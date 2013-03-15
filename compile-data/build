@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mkdir -p out
+cc -g -o out/compile-data src/*.c
