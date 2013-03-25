@@ -11,7 +11,7 @@ l1 := @[];
 l2 := @[@[]];
 l3 := @[@0, @1, @2, @3];
 
-# String-form intlets.
+# String-form listlets.
 s1 := @""; # == @[]
 s1 := @"foo";
 s2 := @"bar";
