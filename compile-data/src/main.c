@@ -408,10 +408,10 @@ static void compileValue(ParseState *state) {
         char c = parsePeek(state);
         switch (c) {
             case '\"': { compileStringlet(state); break; }
-            case '[': { compileListlet(state); break; }
-            case '{': { compileMaplet(state); break; }
-            case '@': { compileUniquelet(state); break; }
-            default: { compileIntlet(state); break; }
+            case '[':  { compileListlet(state);   break; }
+            case '{':  { compileMaplet(state);    break; }
+            case '@':  { compileUniquelet(state); break; }
+            default:   { compileIntlet(state);    break; }
         }
     } else {
         // It had better be a name reference.
