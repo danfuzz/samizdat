@@ -24,8 +24,8 @@ Plan of attack
 
   Written in C using `libsam-dumb-data`.
 
-* `sam-dumb-comp` &mdash; tool to compile source code,
-  "dumb" edition.
+* `sam-dumb-comp-1` &mdash; tool to compile source code,
+  "dumb" edition, first layer.
 
   Accepts input in the form of minimalistic "source code" which
   is not much more than a series of assignment statements
@@ -38,14 +38,32 @@ Plan of attack
 
   Written in C using `libsam-dumb-data`.
 
-* compiler written in sam-dumb that's slightly smarter, still outputs
-  C code to be linked with `libsam-dumb-exec`.
+* `sam-dumb-comp-2` &hellip; `sam-dumb-comp-N` &mdash; tools to
+  compile source code, "dumb" edition, layers two through *n*.
 
-* N more layers of same, with increasing expressivity, ending up at
-  bona fide Samizdat syntax.
+  For `M` and `N` where `N == M + 1`, `sam-dumb-comp-N` is written in
+  the language defined by `sam-dumb-M`. Compiler `sam-dumb-comp-N`
+  accepts the language `sam-dumb-N` and outputs C code to be linked
+  and run with `libsam-dumb-exec`.
 
-* execution support library that makes it possible to write an
-  allocator / GC in Samizdat.
+* `sam-comp` &mdash; tool to compile Samizdat.
+
+  Compiler that accepts bona fide Samizdat syntax and outputs C
+  C code to be linked and run with `libsam-dumb-exec`.
+
+  Written in `sam-dumb-N` (for the ultimate value of `N`).
+
+* `libsam-magic` &mdash; "magic" execution support library
+
+  Library that includes "magic" type functions that make it
+  possible to write an allocator / GC in Samizdat. Canonical
+  magic function: convert int to reference.
+
+  Written in C.
+
+* `libsam-data` &mdash; Non-dumb data structure library, including GC.
+
+  Written in Samizdat, compiled with `sam-comp`.
 
 * ?
 
