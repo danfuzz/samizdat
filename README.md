@@ -63,7 +63,7 @@ Plan of attack
 
   Written in *Samizdat Layer N* (for the ultimate value of `N`).
 
-* `libsam-magic` &mdash; "magic" execution support library
+* `libsam-magic` &mdash; "magic" execution support library.
 
   Library that includes "magic" type functions that make it
   possible to write an allocator / GC in Samizdat. Canonical
