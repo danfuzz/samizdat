@@ -59,7 +59,7 @@ Plan of attack
 * `sam-comp-prelim` &mdash; tool to compile Samizdat.
 
   Compiler that accepts bona fide Samizdat syntax and outputs C
-  C code to be linked and run with `libsam-exec-0`.
+  code to be linked and run with `libsam-exec-0`.
 
   Written in *Samizdat Layer N* (for the ultimate value of `N`).
 
