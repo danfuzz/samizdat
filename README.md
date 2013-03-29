@@ -6,16 +6,16 @@ Watch this space!
 Plan of attack
 --------------
 
-* `interface/sam-data.h` &mdash; public interface to Samizdat data model
+* `interface/sam-data.h` &mdash; Public interface to Samizdat data model
 
   Written in C.
 
-* `interface/sam-exec.h` &mdash; public interface to Samizdat
+* `interface/sam-exec.h` &mdash; Public interface to Samizdat
   execution model.
 
   Written in C.
 
-* `libsam-data-0` &mdash; data structure C library, "minimal" edition.
+* `libsam-data-0` &mdash; Data structure C library, "minimal" edition.
 
   Has functions to (a) build up low-layer data values piece by piece,
   and (b) dump C code based on such data values to recreate them using
@@ -24,7 +24,7 @@ Plan of attack
 
   Written in C, implements API defined by `sam-data.h`.
 
-* `libsam-exec-0` &mdash; execution engine library, "minimal" edition.
+* `libsam-exec-0` &mdash; Execution engine library, "minimal" edition.
 
   Has function to execute a given low-layer data structure using
   as-minimal-as-possible semantics and support library. Has local
@@ -34,8 +34,7 @@ Plan of attack
   Written in C, linked with `libsam-data-0`, implements API defined
   by `sam-exec.h`.
 
-* `sam-comp-0` &mdash; tool to compile source code,
-  "minimal" edition.
+* `sam-comp-0` &mdash; Tool to compile source code, "minimal" edition.
 
   Accepts input in the form of minimalistic "source code" which is not
   much more than a series of assignment statements `varName :=
@@ -48,7 +47,7 @@ Plan of attack
 
   Written in C using `libsam-data-0`.
 
-* `sam-comp-1` &hellip; `sam-comp-N` &mdash; tools to
+* `sam-comp-1` &hellip; `sam-comp-N` &mdash; Tools to
   compile source code, layers 1 through *n*.
 
   For `M` and `N` where `N == M + 1`, `sam-comp-N` is written in
@@ -56,14 +55,14 @@ Plan of attack
   accepts the language *Samizdat layer N* and outputs C code to be linked
   and run with `libsam-exec-0`.
 
-* `sam-comp-prelim` &mdash; tool to compile Samizdat.
+* `sam-comp-prelim` &mdash; Tool to compile Samizdat source code.
 
   Compiler that accepts bona fide Samizdat syntax and outputs C
   code to be linked and run with `libsam-exec-0`.
 
   Written in *Samizdat Layer N* (for the ultimate value of `N`).
 
-* `libsam-magic` &mdash; "magic" execution support library.
+* `libsam-magic` &mdash; "Magic" execution support library.
 
   Library that includes "magic" type functions that make it
   possible to write an allocator / GC in Samizdat. Canonical
@@ -85,7 +84,7 @@ Plan of attack
   Written in Samizdat, compiled with `sam-comp-prelim` to link with
   `libsam-magic` and `libsam-data`.
 
-* `sam-comp` &mdash; tool to compile Samizdat, relinked.
+* `sam-comp` &mdash; Tool to compile Samizdat, relinked.
 
   Same (truly identical) code as `sam-comp-prelim`. The difference is
   in the linking. Written in Samizdat, compiled with `sam-comp-prelim`
