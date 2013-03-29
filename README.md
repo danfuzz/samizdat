@@ -46,7 +46,7 @@ Plan of attack
   accepts the language `sam-dumb-N` and outputs C code to be linked
   and run with `libsam-dumb-exec`.
 
-* `sam-comp` &mdash; tool to compile Samizdat.
+* `sam-comp-prelim` &mdash; tool to compile Samizdat.
 
   Compiler that accepts bona fide Samizdat syntax and outputs C
   C code to be linked and run with `libsam-dumb-exec`.
@@ -63,7 +63,22 @@ Plan of attack
 
 * `libsam-data` &mdash; Non-dumb data structure library, including GC.
 
-  Written in Samizdat, compiled with `sam-comp`.
+  Presents same API as `libsam-dumb-data`.
+
+  Written in Samizdat, compiled with `sam-comp` to link with
+  `libsam-magic`.
+
+* `libsam-exec` &mdash; Non-dumb execution library.
+
+  Presents same API as `libsam-dumb-exec`.
+
+  Written in Samizdat, compiled with `sam-comp` to link with
+  `libsam-magic` and `libsam-data`.
+
+* `sam-comp` &mdash; tool to compile Samizdat, relinked.
+
+  Same code as `sam-comp-prelim`, except linked with `libsam-exec`
+  (et al).
 
 * ?
 
