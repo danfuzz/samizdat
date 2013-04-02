@@ -30,13 +30,3 @@ void samAssertMaplet(sam_value value) {
 void samAssertUniquelet(sam_value value) {
     // TODO: Stuff goes here.
 }
-
-/** Documented in API header. */
-sam_type samType(sam_value value) {
-    // TODO: Stuff goes here.
-}
-
-/** Documented in API header. */
-sam_int samSize(sam_value value) {
-    // TODO: Stuff goes here.
-}
