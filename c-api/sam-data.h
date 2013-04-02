@@ -66,7 +66,7 @@ typedef struct {
 
 
 /*
- * Basic Accessors
+ * Basic Functions
  */
 
 /**
@@ -122,53 +122,16 @@ sam_type samType(sam_value value);
  */
 sam_int samSize(sam_value value);
 
+
+/*
+ * Intlet Functions
+ */
+
 /**
  * Given an intlet, returns the `nth` byte. `value` must be an intlet, and
  * `n` must be `< samSize(value)`.
  */
 sam_int samIntletGet(sam_value intlet, sam_int n);
-
-/**
- * Given a listlet, returns the `nth` element. `value` must be a listlet, and
- * `n` must be `< samSize(value)`.
- */
-sam_value samListletGet(sam_value listlet, sam_int n);
-
-/**
- * Given a maplet, returns the `nth` mapping. `value` must be a maplet, and
- * `n` must be `< samSize(value)`.
- * 
- * Note: When retrieved in ordinal order, keys are always returned in
- * sorted order.
- */
-sam_mapping samMapletGet(sam_value maplet, sam_int n);
-
-/**
- * Given a maplet, find the index of the given key. `value` must be a
- * maplet. Returns the index of the key or `~insertionIndex` (a
- * negative number) if not found.
- */
-sam_mapping samMapletFind(sam_value maplet, sam_value key);
-
-/**
- * Compares two values, providing a full ordering. Returns one of the
- * values `-1 0 1` with the usual comparison result meaning.
- *
- * Major order is by type &mdash `intlet < listlet < maplet <
- * uniquelet` &mdash; and minor order is type-dependant. Intlets order
- * by value. Listlets order by pairwise corresponding-element
- * comparison (with a strict prefix always winning). Maplets order by
- * pairwise corresponding-key comparison (prefixes as with listlets)
- * and then by pairwise corresponding-value comparison. Uniquelets
- * never compare as equal to anything but themselves and have a unique
- * and consistent, but arbitrary, comparison with other uniquelets.
- */
-sam_comparison samCompare(sam_value v1, sam_value v2);
-
-
-/*
- * Intlet Constructors
- */
 
 /**
  * Gets an intlet value equal to the given `sam_int`.
@@ -183,8 +146,14 @@ sam_value samIntletFromUtf8(const sam_byte **string);
 
 
 /*
- * Listlet Constructors
+ * Listlet Functions
  */
+
+/**
+ * Given a listlet, returns the `nth` element. `value` must be a listlet, and
+ * `n` must be `< samSize(value)`.
+ */
+sam_value samListletGet(sam_value listlet, sam_int n);
 
 /**
  * Gets the value `@[]` (that is, the empty listlet).
@@ -205,8 +174,24 @@ sam_value samListletFromUtf8(const sam_byte *string, sam_int stringSize);
 
 
 /*
- * Maplet Constructors
+ * Maplet Functions
  */
+
+/**
+ * Given a maplet, returns the `nth` mapping. `value` must be a maplet, and
+ * `n` must be `< samSize(value)`.
+ *
+ * Note: When retrieved in ordinal order, keys are always returned in
+ * sorted order.
+ */
+sam_mapping samMapletGet(sam_value maplet, sam_int n);
+
+/**
+ * Given a maplet, find the index of the given key. `value` must be a
+ * maplet. Returns the index of the key or `~insertionIndex` (a
+ * negative number) if not found.
+ */
+sam_mapping samMapletFind(sam_value maplet, sam_value key);
 
 /**
  * Gets the value `@{}` (that is, the empty maplet).
@@ -222,7 +207,7 @@ sam_value samMapletPut(sam_value maplet, sam_value key, sam_value value);
 
 
 /*
- * Uniquelet Constructors
+ * Uniquelet Functions
  */
 
 /**
@@ -231,6 +216,26 @@ sam_value samMapletPut(sam_value maplet, sam_value key, sam_value value);
  * given process).
  */
 sam_value samUniquelet(void);
+
+
+/*
+ * Higher Level Functions
+ */
+
+/**
+ * Compares two values, providing a full ordering. Returns one of the
+ * values `-1 0 1` with the usual comparison result meaning.
+ *
+ * Major order is by type &mdash `intlet < listlet < maplet <
+ * uniquelet` &mdash; and minor order is type-dependant. Intlets order
+ * by value. Listlets order by pairwise corresponding-element
+ * comparison (with a strict prefix always winning). Maplets order by
+ * pairwise corresponding-key comparison (prefixes as with listlets)
+ * and then by pairwise corresponding-value comparison. Uniquelets
+ * never compare as equal to anything but themselves and have a unique
+ * and consistent, but arbitrary, comparison with other uniquelets.
+ */
+sam_comparison samCompare(sam_value v1, sam_value v2);
 
 
 #endif
