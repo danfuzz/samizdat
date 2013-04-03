@@ -9,6 +9,7 @@
 #include "util.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 
 /*
@@ -42,8 +43,18 @@ zvalue samListletEmpty(void) {
 
 /** Documented in API header. */
 zvalue samListletAppend(zvalue listlet, zvalue value) {
-    // TODO: Stuff goes here.
-    samDie("TODO");
+    samAssertListlet(listlet);
+
+    zint oldSize = listlet->size;
+    zint size = oldSize + 1;
+    zvalue result = samAllocValue(SAM_LISTLET, size, size * sizeof(zvalue));
+
+    memcpy(((SamListlet *) result)->elems,
+	   ((SamListlet *) listlet)->elems,
+	   oldSize * sizeof(zvalue));
+    ((SamListlet *) result)->elems[oldSize] = value;
+
+    return result;
 }
 
 /** Documented in API header. */
