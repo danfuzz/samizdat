@@ -19,9 +19,10 @@
 void *samAlloc(zint size);
 
 /**
- * Allocates zeroed-out memory, sized to include a `SamValue` header
- * plus the indicated number of extra bytes.
+ * Allocates memory, sized to include a `SamValue` header plus the
+ * indicated number of extra bytes. The `SamValue` header is
+ * initialized with the indicated type and size.
  */
-void *samAllocValue(zint extraSize);
+zvalue samAllocValue(ztype type, zint size, zint extraBytes);
 
 #endif

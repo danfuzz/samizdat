@@ -23,6 +23,12 @@ void *samAlloc(zint size) {
 }
 
 /** Documented in API header. */
-void *samAllocValue(zint extraSize) {
-    return samAlloc(sizeof(SamValue) + extraSize);
+zvalue samAllocValue(ztype type, zint size, zint extraBytes) {
+    zvalue result = samAlloc(sizeof(SamValue) + extraBytes);
+
+    result->magic = SAM_VALUE_MAGIC;
+    result->type = type;
+    result->size = size;
+
+    return result;
 }

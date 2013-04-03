@@ -42,8 +42,8 @@ typedef struct {
     /** Value header. */
     SamValue header;
 
-    /** Signed value, in little-endian order */
-    zint values[0];
+    /** Signed value as an array of `zint` elements, in little-endian order. */
+    zint elems[0];
 } SamIntlet;
 
 /**
@@ -53,7 +53,8 @@ typedef struct {
     /** Value header. */
     SamValue header;
 
-    // TODO: Stuff goes here.
+    /** List elements, in index order. */
+    zvalue elems[0];
 } SamListlet;
 
 /**

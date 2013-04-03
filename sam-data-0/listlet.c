@@ -4,19 +4,40 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
+#include "alloc.h"
 #include "impl.h"
 #include "util.h"
 
+#include <stdlib.h>
+
+
+/*
+ * Helper definitions
+ */
+
+/** The empty listlet, lazily initialized. */
+static zvalue theEmptyListlet = NULL;
+
+
+/*
+ * API Implementation
+ */
+
 /** Documented in API header. */
 zvalue samListletGet(zvalue listlet, zint n) {
-    // TODO: Stuff goes here.
-    samDie("TODO");
+    samAssertListlet(listlet);
+    samAssertNth(listlet, n);
+
+    return ((SamListlet *) listlet)->elems[n];
 }
 
 /** Documented in API header. */
 zvalue samListletEmpty(void) {
-    // TODO: Stuff goes here.
-    samDie("TODO");
+    if (theEmptyListlet == NULL) {
+	theEmptyListlet = samAllocValue(SAM_LISTLET, 0, 0);
+    }
+
+    return theEmptyListlet;
 }
 
 /** Documented in API header. */

@@ -4,42 +4,46 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
+#include "alloc.h"
 #include "impl.h"
 #include "util.h"
 
 /** Documented in API header. */
 zint samIntletGetBit(zvalue intlet, zint n) {
+    samAssertIntlet(intlet);
     samAssertNth(intlet, n);
 
     zint word = n / 64;
     zint bitInWord = n % 64;
-    zint value = samIntletGetInt(intlet, word);
+    zint elem = samIntletGetInt(intlet, word);
 
-    return (value >> bitInWord) & 1;
+    return (elem >> bitInWord) & 1;
 }
 
 /** Documented in API header. */
 zint samIntletGetByte(zvalue intlet, zint n) {
+    samAssertIntlet(intlet);
     samAssertNth(intlet, n * 8);
 
     zint word = n / 4;
     zint byteInWord = n % 4;
-    zint value = samIntletGetInt(intlet, word);
+    zint elem = samIntletGetInt(intlet, word);
 
-    return (value >> (byteInWord * 8)) & 0xff;
+    return (elem >> (byteInWord * 8)) & 0xff;
 }
 
 /** Documented in API header. */
 zint samIntletGetInt(zvalue intlet, zint n) {
+    samAssertIntlet(intlet);
     samAssertNth(intlet, n * 64);
 
-    return ((SamIntlet *) intlet)->values[n];
+    return ((SamIntlet *) intlet)->elems[n];
 }
 
 /** Documented in API header. */
 zvalue samIntletFromInt(zint value) {
-    zvalue result = samAllocValue(sizeof(zint));
+    zvalue result = samAllocValue(SAM_INTLET, 1, sizeof(zint));
 
-    ((SamIntlet *) result)->values[0] = value;
+    ((SamIntlet *) result)->elems[0] = value;
     return result;
 }
