@@ -66,13 +66,13 @@ typedef struct {
 } SamMaplet;
 
 /**
- * Uniquelet structure.
+ * Uniqlet structure.
  */
 typedef struct {
     /** Value header. */
     SamValue header;
 
     // TODO: Stuff goes here.
-} SamUniquelet;
+} SamUniqlet;
 
 #endif
