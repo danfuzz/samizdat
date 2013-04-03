@@ -7,6 +7,6 @@
 #include "sam-data.h"
 
 /** Documented in API header. */
-sam_comparison samCompare(sam_value v1, sam_value v2) {
+zcomparison samCompare(zvalue v1, zvalue v2) {
     // TODO: Stuff goes here.
 }

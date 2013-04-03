@@ -7,6 +7,6 @@
 #include "sam-data.h"
 
 /** Documented in API header. */
-sam_value samUniquelet(void) {
+zvalue samUniquelet(void) {
     // TODO: Stuff goes here.
 }

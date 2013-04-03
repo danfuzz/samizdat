@@ -7,26 +7,26 @@
 #include "sam-data.h"
 
 /** Documented in API header. */
-void samAssertValid(sam_value value) {
+void samAssertValid(zvalue value) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-void samAssertIntlet(sam_value value) {
+void samAssertIntlet(zvalue value) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-void samAssertListlet(sam_value value) {
+void samAssertListlet(zvalue value) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-void samAssertMaplet(sam_value value) {
+void samAssertMaplet(zvalue value) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-void samAssertUniquelet(sam_value value) {
+void samAssertUniquelet(zvalue value) {
     // TODO: Stuff goes here.
 }

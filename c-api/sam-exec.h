@@ -18,8 +18,7 @@
  * implementation of this type to allow code to escape from a mode of
  * pure computation.
  */
-typedef sam_value sam_magic(sam_value uniquelet,
-                            sam_int argCount, const sam_value *args);
+typedef zvalue zmagic(zvalue uniquelet, zint argCount, const zvalue *args);
 
 /**
  * Executes the given code, using the given global environment and
@@ -37,6 +36,6 @@ typedef sam_value sam_magic(sam_value uniquelet,
  * a uniquelet that is bound as a function by the given magic
  * provider.
  */
-sam_value samExecute(sam_value environment, sam_magic *magic, sam_value code);
+zvalue samExecute(zvalue environment, zmagic *magic, zvalue code);
 
 #endif

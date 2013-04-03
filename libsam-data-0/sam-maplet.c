@@ -7,21 +7,21 @@
 #include "sam-data.h"
 
 /** Documented in API header. */
-sam_mapping samMapletGet(sam_value maplet, sam_int n) {
+zmapping samMapletGet(zvalue maplet, zint n) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-sam_mapping samMapletFind(sam_value maplet, sam_value key) {
+zmapping samMapletFind(zvalue maplet, zvalue key) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-sam_value samMapletEmpty(void) {
+zvalue samMapletEmpty(void) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-sam_value samMapletPut(sam_value maplet, sam_value key, sam_value value) {
+zvalue samMapletPut(zvalue maplet, zvalue key, zvalue value) {
     // TODO: Stuff goes here.
 }

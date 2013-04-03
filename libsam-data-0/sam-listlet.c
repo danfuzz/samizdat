@@ -7,21 +7,21 @@
 #include "sam-data.h"
 
 /** Documented in API header. */
-sam_value samListletGet(sam_value listlet, sam_int n) {
+zvalue samListletGet(zvalue listlet, zint n) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-sam_value samListletEmpty(void) {
+zvalue samListletEmpty(void) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-sam_value samListletAppend(sam_value listlet, sam_value value) {
+zvalue samListletAppend(zvalue listlet, zvalue value) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-sam_value samListletFromUtf8(const sam_byte *string, sam_int stringSize) {
+zvalue samListletFromUtf8(const zbyte *string, zint stringSize) {
     // TODO: Stuff goes here.
 }

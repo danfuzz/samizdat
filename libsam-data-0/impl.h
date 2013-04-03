@@ -21,55 +21,55 @@ enum {
 /**
  * Common fields across all values. Used as a header for other types.
  */
-struct sam_value {
+typedef struct SamValue {
     /** Magic number. */
     uint32_t magic;
 
     /** Data type. */
-    sam_type type;
+    ztype type;
 
     /** Size. Meaning varies depending on `type`. */
-    sam_int size;
-};
+    zint size;
+} SamValue;
 
 /**
  * Intlet structure.
  */
 typedef struct {
     /** Value header. */
-    sam_value header;
+    SamValue header;
 
     // TODO: Stuff goes here.
-} impl_intlet;
+} SamIntlet;
 
 /**
  * Listlet structure.
  */
 typedef struct {
     /** Value header. */
-    sam_value header;
+    SamValue header;
 
     // TODO: Stuff goes here.
-} impl_listlet;
+} SamListlet;
 
 /**
  * Maplet structure.
  */
 typedef struct {
     /** Value header. */
-    sam_value header;
+    SamValue header;
 
     // TODO: Stuff goes here.
-} impl_maplet;
+} SamMaplet;
 
 /**
  * Uniquelet structure.
  */
 typedef struct {
     /** Value header. */
-    sam_value header;
+    SamValue header;
 
     // TODO: Stuff goes here.
-} impl_uniquelet;
+} SamUniquelet;
 
 #endif

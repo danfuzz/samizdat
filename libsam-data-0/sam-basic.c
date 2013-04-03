@@ -7,11 +7,11 @@
 #include "sam-data.h"
 
 /** Documented in API header. */
-sam_type samType(sam_value value) {
+ztype samType(zvalue value) {
     // TODO: Stuff goes here.
 }
 
 /** Documented in API header. */
-sam_int samSize(sam_value value) {
+zint samSize(zvalue value) {
     // TODO: Stuff goes here.
 }
