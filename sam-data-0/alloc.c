@@ -1,0 +1,28 @@
+/*
+ * Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+ * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+ * Version 2.0. See the associated file "LICENSE.md" for details.
+ */
+
+#include "alloc.h"
+#include "impl.h"
+#include "util.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+/** Documented in API header. */
+void *samAlloc(zint size) {
+    void *result = malloc(size);
+
+    if (result == NULL) {
+	samDie("Failed: malloc(0x%llx).", size);
+    }
+
+    return result;
+}
+
+/** Documented in API header. */
+void *samAllocValue(zint extraSize) {
+    return samAlloc(sizeof(SamValue) + extraSize);
+}
