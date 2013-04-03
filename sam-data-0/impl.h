@@ -64,7 +64,8 @@ typedef struct {
     /** Value header. */
     SamValue header;
 
-    // TODO: Stuff goes here.
+    /** List of mappings, in key-sorted order. */
+    zmapping elems[0];
 } SamMaplet;
 
 /**
@@ -74,7 +75,8 @@ typedef struct {
     /** Value header. */
     SamValue header;
 
-    // TODO: Stuff goes here.
+    /** Uniqlet unique id */
+    zint id;
 } SamUniqlet;
 
 #endif
