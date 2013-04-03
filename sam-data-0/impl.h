@@ -15,7 +15,10 @@
 
 enum {
     /** "Magic number" for value validation. */
-    SAM_VALUE_MAGIC = 0x600f1e57;
+    SAM_VALUE_MAGIC = 0x600f1e57,
+
+    /** Required byte alignment for values. */
+    SAM_VALUE_ALIGNMENT = 8
 };
 
 /**
