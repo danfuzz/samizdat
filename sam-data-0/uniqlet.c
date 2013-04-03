@@ -4,9 +4,11 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
-#include "sam-data.h"
+#include "impl.h"
+#include "util.h"
 
 /** Documented in API header. */
 zvalue samUniqlet(void) {
     // TODO: Stuff goes here.
+    samDie("TODO");
 }
