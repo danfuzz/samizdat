@@ -17,10 +17,10 @@
  */
 static const char *typeName(ztype type) {
     switch (type) {
-        case SAM_INTLET:    return "intlet";
-        case SAM_LISTLET:   return "listlet";
-        case SAM_MAPLET:    return "maplet";
-        case SAM_UNIQUELET: return "uniquelet";
+        case SAM_INTLET:  return "intlet";
+        case SAM_LISTLET: return "listlet";
+        case SAM_MAPLET:  return "maplet";
+        case SAM_UNIQLET: return "uniqlet";
     }
 
     return "<unknown-type>";
@@ -62,7 +62,7 @@ void samAssertValid(zvalue value) {
         case SAM_INTLET:
         case SAM_LISTLET:
         case SAM_MAPLET:
-        case SAM_UNIQUELET: {
+        case SAM_UNIQLET: {
 	    break;
 	}
         default: {
@@ -88,6 +88,6 @@ void samAssertMaplet(zvalue value) {
 }
 
 /** Documented in API header. */
-void samAssertUniquelet(zvalue value) {
-    assertType(value, SAM_UNIQUELET);
+void samAssertUniqlet(zvalue value) {
+    assertType(value, SAM_UNIQLET);
 }

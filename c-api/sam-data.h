@@ -46,7 +46,7 @@ typedef enum {
     SAM_INTLET = 1,
     SAM_LISTLET,
     SAM_MAPLET,
-    SAM_UNIQUELET
+    SAM_UNIQLET
 } ztype;
 
 /**
@@ -100,10 +100,10 @@ void samAssertMaplet(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a uniquelet. If not, this aborts the process
+ * furthermore that it is a uniqlet. If not, this aborts the process
  * with a diagnostic message.
  */
-void samAssertUniquelet(zvalue value);
+void samAssertUniqlet(zvalue value);
 
 /**
  * Gets the low-level data type of the given value. `value` must be a
@@ -118,7 +118,7 @@ ztype samType(zvalue value);
  * * an intlet's bit count (may be rounded up to a word size)
  * * a listlet's element count
  * * a maplet's mapping count
- * * `0` for all uniquelets
+ * * `0` for all uniqlets
  */
 zint samSize(zvalue value);
 
@@ -222,15 +222,15 @@ zvalue samMapletPut(zvalue maplet, zvalue key, zvalue value);
 
 
 /*
- * Uniquelet Functions
+ * Uniqlet Functions
  */
 
 /**
- * Gets a new uniquelet. Each call to this function is guaranteed to
+ * Gets a new uniqlet. Each call to this function is guaranteed to
  * produce a value unequal to any other call to this function (in any
  * given process).
  */
-zvalue samUniquelet(void);
+zvalue samUniqlet(void);
 
 
 /*
@@ -244,7 +244,7 @@ zvalue samUniquelet(void);
  * comparison result meaning.
  *
  * Major order is by type &mdash `intlet < listlet < maplet <
- * uniquelet` &mdash; and minor order is type-dependant.
+ * uniqlet` &mdash; and minor order is type-dependant.
  *
  * * Intlets order by integer value.
  *
@@ -256,8 +256,8 @@ zvalue samUniquelet(void);
  *   lists are identical, then the result is the comparison of
  *   corresponding lists of values, in key order.
  *
- * * Any given uniquelet never compares as equal to anything but itself.
- *   Any two uniquelets have a consistent and transitive &mdash; but
+ * * Any given uniqlet never compares as equal to anything but itself.
+ *   Any two uniqlets have a consistent and transitive &mdash; but
  *   otherwise arbitrary &mdash; comparison.
  */
 zcomparison samCompare(zvalue v1, zvalue v2);

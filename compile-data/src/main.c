@@ -389,11 +389,11 @@ static void compileMaplet(ParseState *state) {
 }
 
 /**
- * "Compiles" a uniquelet. Assumes the opening `@` is already read.
+ * "Compiles" a uniqlet. Assumes the opening `@` is already read.
  */
-static void compileUniquelet(ParseState *state) {
+static void compileUniqlet(ParseState *state) {
     skipChar(state, '@');
-    printf("samUniquelet()");
+    printf("samUniqlet()");
 }
 
 /**
@@ -410,7 +410,7 @@ static void compileValue(ParseState *state) {
             case '\"': { compileStringlet(state); break; }
             case '[':  { compileListlet(state);   break; }
             case '{':  { compileMaplet(state);    break; }
-            case '@':  { compileUniquelet(state); break; }
+            case '@':  { compileUniqlet(state); break; }
             default:   { compileIntlet(state);    break; }
         }
     } else {

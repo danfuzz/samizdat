@@ -18,7 +18,7 @@
  * implementation of this type to allow code to escape from a mode of
  * pure computation.
  */
-typedef zvalue zmagic(zvalue uniquelet, zint argCount, const zvalue *args);
+typedef zvalue zmagic(zvalue uniqlet, zint argCount, const zvalue *args);
 
 /**
  * Executes the given code, using the given global environment and
@@ -33,7 +33,7 @@ typedef zvalue zmagic(zvalue uniquelet, zint argCount, const zvalue *args);
  * form as is taken by this function.
  *
  * Code may either be a maplet value (details described elsewhere) or
- * a uniquelet that is bound as a function by the given magic
+ * a uniqlet that is bound as a function by the given magic
  * provider.
  */
 zvalue samExecute(zvalue environment, zmagic *magic, zvalue code);
