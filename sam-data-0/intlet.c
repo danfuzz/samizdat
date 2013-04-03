@@ -38,12 +38,8 @@ zint samIntletGetInt(zvalue intlet, zint n) {
 
 /** Documented in API header. */
 zvalue samIntletFromInt(zint value) {
-    // TODO: Stuff goes here.
-    samDie("TODO");
-}
+    zvalue result = samAllocValue(sizeof(zint));
 
-/** Documented in API header. */
-zvalue samIntletFromUtf8(const zbyte **string) {
-    // TODO: Stuff goes here.
-    samDie("TODO");
+    ((SamIntlet *) result)->values[0] = value;
+    return result;
 }

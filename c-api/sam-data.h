@@ -160,12 +160,6 @@ zint samIntletGetInt(zvalue intlet, zint n);
  */
 zvalue samIntletFromInt(zint value);
 
-/**
- * Gets an intlet value equal to the first UTF-8 code point in the given
- * byte string. Updates the byte string pointer.
- */
-zvalue samIntletFromUtf8(const zbyte **string);
-
 
 /*
  * Listlet Functions
