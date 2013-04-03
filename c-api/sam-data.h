@@ -78,6 +78,13 @@ typedef struct {
 void samAssertValid(zvalue value);
 
 /**
+ * Asserts that the given value is a valid `zvalue`, and that its size
+ * accommodates accessing the `n`th element. This includes asserting that
+ * `n >= 0`.
+ */
+void samAssertNth(zvalue value, zint n);
+
+/**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is an intlet. If not, this aborts the process
  * with a diagnostic message.

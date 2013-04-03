@@ -9,20 +9,31 @@
 
 /** Documented in API header. */
 zint samIntletGetBit(zvalue intlet, zint n) {
-    // TODO: Stuff goes here.
-    samDie("TODO");
+    samAssertNth(intlet, n);
+
+    zint word = n / 64;
+    zint bitInWord = n % 64;
+    zint value = samIntletGetInt(intlet, word);
+
+    return (value >> bitInWord) & 1;
 }
 
 /** Documented in API header. */
 zint samIntletGetByte(zvalue intlet, zint n) {
-    // TODO: Stuff goes here.
-    samDie("TODO");
+    samAssertNth(intlet, n * 8);
+
+    zint word = n / 4;
+    zint byteInWord = n % 4;
+    zint value = samIntletGetInt(intlet, word);
+
+    return (value >> (byteInWord * 8)) & 0xff;
 }
 
 /** Documented in API header. */
 zint samIntletGetInt(zvalue intlet, zint n) {
-    // TODO: Stuff goes here.
-    samDie("TODO");
+    samAssertNth(intlet, n * 64);
+
+    return ((SamIntlet *) intlet)->values[n];
 }
 
 /** Documented in API header. */

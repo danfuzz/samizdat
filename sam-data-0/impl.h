@@ -42,7 +42,8 @@ typedef struct {
     /** Value header. */
     SamValue header;
 
-    // TODO: Stuff goes here.
+    /** Signed value, in little-endian order */
+    zint values[0];
 } SamIntlet;
 
 /**

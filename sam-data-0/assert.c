@@ -73,6 +73,20 @@ void samAssertValid(zvalue value) {
 }
 
 /** Documented in API header. */
+void samAssertNth(zvalue value, zint n) {
+    samAssertValid(value);
+
+    if (n < 0) {
+	samDie("Invalid index: %lld", n);
+    }
+
+    if (value->size <= n) {
+	samDie("Invalid size for value access: (%p)->size == %lld; <= %lld",
+	       value, value->size, n);
+    }
+}
+
+/** Documented in API header. */
 void samAssertIntlet(zvalue value) {
     assertType(value, SAM_INTLET);
 }
