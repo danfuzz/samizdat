@@ -115,7 +115,7 @@ ztype samType(zvalue value);
  * Gets the size of the given value. `value` must be a valid value.
  * "Size" means:
  *
- * * an intlet's byte count
+ * * an intlet's bit count (may be rounded up to a word size)
  * * a listlet's element count
  * * a maplet's mapping count
  * * `0` for all uniquelets
@@ -128,10 +128,25 @@ zint samSize(zvalue value);
  */
 
 /**
- * Given an intlet, returns the `nth` byte. `value` must be an intlet, and
- * `n` must be `< samSize(value)`.
+ * Given an intlet, returns the `n`th bit, counting from the least
+ * significant bit. `value` must be an intlet, and `n` must be `<
+ * samSize(value)`.
  */
-zint samIntletGet(zvalue intlet, zint n);
+zint samIntletGetBit(zvalue intlet, zint n);
+
+/**
+ * Given an intlet, returns the `n`th byte, counting from the least
+ * significant byte. `value` must be an intlet, and `n` must be `<
+ * (samSize(value) + 7) / 8`.
+ */
+zint samIntletGetByte(zvalue intlet, zint n);
+
+/**
+ * Given an intlet, returns the `n`th `zint`-sized word, counting from
+ * the least significant word. `value` must be an intlet, and `n` must
+ * be `< (samSize(value) + 63) / 64`.
+ */
+zint samIntletGetInt(zvalue intlet, zint n);
 
 /**
  * Gets an intlet value equal to the given `zint`.
@@ -150,7 +165,7 @@ zvalue samIntletFromUtf8(const zbyte **string);
  */
 
 /**
- * Given a listlet, returns the `nth` element. `value` must be a listlet, and
+ * Given a listlet, returns the `n`th element. `value` must be a listlet, and
  * `n` must be `< samSize(value)`.
  */
 zvalue samListletGet(zvalue listlet, zint n);
@@ -178,7 +193,7 @@ zvalue samListletFromUtf8(const zbyte *string, zint stringSize);
  */
 
 /**
- * Given a maplet, returns the `nth` mapping. `value` must be a maplet, and
+ * Given a maplet, returns the `n`th mapping. `value` must be a maplet, and
  * `n` must be `< samSize(value)`.
  *
  * Note: When retrieved in ordinal order, keys are always returned in
@@ -191,7 +206,7 @@ zmapping samMapletGet(zvalue maplet, zint n);
  * maplet. Returns the index of the key or `~insertionIndex` (a
  * negative number) if not found.
  */
-zmapping samMapletFind(zvalue maplet, zvalue key);
+zint samMapletFind(zvalue maplet, zvalue key);
 
 /**
  * Gets the value `@{}` (that is, the empty maplet).
@@ -224,16 +239,26 @@ zvalue samUniquelet(void);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
- * values `-1 0 1` with the usual comparison result meaning.
+ * values `{ SAM_IS_LESS, SAM_IS_EQUAL, SAM_IS_MORE }`, less
+ * symbolically equal to `{ -1, 0, 1 }` respectively, with the usual
+ * comparison result meaning.
  *
  * Major order is by type &mdash `intlet < listlet < maplet <
- * uniquelet` &mdash; and minor order is type-dependant. Intlets order
- * by value. Listlets order by pairwise corresponding-element
- * comparison (with a strict prefix always winning). Maplets order by
- * pairwise corresponding-key comparison (prefixes as with listlets)
- * and then by pairwise corresponding-value comparison. Uniquelets
- * never compare as equal to anything but themselves and have a unique
- * and consistent, but arbitrary, comparison with other uniquelets.
+ * uniquelet` &mdash; and minor order is type-dependant.
+ *
+ * * Intlets order by integer value.
+ *
+ * * Listlets order by pairwise corresponding-element
+ *   comparison, with a strict prefix always winning.
+ *
+ * * Maplets order by first comparing corresponding ordered lists
+ *   of keys with the same rules as listlet comparison. If the key
+ *   lists are identical, then the result is the comparison of
+ *   corresponding lists of values, in key order.
+ *
+ * * Any given uniquelet never compares as equal to anything but itself.
+ *   Any two uniquelets have a consistent and transitive &mdash; but
+ *   otherwise arbitrary &mdash; comparison.
  */
 zcomparison samCompare(zvalue v1, zvalue v2);
 

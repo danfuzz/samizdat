@@ -12,7 +12,7 @@ zmapping samMapletGet(zvalue maplet, zint n) {
 }
 
 /** Documented in API header. */
-zmapping samMapletFind(zvalue maplet, zvalue key) {
+zint samMapletFind(zvalue maplet, zvalue key) {
     // TODO: Stuff goes here.
 }
 

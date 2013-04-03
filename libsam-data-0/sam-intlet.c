@@ -7,7 +7,17 @@
 #include "sam-data.h"
 
 /** Documented in API header. */
-zint samIntletGet(zvalue intlet, zint n) {
+zint samIntletGetBit(zvalue intlet, zint n) {
+    // TODO: Stuff goes here.
+}
+
+/** Documented in API header. */
+zint samIntletGetByte(zvalue intlet, zint n) {
+    // TODO: Stuff goes here.
+}
+
+/** Documented in API header. */
+zint samIntletGetInt(zvalue intlet, zint n) {
     // TODO: Stuff goes here.
 }
 
