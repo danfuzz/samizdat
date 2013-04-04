@@ -97,7 +97,8 @@ static const zbyte *justDecode(const zbyte *string, zint *result) {
     while (extraBytes > 0) {
 	ch = *string;
 	string++;
-	
+	extraBytes--;
+
 	if ((ch & 0xc0) != 0x80) {
 	    samDie("Invalid UTF-8 continuation byte: 0x%02x", (int) ch);
 	}
