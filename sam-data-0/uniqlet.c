@@ -25,8 +25,8 @@ zvalue samUniqlet(void) {
     zvalue result = samAllocValue(SAM_UNIQLET, 0, sizeof(zint));
 
     if (theNextId < 0) {
-	// Shouldn't be possible, but just in case...
-	samDie("Shouldn't happen: Way too many uniqlets!");
+        // Shouldn't be possible, but just in case...
+        samDie("Shouldn't happen: Way too many uniqlets!");
     }
 
     ((SamUniqlet *) result)->id = theNextId;

@@ -16,7 +16,7 @@ void *samAlloc(zint size) {
     void *result = malloc(size);
 
     if (result == NULL) {
-	samDie("Failed: malloc(0x%llx).", size);
+        samDie("Failed: malloc(0x%llx).", size);
     }
 
     return result;

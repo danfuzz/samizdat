@@ -33,11 +33,11 @@ static void assertType(zvalue value, ztype type) {
     samAssertValid(value);
 
     if (value->type == type) {
-	return;
+        return;
     }
 
     samDie("Expected type %s: (%p)->type == %s",
-	   typeName(type), value, typeName(value->type));
+           typeName(type), value, typeName(value->type));
 }
 
 
@@ -50,12 +50,12 @@ void samAssertValid(zvalue value) {
     zint bits = (zint) (void *) value;
 
     if ((bits & ((1 << SAM_VALUE_ALIGNMENT) - 1)) != 0) {
-	samDie("Bad alignment for value: %p", value);
+        samDie("Bad alignment for value: %p", value);
     }
 
     if (value->magic != SAM_VALUE_MAGIC) {
-	samDie("Incorrect magic for value: (%p)->magic == %04x",
-	       value, value->magic);
+        samDie("Incorrect magic for value: (%p)->magic == %04x",
+               value, value->magic);
     }
 
     switch (value->type) {
@@ -63,12 +63,12 @@ void samAssertValid(zvalue value) {
         case SAM_LISTLET:
         case SAM_MAPLET:
         case SAM_UNIQLET: {
-	    break;
-	}
+            break;
+        }
         default: {
-	    samDie("Invalid type for value: (%p)->type == %04x",
-		   value, value->type);
-	}
+            samDie("Invalid type for value: (%p)->type == %04x",
+                   value, value->type);
+        }
     }
 }
 
@@ -77,12 +77,12 @@ void samAssertNth(zvalue value, zint n) {
     samAssertValid(value);
 
     if (n < 0) {
-	samDie("Invalid index: %lld", n);
+        samDie("Invalid index: %lld", n);
     }
 
     if (value->size <= n) {
-	samDie("Invalid size for value access: (%p)->size == %lld; <= %lld",
-	       value, value->size, n);
+        samDie("Invalid size for value access: (%p)->size == %lld; <= %lld",
+               value, value->size, n);
     }
 }
 

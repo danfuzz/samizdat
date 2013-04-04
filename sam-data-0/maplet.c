@@ -40,7 +40,7 @@ zint samMapletFind(zvalue maplet, zvalue key) {
 /** Documented in API header. */
 zvalue samMapletEmpty(void) {
     if (theEmptyMaplet == NULL) {
-	theEmptyMaplet = samAllocValue(SAM_MAPLET, 0, 0);
+        theEmptyMaplet = samAllocValue(SAM_MAPLET, 0, 0);
     }
 
     return theEmptyMaplet;

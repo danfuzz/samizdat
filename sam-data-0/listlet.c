@@ -35,7 +35,7 @@ zvalue samListletGet(zvalue listlet, zint n) {
 /** Documented in API header. */
 zvalue samListletEmpty(void) {
     if (theEmptyListlet == NULL) {
-	theEmptyListlet = samAllocValue(SAM_LISTLET, 0, 0);
+        theEmptyListlet = samAllocValue(SAM_LISTLET, 0, 0);
     }
 
     return theEmptyListlet;
@@ -50,8 +50,8 @@ zvalue samListletAppend(zvalue listlet, zvalue value) {
     zvalue result = samAllocValue(SAM_LISTLET, size, size * sizeof(zvalue));
 
     memcpy(((SamListlet *) result)->elems,
-	   ((SamListlet *) listlet)->elems,
-	   oldSize * sizeof(zvalue));
+           ((SamListlet *) listlet)->elems,
+           oldSize * sizeof(zvalue));
     ((SamListlet *) result)->elems[oldSize] = value;
 
     return result;
