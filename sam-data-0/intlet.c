@@ -9,21 +9,19 @@
 #include "util.h"
 
 /** Documented in API header. */
-zint samIntletGetBit(zvalue intlet, zint n) {
+bool samIntletGetBit(zvalue intlet, zint n) {
     samAssertIntlet(intlet);
-    samAssertNth(intlet, n);
 
     zint word = n / 64;
     zint bitInWord = n % 64;
     zint elem = samIntletGetInt(intlet, word);
 
-    return (elem >> bitInWord) & 1;
+    return (bool) ((elem >> bitInWord) & 1);
 }
 
 /** Documented in API header. */
 zint samIntletGetByte(zvalue intlet, zint n) {
     samAssertIntlet(intlet);
-    samAssertNth(intlet, n * 8);
 
     zint word = n / 4;
     zint byteInWord = n % 4;
@@ -35,9 +33,19 @@ zint samIntletGetByte(zvalue intlet, zint n) {
 /** Documented in API header. */
 zint samIntletGetInt(zvalue intlet, zint n) {
     samAssertIntlet(intlet);
-    samAssertNth(intlet, n * 64);
 
-    return ((SamIntlet *) intlet)->elems[n];
+    zint wordSize = (samSize(intlet) + 63) / 64;
+    if (n < wordSize) {
+        return ((SamIntlet *) intlet)->elems[n];
+    } else {
+        return samIntletSign(intlet) ? (zint) -1 : 0;
+    }
+}
+
+/** Documented in API header. */
+bool samIntletSign(zvalue intlet) {
+    zint size = samSize(intlet);
+    return samIntletGetBit(intlet, size - 1);
 }
 
 /** Documented in API header. */

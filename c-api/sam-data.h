@@ -11,6 +11,7 @@
 #ifndef SAM_DATA_H
 #define SAM_DATA_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 
@@ -40,7 +41,8 @@ typedef enum {
 } zcomparison;
 
 /**
- * Possible low-level data types.
+ * Possible low-level data types. Note: The enum ordering is the same
+ * as the type-based ordering for comparing values. See `samCompare()`.
  */
 typedef enum {
     SAM_INTLET = 1,
@@ -80,7 +82,8 @@ void samAssertValid(zvalue value);
 /**
  * Asserts that the given value is a valid `zvalue`, and that its size
  * accommodates accessing the `n`th element. This includes asserting that
- * `n >= 0`.
+ * `n >= 0`. Note that all non-negative `n` are valid for accessing
+ * intlets (their size notwithstanding).
  */
 void samAssertNth(zvalue value, zint n);
 
@@ -122,10 +125,14 @@ ztype samType(zvalue value);
  * Gets the size of the given value. `value` must be a valid value.
  * "Size" means:
  *
- * * an intlet's bit count (may be rounded up to a word size)
- * * a listlet's element count
- * * a maplet's mapping count
- * * `0` for all uniqlets
+ * * an intlet's highest significant bit number plus one (may be
+ *   rounded up to a word size).
+ *
+ * * a listlet's element count.
+ *
+ * * a maplet's mapping count.
+ *
+ * * `0` for all uniqlets.
  */
 zint samSize(zvalue value);
 
@@ -136,24 +143,34 @@ zint samSize(zvalue value);
 
 /**
  * Given an intlet, returns the `n`th bit, counting from the least
- * significant bit. `value` must be an intlet, and `n` must be `<
- * samSize(value)`.
+ * significant bit. `value` must be an intlet. Returns `false` for a
+ * `0` bit, and `true` for a `1` bit. If `n` references a bit beyond
+ * the value's size, then the return value is the sign bit of the
+ * value.
  */
-zint samIntletGetBit(zvalue intlet, zint n);
+bool samIntletGetBit(zvalue intlet, zint n);
 
 /**
  * Given an intlet, returns the `n`th byte, counting from the least
- * significant byte. `value` must be an intlet, and `n` must be `<
- * (samSize(value) + 7) / 8`.
+ * significant byte. `value` must be an intlet. If `n` references a
+ * byte beyond the value's size, then the return value is the sign byte
+ * of the value.
  */
 zint samIntletGetByte(zvalue intlet, zint n);
 
 /**
  * Given an intlet, returns the `n`th `zint`-sized word, counting from
- * the least significant word. `value` must be an intlet, and `n` must
- * be `< (samSize(value) + 63) / 64`.
+ * the least significant word. `value` must be an intlet. If `n`
+ * references a word beyond the value's size, then the return value is
+ * the sign word of the value.
  */
 zint samIntletGetInt(zvalue intlet, zint n);
+
+/**
+ * Gets the sign of the given intlet. Returns `false` for
+ * non-negative, and `true` for negative.
+ */
+bool samIntletSign(zvalue intlet);
 
 /**
  * Gets an intlet value equal to the given `zint`.

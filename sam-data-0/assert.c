@@ -80,7 +80,7 @@ void samAssertNth(zvalue value, zint n) {
         samDie("Invalid index: %lld", n);
     }
 
-    if (value->size <= n) {
+    if ((samType(value) != SAM_INTLET) && (value->size <= n)) {
         samDie("Invalid size for value access: (%p)->size == %lld; <= %lld",
                value, value->size, n);
     }
