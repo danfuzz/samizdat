@@ -33,6 +33,16 @@ zint samUtf8DecodeStringSize(const zbyte *string, zint stringBytes);
  * into the given buffer of `zint`s. The buffer must be sufficiently
  * large to hold the result of decoding.
  */
-void samUtf8DecodeString(const zbyte *string, zint stringBytes, zint *result);
+void samUtf8DecodeStringToInts(const zbyte *string, zint stringBytes,
+                               zint *result);
+
+/**
+ * Decodes the given UTF-8 encoded string of the given size in bytes,
+ * into the given buffer of `zvalue`s. The buffer must be sufficiently
+ * large to hold the result of decoding. Each of the decoded values
+ * is an intlet.
+ */
+void samUtf8DecodeStringToValues(const zbyte *string, zint stringBytes,
+                                 zvalue *result);
 
 #endif

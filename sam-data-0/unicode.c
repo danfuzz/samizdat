@@ -4,6 +4,7 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
+#include "sam-data.h"
 #include "unicode.h"
 #include "util.h"
 
@@ -189,11 +190,25 @@ zint samUtf8DecodeStringSize(const zbyte *string, zint stringBytes) {
 }
 
 /** Documented in API header. */
-void samUtf8DecodeString(const zbyte *string, zint stringBytes, zint *result) {
+void samUtf8DecodeStringToInts(const zbyte *string, zint stringBytes,
+                               zint *result) {
     const zbyte *stringEnd = getStringEnd(string, stringBytes);
 
     while (string < stringEnd) {
         string = samUtf8DecodeOne(string, stringEnd - string, result);
+        result++;
+    }
+}
+
+/** Documented in API header. */
+void samUtf8DecodeStringToValues(const zbyte *string, zint stringBytes,
+                                 zvalue *result) {
+    const zbyte *stringEnd = getStringEnd(string, stringBytes);
+    zint one = 0;
+
+    while (string < stringEnd) {
+        string = samUtf8DecodeOne(string, stringEnd - string, &one);
+        *result = samIntletFromInt(one);
         result++;
     }
 }

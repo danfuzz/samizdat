@@ -6,6 +6,7 @@
 
 #include "alloc.h"
 #include "impl.h"
+#include "unicode.h"
 #include "util.h"
 
 #include <stdlib.h>
@@ -59,6 +60,11 @@ zvalue samListletAppend(zvalue listlet, zvalue value) {
 
 /** Documented in API header. */
 zvalue samListletFromUtf8(const zbyte *string, zint stringBytes) {
-    // TODO: Stuff goes here.
-    samDie("TODO");
+    zint decodedSize = samUtf8DecodeStringSize(string, stringBytes);
+    zvalue result =
+        samAllocValue(SAM_LISTLET, decodedSize, decodedSize * sizeof(zvalue));
+
+    samUtf8DecodeStringToValues(string, stringBytes,
+                                ((SamListlet *) result)->elems);
+    return result;
 }
