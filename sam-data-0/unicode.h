@@ -14,10 +14,25 @@
 #include "sam-data.h"
 
 /**
- * Decodes a UTF-8 encoded code point from the given string, storing
- * via the given `zint *`. Returns a pointer to the position just after
- * the bytes that were decoded.
+ * Decodes a UTF-8 encoded code point from the given string of the
+ * given size in bytes, storing via the given `zint *`. If the decoded
+ * value isn't needed, it is valid to pass `result` as `NULL`. Returns
+ * a pointer to the position just after the bytes that were decoded.
  */
-const zbyte *samDecodeUtf8(const zbyte *string, zint *result);
+const zbyte *samUtf8DecodeOne(const zbyte *string, zint stringBytes,
+                              zint *result);
+
+/**
+ * Gets the decoded size (the number of encoded Unicode code points)
+ * of a UTF-8 encoded string of the given size in bytes.
+ */
+zint samUtf8DecodeStringSize(const zbyte *string, zint stringBytes);
+
+/**
+ * Decodes the given UTF-8 encoded string of the given size in bytes,
+ * into the given buffer of `zint`s. The buffer must be sufficiently
+ * large to hold the result of decoding.
+ */
+void samUtf8DecodeString(const zbyte *string, zint stringBytes, zint *result);
 
 #endif

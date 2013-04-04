@@ -58,7 +58,7 @@ zvalue samListletAppend(zvalue listlet, zvalue value) {
 }
 
 /** Documented in API header. */
-zvalue samListletFromUtf8(const zbyte *string, zint stringSize) {
+zvalue samListletFromUtf8(const zbyte *string, zint stringBytes) {
     // TODO: Stuff goes here.
     samDie("TODO");
 }

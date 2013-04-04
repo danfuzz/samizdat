@@ -7,20 +7,48 @@
 #include "unicode.h"
 #include "util.h"
 
+#include <stdlib.h>
+
+
 /*
  * Helper functions
  */
 
 /**
+ * Gets a pointer just past the end of the given string, asserting
+ * validity of same.
+ */
+static const zbyte *getStringEnd(const zbyte *string, zint stringBytes) {
+    if (stringBytes < 0) {
+        samDie("Invalid string size: %lld", stringBytes);
+    }
+
+    const zbyte *result = string + stringBytes;
+
+    if (result < string) {
+        samDie("Invalid string size (pointer wraparound): %p + %lld",
+               string, stringBytes);
+    }
+
+    return result;
+}
+
+/**
  * Does the basic decoding step, with syntactic but not semantic validation.
  */
-static const zbyte *justDecode(const zbyte *string, zint *result) {
+static const zbyte *justDecode(const zbyte *string, zint stringBytes,
+                               zint *result) {
+    if (stringBytes <= 0) {
+        samDie("Invalid string size: %lld", stringBytes);
+    }
+
     zbyte ch = *string;
     zint value;
     int extraBytes;
     zint minValue;
 
     string++;
+    stringBytes--;
 
     switch (ch >> 4) {
         case 0x0: case 0x1: case 0x2: case 0x3:
@@ -94,6 +122,10 @@ static const zbyte *justDecode(const zbyte *string, zint *result) {
         }
     }
 
+    if (extraBytes > stringBytes) {
+        samDie("Incomplete UTF-8 sequence.");
+    }
+
     while (extraBytes > 0) {
         ch = *string;
         string++;
@@ -114,7 +146,10 @@ static const zbyte *justDecode(const zbyte *string, zint *result) {
         samDie("Out-of-range UTF-8 encoded value: 0x%llx", value);
     }
 
-    *result = value;
+    if (result != NULL) {
+        *result = value;
+    }
+
     return string;
 }
 
@@ -124,8 +159,9 @@ static const zbyte *justDecode(const zbyte *string, zint *result) {
  */
 
 /** Documented in API header. */
-const zbyte *samDecodeUtf8(const zbyte *string, zint *result) {
-    string = justDecode(string, result);
+const zbyte *samUtf8DecodeOne(const zbyte *string, zint stringBytes,
+                           zint *result) {
+    string = justDecode(string, stringBytes, result);
 
     if ((*result >= 0xd800) && (*result <= 0xdfff)) {
         samDie("Invalid occurrence of surrogate code point: 0x%04x",
@@ -137,4 +173,27 @@ const zbyte *samDecodeUtf8(const zbyte *string, zint *result) {
     }
 
     return string;
+}
+
+/** Documented in API header. */
+zint samUtf8DecodeStringSize(const zbyte *string, zint stringBytes) {
+    const zbyte *stringEnd = getStringEnd(string, stringBytes);
+    zint result = 0;
+
+    while (string < stringEnd) {
+        string = samUtf8DecodeOne(string, stringEnd - string, NULL);
+        result++;
+    }
+
+    return result;
+}
+
+/** Documented in API header. */
+void samUtf8DecodeString(const zbyte *string, zint stringBytes, zint *result) {
+    const zbyte *stringEnd = getStringEnd(string, stringBytes);
+
+    while (string < stringEnd) {
+        string = samUtf8DecodeOne(string, stringEnd - string, result);
+        result++;
+    }
 }

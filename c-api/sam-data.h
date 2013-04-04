@@ -186,7 +186,7 @@ zvalue samListletAppend(zvalue listlet, zvalue value);
  * Gets the listlet resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given.
  */
-zvalue samListletFromUtf8(const zbyte *string, zint stringSize);
+zvalue samListletFromUtf8(const zbyte *string, zint stringBytes);
 
 
 /*
