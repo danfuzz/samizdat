@@ -14,7 +14,8 @@
  */
 
 enum {
-    BITS_PER_WORD = 64
+    BITS_PER_BYTE = 8,
+    BITS_PER_WORD = sizeof(zint) * BITS_PER_BYTE
 };
 
 /**
@@ -101,7 +102,7 @@ bool samIntletGetBit(zvalue intlet, zint n) {
 
 /** Documented in API header. */
 zint samIntletGetByte(zvalue intlet, zint n) {
-    n *= 8; // 8 bits per byte.
+    n *= BITS_PER_BYTE;
 
     zint word = wordIndex(n);
     zint bit = bitIndex(n);
