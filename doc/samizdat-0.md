@@ -1,0 +1,100 @@
+Samizdat Layer 0
+================
+
+This is the specification for the language known as "Samizdat Layer 0".
+The language is meant to provide a syntactically and semantically
+minimal way to build up and manipulate low layer Samizdat data.
+
+Samizdat Layer 0 is run by translating it into low layer Samizdat
+data, as specified here, and running it with the indicated library
+bindings.
+
+
+Token Syntax
+------------
+
+BNF-like description of the tokens:
+
+doubleAt    ::= "@@" ;
+doubleColon ::= "::" ;
+comma       ::= "," ;
+semicolon   ::= ";" ;
+equal       ::= "=" ;
+at          ::= "@" ;
+openBrace   ::= "{" ;
+closeBrace  ::= "}" ;
+openParen   ::= "(" ;
+closeParen  ::= ")" ;
+openSquare  ::= "[" ;
+closeSquare ::= "]" ;
+
+var    ::= "var" ;
+return ::= "return" ;
+
+number     ::= "-"? ("0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9")+ ;
+name       ::= (~(":"|","|";"|"="|"@"|"{"|"}"|"("|")"|"["|"]"))+ ;
+string     ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
+
+# Whitespace is ignored.
+whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
+
+
+Tree Syntax
+-----------
+
+program ::= statement* ;
+# result: <listlet of statements>
+
+statement ::= (varDeclaration | expression) semicolon ;
+# result: <same as whatever was parsed>
+
+varDeclaration ::= var name equal expression ;
+# result: @[@"type"=@"var", @"value"=@[@"name"=<name>, @"value"=<expression>]]
+
+expressionList ::= (expression (comma expression)*)?
+# result: <listlet of expressions>
+
+expression ::=
+    name | number | stringlet | listlet | maplet | emptyMaplet |
+    uniqlet | function | call ;
+# result: <same as whatever was parsed>
+
+intlet ::= number ;
+# result: @[@"type"=@"literal", @"value"=<intlet of number>]
+
+stringlet ::= at string ;
+# result: @[@"type"=@"literal", @"value"=<listlet of characters>]
+
+listlet ::= at openSquare expressionList closeSquare ;
+# result: @[@"type"=@"listlet", @"value"=<listlet of expressions>]
+
+maplet ::= at openSquare binding (comma binding)* closeSquare ;
+# result: @[@"type"=@"maplet", @"value"=<listlet of bindings>]
+
+binding ::= expression equal expression ;
+# result: @[@"key"=<key expression>, @"value"=<value expression>]]
+
+emptyMaplet ::= openSquare equal closeSquare ;
+# result: @[@"type"=@"literal", @"value"=@[=]]
+
+uniqlet ::= doubleAt ;
+# result: @[@"type"=@"uniqlet"]
+
+function ::= openCurly argumentSpecs? program closeCurly ;
+# result: @[@"type"=@"function",
+#           @"value"=@[@"argumentSpecs"=<argument specs>,
+#                      @"program"=<program>]]
+
+argumentSpecs ::= name (comma name)* doubleColon ;
+# result: <listlet of names>
+
+call ::= expression openParen expressionList closeParen ;
+# result: @[@"type"=@"call",
+#           @"value"=@[@"function"=<function expression>,
+#                      @"arguments"=<expression list>]]
+
+
+Library Bindings
+----------------
+
+TBD
