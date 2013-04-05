@@ -8,35 +8,79 @@
 #include "impl.h"
 #include "util.h"
 
-/** Documented in API header. */
-bool samIntletGetBit(zvalue intlet, zint n) {
+
+/*
+ * Helper functions
+ */
+
+enum {
+    BITS_PER_WORD = 64
+};
+
+/**
+ * Gets the word index for the given bit index.
+ */
+static zint wordIndex(zint n) {
+    return n / BITS_PER_WORD;
+}
+
+/**
+ * Gets the bit-in-word index for the given bit index.
+ */
+static zint bitIndex(zint n) {
+    return n % BITS_PER_WORD;
+}
+
+/**
+ * Allocates an intlet of the given bit size.
+ */
+static zvalue allocIntlet(zint bitSize) {
+    zint wordCount = wordIndex(bitSize + BITS_PER_WORD - 1);
+
+    return samAllocValue(SAM_INTLET, wordCount * BITS_PER_WORD, wordCount);
+}
+
+/**
+ * Gets the elements array from an intlet.
+ */
+static zint *intletElems(zvalue intlet) {
     samAssertIntlet(intlet);
 
-    zint word = n / 64;
-    zint bitInWord = n % 64;
+    return ((SamIntlet *) intlet)->elems;
+}
+
+
+/*
+ * API implementation
+ */
+
+/** Documented in API header. */
+bool samIntletGetBit(zvalue intlet, zint n) {
+    zint word = wordIndex(n);
+    zint bit = bitIndex(n);
     zint elem = samIntletGetInt(intlet, word);
 
-    return (bool) ((elem >> bitInWord) & 1);
+    return (bool) ((elem >> bit) & 1);
 }
 
 /** Documented in API header. */
 zint samIntletGetByte(zvalue intlet, zint n) {
-    samAssertIntlet(intlet);
+    n *= 8; // 8 bits per byte.
 
-    zint word = n / 4;
-    zint byteInWord = n % 4;
+    zint word = wordIndex(n);
+    zint bit = bitIndex(n);
     zint elem = samIntletGetInt(intlet, word);
 
-    return (elem >> (byteInWord * 8)) & 0xff;
+    return (elem >> bit) & 0xff;
 }
 
 /** Documented in API header. */
 zint samIntletGetInt(zvalue intlet, zint n) {
     samAssertIntlet(intlet);
 
-    zint wordSize = (samSize(intlet) + 63) / 64;
+    zint wordSize = wordIndex(samSize(intlet));
     if (n < wordSize) {
-        return ((SamIntlet *) intlet)->elems[n];
+        return intletElems(intlet)[n];
     } else {
         return samIntletSign(intlet) ? (zint) -1 : 0;
     }
@@ -50,8 +94,8 @@ bool samIntletSign(zvalue intlet) {
 
 /** Documented in API header. */
 zvalue samIntletFromInt(zint value) {
-    zvalue result = samAllocValue(SAM_INTLET, 1, sizeof(zint));
+    zvalue result = allocIntlet(1);
 
-    ((SamIntlet *) result)->elems[0] = value;
+    intletElems(result)[0] = value;
     return result;
 }
