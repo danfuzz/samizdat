@@ -20,6 +20,13 @@
 /** The empty listlet, lazily initialized. */
 static zvalue theEmptyListlet = NULL;
 
+/**
+ * Allocates a listlet of the given size.
+ */
+static zvalue allocListlet(zint size) {
+    return samAllocValue(SAM_LISTLET, size, size * sizeof(zvalue));
+}
+
 
 /*
  * API Implementation
@@ -36,7 +43,7 @@ zvalue samListletGet(zvalue listlet, zint n) {
 /** Documented in API header. */
 zvalue samListletEmpty(void) {
     if (theEmptyListlet == NULL) {
-        theEmptyListlet = samAllocValue(SAM_LISTLET, 0, 0);
+        theEmptyListlet = allocListlet(0);
     }
 
     return theEmptyListlet;
@@ -48,7 +55,7 @@ zvalue samListletAppend(zvalue listlet, zvalue value) {
 
     zint oldSize = listlet->size;
     zint size = oldSize + 1;
-    zvalue result = samAllocValue(SAM_LISTLET, size, size * sizeof(zvalue));
+    zvalue result = allocListlet(size);
 
     memcpy(((SamListlet *) result)->elems,
            ((SamListlet *) listlet)->elems,
@@ -61,8 +68,7 @@ zvalue samListletAppend(zvalue listlet, zvalue value) {
 /** Documented in API header. */
 zvalue samListletFromUtf8(const zbyte *string, zint stringBytes) {
     zint decodedSize = samUtf8DecodeStringSize(string, stringBytes);
-    zvalue result =
-        samAllocValue(SAM_LISTLET, decodedSize, decodedSize * sizeof(zvalue));
+    zvalue result = allocListlet(decodedSize);
 
     samUtf8DecodeStringToValues(string, stringBytes,
                                 ((SamListlet *) result)->elems);

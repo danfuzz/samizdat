@@ -19,6 +19,13 @@
 /** The empty maplet, lazily initialized. */
 static zvalue theEmptyMaplet = NULL;
 
+/**
+ * Allocates a maplet of the given size.
+ */
+static zvalue allocMaplet(zint size) {
+    return samAllocValue(SAM_MAPLET, size, size * sizeof(zmapping));
+}
+
 
 /*
  * API Implementation
@@ -64,7 +71,7 @@ zint samMapletFind(zvalue maplet, zvalue key) {
 /** Documented in API header. */
 zvalue samMapletEmpty(void) {
     if (theEmptyMaplet == NULL) {
-        theEmptyMaplet = samAllocValue(SAM_MAPLET, 0, 0);
+        theEmptyMaplet = allocMaplet(0);
     }
 
     return theEmptyMaplet;
@@ -79,14 +86,14 @@ zvalue samMapletPut(zvalue maplet, zvalue key, zvalue value) {
     if (index >= 0) {
         // The key exists in the given maplet, so we need to perform
         // a replacement.
-        result = samAllocValue(SAM_MAPLET, size, sizeof(zmapping));
+        result = allocMaplet(size);
         memcpy(((SamMaplet *) result)->elems,
                ((SamMaplet *) maplet)->elems,
                size * sizeof(zmapping));
     } else {
         // The key wasn't found, so we need to insert a new one.
         index = ~index;
-        result = samAllocValue(SAM_MAPLET, size + 1, sizeof(zmapping));
+        result = allocMaplet(size + 1);
         memcpy(((SamMaplet *) result)->elems,
                ((SamMaplet *) maplet)->elems,
                index * sizeof(zmapping));
