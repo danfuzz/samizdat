@@ -125,6 +125,11 @@ zint samIntletGetInt(zvalue intlet, zint n) {
 /** Documented in API header. */
 bool samIntletSign(zvalue intlet) {
     zint size = samSize(intlet);
+
+    if (size == 0) {
+        return false;
+    }
+
     return samIntletGetBit(intlet, size - 1);
 }
 
