@@ -51,6 +51,42 @@ static zint *intletElems(zvalue intlet) {
 
 
 /*
+ * Intra-library API implementation
+ */
+
+/** Documented in `impl.h`. */
+zcomparison samIntletCompare(zvalue v1, zvalue v2) {
+    bool neg1 = samIntletSign(v1);
+    bool neg2 = samIntletSign(v2);
+
+    if (neg1 != neg2) {
+        return neg1 ? SAM_IS_LESS : SAM_IS_MORE;
+    }
+
+    // At this point, we know the two numbers are the same sign,
+    // which makes it okay to do unsigned comparison (because, in
+    // particular, the unsigned interpretations of two negative numbers
+    // sort the same as the corresponding negative numbers).
+
+    zint sz1 = samSize(v1);
+    zint sz2 = samSize(v2);
+    zint sz = (sz1 > sz2) ? sz1 : sz2;
+
+    for (zint i = sz - 1; i >= 0; i--) {
+        zint n1 = samIntletGetInt(v1, i);
+        zint n2 = samIntletGetInt(v2, i);
+        if (n1 < n2) {
+            return SAM_IS_LESS;
+        } else if (n1 > n2) {
+            return SAM_IS_MORE;
+        }
+    }
+
+    return SAM_IS_EQUAL;
+}
+
+
+/*
  * API implementation
  */
 

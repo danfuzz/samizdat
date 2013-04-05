@@ -38,6 +38,29 @@ static zvalue *listletElems(zvalue listlet) {
 
 
 /*
+ * Intra-library API implementation
+ */
+
+/** Documented in `impl.h`. */
+zcomparison samListletCompare(zvalue v1, zvalue v2) {
+    zvalue *e1 = listletElems(v1);
+    zvalue *e2 = listletElems(v2);
+    zint sz1 = samSize(v1);
+    zint sz2 = samSize(v2);
+    zint sz = (sz1 < sz2) ? sz1 : sz2;
+
+    for (zint i = 0; i < sz; i++) {
+        zcomparison result = samCompare(e1[i], e2[i]);
+        if (result != SAM_IS_EQUAL) {
+            return result;
+        }
+    }
+
+    return (sz1 < sz2) ? SAM_IS_LESS : SAM_IS_MORE;
+}
+
+
+/*
  * API Implementation
  */
 

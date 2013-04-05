@@ -13,6 +13,11 @@
 
 #include "sam-data.h"
 
+
+/*
+ * Data types
+ */
+
 enum {
     /** "Magic number" for value validation. */
     SAM_VALUE_MAGIC = 0x600f1e57,
@@ -78,5 +83,30 @@ typedef struct {
     /** Uniqlet unique id */
     zint id;
 } SamUniqlet;
+
+
+/*
+ * Intra-library exports (cross-file dependencies)
+ */
+
+/**
+ * Compares intlets.
+ */
+zcomparison samIntletCompare(zvalue v1, zvalue v2);
+
+/**
+ * Compares listlets.
+ */
+zcomparison samListletCompare(zvalue v1, zvalue v2);
+
+/**
+ * Compares maplets.
+ */
+zcomparison samMapletCompare(zvalue v1, zvalue v2);
+
+/**
+ * Compares uniqlets.
+ */
+zcomparison samUniqletCompare(zvalue v1, zvalue v2);
 
 #endif

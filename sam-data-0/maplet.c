@@ -37,6 +37,42 @@ static zmapping *mapletElems(zvalue maplet) {
 
 
 /*
+ * Intra-library API implementation
+ */
+
+/** Documented in `impl.h`. */
+zcomparison samMapletCompare(zvalue v1, zvalue v2) {
+    zmapping *e1 = mapletElems(v1);
+    zmapping *e2 = mapletElems(v2);
+    zint sz1 = samSize(v1);
+    zint sz2 = samSize(v2);
+    zint sz = (sz1 < sz2) ? sz1 : sz2;
+
+    for (zint i = 0; i < sz; i++) {
+        zcomparison result = samCompare(e1[i].key, e2[i].key);
+        if (result != SAM_IS_EQUAL) {
+            return result;
+        }
+    }
+
+    if (sz1 < sz2) {
+        return SAM_IS_LESS;
+    } else if (sz1 > sz2) {
+        return SAM_IS_MORE;
+    }
+
+    for (zint i = 0; i < sz; i++) {
+        zcomparison result = samCompare(e1[i].value, e2[i].value);
+        if (result != SAM_IS_EQUAL) {
+            return result;
+        }
+    }
+
+    return SAM_IS_EQUAL;
+}
+
+
+/*
  * API Implementation
  */
 
