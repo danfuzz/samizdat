@@ -19,6 +19,7 @@ void *samAlloc(zint size) {
         samDie("Failed: malloc(0x%llx).", size);
     }
 
+    memset(result, 0, size);
     return result;
 }
 
