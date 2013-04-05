@@ -27,6 +27,15 @@ static zvalue allocListlet(zint size) {
     return samAllocValue(SAM_LISTLET, size, size * sizeof(zvalue));
 }
 
+/**
+ * Gets the elements array from a listlet.
+ */
+static zvalue *listletElems(zvalue listlet) {
+    samAssertListlet(listlet);
+
+    return ((SamListlet *) listlet)->elems;
+}
+
 
 /*
  * API Implementation
@@ -34,10 +43,8 @@ static zvalue allocListlet(zint size) {
 
 /** Documented in API header. */
 zvalue samListletGet(zvalue listlet, zint n) {
-    samAssertListlet(listlet);
     samAssertNth(listlet, n);
-
-    return ((SamListlet *) listlet)->elems[n];
+    return listletElems(listlet)[n];
 }
 
 /** Documented in API header. */
@@ -57,10 +64,9 @@ zvalue samListletAppend(zvalue listlet, zvalue value) {
     zint size = oldSize + 1;
     zvalue result = allocListlet(size);
 
-    memcpy(((SamListlet *) result)->elems,
-           ((SamListlet *) listlet)->elems,
+    memcpy(listletElems(result), listletElems(listlet),
            oldSize * sizeof(zvalue));
-    ((SamListlet *) result)->elems[oldSize] = value;
+    listletElems(result)[oldSize] = value;
 
     return result;
 }
@@ -70,7 +76,6 @@ zvalue samListletFromUtf8(const zbyte *string, zint stringBytes) {
     zint decodedSize = samUtf8DecodeStringSize(string, stringBytes);
     zvalue result = allocListlet(decodedSize);
 
-    samUtf8DecodeStringToValues(string, stringBytes,
-                                ((SamListlet *) result)->elems);
+    samUtf8DecodeStringToValues(string, stringBytes, listletElems(result));
     return result;
 }

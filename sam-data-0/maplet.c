@@ -26,6 +26,15 @@ static zvalue allocMaplet(zint size) {
     return samAllocValue(SAM_MAPLET, size, size * sizeof(zmapping));
 }
 
+/**
+ * Gets the elements array from a maplet.
+ */
+static zmapping *mapletElems(zvalue maplet) {
+    samAssertMaplet(maplet);
+
+    return ((SamMaplet *) maplet)->elems;
+}
+
 
 /*
  * API Implementation
@@ -33,10 +42,9 @@ static zvalue allocMaplet(zint size) {
 
 /** Documented in API header. */
 zmapping samMapletGet(zvalue maplet, zint n) {
-    samAssertMaplet(maplet);
     samAssertNth(maplet, n);
 
-    return ((SamMaplet *) maplet)->elems[n];
+    return mapletElems(maplet)[n];
 }
 
 /** Documented in API header. */
@@ -44,7 +52,7 @@ zint samMapletFind(zvalue maplet, zvalue key) {
     samAssertValid(key);
     samAssertMaplet(maplet);
 
-    zmapping *elems = ((SamMaplet *) maplet)->elems;
+    zmapping *elems = mapletElems(maplet);
     zint min = 0;
     zint max = maplet->size - 1;
 
@@ -87,22 +95,20 @@ zvalue samMapletPut(zvalue maplet, zvalue key, zvalue value) {
         // The key exists in the given maplet, so we need to perform
         // a replacement.
         result = allocMaplet(size);
-        memcpy(((SamMaplet *) result)->elems,
-               ((SamMaplet *) maplet)->elems,
+        memcpy(mapletElems(result), mapletElems(maplet),
                size * sizeof(zmapping));
     } else {
         // The key wasn't found, so we need to insert a new one.
         index = ~index;
         result = allocMaplet(size + 1);
-        memcpy(((SamMaplet *) result)->elems,
-               ((SamMaplet *) maplet)->elems,
+        memcpy(mapletElems(result), mapletElems(maplet),
                index * sizeof(zmapping));
-        memcpy(((SamMaplet *) result)->elems + index + 1,
-               ((SamMaplet *) maplet)->elems + index,
+        memcpy(mapletElems(result) + index + 1,
+               mapletElems(maplet) + index,
                (size - index) * sizeof(zmapping));
     }
 
-    ((SamMaplet *) result)->elems[index].key = key;        
-    ((SamMaplet *) result)->elems[index].value = value;
+    mapletElems(result)[index].key = key;
+    mapletElems(result)[index].value = value;
     return result;
 }
