@@ -48,12 +48,12 @@ static void assertType(zvalue value, ztype type) {
 void samAssertValid(zvalue value) {
     zint bits = (zint) (void *) value;
 
-    if ((bits & ((1 << SAM_VALUE_ALIGNMENT) - 1)) != 0) {
+    if ((bits % SAM_VALUE_ALIGNMENT) != 0) {
         samDie("Bad alignment for value: %p", value);
     }
 
     if (value->magic != SAM_VALUE_MAGIC) {
-        samDie("Incorrect magic for value: (%p)->magic == %04x",
+        samDie("Incorrect magic for value: (%p)->magic == %#04x",
                value, value->magic);
     }
 
@@ -65,7 +65,7 @@ void samAssertValid(zvalue value) {
             break;
         }
         default: {
-            samDie("Invalid type for value: (%p)->type == %04x",
+            samDie("Invalid type for value: (%p)->type == %#04x",
                    value, value->type);
         }
     }
