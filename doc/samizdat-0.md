@@ -27,6 +27,7 @@ closeParen  ::= ")" ;
 openSquare  ::= "[" ;
 closeSquare ::= "]" ;
 
+if     ::= "if" ;
 var    ::= "var" ;
 return ::= "return" ;
 
@@ -44,8 +45,11 @@ Tree Syntax
 program ::= statement* ;
 # result: @[@"type"=@"program" @"value"=<listlet of statements>]
 
-statement ::= (varDeclaration | expression) semicolon ;
+statement ::= (varDeclaration | expression | returnStatement) semicolon ;
 # result: <same as whatever was parsed>
+
+returnStatement ::= return expression ;
+# result: @[@"type"=@"return" @"value"=<expression>]
 
 varDef ::= var name equal expression ;
 # result: @[@"type"=@"varDef" @"value"=@[@"name"=<name> @"value"=<expression>]]
@@ -55,7 +59,8 @@ expressionList ::= expression* ;
 
 expression ::=
     name | number | stringlet | listlet | maplet | emptyMaplet |
-    uniqlet | function | call | openParen expression closeParen;
+    uniqlet | function | callExpression | ifExpression |
+    openParen expression closeParen;
 # result: <same as whatever was parsed>
 
 intlet ::= number ;
@@ -87,9 +92,15 @@ function ::= openCurly argumentSpecs? program closeCurly ;
 argumentSpecs ::= name+ doubleColon ;
 # result: @[@"type"=@"argumentSpecs" @"value"=<listlet of names>]
 
-call ::= expression openParen expressionList closeParen;
+callExpression ::= expression openParen expressionList closeParen;
 # result: @[@"type"=@"call"
 #           @"value"=@[@"function"=<expression> @"arguments"=<expr list>]]
+
+ifExpression ::= if (expression expression)+ expression? ;
+# result: @[@"type"=@"if" @"value"=<listlet of expressions>]
+# Note: The first expression of each pair is a condition to evaluate, and
+#   the second is a function to call if the condition is true. And odd
+#   expression at the end is an "else" function.
 
 
 Library Bindings
