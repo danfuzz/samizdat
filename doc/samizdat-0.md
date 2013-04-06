@@ -86,7 +86,7 @@ function ::= openCurly argumentSpecs? program closeCurly ;
 argumentSpecs ::= name+ doubleColon ;
 # result: <listlet of names>
 
-call ::= expression expressionList ;
+call ::= expression openParen expressionList closeParen;
 # result: @[@"type"=@"call"
 #           @"value"=@[@"function"=<expression> @"arguments"=<expr list>]]
 
