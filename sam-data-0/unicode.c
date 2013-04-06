@@ -139,7 +139,7 @@ static const zbyte *justDecode(const zbyte *string, zint stringBytes,
     }
 
     if (value < minValue) {
-        samDie("Overly long UTF-8 encoding of value: %#llx", value);
+        samDie("Overlong UTF-8 encoding of value: %#llx", value);
     }
 
     if (value >= 0x100000000LL) {
