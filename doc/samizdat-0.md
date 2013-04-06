@@ -17,7 +17,6 @@ BNF/PEG-like description of the tokens:
 
 doubleAt    ::= "@@" ;
 doubleColon ::= "::" ;
-comma       ::= "," ;
 semicolon   ::= ";" ;
 equal       ::= "=" ;
 at          ::= "@" ;
@@ -49,49 +48,47 @@ statement ::= (varDeclaration | expression) semicolon ;
 # result: <same as whatever was parsed>
 
 varDeclaration ::= var name equal expression ;
-# result: @[@"type"=@"var", @"value"=@[@"name"=<name>, @"value"=<expression>]]
+# result: @[@"type"=@"var" @"value"=@[@"name"=<name> @"value"=<expression>]]
 
-expressionList ::= (expression (comma expression)*)?
+expressionList ::= expression* ;
 # result: <listlet of expressions>
 
 expression ::=
     name | number | stringlet | listlet | maplet | emptyMaplet |
-    uniqlet | function | call ;
+    uniqlet | function | call | openParen expression closeParen;
 # result: <same as whatever was parsed>
 
 intlet ::= number ;
-# result: @[@"type"=@"literal", @"value"=<intlet of number>]
+# result: @[@"type"=@"literal" @"value"=<intlet of number>]
 
 stringlet ::= at string ;
-# result: @[@"type"=@"literal", @"value"=<listlet of characters>]
+# result: @[@"type"=@"literal" @"value"=<listlet of characters>]
 
 listlet ::= at openSquare expressionList closeSquare ;
-# result: @[@"type"=@"listlet", @"value"=<listlet of expressions>]
+# result: @[@"type"=@"listlet" @"value"=<listlet of expressions>]
 
-maplet ::= at openSquare binding (comma binding)* closeSquare ;
-# result: @[@"type"=@"maplet", @"value"=<listlet of bindings>]
+maplet ::= at openSquare binding+ closeSquare ;
+# result: @[@"type"=@"maplet" @"value"=<listlet of bindings>]
 
 binding ::= expression equal expression ;
-# result: @[@"key"=<key expression>, @"value"=<value expression>]]
+# result: @[@"key"=<key expression> @"value"=<value expression>]]
 
 emptyMaplet ::= openSquare equal closeSquare ;
-# result: @[@"type"=@"literal", @"value"=@[=]]
+# result: @[@"type"=@"literal" @"value"=@[=]]
 
 uniqlet ::= doubleAt ;
 # result: @[@"type"=@"uniqlet"]
 
 function ::= openCurly argumentSpecs? program closeCurly ;
-# result: @[@"type"=@"function",
-#           @"value"=@[@"argumentSpecs"=<argument specs>,
-#                      @"program"=<program>]]
+# result: @[@"type"=@"function"
+#           @"value"=@[@"argumentSpecs"=<argument specs> @"program"=<program>]]
 
-argumentSpecs ::= name (comma name)* doubleColon ;
+argumentSpecs ::= name+ doubleColon ;
 # result: <listlet of names>
 
-call ::= expression openParen expressionList closeParen ;
-# result: @[@"type"=@"call",
-#           @"value"=@[@"function"=<function expression>,
-#                      @"arguments"=<expression list>]]
+call ::= expression expressionList ;
+# result: @[@"type"=@"call"
+#           @"value"=@[@"function"=<expression> @"arguments"=<expr list>]]
 
 
 Library Bindings
