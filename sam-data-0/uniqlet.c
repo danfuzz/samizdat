@@ -6,7 +6,7 @@
 
 #include "alloc.h"
 #include "impl.h"
-#include "util.h"
+
 
 /*
  * Helper definitions

@@ -5,7 +5,6 @@
  */
 
 #include "impl.h"
-#include "util.h"
 
 
 /*

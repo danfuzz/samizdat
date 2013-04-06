@@ -6,7 +6,6 @@
 
 #include "sam-data.h"
 #include "unicode.h"
-#include "util.h"
 
 #include <stdlib.h>
 

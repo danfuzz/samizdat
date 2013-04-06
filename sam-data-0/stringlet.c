@@ -7,7 +7,6 @@
 #include "alloc.h"
 #include "impl.h"
 #include "unicode.h"
-#include "util.h"
 
 #include <stdlib.h>
 #include <string.h>

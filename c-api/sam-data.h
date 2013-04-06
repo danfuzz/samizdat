@@ -318,4 +318,22 @@ void samStringletEncodeUtf8(zvalue stringlet, zbyte *utf8);
 zcomparison samCompare(zvalue v1, zvalue v2);
 
 
+/*
+ * Utility Functions
+ */
+
+/**
+ * Emits a debugging note. Arguments are as with `printf()`.
+ */
+void samNote(const char *format, ...)
+    __attribute__((format (printf, 1, 2)));
+
+/**
+ * Dies (aborts the process) with the given message. Arguments are as
+ * with `printf()`.
+ */
+void samDie(const char *format, ...)
+    __attribute__((noreturn))
+    __attribute__((format (printf, 1, 2)));
+
 #endif
