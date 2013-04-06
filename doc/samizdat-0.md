@@ -58,15 +58,19 @@ expressionList ::= expression* ;
 # result: @[@"type"=@"expressionList" @"value"=<listlet of expressions>]
 
 expression ::=
-    nameReference | number | stringlet | listlet | maplet | emptyMaplet |
-    uniqlet | function | callExpression ;
+    nameReference | intlet | integer | stringlet | listlet |
+    maplet | emptyMaplet | uniqlet | function | callExpression ;
 # result: <same as whatever was parsed>
 
 nameReference ::= name ;
 # result: @[@"type"=@"nameReference" @"value"=<stringlet of name>]
 
-intlet ::= number ;
+intlet ::= at number ;
 # result: @[@"type"=@"literal" @"value"=<intlet of number>]
+
+integer ::= number;
+# result: @[@"type"=@"literal"
+            @"value"=@[@"type"=@"integer", @"value"=<intlet of number>]]
 
 stringlet ::= at string ;
 # result: @[@"type"=@"literal" @"value"=<listlet of characters>]
