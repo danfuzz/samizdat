@@ -39,15 +39,15 @@ unset newProg
 # Main script
 #
 
-COMPILE_C=(cc -g -c -I"${baseDir}/c-api")
-LINK_LIB=(cc -g -Xlinker -dylib)
-LINK_BIN=(cc -g)
-
 projectName="$(basename "${progDir}")"
 
 OUT="${OUT:-${baseDir}/out}/${projectName}"
 rm -rf "${OUT}" || exit 1
 mkdir -p "${OUT}" || exit 1
+
+COMPILE_C=(cc -g -c -I"${baseDir}/c-api")
+LINK_LIB=(cc -g -Xlinker -dylib "${OUT}/../sam-data-0/sam-data-0.dylib")
+LINK_BIN=(cc -g)
 
 errors=0
 for file in ${progDir}/*.c; do
