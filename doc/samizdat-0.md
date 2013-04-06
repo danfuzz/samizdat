@@ -42,16 +42,16 @@ Tree Syntax
 -----------
 
 program ::= statement* ;
-# result: <listlet of statements>
+# result: @[@"type"=@"program" @"value"=<listlet of statements>]
 
 statement ::= (varDeclaration | expression) semicolon ;
 # result: <same as whatever was parsed>
 
-varDeclaration ::= var name equal expression ;
-# result: @[@"type"=@"var" @"value"=@[@"name"=<name> @"value"=<expression>]]
+varDef ::= var name equal expression ;
+# result: @[@"type"=@"varDef" @"value"=@[@"name"=<name> @"value"=<expression>]]
 
 expressionList ::= expression* ;
-# result: <listlet of expressions>
+# result: @[@"type"=@"expressionList" @"value"=<listlet of expressions>]
 
 expression ::=
     name | number | stringlet | listlet | maplet | emptyMaplet |
@@ -71,7 +71,8 @@ maplet ::= at openSquare binding+ closeSquare ;
 # result: @[@"type"=@"maplet" @"value"=<listlet of bindings>]
 
 binding ::= expression equal expression ;
-# result: @[@"key"=<key expression> @"value"=<value expression>]]
+# result: @[@"type"=@"binding"
+            @"value"=@[@"key"=<key expression> @"value"=<value expression>]]
 
 emptyMaplet ::= openSquare equal closeSquare ;
 # result: @[@"type"=@"literal" @"value"=@[=]]
@@ -84,7 +85,7 @@ function ::= openCurly argumentSpecs? program closeCurly ;
 #           @"value"=@[@"argumentSpecs"=<argument specs> @"program"=<program>]]
 
 argumentSpecs ::= name+ doubleColon ;
-# result: <listlet of names>
+# result: @[@"type"=@"argumentSpecs" @"value"=<listlet of names>]
 
 call ::= expression openParen expressionList closeParen;
 # result: @[@"type"=@"call"
