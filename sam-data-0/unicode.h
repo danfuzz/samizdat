@@ -51,4 +51,14 @@ void samUtf8DecodeStringToInts(const zbyte *string, zint stringBytes,
 void samUtf8DecodeStringToValues(const zbyte *string, zint stringBytes,
                                  zvalue *result);
 
+/**
+ * Encodes a single Unicode code point as UTF-8, writing it to the
+ * given string, which must be large enough to hold it. Returns a
+ * pointer to the position just after what was encoded. If `string` is
+ * passed as `NULL`, this doesn't encode but still returns the
+ * would-be encoded size in pointer form (i.e. `(zbyte *) NULL +
+ * size`).
+ */
+zbyte *samUtf8EncodeOne(zbyte *string, zint ch);
+
 #endif

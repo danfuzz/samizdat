@@ -56,10 +56,29 @@ zvalue samStringletFromAsciiString(const zbyte *string) {
 
 /** Documented in API header. */
 zint samStringletUtf8Size(zvalue stringlet) {
-    samDie("TODO");
+    samAssertStringlet(stringlet);
+
+    zint size = samSize(stringlet);
+    zint result = 0;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = samListletGet(stringlet, i);
+        zint ch = samIntletToInt(one);
+        result += (samUtf8EncodeOne(NULL, ch) - (zbyte *) NULL);
+    }
+
+    return result;
 }
 
 /** Documented in API header. */
 void samStringletEncodeUtf8(zvalue stringlet, zbyte *utf8) {
-    samDie("TODO");
+    samAssertStringlet(stringlet);
+
+    zint size = samSize(stringlet);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = samListletGet(stringlet, i);
+        zint ch = samIntletToInt(one);
+        utf8 = samUtf8EncodeOne(utf8, ch);
+    }
 }
