@@ -174,7 +174,7 @@ void samAssertValidUnicode(zint value) {
 
 /** Documented in `unicode.h`. */
 const zbyte *samUtf8DecodeOne(const zbyte *string, zint stringBytes,
-                           zint *result) {
+                              zint *result) {
     string = justDecode(string, stringBytes, result);
     samAssertValidUnicode(*result);
 
@@ -187,7 +187,7 @@ zint samUtf8DecodeStringSize(const zbyte *string, zint stringBytes) {
     zint result = 0;
 
     while (string < stringEnd) {
-        string = samUtf8DecodeOne(string, stringEnd - string, NULL);
+        string = justDecode(string, stringEnd - string, NULL);
         result++;
     }
 
