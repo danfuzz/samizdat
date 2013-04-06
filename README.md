@@ -6,12 +6,12 @@ Watch this space!
 Plan of attack
 --------------
 
-* `interface/sam-data.h` &mdash; Public interface to Samizdat data model
+* `c-api/sam-data.h` &mdash; Public interface to Samizdat data model.
 
   Written in C.
 
-* `interface/sam-exec.h` &mdash; Public interface to Samizdat
-  execution model.
+* `c-api/sam-exec.h` &mdash; Public interface to Samizdat execution
+  model.
 
   Written in C.
 
