@@ -58,10 +58,12 @@ expressionList ::= expression* ;
 # result: @[@"type"=@"expressionList" @"value"=<listlet of expressions>]
 
 expression ::=
-    name | number | stringlet | listlet | maplet | emptyMaplet |
-    uniqlet | function | callExpression | ifExpression |
-    openParen expression closeParen;
+    nameReference | number | stringlet | listlet | maplet | emptyMaplet |
+    uniqlet | function | callExpression ;
 # result: <same as whatever was parsed>
+
+nameReference ::= name ;
+# result: @[@"type"=@"nameReference" @"value"=<stringlet of name>]
 
 intlet ::= number ;
 # result: @[@"type"=@"literal" @"value"=<intlet of number>]
@@ -85,25 +87,34 @@ emptyMaplet ::= openSquare equal closeSquare ;
 uniqlet ::= doubleAt ;
 # result: @[@"type"=@"uniqlet"]
 
-function ::= openCurly argumentSpecs? program closeCurly ;
+function ::= openCurly argumentSpecs? (program | expression) closeCurly ;
 # result: @[@"type"=@"function"
 #           @"value"=@[@"argumentSpecs"=<argument specs> @"program"=<program>]]
+# Note: If the "expression" variant, the program is the same as
+#   `return <expression>;`.
 
 argumentSpecs ::= name+ doubleColon ;
 # result: @[@"type"=@"argumentSpecs" @"value"=<listlet of names>]
 
-callExpression ::= expression openParen expressionList closeParen;
+callExpression ::= openParen expression expressionList closeParen;
 # result: @[@"type"=@"call"
 #           @"value"=@[@"function"=<expression> @"arguments"=<expr list>]]
-
-ifExpression ::= if (expression expression)+ expression? ;
-# result: @[@"type"=@"if" @"value"=<listlet of expressions>]
-# Note: The first expression of each pair is a condition to evaluate, and
-#   the second is a function to call if the condition is true. And odd
-#   expression at the end is an "else" function.
 
 
 Library Bindings
 ----------------
 
-TBD
+```
+var false = @[@"type"=@"boolean" @"value"=0];
+var true = @[@"type"=@"boolean" @"value"=1];
+
+var if = @@; # Bound via magic as a primitive function.
+# Note: `if` takes two or more arguments, all of which must be functions that
+#   take no arguments. The first argument is called. If it returns `true`,
+#   then the result of the `if` is the result of calling the second argument.
+#   Otherwise, the third argument is called, with `true` indicating that
+#   the fourth is to be the result. And so on. If there is an unpaired
+#   argument at the end, it is taken to provide an `else` result.
+```
+
+More TBD.
