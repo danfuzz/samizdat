@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         samNote("File \"%s\":", argv[i]);
         zvalue name =
-            samStringletFromUtf8String((zbyte *) argv[i], strlen(*argv));
+            samStringletFromUtf8String((zbyte *) argv[i], strlen(argv[i]));
 
         samNote("Reading file...");
         zvalue file = samReadFile(name);
