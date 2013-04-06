@@ -54,3 +54,13 @@ zvalue samStringletFromAsciiString(const zbyte *string) {
 
     return result;
 }
+
+/** Documented in API header. */
+zint samStringletUtf8Size(zvalue stringlet) {
+    samDie("TODO");
+}
+
+/** Documented in API header. */
+void samStringletEncodeUtf8(zvalue stringlet, zbyte *utf8) {
+    samDie("TODO");
+}

@@ -213,25 +213,6 @@ zvalue samListletAppend(zvalue listlet, zvalue value);
 
 
 /*
- * Stringlet functions
- */
-
-/**
- * Gets the stringlet (listlet Unicode-representing intlets) resulting
- * from interpreting the given UTF-8 encoded string, whose size in
- * bytes is as given.
- */
-zvalue samStringletFromUtf8String(const zbyte *string, zint stringBytes);
-
-/**
- * Gets the stringlet resulting from interpreting the ASCII C-style
- * (`'\0'`-terminated) string. It is an error if any byte value is
- * `> 0x7f`.
- */
-zvalue samStringletFromAsciiString(const zbyte *string);
-
-
-/*
  * Maplet Functions
  */
 
@@ -274,6 +255,37 @@ zvalue samMapletPut(zvalue maplet, zvalue key, zvalue value);
  * given process).
  */
 zvalue samUniqlet(void);
+
+
+/*
+ * Stringlet functions
+ */
+
+/**
+ * Gets the stringlet (listlet Unicode-representing intlets) resulting
+ * from interpreting the given UTF-8 encoded string, whose size in
+ * bytes is as given.
+ */
+zvalue samStringletFromUtf8String(const zbyte *string, zint stringBytes);
+
+/**
+ * Gets the stringlet resulting from interpreting the ASCII C-style
+ * (`'\0'`-terminated) string. It is an error if any byte value is
+ * `> 0x7f`.
+ */
+zvalue samStringletFromAsciiString(const zbyte *string);
+
+/**
+ * Gets the UTF-8 encoded size of the given stringlet, in bytes.
+ */
+zint samStringletUtf8Size(zvalue stringlet);
+
+/**
+ * Encodes the given stringlet as UTF-8, storing it into the given
+ * `zbyte *` array. The array must be long enough to hold the result.
+ * It is *not* `'\0'`-terminated.
+ */
+void samStringletEncodeUtf8(zvalue stringlet, zbyte *utf8);
 
 
 /*
