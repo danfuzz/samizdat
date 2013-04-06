@@ -38,4 +38,12 @@ typedef zvalue zmagic(zvalue uniqlet, zint argCount, const zvalue *args);
  */
 zvalue samExecute(zvalue environment, zmagic *magic, zvalue code);
 
+/**
+ * Reads the file with the given name in its entirety, interpreting
+ * it as UTF-8. Returns a stringlet (listlet of Unicode-representing
+ * intlets) of the contents.
+ */
+zvalue samReadFile(zvalue fileName);
+
+
 #endif

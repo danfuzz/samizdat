@@ -90,6 +90,16 @@ typedef struct {
  */
 
 /**
+ * Allocates a listlet of the given size.
+ */
+zvalue samAllocListlet(zint size);
+
+/**
+ * Gets the array of `zvalue` elements from a listlet.
+ */
+zvalue *samListletElems(zvalue listlet);
+
+/**
  * Compares intlets.
  */
 zcomparison samIntletCompare(zvalue v1, zvalue v2);

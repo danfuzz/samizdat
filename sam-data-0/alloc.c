@@ -11,19 +11,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-/** Documented in API header. */
+/** Documented in `alloc.h`. */
 void *samAlloc(zint size) {
     void *result = malloc(size);
 
     if (result == NULL) {
-        samDie("Failed: malloc(0x%llx).", size);
+        samDie("Failed: malloc(%#llx).", size);
     }
 
     memset(result, 0, size);
     return result;
 }
 
-/** Documented in API header. */
+/** Documented in `alloc.h`. */
 zvalue samAllocValue(ztype type, zint size, zint extraBytes) {
     zvalue result = samAlloc(sizeof(SamValue) + extraBytes);
 

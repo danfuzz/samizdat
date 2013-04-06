@@ -116,6 +116,12 @@ void samAssertMaplet(zvalue value);
 void samAssertUniqlet(zvalue value);
 
 /**
+ * Asserts that the given value is a valid listlet, and furthermore
+ * that all elements in it are intlets of valid Unicode code points.
+ */
+void samAssertStringlet(zvalue value);
+
+/**
  * Gets the low-level data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */
@@ -177,6 +183,12 @@ bool samIntletSign(zvalue intlet);
  */
 zvalue samIntletFromInt(zint value);
 
+/**
+ * Gets a `zint` equal to the given intlet value. It is an error if
+ * the value is out of range.
+ */
+zint samIntletToInt(zvalue intlet);
+
 
 /*
  * Listlet Functions
@@ -199,18 +211,24 @@ zvalue samListletEmpty(void);
  */
 zvalue samListletAppend(zvalue listlet, zvalue value);
 
-/**
- * Gets the listlet resulting from interpreting the given UTF-8
- * encoded string, whose size in bytes is as given.
+
+/*
+ * Stringlet functions
  */
-zvalue samListletFromUtf8String(const zbyte *string, zint stringBytes);
 
 /**
- * Gets the listlet resulting from interpreting the ASCII C-style
+ * Gets the stringlet (listlet Unicode-representing intlets) resulting
+ * from interpreting the given UTF-8 encoded string, whose size in
+ * bytes is as given.
+ */
+zvalue samStringletFromUtf8String(const zbyte *string, zint stringBytes);
+
+/**
+ * Gets the stringlet resulting from interpreting the ASCII C-style
  * (`'\0'`-terminated) string. It is an error if any byte value is
  * `> 0x7f`.
  */
-zvalue samListletFromAsciiString(const zbyte *string);
+zvalue samStringletFromAsciiString(const zbyte *string);
 
 
 /*

@@ -62,7 +62,7 @@ static const zbyte *justDecode(const zbyte *string, zint stringBytes,
         }
         case 0x8: case 0x9: case 0xa: case 0xb: {
             // 80..bf: Invalid start bytes.
-            samDie("Invalid UTF-8 start byte: 0x%02x", (int) ch);
+            samDie("Invalid UTF-8 start byte: %#02x", (int) ch);
             break;
         }
         case 0xc: case 0xd: {
@@ -116,7 +116,7 @@ static const zbyte *justDecode(const zbyte *string, zint stringBytes,
                 }
                 case 0xf: {
                     // fe..ff: Invalid start bytes.
-                    samDie("Invalid UTF-8 start byte: 0x%02x", (int) ch);
+                    samDie("Invalid UTF-8 start byte: %#02x", (int) ch);
                     break;
                 }
             }
@@ -133,18 +133,18 @@ static const zbyte *justDecode(const zbyte *string, zint stringBytes,
         extraBytes--;
 
         if ((ch & 0xc0) != 0x80) {
-            samDie("Invalid UTF-8 continuation byte: 0x%02x", (int) ch);
+            samDie("Invalid UTF-8 continuation byte: %#02x", (int) ch);
         }
 
         value = (value << 6) | (ch & 0x3f);
     }
 
     if (value < minValue) {
-        samDie("Overly long UTF-8 encoding of value: 0x%llx", value);
+        samDie("Overly long UTF-8 encoding of value: %#llx", value);
     }
 
     if (value >= 0x100000000LL) {
-        samDie("Out-of-range UTF-8 encoded value: 0x%llx", value);
+        samDie("Out-of-range UTF-8 encoded value: %#llx", value);
     }
 
     if (result != NULL) {
@@ -156,27 +156,33 @@ static const zbyte *justDecode(const zbyte *string, zint stringBytes,
 
 
 /*
- * API implementation
+ * Intra-library API implementation
  */
 
-/** Documented in API header. */
+/** Documented in `unicode.h`. */
+void samAssertValidUnicode(zint value) {
+    if ((value >= 0xd800) && (value <= 0xdfff)) {
+        samDie("Invalid occurrence of surrogate code point: %#04x",
+               (int) value);
+    } else if (value == 0xfffe) {
+        samDie("Invalid occurrence of reversed-BOM.");
+    } else if (value == 0xffff) {
+        samDie("Invalid occurrence of not-a-character.");
+    } else if (value >= 0x110000) {
+        samDie("Invalid occurrence of high code point: %#llx", value);
+    }
+}
+
+/** Documented in `unicode.h`. */
 const zbyte *samUtf8DecodeOne(const zbyte *string, zint stringBytes,
                            zint *result) {
     string = justDecode(string, stringBytes, result);
-
-    if ((*result >= 0xd800) && (*result <= 0xdfff)) {
-        samDie("Invalid occurrence of surrogate code point: 0x%04x",
-               (int) result);
-    } else if (*result == 0xfffe) {
-        samDie("Invalid occurrence of reversed-BOM.");
-    } else if (*result == 0xffff) {
-        samDie("Invalid occurrence of not-a-character.");
-    }
+    samAssertValidUnicode(*result);
 
     return string;
 }
 
-/** Documented in API header. */
+/** Documented in `unicode.h`. */
 zint samUtf8DecodeStringSize(const zbyte *string, zint stringBytes) {
     const zbyte *stringEnd = getStringEnd(string, stringBytes);
     zint result = 0;

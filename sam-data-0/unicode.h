@@ -14,6 +14,12 @@
 #include "sam-data.h"
 
 /**
+ * Asserts that the given `zint` value is valid as a Unicode
+ * code point.
+ */
+void samAssertValidUnicode(zint value);
+
+/**
  * Decodes a UTF-8 encoded code point from the given string of the
  * given size in bytes, storing via the given `zint *`. If the decoded
  * value isn't needed, it is valid to pass `result` as `NULL`. Returns

@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/** Documented in API header. */
+/** Documented in `util.h`. */
 void samNote(const char *format, ...) {
     va_list rest;
 
@@ -20,7 +20,7 @@ void samNote(const char *format, ...) {
     fputs("\n", stderr);
 }
 
-/** Documented in API header. */
+/** Documented in `util.h`. */
 void samDie(const char *format, ...) {
     va_list rest;
 

@@ -141,3 +141,18 @@ zvalue samIntletFromInt(zint value) {
     intletElems(result)[0] = value;
     return result;
 }
+
+/** Documented in API header. */
+zint samIntletToInt(zvalue intlet) {
+    samAssertIntlet(intlet);
+
+    // Note: This relies on the intlet being in optimal form (no
+    // superfluous high-order words).
+    zint size = samSize(intlet);
+
+    if (size > 1) {
+        samDie("Out-of-range intlet.");
+    }
+
+    return (size == 0) ? 0 : intletElems(intlet)[0];
+}
