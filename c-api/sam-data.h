@@ -203,7 +203,14 @@ zvalue samListletAppend(zvalue listlet, zvalue value);
  * Gets the listlet resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given.
  */
-zvalue samListletFromUtf8(const zbyte *string, zint stringBytes);
+zvalue samListletFromUtf8String(const zbyte *string, zint stringBytes);
+
+/**
+ * Gets the listlet resulting from interpreting the ASCII C-style
+ * (`'\0'`-terminated) string. It is an error if any byte value is
+ * `> 0x7f`.
+ */
+zvalue samListletFromAsciiString(const zbyte *string);
 
 
 /*

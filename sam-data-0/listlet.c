@@ -95,10 +95,27 @@ zvalue samListletAppend(zvalue listlet, zvalue value) {
 }
 
 /** Documented in API header. */
-zvalue samListletFromUtf8(const zbyte *string, zint stringBytes) {
+zvalue samListletFromUtf8String(const zbyte *string, zint stringBytes) {
     zint decodedSize = samUtf8DecodeStringSize(string, stringBytes);
     zvalue result = allocListlet(decodedSize);
 
     samUtf8DecodeStringToValues(string, stringBytes, listletElems(result));
+    return result;
+}
+
+/** Documented in API header. */
+zvalue samListletFromAsciiString(const zbyte *string) {
+    zint size = strlen((const void *) string);
+    zvalue result = allocListlet(size);
+    zvalue *elems = listletElems(result);
+
+    for (zint i = 0; i < size; i++) {
+        zbyte one = string[i];
+        if (one >= 0x80) {
+            samDie("Invalid ASCII byte: 0x%02x", one);
+        }
+        elems[i] = samIntletFromInt(one);
+    }
+
     return result;
 }
