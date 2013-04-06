@@ -149,7 +149,7 @@ zint samIntletToInt(zvalue intlet) {
     // superfluous high-order words).
     zint size = samSize(intlet);
 
-    if (size > 1) {
+    if (size > BITS_PER_WORD) {
         samDie("Out-of-range intlet.");
     }
 
