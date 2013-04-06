@@ -10,6 +10,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+/*
+ * API implementation
+ */
+
 /** Documented in API header. */
 void samNote(const char *format, ...) {
     va_list rest;

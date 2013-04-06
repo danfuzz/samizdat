@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+/*
+ * API implementation
+ */
+
 /** Documented in `alloc.h`. */
 void *samAlloc(zint size) {
     void *result = malloc(size);

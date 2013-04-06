@@ -6,6 +6,11 @@
 
 #include "sam-exec.h"
 
+
+/*
+ * API implementation
+ */
+
 /** Documented in API header. */
 zvalue samExecute(zvalue environment, zmagic *magic, zvalue code) {
     // TODO

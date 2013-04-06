@@ -6,6 +6,10 @@
 
 #include "sam-exec.h"
 
+/*
+ * API implementation
+ */
+
 /** Documented in API header. */
 zvalue samReadFile(zvalue fileName) {
     // TODO
