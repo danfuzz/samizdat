@@ -13,7 +13,7 @@ bindings.
 Token Syntax
 ------------
 
-BNF-like description of the tokens:
+BNF/PEG-like description of the tokens:
 
 doubleAt    ::= "@@" ;
 doubleColon ::= "::" ;
