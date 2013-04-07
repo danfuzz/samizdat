@@ -77,8 +77,9 @@ static void skipWhitespace(ParseState *state) {
             }
         } else if ((ch != ' ') && (ch != '\n')) {
             break;
+        } else {
+            read(state);
         }
-        read(state);
     }
 }
 
@@ -104,6 +105,7 @@ static zvalue tokenizeInteger(ParseState *state) {
 
         read(state);
         value = (value * 10) + (ch - '0');
+        any = true;
 
         if (value >= 0x80000000) {
             samDie("Overlarge integer token.");
