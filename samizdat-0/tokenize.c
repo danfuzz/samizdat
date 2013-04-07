@@ -49,7 +49,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return samListletGetInt(state->str, state->at);
+    return isEof(state) ? -1 : samListletGetInt(state->str, state->at);
 }
 
 /**
@@ -97,7 +97,7 @@ static zvalue tokenizeInteger(ParseState *state) {
         read(state);
     }
 
-    while (!isEof(state)) {
+    for (;;) {
         zint ch = peek(state);
 
         if ((ch < '0') || (ch > '9')) {
@@ -132,7 +132,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     // wouldn't have been called otherwise.
     chars[0] = samIntletFromInt(read(state));
 
-    while (!isEof(state)) {
+    for (;;) {
         zint ch = peek(state);
 
         if (!(((ch >= '0') && (ch <= '9')) ||
@@ -163,13 +163,11 @@ static zvalue tokenizeString(ParseState *state) {
     zvalue chars[MAX_STRING_CHARS];
 
     for (;;) {
-        if (isEof(state)) {
-            samDie("Unterminated string.");
-        }
-
         zint ch = peek(state);
 
-        if (ch == '\"') {
+        if (ch == -1) {
+            samDie("Unterminated string.");
+        } else if (ch == '\"') {
             read(state);
             break;
         } else if (size == sizeof(chars)) {
@@ -215,18 +213,18 @@ static zvalue tokenizeOne(ParseState *state) {
         case '@': {
             read(state);
             if (peek(state) == '@') {
+                read(state);
                 return TOK_CH_ATAT;
             } else {
-                read(state);
                 return TOK_CH_AT;
             }
         }
         case ':': {
             read(state);
             if (peek(state) == ':') {
+                read(state);
                 return TOK_CH_COLONCOLON;
             } else {
-                read(state);
                 return TOK_CH_COLON;
             }
         }
