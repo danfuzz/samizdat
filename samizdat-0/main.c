@@ -5,6 +5,7 @@
  */
 
 #include "sam-exec.h"
+#include "consts.h"
 #include "tokenize.h"
 
 #include <string.h>
@@ -22,7 +23,27 @@ static void processFile(zvalue fileContents) {
     samNote("%s", utf);
     samNote("[fin]");
 
+    // TODO: Remove this file dump.
     zvalue tokens = tokenize(fileContents);
+    zint tokensSize = samSize(tokens);
+    for (zint i = 0; i < tokensSize; i++) {
+        zvalue one = samListletGet(tokens, i);
+        zvalue type = samMapletGet(one, STR_TYPE);
+        char value[200] = "";
+        size = samStringletUtf8Size(type);
+        samStringletEncodeUtf8(type, utf);
+        utf[size] = '\0';
+        one = samMapletGet(one, STR_VALUE);
+        if ((one != NULL) && (samType(one) == SAM_LISTLET)) {
+            size = samStringletUtf8Size(one);
+            samStringletEncodeUtf8(one, value);
+            value[size] = '\0';
+        }
+        samNote("token %s %s", utf, value);
+    }
+    samNote("[fin]");
+
+    // TODO: Stuff.
 }
 
 /**
