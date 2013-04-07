@@ -114,11 +114,11 @@ emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 uniqlet ::= @"@@";
 # result: @[@"type"=@"uniqlet"]
 
-function ::= @"{" formals? statements @"}" ;
+function ::= @"{" formals statements @"}" ;
 # result: @[@"type"=@"function"
 #           @"value"=@[@"formals"=<formals> @"statements"=<statements>]]
 
-formals ::= @"identifier"+ @"::" ;
+formals ::= (@"identifier"+ @"::") | ~. ;
 # result: @[@"type"=@"formals" @"value"=<listlet of identifier.values>]
 
 call ::= expression expressions ;
