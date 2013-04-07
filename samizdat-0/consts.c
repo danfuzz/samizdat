@@ -157,3 +157,8 @@ void constsInit(void) {
     TOK_VAR_DEF         = samMapletPut(empty, STR_TYPE, STR_VAR_DEF);
     TOK_VAR_REF         = samMapletPut(empty, STR_TYPE, STR_VAR_REF);
 }
+
+/** Documented in `consts.h` */
+zvalue valueToken(zvalue token, zvalue value) {
+    return samMapletPut(token, STR_VALUE, value);
+}

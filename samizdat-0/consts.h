@@ -88,4 +88,10 @@ extern zvalue TOK_VAR_REF;
  */
 void constsInit(void);
 
+/**
+ * Constructs a value token / node, by combining the given base
+ * token with `value` mapping to the given value.
+ */
+zvalue valueToken(zvalue token, zvalue value);
+
 #endif
