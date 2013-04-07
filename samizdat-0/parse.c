@@ -96,21 +96,70 @@ static zvalue parseStatements(ParseState *state);
  * Parses a `call` node.
  */
 static zvalue parseCall(ParseState *state) {
-    samDie("TODO");
+    zint at = mark(state);
+
+    zvalue function = parseExpression(state);
+
+    if (function == NULL) {
+        return NULL;
+    }
+
+    // Always succeeds, since a zero-length list is valid.
+    zvalue actuals = parseExpressions(state);
+
+    zvalue value = samMapletPut(samMapletEmpty(), STR_FUNCTION, function);
+    value = samMapletPut(value, STR_ACTUALS, actuals);
+    return valueToken(TOK_CALL, value);
 }
 
 /**
  * Parses a `formals` node.
  */
 static zvalue parseFormals(ParseState *state) {
-    samDie("TODO");
+    zint at = mark(state);
+    zvalue identifiers = samListletEmpty();
+
+    for (;;) {
+        zvalue identifier = readMatch(state, TOK_IDENTIFIER);
+        if (identifier == NULL) {
+            break;
+        }
+        identifier = samMapletGet(identifier, STR_VALUE);
+        identifiers = samListletAppend(identifiers, identifier);
+    }
+
+    if (samSize(identifiers) != 0) {
+        if (readMatch(state, TOK_CH_COLONCOLON) == NULL) {
+            reset(state, at);
+            return NULL;
+        }
+    }
+
+    return valueToken(TOK_FORMALS, identifiers);
 }
 
 /**
  * Parses a `function` node.
  */
 static zvalue parseFunction(ParseState *state) {
-    samDie("TODO");
+    zint at = mark(state);
+
+    if (readMatch(state, TOK_CH_OP_CURLY) == NULL) {
+        return NULL;
+    }
+
+    // Both of these always succeed.
+    zvalue formals = parseFormals(state);
+    zvalue statements = parseStatements(state);
+
+    if (readMatch(state, TOK_CH_CL_CURLY) == NULL) {
+        reset(state, at);
+        return NULL;
+    }
+
+    zvalue value = samMapletPut(samMapletEmpty(), STR_FORMALS, formals);
+    value = samMapletPut(value, STR_STATEMENTS, statements);
+    return valueToken(TOK_FUNCTION, value);
 }
 
 /**
@@ -333,17 +382,19 @@ static zvalue parseVarDef(ParseState *state) {
 }
 
 /**
- * Parses the `expression` alternate consisting of a parenthesized
- * expression.
+ * Parses a `parenExpression` node.
  */
-static zvalue parseExpression1(ParseState *state) {
+static zvalue parseParenExpression(ParseState *state) {
     zint at = mark(state);
 
     if (readMatch(state, TOK_CH_OP_PAREN) == NULL) {
         return NULL;
     }
 
-    zvalue expression = parseExpression(state);
+    zvalue expression = parseCall(state);
+    if (expression == NULL) {
+        expression = parseExpression(state);
+    }
 
     if (expression == NULL) {
         reset(state, at);
@@ -374,7 +425,7 @@ static zvalue parseExpression(ParseState *state) {
     if (result == NULL) { result = parseUniqlet(state); }
     if (result == NULL) { result = parseFunction(state); }
     if (result == NULL) { result = parseCall(state); }
-    if (result == NULL) { result = parseExpression1(state); }
+    if (result == NULL) { result = parseParenExpression(state); }
 
     return result;
 }
