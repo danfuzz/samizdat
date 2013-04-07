@@ -9,11 +9,13 @@
 #include <stddef.h>
 
 zvalue STR_CH_AT = NULL;
+zvalue STR_CH_ATAT = NULL;
 zvalue STR_CH_CARET = NULL;
 zvalue STR_CH_CL_CURLY = NULL;
 zvalue STR_CH_CL_PAREN = NULL;
 zvalue STR_CH_CL_SQUARE = NULL;
 zvalue STR_CH_COLON = NULL;
+zvalue STR_CH_COLONCOLON = NULL;
 zvalue STR_CH_EQUAL = NULL;
 zvalue STR_CH_OP_CURLY = NULL;
 zvalue STR_CH_OP_PAREN = NULL;
@@ -40,11 +42,13 @@ zvalue STR_VAR_REF = NULL;
 
 /* Prefab tokens / nodes. Lazily initialized. */
 zvalue TOK_CH_AT = NULL;
+zvalue TOK_CH_ATAT = NULL;
 zvalue TOK_CH_CARET = NULL;
 zvalue TOK_CH_CL_CURLY = NULL;
 zvalue TOK_CH_CL_PAREN = NULL;
 zvalue TOK_CH_CL_SQUARE = NULL;
 zvalue TOK_CH_COLON = NULL;
+zvalue TOK_CH_COLONCOLON = NULL;
 zvalue TOK_CH_EQUAL = NULL;
 zvalue TOK_CH_OP_CURLY = NULL;
 zvalue TOK_CH_OP_PAREN = NULL;
@@ -79,11 +83,13 @@ void constsInit(void) {
     }
 
     STR_CH_AT           = samStringletFromUtf8String("@", -1);
+    STR_CH_ATAT         = samStringletFromUtf8String("@@", -1);
     STR_CH_CARET        = samStringletFromUtf8String("^", -1);
     STR_CH_CL_CURLY     = samStringletFromUtf8String("}", -1);
     STR_CH_CL_PAREN     = samStringletFromUtf8String(")", -1);
     STR_CH_CL_SQUARE    = samStringletFromUtf8String("]", -1);
     STR_CH_COLON        = samStringletFromUtf8String(":", -1);
+    STR_CH_COLONCOLON   = samStringletFromUtf8String("::", -1);
     STR_CH_EQUAL        = samStringletFromUtf8String("=", -1);
     STR_CH_OP_CURLY     = samStringletFromUtf8String("{", -1);
     STR_CH_OP_PAREN     = samStringletFromUtf8String("(", -1);
@@ -111,11 +117,13 @@ void constsInit(void) {
 
     zvalue empty = samMapletEmpty();
     TOK_CH_AT           = samMapletPut(empty, STR_TYPE, STR_CH_AT);
+    TOK_CH_ATAT         = samMapletPut(empty, STR_TYPE, STR_CH_ATAT);
     TOK_CH_CARET        = samMapletPut(empty, STR_TYPE, STR_CH_CARET);
     TOK_CH_CL_CURLY     = samMapletPut(empty, STR_TYPE, STR_CH_CL_CURLY);
     TOK_CH_CL_PAREN     = samMapletPut(empty, STR_TYPE, STR_CH_CL_PAREN);
     TOK_CH_CL_SQUARE    = samMapletPut(empty, STR_TYPE, STR_CH_CL_SQUARE);
     TOK_CH_COLON        = samMapletPut(empty, STR_TYPE, STR_CH_COLON);
+    TOK_CH_COLONCOLON   = samMapletPut(empty, STR_TYPE, STR_CH_COLONCOLON);
     TOK_CH_EQUAL        = samMapletPut(empty, STR_TYPE, STR_CH_EQUAL);
     TOK_CH_OP_CURLY     = samMapletPut(empty, STR_TYPE, STR_CH_OP_CURLY);
     TOK_CH_OP_PAREN     = samMapletPut(empty, STR_TYPE, STR_CH_OP_PAREN);

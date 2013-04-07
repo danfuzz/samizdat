@@ -25,17 +25,19 @@ token ::=
 # result: same as the non-whitespace payload.
 
 punctuation ::=
-    "@" | # result: @[@"type"=@"@"]
-    ":" | # result: @[@"type"=@":"]
-    ";" | # result: @[@"type"=@";"]
-    "=" | # result: @[@"type"=@"="]
-    "^" | # result: @[@"type"=@"^"]
-    "{" | # result: @[@"type"=@"{"]
-    "}" | # result: @[@"type"=@"}"]
-    "(" | # result: @[@"type"=@"("]
-    ")" | # result: @[@"type"=@")"]
-    "[" | # result: @[@"type"=@"["]
-    "]"   # result: @[@"type"=@"]"]
+    "@@" | # result: @[@"type"=@"@@"]
+    "::" | # result: @[@"type"=@"::"]
+    "@"  | # result: @[@"type"=@"@"]
+    ":"  | # result: @[@"type"=@":"]
+    ";"  | # result: @[@"type"=@";"]
+    "="  | # result: @[@"type"=@"="]
+    "^"  | # result: @[@"type"=@"^"]
+    "{"  | # result: @[@"type"=@"{"]
+    "}"  | # result: @[@"type"=@"}"]
+    "("  | # result: @[@"type"=@"("]
+    ")"  | # result: @[@"type"=@")"]
+    "["  | # result: @[@"type"=@"["]
+    "]"    # result: @[@"type"=@"]"]
 ;
 
 integerToken ::= "-"? ("0".."9")+ ;
@@ -107,7 +109,7 @@ binding ::= expression @"=" expression ;
 emptyMaplet ::= @"[" @"=" @"]" ;
 # result: @[@"type"=@"literal" @"value"=@[=]]
 
-uniqlet ::= @"@" @"@";
+uniqlet ::= @"@@";
 # result: @[@"type"=@"uniqlet"]
 
 function ::= @"{" argumentSpecs? (program | expression) @"}" ;
@@ -116,7 +118,7 @@ function ::= @"{" argumentSpecs? (program | expression) @"}" ;
 # Note: If the "expression" variant, the program is the same as
 #   `return <expression>;`.
 
-argumentSpecs ::= @"identifier"+ @":" @":" ;
+argumentSpecs ::= @"identifier"+ @"::" ;
 # result: @[@"type"=@"argumentSpecs" @"value"=<listlet of identifier.values>]
 
 callExpression ::= @"(" expression expressionList @")" ;

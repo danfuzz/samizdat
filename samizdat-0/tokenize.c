@@ -201,18 +201,34 @@ static zvalue tokenizeOne(ParseState *state) {
     zint ch = peek(state);
 
     switch (ch) {
-        case '@': read(state); return TOK_CH_AT;
-        case ':': read(state); return TOK_CH_COLON;
-        case ';': read(state); return TOK_CH_SEMICOLON;
-        case '=': read(state); return TOK_CH_EQUAL;
-        case '^': read(state); return TOK_CH_CARET;
-        case '{': read(state); return TOK_CH_OP_CURLY;
-        case '}': read(state); return TOK_CH_CL_CURLY;
-        case '(': read(state); return TOK_CH_OP_PAREN;
-        case ')': read(state); return TOK_CH_CL_PAREN;
-        case '[': read(state); return TOK_CH_OP_SQUARE;
-        case ']': read(state); return TOK_CH_CL_SQUARE;
+        case ';':  read(state); return TOK_CH_SEMICOLON;
+        case '=':  read(state); return TOK_CH_EQUAL;
+        case '^':  read(state); return TOK_CH_CARET;
+        case '{':  read(state); return TOK_CH_OP_CURLY;
+        case '}':  read(state); return TOK_CH_CL_CURLY;
+        case '(':  read(state); return TOK_CH_OP_PAREN;
+        case ')':  read(state); return TOK_CH_CL_PAREN;
+        case '[':  read(state); return TOK_CH_OP_SQUARE;
+        case ']':  read(state); return TOK_CH_CL_SQUARE;
         case '\"': return tokenizeString(state);
+        case '@': {
+            read(state);
+            if (peek(state) == '@') {
+                return TOK_CH_ATAT;
+            } else {
+                read(state);
+                return TOK_CH_AT;
+            }
+        }
+        case ':': {
+            read(state);
+            if (peek(state) == ':') {
+                return TOK_CH_COLONCOLON;
+            } else {
+                read(state);
+                return TOK_CH_COLON;
+            }
+        }
     }
 
     if (((ch >= '0') && (ch <= '9')) || (ch == '-')) {
