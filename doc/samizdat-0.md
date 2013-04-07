@@ -108,7 +108,7 @@ binding ::= expression @"=" expression ;
 # result: @[@"type"=@"binding"
             @"value"=@[@"key"=<key expression> @"value"=<value expression>]]
 
-emptyMaplet ::= @"[" @"=" @"]" ;
+emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 # result: @[@"type"=@"literal" @"value"=@[=]]
 
 uniqlet ::= @"@@";
