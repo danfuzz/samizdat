@@ -129,10 +129,10 @@ Library Bindings
 ----------------
 
 ```
-var false = @[@"type"=@"boolean" @"value"=0];
-var true = @[@"type"=@"boolean" @"value"=1];
+false = @[@"type"=@"boolean" @"value"=0];
+true = @[@"type"=@"boolean" @"value"=1];
 
-var if = @@; # Bound via magic as a primitive function.
+if = @@; # Bound via magic as a primitive function.
 # Note: `if` takes two or more arguments, all of which must be functions that
 #   take no arguments. The first argument is called. If it returns `true`,
 #   then the result of the `if` is the result of calling the second argument.
