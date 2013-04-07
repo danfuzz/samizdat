@@ -198,8 +198,6 @@ static zvalue tokenizeString(ParseState *state) {
  * Parses a single token, updating the given input position.
  */
 static zvalue tokenizeOne(ParseState *state) {
-    skipWhitespace(state);
-
     zint ch = peek(state);
 
     switch (ch) {
@@ -239,12 +237,14 @@ zvalue tokenize(zvalue stringlet) {
     ParseState state = { stringlet, samSize(stringlet), 0 };
     zint out = 0;
 
-    while (!isEof(&state)) {
-        zvalue one = tokenizeOne(&state);
+    for (;;) {
+        skipWhitespace(&state);
 
-        if (one == NULL) {
+        if (isEof(&state)) {
             break;
         }
+
+        zvalue one = tokenizeOne(&state);
 
         result[out] = one;
         out++;
