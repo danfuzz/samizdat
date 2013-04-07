@@ -19,28 +19,23 @@ repeatedly matching the top `token` rule.
 ```
 token ::=
     whitespace*
-    (punctuation | keyword | integerToken | stringToken | identifier)
+    (punctuation | integerToken | stringToken | identifier)
     whitespace*
 ;
 # result: same as the non-whitespace payload.
 
 punctuation ::=
-    "@@" | # result: @[@"type"=@"@@"]
-    "::" | # result: @[@"type"=@"::"]
-    ";"  | # result: @[@"type"=@";"]
-    "="  | # result: @[@"type"=@"="]
-    "@"  | # result: @[@"type"=@"@"]
-    "{"  | # result: @[@"type"=@"{"]
-    "}"  | # result: @[@"type"=@"}"]
-    "("  | # result: @[@"type"=@"("]
-    ")"  | # result: @[@"type"=@")"]
-    "["  | # result: @[@"type"=@"["]
-    "]"    # result: @[@"type"=@"]"]
-;
-
-keyword ::=
-    "var"    | # result: @[@"type"=@"var"]
-    "return"   # result: @[@"type"=@"return"]
+    "@" | # result: @[@"type"=@"@"]
+    ":" | # result: @[@"type"=@":"]
+    ";" | # result: @[@"type"=@";"]
+    "=" | # result: @[@"type"=@"="]
+    "^" | # result: @[@"type"=@"^"]
+    "{" | # result: @[@"type"=@"{"]
+    "}" | # result: @[@"type"=@"}"]
+    "(" | # result: @[@"type"=@"("]
+    ")" | # result: @[@"type"=@")"]
+    "[" | # result: @[@"type"=@"["]
+    "]"   # result: @[@"type"=@"]"]
 ;
 
 integerToken ::= "-"? ("0".."9")+ ;
@@ -72,10 +67,10 @@ program ::= statement* ;
 statement ::= (varDef | expression | returnStatement) @";" ;
 # result: <same as whatever was parsed>
 
-returnStatement ::= @"return" expression ;
+returnStatement ::= @"^" expression ;
 # result: @[@"type"=@"return" @"value"=<expression>]
 
-varDef ::= @"var" @"identifier" @"=" expression ;
+varDef ::= @"identifier" @"=" expression ;
 # result: @[@"type"=@"varDef"
 #           @"value"=@[@"name"=<identifier.value> @"value"=<expression>]]
 
@@ -112,7 +107,7 @@ binding ::= expression @"=" expression ;
 emptyMaplet ::= @"[" @"=" @"]" ;
 # result: @[@"type"=@"literal" @"value"=@[=]]
 
-uniqlet ::= @"@@" ;
+uniqlet ::= @"@" @"@";
 # result: @[@"type"=@"uniqlet"]
 
 function ::= @"{" argumentSpecs? (program | expression) @"}" ;
@@ -121,7 +116,7 @@ function ::= @"{" argumentSpecs? (program | expression) @"}" ;
 # Note: If the "expression" variant, the program is the same as
 #   `return <expression>;`.
 
-argumentSpecs ::= @"identifier"+ @"::" ;
+argumentSpecs ::= @"identifier"+ @":" @":" ;
 # result: @[@"type"=@"argumentSpecs" @"value"=<listlet of identifier.values>]
 
 callExpression ::= @"(" expression expressionList @")" ;
