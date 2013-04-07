@@ -87,18 +87,86 @@ static zvalue readMatch(ParseState *state, zvalue token) {
     return result;
 }
 
-// TODO: More node parsers go here!
-// parseCall()
-// parseFormals()
-// parseFunction()
-// parseUniqlet()
-// parseEmptyMaplet()
-// parseBinding()
-// parseMaplet()
-// parseListlet()
-// parseStringlet()
-// parseInteger()
-// parseIntlet()
+/* Defined below. */
+static zvalue parseExpression(ParseState *state);
+static zvalue parseStatements(ParseState *state);
+
+/**
+ * Parses a `call` node.
+ */
+static zvalue parseCall(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses a `formals` node.
+ */
+static zvalue parseFormals(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses a `function` node.
+ */
+static zvalue parseFunction(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses a `uniqlet` node.
+ */
+static zvalue parseUniqlet(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses an `emptyMaplet` node.
+ */
+static zvalue parseEmptyMaplet(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses a `binding` node.
+ */
+static zvalue parseBinding(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses a `maplet` node.
+ */
+static zvalue parseMaplet(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses a `listlet` node.
+ */
+static zvalue parseListlet(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses a `stringlet` node.
+ */
+static zvalue parseStringlet(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses an `integer` node.
+ */
+static zvalue parseInteger(ParseState *state) {
+    samDie("TODO");
+}
+
+/**
+ * Parses an `intlet` node.
+ */
+static zvalue parseIntlet(ParseState *state) {
+    samDie("TODO");
+}
 
 /**
  * Parses a `varRef` node.
@@ -115,24 +183,84 @@ static zvalue parseVarDef(ParseState *state) {
 }
 
 /**
+ * Parses the `expression` alternate consisting of a parenthesized
+ * expression.
+ */
+static zvalue parseExpression1(ParseState *state) {
+    zint at = mark(state);
+
+    if (readMatch(state, TOK_CH_OP_PAREN) == NULL) {
+        return NULL;
+    }
+
+    zvalue expression = parseExpression(state);
+
+    if (expression == NULL) {
+        reset(state, at);
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_OP_PAREN) == NULL) {
+        reset(state, at);
+        return NULL;
+    }
+
+    return expression;
+}
+
+/**
  * Parses an `expression` node.
  */
 static zvalue parseExpression(ParseState *state) {
-    samDie("TODO");
+    zvalue result = NULL;
+
+    if (result == NULL) { parseVarRef(state); }
+    if (result == NULL) { result = parseIntlet(state); }
+    if (result == NULL) { result = parseInteger(state); }
+    if (result == NULL) { result = parseStringlet(state); }
+    if (result == NULL) { result = parseListlet(state); }
+    if (result == NULL) { result = parseMaplet(state); }
+    if (result == NULL) { result = parseEmptyMaplet(state); }
+    if (result == NULL) { result = parseUniqlet(state); }
+    if (result == NULL) { result = parseFunction(state); }
+    if (result == NULL) { result = parseCall(state); }
+    if (result == NULL) { result = parseExpression1(state); }
+
+    return result;
 }
 
 /**
  * Parses an `expressions` node.
  */
 static zvalue parseExpressions(ParseState *state) {
-    samDie("TODO");
+    zvalue result = samListletEmpty();
+
+    for (;;) {
+        zvalue expression = parseExpression(state);
+        if (expression == NULL) {
+            break;
+        }
+        result = samListletAppend(result, expression);
+    }
+
+    return valueToken(TOK_EXPRESSIONS, result);
 }
 
 /**
  * Parses a `return` node.
  */
 static zvalue parseReturn(ParseState *state) {
-    samDie("TODO");
+    if (readMatch(state, TOK_CH_CARET) == NULL) {
+        return NULL;
+    }
+
+    zvalue expression = parseExpression(state);
+
+    if (expression == NULL) {
+        return NULL;
+    }
+
+    return valueToken(TOK_RETURN, expression);
 }
 
 /**
@@ -140,17 +268,11 @@ static zvalue parseReturn(ParseState *state) {
  */
 static zvalue parseStatement(ParseState *state) {
     zint at = mark(state);
-    zvalue result;
+    zvalue result = NULL;
 
-    result = parseVarDef(state);
-
-    if (result == NULL) {
-        result = parseExpression(state);
-    }
-
-    if (result == NULL) {
-        result = parseReturn(state);
-    }
+    if (result == NULL) { result = parseVarDef(state); }
+    if (result == NULL) { result = parseExpression(state); }
+    if (result == NULL) { result = parseReturn(state); }
 
     if (result == NULL) {
         return NULL;
@@ -178,7 +300,7 @@ static zvalue parseStatements(ParseState *state) {
         result = samListletAppend(result, statement);
     }
 
-    return samMapletPut(TOK_STATEMENTS, STR_VALUE, result);
+    return valueToken(TOK_STATEMENTS, result);
 }
 
 
