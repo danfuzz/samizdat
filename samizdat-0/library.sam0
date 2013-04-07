@@ -13,9 +13,9 @@ true = @[@"type"=@"boolean" @"value"=1];
 
 # Primitive functions. These are all bound via magic.
 
-if = @@;        # (if expr expr ...) Cascading conditional function.
-readFile = @@;  # (readFile name) Reads a file, interpreting as UTF-8.
-writeFile = @@; # (writeFile name stringlet) Writes a file, encoding UTF-8.
+if = @@;        # if expr expr ... -- Cascading conditional function.
+readFile = @@;  # readFile name -- Reads a file, interpreting as UTF-8.
+writeFile = @@; # writeFile name stringlet -- Writes a file, encoding UTF-8.
 
 MAGIC @"if" if;
 MAGIC @"readFile" readFile;
