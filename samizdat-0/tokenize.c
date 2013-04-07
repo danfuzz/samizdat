@@ -6,6 +6,7 @@
 
 #include "sam-exec.h"
 #include "consts.h"
+#include "tokenize.h"
 
 #include <stddef.h>
 
