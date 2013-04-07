@@ -1,0 +1,22 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. See the associated file "LICENSE.md" for details.
+
+#
+# Samizdat Layer 0 Core Library
+#
+
+# The two boolean constants.
+
+false = @[@"type"=@"boolean" @"value"=0];
+true = @[@"type"=@"boolean" @"value"=1];
+
+# Primitive functions. These are all bound via magic.
+
+if = @@;        # (if expr expr ...) Cascading conditional function.
+readFile = @@;  # (readFile name) Reads a file, interpreting as UTF-8.
+writeFile = @@; # (writeFile name stringlet) Writes a file, encoding UTF-8.
+
+MAGIC @"if" if;
+MAGIC @"readFile" readFile;
+MAGIC @"writeFile" writeFile;
