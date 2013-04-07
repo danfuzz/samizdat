@@ -174,7 +174,7 @@ static zvalue tokenizeInteger(ParseState *state) {
         if ((ch < '0') || (ch > '9')) {
             break;
         }
-        
+
         read(state);
         value = (value * 10) + (ch - '0');
 
