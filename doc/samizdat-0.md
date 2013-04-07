@@ -79,8 +79,12 @@ expressions ::= expression* ;
 expression ::=
     varRef | intlet | integer | stringlet | listlet |
     maplet | emptyMaplet | uniqlet | function | call |
-    @"(" expression @")"
+    @"(" parenExpression @")"
 # result: <same as whatever was parsed>
+
+parenExpression ::= call | expression;
+# result: <same as whatever was parsed>
+# Note: This is to make parenthesized expressions "prefer" to be calls.
 
 varDef ::= @"identifier" @"=" expression ;
 # result: @[@"type"=@"varDef"
