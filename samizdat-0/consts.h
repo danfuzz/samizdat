@@ -1,0 +1,81 @@
+/*
+ * Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+ * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+ * Version 2.0. See the associated file "LICENSE.md" for details.
+ */
+
+/*
+ * Prefab constants.
+ */
+
+#ifndef _CONSTS_H_
+#define _CONSTS_H_
+
+#include "sam-data.h"
+
+/* Prefab stringlets. Lazily initialized. */
+extern zvalue STR_CH_AT;
+extern zvalue STR_CH_CARET;
+extern zvalue STR_CH_CL_CURLY;
+extern zvalue STR_CH_CL_PAREN;
+extern zvalue STR_CH_CL_SQUARE;
+extern zvalue STR_CH_COLON;
+extern zvalue STR_CH_EQUAL;
+extern zvalue STR_CH_OP_CURLY;
+extern zvalue STR_CH_OP_PAREN;
+extern zvalue STR_CH_OP_SQUARE;
+extern zvalue STR_CH_SEMICOLON;
+extern zvalue STR_ARGUMENT_SPECS;
+extern zvalue STR_BINDING;
+extern zvalue STR_CALL;
+extern zvalue STR_EXPRESSION_LIST;
+extern zvalue STR_FUNCTION;
+extern zvalue STR_IDENTIFIER;
+extern zvalue STR_INTEGER;
+extern zvalue STR_LISTLET;
+extern zvalue STR_LITERAL;
+extern zvalue STR_MAPLET;
+extern zvalue STR_PROGRAM;
+extern zvalue STR_RETURN;
+extern zvalue STR_STRING;
+extern zvalue STR_TYPE;
+extern zvalue STR_UNIQLET;
+extern zvalue STR_VALUE;
+extern zvalue STR_VAR_DEF;
+extern zvalue STR_VAR_REF;
+
+/* Prefab tokens / nodes. Lazily initialized. */
+extern zvalue TOK_CH_AT;
+extern zvalue TOK_CH_CARET;
+extern zvalue TOK_CH_CL_CURLY;
+extern zvalue TOK_CH_CL_PAREN;
+extern zvalue TOK_CH_CL_SQUARE;
+extern zvalue TOK_CH_COLON;
+extern zvalue TOK_CH_EQUAL;
+extern zvalue TOK_CH_OP_CURLY;
+extern zvalue TOK_CH_OP_PAREN;
+extern zvalue TOK_CH_OP_SQUARE;
+extern zvalue TOK_CH_SEMICOLON;
+extern zvalue TOK_ARGUMENT_SPECS;
+extern zvalue TOK_BINDING;
+extern zvalue TOK_CALL;
+extern zvalue TOK_EXPRESSION_LIST;
+extern zvalue TOK_FUNCTION;
+extern zvalue TOK_IDENTIFIER;
+extern zvalue TOK_INTEGER;
+extern zvalue TOK_LISTLET;
+extern zvalue TOK_LITERAL;
+extern zvalue TOK_MAPLET;
+extern zvalue TOK_PROGRAM;
+extern zvalue TOK_RETURN;
+extern zvalue TOK_STRING;
+extern zvalue TOK_UNIQLET;
+extern zvalue TOK_VAR_DEF;
+extern zvalue TOK_VAR_REF;
+
+/**
+ * Initializes the string and token variables, if necessary.
+ */
+void constsInit(void);
+
+#endif

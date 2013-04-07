@@ -5,8 +5,25 @@
  */
 
 #include "sam-exec.h"
+#include "tokenize.h"
 
 #include <string.h>
+
+/**
+ * Processes a single file.
+ */
+static void processFile(zvalue fileContents) {
+    // TODO: Remove this file dump.
+    samNote("File contents:");
+    zint size = samStringletUtf8Size(fileContents);
+    char utf[size + 1];
+    samStringletEncodeUtf8(fileContents, utf);
+    utf[size] = '\0';
+    samNote("%s", utf);
+    samNote("[fin]");
+
+    zvalue tokens = tokenize(fileContents);
+}
 
 /**
  * Main driver for Samizdat Layer 0. Reads in each file named as
@@ -14,20 +31,11 @@
  */
 int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
-        samNote("File \"%s\":", argv[i]);
+        samNote("Processing file: %s", argv[i]);
+
         zvalue name = samStringletFromUtf8String(argv[i], -1);
+        zvalue fileContents = samReadFile(name);
 
-        samNote("Reading file...");
-        zvalue file = samReadFile(name);
-
-        // TODO: Something real.
-        samNote("File contents:");
-
-        zint size = samStringletUtf8Size(file);
-        char utf[size + 1];
-        samStringletEncodeUtf8(file, utf);
-        utf[size] = '\0';
-        samNote("%s", utf);
-        samNote("[fin]");
+        processFile(fileContents);
     }
 }

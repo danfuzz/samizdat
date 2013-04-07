@@ -5,6 +5,7 @@
  */
 
 #include "sam-exec.h"
+#include "consts.h"
 
 #include <stddef.h>
 
@@ -31,85 +32,10 @@ typedef struct {
 }
 ParseState;
 
-/* Prefab stringlets. Lazily initialized. */
-static zvalue STR_CH_AT;
-static zvalue STR_CH_CARET;
-static zvalue STR_CH_CL_CURLY;
-static zvalue STR_CH_CL_PAREN;
-static zvalue STR_CH_CL_SQUARE;
-static zvalue STR_CH_COLON;
-static zvalue STR_CH_EQUAL;
-static zvalue STR_CH_OP_CURLY;
-static zvalue STR_CH_OP_PAREN;
-static zvalue STR_CH_OP_SQUARE;
-static zvalue STR_CH_SEMICOLON;
-static zvalue STR_IDENTIFIER;
-static zvalue STR_INTEGER;
-static zvalue STR_STRING;
-static zvalue STR_TYPE;
-static zvalue STR_VALUE;
-
-/* Prefab tokens. Lazily initialized. */
-static zvalue TOK_CH_AT;
-static zvalue TOK_CH_CARET;
-static zvalue TOK_CH_CL_CURLY;
-static zvalue TOK_CH_CL_PAREN;
-static zvalue TOK_CH_CL_SQUARE;
-static zvalue TOK_CH_COLON;
-static zvalue TOK_CH_EQUAL;
-static zvalue TOK_CH_OP_CURLY;
-static zvalue TOK_CH_OP_PAREN;
-static zvalue TOK_CH_OP_SQUARE;
-static zvalue TOK_CH_SEMICOLON;
-static zvalue TOK_IDENTIFIER;
-static zvalue TOK_INTEGER;
-static zvalue TOK_STRING;
 
 /*
  * Helper functions
  */
-
-/**
- * Initializes the static variables.
- */
-static void init(void) {
-    if (STR_CH_AT != NULL) {
-        return;
-    }
-
-    STR_CH_AT        = samStringletFromUtf8String("@", -1);
-    STR_CH_CARET     = samStringletFromUtf8String("^", -1);
-    STR_CH_CL_CURLY  = samStringletFromUtf8String("}", -1);
-    STR_CH_CL_PAREN  = samStringletFromUtf8String(")", -1);
-    STR_CH_CL_SQUARE = samStringletFromUtf8String("]", -1);
-    STR_CH_COLON     = samStringletFromUtf8String(":", -1);
-    STR_CH_EQUAL     = samStringletFromUtf8String("=", -1);
-    STR_CH_OP_CURLY  = samStringletFromUtf8String("{", -1);
-    STR_CH_OP_PAREN  = samStringletFromUtf8String("(", -1);
-    STR_CH_OP_SQUARE = samStringletFromUtf8String("[", -1);
-    STR_CH_SEMICOLON = samStringletFromUtf8String(";", -1);
-    STR_IDENTIFIER   = samStringletFromUtf8String("identifier", -1);
-    STR_INTEGER      = samStringletFromUtf8String("integer", -1);
-    STR_STRING       = samStringletFromUtf8String("string", -1);
-    STR_TYPE         = samStringletFromUtf8String("type", -1);
-    STR_VALUE        = samStringletFromUtf8String("value", -1);
-
-    zvalue empty = samMapletEmpty();
-    TOK_CH_AT        = samMapletPut(empty, STR_TYPE, STR_CH_AT);
-    TOK_CH_CARET     = samMapletPut(empty, STR_TYPE, STR_CH_CARET);
-    TOK_CH_CL_CURLY  = samMapletPut(empty, STR_TYPE, STR_CH_CL_CURLY);
-    TOK_CH_CL_PAREN  = samMapletPut(empty, STR_TYPE, STR_CH_CL_PAREN);
-    TOK_CH_CL_SQUARE = samMapletPut(empty, STR_TYPE, STR_CH_CL_SQUARE);
-    TOK_CH_COLON     = samMapletPut(empty, STR_TYPE, STR_CH_COLON);
-    TOK_CH_EQUAL     = samMapletPut(empty, STR_TYPE, STR_CH_EQUAL);
-    TOK_CH_OP_CURLY  = samMapletPut(empty, STR_TYPE, STR_CH_OP_CURLY);
-    TOK_CH_OP_PAREN  = samMapletPut(empty, STR_TYPE, STR_CH_OP_PAREN);
-    TOK_CH_OP_SQUARE = samMapletPut(empty, STR_TYPE, STR_CH_OP_SQUARE);
-    TOK_CH_SEMICOLON = samMapletPut(empty, STR_TYPE, STR_CH_SEMICOLON);
-    TOK_IDENTIFIER   = samMapletPut(empty, STR_TYPE, STR_IDENTIFIER);
-    TOK_INTEGER      = samMapletPut(empty, STR_TYPE, STR_INTEGER);
-    TOK_STRING       = samMapletPut(empty, STR_TYPE, STR_STRING);
-}
 
 /**
  * Is the parse state at EOF?
@@ -152,6 +78,7 @@ static void skipWhitespace(ParseState *state) {
         } else if ((ch != ' ') && (ch != '\n')) {
             break;
         }
+        read(state);
     }
 }
 
@@ -294,20 +221,17 @@ static zvalue tokenizeOne(ParseState *state) {
         return tokenizeIdentifier(state);
     }
 
-    samDie("Invalid character in token stream: %lld", ch);
+    samDie("Invalid character in token stream: \"%c\" (%lld)", (char) ch, ch);
 }
 
 
 /*
- * Public API
+ * Exported functions
  */
 
-/**
- * Tokenizes a stringlet using Samizdat Layer 0 token syntax. Returns
- * a listlet of tokens.
- */
+/** Documented in `tokenize.h`. */
 zvalue tokenize(zvalue stringlet) {
-    init();
+    constsInit();
 
     zvalue result[MAX_TOKENS];
     ParseState state = { stringlet, samSize(stringlet), 0 };
@@ -315,9 +239,11 @@ zvalue tokenize(zvalue stringlet) {
 
     while (!isEof(&state)) {
         zvalue one = tokenizeOne(&state);
+
         if (one == NULL) {
             break;
         }
+
         result[out] = one;
         out++;
     }
