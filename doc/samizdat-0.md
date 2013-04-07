@@ -54,36 +54,37 @@ whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
 ```
 
 
-Tree Syntax
------------
+Node / Tree Syntax
+------------------
 
-BNF/PEG-like description of the tree syntax. A program is parsed by
-matching the top `program` rule. On the right-hand side of rules,
-a stringlet literal indicates a token whose `type` is the literal
-value, and an identifier indicates a tree syntax rule to match.
+BNF/PEG-like description of the node / tree syntax. A program is
+parsed by matching the top `statements` rule. On the right-hand side
+of rules, a stringlet literal indicates a token whose `type` is the
+literal value, and an identifier indicates a tree syntax rule to
+match.
 
 ```
-program ::= statement* ;
-# result: @[@"type"=@"program" @"value"=<listlet of statements>]
+statements ::= statement* ;
+# result: @[@"type"=@"statements" @"value"=<listlet of statements>]
 
-statement ::= (varDef | expression | returnStatement) @";" ;
+statement ::= (varDef | expression | return) @";" ;
 # result: <same as whatever was parsed>
 
-returnStatement ::= @"^" expression ;
+return ::= @"^" expression ;
 # result: @[@"type"=@"return" @"value"=<expression>]
+
+expressions ::= expression* ;
+# result: @[@"type"=@"expressions" @"value"=<listlet of expressions>]
+
+expression ::=
+    varRef | intlet | integer | stringlet | listlet |
+    maplet | emptyMaplet | uniqlet | function | call |
+    @"(" expression @")"
+# result: <same as whatever was parsed>
 
 varDef ::= @"identifier" @"=" expression ;
 # result: @[@"type"=@"varDef"
 #           @"value"=@[@"name"=<identifier.value> @"value"=<expression>]]
-
-expressionList ::= expression* ;
-# result: @[@"type"=@"expressionList" @"value"=<listlet of expressions>]
-
-expression ::=
-    varRef | intlet | integer | stringlet | listlet |
-    maplet | emptyMaplet | uniqlet | function | callExpression |
-    @"(" expression @")"
-# result: <same as whatever was parsed>
 
 varRef ::= @"identifier" ;
 # result: @[@"type"=@"varRef" @"value"=<identifier.value>]
@@ -97,7 +98,7 @@ integer ::= @"integerToken" ;
 stringlet ::= @"@" @"string" ;
 # result: @[@"type"=@"literal" @"value"=<stringToken.value>]
 
-listlet ::= @"@" @"[" expressionList @"]" ;
+listlet ::= @"@" @"[" expressions @"]" ;
 # result: @[@"type"=@"listlet" @"value"=<listlet of expressions>]
 
 maplet ::= @"@" @"[" binding+ @"]" ;
@@ -113,18 +114,16 @@ emptyMaplet ::= @"[" @"=" @"]" ;
 uniqlet ::= @"@@";
 # result: @[@"type"=@"uniqlet"]
 
-function ::= @"{" argumentSpecs? (program | expression) @"}" ;
+function ::= @"{" argumentSpecs? statements @"}" ;
 # result: @[@"type"=@"function"
-#           @"value"=@[@"argumentSpecs"=<argument specs> @"program"=<program>]]
-# Note: If the "expression" variant, the program is the same as
-#   `return <expression>;`.
+#           @"value"=@[@"formals"=<formals> @"statements"=<statements>]]
 
-argumentSpecs ::= @"identifier"+ @"::" ;
-# result: @[@"type"=@"argumentSpecs" @"value"=<listlet of identifier.values>]
+formals ::= @"identifier"+ @"::" ;
+# result: @[@"type"=@"formals" @"value"=<listlet of identifier.values>]
 
-callExpression ::= expression expressionList ;
+call ::= expression expressions ;
 # result: @[@"type"=@"call"
-#           @"value"=@[@"function"=<expression> @"arguments"=<expr list>]]
+#           @"value"=@[@"function"=<expression> @"actuals"=<expr list>]]
 ```
 
 
