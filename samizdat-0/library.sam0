@@ -8,8 +8,8 @@
 
 # The two boolean constants.
 
-false = @[@"type"=@"boolean" @"value"=0];
-true = @[@"type"=@"boolean" @"value"=1];
+false = @[@"type"=@"boolean" @"value"=@0];
+true = @[@"type"=@"boolean" @"value"=@1];
 
 # Primitive functions. These are all bound via magic.
 
