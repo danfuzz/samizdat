@@ -26,12 +26,6 @@
 typedef int64_t zint;
 
 /**
- * Unsigned byte. This is the type used for all lowest-level byte values
- * (including UTF-8 octets).
- */
-typedef uint8_t zbyte;
-
-/**
  * The result of a comparison.
  */
 typedef enum {
@@ -201,6 +195,13 @@ zint samIntletToInt(zvalue intlet);
 zvalue samListletGet(zvalue listlet, zint n);
 
 /**
+ * Gets the `zint` of the nth element of the given listlet. `value`
+ * must be a listlet, `n` must be `< samSize(value)`, and the element
+ * gotten must be an intlet in range to be represented as a `zint`.
+ */
+zint samListletGetInt(zvalue stringlet, zint n);
+
+/**
  * Gets the value `@[]` (that is, the empty listlet).
  */
 zvalue samListletEmpty(void);
@@ -210,6 +211,11 @@ zvalue samListletEmpty(void);
  * given listlet.
  */
 zvalue samListletAppend(zvalue listlet, zvalue value);
+
+/**
+ * Constructs a listlet from an array of `zvalue`s of the given size.
+ */
+zvalue samListletFromValues(zvalue *values, zint size);
 
 
 /*
@@ -258,22 +264,16 @@ zvalue samUniqlet(void);
 
 
 /*
- * Stringlet functions
+ * Stringlet functions. Stringlets are just listlets whose elements
+ * are all intlets that represent Unicode code points.
  */
 
 /**
- * Gets the stringlet (listlet Unicode-representing intlets) resulting
- * from interpreting the given UTF-8 encoded string, whose size in
- * bytes is as given.
+ * Gets the stringlet resulting from interpreting the given UTF-8
+ * encoded string, whose size in bytes is as given. If `stringBytes`
+ * is passed as `-1`, this uses `strlen()` to determine size.
  */
-zvalue samStringletFromUtf8String(const zbyte *string, zint stringBytes);
-
-/**
- * Gets the stringlet resulting from interpreting the ASCII C-style
- * (`'\0'`-terminated) string. It is an error if any byte value is
- * `> 0x7f`.
- */
-zvalue samStringletFromAsciiString(const zbyte *string);
+zvalue samStringletFromUtf8String(const char *string, zint stringBytes);
 
 /**
  * Gets the UTF-8 encoded size of the given stringlet, in bytes.
@@ -282,10 +282,10 @@ zint samStringletUtf8Size(zvalue stringlet);
 
 /**
  * Encodes the given stringlet as UTF-8, storing it into the given
- * `zbyte *` array. The array must be long enough to hold the result.
+ * `char *` array. The array must be long enough to hold the result.
  * It is *not* `'\0'`-terminated.
  */
-void samStringletEncodeUtf8(zvalue stringlet, zbyte *utf8);
+void samStringletEncodeUtf8(zvalue stringlet, char *utf8);
 
 
 /*

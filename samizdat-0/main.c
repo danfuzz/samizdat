@@ -15,8 +15,7 @@
 int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         samNote("File \"%s\":", argv[i]);
-        zvalue name =
-            samStringletFromUtf8String((zbyte *) argv[i], strlen(argv[i]));
+        zvalue name = samStringletFromUtf8String(argv[i], -1);
 
         samNote("Reading file...");
         zvalue file = samReadFile(name);
@@ -25,7 +24,7 @@ int main(int argc, char **argv) {
         samNote("File contents:");
 
         zint size = samStringletUtf8Size(file);
-        zbyte utf[size + 1];
+        char utf[size + 1];
         samStringletEncodeUtf8(file, utf);
         utf[size] = '\0';
         samNote("%s", utf);

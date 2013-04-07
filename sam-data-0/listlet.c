@@ -66,12 +66,31 @@ zvalue samListletGet(zvalue listlet, zint n) {
 }
 
 /** Documented in API header. */
+zint samListletGetInt(zvalue listlet, zint n) {
+    zvalue v = samListletGet(listlet, n);
+    return samIntletToInt(v);
+}
+
+/** Documented in API header. */
 zvalue samListletEmpty(void) {
     if (theEmptyListlet == NULL) {
         theEmptyListlet = samAllocListlet(0);
     }
 
     return theEmptyListlet;
+}
+
+/** Documented in API header. */
+zvalue samListletFromValues(zvalue *values, zint size) {
+    zvalue result = samAllocListlet(size);
+    zvalue *resultElems = samListletElems(result);
+
+    for (zint i = 0; i < size; i++) {
+        samAssertValid(values[i]);
+        resultElems[i] = values[i];
+    }
+
+    return result;
 }
 
 /** Documented in API header. */

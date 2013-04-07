@@ -23,7 +23,7 @@ enum {
 /** Documented in API header. */
 zvalue samReadFile(zvalue fileName) {
     zint nameSize = samStringletUtf8Size(fileName);
-    zbyte nameUtf[nameSize + 1];
+    char nameUtf[nameSize + 1];
 
     samStringletEncodeUtf8(fileName, nameUtf);
     nameUtf[nameSize] = '\0';
@@ -33,7 +33,7 @@ zvalue samReadFile(zvalue fileName) {
         samDie("Trouble opening file \"%s\": %s", nameUtf, strerror(errno));
     }
 
-    zbyte buf[MAX_FILE_SIZE];
+    char buf[MAX_FILE_SIZE];
     size_t amt = fread(buf, 1, sizeof(buf), in);
 
     if (ferror(in)) {

@@ -18,12 +18,12 @@
  * Gets a pointer just past the end of the given string, asserting
  * validity of same.
  */
-static const zbyte *getStringEnd(const zbyte *string, zint stringBytes) {
+static const char *getStringEnd(const char *string, zint stringBytes) {
     if (stringBytes < 0) {
         samDie("Invalid string size: %lld", stringBytes);
     }
 
-    const zbyte *result = string + stringBytes;
+    const char *result = string + stringBytes;
 
     if (result < string) {
         samDie("Invalid string size (pointer wraparound): %p + %lld",
@@ -36,13 +36,13 @@ static const zbyte *getStringEnd(const zbyte *string, zint stringBytes) {
 /**
  * Does the basic decoding step, with syntactic but not semantic validation.
  */
-static const zbyte *justDecode(const zbyte *string, zint stringBytes,
-                               zint *result) {
+static const char *justDecode(const char *string, zint stringBytes,
+                              zint *result) {
     if (stringBytes <= 0) {
         samDie("Invalid string size: %lld", stringBytes);
     }
 
-    zbyte ch = *string;
+    char ch = *string;
     zint value;
     int extraBytes;
     zint minValue;
@@ -173,8 +173,8 @@ void samAssertValidUnicode(zint value) {
 }
 
 /** Documented in `unicode.h`. */
-const zbyte *samUtf8DecodeOne(const zbyte *string, zint stringBytes,
-                              zint *result) {
+const char *samUtf8DecodeOne(const char *string, zint stringBytes,
+                             zint *result) {
     string = justDecode(string, stringBytes, result);
     samAssertValidUnicode(*result);
 
@@ -182,8 +182,8 @@ const zbyte *samUtf8DecodeOne(const zbyte *string, zint stringBytes,
 }
 
 /** Documented in `unicode.h`. */
-zint samUtf8DecodeStringSize(const zbyte *string, zint stringBytes) {
-    const zbyte *stringEnd = getStringEnd(string, stringBytes);
+zint samUtf8DecodeStringSize(const char *string, zint stringBytes) {
+    const char *stringEnd = getStringEnd(string, stringBytes);
     zint result = 0;
 
     while (string < stringEnd) {
@@ -195,9 +195,9 @@ zint samUtf8DecodeStringSize(const zbyte *string, zint stringBytes) {
 }
 
 /** Documented in `unicode.h`. */
-void samUtf8DecodeStringToInts(const zbyte *string, zint stringBytes,
+void samUtf8DecodeStringToInts(const char *string, zint stringBytes,
                                zint *result) {
-    const zbyte *stringEnd = getStringEnd(string, stringBytes);
+    const char *stringEnd = getStringEnd(string, stringBytes);
 
     while (string < stringEnd) {
         string = samUtf8DecodeOne(string, stringEnd - string, result);
@@ -206,9 +206,9 @@ void samUtf8DecodeStringToInts(const zbyte *string, zint stringBytes,
 }
 
 /** Documented in `unicode.h`. */
-void samUtf8DecodeStringToValues(const zbyte *string, zint stringBytes,
+void samUtf8DecodeStringToValues(const char *string, zint stringBytes,
                                  zvalue *result) {
-    const zbyte *stringEnd = getStringEnd(string, stringBytes);
+    const char *stringEnd = getStringEnd(string, stringBytes);
     zint one = 0;
 
     while (string < stringEnd) {
@@ -219,61 +219,61 @@ void samUtf8DecodeStringToValues(const zbyte *string, zint stringBytes,
 }
 
 /** Documented in `unicode.h`. */
-zbyte *samUtf8EncodeOne(zbyte *string, zint ch) {
+char *samUtf8EncodeOne(char *string, zint ch) {
     if (ch < 0x80) {
         if (string != NULL) {
-            string[0] = (zbyte) ch;
+            string[0] = (char) ch;
         }
         return string + 1;
     } else if (ch < 0x800) {
         if (string != NULL) {
-            string[0] = (zbyte) ((ch & 0x1f) | 0xc0);
-            string[1] = (zbyte) ((ch >> 5) | 0x80);
+            string[0] = (char) ((ch & 0x1f) | 0xc0);
+            string[1] = (char) ((ch >> 5) | 0x80);
         }
         return string + 2;
     } else if (ch < 0x10000) {
         if (string != NULL) {
-            string[0] = (zbyte) ((ch & 0x0f) | 0xe0);
-            string[1] = (zbyte) (((ch >> 4) & 0x3f) | 0x80);
-            string[2] = (zbyte) ((ch >> 10) | 0x80);
+            string[0] = (char) ((ch & 0x0f) | 0xe0);
+            string[1] = (char) (((ch >> 4) & 0x3f) | 0x80);
+            string[2] = (char) ((ch >> 10) | 0x80);
         }
         return string + 3;
     } else if (ch < 0x200000) {
         if (string != NULL) {
-            string[0] = (zbyte) ((ch & 0x07) | 0xf0);
-            string[1] = (zbyte) (((ch >> 3) & 0x3f) | 0x80);
-            string[2] = (zbyte) (((ch >> 9) & 0x3f) | 0x80);
-            string[3] = (zbyte) ((ch >> 15) | 0x80);
+            string[0] = (char) ((ch & 0x07) | 0xf0);
+            string[1] = (char) (((ch >> 3) & 0x3f) | 0x80);
+            string[2] = (char) (((ch >> 9) & 0x3f) | 0x80);
+            string[3] = (char) ((ch >> 15) | 0x80);
         }
         return string + 4;
     } else if (ch < 0x4000000) {
         if (string != NULL) {
-            string[0] = (zbyte) ((ch & 0x03) | 0xf8);
-            string[1] = (zbyte) (((ch >> 2) & 0x3f) | 0x80);
-            string[2] = (zbyte) (((ch >> 8) & 0x3f) | 0x80);
-            string[3] = (zbyte) (((ch >> 14) & 0x3f) | 0x80);
-            string[4] = (zbyte) ((ch >> 20) | 0x80);
+            string[0] = (char) ((ch & 0x03) | 0xf8);
+            string[1] = (char) (((ch >> 2) & 0x3f) | 0x80);
+            string[2] = (char) (((ch >> 8) & 0x3f) | 0x80);
+            string[3] = (char) (((ch >> 14) & 0x3f) | 0x80);
+            string[4] = (char) ((ch >> 20) | 0x80);
         }
         return string + 5;
     } else if (ch < 0x80000000) {
         if (string != NULL) {
-            string[0] = (zbyte) ((ch & 0x01) | 0xfc);
-            string[1] = (zbyte) (((ch >> 1) & 0x3f) | 0x80);
-            string[2] = (zbyte) (((ch >> 7) & 0x3f) | 0x80);
-            string[3] = (zbyte) (((ch >> 13) & 0x3f) | 0x80);
-            string[4] = (zbyte) (((ch >> 19) & 0x3f) | 0x80);
-            string[5] = (zbyte) ((ch >> 25) | 0x80);
+            string[0] = (char) ((ch & 0x01) | 0xfc);
+            string[1] = (char) (((ch >> 1) & 0x3f) | 0x80);
+            string[2] = (char) (((ch >> 7) & 0x3f) | 0x80);
+            string[3] = (char) (((ch >> 13) & 0x3f) | 0x80);
+            string[4] = (char) (((ch >> 19) & 0x3f) | 0x80);
+            string[5] = (char) ((ch >> 25) | 0x80);
         }
         return string + 6;
     } else if (ch < 0x100000000) {
         if (string != NULL) {
-            string[0] = (zbyte) 0xfe;
-            string[1] = (zbyte) ((ch & 0x3f) | 0x80);
-            string[2] = (zbyte) (((ch >> 6) & 0x3f) | 0x80);
-            string[3] = (zbyte) (((ch >> 12) & 0x3f) | 0x80);
-            string[4] = (zbyte) (((ch >> 18) & 0x3f) | 0x80);
-            string[5] = (zbyte) (((ch >> 24) & 0x3f) | 0x80);
-            string[6] = (zbyte) (((ch >> 30) & 0x3f) | 0x80);
+            string[0] = (char) 0xfe;
+            string[1] = (char) ((ch & 0x3f) | 0x80);
+            string[2] = (char) (((ch >> 6) & 0x3f) | 0x80);
+            string[3] = (char) (((ch >> 12) & 0x3f) | 0x80);
+            string[4] = (char) (((ch >> 18) & 0x3f) | 0x80);
+            string[5] = (char) (((ch >> 24) & 0x3f) | 0x80);
+            string[6] = (char) (((ch >> 30) & 0x3f) | 0x80);
         }
         return string + 7;
     } else {

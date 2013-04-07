@@ -29,28 +29,17 @@ void samAssertStringlet(zvalue value) {
 }
 
 /** Documented in API header. */
-zvalue samStringletFromUtf8String(const zbyte *string, zint stringBytes) {
+zvalue samStringletFromUtf8String(const char *string, zint stringBytes) {
+    if (stringBytes == -1) {
+        stringBytes = strlen(string);
+    } else if (stringBytes < 0) {
+        samDie("Invalid string size: %lld", stringBytes);
+    }
+
     zint decodedSize = samUtf8DecodeStringSize(string, stringBytes);
     zvalue result = samAllocListlet(decodedSize);
 
     samUtf8DecodeStringToValues(string, stringBytes, samListletElems(result));
-    return result;
-}
-
-/** Documented in API header. */
-zvalue samStringletFromAsciiString(const zbyte *string) {
-    zint size = strlen((const void *) string);
-    zvalue result = samAllocListlet(size);
-    zvalue *elems = samListletElems(result);
-
-    for (zint i = 0; i < size; i++) {
-        zbyte one = string[i];
-        if (one >= 0x80) {
-            samDie("Invalid ASCII byte: %#02x", one);
-        }
-        elems[i] = samIntletFromInt(one);
-    }
-
     return result;
 }
 
@@ -62,23 +51,21 @@ zint samStringletUtf8Size(zvalue stringlet) {
     zint result = 0;
 
     for (zint i = 0; i < size; i++) {
-        zvalue one = samListletGet(stringlet, i);
-        zint ch = samIntletToInt(one);
-        result += (samUtf8EncodeOne(NULL, ch) - (zbyte *) NULL);
+        zint ch = samListletGetInt(stringlet, i);
+        result += (samUtf8EncodeOne(NULL, ch) - (char *) NULL);
     }
 
     return result;
 }
 
 /** Documented in API header. */
-void samStringletEncodeUtf8(zvalue stringlet, zbyte *utf8) {
+void samStringletEncodeUtf8(zvalue stringlet, char *utf8) {
     samAssertStringlet(stringlet);
 
     zint size = samSize(stringlet);
 
     for (zint i = 0; i < size; i++) {
-        zvalue one = samListletGet(stringlet, i);
-        zint ch = samIntletToInt(one);
+        zint ch = samListletGetInt(stringlet, i);
         utf8 = samUtf8EncodeOne(utf8, ch);
     }
 }
