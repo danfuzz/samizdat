@@ -114,7 +114,7 @@ emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 uniqlet ::= @"@@";
 # result: @[@"type"=@"uniqlet"]
 
-function ::= @"{" argumentSpecs? statements @"}" ;
+function ::= @"{" formals? statements @"}" ;
 # result: @[@"type"=@"function"
 #           @"value"=@[@"formals"=<formals> @"statements"=<statements>]]
 
