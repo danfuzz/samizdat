@@ -143,7 +143,7 @@ zint samSize(zvalue value);
 
 /**
  * Given an intlet, returns the `n`th bit, counting from the least
- * significant bit. `value` must be an intlet. Returns `false` for a
+ * significant bit. `intlet` must be an intlet. Returns `false` for a
  * `0` bit, and `true` for a `1` bit. If `n` references a bit beyond
  * the value's size, then the return value is the sign bit of the
  * value.
@@ -152,7 +152,7 @@ bool samIntletGetBit(zvalue intlet, zint n);
 
 /**
  * Given an intlet, returns the `n`th byte, counting from the least
- * significant byte. `value` must be an intlet. If `n` references a
+ * significant byte. `intlet` must be an intlet. If `n` references a
  * byte beyond the value's size, then the return value is the sign byte
  * of the value.
  */
@@ -160,15 +160,15 @@ zint samIntletGetByte(zvalue intlet, zint n);
 
 /**
  * Given an intlet, returns the `n`th `zint`-sized word, counting from
- * the least significant word. `value` must be an intlet. If `n`
+ * the least significant word. `intlet` must be an intlet. If `n`
  * references a word beyond the value's size, then the return value is
  * the sign word of the value.
  */
 zint samIntletGetInt(zvalue intlet, zint n);
 
 /**
- * Gets the sign of the given intlet. Returns `false` for
- * non-negative, and `true` for negative.
+ * Gets the sign of the given intlet. `intlet` must be an
+ * intlet. Returns `false` for non-negative, and `true` for negative.
  */
 bool samIntletSign(zvalue intlet);
 
@@ -178,8 +178,8 @@ bool samIntletSign(zvalue intlet);
 zvalue samIntletFromInt(zint value);
 
 /**
- * Gets a `zint` equal to the given intlet value. It is an error if
- * the value is out of range.
+ * Gets a `zint` equal to the given intlet value. `intlet` must be an
+ * intlet. It is an error if the value is out of range.
  */
 zint samIntletToInt(zvalue intlet);
 
@@ -189,13 +189,13 @@ zint samIntletToInt(zvalue intlet);
  */
 
 /**
- * Given a listlet, returns the `n`th element. `value` must be a listlet, and
- * `n` must be `< samSize(value)`.
+ * Given a listlet, returns the `n`th element. `listlet` must be a
+ * listlet, and `n` must be `< samSize(value)`.
  */
 zvalue samListletGet(zvalue listlet, zint n);
 
 /**
- * Gets the `zint` of the nth element of the given listlet. `value`
+ * Gets the `zint` of the nth element of the given listlet. `listlet`
  * must be a listlet, `n` must be `< samSize(value)`, and the element
  * gotten must be an intlet in range to be represented as a `zint`.
  */
@@ -223,16 +223,23 @@ zvalue samListletFromValues(zvalue *values, zint size);
  */
 
 /**
- * Given a maplet, returns the `n`th mapping. `value` must be a maplet, and
- * `n` must be `< samSize(value)`.
+ * Given a maplet, returns the `n`th mapping. `maplet` must be a
+ * maplet, and `n` must be `< samSize(value)`.
  *
  * Note: When retrieved in ordinal order, keys are always returned in
  * sorted order.
  */
-zmapping samMapletGet(zvalue maplet, zint n);
+zmapping samMapletGetMapping(zvalue maplet, zint n);
 
 /**
- * Given a maplet, find the index of the given key. `value` must be a
+ * Given a maplet, find the mapping of the given key and return the
+ * corresponding value, or `NULL` if there is no such key. `maplet`
+ * must be a maplet, and `key` must be a valid value.
+ */
+zvalue samMapletGet(zvalue maplet, zvalue key);
+
+/**
+ * Given a maplet, find the index of the given key. `maplet` must be a
  * maplet. Returns the index of the key or `~insertionIndex` (a
  * negative number) if not found.
  */

@@ -76,10 +76,17 @@ zcomparison samMapletCompare(zvalue v1, zvalue v2) {
  */
 
 /** Documented in API header. */
-zmapping samMapletGet(zvalue maplet, zint n) {
+zmapping samMapletGetMapping(zvalue maplet, zint n) {
     samAssertNth(maplet, n);
 
     return mapletElems(maplet)[n];
+}
+
+/** Documented in API header. */
+zvalue samMapletGet(zvalue maplet, zvalue key) {
+    zint index = samMapletFind(maplet, key);
+
+    return (index < 0) ? NULL : samMapletGetMapping(maplet, index).value;
 }
 
 /** Documented in API header. */
