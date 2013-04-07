@@ -81,7 +81,8 @@ expressionList ::= expression* ;
 
 expression ::=
     varRef | intlet | integer | stringlet | listlet |
-    maplet | emptyMaplet | uniqlet | function | callExpression ;
+    maplet | emptyMaplet | uniqlet | function | callExpression |
+    @"(" expression @")"
 # result: <same as whatever was parsed>
 
 varRef ::= @"identifier" ;
@@ -121,7 +122,7 @@ function ::= @"{" argumentSpecs? (program | expression) @"}" ;
 argumentSpecs ::= @"identifier"+ @"::" ;
 # result: @[@"type"=@"argumentSpecs" @"value"=<listlet of identifier.values>]
 
-callExpression ::= @"(" expression expressionList @")" ;
+callExpression ::= expression expressionList ;
 # result: @[@"type"=@"call"
 #           @"value"=@[@"function"=<expression> @"arguments"=<expr list>]]
 ```
