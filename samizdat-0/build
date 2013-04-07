@@ -39,6 +39,9 @@ unset newProg
 # Main script
 #
 
+"${baseDir}/sam-data-0/build" || exit 1
+"${baseDir}/sam-exec-0/build" || exit 1
+
 projectName="$(basename "${progDir}")"
 
 OUT="${OUT:-${baseDir}/out}/${projectName}"
