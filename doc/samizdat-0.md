@@ -89,10 +89,10 @@ varDef ::= @"identifier" @"=" expression ;
 varRef ::= @"identifier" ;
 # result: @[@"type"=@"varRef" @"value"=<identifier.value>]
 
-intlet ::= @"@" @"integerToken" ;
+intlet ::= @"@" @"integer" ;
 # result: @[@"type"=@"literal" @"value"=<integerToken.value>]
 
-integer ::= @"integerToken" ;
+integer ::= @"integer" ;
 # result: @[@"type"=@"literal" @"value"=<integerToken>]
 
 stringlet ::= @"@" @"string" ;
