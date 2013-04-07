@@ -118,7 +118,7 @@ static zvalue tokenizeInteger(ParseState *state) {
     }
 
     zvalue intlet = samIntletFromInt(negative ? -value : value);
-    return samMapletPut(TOK_INTEGER, STR_VALUE, intlet);
+    return valueToken(TOK_INTEGER, intlet);
 }
 
 /**
@@ -149,7 +149,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     }
 
     zvalue stringlet = samListletFromValues(chars, size);
-    return samMapletPut(TOK_IDENTIFIER, STR_VALUE, stringlet);
+    return valueToken(TOK_IDENTIFIER, stringlet);
 }
 
 /**
@@ -190,7 +190,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue stringlet = samListletFromValues(chars, size);
-    return samMapletPut(TOK_STRING, STR_VALUE, stringlet);
+    return valueToken(TOK_STRING, stringlet);
 }
 
 /**
