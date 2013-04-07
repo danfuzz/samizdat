@@ -17,6 +17,10 @@
 
 /** Documented in `alloc.h`. */
 void *samAlloc(zint size) {
+    if (size < 0) {
+        samDie("Invalid allocation size: %lld", size);
+    }
+
     void *result = malloc(size);
 
     if (result == NULL) {
@@ -29,6 +33,10 @@ void *samAlloc(zint size) {
 
 /** Documented in `alloc.h`. */
 zvalue samAllocValue(ztype type, zint size, zint extraBytes) {
+    if (size < 0) {
+        samDie("Invalid value size: %lld", size);
+    }
+
     zvalue result = samAlloc(sizeof(SamValue) + extraBytes);
 
     result->magic = SAM_VALUE_MAGIC;
