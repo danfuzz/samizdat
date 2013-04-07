@@ -19,7 +19,7 @@ repeatedly matching the top `token` rule.
 ```
 token ::=
     whitespace*
-    (punctuation | integerToken | stringToken | identifier)
+    (punctuation | integer | string | identifier)
     whitespace*
 ;
 # result: same as the non-whitespace payload.
@@ -40,10 +40,10 @@ punctuation ::=
     "]"    # result: @[@"type"=@"]"]
 ;
 
-integerToken ::= "-"? ("0".."9")+ ;
+integer ::= "-"? ("0".."9")+ ;
 # result: @[@"type"=@"integer" @"value"=<intlet>].
 
-stringToken ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
+string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
 # result: @[@"type"=@"string" @"value"=<stringlet>].
 
 identifier ::= ("a".."z" | "A".."Z") ("a".."z" | "A".."Z" | "0".."9")* ;
@@ -90,13 +90,13 @@ varRef ::= @"identifier" ;
 # result: @[@"type"=@"varRef" @"value"=<identifier.value>]
 
 intlet ::= @"@" @"integer" ;
-# result: @[@"type"=@"literal" @"value"=<integerToken.value>]
+# result: @[@"type"=@"literal" @"value"=<integer.value>]
 
 integer ::= @"integer" ;
-# result: @[@"type"=@"literal" @"value"=<integerToken>]
+# result: @[@"type"=@"literal" @"value"=<integer>]
 
 stringlet ::= @"@" @"string" ;
-# result: @[@"type"=@"literal" @"value"=<stringToken.value>]
+# result: @[@"type"=@"literal" @"value"=<string.value>]
 
 listlet ::= @"@" @"[" expressions @"]" ;
 # result: @[@"type"=@"listlet" @"value"=<listlet of expressions>]
