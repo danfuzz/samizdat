@@ -452,9 +452,11 @@ static zvalue parseReturn(ParseState *state) {
         return NULL;
     }
 
+    zint mark = cursor(state);
     zvalue expression = parseExpression(state);
 
     if (expression == NULL) {
+        reset(state, mark);
         return NULL;
     }
 
