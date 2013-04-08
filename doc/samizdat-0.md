@@ -76,12 +76,10 @@ return ::= @"^" expression ;
 expression ::= call | basicExpression ;
 # result: <same as whatever was parsed>
 
-basicExpressions ::= basicExpression* ;
-# result: @[@"type"=@"expressions" @"value"=<listlet of expressions>]
-
 basicExpression ::=
-    varRef | intlet | integer | stringlet | listlet |
-    maplet | emptyMaplet | uniqlet | function | parenExpression
+    varRef | intlet | integer | stringlet |
+    emptyListlet | listlet | emptyMaplet | maplet |
+    uniqlet | function | parenExpression
 # result: <same as whatever was parsed>
 
 parenExpression ::= @"(" call @")";
@@ -106,8 +104,14 @@ integer ::= @"integer" ;
 stringlet ::= @"@" @"string" ;
 # result: @[@"type"=@"literal" @"value"=<string.value>]
 
-listlet ::= @"@" @"[" basicExpressions @"]" ;
+emptyListlet ::= @"@" @"[" @"]" ;
+# result: @[@"type"=@"literal" @"value"=@[]]
+
+listlet ::= @"@" @"[" basicExpression+ @"]" ;
 # result: @[@"type"=@"listlet" @"value"=<listlet of expressions>]
+
+emptyMaplet ::= @"@" @"[" @"=" @"]" ;
+# result: @[@"type"=@"literal" @"value"=@[=]]
 
 maplet ::= @"@" @"[" binding+ @"]" ;
 # result: @[@"type"=@"maplet" @"value"=<listlet of bindings>]
@@ -115,9 +119,6 @@ maplet ::= @"@" @"[" binding+ @"]" ;
 binding ::= basicExpression @"=" basicExpression ;
 # result: @[@"type"=@"binding"
             @"value"=@[@"key"=<key expression> @"value"=<value expression>]]
-
-emptyMaplet ::= @"@" @"[" @"=" @"]" ;
-# result: @[@"type"=@"literal" @"value"=@[=]]
 
 uniqlet ::= @"@@";
 # result: @[@"type"=@"uniqlet"]
@@ -129,7 +130,7 @@ function ::= @"{" formals statements @"}" ;
 formals ::= (@"identifier"+ @"::") | ~. ;
 # result: @[@"type"=@"formals" @"value"=<listlet of identifier.values>]
 
-call ::= basicExpression basicExpressions ;
+call ::= basicExpression (@"(" @")" | basicExpression+) ;
 # result: @[@"type"=@"call"
 #           @"value"=@[@"function"=<expression> @"actuals"=<expr list>]]
 ```
