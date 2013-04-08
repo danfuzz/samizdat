@@ -377,9 +377,16 @@ static zvalue parseEmptyListlet(ParseState *state) {
  * Parses a `stringlet` node.
  */
 static zvalue parseStringlet(ParseState *state) {
+    zint mark = cursor(state);
+
+    if (readMatch(state, TOK_CH_AT) == NULL) {
+        return NULL;
+    }
+
     zvalue string = readMatch(state, TOK_STRING);
 
     if (string == NULL) {
+        reset(state, mark);
         return NULL;
     }
 
@@ -404,9 +411,16 @@ static zvalue parseInteger(ParseState *state) {
  * Parses an `intlet` node.
  */
 static zvalue parseIntlet(ParseState *state) {
+    zint mark = cursor(state);
+
+    if (readMatch(state, TOK_CH_AT) == NULL) {
+        return NULL;
+    }
+
     zvalue integer = readMatch(state, TOK_INTEGER);
 
     if (integer == NULL) {
+        reset(state, mark);
         return NULL;
     }
 
@@ -436,7 +450,6 @@ static zvalue parseVarDef(ParseState *state) {
     zvalue identifier = readMatch(state, TOK_IDENTIFIER);
 
     if (identifier == NULL) {
-        reset(state, mark);
         return NULL;
     }
 
@@ -520,11 +533,12 @@ static zvalue parseExpression(ParseState *state) {
  * Parses a `return` node.
  */
 static zvalue parseReturn(ParseState *state) {
+    zint mark = cursor(state);
+
     if (readMatch(state, TOK_CH_CARET) == NULL) {
         return NULL;
     }
 
-    zint mark = cursor(state);
     zvalue expression = parseExpression(state);
 
     if (expression == NULL) {
