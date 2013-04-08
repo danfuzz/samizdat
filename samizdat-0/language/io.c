@@ -17,7 +17,7 @@ enum {
 
 
 /*
- * Exported functions
+ * Module functions
  */
 
 /* Documented in header. */

@@ -64,8 +64,9 @@ static Function *findEntry(zfunreg reg, zvalue id) {
     samDie("No such function.");
 }
 
+
 /*
- * Exported functions
+ * Module functions
  */
 
 /* Documented in header. */

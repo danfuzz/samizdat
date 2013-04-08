@@ -589,7 +589,7 @@ static zvalue parseStatements(ParseState *state) {
 
 
 /*
- * Exported functions
+ * Module functions
  */
 
 /* Documented in header. */

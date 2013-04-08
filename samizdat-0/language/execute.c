@@ -230,8 +230,9 @@ static void execStatements(Context *context, zvalue statements) {
     }
 }
 
+
 /*
- * Exported functions
+ * Module functions
  */
 
 /* Documented in header. */

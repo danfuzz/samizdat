@@ -77,7 +77,7 @@ zvalue TOK_VAR_REF = NULL;
 
 
 /*
- * Exported functions
+ * Module functions
  */
 
 /* Documented in header. */
