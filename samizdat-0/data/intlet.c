@@ -54,7 +54,7 @@ static zint *intletElems(zvalue intlet) {
  * Module functions
  */
 
-/** Documented in `impl.h`. */
+/* Documented in header. */
 zcomparison samIntletCompare(zvalue v1, zvalue v2) {
     bool neg1 = samIntletSign(v1);
     bool neg2 = samIntletSign(v2);
@@ -90,7 +90,7 @@ zcomparison samIntletCompare(zvalue v1, zvalue v2) {
  * Exported functions
  */
 
-/** Documented in API header. */
+/* Documented in header. */
 bool samIntletGetBit(zvalue intlet, zint n) {
     zint word = wordIndex(n);
     zint bit = bitIndex(n);
@@ -99,7 +99,7 @@ bool samIntletGetBit(zvalue intlet, zint n) {
     return (bool) ((elem >> bit) & 1);
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zint samIntletGetByte(zvalue intlet, zint n) {
     n *= BITS_PER_BYTE;
 
@@ -110,7 +110,7 @@ zint samIntletGetByte(zvalue intlet, zint n) {
     return (elem >> bit) & 0xff;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zint samIntletGetInt(zvalue intlet, zint n) {
     samAssertIntlet(intlet);
 
@@ -122,7 +122,7 @@ zint samIntletGetInt(zvalue intlet, zint n) {
     }
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 bool samIntletSign(zvalue intlet) {
     zint size = samSize(intlet);
 
@@ -133,7 +133,7 @@ bool samIntletSign(zvalue intlet) {
     return samIntletGetBit(intlet, size - 1);
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samIntletFromInt(zint value) {
     zvalue result = allocIntlet(1);
 
@@ -141,7 +141,7 @@ zvalue samIntletFromInt(zint value) {
     return result;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zint samIntletToInt(zvalue intlet) {
     samAssertIntlet(intlet);
 

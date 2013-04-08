@@ -6,13 +6,13 @@
 
 #include "impl.h"
 
-/** Documented in API header. */
+/* Documented in header. */
 ztype samType(zvalue value) {
     samAssertValid(value);
     return value->type;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zint samSize(zvalue value) {
     samAssertValid(value);
     return value->size;

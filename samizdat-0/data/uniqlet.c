@@ -29,7 +29,7 @@ static zint uniqletId(zvalue uniqlet) {
  * Module functions
  */
 
-/** Documented in `impl.h`. */
+/* Documented in header. */
 zcomparison samUniqletCompare(zvalue v1, zvalue v2) {
     zint id1 = uniqletId(v1);
     zint id2 = uniqletId(v2);
@@ -48,7 +48,7 @@ zcomparison samUniqletCompare(zvalue v1, zvalue v2) {
  * Exported functions
  */
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samUniqlet(void) {
     zvalue result = samAllocValue(SAM_UNIQLET, 0, sizeof(zint));
 

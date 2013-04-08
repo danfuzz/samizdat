@@ -15,7 +15,7 @@
  * Exported functions
  */
 
-/** Documented in header. */
+/* Documented in header. */
 void samNote(const char *format, ...) {
     va_list rest;
 
@@ -25,7 +25,7 @@ void samNote(const char *format, ...) {
     fputs("\n", stderr);
 }
 
-/** Documented in header. */
+/* Documented in header. */
 void samDie(const char *format, ...) {
     va_list rest;
 

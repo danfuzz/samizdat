@@ -39,7 +39,7 @@ static zmapping *mapletElems(zvalue maplet) {
  * Module functions
  */
 
-/** Documented in `impl.h`. */
+/* Documented in header. */
 zcomparison samMapletCompare(zvalue v1, zvalue v2) {
     zmapping *e1 = mapletElems(v1);
     zmapping *e2 = mapletElems(v2);
@@ -75,21 +75,21 @@ zcomparison samMapletCompare(zvalue v1, zvalue v2) {
  * Exported functions
  */
 
-/** Documented in API header. */
+/* Documented in header. */
 zmapping samMapletGetMapping(zvalue maplet, zint n) {
     samAssertNth(maplet, n);
 
     return mapletElems(maplet)[n];
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samMapletGet(zvalue maplet, zvalue key) {
     zint index = samMapletFind(maplet, key);
 
     return (index < 0) ? NULL : samMapletGetMapping(maplet, index).value;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zint samMapletFind(zvalue maplet, zvalue key) {
     samAssertValid(key);
     samAssertMaplet(maplet);
@@ -115,7 +115,7 @@ zint samMapletFind(zvalue maplet, zvalue key) {
     return ~min;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samMapletEmpty(void) {
     if (theEmptyMaplet == NULL) {
         theEmptyMaplet = allocMaplet(0);
@@ -124,7 +124,7 @@ zvalue samMapletEmpty(void) {
     return theEmptyMaplet;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samMapletPut(zvalue maplet, zvalue key, zvalue value) {
     zint index = samMapletFind(maplet, key);
     zint size = samSize(maplet);

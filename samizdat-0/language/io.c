@@ -20,7 +20,7 @@ enum {
  * Exported functions
  */
 
-/** Documented in `io.h`. */
+/* Documented in header. */
 zvalue readFile(zvalue fileName) {
     zint nameSize = samStringletUtf8Size(fileName);
     char nameUtf[nameSize + 1];

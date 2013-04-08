@@ -28,7 +28,7 @@ typedef struct {
 }
 Function;
 
-/* Documented in `function.h` */
+/* Documented in header. */
 typedef struct FunctionRegistry {
     /** The entries. */
     Function entries[MAX_REGISTRY_SIZE];
@@ -68,7 +68,7 @@ static Function *findEntry(zfunreg reg, zvalue id) {
  * Exported functions
  */
 
-/* Documented in `function.h` */
+/* Documented in header. */
 zfunreg funNew(void) {
     // TODO: Make samAlloc() accessible from here, and use it.
 
@@ -78,7 +78,7 @@ zfunreg funNew(void) {
     return reg;
 }
 
-/* Documented in `function.h` */
+/* Documented in header. */
 zvalue funAdd(zfunreg reg, zfunction function, void *state) {
     if (reg->size == MAX_REGISTRY_SIZE) {
         samDie("Too many functions.");
@@ -94,7 +94,7 @@ zvalue funAdd(zfunreg reg, zfunction function, void *state) {
     return entry->id;
 }
 
-/* Documented in `function.h` */
+/* Documented in header. */
 zvalue funCall(zfunreg reg, zvalue id, zint argCount, const zvalue *args) {
     Function *entry = findEntry(reg, id);
 

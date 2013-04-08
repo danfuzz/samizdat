@@ -243,7 +243,7 @@ static zvalue tokenizeOne(ParseState *state) {
  * Exported functions
  */
 
-/** Documented in `tokenize.h`. */
+/* Documented in header. */
 zvalue tokenize(zvalue stringlet) {
     constsInit();
 

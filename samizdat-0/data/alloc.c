@@ -15,7 +15,7 @@
  * Exported functions
  */
 
-/** Documented in `alloc.h`. */
+/* Documented in header. */
 void *samAlloc(zint size) {
     if (size < 0) {
         samDie("Invalid allocation size: %lld", size);
@@ -31,7 +31,7 @@ void *samAlloc(zint size) {
     return result;
 }
 
-/** Documented in `alloc.h`. */
+/* Documented in header. */
 zvalue samAllocValue(ztype type, zint size, zint extraBytes) {
     if (size < 0) {
         samDie("Invalid value size: %lld", size);

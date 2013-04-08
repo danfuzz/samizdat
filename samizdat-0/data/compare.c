@@ -11,7 +11,7 @@
  * Exported functions
  */
 
-/** Documented in API header. */
+/* Documented in header. */
 zcomparison samCompare(zvalue v1, zvalue v2) {
     ztype t1 = samType(v1);
     ztype t2 = samType(v2);

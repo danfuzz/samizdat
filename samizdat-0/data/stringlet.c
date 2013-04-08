@@ -16,7 +16,7 @@
  * Exported functions
  */
 
-/** Documented in API header. */
+/* Documented in header. */
 void samAssertStringlet(zvalue value) {
     samAssertListlet(value);
 
@@ -28,7 +28,7 @@ void samAssertStringlet(zvalue value) {
     }
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samStringletFromUtf8String(const char *string, zint stringBytes) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
@@ -43,7 +43,7 @@ zvalue samStringletFromUtf8String(const char *string, zint stringBytes) {
     return result;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zint samStringletUtf8Size(zvalue stringlet) {
     samAssertStringlet(stringlet);
 
@@ -58,7 +58,7 @@ zint samStringletUtf8Size(zvalue stringlet) {
     return result;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 void samStringletEncodeUtf8(zvalue stringlet, char *utf8) {
     samAssertStringlet(stringlet);
 

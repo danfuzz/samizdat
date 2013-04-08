@@ -24,19 +24,19 @@ static zvalue theEmptyListlet = NULL;
  * Module functions
  */
 
-/** Documented in `impl.h`. */
+/* Documented in header. */
 zvalue samAllocListlet(zint size) {
     return samAllocValue(SAM_LISTLET, size, size * sizeof(zvalue));
 }
 
-/** Documented in `impl.h`. */
+/* Documented in header. */
 zvalue *samListletElems(zvalue listlet) {
     samAssertListlet(listlet);
 
     return ((SamListlet *) listlet)->elems;
 }
 
-/** Documented in `impl.h`. */
+/* Documented in header. */
 zcomparison samListletCompare(zvalue v1, zvalue v2) {
     zvalue *e1 = samListletElems(v1);
     zvalue *e2 = samListletElems(v2);
@@ -59,19 +59,19 @@ zcomparison samListletCompare(zvalue v1, zvalue v2) {
  * Exported functions
  */
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samListletGet(zvalue listlet, zint n) {
     samAssertNth(listlet, n);
     return samListletElems(listlet)[n];
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zint samListletGetInt(zvalue listlet, zint n) {
     zvalue v = samListletGet(listlet, n);
     return samIntletToInt(v);
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samListletEmpty(void) {
     if (theEmptyListlet == NULL) {
         theEmptyListlet = samAllocListlet(0);
@@ -80,7 +80,7 @@ zvalue samListletEmpty(void) {
     return theEmptyListlet;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samListletFromValues(zvalue *values, zint size) {
     zvalue result = samAllocListlet(size);
     zvalue *resultElems = samListletElems(result);
@@ -93,7 +93,7 @@ zvalue samListletFromValues(zvalue *values, zint size) {
     return result;
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samListletAppend(zvalue listlet, zvalue value) {
     samAssertListlet(listlet);
 

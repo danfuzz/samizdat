@@ -234,7 +234,7 @@ static void execStatements(Context *context, zvalue statements) {
  * Exported functions
  */
 
-/** Documented in API header. */
+/* Documented in header. */
 zvalue samExecute(zvalue environment, zfunreg funreg, zvalue code) {
     samAssertMaplet(environment);
 

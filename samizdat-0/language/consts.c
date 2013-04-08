@@ -80,7 +80,7 @@ zvalue TOK_VAR_REF = NULL;
  * Exported functions
  */
 
-/** Documented in `consts.h` */
+/* Documented in header. */
 void constsInit(void) {
     if (STR_CH_AT != NULL) {
         return;
@@ -154,27 +154,27 @@ void constsInit(void) {
     TOK_VAR_REF         = samMapletPut(empty, STR_TYPE, STR_VAR_REF);
 }
 
-/** Documented in `consts.h` */
+/* Documented in header. */
 zvalue valueToken(zvalue token, zvalue value) {
     return samMapletPut(token, STR_VALUE, value);
 }
 
-/** Documented in `consts.h` */
+/* Documented in header. */
 zvalue highType(zvalue value) {
     return samMapletGet(value, STR_TYPE);
 }
 
-/** Documented in `consts.h` */
+/* Documented in header. */
 zvalue highValue(zvalue value) {
     return samMapletGet(value, STR_VALUE);
 }
 
-/** Documented in `consts.h` */
+/* Documented in header. */
 bool hasType(zvalue value, zvalue type) {
     return (samCompare(highType(value), type) == 0);
 }
 
-/** Documented in `consts.h` */
+/* Documented in header. */
 void assertType(zvalue value, zvalue type) {
     if (!hasType(value, type)) {
         samDie("Type mismatch.");

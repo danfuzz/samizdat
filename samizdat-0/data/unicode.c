@@ -157,7 +157,7 @@ static const char *justDecode(const char *string, zint stringBytes,
  * Module functions
  */
 
-/** Documented in `unicode.h`. */
+/* Documented in header. */
 void samAssertValidUnicode(zint value) {
     if ((value >= 0xd800) && (value <= 0xdfff)) {
         samDie("Invalid occurrence of surrogate code point: %#04x",
@@ -171,7 +171,7 @@ void samAssertValidUnicode(zint value) {
     }
 }
 
-/** Documented in `unicode.h`. */
+/* Documented in header. */
 const char *samUtf8DecodeOne(const char *string, zint stringBytes,
                              zint *result) {
     string = justDecode(string, stringBytes, result);
@@ -180,7 +180,7 @@ const char *samUtf8DecodeOne(const char *string, zint stringBytes,
     return string;
 }
 
-/** Documented in `unicode.h`. */
+/* Documented in header. */
 zint samUtf8DecodeStringSize(const char *string, zint stringBytes) {
     const char *stringEnd = getStringEnd(string, stringBytes);
     zint result = 0;
@@ -193,7 +193,7 @@ zint samUtf8DecodeStringSize(const char *string, zint stringBytes) {
     return result;
 }
 
-/** Documented in `unicode.h`. */
+/* Documented in header. */
 void samUtf8DecodeStringToInts(const char *string, zint stringBytes,
                                zint *result) {
     const char *stringEnd = getStringEnd(string, stringBytes);
@@ -204,7 +204,7 @@ void samUtf8DecodeStringToInts(const char *string, zint stringBytes,
     }
 }
 
-/** Documented in `unicode.h`. */
+/* Documented in header. */
 void samUtf8DecodeStringToValues(const char *string, zint stringBytes,
                                  zvalue *result) {
     const char *stringEnd = getStringEnd(string, stringBytes);
@@ -217,7 +217,7 @@ void samUtf8DecodeStringToValues(const char *string, zint stringBytes,
     }
 }
 
-/** Documented in `unicode.h`. */
+/* Documented in header. */
 char *samUtf8EncodeOne(char *string, zint ch) {
     if (ch < 0x80) {
         if (string != NULL) {

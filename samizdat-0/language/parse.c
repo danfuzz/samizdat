@@ -592,7 +592,7 @@ static zvalue parseStatements(ParseState *state) {
  * Exported functions
  */
 
-/** Documented in `parse.h`. */
+/* Documented in header. */
 zvalue parse(zvalue tokens) {
     ParseState state = { tokens, samSize(tokens), 0 };
     zvalue result = parseStatements(&state);

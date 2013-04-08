@@ -44,7 +44,7 @@ static void assertType(zvalue value, ztype type) {
  * Exported functions
  */
 
-/** Documented in API header. */
+/* Documented in header. */
 void samAssertValid(zvalue value) {
     zint bits = (zint) (void *) value;
 
@@ -71,7 +71,7 @@ void samAssertValid(zvalue value) {
     }
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 void samAssertNth(zvalue value, zint n) {
     samAssertValid(value);
 
@@ -85,22 +85,22 @@ void samAssertNth(zvalue value, zint n) {
     }
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 void samAssertIntlet(zvalue value) {
     assertType(value, SAM_INTLET);
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 void samAssertListlet(zvalue value) {
     assertType(value, SAM_LISTLET);
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 void samAssertMaplet(zvalue value) {
     assertType(value, SAM_MAPLET);
 }
 
-/** Documented in API header. */
+/* Documented in header. */
 void samAssertUniqlet(zvalue value) {
     assertType(value, SAM_UNIQLET);
 }
