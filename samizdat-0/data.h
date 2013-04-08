@@ -286,9 +286,8 @@ void samStringletEncodeUtf8(zvalue stringlet, char *utf8);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
- * values `{ SAM_IS_LESS, SAM_IS_EQUAL, SAM_IS_MORE }`, less
- * symbolically equal to `{ -1, 0, 1 }` respectively, with the usual
- * comparison result meaning.
+ * values `{ ZLESS, ZEQUAL, ZMORE }`, less symbolically equal to `{
+ * -1, 0, 1 }` respectively, with the usual comparison result meaning.
  *
  * Major order is by type &mdash `intlet < listlet < maplet <
  * uniqlet` &mdash; and minor order is type-dependant.

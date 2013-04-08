@@ -44,12 +44,12 @@ zcomparison samListletCompare(zvalue v1, zvalue v2) {
 
     for (zint i = 0; i < sz; i++) {
         zcomparison result = samCompare(e1[i], e2[i]);
-        if (result != SAM_IS_EQUAL) {
+        if (result != ZEQUAL) {
             return result;
         }
     }
 
-    return (sz1 < sz2) ? SAM_IS_LESS : SAM_IS_MORE;
+    return (sz1 < sz2) ? ZLESS : ZMORE;
 }
 
 

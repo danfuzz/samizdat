@@ -34,11 +34,11 @@ zcomparison samUniqletCompare(zvalue v1, zvalue v2) {
     zint id2 = uniqletId(v2);
 
     if (id1 < id2) {
-        return SAM_IS_LESS;
+        return ZLESS;
     } else if (id1 > id2) {
-        return SAM_IS_MORE;
+        return ZMORE;
     } else {
-        return SAM_IS_EQUAL;
+        return ZEQUAL;
     }
 }
 

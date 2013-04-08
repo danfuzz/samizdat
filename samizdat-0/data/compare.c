@@ -17,11 +17,11 @@ zcomparison samCompare(zvalue v1, zvalue v2) {
     ztype t2 = samType(v2);
 
     if (v1 == v2) {
-        return SAM_IS_EQUAL;
+        return ZEQUAL;
     } else if (t1 < t2) {
-        return SAM_IS_LESS;
+        return ZLESS;
     } else if (t1 > t2) {
-        return SAM_IS_MORE;
+        return ZMORE;
     }
 
     switch (t1) {

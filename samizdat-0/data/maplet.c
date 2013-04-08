@@ -48,25 +48,25 @@ zcomparison samMapletCompare(zvalue v1, zvalue v2) {
 
     for (zint i = 0; i < sz; i++) {
         zcomparison result = samCompare(e1[i].key, e2[i].key);
-        if (result != SAM_IS_EQUAL) {
+        if (result != ZEQUAL) {
             return result;
         }
     }
 
     if (sz1 < sz2) {
-        return SAM_IS_LESS;
+        return ZLESS;
     } else if (sz1 > sz2) {
-        return SAM_IS_MORE;
+        return ZMORE;
     }
 
     for (zint i = 0; i < sz; i++) {
         zcomparison result = samCompare(e1[i].value, e2[i].value);
-        if (result != SAM_IS_EQUAL) {
+        if (result != ZEQUAL) {
             return result;
         }
     }
 
-    return SAM_IS_EQUAL;
+    return ZEQUAL;
 }
 
 
@@ -100,9 +100,9 @@ zint samMapletFind(zvalue maplet, zvalue key) {
     while (min <= max) {
         zint guess = (min + max) / 2;
         switch (samCompare(key, elems[guess].key)) {;
-            case SAM_IS_LESS: max = guess - 1; break;
-            case SAM_IS_MORE: min = guess + 1; break;
-            default:          return guess;
+            case ZLESS: max = guess - 1; break;
+            case ZMORE: min = guess + 1; break;
+            default:    return guess;
         }
     }
 

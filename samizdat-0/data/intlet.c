@@ -59,7 +59,7 @@ zcomparison samIntletCompare(zvalue v1, zvalue v2) {
     bool neg2 = samIntletSign(v2);
 
     if (neg1 != neg2) {
-        return neg1 ? SAM_IS_LESS : SAM_IS_MORE;
+        return neg1 ? ZLESS : ZMORE;
     }
 
     // At this point, we know the two numbers are the same sign,
@@ -75,13 +75,13 @@ zcomparison samIntletCompare(zvalue v1, zvalue v2) {
         zint n1 = samIntletGetInt(v1, i);
         zint n2 = samIntletGetInt(v2, i);
         if (n1 < n2) {
-            return SAM_IS_LESS;
+            return ZLESS;
         } else if (n1 > n2) {
-            return SAM_IS_MORE;
+            return ZMORE;
         }
     }
 
-    return SAM_IS_EQUAL;
+    return ZEQUAL;
 }
 
 

@@ -54,9 +54,9 @@ static Function *findEntry(zfunreg reg, zvalue id) {
     while (min <= max) {
         zint guess = (min + max) / 2;
         switch (samCompare(id, entries[guess].id)) {;
-            case SAM_IS_LESS: max = guess - 1; break;
-            case SAM_IS_MORE: min = guess + 1; break;
-            default:          return &entries[guess];
+            case ZLESS: max = guess - 1; break;
+            case ZMORE: min = guess + 1; break;
+            default:    return &entries[guess];
         }
     }
 

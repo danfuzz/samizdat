@@ -23,9 +23,9 @@ typedef int64_t zint;
  * The result of a comparison.
  */
 typedef enum {
-    SAM_IS_LESS = -1,
-    SAM_IS_EQUAL = 0,
-    SAM_IS_MORE = 1
+    ZLESS = -1,
+    ZEQUAL = 0,
+    ZMORE = 1
 } zcomparison;
 
 #endif
