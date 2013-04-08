@@ -172,11 +172,7 @@ static void execVarDef(Context *context, zvalue varDef) {
 static void execReturn(Context *context, zvalue returnForm) { 
     assertType(returnForm, STR_RETURN);
 
-    zvalue result = execExpression(context, highValue(returnForm));
-
-    if (context->toReturn == NULL) {
-        context->toReturn = result;
-    }
+    context->toReturn = execExpression(context, highValue(returnForm));
 }
 
 /**
