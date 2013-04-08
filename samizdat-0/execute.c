@@ -37,19 +37,32 @@ Context;
 static zvalue execExpression(Context *context, zvalue expression);
 
 /**
- * Executes a `call` form.
+ * Executes a `function` form.
  */
-static zvalue execCall(Context *context, zvalue call) {
-    assertType(call, STR_CALL);
+static zvalue execFunction(Context *context, zvalue function) {
+    assertType(function, STR_FUNCTION);
 
     samDie("TODO");
 }
 
 /**
- * Executes a `function` form.
+ * Executes a `call` form.
  */
-static zvalue execFunction(Context *context, zvalue function) {
-    assertType(function, STR_FUNCTION);
+static zvalue execCall(Context *context, zvalue call) {
+    assertType(call, STR_CALL);
+
+    call = highValue(call);
+    zvalue function = samMapletGet(call, STR_FUNCTION);
+    zvalue actuals = samMapletGet(call, STR_ACTUALS);
+    zint argCount = samSize(actuals);
+    zvalue args[argCount];
+
+    samAssertUniqlet(function);
+
+    for (zint i = 0; i < argCount; i++) {
+        zvalue one = samListletGet(actuals, i);
+        args[i] = execExpression(context, one);
+    }
 
     samDie("TODO");
 }
@@ -141,8 +154,8 @@ static zvalue execExpression(Context *context, zvalue ex) {
     else if (hasType(ex, STR_LISTLET))  { return execListlet(context, ex);  }
     else if (hasType(ex, STR_MAPLET))   { return execMaplet(context, ex);   }
     else if (hasType(ex, STR_UNIQLET))  { return execUniqlet(context, ex);  }
-    else if (hasType(ex, STR_FUNCTION)) { return execFunction(context, ex); }
     else if (hasType(ex, STR_CALL))     { return execCall(context, ex);     }
+    else if (hasType(ex, STR_FUNCTION)) { return execFunction(context, ex); }
     else {
         samDie("Invalid expression type.");
     }
