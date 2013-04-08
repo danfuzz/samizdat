@@ -50,7 +50,7 @@ static zvalue read(ParseState *state) {
 /**
  * Gets the current read position.
  */
-static zint mark(ParseState *state) {
+static zint cursor(ParseState *state) {
     return state->at;
 }
 
@@ -69,7 +69,7 @@ static void reset(ParseState *state, zint mark) {
  * Reads the next token if its type matches the given token's type.
  */
 static zvalue readMatch(ParseState *state, zvalue token) {
-    zint at = mark(state);
+    zint mark = cursor(state);
     zvalue result = read(state);
 
     if (result == NULL) {
@@ -80,7 +80,7 @@ static zvalue readMatch(ParseState *state, zvalue token) {
     zvalue resultType = samMapletGet(result, STR_TYPE);
 
     if (samCompare(tokenType, resultType) != 0) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -96,7 +96,7 @@ static zvalue parseStatements(ParseState *state);
  * Parses a `call` node.
  */
 static zvalue parseCall(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
 
     zvalue function = parseExpression(state);
 
@@ -116,7 +116,7 @@ static zvalue parseCall(ParseState *state) {
  * Parses a `formals` node.
  */
 static zvalue parseFormals(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
     zvalue identifiers = samListletEmpty();
 
     for (;;) {
@@ -130,7 +130,7 @@ static zvalue parseFormals(ParseState *state) {
 
     if (samSize(identifiers) != 0) {
         if (readMatch(state, TOK_CH_COLONCOLON) == NULL) {
-            reset(state, at);
+            reset(state, mark);
             return NULL;
         }
     }
@@ -142,7 +142,7 @@ static zvalue parseFormals(ParseState *state) {
  * Parses a `function` node.
  */
 static zvalue parseFunction(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
 
     if (readMatch(state, TOK_CH_OP_CURLY) == NULL) {
         return NULL;
@@ -153,7 +153,7 @@ static zvalue parseFunction(ParseState *state) {
     zvalue statements = parseStatements(state);
 
     if (readMatch(state, TOK_CH_CL_CURLY) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -177,24 +177,24 @@ static zvalue parseUniqlet(ParseState *state) {
  * Parses an `emptyMaplet` node.
  */
 static zvalue parseEmptyMaplet(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
 
     if (readMatch(state, TOK_CH_AT) == NULL) {
         return NULL;
     }
 
     if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
     if (readMatch(state, TOK_CH_EQUAL) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
     if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -205,7 +205,7 @@ static zvalue parseEmptyMaplet(ParseState *state) {
  * Parses a `binding` node.
  */
 static zvalue parseBinding(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
     zvalue key = parseExpression(state);
 
     if (key == NULL) {
@@ -213,14 +213,14 @@ static zvalue parseBinding(ParseState *state) {
     }
 
     if (readMatch(state, TOK_CH_EQUAL) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
     zvalue value = parseExpression(state);
 
     if (value == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -233,14 +233,14 @@ static zvalue parseBinding(ParseState *state) {
  * Parses a `maplet` node.
  */
 static zvalue parseMaplet(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
 
     if (readMatch(state, TOK_CH_AT) == NULL) {
         return NULL;
     }
 
     if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -250,7 +250,7 @@ static zvalue parseMaplet(ParseState *state) {
         zvalue binding = parseBinding(state);
 
         if (binding == NULL) {
-            reset(state, at);
+            reset(state, mark);
             return NULL;
         }
 
@@ -258,12 +258,12 @@ static zvalue parseMaplet(ParseState *state) {
     }
 
     if (samSize(bindings) == 0) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
     if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -274,14 +274,14 @@ static zvalue parseMaplet(ParseState *state) {
  * Parses a `listlet` node.
  */
 static zvalue parseListlet(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
 
     if (readMatch(state, TOK_CH_AT) == NULL) {
         return NULL;
     }
 
     if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -289,7 +289,7 @@ static zvalue parseListlet(ParseState *state) {
     zvalue expressions = parseExpressions(state);
 
     if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -355,23 +355,23 @@ static zvalue parseVarRef(ParseState *state) {
  * Parses a `varDef` node.
  */
 static zvalue parseVarDef(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
     zvalue identifier = readMatch(state, TOK_IDENTIFIER);
 
     if (identifier == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
     if (readMatch(state, TOK_CH_EQUAL) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
     zvalue expression = parseExpression(state);
 
     if (expression == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -385,7 +385,7 @@ static zvalue parseVarDef(ParseState *state) {
  * Parses a `parenExpression` node.
  */
 static zvalue parseParenExpression(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
 
     if (readMatch(state, TOK_CH_OP_PAREN) == NULL) {
         return NULL;
@@ -394,12 +394,12 @@ static zvalue parseParenExpression(ParseState *state) {
     zvalue expression = parseCall(state);
 
     if (expression == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
     if (readMatch(state, TOK_CH_CL_PAREN) == NULL) {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 
@@ -465,7 +465,7 @@ static zvalue parseReturn(ParseState *state) {
  * Parses a `statement` node.
  */
 static zvalue parseStatement(ParseState *state) {
-    zint at = mark(state);
+    zint mark = cursor(state);
     zvalue result = NULL;
 
     if (result == NULL) { result = parseVarDef(state); }
@@ -479,7 +479,7 @@ static zvalue parseStatement(ParseState *state) {
     if (readMatch(state, TOK_CH_SEMICOLON)) {
         return result;
     } else {
-        reset(state, at);
+        reset(state, mark);
         return NULL;
     }
 }
