@@ -162,3 +162,22 @@ void constsInit(void) {
 zvalue valueToken(zvalue token, zvalue value) {
     return samMapletPut(token, STR_VALUE, value);
 }
+
+/** Documented in `consts.h` */
+zvalue highType(zvalue value) {
+    return samMapletGet(value, STR_TYPE);
+}
+
+/** Documented in `consts.h` */
+zvalue highValue(zvalue value) {
+    return samMapletGet(value, STR_VALUE);
+}
+
+/** Documented in `consts.h` */
+void assertType(zvalue value, zvalue type) {
+    zvalue gotType = highType(value);
+
+    if (samCompare(gotType, type) != 0) {
+        samDie("Type mismatch.");
+    }
+}

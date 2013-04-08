@@ -58,8 +58,8 @@ static zvalue readMatch(ParseState *state, zvalue token) {
     }
 
     zvalue result = samListletGet(state->tokens, state->at);
-    zvalue tokenType = samMapletGet(token, STR_TYPE);
-    zvalue resultType = samMapletGet(result, STR_TYPE);
+    zvalue tokenType = highType(token);
+    zvalue resultType = highType(result);
 
     if (samCompare(tokenType, resultType) != 0) {
         return NULL;
@@ -174,7 +174,7 @@ static zvalue parseFormals(ParseState *state) {
         if (identifier == NULL) {
             break;
         }
-        identifier = samMapletGet(identifier, STR_VALUE);
+        identifier = highValue(identifier);
         identifiers = samListletAppend(identifiers, identifier);
     }
 
@@ -389,7 +389,7 @@ static zvalue parseStringlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = samMapletGet(string, STR_VALUE);
+    zvalue value = highValue(string);
     return valueToken(TOK_LITERAL, value);
 }
 
@@ -423,7 +423,7 @@ static zvalue parseIntlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = samMapletGet(integer, STR_VALUE);
+    zvalue value = highValue(integer);
     return valueToken(TOK_LITERAL, value);
 }
 
@@ -437,7 +437,7 @@ static zvalue parseVarRef(ParseState *state) {
         return NULL;
     }
 
-    zvalue name = samMapletGet(identifier, STR_VALUE);
+    zvalue name = highValue(identifier);
     return valueToken(TOK_VAR_REF, name);
 }
 
@@ -464,7 +464,7 @@ static zvalue parseVarDef(ParseState *state) {
         return NULL;
     }
 
-    zvalue name = samMapletGet(identifier, STR_VALUE);
+    zvalue name = highValue(identifier);
     zvalue value = samMapletPut(samMapletEmpty(), STR_NAME, name);
     value = samMapletPut(value, STR_VALUE, expression);
     return valueToken(TOK_VAR_DEF, value);

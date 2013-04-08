@@ -94,4 +94,20 @@ void constsInit(void);
  */
 zvalue valueToken(zvalue token, zvalue value);
 
+/**
+ * Gets the `type` field of the given maplet (*not* the low layer
+ * Samizdat type).
+ */
+zvalue highType(zvalue value);
+
+/**
+ * Gets the `value` field of the given maplet.
+ */
+zvalue highValue(zvalue value);
+
+/**
+ * Asserts that the given value is a maplet whose type is as given.
+ */
+void assertType(zvalue value, zvalue type);
+
 #endif
