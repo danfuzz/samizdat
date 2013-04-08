@@ -272,8 +272,7 @@ static zvalue parseMaplet(ParseState *state) {
         zvalue binding = parseBinding(state);
 
         if (binding == NULL) {
-            reset(state, mark);
-            return NULL;
+            break;
         }
 
         bindings = samListletAppend(bindings, binding);
