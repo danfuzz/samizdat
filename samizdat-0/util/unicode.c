@@ -139,22 +139,6 @@ static const char *justDecode(const char *string, zint stringBytes,
  */
 
 /* Documented in header. */
-const char *samGetStringEnd(const char *string, zint stringBytes) {
-    if (stringBytes < 0) {
-        samDie("Invalid string size: %lld", stringBytes);
-    }
-
-    const char *result = string + stringBytes;
-
-    if (result < string) {
-        samDie("Invalid string size (pointer wraparound): %p + %lld",
-               string, stringBytes);
-    }
-
-    return result;
-}
-
-/* Documented in header. */
 void uniAssertValid(zint value) {
     if ((value >= 0xd800) && (value <= 0xdfff)) {
         samDie("Invalid occurrence of surrogate code point: %#04x",
@@ -179,7 +163,7 @@ const char *utf8DecodeOne(const char *string, zint stringBytes,
 
 /* Documented in header. */
 zint utf8DecodeStringSize(const char *string, zint stringBytes) {
-    const char *stringEnd = samGetStringEnd(string, stringBytes);
+    const char *stringEnd = strGetEnd(string, stringBytes);
     zint result = 0;
 
     while (string < stringEnd) {
@@ -193,7 +177,7 @@ zint utf8DecodeStringSize(const char *string, zint stringBytes) {
 /* Documented in header. */
 void utf8DecodeStringToInts(const char *string, zint stringBytes,
                                zint *result) {
-    const char *stringEnd = samGetStringEnd(string, stringBytes);
+    const char *stringEnd = strGetEnd(string, stringBytes);
 
     while (string < stringEnd) {
         string = utf8DecodeOne(string, stringEnd - string, result);

@@ -44,7 +44,7 @@ void *samAlloc(zint size);
 
 
 /*
- * Unicode functions
+ * String functions
  */
 
 /**
@@ -52,7 +52,12 @@ void *samAlloc(zint size);
  * validity of same. This just validates this as an address range,
  * not as valid string contents.
  */
-const char *samGetStringEnd(const char *string, zint stringBytes);
+const char *strGetEnd(const char *string, zint stringBytes);
+
+
+/*
+ * Unicode functions
+ */
 
 /**
  * Asserts that the given `zint` value is valid as a Unicode

@@ -14,7 +14,7 @@
 /* Documented in header. */
 void utf8DecodeStringToValues(const char *string, zint stringBytes,
                                  zvalue *result) {
-    const char *stringEnd = samGetStringEnd(string, stringBytes);
+    const char *stringEnd = strGetEnd(string, stringBytes);
     zint one = 0;
 
     while (string < stringEnd) {
