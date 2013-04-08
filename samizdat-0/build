@@ -39,21 +39,27 @@ unset newProg
 # Main script
 #
 
-"${baseDir}/sam-data-0/build" || exit 1
-
 projectName="$(basename "${progDir}")"
 
 OUT="${OUT:-${baseDir}/out}/${projectName}"
 rm -rf "${OUT}" || exit 1
 mkdir -p "${OUT}" || exit 1
 
-COMPILE_C=(cc -g -c -I"${baseDir}/c-api")
+COMPILE_C=(cc -g -c -I"${progDir}")
 LINK_BIN=(cc -g)
 
+cd "${progDir}"
+SOURCES=($(find . -name '*.c'))
+
 errors=0
-for file in ${progDir}/*.c; do
-    outFile="${OUT}/$(basename "${file}" .c).o"
+for file in "${SOURCES[@]}"; do
+    [[ ${file} =~ \./(.*)/([^/]*)\.c$ ]]
+    dir="${BASH_REMATCH[1]}"
+    baseName="${BASH_REMATCH[2]}"
+    outDir="${OUT}/${dir}"
+    outFile="${outDir}/${baseName}.o"
     echo "${COMPILE_C[@]}" -o "${outFile}" "${file}"
+    mkdir -p "${outDir}"
     "${COMPILE_C[@]}" -o "${outFile}" "${file}" || (( errors++ ))
 done
 
@@ -62,7 +68,6 @@ if (( errors != 0 )); then
     exit 1
 fi
 
-"${LINK_BIN[@]}" -o "${OUT}/${projectName}" \
-    ${OUT}/*.o \
-    ${OUT}/../sam-data-0/*.o \
-|| exit 1
+cd "${OUT}"
+OBJECTS=($(find . -name '*.o'))
+"${LINK_BIN[@]}" -o "${projectName}" "${OBJECTS[@]}" || exit 1
