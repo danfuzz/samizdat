@@ -114,8 +114,7 @@ maplet ::= @"@" @"[" binding+ @"]" ;
 # result: @[@"type"=@"maplet" @"value"=<listlet of bindings>]
 
 binding ::= atom @"=" atom ;
-# result: @[@"type"=@"binding"
-            @"value"=@[@"key"=<key atom> @"value"=<value atom>]]
+# result: @[@"key"=<key atom> @"value"=<value atom>]
 
 uniqlet ::= @"@@";
 # result: @[@"type"=@"uniqlet"]

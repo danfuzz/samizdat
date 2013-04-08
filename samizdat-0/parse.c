@@ -247,8 +247,7 @@ static zvalue parseBinding(ParseState *state) {
     }
 
     zvalue binding = samMapletPut(samMapletEmpty(), STR_KEY, key);
-    binding = samMapletPut(binding, STR_VALUE, value);
-    return valueToken(TOK_BINDING, binding);
+    return samMapletPut(binding, STR_VALUE, value);
 }
 
 /**
