@@ -100,13 +100,10 @@ zint samMapletFind(zvalue maplet, zvalue key) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        zcomparison c = samCompare(key, elems[guess].key);
-        if (c == SAM_IS_LESS) {
-            max = guess - 1;
-        } else if (c == SAM_IS_MORE) {
-            min = guess + 1;
-        } else {
-            return guess;
+        switch (samCompare(key, elems[guess].key)) {;
+            case SAM_IS_LESS: max = guess - 1; break;
+            case SAM_IS_MORE: min = guess + 1; break;
+            default:          return guess;
         }
     }
 
