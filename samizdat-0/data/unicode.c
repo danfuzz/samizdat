@@ -12,13 +12,13 @@
  */
 
 /* Documented in header. */
-void samUtf8DecodeStringToValues(const char *string, zint stringBytes,
+void utf8DecodeStringToValues(const char *string, zint stringBytes,
                                  zvalue *result) {
     const char *stringEnd = samGetStringEnd(string, stringBytes);
     zint one = 0;
 
     while (string < stringEnd) {
-        string = samUtf8DecodeOne(string, stringEnd - string, &one);
+        string = utf8DecodeOne(string, stringEnd - string, &one);
         *result = samIntletFromInt(one);
         result++;
     }

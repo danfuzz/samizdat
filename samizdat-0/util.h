@@ -58,7 +58,7 @@ const char *samGetStringEnd(const char *string, zint stringBytes);
  * Asserts that the given `zint` value is valid as a Unicode
  * code point.
  */
-void samAssertValidUnicode(zint value);
+void uniAssertValid(zint value);
 
 /**
  * Decodes a UTF-8 encoded code point from the given string of the
@@ -66,21 +66,21 @@ void samAssertValidUnicode(zint value);
  * value isn't needed, it is valid to pass `result` as `NULL`. Returns
  * a pointer to the position just after the bytes that were decoded.
  */
-const char *samUtf8DecodeOne(const char *string, zint stringBytes,
+const char *utf8DecodeOne(const char *string, zint stringBytes,
                              zint *result);
 
 /**
  * Gets the decoded size (the number of encoded Unicode code points)
  * of a UTF-8 encoded string of the given size in bytes.
  */
-zint samUtf8DecodeStringSize(const char *string, zint stringBytes);
+zint utf8DecodeStringSize(const char *string, zint stringBytes);
 
 /**
  * Decodes the given UTF-8 encoded string of the given size in bytes,
  * into the given buffer of `zint`s. The buffer must be sufficiently
  * large to hold the result of decoding.
  */
-void samUtf8DecodeStringToInts(const char *string, zint stringBytes,
+void utf8DecodeStringToInts(const char *string, zint stringBytes,
                                zint *result);
 
 /**
@@ -91,6 +91,6 @@ void samUtf8DecodeStringToInts(const char *string, zint stringBytes,
  * would-be encoded size in pointer form (i.e. `(char *) NULL +
  * size`).
  */
-char *samUtf8EncodeOne(char *string, zint ch);
+char *utf8EncodeOne(char *string, zint ch);
 
 #endif

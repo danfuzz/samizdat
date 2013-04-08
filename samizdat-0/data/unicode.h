@@ -19,7 +19,7 @@
  * large to hold the result of decoding. Each of the decoded values
  * is an intlet.
  */
-void samUtf8DecodeStringToValues(const char *string, zint stringBytes,
+void utf8DecodeStringToValues(const char *string, zint stringBytes,
                                  zvalue *result);
 
 #endif

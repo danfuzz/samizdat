@@ -23,7 +23,7 @@ void samAssertStringlet(zvalue value) {
     for (zint i = 0; i < size; i++) {
         zvalue one = samListletGet(value, i);
         zint v = samIntletToInt(one);
-        samAssertValidUnicode(v);
+        uniAssertValid(v);
     }
 }
 
@@ -35,10 +35,10 @@ zvalue samStringletFromUtf8String(const char *string, zint stringBytes) {
         samDie("Invalid string size: %lld", stringBytes);
     }
 
-    zint decodedSize = samUtf8DecodeStringSize(string, stringBytes);
+    zint decodedSize = utf8DecodeStringSize(string, stringBytes);
     zvalue result = samAllocListlet(decodedSize);
 
-    samUtf8DecodeStringToValues(string, stringBytes, samListletElems(result));
+    utf8DecodeStringToValues(string, stringBytes, samListletElems(result));
     return result;
 }
 
@@ -51,7 +51,7 @@ zint samStringletUtf8Size(zvalue stringlet) {
 
     for (zint i = 0; i < size; i++) {
         zint ch = samListletGetInt(stringlet, i);
-        result += (samUtf8EncodeOne(NULL, ch) - (char *) NULL);
+        result += (utf8EncodeOne(NULL, ch) - (char *) NULL);
     }
 
     return result;
@@ -65,6 +65,6 @@ void samStringletEncodeUtf8(zvalue stringlet, char *utf8) {
 
     for (zint i = 0; i < size; i++) {
         zint ch = samListletGetInt(stringlet, i);
-        utf8 = samUtf8EncodeOne(utf8, ch);
+        utf8 = utf8EncodeOne(utf8, ch);
     }
 }
