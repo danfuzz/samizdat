@@ -178,6 +178,6 @@ bool hasType(zvalue value, zvalue type) {
 /* Documented in header. */
 void assertType(zvalue value, zvalue type) {
     if (!hasType(value, type)) {
-        samDie("Type mismatch.");
+        die("Type mismatch.");
     }
 }

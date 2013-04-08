@@ -31,18 +31,18 @@ zvalue readFile(zvalue fileName) {
 
     FILE *in = fopen((char *) nameUtf, "r");
     if (in == NULL) {
-        samDie("Trouble opening file \"%s\": %s", nameUtf, strerror(errno));
+        die("Trouble opening file \"%s\": %s", nameUtf, strerror(errno));
     }
 
     char buf[MAX_FILE_SIZE];
     size_t amt = fread(buf, 1, sizeof(buf), in);
 
     if (ferror(in)) {
-        samDie("Trouble reading file \"%s\": %s", nameUtf, strerror(errno));
+        die("Trouble reading file \"%s\": %s", nameUtf, strerror(errno));
     }
 
     if (!feof(in)) {
-        samDie("Overlong file \"%s\": %s", nameUtf, strerror(errno));
+        die("Overlong file \"%s\": %s", nameUtf, strerror(errno));
     }
 
     fclose(in);

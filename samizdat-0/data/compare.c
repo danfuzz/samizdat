@@ -31,5 +31,5 @@ zcomparison samCompare(zvalue v1, zvalue v2) {
         case SAM_UNIQLET: return samUniqletCompare(v1, v2);
     }
 
-    samDie("Invalid type (shouldn't happen).");
+    die("Invalid type (shouldn't happen).");
 }

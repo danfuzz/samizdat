@@ -109,12 +109,12 @@ static zvalue tokenizeInteger(ParseState *state) {
         any = true;
 
         if (value >= 0x80000000) {
-            samDie("Overlarge integer token.");
+            die("Overlarge integer token.");
         }
     }
 
     if (!any) {
-        samDie("Invalid integer token (no digits).");
+        die("Invalid integer token (no digits).");
     }
 
     zvalue intlet = samIntletFromInt(negative ? -value : value);
@@ -140,7 +140,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
               ((ch >= 'A') && (ch <= 'Z')))) {
             break;
         } else if (size == sizeof(chars)) {
-            samDie("Overlong identifier token.");
+            die("Overlong identifier token.");
         }
 
         chars[size] = samIntletFromInt(ch);
@@ -166,12 +166,12 @@ static zvalue tokenizeString(ParseState *state) {
         zint ch = peek(state);
 
         if (ch == -1) {
-            samDie("Unterminated string.");
+            die("Unterminated string.");
         } else if (ch == '\"') {
             read(state);
             break;
         } else if (size == sizeof(chars)) {
-            samDie("Overlong string token.");
+            die("Overlong string token.");
         } else if (ch == '\\') {
             read(state);
             ch = peek(state);
@@ -180,7 +180,7 @@ static zvalue tokenizeString(ParseState *state) {
             } else if (ch == 'n') {
                 ch = '\n';
             } else {
-                samDie("Invalid string escape character: %#llx", ch);
+                die("Invalid string escape character: %#llx", ch);
             }
         }
 
@@ -236,7 +236,7 @@ static zvalue tokenizeOne(ParseState *state) {
         return tokenizeIdentifier(state);
     }
 
-    samDie("Invalid character in token stream: \"%c\" (%lld)", (char) ch, ch);
+    die("Invalid character in token stream: \"%c\" (%lld)", (char) ch, ch);
 }
 
 

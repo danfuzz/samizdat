@@ -14,13 +14,13 @@
 /* Documented in header. */
 const char *strGetEnd(const char *string, zint stringBytes) {
     if (stringBytes < 0) {
-        samDie("Invalid string size: %lld", stringBytes);
+        die("Invalid string size: %lld", stringBytes);
     }
 
     const char *result = string + stringBytes;
 
     if (result < string) {
-        samDie("Invalid string size (pointer wraparound): %p + %lld",
+        die("Invalid string size (pointer wraparound): %p + %lld",
                string, stringBytes);
     }
 

@@ -17,13 +17,13 @@
 /* Documented in header. */
 void *samAlloc(zint size) {
     if (size < 0) {
-        samDie("Invalid allocation size: %lld", size);
+        die("Invalid allocation size: %lld", size);
     }
 
     void *result = malloc(size);
 
     if (result == NULL) {
-        samDie("Failed: malloc(%#llx).", size);
+        die("Failed: malloc(%#llx).", size);
     }
 
     memset(result, 0, size);

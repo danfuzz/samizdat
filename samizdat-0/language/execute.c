@@ -60,7 +60,7 @@ static zvalue execExpression(Context *context, zvalue expression);
 static zvalue execFunction(Context *context, zvalue function) {
     assertType(function, STR_FUNCTION);
 
-    samDie("TODO");
+    die("TODO");
 }
 
 /**
@@ -114,7 +114,7 @@ static zvalue execMaplet(Context *context, zvalue maplet) {
                               execExpression(context, value));
     }
 
-    samDie("TODO");
+    die("TODO");
 }
 
 /**
@@ -150,7 +150,7 @@ static zvalue execVarRef(Context *context, zvalue varRef) {
         }
     }
 
-    samDie("No such variable.");
+    die("No such variable.");
 }
 
 /**
@@ -176,7 +176,7 @@ static zvalue execExpression(Context *context, zvalue ex) {
     else if (hasType(ex, STR_CALL))     { return execCall(context, ex);     }
     else if (hasType(ex, STR_FUNCTION)) { return execFunction(context, ex); }
     else {
-        samDie("Invalid expression type.");
+        die("Invalid expression type.");
     }
 }
 
@@ -191,7 +191,7 @@ static void execVarDef(Context *context, zvalue varDef) {
     zvalue value = samMapletGet(nameValue, STR_VALUE);
 
     if (samMapletGet(context->locals, name) != NULL) {
-        samDie("Duplicate assignment.");
+        die("Duplicate assignment.");
     }
 
     context->locals =
@@ -226,7 +226,7 @@ static void execStatements(Context *context, zvalue statements) {
         } else if (hasType(one, STR_RETURN)) {
             execReturn(context, one);
         } else {
-            samDie("Invalid statements element.");
+            die("Invalid statements element.");
         }
     }
 }

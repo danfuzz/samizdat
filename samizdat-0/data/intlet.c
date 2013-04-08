@@ -149,7 +149,7 @@ zint samIntletToInt(zvalue intlet) {
     zint size = samSize(intlet);
 
     if (size > BITS_PER_WORD) {
-        samDie("Out-of-range intlet.");
+        die("Out-of-range intlet.");
     }
 
     return (size == 0) ? 0 : intletElems(intlet)[0];

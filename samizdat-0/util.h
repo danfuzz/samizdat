@@ -21,14 +21,14 @@
 /**
  * Emits a debugging message. Arguments are as with `printf()`.
  */
-void samNote(const char *format, ...)
+void note(const char *format, ...)
     __attribute__((format (printf, 1, 2)));
 
 /**
  * Dies (aborts the process) with the given message. Arguments are as
  * with `printf()`.
  */
-void samDie(const char *format, ...)
+void die(const char *format, ...)
     __attribute__((noreturn))
     __attribute__((format (printf, 1, 2)));
 

@@ -17,7 +17,7 @@
 /* Documented in header. */
 zvalue samAllocValue(ztype type, zint size, zint extraBytes) {
     if (size < 0) {
-        samDie("Invalid value size: %lld", size);
+        die("Invalid value size: %lld", size);
     }
 
     zvalue result = samAlloc(sizeof(SamValue) + extraBytes);

@@ -17,13 +17,13 @@
  */
 static void processFile(zvalue fileContents) {
     // TODO: Remove this file dump.
-    samNote("File contents:");
+    note("File contents:");
     zint size = samStringletUtf8Size(fileContents);
     char utf[size + 1];
     samStringletEncodeUtf8(fileContents, utf);
     utf[size] = '\0';
-    samNote("%s", utf);
-    samNote("[fin]");
+    note("%s", utf);
+    note("[fin]");
 
     zvalue tokens = tokenize(fileContents);
 
@@ -42,9 +42,9 @@ static void processFile(zvalue fileContents) {
             samStringletEncodeUtf8(one, value);
             value[size] = '\0';
         }
-        samNote("token %s %s", utf, value);
+        note("token %s %s", utf, value);
     }
-    samNote("[fin]");
+    note("[fin]");
 
     zvalue program = parse(tokens);
     // TODO: Stuff.
@@ -56,7 +56,7 @@ static void processFile(zvalue fileContents) {
  */
 int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
-        samNote("Processing file: %s", argv[i]);
+        note("Processing file: %s", argv[i]);
 
         zvalue name = samStringletFromUtf8String(argv[i], -1);
         zvalue fileContents = readFile(name);

@@ -60,7 +60,7 @@ static Function *findEntry(zfunreg reg, zvalue id) {
         }
     }
 
-    samDie("No such function.");
+    die("No such function.");
 }
 
 
@@ -79,7 +79,7 @@ zfunreg funNew(void) {
 /* Documented in header. */
 zvalue funAdd(zfunreg reg, zfunction function, void *state) {
     if (reg->size == MAX_REGISTRY_SIZE) {
-        samDie("Too many functions.");
+        die("Too many functions.");
     }
 
     Function *entry = &reg->entries[reg->size];

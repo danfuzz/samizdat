@@ -19,7 +19,7 @@
 static const char *justDecode(const char *string, zint stringBytes,
                               zint *result) {
     if (stringBytes <= 0) {
-        samDie("Invalid string size: %lld", stringBytes);
+        die("Invalid string size: %lld", stringBytes);
     }
 
     char ch = *string;
@@ -41,7 +41,7 @@ static const char *justDecode(const char *string, zint stringBytes,
         }
         case 0x8: case 0x9: case 0xa: case 0xb: {
             // 80..bf: Invalid start bytes.
-            samDie("Invalid UTF-8 start byte: %#02x", (int) ch);
+            die("Invalid UTF-8 start byte: %#02x", (int) ch);
             break;
         }
         case 0xc: case 0xd: {
@@ -95,7 +95,7 @@ static const char *justDecode(const char *string, zint stringBytes,
                 }
                 case 0xf: {
                     // fe..ff: Invalid start bytes.
-                    samDie("Invalid UTF-8 start byte: %#02x", (int) ch);
+                    die("Invalid UTF-8 start byte: %#02x", (int) ch);
                     break;
                 }
             }
@@ -103,7 +103,7 @@ static const char *justDecode(const char *string, zint stringBytes,
     }
 
     if (extraBytes > stringBytes) {
-        samDie("Incomplete UTF-8 sequence.");
+        die("Incomplete UTF-8 sequence.");
     }
 
     while (extraBytes > 0) {
@@ -112,18 +112,18 @@ static const char *justDecode(const char *string, zint stringBytes,
         extraBytes--;
 
         if ((ch & 0xc0) != 0x80) {
-            samDie("Invalid UTF-8 continuation byte: %#02x", (int) ch);
+            die("Invalid UTF-8 continuation byte: %#02x", (int) ch);
         }
 
         value = (value << 6) | (ch & 0x3f);
     }
 
     if (value < minValue) {
-        samDie("Overlong UTF-8 encoding of value: %#llx", value);
+        die("Overlong UTF-8 encoding of value: %#llx", value);
     }
 
     if (value >= 0x100000000LL) {
-        samDie("Out-of-range UTF-8 encoded value: %#llx", value);
+        die("Out-of-range UTF-8 encoded value: %#llx", value);
     }
 
     if (result != NULL) {
@@ -141,14 +141,14 @@ static const char *justDecode(const char *string, zint stringBytes,
 /* Documented in header. */
 void uniAssertValid(zint value) {
     if ((value >= 0xd800) && (value <= 0xdfff)) {
-        samDie("Invalid occurrence of surrogate code point: %#04x",
+        die("Invalid occurrence of surrogate code point: %#04x",
                (int) value);
     } else if (value == 0xfffe) {
-        samDie("Invalid occurrence of reversed-BOM.");
+        die("Invalid occurrence of reversed-BOM.");
     } else if (value == 0xffff) {
-        samDie("Invalid occurrence of not-a-character.");
+        die("Invalid occurrence of not-a-character.");
     } else if (value >= 0x110000) {
-        samDie("Invalid occurrence of high code point: %#llx", value);
+        die("Invalid occurrence of high code point: %#llx", value);
     }
 }
 
@@ -244,6 +244,6 @@ char *utf8EncodeOne(char *string, zint ch) {
         }
         return string + 7;
     } else {
-        samDie("Out of range for UTF-8: %#llx", ch);
+        die("Out of range for UTF-8: %#llx", ch);
     }
 }

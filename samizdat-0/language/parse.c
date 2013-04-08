@@ -42,7 +42,7 @@ static zvalue read(ParseState *state) {
         return NULL;
     }
 
-    samNote("=== read   at %lld", state->at);
+    note("=== read   at %lld", state->at);
 
     zvalue result = samListletGet(state->tokens, state->at);
     state->at++;
@@ -66,7 +66,7 @@ static zvalue readMatch(ParseState *state, zvalue token) {
         return NULL;
     }
 
-    samNote("=== read-m at %lld", state->at);
+    note("=== read-m at %lld", state->at);
     state->at++;
 
     return result;
@@ -76,7 +76,7 @@ static zvalue readMatch(ParseState *state, zvalue token) {
  * Gets the current read position.
  */
 static zint cursor(ParseState *state) {
-    samNote("=== cursor at %lld", state->at);
+    note("=== cursor at %lld", state->at);
     return state->at;
 }
 
@@ -85,10 +85,10 @@ static zint cursor(ParseState *state) {
  */
 static void reset(ParseState *state, zint mark) {
     if (mark > state->at) {
-        samDie("Cannot reset forward: %lld > %lld", mark, state->at);
+        die("Cannot reset forward: %lld > %lld", mark, state->at);
     }
 
-    samNote("=== reset  at %lld", mark);
+    note("=== reset  at %lld", mark);
     state->at = mark;
 }
 
@@ -599,7 +599,7 @@ zvalue parse(zvalue tokens) {
     zvalue result = parseStatements(&state);
 
     if (!isEof(&state)) {
-        samDie("Extra tokens at end of program.");
+        die("Extra tokens at end of program.");
     }
 
     return result;

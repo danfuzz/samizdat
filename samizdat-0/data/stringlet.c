@@ -32,7 +32,7 @@ zvalue samStringletFromUtf8String(const char *string, zint stringBytes) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
     } else if (stringBytes < 0) {
-        samDie("Invalid string size: %lld", stringBytes);
+        die("Invalid string size: %lld", stringBytes);
     }
 
     zint decodedSize = utf8DecodeStringSize(string, stringBytes);

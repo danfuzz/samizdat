@@ -16,7 +16,7 @@
  */
 
 /* Documented in header. */
-void samNote(const char *format, ...) {
+void note(const char *format, ...) {
     va_list rest;
 
     va_start(rest, format);
@@ -26,7 +26,7 @@ void samNote(const char *format, ...) {
 }
 
 /* Documented in header. */
-void samDie(const char *format, ...) {
+void die(const char *format, ...) {
     va_list rest;
 
     va_start(rest, format);

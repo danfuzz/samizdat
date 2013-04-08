@@ -53,7 +53,7 @@ zvalue samUniqlet(void) {
 
     if (theNextId < 0) {
         // Shouldn't be possible, but just in case...
-        samDie("Shouldn't happen: Way too many uniqlets!");
+        die("Shouldn't happen: Way too many uniqlets!");
     }
 
     ((SamUniqlet *) result)->id = theNextId;
