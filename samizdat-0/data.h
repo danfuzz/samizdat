@@ -11,28 +11,13 @@
 #ifndef DATA_H
 #define DATA_H
 
+#include "ztype.h"
 #include <stdbool.h>
-#include <stdint.h>
 
 
 /*
  * C Types
  */
-
-/**
- * 64-bit integer. This is the type used for all lowest-level integer
- * values.
- */
-typedef int64_t zint;
-
-/**
- * The result of a comparison.
- */
-typedef enum {
-    SAM_IS_LESS = -1,
-    SAM_IS_EQUAL = 0,
-    SAM_IS_MORE = 1
-} zcomparison;
 
 /**
  * Possible low-level data types. Note: The enum ordering is the same
@@ -323,24 +308,5 @@ void samStringletEncodeUtf8(zvalue stringlet, char *utf8);
  *   otherwise arbitrary &mdash; comparison.
  */
 zcomparison samCompare(zvalue v1, zvalue v2);
-
-
-/*
- * Utility Functions
- */
-
-/**
- * Emits a debugging note. Arguments are as with `printf()`.
- */
-void samNote(const char *format, ...)
-    __attribute__((format (printf, 1, 2)));
-
-/**
- * Dies (aborts the process) with the given message. Arguments are as
- * with `printf()`.
- */
-void samDie(const char *format, ...)
-    __attribute__((noreturn))
-    __attribute__((format (printf, 1, 2)));
 
 #endif

@@ -5,6 +5,7 @@
  */
 
 #include "consts.h"
+#include "util.h"
 
 #include <stddef.h>
 

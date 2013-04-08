@@ -6,6 +6,7 @@
 
 #include "consts.h"
 #include "tokenize.h"
+#include "util.h"
 
 #include <stddef.h>
 

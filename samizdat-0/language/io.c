@@ -5,6 +5,7 @@
  */
 
 #include "io.h"
+#include "util.h"
 
 #include <stdio.h>
 #include <string.h>

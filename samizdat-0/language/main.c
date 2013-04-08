@@ -8,6 +8,7 @@
 #include "io.h"
 #include "parse.h"
 #include "tokenize.h"
+#include "util.h"
 
 #include <stddef.h>
 

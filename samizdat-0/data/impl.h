@@ -12,6 +12,7 @@
 #define _IMPL_H_
 
 #include "data.h"
+#include "util.h"
 
 
 /*
