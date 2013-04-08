@@ -174,10 +174,13 @@ zvalue highValue(zvalue value) {
 }
 
 /** Documented in `consts.h` */
-void assertType(zvalue value, zvalue type) {
-    zvalue gotType = highType(value);
+bool hasType(zvalue value, zvalue type) {
+    return (samCompare(highType(value), type) == 0);
+}
 
-    if (samCompare(gotType, type) != 0) {
+/** Documented in `consts.h` */
+void assertType(zvalue value, zvalue type) {
+    if (!hasType(value, type)) {
         samDie("Type mismatch.");
     }
 }
