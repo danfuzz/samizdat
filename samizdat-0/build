@@ -40,7 +40,6 @@ unset newProg
 #
 
 "${baseDir}/sam-data-0/build" || exit 1
-"${baseDir}/sam-exec-0/build" || exit 1
 
 projectName="$(basename "${progDir}")"
 
@@ -66,5 +65,4 @@ fi
 "${LINK_BIN[@]}" -o "${OUT}/${projectName}" \
     ${OUT}/*.o \
     ${OUT}/../sam-data-0/*.o \
-    ${OUT}/../sam-exec-0/*.o \
 || exit 1

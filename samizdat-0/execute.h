@@ -5,16 +5,16 @@
  */
 
 /*
- * Execution API for low-level (C) code
+ * Execution of Samizdat Layer 0 parse trees
  */
 
-#ifndef SAM_EXEC_H
-#define SAM_EXEC_H
+#ifndef EXECUTE_H
+#define EXECUTE_H
 
 #include "sam-data.h"
 
 /**
- * Magic function provider. Users of `samExecute()` must provide an
+ * Magic function provider. Users of `execute()` must provide an
  * implementation of this type to allow code to escape from a mode of
  * pure computation.
  */
@@ -36,7 +36,7 @@ typedef zvalue zmagic(zvalue uniqlet, zint argCount, const zvalue *args);
  * a uniqlet that is bound as a function by the given magic
  * provider.
  */
-zvalue samExecute(zvalue environment, zmagic *magic, zvalue code);
+zvalue execute(zvalue environment, zmagic *magic, zvalue code);
 
 
 #endif
