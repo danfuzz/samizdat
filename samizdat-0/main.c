@@ -6,9 +6,10 @@
 
 #include "consts.h"
 #include "io.h"
+#include "parse.h"
 #include "tokenize.h"
 
-#include <string.h>
+#include <stddef.h>
 
 /**
  * Processes a single file.
@@ -23,8 +24,9 @@ static void processFile(zvalue fileContents) {
     samNote("%s", utf);
     samNote("[fin]");
 
-    // TODO: Remove this file dump.
     zvalue tokens = tokenize(fileContents);
+
+    // TODO: Remove this file dump.
     zint tokensSize = samSize(tokens);
     for (zint i = 0; i < tokensSize; i++) {
         zvalue one = samListletGet(tokens, i);
@@ -43,6 +45,7 @@ static void processFile(zvalue fileContents) {
     }
     samNote("[fin]");
 
+    zvalue program = parse(tokens);
     // TODO: Stuff.
 }
 
