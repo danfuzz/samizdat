@@ -73,20 +73,22 @@ statement ::= (varDef | expression | return) @";" ;
 return ::= @"^" expression ;
 # result: @[@"type"=@"return" @"value"=<expression>]
 
-expressions ::= expression* ;
+expression ::= call | basicExpression ;
+# result: <same as whatever was parsed>
+
+basicExpressions ::= basicExpression* ;
 # result: @[@"type"=@"expressions" @"value"=<listlet of expressions>]
 
-expression ::=
+basicExpression ::=
     varRef | intlet | integer | stringlet | listlet |
-    maplet | emptyMaplet | uniqlet | function | call |
-    parenExpression
+    maplet | emptyMaplet | uniqlet | function | parenExpression
 # result: <same as whatever was parsed>
 
 parenExpression ::= @"(" call @")";
 # result: <same as whatever was parsed>
 # Note: In the higher languages, this rule becomes more like
 # `... (call | expression) ...` to make parenthesized expressions
-# "prefer" to be calls.
+# "prefer" to be calls but still be able to be other things too.
 
 varDef ::= @"identifier" @"=" expression ;
 # result: @[@"type"=@"varDef"
@@ -104,13 +106,13 @@ integer ::= @"integer" ;
 stringlet ::= @"@" @"string" ;
 # result: @[@"type"=@"literal" @"value"=<string.value>]
 
-listlet ::= @"@" @"[" expressions @"]" ;
+listlet ::= @"@" @"[" basicExpressions @"]" ;
 # result: @[@"type"=@"listlet" @"value"=<listlet of expressions>]
 
 maplet ::= @"@" @"[" binding+ @"]" ;
 # result: @[@"type"=@"maplet" @"value"=<listlet of bindings>]
 
-binding ::= expression @"=" expression ;
+binding ::= basicExpression @"=" basicExpression ;
 # result: @[@"type"=@"binding"
             @"value"=@[@"key"=<key expression> @"value"=<value expression>]]
 
@@ -127,7 +129,7 @@ function ::= @"{" formals statements @"}" ;
 formals ::= (@"identifier"+ @"::") | ~. ;
 # result: @[@"type"=@"formals" @"value"=<listlet of identifier.values>]
 
-call ::= expression expressions ;
+call ::= basicExpression basicExpressions ;
 # result: @[@"type"=@"call"
 #           @"value"=@[@"function"=<expression> @"actuals"=<expr list>]]
 ```
