@@ -41,7 +41,7 @@ static void assertType(zvalue value, ztype type) {
 
 
 /*
- * API implementation
+ * Exported functions
  */
 
 /** Documented in API header. */

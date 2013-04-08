@@ -11,7 +11,7 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
-#include "sam-data.h"
+#include "data.h"
 
 /**
  * Function registry. The contents of a registry are *not* directly

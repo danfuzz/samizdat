@@ -11,7 +11,7 @@
 #ifndef IO_H
 #define IO_H
 
-#include "sam-data.h"
+#include "data.h"
 
 /**
  * Reads the file with the given name in its entirety, interpreting

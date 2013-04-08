@@ -21,7 +21,7 @@ static zvalue theEmptyListlet = NULL;
 
 
 /*
- * Intra-library API implementation
+ * Module functions
  */
 
 /** Documented in `impl.h`. */
@@ -56,7 +56,7 @@ zcomparison samListletCompare(zvalue v1, zvalue v2) {
 
 
 /*
- * API Implementation
+ * Exported functions
  */
 
 /** Documented in API header. */

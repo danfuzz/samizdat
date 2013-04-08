@@ -11,7 +11,7 @@
 #ifndef _ALLOC_H_
 #define _ALLOC_H_
 
-#include "sam-data.h"
+#include "data.h"
 
 /**
  * Allocates zeroed-out memory of the indicated size (in bytes).

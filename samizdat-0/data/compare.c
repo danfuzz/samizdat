@@ -8,7 +8,7 @@
 
 
 /*
- * API implementation
+ * Exported functions
  */
 
 /** Documented in API header. */

@@ -12,7 +12,7 @@
 
 
 /*
- * API implementation
+ * Exported functions
  */
 
 /** Documented in `alloc.h`. */

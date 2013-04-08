@@ -36,7 +36,7 @@ static zmapping *mapletElems(zvalue maplet) {
 
 
 /*
- * Intra-library API implementation
+ * Module functions
  */
 
 /** Documented in `impl.h`. */
@@ -72,7 +72,7 @@ zcomparison samMapletCompare(zvalue v1, zvalue v2) {
 
 
 /*
- * API Implementation
+ * Exported functions
  */
 
 /** Documented in API header. */

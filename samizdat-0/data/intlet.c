@@ -51,7 +51,7 @@ static zint *intletElems(zvalue intlet) {
 
 
 /*
- * Intra-library API implementation
+ * Module functions
  */
 
 /** Documented in `impl.h`. */
@@ -87,7 +87,7 @@ zcomparison samIntletCompare(zvalue v1, zvalue v2) {
 
 
 /*
- * API implementation
+ * Exported functions
  */
 
 /** Documented in API header. */

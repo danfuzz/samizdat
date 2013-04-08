@@ -4,7 +4,6 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
-#include "sam-data.h"
 #include "unicode.h"
 
 #include <stdlib.h>
@@ -155,7 +154,7 @@ static const char *justDecode(const char *string, zint stringBytes,
 
 
 /*
- * Intra-library API implementation
+ * Module functions
  */
 
 /** Documented in `unicode.h`. */

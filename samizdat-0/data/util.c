@@ -4,7 +4,7 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
-#include "sam-data.h"
+#include "data.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -12,10 +12,10 @@
 
 
 /*
- * API implementation
+ * Exported functions
  */
 
-/** Documented in API header. */
+/** Documented in header. */
 void samNote(const char *format, ...) {
     va_list rest;
 
@@ -25,7 +25,7 @@ void samNote(const char *format, ...) {
     fputs("\n", stderr);
 }
 
-/** Documented in API header. */
+/** Documented in header. */
 void samDie(const char *format, ...) {
     va_list rest;
 

@@ -11,7 +11,7 @@
 #ifndef _UNICODE_H_
 #define _UNICODE_H_
 
-#include "sam-data.h"
+#include "data.h"
 
 /**
  * Asserts that the given `zint` value is valid as a Unicode

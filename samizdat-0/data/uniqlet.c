@@ -26,7 +26,7 @@ static zint uniqletId(zvalue uniqlet) {
 
 
 /*
- * Intra-library API implementation
+ * Module functions
  */
 
 /** Documented in `impl.h`. */
@@ -45,7 +45,7 @@ zcomparison samUniqletCompare(zvalue v1, zvalue v2) {
 
 
 /*
- * API implementation
+ * Exported functions
  */
 
 /** Documented in API header. */

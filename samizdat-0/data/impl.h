@@ -11,7 +11,7 @@
 #ifndef _IMPL_H_
 #define _IMPL_H_
 
-#include "sam-data.h"
+#include "data.h"
 
 
 /*

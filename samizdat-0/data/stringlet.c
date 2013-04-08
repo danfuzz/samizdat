@@ -13,7 +13,7 @@
 
 
 /*
- * API Implementation
+ * Exported functions
  */
 
 /** Documented in API header. */

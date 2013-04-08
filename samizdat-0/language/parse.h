@@ -11,7 +11,7 @@
 #ifndef _PARSE_H_
 #define _PARSE_H_
 
-#include "sam-data.h"
+#include "data.h"
 
 /**
  * Parses a listlet of tokens into Samizdat Layer 0 parse trees. Returns
