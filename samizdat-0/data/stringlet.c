@@ -4,7 +4,6 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
-#include "alloc.h"
 #include "impl.h"
 #include "unicode.h"
 

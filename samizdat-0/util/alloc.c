@@ -4,27 +4,28 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
-#include "impl.h"
+#include "util.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 
 /*
- * Module functions
+ * Exported functions
  */
 
 /* Documented in header. */
-zvalue samAllocValue(ztype type, zint size, zint extraBytes) {
+void *samAlloc(zint size) {
     if (size < 0) {
-        samDie("Invalid value size: %lld", size);
+        samDie("Invalid allocation size: %lld", size);
     }
 
-    zvalue result = samAlloc(sizeof(SamValue) + extraBytes);
+    void *result = malloc(size);
 
-    result->magic = SAM_VALUE_MAGIC;
-    result->type = type;
-    result->size = size;
+    if (result == NULL) {
+        samDie("Failed: malloc(%#llx).", size);
+    }
 
+    memset(result, 0, size);
     return result;
 }

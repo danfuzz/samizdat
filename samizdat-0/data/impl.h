@@ -15,10 +15,6 @@
 #include "util.h"
 
 
-/*
- * Data types
- */
-
 enum {
     /** "Magic number" for value validation. */
     SAM_VALUE_MAGIC = 0x600f1e57,
@@ -85,10 +81,12 @@ typedef struct {
     zint id;
 } SamUniqlet;
 
-
-/*
- * Intra-library exports (cross-file dependencies)
+/**
+ * Allocates memory, sized to include a `SamValue` header plus the
+ * indicated number of extra bytes. The `SamValue` header is
+ * initialized with the indicated type and size.
  */
+zvalue samAllocValue(ztype type, zint size, zint extraBytes);
 
 /**
  * Allocates a listlet of the given size.

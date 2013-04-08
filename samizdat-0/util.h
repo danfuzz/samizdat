@@ -34,6 +34,16 @@ void samDie(const char *format, ...)
 
 
 /*
+ * Allocation functions
+ */
+
+/**
+ * Allocates zeroed-out memory of the indicated size (in bytes).
+ */
+void *samAlloc(zint size);
+
+
+/*
  * Unicode functions
  */
 
