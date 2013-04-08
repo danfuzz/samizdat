@@ -114,7 +114,7 @@ static zvalue execMaplet(Context *context, zvalue maplet) {
                               execExpression(context, value));
     }
 
-    die("TODO");
+    return result;
 }
 
 /**
