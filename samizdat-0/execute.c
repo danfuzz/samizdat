@@ -8,11 +8,11 @@
 
 
 /*
- * API implementation
+ * Exported functions
  */
 
 /** Documented in API header. */
 zvalue samExecute(zvalue environment, zmagic *magic, zvalue code) {
     // TODO
-    return 0;
+    samDie("TODO");
 }
