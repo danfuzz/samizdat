@@ -39,7 +39,7 @@ static zvalue execExpression(Context *context, zvalue expression);
 /**
  * Executes a `call` form.
  */
-static void execCall(Context *context, zvalue call) {
+static zvalue execCall(Context *context, zvalue call) {
     assertType(call, STR_CALL);
 
     samDie("TODO");
@@ -48,7 +48,7 @@ static void execCall(Context *context, zvalue call) {
 /**
  * Executes a `function` form.
  */
-static void execFunction(Context *context, zvalue function) {
+static zvalue execFunction(Context *context, zvalue function) {
     assertType(function, STR_FUNCTION);
 
     samDie("TODO");
@@ -57,17 +57,30 @@ static void execFunction(Context *context, zvalue function) {
 /**
  * Executes a `uniqlet` form.
  */
-static void execUniqlet(Context *context, zvalue uniqlet) {
+static zvalue execUniqlet(Context *context, zvalue uniqlet) {
     assertType(uniqlet, STR_UNIQLET);
 
-    samDie("TODO");
+    return samUniqlet();
 }
 
 /**
  * Executes a `maplet` form.
  */
-static void execMaplet(Context *context, zvalue maplet) {
+static zvalue execMaplet(Context *context, zvalue maplet) {
     assertType(maplet, STR_MAPLET);
+
+    zvalue elems = highValue(maplet);
+    zint size = samSize(elems);
+    zvalue result = samListletEmpty();
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = samListletGet(elems, i);
+        zvalue key = samMapletGet(one, STR_KEY);
+        zvalue value = samMapletGet(one, STR_VALUE);
+        result = samMapletPut(result,
+                              execExpression(context, key),
+                              execExpression(context, value));
+    }
 
     samDie("TODO");
 }
@@ -75,37 +88,64 @@ static void execMaplet(Context *context, zvalue maplet) {
 /**
  * Executes a `listlet` form.
  */
-static void execListlet(Context *context, zvalue listlet) {
+static zvalue execListlet(Context *context, zvalue listlet) {
     assertType(listlet, STR_LISTLET);
 
-    samDie("TODO");
+    zvalue elems = highValue(listlet);
+    zint size = samSize(elems);
+    zvalue result = samListletEmpty();
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = samListletGet(elems, i);
+        result = samListletAppend(result, execExpression(context, one));
+    }
+
+    return result;
 }
 
 /**
  * Executes a `varRef` form.
  */
-static void execVarRef(Context *context, zvalue varRef) {
+static zvalue execVarRef(Context *context, zvalue varRef) {
     assertType(varRef, STR_VAR_REF);
 
-    samDie("TODO");
+    zvalue name = highValue(varRef);
+
+    for (/* context */; context != NULL; context = context->parent) {
+        zvalue found = samMapletGet(context->locals, name);
+        if (found != NULL) {
+            return found;
+        }
+    }
+
+    samDie("No such variable.");
 }
 
 /**
  * Executes a `literal` form.
  */
-static void execLiteral(Context *context, zvalue literal) {
+static zvalue execLiteral(Context *context, zvalue literal) {
     assertType(literal, STR_LITERAL);
 
-    samDie("TODO");
+    return highValue(literal);
 }
 
 /**
  * Executes an `expression` form.
  */
-static zvalue execExpression(Context *context, zvalue expression) {
-    assertType(expression, STR_EXPRESSION);
+static zvalue execExpression(Context *context, zvalue ex) {
+    zvalue type = highType(ex);
 
-    samDie("TODO");
+    if      (hasType(ex, STR_LITERAL))  { return execLiteral(context, ex);  }
+    else if (hasType(ex, STR_VAR_REF))  { return execVarRef(context, ex);   }
+    else if (hasType(ex, STR_LISTLET))  { return execListlet(context, ex);  }
+    else if (hasType(ex, STR_MAPLET))   { return execMaplet(context, ex);   }
+    else if (hasType(ex, STR_UNIQLET))  { return execUniqlet(context, ex);  }
+    else if (hasType(ex, STR_FUNCTION)) { return execFunction(context, ex); }
+    else if (hasType(ex, STR_CALL))     { return execCall(context, ex);     }
+    else {
+        samDie("Invalid expression type.");
+    }
 }
 
 /**
