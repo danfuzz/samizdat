@@ -73,20 +73,17 @@ statement ::= (varDef | expression | return) @";" ;
 return ::= @"^" expression ;
 # result: @[@"type"=@"return" @"value"=<expression>]
 
-expression ::= call | basicExpression ;
+expression ::= call | atom ;
 # result: <same as whatever was parsed>
 
-basicExpression ::=
+atom ::=
     varRef | intlet | integer | stringlet |
     emptyListlet | listlet | emptyMaplet | maplet |
     uniqlet | function | parenExpression
 # result: <same as whatever was parsed>
 
-parenExpression ::= @"(" call @")";
+parenExpression ::= @"(" expression @")";
 # result: <same as whatever was parsed>
-# Note: In the higher languages, this rule becomes more like
-# `... (call | expression) ...` to make parenthesized expressions
-# "prefer" to be calls but still be able to be other things too.
 
 varDef ::= @"identifier" @"=" expression ;
 # result: @[@"type"=@"varDef"
@@ -107,8 +104,8 @@ stringlet ::= @"@" @"string" ;
 emptyListlet ::= @"@" @"[" @"]" ;
 # result: @[@"type"=@"literal" @"value"=@[]]
 
-listlet ::= @"@" @"[" basicExpression+ @"]" ;
-# result: @[@"type"=@"listlet" @"value"=<listlet of expressions>]
+listlet ::= @"@" @"[" atom+ @"]" ;
+# result: @[@"type"=@"listlet" @"value"=<listlet of atoms>]
 
 emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 # result: @[@"type"=@"literal" @"value"=@[=]]
@@ -116,9 +113,9 @@ emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 maplet ::= @"@" @"[" binding+ @"]" ;
 # result: @[@"type"=@"maplet" @"value"=<listlet of bindings>]
 
-binding ::= basicExpression @"=" basicExpression ;
+binding ::= atom @"=" atom ;
 # result: @[@"type"=@"binding"
-            @"value"=@[@"key"=<key expression> @"value"=<value expression>]]
+            @"value"=@[@"key"=<key atom> @"value"=<value atom>]]
 
 uniqlet ::= @"@@";
 # result: @[@"type"=@"uniqlet"]
@@ -130,9 +127,9 @@ function ::= @"{" formals statements @"}" ;
 formals ::= (@"identifier"+ @"::") | ~. ;
 # result: @[@"type"=@"formals" @"value"=<listlet of identifier.values>]
 
-call ::= basicExpression (@"(" @")" | basicExpression+) ;
+call ::= atom (@"(" @")" | atom+) ;
 # result: @[@"type"=@"call"
-#           @"value"=@[@"function"=<expression> @"actuals"=<expr list>]]
+#           @"value"=@[@"function"=<atom> @"actuals"=<atom list>]]
 ```
 
 

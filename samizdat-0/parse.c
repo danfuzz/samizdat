@@ -92,22 +92,22 @@ static void reset(ParseState *state, zint mark) {
 }
 
 /* Defined below. */
-static zvalue parseBasicExpression(ParseState *state);
+static zvalue parseAtom(ParseState *state);
 static zvalue parseExpression(ParseState *state);
 static zvalue parseStatements(ParseState *state);
 
 /**
- * Parses `basicExpression+`. Returns a listlet of parsed expressions.
+ * Parses `atom+`. Returns a listlet of parsed expressions.
  */
-static zvalue parseBasicExpressionPlus(ParseState *state) {
+static zvalue parseAtomPlus(ParseState *state) {
     zvalue result = samListletEmpty();
 
     for (;;) {
-        zvalue expression = parseBasicExpression(state);
-        if (expression == NULL) {
+        zvalue atom = parseAtom(state);
+        if (atom == NULL) {
             break;
         }
-        result = samListletAppend(result, expression);
+        result = samListletAppend(result, atom);
     }
 
     if (samSize(result) == 0) {
@@ -140,7 +140,7 @@ static zvalue parseCall1(ParseState *state) {
  */
 static zvalue parseCall(ParseState *state) {
     zint mark = cursor(state);
-    zvalue function = parseBasicExpression(state);
+    zvalue function = parseAtom(state);
 
     if (function == NULL) {
         return NULL;
@@ -149,7 +149,7 @@ static zvalue parseCall(ParseState *state) {
     zvalue actuals = parseCall1(state);
 
     if (actuals == NULL) {
-        actuals = parseBasicExpressionPlus(state);
+        actuals = parseAtomPlus(state);
     }
 
     if (actuals == NULL) {
@@ -228,7 +228,7 @@ static zvalue parseUniqlet(ParseState *state) {
  */
 static zvalue parseBinding(ParseState *state) {
     zint mark = cursor(state);
-    zvalue key = parseBasicExpression(state);
+    zvalue key = parseAtom(state);
 
     if (key == NULL) {
         return NULL;
@@ -239,7 +239,7 @@ static zvalue parseBinding(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = parseBasicExpression(state);
+    zvalue value = parseAtom(state);
 
     if (value == NULL) {
         reset(state, mark);
@@ -334,9 +334,9 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue expressions = parseBasicExpressionPlus(state);
+    zvalue atoms = parseAtomPlus(state);
 
-    if (expressions == NULL) {
+    if (atoms == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -346,7 +346,7 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    return valueToken(TOK_LISTLET, expressions);
+    return valueToken(TOK_LISTLET, atoms);
 }
 
 /**
@@ -480,7 +480,7 @@ static zvalue parseParenExpression(ParseState *state) {
         return NULL;
     }
 
-    zvalue expression = parseCall(state);
+    zvalue expression = parseExpression(state);
 
     if (expression == NULL) {
         reset(state, mark);
@@ -496,9 +496,9 @@ static zvalue parseParenExpression(ParseState *state) {
 }
 
 /**
- * Parses a `basicExpression` node.
+ * Parses an `atom` node.
  */
-static zvalue parseBasicExpression(ParseState *state) {
+static zvalue parseAtom(ParseState *state) {
     zvalue result = NULL;
 
     if (result == NULL) { result = parseVarRef(state); }
@@ -523,7 +523,7 @@ static zvalue parseExpression(ParseState *state) {
     zvalue result = NULL;
 
     if (result == NULL) { result = parseCall(state); }
-    if (result == NULL) { result = parseBasicExpression(state); }
+    if (result == NULL) { result = parseAtom(state); }
 
     return result;
 }
