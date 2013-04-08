@@ -4,7 +4,7 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
-#include "sam-exec.h"
+#include "io.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -17,11 +17,11 @@ enum {
 
 
 /*
- * API implementation
+ * Exported functions
  */
 
-/** Documented in API header. */
-zvalue samReadFile(zvalue fileName) {
+/** Documented in `io.h`. */
+zvalue readFile(zvalue fileName) {
     zint nameSize = samStringletUtf8Size(fileName);
     char nameUtf[nameSize + 1];
 

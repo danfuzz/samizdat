@@ -4,8 +4,8 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
-#include "sam-exec.h"
 #include "consts.h"
+#include "io.h"
 #include "tokenize.h"
 
 #include <string.h>
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
         samNote("Processing file: %s", argv[i]);
 
         zvalue name = samStringletFromUtf8String(argv[i], -1);
-        zvalue fileContents = samReadFile(name);
+        zvalue fileContents = readFile(name);
 
         processFile(fileContents);
     }
