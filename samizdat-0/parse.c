@@ -392,9 +392,6 @@ static zvalue parseParenExpression(ParseState *state) {
     }
 
     zvalue expression = parseCall(state);
-    if (expression == NULL) {
-        expression = parseExpression(state);
-    }
 
     if (expression == NULL) {
         reset(state, at);

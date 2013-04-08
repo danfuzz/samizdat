@@ -82,9 +82,11 @@ expression ::=
     parenExpression
 # result: <same as whatever was parsed>
 
-parenExpression ::= @"(" (call | expression) @")";
+parenExpression ::= @"(" call @")";
 # result: <same as whatever was parsed>
-# Note: This is to make parenthesized expressions "prefer" to be calls.
+# Note: In the higher languages, this rule becomes more like
+# `... (call | expression) ...` to make parenthesized expressions
+# "prefer" to be calls.
 
 varDef ::= @"identifier" @"=" expression ;
 # result: @[@"type"=@"varDef"
