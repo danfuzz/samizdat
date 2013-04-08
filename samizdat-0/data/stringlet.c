@@ -5,10 +5,32 @@
  */
 
 #include "impl.h"
-#include "unicode.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+
+/*
+ * Helper functions
+ */
+
+/**
+ * Decodes the given UTF-8 encoded string of the given size in bytes,
+ * into the given buffer of `zvalue`s. The buffer must be sufficiently
+ * large to hold the result of decoding. Each of the decoded values
+ * is an intlet.
+ */
+static void decodeStringToValues(const char *string, zint stringBytes,
+                                 zvalue *result) {
+    const char *stringEnd = strGetEnd(string, stringBytes);
+    zint one = 0;
+
+    while (string < stringEnd) {
+        string = utf8DecodeOne(string, stringEnd - string, &one);
+        *result = samIntletFromInt(one);
+        result++;
+    }
+}
 
 
 /*
@@ -38,7 +60,7 @@ zvalue samStringletFromUtf8String(const char *string, zint stringBytes) {
     zint decodedSize = utf8DecodeStringSize(string, stringBytes);
     zvalue result = samAllocListlet(decodedSize);
 
-    utf8DecodeStringToValues(string, stringBytes, samListletElems(result));
+    decodeStringToValues(string, stringBytes, samListletElems(result));
     return result;
 }
 
