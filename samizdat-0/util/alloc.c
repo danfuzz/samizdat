@@ -15,7 +15,7 @@
  */
 
 /* Documented in header. */
-void *samAlloc(zint size) {
+void *zalloc(zint size) {
     if (size < 0) {
         die("Invalid allocation size: %lld", size);
     }

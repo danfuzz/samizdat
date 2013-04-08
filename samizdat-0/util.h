@@ -40,7 +40,7 @@ void die(const char *format, ...)
 /**
  * Allocates zeroed-out memory of the indicated size (in bytes).
  */
-void *samAlloc(zint size);
+void *zalloc(zint size);
 
 
 /*

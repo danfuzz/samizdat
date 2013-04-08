@@ -70,7 +70,7 @@ static Function *findEntry(zfunreg reg, zvalue id) {
 
 /* Documented in header. */
 zfunreg funNew(void) {
-    zfunreg reg = samAlloc(sizeof(FunctionRegistry));
+    zfunreg reg = zalloc(sizeof(FunctionRegistry));
     reg->size = 0;
 
     return reg;

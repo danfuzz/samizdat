@@ -20,7 +20,7 @@ zvalue samAllocValue(ztype type, zint size, zint extraBytes) {
         die("Invalid value size: %lld", size);
     }
 
-    zvalue result = samAlloc(sizeof(SamValue) + extraBytes);
+    zvalue result = zalloc(sizeof(SamValue) + extraBytes);
 
     result->magic = SAM_VALUE_MAGIC;
     result->type = type;
