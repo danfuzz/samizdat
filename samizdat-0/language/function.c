@@ -7,8 +7,6 @@
 #include "function.h"
 #include "util.h"
 
-#include <stdlib.h>
-
 enum {
     /** Maximum number of entries in a function registry */
     MAX_REGISTRY_SIZE = 100000
@@ -72,9 +70,7 @@ static Function *findEntry(zfunreg reg, zvalue id) {
 
 /* Documented in header. */
 zfunreg funNew(void) {
-    // TODO: Make samAlloc() accessible from here, and use it.
-
-    zfunreg reg = malloc(sizeof(FunctionRegistry));
+    zfunreg reg = samAlloc(sizeof(FunctionRegistry));
     reg->size = 0;
 
     return reg;
