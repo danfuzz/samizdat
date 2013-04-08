@@ -93,24 +93,69 @@ static void reset(ParseState *state, zint mark) {
 
 /* Defined below. */
 static zvalue parseBasicExpression(ParseState *state);
-static zvalue parseBasicExpressions(ParseState *state);
 static zvalue parseExpression(ParseState *state);
 static zvalue parseStatements(ParseState *state);
+
+/**
+ * Parses `basicExpression+`. Returns a listlet of parsed expressions.
+ */
+static zvalue parseBasicExpressionPlus(ParseState *state) {
+    zvalue result = samListletEmpty();
+
+    for (;;) {
+        zvalue expression = parseBasicExpression(state);
+        if (expression == NULL) {
+            break;
+        }
+        result = samListletAppend(result, expression);
+    }
+
+    if (samSize(result) == 0) {
+        return NULL;
+    }
+
+    return result;
+}
+
+/**
+ * Parses `@"(" @")"` as part of parsing a `call` node.
+ */
+static zvalue parseCall1(ParseState *state) {
+    zint mark = cursor(state);
+
+    if (readMatch(state, TOK_CH_OP_PAREN) == NULL) {
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_CL_PAREN) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    return samListletEmpty();
+}
 
 /**
  * Parses a `call` node.
  */
 static zvalue parseCall(ParseState *state) {
     zint mark = cursor(state);
-
     zvalue function = parseBasicExpression(state);
 
     if (function == NULL) {
         return NULL;
     }
 
-    // Always succeeds, since a zero-length list is valid.
-    zvalue actuals = parseBasicExpressions(state);
+    zvalue actuals = parseCall1(state);
+
+    if (actuals == NULL) {
+        actuals = parseBasicExpressionPlus(state);
+    }
+
+    if (actuals == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
 
     zvalue value = samMapletPut(samMapletEmpty(), STR_FUNCTION, function);
     value = samMapletPut(value, STR_ACTUALS, actuals);
@@ -176,34 +221,6 @@ static zvalue parseUniqlet(ParseState *state) {
     }
 
     return TOK_UNIQLET;
-}
-
-/**
- * Parses an `emptyMaplet` node.
- */
-static zvalue parseEmptyMaplet(ParseState *state) {
-    zint mark = cursor(state);
-
-    if (readMatch(state, TOK_CH_AT) == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    if (readMatch(state, TOK_CH_EQUAL) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    return valueToken(TOK_LITERAL, samMapletEmpty());
 }
 
 /**
@@ -276,6 +293,34 @@ static zvalue parseMaplet(ParseState *state) {
 }
 
 /**
+ * Parses an `emptyMaplet` node.
+ */
+static zvalue parseEmptyMaplet(ParseState *state) {
+    zint mark = cursor(state);
+
+    if (readMatch(state, TOK_CH_AT) == NULL) {
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_EQUAL) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    return valueToken(TOK_LITERAL, samMapletEmpty());
+}
+
+/**
  * Parses a `listlet` node.
  */
 static zvalue parseListlet(ParseState *state) {
@@ -290,16 +335,42 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    // Always succeeds, since a zero-length list is valid.
-    zvalue expressions = parseBasicExpressions(state);
+    zvalue expressions = parseBasicExpressionPlus(state);
+
+    if (expressions == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
 
     if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    expressions = samMapletGet(expressions, STR_VALUE);
     return valueToken(TOK_LISTLET, expressions);
+}
+
+/**
+ * Parses an `emptyListlet` node.
+ */
+static zvalue parseEmptyListlet(ParseState *state) {
+    zint mark = cursor(state);
+
+    if (readMatch(state, TOK_CH_AT) == NULL) {
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    return valueToken(TOK_LITERAL, samListletEmpty());
 }
 
 /**
@@ -422,32 +493,15 @@ static zvalue parseBasicExpression(ParseState *state) {
     if (result == NULL) { result = parseIntlet(state); }
     if (result == NULL) { result = parseInteger(state); }
     if (result == NULL) { result = parseStringlet(state); }
+    if (result == NULL) { result = parseEmptyListlet(state); }
     if (result == NULL) { result = parseListlet(state); }
-    if (result == NULL) { result = parseMaplet(state); }
     if (result == NULL) { result = parseEmptyMaplet(state); }
+    if (result == NULL) { result = parseMaplet(state); }
     if (result == NULL) { result = parseUniqlet(state); }
     if (result == NULL) { result = parseFunction(state); }
-    if (result == NULL) { result = parseCall(state); }
     if (result == NULL) { result = parseParenExpression(state); }
 
     return result;
-}
-
-/**
- * Parses a `basicExpressions` node.
- */
-static zvalue parseBasicExpressions(ParseState *state) {
-    zvalue result = samListletEmpty();
-
-    for (;;) {
-        zvalue expression = parseExpression(state);
-        if (expression == NULL) {
-            break;
-        }
-        result = samListletAppend(result, expression);
-    }
-
-    return valueToken(TOK_EXPRESSIONS, result);
 }
 
 /**
