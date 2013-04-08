@@ -23,10 +23,27 @@ typedef struct Context {
     /** Parent context. */
     struct Context *parent;
 
-    /** Magic function. */
-    zmagic magic;
+    /** Function registry. */
+    zfunreg reg;
 }
 Context;
+
+/**
+ * Closure, that is a function and its associated state. Instances
+ * of this structure are bound as the closure state as part of
+ * function registration in `execFunction()`.
+ */
+typedef struct {
+    /**
+     * Parent context (which was the current context when the function
+     * was defined).
+     */
+    Context *parent;
+
+    /** Function node, which includes a list of formals and the code to run. */
+    zvalue function;
+}
+Closure;
 
 
 /*
@@ -54,17 +71,18 @@ static zvalue execCall(Context *context, zvalue call) {
     call = highValue(call);
     zvalue function = samMapletGet(call, STR_FUNCTION);
     zvalue actuals = samMapletGet(call, STR_ACTUALS);
+
+    zvalue id = execExpression(context, function);
+    samAssertUniqlet(id);
+
     zint argCount = samSize(actuals);
     zvalue args[argCount];
-
-    samAssertUniqlet(function);
-
     for (zint i = 0; i < argCount; i++) {
         zvalue one = samListletGet(actuals, i);
         args[i] = execExpression(context, one);
     }
 
-    samDie("TODO");
+    return funCall(context->reg, id, argCount, args);
 }
 
 /**
@@ -217,10 +235,10 @@ static void execStatements(Context *context, zvalue statements) {
  */
 
 /** Documented in API header. */
-zvalue samExecute(zvalue environment, zmagic magic, zvalue code) {
+zvalue samExecute(zvalue environment, zfunreg funreg, zvalue code) {
     samAssertMaplet(environment);
 
-    Context context = { environment, NULL, NULL, magic };
+    Context context = { environment, NULL, NULL, funreg };
     execStatements(&context, code);
 
     return context.locals;
