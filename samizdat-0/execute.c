@@ -182,7 +182,7 @@ static void execVarDef(Context *context, zvalue varDef) {
 /**
  * Executes a `return` form.
  */
-static void execReturn(Context *context, zvalue returnForm) { 
+static void execReturn(Context *context, zvalue returnForm) {
     assertType(returnForm, STR_RETURN);
 
     context->toReturn = execExpression(context, highValue(returnForm));
