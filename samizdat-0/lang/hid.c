@@ -9,7 +9,7 @@
 #include "util.h"
 
 /* Documented in header. */
-zvalue valueToken(zvalue token, zvalue value) {
+zvalue hidPutValue(zvalue token, zvalue value) {
     return datMapletPut(token, STR_VALUE, value);
 }
 

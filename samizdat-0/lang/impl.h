@@ -91,7 +91,7 @@ zvalue funCall(zfunreg reg, zvalue id, zint argCount, const zvalue *args);
  * Constructs a value token / node, by combining the given base
  * token with `value` binding to the given value.
  */
-zvalue valueToken(zvalue token, zvalue value);
+zvalue hidPutValue(zvalue token, zvalue value);
 
 /**
  * Gets the `type` binding of the given maplet (*not* the low layer

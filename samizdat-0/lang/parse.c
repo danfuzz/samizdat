@@ -159,7 +159,7 @@ static zvalue parseCall(ParseState *state) {
 
     zvalue value = datMapletPut(datMapletEmpty(), STR_FUNCTION, function);
     value = datMapletPut(value, STR_ACTUALS, actuals);
-    return valueToken(TOK_CALL, value);
+    return hidPutValue(TOK_CALL, value);
 }
 
 /**
@@ -185,7 +185,7 @@ static zvalue parseFormals(ParseState *state) {
         }
     }
 
-    return valueToken(TOK_FORMALS, identifiers);
+    return hidPutValue(TOK_FORMALS, identifiers);
 }
 
 /**
@@ -209,7 +209,7 @@ static zvalue parseFunction(ParseState *state) {
 
     zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
     value = datMapletPut(value, STR_STATEMENTS, statements);
-    return valueToken(TOK_FUNCTION, value);
+    return hidPutValue(TOK_FUNCTION, value);
 }
 
 /**
@@ -287,7 +287,7 @@ static zvalue parseMaplet(ParseState *state) {
         return NULL;
     }
 
-    return valueToken(TOK_MAPLET, bindings);
+    return hidPutValue(TOK_MAPLET, bindings);
 }
 
 /**
@@ -315,7 +315,7 @@ static zvalue parseEmptyMaplet(ParseState *state) {
         return NULL;
     }
 
-    return valueToken(TOK_LITERAL, datMapletEmpty());
+    return hidPutValue(TOK_LITERAL, datMapletEmpty());
 }
 
 /**
@@ -345,7 +345,7 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    return valueToken(TOK_LISTLET, atoms);
+    return hidPutValue(TOK_LISTLET, atoms);
 }
 
 /**
@@ -368,7 +368,7 @@ static zvalue parseEmptyListlet(ParseState *state) {
         return NULL;
     }
 
-    return valueToken(TOK_LITERAL, datListletEmpty());
+    return hidPutValue(TOK_LITERAL, datListletEmpty());
 }
 
 /**
@@ -389,7 +389,7 @@ static zvalue parseStringlet(ParseState *state) {
     }
 
     zvalue value = hidValue(string);
-    return valueToken(TOK_LITERAL, value);
+    return hidPutValue(TOK_LITERAL, value);
 }
 
 /**
@@ -402,7 +402,7 @@ static zvalue parseInteger(ParseState *state) {
         return NULL;
     }
 
-    return valueToken(TOK_LITERAL, integer);
+    return hidPutValue(TOK_LITERAL, integer);
 }
 
 /**
@@ -423,7 +423,7 @@ static zvalue parseIntlet(ParseState *state) {
     }
 
     zvalue value = hidValue(integer);
-    return valueToken(TOK_LITERAL, value);
+    return hidPutValue(TOK_LITERAL, value);
 }
 
 /**
@@ -437,7 +437,7 @@ static zvalue parseVarRef(ParseState *state) {
     }
 
     zvalue name = hidValue(identifier);
-    return valueToken(TOK_VAR_REF, name);
+    return hidPutValue(TOK_VAR_REF, name);
 }
 
 /**
@@ -466,7 +466,7 @@ static zvalue parseVarDef(ParseState *state) {
     zvalue name = hidValue(identifier);
     zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
     value = datMapletPut(value, STR_VALUE, expression);
-    return valueToken(TOK_VAR_DEF, value);
+    return hidPutValue(TOK_VAR_DEF, value);
 }
 
 /**
@@ -544,7 +544,7 @@ static zvalue parseReturn(ParseState *state) {
         return NULL;
     }
 
-    return valueToken(TOK_RETURN, expression);
+    return hidPutValue(TOK_RETURN, expression);
 }
 
 /**
@@ -584,7 +584,7 @@ static zvalue parseStatements(ParseState *state) {
         result = datListletAppend(result, statement);
     }
 
-    return valueToken(TOK_STATEMENTS, result);
+    return hidPutValue(TOK_STATEMENTS, result);
 }
 
 
