@@ -44,6 +44,18 @@ static zvalue prim_readFile(void *state, zint argCount, const zvalue *args) {
     return readFile(args[0]);
 }
 
+/**
+ * TODO: Document!
+ */
+static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
+    if (argCount != 2) {
+        die("Invalid argument count to writeFile: %lld", argCount);
+    }
+
+    writeFile(args[0], args[1]);
+    return langNull();
+}
+
 
 /*
  * Exported functions
@@ -60,8 +72,9 @@ zcontext primNewContext(void) {
     langBind(ctx, "false", langFalse());
     langBind(ctx, "true", langTrue());
 
-    langBindFunction(ctx, "if",       prim_if,       NULL);
-    langBindFunction(ctx, "readFile", prim_readFile, NULL);
+    langBindFunction(ctx, "if",        prim_if,        NULL);
+    langBindFunction(ctx, "readFile",  prim_readFile,  NULL);
+    langBindFunction(ctx, "writeFile", prim_writeFile, NULL);
     // TODO: More.
 
     return ctx;

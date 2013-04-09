@@ -20,4 +20,10 @@
  */
 zvalue readFile(zvalue fileName);
 
+/**
+ * Writes the given stringlet to the file with the given name, encoding
+ * it as UTF-8.
+ */
+void writeFile(zvalue fileName, zvalue text);
+
 #endif
