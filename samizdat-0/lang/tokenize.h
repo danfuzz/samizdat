@@ -11,7 +11,7 @@
 #ifndef _TOKENIZE_H_
 #define _TOKENIZE_H_
 
-#include "data.h"
+#include "dat.h"
 
 /**
  * Tokenizes a stringlet using Samizdat Layer 0 token syntax. Returns

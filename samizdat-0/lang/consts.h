@@ -11,7 +11,7 @@
 #ifndef _CONSTS_H_
 #define _CONSTS_H_
 
-#include "data.h"
+#include "dat.h"
 
 /* Prefab stringlets. Lazily initialized. */
 extern zvalue STR_CH_AT;

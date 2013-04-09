@@ -8,8 +8,8 @@
  * Lowest level type definitions
  */
 
-#ifndef ZTYPE_H
-#define ZTYPE_H
+#ifndef _ZTYPE_H_
+#define _ZTYPE_H_
 
 #include <stdint.h>
 

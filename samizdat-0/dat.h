@@ -8,8 +8,8 @@
  * Low-layer data structures
  */
 
-#ifndef DATA_H
-#define DATA_H
+#ifndef _DAT_H_
+#define _DAT_H_
 
 #include "ztype.h"
 #include <stdbool.h>

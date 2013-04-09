@@ -8,10 +8,10 @@
  * I/O
  */
 
-#ifndef IO_H
-#define IO_H
+#ifndef _IO_H_
+#define _IO_H_
 
-#include "data.h"
+#include "dat.h"
 
 /**
  * Reads the file with the given name in its entirety, interpreting
