@@ -202,8 +202,6 @@ static zvalue execLiteral(Context *context, zvalue literal) {
  * Executes an `expression` form.
  */
 static zvalue execExpression(Context *context, zvalue ex) {
-    zvalue type = highType(ex);
-
     if      (hasType(ex, STR_LITERAL))  { return execLiteral(context, ex);  }
     else if (hasType(ex, STR_VAR_REF))  { return execVarRef(context, ex);   }
     else if (hasType(ex, STR_LISTLET))  { return execListlet(context, ex);  }
