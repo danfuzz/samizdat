@@ -8,6 +8,11 @@
 #include "impl.h"
 #include "util.h"
 
+
+/*
+ * Module functions
+ */
+
 /* Documented in header. */
 zvalue hidPutValue(zvalue token, zvalue value) {
     return datMapletPut(token, STR_VALUE, value);
