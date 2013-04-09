@@ -15,7 +15,7 @@
  */
 
 /* Documented in header. */
-zvalue samAllocValue(ztype type, zint size, zint extraBytes) {
+zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     if (size < 0) {
         die("Invalid value size: %lld", size);
     }

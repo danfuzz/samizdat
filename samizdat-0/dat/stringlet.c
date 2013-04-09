@@ -27,7 +27,7 @@ static void decodeStringToValues(const char *string, zint stringBytes,
 
     while (string < stringEnd) {
         string = utf8DecodeOne(string, stringEnd - string, &one);
-        *result = samIntletFromInt(one);
+        *result = datIntletFromInt(one);
         result++;
     }
 }
@@ -38,19 +38,19 @@ static void decodeStringToValues(const char *string, zint stringBytes,
  */
 
 /* Documented in header. */
-void samAssertStringlet(zvalue value) {
-    samAssertListlet(value);
+void datAssertStringlet(zvalue value) {
+    datAssertListlet(value);
 
-    zint size = samSize(value);
+    zint size = datSize(value);
     for (zint i = 0; i < size; i++) {
-        zvalue one = samListletGet(value, i);
-        zint v = samIntletToInt(one);
+        zvalue one = datListletGet(value, i);
+        zint v = datIntletToInt(one);
         uniAssertValid(v);
     }
 }
 
 /* Documented in header. */
-zvalue samStringletFromUtf8String(const char *string, zint stringBytes) {
+zvalue datStringletFromUtf8String(const char *string, zint stringBytes) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
     } else if (stringBytes < 0) {
@@ -58,21 +58,21 @@ zvalue samStringletFromUtf8String(const char *string, zint stringBytes) {
     }
 
     zint decodedSize = utf8DecodeStringSize(string, stringBytes);
-    zvalue result = samAllocListlet(decodedSize);
+    zvalue result = datAllocListlet(decodedSize);
 
-    decodeStringToValues(string, stringBytes, samListletElems(result));
+    decodeStringToValues(string, stringBytes, datListletElems(result));
     return result;
 }
 
 /* Documented in header. */
-zint samStringletUtf8Size(zvalue stringlet) {
-    samAssertStringlet(stringlet);
+zint datStringletUtf8Size(zvalue stringlet) {
+    datAssertStringlet(stringlet);
 
-    zint size = samSize(stringlet);
+    zint size = datSize(stringlet);
     zint result = 0;
 
     for (zint i = 0; i < size; i++) {
-        zint ch = samListletGetInt(stringlet, i);
+        zint ch = datListletGetInt(stringlet, i);
         result += (utf8EncodeOne(NULL, ch) - (char *) NULL);
     }
 
@@ -80,13 +80,13 @@ zint samStringletUtf8Size(zvalue stringlet) {
 }
 
 /* Documented in header. */
-void samStringletEncodeUtf8(zvalue stringlet, char *utf8) {
-    samAssertStringlet(stringlet);
+void datStringletEncodeUtf8(zvalue stringlet, char *utf8) {
+    datAssertStringlet(stringlet);
 
-    zint size = samSize(stringlet);
+    zint size = datSize(stringlet);
 
     for (zint i = 0; i < size; i++) {
-        zint ch = samListletGetInt(stringlet, i);
+        zint ch = datListletGetInt(stringlet, i);
         utf8 = utf8EncodeOne(utf8, ch);
     }
 }

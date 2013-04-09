@@ -36,14 +36,14 @@ static zint bitIndex(zint n) {
 static zvalue allocIntlet(zint bitSize) {
     zint wordCount = wordIndex(bitSize + BITS_PER_WORD - 1);
 
-    return samAllocValue(SAM_INTLET, wordCount * BITS_PER_WORD, wordCount);
+    return datAllocValue(SAM_INTLET, wordCount * BITS_PER_WORD, wordCount);
 }
 
 /**
  * Gets the elements array from an intlet.
  */
 static zint *intletElems(zvalue intlet) {
-    samAssertIntlet(intlet);
+    datAssertIntlet(intlet);
 
     return ((SamIntlet *) intlet)->elems;
 }
@@ -54,9 +54,9 @@ static zint *intletElems(zvalue intlet) {
  */
 
 /* Documented in header. */
-zcomparison samIntletCompare(zvalue v1, zvalue v2) {
-    bool neg1 = samIntletSign(v1);
-    bool neg2 = samIntletSign(v2);
+zcomparison datIntletCompare(zvalue v1, zvalue v2) {
+    bool neg1 = datIntletSign(v1);
+    bool neg2 = datIntletSign(v2);
 
     if (neg1 != neg2) {
         return neg1 ? ZLESS : ZMORE;
@@ -67,13 +67,13 @@ zcomparison samIntletCompare(zvalue v1, zvalue v2) {
     // particular, the unsigned interpretations of two negative numbers
     // sort the same as the corresponding negative numbers).
 
-    zint sz1 = samSize(v1);
-    zint sz2 = samSize(v2);
+    zint sz1 = datSize(v1);
+    zint sz2 = datSize(v2);
     zint sz = (sz1 > sz2) ? sz1 : sz2;
 
     for (zint i = sz - 1; i >= 0; i--) {
-        zint n1 = samIntletGetInt(v1, i);
-        zint n2 = samIntletGetInt(v2, i);
+        zint n1 = datIntletGetInt(v1, i);
+        zint n2 = datIntletGetInt(v2, i);
         if (n1 < n2) {
             return ZLESS;
         } else if (n1 > n2) {
@@ -90,50 +90,50 @@ zcomparison samIntletCompare(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-bool samIntletGetBit(zvalue intlet, zint n) {
+bool datIntletGetBit(zvalue intlet, zint n) {
     zint word = wordIndex(n);
     zint bit = bitIndex(n);
-    zint elem = samIntletGetInt(intlet, word);
+    zint elem = datIntletGetInt(intlet, word);
 
     return (bool) ((elem >> bit) & 1);
 }
 
 /* Documented in header. */
-zint samIntletGetByte(zvalue intlet, zint n) {
+zint datIntletGetByte(zvalue intlet, zint n) {
     n *= BITS_PER_BYTE;
 
     zint word = wordIndex(n);
     zint bit = bitIndex(n);
-    zint elem = samIntletGetInt(intlet, word);
+    zint elem = datIntletGetInt(intlet, word);
 
     return (elem >> bit) & 0xff;
 }
 
 /* Documented in header. */
-zint samIntletGetInt(zvalue intlet, zint n) {
-    samAssertIntlet(intlet);
+zint datIntletGetInt(zvalue intlet, zint n) {
+    datAssertIntlet(intlet);
 
-    zint wordSize = wordIndex(samSize(intlet));
+    zint wordSize = wordIndex(datSize(intlet));
     if (n < wordSize) {
         return intletElems(intlet)[n];
     } else {
-        return samIntletSign(intlet) ? (zint) -1 : 0;
+        return datIntletSign(intlet) ? (zint) -1 : 0;
     }
 }
 
 /* Documented in header. */
-bool samIntletSign(zvalue intlet) {
-    zint size = samSize(intlet);
+bool datIntletSign(zvalue intlet) {
+    zint size = datSize(intlet);
 
     if (size == 0) {
         return false;
     }
 
-    return samIntletGetBit(intlet, size - 1);
+    return datIntletGetBit(intlet, size - 1);
 }
 
 /* Documented in header. */
-zvalue samIntletFromInt(zint value) {
+zvalue datIntletFromInt(zint value) {
     zvalue result = allocIntlet(1);
 
     intletElems(result)[0] = value;
@@ -141,12 +141,12 @@ zvalue samIntletFromInt(zint value) {
 }
 
 /* Documented in header. */
-zint samIntletToInt(zvalue intlet) {
-    samAssertIntlet(intlet);
+zint datIntletToInt(zvalue intlet) {
+    datAssertIntlet(intlet);
 
     // Note: This relies on the intlet being in optimal form (no
     // superfluous high-order words).
-    zint size = samSize(intlet);
+    zint size = datSize(intlet);
 
     if (size > BITS_PER_WORD) {
         die("Out-of-range intlet.");

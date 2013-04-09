@@ -49,7 +49,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : samListletGetInt(state->str, state->at);
+    return isEof(state) ? -1 : datListletGetInt(state->str, state->at);
 }
 
 /**
@@ -117,7 +117,7 @@ static zvalue tokenizeInteger(ParseState *state) {
         die("Invalid integer token (no digits).");
     }
 
-    zvalue intlet = samIntletFromInt(negative ? -value : value);
+    zvalue intlet = datIntletFromInt(negative ? -value : value);
     return valueToken(TOK_INTEGER, intlet);
 }
 
@@ -130,7 +130,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
 
     // First character is guaranteed valid, because this function
     // wouldn't have been called otherwise.
-    chars[0] = samIntletFromInt(read(state));
+    chars[0] = datIntletFromInt(read(state));
 
     for (;;) {
         zint ch = peek(state);
@@ -143,12 +143,12 @@ static zvalue tokenizeIdentifier(ParseState *state) {
             die("Overlong identifier token.");
         }
 
-        chars[size] = samIntletFromInt(ch);
+        chars[size] = datIntletFromInt(ch);
         size++;
         read(state);
     }
 
-    zvalue stringlet = samListletFromValues(chars, size);
+    zvalue stringlet = datListletFromValues(chars, size);
     return valueToken(TOK_IDENTIFIER, stringlet);
 }
 
@@ -184,12 +184,12 @@ static zvalue tokenizeString(ParseState *state) {
             }
         }
 
-        chars[size] = samIntletFromInt(ch);
+        chars[size] = datIntletFromInt(ch);
         size++;
         read(state);
     }
 
-    zvalue stringlet = samListletFromValues(chars, size);
+    zvalue stringlet = datListletFromValues(chars, size);
     return valueToken(TOK_STRING, stringlet);
 }
 
@@ -249,7 +249,7 @@ zvalue tokenize(zvalue stringlet) {
     constsInit();
 
     zvalue result[MAX_TOKENS];
-    ParseState state = { stringlet, samSize(stringlet), 0 };
+    ParseState state = { stringlet, datSize(stringlet), 0 };
     zint out = 0;
 
     for (;;) {
@@ -265,5 +265,5 @@ zvalue tokenize(zvalue stringlet) {
         out++;
     }
 
-    return samListletFromValues(result, out);
+    return datListletFromValues(result, out);
 }

@@ -18,7 +18,7 @@ static zint theNextId = 0;
  * Gets the id of a uniqlet.
  */
 static zint uniqletId(zvalue uniqlet) {
-    samAssertUniqlet(uniqlet);
+    datAssertUniqlet(uniqlet);
 
     return ((SamUniqlet *) uniqlet)->id;
 }
@@ -29,7 +29,7 @@ static zint uniqletId(zvalue uniqlet) {
  */
 
 /* Documented in header. */
-zcomparison samUniqletCompare(zvalue v1, zvalue v2) {
+zcomparison datUniqletCompare(zvalue v1, zvalue v2) {
     zint id1 = uniqletId(v1);
     zint id2 = uniqletId(v2);
 
@@ -48,8 +48,8 @@ zcomparison samUniqletCompare(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zvalue samUniqlet(void) {
-    zvalue result = samAllocValue(SAM_UNIQLET, 0, sizeof(zint));
+zvalue datUniqlet(void) {
+    zvalue result = datAllocValue(SAM_UNIQLET, 0, sizeof(zint));
 
     if (theNextId < 0) {
         // Shouldn't be possible, but just in case...

@@ -12,9 +12,9 @@
  */
 
 /* Documented in header. */
-zcomparison samCompare(zvalue v1, zvalue v2) {
-    ztype t1 = samType(v1);
-    ztype t2 = samType(v2);
+zcomparison datCompare(zvalue v1, zvalue v2) {
+    ztype t1 = datType(v1);
+    ztype t2 = datType(v2);
 
     if (v1 == v2) {
         return ZEQUAL;
@@ -25,10 +25,10 @@ zcomparison samCompare(zvalue v1, zvalue v2) {
     }
 
     switch (t1) {
-        case SAM_INTLET:  return samIntletCompare(v1, v2);
-        case SAM_LISTLET: return samListletCompare(v1, v2);
-        case SAM_MAPLET:  return samMapletCompare(v1, v2);
-        case SAM_UNIQLET: return samUniqletCompare(v1, v2);
+        case SAM_INTLET:  return datIntletCompare(v1, v2);
+        case SAM_LISTLET: return datListletCompare(v1, v2);
+        case SAM_MAPLET:  return datMapletCompare(v1, v2);
+        case SAM_UNIQLET: return datUniqletCompare(v1, v2);
     }
 
     die("Invalid type (shouldn't happen).");

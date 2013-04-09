@@ -86,36 +86,36 @@ typedef struct {
  * indicated number of extra bytes. The `SamValue` header is
  * initialized with the indicated type and size.
  */
-zvalue samAllocValue(ztype type, zint size, zint extraBytes);
+zvalue datAllocValue(ztype type, zint size, zint extraBytes);
 
 /**
  * Allocates a listlet of the given size.
  */
-zvalue samAllocListlet(zint size);
+zvalue datAllocListlet(zint size);
 
 /**
  * Gets the array of `zvalue` elements from a listlet.
  */
-zvalue *samListletElems(zvalue listlet);
+zvalue *datListletElems(zvalue listlet);
 
 /**
  * Compares intlets.
  */
-zcomparison samIntletCompare(zvalue v1, zvalue v2);
+zcomparison datIntletCompare(zvalue v1, zvalue v2);
 
 /**
  * Compares listlets.
  */
-zcomparison samListletCompare(zvalue v1, zvalue v2);
+zcomparison datListletCompare(zvalue v1, zvalue v2);
 
 /**
  * Compares maplets.
  */
-zcomparison samMapletCompare(zvalue v1, zvalue v2);
+zcomparison datMapletCompare(zvalue v1, zvalue v2);
 
 /**
  * Compares uniqlets.
  */
-zcomparison samUniqletCompare(zvalue v1, zvalue v2);
+zcomparison datUniqletCompare(zvalue v1, zvalue v2);
 
 #endif

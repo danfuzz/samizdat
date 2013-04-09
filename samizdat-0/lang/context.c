@@ -35,7 +35,7 @@ zcontext ctxNewChild(zcontext parent, zvalue locals) {
 zcontext langNewContext(void) {
     zcontext ctx = ctxNewEmpty();
 
-    ctx->locals = samMapletEmpty();
+    ctx->locals = datMapletEmpty();
     ctx->reg = funNew();
 
     return ctx;

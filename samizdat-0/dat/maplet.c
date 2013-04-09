@@ -21,14 +21,14 @@ static zvalue theEmptyMaplet = NULL;
  * Allocates a maplet of the given size.
  */
 static zvalue allocMaplet(zint size) {
-    return samAllocValue(SAM_MAPLET, size, size * sizeof(zmapping));
+    return datAllocValue(SAM_MAPLET, size, size * sizeof(zmapping));
 }
 
 /**
  * Gets the elements array from a maplet.
  */
 static zmapping *mapletElems(zvalue maplet) {
-    samAssertMaplet(maplet);
+    datAssertMaplet(maplet);
 
     return ((SamMaplet *) maplet)->elems;
 }
@@ -39,15 +39,15 @@ static zmapping *mapletElems(zvalue maplet) {
  */
 
 /* Documented in header. */
-zcomparison samMapletCompare(zvalue v1, zvalue v2) {
+zcomparison datMapletCompare(zvalue v1, zvalue v2) {
     zmapping *e1 = mapletElems(v1);
     zmapping *e2 = mapletElems(v2);
-    zint sz1 = samSize(v1);
-    zint sz2 = samSize(v2);
+    zint sz1 = datSize(v1);
+    zint sz2 = datSize(v2);
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zcomparison result = samCompare(e1[i].key, e2[i].key);
+        zcomparison result = datCompare(e1[i].key, e2[i].key);
         if (result != ZEQUAL) {
             return result;
         }
@@ -60,7 +60,7 @@ zcomparison samMapletCompare(zvalue v1, zvalue v2) {
     }
 
     for (zint i = 0; i < sz; i++) {
-        zcomparison result = samCompare(e1[i].value, e2[i].value);
+        zcomparison result = datCompare(e1[i].value, e2[i].value);
         if (result != ZEQUAL) {
             return result;
         }
@@ -75,23 +75,23 @@ zcomparison samMapletCompare(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zmapping samMapletGetMapping(zvalue maplet, zint n) {
-    samAssertNth(maplet, n);
+zmapping datMapletGetMapping(zvalue maplet, zint n) {
+    datAssertNth(maplet, n);
 
     return mapletElems(maplet)[n];
 }
 
 /* Documented in header. */
-zvalue samMapletGet(zvalue maplet, zvalue key) {
-    zint index = samMapletFind(maplet, key);
+zvalue datMapletGet(zvalue maplet, zvalue key) {
+    zint index = datMapletFind(maplet, key);
 
-    return (index < 0) ? NULL : samMapletGetMapping(maplet, index).value;
+    return (index < 0) ? NULL : datMapletGetMapping(maplet, index).value;
 }
 
 /* Documented in header. */
-zint samMapletFind(zvalue maplet, zvalue key) {
-    samAssertValid(key);
-    samAssertMaplet(maplet);
+zint datMapletFind(zvalue maplet, zvalue key) {
+    datAssertValid(key);
+    datAssertMaplet(maplet);
 
     zmapping *elems = mapletElems(maplet);
     zint min = 0;
@@ -99,7 +99,7 @@ zint samMapletFind(zvalue maplet, zvalue key) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        switch (samCompare(key, elems[guess].key)) {;
+        switch (datCompare(key, elems[guess].key)) {;
             case ZLESS: max = guess - 1; break;
             case ZMORE: min = guess + 1; break;
             default:    return guess;
@@ -115,7 +115,7 @@ zint samMapletFind(zvalue maplet, zvalue key) {
 }
 
 /* Documented in header. */
-zvalue samMapletEmpty(void) {
+zvalue datMapletEmpty(void) {
     if (theEmptyMaplet == NULL) {
         theEmptyMaplet = allocMaplet(0);
     }
@@ -124,9 +124,9 @@ zvalue samMapletEmpty(void) {
 }
 
 /* Documented in header. */
-zvalue samMapletPut(zvalue maplet, zvalue key, zvalue value) {
-    zint index = samMapletFind(maplet, key);
-    zint size = samSize(maplet);
+zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
+    zint index = datMapletFind(maplet, key);
+    zint size = datSize(maplet);
     zvalue result;
 
     if (index >= 0) {

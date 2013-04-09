@@ -23,10 +23,10 @@ enum {
 
 /* Documented in header. */
 zvalue readFile(zvalue fileName) {
-    zint nameSize = samStringletUtf8Size(fileName);
+    zint nameSize = datStringletUtf8Size(fileName);
     char nameUtf[nameSize + 1];
 
-    samStringletEncodeUtf8(fileName, nameUtf);
+    datStringletEncodeUtf8(fileName, nameUtf);
     nameUtf[nameSize] = '\0';
 
     FILE *in = fopen((char *) nameUtf, "r");
@@ -47,5 +47,5 @@ zvalue readFile(zvalue fileName) {
 
     fclose(in);
 
-    return samStringletFromUtf8String(buf, amt);
+    return datStringletFromUtf8String(buf, amt);
 }

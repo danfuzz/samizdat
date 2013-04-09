@@ -21,7 +21,7 @@
 
 /**
  * Possible low-level data types. Note: The enum ordering is the same
- * as the type-based ordering for comparing values. See `samCompare()`.
+ * as the type-based ordering for comparing values. See `datCompare()`.
  */
 typedef enum {
     SAM_INTLET = 1,
@@ -56,7 +56,7 @@ typedef struct {
  * but not exhaustive, tests. If not valid, this aborts the process
  * with a diagnostic message.
  */
-void samAssertValid(zvalue value);
+void datAssertValid(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and that its size
@@ -64,47 +64,47 @@ void samAssertValid(zvalue value);
  * `n >= 0`. Note that all non-negative `n` are valid for accessing
  * intlets (their size notwithstanding).
  */
-void samAssertNth(zvalue value, zint n);
+void datAssertNth(zvalue value, zint n);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is an intlet. If not, this aborts the process
  * with a diagnostic message.
  */
-void samAssertIntlet(zvalue value);
+void datAssertIntlet(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a listlet. If not, this aborts the process
  * with a diagnostic message.
  */
-void samAssertListlet(zvalue value);
+void datAssertListlet(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a maplet. If not, this aborts the process
  * with a diagnostic message.
  */
-void samAssertMaplet(zvalue value);
+void datAssertMaplet(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a uniqlet. If not, this aborts the process
  * with a diagnostic message.
  */
-void samAssertUniqlet(zvalue value);
+void datAssertUniqlet(zvalue value);
 
 /**
  * Asserts that the given value is a valid listlet, and furthermore
  * that all elements in it are intlets of valid Unicode code points.
  */
-void samAssertStringlet(zvalue value);
+void datAssertStringlet(zvalue value);
 
 /**
  * Gets the low-level data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */
-ztype samType(zvalue value);
+ztype datType(zvalue value);
 
 /**
  * Gets the size of the given value. `value` must be a valid value.
@@ -119,7 +119,7 @@ ztype samType(zvalue value);
  *
  * * `0` for all uniqlets.
  */
-zint samSize(zvalue value);
+zint datSize(zvalue value);
 
 
 /*
@@ -133,7 +133,7 @@ zint samSize(zvalue value);
  * the value's size, then the return value is the sign bit of the
  * value.
  */
-bool samIntletGetBit(zvalue intlet, zint n);
+bool datIntletGetBit(zvalue intlet, zint n);
 
 /**
  * Given an intlet, returns the `n`th byte, counting from the least
@@ -141,7 +141,7 @@ bool samIntletGetBit(zvalue intlet, zint n);
  * byte beyond the value's size, then the return value is the sign byte
  * of the value.
  */
-zint samIntletGetByte(zvalue intlet, zint n);
+zint datIntletGetByte(zvalue intlet, zint n);
 
 /**
  * Given an intlet, returns the `n`th `zint`-sized word, counting from
@@ -149,24 +149,24 @@ zint samIntletGetByte(zvalue intlet, zint n);
  * references a word beyond the value's size, then the return value is
  * the sign word of the value.
  */
-zint samIntletGetInt(zvalue intlet, zint n);
+zint datIntletGetInt(zvalue intlet, zint n);
 
 /**
  * Gets the sign of the given intlet. `intlet` must be an
  * intlet. Returns `false` for non-negative, and `true` for negative.
  */
-bool samIntletSign(zvalue intlet);
+bool datIntletSign(zvalue intlet);
 
 /**
  * Gets an intlet value equal to the given `zint`.
  */
-zvalue samIntletFromInt(zint value);
+zvalue datIntletFromInt(zint value);
 
 /**
  * Gets a `zint` equal to the given intlet value. `intlet` must be an
  * intlet. It is an error if the value is out of range.
  */
-zint samIntletToInt(zvalue intlet);
+zint datIntletToInt(zvalue intlet);
 
 
 /*
@@ -175,32 +175,32 @@ zint samIntletToInt(zvalue intlet);
 
 /**
  * Given a listlet, returns the `n`th element. `listlet` must be a
- * listlet, and `n` must be `< samSize(value)`.
+ * listlet, and `n` must be `< datSize(value)`.
  */
-zvalue samListletGet(zvalue listlet, zint n);
+zvalue datListletGet(zvalue listlet, zint n);
 
 /**
  * Gets the `zint` of the nth element of the given listlet. `listlet`
- * must be a listlet, `n` must be `< samSize(value)`, and the element
+ * must be a listlet, `n` must be `< datSize(value)`, and the element
  * gotten must be an intlet in range to be represented as a `zint`.
  */
-zint samListletGetInt(zvalue stringlet, zint n);
+zint datListletGetInt(zvalue stringlet, zint n);
 
 /**
  * Gets the value `@[]` (that is, the empty listlet).
  */
-zvalue samListletEmpty(void);
+zvalue datListletEmpty(void);
 
 /**
  * Gets the listlet resulting from appending the given value to the
  * given listlet.
  */
-zvalue samListletAppend(zvalue listlet, zvalue value);
+zvalue datListletAppend(zvalue listlet, zvalue value);
 
 /**
  * Constructs a listlet from an array of `zvalue`s of the given size.
  */
-zvalue samListletFromValues(zvalue *values, zint size);
+zvalue datListletFromValues(zvalue *values, zint size);
 
 
 /*
@@ -209,38 +209,38 @@ zvalue samListletFromValues(zvalue *values, zint size);
 
 /**
  * Given a maplet, returns the `n`th mapping. `maplet` must be a
- * maplet, and `n` must be `< samSize(value)`.
+ * maplet, and `n` must be `< datSize(value)`.
  *
  * Note: When retrieved in ordinal order, keys are always returned in
  * sorted order.
  */
-zmapping samMapletGetMapping(zvalue maplet, zint n);
+zmapping datMapletGetMapping(zvalue maplet, zint n);
 
 /**
  * Given a maplet, find the mapping of the given key and return the
  * corresponding value, or `NULL` if there is no such key. `maplet`
  * must be a maplet, and `key` must be a valid value.
  */
-zvalue samMapletGet(zvalue maplet, zvalue key);
+zvalue datMapletGet(zvalue maplet, zvalue key);
 
 /**
  * Given a maplet, find the index of the given key. `maplet` must be a
  * maplet. Returns the index of the key or `~insertionIndex` (a
  * negative number) if not found.
  */
-zint samMapletFind(zvalue maplet, zvalue key);
+zint datMapletFind(zvalue maplet, zvalue key);
 
 /**
  * Gets the value `@{}` (that is, the empty maplet).
  */
-zvalue samMapletEmpty(void);
+zvalue datMapletEmpty(void);
 
 /**
  * Gets the maplet resulting from putting the given mapping into the
  * given maplet. This can either add a new mapping or replace an
  * existing mapping.
  */
-zvalue samMapletPut(zvalue maplet, zvalue key, zvalue value);
+zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value);
 
 
 /*
@@ -252,7 +252,7 @@ zvalue samMapletPut(zvalue maplet, zvalue key, zvalue value);
  * produce a value unequal to any other call to this function (in any
  * given process).
  */
-zvalue samUniqlet(void);
+zvalue datUniqlet(void);
 
 
 /*
@@ -265,19 +265,19 @@ zvalue samUniqlet(void);
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.
  */
-zvalue samStringletFromUtf8String(const char *string, zint stringBytes);
+zvalue datStringletFromUtf8String(const char *string, zint stringBytes);
 
 /**
  * Gets the UTF-8 encoded size of the given stringlet, in bytes.
  */
-zint samStringletUtf8Size(zvalue stringlet);
+zint datStringletUtf8Size(zvalue stringlet);
 
 /**
  * Encodes the given stringlet as UTF-8, storing it into the given
  * `char *` array. The array must be long enough to hold the result.
  * It is *not* `'\0'`-terminated.
  */
-void samStringletEncodeUtf8(zvalue stringlet, char *utf8);
+void datStringletEncodeUtf8(zvalue stringlet, char *utf8);
 
 
 /*
@@ -306,6 +306,6 @@ void samStringletEncodeUtf8(zvalue stringlet, char *utf8);
  *   Any two uniqlets have a consistent and transitive &mdash; but
  *   otherwise arbitrary &mdash; comparison.
  */
-zcomparison samCompare(zvalue v1, zvalue v2);
+zcomparison datCompare(zvalue v1, zvalue v2);
 
 #endif

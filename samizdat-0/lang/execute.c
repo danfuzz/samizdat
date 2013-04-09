@@ -46,10 +46,10 @@ static void execStatements(zcontext ctx, zvalue statements);
  */
 zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     Closure *closure = state;
-    zvalue formals = samMapletGet(closure->function, STR_FORMALS);
-    zvalue statements = samMapletGet(closure->function, STR_STATEMENTS);
-    zint formalsSize = samSize(formals);
-    zvalue locals = samMapletEmpty();
+    zvalue formals = datMapletGet(closure->function, STR_FORMALS);
+    zvalue statements = datMapletGet(closure->function, STR_STATEMENTS);
+    zint formalsSize = datSize(formals);
+    zvalue locals = datMapletEmpty();
 
     if (argCount < formalsSize) {
         die("Too few arguments to function: %lld < %lld",
@@ -57,8 +57,8 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     }
 
     for (zint i = 0; i < formalsSize; i++) {
-        zvalue name = samListletGet(formals, i);
-        locals = samMapletPut(locals, name, args[i]);
+        zvalue name = datListletGet(formals, i);
+        locals = datMapletPut(locals, name, args[i]);
     }
 
     zcontext ctx = ctxNewChild(closure->parent, locals);
@@ -88,16 +88,16 @@ static zvalue execCall(zcontext ctx, zvalue call) {
     assertType(call, STR_CALL);
 
     call = highValue(call);
-    zvalue function = samMapletGet(call, STR_FUNCTION);
-    zvalue actuals = samMapletGet(call, STR_ACTUALS);
+    zvalue function = datMapletGet(call, STR_FUNCTION);
+    zvalue actuals = datMapletGet(call, STR_ACTUALS);
 
     zvalue id = execExpression(ctx, function);
-    samAssertUniqlet(id);
+    datAssertUniqlet(id);
 
-    zint argCount = samSize(actuals);
+    zint argCount = datSize(actuals);
     zvalue args[argCount];
     for (zint i = 0; i < argCount; i++) {
-        zvalue one = samListletGet(actuals, i);
+        zvalue one = datListletGet(actuals, i);
         args[i] = execExpression(ctx, one);
     }
 
@@ -110,7 +110,7 @@ static zvalue execCall(zcontext ctx, zvalue call) {
 static zvalue execUniqlet(zcontext ctx, zvalue uniqlet) {
     assertType(uniqlet, STR_UNIQLET);
 
-    return samUniqlet();
+    return datUniqlet();
 }
 
 /**
@@ -120,14 +120,14 @@ static zvalue execMaplet(zcontext ctx, zvalue maplet) {
     assertType(maplet, STR_MAPLET);
 
     zvalue elems = highValue(maplet);
-    zint size = samSize(elems);
-    zvalue result = samListletEmpty();
+    zint size = datSize(elems);
+    zvalue result = datListletEmpty();
 
     for (zint i = 0; i < size; i++) {
-        zvalue one = samListletGet(elems, i);
-        zvalue key = samMapletGet(one, STR_KEY);
-        zvalue value = samMapletGet(one, STR_VALUE);
-        result = samMapletPut(result,
+        zvalue one = datListletGet(elems, i);
+        zvalue key = datMapletGet(one, STR_KEY);
+        zvalue value = datMapletGet(one, STR_VALUE);
+        result = datMapletPut(result,
                               execExpression(ctx, key),
                               execExpression(ctx, value));
     }
@@ -142,12 +142,12 @@ static zvalue execListlet(zcontext ctx, zvalue listlet) {
     assertType(listlet, STR_LISTLET);
 
     zvalue elems = highValue(listlet);
-    zint size = samSize(elems);
-    zvalue result = samListletEmpty();
+    zint size = datSize(elems);
+    zvalue result = datListletEmpty();
 
     for (zint i = 0; i < size; i++) {
-        zvalue one = samListletGet(elems, i);
-        result = samListletAppend(result, execExpression(ctx, one));
+        zvalue one = datListletGet(elems, i);
+        result = datListletAppend(result, execExpression(ctx, one));
     }
 
     return result;
@@ -162,7 +162,7 @@ static zvalue execVarRef(zcontext ctx, zvalue varRef) {
     zvalue name = highValue(varRef);
 
     for (/* ctx */; ctx != NULL; ctx = ctx->parent) {
-        zvalue found = samMapletGet(ctx->locals, name);
+        zvalue found = datMapletGet(ctx->locals, name);
         if (found != NULL) {
             return found;
         }
@@ -203,14 +203,14 @@ static void execVarDef(zcontext ctx, zvalue varDef) {
     assertType(varDef, STR_VAR_DEF);
 
     zvalue nameValue = highValue(varDef);
-    zvalue name = samMapletGet(nameValue, STR_NAME);
-    zvalue value = samMapletGet(nameValue, STR_VALUE);
+    zvalue name = datMapletGet(nameValue, STR_NAME);
+    zvalue value = datMapletGet(nameValue, STR_VALUE);
 
-    if (samMapletGet(ctx->locals, name) != NULL) {
+    if (datMapletGet(ctx->locals, name) != NULL) {
         die("Duplicate assignment.");
     }
 
-    ctx->locals = samMapletPut(ctx->locals, name, execExpression(ctx, value));
+    ctx->locals = datMapletPut(ctx->locals, name, execExpression(ctx, value));
 }
 
 /**
@@ -229,10 +229,10 @@ static void execStatements(zcontext ctx, zvalue statements) {
     assertType(statements, STR_STATEMENTS);
 
     statements = highValue(statements);
-    zint size = samSize(statements);
+    zint size = datSize(statements);
 
     for (zint i = 0; (i < size) && (ctx->toReturn == NULL); i++) {
-        zvalue one = samListletGet(statements, i);
+        zvalue one = datListletGet(statements, i);
         zvalue type = highType(one);
         if (hasType(one, STR_EXPRESSION)) {
             execExpression(ctx, one);

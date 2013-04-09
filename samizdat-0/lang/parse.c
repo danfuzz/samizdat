@@ -44,7 +44,7 @@ static zvalue read(ParseState *state) {
 
     note("=== read   at %lld", state->at);
 
-    zvalue result = samListletGet(state->tokens, state->at);
+    zvalue result = datListletGet(state->tokens, state->at);
     state->at++;
 
     return result;
@@ -58,11 +58,11 @@ static zvalue readMatch(ParseState *state, zvalue token) {
         return NULL;
     }
 
-    zvalue result = samListletGet(state->tokens, state->at);
+    zvalue result = datListletGet(state->tokens, state->at);
     zvalue tokenType = highType(token);
     zvalue resultType = highType(result);
 
-    if (samCompare(tokenType, resultType) != 0) {
+    if (datCompare(tokenType, resultType) != 0) {
         return NULL;
     }
 
@@ -101,17 +101,17 @@ static zvalue parseStatements(ParseState *state);
  * Parses `atom+`. Returns a listlet of parsed expressions.
  */
 static zvalue parseAtomPlus(ParseState *state) {
-    zvalue result = samListletEmpty();
+    zvalue result = datListletEmpty();
 
     for (;;) {
         zvalue atom = parseAtom(state);
         if (atom == NULL) {
             break;
         }
-        result = samListletAppend(result, atom);
+        result = datListletAppend(result, atom);
     }
 
-    if (samSize(result) == 0) {
+    if (datSize(result) == 0) {
         return NULL;
     }
 
@@ -133,7 +133,7 @@ static zvalue parseCall1(ParseState *state) {
         return NULL;
     }
 
-    return samListletEmpty();
+    return datListletEmpty();
 }
 
 /**
@@ -158,8 +158,8 @@ static zvalue parseCall(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = samMapletPut(samMapletEmpty(), STR_FUNCTION, function);
-    value = samMapletPut(value, STR_ACTUALS, actuals);
+    zvalue value = datMapletPut(datMapletEmpty(), STR_FUNCTION, function);
+    value = datMapletPut(value, STR_ACTUALS, actuals);
     return valueToken(TOK_CALL, value);
 }
 
@@ -168,7 +168,7 @@ static zvalue parseCall(ParseState *state) {
  */
 static zvalue parseFormals(ParseState *state) {
     zint mark = cursor(state);
-    zvalue identifiers = samListletEmpty();
+    zvalue identifiers = datListletEmpty();
 
     for (;;) {
         zvalue identifier = readMatch(state, TOK_IDENTIFIER);
@@ -176,10 +176,10 @@ static zvalue parseFormals(ParseState *state) {
             break;
         }
         identifier = highValue(identifier);
-        identifiers = samListletAppend(identifiers, identifier);
+        identifiers = datListletAppend(identifiers, identifier);
     }
 
-    if (samSize(identifiers) != 0) {
+    if (datSize(identifiers) != 0) {
         if (readMatch(state, TOK_CH_COLONCOLON) == NULL) {
             reset(state, mark);
             return NULL;
@@ -208,8 +208,8 @@ static zvalue parseFunction(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = samMapletPut(samMapletEmpty(), STR_FORMALS, formals);
-    value = samMapletPut(value, STR_STATEMENTS, statements);
+    zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
+    value = datMapletPut(value, STR_STATEMENTS, statements);
     return valueToken(TOK_FUNCTION, value);
 }
 
@@ -247,8 +247,8 @@ static zvalue parseBinding(ParseState *state) {
         return NULL;
     }
 
-    zvalue binding = samMapletPut(samMapletEmpty(), STR_KEY, key);
-    return samMapletPut(binding, STR_VALUE, value);
+    zvalue binding = datMapletPut(datMapletEmpty(), STR_KEY, key);
+    return datMapletPut(binding, STR_VALUE, value);
 }
 
 /**
@@ -266,7 +266,7 @@ static zvalue parseMaplet(ParseState *state) {
         return NULL;
     }
 
-    zvalue bindings = samListletEmpty();
+    zvalue bindings = datListletEmpty();
 
     for (;;) {
         zvalue binding = parseBinding(state);
@@ -275,10 +275,10 @@ static zvalue parseMaplet(ParseState *state) {
             break;
         }
 
-        bindings = samListletAppend(bindings, binding);
+        bindings = datListletAppend(bindings, binding);
     }
 
-    if (samSize(bindings) == 0) {
+    if (datSize(bindings) == 0) {
         reset(state, mark);
         return NULL;
     }
@@ -316,7 +316,7 @@ static zvalue parseEmptyMaplet(ParseState *state) {
         return NULL;
     }
 
-    return valueToken(TOK_LITERAL, samMapletEmpty());
+    return valueToken(TOK_LITERAL, datMapletEmpty());
 }
 
 /**
@@ -369,7 +369,7 @@ static zvalue parseEmptyListlet(ParseState *state) {
         return NULL;
     }
 
-    return valueToken(TOK_LITERAL, samListletEmpty());
+    return valueToken(TOK_LITERAL, datListletEmpty());
 }
 
 /**
@@ -465,8 +465,8 @@ static zvalue parseVarDef(ParseState *state) {
     }
 
     zvalue name = highValue(identifier);
-    zvalue value = samMapletPut(samMapletEmpty(), STR_NAME, name);
-    value = samMapletPut(value, STR_VALUE, expression);
+    zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
+    value = datMapletPut(value, STR_VALUE, expression);
     return valueToken(TOK_VAR_DEF, value);
 }
 
@@ -575,14 +575,14 @@ static zvalue parseStatement(ParseState *state) {
  * Parses a `statements` node.
  */
 static zvalue parseStatements(ParseState *state) {
-    zvalue result = samListletEmpty();
+    zvalue result = datListletEmpty();
 
     for (;;) {
         zvalue statement = parseStatement(state);
         if (statement == NULL) {
             break;
         }
-        result = samListletAppend(result, statement);
+        result = datListletAppend(result, statement);
     }
 
     return valueToken(TOK_STATEMENTS, result);
@@ -595,7 +595,7 @@ static zvalue parseStatements(ParseState *state) {
 
 /* Documented in header. */
 zvalue parse(zvalue tokens) {
-    ParseState state = { tokens, samSize(tokens), 0 };
+    ParseState state = { tokens, datSize(tokens), 0 };
     zvalue result = parseStatements(&state);
 
     if (!isEof(&state)) {

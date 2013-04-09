@@ -29,7 +29,7 @@ static const char *typeName(ztype type) {
  * Asserts a particular type.
  */
 static void assertType(zvalue value, ztype type) {
-    samAssertValid(value);
+    datAssertValid(value);
 
     if (value->type == type) {
         return;
@@ -45,7 +45,7 @@ static void assertType(zvalue value, ztype type) {
  */
 
 /* Documented in header. */
-void samAssertValid(zvalue value) {
+void datAssertValid(zvalue value) {
     zint bits = (zint) (void *) value;
 
     if ((bits % SAM_VALUE_ALIGNMENT) != 0) {
@@ -72,35 +72,35 @@ void samAssertValid(zvalue value) {
 }
 
 /* Documented in header. */
-void samAssertNth(zvalue value, zint n) {
-    samAssertValid(value);
+void datAssertNth(zvalue value, zint n) {
+    datAssertValid(value);
 
     if (n < 0) {
         die("Invalid index: %lld", n);
     }
 
-    if ((samType(value) != SAM_INTLET) && (value->size <= n)) {
+    if ((datType(value) != SAM_INTLET) && (value->size <= n)) {
         die("Invalid size for value access: (%p)->size == %lld; <= %lld",
                value, value->size, n);
     }
 }
 
 /* Documented in header. */
-void samAssertIntlet(zvalue value) {
+void datAssertIntlet(zvalue value) {
     assertType(value, SAM_INTLET);
 }
 
 /* Documented in header. */
-void samAssertListlet(zvalue value) {
+void datAssertListlet(zvalue value) {
     assertType(value, SAM_LISTLET);
 }
 
 /* Documented in header. */
-void samAssertMaplet(zvalue value) {
+void datAssertMaplet(zvalue value) {
     assertType(value, SAM_MAPLET);
 }
 
 /* Documented in header. */
-void samAssertUniqlet(zvalue value) {
+void datAssertUniqlet(zvalue value) {
     assertType(value, SAM_UNIQLET);
 }

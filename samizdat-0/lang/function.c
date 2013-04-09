@@ -53,7 +53,7 @@ static Function *findEntry(zfunreg reg, zvalue id) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        switch (samCompare(id, entries[guess].id)) {;
+        switch (datCompare(id, entries[guess].id)) {;
             case ZLESS: max = guess - 1; break;
             case ZMORE: min = guess + 1; break;
             default:    return &entries[guess];
@@ -84,7 +84,7 @@ zvalue funAdd(zfunreg reg, zfunction function, void *state) {
 
     Function *entry = &reg->entries[reg->size];
 
-    entry->id = samUniqlet();
+    entry->id = datUniqlet();
     entry->function = function;
     entry->state = state;
     reg->size++;

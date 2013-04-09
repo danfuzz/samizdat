@@ -7,13 +7,13 @@
 #include "impl.h"
 
 /* Documented in header. */
-ztype samType(zvalue value) {
-    samAssertValid(value);
+ztype datType(zvalue value) {
+    datAssertValid(value);
     return value->type;
 }
 
 /* Documented in header. */
-zint samSize(zvalue value) {
-    samAssertValid(value);
+zint datSize(zvalue value) {
+    datAssertValid(value);
     return value->size;
 }

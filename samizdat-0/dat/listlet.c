@@ -23,27 +23,27 @@ static zvalue theEmptyListlet = NULL;
  */
 
 /* Documented in header. */
-zvalue samAllocListlet(zint size) {
-    return samAllocValue(SAM_LISTLET, size, size * sizeof(zvalue));
+zvalue datAllocListlet(zint size) {
+    return datAllocValue(SAM_LISTLET, size, size * sizeof(zvalue));
 }
 
 /* Documented in header. */
-zvalue *samListletElems(zvalue listlet) {
-    samAssertListlet(listlet);
+zvalue *datListletElems(zvalue listlet) {
+    datAssertListlet(listlet);
 
     return ((SamListlet *) listlet)->elems;
 }
 
 /* Documented in header. */
-zcomparison samListletCompare(zvalue v1, zvalue v2) {
-    zvalue *e1 = samListletElems(v1);
-    zvalue *e2 = samListletElems(v2);
-    zint sz1 = samSize(v1);
-    zint sz2 = samSize(v2);
+zcomparison datListletCompare(zvalue v1, zvalue v2) {
+    zvalue *e1 = datListletElems(v1);
+    zvalue *e2 = datListletElems(v2);
+    zint sz1 = datSize(v1);
+    zint sz2 = datSize(v2);
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zcomparison result = samCompare(e1[i], e2[i]);
+        zcomparison result = datCompare(e1[i], e2[i]);
         if (result != ZEQUAL) {
             return result;
         }
@@ -58,33 +58,33 @@ zcomparison samListletCompare(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zvalue samListletGet(zvalue listlet, zint n) {
-    samAssertNth(listlet, n);
-    return samListletElems(listlet)[n];
+zvalue datListletGet(zvalue listlet, zint n) {
+    datAssertNth(listlet, n);
+    return datListletElems(listlet)[n];
 }
 
 /* Documented in header. */
-zint samListletGetInt(zvalue listlet, zint n) {
-    zvalue v = samListletGet(listlet, n);
-    return samIntletToInt(v);
+zint datListletGetInt(zvalue listlet, zint n) {
+    zvalue v = datListletGet(listlet, n);
+    return datIntletToInt(v);
 }
 
 /* Documented in header. */
-zvalue samListletEmpty(void) {
+zvalue datListletEmpty(void) {
     if (theEmptyListlet == NULL) {
-        theEmptyListlet = samAllocListlet(0);
+        theEmptyListlet = datAllocListlet(0);
     }
 
     return theEmptyListlet;
 }
 
 /* Documented in header. */
-zvalue samListletFromValues(zvalue *values, zint size) {
-    zvalue result = samAllocListlet(size);
-    zvalue *resultElems = samListletElems(result);
+zvalue datListletFromValues(zvalue *values, zint size) {
+    zvalue result = datAllocListlet(size);
+    zvalue *resultElems = datListletElems(result);
 
     for (zint i = 0; i < size; i++) {
-        samAssertValid(values[i]);
+        datAssertValid(values[i]);
         resultElems[i] = values[i];
     }
 
@@ -92,15 +92,15 @@ zvalue samListletFromValues(zvalue *values, zint size) {
 }
 
 /* Documented in header. */
-zvalue samListletAppend(zvalue listlet, zvalue value) {
-    samAssertListlet(listlet);
+zvalue datListletAppend(zvalue listlet, zvalue value) {
+    datAssertListlet(listlet);
 
     zint oldSize = listlet->size;
     zint size = oldSize + 1;
-    zvalue result = samAllocListlet(size);
-    zvalue *resultElems = samListletElems(result);
+    zvalue result = datAllocListlet(size);
+    zvalue *resultElems = datListletElems(result);
 
-    memcpy(resultElems, samListletElems(listlet), oldSize * sizeof(zvalue));
+    memcpy(resultElems, datListletElems(listlet), oldSize * sizeof(zvalue));
     resultElems[oldSize] = value;
 
     return result;

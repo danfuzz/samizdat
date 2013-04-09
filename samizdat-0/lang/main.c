@@ -18,9 +18,9 @@
 static void processFile(zvalue fileContents) {
     // TODO: Remove this file dump.
     note("File contents:");
-    zint size = samStringletUtf8Size(fileContents);
+    zint size = datStringletUtf8Size(fileContents);
     char utf[size + 1];
-    samStringletEncodeUtf8(fileContents, utf);
+    datStringletEncodeUtf8(fileContents, utf);
     utf[size] = '\0';
     note("%s", utf);
     note("[fin]");
@@ -28,18 +28,18 @@ static void processFile(zvalue fileContents) {
     zvalue tokens = tokenize(fileContents);
 
     // TODO: Remove this file dump.
-    zint tokensSize = samSize(tokens);
+    zint tokensSize = datSize(tokens);
     for (zint i = 0; i < tokensSize; i++) {
-        zvalue one = samListletGet(tokens, i);
-        zvalue type = samMapletGet(one, STR_TYPE);
+        zvalue one = datListletGet(tokens, i);
+        zvalue type = datMapletGet(one, STR_TYPE);
         char value[200] = "";
-        size = samStringletUtf8Size(type);
-        samStringletEncodeUtf8(type, utf);
+        size = datStringletUtf8Size(type);
+        datStringletEncodeUtf8(type, utf);
         utf[size] = '\0';
-        one = samMapletGet(one, STR_VALUE);
-        if ((one != NULL) && (samType(one) == SAM_LISTLET)) {
-            size = samStringletUtf8Size(one);
-            samStringletEncodeUtf8(one, value);
+        one = datMapletGet(one, STR_VALUE);
+        if ((one != NULL) && (datType(one) == SAM_LISTLET)) {
+            size = datStringletUtf8Size(one);
+            datStringletEncodeUtf8(one, value);
             value[size] = '\0';
         }
         note("token %s %s", utf, value);
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         note("Processing file: %s", argv[i]);
 
-        zvalue name = samStringletFromUtf8String(argv[i], -1);
+        zvalue name = datStringletFromUtf8String(argv[i], -1);
         zvalue fileContents = readFile(name);
 
         processFile(fileContents);
