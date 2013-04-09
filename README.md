@@ -59,9 +59,9 @@ Samizdat Programming Language In N Shout-Outs
 
 Samizdat is a high-level programming language somewhere down the
 family lineage from all of
-[Algol](http://en.wikipedia.org/wiki/ALGOL),
+[ALGOL](http://en.wikipedia.org/wiki/ALGOL),
 [Lisp](http://en.wikipedia.org/wiki/LISP), and
-[Snobol](http://en.wikipedia.org/wiki/SNOBOL) (really!). It is
+[SNOBOL](http://en.wikipedia.org/wiki/SNOBOL) (really!). It is
 intended that the language be an attractive target for use in
 text processing, free-form data structure manipulation, and general
 systems programming.
