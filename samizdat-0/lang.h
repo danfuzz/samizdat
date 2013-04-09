@@ -41,4 +41,11 @@ zcontext langNewContext(void);
  */
 void langExecute(zcontext ctx, zvalue code);
 
+/**
+ * Compile the given program text into an executable form, suitable
+ * for passing to `langExecute()`. The text must be a program in
+ * Samizdat Layer 0.
+ */
+zvalue langCompile(zvalue programText);
+
 #endif

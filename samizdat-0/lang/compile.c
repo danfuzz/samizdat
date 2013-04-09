@@ -10,20 +10,22 @@
 
 #include <stddef.h>
 
-/**
- * Processes a single file.
+/*
+ * Exported functions
  */
-static void processFile(zvalue fileContents) {
+
+/* Documented in header. */
+zvalue langCompile(zvalue programText) {
     // TODO: Remove this file dump.
     note("File contents:");
-    zint size = datStringletUtf8Size(fileContents);
+    zint size = datStringletUtf8Size(programText);
     char utf[size + 1];
-    datStringletEncodeUtf8(fileContents, utf);
+    datStringletEncodeUtf8(programText, utf);
     utf[size] = '\0';
     note("%s", utf);
     note("[fin]");
 
-    zvalue tokens = tokenize(fileContents);
+    zvalue tokens = tokenize(programText);
 
     // TODO: Remove this file dump.
     zint tokensSize = datSize(tokens);
@@ -44,21 +46,5 @@ static void processFile(zvalue fileContents) {
     }
     note("[fin]");
 
-    zvalue program = parse(tokens);
-    // TODO: Stuff.
-}
-
-/**
- * Main driver for Samizdat Layer 0. Reads in each file named as
- * an argument, parses it, and then executes the result.
- */
-int main(int argc, char **argv) {
-    for (int i = 1; i < argc; i++) {
-        note("Processing file: %s", argv[i]);
-
-        zvalue name = datStringletFromUtf8String(argv[i], -1);
-        zvalue fileContents = readFile(name);
-
-        processFile(fileContents);
-    }
+    return parse(tokens);
 }

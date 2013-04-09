@@ -96,13 +96,6 @@ void hidAssertType(zvalue value, zvalue type);
 zcontext ctxNewChild(zcontext parent, zvalue locals);
 
 /**
- * Reads the file with the given name in its entirety, interpreting
- * it as UTF-8. Returns a stringlet (listlet of Unicode-representing
- * intlets) of the contents.
- */
-zvalue readFile(zvalue fileName);
-
-/**
  * Tokenizes a stringlet using Samizdat Layer 0 token syntax. Returns
  * a listlet of tokens.
  */
