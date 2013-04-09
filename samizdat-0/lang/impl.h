@@ -84,4 +84,28 @@ zvalue funAdd(zfunreg reg, zfunction function, void *state);
 zvalue funCall(zfunreg reg, zvalue id, zint argCount, const zvalue *args);
 
 
+/*
+ * Other
+ */
+
+/**
+ * Reads the file with the given name in its entirety, interpreting
+ * it as UTF-8. Returns a stringlet (listlet of Unicode-representing
+ * intlets) of the contents.
+ */
+zvalue readFile(zvalue fileName);
+
+/**
+ * Tokenizes a stringlet using Samizdat Layer 0 token syntax. Returns
+ * a listlet of tokens.
+ */
+zvalue tokenize(zvalue stringlet);
+
+/**
+ * Parses a listlet of tokens into Samizdat Layer 0 parse trees. Returns
+ * a node representing the parsed program.
+ */
+zvalue parse(zvalue tokens);
+
+
 #endif

@@ -5,9 +5,7 @@
  */
 
 #include "consts.h"
-#include "io.h"
-#include "parse.h"
-#include "tokenize.h"
+#include "impl.h"
 #include "util.h"
 
 #include <stddef.h>
