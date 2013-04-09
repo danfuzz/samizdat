@@ -5,7 +5,6 @@
  */
 
 #include "consts.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -157,31 +156,4 @@ void constsInit(void) {
     TOK_UNIQLET         = datMapletPut(empty, STR_TYPE, STR_UNIQLET);
     TOK_VAR_DEF         = datMapletPut(empty, STR_TYPE, STR_VAR_DEF);
     TOK_VAR_REF         = datMapletPut(empty, STR_TYPE, STR_VAR_REF);
-}
-
-/* Documented in header. */
-zvalue valueToken(zvalue token, zvalue value) {
-    return datMapletPut(token, STR_VALUE, value);
-}
-
-/* Documented in header. */
-zvalue highType(zvalue value) {
-    return datMapletGet(value, STR_TYPE);
-}
-
-/* Documented in header. */
-zvalue highValue(zvalue value) {
-    return datMapletGet(value, STR_VALUE);
-}
-
-/* Documented in header. */
-bool hasHighType(zvalue value, zvalue type) {
-    return (datCompare(highType(value), type) == 0);
-}
-
-/* Documented in header. */
-void assertHighType(zvalue value, zvalue type) {
-    if (!hasHighType(value, type)) {
-        die("Type mismatch.");
-    }
 }

@@ -88,32 +88,4 @@ extern zvalue TOK_VAR_REF;
  */
 void constsInit(void);
 
-/**
- * Constructs a value token / node, by combining the given base
- * token with `value` binding to the given value.
- */
-zvalue valueToken(zvalue token, zvalue value);
-
-/**
- * Gets the `type` binding of the given maplet (*not* the low layer
- * Samizdat type).
- */
-zvalue highType(zvalue value);
-
-/**
- * Gets the `value` binding of the given maplet.
- */
-zvalue highValue(zvalue value);
-
-/**
- * Returns whether or not the `type` binding of the given maplet
- * equals the given value.
- */
-bool hasHighType(zvalue value, zvalue type);
-
-/**
- * Asserts that the given value is a maplet whose type is as given.
- */
-void assertHighType(zvalue value, zvalue type);
-
 #endif
