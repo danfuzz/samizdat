@@ -202,12 +202,12 @@ static zvalue tokenizeOne(ParseState *state) {
         case ';':  read(state); return TOK_CH_SEMICOLON;
         case '=':  read(state); return TOK_CH_EQUAL;
         case '^':  read(state); return TOK_CH_CARET;
-        case '{':  read(state); return TOK_CH_OP_CURLY;
-        case '}':  read(state); return TOK_CH_CL_CURLY;
-        case '(':  read(state); return TOK_CH_OP_PAREN;
-        case ')':  read(state); return TOK_CH_CL_PAREN;
-        case '[':  read(state); return TOK_CH_OP_SQUARE;
-        case ']':  read(state); return TOK_CH_CL_SQUARE;
+        case '{':  read(state); return TOK_CH_OCURLY;
+        case '}':  read(state); return TOK_CH_CCURLY;
+        case '(':  read(state); return TOK_CH_OPAREN;
+        case ')':  read(state); return TOK_CH_CPAREN;
+        case '[':  read(state); return TOK_CH_OSQUARE;
+        case ']':  read(state); return TOK_CH_CSQUARE;
         case '\"': return tokenizeString(state);
         case '@': {
             read(state);

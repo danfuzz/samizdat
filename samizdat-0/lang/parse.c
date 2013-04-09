@@ -123,11 +123,11 @@ static zvalue parseAtomPlus(ParseState *state) {
 static zvalue parseCall1(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_OP_PAREN) == NULL) {
+    if (readMatch(state, TOK_CH_OPAREN) == NULL) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CL_PAREN) == NULL) {
+    if (readMatch(state, TOK_CH_CPAREN) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -194,7 +194,7 @@ static zvalue parseFormals(ParseState *state) {
 static zvalue parseFunction(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_OP_CURLY) == NULL) {
+    if (readMatch(state, TOK_CH_OCURLY) == NULL) {
         return NULL;
     }
 
@@ -202,7 +202,7 @@ static zvalue parseFunction(ParseState *state) {
     zvalue formals = parseFormals(state);
     zvalue statements = parseStatements(state);
 
-    if (readMatch(state, TOK_CH_CL_CURLY) == NULL) {
+    if (readMatch(state, TOK_CH_CCURLY) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -260,7 +260,7 @@ static zvalue parseMaplet(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
+    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -282,7 +282,7 @@ static zvalue parseMaplet(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
+    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -300,7 +300,7 @@ static zvalue parseEmptyMaplet(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
+    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -310,7 +310,7 @@ static zvalue parseEmptyMaplet(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
+    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -328,7 +328,7 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
+    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -340,7 +340,7 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
+    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -358,12 +358,12 @@ static zvalue parseEmptyListlet(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_OP_SQUARE) == NULL) {
+    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CL_SQUARE) == NULL) {
+    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -475,7 +475,7 @@ static zvalue parseVarDef(ParseState *state) {
 static zvalue parseParenExpression(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_OP_PAREN) == NULL) {
+    if (readMatch(state, TOK_CH_OPAREN) == NULL) {
         return NULL;
     }
 
@@ -486,7 +486,7 @@ static zvalue parseParenExpression(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CL_PAREN) == NULL) {
+    if (readMatch(state, TOK_CH_CPAREN) == NULL) {
         reset(state, mark);
         return NULL;
     }
