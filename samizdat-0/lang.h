@@ -8,8 +8,8 @@
  * Samizdat Layer 0 language implementation
  */
 
-#ifndef _LANGUAGE_H_
-#define _LANGUAGE_H_
+#ifndef _LANG_H_
+#define _LANG_H_
 
 #include "data.h"
 
