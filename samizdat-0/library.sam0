@@ -15,6 +15,11 @@ null = @[@"type"=@"null"];
 false = @[@"type"=@"boolean" @"value"=@0];
 true =  @[@"type"=@"boolean" @"value"=@1];
 
+# Predicate that always returns `true`, intended for use with the
+# `if` function (natch).
+
+else = { ^ true; };
+
 # Primitive functions. These are all bound via magic.
 
 if = @@;        # if expr expr ... -- Cascading conditional function.
