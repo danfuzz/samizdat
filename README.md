@@ -51,3 +51,46 @@ Plan of attack
 * ?
 
 * Profit!
+
+= = = = = = = = = = = = = = = = = = = = =
+
+Samizdat Programming Language In N Buzzwords
+============================================
+
+Samizdat is a high-level programming language somewhere down the
+family lineage from all of
+[Algol](http://en.wikipedia.org/wiki/ALGOL),
+[Lisp](http://en.wikipedia.org/wiki/LISP), and
+[Snobol](http://en.wikipedia.org/wiki/SNOBOL) (really!). It is
+intended that the language be an attractive target for use in
+text processing, free-form data structure manipulation, and general
+systems programming.
+
+Its syntax is inspired by
+[C](http://en.wikipedia.org/wiki/C_%28programming_language%29),
+[Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript),
+[Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
+and traditional [Backus-Naur Form
+(BNF)](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form).
+Its core data model is inspired by Lisp,
+[Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
+[Clojure](http://en.wikipedia.org/wiki/Clojure), and JavaScript. Its
+parsing semantics are inspired by the recent work on [Parsing
+Expression Grammars
+(PEGs)](http://en.wikipedia.org/wiki/Parsing_expression_grammar),
+particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
+of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR).
+
+The language came about as a second-order effect of the author's
+desire to explore the intersection of all of
+[promise](http://en.wikipedia.org/wiki/Promise_%28programming%29)-based
+computation,
+the [actor model](http://en.wikipedia.org/wiki/Actor_model) of
+concurrency, maximally-pure / immutable data models, and
+[software transactional
+memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
+(STM). The Samizdat language does have a mostly-immutable data model,
+but it does not innately implement promises, actors, or STM; however
+it is intended to be a fertile substrate on which to explore these
+topics, while still being a practical language in its own right.
