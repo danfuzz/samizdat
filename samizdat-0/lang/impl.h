@@ -38,8 +38,7 @@ typedef struct ExecutionContext {
 
     /** Function registry. */
     zfunreg reg;
-}
-ExecutionContext;
+} ExecutionContext;
 
 
 /*

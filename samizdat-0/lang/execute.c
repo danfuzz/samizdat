@@ -28,8 +28,7 @@ typedef struct {
      * statements to run.
      */
     zvalue function;
-}
-Closure;
+} Closure;
 
 
 /*

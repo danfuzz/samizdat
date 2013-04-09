@@ -30,8 +30,7 @@ typedef struct {
 
     /** Current read position. */
     zint at;
-}
-ParseState;
+} ParseState;
 
 
 /*

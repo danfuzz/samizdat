@@ -24,8 +24,7 @@ typedef struct {
 
     /** Arbitrary closure state. */
     void *state;
-}
-Function;
+} Function;
 
 /* Documented in header. */
 typedef struct FunctionRegistry {
@@ -34,8 +33,7 @@ typedef struct FunctionRegistry {
 
     /** Count of entries added. */
     zint size;
-}
-FunctionRegistry;
+} FunctionRegistry;
 
 
 /*
