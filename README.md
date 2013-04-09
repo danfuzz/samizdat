@@ -54,8 +54,8 @@ Plan of attack
 
 - - - - -
 
-Samizdat Programming Language In N Buzzwords
-============================================
+Samizdat Programming Language In N Shout-Outs
+=============================================
 
 Samizdat is a high-level programming language somewhere down the
 family lineage from all of
@@ -68,8 +68,9 @@ systems programming.
 
 Its syntax is inspired by
 [C](http://en.wikipedia.org/wiki/C_%28programming_language%29),
+[E](http://en.wikipedia.org/wiki/E_%28programming_language%29),
 [Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
-[Javascript](http://en.wikipedia.org/wiki/JavaScript),
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript),
 [Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
 and traditional [Backus-Naur
 Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) (BNF).
@@ -79,18 +80,20 @@ Its core data model is inspired by Lisp,
 parsing semantics are inspired by the recent work on [Parsing
 Expression
 Grammars](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEGs),
-particularly [Ometa](http://tinlizzie.org/ometa/), tempered by a lot
-of practical experience with [Antlr](http://en.wikipedia.org/wiki/ANTLR).
+particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
+of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR).
 
 The language came about as a second-order effect of the author's
 desire to explore the intersection of all of
 [promise](http://en.wikipedia.org/wiki/Promise_%28programming%29)-based
-computation,
-the [actor model](http://en.wikipedia.org/wiki/Actor_model) of
+[object-capability](http://en.wikipedia.org/wiki/Object-capability_model)
+computation, the
+[actor model](http://en.wikipedia.org/wiki/Actor_model) of
 concurrency, maximally pure / immutable data models, and
 [software transactional
 memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
-(STM). The Samizdat language has a mostly-immutable data model,
+(STM). The Samizdat language has a mostly-immutable data model and
+generally has "capability nature",
 but it does not innately implement promises, actors, or STM. However,
 it is intended to be a fertile substrate on which to explore these
 topics, while still being a practical language in its own right.
