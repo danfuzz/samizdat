@@ -4,6 +4,7 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
+#include "io.h"
 #include "prim.h"
 #include "util.h"
 
@@ -14,6 +15,9 @@
  * Primitive implementations (exported via the context)
  */
 
+/**
+ * TODO: Document!
+ */
 static zvalue prim_if(void *state, zint argCount, const zvalue *args) {
     if ((argCount % 2) != 0) {
         die("Invalid argument count to if: %lld", argCount);
@@ -27,6 +31,17 @@ static zvalue prim_if(void *state, zint argCount, const zvalue *args) {
     }
 
     return langNull();
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_readFile(void *state, zint argCount, const zvalue *args) {
+    if (argCount != 1) {
+        die("Invalid argument count to readFile: %lld", argCount);
+    }
+
+    return readFile(args[0]);
 }
 
 
@@ -45,7 +60,8 @@ zcontext primNewContext(void) {
     langBind(ctx, "false", langFalse());
     langBind(ctx, "true", langTrue());
 
-    langBindFunction(ctx, "if", prim_if, NULL);
+    langBindFunction(ctx, "if",       prim_if,       NULL);
+    langBindFunction(ctx, "readFile", prim_readFile, NULL);
     // TODO: More.
 
     return ctx;
