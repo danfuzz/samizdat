@@ -40,6 +40,21 @@ typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
  */
 
 /**
+ * Gets the in-model value typically known as `null`.
+ */
+zvalue langNull(void);
+
+/**
+ * Gets the in-model value typically known as `false`.
+ */
+zvalue langFalse(void);
+
+/**
+ * The value typically known as `true`.
+ */
+zvalue langTrue(void);
+
+/**
  * Constructs and returns a fresh execution context, valid for use as
  * an argument to `langExecute()` but without any initial variable
  * bindings.
