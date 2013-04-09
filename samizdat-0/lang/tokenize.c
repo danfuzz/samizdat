@@ -224,7 +224,7 @@ static zvalue tokenizeOne(ParseState *state) {
                 read(state);
                 return TOK_CH_COLONCOLON;
             } else {
-                return TOK_CH_COLON;
+                die("Invalid single colon.");
             }
         }
     }
