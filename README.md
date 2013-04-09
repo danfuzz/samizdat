@@ -52,7 +52,7 @@ Plan of attack
 
 * Profit!
 
-= = = = = = = = = = = = = = = = = = = = =
+- - - - -
 
 Samizdat Programming Language In N Buzzwords
 ============================================
