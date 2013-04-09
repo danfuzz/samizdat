@@ -58,8 +58,8 @@ static zvalue readMatch(ParseState *state, zvalue token) {
     }
 
     zvalue result = datListletGet(state->tokens, state->at);
-    zvalue tokenType = highType(token);
-    zvalue resultType = highType(result);
+    zvalue tokenType = hidType(token);
+    zvalue resultType = hidType(result);
 
     if (datCompare(tokenType, resultType) != 0) {
         return NULL;
@@ -174,7 +174,7 @@ static zvalue parseFormals(ParseState *state) {
         if (identifier == NULL) {
             break;
         }
-        identifier = highValue(identifier);
+        identifier = hidValue(identifier);
         identifiers = datListletAppend(identifiers, identifier);
     }
 
@@ -388,7 +388,7 @@ static zvalue parseStringlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = highValue(string);
+    zvalue value = hidValue(string);
     return valueToken(TOK_LITERAL, value);
 }
 
@@ -422,7 +422,7 @@ static zvalue parseIntlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = highValue(integer);
+    zvalue value = hidValue(integer);
     return valueToken(TOK_LITERAL, value);
 }
 
@@ -436,7 +436,7 @@ static zvalue parseVarRef(ParseState *state) {
         return NULL;
     }
 
-    zvalue name = highValue(identifier);
+    zvalue name = hidValue(identifier);
     return valueToken(TOK_VAR_REF, name);
 }
 
@@ -463,7 +463,7 @@ static zvalue parseVarDef(ParseState *state) {
         return NULL;
     }
 
-    zvalue name = highValue(identifier);
+    zvalue name = hidValue(identifier);
     zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
     value = datMapletPut(value, STR_VALUE, expression);
     return valueToken(TOK_VAR_DEF, value);

@@ -97,23 +97,23 @@ zvalue valueToken(zvalue token, zvalue value);
  * Gets the `type` binding of the given maplet (*not* the low layer
  * Samizdat type).
  */
-zvalue highType(zvalue value);
+zvalue hidType(zvalue value);
 
 /**
  * Gets the `value` binding of the given maplet.
  */
-zvalue highValue(zvalue value);
+zvalue hidValue(zvalue value);
 
 /**
  * Returns whether or not the `type` binding of the given maplet
  * equals the given value.
  */
-bool hasHighType(zvalue value, zvalue type);
+bool hidHasType(zvalue value, zvalue type);
 
 /**
  * Asserts that the given value is a maplet whose type is as given.
  */
-void assertHighType(zvalue value, zvalue type);
+void hidAssertType(zvalue value, zvalue type);
 
 
 /*

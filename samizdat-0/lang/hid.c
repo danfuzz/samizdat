@@ -14,23 +14,23 @@ zvalue valueToken(zvalue token, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue highType(zvalue value) {
+zvalue hidType(zvalue value) {
     return datMapletGet(value, STR_TYPE);
 }
 
 /* Documented in header. */
-zvalue highValue(zvalue value) {
+zvalue hidValue(zvalue value) {
     return datMapletGet(value, STR_VALUE);
 }
 
 /* Documented in header. */
-bool hasHighType(zvalue value, zvalue type) {
-    return (datCompare(highType(value), type) == 0);
+bool hidHasType(zvalue value, zvalue type) {
+    return (datCompare(hidType(value), type) == 0);
 }
 
 /* Documented in header. */
-void assertHighType(zvalue value, zvalue type) {
-    if (!hasHighType(value, type)) {
+void hidAssertType(zvalue value, zvalue type) {
+    if (!hidHasType(value, type)) {
         die("Type mismatch.");
     }
 }
