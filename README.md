@@ -82,6 +82,8 @@ Expression
 Grammars](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEGs),
 particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
 of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR).
+Its general shape and thrust was very much influenced by
+[AWK](http://en.wikipedia.org/wiki/AWK).
 
 The language came about as a second-order effect of the author's
 desire to explore the intersection of all of
