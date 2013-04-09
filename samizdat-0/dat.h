@@ -249,10 +249,42 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value);
 
 /**
  * Gets a new uniqlet. Each call to this function is guaranteed to
- * produce a value unequal to any other call to this function (in any
- * given process).
+ * produce a value unequal to any other uniqlet (in any given process).
  */
 zvalue datUniqlet(void);
+
+/**
+ * Gets a new uniqlet, associated with the given key and contents.
+ * The uniqueness guarantee is the same as with `datUniqlet()`.
+ *
+ * In addition, this provides a convenient way to effectively build an
+ * identity mapping between uniqlets (as the keys) and arbitrary
+ * non-dat-module data (as the values). Rather than store uniqlets
+ * as keys in an external structure, this inverts the relationship,
+ * storing the `key` (that represents the map) and associated `value`
+ * inside the uniqlet. In object-capability terms, the `key` is a
+ * sealer/unsealer, and the uniqlet serves secondary duty as a sealed
+ * box.
+ */
+zvalue datUniqletWith(void *key, void *value);
+
+/**
+ * Gets whether or not the given uniqlet has the given key. The `key`
+ * must not be `NULL`.
+ */
+bool datUniqletHasKey(zvalue uniqlet, void *key);
+
+/**
+ * Gets the value associated with the given uniqlet, asserting that
+ * the uniqlet's key is as given.
+ */
+zvalue datUniqletGetValue(zvalue uniqlet, void *key);
+
+/**
+ * Sets the value associated with the given uniqlet as given,
+ * asserting that the uniqlet's key is as given.
+ */
+void datUniqletSetValue(zvalue uniqlet, void *key, void *value);
 
 
 /*

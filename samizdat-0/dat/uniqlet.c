@@ -6,6 +6,8 @@
 
 #include "impl.h"
 
+#include <stdlib.h>
+
 
 /*
  * Helper definitions
@@ -15,12 +17,49 @@
 static zint theNextId = 0;
 
 /**
+ * Asserts that the given key is valid as a uniqlet key.
+ */
+static void assertValidUniqletKey(void *key) {
+    if (key == NULL) {
+        die("Invalid uniqlet key: NULL");
+    }
+}
+
+/**
+ * Gets a pointer to the info of a uniqlet.
+ */
+static UniqletInfo *uniqletInfo(zvalue uniqlet) {
+    datAssertUniqlet(uniqlet);
+
+    return &((SamUniqlet *) uniqlet)->info;
+}
+
+/**
  * Gets the id of a uniqlet.
  */
 static zint uniqletId(zvalue uniqlet) {
-    datAssertUniqlet(uniqlet);
+    return uniqletInfo(uniqlet)->id;
+}
 
-    return ((SamUniqlet *) uniqlet)->id;
+/**
+ * Allocates and initializes a uniqlet, without doing error-checking
+ * on the arguments.
+ */
+static zvalue newUniqlet(void *key, void *value) {
+    zvalue result = datAllocValue(SAM_UNIQLET, 0, sizeof(UniqletInfo));
+
+    if (theNextId < 0) {
+        // Shouldn't be possible, but just in case...
+        die("Shouldn't happen: Way too many uniqlets!");
+    }
+
+    UniqletInfo *info = &((SamUniqlet *) result)->info;
+    info->id = theNextId;
+    info->key = key;
+    info->value = value;
+    theNextId++;
+
+    return result;
 }
 
 
@@ -49,15 +88,36 @@ zcomparison datUniqletCompare(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zvalue datUniqlet(void) {
-    zvalue result = datAllocValue(SAM_UNIQLET, 0, sizeof(zint));
+    return newUniqlet(NULL, NULL);
+}
 
-    if (theNextId < 0) {
-        // Shouldn't be possible, but just in case...
-        die("Shouldn't happen: Way too many uniqlets!");
+/* Documented in header. */
+zvalue datUniqletWith(void *key, void *value) {
+    assertValidUniqletKey(key);
+    return newUniqlet(key, value);
+}
+
+/* Documented in header. */
+bool datUniqletHasKey(zvalue uniqlet, void *key) {
+    assertValidUniqletKey(key);
+
+    return (key == uniqletInfo(uniqlet)->key);
+}
+
+/* Documented in header. */
+zvalue datUniqletGetValue(zvalue uniqlet, void *key) {
+    if (!datUniqletHasKey(uniqlet, key)) {
+        die("Wrong uniqlet key for get.");
     }
 
-    ((SamUniqlet *) result)->id = theNextId;
-    theNextId++;
+    return uniqletInfo(uniqlet)->value;
+}
 
-    return result;
+/* Documented in header. */
+void datUniqletSetValue(zvalue uniqlet, void *key, void *value) {
+    if (!datUniqletHasKey(uniqlet, key)) {
+        die("Wrong uniqlet key for set.");
+    }
+
+    uniqletInfo(uniqlet)->value = value;
 }

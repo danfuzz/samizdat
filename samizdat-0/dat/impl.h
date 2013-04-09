@@ -71,14 +71,28 @@ typedef struct {
 } SamMaplet;
 
 /**
+ * Uniqlet info.
+ */
+typedef struct {
+    /** Uniqlet unique id */
+    zint id;
+
+    /** Sealer / unsealer key */
+    void *key;
+
+    /** Sealed box payload value */
+    void *value;
+} UniqletInfo;
+
+/**
  * Uniqlet structure.
  */
 typedef struct {
     /** Value header. */
     SamValue header;
 
-    /** Uniqlet unique id */
-    zint id;
+    /** Uniqlet info */
+    UniqletInfo info;
 } SamUniqlet;
 
 /**
