@@ -69,7 +69,7 @@ systems programming.
 Its syntax is inspired by
 [C](http://en.wikipedia.org/wiki/C_%28programming_language%29),
 [Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
-[JavaScript](http://en.wikipedia.org/wiki/JavaScript),
+[Javascript](http://en.wikipedia.org/wiki/JavaScript),
 [Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
 and traditional [Backus-Naur
 Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) (BNF).
@@ -79,8 +79,8 @@ Its core data model is inspired by Lisp,
 parsing semantics are inspired by the recent work on [Parsing
 Expression
 Grammars](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEGs),
-particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
-of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR).
+particularly [Ometa](http://tinlizzie.org/ometa/), tempered by a lot
+of practical experience with [Antlr](http://en.wikipedia.org/wiki/ANTLR).
 
 The language came about as a second-order effect of the author's
 desire to explore the intersection of all of
