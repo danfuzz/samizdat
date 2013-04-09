@@ -232,14 +232,12 @@ static void execStatements(zcontext ctx, zvalue statements) {
     for (zint i = 0; (i < size) && (ctx->toReturn == NULL); i++) {
         zvalue one = datListletGet(statements, i);
         zvalue type = hidType(one);
-        if (hidHasType(one, STR_EXPRESSION)) {
-            execExpression(ctx, one);
-        } else if (hidHasType(one, STR_VAR_DEF)) {
+        if (hidHasType(one, STR_VAR_DEF)) {
             execVarDef(ctx, one);
         } else if (hidHasType(one, STR_RETURN)) {
             execReturn(ctx, one);
         } else {
-            die("Invalid statements element.");
+            execExpression(ctx, one);
         }
     }
 }
