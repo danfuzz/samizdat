@@ -99,7 +99,7 @@ static zvalue execCall(zcontext ctx, zvalue call) {
         args[i] = execExpression(ctx, one);
     }
 
-    return funCall(functionId, argCount, args);
+    return langCall(functionId, argCount, args);
 }
 
 /**

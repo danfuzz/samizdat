@@ -62,6 +62,13 @@ zvalue langTrue(void);
 zcontext langNewContext(void);
 
 /**
+ * Binds an arbitrary value into the given execution context,
+ * giving it the indicated name (interpreted as a `'\0'`-terminated
+ * UTF-8 string).
+ */
+void langBind(zcontext ctx, const char *name, zvalue value);
+
+/**
  * Binds a primitive function into the given execution context,
  * giving it the indicated name (interpreted as a `'\0'`-terminated
  * UTF-8 string). The given `state` will be passed as the first
@@ -69,6 +76,11 @@ zcontext langNewContext(void);
  */
 void langBindFunction(zcontext ctx, const char *name,
                       zfunction function, void *state);
+
+/**
+ * Calls a value which is presumed to be bound as a function.
+ */
+zvalue langCall(zvalue functionId, zint argCount, const zvalue *args);
 
 /**
  * Executes the given code, using the given global context.  Modifies

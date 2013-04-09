@@ -32,22 +32,6 @@ typedef struct ExecutionContext {
 
 
 /*
- * Function registries
- */
-
-/**
- * Defines a function with associated (and arbitrary) closure
- * state. Returns the identifying uniqlet that binds to it.
- */
-zvalue funDefine(zfunction function, void *state);
-
-/**
- * Calls the function bound to the given uniqlet.
- */
-zvalue funCall(zvalue id, zint argCount, const zvalue *args);
-
-
-/*
  * High-Layer data model
  */
 
@@ -94,6 +78,12 @@ zcontext ctxNewChild(zcontext parent, zvalue locals);
  * Binds a new variable in the given context.
  */
 void ctxBind(zcontext ctx, zvalue name, zvalue value);
+
+/**
+ * Defines a function with associated (and arbitrary) closure
+ * state. Returns the identifying uniqlet that binds to it.
+ */
+zvalue funDefine(zfunction function, void *state);
 
 /**
  * Tokenizes a stringlet using Samizdat Layer 0 token syntax. Returns

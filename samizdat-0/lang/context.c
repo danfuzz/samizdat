@@ -44,10 +44,12 @@ zcontext langNewContext(void) {
 }
 
 /* Documented in header. */
+void langBind(zcontext ctx, const char *name, zvalue value) {
+    ctxBind(ctx, datStringletFromUtf8String(name, -1), value);
+}
+
+/* Documented in header. */
 void langBindFunction(zcontext ctx, const char *name,
                       zfunction function, void *state) {
-    zvalue nameValue = datStringletFromUtf8String(name, -1);
-    zvalue functionId = funDefine(function, state);
-
-    ctxBind(ctx, nameValue, functionId);
+    langBind(ctx, name, funDefine(function, state));
 }

@@ -7,6 +7,8 @@
 #include "impl.h"
 #include "util.h"
 
+#include <stddef.h>
+
 
 /** Key for access to function-bearing uniqlets. Fun self-reference! */
 static void *functionKey = &functionKey;
@@ -37,9 +39,20 @@ zvalue funDefine(zfunction function, void *state) {
     return datUniqletWith(functionKey, entry);
 }
 
+
+/*
+ * Exported functions
+ */
+
 /* Documented in header. */
-zvalue funCall(zvalue id, zint argCount, const zvalue *args) {
-    Function *entry = datUniqletGetValue(id, functionKey);
+zvalue langCall(zvalue functionId, zint argCount, const zvalue *args) {
+    if (argCount < 0) {
+        die("Invalid argument count for function call: %lld", argCount);
+    } else if ((argCount == 0) && (args == NULL)) {
+        die("Function call argument inconsistency.");
+    }
+
+    Function *entry = datUniqletGetValue(functionId, functionKey);
 
     return entry->function(entry->state, argCount, args);
 }
