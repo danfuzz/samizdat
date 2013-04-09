@@ -41,8 +41,6 @@ static zvalue read(ParseState *state) {
         return NULL;
     }
 
-    note("=== read   at %lld", state->at);
-
     zvalue result = datListletGet(state->tokens, state->at);
     state->at++;
 
@@ -65,7 +63,6 @@ static zvalue readMatch(ParseState *state, zvalue token) {
         return NULL;
     }
 
-    note("=== read-m at %lld", state->at);
     state->at++;
 
     return result;
@@ -75,7 +72,6 @@ static zvalue readMatch(ParseState *state, zvalue token) {
  * Gets the current read position.
  */
 static zint cursor(ParseState *state) {
-    note("=== cursor at %lld", state->at);
     return state->at;
 }
 
@@ -87,7 +83,6 @@ static void reset(ParseState *state, zint mark) {
         die("Cannot reset forward: %lld > %lld", mark, state->at);
     }
 
-    note("=== reset  at %lld", mark);
     state->at = mark;
 }
 

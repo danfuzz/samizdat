@@ -16,15 +16,6 @@
 
 /* Documented in header. */
 zvalue langCompile(zvalue programText) {
-    // TODO: Remove this file dump.
-    note("File contents:");
-    zint size = datStringletUtf8Size(programText);
-    char utf[size + 1];
-    datStringletEncodeUtf8(programText, utf);
-    utf[size] = '\0';
-    note("%s", utf);
-    note("[fin]");
-
     zvalue tokens = tokenize(programText);
 
     // TODO: Remove this file dump.
@@ -32,17 +23,18 @@ zvalue langCompile(zvalue programText) {
     for (zint i = 0; i < tokensSize; i++) {
         zvalue one = datListletGet(tokens, i);
         zvalue type = datMapletGet(one, STR_TYPE);
+        char typeStr[200];
         char value[200] = "";
-        size = datStringletUtf8Size(type);
-        datStringletEncodeUtf8(type, utf);
-        utf[size] = '\0';
+        zint size = datStringletUtf8Size(type);
+        datStringletEncodeUtf8(type, typeStr);
+        typeStr[size] = '\0';
         one = datMapletGet(one, STR_VALUE);
         if ((one != NULL) && (datType(one) == DAT_LISTLET)) {
             size = datStringletUtf8Size(one);
             datStringletEncodeUtf8(one, value);
             value[size] = '\0';
         }
-        note("token %s %s", utf, value);
+        note("=== %4lld -- %s %s", i, typeStr, value);
     }
     note("[fin]");
 
