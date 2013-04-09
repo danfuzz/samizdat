@@ -7,21 +7,18 @@
 #include "impl.h"
 #include "util.h"
 
+#include <stddef.h>
+
 
 /*
  * Module functions
  */
 
-zcontext ctxNewEmpty(void) {
-    return zalloc(sizeof(ExecutionContext));
-}
-
 zcontext ctxNewChild(zcontext parent, zvalue locals) {
-    zcontext ctx = ctxNewEmpty();
+    zcontext ctx = zalloc(sizeof(ExecutionContext));
 
     ctx->locals = locals;
     ctx->parent = parent;
-    ctx->reg = parent->reg;
 
     return ctx;
 }
@@ -33,10 +30,5 @@ zcontext ctxNewChild(zcontext parent, zvalue locals) {
 
 /* Documented in header. */
 zcontext langNewContext(void) {
-    zcontext ctx = ctxNewEmpty();
-
-    ctx->locals = datMapletEmpty();
-    ctx->reg = funNew();
-
-    return ctx;
+    return ctxNewChild(NULL, datMapletEmpty());
 }

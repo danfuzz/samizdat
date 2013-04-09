@@ -77,7 +77,7 @@ static zvalue execFunction(zcontext ctx, zvalue function) {
     closure->parent = ctx;
     closure->function = hidValue(function);
 
-    return funAdd(ctx->reg, execClosure, closure);
+    return funDefine(execClosure, closure);
 }
 
 /**
@@ -90,8 +90,7 @@ static zvalue execCall(zcontext ctx, zvalue call) {
     zvalue function = datMapletGet(call, STR_FUNCTION);
     zvalue actuals = datMapletGet(call, STR_ACTUALS);
 
-    zvalue id = execExpression(ctx, function);
-    datAssertUniqlet(id);
+    zvalue functionId = execExpression(ctx, function);
 
     zint argCount = datSize(actuals);
     zvalue args[argCount];
@@ -100,7 +99,7 @@ static zvalue execCall(zcontext ctx, zvalue call) {
         args[i] = execExpression(ctx, one);
     }
 
-    return funCall(ctx->reg, id, argCount, args);
+    return funCall(functionId, argCount, args);
 }
 
 /**

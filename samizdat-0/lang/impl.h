@@ -18,13 +18,6 @@
  * Data types
  */
 
-/**
- * Function registry. The contents of a registry are *not* directly
- * accessible through instances of this type via the API. You
- * have to use the various accessor functions.
- */
-typedef struct FunctionRegistry *zfunreg;
-
 /* Documented in header. */
 typedef struct ExecutionContext {
     /** Variables bound at this level. */
@@ -35,26 +28,12 @@ typedef struct ExecutionContext {
 
     /** Parent context. */
     struct ExecutionContext *parent;
-
-    /** Function registry. */
-    zfunreg reg;
 } ExecutionContext;
 
-
-/*
- * Execution contexts
- */
-
 /**
- * Allocates a fresh empty context.
+ * Prototype of all bound functions.
  */
-zcontext ctxNewEmpty(void);
-
-/**
- * Allocates a context set up to be the child of the given one and
- * with the given initial locals.
- */
-zcontext ctxNewChild(zcontext parent, zvalue locals);
+typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
 
 
 /*
@@ -62,25 +41,15 @@ zcontext ctxNewChild(zcontext parent, zvalue locals);
  */
 
 /**
- * Prototype of all bound functions.
- */
-typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
-
-/**
- * Constructs and returns a new function registry.
- */
-zfunreg funNew(void);
-
-/**
- * Adds a function with associated (and arbitrary) closure
+ * Defines a function with associated (and arbitrary) closure
  * state. Returns the identifying uniqlet that binds to it.
  */
-zvalue funAdd(zfunreg reg, zfunction function, void *state);
+zvalue funDefine(zfunction function, void *state);
 
 /**
  * Calls the function bound to the given uniqlet.
  */
-zvalue funCall(zfunreg reg, zvalue id, zint argCount, const zvalue *args);
+zvalue funCall(zvalue id, zint argCount, const zvalue *args);
 
 
 /*
@@ -119,6 +88,12 @@ void hidAssertType(zvalue value, zvalue type);
 /*
  * Other
  */
+
+/**
+ * Allocates an execution context set up to be the child of the given
+ * one and with the given initial locals.
+ */
+zcontext ctxNewChild(zcontext parent, zvalue locals);
 
 /**
  * Reads the file with the given name in its entirety, interpreting
