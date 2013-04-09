@@ -9,10 +9,23 @@
 
 
 /*
+ * Function implementations (exported via the context)
+ */
+
+static zvalue prim_if(zint argCount, zvalue *args) {
+    die("TODO");
+}
+
+
+/*
  * Exported functions
  */
 
 /* Documented in header. */
-zcontext primContext(void) {
-    die("TODO");
+zcontext primNewContext(void) {
+    zcontext ctx = langNewContext();
+
+    // TODO: Stuff.
+
+    return ctx;
 }

@@ -6,6 +6,7 @@
 
 #include "io.h"
 #include "lang.h"
+#include "prim.h"
 #include "util.h"
 
 
@@ -14,7 +15,7 @@
  * an argument, parses it, and then executes the result.
  */
 int main(int argc, char **argv) {
-    zcontext ctx = langNewContext();
+    zcontext ctx = primNewContext();
     
     for (int i = 1; i < argc; i++) {
         note("Processing file: %s", argv[i]);
