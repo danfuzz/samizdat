@@ -105,7 +105,7 @@ bool datUniqletHasKey(zvalue uniqlet, void *key) {
 }
 
 /* Documented in header. */
-zvalue datUniqletGetValue(zvalue uniqlet, void *key) {
+void *datUniqletGetValue(zvalue uniqlet, void *key) {
     if (!datUniqletHasKey(uniqlet, key)) {
         die("Wrong uniqlet key for get.");
     }

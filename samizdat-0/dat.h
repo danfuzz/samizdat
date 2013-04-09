@@ -278,7 +278,7 @@ bool datUniqletHasKey(zvalue uniqlet, void *key);
  * Gets the value associated with the given uniqlet, asserting that
  * the uniqlet's key is as given.
  */
-zvalue datUniqletGetValue(zvalue uniqlet, void *key);
+void *datUniqletGetValue(zvalue uniqlet, void *key);
 
 /**
  * Sets the value associated with the given uniqlet as given,
