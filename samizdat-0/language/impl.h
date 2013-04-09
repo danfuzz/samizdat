@@ -5,13 +5,18 @@
  */
 
 /*
- * Function registry and lookup
+ * Private structure implementation details
  */
 
-#ifndef FUNCTION_H
-#define FUNCTION_H
+#ifndef _IMPL_H_
+#define _IMPL_H_
 
-#include "data.h"
+#include "language.h"
+
+
+/*
+ * Data types
+ */
 
 /**
  * Function registry. The contents of a registry are *not* directly
@@ -19,6 +24,43 @@
  * have to use the various accessor functions.
  */
 typedef struct FunctionRegistry *zfunreg;
+
+/* Documented in header. */
+typedef struct ExecutionContext {
+    /** Variables bound at this level. */
+    zvalue locals;
+
+    /** Pending return value. */
+    zvalue toReturn;
+
+    /** Parent context. */
+    struct ExecutionContext *parent;
+
+    /** Function registry. */
+    zfunreg reg;
+}
+ExecutionContext;
+
+
+/*
+ * Execution contexts
+ */
+
+/**
+ * Allocates a fresh empty context.
+ */
+zcontext ctxNewEmpty(void);
+
+/**
+ * Allocates a context set up to be the child of the given one and
+ * with the given initial locals.
+ */
+zcontext ctxNewChild(zcontext parent, zvalue locals);
+
+
+/*
+ * Function registries
+ */
 
 /**
  * Prototype of all bound functions.
@@ -40,5 +82,6 @@ zvalue funAdd(zfunreg reg, zfunction function, void *state);
  * Calls the function bound to the given uniqlet.
  */
 zvalue funCall(zfunreg reg, zvalue id, zint argCount, const zvalue *args);
+
 
 #endif
