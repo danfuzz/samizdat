@@ -17,16 +17,16 @@
 
 enum {
     /** "Magic number" for value validation. */
-    SAM_VALUE_MAGIC = 0x600f1e57,
+    DAT_VALUE_MAGIC = 0x600f1e57,
 
     /** Required byte alignment for values. */
-    SAM_VALUE_ALIGNMENT = 8
+    DAT_VALUE_ALIGNMENT = 8
 };
 
 /**
  * Common fields across all values. Used as a header for other types.
  */
-typedef struct SamValue {
+typedef struct DatValue {
     /** Magic number. */
     uint32_t magic;
 
@@ -35,40 +35,40 @@ typedef struct SamValue {
 
     /** Size. Meaning varies depending on `type`. */
     zint size;
-} SamValue;
+} DatValue;
 
 /**
  * Intlet structure.
  */
 typedef struct {
     /** Value header. */
-    SamValue header;
+    DatValue header;
 
     /** Signed value as an array of `zint` elements, in little-endian order. */
     zint elems[0];
-} SamIntlet;
+} DatIntlet;
 
 /**
  * Listlet structure.
  */
 typedef struct {
     /** Value header. */
-    SamValue header;
+    DatValue header;
 
     /** List elements, in index order. */
     zvalue elems[0];
-} SamListlet;
+} DatListlet;
 
 /**
  * Maplet structure.
  */
 typedef struct {
     /** Value header. */
-    SamValue header;
+    DatValue header;
 
     /** List of mappings, in key-sorted order. */
     zmapping elems[0];
-} SamMaplet;
+} DatMaplet;
 
 /**
  * Uniqlet info.
@@ -89,15 +89,15 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    SamValue header;
+    DatValue header;
 
     /** Uniqlet info */
     UniqletInfo info;
-} SamUniqlet;
+} DatUniqlet;
 
 /**
- * Allocates memory, sized to include a `SamValue` header plus the
- * indicated number of extra bytes. The `SamValue` header is
+ * Allocates memory, sized to include a `DatValue` header plus the
+ * indicated number of extra bytes. The `DatValue` header is
  * initialized with the indicated type and size.
  */
 zvalue datAllocValue(ztype type, zint size, zint extraBytes);

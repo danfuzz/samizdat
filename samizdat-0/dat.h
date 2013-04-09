@@ -24,10 +24,10 @@
  * as the type-based ordering for comparing values. See `datCompare()`.
  */
 typedef enum {
-    SAM_INTLET = 1,
-    SAM_LISTLET,
-    SAM_MAPLET,
-    SAM_UNIQLET
+    DAT_INTLET = 1,
+    DAT_LISTLET,
+    DAT_MAPLET,
+    DAT_UNIQLET
 } ztype;
 
 /**
@@ -35,7 +35,7 @@ typedef enum {
  * accessible through instances of this type via the API. You
  * have to use the various accessor functions.
  */
-typedef struct SamValue *zvalue;
+typedef struct DatValue *zvalue;
 
 /**
  * Arbitrary (key, value) mapping.

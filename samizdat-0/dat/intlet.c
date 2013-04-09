@@ -36,7 +36,7 @@ static zint bitIndex(zint n) {
 static zvalue allocIntlet(zint bitSize) {
     zint wordCount = wordIndex(bitSize + BITS_PER_WORD - 1);
 
-    return datAllocValue(SAM_INTLET, wordCount * BITS_PER_WORD, wordCount);
+    return datAllocValue(DAT_INTLET, wordCount * BITS_PER_WORD, wordCount);
 }
 
 /**
@@ -45,7 +45,7 @@ static zvalue allocIntlet(zint bitSize) {
 static zint *intletElems(zvalue intlet) {
     datAssertIntlet(intlet);
 
-    return ((SamIntlet *) intlet)->elems;
+    return ((DatIntlet *) intlet)->elems;
 }
 
 

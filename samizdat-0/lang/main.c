@@ -35,7 +35,7 @@ static void processFile(zvalue fileContents) {
         datStringletEncodeUtf8(type, utf);
         utf[size] = '\0';
         one = datMapletGet(one, STR_VALUE);
-        if ((one != NULL) && (datType(one) == SAM_LISTLET)) {
+        if ((one != NULL) && (datType(one) == DAT_LISTLET)) {
             size = datStringletUtf8Size(one);
             datStringletEncodeUtf8(one, value);
             value[size] = '\0';

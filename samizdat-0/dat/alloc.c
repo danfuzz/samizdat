@@ -20,9 +20,9 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
         die("Invalid value size: %lld", size);
     }
 
-    zvalue result = zalloc(sizeof(SamValue) + extraBytes);
+    zvalue result = zalloc(sizeof(DatValue) + extraBytes);
 
-    result->magic = SAM_VALUE_MAGIC;
+    result->magic = DAT_VALUE_MAGIC;
     result->type = type;
     result->size = size;
 

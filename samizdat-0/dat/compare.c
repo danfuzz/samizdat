@@ -25,10 +25,10 @@ zcomparison datCompare(zvalue v1, zvalue v2) {
     }
 
     switch (t1) {
-        case SAM_INTLET:  return datIntletCompare(v1, v2);
-        case SAM_LISTLET: return datListletCompare(v1, v2);
-        case SAM_MAPLET:  return datMapletCompare(v1, v2);
-        case SAM_UNIQLET: return datUniqletCompare(v1, v2);
+        case DAT_INTLET:  return datIntletCompare(v1, v2);
+        case DAT_LISTLET: return datListletCompare(v1, v2);
+        case DAT_MAPLET:  return datMapletCompare(v1, v2);
+        case DAT_UNIQLET: return datUniqletCompare(v1, v2);
     }
 
     die("Invalid type (shouldn't happen).");

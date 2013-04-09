@@ -24,14 +24,14 @@ static zvalue theEmptyListlet = NULL;
 
 /* Documented in header. */
 zvalue datAllocListlet(zint size) {
-    return datAllocValue(SAM_LISTLET, size, size * sizeof(zvalue));
+    return datAllocValue(DAT_LISTLET, size, size * sizeof(zvalue));
 }
 
 /* Documented in header. */
 zvalue *datListletElems(zvalue listlet) {
     datAssertListlet(listlet);
 
-    return ((SamListlet *) listlet)->elems;
+    return ((DatListlet *) listlet)->elems;
 }
 
 /* Documented in header. */

@@ -21,7 +21,7 @@ static zvalue theEmptyMaplet = NULL;
  * Allocates a maplet of the given size.
  */
 static zvalue allocMaplet(zint size) {
-    return datAllocValue(SAM_MAPLET, size, size * sizeof(zmapping));
+    return datAllocValue(DAT_MAPLET, size, size * sizeof(zmapping));
 }
 
 /**
@@ -30,7 +30,7 @@ static zvalue allocMaplet(zint size) {
 static zmapping *mapletElems(zvalue maplet) {
     datAssertMaplet(maplet);
 
-    return ((SamMaplet *) maplet)->elems;
+    return ((DatMaplet *) maplet)->elems;
 }
 
 

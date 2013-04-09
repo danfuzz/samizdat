@@ -16,10 +16,10 @@
  */
 static const char *typeName(ztype type) {
     switch (type) {
-        case SAM_INTLET:  return "intlet";
-        case SAM_LISTLET: return "listlet";
-        case SAM_MAPLET:  return "maplet";
-        case SAM_UNIQLET: return "uniqlet";
+        case DAT_INTLET:  return "intlet";
+        case DAT_LISTLET: return "listlet";
+        case DAT_MAPLET:  return "maplet";
+        case DAT_UNIQLET: return "uniqlet";
     }
 
     return "<unknown-type>";
@@ -48,20 +48,20 @@ static void assertType(zvalue value, ztype type) {
 void datAssertValid(zvalue value) {
     zint bits = (zint) (void *) value;
 
-    if ((bits % SAM_VALUE_ALIGNMENT) != 0) {
+    if ((bits % DAT_VALUE_ALIGNMENT) != 0) {
         die("Bad alignment for value: %p", value);
     }
 
-    if (value->magic != SAM_VALUE_MAGIC) {
+    if (value->magic != DAT_VALUE_MAGIC) {
         die("Incorrect magic for value: (%p)->magic == %#04x",
                value, value->magic);
     }
 
     switch (value->type) {
-        case SAM_INTLET:
-        case SAM_LISTLET:
-        case SAM_MAPLET:
-        case SAM_UNIQLET: {
+        case DAT_INTLET:
+        case DAT_LISTLET:
+        case DAT_MAPLET:
+        case DAT_UNIQLET: {
             break;
         }
         default: {
@@ -79,7 +79,7 @@ void datAssertNth(zvalue value, zint n) {
         die("Invalid index: %lld", n);
     }
 
-    if ((datType(value) != SAM_INTLET) && (value->size <= n)) {
+    if ((datType(value) != DAT_INTLET) && (value->size <= n)) {
         die("Invalid size for value access: (%p)->size == %lld; <= %lld",
                value, value->size, n);
     }
@@ -87,20 +87,20 @@ void datAssertNth(zvalue value, zint n) {
 
 /* Documented in header. */
 void datAssertIntlet(zvalue value) {
-    assertType(value, SAM_INTLET);
+    assertType(value, DAT_INTLET);
 }
 
 /* Documented in header. */
 void datAssertListlet(zvalue value) {
-    assertType(value, SAM_LISTLET);
+    assertType(value, DAT_LISTLET);
 }
 
 /* Documented in header. */
 void datAssertMaplet(zvalue value) {
-    assertType(value, SAM_MAPLET);
+    assertType(value, DAT_MAPLET);
 }
 
 /* Documented in header. */
 void datAssertUniqlet(zvalue value) {
-    assertType(value, SAM_UNIQLET);
+    assertType(value, DAT_UNIQLET);
 }

@@ -31,7 +31,7 @@ static void assertValidUniqletKey(void *key) {
 static UniqletInfo *uniqletInfo(zvalue uniqlet) {
     datAssertUniqlet(uniqlet);
 
-    return &((SamUniqlet *) uniqlet)->info;
+    return &((DatUniqlet *) uniqlet)->info;
 }
 
 /**
@@ -46,14 +46,14 @@ static zint uniqletId(zvalue uniqlet) {
  * on the arguments.
  */
 static zvalue newUniqlet(void *key, void *value) {
-    zvalue result = datAllocValue(SAM_UNIQLET, 0, sizeof(UniqletInfo));
+    zvalue result = datAllocValue(DAT_UNIQLET, 0, sizeof(UniqletInfo));
 
     if (theNextId < 0) {
         // Shouldn't be possible, but just in case...
         die("Shouldn't happen: Way too many uniqlets!");
     }
 
-    UniqletInfo *info = &((SamUniqlet *) result)->info;
+    UniqletInfo *info = &((DatUniqlet *) result)->info;
     info->id = theNextId;
     info->key = key;
     info->value = value;
