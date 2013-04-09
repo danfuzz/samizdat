@@ -24,8 +24,9 @@ typedef struct ExecutionContext *zcontext;
 
 
 /**
- * Constructs and returns a fresh context, valid for use as
- * a top level but with no actual bindings.
+ * Constructs and returns a fresh execution context, valid for use as
+ * an argument to `langExecute()` but without any initial variable
+ * bindings.
  */
 zcontext langNewContext(void);
 
