@@ -27,7 +27,7 @@ typedef struct ExecutionContext *zcontext;
  * Constructs and returns a fresh context, valid for use as
  * a top level but with no actual bindings.
  */
-zcontext ctxNewTopLevel(void);
+zcontext langNewContext(void);
 
 /**
  * Executes the given code, using the given global context.  Modifies
@@ -39,6 +39,6 @@ zcontext ctxNewTopLevel(void);
  * The given `code` must be a `statements` node, such as would have
  * been returned from `parse()` on a Samizdat Layer 0 file.
  */
-void samExecute(zcontext ctx, zvalue code);
+void langExecute(zcontext ctx, zvalue code);
 
 #endif

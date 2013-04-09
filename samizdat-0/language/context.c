@@ -32,7 +32,7 @@ zcontext ctxNewChild(zcontext parent, zvalue locals) {
  */
 
 /* Documented in header. */
-zcontext ctxNewTopLevel(void) {
+zcontext langNewContext(void) {
     zcontext ctx = ctxNewEmpty();
 
     ctx->locals = samMapletEmpty();

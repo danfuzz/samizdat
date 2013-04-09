@@ -252,6 +252,6 @@ static void execStatements(zcontext ctx, zvalue statements) {
  */
 
 /* Documented in header. */
-void samExecute(zcontext ctx, zvalue code) {
+void langExecute(zcontext ctx, zvalue code) {
     execStatements(ctx, code);
 }
