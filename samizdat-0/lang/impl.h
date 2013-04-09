@@ -30,11 +30,6 @@ typedef struct ExecutionContext {
     struct ExecutionContext *parent;
 } ExecutionContext;
 
-/**
- * Prototype of all bound functions.
- */
-typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
-
 
 /*
  * Function registries
@@ -94,6 +89,11 @@ void hidAssertType(zvalue value, zvalue type);
  * one and with the given initial locals.
  */
 zcontext ctxNewChild(zcontext parent, zvalue locals);
+
+/**
+ * Binds a new variable in the given context.
+ */
+void ctxBind(zcontext ctx, zvalue name, zvalue value);
 
 /**
  * Tokenizes a stringlet using Samizdat Layer 0 token syntax. Returns

@@ -14,6 +14,7 @@
  * Module functions
  */
 
+/* Documented in header. */
 zcontext ctxNewChild(zcontext parent, zvalue locals) {
     zcontext ctx = zalloc(sizeof(ExecutionContext));
 
@@ -21,6 +22,15 @@ zcontext ctxNewChild(zcontext parent, zvalue locals) {
     ctx->parent = parent;
 
     return ctx;
+}
+
+/* Documented in header. */
+void ctxBind(zcontext ctx, zvalue name, zvalue value) {
+    if (datMapletGet(ctx->locals, name) != NULL) {
+        die("Duplicate assignment.");
+    }
+
+    ctx->locals = datMapletPut(ctx->locals, name, value);
 }
 
 
@@ -31,4 +41,13 @@ zcontext ctxNewChild(zcontext parent, zvalue locals) {
 /* Documented in header. */
 zcontext langNewContext(void) {
     return ctxNewChild(NULL, datMapletEmpty());
+}
+
+/* Documented in header. */
+void langBindFunction(zcontext ctx, const char *name,
+                      zfunction function, void *state) {
+    zvalue nameValue = datStringletFromUtf8String(name, -1);
+    zvalue functionId = funDefine(function, state);
+
+    ctxBind(ctx, nameValue, functionId);
 }

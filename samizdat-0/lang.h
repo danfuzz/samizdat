@@ -13,6 +13,11 @@
 
 #include "dat.h"
 
+
+/*
+ * Data types
+ */
+
 /**
  * Execution context. This contains global variable bindings and
  * definitions / bindings of functions (both primitive and
@@ -22,6 +27,17 @@
  */
 typedef struct ExecutionContext *zcontext;
 
+/**
+ * Prototype for all functions bound into execution contexts. The
+ * `state` is arbitrary closure state (passed in when the function
+ * was bound).
+ */
+typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
+
+
+/*
+ * Functions
+ */
 
 /**
  * Constructs and returns a fresh execution context, valid for use as
@@ -29,6 +45,15 @@ typedef struct ExecutionContext *zcontext;
  * bindings.
  */
 zcontext langNewContext(void);
+
+/**
+ * Binds a primitive function into the given execution context,
+ * giving it the indicated name (interpreted as a `'\0'`-terminated
+ * UTF-8 string). The given `state` will be passed as the first
+ * argument to the function whenever it is called.
+ */
+void langBindFunction(zcontext ctx, const char *name,
+                      zfunction function, void *state);
 
 /**
  * Executes the given code, using the given global context.  Modifies

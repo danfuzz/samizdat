@@ -204,11 +204,7 @@ static void execVarDef(zcontext ctx, zvalue varDef) {
     zvalue name = datMapletGet(nameValue, STR_NAME);
     zvalue value = datMapletGet(nameValue, STR_VALUE);
 
-    if (datMapletGet(ctx->locals, name) != NULL) {
-        die("Duplicate assignment.");
-    }
-
-    ctx->locals = datMapletPut(ctx->locals, name, execExpression(ctx, value));
+    ctxBind(ctx, name, execExpression(ctx, value));
 }
 
 /**
