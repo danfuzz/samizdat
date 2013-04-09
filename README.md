@@ -71,14 +71,14 @@ Its syntax is inspired by
 [Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
 [JavaScript](http://en.wikipedia.org/wiki/JavaScript),
 [Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
-and traditional [Backus-Naur Form
-(BNF)](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form).
+and traditional [Backus-Naur
+Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) (BNF).
 Its core data model is inspired by Lisp,
 [Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
 [Clojure](http://en.wikipedia.org/wiki/Clojure), and JavaScript. Its
 parsing semantics are inspired by the recent work on [Parsing
-Expression Grammars
-(PEGs)](http://en.wikipedia.org/wiki/Parsing_expression_grammar),
+Expression
+Grammars](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEGs),
 particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
 of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR).
 
@@ -87,7 +87,7 @@ desire to explore the intersection of all of
 [promise](http://en.wikipedia.org/wiki/Promise_%28programming%29)-based
 computation,
 the [actor model](http://en.wikipedia.org/wiki/Actor_model) of
-concurrency, maximally-pure / immutable data models, and
+concurrency, maximally pure / immutable data models, and
 [software transactional
 memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
 (STM). The Samizdat language does have a mostly-immutable data model,
