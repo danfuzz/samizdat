@@ -15,7 +15,7 @@
 
 /**
  * Constructs and returns a fresh execution context, containing
- * bindings for all the primitive functions.
+ * bindings for all the primitive values and functions.
  */
 zcontext primNewContext(void);
 

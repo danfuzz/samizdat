@@ -5,27 +5,11 @@
 #
 # Samizdat Layer 0 Core Library
 #
-
-# The special null value.
-
-null = @[@"type"=@"null"];
-
-# The two boolean constants.
-
-false = @[@"type"=@"boolean" @"value"=@0];
-true =  @[@"type"=@"boolean" @"value"=@1];
+# See the file `prim/prim.c` for details on what's defined by the time
+# this code is run.
+#
 
 # Predicate that always returns `true`, intended for use with the
 # `if` function (natch).
 
 else = { ^ true; };
-
-# Primitive functions. These are all bound via magic.
-
-if = @@;        # if expr expr ... -- Cascading conditional function.
-readFile = @@;  # readFile name -- Reads a file, interpreting as UTF-8.
-writeFile = @@; # writeFile name stringlet -- Writes a file, encoding UTF-8.
-
-MAGIC @"if" if;
-MAGIC @"readFile" readFile;
-MAGIC @"writeFile" writeFile;
