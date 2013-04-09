@@ -90,7 +90,7 @@ the [actor model](http://en.wikipedia.org/wiki/Actor_model) of
 concurrency, maximally pure / immutable data models, and
 [software transactional
 memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
-(STM). The Samizdat language does have a mostly-immutable data model,
-but it does not innately implement promises, actors, or STM; however
+(STM). The Samizdat language has a mostly-immutable data model,
+but it does not innately implement promises, actors, or STM. However,
 it is intended to be a fertile substrate on which to explore these
 topics, while still being a practical language in its own right.
