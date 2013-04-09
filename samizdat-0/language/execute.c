@@ -41,7 +41,10 @@ typedef struct {
      */
     Context *parent;
 
-    /** Function node, which includes a list of formals and the code to run. */
+    /**
+     * Function definition, which includes a list of formals and the
+     * statements to run.
+     */
     zvalue function;
 }
 Closure;
@@ -53,6 +56,35 @@ Closure;
 
 /* Defined below. */
 static zvalue execExpression(Context *context, zvalue expression);
+static void execStatements(Context *context, zvalue statements);
+
+/**
+ * The C function that is used for all registrations with function
+ * registries.
+ */
+zvalue execClosure(void *state, zint argCount, const zvalue *args) {
+    Closure *closure = state;
+    zvalue formals = samMapletGet(closure->function, STR_FORMALS);
+    zvalue statements = samMapletGet(closure->function, STR_STATEMENTS);
+    zint formalsSize = samSize(formals);
+    zvalue locals = samMapletEmpty();
+
+    if (argCount < formalsSize) {
+        die("Too few arguments to function: %lld < %lld",
+            argCount, formalsSize);
+    }
+
+    for (zint i = 0; i < formalsSize; i++) {
+        zvalue name = samListletGet(formals, i);
+        locals = samMapletPut(locals, name, args[i]);
+    }
+
+    Context context = { locals, NULL, closure->parent, closure->parent->reg };
+    execStatements(&context, statements);
+
+    zvalue result = context.toReturn;
+    return (result == NULL) ? TOK_NULL : result;
+}
 
 /**
  * Executes a `function` form.
@@ -60,7 +92,11 @@ static zvalue execExpression(Context *context, zvalue expression);
 static zvalue execFunction(Context *context, zvalue function) {
     assertType(function, STR_FUNCTION);
 
-    die("TODO");
+    Closure *closure = zalloc(sizeof(Closure));
+    closure->parent = context;
+    closure->function = highValue(function);
+
+    return funAdd(context->reg, execClosure, closure);
 }
 
 /**
