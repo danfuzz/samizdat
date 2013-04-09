@@ -7,6 +7,7 @@
 #include "impl.h"
 #include "util.h"
 
+
 /** Key for access to function-bearing uniqlets. Fun self-reference! */
 static void *functionKey = &functionKey;
 
