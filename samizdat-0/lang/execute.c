@@ -119,7 +119,7 @@ static zvalue execMaplet(zcontext ctx, zvalue maplet) {
 
     zvalue elems = hidValue(maplet);
     zint size = datSize(elems);
-    zvalue result = datListletEmpty();
+    zvalue result = datMapletEmpty();
 
     for (zint i = 0; i < size; i++) {
         zvalue one = datListletGet(elems, i);
