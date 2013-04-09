@@ -109,11 +109,11 @@ zvalue highValue(zvalue value);
  * Returns whether or not the `type` binding of the given maplet
  * equals the given value.
  */
-bool hasType(zvalue value, zvalue type);
+bool hasHighType(zvalue value, zvalue type);
 
 /**
  * Asserts that the given value is a maplet whose type is as given.
  */
-void assertType(zvalue value, zvalue type);
+void assertHighType(zvalue value, zvalue type);
 
 #endif

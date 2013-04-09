@@ -72,7 +72,7 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
  * Executes a `function` form.
  */
 static zvalue execFunction(zcontext ctx, zvalue function) {
-    assertType(function, STR_FUNCTION);
+    assertHighType(function, STR_FUNCTION);
 
     Closure *closure = zalloc(sizeof(Closure));
     closure->parent = ctx;
@@ -85,7 +85,7 @@ static zvalue execFunction(zcontext ctx, zvalue function) {
  * Executes a `call` form.
  */
 static zvalue execCall(zcontext ctx, zvalue call) {
-    assertType(call, STR_CALL);
+    assertHighType(call, STR_CALL);
 
     call = highValue(call);
     zvalue function = datMapletGet(call, STR_FUNCTION);
@@ -108,7 +108,7 @@ static zvalue execCall(zcontext ctx, zvalue call) {
  * Executes a `uniqlet` form.
  */
 static zvalue execUniqlet(zcontext ctx, zvalue uniqlet) {
-    assertType(uniqlet, STR_UNIQLET);
+    assertHighType(uniqlet, STR_UNIQLET);
 
     return datUniqlet();
 }
@@ -117,7 +117,7 @@ static zvalue execUniqlet(zcontext ctx, zvalue uniqlet) {
  * Executes a `maplet` form.
  */
 static zvalue execMaplet(zcontext ctx, zvalue maplet) {
-    assertType(maplet, STR_MAPLET);
+    assertHighType(maplet, STR_MAPLET);
 
     zvalue elems = highValue(maplet);
     zint size = datSize(elems);
@@ -139,7 +139,7 @@ static zvalue execMaplet(zcontext ctx, zvalue maplet) {
  * Executes a `listlet` form.
  */
 static zvalue execListlet(zcontext ctx, zvalue listlet) {
-    assertType(listlet, STR_LISTLET);
+    assertHighType(listlet, STR_LISTLET);
 
     zvalue elems = highValue(listlet);
     zint size = datSize(elems);
@@ -157,7 +157,7 @@ static zvalue execListlet(zcontext ctx, zvalue listlet) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(zcontext ctx, zvalue varRef) {
-    assertType(varRef, STR_VAR_REF);
+    assertHighType(varRef, STR_VAR_REF);
 
     zvalue name = highValue(varRef);
 
@@ -175,7 +175,7 @@ static zvalue execVarRef(zcontext ctx, zvalue varRef) {
  * Executes a `literal` form.
  */
 static zvalue execLiteral(zcontext ctx, zvalue literal) {
-    assertType(literal, STR_LITERAL);
+    assertHighType(literal, STR_LITERAL);
 
     return highValue(literal);
 }
@@ -184,13 +184,13 @@ static zvalue execLiteral(zcontext ctx, zvalue literal) {
  * Executes an `expression` form.
  */
 static zvalue execExpression(zcontext ctx, zvalue ex) {
-    if      (hasType(ex, STR_LITERAL))  { return execLiteral(ctx, ex);  }
-    else if (hasType(ex, STR_VAR_REF))  { return execVarRef(ctx, ex);   }
-    else if (hasType(ex, STR_LISTLET))  { return execListlet(ctx, ex);  }
-    else if (hasType(ex, STR_MAPLET))   { return execMaplet(ctx, ex);   }
-    else if (hasType(ex, STR_UNIQLET))  { return execUniqlet(ctx, ex);  }
-    else if (hasType(ex, STR_CALL))     { return execCall(ctx, ex);     }
-    else if (hasType(ex, STR_FUNCTION)) { return execFunction(ctx, ex); }
+    if      (hasHighType(ex, STR_LITERAL))  { return execLiteral(ctx, ex);  }
+    else if (hasHighType(ex, STR_VAR_REF))  { return execVarRef(ctx, ex);   }
+    else if (hasHighType(ex, STR_LISTLET))  { return execListlet(ctx, ex);  }
+    else if (hasHighType(ex, STR_MAPLET))   { return execMaplet(ctx, ex);   }
+    else if (hasHighType(ex, STR_UNIQLET))  { return execUniqlet(ctx, ex);  }
+    else if (hasHighType(ex, STR_CALL))     { return execCall(ctx, ex);     }
+    else if (hasHighType(ex, STR_FUNCTION)) { return execFunction(ctx, ex); }
     else {
         die("Invalid expression type.");
     }
@@ -200,7 +200,7 @@ static zvalue execExpression(zcontext ctx, zvalue ex) {
  * Executes a `varDef` form.
  */
 static void execVarDef(zcontext ctx, zvalue varDef) {
-    assertType(varDef, STR_VAR_DEF);
+    assertHighType(varDef, STR_VAR_DEF);
 
     zvalue nameValue = highValue(varDef);
     zvalue name = datMapletGet(nameValue, STR_NAME);
@@ -217,7 +217,7 @@ static void execVarDef(zcontext ctx, zvalue varDef) {
  * Executes a `return` form.
  */
 static void execReturn(zcontext ctx, zvalue returnForm) {
-    assertType(returnForm, STR_RETURN);
+    assertHighType(returnForm, STR_RETURN);
 
     ctx->toReturn = execExpression(ctx, highValue(returnForm));
 }
@@ -226,7 +226,7 @@ static void execReturn(zcontext ctx, zvalue returnForm) {
  * Executes a `statements` form.
  */
 static void execStatements(zcontext ctx, zvalue statements) {
-    assertType(statements, STR_STATEMENTS);
+    assertHighType(statements, STR_STATEMENTS);
 
     statements = highValue(statements);
     zint size = datSize(statements);
@@ -234,11 +234,11 @@ static void execStatements(zcontext ctx, zvalue statements) {
     for (zint i = 0; (i < size) && (ctx->toReturn == NULL); i++) {
         zvalue one = datListletGet(statements, i);
         zvalue type = highType(one);
-        if (hasType(one, STR_EXPRESSION)) {
+        if (hasHighType(one, STR_EXPRESSION)) {
             execExpression(ctx, one);
-        } else if (hasType(one, STR_VAR_DEF)) {
+        } else if (hasHighType(one, STR_VAR_DEF)) {
             execVarDef(ctx, one);
-        } else if (hasType(one, STR_RETURN)) {
+        } else if (hasHighType(one, STR_RETURN)) {
             execReturn(ctx, one);
         } else {
             die("Invalid statements element.");

@@ -175,13 +175,13 @@ zvalue highValue(zvalue value) {
 }
 
 /* Documented in header. */
-bool hasType(zvalue value, zvalue type) {
+bool hasHighType(zvalue value, zvalue type) {
     return (datCompare(highType(value), type) == 0);
 }
 
 /* Documented in header. */
-void assertType(zvalue value, zvalue type) {
-    if (!hasType(value, type)) {
+void assertHighType(zvalue value, zvalue type) {
+    if (!hasHighType(value, type)) {
         die("Type mismatch.");
     }
 }
