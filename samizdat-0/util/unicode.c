@@ -189,60 +189,62 @@ void utf8DecodeStringToInts(const char *string, zint stringBytes,
 
 /* Documented in header. */
 char *utf8EncodeOne(char *string, zint ch) {
-    if (ch < 0x80) {
+    if (ch < 0) {
+        die("Out of range for UTF-8: %#llx", ch);
+    } else if (ch < 0x80) {
         if (string != NULL) {
             string[0] = (char) ch;
         }
         return string + 1;
     } else if (ch < 0x800) {
         if (string != NULL) {
-            string[0] = (char) ((ch & 0x1f) | 0xc0);
-            string[1] = (char) ((ch >> 5) | 0x80);
+            string[0] = (char) (0xc0 | (ch >> 6));
+            string[1] = (char) (0x80 | (ch & 0x3f));
         }
         return string + 2;
     } else if (ch < 0x10000) {
         if (string != NULL) {
-            string[0] = (char) ((ch & 0x0f) | 0xe0);
-            string[1] = (char) (((ch >> 4) & 0x3f) | 0x80);
-            string[2] = (char) ((ch >> 10) | 0x80);
+            string[0] = (char) (0xe0 | (ch >> 12));
+            string[1] = (char) (0x80 | ((ch >> 6) & 0x3f));
+            string[2] = (char) (0x80 | (ch & 0x3f));
         }
         return string + 3;
     } else if (ch < 0x200000) {
         if (string != NULL) {
-            string[0] = (char) ((ch & 0x07) | 0xf0);
-            string[1] = (char) (((ch >> 3) & 0x3f) | 0x80);
-            string[2] = (char) (((ch >> 9) & 0x3f) | 0x80);
-            string[3] = (char) ((ch >> 15) | 0x80);
+            string[0] = (char) (0xf0 | (ch >> 18));
+            string[1] = (char) (0x80 | ((ch >> 12) & 0x3f));
+            string[2] = (char) (0x80 | ((ch >> 6) & 0x3f));
+            string[3] = (char) (0x80 | (ch & 0x3f));
         }
         return string + 4;
     } else if (ch < 0x4000000) {
         if (string != NULL) {
-            string[0] = (char) ((ch & 0x03) | 0xf8);
-            string[1] = (char) (((ch >> 2) & 0x3f) | 0x80);
-            string[2] = (char) (((ch >> 8) & 0x3f) | 0x80);
-            string[3] = (char) (((ch >> 14) & 0x3f) | 0x80);
-            string[4] = (char) ((ch >> 20) | 0x80);
+            string[0] = (char) (0xf8 | (ch >> 24));
+            string[1] = (char) (0x80 | ((ch >> 18) & 0x3f));
+            string[2] = (char) (0x80 | ((ch >> 12) & 0x3f));
+            string[3] = (char) (0x80 | ((ch >> 6) & 0x3f));
+            string[4] = (char) (0x80 | (ch & 0x3f));
         }
         return string + 5;
     } else if (ch < 0x80000000) {
         if (string != NULL) {
-            string[0] = (char) ((ch & 0x01) | 0xfc);
-            string[1] = (char) (((ch >> 1) & 0x3f) | 0x80);
-            string[2] = (char) (((ch >> 7) & 0x3f) | 0x80);
-            string[3] = (char) (((ch >> 13) & 0x3f) | 0x80);
-            string[4] = (char) (((ch >> 19) & 0x3f) | 0x80);
-            string[5] = (char) ((ch >> 25) | 0x80);
+            string[0] = (char) (0xfc | (ch >> 30));
+            string[1] = (char) (0x80 | ((ch >> 24) & 0x3f));
+            string[2] = (char) (0x80 | ((ch >> 18) & 0x3f));
+            string[3] = (char) (0x80 | ((ch >> 12) & 0x3f));
+            string[4] = (char) (0x80 | ((ch >> 6) & 0x3f));
+            string[5] = (char) (0x80 | (ch & 0x3f));
         }
         return string + 6;
     } else if (ch < 0x100000000) {
         if (string != NULL) {
-            string[0] = (char) 0xfe;
-            string[1] = (char) ((ch & 0x3f) | 0x80);
-            string[2] = (char) (((ch >> 6) & 0x3f) | 0x80);
-            string[3] = (char) (((ch >> 12) & 0x3f) | 0x80);
-            string[4] = (char) (((ch >> 18) & 0x3f) | 0x80);
-            string[5] = (char) (((ch >> 24) & 0x3f) | 0x80);
-            string[6] = (char) (((ch >> 30) & 0x3f) | 0x80);
+            string[0] = (char)  0xfe;
+            string[1] = (char) (0x80 | ((ch >> 30) & 0x3f));
+            string[2] = (char) (0x80 | ((ch >> 24) & 0x3f));
+            string[3] = (char) (0x80 | ((ch >> 18) & 0x3f));
+            string[4] = (char) (0x80 | ((ch >> 12) & 0x3f));
+            string[5] = (char) (0x80 | ((ch >> 6) & 0x3f));
+            string[6] = (char) (0x80 | (ch & 0x3f));
         }
         return string + 7;
     } else {
