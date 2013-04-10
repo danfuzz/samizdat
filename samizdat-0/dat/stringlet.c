@@ -32,6 +32,23 @@ static void decodeStringToValues(const char *string, zint stringBytes,
     }
 }
 
+/**
+ * Gets the UTF-8 encoded size of the given stringlet, in bytes.
+ */
+static zint utf8Size(zvalue stringlet) {
+    datAssertStringlet(stringlet);
+
+    zint size = datSize(stringlet);
+    zint result = 0;
+
+    for (zint i = 0; i < size; i++) {
+        zint ch = datListletGetInt(stringlet, i);
+        result += (utf8EncodeOne(NULL, ch) - (char *) NULL);
+    }
+
+    return result;
+}
+
 
 /*
  * Exported functions
@@ -65,28 +82,20 @@ zvalue datStringletFromUtf8String(const char *string, zint stringBytes) {
 }
 
 /* Documented in header. */
-zint datStringletUtf8Size(zvalue stringlet) {
-    datAssertStringlet(stringlet);
-
+const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize) {
     zint size = datSize(stringlet);
-    zint result = 0;
+    zint utfSize = utf8Size(stringlet);
+    char *result = zalloc(utfSize + 1);
+    char *out = result;
 
     for (zint i = 0; i < size; i++) {
-        zint ch = datListletGetInt(stringlet, i);
-        result += (utf8EncodeOne(NULL, ch) - (char *) NULL);
+        out = utf8EncodeOne(out, datListletGetInt(stringlet, i));
     }
 
+    if (resultSize != NULL) {
+        *resultSize = utfSize;
+    }
+
+    *out = '\0';
     return result;
-}
-
-/* Documented in header. */
-void datStringletEncodeUtf8(zvalue stringlet, char *utf8) {
-    datAssertStringlet(stringlet);
-
-    zint size = datSize(stringlet);
-
-    for (zint i = 0; i < size; i++) {
-        zint ch = datListletGetInt(stringlet, i);
-        utf8 = utf8EncodeOne(utf8, ch);
-    }
 }

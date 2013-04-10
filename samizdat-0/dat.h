@@ -300,16 +300,14 @@ void datUniqletSetValue(zvalue uniqlet, void *key, void *value);
 zvalue datStringletFromUtf8String(const char *string, zint stringBytes);
 
 /**
- * Gets the UTF-8 encoded size of the given stringlet, in bytes.
+ * Encodes the given stringlet as UTF-8, returning permanently
+ * allocated storage for the result, and storing the size in bytes via
+ * the given `resultSize` pointer if non-`NULL`. The result *is*
+ * `'\0'`-terminated, but `*resultSize` will need to be used if the
+ * original stringlet might have contained any `U+0` code points.
  */
-zint datStringletUtf8Size(zvalue stringlet);
+const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
 
-/**
- * Encodes the given stringlet as UTF-8, storing it into the given
- * `char *` array. The array must be long enough to hold the result.
- * It is *not* `'\0'`-terminated.
- */
-void datStringletEncodeUtf8(zvalue stringlet, char *utf8);
 
 
 /*

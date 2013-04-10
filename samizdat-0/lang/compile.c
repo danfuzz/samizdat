@@ -24,18 +24,15 @@ zvalue langCompile(zvalue programText) {
     for (zint i = 0; i < tokensSize; i++) {
         zvalue one = datListletGet(tokens, i);
         zvalue type = datMapletGet(one, STR_TYPE);
-        char typeStr[200];
-        char value[200] = "";
-        zint size = datStringletUtf8Size(type);
-        datStringletEncodeUtf8(type, typeStr);
-        typeStr[size] = '\0';
-        one = datMapletGet(one, STR_VALUE);
-        if ((one != NULL) && (datType(one) == DAT_LISTLET)) {
-            size = datStringletUtf8Size(one);
-            datStringletEncodeUtf8(one, value);
-            value[size] = '\0';
+        zvalue value = datMapletGet(one, STR_VALUE);
+        const char *typeStr = datStringletEncodeUtf8(type, NULL);
+        const char *valueStr = "";
+
+        if ((value != NULL) && (datType(value) == DAT_LISTLET)) {
+            valueStr = datStringletEncodeUtf8(value, NULL);
         }
-        note("=== %4lld -- %s %s", i, typeStr, value);
+
+        note("=== %4lld -- %s %s", i, typeStr, valueStr);
     }
     note("[fin]");
 #endif

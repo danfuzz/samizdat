@@ -26,11 +26,7 @@ enum {
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
 FILE *openFile(zvalue fileName, const char *mode) {
-    zint nameSize = datStringletUtf8Size(fileName);
-    char nameUtf[nameSize + 1];
-
-    datStringletEncodeUtf8(fileName, nameUtf);
-    nameUtf[nameSize] = '\0';
+    const char *nameUtf = datStringletEncodeUtf8(fileName, NULL);
 
     FILE *file = fopen(nameUtf, mode);
     if (file == NULL) {
@@ -66,15 +62,13 @@ zvalue readFile(zvalue fileName) {
 
 /* Documented in header. */
 void writeFile(zvalue fileName, zvalue text) {
-    zint textSize = datStringletUtf8Size(text);
-    char textUtf[textSize];
-
-    datStringletEncodeUtf8(text, textUtf);
+    zint utfSize;
+    const char *utf = datStringletEncodeUtf8(text, &utfSize);
 
     FILE *out = openFile(fileName, "w");
-    zint amt = fwrite(textUtf, 1, textSize, out);
+    zint amt = fwrite(utf, 1, utfSize, out);
 
-    if (amt != textSize) {
+    if (amt != utfSize) {
         die("Trouble writing file: %s", strerror(errno));
     }
 
