@@ -28,15 +28,14 @@ later-named modules depending only on earlier-named ones):
 * lang &mdash; Language parsing and execution engine. This implements
   translation from source text to executable code trees, as well as
   the execution of same. This is also what implements the binding of
-  primitive functions into execution contexts. But this module does
-  not implement any primitive functionality itself. Depends on util
-  and dat.
+  primitive functions into execution contexts. This module does
+  not implement any library itself. Depends on util and dat.
 
 * lib &mdash; Library bindings. This implements both primitive and
   in-language bindings. The former are the parts of the core library
   that need to be (or are most conveniently) implemented in C. The
   latter are what can be implemented in Samizdat Layer 0. Depends on
-  util, dat, lang, and io.
+  util, dat, io, and lang.
 
 * main &mdash; Where it all comes together. This implements the
   C `main()` function. Depends on everything else.
