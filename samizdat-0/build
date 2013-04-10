@@ -49,6 +49,9 @@ COMPILE_C=(cc -g -c -I"${progDir}")
 LINK_BIN=(cc -g)
 
 cd "${progDir}"
+
+xxd -i "lib/library.sam0" > "lib/library-generated.c" || exit 1
+
 SOURCES=($(find . -name '*.c'))
 
 errors=0

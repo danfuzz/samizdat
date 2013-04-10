@@ -5,18 +5,18 @@
  */
 
 /*
- * Primitive function library
+ * Samizdat Layer 0 core library
  */
 
-#ifndef _PRIM_H_
-#define _PRIM_H_
+#ifndef _LIB_H_
+#define _LIB_H_
 
 #include "lang.h"
 
 /**
  * Constructs and returns a fresh execution context, containing
- * bindings for all the primitive values and functions.
+ * bindings for all the core library values and functions.
  */
-zcontext primNewContext(void);
+zcontext libNewContext(void);
 
 #endif

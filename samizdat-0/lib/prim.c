@@ -5,7 +5,7 @@
  */
 
 #include "io.h"
-#include "prim.h"
+#include "lib.h"
 #include "util.h"
 
 #include <stddef.h>
@@ -62,7 +62,7 @@ static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-zcontext primNewContext(void) {
+zcontext libNewContext(void) {
     zcontext ctx = langNewContext();
 
     // These all could have been defined in-language, but we already
