@@ -21,8 +21,8 @@ int main(int argc, char **argv) {
         note("Processing file: %s", argv[i]);
 
         zvalue name = datStringletFromUtf8String(argv[i], -1);
-        zvalue fileContents = readFile(name);
-        zvalue program = langCompile(fileContents);
+        zvalue programText = readFile(name);
+        zvalue program = langCompile(programText);
 
         langExecute(ctx, program);
     }

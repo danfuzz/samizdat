@@ -9,6 +9,22 @@
 
 
 /*
+ * Helper functions
+ */
+
+/**
+ * Runs the library code baked into this executable.
+ */
+static void runLibrary(zcontext ctx) {
+    zvalue programText =
+        datStringletFromUtf8String(lib_library_sam0, lib_library_sam0_len);
+    zvalue program = langCompile(programText);
+
+    langExecute(ctx, program);
+}
+
+
+/*
  * Exported functions
  */
 
@@ -24,8 +40,7 @@ zcontext libNewContext(void) {
     langBind(ctx, "true", langTrue());
 
     bindPrimitives(ctx);
-
-    // TODO: Execute Samizdat library code.
+    runLibrary(ctx);
 
     return ctx;
 }

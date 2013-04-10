@@ -13,3 +13,7 @@
 # `if` function (natch).
 
 else = { ^ true; };
+
+# Be welcoming.
+
+writeFile @"/dev/stderr" @"Hello, Самиздат!";

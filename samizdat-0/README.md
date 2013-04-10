@@ -35,7 +35,7 @@ later-named modules depending only on earlier-named ones):
 * lib &mdash; Library bindings. This implements both primitive and
   in-language bindings. The former are the parts of the core library
   that need to be (or are most conveniently) implemented in C. The
-  latter are what can be implemented in Samizdat Layer 0.  Depends on
+  latter are what can be implemented in Samizdat Layer 0. Depends on
   util, dat, lang, and io.
 
 * main &mdash; Where it all comes together. This implements the
