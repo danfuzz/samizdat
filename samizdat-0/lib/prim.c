@@ -5,6 +5,7 @@
  */
 
 #include "io.h"
+#include "impl.h"
 #include "lib.h"
 #include "util.h"
 
@@ -58,24 +59,13 @@ static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
 
 
 /*
- * Exported functions
+ * Module functions
  */
 
 /* Documented in header. */
-zcontext libNewContext(void) {
-    zcontext ctx = langNewContext();
-
-    // These all could have been defined in-language, but we already
-    // had to have them defined and accessible to C code, so we just
-    // go ahead and export them here.
-    langBind(ctx, "null", langNull());
-    langBind(ctx, "false", langFalse());
-    langBind(ctx, "true", langTrue());
-
+void bindPrimitives(zcontext ctx) {
     langBindFunction(ctx, "if",        prim_if,        NULL);
     langBindFunction(ctx, "readFile",  prim_readFile,  NULL);
     langBindFunction(ctx, "writeFile", prim_writeFile, NULL);
     // TODO: More.
-
-    return ctx;
 }
