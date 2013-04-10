@@ -22,7 +22,7 @@ static const char *justDecode(const char *string, zint stringBytes,
         die("Invalid string size: %lld", stringBytes);
     }
 
-    char ch = *string;
+    unsigned char ch = *string;
     zint value;
     int extraBytes;
     zint minValue;
@@ -92,6 +92,8 @@ static const char *justDecode(const char *string, zint stringBytes,
                     // that would require that form.
                     extraBytes = 6;
                     minValue = 0x80000000;
+                    value = 0;
+                    break;
                 }
                 case 0xf: {
                     // fe..ff: Invalid start bytes.
