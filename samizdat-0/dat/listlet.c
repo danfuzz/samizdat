@@ -49,6 +49,10 @@ zcomparison datListletCompare(zvalue v1, zvalue v2) {
         }
     }
 
+    if (sz1 == sz2) {
+        return ZEQUAL;
+    }
+
     return (sz1 < sz2) ? ZLESS : ZMORE;
 }
 
