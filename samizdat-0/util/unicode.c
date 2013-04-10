@@ -204,36 +204,36 @@ char *utf8EncodeOne(char *string, zint ch) {
         return string + 2;
     } else if (ch < 0x10000) {
         if (string != NULL) {
-            string[0] = (char) (0xe0 | (ch >> 12));
-            string[1] = (char) (0x80 | ((ch >> 6) & 0x3f));
-            string[2] = (char) (0x80 | (ch & 0x3f));
+            string[0] = (char) (0xe0 |  (ch >> 12)        );
+            string[1] = (char) (0x80 | ((ch >> 6)  & 0x3f));
+            string[2] = (char) (0x80 | ( ch        & 0x3f));
         }
         return string + 3;
     } else if (ch < 0x200000) {
         if (string != NULL) {
-            string[0] = (char) (0xf0 | (ch >> 18));
+            string[0] = (char) (0xf0 |  (ch >> 18)        );
             string[1] = (char) (0x80 | ((ch >> 12) & 0x3f));
-            string[2] = (char) (0x80 | ((ch >> 6) & 0x3f));
-            string[3] = (char) (0x80 | (ch & 0x3f));
+            string[2] = (char) (0x80 | ((ch >> 6)  & 0x3f));
+            string[3] = (char) (0x80 | ( ch        & 0x3f));
         }
         return string + 4;
     } else if (ch < 0x4000000) {
         if (string != NULL) {
-            string[0] = (char) (0xf8 | (ch >> 24));
+            string[0] = (char) (0xf8 |  (ch >> 24)        );
             string[1] = (char) (0x80 | ((ch >> 18) & 0x3f));
             string[2] = (char) (0x80 | ((ch >> 12) & 0x3f));
-            string[3] = (char) (0x80 | ((ch >> 6) & 0x3f));
-            string[4] = (char) (0x80 | (ch & 0x3f));
+            string[3] = (char) (0x80 | ((ch >> 6)  & 0x3f));
+            string[4] = (char) (0x80 | ( ch        & 0x3f));
         }
         return string + 5;
     } else if (ch < 0x80000000) {
         if (string != NULL) {
-            string[0] = (char) (0xfc | (ch >> 30));
+            string[0] = (char) (0xfc |  (ch >> 30)        );
             string[1] = (char) (0x80 | ((ch >> 24) & 0x3f));
             string[2] = (char) (0x80 | ((ch >> 18) & 0x3f));
             string[3] = (char) (0x80 | ((ch >> 12) & 0x3f));
-            string[4] = (char) (0x80 | ((ch >> 6) & 0x3f));
-            string[5] = (char) (0x80 | (ch & 0x3f));
+            string[4] = (char) (0x80 | ((ch >> 6)  & 0x3f));
+            string[5] = (char) (0x80 | ( ch        & 0x3f));
         }
         return string + 6;
     } else if (ch < 0x100000000) {
@@ -243,8 +243,8 @@ char *utf8EncodeOne(char *string, zint ch) {
             string[2] = (char) (0x80 | ((ch >> 24) & 0x3f));
             string[3] = (char) (0x80 | ((ch >> 18) & 0x3f));
             string[4] = (char) (0x80 | ((ch >> 12) & 0x3f));
-            string[5] = (char) (0x80 | ((ch >> 6) & 0x3f));
-            string[6] = (char) (0x80 | (ch & 0x3f));
+            string[5] = (char) (0x80 | ((ch >> 6)  & 0x3f));
+            string[6] = (char) (0x80 | ( ch        & 0x3f));
         }
         return string + 7;
     } else {
