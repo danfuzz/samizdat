@@ -32,7 +32,7 @@ FILE *openFile(zvalue fileName, const char *mode) {
     datStringletEncodeUtf8(fileName, nameUtf);
     nameUtf[nameSize] = '\0';
 
-    FILE *file = fopen(nameUtf, "r");
+    FILE *file = fopen(nameUtf, mode);
     if (file == NULL) {
         die("Trouble opening file \"%s\": %s", nameUtf, strerror(errno));
     }
@@ -71,7 +71,7 @@ void writeFile(zvalue fileName, zvalue text) {
 
     datStringletEncodeUtf8(text, textUtf);
 
-    FILE *out = openFile(fileName, "r");
+    FILE *out = openFile(fileName, "w");
     zint amt = fwrite(textUtf, 1, textSize, out);
 
     if (amt != textSize) {

@@ -16,4 +16,4 @@ else = { ^ true; };
 
 # Be welcoming.
 
-writeFile @"/dev/stderr" @"Hello, Самиздат!";
+writeFile @"/dev/stderr" @"Hello, Самиздат!\n";
