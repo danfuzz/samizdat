@@ -66,18 +66,19 @@ intended that the language be an attractive target for use in
 text processing, free-form data structure manipulation, and general
 systems programming.
 
-Its syntax is inspired by
+Its syntax was influenced by
 [C](http://en.wikipedia.org/wiki/C_%28programming_language%29),
 [E](http://en.wikipedia.org/wiki/E_%28programming_language%29),
+[Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
+[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk),
 [Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
 [JavaScript](http://en.wikipedia.org/wiki/JavaScript),
-[Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
 and traditional [Backus-Naur
 Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) (BNF).
-Its core data model is inspired by Lisp,
+Its core data model was influenced by Lisp,
 [Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
 [Clojure](http://en.wikipedia.org/wiki/Clojure), and JavaScript. Its
-parsing semantics are inspired by the recent work on [Parsing
+parsing semantics were influenced by the recent work on [Parsing
 Expression
 Grammars](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEGs),
 particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
@@ -95,7 +96,7 @@ concurrency, maximally pure / immutable data models, and
 [software transactional
 memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
 (STM). The Samizdat language has a mostly-immutable data model and
-generally has "capability nature",
-but it does not innately implement promises, actors, or STM. However,
-it is intended to be a fertile substrate on which to explore these
-topics, while still being a practical language in its own right.
+generally has "capability nature", but it does not innately implement
+promises, actors, or STM. However, it is intended to be a fertile
+substrate on which to explore these topics, while still being a
+practical and compelling language in its own right.
