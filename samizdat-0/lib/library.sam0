@@ -5,8 +5,8 @@
 #
 # Samizdat Layer 0 Core Library
 #
-# See the file `prim/prim.c` for details on what's defined by the time
-# this code is run.
+# See the files `lib/{lib,prim}.c` for details on what's defined by
+# the time this code is run.
 #
 
 # Predicate that always returns `true`, intended for use with the
