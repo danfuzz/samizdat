@@ -50,19 +50,28 @@ LINK_BIN=(cc -g)
 
 cd "${progDir}"
 
-xxd -i "lib/library.sam0" > "lib/library-generated.c" || exit 1
+libraryFile="${OUT}/library-generated.c"
+xxd -i "lib/library.sam0" > "${libraryFile}" || exit 1
 
-SOURCES=($(find . -name '*.c'))
+SOURCES=($(find . -name '*.c') "${libraryFile}")
 
 errors=0
 for file in "${SOURCES[@]}"; do
-    [[ ${file} =~ \./(.*)/([^/]*)\.c$ ]]
-    dir="${BASH_REMATCH[1]}"
-    baseName="${BASH_REMATCH[2]}"
-    outDir="${OUT}/${dir}"
+    if [[ ${file} =~ ^\./(.*)/([^/]*)\.c$ ]]; then
+        # It's a normal source file.
+        dir="${BASH_REMATCH[1]}"
+        baseName="${BASH_REMATCH[2]}"
+        outDir="${OUT}/${dir}"
+    else
+        # It's a generated source file.
+        [[ ${file} =~ ^"${OUT}"/(.*)\.c$ ]] || exit 1
+        baseName="${BASH_REMATCH[1]}"
+        outDir="${OUT}"
+    fi
+
     outFile="${outDir}/${baseName}.o"
-    echo "${COMPILE_C[@]}" -o "${outFile}" "${file}"
     mkdir -p "${outDir}"
+    echo "${COMPILE_C[@]}" -o "${outFile}" "${file}"
     "${COMPILE_C[@]}" -o "${outFile}" "${file}" || (( errors++ ))
 done
 
