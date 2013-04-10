@@ -19,6 +19,7 @@ zvalue langCompile(zvalue programText) {
     zvalue tokens = tokenize(programText);
 
     // TODO: Remove this file dump.
+#if 0
     zint tokensSize = datSize(tokens);
     for (zint i = 0; i < tokensSize; i++) {
         zvalue one = datListletGet(tokens, i);
@@ -37,6 +38,7 @@ zvalue langCompile(zvalue programText) {
         note("=== %4lld -- %s %s", i, typeStr, value);
     }
     note("[fin]");
+#endif
 
     return parse(tokens);
 }
