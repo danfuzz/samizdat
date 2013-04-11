@@ -89,11 +89,10 @@ static zvalue execFunction(zcontext ctx, zvalue function) {
  */
 static zvalue execCall(zcontext ctx, zvalue call) {
     hidAssertType(call, STR_CALL);
-
     call = hidValue(call);
+
     zvalue function = datMapletGet(call, STR_FUNCTION);
     zvalue actuals = datMapletGet(call, STR_ACTUALS);
-
     zvalue functionId = execExpression(ctx, function);
 
     zint argCount = datSize(actuals);
@@ -104,15 +103,6 @@ static zvalue execCall(zcontext ctx, zvalue call) {
     }
 
     return langCall(functionId, argCount, args);
-}
-
-/**
- * Executes a `uniqlet` form.
- */
-static zvalue execUniqlet(zcontext ctx, zvalue uniqlet) {
-    hidAssertType(uniqlet, STR_UNIQLET);
-
-    return datUniqlet();
 }
 
 /**
@@ -163,7 +153,7 @@ static zvalue execExpression(zcontext ctx, zvalue e) {
     else if (hidHasType(e, STR_VAR_REF))  { return ctxGet(ctx, hidValue(e)); }
     else if (hidHasType(e, STR_LISTLET))  { return execListlet(ctx, e);      }
     else if (hidHasType(e, STR_MAPLET))   { return execMaplet(ctx, e);       }
-    else if (hidHasType(e, STR_UNIQLET))  { return execUniqlet(ctx, e);      }
+    else if (hidHasType(e, STR_UNIQLET))  { return datUniqlet();             }
     else if (hidHasType(e, STR_CALL))     { return execCall(ctx, e);         }
     else if (hidHasType(e, STR_FUNCTION)) { return execFunction(ctx, e);     }
     else {
@@ -172,43 +162,25 @@ static zvalue execExpression(zcontext ctx, zvalue e) {
 }
 
 /**
- * Executes a `varDef` form.
- */
-static void execVarDef(zcontext ctx, zvalue varDef) {
-    hidAssertType(varDef, STR_VAR_DEF);
-
-    zvalue nameValue = hidValue(varDef);
-    zvalue name = datMapletGet(nameValue, STR_NAME);
-    zvalue value = datMapletGet(nameValue, STR_VALUE);
-
-    ctxBind(ctx, name, execExpression(ctx, value));
-}
-
-/**
- * Executes a `return` form.
- */
-static void execReturn(zcontext ctx, zvalue returnForm) {
-    hidAssertType(returnForm, STR_RETURN);
-
-    ctx->toReturn = execExpression(ctx, hidValue(returnForm));
-}
-
-/**
  * Executes a `statements` form.
  */
 static void execStatements(zcontext ctx, zvalue statements) {
     hidAssertType(statements, STR_STATEMENTS);
-
     statements = hidValue(statements);
-    zint size = datSize(statements);
 
+    zint size = datSize(statements);
     for (zint i = 0; (i < size) && (ctx->toReturn == NULL); i++) {
         zvalue one = datListletGet(statements, i);
         zvalue type = hidType(one);
+
         if (hidHasType(one, STR_VAR_DEF)) {
-            execVarDef(ctx, one);
+            zvalue nameValue = hidValue(one);
+            zvalue name = datMapletGet(nameValue, STR_NAME);
+            zvalue value = datMapletGet(nameValue, STR_VALUE);
+
+            ctxBind(ctx, name, execExpression(ctx, value));
         } else if (hidHasType(one, STR_RETURN)) {
-            execReturn(ctx, one);
+            ctx->toReturn = execExpression(ctx, hidValue(one));
         } else {
             execExpression(ctx, one);
         }
