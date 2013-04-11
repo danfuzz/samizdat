@@ -57,7 +57,7 @@ Plan of attack
   (to help enable the implementation of Samizdat Layer 0 in even yet
   other languages), as well as an implementation that can be relied
   upon for further iterative development of the other layers of the
-  language.
+  language implementation.
 
   Written in Samizdat.
 
