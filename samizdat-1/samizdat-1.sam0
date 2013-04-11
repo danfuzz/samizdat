@@ -18,5 +18,10 @@
 # in the primary use case.
 main = { file arg1 arg2 arg3 ::
     # Be welcoming.
-    writeFile @"/dev/stdout" @"Hello, Самиздат!\n";
+
+    if { ^ eq file @"danfuzz"; } {
+        writeFile @"/dev/stdout" @"Hello, Danfuzz!\n";
+    } else {
+        writeFile @"/dev/stdout" @"Hello, Самиздат!\n";
+    };
 };
