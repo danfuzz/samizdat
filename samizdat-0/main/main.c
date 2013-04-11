@@ -9,21 +9,38 @@
 #include "lib.h"
 #include "util.h"
 
+#include <stdlib.h>
+
 
 /**
- * Main driver for Samizdat Layer 0. Reads in each file named as
- * an argument, parses it, and then executes the result.
+ * Main driver for Samizdat Layer 0. Takes the first argument to
+ * be a file name. Reads the file, and compiles it to an executable
+ * parse tree in an execution context consisting of the Samizdat Layer
+ * 0 core library. It executes that tree, and then calls the function
+ * `main` (which should have been defined by the prior execution),
+ * passing it an array of the remaining arguments.
  */
 int main(int argc, char **argv) {
+    if (argc < 2) {
+        die("Too few arguments.");
+    }
+
+    zvalue fileName = datStringletFromUtf8String(argv[1], -1);
+    zint argCount = argc - 2;
+    zvalue args[argCount];
+
+    for (int i = 0; i < argCount; i++) {
+        args[i] = datStringletFromUtf8String(argv[i + 2], -1);
+    }
+
     zcontext ctx = libNewContext();
-    
-    for (int i = 1; i < argc; i++) {
-        note("Processing file: %s", argv[i]);
+    zvalue programText = readFile(fileName);
+    zvalue program = langCompile(programText);
 
-        zvalue name = datStringletFromUtf8String(argv[i], -1);
-        zvalue programText = readFile(name);
-        zvalue program = langCompile(programText);
+    langExecute(ctx, program);
+    zvalue result = langCallMain(ctx, argCount, args);
 
-        langExecute(ctx, program);
+    if (datType(result) == DAT_INTLET) {
+        exit((int) datIntletToInt(result));
     }
 }

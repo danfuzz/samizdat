@@ -30,6 +30,7 @@ zvalue STR_INTEGER = NULL;
 zvalue STR_KEY = NULL;
 zvalue STR_LISTLET = NULL;
 zvalue STR_LITERAL = NULL;
+zvalue STR_MAIN = NULL;
 zvalue STR_MAPLET = NULL;
 zvalue STR_NAME = NULL;
 zvalue STR_NULL = NULL;
@@ -106,6 +107,7 @@ void constsInit(void) {
     STR_KEY           = datStringletFromUtf8String("key", -1);
     STR_LISTLET       = datStringletFromUtf8String("listlet", -1);
     STR_LITERAL       = datStringletFromUtf8String("literal", -1);
+    STR_MAIN          = datStringletFromUtf8String("main", -1);
     STR_MAPLET        = datStringletFromUtf8String("maplet", -1);
     STR_NAME          = datStringletFromUtf8String("name", -1);
     STR_NULL          = datStringletFromUtf8String("null", -1);

@@ -83,6 +83,11 @@ void langBindFunction(zcontext ctx, const char *name,
 zvalue langCall(zvalue functionId, zint argCount, const zvalue *args);
 
 /**
+ * Calls the `main` function bound in the given context.
+ */
+zvalue langCallMain(zcontext ctx, zint argCount, const zvalue *args);
+
+/**
  * Executes the given code, using the given global context.  Modifies
  * the context in response to running the code.  In addition, this can
  * cause arbitrary calls to be performed on and via the context's
