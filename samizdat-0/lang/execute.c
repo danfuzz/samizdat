@@ -47,6 +47,10 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     Closure *closure = state;
     zvalue formals = datMapletGet(closure->function, STR_FORMALS);
     zvalue statements = datMapletGet(closure->function, STR_STATEMENTS);
+
+    hidAssertType(formals, STR_FORMALS);
+    formals = hidValue(formals);
+
     zint formalsSize = datSize(formals);
     zvalue locals = datMapletEmpty();
 
@@ -152,43 +156,16 @@ static zvalue execListlet(zcontext ctx, zvalue listlet) {
 }
 
 /**
- * Executes a `varRef` form.
- */
-static zvalue execVarRef(zcontext ctx, zvalue varRef) {
-    hidAssertType(varRef, STR_VAR_REF);
-
-    zvalue name = hidValue(varRef);
-
-    for (/* ctx */; ctx != NULL; ctx = ctx->parent) {
-        zvalue found = datMapletGet(ctx->locals, name);
-        if (found != NULL) {
-            return found;
-        }
-    }
-
-    die("No such variable.");
-}
-
-/**
- * Executes a `literal` form.
- */
-static zvalue execLiteral(zcontext ctx, zvalue literal) {
-    hidAssertType(literal, STR_LITERAL);
-
-    return hidValue(literal);
-}
-
-/**
  * Executes an `expression` form.
  */
-static zvalue execExpression(zcontext ctx, zvalue ex) {
-    if      (hidHasType(ex, STR_LITERAL))  { return execLiteral(ctx, ex);  }
-    else if (hidHasType(ex, STR_VAR_REF))  { return execVarRef(ctx, ex);   }
-    else if (hidHasType(ex, STR_LISTLET))  { return execListlet(ctx, ex);  }
-    else if (hidHasType(ex, STR_MAPLET))   { return execMaplet(ctx, ex);   }
-    else if (hidHasType(ex, STR_UNIQLET))  { return execUniqlet(ctx, ex);  }
-    else if (hidHasType(ex, STR_CALL))     { return execCall(ctx, ex);     }
-    else if (hidHasType(ex, STR_FUNCTION)) { return execFunction(ctx, ex); }
+static zvalue execExpression(zcontext ctx, zvalue e) {
+    if      (hidHasType(e, STR_LITERAL))  { return hidValue(e);              }
+    else if (hidHasType(e, STR_VAR_REF))  { return ctxGet(ctx, hidValue(e)); }
+    else if (hidHasType(e, STR_LISTLET))  { return execListlet(ctx, e);      }
+    else if (hidHasType(e, STR_MAPLET))   { return execMaplet(ctx, e);       }
+    else if (hidHasType(e, STR_UNIQLET))  { return execUniqlet(ctx, e);      }
+    else if (hidHasType(e, STR_CALL))     { return execCall(ctx, e);         }
+    else if (hidHasType(e, STR_FUNCTION)) { return execFunction(ctx, e);     }
     else {
         die("Invalid expression type.");
     }

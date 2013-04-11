@@ -65,7 +65,7 @@ void hidAssertType(zvalue value, zvalue type);
 
 
 /*
- * Other
+ * Execution Contexts
  */
 
 /**
@@ -78,6 +78,18 @@ zcontext ctxNewChild(zcontext parent, zvalue locals);
  * Binds a new variable in the given context.
  */
 void ctxBind(zcontext ctx, zvalue name, zvalue value);
+
+/**
+ * Gets the value of the variable bound in the given context, either
+ * directly or indirectly via its parent chain. It is an error if
+ * the name is not bound.
+ */
+zvalue ctxGet(zcontext ctx, zvalue name);
+
+
+/*
+ * Other
+ */
 
 /**
  * Defines a function with associated (and arbitrary) closure

@@ -6,6 +6,8 @@
 
 #include "impl.h"
 
+#include <stdlib.h>
+
 
 /*
  * Helper functions
@@ -46,6 +48,10 @@ static void assertType(zvalue value, ztype type) {
 
 /* Documented in header. */
 void datAssertValid(zvalue value) {
+    if (value == NULL) {
+        die("Null value.");
+    }
+
     zint bits = (zint) (void *) value;
 
     if ((bits % DAT_VALUE_ALIGNMENT) != 0) {

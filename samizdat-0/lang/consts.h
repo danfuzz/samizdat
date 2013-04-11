@@ -36,6 +36,7 @@ extern zvalue STR_INTEGER;
 extern zvalue STR_KEY;
 extern zvalue STR_LISTLET;
 extern zvalue STR_LITERAL;
+extern zvalue STR_MAIN;
 extern zvalue STR_MAPLET;
 extern zvalue STR_NAME;
 extern zvalue STR_NULL;

@@ -77,26 +77,6 @@ intended that the language be an attractive target for use in
 text processing, free-form data structure manipulation, and general
 systems programming.
 
-Its syntax was influenced by
-[C](http://en.wikipedia.org/wiki/C_%28programming_language%29),
-[E](http://en.wikipedia.org/wiki/E_%28programming_language%29),
-[Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
-[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk),
-[Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
-[JavaScript](http://en.wikipedia.org/wiki/JavaScript),
-and traditional [Backus-Naur
-Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) (BNF).
-Its core data model was influenced by Lisp,
-[Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
-[Clojure](http://en.wikipedia.org/wiki/Clojure), and JavaScript. Its
-parsing semantics were influenced by the recent work on [Parsing
-Expression
-Grammars](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEGs),
-particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
-of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR).
-Its general shape and thrust were very much influenced by
-[AWK](http://en.wikipedia.org/wiki/AWK).
-
 The language came about as a second-order effect of the author's
 desire to explore the intersection of all of
 [promise](http://en.wikipedia.org/wiki/Promise_%28programming%29)-based
@@ -111,3 +91,35 @@ generally has "capability nature", but it does not innately implement
 promises, actors, or STM. However, it is intended to be a fertile
 substrate on which to explore these topics, while still being a
 practical and compelling language in its own right.
+
+Samizdat's syntax bears the influences of
+[C](http://en.wikipedia.org/wiki/C_%28programming_language%29),
+[E](http://en.wikipedia.org/wiki/E_%28programming_language%29),
+[Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
+[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk),
+[Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript),
+and traditional [Backus-Naur
+Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) (BNF).
+
+The Samizdat core data model was influenced by Lisp,
+[Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
+[Clojure](http://en.wikipedia.org/wiki/Clojure), and JavaScript.
+
+Samizdat's parsing semantics were influenced by the recent work on
+[Parsing Expression
+Grammars](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEGs),
+particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
+of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR)
+and [AWK](http://en.wikipedia.org/wiki/AWK).
+
+The Samizdat core library was influenced by
+[Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29)
+and AWK.
+
+The implementation tactics used to build Samizdat were informed by
+[Scheme-48](http://en.wikipedia.org/wiki/Scheme_48) and
+the [Jikes RVM](http://en.wikipedia.org/wiki/Jikes_RVM)
+(formerly a.k.a. Jalape&ntilde;o), with a tip o' the hat to each of
+[PyPy](http://en.wikipedia.org/wiki/PyPy) and
+[Chicken](http://en.wikipedia.org/wiki/Chicken_%28Scheme_implementation%29).

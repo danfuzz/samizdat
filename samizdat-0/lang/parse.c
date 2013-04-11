@@ -175,8 +175,11 @@ static zvalue parseFormals(ParseState *state) {
 
     if (datSize(identifiers) != 0) {
         if (readMatch(state, TOK_CH_COLONCOLON) == NULL) {
+            // We didn't find the expected `::` which means there
+            // was no formals list at all. So reset the parse, but
+            // still succeed with an empty formals list.
             reset(state, mark);
-            return NULL;
+            identifiers = datListletEmpty();
         }
     }
 
@@ -193,7 +196,7 @@ static zvalue parseFunction(ParseState *state) {
         return NULL;
     }
 
-    // Both of these always succeed.
+    // These always succeed.
     zvalue formals = parseFormals(state);
     zvalue statements = parseStatements(state);
 

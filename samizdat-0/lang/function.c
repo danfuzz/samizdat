@@ -48,7 +48,7 @@ zvalue funDefine(zfunction function, void *state) {
 zvalue langCall(zvalue functionId, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);
-    } else if ((argCount == 0) && (args == NULL)) {
+    } else if ((argCount != 0) && (args == NULL)) {
         die("Function call argument inconsistency.");
     }
 

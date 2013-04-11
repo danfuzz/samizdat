@@ -19,6 +19,19 @@
 /**
  * TODO: Document!
  */
+static zvalue prim_eq(void *state, zint argCount, const zvalue *args) {
+    for (zint i = 1; i < argCount; i ++) {
+        if (datCompare(args[0], args[i]) != 0) {
+            return langFalse();
+        }
+    }
+
+    return langTrue();
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_if(void *state, zint argCount, const zvalue *args) {
     if ((argCount % 2) != 0) {
         die("Invalid argument count to if: %lld", argCount);
@@ -64,6 +77,7 @@ static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void bindPrimitives(zcontext ctx) {
+    langBindFunction(ctx, "eq",        prim_eq,        NULL);
     langBindFunction(ctx, "if",        prim_if,        NULL);
     langBindFunction(ctx, "readFile",  prim_readFile,  NULL);
     langBindFunction(ctx, "writeFile", prim_writeFile, NULL);
