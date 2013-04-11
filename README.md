@@ -50,6 +50,17 @@ Plan of attack
 
 * ?
 
+* `samizdat-0.sam` &mdash; Samizdat Layer 0 interpreter.
+
+  This is a maximally-reifying implementation of Samizdat Layer 0,
+  meant to be both an "executable specification" for Samizdat Layer 0
+  (to help enable the implementation of Samizdat Layer 0 in even yet
+  other languages), as well as an implementation that can be relied
+  upon for further iterative development of the other layers of the
+  language.
+
+  Written in Samizdat.
+
 * Profit!
 
 - - - - -
