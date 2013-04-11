@@ -12,7 +12,11 @@
 # Compiles the file named in the first argument in a fresh context,
 # and runs its `main`, passing it an array of the rest of the
 # arguments.
-main = { args ::
+#
+# Note: Samizdat Layer 0 does not support varargs, so this function
+# needs to be written to take exactly as many arguments as are needed
+# in the primary use case.
+main = { file arg1 arg2 arg3 ::
     # Be welcoming.
     writeFile @"/dev/stdout" @"Hello, Самиздат!\n";
 };
