@@ -6,39 +6,50 @@ Watch this space!
 Plan of attack
 --------------
 
-* `c-api/sam-data.h` &mdash; Public interface to Samizdat data model.
-
-  Written in C.
-
-* `libsam-data-0` &mdash; Data structure C library, "minimal" edition.
-
-  Has functions to (a) build up low-layer data values piece by piece,
-  and (b) access that data in various straightforward ways. Doesn't
-  do memory management at all. (That is, it allocates but never GCs.)
-
-  Written in C, implements API defined by `sam-data.h`.
-
 * `samizdat-0` &mdash; Layer 0 (minimal) language implementation.
 
   Tool that accepts input in the form of minimalistic source code, and
-  runs it. The language is meant to be a "parti" of final Samizdat,
-  that is, it embodies *just* the main thrusts of the language with
-  very little embellishment. The language it accepts is called
+  runs it. The language it accepts is meant to be a "parti" of final
+  Samizdat, that is, it embodies *just* the main thrusts of the
+  language with very little embellishment. This language is called
   *Samizdat Layer 0*.
 
-  The associated core library includes a conditional (implementation
-  of a cascading `if...else if...`), simple file I/O, and not much
-  else.
+  The associated core library that comes with the implementation is
+  similarly minimal.
 
-  Written in C using `libsam-data-0`.
+  The language parser and runtime do the bare minimum of error
+  checking, attempting to fail fast in the face of an error but not to
+  provide much in the way of meaningful messages.
 
-* `samizdat-1` &hellip; `samizdat-N` &mdash; Layers
+  `samizdat-0` is written in C.
+
+* `samizdat-1` &mdash; Layer 1 language implementation.
+
+  Tool that accepts input in the Samizdat Layer 0 language, but
+  which provides more robust error reporting than `samizdat-0`.
+
+  `samizdat-1` is written in Samizdat Layer 0, in a style which mostly
+  "absorbs" the core data library and entirely "reifies" the token and
+  tree parsers. In particular, `samizdat-1` translates input program
+  text into the identical executable tree form as is used by
+  `samizdat-0`.
+
+  The point of `samizdat-1` is twofold:
+
+  * Make for a much nicer experience developing and debugging
+    programs written in Samizdat Layer 0, compared to `samizdat-0`.
+  * Provide some validation (via correlation) of the `samizdat-0`
+    token and tree parser implementations. In particular, the source
+    code for `samizdat-1` itself should produce truly identical trees
+    when compiled by either `samizdat-0` or `samizdat-1` itself.
+
+* `samizdat-2` &hellip; `samizdat-N` &mdash; Layers
   1 through *n* language implementations.
 
-  For `M` and `N` where `N == M + 1`, `samizdat-N` is written in
-  the language defined by *Samizdat Layer M*. `samizdat-N`
-  accepts the language *Samizdat layer N*, translating it to the
-  same underlying form that `samizdat-0` executes.
+  For `M` and `N` where `N == M + 1`, `samizdat-N` is written in the
+  language defined by *Samizdat Layer M*. `samizdat-N` accepts the
+  language *Samizdat layer N*, translating it to the same underlying
+  executable parse tree form that `samizdat-0` executes.
 
 * `sam-comp` &mdash; Tool to compile Samizdat source code.
 
