@@ -25,19 +25,19 @@ Plan of attack
 
 * `samizdat-1` &mdash; Layer 1 language implementation.
 
-  Tool that accepts input in the Samizdat Layer 0 language, but
+  Tool that accepts input written in *Samizdat Layer 0*, but
   which provides more robust error reporting than `samizdat-0`.
 
-  `samizdat-1` is written in Samizdat Layer 0, in a style which mostly
-  "absorbs" the core data library and entirely "reifies" the token and
-  tree parsers. In particular, `samizdat-1` translates input program
-  text into the identical executable tree form as is used by
-  `samizdat-0`.
+  `samizdat-1` is itself written in *Samizdat Layer 0*, in a style
+  which mostly "absorbs" the core data library and entirely "reifies"
+  the token and tree parsers. In particular, `samizdat-1` translates
+  input program text into the identical executable tree form as is
+  used by `samizdat-0`.
 
   The point of `samizdat-1` is twofold:
 
   * Make for a much nicer experience developing and debugging
-    programs written in Samizdat Layer 0, compared to `samizdat-0`.
+    programs written in *Samizdat Layer 0*, compared to `samizdat-0`.
 
   * Provide some validation (via correlation) of the `samizdat-0`
     token and tree parser implementations. In particular, the source
