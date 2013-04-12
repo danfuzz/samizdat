@@ -48,7 +48,7 @@ Plan of attack
   1 through *n* language implementations.
 
   For `M` and `N` where `N == M + 1`, `samizdat-N` is written in the
-  language defined by *Samizdat Layer M*. `samizdat-N` accepts the
+  language implemented by *Samizdat Layer M*. `samizdat-N` accepts the
   language *Samizdat layer N*, translating it to the same underlying
   executable parse tree form that `samizdat-0` executes.
 
