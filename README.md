@@ -21,7 +21,11 @@ Plan of attack
   checking, attempting to fail fast in the face of an error but not to
   provide much in the way of meaningful messages.
 
-  `samizdat-0` is written in C.
+  `samizdat-0` is written in C in a style which is meant to be
+  verifiably correct by inspection. That is, the implementation
+  prefers clarity and obviousness over trickiness and efficiency. In
+  addition, it uses a minimum of C library functionality and eschews
+  the use of macros *except* as guards on header files.
 
 * `samizdat-1` &mdash; *Samizdat Layer 1* interpreter.
 
