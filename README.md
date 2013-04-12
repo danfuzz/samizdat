@@ -38,6 +38,7 @@ Plan of attack
 
   * Make for a much nicer experience developing and debugging
     programs written in Samizdat Layer 0, compared to `samizdat-0`.
+
   * Provide some validation (via correlation) of the `samizdat-0`
     token and tree parser implementations. In particular, the source
     code for `samizdat-1` itself should produce truly identical trees
