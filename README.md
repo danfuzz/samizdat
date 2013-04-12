@@ -42,7 +42,7 @@ Plan of attack
   * Provide some validation (via correlation) of the `samizdat-0`
     token and tree parser implementations. In particular, the source
     code for `samizdat-1` itself should produce truly identical trees
-    when compiled by either `samizdat-0` or `samizdat-1` itself.
+    when compiled by either `samizdat-0` or by `samizdat-1` itself.
 
 * `samizdat-2` &hellip; `samizdat-N` &mdash; *Samizdat Layers 2
   through N* interpreters.
