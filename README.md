@@ -6,7 +6,7 @@ Watch this space!
 Plan of attack
 --------------
 
-* `samizdat-0` &mdash; Layer 0 (minimal) language implementation.
+* `samizdat-0` &mdash; *Samizdat Layer 0* interpreter.
 
   Tool that accepts input in the form of minimalistic source code, and
   runs it. The language it accepts is meant to be a "parti" of final
@@ -23,7 +23,7 @@ Plan of attack
 
   `samizdat-0` is written in C.
 
-* `samizdat-1` &mdash; Layer 1 language implementation.
+* `samizdat-1` &mdash; *Samizdat Layer 1* interpreter.
 
   Tool that accepts input written in *Samizdat Layer 0*, but
   which provides more robust error reporting than `samizdat-0`.
@@ -44,13 +44,20 @@ Plan of attack
     code for `samizdat-1` itself should produce truly identical trees
     when compiled by either `samizdat-0` or `samizdat-1` itself.
 
-* `samizdat-2` &hellip; `samizdat-N` &mdash; Layers
-  1 through *n* language implementations.
+* `samizdat-2` &hellip; `samizdat-N` &mdash; *Samizdat Layers 2
+  through N* interpreters.
 
   For `M` and `N` where `N == M + 1`, `samizdat-N` is written in the
   language implemented by *Samizdat Layer M*. `samizdat-N` accepts the
   language *Samizdat layer N*, translating it to the same underlying
   executable parse tree form that `samizdat-0` executes.
+
+* `samizdat` &mdash; *Samizdat* interpreter.
+
+  Tool that accepts input written in *Samizdat* (per se), and runs
+  it.
+
+  Written in *Samizdat Layer N* (for the ultimate value of `N`).
 
 * `sam-comp` &mdash; Tool to compile Samizdat source code.
 
@@ -58,18 +65,18 @@ Plan of attack
   code to be linked and run with an associated library (details
   TBD).
 
-  Written in *Samizdat Layer N* (for the ultimate value of `N`).
+  Written in *Samizdat*.
 
 * ?
 
-* `samizdat-0.sam` &mdash; Samizdat Layer 0 interpreter.
+* `samizdat-0.sam` &mdash; *Samizdat Layer 0* interpreter.
 
-  This is a maximally-reifying implementation of Samizdat Layer 0,
-  meant to be both an "executable specification" for Samizdat Layer 0
-  (to help enable the implementation of Samizdat Layer 0 in even yet
-  other languages), as well as an implementation that can be relied
-  upon for further iterative development of the other layers of the
-  language implementation.
+  This is a maximally-reifying implementation of *Samizdat Layer 0*,
+  meant to be both an "executable specification" for *Samizdat Layer
+  0* (to help enable the implementation of *Samizdat Layer 0* in even
+  yet other languages), as well as an implementation that can be
+  relied upon for further iterative development of the other layers of
+  the language implementation.
 
   Written in Samizdat.
 
