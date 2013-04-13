@@ -9,6 +9,50 @@
 # programs.
 #
 
+#
+# Helper functions (likely to be moved to the samizdat-0 core library)
+#
+
+# Returns true iff the given value is an intlet.
+isIntlet = { value ::
+    ^ eq (lowTypeOf value) @"intlet";
+};
+
+# Returns true iff the given value is a listlet.
+isListlet = { value ::
+    ^ eq (lowTypeOf value) @"listlet";
+};
+
+# Returns true iff the given value is a maplet.
+isMaplet = { value ::
+    ^ eq (lowTypeOf value) @"maplet";
+};
+
+# Returns true iff the given value is a uniqlet.
+isUniqlet = { value ::
+    ^ eq (lowTypeOf value) @"uniqlet";
+};
+
+# Converts an arbitrary value into a string representation form.
+toString = { value ::
+    if { ^ isIntlet value; } {
+        # TODO
+    } { ^ isListlet value; } {
+        # TODO
+    } { ^ isMaplet value; } {
+        # TODO
+    } { ^ isUniqlet value; } {
+        ^ @"@@";
+    } else {
+        ^ @"<unknown>";
+    };
+};
+
+
+#
+# Meat of the implementation
+#
+
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
 tokenize = { programText ::
@@ -31,6 +75,11 @@ parse = { tokens ::
 
     ^ @[@"type"=@"statements" @"value"=@[theCall]];
 };
+
+
+#
+# Main function
+#
 
 # Compiles the file named in the first argument in a fresh context,
 # and runs its `main`, passing it an array of the rest of the
