@@ -1,0 +1,51 @@
+#!/bin/bash
+#
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. See the associated file "LICENSE.md" for details.
+
+
+#
+# Directory and program name detection
+#
+
+# Preserve the original working dir as origDir.
+origDir="${PWD}"
+
+# Set progName to the program name, progDir to its directory, and baseDir
+# to progDir's directory. Follows symlinks.
+prog="$0"
+while [[ -h ${prog} ]]; do
+    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
+    newProg="${BASH_REMATCH[1]}"
+    if [[ ${newProg} =~ ^/ ]]; then
+        prog="${newProg}"
+    else
+        prog="$(dirname "${prog}")/${newProg}"
+    fi
+done
+progName="$(basename "${prog}")"
+progDir="$(dirname "${prog}")"
+cd "${progDir}"
+progDir="${PWD}"
+cd ..
+baseDir="${PWD}"
+cd "${origDir}"
+unset prog
+unset newProg
+
+
+#
+# Main script
+#
+
+cd "${progDir}"
+
+echo 'Build samizdat-0...'
+../samizdat-0/build > /dev/null || exit 1
+echo 'Done!'
+echo ''
+
+# Run samizdat-0 passing it samizdat-1.sam0 to run, and in turn
+# passing *that* samizdat-1.sam0 to run.
+../out/samizdat-0/samizdat-0 samizdat-1.sam0 samizdat-1.sam0 foo bar baz

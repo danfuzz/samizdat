@@ -21,7 +21,15 @@ tokenize = { programText ::
 parse = { tokens ::
     # TODO
 
-    ^ @[@"type"=@"statements" @"value"=@[]];
+    theCall = @[
+        @"type"=@"call"
+        @"value"=@[
+            @"function"=@"writeFile"
+            @"actuals"=@[@"/dev/stdout" @"Hello, Самиздат!\n"]
+        ]
+    ];
+
+    ^ @[@"type"=@"statements" @"value"=@[theCall]];
 };
 
 # Compiles the file named in the first argument in a fresh context,
@@ -43,10 +51,10 @@ main = { file arg1 arg2 arg3 ::
     programText = readFile file;
 
     tokens = tokenize programText;
-    if { ^ eq tokens null; } { ^ 1; };
+    if { ^ eq tokens null; } { ^ @1; };
 
     statements = parse tokens;
-    if { ^ eq statements null; } { ^ 1; };
+    if { ^ eq statements null; } { ^ @1; };
 
     # TODO: Bind statements as a function using exposed interface from
     # samizdat-0, and call it.
