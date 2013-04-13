@@ -33,10 +33,14 @@ isUniqlet = { value ::
     ^ eq (lowTypeOf value) @"uniqlet";
 };
 
-# Converts an arbitrary value into a string representation form.
-toString = { value ::
-    if { ^ isIntlet value; } {
-        # TODO
+# Converts an arbitrary value into a stringlet representation form.
+toStringlet = { value ::
+    ^ if { ^ isIntlet value; } {
+        ^ if { ^ lt value @0; } {
+            ^ listletCat @"-" (toStringlet (ineg value));
+        } else {
+            # TODO
+        };
     } { ^ isListlet value; } {
         # TODO
     } { ^ isMaplet value; } {
