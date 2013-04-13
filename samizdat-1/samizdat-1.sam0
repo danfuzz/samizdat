@@ -46,6 +46,16 @@ isUniqlet = { value ::
 
 # Converts an arbitrary value into a stringlet representation form.
 toStringlet = { value ::
+    intletBody = { value ::
+        ^ if { ^ eq value @0; } {
+            ^ @"";
+        } else {
+            digit = iadd (imod value @10) @48;
+            more = idiv value @10;
+            ^ cat (intletBody more) @[digit];
+        };
+    };
+
     listletBody = { value ::
         ^ if { ^ eq value @[]; } {
             ^ @"";
@@ -61,14 +71,9 @@ toStringlet = { value ::
         };
     };
 
-    intletBody = { value ::
-        ^ if { ^ eq value @0; } {
-            ^ @"";
-        } else {
-            digit = iadd (imod value @10) @48;
-            more = idiv value @10;
-            ^ cat (intletBody more) @[digit];
-        };
+    mapletBody = { value ::
+        # TODO
+        ^ @"maplet=stuff ...";
     };
 
     ^ if { ^ isIntlet value; } {
@@ -85,8 +90,7 @@ toStringlet = { value ::
         ^ if { ^ eq value @[=]; } {
             ^ @"@[=]";
         } else {
-            # TODO
-            ^ @"@[maplet=stuff ...]";
+            ^ cat @"@[" (mapletBody value) @"]";
         };
     } { ^ isUniqlet value; } {
         ^ @"@@";
