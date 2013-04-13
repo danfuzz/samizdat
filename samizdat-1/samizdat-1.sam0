@@ -46,26 +46,41 @@ isUniqlet = { value ::
 
 # Converts an arbitrary value into a stringlet representation form.
 toStringlet = { value ::
-    listletBody = { value spacer ::
-        if { ^ eq value @[]; } {
+    listletBody = { value ::
+        ^ if { ^ eq value @[]; } {
             ^ @"";
         } else {
+            start = listletBody (butLast value);
             ^ cat
-                spacer
-                (listletBody (butLast value) @" ")
-                toStringlet (last value);
+                (if { ^ eq start @""; } {
+                    ^ @"";
+                } else {
+                    ^ cat start @" ";
+                })
+                (toStringlet (last value));
+        };
+    };
+
+    intletBody = { value ::
+        ^ if { ^ eq value @0; } {
+            ^ @"";
+        } else {
+            digit = iadd (imod value @10) @48;
+            more = idiv value @10;
+            ^ cat (intletBody more) @[digit];
         };
     };
 
     ^ if { ^ isIntlet value; } {
         ^ if { ^ lt value @0; } {
-            ^ cat @"-" (toStringlet (ineg value));
+            ^ cat @"@-" (intletBody (ineg value));
+        } { ^ eq value @0; } {
+            ^ @"@0";
         } else {
-            # TODO
-            ^ @"12345678";
+            ^ cat @"@" (intletBody value);
         };
     } { ^ isListlet value; } {
-        ^ cat @"@[" (listletBody value @"") @"]";
+        ^ cat @"@[" (listletBody value) @"]";
     } { ^ isMaplet value; } {
         # TODO
     } { ^ isUniqlet value; } {
@@ -123,6 +138,26 @@ main = { file arg1 arg2 arg3 ::
     } else {
         writeFile @"/dev/stdout" @"Hello, Самиздат!\n";
     };
+
+    writeFile @"/dev/stdout" (toStringlet @0);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (toStringlet @98765);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (toStringlet @-12345);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (toStringlet @[]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (toStringlet @[@1]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (toStringlet @[@1 @2]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (toStringlet @[@1 @2 @300]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (toStringlet @"");
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (toStringlet @"Blort.");
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" @"\n";
 
     programText = readFile file;
 

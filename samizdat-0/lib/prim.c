@@ -219,6 +219,7 @@ static zvalue prim_cat(void *state, zint argCount, const zvalue *args) {
     for (zint i = 1; i < argCount; i ++) {
         zvalue one = args[i];
         zint size = datSize(one);
+        datAssertListlet(one);
         for (zint j = 0; j < size; j++) {
             result = datListletAppend(result, datListletGet(one, j));
         }
