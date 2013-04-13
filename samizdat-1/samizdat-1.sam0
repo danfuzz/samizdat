@@ -13,36 +13,59 @@
 # Helper functions (likely to be moved to the samizdat-0 core library)
 #
 
+# Returns the last element of a given listlet.
+last = { value ::
+    ^ getNth value (isub (lowSize value) @1);
+};
+
+# Returns the listlet consisting of all but the last element of a
+# given listlet.
+butLast = { value ::
+    ^ delNth value (isub (lowSize value) @1);
+};
+
 # Returns true iff the given value is an intlet.
 isIntlet = { value ::
-    ^ eq (lowTypeOf value) @"intlet";
+    ^ eq (lowType value) @"intlet";
 };
 
 # Returns true iff the given value is a listlet.
 isListlet = { value ::
-    ^ eq (lowTypeOf value) @"listlet";
+    ^ eq (lowType value) @"listlet";
 };
 
 # Returns true iff the given value is a maplet.
 isMaplet = { value ::
-    ^ eq (lowTypeOf value) @"maplet";
+    ^ eq (lowType value) @"maplet";
 };
 
 # Returns true iff the given value is a uniqlet.
 isUniqlet = { value ::
-    ^ eq (lowTypeOf value) @"uniqlet";
+    ^ eq (lowType value) @"uniqlet";
 };
 
 # Converts an arbitrary value into a stringlet representation form.
 toStringlet = { value ::
+    listletBody = { value spacer ::
+        if { ^ eq value @[]; } {
+            ^ @"";
+        } else {
+            ^ cat
+                spacer
+                (listletBody (butLast value) @" ")
+                toStringlet (last value);
+        };
+    };
+
     ^ if { ^ isIntlet value; } {
         ^ if { ^ lt value @0; } {
-            ^ listletCat @"-" (toStringlet (ineg value));
+            ^ cat @"-" (toStringlet (ineg value));
         } else {
             # TODO
+            ^ @"12345678";
         };
     } { ^ isListlet value; } {
-        # TODO
+        ^ cat @"@[" (listletBody value @"") @"]";
     } { ^ isMaplet value; } {
         # TODO
     } { ^ isUniqlet value; } {
