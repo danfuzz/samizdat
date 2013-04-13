@@ -29,6 +29,20 @@ static void requireExactly(zint argCount, zint required) {
 }
 
 /**
+ * Check the given argument count for a range of acceptable values,
+ * complaining if it doesn't match.
+ */
+static void requireRange(zint argCount, zint min, zint max) {
+    if (argCount < min) {
+        die("Invalid argument count for primitive: %lld < %lld",
+            argCount, min);
+    } else if (argCount > max) {
+        die("Invalid argument count for primitive: %lld > %lld",
+            argCount, max);
+    }
+}
+
+/**
  * Helper for all of the comparison functions, which parameterizes
  * which comparison to accept.
  */
@@ -255,6 +269,33 @@ static zvalue prim_delNth(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_getKeys(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datMapletKeys(args[0]);
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_getValue(void *state, zint argCount, const zvalue *args) {
+    requireRange(argCount, 2, 3);
+
+    zvalue result = datMapletGet(args[0], args[1]);
+
+    if (result == NULL) {
+        if (argCount != 3) {
+            die("Key not found in maplet.");
+        } else {
+            return args[3];
+        }
+    }
+
+    return result;
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_readFile(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
     return readFile(args[0]);
@@ -300,6 +341,10 @@ void bindPrimitives(zcontext ctx) {
     langBindFunction(ctx, "cat",      prim_cat,    NULL);
     langBindFunction(ctx, "getNth",   prim_getNth, NULL);
     langBindFunction(ctx, "delNth",   prim_delNth, NULL);
+
+    // Maplets
+    langBindFunction(ctx, "getKeys",  prim_getKeys,  NULL);
+    langBindFunction(ctx, "getValue", prim_getValue, NULL);
 
     // Data types
     langBindFunction(ctx, "lowSize", prim_lowSize, NULL);
