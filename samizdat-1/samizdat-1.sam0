@@ -71,9 +71,22 @@ toStringlet = { value ::
         };
     };
 
-    mapletBody = { value ::
-        # TODO
-        ^ @"maplet=stuff ...";
+    mapletBody = { keys value ::
+        ^ if { ^ eq keys @[]; } {
+            ^ @"";
+        } else {
+            start = mapletBody (butLast keys) value;
+            key = last keys;
+            ^ cat
+                (if { ^ eq start @""; } {
+                    ^ @"";
+                } else {
+                    ^ cat start @" ";
+                })
+                (toStringlet key)
+                @"="
+                (toStringlet (getValue value key));
+        };
     };
 
     ^ if { ^ isIntlet value; } {
@@ -90,7 +103,7 @@ toStringlet = { value ::
         ^ if { ^ eq value @[=]; } {
             ^ @"@[=]";
         } else {
-            ^ cat @"@[" (mapletBody value) @"]";
+            ^ cat @"@[" (mapletBody (getKeys value) value) @"]";
         };
     } { ^ isUniqlet value; } {
         ^ @"@@";
