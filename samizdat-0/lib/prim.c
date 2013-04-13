@@ -111,7 +111,7 @@ static zvalue prim_ge(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_lowTypeOf(void *state, zint argCount, const zvalue *args) {
+static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
 
     switch (datType(args[0])) {
@@ -123,6 +123,14 @@ static zvalue prim_lowTypeOf(void *state, zint argCount, const zvalue *args) {
             die("Invalid value type (shouldn't happen): %d", datType(args[0]));
         }
     }
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_lowSize(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datIntletFromInt(datSize(args[0]));
 }
 
 /**
@@ -149,6 +157,98 @@ static zvalue prim_if(void *state, zint argCount, const zvalue *args) {
     }
 
     return CST_NULL;
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_ineg(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datIntletFromInt(-datIntletToInt(args[0]));
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_iadd(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+    return datIntletFromInt(datIntletToInt(args[0]) + datIntletToInt(args[1]));
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_isub(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+    return datIntletFromInt(datIntletToInt(args[0]) - datIntletToInt(args[1]));
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_imul(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+    return datIntletFromInt(datIntletToInt(args[0]) * datIntletToInt(args[1]));
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_idiv(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+    return datIntletFromInt(datIntletToInt(args[0]) / datIntletToInt(args[1]));
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_imod(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+    return datIntletFromInt(datIntletToInt(args[0]) % datIntletToInt(args[1]));
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_cat(void *state, zint argCount, const zvalue *args) {
+    if (argCount == 0) {
+        return datListletEmpty();
+    }
+
+    zvalue result = args[0];
+    for (zint i = 1; i < argCount; i ++) {
+        zvalue one = args[i];
+        zint size = datSize(one);
+        for (zint j = 0; j < size; j++) {
+            result = datListletAppend(result, datListletGet(one, j));
+        }
+    }
+
+    return result;
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_getNth(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+
+    zvalue listlet = args[0];
+    zint index = datIntletToInt(args[1]);
+
+    return datListletGet(listlet, index);
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_delNth(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+
+    zvalue listlet = args[0];
+    zint index = datIntletToInt(args[1]);
+
+    return datListletDelete(listlet, index);
 }
 
 /**
@@ -187,8 +287,22 @@ void bindPrimitives(zcontext ctx) {
     langBindFunction(ctx, "not", prim_not, NULL);
     langBindFunction(ctx, "if",  prim_if,  NULL);
 
+    // Intlets
+    langBindFunction(ctx, "ineg", prim_ineg, NULL);
+    langBindFunction(ctx, "iadd", prim_iadd, NULL);
+    langBindFunction(ctx, "isub", prim_isub, NULL);
+    langBindFunction(ctx, "imul", prim_imul, NULL);
+    langBindFunction(ctx, "idiv", prim_idiv, NULL);
+    langBindFunction(ctx, "imod", prim_imod, NULL);
+
+    // Listlets
+    langBindFunction(ctx, "cat",      prim_cat,    NULL);
+    langBindFunction(ctx, "getNth",   prim_getNth, NULL);
+    langBindFunction(ctx, "delNth",   prim_delNth, NULL);
+
     // Data types
-    langBindFunction(ctx, "lowTypeOf", prim_lowTypeOf, NULL);
+    langBindFunction(ctx, "lowSize", prim_lowSize, NULL);
+    langBindFunction(ctx, "lowType", prim_lowType, NULL);
 
     // Other
     langBindFunction(ctx, "readFile",  prim_readFile,  NULL);
