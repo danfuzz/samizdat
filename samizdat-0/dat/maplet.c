@@ -33,6 +33,36 @@ static zmapping *mapletElems(zvalue maplet) {
     return ((DatMaplet *) maplet)->elems;
 }
 
+/**
+ * Given a maplet, find the index of the given key. `maplet` must be a
+ * maplet. Returns the index of the key or `~insertionIndex` (a
+ * negative number) if not found.
+ */
+static zint mapletFind(zvalue maplet, zvalue key) {
+    datAssertMaplet(maplet);
+    datAssertValid(key);
+
+    zmapping *elems = mapletElems(maplet);
+    zint min = 0;
+    zint max = maplet->size - 1;
+
+    while (min <= max) {
+        zint guess = (min + max) / 2;
+        switch (datCompare(key, elems[guess].key)) {;
+            case ZLESS: max = guess - 1; break;
+            case ZMORE: min = guess + 1; break;
+            default:    return guess;
+        }
+    }
+
+    // Not found. The insert point is at `min`. Per the API,
+    // this is represented as `~min` (and not, in particular, as `-max`)
+    // so that an insertion point of `0` can be unambiguously
+    // represented.
+
+    return ~min;
+}
+
 
 /*
  * Module functions
@@ -75,46 +105,6 @@ zcomparison datMapletCompare(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zmapping datMapletGetMapping(zvalue maplet, zint n) {
-    datAssertNth(maplet, n);
-
-    return mapletElems(maplet)[n];
-}
-
-/* Documented in header. */
-zvalue datMapletGet(zvalue maplet, zvalue key) {
-    zint index = datMapletFind(maplet, key);
-
-    return (index < 0) ? NULL : datMapletGetMapping(maplet, index).value;
-}
-
-/* Documented in header. */
-zint datMapletFind(zvalue maplet, zvalue key) {
-    datAssertValid(key);
-    datAssertMaplet(maplet);
-
-    zmapping *elems = mapletElems(maplet);
-    zint min = 0;
-    zint max = maplet->size - 1;
-
-    while (min <= max) {
-        zint guess = (min + max) / 2;
-        switch (datCompare(key, elems[guess].key)) {;
-            case ZLESS: max = guess - 1; break;
-            case ZMORE: min = guess + 1; break;
-            default:    return guess;
-        }
-    }
-
-    // Not found. The insert point is at `min`. Per the API,
-    // this is represented as `~min` (and not, in particular, as `-max`)
-    // so that an insertion point of `0` can be unambiguously
-    // represented.
-
-    return ~min;
-}
-
-/* Documented in header. */
 zvalue datMapletEmpty(void) {
     if (theEmptyMaplet == NULL) {
         theEmptyMaplet = allocMaplet(0);
@@ -124,8 +114,15 @@ zvalue datMapletEmpty(void) {
 }
 
 /* Documented in header. */
+zvalue datMapletGet(zvalue maplet, zvalue key) {
+    zint index = mapletFind(maplet, key);
+
+    return (index < 0) ? NULL : mapletElems(maplet)[index].value;
+}
+
+/* Documented in header. */
 zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
-    zint index = datMapletFind(maplet, key);
+    zint index = mapletFind(maplet, key);
     zint size = datSize(maplet);
     zvalue result;
 

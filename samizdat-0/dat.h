@@ -174,6 +174,11 @@ zint datIntletToInt(zvalue intlet);
  */
 
 /**
+ * Gets the value `@[]` (that is, the empty listlet).
+ */
+zvalue datListletEmpty(void);
+
+/**
  * Given a listlet, returns the `n`th element. `listlet` must be a
  * listlet, and `n` must be `< datSize(value)`.
  */
@@ -185,11 +190,6 @@ zvalue datListletGet(zvalue listlet, zint n);
  * gotten must be an intlet in range to be represented as a `zint`.
  */
 zint datListletGetInt(zvalue stringlet, zint n);
-
-/**
- * Gets the value `@[]` (that is, the empty listlet).
- */
-zvalue datListletEmpty(void);
 
 /**
  * Gets the listlet resulting from appending the given value to the
@@ -214,13 +214,9 @@ zvalue datListletDelete(zvalue listlet, zint n);
  */
 
 /**
- * Given a maplet, returns the `n`th mapping. `maplet` must be a
- * maplet, and `n` must be `< datSize(value)`.
- *
- * Note: When retrieved in ordinal order, keys are always returned in
- * sorted order.
+ * Gets the value `@{}` (that is, the empty maplet).
  */
-zmapping datMapletGetMapping(zvalue maplet, zint n);
+zvalue datMapletEmpty(void);
 
 /**
  * Given a maplet, find the mapping of the given key and return the
@@ -228,18 +224,6 @@ zmapping datMapletGetMapping(zvalue maplet, zint n);
  * must be a maplet, and `key` must be a valid value.
  */
 zvalue datMapletGet(zvalue maplet, zvalue key);
-
-/**
- * Given a maplet, find the index of the given key. `maplet` must be a
- * maplet. Returns the index of the key or `~insertionIndex` (a
- * negative number) if not found.
- */
-zint datMapletFind(zvalue maplet, zvalue key);
-
-/**
- * Gets the value `@{}` (that is, the empty maplet).
- */
-zvalue datMapletEmpty(void);
 
 /**
  * Gets the maplet resulting from putting the given mapping into the
