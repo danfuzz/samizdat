@@ -219,6 +219,11 @@ zvalue datListletDelete(zvalue listlet, zint n);
 zvalue datMapletEmpty(void);
 
 /**
+ * Gets a listlet of all the keys of the given maplet.
+ */
+zvalue datMapletKeys(zvalue maplet);
+
+/**
  * Given a maplet, find the mapping of the given key and return the
  * corresponding value, or `NULL` if there is no such key. `maplet`
  * must be a maplet, and `key` must be a valid value.
@@ -231,6 +236,12 @@ zvalue datMapletGet(zvalue maplet, zvalue key);
  * existing mapping.
  */
 zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value);
+
+/**
+ * Gets a maplet resulting from the removal of the given key from the
+ * given maplet. It is an error if the key isn't in the maplet.
+ */
+zvalue datMapletDelete(zvalue maplet, zvalue key);
 
 
 /*

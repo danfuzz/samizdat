@@ -114,6 +114,21 @@ zvalue datMapletEmpty(void) {
 }
 
 /* Documented in header. */
+zvalue datMapletKeys(zvalue maplet) {
+    datAssertMaplet(maplet);
+
+    zint size = datSize(maplet);
+    zmapping *elems = mapletElems(maplet);
+    zvalue result = datListletEmpty();
+
+    for (zint i = 0; i < size; i++) {
+        result = datListletAppend(result, elems[i].key);
+    }
+
+    return result;
+}
+
+/* Documented in header. */
 zvalue datMapletGet(zvalue maplet, zvalue key) {
     zint index = mapletFind(maplet, key);
 
@@ -145,5 +160,24 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
 
     mapletElems(result)[index].key = key;
     mapletElems(result)[index].value = value;
+    return result;
+}
+
+/* Documented in header. */
+zvalue datMapletDelete(zvalue maplet, zvalue key) {
+    zint index = mapletFind(maplet, key);
+
+    if (index < 0) {
+        die("Can't delete nonexistent maplet key.");
+    }
+
+    zint size = datSize(maplet) - 1;
+    zvalue result = allocMaplet(size);
+    zmapping *elems = mapletElems(result);
+    zmapping *oldElems = mapletElems(maplet);
+
+    memcpy(elems, oldElems, index * sizeof(zmapping));
+    memcpy(elems + index, oldElems + index + 1,
+           (size - index) * sizeof(zmapping));
     return result;
 }
