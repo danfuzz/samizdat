@@ -22,7 +22,7 @@ parse = { tokens ::
     # TODO
 
     #TODO: Why does this fail to parse?
-    #^ @{@"type"=@"statements" @"value"=@[]};
+    ^ @[@"type"=@"statements" @"value"=@[]];
 };
 
 # Compiles the file named in the first argument in a fresh context,
