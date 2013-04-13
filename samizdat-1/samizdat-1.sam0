@@ -21,7 +21,6 @@ tokenize = { programText ::
 parse = { tokens ::
     # TODO
 
-    #TODO: Why does this fail to parse?
     ^ @[@"type"=@"statements" @"value"=@[]];
 };
 
