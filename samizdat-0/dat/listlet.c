@@ -109,3 +109,19 @@ zvalue datListletAppend(zvalue listlet, zvalue value) {
 
     return result;
 }
+
+zvalue datListletDelete(zvalue listlet, zint n) {
+    datAssertListlet(listlet);
+    datAssertNth(listlet, n);
+
+    zint oldSize = listlet->size;
+    zint size = oldSize - 1;
+    zvalue result = datAllocListlet(size);
+    zvalue *resultElems = datListletElems(result);
+    zvalue *oldElems = datListletElems(listlet);
+
+    memcpy(resultElems, oldElems, n * sizeof(zvalue));
+    memcpy(resultElems + n, oldElems + n + 1, (size - n) * sizeof(zvalue));
+
+    return result;
+}

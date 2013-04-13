@@ -202,6 +202,12 @@ zvalue datListletAppend(zvalue listlet, zvalue value);
  */
 zvalue datListletFromValues(zvalue *values, zint size);
 
+/**
+ * Gets the listlet resulting from deleting the nth element of the
+ * given listlet.
+ */
+zvalue datListletDelete(zvalue listlet, zint n);
+
 
 /*
  * Maplet Functions
