@@ -4,6 +4,7 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
+#include "cst.h"
 #include "lib.h"
 #include "impl.h"
 
@@ -30,14 +31,16 @@ static void runLibrary(zcontext ctx) {
 
 /* Documented in header. */
 zcontext libNewContext(void) {
+    cstInit();
+
     zcontext ctx = langNewContext();
 
     // These all could have been defined in-language, but we already
     // had to have them defined and accessible to C code, so we just
     // go ahead and export them here.
-    langBind(ctx, "null", langNull());
-    langBind(ctx, "false", langFalse());
-    langBind(ctx, "true", langTrue());
+    langBind(ctx, "null", CST_NULL);
+    langBind(ctx, "false", CST_FALSE);
+    langBind(ctx, "true", CST_TRUE);
 
     bindPrimitives(ctx);
     runLibrary(ctx);
