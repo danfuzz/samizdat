@@ -9,6 +9,22 @@
 # programs.
 #
 
+# Tokenizes the given string, using Samizdat Layer 0 token syntax.
+# Returns a listlet of tokens.
+tokenize = { programText ::
+    # TODO
+    ^ @[];
+};
+
+# Parses a listlet of tokens, using Samizdat Layer 0 tree syntax.
+# Returns a `statements` node.
+parse = { tokens ::
+    # TODO
+
+    #TODO: Why does this fail to parse?
+    #^ @{@"type"=@"statements" @"value"=@[]};
+};
+
 # Compiles the file named in the first argument in a fresh context,
 # and runs its `main`, passing it an array of the rest of the
 # arguments.
@@ -24,4 +40,15 @@ main = { file arg1 arg2 arg3 ::
     } else {
         writeFile @"/dev/stdout" @"Hello, Самиздат!\n";
     };
+
+    programText = readFile file;
+
+    tokens = tokenize programText;
+    if { ^ eq tokens null; } { ^ 1; };
+
+    statements = parse tokens;
+    if { ^ eq statements null; } { ^ 1; };
+
+    # TODO: Bind statements as a function using exposed interface from
+    # samizdat-0, and call it.
 };
