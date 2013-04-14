@@ -86,12 +86,13 @@ reduce = { base listlet func ::
 # Concatenates one or more listlets together into a single resulting
 # listlet.
 cat = { listlet rest* ::
-    # Concatenates exactly two lists together.
-    catTwo = { l1 l2 ::
-        ^ reduce l1 l2 { reduction value :: ^ append reduction value; };
-    };
-
-    ^ reduce listlet rest { reduction value :: ^ catTwo reduction value; };
+    # The outer reduce iterates over the listlets, concatenating each in turn.
+    ^ reduce listlet rest
+        { reduction value ::
+            # The inner reduce iterates over items in the second listlet,
+            # appending it to the result-in-progress.
+            ^ reduce reduction value { result ch :: ^ append result ch; };
+        };
 };
 
 # Returns true iff the given value is an intlet.
