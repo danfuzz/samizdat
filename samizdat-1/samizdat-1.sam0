@@ -100,7 +100,7 @@ cat = { listlet rest* ::
     ^ reduce listlet rest
         { reduction value ::
             # The inner reduce iterates over items in the second listlet,
-            # appending it to the result-in-progress.
+            # appending each to the result-in-progress.
             ^ reduce reduction value { result ch :: ^ append result ch; };
         };
 };
