@@ -79,7 +79,7 @@ toStringlet = { value ::
         ^ if { ^ eq value @0; } {
             ^ @"";
         } else {
-            digit = iadd (imod value @10) @48;
+            digit = iadd (imod value @10) @48; # 48 == "0"
             more = idiv value @10;
             ^ cat (intletBody more) @[digit];
         };
