@@ -135,8 +135,13 @@ isStringlet = { value ::
         };
 };
 
-# Converts an arbitrary value into a stringlet representation form.
-toStringlet = { value ::
+# Converts an arbitrary value into a stringlet representation form
+# meant to mimic the Samizdat source syntax.
+#
+# Note that the output differs from Samizdat Layer 0 syntax in that
+# stringlet forms may get represented using hex escapes, which is not
+# defined in Layer 0.
+sourceStringlet = { value ::
     intletBody = { start value ::
         ^ if { ^ eq value @0; } {
             ^ start;
@@ -196,7 +201,7 @@ toStringlet = { value ::
                 ^ cat
                     reduction
                     (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
-                    (toStringlet elem);
+                    (sourceStringlet elem);
             };
         ^ cat @"@[" body @"]";
     } { ^ isMaplet value; } {
@@ -205,9 +210,9 @@ toStringlet = { value ::
                 ^ cat
                     reduction
                     (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
-                    (toStringlet key)
+                    (sourceStringlet key)
                     @"="
-                    (toStringlet (getValue value key));
+                    (sourceStringlet (getValue value key));
             };
         ^ cat @"@[" body @"]";
     } { ^ isUniqlet value; } {
@@ -266,32 +271,33 @@ main = { file arg1 arg2 arg3 ::
         writeFile @"/dev/stdout" @"Hello, Самиздат!\n";
     };
 
-    writeFile @"/dev/stdout" (toStringlet @0);
+    writeFile @"/dev/stdout" (sourceStringlet @0);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @98765);
+    writeFile @"/dev/stdout" (sourceStringlet @98765);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @-12345);
+    writeFile @"/dev/stdout" (sourceStringlet @-12345);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[]);
+    writeFile @"/dev/stdout" (sourceStringlet @[]);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[@-1]);
+    writeFile @"/dev/stdout" (sourceStringlet @[@-1]);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[@1 @-2]);
+    writeFile @"/dev/stdout" (sourceStringlet @[@1 @-2]);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[@-1 @2 @300]);
+    writeFile @"/dev/stdout" (sourceStringlet @[@-1 @2 @300]);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @"");
+    writeFile @"/dev/stdout" (sourceStringlet @"");
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @"\"Blort.\" \n");
+    writeFile @"/dev/stdout" (sourceStringlet @"\"Blort.\" \n");
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[=]);
+    writeFile @"/dev/stdout" (sourceStringlet @[=]);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[@1=@2]);
+    writeFile @"/dev/stdout" (sourceStringlet @[@1=@2]);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[@1=@2 @888=@1]);
+    writeFile @"/dev/stdout" (sourceStringlet @[@1=@2 @888=@1]);
     writeFile @"/dev/stdout" @"\n";
     writeFile @"/dev/stdout"
-        (toStringlet @[@"fizmo"=@"omzif" @"igram"=@"margi" @"blort"=@"trolb"]);
+        (sourceStringlet
+            @[@"fizmo"=@"omzif" @"igram"=@"margi" @"blort"=@"trolb"]);
     writeFile @"/dev/stdout" @"\n";
     writeFile @"/dev/stdout" @"\n";
 
