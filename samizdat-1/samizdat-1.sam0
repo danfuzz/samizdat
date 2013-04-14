@@ -260,12 +260,6 @@ parse = { tokens ::
 main = { file arg1 arg2 arg3 ::
     # Be welcoming.
 
-    ifElse (eq file @"danfuzz") {
-        writeFile @"/dev/stdout" @"Hello, Danfuzz!\n";
-    } {
-        writeFile @"/dev/stdout" @"Hello, Самиздат!\n";
-    };
-
     if { ^ eq file @"danfuzz"; } {
         writeFile @"/dev/stdout" @"Hello, Danfuzz!\n";
     } else {
