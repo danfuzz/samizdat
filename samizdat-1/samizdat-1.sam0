@@ -121,18 +121,13 @@ toStringlet = { value ::
     };
 
     listletBody = { value ::
-        ^ if { ^ eq value @[]; } {
-            ^ @"";
-        } else {
-            start = listletBody (butLast value);
-            ^ cat
-                (if { ^ eq start @""; } {
-                    ^ @"";
-                } else {
-                    ^ cat start @" ";
-                })
-                (toStringlet (last value));
-        };
+        ^ reduce value @""
+            { reduction elem ::
+                ^ cat
+                    reduction
+                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
+                    (toStringlet elem);
+            };
     };
 
     mapletBody = { value ::
