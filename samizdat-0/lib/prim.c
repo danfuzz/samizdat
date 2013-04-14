@@ -179,7 +179,7 @@ static zvalue prim_if(void *state, zint argCount, const zvalue *args) {
  */
 static zvalue prim_ifElse(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 3);
-    zvalue func = langIsTrue(langCall(args[0], 0, NULL)) ? args[1] : args[2];
+    zvalue func = langIsTrue(args[0]) ? args[1] : args[2];
     return langCall(func, 0, NULL);
 }
 
