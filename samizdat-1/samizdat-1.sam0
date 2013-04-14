@@ -146,7 +146,7 @@ toStringlet = { value ::
         } else {
             digit = iadd (imod value @10) @48; # 48 == "0"
             more = idiv value @10;
-            ^ cat (intletBody start more) @[digit];
+            ^ append (intletBody start more) digit;
         };
     };
 
@@ -156,7 +156,7 @@ toStringlet = { value ::
         } else {
             digit = getNth @"0123456789abcdef" (imod value @16);
             more = idiv value @16;
-            ^ cat (intletHex more) @[digit];
+            ^ append (intletHex more) digit;
         };
     };
 
@@ -167,7 +167,7 @@ toStringlet = { value ::
             ^ @"\\n";
         } { ^ or { ^ eq ch @34; } { ^ eq ch @92; }; } {
             # 34 == "\"" and 92 == "\\"
-            ^ cat @"\\" @[ch];
+            ^ append @"\\" ch;
         } { ^ or { ^ le ch @31; }
                   { ^ and { ^ ge ch @127; } { ^ le ch @159; }; }; } {
             # These are the ranges for nonprinting control characters.

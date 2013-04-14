@@ -188,6 +188,14 @@ static zvalue prim_imod(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_append(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+    return datListletAppend(args[0], args[1]);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_cat(void *state, zint argCount, const zvalue *args) {
     if (argCount == 0) {
         return datListletEmpty();
@@ -310,6 +318,7 @@ void bindPrimitives(zcontext ctx) {
     langBindFunction(ctx, "imod", prim_imod, NULL);
 
     // Listlets
+    langBindFunction(ctx, "append", prim_append, NULL);
     langBindFunction(ctx, "cat",    prim_cat,    NULL);
     langBindFunction(ctx, "getNth", prim_getNth, NULL);
     langBindFunction(ctx, "delNth", prim_delNth, NULL);
