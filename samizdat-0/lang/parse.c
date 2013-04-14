@@ -177,7 +177,7 @@ static zvalue parseFormals(ParseState *state) {
             // In Samizdat Layer 0, the only modifier for a formal is
             // `*` which has to be on the last formal.
             formal = datMapletPut(formal, STR_REPEAT, TOK_CH_STAR);
-            formals = datListletAppend(formals, identifier);
+            formals = datListletAppend(formals, formal);
             break;
         }
 
