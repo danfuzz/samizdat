@@ -198,15 +198,21 @@ zint datListletGetInt(zvalue stringlet, zint n);
 zvalue datListletAppend(zvalue listlet, zvalue value);
 
 /**
+ * Gets the listlet resulting from deleting the nth element of the
+ * given listlet.
+ */
+zvalue datListletDelete(zvalue listlet, zint n);
+
+/**
  * Constructs a listlet from an array of `zvalue`s of the given size.
  */
 zvalue datListletFromValues(zvalue *values, zint size);
 
 /**
- * Gets the listlet resulting from deleting the nth element of the
- * given listlet.
+ * Copies all the values of the given listlet into the given output
+ * array, which must be sized large enough to hold all of them.
  */
-zvalue datListletDelete(zvalue listlet, zint n);
+void datListletToValues(zvalue listlet, zvalue *values);
 
 
 /*
