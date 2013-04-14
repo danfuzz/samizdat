@@ -15,11 +15,13 @@ zvalue STR_CH_CCURLY = NULL;
 zvalue STR_CH_CPAREN = NULL;
 zvalue STR_CH_CSQUARE = NULL;
 zvalue STR_CH_COLONCOLON = NULL;
+zvalue STR_CH_DOT = NULL;
 zvalue STR_CH_EQUAL = NULL;
 zvalue STR_CH_OCURLY = NULL;
 zvalue STR_CH_OPAREN = NULL;
 zvalue STR_CH_OSQUARE = NULL;
 zvalue STR_CH_SEMICOLON = NULL;
+zvalue STR_CH_STAR = NULL;
 zvalue STR_ACTUALS = NULL;
 zvalue STR_BOOLEAN = NULL;
 zvalue STR_CALL = NULL;
@@ -34,6 +36,7 @@ zvalue STR_MAIN = NULL;
 zvalue STR_MAPLET = NULL;
 zvalue STR_NAME = NULL;
 zvalue STR_NULL = NULL;
+zvalue STR_REPEAT = NULL;
 zvalue STR_RETURN = NULL;
 zvalue STR_STATEMENTS = NULL;
 zvalue STR_STRING = NULL;
@@ -51,11 +54,13 @@ zvalue TOK_CH_CCURLY = NULL;
 zvalue TOK_CH_CPAREN = NULL;
 zvalue TOK_CH_CSQUARE = NULL;
 zvalue TOK_CH_COLONCOLON = NULL;
+zvalue TOK_CH_DOT = NULL;
 zvalue TOK_CH_EQUAL = NULL;
 zvalue TOK_CH_OCURLY = NULL;
 zvalue TOK_CH_OPAREN = NULL;
 zvalue TOK_CH_OSQUARE = NULL;
 zvalue TOK_CH_SEMICOLON = NULL;
+zvalue TOK_CH_STAR = NULL;
 zvalue TOK_ACTUALS = NULL;
 zvalue TOK_BOOLEAN = NULL;
 zvalue TOK_CALL = NULL;
@@ -81,7 +86,7 @@ zvalue TOK_VAR_REF = NULL;
 
 /* Documented in header. */
 void constsInit(void) {
-    if (STR_CH_AT != NULL) {
+    if (STR_NULL != NULL) {
         return;
     }
 
@@ -92,11 +97,13 @@ void constsInit(void) {
     STR_CH_CPAREN     = datStringletFromUtf8String(")", -1);
     STR_CH_CSQUARE    = datStringletFromUtf8String("]", -1);
     STR_CH_COLONCOLON = datStringletFromUtf8String("::", -1);
+    STR_CH_DOT        = datStringletFromUtf8String(".", -1);
     STR_CH_EQUAL      = datStringletFromUtf8String("=", -1);
     STR_CH_OCURLY     = datStringletFromUtf8String("{", -1);
     STR_CH_OPAREN     = datStringletFromUtf8String("(", -1);
     STR_CH_OSQUARE    = datStringletFromUtf8String("[", -1);
     STR_CH_SEMICOLON  = datStringletFromUtf8String(";", -1);
+    STR_CH_STAR       = datStringletFromUtf8String("*", -1);
     STR_ACTUALS       = datStringletFromUtf8String("actuals", -1);
     STR_BOOLEAN       = datStringletFromUtf8String("boolean", -1);
     STR_CALL          = datStringletFromUtf8String("call", -1);
@@ -111,6 +118,7 @@ void constsInit(void) {
     STR_MAPLET        = datStringletFromUtf8String("maplet", -1);
     STR_NAME          = datStringletFromUtf8String("name", -1);
     STR_NULL          = datStringletFromUtf8String("null", -1);
+    STR_REPEAT        = datStringletFromUtf8String("repeat", -1);
     STR_RETURN        = datStringletFromUtf8String("return", -1);
     STR_STATEMENTS    = datStringletFromUtf8String("statements", -1);
     STR_STRING        = datStringletFromUtf8String("string", -1);
@@ -128,11 +136,13 @@ void constsInit(void) {
     TOK_CH_CPAREN     = datMapletPut(empty, STR_TYPE, STR_CH_CPAREN);
     TOK_CH_CSQUARE    = datMapletPut(empty, STR_TYPE, STR_CH_CSQUARE);
     TOK_CH_COLONCOLON = datMapletPut(empty, STR_TYPE, STR_CH_COLONCOLON);
+    TOK_CH_DOT        = datMapletPut(empty, STR_TYPE, STR_CH_DOT);
     TOK_CH_EQUAL      = datMapletPut(empty, STR_TYPE, STR_CH_EQUAL);
     TOK_CH_OCURLY     = datMapletPut(empty, STR_TYPE, STR_CH_OCURLY);
     TOK_CH_OPAREN     = datMapletPut(empty, STR_TYPE, STR_CH_OPAREN);
     TOK_CH_OSQUARE    = datMapletPut(empty, STR_TYPE, STR_CH_OSQUARE);
     TOK_CH_SEMICOLON  = datMapletPut(empty, STR_TYPE, STR_CH_SEMICOLON);
+    TOK_CH_STAR       = datMapletPut(empty, STR_TYPE, STR_CH_STAR);
     TOK_ACTUALS       = datMapletPut(empty, STR_TYPE, STR_ACTUALS);
     TOK_BOOLEAN       = datMapletPut(empty, STR_TYPE, STR_BOOLEAN);
     TOK_CALL          = datMapletPut(empty, STR_TYPE, STR_CALL);

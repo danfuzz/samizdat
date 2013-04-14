@@ -29,6 +29,7 @@ punctuation ::=
     "::" | # result: @[@"type"=@"::"]
     "@"  | # result: @[@"type"=@"@"]
     ":"  | # result: @[@"type"=@":"]
+    "*"  | # result: @[@"type"=@"*"]
     ";"  | # result: @[@"type"=@";"]
     "="  | # result: @[@"type"=@"="]
     "^"  | # result: @[@"type"=@"^"]
@@ -123,8 +124,11 @@ function ::= @"{" formals statements @"}" ;
 # result: @[@"type"=@"function"
 #           @"value"=@[@"formals"=<formals> @"statements"=<statements>]]
 
-formals ::= (@"identifier"+ @"::") | ~. ;
-# result: @[@"type"=@"formals" @"value"=<listlet of identifier.values>]
+formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
+# result: @[@"type"=@"formals"
+#           @"value"=@[@[@"name"=<identifier.value>
+#                        @"repeat"=@[@"type"=(@"." | @"*")]]
+#                      ...]]
 
 call ::= atom (@"(" @")" | atom+) ;
 # result: @[@"type"=@"call"

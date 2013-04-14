@@ -162,28 +162,40 @@ static zvalue parseCall(ParseState *state) {
  */
 static zvalue parseFormals(ParseState *state) {
     zint mark = cursor(state);
-    zvalue identifiers = datListletEmpty();
+    zvalue formals = datListletEmpty();
 
     for (;;) {
         zvalue identifier = readMatch(state, TOK_IDENTIFIER);
         if (identifier == NULL) {
             break;
         }
-        identifier = hidValue(identifier);
-        identifiers = datListletAppend(identifiers, identifier);
+
+        zvalue formal =
+            datMapletPut(datMapletEmpty(), STR_NAME, hidValue(identifier));
+
+        if (readMatch(state, TOK_CH_STAR) != NULL) {
+            // In Samizdat Layer 0, the only modifier for a formal is
+            // `*` which has to be on the last formal.
+            formal = datMapletPut(formal, STR_REPEAT, TOK_CH_STAR);
+            formals = datListletAppend(formals, identifier);
+            break;
+        }
+
+        formal = datMapletPut(formal, STR_REPEAT, TOK_CH_DOT);
+        formals = datListletAppend(formals, formal);
     }
 
-    if (datSize(identifiers) != 0) {
+    if (datSize(formals) != 0) {
         if (readMatch(state, TOK_CH_COLONCOLON) == NULL) {
             // We didn't find the expected `::` which means there
             // was no formals list at all. So reset the parse, but
             // still succeed with an empty formals list.
             reset(state, mark);
-            identifiers = datListletEmpty();
+            formals = datListletEmpty();
         }
     }
 
-    return hidPutValue(TOK_FORMALS, identifiers);
+    return hidPutValue(TOK_FORMALS, formals);
 }
 
 /**

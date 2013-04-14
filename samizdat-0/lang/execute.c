@@ -60,8 +60,23 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     }
 
     for (zint i = 0; i < formalsSize; i++) {
-        zvalue name = datListletGet(formals, i);
-        locals = datMapletPut(locals, name, args[i]);
+        zvalue formal = datListletGet(formals, i);
+        zvalue name = datMapletGet(formal, STR_NAME);
+        zvalue repeat = datMapletGet(formal, STR_REPEAT);
+        zvalue value;
+
+        if (datCompare(repeat, TOK_CH_STAR) == 0) {
+            value = datListletEmpty();
+            for (/*i*/; i < argCount; i++) {
+                value = datListletAppend(value, args[i]);
+            }
+        } else if (i >= argCount) {
+            die("Too few arguments to function: %lld", argCount);
+        } else {
+            value = args[i];
+        }
+
+        locals = datMapletPut(locals, name, value);
     }
 
     zcontext ctx = ctxNewChild(closure->parent, locals);
