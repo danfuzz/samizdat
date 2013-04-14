@@ -120,16 +120,6 @@ toStringlet = { value ::
         };
     };
 
-    listletBody = { value ::
-        ^ reduce value @""
-            { reduction elem ::
-                ^ cat
-                    reduction
-                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
-                    (toStringlet elem);
-            };
-    };
-
     mapletBody = { value ::
         ^ reduce (getKeys value) @""
             { reduction key ::
@@ -169,12 +159,11 @@ toStringlet = { value ::
         };
     };
 
-    stringletBody = { value ::
-        ^ reduce value @""
-            { reduction item :: ^ cat reduction (stringletChar item); };
-    };
-
-    ^ if { ^ isIntlet value; } {
+    ^ if { ^ eq value @[]; } {
+        ^ @"@[]";
+    } { ^ eq value @[=]; } {
+        ^ @"@[=]";
+    } { ^ isIntlet value; } {
         ^ if { ^ lt value @0; } {
             ^ cat @"@-" (intletBody (ineg value));
         } { ^ eq value @0; } {
@@ -182,18 +171,30 @@ toStringlet = { value ::
         } else {
             ^ cat @"@" (intletBody value);
         };
-    } { ^ eq value @[]; } {
-        ^ @"@[]";
     } { ^ isStringlet value; } {
-        ^ cat @"@\"" (stringletBody value) @"\"";
+        body = reduce value @""
+            { reduction item :: ^ cat reduction (stringletChar item); };
+        ^ cat @"@\"" body @"\"";
     } { ^ isListlet value; } {
-        ^ cat @"@[" (listletBody value) @"]";
+        body = reduce value @""
+            { reduction elem ::
+                ^ cat
+                    reduction
+                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
+                    (toStringlet elem);
+            };
+        ^ cat @"@[" body @"]";
     } { ^ isMaplet value; } {
-        ^ if { ^ eq value @[=]; } {
-            ^ @"@[=]";
-        } else {
-            ^ cat @"@[" (mapletBody value) @"]";
-        };
+        body = reduce (getKeys value) @""
+            { reduction key ::
+                ^ cat
+                    reduction
+                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
+                    (toStringlet key)
+                    @"="
+                    (toStringlet (getValue value key));
+            };
+        ^ cat @"@[" body @"]";
     } { ^ isUniqlet value; } {
         ^ @"@@";
     } else {
