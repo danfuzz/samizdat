@@ -46,6 +46,11 @@ or = { predicate rest* ::
 # Maps each value of a listlet, collecting the results into a new
 # listlet. The given function is called on each value, with two
 # arguments, namely the value and its index number.
+#
+# Note: Unlike many other languages with similar functions, the
+# function argument is the *last* one and not the *first* one. This is
+# specifically done to make it natural to write a multi-line function
+# without losing track of the listlet argument.
 map = { listlet func ::
     size = lowSize listlet;
 
@@ -67,6 +72,11 @@ map = { listlet func ::
 # this is a left-reduce operation). The given function is called on
 # each value, with three arguments: the last reduction result, the
 # value, and its index number.
+#
+# Note: Unlike many other languages with similar functions, the
+# function argument is the *last* one and not the *first* one. This is
+# specifically done to make it natural to write a multi-line function
+# without losing track of the other two arguments.
 reduce = { base listlet func ::
     size = lowSize listlet;
 
