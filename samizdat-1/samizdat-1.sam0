@@ -94,17 +94,6 @@ cat = { listlet rest* ::
     ^ reduce listlet rest { reduction value :: ^ catTwo reduction value; };
 };
 
-# Returns the last element of a given listlet.
-last = { value ::
-    ^ getNth value (isub (lowSize value) @1);
-};
-
-# Returns the listlet consisting of all but the last element of a
-# given listlet.
-butLast = { value ::
-    ^ delNth value (isub (lowSize value) @1);
-};
-
 # Returns true iff the given value is an intlet.
 isIntlet = { value ::
     ^ eq (lowType value) @"intlet";
@@ -132,25 +121,17 @@ isStringlet = { value ::
     ^ and
         { ^ isListlet value; }
         {
-            isValidCode = { value ::
+            check = { ch rest* ::
                 # Note: 1114111 == 0x10ffff, which is the highest valid
                 # Unicode code point.
-                ^ and { ^ ge value @0; } { ^ le value @1114111; };
+                ^ and
+                    { ^ isIntlet ch; }
+                    { ^ ge ch @0; }
+                    { ^ le ch @1114111; }
+                    { ^ or { ^ eq rest @[]; } { ^ apply check rest; }; };
             };
 
-            check = { value ::
-                ^ or
-                    { ^ eq value @[]; }
-                    {
-                        lastValue = last value;
-                        ^ and
-                            { ^ isIntlet lastValue; }
-                            { ^ isValidCode lastValue; }
-                            { ^ check (butLast value); };
-                    };
-            };
-
-            ^ check value;
+            ^ or { ^ eq value @[]; } { ^ apply check value; };
         };
 };
 
