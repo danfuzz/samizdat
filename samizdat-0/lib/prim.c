@@ -131,34 +131,6 @@ static zvalue prim_not(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_and(void *state, zint argCount, const zvalue *args) {
-    for (zint i = 0; i < argCount; i++) {
-        zvalue test = langCall(args[i], 0, NULL);
-        if (langIsFalse(test)) {
-            return CST_FALSE;
-        }
-    }
-
-    return CST_TRUE;
-}
-
-/**
- * TODO: Document!
- */
-static zvalue prim_or(void *state, zint argCount, const zvalue *args) {
-    for (zint i = 0; i < argCount; i++) {
-        zvalue test = langCall(args[i], 0, NULL);
-        if (langIsTrue(test)) {
-            return CST_TRUE;
-        }
-    }
-
-    return CST_FALSE;
-}
-
-/**
- * TODO: Document!
- */
 static zvalue prim_ifElse(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 3);
     zvalue func = langIsTrue(args[0]) ? args[1] : args[2];
@@ -327,8 +299,6 @@ void bindPrimitives(zcontext ctx) {
 
     // Boolean(esque)
     langBindFunction(ctx, "not",    prim_not,    NULL);
-    langBindFunction(ctx, "and",    prim_and,    NULL);
-    langBindFunction(ctx, "or",     prim_or,     NULL);
     langBindFunction(ctx, "ifElse", prim_ifElse, NULL);
 
     // Intlets

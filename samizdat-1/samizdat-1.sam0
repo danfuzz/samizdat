@@ -14,14 +14,33 @@
 #
 
 # Cascading conditional. Takes an even number of arguments,
-# alternating tests and consequents. The tests are run in order until
-# one returns `true`. The consequent immediately after the `true` test
-# then gets run, and its return value becomes the result of this
-# function. If no tests return `true`, this function returns `null`.
-if = { test consequent rest* ::
-    ^ ifElse (test())
+# alternating predicates and consequents. The predicates are run in
+# order until one returns `true`. The consequent immediately after the
+# `true` predicate then gets run, and its return value becomes the
+# result of this function. If no predicate returns `true`, this
+# function returns `null`.
+if = { predicate consequent rest* ::
+    ^ ifElse (predicate())
         consequent
         { ^ ifElse (eq rest @[]) { ^ null; } { ^ apply if rest; }; };
+};
+
+# Short-circuit conjunction. Takes an arbitrary number of predicates.
+# Runs each of them in turn until one of them returns `false`. If no
+# predicate returns `false`, this function returns `true`.
+and = { predicate rest* ::
+    ^ ifElse (predicate())
+        { ^ ifElse (eq rest @[]) { ^ true; } { ^ apply and rest; }; }
+        { ^ false; };
+};
+
+# Short-circuit disjunction. Takes an arbitrary number of predicates.
+# Runs each of them in turn until one of them returns `true`. If no
+# predicate returns `true`, this function returns `false`.
+or = { predicate rest* ::
+    ^ ifElse (predicate())
+        { ^ true; }
+        { ^ ifElse (eq rest @[]) { ^ false; } { ^ apply and rest; }; };
 };
 
 # Maps each value of a listlet, collecting the results into a new
