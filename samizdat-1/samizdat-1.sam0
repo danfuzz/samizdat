@@ -44,6 +44,35 @@ isUniqlet = { value ::
     ^ eq (lowType value) @"uniqlet";
 };
 
+# Returns true iff the given value is a stringlet (which is the
+# same as a listlet with intlet elements in the range of Unicode
+# code points).
+isStringlet = { value ::
+    ^ if { ^ isListlet value; } {
+        isValidCode = { value ::
+            # Note: 1114111 == 0x10ffff, which is the highest valid Unicode
+            # code point.
+            ^ and { ^ ge value @0; } { ^ le value @1114111; };
+        };
+
+        check = { value ::
+            ^ or
+                { ^ eq value @[]; }
+                {
+                    lastValue = last value;
+                    ^ and
+                        { ^ isIntlet lastValue; }
+                        { ^ isValidCode lastValue; }
+                        { ^ check (butLast value); };
+                };
+        };
+
+        ^ check value;
+    } else {
+        ^ false;
+    };
+};
+
 # Converts an arbitrary value into a stringlet representation form.
 toStringlet = { value ::
     intletBody = { value ::
@@ -89,6 +118,11 @@ toStringlet = { value ::
         };
     };
 
+    stringletBody = { value ::
+        # TODO
+        ^ @"blort";
+    };
+
     ^ if { ^ isIntlet value; } {
         ^ if { ^ lt value @0; } {
             ^ cat @"@-" (intletBody (ineg value));
@@ -97,6 +131,10 @@ toStringlet = { value ::
         } else {
             ^ cat @"@" (intletBody value);
         };
+    } { ^ eq value @[]; } {
+        ^ @"@[]";
+    } { ^ isStringlet value; } {
+        ^ cat @"@\"" (stringletBody value) @"\"";
     } { ^ isListlet value; } {
         ^ cat @"@[" (listletBody value) @"]";
     } { ^ isMaplet value; } {
@@ -169,11 +207,11 @@ main = { file arg1 arg2 arg3 ::
     writeFile @"/dev/stdout" @"\n";
     writeFile @"/dev/stdout" (toStringlet @[]);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[@1]);
+    writeFile @"/dev/stdout" (toStringlet @[@-1]);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[@1 @2]);
+    writeFile @"/dev/stdout" (toStringlet @[@1 @-2]);
     writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (toStringlet @[@1 @2 @300]);
+    writeFile @"/dev/stdout" (toStringlet @[@-1 @2 @300]);
     writeFile @"/dev/stdout" @"\n";
     writeFile @"/dev/stdout" (toStringlet @"");
     writeFile @"/dev/stdout" @"\n";
