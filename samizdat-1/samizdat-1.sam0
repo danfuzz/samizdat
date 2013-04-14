@@ -110,13 +110,13 @@ isStringlet = { value ::
 
 # Converts an arbitrary value into a stringlet representation form.
 toStringlet = { value ::
-    intletBody = { value ::
+    intletBody = { start value ::
         ^ if { ^ eq value @0; } {
-            ^ @"";
+            ^ start;
         } else {
             digit = iadd (imod value @10) @48; # 48 == "0"
             more = idiv value @10;
-            ^ cat (intletBody more) @[digit];
+            ^ cat (intletBody start more) @[digit];
         };
     };
 
@@ -152,12 +152,12 @@ toStringlet = { value ::
     } { ^ eq value @[=]; } {
         ^ @"@[=]";
     } { ^ isIntlet value; } {
-        ^ if { ^ lt value @0; } {
-            ^ cat @"@-" (intletBody (ineg value));
-        } { ^ eq value @0; } {
+        ^ if { ^ eq value @0; } {
             ^ @"@0";
+        } { ^ gt value @0; } {
+            ^ intletBody @"@" value;
         } else {
-            ^ cat @"@" (intletBody value);
+            ^ intletBody @"@-" (ineg value);
         };
     } { ^ isStringlet value; } {
         body = reduce value @""
