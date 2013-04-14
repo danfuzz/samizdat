@@ -92,3 +92,40 @@ zvalue langTrue(void) {
     initHidConsts();
     return HID_TRUE;
 }
+
+/* Documented in header. */
+bool langIsNull(zvalue value) {
+    initHidConsts();
+    return datCompare(value, HID_NULL) == 0;
+}
+
+/* Documented in header. */
+bool langIsFalse(zvalue value) {
+    initHidConsts();
+    return datCompare(value, HID_FALSE) == 0;
+}
+
+/* Documented in header. */
+bool langIsTrue(zvalue value) {
+    initHidConsts();
+    return datCompare(value, HID_TRUE) == 0;
+}
+
+/* Documented in header. */
+void langAssertBoolean(zvalue value) {
+    if (!(langIsFalse(value) || langIsTrue(value))) {
+        die("Not a boolean value.");
+    }
+}
+
+/* Documented in header. */
+zvalue langBooleanFromBool(bool value) {
+    initHidConsts();
+    return value ? HID_TRUE : HID_FALSE;
+}
+
+/* Documented in header. */
+bool langBooleanToBool(zvalue value) {
+    langAssertBoolean(value);
+    return langIsTrue(value);
+}

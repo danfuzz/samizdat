@@ -36,7 +36,7 @@ typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
 
 
 /*
- * Functions
+ * Constant-related functions
  */
 
 /**
@@ -53,6 +53,41 @@ zvalue langFalse(void);
  * The value typically known as `true`.
  */
 zvalue langTrue(void);
+
+/**
+ * Returns whether or not the given value is equal to `null`.
+ */
+bool langIsNull(zvalue value);
+
+/**
+ * Returns whether or not the given value is equal to `false`.
+ */
+bool langIsFalse(zvalue value);
+
+/**
+ * Returns whether or not the given value is equal to `true`.
+ */
+bool langIsTrue(zvalue value);
+
+/**
+ * Asserts that the given value is equal to either `true` or `false`.
+ */
+void langAssertBoolean(zvalue value);
+
+/**
+ * Converts a C `bool` to an in-model boolean value.
+ */
+zvalue langBooleanFromBool(bool value);
+
+/**
+ * Converts an in-model boolean value to a C `bool`.
+ */
+bool langBooleanToBool(zvalue value);
+
+
+/*
+ * Other functions
+ */
 
 /**
  * Constructs and returns a fresh execution context, valid for use as
