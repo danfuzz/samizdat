@@ -120,18 +120,6 @@ toStringlet = { value ::
         };
     };
 
-    mapletBody = { value ::
-        ^ reduce (getKeys value) @""
-            { reduction key ::
-                ^ cat
-                    reduction
-                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
-                    (toStringlet key)
-                    @"="
-                    (toStringlet (getValue value key));
-            };
-    };
-
     intletHex = { value ::
         ^ if { ^ eq value @0; } {
             ^ @"";
