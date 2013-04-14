@@ -48,29 +48,29 @@ isUniqlet = { value ::
 # same as a listlet with intlet elements in the range of Unicode
 # code points).
 isStringlet = { value ::
-    ^ if { ^ isListlet value; } {
-        isValidCode = { value ::
-            # Note: 1114111 == 0x10ffff, which is the highest valid Unicode
-            # code point.
-            ^ and { ^ ge value @0; } { ^ le value @1114111; };
-        };
+    ^ and
+        { ^ isListlet value; }
+        {
+            isValidCode = { value ::
+                # Note: 1114111 == 0x10ffff, which is the highest valid
+                # Unicode code point.
+                ^ and { ^ ge value @0; } { ^ le value @1114111; };
+            };
 
-        check = { value ::
-            ^ or
-                { ^ eq value @[]; }
-                {
-                    lastValue = last value;
-                    ^ and
-                        { ^ isIntlet lastValue; }
-                        { ^ isValidCode lastValue; }
-                        { ^ check (butLast value); };
-                };
-        };
+            check = { value ::
+                ^ or
+                    { ^ eq value @[]; }
+                    {
+                        lastValue = last value;
+                        ^ and
+                            { ^ isIntlet lastValue; }
+                            { ^ isValidCode lastValue; }
+                            { ^ check (butLast value); };
+                    };
+            };
 
-        ^ check value;
-    } else {
-        ^ false;
-    };
+            ^ check value;
+        };
 };
 
 # Converts an arbitrary value into a stringlet representation form.
