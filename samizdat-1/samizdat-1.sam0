@@ -55,13 +55,13 @@ map = { listlet func ::
     size = lowSize listlet;
 
     doMap = { index ::
-        ^ if { ^ eq index size; } {
-            ^ @[];
-        } else {
-            ^ cat
-                @[(func (getNth listlet index) index)]
-                (doMap (iadd index @1));
-        };
+        ^ ifElse (eq index size)
+            { ^ @[]; }
+            {
+                ^ cat
+                    @[(func (getNth listlet index) index)]
+                    (doMap (iadd index @1));
+            };
     };
 
     ^ doMap @0;
@@ -81,13 +81,13 @@ reduce = { base listlet func ::
     size = lowSize listlet;
 
     doReduce = { reduction index ::
-        ^ if { ^ eq index size; } {
-            ^ reduction;
-        } else {
-            ^ doReduce
-                (func reduction (getNth listlet index) index)
-                (iadd index @1);
-        };
+        ^ ifElse (eq index size)
+            { ^ reduction; }
+            {
+                ^ doReduce
+                    (func reduction (getNth listlet index) index)
+                    (iadd index @1);
+            };
     };
 
     ^ doReduce base @0;
