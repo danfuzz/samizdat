@@ -368,9 +368,9 @@ void bindPrimitives(zcontext ctx) {
     langBindFunction(ctx, "imod", prim_imod, NULL);
 
     // Listlets
-    langBindFunction(ctx, "cat",      prim_cat,    NULL);
-    langBindFunction(ctx, "getNth",   prim_getNth, NULL);
-    langBindFunction(ctx, "delNth",   prim_delNth, NULL);
+    langBindFunction(ctx, "cat",    prim_cat,    NULL);
+    langBindFunction(ctx, "getNth", prim_getNth, NULL);
+    langBindFunction(ctx, "delNth", prim_delNth, NULL);
 
     // Maplets
     langBindFunction(ctx, "getKeys",  prim_getKeys,  NULL);
