@@ -135,22 +135,16 @@ toStringlet = { value ::
         };
     };
 
-    mapletBody = { keys value ::
-        ^ if { ^ eq keys @[]; } {
-            ^ @"";
-        } else {
-            start = mapletBody (butLast keys) value;
-            key = last keys;
-            ^ cat
-                (if { ^ eq start @""; } {
-                    ^ @"";
-                } else {
-                    ^ cat start @" ";
-                })
-                (toStringlet key)
-                @"="
-                (toStringlet (getValue value key));
-        };
+    mapletBody = { value ::
+        ^ reduce (getKeys value) @""
+            { reduction key ::
+                ^ cat
+                    reduction
+                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
+                    (toStringlet key)
+                    @"="
+                    (toStringlet (getValue value key));
+            };
     };
 
     intletHex = { value ::
@@ -203,7 +197,7 @@ toStringlet = { value ::
         ^ if { ^ eq value @[=]; } {
             ^ @"@[=]";
         } else {
-            ^ cat @"@[" (mapletBody (getKeys value) value) @"]";
+            ^ cat @"@[" (mapletBody value) @"]";
         };
     } { ^ isUniqlet value; } {
         ^ @"@@";
