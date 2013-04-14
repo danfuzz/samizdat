@@ -54,11 +54,6 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     zint formalsSize = datSize(formals);
     zvalue locals = datMapletEmpty();
 
-    if (argCount < formalsSize) {
-        die("Too few arguments to function: %lld < %lld",
-            argCount, formalsSize);
-    }
-
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = datListletGet(formals, i);
         zvalue name = datMapletGet(formal, STR_NAME);
