@@ -42,33 +42,6 @@ static void requireRange(zint argCount, zint min, zint max) {
     }
 }
 
-/**
- * Helper for all of the comparison functions, which parameterizes
- * which comparison to accept.
- */
-static zvalue compare(zcomparison wanted, zint argCount, const zvalue *args) {
-    for (zint i = 1; i < argCount; i ++) {
-        if (datCompare(args[0], args[i]) != wanted) {
-            return CST_FALSE;
-        }
-    }
-
-    return CST_TRUE;
-}
-
-/**
- * Underlying implementation of `not`.
- */
-static zvalue booleanNot(zvalue value) {
-    if (datCompare(value, CST_FALSE) == 0) {
-        return CST_TRUE;
-    } else if (datCompare(value, CST_TRUE) == 0) {
-        return CST_FALSE;
-    } else {
-        die("Non-boolean argument to not.");
-    }
-}
-
 
 /*
  * Primitive implementations (exported via the context)
@@ -78,48 +51,48 @@ static zvalue booleanNot(zvalue value) {
  * TODO: Document!
  */
 static zvalue prim_eq(void *state, zint argCount, const zvalue *args) {
-    if (argCount < 2) return CST_TRUE;
-    return compare(ZEQUAL, argCount, args);
+    requireExactly(argCount, 2);
+    return langBooleanFromBool(datCompare(args[0], args[1]) == 0);
 }
 
 /**
  * TODO: Document!
  */
 static zvalue prim_ne(void *state, zint argCount, const zvalue *args) {
-    if (argCount < 2) return CST_TRUE;
-    return booleanNot(compare(ZEQUAL, argCount, args));
+    requireExactly(argCount, 2);
+    return langBooleanFromBool(datCompare(args[0], args[1]) != 0);
 }
 
 /**
  * TODO: Document!
  */
 static zvalue prim_lt(void *state, zint argCount, const zvalue *args) {
-    if (argCount < 2) return CST_TRUE;
-    return compare(ZLESS, argCount, args);
+    requireExactly(argCount, 2);
+    return langBooleanFromBool(datCompare(args[0], args[1]) < 0);
 }
 
 /**
  * TODO: Document!
  */
 static zvalue prim_gt(void *state, zint argCount, const zvalue *args) {
-    if (argCount < 2) return CST_TRUE;
-    return compare(ZMORE, argCount, args);
+    requireExactly(argCount, 2);
+    return langBooleanFromBool(datCompare(args[0], args[1]) > 0);
 }
 
 /**
  * TODO: Document!
  */
 static zvalue prim_le(void *state, zint argCount, const zvalue *args) {
-    if (argCount < 2) return CST_TRUE;
-    return booleanNot(compare(ZMORE, argCount, args));
+    requireExactly(argCount, 2);
+    return langBooleanFromBool(datCompare(args[0], args[1]) <= 0);
 }
 
 /**
  * TODO: Document!
  */
 static zvalue prim_ge(void *state, zint argCount, const zvalue *args) {
-    if (argCount < 2) return CST_TRUE;
-    return booleanNot(compare(ZLESS, argCount, args));
+    requireExactly(argCount, 2);
+    return langBooleanFromBool(datCompare(args[0], args[1]) >= 0);
 }
 
 /**
@@ -152,7 +125,7 @@ static zvalue prim_lowSize(void *state, zint argCount, const zvalue *args) {
  */
 static zvalue prim_not(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
-    return booleanNot(args[0]);
+    return langBooleanFromBool(!langBooleanToBool(args[0]));
 }
 
 /**
@@ -161,7 +134,7 @@ static zvalue prim_not(void *state, zint argCount, const zvalue *args) {
 static zvalue prim_and(void *state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < argCount; i++) {
         zvalue test = langCall(args[i], 0, NULL);
-        if (datCompare(test, CST_FALSE) == 0) {
+        if (langIsFalse(test)) {
             return CST_FALSE;
         }
     }
@@ -175,7 +148,7 @@ static zvalue prim_and(void *state, zint argCount, const zvalue *args) {
 static zvalue prim_or(void *state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < argCount; i++) {
         zvalue test = langCall(args[i], 0, NULL);
-        if (datCompare(test, CST_FALSE) != 0) {
+        if (langIsTrue(test)) {
             return CST_TRUE;
         }
     }
@@ -193,7 +166,7 @@ static zvalue prim_if(void *state, zint argCount, const zvalue *args) {
 
     for (zint i = 0; i < argCount; i += 2) {
         zvalue test = langCall(args[i], 0, NULL);
-        if (datCompare(test, CST_FALSE) != 0) {
+        if (langIsTrue(test)) {
             return langCall(args[i + 1], 0, NULL);
         }
     }
