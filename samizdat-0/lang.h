@@ -113,12 +113,20 @@ void langBindFunction(zcontext ctx, const char *name,
                       zfunction function, void *state);
 
 /**
- * Calls a value which is presumed to be bound as a function.
+ * Calls a value which is presumed to be bound as a function, passing
+ * it the given listlet of arguments.
+ */
+zvalue langApply(zvalue functionId, zvalue args);
+
+/**
+ * Calls a value which is presumed to be bound as a function, passing
+ * it the given number of arguments in the indicated array.
  */
 zvalue langCall(zvalue functionId, zint argCount, const zvalue *args);
 
 /**
- * Calls the `main` function bound in the given context.
+ * Calls the `main` function bound in the given context, passing
+ * it the given number of arguments in the indicated array.
  */
 zvalue langCallMain(zcontext ctx, zint argCount, const zvalue *args);
 

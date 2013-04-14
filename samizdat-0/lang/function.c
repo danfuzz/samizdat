@@ -56,3 +56,12 @@ zvalue langCall(zvalue functionId, zint argCount, const zvalue *args) {
 
     return entry->function(entry->state, argCount, args);
 }
+
+/* Documented in header. */
+zvalue langApply(zvalue functionId, zvalue args) {
+    zint argCount = datSize(args);
+    zvalue argsArray[argCount];
+
+    datListletToValues(args, argsArray);
+    return langCall(functionId, argCount, argsArray);
+}
