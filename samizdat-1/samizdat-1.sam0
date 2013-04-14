@@ -13,6 +13,41 @@
 # Helper functions (likely to be moved to the samizdat-0 core library)
 #
 
+# Maps each value of a listlet, collecting the results into a new
+# listlet. The given function is called on each value, with two
+# arguments, namely the value and its index number.
+map = { listlet func ::
+    size = lowSize listlet;
+    doMap = { index ::
+        ^ if { ^ eq index size; } {
+            ^ @[];
+        } else {
+            ^ cat
+                @[(func (getNth listlet index) index)]
+                (doMap (iadd index @1));
+        };
+    };
+    ^ doMap @0;
+};
+
+# Reduces a listlet to a single value, given a base value and a
+# reducer function, operating in low-to-high index order. The given
+# function is called on each value, with three arguments: the last
+# reduction result, the value, and its index number.
+reduce = { listlet base func ::
+    size = lowSize listlet;
+    doReduce = { reduction index ::
+        ^ if { ^ eq index size; } {
+            ^ reduction;
+        } else {
+            ^ doReduce
+                (func reduction (getNth listlet index) index)
+                (iadd index @1);
+        };
+    };
+    ^ doReduce base @0;
+};
+
 # Returns the last element of a given listlet.
 last = { value ::
     ^ getNth value (isub (lowSize value) @1);
@@ -71,41 +106,6 @@ isStringlet = { value ::
 
             ^ check value;
         };
-};
-
-# Maps each value of a listlet, collecting the results into a new
-# listlet. The given function is called on each value, with two
-# arguments, namely the value and its index number.
-map = { listlet func ::
-    size = lowSize listlet;
-    doMap = { index ::
-        ^ if { ^ eq index size; } {
-            ^ @[];
-        } else {
-            ^ cat
-                @[(func (getNth listlet index) index)]
-                (doMap (iadd index @1));
-        };
-    };
-    ^ doMap @0;
-};
-
-# Reduces a listlet to a single value, given a base value and a
-# reducer function, operating in low-to-high index order. The given
-# function is called on each value, with three arguments: the last
-# reduction result, the value, and its index number.
-reduce = { listlet base func ::
-    size = lowSize listlet;
-    doReduce = { reduction index ::
-        ^ if { ^ eq index size; } {
-            ^ reduction;
-        } else {
-            ^ doReduce
-                (func reduction (getNth listlet index) index)
-                (iadd index @1);
-        };
-    };
-    ^ doReduce base @0;
 };
 
 # Converts an arbitrary value into a stringlet representation form.
