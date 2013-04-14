@@ -315,11 +315,17 @@ main = { file arg1 arg2 arg3 ::
     programText = readFile file;
 
     tokens = tokenize programText;
-    if { ^ eq tokens null; } { ^ @1; };
-
-    statements = parse tokens;
-    if { ^ eq statements null; } { ^ @1; };
-
-    # TODO: Bind statements as a function using exposed interface from
-    # samizdat-0, and call it.
+    ^ if { ^ ne tokens null; } {
+        statements = parse tokens;
+        if { ^ ne statements null; } {
+            # TODO: Bind statements as a function using exposed
+            # interface from samizdat-0, and call it.
+            writeFile @"/dev/stdout" @"TODO: Run.\n";
+            ^ @0;
+        } else {
+            ^ @1;
+        };
+    } else {
+        ^ @1;
+    };
 };
