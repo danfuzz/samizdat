@@ -196,27 +196,6 @@ static zvalue prim_append(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_cat(void *state, zint argCount, const zvalue *args) {
-    if (argCount == 0) {
-        return datListletEmpty();
-    }
-
-    zvalue result = args[0];
-    for (zint i = 1; i < argCount; i ++) {
-        zvalue one = args[i];
-        zint size = datSize(one);
-        datAssertListlet(one);
-        for (zint j = 0; j < size; j++) {
-            result = datListletAppend(result, datListletGet(one, j));
-        }
-    }
-
-    return result;
-}
-
-/**
- * TODO: Document!
- */
 static zvalue prim_getNth(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
 
@@ -319,7 +298,6 @@ void bindPrimitives(zcontext ctx) {
 
     // Listlets
     langBindFunction(ctx, "append", prim_append, NULL);
-    langBindFunction(ctx, "cat",    prim_cat,    NULL);
     langBindFunction(ctx, "getNth", prim_getNth, NULL);
     langBindFunction(ctx, "delNth", prim_delNth, NULL);
 

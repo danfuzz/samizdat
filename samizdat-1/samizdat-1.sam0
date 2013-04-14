@@ -48,6 +48,7 @@ or = { predicate rest* ::
 # arguments, namely the value and its index number.
 map = { listlet func ::
     size = lowSize listlet;
+
     doMap = { index ::
         ^ if { ^ eq index size; } {
             ^ @[];
@@ -57,6 +58,7 @@ map = { listlet func ::
                 (doMap (iadd index @1));
         };
     };
+
     ^ doMap @0;
 };
 
@@ -66,6 +68,7 @@ map = { listlet func ::
 # reduction result, the value, and its index number.
 reduce = { listlet base func ::
     size = lowSize listlet;
+
     doReduce = { reduction index ::
         ^ if { ^ eq index size; } {
             ^ reduction;
@@ -75,7 +78,19 @@ reduce = { listlet base func ::
                 (iadd index @1);
         };
     };
+
     ^ doReduce base @0;
+};
+
+# Concatenates one or more listlets together into a single resulting
+# listlet.
+cat = { listlet rest* ::
+    # Concatenates exactly two lists together.
+    catTwo = { l1 l2 ::
+        ^ reduce l2 l1 { reduction value :: ^ append reduction value; };
+    };
+
+    ^ reduce rest listlet { reduction value :: ^ catTwo reduction value; };
 };
 
 # Returns the last element of a given listlet.
