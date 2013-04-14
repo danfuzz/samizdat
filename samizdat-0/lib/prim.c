@@ -159,24 +159,6 @@ static zvalue prim_or(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_if(void *state, zint argCount, const zvalue *args) {
-    if ((argCount % 2) != 0) {
-        die("Invalid argument count to if: %lld", argCount);
-    }
-
-    for (zint i = 0; i < argCount; i += 2) {
-        zvalue test = langCall(args[i], 0, NULL);
-        if (langIsTrue(test)) {
-            return langCall(args[i + 1], 0, NULL);
-        }
-    }
-
-    return CST_NULL;
-}
-
-/**
- * TODO: Document!
- */
 static zvalue prim_ifElse(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 3);
     zvalue func = langIsTrue(args[0]) ? args[1] : args[2];
@@ -306,6 +288,14 @@ static zvalue prim_getValue(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_apply(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+    return langApply(args[0], args[1]);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_readFile(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
     return readFile(args[0]);
@@ -339,7 +329,6 @@ void bindPrimitives(zcontext ctx) {
     langBindFunction(ctx, "not",    prim_not,    NULL);
     langBindFunction(ctx, "and",    prim_and,    NULL);
     langBindFunction(ctx, "or",     prim_or,     NULL);
-    langBindFunction(ctx, "if",     prim_if,     NULL);
     langBindFunction(ctx, "ifElse", prim_ifElse, NULL);
 
     // Intlets
@@ -359,11 +348,14 @@ void bindPrimitives(zcontext ctx) {
     langBindFunction(ctx, "getKeys",  prim_getKeys,  NULL);
     langBindFunction(ctx, "getValue", prim_getValue, NULL);
 
-    // Data types
+    // Functions
+    langBindFunction(ctx, "apply", prim_apply, NULL);
+
+    // General data types
     langBindFunction(ctx, "lowSize", prim_lowSize, NULL);
     langBindFunction(ctx, "lowType", prim_lowType, NULL);
 
-    // Other
+    // I/O
     langBindFunction(ctx, "readFile",  prim_readFile,  NULL);
     langBindFunction(ctx, "writeFile", prim_writeFile, NULL);
 

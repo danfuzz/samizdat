@@ -13,6 +13,17 @@
 # Helper functions (likely to be moved to the samizdat-0 core library)
 #
 
+# Cascading conditional. Takes an even number of arguments,
+# alternating tests and consequents. The tests are run in order until
+# one returns `true`. The consequent immediately after the `true` test
+# then gets run, and its return value becomes the result of this
+# function. If no tests return `true`, this function returns `null`.
+if = { test consequent rest* ::
+    ^ ifElse (test())
+        consequent
+        { ^ ifElse (eq rest @[]) { ^ null; } { ^ apply if rest; }; };
+};
+
 # Maps each value of a listlet, collecting the results into a new
 # listlet. The given function is called on each value, with two
 # arguments, namely the value and its index number.
@@ -232,6 +243,12 @@ parse = { tokens ::
 # in the primary use case.
 main = { file arg1 arg2 arg3 ::
     # Be welcoming.
+
+    ifElse (eq file @"danfuzz") {
+        writeFile @"/dev/stdout" @"Hello, Danfuzz!\n";
+    } {
+        writeFile @"/dev/stdout" @"Hello, Самиздат!\n";
+    };
 
     if { ^ eq file @"danfuzz"; } {
         writeFile @"/dev/stdout" @"Hello, Danfuzz!\n";
