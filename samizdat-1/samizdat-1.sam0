@@ -63,10 +63,11 @@ map = { listlet func ::
 };
 
 # Reduces a listlet to a single value, given a base value and a
-# reducer function, operating in low-to-high index order. The given
-# function is called on each value, with three arguments: the last
-# reduction result, the value, and its index number.
-reduce = { listlet base func ::
+# reducer function, operating in low-to-high index order (that is,
+# this is a left-reduce operation). The given function is called on
+# each value, with three arguments: the last reduction result, the
+# value, and its index number.
+reduce = { base listlet func ::
     size = lowSize listlet;
 
     doReduce = { reduction index ::
@@ -87,10 +88,10 @@ reduce = { listlet base func ::
 cat = { listlet rest* ::
     # Concatenates exactly two lists together.
     catTwo = { l1 l2 ::
-        ^ reduce l2 l1 { reduction value :: ^ append reduction value; };
+        ^ reduce l1 l2 { reduction value :: ^ append reduction value; };
     };
 
-    ^ reduce rest listlet { reduction value :: ^ catTwo reduction value; };
+    ^ reduce listlet rest { reduction value :: ^ catTwo reduction value; };
 };
 
 # Returns the last element of a given listlet.
@@ -205,11 +206,11 @@ toStringlet = { value ::
             ^ intletBody @"@-" (ineg value);
         };
     } { ^ isStringlet value; } {
-        body = reduce value @""
+        body = reduce @"" value
             { reduction item :: ^ cat reduction (stringletChar item); };
         ^ cat @"@\"" body @"\"";
     } { ^ isListlet value; } {
-        body = reduce value @""
+        body = reduce @"" value
             { reduction elem ::
                 ^ cat
                     reduction
@@ -218,7 +219,7 @@ toStringlet = { value ::
             };
         ^ cat @"@[" body @"]";
     } { ^ isMaplet value; } {
-        body = reduce (getKeys value) @""
+        body = reduce @"" (getKeys value)
             { reduction key ::
                 ^ cat
                     reduction
