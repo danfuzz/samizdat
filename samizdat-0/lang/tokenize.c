@@ -193,6 +193,26 @@ static zvalue tokenizeString(ParseState *state) {
 }
 
 /**
+ * Looks for a second character for a two-character token. If
+ * found, returns the indicated token. If not found, either
+ * returns the given one-character token or errors (the latter
+ * if the one-character token was passed as `NULL`).
+ */
+static zvalue tokenizeOneOrTwoChars(ParseState *state, zint ch2,
+                                    zvalue token1, zvalue token2) {
+    zint ch1 = read(state);
+
+    if (peek(state) == ch2) {
+        read(state);
+        return token2;
+    } else if (token1 != NULL) {
+        return token1;
+    }
+
+    die("Invalid partial \"%c%c\" token.", (char) ch1, (char) ch2);
+}
+
+/**
  * Parses a single token, updating the given input position.
  */
 static zvalue tokenizeOne(ParseState *state) {
@@ -209,33 +229,12 @@ static zvalue tokenizeOne(ParseState *state) {
         case ';':  read(state); return TOK_CH_SEMICOLON;
         case '*':  read(state); return TOK_CH_STAR;
         case '\"': return tokenizeString(state);
-        case '@': {
-            read(state);
-            if (peek(state) == '@') {
-                read(state);
-                return TOK_CH_ATAT;
-            } else {
-                return TOK_CH_AT;
-            }
-        }
-        case ':': {
-            read(state);
-            if (peek(state) == ':') {
-                read(state);
-                return TOK_CH_COLONCOLON;
-            } else {
-                die("Invalid single colon.");
-            }
-        }
-        case '<': {
-            read(state);
-            if (peek(state) == '>') {
-                read(state);
-                return TOK_CH_DIAMOND;
-            } else {
-                die("Invalid half diamond.");
-            }
-        }
+        case '@':  return tokenizeOneOrTwoChars(
+                       state, '@', TOK_CH_AT, TOK_CH_ATAT);
+        case ':':  return tokenizeOneOrTwoChars(
+                       state, ':', NULL, TOK_CH_COLONCOLON);
+        case '<':  return tokenizeOneOrTwoChars(
+                       state, '>', NULL, TOK_CH_DIAMOND);
     }
 
     if (((ch >= '0') && (ch <= '9')) || (ch == '-')) {
