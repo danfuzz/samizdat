@@ -50,49 +50,31 @@ static void requireRange(zint argCount, zint min, zint max) {
 /**
  * TODO: Document!
  */
-static zvalue prim_eq(void *state, zint argCount, const zvalue *args) {
+static zvalue prim_lowOrder(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
-    return langBooleanFromBool(datCompare(args[0], args[1]) == 0);
+    return datIntletFromInt(datCompare(args[0], args[1]));
 }
 
 /**
  * TODO: Document!
  */
-static zvalue prim_ne(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 2);
-    return langBooleanFromBool(datCompare(args[0], args[1]) != 0);
+static zvalue prim_lowOrderIs(void *state, zint argCount, const zvalue *args) {
+    requireRange(argCount, 3, 4);
+
+    zcomparison comp = datCompare(args[0], args[1]);
+    bool result =
+        (comp == datIntletToInt(args[2])) ||
+        ((argCount == 4) && (comp == datIntletToInt(args[3])));
+
+    return langBooleanFromBool(result);
 }
 
 /**
  * TODO: Document!
  */
-static zvalue prim_lt(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 2);
-    return langBooleanFromBool(datCompare(args[0], args[1]) < 0);
-}
-
-/**
- * TODO: Document!
- */
-static zvalue prim_gt(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 2);
-    return langBooleanFromBool(datCompare(args[0], args[1]) > 0);
-}
-
-/**
- * TODO: Document!
- */
-static zvalue prim_le(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 2);
-    return langBooleanFromBool(datCompare(args[0], args[1]) <= 0);
-}
-
-/**
- * TODO: Document!
- */
-static zvalue prim_ge(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 2);
-    return langBooleanFromBool(datCompare(args[0], args[1]) >= 0);
+static zvalue prim_lowSize(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datIntletFromInt(datSize(args[0]));
 }
 
 /**
@@ -110,14 +92,6 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
             die("Invalid value type (shouldn't happen): %d", datType(args[0]));
         }
     }
-}
-
-/**
- * TODO: Document!
- */
-static zvalue prim_lowSize(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 1);
-    return datIntletFromInt(datSize(args[0]));
 }
 
 /**
@@ -276,13 +250,11 @@ static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void bindPrimitives(zcontext ctx) {
-    // Comparison
-    langBindFunction(ctx, "eq", prim_eq, NULL);
-    langBindFunction(ctx, "ne", prim_ne, NULL);
-    langBindFunction(ctx, "lt", prim_lt, NULL);
-    langBindFunction(ctx, "gt", prim_gt, NULL);
-    langBindFunction(ctx, "le", prim_le, NULL);
-    langBindFunction(ctx, "ge", prim_ge, NULL);
+    // Low-layer types (in general)
+    langBindFunction(ctx, "lowOrder",   prim_lowOrder,   NULL);
+    langBindFunction(ctx, "lowOrderIs", prim_lowOrderIs, NULL);
+    langBindFunction(ctx, "lowSize",    prim_lowSize,    NULL);
+    langBindFunction(ctx, "lowType",    prim_lowType,    NULL);
 
     // Boolean(esque)
     langBindFunction(ctx, "not",    prim_not,    NULL);
@@ -307,10 +279,6 @@ void bindPrimitives(zcontext ctx) {
 
     // Functions
     langBindFunction(ctx, "apply", prim_apply, NULL);
-
-    // General data types
-    langBindFunction(ctx, "lowSize", prim_lowSize, NULL);
-    langBindFunction(ctx, "lowType", prim_lowType, NULL);
 
     // I/O
     langBindFunction(ctx, "readFile",  prim_readFile,  NULL);

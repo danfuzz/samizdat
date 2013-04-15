@@ -9,6 +9,24 @@
 # core library functions that aren't primitive.
 #
 
+# "Equal" comparison in overall value order.
+eq = { v1 v2 :: ^ lowOrderIs v1 v2 @0; };
+
+# "Not equal" comparison in overall value order.
+ne = { v1 v2 :: ^ lowOrderIs v1 v2 @-1 @1; };
+
+# "Less than" comparison in overall value order.
+lt = { v1 v2 :: ^ lowOrderIs v1 v2 @-1; };
+
+# "Greater than" comparison in overall value order.
+gt = { v1 v2 :: ^ lowOrderIs v1 v2 @1; };
+
+# "Less than or equal" comparison in overall value order.
+le = { v1 v2 :: ^ lowOrderIs v1 v2 @-1 @0; };
+
+# "Greater than or equal" comparison in overall value order.
+ge = { v1 v2 :: ^ lowOrderIs v1 v2 @1 @0; };
+
 # Cascading conditional. Takes an even number of arguments,
 # alternating predicates and consequents. The predicates are run in
 # order until one returns `true`. The consequent immediately after the
@@ -239,6 +257,12 @@ sourceStringlet = { value ::
 # Returns all the library bindings.
 main = { 
     ^ @[
+        @"eq" = eq
+        @"ne" = ne
+        @"lt" = lt
+        @"gt" = gt
+        @"le" = le
+        @"ge" = ge
         @"and" = and
         @"cat" = cat
         @"else" = else
