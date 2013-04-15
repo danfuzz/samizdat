@@ -124,12 +124,8 @@ static zvalue tokenizeInteger(ParseState *state) {
  * Parses an identifier token, updating the given input position.
  */
 static zvalue tokenizeIdentifier(ParseState *state) {
-    zint size = 1;
+    zint size = 0;
     zvalue chars[MAX_IDENTIFIER_CHARS];
-
-    // First character is guaranteed valid, because this function
-    // wouldn't have been called otherwise.
-    chars[0] = datIntletFromInt(read(state));
 
     for (;;) {
         zint ch = peek(state);
@@ -145,6 +141,10 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         chars[size] = datIntletFromInt(ch);
         size++;
         read(state);
+    }
+
+    if (size == 0) {
+        return NULL;
     }
 
     zvalue stringlet = datListletFromValues(chars, size);
@@ -228,22 +228,26 @@ static zvalue tokenizeOne(ParseState *state) {
         case '[':  read(state); return TOK_CH_OSQUARE;
         case ';':  read(state); return TOK_CH_SEMICOLON;
         case '*':  read(state); return TOK_CH_STAR;
-        case '\"': return tokenizeString(state);
-        case '@':  return tokenizeOneOrTwoChars(
-                       state, '@', TOK_CH_AT, TOK_CH_ATAT);
-        case ':':  return tokenizeOneOrTwoChars(
-                       state, ':', NULL, TOK_CH_COLONCOLON);
-        case '<':  return tokenizeOneOrTwoChars(
-                       state, '>', NULL, TOK_CH_DIAMOND);
+        case '\"':
+            return tokenizeString(state);
+        case '@':
+            return tokenizeOneOrTwoChars(state, '@', TOK_CH_AT, TOK_CH_ATAT);
+        case ':':
+            return tokenizeOneOrTwoChars(state, ':', NULL, TOK_CH_COLONCOLON);
+        case '<':
+            return tokenizeOneOrTwoChars(state, '>', NULL, TOK_CH_DIAMOND);
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9': case '-':
+            return tokenizeInteger(state);
     }
 
-    if (((ch >= '0') && (ch <= '9')) || (ch == '-')) {
-        return tokenizeInteger(state);
-    } else if (((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z'))) {
-        return tokenizeIdentifier(state);
+    zvalue result = tokenizeIdentifier(state);
+
+    if (result == NULL) {
+        die("Invalid character in token stream: \"%c\" (%lld)", (char) ch, ch);
     }
 
-    die("Invalid character in token stream: \"%c\" (%lld)", (char) ch, ch);
+    return result;
 }
 
 
