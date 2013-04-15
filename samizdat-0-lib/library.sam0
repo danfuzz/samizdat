@@ -236,7 +236,7 @@ sourceStringlet = { value ::
 # Main function
 #
 
-# Returns all the core bindings.
+# Returns all the library bindings.
 main = { 
     ^ @[
         @"and" = and
