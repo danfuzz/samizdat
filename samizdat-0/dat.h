@@ -315,7 +315,7 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
- * values `{ ZLESS, ZEQUAL, ZMORE }`, less symbolically equal to `{
+ * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
  *
  * Major order is by type &mdash `intlet < listlet < maplet <
@@ -335,6 +335,6 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
  *   Any two uniqlets have a consistent and transitive &mdash; but
  *   otherwise arbitrary &mdash; comparison.
  */
-zcomparison datCompare(zvalue v1, zvalue v2);
+zorder datCompare(zvalue v1, zvalue v2);
 
 #endif

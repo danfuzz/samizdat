@@ -61,7 +61,7 @@ static zvalue prim_lowOrder(void *state, zint argCount, const zvalue *args) {
 static zvalue prim_lowOrderIs(void *state, zint argCount, const zvalue *args) {
     requireRange(argCount, 3, 4);
 
-    zcomparison comp = datCompare(args[0], args[1]);
+    zorder comp = datCompare(args[0], args[1]);
     bool result =
         (comp == datIntletToInt(args[2])) ||
         ((argCount == 4) && (comp == datIntletToInt(args[3])));

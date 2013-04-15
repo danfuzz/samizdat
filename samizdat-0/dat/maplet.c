@@ -69,7 +69,7 @@ static zint mapletFind(zvalue maplet, zvalue key) {
  */
 
 /* Documented in header. */
-zcomparison datMapletCompare(zvalue v1, zvalue v2) {
+zorder datMapletCompare(zvalue v1, zvalue v2) {
     zmapping *e1 = mapletElems(v1);
     zmapping *e2 = mapletElems(v2);
     zint sz1 = datSize(v1);
@@ -77,8 +77,8 @@ zcomparison datMapletCompare(zvalue v1, zvalue v2) {
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zcomparison result = datCompare(e1[i].key, e2[i].key);
-        if (result != ZEQUAL) {
+        zorder result = datCompare(e1[i].key, e2[i].key);
+        if (result != ZSAME) {
             return result;
         }
     }
@@ -90,13 +90,13 @@ zcomparison datMapletCompare(zvalue v1, zvalue v2) {
     }
 
     for (zint i = 0; i < sz; i++) {
-        zcomparison result = datCompare(e1[i].value, e2[i].value);
-        if (result != ZEQUAL) {
+        zorder result = datCompare(e1[i].value, e2[i].value);
+        if (result != ZSAME) {
             return result;
         }
     }
 
-    return ZEQUAL;
+    return ZSAME;
 }
 
 

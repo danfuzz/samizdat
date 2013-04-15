@@ -12,12 +12,12 @@
  */
 
 /* Documented in header. */
-zcomparison datCompare(zvalue v1, zvalue v2) {
+zorder datCompare(zvalue v1, zvalue v2) {
     ztype t1 = datType(v1);
     ztype t2 = datType(v2);
 
     if (v1 == v2) {
-        return ZEQUAL;
+        return ZSAME;
     } else if (t1 < t2) {
         return ZLESS;
     } else if (t1 > t2) {

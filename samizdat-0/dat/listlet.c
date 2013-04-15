@@ -35,7 +35,7 @@ zvalue *datListletElems(zvalue listlet) {
 }
 
 /* Documented in header. */
-zcomparison datListletCompare(zvalue v1, zvalue v2) {
+zorder datListletCompare(zvalue v1, zvalue v2) {
     zvalue *e1 = datListletElems(v1);
     zvalue *e2 = datListletElems(v2);
     zint sz1 = datSize(v1);
@@ -43,14 +43,14 @@ zcomparison datListletCompare(zvalue v1, zvalue v2) {
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zcomparison result = datCompare(e1[i], e2[i]);
-        if (result != ZEQUAL) {
+        zorder result = datCompare(e1[i], e2[i]);
+        if (result != ZSAME) {
             return result;
         }
     }
 
     if (sz1 == sz2) {
-        return ZEQUAL;
+        return ZSAME;
     }
 
     return (sz1 < sz2) ? ZLESS : ZMORE;

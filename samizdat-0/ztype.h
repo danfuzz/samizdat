@@ -20,12 +20,12 @@
 typedef int64_t zint;
 
 /**
- * The result of a comparison.
+ * The result of a comparison, which is to say, an order.
  */
 typedef enum {
     ZLESS = -1,
-    ZEQUAL = 0,
+    ZSAME = 0,
     ZMORE = 1
-} zcomparison;
+} zorder;
 
 #endif
