@@ -10,22 +10,22 @@
 #
 
 # "Equal" comparison in overall value order.
-eq = { v1 v2 :: ^ lowOrderIs v1 v2 @0; };
+eq = { v1 v2 :: <> lowOrderIs v1 v2 @0; };
 
 # "Not equal" comparison in overall value order.
-ne = { v1 v2 :: ^ lowOrderIs v1 v2 @-1 @1; };
+ne = { v1 v2 :: <> lowOrderIs v1 v2 @-1 @1; };
 
 # "Less than" comparison in overall value order.
-lt = { v1 v2 :: ^ lowOrderIs v1 v2 @-1; };
+lt = { v1 v2 :: <> lowOrderIs v1 v2 @-1; };
 
 # "Greater than" comparison in overall value order.
-gt = { v1 v2 :: ^ lowOrderIs v1 v2 @1; };
+gt = { v1 v2 :: <> lowOrderIs v1 v2 @1; };
 
 # "Less than or equal" comparison in overall value order.
-le = { v1 v2 :: ^ lowOrderIs v1 v2 @-1 @0; };
+le = { v1 v2 :: <> lowOrderIs v1 v2 @-1 @0; };
 
 # "Greater than or equal" comparison in overall value order.
-ge = { v1 v2 :: ^ lowOrderIs v1 v2 @1 @0; };
+ge = { v1 v2 :: <> lowOrderIs v1 v2 @1 @0; };
 
 # Cascading conditional. Takes an even number of arguments,
 # alternating predicates and consequents. The predicates are run in
@@ -34,30 +34,30 @@ ge = { v1 v2 :: ^ lowOrderIs v1 v2 @1 @0; };
 # result of this function. If no predicate returns `true`, this
 # function returns `null`.
 if = { predicate consequent rest* ::
-    ^ ifElse (predicate())
+    <> ifElse (predicate())
         consequent
-        { ^ ifElse (eq rest @[]) { ^ null; } { ^ apply if rest; }; };
+        { <> ifElse (eq rest @[]) { <> null; } { <> apply if rest; }; };
 };
 
 # Function to use as the final catch-all predicate in an `if` call.
-else = { ^ true; };
+else = { <> true; };
 
 # Short-circuit conjunction. Takes an arbitrary number of predicates.
 # Runs each of them in turn until one of them returns `false`. If no
 # predicate returns `false`, this function returns `true`.
 and = { predicate rest* ::
-    ^ ifElse (predicate())
-        { ^ ifElse (eq rest @[]) { ^ true; } { ^ apply and rest; }; }
-        { ^ false; };
+    <> ifElse (predicate())
+        { <> ifElse (eq rest @[]) { <> true; } { <> apply and rest; }; }
+        { <> false; };
 };
 
 # Short-circuit disjunction. Takes an arbitrary number of predicates.
 # Runs each of them in turn until one of them returns `true`. If no
 # predicate returns `true`, this function returns `false`.
 or = { predicate rest* ::
-    ^ ifElse (predicate())
-        { ^ true; }
-        { ^ ifElse (eq rest @[]) { ^ false; } { ^ apply and rest; }; };
+    <> ifElse (predicate())
+        { <> true; }
+        { <> ifElse (eq rest @[]) { <> false; } { <> apply and rest; }; };
 };
 
 # Maps each value of a listlet, collecting the results into a new
@@ -72,16 +72,16 @@ map = { listlet func ::
     size = lowSize listlet;
 
     doMap = { index ::
-        ^ ifElse (eq index size)
-            { ^ @[]; }
+        <> ifElse (eq index size)
+            { <> @[]; }
             {
-                ^ cat
+                <> cat
                     @[(func (getNth listlet index) index)]
                     (doMap (iadd index @1));
             };
     };
 
-    ^ doMap @0;
+    <> doMap @0;
 };
 
 # Reduces a listlet to a single value, given a base value and a
@@ -98,67 +98,67 @@ reduce = { base listlet func ::
     size = lowSize listlet;
 
     doReduce = { reduction index ::
-        ^ ifElse (eq index size)
-            { ^ reduction; }
+        <> ifElse (eq index size)
+            { <> reduction; }
             {
-                ^ doReduce
+                <> doReduce
                     (func reduction (getNth listlet index) index)
                     (iadd index @1);
             };
     };
 
-    ^ doReduce base @0;
+    <> doReduce base @0;
 };
 
 # Concatenates one or more listlets together into a single resulting
 # listlet.
 cat = { listlet rest* ::
     # The outer reduce iterates over the listlets, concatenating each in turn.
-    ^ reduce listlet rest
+    <> reduce listlet rest
         { reduction value ::
             # The inner reduce iterates over items in the second listlet,
             # appending each to the result-in-progress.
-            ^ reduce reduction value { result ch :: ^ append result ch; };
+            <> reduce reduction value { result ch :: <> append result ch; };
         };
 };
 
 # Returns true iff the given value is an intlet.
 isIntlet = { value ::
-    ^ eq (lowType value) @"intlet";
+    <> eq (lowType value) @"intlet";
 };
 
 # Returns true iff the given value is a listlet.
 isListlet = { value ::
-    ^ eq (lowType value) @"listlet";
+    <> eq (lowType value) @"listlet";
 };
 
 # Returns true iff the given value is a maplet.
 isMaplet = { value ::
-    ^ eq (lowType value) @"maplet";
+    <> eq (lowType value) @"maplet";
 };
 
 # Returns true iff the given value is a uniqlet.
 isUniqlet = { value ::
-    ^ eq (lowType value) @"uniqlet";
+    <> eq (lowType value) @"uniqlet";
 };
 
 # Returns true iff the given value is a stringlet (which is the
 # same as a listlet with intlet elements in the range of Unicode
 # code points).
 isStringlet = { value ::
-    ^ and
-        { ^ isListlet value; }
+    <> and
+        { <> isListlet value; }
         {
             check = { ch rest* ::
                 # Note: 1114111 == 0x10ffff, which is the highest valid
                 # Unicode code point.
-                ^ and
-                    { ^ ge ch @0; }
-                    { ^ le ch @1114111; }
-                    { ^ or { ^ eq rest @[]; } { ^ apply check rest; }; };
+                <> and
+                    { <> ge ch @0; }
+                    { <> le ch @1114111; }
+                    { <> or { <> eq rest @[]; } { <> apply check rest; }; };
             };
 
-            ^ or { ^ eq value @[]; } { ^ apply check value; };
+            <> or { <> eq value @[]; } { <> apply check value; };
         };
 };
 
@@ -170,82 +170,82 @@ isStringlet = { value ::
 # defined in Layer 0.
 sourceStringlet = { value ::
     intletBody = { start value ::
-        ^ if { ^ eq value @0; } {
-            ^ start;
+        <> if { <> eq value @0; } {
+            <> start;
         } else {
             digit = iadd (imod value @10) @48; # 48 == "0"
             more = idiv value @10;
-            ^ append (intletBody start more) digit;
+            <> append (intletBody start more) digit;
         };
     };
 
     intletHex = { value ::
-        ^ if { ^ eq value @0; } {
-            ^ @"";
+        <> if { <> eq value @0; } {
+            <> @"";
         } else {
             digit = getNth @"0123456789abcdef" (imod value @16);
             more = idiv value @16;
-            ^ append (intletHex more) digit;
+            <> append (intletHex more) digit;
         };
     };
 
     stringletChar = { ch ::
-        ^ if { ^ eq ch @0; } {
-            ^ @"\\0";
-        } { ^ eq ch @10; } {
-            ^ @"\\n";
-        } { ^ or { ^ eq ch @34; } { ^ eq ch @92; }; } {
+        <> if { <> eq ch @0; } {
+            <> @"\\0";
+        } { <> eq ch @10; } {
+            <> @"\\n";
+        } { <> or { <> eq ch @34; } { <> eq ch @92; }; } {
             # 34 == "\"" and 92 == "\\"
-            ^ append @"\\" ch;
-        } { ^ or { ^ le ch @31; }
-                  { ^ and { ^ ge ch @127; } { ^ le ch @159; }; }; } {
+            <> append @"\\" ch;
+        } { <> or { <> le ch @31; }
+                  { <> and { <> ge ch @127; } { <> le ch @159; }; }; } {
             # These are the ranges for nonprinting control characters.
-            ^ cat @"\\x" (intletHex ch) @";";
+            <> cat @"\\x" (intletHex ch) @";";
         } else {
-            ^ @[ch];
+            <> @[ch];
         };
     };
 
-    ^ if { ^ eq value @[]; } {
-        ^ @"@[]";
-    } { ^ eq value @[=]; } {
-        ^ @"@[=]";
-    } { ^ isIntlet value; } {
-        ^ if { ^ eq value @0; } {
-            ^ @"@0";
-        } { ^ gt value @0; } {
-            ^ intletBody @"@" value;
+    <> if { <> eq value @[]; } {
+        <> @"@[]";
+    } { <> eq value @[=]; } {
+        <> @"@[=]";
+    } { <> isIntlet value; } {
+        <> if { <> eq value @0; } {
+            <> @"@0";
+        } { <> gt value @0; } {
+            <> intletBody @"@" value;
         } else {
-            ^ intletBody @"@-" (ineg value);
+            <> intletBody @"@-" (ineg value);
         };
-    } { ^ isStringlet value; } {
+    } { <> isStringlet value; } {
         body = reduce @"" value
-            { reduction item :: ^ cat reduction (stringletChar item); };
-        ^ cat @"@\"" body @"\"";
-    } { ^ isListlet value; } {
+            { reduction item :: <> cat reduction (stringletChar item); };
+        <> cat @"@\"" body @"\"";
+    } { <> isListlet value; } {
         body = reduce @"" value
             { reduction elem ::
-                ^ cat
+                <> cat
                     reduction
-                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
+                    (if { <> eq reduction @""; } { <> @""; } else { <> @" "; })
                     (sourceStringlet elem);
             };
-        ^ cat @"@[" body @"]";
-    } { ^ isMaplet value; } {
+        <> cat @"@[" body @"]";
+    } { <> isMaplet value; } {
         body = reduce @"" (getKeys value)
             { reduction key ::
-                ^ cat
+                <> cat
                     reduction
-                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
+                    (if { <> eq reduction @""; } { <> @""; } else { <> @" "; })
                     (sourceStringlet key)
                     @"="
                     (sourceStringlet (getValue value key));
             };
-        ^ cat @"@[" body @"]";
-    } { ^ isUniqlet value; } {
-        ^ @"@@";
+        <> cat @"@[" body @"]";
+    } { <> isUniqlet value; } {
+        <> @"@@";
     } else {
-        ^ @"<unknown>";
+        <> @"<unknown>";
     };
 };
 
@@ -256,7 +256,7 @@ sourceStringlet = { value ::
 
 # Returns all the library bindings.
 main = { 
-    ^ @[
+    <> @[
         @"eq" = eq
         @"ne" = ne
         @"lt" = lt

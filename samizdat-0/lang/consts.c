@@ -10,11 +10,11 @@
 
 zvalue STR_CH_AT = NULL;
 zvalue STR_CH_ATAT = NULL;
-zvalue STR_CH_CARET = NULL;
 zvalue STR_CH_CCURLY = NULL;
 zvalue STR_CH_CPAREN = NULL;
 zvalue STR_CH_CSQUARE = NULL;
 zvalue STR_CH_COLONCOLON = NULL;
+zvalue STR_CH_DIAMOND = NULL;
 zvalue STR_CH_DOT = NULL;
 zvalue STR_CH_EQUAL = NULL;
 zvalue STR_CH_OCURLY = NULL;
@@ -49,11 +49,11 @@ zvalue STR_VAR_REF = NULL;
 /* Prefab tokens / nodes. Lazily initialized. */
 zvalue TOK_CH_AT = NULL;
 zvalue TOK_CH_ATAT = NULL;
-zvalue TOK_CH_CARET = NULL;
 zvalue TOK_CH_CCURLY = NULL;
 zvalue TOK_CH_CPAREN = NULL;
 zvalue TOK_CH_CSQUARE = NULL;
 zvalue TOK_CH_COLONCOLON = NULL;
+zvalue TOK_CH_DIAMOND = NULL;
 zvalue TOK_CH_DOT = NULL;
 zvalue TOK_CH_EQUAL = NULL;
 zvalue TOK_CH_OCURLY = NULL;
@@ -92,11 +92,11 @@ void constsInit(void) {
 
     STR_CH_AT         = datStringletFromUtf8String("@", -1);
     STR_CH_ATAT       = datStringletFromUtf8String("@@", -1);
-    STR_CH_CARET      = datStringletFromUtf8String("^", -1);
     STR_CH_CCURLY     = datStringletFromUtf8String("}", -1);
     STR_CH_CPAREN     = datStringletFromUtf8String(")", -1);
     STR_CH_CSQUARE    = datStringletFromUtf8String("]", -1);
     STR_CH_COLONCOLON = datStringletFromUtf8String("::", -1);
+    STR_CH_DIAMOND    = datStringletFromUtf8String("<>", -1);
     STR_CH_DOT        = datStringletFromUtf8String(".", -1);
     STR_CH_EQUAL      = datStringletFromUtf8String("=", -1);
     STR_CH_OCURLY     = datStringletFromUtf8String("{", -1);
@@ -131,11 +131,11 @@ void constsInit(void) {
     zvalue empty = datMapletEmpty();
     TOK_CH_AT         = datMapletPut(empty, STR_TYPE, STR_CH_AT);
     TOK_CH_ATAT       = datMapletPut(empty, STR_TYPE, STR_CH_ATAT);
-    TOK_CH_CARET      = datMapletPut(empty, STR_TYPE, STR_CH_CARET);
     TOK_CH_CCURLY     = datMapletPut(empty, STR_TYPE, STR_CH_CCURLY);
     TOK_CH_CPAREN     = datMapletPut(empty, STR_TYPE, STR_CH_CPAREN);
     TOK_CH_CSQUARE    = datMapletPut(empty, STR_TYPE, STR_CH_CSQUARE);
     TOK_CH_COLONCOLON = datMapletPut(empty, STR_TYPE, STR_CH_COLONCOLON);
+    TOK_CH_DIAMOND    = datMapletPut(empty, STR_TYPE, STR_CH_DIAMOND);
     TOK_CH_DOT        = datMapletPut(empty, STR_TYPE, STR_CH_DOT);
     TOK_CH_EQUAL      = datMapletPut(empty, STR_TYPE, STR_CH_EQUAL);
     TOK_CH_OCURLY     = datMapletPut(empty, STR_TYPE, STR_CH_OCURLY);

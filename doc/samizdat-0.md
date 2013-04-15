@@ -27,12 +27,12 @@ token ::=
 punctuation ::=
     "@@" | # result: @[@"type"=@"@@"]
     "::" | # result: @[@"type"=@"::"]
+    "<>" | # result: @[@"type"=@"<>"]
     "@"  | # result: @[@"type"=@"@"]
     ":"  | # result: @[@"type"=@":"]
     "*"  | # result: @[@"type"=@"*"]
     ";"  | # result: @[@"type"=@";"]
     "="  | # result: @[@"type"=@"="]
-    "^"  | # result: @[@"type"=@"^"]
     "{"  | # result: @[@"type"=@"{"]
     "}"  | # result: @[@"type"=@"}"]
     "("  | # result: @[@"type"=@"("]
@@ -71,7 +71,7 @@ statements ::= statement* ;
 statement ::= (varDef | expression | return) @";" ;
 # result: <same as whatever was parsed>
 
-return ::= @"^" expression ;
+return ::= @"<>" expression ;
 # result: @[@"type"=@"return" @"value"=<expression>]
 
 expression ::= call | atom ;

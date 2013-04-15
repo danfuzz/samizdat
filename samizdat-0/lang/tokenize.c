@@ -199,7 +199,6 @@ static zvalue tokenizeOne(ParseState *state) {
     zint ch = peek(state);
 
     switch (ch) {
-        case '^':  read(state); return TOK_CH_CARET;
         case '}':  read(state); return TOK_CH_CCURLY;
         case ')':  read(state); return TOK_CH_CPAREN;
         case ']':  read(state); return TOK_CH_CSQUARE;
@@ -226,6 +225,15 @@ static zvalue tokenizeOne(ParseState *state) {
                 return TOK_CH_COLONCOLON;
             } else {
                 die("Invalid single colon.");
+            }
+        }
+        case '<': {
+            read(state);
+            if (peek(state) == '>') {
+                read(state);
+                return TOK_CH_DIAMOND;
+            } else {
+                die("Invalid half diamond.");
             }
         }
     }

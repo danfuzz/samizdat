@@ -543,7 +543,7 @@ static zvalue parseExpression(ParseState *state) {
 static zvalue parseReturn(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_CARET) == NULL) {
+    if (readMatch(state, TOK_CH_DIAMOND) == NULL) {
         return NULL;
     }
 

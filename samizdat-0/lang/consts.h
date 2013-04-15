@@ -16,11 +16,11 @@
 /* Prefab stringlets. Lazily initialized. */
 extern zvalue STR_CH_AT;
 extern zvalue STR_CH_ATAT;
-extern zvalue STR_CH_CARET;
 extern zvalue STR_CH_CCURLY;
 extern zvalue STR_CH_CPAREN;
 extern zvalue STR_CH_CSQUARE;
 extern zvalue STR_CH_COLONCOLON;
+extern zvalue STR_CH_DIAMOND;
 extern zvalue STR_CH_DOT;
 extern zvalue STR_CH_EQUAL;
 extern zvalue STR_CH_OCURLY;
@@ -55,11 +55,11 @@ extern zvalue STR_VAR_REF;
 /* Prefab tokens / nodes. Lazily initialized. */
 extern zvalue TOK_CH_AT;
 extern zvalue TOK_CH_ATAT;
-extern zvalue TOK_CH_CARET;
 extern zvalue TOK_CH_CCURLY;
 extern zvalue TOK_CH_CPAREN;
 extern zvalue TOK_CH_CSQUARE;
 extern zvalue TOK_CH_COLONCOLON;
+extern zvalue TOK_CH_DIAMOND;
 extern zvalue TOK_CH_DOT;
 extern zvalue TOK_CH_EQUAL;
 extern zvalue TOK_CH_OCURLY;
