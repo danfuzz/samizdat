@@ -135,7 +135,6 @@ isStringlet = { value ::
                 # Note: 1114111 == 0x10ffff, which is the highest valid
                 # Unicode code point.
                 ^ and
-                    { ^ isIntlet ch; }
                     { ^ ge ch @0; }
                     { ^ le ch @1114111; }
                     { ^ or { ^ eq rest @[]; } { ^ apply check rest; }; };
