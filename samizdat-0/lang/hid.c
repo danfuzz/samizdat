@@ -112,20 +112,7 @@ bool langIsTrue(zvalue value) {
 }
 
 /* Documented in header. */
-void langAssertBoolean(zvalue value) {
-    if (!(langIsFalse(value) || langIsTrue(value))) {
-        die("Not a boolean value.");
-    }
-}
-
-/* Documented in header. */
 zvalue langBooleanFromBool(bool value) {
     initHidConsts();
     return value ? HID_TRUE : HID_FALSE;
-}
-
-/* Documented in header. */
-bool langBooleanToBool(zvalue value) {
-    langAssertBoolean(value);
-    return langIsTrue(value);
 }

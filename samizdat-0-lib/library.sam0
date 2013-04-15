@@ -27,6 +27,17 @@ le = { v1 v2 :: <> lowOrderIs v1 v2 @-1 @0; };
 # "Greater than or equal" comparison in overall value order.
 ge = { v1 v2 :: <> lowOrderIs v1 v2 @1 @0; };
 
+# Boolean not. The given argument must be a boolean.
+not = { value ::
+    <> ifElse (eq value true)
+        { <> false; }
+        {
+            <> ifElse (eq value false)
+                { <> true; }
+                { die @"Non-boolean argument to `not`."; };
+        };
+};
+
 # Cascading conditional. Takes an even number of arguments,
 # alternating predicates and consequents. The predicates are run in
 # order until one returns `true`. The consequent immediately after the
@@ -273,6 +284,7 @@ main = {
         @"isStringlet" = isStringlet
         @"isUniqlet" = isUniqlet
         @"map" = map
+        @"not" = not
         @"or" = or
         @"reduce" = reduce
         @"sourceStringlet" = sourceStringlet

@@ -97,17 +97,12 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_not(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 1);
-    return langBooleanFromBool(!langBooleanToBool(args[0]));
-}
-
-/**
- * TODO: Document!
- */
 static zvalue prim_ifElse(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 3);
-    zvalue func = langIsTrue(args[0]) ? args[1] : args[2];
+
+    // `langIsFalse()` is used here so that any non-false value counts
+    // as true.
+    zvalue func = langIsFalse(args[0]) ? args[2] : args[1];
     return langCall(func, 0, NULL);
 }
 
@@ -229,6 +224,18 @@ static zvalue prim_apply(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_die(void *state, zint argCount, const zvalue *args) {
+    requireRange(argCount, 0, 1);
+
+    const char *message =
+        (argCount == 0) ? "Alas" : datStringletEncodeUtf8(args[0], NULL);
+
+    die("%s", message);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_readFile(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
     return readFile(args[0]);
@@ -257,7 +264,6 @@ void bindPrimitives(zcontext ctx) {
     langBindFunction(ctx, "lowType",    prim_lowType,    NULL);
 
     // Boolean(esque)
-    langBindFunction(ctx, "not",    prim_not,    NULL);
     langBindFunction(ctx, "ifElse", prim_ifElse, NULL);
 
     // Intlets
@@ -281,6 +287,7 @@ void bindPrimitives(zcontext ctx) {
     langBindFunction(ctx, "apply", prim_apply, NULL);
 
     // I/O
+    langBindFunction(ctx, "die",       prim_die,       NULL);
     langBindFunction(ctx, "readFile",  prim_readFile,  NULL);
     langBindFunction(ctx, "writeFile", prim_writeFile, NULL);
 

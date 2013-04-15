@@ -70,19 +70,9 @@ bool langIsFalse(zvalue value);
 bool langIsTrue(zvalue value);
 
 /**
- * Asserts that the given value is equal to either `true` or `false`.
- */
-void langAssertBoolean(zvalue value);
-
-/**
  * Converts a C `bool` to an in-model boolean value.
  */
 zvalue langBooleanFromBool(bool value);
-
-/**
- * Converts an in-model boolean value to a C `bool`.
- */
-bool langBooleanToBool(zvalue value);
 
 
 /*
