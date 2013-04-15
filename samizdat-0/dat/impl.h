@@ -60,6 +60,14 @@ typedef struct {
 } DatListlet;
 
 /**
+ * Arbitrary (key, value) mapping.
+ */
+typedef struct {
+    zvalue key;
+    zvalue value;
+} zmapping;
+
+/**
  * Maplet structure.
  */
 typedef struct {
