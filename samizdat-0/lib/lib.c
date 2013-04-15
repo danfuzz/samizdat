@@ -8,20 +8,27 @@
 #include "lib.h"
 #include "impl.h"
 
+#include <stddef.h>
+
 
 /*
  * Helper functions
  */
 
 /**
- * Runs the library code baked into this executable.
+ * Adds the bindings supplied by the library code baked into this
+ * executable.
  */
-static void runLibrary(zcontext ctx) {
+static void addLibrary(zcontext ctx) {
     zvalue programText =
-        datStringletFromUtf8String(lib_library_sam0, lib_library_sam0_len);
+        datStringletFromUtf8String(library_sam0, library_sam0_len);
     zvalue program = langCompile(programText);
+    zcontext childCtx = langCtxNewChild(ctx);
 
-    langExecute(ctx, program);
+    langExecute(childCtx, program);
+    zvalue result = langCallMain(childCtx, 0, NULL);
+
+    langCtxBindAll(ctx, result);
 }
 
 
@@ -33,7 +40,7 @@ static void runLibrary(zcontext ctx) {
 zcontext libNewContext(void) {
     cstInit();
 
-    zcontext ctx = langNewContext();
+    zcontext ctx = langCtxNew();
 
     // These all could have been defined in-language, but we already
     // had to have them defined and accessible to C code, so we just
@@ -43,7 +50,7 @@ zcontext libNewContext(void) {
     langBind(ctx, "true", CST_TRUE);
 
     bindPrimitives(ctx);
-    runLibrary(ctx);
+    addLibrary(ctx);
 
     return ctx;
 }

@@ -51,7 +51,11 @@ LINK_BIN=(cc -g)
 cd "${progDir}"
 
 libraryFile="${OUT}/library-generated.c"
-xxd -i "lib/library.sam0" > "${libraryFile}" || exit 1
+# `xxd` names its output after the full input path, hence the `cd`.
+(
+    cd ../samizdat-0-lib;
+    xxd -i "library.sam0" > "${libraryFile}"
+) || exit 1
 
 SOURCES=($(find . -name '*.c') "${libraryFile}")
 

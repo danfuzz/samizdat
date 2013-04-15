@@ -14,10 +14,10 @@
 #include "lang.h"
 
 /** Embedded library source code, written in Samizdat Layer 0. */
-extern char lib_library_sam0[];
+extern char library_sam0[];
 
 /** Number of bytes in `lib_library_sam0`. */
-extern unsigned int lib_library_sam0_len;
+extern unsigned int library_sam0_len;
 
 /**
  * Binds all the primitive function definitions into the given

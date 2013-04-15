@@ -36,6 +36,7 @@ void ctxBind(zcontext ctx, zvalue name, zvalue value) {
 
 /* Documented in header. */
 zvalue ctxGet(zcontext ctx, zvalue name) {
+    zcontext zorig = ctx;
     for (/* ctx */; ctx != NULL; ctx = ctx->parent) {
         zvalue found = datMapletGet(ctx->locals, name);
         if (found != NULL) {
@@ -52,8 +53,13 @@ zvalue ctxGet(zcontext ctx, zvalue name) {
  */
 
 /* Documented in header. */
-zcontext langNewContext(void) {
+zcontext langCtxNew(void) {
     return ctxNewChild(NULL, datMapletEmpty());
+}
+
+/* Documented in header. */
+zcontext langCtxNewChild(zcontext parent) {
+    return ctxNewChild(parent, datMapletEmpty());
 }
 
 /* Documented in header. */
@@ -65,6 +71,17 @@ void langBind(zcontext ctx, const char *name, zvalue value) {
 void langBindFunction(zcontext ctx, const char *name,
                       zfunction function, void *state) {
     langBind(ctx, name, funDefine(function, state));
+}
+
+/* Documented in header. */
+void langCtxBindAll(zcontext ctx, zvalue maplet) {
+    zvalue keys = datMapletKeys(maplet);
+    zint size = datSize(keys);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue key = datListletGet(keys, i);
+        ctxBind(ctx, key, datMapletGet(maplet, key));
+    }
 }
 
 /* Documented in header. */

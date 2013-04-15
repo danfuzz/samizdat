@@ -1,0 +1,257 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. See the associated file "LICENSE.md" for details.
+
+#
+# Samizdat Layer 0 Core Library
+#
+# This is a Samizdat Layer 0 program which defines all the
+# core library functions that aren't primitive.
+#
+
+# Cascading conditional. Takes an even number of arguments,
+# alternating predicates and consequents. The predicates are run in
+# order until one returns `true`. The consequent immediately after the
+# `true` predicate then gets run, and its return value becomes the
+# result of this function. If no predicate returns `true`, this
+# function returns `null`.
+if = { predicate consequent rest* ::
+    ^ ifElse (predicate())
+        consequent
+        { ^ ifElse (eq rest @[]) { ^ null; } { ^ apply if rest; }; };
+};
+
+# Function to use as the final catch-all predicate in an `if` call.
+else = { ^ true; };
+
+# Short-circuit conjunction. Takes an arbitrary number of predicates.
+# Runs each of them in turn until one of them returns `false`. If no
+# predicate returns `false`, this function returns `true`.
+and = { predicate rest* ::
+    ^ ifElse (predicate())
+        { ^ ifElse (eq rest @[]) { ^ true; } { ^ apply and rest; }; }
+        { ^ false; };
+};
+
+# Short-circuit disjunction. Takes an arbitrary number of predicates.
+# Runs each of them in turn until one of them returns `true`. If no
+# predicate returns `true`, this function returns `false`.
+or = { predicate rest* ::
+    ^ ifElse (predicate())
+        { ^ true; }
+        { ^ ifElse (eq rest @[]) { ^ false; } { ^ apply and rest; }; };
+};
+
+# Maps each value of a listlet, collecting the results into a new
+# listlet. The given function is called on each value, with two
+# arguments, namely the value and its index number.
+#
+# Note: Unlike many other languages with similar functions, the
+# function argument is the *last* one and not the *first* one. This is
+# specifically done to make it natural to write a multi-line function
+# without losing track of the listlet argument.
+map = { listlet func ::
+    size = lowSize listlet;
+
+    doMap = { index ::
+        ^ ifElse (eq index size)
+            { ^ @[]; }
+            {
+                ^ cat
+                    @[(func (getNth listlet index) index)]
+                    (doMap (iadd index @1));
+            };
+    };
+
+    ^ doMap @0;
+};
+
+# Reduces a listlet to a single value, given a base value and a
+# reducer function, operating in low-to-high index order (that is,
+# this is a left-reduce operation). The given function is called on
+# each value, with three arguments: the last reduction result, the
+# value, and its index number.
+#
+# Note: Unlike many other languages with similar functions, the
+# function argument is the *last* one and not the *first* one. This is
+# specifically done to make it natural to write a multi-line function
+# without losing track of the other two arguments.
+reduce = { base listlet func ::
+    size = lowSize listlet;
+
+    doReduce = { reduction index ::
+        ^ ifElse (eq index size)
+            { ^ reduction; }
+            {
+                ^ doReduce
+                    (func reduction (getNth listlet index) index)
+                    (iadd index @1);
+            };
+    };
+
+    ^ doReduce base @0;
+};
+
+# Concatenates one or more listlets together into a single resulting
+# listlet.
+cat = { listlet rest* ::
+    # The outer reduce iterates over the listlets, concatenating each in turn.
+    ^ reduce listlet rest
+        { reduction value ::
+            # The inner reduce iterates over items in the second listlet,
+            # appending each to the result-in-progress.
+            ^ reduce reduction value { result ch :: ^ append result ch; };
+        };
+};
+
+# Returns true iff the given value is an intlet.
+isIntlet = { value ::
+    ^ eq (lowType value) @"intlet";
+};
+
+# Returns true iff the given value is a listlet.
+isListlet = { value ::
+    ^ eq (lowType value) @"listlet";
+};
+
+# Returns true iff the given value is a maplet.
+isMaplet = { value ::
+    ^ eq (lowType value) @"maplet";
+};
+
+# Returns true iff the given value is a uniqlet.
+isUniqlet = { value ::
+    ^ eq (lowType value) @"uniqlet";
+};
+
+# Returns true iff the given value is a stringlet (which is the
+# same as a listlet with intlet elements in the range of Unicode
+# code points).
+isStringlet = { value ::
+    ^ and
+        { ^ isListlet value; }
+        {
+            check = { ch rest* ::
+                # Note: 1114111 == 0x10ffff, which is the highest valid
+                # Unicode code point.
+                ^ and
+                    { ^ isIntlet ch; }
+                    { ^ ge ch @0; }
+                    { ^ le ch @1114111; }
+                    { ^ or { ^ eq rest @[]; } { ^ apply check rest; }; };
+            };
+
+            ^ or { ^ eq value @[]; } { ^ apply check value; };
+        };
+};
+
+# Converts an arbitrary value into a stringlet representation form
+# meant to mimic the Samizdat source syntax.
+#
+# Note that the output differs from Samizdat Layer 0 syntax in that
+# stringlet forms may get represented using hex escapes, which is not
+# defined in Layer 0.
+sourceStringlet = { value ::
+    intletBody = { start value ::
+        ^ if { ^ eq value @0; } {
+            ^ start;
+        } else {
+            digit = iadd (imod value @10) @48; # 48 == "0"
+            more = idiv value @10;
+            ^ append (intletBody start more) digit;
+        };
+    };
+
+    intletHex = { value ::
+        ^ if { ^ eq value @0; } {
+            ^ @"";
+        } else {
+            digit = getNth @"0123456789abcdef" (imod value @16);
+            more = idiv value @16;
+            ^ append (intletHex more) digit;
+        };
+    };
+
+    stringletChar = { ch ::
+        ^ if { ^ eq ch @0; } {
+            ^ @"\\0";
+        } { ^ eq ch @10; } {
+            ^ @"\\n";
+        } { ^ or { ^ eq ch @34; } { ^ eq ch @92; }; } {
+            # 34 == "\"" and 92 == "\\"
+            ^ append @"\\" ch;
+        } { ^ or { ^ le ch @31; }
+                  { ^ and { ^ ge ch @127; } { ^ le ch @159; }; }; } {
+            # These are the ranges for nonprinting control characters.
+            ^ cat @"\\x" (intletHex ch) @";";
+        } else {
+            ^ @[ch];
+        };
+    };
+
+    ^ if { ^ eq value @[]; } {
+        ^ @"@[]";
+    } { ^ eq value @[=]; } {
+        ^ @"@[=]";
+    } { ^ isIntlet value; } {
+        ^ if { ^ eq value @0; } {
+            ^ @"@0";
+        } { ^ gt value @0; } {
+            ^ intletBody @"@" value;
+        } else {
+            ^ intletBody @"@-" (ineg value);
+        };
+    } { ^ isStringlet value; } {
+        body = reduce @"" value
+            { reduction item :: ^ cat reduction (stringletChar item); };
+        ^ cat @"@\"" body @"\"";
+    } { ^ isListlet value; } {
+        body = reduce @"" value
+            { reduction elem ::
+                ^ cat
+                    reduction
+                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
+                    (sourceStringlet elem);
+            };
+        ^ cat @"@[" body @"]";
+    } { ^ isMaplet value; } {
+        body = reduce @"" (getKeys value)
+            { reduction key ::
+                ^ cat
+                    reduction
+                    (if { ^ eq reduction @""; } { ^ @""; } else { ^ @" "; })
+                    (sourceStringlet key)
+                    @"="
+                    (sourceStringlet (getValue value key));
+            };
+        ^ cat @"@[" body @"]";
+    } { ^ isUniqlet value; } {
+        ^ @"@@";
+    } else {
+        ^ @"<unknown>";
+    };
+};
+
+
+#
+# Main function
+#
+
+# Returns all the core bindings.
+main = { 
+    ^ @[
+        @"and" = and
+        @"cat" = cat
+        @"else" = else
+        @"if" = if
+        @"isIntlet" = isIntlet
+        @"isListlet" = isListlet
+        @"isMaplet" = isMaplet
+        @"isStringlet" = isStringlet
+        @"isUniqlet" = isUniqlet
+        @"map" = map
+        @"or" = or
+        @"reduce" = reduce
+        @"sourceStringlet" = sourceStringlet
+    ];
+};
