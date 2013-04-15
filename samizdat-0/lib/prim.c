@@ -52,7 +52,7 @@ static void requireRange(zint argCount, zint min, zint max) {
  */
 static zvalue prim_lowOrder(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
-    return datIntletFromInt(datCompare(args[0], args[1]));
+    return datIntletFromInt(datOrder(args[0], args[1]));
 }
 
 /**
@@ -61,7 +61,7 @@ static zvalue prim_lowOrder(void *state, zint argCount, const zvalue *args) {
 static zvalue prim_lowOrderIs(void *state, zint argCount, const zvalue *args) {
     requireRange(argCount, 3, 4);
 
-    zorder comp = datCompare(args[0], args[1]);
+    zorder comp = datOrder(args[0], args[1]);
     bool result =
         (comp == datIntletToInt(args[2])) ||
         ((argCount == 4) && (comp == datIntletToInt(args[3])));

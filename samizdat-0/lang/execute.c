@@ -60,7 +60,7 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
         zvalue repeat = datMapletGet(formal, STR_REPEAT);
         zvalue value;
 
-        if (datCompare(repeat, TOK_CH_STAR) == 0) {
+        if (datOrder(repeat, TOK_CH_STAR) == 0) {
             value = datListletEmpty();
             for (/*i*/; i < argCount; i++) {
                 value = datListletAppend(value, args[i]);

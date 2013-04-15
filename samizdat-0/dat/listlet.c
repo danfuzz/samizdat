@@ -43,7 +43,7 @@ zorder datListletCompare(zvalue v1, zvalue v2) {
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zorder result = datCompare(e1[i], e2[i]);
+        zorder result = datOrder(e1[i], e2[i]);
         if (result != ZSAME) {
             return result;
         }

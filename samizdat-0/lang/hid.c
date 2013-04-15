@@ -60,7 +60,7 @@ zvalue hidValue(zvalue value) {
 
 /* Documented in header. */
 bool hidHasType(zvalue value, zvalue type) {
-    return (datCompare(hidType(value), type) == 0);
+    return (datOrder(hidType(value), type) == 0);
 }
 
 /* Documented in header. */
@@ -96,19 +96,19 @@ zvalue langTrue(void) {
 /* Documented in header. */
 bool langIsNull(zvalue value) {
     initHidConsts();
-    return datCompare(value, HID_NULL) == 0;
+    return datOrder(value, HID_NULL) == 0;
 }
 
 /* Documented in header. */
 bool langIsFalse(zvalue value) {
     initHidConsts();
-    return datCompare(value, HID_FALSE) == 0;
+    return datOrder(value, HID_FALSE) == 0;
 }
 
 /* Documented in header. */
 bool langIsTrue(zvalue value) {
     initHidConsts();
-    return datCompare(value, HID_TRUE) == 0;
+    return datOrder(value, HID_TRUE) == 0;
 }
 
 /* Documented in header. */

@@ -48,7 +48,7 @@ static zint mapletFind(zvalue maplet, zvalue key) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        switch (datCompare(key, elems[guess].key)) {;
+        switch (datOrder(key, elems[guess].key)) {;
             case ZLESS: max = guess - 1; break;
             case ZMORE: min = guess + 1; break;
             default:    return guess;
@@ -77,7 +77,7 @@ zorder datMapletCompare(zvalue v1, zvalue v2) {
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zorder result = datCompare(e1[i].key, e2[i].key);
+        zorder result = datOrder(e1[i].key, e2[i].key);
         if (result != ZSAME) {
             return result;
         }
@@ -90,7 +90,7 @@ zorder datMapletCompare(zvalue v1, zvalue v2) {
     }
 
     for (zint i = 0; i < sz; i++) {
-        zorder result = datCompare(e1[i].value, e2[i].value);
+        zorder result = datOrder(e1[i].value, e2[i].value);
         if (result != ZSAME) {
             return result;
         }

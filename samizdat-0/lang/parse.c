@@ -59,7 +59,7 @@ static zvalue readMatch(ParseState *state, zvalue token) {
     zvalue tokenType = hidType(token);
     zvalue resultType = hidType(result);
 
-    if (datCompare(tokenType, resultType) != 0) {
+    if (datOrder(tokenType, resultType) != 0) {
         return NULL;
     }
 

@@ -12,7 +12,7 @@
  */
 
 /* Documented in header. */
-zorder datCompare(zvalue v1, zvalue v2) {
+zorder datOrder(zvalue v1, zvalue v2) {
     ztype t1 = datType(v1);
     ztype t2 = datType(v2);
 

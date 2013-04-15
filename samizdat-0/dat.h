@@ -21,7 +21,7 @@
 
 /**
  * Possible low-level data types. Note: The enum ordering is the same
- * as the type-based ordering for comparing values. See `datCompare()`.
+ * as the type-based ordering for comparing values. See `datOrder()`.
  */
 typedef enum {
     DAT_INTLET = 1,
@@ -335,6 +335,6 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
  *   Any two uniqlets have a consistent and transitive &mdash; but
  *   otherwise arbitrary &mdash; comparison.
  */
-zorder datCompare(zvalue v1, zvalue v2);
+zorder datOrder(zvalue v1, zvalue v2);
 
 #endif
