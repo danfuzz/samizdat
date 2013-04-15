@@ -54,7 +54,7 @@ static zint *intletElems(zvalue intlet) {
  */
 
 /* Documented in header. */
-zorder datIntletCompare(zvalue v1, zvalue v2) {
+zorder datIntletOrder(zvalue v1, zvalue v2) {
     bool neg1 = datIntletSign(v1);
     bool neg2 = datIntletSign(v2);
 

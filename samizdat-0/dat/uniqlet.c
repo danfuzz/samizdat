@@ -68,7 +68,7 @@ static zvalue newUniqlet(void *key, void *value) {
  */
 
 /* Documented in header. */
-zorder datUniqletCompare(zvalue v1, zvalue v2) {
+zorder datUniqletOrder(zvalue v1, zvalue v2) {
     zint id1 = uniqletId(v1);
     zint id2 = uniqletId(v2);
 

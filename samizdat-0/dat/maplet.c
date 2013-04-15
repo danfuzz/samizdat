@@ -69,7 +69,7 @@ static zint mapletFind(zvalue maplet, zvalue key) {
  */
 
 /* Documented in header. */
-zorder datMapletCompare(zvalue v1, zvalue v2) {
+zorder datMapletOrder(zvalue v1, zvalue v2) {
     zmapping *e1 = mapletElems(v1);
     zmapping *e2 = mapletElems(v2);
     zint sz1 = datSize(v1);

@@ -35,7 +35,7 @@ zvalue *datListletElems(zvalue listlet) {
 }
 
 /* Documented in header. */
-zorder datListletCompare(zvalue v1, zvalue v2) {
+zorder datListletOrder(zvalue v1, zvalue v2) {
     zvalue *e1 = datListletElems(v1);
     zvalue *e2 = datListletElems(v2);
     zint sz1 = datSize(v1);

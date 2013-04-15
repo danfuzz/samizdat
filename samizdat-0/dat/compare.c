@@ -25,10 +25,10 @@ zorder datOrder(zvalue v1, zvalue v2) {
     }
 
     switch (t1) {
-        case DAT_INTLET:  return datIntletCompare(v1, v2);
-        case DAT_LISTLET: return datListletCompare(v1, v2);
-        case DAT_MAPLET:  return datMapletCompare(v1, v2);
-        case DAT_UNIQLET: return datUniqletCompare(v1, v2);
+        case DAT_INTLET:  return datIntletOrder(v1, v2);
+        case DAT_LISTLET: return datListletOrder(v1, v2);
+        case DAT_MAPLET:  return datMapletOrder(v1, v2);
+        case DAT_UNIQLET: return datUniqletOrder(v1, v2);
     }
 
     die("Invalid type (shouldn't happen).");

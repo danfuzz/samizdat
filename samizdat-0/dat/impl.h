@@ -123,21 +123,21 @@ zvalue *datListletElems(zvalue listlet);
 /**
  * Compares intlets.
  */
-zorder datIntletCompare(zvalue v1, zvalue v2);
+zorder datIntletOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares listlets.
  */
-zorder datListletCompare(zvalue v1, zvalue v2);
+zorder datListletOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares maplets.
  */
-zorder datMapletCompare(zvalue v1, zvalue v2);
+zorder datMapletOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares uniqlets.
  */
-zorder datUniqletCompare(zvalue v1, zvalue v2);
+zorder datUniqletOrder(zvalue v1, zvalue v2);
 
 #endif
