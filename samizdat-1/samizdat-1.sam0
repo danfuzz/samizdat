@@ -28,7 +28,7 @@ tokenize = { programText ::
 };
 
 # Parses a listlet of tokens, using Samizdat Layer 0 tree syntax.
-# Returns a `statements` node.
+# Returns a `block` node.
 parse = { tokens ::
     # TODO
 
@@ -40,7 +40,8 @@ parse = { tokens ::
         ]
     ];
 
-    <> @[@"type"=@"statements" @"value"=@[theCall]];
+    <> @[@"type"=@"block"
+         @"value"=@[@"statements"=@[theCall]]];
 };
 
 
@@ -94,9 +95,9 @@ main = { file rest* ::
 
     tokens = tokenize programText;
     <> if { <> ne tokens null; } {
-        statements = parse tokens;
-        if { <> ne statements null; } {
-            # TODO: Bind statements as a function using exposed
+        block = parse tokens;
+        if { <> ne block null; } {
+            # TODO: Bind block as a function using exposed
             # interface from samizdat-0, and call it.
             writeFile @"/dev/stdout" @"TODO: Run.\n";
             <> @0;

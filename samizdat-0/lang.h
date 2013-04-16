@@ -151,7 +151,7 @@ zvalue langCallMain(zcontext ctx, zint argCount, const zvalue *args);
  * function registry (which can respond to those calls as it sees
  * fit).
  *
- * The given `code` must be a `statements` node, such as would have
+ * The given `code` must be a `block` node, such as would have
  * been returned from `langCompile()` on a Samizdat Layer 0 file.
  */
 void langExecute(zcontext ctx, zvalue code);
