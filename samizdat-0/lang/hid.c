@@ -15,9 +15,6 @@
  * Helper definitions
  */
 
-/** The value `null`. Lazily initialized. */
-static zvalue HID_NULL = NULL;
-
 /** The value `false`. Lazily initialized. */
 static zvalue HID_FALSE = NULL;
 
@@ -28,12 +25,11 @@ static zvalue HID_TRUE = NULL;
  * Initialize the constants (above) if necessary.
  */
 static void initHidConsts(void) {
-    if (HID_NULL != NULL) {
+    if (HID_FALSE != NULL) {
         return;
     }
 
     constsInit();
-    HID_NULL  = TOK_NULL;
     HID_FALSE = hidPutValue(TOK_BOOLEAN, datIntletFromInt(0));
     HID_TRUE  = hidPutValue(TOK_BOOLEAN, datIntletFromInt(1));
 }
@@ -76,12 +72,6 @@ void hidAssertType(zvalue value, zvalue type) {
  */
 
 /* Documented in header. */
-zvalue langNull(void) {
-    initHidConsts();
-    return HID_NULL;
-}
-
-/* Documented in header. */
 zvalue langFalse(void) {
     initHidConsts();
     return HID_FALSE;
@@ -91,12 +81,6 @@ zvalue langFalse(void) {
 zvalue langTrue(void) {
     initHidConsts();
     return HID_TRUE;
-}
-
-/* Documented in header. */
-bool langIsNull(zvalue value) {
-    initHidConsts();
-    return datOrder(value, HID_NULL) == 0;
 }
 
 /* Documented in header. */

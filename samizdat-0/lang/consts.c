@@ -36,7 +36,6 @@ zvalue STR_LITERAL = NULL;
 zvalue STR_MAIN = NULL;
 zvalue STR_MAPLET = NULL;
 zvalue STR_NAME = NULL;
-zvalue STR_NULL = NULL;
 zvalue STR_REPEAT = NULL;
 zvalue STR_STATEMENTS = NULL;
 zvalue STR_STRING = NULL;
@@ -73,7 +72,6 @@ zvalue TOK_INTEGER = NULL;
 zvalue TOK_LISTLET = NULL;
 zvalue TOK_LITERAL = NULL;
 zvalue TOK_MAPLET = NULL;
-zvalue TOK_NULL = NULL;
 zvalue TOK_STRING = NULL;
 zvalue TOK_UNIQLET = NULL;
 zvalue TOK_VAR_DEF = NULL;
@@ -86,7 +84,7 @@ zvalue TOK_VAR_REF = NULL;
 
 /* Documented in header. */
 void constsInit(void) {
-    if (STR_NULL != NULL) {
+    if (STR_CH_AT != NULL) {
         return;
     }
 
@@ -118,7 +116,6 @@ void constsInit(void) {
     STR_MAIN          = datStringletFromUtf8String("main", -1);
     STR_MAPLET        = datStringletFromUtf8String("maplet", -1);
     STR_NAME          = datStringletFromUtf8String("name", -1);
-    STR_NULL          = datStringletFromUtf8String("null", -1);
     STR_REPEAT        = datStringletFromUtf8String("repeat", -1);
     STR_STATEMENTS    = datStringletFromUtf8String("statements", -1);
     STR_STRING        = datStringletFromUtf8String("string", -1);
@@ -155,7 +152,6 @@ void constsInit(void) {
     TOK_LISTLET       = datMapletPut(empty, STR_TYPE, STR_LISTLET);
     TOK_LITERAL       = datMapletPut(empty, STR_TYPE, STR_LITERAL);
     TOK_MAPLET        = datMapletPut(empty, STR_TYPE, STR_MAPLET);
-    TOK_NULL          = datMapletPut(empty, STR_TYPE, STR_NULL);
     TOK_STRING        = datMapletPut(empty, STR_TYPE, STR_STRING);
     TOK_UNIQLET       = datMapletPut(empty, STR_TYPE, STR_UNIQLET);
     TOK_VAR_DEF       = datMapletPut(empty, STR_TYPE, STR_VAR_DEF);

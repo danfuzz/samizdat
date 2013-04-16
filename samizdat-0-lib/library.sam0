@@ -6,8 +6,11 @@
 # Samizdat Layer 0 Core Library
 #
 # This is a Samizdat Layer 0 program which defines all the
-# core library functions that aren't primitive.
+# core library functions and other bindings that aren't primitive.
 #
+
+# The value more commonly known as `null`.
+null = @[@"type"=@"null"];
 
 # "Equal" comparison in overall value order.
 eq = { v1 v2 :: <> lowOrderIs v1 v2 @0; };
@@ -286,6 +289,7 @@ main = {
         @"isUniqlet" = isUniqlet
         @"map" = map
         @"not" = not
+        @"null" = null
         @"or" = or
         @"reduce" = reduce
         @"sourceStringlet" = sourceStringlet

@@ -20,7 +20,6 @@ extern zvalue CST_STR_MAPLET;
 extern zvalue CST_STR_UNIQLET;
 
 /* Other constants. */
-extern zvalue CST_NULL;
 extern zvalue CST_TRUE;
 extern zvalue CST_FALSE;
 

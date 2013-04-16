@@ -45,7 +45,6 @@ zcontext libNewContext(void) {
     // These all could have been defined in-language, but we already
     // had to have them defined and accessible to C code, so we just
     // go ahead and export them here.
-    langBind(ctx, "null", CST_NULL);
     langBind(ctx, "false", CST_FALSE);
     langBind(ctx, "true", CST_TRUE);
 
