@@ -84,15 +84,16 @@ zvalue langTrue(void) {
 }
 
 /* Documented in header. */
-bool langIsFalse(zvalue value) {
+bool langBooleanToBool(zvalue value) {
     initHidConsts();
-    return datOrder(value, HID_FALSE) == 0;
-}
 
-/* Documented in header. */
-bool langIsTrue(zvalue value) {
-    initHidConsts();
-    return datOrder(value, HID_TRUE) == 0;
+    if (datOrder(value, HID_FALSE) == 0) {
+        return false;
+    } else if (datOrder(value, HID_TRUE) == 0) {
+        return true;
+    }
+
+    die("Not a boolean value.");
 }
 
 /* Documented in header. */

@@ -50,14 +50,9 @@ zvalue langFalse(void);
 zvalue langTrue(void);
 
 /**
- * Returns whether or not the given value is equal to `false`.
+ * Converts an in-model boolean value to a C `bool`.
  */
-bool langIsFalse(zvalue value);
-
-/**
- * Returns whether or not the given value is equal to `true`.
- */
-bool langIsTrue(zvalue value);
+bool langBooleanToBool(zvalue value);
 
 /**
  * Converts a C `bool` to an in-model boolean value.

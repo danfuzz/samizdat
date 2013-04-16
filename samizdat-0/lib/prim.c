@@ -100,9 +100,7 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
 static zvalue prim_ifElse(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 3);
 
-    // `langIsFalse()` is used here so that any non-false value counts
-    // as true.
-    zvalue func = langIsFalse(args[0]) ? args[2] : args[1];
+    zvalue func = langBooleanToBool(args[0]) ? args[1] : args[2];
     return langCall(func, 0, NULL);
 }
 
