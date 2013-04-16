@@ -146,7 +146,7 @@ zvalue langCallMain(zcontext ctx, zint argCount, const zvalue *args);
 
 /**
  * Executes the given code, using the given global context.  Modifies
- * the context in response to running the code.  In addition, this can
+ * the context in response to running the code. In addition, this can
  * cause arbitrary calls to be performed on and via the context's
  * function registry (which can respond to those calls as it sees
  * fit).
