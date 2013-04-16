@@ -89,7 +89,7 @@ static void reset(ParseState *state, zint mark) {
 /* Defined below. */
 static zvalue parseAtom(ParseState *state);
 static zvalue parseExpression(ParseState *state);
-static zvalue parseStatements(ParseState *state);
+static zvalue parseBlock(ParseState *state);
 
 /**
  * Parses `atom+`. Returns a listlet of parsed expressions.
@@ -210,7 +210,7 @@ static zvalue parseFunction(ParseState *state) {
 
     // These always succeed.
     zvalue formals = parseFormals(state);
-    zvalue statements = parseStatements(state);
+    zvalue block = parseBlock(state);
 
     if (readMatch(state, TOK_CH_CCURLY) == NULL) {
         reset(state, mark);
@@ -218,7 +218,7 @@ static zvalue parseFunction(ParseState *state) {
     }
 
     zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
-    value = datMapletPut(value, STR_STATEMENTS, statements);
+    value = datMapletPut(value, STR_BLOCK, block);
     return hidPutValue(TOK_FUNCTION, value);
 }
 
@@ -581,9 +581,9 @@ static zvalue parseYield(ParseState *state) {
 }
 
 /**
- * Parses a `statements` node.
+ * Parses a `block` node.
  */
-static zvalue parseStatements(ParseState *state) {
+static zvalue parseBlock(ParseState *state) {
     zvalue statements = datListletEmpty();
 
     for (;;) {
@@ -595,13 +595,13 @@ static zvalue parseStatements(ParseState *state) {
     }
 
     zvalue yield = parseYield(state);
-
     zvalue result = datMapletPut(datMapletEmpty(), STR_STATEMENTS, statements);
+
     if (yield != NULL) {
         result = datMapletPut(result, STR_YIELD, yield);
     }
 
-    return hidPutValue(TOK_STATEMENTS, result);
+    return hidPutValue(TOK_BLOCK, result);
 }
 
 
@@ -612,7 +612,7 @@ static zvalue parseStatements(ParseState *state) {
 /* Documented in header. */
 zvalue parse(zvalue tokens) {
     ParseState state = { tokens, datSize(tokens), 0 };
-    zvalue result = parseStatements(&state);
+    zvalue result = parseBlock(&state);
 
     if (!isEof(&state)) {
         die("Extra tokens at end of program.");

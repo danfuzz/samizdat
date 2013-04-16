@@ -65,8 +65,8 @@ literal value, and an identifier indicates a tree syntax rule to
 match.
 
 ```
-statements ::= statement* yield? ;
-# result: @[@"type"=@"statements"
+block ::= statement* yield? ;
+# result: @[@"type"=@"block"
 #           @"value"=@[@"statements"=<listlet of statements>
 #                      (@"yield"=<yield>)?]]
 
@@ -122,9 +122,9 @@ binding ::= atom @"=" atom ;
 uniqlet ::= @"@@";
 # result: @[@"type"=@"uniqlet"]
 
-function ::= @"{" formals statements @"}" ;
+function ::= @"{" formals block @"}" ;
 # result: @[@"type"=@"function"
-#           @"value"=@[@"formals"=<formals> @"statements"=<statements>]]
+#           @"value"=@[@"formals"=<formals> @"block"=<block>]]
 
 formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
 # result: @[@"type"=@"formals"

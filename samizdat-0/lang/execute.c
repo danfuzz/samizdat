@@ -25,7 +25,7 @@ typedef struct {
 
     /**
      * Function definition, which includes a list of formals and the
-     * statements to run.
+     * block to run.
      */
     zvalue function;
 } Closure;
@@ -37,7 +37,7 @@ typedef struct {
 
 /* Defined below. */
 static zvalue execExpression(zcontext ctx, zvalue expression);
-static zvalue execStatements(zcontext ctx, zvalue statements);
+static zvalue execBlock(zcontext ctx, zvalue block);
 
 /**
  * The C function that is used for all registrations with function
@@ -46,7 +46,7 @@ static zvalue execStatements(zcontext ctx, zvalue statements);
 zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     Closure *closure = state;
     zvalue formals = datMapletGet(closure->function, STR_FORMALS);
-    zvalue statements = datMapletGet(closure->function, STR_STATEMENTS);
+    zvalue block = datMapletGet(closure->function, STR_BLOCK);
 
     hidAssertType(formals, STR_FORMALS);
     formals = hidValue(formals);
@@ -75,7 +75,7 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     }
 
     zcontext ctx = ctxNewChild(closure->parent, locals);
-    zvalue result = execStatements(ctx, statements);
+    zvalue result = execBlock(ctx, block);
 
     // TODO: This should just return `NULL` as part of differentiating
     // `null` from no-value.
@@ -173,13 +173,13 @@ static zvalue execExpression(zcontext ctx, zvalue e) {
 }
 
 /**
- * Executes a `statements` form.
+ * Executes a `block` form.
  */
-static zvalue execStatements(zcontext ctx, zvalue statements) {
-    hidAssertType(statements, STR_STATEMENTS);
-    zvalue contents = hidValue(statements);
+static zvalue execBlock(zcontext ctx, zvalue block) {
+    hidAssertType(block, STR_BLOCK);
+    block = hidValue(block);
 
-    statements = datMapletGet(contents, STR_STATEMENTS);
+    zvalue statements = datMapletGet(block, STR_STATEMENTS);
     zint size = datSize(statements);
 
     for (zint i = 0; i < size; i++) {
@@ -196,7 +196,7 @@ static zvalue execStatements(zcontext ctx, zvalue statements) {
         }
     }
 
-    zvalue yield = datMapletGet(contents, STR_YIELD);
+    zvalue yield = datMapletGet(block, STR_YIELD);
     return (yield == NULL) ? NULL : execExpression(ctx, yield);
 }
 
@@ -207,5 +207,5 @@ static zvalue execStatements(zcontext ctx, zvalue statements) {
 
 /* Documented in header. */
 void langExecute(zcontext ctx, zvalue code) {
-    execStatements(ctx, code);
+    execBlock(ctx, code);
 }
