@@ -43,11 +43,12 @@ not = { value ::
 # order until one returns `true`. The consequent immediately after the
 # `true` predicate then gets run, and its return value becomes the
 # result of this function. If no predicate returns `true`, this
-# function returns `null`.
+# function returns `void` (that is, a non-value).
 if = { predicate consequent rest* ::
     <> ifElse (predicate())
         consequent
-        { <> ifElse (eq rest @[]) { <> null; } { <> apply if rest; }; };
+        # Note: `{}` by definition is a function that returns void.
+        { <> ifElse (eq rest @[]) {} { <> apply if rest; }; };
 };
 
 # Function to use as the final catch-all predicate in an `if` call.

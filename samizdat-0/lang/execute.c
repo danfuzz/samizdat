@@ -37,6 +37,7 @@ typedef struct {
 
 /* Defined below. */
 static zvalue execExpression(zcontext ctx, zvalue expression);
+static zvalue execExpressionVoidOk(zcontext ctx, zvalue expression);
 static zvalue execBlock(zcontext ctx, zvalue block);
 
 /**
@@ -75,11 +76,7 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     }
 
     zcontext ctx = ctxNewChild(closure->parent, locals);
-    zvalue result = execBlock(ctx, block);
-
-    // TODO: This should just return `NULL` as part of differentiating
-    // `null` from no-value.
-    return (result == NULL) ? TOK_NULL : result;
+    return execBlock(ctx, block);
 }
 
 /**
@@ -157,9 +154,10 @@ static zvalue execListlet(zcontext ctx, zvalue listlet) {
 }
 
 /**
- * Executes an `expression` form.
+ * Executes an `expression` form, with the result possibly being
+ * `void` (represented as `NULL`).
  */
-static zvalue execExpression(zcontext ctx, zvalue e) {
+static zvalue execExpressionVoidOk(zcontext ctx, zvalue e) {
     if      (hidHasType(e, STR_LITERAL))  { return hidValue(e);              }
     else if (hidHasType(e, STR_VAR_REF))  { return ctxGet(ctx, hidValue(e)); }
     else if (hidHasType(e, STR_LISTLET))  { return execListlet(ctx, e);      }
@@ -170,6 +168,20 @@ static zvalue execExpression(zcontext ctx, zvalue e) {
     else {
         die("Invalid expression type.");
     }
+}
+
+/**
+ * Executes an `expression` form, with the result never allowed to be
+ * `void`.
+ */
+static zvalue execExpression(zcontext ctx, zvalue expression) {
+    zvalue result = execExpressionVoidOk(ctx, expression);
+
+    if (result == NULL) {
+        die("Invalid use of void expression result.");
+    }
+
+    return result;
 }
 
 /**
@@ -192,12 +204,12 @@ static zvalue execBlock(zcontext ctx, zvalue block) {
             zvalue value = datMapletGet(nameValue, STR_VALUE);
             ctxBind(ctx, name, execExpression(ctx, value));
         } else {
-            execExpression(ctx, one);
+            execExpressionVoidOk(ctx, one);
         }
     }
 
     zvalue yield = datMapletGet(block, STR_YIELD);
-    return (yield == NULL) ? NULL : execExpression(ctx, yield);
+    return (yield == NULL) ? NULL : execExpressionVoidOk(ctx, yield);
 }
 
 

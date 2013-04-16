@@ -140,7 +140,9 @@ void langCtxBindAll(zcontext ctx, zvalue maplet);
 
 /**
  * Calls the `main` function bound in the given context, passing
- * it the given number of arguments in the indicated array.
+ * it the given number of arguments in the indicated array. This
+ * returns whatever `main` returned, including possibly `NULL`
+ * which indicates that the function did not actually return anything.
  */
 zvalue langCallMain(zcontext ctx, zint argCount, const zvalue *args);
 

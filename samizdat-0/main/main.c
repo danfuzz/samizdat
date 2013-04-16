@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     langExecute(ctx, program);
     zvalue result = langCallMain(ctx, argCount, args);
 
-    if (datType(result) == DAT_INTLET) {
+    if ((result != NULL) && (datType(result) == DAT_INTLET)) {
         exit((int) datIntletToInt(result));
     }
 }

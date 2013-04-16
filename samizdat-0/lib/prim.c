@@ -247,7 +247,7 @@ static zvalue prim_readFile(void *state, zint argCount, const zvalue *args) {
 static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
     writeFile(args[0], args[1]);
-    return CST_NULL;
+    return NULL;
 }
 
 
