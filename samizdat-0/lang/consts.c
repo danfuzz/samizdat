@@ -37,7 +37,6 @@ zvalue STR_MAPLET = NULL;
 zvalue STR_NAME = NULL;
 zvalue STR_NULL = NULL;
 zvalue STR_REPEAT = NULL;
-zvalue STR_RETURN = NULL;
 zvalue STR_STATEMENTS = NULL;
 zvalue STR_STRING = NULL;
 zvalue STR_TYPE = NULL;
@@ -45,6 +44,7 @@ zvalue STR_UNIQLET = NULL;
 zvalue STR_VALUE = NULL;
 zvalue STR_VAR_DEF = NULL;
 zvalue STR_VAR_REF = NULL;
+zvalue STR_YIELD = NULL;
 
 /* Prefab tokens / nodes. Lazily initialized. */
 zvalue TOK_CH_AT = NULL;
@@ -72,7 +72,6 @@ zvalue TOK_LISTLET = NULL;
 zvalue TOK_LITERAL = NULL;
 zvalue TOK_MAPLET = NULL;
 zvalue TOK_NULL = NULL;
-zvalue TOK_RETURN = NULL;
 zvalue TOK_STATEMENTS = NULL;
 zvalue TOK_STRING = NULL;
 zvalue TOK_UNIQLET = NULL;
@@ -119,7 +118,6 @@ void constsInit(void) {
     STR_NAME          = datStringletFromUtf8String("name", -1);
     STR_NULL          = datStringletFromUtf8String("null", -1);
     STR_REPEAT        = datStringletFromUtf8String("repeat", -1);
-    STR_RETURN        = datStringletFromUtf8String("return", -1);
     STR_STATEMENTS    = datStringletFromUtf8String("statements", -1);
     STR_STRING        = datStringletFromUtf8String("string", -1);
     STR_TYPE          = datStringletFromUtf8String("type", -1);
@@ -127,6 +125,7 @@ void constsInit(void) {
     STR_VALUE         = datStringletFromUtf8String("value", -1);
     STR_VAR_DEF       = datStringletFromUtf8String("varDef", -1);
     STR_VAR_REF       = datStringletFromUtf8String("varRef", -1);
+    STR_YIELD         = datStringletFromUtf8String("yield", -1);
 
     zvalue empty = datMapletEmpty();
     TOK_CH_AT         = datMapletPut(empty, STR_TYPE, STR_CH_AT);
@@ -154,7 +153,6 @@ void constsInit(void) {
     TOK_LITERAL       = datMapletPut(empty, STR_TYPE, STR_LITERAL);
     TOK_MAPLET        = datMapletPut(empty, STR_TYPE, STR_MAPLET);
     TOK_NULL          = datMapletPut(empty, STR_TYPE, STR_NULL);
-    TOK_RETURN        = datMapletPut(empty, STR_TYPE, STR_RETURN);
     TOK_STATEMENTS    = datMapletPut(empty, STR_TYPE, STR_STATEMENTS);
     TOK_STRING        = datMapletPut(empty, STR_TYPE, STR_STRING);
     TOK_UNIQLET       = datMapletPut(empty, STR_TYPE, STR_UNIQLET);

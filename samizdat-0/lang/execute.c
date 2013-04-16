@@ -37,7 +37,7 @@ typedef struct {
 
 /* Defined below. */
 static zvalue execExpression(zcontext ctx, zvalue expression);
-static void execStatements(zcontext ctx, zvalue statements);
+static zvalue execStatements(zcontext ctx, zvalue statements);
 
 /**
  * The C function that is used for all registrations with function
@@ -75,9 +75,10 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     }
 
     zcontext ctx = ctxNewChild(closure->parent, locals);
-    execStatements(ctx, statements);
+    zvalue result = execStatements(ctx, statements);
 
-    zvalue result = ctx->toReturn;
+    // TODO: This should just return `NULL` as part of differentiating
+    // `null` from no-value.
     return (result == NULL) ? TOK_NULL : result;
 }
 
@@ -174,12 +175,14 @@ static zvalue execExpression(zcontext ctx, zvalue e) {
 /**
  * Executes a `statements` form.
  */
-static void execStatements(zcontext ctx, zvalue statements) {
+static zvalue execStatements(zcontext ctx, zvalue statements) {
     hidAssertType(statements, STR_STATEMENTS);
-    statements = hidValue(statements);
+    zvalue contents = hidValue(statements);
 
+    statements = datMapletGet(contents, STR_STATEMENTS);
     zint size = datSize(statements);
-    for (zint i = 0; (i < size) && (ctx->toReturn == NULL); i++) {
+
+    for (zint i = 0; i < size; i++) {
         zvalue one = datListletGet(statements, i);
         zvalue type = hidType(one);
 
@@ -187,14 +190,14 @@ static void execStatements(zcontext ctx, zvalue statements) {
             zvalue nameValue = hidValue(one);
             zvalue name = datMapletGet(nameValue, STR_NAME);
             zvalue value = datMapletGet(nameValue, STR_VALUE);
-
             ctxBind(ctx, name, execExpression(ctx, value));
-        } else if (hidHasType(one, STR_RETURN)) {
-            ctx->toReturn = execExpression(ctx, hidValue(one));
         } else {
             execExpression(ctx, one);
         }
     }
+
+    zvalue yield = datMapletGet(contents, STR_YIELD);
+    return (yield == NULL) ? NULL : execExpression(ctx, yield);
 }
 
 

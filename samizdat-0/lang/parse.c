@@ -538,26 +538,6 @@ static zvalue parseExpression(ParseState *state) {
 }
 
 /**
- * Parses a `return` node.
- */
-static zvalue parseReturn(ParseState *state) {
-    zint mark = cursor(state);
-
-    if (readMatch(state, TOK_CH_DIAMOND) == NULL) {
-        return NULL;
-    }
-
-    zvalue expression = parseExpression(state);
-
-    if (expression == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    return hidPutValue(TOK_RETURN, expression);
-}
-
-/**
  * Parses a `statement` node.
  */
 static zvalue parseStatement(ParseState *state) {
@@ -566,7 +546,6 @@ static zvalue parseStatement(ParseState *state) {
 
     if (result == NULL) { result = parseVarDef(state); }
     if (result == NULL) { result = parseExpression(state); }
-    if (result == NULL) { result = parseReturn(state); }
 
     if (result == NULL) {
         return NULL;
@@ -581,17 +560,45 @@ static zvalue parseStatement(ParseState *state) {
 }
 
 /**
+ * Parses a `yield` node.
+ */
+static zvalue parseYield(ParseState *state) {
+    zint mark = cursor(state);
+
+    if (readMatch(state, TOK_CH_DIAMOND) == NULL) {
+        return NULL;
+    }
+
+    zvalue expression = parseExpression(state);
+
+    if ((expression == NULL) ||
+        (readMatch(state, TOK_CH_SEMICOLON) == NULL)) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    return expression;
+}
+
+/**
  * Parses a `statements` node.
  */
 static zvalue parseStatements(ParseState *state) {
-    zvalue result = datListletEmpty();
+    zvalue statements = datListletEmpty();
 
     for (;;) {
         zvalue statement = parseStatement(state);
         if (statement == NULL) {
             break;
         }
-        result = datListletAppend(result, statement);
+        statements = datListletAppend(statements, statement);
+    }
+
+    zvalue yield = parseYield(state);
+
+    zvalue result = datMapletPut(datMapletEmpty(), STR_STATEMENTS, statements);
+    if (yield != NULL) {
+        result = datMapletPut(result, STR_YIELD, yield);
     }
 
     return hidPutValue(TOK_STATEMENTS, result);

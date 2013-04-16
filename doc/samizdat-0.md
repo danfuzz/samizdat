@@ -65,14 +65,16 @@ literal value, and an identifier indicates a tree syntax rule to
 match.
 
 ```
-statements ::= statement* ;
-# result: @[@"type"=@"statements" @"value"=<listlet of statements>]
+statements ::= statement* yield? ;
+# result: @[@"type"=@"statements"
+#           @"value"=@[@"statements"=<listlet of statements>
+#                      (@"yield"=<yield>)?]]
 
-statement ::= (varDef | expression | return) @";" ;
+yield ::= @"<>" expression @";" ;
+# result: <expression>
+
+statement ::= (varDef | expression) @";" ;
 # result: <same as whatever was parsed>
-
-return ::= @"<>" expression ;
-# result: @[@"type"=@"return" @"value"=<expression>]
 
 expression ::= call | atom ;
 # result: <same as whatever was parsed>
@@ -84,7 +86,7 @@ atom ::=
 # result: <same as whatever was parsed>
 
 parenExpression ::= @"(" expression @")";
-# result: <same as whatever was parsed>
+# result: <expression>
 
 varDef ::= @"identifier" @"=" expression ;
 # result: @[@"type"=@"varDef"

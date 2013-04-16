@@ -43,7 +43,6 @@ extern zvalue STR_MAPLET;
 extern zvalue STR_NAME;
 extern zvalue STR_NULL;
 extern zvalue STR_REPEAT;
-extern zvalue STR_RETURN;
 extern zvalue STR_STATEMENTS;
 extern zvalue STR_STRING;
 extern zvalue STR_TYPE;
@@ -51,6 +50,7 @@ extern zvalue STR_UNIQLET;
 extern zvalue STR_VALUE;
 extern zvalue STR_VAR_DEF;
 extern zvalue STR_VAR_REF;
+extern zvalue STR_YIELD;
 
 /* Prefab tokens / nodes. Lazily initialized. */
 extern zvalue TOK_CH_AT;
@@ -78,7 +78,6 @@ extern zvalue TOK_LISTLET;
 extern zvalue TOK_LITERAL;
 extern zvalue TOK_MAPLET;
 extern zvalue TOK_NULL;
-extern zvalue TOK_RETURN;
 extern zvalue TOK_STATEMENTS;
 extern zvalue TOK_STRING;
 extern zvalue TOK_UNIQLET;

@@ -23,9 +23,6 @@ typedef struct ExecutionContext {
     /** Variables bound at this level. */
     zvalue locals;
 
-    /** Pending return value. */
-    zvalue toReturn;
-
     /** Parent context. */
     struct ExecutionContext *parent;
 } ExecutionContext;
