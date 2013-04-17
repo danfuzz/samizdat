@@ -14,8 +14,11 @@ Plan of attack
   language with very little embellishment. This language is called
   *Samizdat Layer 0*.
 
-  The associated core library that comes with the implementation is
-  similarly minimal.
+  *Samizdat Layer 0* also defines a minimal core library. A subset
+  of that library is implemented directly in `samizdat-0` as
+  primitive functions. The remainder of the library is implemented
+  in *Samizdat Layer 0* in terms of that library and the language
+  syntax.
 
   The language parser and runtime do the bare minimum of error
   checking, attempting to fail fast in the face of an error but not to
@@ -26,6 +29,17 @@ Plan of attack
   prefers clarity and obviousness over trickiness and efficiency. In
   addition, it uses a minimum of C library functionality and eschews
   the use of macros *except* as guards on header files.
+
+* `samizdat-0-lib` &mdash; *Samizdat Layer 0* in-language core library.
+
+  This is a library of code which implements the parts of the
+  *Samizdat Layer 0* core library which are possible to implement
+  in terms of `samizdat-0`'s primitive functions.
+
+  `samizdat-0-lib` is written in *Samizdat Layer 0*. It is
+  incorporated into both `samizdat-0` and `samizdat-1` such that
+  programs run with either of those tools automatically see the
+  full core library definition.
 
 * `samizdat-1` &mdash; *Samizdat Layer 1* interpreter.
 
@@ -45,7 +59,7 @@ Plan of attack
 
   * Provide some validation (via correlation) of the `samizdat-0`
     token and tree parser implementations. In particular, the source
-    code for `samizdat-1` itself should produce truly identical trees
+    code for `samizdat-1` should produce truly identical trees
     when compiled by either `samizdat-0` or by `samizdat-1` itself.
 
 * `samizdat-2` &hellip; `samizdat-N` &mdash; *Samizdat Layers 2
@@ -56,22 +70,26 @@ Plan of attack
   language *Samizdat layer N*, translating it to the same underlying
   executable parse tree form that `samizdat-0` executes.
 
-* `samizdat` &mdash; *Samizdat* interpreter.
+* `sam` &mdash; *Samizdat* interpreter.
 
   Tool that accepts input written in *Samizdat* (per se), and runs
   it.
 
   Written in *Samizdat Layer N* (for the ultimate value of `N`).
 
-* `sam-comp` &mdash; Tool to compile Samizdat source code.
+* `samc` &mdash; Tool to compile Samizdat source code.
 
   Compiler that accepts bona fide Samizdat syntax and outputs C
   code to be linked and run with an associated library (details
   TBD).
 
-  Written in *Samizdat*.
+  Written in *Samizdat*. Used to produce (at least) two executables:
 
-* ?
+  * Run using interpreted `sam` and given `sam`'s source as input, in
+    order to produce a compiled version of `sam`.
+
+  * Run using compiled `sam` and given `samc`'s source as input, in
+    order to produce a compiled version of `samc`.
 
 * `samizdat-0.sam` &mdash; *Samizdat Layer 0* interpreter.
 
@@ -82,7 +100,11 @@ Plan of attack
   relied upon for further iterative development of the other layers of
   the language implementation.
 
-  Written in Samizdat.
+  Written in Samizdat. Run and compiled-and-run with `sam` and `samc`
+  (respectively), for purposes of verification, validation, and
+  further language iteration.
+
+* ?
 
 * Profit!
 
