@@ -266,39 +266,39 @@ static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void bindPrimitives(zcontext ctx) {
     // Low-layer types (in general)
-    langBindFunction(ctx, "lowOrder",   prim_lowOrder,   NULL);
-    langBindFunction(ctx, "lowOrderIs", prim_lowOrderIs, NULL);
-    langBindFunction(ctx, "lowSize",    prim_lowSize,    NULL);
-    langBindFunction(ctx, "lowType",    prim_lowType,    NULL);
+    langCtxBindFunction(ctx, "lowOrder",   prim_lowOrder,   NULL);
+    langCtxBindFunction(ctx, "lowOrderIs", prim_lowOrderIs, NULL);
+    langCtxBindFunction(ctx, "lowSize",    prim_lowSize,    NULL);
+    langCtxBindFunction(ctx, "lowType",    prim_lowType,    NULL);
 
     // Conditional
-    langBindFunction(ctx, "ifElse", prim_ifElse, NULL);
-    langBindFunction(ctx, "ifVoid", prim_ifVoid, NULL);
+    langCtxBindFunction(ctx, "ifElse", prim_ifElse, NULL);
+    langCtxBindFunction(ctx, "ifVoid", prim_ifVoid, NULL);
 
     // Intlets
-    langBindFunction(ctx, "ineg", prim_ineg, NULL);
-    langBindFunction(ctx, "iadd", prim_iadd, NULL);
-    langBindFunction(ctx, "isub", prim_isub, NULL);
-    langBindFunction(ctx, "imul", prim_imul, NULL);
-    langBindFunction(ctx, "idiv", prim_idiv, NULL);
-    langBindFunction(ctx, "imod", prim_imod, NULL);
+    langCtxBindFunction(ctx, "ineg", prim_ineg, NULL);
+    langCtxBindFunction(ctx, "iadd", prim_iadd, NULL);
+    langCtxBindFunction(ctx, "isub", prim_isub, NULL);
+    langCtxBindFunction(ctx, "imul", prim_imul, NULL);
+    langCtxBindFunction(ctx, "idiv", prim_idiv, NULL);
+    langCtxBindFunction(ctx, "imod", prim_imod, NULL);
 
     // Listlets
-    langBindFunction(ctx, "append", prim_append, NULL);
-    langBindFunction(ctx, "getNth", prim_getNth, NULL);
-    langBindFunction(ctx, "delNth", prim_delNth, NULL);
+    langCtxBindFunction(ctx, "append", prim_append, NULL);
+    langCtxBindFunction(ctx, "getNth", prim_getNth, NULL);
+    langCtxBindFunction(ctx, "delNth", prim_delNth, NULL);
 
     // Maplets
-    langBindFunction(ctx, "getKeys",  prim_getKeys,  NULL);
-    langBindFunction(ctx, "getValue", prim_getValue, NULL);
+    langCtxBindFunction(ctx, "getKeys",  prim_getKeys,  NULL);
+    langCtxBindFunction(ctx, "getValue", prim_getValue, NULL);
 
     // Functions
-    langBindFunction(ctx, "apply", prim_apply, NULL);
+    langCtxBindFunction(ctx, "apply", prim_apply, NULL);
 
     // I/O
-    langBindFunction(ctx, "die",       prim_die,       NULL);
-    langBindFunction(ctx, "readFile",  prim_readFile,  NULL);
-    langBindFunction(ctx, "writeFile", prim_writeFile, NULL);
+    langCtxBindFunction(ctx, "die",       prim_die,       NULL);
+    langCtxBindFunction(ctx, "readFile",  prim_readFile,  NULL);
+    langCtxBindFunction(ctx, "writeFile", prim_writeFile, NULL);
 
     // TODO: More.
 }

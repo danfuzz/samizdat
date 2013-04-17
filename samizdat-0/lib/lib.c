@@ -26,7 +26,7 @@ static void addLibrary(zcontext ctx) {
     zcontext childCtx = langCtxNewChild(ctx);
 
     langExecute(childCtx, program);
-    zvalue result = langCallMain(childCtx, 0, NULL);
+    zvalue result = langCtxCallMain(childCtx, 0, NULL);
 
     langCtxBindAll(ctx, result);
 }
@@ -45,8 +45,8 @@ zcontext libNewContext(void) {
     // These all could have been defined in-language, but we already
     // had to have them defined and accessible to C code, so we just
     // go ahead and export them here.
-    langBind(ctx, "false", CST_FALSE);
-    langBind(ctx, "true", CST_TRUE);
+    langCtxBind(ctx, "false", CST_FALSE);
+    langCtxBind(ctx, "true", CST_TRUE);
 
     bindPrimitives(ctx);
     addLibrary(ctx);

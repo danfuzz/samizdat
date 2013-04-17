@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
     zvalue program = langCompile(programText);
 
     langExecute(ctx, program);
-    zvalue result = langCallMain(ctx, argCount, args);
+    zvalue result = langCtxCallMain(ctx, argCount, args);
 
     if ((result != NULL) && (datType(result) == DAT_INTLET)) {
         exit((int) datIntletToInt(result));

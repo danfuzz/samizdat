@@ -63,14 +63,14 @@ zcontext langCtxNewChild(zcontext parent) {
 }
 
 /* Documented in header. */
-void langBind(zcontext ctx, const char *name, zvalue value) {
+void langCtxBind(zcontext ctx, const char *name, zvalue value) {
     ctxBind(ctx, datStringletFromUtf8String(name, -1), value);
 }
 
 /* Documented in header. */
-void langBindFunction(zcontext ctx, const char *name,
+void langCtxBindFunction(zcontext ctx, const char *name,
                       zfunction function, void *state) {
-    langBind(ctx, name, funDefine(function, state));
+    langCtxBind(ctx, name, funDefine(function, state));
 }
 
 /* Documented in header. */
@@ -85,6 +85,6 @@ void langCtxBindAll(zcontext ctx, zvalue maplet) {
 }
 
 /* Documented in header. */
-zvalue langCallMain(zcontext ctx, zint argCount, const zvalue *args) {
+zvalue langCtxCallMain(zcontext ctx, zint argCount, const zvalue *args) {
     return langCall(ctxGet(ctx, STR_MAIN), argCount, args);
 }

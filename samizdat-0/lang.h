@@ -61,7 +61,7 @@ zvalue langBooleanFromBool(bool value);
 
 
 /*
- * Functions about functions
+ * Function application
  */
 
 /**
@@ -76,16 +76,9 @@ zvalue langApply(zvalue functionId, zvalue args);
  */
 zvalue langCall(zvalue functionId, zint argCount, const zvalue *args);
 
-/**
- * Compile the given program text into an executable form, suitable
- * for passing to `langExecute()`. The text must be a program in
- * Samizdat Layer 0.
- */
-zvalue langCompile(zvalue programText);
-
 
 /*
- * Other functions
+ * Execution contexts
  */
 
 /**
@@ -106,7 +99,7 @@ zcontext langCtxNewChild(zcontext parent);
  * giving it the indicated name (interpreted as a `'\0'`-terminated
  * UTF-8 string).
  */
-void langBind(zcontext ctx, const char *name, zvalue value);
+void langCtxBind(zcontext ctx, const char *name, zvalue value);
 
 /**
  * Binds a primitive function into the given execution context,
@@ -114,8 +107,8 @@ void langBind(zcontext ctx, const char *name, zvalue value);
  * UTF-8 string). The given `state` will be passed as the first
  * argument to the function whenever it is called.
  */
-void langBindFunction(zcontext ctx, const char *name,
-                      zfunction function, void *state);
+void langCtxBindFunction(zcontext ctx, const char *name,
+                         zfunction function, void *state);
 
 /**
  * Adds all of the bindings from the given maplet to the given
@@ -129,7 +122,7 @@ void langCtxBindAll(zcontext ctx, zvalue maplet);
  * returns whatever `main` returned, including possibly `NULL`
  * which indicates that the function did not actually return anything.
  */
-zvalue langCallMain(zcontext ctx, zint argCount, const zvalue *args);
+zvalue langCtxCallMain(zcontext ctx, zint argCount, const zvalue *args);
 
 /**
  * Executes the given code, using the given global context.  Modifies
@@ -142,6 +135,18 @@ zvalue langCallMain(zcontext ctx, zint argCount, const zvalue *args);
  * been returned from `langCompile()` on a Samizdat Layer 0 file.
  */
 void langExecute(zcontext ctx, zvalue code);
+
+
+/*
+ * Compilation
+ */
+
+/**
+ * Compile the given program text into an executable form, suitable
+ * for passing to `langExecute()`. The text must be a program in
+ * Samizdat Layer 0.
+ */
+zvalue langCompile(zvalue programText);
 
 
 #endif
