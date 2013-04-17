@@ -232,6 +232,14 @@ static zvalue prim_apply(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_sam0Tree(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 1);
+    return langTextToProgramNode(args[0]);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_die(void *state, zint argCount, const zvalue *args) {
     requireRange(argCount, 0, 1);
 
@@ -294,6 +302,9 @@ void bindPrimitives(zcontext ctx) {
 
     // Functions
     langCtxBindFunction(ctx, "apply", prim_apply, NULL);
+
+    // Compilation
+    langCtxBindFunction(ctx, "sam0Tree", prim_sam0Tree, NULL);
 
     // I/O
     langCtxBindFunction(ctx, "die",       prim_die,       NULL);
