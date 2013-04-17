@@ -27,18 +27,20 @@ int main(int argc, char **argv) {
 
     zvalue fileName = datStringletFromUtf8String(argv[1], -1);
     zint argCount = argc - 2;
-    zvalue args[argCount];
+    zvalue args = datListletEmpty();
 
     for (int i = 0; i < argCount; i++) {
-        args[i] = datStringletFromUtf8String(argv[i + 2], -1);
+        zvalue arg = datStringletFromUtf8String(argv[i + 2], -1);
+        args = datListletAppend(args, arg);
     }
 
     zcontext ctx = libNewContext();
+    langCtxBind(ctx, "ARGS", args);
+
     zvalue programText = readFile(fileName);
     zvalue program = langCompile(programText);
-
-    langExecute(ctx, program);
-    zvalue result = langCtxCallMain(ctx, argCount, args);
+    zvalue function = langFunctionFromNode(ctx, program);
+    zvalue result = langApply(function, args);
 
     if ((result != NULL) && (datType(result) == DAT_INTLET)) {
         exit((int) datIntletToInt(result));

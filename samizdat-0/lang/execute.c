@@ -218,11 +218,6 @@ static zvalue execBlock(zcontext ctx, zvalue block) {
  */
 
 /* Documented in header. */
-void langExecute(zcontext ctx, zvalue code) {
-    execBlock(ctx, code);
-}
-
-/* Documented in header. */
 zvalue langFunctionFromNode(zcontext ctx, zvalue functionNode) {
     return execFunction(ctx, functionNode);
 }

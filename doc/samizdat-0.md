@@ -59,12 +59,28 @@ Node / Tree Syntax
 ------------------
 
 BNF/PEG-like description of the node / tree syntax. A program is
-parsed by matching the top `statements` rule. On the right-hand side
-of rules, a stringlet literal indicates a token whose `type` is the
-literal value, and an identifier indicates a tree syntax rule to
-match.
+parsed by matching the top `program` rule, which yields a `function`
+node. On the right-hand side of rules, a stringlet literal indicates a
+token whose `type` is the literal value, and an identifier indicates a
+tree syntax rule to match.
 
 ```
+program ::= block ;
+# result: @[@"type"=@"function"
+#           @"value"=@[@"formals"=@[@"type"=@"formals" @value=@[]]
+#                      @"block"=<block>]]
+
+function ::= @"{" formals block @"}" ;
+# result: @[@"type"=@"function"
+#           @"value"=@[@"formals"=<formals>
+#                      @"block"=<block>]]
+
+formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
+# result: @[@"type"=@"formals"
+#           @"value"=@[@[@"name"=<identifier.value>
+#                        @"repeat"=@[@"type"=(@"." | @"*")]]
+#                      ...]]
+
 block ::= statement* yield? ;
 # result: @[@"type"=@"block"
 #           @"value"=@[@"statements"=<listlet of statements>
@@ -121,16 +137,6 @@ binding ::= atom @"=" atom ;
 
 uniqlet ::= @"@@";
 # result: @[@"type"=@"uniqlet"]
-
-function ::= @"{" formals block @"}" ;
-# result: @[@"type"=@"function"
-#           @"value"=@[@"formals"=<formals> @"block"=<block>]]
-
-formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
-# result: @[@"type"=@"formals"
-#           @"value"=@[@[@"name"=<identifier.value>
-#                        @"repeat"=@[@"type"=(@"." | @"*")]]
-#                      ...]]
 
 call ::= atom (@"(" @")" | atom+) ;
 # result: @[@"type"=@"call"

@@ -83,8 +83,3 @@ void langCtxBindAll(zcontext ctx, zvalue maplet) {
         ctxBind(ctx, key, datMapletGet(maplet, key));
     }
 }
-
-/* Documented in header. */
-zvalue langCtxCallMain(zcontext ctx, zint argCount, const zvalue *args) {
-    return langCall(ctxGet(ctx, STR_MAIN), argCount, args);
-}

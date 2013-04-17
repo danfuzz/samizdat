@@ -266,32 +266,29 @@ sourceStringlet = { value ::
 
 
 #
-# Main function
+# Exports
 #
 
-# Returns all the library bindings.
-main = { 
-    <> @[
-        @"eq" = eq
-        @"ne" = ne
-        @"lt" = lt
-        @"gt" = gt
-        @"le" = le
-        @"ge" = ge
-        @"and" = and
-        @"cat" = cat
-        @"else" = else
-        @"if" = if
-        @"isIntlet" = isIntlet
-        @"isListlet" = isListlet
-        @"isMaplet" = isMaplet
-        @"isStringlet" = isStringlet
-        @"isUniqlet" = isUniqlet
-        @"map" = map
-        @"not" = not
-        @"null" = null
-        @"or" = or
-        @"reduce" = reduce
-        @"sourceStringlet" = sourceStringlet
-    ];
-};
+<> @[
+    @"eq" = eq
+    @"ne" = ne
+    @"lt" = lt
+    @"gt" = gt
+    @"le" = le
+    @"ge" = ge
+    @"and" = and
+    @"cat" = cat
+    @"else" = else
+    @"if" = if
+    @"isIntlet" = isIntlet
+    @"isListlet" = isListlet
+    @"isMaplet" = isMaplet
+    @"isStringlet" = isStringlet
+    @"isUniqlet" = isUniqlet
+    @"map" = map
+    @"not" = not
+    @"null" = null
+    @"or" = or
+    @"reduce" = reduce
+    @"sourceStringlet" = sourceStringlet
+];

@@ -89,7 +89,7 @@ static void reset(ParseState *state, zint mark) {
 /* Defined below. */
 static zvalue parseAtom(ParseState *state);
 static zvalue parseExpression(ParseState *state);
-static zvalue parseBlock(ParseState *state);
+static zvalue parseFunction(ParseState *state);
 
 /**
  * Parses `atom+`. Returns a listlet of parsed expressions.
@@ -155,71 +155,6 @@ static zvalue parseCall(ParseState *state) {
     zvalue value = datMapletPut(datMapletEmpty(), STR_FUNCTION, function);
     value = datMapletPut(value, STR_ACTUALS, actuals);
     return hidPutValue(TOK_CALL, value);
-}
-
-/**
- * Parses a `formals` node.
- */
-static zvalue parseFormals(ParseState *state) {
-    zint mark = cursor(state);
-    zvalue formals = datListletEmpty();
-
-    for (;;) {
-        zvalue identifier = readMatch(state, TOK_IDENTIFIER);
-        if (identifier == NULL) {
-            break;
-        }
-
-        zvalue formal =
-            datMapletPut(datMapletEmpty(), STR_NAME, hidValue(identifier));
-
-        if (readMatch(state, TOK_CH_STAR) != NULL) {
-            // In Samizdat Layer 0, the only modifier for a formal is
-            // `*` which has to be on the last formal.
-            formal = datMapletPut(formal, STR_REPEAT, TOK_CH_STAR);
-            formals = datListletAppend(formals, formal);
-            break;
-        }
-
-        formal = datMapletPut(formal, STR_REPEAT, TOK_CH_DOT);
-        formals = datListletAppend(formals, formal);
-    }
-
-    if (datSize(formals) != 0) {
-        if (readMatch(state, TOK_CH_COLONCOLON) == NULL) {
-            // We didn't find the expected `::` which means there
-            // was no formals list at all. So reset the parse, but
-            // still succeed with an empty formals list.
-            reset(state, mark);
-            formals = datListletEmpty();
-        }
-    }
-
-    return hidPutValue(TOK_FORMALS, formals);
-}
-
-/**
- * Parses a `function` node.
- */
-static zvalue parseFunction(ParseState *state) {
-    zint mark = cursor(state);
-
-    if (readMatch(state, TOK_CH_OCURLY) == NULL) {
-        return NULL;
-    }
-
-    // These always succeed.
-    zvalue formals = parseFormals(state);
-    zvalue block = parseBlock(state);
-
-    if (readMatch(state, TOK_CH_CCURLY) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
-    value = datMapletPut(value, STR_BLOCK, block);
-    return hidPutValue(TOK_FUNCTION, value);
 }
 
 /**
@@ -604,6 +539,90 @@ static zvalue parseBlock(ParseState *state) {
     return hidPutValue(TOK_BLOCK, result);
 }
 
+/**
+ * Parses a `formals` node.
+ */
+static zvalue parseFormals(ParseState *state) {
+    zint mark = cursor(state);
+    zvalue formals = datListletEmpty();
+
+    for (;;) {
+        zvalue identifier = readMatch(state, TOK_IDENTIFIER);
+        if (identifier == NULL) {
+            break;
+        }
+
+        zvalue formal =
+            datMapletPut(datMapletEmpty(), STR_NAME, hidValue(identifier));
+
+        if (readMatch(state, TOK_CH_STAR) != NULL) {
+            // In Samizdat Layer 0, the only modifier for a formal is
+            // `*` which has to be on the last formal.
+            formal = datMapletPut(formal, STR_REPEAT, TOK_CH_STAR);
+            formals = datListletAppend(formals, formal);
+            break;
+        }
+
+        formal = datMapletPut(formal, STR_REPEAT, TOK_CH_DOT);
+        formals = datListletAppend(formals, formal);
+    }
+
+    if (datSize(formals) != 0) {
+        if (readMatch(state, TOK_CH_COLONCOLON) == NULL) {
+            // We didn't find the expected `::` which means there
+            // was no formals list at all. So reset the parse, but
+            // still succeed with an empty formals list.
+            reset(state, mark);
+            formals = datListletEmpty();
+        }
+    }
+
+    return hidPutValue(TOK_FORMALS, formals);
+}
+
+/**
+ * Helper that creates a `function` node.
+ */
+static zvalue functionNode(zvalue formals, zvalue block) {
+    zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
+    value = datMapletPut(value, STR_BLOCK, block);
+    return hidPutValue(TOK_FUNCTION, value);
+}
+
+/**
+ * Parses a `function` node.
+ */
+static zvalue parseFunction(ParseState *state) {
+    zint mark = cursor(state);
+
+    if (readMatch(state, TOK_CH_OCURLY) == NULL) {
+        return NULL;
+    }
+
+    // These always succeed.
+    zvalue formals = parseFormals(state);
+    zvalue block = parseBlock(state);
+
+    if (readMatch(state, TOK_CH_CCURLY) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    return functionNode(formals, block);
+}
+
+/**
+ * Parses a program, yielding a `function` node.
+ */
+static zvalue parseProgram(ParseState *state) {
+    zvalue block = parseBlock(state);
+
+    if (block == NULL) {
+        return NULL;
+    }
+
+    return functionNode(hidPutValue(TOK_FORMALS, datListletEmpty()), block);
+}
 
 /*
  * Module functions
@@ -612,7 +631,7 @@ static zvalue parseBlock(ParseState *state) {
 /* Documented in header. */
 zvalue parse(zvalue tokens) {
     ParseState state = { tokens, datSize(tokens), 0 };
-    zvalue result = parseBlock(&state);
+    zvalue result = parseProgram(&state);
 
     if (!isEof(&state)) {
         die("Extra tokens at end of program.");

@@ -116,26 +116,6 @@ void langCtxBindFunction(zcontext ctx, const char *name,
  */
 void langCtxBindAll(zcontext ctx, zvalue maplet);
 
-/**
- * Calls the `main` function bound in the given context, passing
- * it the given number of arguments in the indicated array. This
- * returns whatever `main` returned, including possibly `NULL`
- * which indicates that the function did not actually return anything.
- */
-zvalue langCtxCallMain(zcontext ctx, zint argCount, const zvalue *args);
-
-/**
- * Executes the given code, using the given global context.  Modifies
- * the context in response to running the code. In addition, this can
- * cause arbitrary calls to be performed on and via the context's
- * function registry (which can respond to those calls as it sees
- * fit).
- *
- * The given `code` must be a `block` node, such as would have
- * been returned from `langCompile()` on a Samizdat Layer 0 file.
- */
-void langExecute(zcontext ctx, zvalue code);
-
 
 /*
  * Compilation

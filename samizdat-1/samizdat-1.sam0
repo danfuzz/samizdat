@@ -108,3 +108,5 @@ main = { file rest* ::
         <> @1;
     };
 };
+
+apply main ARGS;
