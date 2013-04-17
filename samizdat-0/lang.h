@@ -142,11 +142,18 @@ void langExecute(zcontext ctx, zvalue code);
  */
 
 /**
- * Compile the given program text into an executable form, suitable
- * for passing to `langExecute()`. The text must be a program in
- * Samizdat Layer 0.
+ * Compiles the given program text into an executable form, suitable
+ * for passing to `langFunctionFromBlock()`. The text must be a
+ * program in Samizdat Layer 0. The result is a `block` node in the
+ * Samizdat Layer 0 parse tree form (details documented elsewhere).
  */
 zvalue langCompile(zvalue programText);
+
+/**
+ * Constructs an in-model no-args function from the given `function`
+ * node, by binding it in the given variable context.
+ */
+zvalue langFunctionFromNode(zcontext ctx, zvalue functionNode);
 
 
 #endif
