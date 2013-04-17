@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
     langCtxBind(ctx, "ARGS", args);
 
     zvalue programText = readFile(fileName);
-    zvalue program = langCompile(programText);
+    zvalue program = langTextToProgramNode(programText);
     zvalue function = langFunctionFromNode(ctx, program);
     zvalue result = langApply(function, args);
 

@@ -122,12 +122,12 @@ void langCtxBindAll(zcontext ctx, zvalue maplet);
  */
 
 /**
- * Compiles the given program text into an executable form, suitable
+ * Compiles the given program text into a parse tree form, suitable
  * for passing to `langFunctionFromBlock()`. The text must be a
- * program in Samizdat Layer 0. The result is a `block` node in the
+ * program in Samizdat Layer 0. The result is a `function` node in the
  * Samizdat Layer 0 parse tree form (details documented elsewhere).
  */
-zvalue langCompile(zvalue programText);
+zvalue langTextToProgramNode(zvalue programText);
 
 /**
  * Constructs an in-model no-args function from the given `function`

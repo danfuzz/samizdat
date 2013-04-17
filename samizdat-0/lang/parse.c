@@ -624,12 +624,14 @@ static zvalue parseProgram(ParseState *state) {
     return functionNode(hidPutValue(TOK_FORMALS, datListletEmpty()), block);
 }
 
+
 /*
- * Module functions
+ * Exported functions
  */
 
 /* Documented in header. */
-zvalue parse(zvalue tokens) {
+zvalue langTextToProgramNode(zvalue programText) {
+    zvalue tokens = tokenize(programText);
     ParseState state = { tokens, datSize(tokens), 0 };
     zvalue result = parseProgram(&state);
 

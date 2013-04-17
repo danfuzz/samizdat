@@ -22,7 +22,7 @@
 static void addLibrary(zcontext ctx) {
     zvalue programText =
         datStringletFromUtf8String(library_sam0, library_sam0_len);
-    zvalue program = langCompile(programText);
+    zvalue program = langTextToProgramNode(programText);
     zvalue function = langFunctionFromNode(ctx, program);
     zvalue result = langCall(function, 0, NULL);
 

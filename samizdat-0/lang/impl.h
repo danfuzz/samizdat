@@ -100,11 +100,5 @@ zvalue funDefine(zfunction function, void *state);
  */
 zvalue tokenize(zvalue stringlet);
 
-/**
- * Parses a listlet of tokens into Samizdat Layer 0 parse trees. Returns
- * a node representing the parsed program.
- */
-zvalue parse(zvalue tokens);
-
 
 #endif
