@@ -178,14 +178,22 @@ static zvalue execListlet(zcontext ctx, zvalue listlet) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(zcontext ctx, zvalue e) {
-    if      (datHighletHasType(e, STR_LITERAL))  { return datHighletValue(e);              }
-    else if (datHighletHasType(e, STR_VAR_REF))  { return ctxGet(ctx, datHighletValue(e)); }
-    else if (datHighletHasType(e, STR_LISTLET))  { return execListlet(ctx, e);      }
-    else if (datHighletHasType(e, STR_MAPLET))   { return execMaplet(ctx, e);       }
-    else if (datHighletHasType(e, STR_UNIQLET))  { return datUniqlet();             }
-    else if (datHighletHasType(e, STR_HIGHLET))  { return execHighlet(ctx, e);      }
-    else if (datHighletHasType(e, STR_CALL))     { return execCall(ctx, e);         }
-    else if (datHighletHasType(e, STR_FUNCTION)) { return execFunction(ctx, e);     }
+    if (datHighletHasType(e, STR_LITERAL))
+        return datHighletValue(e);
+    else if (datHighletHasType(e, STR_VAR_REF))
+        return ctxGet(ctx, datHighletValue(e));
+    else if (datHighletHasType(e, STR_LISTLET))
+        return execListlet(ctx, e);
+    else if (datHighletHasType(e, STR_MAPLET))
+        return execMaplet(ctx, e);
+    else if (datHighletHasType(e, STR_UNIQLET))
+        return datUniqlet();
+    else if (datHighletHasType(e, STR_HIGHLET))
+        return execHighlet(ctx, e);
+    else if (datHighletHasType(e, STR_CALL))
+        return execCall(ctx, e);
+    else if (datHighletHasType(e, STR_FUNCTION))
+        return execFunction(ctx, e);
     else {
         die("Invalid expression type.");
     }
