@@ -31,6 +31,24 @@ static zvalue *listletElems(zvalue listlet) {
     return ((DatListlet *) listlet)->elems;
 }
 
+/**
+ * Combines two element arrays into a single new listlet. This
+ * can also be used for a single array by passing `size2` as `0`.
+ */
+static zvalue listletFromTwoArrays(zint size1, zvalue *elems1,
+                                   zint size2, zvalue *elems2) {
+    zvalue result = allocListlet(size1 + size2);
+    zvalue *resultElems = listletElems(result);
+
+    memcpy(resultElems, elems1, size1 * sizeof(zvalue));
+
+    if (size2 != 0) {
+        memcpy(resultElems + size1, elems2, size2 * sizeof(zvalue));
+    }
+
+    return result;
+}
+
 
 /*
  * Module functions
@@ -82,45 +100,47 @@ zvalue datListletEmpty(void) {
 /* Documented in header. */
 zvalue datListletAppend(zvalue listlet, zvalue value) {
     datAssertListlet(listlet);
+    datAssertValid(value);
 
-    zint oldSize = listlet->size;
-    zint size = oldSize + 1;
-    zvalue result = allocListlet(size);
-    zvalue *resultElems = listletElems(result);
+    return listletFromTwoArrays(datSize(listlet), listletElems(listlet),
+                                1, &value);
+}
 
-    memcpy(resultElems, listletElems(listlet), oldSize * sizeof(zvalue));
-    resultElems[oldSize] = value;
+/* Documented in header. */
+zvalue datListletPrepend(zvalue value, zvalue listlet) {
+    datAssertValid(value);
+    datAssertListlet(listlet);
 
-    return result;
+    return listletFromTwoArrays(1, &value,
+                                datSize(listlet), listletElems(listlet));
+}
+
+/* Documented in header. */
+zvalue datListletAdd(zvalue listlet1, zvalue listlet2) {
+    datAssertListlet(listlet1);
+    datAssertListlet(listlet2);
+
+    return listletFromTwoArrays(datSize(listlet1), listletElems(listlet1),
+                                datSize(listlet2), listletElems(listlet2));
 }
 
 zvalue datListletDelete(zvalue listlet, zint n) {
     datAssertListlet(listlet);
     datAssertNth(listlet, n);
 
-    zint oldSize = listlet->size;
-    zint size = oldSize - 1;
-    zvalue result = allocListlet(size);
-    zvalue *resultElems = listletElems(result);
-    zvalue *oldElems = listletElems(listlet);
+    zvalue *elems = listletElems(listlet);
+    zint size = datSize(listlet);
 
-    memcpy(resultElems, oldElems, n * sizeof(zvalue));
-    memcpy(resultElems + n, oldElems + n + 1, (size - n) * sizeof(zvalue));
-
-    return result;
+    return listletFromTwoArrays(n, elems, size - n - 1, elems + n + 1);
 }
 
 /* Documented in header. */
 zvalue datListletFromValues(zvalue *values, zint size) {
-    zvalue result = allocListlet(size);
-    zvalue *resultElems = listletElems(result);
-
     for (zint i = 0; i < size; i++) {
         datAssertValid(values[i]);
-        resultElems[i] = values[i];
     }
 
-    return result;
+    return listletFromTwoArrays(size, values, 0, NULL);
 }
 
 /* Documented in header. */

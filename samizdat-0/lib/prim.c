@@ -224,6 +224,23 @@ static zvalue prim_append(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_listletPrepend(void *state, zint argCount,
+                                  const zvalue *args) {
+    requireExactly(argCount, 2);
+    return datListletPrepend(args[0], args[1]);
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_listletAdd(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+    return datListletAdd(args[0], args[1]);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_getNth(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
 
@@ -371,6 +388,8 @@ void bindPrimitives(zcontext ctx) {
                         NULL);
 
     // Listlets
+    langCtxBindFunction(ctx, "listletAdd",     prim_listletAdd, NULL);
+    langCtxBindFunction(ctx, "listletPrepend", prim_listletPrepend, NULL);
     langCtxBindFunction(ctx, "append", prim_append, NULL);
     langCtxBindFunction(ctx, "getNth", prim_getNth, NULL);
     langCtxBindFunction(ctx, "delNth", prim_delNth, NULL);

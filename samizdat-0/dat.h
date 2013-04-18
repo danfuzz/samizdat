@@ -208,12 +208,8 @@ zvalue datStringletToListlet(zvalue stringlet);
 
 /**
  * Combines the characters of two stringlets, in order, into a new
- * stringlet.
- *
- * Note: The name is intentionally `add` and not `append`. `append` on
- * lists canonically adds an element to a list, whereas this function
- * combines two things-of-the-same-type, such as (e.g.) `+` on strings
- * does in many languages.
+ * stringlet. See `datListletAdd()` for discussion about the choice
+ * of name.
  */
 zvalue datStringletAdd(zvalue str1, zvalue str2);
 
@@ -254,6 +250,24 @@ zvalue datListletGet(zvalue listlet, zint n);
  * given listlet.
  */
 zvalue datListletAppend(zvalue listlet, zvalue value);
+
+/**
+ * Gets the listlet resulting from prepending the given value to the
+ * front of the given listlet. Note that the order of arguments is in
+ * parallel to what the result will be.
+ */
+zvalue datListletPrepend(zvalue value, zvalue listlet);
+
+/**
+ * Combines the elements of two listlets, in order, into a new
+ * listlet.
+ *
+ * Contrasting this with `datListlet{Append,Prepend}()` and above,
+ * those functions operate
+ * heterogeneously on a listlet and an element, whereas this one
+ * operates on two peer listlets.
+ */
+zvalue datListletAdd(zvalue listlet1, zvalue listlet2);
 
 /**
  * Gets the listlet resulting from deleting the nth element of the
