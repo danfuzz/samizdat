@@ -190,6 +190,12 @@ zchar datStringletGet(zvalue stringlet, zint n);
 zvalue datStringletFromChars(const zchar *chars, zint size);
 
 /**
+ * Gets the stringlet built from the given character-representing
+ * intlet.
+ */
+zvalue datStringletFromIntlet(zvalue intlet);
+
+/**
  * Gets the stringlet built from the given listlet of intlets.
  */
 zvalue datStringletFromListlet(zvalue listlet);

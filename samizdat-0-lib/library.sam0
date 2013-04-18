@@ -137,13 +137,6 @@ cat = { listlet rest* ::
         };
 };
 
-# Returns a stringlet consisting of the given character (given as an
-# intlet).
-stringletFromChar = { char ::
-    <> stringletFromChars @[char];
-};
-
-
 # Concatenates one or more stringlets together into a single resulting
 # stringlet.
 stringletCat = { stringlet rest* ::
@@ -308,5 +301,4 @@ sourceStringlet = { value ::
     @"reduce" = reduce
     @"sourceStringlet" = sourceStringlet
     @"stringletCat" = stringletCat
-    @"stringletFromChar" = stringletFromChar
 ];
