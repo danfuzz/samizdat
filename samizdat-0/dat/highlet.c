@@ -61,4 +61,27 @@ zorder datHighletOrder(zvalue v1, zvalue v2) {
  * Exported functions
  */
 
-// TODO: Stuff.
+/* Documented in header. */
+zvalue datHighletType(zvalue highlet) {
+    datAssertHighlet(highlet);
+    return highletInfo(highlet)->type;
+}
+
+/* Documented in header. */
+zvalue datHighletValue(zvalue highlet) {
+    datAssertHighlet(highlet);
+    return highletInfo(highlet)->value;
+}
+
+/* Documented in header. */
+zvalue datHighletFromType(zvalue type) {
+    datAssertValid(type);
+    return newHighlet(type, NULL);
+}
+
+/* Documented in header. */
+zvalue datHighletFromTypeValue(zvalue type, zvalue value) {
+    datAssertValid(type);
+    datAssertValid(value);
+    return newHighlet(type, value);
+}

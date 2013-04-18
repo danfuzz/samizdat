@@ -347,6 +347,32 @@ void datUniqletSetValue(zvalue uniqlet, void *key, void *value);
 
 
 /*
+ * Highlet Functions
+ */
+
+/**
+ * Gets the type tag of a highlet.
+ */
+zvalue datHighletType(zvalue highlet);
+
+/**
+ * Gets the value associated with a highlet. This is `NULL` for
+ * valueless highlets (unsurprisingly).
+ */
+zvalue datHighletValue(zvalue highlet);
+
+/**
+ * Returns a valueless highlet, with the given type tag.
+ */
+zvalue datHighletFromType(zvalue type);
+
+/**
+ * Returns a valued highlet.
+ */
+zvalue datHighletFromTypeValue(zvalue type, zvalue value);
+
+
+/*
  * Higher Level Functions
  */
 
