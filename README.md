@@ -1,7 +1,12 @@
 Samizdat
 ========
 
+This is the source for the Samizdat programming language, or "Sami" if
+you want to be terse.
+
 Watch this space!
+
+- - - - -
 
 Plan of attack
 --------------
