@@ -182,6 +182,17 @@ zchar datStringletGet(zvalue stringlet, zint n);
 zvalue datStringletFromChars(const zchar *chars, zint size);
 
 /**
+ * Combines the characters of two stringlets, in order, into a new
+ * stringlet.
+ *
+ * Note: The name is intentionally `add` and not `append`. `append` on
+ * lists canonically adds an element to a list, whereas this function
+ * combines two things-of-the-same-type, such as (e.g.) `+` on strings
+ * does in many languages.
+ */
+zvalue datStringletAdd(zvalue str1, zvalue str2);
+
+/**
  * Gets the stringlet resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.

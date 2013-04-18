@@ -96,6 +96,22 @@ zvalue datStringletFromChars(const zchar *chars, zint size) {
 }
 
 /* Documented in header. */
+zvalue datStringletAdd(zvalue str1, zvalue str2) {
+    datAssertStringlet(str1);
+    datAssertStringlet(str2);
+
+    zint size1 = datSize(str1);
+    zint size2 = datSize(str2);
+    zvalue result = allocStringlet(size1 + size2);
+
+    memcpy(stringletElems(result), stringletElems(str1),
+           size1 * sizeof(zchar));
+    memcpy(stringletElems(result) + size1, stringletElems(str2),
+           size2 * sizeof(zchar));
+    return result;
+}
+
+/* Documented in header. */
 zvalue datStringletFromUtf8String(const char *string, zint stringBytes) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
