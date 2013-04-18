@@ -85,7 +85,7 @@ or = { predicate rest* ::
 # function argument is the *last* one and not the *first* one. This is
 # specifically done to make it natural to write a multi-line function
 # without losing track of the other two arguments.
-reduce = { base listlet func ::
+listletReduce = { base listlet func ::
     size = lowSize listlet;
 
     doReduce = { reduction index ::
@@ -110,7 +110,7 @@ reduce = { base listlet func ::
 # specifically done to make it natural to write a multi-line function
 # without losing track of the listlet argument.
 listletMap = { listlet func ::
-    <> reduce @[] listlet
+    <> listletReduce @[] listlet
         { reduction value index ::
             <> listletAppend reduction (func value index);
         };
@@ -120,14 +120,14 @@ listletMap = { listlet func ::
 # Concatenates one or more listlets together into a single resulting
 # listlet.
 listletCat = { listlet rest* ::
-    <> reduce listlet rest
+    <> listletReduce listlet rest
         { reduction value :: <> listletAdd reduction value; };
 };
 
 # Concatenates one or more stringlets together into a single resulting
 # stringlet.
 stringletCat = { stringlet rest* ::
-    <> reduce stringlet rest
+    <> listletReduce stringlet rest
         { reduction value :: <> stringletAdd reduction value; };
 };
 
@@ -222,7 +222,7 @@ sourceStringlet = { value ::
         result = listletCat @[@"@\""] body @[@"\""];
         <> apply stringletCat result;
     } { <> isListlet value; } {
-        body = reduce @"" value
+        body = listletReduce @"" value
             { reduction elem ::
                 <> stringletCat
                     reduction
@@ -231,7 +231,7 @@ sourceStringlet = { value ::
             };
         <> stringletCat @"@[" body @"]";
     } { <> isMaplet value; } {
-        body = reduce @"" (getKeys value)
+        body = listletReduce @"" (getKeys value)
             { reduction key ::
                 <> stringletCat
                     reduction
@@ -282,10 +282,10 @@ sourceStringlet = { value ::
     @"isUniqlet" = isUniqlet
     @"listletCat" = listletCat
     @"listletMap" = listletMap
+    @"listletReduce" = listletReduce
     @"not" = not
     @"null" = null
     @"or" = or
-    @"reduce" = reduce
     @"sourceStringlet" = sourceStringlet
     @"stringletCat" = stringletCat
 ];
