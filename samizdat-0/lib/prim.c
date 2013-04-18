@@ -361,59 +361,56 @@ static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void bindPrimitives(zcontext ctx) {
+    #define BIND(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
+
     // Low-layer types (in general)
-    langCtxBindFunction(ctx, "lowOrder",   prim_lowOrder,   NULL);
-    langCtxBindFunction(ctx, "lowOrderIs", prim_lowOrderIs, NULL);
-    langCtxBindFunction(ctx, "lowSize",    prim_lowSize,    NULL);
-    langCtxBindFunction(ctx, "lowType",    prim_lowType,    NULL);
+    BIND(lowOrder);
+    BIND(lowOrderIs);
+    BIND(lowSize);
+    BIND(lowType);
 
     // Conditional
-    langCtxBindFunction(ctx, "ifElse", prim_ifElse, NULL);
-    langCtxBindFunction(ctx, "ifVoid", prim_ifVoid, NULL);
+    BIND(ifElse);
+    BIND(ifVoid);
 
     // Intlets
-    langCtxBindFunction(ctx, "ineg", prim_ineg, NULL);
-    langCtxBindFunction(ctx, "iadd", prim_iadd, NULL);
-    langCtxBindFunction(ctx, "isub", prim_isub, NULL);
-    langCtxBindFunction(ctx, "imul", prim_imul, NULL);
-    langCtxBindFunction(ctx, "idiv", prim_idiv, NULL);
-    langCtxBindFunction(ctx, "imod", prim_imod, NULL);
+    BIND(ineg);
+    BIND(iadd);
+    BIND(isub);
+    BIND(imul);
+    BIND(idiv);
+    BIND(imod);
 
     // Stringlets
-    langCtxBindFunction(ctx, "stringletAdd",       prim_stringletAdd, NULL);
-    langCtxBindFunction(ctx, "stringletFromChar",  prim_stringletFromChar,
-                        NULL);
-    langCtxBindFunction(ctx, "stringletFromChars", prim_stringletFromChars,
-                        NULL);
-    langCtxBindFunction(ctx, "stringletNth",       prim_stringletNth, NULL);
-    langCtxBindFunction(ctx, "stringletToChars",   prim_stringletToChars,
-                        NULL);
+    BIND(stringletAdd);
+    BIND(stringletFromChar);
+    BIND(stringletFromChars);
+    BIND(stringletNth);
+    BIND(stringletToChars);
 
     // Listlets
-    langCtxBindFunction(ctx, "listletAdd",     prim_listletAdd, NULL);
-    langCtxBindFunction(ctx, "listletAppend",  prim_listletAppend, NULL);
-    langCtxBindFunction(ctx, "listletDelNth",  prim_listletDelNth, NULL);
-    langCtxBindFunction(ctx, "listletNth",     prim_listletNth, NULL);
-    langCtxBindFunction(ctx, "listletPrepend", prim_listletPrepend, NULL);
+    BIND(listletAdd);
+    BIND(listletAppend);
+    BIND(listletDelNth);
+    BIND(listletNth);
+    BIND(listletPrepend);
 
     // Maplets
-    langCtxBindFunction(ctx, "mapletKeys", prim_mapletKeys,  NULL);
-    langCtxBindFunction(ctx, "mapletGet",  prim_mapletGet, NULL);
+    BIND(mapletKeys);
+    BIND(mapletGet);
 
     // Highlets
-    langCtxBindFunction(ctx, "highletType",  prim_highletType,  NULL);
-    langCtxBindFunction(ctx, "highletValue", prim_highletValue, NULL);
+    BIND(highletType);
+    BIND(highletValue);
 
     // Functions
-    langCtxBindFunction(ctx, "apply", prim_apply, NULL);
+    BIND(apply);
 
     // Compilation
-    langCtxBindFunction(ctx, "sam0Tree", prim_sam0Tree, NULL);
+    BIND(sam0Tree);
 
     // I/O
-    langCtxBindFunction(ctx, "die",       prim_die,       NULL);
-    langCtxBindFunction(ctx, "readFile",  prim_readFile,  NULL);
-    langCtxBindFunction(ctx, "writeFile", prim_writeFile, NULL);
-
-    // TODO: More.
+    BIND(die);
+    BIND(readFile);
+    BIND(writeFile);
 }

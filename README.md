@@ -33,7 +33,8 @@ Plan of attack
   verifiably correct by inspection. That is, the implementation
   prefers clarity and obviousness over trickiness and efficiency. In
   addition, it uses a minimum of C library functionality and eschews
-  the use of macros *except* as guards on header files.
+  the use of macros *except* as guards on header files and to
+  reduce noisy boilerplate.
 
 * `samizdat-0-lib` &mdash; *Samizdat Layer 0* in-language core library.
 
