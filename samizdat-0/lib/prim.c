@@ -89,6 +89,7 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
         case DAT_LISTLET:   return CST_STR_LISTLET;
         case DAT_MAPLET:    return CST_STR_MAPLET;
         case DAT_UNIQLET:   return CST_STR_UNIQLET;
+        case DAT_HIGHLET:   return CST_STR_HIGHLET;
         default: {
             die("Invalid value type (shouldn't happen): %d", datType(args[0]));
         }

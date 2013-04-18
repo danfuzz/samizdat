@@ -19,6 +19,7 @@ extern zvalue CST_STR_STRINGLET;
 extern zvalue CST_STR_LISTLET;
 extern zvalue CST_STR_MAPLET;
 extern zvalue CST_STR_UNIQLET;
+extern zvalue CST_STR_HIGHLET;
 
 /* Other constants. */
 extern zvalue CST_TRUE;

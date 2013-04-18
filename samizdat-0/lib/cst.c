@@ -14,6 +14,7 @@ zvalue CST_STR_STRINGLET = NULL;
 zvalue CST_STR_LISTLET = NULL;
 zvalue CST_STR_MAPLET = NULL;
 zvalue CST_STR_UNIQLET = NULL;
+zvalue CST_STR_HIGHLET = NULL;
 
 zvalue CST_FALSE = NULL;
 zvalue CST_TRUE = NULL;
@@ -34,6 +35,7 @@ void cstInit(void) {
     CST_STR_LISTLET   = datStringletFromUtf8String("listlet", -1);
     CST_STR_MAPLET    = datStringletFromUtf8String("maplet", -1);
     CST_STR_UNIQLET   = datStringletFromUtf8String("uniqlet", -1);
+    CST_STR_HIGHLET   = datStringletFromUtf8String("highlet", -1);
 
     CST_FALSE = langFalse();
     CST_TRUE  = langTrue();

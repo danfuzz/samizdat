@@ -28,7 +28,8 @@ typedef enum {
     DAT_STRINGLET,
     DAT_LISTLET,
     DAT_MAPLET,
-    DAT_UNIQLET
+    DAT_UNIQLET,
+    DAT_HIGHLET
 } ztype;
 
 /**
@@ -93,6 +94,13 @@ void datAssertMaplet(zvalue value);
  * with a diagnostic message.
  */
 void datAssertUniqlet(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and furthermore
+ * that it is a highlet (a high-layer value). If not, this aborts the
+ * process with a diagnostic message.
+ */
+void datAssertHighlet(zvalue value);
 
 /**
  * Gets the low-level data type of the given value. `value` must be a
@@ -348,7 +356,7 @@ void datUniqletSetValue(zvalue uniqlet, void *key, void *value);
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
  *
  * Major order is by type &mdash `intlet < stringlet < listlet <
- * maplet < uniqlet` &mdash; and minor order is type-dependant.
+ * maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
  *
  * * Intlets order by integer value.
  *
@@ -363,6 +371,10 @@ void datUniqletSetValue(zvalue uniqlet, void *key, void *value);
  * * Any given uniqlet never compares as equal to anything but itself.
  *   Any two uniqlets have a consistent and transitive &mdash; but
  *   otherwise arbitrary &mdash; ordering.
+ *
+ * * Highlets compare by type as primary, and value as secondary.
+ *   With types equal, a highlets without a value order earlier than
+ *   ones with a value.
  */
 zorder datOrder(zvalue v1, zvalue v2);
 
