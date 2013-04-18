@@ -147,3 +147,35 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize) {
     *out = '\0';
     return result;
 }
+
+/* Documented in header. */
+zvalue datStringletFromListlet(zvalue listlet) {
+    zint size = datSize(listlet);
+    zvalue result = allocStringlet(size);
+    zchar *elems = stringletElems(result);
+
+    for (zint i = 0; i < size; i++) {
+        zint one = datIntletToInt(datListletGet(listlet, i));
+        if ((one < 0) || (one >= 0x100000000)) {
+            die("Invalid intlet value for stringlet: %lld", one);
+        }
+        elems[i] = (zchar) one;
+    }
+
+    return result;
+}
+
+/* Documented in header. */
+zvalue datStringletToListlet(zvalue stringlet) {
+    datAssertStringlet(stringlet);
+
+    zint size = datSize(stringlet);
+    zchar *elems = stringletElems(stringlet);
+    zvalue ints[size];
+
+    for (zint i = 0; i < size; i++) {
+        ints[i] = datIntletFromInt(elems[i]);
+    }
+
+    return datListletFromValues(ints, size);
+}

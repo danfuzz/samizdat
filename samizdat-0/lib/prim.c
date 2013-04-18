@@ -166,6 +166,24 @@ static zvalue prim_imod(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_stringletFromChars(void *state, zint argCount,
+                                      const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datStringletFromListlet(args[0]);
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_stringletToChars(void *state, zint argCount,
+                                    const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datStringletToListlet(args[0]);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_stringletAdd(void *state, zint argCount,
                                 const zvalue *args) {
     requireExactly(argCount, 2);
@@ -315,8 +333,12 @@ void bindPrimitives(zcontext ctx) {
     langCtxBindFunction(ctx, "imod", prim_imod, NULL);
 
     // Stringlets
-    langCtxBindFunction(ctx, "stringletAdd", prim_stringletAdd, NULL);
-    langCtxBindFunction(ctx, "stringletNth", prim_stringletNth, NULL);
+    langCtxBindFunction(ctx, "stringletAdd",       prim_stringletAdd, NULL);
+    langCtxBindFunction(ctx, "stringletFromChars", prim_stringletFromChars,
+                        NULL);
+    langCtxBindFunction(ctx, "stringletNth",       prim_stringletNth, NULL);
+    langCtxBindFunction(ctx, "stringletToChars",   prim_stringletToChars,
+                        NULL);
 
     // Listlets
     langCtxBindFunction(ctx, "append", prim_append, NULL);
