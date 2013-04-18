@@ -90,7 +90,7 @@ map = { listlet func ::
         <> ifElse (eq index size)
             { <> @[]; }
             {
-                <> cat
+                <> listletCat
                     @[(func (listletNth listlet index) index)]
                     (doMap (iadd index @1));
             };
@@ -127,8 +127,7 @@ reduce = { base listlet func ::
 
 # Concatenates one or more listlets together into a single resulting
 # listlet.
-cat = { listlet rest* ::
-    # The outer reduce iterates over the listlets, concatenating each in turn.
+listletCat = { listlet rest* ::
     <> reduce listlet rest
         { reduction value :: <> listletAdd reduction value; };
 };
@@ -228,7 +227,7 @@ sourceStringlet = { value ::
         };
     } { <> isStringlet value; } {
         body = map (stringletToChars value) stringletChar;
-        result = cat @[@"@\""] body @[@"\""];
+        result = listletCat @[@"@\""] body @[@"\""];
         <> apply stringletCat result;
     } { <> isListlet value; } {
         body = reduce @"" value
@@ -281,7 +280,6 @@ sourceStringlet = { value ::
     @"le" = le
     @"ge" = ge
     @"and" = and
-    @"cat" = cat
     @"else" = else
     @"if" = if
     @"isHighlet" = isHighlet
@@ -290,6 +288,7 @@ sourceStringlet = { value ::
     @"isMaplet" = isMaplet
     @"isStringlet" = isStringlet
     @"isUniqlet" = isUniqlet
+    @"listletCat" = listletCat
     @"map" = map
     @"not" = not
     @"null" = null
