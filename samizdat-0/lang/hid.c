@@ -30,8 +30,8 @@ static void initHidConsts(void) {
     }
 
     constsInit();
-    HID_FALSE = datHighletFrom(TOK_BOOLEAN, datIntletFromInt(0));
-    HID_TRUE  = datHighletFrom(TOK_BOOLEAN, datIntletFromInt(1));
+    HID_FALSE = datHighletWithValue(TOK_BOOLEAN, datIntletFromInt(0));
+    HID_TRUE  = datHighletWithValue(TOK_BOOLEAN, datIntletFromInt(1));
 }
 
 
