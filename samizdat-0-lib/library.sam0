@@ -137,6 +137,20 @@ cat = { listlet rest* ::
         };
 };
 
+# Returns a stringlet consisting of the given character (given as an
+# intlet).
+stringletFromChar = { char ::
+    <> stringletFromChars @[char];
+};
+
+
+# Concatenates one or more stringlets together into a single resulting
+# stringlet.
+stringletCat = { stringlet rest* ::
+    <> reduce stringlet rest
+        { reduction value :: <> stringletAdd reduction value; };
+};
+
 # Returns true iff the given value is an intlet.
 isIntlet = { value ::
     <> eq (lowType value) @"intlet";
@@ -175,7 +189,7 @@ sourceStringlet = { value ::
         } else {
             digit = iadd (imod value @10) @48; # 48 == "0"
             more = idiv value @10;
-            <> append (intletBody start more) digit;
+            <> stringletAdd (intletBody start more) (stringletFromChar digit);
         };
     };
 
@@ -185,7 +199,7 @@ sourceStringlet = { value ::
         } else {
             digit = stringletNth @"0123456789abcdef" (imod value @16);
             more = idiv value @16;
-            <> append (intletHex more) digit;
+            <> stringletAdd (intletHex more) (stringletFromChar digit);
         };
     };
 
@@ -196,13 +210,13 @@ sourceStringlet = { value ::
             <> @"\\n";
         } { <> or { <> eq ch @34; } { <> eq ch @92; }; } {
             # 34 == "\"" and 92 == "\\"
-            <> append @"\\" ch;
+            <> stringletAdd @"\\" (stringletFromChar ch);
         } { <> or { <> le ch @31; }
                   { <> and { <> ge ch @127; } { <> le ch @159; }; }; } {
             # These are the ranges for nonprinting control characters.
-            <> cat @"\\x" (intletHex ch) @";";
+            <> stringletCat @"\\x" (intletHex ch) @";";
         } else {
-            <> @[ch];
+            <> stringletFromChar ch;
         };
     };
 
@@ -219,29 +233,29 @@ sourceStringlet = { value ::
             <> intletBody @"@-" (ineg value);
         };
     } { <> isStringlet value; } {
-        body = reduce @"" value
-            { reduction item :: <> cat reduction (stringletChar item); };
-        <> cat @"@\"" body @"\"";
+        body = map (stringletToChars value) stringletChar;
+        result = cat @[@"@\""] body @[@"\""];
+        <> apply stringletCat result;
     } { <> isListlet value; } {
         body = reduce @"" value
             { reduction elem ::
-                <> cat
+                <> stringletCat
                     reduction
                     (if { <> eq reduction @""; } { <> @""; } else { <> @" "; })
                     (sourceStringlet elem);
             };
-        <> cat @"@[" body @"]";
+        <> stringletCat @"@[" body @"]";
     } { <> isMaplet value; } {
         body = reduce @"" (getKeys value)
             { reduction key ::
-                <> cat
+                <> stringletCat
                     reduction
                     (if { <> eq reduction @""; } { <> @""; } else { <> @" "; })
                     (sourceStringlet key)
                     @"="
                     (sourceStringlet (getValue value key));
             };
-        <> cat @"@[" body @"]";
+        <> stringletCat @"@[" body @"]";
     } { <> isUniqlet value; } {
         <> @"@@";
     } else {
@@ -276,4 +290,6 @@ sourceStringlet = { value ::
     @"or" = or
     @"reduce" = reduce
     @"sourceStringlet" = sourceStringlet
+    @"stringletCat" = stringletCat
+    @"stringletFromChar" = stringletFromChar
 ];
