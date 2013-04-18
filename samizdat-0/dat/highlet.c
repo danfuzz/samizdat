@@ -80,10 +80,16 @@ zvalue datHighletFromType(zvalue type) {
 }
 
 /* Documented in header. */
-zvalue datHighletFromTypeValue(zvalue type, zvalue value) {
+zvalue datHighletFrom(zvalue type, zvalue value) {
     datAssertValid(type);
     datAssertValid(value);
     return newHighlet(type, value);
+}
+
+/* Documented in header. */
+zvalue datHighletWithValue(zvalue highlet, zvalue value) {
+    datAssertHighlet(highlet);
+    return datHighletFrom(highletInfo(highlet)->type, value);
 }
 
 /* Documented in header. */
