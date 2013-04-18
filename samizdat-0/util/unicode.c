@@ -17,13 +17,13 @@
  * Does the basic decoding step, with syntactic but not semantic validation.
  */
 static const char *justDecode(const char *string, zint stringBytes,
-                              zint *result) {
+                              zchar *result) {
     if (stringBytes <= 0) {
         die("Invalid string size: %lld", stringBytes);
     }
 
     unsigned char ch = *string;
-    zint value;
+    zint value; // Note: zint and not zchar for easier overflow detection.
     int extraBytes;
     zint minValue;
 
@@ -129,7 +129,7 @@ static const char *justDecode(const char *string, zint stringBytes,
     }
 
     if (result != NULL) {
-        *result = value;
+        *result = (zchar) value;
     }
 
     return string;
@@ -156,7 +156,7 @@ void uniAssertValid(zint value) {
 
 /* Documented in header. */
 const char *utf8DecodeOne(const char *string, zint stringBytes,
-                          zint *result) {
+                          zchar *result) {
     string = justDecode(string, stringBytes, result);
     uniAssertValid(*result);
 
@@ -177,8 +177,8 @@ zint utf8DecodeStringSize(const char *string, zint stringBytes) {
 }
 
 /* Documented in header. */
-void utf8DecodeStringToInts(const char *string, zint stringBytes,
-                            zint *result) {
+void utf8DecodeStringToChars(const char *string, zint stringBytes,
+                             zchar *result) {
     const char *stringEnd = strGetEnd(string, stringBytes);
 
     while (string < stringEnd) {

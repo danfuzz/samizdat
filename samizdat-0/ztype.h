@@ -20,6 +20,13 @@
 typedef int64_t zint;
 
 /**
+ * 32-bit unsigned integer. This is the type used to represent
+ * characters individually (as UTF-32 values / naked Unicode code
+ * points).
+ */
+typedef uint32_t zchar;
+
+/**
  * The result of a comparison, which is to say, an order.
  */
 typedef enum {

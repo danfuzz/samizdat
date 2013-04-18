@@ -84,10 +84,11 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
 
     switch (datType(args[0])) {
-        case DAT_INTLET:  return CST_STR_INTLET;
-        case DAT_LISTLET: return CST_STR_LISTLET;
-        case DAT_MAPLET:  return CST_STR_MAPLET;
-        case DAT_UNIQLET: return CST_STR_UNIQLET;
+        case DAT_INTLET:    return CST_STR_INTLET;
+        case DAT_STRINGLET: return CST_STR_STRINGLET;
+        case DAT_LISTLET:   return CST_STR_LISTLET;
+        case DAT_MAPLET:    return CST_STR_MAPLET;
+        case DAT_UNIQLET:   return CST_STR_UNIQLET;
         default: {
             die("Invalid value type (shouldn't happen): %d", datType(args[0]));
         }
@@ -160,6 +161,19 @@ static zvalue prim_idiv(void *state, zint argCount, const zvalue *args) {
 static zvalue prim_imod(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
     return datIntletFromInt(datIntletToInt(args[0]) % datIntletToInt(args[1]));
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_stringletNth(void *state, zint argCount,
+                                const zvalue *args) {
+    requireExactly(argCount, 2);
+
+    zvalue stringlet = args[0];
+    zint index = datIntletToInt(args[1]);
+
+    return datIntletFromInt(datStringletGet(stringlet, index));
 }
 
 /**
@@ -290,6 +304,9 @@ void bindPrimitives(zcontext ctx) {
     langCtxBindFunction(ctx, "imul", prim_imul, NULL);
     langCtxBindFunction(ctx, "idiv", prim_idiv, NULL);
     langCtxBindFunction(ctx, "imod", prim_imod, NULL);
+
+    // Stringlets
+    langCtxBindFunction(ctx, "stringletNth", prim_stringletNth, NULL);
 
     // Listlets
     langCtxBindFunction(ctx, "append", prim_append, NULL);
