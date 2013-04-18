@@ -26,9 +26,9 @@ Plan of attack
   syntax.
 
   Finally, *Samizdat Layer 0* defines an executable parse tree
-  format. This format, along with API defined by the minimal core
-  library, are the analog to a bytecode specification in systems that
-  are bytecode-based.
+  format. This format, along with API defined by the
+  primitively-defined part of the core library, are the analog to a
+  bytecode specification in systems that are bytecode-based.
 
   The language parser and runtime do the bare minimum of error
   checking, attempting to fail fast in the face of an error but not to
