@@ -266,6 +266,24 @@ static zvalue prim_getValue(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_highletType(void *state, zint argCount,
+                               const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datHighletType(args[0]);
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_highletValue(void *state, zint argCount,
+                                const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datHighletValue(args[0]);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_apply(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
     return langApply(args[0], args[1]);
@@ -349,6 +367,10 @@ void bindPrimitives(zcontext ctx) {
     // Maplets
     langCtxBindFunction(ctx, "getKeys",  prim_getKeys,  NULL);
     langCtxBindFunction(ctx, "getValue", prim_getValue, NULL);
+
+    // Highlets
+    langCtxBindFunction(ctx, "highletType",  prim_highletType,  NULL);
+    langCtxBindFunction(ctx, "highletValue", prim_highletValue, NULL);
 
     // Functions
     langCtxBindFunction(ctx, "apply", prim_apply, NULL);
