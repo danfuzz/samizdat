@@ -367,13 +367,15 @@ zvalue datHighletValue(zvalue highlet);
 zvalue datHighletFromType(zvalue type);
 
 /**
- * Returns a valued highlet.
+ * Returns a possibly-valued highlet. The given value must either
+ * be a valid value or `NULL`.
  */
 zvalue datHighletFrom(zvalue type, zvalue value);
 
 /**
- * Returns a valued highlet using the type of the given base highlet
- * and the given value.
+ * Returns a possibly-valued highlet using the type of the given base
+ * highlet and the given value. The given value must either be a valid
+ * value or `NULL`.
  */
 zvalue datHighletWithValue(zvalue highlet, zvalue value);
 

@@ -82,7 +82,11 @@ zvalue datHighletFromType(zvalue type) {
 /* Documented in header. */
 zvalue datHighletFrom(zvalue type, zvalue value) {
     datAssertValid(type);
-    datAssertValid(value);
+
+    if (value != NULL) {
+        datAssertValid(value);
+    }
+
     return newHighlet(type, value);
 }
 
