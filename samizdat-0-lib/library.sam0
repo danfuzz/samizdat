@@ -10,7 +10,7 @@
 #
 
 # The value more commonly known as `null`.
-null = @[@"type"=@"null"];
+null = [:@"null":];
 
 # "Equal" comparison in overall value order.
 eq = { v1 v2 :: <> lowOrderIs v1 v2 @0; };
