@@ -68,12 +68,6 @@ zvalue datListletGet(zvalue listlet, zint n) {
 }
 
 /* Documented in header. */
-zint datListletGetInt(zvalue listlet, zint n) {
-    zvalue v = datListletGet(listlet, n);
-    return datIntletToInt(v);
-}
-
-/* Documented in header. */
 zvalue datListletEmpty(void) {
     if (theEmptyListlet == NULL) {
         theEmptyListlet = datAllocListlet(0);
