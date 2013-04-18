@@ -88,6 +88,14 @@ zchar datStringletGet(zvalue stringlet, zint n) {
 }
 
 /* Documented in header. */
+zvalue datStringletFromChars(const zchar *chars, zint size) {
+    zvalue result = allocStringlet(size);
+
+    memcpy(stringletElems(result), chars, size * sizeof(zchar));
+    return result;
+}
+
+/* Documented in header. */
 zvalue datStringletFromUtf8String(const char *string, zint stringBytes) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);

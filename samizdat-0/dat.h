@@ -176,6 +176,12 @@ zint datIntletToInt(zvalue intlet);
 zchar datStringletGet(zvalue stringlet, zint n);
 
 /**
+ * Gets the stringlet built from the given array of `zchar`s, of
+ * the given size.
+ */
+zvalue datStringletFromChars(const zchar *chars, zint size);
+
+/**
  * Gets the stringlet resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.

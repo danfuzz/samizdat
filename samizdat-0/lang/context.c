@@ -44,6 +44,7 @@ zvalue ctxGet(zcontext ctx, zvalue name) {
         }
     }
 
+    note("=== [%s]", datStringletEncodeUtf8(name, NULL));
     die("No such variable.");
 }
 
