@@ -15,7 +15,7 @@
 
 
 /*
- * Data types
+ * Execution Contexts
  */
 
 /* Documented in header. */
@@ -26,44 +26,6 @@ typedef struct ExecutionContext {
     /** Parent context. */
     struct ExecutionContext *parent;
 } ExecutionContext;
-
-
-/*
- * High-Layer data model
- */
-
-/**
- * Constructs a value token / node, by combining the given base
- * token with `value` binding to the given value.
- */
-zvalue hidPutValue(zvalue token, zvalue value);
-
-/**
- * Gets the `type` binding of the given maplet (*not* the low layer
- * Samizdat type).
- */
-zvalue hidType(zvalue value);
-
-/**
- * Gets the `value` binding of the given maplet.
- */
-zvalue hidValue(zvalue value);
-
-/**
- * Returns whether or not the `type` binding of the given maplet
- * equals the given value.
- */
-bool hidHasType(zvalue value, zvalue type);
-
-/**
- * Asserts that the given value is a maplet whose type is as given.
- */
-void hidAssertType(zvalue value, zvalue type);
-
-
-/*
- * Execution Contexts
- */
 
 /**
  * Allocates an execution context set up to be the child of the given

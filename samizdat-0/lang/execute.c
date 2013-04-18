@@ -49,8 +49,8 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     zvalue formals = datMapletGet(closure->function, STR_FORMALS);
     zvalue block = datMapletGet(closure->function, STR_BLOCK);
 
-    hidAssertType(formals, STR_FORMALS);
-    formals = hidValue(formals);
+    datHighletAssertType(formals, STR_FORMALS);
+    formals = datHighletValue(formals);
 
     zint formalsSize = datSize(formals);
     zvalue locals = datMapletEmpty();
@@ -83,11 +83,11 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
  * Executes a `function` form.
  */
 static zvalue execFunction(zcontext ctx, zvalue function) {
-    hidAssertType(function, STR_FUNCTION);
+    datHighletAssertType(function, STR_FUNCTION);
 
     Closure *closure = zalloc(sizeof(Closure));
     closure->parent = ctx;
-    closure->function = hidValue(function);
+    closure->function = datHighletValue(function);
 
     return funDefine(execClosure, closure);
 }
@@ -96,8 +96,8 @@ static zvalue execFunction(zcontext ctx, zvalue function) {
  * Executes a `call` form.
  */
 static zvalue execCall(zcontext ctx, zvalue call) {
-    hidAssertType(call, STR_CALL);
-    call = hidValue(call);
+    datHighletAssertType(call, STR_CALL);
+    call = datHighletValue(call);
 
     zvalue function = datMapletGet(call, STR_FUNCTION);
     zvalue actuals = datMapletGet(call, STR_ACTUALS);
@@ -117,9 +117,9 @@ static zvalue execCall(zcontext ctx, zvalue call) {
  * Executes a `maplet` form.
  */
 static zvalue execMaplet(zcontext ctx, zvalue maplet) {
-    hidAssertType(maplet, STR_MAPLET);
+    datHighletAssertType(maplet, STR_MAPLET);
 
-    zvalue elems = hidValue(maplet);
+    zvalue elems = datHighletValue(maplet);
     zint size = datSize(elems);
     zvalue result = datMapletEmpty();
 
@@ -139,9 +139,9 @@ static zvalue execMaplet(zcontext ctx, zvalue maplet) {
  * Executes a `listlet` form.
  */
 static zvalue execListlet(zcontext ctx, zvalue listlet) {
-    hidAssertType(listlet, STR_LISTLET);
+    datHighletAssertType(listlet, STR_LISTLET);
 
-    zvalue elems = hidValue(listlet);
+    zvalue elems = datHighletValue(listlet);
     zint size = datSize(elems);
     zvalue result = datListletEmpty();
 
@@ -158,13 +158,13 @@ static zvalue execListlet(zcontext ctx, zvalue listlet) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(zcontext ctx, zvalue e) {
-    if      (hidHasType(e, STR_LITERAL))  { return hidValue(e);              }
-    else if (hidHasType(e, STR_VAR_REF))  { return ctxGet(ctx, hidValue(e)); }
-    else if (hidHasType(e, STR_LISTLET))  { return execListlet(ctx, e);      }
-    else if (hidHasType(e, STR_MAPLET))   { return execMaplet(ctx, e);       }
-    else if (hidHasType(e, STR_UNIQLET))  { return datUniqlet();             }
-    else if (hidHasType(e, STR_CALL))     { return execCall(ctx, e);         }
-    else if (hidHasType(e, STR_FUNCTION)) { return execFunction(ctx, e);     }
+    if      (datHighletHasType(e, STR_LITERAL))  { return datHighletValue(e);              }
+    else if (datHighletHasType(e, STR_VAR_REF))  { return ctxGet(ctx, datHighletValue(e)); }
+    else if (datHighletHasType(e, STR_LISTLET))  { return execListlet(ctx, e);      }
+    else if (datHighletHasType(e, STR_MAPLET))   { return execMaplet(ctx, e);       }
+    else if (datHighletHasType(e, STR_UNIQLET))  { return datUniqlet();             }
+    else if (datHighletHasType(e, STR_CALL))     { return execCall(ctx, e);         }
+    else if (datHighletHasType(e, STR_FUNCTION)) { return execFunction(ctx, e);     }
     else {
         die("Invalid expression type.");
     }
@@ -188,18 +188,18 @@ static zvalue execExpression(zcontext ctx, zvalue expression) {
  * Executes a `block` form.
  */
 static zvalue execBlock(zcontext ctx, zvalue block) {
-    hidAssertType(block, STR_BLOCK);
-    block = hidValue(block);
+    datHighletAssertType(block, STR_BLOCK);
+    block = datHighletValue(block);
 
     zvalue statements = datMapletGet(block, STR_STATEMENTS);
     zint size = datSize(statements);
 
     for (zint i = 0; i < size; i++) {
         zvalue one = datListletGet(statements, i);
-        zvalue type = hidType(one);
+        zvalue type = datHighletType(one);
 
-        if (hidHasType(one, STR_VAR_DEF)) {
-            zvalue nameValue = hidValue(one);
+        if (datHighletHasType(one, STR_VAR_DEF)) {
+            zvalue nameValue = datHighletValue(one);
             zvalue name = datMapletGet(nameValue, STR_NAME);
             zvalue value = datMapletGet(nameValue, STR_VALUE);
             ctxBind(ctx, name, execExpression(ctx, value));
