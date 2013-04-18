@@ -25,6 +25,7 @@
  */
 typedef enum {
     DAT_INTLET = 1,
+    DAT_STRINGLET,
     DAT_LISTLET,
     DAT_MAPLET,
     DAT_UNIQLET
@@ -67,6 +68,13 @@ void datAssertIntlet(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a stringlet. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertStringlet(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a listlet. If not, this aborts the process
  * with a diagnostic message.
  */
@@ -87,12 +95,6 @@ void datAssertMaplet(zvalue value);
 void datAssertUniqlet(zvalue value);
 
 /**
- * Asserts that the given value is a valid listlet, and furthermore
- * that all elements in it are intlets of valid Unicode code points.
- */
-void datAssertStringlet(zvalue value);
-
-/**
  * Gets the low-level data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */
@@ -104,6 +106,8 @@ ztype datType(zvalue value);
  *
  * * an intlet's highest significant bit number plus one (may be
  *   rounded up to a word size).
+ *
+ * * a stringlet's character (code point) count.
  *
  * * a listlet's element count.
  *
@@ -162,6 +166,61 @@ zint datIntletToInt(zvalue intlet);
 
 
 /*
+ * Stringlet functions.
+ */
+
+/**
+ * Given a stringlet, returns the `n`th element. `stringlet` must be a
+ * stringlet, and `n` must be `< datSize(value)`.
+ */
+zchar datStringletGet(zvalue stringlet, zint n);
+
+/**
+ * Gets the stringlet built from the given array of `zchar`s, of
+ * the given size.
+ */
+zvalue datStringletFromChars(const zchar *chars, zint size);
+
+/**
+ * Gets the stringlet built from the given listlet of intlets.
+ */
+zvalue datStringletFromListlet(zvalue listlet);
+
+/**
+ * Gets the list of characters in the given stringlet, in order,
+ * as a listlet of intlets.
+ */
+zvalue datStringletToListlet(zvalue stringlet);
+
+/**
+ * Combines the characters of two stringlets, in order, into a new
+ * stringlet.
+ *
+ * Note: The name is intentionally `add` and not `append`. `append` on
+ * lists canonically adds an element to a list, whereas this function
+ * combines two things-of-the-same-type, such as (e.g.) `+` on strings
+ * does in many languages.
+ */
+zvalue datStringletAdd(zvalue str1, zvalue str2);
+
+/**
+ * Gets the stringlet resulting from interpreting the given UTF-8
+ * encoded string, whose size in bytes is as given. If `stringBytes`
+ * is passed as `-1`, this uses `strlen()` to determine size.
+ */
+zvalue datStringletFromUtf8String(const char *string, zint stringBytes);
+
+/**
+ * Encodes the given stringlet as UTF-8, returning permanently
+ * allocated storage for the result, and storing the size in bytes via
+ * the given `resultSize` pointer if non-`NULL`. The result *is*
+ * `'\0'`-terminated, but `*resultSize` will need to be used if the
+ * original stringlet might have contained any `U+0` code points.
+ */
+const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
+
+
+/*
  * Listlet Functions
  */
 
@@ -175,13 +234,6 @@ zvalue datListletEmpty(void);
  * listlet, and `n` must be `< datSize(value)`.
  */
 zvalue datListletGet(zvalue listlet, zint n);
-
-/**
- * Gets the `zint` of the nth element of the given listlet. `listlet`
- * must be a listlet, `n` must be `< datSize(value)`, and the element
- * gotten must be an intlet in range to be represented as a `zint`.
- */
-zint datListletGetInt(zvalue stringlet, zint n);
 
 /**
  * Gets the listlet resulting from appending the given value to the
@@ -287,29 +339,6 @@ void datUniqletSetValue(zvalue uniqlet, void *key, void *value);
 
 
 /*
- * Stringlet functions. Stringlets are just listlets whose elements
- * are all intlets that represent Unicode code points.
- */
-
-/**
- * Gets the stringlet resulting from interpreting the given UTF-8
- * encoded string, whose size in bytes is as given. If `stringBytes`
- * is passed as `-1`, this uses `strlen()` to determine size.
- */
-zvalue datStringletFromUtf8String(const char *string, zint stringBytes);
-
-/**
- * Encodes the given stringlet as UTF-8, returning permanently
- * allocated storage for the result, and storing the size in bytes via
- * the given `resultSize` pointer if non-`NULL`. The result *is*
- * `'\0'`-terminated, but `*resultSize` will need to be used if the
- * original stringlet might have contained any `U+0` code points.
- */
-const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
-
-
-
-/*
  * Higher Level Functions
  */
 
@@ -318,12 +347,12 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
  * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
  *
- * Major order is by type &mdash `intlet < listlet < maplet <
- * uniqlet` &mdash; and minor order is type-dependant.
+ * Major order is by type &mdash `intlet < stringlet < listlet <
+ * maplet < uniqlet` &mdash; and minor order is type-dependant.
  *
  * * Intlets order by integer value.
  *
- * * Listlets order by pairwise corresponding-element
+ * * Listlets and stringlets order by pairwise corresponding-element
  *   comparison, with a strict prefix always winning.
  *
  * * Maplets order by first comparing corresponding ordered lists
@@ -333,7 +362,7 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
  *
  * * Any given uniqlet never compares as equal to anything but itself.
  *   Any two uniqlets have a consistent and transitive &mdash; but
- *   otherwise arbitrary &mdash; comparison.
+ *   otherwise arbitrary &mdash; ordering.
  */
 zorder datOrder(zvalue v1, zvalue v2);
 

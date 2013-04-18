@@ -49,6 +49,17 @@ typedef struct {
 } DatIntlet;
 
 /**
+ * Stringlet structure.
+ */
+typedef struct {
+    /** Value header. */
+    DatValue header;
+
+    /** Characters of the stringlet, in index order. */
+    zchar elems[0];
+} DatStringlet;
+
+/**
  * Listlet structure.
  */
 typedef struct {
@@ -124,6 +135,11 @@ zvalue *datListletElems(zvalue listlet);
  * Compares intlets.
  */
 zorder datIntletOrder(zvalue v1, zvalue v2);
+
+/**
+ * Compares stringlets.
+ */
+zorder datStringletOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares listlets.

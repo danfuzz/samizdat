@@ -48,7 +48,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : datListletGetInt(state->str, state->at);
+    return isEof(state) ? -1 : datStringletGet(state->str, state->at);
 }
 
 /**
@@ -125,7 +125,7 @@ static zvalue tokenizeInteger(ParseState *state) {
  */
 static zvalue tokenizeIdentifier(ParseState *state) {
     zint size = 0;
-    zvalue chars[MAX_IDENTIFIER_CHARS];
+    zchar chars[MAX_IDENTIFIER_CHARS];
 
     for (;;) {
         zint ch = peek(state);
@@ -138,7 +138,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
             die("Overlong identifier token.");
         }
 
-        chars[size] = datIntletFromInt(ch);
+        chars[size] = ch;
         size++;
         read(state);
     }
@@ -147,7 +147,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         return NULL;
     }
 
-    zvalue stringlet = datListletFromValues(chars, size);
+    zvalue stringlet = datStringletFromChars(chars, size);
     return hidPutValue(TOK_IDENTIFIER, stringlet);
 }
 
@@ -159,7 +159,7 @@ static zvalue tokenizeString(ParseState *state) {
     read(state);
 
     zint size = 0;
-    zvalue chars[MAX_STRING_CHARS];
+    zchar chars[MAX_STRING_CHARS];
 
     for (;;) {
         zint ch = peek(state);
@@ -183,12 +183,12 @@ static zvalue tokenizeString(ParseState *state) {
             }
         }
 
-        chars[size] = datIntletFromInt(ch);
+        chars[size] = ch;
         size++;
         read(state);
     }
 
-    zvalue stringlet = datListletFromValues(chars, size);
+    zvalue stringlet = datStringletFromChars(chars, size);
     return hidPutValue(TOK_STRING, stringlet);
 }
 

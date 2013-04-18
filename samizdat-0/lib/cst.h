@@ -15,6 +15,7 @@
 
 /* Prefab stringlets. */
 extern zvalue CST_STR_INTLET;
+extern zvalue CST_STR_STRINGLET;
 extern zvalue CST_STR_LISTLET;
 extern zvalue CST_STR_MAPLET;
 extern zvalue CST_STR_UNIQLET;

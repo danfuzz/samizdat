@@ -10,6 +10,7 @@
 #include <stddef.h>
 
 zvalue CST_STR_INTLET = NULL;
+zvalue CST_STR_STRINGLET = NULL;
 zvalue CST_STR_LISTLET = NULL;
 zvalue CST_STR_MAPLET = NULL;
 zvalue CST_STR_UNIQLET = NULL;
@@ -28,10 +29,11 @@ void cstInit(void) {
         return;
     }
 
-    CST_STR_INTLET  = datStringletFromUtf8String("intlet", -1);
-    CST_STR_LISTLET = datStringletFromUtf8String("listlet", -1);
-    CST_STR_MAPLET  = datStringletFromUtf8String("maplet", -1);
-    CST_STR_UNIQLET = datStringletFromUtf8String("uniqlet", -1);
+    CST_STR_INTLET    = datStringletFromUtf8String("intlet", -1);
+    CST_STR_STRINGLET = datStringletFromUtf8String("stringlet", -1);
+    CST_STR_LISTLET   = datStringletFromUtf8String("listlet", -1);
+    CST_STR_MAPLET    = datStringletFromUtf8String("maplet", -1);
+    CST_STR_UNIQLET   = datStringletFromUtf8String("uniqlet", -1);
 
     CST_FALSE = langFalse();
     CST_TRUE  = langTrue();

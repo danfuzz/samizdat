@@ -67,12 +67,12 @@ void uniAssertValid(zint value);
 
 /**
  * Decodes a UTF-8 encoded code point from the given string of the
- * given size in bytes, storing via the given `zint *`. If the decoded
+ * given size in bytes, storing via the given `zchar *`. If the decoded
  * value isn't needed, it is valid to pass `result` as `NULL`. Returns
  * a pointer to the position just after the bytes that were decoded.
  */
 const char *utf8DecodeOne(const char *string, zint stringBytes,
-                          zint *result);
+                          zchar *result);
 
 /**
  * Gets the decoded size (the number of encoded Unicode code points)
@@ -82,11 +82,11 @@ zint utf8DecodeStringSize(const char *string, zint stringBytes);
 
 /**
  * Decodes the given UTF-8 encoded string of the given size in bytes,
- * into the given buffer of `zint`s. The buffer must be sufficiently
+ * into the given buffer of `zchar`s. The buffer must be sufficiently
  * large to hold the result of decoding.
  */
-void utf8DecodeStringToInts(const char *string, zint stringBytes,
-                            zint *result);
+void utf8DecodeStringToChars(const char *string, zint stringBytes,
+                             zchar *result);
 
 /**
  * Encodes a single Unicode code point as UTF-8, writing it to the
