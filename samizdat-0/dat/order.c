@@ -32,6 +32,7 @@ zorder datOrder(zvalue v1, zvalue v2) {
         case DAT_LISTLET:   return datListletOrder(v1, v2);
         case DAT_MAPLET:    return datMapletOrder(v1, v2);
         case DAT_UNIQLET:   return datUniqletOrder(v1, v2);
+        case DAT_HIGHLET:   return datHighletOrder(v1, v2);
     }
 
     die("Invalid type (shouldn't happen).");

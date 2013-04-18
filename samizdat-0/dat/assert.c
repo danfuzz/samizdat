@@ -23,6 +23,7 @@ static const char *typeName(ztype type) {
         case DAT_LISTLET:   return "listlet";
         case DAT_MAPLET:    return "maplet";
         case DAT_UNIQLET:   return "uniqlet";
+        case DAT_HIGHLET:   return "highlet";
     }
 
     return "<unknown-type>";
@@ -39,7 +40,7 @@ static void assertType(zvalue value, ztype type) {
     }
 
     die("Expected type %s: (%p)->type == %s",
-           typeName(type), value, typeName(value->type));
+        typeName(type), value, typeName(value->type));
 }
 
 
@@ -61,7 +62,7 @@ void datAssertValid(zvalue value) {
 
     if (value->magic != DAT_VALUE_MAGIC) {
         die("Incorrect magic for value: (%p)->magic == %#04x",
-               value, value->magic);
+            value, value->magic);
     }
 
     switch (value->type) {
@@ -69,12 +70,13 @@ void datAssertValid(zvalue value) {
         case DAT_STRINGLET:
         case DAT_LISTLET:
         case DAT_MAPLET:
-        case DAT_UNIQLET: {
+        case DAT_UNIQLET:
+        case DAT_HIGHLET: {
             break;
         }
         default: {
             die("Invalid type for value: (%p)->type == %#04x",
-                   value, value->type);
+                value, value->type);
         }
     }
 }
@@ -89,7 +91,7 @@ void datAssertNth(zvalue value, zint n) {
 
     if ((datType(value) != DAT_INTLET) && (value->size <= n)) {
         die("Invalid size for value access: (%p)->size == %lld; <= %lld",
-               value, value->size, n);
+            value, value->size, n);
     }
 }
 
@@ -116,4 +118,9 @@ void datAssertMaplet(zvalue value) {
 /* Documented in header. */
 void datAssertUniqlet(zvalue value) {
     assertType(value, DAT_UNIQLET);
+}
+
+/* Documented in header. */
+void datAssertHighlet(zvalue value) {
+    assertType(value, DAT_HIGHLET);
 }

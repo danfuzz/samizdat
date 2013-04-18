@@ -10,7 +10,7 @@
 #
 
 # The value more commonly known as `null`.
-null = @[@"type"=@"null"];
+null = [:@"null":];
 
 # "Equal" comparison in overall value order.
 eq = { v1 v2 :: <> lowOrderIs v1 v2 @0; };
@@ -176,6 +176,11 @@ isUniqlet = { value ::
     <> eq (lowType value) @"uniqlet";
 };
 
+# Returns true iff the given value is a highlet.
+isHighlet = { value ::
+    <> eq (lowType value) @"highlet";
+};
+
 # Converts an arbitrary value into a stringlet representation form
 # meant to mimic the Samizdat source syntax.
 #
@@ -256,6 +261,17 @@ sourceStringlet = { value ::
                     (sourceStringlet (getValue value key));
             };
         <> stringletCat @"@[" body @"]";
+    } { <> isHighlet value; } {
+        type = highletType value;
+        noValue = @@;
+        v = ifVoid { <> highletValue value; } { <> noValue; };
+        <> stringletCat
+            @"[:"
+            (sourceStringlet type)
+            (ifElse (eq v noValue)
+                { <> @""; }
+                { <> stringletAdd @" " (sourceStringlet v); })
+            @":]";
     } { <> isUniqlet value; } {
         <> @"@@";
     } else {
@@ -279,6 +295,7 @@ sourceStringlet = { value ::
     @"cat" = cat
     @"else" = else
     @"if" = if
+    @"isHighlet" = isHighlet
     @"isIntlet" = isIntlet
     @"isListlet" = isListlet
     @"isMaplet" = isMaplet

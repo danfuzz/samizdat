@@ -93,13 +93,13 @@ typedef struct {
  * Uniqlet info.
  */
 typedef struct {
-    /** Uniqlet unique id */
+    /** Uniqlet unique id. */
     zint id;
 
-    /** Sealer / unsealer key */
+    /** Sealer / unsealer key. */
     void *key;
 
-    /** Sealed box payload value */
+    /** Sealed box payload value. */
     void *value;
 } UniqletInfo;
 
@@ -110,9 +110,31 @@ typedef struct {
     /** Value header. */
     DatValue header;
 
-    /** Uniqlet info */
+    /** Uniqlet info. */
     UniqletInfo info;
 } DatUniqlet;
+
+/**
+ * Highlet info.
+ */
+typedef struct {
+    /** Type tag. Never `NULL`. */
+    zvalue type;
+
+    /** Associated value. Possibly `NULL`. */
+    zvalue value;
+} HighletInfo;
+
+/**
+ * Highlet structure.
+ */
+typedef struct {
+    /** Value header. */
+    DatValue header;
+
+    /** Highlet info. */
+    HighletInfo info;
+} DatHighlet;
 
 /**
  * Allocates memory, sized to include a `DatValue` header plus the
@@ -145,5 +167,10 @@ zorder datMapletOrder(zvalue v1, zvalue v2);
  * Compares uniqlets.
  */
 zorder datUniqletOrder(zvalue v1, zvalue v2);
+
+/**
+ * Compares highlets.
+ */
+zorder datHighletOrder(zvalue v1, zvalue v2);
 
 #endif
