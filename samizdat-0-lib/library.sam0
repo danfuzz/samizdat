@@ -91,7 +91,7 @@ map = { listlet func ::
             { <> @[]; }
             {
                 <> cat
-                    @[(func (getNth listlet index) index)]
+                    @[(func (listletNth listlet index) index)]
                     (doMap (iadd index @1));
             };
     };
@@ -117,7 +117,7 @@ reduce = { base listlet func ::
             { <> reduction; }
             {
                 <> doReduce
-                    (func reduction (getNth listlet index) index)
+                    (func reduction (listletNth listlet index) index)
                     (iadd index @1);
             };
     };
@@ -133,7 +133,8 @@ cat = { listlet rest* ::
         { reduction value ::
             # The inner reduce iterates over items in the second listlet,
             # appending each to the result-in-progress.
-            <> reduce reduction value { result one :: <> append result one; };
+            <> reduce reduction value
+                { result one :: <> listletAppend result one; };
         };
 };
 

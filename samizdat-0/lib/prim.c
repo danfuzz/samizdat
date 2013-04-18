@@ -216,7 +216,8 @@ static zvalue prim_stringletNth(void *state, zint argCount,
 /**
  * TODO: Document!
  */
-static zvalue prim_append(void *state, zint argCount, const zvalue *args) {
+static zvalue prim_listletAppend(void *state, zint argCount,
+                                 const zvalue *args) {
     requireExactly(argCount, 2);
     return datListletAppend(args[0], args[1]);
 }
@@ -241,7 +242,7 @@ static zvalue prim_listletAdd(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_getNth(void *state, zint argCount, const zvalue *args) {
+static zvalue prim_listletNth(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
 
     zvalue listlet = args[0];
@@ -253,7 +254,8 @@ static zvalue prim_getNth(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_delNth(void *state, zint argCount, const zvalue *args) {
+static zvalue prim_listletDelNth(void *state, zint argCount,
+                                 const zvalue *args) {
     requireExactly(argCount, 2);
 
     zvalue listlet = args[0];
@@ -389,10 +391,10 @@ void bindPrimitives(zcontext ctx) {
 
     // Listlets
     langCtxBindFunction(ctx, "listletAdd",     prim_listletAdd, NULL);
+    langCtxBindFunction(ctx, "listletAppend",  prim_listletAppend, NULL);
+    langCtxBindFunction(ctx, "listletDelNth",  prim_listletDelNth, NULL);
+    langCtxBindFunction(ctx, "listletNth",     prim_listletNth, NULL);
     langCtxBindFunction(ctx, "listletPrepend", prim_listletPrepend, NULL);
-    langCtxBindFunction(ctx, "append", prim_append, NULL);
-    langCtxBindFunction(ctx, "getNth", prim_getNth, NULL);
-    langCtxBindFunction(ctx, "delNth", prim_delNth, NULL);
 
     // Maplets
     langCtxBindFunction(ctx, "getKeys",  prim_getKeys,  NULL);
