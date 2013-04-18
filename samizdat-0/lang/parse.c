@@ -56,8 +56,8 @@ static zvalue readMatch(ParseState *state, zvalue token) {
     }
 
     zvalue result = datListletGet(state->tokens, state->at);
-    zvalue tokenType = hidType(token);
-    zvalue resultType = hidType(result);
+    zvalue tokenType = datHighletType(token);
+    zvalue resultType = datHighletType(result);
 
     if (datOrder(tokenType, resultType) != 0) {
         return NULL;
@@ -154,7 +154,50 @@ static zvalue parseCall(ParseState *state) {
 
     zvalue value = datMapletPut(datMapletEmpty(), STR_FUNCTION, function);
     value = datMapletPut(value, STR_ACTUALS, actuals);
-    return hidPutValue(TOK_CALL, value);
+    return datHighletWithValue(TOK_CALL, value);
+}
+
+/**
+ * Parses a `highlet` node.
+ */
+static zvalue parseHighlet(ParseState *state) {
+    zint mark = cursor(state);
+
+    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_COLON) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    zvalue innerType = parseAtom(state);
+    if (innerType == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    // It's okay for this to be NULL.
+    zvalue innerValue = parseAtom(state);
+
+    if (readMatch(state, TOK_CH_COLON) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    zvalue value = datMapletPut(datMapletEmpty(), STR_TYPE, innerType);
+
+    if (innerValue != NULL) {
+        value = datMapletPut(value, STR_VALUE, innerValue);
+    }
+
+    return datHighletWithValue(TOK_HIGHLET, value);
 }
 
 /**
@@ -232,7 +275,7 @@ static zvalue parseMaplet(ParseState *state) {
         return NULL;
     }
 
-    return hidPutValue(TOK_MAPLET, bindings);
+    return datHighletWithValue(TOK_MAPLET, bindings);
 }
 
 /**
@@ -260,7 +303,7 @@ static zvalue parseEmptyMaplet(ParseState *state) {
         return NULL;
     }
 
-    return hidPutValue(TOK_LITERAL, datMapletEmpty());
+    return datHighletWithValue(TOK_LITERAL, datMapletEmpty());
 }
 
 /**
@@ -290,7 +333,7 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    return hidPutValue(TOK_LISTLET, atoms);
+    return datHighletWithValue(TOK_LISTLET, atoms);
 }
 
 /**
@@ -313,7 +356,7 @@ static zvalue parseEmptyListlet(ParseState *state) {
         return NULL;
     }
 
-    return hidPutValue(TOK_LITERAL, datListletEmpty());
+    return datHighletWithValue(TOK_LITERAL, datListletEmpty());
 }
 
 /**
@@ -333,8 +376,8 @@ static zvalue parseStringlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = hidValue(string);
-    return hidPutValue(TOK_LITERAL, value);
+    zvalue value = datHighletValue(string);
+    return datHighletWithValue(TOK_LITERAL, value);
 }
 
 /**
@@ -347,7 +390,7 @@ static zvalue parseInteger(ParseState *state) {
         return NULL;
     }
 
-    return hidPutValue(TOK_LITERAL, integer);
+    return datHighletWithValue(TOK_LITERAL, integer);
 }
 
 /**
@@ -367,8 +410,8 @@ static zvalue parseIntlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = hidValue(integer);
-    return hidPutValue(TOK_LITERAL, value);
+    zvalue value = datHighletValue(integer);
+    return datHighletWithValue(TOK_LITERAL, value);
 }
 
 /**
@@ -381,8 +424,8 @@ static zvalue parseVarRef(ParseState *state) {
         return NULL;
     }
 
-    zvalue name = hidValue(identifier);
-    return hidPutValue(TOK_VAR_REF, name);
+    zvalue name = datHighletValue(identifier);
+    return datHighletWithValue(TOK_VAR_REF, name);
 }
 
 /**
@@ -408,10 +451,10 @@ static zvalue parseVarDef(ParseState *state) {
         return NULL;
     }
 
-    zvalue name = hidValue(identifier);
+    zvalue name = datHighletValue(identifier);
     zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
     value = datMapletPut(value, STR_VALUE, expression);
-    return hidPutValue(TOK_VAR_DEF, value);
+    return datHighletWithValue(TOK_VAR_DEF, value);
 }
 
 /**
@@ -454,6 +497,7 @@ static zvalue parseAtom(ParseState *state) {
     if (result == NULL) { result = parseEmptyMaplet(state); }
     if (result == NULL) { result = parseMaplet(state); }
     if (result == NULL) { result = parseUniqlet(state); }
+    if (result == NULL) { result = parseHighlet(state); }
     if (result == NULL) { result = parseFunction(state); }
     if (result == NULL) { result = parseParenExpression(state); }
 
@@ -536,7 +580,7 @@ static zvalue parseBlock(ParseState *state) {
         result = datMapletPut(result, STR_YIELD, yield);
     }
 
-    return hidPutValue(TOK_BLOCK, result);
+    return datHighletWithValue(TOK_BLOCK, result);
 }
 
 /**
@@ -553,7 +597,7 @@ static zvalue parseFormals(ParseState *state) {
         }
 
         zvalue formal =
-            datMapletPut(datMapletEmpty(), STR_NAME, hidValue(identifier));
+            datMapletPut(datMapletEmpty(), STR_NAME, datHighletValue(identifier));
 
         if (readMatch(state, TOK_CH_STAR) != NULL) {
             // In Samizdat Layer 0, the only modifier for a formal is
@@ -577,7 +621,7 @@ static zvalue parseFormals(ParseState *state) {
         }
     }
 
-    return hidPutValue(TOK_FORMALS, formals);
+    return datHighletWithValue(TOK_FORMALS, formals);
 }
 
 /**
@@ -586,7 +630,7 @@ static zvalue parseFormals(ParseState *state) {
 static zvalue functionNode(zvalue formals, zvalue block) {
     zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
     value = datMapletPut(value, STR_BLOCK, block);
-    return hidPutValue(TOK_FUNCTION, value);
+    return datHighletWithValue(TOK_FUNCTION, value);
 }
 
 /**
@@ -621,7 +665,8 @@ static zvalue parseProgram(ParseState *state) {
         return NULL;
     }
 
-    return functionNode(hidPutValue(TOK_FORMALS, datListletEmpty()), block);
+    return functionNode(datHighletWithValue(TOK_FORMALS, datListletEmpty()),
+                        block);
 }
 
 

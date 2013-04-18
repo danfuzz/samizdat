@@ -117,7 +117,7 @@ static zvalue tokenizeInteger(ParseState *state) {
     }
 
     zvalue intlet = datIntletFromInt(negative ? -value : value);
-    return hidPutValue(TOK_INTEGER, intlet);
+    return datHighletWithValue(TOK_INTEGER, intlet);
 }
 
 /**
@@ -148,7 +148,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     }
 
     zvalue stringlet = datStringletFromChars(chars, size);
-    return hidPutValue(TOK_IDENTIFIER, stringlet);
+    return datHighletWithValue(TOK_IDENTIFIER, stringlet);
 }
 
 /**
@@ -189,7 +189,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue stringlet = datStringletFromChars(chars, size);
-    return hidPutValue(TOK_STRING, stringlet);
+    return datHighletWithValue(TOK_STRING, stringlet);
 }
 
 /**
@@ -231,11 +231,14 @@ static zvalue tokenizeOne(ParseState *state) {
         case '\"':
             return tokenizeString(state);
         case '@':
-            return tokenizeOneOrTwoChars(state, '@', TOK_CH_AT, TOK_CH_ATAT);
+            return tokenizeOneOrTwoChars(state, '@',
+                                         TOK_CH_AT, TOK_CH_ATAT);
         case ':':
-            return tokenizeOneOrTwoChars(state, ':', NULL, TOK_CH_COLONCOLON);
+            return tokenizeOneOrTwoChars(state, ':',
+                                         TOK_CH_COLON, TOK_CH_COLONCOLON);
         case '<':
-            return tokenizeOneOrTwoChars(state, '>', NULL, TOK_CH_DIAMOND);
+            return tokenizeOneOrTwoChars(state, '>',
+                                         NULL, TOK_CH_DIAMOND);
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9': case '-':
             return tokenizeInteger(state);

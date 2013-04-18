@@ -89,6 +89,7 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
         case DAT_LISTLET:   return CST_STR_LISTLET;
         case DAT_MAPLET:    return CST_STR_MAPLET;
         case DAT_UNIQLET:   return CST_STR_UNIQLET;
+        case DAT_HIGHLET:   return CST_STR_HIGHLET;
         default: {
             die("Invalid value type (shouldn't happen): %d", datType(args[0]));
         }
@@ -265,6 +266,24 @@ static zvalue prim_getValue(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_highletType(void *state, zint argCount,
+                               const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datHighletType(args[0]);
+}
+
+/**
+ * TODO: Document!
+ */
+static zvalue prim_highletValue(void *state, zint argCount,
+                                const zvalue *args) {
+    requireExactly(argCount, 1);
+    return datHighletValue(args[0]);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_apply(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
     return langApply(args[0], args[1]);
@@ -348,6 +367,10 @@ void bindPrimitives(zcontext ctx) {
     // Maplets
     langCtxBindFunction(ctx, "getKeys",  prim_getKeys,  NULL);
     langCtxBindFunction(ctx, "getValue", prim_getValue, NULL);
+
+    // Highlets
+    langCtxBindFunction(ctx, "highletType",  prim_highletType,  NULL);
+    langCtxBindFunction(ctx, "highletValue", prim_highletValue, NULL);
 
     // Functions
     langCtxBindFunction(ctx, "apply", prim_apply, NULL);

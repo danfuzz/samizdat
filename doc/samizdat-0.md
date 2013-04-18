@@ -25,30 +25,30 @@ token ::=
 # result: same as the non-whitespace payload.
 
 punctuation ::=
-    "@@" | # result: @[@"type"=@"@@"]
-    "::" | # result: @[@"type"=@"::"]
-    "<>" | # result: @[@"type"=@"<>"]
-    "@"  | # result: @[@"type"=@"@"]
-    ":"  | # result: @[@"type"=@":"]
-    "*"  | # result: @[@"type"=@"*"]
-    ";"  | # result: @[@"type"=@";"]
-    "="  | # result: @[@"type"=@"="]
-    "{"  | # result: @[@"type"=@"{"]
-    "}"  | # result: @[@"type"=@"}"]
-    "("  | # result: @[@"type"=@"("]
-    ")"  | # result: @[@"type"=@")"]
-    "["  | # result: @[@"type"=@"["]
-    "]"    # result: @[@"type"=@"]"]
+    "@@" | # result: [:@"@@":]
+    "::" | # result: [:@"::":]
+    "<>" | # result: [:@"<>":]
+    "@"  | # result: [:@"@":]
+    ":"  | # result: [:@":":]
+    "*"  | # result: [:@"*":]
+    ";"  | # result: [:@";":]
+    "="  | # result: [:@"=":]
+    "{"  | # result: [:@"{":]
+    "}"  | # result: [:@"}":]
+    "("  | # result: [:@"(":]
+    ")"  | # result: [:@")":]
+    "["  | # result: [:@"[":]
+    "]"    # result: [:@"]":]
 ;
 
 integer ::= "-"? ("0".."9")+ ;
-# result: @[@"type"=@"integer" @"value"=<intlet>].
+# result: [:@"integer" <intlet>:]
 
 string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
-# result: @[@"type"=@"string" @"value"=<stringlet>].
+# result: [:@"string" <stringlet>:]
 
 identifier ::= ("a".."z" | "A".."Z") ("a".."z" | "A".."Z" | "0".."9")* ;
-# result: @[@"type"=@"identifier" @"value"=<stringlet>].
+# result: [:@"identifier" <stringlet>:]
 
 whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
 # result: none; automatically ignored.
@@ -66,25 +66,26 @@ tree syntax rule to match.
 
 ```
 program ::= block ;
-# result: @[@"type"=@"function"
-#           @"value"=@[@"formals"=@[@"type"=@"formals" @value=@[]]
-#                      @"block"=<block>]]
+# result: [:
+#             @"function"
+#             @[@"formals"=@[@"type"=@"formals" @value=@[]] @"block"=<block>]
+#         :]
 
 function ::= @"{" formals block @"}" ;
-# result: @[@"type"=@"function"
-#           @"value"=@[@"formals"=<formals>
-#                      @"block"=<block>]]
+# result: [:@"function" [@"formals"=<formals> @"block"=<block>]:]
 
 formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
-# result: @[@"type"=@"formals"
-#           @"value"=@[@[@"name"=<identifier.value>
-#                        @"repeat"=@[@"type"=(@"." | @"*")]]
-#                      ...]]
+# result: [:
+#             @"formals"
+#             @[@[@"name"=<identifier.value> @"repeat"=@[@"type"=(@"."|@"*")]]
+#               ...]
+#         :]
 
 block ::= statement* yield? ;
-# result: @[@"type"=@"block"
-#           @"value"=@[@"statements"=<listlet of statements>
-#                      (@"yield"=<yield>)?]]
+# result: [:
+#             @"block"
+#             @[@"statements"=<listlet of statements> (@"yield"=<yield>)?]
+#         :]
 
 yield ::= @"<>" expression @";" ;
 # result: <expression>
@@ -98,49 +99,50 @@ expression ::= call | atom ;
 atom ::=
     varRef | intlet | integer | stringlet |
     emptyListlet | listlet | emptyMaplet | maplet |
-    uniqlet | function | parenExpression
+    uniqlet | highlet | function | parenExpression
 # result: <same as whatever was parsed>
 
 parenExpression ::= @"(" expression @")";
 # result: <expression>
 
 varDef ::= @"identifier" @"=" expression ;
-# result: @[@"type"=@"varDef"
-#           @"value"=@[@"name"=<identifier.value> @"value"=<expression>]]
+# result: [:@"varDef" @[@"name"=<identifier.value> @"value"=<expression>]:]
 
 varRef ::= @"identifier" ;
-# result: @[@"type"=@"varRef" @"value"=<identifier.value>]
+# result: [:@"varRef" <identifier.value>:]
 
 intlet ::= @"@" @"integer" ;
-# result: @[@"type"=@"literal" @"value"=<integer.value>]
+# result: [:@"literal" <integer.value>:]
 
 integer ::= @"integer" ;
-# result: @[@"type"=@"literal" @"value"=<integer>]
+# result: [:@"literal" <integer>:]
 
 stringlet ::= @"@" @"string" ;
-# result: @[@"type"=@"literal" @"value"=<string.value>]
+# result: [:@"literal" <string.value>:]
 
 emptyListlet ::= @"@" @"[" @"]" ;
-# result: @[@"type"=@"literal" @"value"=@[]]
+# result: [:@"literal" @[]:]
 
 listlet ::= @"@" @"[" atom+ @"]" ;
-# result: @[@"type"=@"listlet" @"value"=<listlet of atoms>]
+# result: [:@"listlet" <listlet of atoms>:]
 
 emptyMaplet ::= @"@" @"[" @"=" @"]" ;
-# result: @[@"type"=@"literal" @"value"=@[=]]
+# result: [:@"literal" @[=]:]
 
 maplet ::= @"@" @"[" binding+ @"]" ;
-# result: @[@"type"=@"maplet" @"value"=<listlet of bindings>]
+# result: [:@"maplet" <listlet of bindings>:]
 
 binding ::= atom @"=" atom ;
 # result: @[@"key"=<key atom> @"value"=<value atom>]
 
 uniqlet ::= @"@@";
-# result: @[@"type"=@"uniqlet"]
+# result: [:@"uniqlet":]
+
+highlet ::= @"[" @":" atom atom? @":" @"]";
+# result: [:@"highlet" @[@"type"=<type atom> (@"value"=<value atom>)?]:]
 
 call ::= atom (@"(" @")" | atom+) ;
-# result: @[@"type"=@"call"
-#           @"value"=@[@"function"=<atom> @"actuals"=<atom list>]]
+# result: [:@"call" @"value"=@[@"function"=<atom> @"actuals"=<atom list>]:]
 ```
 
 
@@ -148,16 +150,9 @@ Library Bindings
 ----------------
 
 ```
-false = @[@"type"=@"boolean" @"value"=0];
-true = @[@"type"=@"boolean" @"value"=1];
-
-if = @@; # Bound via magic as a primitive function.
-# Note: `if` takes two or more arguments, all of which must be functions that
-#   take no arguments. The first argument is called. If it returns `true`,
-#   then the result of the `if` is the result of calling the second argument.
-#   Otherwise, the third argument is called, with `true` indicating that
-#   the fourth is to be the result. And so on. If there is an unpaired
-#   argument at the end, it is taken to provide an `else` result.
+null = [:@"null":];
+false = [:@"boolean" @0:];
+true = [:@"boolean" @1:];
 ```
 
 More TBD.

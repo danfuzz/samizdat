@@ -30,40 +30,8 @@ static void initHidConsts(void) {
     }
 
     constsInit();
-    HID_FALSE = hidPutValue(TOK_BOOLEAN, datIntletFromInt(0));
-    HID_TRUE  = hidPutValue(TOK_BOOLEAN, datIntletFromInt(1));
-}
-
-
-/*
- * Module functions
- */
-
-/* Documented in header. */
-zvalue hidPutValue(zvalue token, zvalue value) {
-    return datMapletPut(token, STR_VALUE, value);
-}
-
-/* Documented in header. */
-zvalue hidType(zvalue value) {
-    return datMapletGet(value, STR_TYPE);
-}
-
-/* Documented in header. */
-zvalue hidValue(zvalue value) {
-    return datMapletGet(value, STR_VALUE);
-}
-
-/* Documented in header. */
-bool hidHasType(zvalue value, zvalue type) {
-    return (datOrder(hidType(value), type) == 0);
-}
-
-/* Documented in header. */
-void hidAssertType(zvalue value, zvalue type) {
-    if (!hidHasType(value, type)) {
-        die("Type mismatch.");
-    }
+    HID_FALSE = datHighletWithValue(TOK_BOOLEAN, datIntletFromInt(0));
+    HID_TRUE  = datHighletWithValue(TOK_BOOLEAN, datIntletFromInt(1));
 }
 
 

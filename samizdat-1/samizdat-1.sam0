@@ -89,6 +89,12 @@ main = { file rest* ::
         (sourceStringlet
             @[@"fizmo"=@"omzif" @"igram"=@"margi" @"blort"=@"trolb"]);
     writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet null);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet false);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet true);
+    writeFile @"/dev/stdout" @"\n";
     writeFile @"/dev/stdout" @"\n";
 
     programText = readFile file;
