@@ -267,7 +267,7 @@ static zvalue prim_listletDelNth(void *state, zint argCount,
 /**
  * TODO: Document!
  */
-static zvalue prim_getKeys(void *state, zint argCount, const zvalue *args) {
+static zvalue prim_mapletKeys(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
     return datMapletKeys(args[0]);
 }
@@ -275,7 +275,7 @@ static zvalue prim_getKeys(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_getValue(void *state, zint argCount, const zvalue *args) {
+static zvalue prim_mapletGet(void *state, zint argCount, const zvalue *args) {
     requireRange(argCount, 2, 3);
 
     zvalue result = datMapletGet(args[0], args[1]);
@@ -397,8 +397,8 @@ void bindPrimitives(zcontext ctx) {
     langCtxBindFunction(ctx, "listletPrepend", prim_listletPrepend, NULL);
 
     // Maplets
-    langCtxBindFunction(ctx, "getKeys",  prim_getKeys,  NULL);
-    langCtxBindFunction(ctx, "getValue", prim_getValue, NULL);
+    langCtxBindFunction(ctx, "mapletKeys", prim_mapletKeys,  NULL);
+    langCtxBindFunction(ctx, "mapletGet",  prim_mapletGet, NULL);
 
     // Highlets
     langCtxBindFunction(ctx, "highletType",  prim_highletType,  NULL);

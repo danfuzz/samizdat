@@ -266,14 +266,14 @@ sourceStringlet = { value ::
             };
         <> stringletCat @"@[" body @"]";
     } { <> isMaplet value; } {
-        body = listletReduce @"" (getKeys value)
+        body = listletReduce @"" (mapletKeys value)
             { reduction key ::
                 <> stringletCat
                     reduction
                     (if { <> eq reduction @""; } { <> @""; } else { <> @" "; })
                     (sourceStringlet key)
                     @"="
-                    (sourceStringlet (getValue value key));
+                    (sourceStringlet (mapletGet value key));
             };
         <> stringletCat @"@[" body @"]";
     } { <> isHighlet value; } {
