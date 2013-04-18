@@ -253,9 +253,9 @@ sourceStringlet = { value ::
             <> intletBody @"@-" (ineg value);
         };
     } { <> isStringlet value; } {
-        body = listletMap (stringletToChars value) stringletChar;
-        result = listletCat @[@"@\""] body @[@"\""];
-        <> apply stringletCat result;
+        body = stringletReduce @"" value
+            { reduction ch :: <> stringletAdd reduction (stringletChar ch); };
+        <> stringletCat @"@\"" body @"\"";
     } { <> isListlet value; } {
         body = listletReduce @"" value
             { reduction elem ::
