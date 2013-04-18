@@ -133,13 +133,18 @@ cat = { listlet rest* ::
         { reduction value ::
             # The inner reduce iterates over items in the second listlet,
             # appending each to the result-in-progress.
-            <> reduce reduction value { result ch :: <> append result ch; };
+            <> reduce reduction value { result one :: <> append result one; };
         };
 };
 
 # Returns true iff the given value is an intlet.
 isIntlet = { value ::
     <> eq (lowType value) @"intlet";
+};
+
+# Returns true iff the given value is a stringlet.
+isStringlet = { value ::
+    <> eq (lowType value) @"stringlet";
 };
 
 # Returns true iff the given value is a listlet.
@@ -155,26 +160,6 @@ isMaplet = { value ::
 # Returns true iff the given value is a uniqlet.
 isUniqlet = { value ::
     <> eq (lowType value) @"uniqlet";
-};
-
-# Returns true iff the given value is a stringlet (which is the
-# same as a listlet with intlet elements in the range of Unicode
-# code points).
-isStringlet = { value ::
-    <> and
-        { <> isListlet value; }
-        {
-            check = { ch rest* ::
-                # Note: 1114111 == 0x10ffff, which is the highest valid
-                # Unicode code point.
-                <> and
-                    { <> ge ch @0; }
-                    { <> le ch @1114111; }
-                    { <> or { <> eq rest @[]; } { <> apply check rest; }; };
-            };
-
-            <> or { <> eq value @[]; } { <> apply check value; };
-        };
 };
 
 # Converts an arbitrary value into a stringlet representation form
@@ -198,7 +183,7 @@ sourceStringlet = { value ::
         <> if { <> eq value @0; } {
             <> @"";
         } else {
-            digit = getNth @"0123456789abcdef" (imod value @16);
+            digit = stringletNth @"0123456789abcdef" (imod value @16);
             more = idiv value @16;
             <> append (intletHex more) digit;
         };
