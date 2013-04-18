@@ -122,16 +122,6 @@ typedef struct {
 zvalue datAllocValue(ztype type, zint size, zint extraBytes);
 
 /**
- * Allocates a listlet of the given size.
- */
-zvalue datAllocListlet(zint size);
-
-/**
- * Gets the array of `zvalue` elements from a listlet.
- */
-zvalue *datListletElems(zvalue listlet);
-
-/**
  * Compares intlets.
  */
 zorder datIntletOrder(zvalue v1, zvalue v2);

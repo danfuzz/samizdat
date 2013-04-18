@@ -11,11 +11,25 @@
 
 
 /*
- * Helper definitions
+ * Helper definitions / functions
  */
 
 /** The empty listlet, lazily initialized. */
 static zvalue theEmptyListlet = NULL;
+
+/**
+ * Allocates a listlet of the given size.
+ */
+static zvalue allocListlet(zint size) {
+    return datAllocValue(DAT_LISTLET, size, size * sizeof(zvalue));
+}
+
+/**
+ * Gets the array of `zvalue` elements from a listlet.
+ */
+static zvalue *listletElems(zvalue listlet) {
+    return ((DatListlet *) listlet)->elems;
+}
 
 
 /*
@@ -23,21 +37,9 @@ static zvalue theEmptyListlet = NULL;
  */
 
 /* Documented in header. */
-zvalue datAllocListlet(zint size) {
-    return datAllocValue(DAT_LISTLET, size, size * sizeof(zvalue));
-}
-
-/* Documented in header. */
-zvalue *datListletElems(zvalue listlet) {
-    datAssertListlet(listlet);
-
-    return ((DatListlet *) listlet)->elems;
-}
-
-/* Documented in header. */
 zorder datListletOrder(zvalue v1, zvalue v2) {
-    zvalue *e1 = datListletElems(v1);
-    zvalue *e2 = datListletElems(v2);
+    zvalue *e1 = listletElems(v1);
+    zvalue *e2 = listletElems(v2);
     zint sz1 = datSize(v1);
     zint sz2 = datSize(v2);
     zint sz = (sz1 < sz2) ? sz1 : sz2;
@@ -63,14 +65,15 @@ zorder datListletOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zvalue datListletGet(zvalue listlet, zint n) {
+    datAssertListlet(listlet);
     datAssertNth(listlet, n);
-    return datListletElems(listlet)[n];
+    return listletElems(listlet)[n];
 }
 
 /* Documented in header. */
 zvalue datListletEmpty(void) {
     if (theEmptyListlet == NULL) {
-        theEmptyListlet = datAllocListlet(0);
+        theEmptyListlet = allocListlet(0);
     }
 
     return theEmptyListlet;
@@ -82,10 +85,10 @@ zvalue datListletAppend(zvalue listlet, zvalue value) {
 
     zint oldSize = listlet->size;
     zint size = oldSize + 1;
-    zvalue result = datAllocListlet(size);
-    zvalue *resultElems = datListletElems(result);
+    zvalue result = allocListlet(size);
+    zvalue *resultElems = listletElems(result);
 
-    memcpy(resultElems, datListletElems(listlet), oldSize * sizeof(zvalue));
+    memcpy(resultElems, listletElems(listlet), oldSize * sizeof(zvalue));
     resultElems[oldSize] = value;
 
     return result;
@@ -97,9 +100,9 @@ zvalue datListletDelete(zvalue listlet, zint n) {
 
     zint oldSize = listlet->size;
     zint size = oldSize - 1;
-    zvalue result = datAllocListlet(size);
-    zvalue *resultElems = datListletElems(result);
-    zvalue *oldElems = datListletElems(listlet);
+    zvalue result = allocListlet(size);
+    zvalue *resultElems = listletElems(result);
+    zvalue *oldElems = listletElems(listlet);
 
     memcpy(resultElems, oldElems, n * sizeof(zvalue));
     memcpy(resultElems + n, oldElems + n + 1, (size - n) * sizeof(zvalue));
@@ -109,8 +112,8 @@ zvalue datListletDelete(zvalue listlet, zint n) {
 
 /* Documented in header. */
 zvalue datListletFromValues(zvalue *values, zint size) {
-    zvalue result = datAllocListlet(size);
-    zvalue *resultElems = datListletElems(result);
+    zvalue result = allocListlet(size);
+    zvalue *resultElems = listletElems(result);
 
     for (zint i = 0; i < size; i++) {
         datAssertValid(values[i]);
@@ -123,5 +126,5 @@ zvalue datListletFromValues(zvalue *values, zint size) {
 /* Documented in header. */
 void datListletToValues(zvalue listlet, zvalue *values) {
     datAssertListlet(listlet);
-    memcpy(values, datListletElems(listlet), listlet->size * sizeof(zvalue));
+    memcpy(values, listletElems(listlet), listlet->size * sizeof(zvalue));
 }
