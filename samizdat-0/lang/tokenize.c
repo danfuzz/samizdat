@@ -231,11 +231,14 @@ static zvalue tokenizeOne(ParseState *state) {
         case '\"':
             return tokenizeString(state);
         case '@':
-            return tokenizeOneOrTwoChars(state, '@', TOK_CH_AT, TOK_CH_ATAT);
+            return tokenizeOneOrTwoChars(state, '@',
+                                         TOK_CH_AT, TOK_CH_ATAT);
         case ':':
-            return tokenizeOneOrTwoChars(state, ':', NULL, TOK_CH_COLONCOLON);
+            return tokenizeOneOrTwoChars(state, ':',
+                                         TOK_CH_COLON, TOK_CH_COLONCOLON);
         case '<':
-            return tokenizeOneOrTwoChars(state, '>', NULL, TOK_CH_DIAMOND);
+            return tokenizeOneOrTwoChars(state, '>',
+                                         NULL, TOK_CH_DIAMOND);
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9': case '-':
             return tokenizeInteger(state);

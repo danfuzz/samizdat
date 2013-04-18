@@ -114,6 +114,26 @@ static zvalue execCall(zcontext ctx, zvalue call) {
 }
 
 /**
+ * Executes a `highlet` form.
+ */
+static zvalue execHighlet(zcontext ctx, zvalue highlet) {
+    datHighletAssertType(highlet, STR_HIGHLET);
+    highlet = datHighletValue(highlet);
+
+    zvalue type = execExpression(ctx, datMapletGet(highlet, STR_TYPE));
+    zvalue value = datMapletGet(highlet, STR_VALUE);
+
+    if (value != NULL) {
+        // Note: This intentionally enables the atom in the value
+        // position to be `void` in which case we end up with a
+        // valueless highlet.
+        value = execExpression(ctx, value);
+    }
+
+    return datHighletFrom(type, value);
+}
+
+/**
  * Executes a `maplet` form.
  */
 static zvalue execMaplet(zcontext ctx, zvalue maplet) {
@@ -163,6 +183,7 @@ static zvalue execExpressionVoidOk(zcontext ctx, zvalue e) {
     else if (datHighletHasType(e, STR_LISTLET))  { return execListlet(ctx, e);      }
     else if (datHighletHasType(e, STR_MAPLET))   { return execMaplet(ctx, e);       }
     else if (datHighletHasType(e, STR_UNIQLET))  { return datUniqlet();             }
+    else if (datHighletHasType(e, STR_HIGHLET))  { return execHighlet(ctx, e);      }
     else if (datHighletHasType(e, STR_CALL))     { return execCall(ctx, e);         }
     else if (datHighletHasType(e, STR_FUNCTION)) { return execFunction(ctx, e);     }
     else {

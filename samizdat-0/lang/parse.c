@@ -158,6 +158,49 @@ static zvalue parseCall(ParseState *state) {
 }
 
 /**
+ * Parses a `highlet` node.
+ */
+static zvalue parseHighlet(ParseState *state) {
+    zint mark = cursor(state);
+
+    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_COLON) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    zvalue innerType = parseAtom(state);
+    if (innerType == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    // It's okay for this to be NULL.
+    zvalue innerValue = parseAtom(state);
+
+    if (readMatch(state, TOK_CH_COLON) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
+        reset(state, mark);
+        return NULL;
+    }
+
+    zvalue value = datMapletPut(datMapletEmpty(), STR_TYPE, innerType);
+
+    if (innerValue != NULL) {
+        value = datMapletPut(value, STR_VALUE, innerValue);
+    }
+
+    return datHighletWithValue(TOK_HIGHLET, value);
+}
+
+/**
  * Parses a `uniqlet` node.
  */
 static zvalue parseUniqlet(ParseState *state) {
@@ -454,6 +497,7 @@ static zvalue parseAtom(ParseState *state) {
     if (result == NULL) { result = parseEmptyMaplet(state); }
     if (result == NULL) { result = parseMaplet(state); }
     if (result == NULL) { result = parseUniqlet(state); }
+    if (result == NULL) { result = parseHighlet(state); }
     if (result == NULL) { result = parseFunction(state); }
     if (result == NULL) { result = parseParenExpression(state); }
 
