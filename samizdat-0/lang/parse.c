@@ -48,18 +48,17 @@ static zvalue read(ParseState *state) {
 }
 
 /**
- * Reads the next token if its type matches the given token's type.
+ * Reads the next token if its type matches the given type.
  */
-static zvalue readMatch(ParseState *state, zvalue token) {
+static zvalue readMatch(ParseState *state, zvalue type) {
     if (isEof(state)) {
         return NULL;
     }
 
     zvalue result = datListletGet(state->tokens, state->at);
-    zvalue tokenType = datHighletType(token);
     zvalue resultType = datHighletType(result);
 
-    if (datOrder(tokenType, resultType) != 0) {
+    if (datOrder(type, resultType) != 0) {
         return NULL;
     }
 
@@ -118,11 +117,11 @@ static zvalue parseAtomPlus(ParseState *state) {
 static zvalue parseCall1(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_OPAREN) == NULL) {
+    if (readMatch(state, STR_CH_OPAREN) == NULL) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CPAREN) == NULL) {
+    if (readMatch(state, STR_CH_CPAREN) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -154,7 +153,7 @@ static zvalue parseCall(ParseState *state) {
 
     zvalue value = datMapletPut(datMapletEmpty(), STR_FUNCTION, function);
     value = datMapletPut(value, STR_ACTUALS, actuals);
-    return datHighletWithValue(TOK_CALL, value);
+    return datHighletFrom(STR_CALL, value);
 }
 
 /**
@@ -163,11 +162,11 @@ static zvalue parseCall(ParseState *state) {
 static zvalue parseHighlet(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_COLON) == NULL) {
+    if (readMatch(state, STR_CH_COLON) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -181,12 +180,12 @@ static zvalue parseHighlet(ParseState *state) {
     // It's okay for this to be NULL.
     zvalue innerValue = parseAtom(state);
 
-    if (readMatch(state, TOK_CH_COLON) == NULL) {
+    if (readMatch(state, STR_CH_COLON) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -197,14 +196,14 @@ static zvalue parseHighlet(ParseState *state) {
         value = datMapletPut(value, STR_VALUE, innerValue);
     }
 
-    return datHighletWithValue(TOK_HIGHLET, value);
+    return datHighletFrom(STR_HIGHLET, value);
 }
 
 /**
  * Parses a `uniqlet` node.
  */
 static zvalue parseUniqlet(ParseState *state) {
-    if (readMatch(state, TOK_CH_ATAT) == NULL) {
+    if (readMatch(state, STR_CH_ATAT) == NULL) {
         return NULL;
     }
 
@@ -222,7 +221,7 @@ static zvalue parseBinding(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_EQUAL) == NULL) {
+    if (readMatch(state, STR_CH_EQUAL) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -244,11 +243,11 @@ static zvalue parseBinding(ParseState *state) {
 static zvalue parseMaplet(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_AT) == NULL) {
+    if (readMatch(state, STR_CH_AT) == NULL) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -270,12 +269,12 @@ static zvalue parseMaplet(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    return datHighletWithValue(TOK_MAPLET, bindings);
+    return datHighletFrom(STR_MAPLET, bindings);
 }
 
 /**
@@ -284,26 +283,26 @@ static zvalue parseMaplet(ParseState *state) {
 static zvalue parseEmptyMaplet(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_AT) == NULL) {
+    if (readMatch(state, STR_CH_AT) == NULL) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_EQUAL) == NULL) {
+    if (readMatch(state, STR_CH_EQUAL) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    return datHighletWithValue(TOK_LITERAL, datMapletEmpty());
+    return datHighletFrom(STR_LITERAL, datMapletEmpty());
 }
 
 /**
@@ -312,11 +311,11 @@ static zvalue parseEmptyMaplet(ParseState *state) {
 static zvalue parseListlet(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_AT) == NULL) {
+    if (readMatch(state, STR_CH_AT) == NULL) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -328,12 +327,12 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    return datHighletWithValue(TOK_LISTLET, atoms);
+    return datHighletFrom(STR_LISTLET, atoms);
 }
 
 /**
@@ -342,21 +341,21 @@ static zvalue parseListlet(ParseState *state) {
 static zvalue parseEmptyListlet(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_AT) == NULL) {
+    if (readMatch(state, STR_CH_AT) == NULL) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_OSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CSQUARE) == NULL) {
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    return datHighletWithValue(TOK_LITERAL, datListletEmpty());
+    return datHighletFrom(STR_LITERAL, datListletEmpty());
 }
 
 /**
@@ -365,11 +364,11 @@ static zvalue parseEmptyListlet(ParseState *state) {
 static zvalue parseStringlet(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_AT) == NULL) {
+    if (readMatch(state, STR_CH_AT) == NULL) {
         return NULL;
     }
 
-    zvalue string = readMatch(state, TOK_STRING);
+    zvalue string = readMatch(state, STR_STRING);
 
     if (string == NULL) {
         reset(state, mark);
@@ -377,20 +376,20 @@ static zvalue parseStringlet(ParseState *state) {
     }
 
     zvalue value = datHighletValue(string);
-    return datHighletWithValue(TOK_LITERAL, value);
+    return datHighletFrom(STR_LITERAL, value);
 }
 
 /**
  * Parses an `integer` node.
  */
 static zvalue parseInteger(ParseState *state) {
-    zvalue integer = readMatch(state, TOK_INTEGER);
+    zvalue integer = readMatch(state, STR_INTEGER);
 
     if (integer == NULL) {
         return NULL;
     }
 
-    return datHighletWithValue(TOK_LITERAL, integer);
+    return datHighletFrom(STR_LITERAL, integer);
 }
 
 /**
@@ -399,11 +398,11 @@ static zvalue parseInteger(ParseState *state) {
 static zvalue parseIntlet(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_AT) == NULL) {
+    if (readMatch(state, STR_CH_AT) == NULL) {
         return NULL;
     }
 
-    zvalue integer = readMatch(state, TOK_INTEGER);
+    zvalue integer = readMatch(state, STR_INTEGER);
 
     if (integer == NULL) {
         reset(state, mark);
@@ -411,21 +410,21 @@ static zvalue parseIntlet(ParseState *state) {
     }
 
     zvalue value = datHighletValue(integer);
-    return datHighletWithValue(TOK_LITERAL, value);
+    return datHighletFrom(STR_LITERAL, value);
 }
 
 /**
  * Parses a `varRef` node.
  */
 static zvalue parseVarRef(ParseState *state) {
-    zvalue identifier = readMatch(state, TOK_IDENTIFIER);
+    zvalue identifier = readMatch(state, STR_IDENTIFIER);
 
     if (identifier == NULL) {
         return NULL;
     }
 
     zvalue name = datHighletValue(identifier);
-    return datHighletWithValue(TOK_VAR_REF, name);
+    return datHighletFrom(STR_VAR_REF, name);
 }
 
 /**
@@ -433,13 +432,13 @@ static zvalue parseVarRef(ParseState *state) {
  */
 static zvalue parseVarDef(ParseState *state) {
     zint mark = cursor(state);
-    zvalue identifier = readMatch(state, TOK_IDENTIFIER);
+    zvalue identifier = readMatch(state, STR_IDENTIFIER);
 
     if (identifier == NULL) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_EQUAL) == NULL) {
+    if (readMatch(state, STR_CH_EQUAL) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -454,7 +453,7 @@ static zvalue parseVarDef(ParseState *state) {
     zvalue name = datHighletValue(identifier);
     zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
     value = datMapletPut(value, STR_VALUE, expression);
-    return datHighletWithValue(TOK_VAR_DEF, value);
+    return datHighletFrom(STR_VAR_DEF, value);
 }
 
 /**
@@ -463,7 +462,7 @@ static zvalue parseVarDef(ParseState *state) {
 static zvalue parseParenExpression(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_OPAREN) == NULL) {
+    if (readMatch(state, STR_CH_OPAREN) == NULL) {
         return NULL;
     }
 
@@ -474,7 +473,7 @@ static zvalue parseParenExpression(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_CPAREN) == NULL) {
+    if (readMatch(state, STR_CH_CPAREN) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -530,7 +529,7 @@ static zvalue parseStatement(ParseState *state) {
         return NULL;
     }
 
-    if (readMatch(state, TOK_CH_SEMICOLON)) {
+    if (readMatch(state, STR_CH_SEMICOLON)) {
         return result;
     } else {
         reset(state, mark);
@@ -544,14 +543,14 @@ static zvalue parseStatement(ParseState *state) {
 static zvalue parseYield(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_DIAMOND) == NULL) {
+    if (readMatch(state, STR_CH_DIAMOND) == NULL) {
         return NULL;
     }
 
     zvalue expression = parseExpression(state);
 
     if ((expression == NULL) ||
-        (readMatch(state, TOK_CH_SEMICOLON) == NULL)) {
+        (readMatch(state, STR_CH_SEMICOLON) == NULL)) {
         reset(state, mark);
         return NULL;
     }
@@ -580,7 +579,7 @@ static zvalue parseBlock(ParseState *state) {
         result = datMapletPut(result, STR_YIELD, yield);
     }
 
-    return datHighletWithValue(TOK_BLOCK, result);
+    return datHighletFrom(STR_BLOCK, result);
 }
 
 /**
@@ -591,7 +590,7 @@ static zvalue parseFormals(ParseState *state) {
     zvalue formals = datListletEmpty();
 
     for (;;) {
-        zvalue identifier = readMatch(state, TOK_IDENTIFIER);
+        zvalue identifier = readMatch(state, STR_IDENTIFIER);
         if (identifier == NULL) {
             break;
         }
@@ -599,7 +598,7 @@ static zvalue parseFormals(ParseState *state) {
         zvalue formal =
             datMapletPut(datMapletEmpty(), STR_NAME, datHighletValue(identifier));
 
-        if (readMatch(state, TOK_CH_STAR) != NULL) {
+        if (readMatch(state, STR_CH_STAR) != NULL) {
             // In Samizdat Layer 0, the only modifier for a formal is
             // `*` which has to be on the last formal.
             formal = datMapletPut(formal, STR_REPEAT, TOK_CH_STAR);
@@ -612,7 +611,7 @@ static zvalue parseFormals(ParseState *state) {
     }
 
     if (datSize(formals) != 0) {
-        if (readMatch(state, TOK_CH_COLONCOLON) == NULL) {
+        if (readMatch(state, STR_CH_COLONCOLON) == NULL) {
             // We didn't find the expected `::` which means there
             // was no formals list at all. So reset the parse, but
             // still succeed with an empty formals list.
@@ -621,7 +620,7 @@ static zvalue parseFormals(ParseState *state) {
         }
     }
 
-    return datHighletWithValue(TOK_FORMALS, formals);
+    return datHighletFrom(STR_FORMALS, formals);
 }
 
 /**
@@ -630,7 +629,7 @@ static zvalue parseFormals(ParseState *state) {
 static zvalue functionNode(zvalue formals, zvalue block) {
     zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
     value = datMapletPut(value, STR_BLOCK, block);
-    return datHighletWithValue(TOK_FUNCTION, value);
+    return datHighletFrom(STR_FUNCTION, value);
 }
 
 /**
@@ -639,7 +638,7 @@ static zvalue functionNode(zvalue formals, zvalue block) {
 static zvalue parseFunction(ParseState *state) {
     zint mark = cursor(state);
 
-    if (readMatch(state, TOK_CH_OCURLY) == NULL) {
+    if (readMatch(state, STR_CH_OCURLY) == NULL) {
         return NULL;
     }
 
@@ -647,7 +646,7 @@ static zvalue parseFunction(ParseState *state) {
     zvalue formals = parseFormals(state);
     zvalue block = parseBlock(state);
 
-    if (readMatch(state, TOK_CH_CCURLY) == NULL) {
+    if (readMatch(state, STR_CH_CCURLY) == NULL) {
         reset(state, mark);
         return NULL;
     }
@@ -665,7 +664,7 @@ static zvalue parseProgram(ParseState *state) {
         return NULL;
     }
 
-    return functionNode(datHighletWithValue(TOK_FORMALS, datListletEmpty()),
+    return functionNode(datHighletFrom(STR_FORMALS, datListletEmpty()),
                         block);
 }
 

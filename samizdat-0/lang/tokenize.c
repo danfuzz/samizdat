@@ -117,7 +117,7 @@ static zvalue tokenizeInteger(ParseState *state) {
     }
 
     zvalue intlet = datIntletFromInt(negative ? -value : value);
-    return datHighletWithValue(TOK_INTEGER, intlet);
+    return datHighletFrom(STR_INTEGER, intlet);
 }
 
 /**
@@ -148,7 +148,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     }
 
     zvalue stringlet = datStringletFromChars(chars, size);
-    return datHighletWithValue(TOK_IDENTIFIER, stringlet);
+    return datHighletFrom(STR_IDENTIFIER, stringlet);
 }
 
 /**
@@ -189,7 +189,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue stringlet = datStringletFromChars(chars, size);
-    return datHighletWithValue(TOK_STRING, stringlet);
+    return datHighletFrom(STR_STRING, stringlet);
 }
 
 /**

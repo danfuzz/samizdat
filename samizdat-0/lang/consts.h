@@ -69,22 +69,7 @@ extern zvalue TOK_CH_OPAREN;
 extern zvalue TOK_CH_OSQUARE;
 extern zvalue TOK_CH_SEMICOLON;
 extern zvalue TOK_CH_STAR;
-extern zvalue TOK_ACTUALS;
-extern zvalue TOK_BLOCK;
-extern zvalue TOK_BOOLEAN;
-extern zvalue TOK_CALL;
-extern zvalue TOK_FORMALS;
-extern zvalue TOK_FUNCTION;
-extern zvalue TOK_HIGHLET;
-extern zvalue TOK_IDENTIFIER;
-extern zvalue TOK_INTEGER;
-extern zvalue TOK_LISTLET;
-extern zvalue TOK_LITERAL;
-extern zvalue TOK_MAPLET;
-extern zvalue TOK_STRING;
 extern zvalue TOK_UNIQLET;
-extern zvalue TOK_VAR_DEF;
-extern zvalue TOK_VAR_REF;
 
 /**
  * Initializes the string and token variables, if necessary.

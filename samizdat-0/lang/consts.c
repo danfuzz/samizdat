@@ -63,22 +63,7 @@ zvalue TOK_CH_OPAREN = NULL;
 zvalue TOK_CH_OSQUARE = NULL;
 zvalue TOK_CH_SEMICOLON = NULL;
 zvalue TOK_CH_STAR = NULL;
-zvalue TOK_ACTUALS = NULL;
-zvalue TOK_BLOCK = NULL;
-zvalue TOK_BOOLEAN = NULL;
-zvalue TOK_CALL = NULL;
-zvalue TOK_FORMALS = NULL;
-zvalue TOK_FUNCTION = NULL;
-zvalue TOK_HIGHLET = NULL;
-zvalue TOK_IDENTIFIER = NULL;
-zvalue TOK_INTEGER = NULL;
-zvalue TOK_LISTLET = NULL;
-zvalue TOK_LITERAL = NULL;
-zvalue TOK_MAPLET = NULL;
-zvalue TOK_STRING = NULL;
 zvalue TOK_UNIQLET = NULL;
-zvalue TOK_VAR_DEF = NULL;
-zvalue TOK_VAR_REF = NULL;
 
 
 /*
@@ -146,20 +131,5 @@ void constsInit(void) {
     TOK_CH_OSQUARE    = datHighletFromType(STR_CH_OSQUARE);
     TOK_CH_SEMICOLON  = datHighletFromType(STR_CH_SEMICOLON);
     TOK_CH_STAR       = datHighletFromType(STR_CH_STAR);
-    TOK_ACTUALS       = datHighletFromType(STR_ACTUALS);
-    TOK_BLOCK         = datHighletFromType(STR_BLOCK);
-    TOK_BOOLEAN       = datHighletFromType(STR_BOOLEAN);
-    TOK_CALL          = datHighletFromType(STR_CALL);
-    TOK_FORMALS       = datHighletFromType(STR_FORMALS);
-    TOK_FUNCTION      = datHighletFromType(STR_FUNCTION);
-    TOK_HIGHLET       = datHighletFromType(STR_HIGHLET);
-    TOK_IDENTIFIER    = datHighletFromType(STR_IDENTIFIER);
-    TOK_INTEGER       = datHighletFromType(STR_INTEGER);
-    TOK_LISTLET       = datHighletFromType(STR_LISTLET);
-    TOK_LITERAL       = datHighletFromType(STR_LITERAL);
-    TOK_MAPLET        = datHighletFromType(STR_MAPLET);
-    TOK_STRING        = datHighletFromType(STR_STRING);
     TOK_UNIQLET       = datHighletFromType(STR_UNIQLET);
-    TOK_VAR_DEF       = datHighletFromType(STR_VAR_DEF);
-    TOK_VAR_REF       = datHighletFromType(STR_VAR_REF);
 }

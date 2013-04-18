@@ -373,13 +373,6 @@ zvalue datHighletFromType(zvalue type);
 zvalue datHighletFrom(zvalue type, zvalue value);
 
 /**
- * Returns a possibly-valued highlet using the type of the given base
- * highlet and the given value. The given value must either be a valid
- * value or `NULL`.
- */
-zvalue datHighletWithValue(zvalue highlet, zvalue value);
-
-/**
  * Returns whether or not the type of the given highlet equals the
  * given value.
  */

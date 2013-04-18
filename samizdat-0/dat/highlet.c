@@ -91,12 +91,6 @@ zvalue datHighletFrom(zvalue type, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue datHighletWithValue(zvalue highlet, zvalue value) {
-    datAssertHighlet(highlet);
-    return datHighletFrom(highletInfo(highlet)->type, value);
-}
-
-/* Documented in header. */
 bool datHighletHasType(zvalue highlet, zvalue type) {
     return (datOrder(datHighletType(highlet), type) == 0);
 }
