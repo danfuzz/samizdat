@@ -130,12 +130,7 @@ reduce = { base listlet func ::
 cat = { listlet rest* ::
     # The outer reduce iterates over the listlets, concatenating each in turn.
     <> reduce listlet rest
-        { reduction value ::
-            # The inner reduce iterates over items in the second listlet,
-            # appending each to the result-in-progress.
-            <> reduce reduction value
-                { result one :: <> listletAppend result one; };
-        };
+        { reduction value :: <> listletAdd reduction value; };
 };
 
 # Concatenates one or more stringlets together into a single resulting
