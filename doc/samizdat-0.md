@@ -3,9 +3,9 @@ Samizdat Layer 0
 
 This is the specification for the language known as "Samizdat Layer 0".
 The language is meant to provide a syntactically and semantically
-minimal way to build up and manipulate low layer Samizdat data.
+minimal way to build up and manipulate low-layer Samizdat data.
 
-Samizdat Layer 0 is run by translating it into low layer Samizdat
+Samizdat Layer 0 is run by translating it into low-layer Samizdat
 data, as specified here, and running it with the indicated library
 bindings.
 
