@@ -689,7 +689,6 @@ Returns `true` iff the given value is a stringlet.
 
 Returns `true` iff the given value is a uniqlet.
 
-
 <br><br>
 ### In-Language Library: Conditionals
 
@@ -780,7 +779,6 @@ element, with three arguments: the last (or base) reduction result,
 the element, and its index number (zero-based).
 
 See note on `stringletMap` about choice of argument order.
-
 
 <br><br>
 ### In-Language Library: Miscellaneous
