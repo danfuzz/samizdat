@@ -29,7 +29,7 @@ are specific to *Samizdat Layer 0*, with higher layers providing
 much fuller expressivity.
 
 
-## Comments
+### Comments
 
 Comments start with `#` and continue to the end of a line.
 
