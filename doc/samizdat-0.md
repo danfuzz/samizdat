@@ -16,12 +16,16 @@ Data Syntax And Semantics In A Nutshell
 This section provides a few quick examples of what *Samizdat
 Layer 0* data types look like as text, and what they mean.
 
-To avoid naming conflicts with the type names used in the final
-language layer, in the low layer, type names get a suffix "let" (to
-imply "little version", like "booklet" is to "book").
+First and foremost on the topic of semantics, all data values are
+immutable. For example, appending to or deleting from a list always
+results in a new list, with the original remaining unchanged
 
-Similarly, to avoid syntactic conflicts, most low layer types
-are represented using an initial `@` character.
+With regards to naming, to avoid naming conflicts with the type names
+used in the final language layer, in the low layer, type names get a
+suffix "let" (to imply "little version", like "booklet" is to "book").
+
+As with naming, to avoid higher layer syntactic conflicts, most low
+layer types are represented using an initial `@` character.
 
 Keep in mind that many of the restrictions and caveats mentioned
 (such as, for example, what can be backslash-escaped in a string)
@@ -340,28 +344,28 @@ The boolean value true. It can also be written as `[:@"boolean" @1:]`.
 <br><br>
 ### Primitive Library: Conditionals
 
-#### `ifTrue predicate thenFunc elseFunc? <> . | ~.`
+#### `ifTrue predicate thenFunction elseFunction? <> . | ~.`
 
 Primitive boolean conditional. This calls the given predicate with no
 arguments, expecting it to return a boolean.
 
-If the predicate returns `true`, then the `thenFunc` is called with no
-arguments. If the predicate returns `false`, then the `elseFunc` (if
-any) is called with no arguments.
+If the predicate returns `true`, then the `thenFunction` is called
+with no arguments. If the predicate returns `false`, then the
+`elseFunction` (if any) is called with no arguments.
 
 The return value from this function is whatever was returned by the
 consequent function that was called. If no consequent was called, this
 returns no value.
 
-#### `ifValue func valueFunc voidFunc? <> . | ~.`
+#### `ifValue function valueFunction voidFunction? <> . | ~.`
 
 Primitive value conditional. This calls the given function with no
 arguments, taking note of its return value or lack thereof.
 
-If the function returns a value, then the `valueFunc` is called with one
-argument, namely the value returned from the original function. If the
-function does not return a value, then the `voidFunc` (if any) is called
-with no arguments.
+If the function returns a value, then the `valueFunction` is called
+with one argument, namely the value returned from the original
+function. If the function does not return a value, then the
+`voidFunction` (if any) is called with no arguments.
 
 The return value from this function is whatever was returned by the
 consequent function that was called. If no consequent was called, this
@@ -413,7 +417,7 @@ no way to define boolean comparators in-language.
 
 #### `lowSize value <> intlet`
 
-Gets the "size" of the given value. Every low-layer value has
+Returns the "size" of the given value. Every low-layer value has
 a size, defined as follows:
 
 * `intlet` &mdash; the number of significant bits (*not* bytes) in
@@ -433,7 +437,7 @@ a size, defined as follows:
 
 #### `lowType value <> stringlet`
 
-Gets the type name of the low-layer type of the given value. The
+Returns the type name of the low-layer type of the given value. The
 result will be one of: `@"intlet" @"stringlet" @"listlet" @"maplet"
 @"uniqlet" @"highlet"`
 
@@ -473,8 +477,8 @@ Returns the difference of the given values (first minus second).
 
 #### `stringletAdd stringlet1 stringlet2 <> stringlet`
 
-Returns a stringlet consisting of the concatenation of the two
-argument stringlets, in argument order.
+Returns a stringlet consisting of the concatenation of the contents
+of the two argument stringlets, in argument order.
 
 #### `stringletFromChar intlet <> stringlet`
 
@@ -498,9 +502,113 @@ as an intlet.
 Returns a listlet that consists of the character codes of the
 given stringlet, each represented as an intlet in the result.
 
+<br><br>
+### Primitive Library: Listlets
+
+#### `listletAdd listlet1 listlet2 <> listlet`
+
+Returns a listlet consisting of the concatenation of the elements
+of the two argument listlets, in argument order.
+
+#### `listletAppend listlet value <> listlet`
+
+Returns a listlet consisting of the elements of the given
+listlet argument followed by the given additional value.
+
+#### `listletDelNth listlet n <> listlet`
+
+Returns a listlet just like the given one, except that the `n`th (zero-based)
+element is deleted.
+
+#### `listletPrepend value listlet <> listlet`
+
+Returns a listlet consisting of the given first value followed by the
+elements of the given listlet argument.
+
+*Note:* The arguments are given in an order meant to reflect the
+result (and not listlet-first).
+
+#### `listletNth listlet n <> .`
+
+Returns the `n`th (zero-based) element of the given listlet.
 
 <br><br>
+### Primitive Library: Maplets
 
+#### `mapletAdd maplet1 mapet2 <> maplet`
+
+Returns a maplet consisting of the combination of the mappings of the
+two argument maplets. For any keys in common between the two maplets,
+the second argument's value is the one that ends up in the result.
+
+#### `mapletGet maplet key notFound? <> . | ~.`
+
+Returns the value mapped to the given key (an arbitrary value) in
+the given maplet. If there is no such mapping, then this
+returns the `notFound` value (an arbitrary value) if supplied,
+or simply returns no value at all if `notFound` was not supplied.
+
+#### `mapletKeys maplet <> listlet`
+
+Returns a listlet of all the keys in the given maplet, in sorted
+order.
+
+<br><br>
+### Primitive Library: Highlets
+
+#### `highletType highlet <> .`
+
+Returns the type tag value (an arbitrary value) of the given highlet.
+
+#### `highletValue highlet <> . | ~.`
+
+Returns the payload data value (an arbitrary value) of the given
+highlet, if any. Returns no value if the given highlet is valueless.
+
+<br><br>
+### Primitive Library: Functions and Code
+
+#### `apply function listlet <> . | ~.`
+
+Calls the given function with the given listlet as its arguments (that
+is, each element of the listlet becomes a separate argument to the
+function). This function returns whatever the called function returned
+(including nothing).
+
+#### `sam0Function context functionNode <> function`
+
+Returns an in-model callable function which executes the code indicated
+by the given `function` node (such as could have been returned from
+`sam0Tree`), using the given context (a maplet of variable bindings)
+to resolve any open variable references.
+
+#### `sam0Tree stringlet <> functionNode`
+
+Parses the given stringlet as a program written in *Samizdat Layer 0*.
+Returns a `function` node (as defined by the parse tree semantics)
+that represents the function.
+
+<br><br>
+### Primitive Library: Miscellaneous
+
+#### `die stringlet <> (exits)`
+
+Prints the given stringlet to the system console, and exits.
+
+#### `readFile fileName <> stringlet`
+
+Reads the named file (named by a stringlet) using the underlying
+OS's functionality, interpreting the contents as UTF-8 encoded
+text. Returns a stringlet of the read and decoded text.
+
+#### `writeFile fileName text <> ~.`
+
+Writes out the given text to the named file (named by a stringlet),
+using the underlying OS's functionality, and encoding the text
+(a stringlet) as a stream of UTF-8 bytes.
+
+
+<br><br>
 ### In-Language Library
 
 #### `null`
