@@ -33,31 +33,31 @@ generalReduce = { base value func size nthFunc ::
 
 
 #
-# Exported functions
+# Exported definitions
 #
 
-# The value more commonly known as `null`.
+# Documented in Samizdat Layer 0 spec.
 null = [:@"null":];
 
-# "Equal" comparison in overall value order.
+# Documented in Samizdat Layer 0 spec.
 eq = { v1 v2 :: <> lowOrderIs v1 v2 @0; };
 
-# "Not equal" comparison in overall value order.
+# Documented in Samizdat Layer 0 spec.
 ne = { v1 v2 :: <> lowOrderIs v1 v2 @-1 @1; };
 
-# "Less than" comparison in overall value order.
+# Documented in Samizdat Layer 0 spec.
 lt = { v1 v2 :: <> lowOrderIs v1 v2 @-1; };
 
-# "Greater than" comparison in overall value order.
+# Documented in Samizdat Layer 0 spec.
 gt = { v1 v2 :: <> lowOrderIs v1 v2 @1; };
 
-# "Less than or equal" comparison in overall value order.
+# Documented in Samizdat Layer 0 spec.
 le = { v1 v2 :: <> lowOrderIs v1 v2 @-1 @0; };
 
-# "Greater than or equal" comparison in overall value order.
+# Documented in Samizdat Layer 0 spec.
 ge = { v1 v2 :: <> lowOrderIs v1 v2 @1 @0; };
 
-# Boolean not. The given argument must be a boolean.
+# Documented in Samizdat Layer 0 spec.
 not = { value ::
     <> ifTrue { <> eq value true; }
         { <> false; }
@@ -68,12 +68,7 @@ not = { value ::
         };
 };
 
-# Cascading conditional. Takes an even number of arguments,
-# alternating predicates and consequents. The predicates are run in
-# order until one returns `true`. The consequent immediately after the
-# `true` predicate then gets run, and its return value becomes the
-# result of this function. If no predicate returns `true`, this
-# function returns `void` (that is, a non-value).
+# Documented in Samizdat Layer 0 spec.
 if = { predicate consequent rest* ::
     <> ifTrue predicate
         consequent
@@ -81,21 +76,17 @@ if = { predicate consequent rest* ::
         { <> ifTrue { <> eq rest @[]; } {} { <> apply if rest; }; };
 };
 
-# Function to use as the final catch-all predicate in an `if` call.
+# Documented in Samizdat Layer 0 spec.
 else = { <> true; };
 
-# Short-circuit conjunction. Takes an arbitrary number of predicates.
-# Runs each of them in turn until one of them returns `false`. If no
-# predicate returns `false`, this function returns `true`.
+# Documented in Samizdat Layer 0 spec.
 and = { predicate rest* ::
     <> ifTrue predicate
         { <> ifTrue { <> eq rest @[]; } { <> true; } { <> apply and rest; }; }
         { <> false; };
 };
 
-# Short-circuit disjunction. Takes an arbitrary number of predicates.
-# Runs each of them in turn until one of them returns `true`. If no
-# predicate returns `true`, this function returns `false`.
+# Documented in Samizdat Layer 0 spec.
 or = { predicate rest* ::
     <> ifTrue predicate
         { <> true; }
@@ -104,28 +95,12 @@ or = { predicate rest* ::
             { <> apply and rest; }; };
 };
 
-# Reduces a listlet to a single value, given a base value and a
-# reducer function, operating in low-to-high index order (that is,
-# this is a left-reduce operation). The given function is called on
-# each listlet element, with three arguments: the last reduction
-# result, the element, and its index number.
-#
-# Note: Unlike many other languages with similar functions, the
-# function argument is the *last* one and not the *first* one. This is
-# specifically done to make it natural to write a multi-line function
-# without losing track of the other two arguments.
+# Documented in Samizdat Layer 0 spec.
 listletReduce = { base listlet func ::
     <> generalReduce base listlet func (lowSize listlet) listletNth;
 };
 
-# Maps each element of a listlet, collecting the results into a new
-# listlet. The given function is called on each listlet element, with
-# two arguments, namely the element and its index number.
-#
-# Note: Unlike many other languages with similar functions, the
-# function argument is the *last* one and not the *first* one. This is
-# specifically done to make it natural to write a multi-line function
-# without losing track of the listlet argument.
+# Documented in Samizdat Layer 0 spec.
 listletMap = { listlet func ::
     <> listletReduce @[] listlet
         { reduction value index ::
@@ -133,27 +108,18 @@ listletMap = { listlet func ::
         };
 };
 
-# Concatenates one or more listlets together into a single resulting
-# listlet.
+# Documented in Samizdat Layer 0 spec.
 listletCat = { listlet rest* ::
     <> listletReduce listlet rest
         { reduction value :: <> listletAdd reduction value; };
 };
 
-# Reduces a stringlet to a single value, given a base value and a
-# reducer function, operating in low-to-high index order (that is,
-# this is a left-reduce operation). The given function is called once
-# per stringlet element (character as an intlet), with three
-# arguments: the last reduction result, the element, and its index
-# number.
+# Documented in Samizdat Layer 0 spec.
 stringletReduce = { base stringlet func ::
     <> generalReduce base stringlet func (lowSize stringlet) stringletNth;
 };
 
-# Maps each element of a stringlet, collecting the results into a
-# listlet (note, not into a stringlet). The given function is called
-# on each element (character as an intlet), with two arguments, namely
-# the element and its index number.
+# Documented in Samizdat Layer 0 spec.
 stringletMap = { stringlet func ::
     <> stringletReduce @[] stringlet
         { reduction value index ::
@@ -161,49 +127,43 @@ stringletMap = { stringlet func ::
         };
 };
 
-# Concatenates one or more stringlets together into a single resulting
-# stringlet.
+# Documented in Samizdat Layer 0 spec.
 stringletCat = { stringlet rest* ::
     <> listletReduce stringlet rest
         { reduction value :: <> stringletAdd reduction value; };
 };
 
-# Returns true iff the given value is an intlet.
+# Documented in Samizdat Layer 0 spec.
 isIntlet = { value ::
     <> eq (lowType value) @"intlet";
 };
 
-# Returns true iff the given value is a stringlet.
+# Documented in Samizdat Layer 0 spec.
 isStringlet = { value ::
     <> eq (lowType value) @"stringlet";
 };
 
-# Returns true iff the given value is a listlet.
+# Documented in Samizdat Layer 0 spec.
 isListlet = { value ::
     <> eq (lowType value) @"listlet";
 };
 
-# Returns true iff the given value is a maplet.
+# Documented in Samizdat Layer 0 spec.
 isMaplet = { value ::
     <> eq (lowType value) @"maplet";
 };
 
-# Returns true iff the given value is a uniqlet.
+# Documented in Samizdat Layer 0 spec.
 isUniqlet = { value ::
     <> eq (lowType value) @"uniqlet";
 };
 
-# Returns true iff the given value is a highlet.
+# Documented in Samizdat Layer 0 spec.
 isHighlet = { value ::
     <> eq (lowType value) @"highlet";
 };
 
-# Converts an arbitrary value into a stringlet representation form
-# meant to mimic the Samizdat source syntax.
-#
-# Note that the output differs from Samizdat Layer 0 syntax in that
-# stringlet forms may get represented using hex escapes, which is not
-# defined in Layer 0.
+# Documented in Samizdat Layer 0 spec.
 sourceStringlet = { value ::
     intletBody = { start value ::
         <> if { <> eq value @0; } {
@@ -294,8 +254,7 @@ sourceStringlet = { value ::
     };
 };
 
-# Returns the full set of core library bindings, including stuff
-# defined both primitively and in-language.
+# Documented in Samizdat Layer 0 spec.
 sam0Library = {
     <> CORELIB; # Defined toward the bottom of the file.
 };
