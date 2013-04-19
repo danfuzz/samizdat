@@ -116,6 +116,14 @@ void langCtxBindFunction(zcontext ctx, const char *name,
  */
 void langCtxBindAll(zcontext ctx, zvalue maplet);
 
+/**
+ * Gets a maplet of all the bindings in the given context. Note
+ * that this is a snapshot; any subsequent modification to the
+ * bindings will have no effect on the result returned from this
+ * function.
+ */
+zvalue langCtxToMaplet(zcontext ctx);
+
 
 /*
  * Compilation

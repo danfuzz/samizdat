@@ -316,6 +316,12 @@ zvalue datMapletGet(zvalue maplet, zvalue key);
 zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value);
 
 /**
+ * Combines the bindings of the two given maplets into a new maplet.
+ * For overlapping keys between the two, the second argument "wins".
+ */
+zvalue datMapletAdd(zvalue maplet1, zvalue maplet2);
+
+/**
  * Gets a maplet resulting from the removal of the given key from the
  * given maplet. It is an error if the key isn't in the maplet.
  */
