@@ -299,7 +299,7 @@ provide the primitive library, but it can rely on the canonical
 in-language library source for the remainder.
 
 
-<br>
+<br><br>
 
 ### Primitive Library
 
@@ -314,7 +314,7 @@ The boolean value true. It can also be written as `[:@"boolean" @1:]`.
 #### More TBD.
 
 
-<br>
+<br><br><br>
 
 ### In-Language Library
 
