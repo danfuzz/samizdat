@@ -124,9 +124,6 @@ static zvalue execHighlet(zcontext ctx, zvalue highlet) {
     zvalue value = datMapletGet(highlet, STR_VALUE);
 
     if (value != NULL) {
-        // Note: This intentionally enables the atom in the value
-        // position to be `void` in which case we end up with a
-        // valueless highlet.
         value = execExpression(ctx, value);
     }
 
