@@ -99,7 +99,7 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_ifElse(void *state, zint argCount, const zvalue *args) {
+static zvalue prim_ifTrue(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 3);
 
     zvalue func = langBooleanToBool(args[0]) ? args[1] : args[2];
@@ -404,7 +404,7 @@ zcontext primitiveContext(void) {
     BIND(lowType);
 
     // Conditional
-    BIND(ifElse);
+    BIND(ifTrue);
     BIND(ifVoid);
 
     // Intlets
