@@ -126,10 +126,10 @@ written as `@[=]`.
 
 ### Uniqlet
 
-A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except
-that no uniqlet is equal to any other uniqlet. In practice, uniqlets
-are used to help bridge the divide between data and not-data, with
-one of the main not-data things in the system being functions.
+A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
+no uniqlet is equal to any other uniqlet. In practice, uniqlets are
+used to help bridge the divide between data and not-data, with some of
+the main not-data sorts of things in the system being functions.
 
 Uniqlets are written as simply `@@`. Each mention of `@@` refers
 to a different value.
@@ -147,8 +147,9 @@ high-layer data (hence the name). Highlets are also used as the
 low-layer type returned by parsing (including tokenization) functions.
 
 Highlets are written as an initial `[:`, followed by a type tag
-representation (an arbitrary value), optionally followed by a
-payload value (another arbitrary value), followed by a final `:]`.
+representation (an arbitrary value), optionally followed by a payload
+value representation (another arbitrary value), followed by a final
+`:]`.
 
 ```
 [:@"null":]                   # the value usually just written as `null`
