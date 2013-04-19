@@ -291,10 +291,31 @@ call ::= atom (@"(" @")" | atom+) ;
 Library Bindings
 ----------------
 
-```
-null = [:@"null":];
-false = [:@"boolean" @0:];
-true = [:@"boolean" @1:];
-```
+The library is split into two layers, primitive and in-language.
+From the perspective of code, there is no distinction between the
+two layers, but from the perspective of implementation, there is.
+In particular, an implementation of *Samizdat Layer 0* must
+provide the primitive library, but it can rely on the canonical
+in-language library source for the remainder.
 
-More TBD.
+### Primitive Library
+
+#### false
+
+The boolean value false. It can also be written as `[:@"boolean" @0:]`.
+
+#### true
+
+The boolean value true. It can also be written as `[:@"boolean" @1:]`.
+
+#### More TBD.
+
+
+### In-Language Library
+
+#### `null`
+
+A value used when no other value is suitable, but when a value is
+nonetheless required. It can also be written as `[:@"null":]`.
+
+#### More TBD.
