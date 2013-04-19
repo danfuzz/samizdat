@@ -39,7 +39,7 @@ Comments start with `#` and continue to the end of a line.
 ```
 
 
-## Intlet
+### Intlet
 
 An `intlet` is a signed arbitrary-precision integer value (a/k/a
 a "bigint"). In the C implementation, there is actually a
@@ -56,7 +56,7 @@ digits are interpreted in base 10. (There is no hex representation.)
 @-234452
 ```
 
-## Stringlet
+### Stringlet
 
 A `stringlet` is a sequence of zero or more Unicode code points.
 
@@ -77,7 +77,7 @@ Characters are self-representing, except that there are three
 ```
 
 
-# Listlet
+### Listlet
 
 A `listlet` is a sequence of zero or more other values.
 
@@ -92,7 +92,7 @@ more value representations, followed by a final `]`.
 ```
 
 
-# Maplet
+### Maplet
 
 A `maplet` is a sequence of zero or more mappings (a/k/a bindings)
 from arbitrary keys to arbitrary values. Keys and values are both
@@ -117,7 +117,7 @@ written as `@[=]`.
 ```
 
 
-# Uniqlet
+### Uniqlet
 
 A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except
 that no uniqlet is equal to any other uniqlet. In practice, uniqlets
@@ -132,7 +132,7 @@ to a different value.
 ```
 
 
-# Highlet
+### Highlet
 
 A `highlet` is a combination of a type tag value and an optional
 payload value. Highlets are the bridge between low-layer data and
