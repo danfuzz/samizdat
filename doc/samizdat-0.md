@@ -300,11 +300,11 @@ in-language library source for the remainder.
 
 ### Primitive Library
 
-#### false
+#### `false`
 
 The boolean value false. It can also be written as `[:@"boolean" @0:]`.
 
-#### true
+#### `true`
 
 The boolean value true. It can also be written as `[:@"boolean" @1:]`.
 
