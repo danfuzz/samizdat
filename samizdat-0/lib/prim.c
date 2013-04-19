@@ -100,10 +100,12 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
  * TODO: Document!
  */
 static zvalue prim_ifTrue(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 3);
+    requireRange(argCount, 2, 3);
 
-    zvalue func = langBooleanToBool(args[0]) ? args[1] : args[2];
-    return langCall(func, 0, NULL);
+    bool test = langBooleanToBool(langCall(args[0], 0, NULL));
+    zvalue func = test ? args[1] : args[2];
+
+    return (func == NULL) ? NULL : langCall(func, 0, NULL);
 }
 
 /**
