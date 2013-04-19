@@ -28,6 +28,7 @@ static zvalue newHighlet(zvalue type, zvalue value) {
     zvalue result = datAllocValue(DAT_HIGHLET, 0, sizeof(HighletInfo));
     HighletInfo *info = highletInfo(result);
 
+    result->size = (value == NULL) ? 0 : 1;
     info->type = type;
     info->value = value;
     return result;
