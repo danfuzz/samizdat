@@ -103,8 +103,8 @@ more value representations, followed by a final `]`.
 
 A `maplet` is a sequence of zero or more mappings (a/k/a bindings)
 from arbitrary keys to arbitrary values. Keys and values are both
-allowed to be any kind of other value. Notably, keys are *not*
-restricted to only being strings (or string-like things).
+allowed to be any type of value. Notably, keys are *not* restricted to
+only being strings (or string-like things).
 
 Non-empty maplets are written as an initial `@[`, followed by one or
 more mappings, followed by a final `]`. Mappings are written as
@@ -321,8 +321,9 @@ of how it would be called.
   arguments) is indicated by following it by a `*` (star / asterisk).
 
 * If the function returns a value, that is indicated at the end of the
-  line with `<>` (a "diamond") and then the type name of the kind of
-  value returned or `.` (a dot) indicating "any possible value".
+  line with `<>` (a "diamond") and then the type name of the type of
+  value returned, or the specific value returned, or `.` (a dot)
+  indicating "any possible value".
 
 * If the function does not return a value, that is indicated by ending
   the line with `<> ~.`.
