@@ -35,10 +35,10 @@ parse = { tokens ::
     theCall = [:
         @"call"
         @[
-            @"function"=@"writeFile"
+            @"function"=[:@"varRef" @"writeFile":]
             @"actuals"=@[
-                @"/dev/stdout"
-                @"Hello, Самиздат!\n"
+                [:@"literal" @"/dev/stdout":]
+                [:@"literal" @"We have received the Самиздат!\n":]
             ]
         ]
     :];
@@ -113,12 +113,10 @@ main = { file rest* ::
 
     tokens = tokenize programText;
     <> if { <> ne tokens null; } {
-        block = parse tokens;
-        if { <> ne block null; } {
-            # TODO: Bind block as a function using exposed
-            # interface from samizdat-0, and call it.
-            writeFile @"/dev/stdout" @"TODO: Run.\n";
-            <> @0;
+        programNode = parse tokens;
+        if { <> ne programNode null; } {
+            function = sam0Function (sam0Library()) programNode;
+            <> function();
         } else {
             <> @1;
         };
