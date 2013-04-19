@@ -280,14 +280,12 @@ sourceStringlet = { value ::
         <> stringletCat @"@[" body @"]";
     } { <> isHighlet value; } {
         type = highletType value;
-        noValue = @@;
-        v = ifVoid { <> highletValue value; } { <> noValue; };
         <> stringletCat
             @"[:"
             (sourceStringlet type)
-            (ifTrue { <> eq v noValue; }
-                { <> @""; }
-                { <> stringletAdd @" " (sourceStringlet v); })
+            (ifValue { <> highletValue value; }
+                { v :: <> stringletAdd @" " (sourceStringlet v); }
+                { <> @""; })
             @":]";
     } { <> isUniqlet value; } {
         <> @"@@";

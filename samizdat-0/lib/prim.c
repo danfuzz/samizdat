@@ -111,11 +111,18 @@ static zvalue prim_ifTrue(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
-static zvalue prim_ifVoid(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 2);
+static zvalue prim_ifValue(void *state, zint argCount, const zvalue *args) {
+    requireRange(argCount, 2, 3);
 
     zvalue result = langCall(args[0], 0, NULL);
-    return (result != NULL) ? result : langCall(args[1], 0, NULL);
+
+    if (result != NULL) {
+        return langCall(args[1], 1, &result);
+    } else if (argCount == 3) {
+        return langCall(args[2], 0, NULL);
+    } else {
+        return NULL;
+    }
 }
 
 /**
@@ -407,7 +414,7 @@ zcontext primitiveContext(void) {
 
     // Conditional
     BIND(ifTrue);
-    BIND(ifVoid);
+    BIND(ifValue);
 
     // Intlets
     BIND(ineg);
