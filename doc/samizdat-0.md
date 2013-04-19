@@ -327,8 +327,10 @@ of how it would be called.
   the line with `<> ~.`.
 
 * If a function might or might not return a value, that is indicated
-  by ending the line with `<> . | ~.`. (Note, the return value stuff
-  is is not actual *Samizdat Layer 0* syntax.)
+  by ending the line with `<> . | ~.`.
+
+*Note:* The return value stuff is not actual *Samizdat Layer 0* syntax,
+though it uses elements of it.
 
 
 <br><br>
