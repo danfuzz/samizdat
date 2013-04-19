@@ -30,7 +30,8 @@ layer types are represented using an initial `@` character.
 Keep in mind that many of the restrictions and caveats mentioned
 (such as, for example, what can be backslash-escaped in a string)
 are specific to *Samizdat Layer 0*, with higher layers providing
-much fuller expressivity.
+much fuller expressivity. It may be useful to think of this layer
+as being analogous to the bytecode layer of bytecode-based systems.
 
 
 ### Comments
