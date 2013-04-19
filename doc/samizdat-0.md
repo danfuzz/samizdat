@@ -429,7 +429,8 @@ a size, defined as follows:
 
 * `intlet` &mdash; the number of significant bits (not bytes) in
   the value when represented in twos-complement form, including a
-  high-order sign bit.
+  high-order sign bit. The minimum size of an intlet is 1, which
+  is the size of both `@0` and `@-1`.
 
 * `stringlet` &mdash; the number of characters.
 
