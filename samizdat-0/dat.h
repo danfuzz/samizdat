@@ -418,27 +418,8 @@ void datHighletAssertType(zvalue highlet, zvalue type);
  * Compares two values, providing a full ordering. Returns one of the
  * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
- *
- * Major order is by type &mdash `intlet < stringlet < listlet <
- * maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
- *
- * * Intlets order by integer value.
- *
- * * Listlets and stringlets order by pairwise corresponding-element
- *   comparison, with a strict prefix always winning.
- *
- * * Maplets order by first comparing corresponding ordered lists
- *   of keys with the same rules as listlet comparison. If the key
- *   lists are identical, then the result is the comparison of
- *   corresponding lists of values, in key order.
- *
- * * Any given uniqlet never compares as equal to anything but itself.
- *   Any two uniqlets have a consistent and transitive &mdash; but
- *   otherwise arbitrary &mdash; ordering.
- *
- * * Highlets compare by type as primary, and value as secondary.
- *   With types equal, a highlets without a value order earlier than
- *   ones with a value.
+ * See `lowOrder` in the Samizdat Layer 0 spec for more details about
+ * value sorting.
  */
 zorder datOrder(zvalue v1, zvalue v2);
 
