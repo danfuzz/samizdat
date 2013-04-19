@@ -573,7 +573,8 @@ static zvalue parseBlock(ParseState *state) {
     }
 
     zvalue yield = parseYield(state);
-    zvalue result = datMapletPut(datMapletEmpty(), STR_STATEMENTS, statements);
+    zvalue result =
+        datMapletPut(datMapletEmpty(), STR_STATEMENTS, statements);
 
     if (yield != NULL) {
         result = datMapletPut(result, STR_YIELD, yield);
@@ -595,8 +596,8 @@ static zvalue parseFormals(ParseState *state) {
             break;
         }
 
-        zvalue formal =
-            datMapletPut(datMapletEmpty(), STR_NAME, datHighletValue(identifier));
+        zvalue formal = datMapletPut(datMapletEmpty(), STR_NAME,
+                                     datHighletValue(identifier));
 
         if (readMatch(state, STR_CH_STAR) != NULL) {
             // In Samizdat Layer 0, the only modifier for a formal is
