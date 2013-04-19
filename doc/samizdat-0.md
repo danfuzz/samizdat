@@ -298,6 +298,9 @@ In particular, an implementation of *Samizdat Layer 0* must
 provide the primitive library, but it can rely on the canonical
 in-language library source for the remainder.
 
+
+<br>
+
 ### Primitive Library
 
 #### `false`
@@ -310,6 +313,8 @@ The boolean value true. It can also be written as `[:@"boolean" @1:]`.
 
 #### More TBD.
 
+
+<br>
 
 ### In-Language Library
 
