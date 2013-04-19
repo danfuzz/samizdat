@@ -284,7 +284,7 @@ highlet ::= @"[" @":" atom atom? @":" @"]";
 # result: [:@"highlet" @[@"type"=<type atom> (@"value"=<value atom>)?]:]
 
 call ::= atom (@"(" @")" | atom+) ;
-# result: [:@"call" @"value"=@[@"function"=<atom> @"actuals"=<atom list>]:]
+# result: [:@"call" @[@"function"=<atom> @"actuals"=<atom list>]:]
 ```
 
 
