@@ -45,9 +45,7 @@ parse = { tokens ::
 
     theBlock = [:
         @"block"
-        @[
-            @"statements"=@[theCall]
-        ]
+        @[@"statements"=@[theCall]]
     :];
 
     <> [:
@@ -68,9 +66,9 @@ main = { file rest* ::
     # Be welcoming.
 
     if { <> eq file @"danfuzz"; } {
-        writeFile @"/dev/stdout" @"Hello, Danfuzz!\n";
+        writeFile @"/dev/stdout" @"Hello, Danfuzz!\n\n";
     } else {
-        writeFile @"/dev/stdout" @"Hello, Самиздат!\n";
+        writeFile @"/dev/stdout" @"Hello, Самиздат!\n\n";
     };
 
     writeFile @"/dev/stdout" (sourceStringlet @0);
