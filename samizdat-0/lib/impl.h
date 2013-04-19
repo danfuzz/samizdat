@@ -20,9 +20,8 @@ extern char library_sam0[];
 extern unsigned int library_sam0_len;
 
 /**
- * Binds all the primitive function definitions into the given
- * context.
+ * Creates a context, and binds all the primitive definitions into it.
  */
-void bindPrimitives(zcontext ctx);
+zcontext primitiveContext(void);
 
 #endif

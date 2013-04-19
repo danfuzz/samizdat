@@ -267,6 +267,14 @@ static zvalue prim_listletDelNth(void *state, zint argCount,
 /**
  * TODO: Document!
  */
+static zvalue prim_mapletAdd(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 2);
+    return datMapletAdd(args[0], args[1]);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_mapletKeys(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
     return datMapletKeys(args[0]);
@@ -328,6 +336,21 @@ static zvalue prim_sam0Tree(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_sam0Function(void *state, zint argCount,
+                                const zvalue *args) {
+    requireExactly(argCount, 2);
+
+    zvalue contextMaplet = args[0];
+    zvalue functionNode = args[1];
+    zcontext ctx = langCtxNew();
+
+    langCtxBindAll(ctx, contextMaplet);
+    return langFunctionFromNode(ctx, functionNode);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_die(void *state, zint argCount, const zvalue *args) {
     requireRange(argCount, 0, 1);
 
@@ -360,7 +383,18 @@ static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-void bindPrimitives(zcontext ctx) {
+zcontext primitiveContext(void) {
+    cstInit();
+
+    zcontext ctx = langCtxNew();
+
+    // These all could have been defined in-language, but we already
+    // have to make them be defined and accessible to C code, so we just
+    // go ahead and bind them here.
+    langCtxBind(ctx, "false", CST_FALSE);
+    langCtxBind(ctx, "true", CST_TRUE);
+
+    // This avoids boilerplate below.
     #define BIND(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
 
     // Low-layer types (in general)
@@ -396,8 +430,9 @@ void bindPrimitives(zcontext ctx) {
     BIND(listletPrepend);
 
     // Maplets
-    BIND(mapletKeys);
+    BIND(mapletAdd);
     BIND(mapletGet);
+    BIND(mapletKeys);
 
     // Highlets
     BIND(highletType);
@@ -408,9 +443,15 @@ void bindPrimitives(zcontext ctx) {
 
     // Compilation
     BIND(sam0Tree);
+    BIND(sam0Function);
 
     // I/O
     BIND(die);
     BIND(readFile);
     BIND(writeFile);
+
+    // Include a binding for a maplet of all the bindings.
+    langCtxBind(ctx, "PRIMLIB", langCtxToMaplet(ctx));
+
+    return ctx;
 }

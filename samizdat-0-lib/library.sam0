@@ -294,12 +294,21 @@ sourceStringlet = { value ::
     };
 };
 
+# Returns the full set of core library bindings, including stuff
+# defined both primitively and in-language.
+sam0Library = {
+    <> CORELIB; # Defined toward the bottom of the file.
+};
+
 
 #
-# Exports
+# Export mechanics
 #
 
-<> @[
+# Maplet of all of the core library bindings. Note that
+# this has to be placed *after* all the core definitions in order
+# to execute in a context where they're all in scope.
+CORELIB = mapletAdd PRIMLIB @[
     @"eq" = eq
     @"ne" = ne
     @"lt" = lt
@@ -321,8 +330,11 @@ sourceStringlet = { value ::
     @"not" = not
     @"null" = null
     @"or" = or
+    @"sam0Library" = sam0Library
     @"sourceStringlet" = sourceStringlet
     @"stringletCat" = stringletCat
     @"stringletMap" = stringletMap
     @"stringletReduce" = stringletReduce
 ];
+
+<> CORELIB;
