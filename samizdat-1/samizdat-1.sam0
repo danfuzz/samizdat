@@ -27,21 +27,33 @@ tokenize = { programText ::
     <> @[];
 };
 
-# Parses a listlet of tokens, using Samizdat Layer 0 tree syntax.
-# Returns a `block` node.
+# Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
+# syntax. Returns a `function` node.
 parse = { tokens ::
     # TODO
 
-    theCall = @[
-        @"type"=@"call"
-        @"value"=@[
+    theCall = [:
+        @"call"
+        @[
             @"function"=@"writeFile"
-            @"actuals"=@[@"/dev/stdout" @"Hello, Самиздат!\n"]
+            @"actuals"=@[
+                @"/dev/stdout"
+                @"Hello, Самиздат!\n"
+            ]
         ]
-    ];
+    :];
 
-    <> @[@"type"=@"block"
-         @"value"=@[@"statements"=@[theCall]]];
+    theBlock = [:
+        @"block"
+        @[
+            @"statements"=@[theCall]
+        ]
+    :];
+
+    <> [:
+        @"function"
+        @[@"formals"=[:@"formals" @[]:] @"block"=theBlock]
+    :];
 };
 
 

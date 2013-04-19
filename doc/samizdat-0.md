@@ -68,7 +68,7 @@ tree syntax rule to match.
 program ::= block ;
 # result: [:
 #             @"function"
-#             @[@"formals"=@[@"type"=@"formals" @value=@[]] @"block"=<block>]
+#             @[@"formals"=[:@"formals" @[]:] @"block"=<block>]
 #         :]
 
 function ::= @"{" formals block @"}" ;
