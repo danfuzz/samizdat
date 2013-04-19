@@ -336,6 +336,21 @@ static zvalue prim_sam0Tree(void *state, zint argCount, const zvalue *args) {
 /**
  * TODO: Document!
  */
+static zvalue prim_sam0Function(void *state, zint argCount,
+                                const zvalue *args) {
+    requireExactly(argCount, 2);
+
+    zvalue contextMaplet = args[0];
+    zvalue functionNode = args[1];
+    zcontext ctx = langCtxNew();
+
+    langCtxBindAll(ctx, contextMaplet);
+    return langFunctionFromNode(ctx, functionNode);
+}
+
+/**
+ * TODO: Document!
+ */
 static zvalue prim_die(void *state, zint argCount, const zvalue *args) {
     requireRange(argCount, 0, 1);
 
@@ -428,6 +443,7 @@ zcontext primitiveContext(void) {
 
     // Compilation
     BIND(sam0Tree);
+    BIND(sam0Function);
 
     // I/O
     BIND(die);
