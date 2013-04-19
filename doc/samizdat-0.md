@@ -415,8 +415,9 @@ to either check value, this function returns `true`. Otherwise
 it returns `false`.
 
 *Note:* This function exists in order to provide a primitive
-function that returns a boolean. Without it, there would be
-no way to define boolean comparators in-language.
+comparison function that returns a boolean. Without it (or something
+like it), there would be no way to define boolean-returning
+comparators in-language.
 
 #### `lowSize value <> intlet`
 
