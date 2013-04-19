@@ -777,6 +777,12 @@ See note on `stringletMap` about choice of argument order.
 <br><br>
 ### In-Language Library: Miscellaneous
 
+#### `sam0Library() <> maplet`
+
+Returns a maplet of bindings of the entire *Samizdat Layer 0*
+library. This is suitable for passing to `sam0Function`, for
+example.
+
 #### `sourceStringlet value <> stringlet`
 
 Converts an arbitrary value into a stringlet representation form
