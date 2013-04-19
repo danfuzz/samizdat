@@ -330,7 +330,7 @@ static zvalue prim_apply(void *state, zint argCount, const zvalue *args) {
  */
 static zvalue prim_sam0Tree(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
-    return langTextToProgramNode(args[0]);
+    return langNodeFromProgramText(args[0]);
 }
 
 /**

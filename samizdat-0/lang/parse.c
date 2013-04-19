@@ -674,7 +674,7 @@ static zvalue parseProgram(ParseState *state) {
  */
 
 /* Documented in header. */
-zvalue langTextToProgramNode(zvalue programText) {
+zvalue langNodeFromProgramText(zvalue programText) {
     zvalue tokens = tokenize(programText);
     ParseState state = { tokens, datSize(tokens), 0 };
     zvalue result = parseProgram(&state);

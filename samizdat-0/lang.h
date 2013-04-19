@@ -131,11 +131,12 @@ zvalue langCtxToMaplet(zcontext ctx);
 
 /**
  * Compiles the given program text into a parse tree form, suitable
- * for passing to `langFunctionFromBlock()`. The text must be a
- * program in Samizdat Layer 0. The result is a `function` node in the
- * Samizdat Layer 0 parse tree form (details documented elsewhere).
+ * for passing to `langFunctionFromNode()`. The text must be a
+ * top-level program in Samizdat Layer 0. The result is a `function`
+ * node in the Samizdat Layer 0 parse tree form (details documented
+ * elsewhere).
  */
-zvalue langTextToProgramNode(zvalue programText);
+zvalue langNodeFromProgramText(zvalue programText);
 
 /**
  * Constructs an in-model no-args function from the given `function`
