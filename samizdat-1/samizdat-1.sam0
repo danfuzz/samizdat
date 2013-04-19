@@ -9,6 +9,11 @@
 # programs.
 #
 
+
+# This declares the arguments to the program itself.
+ARGS* ::
+
+
 #
 # Helper functions
 #
@@ -123,4 +128,4 @@ main = { file rest* ::
     };
 };
 
-apply main ARGS;
+<> apply main ARGS;

@@ -35,8 +35,6 @@ int main(int argc, char **argv) {
     }
 
     zcontext ctx = libNewContext();
-    langCtxBind(ctx, "ARGS", args);
-
     zvalue programText = readFile(fileName);
     zvalue program = langNodeFromProgramText(programText);
     zvalue function = langFunctionFromNode(ctx, program);
