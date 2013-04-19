@@ -624,9 +624,14 @@ static zvalue parseFormals(ParseState *state) {
 }
 
 /**
- * Helper that creates a `function` node.
+ * Parses a `program` node.
  */
-static zvalue functionNode(zvalue formals, zvalue block) {
+static zvalue parseProgram(ParseState *state) {
+    // Note: Both of these always succeed. That is, an empty token
+    // list is a valid program.
+    zvalue formals = parseFormals(state);
+    zvalue block = parseBlock(state);
+
     zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
     value = datMapletPut(value, STR_BLOCK, block);
     return datHighletFrom(STR_FUNCTION, value);
@@ -642,30 +647,15 @@ static zvalue parseFunction(ParseState *state) {
         return NULL;
     }
 
-    // These always succeed.
-    zvalue formals = parseFormals(state);
-    zvalue block = parseBlock(state);
+    // This always succeeds. See note in `parseProgram` above.
+    zvalue result = parseProgram(state);
 
     if (readMatch(state, STR_CH_CCURLY) == NULL) {
         reset(state, mark);
         return NULL;
     }
 
-    return functionNode(formals, block);
-}
-
-/**
- * Parses a program, yielding a `function` node.
- */
-static zvalue parseProgram(ParseState *state) {
-    zvalue block = parseBlock(state);
-
-    if (block == NULL) {
-        return NULL;
-    }
-
-    return functionNode(datHighletFrom(STR_FORMALS, datListletEmpty()),
-                        block);
+    return result;
 }
 
 

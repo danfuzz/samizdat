@@ -65,14 +65,11 @@ token whose `type` is the literal value, and an identifier indicates a
 tree syntax rule to match.
 
 ```
-program ::= block ;
-# result: [:
-#             @"function"
-#             @[@"formals"=[:@"formals" @[]:] @"block"=<block>]
-#         :]
+function ::= @"{" program @"}" ;
+# result: <program>
 
-function ::= @"{" formals block @"}" ;
-# result: [:@"function" [@"formals"=<formals> @"block"=<block>]:]
+program ::= formals block ;
+# result: [:@"function" @[@"formals"=<formals> @"block"=<block>]:]
 
 formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
 # result: [:
