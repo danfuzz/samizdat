@@ -16,17 +16,18 @@
  */
 
 /**
- * Adds the bindings supplied by the library code baked into this
- * executable.
+ * Runs the core library code baked into this executable, returning
+ * whatever value it yields, which *should* be the set of exported
+ * core library bindings (including whatever primitives are passed
+ * through).
  */
-static void addLibrary(zcontext ctx) {
+static zvalue runLibrary(zcontext ctx) {
     zvalue programText =
         datStringletFromUtf8String(library_sam0, library_sam0_len);
     zvalue program = langTextToProgramNode(programText);
     zvalue function = langFunctionFromNode(ctx, program);
-    zvalue result = langCall(function, 0, NULL);
 
-    langCtxBindAll(ctx, result);
+    return langCall(function, 0, NULL);
 }
 
 
@@ -36,18 +37,10 @@ static void addLibrary(zcontext ctx) {
 
 /* Documented in header. */
 zcontext libNewContext(void) {
-    cstInit();
+    zcontext ctx = primitiveContext();
+    zvalue libraryMaplet = runLibrary(ctx);
+    zcontext result = langCtxNew();
 
-    zcontext ctx = langCtxNew();
-
-    // These all could have been defined in-language, but we already
-    // had to have them defined and accessible to C code, so we just
-    // go ahead and export them here.
-    langCtxBind(ctx, "false", CST_FALSE);
-    langCtxBind(ctx, "true", CST_TRUE);
-
-    bindPrimitives(ctx);
-    addLibrary(ctx);
-
-    return ctx;
+    langCtxBindAll(result, libraryMaplet);
+    return result;
 }

@@ -164,6 +164,19 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
 }
 
 /* Documented in header. */
+zvalue datMapletAdd(zvalue maplet1, zvalue maplet2) {
+    zvalue result = maplet1;
+    zint size = datSize(maplet2);
+    zmapping *elems = mapletElems(maplet2);
+
+    for (zint i = 0; i < size; i++) {
+        result = datMapletPut(result, elems[i].key, elems[i].value);
+    }
+
+    return result;
+}
+
+/* Documented in header. */
 zvalue datMapletDelete(zvalue maplet, zvalue key) {
     zint index = mapletFind(maplet, key);
 

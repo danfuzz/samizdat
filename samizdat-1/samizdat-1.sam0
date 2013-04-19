@@ -27,21 +27,33 @@ tokenize = { programText ::
     <> @[];
 };
 
-# Parses a listlet of tokens, using Samizdat Layer 0 tree syntax.
-# Returns a `block` node.
+# Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
+# syntax. Returns a `function` node.
 parse = { tokens ::
     # TODO
 
-    theCall = @[
-        @"type"=@"call"
-        @"value"=@[
-            @"function"=@"writeFile"
-            @"actuals"=@[@"/dev/stdout" @"Hello, Самиздат!\n"]
+    theCall = [:
+        @"call"
+        @[
+            @"function"=[:@"varRef" @"writeFile":]
+            @"actuals"=@[
+                [:@"literal" @"/dev/stdout":]
+                [:@"literal" @"We have received the Самиздат!\n":]
+            ]
         ]
-    ];
+    :];
 
-    <> @[@"type"=@"block"
-         @"value"=@[@"statements"=@[theCall]]];
+    theBlock = [:
+        @"block"
+        @[
+            @"statements"=@[theCall]
+        ]
+    :];
+
+    <> [:
+        @"function"
+        @[@"formals"=[:@"formals" @[]:] @"block"=theBlock]
+    :];
 };
 
 
@@ -101,12 +113,10 @@ main = { file rest* ::
 
     tokens = tokenize programText;
     <> if { <> ne tokens null; } {
-        block = parse tokens;
-        if { <> ne block null; } {
-            # TODO: Bind block as a function using exposed
-            # interface from samizdat-0, and call it.
-            writeFile @"/dev/stdout" @"TODO: Run.\n";
-            <> @0;
+        programNode = parse tokens;
+        if { <> ne programNode null; } {
+            function = sam0Function (sam0Library()) programNode;
+            <> function();
         } else {
             <> @1;
         };
