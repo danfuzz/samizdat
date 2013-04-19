@@ -424,7 +424,7 @@ comparators in-language.
 Returns the "size" of the given value. Every low-layer value has
 a size, defined as follows:
 
-* `intlet` &mdash; the number of significant bits (*not* bytes) in
+* `intlet` &mdash; the number of significant bits (not bytes) in
   the value when represented in twos-complement form, including a
   high-order sign bit.
 
