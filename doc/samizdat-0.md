@@ -607,13 +607,181 @@ Writes out the given text to the named file (named by a stringlet),
 using the underlying OS's functionality, and encoding the text
 (a stringlet) as a stream of UTF-8 bytes.
 
-
 <br><br>
-### In-Language Library
+### In-Language Library: Value Definitions
 
 #### `null`
 
 A value used when no other value is suitable, but when a value is
 nonetheless required. It can also be written as `[:@"null":]`.
 
-#### More TBD.
+<br><br>
+### In-Language Library: Comparisons / Booleans
+
+#### `eq value1 value2 <> boolean`
+
+Checks for equality. Returns `true` iff the two given values are
+identical.
+
+#### `le value1 value2 <> boolean`
+
+Checks for a less-than-or-equal relationship. Returns `true` iff the
+first value orders before the second or is identical to it.
+
+#### `lt value1 value2 <> boolean`
+
+Checks for a less-than relationship. Returns `true` iff the first value
+orders before the second.
+
+#### `ge value1 value2 <> boolean`
+
+Checks for a greater-than-or-equal relationship. Returns `true` iff the
+first value orders after the second or is identical to it.
+
+#### `gt value1 value2 <> boolean`
+
+Checks for a greater-than relationship. Returns `true` iff the first value
+orders after the second.
+
+#### `ne value1 value2 <> boolean`
+
+Checks for inequality. Returns `true` iff the two given values are not
+identical.
+
+#### `not boolean <> boolean`
+
+Returns the opposite boolean to the one given.
+
+*Note:* Only accepts boolean arguments.
+
+<br><br>
+### In-Language Library: Types
+
+#### `isHighlet value <> boolean`
+
+Returns `true` iff the given value is a highlet.
+
+#### `isIntlet value <> boolean`
+
+Returns `true` iff the given value is an intlet.
+
+#### `isListlet value <> boolean`
+
+Returns `true` iff the given value is a listlet.
+
+#### `isMaplet value <> boolean`
+
+Returns `true` iff the given value is a maplet.
+
+#### `isStringlet value <> boolean`
+
+Returns `true` iff the given value is a stringlet.
+
+#### `isUniqlet value <> boolean`
+
+Returns `true` iff the given value is a uniqlet.
+
+
+<br><br>
+### In-Language Library: Conditionals
+
+#### `and predicate rest* <> boolean`
+
+Short-circuit conjunction. Takes an arbitrary number of predicates,
+each a no-argument function.  Calls each of them in turn until one of
+them returns `false`, in which case this function also returns
+`false`. If no predicate returns `false`, this function returns
+`true`.
+
+#### `else() <> true`
+
+No-argument predicate that always returns `true`. Used idiomatically
+when writing cascading `if` calls.
+
+#### `if predicate consequent rest* <> . | ~.`
+
+Cascading conditional. Takes an even number of arguments, alternating
+predicates and consequents, each argument being a no-argument
+function. The predicates are called in order until one returns
+`true`. The consequent immediately after the `true` predicate then
+gets called, and its return value becomes the result of this
+function. If no predicate returns `true`, this function returns no
+value.
+
+#### `or predicate rest* <> boolean`
+
+Short-circuit disjunction. Takes an arbitrary number of predicates,
+each a no-argument function.  Calls each of them in turn until one of
+them returns `true`, in which case this function also returns
+`true`. If no predicate returns `true`, this function returns `false`.
+
+<br><br>
+### In-Language Library: Stringlets
+
+#### `stringletCat stringlet rest* <> stringlet`
+
+Concatenates one or more stringlets together into a single resulting
+stringlet.
+
+#### `stringletMap stringlet function <> listlet`
+
+Maps each element of a stringlet using a mapping function, collecting
+the results into a listlet (note, not into a stringlet). The given
+function is called on each element (character as an intlet), with two
+arguments, namely the element and its index number (zero-based).
+
+*Note:* Unlike many other languages with similar functions, the
+function argument is the *last* one and not the *first* one. This is
+specifically done to make it natural to write a multi-line function
+without losing track of the other two arguments.
+
+#### `stringletReduce base stringlet function <> .`
+
+Reduces a stringlet to a single value, given a base value and a
+reducer function, operating in low-to-high index order (that is, this
+is a left-reduce operation). The given function is called once per
+stringlet element (character as an intlet), with three arguments: the
+last (or base) reduction result, the element, and its index number
+(zero-based).
+
+See note on `stringletMap` about choice of argument order.
+
+<br><br>
+### In-Language Library: Listlets
+
+#### `listletCat listlet rest* <> listlet`
+
+Concatenates one or more listlets together into a single resulting
+listlet.
+
+#### `listletMap listlet function <> listlet`
+
+Maps each element of a listlet using a mapping function, collecting
+the results into a new listlet. The given function is called on each
+listlet element, with two arguments, namely the element and its index
+number (zero-based).
+
+See note on `stringletMap` about choice of argument order.
+
+#### `listletReduce base listlet function <> .`
+
+Reduces a listlet to a single value, given a base value and a reducer
+function, operating in low-to-high index order (that is, this is a
+left-reduce operation). The given function is called on each listlet
+element, with three arguments: the last (or base) reduction result,
+the element, and its index number (zero-based).
+
+See note on `stringletMap` about choice of argument order.
+
+
+<br><br>
+### In-Language Library: Miscellaneous
+
+#### `sourceStringlet value <> stringlet`
+
+Converts an arbitrary value into a stringlet representation form
+that is meant to mimic the Samizdat source syntax.
+
+*Note:* The output differs from Samizdat Layer 0 syntax in that
+stringlet forms may get represented using hex escapes, which is not
+defined syntax in *Samizdat Layer 0*.
