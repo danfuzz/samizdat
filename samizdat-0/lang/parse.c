@@ -10,6 +10,11 @@
 
 #include <stddef.h>
 
+
+/*
+ * ParseState definition and functions
+ */
+
 typedef struct {
     /** token list being parsed. */
     zvalue tokens;
@@ -20,11 +25,6 @@ typedef struct {
     /** Current read position. */
     zint at;
 } ParseState;
-
-
-/*
- * Helper functions
- */
 
 /**
  * Is the parse state at EOF?
@@ -84,6 +84,32 @@ static void reset(ParseState *state, zint mark) {
 
     state->at = mark;
 }
+
+
+/*
+ * Node constructors
+ */
+
+/**
+ * Constructs a `varRef` node.
+ */
+static zvalue makeVarRef(zvalue name) {
+    return datHighletFrom(STR_VAR_REF, name);
+}
+
+/**
+ * Constructs a `call` node.
+ */
+static zvalue makeCall(zvalue function, zvalue actuals) {
+    zvalue value = datMapletPut(datMapletEmpty(), STR_FUNCTION, function);
+    value = datMapletPut(value, STR_ACTUALS, actuals);
+    return datHighletFrom(STR_CALL, value);
+}
+
+
+/*
+ * Parsing functions
+ */
 
 /* Defined below. */
 static zvalue parseAtom(ParseState *state);
@@ -151,9 +177,7 @@ static zvalue parseCall(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = datMapletPut(datMapletEmpty(), STR_FUNCTION, function);
-    value = datMapletPut(value, STR_ACTUALS, actuals);
-    return datHighletFrom(STR_CALL, value);
+    return makeCall(function, actuals);
 }
 
 /**
@@ -190,13 +214,13 @@ static zvalue parseHighlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = datMapletPut(datMapletEmpty(), STR_TYPE, innerType);
+    zvalue args = datListletAppend(datListletEmpty(), innerType);
 
     if (innerValue != NULL) {
-        value = datMapletPut(value, STR_VALUE, innerValue);
+        args = datListletAppend(args, innerValue);
     }
 
-    return datHighletFrom(STR_HIGHLET, value);
+    return makeCall(makeVarRef(STR_MAKE_HIGHLET), args);
 }
 
 /**
@@ -207,7 +231,7 @@ static zvalue parseUniqlet(ParseState *state) {
         return NULL;
     }
 
-    return TOK_UNIQLET;
+    return makeCall(makeVarRef(STR_MAKE_UNIQLET), datListletEmpty());
 }
 
 /**
@@ -410,8 +434,7 @@ static zvalue parseVarRef(ParseState *state) {
         return NULL;
     }
 
-    zvalue name = datHighletValue(identifier);
-    return datHighletFrom(STR_VAR_REF, name);
+    return makeVarRef(datHighletValue(identifier));
 }
 
 /**
