@@ -226,7 +226,8 @@ program ::= formals block ;
 formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
 # result: [:
 #             @"formals"
-#             @[@[@"name"=<identifier.value> @"repeat"=@[@"type"=(@"."|@"*")]]
+#             @[@[@"name"=(highValue identifier)
+#                 @"repeat"=@[@"type"=(@"."|@"*")]]
 #               ...]
 #         :]
 
@@ -255,40 +256,45 @@ parenExpression ::= @"(" expression @")";
 # result: <expression>
 
 varDef ::= @"identifier" @"=" expression ;
-# result: [:@"varDef" @[@"name"=<identifier.value> @"value"=<expression>]:]
+# result: [:@"varDef" @[@"name"=(highValue identifier) @"value"=<expression>]:]
 
 varRef ::= @"identifier" ;
-# result: [:@"varRef" <identifier.value>:]
+# result: [:@"varRef" (highValue <identifier>):];
 
 intlet ::= @"@" @"integer" ;
-# result: [:@"literal" <integer.value>:]
+# result: [:@"literal" (highValue <integer>):]
 
 stringlet ::= @"@" @"string" ;
-# result: [:@"literal" <string.value>:]
+# result: [:@"literal" (highValue <string>):]
 
 emptyListlet ::= @"@" @"[" @"]" ;
 # result: [:@"literal" @[]:]
 
 listlet ::= @"@" @"[" atom+ @"]" ;
-# result: [:@"listlet" <listlet of atoms>:]
+# result: makeCall [:@"varRef" @"makeListlet":] <atom>+
 
 emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 # result: [:@"literal" @[=]:]
 
 maplet ::= @"@" @"[" binding+ @"]" ;
-# result: [:@"maplet" <listlet of bindings>:]
+# result: makeCall [:@"varRef" @"makeMaplet":]
+#             (<binding.key> <binding.value>)+;
 
 binding ::= atom @"=" atom ;
 # result: @[@"key"=<key atom> @"value"=<value atom>]
 
 uniqlet ::= @"@@";
-# result: [:@"uniqlet":]
+# result: makeCall [:@"varRef" @"makeUniqlet":]
 
 highlet ::= @"[" @":" atom atom? @":" @"]";
-# result: [:@"highlet" @[@"type"=<type atom> (@"value"=<value atom>)?]:]
+# result: makeCall [:@"varRef" @"makeHighlet":] <type atom> <value atom>?
 
 call ::= atom (@"(" @")" | atom+) ;
-# result: [:@"call" @[@"function"=<atom> @"actuals"=<atom list>]:]
+# result: makeCall <function atom> <argument atom+>
+
+makeCall = { function actuals* ::
+    <> [:@"call" @[@"function"=function @"actuals"=actuals]:];
+};
 ```
 
 
