@@ -402,8 +402,7 @@ a maplet that binds these two keys:
     `repeat` of the last formal. The argument variable as bound is a
     listlet of all the passed actual arguments that were bound.
 
-#### `block` &mdash;
-     `[:@"block" @[@"statements"=statements (@"yield"=yield)?]:]`
+#### `block` &mdash; `[:@"block" @[@"statements"=statements (@"yield"=yield)?]:]`
 
 This represents the main body of a function. `statements` must
 be a listlet, with each of the elements being either an expression
