@@ -135,7 +135,7 @@ zvalue datListletDelete(zvalue listlet, zint n) {
 }
 
 /* Documented in header. */
-zvalue datListletFromValues(const zvalue *values, zint size) {
+zvalue datListletFromValues(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
         datAssertValid(values[i]);
     }

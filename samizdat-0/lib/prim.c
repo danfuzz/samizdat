@@ -73,7 +73,7 @@ static zvalue prim_makeHighlet(void *state, zint argCount,
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue prim_makeListlet(void *state, zint argCount,
                                const zvalue *args) {
-    return datListletFromValues(args, argCount);
+    return datListletFromValues(argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
