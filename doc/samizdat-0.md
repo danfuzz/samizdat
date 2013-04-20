@@ -313,7 +313,7 @@ the source syntax of *Samizdat Layer 0*.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `call` &mdash; `[:@"call": @[@"function"=function @"actuals"=actuals]:]`
+#### `call` &mdash; `[:@"call" @[@"function"=function @"actuals"=actuals]:]`
 
 This represents a function call. In the data payload, `function` is an
 arbitrary expression node, and `actuals` is a listlet of arbitrary
