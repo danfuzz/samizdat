@@ -226,7 +226,8 @@ program ::= formals block ;
 formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
 # result: [:
 #             @"formals"
-#             @[@[@"name"=<identifier.value> @"repeat"=@[@"type"=(@"."|@"*")]]
+#             @[@[@"name"=(highValue identifier)
+#                 @"repeat"=@[@"type"=(@"."|@"*")]]
 #               ...]
 #         :]
 
@@ -255,40 +256,45 @@ parenExpression ::= @"(" expression @")";
 # result: <expression>
 
 varDef ::= @"identifier" @"=" expression ;
-# result: [:@"varDef" @[@"name"=<identifier.value> @"value"=<expression>]:]
+# result: [:@"varDef" @[@"name"=(highValue identifier) @"value"=<expression>]:]
 
 varRef ::= @"identifier" ;
-# result: [:@"varRef" <identifier.value>:]
+# result: [:@"varRef" (highValue <identifier>):];
 
 intlet ::= @"@" @"integer" ;
-# result: [:@"literal" <integer.value>:]
+# result: [:@"literal" (highValue <integer>):]
 
 stringlet ::= @"@" @"string" ;
-# result: [:@"literal" <string.value>:]
+# result: [:@"literal" (highValue <string>):]
 
 emptyListlet ::= @"@" @"[" @"]" ;
 # result: [:@"literal" @[]:]
 
 listlet ::= @"@" @"[" atom+ @"]" ;
-# result: [:@"listlet" <listlet of atoms>:]
+# result: makeCall [:@"varRef" @"makeListlet":] <atom>+
 
 emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 # result: [:@"literal" @[=]:]
 
 maplet ::= @"@" @"[" binding+ @"]" ;
-# result: [:@"maplet" <listlet of bindings>:]
+# result: makeCall [:@"varRef" @"makeMaplet":]
+#             (<binding key> <binding value>)+;
 
 binding ::= atom @"=" atom ;
-# result: @[@"key"=<key atom> @"value"=<value atom>]
+# result: @[<key atom> <value atom>]
 
 uniqlet ::= @"@@";
-# result: [:@"uniqlet":]
+# result: makeCall [:@"varRef" @"makeUniqlet":]
 
 highlet ::= @"[" @":" atom atom? @":" @"]";
-# result: [:@"highlet" @[@"type"=<type atom> (@"value"=<value atom>)?]:]
+# result: makeCall [:@"varRef" @"makeHighlet":] <type atom> <value atom>?
 
 call ::= atom (@"(" @")" | atom+) ;
-# result: [:@"call" @[@"function"=<atom> @"actuals"=<atom list>]:]
+# result: makeCall <function atom> <argument atom+>
+
+makeCall = { function actuals* ::
+    <> [:@"call" @[@"function"=function @"actuals"=actuals]:];
+};
 ```
 
 
@@ -349,6 +355,65 @@ The boolean value false. It can also be written as `[:@"boolean" @0:]`.
 #### `true`
 
 The boolean value true. It can also be written as `[:@"boolean" @1:]`.
+
+<br><br>
+### Primitive Library: Ultraprimitive Functions
+
+This set of primitive functions are required in order to execute
+parse trees as produced by `sam0Tree` (see which).
+
+#### `makeHighlet type value? <> highlet`
+
+Returns a highlet with the given type tag (an arbitrary value)
+and optional data payload value (also an arbitrary value). These
+equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = [:key:];         is equivalent to   v = makeHighlet key;
+v = [:key value:];   is equivalent to   v = makeHighlet key value;
+```
+
+#### `makeListlet rest* <> listlet`
+
+Returns a listlet with the given elements (in argument order).
+These equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = @[v1];      is equivalent to   v = makeListlet v1;
+v = @[v1 v2];   is equivalent to   v = makeListlet v1 v2;
+[etc.]
+```
+
+*Note:* The equivalence requires at least one argument, even though
+the function is happy to operate given zero arguments.
+
+#### `makeMaplet rest* <> maplet`
+
+Returns a maplet with the given key-value bindings (in argument
+order), with each key-value pair represented as two consecutive
+arguments. The number of arguments passed to this function must be
+even. These equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = @[k1=v1];         is equivalent to   v = makeMaplet k1 v1;
+v = @[k1=v1 k2=v2];   is equivalent to   v = makeMaplet k1 v1 k2 v2;
+[etc.]
+```
+
+*Note:* The equivalence requires at least two arguments, even though
+the function is happy to operate given zero arguments.
+
+#### `makeUniqlet() <> uniqlet`
+
+Returns a uniqlet that has never before been returned from this
+function (nor from any other uniqlet-producing source, should such a
+source exist). This equivalence holds for *Samizdat Layer 0* source
+code:
+
+```
+v = @@;   is equivalent to   v = makeUniqlet();
+```
+
 
 <br><br>
 ### Primitive Library: Conditionals

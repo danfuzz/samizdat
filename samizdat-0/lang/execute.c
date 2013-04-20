@@ -114,63 +114,6 @@ static zvalue execCall(zcontext ctx, zvalue call) {
 }
 
 /**
- * Executes a `highlet` form.
- */
-static zvalue execHighlet(zcontext ctx, zvalue highlet) {
-    datHighletAssertType(highlet, STR_HIGHLET);
-    highlet = datHighletValue(highlet);
-
-    zvalue type = execExpression(ctx, datMapletGet(highlet, STR_TYPE));
-    zvalue value = datMapletGet(highlet, STR_VALUE);
-
-    if (value != NULL) {
-        value = execExpression(ctx, value);
-    }
-
-    return datHighletFrom(type, value);
-}
-
-/**
- * Executes a `maplet` form.
- */
-static zvalue execMaplet(zcontext ctx, zvalue maplet) {
-    datHighletAssertType(maplet, STR_MAPLET);
-
-    zvalue elems = datHighletValue(maplet);
-    zint size = datSize(elems);
-    zvalue result = datMapletEmpty();
-
-    for (zint i = 0; i < size; i++) {
-        zvalue one = datListletGet(elems, i);
-        zvalue key = datMapletGet(one, STR_KEY);
-        zvalue value = datMapletGet(one, STR_VALUE);
-        result = datMapletPut(result,
-                              execExpression(ctx, key),
-                              execExpression(ctx, value));
-    }
-
-    return result;
-}
-
-/**
- * Executes a `listlet` form.
- */
-static zvalue execListlet(zcontext ctx, zvalue listlet) {
-    datHighletAssertType(listlet, STR_LISTLET);
-
-    zvalue elems = datHighletValue(listlet);
-    zint size = datSize(elems);
-    zvalue result = datListletEmpty();
-
-    for (zint i = 0; i < size; i++) {
-        zvalue one = datListletGet(elems, i);
-        result = datListletAppend(result, execExpression(ctx, one));
-    }
-
-    return result;
-}
-
-/**
  * Executes an `expression` form, with the result possibly being
  * `void` (represented as `NULL`).
  */
@@ -179,14 +122,6 @@ static zvalue execExpressionVoidOk(zcontext ctx, zvalue e) {
         return datHighletValue(e);
     else if (datHighletHasType(e, STR_VAR_REF))
         return ctxGet(ctx, datHighletValue(e));
-    else if (datHighletHasType(e, STR_LISTLET))
-        return execListlet(ctx, e);
-    else if (datHighletHasType(e, STR_MAPLET))
-        return execMaplet(ctx, e);
-    else if (datHighletHasType(e, STR_UNIQLET))
-        return datUniqlet();
-    else if (datHighletHasType(e, STR_HIGHLET))
-        return execHighlet(ctx, e);
     else if (datHighletHasType(e, STR_CALL))
         return execCall(ctx, e);
     else if (datHighletHasType(e, STR_FUNCTION))
