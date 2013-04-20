@@ -301,7 +301,126 @@ makeCall = { function actuals* ::
 Node / Tree Semantics
 ---------------------
 
-Coming soon!
+These are all the node types that can occur in a parse tree,
+such that it can be compiled (or "compile-equivalent"ed) by
+`sam0Function` (and the like). These are presented in a form
+meant to be representative of how one would construct them in
+the source syntax of *Samizdat Layer 0*.
+
+<br><br>
+### Expression Nodes
+
+Each of these node types can appear anywhere an "expression"
+is called for.
+
+#### `call` &mdash; `[:@"call": @[@"function"=function @"actuals"=actuals]:]`
+
+This represents a function call. In the data payload, `function` is an
+arbitrary expression node, and `actuals` is a listlet of arbitrary
+expression nodes.
+
+When run, first `function` and then the elements of `actuals` (in order)
+are evaluated. If `function` evaluates to something other than a
+function, the call fails (terminating the runtime). If any of the
+`actuals` evaluate without yielding a value, the call fails (terminating
+the runtime).
+
+If there are too few actual arguments for the function (e.g. the
+function requires at least three arguments, but only two are passed),
+then the call fails (terminating the runtime).
+
+With all the above prerequisites passed, the function is applied to
+the evaluated actuals as its arguments, and the result of evaluation
+is the same as whatever was returned by the function call (including
+nothing, if the function turned out to not to return anything).
+
+#### `function` &mdash; `[:@"function" @[@"formals"=formals @"block"=block]:]`
+
+This represents a function definition. In the data payload, `formals`
+is a `formals` node (as defined below), and `block` is a `block` node
+(as defined below).
+
+When run, a closure (representation of the function as an in-model
+value) is created, which nascently binds as variables the names of all
+the formals to all the incoming actual arguments, and binds all other
+variable names to whatever they refer to in the static evaluation
+context. This closure is the result of evaluation.
+
+When the closure is actually called (e.g. by virtue of being the
+designated `function` in a `call` node), a fresh execution context is
+created, in which the actual arguments are bound to the formals. If
+there are too few actual arguments, the call fails (terminating the
+runtime). After that, the statements of the `block` are evaluated in
+order. Finally, if there is a `yield` in the `block`, then that is
+evaluated. The result of the call is the same as the result of the
+`yield` evaluation (including possibly no value) if a `yield` was
+present, or no value if there was no `yield` to evaluate.
+
+#### `literal` &mdash; `[:@"literal" value:]`
+
+This represents arbitrary literal data. The data payload is
+an arbitrary value.
+
+The data `value` is the result of evaluation, when a `literal`
+node is run. Evaluation never fails.
+
+#### `varRef` &mdash; `[:@"varRef" name:]`
+
+This represents a by-name variable reference. `name` is an
+arbitrary value, but is most typically a stringlet.
+
+When run, this causes the `name` to be looked up in the current
+execution context. If a binding is found for it, then the bound value
+is the result of evaluation. If a binding is not found for it, then
+evaluation fails (terminating the runtime).
+
+<br><br>
+### Other Nodes
+
+These are node types that appear within the data payloads
+of various expression nodes.
+
+#### `formals` &mdash; `[:@"formals" declarations:]`
+
+This represents the formal arguments to a function. `declarations`
+must be a listlet, and each element of the listlet must be
+a maplet that binds these two keys:
+
+* `@"name"` &mdash; an arbitrary value (but typically a stringlet),
+  which indicates the name of the variable to be bound for this
+  argument.
+
+* `@"repeat"` &mdash; indicates how many actual arguments are
+  bound by this formal. It is one of:
+
+  * `@"."` &mdash; indicates that this argument binds exactly one
+    actual argument. The argument variable as bound is the same as the
+    actual argument as passed.
+
+  * `@"*"` &mdash; indicates that this argument binds as many actual
+    arguments as are available. As such, this must only ever be the
+    `repeat` of the last formal. The argument variable as bound is a
+    listlet of all the passed actual arguments that were bound.
+
+#### `block` &mdash;
+     `[:@"block" @[@"statements"=statements (@"yield"=yield)?]:]`
+
+This represents the main body of a function. `statements` must
+be a listlet, with each of the elements being either an expression
+node or a `varDef` node. The `yield` binding is optional, but if
+present must be an expression node.
+
+#### `varDef` &mdash; `[:@"varDef" @[@"name"=name @"value"=value]:]`
+
+This represents a variable definition as part of a function body.
+`name` is an arbitrary value (but typically a stringlet) representing
+the name of the variable to define, and `value` must be an expression
+node, indicating the value that the variable should be bound to.
+
+When run, `value` is evaluated. If it does not evaluate to a value,
+then evaluation fails (terminating the runtime). Otherwise, the
+evaluated value is bound in the current (topmost) execution context to
+the indicated `name`.
 
 
 Library Bindings
