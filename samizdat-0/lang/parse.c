@@ -257,8 +257,7 @@ static zvalue parseBinding(ParseState *state) {
         return NULL;
     }
 
-    zvalue binding = datMapletPut(datMapletEmpty(), STR_KEY, key);
-    return datMapletPut(binding, STR_VALUE, value);
+    return datListletAppend(datListletAppend(datListletEmpty(), key), value);
 }
 
 /**
@@ -285,7 +284,7 @@ static zvalue parseMaplet(ParseState *state) {
             break;
         }
 
-        bindings = datListletAppend(bindings, binding);
+        bindings = datListletAdd(bindings, binding);
     }
 
     if (datSize(bindings) == 0) {
@@ -298,7 +297,7 @@ static zvalue parseMaplet(ParseState *state) {
         return NULL;
     }
 
-    return datHighletFrom(STR_MAPLET, bindings);
+    return makeCall(makeVarRef(STR_MAKE_MAPLET), bindings);
 }
 
 /**
@@ -356,7 +355,7 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    return datHighletFrom(STR_LISTLET, atoms);
+    return makeCall(makeVarRef(STR_MAKE_LISTLET), atoms);
 }
 
 /**

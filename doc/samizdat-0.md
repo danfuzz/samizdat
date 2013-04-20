@@ -278,10 +278,10 @@ emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 
 maplet ::= @"@" @"[" binding+ @"]" ;
 # result: makeCall [:@"varRef" @"makeMaplet":]
-#             (<binding.key> <binding.value>)+;
+#             (<binding key> <binding value>)+;
 
 binding ::= atom @"=" atom ;
-# result: @[@"key"=<key atom> @"value"=<value atom>]
+# result: @[<key atom> <value atom>]
 
 uniqlet ::= @"@@";
 # result: makeCall [:@"varRef" @"makeUniqlet":]
