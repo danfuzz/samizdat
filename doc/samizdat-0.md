@@ -351,6 +351,65 @@ The boolean value false. It can also be written as `[:@"boolean" @0:]`.
 The boolean value true. It can also be written as `[:@"boolean" @1:]`.
 
 <br><br>
+### Primitive Library: Ultraprimitive Functions
+
+This set of primitive functions are required in order to execute
+parse trees as produced by `sam0Tree` (see which).
+
+#### `makeHighlet type value? <> highlet`
+
+Returns a highlet with the given type tag (an arbitrary value)
+and optional data payload value (also an arbitrary value). These
+equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = [:key:];         is equivalent to   v = makeHighlet key;
+v = [:key value:];   is equivalent to   v = makeHighlet key value;
+```
+
+#### `makeListlet rest* <> listlet`
+
+Returns a listlet with the given elements (in argument order).
+These equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = @[v1];      is equivalent to   v = makeListlet v1;
+v = @[v1 v2];   is equivalent to   v = makeListlet v1 v2;
+[etc.]
+```
+
+*Note:* The equivalence requires at least one argument, even though
+the function is happy to operate given zero arguments.
+
+#### `makeMaplet rest* <> maplet`
+
+Returns a maplet with the given key-value bindings (in argument
+order), with each key-value pair represented as two consecutive
+arguments. The number of arguments passed to this function must be
+even. These equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = @[k1=v1];         is equivalent to   v = makeMaplet k1 v1;
+v = @[k1=v1 k2=v2];   is equivalent to   v = makeMaplet k1 v1 k2 v2;
+[etc.]
+```
+
+*Note:* The equivalence requires at least two arguments, even though
+the function is happy to operate given zero arguments.
+
+#### `makeUniqlet() <> uniqlet`
+
+Returns a uniqlet that has never before been returned from this
+function (nor from any other uniqlet-producing source, should such a
+source exist). This equivalence holds for *Samizdat Layer 0* source
+code:
+
+```
+v = @@;   is equivalent to   v = makeUniqlet();
+```
+
+
+<br><br>
 ### Primitive Library: Conditionals
 
 #### `ifTrue predicate thenFunction elseFunction? <> . | ~.`
