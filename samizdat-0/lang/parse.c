@@ -380,19 +380,6 @@ static zvalue parseStringlet(ParseState *state) {
 }
 
 /**
- * Parses an `integer` node.
- */
-static zvalue parseInteger(ParseState *state) {
-    zvalue integer = readMatch(state, STR_INTEGER);
-
-    if (integer == NULL) {
-        return NULL;
-    }
-
-    return datHighletFrom(STR_LITERAL, integer);
-}
-
-/**
  * Parses an `intlet` node.
  */
 static zvalue parseIntlet(ParseState *state) {
@@ -489,7 +476,6 @@ static zvalue parseAtom(ParseState *state) {
 
     if (result == NULL) { result = parseVarRef(state); }
     if (result == NULL) { result = parseIntlet(state); }
-    if (result == NULL) { result = parseInteger(state); }
     if (result == NULL) { result = parseStringlet(state); }
     if (result == NULL) { result = parseEmptyListlet(state); }
     if (result == NULL) { result = parseListlet(state); }

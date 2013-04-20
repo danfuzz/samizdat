@@ -246,7 +246,7 @@ expression ::= call | atom ;
 # result: <same as whatever was parsed>
 
 atom ::=
-    varRef | intlet | integer | stringlet |
+    varRef | intlet | stringlet |
     emptyListlet | listlet | emptyMaplet | maplet |
     uniqlet | highlet | function | parenExpression
 # result: <same as whatever was parsed>
@@ -262,9 +262,6 @@ varRef ::= @"identifier" ;
 
 intlet ::= @"@" @"integer" ;
 # result: [:@"literal" <integer.value>:]
-
-integer ::= @"integer" ;
-# result: [:@"literal" <integer>:]
 
 stringlet ::= @"@" @"string" ;
 # result: [:@"literal" <string.value>:]
