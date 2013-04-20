@@ -35,8 +35,8 @@ static zvalue *listletElems(zvalue listlet) {
  * Combines two element arrays into a single new listlet. This
  * can also be used for a single array by passing `size2` as `0`.
  */
-static zvalue listletFromTwoArrays(zint size1, zvalue *elems1,
-                                   zint size2, zvalue *elems2) {
+static zvalue listletFromTwoArrays(zint size1, const zvalue *elems1,
+                                   zint size2, const zvalue *elems2) {
     zvalue result = allocListlet(size1 + size2);
     zvalue *resultElems = listletElems(result);
 
@@ -135,7 +135,7 @@ zvalue datListletDelete(zvalue listlet, zint n) {
 }
 
 /* Documented in header. */
-zvalue datListletFromValues(zvalue *values, zint size) {
+zvalue datListletFromValues(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
         datAssertValid(values[i]);
     }

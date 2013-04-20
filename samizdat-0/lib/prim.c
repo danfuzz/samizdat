@@ -42,9 +42,63 @@ static void requireRange(zint argCount, zint min, zint max) {
     }
 }
 
+/**
+ * Check that the given argument count is even, complaining if not.
+ */
+static void requireEven(zint argCount) {
+    if ((argCount & 0x01) != 0) {
+        die("Invalid non-even argument count for primitive: %lld", argCount);
+    }
+}
+
 
 /*
  * Primitive implementations (exported via the context)
+ */
+
+/*
+ * Ultraprimitives (required in order to successfully execute parse
+ * trees)
+ */
+
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue prim_makeHighlet(void *state, zint argCount,
+                               const zvalue *args) {
+    requireRange(argCount, 1, 2);
+
+    zvalue value = (argCount == 2) ? args[1] : NULL;
+    return datHighletFrom(args[0], value);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue prim_makeListlet(void *state, zint argCount,
+                               const zvalue *args) {
+    return datListletFromValues(argCount, args);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue prim_makeMaplet(void *state, zint argCount,
+                              const zvalue *args) {
+    requireEven(argCount);
+
+    zvalue result = datMapletEmpty();
+
+    for (zint i = 0; i < argCount; i += 2) {
+        result = datMapletPut(result, args[i], args[i + 1]);
+    }
+
+    return result;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue prim_makeUniqlet(void *state, zint argCount,
+                               const zvalue *args) {
+    requireExactly(argCount, 0);
+    return datUniqlet();
+}
+
+/*
+ * The rest (to be sorted)
  */
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -342,6 +396,12 @@ zcontext primitiveContext(void) {
 
     // This avoids boilerplate below.
     #define BIND(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
+
+    // Ultraprimitives
+    BIND(makeHighlet);
+    BIND(makeListlet);
+    BIND(makeMaplet);
+    BIND(makeUniqlet);
 
     // Low-layer types (in general)
     BIND(lowOrder);
