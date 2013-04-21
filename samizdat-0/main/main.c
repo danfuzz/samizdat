@@ -41,6 +41,6 @@ int main(int argc, char **argv) {
     zvalue result = langApply(function, args);
 
     if ((result != NULL) && (datType(result) == DAT_INTLET)) {
-        exit((int) datIntletToInt(result));
+        exit((int) datIntFromIntlet(result));
     }
 }

@@ -146,7 +146,7 @@ zvalue datIntletFromInt(zint value);
  * Gets a `zint` equal to the given intlet value. `intlet` must be an
  * intlet. It is an error if the value is out of range.
  */
-zint datIntletToInt(zvalue intlet);
+zint datIntFromIntlet(zvalue intlet);
 
 
 /*

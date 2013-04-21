@@ -103,7 +103,7 @@ zvalue datIntletFromInt(zint value) {
 }
 
 /* Documented in header. */
-zint datIntletToInt(zvalue intlet) {
+zint datIntFromIntlet(zvalue intlet) {
     datAssertIntlet(intlet);
     return intletValue(intlet);
 }

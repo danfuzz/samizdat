@@ -113,8 +113,8 @@ static zvalue prim_lowOrderIs(void *state, zint argCount, const zvalue *args) {
 
     zorder comp = datOrder(args[0], args[1]);
     bool result =
-        (comp == datIntletToInt(args[2])) ||
-        ((argCount == 4) && (comp == datIntletToInt(args[3])));
+        (comp == datIntFromIntlet(args[2])) ||
+        ((argCount == 4) && (comp == datIntFromIntlet(args[3])));
 
     return langBooleanFromBool(result);
 }
@@ -173,37 +173,42 @@ static zvalue prim_ifValue(void *state, zint argCount, const zvalue *args) {
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue prim_ineg(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
-    return datIntletFromInt(-datIntletToInt(args[0]));
+    return datIntletFromInt(-datIntFromIntlet(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue prim_iadd(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
-    return datIntletFromInt(datIntletToInt(args[0]) + datIntletToInt(args[1]));
+    return datIntletFromInt(
+        datIntFromIntlet(args[0]) + datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue prim_isub(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
-    return datIntletFromInt(datIntletToInt(args[0]) - datIntletToInt(args[1]));
+    return datIntletFromInt(
+        datIntFromIntlet(args[0]) - datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue prim_imul(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
-    return datIntletFromInt(datIntletToInt(args[0]) * datIntletToInt(args[1]));
+    return datIntletFromInt(
+        datIntFromIntlet(args[0]) * datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue prim_idiv(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
-    return datIntletFromInt(datIntletToInt(args[0]) / datIntletToInt(args[1]));
+    return datIntletFromInt(
+        datIntFromIntlet(args[0]) / datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue prim_imod(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
-    return datIntletFromInt(datIntletToInt(args[0]) % datIntletToInt(args[1]));
+    return datIntletFromInt(
+        datIntFromIntlet(args[0]) % datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -240,7 +245,7 @@ static zvalue prim_stringletNth(void *state, zint argCount,
     requireExactly(argCount, 2);
 
     zvalue stringlet = args[0];
-    zint index = datIntletToInt(args[1]);
+    zint index = datIntFromIntlet(args[1]);
 
     return datIntletFromInt(datStringletGet(stringlet, index));
 }
@@ -270,7 +275,7 @@ static zvalue prim_listletNth(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
 
     zvalue listlet = args[0];
-    zint index = datIntletToInt(args[1]);
+    zint index = datIntFromIntlet(args[1]);
 
     return datListletGet(listlet, index);
 }
@@ -281,7 +286,7 @@ static zvalue prim_listletDelNth(void *state, zint argCount,
     requireExactly(argCount, 2);
 
     zvalue listlet = args[0];
-    zint index = datIntletToInt(args[1]);
+    zint index = datIntFromIntlet(args[1]);
 
     return datListletDelete(listlet, index);
 }

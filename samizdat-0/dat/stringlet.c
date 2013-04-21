@@ -48,7 +48,7 @@ static zint utf8Size(zvalue stringlet) {
  * is in fact an intlet and in range for same.
  */
 static zchar intletToChar(zvalue intlet) {
-    zint value = datIntletToInt(intlet);
+    zint value = datIntFromIntlet(intlet);
 
     if ((value < 0) || (value >= 0x100000000)) {
         die("Invalid intlet value for stringlet: %lld", value);
