@@ -47,7 +47,7 @@ static zint utf8Size(zvalue stringlet) {
  * Gets the `zchar` of the given intlet, asserting that the value
  * is in fact an intlet and in range for same.
  */
-static zchar intletToChar(zvalue intlet) {
+static zchar charFromIntlet(zvalue intlet) {
     zint value = datIntFromIntlet(intlet);
 
     if ((value < 0) || (value >= 0x100000000)) {
@@ -164,7 +164,7 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize) {
 
 /* Documented in header. */
 zvalue datStringletFromIntlet(zvalue intlet) {
-    zchar ch = intletToChar(intlet);
+    zchar ch = charFromIntlet(intlet);
 
     return datStringletFromChars(&ch, 1);
 }
@@ -176,7 +176,7 @@ zvalue datStringletFromListlet(zvalue listlet) {
     zchar *elems = stringletElems(result);
 
     for (zint i = 0; i < size; i++) {
-        elems[i] = intletToChar(datListletGet(listlet, i));
+        elems[i] = charFromIntlet(datListletGet(listlet, i));
     }
 
     return result;
