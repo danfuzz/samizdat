@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "util.h"
 
 
 /*
@@ -29,6 +30,41 @@
     extern int semicolonRequiredHere
 
 /**
+ * Division operation. This isn't a straightforward application of
+ * `/`, so that division by zero can operate as specified.
+ */
+static zint div(zint numerator, zint denominator) {
+    if (denominator == 0) {
+        die("Attempt to divide by zero: %lld", numerator);
+    }
+
+    return numerator / denominator;
+}
+
+/**
+ * Remainder operation. This isn't a straightforward application
+ * of `%`, because:
+ *
+ * * We need to handle division by zero as a failure.
+ *
+ * * Though well specified as of C99, in practice there is
+ *   variation across implementations of the `%` operator.
+ */
+static zint rem(zint numerator, zint denominator) {
+    zint q = div(numerator, denominator);
+    return numerator - (q * denominator);
+}
+
+/**
+ * Modulo operation. This has to be a function, since C defines no
+ * portable modulo function.
+ */
+static zint mod(zint numerator, zint denominator) {
+    zint r = rem(numerator, denominator);
+    return rem(r + denominator, denominator);
+}
+
+/**
  * Binary left-shift operation. This isn't a straightforward
  * application of `<<` to the two arguments, because:
  *
@@ -46,7 +82,7 @@
  * meaning-preserving in the face of the `dat` layer's implementation
  * of the 32-bit width restriction on intlets.
  */
-static zint shiftLeft(zint value, zint shift) {
+static zint shl(zint value, zint shift) {
     if (shift == 0) {
         return value;
     } else if (shift > 0) {
@@ -76,11 +112,12 @@ UNARY_PRIM(inot, ~x);
 
 BINARY_PRIM(iadd, x + y);
 BINARY_PRIM(iand, x & y);
-BINARY_PRIM(idiv, x / y);
-BINARY_PRIM(imod, x % y);
+BINARY_PRIM(idiv, div(x, y));
+BINARY_PRIM(imod, mod(x, y));
 BINARY_PRIM(imul, x * y);
 BINARY_PRIM(ior,  x | y);
+BINARY_PRIM(irem, rem(x, y));
 BINARY_PRIM(isub, x - y);
-BINARY_PRIM(ishl, shiftLeft(x, y));
-BINARY_PRIM(ishr, shiftLeft(x, -y));
+BINARY_PRIM(ishl, shl(x, y));
+BINARY_PRIM(ishr, shl(x, -y));
 BINARY_PRIM(ixor, x ^ y);

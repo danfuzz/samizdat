@@ -738,8 +738,6 @@ Returns the binary-or (union of all one-bits) of the given values.
 
 #### `irem intlet1 intlet2 <> intlet`
 
-TODO: Implement this.
-
 Returns the truncated-division remainder of the given values (first
 over second). The sign of the result will always match the sign of the
 first argument. It is an error (terminating the runtime) if the second
