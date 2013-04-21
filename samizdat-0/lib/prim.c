@@ -17,88 +17,6 @@
  * Primitive implementations (exported via the context)
  */
 
-/*
- * Ultraprimitives (required in order to successfully execute parse
- * trees)
- */
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeHighlet) {
-    requireRange(argCount, 1, 2);
-
-    zvalue value = (argCount == 2) ? args[1] : NULL;
-    return datHighletFrom(args[0], value);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeListlet) {
-    return datListletFromArray(argCount, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeMaplet) {
-    requireEven(argCount);
-
-    zvalue result = datMapletEmpty();
-
-    for (zint i = 0; i < argCount; i += 2) {
-        result = datMapletPut(result, args[i], args[i + 1]);
-    }
-
-    return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeUniqlet) {
-    requireExactly(argCount, 0);
-    return datUniqlet();
-}
-
-/*
- * The rest (to be sorted)
- */
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowOrder) {
-    requireExactly(argCount, 2);
-    return datIntletFromInt(datOrder(args[0], args[1]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowOrderIs) {
-    requireRange(argCount, 3, 4);
-
-    zorder comp = datOrder(args[0], args[1]);
-    bool result =
-        (comp == datIntFromIntlet(args[2])) ||
-        ((argCount == 4) && (comp == datIntFromIntlet(args[3])));
-
-    return langBooleanFromBool(result);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowSize) {
-    requireExactly(argCount, 1);
-    return datIntletFromInt(datSize(args[0]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowType) {
-    requireExactly(argCount, 1);
-
-    switch (datType(args[0])) {
-        case DAT_INTLET:    return CST_STR_INTLET;
-        case DAT_STRINGLET: return CST_STR_STRINGLET;
-        case DAT_LISTLET:   return CST_STR_LISTLET;
-        case DAT_MAPLET:    return CST_STR_MAPLET;
-        case DAT_UNIQLET:   return CST_STR_UNIQLET;
-        case DAT_HIGHLET:   return CST_STR_HIGHLET;
-        default: {
-            die("Invalid value type (shouldn't happen): %d", datType(args[0]));
-        }
-    }
-}
-
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifTrue) {
     requireRange(argCount, 2, 3);
@@ -125,47 +43,6 @@ PRIM_IMPL(ifValue) {
     } else {
         return NULL;
     }
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(ineg) {
-    requireExactly(argCount, 1);
-    return datIntletFromInt(-datIntFromIntlet(args[0]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(iadd) {
-    requireExactly(argCount, 2);
-    return datIntletFromInt(
-        datIntFromIntlet(args[0]) + datIntFromIntlet(args[1]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(isub) {
-    requireExactly(argCount, 2);
-    return datIntletFromInt(
-        datIntFromIntlet(args[0]) - datIntFromIntlet(args[1]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(imul) {
-    requireExactly(argCount, 2);
-    return datIntletFromInt(
-        datIntFromIntlet(args[0]) * datIntFromIntlet(args[1]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(idiv) {
-    requireExactly(argCount, 2);
-    return datIntletFromInt(
-        datIntFromIntlet(args[0]) / datIntFromIntlet(args[1]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(imod) {
-    requireExactly(argCount, 2);
-    return datIntletFromInt(
-        datIntFromIntlet(args[0]) % datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

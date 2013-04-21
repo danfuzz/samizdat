@@ -11,7 +11,7 @@
 #ifndef _IMPL_H_
 #define _IMPL_H_
 
-#include "lang.h"
+#include "lib.h"
 
 /** Embedded library source code, written in Samizdat Layer 0. */
 extern char library_sam0[];
