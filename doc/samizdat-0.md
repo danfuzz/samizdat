@@ -10,6 +10,7 @@ data, as specified here, and running it with the indicated library
 bindings.
 
 
+<br><br>
 Data Syntax And Semantics In A Nutshell
 ---------------------------------------
 
@@ -162,6 +163,7 @@ value representation (another arbitrary value), followed by a final
 ```
 
 
+<br><br>
 Token Syntax
 ------------
 
@@ -207,6 +209,7 @@ whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
 ```
 
 
+<br><br>
 Node / Tree Syntax
 ------------------
 
@@ -298,6 +301,7 @@ makeCall = { function actuals* ::
 ```
 
 
+<br><br>
 Node / Tree Semantics
 ---------------------
 
@@ -422,6 +426,7 @@ evaluated value is bound in the current (topmost) execution context to
 the indicated `name`.
 
 
+<br><br>
 Library Bindings
 ----------------
 
