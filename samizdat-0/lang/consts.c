@@ -39,7 +39,7 @@ void constsInit(void) {
 
     #define TOK(name, str) \
         STR(name, str); \
-        TOK_##name = datHighletFromType(STR_##name);
+        TOK_##name = datHighletFrom(STR_##name, NULL);
 
     #include "consts-def.h"
 }

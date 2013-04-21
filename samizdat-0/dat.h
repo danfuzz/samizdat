@@ -364,11 +364,6 @@ zvalue datHighletType(zvalue highlet);
 zvalue datHighletValue(zvalue highlet);
 
 /**
- * Returns a valueless highlet, with the given type tag.
- */
-zvalue datHighletFromType(zvalue type);
-
-/**
  * Returns a possibly-valued highlet. The given value must either
  * be a valid value or `NULL`.
  */
