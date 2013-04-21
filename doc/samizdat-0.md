@@ -531,7 +531,10 @@ makeListlet = { rest* :: <> rest; };
 Returns a maplet with the given key-value bindings (in argument
 order), with each key-value pair represented as two consecutive
 arguments. The number of arguments passed to this function must be
-even. These equivalences hold for *Samizdat Layer 0* source code:
+even. It is valid to repeat keys in the arguments to this function, in
+which case the *final* value binding for any given key in the argument
+list (in argument order) is the one that ends up in the result.  These
+equivalences hold for *Samizdat Layer 0* source code:
 
 ```
 v = @[k1=v1];         is equivalent to   v = makeMaplet k1 v1;
