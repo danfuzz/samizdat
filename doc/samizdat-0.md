@@ -694,6 +694,10 @@ result will be one of: `@"intlet" @"stringlet" @"listlet" @"maplet"
 
 Returns the sum of the given values.
 
+#### `iand intlet1 intlet2 <> intlet`
+
+Returns the binary-and (intersection of all one-bits) of the given values.
+
 #### `idiv intlet1 intlet2 <> intlet`
 
 Returns the quotient of the given values (first over second).
@@ -714,9 +718,21 @@ Returns the product of the given values.
 Returns the negation (same magnitude, opposite sign) of the given
 value.
 
+#### `inot intlet <> intlet`
+
+Returns the binary complement (all bits opposite) of the given value.
+
+#### `ior intlet1 intlet2 <> intlet`
+
+Returns the binary-or (union of all one-bits) of the given values.
+
 #### `isub intlet1 intlet2 <> intlet`
 
 Returns the difference of the given values (first minus second).
+
+#### `ixor intlet1 intlet2 <> intlet`
+
+Returns the binary-xor (bitwise not-equal) of the given values.
 
 <br><br>
 ### Primitive Library: Stringlets

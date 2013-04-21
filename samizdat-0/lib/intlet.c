@@ -22,9 +22,15 @@
     extern int semicolonRequiredHere
 
 /* These are all documented in Samizdat Layer 0 spec. */
+
 UNARY_PRIM(ineg, -);
+UNARY_PRIM(inot, ~);
+
 BINARY_PRIM(iadd, +);
+BINARY_PRIM(iand, &);
 BINARY_PRIM(idiv, /);
 BINARY_PRIM(imod, %);
 BINARY_PRIM(imul, *);
+BINARY_PRIM(ior,  |);
 BINARY_PRIM(isub, -);
+BINARY_PRIM(ixor, ^);
