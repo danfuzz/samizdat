@@ -12,8 +12,7 @@
  */
 
 enum {
-    BITS_PER_BYTE = 8,
-    BITS_PER_WORD = sizeof(zint) * BITS_PER_BYTE,
+    /** Intlets are restricted to being in the range of `int32_t`. */
     MAX_BITS = 32
 };
 
