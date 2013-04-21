@@ -613,8 +613,16 @@ returns no value.
 
 Returns the order of the two given values in the total order of
 Samizdat low-layer values. This returns one of `@-1 @0 @1` indicating
-how the two values sort with each other, using the standard meaning
-of those values. Ordering is calculated as follows:
+how the two values sort with each other, using the reasonably
+standard meaning of those values:
+
+* `-1` &mdash; The first value orders before the second value.
+
+* `0` &mdash; The two values are identical.
+
+* `1` &mdash; The first value orders after the second value.
+
+Ordering is calculated as follows:
 
 The major order is by type &mdash; `intlet < stringlet < listlet <
 maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
@@ -630,9 +638,9 @@ maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
   lists are identical, then the result is the comparison of
   corresponding lists of values, in key order.
 
-* Any given uniqlet never compares as equal to anything but itself.
-  Any two uniqlets have a consistent and transitive &mdash; but
-  otherwise arbitrary &mdash; ordering.
+* Any given uniqlet never compares as identical to anything but
+  itself. Any two uniqlets have a consistent, transitive, and
+  commutative &mdash; but otherwise arbitrary &mdash; ordering.
 
 * Highlets compare by type as primary, and value as secondary.
   With types equal, a highlets without a value order earlier than
