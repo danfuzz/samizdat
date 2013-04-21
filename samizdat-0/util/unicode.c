@@ -168,7 +168,7 @@ void uniAssertValid(zint value) {
 
 /* Documented in header. */
 zint utf8DecodeStringSize(zint stringBytes, const char *string) {
-    const char *stringEnd = strGetEnd(string, stringBytes);
+    const char *stringEnd = strGetEnd(stringBytes, string);
     zint result = 0;
 
     while (string < stringEnd) {
@@ -182,7 +182,7 @@ zint utf8DecodeStringSize(zint stringBytes, const char *string) {
 /* Documented in header. */
 void utf8DecodeCharsFromString(zchar *result,
                                zint stringBytes, const char *string) {
-    const char *stringEnd = strGetEnd(string, stringBytes);
+    const char *stringEnd = strGetEnd(stringBytes, string);
 
     while (string < stringEnd) {
         string = decodeValid(result, stringEnd - string, string);

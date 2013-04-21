@@ -52,7 +52,7 @@ void *zalloc(zint size);
  * validity of same. This just validates this as an address range,
  * not as valid string contents.
  */
-const char *strGetEnd(const char *string, zint stringBytes);
+const char *strGetEnd(zint stringBytes, const char *string);
 
 
 /*
