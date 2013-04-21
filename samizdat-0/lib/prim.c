@@ -4,7 +4,6 @@
  * Version 2.0. See the associated file "LICENSE.md" for details.
  */
 
-#include "cst.h"
 #include "impl.h"
 #include "util.h"
 
@@ -43,15 +42,13 @@ void requireEven(zint argCount) {
 
 /* Documented in header. */
 zcontext primitiveContext(void) {
-    cstInit();
-
     zcontext ctx = langCtxNew();
 
     // These all could have been defined in-language, but we already
     // have to make them be defined and accessible to C code, so we just
     // go ahead and bind them here.
-    langCtxBind(ctx, "false", CST_FALSE);
-    langCtxBind(ctx, "true", CST_TRUE);
+    langCtxBind(ctx, "false", langFalse());
+    langCtxBind(ctx, "true", langTrue());
 
     // Bind all the primitive functions.
     #define PRIM_FUNC(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
