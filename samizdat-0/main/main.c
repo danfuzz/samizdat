@@ -25,12 +25,12 @@ int main(int argc, char **argv) {
         die("Too few arguments.");
     }
 
-    zvalue fileName = datStringletFromUtf8String(argv[1], -1);
+    zvalue fileName = datStringletFromUtf8String(-1, argv[1]);
     zint argCount = argc - 2;
     zvalue args = datListletEmpty();
 
     for (int i = 0; i < argCount; i++) {
-        zvalue arg = datStringletFromUtf8String(argv[i + 2], -1);
+        zvalue arg = datStringletFromUtf8String(-1, argv[i + 2]);
         args = datListletAppend(args, arg);
     }
 

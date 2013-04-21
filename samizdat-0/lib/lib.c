@@ -23,7 +23,7 @@
  */
 static zvalue runLibrary(zcontext ctx) {
     zvalue programText =
-        datStringletFromUtf8String(library_sam0, library_sam0_len);
+        datStringletFromUtf8String(library_sam0_len, library_sam0);
     zvalue program = langNodeFromProgramText(programText);
     zvalue function = langEvalExpressionNode(ctx, program);
 

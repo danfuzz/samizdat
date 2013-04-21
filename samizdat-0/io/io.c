@@ -57,7 +57,7 @@ zvalue readFile(zvalue fileName) {
 
     fclose(in);
 
-    return datStringletFromUtf8String(buf, amt);
+    return datStringletFromUtf8String(amt, buf);
 }
 
 /* Documented in header. */

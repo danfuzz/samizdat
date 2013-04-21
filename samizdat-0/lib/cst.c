@@ -30,12 +30,12 @@ void cstInit(void) {
         return;
     }
 
-    CST_STR_INTLET    = datStringletFromUtf8String("intlet", -1);
-    CST_STR_STRINGLET = datStringletFromUtf8String("stringlet", -1);
-    CST_STR_LISTLET   = datStringletFromUtf8String("listlet", -1);
-    CST_STR_MAPLET    = datStringletFromUtf8String("maplet", -1);
-    CST_STR_UNIQLET   = datStringletFromUtf8String("uniqlet", -1);
-    CST_STR_HIGHLET   = datStringletFromUtf8String("highlet", -1);
+    CST_STR_INTLET    = datStringletFromUtf8String(-1, "intlet");
+    CST_STR_STRINGLET = datStringletFromUtf8String(-1, "stringlet");
+    CST_STR_LISTLET   = datStringletFromUtf8String(-1, "listlet");
+    CST_STR_MAPLET    = datStringletFromUtf8String(-1, "maplet");
+    CST_STR_UNIQLET   = datStringletFromUtf8String(-1, "uniqlet");
+    CST_STR_HIGHLET   = datStringletFromUtf8String(-1, "highlet");
 
     CST_FALSE = langFalse();
     CST_TRUE  = langTrue();
