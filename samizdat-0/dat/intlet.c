@@ -32,12 +32,12 @@ static zint bitSize(zint value) {
     zint result = 1; // +1 in that we want size, not zero-based bit number.
     uint64_t uv = (uint64_t) value; // Use `uint` to account for `-MAX_ZINT`.
 
-    if (uv >= (1L << 32)) { result += 32; uv >>= 32; }
-    if (uv >= (1L << 16)) { result += 16; uv >>= 16; }
-    if (uv >= (1L << 8))  { result +=  8; uv >>=  8; }
-    if (uv >= (1L << 4))  { result +=  4; uv >>=  4; }
-    if (uv >= (1L << 2))  { result +=  2; uv >>=  2; }
-    if (uv >= (1L << 1))  { result +=  1; uv >>=  1; }
+    if (uv >= ((zint) 1 << 32)) { result += 32; uv >>= 32; }
+    if (uv >= ((zint) 1 << 16)) { result += 16; uv >>= 16; }
+    if (uv >= ((zint) 1 << 8))  { result +=  8; uv >>=  8; }
+    if (uv >= ((zint) 1 << 4))  { result +=  4; uv >>=  4; }
+    if (uv >= ((zint) 1 << 2))  { result +=  2; uv >>=  2; }
+    if (uv >= ((zint) 1 << 1))  { result +=  1; uv >>=  1; }
     return result + uv;
 }
 

@@ -124,7 +124,7 @@ static const char *justDecode(zchar *result,
         die("Overlong UTF-8 encoding of value: %#llx", value);
     }
 
-    if (value >= 0x100000000LL) {
+    if (value >= 0x100000000) {
         die("Out-of-range UTF-8 encoded value: %#llx", value);
     }
 
