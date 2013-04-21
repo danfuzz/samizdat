@@ -250,7 +250,12 @@ sourceStringlet = { value ::
     } { <> isUniqlet value } {
         <> @"@@"
     } else {
-        <> @"<unknown>"
+        <> stringletCat
+            @"@[(unknown) "
+            (sourceStringlet (lowType value))
+            @" "
+            (sourceStringlet (lowSize value))
+            @"]"
     }
 };
 
