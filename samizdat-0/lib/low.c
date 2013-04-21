@@ -5,7 +5,6 @@
  */
 
 #include "impl.h"
-#include "cst.h"
 #include "util.h"
 
 
@@ -36,16 +35,5 @@ PRIM_IMPL(lowSize) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(lowType) {
     requireExactly(argCount, 1);
-
-    switch (datType(args[0])) {
-        case DAT_INTLET:    return CST_STR_INTLET;
-        case DAT_STRINGLET: return CST_STR_STRINGLET;
-        case DAT_LISTLET:   return CST_STR_LISTLET;
-        case DAT_MAPLET:    return CST_STR_MAPLET;
-        case DAT_UNIQLET:   return CST_STR_UNIQLET;
-        case DAT_HIGHLET:   return CST_STR_HIGHLET;
-        default: {
-            die("Invalid value type (shouldn't happen): %d", datType(args[0]));
-        }
-    }
+    return langLowTypeName(args[0]);
 }
