@@ -177,8 +177,8 @@ zint utf8DecodeStringSize(const char *string, zint stringBytes) {
 }
 
 /* Documented in header. */
-void utf8DecodeStringToChars(const char *string, zint stringBytes,
-                             zchar *result) {
+void utf8DecodeCharsFromString(zchar *result,
+                               const char *string, zint stringBytes) {
     const char *stringEnd = strGetEnd(string, stringBytes);
 
     while (string < stringEnd) {

@@ -136,7 +136,7 @@ zvalue datStringletFromUtf8String(const char *string, zint stringBytes) {
     zint decodedSize = utf8DecodeStringSize(string, stringBytes);
     zvalue result = allocStringlet(decodedSize);
 
-    utf8DecodeStringToChars(string, stringBytes, stringletElems(result));
+    utf8DecodeCharsFromString(stringletElems(result), string, stringBytes);
     return result;
 }
 

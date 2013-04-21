@@ -85,8 +85,8 @@ zint utf8DecodeStringSize(const char *string, zint stringBytes);
  * into the given buffer of `zchar`s. The buffer must be sufficiently
  * large to hold the result of decoding.
  */
-void utf8DecodeStringToChars(const char *string, zint stringBytes,
-                             zchar *result);
+void utf8DecodeCharsFromString(zchar *result,
+                               const char *string, zint stringBytes);
 
 /**
  * Encodes a single Unicode code point as UTF-8, writing it to the
