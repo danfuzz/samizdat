@@ -772,6 +772,12 @@ Returns the first argument bit-shifted by an amount indicated by the
 second argument. This is identical to `ishl`, except that the sense of
 positive and negative `shift` is reversed.
 
+*Note:* Unlike some other languages, there is no unsigned right-shift
+operation in *Samizdat Layer 0*. This is because intlets are unlimited
+in bit width, and so there is no way to define such an operation. If
+you need "unsigned" operations, just operate consistently on
+non-negative intlets.
+
 #### `isub intlet1 intlet2 <> intlet`
 
 Returns the difference of the given values (first minus second).
