@@ -8,13 +8,38 @@
 
 
 /*
- * Helper functions
+ * Helper definitions
  */
 
 enum {
     /** Intlets are restricted to being in the range of `int32_t`. */
     MAX_BITS = 32
 };
+
+/**
+ * Gets the bit size (highest-order significant bit number, plus one)
+ * of the given `zint`.
+ */
+static zint bitSize(zint value) {
+    if (value < 0) {
+        value = ~value;
+    }
+
+    // "Binary-search" style implementation. Many compilers have a
+    // built-in "count leading zeroes" function, but we're aiming
+    // for portability here.
+
+    zint result = 1; // +1 in that we want size, not zero-based bit number.
+    uint64_t uv = (uint64_t) value; // Accounts for -MAX_ZINT.
+
+    if (uv >= (1L << 32)) { result += 32; uv >>= 32; }
+    if (uv >= (1L << 16)) { result += 16; uv >>= 16; }
+    if (uv >= (1L << 8))  { result +=  8; uv >>=  8; }
+    if (uv >= (1L << 4))  { result +=  4; uv >>=  4; }
+    if (uv >= (1L << 2))  { result +=  2; uv >>=  2; }
+    if (uv >= (1L << 1))  { result +=  1; uv >>=  1; }
+    return result + uv;
+}
 
 /**
  * Gets the value of the given intlet as a `zint`. Doesn't do any
@@ -66,8 +91,12 @@ bool datIntletSign(zvalue intlet) {
 
 /* Documented in header. */
 zvalue datIntletFromInt(zint value) {
-    zint bitSize = 32; // FIXME!
-    zvalue result = datAllocValue(DAT_INTLET, bitSize, sizeof(int32_t));
+    zint size = bitSize(value);
+    zvalue result = datAllocValue(DAT_INTLET, size, sizeof(int32_t));
+
+    if (size > MAX_BITS) {
+        die("Value too large to fit into intlet: %lld", value);
+    }
 
     ((DatIntlet *) result)->value = (int32_t) value;
     return result;
