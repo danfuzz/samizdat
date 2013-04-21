@@ -62,6 +62,6 @@ zvalue langApply(zvalue functionId, zvalue args) {
     zint argCount = datSize(args);
     zvalue argsArray[argCount];
 
-    datListletToValues(args, argsArray);
+    datArrayFromListlet(args, argsArray);
     return langCall(functionId, argCount, argsArray);
 }

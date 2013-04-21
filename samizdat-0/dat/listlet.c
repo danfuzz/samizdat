@@ -135,7 +135,7 @@ zvalue datListletDelete(zvalue listlet, zint n) {
 }
 
 /* Documented in header. */
-zvalue datListletFromValues(zint size, const zvalue *values) {
+zvalue datListletFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
         datAssertValid(values[i]);
     }
@@ -144,7 +144,7 @@ zvalue datListletFromValues(zint size, const zvalue *values) {
 }
 
 /* Documented in header. */
-void datListletToValues(zvalue listlet, zvalue *values) {
+void datArrayFromListlet(zvalue listlet, zvalue *values) {
     datAssertListlet(listlet);
     memcpy(values, listletElems(listlet), listlet->size * sizeof(zvalue));
 }

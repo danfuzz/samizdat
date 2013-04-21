@@ -254,13 +254,13 @@ zvalue datListletDelete(zvalue listlet, zint n);
 /**
  * Constructs a listlet from an array of `zvalue`s of the given size.
  */
-zvalue datListletFromValues(zint size, const zvalue *values);
+zvalue datListletFromArray(zint size, const zvalue *values);
 
 /**
  * Copies all the values of the given listlet into the given output
  * array, which must be sized large enough to hold all of them.
  */
-void datListletToValues(zvalue listlet, zvalue *values);
+void datArrayFromListlet(zvalue listlet, zvalue *values);
 
 
 /*

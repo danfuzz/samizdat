@@ -194,5 +194,5 @@ zvalue datListletFromStringlet(zvalue stringlet) {
         ints[i] = datIntletFromInt(elems[i]);
     }
 
-    return datListletFromValues(size, ints);
+    return datListletFromArray(size, ints);
 }
