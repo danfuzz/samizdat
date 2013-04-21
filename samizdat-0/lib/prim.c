@@ -229,7 +229,7 @@ static zvalue prim_stringletFromChars(void *state, zint argCount,
 static zvalue prim_stringletToChars(void *state, zint argCount,
                                     const zvalue *args) {
     requireExactly(argCount, 1);
-    return datStringletToListlet(args[0]);
+    return datListletFromStringlet(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

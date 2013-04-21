@@ -180,7 +180,7 @@ zvalue datStringletFromListlet(zvalue listlet);
  * Gets the list of characters in the given stringlet, in order,
  * as a listlet of intlets.
  */
-zvalue datStringletToListlet(zvalue stringlet);
+zvalue datListletFromStringlet(zvalue stringlet);
 
 /**
  * Combines the characters of two stringlets, in order, into a new

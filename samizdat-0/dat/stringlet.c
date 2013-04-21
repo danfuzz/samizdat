@@ -183,7 +183,7 @@ zvalue datStringletFromListlet(zvalue listlet) {
 }
 
 /* Documented in header. */
-zvalue datStringletToListlet(zvalue stringlet) {
+zvalue datListletFromStringlet(zvalue stringlet) {
     datAssertStringlet(stringlet);
 
     zint size = datSize(stringlet);
