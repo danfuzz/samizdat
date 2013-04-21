@@ -163,7 +163,7 @@ zchar datStringletGet(zvalue stringlet, zint n);
  * Gets the stringlet built from the given array of `zchar`s, of
  * the given size.
  */
-zvalue datStringletFromChars(const zchar *chars, zint size);
+zvalue datStringletFromChars(zint size, const zchar *chars);
 
 /**
  * Gets the stringlet built from the given character-representing

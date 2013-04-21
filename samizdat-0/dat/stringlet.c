@@ -102,7 +102,7 @@ zchar datStringletGet(zvalue stringlet, zint n) {
 }
 
 /* Documented in header. */
-zvalue datStringletFromChars(const zchar *chars, zint size) {
+zvalue datStringletFromChars(zint size, const zchar *chars) {
     zvalue result = allocStringlet(size);
 
     memcpy(stringletElems(result), chars, size * sizeof(zchar));
@@ -166,7 +166,7 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize) {
 zvalue datStringletFromIntlet(zvalue intlet) {
     zchar ch = charFromIntlet(intlet);
 
-    return datStringletFromChars(&ch, 1);
+    return datStringletFromChars(1, &ch);
 }
 
 /* Documented in header. */

@@ -147,7 +147,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         return NULL;
     }
 
-    zvalue stringlet = datStringletFromChars(chars, size);
+    zvalue stringlet = datStringletFromChars(size, chars);
     return datHighletFrom(STR_IDENTIFIER, stringlet);
 }
 
@@ -188,7 +188,7 @@ static zvalue tokenizeString(ParseState *state) {
         read(state);
     }
 
-    zvalue stringlet = datStringletFromChars(chars, size);
+    zvalue stringlet = datStringletFromChars(size, chars);
     return datHighletFrom(STR_STRING, stringlet);
 }
 
