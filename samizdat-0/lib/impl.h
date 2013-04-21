@@ -19,10 +19,6 @@ extern char library_sam0[];
 /** Number of bytes in `lib_library_sam0`. */
 extern unsigned int library_sam0_len;
 
-/**
- * Creates a context, and binds all the primitive definitions into it.
- */
-zcontext primitiveContext(void);
 
 /**
  * Check the given argument count for an exact required amount,
