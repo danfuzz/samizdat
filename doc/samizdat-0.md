@@ -706,7 +706,8 @@ Returns the quotient of the given values (first over second).
 
 Returns the division modulus of the given values (first over
 second). The sign of the result will always match the sign of the
-second argument.
+second argument. If `idiv x y` is `d`, then `m` can be defined
+as `isub x (imul d y)`.
 
 *Note:* This differs from the `irem` in the treatment of negative
 numbers.
