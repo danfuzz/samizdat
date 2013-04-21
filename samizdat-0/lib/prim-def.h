@@ -29,6 +29,8 @@ PRIM_FUNC(imul);
 PRIM_FUNC(ineg);
 PRIM_FUNC(inot);
 PRIM_FUNC(ior);
+PRIM_FUNC(ishl);
+PRIM_FUNC(ishr);
 PRIM_FUNC(isub);
 PRIM_FUNC(ixor);
 PRIM_FUNC(stringletAdd);

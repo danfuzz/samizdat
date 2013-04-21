@@ -726,6 +726,23 @@ Returns the binary complement (all bits opposite) of the given value.
 
 Returns the binary-or (union of all one-bits) of the given values.
 
+#### `ishl intlet shift <> intlet`
+
+Returns the first argument (an intlet) bit-shifted an amount indicated
+by the second argument (also an intlet). If `shift` is positive, this
+is a left-shift operation. If `shift` is negative, this is a right-shift
+operation. If `shift` is `@0`, this is a no-op, returning the first
+argument unchanged.
+
+*Note:* The `shift` argument is not limited in any particular way (not
+masked, etc.).
+
+#### `ishr intlet shift <> intlet`
+
+Returns the first argument bit-shifted by an amount indicated by the
+second argument. This is identical to `ishl`, except that the sense of
+positive and negative `shift` is reversed.
+
 #### `isub intlet1 intlet2 <> intlet`
 
 Returns the difference of the given values (first minus second).
