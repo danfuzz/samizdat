@@ -223,12 +223,12 @@ tree syntax rule to match.
 function ::= @"{" program @"}" ;
 # result: <program>
 
-program ::= formals statement* yield? ;
+program ::= formals statement (@";" statement)* yield? ;
 # result: [:
 #             @"function"
 #             @[
 #                 @"formals"=<formals>
-#                 @"statements"=<listlet of statements>
+#                 @"statements"=<listlet of non-empty statements>
 #                 (@"yield"=<yield>)?
 #             ]
 #         :]
@@ -241,11 +241,12 @@ formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
 #               ...]
 #         :]
 
-yield ::= @"<>" expression @";" ;
+yield ::= @"<>" expression @";"? ;
 # result: <expression>
 
-statement ::= (varDef | expression) @";" ;
-# result: <same as whatever was parsed>
+statement ::= varDef | expression | ~. ;
+# result: <varDef> | <expression> | [:@"literal":]
+# Note: that is, an empty literal in the case of an empty statement.
 
 expression ::= call | atom ;
 # result: <same as whatever was parsed>

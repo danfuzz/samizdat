@@ -117,6 +117,15 @@ static zvalue parseExpression(ParseState *state);
 static zvalue parseFunction(ParseState *state);
 
 /**
+ * Returns whether the given value is the empty literal.
+ */
+static bool isEmptyLiteral(zvalue value) {
+    return (datType(value) == DAT_HIGHLET)
+        && datHighletHasType(value, STR_LITERAL)
+        && (datHighletValue(value) == NULL);
+}
+
+/**
  * Parses `atom+`. Returns a listlet of parsed expressions.
  */
 static zvalue parseAtomPlus(ParseState *state) {
@@ -527,22 +536,15 @@ static zvalue parseExpression(ParseState *state) {
  * Parses a `statement` node.
  */
 static zvalue parseStatement(ParseState *state) {
-    zint mark = cursor(state);
-    zvalue result = NULL;
+    // Note: This always succeeds, because the empty token list is
+    // a valid statement. So, this function never needs to backtrack.
 
-    if (result == NULL) { result = parseVarDef(state); }
+    zvalue result = result = parseVarDef(state);
+
     if (result == NULL) { result = parseExpression(state); }
+    if (result == NULL) { result = datHighletFrom(STR_LITERAL, NULL); }
 
-    if (result == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_SEMICOLON)) {
-        return result;
-    } else {
-        reset(state, mark);
-        return NULL;
-    }
+    return result;
 }
 
 /**
@@ -557,12 +559,12 @@ static zvalue parseYield(ParseState *state) {
 
     zvalue expression = parseExpression(state);
 
-    if ((expression == NULL) ||
-        (readMatch(state, STR_CH_SEMICOLON) == NULL)) {
+    if (expression == NULL) {
         reset(state, mark);
         return NULL;
     }
 
+    readMatch(state, STR_CH_SEMICOLON); // Optional semicolon.
     return expression;
 }
 
@@ -621,10 +623,14 @@ static zvalue parseProgram(ParseState *state) {
 
     for (;;) {
         zvalue statement = parseStatement(state);
-        if (statement == NULL) {
+
+        if (!isEmptyLiteral(statement)) {
+            statements = datListletAppend(statements, statement);
+        }
+
+        if (readMatch(state, STR_CH_SEMICOLON) == NULL) {
             break;
         }
-        statements = datListletAppend(statements, statement);
     }
 
     zvalue yield = parseYield(state); // Always succeeds.
