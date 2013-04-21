@@ -226,7 +226,7 @@ static zvalue prim_stringletFromChars(void *state, zint argCount,
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_stringletToChars(void *state, zint argCount,
+static zvalue prim_charsFromStringlet(void *state, zint argCount,
                                     const zvalue *args) {
     requireExactly(argCount, 1);
     return datListletFromStringlet(args[0]);
@@ -436,7 +436,7 @@ zcontext primitiveContext(void) {
     BIND(stringletFromChar);
     BIND(stringletFromChars);
     BIND(stringletNth);
-    BIND(stringletToChars);
+    BIND(charsFromStringlet);
 
     // Listlets
     BIND(listletAdd);
