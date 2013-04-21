@@ -704,10 +704,12 @@ Returns the quotient of the given values (first over second).
 
 #### `imod intlet1 intlet2 <> intlet`
 
-Returns the modulus of the given values (first over second).
+Returns the division modulus of the given values (first over
+second). The sign of the result will always match the sign of the
+second argument.
 
-*Note:* This differs from the remainder in the treatment of
-negative numbers.
+*Note:* This differs from the `irem` in the treatment of negative
+numbers.
 
 #### `imul intlet1 intlet2 <> intlet`
 
@@ -725,6 +727,17 @@ Returns the binary complement (all bits opposite) of the given value.
 #### `ior intlet1 intlet2 <> intlet`
 
 Returns the binary-or (union of all one-bits) of the given values.
+
+#### `irem intlet1 intlet2 <> intlet`
+
+TODO: Implement this.
+
+Returns the division remainder of the given values (first over
+second). The sign of the result will always match the sign of the
+first argument.
+
+*Note:* This differs from the `irem` in the treatment of negative
+numbers.
 
 #### `ishl intlet shift <> intlet`
 
