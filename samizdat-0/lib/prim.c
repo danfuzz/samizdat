@@ -146,7 +146,7 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
 static zvalue prim_ifTrue(void *state, zint argCount, const zvalue *args) {
     requireRange(argCount, 2, 3);
 
-    if (langBooleanToBool(langCall(args[0], 0, NULL))) {
+    if (langBoolFromBoolean(langCall(args[0], 0, NULL))) {
         return langCall(args[1], 0, NULL);
     } else if (argCount ==3) {
         return langCall(args[2], 0, NULL);

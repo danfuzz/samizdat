@@ -52,7 +52,7 @@ zvalue langTrue(void) {
 }
 
 /* Documented in header. */
-bool langBooleanToBool(zvalue value) {
+bool langBoolFromBoolean(zvalue value) {
     initHidConsts();
 
     if (datOrder(value, HID_FALSE) == 0) {

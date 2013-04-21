@@ -52,7 +52,7 @@ zvalue langTrue(void);
 /**
  * Converts an in-model boolean value to a C `bool`.
  */
-bool langBooleanToBool(zvalue value);
+bool langBoolFromBoolean(zvalue value);
 
 /**
  * Converts a C `bool` to an in-model boolean value.
