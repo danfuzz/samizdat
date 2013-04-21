@@ -48,14 +48,12 @@ parse = { tokens ::
         ]
     :];
 
-    theBlock = [:
-        @"block"
-        @[@"statements"=@[theCall]]
-    :];
-
     <> [:
         @"function"
-        @[@"formals"=[:@"formals" @[]:] @"block"=theBlock]
+        @[
+            @"formals"=[:@"formals" @[]:]
+            @"statements"=@[theCall]
+        ]
     :];
 };
 
