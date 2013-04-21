@@ -20,7 +20,7 @@
 generalReduce = { base value func size nthFunc ::
     doReduce = { reduction index ::
         <> ifTrue { <> eq index size }
-            { <> reduction; }
+            { <> reduction }
             {
                 <> doReduce
                     (func reduction (nthFunc value index) index)
