@@ -706,7 +706,7 @@ Returns the quotient of the given values (first over second).
 
 Returns the division modulus of the given values (first over
 second). The sign of the result will always match the sign of the
-second argument. If `imod x y` can be defined as `isub x (imul (idiv
+second argument. `imod x y` can be defined as `isub x (imul (idiv
 x y) y)`.
 
 *Note:* This differs from the `irem` in the treatment of negative
