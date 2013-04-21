@@ -468,11 +468,21 @@ though it uses elements of it.
 
 #### `false`
 
-The boolean value false. It can also be written as `[:@"boolean" @0:]`.
+The boolean value false. 
+
+*Note:* Technically, this value could be defined in-language as
+`false = [:@"boolean" @0:]`. However, as a practical matter the
+lowest layer of implementation needs to refer to this value, so
+it makes sense to allow it to be exported as a primitive.
 
 #### `true`
 
-The boolean value true. It can also be written as `[:@"boolean" @1:]`.
+The boolean value true.
+
+*Note:* Technically, this value could be defined in-language as
+`true = [:@"boolean" @1:]`. However, as a practical matter the
+lowest layer of implementation needs to refer to this value, so
+it makes sense to allow it to be exported as a primitive.
 
 <br><br>
 ### Primitive Library: Ultraprimitive Functions
@@ -505,7 +515,7 @@ v = @[v1 v2];   is equivalent to   v = makeListlet v1 v2;
 *Note:* The equivalence requires at least one argument, even though
 the function is happy to operate given zero arguments.
 
-Technically, this function could be defined in-language as the
+*Note:* Technically, this function could be defined in-language as the
 following, but for practical reasons (e.g. and in particular, expected
 ordering of human operations during the course of bootstrapping an
 implementation), it makes sense to keep this defined as an
