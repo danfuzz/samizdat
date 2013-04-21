@@ -133,10 +133,10 @@ zvalue datStringletFromUtf8String(const char *string, zint stringBytes) {
         die("Invalid string size: %lld", stringBytes);
     }
 
-    zint decodedSize = utf8DecodeStringSize(string, stringBytes);
+    zint decodedSize = utf8DecodeStringSize(stringBytes, string);
     zvalue result = allocStringlet(decodedSize);
 
-    utf8DecodeCharsFromString(stringletElems(result), string, stringBytes);
+    utf8DecodeCharsFromString(stringletElems(result), stringBytes, string);
     return result;
 }
 
