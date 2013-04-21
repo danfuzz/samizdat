@@ -74,14 +74,20 @@ zorder datIntletOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-bool datIntletGetBit(zvalue intlet, zint n) {
-    datAssertIntlet(intlet);
-
-    if (n >= MAX_BITS) {
+bool datIntGetBit(zint value, zint n) {
+    if (n < 0) {
+        die("Attempt to access negative bit index: %lld", n);
+    } else if (n >= MAX_BITS) {
         n = MAX_BITS - 1;
     }
 
-    return (bool) ((intletValue(intlet) >> n) & 1);
+    return (bool) ((value >> n) & 1);
+}
+
+/* Documented in header. */
+bool datIntletGetBit(zvalue intlet, zint n) {
+    datAssertIntlet(intlet);
+    return datIntGetBit(intletValue(intlet), n);
 }
 
 /* Documented in header. */

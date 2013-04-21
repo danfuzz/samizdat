@@ -121,11 +121,18 @@ zint datSize(zvalue value);
  */
 
 /**
+ * Given a 32-bit int value, returns the `n`th bit. This is just like
+ * `datIntletGetBit()` except using a `zint` value. This function is
+ * exported for the convenience of other modules.
+ */
+bool datIntGetBit(zint value, zint n);
+
+/**
  * Given an intlet, returns the `n`th bit, counting from the least
  * significant bit. `intlet` must be an intlet. Returns `false` for a
  * `0` bit, and `true` for a `1` bit. If `n` references a bit beyond
  * the value's size, then the return value is the sign bit of the
- * value.
+ * value. It is an error if `n < 0`.
  */
 bool datIntletGetBit(zvalue intlet, zint n);
 

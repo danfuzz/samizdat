@@ -698,6 +698,13 @@ Returns the sum of the given values.
 
 Returns the binary-and (intersection of all one-bits) of the given values.
 
+#### `ibit intlet1 intlet2 <> intlet`
+
+Returns as an intlet (`@0` or `@1`) the bit value in the first
+argument at the bit position (zero-based) indicated by the second
+argument. It is an error (terminating the runtime) if the second
+argument is negative.
+
 #### `idiv intlet1 intlet2 <> intlet`
 
 Returns the quotient of the given values (first over second),

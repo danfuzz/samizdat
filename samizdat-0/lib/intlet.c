@@ -112,6 +112,7 @@ UNARY_PRIM(inot, ~x);
 
 BINARY_PRIM(iadd, x + y);
 BINARY_PRIM(iand, x & y);
+BINARY_PRIM(ibit, datIntGetBit(x, y));
 BINARY_PRIM(idiv, div(x, y));
 BINARY_PRIM(imod, mod(x, y));
 BINARY_PRIM(imul, x * y);
