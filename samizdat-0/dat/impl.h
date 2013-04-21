@@ -44,8 +44,8 @@ typedef struct {
     /** Value header. */
     DatValue header;
 
-    /** Signed value as an array of `zint` elements, in little-endian order. */
-    zint elems[0];
+    /** Integer value. See `datIntletFromInt()` about range restriction. */
+    int32_t value;
 } DatIntlet;
 
 /**

@@ -110,18 +110,8 @@ ztype datType(zvalue value);
 
 /**
  * Gets the size of the given value. `value` must be a valid value.
- * "Size" means:
- *
- * * an intlet's highest significant bit number plus one (may be
- *   rounded up to a word size).
- *
- * * a stringlet's character (code point) count.
- *
- * * a listlet's element count.
- *
- * * a maplet's mapping count.
- *
- * * `0` for all uniqlets.
+ * See the *Samizdat Layer 0* specification for details on
+ * what low-layer "size" means.
  */
 zint datSize(zvalue value);
 
@@ -140,29 +130,15 @@ zint datSize(zvalue value);
 bool datIntletGetBit(zvalue intlet, zint n);
 
 /**
- * Given an intlet, returns the `n`th byte, counting from the least
- * significant byte. `intlet` must be an intlet. If `n` references a
- * byte beyond the value's size, then the return value is the sign byte
- * of the value.
- */
-zint datIntletGetByte(zvalue intlet, zint n);
-
-/**
- * Given an intlet, returns the `n`th `zint`-sized word, counting from
- * the least significant word. `intlet` must be an intlet. If `n`
- * references a word beyond the value's size, then the return value is
- * the sign word of the value.
- */
-zint datIntletGetInt(zvalue intlet, zint n);
-
-/**
  * Gets the sign of the given intlet. `intlet` must be an
  * intlet. Returns `false` for non-negative, and `true` for negative.
  */
 bool datIntletSign(zvalue intlet);
 
 /**
- * Gets an intlet value equal to the given `zint`.
+ * Gets an intlet value equal to the given `zint`. In this
+ * implementation, intlets are restricted to only taking on the range
+ * of 32-bit signed quantities, when represented as twos-complement.
  */
 zvalue datIntletFromInt(zint value);
 
