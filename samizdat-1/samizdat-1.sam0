@@ -29,7 +29,7 @@ ARGS* ::
 # Returns a listlet of tokens.
 tokenize = { programText ::
     # TODO
-    <> @[];
+    <> @[]
 };
 
 # Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
@@ -54,7 +54,7 @@ parse = { tokens ::
             @"formals"=[:@"formals" @[]:]
             @"statements"=@[theCall]
         ]
-    :];
+    :]
 };
 
 
@@ -68,10 +68,10 @@ parse = { tokens ::
 main = { file rest* ::
     # Be welcoming.
 
-    if { <> eq file @"danfuzz"; } {
-        writeFile @"/dev/stdout" @"Hello, Danfuzz!\n\n";
+    if { <> eq file @"danfuzz" } {
+        writeFile @"/dev/stdout" @"Hello, Danfuzz!\n\n"
     } else {
-        writeFile @"/dev/stdout" @"Hello, Самиздат!\n\n";
+        writeFile @"/dev/stdout" @"Hello, Самиздат!\n\n"
     };
 
     writeFile @"/dev/stdout" (sourceStringlet @0);
@@ -113,17 +113,17 @@ main = { file rest* ::
     programText = readFile file;
 
     tokens = tokenize programText;
-    <> if { <> ne tokens null; } {
+    <> if { <> ne tokens null } {
         programNode = parse tokens;
-        if { <> ne programNode null; } {
+        if { <> ne programNode null } {
             function = sam0Eval (sam0Library()) programNode;
-            <> function();
+            <> function()
         } else {
-            <> @1;
-        };
+            <> @1
+        }
     } else {
-        <> @1;
-    };
+        <> @1
+    }
 };
 
-<> apply main ARGS;
+<> apply main ARGS
