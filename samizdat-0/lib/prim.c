@@ -14,45 +14,6 @@
 
 
 /*
- * Helper functions
- */
-
-/**
- * Check the given argument count for an exact required amount,
- * complaining if it doesn't match.
- */
-static void requireExactly(zint argCount, zint required) {
-    if (argCount != required) {
-        die("Invalid argument count for primitive: %lld != %lld",
-            argCount, required);
-    }
-}
-
-/**
- * Check the given argument count for a range of acceptable values,
- * complaining if it doesn't match.
- */
-static void requireRange(zint argCount, zint min, zint max) {
-    if (argCount < min) {
-        die("Invalid argument count for primitive: %lld < %lld",
-            argCount, min);
-    } else if (argCount > max) {
-        die("Invalid argument count for primitive: %lld > %lld",
-            argCount, max);
-    }
-}
-
-/**
- * Check that the given argument count is even, complaining if not.
- */
-static void requireEven(zint argCount) {
-    if ((argCount & 0x01) != 0) {
-        die("Invalid non-even argument count for primitive: %lld", argCount);
-    }
-}
-
-
-/*
  * Primitive implementations (exported via the context)
  */
 
@@ -62,8 +23,7 @@ static void requireEven(zint argCount) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_makeHighlet(void *state, zint argCount,
-                               const zvalue *args) {
+PRIM_IMPL(makeHighlet) {
     requireRange(argCount, 1, 2);
 
     zvalue value = (argCount == 2) ? args[1] : NULL;
@@ -71,14 +31,12 @@ static zvalue prim_makeHighlet(void *state, zint argCount,
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_makeListlet(void *state, zint argCount,
-                               const zvalue *args) {
+PRIM_IMPL(makeListlet) {
     return datListletFromArray(argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_makeMaplet(void *state, zint argCount,
-                              const zvalue *args) {
+PRIM_IMPL(makeMaplet) {
     requireEven(argCount);
 
     zvalue result = datMapletEmpty();
@@ -91,8 +49,7 @@ static zvalue prim_makeMaplet(void *state, zint argCount,
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_makeUniqlet(void *state, zint argCount,
-                               const zvalue *args) {
+PRIM_IMPL(makeUniqlet) {
     requireExactly(argCount, 0);
     return datUniqlet();
 }
@@ -102,13 +59,13 @@ static zvalue prim_makeUniqlet(void *state, zint argCount,
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_lowOrder(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(lowOrder) {
     requireExactly(argCount, 2);
     return datIntletFromInt(datOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_lowOrderIs(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(lowOrderIs) {
     requireRange(argCount, 3, 4);
 
     zorder comp = datOrder(args[0], args[1]);
@@ -120,13 +77,13 @@ static zvalue prim_lowOrderIs(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_lowSize(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(lowSize) {
     requireExactly(argCount, 1);
     return datIntletFromInt(datSize(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(lowType) {
     requireExactly(argCount, 1);
 
     switch (datType(args[0])) {
@@ -143,7 +100,7 @@ static zvalue prim_lowType(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_ifTrue(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(ifTrue) {
     requireRange(argCount, 2, 3);
 
     if (langBoolFromBoolean(langCall(args[0], 0, NULL))) {
@@ -156,7 +113,7 @@ static zvalue prim_ifTrue(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_ifValue(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(ifValue) {
     requireRange(argCount, 2, 3);
 
     zvalue result = langCall(args[0], 0, NULL);
@@ -171,77 +128,72 @@ static zvalue prim_ifValue(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_ineg(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(ineg) {
     requireExactly(argCount, 1);
     return datIntletFromInt(-datIntFromIntlet(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_iadd(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(iadd) {
     requireExactly(argCount, 2);
     return datIntletFromInt(
         datIntFromIntlet(args[0]) + datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_isub(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(isub) {
     requireExactly(argCount, 2);
     return datIntletFromInt(
         datIntFromIntlet(args[0]) - datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_imul(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(imul) {
     requireExactly(argCount, 2);
     return datIntletFromInt(
         datIntFromIntlet(args[0]) * datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_idiv(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(idiv) {
     requireExactly(argCount, 2);
     return datIntletFromInt(
         datIntFromIntlet(args[0]) / datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_imod(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(imod) {
     requireExactly(argCount, 2);
     return datIntletFromInt(
         datIntFromIntlet(args[0]) % datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_stringletFromChar(void *state, zint argCount,
-                                     const zvalue *args) {
+PRIM_IMPL(stringletFromChar) {
     requireExactly(argCount, 1);
     return datStringletFromIntlet(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_stringletFromChars(void *state, zint argCount,
-                                      const zvalue *args) {
+PRIM_IMPL(stringletFromChars) {
     requireExactly(argCount, 1);
     return datStringletFromListlet(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_charsFromStringlet(void *state, zint argCount,
-                                    const zvalue *args) {
+PRIM_IMPL(charsFromStringlet) {
     requireExactly(argCount, 1);
     return datListletFromStringlet(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_stringletAdd(void *state, zint argCount,
-                                const zvalue *args) {
+PRIM_IMPL(stringletAdd) {
     requireExactly(argCount, 2);
     return datStringletAdd(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_stringletNth(void *state, zint argCount,
-                                const zvalue *args) {
+PRIM_IMPL(stringletNth) {
     requireExactly(argCount, 2);
 
     zvalue stringlet = args[0];
@@ -251,27 +203,25 @@ static zvalue prim_stringletNth(void *state, zint argCount,
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_listletAppend(void *state, zint argCount,
-                                 const zvalue *args) {
+PRIM_IMPL(listletAppend) {
     requireExactly(argCount, 2);
     return datListletAppend(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_listletPrepend(void *state, zint argCount,
-                                  const zvalue *args) {
+PRIM_IMPL(listletPrepend) {
     requireExactly(argCount, 2);
     return datListletPrepend(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_listletAdd(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(listletAdd) {
     requireExactly(argCount, 2);
     return datListletAdd(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_listletNth(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(listletNth) {
     requireExactly(argCount, 2);
 
     zvalue listlet = args[0];
@@ -281,8 +231,7 @@ static zvalue prim_listletNth(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_listletDelNth(void *state, zint argCount,
-                                 const zvalue *args) {
+PRIM_IMPL(listletDelNth) {
     requireExactly(argCount, 2);
 
     zvalue listlet = args[0];
@@ -292,19 +241,19 @@ static zvalue prim_listletDelNth(void *state, zint argCount,
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_mapletAdd(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(mapletAdd) {
     requireExactly(argCount, 2);
     return datMapletAdd(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_mapletKeys(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(mapletKeys) {
     requireExactly(argCount, 1);
     return datMapletKeys(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_mapletGet(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(mapletGet) {
     requireRange(argCount, 2, 3);
 
     zvalue result = datMapletGet(args[0], args[1]);
@@ -321,39 +270,37 @@ static zvalue prim_mapletGet(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_mapletPut(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(mapletPut) {
     requireExactly(argCount, 3);
     return datMapletPut(args[0], args[1], args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_highletType(void *state, zint argCount,
-                               const zvalue *args) {
+PRIM_IMPL(highletType) {
     requireExactly(argCount, 1);
     return datHighletType(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_highletValue(void *state, zint argCount,
-                                const zvalue *args) {
+PRIM_IMPL(highletValue) {
     requireExactly(argCount, 1);
     return datHighletValue(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_apply(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(apply) {
     requireExactly(argCount, 2);
     return langApply(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_sam0Tree(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(sam0Tree) {
     requireExactly(argCount, 1);
     return langNodeFromProgramText(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_sam0Eval(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(sam0Eval) {
     requireExactly(argCount, 2);
 
     zvalue contextMaplet = args[0];
@@ -365,7 +312,7 @@ static zvalue prim_sam0Eval(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_die(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(die) {
     requireRange(argCount, 0, 1);
 
     const char *message =
@@ -375,13 +322,13 @@ static zvalue prim_die(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_readFile(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(readFile) {
     requireExactly(argCount, 1);
     return readFile(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
+PRIM_IMPL(writeFile) {
     requireExactly(argCount, 2);
     writeFile(args[0], args[1]);
     return NULL;
@@ -391,6 +338,32 @@ static zvalue prim_writeFile(void *state, zint argCount, const zvalue *args) {
 /*
  * Module functions
  */
+
+/** Documented in header. */
+void requireExactly(zint argCount, zint required) {
+    if (argCount != required) {
+        die("Invalid argument count for primitive: %lld != %lld",
+            argCount, required);
+    }
+}
+
+/** Documented in header. */
+void requireRange(zint argCount, zint min, zint max) {
+    if (argCount < min) {
+        die("Invalid argument count for primitive: %lld < %lld",
+            argCount, min);
+    } else if (argCount > max) {
+        die("Invalid argument count for primitive: %lld > %lld",
+            argCount, max);
+    }
+}
+
+/** Documented in header. */
+void requireEven(zint argCount) {
+    if ((argCount & 0x01) != 0) {
+        die("Invalid non-even argument count for primitive: %lld", argCount);
+    }
+}
 
 /* Documented in header. */
 zcontext primitiveContext(void) {
@@ -404,66 +377,9 @@ zcontext primitiveContext(void) {
     langCtxBind(ctx, "false", CST_FALSE);
     langCtxBind(ctx, "true", CST_TRUE);
 
-    // This avoids boilerplate below.
-    #define BIND(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
-
-    // Ultraprimitives
-    BIND(makeHighlet);
-    BIND(makeListlet);
-    BIND(makeMaplet);
-    BIND(makeUniqlet);
-
-    // Low-layer types (in general)
-    BIND(lowOrder);
-    BIND(lowOrderIs);
-    BIND(lowSize);
-    BIND(lowType);
-
-    // Conditional
-    BIND(ifTrue);
-    BIND(ifValue);
-
-    // Intlets
-    BIND(iadd);
-    BIND(idiv);
-    BIND(imod);
-    BIND(imul);
-    BIND(ineg);
-    BIND(isub);
-
-    // Stringlets
-    BIND(stringletAdd);
-    BIND(stringletFromChar);
-    BIND(stringletFromChars);
-    BIND(stringletNth);
-    BIND(charsFromStringlet);
-
-    // Listlets
-    BIND(listletAdd);
-    BIND(listletAppend);
-    BIND(listletDelNth);
-    BIND(listletNth);
-    BIND(listletPrepend);
-
-    // Maplets
-    BIND(mapletAdd);
-    BIND(mapletGet);
-    BIND(mapletKeys);
-    BIND(mapletPut);
-
-    // Highlets
-    BIND(highletType);
-    BIND(highletValue);
-
-    // Functions and Code
-    BIND(apply);
-    BIND(sam0Eval);
-    BIND(sam0Tree);
-
-    // Miscellaneous
-    BIND(die);
-    BIND(readFile);
-    BIND(writeFile);
+    // Bind all the primitive functions.
+    #define PRIM_FUNC(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
+    #include "prim-def.h"
 
     // Include a binding for a maplet of all the bindings.
     langCtxBind(ctx, "PRIMLIB", langMapletFromCtx(ctx));

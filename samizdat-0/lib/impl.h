@@ -24,4 +24,34 @@ extern unsigned int library_sam0_len;
  */
 zcontext primitiveContext(void);
 
+/**
+ * Check the given argument count for an exact required amount,
+ * complaining if it doesn't match.
+ */
+void requireExactly(zint argCount, zint required);
+
+/**
+ * Check the given argument count for a range of acceptable values,
+ * complaining if it doesn't match.
+ */
+void requireRange(zint argCount, zint min, zint max);
+
+/**
+ * Check that the given argument count is even, complaining if not.
+ */
+void requireEven(zint argCount);
+
+/**
+ * Used at the top of primitive functions, to supply the standard
+ * function prototype.
+ */
+#define PRIM_IMPL(name) \
+    zvalue prim_##name(void *state, zint argCount, const zvalue *args)
+
+/* Declarations for all the primitive functions */
+#define PRIM_FUNC(name) zvalue prim_##name(void *, zint, const zvalue *)
+#include "prim-def.h"
+#undef PRIM_FUNC
+
+
 #endif
