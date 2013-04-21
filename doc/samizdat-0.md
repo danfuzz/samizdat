@@ -700,14 +700,16 @@ Returns the binary-and (intersection of all one-bits) of the given values.
 
 #### `idiv intlet1 intlet2 <> intlet`
 
-Returns the quotient of the given values (first over second), truncated
-(rounded toward zero) to yield an intlet result.
+Returns the quotient of the given values (first over second),
+truncated (rounded toward zero) to yield an intlet result. It is an
+error (terminating the runtime) if the second argument is `@0`.
 
 #### `imod intlet1 intlet2 <> intlet`
 
 Returns the division modulus of the given values (first over
 second). The sign of the result will always match the sign of the
-second argument.
+second argument. It is an error (terminating the runtime) if the
+second argument is `@0`.
 
 `imod x y` can be thought of as the smallest magnitude value `m` with
 the same sign as 'y' such that `isub x m` is a multiple of `y`.
@@ -740,7 +742,8 @@ TODO: Implement this.
 
 Returns the truncated-division remainder of the given values (first
 over second). The sign of the result will always match the sign of the
-first argument.
+first argument. It is an error (terminating the runtime) if the second
+argument is `@0`.
 
 `irem x y` can be defined as `isub x (imul (idiv x y) y)`.
 
