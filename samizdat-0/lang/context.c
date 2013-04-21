@@ -85,11 +85,11 @@ void langCtxBindAll(zcontext ctx, zvalue maplet) {
 }
 
 /* Documented in header. */
-zvalue langCtxToMaplet(zcontext ctx) {
+zvalue langMapletFromCtx(zcontext ctx) {
     if (ctx->parent == NULL) {
         return ctx->locals;
     } else {
-        zvalue result = langCtxToMaplet(ctx->parent);
+        zvalue result = langMapletFromCtx(ctx->parent);
         return datMapletAdd(result, ctx->locals);
     }
 }

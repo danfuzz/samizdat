@@ -466,7 +466,7 @@ zcontext primitiveContext(void) {
     BIND(writeFile);
 
     // Include a binding for a maplet of all the bindings.
-    langCtxBind(ctx, "PRIMLIB", langCtxToMaplet(ctx));
+    langCtxBind(ctx, "PRIMLIB", langMapletFromCtx(ctx));
 
     return ctx;
 }

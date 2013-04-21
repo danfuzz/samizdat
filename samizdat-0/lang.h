@@ -122,7 +122,7 @@ void langCtxBindAll(zcontext ctx, zvalue maplet);
  * bindings will have no effect on the result returned from this
  * function.
  */
-zvalue langCtxToMaplet(zcontext ctx);
+zvalue langMapletFromCtx(zcontext ctx);
 
 
 /*
