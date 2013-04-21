@@ -38,7 +38,34 @@ typedef struct {
 /* Defined below. */
 static zvalue execExpression(zcontext ctx, zvalue expression);
 static zvalue execExpressionVoidOk(zcontext ctx, zvalue expression);
-static zvalue execBlock(zcontext ctx, zvalue block);
+
+/**
+ * Executes a `block` form.
+ */
+static zvalue execBlock(zcontext ctx, zvalue block) {
+    datHighletAssertType(block, STR_BLOCK);
+    block = datHighletValue(block);
+
+    zvalue statements = datMapletGet(block, STR_STATEMENTS);
+    zint size = datSize(statements);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = datListletGet(statements, i);
+        zvalue type = datHighletType(one);
+
+        if (datHighletHasType(one, STR_VAR_DEF)) {
+            zvalue nameValue = datHighletValue(one);
+            zvalue name = datMapletGet(nameValue, STR_NAME);
+            zvalue value = datMapletGet(nameValue, STR_VALUE);
+            ctxBind(ctx, name, execExpression(ctx, value));
+        } else {
+            execExpressionVoidOk(ctx, one);
+        }
+    }
+
+    zvalue yield = datMapletGet(block, STR_YIELD);
+    return (yield == NULL) ? NULL : execExpressionVoidOk(ctx, yield);
+}
 
 /**
  * The C function that is used for all registrations with function
@@ -143,34 +170,6 @@ static zvalue execExpression(zcontext ctx, zvalue expression) {
     }
 
     return result;
-}
-
-/**
- * Executes a `block` form.
- */
-static zvalue execBlock(zcontext ctx, zvalue block) {
-    datHighletAssertType(block, STR_BLOCK);
-    block = datHighletValue(block);
-
-    zvalue statements = datMapletGet(block, STR_STATEMENTS);
-    zint size = datSize(statements);
-
-    for (zint i = 0; i < size; i++) {
-        zvalue one = datListletGet(statements, i);
-        zvalue type = datHighletType(one);
-
-        if (datHighletHasType(one, STR_VAR_DEF)) {
-            zvalue nameValue = datHighletValue(one);
-            zvalue name = datMapletGet(nameValue, STR_NAME);
-            zvalue value = datMapletGet(nameValue, STR_VALUE);
-            ctxBind(ctx, name, execExpression(ctx, value));
-        } else {
-            execExpressionVoidOk(ctx, one);
-        }
-    }
-
-    zvalue yield = datMapletGet(block, STR_YIELD);
-    return (yield == NULL) ? NULL : execExpressionVoidOk(ctx, yield);
 }
 
 
