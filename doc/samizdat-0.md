@@ -516,10 +516,11 @@ v = @[v1 v2];   is equivalent to   v = makeListlet v1 v2;
 the function is happy to operate given zero arguments.
 
 *Note:* Technically, this function could be defined in-language as the
-following, but for practical reasons (e.g. and in particular, expected
-ordering of human operations during the course of bootstrapping an
-implementation), it makes sense to keep this defined as an
-"ultraprimitive":
+following, but for practical reasons &mdash; e.g. and in particular,
+expected ordering of human operations during the course of
+bootstrapping an implementation, as well as efficiency of
+implementation (without sacrificing clarity) &mdash; it makes sense to
+keep this defined as an "ultraprimitive":
 
 ```
 makeListlet = { rest* :: <> rest; };
@@ -540,6 +541,25 @@ v = @[k1=v1 k2=v2];   is equivalent to   v = makeMaplet k1 v1 k2 v2;
 
 *Note:* The equivalence requires at least two arguments, even though
 the function is happy to operate given zero arguments.
+
+*Note:* Technically, this function could be defined in-language as the
+following. (See `makeListlet` for discussion.):
+
+```
+makeMaplet = { rest* ::
+    makeStep = { key value rest* ::
+        restMap = apply makeMaplet rest;
+        <> ifValue { <> mapletGet restMap key; }
+            { <> restMap; }
+            { <> mapletPut restMap key value; };
+    };
+
+    <> ifTrue { <> eq rest @[] }
+        { <> @[=]; }
+        { <> apply makeStep rest; };
+};
+```
+
 
 #### `makeUniqlet() <> uniqlet`
 
@@ -766,6 +786,16 @@ or simply returns no value at all if `notFound` was not supplied.
 
 Returns a listlet of all the keys in the given maplet, in sorted
 order.
+
+#### `mapletPut maplet key value <> maplet`
+
+Returns a maplet just like the given one, except with a new binding
+for `key` to `value`. The result has a replacement for the existing
+binding for `key` in `maplet` if such a one existed, or has an
+additional binding in cases where `maplet` didn't already bind `key`.
+These two scenarios can be easily differentiated by either noting a
+change in size (or not) between original and result, or by explicitly
+checking for the existence of `key` in the original.
 
 <br><br>
 ### Primitive Library: Highlets

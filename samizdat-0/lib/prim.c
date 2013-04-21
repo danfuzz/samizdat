@@ -316,6 +316,12 @@ static zvalue prim_mapletGet(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+static zvalue prim_mapletPut(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 3);
+    return datMapletPut(args[0], args[1], args[2]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue prim_highletType(void *state, zint argCount,
                                const zvalue *args) {
     requireExactly(argCount, 1);
@@ -438,6 +444,7 @@ zcontext primitiveContext(void) {
     BIND(mapletAdd);
     BIND(mapletGet);
     BIND(mapletKeys);
+    BIND(mapletPut);
 
     // Highlets
     BIND(highletType);
