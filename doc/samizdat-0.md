@@ -712,6 +712,12 @@ Returns the difference of the given values (first minus second).
 <br><br>
 ### Primitive Library: Stringlets
 
+#### `charsFromStringlet stringlet <> listlet`
+
+Returns a listlet that consists of the character codes of the given
+stringlet, each represented as an intlet element in the resulting
+listlet.
+
 #### `stringletAdd stringlet1 stringlet2 <> stringlet`
 
 Returns a stringlet consisting of the concatenation of the contents
@@ -733,11 +739,6 @@ intlet in the range for representation as an unsigned 32-bit quantity.
 
 Returns the `n`th (zero-based) element of the given stringlet,
 as an intlet.
-
-#### `charsFromStringlet stringlet <> listlet`
-
-Returns a listlet that consists of the character codes of the
-given stringlet, each represented as an intlet in the result.
 
 <br><br>
 ### Primitive Library: Listlets
