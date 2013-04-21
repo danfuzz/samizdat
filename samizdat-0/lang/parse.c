@@ -566,30 +566,6 @@ static zvalue parseYield(ParseState *state) {
     return expression;
 }
 
-/**
- * Parses a `block` node.
- */
-static zvalue parseBlock(ParseState *state) {
-    zvalue statements = datListletEmpty();
-
-    for (;;) {
-        zvalue statement = parseStatement(state);
-        if (statement == NULL) {
-            break;
-        }
-        statements = datListletAppend(statements, statement);
-    }
-
-    zvalue yield = parseYield(state);
-    zvalue result =
-        datMapletPut(datMapletEmpty(), STR_STATEMENTS, statements);
-
-    if (yield != NULL) {
-        result = datMapletPut(result, STR_YIELD, yield);
-    }
-
-    return datHighletFrom(STR_BLOCK, result);
-}
 
 /**
  * Parses a `formals` node.
@@ -636,13 +612,30 @@ static zvalue parseFormals(ParseState *state) {
  * Parses a `program` node.
  */
 static zvalue parseProgram(ParseState *state) {
-    // Note: Both of these always succeed. That is, an empty token
-    // list is a valid program.
-    zvalue formals = parseFormals(state);
-    zvalue block = parseBlock(state);
+    // Note: An empty token list is a valid program, as is one with
+    // a formals list but no statements or yield. So, we never have
+    // to backtrack during this rule.
 
+    zvalue formals = parseFormals(state); // Always succeeds.
+    zvalue statements = datListletEmpty();
+
+    for (;;) {
+        zvalue statement = parseStatement(state);
+        if (statement == NULL) {
+            break;
+        }
+        statements = datListletAppend(statements, statement);
+    }
+
+    zvalue yield = parseYield(state); // Always succeeds.
     zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
-    value = datMapletPut(value, STR_BLOCK, block);
+
+    value = datMapletPut(value, STR_STATEMENTS, statements);
+
+    if (yield != NULL) {
+        value = datMapletPut(value, STR_YIELD, yield);
+    }
+
     return datHighletFrom(STR_FUNCTION, value);
 }
 

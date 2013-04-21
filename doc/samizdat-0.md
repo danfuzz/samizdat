@@ -223,8 +223,15 @@ tree syntax rule to match.
 function ::= @"{" program @"}" ;
 # result: <program>
 
-program ::= formals block ;
-# result: [:@"function" @[@"formals"=<formals> @"block"=<block>]:]
+program ::= formals statement* yield? ;
+# result: [:
+#             @"function"
+#             @[
+#                 @"formals"=<formals>
+#                 @"statements"=<listlet of statements>
+#                 (@"yield"=<yield>)?
+#             ]
+#         :]
 
 formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
 # result: [:
@@ -232,12 +239,6 @@ formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
 #             @[@[@"name"=(highValue identifier)
 #                 @"repeat"=@[@"type"=(@"."|@"*")]]
 #               ...]
-#         :]
-
-block ::= statement* yield? ;
-# result: [:
-#             @"block"
-#             @[@"statements"=<listlet of statements> (@"yield"=<yield>)?]
 #         :]
 
 yield ::= @"<>" expression @";" ;
@@ -337,11 +338,13 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 nothing, if the function turned out to not to return anything).
 
-#### `function` &mdash; `[:@"function" @[@"formals"=formals @"block"=block]:]`
+#### `function` &mdash; `[:@"function" @[@"formals"=formals @"statements"=statements (@"yield"=yield)?:]`
 
 This represents a function definition. In the data payload, `formals`
-is a `formals` node (as defined below), and `block` is a `block` node
-(as defined below).
+is a `formals` node (as defined below), `statements` must be a
+listlet, with each of the elements being either an expression node or
+a `varDef` node. The `yield` binding is optional, but if present must
+be an expression node.
 
 When run, a closure (representation of the function as an in-model
 value) is created, which nascently binds as variables the names of all
@@ -353,11 +356,11 @@ When the closure is actually called (e.g. by virtue of being the
 designated `function` in a `call` node), a fresh execution context is
 created, in which the actual arguments are bound to the formals. If
 there are too few actual arguments, the call fails (terminating the
-runtime). After that, the statements of the `block` are evaluated in
-order. Finally, if there is a `yield` in the `block`, then that is
-evaluated. The result of the call is the same as the result of the
-`yield` evaluation (including possibly no value) if a `yield` was
-present, or no value if there was no `yield` to evaluate.
+runtime). After that, the `statements` are evaluated in
+order. Finally, if there is a `yield`, then that is evaluated. The
+result of the call is the same as the result of the `yield` evaluation
+(including possibly no value) if a `yield` was present, or no value if
+there was no `yield` to evaluate.
 
 #### `literal` &mdash; `[:@"literal" value:]`
 
@@ -404,13 +407,6 @@ a maplet that binds these two keys:
     arguments as are available. As such, this must only ever be the
     `repeat` of the last formal. The argument variable as bound is a
     listlet of all the passed actual arguments that were bound.
-
-#### `block` &mdash; `[:@"block" @[@"statements"=statements (@"yield"=yield)?]:]`
-
-This represents the main body of a function. `statements` must
-be a listlet, with each of the elements being either an expression
-node or a `varDef` node. The `yield` binding is optional, but if
-present must be an expression node.
 
 #### `varDef` &mdash; `[:@"varDef" @[@"name"=name @"value"=value]:]`
 

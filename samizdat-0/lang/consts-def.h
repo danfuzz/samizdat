@@ -28,7 +28,6 @@ TOK(CH_OSQUARE,    "[");
 TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
 STR(ACTUALS,       "actuals");
-STR(BLOCK,         "block");
 STR(BOOLEAN,       "boolean");
 STR(CALL,          "call");
 STR(FORMALS,       "formals");

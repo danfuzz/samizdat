@@ -40,41 +40,17 @@ static zvalue execExpression(zcontext ctx, zvalue expression);
 static zvalue execExpressionVoidOk(zcontext ctx, zvalue expression);
 
 /**
- * Executes a `block` form.
- */
-static zvalue execBlock(zcontext ctx, zvalue block) {
-    datHighletAssertType(block, STR_BLOCK);
-    block = datHighletValue(block);
-
-    zvalue statements = datMapletGet(block, STR_STATEMENTS);
-    zint size = datSize(statements);
-
-    for (zint i = 0; i < size; i++) {
-        zvalue one = datListletGet(statements, i);
-        zvalue type = datHighletType(one);
-
-        if (datHighletHasType(one, STR_VAR_DEF)) {
-            zvalue nameValue = datHighletValue(one);
-            zvalue name = datMapletGet(nameValue, STR_NAME);
-            zvalue value = datMapletGet(nameValue, STR_VALUE);
-            ctxBind(ctx, name, execExpression(ctx, value));
-        } else {
-            execExpressionVoidOk(ctx, one);
-        }
-    }
-
-    zvalue yield = datMapletGet(block, STR_YIELD);
-    return (yield == NULL) ? NULL : execExpressionVoidOk(ctx, yield);
-}
-
-/**
  * The C function that is used for all registrations with function
  * registries.
  */
 zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     Closure *closure = state;
-    zvalue formals = datMapletGet(closure->function, STR_FORMALS);
-    zvalue block = datMapletGet(closure->function, STR_BLOCK);
+    zvalue functionNode = closure->function;
+    zvalue formals = datMapletGet(functionNode, STR_FORMALS);
+    zvalue statements = datMapletGet(functionNode, STR_STATEMENTS);
+    zvalue yield = datMapletGet(functionNode, STR_YIELD);
+
+    // Bind the formals, creating a context.
 
     datHighletAssertType(formals, STR_FORMALS);
     formals = datHighletValue(formals);
@@ -103,7 +79,27 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     }
 
     zcontext ctx = ctxNewChild(closure->parent, locals);
-    return execBlock(ctx, block);
+
+    // Using the new context, evaluate the statements.
+
+    zint statementsSize = datSize(statements);
+    for (zint i = 0; i < statementsSize; i++) {
+        zvalue one = datListletGet(statements, i);
+
+        if (datHighletHasType(one, STR_VAR_DEF)) {
+            zvalue nameValue = datHighletValue(one);
+            zvalue name = datMapletGet(nameValue, STR_NAME);
+            zvalue value = datMapletGet(nameValue, STR_VALUE);
+            ctxBind(ctx, name, execExpression(ctx, value));
+        } else {
+            execExpressionVoidOk(ctx, one);
+        }
+    }
+
+    // Evaluate the yield expression if present, and return the final
+    // result.
+
+    return (yield == NULL) ? NULL : execExpressionVoidOk(ctx, yield);
 }
 
 /**
