@@ -305,11 +305,10 @@ makeCall = { function actuals* ::
 Node / Tree Semantics
 ---------------------
 
-These are all the node types that can occur in a parse tree,
-such that it can be compiled (or "compile-equivalent"ed) by
-`sam0Function` (and the like). These are presented in a form
-meant to be representative of how one would construct them in
-the source syntax of *Samizdat Layer 0*.
+These are all the node types that can occur in a parse tree, such that
+it can be compiled (or "compile-equivalent"ed) by `sam0Eval` (and the
+like). These are presented in a form meant to be representative of how
+one would construct them in the source syntax of *Samizdat Layer 0*.
 
 <br><br>
 ### Expression Nodes
@@ -774,12 +773,18 @@ is, each element of the listlet becomes a separate argument to the
 function). This function returns whatever the called function returned
 (including nothing).
 
-#### `sam0Function context functionNode <> function`
+#### `sam0Eval context expressionNode <> . | ~.`
 
-Returns an in-model callable function which executes the code indicated
-by the given `function` node (such as could have been returned from
-`sam0Tree`), using the given context (a maplet of variable bindings)
-to resolve any open variable references.
+Returns the evaluation result of executing the given expression node,
+which is a parse tree as specified in this document. Very notably, the
+result of calling `sam0Tree` is valid as the `expressionNode` argument
+here.
+
+Evaluation is performed in an execution context that includes all of
+the variable bindings indicated by `context`, which must be a maplet.
+
+It is recommended (but not required) that the given `context` include
+bindings for all of the library functions specified by this document.
 
 #### `sam0Tree stringlet <> functionNode`
 
@@ -977,8 +982,7 @@ See note on `stringletMap` about choice of argument order.
 #### `sam0Library() <> maplet`
 
 Returns a maplet of bindings of the entire *Samizdat Layer 0*
-library. This is suitable for passing to `sam0Function`, for
-example.
+library. This is suitable for passing to `sam0Eval`, for example.
 
 #### `sourceStringlet value <> stringlet`
 

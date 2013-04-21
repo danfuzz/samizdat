@@ -342,16 +342,15 @@ static zvalue prim_sam0Tree(void *state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-static zvalue prim_sam0Function(void *state, zint argCount,
-                                const zvalue *args) {
+static zvalue prim_sam0Eval(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 2);
 
     zvalue contextMaplet = args[0];
-    zvalue functionNode = args[1];
+    zvalue expressionNode = args[1];
     zcontext ctx = langCtxNew();
 
     langCtxBindAll(ctx, contextMaplet);
-    return langFunctionFromNode(ctx, functionNode);
+    return langEvalExpressionNode(ctx, expressionNode);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -446,7 +445,7 @@ zcontext primitiveContext(void) {
 
     // Functions and Code
     BIND(apply);
-    BIND(sam0Function);
+    BIND(sam0Eval);
     BIND(sam0Tree);
 
     // Miscellaneous

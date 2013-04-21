@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
     zcontext ctx = libNewContext();
     zvalue programText = readFile(fileName);
     zvalue program = langNodeFromProgramText(programText);
-    zvalue function = langFunctionFromNode(ctx, program);
+    zvalue function = langEvalExpressionNode(ctx, program);
     zvalue result = langApply(function, args);
 
     if ((result != NULL) && (datType(result) == DAT_INTLET)) {

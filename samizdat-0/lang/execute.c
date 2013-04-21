@@ -178,6 +178,6 @@ static zvalue execExpression(zcontext ctx, zvalue expression) {
  */
 
 /* Documented in header. */
-zvalue langFunctionFromNode(zcontext ctx, zvalue functionNode) {
-    return execFunction(ctx, functionNode);
+zvalue langEvalExpressionNode(zcontext ctx, zvalue node) {
+    return execExpressionVoidOk(ctx, node);
 }

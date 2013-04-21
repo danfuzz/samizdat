@@ -118,7 +118,7 @@ main = { file rest* ::
     <> if { <> ne tokens null; } {
         programNode = parse tokens;
         if { <> ne programNode null; } {
-            function = sam0Function (sam0Library()) programNode;
+            function = sam0Eval (sam0Library()) programNode;
             <> function();
         } else {
             <> @1;

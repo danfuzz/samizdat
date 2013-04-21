@@ -131,18 +131,22 @@ zvalue langCtxToMaplet(zcontext ctx);
 
 /**
  * Compiles the given program text into a parse tree form, suitable
- * for passing to `langFunctionFromNode()`. The text must be a
+ * for passing to `langEvalExpressionNode()`. The text must be a
  * top-level program in Samizdat Layer 0. The result is a `function`
- * node in the Samizdat Layer 0 parse tree form (details documented
- * elsewhere).
+ * node in the *Samizdat Layer 0* parse tree form.
+ *
+ * See the *Samizdat Layer 0* spec for details about the grammar.
  */
 zvalue langNodeFromProgramText(zvalue programText);
 
 /**
- * Constructs an in-model no-args function from the given `function`
- * node, by binding it in the given variable context.
+ * Evaluates the given expression node in the given variable
+ * context. Returns the evaluated value of the expression, which
+ * will be `NULL` if the expression did not yield a value.
+ *
+ * See the *Samizdat Layer 0* spec for details on expression nodes.
  */
-zvalue langFunctionFromNode(zcontext ctx, zvalue functionNode);
+zvalue langEvalExpressionNode(zcontext ctx, zvalue node);
 
 
 #endif
