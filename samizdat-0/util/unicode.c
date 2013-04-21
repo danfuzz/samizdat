@@ -16,8 +16,8 @@
 /**
  * Does the basic decoding step, with syntactic but not semantic validation.
  */
-static const char *justDecode(const char *string, zint stringBytes,
-                              zchar *result) {
+static const char *justDecode(zchar *result,
+                              zint stringBytes, const char *string) {
     if (stringBytes <= 0) {
         die("Invalid string size: %lld", stringBytes);
     }
@@ -135,6 +135,18 @@ static const char *justDecode(const char *string, zint stringBytes,
     return string;
 }
 
+/**
+ * Decodes a UTF-8 encoded code point from the given string of the
+ * given size in bytes, storing via the given `zchar *`. Returns
+ * a pointer to the position just after the bytes that were decoded.
+ */
+static const char *decodeValid(zchar *result,
+                               zint stringBytes, const char *string) {
+    string = justDecode(result, stringBytes, string);
+    uniAssertValid(*result);
+    return string;
+}
+
 
 /*
  * Exported functions
@@ -155,21 +167,12 @@ void uniAssertValid(zint value) {
 }
 
 /* Documented in header. */
-const char *utf8DecodeOne(const char *string, zint stringBytes,
-                          zchar *result) {
-    string = justDecode(string, stringBytes, result);
-    uniAssertValid(*result);
-
-    return string;
-}
-
-/* Documented in header. */
 zint utf8DecodeStringSize(const char *string, zint stringBytes) {
     const char *stringEnd = strGetEnd(string, stringBytes);
     zint result = 0;
 
     while (string < stringEnd) {
-        string = justDecode(string, stringEnd - string, NULL);
+        string = justDecode(NULL, stringEnd - string, string);
         result++;
     }
 
@@ -182,7 +185,7 @@ void utf8DecodeCharsFromString(zchar *result,
     const char *stringEnd = strGetEnd(string, stringBytes);
 
     while (string < stringEnd) {
-        string = utf8DecodeOne(string, stringEnd - string, result);
+        string = decodeValid(result, stringEnd - string, string);
         result++;
     }
 }
