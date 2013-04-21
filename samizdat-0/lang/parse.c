@@ -620,8 +620,15 @@ static zvalue parseProgram(ParseState *state) {
 
     zvalue formals = parseFormals(state); // Always succeeds.
     zvalue statements = datListletEmpty();
+    zvalue yield = NULL; // NULL is ok, as it's optional.
 
     for (;;) {
+        yield = parseYield(state);
+
+        if (yield != NULL) {
+            break;
+        }
+
         zvalue statement = parseStatement(state);
 
         if (!isEmptyLiteral(statement)) {
@@ -633,7 +640,6 @@ static zvalue parseProgram(ParseState *state) {
         }
     }
 
-    zvalue yield = parseYield(state); // Always succeeds.
     zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
 
     value = datMapletPut(value, STR_STATEMENTS, statements);

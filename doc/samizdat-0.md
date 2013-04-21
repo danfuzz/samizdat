@@ -223,7 +223,7 @@ tree syntax rule to match.
 function ::= @"{" program @"}" ;
 # result: <program>
 
-program ::= formals statement (@";" statement)* yield? ;
+program ::= formals (yield | statement (@";" statement)* (@";" yield)?) ;
 # result: [:
 #             @"function"
 #             @[
