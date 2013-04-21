@@ -505,6 +505,16 @@ v = @[v1 v2];   is equivalent to   v = makeListlet v1 v2;
 *Note:* The equivalence requires at least one argument, even though
 the function is happy to operate given zero arguments.
 
+Technically, this function could be defined in-language as the
+following, but for practical reasons (e.g. and in particular, expected
+ordering of human operations during the course of bootstrapping an
+implementation), it makes sense to keep this defined as an
+"ultraprimitive":
+
+```
+makeListlet = { rest* :: <> rest; };
+```
+
 #### `makeMaplet rest* <> maplet`
 
 Returns a maplet with the given key-value bindings (in argument
@@ -729,7 +739,7 @@ Returns the `n`th (zero-based) element of the given listlet.
 <br><br>
 ### Primitive Library: Maplets
 
-#### `mapletAdd maplet1 mapet2 <> maplet`
+#### `mapletAdd maplet1 maplet2 <> maplet`
 
 Returns a maplet consisting of the combination of the mappings of the
 two argument maplets. For any keys in common between the two maplets,
