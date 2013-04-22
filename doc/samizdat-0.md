@@ -488,7 +488,7 @@ it makes sense to allow it to be exported as a primitive.
 <br><br>
 ### Primitive Library: Ultraprimitive Functions
 
-This set of primitive functions are required in order to execute
+This set of primitive functions is required in order to execute
 parse trees as produced by `sam0Tree` (see which).
 
 #### `makeHighlet type value? <> highlet`
