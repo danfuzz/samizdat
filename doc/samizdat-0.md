@@ -289,7 +289,7 @@ expression ::= call | atom ;
 atom ::=
     varRef | intlet | stringlet |
     emptyListlet | listlet | emptyMaplet | maplet |
-    uniqlet | highlet | function | parenExpression
+    uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever was parsed>
 
 parenExpression ::= @"(" expression @")";
@@ -325,7 +325,7 @@ binding ::= atom @"=" atom ;
 uniqlet ::= @"@@";
 # result: makeCall [:@varRef @makeUniqlet:]
 
-highlet ::= @"[" @":" atom atom? @":" @"]";
+highlet ::= @"[" @":" atom atom? @":" @"]" ;
 # result: makeCall [:@varRef @makeHighlet:] <type atom> <value atom>?
 
 call ::= atom (@"(" @")" | atom+) ;
