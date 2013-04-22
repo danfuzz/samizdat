@@ -1154,6 +1154,14 @@ library. This is suitable for passing to `sam0Eval`, for example.
 Converts an arbitrary value into a stringlet representation form
 that is meant to mimic the Samizdat source syntax.
 
-*Note:* The output differs from Samizdat Layer 0 syntax in that
-stringlet forms may get represented using hex escapes, which is not
-defined syntax in *Samizdat Layer 0*.
+*Note:* The output differs from *Samizdat Layer 0* syntax in that
+stringlet forms can include two escape forms not defined in the
+language:
+
+* '\0` &mdash; This represents the value 0.
+
+* `\xHEX;` where `HEX` is a sequence of one or more hexadecimal digits
+  (using lowercase letters) &mdash; These represent the so-numbered
+  Unicode code points, and this form is used to represent all
+  non-printing characters other than newline that are in the Latin-1
+  code point range.
