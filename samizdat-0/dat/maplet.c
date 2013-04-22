@@ -177,7 +177,7 @@ zvalue datMapletAdd(zvalue maplet1, zvalue maplet2) {
 }
 
 /* Documented in header. */
-zvalue datMapletDelete(zvalue maplet, zvalue key) {
+zvalue datMapletDel(zvalue maplet, zvalue key) {
     zint index = mapletFind(maplet, key);
 
     if (index < 0) {

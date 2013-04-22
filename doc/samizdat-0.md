@@ -832,8 +832,10 @@ listlet argument followed by the given additional value.
 
 #### `listletDelNth listlet n <> listlet`
 
-Returns a listlet just like the given one, except that the `n`th (zero-based)
-element is deleted.
+Returns a listlet just like the given one, except that the `n`th
+(zero-based) element is deleted. `n` must be non-negative and less
+than the size of the listlet; if not, it is an error (terminating the
+runtime).
 
 #### `listletPrepend value listlet <> listlet`
 
@@ -845,7 +847,9 @@ result (and not listlet-first).
 
 #### `listletNth listlet n <> .`
 
-Returns the `n`th (zero-based) element of the given listlet.
+Returns the `n`th (zero-based) element of the given listlet. `n` must
+be non-negative and less than the size of the listlet; if not, it is
+an error (terminating the runtime).
 
 <br><br>
 ### Primitive Library: Maplets
@@ -855,6 +859,12 @@ Returns the `n`th (zero-based) element of the given listlet.
 Returns a maplet consisting of the combination of the mappings of the
 two argument maplets. For any keys in common between the two maplets,
 the second argument's value is the one that ends up in the result.
+
+#### `mapletDel maplet key <> maplet`
+
+Returns a maplet just like the one given as an argument, except that
+the result does not have a binding for the key `key`. It is an error
+(terminating the runtime) if `key` is not a key in `maplet`.
 
 #### `mapletGet maplet key notFound? <> . | ~.`
 

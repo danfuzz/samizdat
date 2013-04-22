@@ -21,6 +21,12 @@ PRIM_IMPL(mapletAdd) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapletDel) {
+    requireExactly(argCount, 2);
+    return datMapletDel(args[0], args[1]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapletKeys) {
     requireExactly(argCount, 1);
     return datMapletKeys(args[0]);

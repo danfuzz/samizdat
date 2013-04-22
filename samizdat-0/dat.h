@@ -308,7 +308,7 @@ zvalue datMapletAdd(zvalue maplet1, zvalue maplet2);
  * Gets a maplet resulting from the removal of the given key from the
  * given maplet. It is an error if the key isn't in the maplet.
  */
-zvalue datMapletDelete(zvalue maplet, zvalue key);
+zvalue datMapletDel(zvalue maplet, zvalue key);
 
 
 /*
