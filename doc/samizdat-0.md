@@ -812,11 +812,13 @@ Returns a stringlet that consists of the character codes indicated by
 the elements of the given listlet argument. Each element must be an
 intlet in the range for representation as an unsigned 32-bit quantity.
 
-#### `stringletNth stringlet n <> intlet`
+#### `stringletNth stringlet n notFound? <> . | ~.`
 
-Returns the `n`th (zero-based) element of the given stringlet,
-as an intlet. `n` must be non-negative and less than the size of
-the stringlet; if not, it is an error (terminating the runtime).
+Returns the `n`th (zero-based) element of the given stringlet, as an
+intlet, if `n` is a valid intlet index into the given stringlet.  If
+`n` is not valid (not an intlet, or out of range), then this returns
+the `notFound` value (an arbitrary value) if supplied, or returns no
+value at all if not.
 
 <br><br>
 ### Primitive Library: Listlets

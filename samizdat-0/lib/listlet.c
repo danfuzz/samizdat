@@ -40,7 +40,7 @@ PRIM_IMPL(listletNth) {
         return (argCount == 3) ? args[3] : NULL;
     } else {
         return result;
-    }    
+    }
 }
 
 /* Documented in Samizdat Layer 0 spec. */

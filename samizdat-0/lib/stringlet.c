@@ -6,6 +6,8 @@
 
 #include "impl.h"
 
+#include <stddef.h>
+
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringletFromChar) {
@@ -33,10 +35,19 @@ PRIM_IMPL(stringletAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringletNth) {
-    requireExactly(argCount, 2);
+    requireRange(argCount, 2, 3);
 
-    zvalue stringlet = args[0];
-    zint index = datIntFromIntlet(args[1]);
+    zvalue result = NULL;
+    if (datTypeIs(args[1], DAT_INTLET)) {
+        zint ch = datStringletNth(args[0], datIntFromIntlet(args[1]));
+        if (ch >= 0) {
+            result = datIntletFromInt(ch);
+        }
+    }
 
-    return datIntletFromInt(datStringletNth(stringlet, index));
+    if (result == NULL) {
+        return (argCount == 3) ? args[3] : NULL;
+    } else {
+        return result;
+    }
 }

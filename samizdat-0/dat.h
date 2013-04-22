@@ -167,10 +167,11 @@ zint datIntFromIntlet(zvalue intlet);
  */
 
 /**
- * Given a stringlet, returns the `n`th element. `stringlet` must be a
- * stringlet, and `n` must be `< datSize(value)`.
+ * Given a stringlet, returns the `n`th element, which is in the
+ * range of a 32-bit unsigned int. If `n` is out of range, this
+ * returns `-1`.
  */
-zchar datStringletNth(zvalue stringlet, zint n);
+zint datStringletNth(zvalue stringlet, zint n);
 
 /**
  * Gets the stringlet built from the given array of `zchar`s, of
