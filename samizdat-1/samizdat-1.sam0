@@ -38,21 +38,21 @@ parse = { tokens ::
     # TODO
 
     theCall = [:
-        @"call"
+        @call
         @[
-            @"function"=[:@"varRef" @"writeFile":]
-            @"actuals"=@[
-                [:@"literal" @"/dev/stdout":]
-                [:@"literal" @"We have received the Самиздат!\n":]
+            @function=[:@varRef @writeFile:]
+            @actuals=@[
+                [:@literal @"/dev/stdout":]
+                [:@literal @"We have received the Самиздат!\n":]
             ]
         ]
     :];
 
     <> [:
-        @"function"
+        @function
         @[
-            @"formals"=[:@"formals" @[]:]
-            @"statements"=@[theCall]
+            @formals=[:@formals @[]:]
+            @statements=@[theCall]
         ]
     :]
 };
@@ -68,7 +68,7 @@ parse = { tokens ::
 main = { file rest* ::
     # Be welcoming.
 
-    if { <> eq file @"danfuzz" } {
+    if { <> eq file @danfuzz } {
         writeFile @"/dev/stdout" @"Hello, Danfuzz!\n\n"
     } else {
         writeFile @"/dev/stdout" @"Hello, Самиздат!\n\n"
@@ -99,8 +99,7 @@ main = { file rest* ::
     writeFile @"/dev/stdout" (sourceStringlet @[@1=@2 @888=@1]);
     writeFile @"/dev/stdout" @"\n";
     writeFile @"/dev/stdout"
-        (sourceStringlet
-            @[@"fizmo"=@"omzif" @"igram"=@"margi" @"blort"=@"trolb"]);
+        (sourceStringlet @[@fizmo=@omzif @igram=@margi @blort=@trolb]);
     writeFile @"/dev/stdout" @"\n";
     writeFile @"/dev/stdout" (sourceStringlet null);
     writeFile @"/dev/stdout" @"\n";
