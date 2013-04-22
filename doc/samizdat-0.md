@@ -698,7 +698,7 @@ Returns the sum of the given values.
 
 Returns the binary-and (intersection of all one-bits) of the given values.
 
-#### `ibit intlet1 intlet2 <> intlet`
+#### `ibit intlet n <> intlet`
 
 Returns as an intlet (`@0` or `@1`) the bit value in the first
 argument at the bit position (zero-based) indicated by the second
