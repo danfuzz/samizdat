@@ -6,9 +6,6 @@
 
 #include "impl.h"
 
-#include <stdlib.h>
-#include <string.h>
-
 
 /*
  * Module functions
