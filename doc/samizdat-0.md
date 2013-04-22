@@ -719,7 +719,7 @@ second argument. It is an error (terminating the runtime) if the
 second argument is `@0`.
 
 `imod x y` can be thought of as the smallest magnitude value `m` with
-the same sign as 'y' such that `isub x m` is a multiple of `y`.
+the same sign as `y` such that `isub x m` is a multiple of `y`.
 
 `imod x y` can be defined as `irem (iadd (irem x y) y) y`.
 
@@ -752,7 +752,7 @@ argument is `@0`.
 
 `irem x y` can be defined as `isub x (imul (idiv x y) y)`.
 
-*Note:* This differs from the `irem` in the treatment of negative
+*Note:* This differs from the `imod` in the treatment of negative
 numbers.
 
 #### `ishl intlet shift <> intlet`
