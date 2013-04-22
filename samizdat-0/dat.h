@@ -263,7 +263,7 @@ zvalue datListletAdd(zvalue listlet1, zvalue listlet2);
  * Gets the listlet resulting from deleting the nth element of the
  * given listlet.
  */
-zvalue datListletDelete(zvalue listlet, zint n);
+zvalue datListletDelNth(zvalue listlet, zint n);
 
 /**
  * Constructs a listlet from an array of `zvalue`s of the given size.

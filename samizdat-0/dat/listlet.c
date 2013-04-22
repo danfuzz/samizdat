@@ -143,7 +143,7 @@ zvalue datListletAdd(zvalue listlet1, zvalue listlet2) {
                                 datSize(listlet2), listletElems(listlet2));
 }
 
-zvalue datListletDelete(zvalue listlet, zint n) {
+zvalue datListletDelNth(zvalue listlet, zint n) {
     datAssertListlet(listlet);
     datAssertNth(listlet, n);
 

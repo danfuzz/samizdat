@@ -40,5 +40,5 @@ PRIM_IMPL(listletNth) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletDelNth) {
     requireExactly(argCount, 2);
-    return datListletDelete(args[0], datIntFromIntlet(args[1]));
+    return datListletDelNth(args[0], datIntFromIntlet(args[1]));
 }
