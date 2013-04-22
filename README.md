@@ -171,7 +171,7 @@ of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR),
 [Lex](http://en.wikipedia.org/wiki/Lex_%28software%29) /
 [Flex](http://en.wikipedia.org/wiki/Flex_lexical_analyser),
 , and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
-[Bison](http://en.wikipedia.org/wiki/GNU_bison)
+[Bison](http://en.wikipedia.org/wiki/GNU_bison).
 
 The Samizdat core library was influenced by
 [Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29)
