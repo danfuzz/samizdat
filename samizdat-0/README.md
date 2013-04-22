@@ -18,7 +18,7 @@ later-named modules depending only on earlier-named ones):
   messaging, Unicode conversion, and about the simplest memory
   allocation facility.
 
-* dat &mdash; "Low-layer" data model. This implements the four
+* dat &mdash; "Low-layer" data model. This implements the six
   Samizdat low-layer data types, providing constructors, accessors,
   and a handful of assertions. Depends on util.
 
@@ -29,13 +29,14 @@ later-named modules depending only on earlier-named ones):
   translation from source text to executable code trees, as well as
   the execution of same. This is also what implements the binding of
   primitive functions into execution contexts. This module does
-  not implement any library itself. Depends on util and dat.
+  not implement any of the library itself. Depends on util and dat.
 
 * lib &mdash; Library bindings. This implements both primitive and
   in-language bindings. The former are the parts of the core library
   that need to be (or are most conveniently) implemented in C. The
   latter are what can be implemented in Samizdat Layer 0. Depends on
-  util, dat, io, and lang.
+  util, dat, io, and lang. It also bundles in code from the parallel
+  directory `samizdat-0-lib`.
 
 * main &mdash; Where it all comes together. This implements the
   C `main()` function. Depends on everything else.
