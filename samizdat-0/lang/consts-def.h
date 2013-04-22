@@ -22,6 +22,7 @@ TOK(CH_COLONCOLON, "::");
 TOK(CH_DIAMOND,    "<>");
 TOK(CH_DOT,        ".");
 TOK(CH_EQUAL,      "=");
+TOK(CH_MINUS,      "-");
 TOK(CH_OCURLY,     "{");
 TOK(CH_OPAREN,     "(");
 TOK(CH_OSQUARE,    "[");

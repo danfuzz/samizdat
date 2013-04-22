@@ -215,6 +215,7 @@ punctuation ::=
     "*"  | # result: [:@"*":]
     ";"  | # result: [:@";":]
     "="  | # result: [:@"=":]
+    "-"  | # result: [:@"-":]
     "{"  | # result: [:@"{":]
     "}"  | # result: [:@"}":]
     "("  | # result: [:@"(":]
@@ -223,7 +224,7 @@ punctuation ::=
     "]"    # result: [:@"]":]
 ;
 
-integer ::= "-"? ("0".."9")+ ;
+integer ::= ("0".."9")+ ;
 # result: [:@"integer" <intlet>:]
 
 string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
@@ -294,8 +295,8 @@ varDef ::= @"identifier" @"=" expression ;
 varRef ::= @"identifier" ;
 # result: [:@"varRef" (highValue <identifier>):];
 
-intlet ::= @"@" @"integer" ;
-# result: [:@"literal" (highValue <integer>):]
+intlet ::= @"@" @"-"? @"integer" ;
+# result: [:@"literal" (imul (@1|@-1) (highValue <integer>)):]
 
 stringlet ::= @"@" @"string" ;
 # result: [:@"literal" (highValue <string>):]

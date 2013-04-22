@@ -421,6 +421,7 @@ static zvalue parseIntlet(ParseState *state) {
         return NULL;
     }
 
+    bool negative = (readMatch(state, STR_CH_MINUS) != NULL);
     zvalue integer = readMatch(state, STR_INTEGER);
 
     if (integer == NULL) {
@@ -429,6 +430,11 @@ static zvalue parseIntlet(ParseState *state) {
     }
 
     zvalue value = datHighletValue(integer);
+
+    if (negative) {
+        value = datIntletFromInt(-datIntFromIntlet(value));
+    }
+
     return datHighletFrom(STR_LITERAL, value);
 }
 
