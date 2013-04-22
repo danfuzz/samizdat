@@ -829,9 +829,10 @@ of the two argument listlets, in argument order.
 #### `listletDelNth listlet n <> listlet`
 
 Returns a listlet just like the given one, except that the `n`th
-(zero-based) element is deleted. `n` must be non-negative and less
-than the size of the listlet; if not, it is an error (terminating the
-runtime).
+(zero-based) element is deleted, if `n` is a valid intlet index into
+the given listlet. If `n` is not a valid index (not an intlet, or with
+a value out of range), then this returns the original listlet as the
+result.
 
 #### `listletInsNth listlet n value <> listlet`
 
@@ -874,8 +875,9 @@ the second argument's value is the one that ends up in the result.
 #### `mapletDel maplet key <> maplet`
 
 Returns a maplet just like the one given as an argument, except that
-the result does not have a binding for the key `key`. It is an error
-(terminating the runtime) if `key` is not a key in `maplet`.
+the result does not have a binding for the key `key`. If the given
+maplet does not have `key` as a key, then this returns the given
+maplet as the result.
 
 #### `mapletGet maplet key notFound? <> . | ~.`
 

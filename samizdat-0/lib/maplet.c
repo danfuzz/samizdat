@@ -39,14 +39,10 @@ PRIM_IMPL(mapletGet) {
     zvalue result = datMapletGet(args[0], args[1]);
 
     if (result == NULL) {
-        if (argCount != 3) {
-            die("Key not found in maplet.");
-        } else {
-            return args[3];
-        }
+        return (argCount == 3) ? args[3] : NULL;
+    } else {
+        return result;
     }
-
-    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

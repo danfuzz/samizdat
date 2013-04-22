@@ -31,15 +31,25 @@ PRIM_IMPL(listletAdd) {
 PRIM_IMPL(listletNth) {
     requireRange(argCount, 2, 3);
 
-    if (!datTypeIs(args[1], DAT_INTLET)) {
-        return NULL;
+    zvalue result = NULL;
+    if (datTypeIs(args[1], DAT_INTLET)) {
+        result = datListletNth(args[0], datIntFromIntlet(args[1]));
     }
 
-    return datListletNth(args[0], datIntFromIntlet(args[1]));
+    if (result == NULL) {
+        return (argCount == 3) ? args[3] : NULL;
+    } else {
+        return result;
+    }    
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletDelNth) {
     requireExactly(argCount, 2);
+
+    if (!datTypeIs(args[1], DAT_INTLET)) {
+        return args[0];
+    }
+
     return datListletDelNth(args[0], datIntFromIntlet(args[1]));
 }

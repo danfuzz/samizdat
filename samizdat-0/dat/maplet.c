@@ -180,7 +180,7 @@ zvalue datMapletDel(zvalue maplet, zvalue key) {
     zint index = mapletFind(maplet, key);
 
     if (index < 0) {
-        die("Can't delete nonexistent maplet key.");
+        return maplet;
     }
 
     zint size = datSize(maplet) - 1;
