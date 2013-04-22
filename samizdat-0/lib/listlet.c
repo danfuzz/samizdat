@@ -8,18 +8,6 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listletAppend) {
-    requireExactly(argCount, 2);
-    return datListletAppend(args[0], args[1]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listletPrepend) {
-    requireExactly(argCount, 2);
-    return datListletPrepend(args[0], args[1]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletPutNth) {
     requireExactly(argCount, 3);
     return datListletPutNth(args[0], datIntFromIntlet(args[1]), args[2]);

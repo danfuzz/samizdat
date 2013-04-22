@@ -826,11 +826,6 @@ the stringlet; if not, it is an error (terminating the runtime).
 Returns a listlet consisting of the concatenation of the elements
 of the two argument listlets, in argument order.
 
-#### `listletAppend listlet value <> listlet`
-
-Returns a listlet consisting of the elements of the given
-listlet argument followed by the given additional value.
-
 #### `listletDelNth listlet n <> listlet`
 
 Returns a listlet just like the given one, except that the `n`th
@@ -847,16 +842,6 @@ are shifted up by one index.
 
 `n` must be non-negative and less than or equal to the size of the
 listlet. If not, it is an error (terminating the runtime).
-
-#### `listletPrepend value listlet <> listlet`
-
-Returns a listlet consisting of the given first value followed by the
-elements of the given listlet argument.
-
-This function could be implemented as `listletInsNth listlet @0 value`.
-
-*Note:* The arguments are given in an order meant to reflect the
-result (and not listlet-first).
 
 #### `listletPutNth listlet n value <> listlet`
 
@@ -1113,6 +1098,11 @@ See note on `stringletMap` about choice of argument order.
 <br><br>
 ### In-Language Library: Listlets
 
+#### `listletAppend listlet value <> listlet`
+
+Returns a listlet consisting of the elements of the given
+listlet argument followed by the given additional value.
+
 #### `listletCat listlet rest* <> listlet`
 
 Concatenates one or more listlets together into a single resulting
@@ -1126,6 +1116,14 @@ listlet element, with two arguments, namely the element and its index
 number (zero-based).
 
 See note on `stringletMap` about choice of argument order.
+
+#### `listletPrepend value listlet <> listlet`
+
+Returns a listlet consisting of the given first value followed by the
+elements of the given listlet argument.
+
+*Note:* The arguments are given in an order meant to reflect the
+result (and not listlet-first).
 
 #### `listletReduce base listlet function <> .`
 
