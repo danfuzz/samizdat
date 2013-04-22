@@ -59,7 +59,7 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     zvalue locals = datMapletEmpty();
 
     for (zint i = 0; i < formalsSize; i++) {
-        zvalue formal = datListletGet(formals, i);
+        zvalue formal = datListletNth(formals, i);
         zvalue name = datMapletGet(formal, STR_NAME);
         zvalue repeat = datMapletGet(formal, STR_REPEAT);
         zvalue value;
@@ -84,7 +84,7 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
 
     zint statementsSize = datSize(statements);
     for (zint i = 0; i < statementsSize; i++) {
-        zvalue one = datListletGet(statements, i);
+        zvalue one = datListletNth(statements, i);
 
         if (datHighletHasType(one, STR_VAR_DEF)) {
             zvalue nameValue = datHighletValue(one);
@@ -129,7 +129,7 @@ static zvalue execCall(zcontext ctx, zvalue call) {
     zint argCount = datSize(actuals);
     zvalue args[argCount];
     for (zint i = 0; i < argCount; i++) {
-        zvalue one = datListletGet(actuals, i);
+        zvalue one = datListletNth(actuals, i);
         args[i] = execExpression(ctx, one);
     }
 

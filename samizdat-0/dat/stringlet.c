@@ -176,7 +176,7 @@ zvalue datStringletFromListlet(zvalue listlet) {
     zchar *elems = stringletElems(result);
 
     for (zint i = 0; i < size; i++) {
-        elems[i] = charFromIntlet(datListletGet(listlet, i));
+        elems[i] = charFromIntlet(datListletNth(listlet, i));
     }
 
     return result;

@@ -32,7 +32,7 @@ PRIM_IMPL(listletNth) {
     zvalue listlet = args[0];
     zint index = datIntFromIntlet(args[1]);
 
-    return datListletGet(listlet, index);
+    return datListletNth(listlet, index);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

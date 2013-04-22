@@ -82,7 +82,7 @@ zorder datListletOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zvalue datListletGet(zvalue listlet, zint n) {
+zvalue datListletNth(zvalue listlet, zint n) {
     datAssertListlet(listlet);
     datAssertNth(listlet, n);
     return listletElems(listlet)[n];

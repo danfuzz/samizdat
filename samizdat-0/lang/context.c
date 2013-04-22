@@ -79,7 +79,7 @@ void langCtxBindAll(zcontext ctx, zvalue maplet) {
     zint size = datSize(keys);
 
     for (zint i = 0; i < size; i++) {
-        zvalue key = datListletGet(keys, i);
+        zvalue key = datListletNth(keys, i);
         ctxBind(ctx, key, datMapletGet(maplet, key));
     }
 }

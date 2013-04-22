@@ -226,7 +226,7 @@ zvalue datListletEmpty(void);
  * Given a listlet, returns the `n`th element. `listlet` must be a
  * listlet, and `n` must be `< datSize(value)`.
  */
-zvalue datListletGet(zvalue listlet, zint n);
+zvalue datListletNth(zvalue listlet, zint n);
 
 /**
  * Gets the listlet resulting from appending the given value to the

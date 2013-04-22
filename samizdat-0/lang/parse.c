@@ -41,7 +41,7 @@ static zvalue read(ParseState *state) {
         return NULL;
     }
 
-    zvalue result = datListletGet(state->tokens, state->at);
+    zvalue result = datListletNth(state->tokens, state->at);
     state->at++;
 
     return result;
@@ -55,7 +55,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
         return NULL;
     }
 
-    zvalue result = datListletGet(state->tokens, state->at);
+    zvalue result = datListletNth(state->tokens, state->at);
     zvalue resultType = datHighletType(result);
 
     if (datOrder(type, resultType) != 0) {
