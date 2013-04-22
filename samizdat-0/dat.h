@@ -223,6 +223,13 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
 zvalue datListletEmpty(void);
 
 /**
+ * Gets the listlet resulting from inserting the given value at the
+ * given index in the given listlet. `n` must be non-negative and no
+ * greater than the size of the given listlet.
+ */
+zvalue datListletInsNth(zvalue listlet, zint n, zvalue value);
+
+/**
  * Given a listlet, returns the `n`th element. `listlet` must be a
  * listlet, and `n` must be `< datSize(value)`.
  */

@@ -32,18 +32,28 @@ static zvalue *listletElems(zvalue listlet) {
 }
 
 /**
- * Combines two element arrays into a single new listlet. This
- * can also be used for a single array by passing `size2` as `0`.
+ * Combines up to two element arrays and an additional element into a
+ * single new listlet. This can also be used for a single array by
+ * passing `size2` as `0`. If `insert` is non-`NULL`, that element is
+ * placed in between the two lists of array contents in the result
  */
-static zvalue listletFromTwoArrays(zint size1, const zvalue *elems1,
-                                   zint size2, const zvalue *elems2) {
-    zvalue result = allocListlet(size1 + size2);
+static zvalue listletFrom(zint size1, const zvalue *elems1, zvalue insert,
+                          zint size2, const zvalue *elems2) {
+    zint insertCount = (insert == NULL) ? 0 : 1;
+    zvalue result = allocListlet(size1 + size2 + insertCount);
     zvalue *resultElems = listletElems(result);
 
-    memcpy(resultElems, elems1, size1 * sizeof(zvalue));
+    if (size1 != 0) {
+        memcpy(resultElems, elems1, size1 * sizeof(zvalue));
+    }
+
+    if (insert != NULL) {
+        resultElems[size1] = insert;
+    }
 
     if (size2 != 0) {
-        memcpy(resultElems + size1, elems2, size2 * sizeof(zvalue));
+        memcpy(resultElems + size1 + insertCount, elems2,
+               size2 * sizeof(zvalue));
     }
 
     return result;
@@ -99,20 +109,12 @@ zvalue datListletEmpty(void) {
 
 /* Documented in header. */
 zvalue datListletAppend(zvalue listlet, zvalue value) {
-    datAssertListlet(listlet);
-    datAssertValid(value);
-
-    return listletFromTwoArrays(datSize(listlet), listletElems(listlet),
-                                1, &value);
+    return datListletInsNth(listlet, datSize(listlet), value);
 }
 
 /* Documented in header. */
 zvalue datListletPrepend(zvalue value, zvalue listlet) {
-    datAssertValid(value);
-    datAssertListlet(listlet);
-
-    return listletFromTwoArrays(1, &value,
-                                datSize(listlet), listletElems(listlet));
+    return datListletInsNth(listlet, 0, value);
 }
 
 /* Documented in header. */
@@ -123,24 +125,40 @@ zvalue datListletPutNth(zvalue listlet, zint n, zvalue value) {
     zint size = datSize(listlet);
 
     if (n == size) {
-        return datListletAppend(listlet, value);
+        return datListletInsNth(listlet, n, value);
     }
 
     datAssertNth(listlet, n);
 
-    zvalue result = listletFromTwoArrays(size, listletElems(listlet), 0, NULL);
+    zvalue result = listletFrom(size, listletElems(listlet), NULL, 0, NULL);
 
     listletElems(result)[n] = value;
     return result;
 }
 
 /* Documented in header. */
+zvalue datListletInsNth(zvalue listlet, zint n, zvalue value) {
+    datAssertListlet(listlet);
+    datAssertValid(value);
+
+    zint size = datSize(listlet);
+
+    if (n != size) {
+        datAssertNth(listlet, n);
+    }
+
+    zvalue *elems = listletElems(listlet);
+    return listletFrom(n, elems, value, size - n, elems + n);
+}
+
+
+/* Documented in header. */
 zvalue datListletAdd(zvalue listlet1, zvalue listlet2) {
     datAssertListlet(listlet1);
     datAssertListlet(listlet2);
 
-    return listletFromTwoArrays(datSize(listlet1), listletElems(listlet1),
-                                datSize(listlet2), listletElems(listlet2));
+    return listletFrom(datSize(listlet1), listletElems(listlet1), NULL,
+                       datSize(listlet2), listletElems(listlet2));
 }
 
 zvalue datListletDelNth(zvalue listlet, zint n) {
@@ -150,7 +168,7 @@ zvalue datListletDelNth(zvalue listlet, zint n) {
     zvalue *elems = listletElems(listlet);
     zint size = datSize(listlet);
 
-    return listletFromTwoArrays(n, elems, size - n - 1, elems + n + 1);
+    return listletFrom(n, elems, NULL, size - n - 1, elems + n + 1);
 }
 
 /* Documented in header. */
@@ -159,7 +177,7 @@ zvalue datListletFromArray(zint size, const zvalue *values) {
         datAssertValid(values[i]);
     }
 
-    return listletFromTwoArrays(size, values, 0, NULL);
+    return listletFrom(size, values, NULL, 0, NULL);
 }
 
 /* Documented in header. */

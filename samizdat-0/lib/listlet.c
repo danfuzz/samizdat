@@ -26,6 +26,12 @@ PRIM_IMPL(listletPutNth) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listletInsNth) {
+    requireExactly(argCount, 3);
+    return datListletInsNth(args[0], datIntFromIntlet(args[1]), args[2]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletAdd) {
     requireExactly(argCount, 2);
     return datListletAdd(args[0], args[1]);

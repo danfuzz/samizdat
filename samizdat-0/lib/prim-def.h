@@ -42,6 +42,7 @@ PRIM_FUNC(charsFromStringlet);
 PRIM_FUNC(listletAdd);
 PRIM_FUNC(listletAppend);
 PRIM_FUNC(listletDelNth);
+PRIM_FUNC(listletInsNth);
 PRIM_FUNC(listletNth);
 PRIM_FUNC(listletPrepend);
 PRIM_FUNC(listletPutNth);
