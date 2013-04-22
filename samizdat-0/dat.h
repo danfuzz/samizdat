@@ -164,7 +164,7 @@ zint datIntFromIntlet(zvalue intlet);
  * Given a stringlet, returns the `n`th element. `stringlet` must be a
  * stringlet, and `n` must be `< datSize(value)`.
  */
-zchar datStringletGet(zvalue stringlet, zint n);
+zchar datStringletNth(zvalue stringlet, zint n);
 
 /**
  * Gets the stringlet built from the given array of `zchar`s, of

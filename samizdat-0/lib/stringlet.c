@@ -38,5 +38,5 @@ PRIM_IMPL(stringletNth) {
     zvalue stringlet = args[0];
     zint index = datIntFromIntlet(args[1]);
 
-    return datIntletFromInt(datStringletGet(stringlet, index));
+    return datIntletFromInt(datStringletNth(stringlet, index));
 }

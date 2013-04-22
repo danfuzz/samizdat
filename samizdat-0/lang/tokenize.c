@@ -48,7 +48,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : datStringletGet(state->str, state->at);
+    return isEof(state) ? -1 : datStringletNth(state->str, state->at);
 }
 
 /**

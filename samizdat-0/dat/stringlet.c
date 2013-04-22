@@ -94,7 +94,7 @@ zorder datStringletOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zchar datStringletGet(zvalue stringlet, zint n) {
+zchar datStringletNth(zvalue stringlet, zint n) {
     datAssertStringlet(stringlet);
     datAssertNth(stringlet, n);
 
