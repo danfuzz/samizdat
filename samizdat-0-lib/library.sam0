@@ -146,7 +146,7 @@ stringletCat = { stringlet rest* ::
 # Documented in Samizdat Layer 0 spec.
 mapletReduce = { base maplet func ::
     <> listletReduce base (mapletKeys maplet)
-        { reduction key :: <> func reduction (mapletGet key) key }
+        { reduction key :: <> func reduction (mapletGet maplet key) key }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -256,14 +256,14 @@ sourceStringlet = { value ::
             };
         <> stringletCat @"@[" body @"]"
     } { <> isMaplet value } {
-        body = listletReduce @"" (mapletKeys value)
-            { reduction key ::
+        body = mapletReduce @"" value
+            { reduction value key ::
                 <> stringletCat
                     reduction
                     (if { <> eq reduction @"" } { <> @"" } else { <> @" " })
                     (sourceStringlet key)
                     @"="
-                    (sourceStringlet (mapletGet value key))
+                    (sourceStringlet value)
             };
         <> stringletCat @"@[" body @"]"
     } { <> isHighlet value } {
