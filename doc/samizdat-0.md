@@ -132,6 +132,9 @@ no uniqlet is equal to any other uniqlet. In practice, uniqlets are
 used to help bridge the divide between data and not-data, with some of
 the main not-data sorts of things in the system being functions.
 
+One way of thinking about uniqlets is that they are an "atomic
+unit of identity" which can be represented as pure data.
+
 Uniqlets are written as simply `@@`. Each mention of `@@` refers
 to a different value.
 
@@ -161,6 +164,31 @@ value representation (another arbitrary value), followed by a final
   @[@"name"=@"frotz" @"purpose"=@"cause item to glow"]
 :]
 ```
+
+
+### `.`, `~.`, and void
+
+In *Samizdat Layer 0*, it is possible for functions to return without
+yielding a value. Such functions are referred to as "void functions"
+and one can say that such a function "returns void" or "returns a void
+result".
+
+Unlike some languages (notably JavaScript), it is invalid to try to
+assign the void non-value (`undefined` is the JavaScript equivalent)
+to a variable or to pass it as a parameter to some other
+function. However, the *Samizdat Layer 0* library provides the
+`ifValue` function to let code act sensibly when it needs to call a
+function but doesn't know up-front whether or not it will yield a
+value.
+
+In code-like function descriptions, a void result is written `~.`,
+which can be read as "not anything" (or with more technical accuracy,
+"the complement of any value"). Relatedly, a result that is a value
+but without any further specifics is written as `.`. If a function can
+possibly return a value *or* return void, that is written as `. |
+~.`. None of these forms is *Samizdat Layer 0* syntax, but it is meant
+to be suggestive of the matching syntax used in higher layers of the
+system (where `.` means "any value", and `~` means set-complement).
 
 
 <br><br>
@@ -324,11 +352,10 @@ This represents a function call. In the data payload, `function` is an
 arbitrary expression node, and `actuals` is a listlet of arbitrary
 expression nodes.
 
-When run, first `function` and then the elements of `actuals` (in order)
-are evaluated. If `function` evaluates to something other than a
-function, the call fails (terminating the runtime). If any of the
-`actuals` evaluate without yielding a value, the call fails (terminating
-the runtime).
+When run, first `function` and then the elements of `actuals` (in
+order) are evaluated. If `function` evaluates to something other than
+a function, the call fails (terminating the runtime). If any of the
+`actuals` evaluate to void, the call fails (terminating the runtime).
 
 If there are too few actual arguments for the function (e.g. the
 function requires at least three arguments, but only two are passed),
@@ -337,7 +364,7 @@ then the call fails (terminating the runtime).
 With all the above prerequisites passed, the function is applied to
 the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
-nothing, if the function turned out to not to return anything).
+void).
 
 #### `function` &mdash; `[:@"function" @[@"formals"=formals @"statements"=statements (@"yield"=yield)?:]`
 
@@ -360,7 +387,7 @@ there are too few actual arguments, the call fails (terminating the
 runtime). After that, the `statements` are evaluated in
 order. Finally, if there is a `yield`, then that is evaluated. The
 result of the call is the same as the result of the `yield` evaluation
-(including possibly no value) if a `yield` was present, or no value if
+(including possibly void) if a `yield` was present, or void if
 there was no `yield` to evaluate.
 
 #### `literal` &mdash; `[:@"literal" value:]`
@@ -416,10 +443,10 @@ This represents a variable definition as part of a function body.
 the name of the variable to define, and `value` must be an expression
 node, indicating the value that the variable should be bound to.
 
-When run, `value` is evaluated. If it does not evaluate to a value,
-then evaluation fails (terminating the runtime). Otherwise, the
-evaluated value is bound in the current (topmost) execution context to
-the indicated `name`.
+When run, `value` is evaluated. If it evaluates to void, then
+evaluation fails (terminating the runtime). Otherwise, the evaluated
+value is bound in the current (topmost) execution context to the
+indicated `name`.
 
 
 <br><br>
@@ -449,19 +476,10 @@ of how it would be called.
 * A "rest" argument at the end (capturing zero or more additional
   arguments) is indicated by following it by a `*` (star / asterisk).
 
-* If the function returns a value, that is indicated at the end of the
-  line with `<>` (a "diamond") and then the type name of the type of
-  value returned, or the specific value returned, or `.` (a dot)
-  indicating "any possible value".
-
-* If the function does not return a value, that is indicated by ending
-  the line with `<> ~.`.
-
-* If a function might or might not return a value, that is indicated
-  by ending the line with `<> . | ~.`.
-
-*Note:* The return value stuff is not actual *Samizdat Layer 0* syntax,
-though it uses elements of it.
+* Next the return type is indicate with a `<>` (a "diamond") and
+  then one of: the specific value returned, name of the type
+  returned, or one of `.` `~.` `. | ~.` as described above in the
+  section about data types.
 
 
 <br><br>
@@ -590,8 +608,8 @@ with no arguments. If the predicate returns `false`, then the
 `elseFunction` (if any) is called with no arguments.
 
 The return value from this function is whatever was returned by the
-consequent function that was called. If no consequent was called, this
-returns no value.
+consequent function that was called (including void). If no consequent
+was called, this returns void.
 
 #### `ifValue function valueFunction voidFunction? <> . | ~.`
 
@@ -600,12 +618,12 @@ arguments, taking note of its return value or lack thereof.
 
 If the function returns a value, then the `valueFunction` is called
 with one argument, namely the value returned from the original
-function. If the function does not return a value, then the
-`voidFunction` (if any) is called with no arguments.
+function. If the function returns void, then the `voidFunction` (if
+any) is called with no arguments.
 
 The return value from this function is whatever was returned by the
-consequent function that was called. If no consequent was called, this
-returns no value.
+consequent function that was called (including void). If no consequent
+was called, this returns void.
 
 <br><br>
 ### Primitive Library: General Low-Order Values
@@ -644,7 +662,7 @@ maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
   commutative &mdash; but otherwise arbitrary &mdash; ordering.
 
 * Highlets compare by type as primary, and value as secondary.
-  With types equal, a highlets without a value order earlier than
+  With types equal, highlets without a value order earlier than
   ones with a value.
 
 #### `lowOrderIs value1 value2 check1 check2? <> boolean`
@@ -817,8 +835,8 @@ intlet in the range for representation as an unsigned 32-bit quantity.
 Returns the `n`th (zero-based) element of the given stringlet, as an
 intlet, if `n` is a valid intlet index into the given stringlet. If
 `n` is not valid (not an intlet, or out of range), then this returns
-the `notFound` value (an arbitrary value) if supplied, or returns no
-value at all if not.
+the `notFound` value (an arbitrary value) if supplied, or returns
+void.
 
 <br><br>
 ### Primitive Library: Listlets
@@ -863,7 +881,7 @@ Returns the `n`th (zero-based) element of the given listlet, if `n` is
 a valid intlet index into the listlet. If `n` is not a valid index
 (either an out-of-range intlet, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
-simply returns no value at all if `notFound` was not supplied.
+returns void if `notFound` was not supplied.
 
 <br><br>
 ### Primitive Library: Maplets
@@ -886,7 +904,7 @@ maplet as the result.
 Returns the value mapped to the given key (an arbitrary value) in
 the given maplet. If there is no such mapping, then this
 returns the `notFound` value (an arbitrary value) if supplied,
-or simply returns no value at all if `notFound` was not supplied.
+or returns void if `notFound` was not supplied.
 
 #### `mapletKeys maplet <> listlet`
 
@@ -913,7 +931,7 @@ Returns the type tag value (an arbitrary value) of the given highlet.
 #### `highletValue highlet <> . | ~.`
 
 Returns the payload data value (an arbitrary value) of the given
-highlet, if any. Returns no value if the given highlet is valueless.
+highlet, if any. Returns void if the given highlet is valueless.
 
 <br><br>
 ### Primitive Library: Functions and Code
@@ -923,17 +941,19 @@ highlet, if any. Returns no value if the given highlet is valueless.
 Calls the given function with the given listlet as its arguments (that
 is, each element of the listlet becomes a separate argument to the
 function). This function returns whatever the called function returned
-(including nothing).
+(including void).
 
 #### `sam0Eval context expressionNode <> . | ~.`
 
 Returns the evaluation result of executing the given expression node,
-which is a parse tree as specified in this document. Very notably, the
-result of calling `sam0Tree` is valid as the `expressionNode` argument
-here.
+which is a parse tree as specified in this document. It is valid for
+the expression to yield void, in which case this function returns
+void. Evaluation is performed in an execution context that includes
+all of the variable bindings indicated by `context`, which must be a
+maplet.
 
-Evaluation is performed in an execution context that includes all of
-the variable bindings indicated by `context`, which must be a maplet.
+Very notably, the result of calling `sam0Tree` is valid as the
+`expressionNode` argument here.
 
 It is recommended (but not required) that the given `context` include
 bindings for all of the library functions specified by this document.
@@ -1060,8 +1080,7 @@ predicates and consequents, each argument being a no-argument
 function. The predicates are called in order until one returns
 `true`. The consequent immediately after the `true` predicate then
 gets called, and its return value becomes the result of this
-function. If no predicate returns `true`, this function returns no
-value.
+function. If no predicate returns `true`, this function returns void.
 
 #### `or predicate rest* <> boolean`
 
