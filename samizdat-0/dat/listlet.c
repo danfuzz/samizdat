@@ -94,8 +94,7 @@ zorder datListletOrder(zvalue v1, zvalue v2) {
 /* Documented in header. */
 zvalue datListletNth(zvalue listlet, zint n) {
     datAssertListlet(listlet);
-    datAssertNth(listlet, n);
-    return listletElems(listlet)[n];
+    return datHasNth(listlet, n) ? listletElems(listlet)[n] : NULL;
 }
 
 /* Documented in header. */
@@ -110,11 +109,6 @@ zvalue datListletEmpty(void) {
 /* Documented in header. */
 zvalue datListletAppend(zvalue listlet, zvalue value) {
     return datListletInsNth(listlet, datSize(listlet), value);
-}
-
-/* Documented in header. */
-zvalue datListletPrepend(zvalue value, zvalue listlet) {
-    return datListletInsNth(listlet, 0, value);
 }
 
 /* Documented in header. */

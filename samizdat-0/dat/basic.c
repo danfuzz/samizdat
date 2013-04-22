@@ -6,6 +6,26 @@
 
 #include "impl.h"
 
+/*
+ * Module functions
+ */
+
+/* Documented in header. */
+bool datHasNth(zvalue value, zint n) {
+    return (n >= 0) && (n < datSize(value));
+}
+
+
+/*
+ * Exported functions
+ */
+
+/* Documented in header. */
+zint datSize(zvalue value) {
+    datAssertValid(value);
+    return value->size;
+}
+
 /* Documented in header. */
 ztype datType(zvalue value) {
     datAssertValid(value);
@@ -13,7 +33,7 @@ ztype datType(zvalue value) {
 }
 
 /* Documented in header. */
-zint datSize(zvalue value) {
+bool datTypeIs(zvalue value, ztype type) {
     datAssertValid(value);
-    return value->size;
+    return value->type == type;
 }

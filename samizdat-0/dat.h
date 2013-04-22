@@ -103,6 +103,12 @@ void datAssertUniqlet(zvalue value);
 void datAssertHighlet(zvalue value);
 
 /**
+ * Returns whether the given value has the given low-layer type.
+ * `value` must be a valid value (in particular, non-`NULL`).
+ */
+bool datTypeIs(zvalue value, ztype type);
+
+/**
  * Gets the low-level data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */
@@ -240,13 +246,6 @@ zvalue datListletNth(zvalue listlet, zint n);
  * given listlet.
  */
 zvalue datListletAppend(zvalue listlet, zvalue value);
-
-/**
- * Gets the listlet resulting from prepending the given value to the
- * front of the given listlet. Note that the order of arguments is in
- * parallel to what the result will be.
- */
-zvalue datListletPrepend(zvalue value, zvalue listlet);
 
 /**
  * Gets the listlet resulting from setting the value at the

@@ -854,11 +854,13 @@ exactly like `listletAppend`.
 `n` must be non-negative and less than or equal to the size of the
 listlet. If not, it is an error (terminating the runtime).
 
-#### `listletNth listlet n <> .`
+#### `listletNth listlet n notFound? <> . | ~.`
 
-Returns the `n`th (zero-based) element of the given listlet. `n` must
-be non-negative and less than the size of the listlet; if not, it is
-an error (terminating the runtime).
+Returns the `n`th (zero-based) element of the given listlet, if `n` is
+a valid intlet index into the listlet. If `n` is not a valid index
+(either an out-of-range intlet, or some other value), then this
+returns the `notFound` value (an arbitrary value) if supplied, or
+simply returns no value at all if `notFound` was not supplied.
 
 <br><br>
 ### Primitive Library: Maplets

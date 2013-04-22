@@ -6,6 +6,8 @@
 
 #include "impl.h"
 
+#include <stddef.h>
+
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletPutNth) {
@@ -27,7 +29,12 @@ PRIM_IMPL(listletAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletNth) {
-    requireExactly(argCount, 2);
+    requireRange(argCount, 2, 3);
+
+    if (!datTypeIs(args[1], DAT_INTLET)) {
+        return NULL;
+    }
+
     return datListletNth(args[0], datIntFromIntlet(args[1]));
 }
 

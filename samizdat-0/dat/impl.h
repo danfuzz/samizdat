@@ -144,6 +144,13 @@ typedef struct {
 zvalue datAllocValue(ztype type, zint size, zint extraBytes);
 
 /**
+ * Returns whether the given value (which must be valid) has an
+ * `n`th element, according to its defined size. This is only
+ * useful with some types.
+ */
+bool datHasNth(zvalue value, zint n);
+
+/**
  * Compares intlets.
  */
 zorder datIntletOrder(zvalue v1, zvalue v2);

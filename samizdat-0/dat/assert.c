@@ -85,13 +85,8 @@ void datAssertValid(zvalue value) {
 void datAssertNth(zvalue value, zint n) {
     datAssertValid(value);
 
-    if (n < 0) {
-        die("Invalid index: %lld", n);
-    }
-
-    if ((datType(value) != DAT_INTLET) && (value->size <= n)) {
-        die("Invalid size for value access: (%p)->size == %lld; <= %lld",
-            value, value->size, n);
+    if (!datHasNth(value, n)) {
+        die("Invalid index: %lld; size %lld", n, value->size);
     }
 }
 
