@@ -815,7 +815,8 @@ intlet in the range for representation as an unsigned 32-bit quantity.
 #### `stringletNth stringlet n <> intlet`
 
 Returns the `n`th (zero-based) element of the given stringlet,
-as an intlet.
+as an intlet. `n` must be non-negative and less than the size of
+the stringlet; if not, it is an error (terminating the runtime).
 
 <br><br>
 ### Primitive Library: Listlets
