@@ -278,10 +278,10 @@ zvalue datListletDelNth(zvalue listlet, zint n);
 zvalue datListletFromArray(zint size, const zvalue *values);
 
 /**
- * Copies all the values of the given listlet into the given output
+ * Copies all the values of the given listlet into the given result
  * array, which must be sized large enough to hold all of them.
  */
-void datArrayFromListlet(zvalue listlet, zvalue *values);
+void datArrayFromListlet(zvalue *result, zvalue listlet);
 
 
 /*

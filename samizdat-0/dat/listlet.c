@@ -181,7 +181,7 @@ zvalue datListletFromArray(zint size, const zvalue *values) {
 }
 
 /* Documented in header. */
-void datArrayFromListlet(zvalue listlet, zvalue *values) {
+void datArrayFromListlet(zvalue *result, zvalue listlet) {
     datAssertListlet(listlet);
-    memcpy(values, listletElems(listlet), listlet->size * sizeof(zvalue));
+    memcpy(result, listletElems(listlet), listlet->size * sizeof(zvalue));
 }
