@@ -166,8 +166,12 @@ Samizdat's parsing semantics were influenced by the recent work on
 [Parsing Expression
 Grammars](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEGs),
 particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
-of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR)
-and [AWK](http://en.wikipedia.org/wiki/AWK).
+of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR),
+[Awk](http://en.wikipedia.org/wiki/AWK),
+[Lex](http://en.wikipedia.org/wiki/Lex_%28software%29) /
+[Flex](http://en.wikipedia.org/wiki/Flex_lexical_analyser),
+, and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
+[Bison](http://en.wikipedia.org/wiki/GNU_bison)
 
 The Samizdat core library was influenced by
 [Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29)
