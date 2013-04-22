@@ -317,8 +317,7 @@ emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 # result: [:@literal @[=]:]
 
 maplet ::= @"@" @"[" binding+ @"]" ;
-# result: makeCall [:@varRef @makeMaplet:]
-#             (<binding key> <binding value>)+;
+# result: makeCall [:@varRef @makeMaplet:] (<binding key> <binding value>)+;
 
 binding ::= atom @"=" atom ;
 # result: @[<key atom> <value atom>]
