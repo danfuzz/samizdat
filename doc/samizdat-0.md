@@ -1,13 +1,13 @@
 Samizdat Layer 0
 ================
 
-This is the specification for the language known as "Samizdat Layer 0".
+This is the specification for the language known as *Samizdat Layer 0*.
 The language is meant to provide a syntactically and semantically
 minimal way to build up and manipulate low-layer Samizdat data.
 
-Samizdat Layer 0 is run by translating it into low-layer Samizdat
-data, as specified here, and running it with the indicated library
-bindings.
+*Samizdat Layer 0* is run by translating it into low-layer Samizdat
+data, as specified here, and running it with the indicated core
+library bindings.
 
 
 <br><br>
@@ -423,15 +423,15 @@ the indicated `name`.
 
 
 <br><br>
-Library Bindings
-----------------
+Core Library Bindings
+---------------------
 
-The library is split into two layers, primitive and in-language.
-From the perspective of code, there is no distinction between the
-two layers, but from the perspective of implementation, there is.
-In particular, an implementation of *Samizdat Layer 0* must
-provide the primitive library, but it can rely on the canonical
-in-language library source for the remainder.
+The core library is split into two layers, primitive and in-language.
+From the perspective of "client" code written in the language, there
+is no distinction between the two layers, but from the perspective of
+implementation, there is. In particular, an implementation of
+*Samizdat Layer 0* must provide the primitive library, but it can rely
+on the canonical in-language library source for the remainder.
 
 Each function binding here is listed in a short-hand form suggestive
 of how it would be called.
@@ -534,7 +534,7 @@ order), with each key-value pair represented as two consecutive
 arguments. The number of arguments passed to this function must be
 even. It is valid to repeat keys in the arguments to this function, in
 which case the *final* value binding for any given key in the argument
-list (in argument order) is the one that ends up in the result.  These
+list (in argument order) is the one that ends up in the result. These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
@@ -815,7 +815,7 @@ intlet in the range for representation as an unsigned 32-bit quantity.
 #### `stringletNth stringlet n notFound? <> . | ~.`
 
 Returns the `n`th (zero-based) element of the given stringlet, as an
-intlet, if `n` is a valid intlet index into the given stringlet.  If
+intlet, if `n` is a valid intlet index into the given stringlet. If
 `n` is not valid (not an intlet, or out of range), then this returns
 the `notFound` value (an arbitrary value) if supplied, or returns no
 value at all if not.
@@ -1043,7 +1043,7 @@ Returns `true` iff the given value is a uniqlet.
 #### `and predicate rest* <> boolean`
 
 Short-circuit conjunction. Takes an arbitrary number of predicates,
-each a no-argument function.  Calls each of them in turn until one of
+each a no-argument function. Calls each of them in turn until one of
 them returns `false`, in which case this function also returns
 `false`. If no predicate returns `false`, this function returns
 `true`.
@@ -1066,7 +1066,7 @@ value.
 #### `or predicate rest* <> boolean`
 
 Short-circuit disjunction. Takes an arbitrary number of predicates,
-each a no-argument function.  Calls each of them in turn until one of
+each a no-argument function. Calls each of them in turn until one of
 them returns `true`, in which case this function also returns
 `true`. If no predicate returns `true`, this function returns `false`.
 
