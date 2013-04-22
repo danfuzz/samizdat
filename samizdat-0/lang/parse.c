@@ -403,8 +403,11 @@ static zvalue parseStringlet(ParseState *state) {
     zvalue string = readMatch(state, STR_STRING);
 
     if (string == NULL) {
-        reset(state, mark);
-        return NULL;
+        string = readMatch(state, STR_IDENTIFIER);
+        if (string == NULL) {
+            reset(state, mark);
+            return NULL;
+        }
     }
 
     zvalue value = datHighletValue(string);

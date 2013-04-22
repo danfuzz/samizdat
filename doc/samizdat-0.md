@@ -298,8 +298,8 @@ varRef ::= @"identifier" ;
 intlet ::= @"@" @"-"? @"integer" ;
 # result: [:@"literal" (imul (@1|@-1) (highValue <integer>)):]
 
-stringlet ::= @"@" @"string" ;
-# result: [:@"literal" (highValue <string>):]
+stringlet ::= @"@" (@"string" | @"identifier");
+# result: [:@"literal" (highValue <string|identifier>):]
 
 emptyListlet ::= @"@" @"[" @"]" ;
 # result: [:@"literal" @[]:]
