@@ -838,13 +838,40 @@ Returns a listlet just like the given one, except that the `n`th
 than the size of the listlet; if not, it is an error (terminating the
 runtime).
 
+#### `listletInsNth listlet n value <> listlet`
+
+TODO: Implement this.
+
+Returns a listlet just like the given one, except that the `n`th
+(zero-based) element is set to be the given value (an arbitrary
+value), and all elements at or beyond index `n` in the original
+are shifted up by one index.
+
+`n` must be non-negative and less than or equal to the size of the
+listlet. If not, it is an error (terminating the runtime).
+
 #### `listletPrepend value listlet <> listlet`
 
 Returns a listlet consisting of the given first value followed by the
 elements of the given listlet argument.
 
+This function could be implemented as `listletInsNth listlet @0 value`.
+
 *Note:* The arguments are given in an order meant to reflect the
 result (and not listlet-first).
+
+#### `listletPutNth listlet n value <> listlet`
+
+TODO: Implement this.
+
+Returns a listlet just like the given one, except that the `n`th
+(zero-based) element is set to be the given value (an arbitrary
+value), replacing whatever was at that index in the original. If
+`n` is the size of the original listlet, then this call behaves
+exactly like `listletAppend`.
+
+`n` must be non-negative and less than or equal to the size of the
+listlet. If not, it is an error (terminating the runtime).
 
 #### `listletNth listlet n <> .`
 
