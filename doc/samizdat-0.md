@@ -1109,14 +1109,20 @@ function argument is the *last* one and not the *first* one. This is
 specifically done to make it natural to write a multi-line function
 without losing track of the other two arguments.
 
-#### `stringletReduce base stringlet function <> .`
+#### `stringletReduce base stringlet function <> . | ~.`
 
 Reduces a stringlet to a single value, given a base value and a
 reducer function, operating in low-to-high index order (that is, this
 is a left-reduce operation). The given function is called once per
 stringlet element (character as an intlet), with three arguments: the
 last (or base) reduction result, the element, and its index number
-(zero-based).
+(zero-based). The function result becomes the reduction result, which
+is passed to the next call of `function` or becomes the return value
+of the call to this function if it was the call for the final element.
+
+It is only valid for `function` to return void if it happens to be the
+final call to the function for the reduction, and if so this function
+also returns void.
 
 See note on `stringletMap` about choice of argument order.
 
@@ -1150,13 +1156,58 @@ elements of the given listlet argument.
 *Note:* The arguments are given in an order meant to reflect the
 result (and not listlet-first).
 
-#### `listletReduce base listlet function <> .`
+#### `listletReduce base listlet function <> . | ~.`
 
 Reduces a listlet to a single value, given a base value and a reducer
 function, operating in low-to-high index order (that is, this is a
 left-reduce operation). The given function is called on each listlet
 element, with three arguments: the last (or base) reduction result,
-the element, and its index number (zero-based).
+the element, and its index number (zero-based). The function result
+becomes the reduction result, which is passed to the next call of
+`function` or becomes the return value of the call to this function if
+it was the call for the final element.
+
+It is only valid for `function` to return void if it happens to be the
+final call to the function for the reduction, and if so this function
+also returns void.
+
+See note on `stringletMap` about choice of argument order.
+
+
+### In-Language Library: Maplets
+
+#### `mapletCat maplet rest* <> maplet`
+
+Concatenates one or more maplets together into a single resulting
+maplet. If there are any duplicate keys among the arguments, then
+value associated with the last argument in which that key appears
+is the value that "wins" in the final result.
+
+#### `mapletMap maplet function <> maplet`
+
+Maps the values of a maplet using the given mapping function,
+resulting in a maplet whose keys are the same as the given maplet but
+whose values may differ. In key order, the function is called with
+two arguments representing the binding, a value and a key (in that
+order, because it is common enough to want to ignore the key). The
+return value of the function becomes the bound value for the given
+key in the final result.
+
+See note on `stringletMap` about choice of argument order.
+
+#### `mapletReduce base maplet function <> . | ~.`
+
+Reduces a maplet to a single value, given a base value and a reducer
+function, operating in key order. The given function is called on each
+maplet binding, with three arguments: the last (or base) reduction
+result, the value associated with the binding, and its key. The
+function result becomes the reduction result, which is passed to the
+next call of `function` or becomes the return value of the call to
+this function if it was the call for the final binding.
+
+It is only valid for `function` to return void if it happens to be the
+final call to the function for the reduction, and if so this function
+also returns void.
 
 See note on `stringletMap` about choice of argument order.
 
