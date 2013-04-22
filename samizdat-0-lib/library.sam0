@@ -219,7 +219,7 @@ sourceStringlet = { value ::
         } { <> eq ch @10 } {
             <> @"\\n"
         } { <> or { <> eq ch @34 } { <> eq ch @92 } } {
-            # 34 == "\"" and 92 == "\\"
+            # 34 == "\"", and 92 == "\\".
             <> stringletAdd @"\\" (stringletFromChar ch)
         } { <> or { <> le ch @31 }
                   { <> and { <> ge ch @127 } { <> le ch @159 } } } {
