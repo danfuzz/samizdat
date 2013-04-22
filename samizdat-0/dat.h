@@ -393,7 +393,7 @@ zvalue datHighletFrom(zvalue type, zvalue value);
  * Returns whether or not the type of the given highlet equals the
  * given value.
  */
-bool datHighletHasType(zvalue highlet, zvalue type);
+bool datHighletTypeIs(zvalue highlet, zvalue type);
 
 /**
  * Asserts that the given value is a highlet whose type is as given.

@@ -86,7 +86,7 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = datListletNth(statements, i);
 
-        if (datHighletHasType(one, STR_VAR_DEF)) {
+        if (datHighletTypeIs(one, STR_VAR_DEF)) {
             zvalue nameValue = datHighletValue(one);
             zvalue name = datMapletGet(nameValue, STR_NAME);
             zvalue value = datMapletGet(nameValue, STR_VALUE);
@@ -141,13 +141,13 @@ static zvalue execCall(zcontext ctx, zvalue call) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(zcontext ctx, zvalue e) {
-    if (datHighletHasType(e, STR_LITERAL))
+    if (datHighletTypeIs(e, STR_LITERAL))
         return datHighletValue(e);
-    else if (datHighletHasType(e, STR_VAR_REF))
+    else if (datHighletTypeIs(e, STR_VAR_REF))
         return ctxGet(ctx, datHighletValue(e));
-    else if (datHighletHasType(e, STR_CALL))
+    else if (datHighletTypeIs(e, STR_CALL))
         return execCall(ctx, e);
-    else if (datHighletHasType(e, STR_FUNCTION))
+    else if (datHighletTypeIs(e, STR_FUNCTION))
         return execFunction(ctx, e);
     else {
         die("Invalid expression type.");

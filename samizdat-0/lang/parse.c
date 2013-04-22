@@ -121,7 +121,7 @@ static zvalue parseFunction(ParseState *state);
  */
 static bool isEmptyLiteral(zvalue value) {
     return (datType(value) == DAT_HIGHLET)
-        && datHighletHasType(value, STR_LITERAL)
+        && datHighletTypeIs(value, STR_LITERAL)
         && (datHighletValue(value) == NULL);
 }
 

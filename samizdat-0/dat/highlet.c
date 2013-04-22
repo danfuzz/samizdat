@@ -86,13 +86,13 @@ zvalue datHighletFrom(zvalue type, zvalue value) {
 }
 
 /* Documented in header. */
-bool datHighletHasType(zvalue highlet, zvalue type) {
+bool datHighletTypeIs(zvalue highlet, zvalue type) {
     return (datOrder(datHighletType(highlet), type) == 0);
 }
 
 /* Documented in header. */
 void datHighletAssertType(zvalue highlet, zvalue type) {
-    if (!datHighletHasType(highlet, type)) {
+    if (!datHighletTypeIs(highlet, type)) {
         die("Type mismatch.");
     }
 }
