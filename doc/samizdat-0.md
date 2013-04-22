@@ -840,8 +840,6 @@ runtime).
 
 #### `listletInsNth listlet n value <> listlet`
 
-TODO: Implement this.
-
 Returns a listlet just like the given one, except that the `n`th
 (zero-based) element is set to be the given value (an arbitrary
 value), and all elements at or beyond index `n` in the original
@@ -861,8 +859,6 @@ This function could be implemented as `listletInsNth listlet @0 value`.
 result (and not listlet-first).
 
 #### `listletPutNth listlet n value <> listlet`
-
-TODO: Implement this.
 
 Returns a listlet just like the given one, except that the `n`th
 (zero-based) element is set to be the given value (an arbitrary
