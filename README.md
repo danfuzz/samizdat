@@ -175,7 +175,7 @@ of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR),
 
 The Samizdat core library was influenced by
 [Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29)
-and AWK.
+and Awk.
 
 The implementation tactics used to build Samizdat were informed by
 [Scheme-48](http://en.wikipedia.org/wiki/Scheme_48),
