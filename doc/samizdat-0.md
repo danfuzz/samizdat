@@ -64,6 +64,7 @@ representation.)
 @-234452
 ```
 
+
 ### Stringlet
 
 A `stringlet` is a sequence of zero or more Unicode code points.
@@ -78,10 +79,15 @@ Characters are self-representing, except that there are three
 * `\"` &mdash; a double quote
 * `\n` &mdash; newline (Unicode U+0010)
 
+If a stringlet's contents form a valid identifier (e.g. variable
+name) in the *Samizdat Layer 0* syntax, then it is valid to
+omit the double-quote delimiters.
+
 ```
 @""                           # the empty string
 @"Hello, Самиздат!"
 @"\"blort\" -- potion that enables one to see in the dark.\n"
+@fizmo
 ```
 
 
@@ -95,8 +101,8 @@ more value representations, followed by a final `]`.
 ```
 @[]                           # the empty listlet
 @[@1]
-@[@"blort" @"fizmo" @"igram"]
-@[@[@1] @2]
+@[@blort @fizmo @igram]
+@[@[@1] @242 @-23]
 ```
 
 
@@ -117,11 +123,11 @@ written as `@[=]`.
 
 ```
 @[=]                          # the empty maplet
-@[@1=@"one"]
-@[@"blort" = @"potion; the ability to see in the dark"
-  @"fizmo" = @"spell; unclogs pipes"
-  @"igram" = @"spell; make purple things invisible"]
-@[@[@"complex" @"data" @"as" @"key"] = @"handy!"]
+@[@1=@"number one"]
+@[@blort = @"potion; the ability to see in the dark"
+  @fizmo = @"spell; unclogs pipes"
+  @igram = @"spell; make purple things invisible"]
+@[@[@complex @data @as @key] = @"Handy!"]
 ```
 
 
@@ -156,12 +162,12 @@ value representation (another arbitrary value), followed by a final
 `:]`.
 
 ```
-[:@"null":]                   # the value usually just written as `null`
-[:@"boolean" @0:]             # the value usually just written as `false`
-[:@"boolean" @1:]             # the value usually just written as `true`
+[:@null:]                     # the value usually just written as `null`
+[:@boolean @0:]               # the value usually just written as `false`
+[:@boolean @1:]               # the value usually just written as `true`
 [:
-  @"spell"
-  @[@"name"=@"frotz" @"purpose"=@"cause item to glow"]
+  @spell
+  @[@name=@frotz @purpose=@"cause item to glow"]
 :]
 ```
 
@@ -225,13 +231,13 @@ punctuation ::=
 ;
 
 integer ::= ("0".."9")+ ;
-# result: [:@"integer" <intlet>:]
+# result: [:@integer <intlet>:]
 
 string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
-# result: [:@"string" <stringlet>:]
+# result: [:@string <stringlet>:]
 
 identifier ::= ("a".."z" | "A".."Z") ("a".."z" | "A".."Z" | "0".."9")* ;
-# result: [:@"identifier" <stringlet>:]
+# result: [:@identifier <stringlet>:]
 
 whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
 # result: none; automatically ignored.
@@ -254,19 +260,19 @@ function ::= @"{" program @"}" ;
 
 program ::= formals (yield | statement (@";" statement)* (@";" yield)?) ;
 # result: [:
-#             @"function"
+#             @function
 #             @[
-#                 @"formals"=<formals>
-#                 @"statements"=<listlet of non-empty statements>
-#                 (@"yield"=<yield>)?
+#                 @formals=<formals>
+#                 @statements=<listlet of non-empty statements>
+#                 (@yield=<yield>)?
 #             ]
 #         :]
 
-formals ::= (@"identifier"+ @"*"? @"::") | ~. ;
+formals ::= (@identifier+ @"*"? @"::") | ~. ;
 # result: [:
-#             @"formals"
-#             @[@[@"name"=(highValue identifier)
-#                 @"repeat"=@[@"type"=(@"."|@"*")]]
+#             @formals
+#             @[@[@name=(highValue identifier)
+#                 @repeat=@[@type=(@"."|@"*")]]
 #               ...]
 #         :]
 
@@ -274,8 +280,8 @@ yield ::= @"<>" expression @";"? ;
 # result: <expression>
 
 statement ::= varDef | expression | ~. ;
-# result: <varDef> | <expression> | [:@"literal":]
-# Note: that is, an empty literal in the case of an empty statement.
+# result: <varDef> | <expression> | [:@literal:]
+# Note: that is, a valueless literal in the case of an empty statement.
 
 expression ::= call | atom ;
 # result: <same as whatever was parsed>
@@ -289,45 +295,45 @@ atom ::=
 parenExpression ::= @"(" expression @")";
 # result: <expression>
 
-varDef ::= @"identifier" @"=" expression ;
-# result: [:@"varDef" @[@"name"=(highValue identifier) @"value"=<expression>]:]
+varDef ::= @identifier @"=" expression ;
+# result: [:@varDef @[@name=(highValue identifier) @value=<expression>]:]
 
-varRef ::= @"identifier" ;
-# result: [:@"varRef" (highValue <identifier>):];
+varRef ::= @identifier ;
+# result: [:@varRef (highValue <identifier>):];
 
-intlet ::= @"@" @"-"? @"integer" ;
-# result: [:@"literal" (imul (@1|@-1) (highValue <integer>)):]
+intlet ::= @"@" @"-"? @integer ;
+# result: [:@literal (imul (@1|@-1) (highValue <integer>)):]
 
-stringlet ::= @"@" (@"string" | @"identifier");
-# result: [:@"literal" (highValue <string|identifier>):]
+stringlet ::= @"@" (@string | @identifier);
+# result: [:@literal (highValue <string|identifier>):]
 
 emptyListlet ::= @"@" @"[" @"]" ;
-# result: [:@"literal" @[]:]
+# result: [:@literal @[]:]
 
 listlet ::= @"@" @"[" atom+ @"]" ;
-# result: makeCall [:@"varRef" @"makeListlet":] <atom>+
+# result: makeCall [:@varRef @makeListlet:] <atom>+
 
 emptyMaplet ::= @"@" @"[" @"=" @"]" ;
-# result: [:@"literal" @[=]:]
+# result: [:@literal @[=]:]
 
 maplet ::= @"@" @"[" binding+ @"]" ;
-# result: makeCall [:@"varRef" @"makeMaplet":]
+# result: makeCall [:@varRef @makeMaplet:]
 #             (<binding key> <binding value>)+;
 
 binding ::= atom @"=" atom ;
 # result: @[<key atom> <value atom>]
 
 uniqlet ::= @"@@";
-# result: makeCall [:@"varRef" @"makeUniqlet":]
+# result: makeCall [:@varRef @makeUniqlet:]
 
 highlet ::= @"[" @":" atom atom? @":" @"]";
-# result: makeCall [:@"varRef" @"makeHighlet":] <type atom> <value atom>?
+# result: makeCall [:@varRef @makeHighlet:] <type atom> <value atom>?
 
 call ::= atom (@"(" @")" | atom+) ;
 # result: makeCall <function atom> <argument atom+>
 
 makeCall = { function actuals* ::
-    <> [:@"call" @[@"function"=function @"actuals"=actuals]:];
+    <> [:@call @[@function=function @actuals=actuals]:];
 };
 ```
 
@@ -347,7 +353,7 @@ one would construct them in the source syntax of *Samizdat Layer 0*.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `call` &mdash; `[:@"call" @[@"function"=function @"actuals"=actuals]:]`
+#### `call` &mdash; `[:@call @[@function=function @actuals=actuals]:]`
 
 This represents a function call. In the data payload, `function` is an
 arbitrary expression node, and `actuals` is a listlet of arbitrary
@@ -367,7 +373,7 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `function` &mdash; `[:@"function" @[@"formals"=formals @"statements"=statements (@"yield"=yield)?:]`
+#### `function` &mdash; `[:@function @[@formals=formals @statements=statements (@yield=yield)?:]`
 
 This represents a function definition. In the data payload, `formals`
 is a `formals` node (as defined below), `statements` must be a
@@ -391,7 +397,7 @@ result of the call is the same as the result of the `yield` evaluation
 (including possibly void) if a `yield` was present, or void if
 there was no `yield` to evaluate.
 
-#### `literal` &mdash; `[:@"literal" value:]`
+#### `literal` &mdash; `[:@literal value:]`
 
 This represents arbitrary literal data. The data payload is
 an arbitrary value.
@@ -399,7 +405,7 @@ an arbitrary value.
 The data `value` is the result of evaluation, when a `literal`
 node is run. Evaluation never fails.
 
-#### `varRef` &mdash; `[:@"varRef" name:]`
+#### `varRef` &mdash; `[:@varRef name:]`
 
 This represents a by-name variable reference. `name` is an
 arbitrary value, but is most typically a stringlet.
@@ -415,17 +421,17 @@ evaluation fails (terminating the runtime).
 These are node types that appear within the data payloads
 of various expression nodes.
 
-#### `formals` &mdash; `[:@"formals" declarations:]`
+#### `formals` &mdash; `[:@formals declarations:]`
 
 This represents the formal arguments to a function. `declarations`
 must be a listlet, and each element of the listlet must be
 a maplet that binds these two keys:
 
-* `@"name"` &mdash; an arbitrary value (but typically a stringlet),
+* `@name` &mdash; an arbitrary value (but typically a stringlet),
   which indicates the name of the variable to be bound for this
   argument.
 
-* `@"repeat"` &mdash; indicates how many actual arguments are
+* `@repeat` &mdash; indicates how many actual arguments are
   bound by this formal. It is one of:
 
   * `@"."` &mdash; indicates that this argument binds exactly one
@@ -437,7 +443,7 @@ a maplet that binds these two keys:
     `repeat` of the last formal. The argument variable as bound is a
     listlet of all the passed actual arguments that were bound.
 
-#### `varDef` &mdash; `[:@"varDef" @[@"name"=name @"value"=value]:]`
+#### `varDef` &mdash; `[:@varDef @[@name=name @value=value]:]`
 
 This represents a variable definition as part of a function body.
 `name` is an arbitrary value (but typically a stringlet) representing
@@ -491,7 +497,7 @@ of how it would be called.
 The boolean value false. 
 
 *Note:* Technically, this value could be defined in-language as
-`false = [:@"boolean" @0:]`. However, as a practical matter the
+`false = [:@boolean @0:]`. However, as a practical matter the
 lowest layer of implementation needs to refer to this value, so
 it makes sense to allow it to be exported as a primitive.
 
@@ -500,7 +506,7 @@ it makes sense to allow it to be exported as a primitive.
 The boolean value true.
 
 *Note:* Technically, this value could be defined in-language as
-`true = [:@"boolean" @1:]`. However, as a practical matter the
+`true = [:@boolean @1:]`. However, as a practical matter the
 lowest layer of implementation needs to refer to this value, so
 it makes sense to allow it to be exported as a primitive.
 
@@ -703,8 +709,8 @@ a size, defined as follows:
 #### `lowType value <> stringlet`
 
 Returns the type name of the low-layer type of the given value. The
-result will be one of: `@"intlet" @"stringlet" @"listlet" @"maplet"
-@"uniqlet" @"highlet"`
+result will be one of: `@intlet` `@stringlet` `@listlet` `@maplet`
+`@uniqlet` `@highlet`
 
 <br><br>
 ### Primitive Library: Intlets
@@ -990,7 +996,7 @@ using the underlying OS's functionality, and encoding the text
 #### `null`
 
 A value used when no other value is suitable, but when a value is
-nonetheless required. It can also be written as `[:@"null":]`.
+nonetheless required. It can also be written as `[:@null:]`.
 
 <br><br>
 ### In-Language Library: Comparisons / Booleans
