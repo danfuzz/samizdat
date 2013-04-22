@@ -242,6 +242,13 @@ zvalue datListletAppend(zvalue listlet, zvalue value);
 zvalue datListletPrepend(zvalue value, zvalue listlet);
 
 /**
+ * Gets the listlet resulting from setting the value at the
+ * given index to the given value. `n` must be non-negative
+ * and no greater than the size of the given listlet.
+ */
+zvalue datListletPutNth(zvalue listlet, zint n, zvalue value);
+
+/**
  * Combines the elements of two listlets, in order, into a new
  * listlet.
  *

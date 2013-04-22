@@ -44,6 +44,7 @@ PRIM_FUNC(listletAppend);
 PRIM_FUNC(listletDelNth);
 PRIM_FUNC(listletNth);
 PRIM_FUNC(listletPrepend);
+PRIM_FUNC(listletPutNth);
 PRIM_FUNC(mapletAdd);
 PRIM_FUNC(mapletDel);
 PRIM_FUNC(mapletGet);

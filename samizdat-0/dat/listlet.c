@@ -116,6 +116,25 @@ zvalue datListletPrepend(zvalue value, zvalue listlet) {
 }
 
 /* Documented in header. */
+zvalue datListletPutNth(zvalue listlet, zint n, zvalue value) {
+    datAssertListlet(listlet);
+    datAssertValid(value);
+
+    zint size = datSize(listlet);
+
+    if (n == size) {
+        return datListletAppend(listlet, value);
+    }
+
+    datAssertNth(listlet, n);
+
+    zvalue result = listletFromTwoArrays(size, listletElems(listlet), 0, NULL);
+
+    listletElems(result)[n] = value;
+    return result;
+}
+
+/* Documented in header. */
 zvalue datListletAdd(zvalue listlet1, zvalue listlet2) {
     datAssertListlet(listlet1);
     datAssertListlet(listlet2);

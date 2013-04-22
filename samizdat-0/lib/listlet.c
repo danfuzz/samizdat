@@ -20,6 +20,12 @@ PRIM_IMPL(listletPrepend) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listletPutNth) {
+    requireExactly(argCount, 3);
+    return datListletPutNth(args[0], datIntFromIntlet(args[1]), args[2]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletAdd) {
     requireExactly(argCount, 2);
     return datListletAdd(args[0], args[1]);
@@ -28,19 +34,11 @@ PRIM_IMPL(listletAdd) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletNth) {
     requireExactly(argCount, 2);
-
-    zvalue listlet = args[0];
-    zint index = datIntFromIntlet(args[1]);
-
-    return datListletNth(listlet, index);
+    return datListletNth(args[0], datIntFromIntlet(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletDelNth) {
     requireExactly(argCount, 2);
-
-    zvalue listlet = args[0];
-    zint index = datIntFromIntlet(args[1]);
-
-    return datListletDelete(listlet, index);
+    return datListletDelete(args[0], datIntFromIntlet(args[1]));
 }
