@@ -205,6 +205,7 @@ zvalue datStringletFromUtf8String(zint stringBytes, const char *string);
  * the given `resultSize` pointer if non-`NULL`. The result *is*
  * `'\0'`-terminated, but `*resultSize` will need to be used if the
  * original stringlet might have contained any `U+0` code points.
+ * `*resultSize` does *not* include the terminating `'\0'`.
  */
 const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
 
