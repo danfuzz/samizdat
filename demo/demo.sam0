@@ -15,6 +15,11 @@ ARGS* ::
 # Main function
 #
 
+process = { value ::
+    writeFile @"/dev/stdout" (sourceStringlet value);
+    writeFile @"/dev/stdout" @"\n";
+};
+
 main = { name rest* ::
     # Be welcoming.
 
@@ -24,41 +29,23 @@ main = { name rest* ::
         writeFile @"/dev/stdout" @"Hello, Самиздат!\n\n"
     };
 
-    writeFile @"/dev/stdout" (sourceStringlet @0);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @98765);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @-12345);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@-1]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@1 @-2]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@-1 @2 @300]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @"");
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @"\"Blort.\" \n");
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[=]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@1=@2]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@1=@2 @888=@1]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout"
-        (sourceStringlet @[@fizmo=@omzif @igram=@margi @blort=@trolb]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet null);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet false);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet true);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @@);
-    writeFile @"/dev/stdout" @"\n";
+    process @0;
+    process @98765;
+    process @-12345;
+    process @[];
+    process @[@-1];
+    process @[@1 @-2];
+    process @[@-1 @2 @300];
+    process @"";
+    process @"\"Blort.\" \n";
+    process @[=];
+    process @[@1=@2];
+    process @[@1=@2 @888=@1];
+    process @[@fizmo=@omzif @igram=@margi @blort=@trolb];
+    process null;
+    process false;
+    process true;
+    process @@;
 };
 
 <> apply main ARGS
