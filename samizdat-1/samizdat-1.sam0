@@ -66,51 +66,6 @@ parse = { tokens ::
 # and runs its `main`, passing it an array of the rest of the
 # arguments.
 main = { file rest* ::
-    # Be welcoming.
-
-    if { <> eq file @danfuzz } {
-        writeFile @"/dev/stdout" @"Hello, Danfuzz!\n\n"
-    } else {
-        writeFile @"/dev/stdout" @"Hello, Самиздат!\n\n"
-    };
-
-    writeFile @"/dev/stdout" (sourceStringlet @0);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @98765);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @-12345);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@-1]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@1 @-2]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@-1 @2 @300]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @"");
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @"\"Blort.\" \n");
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[=]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@1=@2]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @[@1=@2 @888=@1]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout"
-        (sourceStringlet @[@fizmo=@omzif @igram=@margi @blort=@trolb]);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet null);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet false);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet true);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" (sourceStringlet @@);
-    writeFile @"/dev/stdout" @"\n";
-    writeFile @"/dev/stdout" @"\n";
-
     programText = readFile file;
 
     tokens = tokenize programText;
@@ -118,7 +73,7 @@ main = { file rest* ::
         programNode = parse tokens;
         if { <> ne programNode null } {
             function = sam0Eval (sam0Library()) programNode;
-            <> function()
+            <> apply function rest
         } else {
             <> @1
         }

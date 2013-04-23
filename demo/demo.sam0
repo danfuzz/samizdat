@@ -1,0 +1,64 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. See the associated file "LICENSE.md" for details.
+
+#
+# Demo / scratch code
+#
+
+
+# This declares the arguments to the program itself.
+ARGS* ::
+
+
+#
+# Main function
+#
+
+main = { name rest* ::
+    # Be welcoming.
+
+    if { <> eq name @danfuzz } {
+        writeFile @"/dev/stdout" @"Hello, Danfuzz!\n\n"
+    } else {
+        writeFile @"/dev/stdout" @"Hello, Самиздат!\n\n"
+    };
+
+    writeFile @"/dev/stdout" (sourceStringlet @0);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @98765);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @-12345);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @[]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @[@-1]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @[@1 @-2]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @[@-1 @2 @300]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @"");
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @"\"Blort.\" \n");
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @[=]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @[@1=@2]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @[@1=@2 @888=@1]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout"
+        (sourceStringlet @[@fizmo=@omzif @igram=@margi @blort=@trolb]);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet null);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet false);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet true);
+    writeFile @"/dev/stdout" @"\n";
+    writeFile @"/dev/stdout" (sourceStringlet @@);
+    writeFile @"/dev/stdout" @"\n";
+};
+
+<> apply main ARGS
