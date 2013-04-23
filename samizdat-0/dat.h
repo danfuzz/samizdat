@@ -127,6 +127,12 @@ zint datSize(zvalue value);
  */
 
 /**
+ * Gets the `zchar` of the given intlet, asserting that the value
+ * is in fact an intlet and in range for same.
+ */
+zchar datCharFromIntlet(zvalue intlet);
+
+/**
  * Given a 32-bit int value, returns the `n`th bit. This is just like
  * `datIntletGetBit()` except using a `zint` value. This function is
  * exported for the convenience of other modules.
@@ -178,12 +184,6 @@ zint datStringletNth(zvalue stringlet, zint n);
  * the given size.
  */
 zvalue datStringletFromChars(zint size, const zchar *chars);
-
-/**
- * Gets the stringlet built from the given character-representing
- * intlet.
- */
-zvalue datStringletFromIntlet(zvalue intlet);
 
 /**
  * Combines the characters of two stringlets, in order, into a new

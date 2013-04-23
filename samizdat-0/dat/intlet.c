@@ -74,6 +74,17 @@ zorder datIntletOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
+zchar datCharFromIntlet(zvalue intlet) {
+    zint value = datIntFromIntlet(intlet);
+
+    if ((value < 0) || (value >= 0x100000000)) {
+        die("Invalid intlet value for character: %lld", value);
+    }
+
+    return (zchar) value;
+}
+
+/* Documented in header. */
 bool datIntGetBit(zint value, zint n) {
     if (n < 0) {
         die("Attempt to access negative bit index: %lld", n);

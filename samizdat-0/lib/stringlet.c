@@ -26,7 +26,9 @@ PRIM_IMPL(intletFromStringlet) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringletFromIntlet) {
     requireExactly(argCount, 1);
-    return datStringletFromIntlet(args[0]);
+
+    zchar ch = datCharFromIntlet(args[0]);
+    return datStringletFromChars(1, &ch);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
