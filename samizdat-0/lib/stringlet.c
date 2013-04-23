@@ -64,7 +64,7 @@ PRIM_IMPL(stringletNth) {
     }
 
     if (result == NULL) {
-        return (argCount == 3) ? args[3] : NULL;
+        return (argCount == 3) ? args[2] : NULL;
     } else {
         return result;
     }

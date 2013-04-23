@@ -37,7 +37,7 @@ PRIM_IMPL(listletNth) {
     }
 
     if (result == NULL) {
-        return (argCount == 3) ? args[3] : NULL;
+        return (argCount == 3) ? args[2] : NULL;
     } else {
         return result;
     }

@@ -39,7 +39,7 @@ PRIM_IMPL(mapletGet) {
     zvalue result = datMapletGet(args[0], args[1]);
 
     if (result == NULL) {
-        return (argCount == 3) ? args[3] : NULL;
+        return (argCount == 3) ? args[2] : NULL;
     } else {
         return result;
     }
