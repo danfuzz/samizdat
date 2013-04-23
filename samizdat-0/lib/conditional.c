@@ -19,7 +19,7 @@ PRIM_IMPL(ifTrue) {
 
     if (langBoolFromBoolean(langCall(args[0], 0, NULL))) {
         return langCall(args[1], 0, NULL);
-    } else if (argCount ==3) {
+    } else if (argCount == 3) {
         return langCall(args[2], 0, NULL);
     } else {
         return NULL;
