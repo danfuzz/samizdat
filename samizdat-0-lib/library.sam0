@@ -207,24 +207,28 @@ sourceStringlet = { value ::
         } else {
             digit = stringletNth @"0123456789abcdef" (imod value @16);
             more = idiv value @16;
-            <> stringletAdd (intletHex more) (stringletFromIntlet digit)
+            <> stringletAdd (intletHex more) digit
         }
     };
 
+    # Single-character stringlets `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
+    CHAR0 = stringletFromIntlet @0;
+    CHAR127 = stringletFromIntlet @127;
+    CHAR159 = stringletFromIntlet @159;
+
     stringletChar = { ch ::
-        <> if { <> eq ch @0 } {
+        <> if { <> eq ch CHAR0 } {
             <> @"\\0"
-        } { <> eq ch @10 } {
+        } { <> eq ch @"\n" } {
             <> @"\\n"
-        } { <> or { <> eq ch @34 } { <> eq ch @92 } } {
-            # 34 == "\"", and 92 == "\\".
-            <> stringletAdd @"\\" (stringletFromIntlet ch)
-        } { <> or { <> le ch @31 }
-                  { <> and { <> ge ch @127 } { <> le ch @159 } } } {
+        } { <> or { <> eq ch @"\"" } { <> eq ch @"\\" } } {
+            <> stringletAdd @"\\" ch
+        } { <> or { <> lt ch @" " }
+                  { <> and { <> ge ch CHAR127 } { <> le ch CHAR159 } } } {
             # These are the ranges for nonprinting control characters.
-            <> stringletCat @"\\x" (intletHex ch) @";"
+            <> stringletCat @"\\x" (intletHex (intletFromStringlet ch)) @";"
         } else {
-            <> stringletFromIntlet ch
+            <> ch
         }
     };
 

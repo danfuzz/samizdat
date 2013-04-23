@@ -832,11 +832,11 @@ range for representation as an unsigned 32-bit quantity.
 
 #### `stringletNth stringlet n notFound? <> . | ~.`
 
-Returns the `n`th (zero-based) element of the given stringlet, as an
-intlet, if `n` is a valid intlet index into the given stringlet. If
-`n` is not valid (not an intlet, or out of range), then this returns
-the `notFound` value (an arbitrary value) if supplied, or returns
-void if `notFound` was not supplied.
+Returns the `n`th (zero-based) element of the given stringlet, as a
+single-element stringlet, if `n` is a valid intlet index into the given
+stringlet. If `n` is not valid (not an intlet, or out of range),
+then this returns the `notFound` value (an arbitrary value) if supplied,
+or returns void if `notFound` was not supplied.
 
 <br><br>
 ### Primitive Library: Listlets
@@ -1101,8 +1101,9 @@ stringlet.
 
 Maps each element of a stringlet using a mapping function, collecting
 the results into a listlet (note, not into a stringlet). The given
-function is called on each element (character as an intlet), with two
-arguments, namely the element and its index number (zero-based).
+function is called on each element (character), with two arguments,
+namely the element (as a single-character stringlet) and its index
+number (zero-based).
 
 *Note:* Unlike many other languages with similar functions, the
 function argument is the *last* one and not the *first* one. This is
@@ -1114,11 +1115,12 @@ without losing track of the other two arguments.
 Reduces a stringlet to a single value, given a base value and a
 reducer function, operating in low-to-high index order (that is, this
 is a left-reduce operation). The given function is called once per
-stringlet element (character as an intlet), with three arguments: the
-last (or base) reduction result, the element, and its index number
-(zero-based). The function result becomes the reduction result, which
-is passed to the next call of `function` or becomes the return value
-of the call to this function if it was the call for the final element.
+stringlet element (character), with three arguments: the last (or base)
+reduction result, the element (as a single-character stringlet), and its
+index number (zero-based). The function result becomes the reduction
+result, which is passed to the next call of `function` or becomes the
+return value of the call to this function if it was the call for the
+final element.
 
 It is only valid for `function` to return void if it happens to be the
 final call to the function for the reduction, and if so this function

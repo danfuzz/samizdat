@@ -10,6 +10,22 @@
 #include <stddef.h>
 
 
+/*
+ * Helper functions
+ */
+
+/**
+ * Returns a single-character stringlet.
+ */
+static zvalue stringletFromChar(zchar ch) {
+    return datStringletFromChars(1, &ch);
+}
+
+
+/*
+ * Exported functions
+ */
+
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intletFromStringlet) {
     requireExactly(argCount, 1);
@@ -26,9 +42,7 @@ PRIM_IMPL(intletFromStringlet) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringletFromIntlet) {
     requireExactly(argCount, 1);
-
-    zchar ch = datCharFromIntlet(args[0]);
-    return datStringletFromChars(1, &ch);
+    return stringletFromChar(datCharFromIntlet(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -45,7 +59,7 @@ PRIM_IMPL(stringletNth) {
     if (datTypeIs(args[1], DAT_INTLET)) {
         zint ch = datStringletNth(args[0], datIntFromIntlet(args[1]));
         if (ch >= 0) {
-            result = datIntletFromInt(ch);
+            result = stringletFromChar(ch);
         }
     }
 
