@@ -81,7 +81,7 @@ zorder datStringletOrder(zvalue v1, zvalue v2) {
 /* Documented in header. */
 zint datStringletNth(zvalue stringlet, zint n) {
     datAssertStringlet(stringlet);
-    return datHasNth(stringlet, n) ? stringletElems(stringlet)[n] : -1;
+    return datHasNth(stringlet, n) ? stringletElems(stringlet)[n] : (zint) -1;
 }
 
 /* Documented in header. */
