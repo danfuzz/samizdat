@@ -842,7 +842,7 @@ Returns the `n`th (zero-based) element of the given stringlet, as an
 intlet, if `n` is a valid intlet index into the given stringlet. If
 `n` is not valid (not an intlet, or out of range), then this returns
 the `notFound` value (an arbitrary value) if supplied, or returns
-void.
+void if `notFound` was not supplied.
 
 <br><br>
 ### Primitive Library: Listlets
