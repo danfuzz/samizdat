@@ -4,7 +4,6 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "lib.h"
 #include "impl.h"
 #include "util.h"
 
@@ -74,6 +73,14 @@ void requireRange(zint argCount, zint min, zint max) {
     } else if (argCount > max) {
         die("Invalid argument count for primitive: %lld > %lld",
             argCount, max);
+    }
+}
+
+/** Documented in header. */
+void requireMinimum(zint argCount, zint minimum) {
+    if (argCount < minimum) {
+        die("Invalid argument count for primitive: %lld < %lld",
+            argCount, minimum);
     }
 }
 

@@ -21,21 +21,27 @@ extern unsigned int library_sam0_len;
 
 
 /**
+ * Check that the given argument count is even, complaining if not.
+ */
+void requireEven(zint argCount);
+
+/**
  * Check the given argument count for an exact required amount,
  * complaining if it doesn't match.
  */
 void requireExactly(zint argCount, zint required);
 
 /**
+ * Check the given argument count for a minimum amount, complaining if the
+ * given count is too small.
+ */
+void requireMinimum(zint argCount, zint minimum);
+
+/**
  * Check the given argument count for a range of acceptable values,
  * complaining if it doesn't match.
  */
 void requireRange(zint argCount, zint min, zint max);
-
-/**
- * Check that the given argument count is even, complaining if not.
- */
-void requireEven(zint argCount);
 
 /**
  * Used at the top of primitive functions, to supply the standard
