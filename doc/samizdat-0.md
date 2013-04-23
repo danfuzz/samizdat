@@ -19,7 +19,7 @@ Layer 0* data types look like as text, and what they mean.
 
 First and foremost on the topic of semantics, all data values are
 immutable. For example, appending to or deleting from a list always
-results in a new list, with the original remaining unchanged
+results in a new list, with the original remaining unchanged.
 
 With regards to naming, to avoid naming conflicts with the type names
 used in the final language layer, in the low layer, type names get a
@@ -493,7 +493,7 @@ of how it would be called.
 
 #### `false`
 
-The boolean value false. 
+The boolean value false.
 
 *Note:* Technically, this value could be defined in-language as
 `false = [:@boolean @0:]`. However, as a practical matter the
