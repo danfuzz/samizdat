@@ -35,7 +35,7 @@ PRIM_FUNC(ishr);
 PRIM_FUNC(isub);
 PRIM_FUNC(ixor);
 PRIM_FUNC(stringletAdd);
-PRIM_FUNC(stringletFromChar);
+PRIM_FUNC(stringletFromIntlet);
 PRIM_FUNC(stringletNth);
 PRIM_FUNC(listletAdd);
 PRIM_FUNC(listletDelNth);

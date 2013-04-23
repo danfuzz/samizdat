@@ -10,7 +10,7 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringletFromChar) {
+PRIM_IMPL(stringletFromIntlet) {
     requireExactly(argCount, 1);
     return datStringletFromIntlet(args[0]);
 }

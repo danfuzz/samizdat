@@ -818,7 +818,7 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 Returns a stringlet consisting of the concatenation of the contents
 of the two argument stringlets, in argument order.
 
-#### `stringletFromChar intlet <> stringlet`
+#### `stringletFromIntlet intlet <> stringlet`
 
 Returns a single-character stringlet that consists of the character
 code indicated by the given intlet argument, which must be in the
