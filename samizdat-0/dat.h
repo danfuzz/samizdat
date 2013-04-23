@@ -186,17 +186,6 @@ zvalue datStringletFromChars(zint size, const zchar *chars);
 zvalue datStringletFromIntlet(zvalue intlet);
 
 /**
- * Gets the stringlet built from the given listlet of intlets.
- */
-zvalue datStringletFromListlet(zvalue listlet);
-
-/**
- * Gets the list of characters in the given stringlet, in order,
- * as a listlet of intlets.
- */
-zvalue datListletFromStringlet(zvalue stringlet);
-
-/**
  * Combines the characters of two stringlets, in order, into a new
  * stringlet. See `datListletAdd()` for discussion about the choice
  * of name.

@@ -165,31 +165,3 @@ zvalue datStringletFromIntlet(zvalue intlet) {
 
     return datStringletFromChars(1, &ch);
 }
-
-/* Documented in header. */
-zvalue datStringletFromListlet(zvalue listlet) {
-    zint size = datSize(listlet);
-    zvalue result = allocStringlet(size);
-    zchar *elems = stringletElems(result);
-
-    for (zint i = 0; i < size; i++) {
-        elems[i] = charFromIntlet(datListletNth(listlet, i));
-    }
-
-    return result;
-}
-
-/* Documented in header. */
-zvalue datListletFromStringlet(zvalue stringlet) {
-    datAssertStringlet(stringlet);
-
-    zint size = datSize(stringlet);
-    zchar *elems = stringletElems(stringlet);
-    zvalue ints[size];
-
-    for (zint i = 0; i < size; i++) {
-        ints[i] = datIntletFromInt(elems[i]);
-    }
-
-    return datListletFromArray(size, ints);
-}

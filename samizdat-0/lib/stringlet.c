@@ -16,18 +16,6 @@ PRIM_IMPL(stringletFromChar) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringletFromChars) {
-    requireExactly(argCount, 1);
-    return datStringletFromListlet(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(charsFromStringlet) {
-    requireExactly(argCount, 1);
-    return datListletFromStringlet(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringletAdd) {
     requireExactly(argCount, 2);
     return datStringletAdd(args[0], args[1]);

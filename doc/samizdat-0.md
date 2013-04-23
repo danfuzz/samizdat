@@ -813,12 +813,6 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 <br><br>
 ### Primitive Library: Stringlets
 
-#### `charsFromStringlet stringlet <> listlet`
-
-Returns a listlet that consists of the character codes of the given
-stringlet, each represented as an intlet element in the resulting
-listlet.
-
 #### `stringletAdd stringlet1 stringlet2 <> stringlet`
 
 Returns a stringlet consisting of the concatenation of the contents
@@ -829,12 +823,6 @@ of the two argument stringlets, in argument order.
 Returns a single-character stringlet that consists of the character
 code indicated by the given intlet argument, which must be in the
 range for representation as an unsigned 32-bit quantity.
-
-#### `stringletFromChars listlet <> stringlet`
-
-Returns a stringlet that consists of the character codes indicated by
-the elements of the given listlet argument. Each element must be an
-intlet in the range for representation as an unsigned 32-bit quantity.
 
 #### `stringletNth stringlet n notFound? <> . | ~.`
 
