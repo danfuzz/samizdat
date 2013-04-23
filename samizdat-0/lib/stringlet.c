@@ -5,9 +5,23 @@
  */
 
 #include "impl.h"
+#include "util.h"
 
 #include <stddef.h>
 
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(intletFromStringlet) {
+    requireExactly(argCount, 1);
+
+    zvalue stringlet = args[0];
+
+    if (datSize(stringlet) != 1) {
+        die("Invalid use of stringlet: size != 1");
+    }
+
+    return datIntletFromInt(datStringletNth(stringlet, 1));
+}
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringletFromIntlet) {

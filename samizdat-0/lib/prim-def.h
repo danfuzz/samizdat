@@ -27,6 +27,7 @@ PRIM_FUNC(ifValue);
 PRIM_FUNC(imod);
 PRIM_FUNC(imul);
 PRIM_FUNC(ineg);
+PRIM_FUNC(intletFromStringlet);
 PRIM_FUNC(inot);
 PRIM_FUNC(ior);
 PRIM_FUNC(irem);
