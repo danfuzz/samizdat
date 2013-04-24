@@ -258,17 +258,19 @@ tree syntax rule to match.
 function ::= @"{" program @"}" ;
 # result: <program>
 
-program ::= formals (yield | statement (@";" statement)* (@";" yield)?) ;
+program ::=
+    (formals? @"::")?
+    (yield | statement (@";" statement)* (@";" yield)?) ;
 # result: [:
 #             @function
 #             @[
-#                 @formals=<formals>
+#                 (@formals=<formals>)?
 #                 @statements=<listlet of non-empty statements>
 #                 (@yield=<yield>)?
 #             ]
 #         :]
 
-formals ::= (@identifier+ @"*"? @"::") | ~. ;
+formals ::= @identifier+ @"*"? ;
 # result: [:
 #             @formals
 #             @[@[@name=(highValue identifier)
@@ -372,13 +374,13 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `function` &mdash; `[:@function @[@formals=formals @statements=statements (@yield=yield)?:]`
+#### `function` &mdash; `[:@function @[(@formals=formals)? @statements=statements (@yield=yield)?:]`
 
 This represents a function definition. In the data payload, `formals`
-is a `formals` node (as defined below), `statements` must be a
-listlet, with each of the elements being either an expression node or
-a `varDef` node. The `yield` binding is optional, but if present must
-be an expression node.
+is optional but must be a `formals` node (as defined below) if present.
+`statements` must be a listlet, with each of the elements being either
+an expression node or a `varDef` node. The `yield` binding is optional,
+but if present must be an expression node.
 
 When run, a closure (representation of the function as an in-model
 value) is created, which nascently binds as variables the names of all

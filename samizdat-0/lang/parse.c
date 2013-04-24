@@ -457,17 +457,28 @@ DEF_PARSE(formals) {
         formals = datListletAppend(formals, formal);
     }
 
-    if (datSize(formals) != 0) {
-        if (MATCH(CH_COLONCOLON) == NULL) {
-            // We didn't find the expected `::` which means there
-            // was no formals list at all. So reset the parse, but
-            // still succeed with an empty formals list.
-            reset(state, mark);
-            formals = datListletEmpty();
-        }
-    }
+    REJECT_IF(datSize(formals) == 0);
 
     return datHighletFrom(STR_FORMALS, formals);
+}
+
+/**
+ * Helper for `program`: Parses `(formals? @"::")`. Returns either
+ * parsed formals or (validly) `NULL` to indicate that there were no
+ * formals present.
+ */
+DEF_PARSE(program1) {
+    MARK();
+
+    zvalue formals = PARSE(formals);
+
+    if (formals == NULL) {
+        MATCH(CH_COLONCOLON); // Optional if there are no formals.
+    } else {
+        MATCH_OR_REJECT(CH_COLONCOLON); // Mandatory if there are formals.
+    }
+
+    return formals;
 }
 
 /**
@@ -478,7 +489,7 @@ DEF_PARSE(program) {
     // a formals list but no statements or yield. So, we never have
     // to backtrack during this rule.
 
-    zvalue formals = PARSE(formals); // Always succeeds.
+    zvalue formals = PARSE(program1);
     zvalue statements = datListletEmpty();
     zvalue yield = NULL; // NULL is ok, as it's optional.
 
@@ -500,8 +511,11 @@ DEF_PARSE(program) {
         }
     }
 
-    zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
-    value = datMapletPut(value, STR_STATEMENTS, statements);
+    zvalue value = datMapletPut(datMapletEmpty(), STR_STATEMENTS, statements);
+
+    if (formals != NULL) {
+        value = datMapletPut(value, STR_FORMALS, formals);
+    }
 
     if (yield != NULL) {
         value = datMapletPut(value, STR_YIELD, yield);

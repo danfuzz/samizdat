@@ -40,23 +40,22 @@ static zvalue execExpression(zcontext ctx, zvalue expression);
 static zvalue execExpressionVoidOk(zcontext ctx, zvalue expression);
 
 /**
- * The C function that is used for all registrations with function
- * registries.
+ * Binds variables for all the formal arguments of the given
+ * function (if any), returning a maplet of the bindings.
  */
-zvalue execClosure(void *state, zint argCount, const zvalue *args) {
-    Closure *closure = state;
-    zvalue functionNode = closure->function;
+static zvalue bindArguments(zvalue functionNode,
+                            zint argCount, const zvalue *args) {
+    zvalue result = datMapletEmpty();
     zvalue formals = datMapletGet(functionNode, STR_FORMALS);
-    zvalue statements = datMapletGet(functionNode, STR_STATEMENTS);
-    zvalue yield = datMapletGet(functionNode, STR_YIELD);
 
-    // Bind the formals, creating a context.
+    if (formals == NULL) {
+        return result;
+    }
 
     datHighletAssertType(formals, STR_FORMALS);
     formals = datHighletValue(formals);
 
     zint formalsSize = datSize(formals);
-    zvalue locals = datMapletEmpty();
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = datListletNth(formals, i);
@@ -75,9 +74,24 @@ zvalue execClosure(void *state, zint argCount, const zvalue *args) {
             value = args[i];
         }
 
-        locals = datMapletPut(locals, name, value);
+        result = datMapletPut(result, name, value);
     }
 
+    return result;
+}
+
+/**
+ * The C function that is used for all registrations with function
+ * registries.
+ */
+static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
+    Closure *closure = state;
+    zvalue functionNode = closure->function;
+    zvalue statements = datMapletGet(functionNode, STR_STATEMENTS);
+    zvalue yield = datMapletGet(functionNode, STR_YIELD);
+
+    // Bind the formals, creating a context.
+    zvalue locals = bindArguments(functionNode, argCount, args);
     zcontext ctx = ctxNewChild(closure->parent, locals);
 
     // Using the new context, evaluate the statements.
