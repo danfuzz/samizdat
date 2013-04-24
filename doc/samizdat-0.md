@@ -489,7 +489,7 @@ of how it would be called.
 
 
 <br><br>
-### Primitive Library: Value Definitions
+### Primitive Library: Constants
 
 #### `false`
 
@@ -984,7 +984,7 @@ using the underlying OS's functionality, and encoding the text
 (a stringlet) as a stream of UTF-8 bytes.
 
 <br><br>
-### In-Language Library: Value Definitions
+### In-Language Library: Constants
 
 #### `null`
 
