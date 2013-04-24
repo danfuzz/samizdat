@@ -111,19 +111,27 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
  * Parsing functions
  */
 
+/* Definitions to help avoid boilerplate in the parser functions. */
+#define DEF_PARSE(name) static zvalue parse_##name(ParseState *state)
+#define PARSE(name) parse_##name(state)
+#define MARK() zint mark = cursor(state)
+#define REJECT() do { reset(state, mark); return NULL; } while (0)
+#define ACCEPT(result) do { return (result); } while (1)
+
 /* Defined below. */
-static zvalue parseAtom(ParseState *state);
-static zvalue parseExpression(ParseState *state);
-static zvalue parseFunction(ParseState *state);
+DEF_PARSE(atom);
+DEF_PARSE(expression);
+DEF_PARSE(function);
+
 
 /**
  * Parses `atom+`. Returns a listlet of parsed expressions.
  */
-static zvalue parseAtomPlus(ParseState *state) {
+DEF_PARSE(atomPlus) {
     zvalue result = datListletEmpty();
 
     for (;;) {
-        zvalue atom = parseAtom(state);
+        zvalue atom = PARSE(atom);
         if (atom == NULL) {
             break;
         }
@@ -140,7 +148,7 @@ static zvalue parseAtomPlus(ParseState *state) {
 /**
  * Parses `@"(" @")"` as part of parsing a `call` node.
  */
-static zvalue parseCall1(ParseState *state) {
+DEF_PARSE(call1) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_OPAREN) == NULL) {
@@ -158,18 +166,18 @@ static zvalue parseCall1(ParseState *state) {
 /**
  * Parses a `call` node.
  */
-static zvalue parseCall(ParseState *state) {
+DEF_PARSE(call) {
     zint mark = cursor(state);
-    zvalue function = parseAtom(state);
+    zvalue function = PARSE(atom);
 
     if (function == NULL) {
         return NULL;
     }
 
-    zvalue actuals = parseCall1(state);
+    zvalue actuals = PARSE(call1);
 
     if (actuals == NULL) {
-        actuals = parseAtomPlus(state);
+        actuals = PARSE(atomPlus);
     }
 
     if (actuals == NULL) {
@@ -183,7 +191,7 @@ static zvalue parseCall(ParseState *state) {
 /**
  * Parses a `highlet` node.
  */
-static zvalue parseHighlet(ParseState *state) {
+DEF_PARSE(highlet) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_OSQUARE) == NULL) {
@@ -195,14 +203,14 @@ static zvalue parseHighlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue innerType = parseAtom(state);
+    zvalue innerType = PARSE(atom);
     if (innerType == NULL) {
         reset(state, mark);
         return NULL;
     }
 
     // It's okay for this to be NULL.
-    zvalue innerValue = parseAtom(state);
+    zvalue innerValue = PARSE(atom);
 
     if (readMatch(state, STR_CH_COLON) == NULL) {
         reset(state, mark);
@@ -226,7 +234,7 @@ static zvalue parseHighlet(ParseState *state) {
 /**
  * Parses a `uniqlet` node.
  */
-static zvalue parseUniqlet(ParseState *state) {
+DEF_PARSE(uniqlet) {
     if (readMatch(state, STR_CH_ATAT) == NULL) {
         return NULL;
     }
@@ -237,9 +245,9 @@ static zvalue parseUniqlet(ParseState *state) {
 /**
  * Parses a `binding` node.
  */
-static zvalue parseBinding(ParseState *state) {
+DEF_PARSE(binding) {
     zint mark = cursor(state);
-    zvalue key = parseAtom(state);
+    zvalue key = PARSE(atom);
 
     if (key == NULL) {
         return NULL;
@@ -250,7 +258,7 @@ static zvalue parseBinding(ParseState *state) {
         return NULL;
     }
 
-    zvalue value = parseAtom(state);
+    zvalue value = PARSE(atom);
 
     if (value == NULL) {
         reset(state, mark);
@@ -263,7 +271,7 @@ static zvalue parseBinding(ParseState *state) {
 /**
  * Parses a `maplet` node.
  */
-static zvalue parseMaplet(ParseState *state) {
+DEF_PARSE(maplet) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_AT) == NULL) {
@@ -278,7 +286,7 @@ static zvalue parseMaplet(ParseState *state) {
     zvalue bindings = datListletEmpty();
 
     for (;;) {
-        zvalue binding = parseBinding(state);
+        zvalue binding = PARSE(binding);
 
         if (binding == NULL) {
             break;
@@ -303,7 +311,7 @@ static zvalue parseMaplet(ParseState *state) {
 /**
  * Parses an `emptyMaplet` node.
  */
-static zvalue parseEmptyMaplet(ParseState *state) {
+DEF_PARSE(emptyMaplet) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_AT) == NULL) {
@@ -331,7 +339,7 @@ static zvalue parseEmptyMaplet(ParseState *state) {
 /**
  * Parses a `listlet` node.
  */
-static zvalue parseListlet(ParseState *state) {
+DEF_PARSE(listlet) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_AT) == NULL) {
@@ -343,7 +351,7 @@ static zvalue parseListlet(ParseState *state) {
         return NULL;
     }
 
-    zvalue atoms = parseAtomPlus(state);
+    zvalue atoms = PARSE(atomPlus);
 
     if (atoms == NULL) {
         reset(state, mark);
@@ -361,7 +369,7 @@ static zvalue parseListlet(ParseState *state) {
 /**
  * Parses an `emptyListlet` node.
  */
-static zvalue parseEmptyListlet(ParseState *state) {
+DEF_PARSE(emptyListlet) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_AT) == NULL) {
@@ -384,7 +392,7 @@ static zvalue parseEmptyListlet(ParseState *state) {
 /**
  * Parses a `stringlet` node.
  */
-static zvalue parseStringlet(ParseState *state) {
+DEF_PARSE(stringlet) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_AT) == NULL) {
@@ -408,7 +416,7 @@ static zvalue parseStringlet(ParseState *state) {
 /**
  * Parses an `intlet` node.
  */
-static zvalue parseIntlet(ParseState *state) {
+DEF_PARSE(intlet) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_AT) == NULL) {
@@ -435,7 +443,7 @@ static zvalue parseIntlet(ParseState *state) {
 /**
  * Parses a `varRef` node.
  */
-static zvalue parseVarRef(ParseState *state) {
+DEF_PARSE(varRef) {
     zvalue identifier = readMatch(state, STR_IDENTIFIER);
 
     if (identifier == NULL) {
@@ -448,7 +456,7 @@ static zvalue parseVarRef(ParseState *state) {
 /**
  * Parses a `varDef` node.
  */
-static zvalue parseVarDef(ParseState *state) {
+DEF_PARSE(varDef) {
     zint mark = cursor(state);
     zvalue identifier = readMatch(state, STR_IDENTIFIER);
 
@@ -461,7 +469,7 @@ static zvalue parseVarDef(ParseState *state) {
         return NULL;
     }
 
-    zvalue expression = parseExpression(state);
+    zvalue expression = PARSE(expression);
 
     if (expression == NULL) {
         reset(state, mark);
@@ -477,14 +485,14 @@ static zvalue parseVarDef(ParseState *state) {
 /**
  * Parses a `parenExpression` node.
  */
-static zvalue parseParenExpression(ParseState *state) {
+DEF_PARSE(parenExpression) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_OPAREN) == NULL) {
         return NULL;
     }
 
-    zvalue expression = parseExpression(state);
+    zvalue expression = PARSE(expression);
 
     if (expression == NULL) {
         reset(state, mark);
@@ -502,20 +510,20 @@ static zvalue parseParenExpression(ParseState *state) {
 /**
  * Parses an `atom` node.
  */
-static zvalue parseAtom(ParseState *state) {
+DEF_PARSE(atom) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = parseVarRef(state); }
-    if (result == NULL) { result = parseIntlet(state); }
-    if (result == NULL) { result = parseStringlet(state); }
-    if (result == NULL) { result = parseEmptyListlet(state); }
-    if (result == NULL) { result = parseListlet(state); }
-    if (result == NULL) { result = parseEmptyMaplet(state); }
-    if (result == NULL) { result = parseMaplet(state); }
-    if (result == NULL) { result = parseUniqlet(state); }
-    if (result == NULL) { result = parseHighlet(state); }
-    if (result == NULL) { result = parseFunction(state); }
-    if (result == NULL) { result = parseParenExpression(state); }
+    if (result == NULL) { result = PARSE(varRef); }
+    if (result == NULL) { result = PARSE(intlet); }
+    if (result == NULL) { result = PARSE(stringlet); }
+    if (result == NULL) { result = PARSE(emptyListlet); }
+    if (result == NULL) { result = PARSE(listlet); }
+    if (result == NULL) { result = PARSE(emptyMaplet); }
+    if (result == NULL) { result = PARSE(maplet); }
+    if (result == NULL) { result = PARSE(uniqlet); }
+    if (result == NULL) { result = PARSE(highlet); }
+    if (result == NULL) { result = PARSE(function); }
+    if (result == NULL) { result = PARSE(parenExpression); }
 
     return result;
 }
@@ -523,11 +531,11 @@ static zvalue parseAtom(ParseState *state) {
 /**
  * Parses an `expression` node.
  */
-static zvalue parseExpression(ParseState *state) {
+DEF_PARSE(expression) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = parseCall(state); }
-    if (result == NULL) { result = parseAtom(state); }
+    if (result == NULL) { result = PARSE(call); }
+    if (result == NULL) { result = PARSE(atom); }
 
     return result;
 }
@@ -540,22 +548,22 @@ static zvalue parseExpression(ParseState *state) {
  * backtrack. That said, this function *will* return `NULL` to indicate that
  * what it parsed was in fact an empty statement.
  */
-static zvalue parseStatement(ParseState *state) {
-    zvalue result = parseVarDef(state);
-    return (result != NULL) ? result : parseExpression(state);
+DEF_PARSE(statement) {
+    zvalue result = PARSE(varDef);
+    return (result != NULL) ? result : PARSE(expression);
 }
 
 /**
  * Parses a `yield` node.
  */
-static zvalue parseYield(ParseState *state) {
+DEF_PARSE(yield) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_DIAMOND) == NULL) {
         return NULL;
     }
 
-    zvalue expression = parseExpression(state);
+    zvalue expression = PARSE(expression);
 
     if (expression == NULL) {
         reset(state, mark);
@@ -570,7 +578,7 @@ static zvalue parseYield(ParseState *state) {
 /**
  * Parses a `formals` node.
  */
-static zvalue parseFormals(ParseState *state) {
+DEF_PARSE(formals) {
     zint mark = cursor(state);
     zvalue formals = datListletEmpty();
 
@@ -611,24 +619,24 @@ static zvalue parseFormals(ParseState *state) {
 /**
  * Parses a `program` node.
  */
-static zvalue parseProgram(ParseState *state) {
+DEF_PARSE(program) {
     // Note: An empty token list is a valid program, as is one with
     // a formals list but no statements or yield. So, we never have
     // to backtrack during this rule.
 
-    zvalue formals = parseFormals(state); // Always succeeds.
+    zvalue formals = PARSE(formals); // Always succeeds.
     zvalue statements = datListletEmpty();
     zvalue yield = NULL; // NULL is ok, as it's optional.
 
     for (;;) {
-        yield = parseYield(state);
+        yield = PARSE(yield);
 
         if (yield != NULL) {
             break;
         }
 
         // See note in `parseStatement()` header.
-        zvalue statement = parseStatement(state);
+        zvalue statement = PARSE(statement);
         if (statement != NULL) {
             statements = datListletAppend(statements, statement);
         }
@@ -652,7 +660,7 @@ static zvalue parseProgram(ParseState *state) {
 /**
  * Parses a `function` node.
  */
-static zvalue parseFunction(ParseState *state) {
+DEF_PARSE(function) {
     zint mark = cursor(state);
 
     if (readMatch(state, STR_CH_OCURLY) == NULL) {
@@ -660,7 +668,7 @@ static zvalue parseFunction(ParseState *state) {
     }
 
     // This always succeeds. See note in `parseProgram` above.
-    zvalue result = parseProgram(state);
+    zvalue result = PARSE(program);
 
     if (readMatch(state, STR_CH_CCURLY) == NULL) {
         reset(state, mark);
@@ -679,7 +687,7 @@ static zvalue parseFunction(ParseState *state) {
 zvalue langNodeFromProgramText(zvalue programText) {
     zvalue tokens = tokenize(programText);
     ParseState state = { tokens, datSize(tokens), 0 };
-    zvalue result = parseProgram(&state);
+    zvalue result = parse_program(&state);
 
     if (!isEof(&state)) {
         die("Extra tokens at end of program.");
