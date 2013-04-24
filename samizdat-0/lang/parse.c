@@ -128,6 +128,8 @@ DEF_PARSE(function);
  * Parses `atom+`. Returns a listlet of parsed expressions.
  */
 DEF_PARSE(atomPlus) {
+    MARK();
+
     zvalue result = datListletEmpty();
 
     for (;;) {
@@ -138,9 +140,7 @@ DEF_PARSE(atomPlus) {
         result = datListletAppend(result, atom);
     }
 
-    if (datSize(result) == 0) {
-        return NULL;
-    }
+    if (datSize(result) == 0) { REJECT(); }
 
     return result;
 }
@@ -149,16 +149,10 @@ DEF_PARSE(atomPlus) {
  * Parses `@"(" @")"` as part of parsing a `call` node.
  */
 DEF_PARSE(call1) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_OPAREN) == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_CPAREN) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_OPAREN) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_CPAREN) == NULL) { REJECT(); }
 
     return datListletEmpty();
 }
@@ -167,12 +161,10 @@ DEF_PARSE(call1) {
  * Parses a `call` node.
  */
 DEF_PARSE(call) {
-    zint mark = cursor(state);
+    MARK();
     zvalue function = PARSE(atom);
 
-    if (function == NULL) {
-        return NULL;
-    }
+    if (function == NULL) { REJECT(); }
 
     zvalue actuals = PARSE(call1);
 
@@ -180,10 +172,7 @@ DEF_PARSE(call) {
         actuals = PARSE(atomPlus);
     }
 
-    if (actuals == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (actuals == NULL) { REJECT(); }
 
     return makeCall(function, actuals);
 }
@@ -192,35 +181,19 @@ DEF_PARSE(call) {
  * Parses a `highlet` node.
  */
 DEF_PARSE(highlet) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_COLON) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_COLON) == NULL) { REJECT(); }
 
     zvalue innerType = PARSE(atom);
-    if (innerType == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (innerType == NULL) { REJECT(); }
 
     // It's okay for this to be NULL.
     zvalue innerValue = PARSE(atom);
 
-    if (readMatch(state, STR_CH_COLON) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_COLON) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
 
     zvalue args = datListletAppend(datListletEmpty(), innerType);
 
@@ -235,9 +208,9 @@ DEF_PARSE(highlet) {
  * Parses a `uniqlet` node.
  */
 DEF_PARSE(uniqlet) {
-    if (readMatch(state, STR_CH_ATAT) == NULL) {
-        return NULL;
-    }
+    MARK();
+
+    if (readMatch(state, STR_CH_ATAT) == NULL) { REJECT(); }
 
     return makeCall(makeVarRef(STR_MAKE_UNIQLET), datListletEmpty());
 }
@@ -246,24 +219,14 @@ DEF_PARSE(uniqlet) {
  * Parses a `binding` node.
  */
 DEF_PARSE(binding) {
-    zint mark = cursor(state);
+    MARK();
     zvalue key = PARSE(atom);
 
-    if (key == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_EQUAL) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (key == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_EQUAL) == NULL) { REJECT(); }
 
     zvalue value = PARSE(atom);
-
-    if (value == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (value == NULL) { REJECT(); }
 
     return datListletAppend(datListletAppend(datListletEmpty(), key), value);
 }
@@ -272,16 +235,10 @@ DEF_PARSE(binding) {
  * Parses a `maplet` node.
  */
 DEF_PARSE(maplet) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
 
     zvalue bindings = datListletEmpty();
 
@@ -295,15 +252,8 @@ DEF_PARSE(maplet) {
         bindings = datListletAdd(bindings, binding);
     }
 
-    if (datSize(bindings) == 0) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (datSize(bindings) == 0) { REJECT(); }
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
 
     return makeCall(makeVarRef(STR_MAKE_MAPLET), bindings);
 }
@@ -312,26 +262,12 @@ DEF_PARSE(maplet) {
  * Parses an `emptyMaplet` node.
  */
 DEF_PARSE(emptyMaplet) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_EQUAL) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_EQUAL) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
 
     return datHighletFrom(STR_LITERAL, datMapletEmpty());
 }
@@ -340,28 +276,15 @@ DEF_PARSE(emptyMaplet) {
  * Parses a `listlet` node.
  */
 DEF_PARSE(listlet) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
 
     zvalue atoms = PARSE(atomPlus);
+    if (atoms == NULL) { REJECT(); }
 
-    if (atoms == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
 
     return makeCall(makeVarRef(STR_MAKE_LISTLET), atoms);
 }
@@ -370,21 +293,11 @@ DEF_PARSE(listlet) {
  * Parses an `emptyListlet` node.
  */
 DEF_PARSE(emptyListlet) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
+    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
 
     return datHighletFrom(STR_LITERAL, datListletEmpty());
 }
@@ -393,20 +306,15 @@ DEF_PARSE(emptyListlet) {
  * Parses a `stringlet` node.
  */
 DEF_PARSE(stringlet) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) {
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
 
     zvalue string = readMatch(state, STR_STRING);
 
     if (string == NULL) {
         string = readMatch(state, STR_IDENTIFIER);
-        if (string == NULL) {
-            reset(state, mark);
-            return NULL;
-        }
+        if (string == NULL) { REJECT(); }
     }
 
     zvalue value = datHighletValue(string);
@@ -417,19 +325,14 @@ DEF_PARSE(stringlet) {
  * Parses an `intlet` node.
  */
 DEF_PARSE(intlet) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) {
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
 
     bool negative = (readMatch(state, STR_CH_MINUS) != NULL);
     zvalue integer = readMatch(state, STR_INTEGER);
 
-    if (integer == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (integer == NULL) { REJECT(); }
 
     zvalue value = datHighletValue(integer);
 
@@ -444,11 +347,10 @@ DEF_PARSE(intlet) {
  * Parses a `varRef` node.
  */
 DEF_PARSE(varRef) {
-    zvalue identifier = readMatch(state, STR_IDENTIFIER);
+    MARK();
 
-    if (identifier == NULL) {
-        return NULL;
-    }
+    zvalue identifier = readMatch(state, STR_IDENTIFIER);
+    if (identifier == NULL) { REJECT(); }
 
     return makeVarRef(datHighletValue(identifier));
 }
@@ -457,24 +359,15 @@ DEF_PARSE(varRef) {
  * Parses a `varDef` node.
  */
 DEF_PARSE(varDef) {
-    zint mark = cursor(state);
+    MARK();
+
     zvalue identifier = readMatch(state, STR_IDENTIFIER);
+    if (identifier == NULL) { REJECT(); }
 
-    if (identifier == NULL) {
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_EQUAL) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_EQUAL) == NULL) { REJECT(); }
 
     zvalue expression = PARSE(expression);
-
-    if (expression == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (expression == NULL) { REJECT(); }
 
     zvalue name = datHighletValue(identifier);
     zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
@@ -486,23 +379,14 @@ DEF_PARSE(varDef) {
  * Parses a `parenExpression` node.
  */
 DEF_PARSE(parenExpression) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_OPAREN) == NULL) {
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_OPAREN) == NULL) { REJECT(); }
 
     zvalue expression = PARSE(expression);
+    if (expression == NULL) { REJECT(); }
 
-    if (expression == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
-
-    if (readMatch(state, STR_CH_CPAREN) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_CPAREN) == NULL) { REJECT(); }
 
     return expression;
 }
@@ -557,18 +441,12 @@ DEF_PARSE(statement) {
  * Parses a `yield` node.
  */
 DEF_PARSE(yield) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_DIAMOND) == NULL) {
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_DIAMOND) == NULL) { REJECT(); }
 
     zvalue expression = PARSE(expression);
-
-    if (expression == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (expression == NULL) { REJECT(); }
 
     readMatch(state, STR_CH_SEMICOLON); // Optional semicolon.
     return expression;
@@ -579,7 +457,7 @@ DEF_PARSE(yield) {
  * Parses a `formals` node.
  */
 DEF_PARSE(formals) {
-    zint mark = cursor(state);
+    MARK();
     zvalue formals = datListletEmpty();
 
     for (;;) {
@@ -661,19 +539,14 @@ DEF_PARSE(program) {
  * Parses a `function` node.
  */
 DEF_PARSE(function) {
-    zint mark = cursor(state);
+    MARK();
 
-    if (readMatch(state, STR_CH_OCURLY) == NULL) {
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_OCURLY) == NULL) { REJECT(); }
 
     // This always succeeds. See note in `parseProgram` above.
     zvalue result = PARSE(program);
 
-    if (readMatch(state, STR_CH_CCURLY) == NULL) {
-        reset(state, mark);
-        return NULL;
-    }
+    if (readMatch(state, STR_CH_CCURLY) == NULL) { REJECT(); }
 
     return result;
 }
