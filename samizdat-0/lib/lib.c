@@ -11,8 +11,69 @@
 
 
 /*
- * Helper functions
+ * Helper definitions
  */
+
+// Declarations for all the embedded library source files.
+#define LIB_FILE(name) \
+    extern char name##_sam0[]; \
+    extern unsigned int name##_sam0_len; \
+    static zvalue LIB_NAME_##name = NULL; \
+    static zvalue LIB_TEXT_##name = NULL
+#include "lib-def.h"
+#undef LIB_FILE
+
+/**
+ * Maplet from names to library contents, set up by `initLibraryFiles()`.
+ */
+static zvalue LIBRARY_FILES = NULL;
+
+/**
+ * Maplet of all core library bindings, set up by `initLibraryBindings()`.
+ * Bindings include both primitive and in-language definitions.
+ */
+static zvalue LIBRARY_BINDINGS = NULL;
+
+/**
+ * Sets up `LIBRARY_FILES`.
+ */
+static void initLibraryFiles(void) {
+    if (LIBRARY_FILES != NULL) {
+        return;
+    }
+
+    zvalue result = datMapletEmpty();
+
+    // This adds an element to `result` for each of the embedded files,
+    // and sets up the static name constants.
+    #define LIB_FILE(name) \
+        LIB_NAME_##name = datStringletFromUtf8String(-1, #name); \
+        LIB_TEXT_##name = \
+            datStringletFromUtf8String(name##_sam0_len, name##_sam0); \
+        result = datMapletPut(result, LIB_NAME_##name, LIB_TEXT_##name)
+    #include "lib-def.h"
+    #undef LIB_FILE
+
+    LIBRARY_FILES = result;
+}
+
+/**
+ * Implementation of the loader function passed as the argument
+ * to in-language library files. Loads the named file by lookup in
+ * the `libraryMaplet()`.
+ */
+static zvalue libraryLoader(void *state, zint argCount, const zvalue *args) {
+    requireExactly(argCount, 1);
+
+    zvalue name = args[0];
+    zvalue text = datMapletGet(LIBRARY_FILES, name);
+
+    if (text == NULL) {
+        die("No such library file: %s", datStringletEncodeUtf8(name, NULL));
+    }
+
+    return text;
+}
 
 /**
  * Creates a `zcontext`, and binds all the primitive definitions into it.
@@ -38,57 +99,21 @@ static zcontext primitiveContext(void) {
 }
 
 /**
- * Runs the core library code baked into this executable, returning
- * whatever value it yields, which *should* be the set of exported
- * core library bindings (including whatever primitives are passed
- * through).
+ * Sets up `LIBRARY_BINDINGS`.
  */
-static zvalue runLibrary(zcontext ctx) {
-    zvalue programText =
-        datStringletFromUtf8String(library_sam0_len, library_sam0);
-    zvalue program = langNodeFromProgramText(programText);
-    zvalue function = langEvalExpressionNode(ctx, program);
-
-    return langCall(function, 0, NULL);
-}
-
-
-/*
- * Module functions
- */
-
-/** Documented in header. */
-void requireExactly(zint argCount, zint required) {
-    if (argCount != required) {
-        die("Invalid argument count for primitive: %lld != %lld",
-            argCount, required);
+static void initLibraryBindings(void) {
+    if (LIBRARY_BINDINGS != NULL) {
+        return;
     }
-}
 
-/** Documented in header. */
-void requireRange(zint argCount, zint min, zint max) {
-    if (argCount < min) {
-        die("Invalid argument count for primitive: %lld < %lld",
-            argCount, min);
-    } else if (argCount > max) {
-        die("Invalid argument count for primitive: %lld > %lld",
-            argCount, max);
-    }
-}
+    zcontext ctx = primitiveContext();
+    zvalue mainProgram = langNodeFromProgramText(LIB_TEXT_main);
+    zvalue mainFunction = langEvalExpressionNode(ctx, mainProgram);
+    zvalue loaderFunction = langDefineFunction(libraryLoader, NULL);
 
-/** Documented in header. */
-void requireMinimum(zint argCount, zint minimum) {
-    if (argCount < minimum) {
-        die("Invalid argument count for primitive: %lld < %lld",
-            argCount, minimum);
-    }
-}
-
-/** Documented in header. */
-void requireEven(zint argCount) {
-    if ((argCount & 0x01) != 0) {
-        die("Invalid non-even argument count for primitive: %lld", argCount);
-    }
+    // It is the responsibility of the `main` core library program
+    // to return the full set of core library bindings.
+    LIBRARY_BINDINGS = langCall(mainFunction, 1, &loaderFunction);
 }
 
 
@@ -98,10 +123,11 @@ void requireEven(zint argCount) {
 
 /* Documented in header. */
 zcontext libNewContext(void) {
-    zcontext ctx = primitiveContext();
-    zvalue libraryMaplet = runLibrary(ctx);
+    initLibraryFiles();
+    initLibraryBindings();
+
     zcontext result = langCtxNew();
 
-    langCtxBindAll(result, libraryMaplet);
+    langCtxBindAll(result, LIBRARY_BINDINGS);
     return result;
 }

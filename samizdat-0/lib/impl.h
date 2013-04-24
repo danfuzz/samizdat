@@ -13,12 +13,6 @@
 
 #include "lib.h"
 
-/** Embedded library source code, written in Samizdat Layer 0. */
-extern char library_sam0[];
-
-/** Number of bytes in `lib_library_sam0`. */
-extern unsigned int library_sam0_len;
-
 
 /**
  * Check that the given argument count is even, complaining if not.
