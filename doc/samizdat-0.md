@@ -274,7 +274,7 @@ formals ::= @identifier+ @"*"? ;
 # result: [:
 #             @formals
 #             @[@[@name=(highValue identifier)
-#                 @repeat=@[@type=(@"."|@"*")]]
+#                 (@repeat=@[@type=@"*"])?]
 #               ...]
 #         :]
 
@@ -426,23 +426,24 @@ of various expression nodes.
 
 This represents the formal arguments to a function. `declarations`
 must be a listlet, and each element of the listlet must be
-a maplet that binds these two keys:
+a maplet that binds `@name` and optionally `@repeat`:
 
 * `@name` &mdash; an arbitrary value (but typically a stringlet),
   which indicates the name of the variable to be bound for this
   argument.
 
-* `@repeat` &mdash; indicates how many actual arguments are
-  bound by this formal. It is one of:
-
-  * `@"."` &mdash; indicates that this argument binds exactly one
-    actual argument. The argument variable as bound is the same as the
-    actual argument as passed.
+* `@repeat` &mdash; indicates (if present) that the number of actual
+  arguments bound by this formal is not exactly one. If present it must be:
 
   * `@"*"` &mdash; indicates that this argument binds as many actual
-    arguments as are available. As such, this must only ever be the
-    `repeat` of the last formal. The argument variable as bound is a
-    listlet of all the passed actual arguments that were bound.
+    arguments as are available, including none. As such, this must only
+    ever be the `repeat` of the last formal. The argument variable as bound
+    is a listlet of all the passed actual arguments that were bound.
+
+If no `@repeat` is specified, then the given formal binds exactly one
+actual argument. The argument variable as bound is the same as the
+actual argument as passed.
+
 
 #### `varDef` &mdash; `[:@varDef @[@name=name @value=value]:]`
 

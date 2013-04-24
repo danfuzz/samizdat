@@ -63,10 +63,14 @@ static zvalue bindArguments(zvalue functionNode,
         zvalue repeat = datMapletGet(formal, STR_REPEAT);
         zvalue value;
 
-        if (datOrder(repeat, TOK_CH_STAR) == 0) {
-            value = datListletEmpty();
-            for (/*i*/; i < argCount; i++) {
-                value = datListletAppend(value, args[i]);
+        if (repeat != NULL) {
+            if (datOrder(repeat, TOK_CH_STAR) == 0) {
+                value = datListletEmpty();
+                for (/*i*/; i < argCount; i++) {
+                    value = datListletAppend(value, args[i]);
+                }
+            } else {
+                die("Unknown repeat modifier.");
             }
         } else if (i >= argCount) {
             die("Too few arguments to function: %lld", argCount);

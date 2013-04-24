@@ -453,7 +453,6 @@ DEF_PARSE(formals) {
             break;
         }
 
-        formal = datMapletPut(formal, STR_REPEAT, TOK_CH_DOT);
         formals = datListletAppend(formals, formal);
     }
 
