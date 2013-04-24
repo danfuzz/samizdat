@@ -50,32 +50,38 @@ LINK_BIN=(cc -g)
 
 cd "${progDir}"
 
-libraryFile="${OUT}/library-generated.c"
-# `xxd` names its output after the full input path, hence the `cd`.
-(
-    cd ../samizdat-0-lib;
-    xxd -i "library.sam0" > "${libraryFile}"
-) || exit 1
+C_SOURCES=($(find . -name '*.c'))
+LIB_SOURCES=($(find ../samizdat-0-lib -name '*.sam0'))
 
-SOURCES=($(find . -name '*.c') "${libraryFile}")
+for file in "${LIB_SOURCES[@]}"; do
+    inDir="$(dirname "${file}")"
+    inFile="$(basename "${file}")"
+    outFile="${OUT}/${inFile%.sam0}.c"
+    # `xxd` names its output after the full input path, hence the `cd`.
+    (cd "${inDir}"; xxd -i "${inFile}" > "${outFile}") || exit 1
+    C_SOURCES+=("${outFile}")
+done
 
 errors=0
-for file in "${SOURCES[@]}"; do
+for file in "${C_SOURCES[@]}"; do
     if [[ ${file} =~ ^\./(.*)/([^/]*)\.c$ ]]; then
         # It's a normal source file.
         dir="${BASH_REMATCH[1]}"
         baseName="${BASH_REMATCH[2]}"
         outDir="${OUT}/${dir}"
+        infoName="${file}"
     else
         # It's a generated source file.
         [[ ${file} =~ ^"${OUT}"/(.*)\.c$ ]] || exit 1
         baseName="${BASH_REMATCH[1]}"
+        infoName="${baseName}"
         outDir="${OUT}"
+        infoName="${baseName}.c"
     fi
 
     outFile="${outDir}/${baseName}.o"
     mkdir -p "${outDir}"
-    echo "${COMPILE_C[@]}" -o "${outFile}" "${file}"
+    echo "Compile: ${infoName}"
     "${COMPILE_C[@]}" -o "${outFile}" "${file}" || (( errors++ ))
 done
 
