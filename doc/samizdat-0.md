@@ -482,7 +482,7 @@ of how it would be called.
 * A "rest" argument at the end (capturing zero or more additional
   arguments) is indicated by following it by a `*` (star / asterisk).
 
-* Next the return type is indicate with a `<>` (a "diamond") and
+* Next the return type is indicated with a `<>` (a "diamond") and
   then one of: the specific value returned, name of the type
   returned, or one of `.` `~.` `. | ~.` as described above in the
   section about data types.
