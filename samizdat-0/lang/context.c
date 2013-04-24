@@ -70,7 +70,7 @@ void langCtxBind(zcontext ctx, const char *name, zvalue value) {
 /* Documented in header. */
 void langCtxBindFunction(zcontext ctx, const char *name,
                       zfunction function, void *state) {
-    langCtxBind(ctx, name, funDefine(function, state));
+    langCtxBind(ctx, name, langDefineFunction(function, state));
 }
 
 /* Documented in header. */

@@ -51,12 +51,6 @@ zvalue ctxGet(zcontext ctx, zvalue name);
  */
 
 /**
- * Defines a function with associated (and arbitrary) closure
- * state. Returns the identifying uniqlet that binds to it.
- */
-zvalue funDefine(zfunction function, void *state);
-
-/**
  * Tokenizes a stringlet using Samizdat Layer 0 token syntax. Returns
  * a listlet of tokens.
  */

@@ -112,7 +112,7 @@ static zvalue execFunction(zcontext ctx, zvalue function) {
     closure->parent = ctx;
     closure->function = datHighletValue(function);
 
-    return funDefine(execClosure, closure);
+    return langDefineFunction(execClosure, closure);
 }
 
 /**

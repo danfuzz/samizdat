@@ -26,11 +26,11 @@ typedef struct {
 
 
 /*
- * Module functions
+ * Exported functions
  */
 
 /* Documented in header. */
-zvalue funDefine(zfunction function, void *state) {
+zvalue langDefineFunction(zfunction function, void *state) {
     Function *entry = zalloc(sizeof(Function));
 
     entry->function = function;
@@ -38,11 +38,6 @@ zvalue funDefine(zfunction function, void *state) {
 
     return datUniqletWith(functionKey, entry);
 }
-
-
-/*
- * Exported functions
- */
 
 /* Documented in header. */
 zvalue langCall(zvalue functionId, zint argCount, const zvalue *args) {

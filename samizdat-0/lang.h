@@ -70,7 +70,7 @@ zvalue langLowTypeName(zvalue value);
 
 
 /*
- * Function application
+ * Function definition and application
  */
 
 /**
@@ -84,6 +84,12 @@ zvalue langApply(zvalue functionId, zvalue args);
  * it the given number of arguments in the indicated array.
  */
 zvalue langCall(zvalue functionId, zint argCount, const zvalue *args);
+
+/**
+ * Defines a function with associated (and arbitrary) closure
+ * state. Returns the identifying uniqlet that binds to it.
+ */
+zvalue langDefineFunction(zfunction function, void *state);
 
 
 /*
