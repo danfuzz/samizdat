@@ -171,16 +171,12 @@ DEF_PARSE(call1) {
 DEF_PARSE(call) {
     MARK();
 
-    zvalue function = PARSE(atom);
-    REJECT_IF(function == NULL);
+    zvalue function = PARSE_OR_REJECT(atom);
 
     zvalue actuals = PARSE(call1);
-
     if (actuals == NULL) {
-        actuals = PARSE(atomPlus);
+        actuals = PARSE_OR_REJECT(atomPlus);
     }
-
-    REJECT_IF(actuals == NULL);
 
     return makeCall(function, actuals);
 }
@@ -193,13 +189,8 @@ DEF_PARSE(highlet) {
 
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_COLON);
-
-    zvalue innerType = PARSE(atom);
-    REJECT_IF(innerType == NULL);
-
-    // It's okay for this to be NULL.
-    zvalue innerValue = PARSE(atom);
-
+    zvalue innerType = PARSE_OR_REJECT(atom);
+    zvalue innerValue = PARSE(atom); // It's okay for this to be NULL.
     MATCH_OR_REJECT(CH_COLON);
     MATCH_OR_REJECT(CH_CSQUARE);
 
@@ -229,13 +220,9 @@ DEF_PARSE(uniqlet) {
 DEF_PARSE(binding) {
     MARK();
 
-    zvalue key = PARSE(atom);
-    REJECT_IF(key == NULL);
-
+    zvalue key = PARSE_OR_REJECT(atom);
     MATCH_OR_REJECT(CH_EQUAL);
-
-    zvalue value = PARSE(atom);
-    REJECT_IF(value == NULL);
+    zvalue value = PARSE_OR_REJECT(atom);
 
     return datListletAppend(datListletAppend(datListletEmpty(), key), value);
 }
@@ -253,7 +240,6 @@ DEF_PARSE(maplet) {
 
     for (;;) {
         zvalue binding = PARSE(binding);
-
         if (binding == NULL) {
             break;
         }
@@ -289,10 +275,7 @@ DEF_PARSE(listlet) {
 
     MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
-
-    zvalue atoms = PARSE(atomPlus);
-    REJECT_IF(atoms == NULL);
-
+    zvalue atoms = PARSE_OR_REJECT(atomPlus);
     MATCH_OR_REJECT(CH_CSQUARE);
 
     return makeCall(makeVarRef(STR_MAKE_LISTLET), atoms);
@@ -320,7 +303,6 @@ DEF_PARSE(stringlet) {
     MATCH_OR_REJECT(CH_AT);
 
     zvalue string = MATCH(STRING);
-
     if (string == NULL) {
         string = MATCH_OR_REJECT(IDENTIFIER);
     }
@@ -336,9 +318,7 @@ DEF_PARSE(intlet) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
-
     bool negative = (MATCH(CH_MINUS) != NULL);
-
     zvalue integer = MATCH_OR_REJECT(INTEGER);
     zvalue value = datHighletValue(integer);
 
@@ -367,9 +347,7 @@ DEF_PARSE(varDef) {
     MARK();
 
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
-
     MATCH_OR_REJECT(CH_EQUAL);
-
     zvalue expression = PARSE_OR_REJECT(expression);
 
     zvalue name = datHighletValue(identifier);
@@ -385,9 +363,7 @@ DEF_PARSE(parenExpression) {
     MARK();
 
     MATCH_OR_REJECT(CH_OPAREN);
-
     zvalue expression = PARSE_OR_REJECT(expression);
-
     MATCH_OR_REJECT(CH_CPAREN);
 
     return expression;
@@ -446,10 +422,9 @@ DEF_PARSE(yield) {
     MARK();
 
     MATCH_OR_REJECT(CH_DIAMOND);
-
     zvalue expression = PARSE_OR_REJECT(expression);
-
     MATCH(CH_SEMICOLON); // Optional semicolon.
+
     return expression;
 }
 
