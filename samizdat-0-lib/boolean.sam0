@@ -1,0 +1,46 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Comparisons / Booleans
+#
+
+# Documented in Samizdat Layer 0 spec.
+eq = { v1 v2 :: <> lowOrderIs v1 v2 @0 };
+
+# Documented in Samizdat Layer 0 spec.
+ge = { v1 v2 :: <> lowOrderIs v1 v2 @1 @0 };
+
+# Documented in Samizdat Layer 0 spec.
+gt = { v1 v2 :: <> lowOrderIs v1 v2 @1 };
+
+# Documented in Samizdat Layer 0 spec.
+lt = { v1 v2 :: <> lowOrderIs v1 v2 @-1 };
+
+# Documented in Samizdat Layer 0 spec.
+le = { v1 v2 :: <> lowOrderIs v1 v2 @-1 @0 };
+
+# Documented in Samizdat Layer 0 spec.
+ne = { v1 v2 :: <> lowOrderIs v1 v2 @-1 @1 };
+
+# Documented in Samizdat Layer 0 spec.
+not = { value ::
+    <> ifTrue { <> eq value true }
+        { <> false }
+        {
+            <> ifTrue { <> eq value false }
+                { <> true }
+                { die @"Non-boolean argument to `not`." }
+        }
+};
+
+<> @[
+    @eq = eq
+    @ge = ge
+    @gt = gt
+    @le = le
+    @lt = lt
+    @ne = ne
+    @not = not
+]

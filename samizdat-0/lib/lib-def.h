@@ -13,5 +13,8 @@
  * `samizdat-0` executable.
  */
 
+LIB_FILE(boolean);
+LIB_FILE(const);
 LIB_FILE(main);
-LIB_FILE(sourceStringlet);
+LIB_FILE(type);
+LIB_FILE(unsorted);
