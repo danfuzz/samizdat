@@ -7,7 +7,7 @@
 #
 
 #
-# Helper functions
+# Helper definitions
 #
 
 # Single-character stringlets `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
@@ -38,34 +38,43 @@ doIntlet = { intlet ::
     }
 };
 
-# Helper for stringifying stringlets: Returns the hex code for the given
-# value. Assumes it's not passed `@0`.
-intletHex = { value ::
-    <> ifTrue { <> eq value @0 }
-        { <> @"" }
-        {
-            digit = stringletNth @"0123456789abcdef" (imod value @16);
-            more = idiv value @16;
-            <> stringletAdd (intletHex more) digit
-        }
+# Helper for stringifying stringlets: Returns the hex form for the given
+# character. Assumes it's not passed `@0`.
+stringletHexEscape = { ch ::
+    intletHex = { value ::
+        <> ifTrue { <> eq value @0 }
+            { <> @"" }
+            {
+                digit = stringletNth @"0123456789abcdef" (imod value @16);
+                more = idiv value @16;
+                <> stringletAdd (intletHex more) digit
+            }
+    };
+
+    <> stringletCat @"\\x" (intletHex (intletFromStringlet ch)) @";"
 };
+
+# Maplet of special-case characters to their stringified forms.
+SPECIALCHARS = @[
+    CHAR0 = @"\\0"
+    @"\n" = @"\\n"
+    @"\"" = @"\\\""
+    @"\\" = @"\\\\"
+];
 
 # Helper for stringifying stringlets: Returns the converted form of the
 # given character.
 stringletChar = { ch ::
-    <> if { <> eq ch CHAR0 } {
-        <> @"\\0"
-    } { <> eq ch @"\n" } {
-        <> @"\\n"
-    } { <> or { <> eq ch @"\"" } { <> eq ch @"\\" } } {
-        <> stringletAdd @"\\" ch
-    } { <> or { <> lt ch @" " }
-              { <> and { <> ge ch CHAR127 } { <> le ch CHAR159 } } } {
-        # These are the ranges for nonprinting control characters.
-        <> stringletCat @"\\x" (intletHex (intletFromStringlet ch)) @";"
-    } else {
-        <> ch
-    }
+    <> ifValue { <> mapletGet SPECIALCHARS ch }
+        { special :: <> special }
+        {
+            # This checks for the ranges of nonprinting control characters.
+            <> ifTrue { <> or { <> lt ch @" " }
+                              { <> and { <> ge ch CHAR127 }
+                                       { <> le ch CHAR159 } } }
+                { <> stringletHexEscape ch }
+                { <> ch }
+        }
 };
 
 # Stringifies a stringlet.
