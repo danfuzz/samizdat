@@ -29,6 +29,7 @@ main = { name rest* ::
         writeFile @"/dev/stdout" @"Hello, Самиздат!\n\n"
     };
 
+    process rest;
     process @0;
     process @98765;
     process @-12345;
