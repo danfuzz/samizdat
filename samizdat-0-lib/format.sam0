@@ -100,7 +100,9 @@ doMaplet = { maplet ::
                 (sourceStringlet value)
         };
 
-    <> stringletCat @"@[" body @"]"
+    <> ifTrue { <> eq maplet @[=] }
+        { <> @"@[=]" }
+        { <> stringletCat @"@[" body @"]" }
 };
 
 # Stringifies a highlet.
@@ -137,11 +139,7 @@ doUnknown = { unknown ::
 
 # Documented in Samizdat Layer 0 spec.
 sourceStringlet = { value ::
-    <> if { <> eq value @[] } {
-        <> @"@[]"
-    } { <> eq value @[=] } {
-        <> @"@[=]"
-    } { <> isIntlet value } {
+    <> if { <> isIntlet value } {
         <> doIntlet value
     } { <> isStringlet value } {
         <> doStringlet value
