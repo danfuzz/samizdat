@@ -114,12 +114,17 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 /* Definitions to help avoid boilerplate in the parser functions. */
 #define DEF_PARSE(name) static zvalue parse_##name(ParseState *state)
 #define PARSE(name) parse_##name(state)
-#define MARK() zint mark = cursor(state)
+#define MATCH(tokenType) readMatch(state, (STR_##tokenType))
+#define MARK() zint mark = cursor(state); zvalue tempResult
 #define REJECT() do { reset(state, mark); return NULL; } while (0)
 #define REJECT_IF(condition) \
     do { if ((condition)) REJECT(); } while (0)
 #define MATCH_OR_REJECT(tokenType) \
-    REJECT_IF(readMatch(state, (tokenType)) == NULL)
+    tempResult = MATCH(tokenType); \
+    REJECT_IF(tempResult == NULL)
+#define PARSE_OR_REJECT(name) \
+    tempResult = PARSE(name); \
+    REJECT_IF(tempResult == NULL)
 
 /* Defined below. */
 DEF_PARSE(atom);
@@ -154,8 +159,8 @@ DEF_PARSE(atomPlus) {
 DEF_PARSE(call1) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_OPAREN);
-    MATCH_OR_REJECT(STR_CH_CPAREN);
+    MATCH_OR_REJECT(CH_OPAREN);
+    MATCH_OR_REJECT(CH_CPAREN);
 
     return datListletEmpty();
 }
@@ -186,8 +191,8 @@ DEF_PARSE(call) {
 DEF_PARSE(highlet) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_OSQUARE);
-    MATCH_OR_REJECT(STR_CH_COLON);
+    MATCH_OR_REJECT(CH_OSQUARE);
+    MATCH_OR_REJECT(CH_COLON);
 
     zvalue innerType = PARSE(atom);
     REJECT_IF(innerType == NULL);
@@ -195,8 +200,8 @@ DEF_PARSE(highlet) {
     // It's okay for this to be NULL.
     zvalue innerValue = PARSE(atom);
 
-    MATCH_OR_REJECT(STR_CH_COLON);
-    MATCH_OR_REJECT(STR_CH_CSQUARE);
+    MATCH_OR_REJECT(CH_COLON);
+    MATCH_OR_REJECT(CH_CSQUARE);
 
     zvalue args = datListletAppend(datListletEmpty(), innerType);
 
@@ -213,7 +218,7 @@ DEF_PARSE(highlet) {
 DEF_PARSE(uniqlet) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_ATAT);
+    MATCH_OR_REJECT(CH_ATAT);
 
     return makeCall(makeVarRef(STR_MAKE_UNIQLET), datListletEmpty());
 }
@@ -227,7 +232,7 @@ DEF_PARSE(binding) {
     zvalue key = PARSE(atom);
     REJECT_IF(key == NULL);
 
-    MATCH_OR_REJECT(STR_CH_EQUAL);
+    MATCH_OR_REJECT(CH_EQUAL);
 
     zvalue value = PARSE(atom);
     REJECT_IF(value == NULL);
@@ -241,8 +246,8 @@ DEF_PARSE(binding) {
 DEF_PARSE(maplet) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_AT);
-    MATCH_OR_REJECT(STR_CH_OSQUARE);
+    MATCH_OR_REJECT(CH_AT);
+    MATCH_OR_REJECT(CH_OSQUARE);
 
     zvalue bindings = datListletEmpty();
 
@@ -257,7 +262,7 @@ DEF_PARSE(maplet) {
     }
 
     REJECT_IF(datSize(bindings) == 0);
-    MATCH_OR_REJECT(STR_CH_CSQUARE);
+    MATCH_OR_REJECT(CH_CSQUARE);
 
     return makeCall(makeVarRef(STR_MAKE_MAPLET), bindings);
 }
@@ -268,10 +273,10 @@ DEF_PARSE(maplet) {
 DEF_PARSE(emptyMaplet) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_AT);
-    MATCH_OR_REJECT(STR_CH_OSQUARE);
-    MATCH_OR_REJECT(STR_CH_EQUAL);
-    MATCH_OR_REJECT(STR_CH_CSQUARE);
+    MATCH_OR_REJECT(CH_AT);
+    MATCH_OR_REJECT(CH_OSQUARE);
+    MATCH_OR_REJECT(CH_EQUAL);
+    MATCH_OR_REJECT(CH_CSQUARE);
 
     return datHighletFrom(STR_LITERAL, datMapletEmpty());
 }
@@ -282,13 +287,13 @@ DEF_PARSE(emptyMaplet) {
 DEF_PARSE(listlet) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_AT);
-    MATCH_OR_REJECT(STR_CH_OSQUARE);
+    MATCH_OR_REJECT(CH_AT);
+    MATCH_OR_REJECT(CH_OSQUARE);
 
     zvalue atoms = PARSE(atomPlus);
     REJECT_IF(atoms == NULL);
 
-    MATCH_OR_REJECT(STR_CH_CSQUARE);
+    MATCH_OR_REJECT(CH_CSQUARE);
 
     return makeCall(makeVarRef(STR_MAKE_LISTLET), atoms);
 }
@@ -299,9 +304,9 @@ DEF_PARSE(listlet) {
 DEF_PARSE(emptyListlet) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_AT);
-    MATCH_OR_REJECT(STR_CH_OSQUARE);
-    MATCH_OR_REJECT(STR_CH_CSQUARE);
+    MATCH_OR_REJECT(CH_AT);
+    MATCH_OR_REJECT(CH_OSQUARE);
+    MATCH_OR_REJECT(CH_CSQUARE);
 
     return datHighletFrom(STR_LITERAL, datListletEmpty());
 }
@@ -312,13 +317,12 @@ DEF_PARSE(emptyListlet) {
 DEF_PARSE(stringlet) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_AT);
+    MATCH_OR_REJECT(CH_AT);
 
-    zvalue string = readMatch(state, STR_STRING);
+    zvalue string = MATCH(STRING);
 
     if (string == NULL) {
-        string = readMatch(state, STR_IDENTIFIER);
-        REJECT_IF(string == NULL);
+        string = MATCH_OR_REJECT(IDENTIFIER);
     }
 
     zvalue value = datHighletValue(string);
@@ -331,13 +335,11 @@ DEF_PARSE(stringlet) {
 DEF_PARSE(intlet) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_AT);
+    MATCH_OR_REJECT(CH_AT);
 
-    bool negative = (readMatch(state, STR_CH_MINUS) != NULL);
+    bool negative = (MATCH(CH_MINUS) != NULL);
 
-    zvalue integer = readMatch(state, STR_INTEGER);
-    REJECT_IF(integer == NULL);
-
+    zvalue integer = MATCH_OR_REJECT(INTEGER);
     zvalue value = datHighletValue(integer);
 
     if (negative) {
@@ -353,8 +355,7 @@ DEF_PARSE(intlet) {
 DEF_PARSE(varRef) {
     MARK();
 
-    zvalue identifier = readMatch(state, STR_IDENTIFIER);
-    REJECT_IF(identifier == NULL);
+    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
 
     return makeVarRef(datHighletValue(identifier));
 }
@@ -365,13 +366,11 @@ DEF_PARSE(varRef) {
 DEF_PARSE(varDef) {
     MARK();
 
-    zvalue identifier = readMatch(state, STR_IDENTIFIER);
-    REJECT_IF(identifier == NULL);
+    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
 
-    MATCH_OR_REJECT(STR_CH_EQUAL);
+    MATCH_OR_REJECT(CH_EQUAL);
 
-    zvalue expression = PARSE(expression);
-    REJECT_IF(expression == NULL);
+    zvalue expression = PARSE_OR_REJECT(expression);
 
     zvalue name = datHighletValue(identifier);
     zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
@@ -385,12 +384,11 @@ DEF_PARSE(varDef) {
 DEF_PARSE(parenExpression) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_OPAREN);
+    MATCH_OR_REJECT(CH_OPAREN);
 
-    zvalue expression = PARSE(expression);
-    REJECT_IF(expression == NULL);
+    zvalue expression = PARSE_OR_REJECT(expression);
 
-    MATCH_OR_REJECT(STR_CH_CPAREN);
+    MATCH_OR_REJECT(CH_CPAREN);
 
     return expression;
 }
@@ -447,12 +445,11 @@ DEF_PARSE(statement) {
 DEF_PARSE(yield) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_DIAMOND);
+    MATCH_OR_REJECT(CH_DIAMOND);
 
-    zvalue expression = PARSE(expression);
-    REJECT_IF(expression == NULL);
+    zvalue expression = PARSE_OR_REJECT(expression);
 
-    readMatch(state, STR_CH_SEMICOLON); // Optional semicolon.
+    MATCH(CH_SEMICOLON); // Optional semicolon.
     return expression;
 }
 
@@ -465,7 +462,7 @@ DEF_PARSE(formals) {
     zvalue formals = datListletEmpty();
 
     for (;;) {
-        zvalue identifier = readMatch(state, STR_IDENTIFIER);
+        zvalue identifier = MATCH(IDENTIFIER);
         if (identifier == NULL) {
             break;
         }
@@ -473,7 +470,7 @@ DEF_PARSE(formals) {
         zvalue formal = datMapletPut(datMapletEmpty(), STR_NAME,
                                      datHighletValue(identifier));
 
-        if (readMatch(state, STR_CH_STAR) != NULL) {
+        if (MATCH(CH_STAR) != NULL) {
             // In Samizdat Layer 0, the only modifier for a formal is
             // `*` which has to be on the last formal.
             formal = datMapletPut(formal, STR_REPEAT, TOK_CH_STAR);
@@ -486,7 +483,7 @@ DEF_PARSE(formals) {
     }
 
     if (datSize(formals) != 0) {
-        if (readMatch(state, STR_CH_COLONCOLON) == NULL) {
+        if (MATCH(CH_COLONCOLON) == NULL) {
             // We didn't find the expected `::` which means there
             // was no formals list at all. So reset the parse, but
             // still succeed with an empty formals list.
@@ -523,7 +520,7 @@ DEF_PARSE(program) {
             statements = datListletAppend(statements, statement);
         }
 
-        if (readMatch(state, STR_CH_SEMICOLON) == NULL) {
+        if (MATCH(CH_SEMICOLON) == NULL) {
             break;
         }
     }
@@ -544,12 +541,12 @@ DEF_PARSE(program) {
 DEF_PARSE(function) {
     MARK();
 
-    MATCH_OR_REJECT(STR_CH_OCURLY);
+    MATCH_OR_REJECT(CH_OCURLY);
 
     // This always succeeds. See note in `parseProgram` above.
     zvalue result = PARSE(program);
 
-    MATCH_OR_REJECT(STR_CH_CCURLY);
+    MATCH_OR_REJECT(CH_CCURLY);
 
     return result;
 }
