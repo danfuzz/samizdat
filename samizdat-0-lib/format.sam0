@@ -22,9 +22,8 @@ doIntlet = { intlet ::
             { <> start }
             {
                 digit = iadd (imod value @10) @48;   # 48 == "0"
-                more = idiv value @10;
                 <> stringletAdd
-                    (intletBody start more)
+                    (intletBody start (idiv value @10))
                     (stringletFromIntlet digit)
             }
     };
