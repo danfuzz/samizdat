@@ -117,15 +117,6 @@ static zvalue parseExpression(ParseState *state);
 static zvalue parseFunction(ParseState *state);
 
 /**
- * Returns whether the given value is the empty literal.
- */
-static bool isEmptyLiteral(zvalue value) {
-    return (datType(value) == DAT_HIGHLET)
-        && datHighletTypeIs(value, STR_LITERAL)
-        && (datHighletValue(value) == NULL);
-}
-
-/**
  * Parses `atom+`. Returns a listlet of parsed expressions.
  */
 static zvalue parseAtomPlus(ParseState *state) {
@@ -543,17 +534,15 @@ static zvalue parseExpression(ParseState *state) {
 
 /**
  * Parses a `statement` node.
+ *
+ * Note: Per the grammar, statement parsing always succeeds, because the
+ * empty token list is a valid statement. So, this function never needs to
+ * backtrack. That said, this function *will* return `NULL` to indicate that
+ * what it parsed was in fact an empty statement.
  */
 static zvalue parseStatement(ParseState *state) {
-    // Note: This always succeeds, because the empty token list is
-    // a valid statement. So, this function never needs to backtrack.
-
-    zvalue result = result = parseVarDef(state);
-
-    if (result == NULL) { result = parseExpression(state); }
-    if (result == NULL) { result = datHighletFrom(STR_LITERAL, NULL); }
-
-    return result;
+    zvalue result = parseVarDef(state);
+    return (result != NULL) ? result : parseExpression(state);
 }
 
 /**
@@ -638,9 +627,9 @@ static zvalue parseProgram(ParseState *state) {
             break;
         }
 
+        // See note in `parseStatement()` header.
         zvalue statement = parseStatement(state);
-
-        if (!isEmptyLiteral(statement)) {
+        if (statement != NULL) {
             statements = datListletAppend(statements, statement);
         }
 
