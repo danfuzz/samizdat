@@ -118,8 +118,10 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 #define REJECT() do { reset(state, mark); return NULL; } while (0)
 #define ACCEPT(result) do { return (result); } while (1)
 
+#define REJECT_IF(condition) \
+    do { if ((condition)) REJECT(); } while (0)
 #define MATCH_OR_REJECT(tokenType) \
-    do { if (readMatch(state, (tokenType)) == NULL) REJECT(); } while (0)
+    REJECT_IF(readMatch(state, (tokenType)) == NULL)
 
 /* Defined below. */
 DEF_PARSE(atom);
