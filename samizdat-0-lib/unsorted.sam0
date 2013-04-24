@@ -34,41 +34,6 @@ generalReduce = { base value func size nthFunc ::
 #
 
 # Documented in Samizdat Layer 0 spec.
-ifFalse = { predicate falseFunction trueFunction ::
-    <> ifTrue predicate trueFunction falseFunction
-};
-
-# Documented in Samizdat Layer 0 spec.
-ifVoid = { predicate voidFunction valueFunction ::
-    <> ifValue predicate valueFunction voidFunction
-};
-
-# Documented in Samizdat Layer 0 spec.
-if = { predicate consequent rest* ::
-    <> ifTrue predicate
-        consequent
-        # Note: `{}` by definition is a function that returns void.
-        { <> ifTrue { <> eq rest @[] } {} { <> apply if rest } }
-};
-
-# Documented in Samizdat Layer 0 spec.
-else = { <> true };
-
-# Documented in Samizdat Layer 0 spec.
-and = { predicate rest* ::
-    <> ifTrue predicate
-        { <> ifTrue { <> eq rest @[] } { <> true } { <> apply and rest } }
-        { <> false }
-};
-
-# Documented in Samizdat Layer 0 spec.
-or = { predicate rest* ::
-    <> ifTrue predicate
-        { <> true }
-        { <> ifTrue { <> eq rest @[] } { <> false } { <> apply and rest } }
-};
-
-# Documented in Samizdat Layer 0 spec.
 listletAppend = { listlet value ::
     <> listletInsNth listlet (lowSize listlet) value
 };
@@ -235,11 +200,6 @@ sourceStringlet = { value ::
 };
 
 <> @[
-    @and = and
-    @else = else
-    @if = if
-    @ifFalse = ifFalse
-    @ifVoid = ifVoid
     @listletAppend = listletAppend
     @listletCat = listletCat
     @listletMap = listletMap
@@ -248,7 +208,6 @@ sourceStringlet = { value ::
     @mapletCat = mapletCat
     @mapletMap = mapletMap
     @mapletReduce = mapletReduce
-    @or = or
     @sourceStringlet = sourceStringlet
     @stringletCat = stringletCat
     @stringletMap = stringletMap

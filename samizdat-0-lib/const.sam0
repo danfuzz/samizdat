@@ -11,4 +11,4 @@ null = [:@null:];
 
 <> @[
     @null = null
-];
+]

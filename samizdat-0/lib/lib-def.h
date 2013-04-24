@@ -14,6 +14,7 @@
  */
 
 LIB_FILE(boolean);
+LIB_FILE(conditional);
 LIB_FILE(const);
 LIB_FILE(main);
 LIB_FILE(type);

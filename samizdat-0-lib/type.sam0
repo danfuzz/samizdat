@@ -43,4 +43,4 @@ isUniqlet = { value ::
     @isMaplet = isMaplet
     @isStringlet = isStringlet
     @isUniqlet = isUniqlet
-];
+]
