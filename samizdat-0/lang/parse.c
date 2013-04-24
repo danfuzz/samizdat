@@ -146,7 +146,7 @@ DEF_PARSE(atomPlus) {
         result = datListletAppend(result, atom);
     }
 
-    if (datSize(result) == 0) REJECT();
+    REJECT_IF(datSize(result) == 0);
 
     return result;
 }
@@ -168,9 +168,9 @@ DEF_PARSE(call1) {
  */
 DEF_PARSE(call) {
     MARK();
-    zvalue function = PARSE(atom);
 
-    if (function == NULL) REJECT();
+    zvalue function = PARSE(atom);
+    REJECT_IF(function == NULL);
 
     zvalue actuals = PARSE(call1);
 
@@ -178,7 +178,7 @@ DEF_PARSE(call) {
         actuals = PARSE(atomPlus);
     }
 
-    if (actuals == NULL) REJECT();
+    REJECT_IF(actuals == NULL);
 
     return makeCall(function, actuals);
 }
@@ -193,7 +193,7 @@ DEF_PARSE(highlet) {
     MATCH_OR_REJECT(STR_CH_COLON);
 
     zvalue innerType = PARSE(atom);
-    if (innerType == NULL) REJECT();
+    REJECT_IF(innerType == NULL);
 
     // It's okay for this to be NULL.
     zvalue innerValue = PARSE(atom);
@@ -226,13 +226,14 @@ DEF_PARSE(uniqlet) {
  */
 DEF_PARSE(binding) {
     MARK();
-    zvalue key = PARSE(atom);
 
-    if (key == NULL) REJECT();
+    zvalue key = PARSE(atom);
+    REJECT_IF(key == NULL);
+
     MATCH_OR_REJECT(STR_CH_EQUAL);
 
     zvalue value = PARSE(atom);
-    if (value == NULL) REJECT();
+    REJECT_IF(value == NULL);
 
     return datListletAppend(datListletAppend(datListletEmpty(), key), value);
 }
@@ -258,7 +259,7 @@ DEF_PARSE(maplet) {
         bindings = datListletAdd(bindings, binding);
     }
 
-    if (datSize(bindings) == 0) REJECT();
+    REJECT_IF(datSize(bindings) == 0);
     MATCH_OR_REJECT(STR_CH_CSQUARE);
 
     return makeCall(makeVarRef(STR_MAKE_MAPLET), bindings);
@@ -288,7 +289,7 @@ DEF_PARSE(listlet) {
     MATCH_OR_REJECT(STR_CH_OSQUARE);
 
     zvalue atoms = PARSE(atomPlus);
-    if (atoms == NULL) REJECT();
+    REJECT_IF(atoms == NULL);
 
     MATCH_OR_REJECT(STR_CH_CSQUARE);
 
@@ -320,7 +321,7 @@ DEF_PARSE(stringlet) {
 
     if (string == NULL) {
         string = readMatch(state, STR_IDENTIFIER);
-        if (string == NULL) REJECT();
+        REJECT_IF(string == NULL);
     }
 
     zvalue value = datHighletValue(string);
@@ -336,9 +337,9 @@ DEF_PARSE(intlet) {
     MATCH_OR_REJECT(STR_CH_AT);
 
     bool negative = (readMatch(state, STR_CH_MINUS) != NULL);
-    zvalue integer = readMatch(state, STR_INTEGER);
 
-    if (integer == NULL) REJECT();
+    zvalue integer = readMatch(state, STR_INTEGER);
+    REJECT_IF(integer == NULL);
 
     zvalue value = datHighletValue(integer);
 
@@ -356,7 +357,7 @@ DEF_PARSE(varRef) {
     MARK();
 
     zvalue identifier = readMatch(state, STR_IDENTIFIER);
-    if (identifier == NULL) REJECT();
+    REJECT_IF(identifier == NULL);
 
     return makeVarRef(datHighletValue(identifier));
 }
@@ -368,12 +369,12 @@ DEF_PARSE(varDef) {
     MARK();
 
     zvalue identifier = readMatch(state, STR_IDENTIFIER);
-    if (identifier == NULL) REJECT();
+    REJECT_IF(identifier == NULL);
 
     MATCH_OR_REJECT(STR_CH_EQUAL);
 
     zvalue expression = PARSE(expression);
-    if (expression == NULL) REJECT();
+    REJECT_IF(expression == NULL);
 
     zvalue name = datHighletValue(identifier);
     zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
@@ -390,7 +391,7 @@ DEF_PARSE(parenExpression) {
     MATCH_OR_REJECT(STR_CH_OPAREN);
 
     zvalue expression = PARSE(expression);
-    if (expression == NULL) REJECT();
+    REJECT_IF(expression == NULL);
 
     MATCH_OR_REJECT(STR_CH_CPAREN);
 
@@ -452,7 +453,7 @@ DEF_PARSE(yield) {
     MATCH_OR_REJECT(STR_CH_DIAMOND);
 
     zvalue expression = PARSE(expression);
-    if (expression == NULL) REJECT();
+    REJECT_IF(expression == NULL);
 
     readMatch(state, STR_CH_SEMICOLON); // Optional semicolon.
     return expression;
@@ -531,7 +532,6 @@ DEF_PARSE(program) {
     }
 
     zvalue value = datMapletPut(datMapletEmpty(), STR_FORMALS, formals);
-
     value = datMapletPut(value, STR_STATEMENTS, statements);
 
     if (yield != NULL) {
