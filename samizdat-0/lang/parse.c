@@ -118,6 +118,9 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 #define REJECT() do { reset(state, mark); return NULL; } while (0)
 #define ACCEPT(result) do { return (result); } while (1)
 
+#define MATCH_OR_REJECT(tokenType) \
+    do { if (readMatch(state, (tokenType)) == NULL) REJECT(); } while (0)
+
 /* Defined below. */
 DEF_PARSE(atom);
 DEF_PARSE(expression);
@@ -137,10 +140,11 @@ DEF_PARSE(atomPlus) {
         if (atom == NULL) {
             break;
         }
+
         result = datListletAppend(result, atom);
     }
 
-    if (datSize(result) == 0) { REJECT(); }
+    if (datSize(result) == 0) REJECT();
 
     return result;
 }
@@ -151,8 +155,8 @@ DEF_PARSE(atomPlus) {
 DEF_PARSE(call1) {
     MARK();
 
-    if (readMatch(state, STR_CH_OPAREN) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_CPAREN) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_OPAREN);
+    MATCH_OR_REJECT(STR_CH_CPAREN);
 
     return datListletEmpty();
 }
@@ -164,7 +168,7 @@ DEF_PARSE(call) {
     MARK();
     zvalue function = PARSE(atom);
 
-    if (function == NULL) { REJECT(); }
+    if (function == NULL) REJECT();
 
     zvalue actuals = PARSE(call1);
 
@@ -172,7 +176,7 @@ DEF_PARSE(call) {
         actuals = PARSE(atomPlus);
     }
 
-    if (actuals == NULL) { REJECT(); }
+    if (actuals == NULL) REJECT();
 
     return makeCall(function, actuals);
 }
@@ -183,17 +187,17 @@ DEF_PARSE(call) {
 DEF_PARSE(highlet) {
     MARK();
 
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_COLON) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_OSQUARE);
+    MATCH_OR_REJECT(STR_CH_COLON);
 
     zvalue innerType = PARSE(atom);
-    if (innerType == NULL) { REJECT(); }
+    if (innerType == NULL) REJECT();
 
     // It's okay for this to be NULL.
     zvalue innerValue = PARSE(atom);
 
-    if (readMatch(state, STR_CH_COLON) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_COLON);
+    MATCH_OR_REJECT(STR_CH_CSQUARE);
 
     zvalue args = datListletAppend(datListletEmpty(), innerType);
 
@@ -210,7 +214,7 @@ DEF_PARSE(highlet) {
 DEF_PARSE(uniqlet) {
     MARK();
 
-    if (readMatch(state, STR_CH_ATAT) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_ATAT);
 
     return makeCall(makeVarRef(STR_MAKE_UNIQLET), datListletEmpty());
 }
@@ -222,11 +226,11 @@ DEF_PARSE(binding) {
     MARK();
     zvalue key = PARSE(atom);
 
-    if (key == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_EQUAL) == NULL) { REJECT(); }
+    if (key == NULL) REJECT();
+    MATCH_OR_REJECT(STR_CH_EQUAL);
 
     zvalue value = PARSE(atom);
-    if (value == NULL) { REJECT(); }
+    if (value == NULL) REJECT();
 
     return datListletAppend(datListletAppend(datListletEmpty(), key), value);
 }
@@ -237,8 +241,8 @@ DEF_PARSE(binding) {
 DEF_PARSE(maplet) {
     MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_AT);
+    MATCH_OR_REJECT(STR_CH_OSQUARE);
 
     zvalue bindings = datListletEmpty();
 
@@ -252,8 +256,8 @@ DEF_PARSE(maplet) {
         bindings = datListletAdd(bindings, binding);
     }
 
-    if (datSize(bindings) == 0) { REJECT(); }
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
+    if (datSize(bindings) == 0) REJECT();
+    MATCH_OR_REJECT(STR_CH_CSQUARE);
 
     return makeCall(makeVarRef(STR_MAKE_MAPLET), bindings);
 }
@@ -264,10 +268,10 @@ DEF_PARSE(maplet) {
 DEF_PARSE(emptyMaplet) {
     MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_EQUAL) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_AT);
+    MATCH_OR_REJECT(STR_CH_OSQUARE);
+    MATCH_OR_REJECT(STR_CH_EQUAL);
+    MATCH_OR_REJECT(STR_CH_CSQUARE);
 
     return datHighletFrom(STR_LITERAL, datMapletEmpty());
 }
@@ -278,13 +282,13 @@ DEF_PARSE(emptyMaplet) {
 DEF_PARSE(listlet) {
     MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_AT);
+    MATCH_OR_REJECT(STR_CH_OSQUARE);
 
     zvalue atoms = PARSE(atomPlus);
-    if (atoms == NULL) { REJECT(); }
+    if (atoms == NULL) REJECT();
 
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_CSQUARE);
 
     return makeCall(makeVarRef(STR_MAKE_LISTLET), atoms);
 }
@@ -295,9 +299,9 @@ DEF_PARSE(listlet) {
 DEF_PARSE(emptyListlet) {
     MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_OSQUARE) == NULL) { REJECT(); }
-    if (readMatch(state, STR_CH_CSQUARE) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_AT);
+    MATCH_OR_REJECT(STR_CH_OSQUARE);
+    MATCH_OR_REJECT(STR_CH_CSQUARE);
 
     return datHighletFrom(STR_LITERAL, datListletEmpty());
 }
@@ -308,13 +312,13 @@ DEF_PARSE(emptyListlet) {
 DEF_PARSE(stringlet) {
     MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_AT);
 
     zvalue string = readMatch(state, STR_STRING);
 
     if (string == NULL) {
         string = readMatch(state, STR_IDENTIFIER);
-        if (string == NULL) { REJECT(); }
+        if (string == NULL) REJECT();
     }
 
     zvalue value = datHighletValue(string);
@@ -327,12 +331,12 @@ DEF_PARSE(stringlet) {
 DEF_PARSE(intlet) {
     MARK();
 
-    if (readMatch(state, STR_CH_AT) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_AT);
 
     bool negative = (readMatch(state, STR_CH_MINUS) != NULL);
     zvalue integer = readMatch(state, STR_INTEGER);
 
-    if (integer == NULL) { REJECT(); }
+    if (integer == NULL) REJECT();
 
     zvalue value = datHighletValue(integer);
 
@@ -350,7 +354,7 @@ DEF_PARSE(varRef) {
     MARK();
 
     zvalue identifier = readMatch(state, STR_IDENTIFIER);
-    if (identifier == NULL) { REJECT(); }
+    if (identifier == NULL) REJECT();
 
     return makeVarRef(datHighletValue(identifier));
 }
@@ -362,12 +366,12 @@ DEF_PARSE(varDef) {
     MARK();
 
     zvalue identifier = readMatch(state, STR_IDENTIFIER);
-    if (identifier == NULL) { REJECT(); }
+    if (identifier == NULL) REJECT();
 
-    if (readMatch(state, STR_CH_EQUAL) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_EQUAL);
 
     zvalue expression = PARSE(expression);
-    if (expression == NULL) { REJECT(); }
+    if (expression == NULL) REJECT();
 
     zvalue name = datHighletValue(identifier);
     zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
@@ -381,12 +385,12 @@ DEF_PARSE(varDef) {
 DEF_PARSE(parenExpression) {
     MARK();
 
-    if (readMatch(state, STR_CH_OPAREN) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_OPAREN);
 
     zvalue expression = PARSE(expression);
-    if (expression == NULL) { REJECT(); }
+    if (expression == NULL) REJECT();
 
-    if (readMatch(state, STR_CH_CPAREN) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_CPAREN);
 
     return expression;
 }
@@ -443,10 +447,10 @@ DEF_PARSE(statement) {
 DEF_PARSE(yield) {
     MARK();
 
-    if (readMatch(state, STR_CH_DIAMOND) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_DIAMOND);
 
     zvalue expression = PARSE(expression);
-    if (expression == NULL) { REJECT(); }
+    if (expression == NULL) REJECT();
 
     readMatch(state, STR_CH_SEMICOLON); // Optional semicolon.
     return expression;
@@ -541,12 +545,12 @@ DEF_PARSE(program) {
 DEF_PARSE(function) {
     MARK();
 
-    if (readMatch(state, STR_CH_OCURLY) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_OCURLY);
 
     // This always succeeds. See note in `parseProgram` above.
     zvalue result = PARSE(program);
 
-    if (readMatch(state, STR_CH_CCURLY) == NULL) { REJECT(); }
+    MATCH_OR_REJECT(STR_CH_CCURLY);
 
     return result;
 }
