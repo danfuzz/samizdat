@@ -83,6 +83,6 @@ baseLibrary = mapletPut PRIMLIB @sam0Library sam0Library;
 # and the first, etc.).
 CORELIB = loadAllLibraries
     baseLibrary
-    @"const" @"boolean" @"type" @"conditional" @"unsorted";
+    @"const" @"boolean" @"type" @"conditional" @"collections" @"format";
 
 <> CORELIB

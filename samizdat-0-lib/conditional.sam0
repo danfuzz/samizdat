@@ -1,0 +1,52 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Conditional functions
+#
+
+
+# Documented in Samizdat Layer 0 spec.
+and = { predicate rest* ::
+    <> ifTrue predicate
+        { <> ifTrue { <> eq rest @[] } { <> true } { <> apply and rest } }
+        { <> false }
+};
+
+# Documented in Samizdat Layer 0 spec.
+else = { <> true };
+
+# Documented in Samizdat Layer 0 spec.
+if = { predicate consequent rest* ::
+    <> ifTrue predicate
+        consequent
+        # Note: `{}` by definition is a function that returns void.
+        { <> ifTrue { <> eq rest @[] } {} { <> apply if rest } }
+};
+
+# Documented in Samizdat Layer 0 spec.
+ifFalse = { predicate falseFunction trueFunction ::
+    <> ifTrue predicate trueFunction falseFunction
+};
+
+# Documented in Samizdat Layer 0 spec.
+ifVoid = { predicate voidFunction valueFunction ::
+    <> ifValue predicate valueFunction voidFunction
+};
+
+# Documented in Samizdat Layer 0 spec.
+or = { predicate rest* ::
+    <> ifTrue predicate
+        { <> true }
+        { <> ifTrue { <> eq rest @[] } { <> false } { <> apply and rest } }
+};
+
+<> @[
+    @and = and
+    @else = else
+    @if = if
+    @ifFalse = ifFalse
+    @ifVoid = ifVoid
+    @or = or
+]
