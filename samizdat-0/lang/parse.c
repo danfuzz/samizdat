@@ -116,8 +116,6 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 #define PARSE(name) parse_##name(state)
 #define MARK() zint mark = cursor(state)
 #define REJECT() do { reset(state, mark); return NULL; } while (0)
-#define ACCEPT(result) do { return (result); } while (1)
-
 #define REJECT_IF(condition) \
     do { if ((condition)) REJECT(); } while (0)
 #define MATCH_OR_REJECT(tokenType) \
