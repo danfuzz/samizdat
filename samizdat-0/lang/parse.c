@@ -126,7 +126,6 @@ DEF_PARSE(atom);
 DEF_PARSE(expression);
 DEF_PARSE(function);
 
-
 /**
  * Parses `atom+`. Returns a listlet of parsed expressions.
  */
