@@ -18,5 +18,6 @@ LIB_FILE(conditional);
 LIB_FILE(collections);
 LIB_FILE(const);
 LIB_FILE(format);
+LIB_FILE(intlet);
 LIB_FILE(main);
 LIB_FILE(type);

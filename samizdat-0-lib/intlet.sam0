@@ -1,0 +1,19 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Intlets
+#
+
+# Documented in Samizdat Layer 0 spec.
+intletSign = { intlet ::
+    # The `iadd` call ensures that the value is an intlet.
+    <> ifTrue { <> eq (iadd value @0) @0 }
+        { <> @0 }
+        { <> ifTrue { <> gt value @0 } { <> @1 } { <> @-1 } }
+};
+
+<> @[
+    @intletSign = intletSign
+]

@@ -1103,6 +1103,14 @@ them returns `true`, in which case this function also returns
 `true`. If no predicate returns `true`, this function returns `false`.
 
 <br><br>
+### In-Language Library: Intlets
+
+#### `intletSign intlet <> intlet`
+
+Returns the sign of the given value: `@-1` for negative values,
+`@1` for positive values, or `@0` for `@0`.
+
+<br><br>
 ### In-Language Library: Stringlets
 
 #### `stringletCat stringlet rest* <> stringlet`
