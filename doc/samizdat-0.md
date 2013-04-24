@@ -1243,7 +1243,7 @@ that is meant to mimic the Samizdat source syntax.
 stringlet forms can include two escape forms not defined in the
 language:
 
-* '\0` &mdash; This represents the value 0.
+* `\0` &mdash; This represents the value 0.
 
 * `\xHEX;` where `HEX` is a sequence of one or more hexadecimal digits
   (using lowercase letters) &mdash; These represent the so-numbered
