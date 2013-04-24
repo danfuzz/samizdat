@@ -36,7 +36,7 @@ PRIM_IMPL(intletFromStringlet) {
         die("Invalid use of stringlet: size != 1");
     }
 
-    return datIntletFromInt(datStringletNth(stringlet, 1));
+    return datIntletFromInt(datStringletNth(stringlet, 0));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
