@@ -604,14 +604,14 @@ v = @@;   is equivalent to   v = makeUniqlet();
 <br><br>
 ### Primitive Library: Conditionals
 
-#### `ifTrue predicate thenFunction elseFunction? <> . | ~.`
+#### `ifTrue predicate trueFunction falseFunction? <> . | ~.`
 
 Primitive boolean conditional. This calls the given predicate with no
 arguments, expecting it to return a boolean.
 
-If the predicate returns `true`, then the `thenFunction` is called
+If the predicate returns `true`, then the `trueFunction` is called
 with no arguments. If the predicate returns `false`, then the
-`elseFunction` (if any) is called with no arguments.
+`falseFunction` (if any) is called with no arguments.
 
 The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
@@ -1081,6 +1081,16 @@ function. The predicates are called in order until one returns
 `true`. The consequent immediately after the `true` predicate then
 gets called, and its return value becomes the result of this
 function. If no predicate returns `true`, this function returns void.
+
+#### `ifFalse predicate falseFunction trueFunction? <> . | ~.`
+
+This is identical to `ifTrue` except that the order of the second
+and third arguments is reversed.
+
+#### `ifVoid function voidFunction valueFunction? <> . | ~.`
+
+This is identical to `ifValue` except that the order of the second
+and third arguments is reversed.
 
 #### `or predicate rest* <> boolean`
 

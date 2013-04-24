@@ -69,6 +69,16 @@ not = { value ::
 };
 
 # Documented in Samizdat Layer 0 spec.
+ifFalse = { predicate falseFunction trueFunction ::
+    <> ifTrue predicate trueFunction falseFunction
+};
+
+# Documented in Samizdat Layer 0 spec.
+ifVoid = { predicate voidFunction valueFunction ::
+    <> ifValue predicate valueFunction voidFunction
+};
+
+# Documented in Samizdat Layer 0 spec.
 if = { predicate consequent rest* ::
     <> ifTrue predicate
         consequent
@@ -312,6 +322,8 @@ CORELIB = mapletAdd PRIMLIB @[
     @and = and
     @else = else
     @if = if
+    @ifFalse = ifFalse
+    @ifVoid = ifVoid
     @isHighlet = isHighlet
     @isIntlet = isIntlet
     @isListlet = isListlet
