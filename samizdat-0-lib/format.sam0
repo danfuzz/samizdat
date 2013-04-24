@@ -10,6 +10,126 @@
 # Helper functions
 #
 
+# Single-character stringlets `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
+CHAR0 = stringletFromIntlet @0;
+CHAR127 = stringletFromIntlet @127;
+CHAR159 = stringletFromIntlet @159;
+
+# Stringifies an intlet.
+doIntlet = { intlet ::
+    intletBody = { start value ::
+        <> ifTrue { <> eq value @0 }
+            { <> start }
+            {
+                digit = iadd (imod value @10) @48;   # 48 == "0"
+                more = idiv value @10;
+                <> stringletAdd
+                    (intletBody start more)
+                    (stringletFromIntlet digit)
+            }
+    };
+
+    <> if { <> eq intlet @0 } {
+        <> @"@0"
+    } { <> gt intlet @0 } {
+        <> intletBody @"@" intlet
+    } else {
+        <> intletBody @"@-" (ineg intlet)
+    }
+};
+
+# Helper for stringifying stringlets: Returns the hex code for the given
+# value. Assumes it's not passed `@0`.
+intletHex = { value ::
+    <> ifTrue { <> eq value @0 }
+        { <> @"" }
+        {
+            digit = stringletNth @"0123456789abcdef" (imod value @16);
+            more = idiv value @16;
+            <> stringletAdd (intletHex more) digit
+        }
+};
+
+# Helper for stringifying stringlets: Returns the converted form of the
+# given character.
+stringletChar = { ch ::
+    <> if { <> eq ch CHAR0 } {
+        <> @"\\0"
+    } { <> eq ch @"\n" } {
+        <> @"\\n"
+    } { <> or { <> eq ch @"\"" } { <> eq ch @"\\" } } {
+        <> stringletAdd @"\\" ch
+    } { <> or { <> lt ch @" " }
+              { <> and { <> ge ch CHAR127 } { <> le ch CHAR159 } } } {
+        # These are the ranges for nonprinting control characters.
+        <> stringletCat @"\\x" (intletHex (intletFromStringlet ch)) @";"
+    } else {
+        <> ch
+    }
+};
+
+# Stringifies a stringlet.
+doStringlet = { stringlet ::
+    body = stringletReduce @"" stringlet
+        { reduction ch :: <> stringletAdd reduction (stringletChar ch) };
+    <> stringletCat @"@\"" body @"\""
+};
+
+# Stringifies a listlet.
+doListlet = { listlet ::
+    body = listletReduce @"" listlet
+        { reduction elem ::
+            <> stringletCat
+                reduction
+                (if { <> eq reduction @"" } { <> @"" } else { <> @" " })
+                (sourceStringlet elem)
+        };
+
+    <> stringletCat @"@[" body @"]"
+};
+
+# Stringifies a maplet.
+doMaplet = { maplet ::
+    body = mapletReduce @"" maplet
+        { reduction value key ::
+            <> stringletCat
+                reduction
+                (if { <> eq reduction @"" } { <> @"" } else { <> @" " })
+                (sourceStringlet key)
+                @"="
+                (sourceStringlet value)
+        };
+
+    <> stringletCat @"@[" body @"]"
+};
+
+# Stringifies a highlet.
+doHighlet = { highlet ::
+    type = highletType highlet;
+    <> stringletCat
+        @"[:"
+        (sourceStringlet type)
+        (ifValue { <> highletValue highlet }
+            { value :: <> stringletAdd @" " (sourceStringlet value) }
+            { <> @"" })
+        @":]"
+};
+
+# Stringifies a uniqlet.
+doUniqlet = { uniqlet ::
+    <> @"@@"
+};
+
+# Stringifies an unknown value type.
+doUnknown = { unknown ::
+    <> stringletCat
+        @"@[(unknown) "
+        (sourceStringlet (lowType value))
+        @" "
+        (sourceStringlet (lowSize value))
+        @"]"
+};
+
 
 #
 # Exported definitions
@@ -17,101 +137,24 @@
 
 # Documented in Samizdat Layer 0 spec.
 sourceStringlet = { value ::
-    intletBody = { start value ::
-        <> if { <> eq value @0 } {
-            <> start
-        } else {
-            digit = iadd (imod value @10) @48;   # 48 == "0"
-            more = idiv value @10;
-            <> stringletAdd (intletBody start more) (stringletFromIntlet digit)
-        }
-    };
-
-    intletHex = { value ::
-        <> if { <> eq value @0 } {
-            <> @""
-        } else {
-            digit = stringletNth @"0123456789abcdef" (imod value @16);
-            more = idiv value @16;
-            <> stringletAdd (intletHex more) digit
-        }
-    };
-
-    # Single-character stringlets `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
-    CHAR0 = stringletFromIntlet @0;
-    CHAR127 = stringletFromIntlet @127;
-    CHAR159 = stringletFromIntlet @159;
-
-    stringletChar = { ch ::
-        <> if { <> eq ch CHAR0 } {
-            <> @"\\0"
-        } { <> eq ch @"\n" } {
-            <> @"\\n"
-        } { <> or { <> eq ch @"\"" } { <> eq ch @"\\" } } {
-            <> stringletAdd @"\\" ch
-        } { <> or { <> lt ch @" " }
-                  { <> and { <> ge ch CHAR127 } { <> le ch CHAR159 } } } {
-            # These are the ranges for nonprinting control characters.
-            <> stringletCat @"\\x" (intletHex (intletFromStringlet ch)) @";"
-        } else {
-            <> ch
-        }
-    };
-
     <> if { <> eq value @[] } {
         <> @"@[]"
     } { <> eq value @[=] } {
         <> @"@[=]"
     } { <> isIntlet value } {
-        <> if { <> eq value @0 } {
-            <> @"@0"
-        } { <> gt value @0 } {
-            <> intletBody @"@" value
-        } else {
-            <> intletBody @"@-" (ineg value)
-        }
+        <> doIntlet value
     } { <> isStringlet value } {
-        body = stringletReduce @"" value
-            { reduction ch :: <> stringletAdd reduction (stringletChar ch) };
-        <> stringletCat @"@\"" body @"\""
+        <> doStringlet value
     } { <> isListlet value } {
-        body = listletReduce @"" value
-            { reduction elem ::
-                <> stringletCat
-                    reduction
-                    (if { <> eq reduction @"" } { <> @"" } else { <> @" " })
-                    (sourceStringlet elem)
-            };
-        <> stringletCat @"@[" body @"]"
+        <> doListlet value
     } { <> isMaplet value } {
-        body = mapletReduce @"" value
-            { reduction value key ::
-                <> stringletCat
-                    reduction
-                    (if { <> eq reduction @"" } { <> @"" } else { <> @" " })
-                    (sourceStringlet key)
-                    @"="
-                    (sourceStringlet value)
-            };
-        <> stringletCat @"@[" body @"]"
+        <> doMaplet value
     } { <> isHighlet value } {
-        type = highletType value;
-        <> stringletCat
-            @"[:"
-            (sourceStringlet type)
-            (ifValue { <> highletValue value }
-                { v :: <> stringletAdd @" " (sourceStringlet v) }
-                { <> @"" })
-            @":]"
+        <> doHighlet value
     } { <> isUniqlet value } {
-        <> @"@@"
+        <> doUniqlet value
     } else {
-        <> stringletCat
-            @"@[(unknown) "
-            (sourceStringlet (lowType value))
-            @" "
-            (sourceStringlet (lowSize value))
-            @"]"
+        <> doUnknown value
     }
 };
 
