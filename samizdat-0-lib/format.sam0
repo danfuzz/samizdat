@@ -132,6 +132,16 @@ doUnknown = { unknown ::
         @"]"
 };
 
+# Mapping from low-layer type names to stringifiers.
+STRINGIFIERS = @[
+    @highlet   = doHighlet
+    @intlet    = doIntlet
+    @listlet   = doListlet
+    @maplet    = doMaplet
+    @stringlet = doStringlet
+    @uniqlet   = doUniqlet
+];
+
 
 #
 # Exported definitions
@@ -139,21 +149,8 @@ doUnknown = { unknown ::
 
 # Documented in Samizdat Layer 0 spec.
 sourceStringlet = { value ::
-    <> if { <> isIntlet value } {
-        <> doIntlet value
-    } { <> isStringlet value } {
-        <> doStringlet value
-    } { <> isListlet value } {
-        <> doListlet value
-    } { <> isMaplet value } {
-        <> doMaplet value
-    } { <> isHighlet value } {
-        <> doHighlet value
-    } { <> isUniqlet value } {
-        <> doUniqlet value
-    } else {
-        <> doUnknown value
-    }
+    stringifier = mapletGet STRINGIFIERS (lowType value) doUnknown;
+    <> stringifier value
 };
 
 <> @[
