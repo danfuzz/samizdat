@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Generate some quick overall stats about the code.
+#
+
+#
+# Directory and program name detection
+#
+
+# Preserve the original working dir as origDir.
+origDir="${PWD}"
+
+# Set progName to the program name, progDir to its directory, and baseDir
+# to progDir's directory. Follows symlinks.
+prog="$0"
+while [[ -h ${prog} ]]; do
+    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
+    newProg="${BASH_REMATCH[1]}"
+    if [[ ${newProg} =~ ^/ ]]; then
+        prog="${newProg}"
+    else
+        prog="$(dirname "${prog}")/${newProg}"
+    fi
+done
+progName="$(basename "${prog}")"
+progDir="$(dirname "${prog}")"
+cd "${progDir}"
+progDir="${PWD}"
+cd ..
+baseDir="${PWD}"
+cd "${origDir}"
+unset prog
+unset newProg
+
+
+#
+# Helper functions
+#
+
+# Reports a line count of all files in the repo that match the given
+# name (a glob pattern).
+function getCount {
+    local glob="$1"
+
+    wc -l $(find . -name "$glob") |
+    awk '$2 == "total" { print $1; }'
+}
+
+
+#
+# Main script
+#
+
+cd "${baseDir}"
+
+cHeader="$(getCount '*.h')"
+cCode="$(getCount '*.c')"
+(( cTotal = cHeader + cCode ))
+
+sam0Code="$(getCount '*.sam0')"
+(( samTotal = sam0Code ))
+
+(( total = cTotal + samTotal ))
+
+(( per10k = samTotal * 10000 / total ))
+(( samPercent = per10k / 100 ))
+(( samPercentFrac = per10k % 100 ))
+
+printf 'C header:    %5d\n' "${cHeader}"
+printf 'C code:      %5d\n' "${cCode}"
+printf 'C total:     %5d\n' "${cTotal}"
+printf '\n'
+
+printf 'Sam0 code:   %5d\n' "${sam0Code}"
+printf '\n'
+
+printf 'Total lines: %5d\n' "${total}"
+printf 'Sam bulk:       %2d.%02d%%\n' "${samPercent}" "${samPercentFrac}"
+printf '\n'
