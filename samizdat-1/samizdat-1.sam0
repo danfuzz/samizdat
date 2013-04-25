@@ -226,7 +226,7 @@ parse = { tokens ::
         @[
             @function=[:@varRef @io0WriteFileUtf8:]
             @actuals=@[
-                [:@literal @"/dev/stdout":]
+                [:@literal @[@"dev" @"stdout"]:]
                 [:@literal @"We have received the Самиздат!\n":]
             ]
         ]
@@ -246,15 +246,18 @@ parse = { tokens ::
 # Main function
 #
 
+# Standard output, as a pathListlet.
+stdout = @[@"dev" @"stdout"];
+
 # Compiles the file named in the first argument in a fresh context,
 # and runs its `main`, passing it an array of the rest of the
 # arguments.
 main = { selfPath file rest* ::
-    programText = io0ReadFileUtf8 file;
+    programText = io0ReadFileUtf8 (io0PathFromStringlet file);
     tokens = tokenize programText;
 
-    io0WriteFileUtf8 @"/dev/stdout" (sourceStringlet tokens);
-    io0WriteFileUtf8 @"/dev/stdout" @"\n\n";
+    io0WriteFileUtf8 stdout (sourceStringlet tokens);
+    io0WriteFileUtf8 stdout @"\n\n";
 
     programNode = parse tokens;
     function = sam0Eval (sam0Library()) programNode;

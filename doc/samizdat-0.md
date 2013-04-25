@@ -984,17 +984,51 @@ that represents the function.
 
 Prints the given stringlet to the system console, and exits.
 
-#### `io0ReadFileUtf8 fileName <> stringlet`
+#### `io0PathFromStringlet stringlet <> pathListlet`
 
-Reads the named file (named by a stringlet) using the underlying
-OS's functionality, interpreting the contents as UTF-8 encoded
-text. Returns a stringlet of the read and decoded text.
+Converts the given path stringlet to an absolute form, in the "form factor"
+that is used internally. The input `stringlet` is expected to be a
+"Posix-style" path:
 
-#### `io0WriteFileUtf8 fileName text <> ~.`
+* Path components are separated by slashes (`"/"`).
 
-Writes out the given text to the named file (named by a stringlet),
-using the underlying OS's functionality, and encoding the text
-(a stringlet) as a stream of UTF-8 bytes.
+* A path-initial slash indicates an absolute path.
+
+* If there is no path-initial slash, then the result has the system's
+  "current working directory" prepended.
+
+* Empty path components (that is, if there are two slashes in a row)
+  are ignored.
+
+* Path components of value `@"."` (canonically representing "this directory")
+  are ignored.
+
+* Path components of value `@".."` cause the previous non-`..` path component
+  to be discarded. It is invalid (terminating the runtime) for such a
+  component to "back up" beyond the filesystem root.
+
+The result is a listlet of path components, representing the absolute path.
+None of the components will be the empty stringlet (`@""`), except possibly
+the last. If the last component is empty, that is an indication that the
+original path ended with a trailing slash.
+
+
+#### `io0ReadFileUtf8 pathListlet <> stringlet`
+
+Reads the named file, using the underlying OS's functionality,
+interpreting the contents as UTF-8 encoded text. Returns a stringlet
+of the read and decoded text.
+
+`pathListlet` must be a listlet of the form described by `io0PathFromStringlet`
+(see which).
+
+#### `io0WriteFileUtf8 pathListlet text <> ~.`
+
+Writes out the given text to the named file, using the underlying OS's
+functionality, and encoding the text (a stringlet) as a stream of UTF-8 bytes.
+
+`pathListlet` must be a listlet of the form described by `io0PathFromStringlet`
+(see which).
 
 <br><br>
 ### In-Language Library: Constants

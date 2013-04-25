@@ -26,6 +26,12 @@ PRIM_IMPL(die) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(io0PathFromStringlet) {
+    requireExactly(argCount, 1);
+    return ioPathListletFromUtf8(datStringletEncodeUtf8(args[0], NULL));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0ReadFileUtf8) {
     requireExactly(argCount, 1);
     return ioReadFileUtf8(args[0]);

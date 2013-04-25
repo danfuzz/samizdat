@@ -14,16 +14,26 @@
 #include "dat.h"
 
 /**
+ * Converts a path string to an absolute form, as a listlet of path components,
+ * where each component is a stringlet. If the original is a relative path,
+ * the result will have the system's current working directory prepended.
+ */
+zvalue ioPathListletFromUtf8(const char *path);
+
+/**
  * Reads the file with the given name in its entirety, interpreting
  * it as UTF-8. Returns a stringlet (listlet of Unicode-representing
  * intlets) of the contents.
+ *
+ * The `pathListlet` represents an absolute filesystem path as individual
+ * stringlets.
  */
-zvalue ioReadFileUtf8(zvalue fileName);
+zvalue ioReadFileUtf8(zvalue pathListlet);
 
 /**
  * Writes the given stringlet to the file with the given name, encoding
- * it as UTF-8.
+ * it as UTF-8. `pathListlet` is as with `ioReadFileUtf8`.
  */
-void ioWriteFileUtf8(zvalue fileName, zvalue text);
+void ioWriteFileUtf8(zvalue pathListlet, zvalue text);
 
 #endif

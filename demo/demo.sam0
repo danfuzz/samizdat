@@ -12,21 +12,29 @@ ARGS* ::
 
 
 #
-# Main function
+# Helper definitions
 #
 
+# Standard output, as a pathListlet.
+stdout = @[@"dev" @"stdout"];
+
 process = { value ::
-    io0WriteFileUtf8 @"/dev/stdout" (sourceStringlet value);
-    io0WriteFileUtf8 @"/dev/stdout" @"\n";
+    io0WriteFileUtf8 stdout (sourceStringlet value);
+    io0WriteFileUtf8 stdout @"\n";
 };
+
+
+#
+# Main function
+#
 
 main = { selfPath name rest* ::
     # Be welcoming.
 
     if { <> eq name @danfuzz } {
-        io0WriteFileUtf8 @"/dev/stdout" @"Hello, Danfuzz!\n\n"
+        io0WriteFileUtf8 stdout @"Hello, Danfuzz!\n\n"
     } else {
-        io0WriteFileUtf8 @"/dev/stdout" @"Hello, Самиздат!\n\n"
+        io0WriteFileUtf8 stdout @"Hello, Самиздат!\n\n"
     };
 
     process selfPath;
