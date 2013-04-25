@@ -411,8 +411,12 @@ DEF_PARSE(expression) {
  * what it parsed was in fact an empty statement.
  */
 DEF_PARSE(statement) {
-    zvalue result = PARSE(varDef);
-    return (result != NULL) ? result : PARSE(expression);
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(varDef); }
+    if (result == NULL) { result = PARSE(expression); }
+
+    return result;
 }
 
 /**
