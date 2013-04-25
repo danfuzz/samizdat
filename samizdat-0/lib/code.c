@@ -26,6 +26,9 @@ typedef struct {
 
     /** In-model function value. */
     zvalue function;
+
+    /** Busy flag, used to prevent recursion. */
+    bool busy;
 } Object;
 
 /** The stringlet @"result", lazily initialized. */
@@ -51,22 +54,30 @@ static zvalue callObject(void *state, zint argCount, const zvalue *args) {
     Object *object = state;
     zvalue fullArgs[argCount + 1];
 
+    if (object->busy) {
+        die("Attempt to recursively call object.");
+    }
+
+    object->busy = true;
+
     fullArgs[0] = object->state;
     memcpy(fullArgs + 1, args, argCount);
 
     zvalue resultMaplet = langCall(object->function, argCount + 1, fullArgs);
+    zvalue result;
 
     if (resultMaplet == NULL) {
-        return NULL;
+        result = NULL;
+    } else {
+        zvalue newState = datMapletGet(resultMaplet, STR_STATE);
+        if (newState != NULL) {
+            object->state = newState;
+        }
+
+        result = datMapletGet(resultMaplet, STR_RESULT);
     }
 
-    zvalue result = datMapletGet(resultMaplet, STR_RESULT);
-    zvalue newState = datMapletGet(resultMaplet, STR_STATE);
-
-    if (newState != NULL) {
-        object->state = newState;
-    }
-
+    object->busy = false;
     return result;
 }
 
@@ -121,6 +132,7 @@ PRIM_IMPL(object) {
     Object *object = zalloc(sizeof(Object));
     object->state = args[0];
     object->function = args[1];
+    object->busy = false;
 
     return langDefineFunction(callObject, object);
 }
