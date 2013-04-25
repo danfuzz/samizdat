@@ -26,14 +26,14 @@ PRIM_IMPL(die) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(readFile) {
+PRIM_IMPL(readFileUtf8) {
     requireExactly(argCount, 1);
-    return ioReadFile(args[0]);
+    return ioReadFileUtf8(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(writeFile) {
+PRIM_IMPL(writeFileUtf8) {
     requireExactly(argCount, 2);
-    ioWriteFile(args[0], args[1]);
+    ioWriteFileUtf8(args[0], args[1]);
     return NULL;
 }

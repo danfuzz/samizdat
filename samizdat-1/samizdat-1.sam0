@@ -224,7 +224,7 @@ parse = { tokens ::
     theCall = [:
         @call
         @[
-            @function=[:@varRef @writeFile:]
+            @function=[:@varRef @writeFileUtf8:]
             @actuals=@[
                 [:@literal @"/dev/stdout":]
                 [:@literal @"We have received the Самиздат!\n":]
@@ -250,11 +250,11 @@ parse = { tokens ::
 # and runs its `main`, passing it an array of the rest of the
 # arguments.
 main = { file rest* ::
-    programText = readFile file;
+    programText = readFileUtf8 file;
     tokens = tokenize programText;
 
-    writeFile @"/dev/stdout" (sourceStringlet tokens);
-    writeFile @"/dev/stdout" @"\n\n";
+    writeFileUtf8 @"/dev/stdout" (sourceStringlet tokens);
+    writeFileUtf8 @"/dev/stdout" @"\n\n";
 
     programNode = parse tokens;
     function = sam0Eval (sam0Library()) programNode;

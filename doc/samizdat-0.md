@@ -984,13 +984,13 @@ that represents the function.
 
 Prints the given stringlet to the system console, and exits.
 
-#### `readFile fileName <> stringlet`
+#### `readFileUtf8 fileName <> stringlet`
 
 Reads the named file (named by a stringlet) using the underlying
 OS's functionality, interpreting the contents as UTF-8 encoded
 text. Returns a stringlet of the read and decoded text.
 
-#### `writeFile fileName text <> ~.`
+#### `writeFileUtf8 fileName text <> ~.`
 
 Writes out the given text to the named file (named by a stringlet),
 using the underlying OS's functionality, and encoding the text
