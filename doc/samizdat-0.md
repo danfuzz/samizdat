@@ -202,8 +202,8 @@ system (where `.` means "any value", and `~` means set-complement).
 Token Syntax
 ------------
 
-BNF/PEG-like description of the tokens. A program is tokenized by
-repeatedly matching the top `token` rule.
+The following is a BNF/PEG-like description of the tokens. A program
+is tokenized by repeatedly matching the top `token` rule.
 
 ```
 token ::=
@@ -250,11 +250,13 @@ whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
 Node / Tree Syntax
 ------------------
 
-BNF/PEG-like description of the node / tree syntax. A program is
-parsed by matching the top `program` rule, which yields a `function`
-node. On the right-hand side of rules, a stringlet literal indicates a
-token whose `type` is the literal value, and an identifier indicates a
-tree syntax rule to match.
+The following is a BNF/PEG-like description of the node / tree syntax.
+A program is parsed by matching the top `program` rule, which yields a
+`function` node. On the right-hand side of rules, a stringlet literal
+indicates a token whose `type` is the literal value, and an identifier
+indicates a tree syntax rule to match. All of `*` `+` `?` `(` `)` have
+their usual PEG interpretations (similar to their interpretation in
+regular expressions).
 
 ```
 function ::= @"{" program @"}" ;
@@ -303,7 +305,7 @@ varDef ::= @identifier @"=" expression ;
 # result: [:@varDef @[@name=(highValue identifier) @value=<expression>]:]
 
 varRef ::= @identifier ;
-# result: [:@varRef (highValue <identifier>):];
+# result: [:@varRef (highValue <identifier>):]
 
 intlet ::= @"@" @"-"? @integer ;
 # result: [:@literal (imul (@1|@-1) (highValue <integer>)):]
@@ -321,7 +323,7 @@ emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 # result: [:@literal @[=]:]
 
 maplet ::= @"@" @"[" binding+ @"]" ;
-# result: makeCall [:@varRef @makeMaplet:] (<binding key> <binding value>)+;
+# result: makeCall [:@varRef @makeMaplet:] (<binding key> <binding value>)+
 
 binding ::= atom @"=" atom ;
 # result: @[<key atom> <value atom>]
@@ -335,9 +337,10 @@ highlet ::= @"[" @":" atom atom? @":" @"]" ;
 call ::= atom (@"(" @")" | atom+) ;
 # result: makeCall <function atom> <argument atom+>
 
+# Function that returns an appropriately-formed `call` node.
 makeCall = { function actuals* ::
-    <> [:@call @[@function=function @actuals=actuals]:];
-};
+    <> [:@call @[@function=function @actuals=actuals]:]
+}
 ```
 
 
