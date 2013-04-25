@@ -283,8 +283,8 @@ yield ::= @"<>" expression @";"? ;
 # result: <expression>
 
 statement ::= varDef | expression | ~. ;
-# result: <varDef> | <expression> | [:@literal:]
-# Note: that is, a valueless literal in the case of an empty statement.
+# result: <varDef> | <expression> | <void>
+# Note: That is, void is returned in the case of an empty statement.
 
 expression ::= call | atom ;
 # result: <same as whatever was parsed>
