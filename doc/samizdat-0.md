@@ -957,6 +957,37 @@ a five-argument call: `apply fizmoFunc @foo @bar @baz @[@frob @twiddle]`
 This function returns whatever the called function returned (including
 void).
 
+#### `object state implementation <> function`
+
+Constructs and returns an "object". In *Samizdat Layer 0* an object is
+merely the combination of a mutable `state` value (an arbitarary
+value) with an `implementation` function (an arbitrary function).
+The return value from this function is another function,
+referred to as the "object interface function".
+
+When the object interface function is called, it in turn calls the
+`implementation` function, passing it the state value as its first
+argument, along with any other arguments passed to the interface
+function (in the same order). The implementation function can do
+whatever it wants, but it is restricted it what it is allowed to return.
+
+* If the implementation function returns void, then void is also
+  returned from the interface function, and nothing else is done.
+
+* Otherwise, the implementation function must return a maplet.
+
+* If the returned maplet binds `@state`, then the object's state
+  is updated to be the `@state` value. This will become the value
+  passed to the implementation function for its next call.
+
+* If the returned maplet binds `@result`, then the `@result` value
+  becomes the return value from the interface function.
+
+To avoid confusion, it is invalid (terminating the runtime) for an
+object implementation function to call its own interface function.
+To implement a recursive operation, it is necessary to do so without
+going through the interface.
+
 #### `sam0Eval context expressionNode <> . | ~.`
 
 Returns the evaluation result of executing the given expression node,
