@@ -1,0 +1,28 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Baseline I/O functions
+#
+
+# Makes a file reader that only possibly reads files under the given
+# directory. The return value operates like `ioReadFileUtf8`.
+#
+# TODO: The current implementation is incorrect in that all it does
+# is append the directory and the file name, separated by a slash.
+# This means that it's trivially possible to "escape" out of the
+# directory, either via symbolic links or by using one or more `../`
+# components at the start of the file name.
+io0SandboxedReader = { directory ::
+    reader = { name ::
+        fullPath = stringletCat directory @"/" name;
+        <> ioReadFileUtf8 name;
+    };
+
+    <> reader;
+};
+
+<> @[
+    @io0SandboxedReader = io0SandboxedReader
+];
