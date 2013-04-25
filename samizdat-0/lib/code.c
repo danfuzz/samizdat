@@ -112,7 +112,7 @@ PRIM_IMPL(apply) {
     return langCall(function, flatSize, flatArgs);
 }
 
-/* TODO: Documented in Samizdat Layer 0 spec. */
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(object) {
     initCodeConsts();
 
