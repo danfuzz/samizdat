@@ -170,7 +170,8 @@ of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR),
 and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
 [Bison](http://en.wikipedia.org/wiki/GNU_bison). Additionally,
 [SNOBOL](http://en.wikipedia.org/wiki/SNOBOL) deserves credit for blazing
-the trail for languages that make parsing a first-class operation.
+the trail for general-purpose languages that make parsing a first-class
+operation.
 
 The Samizdat core library was influenced by
 [Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29)
