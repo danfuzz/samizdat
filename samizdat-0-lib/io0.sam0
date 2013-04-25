@@ -15,7 +15,7 @@
 io0SandboxedReader = { directory ::
     reader = { path ::
         fullPath = listletCat directory path;
-        <> ioReadFileUtf8 fullPath;
+        <> io0ReadFileUtf8 fullPath;
     };
 
     <> reader;
