@@ -236,7 +236,8 @@ integer ::= ("0".."9")+ ;
 string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
 # result: [:@string <stringlet>:]
 
-identifier ::= ("a".."z" | "A".."Z") ("a".."z" | "A".."Z" | "0".."9")* ;
+identifier ::=
+    ("_" | "a".."z" | "A".."Z") ("_" | "a".."z" | "A".."Z" | "0".."9")* ;
 # result: [:@identifier <stringlet>:]
 
 whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;

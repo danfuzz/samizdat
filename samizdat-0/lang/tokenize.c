@@ -118,7 +118,8 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     for (;;) {
         zint ch = peek(state);
 
-        if (!(((ch >= '0') && (ch <= '9')) ||
+        if (!((ch == '_') ||
+              ((ch >= '0') && (ch <= '9')) ||
               ((ch >= 'a') && (ch <= 'z')) ||
               ((ch >= 'A') && (ch <= 'Z')))) {
             break;
