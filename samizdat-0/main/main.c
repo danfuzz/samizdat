@@ -16,9 +16,9 @@
  * Main driver for Samizdat Layer 0. Takes the first argument to
  * be a file name. Reads the file, and compiles it to an executable
  * parse tree in an execution context consisting of the Samizdat Layer
- * 0 core library. It executes that tree, and then calls the function
- * `main` (which should have been defined by the prior execution),
- * passing it an array of the remaining arguments.
+ * 0 core library. It evaluates that tree, which should evaluate to
+ * a function. It then calls that function, passing it the remaining
+ * arguments.
  */
 int main(int argc, char **argv) {
     if (argc < 2) {
