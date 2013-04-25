@@ -48,11 +48,11 @@ thisIsNotCommentary   # ...but this *is* commentary.
 
 ### Intlet
 
-An `intlet` is a signed arbitrary-precision integer value, a/k/a a
-"bigint" or "BigInteger" (even though they aren't always actually
-that big). In the C implementation, there is actually
-a limitation that intlets only have a 32-bit signed range, with
-out-of-range arithmetic results causing failure, not wraparound.
+An `intlet` is a signed arbitrary-precision integer value, sometimes
+called a "bigint" or "BigInteger" (even though they aren't always actually
+that big). In the C implementation, there is actually a limitation that
+intlets only have a 32-bit signed range, with out-of-range arithmetic
+results causing failure, not wraparound.
 
 Intlets are written as an initial `@`, followed by an optional `-`
 (minus sign), followed by one or more decimal digits. The digits are
