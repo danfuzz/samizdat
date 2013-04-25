@@ -185,7 +185,7 @@ tokenize = { programText ::
             {
                 <> ifValue { <> mapletGet parsed @error }
                     { error ::
-                        die (stringletCat
+                        io0Die (stringletCat
                             @"Tokenization failed at offset: "
                             (sourceStringlet nextAt) @"\n"
                             error @"\n")

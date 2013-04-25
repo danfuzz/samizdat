@@ -981,10 +981,10 @@ that represents the function.
 <br><br>
 ### Primitive Library: I/O
 
-#### `die stringlet <> (exits)`
+#### `io0Die stringlet? <> ~. (exits)`
 
-Prints the given stringlet to the system console (as if with `io0Note`),
-and exits.
+Prints the given stringlet to the system console (as if with `io0Note`)
+if supplied, and terminates the runtime with a failure status code (`1`).
 
 #### `io0Note stringlet <> ~.`
 

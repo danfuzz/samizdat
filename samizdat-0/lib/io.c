@@ -31,7 +31,7 @@ static void emitNote(zvalue message) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(die) {
+PRIM_IMPL(io0Die) {
     requireRange(argCount, 0, 1);
 
     zvalue message =

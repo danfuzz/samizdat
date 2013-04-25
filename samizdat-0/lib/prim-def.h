@@ -12,7 +12,6 @@
  */
 
 PRIM_FUNC(apply);
-PRIM_FUNC(die);
 PRIM_FUNC(highletType);
 PRIM_FUNC(highletValue);
 PRIM_FUNC(iadd);
@@ -25,6 +24,7 @@ PRIM_FUNC(imul);
 PRIM_FUNC(ineg);
 PRIM_FUNC(inot);
 PRIM_FUNC(intletFromStringlet);
+PRIM_FUNC(io0Die);
 PRIM_FUNC(io0Note);
 PRIM_FUNC(io0PathFromStringlet);
 PRIM_FUNC(io0ReadFileUtf8);
