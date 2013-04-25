@@ -16,7 +16,7 @@ ARGS* ::
 #
 
 process = { value ::
-    io0Note (sourceStringlet value);
+    io0Note (sourceStringlet value)
 };
 
 
