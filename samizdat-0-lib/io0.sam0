@@ -9,9 +9,10 @@
 # Documented in Samizdat Layer 0 spec.
 #
 # TODO: The current implementation is incorrect in that all it does
-# is append the directory and the given path. This means that it's trivially
-# possible to "escape" out of the directory, either via symbolic links or by
-# using one or more `..` components at the start of the path.
+# is append the directory and the given path and attempt to read that
+# using `io0ReadFileUtf8`. This means that it's possible to "escape" out
+# of the directory if there is a symbolic link anywhere in it that refers
+# to somewhere outside the directory.
 io0SandboxedReader = { directory ::
     reader = { path ::
         fullPath = listletCat directory path;

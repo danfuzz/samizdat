@@ -1021,7 +1021,8 @@ interpreting the contents as UTF-8 encoded text. Returns a stringlet
 of the read and decoded text.
 
 `pathListlet` must be a listlet of the form described by `io0PathFromStringlet`
-(see which).
+(see which). It is invalid (terminating the runtime) for a component to
+be any of `@""` `@"."` `@".."` or to contain a slash (`/`).
 
 #### `io0WriteFileUtf8 pathListlet text <> ~.`
 
@@ -1029,7 +1030,7 @@ Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a stringlet) as a stream of UTF-8 bytes.
 
 `pathListlet` must be a listlet of the form described by `io0PathFromStringlet`
-(see which).
+(see which). See `io0ReadFileUtf8` for further discussion.
 
 <br><br>
 ### In-Language Library: Constants
