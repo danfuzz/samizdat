@@ -39,7 +39,7 @@ ifVoid = { predicate voidFunction valueFunction ::
 or = { predicate rest* ::
     <> ifTrue predicate
         { <> true }
-        { <> ifTrue { <> eq rest @[] } { <> false } { <> apply and rest } }
+        { <> ifTrue { <> eq rest @[] } { <> false } { <> apply or rest } }
 };
 
 <> @[
