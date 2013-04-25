@@ -42,6 +42,7 @@ Comments start with `#` and continue to the end of a line.
 ```
 #
 # I am commentary.
+thisIsNotCommentary   # ...but this *is* commentary.
 ```
 
 
