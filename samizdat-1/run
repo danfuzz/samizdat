@@ -39,13 +39,14 @@ unset newProg
 # Main script
 #
 
-cd "${progDir}"
-
 echo 'Build samizdat-0...'
-../samizdat-0/build > /dev/null || exit 1
+"${baseDir}/samizdat-0/build" > /dev/null || exit 1
 echo 'Done!'
 echo ''
 
 # Run samizdat-0 passing it samizdat-1.sam0 to run, and in turn
 # passing *that* samizdat-1.sam0 to run.
-../out/samizdat-0/samizdat-0 samizdat-1.sam0 samizdat-1.sam0 "$@"
+"${baseDir}/out/samizdat-0/samizdat-0" \
+    "${progDir}/samizdat-1.sam0" \
+    "${progDir}/samizdat-1.sam0" \
+    "$@"

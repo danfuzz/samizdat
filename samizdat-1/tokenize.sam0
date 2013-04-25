@@ -1,0 +1,201 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+#
+# Samizdat Layer 0 tokenizer
+#
+
+# Tokenizes the given string, using Samizdat Layer 0 token syntax.
+# Returns a listlet of tokens.
+tokenize = { programText ::
+    size = lowSize programText;
+
+    # Gets the program text character at the given index, as a single-character
+    # stringlet.
+    get = { at :: <> stringletNth programText at null };
+
+    # Makes a parser that just returns a single-character token of the
+    # given character. The result is only nominally a "parser" in that it
+    # assumes that it's called in a context where it matched. (See below.)
+    oneCharParser = { ch ::
+        result = @[@token=[:ch:]];
+        <> { at :: <> mapletPut result @at (iadd at @1) }
+    };
+
+    # These are all the single-character parser mappings.
+    oneCharRules = listletReduce @[=]
+        @[@"{" @"}" @"[" @"]" @"(" @")" @"=" @"-" @";" @"*"]
+        { result ch :: <> mapletPut result ch (oneCharParser ch) };
+
+    # Makes a parser that matches a token consisting of either the first
+    # or both characters (in sequence).
+    oneOrTwoCharParser = { ch1 ch2 ::
+        result1 = @[@token=[:ch1:]];
+        result2 = @[@token=[:(stringletCat ch1 ch2):]];
+
+        <> { at ::
+            nextAt = (iadd at @1);
+            <> ifTrue { <> ne (get nextAt) ch2 }
+                { <> mapletPut result1 @at nextAt }
+                { <> mapletPut result2 @at (iadd at @2) }
+        }
+    };
+
+    # These are all the one-or-two-character parser mappings.
+    oneTwoCharRules = listletReduce @[=]
+        @[@[@":" @":"] @[@"@" @"@"] @[@"<" @">"]]
+        { result chs ::
+            <> mapletPut result (listletNth chs @0)
+                (apply oneOrTwoCharParser chs)
+        };
+
+    # These are all the integer digits, as a maplet from stringlets to
+    # digit values.
+    integerChars = listletReduce @[=]
+        @[@0 @1 @2 @3 @4 @5 @6 @7 @8 @9]
+        { result n ::
+            # Note: 48 == "0".
+            <> mapletPut result (stringletFromIntlet (iadd @48 n)) n };
+
+    # Parses an integer.
+    parseInteger = { at ::
+        parseStep = { result at ::
+            <> ifValue { <> mapletGet integerChars (get at) }
+                { n :: <> parseStep (iadd n (imul result @10)) (iadd at @1) }
+                { <> @[@token=[:@integer result:] @at=at] }
+        };
+        <> parseStep @0 at
+    };
+
+    # These are all the integer parser mappings.
+    integerRules = mapletMap integerChars { <> parseInteger };
+
+    # These are all the valid identifier characters, as a set-like maplet.
+    identifierChars = listletReduce @[=]
+        @[@"0" @"1" @"2" @"3" @"4" @"5" @"6" @"7" @"8" @"9" @"_"
+          @"a" @"b" @"c" @"d" @"e" @"f" @"g" @"h" @"i" @"j" @"k" @"l" @"m"
+          @"n" @"o" @"p" @"q" @"r" @"s" @"t" @"u" @"v" @"w" @"x" @"y" @"z"
+          @"A" @"B" @"C" @"D" @"E" @"F" @"G" @"H" @"I" @"J" @"K" @"L" @"M"
+          @"N" @"O" @"P" @"Q" @"R" @"S" @"T" @"U" @"V" @"W" @"X" @"Y" @"Z"]
+        { result ch :: <> mapletPut result ch null };
+
+    # Parses an identifier.
+    parseIdentifier = { at ::
+        parseStep = { result at ::
+            ch = get at;
+            <> ifValue { <> mapletGet identifierChars ch }
+                { <> parseStep (stringletCat result ch) (iadd at @1) }
+                { <> @[@token=[:@identifier result:] @at=at] }
+        };
+        <> parseStep @"" at
+    };
+
+    # These are all the identifier parser mappings.
+    identifierRules = mapletMap identifierChars { <> parseIdentifier };
+
+    # Mapping from valid string escapes to their translated characters.
+    stringEscapes = @[@"\\"=@"\\" @"\""=@"\"" @"n"=@"\n"];
+
+    # Parses a string.
+    parseString = { at ::
+        parseStep = { result at ::
+            ch = get at;
+            nextAt = iadd at @1;
+            <> ifTrue { <> eq ch @"\"" }
+                { <> @[@token=[:@string result:] @at=nextAt] }
+                {
+                    <> ifTrue { <> ne ch @"\\" }
+                        { <> parseStep (stringletCat result ch) nextAt }
+                        {
+                            ch2 = get nextAt;
+                            <> ifValue { <> mapletGet stringEscapes ch2 }
+                                { decoded ::
+                                    <> parseStep
+                                        (stringletCat result decoded)
+                                        (iadd nextAt @1)
+                                }
+                        }
+                }
+        };
+        <> parseStep @"" (iadd at @1) # +1 to skip the open quote.
+    };
+
+    # These are all the string parser mappings.
+    stringRules = @[@"\"" = parseString]; # FIXME!
+
+    # These are all the rules. Note: identifierRules has to be listed before
+    # integerRules in order to avoid the former trampling on the latter.
+    rules = mapletCat
+        oneCharRules
+        oneTwoCharRules
+        identifierRules
+        integerRules
+        stringRules;
+
+    # Returns the position immediately after the next newline at or after
+    # the given index, or the EOF position if there is no newline.
+    skipUntilNewline = { at ::
+        ch = get at;
+        nextAt = iadd at @1;
+        <> ifTrue { <> or { <> eq ch @"\n" } { <> eq ch null } }
+            { <> nextAt }
+            { <> skipUntilNewline nextAt }
+    };
+
+    # Returns the position just past any whitespace at the given index.
+    skipWhitespace = { at ::
+        ch = get at;
+        nextAt = iadd at @1;
+        <> if { <> or { <> eq ch @" " } { <> eq ch @"\n" } } {
+            <> skipWhitespace nextAt
+        } { <> eq ch @"#" } {
+            <> skipWhitespace (skipUntilNewline nextAt);
+        } else {
+            <> at
+        }
+    };
+
+    # Parses a single token.
+    parseOne = { at ::
+        tokenAt = skipWhitespace at;
+        <> ifValue { <> stringletNth programText tokenAt }
+            {
+                ch = get tokenAt;
+                <> ifValue { <> mapletGet rules ch }
+                    { parser :: <> parser tokenAt }
+                    {
+                        error = stringletCat @"No parser for char: [" ch @"]";
+                        <> @[@at=tokenAt @error=error]
+                    }
+            }
+            {
+                # There was whitespace at EOF. Return a token-free (but
+                # successful) result.
+                <> @[@at=size]
+            }
+    };
+
+    # Parses all the tokens.
+    parseAll = { result at ::
+        parsed = parseOne at;
+        nextAt = mapletGet parsed @at;
+        <> ifValue { <> mapletGet parsed @token }
+            { token :: <> parseAll (listletAppend result token) nextAt }
+            {
+                <> ifValue { <> mapletGet parsed @error }
+                    { error ::
+                        die (stringletCat
+                            @"Tokenization failed at offset: "
+                            (sourceStringlet nextAt) @"\n"
+                            error @"\n")
+                    }
+                    { <> result }
+            }
+    };
+
+    <> parseAll @[] @0
+};
+
+<> tokenize;
