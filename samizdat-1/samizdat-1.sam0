@@ -249,7 +249,7 @@ parse = { tokens ::
 # Compiles the file named in the first argument in a fresh context,
 # and runs its `main`, passing it an array of the rest of the
 # arguments.
-main = { file rest* ::
+main = { selfPath file rest* ::
     programText = io0ReadFileUtf8 file;
     tokens = tokenize programText;
 

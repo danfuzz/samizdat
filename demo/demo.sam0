@@ -20,7 +20,7 @@ process = { value ::
     io0WriteFileUtf8 @"/dev/stdout" @"\n";
 };
 
-main = { name rest* ::
+main = { selfPath name rest* ::
     # Be welcoming.
 
     if { <> eq name @danfuzz } {
@@ -29,6 +29,7 @@ main = { name rest* ::
         io0WriteFileUtf8 @"/dev/stdout" @"Hello, Самиздат!\n\n"
     };
 
+    process selfPath;
     process rest;
     process @0;
     process @98765;
