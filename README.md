@@ -170,7 +170,7 @@ of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR),
 [Awk](http://en.wikipedia.org/wiki/AWK),
 [Lex](http://en.wikipedia.org/wiki/Lex_%28software%29) /
 [Flex](http://en.wikipedia.org/wiki/Flex_lexical_analyser),
-, and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
+and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
 [Bison](http://en.wikipedia.org/wiki/GNU_bison).
 
 The Samizdat core library was influenced by
