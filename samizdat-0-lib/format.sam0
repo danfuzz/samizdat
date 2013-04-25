@@ -15,26 +15,29 @@ CHAR0 = stringletFromIntlet @0;
 CHAR127 = stringletFromIntlet @127;
 CHAR159 = stringletFromIntlet @159;
 
+# Helper for stringifying intlets, which does most of the conversion,
+# as well as prepending the given prefix.
+intletBody = { start value ::
+    <> ifTrue { <> eq value @0 }
+        { <> start }
+        {
+            digit = iadd (imod value @10) @48;   # 48 == "0"
+            <> stringletAdd
+                (intletBody start (idiv value @10))
+                (stringletFromIntlet digit)
+        }
+};
+
+# Maplet from intlet sign values to the appropriate stringifier for each.
+INTLETSIGNS = @[
+    @-1 = { intlet :: <> intletBody @"@-" (ineg intlet) }
+    @0  = { <> @"@0" }
+    @1  = { intlet :: <> intletBody @"@" intlet }
+];
+
 # Stringifies an intlet.
 doIntlet = { intlet ::
-    intletBody = { start value ::
-        <> ifTrue { <> eq value @0 }
-            { <> start }
-            {
-                digit = iadd (imod value @10) @48;   # 48 == "0"
-                <> stringletAdd
-                    (intletBody start (idiv value @10))
-                    (stringletFromIntlet digit)
-            }
-    };
-
-    <> if { <> eq intlet @0 } {
-        <> @"@0"
-    } { <> gt intlet @0 } {
-        <> intletBody @"@" intlet
-    } else {
-        <> intletBody @"@-" (ineg intlet)
-    }
+    <> (mapletGet INTLETSIGNS (intletSign intlet)) intlet
 };
 
 # Helper for stringifying stringlets: Returns the hex form for the given
