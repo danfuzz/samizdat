@@ -16,17 +16,17 @@ ARGS* ::
 #
 
 process = { value ::
-    writeFileUtf8 @"/dev/stdout" (sourceStringlet value);
-    writeFileUtf8 @"/dev/stdout" @"\n";
+    io0WriteFileUtf8 @"/dev/stdout" (sourceStringlet value);
+    io0WriteFileUtf8 @"/dev/stdout" @"\n";
 };
 
 main = { name rest* ::
     # Be welcoming.
 
     if { <> eq name @danfuzz } {
-        writeFileUtf8 @"/dev/stdout" @"Hello, Danfuzz!\n\n"
+        io0WriteFileUtf8 @"/dev/stdout" @"Hello, Danfuzz!\n\n"
     } else {
-        writeFileUtf8 @"/dev/stdout" @"Hello, Самиздат!\n\n"
+        io0WriteFileUtf8 @"/dev/stdout" @"Hello, Самиздат!\n\n"
     };
 
     process rest;
