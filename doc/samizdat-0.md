@@ -1247,6 +1247,18 @@ See note on `stringletMap` about choice of argument order.
 <br><br>
 ### In-Language Library: Miscellaneous
 
+#### `io0SandboxedReader directory <> function`
+
+Returns a file reader function which is limited to *only* reading
+files from underneath the named directory (a stringlet). The
+return value from this call behaves like `ioReadFileUtf8`, as if
+the given directory is both the root of the filesystem and is the
+current working directory. Symbolic links are respected, but only
+if the link target is under the named directory.
+
+This function is meant to help enable a "supervisor" to build a sandbox
+from which untrusted code can read its own files.
+
 #### `sam0Library() <> maplet`
 
 Returns a maplet of bindings of the entire *Samizdat Layer 0*
