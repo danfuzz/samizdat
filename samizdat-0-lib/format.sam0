@@ -11,9 +11,9 @@
 #
 
 # Single-character stringlets `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
-CHAR0 = stringletFromIntlet @0;
-CHAR127 = stringletFromIntlet @127;
-CHAR159 = stringletFromIntlet @159;
+CHAR_0 = stringletFromIntlet @0;
+CHAR_127 = stringletFromIntlet @127;
+CHAR_159 = stringletFromIntlet @159;
 
 # Helper for stringifying intlets, which does most of the conversion,
 # as well as prepending the given prefix.
@@ -29,7 +29,7 @@ intletBody = { start value ::
 };
 
 # Maplet from intlet sign values to the appropriate stringifier for each.
-INTLETSIGNS = @[
+INTLET_SIGNS = @[
     @-1 = { intlet :: <> intletBody @"@-" (ineg intlet) }
     @0  = { <> @"@0" }
     @1  = { intlet :: <> intletBody @"@" intlet }
@@ -37,7 +37,7 @@ INTLETSIGNS = @[
 
 # Stringifies an intlet.
 doIntlet = { intlet ::
-    <> (mapletGet INTLETSIGNS (intletSign intlet)) intlet
+    <> (mapletGet INTLET_SIGNS (intletSign intlet)) intlet
 };
 
 # Helper for stringifying stringlets: Returns the hex form for the given
@@ -57,23 +57,23 @@ stringletHexEscape = { ch ::
 };
 
 # Maplet of special-case characters to their stringified forms.
-SPECIALCHARS = @[
-    CHAR0 = @"\\0"
-    @"\n" = @"\\n"
-    @"\"" = @"\\\""
-    @"\\" = @"\\\\"
+SPECIAL_CHARS = @[
+    CHAR_0 = @"\\0"
+    @"\n"  = @"\\n"
+    @"\""  = @"\\\""
+    @"\\"  = @"\\\\"
 ];
 
 # Helper for stringifying stringlets: Returns the converted form of the
 # given character.
 stringletChar = { ch ::
-    <> ifValue { <> mapletGet SPECIALCHARS ch }
+    <> ifValue { <> mapletGet SPECIAL_CHARS ch }
         { special :: <> special }
         {
             # This checks for the ranges of nonprinting control characters.
             <> ifTrue { <> or { <> lt ch @" " }
-                              { <> and { <> ge ch CHAR127 }
-                                       { <> le ch CHAR159 } } }
+                              { <> and { <> ge ch CHAR_127 }
+                                       { <> le ch CHAR_159 } } }
                 { <> stringletHexEscape ch }
                 { <> ch }
         }

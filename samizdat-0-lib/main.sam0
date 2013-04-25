@@ -66,7 +66,7 @@ loadAllLibraries = { ctx name rest* ::
 # as it needs to refer to the overall bindings maplet, which is not readily
 # accessible anywhere else.
 sam0Library = {
-    <> CORELIB   # Defined below.
+    <> CORE_LIBRARY   # Defined below.
 };
 
 
@@ -81,9 +81,9 @@ baseLibrary = mapletPut PRIMLIB @sam0Library sam0Library;
 # The argument list here is all the library files in dependency order.
 # (First depends only on the primitives, second can depend on primitives
 # and the first, etc.).
-CORELIB = loadAllLibraries
+CORE_LIBRARY = loadAllLibraries
     baseLibrary
     @"const" @"boolean" @"type" @"conditional"
     @"intlet" @"collections" @"format";
 
-<> CORELIB
+<> CORE_LIBRARY
