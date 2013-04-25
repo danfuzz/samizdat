@@ -12,8 +12,8 @@
 
 
 /**
- * Closure, that is a function and its associated state. Instances
- * of this structure are bound as the closure state as part of
+ * Closure, that is, a function and its associated immutable bindings.
+ * Instances of this structure are bound as the closure state as part of
  * function registration in `execFunction()`.
  */
 typedef struct {
@@ -85,8 +85,7 @@ static zvalue bindArguments(zvalue functionNode,
 }
 
 /**
- * The C function that is used for all registrations with function
- * registries.
+ * The C function that is bound to in order to execute interpreted code.
  */
 static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     Closure *closure = state;

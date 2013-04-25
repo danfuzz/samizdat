@@ -5,9 +5,86 @@
  */
 
 #include "impl.h"
+#include "util.h"
 
 #include <stddef.h>
+#include <string.h>
 
+
+/*
+ * Helper definitions
+ */
+
+/**
+ * Object, that is, a function and its associated mutable state. Instances
+ * of this structure are bound as the closure state as part of
+ * function registration in the implementation of the primitive `object`.
+ */
+typedef struct {
+    /** Arbitrary state value. */
+    zvalue state;
+
+    /** In-model function value. */
+    zvalue function;
+
+    /** Busy flag, used to prevent recursion. */
+    bool busy;
+} Object;
+
+/** The stringlet @"result", lazily initialized. */
+static zvalue STR_RESULT = NULL;
+
+/** The stringlet @"state", lazily initialized. */
+static zvalue STR_STATE = NULL;
+
+/**
+ * Initializes the stringlet constants, if necessary.
+ */
+static void initCodeConsts(void) {
+    if (STR_RESULT == NULL) {
+        STR_RESULT = datStringletFromUtf8String(-1, "result");
+        STR_STATE  = datStringletFromUtf8String(-1, "state");
+    }
+}
+
+/**
+ * The C function that is bound by the `object` primitive.
+ */
+static zvalue callObject(void *state, zint argCount, const zvalue *args) {
+    Object *object = state;
+    zvalue fullArgs[argCount + 1];
+
+    if (object->busy) {
+        die("Attempt to recursively call object.");
+    }
+
+    object->busy = true;
+
+    fullArgs[0] = object->state;
+    memcpy(fullArgs + 1, args, argCount);
+
+    zvalue resultMaplet = langCall(object->function, argCount + 1, fullArgs);
+    zvalue result;
+
+    if (resultMaplet == NULL) {
+        result = NULL;
+    } else {
+        zvalue newState = datMapletGet(resultMaplet, STR_STATE);
+        if (newState != NULL) {
+            object->state = newState;
+        }
+
+        result = datMapletGet(resultMaplet, STR_RESULT);
+    }
+
+    object->busy = false;
+    return result;
+}
+
+
+/*
+ * Exported primitives
+ */
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(apply) {
@@ -44,6 +121,20 @@ PRIM_IMPL(apply) {
 
     datArrayFromListlet(flatArgs + argCount, rest);
     return langCall(function, flatSize, flatArgs);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(object) {
+    initCodeConsts();
+
+    requireExactly(argCount, 2);
+
+    Object *object = zalloc(sizeof(Object));
+    object->state = args[0];
+    object->function = args[1];
+    object->busy = false;
+
+    return langDefineFunction(callObject, object);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
