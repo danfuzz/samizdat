@@ -251,7 +251,7 @@ Node / Tree Syntax
 ------------------
 
 The following is a BNF/PEG-like description of the node / tree syntax.
-A program is parsed by matching the top `program` rule, which yields a
+A program is parsed by matching the `program` rule, which yields a
 `function` node. On the right-hand side of rules, a stringlet literal
 indicates a token whose `type` is the literal value, and an identifier
 indicates a tree syntax rule to match. All of `*` `+` `?` `(` `)` have
