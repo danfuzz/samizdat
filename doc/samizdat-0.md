@@ -499,7 +499,7 @@ of how it would be called.
 
 The boolean value false.
 
-*Note:* Technically, this value could be defined in-language as
+**Note:** Technically, this value could be defined in-language as
 `false = [:@boolean @0:]`. However, as a practical matter the
 lowest layer of implementation needs to refer to this value, so
 it makes sense to allow it to be exported as a primitive.
@@ -508,7 +508,7 @@ it makes sense to allow it to be exported as a primitive.
 
 The boolean value true.
 
-*Note:* Technically, this value could be defined in-language as
+**Note:** Technically, this value could be defined in-language as
 `true = [:@boolean @1:]`. However, as a practical matter the
 lowest layer of implementation needs to refer to this value, so
 it makes sense to allow it to be exported as a primitive.
@@ -541,10 +541,10 @@ v = @[v1 v2];   is equivalent to   v = makeListlet v1 v2;
 [etc.]
 ```
 
-*Note:* The equivalence requires at least one argument, even though
+**Note:** The equivalence requires at least one argument, even though
 the function is happy to operate given zero arguments.
 
-*Note:* Technically, this function could be defined in-language as the
+**Note:** Technically, this function could be defined in-language as the
 following, but for practical reasons &mdash; e.g. and in particular,
 expected ordering of human operations during the course of
 bootstrapping an implementation, as well as efficiency of
@@ -571,10 +571,10 @@ v = @[k1=v1 k2=v2];   is equivalent to   v = makeMaplet k1 v1 k2 v2;
 [etc.]
 ```
 
-*Note:* The equivalence requires at least two arguments, even though
+**Note:** The equivalence requires at least two arguments, even though
 the function is happy to operate given zero arguments.
 
-*Note:* Technically, this function could be defined in-language as the
+**Note:** Technically, this function could be defined in-language as the
 following. (See `makeListlet` for discussion.):
 
 ```
@@ -683,7 +683,7 @@ the one or two check values. If the comparison result is equal
 to either check value, this function returns `true`. Otherwise
 it returns `false`.
 
-*Note:* This function exists in order to provide a primitive
+**Note:** This function exists in order to provide a primitive
 comparison function that returns a boolean. Without it (or something
 like it), there would be no way to define boolean-returning
 comparators in-language.
@@ -751,7 +751,7 @@ the same sign as `y` such that `isub x m` is a multiple of `y`.
 
 `imod x y` can be defined as `irem (iadd (irem x y) y) y`.
 
-*Note:* This differs from the `irem` in the treatment of negative
+**Note:** This differs from the `irem` in the treatment of negative
 numbers.
 
 #### `imul intlet1 intlet2 <> intlet`
@@ -780,7 +780,7 @@ argument is `@0`.
 
 `irem x y` can be defined as `isub x (imul (idiv x y) y)`.
 
-*Note:* This differs from the `imod` in the treatment of negative
+**Note:** This differs from the `imod` in the treatment of negative
 numbers.
 
 #### `ishl intlet shift <> intlet`
@@ -791,7 +791,7 @@ is a left-shift operation. If `shift` is negative, this is a right-shift
 operation. If `shift` is `@0`, this is a no-op, returning the first
 argument unchanged.
 
-*Note:* The `shift` argument is not limited in any particular way (not
+**Note:** The `shift` argument is not limited in any particular way (not
 masked, etc.).
 
 #### `ishr intlet shift <> intlet`
@@ -800,7 +800,7 @@ Returns the first argument bit-shifted by an amount indicated by the
 second argument. This is identical to `ishl`, except that the sense of
 positive and negative `shift` is reversed.
 
-*Note:* Unlike some other languages, there is no unsigned right-shift
+**Note:** Unlike some other languages, there is no unsigned right-shift
 operation in *Samizdat Layer 0*. This is because intlets are unlimited
 in bit width, and so there is no way to define such an operation. If
 you need "unsigned" operations, just operate consistently on
@@ -1041,7 +1041,7 @@ identical.
 
 Returns the opposite boolean to the one given.
 
-*Note:* Only accepts boolean arguments.
+**Note:** Only accepts boolean arguments.
 
 <br><br>
 ### In-Language Library: Types
@@ -1136,7 +1136,7 @@ function is called on each element (character), with two arguments,
 namely the element (as a single-character stringlet) and its index
 number (zero-based).
 
-*Note:* Unlike many other languages with similar functions, the
+**Note:** Unlike many other languages with similar functions, the
 function argument is the *last* one and not the *first* one. This is
 specifically done to make it natural to write a multi-line function
 without losing track of the other two arguments.
@@ -1186,7 +1186,7 @@ See note on `stringletMap` about choice of argument order.
 Returns a listlet consisting of the given first value followed by the
 elements of the given listlet argument.
 
-*Note:* The arguments are given in an order meant to reflect the
+**Note:** The arguments are given in an order meant to reflect the
 result (and not listlet-first).
 
 #### `listletReduce base listlet function <> . | ~.`
@@ -1269,7 +1269,7 @@ library. This is suitable for passing to `sam0Eval`, for example.
 Converts an arbitrary value into a stringlet representation form
 that is meant to mimic the Samizdat source syntax.
 
-*Note:* The output differs from *Samizdat Layer 0* syntax in that
+**Note:** The output differs from *Samizdat Layer 0* syntax in that
 stringlet forms can include two escape forms not defined in the
 language:
 
