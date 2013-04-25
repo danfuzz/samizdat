@@ -32,7 +32,7 @@ void requireRange(zint argCount, zint min, zint max) {
 }
 
 /** Documented in header. */
-void requireMinimum(zint argCount, zint minimum) {
+void requireAtLeast(zint argCount, zint minimum) {
     if (argCount < minimum) {
         die("Invalid argument count for primitive: %lld < %lld",
             argCount, minimum);

@@ -29,7 +29,7 @@ void requireExactly(zint argCount, zint required);
  * Check the given argument count for a minimum amount, complaining if the
  * given count is too small.
  */
-void requireMinimum(zint argCount, zint minimum);
+void requireAtLeast(zint argCount, zint minimum);
 
 /**
  * Check the given argument count for a range of acceptable values,

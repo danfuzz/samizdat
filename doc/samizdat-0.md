@@ -940,12 +940,21 @@ highlet, if any. Returns void if the given highlet is valueless.
 <br><br>
 ### Primitive Library: Functions and Code
 
-#### `apply function listlet <> . | ~.`
+#### `apply function (value* listlet)? <> . | ~.`
 
-Calls the given function with the given listlet as its arguments (that
-is, each element of the listlet becomes a separate argument to the
-function). This function returns whatever the called function returned
-(including void).
+Calls the given function with the given arguments.
+
+It is valid to pass no arguments other than `function`, in which case the
+function is called with no arguments.
+
+If any other arguments are supplied, then each of the initial `value`
+arguments is taken to be an arbitrary value, and the final `listlet`
+argument must be a listlet, whose contents are "flattened" into the
+final list of arguments to pass to the function. For example, this is
+a five-argument call: `apply fizmoFunc @foo @bar @baz @[@frob @twiddle]`
+
+This function returns whatever the called function returned (including
+void).
 
 #### `sam0Eval context expressionNode <> . | ~.`
 
