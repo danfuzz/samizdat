@@ -8,7 +8,7 @@
 		<string>sam0</string>
 	</array>
 	<key>foldingStartMarker</key>
-	<string>{[ ]*(#.*)?$</string>
+	<string>{ *(#.*)?$</string>
 	<key>foldingStopMarker</key>
 	<string>^[^{]*}[ ]*(#.*)?$</string>
 	<key>name</key>
@@ -24,16 +24,19 @@
 		<dict>
 			<key>name</key>
 			<string>string.quoted.double</string>
-			<key>match</key>
-			<string>@?"([^\\"]|\\.)*"</string>
-		</dict>
-		<dict>
-			<key>name</key>
-			<string>string.quoted.double</string>
 			<key>begin</key>
-			<string>@?"([^\\"]|\\.)*$</string>
+			<string>@?"</string>
 			<key>end</key>
-			<string>([^\\"]|\\.)*"</string>
+			<string>"</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>name</key>
+					<string>constant.character.escape</string>
+					<key>match</key>
+					<string>\\([0nrt\\"]|x.*;)</string>
+				</dict>
+			</array>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -45,13 +48,13 @@
 			<key>name</key>
 			<string>constant.other</string>
 			<key>match</key>
-			<string>@[a-zA-Z][a-zA-Z0-9]*</string>
+			<string>@[_a-zA-Z][_a-zA-Z0-9]*</string>
 		</dict>
 		<dict>
 			<key>name</key>
 			<string>constant.language</string>
 			<key>match</key>
-			<string>true|false|null|@\[\]|@\[=\]</string>
+			<string>\btrue\b|\bfalse\b|\bnull\b|@\[\]|@\[=\]</string>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -67,9 +70,14 @@
 					<key>name</key>
 					<string>variable.parameter</string>
 				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator</string>
+				</dict>
 			</dict>
 			<key>match</key>
-			<string>{(.*)::</string>
+			<string>{(.*)(::)</string>
 		</dict>
 		<dict>
 			<key>captures</key>
@@ -81,7 +89,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>\(([a-zA-Z0-9]*)\b</string>
+			<string>\(([_a-zA-Z0-9]*)\b</string>
 		</dict>
 		<dict>
 			<key>captures</key>
@@ -91,9 +99,14 @@
 					<key>name</key>
 					<string>variable.other</string>
 				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator</string>
+				</dict>
 			</dict>
 			<key>match</key>
-			<string>([a-zA-Z][a-zA-Z0-9]*) *=</string>
+			<string>([_a-zA-Z][_a-zA-Z0-9]*) *(=)</string>
 		</dict>
 	</array>
 	<key>scopeName</key>
