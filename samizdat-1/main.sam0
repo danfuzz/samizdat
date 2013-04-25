@@ -46,8 +46,7 @@ parse = loadFile @"parse";
 #
 
 # Compiles the file named in the first argument in a fresh context,
-# and runs its `main`, passing it an array of the rest of the
-# arguments.
+# and runs it, passing it an array of the rest of the arguments.
 main = { file rest* ::
     programText = io0ReadFileUtf8 (io0PathFromStringlet file);
     tokens = tokenize programText;
