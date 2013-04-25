@@ -37,31 +37,8 @@ loadFile = { name ::
 # Tokenizer function.
 tokenize = loadFile @"tokenize";
 
-
-# Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
-# syntax. Returns a `function` node.
-parse = { tokens ::
-    # TODO
-
-    theCall = [:
-        @call
-        @[
-            @function=[:@varRef @io0WriteFileUtf8:]
-            @actuals=@[
-                [:@literal @[@"dev" @"stdout"]:]
-                [:@literal @"We have received the Самиздат!\n":]
-            ]
-        ]
-    :];
-
-    <> [:
-        @function
-        @[
-            @formals=[:@formals @[]:]
-            @statements=@[theCall]
-        ]
-    :]
-};
+# Tree parser function.
+parse = loadFile @"parse";
 
 
 #
