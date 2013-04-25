@@ -15,12 +15,8 @@ ARGS* ::
 # Helper definitions
 #
 
-# Standard output, as a pathListlet.
-stdout = @[@"dev" @"stdout"];
-
 process = { value ::
-    io0WriteFileUtf8 stdout (sourceStringlet value);
-    io0WriteFileUtf8 stdout @"\n";
+    io0Note (sourceStringlet value);
 };
 
 
@@ -32,9 +28,9 @@ main = { selfPath name rest* ::
     # Be welcoming.
 
     if { <> eq name @danfuzz } {
-        io0WriteFileUtf8 stdout @"Hello, Danfuzz!\n\n"
+        io0Note @"Hello, Danfuzz!\n"
     } else {
-        io0WriteFileUtf8 stdout @"Hello, Самиздат!\n\n"
+        io0Note @"Hello, Самиздат!\n"
     };
 
     process selfPath;

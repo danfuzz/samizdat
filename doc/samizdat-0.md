@@ -979,11 +979,18 @@ Returns a `function` node (as defined by the parse tree semantics)
 that represents the function.
 
 <br><br>
-### Primitive Library: Miscellaneous
+### Primitive Library: I/O
 
 #### `die stringlet <> (exits)`
 
-Prints the given stringlet to the system console, and exits.
+Prints the given stringlet to the system console (as if with `io0Note`),
+and exits.
+
+#### `io0Note stringlet <> ~.`
+
+Writes out a newline-terminated note to the system console or equivalent.
+This is intended for debugging, and as such this will generally end up
+emitting to the standard-error stream.
 
 #### `io0PathFromStringlet stringlet <> pathListlet`
 
@@ -1012,7 +1019,6 @@ The result is a listlet of path components, representing the absolute path.
 None of the components will be the empty stringlet (`@""`), except possibly
 the last. If the last component is empty, that is an indication that the
 original path ended with a trailing slash.
-
 
 #### `io0ReadFileUtf8 pathListlet <> stringlet`
 
@@ -1281,7 +1287,7 @@ also returns void.
 See note on `stringletMap` about choice of argument order.
 
 <br><br>
-### In-Language Library: Miscellaneous
+### In-Language Library: I/O
 
 #### `io0SandboxedReader directory <> function`
 
@@ -1295,6 +1301,9 @@ directory.
 
 This function is meant to help enable a "supervisor" to build a sandbox
 from which untrusted code can read its own files.
+
+<br><br>
+### In-Language Library: Miscellaneous
 
 #### `sam0Library() <> maplet`
 

@@ -25,6 +25,7 @@ PRIM_FUNC(imul);
 PRIM_FUNC(ineg);
 PRIM_FUNC(inot);
 PRIM_FUNC(intletFromStringlet);
+PRIM_FUNC(io0Note);
 PRIM_FUNC(io0PathFromStringlet);
 PRIM_FUNC(io0ReadFileUtf8);
 PRIM_FUNC(io0WriteFileUtf8);

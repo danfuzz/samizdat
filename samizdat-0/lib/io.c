@@ -6,10 +6,25 @@
 
 #include "io.h"
 #include "impl.h"
-#include "util.h"
 
-#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 
+
+/*
+ * Helper functions
+ */
+
+/**
+ * Emits a note.
+ */
+static void emitNote(zvalue message) {
+    zint size = 0;
+    const char *str = datStringletEncodeUtf8(message, &size);
+
+    fwrite(str, 1, size, stderr);
+    fputc('\n', stderr);
+}
 
 /*
  * Primitive implementations (exported via the context)
@@ -19,10 +34,17 @@
 PRIM_IMPL(die) {
     requireRange(argCount, 0, 1);
 
-    const char *message =
-        (argCount == 0) ? "Alas" : datStringletEncodeUtf8(args[0], NULL);
+    zvalue message =
+        (argCount == 1) ? args[0] : datStringletFromUtf8String(-1, "Alas");
+    emitNote(message);
+    exit(1);
+}
 
-    die("%s", message);
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(io0Note) {
+    requireExactly(argCount, 1);
+    emitNote(args[0]);
+    return NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
