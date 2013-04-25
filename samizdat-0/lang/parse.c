@@ -446,8 +446,8 @@ DEF_PARSE(formals) {
                                      datHighletValue(identifier));
 
         if (MATCH(CH_STAR) != NULL) {
-            // In Samizdat Layer 0, the only modifier for a formal is
-            // `*` which has to be on the last formal.
+            // In Samizdat Layer 0, the only allowed modifier for a formal is
+            // `*`, and it has to be on the last formal.
             formal = datMapletPut(formal, STR_REPEAT, TOK_CH_STAR);
             formals = datListletAppend(formals, formal);
             break;
@@ -470,12 +470,7 @@ DEF_PARSE(program1) {
     MARK();
 
     zvalue formals = PARSE(formals);
-
-    if (formals == NULL) {
-        MATCH(CH_COLONCOLON); // Optional if there are no formals.
-    } else {
-        MATCH_OR_REJECT(CH_COLONCOLON); // Mandatory if there are formals.
-    }
+    MATCH_OR_REJECT(CH_COLONCOLON);
 
     return formals;
 }
@@ -488,13 +483,12 @@ DEF_PARSE(program) {
     // a formals list but no statements or yield. So, we never have
     // to backtrack during this rule.
 
-    zvalue formals = PARSE(program1);
+    zvalue formals = PARSE(program1); // `NULL` is ok, as it's optional.
     zvalue statements = datListletEmpty();
-    zvalue yield = NULL; // NULL is ok, as it's optional.
+    zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
     for (;;) {
         yield = PARSE(yield);
-
         if (yield != NULL) {
             break;
         }
