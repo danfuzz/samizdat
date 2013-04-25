@@ -85,7 +85,7 @@ name) in the *Samizdat Layer 0* syntax, then it is valid to
 omit the double-quote delimiters.
 
 ```
-@""                           # the empty string
+@""                           # the empty stringlet
 @"Hello, Самиздат!"
 @"\"blort\" -- potion that enables one to see in the dark.\n"
 @fizmo
