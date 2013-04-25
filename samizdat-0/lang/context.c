@@ -36,7 +36,6 @@ void ctxBind(zcontext ctx, zvalue name, zvalue value) {
 
 /* Documented in header. */
 zvalue ctxGet(zcontext ctx, zvalue name) {
-    zcontext zorig = ctx;
     for (/* ctx */; ctx != NULL; ctx = ctx->parent) {
         zvalue found = datMapletGet(ctx->locals, name);
         if (found != NULL) {
