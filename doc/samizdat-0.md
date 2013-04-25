@@ -183,9 +183,9 @@ Unlike some languages (notably JavaScript), it is invalid to try to
 assign the void non-value (`undefined` is the JavaScript equivalent)
 to a variable or to pass it as a parameter to some other
 function. However, the *Samizdat Layer 0* library provides the
-`ifValue` function to let code act sensibly when it needs to call a
-function but doesn't know up-front whether or not it will yield a
-value.
+`ifValue` and `ifVoid` functions to let code act sensibly when it needs
+to call a function but doesn't know up-front whether or not it will yield
+a value.
 
 In code-like function descriptions, a void result is written `~.`,
 which can be read as "not anything" (or with more technical accuracy,
