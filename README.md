@@ -128,7 +128,7 @@ Samizdat is a high-level programming language somewhere down the
 family lineage from all of
 [ALGOL](http://en.wikipedia.org/wiki/ALGOL),
 [Lisp](http://en.wikipedia.org/wiki/LISP), and
-[SNOBOL](http://en.wikipedia.org/wiki/SNOBOL) (really!). It is
+[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk). It is
 intended that the language be an attractive target for use in
 text processing, free-form data structure manipulation, and general
 systems programming.
@@ -137,10 +137,8 @@ The language came about as a second-order effect of the author's
 desire to explore the intersection of all of
 [promise](http://en.wikipedia.org/wiki/Promise_%28programming%29)-based
 [object-capability](http://en.wikipedia.org/wiki/Object-capability_model)
-computation, the
-[actor model](http://en.wikipedia.org/wiki/Actor_model) of
-concurrency, maximally pure / immutable data models, and
-[software transactional
+computation, the [actor model](http://en.wikipedia.org/wiki/Actor_model) of
+concurrency, maximally pure / immutable data models, and [software transactional
 memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
 (STM). The Samizdat language has a mostly-immutable data model and
 generally has "capability nature", but it does not innately implement
@@ -152,11 +150,10 @@ Samizdat's syntax bears the influences of
 [C](http://en.wikipedia.org/wiki/C_%28programming_language%29),
 [E](http://en.wikipedia.org/wiki/E_%28programming_language%29),
 [Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
-[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk),
-[Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
-[JavaScript](http://en.wikipedia.org/wiki/JavaScript),
-and traditional [Backus-Naur
-Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) (BNF).
+Smalltalk, [Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript), and traditional
+[Backus-Naur Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)
+(BNF).
 
 The Samizdat core data model was influenced by Lisp,
 [Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
@@ -171,7 +168,9 @@ of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR),
 [Lex](http://en.wikipedia.org/wiki/Lex_%28software%29) /
 [Flex](http://en.wikipedia.org/wiki/Flex_lexical_analyser),
 and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
-[Bison](http://en.wikipedia.org/wiki/GNU_bison).
+[Bison](http://en.wikipedia.org/wiki/GNU_bison). Additionally,
+[SNOBOL](http://en.wikipedia.org/wiki/SNOBOL) deserves credit for blazing
+the trail for languages that make parsing a first-class operation.
 
 The Samizdat core library was influenced by
 [Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29)
