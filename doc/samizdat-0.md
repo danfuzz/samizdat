@@ -1282,7 +1282,7 @@ also returns void.
 
 See note on `stringletMap` about choice of argument order.
 
-
+<br><br>
 ### In-Language Library: Maplets
 
 #### `mapletCat maplet rest* <> maplet`
