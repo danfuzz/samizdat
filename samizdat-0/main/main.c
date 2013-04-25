@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     }
 
     zcontext ctx = libNewContext();
-    zvalue programText = readFile(fileName);
+    zvalue programText = ioReadFile(fileName);
     zvalue program = langNodeFromProgramText(programText);
     zvalue function = langEvalExpressionNode(ctx, program);
     zvalue result = langApply(function, args);

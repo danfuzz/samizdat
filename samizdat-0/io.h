@@ -18,12 +18,12 @@
  * it as UTF-8. Returns a stringlet (listlet of Unicode-representing
  * intlets) of the contents.
  */
-zvalue readFile(zvalue fileName);
+zvalue ioReadFile(zvalue fileName);
 
 /**
  * Writes the given stringlet to the file with the given name, encoding
  * it as UTF-8.
  */
-void writeFile(zvalue fileName, zvalue text);
+void ioWriteFile(zvalue fileName, zvalue text);
 
 #endif

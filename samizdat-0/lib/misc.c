@@ -28,12 +28,12 @@ PRIM_IMPL(die) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(readFile) {
     requireExactly(argCount, 1);
-    return readFile(args[0]);
+    return ioReadFile(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(writeFile) {
     requireExactly(argCount, 2);
-    writeFile(args[0], args[1]);
+    ioWriteFile(args[0], args[1]);
     return NULL;
 }

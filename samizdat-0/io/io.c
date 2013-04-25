@@ -42,7 +42,7 @@ FILE *openFile(zvalue fileName, const char *mode) {
  */
 
 /* Documented in header. */
-zvalue readFile(zvalue fileName) {
+zvalue ioReadFile(zvalue fileName) {
     char buf[MAX_FILE_SIZE];
     FILE *in = openFile(fileName, "r");
     size_t amt = fread(buf, 1, sizeof(buf), in);
@@ -61,7 +61,7 @@ zvalue readFile(zvalue fileName) {
 }
 
 /* Documented in header. */
-void writeFile(zvalue fileName, zvalue text) {
+void ioWriteFile(zvalue fileName, zvalue text) {
     zint utfSize;
     const char *utf = datStringletEncodeUtf8(text, &utfSize);
 
