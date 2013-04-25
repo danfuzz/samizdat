@@ -109,7 +109,7 @@ more value representations, followed by a final `]`.
 
 ### Maplet
 
-A `maplet` is a sequence of zero or more mappings (a/k/a bindings)
+A `maplet` is a sequence of zero or more mappings (also called bindings)
 from arbitrary keys to arbitrary values. Keys and values are both
 allowed to be any type of value. Notably, keys are *not* restricted to
 only being strings (or string-like things).
