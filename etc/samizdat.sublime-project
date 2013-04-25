@@ -1,0 +1,17 @@
+{
+    "folders":
+    [
+        {
+            "path": "..",
+            "folder_exclude_patterns": ["out"]
+        }
+    ],
+    "build_systems":
+    [
+        {
+            "name": "Demo",
+            "working_dir": "${project_path}",
+            "cmd": ["../demo/run", "demo", "Greetings!"]
+        }
+    ]
+}
