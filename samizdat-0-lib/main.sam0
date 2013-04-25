@@ -11,13 +11,13 @@
 
 # These are the arguments passed to the library itself.
 #
-# `LOADER` is expected to be a function of one argument
-# `{ fileName :: ... }`, where `fileName` indicates a file to load.
+# `READER` is expected to be a function of one argument
+# `{ fileName :: ... }`, where `fileName` indicates a file to read.
 # The result of the call is a stringlet of the file contents. If
 # the file doesn't exist, this call fails, terminating the runtime.
-# `LOADER` is used to load in the sub-components of the core library.
+# `READER` is used to read in the sub-components of the core library.
 
-LOADER ::
+READER ::
 
 
 #
@@ -29,7 +29,7 @@ LOADER ::
 # by the named library. Each library file is expected to return a maplet of
 # bindings that it wishes to export.
 loadLibrary = { ctx name rest* ::
-    text = LOADER name;
+    text = READER name;
     tree = sam0Tree text;
     function = sam0Eval ctx tree;
 

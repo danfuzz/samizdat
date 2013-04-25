@@ -58,11 +58,11 @@ static void initLibraryFiles(void) {
 }
 
 /**
- * Implementation of the loader function passed as the argument
- * to in-language library files. Loads the named file by lookup in
+ * Implementation of the reader function passed as the argument
+ * to in-language library files. Reads the named file by lookup in
  * the `libraryMaplet()`.
  */
-static zvalue libraryLoader(void *state, zint argCount, const zvalue *args) {
+static zvalue libraryReader(void *state, zint argCount, const zvalue *args) {
     requireExactly(argCount, 1);
 
     zvalue name = args[0];
@@ -109,11 +109,11 @@ static void initLibraryBindings(void) {
     zcontext ctx = primitiveContext();
     zvalue mainProgram = langNodeFromProgramText(LIB_TEXT_main);
     zvalue mainFunction = langEvalExpressionNode(ctx, mainProgram);
-    zvalue loaderFunction = langDefineFunction(libraryLoader, NULL);
+    zvalue readerFunction = langDefineFunction(libraryReader, NULL);
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    LIBRARY_BINDINGS = langCall(mainFunction, 1, &loaderFunction);
+    LIBRARY_BINDINGS = langCall(mainFunction, 1, &readerFunction);
 }
 
 
