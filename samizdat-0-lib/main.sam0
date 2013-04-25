@@ -9,7 +9,7 @@
 # core library functions and other bindings that aren't primitive.
 #
 
-# These are the arguments passed to the library itself.
+# The following declares the arguments passed to the library itself.
 #
 # `READER` is expected to be a function of one argument
 # `{ fileName :: ... }`, where `fileName` indicates a file to read.
