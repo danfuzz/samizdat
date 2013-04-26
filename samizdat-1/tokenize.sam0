@@ -87,6 +87,28 @@ makeReader = { programText ::
 # Tokenizer function
 #
 
+# These are all the integer digits, as a maplet from stringlets to
+# digit values.
+INTEGER_CHARS = listletReduce @[=]
+    @[@0 @1 @2 @3 @4 @5 @6 @7 @8 @9]
+    { result n ::
+        # Note: 48 == "0".
+        <> mapletPut result (stringletFromIntlet (iadd @48 n)) n
+    };
+
+# Parses an integer.
+parseInteger = { reader ::
+    value = whileReduce @0 { result ::
+        <> ifValue { <> reader @peek }
+            { ch ::
+                <> ifValue { <> mapletGet INTEGER_CHARS ch }
+                    { n :: <> (iadd n (imul result @10)) }
+            }
+    };
+
+    <> [:@integer value:];
+};
+
 # Skips over all characters until and including a newline.
 skipUntilNewline = { reader ::
     while {
@@ -143,23 +165,23 @@ makeOneTwoParser = { twoChars ::
 };
 
 # Mapping from token start character to the corresponding parser to use.
-TOKEN_DISPATCH = @[
-    @"{" = oneCharParser
-    @"}" = oneCharParser
-    @"[" = oneCharParser
-    @"]" = oneCharParser
-    @"(" = oneCharParser
-    @")" = oneCharParser
-    @"=" = oneCharParser
-    @"-" = oneCharParser
-    @";" = oneCharParser
-    @"*" = oneCharParser
-    @":" = (makeOneTwoParser @"::")
-    @"@" = (makeOneTwoParser @"@@")
-    @"<" = (makeOneTwoParser @"<>")
-
-    # TODO: More
-];
+TOKEN_DISPATCH = mapletAdd
+    (mapletMap INTEGER_CHARS { <> parseInteger })
+    @[
+        @"{" = oneCharParser
+        @"}" = oneCharParser
+        @"[" = oneCharParser
+        @"]" = oneCharParser
+        @"(" = oneCharParser
+        @")" = oneCharParser
+        @"=" = oneCharParser
+        @"-" = oneCharParser
+        @";" = oneCharParser
+        @"*" = oneCharParser
+        @":" = (makeOneTwoParser @"::")
+        @"@" = (makeOneTwoParser @"@@")
+        @"<" = (makeOneTwoParser @"<>")
+    ];
 
 # Reads a single token.
 readToken = { reader ::
@@ -194,34 +216,6 @@ tokenizex = { programText ::
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
 tokenize = { programText ::
-    size = lowSize programText;
-
-    # Gets the program text character at the given index, as a single-character
-    # stringlet.
-    get = { at :: <> stringletNth programText at null };
-
-
-
-    # These are all the integer digits, as a maplet from stringlets to
-    # digit values.
-    integerChars = listletReduce @[=]
-        @[@0 @1 @2 @3 @4 @5 @6 @7 @8 @9]
-        { result n ::
-            # Note: 48 == "0".
-            <> mapletPut result (stringletFromIntlet (iadd @48 n)) n };
-
-    # Parses an integer.
-    parseInteger = { at ::
-        parseStep = { result at ::
-            <> ifValue { <> mapletGet integerChars (get at) }
-                { n :: <> parseStep (iadd n (imul result @10)) (iadd at @1) }
-                { <> @[@token=[:@integer result:] @at=at] }
-        };
-        <> parseStep @0 at
-    };
-
-    # These are all the integer parser mappings.
-    integerRules = mapletMap integerChars { <> parseInteger };
 
     # These are all the valid identifier characters, as a set-like maplet.
     identifierChars = listletReduce @[=]
@@ -279,10 +273,7 @@ tokenize = { programText ::
     # These are all the rules. Note: identifierRules has to be listed before
     # integerRules in order to avoid the former trampling on the latter.
     rules = mapletCat
-        oneCharRules
-        oneTwoCharRules
         identifierRules
-        integerRules
         stringRules;
 
     # Parses all the tokens.
