@@ -32,9 +32,6 @@ xText = { state :: <> mapletGet state @text };
 # Gets the cursor position.
 xAt = { state :: <> mapletGet state @at };
 
-# Gets the current cursor position.
-doAt = { state :: <> @[@result=(xAt state)] };
-
 # Returns whether the reader is at EOF.
 doEof = { state :: <> @[@result=(lt (xAt state) (xSize state))] };
 
@@ -54,7 +51,6 @@ doRead = { state ::
 
 # Dispatch table.
 READER_DISPATCH = @[
-    @at    = doAt
     @eof   = doEof
     @peek  = doPeek
     @read  = doRead
