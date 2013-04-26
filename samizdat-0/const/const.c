@@ -24,6 +24,12 @@
 #undef STR
 #undef TOK
 
+/* Documented in header. */
+zvalue CONST_FALSE = NULL;
+
+/* Documented in header. */
+zvalue CONST_TRUE = NULL;
+
 
 /*
  * Module functions
@@ -31,7 +37,7 @@
 
 /* Documented in header. */
 void constInit(void) {
-    if (STR_CH_AT != NULL) {
+    if (CONST_FALSE != NULL) {
         return;
     }
 
@@ -42,4 +48,7 @@ void constInit(void) {
         TOK_##name = datHighletFrom(STR_##name, NULL);
 
     #include "const-def.h"
+
+    CONST_FALSE = datHighletFrom(STR_BOOLEAN, datIntletFromInt(0));
+    CONST_TRUE  = datHighletFrom(STR_BOOLEAN, datIntletFromInt(1));
 }

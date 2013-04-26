@@ -40,16 +40,6 @@ typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
  */
 
 /**
- * Gets the in-model value typically known as `false`.
- */
-zvalue langFalse(void);
-
-/**
- * The value typically known as `true`.
- */
-zvalue langTrue(void);
-
-/**
  * Converts an in-model boolean value to a C `bool`.
  */
 bool langBoolFromBoolean(zvalue value);

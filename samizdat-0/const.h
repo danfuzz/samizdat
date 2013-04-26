@@ -28,6 +28,13 @@
 #undef STR
 #undef TOK
 
+/** The canonical `false` value. */
+extern zvalue CONST_FALSE;
+
+/** The canonical `true` value. */
+extern zvalue CONST_TRUE;
+
+
 /**
  * Initializes the constants, if necessary.
  */

@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -79,13 +80,14 @@ static zvalue libraryReader(void *state, zint argCount, const zvalue *args) {
  * Creates a `zcontext`, and binds all the primitive definitions into it.
  */
 static zcontext primitiveContext(void) {
+    constInit();
     zcontext ctx = langCtxNew();
 
     // These both could have been defined in-language, but we already
     // have to make them be defined and accessible to C code, so we just
     // go ahead and bind them here.
-    langCtxBind(ctx, "false", langFalse());
-    langCtxBind(ctx, "true", langTrue());
+    langCtxBind(ctx, "false", CONST_FALSE);
+    langCtxBind(ctx, "true", CONST_TRUE);
 
     // Bind all the primitive functions.
     #define PRIM_FUNC(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
