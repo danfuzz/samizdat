@@ -14,8 +14,6 @@
 
 /* Documented in header. */
 bool constBoolFromBoolean(zvalue value) {
-    constInit();
-
     if (datOrder(value, CONST_FALSE) == 0) {
         return false;
     } else if (datOrder(value, CONST_TRUE) == 0) {
@@ -27,6 +25,5 @@ bool constBoolFromBoolean(zvalue value) {
 
 /* Documented in header. */
 zvalue constBooleanFromBool(bool value) {
-    constInit();
     return value ? CONST_TRUE : CONST_FALSE;
 }

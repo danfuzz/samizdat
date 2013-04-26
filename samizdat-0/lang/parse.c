@@ -544,6 +544,8 @@ DEF_PARSE(function) {
 
 /* Documented in header. */
 zvalue langNodeFromProgramText(zvalue programText) {
+    constInit();
+
     zvalue tokens = tokenize(programText);
     ParseState state = { tokens, datSize(tokens), 0 };
     zvalue result = parse_program(&state);
