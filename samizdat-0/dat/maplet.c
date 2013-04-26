@@ -111,13 +111,13 @@ zvalue datMapletKeys(zvalue maplet) {
 
     zint size = datSize(maplet);
     zmapping *elems = mapletElems(maplet);
-    zvalue result = datListletFromArray(0, NULL); // TODO: Revisit this.
+    zvalue result[size];
 
     for (zint i = 0; i < size; i++) {
-        result = datListletAppend(result, elems[i].key);
+        result[i] = elems[i].key;
     }
 
-    return result;
+    return datListletFromArray(size, result);
 }
 
 /* Documented in header. */
