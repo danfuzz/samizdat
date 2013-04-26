@@ -14,14 +14,13 @@
 # Helper functions
 #
 
-# Generic reduce function, which in addition to the three arguments
-# accepted by the exported reduce functions, also takes the function
-# to use to get the `nth` element from the value.
-genericReduce = { base value func nthFunc ::
+# Generic reduce function. Instead of the value-to-reduce argument, this
+# takes an `nthFunc` of one argument.
+genericReduce = { base nthFunc func ::
     reduction = whileReduce @[base @0] { state ::
         result = listletNth state @0;
         index = listletNth state @1;
-        <> ifValue { <> (nthFunc value index) }
+        <> ifValue { <> (nthFunc index) }
             { item :: <> @[(func result item index) (iadd index @1)] }
     };
 
@@ -59,7 +58,7 @@ listletPrepend = { value listlet ::
 
 # Documented in Samizdat Layer 0 spec.
 listletReduce = { base listlet func ::
-    <> genericReduce base listlet func listletNth
+    <> genericReduce base { n :: <> listletNth listlet n } func
 };
 
 
@@ -106,7 +105,7 @@ stringletMap = { stringlet func ::
 
 # Documented in Samizdat Layer 0 spec.
 stringletReduce = { base stringlet func ::
-    <> genericReduce base stringlet func stringletNth
+    <> genericReduce base { n :: <> stringletNth stringlet n } func
 };
 
 
