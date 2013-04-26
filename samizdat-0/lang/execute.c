@@ -65,10 +65,10 @@ static zvalue bindArguments(zvalue functionNode,
 
         if (repeat != NULL) {
             if (datOrder(repeat, TOK_CH_STAR) == 0) {
-                value = EMPTY_LISTLET;
-                for (/*i*/; i < argCount; i++) {
-                    value = datListletAppend(value, args[i]);
+                if (i != (formalsSize - 1)) {
+                    die("Invalid star repeat modifier.");
                 }
+                value = datListletFromArray(argCount - i, &args[i]);
             } else {
                 die("Unknown repeat modifier.");
             }
