@@ -33,6 +33,10 @@ main = { selfPath name rest* ::
         io0Note @"Hello, Самиздат!\n"
     };
 
+    io0Note (format @"Testing %% 1 2 3\n%s\n%q\n%Q"
+        @"\"blort\""
+        @"splat"
+        @"fizmo");
     process selfPath;
     process rest;
     process @0;

@@ -7,7 +7,7 @@
 #
 
 #
-# Helper definitions
+# `sourceStringlet` function
 #
 
 # Single-character stringlets `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
@@ -153,17 +153,146 @@ STRINGIFIERS = @[
     @uniqlet   = doUniqlet
 ];
 
-
-#
-# Exported definitions
-#
-
-# Documented in Samizdat Layer 0 spec.
-sourceStringlet = { value ::
+# Common handler for the two exported variants.
+sourceStringletGeneral = { value adorn ::
     stringifier = mapletGet STRINGIFIERS (lowType value) doUnknown;
     <> stringifier value
 };
 
+# Documented in Samizdat Layer 0 spec.
+sourceStringlet = { value ::
+    <> sourceStringletGeneral value true
+};
+
+# Documented in Samizdat Layer 0 spec.
+sourceStringletUnadorned = { value ::
+    <> sourceStringletGeneral value false
+};
+
+#
+# `format` function
+#
+
+# Gets the current format string position.
+xFmtAt = { state ::
+    <> (mapletGet state @fmtAt)
+};
+
+# Peeks at the current format string character.
+xPeek = { state ::
+    <> stringletNth (mapletGet state @fmt) (xFmtAt state)
+};
+
+# Peeks at the next format string character.
+xPeek1 = { state ::
+    at = iadd @1 (xFmtAt state);
+    <> stringletNth (mapletGet state @fmt) at;
+};
+
+# Gets the current argument consumption position.
+xArgsAt = { state ::
+    <> (mapletGet state @argsAt)
+};
+
+# Gets the current argument.
+xArg = { state ::
+    <> ifValue { <> listletNth (mapletGet state @args) (xArgsAt state) }
+        { value :: <> value }
+        { <> @"(missing argument)" }
+};
+
+# Formats a literal percent.
+xPercent = { state ::
+    fmtAt = iadd @2 (mapletGet state @fmtAt);
+    nextState = mapletPut state @fmtAt fmtAt;
+    <> @[@result=@"%" @state=nextState];
+};
+
+# Formats a literal quoted argument.
+xLiteral = { state ::
+    arg = xArg state;
+    argsAt = iadd @1 (xArgsAt state);
+    fmtAt = iadd @2 (xFmtAt state);
+    nextState = mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
+    <> @[@result=(sourceStringlet arg) @state=nextState];
+};
+
+# Formats a literal quoted argument, without top-level adornment.
+xUnadornedLiteral = { state ::
+    arg = xArg state;
+    argsAt = iadd @1 (xArgsAt state);
+    fmtAt = iadd @2 (xFmtAt state);
+    nextState = mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
+    <> @[@result=(sourceStringletUnadorned arg) @state=nextState];
+};
+
+# Formats a stringlet argument.
+xStringlet = { state ::
+    arg = xArg state;
+    argsAt = iadd @1 (xArgsAt state);
+    fmtAt = iadd @2 (xFmtAt state);
+    nextState = mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
+    <> @[@result=arg @state=nextState];
+};
+
+# Mapping from format escape characters to their respective handler functions.
+FORMATTERS = @[
+    @"%" = xPercent
+    @"q" = xLiteral
+    @"Q" = xUnadornedLiteral
+    @"s" = xStringlet
+];
+
+# Formats a plain character (that is, returns it as-is).
+xPlain = { state ch ::
+    fmtAt = iadd @1 (mapletGet state @fmtAt);
+    nextState = mapletPut state @fmtAt fmtAt;
+    <> @[@result=ch @state=nextState];
+};
+
+# Formats an arbitrary escape.
+xEscape = { state ::
+    <> ifValue { <> xPeek1 state }
+        { ch ::
+            <> ifValue { <> mapletGet FORMATTERS ch }
+                { formatter :: <> formatter state ch }
+                { <> xPlain state }
+        }
+        { <> xPlain state @"%" }
+};
+
+# Formats a single character out of the format string.
+formatOne = { state ::
+    <> ifValue { <> xPeek state }
+        { ch ::
+            <> ifTrue { <> eq ch @"%" }
+                { <> xEscape state }
+                { <> xPlain state ch }
+        }
+};
+
+# Documented in Samizdat Layer 0 spec.
+format = { formatString rest* ::
+    formatter = object formatOne @[
+        @fmt    = formatString
+        @fmtAt  = @0
+        @args   = rest
+        @argsAt = @0
+    ];
+
+    <> whileReduce @"" { result ::
+        <> ifValue { <> formatter() }
+            { s :: <> stringletAdd result s }
+    }
+};
+
+
+#
+# Export mechanics
+#
+
 <> @[
+    @format = format
     @sourceStringlet = sourceStringlet
+    @sourceStringletUnadorned = sourceStringletUnadorned
 ]
