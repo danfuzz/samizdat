@@ -1064,6 +1064,20 @@ of the read and decoded text.
 (see which). It is invalid (terminating the runtime) for a component to
 be any of `@""` `@"."` `@".."` or to contain a slash (`/`).
 
+#### `io0ReadLink pathListlet <> pathListlet | ~.`
+
+Checks the filesystem to see if the given path refers to a symbolic
+link. If it does, then this returns the path which represents the
+direct resolution of that link. It does not try to re-resolve
+the result iteratively, so the result may not actually refer to a
+real file (for example).
+
+If the path does not refer to a symbolic link, then this function returns
+void.
+
+`pathListlet` must be a listlet of the form described by `io0PathFromStringlet`
+(see which). See `io0ReadFileUtf8` for further discussion.
+
 #### `io0WriteFileUtf8 pathListlet text <> ~.`
 
 Writes out the given text to the named file, using the underlying OS's

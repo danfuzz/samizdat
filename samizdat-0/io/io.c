@@ -151,7 +151,7 @@ zvalue ioPathListletFromUtf8(const char *path) {
         int size = strlen(path) + FILENAME_MAX + 1; // +1 for the '/'.
         char *buf = zalloc(size);
 
-        if (getcwd(buf,size) == NULL) {
+        if (getcwd(buf, size) == NULL) {
             die("Can't get cwd: %s", strerror(errno));
         }
 
@@ -161,6 +161,41 @@ zvalue ioPathListletFromUtf8(const char *path) {
     }
 
     return pathListletFromAbsolute(path);
+}
+
+/* Documented in header. */
+zvalue ioReadLink(zvalue pathListlet) {
+    initIoConsts();
+
+    const char *path = utf8FromPathListlet(pathListlet);
+    size_t pathLen = strlen(path);
+    char result[pathLen + 4 + FILENAME_MAX + 1];
+
+    strcpy(result, path);
+    strcat(result, "/../"); // To elide the name of the link in the result.
+
+    char *linkAt = strchr(result, '\0');
+    ssize_t size = readlink(path, linkAt, FILENAME_MAX);
+
+    if (size < 0) {
+        if ((errno == EINVAL) || (errno == ENOENT) || (errno == ENOTDIR)) {
+            // Not a symlink, or file not found, or invalid component, none
+            // of which are really errors from the perspective of this function.
+            return NULL;
+        }
+        die("Trouble with readlink: %s", strerror(errno));
+    }
+
+    linkAt[size] = '\0';
+
+    if (linkAt[0] == '/') {
+        // The link is absolute. Just use it, ignoring the path that led
+        // up to it.
+        return ioPathListletFromUtf8(linkAt);
+    } else {
+        // The link is relative. Need to use the prefix we set up.
+        return ioPathListletFromUtf8(result);
+    }
 }
 
 /* Documented in header. */

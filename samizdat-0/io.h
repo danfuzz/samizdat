@@ -21,6 +21,13 @@
 zvalue ioPathListletFromUtf8(const char *path);
 
 /**
+ * Gets symbolic link information about the file with the given name.
+ * This returns the linked path if the file names a symbolic link, or
+ * returns void if not.
+ */
+zvalue ioReadLink(zvalue pathListlet);
+
+/**
  * Reads the file with the given name in its entirety, interpreting
  * it as UTF-8. Returns a stringlet (listlet of Unicode-representing
  * intlets) of the contents.

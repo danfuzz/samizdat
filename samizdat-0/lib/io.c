@@ -60,6 +60,12 @@ PRIM_IMPL(io0ReadFileUtf8) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(io0ReadLink) {
+    requireExactly(argCount, 1);
+    return ioReadLink(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0WriteFileUtf8) {
     requireExactly(argCount, 2);
     ioWriteFileUtf8(args[0], args[1]);

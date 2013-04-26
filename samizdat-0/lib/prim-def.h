@@ -28,6 +28,7 @@ PRIM_FUNC(io0Die);
 PRIM_FUNC(io0Note);
 PRIM_FUNC(io0PathFromStringlet);
 PRIM_FUNC(io0ReadFileUtf8);
+PRIM_FUNC(io0ReadLink);
 PRIM_FUNC(io0WriteFileUtf8);
 PRIM_FUNC(ior);
 PRIM_FUNC(irem);
