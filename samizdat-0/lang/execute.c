@@ -4,7 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "consts.h"
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -45,7 +45,7 @@ static zvalue execExpressionVoidOk(zcontext ctx, zvalue expression);
  */
 static zvalue bindArguments(zvalue functionNode,
                             zint argCount, const zvalue *args) {
-    zvalue result = datMapletEmpty();
+    zvalue result = EMPTY_MAPLET;
     zvalue formals = datMapletGet(functionNode, STR_FORMALS);
 
     if (formals == NULL) {
@@ -65,10 +65,10 @@ static zvalue bindArguments(zvalue functionNode,
 
         if (repeat != NULL) {
             if (datOrder(repeat, TOK_CH_STAR) == 0) {
-                value = datListletEmpty();
-                for (/*i*/; i < argCount; i++) {
-                    value = datListletAppend(value, args[i]);
+                if (i != (formalsSize - 1)) {
+                    die("Invalid star repeat modifier.");
                 }
+                value = datListletFromArray(argCount - i, &args[i]);
             } else {
                 die("Unknown repeat modifier.");
             }

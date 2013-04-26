@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -30,22 +31,6 @@ typedef struct {
     /** Busy flag, used to prevent recursion. */
     bool busy;
 } Object;
-
-/** The stringlet @"result", lazily initialized. */
-static zvalue STR_RESULT = NULL;
-
-/** The stringlet @"state", lazily initialized. */
-static zvalue STR_STATE = NULL;
-
-/**
- * Initializes the stringlet constants, if necessary.
- */
-static void initCodeConsts(void) {
-    if (STR_RESULT == NULL) {
-        STR_RESULT = datStringletFromUtf8String(-1, "result");
-        STR_STATE  = datStringletFromUtf8String(-1, "state");
-    }
-}
 
 /**
  * The C function that is bound by the `object` primitive.
@@ -125,8 +110,6 @@ PRIM_IMPL(apply) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(object) {
-    initCodeConsts();
-
     requireExactly(argCount, 2);
 
     Object *object = zalloc(sizeof(Object));

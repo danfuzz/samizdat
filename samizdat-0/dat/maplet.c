@@ -13,9 +13,6 @@
  * Helper definitions
  */
 
-/** The empty maplet, lazily initialized. */
-static zvalue theEmptyMaplet = NULL;
-
 /**
  * Allocates a maplet of the given size.
  */
@@ -105,11 +102,7 @@ zorder datMapletOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zvalue datMapletEmpty(void) {
-    if (theEmptyMaplet == NULL) {
-        theEmptyMaplet = allocMaplet(0);
-    }
-
-    return theEmptyMaplet;
+    return allocMaplet(0);
 }
 
 /* Documented in header. */
@@ -118,13 +111,13 @@ zvalue datMapletKeys(zvalue maplet) {
 
     zint size = datSize(maplet);
     zmapping *elems = mapletElems(maplet);
-    zvalue result = datListletEmpty();
+    zvalue result[size];
 
     for (zint i = 0; i < size; i++) {
-        result = datListletAppend(result, elems[i].key);
+        result[i] = elems[i].key;
     }
 
-    return result;
+    return datListletFromArray(size, result);
 }
 
 /* Documented in header. */

@@ -4,7 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "consts.h"
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -250,7 +250,7 @@ static zvalue tokenizeOne(ParseState *state) {
 
 /* Documented in header. */
 zvalue tokenize(zvalue stringlet) {
-    constsInit();
+    constInit();
 
     zvalue result[MAX_TOKENS];
     ParseState state = { stringlet, datSize(stringlet), 0 };

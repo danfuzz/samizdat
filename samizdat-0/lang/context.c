@@ -4,7 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "consts.h"
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -58,12 +58,12 @@ zvalue ctxGet(zcontext ctx, zvalue name) {
 
 /* Documented in header. */
 zcontext langCtxNew(void) {
-    return ctxNewChild(NULL, datMapletEmpty());
+    return ctxNewChild(NULL, EMPTY_MAPLET);
 }
 
 /* Documented in header. */
 zcontext langCtxNewChild(zcontext parent) {
-    return ctxNewChild(parent, datMapletEmpty());
+    return ctxNewChild(parent, EMPTY_MAPLET);
 }
 
 /* Documented in header. */

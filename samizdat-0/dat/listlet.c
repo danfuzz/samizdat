@@ -13,9 +13,6 @@
  * Helper definitions / functions
  */
 
-/** The empty listlet, lazily initialized. */
-static zvalue theEmptyListlet = NULL;
-
 /**
  * Allocates a listlet of the given size.
  */
@@ -94,15 +91,6 @@ zorder datListletOrder(zvalue v1, zvalue v2) {
 zvalue datListletNth(zvalue listlet, zint n) {
     datAssertListlet(listlet);
     return datHasNth(listlet, n) ? listletElems(listlet)[n] : NULL;
-}
-
-/* Documented in header. */
-zvalue datListletEmpty(void) {
-    if (theEmptyListlet == NULL) {
-        theEmptyListlet = allocListlet(0);
-    }
-
-    return theEmptyListlet;
 }
 
 /* Documented in header. */

@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -23,7 +24,7 @@ PRIM_IMPL(lowOrderIs) {
         (comp == datIntFromIntlet(args[2])) ||
         ((argCount == 4) && (comp == datIntFromIntlet(args[3])));
 
-    return langBooleanFromBool(result);
+    return constBooleanFromBool(result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -35,5 +36,5 @@ PRIM_IMPL(lowSize) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(lowType) {
     requireExactly(argCount, 1);
-    return langLowTypeName(args[0]);
+    return constLowTypeName(args[0]);
 }

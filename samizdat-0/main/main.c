@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "io.h"
 #include "lang.h"
 #include "lib.h"
@@ -31,19 +32,19 @@ int main(int argc, char **argv) {
     }
 
     zvalue pathListlet = ioPathListletFromUtf8(argv[1]);
-    zvalue args = datListletAppend(datListletEmpty(), pathListlet);
-    zint argCount = argc - 2;
+    zint argCount = argc - 1;
+    zvalue args[argCount];
 
-    for (int i = 0; i < argCount; i++) {
-        zvalue arg = datStringletFromUtf8String(-1, argv[i + 2]);
-        args = datListletAppend(args, arg);
+    args[0] = pathListlet;
+    for (int i = 1; i < argCount; i++) {
+        args[i] = datStringletFromUtf8String(-1, argv[i + 1]);
     }
 
     zcontext ctx = libNewContext();
     zvalue programText = ioReadFileUtf8(pathListlet);
     zvalue program = langNodeFromProgramText(programText);
     zvalue function = langEvalExpressionNode(ctx, program);
-    zvalue result = langApply(function, args);
+    zvalue result = langApply(function, datListletFromArray(argCount, args));
 
     if ((result != NULL) && (datType(result) == DAT_INTLET)) {
         exit((int) datIntFromIntlet(result));

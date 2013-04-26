@@ -13,10 +13,6 @@
  * Helper definitions
  */
 
-/** The empty stringlet, lazily initialized. */
-static zvalue theEmptyStringlet = NULL;
-
-
 /**
  * Allocates a stringlet of the given size.
  */
@@ -50,14 +46,6 @@ static zint utf8Size(zvalue stringlet) {
 /*
  * Module functions
  */
-
-zvalue datStringletEmpty(void) {
-    if (theEmptyStringlet == NULL) {
-        theEmptyStringlet = allocStringlet(0);
-    }
-
-    return theEmptyStringlet;
-}
 
 /* Documented in header. */
 zorder datStringletOrder(zvalue v1, zvalue v2) {

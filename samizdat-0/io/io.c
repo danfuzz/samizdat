@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "io.h"
 #include "util.h"
 
@@ -22,36 +23,12 @@ enum {
     MAX_FILE_SIZE = 100000
 };
 
-/** The stringlet @"", lazily initialized. */
-static zvalue STR_EMPTY = NULL;
-
-/** The stringlet @"/", lazily initialized. */
-static zvalue STR_SLASH = NULL;
-
-/** The stringlet @".", lazily initialized. */
-static zvalue STR_DOT = NULL;
-
-/** The stringlet @"..", lazily initialized. */
-static zvalue STR_DOTDOT = NULL;
-
-/**
- * Initializes the stringlet constants, if necessary.
- */
-static void initIoConsts(void) {
-    if (STR_EMPTY == NULL) {
-        STR_EMPTY  = datStringletEmpty();
-        STR_SLASH  = datStringletFromUtf8String(-1, "/");
-        STR_DOT    = datStringletFromUtf8String(-1, ".");
-        STR_DOTDOT = datStringletFromUtf8String(-1, "..");
-    }
-}
-
 /**
  * Converts a listlet-of-stringlets path form into an absolute file name,
  * checking the components for sanity.
  */
 static const char *utf8FromPathListlet(zvalue pathListlet) {
-    zvalue result = datStringletEmpty();
+    zvalue result = STR_EMPTY;
     zint size = datSize(pathListlet);
 
     for (zint i = 0; i < size; i++) {
@@ -64,12 +41,12 @@ static const char *utf8FromPathListlet(zvalue pathListlet) {
         } else if (strchr(str, '/') != NULL) {
             die("Invalid path component (contains slash): \"%s\"", str);
         } else if ((datOrder(one, STR_EMPTY) == 0) ||
-            (datOrder(one, STR_DOT) == 0) ||
-            (datOrder(one, STR_DOTDOT) == 0)) {
+            (datOrder(one, STR_CH_DOT) == 0) ||
+            (datOrder(one, STR_CH_DOTDOT) == 0)) {
             die("Invalid path component: \"%s\"", str);
         }
 
-        result = datStringletAdd(result, STR_SLASH);
+        result = datStringletAdd(result, STR_CH_SLASH);
         result = datStringletAdd(result, one);
     }
 
@@ -84,26 +61,26 @@ static const char *utf8FromPathListlet(zvalue pathListlet) {
  */
 static zvalue pathListletFromAbsolute(const char *path) {
     if (path[0] == '\0') {
-        return datListletEmpty();
+        return EMPTY_LISTLET;
     } else if (path[0] != '/') {
         die("Invalid absolute path: \"%s\"", path);
     }
 
-    zvalue result = datListletEmpty();
+    zvalue result = EMPTY_LISTLET;
     const char *at = path + 1; // +1 to skip the initial '/'.
     for (;;) {
         const char *slashAt = strchr(at, '/');
         zint size = (slashAt != NULL) ? (slashAt - at) : strlen(at);
         zvalue one = datStringletFromUtf8String(size, at);
 
-        if (datOrder(one, STR_DOTDOT) == 0) {
+        if (datOrder(one, STR_CH_DOTDOT) == 0) {
             zint rsize = datSize(result);
             if (datSize(result) == 0) {
                 die("Invalid `..` component in path: \"%s\"", path);
             }
             result = datListletDelNth(result, rsize -1);
         } else if (!((datOrder(one, STR_EMPTY) == 0) ||
-                     (datOrder(one, STR_DOT) == 0))) {
+                     (datOrder(one, STR_CH_DOT) == 0))) {
             result = datListletAppend(result, one);
         }
 
@@ -144,7 +121,7 @@ static FILE *openFile(zvalue pathListlet, const char *mode) {
 
 /* Documented in header. */
 zvalue ioPathListletFromUtf8(const char *path) {
-    initIoConsts();
+    constInit();
 
     if (path[0] != '/') {
         // Concatenate the given path onto the current working directory.
@@ -165,7 +142,7 @@ zvalue ioPathListletFromUtf8(const char *path) {
 
 /* Documented in header. */
 zvalue ioReadLink(zvalue pathListlet) {
-    initIoConsts();
+    constInit();
 
     const char *path = utf8FromPathListlet(pathListlet);
     size_t pathLen = strlen(path);
@@ -200,7 +177,7 @@ zvalue ioReadLink(zvalue pathListlet) {
 
 /* Documented in header. */
 zvalue ioReadFileUtf8(zvalue pathListlet) {
-    initIoConsts();
+    constInit();
 
     char buf[MAX_FILE_SIZE];
     FILE *in = openFile(pathListlet, "r");
@@ -221,7 +198,7 @@ zvalue ioReadFileUtf8(zvalue pathListlet) {
 
 /* Documented in header. */
 void ioWriteFileUtf8(zvalue pathListlet, zvalue text) {
-    initIoConsts();
+    constInit();
 
     zint utfSize;
     const char *utf = datStringletEncodeUtf8(text, &utfSize);

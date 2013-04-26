@@ -4,8 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "consts.h"
-#include "impl.h"
+#include "const.h"
 #include "util.h"
 
 
@@ -14,7 +13,7 @@
  */
 
 /* Documented in header. */
-zvalue langLowTypeName(zvalue value) {
+zvalue constLowTypeName(zvalue value) {
     switch (datType(value)) {
         case DAT_INTLET:    return STR_INTLET;
         case DAT_STRINGLET: return STR_STRINGLET;

@@ -4,7 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "consts.h"
+#include "const.h"
 
 #include <stddef.h>
 
@@ -19,10 +19,22 @@
     STR(name, str); \
     zvalue TOK_##name = NULL
 
-#include "consts-def.h"
+#include "const-def.h"
 
 #undef STR
 #undef TOK
+
+/* Documented in header. */
+zvalue CONST_FALSE = NULL;
+
+/* Documented in header. */
+zvalue CONST_TRUE = NULL;
+
+/* Documented in header. */
+zvalue EMPTY_LISTLET = NULL;
+
+/* Documented in header. */
+zvalue EMPTY_MAPLET = NULL;
 
 
 /*
@@ -30,8 +42,8 @@
  */
 
 /* Documented in header. */
-void constsInit(void) {
-    if (STR_CH_AT != NULL) {
+void constInit(void) {
+    if (CONST_FALSE != NULL) {
         return;
     }
 
@@ -41,5 +53,11 @@ void constsInit(void) {
         STR(name, str); \
         TOK_##name = datHighletFrom(STR_##name, NULL);
 
-    #include "consts-def.h"
+    #include "const-def.h"
+
+    CONST_FALSE = datHighletFrom(STR_BOOLEAN, datIntletFromInt(0));
+    CONST_TRUE  = datHighletFrom(STR_BOOLEAN, datIntletFromInt(1));
+
+    EMPTY_LISTLET = datListletFromArray(0, NULL);
+    EMPTY_MAPLET = datMapletEmpty();
 }

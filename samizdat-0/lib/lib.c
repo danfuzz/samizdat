@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -42,7 +43,7 @@ static void initLibraryFiles(void) {
         return;
     }
 
-    zvalue result = datMapletEmpty();
+    zvalue result = EMPTY_MAPLET;
 
     // This adds an element to `result` for each of the embedded files,
     // and sets up the static name constants.
@@ -84,8 +85,8 @@ static zcontext primitiveContext(void) {
     // These both could have been defined in-language, but we already
     // have to make them be defined and accessible to C code, so we just
     // go ahead and bind them here.
-    langCtxBind(ctx, "false", langFalse());
-    langCtxBind(ctx, "true", langTrue());
+    langCtxBind(ctx, "false", CONST_FALSE);
+    langCtxBind(ctx, "true", CONST_TRUE);
 
     // Bind all the primitive functions.
     #define PRIM_FUNC(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
@@ -123,6 +124,7 @@ static void initLibraryBindings(void) {
 
 /* Documented in header. */
 zcontext libNewContext(void) {
+    constInit();
     initLibraryFiles();
     initLibraryBindings();
 

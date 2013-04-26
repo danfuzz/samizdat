@@ -173,11 +173,6 @@ zint datIntFromIntlet(zvalue intlet);
  */
 
 /**
- * Gets the value `@""` (that is, the empty stringlet).
- */
-zvalue datStringletEmpty(void);
-
-/**
  * Given a stringlet, returns the `n`th element, which is in the
  * range of a 32-bit unsigned int. If `n` is out of range, this
  * returns `-1`.
@@ -218,11 +213,6 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
 /*
  * Listlet Functions
  */
-
-/**
- * Gets the value `@[]` (that is, the empty listlet).
- */
-zvalue datListletEmpty(void);
 
 /**
  * Gets the listlet resulting from inserting the given value at the
@@ -284,7 +274,8 @@ void datArrayFromListlet(zvalue *result, zvalue listlet);
  */
 
 /**
- * Gets the value `@{}` (that is, the empty maplet).
+ * Gets an empty maplet value, i.e. `@[=]`. Note that this can return
+ * a different allocated value every time.
  */
 zvalue datMapletEmpty(void);
 
