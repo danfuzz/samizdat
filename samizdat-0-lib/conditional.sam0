@@ -26,13 +26,18 @@ if = { predicate consequent rest* ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-ifFalse = { predicate falseFunction trueFunction ::
-    <> ifTrue predicate trueFunction falseFunction
+ifFalse = { predicate falseFunction rest* ::
+    # Because we don't have `?` args, we have to do this circumlocution.
+    <> ifValue { <> listletNth rest @0 }
+        { trueFunction :: <> ifTrue predicate trueFunction falseFunction }
+        { <> ifTrue predicate {} falseFunction }
 };
 
 # Documented in Samizdat Layer 0 spec.
-ifVoid = { predicate voidFunction valueFunction ::
-    <> ifValue predicate valueFunction voidFunction
+ifVoid = { predicate voidFunction rest* ::
+    <> ifValue { <> listletNth rest @0 }
+        { valueFunction :: <> ifValue predicate valueFunction voidFunction }
+        { <> ifValue predicate {} voidFunction }
 };
 
 # Documented in Samizdat Layer 0 spec.
