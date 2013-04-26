@@ -87,8 +87,37 @@ static void reset(ParseState *state, zint mark) {
 
 
 /*
- * Node constructors
+ * Node constructors and related helpers
  */
+
+/**
+ * Makes a 0-3 binding maplet. Values are allowed to be `NULL`, in
+ * which case the corresponding key isn't included in the result.
+ */
+static zvalue mapletFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+                          zvalue k3, zvalue v3) {
+    zvalue result = EMPTY_MAPLET;
+
+    if (v1 != NULL) { result = datMapletPut(result, k1, v1); }
+    if (v2 != NULL) { result = datMapletPut(result, k2, v2); }
+    if (v3 != NULL) { result = datMapletPut(result, k3, v3); }
+
+    return result;
+}
+
+/**
+ * Makes a 0-2 binding maplet.
+ */
+static zvalue mapletFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    return mapletFrom3(k1, v1, k2, v2, NULL, NULL);
+}
+
+/**
+ * Makes a 0-1 binding maplet.
+ */
+static zvalue mapletFrom1(zvalue k1, zvalue v1) {
+    return mapletFrom3(k1, v1, NULL, NULL, NULL, NULL);
+}
 
 /**
  * Constructs a `varRef` node.
@@ -101,8 +130,7 @@ static zvalue makeVarRef(zvalue name) {
  * Constructs a `call` node.
  */
 static zvalue makeCall(zvalue function, zvalue actuals) {
-    zvalue value = datMapletPut(EMPTY_MAPLET, STR_FUNCTION, function);
-    value = datMapletPut(value, STR_ACTUALS, actuals);
+    zvalue value = mapletFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
     return datHighletFrom(STR_CALL, value);
 }
 
@@ -351,8 +379,7 @@ DEF_PARSE(varDef) {
     zvalue expression = PARSE_OR_REJECT(expression);
 
     zvalue name = datHighletValue(identifier);
-    zvalue value = datMapletPut(EMPTY_MAPLET, STR_NAME, name);
-    value = datMapletPut(value, STR_VALUE, expression);
+    zvalue value = mapletFrom2(STR_NAME, name, STR_VALUE, expression);
     return datHighletFrom(STR_VAR_DEF, value);
 }
 
@@ -446,18 +473,17 @@ DEF_PARSE(formals) {
             break;
         }
 
-        zvalue formal = datMapletPut(EMPTY_MAPLET, STR_NAME,
-                                     datHighletValue(identifier));
+        // In Samizdat Layer 0, the only allowed modifier for a formal is `*`.
+        zvalue repeat = MATCH(CH_STAR);
 
-        if (MATCH(CH_STAR) != NULL) {
-            // In Samizdat Layer 0, the only allowed modifier for a formal is
-            // `*`, and it has to be on the last formal.
-            formal = datMapletPut(formal, STR_REPEAT, TOK_CH_STAR);
-            formals = datListletAppend(formals, formal);
+        zvalue formal = mapletFrom2(STR_NAME, datHighletValue(identifier),
+                                    STR_REPEAT, repeat);
+        formals = datListletAppend(formals, formal);
+
+        if (repeat != NULL) {
+            // In Samizdat Layer 0, `*` has to be on the last formal.
             break;
         }
-
-        formals = datListletAppend(formals, formal);
     }
 
     REJECT_IF(datSize(formals) == 0);
@@ -508,15 +534,9 @@ DEF_PARSE(program) {
         }
     }
 
-    zvalue value = datMapletPut(EMPTY_MAPLET, STR_STATEMENTS, statements);
-
-    if (formals != NULL) {
-        value = datMapletPut(value, STR_FORMALS, formals);
-    }
-
-    if (yield != NULL) {
-        value = datMapletPut(value, STR_YIELD, yield);
-    }
+    zvalue value = mapletFrom3(STR_STATEMENTS, statements,
+                               STR_FORMALS, formals,
+                               STR_YIELD, yield);
 
     return datHighletFrom(STR_FUNCTION, value);
 }
