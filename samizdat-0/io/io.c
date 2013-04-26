@@ -12,15 +12,15 @@
 #include <errno.h>
 #include <unistd.h>
 
-enum {
-    /** Maximum readable file size, in bytes. */
-    MAX_FILE_SIZE = 100000
-};
-
 
 /*
  * Helper definitions
  */
+
+enum {
+    /** Maximum readable file size, in bytes. */
+    MAX_FILE_SIZE = 100000
+};
 
 /** The stringlet @"", lazily initialized. */
 static zvalue STR_EMPTY = NULL;
