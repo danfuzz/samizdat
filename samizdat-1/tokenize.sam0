@@ -55,7 +55,7 @@ doRead = { state ::
 # Sets the cursor position to the given one.
 doReset = { state at ::
     ifTrue { <> or { <> lt at @0 } { <> ge at (xSize state) } }
-        { io0Die @"Reset out of range." }
+        { io0Die @"Reset out of range." };
     <> @[@state=(mapletPut state @at at)]
 };
 
@@ -128,6 +128,7 @@ makeOneTwoParser = { twoChars ::
     ch2 = stringletNth twoChars @1;
     result1 = [:(stringletNth twoChars @0):];
     result2 = [:twoChars:];
+
     parser = { reader ::
         reader @read; # Only ever called when the first character matched.
         <> ifValue { <> reader @peek }
@@ -168,7 +169,7 @@ readToken = { reader ::
             <> ifValue { <> mapletGet TOKEN_DISPATCH ch }
                 { parser :: <> parser reader }
                 {
-                    error = stringletCat @"No parser for char: "
+                    error = stringletCat @"No parser for character: "
                         (sourceStringlet ch);
                     skipUntilNewline reader; # Heuristic to help re-synch.
                     <> [:@error error:];
