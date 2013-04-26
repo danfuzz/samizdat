@@ -112,9 +112,7 @@ parseInteger = { reader ::
 # Skips over all characters until and including a newline.
 skipUntilNewline = { reader ::
     while {
-        <> ifValue { <> reader @read }
-            { ch :: <> ne ch @"\n" }
-            { <> false }
+        <> ifValue { <> reader @read } { ch :: <> ne ch @"\n" } { <> false }
     }
 };
 
