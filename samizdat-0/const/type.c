@@ -5,7 +5,6 @@
  */
 
 #include "const.h"
-#include "impl.h"
 #include "util.h"
 
 
@@ -14,7 +13,7 @@
  */
 
 /* Documented in header. */
-zvalue langLowTypeName(zvalue value) {
+zvalue constLowTypeName(zvalue value) {
     switch (datType(value)) {
         case DAT_INTLET:    return STR_INTLET;
         case DAT_STRINGLET: return STR_STRINGLET;

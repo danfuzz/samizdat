@@ -36,20 +36,6 @@ typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
 
 
 /*
- * Constant-related functions
- */
-
-/**
- * Gets the stringlet representing the low-layer type of the given value.
- *
- * Note: This is defined here mostly out of convenience, in that this
- * module is the one that has a clean mechanism for maintaining
- * commonly-used stringlet constants.
- */
-zvalue langLowTypeName(zvalue value);
-
-
-/*
  * Function definition and application
  */
 

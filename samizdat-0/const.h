@@ -49,5 +49,9 @@ bool constBoolFromBoolean(zvalue value);
  */
 zvalue constBooleanFromBool(bool value);
 
+/**
+ * Gets the stringlet representing the low-layer type of the given value.
+ */
+zvalue constLowTypeName(zvalue value);
 
 #endif
