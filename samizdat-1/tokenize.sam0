@@ -52,20 +52,12 @@ doRead = { state ::
         { ch :: <> @[@result=ch @state=(mapletPut state @at (iadd at @1))] };
 };
 
-# Sets the cursor position to the given one.
-doReset = { state at ::
-    ifTrue { <> or { <> lt at @0 } { <> ge at (xSize state) } }
-        { io0Die @"Reset out of range." };
-    <> @[@state=(mapletPut state @at at)]
-};
-
 # Dispatch table.
 READER_DISPATCH = @[
     @at    = doAt
     @eof   = doEof
     @peek  = doPeek
     @read  = doRead
-    @reset = doReset
 ];
 
 # Performs method dispatch.
