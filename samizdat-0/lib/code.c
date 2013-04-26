@@ -21,11 +21,11 @@
  * function registration in the implementation of the primitive `object`.
  */
 typedef struct {
-    /** Arbitrary state value. */
-    zvalue state;
-
     /** In-model function value. */
     zvalue function;
+
+    /** Arbitrary state value. */
+    zvalue state;
 
     /** Busy flag, used to prevent recursion. */
     bool busy;
@@ -130,8 +130,8 @@ PRIM_IMPL(object) {
     requireExactly(argCount, 2);
 
     Object *object = zalloc(sizeof(Object));
-    object->state = args[0];
-    object->function = args[1];
+    object->function = args[0];
+    object->state = args[1];
     object->busy = false;
 
     return langDefineFunction(callObject, object);

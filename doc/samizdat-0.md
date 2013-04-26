@@ -960,7 +960,7 @@ a five-argument call: `apply fizmoFunc @foo @bar @baz @[@frob @twiddle]`
 This function returns whatever the called function returned (including
 void).
 
-#### `object state implementation <> function`
+#### `object implementation state <> function`
 
 Constructs and returns an "object". In *Samizdat Layer 0* an object is
 merely the combination of a mutable `state` value (an arbitarary
