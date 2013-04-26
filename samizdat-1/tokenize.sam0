@@ -87,6 +87,45 @@ makeReader = { programText ::
 # Tokenizer function
 #
 
+# Mapping from valid string escapes to their translated characters.
+STRING_ESCAPES = @[@"\\"=@"\\" @"\""=@"\"" @"n"=@"\n"];
+
+# Parses a string escape.
+parseStringEscape = { reader ::
+    reader @read; # Skip the backslash.
+
+    <> ifValue { <> reader @read }
+        { ch ::
+            <> ifValue { <> mapletGet STRING_ESCAPES ch }
+                { translation :: <> translation }
+        }
+};
+
+# Parses a string.
+parseString = { reader ::
+    reader @read; # Skip the open quote.
+
+    value = whileReduce @"" { result ::
+        <> ifValue { <> reader @peek }
+            { ch ::
+                <> ifTrue { <> ne ch @"\"" }
+                    {
+                        # TODO: Handle invalid escape sequences gracefully.
+                        reader @read;
+                        addCh = ifTrue { <> eq ch @"\\" }
+                            { <> parseStringEscape reader }
+                            { <> ch };
+                        <> stringletAdd result addCh;
+                    }
+            }
+    };
+
+    # Skip the close quote, or complain if it was absent.
+    <> ifVoid { <> reader @read }
+        { <> [:@error @"Unterminated string literal.":] }
+        { <> [:@string value:] }
+};
+
 # These are all the valid identifier characters, as a set-like maplet
 # (all elements map to `null`).
 IDENTIFIER_CHARS = listletReduce @[=]
@@ -105,7 +144,7 @@ parseIdentifier = { reader ::
         <> ifValue { <> reader @peek }
             { ch ::
                 ifValue { <> mapletGet IDENTIFIER_CHARS ch }
-                    { <> stringletAdd result ch }
+                    { reader @read; <> stringletAdd result ch }
             }
     };
 
@@ -194,19 +233,20 @@ TOKEN_DISPATCH = mapletCat
     (mapletMap IDENTIFIER_CHARS { <> parseIdentifier })
     (mapletMap INTEGER_CHARS { <> parseInteger })
     @[
-        @"{" = oneCharParser
-        @"}" = oneCharParser
-        @"[" = oneCharParser
-        @"]" = oneCharParser
-        @"(" = oneCharParser
-        @")" = oneCharParser
-        @"=" = oneCharParser
-        @"-" = oneCharParser
-        @";" = oneCharParser
-        @"*" = oneCharParser
-        @":" = (makeOneTwoParser @"::")
-        @"@" = (makeOneTwoParser @"@@")
-        @"<" = (makeOneTwoParser @"<>")
+        @"\"" = parseString
+        @"{"  = oneCharParser
+        @"}"  = oneCharParser
+        @"["  = oneCharParser
+        @"]"  = oneCharParser
+        @"("  = oneCharParser
+        @")"  = oneCharParser
+        @"="  = oneCharParser
+        @"-"  = oneCharParser
+        @";"  = oneCharParser
+        @"*"  = oneCharParser
+        @":"  = (makeOneTwoParser @"::")
+        @"@"  = (makeOneTwoParser @"@@")
+        @"<"  = (makeOneTwoParser @"<>")
     ];
 
 # Reads a single token.
@@ -227,77 +267,13 @@ readToken = { reader ::
 
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
-tokenizex = { programText ::
+tokenize = { programText ::
     reader = makeReader programText;
 
     <> whileReduce @[] { result ::
         <> ifValue { <> readToken reader }
             { token :: <> listletAppend result token }
     }
-};
-
-
-########## OLD STUFF FOR REFERENCE ##########
-
-# Tokenizes the given string, using Samizdat Layer 0 token syntax.
-# Returns a listlet of tokens.
-tokenize = { programText ::
-
-    # Mapping from valid string escapes to their translated characters.
-    stringEscapes = @[@"\\"=@"\\" @"\""=@"\"" @"n"=@"\n"];
-
-    # Parses a string.
-    parseString = { at ::
-        parseStep = { result at ::
-            ch = get at;
-            nextAt = iadd at @1;
-            <> ifTrue { <> eq ch @"\"" }
-                { <> @[@token=[:@string result:] @at=nextAt] }
-                {
-                    <> ifTrue { <> ne ch @"\\" }
-                        { <> parseStep (stringletCat result ch) nextAt }
-                        {
-                            ch2 = get nextAt;
-                            <> ifValue { <> mapletGet stringEscapes ch2 }
-                                { decoded ::
-                                    <> parseStep
-                                        (stringletCat result decoded)
-                                        (iadd nextAt @1)
-                                }
-                        }
-                }
-        };
-        <> parseStep @"" (iadd at @1) # +1 to skip the open quote.
-    };
-
-    # These are all the string parser mappings.
-    stringRules = @[@"\"" = parseString]; # FIXME!
-
-    # These are all the rules. Note: identifierRules has to be listed before
-    # integerRules in order to avoid the former trampling on the latter.
-    rules = mapletCat
-        identifierRules
-        stringRules;
-
-    # Parses all the tokens.
-    parseAll = { result at ::
-        parsed = parseOne at;
-        nextAt = mapletGet parsed @at;
-        <> ifValue { <> mapletGet parsed @token }
-            { token :: <> parseAll (listletAppend result token) nextAt }
-            {
-                <> ifValue { <> mapletGet parsed @error }
-                    { error ::
-                        io0Die (stringletCat
-                            @"Tokenization failed at offset: "
-                            (sourceStringlet nextAt) @"\n"
-                            error @"\n")
-                    }
-                    { <> result }
-            }
-    };
-
-    <> parseAll @[] @0
 };
 
 <> tokenize;
