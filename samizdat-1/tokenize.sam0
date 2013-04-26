@@ -87,6 +87,31 @@ makeReader = { programText ::
 # Tokenizer function
 #
 
+# These are all the valid identifier characters, as a set-like maplet
+# (all elements map to `null`).
+IDENTIFIER_CHARS = listletReduce @[=]
+    @[
+        @"0" @"1" @"2" @"3" @"4" @"5" @"6" @"7" @"8" @"9" @"_"
+        @"a" @"b" @"c" @"d" @"e" @"f" @"g" @"h" @"i" @"j" @"k" @"l" @"m"
+        @"n" @"o" @"p" @"q" @"r" @"s" @"t" @"u" @"v" @"w" @"x" @"y" @"z"
+        @"A" @"B" @"C" @"D" @"E" @"F" @"G" @"H" @"I" @"J" @"K" @"L" @"M"
+        @"N" @"O" @"P" @"Q" @"R" @"S" @"T" @"U" @"V" @"W" @"X" @"Y" @"Z"
+    ]
+    { result ch :: <> mapletPut result ch null };
+
+# Parses an identifier.
+parseIdentifier = { reader ::
+    value = whileReduce @"" { result ::
+        <> ifValue { <> reader @peek }
+            { ch ::
+                ifValue { <> mapletGet IDENTIFIER_CHARS ch }
+                    { <> stringletAdd result ch }
+            }
+    };
+
+    <> [:@identifier value:]
+};
+
 # These are all the integer digits, as a maplet from stringlets to
 # digit values.
 INTEGER_CHARS = listletReduce @[=]
@@ -163,7 +188,10 @@ makeOneTwoParser = { twoChars ::
 };
 
 # Mapping from token start character to the corresponding parser to use.
-TOKEN_DISPATCH = mapletAdd
+# Note that the identifier mappings need to be listed before the integer
+# ones, so that the latter overrides the ones that overlap with the former.
+TOKEN_DISPATCH = mapletCat
+    (mapletMap IDENTIFIER_CHARS { <> parseIdentifier })
     (mapletMap INTEGER_CHARS { <> parseInteger })
     @[
         @"{" = oneCharParser
@@ -214,29 +242,6 @@ tokenizex = { programText ::
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
 tokenize = { programText ::
-
-    # These are all the valid identifier characters, as a set-like maplet.
-    identifierChars = listletReduce @[=]
-        @[@"0" @"1" @"2" @"3" @"4" @"5" @"6" @"7" @"8" @"9" @"_"
-          @"a" @"b" @"c" @"d" @"e" @"f" @"g" @"h" @"i" @"j" @"k" @"l" @"m"
-          @"n" @"o" @"p" @"q" @"r" @"s" @"t" @"u" @"v" @"w" @"x" @"y" @"z"
-          @"A" @"B" @"C" @"D" @"E" @"F" @"G" @"H" @"I" @"J" @"K" @"L" @"M"
-          @"N" @"O" @"P" @"Q" @"R" @"S" @"T" @"U" @"V" @"W" @"X" @"Y" @"Z"]
-        { result ch :: <> mapletPut result ch null };
-
-    # Parses an identifier.
-    parseIdentifier = { at ::
-        parseStep = { result at ::
-            ch = get at;
-            <> ifValue { <> mapletGet identifierChars ch }
-                { <> parseStep (stringletCat result ch) (iadd at @1) }
-                { <> @[@token=[:@identifier result:] @at=at] }
-        };
-        <> parseStep @"" at
-    };
-
-    # These are all the identifier parser mappings.
-    identifierRules = mapletMap identifierChars { <> parseIdentifier };
 
     # Mapping from valid string escapes to their translated characters.
     stringEscapes = @[@"\\"=@"\\" @"\""=@"\"" @"n"=@"\n"];
