@@ -15,6 +15,13 @@ CHAR_0 = stringletFromIntlet @0;
 CHAR_127 = stringletFromIntlet @127;
 CHAR_159 = stringletFromIntlet @159;
 
+# Helper for optionally adorning results.
+adornIf = { adorn before value after ::
+    <> ifTrue { <> adorn }
+        { <> stringletCat before value after }
+        { <> value }
+};
+
 # Helper for stringifying intlets, which does most of the conversion,
 # as well as prepending the given prefix.
 intletBody = { start value ::
@@ -30,14 +37,15 @@ intletBody = { start value ::
 
 # Maplet from intlet sign values to the appropriate stringifier for each.
 INTLET_SIGNS = @[
-    @-1 = { intlet :: <> intletBody @"@-" (ineg intlet) }
-    @0  = { <> @"@0" }
-    @1  = { intlet :: <> intletBody @"@" intlet }
+    @-1 = { intlet :: <> intletBody @"-" (ineg intlet) }
+    @0  = { <> @"0" }
+    @1  = { intlet :: <> intletBody @"" intlet }
 ];
 
 # Stringifies an intlet.
-doIntlet = { intlet ::
-    <> (mapletGet INTLET_SIGNS (intletSign intlet)) intlet
+doIntlet = { intlet adorn ::
+    result = (mapletGet INTLET_SIGNS (intletSign intlet)) intlet;
+    <> adornIf adorn @"@" result @""
 };
 
 # Helper for stringifying stringlets: Returns the hex form for the given
@@ -80,14 +88,14 @@ stringletChar = { ch ::
 };
 
 # Stringifies a stringlet.
-doStringlet = { stringlet ::
+doStringlet = { stringlet adorn ::
     body = stringletReduce @"" stringlet
         { reduction ch :: <> stringletAdd reduction (stringletChar ch) };
-    <> stringletCat @"@\"" body @"\""
+    <> adornIf adorn @"@\"" body @"\""
 };
 
 # Stringifies a listlet.
-doListlet = { listlet ::
+doListlet = { listlet adorn ::
     body = listletReduce @"" listlet
         { reduction elem ::
             <> stringletCat
@@ -96,11 +104,11 @@ doListlet = { listlet ::
                 (sourceStringlet elem)
         };
 
-    <> stringletCat @"@[" body @"]"
+    <> adornIf adorn @"@[" body @"]"
 };
 
 # Stringifies a maplet.
-doMaplet = { maplet ::
+doMaplet = { maplet adorn ::
     body = mapletReduce @"" maplet
         { reduction value key ::
             <> stringletCat
@@ -111,21 +119,22 @@ doMaplet = { maplet ::
                 (sourceStringlet value)
         };
 
-    <> ifTrue { <> eq maplet @[=] }
-        { <> @"@[=]" }
-        { <> stringletCat @"@[" body @"]" }
+    <> adornIf adorn
+        @"@["
+        (ifTrue { <> eq body @"" } { <> @"=" } { <> body })
+        @"]"
 };
 
 # Stringifies a highlet.
-doHighlet = { highlet ::
+doHighlet = { highlet adorn ::
     type = highletType highlet;
-    <> stringletCat
-        @"[:"
+    result = stringletCat
         (sourceStringlet type)
         (ifValue { <> highletValue highlet }
             { value :: <> stringletAdd @" " (sourceStringlet value) }
-            { <> @"" })
-        @":]"
+            { <> @"" });
+
+    <> adornIf adorn @"[:" result @":]"
 };
 
 # Stringifies a uniqlet.
@@ -156,7 +165,7 @@ STRINGIFIERS = @[
 # Common handler for the two exported variants.
 sourceStringletGeneral = { value adorn ::
     stringifier = mapletGet STRINGIFIERS (lowType value) doUnknown;
-    <> stringifier value
+    <> stringifier value adorn
 };
 
 # Documented in Samizdat Layer 0 spec.
