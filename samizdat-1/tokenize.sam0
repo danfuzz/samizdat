@@ -24,13 +24,13 @@
 #
 
 # Gets the size.
-xSize = { state :: mapletGet state @size };
+xSize = { state :: <> mapletGet state @size };
 
 # Gets the text.
-xText = { state :: mapletGet state @text };
+xText = { state :: <> mapletGet state @text };
 
 # Gets the cursor position.
-xAt = { state :: mapletGet state @at };
+xAt = { state :: <> mapletGet state @at };
 
 # Gets the current cursor position.
 doAt = { state :: <> @[@result=(xAt state)] };
@@ -41,14 +41,14 @@ doEof = { state :: <> @[@result=(lt (xAt state) (xSize state))] };
 # Peeks at the next character without reading. Returns void at EOF.
 doPeek = { state ::
     at = xAt state;
-    <> ifValue { <> listletNth (xText state) at }
+    <> ifValue { <> stringletNth (xText state) at }
         { ch :: <> @[@result=ch] };
 };
 
 # Reads the next character. Returns void at EOF.
 doRead = { state ::
     at = xAt state;
-    <> ifValue { <> listletNth (xText state) at }
+    <> ifValue { <> stringletNth (xText state) at }
         { ch :: <> @[@result=ch @state=(mapletPut state @at (iadd at @1))] };
 };
 
