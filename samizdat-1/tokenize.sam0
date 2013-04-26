@@ -143,8 +143,11 @@ parseIdentifier = { reader ::
     value = whileReduce @"" { result ::
         <> ifValue { <> reader @peek }
             { ch ::
-                ifValue { <> mapletGet IDENTIFIER_CHARS ch }
-                    { reader @read; <> stringletAdd result ch }
+                <> ifValue { <> mapletGet IDENTIFIER_CHARS ch }
+                    {
+                        reader @read;
+                        <> stringletAdd result ch
+                    }
             }
     };
 
@@ -166,7 +169,10 @@ parseInteger = { reader ::
         <> ifValue { <> reader @peek }
             { ch ::
                 <> ifValue { <> mapletGet INTEGER_CHARS ch }
-                    { n :: <> (iadd n (imul result @10)) }
+                    { n ::
+                        reader @read;
+                        <> (iadd n (imul result @10))
+                    }
             }
     };
 
