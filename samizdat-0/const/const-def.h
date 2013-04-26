@@ -46,6 +46,8 @@ STR(MAKE_UNIQLET,  "makeUniqlet");
 STR(MAPLET,        "maplet");
 STR(NAME,          "name");
 STR(REPEAT,        "repeat");
+STR(RESULT,        "result");
+STR(STATE,         "state");
 STR(STATEMENTS,    "statements");
 STR(STRING,        "string");
 STR(STRINGLET,     "stringlet");
