@@ -40,16 +40,6 @@ typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
  */
 
 /**
- * Converts an in-model boolean value to a C `bool`.
- */
-bool langBoolFromBoolean(zvalue value);
-
-/**
- * Converts a C `bool` to an in-model boolean value.
- */
-zvalue langBooleanFromBool(bool value);
-
-/**
  * Gets the stringlet representing the low-layer type of the given value.
  *
  * Note: This is defined here mostly out of convenience, in that this

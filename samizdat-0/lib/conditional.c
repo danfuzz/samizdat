@@ -4,11 +4,8 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-//#include "cst.h"
-//#include "io.h"
+#include "const.h"
 #include "impl.h"
-//#include "lib.h"
-//#include "util.h"
 
 #include <stddef.h>
 
@@ -17,7 +14,7 @@
 PRIM_IMPL(ifTrue) {
     requireRange(argCount, 2, 3);
 
-    if (langBoolFromBoolean(langCall(args[0], 0, NULL))) {
+    if (constBoolFromBoolean(langCall(args[0], 0, NULL))) {
         return langCall(args[1], 0, NULL);
     } else if (argCount == 3) {
         return langCall(args[2], 0, NULL);
@@ -46,7 +43,7 @@ PRIM_IMPL(while) {
     requireExactly(argCount, 1);
 
     zvalue test = args[0];
-    while (langBoolFromBoolean(langCall(test, 0, NULL))) {
+    while (constBoolFromBoolean(langCall(test, 0, NULL))) {
         // No loop body necessary.
     }
 

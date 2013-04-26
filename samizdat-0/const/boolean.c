@@ -5,10 +5,7 @@
  */
 
 #include "const.h"
-#include "impl.h"
 #include "util.h"
-
-#include <stddef.h>
 
 
 /*
@@ -16,7 +13,7 @@
  */
 
 /* Documented in header. */
-bool langBoolFromBoolean(zvalue value) {
+bool constBoolFromBoolean(zvalue value) {
     constInit();
 
     if (datOrder(value, CONST_FALSE) == 0) {
@@ -29,7 +26,7 @@ bool langBoolFromBoolean(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue langBooleanFromBool(bool value) {
+zvalue constBooleanFromBool(bool value) {
     constInit();
     return value ? CONST_TRUE : CONST_FALSE;
 }

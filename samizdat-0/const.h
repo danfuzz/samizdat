@@ -34,10 +34,20 @@ extern zvalue CONST_FALSE;
 /** The canonical `true` value. */
 extern zvalue CONST_TRUE;
 
-
 /**
  * Initializes the constants, if necessary.
  */
 void constInit(void);
+
+/**
+ * Converts an in-model boolean value to a C `bool`.
+ */
+bool constBoolFromBoolean(zvalue value);
+
+/**
+ * Converts a C `bool` to an in-model boolean value.
+ */
+zvalue constBooleanFromBool(bool value);
+
 
 #endif
