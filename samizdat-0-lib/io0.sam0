@@ -19,10 +19,7 @@ isPrefix = { prefix path ::
         { <> and
             { <> ne path @[] }
             { <> eq (listletNth prefix @0) (listletNth path @0) }
-            { <> isPrefix
-                (listletDelNth prefix @0)
-                (listletDelNth path @0)
-            }
+            { <> isPrefix (listletDelNth prefix @0) (listletDelNth path @0) }
         }
 };
 
