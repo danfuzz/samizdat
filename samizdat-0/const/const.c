@@ -4,7 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "consts.h"
+#include "const.h"
 
 #include <stddef.h>
 
@@ -19,7 +19,7 @@
     STR(name, str); \
     zvalue TOK_##name = NULL
 
-#include "consts-def.h"
+#include "const-def.h"
 
 #undef STR
 #undef TOK
@@ -30,7 +30,7 @@
  */
 
 /* Documented in header. */
-void constsInit(void) {
+void constInit(void) {
     if (STR_CH_AT != NULL) {
         return;
     }
@@ -41,5 +41,5 @@ void constsInit(void) {
         STR(name, str); \
         TOK_##name = datHighletFrom(STR_##name, NULL);
 
-    #include "consts-def.h"
+    #include "const-def.h"
 }

@@ -4,7 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "consts.h"
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -29,7 +29,7 @@ static void initHidConsts(void) {
         return;
     }
 
-    constsInit();
+    constInit();
     HID_FALSE = datHighletFrom(STR_BOOLEAN, datIntletFromInt(0));
     HID_TRUE  = datHighletFrom(STR_BOOLEAN, datIntletFromInt(1));
 }

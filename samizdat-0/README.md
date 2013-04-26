@@ -22,6 +22,10 @@ later-named modules depending only on earlier-named ones):
   Samizdat low-layer data types, providing constructors, accessors,
   and a handful of assertions. Depends on util.
 
+* const &mdash; Commonly-used in-model constants. This includes things
+  like stringlets used during parsing, and the like. Depends on util
+  and dat.
+
 * io &mdash; I/O functions. This implements a minimal set of I/O
   operations. Depends on util and dat.
 
@@ -29,7 +33,7 @@ later-named modules depending only on earlier-named ones):
   translation from source text to executable code trees, as well as
   the execution of same. This is also what implements the binding of
   primitive functions into execution contexts. This module does
-  not implement any of the library itself. Depends on util and dat.
+  not implement any of the library itself. Depends on util, const, and dat.
 
 * lib &mdash; Library bindings. This implements both primitive and
   in-language bindings. The former are the parts of the core library

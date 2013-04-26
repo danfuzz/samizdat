@@ -5,11 +5,11 @@
  */
 
 /*
- * Prefab constants.
+ * Commonly-used in-model constants.
  */
 
-#ifndef _CONSTS_H_
-#define _CONSTS_H_
+#ifndef _CONST_H_
+#define _CONST_H_
 
 #include "dat.h"
 
@@ -23,14 +23,14 @@
     STR(name, str); \
     extern zvalue TOK_##name
 
-#include "consts-def.h"
+#include "const/const-def.h"
 
 #undef STR
 #undef TOK
 
 /**
- * Initializes the string and token global constants, if necessary.
+ * Initializes the constants, if necessary.
  */
-void constsInit(void);
+void constInit(void);
 
 #endif
