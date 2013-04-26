@@ -34,8 +34,14 @@ extern zvalue CONST_FALSE;
 /** The canonical `true` value. */
 extern zvalue CONST_TRUE;
 
-/** The canonical empty stringlet (`@""`) value. */
+/** The canonical empty stringlet value (`@""`). */
 extern zvalue STR_EMPTY;
+
+/** The canonical empty listlet value (`@[]`). */
+extern zvalue EMPTY_LISTLET;
+
+/** The canonical empty maplet value (`@[=]`). */
+extern zvalue EMPTY_MAPLET;
 
 /**
  * Initializes the constants, if necessary.

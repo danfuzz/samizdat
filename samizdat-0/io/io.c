@@ -61,12 +61,12 @@ static const char *utf8FromPathListlet(zvalue pathListlet) {
  */
 static zvalue pathListletFromAbsolute(const char *path) {
     if (path[0] == '\0') {
-        return datListletEmpty();
+        return EMPTY_LISTLET;
     } else if (path[0] != '/') {
         die("Invalid absolute path: \"%s\"", path);
     }
 
-    zvalue result = datListletEmpty();
+    zvalue result = EMPTY_LISTLET;
     const char *at = path + 1; // +1 to skip the initial '/'.
     for (;;) {
         const char *slashAt = strchr(at, '/');

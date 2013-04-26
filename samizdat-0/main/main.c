@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "io.h"
 #include "lang.h"
 #include "lib.h"
@@ -31,7 +32,7 @@ int main(int argc, char **argv) {
     }
 
     zvalue pathListlet = ioPathListletFromUtf8(argv[1]);
-    zvalue args = datListletAppend(datListletEmpty(), pathListlet);
+    zvalue args = datListletAppend(EMPTY_LISTLET, pathListlet);
     zint argCount = argc - 2;
 
     for (int i = 0; i < argCount; i++) {

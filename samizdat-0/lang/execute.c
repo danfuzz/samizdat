@@ -45,7 +45,7 @@ static zvalue execExpressionVoidOk(zcontext ctx, zvalue expression);
  */
 static zvalue bindArguments(zvalue functionNode,
                             zint argCount, const zvalue *args) {
-    zvalue result = datMapletEmpty();
+    zvalue result = EMPTY_MAPLET;
     zvalue formals = datMapletGet(functionNode, STR_FORMALS);
 
     if (formals == NULL) {
@@ -65,7 +65,7 @@ static zvalue bindArguments(zvalue functionNode,
 
         if (repeat != NULL) {
             if (datOrder(repeat, TOK_CH_STAR) == 0) {
-                value = datListletEmpty();
+                value = EMPTY_LISTLET;
                 for (/*i*/; i < argCount; i++) {
                     value = datListletAppend(value, args[i]);
                 }

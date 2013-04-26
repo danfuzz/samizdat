@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
 
 #include <stddef.h>
@@ -26,7 +27,7 @@ PRIM_IMPL(makeListlet) {
 PRIM_IMPL(makeMaplet) {
     requireEven(argCount);
 
-    zvalue result = datMapletEmpty();
+    zvalue result = EMPTY_MAPLET;
 
     for (zint i = 0; i < argCount; i += 2) {
         result = datMapletPut(result, args[i], args[i + 1]);

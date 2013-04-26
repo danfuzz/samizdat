@@ -215,11 +215,6 @@ const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
  */
 
 /**
- * Gets the value `@[]` (that is, the empty listlet).
- */
-zvalue datListletEmpty(void);
-
-/**
  * Gets the listlet resulting from inserting the given value at the
  * given index in the given listlet. `n` must be non-negative and no
  * greater than the size of the given listlet.
@@ -279,7 +274,8 @@ void datArrayFromListlet(zvalue *result, zvalue listlet);
  */
 
 /**
- * Gets the value `@{}` (that is, the empty maplet).
+ * Gets an empty maplet value, i.e. `@[=]`. Note that this can return
+ * a different allocated value every time.
  */
 zvalue datMapletEmpty(void);
 

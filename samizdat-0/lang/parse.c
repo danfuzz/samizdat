@@ -101,7 +101,7 @@ static zvalue makeVarRef(zvalue name) {
  * Constructs a `call` node.
  */
 static zvalue makeCall(zvalue function, zvalue actuals) {
-    zvalue value = datMapletPut(datMapletEmpty(), STR_FUNCTION, function);
+    zvalue value = datMapletPut(EMPTY_MAPLET, STR_FUNCTION, function);
     value = datMapletPut(value, STR_ACTUALS, actuals);
     return datHighletFrom(STR_CALL, value);
 }
@@ -137,7 +137,7 @@ DEF_PARSE(function);
 DEF_PARSE(atomPlus) {
     MARK();
 
-    zvalue result = datListletEmpty();
+    zvalue result = EMPTY_LISTLET;
 
     for (;;) {
         zvalue atom = PARSE(atom);
@@ -162,7 +162,7 @@ DEF_PARSE(call1) {
     MATCH_OR_REJECT(CH_OPAREN);
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return datListletEmpty();
+    return EMPTY_LISTLET;
 }
 
 /**
@@ -194,7 +194,7 @@ DEF_PARSE(highlet) {
     MATCH_OR_REJECT(CH_COLON);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    zvalue args = datListletAppend(datListletEmpty(), innerType);
+    zvalue args = datListletAppend(EMPTY_LISTLET, innerType);
 
     if (innerValue != NULL) {
         args = datListletAppend(args, innerValue);
@@ -211,7 +211,7 @@ DEF_PARSE(uniqlet) {
 
     MATCH_OR_REJECT(CH_ATAT);
 
-    return makeCall(makeVarRef(STR_MAKE_UNIQLET), datListletEmpty());
+    return makeCall(makeVarRef(STR_MAKE_UNIQLET), EMPTY_LISTLET);
 }
 
 /**
@@ -224,7 +224,7 @@ DEF_PARSE(binding) {
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue value = PARSE_OR_REJECT(atom);
 
-    return datListletAppend(datListletAppend(datListletEmpty(), key), value);
+    return datListletAppend(datListletAppend(EMPTY_LISTLET, key), value);
 }
 
 /**
@@ -236,7 +236,7 @@ DEF_PARSE(maplet) {
     MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
 
-    zvalue bindings = datListletEmpty();
+    zvalue bindings = EMPTY_LISTLET;
 
     for (;;) {
         zvalue binding = PARSE(binding);
@@ -264,7 +264,7 @@ DEF_PARSE(emptyMaplet) {
     MATCH_OR_REJECT(CH_EQUAL);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return datHighletFrom(STR_LITERAL, datMapletEmpty());
+    return datHighletFrom(STR_LITERAL, EMPTY_MAPLET);
 }
 
 /**
@@ -291,7 +291,7 @@ DEF_PARSE(emptyListlet) {
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return datHighletFrom(STR_LITERAL, datListletEmpty());
+    return datHighletFrom(STR_LITERAL, EMPTY_LISTLET);
 }
 
 /**
@@ -351,7 +351,7 @@ DEF_PARSE(varDef) {
     zvalue expression = PARSE_OR_REJECT(expression);
 
     zvalue name = datHighletValue(identifier);
-    zvalue value = datMapletPut(datMapletEmpty(), STR_NAME, name);
+    zvalue value = datMapletPut(EMPTY_MAPLET, STR_NAME, name);
     value = datMapletPut(value, STR_VALUE, expression);
     return datHighletFrom(STR_VAR_DEF, value);
 }
@@ -438,7 +438,7 @@ DEF_PARSE(yield) {
  */
 DEF_PARSE(formals) {
     MARK();
-    zvalue formals = datListletEmpty();
+    zvalue formals = EMPTY_LISTLET;
 
     for (;;) {
         zvalue identifier = MATCH(IDENTIFIER);
@@ -446,7 +446,7 @@ DEF_PARSE(formals) {
             break;
         }
 
-        zvalue formal = datMapletPut(datMapletEmpty(), STR_NAME,
+        zvalue formal = datMapletPut(EMPTY_MAPLET, STR_NAME,
                                      datHighletValue(identifier));
 
         if (MATCH(CH_STAR) != NULL) {
@@ -488,7 +488,7 @@ DEF_PARSE(program) {
     // to backtrack during this rule.
 
     zvalue formals = PARSE(program1); // `NULL` is ok, as it's optional.
-    zvalue statements = datListletEmpty();
+    zvalue statements = EMPTY_LISTLET;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
     for (;;) {
@@ -508,7 +508,7 @@ DEF_PARSE(program) {
         }
     }
 
-    zvalue value = datMapletPut(datMapletEmpty(), STR_STATEMENTS, statements);
+    zvalue value = datMapletPut(EMPTY_MAPLET, STR_STATEMENTS, statements);
 
     if (formals != NULL) {
         value = datMapletPut(value, STR_FORMALS, formals);

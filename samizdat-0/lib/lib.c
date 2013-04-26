@@ -43,7 +43,7 @@ static void initLibraryFiles(void) {
         return;
     }
 
-    zvalue result = datMapletEmpty();
+    zvalue result = EMPTY_MAPLET;
 
     // This adds an element to `result` for each of the embedded files,
     // and sets up the static name constants.
@@ -80,7 +80,6 @@ static zvalue libraryReader(void *state, zint argCount, const zvalue *args) {
  * Creates a `zcontext`, and binds all the primitive definitions into it.
  */
 static zcontext primitiveContext(void) {
-    constInit();
     zcontext ctx = langCtxNew();
 
     // These both could have been defined in-language, but we already
@@ -125,6 +124,7 @@ static void initLibraryBindings(void) {
 
 /* Documented in header. */
 zcontext libNewContext(void) {
+    constInit();
     initLibraryFiles();
     initLibraryBindings();
 

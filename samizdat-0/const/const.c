@@ -30,6 +30,12 @@ zvalue CONST_FALSE = NULL;
 /* Documented in header. */
 zvalue CONST_TRUE = NULL;
 
+/* Documented in header. */
+zvalue EMPTY_LISTLET = NULL;
+
+/* Documented in header. */
+zvalue EMPTY_MAPLET = NULL;
+
 
 /*
  * Module functions
@@ -51,4 +57,7 @@ void constInit(void) {
 
     CONST_FALSE = datHighletFrom(STR_BOOLEAN, datIntletFromInt(0));
     CONST_TRUE  = datHighletFrom(STR_BOOLEAN, datIntletFromInt(1));
+
+    EMPTY_LISTLET = datListletFromArray(0, NULL);
+    EMPTY_MAPLET = datMapletEmpty();
 }
