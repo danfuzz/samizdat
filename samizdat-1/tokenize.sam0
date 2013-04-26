@@ -6,6 +6,190 @@
 # Samizdat Layer 0 tokenizer
 #
 
+
+#
+# Lookahead Reader
+#
+# A lookahead reader can read characters from a string, additionally
+# allowing explicit backtracking.
+#
+# State consists of:
+#
+# * `@text` &mdash; The text being read.
+# * `@size` &mdash; The size of the text in characters.
+# * `@at` &mdash; The current cursor position.
+#
+# Convention: `do` prefix for public exposed functions, and `x` prefix for
+# private non-dispatched functions.
+#
+
+# Gets the size.
+xSize = { state :: mapletGet state @size };
+
+# Gets the text.
+xText = { state :: mapletGet state @text };
+
+# Gets the cursor position.
+xAt = { state :: mapletGet state @at };
+
+# Gets the current cursor position.
+doAt = { state :: <> @[@result=(xAt state)] };
+
+# Returns whether the reader is at EOF.
+doEof = { state :: <> @[@result=(lt (xAt state) (xSize state))] };
+
+# Peeks at the next character without reading. Returns void at EOF.
+doPeek = { state ::
+    at = xAt state;
+    <> ifValue { <> listletNth (xText state) at }
+        { ch :: <> @[@result=ch] };
+};
+
+# Reads the next character. Returns void at EOF.
+doRead = { state ::
+    at = xAt state;
+    <> ifValue { <> listletNth (xText state) at }
+        { ch :: <> @[@result=ch @state=(mapletPut state @at (iadd at @1))] };
+};
+
+# Sets the cursor position to the given one.
+doReset = { state at ::
+    ifTrue { <> or { <> lt at @0 } { <> ge at (xSize state) } }
+        { io0Die @"Reset out of range." }
+    <> @[@state=(mapletPut state @at at)]
+};
+
+# Dispatch table.
+READER_DISPATCH = @[
+    @at    = doAt
+    @eof   = doEof
+    @peek  = doPeek
+    @read  = doRead
+    @reset = doReset
+];
+
+# Performs method dispatch.
+readerDispatch = { state name rest* ::
+    <> apply (mapletGet READER_DISPATCH name) state rest
+};
+
+# Returns a lookahead-enabled character reader.
+makeReader = { programText ::
+    <> object readerDispatch @[
+        @at = @0
+        @size = (lowSize programText)
+        @text = programText
+    ]
+};
+
+
+#
+# Tokenizer function
+#
+
+# Skips over all characters until and including a newline.
+skipUntilNewline = { reader ::
+    while {
+        <> ifValue { <> reader @read }
+            { ch :: <> ne ch @"\n" }
+            { <> false }
+    }
+};
+
+# Parsers for particular whitespace characters.
+WHITESPACE_DISPATCH = @[
+    @" "  = { reader :: reader @read }
+    @"\n" = { reader :: reader @read }
+    @"#"  = skipUntilNewline
+];
+
+# Skips any whitespace at the current cursor.
+skipWhitespace = { reader ::
+    while {
+        <> ifVoid { <> reader @peek }
+            { <> false }
+            { ch ::
+                <> ifValue { <> mapletGet WHITESPACE_DISPATCH ch }
+                    { parser :: parser reader; <> true }
+                    { <> false }
+            }
+    }
+};
+
+# Single-character parser. Reads a single character, returning that
+# value directly as a token.
+oneCharParser = { reader :: <> [:(reader @read):] };
+
+# Makes a one-or-two-character parser, given a two-character string.
+# The result is a function which reads a character, and then peeks at
+# the next one. It consumes the second character only if it matches as
+# indicated.
+makeOneTwoParser = { twoChars ::
+    ch2 = stringletNth twoChars @1;
+    result1 = [:(stringletNth twoChars @0):];
+    result2 = [:twoChars:];
+    parser = { reader ::
+        reader @read; # Only ever called when the first character matched.
+        <> ifValue { <> reader @peek }
+            { ch ::
+                <> ifTrue { <> eq ch ch2 }
+                    { reader @read; <> result2 }
+                    { <> result1 }
+            }
+    };
+
+    <> parser;
+};
+
+# Mapping from token start character to the corresponding parser to use.
+TOKEN_DISPATCH = @[
+    @"{" = oneCharParser
+    @"}" = oneCharParser
+    @"[" = oneCharParser
+    @"]" = oneCharParser
+    @"(" = oneCharParser
+    @")" = oneCharParser
+    @"=" = oneCharParser
+    @"-" = oneCharParser
+    @";" = oneCharParser
+    @"*" = oneCharParser
+    @":" = (makeOneTwoParser @"::")
+    @"@" = (makeOneTwoParser @"@@")
+    @"<" = (makeOneTwoParser @"<>")
+
+    # TODO: More
+];
+
+# Reads a single token.
+readToken = { reader ::
+    skipWhitespace reader;
+    <> ifValue { <> reader @peek }
+        { ch ::
+            <> ifValue { <> mapletGet TOKEN_DISPATCH ch }
+                { parser :: <> parser reader }
+                {
+                    error = stringletCat @"No parser for char: "
+                        (sourceStringlet ch);
+                    skipUntilNewline reader; # Heuristic to help re-synch.
+                    <> [:@error error:];
+                }
+        }
+};
+
+# Tokenizes the given string, using Samizdat Layer 0 token syntax.
+# Returns a listlet of tokens.
+tokenizex = { programText ::
+    reader = makeReader programText;
+
+    <> whileReduce @[] { result ::
+        <> ifValue { <> readToken reader }
+            { token :: <> listletAppend result token }
+    }
+};
+
+
+########## OLD STUFF FOR REFERENCE ##########
+
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
 tokenize = { programText ::
@@ -15,40 +199,7 @@ tokenize = { programText ::
     # stringlet.
     get = { at :: <> stringletNth programText at null };
 
-    # Makes a parser that just returns a single-character token of the
-    # given character. The result is only nominally a "parser" in that it
-    # assumes that it's called in a context where it matched. (See below.)
-    oneCharParser = { ch ::
-        result = @[@token=[:ch:]];
-        <> { at :: <> mapletPut result @at (iadd at @1) }
-    };
 
-    # These are all the single-character parser mappings.
-    oneCharRules = listletReduce @[=]
-        @[@"{" @"}" @"[" @"]" @"(" @")" @"=" @"-" @";" @"*"]
-        { result ch :: <> mapletPut result ch (oneCharParser ch) };
-
-    # Makes a parser that matches a token consisting of either the first
-    # or both characters (in sequence).
-    oneOrTwoCharParser = { ch1 ch2 ::
-        result1 = @[@token=[:ch1:]];
-        result2 = @[@token=[:(stringletCat ch1 ch2):]];
-
-        <> { at ::
-            nextAt = (iadd at @1);
-            <> ifTrue { <> ne (get nextAt) ch2 }
-                { <> mapletPut result1 @at nextAt }
-                { <> mapletPut result2 @at (iadd at @2) }
-        }
-    };
-
-    # These are all the one-or-two-character parser mappings.
-    oneTwoCharRules = listletReduce @[=]
-        @[@[@":" @":"] @[@"@" @"@"] @[@"<" @">"]]
-        { result chs ::
-            <> mapletPut result (listletNth chs @0)
-                (apply oneOrTwoCharParser chs)
-        };
 
     # These are all the integer digits, as a maplet from stringlets to
     # digit values.
@@ -132,49 +283,6 @@ tokenize = { programText ::
         identifierRules
         integerRules
         stringRules;
-
-    # Returns the position immediately after the next newline at or after
-    # the given index, or the EOF position if there is no newline.
-    skipUntilNewline = { at ::
-        ch = get at;
-        nextAt = iadd at @1;
-        <> ifTrue { <> or { <> eq ch @"\n" } { <> eq ch null } }
-            { <> nextAt }
-            { <> skipUntilNewline nextAt }
-    };
-
-    # Returns the position just past any whitespace at the given index.
-    skipWhitespace = { at ::
-        ch = get at;
-        nextAt = iadd at @1;
-        <> if { <> or { <> eq ch @" " } { <> eq ch @"\n" } } {
-            <> skipWhitespace nextAt
-        } { <> eq ch @"#" } {
-            <> skipWhitespace (skipUntilNewline nextAt);
-        } else {
-            <> at
-        }
-    };
-
-    # Parses a single token.
-    parseOne = { at ::
-        tokenAt = skipWhitespace at;
-        <> ifValue { <> stringletNth programText tokenAt }
-            {
-                ch = get tokenAt;
-                <> ifValue { <> mapletGet rules ch }
-                    { parser :: <> parser tokenAt }
-                    {
-                        error = stringletCat @"No parser for char: [" ch @"]";
-                        <> @[@at=tokenAt @error=error]
-                    }
-            }
-            {
-                # There was whitespace at EOF. Return a token-free (but
-                # successful) result.
-                <> @[@at=size]
-            }
-    };
 
     # Parses all the tokens.
     parseAll = { result at ::
