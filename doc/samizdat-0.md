@@ -639,6 +639,24 @@ The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
 
+#### `while function <> ~.`
+
+Primitive conditional loop construct. This repeatedly calls the given
+function with no arguments. The function must always return a boolean.
+The repeated calls stop as soon as the function returns `false`.
+
+#### `whileReduce base function <> ~.`
+
+Primitive conditional loop construct, with reduce semantics. This repeatedly
+calls the given function with a single argument. The first time the function
+is called, it is passed the given `base` value (an arbitrary value), and
+subsequent times it is passed whatever the `function` returned on the
+previous iteration. Iteration ends immediately after `function` returns
+void, at which point, this function returns that last argument passed into
+the function (which will be the `base` value if `function` returned void
+on the first iteration).
+
+
 <br><br>
 ### Primitive Library: General Low-Order Values
 

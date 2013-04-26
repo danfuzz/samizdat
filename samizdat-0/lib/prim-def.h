@@ -60,3 +60,5 @@ PRIM_FUNC(sam0Tree);
 PRIM_FUNC(stringletAdd);
 PRIM_FUNC(stringletFromIntlet);
 PRIM_FUNC(stringletNth);
+PRIM_FUNC(while);
+PRIM_FUNC(whileReduce);
