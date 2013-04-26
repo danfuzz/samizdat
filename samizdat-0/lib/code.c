@@ -46,7 +46,7 @@ static zvalue callObject(void *state, zint argCount, const zvalue *args) {
     object->busy = true;
 
     fullArgs[0] = object->state;
-    memcpy(fullArgs + 1, args, argCount);
+    memcpy(fullArgs + 1, args, argCount * sizeof(zvalue));
 
     zvalue resultMaplet = langCall(object->function, argCount + 1, fullArgs);
     zvalue result;

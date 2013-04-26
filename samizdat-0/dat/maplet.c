@@ -129,6 +129,8 @@ zvalue datMapletGet(zvalue maplet, zvalue key) {
 
 /* Documented in header. */
 zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
+    datAssertValid(value);
+
     zint index = mapletFind(maplet, key);
     zint size = datSize(maplet);
     zvalue result;
