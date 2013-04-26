@@ -10,8 +10,8 @@
 #
 # Lookahead Reader
 #
-# A lookahead reader can read characters from a string, additionally
-# allowing explicit backtracking.
+# This can read characters from a stringlet, additionally allowing for
+# a single character of lookahead.
 #
 # State consists of:
 #
