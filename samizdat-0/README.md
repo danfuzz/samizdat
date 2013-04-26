@@ -27,7 +27,7 @@ later-named modules depending only on earlier-named ones):
   and dat.
 
 * io &mdash; I/O functions. This implements a minimal set of I/O
-  operations. Depends on util and dat.
+  operations. Depends on util, dat, and const.
 
 * lang &mdash; Language parsing and execution engine. This implements
   translation from source text to executable code trees, as well as

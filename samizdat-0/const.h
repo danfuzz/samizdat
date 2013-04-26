@@ -34,6 +34,9 @@ extern zvalue CONST_FALSE;
 /** The canonical `true` value. */
 extern zvalue CONST_TRUE;
 
+/** The canonical empty stringlet (`@""`) value. */
+extern zvalue STR_EMPTY;
+
 /**
  * Initializes the constants, if necessary.
  */

@@ -173,11 +173,6 @@ zint datIntFromIntlet(zvalue intlet);
  */
 
 /**
- * Gets the value `@""` (that is, the empty stringlet).
- */
-zvalue datStringletEmpty(void);
-
-/**
  * Given a stringlet, returns the `n`th element, which is in the
  * range of a 32-bit unsigned int. If `n` is out of range, this
  * returns `-1`.

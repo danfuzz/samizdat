@@ -28,9 +28,14 @@ TOK(CH_OPAREN,     "(");
 TOK(CH_OSQUARE,    "[");
 TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
+
+STR(CH_DOTDOT,     "..");
+STR(CH_SLASH,      "/");
+
 STR(ACTUALS,       "actuals");
 STR(BOOLEAN,       "boolean");
 STR(CALL,          "call");
+STR(EMPTY,         ""); // The canonical empty stringlet (`@""`) value.
 STR(FORMALS,       "formals");
 STR(FUNCTION,      "function");
 STR(HIGHLET,       "highlet");
