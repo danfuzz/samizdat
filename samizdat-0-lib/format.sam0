@@ -7,7 +7,7 @@
 #
 
 #
-# `sourceStringlet` function
+# `sourceStringlet` and `sourceStringletUnadorned` functions
 #
 
 # Single-character stringlets `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
