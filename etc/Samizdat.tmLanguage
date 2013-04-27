@@ -77,7 +77,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>{([^:{}]*)(::)</string>
+			<string>{([^:{}@"]*)(::)</string>
 		</dict>
 		<dict>
 			<key>captures</key>
