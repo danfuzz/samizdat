@@ -166,8 +166,8 @@ parseFormals = { reader ::
 
 # `formals` node helper: Parses `identifier`, returning a maplet.
 parseFormals1 = { reader ::
-    <> ifValue { <> parseMatch reader @identifier }
-        { <> @[@name = (highValue identifier)] }
+    <> ifValue { <> readOne reader @identifier }
+        { result :: <> @[@name = (highletValue result)] }
 };
 
 # Parses a `yield` node.
@@ -214,7 +214,8 @@ parseVarDef = { reader ::
 
 # Parses a `varRef` node.
 parseVarRef = { reader ::
-    # TODO
+    <> ifValue { <> readOne reader @identifier }
+        { result :: <> [:@varRef (highletValue result):] }
 };
 
 # Parses an `intlet` node.
