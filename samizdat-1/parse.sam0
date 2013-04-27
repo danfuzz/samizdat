@@ -6,10 +6,133 @@
 # Samizdat Layer 0 tree parser
 #
 
+#
+# Helper functions
+#
+
+# Reads the indicated token type from the reader if it happens to
+# be what's ready to be read. Returns it if so, or returns void if not.
+readMatch = { reader type ::
+    <> ifValue { <> reader @peek }
+        { token ::
+            <> ifTrue { <> eq type (lowType token) }
+                {
+                    reader @read;
+                    <> token
+                }
+        }
+};
+
+# Parses a list of alternate rules (`|` separated in PEG), returning
+# the first successful result, or void if none succeeds.
+orRule = { reader rule rest* ::
+    <> ifValue { <> rule reader }
+        { result :: <> result }
+        {
+            <> ifTrue { <> ne rest @[] }
+                { <> apply orRule reader rest }
+        }
+};
+
+# Parses an optional rule (`?` suffix in PEG), returning the indicated
+# `ifFailed` value if parsing failed.
+questRule = { reader rule ifFailed ::
+    <> orRule reader rule { reader :: <> ifFailed }
+};
+
+# Parses a zero-or-more repetition rule (`*` suffix in PEG), returning a
+# listlet of all the matched repetitions.
+starRule = { reader rule ::
+    <> whileReduce @[]
+        { result ::
+            <> ifValue { <> rule reader }
+                { match :: <> listletAppend result match }
+        }
+};
+
+
+#
+# The following is a near-transliteration of the tree grammar in
+# the *Samizdat Layer 0* specification.
+#
+
+# `program` node helper: Parses `formals`, yielding a maplet.
+parseProgram1 = { reader ::
+    <> ifValue { <> parseFormals reader }
+        { result :: <> @[@formals = result] }
+        { <> @[=] }
+};
+
+# `program` node helper: Parses `(formals? @"::")`.
+parseProgram2 = { reader ::
+    mark = reader @at;
+    formals = parseProgram1 reader;
+
+    <> ifValue { <> readMatch reader @"::" }
+        { <> formals }
+        { reader @reset mark }
+};
+
+# `program` node helper: Parses `yield`, yielding a maplet.
+parseProgram3 = { reader ::
+    <> ifValue { <> parseYield reader }
+        { result :: <> @[@yield = result] }
+};
+
+# `program` node helper: Parses `(@";" statement)`.
+parseprogram4 = { reader ::
+    # Note: `statement` always succeeds, because the empty statement is valid.
+    <> ifValue { <> readMatch reader @";" }
+        { <> parseStatement reader }
+};
+
+# `program` node helper: Parses `(@";" yield)`.
+parseprogram5 = { reader ::
+    mark = reader @at;
+    <> ifValue { <> readMatch reader @";" }
+        { <> parseYield reader }
+        { reader @reset mark }
+};
+
+# `program` node helper: Parses `statement (@";" statement)* (@";" yield)?`,
+# yielding a maplet.
+#
+# TODO: There is a bug in the grammar! The statement repetition will consume
+# any semicolon before a yield, making it so the last clause will never
+# match. Oops!
+parseProgram6 = { reader ::
+    # Note: These calls will all always succeed.
+    statement1 = parseStatement reader;
+    statements = starRule reader parseProgram4;
+    yield = questRule reader parseProgram5;
+
+    # TODO: Properly handle empty statements.
+
+    <> mapletAdd
+        @[@statements = (listletPrepend statement1 statements)]
+        yield
+};
+
+# Parses a `program` node.
+parseProgram = { reader ::
+    formals = questRule reader parseProgram2 @[=];
+    statements = orRule reader parseProgram3 parseProgram6;
+    <> [:
+        @function
+        (mapletAdd formals statements)
+    :]
+};
+
+
+#
+# Main `parse` function
+#
+
 # Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
 # syntax. Returns a `function` node.
 parse = { tokens ::
-    # TODO
+    theReader = reader tokens;
+    # theTree = parseProgram theReader;
 
     theCall = [:
         @call
