@@ -62,22 +62,23 @@ ARGS* ::
 # for readability and not strictly necessary. That is, the definition
 # of `applicator` doesn't directly refer to the variable `applicator`.
 #
-xCombinator = { func ::
+xCombinator = { function ::
+    uCombinator = { x :: <> x x };
     applicator = { selfRef ::
-        <> { rest* :: <> apply (func selfRef) rest }
+        <> { args* :: <> apply (function (uCombinator selfRef)) args }
     };
 
     <> applicator applicator;
 };
 
 # Returns a listlet with intlet contents that count down from `n`,
-# generated recursively. The function literal here takes one extra
-# argument than the "exposed" function, namely an initial argument
-# that is used for achieving recursion. See `fuzzCombinator` above.
+# generated recursively. The "main" function literal here is wrapped
+# in an outer function layer, whose argument is used to achieve
+# recursion. See `xCombinator` above.
 countDown = xCombinator { countDown ::
     <> { n ::
         <> ifTrue { <> ge n @0 }
-            { <> listletPrepend n ((countDown countDown) (isub n @1)) }
+            { <> listletPrepend n (countDown (isub n @1)) }
             { <> @[] }
     }
 };
@@ -86,6 +87,7 @@ countDown = xCombinator { countDown ::
 process = { value ::
     io0Note (sourceStringlet value)
 };
+
 
 #
 # Main function
