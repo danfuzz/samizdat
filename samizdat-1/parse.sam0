@@ -162,9 +162,26 @@ parseYield = { reader ::
         { reader @reset mark }
 };
 
+# `formals` node helper: Parses `identifier`, returning a maplet.
+parseFormals1 = { reader ::
+    <> ifValue { <> parseMatch reader @identifier }
+        { <> @[@name = (highValue identifier)] }
+};
+
 # Parses a `formals` node.
 parseFormals = { reader ::
-    # TODO
+    <> ifValue { <> plusRule reader parseFormals1 }
+        { almostResult ::
+            <> ifValue { <> parseMatch reader @"*" }
+                {
+                    n = isub (lowSize almostResult) @1;
+                    last = listletNth almostResult n;
+                    result = listletPutNth almostResult n
+                        (mapletPut last @repeat @[@type=@"*"]);
+                    <> [:@formals result:]
+                }
+                { <> [:@formals almostResult:] }
+        }
 };
 
 # `program` node helper: Parses `formals`, yielding a possibly-empty maplet.
