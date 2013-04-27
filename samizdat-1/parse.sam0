@@ -97,9 +97,8 @@ parseprogram5 = { reader ::
 # `program` node helper: Parses `statement (@";" statement)* (@";" yield)?`,
 # yielding a maplet.
 #
-# TODO: There is a bug in the grammar! The statement repetition will consume
-# any semicolon before a yield, making it so the last clause will never
-# match. Oops!
+# TODO: This version reflects a former bug in the grammar. It needs to
+# be updated to match the now-corrected grammar.
 parseProgram6 = { reader ::
     # Note: These calls will all always succeed.
     statement1 = parseStatement reader;
