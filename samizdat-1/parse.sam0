@@ -14,7 +14,7 @@
 # is taken to represent a token type to read. Otherwise, it is taken to
 # be a parser function to call. Returns the parsed item on success, or
 # void on failure.
-readMatch = { reader rule ::
+readOne = { reader rule ::
     <> ifTrue { <> isHighlet rule }
         {
             <> ifValue { <> reader @peek }
@@ -29,10 +29,26 @@ readMatch = { reader rule ::
         { <> item reader }
 };
 
+# Parses all of the indicate rules, in order, returning a listlet of
+# the results. Returns void if it could not parse everything requested.
+readAll = { reader rule rest* ::
+    mark = reader @at;
+    <> ifValue { <> readOne reader rule }
+        { firstResult ::
+            <> ifTrue { <> eq rest @[] }
+                { <> @[firstResult] }
+                {
+                    <> ifValue { <> apply readAll reader rest }
+                        { result :: <> listletPrepend firstResult result }
+                }
+        }
+        { reader @reset mark }
+};
+
 # Parses a list of alternate rules (`|` separated in PEG), returning
 # the first successful result, or void if none succeeds.
 orRule = { reader rule rest* ::
-    <> ifValue { <> readMatch reader rule }
+    <> ifValue { <> readOne reader rule }
         { result :: <> result }
         {
             <> ifTrue { <> ne rest @[] }
@@ -51,7 +67,7 @@ questRule = { reader rule ifFailed ::
 starRule = { reader rule ::
     <> whileReduce @[]
         { result ::
-            <> ifValue { <> readMatch reader rule }
+            <> ifValue { <> readOne reader rule }
                 { match :: <> listletAppend result match }
         }
 };
@@ -71,27 +87,16 @@ plusRule = { reader rule ::
 # the *Samizdat Layer 0* specification.
 #
 
-# Parses a semicolon token.
-parseSemicolon = { reader :: <> readMatch reader [:@";":] };
-
 # Parses a `function` node.
 parseFunction = { reader ::
-    mark = reader @at;
-    <> ifValue { <> readMatch reader [:@"{":] }
-        {
-            <> ifValue { <> parseProgram reader }
-                { result ::
-                    <> ifValue { <> readMatch reader [:@"}":] }
-                        { <> result }
-                }
-        }
-        { reader @reset mark }
+    <> ifValue { <> readAll reader [:@"{":] parseProgram [:@"}":] }
+        { result :: <> listletNth result @1 }
 };
 
 # Parses a `program` node.
 parseProgram = { reader ::
     formals = questRule reader parseProgram1 @[=];
-    starRule reader parseSemicolon; # Optional semicolons.
+    starRule reader [:@";":]; # Optional semicolons.
     statements = starRule reader parseProgram3;
     almostResult = parseProgram4 reader statements;
 
@@ -107,7 +112,7 @@ parseProgram1 = { reader ::
     mark = reader @at;
     formals = parseProgram2 reader;
 
-    <> ifValue { <> readMatch reader [:@"::":] }
+    <> ifValue { <> readOne reader [:@"::":] }
         { <> formals }
         { reader @reset mark }
 };
@@ -125,7 +130,7 @@ parseprogram3 = { reader ::
     mark = reader @at;
     <> ifValue { <> parseStatement reader }
         { result ::
-            <> ifValue { <> plusRule reader parseSemicolon }
+            <> ifValue { <> plusRule reader [:@";":] }
                 { <> result }
         }
         { reader @reset mark }
@@ -147,7 +152,7 @@ parseprogram4 = { reader statements ::
 parseFormals = { reader ::
     <> ifValue { <> plusRule reader parseFormals1 }
         { almostResult ::
-            <> ifValue { <> readMatch reader [:@"*":] }
+            <> ifValue { <> readOne reader [:@"*":] }
                 {
                     n = isub (lowSize almostResult) @1;
                     last = listletNth almostResult n;
@@ -167,16 +172,11 @@ parseFormals1 = { reader ::
 
 # Parses a `yield` node.
 parseYield = { reader ::
-    mark = reader @at;
-    <> ifValue { <> readMatch reader [:@"<>":] }
-        {
-            <> ifValue { <> parseExpression reader }
-                { result ::
-                    starRule reader parseSemicolon; # Optional semicolons.
-                    <> result
-                }
+    <> ifValue { <> readAll reader [:@"<>":] parseExpression }
+        { result ::
+            starRule reader [:@";":]; # Optional semicolons.
+            <> listletNth result @1;
         }
-        { reader @reset mark }
 };
 
 # Parses a `statement` node.
@@ -198,12 +198,18 @@ parseAtom = { reader ::
 
 # Parses a `parenExpression` node.
 parseParenExpression = { reader ::
-    # TODO
+    <> ifValue { <> readAll reader [:@"(":] parseExpression [:@")":] }
+        { result :: <> listletNth result @1 }
 };
 
 # Parses a `varDef` node.
 parseVarDef = { reader ::
-    # TODO
+    <> ifValue { <> readAll reader [:@identifier:] [:@"=":] parseExpression }
+        { result ::
+            name = highletValue (listletNth result @0);
+            value = listletNth result @2;
+            <> [: @varDef @[@name=name @value=value] :];
+        }
 };
 
 # Parses a `varRef` node.
