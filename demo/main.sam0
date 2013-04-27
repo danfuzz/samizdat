@@ -15,17 +15,23 @@ ARGS* ::
 # Helper definitions
 #
 
-# This is a function in the "Y combinator" family, but I don't know
-# what its official name is, if any. It takes a function as an argument,
-# yielding a function of one fewer argument. When the resulting function
-# is called, it in turn calls the original function, prepending a new
-# first argument which, when called, performs a recursive call on the
-# original function.
+# Self-recursion helper function. This function takes another function as
+# its argument, in return yielding a function of one fewer argument.
+# When the resulting function is called, it in turn calls the original
+# function, prepending a new first argument. The new first argument is a
+# function which, when called, performs a recursive call on the original
+# function.
+#
+# Per Wikipedia [Fixed-point
+# combinator](http://en.wikipedia.org/wiki/Fixed-point_combinator),
+# this is an example of the "X combinator", which is the call-by-value
+# cousin of the better-known "Y combinator".
 #
 # Although it is written here using a variable assignment, it's just
 # for readability and not strictly necessary. That is, the definition
 # of `applicator` doesn't directly refer to the variable `applicator`.
-fuzzCombinator = { func ::
+#
+xCombinator = { func ::
     applicator = { selfRef ::
         <> { rest* :: <> apply func (selfRef selfRef) rest }
     };
@@ -37,7 +43,7 @@ fuzzCombinator = { func ::
 # generated recursively. The function literal here takes one extra
 # argument than the "exposed" function, namely an initial argument
 # that is used for achieving recursion. See `fuzzCombinator` above.
-countDown = fuzzCombinator { countDown n ::
+countDown = xCombinator { countDown n ::
     <> ifTrue { <> ge n @0 }
         { <> listletPrepend n (countDown (isub n @1)) }
         { <> @[] }
