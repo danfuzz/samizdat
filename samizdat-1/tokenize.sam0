@@ -6,75 +6,6 @@
 # Samizdat Layer 0 tokenizer
 #
 
-
-#
-# Lookahead Reader
-#
-# This can read characters from a stringlet, additionally allowing for
-# a single character of lookahead.
-#
-# State consists of:
-#
-# * `@text` &mdash; The text being read.
-# * `@size` &mdash; The size of the text in characters.
-# * `@at` &mdash; The current cursor position.
-#
-# Convention: `do` prefix for public exposed functions, and `x` prefix for
-# private non-dispatched functions.
-#
-
-# Gets the size.
-xSize = { state :: <> mapletGet state @size };
-
-# Gets the text.
-xText = { state :: <> mapletGet state @text };
-
-# Gets the cursor position.
-xAt = { state :: <> mapletGet state @at };
-
-# Returns whether the reader is at EOF.
-doEof = { state :: <> @[@result=(lt (xAt state) (xSize state))] };
-
-# Peeks at the next character without reading. Returns void at EOF.
-doPeek = { state ::
-    at = xAt state;
-    <> ifValue { <> stringletNth (xText state) at }
-        { ch :: <> @[@result=ch] };
-};
-
-# Reads the next character. Returns void at EOF.
-doRead = { state ::
-    at = xAt state;
-    <> ifValue { <> stringletNth (xText state) at }
-        { ch :: <> @[@result=ch @state=(mapletPut state @at (iadd at @1))] };
-};
-
-# Dispatch table.
-READER_DISPATCH = @[
-    @eof   = doEof
-    @peek  = doPeek
-    @read  = doRead
-];
-
-# Performs method dispatch.
-readerDispatch = { state name rest* ::
-    <> apply (mapletGet READER_DISPATCH name) state rest
-};
-
-# Returns a lookahead-enabled character reader.
-makeReader = { programText ::
-    <> object readerDispatch @[
-        @at = @0
-        @size = (lowSize programText)
-        @text = programText
-    ]
-};
-
-
-#
-# Tokenizer function
-#
-
 # Mapping from valid string escapes to their translated characters.
 STRING_ESCAPES = @[@"\\"=@"\\" @"\""=@"\"" @"n"=@"\n"];
 
@@ -262,10 +193,10 @@ readToken = { reader ::
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
 tokenize = { programText ::
-    reader = makeReader programText;
+    theReader = reader programText;
 
     <> whileReduce @[] { result ::
-        <> ifValue { <> readToken reader }
+        <> ifValue { <> readToken theReader }
             { token :: <> listletAppend result token }
     }
 };
