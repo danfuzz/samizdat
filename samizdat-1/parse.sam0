@@ -220,7 +220,19 @@ parseVarRef = { reader ::
 
 # Parses an `intlet` node.
 parseIntlet = { reader ::
-    # TODO
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"@":]
+                { reader :: <> questRule reader [:@"-":] null }
+                [:@integer:]
+        }
+        { result ::
+            sign = ifTrue { <> eq (listletNth result @1) null }
+                { <> @-1 } { @1 };
+            value = imul sign (highletValue (listletNth result @2));
+            <> [:@intlet value:]
+        }
 };
 
 # Parses a `stringlet` node.
