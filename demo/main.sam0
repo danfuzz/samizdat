@@ -15,25 +15,56 @@ ARGS* ::
 # Helper definitions
 #
 
-# Self-recursion helper function. This function takes another function as
-# its argument, in return yielding a function of one fewer argument.
-# When the resulting function is called, it in turn calls the original
-# function, prepending a new first argument. The new first argument is a
-# function which, when called, performs a recursive call on the original
-# function.
+# Self-recursion helper function.
+#
+# Short version: If you want to make a recursive function, you can write
+# it like this:
+#
+# ```
+# myRecursiveFunction = xCombinator { selfCall ::
+#     # Inner function.
+#     <> { myArg1 myArg2 ... ::
+#         ... my code ...
+#         selfCall args ...
+#         ... my code ...
+#     }
+# };
+# ```
+#
+# In the example above, a call to `selfCall` will end up recursively
+# calling into the (so-labeled) inner function.
+#
+# Long version:
+#
+# This function takes another function as its argument, called the
+# "wrapper" function. That function must take a single argument, which itself
+# is a function, called the "recurser" function. The "wrapper" function must
+# return yet another function, called the "inner" function. The return value
+# of this function, called the "result" function, is a function which, when
+# called, ends up calling the wrapper function and then calling the inner
+# function that the wrapper function returned.
+#
+# The inner function is an arbitrary function, taking arbitrary arguments,
+# returning anything including void, and performing any arbitrary
+# actions in its body. In particular, it can be written to call the
+# "recurser" argument passed to its wrapper. If it does so, that will in
+# turn result in a recursive call to itself.
+#
+# This function is used to write recursive functions without relying
+# on use-before-def variable binding.
 #
 # Per Wikipedia [Fixed-point
 # combinator](http://en.wikipedia.org/wiki/Fixed-point_combinator),
-# this is an example of the "X combinator", which is the call-by-value
+# this is a variation of the "X combinator", which is the call-by-value
 # cousin of the better-known "Y combinator".
 #
-# Although it is written here using a variable assignment, it's just
+# Although it is coded here using a variable assignment, it's just
 # for readability and not strictly necessary. That is, the definition
 # of `applicator` doesn't directly refer to the variable `applicator`.
 #
 xCombinator = { func ::
     applicator = { selfRef ::
-        <> { rest* :: <> apply func (selfRef selfRef) rest }
+        <> { rest* :: <> apply (func selfRef) rest }
     };
 
     <> applicator applicator;
@@ -43,10 +74,12 @@ xCombinator = { func ::
 # generated recursively. The function literal here takes one extra
 # argument than the "exposed" function, namely an initial argument
 # that is used for achieving recursion. See `fuzzCombinator` above.
-countDown = xCombinator { countDown n ::
-    <> ifTrue { <> ge n @0 }
-        { <> listletPrepend n (countDown (isub n @1)) }
-        { <> @[] }
+countDown = xCombinator { countDown ::
+    <> { n ::
+        <> ifTrue { <> ge n @0 }
+            { <> listletPrepend n ((countDown countDown) (isub n @1)) }
+            { <> @[] }
+    }
 };
 
 # Emits the stringified version of the given value to the console.
