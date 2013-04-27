@@ -15,10 +15,38 @@ ARGS* ::
 # Helper definitions
 #
 
+# This is a function in the "Y combinator" family, but I don't know
+# what its official name is, if any. It takes a function as an argument,
+# yielding a function of one fewer argument. When the resulting function
+# is called, it in turn calls the original function, prepending a new
+# first argument which, when called, performs a recursive call on the
+# original function.
+#
+# Although it is written here using a variable assignment, it's just
+# for readability and not strictly necessary. That is, the definition
+# of `applicator` doesn't directly refer to the variable `applicator`.
+fuzzCombinator = { func ::
+    applicator = { selfRef ::
+        <> { rest* :: <> apply func (selfRef selfRef) rest }
+    };
+
+    <> applicator applicator;
+};
+
+# Returns a listlet with intlet contents that count down from `n`,
+# generated recursively. The function literal here takes one extra
+# argument than the "exposed" function, namely an initial argument
+# that is used for achieving recursion. See `fuzzCombinator` above.
+countDown = fuzzCombinator { countDown n ::
+    <> ifTrue { <> ge n @0 }
+        { <> listletPrepend n (countDown (isub n @1)) }
+        { <> @[] }
+};
+
+# Emits the stringified version of the given value to the console.
 process = { value ::
     io0Note (sourceStringlet value)
 };
-
 
 #
 # Main function
@@ -52,6 +80,7 @@ main = { selfPath name rest* ::
     process false;
     process true;
     process @@;
+    process (countDown @10);
 };
 
 <> apply main ARGS
