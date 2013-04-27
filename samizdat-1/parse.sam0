@@ -56,10 +56,12 @@ orRule = { reader rule rest* ::
         }
 };
 
-# Parses an optional rule (`?` suffix in PEG), returning the indicated
-# `ifFailed` value if parsing failed.
-questRule = { reader rule ifFailed ::
-    <> orRule reader rule { reader :: <> ifFailed }
+# Parses an optional rule (`?` suffix in PEG), returning a listlet
+# of matched results, which will always be of length zero or one.
+questRule = { reader rule ::
+    <> ifValue { <> readOne reader rule }
+        { result :: <> @[result] }
+        { <> @[] }
 };
 
 # Parses a zero-or-more repetition rule (`*` suffix in PEG), returning a
@@ -95,10 +97,15 @@ parseFunction = { reader ::
 
 # Parses a `program` node.
 parseProgram = { reader ::
-    formals = questRule reader parseProgram1 @[=];
+    formals = questRule reader parseProgram1;
+    formalsResult = ifValue { <> listletNth formals @0 }
+        { result :: @[@formals=result] }
+        { <> @[=] };
+
     starRule reader [:@";":]; # Optional semicolons.
-    statements = starRule reader parseProgram3;
-    almostResult = parseProgram4 reader statements;
+
+    statements = starRule reader parseProgram2;
+    almostResult = parseProgram3 reader statements;
 
     <> [:
         @function
@@ -106,39 +113,31 @@ parseProgram = { reader ::
     :]
 };
 
-# `program` node helper: Parses `(formals? @"::")`, yielding a possibly-empty
-# maplet. May fail.
+# `program` node helper: Parses `(formals? @"::")`. May fail.
 parseProgram1 = { reader ::
-    mark = reader @at;
-    formals = parseProgram2 reader;
-
-    <> ifValue { <> readOne reader [:@"::":] }
-        { <> formals }
-        { reader @reset mark }
-};
-
-# `program` node helper: Parses `formals`, yielding a possibly-empty maplet.
-# Always succeeds.
-parseProgram2 = { reader ::
-    <> ifValue { <> parseFormals reader }
-        { result :: <> @[@formals = result] }
-        { <> @[=] }
+    <> ifValue
+        {
+            <> readAll reader
+                { reader :: questRule reader parseFormals }
+                [:@"::":]
+        }
+        { result ::
+            formals = listletNth result @0;
+            <> ifValue { <> listletNth formals @0 }
+                { result :: <> result }
+        };
 };
 
 # `program` node helper: Parses `(statement @";"+)`.
-parseprogram3 = { reader ::
-    mark = reader @at;
-    <> ifValue { <> parseStatement reader }
-        { result ::
-            <> ifValue { <> plusRule reader [:@";":] }
-                { <> result }
-        }
-        { reader @reset mark }
+parseprogram2 = { reader ::
+    <> readAll reader
+        parseStatement
+        { reader:: <> plusRule reader [:@";":] }
 };
 
 # `program` node helper: Parses `(statement | yield)?`, yielding
 # a combined yield-and-statements maplet.
-parseprogram4 = { reader statements ::
+parseprogram3 = { reader statements ::
     <> ifValue { <> parseStatement reader }
         { <> @[@statements = (listletAppend statements statement)] }
         {
@@ -224,12 +223,12 @@ parseIntlet = { reader ::
         {
             <> readAll reader
                 [:@"@":]
-                { reader :: <> questRule reader [:@"-":] null }
+                { reader :: <> questRule reader [:@"-":] }
                 [:@integer:]
         }
         { result ::
-            sign = ifTrue { <> eq (listletNth result @1) null }
-                { <> @-1 } { @1 };
+            sign = ifTrue { <> eq (listletNth result @1) @[] }
+                { <> @1 } { @-1 };
             value = imul sign (highletValue (listletNth result @2));
             <> [:@intlet value:]
         }
