@@ -60,7 +60,6 @@ doReset = { state resetAt ::
     <> @[@state=nextState]
 };
 
-
 # Dispatch table.
 READER_DISPATCH = @[
     @at    = doAt
@@ -84,7 +83,7 @@ reader = { value ::
 
     <> object readerDispatch @[
         @at   = @0
-        @size = (lowSize programText)
+        @size = (lowSize value)
         @nth  = nth
     ]
 };
