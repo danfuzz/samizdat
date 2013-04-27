@@ -236,12 +236,14 @@ parseIntlet = { reader ::
 
 # Parses a `stringlet` node.
 parseStringlet = { reader ::
-    # TODO
+    <> ifValue { <> orRule reader [:@string:] [:@identifier:] }
+        { result :: <> [:@literal (highletValue result):]}
 };
 
 # Parses a `emptyListlet` node.
 parseEmptyListlet = { reader ::
-    # TODO
+    <> ifValue { <> readAll [:@"@":] [:@"[":] [:@"]":] }
+        { <> [:@literal @[]:]}
 };
 
 # Parses a `listlet` node.
@@ -251,7 +253,8 @@ parseListlet = { reader ::
 
 # Parses a `emptyMaplet` node.
 parseEmptyMaplet = { reader ::
-    # TODO
+    <> ifValue { <> readAll [:@"@":] [:@"[":] [:@"=":] [:@"]":] }
+        { <> [:@literal @[=]:]}
 };
 
 # Parses a `maplet` node.
@@ -266,7 +269,8 @@ parseBinding = { reader ::
 
 # Parses a `uniqlet` node.
 parseUniqlet = { reader ::
-    # TODO
+    <> ifValue { <> readAll [:@"@":] [:@"@":] }
+        { <> [:@varRef @uniqlet:]}
 };
 
 # Parses a `highlet` node.
