@@ -23,37 +23,25 @@ readFile = io0SandboxedReader
     (listletDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
 
 # Loads a sibling file.
-loadFile = { name ::
+loadFile = { ctx name ::
     text = readFile @[(stringletAdd name @".sam0")];
     tree = sam0Tree text;
-    function = sam0Eval (sam0Library()) tree;
+    function = sam0Eval ctx tree;
 
     <> function()
 };
 
-# Tokenizer function.
-tokenize = loadFile @tokenize;
-
-# Tree parser function.
-parse = loadFile @parse;
-
-
-#
-# Main function
-#
-
-# Compiles the file named in the first argument in a fresh context,
-# and runs it, passing it an array of the rest of the arguments.
-main = { file rest* ::
-    programText = io0ReadFileUtf8 (io0PathFromStringlet file);
-    tokens = tokenize programText;
-
-    io0Note (sourceStringlet tokens);
-    io0Note @"";
-
-    programNode = parse tokens;
-    function = sam0Eval (sam0Library()) programNode;
-    <> apply function rest
+# Loads the named libraries, each one in the context of the previously-defined
+# ones.
+loadAllLibraries = { ctx rest* ::
+    <> listletReduce ctx rest { result elem ::
+        <> mapletAdd result (loadFile result elem);
+    }
 };
 
-<> apply main ARGS
+# Put together the final execution context.
+CONTEXT = loadAllLibraries (sam0Library())
+    @reader @tokenize @parse @run;
+
+# Call the `run` function to do the final deed.
+<> apply (mapletGet CONTEXT @run) ARGS

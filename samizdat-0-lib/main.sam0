@@ -50,6 +50,7 @@ loadAllLibraries = { ctx name rest* ::
     newCtx = loadLibrary ctx name;
 
     # Can't say `eq rest @[]` here, since `eq` is not yet defined.
+    # Similarly, can't use `listReduce rest ...`.
     <> ifTrue { <> lowOrderIs rest @[] @0 }
         { <> newCtx }
         { <> apply loadAllLibraries newCtx rest }

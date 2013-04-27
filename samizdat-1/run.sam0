@@ -1,0 +1,23 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `run` function, which is the effective main entry point to the program.
+#
+
+# Compiles the file named in the first argument in a fresh context,
+# and runs it, passing it an array of the rest of the arguments.
+run = { file rest* ::
+    programText = io0ReadFileUtf8 (io0PathFromStringlet file);
+    tokens = tokenize programText;
+
+    io0Note (sourceStringlet tokens);
+    io0Note @"";
+
+    programNode = parse tokens;
+    function = sam0Eval (sam0Library()) programNode;
+    <> apply function rest
+};
+
+<> @[@run = run]

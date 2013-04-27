@@ -270,4 +270,4 @@ tokenize = { programText ::
     }
 };
 
-<> tokenize;
+<> @[@tokenize = tokenize]
