@@ -277,7 +277,7 @@ program ::=
 formals ::= @identifier+ @"*"? ;
 # result: [:
 #             @formals
-#             @[@[@name=(highValue identifier)
+#             @[@[@name=(highletValue identifier)
 #                 (@repeat=@[@type=@"*"])?]
 #               ...]
 #         :]
@@ -301,16 +301,16 @@ parenExpression ::= @"(" expression @")";
 # result: <expression>
 
 varDef ::= @identifier @"=" expression ;
-# result: [:@varDef @[@name=(highValue identifier) @value=<expression>]:]
+# result: [:@varDef @[@name=(highletValue identifier) @value=<expression>]:]
 
 varRef ::= @identifier ;
-# result: [:@varRef (highValue <identifier>):]
+# result: [:@varRef (highletValue <identifier>):]
 
 intlet ::= @"@" @"-"? @integer ;
-# result: [:@literal (imul (@1|@-1) (highValue <integer>)):]
+# result: [:@literal (imul (@1|@-1) (highletValue <integer>)):]
 
 stringlet ::= @"@" (@string | @identifier);
-# result: [:@literal (highValue <string|identifier>):]
+# result: [:@literal (highletValue <string|identifier>):]
 
 emptyListlet ::= @"@" @"[" @"]" ;
 # result: [:@literal @[]:]
