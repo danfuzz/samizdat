@@ -67,7 +67,7 @@ xCombinator = { function ::
         <> { args* :: <> apply (function (uCombinator selfRef)) args }
     };
 
-    <> applicator applicator;
+    <> uCombinator applicator;
 };
 
 # This is like `xCombinator`, except that it can take any number of
@@ -114,9 +114,7 @@ xStarCombinator = { functions* ::
         };
     };
 
-    <> listletMap applicators { applicator ::
-        <> apply applicator applicators
-    }
+    <> uStarCombinator applicators;
 };
 
 # Example of self-recursion using `xCombinator`. This is how a simple
