@@ -264,7 +264,7 @@ function ::= @"{" program @"}" ;
 
 program ::=
     (formals? @"::")?
-    @";"* (statement @";"+)* (statement | yield)? ";"* ;
+    @";"* (statement @";"+)* (statement | yield)? ;
 # result: [:
 #             @function
 #             @[
@@ -282,7 +282,7 @@ formals ::= @identifier+ @"*"? ;
 #               ...]
 #         :]
 
-yield ::= @"<>" expression @";"? ;
+yield ::= @"<>" expression ";"* ;
 # result: <expression>
 
 statement ::= varDef | expression ;
