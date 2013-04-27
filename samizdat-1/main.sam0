@@ -18,7 +18,8 @@ SELF_PATH ARGS* ::
 # Helper functions
 #
 
-# Reads a sibling file.
+# Reads a sibling file. Note: This is a call to a function-generating
+# function.
 readFile = io0SandboxedReader
     (listletDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
 
