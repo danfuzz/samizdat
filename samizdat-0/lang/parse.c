@@ -144,7 +144,8 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 #define PARSE(name) parse_##name(state)
 #define MATCH(tokenType) readMatch(state, (STR_##tokenType))
 #define MARK() zint mark = cursor(state); zvalue tempResult
-#define REJECT() do { reset(state, mark); return NULL; } while (0)
+#define RESET() do { reset(state, mark); } while (0)
+#define REJECT() do { RESET(); return NULL; } while (0)
 #define REJECT_IF(condition) \
     do { if ((condition)) REJECT(); } while (0)
 #define MATCH_OR_REJECT(tokenType) \
@@ -431,11 +432,6 @@ DEF_PARSE(expression) {
 
 /**
  * Parses a `statement` node.
- *
- * Note: Per the grammar, statement parsing always succeeds, because the
- * empty token list is a valid statement. So, this function never needs to
- * backtrack. That said, this function *will* return `NULL` to indicate that
- * what it parsed was in fact an empty statement.
  */
 DEF_PARSE(statement) {
     zvalue result = NULL;
@@ -509,30 +505,39 @@ DEF_PARSE(program1) {
  * Parses a `program` node.
  */
 DEF_PARSE(program) {
-    // Note: An empty token list is a valid program, as is one with
-    // a formals list but no statements or yield. So, we never have
-    // to backtrack during this rule.
-
     zvalue formals = PARSE(program1); // `NULL` is ok, as it's optional.
     zvalue statements = EMPTY_LISTLET;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
-    for (;;) {
-        yield = PARSE(yield);
-        if (yield != NULL) {
-            break;
-        }
+    while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
 
-        // See note in `parseStatement()` header.
+    for (;;) {
+        MARK();
+
         zvalue statement = PARSE(statement);
-        if (statement != NULL) {
-            statements = datListletAppend(statements, statement);
+        if (statement == NULL) {
+            break;
         }
 
         if (MATCH(CH_SEMICOLON) == NULL) {
+            RESET();
             break;
         }
+
+        statements = datListletAppend(statements, statement);
+
+        while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
     }
+
+    zvalue statement = PARSE(statement);
+
+    if (statement != NULL) {
+        statements = datListletAppend(statements, statement);
+    } else {
+        yield = PARSE(yield);
+    }
+
+    while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
 
     zvalue value = mapletFrom3(STR_STATEMENTS, statements,
                                STR_FORMALS, formals,
