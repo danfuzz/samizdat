@@ -443,6 +443,14 @@ DEF_PARSE(statement) {
 }
 
 /**
+ * Parses zero or more semicolons. Always returns `NULL`.
+ */
+DEF_PARSE(optSemicolons) {
+    while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
+    return NULL;
+}
+
+/**
  * Parses a `yield` node.
  */
 DEF_PARSE(yield) {
@@ -450,7 +458,7 @@ DEF_PARSE(yield) {
 
     MATCH_OR_REJECT(CH_DIAMOND);
     zvalue expression = PARSE_OR_REJECT(expression);
-    MATCH(CH_SEMICOLON); // Optional semicolon.
+    PARSE(optSemicolons);
 
     return expression;
 }
@@ -509,7 +517,7 @@ DEF_PARSE(program) {
     zvalue statements = EMPTY_LISTLET;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
-    while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
+    PARSE(optSemicolons);
 
     for (;;) {
         MARK();
@@ -525,8 +533,7 @@ DEF_PARSE(program) {
         }
 
         statements = datListletAppend(statements, statement);
-
-        while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
+        PARSE(optSemicolons);
     }
 
     zvalue statement = PARSE(statement);
@@ -536,8 +543,6 @@ DEF_PARSE(program) {
     } else {
         yield = PARSE(yield);
     }
-
-    while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
 
     zvalue value = mapletFrom3(STR_STATEMENTS, statements,
                                STR_FORMALS, formals,
