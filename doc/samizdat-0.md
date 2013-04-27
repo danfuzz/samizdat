@@ -285,9 +285,8 @@ formals ::= @identifier+ @"*"? ;
 yield ::= @"<>" expression @";"? ;
 # result: <expression>
 
-statement ::= varDef | expression | ~. ;
-# result: <varDef> | <expression> | <void>
-# Note: That is, void is returned in the case of an empty statement.
+statement ::= varDef | expression ;
+# result: <varDef> | <expression>
 
 expression ::= call | atom ;
 # result: <same as whatever was parsed>
