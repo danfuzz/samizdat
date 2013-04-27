@@ -61,7 +61,6 @@ ARGS* ::
 # Although it is coded here using a variable assignment, it's just
 # for readability and not strictly necessary. That is, the definition
 # of `applicator` doesn't directly refer to the variable `applicator`.
-#
 xCombinator = { function ::
     uCombinator = { x :: <> x x };
     applicator = { selfRef ::
@@ -71,6 +70,59 @@ xCombinator = { function ::
     <> applicator applicator;
 };
 
+# This is like `xCombinator`, except that it can take any number of
+# functions as arguments, resulting in a listlet of mutual-recursion-enabled
+# result functions.
+#
+# Short version: If you want to make a set of N mututally-recursive
+# functions, you can write it like this:
+#
+# ```
+# myRecursiveFunctions = xCombinator
+#     { selfCall1 selfCall2 ... ::
+#         # Inner function.
+#         <> { myArg1 myArg2 ... ::
+#             ... my code ...
+#             selfCall1 args ... # Call this function.
+#             selfCall2 args ... # Call the other function.
+#             ... my code ...
+#         }
+#     }
+#     { selfCall1 selfCall2 ... ::
+#         # Inner function.
+#         <> { myArg1 myArg2 ... ::
+#             ... my code ...
+#             selfCall1 args ... # Call the other function.
+#             selfCall2 args ... # Call this function.
+#             ... my code ...
+#         }
+#     };
+# ```
+xStarCombinator = { functions* ::
+    # I (danfuzz) am not sure if "U* combinator" is really the right name
+    # for this function, but it's called that as it is used in the same way
+    # as the U combinator is in the non-* version of the X combinator.
+    uStarCombinator = { xs ::
+        <> listletMap xs { x :: <> apply x xs }
+    };
+
+    applicators = listletMap functions { function ::
+        <> { selfRefs* ::
+            <> { args* ::
+                <> apply (apply function (uStarCombinator selfRefs)) args
+            }
+        };
+    };
+
+    <> listletMap applicators { applicator ::
+        <> apply applicator applicators
+    }
+};
+
+# Example of self-recursion using `xCombinator`. This is how a simple
+# self-recursive Samizdat function might end up looking when coverted
+# into Samizdat Layer 0 form.
+#
 # Returns a listlet with intlet contents that count down from `n`,
 # generated recursively. The "main" function literal here is wrapped
 # in an outer function layer, whose argument is used to achieve
@@ -82,6 +134,22 @@ countDown = xCombinator { countDown ::
             { <> @[] }
     }
 };
+
+# Example of mutual recursion using `xStarCombinator`. See discussion
+# above.
+countDowns = xStarCombinator
+    { f1 f2 ::
+        <> { n ::
+            <> ifTrue { <> gt n @0 }
+                { <> listletPrepend n (f2 (isub n @1)) }
+                { <> @[@0] }
+        }
+    }
+    { f1 f2 ::
+        <> { n :: <> listletPrepend @"and" (f1 n) }
+    };
+countDown2 = listletNth countDowns @0;
+
 
 # Emits the stringified version of the given value to the console.
 process = { value ::
@@ -122,6 +190,7 @@ main = { selfPath name rest* ::
     process true;
     process @@;
     process (countDown @10);
+    process (countDown2 @5);
 };
 
 <> apply main ARGS
