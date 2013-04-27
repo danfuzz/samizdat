@@ -80,11 +80,12 @@ reader = { value ::
     nth = mapletGet
         @[@listlet=listletNth @stringlet=stringletNth]
         (lowType value);
+    nthFunc = { n :: <> nth value n };
 
     <> object readerDispatch @[
         @at   = @0
         @size = (lowSize value)
-        @nth  = nth
+        @nth  = nthFunc
     ]
 };
 
