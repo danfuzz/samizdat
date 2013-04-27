@@ -50,20 +50,133 @@ starRule = { reader rule ::
         }
 };
 
+# Parses a one-or-more repetition rule (`+` suffix in PEG), returning a
+# listlet of all the matched repetitions.
+plusRule = { reader rule ::
+    mark = reader at;
+    result = starRule reader rule;
+    <> ifTrue { <> gt (lowSize result) @0 }
+        { <> result }
+        { reader @reset mark }
+};
 
 #
 # The following is a near-transliteration of the tree grammar in
 # the *Samizdat Layer 0* specification.
 #
 
-# `program` node helper: Parses `formals`, yielding a maplet.
+# Parses a semicolon token.
+parseSemicolon = { reader :: <> readMatch reader @";" };
+
+# Parses a `call` node.
+parseCall = { reader ::
+    # TODO
+};
+
+# Parses a `highlet` node.
+parseHighlet = { reader ::
+    # TODO
+};
+
+# Parses a `uniqlet` node.
+parseUniqlet = { reader ::
+    # TODO
+};
+
+# Parses a `binding` node.
+parseBinding = { reader ::
+    # TODO
+};
+
+# Parses a `maplet` node.
+parseMaplet = { reader ::
+    # TODO
+};
+
+# Parses a `emptyMaplet` node.
+parseEmptyMaplet = { reader ::
+    # TODO
+};
+
+# Parses a `listlet` node.
+parseListlet = { reader ::
+    # TODO
+};
+
+# Parses a `emptyListlet` node.
+parseEmptyListlet = { reader ::
+    # TODO
+};
+
+# Parses a `stringlet` node.
+parseStringlet = { reader ::
+    # TODO
+};
+
+# Parses an `intlet` node.
+parseIntlet = { reader ::
+    # TODO
+};
+
+# Parses a `varRef` node.
+parseVarRef = { reader ::
+    # TODO
+};
+
+# Parses a `varDef` node.
+parseVarDef = { reader ::
+    # TODO
+};
+
+# Parses a `parenExpression` node.
+parseParenExpression = { reader ::
+    # TODO
+};
+
+# Parses an `atom` node.
+parseAtom = { reader ::
+    # TODO
+};
+
+# Parses an `expression` node.
+parseExpression = { reader ::
+    # TODO
+};
+
+# Parses a `statement` node.
+parseStatement = { reader ::
+    # TODO
+};
+
+# Parses a `yield` node.
+parseYield = { reader ::
+    mark = reader @at;
+    <> ifValue { <> parseMatch reader @"<>" }
+        {
+            <> ifValue { <> parseExpression reader }
+                { result ::
+                    starRule reader parseSemicolon; # Optional semicolons.
+                    <> result
+                }
+        }
+        { reader @reset mark }
+};
+
+# Parses a `formals` node.
+parseFormals = { reader ::
+    # TODO
+};
+
+# `program` node helper: Parses `formals`, yielding a possibly-empty maplet.
+# Always succeeds.
 parseProgram1 = { reader ::
     <> ifValue { <> parseFormals reader }
         { result :: <> @[@formals = result] }
         { <> @[=] }
 };
 
-# `program` node helper: Parses `(formals? @"::")`.
+# `program` node helper: Parses `(formals? @"::")`, yielding a possibly-empty
+# maplet. May fail.
 parseProgram2 = { reader ::
     mark = reader @at;
     formals = parseProgram1 reader;
@@ -73,54 +186,47 @@ parseProgram2 = { reader ::
         { reader @reset mark }
 };
 
-# `program` node helper: Parses `yield`, yielding a maplet.
-parseProgram3 = { reader ::
-    <> ifValue { <> parseYield reader }
-        { result :: <> @[@yield = result] }
-};
-
-# `program` node helper: Parses `(@";" statement)`.
-parseprogram4 = { reader ::
-    # Note: `statement` always succeeds, because the empty statement is valid.
-    <> ifValue { <> readMatch reader @";" }
-        { <> parseStatement reader }
-};
-
-# `program` node helper: Parses `(@";" yield)`.
-parseprogram5 = { reader ::
+# `program` node helper: Parses `(statement @";"+)`.
+parseprogram3 = { reader ::
     mark = reader @at;
-    <> ifValue { <> readMatch reader @";" }
-        { <> parseYield reader }
+    <> ifValue { <> parseStatement reader }
+        { result ::
+            <> ifValue { <> plusRule reader parseSemicolon }
+                { <> result }
+        }
         { reader @reset mark }
 };
 
-# `program` node helper: Parses `statement (@";" statement)* (@";" yield)?`,
-# yielding a maplet.
-#
-# TODO: This version reflects a former bug in the grammar. It needs to
-# be updated to match the now-corrected grammar.
-parseProgram6 = { reader ::
-    # Note: These calls will all always succeed.
-    statement1 = parseStatement reader;
-    statements = starRule reader parseProgram4;
-    yield = questRule reader parseProgram5;
-
-    # TODO: Properly handle empty statements.
-
-    <> mapletAdd
-        @[@statements = (listletPrepend statement1 statements)]
-        yield
+# `program` node helper: Parses `(statement | yield)?`, yielding
+# a combined yield-and-statements maplet.
+parseprogram4 = { reader statements ::
+    <> ifValue { <> parseStatement reader }
+        { <> @[@statements = (listletAppend statements statement)] }
+        {
+            <> ifValue { <> parseYield reader }
+                { <> @[@statements=statements @yield=yield] }
+                { <> @[@statements=statements] }
+        }
 };
 
 # Parses a `program` node.
 parseProgram = { reader ::
     formals = questRule reader parseProgram2 @[=];
-    statements = orRule reader parseProgram3 parseProgram6;
+    starRule reader parseSemicolon; # Optional semicolons.
+    statements = starRule reader parseProgram3;
+    almostResult = parseProgram4 reader statements;
+
     <> [:
         @function
-        (mapletAdd formals statements)
+        (mapletAdd formals almostResult)
     :]
 };
+
+# Parses a `function` node.
+parseFunction = { reader ::
+    # TODO
+};
+
 
 
 #
