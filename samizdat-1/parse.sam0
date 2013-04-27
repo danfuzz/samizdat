@@ -68,139 +68,41 @@ plusRule = { reader rule ::
 # Parses a semicolon token.
 parseSemicolon = { reader :: <> readMatch reader @";" };
 
-# Parses a `call` node.
-parseCall = { reader ::
+# Parses a `function` node.
+parseFunction = { reader ::
     # TODO
 };
 
-# Parses a `highlet` node.
-parseHighlet = { reader ::
-    # TODO
-};
+# Parses a `program` node.
+parseProgram = { reader ::
+    formals = questRule reader parseProgram1 @[=];
+    starRule reader parseSemicolon; # Optional semicolons.
+    statements = starRule reader parseProgram3;
+    almostResult = parseProgram4 reader statements;
 
-# Parses a `uniqlet` node.
-parseUniqlet = { reader ::
-    # TODO
-};
-
-# Parses a `binding` node.
-parseBinding = { reader ::
-    # TODO
-};
-
-# Parses a `maplet` node.
-parseMaplet = { reader ::
-    # TODO
-};
-
-# Parses a `emptyMaplet` node.
-parseEmptyMaplet = { reader ::
-    # TODO
-};
-
-# Parses a `listlet` node.
-parseListlet = { reader ::
-    # TODO
-};
-
-# Parses a `emptyListlet` node.
-parseEmptyListlet = { reader ::
-    # TODO
-};
-
-# Parses a `stringlet` node.
-parseStringlet = { reader ::
-    # TODO
-};
-
-# Parses an `intlet` node.
-parseIntlet = { reader ::
-    # TODO
-};
-
-# Parses a `varRef` node.
-parseVarRef = { reader ::
-    # TODO
-};
-
-# Parses a `varDef` node.
-parseVarDef = { reader ::
-    # TODO
-};
-
-# Parses a `parenExpression` node.
-parseParenExpression = { reader ::
-    # TODO
-};
-
-# Parses an `atom` node.
-parseAtom = { reader ::
-    # TODO
-};
-
-# Parses an `expression` node.
-parseExpression = { reader ::
-    # TODO
-};
-
-# Parses a `statement` node.
-parseStatement = { reader ::
-    # TODO
-};
-
-# Parses a `yield` node.
-parseYield = { reader ::
-    mark = reader @at;
-    <> ifValue { <> parseMatch reader @"<>" }
-        {
-            <> ifValue { <> parseExpression reader }
-                { result ::
-                    starRule reader parseSemicolon; # Optional semicolons.
-                    <> result
-                }
-        }
-        { reader @reset mark }
-};
-
-# `formals` node helper: Parses `identifier`, returning a maplet.
-parseFormals1 = { reader ::
-    <> ifValue { <> parseMatch reader @identifier }
-        { <> @[@name = (highValue identifier)] }
-};
-
-# Parses a `formals` node.
-parseFormals = { reader ::
-    <> ifValue { <> plusRule reader parseFormals1 }
-        { almostResult ::
-            <> ifValue { <> parseMatch reader @"*" }
-                {
-                    n = isub (lowSize almostResult) @1;
-                    last = listletNth almostResult n;
-                    result = listletPutNth almostResult n
-                        (mapletPut last @repeat @[@type=@"*"]);
-                    <> [:@formals result:]
-                }
-                { <> [:@formals almostResult:] }
-        }
-};
-
-# `program` node helper: Parses `formals`, yielding a possibly-empty maplet.
-# Always succeeds.
-parseProgram1 = { reader ::
-    <> ifValue { <> parseFormals reader }
-        { result :: <> @[@formals = result] }
-        { <> @[=] }
+    <> [:
+        @function
+        (mapletAdd formals almostResult)
+    :]
 };
 
 # `program` node helper: Parses `(formals? @"::")`, yielding a possibly-empty
 # maplet. May fail.
-parseProgram2 = { reader ::
+parseProgram1 = { reader ::
     mark = reader @at;
-    formals = parseProgram1 reader;
+    formals = parseProgram2 reader;
 
     <> ifValue { <> readMatch reader @"::" }
         { <> formals }
         { reader @reset mark }
+};
+
+# `program` node helper: Parses `formals`, yielding a possibly-empty maplet.
+# Always succeeds.
+parseProgram2 = { reader ::
+    <> ifValue { <> parseFormals reader }
+        { result :: <> @[@formals = result] }
+        { <> @[=] }
 };
 
 # `program` node helper: Parses `(statement @";"+)`.
@@ -226,24 +128,123 @@ parseprogram4 = { reader statements ::
         }
 };
 
-# Parses a `program` node.
-parseProgram = { reader ::
-    formals = questRule reader parseProgram2 @[=];
-    starRule reader parseSemicolon; # Optional semicolons.
-    statements = starRule reader parseProgram3;
-    almostResult = parseProgram4 reader statements;
-
-    <> [:
-        @function
-        (mapletAdd formals almostResult)
-    :]
+# Parses a `formals` node.
+parseFormals = { reader ::
+    <> ifValue { <> plusRule reader parseFormals1 }
+        { almostResult ::
+            <> ifValue { <> parseMatch reader @"*" }
+                {
+                    n = isub (lowSize almostResult) @1;
+                    last = listletNth almostResult n;
+                    result = listletPutNth almostResult n
+                        (mapletPut last @repeat @[@type=@"*"]);
+                    <> [:@formals result:]
+                }
+                { <> [:@formals almostResult:] }
+        }
 };
 
-# Parses a `function` node.
-parseFunction = { reader ::
+# `formals` node helper: Parses `identifier`, returning a maplet.
+parseFormals1 = { reader ::
+    <> ifValue { <> parseMatch reader @identifier }
+        { <> @[@name = (highValue identifier)] }
+};
+
+# Parses a `yield` node.
+parseYield = { reader ::
+    mark = reader @at;
+    <> ifValue { <> parseMatch reader @"<>" }
+        {
+            <> ifValue { <> parseExpression reader }
+                { result ::
+                    starRule reader parseSemicolon; # Optional semicolons.
+                    <> result
+                }
+        }
+        { reader @reset mark }
+};
+
+# Parses a `statement` node.
+parseStatement = { reader ::
+    <> orRule reader parseVarDef parseExpression
+};
+
+# Parses an `expression` node.
+parseExpression = { reader ::
+    <> orRule reader parseCall parseAtom
+};
+
+# Parses an `atom` node.
+parseAtom = { reader ::
+    <> orRule reader parseVarRef parseIntlet parseStringlet
+        parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
+        parseUniqlet parseHighlet parseFunction parseParenExpression
+};
+
+# Parses a `parenExpression` node.
+parseParenExpression = { reader ::
     # TODO
 };
 
+# Parses a `varDef` node.
+parseVarDef = { reader ::
+    # TODO
+};
+
+# Parses a `varRef` node.
+parseVarRef = { reader ::
+    # TODO
+};
+
+# Parses an `intlet` node.
+parseIntlet = { reader ::
+    # TODO
+};
+
+# Parses a `stringlet` node.
+parseStringlet = { reader ::
+    # TODO
+};
+
+# Parses a `emptyListlet` node.
+parseEmptyListlet = { reader ::
+    # TODO
+};
+
+# Parses a `listlet` node.
+parseListlet = { reader ::
+    # TODO
+};
+
+# Parses a `emptyMaplet` node.
+parseEmptyMaplet = { reader ::
+    # TODO
+};
+
+# Parses a `maplet` node.
+parseMaplet = { reader ::
+    # TODO
+};
+
+# Parses a `binding` node.
+parseBinding = { reader ::
+    # TODO
+};
+
+# Parses a `uniqlet` node.
+parseUniqlet = { reader ::
+    # TODO
+};
+
+# Parses a `highlet` node.
+parseHighlet = { reader ::
+    # TODO
+};
+
+# Parses a `call` node.
+parseCall = { reader ::
+    # TODO
+};
 
 
 #
