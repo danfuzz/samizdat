@@ -53,10 +53,17 @@ ARGS* ::
 # This function is used to write recursive functions without relying
 # on use-before-def variable binding.
 #
-# Per Wikipedia [Fixed-point
-# combinator](http://en.wikipedia.org/wiki/Fixed-point_combinator),
-# this is a variation of the "X combinator", which is the call-by-value
-# cousin of the better-known "Y combinator".
+# See Wikipedia [Fixed-point
+# combinator](http://en.wikipedia.org/wiki/Fixed-point_combinator) for
+# more details about some of the theoretical basis for this stuff.
+# This function is in the "Y combinator family" but is not exactly any
+# of the ones described on that page. In traditional notation (and with
+# the caveat that `a` represents an arbitrary number of arguments here),
+# this function would be written as:
+#
+# ```
+# Y_letrec = λf . (λx.x x) (λs . (λa . (f ((λx.x x) s)) a))
+# ```
 #
 # Although it is coded here using a variable assignment, it's just
 # for readability and not strictly necessary. That is, the definition
