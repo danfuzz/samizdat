@@ -65,6 +65,13 @@ ARGS* ::
 # Y_letrec = λf . (λx.x x) (λs . (λa . (f ((λx.x x) s)) a))
 # ```
 #
+# or, factoring out the U combinator:
+#
+# ```
+# U = λx.x x
+# Y_letrec = λf . U (λs . (λa . (f (U s)) a))
+# ```
+#
 # Although it is coded here using a variable assignment, it's just
 # for readability and not strictly necessary. That is, the definition
 # of `applicator` doesn't directly refer to the variable `applicator`.
