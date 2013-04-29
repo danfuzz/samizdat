@@ -31,7 +31,7 @@ xSize = { state :: <> mapletGet state @size };
 doAt = { state :: <> @[@result=(xAt state)] };
 
 # Returns whether the reader is at EOF.
-doEof = { state :: <> @[@result=(lt (xAt state) (xSize state))] };
+doEof = { state :: <> @[@result=(ge (xAt state) (xSize state))] };
 
 # Peeks at the next element without consuming it. Returns void at EOF.
 doPeek = { state ::
