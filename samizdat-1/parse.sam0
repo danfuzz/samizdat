@@ -26,7 +26,7 @@ readOne = { reader rule ::
                         }
                 }
         }
-        { <> item reader }
+        { <> rule reader }
 };
 
 # Parses all of the indicate rules, in order, returning a listlet of
@@ -356,6 +356,13 @@ parseCall1 = { reader ::
 # syntax. Returns a `function` node.
 parse = { tokens ::
     theReader = reader tokens;
+    <> parseProgram theReader;
+};
+
+# Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
+# syntax. Returns a `function` node.
+stubParse = { tokens ::
+    theReader = reader tokens;
     # theTree = parseProgram theReader;
 
     theCall = [:
@@ -378,4 +385,4 @@ parse = { tokens ::
     :]
 };
 
-<> @[@parse = parse];
+<> @[@parse = stubParse];
