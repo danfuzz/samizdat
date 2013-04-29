@@ -270,7 +270,7 @@ parseIntlet = { reader ::
         }
         { result ::
             sign = ifTrue { <> eq (listletNth result @1) @[] }
-                { <> @1 } { @-1 };
+                { <> @1 } { <> @-1 };
             value = imul sign (highletValue (listletNth result @2));
             <> [:@intlet value:]
         }
@@ -278,8 +278,13 @@ parseIntlet = { reader ::
 
 # Parses a `stringlet` node.
 parseStringlet = { reader ::
-    <> ifValue { <> orRule reader [:@string:] [:@identifier:] }
-        { result :: <> [:@literal (highletValue result):] }
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"@":]
+                { reader :: <> orRule reader [:@string:] [:@identifier:] }
+        }
+        { result :: <> [:@literal (highletValue (listletNth result @1)):] }
 };
 
 # Parses a `emptyListlet` node.
@@ -336,7 +341,7 @@ parseBinding = { reader ::
 
 # Parses a `uniqlet` node.
 parseUniqlet = { reader ::
-    <> ifValue { <> readAll reader [:@"@":] [:@"@":] }
+    <> ifValue { <> readOne reader [:@"@@":] }
         { <> [:@varRef @uniqlet:] }
 };
 
