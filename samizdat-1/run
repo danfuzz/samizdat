@@ -45,8 +45,8 @@ echo 'Done!'
 echo ''
 
 # Run samizdat-0 passing it samizdat-1's main.sam0 to run, and in turn
-# passing *that* main.sam0 to run.
+# passing *that* demo/main.sam0 to run.
 "${baseDir}/out/samizdat-0/samizdat-0" \
     "${progDir}/main.sam0" \
-    "${progDir}/main.sam0" \
+    "${baseDir}/demo/main.sam0" \
     "$@"
