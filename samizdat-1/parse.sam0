@@ -181,17 +181,24 @@ parseProgram3 = { reader ::
 
 # Parses a `formals` node.
 parseFormals = { reader ::
-    <> ifValue { <> plusRule reader parseFormals1 }
-        { almostResult ::
-            <> ifValue { <> readOne reader [:@"*":] }
-                {
-                    n = isub (lowSize almostResult) @1;
-                    last = listletNth almostResult n;
-                    result = listletPutNth almostResult n
-                        (mapletPut last @repeat [:@"*":]);
-                    <> [:@formals result:]
+    <> ifValue
+        {
+            <> readAll reader
+                { reader :: <> plusRule reader parseFormals1 }
+                { reader :: <> questRule reader [:@"*":] }
+        }
+        { result ::
+            almostFormals = listletNth result @0;
+            starMod = listletNth result @1;
+            formals = ifValue { <> listletNth starMod @0 }
+                { starToken ::
+                    n = isub (lowSize almostFormals) @1;
+                    last = listletNth almostFormals n;
+                    <> listletPutNth almostFormals n
+                        (mapletPut last @repeat starToken);
                 }
-                { <> [:@formals almostResult:] }
+                { <> almostFormals };
+            <> [:@formals formals:]
         }
 };
 
