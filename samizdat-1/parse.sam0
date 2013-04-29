@@ -249,7 +249,7 @@ parseVarDef = { reader ::
         { result ::
             name = highletValue (listletNth result @0);
             value = listletNth result @2;
-            <> [: @varDef @[@name=name @value=value] :];
+            <> [:@varDef @[@name=name @value=value]:];
         }
 };
 
@@ -394,43 +394,19 @@ parse = { tokens ::
 
     ifFalse { <> theReader @eof }
         {
-            sam0Note @"Pending tokens:"
+            io0Note @"Pending tokens:";
             while {
-                ifValue { <> theReader @read }
+                <> ifValue { <> theReader @read }
                     { token ::
-                        sam0Note (format @"    %q" token)
+                        io0Note (format @"    %q" token);
+                        <> true
                     }
                     { <> false }
-            }
-            sam0Die @"Extra tokens at end of program."
+            };
+            io0Die @"Extra tokens at end of program."
         };
 
     <> theProgram;
-};
-
-# Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
-# syntax. Returns a `function` node.
-stubParse = { tokens ::
-    theReader = reader tokens;
-
-    theCall = [:
-        @call
-        @[
-            @function=[:@varRef @io0WriteFileUtf8:]
-            @actuals=@[
-                [:@literal @[@"dev" @"stdout"]:]
-                [:@literal @"We have received the Самиздат!\n":]
-            ]
-        ]
-    :];
-
-    <> [:
-        @function
-        @[
-            @formals=[:@formals @[]:]
-            @statements=@[theCall]
-        ]
-    :]
 };
 
 <> @[@parse = parse];
