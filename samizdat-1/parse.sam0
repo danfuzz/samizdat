@@ -31,17 +31,23 @@ readOne = { reader rule ::
 
 # Parses all of the indicate rules, in order, returning a listlet of
 # the results. Returns void if it could not parse everything requested.
-readAll = { reader rule rest* ::
+readAll = { reader rest* ::
+    doReads = { rule rest* ::
+        <> ifValue { <> readOne reader rule }
+            { firstResult ::
+                <> ifTrue { <> eq rest @[] }
+                    { <> @[firstResult] }
+                    {
+                        <> ifValue { <> apply doReads rest }
+                            { result :: <> listletPrepend firstResult result }
+                    }
+            }
+    };
+
     mark = reader @at;
-    <> ifValue { <> readOne reader rule }
-        { firstResult ::
-            <> ifTrue { <> eq rest @[] }
-                { <> @[firstResult] }
-                {
-                    <> ifValue { <> apply readAll reader rest }
-                        { result :: <> listletPrepend firstResult result }
-                }
-        }
+
+    <> ifValue { <> apply doReads rest }
+        { result :: <> result }
         { reader @reset mark }
 };
 
@@ -139,7 +145,7 @@ parseProgram1 = { reader ::
     <> ifValue
         {
             <> readAll reader
-                { reader :: questRule reader parseFormals }
+                { reader :: <> questRule reader parseFormals }
                 [:@"::":]
         }
         { result ::
@@ -391,7 +397,8 @@ parse = { tokens ::
             }
             sam0Die @"Extra tokens at end of program."
         };
-    <> parseProgram theReader;
+
+    <> theProgram;
 };
 
 # Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
@@ -419,4 +426,4 @@ stubParse = { tokens ::
     :]
 };
 
-<> @[@parse = stubParse];
+<> @[@parse = parse];
