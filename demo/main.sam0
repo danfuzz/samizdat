@@ -15,123 +15,7 @@ ARGS* ::
 # Helper definitions
 #
 
-# Self-recursion helper function.
-#
-# Short version: If you want to make a recursive function, you can write
-# it like this:
-#
-# ```
-# myRecursiveFunction = xCombinator { selfCall ::
-#     # Inner function.
-#     <> { myArg1 myArg2 ... ::
-#         ... my code ...
-#         selfCall args ...
-#         ... my code ...
-#     }
-# };
-# ```
-#
-# In the example above, a call to `selfCall` will end up recursively
-# calling into the (so-labeled) inner function.
-#
-# Long version:
-#
-# This function takes another function as its argument, called the
-# "wrapper" function. That function must take a single argument, which itself
-# is a function, called the "recurser" function. The "wrapper" function must
-# return yet another function, called the "inner" function. The return value
-# of this function, called the "result" function, is a function which, when
-# called, ends up calling the wrapper function and then calling the inner
-# function that the wrapper function returned.
-#
-# The inner function is an arbitrary function, taking arbitrary arguments,
-# returning anything including void, and performing any arbitrary
-# actions in its body. In particular, it can be written to call the
-# "recurser" argument passed to its wrapper. If it does so, that will in
-# turn result in a recursive call to itself.
-#
-# This function is used to write recursive functions without relying
-# on use-before-def variable binding.
-#
-# See Wikipedia [Fixed-point
-# combinator](http://en.wikipedia.org/wiki/Fixed-point_combinator) for
-# more details about some of the theoretical basis for this stuff.
-# This function is in the "Y combinator family" but is not exactly any
-# of the ones described on that page. In traditional notation (and with
-# the caveat that `a` represents an arbitrary number of arguments here),
-# this function would be written as:
-#
-# ```
-# Y_letrec = λf . (λx.x x) (λs . (λa . (f ((λx.x x) s)) a))
-# ```
-#
-# or, factoring out the U combinator:
-#
-# ```
-# U = λx.x x
-# Y_letrec = λf . U (λs . (λa . (f (U s)) a))
-# ```
-#
-# Although it is coded here using a variable assignment, it's just
-# for readability and not strictly necessary. That is, the definition
-# of `applicator` doesn't directly refer to the variable `applicator`.
-xCombinator = { function ::
-    uCombinator = { x :: <> x x };
-    applicator = { selfRef ::
-        <> { args* :: <> apply (function (uCombinator selfRef)) args }
-    };
-
-    <> uCombinator applicator;
-};
-
-# This is like `xCombinator`, except that it can take any number of
-# functions as arguments, resulting in a listlet of mutual-recursion-enabled
-# result functions.
-#
-# Short version: If you want to make a set of N mututally-recursive
-# functions, you can write it like this:
-#
-# ```
-# myRecursiveFunctions = xCombinator
-#     { selfCall1 selfCall2 ... ::
-#         # Inner function.
-#         <> { myArg1 myArg2 ... ::
-#             ... my code ...
-#             selfCall1 args ... # Call this function.
-#             selfCall2 args ... # Call the other function.
-#             ... my code ...
-#         }
-#     }
-#     { selfCall1 selfCall2 ... ::
-#         # Inner function.
-#         <> { myArg1 myArg2 ... ::
-#             ... my code ...
-#             selfCall1 args ... # Call the other function.
-#             selfCall2 args ... # Call this function.
-#             ... my code ...
-#         }
-#     };
-# ```
-xStarCombinator = { functions* ::
-    # I (danfuzz) am not sure if "U* combinator" is really the right name
-    # for this function, but it's called that as it is used in the same way
-    # as the U combinator is in the non-* version of the X combinator.
-    uStarCombinator = { xs ::
-        <> listletMap xs { x :: <> apply x xs }
-    };
-
-    applicators = listletMap functions { function ::
-        <> { selfRefs* ::
-            <> { args* ::
-                <> apply (apply function (uStarCombinator selfRefs)) args
-            }
-        };
-    };
-
-    <> uStarCombinator applicators;
-};
-
-# Example of self-recursion using `xCombinator`. This is how a simple
+# Example of self-recursion using `yCombinator`. This is how a simple
 # self-recursive Samizdat function might end up looking when coverted
 # into Samizdat Layer 0 form.
 #
@@ -139,7 +23,7 @@ xStarCombinator = { functions* ::
 # generated recursively. The "main" function literal here is wrapped
 # in an outer function layer, whose argument is used to achieve
 # recursion. See `xCombinator` above.
-countDown = xCombinator { countDown ::
+countDown = yCombinator { countDown ::
     <> { n ::
         <> ifTrue { <> ge n @0 }
             { <> listletPrepend n (countDown (isub n @1)) }
@@ -147,9 +31,9 @@ countDown = xCombinator { countDown ::
     }
 };
 
-# Example of mutual recursion using `xStarCombinator`. See discussion
+# Example of mutual recursion using `yStarCombinator`. See discussion
 # above.
-countDowns = xStarCombinator
+countDowns = yStarCombinator
     { f1 f2 ::
         <> { n ::
             <> ifTrue { <> gt n @0 }

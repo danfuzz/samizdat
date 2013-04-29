@@ -84,6 +84,7 @@ baseLibrary = mapletPut PRIMLIB @sam0Library sam0Library;
 # and the first, etc.).
 CORE_LIBRARY = loadAllLibraries
     baseLibrary
-    @const @boolean @type @conditional @intlet @collections @format @io0;
+    @combinator @const @boolean @type @conditional @intlet
+    @collections @format @io0;
 
 <> CORE_LIBRARY

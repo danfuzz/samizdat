@@ -1,0 +1,111 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Function combinators
+#
+# This module is meant to be able to be defined in fairly incomplete
+# implementations of *Samizdat Layer 0*. In particular, this module
+# does not make any calls to non-primitive library functions, and
+# it limits its explicit primitive library function calls to:
+# `apply` `ifTrue` `listletAdd` `lowOrderIs`.
+#
+# Unlike other modules, this one is arranged with helpers and
+# exports interspersed, specifically because the the `argsMap` helper
+# used to implement `yStarCombinator` needs to use `yCombinator`.
+
+
+#
+# Y combinator
+#
+
+# The U combinator, which is a function that takes a function argument and
+# returns the result of applying that function to itself as its own argument.
+# This is a very simple function, simple enough that it's often not worth
+# writing a call to it (instead just "manually" expanding it where needed).
+# It is included and used here, specifically so that the common structure
+# between the two Y combinator variants is more obvious.
+uCombinator = { function :: <> function function };
+
+# Documented in Samizdat Layer 0 spec.
+yCombinator = { function ::
+    # Although it is coded here using a variable assignment, it's just
+    # for readability and not a strict necessity. That is, the definition
+    # of `applicator` doesn't directly refer to the variable `applicator`.
+
+    applicator = { selfRef ::
+        <> { args* ::
+            <> apply (function (uCombinator selfRef)) args
+        }
+    };
+
+    <> uCombinator applicator;
+};
+
+
+#
+# Y* combinator
+#
+
+# Takes a mapping function as a first argument, and uses it to
+# make a result listlet consisting of running that mapping function
+# on each of the rest of the arguments. This is along the lines of
+# `listletMap`. This function is used in preference to that one, mostly
+# to keep the dependencies of this module at a minimum. See note at
+# the top of this file.
+argsMap = yCombinator { argsMap ::
+    <> { function elem rest* ::
+        resultElem = @[(function elem)];
+        <> ifTrue { <> lowOrderIs rest @[] @0 }
+            { <> resultElem }
+            { <> listletAdd resultElem (apply argsMap function rest) }
+    }
+};
+
+# The U* combinator. This is like the U combinator, except expanded to
+# work for multiple function arguments, in this case both passed and
+# returned as an array. Each function argument is called with the entire
+# contents of the array (as individual arguments). The result of each of
+# the calls is packaged back up into a new array to become the return
+# value of this function.
+#
+# Naming note: I (danfuzz) haven't found any official name for this
+# function, but the name "U*" makes for a nice parallel with the name
+# "Y*". That is, the Y combinator uses the U combinator in the same way
+# that the Y* combinator uses this function.
+uStarCombinator = { functions ::
+    <> apply argsMap
+        { function :: <> apply function functions }
+        functions;
+};
+
+# Documented in Samizdat Layer 0 spec.
+yStarCombinator = { functions* ::
+    # The code here is meant to be exactly parallel to that of `yCombinator`,
+    # except with additional listlet mapping (including via the
+    # `uStarCombinator` function) where necessitated by the multiple-function
+    # nature of this variant.
+
+    applicators = apply argsMap
+        { function ::
+            <> { selfRefs* ::
+                <> { args* ::
+                    <> apply (apply function (uStarCombinator selfRefs)) args
+                }
+            }
+        }
+        functions;
+
+    <> uStarCombinator applicators;
+};
+
+
+#
+# Export mechanics
+#
+
+<> @[
+    @yCombinator = yCombinator
+    @yStarCombinator = yStarCombinator
+]
