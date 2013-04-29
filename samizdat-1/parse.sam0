@@ -356,6 +356,20 @@ parseCall1 = { reader ::
 # syntax. Returns a `function` node.
 parse = { tokens ::
     theReader = reader tokens;
+    theProgram = parseProgram theReader;
+
+    ifFalse { <> theReader @eof }
+        {
+            sam0Note @"Pending tokens:"
+            while {
+                ifValue { <> theReader @read }
+                    { token ::
+                        sam0Note (format @"    %q" token)
+                    }
+                    { <> false }
+            }
+            sam0Die @"Extra tokens at end of program."
+        };
     <> parseProgram theReader;
 };
 
