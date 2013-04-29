@@ -84,6 +84,11 @@ plusRule = { reader rule ::
         { reader @reset mark }
 };
 
+# Returns a `call` node.
+makeCall = { function actuals* ::
+    <> [:@call @[@function=function @actuals=actuals]:]
+};
+
 
 #
 # Grammar rules
@@ -251,7 +256,17 @@ parseEmptyListlet = { reader ::
 
 # Parses a `listlet` node.
 parseListlet = { reader ::
-    # TODO
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"@":]
+                [:@"[":]
+                { reader :: <> plusRule reader parseAtom }
+                [:@"]":]
+        }
+        { result ::
+            <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
+        }
 };
 
 # Parses a `emptyMaplet` node.
@@ -262,12 +277,27 @@ parseEmptyMaplet = { reader ::
 
 # Parses a `maplet` node.
 parseMaplet = { reader ::
-    # TODO
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"@":]
+                [:@"[":]
+                { reader :: <> plusRule reader parseBinding }
+                [:@"]":]
+        }
+        { result ::
+            bindings = apply listletCat (listletNth result @2);
+            <> apply makeCall [:@varRef @makeMaplet:] bindings
+        }
 };
 
 # Parses a `binding` node.
 parseBinding = { reader ::
-    # TODO
+    <> ifValue
+        { <> readAll reader parseAtom [:@"=":] parseAtom }
+        { result ::
+            <> @[(listletNth result @0) (listletNth result @2)]
+        }
 };
 
 # Parses a `uniqlet` node.
@@ -278,12 +308,43 @@ parseUniqlet = { reader ::
 
 # Parses a `highlet` node.
 parseHighlet = { reader ::
-    # TODO
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"[":]
+                [:@":":]
+                parseAtom
+                { reader :: <> questRule reader parseAtom }
+                [:@":":]
+                [:@"]":]
+        }
+        { result ::
+            <> apply makeCall [:@varRef @makeHighlet:]
+                (listletNth result @2)
+                (listletNth result @3)
+        }
 };
 
 # Parses a `call` node.
 parseCall = { reader ::
-    # TODO
+    <> ifValue
+        {
+            <> readAll reader
+                parseAtom
+                { reader :: <> orRule reader
+                    parseCall1
+                    { reader :: <> plusRule reader parseAtom }
+                }
+        }
+        { result ::
+            <> apply makeCall (listletNth result @0) (listletNth result @1)
+        }
+};
+
+# `call` node helper: Parses literal `()`, returning an empty listlet.
+parseCall1 = { reader ::
+    <> ifValue { <> readAll reader [:@"(":] [:@")":] }
+        { <> @[] }
 };
 
 
