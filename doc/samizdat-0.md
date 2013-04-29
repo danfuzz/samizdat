@@ -277,9 +277,10 @@ program ::=
 formals ::= @identifier+ @"*"? ;
 # result: [:
 #             @formals
-#             @[@[@name=(highletValue identifier)
-#                 (@repeat=@[@type=@"*"])?]
-#               ...]
+#             @[
+#                 @[@name=(highletValue identifier) (@repeat=[:@"*":])?]
+#                 ...
+#             ]
 #         :]
 
 yield ::= @"<>" expression ";"* ;
