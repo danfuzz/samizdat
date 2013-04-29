@@ -77,7 +77,7 @@ starRule = { reader rule ::
 # Parses a one-or-more repetition rule (`+` suffix in PEG), returning a
 # listlet of all the matched repetitions.
 plusRule = { reader rule ::
-    mark = reader at;
+    mark = reader @at;
     result = starRule reader rule;
     <> ifTrue { <> gt (lowSize result) @0 }
         { <> result }
@@ -117,7 +117,7 @@ parseProgram = { reader ::
 
     <> [:
         @function
-        (mapletAdd formals almostResult)
+        (mapletAdd formalsResult almostResult)
     :]
 };
 
@@ -137,7 +137,7 @@ parseProgram1 = { reader ::
 };
 
 # `program` node helper: Parses `(statement @";"+)`.
-parseprogram2 = { reader ::
+parseProgram2 = { reader ::
     <> readAll reader
         parseStatement
         { reader:: <> plusRule reader [:@";":] }
@@ -145,7 +145,7 @@ parseprogram2 = { reader ::
 
 # `program` node helper: Parses `(statement | yield)?`, yielding
 # a combined yield-and-statements maplet.
-parseprogram3 = { reader statements ::
+parseProgram3 = { reader statements ::
     <> ifValue { <> parseStatement reader }
         { <> @[@statements = (listletAppend statements statement)] }
         {
@@ -173,7 +173,7 @@ parseFormals = { reader ::
 
 # `formals` node helper: Parses `identifier`, returning a maplet.
 parseFormals1 = { reader ::
-    <> ifValue { <> readOne reader @identifier }
+    <> ifValue { <> readOne reader [:@identifier:] }
         { result :: <> @[@name = (highletValue result)] }
 };
 
@@ -221,7 +221,7 @@ parseVarDef = { reader ::
 
 # Parses a `varRef` node.
 parseVarRef = { reader ::
-    <> ifValue { <> readOne reader @identifier }
+    <> ifValue { <> readOne reader [:@identifier:] }
         { result :: <> [:@varRef (highletValue result):] }
 };
 
@@ -250,7 +250,7 @@ parseStringlet = { reader ::
 
 # Parses a `emptyListlet` node.
 parseEmptyListlet = { reader ::
-    <> ifValue { <> readAll [:@"@":] [:@"[":] [:@"]":] }
+    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"]":] }
         { <> [:@literal @[]:]}
 };
 
@@ -271,7 +271,7 @@ parseListlet = { reader ::
 
 # Parses a `emptyMaplet` node.
 parseEmptyMaplet = { reader ::
-    <> ifValue { <> readAll [:@"@":] [:@"[":] [:@"=":] [:@"]":] }
+    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"=":] [:@"]":] }
         { <> [:@literal @[=]:]}
 };
 
@@ -302,7 +302,7 @@ parseBinding = { reader ::
 
 # Parses a `uniqlet` node.
 parseUniqlet = { reader ::
-    <> ifValue { <> readAll [:@"@":] [:@"@":] }
+    <> ifValue { <> readAll reader [:@"@":] [:@"@":] }
         { <> [:@varRef @uniqlet:]}
 };
 
@@ -363,7 +363,6 @@ parse = { tokens ::
 # syntax. Returns a `function` node.
 stubParse = { tokens ::
     theReader = reader tokens;
-    # theTree = parseProgram theReader;
 
     theCall = [:
         @call

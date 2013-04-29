@@ -16,6 +16,10 @@ run = { file rest* ::
     io0Note @"";
 
     programNode = parse tokens;
+
+    io0Note (sourceStringlet programNode);
+    io0Note @"";
+
     function = sam0Eval (sam0Library()) programNode;
     <> apply function rest
 };

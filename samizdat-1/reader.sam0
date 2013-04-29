@@ -28,7 +28,7 @@ xNth = { state n :: <> (mapletGet state @nth) n };
 xSize = { state :: <> mapletGet state @size };
 
 # Gets the current cursor position.
-doAt = { state :: <> @[result=(xAt state)] };
+doAt = { state :: <> @[@result=(xAt state)] };
 
 # Returns whether the reader is at EOF.
 doEof = { state :: <> @[@result=(lt (xAt state) (xSize state))] };
