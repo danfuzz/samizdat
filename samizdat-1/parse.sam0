@@ -159,7 +159,7 @@ parseProgram2 = { reader ::
                 parseStatement
                 { reader:: <> plusRule reader [:@";":] }
         }
-        { result :: <> listletNth result @1 }
+        { result :: <> listletNth result @0 }
 };
 
 # `program` node helper: Parses `(statement | yield)?`, yielding
@@ -197,11 +197,14 @@ parseFormals1 = { reader ::
 
 # Parses a `yield` node.
 parseYield = { reader ::
-    <> ifValue { <> readAll reader [:@"<>":] parseExpression }
-        { result ::
-            starRule reader [:@";":]; # Optional semicolons.
-            <> listletNth result @1;
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"<>":]
+                parseExpression
+                { reader:: <> starRule reader [:@";":] }
         }
+        { result :: <> listletNth result @1; }
 };
 
 # Parses a `statement` node.
@@ -263,13 +266,13 @@ parseIntlet = { reader ::
 # Parses a `stringlet` node.
 parseStringlet = { reader ::
     <> ifValue { <> orRule reader [:@string:] [:@identifier:] }
-        { result :: <> [:@literal (highletValue result):]}
+        { result :: <> [:@literal (highletValue result):] }
 };
 
 # Parses a `emptyListlet` node.
 parseEmptyListlet = { reader ::
     <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"]":] }
-        { <> [:@literal @[]:]}
+        { <> [:@literal @[]:] }
 };
 
 # Parses a `listlet` node.
@@ -290,7 +293,7 @@ parseListlet = { reader ::
 # Parses a `emptyMaplet` node.
 parseEmptyMaplet = { reader ::
     <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"=":] [:@"]":] }
-        { <> [:@literal @[=]:]}
+        { <> [:@literal @[=]:] }
 };
 
 # Parses a `maplet` node.
@@ -321,7 +324,7 @@ parseBinding = { reader ::
 # Parses a `uniqlet` node.
 parseUniqlet = { reader ::
     <> ifValue { <> readAll reader [:@"@":] [:@"@":] }
-        { <> [:@varRef @uniqlet:]}
+        { <> [:@varRef @uniqlet:] }
 };
 
 # Parses a `highlet` node.
