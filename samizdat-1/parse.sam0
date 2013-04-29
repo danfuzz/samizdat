@@ -188,7 +188,7 @@ parseFormals = { reader ::
                     n = isub (lowSize almostResult) @1;
                     last = listletNth almostResult n;
                     result = listletPutNth almostResult n
-                        (mapletPut last @repeat @[@type=@"*"]);
+                        (mapletPut last @repeat [:@"*":]);
                     <> [:@formals result:]
                 }
                 { <> [:@formals almostResult:] }
