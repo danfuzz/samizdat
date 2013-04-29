@@ -105,23 +105,36 @@ parseFunction = { reader ::
 
 # Parses a `program` node.
 parseProgram = { reader ::
-    formals = questRule reader parseProgram1;
-    formalsResult = ifValue { <> listletNth formals @0 }
-        { result :: @[@formals=result] }
-        { <> @[=] };
-
-    starRule reader [:@";":]; # Optional semicolons.
-
-    statements = starRule reader parseProgram2;
-    almostResult = parseProgram3 reader statements;
-
-    <> [:
-        @function
-        (mapletAdd formalsResult almostResult)
-    :]
+    <> ifValue
+        {
+            <> readAll reader
+                { reader :: <> questRule reader parseProgram1 }
+                { reader :: <> starRule reader [:@";":] }
+                { reader :: <> starRule reader parseProgram2 }
+                { reader :: <> questRule reader parseProgram3 }
+        }
+        { result ::
+            formals = ifValue { <> listletNth (listletNth result @0) @0 }
+                { result :: <> result }
+                { <> @[=] };
+            mostStatements = listletNth result @2;
+            lastClause = ifValue { <> listletNth (listletNth result @3) @0 }
+                { result :: <> result }
+                { <> @[@statements=@[] @yield=@[=]] };
+            statements = listletAdd mostStatements
+                (mapletGet lastClause @statements);
+            <> [:
+                @function
+                (mapletCat
+                    formals
+                    @[@statements=statements]
+                    (mapletGet lastClause @yield))
+            :]
+        }
 };
 
-# `program` node helper: Parses `(formals? @"::")`. May fail.
+# `program` node helper: Parses `(formals? @"::")`. May fail. On success,
+# returns a maplet (possibly empty).
 parseProgram1 = { reader ::
     <> ifValue
         {
@@ -132,26 +145,31 @@ parseProgram1 = { reader ::
         { result ::
             formals = listletNth result @0;
             <> ifValue { <> listletNth formals @0 }
-                { result :: <> result }
-        };
+                { result :: <> @[@formals=result] }
+                { <> @[=] }
+        }
 };
 
-# `program` node helper: Parses `(statement @";"+)`.
+# `program` node helper: Parses `(statement @";"+)`. Returns listlet of
+# statements.
 parseProgram2 = { reader ::
-    <> readAll reader
-        parseStatement
-        { reader:: <> plusRule reader [:@";":] }
+    <> ifValue
+        {
+            <> readAll reader
+                parseStatement
+                { reader:: <> plusRule reader [:@";":] }
+        }
+        { result :: <> listletNth result @1 }
 };
 
 # `program` node helper: Parses `(statement | yield)?`, yielding
-# a combined yield-and-statements maplet.
-parseProgram3 = { reader statements ::
+# a maplet that maps `@yield` and `@statements`. May fail.
+parseProgram3 = { reader ::
     <> ifValue { <> parseStatement reader }
-        { <> @[@statements = (listletAppend statements statement)] }
+        { result :: <> @[@statements=@[result] @yield=@[=]] }
         {
             <> ifValue { <> parseYield reader }
-                { <> @[@statements=statements @yield=yield] }
-                { <> @[@statements=statements] }
+                { result :: <> @[@statements=@[] @yield=@[@yield=result]] }
         }
 };
 
