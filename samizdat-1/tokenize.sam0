@@ -11,8 +11,6 @@ STRING_ESCAPES = @[@"\\"=@"\\" @"\""=@"\"" @"n"=@"\n"];
 
 # Parses a string escape.
 parseStringEscape = { reader ::
-    reader @read; # Skip the backslash.
-
     <> ifValue { <> reader @read }
         { ch ::
             <> ifValue { <> mapletGet STRING_ESCAPES ch }
