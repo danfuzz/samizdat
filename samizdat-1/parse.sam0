@@ -272,7 +272,7 @@ parseIntlet = { reader ::
             sign = ifTrue { <> eq (listletNth result @1) @[] }
                 { <> @1 } { <> @-1 };
             value = imul sign (highletValue (listletNth result @2));
-            <> [:@intlet value:]
+            <> [:@literal value:]
         }
 };
 
@@ -342,7 +342,7 @@ parseBinding = { reader ::
 # Parses a `uniqlet` node.
 parseUniqlet = { reader ::
     <> ifValue { <> readOne reader [:@"@@":] }
-        { <> [:@varRef @uniqlet:] }
+        { <> [:@varRef @makeUniqlet:] }
 };
 
 # Parses a `highlet` node.
