@@ -18,29 +18,49 @@ parseStringEscape = { reader ::
         }
 };
 
+# Parses a single string character (including escapes).
+parseStringChar = { reader ::
+    <> ifValue { <> reader @peek }
+        { ch ::
+            <> ifTrue { <> ne ch @"\"" }
+                {
+                    reader @read;
+                    <> ifTrue { <> eq ch @"\\" }
+                        { <> parseStringEscape reader }
+                        { <> ch }
+                }
+        }
+};
+
+# Reads a double quote, if available.
+parseDoubleQuote = { reader ::
+    <> ifValue { <> reader @peek }
+        { ch ::
+            <> ifTrue { <> eq ch @"\"" }
+            {
+                reader @read;
+                <> ch
+            }
+        }
+};
+
 # Parses a string.
 parseString = { reader ::
     reader @read; # Skip the open quote.
 
     value = whileReduce @"" { result ::
-        <> ifValue { <> reader @peek }
-            { ch ::
-                <> ifTrue { <> ne ch @"\"" }
-                    {
-                        # TODO: Handle invalid escape sequences gracefully.
-                        reader @read;
-                        addCh = ifTrue { <> eq ch @"\\" }
-                            { <> parseStringEscape reader }
-                            { <> ch };
-                        <> stringletAdd result addCh;
-                    }
-            }
+        <> ifValue { <> parseStringChar reader }
+            { ch :: <> stringletAdd result ch }
     };
 
     # Skip the close quote, or complain if it was absent.
-    <> ifVoid { <> reader @read }
-        { <> [:@error @"Unterminated string literal.":] }
+    <> ifValue { <> parseDoubleQuote reader }
         { <> [:@string value:] }
+        {
+            <> ifTrue { <> reader @eof }
+                { <> [:@error @"Unterminated string literal.":] }
+                { <> [:@error @"Invalid string escape sequence.":] }
+        }
 };
 
 # These are all the valid identifier characters, as a set-like maplet
