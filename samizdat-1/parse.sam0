@@ -14,25 +14,6 @@
 # rules.
 #
 
-# Parses the indicated rule, If the rule is a highlet, then it
-# is taken to represent a token type to read. Otherwise, it is taken to
-# be a parser function to call. Returns the parsed item on success, or
-# void on failure.
-readOne = { reader rule ::
-    <> ifTrue { <> isHighlet rule }
-        {
-            <> ifValue { <> reader @peek }
-                { token ::
-                    <> ifTrue { <> eq (highletType rule) (highletType token) }
-                        {
-                            reader @read;
-                            <> token
-                        }
-                }
-        }
-        { <> rule reader }
-};
-
 # Meta-helper function, which transforms a highlet "rule" into a
 # token-matching rule per se.
 transformTokenRule = { rule ::
