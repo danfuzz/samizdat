@@ -60,11 +60,9 @@ process = { value ::
 main = { selfPath name rest* ::
     # Be welcoming.
 
-    if { <> eq name @danfuzz } {
-        io0Note @"Hello, Danfuzz!\n"
-    } else {
-        io0Note @"Hello, Самиздат!\n"
-    };
+    ifTrue { <> eq name @danfuzz }
+        { io0Note @"Hello, Danfuzz!\n" }
+        { io0Note @"Hello, Самиздат!\n" };
 
     process selfPath;
     process rest;

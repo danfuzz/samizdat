@@ -100,7 +100,7 @@ doListlet = { listlet adorn ::
         { reduction elem ::
             <> stringletCat
                 reduction
-                (if { <> eq reduction @"" } { <> @"" } else { <> @" " })
+                (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
                 (sourceStringlet elem)
         };
 
@@ -113,7 +113,7 @@ doMaplet = { maplet adorn ::
         { reduction value key ::
             <> stringletCat
                 reduction
-                (if { <> eq reduction @"" } { <> @"" } else { <> @" " })
+                (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
                 (sourceStringlet key)
                 @"="
                 (sourceStringlet value)
