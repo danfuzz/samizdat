@@ -46,9 +46,16 @@ unset newProg
 # name (a glob pattern).
 function getCount {
     local glob="$1"
+    local dir="$2"
 
-    wc -l $(find . -name "$glob") |
-    awk '$2 == "total" { print $1; }'
+    if [[ ${dir} == '' ]]; then
+        dir='.'
+    fi
+
+    wc -l $(find "${dir}" -name "$glob") |
+    awk '
+    { count = $1; }
+    END { print count; }'
 }
 
 
@@ -62,8 +69,10 @@ cHeader="$(getCount '*.h')"
 cCode="$(getCount '*.c')"
 (( cTotal = cHeader + cCode ))
 
-sam0Code="$(getCount '*.sam0')"
-(( samTotal = sam0Code ))
+sam0Code="$(getCount '*.sam0' samizdat-0-lib)"
+sam1Code="$(getCount '*.sam0' samizdat-1)"
+demoCode="$(getCount '*.sam0' demo)"
+(( samTotal = sam0Code + sam1Code + demoCode ))
 
 (( total = cTotal + samTotal ))
 
@@ -71,14 +80,25 @@ sam0Code="$(getCount '*.sam0')"
 (( samPercent = per10k / 100 ))
 (( samPercentFrac = per10k % 100 ))
 
-printf 'C header:    %5d\n' "${cHeader}"
-printf 'C code:      %5d\n' "${cCode}"
-printf 'C total:     %5d\n' "${cTotal}"
 printf '\n'
 
-printf 'Sam0 code:   %5d\n' "${sam0Code}"
+printf 'C Code\n'
+printf -- '----------------------\n'
+printf '  Header     %5d\n' "${cHeader}"
+printf '  Code       %5d\n' "${cCode}"
+printf '  Total      %5d\n' "${cTotal}"
 printf '\n'
 
-printf 'Total lines: %5d\n' "${total}"
-printf 'Sam bulk:       %2d.%02d%%\n' "${samPercent}" "${samPercentFrac}"
+printf 'Samizdat Code\n'
+printf -- '----------------------\n'
+printf '  Library    %5d\n' "${sam0Code}"
+printf '  Samizdat-1 %5d\n' "${sam1Code}"
+printf '  Demo       %5d\n' "${demoCode}"
+printf '  Total      %5d\n' "${samTotal}"
+printf '\n'
+
+printf 'Summary\n'
+printf -- '----------------------\n'
+printf '  Total      %5d\n' "${total}"
+printf '  Sam bulk      %2d.%02d%%\n' "${samPercent}" "${samPercentFrac}"
 printf '\n'
