@@ -124,7 +124,7 @@ zvalue datStringletFromUtf8String(zint stringBytes, const char *string) {
 }
 
 /* Documented in header. */
-const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize) {
+const char *datUtf8FromStringlet(zint *resultSize, zvalue stringlet) {
     datAssertStringlet(stringlet);
 
     zint size = datSize(stringlet);

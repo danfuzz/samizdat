@@ -70,7 +70,7 @@ static zvalue libraryReader(void *state, zint argCount, const zvalue *args) {
     zvalue text = datMapletGet(LIBRARY_FILES, name);
 
     if (text == NULL) {
-        die("No such library file: %s", datStringletEncodeUtf8(name, NULL));
+        die("No such library file: %s", datUtf8FromStringlet(NULL, name));
     }
 
     return text;

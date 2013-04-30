@@ -20,7 +20,7 @@
  */
 static void emitNote(zvalue message) {
     zint size = 0;
-    const char *str = datStringletEncodeUtf8(message, &size);
+    const char *str = datUtf8FromStringlet(&size, message);
 
     fwrite(str, 1, size, stderr);
     fputc('\n', stderr);
@@ -50,7 +50,7 @@ PRIM_IMPL(io0Note) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0PathFromStringlet) {
     requireExactly(argCount, 1);
-    return ioPathListletFromUtf8(datStringletEncodeUtf8(args[0], NULL));
+    return ioPathListletFromUtf8(datUtf8FromStringlet(NULL, args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

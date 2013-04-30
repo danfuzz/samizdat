@@ -207,7 +207,7 @@ zvalue datStringletFromUtf8String(zint stringBytes, const char *string);
  * original stringlet might have contained any `U+0` code points.
  * `*resultSize` does *not* include the terminating `'\0'`.
  */
-const char *datStringletEncodeUtf8(zvalue stringlet, zint *resultSize);
+const char *datUtf8FromStringlet(zint *resultSize, zvalue stringlet);
 
 
 /*
