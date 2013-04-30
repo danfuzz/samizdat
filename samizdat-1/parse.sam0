@@ -344,14 +344,13 @@ parseProgram2 = filterRule
 
 # `program` node helper: Parses `(statement | yield)?`, yielding
 # a maplet that maps `@yield` and `@statements`. May fail.
-parseProgram3 = { reader ::
-    <> ifValue { <> parseStatement reader }
-        { result :: <> @[@statements=@[result] @yield=@[=]] }
-        {
-            <> ifValue { <> parseYield reader }
-                { result :: <> @[@statements=@[] @yield=@[@yield=result]] }
-        }
-};
+parseProgram3 = orRule
+    (filterRule
+        parseStatement
+        { result :: <> @[@statements=@[result] @yield=@[=]] })
+    (filterRule
+        parseYield
+        { result :: <> @[@statements=@[] @yield=@[@yield=result]] });
 
 # Parses a `program` node.
 parseProgram = filterRule
