@@ -179,6 +179,7 @@ makeCall = { function actuals* ::
 
 # These are effectively forward declarations.
 fwdParseAtom = { reader :: <> parseAtom reader };
+fwdParseExpression = { reader :: <> parseExpression reader };
 fwdParseFunction = { reader :: <> parseFunction reader };
 
 # `call` node helper: Parses literal `()`, returning an empty listlet.
@@ -249,32 +250,21 @@ parseEmptyListlet = filterRule
     { <> [:@literal @[]:] };
 
 # Parses a `stringlet` node.
-parseStringlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                (orRule [:@string:] [:@identifier:])
-        }
-        { result :: <> [:@literal (highletValue (listletNth result @1)):] }
-};
+parseStringlet = filterRule
+    (allRule
+        [:@"@":]
+        (orRule [:@string:] [:@identifier:]))
+    { result :: <> [:@literal (highletValue (listletNth result @1)):] };
 
 # Parses an `intlet` node.
-parseIntlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                (questRule [:@"-":])
-                [:@integer:]
-        }
-        { result ::
-            sign = ifTrue { <> eq (listletNth result @1) @[] }
-                { <> @1 } { <> @-1 };
-            value = imul sign (highletValue (listletNth result @2));
-            <> [:@literal value:]
-        }
-};
+parseIntlet = filterRule
+    (allRule [:@"@":] (questRule [:@"-":]) [:@integer:])
+    { result ::
+        sign = ifTrue { <> eq (listletNth result @1) @[] }
+            { <> @1 } { <> @-1 };
+        value = imul sign (highletValue (listletNth result @2));
+        <> [:@literal value:]
+    };
 
 # Parses a `varRef` node.
 parseVarRef = { reader ::
@@ -283,20 +273,18 @@ parseVarRef = { reader ::
 };
 
 # Parses a `varDef` node.
-parseVarDef = { reader ::
-    <> ifValue { <> readAll reader [:@identifier:] [:@"=":] parseExpression }
-        { result ::
-            name = highletValue (listletNth result @0);
-            value = listletNth result @2;
-            <> [:@varDef @[@name=name @value=value]:];
-        }
-};
+parseVarDef = filterRule
+    (allRule [:@identifier:] [:@"=":] fwdParseExpression)
+    { result ::
+        name = highletValue (listletNth result @0);
+        value = listletNth result @2;
+        <> [:@varDef @[@name=name @value=value]:]
+    };
 
 # Parses a `parenExpression` node.
-parseParenExpression = { reader ::
-    <> ifValue { <> readAll reader [:@"(":] parseExpression [:@")":] }
-        { result :: <> listletNth result @1 }
-};
+parseParenExpression = filterRule
+    (allRule [:@"(":] fwdParseExpression [:@")":])
+    { result :: <> listletNth result @1 };
 
 # Parses an `atom` node.
 parseAtom = orRule parseVarRef parseIntlet parseStringlet
