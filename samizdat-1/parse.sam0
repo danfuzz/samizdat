@@ -9,85 +9,136 @@
 #
 # Helper functions
 #
+# Note: All of the meta-rule functions accept as rules either
+# parsing functions per se or simple highlets to represent token-matching
+# rules.
+#
 
-# Parses the indicated rule, If the rule is a highlet, then it
-# is taken to represent a token type to read. Otherwise, it is taken to
-# be a parser function to call. Returns the parsed item on success, or
-# void on failure.
-readOne = { reader rule ::
+# Meta-helper function, which transforms a highlet "rule" into a
+# token-matching rule per se.
+transformTokenRule = { rule ::
     <> ifTrue { <> isHighlet rule }
-        {
-            <> ifValue { <> reader @peek }
-                { token ::
-                    <> ifTrue { <> eq (highletType rule) (highletType token) }
-                        {
-                            reader @read;
-                            <> token
-                        }
-                }
-        }
-        { <> rule reader }
+        { <> tokenRule rule }
+        { <> rule }
 };
 
-# Parses all of the indicate rules, in order, returning a listlet of
-# the results. Returns void if it could not parse everything requested.
-readAll = { reader rest* ::
-    doReads = { rule rest* ::
-        <> ifValue { <> readOne reader rule }
-            { firstResult ::
-                <> ifTrue { <> eq rest @[] }
-                    { <> @[firstResult] }
+# Returns a rule which succeeds if a given other rule succeeds, and
+# if so runs the given result filter function, passing it the rule
+# result, to produce the final result of processing.
+filterRule = { rule filterFunction ::
+    <> { reader ::
+        <> ifValue { <> rule reader } filterFunction
+    }
+};
+
+# Returns a rule which succeeds if the given token type is successfully
+# read.
+tokenRule = { token ::
+    type = highletType token;
+
+    <> { reader ::
+        <> ifValue { <> reader @peek }
+            { got ::
+                <> ifTrue { <> eq type (highletType got) }
                     {
-                        <> ifValue { <> apply doReads rest }
-                            { result :: <> listletPrepend firstResult result }
+                        reader @read;
+                        <> got
                     }
             }
-    };
-
-    mark = reader @at;
-
-    <> ifValue { <> apply doReads rest }
-        { result :: <> result }
-        { reader @reset mark }
+    }
 };
 
-# Parses a list of alternate rules (`|` separated in PEG), returning
-# the first successful result, or void if none succeeds.
-orRule = { reader rule rest* ::
-    <> ifValue { <> readOne reader rule }
-        { result :: <> result }
-        {
-            <> ifTrue { <> ne rest @[] }
-                { <> apply orRule reader rest }
-        }
+# Returns a rule which succeeds if all of a list of other rules
+# succeeds in order (said list given in the form of separate arguments
+# to this function). The result, if successful, is a listlet of all
+# the rule results. This effectively implements the "adjacency operator"
+# in PEG.
+allRule = { rules* ::
+    finalRules = listletMap rules transformTokenRule;
+
+    <> { reader ::
+        doAll = { rule rest* ::
+            <> ifValue { <> rule reader }
+                { firstResult ::
+                    <> ifTrue { <> eq rest @[] }
+                        { <> @[firstResult] }
+                        {
+                            <> ifValue { <> apply doAll rest }
+                                { result ::
+                                    <> listletPrepend firstResult result }
+                        }
+                }
+        };
+
+        mark = reader @at;
+
+        <> ifValue { <> apply doAll finalRules }
+            { result :: <> result }
+            { reader @reset mark }
+    }
 };
 
-# Parses an optional rule (`?` suffix in PEG), returning a listlet
-# of matched results, which will always be of length zero or one.
-questRule = { reader rule ::
-    <> ifValue { <> readOne reader rule }
-        { result :: <> @[result] }
-        { <> @[] }
+# Returns a rule which succeeds if any of a list of other rules
+# succeeds (said list given in the form of separate arguments to this
+# function), trying them in order. The result is the same as the
+# result of whichever rule succeeded, or void if all the alternatives
+# failed. This effectively implements the `|` operator in PEG.
+orRule = { rules* ::
+    finalRules = listletMap rules transformTokenRule;
+
+    <> { reader ::
+        doOr = { rule rest* ::
+            <> ifValue { <> rule reader }
+                { result :: <> result }
+                {
+                    <> ifTrue { <> ne rest @[] }
+                        { <> apply doOr rest }
+                }
+        };
+
+        <> apply doOr finalRules;
+    }
 };
 
-# Parses a zero-or-more repetition rule (`*` suffix in PEG), returning a
-# listlet of all the matched repetitions.
-starRule = { reader rule ::
-    <> whileReduce @[]
-        { result ::
-            <> ifValue { <> readOne reader rule }
-                { match :: <> listletAppend result match }
-        }
+# Returns a rule which optionally parses a given other rule. The
+# rule when run always succeeds, yielding a listlet. The listlet will
+# have either zero or one element, depending on whether the inner
+# rule was matched. This effectively implements the `?` suffix in PEG.
+questRule = { rule ::
+    finalRule = transformTokenRule rule;
+
+    <> { reader ::
+        <> ifValue { <> finalRule reader }
+            { result :: <> @[result] }
+            { <> @[] }
+    }
 };
 
-# Parses a one-or-more repetition rule (`+` suffix in PEG), returning a
-# listlet of all the matched repetitions.
-plusRule = { reader rule ::
-    mark = reader @at;
-    result = starRule reader rule;
-    <> ifTrue { <> gt (lowSize result) @0 }
-        { <> result }
-        { reader @reset mark }
+# Returns a rule which parses zero or more repetitions of a given other
+# rule. The rule when run always succeeds, yielding a listlet of all
+# the results of matching. It will be a zero-length listlet if in fact
+# the inner rule never matched. This effectively implements the `*`
+# suffix in PEG.
+starRule = { rule ::
+    finalRule = transformTokenRule rule;
+
+    <> { reader ::
+        <> whileReduce @[]
+            { result ::
+                <> ifValue { <> finalRule reader }
+                    { match :: <> listletAppend result match }
+            }
+    }
+};
+
+# Returns a rule which parses one or more repetitions of a given other
+# rule. The rule when successful yields a listlet of all the results of
+# matching and will be of size one or more. This effectively implements
+# the `+` suffix in PEG.
+plusRule = { rule ::
+    <> filterRule
+        (allRule rule (starRule rule))
+        { result :: <> apply listletPrepend result }
 };
 
 # Returns a `call` node.
@@ -103,288 +154,218 @@ makeCall = { function actuals* ::
 # the *Samizdat Layer 0* specification.
 #
 
-# Parses a `function` node.
-parseFunction = { reader ::
-    <> ifValue { <> readAll reader [:@"{":] parseProgram [:@"}":] }
-        { result :: <> listletNth result @1 }
-};
+# These are effectively forward declarations.
+fwdParseAtom = { reader :: <> parseAtom reader };
+fwdParseExpression = { reader :: <> parseExpression reader };
+fwdParseFunction = { reader :: <> parseFunction reader };
 
-# Parses a `program` node.
-parseProgram = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                { reader :: <> questRule reader parseProgram1 }
-                { reader :: <> starRule reader [:@";":] }
-                { reader :: <> starRule reader parseProgram2 }
-                { reader :: <> questRule reader parseProgram3 }
-        }
-        { result ::
-            formals = ifValue { <> listletNth (listletNth result @0) @0 }
-                { result :: <> result }
-                { <> @[=] };
-            mostStatements = listletNth result @2;
-            lastClause = ifValue { <> listletNth (listletNth result @3) @0 }
-                { result :: <> result }
-                { <> @[@statements=@[] @yield=@[=]] };
-            statements = listletAdd mostStatements
-                (mapletGet lastClause @statements);
-            <> [:
-                @function
-                (mapletCat
-                    formals
-                    @[@statements=statements]
-                    (mapletGet lastClause @yield))
-            :]
-        }
-};
+# `call` node helper: Parses literal `()`, returning an empty listlet.
+parseCall1 = filterRule
+    (allRule [:@"(":] [:@")":])
+    { <> @[] };
 
-# `program` node helper: Parses `(formals? @"::")`. May fail. On success,
-# returns a maplet (possibly empty).
-parseProgram1 = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                { reader :: <> questRule reader parseFormals }
-                [:@"::":]
-        }
-        { result ::
-            formals = listletNth result @0;
-            <> ifValue { <> listletNth formals @0 }
-                { result :: <> @[@formals=result] }
-                { <> @[=] }
-        }
-};
+# Parses a `call` node.
+parseCall = filterRule
+    (allRule
+        fwdParseAtom
+        (orRule parseCall1 (plusRule fwdParseAtom)))
+    { result ::
+        <> apply makeCall (listletNth result @0) (listletNth result @1)
+    };
+
+# Parses a `highlet` node.
+parseHighlet = filterRule
+    (allRule
+        [:@"[":]
+        [:@":":]
+        fwdParseAtom
+        (questRule fwdParseAtom)
+        [:@":":]
+        [:@"]":])
+    { result ::
+        <> apply makeCall [:@varRef @makeHighlet:]
+            (listletNth result @2)
+            (listletNth result @3)
+    };
+
+# Parses a `uniqlet` node.
+parseUniqlet = filterRule
+    (tokenRule [:@"@@":])
+    { <> [:@varRef @makeUniqlet:] };
+
+# Parses a `binding` node.
+parseBinding = filterRule
+    (allRule fwdParseAtom [:@"=":] fwdParseAtom)
+    { result ::
+        <> @[(listletNth result @0) (listletNth result @2)]
+    };
+
+# Parses a `maplet` node.
+parseMaplet = filterRule
+    (allRule [:@"@":] [:@"[":] (plusRule parseBinding) [:@"]":])
+    { result ::
+        bindings = apply listletCat (listletNth result @2);
+        <> apply makeCall [:@varRef @makeMaplet:] bindings
+    };
+
+# Parses a `emptyMaplet` node.
+parseEmptyMaplet = filterRule
+    (allRule [:@"@":] [:@"[":] [:@"=":] [:@"]":])
+    { <> [:@literal @[=]:] };
+
+# Parses a `listlet` node.
+parseListlet = filterRule
+    (allRule [:@"@":] [:@"[":] (plusRule fwdParseAtom) [:@"]":])
+    { result ::
+        <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
+    };
+
+# Parses a `emptyListlet` node.
+parseEmptyListlet = filterRule
+    (allRule [:@"@":] [:@"[":] [:@"]":])
+    { <> [:@literal @[]:] };
+
+# Parses a `stringlet` node.
+parseStringlet = filterRule
+    (allRule
+        [:@"@":]
+        (orRule [:@string:] [:@identifier:]))
+    { result :: <> [:@literal (highletValue (listletNth result @1)):] };
+
+# Parses an `intlet` node.
+parseIntlet = filterRule
+    (allRule [:@"@":] (questRule [:@"-":]) [:@integer:])
+    { result ::
+        sign = ifTrue { <> eq (listletNth result @1) @[] }
+            { <> @1 } { <> @-1 };
+        value = imul sign (highletValue (listletNth result @2));
+        <> [:@literal value:]
+    };
+
+# Parses a `varRef` node.
+parseVarRef = filterRule
+    (tokenRule [:@identifier:])
+    { result :: <> [:@varRef (highletValue result):] };
+
+# Parses a `varDef` node.
+parseVarDef = filterRule
+    (allRule [:@identifier:] [:@"=":] fwdParseExpression)
+    { result ::
+        name = highletValue (listletNth result @0);
+        value = listletNth result @2;
+        <> [:@varDef @[@name=name @value=value]:]
+    };
+
+# Parses a `parenExpression` node.
+parseParenExpression = filterRule
+    (allRule [:@"(":] fwdParseExpression [:@")":])
+    { result :: <> listletNth result @1 };
+
+# Parses an `atom` node.
+parseAtom = orRule parseVarRef parseIntlet parseStringlet
+    parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
+    parseUniqlet parseHighlet fwdParseFunction parseParenExpression;
+
+# Parses an `expression` node.
+parseExpression = orRule parseCall parseAtom;
+
+# Parses a `statement` node.
+parseStatement = orRule parseVarDef parseExpression;
+
+# Parses a `yield` node.
+parseYield = filterRule
+    (allRule [:@"<>":] parseExpression (starRule [:@";":]))
+    { result :: <> listletNth result @1; };
+
+# `formals` node helper: Parses `identifier`, returning a maplet.
+parseFormals1 = filterRule
+    (tokenRule [:@identifier:])
+    { result :: <> @[@name = (highletValue result)] };
+
+# Parses a `formals` node.
+parseFormals = filterRule
+    (allRule (plusRule parseFormals1) (questRule [:@"*":]))
+    { result ::
+        almostFormals = listletNth result @0;
+        starMod = listletNth result @1;
+        formals = ifValue { <> listletNth starMod @0 }
+            { starToken ::
+                n = isub (lowSize almostFormals) @1;
+                last = listletNth almostFormals n;
+                <> listletPutNth almostFormals n
+                    (mapletPut last @repeat starToken);
+            }
+            { <> almostFormals };
+        <> [:@formals formals:]
+    };
+
+# `program` node helper: Parses `(formals? @"::")?`, yielding a maplet
+# (possibly empty).
+parseProgram1 = filterRule
+    (questRule
+        (filterRule
+            (allRule (questRule parseFormals) [:@"::":])
+            { result ::
+                formals = listletNth result @0;
+                <> ifValue { <> listletNth formals @0 }
+                    { result :: <> @[@formals=result] }
+                    { <> @[=] }
+            }))
+    { result ::
+        <> ifValue { <> listletNth result @0 }
+            { result :: <> result }
+            { <> @[=] }
+    };
 
 # `program` node helper: Parses `(statement @";"+)`. Returns listlet of
 # statements.
-parseProgram2 = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                parseStatement
-                { reader:: <> plusRule reader [:@";":] }
-        }
-        { result :: <> listletNth result @0 }
-};
+parseProgram2 = filterRule
+    (allRule parseStatement (plusRule [:@";":]))
+    { result :: <> listletNth result @0 };
 
 # `program` node helper: Parses `(statement | yield)?`, yielding
-# a maplet that maps `@yield` and `@statements`. May fail.
-parseProgram3 = { reader ::
-    <> ifValue { <> parseStatement reader }
-        { result :: <> @[@statements=@[result] @yield=@[=]] }
-        {
-            <> ifValue { <> parseYield reader }
-                { result :: <> @[@statements=@[] @yield=@[@yield=result]] }
-        }
-};
+# a maplet that maps `@yield` and `@statements`. Always Succeeds.
+parseProgram3 = filterRule
+    (questRule
+        (orRule
+            (filterRule
+                parseStatement
+                { result :: <> @[@statements=@[result] @yield=@[=]] })
+            (filterRule
+                parseYield
+                { result :: <> @[@statements=@[] @yield=@[@yield=result]] })))
+    { result ::
+        <> ifValue { <> listletNth result @0 }
+            { result :: <> result }
+            { <> @[@statements=@[] @yield=@[=]] }
+    };
 
-# Parses a `formals` node.
-parseFormals = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                { reader :: <> plusRule reader parseFormals1 }
-                { reader :: <> questRule reader [:@"*":] }
-        }
-        { result ::
-            almostFormals = listletNth result @0;
-            starMod = listletNth result @1;
-            formals = ifValue { <> listletNth starMod @0 }
-                { starToken ::
-                    n = isub (lowSize almostFormals) @1;
-                    last = listletNth almostFormals n;
-                    <> listletPutNth almostFormals n
-                        (mapletPut last @repeat starToken);
-                }
-                { <> almostFormals };
-            <> [:@formals formals:]
-        }
-};
+# Parses a `program` node.
+parseProgram = filterRule
+    (allRule
+        parseProgram1
+        (starRule [:@";":])
+        (starRule parseProgram2)
+        parseProgram3)
+    { result ::
+        formals = listletNth result @0;
+        mostStatements = listletNth result @2;
+        lastClause = listletNth result @3;
+        statements = listletAdd mostStatements
+            (mapletGet lastClause @statements);
+        <> [:
+            @function
+            (mapletCat
+                formals
+                @[@statements=statements]
+                (mapletGet lastClause @yield))
+        :]
+    };
 
-# `formals` node helper: Parses `identifier`, returning a maplet.
-parseFormals1 = { reader ::
-    <> ifValue { <> readOne reader [:@identifier:] }
-        { result :: <> @[@name = (highletValue result)] }
-};
-
-# Parses a `yield` node.
-parseYield = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"<>":]
-                parseExpression
-                { reader:: <> starRule reader [:@";":] }
-        }
-        { result :: <> listletNth result @1; }
-};
-
-# Parses a `statement` node.
-parseStatement = { reader ::
-    <> orRule reader parseVarDef parseExpression
-};
-
-# Parses an `expression` node.
-parseExpression = { reader ::
-    <> orRule reader parseCall parseAtom
-};
-
-# Parses an `atom` node.
-parseAtom = { reader ::
-    <> orRule reader parseVarRef parseIntlet parseStringlet
-        parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
-        parseUniqlet parseHighlet parseFunction parseParenExpression
-};
-
-# Parses a `parenExpression` node.
-parseParenExpression = { reader ::
-    <> ifValue { <> readAll reader [:@"(":] parseExpression [:@")":] }
-        { result :: <> listletNth result @1 }
-};
-
-# Parses a `varDef` node.
-parseVarDef = { reader ::
-    <> ifValue { <> readAll reader [:@identifier:] [:@"=":] parseExpression }
-        { result ::
-            name = highletValue (listletNth result @0);
-            value = listletNth result @2;
-            <> [:@varDef @[@name=name @value=value]:];
-        }
-};
-
-# Parses a `varRef` node.
-parseVarRef = { reader ::
-    <> ifValue { <> readOne reader [:@identifier:] }
-        { result :: <> [:@varRef (highletValue result):] }
-};
-
-# Parses an `intlet` node.
-parseIntlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                { reader :: <> questRule reader [:@"-":] }
-                [:@integer:]
-        }
-        { result ::
-            sign = ifTrue { <> eq (listletNth result @1) @[] }
-                { <> @1 } { <> @-1 };
-            value = imul sign (highletValue (listletNth result @2));
-            <> [:@literal value:]
-        }
-};
-
-# Parses a `stringlet` node.
-parseStringlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                { reader :: <> orRule reader [:@string:] [:@identifier:] }
-        }
-        { result :: <> [:@literal (highletValue (listletNth result @1)):] }
-};
-
-# Parses a `emptyListlet` node.
-parseEmptyListlet = { reader ::
-    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"]":] }
-        { <> [:@literal @[]:] }
-};
-
-# Parses a `listlet` node.
-parseListlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                [:@"[":]
-                { reader :: <> plusRule reader parseAtom }
-                [:@"]":]
-        }
-        { result ::
-            <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
-        }
-};
-
-# Parses a `emptyMaplet` node.
-parseEmptyMaplet = { reader ::
-    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"=":] [:@"]":] }
-        { <> [:@literal @[=]:] }
-};
-
-# Parses a `maplet` node.
-parseMaplet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                [:@"[":]
-                { reader :: <> plusRule reader parseBinding }
-                [:@"]":]
-        }
-        { result ::
-            bindings = apply listletCat (listletNth result @2);
-            <> apply makeCall [:@varRef @makeMaplet:] bindings
-        }
-};
-
-# Parses a `binding` node.
-parseBinding = { reader ::
-    <> ifValue
-        { <> readAll reader parseAtom [:@"=":] parseAtom }
-        { result ::
-            <> @[(listletNth result @0) (listletNth result @2)]
-        }
-};
-
-# Parses a `uniqlet` node.
-parseUniqlet = { reader ::
-    <> ifValue { <> readOne reader [:@"@@":] }
-        { <> [:@varRef @makeUniqlet:] }
-};
-
-# Parses a `highlet` node.
-parseHighlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"[":]
-                [:@":":]
-                parseAtom
-                { reader :: <> questRule reader parseAtom }
-                [:@":":]
-                [:@"]":]
-        }
-        { result ::
-            <> apply makeCall [:@varRef @makeHighlet:]
-                (listletNth result @2)
-                (listletNth result @3)
-        }
-};
-
-# Parses a `call` node.
-parseCall = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                parseAtom
-                { reader :: <> orRule reader
-                    parseCall1
-                    { reader :: <> plusRule reader parseAtom }
-                }
-        }
-        { result ::
-            <> apply makeCall (listletNth result @0) (listletNth result @1)
-        }
-};
-
-# `call` node helper: Parses literal `()`, returning an empty listlet.
-parseCall1 = { reader ::
-    <> ifValue { <> readAll reader [:@"(":] [:@")":] }
-        { <> @[] }
-};
+# Parses a `function` node.
+parseFunction = filterRule
+    (allRule [:@"{":] parseProgram [:@"}":])
+    { result :: <> listletNth result @1 };
 
 
 #
