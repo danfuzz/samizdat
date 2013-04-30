@@ -196,23 +196,19 @@ parseCall = filterRule
     };
 
 # Parses a `highlet` node.
-parseHighlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"[":]
-                [:@":":]
-                parseAtom
-                (questRule parseAtom)
-                [:@":":]
-                [:@"]":]
-        }
-        { result ::
-            <> apply makeCall [:@varRef @makeHighlet:]
-                (listletNth result @2)
-                (listletNth result @3)
-        }
-};
+parseHighlet = filterRule
+    (allRule
+        [:@"[":]
+        [:@":":]
+        fwdParseAtom
+        (questRule fwdParseAtom)
+        [:@":":]
+        [:@"]":])
+    { result ::
+        <> apply makeCall [:@varRef @makeHighlet:]
+            (listletNth result @2)
+            (listletNth result @3)
+    };
 
 # Parses a `uniqlet` node.
 parseUniqlet = { reader ::
@@ -221,56 +217,36 @@ parseUniqlet = { reader ::
 };
 
 # Parses a `binding` node.
-parseBinding = { reader ::
-    <> ifValue
-        { <> readAll reader parseAtom [:@"=":] parseAtom }
-        { result ::
-            <> @[(listletNth result @0) (listletNth result @2)]
-        }
-};
+parseBinding = filterRule
+    (allRule fwdParseAtom [:@"=":] fwdParseAtom)
+    { result ::
+        <> @[(listletNth result @0) (listletNth result @2)]
+    };
 
 # Parses a `maplet` node.
-parseMaplet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                [:@"[":]
-                (plusRule parseBinding)
-                [:@"]":]
-        }
-        { result ::
-            bindings = apply listletCat (listletNth result @2);
-            <> apply makeCall [:@varRef @makeMaplet:] bindings
-        }
-};
+parseMaplet = filterRule
+    (allRule [:@"@":] [:@"[":] (plusRule parseBinding) [:@"]":])
+    { result ::
+        bindings = apply listletCat (listletNth result @2);
+        <> apply makeCall [:@varRef @makeMaplet:] bindings
+    };
 
 # Parses a `emptyMaplet` node.
-parseEmptyMaplet = { reader ::
-    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"=":] [:@"]":] }
-        { <> [:@literal @[=]:] }
-};
+parseEmptyMaplet = filterRule
+    (allRule [:@"@":] [:@"[":] [:@"=":] [:@"]":])
+    { <> [:@literal @[=]:] };
 
 # Parses a `listlet` node.
-parseListlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                [:@"[":]
-                (plusRule parseAtom)
-                [:@"]":]
-        }
-        { result ::
-            <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
-        }
-};
+parseListlet = filterRule
+    (allRule [:@"@":] [:@"[":] (plusRule fwdParseAtom) [:@"]":])
+    { result ::
+        <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
+    };
 
 # Parses a `emptyListlet` node.
-parseEmptyListlet = { reader ::
-    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"]":] }
-        { <> [:@literal @[]:] }
-};
+parseEmptyListlet = filterRule
+    (allRule [:@"@":] [:@"[":] [:@"]":])
+    { <> [:@literal @[]:] };
 
 # Parses a `stringlet` node.
 parseStringlet = { reader ::
