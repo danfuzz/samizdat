@@ -51,8 +51,63 @@ readAll = { reader rest* ::
         { reader @reset mark }
 };
 
+# Returns a rule which succeeds if a given other rule succeeds, and
+# if so runs the given result filter function, passing it the rule
+# result, to produce the final result of processing.
+filterRule = { rule filterFunction ::
+    <> { reader ::
+        <> ifValue { <> rule reader } filterFunction
+    }
+};
+
+# Returns a rule which succeeds if the given token type is successfully
+# read.
+tokenRule = { token ::
+    type = highletType token;
+
+    <> { reader ::
+        <> ifValue { <> reader @peek }
+            { got ::
+                <> ifTrue { <> eq type (highletType got) }
+                    {
+                        reader @read;
+                        <> got
+                    }
+            }
+    }
+};
+
+# Returns a rule which succeeds if all of a list of other rules
+# succeeds in order (said list given in the form of separate arguments
+# to this function). The result, if successful, is a listlet of all
+# the rule results. This effectively implements the "adjacency operator"
+# in PEG.
+allRule = { rules* ::
+    <> { reader ::
+        doAll = { rule rest* ::
+            <> ifValue { <> readOne reader rule }
+                { firstResult ::
+                    <> ifTrue { <> eq rest @[] }
+                        { <> @[firstResult] }
+                        {
+                            <> ifValue { <> apply doAll rest }
+                                { result ::
+                                    <> listletPrepend firstResult result }
+                        }
+                }
+        };
+
+        mark = reader @at;
+
+        <> ifValue { <> apply doAll rules }
+            { result :: <> result }
+            { reader @reset mark }
+    }
+};
+
 # Returns a rule which succeeds if any of a list of other rules
-# succeeds, trying them in order. The result is the same as the
+# succeeds (said list given in the form of separate arguments to this
+# function), trying them in order. The result is the same as the
 # result of whichever rule succeeded, or void if all the alternatives
 # failed. This effectively implements the `|` operator in PEG.
 orRule = { rules* ::
@@ -102,8 +157,9 @@ starRule = { rule ::
 # matching and will be of size one or more. This effectively implements
 # the `+` suffix in PEG.
 plusRule = { rule ::
+    subRule = allRule rule (starRule rule);
     <> { reader ::
-        <> ifValue { <> readAll reader rule (starRule rule) }
+        <> ifValue { <> subRule reader }
             { result :: <> apply listletPrepend result }
     }
 };
