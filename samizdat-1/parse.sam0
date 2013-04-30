@@ -298,16 +298,9 @@ parseExpression = orRule parseCall parseAtom;
 parseStatement = orRule parseVarDef parseExpression;
 
 # Parses a `yield` node.
-parseYield = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"<>":]
-                parseExpression
-                (starRule [:@";":])
-        }
-        { result :: <> listletNth result @1; }
-};
+parseYield = filterRule
+    (allRule [:@"<>":] parseExpression (starRule [:@";":]))
+    { result :: <> listletNth result @1; };
 
 # `formals` node helper: Parses `identifier`, returning a maplet.
 parseFormals1 = { reader ::
@@ -316,56 +309,38 @@ parseFormals1 = { reader ::
 };
 
 # Parses a `formals` node.
-parseFormals = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                (plusRule parseFormals1)
-                (questRule [:@"*":])
-        }
-        { result ::
-            almostFormals = listletNth result @0;
-            starMod = listletNth result @1;
-            formals = ifValue { <> listletNth starMod @0 }
-                { starToken ::
-                    n = isub (lowSize almostFormals) @1;
-                    last = listletNth almostFormals n;
-                    <> listletPutNth almostFormals n
-                        (mapletPut last @repeat starToken);
-                }
-                { <> almostFormals };
-            <> [:@formals formals:]
-        }
-};
+parseFormals = filterRule
+    (allRule (plusRule parseFormals1) (questRule [:@"*":]))
+    { result ::
+        almostFormals = listletNth result @0;
+        starMod = listletNth result @1;
+        formals = ifValue { <> listletNth starMod @0 }
+            { starToken ::
+                n = isub (lowSize almostFormals) @1;
+                last = listletNth almostFormals n;
+                <> listletPutNth almostFormals n
+                    (mapletPut last @repeat starToken);
+            }
+            { <> almostFormals };
+        <> [:@formals formals:]
+    };
 
 # `program` node helper: Parses `(formals? @"::")`. May fail. On success,
 # returns a maplet (possibly empty).
-parseProgram1 = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                (questRule parseFormals)
-                [:@"::":]
-        }
-        { result ::
-            formals = listletNth result @0;
-            <> ifValue { <> listletNth formals @0 }
-                { result :: <> @[@formals=result] }
-                { <> @[=] }
-        }
-};
+parseProgram1 = filterRule
+    (allRule (questRule parseFormals) [:@"::":])
+    { result ::
+        formals = listletNth result @0;
+        <> ifValue { <> listletNth formals @0 }
+            { result :: <> @[@formals=result] }
+            { <> @[=] }
+    };
 
 # `program` node helper: Parses `(statement @";"+)`. Returns listlet of
 # statements.
-parseProgram2 = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                parseStatement
-                (plusRule [:@";":])
-        }
-        { result :: <> listletNth result @0 }
-};
+parseProgram2 = filterRule
+    (allRule parseStatement (plusRule [:@";":]))
+    { result :: <> listletNth result @0 };
 
 # `program` node helper: Parses `(statement | yield)?`, yielding
 # a maplet that maps `@yield` and `@statements`. May fail.
@@ -379,34 +354,30 @@ parseProgram3 = { reader ::
 };
 
 # Parses a `program` node.
-parseProgram = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                (questRule parseProgram1)
-                (starRule [:@";":])
-                (starRule parseProgram2)
-                (questRule parseProgram3)
-        }
-        { result ::
-            formals = ifValue { <> listletNth (listletNth result @0) @0 }
-                { result :: <> result }
-                { <> @[=] };
-            mostStatements = listletNth result @2;
-            lastClause = ifValue { <> listletNth (listletNth result @3) @0 }
-                { result :: <> result }
-                { <> @[@statements=@[] @yield=@[=]] };
-            statements = listletAdd mostStatements
-                (mapletGet lastClause @statements);
-            <> [:
-                @function
-                (mapletCat
-                    formals
-                    @[@statements=statements]
-                    (mapletGet lastClause @yield))
-            :]
-        }
-};
+parseProgram = filterRule
+    (allRule
+        (questRule parseProgram1)
+        (starRule [:@";":])
+        (starRule parseProgram2)
+        (questRule parseProgram3))
+    { result ::
+        formals = ifValue { <> listletNth (listletNth result @0) @0 }
+            { result :: <> result }
+            { <> @[=] };
+        mostStatements = listletNth result @2;
+        lastClause = ifValue { <> listletNth (listletNth result @3) @0 }
+            { result :: <> result }
+            { <> @[@statements=@[] @yield=@[=]] };
+        statements = listletAdd mostStatements
+            (mapletGet lastClause @statements);
+        <> [:
+            @function
+            (mapletCat
+                formals
+                @[@statements=statements]
+                (mapletGet lastClause @yield))
+        :]
+    };
 
 # Parses a `function` node.
 parseFunction = filterRule
