@@ -33,6 +33,12 @@ PRIM_IMPL(mapletKeys) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapletValues) {
+    requireExactly(argCount, 1);
+    return datMapletValues(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapletGet) {
     requireRange(argCount, 2, 3);
 

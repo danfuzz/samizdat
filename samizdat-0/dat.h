@@ -310,6 +310,11 @@ zvalue datMapletAdd(zvalue maplet1, zvalue maplet2);
  */
 zvalue datMapletDel(zvalue maplet, zvalue key);
 
+/**
+ * Gets a listlet of all the values of the given maplet.
+ */
+zvalue datMapletValues(zvalue maplet);
+
 
 /*
  * Uniqlet Functions

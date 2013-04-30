@@ -54,6 +54,7 @@ PRIM_FUNC(mapletDel);
 PRIM_FUNC(mapletGet);
 PRIM_FUNC(mapletKeys);
 PRIM_FUNC(mapletPut);
+PRIM_FUNC(mapletValues);
 PRIM_FUNC(object);
 PRIM_FUNC(sam0Eval);
 PRIM_FUNC(sam0Tree);

@@ -59,6 +59,23 @@ static zint mapletFind(zvalue maplet, zvalue key) {
     return ~min;
 }
 
+/**
+ * Given a maplet, produce a listlet of either its keys or values.
+ */
+static zvalue keysOrValues(zvalue maplet, bool wantKeys) {
+    datAssertMaplet(maplet);
+
+    zint size = datSize(maplet);
+    zmapping *elems = mapletElems(maplet);
+    zvalue result[size];
+
+    for (zint i = 0; i < size; i++) {
+        result[i] = wantKeys ? elems[i].key : elems[i].value;
+    }
+
+    return datListletFromArray(size, result);
+}
+
 
 /*
  * Module functions
@@ -107,17 +124,12 @@ zvalue datMapletEmpty(void) {
 
 /* Documented in header. */
 zvalue datMapletKeys(zvalue maplet) {
-    datAssertMaplet(maplet);
+    return keysOrValues(maplet, true);
+}
 
-    zint size = datSize(maplet);
-    zmapping *elems = mapletElems(maplet);
-    zvalue result[size];
-
-    for (zint i = 0; i < size; i++) {
-        result[i] = elems[i].key;
-    }
-
-    return datListletFromArray(size, result);
+/* Documented in header. */
+zvalue datMapletValues(zvalue maplet) {
+    return keysOrValues(maplet, false);
 }
 
 /* Documented in header. */

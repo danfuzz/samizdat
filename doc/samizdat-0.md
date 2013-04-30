@@ -947,6 +947,11 @@ These two scenarios can be easily differentiated by either noting a
 change in size (or not) between original and result, or by explicitly
 checking for the existence of `key` in the original.
 
+#### `mapletValues maplet <> listlet`
+
+Returns a listlet of all the values in the given maplet, in order
+of the keys (in sorted order).
+
 <br><br>
 ### Primitive Library: Highlets
 
