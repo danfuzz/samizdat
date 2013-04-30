@@ -9,6 +9,10 @@
 #
 # Helper functions
 #
+# Note: All of the meta-rule functions accept as rules either
+# parsing functions per se or simple highlets to represent token-matching
+# rules.
+#
 
 # Parses the indicated rule, If the rule is a highlet, then it
 # is taken to represent a token type to read. Otherwise, it is taken to
@@ -29,15 +33,12 @@ readOne = { reader rule ::
         { <> rule reader }
 };
 
-# Helper for `allRule` and `orRule` which transforms highlets in a
-# rule list into token-matchng rules.
-transformTokenRules = { rules ::
-    <> listletMap rules
-        { rule ::
-            <> ifTrue { <> isHighlet rule }
-                { <> tokenRule rule }
-                { <> rule }
-        }
+# Meta-helper function, which transforms a highlet "rule" into a
+# token-matching rule per se.
+transformTokenRule = { rule ::
+    <> ifTrue { <> isHighlet rule }
+        { <> tokenRule rule }
+        { <> rule }
 };
 
 # Returns a rule which succeeds if a given other rule succeeds, and
@@ -71,12 +72,8 @@ tokenRule = { token ::
 # to this function). The result, if successful, is a listlet of all
 # the rule results. This effectively implements the "adjacency operator"
 # in PEG.
-#
-# As a convenience, any of the rules is given as a raw highlets (instead
-# of a parser function) get treated as token-matching rules for tokens
-# that match the so-named highlets.
 allRule = { rules* ::
-    finalRules = transformTokenRules rules;
+    finalRules = listletMap rules transformTokenRule;
 
     <> { reader ::
         doAll = { rule rest* ::
@@ -105,12 +102,8 @@ allRule = { rules* ::
 # function), trying them in order. The result is the same as the
 # result of whichever rule succeeded, or void if all the alternatives
 # failed. This effectively implements the `|` operator in PEG.
-#
-# As a convenience, any of the rules is given as a raw highlets (instead
-# of a parser function) get treated as token-matching rules for tokens
-# that match the so-named highlets.
 orRule = { rules* ::
-    finalRules = transformTokenRules rules;
+    finalRules = listletMap rules transformTokenRule;
 
     <> { reader ::
         doOr = { rule rest* ::
@@ -130,12 +123,8 @@ orRule = { rules* ::
 # rule when run always succeeds, yielding a listlet. The listlet will
 # have either zero or one element, depending on whether the inner
 # rule was matched. This effectively implements the `?` suffix in PEG.
-#
-# As a convenience, any of the rules is given as a raw highlets (instead
-# of a parser function) get treated as token-matching rules for tokens
-# that match the so-named highlets.
 questRule = { rule ::
-    finalRule = listletNth (transformTokenRules @[rule]) @0;
+    finalRule = transformTokenRule rule;
 
     <> { reader ::
         <> ifValue { <> finalRule reader }
@@ -150,10 +139,12 @@ questRule = { rule ::
 # the inner rule never matched. This effectively implements the `*`
 # suffix in PEG.
 starRule = { rule ::
+    finalRule = transformTokenRule rule;
+
     <> { reader ::
         <> whileReduce @[]
             { result ::
-                <> ifValue { <> readOne reader rule }
+                <> ifValue { <> finalRule reader }
                     { match :: <> listletAppend result match }
             }
     }
