@@ -136,11 +136,9 @@ starRule = { rule ::
 # matching and will be of size one or more. This effectively implements
 # the `+` suffix in PEG.
 plusRule = { rule ::
-    subRule = allRule rule (starRule rule);
-    <> { reader ::
-        <> ifValue { <> subRule reader }
-            { result :: <> apply listletPrepend result }
-    }
+    <> filterRule
+        (allRule rule (starRule rule))
+        { result :: <> apply listletPrepend result }
 };
 
 # Returns a `call` node.
