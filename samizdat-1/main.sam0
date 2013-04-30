@@ -42,7 +42,7 @@ loadAllLibraries = { ctx rest* ::
 
 # Put together the final execution context.
 CONTEXT = loadAllLibraries (sam0Library())
-    @reader @tokenize @parse @run;
+    @diff @reader @tokenize @parse @run;
 
 # Call the `run` function to do the final deed.
 <> apply (mapletGet CONTEXT @run) ARGS

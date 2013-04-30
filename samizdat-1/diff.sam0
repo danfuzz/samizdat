@@ -29,7 +29,11 @@ ifValueChain = { functions* ::
 # Reports a difference.
 report = { context v1 v2 message ::
     io0Note message;
-    listletMap message { item :: io0Note (format @"    at %Q" item) };
+    listletMap context
+        { item ::
+            io0Note (format @"    at %Q" item);
+            <> null
+        };
     io0Note @"";
     io0Note (format @"v1 = %q" v1);
     io0Note (format @"v2 = %q" v2);
@@ -68,8 +72,8 @@ diffMaplet = { context v1 v2 ::
     values2 = mapletValues v2;
 
     <> ifValueChain
-        { <> innerDiff context @keys keys1 keys2 }
-        { <> innerDiff context @values values1 values2 }
+        { <> diffListlet (listletAppend context @keys) keys1 keys2 }
+        { <> diffListlet (listletAppend context @values) values1 values2 }
 };
 
 # Diffs listlets.
@@ -80,7 +84,7 @@ diffListlet = { context v1 v2 ::
     <> ifValueChain
         { <> innerDiff context @size size1 size2 }
         {
-            listletMap v1
+            <> listletMap v1
                 { elem index ::
                     <> innerDiff context index elem (listletNth v2 index)
                 }
@@ -109,7 +113,7 @@ DIFF_FUNCTIONS = @[
 
 # Inner diff. Returns void when diff fails.
 innerDiff = { context newLayer v1 v2 ::
-    fullContext = listletAppend context newLayer;
+    innerContext = listletAppend context newLayer;
 
     <> ifTrue { <> ne v1 v2 }
         {
@@ -121,7 +125,11 @@ innerDiff = { context newLayer v1 v2 ::
                     report context v1 v2
                         (format @"Types differ: %q %q" type1 type2)
                 }
-                { (mapletGet DIFF_FUNCTIONS @type1) fullContext v1 v2 }
+                {
+                    (mapletGet DIFF_FUNCTIONS type1)
+                        (listletAppend innerContext type1)
+                        v1 v2
+                }
         }
         { <> true }
 };

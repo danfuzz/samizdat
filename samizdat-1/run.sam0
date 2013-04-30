@@ -13,10 +13,29 @@
 run = { file rest* ::
     filePath = io0PathFromStringlet file;
     programText = io0ReadFileUtf8 filePath;
+
+    # Turn the text into a parse tree using the tokenizer and tree parser
+    # defined here.
     tokens = tokenize programText;
     programNode = parse tokens;
+
+    # Turn the text into a parse tree using the samizdat-0 implementation
+    # of parsing.
+    programNode0 = sam0Tree programText;
+
+    # Complain if the two parsed forms aren't identical.
+    ifTrue { <> ne programNode0 programNode }
+        {
+            io0Note @"Parser disagreement.";
+            diff programNode0 programNode;
+            io0Note @"";
+            io0Die @"Ouch!";
+        };
+
+    # Evaluate the program in the context of the samizdat-0 core library.
     function = sam0Eval (sam0Library()) programNode;
 
+    # Run it!
     <> apply function filePath rest
 };
 
