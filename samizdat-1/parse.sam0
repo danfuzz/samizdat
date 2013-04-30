@@ -177,32 +177,23 @@ makeCall = { function actuals* ::
 # the *Samizdat Layer 0* specification.
 #
 
-# Parses a `function` node.
-parseFunction = { reader ::
-    <> ifValue { <> readAll reader [:@"{":] parseProgram [:@"}":] }
-        { result :: <> listletNth result @1 }
-};
+# These are effectively forward declarations.
+fwdParseAtom = { reader :: <> parseAtom reader };
+fwdParseFunction = { reader :: <> parseFunction reader };
 
 # `call` node helper: Parses literal `()`, returning an empty listlet.
-parseCall1 = { reader ::
-    <> ifValue { <> readAll reader [:@"(":] [:@")":] }
-        { <> @[] }
-};
+parseCall1 = filterRule
+    (allRule [:@"(":] [:@")":])
+    { <> @[] };
 
 # Parses a `call` node.
-parseCall = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                parseAtom
-                (orRule
-                    parseCall1
-                    (plusRule parseAtom))
-        }
-        { result ::
-            <> apply makeCall (listletNth result @0) (listletNth result @1)
-        }
-};
+parseCall = filterRule
+    (allRule
+        fwdParseAtom
+        (orRule parseCall1 (plusRule fwdParseAtom)))
+    { result ::
+        <> apply makeCall (listletNth result @0) (listletNth result @1)
+    };
 
 # Parses a `highlet` node.
 parseHighlet = { reader ::
@@ -334,7 +325,7 @@ parseParenExpression = { reader ::
 # Parses an `atom` node.
 parseAtom = orRule parseVarRef parseIntlet parseStringlet
     parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
-    parseUniqlet parseHighlet parseFunction parseParenExpression;
+    parseUniqlet parseHighlet fwdParseFunction parseParenExpression;
 
 # Parses an `expression` node.
 parseExpression = orRule parseCall parseAtom;
@@ -453,6 +444,10 @@ parseProgram = { reader ::
         }
 };
 
+# Parses a `function` node.
+parseFunction = filterRule
+    (allRule [:@"{":] parseProgram [:@"}":])
+    { result :: <> listletNth result @1 };
 
 
 #
