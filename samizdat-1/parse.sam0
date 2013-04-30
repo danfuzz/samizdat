@@ -191,7 +191,7 @@ parseHighlet = filterRule
 # Parses a `uniqlet` node.
 parseUniqlet = filterRule
     (tokenRule [:@"@@":])
-    { <> [:@varRef @makeUniqlet:] };
+    { <> makeCall [:@varRef @makeUniqlet:] };
 
 # Parses a `binding` node.
 parseBinding = filterRule
