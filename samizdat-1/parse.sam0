@@ -51,19 +51,23 @@ readAll = { reader rest* ::
         { reader @reset mark }
 };
 
-# Parses a list of alternate rules (`|` separated in PEG), returning
-# the first successful result, or void if none succeeds.
-orRule = { reader rest* ::
-    doOr = { rule rest* ::
-        <> ifValue { <> readOne reader rule }
-            { result :: <> result }
-            {
-                <> ifTrue { <> ne rest @[] }
-                    { <> apply doOr rest }
-            }
-    };
+# Returns a rule which succeeds if any of a list of other rules
+# succeeds, trying them in order. The result is the same as the
+# result of whichever rule succeeded, or void if all the alternatives
+# failed. This effectively implements the `|` operator in PEG.
+orRule = { rules* ::
+    <> { reader ::
+        doOr = { rule rest* ::
+            <> ifValue { <> readOne reader rule }
+                { result :: <> result }
+                {
+                    <> ifTrue { <> ne rest @[] }
+                        { <> apply doOr rest }
+                }
+        };
 
-    <> apply doOr rest
+        <> apply doOr rules
+    }
 };
 
 # Returns a rule which optionally parses a given other rule. The
@@ -229,21 +233,15 @@ parseYield = { reader ::
 };
 
 # Parses a `statement` node.
-parseStatement = { reader ::
-    <> orRule reader parseVarDef parseExpression
-};
+parseStatement = orRule parseVarDef parseExpression;
 
 # Parses an `expression` node.
-parseExpression = { reader ::
-    <> orRule reader parseCall parseAtom
-};
+parseExpression = orRule parseCall parseAtom;
 
 # Parses an `atom` node.
-parseAtom = { reader ::
-    <> orRule reader parseVarRef parseIntlet parseStringlet
-        parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
-        parseUniqlet parseHighlet parseFunction parseParenExpression
-};
+parseAtom = orRule parseVarRef parseIntlet parseStringlet
+    parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
+    parseUniqlet parseHighlet parseFunction parseParenExpression;
 
 # Parses a `parenExpression` node.
 parseParenExpression = { reader ::
@@ -290,7 +288,7 @@ parseStringlet = { reader ::
         {
             <> readAll reader
                 [:@"@":]
-                { reader :: <> orRule reader [:@string:] [:@identifier:] }
+                (orRule [:@string:] [:@identifier:])
         }
         { result :: <> [:@literal (highletValue (listletNth result @1)):] }
 };
@@ -378,10 +376,9 @@ parseCall = { reader ::
         {
             <> readAll reader
                 parseAtom
-                { reader :: <> orRule reader
+                (orRule
                     parseCall1
-                    { reader :: <> plusRule reader parseAtom }
-                }
+                    { reader :: <> plusRule reader parseAtom })
         }
         { result ::
             <> apply makeCall (listletNth result @0) (listletNth result @1)
