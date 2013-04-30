@@ -2,5 +2,6 @@ Samizdat Authors
 ================
 
 Dan Bornstein
-email: <danfuzz@milk.com>
-web: <http://milk.com/>
+[Email](danfuzz@milk.com)
+[Website](http://milk.com/)
+[GitHub](https://github.com/danfuzz)
