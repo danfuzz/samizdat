@@ -53,13 +53,17 @@ readAll = { reader rest* ::
 
 # Parses a list of alternate rules (`|` separated in PEG), returning
 # the first successful result, or void if none succeeds.
-orRule = { reader rule rest* ::
-    <> ifValue { <> readOne reader rule }
-        { result :: <> result }
-        {
-            <> ifTrue { <> ne rest @[] }
-                { <> apply orRule reader rest }
-        }
+orRule = { reader rest* ::
+    doOr = { rule rest* ::
+        <> ifValue { <> readOne reader rule }
+            { result :: <> result }
+            {
+                <> ifTrue { <> ne rest @[] }
+                    { <> apply doOr rest }
+            }
+    };
+
+    <> apply doOr rest
 };
 
 # Returns a rule which optionally parses a given other rule. The
