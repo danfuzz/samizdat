@@ -51,6 +51,17 @@ readAll = { reader rest* ::
         { reader @reset mark }
 };
 
+# Helper for `allRule` and `orRule` which transforms highlets in a
+# rule list into token-matchng rules.
+transformTokenRules = { rules ::
+    <> listletMap rules
+        { rule ::
+            <> ifTrue { <> isHighlet rule }
+                { <> tokenRule rule }
+                { <> rule }
+        }
+};
+
 # Returns a rule which succeeds if a given other rule succeeds, and
 # if so runs the given result filter function, passing it the rule
 # result, to produce the final result of processing.
@@ -81,11 +92,15 @@ tokenRule = { token ::
 # succeeds in order (said list given in the form of separate arguments
 # to this function). The result, if successful, is a listlet of all
 # the rule results. This effectively implements the "adjacency operator"
-# in PEG.
+# in PEG. As a convenience, any of the rules is given as a raw
+# highlets (instead of a parser function) get treated as token-matching
+# rules for tokens that match the so-named highlets.
 allRule = { rules* ::
+    finalRules = transformTokenRules rules;
+
     <> { reader ::
         doAll = { rule rest* ::
-            <> ifValue { <> readOne reader rule }
+            <> ifValue { <> rule reader }
                 { firstResult ::
                     <> ifTrue { <> eq rest @[] }
                         { <> @[firstResult] }
@@ -99,7 +114,7 @@ allRule = { rules* ::
 
         mark = reader @at;
 
-        <> ifValue { <> apply doAll rules }
+        <> ifValue { <> apply doAll finalRules }
             { result :: <> result }
             { reader @reset mark }
     }
@@ -212,10 +227,9 @@ parseHighlet = filterRule
     };
 
 # Parses a `uniqlet` node.
-parseUniqlet = { reader ::
-    <> ifValue { <> readOne reader [:@"@@":] }
-        { <> [:@varRef @makeUniqlet:] }
-};
+parseUniqlet = filterRule
+    (tokenRule [:@"@@":])
+    { <> [:@varRef @makeUniqlet:] };
 
 # Parses a `binding` node.
 parseBinding = filterRule
@@ -267,10 +281,9 @@ parseIntlet = filterRule
     };
 
 # Parses a `varRef` node.
-parseVarRef = { reader ::
-    <> ifValue { <> readOne reader [:@identifier:] }
-        { result :: <> [:@varRef (highletValue result):] }
-};
+parseVarRef = filterRule
+    (tokenRule [:@identifier:])
+    { result :: <> [:@varRef (highletValue result):] };
 
 # Parses a `varDef` node.
 parseVarDef = filterRule
@@ -303,10 +316,9 @@ parseYield = filterRule
     { result :: <> listletNth result @1; };
 
 # `formals` node helper: Parses `identifier`, returning a maplet.
-parseFormals1 = { reader ::
-    <> ifValue { <> readOne reader [:@identifier:] }
-        { result :: <> @[@name = (highletValue result)] }
-};
+parseFormals1 = filterRule
+    (tokenRule [:@identifier:])
+    { result :: <> @[@name = (highletValue result)] };
 
 # Parses a `formals` node.
 parseFormals = filterRule
