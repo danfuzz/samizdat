@@ -155,9 +155,9 @@ makeCall = { function actuals* ::
 #
 
 # These are effectively forward declarations.
-fwdParseAtom = { reader :: <> parseAtom reader };
-fwdParseExpression = { reader :: <> parseExpression reader };
-fwdParseFunction = { reader :: <> parseFunction reader };
+parseAtom = { reader :: <> parseAtomImpl reader };
+parseExpression = { reader :: <> parseExpressionImpl reader };
+parseFunction = { reader :: <> parseFunctionImpl reader };
 
 # `call` node helper: Parses literal `()`, returning an empty listlet.
 parseCall1 = filterRule
@@ -167,8 +167,8 @@ parseCall1 = filterRule
 # Parses a `call` node.
 parseCall = filterRule
     (allRule
-        fwdParseAtom
-        (orRule parseCall1 (plusRule fwdParseAtom)))
+        parseAtom
+        (orRule parseCall1 (plusRule parseAtom)))
     { result ::
         <> apply makeCall (listletNth result @0) (listletNth result @1)
     };
@@ -178,8 +178,8 @@ parseHighlet = filterRule
     (allRule
         [:@"[":]
         [:@":":]
-        fwdParseAtom
-        (questRule fwdParseAtom)
+        parseAtom
+        (questRule parseAtom)
         [:@":":]
         [:@"]":])
     { result ::
@@ -195,7 +195,7 @@ parseUniqlet = filterRule
 
 # Parses a `binding` node.
 parseBinding = filterRule
-    (allRule fwdParseAtom [:@"=":] fwdParseAtom)
+    (allRule parseAtom [:@"=":] parseAtom)
     { result ::
         <> @[(listletNth result @0) (listletNth result @2)]
     };
@@ -215,7 +215,7 @@ parseEmptyMaplet = filterRule
 
 # Parses a `listlet` node.
 parseListlet = filterRule
-    (allRule [:@"@":] [:@"[":] (plusRule fwdParseAtom) [:@"]":])
+    (allRule [:@"@":] [:@"[":] (plusRule parseAtom) [:@"]":])
     { result ::
         <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
     };
@@ -249,7 +249,7 @@ parseVarRef = filterRule
 
 # Parses a `varDef` node.
 parseVarDef = filterRule
-    (allRule [:@identifier:] [:@"=":] fwdParseExpression)
+    (allRule [:@identifier:] [:@"=":] parseExpression)
     { result ::
         name = highletValue (listletNth result @0);
         value = listletNth result @2;
@@ -258,16 +258,16 @@ parseVarDef = filterRule
 
 # Parses a `parenExpression` node.
 parseParenExpression = filterRule
-    (allRule [:@"(":] fwdParseExpression [:@")":])
+    (allRule [:@"(":] parseExpression [:@")":])
     { result :: <> listletNth result @1 };
 
 # Parses an `atom` node.
-parseAtom = orRule parseVarRef parseIntlet parseStringlet
+parseAtomImpl = orRule parseVarRef parseIntlet parseStringlet
     parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
-    parseUniqlet parseHighlet fwdParseFunction parseParenExpression;
+    parseUniqlet parseHighlet parseFunction parseParenExpression;
 
 # Parses an `expression` node.
-parseExpression = orRule parseCall parseAtom;
+parseExpressionImpl = orRule parseCall parseAtom;
 
 # Parses a `statement` node.
 parseStatement = orRule parseVarDef parseExpression;
@@ -363,7 +363,7 @@ parseProgram = filterRule
     };
 
 # Parses a `function` node.
-parseFunction = filterRule
+parseFunctionImpl = filterRule
     (allRule [:@"{":] parseProgram [:@"}":])
     { result :: <> listletNth result @1 };
 
