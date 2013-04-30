@@ -7,21 +7,17 @@
 #
 
 # Compiles the file named in the first argument in a fresh context,
-# and runs it, passing it an array of the rest of the arguments.
+# and runs it, passing it an array consisting of its own file path
+# (in standard listlet-of-stringlet form) followed by the rest of the
+# arguments as-is.
 run = { file rest* ::
-    programText = io0ReadFileUtf8 (io0PathFromStringlet file);
+    filePath = io0PathFromStringlet file;
+    programText = io0ReadFileUtf8 filePath;
     tokens = tokenize programText;
-
-    io0Note (sourceStringlet tokens);
-    io0Note @"";
-
     programNode = parse tokens;
-
-    io0Note (sourceStringlet programNode);
-    io0Note @"";
-
     function = sam0Eval (sam0Library()) programNode;
-    <> apply function rest
+
+    <> apply function filePath rest
 };
 
 <> @[@run = run]
