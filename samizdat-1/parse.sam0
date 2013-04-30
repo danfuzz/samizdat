@@ -299,14 +299,21 @@ parseFormals = filterRule
         <> [:@formals formals:]
     };
 
-# `program` node helper: Parses `(formals? @"::")`. May fail. On success,
-# returns a maplet (possibly empty).
+# `program` node helper: Parses `(formals? @"::")?`, yielding a maplet
+# (possibly empty).
 parseProgram1 = filterRule
-    (allRule (questRule parseFormals) [:@"::":])
+    (questRule
+        (filterRule
+            (allRule (questRule parseFormals) [:@"::":])
+            { result ::
+                formals = listletNth result @0;
+                <> ifValue { <> listletNth formals @0 }
+                    { result :: <> @[@formals=result] }
+                    { <> @[=] }
+            }))
     { result ::
-        formals = listletNth result @0;
-        <> ifValue { <> listletNth formals @0 }
-            { result :: <> @[@formals=result] }
+        <> ifValue { <> listletNth result @0 }
+            { result :: <> result }
             { <> @[=] }
     };
 
@@ -336,14 +343,12 @@ parseProgram3 = filterRule
 # Parses a `program` node.
 parseProgram = filterRule
     (allRule
-        (questRule parseProgram1)
+        parseProgram1
         (starRule [:@";":])
         (starRule parseProgram2)
         parseProgram3)
     { result ::
-        formals = ifValue { <> listletNth (listletNth result @0) @0 }
-            { result :: <> result }
-            { <> @[=] };
+        formals = listletNth result @0;
         mostStatements = listletNth result @2;
         lastClause = listletNth result @3;
         statements = listletAdd mostStatements
