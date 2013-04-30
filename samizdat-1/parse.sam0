@@ -62,12 +62,16 @@ orRule = { reader rule rest* ::
         }
 };
 
-# Parses an optional rule (`?` suffix in PEG), returning a listlet
-# of matched results, which will always be of length zero or one.
-questRule = { reader rule ::
-    <> ifValue { <> readOne reader rule }
-        { result :: <> @[result] }
-        { <> @[] }
+# Returns a rule which optionally parses a given other rule. The
+# rule when run always succeeds and yields a listlet. The listlet will
+# have either zero or one element, depending on whether the inner
+# rule was matched. This effectively implements the `?` suffix in PEG.
+questRule = { rule ::
+    <> { reader ::
+        <> ifValue { <> readOne reader rule }
+            { result :: <> @[result] }
+            { <> @[] }
+    }
 };
 
 # Parses a zero-or-more repetition rule (`*` suffix in PEG), returning a
@@ -114,10 +118,10 @@ parseProgram = { reader ::
     <> ifValue
         {
             <> readAll reader
-                { reader :: <> questRule reader parseProgram1 }
+                (questRule parseProgram1)
                 { reader :: <> starRule reader [:@";":] }
                 { reader :: <> starRule reader parseProgram2 }
-                { reader :: <> questRule reader parseProgram3 }
+                (questRule parseProgram3)
         }
         { result ::
             formals = ifValue { <> listletNth (listletNth result @0) @0 }
@@ -145,7 +149,7 @@ parseProgram1 = { reader ::
     <> ifValue
         {
             <> readAll reader
-                { reader :: <> questRule reader parseFormals }
+                (questRule parseFormals)
                 [:@"::":]
         }
         { result ::
@@ -185,7 +189,7 @@ parseFormals = { reader ::
         {
             <> readAll reader
                 { reader :: <> plusRule reader parseFormals1 }
-                { reader :: <> questRule reader [:@"*":] }
+                (questRule [:@"*":])
         }
         { result ::
             almostFormals = listletNth result @0;
@@ -265,7 +269,7 @@ parseIntlet = { reader ::
         {
             <> readAll reader
                 [:@"@":]
-                { reader :: <> questRule reader [:@"-":] }
+                (questRule [:@"-":])
                 [:@integer:]
         }
         { result ::
@@ -353,7 +357,7 @@ parseHighlet = { reader ::
                 [:@"[":]
                 [:@":":]
                 parseAtom
-                { reader :: <> questRule reader parseAtom }
+                (questRule parseAtom)
                 [:@":":]
                 [:@"]":]
         }
