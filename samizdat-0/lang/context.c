@@ -67,14 +67,16 @@ zcontext langCtxNewChild(zcontext parent) {
 }
 
 /* Documented in header. */
-void langCtxBind(zcontext ctx, const char *name, zvalue value) {
-    ctxBind(ctx, datStringletFromUtf8(-1, name), value);
+void langCtxBind(zcontext ctx, zvalue name, zvalue value) {
+    ctxBind(ctx, name, value);
 }
 
 /* Documented in header. */
 void langCtxBindFunction(zcontext ctx, const char *name,
                       zfunction function, void *state) {
-    langCtxBind(ctx, name, langDefineFunction(function, state));
+    langCtxBind(ctx,
+        datStringletFromUtf8(-1, name),
+        langDefineFunction(function, state));
 }
 
 /* Documented in header. */

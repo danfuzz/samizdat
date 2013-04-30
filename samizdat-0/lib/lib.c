@@ -85,8 +85,8 @@ static zcontext primitiveContext(void) {
     // These both could have been defined in-language, but we already
     // have to make them be defined and accessible to C code, so we just
     // go ahead and bind them here.
-    langCtxBind(ctx, "false", CONST_FALSE);
-    langCtxBind(ctx, "true", CONST_TRUE);
+    langCtxBind(ctx, STR_FALSE, CONST_FALSE);
+    langCtxBind(ctx, STR_TRUE, CONST_TRUE);
 
     // Bind all the primitive functions.
     #define PRIM_FUNC(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
@@ -94,7 +94,7 @@ static zcontext primitiveContext(void) {
 
     // Include a binding for a maplet of all the primitive bindings
     // (other than this one, since values can't self-reference).
-    langCtxBind(ctx, "PRIMLIB", langMapletFromCtx(ctx));
+    langCtxBind(ctx, STR_UP_LIBRARY, langMapletFromCtx(ctx));
 
     return ctx;
 }

@@ -32,10 +32,13 @@ TOK(CH_STAR,       "*");
 STR(CH_DOTDOT,     "..");
 STR(CH_SLASH,      "/");
 
+STR(UP_LIBRARY,    "LIBRARY");
+
 STR(ACTUALS,       "actuals");
 STR(BOOLEAN,       "boolean");
 STR(CALL,          "call");
 STR(EMPTY,         ""); // The canonical empty stringlet (`@""`) value.
+STR(FALSE,         "false");
 STR(FORMALS,       "formals");
 STR(FUNCTION,      "function");
 STR(HIGHLET,       "highlet");
@@ -56,6 +59,7 @@ STR(STATE,         "state");
 STR(STATEMENTS,    "statements");
 STR(STRING,        "string");
 STR(STRINGLET,     "stringlet");
+STR(TRUE,          "true");
 STR(TYPE,          "type");
 STR(UNIQLET,       "uniqlet");
 STR(VALUE,         "value");

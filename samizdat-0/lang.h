@@ -80,7 +80,7 @@ zcontext langCtxNewChild(zcontext parent);
  * giving it the indicated name (interpreted as a `'\0'`-terminated
  * UTF-8 string).
  */
-void langCtxBind(zcontext ctx, const char *name, zvalue value);
+void langCtxBind(zcontext ctx, zvalue name, zvalue value);
 
 /**
  * Binds a primitive function into the given execution context,

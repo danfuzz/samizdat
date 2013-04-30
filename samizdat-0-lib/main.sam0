@@ -77,7 +77,7 @@ sam0Library = {
 
 # Set up the first tier of library, which is just the primitives and
 # `sam0Library` (defined above).
-baseLibrary = mapletPut PRIMLIB @sam0Library sam0Library;
+baseLibrary = mapletPut LIBRARY @sam0Library sam0Library;
 
 # The argument list here is all the library files in dependency order.
 # (First depends only on the primitives, second can depend on primitives
