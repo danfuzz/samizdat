@@ -65,8 +65,8 @@ function getCount {
 
 cd "${baseDir}"
 
-cHeader="$(getCount '*.h')"
-cCode="$(getCount '*.c')"
+cHeader="$(getCount '*.h' samizdat-0)"
+cCode="$(getCount '*.c' samizdat-0)"
 (( cTotal = cHeader + cCode ))
 
 sam0Code="$(getCount '*.sam0' samizdat-0-lib)"
