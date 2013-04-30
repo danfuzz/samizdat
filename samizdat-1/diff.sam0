@@ -1,0 +1,134 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Structural value diff.
+#
+
+# `ifValue` chain: Takes a sequence of functions, and runs each one in
+# argument order, stopping as soon as one of them returns void. Each
+# function is passed as arguments the results of all the previous functions
+# (as separate arguments). The final result is the return value of the last
+# function run (which is necessarily void if the chain did not execute
+# completely.
+ifValueChain = { functions* ::
+    doChain = { results function rest* ::
+        <> ifValue { <> apply function results }
+            { result ::
+                newResults = listletAppend results result;
+                <> ifTrue { <> eq rest @[] }
+                    { <> newResults }
+                    { <> apply doChain newResults rest }
+            }
+    };
+
+    <> apply doChain @[] functions;
+};
+
+# Reports a difference.
+report = { context v1 v2 message ::
+    io0Note message;
+    listletMap message { item :: io0Note (format @"    at %Q" item) };
+    io0Note @"";
+    io0Note (format @"v1 = %q" v1);
+    io0Note (format @"v2 = %q" v2);
+};
+
+# Diffs highlets.
+diffHighlet = { context v1 v2 ::
+    type1 = highletType v1;
+    type2 = highletType v2;
+
+    <> ifValueChain
+        { <> innerDiff context @type type1 type2 }
+        {
+            <> ifValue { <> highletValue v1 }
+                { result :: <> result }
+                { report context v1 v2 @"Value/void mismatch." }
+        }
+        {
+            <> ifValue { <> highletValue v2 }
+                { result :: <> result }
+                { report context v1 v2 @"Value/void mismatch." }
+        }
+        { ignored hv1 hv2 :: <> innerDiff context @value hv1 hv2 }
+};
+
+# Diffs intlets.
+diffIntlet = { context v1 v2 ::
+    report context v1 v2 @"Different intlets."
+};
+
+# Diffs maplets.
+diffMaplet = { context v1 v2 ::
+    keys1 = mapletKeys v1;
+    keys2 = mapletKeys v2;
+    values1 = mapletValues v1;
+    values2 = mapletValues v2;
+
+    <> ifValueChain
+        { <> innerDiff context @keys keys1 keys2 }
+        { <> innerDiff context @values values1 values2 }
+};
+
+# Diffs listlets.
+diffListlet = { context v1 v2 ::
+    size1 = lowSize v1;
+    size2 = lowSize v2;
+
+    <> ifValueChain
+        { <> innerDiff context @size size1 size2 }
+        {
+            listletMap v1
+                { elem index ::
+                    <> innerDiff context index elem (listletNth v2 index)
+                }
+        }
+};
+
+# Diffs stringlets.
+diffStringlet = { context v1 v2 ::
+    report context v1 v2 @"Different stringlets."
+};
+
+# Diffs uniqlets.
+diffUniqlet = { context v1 v2 ::
+    report context v1 v2 @"Different uniqlets."
+};
+
+# Mapping from type names to diff functions.
+DIFF_FUNCTIONS = @[
+    @highlet   = diffHighlet
+    @intlet    = diffIntlet
+    @listlet   = diffListlet
+    @maplet    = diffMaplet
+    @stringlet = diffStringlet
+    @uniqlet   = diffUniqlet
+];
+
+# Inner diff. Returns void when diff fails.
+innerDiff = { context newLayer v1 v2 ::
+    fullContext = listletAppend context newLayer;
+
+    <> ifTrue { <> ne v1 v2 }
+        {
+            type1 = lowType v1;
+            type2 = lowType v2;
+
+            ifTrue { <> ne type1 type2 }
+                {
+                    report context v1 v2
+                        (format @"Types differ: %q %q" type1 type2)
+                }
+                { (mapletGet DIFF_FUNCTIONS @type1) fullContext v1 v2 }
+        }
+        { <> true }
+};
+
+# Compares two values structurally, reporting on the differences.
+diff = { v1 v2 ::
+    <> innerDiff @[] @top v1 v2
+};
+
+<> @[@diff = diff]
