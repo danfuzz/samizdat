@@ -25,7 +25,7 @@ READER ::
 #
 
 # Loads the named library files in the given context, returning a maplet
-# representing both the originally given context *and* the bindings defined
+# representing both the originally-given context *and* the bindings defined
 # by the named library. Each library file is expected to return a maplet of
 # bindings that it wishes to export.
 loadLibrary = { ctx name ::
