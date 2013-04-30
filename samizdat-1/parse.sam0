@@ -121,33 +121,203 @@ parseFunction = { reader ::
         { result :: <> listletNth result @1 }
 };
 
-# Parses a `program` node.
-parseProgram = { reader ::
+# `call` node helper: Parses literal `()`, returning an empty listlet.
+parseCall1 = { reader ::
+    <> ifValue { <> readAll reader [:@"(":] [:@")":] }
+        { <> @[] }
+};
+
+# Parses a `call` node.
+parseCall = { reader ::
     <> ifValue
         {
             <> readAll reader
-                (questRule parseProgram1)
-                { reader :: <> starRule reader [:@";":] }
-                { reader :: <> starRule reader parseProgram2 }
-                (questRule parseProgram3)
+                parseAtom
+                (orRule
+                    parseCall1
+                    { reader :: <> plusRule reader parseAtom })
         }
         { result ::
-            formals = ifValue { <> listletNth (listletNth result @0) @0 }
-                { result :: <> result }
-                { <> @[=] };
-            mostStatements = listletNth result @2;
-            lastClause = ifValue { <> listletNth (listletNth result @3) @0 }
-                { result :: <> result }
-                { <> @[@statements=@[] @yield=@[=]] };
-            statements = listletAdd mostStatements
-                (mapletGet lastClause @statements);
-            <> [:
-                @function
-                (mapletCat
-                    formals
-                    @[@statements=statements]
-                    (mapletGet lastClause @yield))
-            :]
+            <> apply makeCall (listletNth result @0) (listletNth result @1)
+        }
+};
+
+# Parses a `highlet` node.
+parseHighlet = { reader ::
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"[":]
+                [:@":":]
+                parseAtom
+                (questRule parseAtom)
+                [:@":":]
+                [:@"]":]
+        }
+        { result ::
+            <> apply makeCall [:@varRef @makeHighlet:]
+                (listletNth result @2)
+                (listletNth result @3)
+        }
+};
+
+# Parses a `uniqlet` node.
+parseUniqlet = { reader ::
+    <> ifValue { <> readOne reader [:@"@@":] }
+        { <> [:@varRef @makeUniqlet:] }
+};
+
+# Parses a `binding` node.
+parseBinding = { reader ::
+    <> ifValue
+        { <> readAll reader parseAtom [:@"=":] parseAtom }
+        { result ::
+            <> @[(listletNth result @0) (listletNth result @2)]
+        }
+};
+
+# Parses a `maplet` node.
+parseMaplet = { reader ::
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"@":]
+                [:@"[":]
+                { reader :: <> plusRule reader parseBinding }
+                [:@"]":]
+        }
+        { result ::
+            bindings = apply listletCat (listletNth result @2);
+            <> apply makeCall [:@varRef @makeMaplet:] bindings
+        }
+};
+
+# Parses a `emptyMaplet` node.
+parseEmptyMaplet = { reader ::
+    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"=":] [:@"]":] }
+        { <> [:@literal @[=]:] }
+};
+
+# Parses a `listlet` node.
+parseListlet = { reader ::
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"@":]
+                [:@"[":]
+                { reader :: <> plusRule reader parseAtom }
+                [:@"]":]
+        }
+        { result ::
+            <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
+        }
+};
+
+# Parses a `emptyListlet` node.
+parseEmptyListlet = { reader ::
+    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"]":] }
+        { <> [:@literal @[]:] }
+};
+
+# Parses a `stringlet` node.
+parseStringlet = { reader ::
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"@":]
+                (orRule [:@string:] [:@identifier:])
+        }
+        { result :: <> [:@literal (highletValue (listletNth result @1)):] }
+};
+
+# Parses an `intlet` node.
+parseIntlet = { reader ::
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"@":]
+                (questRule [:@"-":])
+                [:@integer:]
+        }
+        { result ::
+            sign = ifTrue { <> eq (listletNth result @1) @[] }
+                { <> @1 } { <> @-1 };
+            value = imul sign (highletValue (listletNth result @2));
+            <> [:@literal value:]
+        }
+};
+
+# Parses a `varRef` node.
+parseVarRef = { reader ::
+    <> ifValue { <> readOne reader [:@identifier:] }
+        { result :: <> [:@varRef (highletValue result):] }
+};
+
+# Parses a `varDef` node.
+parseVarDef = { reader ::
+    <> ifValue { <> readAll reader [:@identifier:] [:@"=":] parseExpression }
+        { result ::
+            name = highletValue (listletNth result @0);
+            value = listletNth result @2;
+            <> [:@varDef @[@name=name @value=value]:];
+        }
+};
+
+# Parses a `parenExpression` node.
+parseParenExpression = { reader ::
+    <> ifValue { <> readAll reader [:@"(":] parseExpression [:@")":] }
+        { result :: <> listletNth result @1 }
+};
+
+# Parses an `atom` node.
+parseAtom = orRule parseVarRef parseIntlet parseStringlet
+    parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
+    parseUniqlet parseHighlet parseFunction parseParenExpression;
+
+# Parses an `expression` node.
+parseExpression = orRule parseCall parseAtom;
+
+# Parses a `statement` node.
+parseStatement = orRule parseVarDef parseExpression;
+
+# Parses a `yield` node.
+parseYield = { reader ::
+    <> ifValue
+        {
+            <> readAll reader
+                [:@"<>":]
+                parseExpression
+                { reader:: <> starRule reader [:@";":] }
+        }
+        { result :: <> listletNth result @1; }
+};
+
+# `formals` node helper: Parses `identifier`, returning a maplet.
+parseFormals1 = { reader ::
+    <> ifValue { <> readOne reader [:@identifier:] }
+        { result :: <> @[@name = (highletValue result)] }
+};
+
+# Parses a `formals` node.
+parseFormals = { reader ::
+    <> ifValue
+        {
+            <> readAll reader
+                { reader :: <> plusRule reader parseFormals1 }
+                (questRule [:@"*":])
+        }
+        { result ::
+            almostFormals = listletNth result @0;
+            starMod = listletNth result @1;
+            formals = ifValue { <> listletNth starMod @0 }
+                { starToken ::
+                    n = isub (lowSize almostFormals) @1;
+                    last = listletNth almostFormals n;
+                    <> listletPutNth almostFormals n
+                        (mapletPut last @repeat starToken);
+                }
+                { <> almostFormals };
+            <> [:@formals formals:]
         }
 };
 
@@ -191,205 +361,36 @@ parseProgram3 = { reader ::
         }
 };
 
-# Parses a `formals` node.
-parseFormals = { reader ::
+# Parses a `program` node.
+parseProgram = { reader ::
     <> ifValue
         {
             <> readAll reader
-                { reader :: <> plusRule reader parseFormals1 }
-                (questRule [:@"*":])
+                (questRule parseProgram1)
+                { reader :: <> starRule reader [:@";":] }
+                { reader :: <> starRule reader parseProgram2 }
+                (questRule parseProgram3)
         }
         { result ::
-            almostFormals = listletNth result @0;
-            starMod = listletNth result @1;
-            formals = ifValue { <> listletNth starMod @0 }
-                { starToken ::
-                    n = isub (lowSize almostFormals) @1;
-                    last = listletNth almostFormals n;
-                    <> listletPutNth almostFormals n
-                        (mapletPut last @repeat starToken);
-                }
-                { <> almostFormals };
-            <> [:@formals formals:]
+            formals = ifValue { <> listletNth (listletNth result @0) @0 }
+                { result :: <> result }
+                { <> @[=] };
+            mostStatements = listletNth result @2;
+            lastClause = ifValue { <> listletNth (listletNth result @3) @0 }
+                { result :: <> result }
+                { <> @[@statements=@[] @yield=@[=]] };
+            statements = listletAdd mostStatements
+                (mapletGet lastClause @statements);
+            <> [:
+                @function
+                (mapletCat
+                    formals
+                    @[@statements=statements]
+                    (mapletGet lastClause @yield))
+            :]
         }
 };
 
-# `formals` node helper: Parses `identifier`, returning a maplet.
-parseFormals1 = { reader ::
-    <> ifValue { <> readOne reader [:@identifier:] }
-        { result :: <> @[@name = (highletValue result)] }
-};
-
-# Parses a `yield` node.
-parseYield = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"<>":]
-                parseExpression
-                { reader:: <> starRule reader [:@";":] }
-        }
-        { result :: <> listletNth result @1; }
-};
-
-# Parses a `statement` node.
-parseStatement = orRule parseVarDef parseExpression;
-
-# Parses an `expression` node.
-parseExpression = orRule parseCall parseAtom;
-
-# Parses an `atom` node.
-parseAtom = orRule parseVarRef parseIntlet parseStringlet
-    parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
-    parseUniqlet parseHighlet parseFunction parseParenExpression;
-
-# Parses a `parenExpression` node.
-parseParenExpression = { reader ::
-    <> ifValue { <> readAll reader [:@"(":] parseExpression [:@")":] }
-        { result :: <> listletNth result @1 }
-};
-
-# Parses a `varDef` node.
-parseVarDef = { reader ::
-    <> ifValue { <> readAll reader [:@identifier:] [:@"=":] parseExpression }
-        { result ::
-            name = highletValue (listletNth result @0);
-            value = listletNth result @2;
-            <> [:@varDef @[@name=name @value=value]:];
-        }
-};
-
-# Parses a `varRef` node.
-parseVarRef = { reader ::
-    <> ifValue { <> readOne reader [:@identifier:] }
-        { result :: <> [:@varRef (highletValue result):] }
-};
-
-# Parses an `intlet` node.
-parseIntlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                (questRule [:@"-":])
-                [:@integer:]
-        }
-        { result ::
-            sign = ifTrue { <> eq (listletNth result @1) @[] }
-                { <> @1 } { <> @-1 };
-            value = imul sign (highletValue (listletNth result @2));
-            <> [:@literal value:]
-        }
-};
-
-# Parses a `stringlet` node.
-parseStringlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                (orRule [:@string:] [:@identifier:])
-        }
-        { result :: <> [:@literal (highletValue (listletNth result @1)):] }
-};
-
-# Parses a `emptyListlet` node.
-parseEmptyListlet = { reader ::
-    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"]":] }
-        { <> [:@literal @[]:] }
-};
-
-# Parses a `listlet` node.
-parseListlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                [:@"[":]
-                { reader :: <> plusRule reader parseAtom }
-                [:@"]":]
-        }
-        { result ::
-            <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
-        }
-};
-
-# Parses a `emptyMaplet` node.
-parseEmptyMaplet = { reader ::
-    <> ifValue { <> readAll reader [:@"@":] [:@"[":] [:@"=":] [:@"]":] }
-        { <> [:@literal @[=]:] }
-};
-
-# Parses a `maplet` node.
-parseMaplet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"@":]
-                [:@"[":]
-                { reader :: <> plusRule reader parseBinding }
-                [:@"]":]
-        }
-        { result ::
-            bindings = apply listletCat (listletNth result @2);
-            <> apply makeCall [:@varRef @makeMaplet:] bindings
-        }
-};
-
-# Parses a `binding` node.
-parseBinding = { reader ::
-    <> ifValue
-        { <> readAll reader parseAtom [:@"=":] parseAtom }
-        { result ::
-            <> @[(listletNth result @0) (listletNth result @2)]
-        }
-};
-
-# Parses a `uniqlet` node.
-parseUniqlet = { reader ::
-    <> ifValue { <> readOne reader [:@"@@":] }
-        { <> [:@varRef @makeUniqlet:] }
-};
-
-# Parses a `highlet` node.
-parseHighlet = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                [:@"[":]
-                [:@":":]
-                parseAtom
-                (questRule parseAtom)
-                [:@":":]
-                [:@"]":]
-        }
-        { result ::
-            <> apply makeCall [:@varRef @makeHighlet:]
-                (listletNth result @2)
-                (listletNth result @3)
-        }
-};
-
-# Parses a `call` node.
-parseCall = { reader ::
-    <> ifValue
-        {
-            <> readAll reader
-                parseAtom
-                (orRule
-                    parseCall1
-                    { reader :: <> plusRule reader parseAtom })
-        }
-        { result ::
-            <> apply makeCall (listletNth result @0) (listletNth result @1)
-        }
-};
-
-# `call` node helper: Parses literal `()`, returning an empty listlet.
-parseCall1 = { reader ::
-    <> ifValue { <> readAll reader [:@"(":] [:@")":] }
-        { <> @[] }
-};
 
 
 #
