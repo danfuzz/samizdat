@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 
     args[0] = pathListlet;
     for (int i = 1; i < argCount; i++) {
-        args[i] = datStringletFromUtf8String(-1, argv[i + 1]);
+        args[i] = datStringletFromUtf8(-1, argv[i + 1]);
     }
 
     zcontext ctx = libNewContext();

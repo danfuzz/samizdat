@@ -48,9 +48,9 @@ static void initLibraryFiles(void) {
     // This adds an element to `result` for each of the embedded files,
     // and sets up the static name constants.
     #define LIB_FILE(name) \
-        LIB_NAME_##name = datStringletFromUtf8String(-1, #name); \
+        LIB_NAME_##name = datStringletFromUtf8(-1, #name); \
         LIB_TEXT_##name = \
-            datStringletFromUtf8String(name##_sam0_len, name##_sam0); \
+            datStringletFromUtf8(name##_sam0_len, name##_sam0); \
         result = datMapletPut(result, LIB_NAME_##name, LIB_TEXT_##name)
     #include "lib-def.h"
     #undef LIB_FILE

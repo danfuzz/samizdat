@@ -197,7 +197,7 @@ zvalue datStringletAdd(zvalue str1, zvalue str2);
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.
  */
-zvalue datStringletFromUtf8String(zint stringBytes, const char *string);
+zvalue datStringletFromUtf8(zint stringBytes, const char *string);
 
 /**
  * Encodes the given stringlet as UTF-8, returning permanently

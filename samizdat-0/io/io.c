@@ -71,7 +71,7 @@ static zvalue pathListletFromAbsolute(const char *path) {
     for (;;) {
         const char *slashAt = strchr(at, '/');
         zint size = (slashAt != NULL) ? (slashAt - at) : strlen(at);
-        zvalue one = datStringletFromUtf8String(size, at);
+        zvalue one = datStringletFromUtf8(size, at);
 
         if (datOrder(one, STR_CH_DOTDOT) == 0) {
             zint rsize = datSize(result);
@@ -193,7 +193,7 @@ zvalue ioReadFileUtf8(zvalue pathListlet) {
 
     fclose(in);
 
-    return datStringletFromUtf8String(amt, buf);
+    return datStringletFromUtf8(amt, buf);
 }
 
 /* Documented in header. */

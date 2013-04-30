@@ -109,7 +109,7 @@ zvalue datStringletAdd(zvalue str1, zvalue str2) {
 }
 
 /* Documented in header. */
-zvalue datStringletFromUtf8String(zint stringBytes, const char *string) {
+zvalue datStringletFromUtf8(zint stringBytes, const char *string) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
     } else if (stringBytes < 0) {

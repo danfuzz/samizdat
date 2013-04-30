@@ -47,7 +47,7 @@ void constInit(void) {
         return;
     }
 
-    #define STR(name, str) STR_##name = datStringletFromUtf8String(-1, str)
+    #define STR(name, str) STR_##name = datStringletFromUtf8(-1, str)
 
     #define TOK(name, str) \
         STR(name, str); \

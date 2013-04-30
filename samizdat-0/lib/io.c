@@ -35,7 +35,7 @@ PRIM_IMPL(io0Die) {
     requireRange(argCount, 0, 1);
 
     zvalue message =
-        (argCount == 1) ? args[0] : datStringletFromUtf8String(-1, "Alas");
+        (argCount == 1) ? args[0] : datStringletFromUtf8(-1, "Alas");
     emitNote(message);
     exit(1);
 }
