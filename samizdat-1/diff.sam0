@@ -37,6 +37,7 @@ report = { context v1 v2 message ::
     io0Note @"";
     io0Note (format @"v1 = %q" v1);
     io0Note (format @"v2 = %q" v2);
+    <> false;
 };
 
 # Diffs highlets.
@@ -61,7 +62,7 @@ diffHighlet = { context v1 v2 ::
 
 # Diffs intlets.
 diffIntlet = { context v1 v2 ::
-    report context v1 v2 @"Different intlets."
+    <> report context v1 v2 @"Different intlets."
 };
 
 # Diffs maplets.
@@ -71,7 +72,7 @@ diffMaplet = { context v1 v2 ::
     values1 = mapletValues v1;
     values2 = mapletValues v2;
 
-    <> ifValueChain
+    <> and
         { <> diffListlet (listletAppend context @keys) keys1 keys2 }
         { <> diffListlet (listletAppend context @values) values1 values2 }
 };
@@ -81,24 +82,28 @@ diffListlet = { context v1 v2 ::
     size1 = lowSize v1;
     size2 = lowSize v2;
 
-    <> ifValueChain
-        { <> innerDiff context @size size1 size2 }
-        {
-            <> listletMap v1
-                { elem index ::
-                    <> innerDiff context index elem (listletNth v2 index)
-                }
+    <> or
+        { <> eq v1 v2 }
+        { <> and
+            { <> innerDiff context @size size1 size2 }
+            {
+                listletMap v1
+                    { elem index ::
+                        <> innerDiff context index elem (listletNth v2 index)
+                    };
+                <> false
+            }
         }
 };
 
 # Diffs stringlets.
 diffStringlet = { context v1 v2 ::
-    report context v1 v2 @"Different stringlets."
+    <> report context v1 v2 @"Different stringlets."
 };
 
 # Diffs uniqlets.
 diffUniqlet = { context v1 v2 ::
-    report context v1 v2 @"Different uniqlets."
+    <> report context v1 v2 @"Different uniqlets."
 };
 
 # Mapping from type names to diff functions.
@@ -111,7 +116,7 @@ DIFF_FUNCTIONS = @[
     @uniqlet   = diffUniqlet
 ];
 
-# Inner diff. Returns void when diff fails.
+# Inner diff. Returns an `eq` result.
 innerDiff = { context newLayer v1 v2 ::
     innerContext = listletAppend context newLayer;
 
@@ -120,13 +125,13 @@ innerDiff = { context newLayer v1 v2 ::
             type1 = lowType v1;
             type2 = lowType v2;
 
-            ifTrue { <> ne type1 type2 }
+            <> ifTrue { <> ne type1 type2 }
                 {
-                    report context v1 v2
+                    <> report context v1 v2
                         (format @"Types differ: %q %q" type1 type2)
                 }
                 {
-                    (mapletGet DIFF_FUNCTIONS type1)
+                    <> (mapletGet DIFF_FUNCTIONS type1)
                         (listletAppend innerContext type1)
                         v1 v2
                 }

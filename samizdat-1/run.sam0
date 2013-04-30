@@ -29,6 +29,8 @@ run = { file rest* ::
             io0Note @"Parser disagreement.";
             diff programNode0 programNode;
             io0Note @"";
+            io0Note (format @"v1\n----------\n%q\n" programNode0);
+            io0Note (format @"v2\n----------\n%q\n" programNode);
             io0Die @"Ouch!";
         };
 
