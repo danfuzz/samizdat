@@ -71,7 +71,7 @@ orRule = { rules* ::
 };
 
 # Returns a rule which optionally parses a given other rule. The
-# rule when run always succeeds and yields a listlet. The listlet will
+# rule when run always succeeds, yielding a listlet. The listlet will
 # have either zero or one element, depending on whether the inner
 # rule was matched. This effectively implements the `?` suffix in PEG.
 questRule = { rule ::
@@ -82,24 +82,30 @@ questRule = { rule ::
     }
 };
 
-# Parses a zero-or-more repetition rule (`*` suffix in PEG), returning a
-# listlet of all the matched repetitions.
-starRule = { reader rule ::
-    <> whileReduce @[]
-        { result ::
-            <> ifValue { <> readOne reader rule }
-                { match :: <> listletAppend result match }
-        }
+# Returns a rule which parses zero or more repetitions of a given other
+# rule. The rule when run always succeeds, yielding a listlet of all
+# the results of matching. It will be a zero-length listlet if in fact
+# the inner rule never matched. This effectively implements the `*`
+# suffix in PEG.
+starRule = { rule ::
+    <> { reader ::
+        <> whileReduce @[]
+            { result ::
+                <> ifValue { <> readOne reader rule }
+                    { match :: <> listletAppend result match }
+            }
+    }
 };
 
-# Parses a one-or-more repetition rule (`+` suffix in PEG), returning a
-# listlet of all the matched repetitions.
-plusRule = { reader rule ::
-    mark = reader @at;
-    result = starRule reader rule;
-    <> ifTrue { <> gt (lowSize result) @0 }
-        { <> result }
-        { reader @reset mark }
+# Returns a rule which parses one or more repetitions of a given other
+# rule. The rule when successful yields a listlet of all the results of
+# matching and will be of size one or more. This effectively implements
+# the `+` suffix in PEG.
+plusRule = { rule ::
+    <> { reader ::
+        <> ifValue { <> readAll reader rule (starRule rule) }
+            { result :: <> apply listletPrepend result }
+    }
 };
 
 # Returns a `call` node.
@@ -135,7 +141,7 @@ parseCall = { reader ::
                 parseAtom
                 (orRule
                     parseCall1
-                    { reader :: <> plusRule reader parseAtom })
+                    (plusRule parseAtom))
         }
         { result ::
             <> apply makeCall (listletNth result @0) (listletNth result @1)
@@ -183,7 +189,7 @@ parseMaplet = { reader ::
             <> readAll reader
                 [:@"@":]
                 [:@"[":]
-                { reader :: <> plusRule reader parseBinding }
+                (plusRule parseBinding)
                 [:@"]":]
         }
         { result ::
@@ -205,7 +211,7 @@ parseListlet = { reader ::
             <> readAll reader
                 [:@"@":]
                 [:@"[":]
-                { reader :: <> plusRule reader parseAtom }
+                (plusRule parseAtom)
                 [:@"]":]
         }
         { result ::
@@ -287,7 +293,7 @@ parseYield = { reader ::
             <> readAll reader
                 [:@"<>":]
                 parseExpression
-                { reader:: <> starRule reader [:@";":] }
+                (starRule [:@";":])
         }
         { result :: <> listletNth result @1; }
 };
@@ -303,7 +309,7 @@ parseFormals = { reader ::
     <> ifValue
         {
             <> readAll reader
-                { reader :: <> plusRule reader parseFormals1 }
+                (plusRule parseFormals1)
                 (questRule [:@"*":])
         }
         { result ::
@@ -345,7 +351,7 @@ parseProgram2 = { reader ::
         {
             <> readAll reader
                 parseStatement
-                { reader:: <> plusRule reader [:@";":] }
+                (plusRule [:@";":])
         }
         { result :: <> listletNth result @0 }
 };
@@ -367,8 +373,8 @@ parseProgram = { reader ::
         {
             <> readAll reader
                 (questRule parseProgram1)
-                { reader :: <> starRule reader [:@";":] }
-                { reader :: <> starRule reader parseProgram2 }
+                (starRule [:@";":])
+                (starRule parseProgram2)
                 (questRule parseProgram3)
         }
         { result ::
