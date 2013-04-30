@@ -159,16 +159,15 @@ parseAtom = { reader :: <> parseAtomImpl reader };
 parseExpression = { reader :: <> parseExpressionImpl reader };
 parseFunction = { reader :: <> parseFunctionImpl reader };
 
-# `call` node helper: Parses literal `()`, returning an empty listlet.
-parseCall1 = filterRule
-    (allRule [:@"(":] [:@")":])
-    { <> @[] };
-
 # Parses a `call` node.
 parseCall = filterRule
     (allRule
         parseAtom
-        (orRule parseCall1 (plusRule parseAtom)))
+        (orRule
+            (plusRule parseAtom)
+            (filterRule
+                (allRule [:@"(":] [:@")":])
+                { <> @[] })))
     { result ::
         <> apply makeCall (listletNth result @0) (listletNth result @1)
     };
@@ -277,14 +276,14 @@ parseYield = filterRule
     (allRule [:@"<>":] parseExpression (starRule [:@";":]))
     { result :: <> listletNth result @1; };
 
-# `formals` node helper: Parses `identifier`, returning a maplet.
-parseFormals1 = filterRule
-    (tokenRule [:@identifier:])
-    { result :: <> @[@name = (highletValue result)] };
-
 # Parses a `formals` node.
 parseFormals = filterRule
-    (allRule (plusRule parseFormals1) (questRule [:@"*":]))
+    (allRule
+        (plusRule
+            (filterRule
+                (tokenRule [:@identifier:])
+                { result :: <> @[@name = (highletValue result)] }))
+        (questRule [:@"*":]))
     { result ::
         almostFormals = listletNth result @0;
         starMod = listletNth result @1;
