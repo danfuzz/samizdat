@@ -70,9 +70,11 @@ tokenRule = { token ::
 # succeeds in order (said list given in the form of separate arguments
 # to this function). The result, if successful, is a listlet of all
 # the rule results. This effectively implements the "adjacency operator"
-# in PEG. As a convenience, any of the rules is given as a raw
-# highlets (instead of a parser function) get treated as token-matching
-# rules for tokens that match the so-named highlets.
+# in PEG.
+#
+# As a convenience, any of the rules is given as a raw highlets (instead
+# of a parser function) get treated as token-matching rules for tokens
+# that match the so-named highlets.
 allRule = { rules* ::
     finalRules = transformTokenRules rules;
 
@@ -103,10 +105,16 @@ allRule = { rules* ::
 # function), trying them in order. The result is the same as the
 # result of whichever rule succeeded, or void if all the alternatives
 # failed. This effectively implements the `|` operator in PEG.
+#
+# As a convenience, any of the rules is given as a raw highlets (instead
+# of a parser function) get treated as token-matching rules for tokens
+# that match the so-named highlets.
 orRule = { rules* ::
+    finalRules = transformTokenRules rules;
+
     <> { reader ::
         doOr = { rule rest* ::
-            <> ifValue { <> readOne reader rule }
+            <> ifValue { <> rule reader }
                 { result :: <> result }
                 {
                     <> ifTrue { <> ne rest @[] }
@@ -114,7 +122,7 @@ orRule = { rules* ::
                 }
         };
 
-        <> apply doOr rules
+        <> apply doOr finalRules;
     }
 };
 
@@ -122,9 +130,15 @@ orRule = { rules* ::
 # rule when run always succeeds, yielding a listlet. The listlet will
 # have either zero or one element, depending on whether the inner
 # rule was matched. This effectively implements the `?` suffix in PEG.
+#
+# As a convenience, any of the rules is given as a raw highlets (instead
+# of a parser function) get treated as token-matching rules for tokens
+# that match the so-named highlets.
 questRule = { rule ::
+    finalRule = listletNth (transformTokenRules @[rule]) @0;
+
     <> { reader ::
-        <> ifValue { <> readOne reader rule }
+        <> ifValue { <> finalRule reader }
             { result :: <> @[result] }
             { <> @[] }
     }
