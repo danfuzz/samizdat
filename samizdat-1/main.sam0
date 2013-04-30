@@ -43,7 +43,7 @@ loadAllLibraries = { ctx rest* ::
 };
 
 # Put together the final execution context.
-CONTEXT = loadAllLibraries (sam0Library())
+CONTEXT = loadAllLibraries (makeLibrary LIBRARY)
     @diff @reader @tokenize @parse @run;
 
 # Call the `run` function to do the final deed.

@@ -35,7 +35,7 @@ run = { file rest* ::
         };
 
     # Evaluate the program in the context of the samizdat-0 core library.
-    function = sam0Eval (sam0Library()) programNode;
+    function = sam0Eval (makeLibrary LIBRARY) programNode;
 
     # Run it!
     <> apply function filePath rest

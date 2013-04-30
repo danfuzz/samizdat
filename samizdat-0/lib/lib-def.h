@@ -22,4 +22,5 @@ LIB_FILE(format);
 LIB_FILE(intlet);
 LIB_FILE(io0);
 LIB_FILE(main);
+LIB_FILE(meta);
 LIB_FILE(type);

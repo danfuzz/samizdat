@@ -737,6 +737,7 @@ Returns the type name of the low-layer type of the given value. The
 result will be one of: `@intlet` `@stringlet` `@listlet` `@maplet`
 `@uniqlet` `@highlet`
 
+
 <br><br>
 ### Primitive Library: Intlets
 
@@ -836,6 +837,7 @@ Returns the difference of the given values (first minus second).
 
 Returns the binary-xor (bitwise not-equal) of the given values.
 
+
 <br><br>
 ### Primitive Library: Stringlets
 
@@ -863,6 +865,7 @@ single-element stringlet, if `n` is a valid intlet index into the given
 stringlet. If `n` is not valid (not an intlet, or out of range),
 then this returns the `notFound` value (an arbitrary value) if supplied,
 or returns void if `notFound` was not supplied.
+
 
 <br><br>
 ### Primitive Library: Listlets
@@ -909,6 +912,7 @@ a valid intlet index into the listlet. If `n` is not a valid index
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied.
 
+
 <br><br>
 ### Primitive Library: Maplets
 
@@ -952,6 +956,7 @@ checking for the existence of `key` in the original.
 Returns a listlet of all the values in the given maplet, in order
 of the keys (in sorted order).
 
+
 <br><br>
 ### Primitive Library: Highlets
 
@@ -963,6 +968,7 @@ Returns the type tag value (an arbitrary value) of the given highlet.
 
 Returns the payload data value (an arbitrary value) of the given
 highlet, if any. Returns void if the given highlet is valueless.
+
 
 <br><br>
 ### Primitive Library: Functions and Code
@@ -1034,6 +1040,7 @@ bindings for all of the library functions specified by this document.
 Parses the given stringlet as a program written in *Samizdat Layer 0*.
 Returns a `function` node (as defined by the parse tree semantics)
 that represents the function.
+
 
 <br><br>
 ### Primitive Library: I/O
@@ -1109,6 +1116,23 @@ functionality, and encoding the text (a stringlet) as a stream of UTF-8 bytes.
 `pathListlet` must be a listlet of the form described by `io0PathFromStringlet`
 (see which). See `io0ReadFileUtf8` for further discussion.
 
+
+### Primitive Library: Meta-Library
+
+#### `LIBRARY`
+
+A maplet of bindings of the entire *Samizdat Layer 0*
+primitive library, except for the binding of `LIBRARY` itself (which can't
+be done in that the data model doesn't allow self-reference).
+
+**Note:** This is a constant maplet value, not a function.
+
+**Note:** This binding as the *primitive* library is only available when
+the in-language core library is first being loaded. When non-library code
+is loaded, its `LIBRARY` binding is the full core library, including both
+primitives and in-language definitions.
+
+
 <br><br>
 ### In-Language Library: Constants
 
@@ -1116,6 +1140,9 @@ functionality, and encoding the text (a stringlet) as a stream of UTF-8 bytes.
 
 A value used when no other value is suitable, but when a value is
 nonetheless required. It can also be written as `[:@null:]`.
+
+**Note:** This is a constant value, not a function.
+
 
 <br><br>
 ### In-Language Library: Comparisons / Booleans
@@ -1156,6 +1183,7 @@ Returns the opposite boolean to the one given.
 
 **Note:** Only accepts boolean arguments.
 
+
 <br><br>
 ### In-Language Library: Types
 
@@ -1182,6 +1210,7 @@ Returns `true` iff the given value is a stringlet.
 #### `isUniqlet value <> boolean`
 
 Returns `true` iff the given value is a uniqlet.
+
 
 <br><br>
 ### In-Language Library: Conditionals
@@ -1224,6 +1253,7 @@ Short-circuit disjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
 them returns `true`, in which case this function also returns
 `true`. If no predicate returns `true`, this function returns `false`.
+
 
 <br><br>
 ### In-Language Library: Intlets
@@ -1272,6 +1302,7 @@ also returns void.
 
 See note on `stringletMap` about choice of argument order.
 
+
 <br><br>
 ### In-Language Library: Listlets
 
@@ -1319,6 +1350,7 @@ also returns void.
 
 See note on `stringletMap` about choice of argument order.
 
+
 <br><br>
 ### In-Language Library: Maplets
 
@@ -1357,6 +1389,7 @@ also returns void.
 
 See note on `stringletMap` about choice of argument order.
 
+
 <br><br>
 ### In-Language Library: I/O
 
@@ -1373,8 +1406,9 @@ directory.
 This function is meant to help enable a "supervisor" to build a sandbox
 from which untrusted code can read its own files.
 
+
 <br><br>
-### In-Language Library: Miscellaneous
+### In-Language Library: String Formatting
 
 #### `format formatStringlet rest* <> stringlet`
 
@@ -1399,11 +1433,6 @@ The following are the format codes and their meanings:
 * `%Q` &mdash; "Quotes" the argument without top-level adornment through
   `sourceStringletUnadorned` (see which).
 
-#### `sam0Library() <> maplet`
-
-Returns a maplet of bindings of the entire *Samizdat Layer 0*
-library. This is suitable for passing to `sam0Eval`, for example.
-
 #### `sourceStringlet value <> stringlet`
 
 Converts an arbitrary value into a stringlet representation form
@@ -1425,6 +1454,31 @@ language:
 
 This is just like `sourceStringlet`, except that top-level adornment
 (quotes, etc.) are not produced.
+
+
+<br><br>
+### In-Language Library: Meta-Library
+
+#### `LIBRARY`
+
+A maplet of bindings of the entire *Samizdat Layer 0*
+library, except for the binding of `LIBRARY` itself (which can't
+be done in that the data model doesn't allow self-reference).
+
+**Note:** This is a constant maplet value, not a function.
+
+#### `makeLibrary maplet <> maplet`
+
+Takes a library binding maplet and returns one that is just like the
+one given, except that the key `@LIBRARY` is bound to the given
+maplet. This makes a `LIBRARY` binding into a form suitable for
+passing as the library / global context argument to evaluation
+functions (such as `sam0Eval`), in that callees can rightfully expect
+there to be a binding for `LIBRARY`.
+
+
+<br><br>
+### In-Language Library: Combinators
 
 #### `yCombinator function <> function`
 

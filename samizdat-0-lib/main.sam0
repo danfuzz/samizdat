@@ -28,10 +28,10 @@ READER ::
 # representing both the originally given context *and* the bindings defined
 # by the named library. Each library file is expected to return a maplet of
 # bindings that it wishes to export.
-loadLibrary = { ctx name rest* ::
+loadLibrary = { ctx name ::
     text = READER name;
     tree = sam0Tree text;
-    function = sam0Eval ctx tree;
+    function = sam0Eval (mapletPut ctx @LIBRARY ctx) tree;
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -58,33 +58,15 @@ loadAllLibraries = { ctx name rest* ::
 
 
 #
-# Exported functions
-#
-
-# Documented in Samizdat Layer 0 spec.
-#
-# This is the one binding that is most conveniently defined in this file,
-# as it needs to refer to the overall bindings maplet, which is not readily
-# accessible anywhere else.
-sam0Library = {
-    <> CORE_LIBRARY   # Defined below.
-};
-
-
-#
 # Main export mechanics
 #
-
-# Set up the first tier of library, which is just the primitives and
-# `sam0Library` (defined above).
-baseLibrary = mapletPut LIBRARY @sam0Library sam0Library;
 
 # The argument list here is all the library files in dependency order.
 # (First depends only on the primitives, second can depend on primitives
 # and the first, etc.).
 CORE_LIBRARY = loadAllLibraries
-    baseLibrary
+    LIBRARY
     @combinator @const @boolean @type @conditional @intlet
-    @collections @format @io0;
+    @collections @format @io0 @meta;
 
 <> CORE_LIBRARY
