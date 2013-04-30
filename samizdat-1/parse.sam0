@@ -29,28 +29,6 @@ readOne = { reader rule ::
         { <> rule reader }
 };
 
-# Parses all of the indicate rules, in order, returning a listlet of
-# the results. Returns void if it could not parse everything requested.
-readAll = { reader rest* ::
-    doReads = { rule rest* ::
-        <> ifValue { <> readOne reader rule }
-            { firstResult ::
-                <> ifTrue { <> eq rest @[] }
-                    { <> @[firstResult] }
-                    {
-                        <> ifValue { <> apply doReads rest }
-                            { result :: <> listletPrepend firstResult result }
-                    }
-            }
-    };
-
-    mark = reader @at;
-
-    <> ifValue { <> apply doReads rest }
-        { result :: <> result }
-        { reader @reset mark }
-};
-
 # Helper for `allRule` and `orRule` which transforms highlets in a
 # rule list into token-matchng rules.
 transformTokenRules = { rules ::
