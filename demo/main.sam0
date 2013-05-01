@@ -46,6 +46,10 @@ countDowns = yStarCombinator
     };
 countDown2 = listletNth countDowns @0;
 
+# Demo of formal argument repeat modifiers.
+blort = { foo bar? baz? more* ::
+    io0Note (format @"%q %q %q %q" foo bar baz more);
+};
 
 # Emits the stringified version of the given value to the console.
 process = { value ::
@@ -85,6 +89,12 @@ main = { selfPath name rest* ::
     process @@;
     process (countDown @10);
     process (countDown2 @5);
+
+    blort @1;
+    blort @1 @2;
+    blort @1 @2 @3;
+    blort @1 @2 @3 @4;
+    blort @1 @2 @3 @4 @5;
 };
 
 <> apply main ARGS

@@ -26,6 +26,7 @@ TOK(CH_MINUS,      "-");
 TOK(CH_OCURLY,     "{");
 TOK(CH_OPAREN,     "(");
 TOK(CH_OSQUARE,    "[");
+TOK(CH_QMARK,      "?");
 TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
 

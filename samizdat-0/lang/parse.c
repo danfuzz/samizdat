@@ -463,6 +463,31 @@ DEF_PARSE(yield) {
     return expression;
 }
 
+/**
+ * Helper for `formal`: Parses `(@"?" | @"*")?`. Returns either the
+ * parsed token or `NULL` to indicate that neither was present.
+ */
+DEF_PARSE(formal1) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = MATCH(CH_QMARK); }
+    if (result == NULL) { result = MATCH(CH_STAR); }
+
+    return result;
+}
+
+/**
+ * Parses a `formal` node.
+ */
+DEF_PARSE(formal) {
+    MARK();
+
+    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
+    zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
+
+    return mapletFrom2(STR_NAME, datHighletValue(identifier),
+                       STR_REPEAT, repeat);
+}
 
 /**
  * Parses a `formals` node.
@@ -472,22 +497,12 @@ DEF_PARSE(formals) {
     zvalue formals = EMPTY_LISTLET;
 
     for (;;) {
-        zvalue identifier = MATCH(IDENTIFIER);
-        if (identifier == NULL) {
+        zvalue formal = PARSE(formal);
+        if (formal == NULL) {
             break;
         }
 
-        // In Samizdat Layer 0, the only allowed modifier for a formal is `*`.
-        zvalue repeat = MATCH(CH_STAR);
-
-        zvalue formal = mapletFrom2(STR_NAME, datHighletValue(identifier),
-                                    STR_REPEAT, repeat);
         formals = datListletAppend(formals, formal);
-
-        if (repeat != NULL) {
-            // In Samizdat Layer 0, `*` has to be on the last formal.
-            break;
-        }
     }
 
     REJECT_IF(datSize(formals) == 0);

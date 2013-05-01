@@ -276,27 +276,26 @@ parseYield = filterRule
     (allRule [:@"<>":] parseExpression (starRule [:@";":]))
     { result :: <> listletNth result @1; };
 
+# Parses a `formal` node.
+parseFormal = filterRule
+    (allRule
+        (filterRule
+            (tokenRule [:@identifier:])
+            { result :: <> @[@name = (highletValue result)] })
+        (filterRule
+            (questRule
+                (orRule [:@"*":] [:@"?":]))
+            { result ::
+                <> ifValue { <> listletNth result @0 }
+                    { repeatToken :: <> @[@repeat = repeatToken] }
+                    { <> @[=] }
+            }))
+    { result :: <> apply mapletAdd result };
+
 # Parses a `formals` node.
 parseFormals = filterRule
-    (allRule
-        (plusRule
-            (filterRule
-                (tokenRule [:@identifier:])
-                { result :: <> @[@name = (highletValue result)] }))
-        (questRule [:@"*":]))
-    { result ::
-        almostFormals = listletNth result @0;
-        starMod = listletNth result @1;
-        formals = ifValue { <> listletNth starMod @0 }
-            { starToken ::
-                n = isub (lowSize almostFormals) @1;
-                last = listletNth almostFormals n;
-                <> listletPutNth almostFormals n
-                    (mapletPut last @repeat starToken);
-            }
-            { <> almostFormals };
-        <> [:@formals formals:]
-    };
+    (plusRule parseFormal)
+    { result :: <> [:@formals result:] };
 
 # `program` node helper: Parses `(formals? @"::")?`, yielding a maplet
 # (possibly empty).
