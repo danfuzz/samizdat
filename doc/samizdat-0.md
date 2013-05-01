@@ -283,7 +283,7 @@ formal ::= @identifier (@"*" | @"?")? ;
 # result: @[@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]
 
 yieldDef ::= @"<" @identifier @">" ;
-# result: <identifier>
+# result: <identifier.value>
 
 yield ::= @"<" @">" expression ";"* ;
 # result: <expression>

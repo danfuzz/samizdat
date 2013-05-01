@@ -471,10 +471,10 @@ DEF_PARSE(yieldDef) {
     MARK();
 
     MATCH_OR_REJECT(CH_LT);
-    zvalue name = MATCH_OR_REJECT(IDENTIFIER);
+    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     MATCH_OR_REJECT(CH_GT);
 
-    return name;
+    return datHighletValue(identifier);
 }
 
 /**
