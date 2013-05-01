@@ -275,14 +275,11 @@ program ::=
 #             ]
 #         :]
 
-formals ::= (@identifier (@"*" | @"?")?)+ ;
-# result: [:
-#             @formals
-#             @[
-#                 @[@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]
-#                 ...
-#             ]
-#         :]
+formals ::= formal+ ;
+# result: [:@formals @[formal ...]:]
+
+formal ::= @identifier (@"*" | @"?")? ;
+# result: @[@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]
 
 yield ::= @"<>" expression ";"* ;
 # result: <expression>
