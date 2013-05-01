@@ -35,7 +35,7 @@ static zvalue stringletFromPathListlet(zvalue pathListlet) {
         zvalue one = datListletNth(pathListlet, i);
         zint size = datUtf8SizeFromStringlet(one);
         char str[size + 1];
-        datUtf8FromStringlet(NULL, str, one);
+        datUtf8FromStringlet(size + 1, str, one);
 
         if (strlen(str) != size) {
             die("Invalid path component (contains null bytes): \"%s\"", str);
@@ -108,7 +108,7 @@ static FILE *openFile(zvalue pathListlet, const char *mode) {
     zvalue pathStringlet = stringletFromPathListlet(pathListlet);
     zint pathSize = datUtf8SizeFromStringlet(pathStringlet);
     char path[pathSize + 1];
-    datUtf8FromStringlet(NULL, path, pathStringlet);
+    datUtf8FromStringlet(pathSize + 1, path, pathStringlet);
 
     FILE *file = fopen(path, mode);
     if (file == NULL) {
@@ -152,7 +152,7 @@ zvalue ioReadLink(zvalue pathListlet) {
     zint pathSize = datUtf8SizeFromStringlet(pathStringlet);
     char path[pathSize + 4 + FILENAME_MAX + 1];
 
-    datUtf8FromStringlet(NULL, path, pathStringlet);
+    datUtf8FromStringlet(pathSize + 1, path, pathStringlet);
 
     char linkPath[FILENAME_MAX + 1];
     ssize_t size = readlink(path, linkPath, FILENAME_MAX);
@@ -207,7 +207,7 @@ void ioWriteFileUtf8(zvalue pathListlet, zvalue text) {
 
     zint utfSize = datUtf8SizeFromStringlet(text);
     char utf[utfSize + 1];
-    datUtf8FromStringlet(NULL, utf, text);
+    datUtf8FromStringlet(utfSize + 1, utf, text);
 
     FILE *out = openFile(pathListlet, "w");
     zint amt = fwrite(utf, 1, utfSize, out);

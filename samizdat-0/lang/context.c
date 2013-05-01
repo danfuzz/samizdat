@@ -46,7 +46,7 @@ zvalue ctxGet(zcontext ctx, zvalue name) {
     if (datTypeIs(name, DAT_STRINGLET)) {
         zint nameSize = datUtf8SizeFromStringlet(name);
         char nameStr[nameSize + 1];
-        datUtf8FromStringlet(NULL, nameStr, name);
+        datUtf8FromStringlet(nameSize + 1, nameStr, name);
         die("No such variable: %s", nameStr);
     }
 

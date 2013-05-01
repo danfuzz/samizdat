@@ -21,7 +21,7 @@
 static void emitNote(zvalue message) {
     zint size = datUtf8SizeFromStringlet(message);
     char str[size + 1];
-    datUtf8FromStringlet(NULL, str, message);
+    datUtf8FromStringlet(size + 1, str, message);
 
     fwrite(str, 1, size, stderr);
     fputc('\n', stderr);
@@ -56,7 +56,7 @@ PRIM_IMPL(io0PathFromStringlet) {
     zvalue stringlet = args[0];
     zint size = datUtf8SizeFromStringlet(stringlet);
     char str[size + 1];
-    datUtf8FromStringlet(NULL, str, stringlet);
+    datUtf8FromStringlet(size + 1, str, stringlet);
 
     return ioPathListletFromUtf8(str);
 }
