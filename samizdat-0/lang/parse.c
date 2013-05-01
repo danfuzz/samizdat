@@ -464,16 +464,29 @@ DEF_PARSE(yield) {
 }
 
 /**
- * Helper for `formals`: Parses `(@"?" | @"*")?`. Returns either the
+ * Helper for `formal`: Parses `(@"?" | @"*")?`. Returns either the
  * parsed token or `NULL` to indicate that neither was present.
  */
-DEF_PARSE(formals1) {
+DEF_PARSE(formal1) {
     zvalue result = NULL;
 
     if (result == NULL) { result = MATCH(CH_QMARK); }
     if (result == NULL) { result = MATCH(CH_STAR); }
 
     return result;
+}
+
+/**
+ * Parses a `formal` node.
+ */
+DEF_PARSE(formal) {
+    MARK();
+
+    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
+    zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
+
+    return mapletFrom2(STR_NAME, datHighletValue(identifier),
+                       STR_REPEAT, repeat);
 }
 
 /**
@@ -484,14 +497,11 @@ DEF_PARSE(formals) {
     zvalue formals = EMPTY_LISTLET;
 
     for (;;) {
-        zvalue identifier = MATCH(IDENTIFIER);
-        if (identifier == NULL) {
+        zvalue formal = PARSE(formal);
+        if (formal == NULL) {
             break;
         }
 
-        zvalue repeat = PARSE(formals1); // Okay for it to be `NULL`.
-        zvalue formal = mapletFrom2(STR_NAME, datHighletValue(identifier),
-                                    STR_REPEAT, repeat);
         formals = datListletAppend(formals, formal);
     }
 
