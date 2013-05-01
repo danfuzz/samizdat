@@ -126,7 +126,7 @@ zvalue ioPathListletFromUtf8(const char *path) {
     if (path[0] != '/') {
         // Concatenate the given path onto the current working directory.
         int size = strlen(path) + FILENAME_MAX + 1; // +1 for the '/'.
-        char *buf = zalloc(size);
+        char buf[size];
 
         if (getcwd(buf, size) == NULL) {
             die("Can't get cwd: %s", strerror(errno));
