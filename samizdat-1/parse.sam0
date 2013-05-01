@@ -281,7 +281,7 @@ parseNonlocalExit = filterRule
         (questRule parseExpression)
         (starRule [:@";":]))
     { result ::
-        varRef = [:@varRef (listletNth result @1):];
+        varRef = [:@varRef (highletValue (listletNth result @1)):];
         actuals = listletNth result @3;
         <> apply makeCall varRef actuals
     };
@@ -341,13 +341,13 @@ parseProgram1 = filterRule
             { <> @[=] }
     };
 
-# `program` node helper: Parses `(statement | yield)?`, yielding
+# `program` node helper: Parses `(statement | nonlocalExit | yield)?`, yielding
 # a maplet that maps `@yield` and `@statements`. Always Succeeds.
 parseProgram2 = filterRule
     (questRule
         (orRule
             (filterRule
-                parseStatement
+                (orRule parseStatement parseNonlocalExit)
                 { result :: <> @[@statements=@[result] @yield=@[=]] })
             (filterRule
                 parseYield
