@@ -200,6 +200,12 @@ zvalue datStringletAdd(zvalue str1, zvalue str2);
 zvalue datStringletFromUtf8(zint stringBytes, const char *string);
 
 /**
+ * Gets the number of bytes required to encode the given stringlet
+ * as UTF-8. The result does *not* include a terminating `'\0'` byte.
+ */
+zint datUtf8SizeFromStringlet(zvalue stringlet);
+
+/**
  * Encodes the given stringlet as UTF-8, returning a pointer to the
  * encoded result, and storing the size in bytes via the given
  * `resultSize` pointer if non-`NULL`. If `result` is non-`NULL`, then

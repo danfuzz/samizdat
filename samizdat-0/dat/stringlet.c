@@ -27,21 +27,6 @@ static zchar *stringletElems(zvalue stringlet) {
     return ((DatStringlet *) stringlet)->elems;
 }
 
-/**
- * Gets the UTF-8 encoded size of the given stringlet, in bytes.
- */
-static zint utf8Size(zvalue stringlet) {
-    zint size = datSize(stringlet);
-    zchar *elems = stringletElems(stringlet);
-    zint result = 0;
-
-    for (zint i = 0; i < size; i++) {
-        result += (utf8EncodeOne(NULL, elems[i]) - (char *) NULL);
-    }
-
-    return result;
-}
-
 
 /*
  * Module functions
@@ -124,12 +109,27 @@ zvalue datStringletFromUtf8(zint stringBytes, const char *string) {
 }
 
 /* Documented in header. */
+zint datUtf8SizeFromStringlet(zvalue stringlet) {
+    datAssertStringlet(stringlet);
+
+    zint size = datSize(stringlet);
+    zchar *elems = stringletElems(stringlet);
+    zint result = 0;
+
+    for (zint i = 0; i < size; i++) {
+        result += (utf8EncodeOne(NULL, elems[i]) - (char *) NULL);
+    }
+
+    return result;
+}
+
+/* Documented in header. */
 const char *datUtf8FromStringlet(zint *resultSize, char *result,
                                  zvalue stringlet) {
     datAssertStringlet(stringlet);
 
     if (result == NULL) {
-        zint utfSize = utf8Size(stringlet);
+        zint utfSize = datUtf8SizeFromStringlet(stringlet);
         result = zalloc(utfSize + 1);
     }
 
