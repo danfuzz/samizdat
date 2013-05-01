@@ -12,6 +12,20 @@
 
 
 /*
+ * Helper definitions
+ */
+
+/* Documented in header. */
+typedef struct ExecutionContext {
+    /** Variables bound at this level. */
+    zvalue locals;
+
+    /** Variables bound in the parent. */
+    zvalue parent;
+} ExecutionContext;
+
+
+/*
  * Module functions
  */
 
@@ -20,7 +34,7 @@ zcontext ctxNewChild(zcontext parent, zvalue locals) {
     zcontext ctx = zalloc(sizeof(ExecutionContext));
 
     ctx->locals = locals;
-    ctx->parent = parent;
+    ctx->parent = (parent == NULL) ? EMPTY_MAPLET : langMapletFromCtx(parent);
 
     return ctx;
 }
@@ -36,11 +50,14 @@ void ctxBind(zcontext ctx, zvalue name, zvalue value) {
 
 /* Documented in header. */
 zvalue ctxGet(zcontext ctx, zvalue name) {
-    for (/* ctx */; ctx != NULL; ctx = ctx->parent) {
-        zvalue found = datMapletGet(ctx->locals, name);
-        if (found != NULL) {
-            return found;
-        }
+    zvalue found = datMapletGet(ctx->locals, name);
+
+    if (found == NULL) {
+        found = datMapletGet(ctx->parent, name);
+    }
+
+    if (found != NULL) {
+        return found;
     }
 
     if (datTypeIs(name, DAT_STRINGLET)) {
@@ -75,7 +92,7 @@ void langCtxBind(zcontext ctx, zvalue name, zvalue value) {
 
 /* Documented in header. */
 void langCtxBindFunction(zcontext ctx, const char *name,
-                      zfunction function, void *state) {
+                         zfunction function, void *state) {
     langCtxBind(ctx,
         datStringletFromUtf8(-1, name),
         langDefineFunction(function, state));
@@ -94,10 +111,5 @@ void langCtxBindAll(zcontext ctx, zvalue maplet) {
 
 /* Documented in header. */
 zvalue langMapletFromCtx(zcontext ctx) {
-    if (ctx->parent == NULL) {
-        return ctx->locals;
-    } else {
-        zvalue result = langMapletFromCtx(ctx->parent);
-        return datMapletAdd(result, ctx->locals);
-    }
+    return datMapletAdd(ctx->parent, ctx->locals);
 }

@@ -18,15 +18,6 @@
  * Execution Contexts
  */
 
-/* Documented in header. */
-typedef struct ExecutionContext {
-    /** Variables bound at this level. */
-    zvalue locals;
-
-    /** Parent context. */
-    struct ExecutionContext *parent;
-} ExecutionContext;
-
 /**
  * Allocates an execution context set up to be the child of the given
  * one and with the given initial locals.
