@@ -9,9 +9,8 @@
 #
 # Helper functions
 #
-# Note: All of the meta-rule functions accept as rules either
-# parsing functions per se or simple highlets to represent token-matching
-# rules.
+# Note: All of the meta-rule functions accept as rules either parsing
+# functions per se or simple highlets to represent token-matching rules.
 #
 
 # Meta-helper function, which transforms a highlet "rule" into a
