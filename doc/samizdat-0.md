@@ -223,6 +223,7 @@ punctuation ::=
     ";"  | # result: [:@";":]
     "="  | # result: [:@"=":]
     "-"  | # result: [:@"-":]
+    "?"  | # result: [:@"?":]
     "{"  | # result: [:@"{":]
     "}"  | # result: [:@"}":]
     "("  | # result: [:@"(":]
@@ -274,11 +275,11 @@ program ::=
 #             ]
 #         :]
 
-formals ::= @identifier+ @"*"? ;
+formals ::= (@identifier (@"*" | @"?")?)+ ;
 # result: [:
 #             @formals
 #             @[
-#                 @[@name=(highletValue identifier) (@repeat=[:@"*":])?]
+#                 @[@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]
 #                 ...
 #             ]
 #         :]

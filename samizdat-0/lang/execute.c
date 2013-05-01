@@ -57,7 +57,7 @@ static zvalue bindArguments(zvalue functionNode,
 
     zint formalsSize = datSize(formals);
 
-    for (zint i = 0; i < formalsSize; i++) {
+    for (zint i = 0, argAt = 0; i < formalsSize; i++) {
         zvalue formal = datListletNth(formals, i);
         zvalue name = datMapletGet(formal, STR_NAME);
         zvalue repeat = datMapletGet(formal, STR_REPEAT);
@@ -65,17 +65,23 @@ static zvalue bindArguments(zvalue functionNode,
 
         if (repeat != NULL) {
             if (datOrder(repeat, TOK_CH_STAR) == 0) {
-                if (i != (formalsSize - 1)) {
-                    die("Invalid star repeat modifier.");
+                value = datListletFromArray(argCount - argAt, &args[argAt]);
+                argAt = argCount;
+            } else if (datOrder(repeat, TOK_CH_QMARK) == 0) {
+                if (argAt < argCount) {
+                    value = datListletFromArray(1, &args[argAt]);
+                    argAt++;
+                } else {
+                    value = EMPTY_LISTLET;
                 }
-                value = datListletFromArray(argCount - i, &args[i]);
             } else {
                 die("Unknown repeat modifier.");
             }
         } else if (i >= argCount) {
             die("Too few arguments to function: %lld", argCount);
         } else {
-            value = args[i];
+            value = args[argAt];
+            argAt++;
         }
 
         result = datMapletPut(result, name, value);
