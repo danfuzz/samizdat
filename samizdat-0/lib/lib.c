@@ -15,6 +15,12 @@
  * Helper definitions
  */
 
+/**
+ * Maplet of all core library bindings, set up by `initLibraryBindings()`.
+ * Bindings include both primitive and in-language definitions.
+ */
+static zvalue LIBRARY_BINDINGS = NULL;
+
 // Declarations for all the embedded library source files.
 #define LIB_FILE(name) \
     extern char name##_sam0[]; \
@@ -25,24 +31,11 @@
 #undef LIB_FILE
 
 /**
- * Maplet from names to library contents, set up by `initLibraryFiles()`.
+ * Sets up the mapping from names to library file contents.
+ * This is what ends up bound to `LIBRARY_FILES` in the main entry
+ * of `samizdat-0-lib`.
  */
-static zvalue LIBRARY_FILES = NULL;
-
-/**
- * Maplet of all core library bindings, set up by `initLibraryBindings()`.
- * Bindings include both primitive and in-language definitions.
- */
-static zvalue LIBRARY_BINDINGS = NULL;
-
-/**
- * Sets up `LIBRARY_FILES`.
- */
-static void initLibraryFiles(void) {
-    if (LIBRARY_FILES != NULL) {
-        return;
-    }
-
+static zvalue getLibraryFiles(void) {
     zvalue result = EMPTY_MAPLET;
 
     // This adds an element to `result` for each of the embedded files,
@@ -55,25 +48,7 @@ static void initLibraryFiles(void) {
     #include "lib-def.h"
     #undef LIB_FILE
 
-    LIBRARY_FILES = result;
-}
-
-/**
- * Implementation of the reader function passed as the argument
- * to in-language library files. Reads the named file by lookup in
- * the `libraryMaplet()`.
- */
-static zvalue libraryReader(void *state, zint argCount, const zvalue *args) {
-    requireExactly(argCount, 1);
-
-    zvalue name = args[0];
-    zvalue text = datMapletGet(LIBRARY_FILES, name);
-
-    if (text == NULL) {
-        die("No such library file: %s", datUtf8FromStringlet(NULL, name));
-    }
-
-    return text;
+    return result;
 }
 
 /**
@@ -107,14 +82,14 @@ static void initLibraryBindings(void) {
         return;
     }
 
+    zvalue libraryFiles = getLibraryFiles();
     zcontext ctx = primitiveContext();
     zvalue mainProgram = langNodeFromProgramText(LIB_TEXT_main);
     zvalue mainFunction = langEvalExpressionNode(ctx, mainProgram);
-    zvalue readerFunction = langDefineFunction(libraryReader, NULL);
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    LIBRARY_BINDINGS = langCall(mainFunction, 1, &readerFunction);
+    LIBRARY_BINDINGS = langCall(mainFunction, 1, &libraryFiles);
 }
 
 
@@ -125,7 +100,6 @@ static void initLibraryBindings(void) {
 /* Documented in header. */
 zcontext libNewContext(void) {
     constInit();
-    initLibraryFiles();
     initLibraryBindings();
 
     zcontext result = langCtxNew();

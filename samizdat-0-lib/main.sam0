@@ -11,25 +11,33 @@
 
 # The following declares the arguments passed to the library itself.
 #
-# `READER` is expected to be a function of one argument
-# `{ fileName :: ... }`, where `fileName` indicates a file to read.
-# The result of the call is a stringlet of the file contents. If
-# the file doesn't exist, this call fails, terminating the runtime.
-# `READER` is used to read in the sub-components of the core library.
+# `LIBRARY_FILES` is expected to be a maplet from core library file names
+# to their contents as stringlets. These are read and loaded in order
+# to create the final core library that then gets used as the global
+# context when loading regular programs.
 
-READER ::
+LIBRARY_FILES ::
 
 
 #
 # Helper functions
 #
 
-# Loads the named library files in the given context, returning a maplet
+# "Reads" the named library file. Since the files are passed into
+# here in the form of a maplet binding file names to text contents, this
+# is really just a maplet lookup.
+readLibraryFile = { name ::
+    <> ifValue { <> mapletGet LIBRARY_FILES name }
+        { result :: <> result }
+        { io0Die (stringletCat @"No such core library file: " name) }
+};
+
+# Loads the named library file in the given context, returning a maplet
 # representing both the originally-given context *and* the bindings defined
 # by the named library. Each library file is expected to return a maplet of
 # bindings that it wishes to export.
 loadLibrary = { ctx name ::
-    text = READER name;
+    text = readLibraryFile name;
     tree = sam0Tree text;
     function = sam0Eval (mapletPut ctx @LIBRARY ctx) tree;
 
