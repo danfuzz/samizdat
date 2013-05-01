@@ -48,12 +48,12 @@ tokenRule = { token ::
     }
 };
 
-# Returns a rule which succeeds if all of a list of other rules
-# succeeds in order (said list given in the form of separate arguments
+# Returns a rule which succeeds if each of a list of other rules
+# succeeds in sequence (said list given in the form of separate arguments
 # to this function). The result, if successful, is a listlet of all
-# the rule results. This effectively implements the "adjacency operator"
+# the rule results. This effectively implements the sequence "operator"
 # in PEG.
-allRule = { rules* ::
+seqRule = { rules* ::
     finalRules = listletMap rules transformTokenRule;
 
     <> { reader ::
@@ -137,7 +137,7 @@ starRule = { rule ::
 # the `+` suffix in PEG.
 plusRule = { rule ::
     <> filterRule
-        (allRule rule (starRule rule))
+        (seqRule rule (starRule rule))
         { result :: <> apply listletPrepend result }
 };
 
@@ -161,12 +161,12 @@ parseFunction = { reader :: <> parseFunctionImpl reader };
 
 # Parses a `call` node.
 parseCall = filterRule
-    (allRule
+    (seqRule
         parseAtom
         (orRule
             (plusRule parseAtom)
             (filterRule
-                (allRule [:@"(":] [:@")":])
+                (seqRule [:@"(":] [:@")":])
                 { <> @[] })))
     { result ::
         <> apply makeCall (listletNth result @0) (listletNth result @1)
@@ -174,7 +174,7 @@ parseCall = filterRule
 
 # Parses a `highlet` node.
 parseHighlet = filterRule
-    (allRule
+    (seqRule
         [:@"[":]
         [:@":":]
         parseAtom
@@ -194,14 +194,14 @@ parseUniqlet = filterRule
 
 # Parses a `binding` node.
 parseBinding = filterRule
-    (allRule parseAtom [:@"=":] parseAtom)
+    (seqRule parseAtom [:@"=":] parseAtom)
     { result ::
         <> @[(listletNth result @0) (listletNth result @2)]
     };
 
 # Parses a `maplet` node.
 parseMaplet = filterRule
-    (allRule [:@"@":] [:@"[":] (plusRule parseBinding) [:@"]":])
+    (seqRule [:@"@":] [:@"[":] (plusRule parseBinding) [:@"]":])
     { result ::
         bindings = apply listletCat (listletNth result @2);
         <> apply makeCall [:@varRef @makeMaplet:] bindings
@@ -209,31 +209,31 @@ parseMaplet = filterRule
 
 # Parses a `emptyMaplet` node.
 parseEmptyMaplet = filterRule
-    (allRule [:@"@":] [:@"[":] [:@"=":] [:@"]":])
+    (seqRule [:@"@":] [:@"[":] [:@"=":] [:@"]":])
     { <> [:@literal @[=]:] };
 
 # Parses a `listlet` node.
 parseListlet = filterRule
-    (allRule [:@"@":] [:@"[":] (plusRule parseAtom) [:@"]":])
+    (seqRule [:@"@":] [:@"[":] (plusRule parseAtom) [:@"]":])
     { result ::
         <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
     };
 
 # Parses a `emptyListlet` node.
 parseEmptyListlet = filterRule
-    (allRule [:@"@":] [:@"[":] [:@"]":])
+    (seqRule [:@"@":] [:@"[":] [:@"]":])
     { <> [:@literal @[]:] };
 
 # Parses a `stringlet` node.
 parseStringlet = filterRule
-    (allRule
+    (seqRule
         [:@"@":]
         (orRule [:@string:] [:@identifier:]))
     { result :: <> [:@literal (highletValue (listletNth result @1)):] };
 
 # Parses an `intlet` node.
 parseIntlet = filterRule
-    (allRule [:@"@":] (questRule [:@"-":]) [:@integer:])
+    (seqRule [:@"@":] (questRule [:@"-":]) [:@integer:])
     { result ::
         sign = ifTrue { <> eq (listletNth result @1) @[] }
             { <> @1 } { <> @-1 };
@@ -248,7 +248,7 @@ parseVarRef = filterRule
 
 # Parses a `varDef` node.
 parseVarDef = filterRule
-    (allRule [:@identifier:] [:@"=":] parseExpression)
+    (seqRule [:@identifier:] [:@"=":] parseExpression)
     { result ::
         name = highletValue (listletNth result @0);
         value = listletNth result @2;
@@ -257,7 +257,7 @@ parseVarDef = filterRule
 
 # Parses a `parenExpression` node.
 parseParenExpression = filterRule
-    (allRule [:@"(":] parseExpression [:@")":])
+    (seqRule [:@"(":] parseExpression [:@")":])
     { result :: <> listletNth result @1 };
 
 # Parses an `atom` node.
@@ -273,12 +273,12 @@ parseStatement = orRule parseVarDef parseExpression;
 
 # Parses a `yield` node.
 parseYield = filterRule
-    (allRule [:@"<>":] parseExpression (starRule [:@";":]))
+    (seqRule [:@"<>":] parseExpression (starRule [:@";":]))
     { result :: <> listletNth result @1; };
 
 # Parses a `formal` node.
 parseFormal = filterRule
-    (allRule
+    (seqRule
         (filterRule
             (tokenRule [:@identifier:])
             { result :: <> @[@name = (highletValue result)] })
@@ -302,7 +302,7 @@ parseFormals = filterRule
 parseProgram1 = filterRule
     (questRule
         (filterRule
-            (allRule (questRule parseFormals) [:@"::":])
+            (seqRule (questRule parseFormals) [:@"::":])
             { result ::
                 formals = listletNth result @0;
                 <> ifValue { <> listletNth formals @0 }
@@ -334,12 +334,12 @@ parseProgram2 = filterRule
 
 # Parses a `program` node.
 parseProgram = filterRule
-    (allRule
+    (seqRule
         parseProgram1
         (starRule [:@";":])
         (starRule
             (filterRule
-                (allRule parseStatement (plusRule [:@";":]))
+                (seqRule parseStatement (plusRule [:@";":]))
                 { result :: <> listletNth result @0 }))
         parseProgram2)
     { result ::
@@ -359,7 +359,7 @@ parseProgram = filterRule
 
 # Parses a `function` node.
 parseFunctionImpl = filterRule
-    (allRule [:@"{":] parseProgram [:@"}":])
+    (seqRule [:@"{":] parseProgram [:@"}":])
     { result :: <> listletNth result @1 };
 
 
