@@ -47,6 +47,11 @@ static zvalue bindArguments(zvalue functionNode,
                             zint argCount, const zvalue *args) {
     zvalue result = EMPTY_MAPLET;
     zvalue formals = datMapletGet(functionNode, STR_FORMALS);
+    zvalue yieldDef = datMapletGet(functionNode, STR_YIELD_DEF);
+
+    if (yieldDef != NULL) {
+        die("TODO: Handle non-local exit setup.");
+    }
 
     if (formals == NULL) {
         return result;
