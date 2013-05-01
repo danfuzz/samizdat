@@ -264,7 +264,7 @@ function ::= @"{" program @"}" ;
 
 program ::=
     (formals? yieldDef? @"::")?
-    @";"* (statement @";"+)* (statement | yield | nonlocalExit )? ;
+    @";"* (statement @";"+)* (statement | nonlocalExit | yield)? ;
 # result: [:
 #             @function
 #             @[
