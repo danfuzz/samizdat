@@ -317,17 +317,23 @@ parseFormals = filterRule
     (plusRule parseFormal)
     { result :: <> [:@formals result:] };
 
-# `program` node helper: Parses `(formals? @"::")?`, yielding a maplet
-# (possibly empty).
+# `program` node helper: Parses `(formals? yieldDef? @"::")?`, yielding
+# a maplet (possibly empty).
 parseProgram1 = filterRule
     (questRule
         (filterRule
-            (seqRule (questRule parseFormals) [:@"::":])
+            (seqRule
+                (questRule parseFormals)
+                (questRule parseYieldDef)
+                [:@"::":])
             { result ::
-                formals = listletNth result @0;
-                <> ifValue { <> listletNth formals @0 }
-                    { result :: <> @[@formals=result] }
-                    { <> @[=] }
+                formals = ifValue { <> listletNth (listletNth result @0) @0 }
+                    { value :: <> @[@formals=value] }
+                    { <> @[=] };
+                yieldDef = ifValue { <> listletNth (listletNth result @1) @0 }
+                    { value :: <> @[@yieldDef=value] }
+                    { <> @[=] };
+                <> mapletAdd formals yieldDef
             }))
     { result ::
         <> ifValue { <> listletNth result @0 }
