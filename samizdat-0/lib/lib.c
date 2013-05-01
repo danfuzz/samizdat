@@ -14,13 +14,6 @@
  * Helper definitions
  */
 
-// Declarations for all the embedded library source files.
-#define LIB_FILE(name) \
-    extern char name##_sam0[]; \
-    extern unsigned int name##_sam0_len
-#include "lib-def.h"
-#undef LIB_FILE
-
 /**
  * Sets up the mapping from names to library file contents.
  * This is what ends up bound to `LIBRARY_FILES` in the main entry
@@ -32,6 +25,8 @@ static zvalue getLibraryFiles(void) {
     // This adds an element to `result` for each of the embedded files,
     // and sets up the static name constants.
     #define LIB_FILE(name) \
+        extern char name##_sam0[]; \
+        extern unsigned int name##_sam0_len; \
         zvalue LIB_NAME_##name = datStringletFromUtf8(-1, #name); \
         zvalue LIB_TEXT_##name = \
             datStringletFromUtf8(name##_sam0_len, name##_sam0); \

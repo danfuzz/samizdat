@@ -5,8 +5,8 @@
  */
 
 /*
- * Note: This file gets `#include`d multiple times, and so does not
- * have the usual guard macros.
+ * Note: This file gets `#include`d as source, and so does not have the
+ * usual guard macros.
  *
  * `LIB_FILE(name)` defines an in-language core library file with the given
  * name. These are all `.sam0` source files that get embedded into the
