@@ -130,7 +130,12 @@ static zvalue makeVarRef(zvalue name) {
  * Constructs a `call` node.
  */
 static zvalue makeCall(zvalue function, zvalue actuals) {
+    if (actuals == NULL) {
+        actuals = EMPTY_LISTLET;
+    }
+
     zvalue value = mapletFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
+
     return datHighletFrom(STR_CALL, value);
 }
 
