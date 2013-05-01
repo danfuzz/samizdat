@@ -185,6 +185,7 @@ TOKEN_DISPATCH = mapletCat
         @")"  = oneCharParser
         @"="  = oneCharParser
         @"-"  = oneCharParser
+        @"?"  = oneCharParser
         @";"  = oneCharParser
         @"*"  = oneCharParser
         @":"  = (makeOneTwoParser @"::")
