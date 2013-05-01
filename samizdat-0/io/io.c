@@ -34,7 +34,7 @@ static const char *utf8FromPathListlet(zvalue pathListlet) {
     for (zint i = 0; i < size; i++) {
         zvalue one = datListletNth(pathListlet, i);
         zint encodeSize = 0;
-        const char *str = datUtf8FromStringlet(&encodeSize, one);
+        const char *str = datUtf8FromStringlet(&encodeSize, NULL, one);
 
         if (strlen(str) != encodeSize) {
             die("Invalid path component (contains null bytes): \"%s\"", str);
@@ -50,7 +50,7 @@ static const char *utf8FromPathListlet(zvalue pathListlet) {
         result = datStringletAdd(result, one);
     }
 
-    return datUtf8FromStringlet(NULL, result);
+    return datUtf8FromStringlet(NULL, NULL, result);
 }
 
 /**
@@ -201,7 +201,7 @@ void ioWriteFileUtf8(zvalue pathListlet, zvalue text) {
     constInit();
 
     zint utfSize;
-    const char *utf = datUtf8FromStringlet(&utfSize, text);
+    const char *utf = datUtf8FromStringlet(&utfSize, NULL, text);
 
     FILE *out = openFile(pathListlet, "w");
     zint amt = fwrite(utf, 1, utfSize, out);

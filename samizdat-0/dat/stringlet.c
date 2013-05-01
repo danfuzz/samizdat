@@ -124,13 +124,17 @@ zvalue datStringletFromUtf8(zint stringBytes, const char *string) {
 }
 
 /* Documented in header. */
-const char *datUtf8FromStringlet(zint *resultSize, zvalue stringlet) {
+const char *datUtf8FromStringlet(zint *resultSize, char *result,
+                                 zvalue stringlet) {
     datAssertStringlet(stringlet);
 
+    if (result == NULL) {
+        zint utfSize = utf8Size(stringlet);
+        result = zalloc(utfSize + 1);
+    }
+
     zint size = datSize(stringlet);
-    zint utfSize = utf8Size(stringlet);
     zchar *elems = stringletElems(stringlet);
-    char *result = zalloc(utfSize + 1);
     char *out = result;
 
     for (zint i = 0; i < size; i++) {
@@ -138,7 +142,7 @@ const char *datUtf8FromStringlet(zint *resultSize, zvalue stringlet) {
     }
 
     if (resultSize != NULL) {
-        *resultSize = utfSize;
+        *resultSize = out - result;
     }
 
     *out = '\0';

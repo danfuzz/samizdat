@@ -200,14 +200,23 @@ zvalue datStringletAdd(zvalue str1, zvalue str2);
 zvalue datStringletFromUtf8(zint stringBytes, const char *string);
 
 /**
- * Encodes the given stringlet as UTF-8, returning permanently
- * allocated storage for the result, and storing the size in bytes via
- * the given `resultSize` pointer if non-`NULL`. The result *is*
- * `'\0'`-terminated, but `*resultSize` will need to be used if the
- * original stringlet might have contained any `U+0` code points.
- * `*resultSize` does *not* include the terminating `'\0'`.
+ * Encodes the given stringlet as UTF-8, returning a pointer to the
+ * encoded result, and storing the size in bytes via the given
+ * `resultSize` pointer if non-`NULL`. If `result` is non-`NULL`, then
+ * it must point to a sufficiently large allocation to store the result
+ * (including a terminating `'\0'` byte), and that storage is used for
+ * the result. If `result` is `NULL`, then this function will allocate
+ * permanent storage for the result.
+ *
+ * The result *is* `'\0'`-terminated, but `*resultSize` does *not* include
+ * the terminating `'\0'` byte.
+ *
+ * **Note:** If the given stringlet possibly contains any `U+0` code points,
+ * then the only "safe" way to use the result is as an explicitly-sized
+ * buffer. (For example, `strlen()` might "lie".)
  */
-const char *datUtf8FromStringlet(zint *resultSize, zvalue stringlet);
+const char *datUtf8FromStringlet(zint *resultSize, char *result,
+                                 zvalue stringlet);
 
 
 /*
