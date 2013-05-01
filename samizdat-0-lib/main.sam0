@@ -54,14 +54,26 @@ loadLibrary = { ctx name ::
 # Loads all of the named libraries, in order, allowing later libraries to
 # depend on earlier ones. The first listed library can depend only on the
 # given context.
-loadAllLibraries = { ctx name rest* ::
-    newCtx = loadLibrary ctx name;
+loadAllLibraries = { ctx rest* ::
+    # A couple tricky things are going on here:
+    #
+    # * The function can't refer to itself, as use-before-def is invalid in
+    #   *Samizdat Layer 0*. Therefore, there is an inner function that takes
+    #   itself as an argument. (This is approximately a "manual inlining"
+    #   of the Y combinator.)
+    #
+    # * While it would be natural to say `eq rest @[]` here, and perhaps
+    #   use the `listReduce` function, neither one is defined yet, since
+    #   they only get definitions once this code gets a chance to load them.
 
-    # Can't say `eq rest @[]` here, since `eq` is not yet defined.
-    # Similarly, can't use `listReduce rest ...`.
-    <> ifTrue { <> lowOrderIs rest @[] @0 }
-        { <> newCtx }
-        { <> apply loadAllLibraries newCtx rest }
+    innerLoad = { selfRef ctx name rest* ::
+        newCtx = loadLibrary ctx name;
+        <> ifTrue { <> lowOrderIs rest @[] @0 }
+            { <> newCtx }
+            { <> apply selfRef selfRef newCtx rest }
+    };
+
+    <> apply innerLoad innerLoad ctx rest
 };
 
 
