@@ -6,7 +6,6 @@
 
 #include "const.h"
 #include "impl.h"
-#include "util.h"
 
 #include <stddef.h>
 
@@ -14,12 +13,6 @@
 /*
  * Helper definitions
  */
-
-/**
- * Maplet of all core library bindings, set up by `initLibraryBindings()`.
- * Bindings include both primitive and in-language definitions.
- */
-static zvalue LIBRARY_BINDINGS = NULL;
 
 // Declarations for all the embedded library source files.
 #define LIB_FILE(name) \
@@ -73,13 +66,10 @@ static zcontext primitiveContext(void) {
 }
 
 /**
- * Sets up `LIBRARY_BINDINGS`.
+ * Returns a maplet with all the core library bindings. This is the
+ * return value from running the in-language library `main`.
  */
-static void initLibraryBindings(void) {
-    if (LIBRARY_BINDINGS != NULL) {
-        return;
-    }
-
+static zvalue getLibrary(void) {
     zvalue libraryFiles = getLibraryFiles();
     zvalue mainText = datMapletGet(libraryFiles, STR_MAIN);
     zvalue mainProgram = langNodeFromProgramText(mainText);
@@ -89,7 +79,7 @@ static void initLibraryBindings(void) {
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    LIBRARY_BINDINGS = langCall(mainFunction, 1, &libraryFiles);
+    return langCall(mainFunction, 1, &libraryFiles);
 }
 
 
@@ -100,10 +90,10 @@ static void initLibraryBindings(void) {
 /* Documented in header. */
 zcontext libNewContext(void) {
     constInit();
-    initLibraryBindings();
 
+    zvalue library = getLibrary();
     zcontext result = langCtxNew();
 
-    langCtxBindAll(result, LIBRARY_BINDINGS);
+    langCtxBindAll(result, library);
     return result;
 }
