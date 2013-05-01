@@ -272,10 +272,29 @@ parseExpressionImpl = orRule parseCall parseAtom;
 # Parses a `statement` node.
 parseStatement = orRule parseVarDef parseExpression;
 
+# Parses a `nonlocalExit` node.
+parseNonlocalExit = filterRule
+    (seqRule
+        [:@"<":]
+        [:@identifier:]
+        [:@">":]
+        (questRule parseExpression)
+        (starRule [:@";":]))
+    { result ::
+        varRef = [:@varRef (listletNth result @1):];
+        actuals = listletNth result @3;
+        <> apply makeCall varRef actuals
+    };
+
 # Parses a `yield` node.
 parseYield = filterRule
-    (seqRule [:@"<>":] parseExpression (starRule [:@";":]))
-    { result :: <> listletNth result @1; };
+    (seqRule [:@"<":] [:@">":] parseExpression (starRule [:@";":]))
+    { result :: <> listletNth result @2 };
+
+# Parses a `yieldDef` node.
+parseYieldDef = filterRule
+    (seqRule [:@"<":] [:@identifier:] [:@">":])
+    { result :: <> highletValue (listletNth result @1) };
 
 # Parses a `formal` node.
 parseFormal = filterRule
