@@ -27,16 +27,17 @@ enum {
  * Converts a listlet-of-stringlets path form into an absolute file name,
  * checking the components for sanity.
  */
-static const char *utf8FromPathListlet(zvalue pathListlet) {
+static zvalue stringletFromPathListlet(zvalue pathListlet) {
     zvalue result = STR_EMPTY;
     zint size = datSize(pathListlet);
 
     for (zint i = 0; i < size; i++) {
         zvalue one = datListletNth(pathListlet, i);
-        zint encodeSize = 0;
-        const char *str = datUtf8FromStringlet(&encodeSize, one);
+        zint size = datUtf8SizeFromStringlet(one);
+        char str[size + 1];
+        datUtf8FromStringlet(size + 1, str, one);
 
-        if (strlen(str) != encodeSize) {
+        if (strlen(str) != size) {
             die("Invalid path component (contains null bytes): \"%s\"", str);
         } else if (strchr(str, '/') != NULL) {
             die("Invalid path component (contains slash): \"%s\"", str);
@@ -50,7 +51,7 @@ static const char *utf8FromPathListlet(zvalue pathListlet) {
         result = datStringletAdd(result, one);
     }
 
-    return datUtf8FromStringlet(NULL, result);
+    return result;
 }
 
 /**
@@ -104,7 +105,10 @@ static zvalue pathListletFromAbsolute(const char *path) {
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
 static FILE *openFile(zvalue pathListlet, const char *mode) {
-    const char *path = utf8FromPathListlet(pathListlet);
+    zvalue pathStringlet = stringletFromPathListlet(pathListlet);
+    zint pathSize = datUtf8SizeFromStringlet(pathStringlet);
+    char path[pathSize + 1];
+    datUtf8FromStringlet(pathSize + 1, path, pathStringlet);
 
     FILE *file = fopen(path, mode);
     if (file == NULL) {
@@ -123,36 +127,35 @@ static FILE *openFile(zvalue pathListlet, const char *mode) {
 zvalue ioPathListletFromUtf8(const char *path) {
     constInit();
 
-    if (path[0] != '/') {
-        // Concatenate the given path onto the current working directory.
-        int size = strlen(path) + FILENAME_MAX + 1; // +1 for the '/'.
-        char buf[size];
-
-        if (getcwd(buf, size) == NULL) {
-            die("Can't get cwd: %s", strerror(errno));
-        }
-
-        strcat(buf, "/");
-        strcat(buf, path);
-        path = buf;
+    if (path[0] == '/') {
+        return pathListletFromAbsolute(path);
     }
 
-    return pathListletFromAbsolute(path);
+    // Concatenate the given path onto the current working directory.
+    int size = strlen(path) + FILENAME_MAX + 1; // +1 for the '/'.
+    char buf[size];
+
+    if (getcwd(buf, size) == NULL) {
+        die("Can't get cwd: %s", strerror(errno));
+    }
+
+    strcat(buf, "/");
+    strcat(buf, path);
+    return pathListletFromAbsolute(buf);
 }
 
 /* Documented in header. */
 zvalue ioReadLink(zvalue pathListlet) {
     constInit();
 
-    const char *path = utf8FromPathListlet(pathListlet);
-    size_t pathLen = strlen(path);
-    char result[pathLen + 4 + FILENAME_MAX + 1];
+    zvalue pathStringlet = stringletFromPathListlet(pathListlet);
+    zint pathSize = datUtf8SizeFromStringlet(pathStringlet);
+    char path[pathSize + 4 + FILENAME_MAX + 1];
 
-    strcpy(result, path);
-    strcat(result, "/../"); // To elide the name of the link in the result.
+    datUtf8FromStringlet(pathSize + 1, path, pathStringlet);
 
-    char *linkAt = strchr(result, '\0');
-    ssize_t size = readlink(path, linkAt, FILENAME_MAX);
+    char linkPath[FILENAME_MAX + 1];
+    ssize_t size = readlink(path, linkPath, FILENAME_MAX);
 
     if (size < 0) {
         if ((errno == EINVAL) || (errno == ENOENT) || (errno == ENOTDIR)) {
@@ -163,15 +166,17 @@ zvalue ioReadLink(zvalue pathListlet) {
         die("Trouble with readlink: %s", strerror(errno));
     }
 
-    linkAt[size] = '\0';
+    linkPath[size] = '\0';
 
-    if (linkAt[0] == '/') {
+    if (linkPath[0] == '/') {
         // The link is absolute. Just use it, ignoring the path that led
         // up to it.
-        return ioPathListletFromUtf8(linkAt);
+        return ioPathListletFromUtf8(linkPath);
     } else {
-        // The link is relative. Need to use the prefix we set up.
-        return ioPathListletFromUtf8(result);
+        // The link is relative. Need to use the passed-in prefix.
+        strcat(path, "/../"); // To elide the name of the link in the result.
+        strcat(path, linkPath);
+        return ioPathListletFromUtf8(path);
     }
 }
 
@@ -200,8 +205,9 @@ zvalue ioReadFileUtf8(zvalue pathListlet) {
 void ioWriteFileUtf8(zvalue pathListlet, zvalue text) {
     constInit();
 
-    zint utfSize;
-    const char *utf = datUtf8FromStringlet(&utfSize, text);
+    zint utfSize = datUtf8SizeFromStringlet(text);
+    char utf[utfSize + 1];
+    datUtf8FromStringlet(utfSize + 1, utf, text);
 
     FILE *out = openFile(pathListlet, "w");
     zint amt = fwrite(utf, 1, utfSize, out);
