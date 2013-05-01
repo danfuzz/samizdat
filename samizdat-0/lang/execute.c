@@ -18,10 +18,10 @@
  */
 typedef struct {
     /**
-     * Parent context (which was the current context when the function
-     * was defined).
+     * Parent variable context (which was the current context when
+     * the function was defined).
      */
-    zcontext parent;
+    zvalue context;
 
     /**
      * Function definition, which includes a list of formals and the
@@ -101,7 +101,7 @@ static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
 
     // Bind the formals, creating a context.
     zvalue locals = bindArguments(functionNode, argCount, args);
-    zcontext ctx = ctxNewChild(closure->parent, locals);
+    zcontext ctx = ctxNewChild(closure->context, locals);
 
     // Using the new context, evaluate the statements.
 
@@ -132,7 +132,7 @@ static zvalue execFunction(zcontext ctx, zvalue function) {
     datHighletAssertType(function, STR_FUNCTION);
 
     Closure *closure = zalloc(sizeof(Closure));
-    closure->parent = ctx;
+    closure->context = langMapletFromCtx(ctx);
     closure->function = datHighletValue(function);
 
     return langDefineFunction(execClosure, closure);
