@@ -216,6 +216,7 @@ static zvalue tokenizeOne(ParseState *state) {
         case '{':  read(state); return TOK_CH_OCURLY;
         case '(':  read(state); return TOK_CH_OPAREN;
         case '[':  read(state); return TOK_CH_OSQUARE;
+        case '?':  read(state); return TOK_CH_QMARK;
         case ';':  read(state); return TOK_CH_SEMICOLON;
         case '*':  read(state); return TOK_CH_STAR;
         case '\"':
