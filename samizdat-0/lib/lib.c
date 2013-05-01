@@ -24,9 +24,7 @@ static zvalue LIBRARY_BINDINGS = NULL;
 // Declarations for all the embedded library source files.
 #define LIB_FILE(name) \
     extern char name##_sam0[]; \
-    extern unsigned int name##_sam0_len; \
-    static zvalue LIB_NAME_##name = NULL; \
-    static zvalue LIB_TEXT_##name = NULL
+    extern unsigned int name##_sam0_len
 #include "lib-def.h"
 #undef LIB_FILE
 
@@ -41,8 +39,8 @@ static zvalue getLibraryFiles(void) {
     // This adds an element to `result` for each of the embedded files,
     // and sets up the static name constants.
     #define LIB_FILE(name) \
-        LIB_NAME_##name = datStringletFromUtf8(-1, #name); \
-        LIB_TEXT_##name = \
+        zvalue LIB_NAME_##name = datStringletFromUtf8(-1, #name); \
+        zvalue LIB_TEXT_##name = \
             datStringletFromUtf8(name##_sam0_len, name##_sam0); \
         result = datMapletPut(result, LIB_NAME_##name, LIB_TEXT_##name)
     #include "lib-def.h"
@@ -83,8 +81,10 @@ static void initLibraryBindings(void) {
     }
 
     zvalue libraryFiles = getLibraryFiles();
+    zvalue mainText = datMapletGet(libraryFiles, STR_MAIN);
+    zvalue mainProgram = langNodeFromProgramText(mainText);
+
     zcontext ctx = primitiveContext();
-    zvalue mainProgram = langNodeFromProgramText(LIB_TEXT_main);
     zvalue mainFunction = langEvalExpressionNode(ctx, mainProgram);
 
     // It is the responsibility of the `main` core library program

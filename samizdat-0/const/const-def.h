@@ -52,6 +52,7 @@ STR(MAKE_HIGHLET,  "makeHighlet");
 STR(MAKE_LISTLET,  "makeListlet");
 STR(MAKE_MAPLET,   "makeMaplet");
 STR(MAKE_UNIQLET,  "makeUniqlet");
+STR(MAIN,          "main");
 STR(MAPLET,        "maplet");
 STR(NAME,          "name");
 STR(REPEAT,        "repeat");
