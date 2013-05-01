@@ -43,12 +43,14 @@ zvalue ctxGet(zcontext ctx, zvalue name) {
         }
     }
 
-    const char *nameStr = "(non-stringlet name)";
     if (datTypeIs(name, DAT_STRINGLET)) {
-        nameStr = datUtf8FromStringlet(NULL, name);
+        zint nameSize = datUtf8SizeFromStringlet(name);
+        char nameStr[nameSize + 1];
+        datUtf8FromStringlet(nameSize + 1, nameStr, name);
+        die("No such variable: %s", nameStr);
     }
 
-    die("No such variable: %s", nameStr);
+    die("No such variable: (strange name)");
 }
 
 

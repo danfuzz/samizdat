@@ -27,21 +27,6 @@ static zchar *stringletElems(zvalue stringlet) {
     return ((DatStringlet *) stringlet)->elems;
 }
 
-/**
- * Gets the UTF-8 encoded size of the given stringlet, in bytes.
- */
-static zint utf8Size(zvalue stringlet) {
-    zint size = datSize(stringlet);
-    zchar *elems = stringletElems(stringlet);
-    zint result = 0;
-
-    for (zint i = 0; i < size; i++) {
-        result += (utf8EncodeOne(NULL, elems[i]) - (char *) NULL);
-    }
-
-    return result;
-}
-
 
 /*
  * Module functions
@@ -124,23 +109,36 @@ zvalue datStringletFromUtf8(zint stringBytes, const char *string) {
 }
 
 /* Documented in header. */
-const char *datUtf8FromStringlet(zint *resultSize, zvalue stringlet) {
+zint datUtf8SizeFromStringlet(zvalue stringlet) {
     datAssertStringlet(stringlet);
 
     zint size = datSize(stringlet);
-    zint utfSize = utf8Size(stringlet);
     zchar *elems = stringletElems(stringlet);
-    char *result = zalloc(utfSize + 1);
+    zint result = 0;
+
+    for (zint i = 0; i < size; i++) {
+        result += (utf8EncodeOne(NULL, elems[i]) - (char *) NULL);
+    }
+
+    return result;
+}
+
+/* Documented in header. */
+void datUtf8FromStringlet(zint resultSize, char *result, zvalue stringlet) {
+    datAssertStringlet(stringlet);
+
+    zint size = datSize(stringlet);
+    zchar *elems = stringletElems(stringlet);
     char *out = result;
 
     for (zint i = 0; i < size; i++) {
         out = utf8EncodeOne(out, elems[i]);
     }
 
-    if (resultSize != NULL) {
-        *resultSize = utfSize;
-    }
-
     *out = '\0';
-    return result;
+    out++;
+
+    if ((out - result) > resultSize) {
+        die("Buffer too small for utf8-encoded stringlet.");
+    }
 }

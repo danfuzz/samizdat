@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-ARGS* ::
+SELF_PATH ARGS* ::
 
 
 #
@@ -51,6 +51,14 @@ blort = { foo bar? baz? more* ::
     io0Note (format @"%q %q %q %q" foo bar baz more);
 };
 
+# Demo of reading a sibling file through a sandboxed reader.
+sibling = {
+    reader = io0SandboxedReader
+        (listletDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
+    text = reader @[@"sibling.txt"];
+    io0Note text;
+};
+
 # Emits the stringified version of the given value to the console.
 process = { value ::
     io0Note (sourceStringlet value)
@@ -90,6 +98,8 @@ main = { selfPath name rest* ::
     process (countDown @10);
     process (countDown2 @5);
 
+    sibling();
+
     blort @1;
     blort @1 @2;
     blort @1 @2 @3;
@@ -97,4 +107,4 @@ main = { selfPath name rest* ::
     blort @1 @2 @3 @4 @5;
 };
 
-<> apply main ARGS
+<> apply main SELF_PATH ARGS

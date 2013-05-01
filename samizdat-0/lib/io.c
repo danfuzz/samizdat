@@ -19,12 +19,14 @@
  * Emits a note.
  */
 static void emitNote(zvalue message) {
-    zint size = 0;
-    const char *str = datUtf8FromStringlet(&size, message);
+    zint size = datUtf8SizeFromStringlet(message);
+    char str[size + 1];
+    datUtf8FromStringlet(size + 1, str, message);
 
     fwrite(str, 1, size, stderr);
     fputc('\n', stderr);
 }
+
 
 /*
  * Primitive implementations (exported via the context)
@@ -50,7 +52,13 @@ PRIM_IMPL(io0Note) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0PathFromStringlet) {
     requireExactly(argCount, 1);
-    return ioPathListletFromUtf8(datUtf8FromStringlet(NULL, args[0]));
+
+    zvalue stringlet = args[0];
+    zint size = datUtf8SizeFromStringlet(stringlet);
+    char str[size + 1];
+    datUtf8FromStringlet(size + 1, str, stringlet);
+
+    return ioPathListletFromUtf8(str);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
