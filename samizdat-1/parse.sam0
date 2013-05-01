@@ -52,7 +52,7 @@ tokenRule = { token ::
 # succeeds in sequence (said list given in the form of separate arguments
 # to this function). The result, if successful, is a listlet of all
 # the rule results. This effectively implements the sequence "operator"
-# in PEG.
+# (null infix operator) in PEG.
 seqRule = { rules* ::
     finalRules = listletMap rules transformTokenRule;
 
@@ -82,7 +82,8 @@ seqRule = { rules* ::
 # succeeds (said list given in the form of separate arguments to this
 # function), trying them in order. The result is the same as the
 # result of whichever rule succeeded, or void if all the alternatives
-# failed. This effectively implements the `|` operator in PEG.
+# failed. This effectively implements the ordered choice operator
+# (`|` infix) in PEG.
 orRule = { rules* ::
     finalRules = listletMap rules transformTokenRule;
 
@@ -103,7 +104,8 @@ orRule = { rules* ::
 # Returns a rule which optionally parses a given other rule. The
 # rule when run always succeeds, yielding a listlet. The listlet will
 # have either zero or one element, depending on whether the inner
-# rule was matched. This effectively implements the `?` suffix in PEG.
+# rule was matched. This effectively implements the zero-or-one
+# operator (`?` suffix) in PEG.
 questRule = { rule ::
     finalRule = transformTokenRule rule;
 
@@ -117,8 +119,8 @@ questRule = { rule ::
 # Returns a rule which parses zero or more repetitions of a given other
 # rule. The rule when run always succeeds, yielding a listlet of all
 # the results of matching. It will be a zero-length listlet if in fact
-# the inner rule never matched. This effectively implements the `*`
-# suffix in PEG.
+# the inner rule never matched. This effectively implements the
+# zero-or-more operator (`*` suffix) in PEG.
 starRule = { rule ::
     finalRule = transformTokenRule rule;
 
@@ -134,7 +136,7 @@ starRule = { rule ::
 # Returns a rule which parses one or more repetitions of a given other
 # rule. The rule when successful yields a listlet of all the results of
 # matching and will be of size one or more. This effectively implements
-# the `+` suffix in PEG.
+# the one-or-more operator (`+` suffix) in PEG.
 plusRule = { rule ::
     <> filterRule
         (seqRule rule (starRule rule))
