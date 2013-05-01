@@ -465,7 +465,7 @@ DEF_PARSE(yield) {
 
 /**
  * Helper for `formals`: Parses `(@"?" | @"*")?`. Returns either the
- * stringlet parsed or `NULL` to indicate that neither was present.
+ * parsed token or `NULL` to indicate that neither was present.
  */
 DEF_PARSE(formals1) {
     zvalue result = NULL;
