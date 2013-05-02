@@ -364,13 +364,13 @@ parseProgram2 = filterRule
 # Parses a `program` node.
 parseProgram = filterRule
     (seqRule
-        @program1
+        parseProgram1
         (starRule [:@";":])
         (starRule
             (filterRule
                 (seqRule @statement (plusRule [:@";":]))
                 { result :: <> listletNth result @0 }))
-        @program2)
+        parseProgram2)
     { result ::
         formals = listletNth result @0;
         mostStatements = listletNth result @2;
@@ -412,8 +412,6 @@ RULES = @[
     @nonlocalExit = parseNonlocalExit
     @parenExpression = parseParenExpression
     @program = parseProgram
-    @program1 = parseProgram1
-    @program2 = parseProgram2
     @statement = parseStatement
     @stringlet = parseStringlet
     @uniqlet = parseUniqlet
