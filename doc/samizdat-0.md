@@ -1442,6 +1442,12 @@ maplet. If there are any duplicate keys among the arguments, then
 value associated with the last argument in which that key appears
 is the value that "wins" in the final result.
 
+#### `mapletForEach maplet function <> ~.`
+
+Calls the given function for each mapping in the given maplet. The
+function is called with two arguments, a value from the maplet and
+its corresponding key (in that order). Always returns void.
+
 #### `mapletMap maplet function <> maplet`
 
 Maps the values of a maplet using the given mapping function,
