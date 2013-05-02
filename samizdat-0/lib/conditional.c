@@ -87,6 +87,31 @@ PRIM_IMPL(ifValue) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(loop) {
+    requireExactly(argCount, 1);
+
+    zvalue function = args[0];
+    for (;;) {
+        langCall(function, 0, NULL);
+    }
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(loopReduce) {
+    requireExactly(argCount, 2);
+
+    zvalue result = args[0];
+    zvalue function = args[1];
+
+    for (;;) {
+        zvalue next = langCall(function, 1, &result);
+        if (next != NULL) {
+            result = next;
+        }
+    }
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(while) {
     requireExactly(argCount, 1);
 

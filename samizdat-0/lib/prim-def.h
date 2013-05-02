@@ -44,6 +44,8 @@ PRIM_FUNC(listletDelNth);
 PRIM_FUNC(listletInsNth);
 PRIM_FUNC(listletNth);
 PRIM_FUNC(listletPutNth);
+PRIM_FUNC(loop);
+PRIM_FUNC(loopReduce);
 PRIM_FUNC(lowOrder);
 PRIM_FUNC(lowOrderIs);
 PRIM_FUNC(lowSize);
