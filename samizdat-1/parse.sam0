@@ -79,8 +79,8 @@ orRule = { rules* ::
     finalRules = listletMap rules transformTokenRule;
 
     <> { reader <out> ::
-        listletReduce null finalRules
-            { ignored rule ::
+        listletForEach finalRules
+            { rule ::
                 ifValue { <> rule reader }
                     { result :: <out> result }
             }
