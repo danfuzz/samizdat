@@ -935,6 +935,14 @@ are shifted up by one index.
 `n` must be non-negative and less than or equal to the size of the
 listlet. If not, it is an error (terminating the runtime).
 
+#### `listletNth listlet n notFound? <> . | ~.`
+
+Returns the `n`th (zero-based) element of the given listlet, if `n` is
+a valid intlet index into the listlet. If `n` is not a valid index
+(either an out-of-range intlet, or some other value), then this
+returns the `notFound` value (an arbitrary value) if supplied, or
+returns void if `notFound` was not supplied.
+
 #### `listletPutNth listlet n value <> listlet`
 
 Returns a listlet just like the given one, except that the `n`th
@@ -945,14 +953,6 @@ exactly like `listletAppend`.
 
 `n` must be non-negative and less than or equal to the size of the
 listlet. If not, it is an error (terminating the runtime).
-
-#### `listletNth listlet n notFound? <> . | ~.`
-
-Returns the `n`th (zero-based) element of the given listlet, if `n` is
-a valid intlet index into the listlet. If `n` is not a valid index
-(either an out-of-range intlet, or some other value), then this
-returns the `notFound` value (an arbitrary value) if supplied, or
-returns void if `notFound` was not supplied.
 
 
 <br><br>
@@ -1315,6 +1315,7 @@ them returns `true`, in which case this function also returns
 
 Returns the sign of the given value: `@-1` for negative values,
 `@1` for positive values, or `@0` for `@0`.
+
 
 <br><br>
 ### In-Language Library: Stringlets
