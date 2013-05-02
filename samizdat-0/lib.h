@@ -17,6 +17,6 @@
  * Constructs and returns a fresh execution context, containing
  * bindings for all the core library values and functions.
  */
-zcontext libNewContext(void);
+zvalue libNewContext(void);
 
 #endif

@@ -121,7 +121,7 @@ zvalue langNodeFromProgramText(zvalue programText);
  *
  * See the *Samizdat Layer 0* spec for details on expression nodes.
  */
-zvalue langEvalExpressionNode(zcontext ctx, zvalue node);
+zvalue langEvalExpressionNode(zvalue ctx, zvalue node);
 
 
 #endif

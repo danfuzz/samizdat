@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
         args[i] = datStringletFromUtf8(-1, argv[i + 1]);
     }
 
-    zcontext ctx = libNewContext();
+    zvalue ctx = libNewContext();
     zvalue programText = ioReadFileUtf8(pathListlet);
     zvalue program = langNodeFromProgramText(programText);
     zvalue function = langEvalExpressionNode(ctx, program);

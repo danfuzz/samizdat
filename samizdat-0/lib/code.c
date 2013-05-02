@@ -130,10 +130,8 @@ PRIM_IMPL(sam0Tree) {
 PRIM_IMPL(sam0Eval) {
     requireExactly(argCount, 2);
 
-    zvalue contextMaplet = args[0];
+    zvalue ctx = args[0];
     zvalue expressionNode = args[1];
-    zcontext ctx = langCtxNew();
 
-    langCtxBindAll(ctx, contextMaplet);
     return langEvalExpressionNode(ctx, expressionNode);
 }

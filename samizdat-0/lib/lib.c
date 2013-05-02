@@ -38,9 +38,9 @@ static zvalue getLibraryFiles(void) {
 }
 
 /**
- * Creates a `zcontext`, and binds all the primitive definitions into it.
+ * Creates a context maplet with all the primitive definitions bound into it.
  */
-static zcontext primitiveContext(void) {
+static zvalue primitiveContext(void) {
     zcontext ctx = langCtxNew();
 
     // These both could have been defined in-language, but we already
@@ -57,7 +57,7 @@ static zcontext primitiveContext(void) {
     // (other than this one, since values can't self-reference).
     langCtxBind(ctx, STR_UP_LIBRARY, langMapletFromCtx(ctx));
 
-    return ctx;
+    return langMapletFromCtx(ctx);
 }
 
 /**
@@ -69,7 +69,7 @@ static zvalue getLibrary(void) {
     zvalue mainText = datMapletGet(libraryFiles, STR_MAIN);
     zvalue mainProgram = langNodeFromProgramText(mainText);
 
-    zcontext ctx = primitiveContext();
+    zvalue ctx = primitiveContext();
     zvalue mainFunction = langEvalExpressionNode(ctx, mainProgram);
 
     // It is the responsibility of the `main` core library program
@@ -83,12 +83,7 @@ static zvalue getLibrary(void) {
  */
 
 /* Documented in header. */
-zcontext libNewContext(void) {
+zvalue libNewContext(void) {
     constInit();
-
-    zvalue library = getLibrary();
-    zcontext result = langCtxNew();
-
-    langCtxBindAll(result, library);
-    return result;
+    return getLibrary();
 }

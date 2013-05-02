@@ -56,8 +56,8 @@ typedef struct {
  */
 
 /* Defined below. */
-static zvalue execExpression(zcontext ctx, zvalue expression);
-static zvalue execExpressionVoidOk(zcontext ctx, zvalue expression);
+static zvalue execExpression(zvalue ctx, zvalue expression);
+static zvalue execExpressionVoidOk(zvalue ctx, zvalue expression);
 
 /**
  * The C function that is bound to in order to perform nonlocal exit.
@@ -90,15 +90,15 @@ static zvalue nonlocalExit(void *state, zint argCount, const zvalue *args) {
 
 /**
  * Binds variables for all the formal arguments of the given
- * function (if any), returning a maplet of the bindings.
+ * function (if any), returning a maplet of the bindings added
+ * to the given base context.
  */
-static zvalue bindArguments(zvalue functionNode,
+static zvalue bindArguments(zvalue ctx, zvalue functionNode,
                             zint argCount, const zvalue *args) {
-    zvalue result = EMPTY_MAPLET;
     zvalue formals = datMapletGet(functionNode, STR_FORMALS);
 
     if (formals == NULL) {
-        return result;
+        return ctx;
     }
 
     datHighletAssertType(formals, STR_FORMALS);
@@ -133,10 +133,23 @@ static zvalue bindArguments(zvalue functionNode,
             argAt++;
         }
 
-        result = datMapletPut(result, name, value);
+        ctx = datMapletPut(ctx, name, value);
     }
 
-    return result;
+    return ctx;
+}
+
+/**
+ * Executes a variable definition, by updating the given variable
+ * context as appropriate.
+ */
+static zvalue execVarDef(zvalue ctx, zvalue varDef) {
+    zvalue nameValue = datHighletValue(varDef);
+    zvalue name = datMapletGet(nameValue, STR_NAME);
+    zvalue valueExpression = datMapletGet(nameValue, STR_VALUE);
+    zvalue value = execExpression(ctx, valueExpression);
+
+    return datMapletPut(ctx, name, value);
 }
 
 /**
@@ -145,14 +158,17 @@ static zvalue bindArguments(zvalue functionNode,
 static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     Closure *closure = state;
     zvalue functionNode = closure->function;
+    zvalue parentContext = closure->context;
+
     zvalue yieldDef = datMapletGet(functionNode, STR_YIELD_DEF);
     zvalue statements = datMapletGet(functionNode, STR_STATEMENTS);
     zvalue yield = datMapletGet(functionNode, STR_YIELD);
     YieldState *yieldState = NULL;
 
-    // Bind the formals and yieldDef (if present), creating a context.
+    // Take the parent context as a base, and bind the formals and
+    // yieldDef (if present), creating an initial variable context.
 
-    zvalue locals = bindArguments(functionNode, argCount, args);
+    zvalue ctx = bindArguments(parentContext, functionNode, argCount, args);
 
     if (yieldDef != NULL) {
         yieldState = zalloc(sizeof(YieldState));
@@ -165,22 +181,17 @@ static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
         }
 
         zvalue exitFunction = langDefineFunction(nonlocalExit, yieldState);
-        locals = datMapletPut(locals, yieldDef, exitFunction);
+        ctx = datMapletPut(ctx, yieldDef, exitFunction);
     }
 
-    zcontext ctx = ctxNewChild(closure->context, locals);
-
-    // Using the new context, evaluate the statements.
+    // Evaluate the statements, updating the variable context as needed.
 
     zint statementsSize = datSize(statements);
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = datListletNth(statements, i);
 
         if (datHighletTypeIs(one, STR_VAR_DEF)) {
-            zvalue nameValue = datHighletValue(one);
-            zvalue name = datMapletGet(nameValue, STR_NAME);
-            zvalue value = datMapletGet(nameValue, STR_VALUE);
-            ctxBind(ctx, name, execExpression(ctx, value));
+            ctx = execVarDef(ctx, one);
         } else {
             execExpressionVoidOk(ctx, one);
         }
@@ -205,11 +216,11 @@ static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
 /**
  * Executes a `function` form.
  */
-static zvalue execFunction(zcontext ctx, zvalue function) {
+static zvalue execFunction(zvalue ctx, zvalue function) {
     datHighletAssertType(function, STR_FUNCTION);
 
     Closure *closure = zalloc(sizeof(Closure));
-    closure->context = langMapletFromCtx(ctx);
+    closure->context = ctx;
     closure->function = datHighletValue(function);
 
     return langDefineFunction(execClosure, closure);
@@ -218,7 +229,7 @@ static zvalue execFunction(zcontext ctx, zvalue function) {
 /**
  * Executes a `call` form.
  */
-static zvalue execCall(zcontext ctx, zvalue call) {
+static zvalue execCall(zvalue ctx, zvalue call) {
     datHighletAssertType(call, STR_CALL);
     call = datHighletValue(call);
 
@@ -237,14 +248,37 @@ static zvalue execCall(zcontext ctx, zvalue call) {
 }
 
 /**
+ * Executes a `varRef` form.
+ */
+static zvalue execVarRef(zvalue ctx, zvalue varRef) {
+    datHighletAssertType(varRef, STR_VAR_REF);
+
+    zvalue name = datHighletValue(varRef);
+    zvalue found = datMapletGet(ctx, name);
+
+    if (found != NULL) {
+        return found;
+    }
+
+    if (datTypeIs(name, DAT_STRINGLET)) {
+        zint nameSize = datUtf8SizeFromStringlet(name);
+        char nameStr[nameSize + 1];
+        datUtf8FromStringlet(nameSize + 1, nameStr, name);
+        die("No such variable: %s", nameStr);
+    }
+
+    die("No such variable: (strange name)");
+}
+
+/**
  * Executes an `expression` form, with the result possibly being
  * `void` (represented as `NULL`).
  */
-static zvalue execExpressionVoidOk(zcontext ctx, zvalue e) {
+static zvalue execExpressionVoidOk(zvalue ctx, zvalue e) {
     if (datHighletTypeIs(e, STR_LITERAL))
         return datHighletValue(e);
     else if (datHighletTypeIs(e, STR_VAR_REF))
-        return ctxGet(ctx, datHighletValue(e));
+        return execVarRef(ctx, e);
     else if (datHighletTypeIs(e, STR_CALL))
         return execCall(ctx, e);
     else if (datHighletTypeIs(e, STR_FUNCTION))
@@ -258,7 +292,7 @@ static zvalue execExpressionVoidOk(zcontext ctx, zvalue e) {
  * Executes an `expression` form, with the result never allowed to be
  * `void`.
  */
-static zvalue execExpression(zcontext ctx, zvalue expression) {
+static zvalue execExpression(zvalue ctx, zvalue expression) {
     zvalue result = execExpressionVoidOk(ctx, expression);
 
     if (result == NULL) {
@@ -274,6 +308,6 @@ static zvalue execExpression(zcontext ctx, zvalue expression) {
  */
 
 /* Documented in header. */
-zvalue langEvalExpressionNode(zcontext ctx, zvalue node) {
+zvalue langEvalExpressionNode(zvalue ctx, zvalue node) {
     return execExpressionVoidOk(ctx, node);
 }
