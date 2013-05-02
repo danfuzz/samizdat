@@ -67,14 +67,33 @@ diffIntlet = { context v1 v2 ::
 
 # Diffs maplets.
 diffMaplet = { context v1 v2 ::
-    keys1 = mapletKeys v1;
-    keys2 = mapletKeys v2;
-    values1 = mapletValues v1;
-    values2 = mapletValues v2;
+    size1 = lowSize v1;
+    size2 = lowSize v2;
 
     <> and
-        { <> diffListlet (listletAppend context @keys) keys1 keys2 }
-        { <> diffListlet (listletAppend context @values) values1 values2 }
+        { <> innerDiff context @size size1 size2 }
+        {
+            mapletForEach v1
+                { value key ::
+                    ifVoid { <> mapletGet v2 key }
+                        {
+                            report (listletAppend context key) v1 v2
+                                @"Key mismatch."
+                        }
+                };
+            <> false
+        }
+        {
+            mapletForEach v1
+                { value key ::
+                    ifTrue { <> ne value (mapletGet v2 key) }
+                        {
+                            report (listletAppend context key) v1 v2
+                                @"Value mismatch."
+                        }
+                };
+            <> false
+        }
 };
 
 # Diffs listlets.
@@ -82,17 +101,14 @@ diffListlet = { context v1 v2 ::
     size1 = lowSize v1;
     size2 = lowSize v2;
 
-    <> or
-        { <> eq v1 v2 }
-        { <> and
-            { <> innerDiff context @size size1 size2 }
-            {
-                listletMap v1
-                    { elem index ::
-                        <> innerDiff context index elem (listletNth v2 index)
-                    };
-                <> false
-            }
+    <> and
+        { <> innerDiff context @size size1 size2 }
+        {
+            listletForEach v1
+                { elem index ::
+                    <> innerDiff context index elem (listletNth v2 index)
+                };
+            <> false
         }
 };
 
