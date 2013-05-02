@@ -48,10 +48,13 @@ parseDoubleQuote = { reader ::
 parseString = { reader ::
     reader @read; # Skip the open quote.
 
-    value = whileReduce @"" { result ::
-        <> ifValue { <> parseStringChar reader }
-            { ch :: <> stringletAdd result ch }
-    };
+    value = { <yield> ::
+        loopReduce @"" { result ::
+            <> ifValue { <> parseStringChar reader }
+                { ch :: <> stringletAdd result ch }
+                { <yield> result }
+            }
+    }();
 
     # Skip the close quote, or complain if it was absent.
     <> ifValue { <> parseDoubleQuote reader }
@@ -75,20 +78,25 @@ IDENTIFIER_CHARS = listletReduce @[=]
     ]
     { result ch :: <> mapletPut result ch null };
 
-# Parses an identifier.
-parseIdentifier = { reader ::
-    value = whileReduce @"" { result ::
-        <> ifValue { <> reader @peek }
-            { ch ::
-                <> ifValue { <> mapletGet IDENTIFIER_CHARS ch }
-                    {
-                        reader @read;
-                        <> stringletAdd result ch
-                    }
-            }
-    };
+# Parses a single identifier character.
+parseIdentifierChar = { reader ::
+    <> ifValue { <> reader @peek }
+        { ch ::
+            <> ifValue { <> mapletGet IDENTIFIER_CHARS ch }
+                {
+                    reader @read;
+                    <> ch
+                }
+        }
+};
 
-    <> [:@identifier value:]
+# Parses an identifier.
+parseIdentifier = { reader <out> ::
+    loopReduce @"" { result ::
+        <> ifValue { <> parseIdentifierChar reader }
+            { ch :: <> stringletAdd result ch }
+            { <out> [:@identifier result:] }
+    }
 };
 
 # These are all the integer digits, as a maplet from stringlets to
@@ -100,26 +108,33 @@ INTEGER_CHARS = listletReduce @[=]
         <> mapletPut result (stringletFromIntlet (iadd @48 n)) n
     };
 
-# Parses an integer.
-parseInteger = { reader ::
-    value = whileReduce @0 { result ::
-        <> ifValue { <> reader @peek }
-            { ch ::
-                <> ifValue { <> mapletGet INTEGER_CHARS ch }
-                    { n ::
-                        reader @read;
-                        <> (iadd n (imul result @10))
-                    }
-            }
-    };
+# Parses a single integer character, returning the digit value if successful.
+parseIntegerChar = { reader ::
+    <> ifValue { <> reader @peek }
+        { ch ::
+            <> ifValue { <> mapletGet INTEGER_CHARS ch }
+                { value ::
+                    reader @read;
+                    <> value
+                }
+        }
+};
 
-    <> [:@integer value:];
+# Parses an integer.
+parseInteger = { reader <out> ::
+    loopReduce @0 { result ::
+        <> ifValue { <> parseIntegerChar reader }
+            { value :: <> iadd value (imul result @10) }
+            { <out> [:@integer result:] }
+    }
 };
 
 # Skips over all characters until and including a newline.
-skipUntilNewline = { reader ::
-    while {
-        <> ifValue { <> reader @read } { ch :: <> ne ch @"\n" } { <> false }
+skipUntilNewline = { reader <out> ::
+    loop {
+        ifValue { <> reader @read }
+            { ch :: ifTrue { <> eq ch @"\n" } { <out> } }
+            { <out> }
     }
 };
 
@@ -131,15 +146,15 @@ WHITESPACE_DISPATCH = @[
 ];
 
 # Skips any whitespace at the current cursor.
-skipWhitespace = { reader ::
-    while {
-        <> ifVoid { <> reader @peek }
-            { <> false }
+skipWhitespace = { reader <out> ::
+    loop {
+        <> ifValue { <> reader @peek }
             { ch ::
                 <> ifValue { <> mapletGet WHITESPACE_DISPATCH ch }
-                    { parser :: parser reader; <> true }
-                    { <> false }
+                    { parser :: parser reader }
+                    { <out> }
             }
+            { <out> }
     }
 };
 
@@ -212,12 +227,13 @@ readToken = { reader ::
 
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
-tokenize = { programText ::
+tokenize = { programText <out> ::
     theReader = reader programText;
 
-    <> whileReduce @[] { result ::
+    <> loopReduce @[] { result ::
         <> ifValue { <> readToken theReader }
             { token :: <> listletAppend result token }
+            { <out> result }
     }
 };
 

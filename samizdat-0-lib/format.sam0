@@ -24,20 +24,18 @@ adornIf = { adorn before value after ::
 
 # Helper for stringifying intlets, which does most of the conversion,
 # as well as prepending the given prefix.
-intletBody = { start value ::
-    result = whileReduce @[@"" value]
-        { result ::
-            text = listletNth result @0;
-            value = listletNth result @1;
-            <> ifTrue { <> ne value @0 }
-                {
-                    # Note: 48 == "0"
-                    digit = stringletFromIntlet (iadd (imod value @10) @48);
-                    <> @[(stringletAdd digit text) (idiv value @10)];
-                }
-        };
-
-    <> stringletAdd start (listletNth result @0)
+intletBody = { start value <out> ::
+    loopReduce @[@"" value] { result ::
+        text = listletNth result @0;
+        value = listletNth result @1;
+        <> ifTrue { <> ne value @0 }
+            {
+                # Note: 48 == "0"
+                digit = stringletFromIntlet (iadd (imod value @10) @48);
+                <> @[(stringletAdd digit text) (idiv value @10)];
+            }
+            { <out> stringletAdd start text }
+    }
 };
 
 # Maplet from intlet sign values to the appropriate stringifier for each.
@@ -292,7 +290,7 @@ formatOne = { state ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-format = { formatString rest* ::
+format = { formatString rest* <out> ::
     formatter = object formatOne @[
         @fmt    = formatString
         @fmtAt  = @0
@@ -300,9 +298,10 @@ format = { formatString rest* ::
         @argsAt = @0
     ];
 
-    <> whileReduce @"" { result ::
+    loopReduce @"" { result ::
         <> ifValue { <> formatter() }
             { s :: <> stringletAdd result s }
+            { <out> result }
     }
 };
 

@@ -681,22 +681,22 @@ The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
 
-#### `while function <> ~.`
+#### `loop function <> ~.`
 
-Primitive conditional loop construct. This repeatedly calls the given
-function with no arguments. The function must always return a boolean.
-The repeated calls stop as soon as the function returns `false`.
+Primitive unconditional loop construct. This repeatedly calls the given
+function with no arguments.
 
-#### `whileReduce base function <> ~.`
+In order for the loop to terminate, the function must use a nonlocal exit.
 
-Primitive conditional loop construct, with reduce semantics. This repeatedly
-calls the given function with a single argument. The first time the function
-is called, it is passed the given `base` value (an arbitrary value), and
-subsequent times it is passed whatever the `function` returned on the
-previous iteration. Iteration ends immediately after `function` returns
-void, at which point, this function returns that last argument passed into
-the function (which will be the `base` value if `function` returned void
-on the first iteration).
+#### `loopReduce base function <> ~.`
+
+Primitive unconditional loop construct, with reduce semantics. This repeatedly
+calls the given function with a single argument. The argument is the
+most recent non-void result of calling the function, or the `base` value
+if the function has yet to return non-void (including notably to the first
+call to the function).
+
+In order for the loop to terminate, the function must use a nonlocal exit.
 
 
 <br><br>

@@ -16,20 +16,21 @@
 
 # Generic for-each function. Instead of the value-to-iterate argument, this
 # takes an `nthFunc` of one argument.
-genericForEach = { nthFunc function ::
-    whileReduce @0 { index ::
+genericForEach = { nthFunc function <out> ::
+    loopReduce @0 { index ::
         <> ifValue { <> (nthFunc index) }
             { item ::
                 function item index;
                 <> iadd index @1
             }
+            { <out> }
     }
 };
 
 # Generic reduce function. Instead of the value-to-reduce argument, this
 # takes an `nthFunc` of one argument.
-genericReduce = { base nthFunc function ::
-    reduction = whileReduce @[base @0] { state ::
+genericReduce = { base nthFunc function <out> ::
+    loopReduce @[base @0] { state ::
         result = listletNth state @0;
         index = listletNth state @1;
         <> ifValue { <> (nthFunc index) }
@@ -39,9 +40,8 @@ genericReduce = { base nthFunc function ::
                     { <> result };
                 <> @[nextResult (iadd index @1)]
             }
-    };
-
-    <> listletNth reduction @0;
+            { <out> result }
+    }
 };
 
 # Generic map function. Instead of the value-to-map argument, this
