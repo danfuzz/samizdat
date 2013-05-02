@@ -31,7 +31,7 @@ loadFile = { ctx name ::
     tree = sam0Tree text;
     function = sam0Eval ctx tree;
 
-    <> function()
+    <> function readFile
 };
 
 # Loads the named libraries, each one in the context of the previously-defined

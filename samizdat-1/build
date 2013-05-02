@@ -39,10 +39,21 @@ unset newProg
 # Main script
 #
 
-"${progDir}/build"
+projectName="$(basename "${progDir}")"
 
-PATH="${PATH}:${baseDir}/out/samizdat-0:${baseDir}/out/samizdat-1"
+OUT="${OUT:-${baseDir}/out}/${projectName}"
+rm -rf "${OUT}" || exit 1
+mkdir -p "${OUT}" || exit 1
 
-# Run samizdat-1 (which is has a shebang line of `samizdat-0`),
-# passing it demo/main.sam0 to run.
-samizdat-1 "${baseDir}/demo/main.sam0" "$@"
+echo 'Build samizdat-0...'
+"${baseDir}/samizdat-0/build" > /dev/null || exit 1
+echo 'Done!'
+echo ''
+
+echo 'Build samizdat-1...'
+cp -r ${progDir}/*.sam0 "${OUT}"
+cp -r ${baseDir}/samizdat-0-lib "${OUT}"
+chmod 755 ${OUT}/main.sam0
+ln -s main.sam0 ${OUT}/samizdat-1
+echo 'Done!'
+echo ''

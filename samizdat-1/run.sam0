@@ -6,11 +6,15 @@
 # `run` function, which is the effective main entry point to the program.
 #
 
+# This is the reader to use for reading internal files (e.g. and in
+# particular, the embedded copy of samizdat-0-lib).
+READER ::
+
 # Parses the given program text, yielding a `program` node. This also
 # compares the would-be result with the result of doing the same operation
 # using the samizdat-0 facilities for same, complaining if they're not
 # equal.
-parseProgram = { programText ::
+sam1Tree = { programText ::
     # Turn the text into a parse tree using the tokenizer and tree parser
     # defined in this program.
     tokens = tokenize programText;
@@ -34,14 +38,48 @@ parseProgram = { programText ::
     <> programNode
 };
 
+# Reads the named embedded library file.
+readLibraryFile = { name ::
+    <> READER @[@"samizdat-0-lib" (stringletAdd name @".sam0")]
+};
+
+# Reads all the library files, returning a maplet from names to contents.
+readAllLibraryFiles = {
+    # Use the manifest to figure out what all to read.
+    manifestProgram = sam1Tree (readLibraryFile @manifest);
+    manifest = (sam0Eval (makeLibrary LIBRARY) manifestProgram)();
+
+    <> listletReduce @[=] manifest { result name ::
+        <> mapletPut result name (readLibraryFile name)
+    }
+};
+
+makeCoreLibrary = {
+    # Make the core library context that will be used to load the embedded
+    # core library. The only difference between this and the original core
+    # library is the replacement of `sam0Tree` with `sam1Tree`.
+    subLibrary = makeLibrary (mapletPut LIBRARY @sam0Tree sam1Tree);
+
+    libraryFiles = readAllLibraryFiles();
+
+    mainProgram = sam1Tree (mapletGet libraryFiles @main);
+    mainFunction = sam0Eval subLibrary mainProgram;
+    <> mainFunction libraryFiles
+};
+
 # Compiles the file named in the first argument in a fresh context,
 # and runs it, passing it an array consisting of its own file path
 # (in standard listlet-of-stringlet form) followed by the rest of the
 # arguments as-is.
 run = { file rest* ::
+
+    io0Note @"Loading core library...";
+    makeCoreLibrary();
+    io0Note @"Done!";
+
     filePath = io0PathFromStringlet file;
     programText = io0ReadFileUtf8 filePath;
-    programNode = parseProgram programText;
+    programNode = sam1Tree programText;
 
     # Evaluate the program in the context of the samizdat-0 core library.
     function = sam0Eval (makeLibrary LIBRARY) programNode;
