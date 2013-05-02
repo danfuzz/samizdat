@@ -13,23 +13,6 @@
 # functions per se or simple highlets to represent token-matching rules.
 #
 
-# Meta-helper function, which transforms a highlet "rule" into a
-# token-matching rule per se.
-transformTokenRule = { rule ::
-    <> ifTrue { <> isHighlet rule }
-        { <> tokenRule rule }
-        { <> rule }
-};
-
-# Returns a rule which succeeds if a given other rule succeeds, and
-# if so runs the given result filter function, passing it the rule
-# result, to produce the final result of processing.
-filterRule = { rule filterFunction ::
-    <> { reader ::
-        <> ifValue { <> rule reader } filterFunction
-    }
-};
-
 # Returns a rule which succeeds if the given token type is successfully
 # read.
 tokenRule = { token ::
@@ -47,6 +30,23 @@ tokenRule = { token ::
     }
 };
 
+# Meta-helper function, which transforms a highlet "rule" into a
+# token-matching rule per se.
+transformTokenRule = { rule ::
+    <> ifTrue { <> isHighlet rule }
+        { <> tokenRule rule }
+        { <> rule }
+};
+
+# Returns a rule which succeeds if a given other rule succeeds, and
+# if so runs the given result filter function, passing it the rule
+# result, to produce the final result of processing.
+filterRule = { rule filterFunction ::
+    <> { reader ::
+        <> ifValue { <> rule reader } filterFunction
+    }
+};
+
 # Returns a rule which succeeds if each of a list of other rules
 # succeeds in sequence (said list given in the form of separate arguments
 # to this function). The result, if successful, is a listlet of all
@@ -55,25 +55,17 @@ tokenRule = { token ::
 seqRule = { rules* ::
     finalRules = listletMap rules transformTokenRule;
 
-    <> { reader ::
-        doAll = { rule rest* ::
-            <> ifValue { <> rule reader }
-                { firstResult ::
-                    <> ifTrue { <> eq rest @[] }
-                        { <> @[firstResult] }
-                        {
-                            <> ifValue { <> apply doAll rest }
-                                { result ::
-                                    <> listletPrepend firstResult result }
-                        }
-                }
-        };
-
+    <> { reader <out> ::
         mark = reader @at;
-
-        <> ifValue { <> apply doAll finalRules }
-            { result :: <> result }
-            { reader @reset mark }
+        <> listletReduce @[] finalRules
+            { results rule ::
+                <> ifValue { <> rule reader }
+                    { result :: <> listletAppend results result }
+                    {
+                        reader @reset mark;
+                        <out>
+                    }
+            }
     }
 };
 
