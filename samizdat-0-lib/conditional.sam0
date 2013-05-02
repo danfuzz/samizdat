@@ -6,23 +6,12 @@
 # Conditional functions
 #
 
-
 # Documented in Samizdat Layer 0 spec.
-and = { predicate rest* ::
-    <> ifTrue predicate
-        { <> ifTrue { <> eq rest @[] } { <> true } { <> apply and rest } }
-        { <> false }
-};
-
-# Documented in Samizdat Layer 0 spec.
-else = { <> true };
-
-# Documented in Samizdat Layer 0 spec.
-if = { predicate consequent rest* ::
-    <> ifTrue predicate
-        consequent
-        # Note: `{}` by definition is a function that returns void.
-        { <> ifTrue { <> eq rest @[] } {} { <> apply if rest } }
+and = { predicates* <out> ::
+    <> apply argsReduce
+        { result predicate :: ifTrue predicate {} { <out> false } }
+        true
+        predicates
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -40,16 +29,15 @@ ifVoid = { predicate voidFunction valueFunction? ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-or = { predicate rest* ::
-    <> ifTrue predicate
-        { <> true }
-        { <> ifTrue { <> eq rest @[] } { <> false } { <> apply or rest } }
+or = { predicates* <out> ::
+    <> apply argsReduce
+        { result predicate :: ifTrue predicate { <out> true } }
+        false
+        predicates
 };
 
 <> @[
     @and = and
-    @else = else
-    @if = if
     @ifFalse = ifFalse
     @ifVoid = ifVoid
     @or = or

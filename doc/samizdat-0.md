@@ -448,17 +448,25 @@ a maplet that binds `@name` and optionally `@repeat`:
   argument.
 
 * `@repeat` &mdash; indicates (if present) that the number of actual
-  arguments bound by this formal is not exactly one. If present it must be:
+  arguments bound by this formal is not exactly one. If present it must be
+  one of:
 
   * `@"*"` &mdash; indicates that this argument binds as many actual
-    arguments as are available, including none. As such, this must only
-    ever be the `repeat` of the last formal. The argument variable as bound
+    arguments as are available, including none. As such, this only really
+    makes sense as the `repeat` of the last formal, though the syntax
+    will tolerate it being on any formal. The argument variable as bound
     is a listlet of all the passed actual arguments that were bound.
+
+  * `@"?"` &mdash; indicates that this argument binds a single argument if
+    available, including none. As such, this only really makes sense if
+    only ever followed by other `?` formals or a `*` formal, though the
+    syntax will tolerate it being on any formal. The argument variable as
+    bound is a listlet, either of size one if an argument was bound or
+    of size zero if not.
 
 If no `@repeat` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
-actual argument as passed.
-
+actual argument as passed (no extra wrapping).
 
 #### `varDef` &mdash; `[:@varDef @[@name=name @value=value]:]`
 
@@ -606,7 +614,6 @@ makeMaplet = { rest* ::
 };
 ```
 
-
 #### `makeUniqlet() <> uniqlet`
 
 Returns a uniqlet that has never before been returned from this
@@ -620,7 +627,32 @@ v = @@;   is equivalent to   v = makeUniqlet();
 
 
 <br><br>
-### Primitive Library: Conditionals
+### Primitive Library: Conditionals and Iteration
+
+#### `argsMap function rest* <> listlet`
+
+Primitive mapping iterator. This calls the given function on each of
+the rest of the arguments in sequence, collecting all the non-void
+results into a listlet, which is returned. The function is called with
+exactly one argument, namely the item to process.
+
+**Note:** Unlike most of the map/reduce functions, this one takes its
+function as the first argument. This is done specifically so that it is
+convenient to `apply` it.
+
+#### `argsReduce function base rest* <> . | ~.`
+
+Primitive reducing iterator. This calls the given function on each of the
+rest of the arguments in sequence, yielding a final reduction result.
+(That is, this is a left-reduce operation.) The function is called with
+exactly two arguments, first the previous non-void reduction result (or
+the `base` for the first item in `rest`), and second the item to process.
+The return value of this call is what would have been passed as the
+reduction result to a would-be next function call.
+
+**Note:** Unlike most of the map/reduce functions, this one takes its
+function as the first argument. This is done specifically so that it is
+convenient to `apply` it.
 
 #### `ifTrue predicate trueFunction falseFunction? <> . | ~.`
 
@@ -1225,27 +1257,13 @@ Returns `true` iff the given value is a uniqlet.
 <br><br>
 ### In-Language Library: Conditionals
 
-#### `and predicate rest* <> boolean`
+#### `and predicates* <> boolean`
 
 Short-circuit conjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
 them returns `false`, in which case this function also returns
 `false`. If no predicate returns `false`, this function returns
 `true`.
-
-#### `else() <> true`
-
-No-argument predicate that always returns `true`. Used idiomatically
-when writing cascading `if` calls.
-
-#### `if predicate consequent rest* <> . | ~.`
-
-Cascading conditional. Takes an even number of arguments, alternating
-predicates and consequents, each argument being a no-argument
-function. The predicates are called in order until one returns
-`true`. The consequent immediately after the `true` predicate then
-gets called, and its return value becomes the result of this
-function. If no predicate returns `true`, this function returns void.
 
 #### `ifFalse predicate falseFunction trueFunction? <> . | ~.`
 
@@ -1257,7 +1275,7 @@ and third arguments is reversed.
 This is identical to `ifValue` except that the order of the second
 and third arguments is reversed.
 
-#### `or predicate rest* <> boolean`
+#### `or predicates* <> boolean`
 
 Short-circuit disjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
@@ -1296,6 +1314,10 @@ function is called on each element (character), with two arguments,
 namely the element (as a single-character stringlet) and its index
 number (zero-based).
 
+Similar to `argsMap`, if the function returns void, then no item is
+added for the corresponding element. This means the size of the
+result may be smaller than the size of the argument.
+
 **Note:** Unlike many other languages with similar functions, the
 function argument is the *last* one and not the *first* one. This is
 specifically done to make it natural to write a multi-line function
@@ -1313,9 +1335,10 @@ result, which is passed to the next call of `function` or becomes the
 return value of the call to this function if it was the call for the
 final element.
 
-It is only valid for `function` to return void if it happens to be the
-final call to the function for the reduction, and if so this function
-also returns void.
+Similar to `argsReduce`, if the function returns void, then the
+previously-returned non-void value (or `base` value if there has
+yet to be a non-void function return) is what is passed to the
+subsequent iteration and returned at the end of the call.
 
 See note on `stringletMap` about choice of argument order.
 
@@ -1346,6 +1369,10 @@ the results into a new listlet. The given function is called on each
 listlet element, with two arguments, namely the element and its index
 number (zero-based).
 
+Similar to `argsMap`, if the function returns void, then no item is
+added for the corresponding element. This means the size of the
+result may be smaller than the size of the argument.
+
 See note on `stringletMap` about choice of argument order.
 
 #### `listletPrepend value listlet <> listlet`
@@ -1367,9 +1394,10 @@ becomes the reduction result, which is passed to the next call of
 `function` or becomes the return value of the call to this function if
 it was the call for the final element.
 
-It is only valid for `function` to return void if it happens to be the
-final call to the function for the reduction, and if so this function
-also returns void.
+Similar to `argsReduce`, if the function returns void, then the
+previously-returned non-void value (or `base` value if there has
+yet to be a non-void function return) is what is passed to the
+subsequent iteration and returned at the end of the call.
 
 See note on `stringletMap` about choice of argument order.
 
@@ -1394,6 +1422,10 @@ order, because it is common enough to want to ignore the key). The
 return value of the function becomes the bound value for the given
 key in the final result.
 
+Similar to `argsMap`, if the function returns void, then no item is
+added for the corresponding element. This means the size of the
+result may be smaller than the size of the argument.
+
 See note on `stringletMap` about choice of argument order.
 
 #### `mapletReduce base maplet function <> . | ~.`
@@ -1406,9 +1438,10 @@ function result becomes the reduction result, which is passed to the
 next call of `function` or becomes the return value of the call to
 this function if it was the call for the final binding.
 
-It is only valid for `function` to return void if it happens to be the
-final call to the function for the reduction, and if so this function
-also returns void.
+Similar to `argsReduce`, if the function returns void, then the
+previously-returned non-void value (or `base` value if there has
+yet to be a non-void function return) is what is passed to the
+subsequent iteration and returned at the end of the call.
 
 See note on `stringletMap` about choice of argument order.
 

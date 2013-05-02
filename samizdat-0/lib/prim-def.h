@@ -12,6 +12,8 @@
  */
 
 PRIM_FUNC(apply);
+PRIM_FUNC(argsMap);
+PRIM_FUNC(argsReduce);
 PRIM_FUNC(highletType);
 PRIM_FUNC(highletValue);
 PRIM_FUNC(iadd);
