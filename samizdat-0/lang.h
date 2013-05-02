@@ -70,22 +70,6 @@ zvalue langDefineFunction(zfunction function, void *state);
 zcontext langCtxNew(void);
 
 /**
- * Binds an arbitrary value into the given execution context,
- * giving it the indicated name (interpreted as a `'\0'`-terminated
- * UTF-8 string).
- */
-void langCtxBind(zcontext ctx, zvalue name, zvalue value);
-
-/**
- * Binds a primitive function into the given execution context,
- * giving it the indicated name (interpreted as a `'\0'`-terminated
- * UTF-8 string). The given `state` will be passed as the first
- * argument to the function whenever it is called.
- */
-void langCtxBindFunction(zcontext ctx, const char *name,
-                         zfunction function, void *state);
-
-/**
  * Gets a maplet of all the bindings in the given context. Note
  * that this is a snapshot; any subsequent modification to the
  * bindings will have no effect on the result returned from this

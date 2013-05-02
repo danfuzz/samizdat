@@ -39,15 +39,6 @@ zcontext ctxNewChild(zvalue parent, zvalue locals) {
     return ctx;
 }
 
-/* Documented in header. */
-void ctxBind(zcontext ctx, zvalue name, zvalue value) {
-    if (datMapletGet(ctx->locals, name) != NULL) {
-        die("Duplicate assignment.");
-    }
-
-    ctx->locals = datMapletPut(ctx->locals, name, value);
-}
-
 
 /*
  * Exported functions
@@ -56,19 +47,6 @@ void ctxBind(zcontext ctx, zvalue name, zvalue value) {
 /* Documented in header. */
 zcontext langCtxNew(void) {
     return ctxNewChild(EMPTY_MAPLET, EMPTY_MAPLET);
-}
-
-/* Documented in header. */
-void langCtxBind(zcontext ctx, zvalue name, zvalue value) {
-    ctxBind(ctx, name, value);
-}
-
-/* Documented in header. */
-void langCtxBindFunction(zcontext ctx, const char *name,
-                         zfunction function, void *state) {
-    langCtxBind(ctx,
-        datStringletFromUtf8(-1, name),
-        langDefineFunction(function, state));
 }
 
 /* Documented in header. */

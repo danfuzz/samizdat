@@ -24,11 +24,6 @@
  */
 zcontext ctxNewChild(zvalue parent, zvalue locals);
 
-/**
- * Binds a new variable in the given context.
- */
-void ctxBind(zcontext ctx, zvalue name, zvalue value);
-
 
 /*
  * Other
