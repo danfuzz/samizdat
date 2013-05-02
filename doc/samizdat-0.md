@@ -1328,6 +1328,10 @@ function is called on each element (character), with two arguments,
 namely the element (as a single-character stringlet) and its index
 number (zero-based).
 
+Similar to `argsMap`, if the function returns void, then no item is
+added for the corresponding element. This means the size of the
+result may be smaller than the size of the argument.
+
 **Note:** Unlike many other languages with similar functions, the
 function argument is the *last* one and not the *first* one. This is
 specifically done to make it natural to write a multi-line function
@@ -1345,9 +1349,10 @@ result, which is passed to the next call of `function` or becomes the
 return value of the call to this function if it was the call for the
 final element.
 
-It is only valid for `function` to return void if it happens to be the
-final call to the function for the reduction, and if so this function
-also returns void.
+Similar to `argsReduce`, if the function returns void, then the
+previously-returned non-void value (or `base` value if there has
+yet to be a non-void function return) is what is passed to the
+subsequent iteration and returned at the end of the call.
 
 See note on `stringletMap` about choice of argument order.
 
@@ -1378,6 +1383,10 @@ the results into a new listlet. The given function is called on each
 listlet element, with two arguments, namely the element and its index
 number (zero-based).
 
+Similar to `argsMap`, if the function returns void, then no item is
+added for the corresponding element. This means the size of the
+result may be smaller than the size of the argument.
+
 See note on `stringletMap` about choice of argument order.
 
 #### `listletPrepend value listlet <> listlet`
@@ -1399,9 +1408,10 @@ becomes the reduction result, which is passed to the next call of
 `function` or becomes the return value of the call to this function if
 it was the call for the final element.
 
-It is only valid for `function` to return void if it happens to be the
-final call to the function for the reduction, and if so this function
-also returns void.
+Similar to `argsReduce`, if the function returns void, then the
+previously-returned non-void value (or `base` value if there has
+yet to be a non-void function return) is what is passed to the
+subsequent iteration and returned at the end of the call.
 
 See note on `stringletMap` about choice of argument order.
 
@@ -1426,6 +1436,10 @@ order, because it is common enough to want to ignore the key). The
 return value of the function becomes the bound value for the given
 key in the final result.
 
+Similar to `argsMap`, if the function returns void, then no item is
+added for the corresponding element. This means the size of the
+result may be smaller than the size of the argument.
+
 See note on `stringletMap` about choice of argument order.
 
 #### `mapletReduce base maplet function <> . | ~.`
@@ -1438,9 +1452,10 @@ function result becomes the reduction result, which is passed to the
 next call of `function` or becomes the return value of the call to
 this function if it was the call for the final binding.
 
-It is only valid for `function` to return void if it happens to be the
-final call to the function for the reduction, and if so this function
-also returns void.
+Similar to `argsReduce`, if the function returns void, then the
+previously-returned non-void value (or `base` value if there has
+yet to be a non-void function return) is what is passed to the
+subsequent iteration and returned at the end of the call.
 
 See note on `stringletMap` about choice of argument order.
 

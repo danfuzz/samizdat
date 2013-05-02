@@ -33,10 +33,26 @@ genericReduce = { base nthFunc function ::
         result = listletNth state @0;
         index = listletNth state @1;
         <> ifValue { <> (nthFunc index) }
-            { item :: <> @[(function result item index) (iadd index @1)] }
+            { item ::
+                nextResult = ifValue { <> function result item index }
+                    { value :: <> value }
+                    { <> result };
+                <> @[nextResult (iadd index @1)]
+            }
     };
 
     <> listletNth reduction @0;
+};
+
+# Generic map function. Instead of the value-to-reduce argument, this
+# takes an `nthFunc` of one argument.
+genericMap = { nthFunc function ::
+    <> genericReduce @[] nthFunc
+        { result item index ::
+            <> ifValue { <> function item index }
+                { value :: <> listletAppend result value }
+                { <> result }
+        }
 };
 
 
@@ -62,10 +78,7 @@ listletForEach = { listlet function ::
 
 # Documented in Samizdat Layer 0 spec.
 listletMap = { listlet function ::
-    <> listletReduce @[] listlet
-        { reduction value index ::
-            <> listletAppend reduction (function value index)
-        }
+    <> genericMap { n :: <> listletNth listlet n } function
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -93,7 +106,9 @@ mapletCat = { maplet rest* ::
 mapletMap = { maplet function ::
     <> mapletReduce @[=] maplet
         { reduction value key ::
-            <> mapletPut reduction key (function value key)
+            <> ifValue { <> function value key }
+                { newValue :: <> mapletPut reduction key newValue }
+                { <> reduction }
         }
 };
 
@@ -121,10 +136,7 @@ stringletForEach = { listlet function ::
 
 # Documented in Samizdat Layer 0 spec.
 stringletMap = { stringlet function ::
-    <> stringletReduce @[] stringlet
-        { reduction value index ::
-            <> listletAppend reduction (function value index)
-        }
+    <> genericMap { n :: <> stringletNth stringlet n } function
 };
 
 # Documented in Samizdat Layer 0 spec.
