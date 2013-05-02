@@ -1281,6 +1281,13 @@ Returns the sign of the given value: `@-1` for negative values,
 Concatenates one or more stringlets together into a single resulting
 stringlet.
 
+#### `stringletForEach stringlet function <> ~.`
+
+Calls the given function on each element (character) of the given stringlet.
+The given function is called with two arguments, namely the element (as a
+single-character stringlet) and its index number (zero-based). Always returns
+void.
+
 #### `stringletMap stringlet function <> listlet`
 
 Maps each element of a stringlet using a mapping function, collecting
@@ -1325,6 +1332,12 @@ listlet argument followed by the given additional value.
 
 Concatenates one or more listlets together into a single resulting
 listlet.
+
+#### `listletForEach listlet function <> ~.`
+
+Calls the given function on each element of the given listlet.
+The given function is called with two arguments, namely the element
+and its index number (zero-based). Always returns void.
 
 #### `listletMap listlet function <> listlet`
 

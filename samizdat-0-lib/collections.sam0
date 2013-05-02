@@ -14,14 +14,26 @@
 # Helper functions
 #
 
+# Generic for-each function. Instead of the value-to-iterate argument, this
+# takes an `nthFunc` of one argument.
+genericForEach = { base nthFunc function ::
+    whileReduce @0 { index ::
+        <> ifValue { <> (nthFunc index) }
+            { item ::
+                function result item index;
+                <> iadd index @1
+            }
+    }
+};
+
 # Generic reduce function. Instead of the value-to-reduce argument, this
 # takes an `nthFunc` of one argument.
-genericReduce = { base nthFunc func ::
+genericReduce = { base nthFunc function ::
     reduction = whileReduce @[base @0] { state ::
         result = listletNth state @0;
         index = listletNth state @1;
         <> ifValue { <> (nthFunc index) }
-            { item :: <> @[(func result item index) (iadd index @1)] }
+            { item :: <> @[(function result item index) (iadd index @1)] }
     };
 
     <> listletNth reduction @0;
@@ -50,6 +62,11 @@ listletAppend = { listlet value ::
 listletCat = { listlet rest* ::
     <> listletReduce listlet rest
         { reduction value :: <> listletAdd reduction value }
+};
+
+# Documented in Samizdat Layer 0 spec.
+listletForEach = { listlet func ::
+    <> genericForEach listlet { n :: <> listletNth listlet n } func
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -102,6 +119,11 @@ stringletCat = { stringlet rest* ::
 };
 
 # Documented in Samizdat Layer 0 spec.
+stringletForEach = { listlet func ::
+    <> genericForEach listlet { n :: <> stringletNth listlet n } func
+};
+
+# Documented in Samizdat Layer 0 spec.
 stringletMap = { stringlet func ::
     <> stringletReduce @[] stringlet
         { reduction value index ::
@@ -122,6 +144,7 @@ stringletReduce = { base stringlet func ::
 <> @[
     @listletAppend = listletAppend
     @listletCat = listletCat
+    @listletForEach = listletForEach
     @listletMap = listletMap
     @listletPrepend = listletPrepend
     @listletReduce = listletReduce
@@ -129,6 +152,7 @@ stringletReduce = { base stringlet func ::
     @mapletMap = mapletMap
     @mapletReduce = mapletReduce
     @stringletCat = stringletCat
+    @stringletForEach = stringletForEach
     @stringletMap = stringletMap
     @stringletReduce = stringletReduce
 ]
