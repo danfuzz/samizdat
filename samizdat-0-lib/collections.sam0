@@ -20,7 +20,7 @@ genericForEach = { base nthFunc function ::
     whileReduce @0 { index ::
         <> ifValue { <> (nthFunc index) }
             { item ::
-                function result item index;
+                function item index;
                 <> iadd index @1
             }
     }
