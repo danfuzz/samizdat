@@ -19,10 +19,10 @@
  */
 
 /**
- * Allocates an execution context set up to be the child of the given
- * one and with the given initial locals.
+ * Allocates an execution context set up with the given parent bindings
+ * and initial local variable bindings.
  */
-zcontext ctxNewChild(zcontext parent, zvalue locals);
+zcontext ctxNewChild(zvalue parent, zvalue locals);
 
 /**
  * Binds a new variable in the given context.

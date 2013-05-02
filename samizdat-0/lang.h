@@ -64,14 +64,14 @@ zvalue langDefineFunction(zfunction function, void *state);
 
 /**
  * Constructs and returns a fresh execution context, valid for use as
- * an argument to `langExecute()` but without any initial variable
- * bindings.
+ * an argument to `langEvalExpressionNode()` but without any variable
+ * bindings in either as parent bindings or local variables.
  */
 zcontext langCtxNew(void);
 
 /**
  * Constructs and returns a fresh execution context, with the given
- * parent context.
+ * parent context but with no initial local variable bindings.
  */
 zcontext langCtxNewChild(zcontext parent);
 

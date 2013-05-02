@@ -78,17 +78,12 @@ seqRule = { rules* ::
 orRule = { rules* ::
     finalRules = listletMap rules transformTokenRule;
 
-    <> { reader ::
-        doOr = { rule rest* ::
-            <> ifValue { <> rule reader }
-                { result :: <> result }
-                {
-                    <> ifTrue { <> ne rest @[] }
-                        { <> apply doOr rest }
-                }
-        };
-
-        <> apply doOr finalRules;
+    <> { reader <out> ::
+        listletReduce null finalRules
+            { ignored rule ::
+                ifValue { <> rule reader }
+                    { result :: <out> result }
+            }
     }
 };
 
@@ -148,9 +143,16 @@ makeCall = { function actuals* ::
 #
 
 # These are effectively forward declarations.
-parseAtom = { reader :: <> parseAtomImpl reader };
-parseExpression = { reader :: <> parseExpressionImpl reader };
-parseFunction = { reader :: <> parseFunctionImpl reader };
+RECURSIVE_PARSERS = object
+    { state key value? ::
+        <> ifValue { <> listletNth value @0 }
+            { value :: <> @[@state=(mapletPut state key value)] }
+            { <> @[@result=(mapletGet state key)] }
+    }
+    @[=];
+parseAtom = { reader :: <> (RECURSIVE_PARSERS @atom) reader };
+parseExpression = { reader :: <> (RECURSIVE_PARSERS @expression) reader };
+parseFunction = { reader :: <> (RECURSIVE_PARSERS @function) reader };
 
 # Parses a `call` node.
 parseCall = filterRule
@@ -257,9 +259,11 @@ parseParenExpression = filterRule
 parseAtomImpl = orRule parseVarRef parseIntlet parseStringlet
     parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
     parseUniqlet parseHighlet parseFunction parseParenExpression;
+RECURSIVE_PARSERS @atom parseAtomImpl;
 
 # Parses an `expression` node.
 parseExpressionImpl = orRule parseCall parseAtom;
+RECURSIVE_PARSERS @expression parseExpressionImpl;
 
 # Parses a `statement` node.
 parseStatement = orRule parseVarDef parseExpression;
@@ -379,6 +383,7 @@ parseProgram = filterRule
 parseFunctionImpl = filterRule
     (seqRule [:@"{":] parseProgram [:@"}":])
     { result :: <> listletNth result @1 };
+RECURSIVE_PARSERS @function parseFunctionImpl;
 
 
 #
