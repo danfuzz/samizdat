@@ -108,20 +108,25 @@ INTEGER_CHARS = listletReduce @[=]
         <> mapletPut result (stringletFromIntlet (iadd @48 n)) n
     };
 
-# Parses an integer.
-parseInteger = { reader ::
-    value = whileReduce @0 { result ::
-        <> ifValue { <> reader @peek }
-            { ch ::
-                <> ifValue { <> mapletGet INTEGER_CHARS ch }
-                    { n ::
-                        reader @read;
-                        <> (iadd n (imul result @10))
-                    }
-            }
-    };
+# Parses a single integer character, returning the digit value if successful.
+parseIntegerChar = { reader ::
+    <> ifValue { <> reader @peek }
+        { ch ::
+            <> ifValue { <> mapletGet INTEGER_CHARS ch }
+                { value ::
+                    reader @read;
+                    <> value
+                }
+        }
+};
 
-    <> [:@integer value:];
+# Parses an integer.
+parseInteger = { reader <out> ::
+    loopReduce @0 { result ::
+        <> ifValue { <> parseIntegerChar reader }
+            { value :: <> iadd value (imul result @10) }
+            { <out> [:@integer result:] }
+    }
 };
 
 # Skips over all characters until and including a newline.
@@ -222,12 +227,13 @@ readToken = { reader ::
 
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
-tokenize = { programText ::
+tokenize = { programText <out> ::
     theReader = reader programText;
 
-    <> whileReduce @[] { result ::
+    <> loopReduce @[] { result ::
         <> ifValue { <> readToken theReader }
             { token :: <> listletAppend result token }
+            { <out> result }
     }
 };
 
