@@ -20,11 +20,17 @@ PRIM_IMPL(argsMap) {
     argCount--;
 
     zvalue result[argCount];
+    zint at = 0;
+
     for (zint i = 0; i < argCount; i++) {
-        result[i] = langCall(function, 1, &args[i]);
+        zvalue one = langCall(function, 1, &args[i]);
+        if (one != NULL) {
+            result[at] = one;
+            at++;
+        }
     }
 
-    return datListletFromArray(argCount, result);
+    return datListletFromArray(at, result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -41,7 +47,12 @@ PRIM_IMPL(argsReduce) {
 
     for (zint i = 0; i < argCount; i++) {
         funArgs[1] = args[i];
-        funArgs[0] = langCall(function, 2, funArgs);
+
+        zvalue result = langCall(function, 2, funArgs);
+
+        if (result != NULL) {
+            funArgs[0] = result;
+        }
     }
 
     return funArgs[0];
