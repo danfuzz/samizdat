@@ -54,6 +54,8 @@ readAllLibraryFiles = {
     }
 };
 
+# Makes the core library by using this program's parser to parse the library
+# source text.
 makeCoreLibrary = {
     # Make the core library context that will be used to load the embedded
     # core library. The only difference between this and the original core
@@ -67,25 +69,50 @@ makeCoreLibrary = {
     <> mainFunction libraryFiles
 };
 
+# Parses the command-line arguments.
+parseArgs = { args <out> ::
+    <> listletReduce @[@validate=false @args=@[]] args { result arg ::
+        <> ifTrue { <> eq arg @"--validate" }
+            { <> mapletPut result @validate true }
+            {
+                <> ifValue { <> mapletGet result @file }
+                    {
+                        args = listletAppend (mapletGet result @args) arg;
+                        <> mapletPut result @args args
+                    }
+                    { <> mapletPut result @file arg }
+            }
+    }
+};
+
 # Compiles the file named in the first argument in a fresh context,
 # and runs it, passing it an array consisting of its own file path
 # (in standard listlet-of-stringlet form) followed by the rest of the
 # arguments as-is.
-run = { file rest* ::
+run = { args* ::
+    parsedArgs = parseArgs args;
+    validate = mapletGet parsedArgs @validate;
+    file = mapletGet parsedArgs @file;
+    argsPerSe = mapletGet parsedArgs @args;
 
-    io0Note @"Loading core library...";
-    makeCoreLibrary();
-    io0Note @"Done!";
+    library = ifTrue { <> validate }
+        {
+            io0Note @"Loading core library...";
+            lib = makeCoreLibrary();
+            io0Note @"Done!";
+            <> lib
+        }
+        { <> LIBRARY };
 
     filePath = io0PathFromStringlet file;
     programText = io0ReadFileUtf8 filePath;
     programNode = sam1Tree programText;
 
     # Evaluate the program in the context of the samizdat-0 core library.
-    function = sam0Eval (makeLibrary LIBRARY) programNode;
+    function = sam0Eval (makeLibrary library) programNode;
 
     # Run it!
-    <> apply function filePath rest
+    <> apply function filePath argsPerSe
 };
 
 <> @[@run = run]

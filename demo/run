@@ -35,16 +35,63 @@ unset prog
 unset newProg
 
 
+
+#
+# Argument parsing
+#
+
+# Which Samizdat layer to use.
+layer='0'
+
+# Whether to super-validate. (Slow but useful.)
+validate='no'
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        echo "${progName} [--sam0 | --sam1] [--validate]"
+        exit
+    elif [[ ${opt} == '--sam0' ]]; then
+        layer='0'
+    elif [[ ${opt} == '--sam1' ]]; then
+        layer='1'
+    elif [[ ${opt} == '--validate' ]]; then
+        validate='yes'
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        exit 1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+
 #
 # Main script
 #
 
-cd "${progDir}"
+opts=()
 
-echo 'Build samizdat-0...'
-../samizdat-0/build > /dev/null || exit 1
-echo 'Done!'
-echo ''
+if [[ ${layer} == '0' ]]; then
+    "${baseDir}/samizdat-0/build" > /dev/null
+    PATH="${PATH}:${baseDir}/out/samizdat-0"
+    cmd="samizdat-0"
+elif [[ ${layer} == '1' ]]; then
+    "${baseDir}/samizdat-1/build" > /dev/null
+    PATH="${PATH}:${baseDir}/out/samizdat-0:${baseDir}/out/samizdat-1"
+    cmd="samizdat-1"
+else
+    echo 'Unknown layer.' 1>&2
+    exit 1
+fi
 
-# Run samizdat-0 passing it main.sam0 to run.
-../out/samizdat-0/samizdat-0 main.sam0 "$@"
+if [[ ${validate} == 'yes' ]]; then
+    opts=(--validate)
+fi
+
+"${cmd}" "${opts[@]}" "${progDir}/main.sam0" "$@"
