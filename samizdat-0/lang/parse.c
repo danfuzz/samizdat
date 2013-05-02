@@ -130,7 +130,12 @@ static zvalue makeVarRef(zvalue name) {
  * Constructs a `call` node.
  */
 static zvalue makeCall(zvalue function, zvalue actuals) {
+    if (actuals == NULL) {
+        actuals = EMPTY_LISTLET;
+    }
+
     zvalue value = mapletFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
+
     return datHighletFrom(STR_CALL, value);
 }
 
@@ -456,11 +461,42 @@ DEF_PARSE(optSemicolons) {
 DEF_PARSE(yield) {
     MARK();
 
-    MATCH_OR_REJECT(CH_DIAMOND);
-    zvalue expression = PARSE_OR_REJECT(expression);
+    MATCH_OR_REJECT(CH_LT);
+    MATCH_OR_REJECT(CH_GT);
+    zvalue yield = PARSE_OR_REJECT(expression);
     PARSE(optSemicolons);
 
-    return expression;
+    return yield;
+}
+
+/**
+ * Parses a `yieldDef` node.
+ */
+DEF_PARSE(yieldDef) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_LT);
+    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
+    MATCH_OR_REJECT(CH_GT);
+
+    return datHighletValue(identifier);
+}
+
+/**
+ * Parses a `nonlocalExit` node.
+ */
+DEF_PARSE(nonlocalExit) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_LT);
+    zvalue name = PARSE_OR_REJECT(varRef);
+    MATCH_OR_REJECT(CH_GT);
+
+    zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
+    zvalue actuals =
+        (value == NULL) ? NULL : datListletAppend(EMPTY_LISTLET, value);
+
+    return makeCall(name, actuals);
 }
 
 /**
@@ -511,24 +547,27 @@ DEF_PARSE(formals) {
 }
 
 /**
- * Helper for `program`: Parses `(formals? @"::")`. Returns either
- * parsed formals or (validly) `NULL` to indicate that there were no
- * formals present.
+ * Helper for `program`: Parses `(formals? yieldDef? @"::")`. Returns
+ * a maplet of bindings to include in the final result, or `NULL` if
+ * there were no valid declarations.
  */
 DEF_PARSE(program1) {
     MARK();
 
+    // It's okay for either of these to be `NULL`.
     zvalue formals = PARSE(formals);
+    zvalue yieldDef = PARSE(yieldDef);
+
     MATCH_OR_REJECT(CH_COLONCOLON);
 
-    return formals;
+    return mapletFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
 }
 
 /**
  * Parses a `program` node.
  */
 DEF_PARSE(program) {
-    zvalue formals = PARSE(program1); // `NULL` is ok, as it's optional.
+    zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
     zvalue statements = EMPTY_LISTLET;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
@@ -553,15 +592,21 @@ DEF_PARSE(program) {
 
     zvalue statement = PARSE(statement);
 
+    if (statement == NULL) {
+        statement = PARSE(nonlocalExit);
+    }
+
     if (statement != NULL) {
         statements = datListletAppend(statements, statement);
     } else {
         yield = PARSE(yield);
     }
 
-    zvalue value = mapletFrom3(STR_STATEMENTS, statements,
-                               STR_FORMALS, formals,
-                               STR_YIELD, yield);
+    zvalue value = mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+
+    if (declarations != NULL) {
+        value = datMapletAdd(value, declarations);
+    }
 
     return datHighletFrom(STR_FUNCTION, value);
 }

@@ -8,6 +8,7 @@
 #include "impl.h"
 #include "util.h"
 
+#include <setjmp.h>
 #include <stddef.h>
 
 
@@ -28,6 +29,15 @@ typedef struct {
      * block to run.
      */
     zvalue function;
+
+    /** Whether there is an active nonlocal exit that could land here */
+    bool yieldActive;
+
+    /** Return value thrown here via nonlocal exit. `NULL` for void. */
+    zvalue yieldResult;
+
+    /** Jump buffer, used for nonlocal exit. */
+    jmp_buf yieldHere;
 } Closure;
 
 
@@ -38,6 +48,34 @@ typedef struct {
 /* Defined below. */
 static zvalue execExpression(zcontext ctx, zvalue expression);
 static zvalue execExpressionVoidOk(zcontext ctx, zvalue expression);
+
+/**
+ * The C function that is bound to in order to perform nonlocal exit.
+ */
+static zvalue nonlocalExit(void *state, zint argCount, const zvalue *args) {
+    Closure *closure = state;
+
+    if (!closure->yieldActive) {
+        die("Attempt to use out-of-scope nonlocal exit.");
+    }
+
+    switch (argCount) {
+        case 0: {
+            // Nothing to do.
+            break;
+        }
+        case 1: {
+            closure->yieldResult = args[0];
+            break;
+        }
+        default: {
+            die("Too many arguments for nonlocal exit: %lld", argCount);
+        }
+    }
+
+    closure->yieldActive = false;
+    longjmp(closure->yieldHere, 1);
+}
 
 /**
  * Binds variables for all the formal arguments of the given
@@ -96,11 +134,25 @@ static zvalue bindArguments(zvalue functionNode,
 static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     Closure *closure = state;
     zvalue functionNode = closure->function;
+    zvalue yieldDef = datMapletGet(functionNode, STR_YIELD_DEF);
     zvalue statements = datMapletGet(functionNode, STR_STATEMENTS);
     zvalue yield = datMapletGet(functionNode, STR_YIELD);
 
-    // Bind the formals, creating a context.
+    // Bind the formals and yieldDef (if present), creating a context.
+
     zvalue locals = bindArguments(functionNode, argCount, args);
+
+    if (yieldDef != NULL) {
+        zvalue exitFunction = langDefineFunction(nonlocalExit, closure);
+        locals = datMapletPut(locals, yieldDef, exitFunction);
+        closure->yieldActive = true;
+        closure->yieldResult = NULL;
+        if (setjmp(closure->yieldHere)) {
+            // Here is where we land if and when `longjmp` is called.
+            return closure->yieldResult;
+        }
+    }
+
     zcontext ctx = ctxNewChild(closure->parent, locals);
 
     // Using the new context, evaluate the statements.
