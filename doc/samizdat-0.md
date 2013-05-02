@@ -978,6 +978,36 @@ the given maplet. If there is no such mapping, then this
 returns the `notFound` value (an arbitrary value) if supplied,
 or returns void if `notFound` was not supplied.
 
+#### `mapletNth maplet n notFound? <> . | ~.`
+
+Returns the `n`th (zero-based) mapping of the given maplet, if `n` is
+a valid intlet index into the maplet. If `n` is not a valid index
+(either an out-of-range intlet, or some other value), then this
+returns the `notFound` value (an arbitrary value) if supplied, or
+returns void if `notFound` was not supplied.
+
+The ordering of the mappings is by sort order of the keys.
+
+#### `mapletNthKey maplet n notFound? <> . | ~.`
+
+Returns the key of the `n`th (zero-based) mapping of the given maplet,
+if `n` is a valid intlet index into the maplet. If `n` is not a valid index
+(either an out-of-range intlet, or some other value), then this
+returns the `notFound` value (an arbitrary value) if supplied, or
+returns void if `notFound` was not supplied.
+
+The ordering of the mappings is by sort order of the keys.
+
+#### `mapletNthValue maplet n notFound? <> . | ~.`
+
+Returns the value of the `n`th (zero-based) mapping of the given maplet,
+if `n` is a valid intlet index into the maplet. If `n` is not a valid index
+(either an out-of-range intlet, or some other value), then this
+returns the `notFound` value (an arbitrary value) if supplied, or
+returns void if `notFound` was not supplied.
+
+The ordering of the mappings is by sort order of the keys.
+
 #### `mapletKeys maplet <> listlet`
 
 Returns a listlet of all the keys in the given maplet, in sorted

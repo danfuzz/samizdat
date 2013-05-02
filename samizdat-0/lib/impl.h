@@ -14,6 +14,14 @@
 #include "lib.h"
 
 
+/** Prototype for any of the dat module `nth` style functions. */
+typedef zvalue (*znth)(zvalue value, zint n);
+
+/**
+ * Calls an `nth` style function, handling not-found cases.
+ */
+zvalue doNth(znth function, zint argCount, const zvalue *args);
+
 /**
  * Check that the given argument count is even, complaining if not.
  */

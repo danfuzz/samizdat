@@ -30,6 +30,18 @@ static zmapping *mapletElems(zvalue maplet) {
 }
 
 /**
+ * Allocates and returns a maplet with the single given mapping.
+ */
+static zvalue mapletFrom1(zvalue key, zvalue value) {
+    zvalue result = allocMaplet(1);
+    zmapping *elems = mapletElems(result);
+
+    elems->key = key;
+    elems->value = value;
+    return result;
+}
+
+/**
  * Given a maplet, find the index of the given key. `maplet` must be a
  * maplet. Returns the index of the key or `~insertionIndex` (a
  * negative number) if not found.
@@ -199,4 +211,44 @@ zvalue datMapletDel(zvalue maplet, zvalue key) {
     memcpy(elems + index, oldElems + index + 1,
            (size - index) * sizeof(zmapping));
     return result;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue datMapletNth(zvalue maplet, zint n) {
+    datAssertMaplet(maplet);
+
+    if (!datHasNth(maplet, n)) {
+        return NULL;
+    }
+
+    if (datSize(maplet) == 1) {
+        return maplet;
+    }
+
+    zmapping *mapping = &mapletElems(maplet)[n];
+    return mapletFrom1(mapping->key, mapping->value);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue datMapletNthKey(zvalue maplet, zint n) {
+    datAssertMaplet(maplet);
+    datAssertNth(maplet, n);
+
+    if (!datHasNth(maplet, n)) {
+        return NULL;
+    }
+
+    return mapletElems(maplet)[n].key;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue datMapletNthValue(zvalue maplet, zint n) {
+    datAssertMaplet(maplet);
+    datAssertNth(maplet, n);
+
+    if (!datHasNth(maplet, n)) {
+        return NULL;
+    }
+
+    return mapletElems(maplet)[n].value;
 }

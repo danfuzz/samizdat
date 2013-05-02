@@ -7,6 +7,8 @@
 #include "impl.h"
 #include "util.h"
 
+#include <stddef.h>
+
 
 /*
  * Module functions
@@ -43,5 +45,21 @@ void requireAtLeast(zint argCount, zint minimum) {
 void requireEven(zint argCount) {
     if ((argCount & 0x01) != 0) {
         die("Invalid non-even argument count for primitive: %lld", argCount);
+    }
+}
+
+/** Documented in header. */
+zvalue doNth(znth function, zint argCount, const zvalue *args) {
+    requireRange(argCount, 2, 3);
+
+    zvalue result = NULL;
+    if (datTypeIs(args[1], DAT_INTLET)) {
+        result = function(args[0], datIntFromIntlet(args[1]));
+    }
+
+    if (result == NULL) {
+        return (argCount == 3) ? args[2] : NULL;
+    } else {
+        return result;
     }
 }

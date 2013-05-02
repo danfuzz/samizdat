@@ -52,6 +52,21 @@ PRIM_IMPL(mapletGet) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapletNth) {
+    return doNth(datMapletNth, argCount, args);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapletNthKey) {
+    return doNth(datMapletNthKey, argCount, args);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapletNthValue) {
+    return doNth(datMapletNthValue, argCount, args);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapletPut) {
     requireExactly(argCount, 3);
     return datMapletPut(args[0], args[1], args[2]);
