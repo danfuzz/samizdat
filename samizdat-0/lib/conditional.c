@@ -110,32 +110,3 @@ PRIM_IMPL(loopReduce) {
         }
     }
 }
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(while) {
-    requireExactly(argCount, 1);
-
-    zvalue test = args[0];
-    while (constBoolFromBoolean(langCall(test, 0, NULL))) {
-        // No loop body necessary.
-    }
-
-    return NULL;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(whileReduce) {
-    requireExactly(argCount, 2);
-
-    zvalue result = args[0];
-    zvalue func = args[1];
-
-    for (;;) {
-        zvalue next = langCall(func, 1, &result);
-        if (next == NULL) {
-            return result;
-        }
-
-        result = next;
-    }
-}
