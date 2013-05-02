@@ -1257,7 +1257,7 @@ Returns `true` iff the given value is a uniqlet.
 <br><br>
 ### In-Language Library: Conditionals
 
-#### `and predicate rest* <> boolean`
+#### `and predicates* <> boolean`
 
 Short-circuit conjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
@@ -1275,7 +1275,7 @@ and third arguments is reversed.
 This is identical to `ifValue` except that the order of the second
 and third arguments is reversed.
 
-#### `or predicate rest* <> boolean`
+#### `or predicates* <> boolean`
 
 Short-circuit disjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
