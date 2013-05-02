@@ -29,13 +29,6 @@ zcontext ctxNewChild(zvalue parent, zvalue locals);
  */
 void ctxBind(zcontext ctx, zvalue name, zvalue value);
 
-/**
- * Gets the value of the variable bound in the given context, either
- * directly or indirectly via its parent chain. It is an error if
- * the name is not bound.
- */
-zvalue ctxGet(zcontext ctx, zvalue name);
-
 
 /*
  * Other

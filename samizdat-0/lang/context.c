@@ -48,28 +48,6 @@ void ctxBind(zcontext ctx, zvalue name, zvalue value) {
     ctx->locals = datMapletPut(ctx->locals, name, value);
 }
 
-/* Documented in header. */
-zvalue ctxGet(zcontext ctx, zvalue name) {
-    zvalue found = datMapletGet(ctx->locals, name);
-
-    if (found == NULL) {
-        found = datMapletGet(ctx->parent, name);
-    }
-
-    if (found != NULL) {
-        return found;
-    }
-
-    if (datTypeIs(name, DAT_STRINGLET)) {
-        zint nameSize = datUtf8SizeFromStringlet(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromStringlet(nameSize + 1, nameStr, name);
-        die("No such variable: %s", nameStr);
-    }
-
-    die("No such variable: (strange name)");
-}
-
 
 /*
  * Exported functions

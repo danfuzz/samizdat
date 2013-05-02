@@ -41,23 +41,26 @@ static zvalue getLibraryFiles(void) {
  * Creates a context maplet with all the primitive definitions bound into it.
  */
 static zvalue primitiveContext(void) {
-    zcontext ctx = langCtxNew();
+    zvalue ctx = EMPTY_MAPLET;
 
     // These both could have been defined in-language, but we already
     // have to make them be defined and accessible to C code, so we just
     // go ahead and bind them here.
-    langCtxBind(ctx, STR_FALSE, CONST_FALSE);
-    langCtxBind(ctx, STR_TRUE, CONST_TRUE);
+    ctx = datMapletPut(ctx, STR_FALSE, CONST_FALSE);
+    ctx = datMapletPut(ctx, STR_TRUE, CONST_TRUE);
 
     // Bind all the primitive functions.
-    #define PRIM_FUNC(name) langCtxBindFunction(ctx, #name, prim_##name, NULL)
+    #define PRIM_FUNC(name) \
+        ctx = datMapletPut(ctx, \
+                           datStringletFromUtf8(-1, #name), \
+                           langDefineFunction(prim_##name, NULL))
     #include "prim-def.h"
 
     // Include a binding for a maplet of all the primitive bindings
     // (other than this one, since values can't self-reference).
-    langCtxBind(ctx, STR_UP_LIBRARY, langMapletFromCtx(ctx));
+    ctx = datMapletPut(ctx, STR_UP_LIBRARY, ctx);
 
-    return langMapletFromCtx(ctx);
+    return ctx;
 }
 
 /**
