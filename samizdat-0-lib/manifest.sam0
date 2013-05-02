@@ -1,0 +1,23 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# File manifest for the library.
+#
+# This lists all of the names of the core library files.
+#
+
+<> @[
+    @boolean
+    @collections
+    @combinator
+    @conditional
+    @const
+    @format
+    @intlet
+    @io0
+    @main
+    @meta
+    @type
+]
