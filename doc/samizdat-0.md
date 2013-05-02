@@ -448,17 +448,25 @@ a maplet that binds `@name` and optionally `@repeat`:
   argument.
 
 * `@repeat` &mdash; indicates (if present) that the number of actual
-  arguments bound by this formal is not exactly one. If present it must be:
+  arguments bound by this formal is not exactly one. If present it must be
+  one of:
 
   * `@"*"` &mdash; indicates that this argument binds as many actual
-    arguments as are available, including none. As such, this must only
-    ever be the `repeat` of the last formal. The argument variable as bound
+    arguments as are available, including none. As such, this only really
+    makes sense as the `repeat` of the last formal, though the syntax
+    will tolerate it being on any formal. The argument variable as bound
     is a listlet of all the passed actual arguments that were bound.
+
+  * `@"?"` &mdash; indicates that this argument binds a single argument if
+    available, including none. As such, this only really makes sense if
+    only ever followed by other `?` formals or a `*` formal, though the
+    syntax will tolerate it being on any formal. The argument variable as
+    bound is a listlet, either of size one if an argument was bound or
+    of size zero if not.
 
 If no `@repeat` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
-actual argument as passed.
-
+actual argument as passed (no extra wrapping).
 
 #### `varDef` &mdash; `[:@varDef @[@name=name @value=value]:]`
 
