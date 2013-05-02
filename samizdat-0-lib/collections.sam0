@@ -44,13 +44,13 @@ genericReduce = { base nthFunc function ::
     <> listletNth reduction @0;
 };
 
-# Generic map function. Instead of the value-to-reduce argument, this
+# Generic map function. Instead of the value-to-map argument, this
 # takes an `nthFunc` of one argument.
 genericMap = { nthFunc function ::
     <> genericReduce @[] nthFunc
         { result item index ::
             <> ifValue { <> function item index }
-                { value :: <> listletAppend result value }
+                { value :: <> listletInsNth result (lowSize result) value }
                 { <> result }
         }
 };
