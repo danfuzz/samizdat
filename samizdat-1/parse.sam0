@@ -110,12 +110,12 @@ questRule = { rule ::
 starRule = { rule ::
     finalRule = transformTokenRule rule;
 
-    <> { reader ::
-        <> whileReduce @[]
-            { result ::
-                <> ifValue { <> finalRule reader }
-                    { match :: <> listletAppend result match }
-            }
+    <> { reader <out> ::
+        loopReduce @[] { result ::
+            <> ifValue { <> finalRule reader }
+                { match :: <> listletAppend result match }
+                { <out> result }
+        }
     }
 };
 
