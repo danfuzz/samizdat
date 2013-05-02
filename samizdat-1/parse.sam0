@@ -399,14 +399,15 @@ parse = { tokens ::
     ifFalse { <> theReader @eof }
         {
             io0Note @"Pending tokens:";
-            while {
-                <> ifValue { <> theReader @read }
-                    { token ::
-                        io0Note (format @"    %q" token);
-                        <> true
-                    }
-                    { <> false }
-            };
+
+            { <break> ::
+                loop {
+                    ifValue { <> theReader @read }
+                        { token :: io0Note (format @"    %q" token) }
+                        { <break> }
+                }
+            }();
+
             io0Die @"Extra tokens at end of program."
         };
 
