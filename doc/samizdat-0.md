@@ -1265,20 +1265,6 @@ them returns `false`, in which case this function also returns
 `false`. If no predicate returns `false`, this function returns
 `true`.
 
-#### `else() <> true`
-
-No-argument predicate that always returns `true`. Used idiomatically
-when writing cascading `if` calls.
-
-#### `if predicate consequent rest* <> . | ~.`
-
-Cascading conditional. Takes an even number of arguments, alternating
-predicates and consequents, each argument being a no-argument
-function. The predicates are called in order until one returns
-`true`. The consequent immediately after the `true` predicate then
-gets called, and its return value becomes the result of this
-function. If no predicate returns `true`, this function returns void.
-
 #### `ifFalse predicate falseFunction trueFunction? <> . | ~.`
 
 This is identical to `ifTrue` except that the order of the second

@@ -15,17 +15,6 @@ and = { predicate rest* ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-else = { <> true };
-
-# Documented in Samizdat Layer 0 spec.
-if = { predicate consequent rest* ::
-    <> ifTrue predicate
-        consequent
-        # Note: `{}` by definition is a function that returns void.
-        { <> ifTrue { <> eq rest @[] } {} { <> apply if rest } }
-};
-
-# Documented in Samizdat Layer 0 spec.
 ifFalse = { predicate falseFunction trueFunction? ::
     <> ifValue { <> listletNth trueFunction @0 }
         { trueFunction :: <> ifTrue predicate trueFunction falseFunction }
@@ -48,8 +37,6 @@ or = { predicate rest* ::
 
 <> @[
     @and = and
-    @else = else
-    @if = if
     @ifFalse = ifFalse
     @ifVoid = ifVoid
     @or = or
