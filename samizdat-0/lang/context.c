@@ -94,17 +94,6 @@ void langCtxBindFunction(zcontext ctx, const char *name,
 }
 
 /* Documented in header. */
-void langCtxBindAll(zcontext ctx, zvalue maplet) {
-    zvalue keys = datMapletKeys(maplet);
-    zint size = datSize(keys);
-
-    for (zint i = 0; i < size; i++) {
-        zvalue key = datListletNth(keys, i);
-        ctxBind(ctx, key, datMapletGet(maplet, key));
-    }
-}
-
-/* Documented in header. */
 zvalue langMapletFromCtx(zcontext ctx) {
     return datMapletAdd(ctx->parent, ctx->locals);
 }
