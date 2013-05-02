@@ -10,14 +10,9 @@
 # does not make any calls to non-primitive library functions, and
 # it limits its explicit primitive library function calls to
 # `apply` and `argsMap`.
-#
-# Unlike other modules, this one is arranged with helpers and
-# exports interspersed, specifically because the the `argsMap` helper
-# used to implement `yStarCombinator` needs to use `yCombinator`.
-
 
 #
-# Y combinator
+# Helper functions
 #
 
 # The U combinator, which is a function that takes a function argument and
@@ -27,26 +22,6 @@
 # It is included and used here, specifically so that the common structure
 # between the two Y combinator variants is more obvious.
 uCombinator = { function :: <> function function };
-
-# Documented in Samizdat Layer 0 spec.
-yCombinator = { function ::
-    # Although it is coded here using a variable assignment, it's just
-    # for readability and not a strict necessity. That is, the definition
-    # of `applicator` doesn't directly refer to the variable `applicator`.
-
-    applicator = { selfRef ::
-        <> { args* ::
-            <> apply (function (uCombinator selfRef)) args
-        }
-    };
-
-    <> uCombinator applicator;
-};
-
-
-#
-# Y* combinator
-#
 
 # The U* combinator. This is like the U combinator, except expanded to
 # work for multiple function arguments, in this case both passed and
@@ -63,6 +38,26 @@ uStarCombinator = { functions ::
     <> apply argsMap
         { function :: <> apply function functions }
         functions;
+};
+
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 0 spec.
+yCombinator = { function ::
+    # Although it is coded here using a variable assignment, it's just
+    # for readability and not a strict necessity. That is, the definition
+    # of `applicator` doesn't directly refer to the variable `applicator`.
+
+    applicator = { selfRef ::
+        <> { args* ::
+            <> apply (function (uCombinator selfRef)) args
+        }
+    };
+
+    <> uCombinator applicator;
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -84,11 +79,6 @@ yStarCombinator = { functions* ::
 
     <> uStarCombinator applicators;
 };
-
-
-#
-# Export mechanics
-#
 
 <> @[
     @yCombinator = yCombinator
