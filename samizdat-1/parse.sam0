@@ -78,17 +78,12 @@ seqRule = { rules* ::
 orRule = { rules* ::
     finalRules = listletMap rules transformTokenRule;
 
-    <> { reader ::
-        doOr = { rule rest* ::
-            <> ifValue { <> rule reader }
-                { result :: <> result }
-                {
-                    <> ifTrue { <> ne rest @[] }
-                        { <> apply doOr rest }
-                }
-        };
-
-        <> apply doOr finalRules;
+    <> { reader <out> ::
+        listletReduce null finalRules
+            { ignored rule ::
+                ifValue { <> rule reader }
+                    { result :: <out> result }
+            }
     }
 };
 
