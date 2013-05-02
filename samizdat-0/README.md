@@ -1,7 +1,7 @@
 Samizdat Layer 0
 ================
 
-This is an implementation of the Samizdat Layer 0 language.
+This is an implementation of the *Samizdat Layer 0* language.
 
 - - - - -
 
