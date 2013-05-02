@@ -13,37 +13,58 @@
 # functions per se or simple highlets to represent token-matching rules.
 #
 
+# Makes a reader that's augmented with a method to perform rule lookup.
+engine = { reader rules ::
+    <> { name rest* ::
+        <> ifTrue { <> eq name @rule }
+            { <> mapletGet rules (listletNth rest @0) }
+            { <> apply reader name rest }
+    }
+};
+
 # Returns a rule which succeeds if the given token type is successfully
 # read.
 tokenRule = { token ::
     type = highletType token;
 
-    <> { reader ::
-        <> ifValue { <> reader @peek }
+    <> { engine ::
+        <> ifValue { <> engine @peek }
             { got ::
                 <> ifTrue { <> eq type (highletType got) }
                     {
-                        reader @read;
+                        engine @read;
                         <> got
                     }
             }
     }
 };
 
-# Meta-helper function, which transforms a highlet "rule" into a
-# token-matching rule per se.
-transformTokenRule = { rule ::
+# Returns a rule which succeeds if the given parser rule is successfully
+# matched.
+parserRule = { rule ::
+    <> { engine :: <> (engine @rule rule) engine }
+};
+
+# Meta-helper function, which transforms named rules (highlets for
+# token matching and stringlets for parser matching) into functions.
+functionFromRule = { rule ::
     <> ifTrue { <> isHighlet rule }
         { <> tokenRule rule }
-        { <> rule }
+        {
+            <> ifTrue { <> isStringlet rule }
+                { <> parserRule rule}
+                { <> rule }
+        }
 };
 
 # Returns a rule which succeeds if a given other rule succeeds, and
 # if so runs the given result filter function, passing it the rule
 # result, to produce the final result of processing.
 filterRule = { rule filterFunction ::
-    <> { reader ::
-        <> ifValue { <> rule reader } filterFunction
+    finalRule = functionFromRule rule;
+
+    <> { engine ::
+        <> ifValue { <> finalRule engine } filterFunction
     }
 };
 
@@ -53,16 +74,16 @@ filterRule = { rule filterFunction ::
 # the rule results. This effectively implements the sequence "operator"
 # (null infix operator) in PEG.
 seqRule = { rules* ::
-    finalRules = listletMap rules transformTokenRule;
+    finalRules = listletMap rules functionFromRule;
 
-    <> { reader <out> ::
-        mark = reader @at;
+    <> { engine <out> ::
+        mark = engine @at;
         <> listletReduce @[] finalRules
             { results rule ::
-                <> ifValue { <> rule reader }
+                <> ifValue { <> rule engine }
                     { result :: <> listletAppend results result }
                     {
-                        reader @reset mark;
+                        engine @reset mark;
                         <out>
                     }
             }
@@ -76,12 +97,12 @@ seqRule = { rules* ::
 # failed. This effectively implements the ordered choice operator
 # (`|` infix) in PEG.
 orRule = { rules* ::
-    finalRules = listletMap rules transformTokenRule;
+    finalRules = listletMap rules functionFromRule;
 
-    <> { reader <out> ::
+    <> { engine <out> ::
         listletForEach finalRules
             { rule ::
-                ifValue { <> rule reader }
+                ifValue { <> rule engine }
                     { result :: <out> result }
             }
     }
@@ -93,10 +114,10 @@ orRule = { rules* ::
 # rule was matched. This effectively implements the zero-or-one
 # operator (`?` suffix) in PEG.
 questRule = { rule ::
-    finalRule = transformTokenRule rule;
+    finalRule = functionFromRule rule;
 
-    <> { reader ::
-        <> ifValue { <> finalRule reader }
+    <> { engine ::
+        <> ifValue { <> finalRule engine }
             { result :: <> @[result] }
             { <> @[] }
     }
@@ -108,11 +129,11 @@ questRule = { rule ::
 # the inner rule never matched. This effectively implements the
 # zero-or-more operator (`*` suffix) in PEG.
 starRule = { rule ::
-    finalRule = transformTokenRule rule;
+    finalRule = functionFromRule rule;
 
-    <> { reader <out> ::
+    <> { engine <out> ::
         loopReduce @[] { result ::
-            <> ifValue { <> finalRule reader }
+            <> ifValue { <> finalRule engine }
                 { match :: <> listletAppend result match }
                 { <out> result }
         }
@@ -142,24 +163,12 @@ makeCall = { function actuals* ::
 # the *Samizdat Layer 0* specification.
 #
 
-# These are effectively forward declarations.
-RECURSIVE_PARSERS = object
-    { state key value? ::
-        <> ifValue { <> listletNth value @0 }
-            { value :: <> @[@state=(mapletPut state key value)] }
-            { <> @[@result=(mapletGet state key)] }
-    }
-    @[=];
-parseAtom = { reader :: <> (RECURSIVE_PARSERS @atom) reader };
-parseExpression = { reader :: <> (RECURSIVE_PARSERS @expression) reader };
-parseFunction = { reader :: <> (RECURSIVE_PARSERS @function) reader };
-
 # Parses a `call` node.
 parseCall = filterRule
     (seqRule
-        parseAtom
+        @atom
         (orRule
-            (plusRule parseAtom)
+            (plusRule @atom)
             (filterRule
                 (seqRule [:@"(":] [:@")":])
                 { <> @[] })))
@@ -172,8 +181,8 @@ parseHighlet = filterRule
     (seqRule
         [:@"[":]
         [:@":":]
-        parseAtom
-        (questRule parseAtom)
+        @atom
+        (questRule @atom)
         [:@":":]
         [:@"]":])
     { result ::
@@ -189,14 +198,14 @@ parseUniqlet = filterRule
 
 # Parses a `binding` node.
 parseBinding = filterRule
-    (seqRule parseAtom [:@"=":] parseAtom)
+    (seqRule @atom [:@"=":] @atom)
     { result ::
         <> @[(listletNth result @0) (listletNth result @2)]
     };
 
 # Parses a `maplet` node.
 parseMaplet = filterRule
-    (seqRule [:@"@":] [:@"[":] (plusRule parseBinding) [:@"]":])
+    (seqRule [:@"@":] [:@"[":] (plusRule @binding) [:@"]":])
     { result ::
         bindings = apply listletCat (listletNth result @2);
         <> apply makeCall [:@varRef @makeMaplet:] bindings
@@ -209,7 +218,7 @@ parseEmptyMaplet = filterRule
 
 # Parses a `listlet` node.
 parseListlet = filterRule
-    (seqRule [:@"@":] [:@"[":] (plusRule parseAtom) [:@"]":])
+    (seqRule [:@"@":] [:@"[":] (plusRule @atom) [:@"]":])
     { result ::
         <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
     };
@@ -243,7 +252,7 @@ parseVarRef = filterRule
 
 # Parses a `varDef` node.
 parseVarDef = filterRule
-    (seqRule [:@identifier:] [:@"=":] parseExpression)
+    (seqRule [:@identifier:] [:@"=":] @expression)
     { result ::
         name = highletValue (listletNth result @0);
         value = listletNth result @2;
@@ -252,21 +261,19 @@ parseVarDef = filterRule
 
 # Parses a `parenExpression` node.
 parseParenExpression = filterRule
-    (seqRule [:@"(":] parseExpression [:@")":])
+    (seqRule [:@"(":] @expression [:@")":])
     { result :: <> listletNth result @1 };
 
 # Parses an `atom` node.
-parseAtomImpl = orRule parseVarRef parseIntlet parseStringlet
-    parseEmptyListlet parseListlet parseEmptyMaplet parseMaplet
-    parseUniqlet parseHighlet parseFunction parseParenExpression;
-RECURSIVE_PARSERS @atom parseAtomImpl;
+parseAtom = orRule @varRef @intlet @stringlet
+    @emptyListlet @listlet @emptyMaplet @maplet
+    @uniqlet @highlet @function @parenExpression;
 
 # Parses an `expression` node.
-parseExpressionImpl = orRule parseCall parseAtom;
-RECURSIVE_PARSERS @expression parseExpressionImpl;
+parseExpression = orRule @call @atom;
 
 # Parses a `statement` node.
-parseStatement = orRule parseVarDef parseExpression;
+parseStatement = orRule @varDef @expression;
 
 # Parses a `nonlocalExit` node.
 parseNonlocalExit = filterRule
@@ -274,7 +281,7 @@ parseNonlocalExit = filterRule
         [:@"<":]
         [:@identifier:]
         [:@">":]
-        (questRule parseExpression)
+        (questRule @expression)
         (starRule [:@";":]))
     { result ::
         varRef = [:@varRef (highletValue (listletNth result @1)):];
@@ -284,7 +291,7 @@ parseNonlocalExit = filterRule
 
 # Parses a `yield` node.
 parseYield = filterRule
-    (seqRule [:@"<":] [:@">":] parseExpression (starRule [:@";":]))
+    (seqRule [:@"<":] [:@">":] @expression (starRule [:@";":]))
     { result :: <> listletNth result @2 };
 
 # Parses a `yieldDef` node.
@@ -310,7 +317,7 @@ parseFormal = filterRule
 
 # Parses a `formals` node.
 parseFormals = filterRule
-    (plusRule parseFormal)
+    (plusRule @formal)
     { result :: <> [:@formals result:] };
 
 # `program` node helper: Parses `(formals? yieldDef? @"::")?`, yielding
@@ -319,8 +326,8 @@ parseProgram1 = filterRule
     (questRule
         (filterRule
             (seqRule
-                (questRule parseFormals)
-                (questRule parseYieldDef)
+                (questRule @formals)
+                (questRule @yieldDef)
                 [:@"::":])
             { result ::
                 formals = ifValue { <> listletNth (listletNth result @0) @0 }
@@ -343,10 +350,10 @@ parseProgram2 = filterRule
     (questRule
         (orRule
             (filterRule
-                (orRule parseStatement parseNonlocalExit)
+                (orRule @statement @nonlocalExit)
                 { result :: <> @[@statements=@[result] @yield=@[=]] })
             (filterRule
-                parseYield
+                @yield
                 { result :: <> @[@statements=@[] @yield=@[@yield=result]] })))
     { result ::
         <> ifValue { <> listletNth result @0 }
@@ -357,13 +364,13 @@ parseProgram2 = filterRule
 # Parses a `program` node.
 parseProgram = filterRule
     (seqRule
-        parseProgram1
+        @program1
         (starRule [:@";":])
         (starRule
             (filterRule
-                (seqRule parseStatement (plusRule [:@";":]))
+                (seqRule @statement (plusRule [:@";":]))
                 { result :: <> listletNth result @0 }))
-        parseProgram2)
+        @program2)
     { result ::
         formals = listletNth result @0;
         mostStatements = listletNth result @2;
@@ -380,10 +387,41 @@ parseProgram = filterRule
     };
 
 # Parses a `function` node.
-parseFunctionImpl = filterRule
-    (seqRule [:@"{":] parseProgram [:@"}":])
+parseFunction = filterRule
+    (seqRule [:@"{":] @program [:@"}":])
     { result :: <> listletNth result @1 };
-RECURSIVE_PARSERS @function parseFunctionImpl;
+
+# Maplet of all of the parser rules. Any time a parser rule is needed,
+# it's looked up through this maplet by name, which trivially allows for
+# mutually-recursive rules (since the rules refer directly to names and
+# not actual functions).
+RULES = @[
+    @atom = parseAtom
+    @binding = parseBinding
+    @call = parseCall
+    @emptyListlet = parseEmptyListlet
+    @emptyMaplet = parseEmptyMaplet
+    @expression = parseExpression
+    @formal = parseFormal
+    @formals = parseFormals
+    @function = parseFunction
+    @highlet = parseHighlet
+    @intlet = parseIntlet
+    @listlet = parseListlet
+    @maplet = parseMaplet
+    @nonlocalExit = parseNonlocalExit
+    @parenExpression = parseParenExpression
+    @program = parseProgram
+    @program1 = parseProgram1
+    @program2 = parseProgram2
+    @statement = parseStatement
+    @stringlet = parseStringlet
+    @uniqlet = parseUniqlet
+    @varDef = parseVarDef
+    @varRef = parseVarRef
+    @yield = parseYield
+    @yieldDef = parseYieldDef
+];
 
 
 #
@@ -394,15 +432,16 @@ RECURSIVE_PARSERS @function parseFunctionImpl;
 # syntax. Returns a `function` node.
 parse = { tokens ::
     theReader = reader tokens;
-    theProgram = parseProgram theReader;
+    theEngine = engine theReader RULES;
+    theProgram = parseProgram theEngine;
 
-    ifFalse { <> theReader @eof }
+    ifFalse { <> theEngine @eof }
         {
             io0Note @"Pending tokens:";
 
             { <break> ::
                 loop {
-                    ifValue { <> theReader @read }
+                    ifValue { <> theEngine @read }
                         { token :: io0Note (format @"    %q" token) }
                         { <break> }
                 }
