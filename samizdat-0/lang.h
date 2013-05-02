@@ -70,12 +70,6 @@ zvalue langDefineFunction(zfunction function, void *state);
 zcontext langCtxNew(void);
 
 /**
- * Constructs and returns a fresh execution context, with the given
- * parent context but with no initial local variable bindings.
- */
-zcontext langCtxNewChild(zcontext parent);
-
-/**
  * Binds an arbitrary value into the given execution context,
  * giving it the indicated name (interpreted as a `'\0'`-terminated
  * UTF-8 string).

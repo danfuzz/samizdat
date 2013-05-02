@@ -81,14 +81,6 @@ zcontext langCtxNew(void) {
 }
 
 /* Documented in header. */
-zcontext langCtxNewChild(zcontext parent) {
-    zvalue parentMaplet =
-        (parent == NULL) ? EMPTY_MAPLET : langMapletFromCtx(parent);
-
-    return ctxNewChild(parentMaplet, EMPTY_MAPLET);
-}
-
-/* Documented in header. */
 void langCtxBind(zcontext ctx, zvalue name, zvalue value) {
     ctxBind(ctx, name, value);
 }
