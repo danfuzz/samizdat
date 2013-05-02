@@ -54,14 +54,11 @@ loadLibrary = { ctx name ::
 # Loads all of the named libraries, in order, allowing later libraries to
 # depend on earlier ones. The first listed library can depend only on the
 # given context.
-loadAllLibraries = { ctx name rest* ::
-    newCtx = loadLibrary ctx name;
-
-    # Can't say `eq rest @[]` here, since `eq` is not yet defined.
-    # Similarly, can't use `listReduce rest ...`.
-    <> ifTrue { <> lowOrderIs rest @[] @0 }
-        { <> newCtx }
-        { <> apply loadAllLibraries newCtx rest }
+loadAllLibraries = { ctx names* ::
+    <> apply argsReduce
+        { result name :: <> loadLibrary result name }
+        ctx
+        names
 };
 
 
