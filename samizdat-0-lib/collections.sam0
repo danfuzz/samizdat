@@ -115,6 +115,13 @@ mapletMap = { maplet function ::
 #
 
 # Documented in Samizdat Layer 0 spec.
+#
+# See comment in `listletReduce` (above) about in-file ordering.
+stringletReduce = { base stringlet function ::
+    <> genericReduce base { n :: <> stringletNth stringlet n } function
+};
+
+# Documented in Samizdat Layer 0 spec.
 stringletCat = { stringlet rest* ::
     <> listletReduce stringlet rest
         { reduction value :: <> stringletAdd reduction value }
@@ -131,11 +138,6 @@ stringletMap = { stringlet function ::
         { reduction value index ::
             <> listletAppend reduction (function value index)
         }
-};
-
-# Documented in Samizdat Layer 0 spec.
-stringletReduce = { base stringlet function ::
-    <> genericReduce base { n :: <> stringletNth stringlet n } function
 };
 
 
