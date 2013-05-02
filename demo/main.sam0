@@ -59,6 +59,13 @@ sibling = {
     io0Note text;
 };
 
+# Demo of nonlocal exit.
+exiter = { foo <out> ::
+    ifTrue { <> eq foo @1 }
+        { <out> @"one" }
+        { <out> }
+};
+
 # Emits the stringified version of the given value to the console.
 process = { value ::
     io0Note (sourceStringlet value)
@@ -105,6 +112,11 @@ main = { selfPath name rest* ::
     blort @1 @2 @3;
     blort @1 @2 @3 @4;
     blort @1 @2 @3 @4 @5;
+
+    process (exiter @1);
+    ifValue { <> exiter @0 }
+        { value :: process (format @"Unexpected! %q" value) }
+        { io0Note @"The void." };
 };
 
 <> apply main SELF_PATH ARGS

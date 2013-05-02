@@ -183,6 +183,8 @@ TOKEN_DISPATCH = mapletCat
         @"]"  = oneCharParser
         @"("  = oneCharParser
         @")"  = oneCharParser
+        @"<"  = oneCharParser
+        @">"  = oneCharParser
         @"="  = oneCharParser
         @"-"  = oneCharParser
         @"?"  = oneCharParser
@@ -190,7 +192,6 @@ TOKEN_DISPATCH = mapletCat
         @"*"  = oneCharParser
         @":"  = (makeOneTwoParser @"::")
         @"@"  = (makeOneTwoParser @"@@")
-        @"<"  = (makeOneTwoParser @"<>")
     ];
 
 # Reads a single token.

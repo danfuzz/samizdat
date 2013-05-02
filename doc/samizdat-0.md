@@ -216,7 +216,6 @@ token ::=
 punctuation ::=
     "@@" | # result: [:@"@@":]
     "::" | # result: [:@"::":]
-    "<>" | # result: [:@"<>":]
     "@"  | # result: [:@"@":]
     ":"  | # result: [:@":":]
     "*"  | # result: [:@"*":]
@@ -264,16 +263,18 @@ function ::= @"{" program @"}" ;
 # result: <program>
 
 program ::=
-    (formals? @"::")?
-    @";"* (statement @";"+)* (statement | yield)? ;
+    (formals? yieldDef? @"::")?
+    @";"* (statement @";"+)* (statement | nonlocalExit | yield)? ;
 # result: [:
 #             @function
 #             @[
 #                 (@formals=<formals>)?
+#                 (@yieldDef=<yieldDef>)?
 #                 @statements=<listlet of non-empty statements>
 #                 (@yield=<yield>)?
 #             ]
 #         :]
+# Note: nonLocalExit results in a statement.
 
 formals ::= formal+ ;
 # result: [:@formals @[formal ...]:]
@@ -281,8 +282,14 @@ formals ::= formal+ ;
 formal ::= @identifier (@"*" | @"?")? ;
 # result: @[@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]
 
-yield ::= @"<>" expression ";"* ;
+yieldDef ::= @"<" @identifier @">" ;
+# result: <identifier.value>
+
+yield ::= @"<" @">" expression ";"* ;
 # result: <expression>
+
+nonlocalExit ::= @"<" @identifier @">" expression? ";"* ;
+# result: makeCall <identifier> <expression>?
 
 statement ::= varDef | expression ;
 # result: <varDef> | <expression>
@@ -377,19 +384,24 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `function` &mdash; `[:@function @[(@formals=formals)? @statements=statements (@yield=yield)?:]`
+#### `function` &mdash; `[:@function @[(@formals=formals)? (@yieldDef=yieldDef)? @statements=statements (@yield=yield)?:]`
 
 This represents a function definition. In the data payload, `formals`
 is optional but must be a `formals` node (as defined below) if present.
 `statements` must be a listlet, with each of the elements being either
-an expression node or a `varDef` node. The `yield` binding is optional,
-but if present must be an expression node.
+an expression node or a `varDef` node.
+
+The yield-related bindings are all optional. If present, `yieldDef` must
+be a stringlet. If present, `yield` must be an expression node.
 
 When run, a closure (representation of the function as an in-model
 value) is created, which nascently binds as variables the names of all
 the formals to all the incoming actual arguments, and binds all other
 variable names to whatever they refer to in the static evaluation
-context. This closure is the result of evaluation.
+context. This closure is the result of evaluation. If there is a `yieldDef`,
+then that is bound as a nonlocal exit function, which, when called, causes
+this closure to exit. Nonlocal exit functions accept zero or one argument,
+zero to return void and one to return a value.
 
 When the closure is actually called (e.g. by virtue of being the
 designated `function` in a `call` node), a fresh execution context is
