@@ -30,11 +30,11 @@ typedef struct ExecutionContext {
  */
 
 /* Documented in header. */
-zcontext ctxNewChild(zcontext parent, zvalue locals) {
+zcontext ctxNewChild(zvalue parent, zvalue locals) {
     zcontext ctx = zalloc(sizeof(ExecutionContext));
 
     ctx->locals = locals;
-    ctx->parent = (parent == NULL) ? EMPTY_MAPLET : langMapletFromCtx(parent);
+    ctx->parent = parent;
 
     return ctx;
 }
@@ -77,12 +77,15 @@ zvalue ctxGet(zcontext ctx, zvalue name) {
 
 /* Documented in header. */
 zcontext langCtxNew(void) {
-    return ctxNewChild(NULL, EMPTY_MAPLET);
+    return ctxNewChild(EMPTY_MAPLET, EMPTY_MAPLET);
 }
 
 /* Documented in header. */
 zcontext langCtxNewChild(zcontext parent) {
-    return ctxNewChild(parent, EMPTY_MAPLET);
+    zvalue parentMaplet =
+        (parent == NULL) ? EMPTY_MAPLET : langMapletFromCtx(parent);
+
+    return ctxNewChild(parentMaplet, EMPTY_MAPLET);
 }
 
 /* Documented in header. */

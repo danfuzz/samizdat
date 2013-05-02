@@ -25,14 +25,19 @@ adornIf = { adorn before value after ::
 # Helper for stringifying intlets, which does most of the conversion,
 # as well as prepending the given prefix.
 intletBody = { start value ::
-    <> ifTrue { <> eq value @0 }
-        { <> start }
-        {
-            digit = iadd (imod value @10) @48;   # 48 == "0"
-            <> stringletAdd
-                (intletBody start (idiv value @10))
-                (stringletFromIntlet digit)
-        }
+    result = whileReduce @[@"" value]
+        { result ::
+            text = listletNth result @0;
+            value = listletNth result @1;
+            <> ifTrue { <> ne value @0 }
+                {
+                    # Note: 48 == "0"
+                    digit = stringletFromIntlet (iadd (imod value @10) @48);
+                    <> @[(stringletAdd digit text) (idiv value @10)];
+                }
+        };
+
+    <> stringletAdd start (listletNth result @0)
 };
 
 # Maplet from intlet sign values to the appropriate stringifier for each.
@@ -43,7 +48,7 @@ INTLET_SIGNS = @[
 ];
 
 # Stringifies an intlet.
-doIntlet = { intlet adorn ::
+doIntlet = { recurse intlet adorn ::
     result = (mapletGet INTLET_SIGNS (intletSign intlet)) intlet;
     <> adornIf adorn @"@" result @""
 };
@@ -88,35 +93,35 @@ stringletChar = { ch ::
 };
 
 # Stringifies a stringlet.
-doStringlet = { stringlet adorn ::
+doStringlet = { recurse stringlet adorn ::
     body = stringletReduce @"" stringlet
         { reduction ch :: <> stringletAdd reduction (stringletChar ch) };
     <> adornIf adorn @"@\"" body @"\""
 };
 
 # Stringifies a listlet.
-doListlet = { listlet adorn ::
+doListlet = { recurse listlet adorn ::
     body = listletReduce @"" listlet
         { reduction elem ::
             <> stringletCat
                 reduction
                 (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
-                (sourceStringlet elem)
+                (recurse elem)
         };
 
     <> adornIf adorn @"@[" body @"]"
 };
 
 # Stringifies a maplet.
-doMaplet = { maplet adorn ::
+doMaplet = { recurse maplet adorn ::
     body = mapletReduce @"" maplet
         { reduction value key ::
             <> stringletCat
                 reduction
                 (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
-                (sourceStringlet key)
+                (recurse key)
                 @"="
-                (sourceStringlet value)
+                (recurse value)
         };
 
     <> adornIf adorn
@@ -126,29 +131,29 @@ doMaplet = { maplet adorn ::
 };
 
 # Stringifies a highlet.
-doHighlet = { highlet adorn ::
+doHighlet = { recurse highlet adorn ::
     type = highletType highlet;
     result = stringletCat
-        (sourceStringlet type)
+        (recurse type)
         (ifValue { <> highletValue highlet }
-            { value :: <> stringletAdd @" " (sourceStringlet value) }
+            { value :: <> stringletAdd @" " (recurse value) }
             { <> @"" });
 
     <> adornIf adorn @"[:" result @":]"
 };
 
 # Stringifies a uniqlet.
-doUniqlet = { uniqlet ::
+doUniqlet = { recurse uniqlet ::
     <> @"@@"
 };
 
 # Stringifies an unknown value type.
-doUnknown = { unknown ::
+doUnknown = { recurse unknown ::
     <> stringletCat
         @"@[(unknown) "
-        (sourceStringlet (lowType value))
+        (recurse (lowType value))
         @" "
-        (sourceStringlet (lowSize value))
+        (recurse (lowSize value))
         @"]"
 };
 
@@ -163,19 +168,24 @@ STRINGIFIERS = @[
 ];
 
 # Common handler for the two exported variants.
-sourceStringletGeneral = { value adorn ::
+sourceStringletGeneral = { selfRef value adorn ::
+    # The `selfRef` and `recurse` definitions here are effectively a
+    # "manual inlining" of the Y combinator, necessitated by the fact that
+    # *Samizdat Layer 0* doesn't allow use-before-def.
+    recurse = { value :: <> selfRef selfRef value true };
+
     stringifier = mapletGet STRINGIFIERS (lowType value) doUnknown;
-    <> stringifier value adorn
+    <> stringifier recurse value adorn
 };
 
 # Documented in Samizdat Layer 0 spec.
 sourceStringlet = { value ::
-    <> sourceStringletGeneral value true
+    <> sourceStringletGeneral sourceStringletGeneral value true
 };
 
 # Documented in Samizdat Layer 0 spec.
 sourceStringletUnadorned = { value ::
-    <> sourceStringletGeneral value false
+    <> sourceStringletGeneral sourceStringletGeneral value false
 };
 
 
