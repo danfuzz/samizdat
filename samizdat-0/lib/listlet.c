@@ -29,18 +29,7 @@ PRIM_IMPL(listletAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletNth) {
-    requireRange(argCount, 2, 3);
-
-    zvalue result = NULL;
-    if (datTypeIs(args[1], DAT_INTLET)) {
-        result = datListletNth(args[0], datIntFromIntlet(args[1]));
-    }
-
-    if (result == NULL) {
-        return (argCount == 3) ? args[2] : NULL;
-    } else {
-        return result;
-    }
+    return doNth(datListletNth, argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

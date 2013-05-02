@@ -978,10 +978,35 @@ the given maplet. If there is no such mapping, then this
 returns the `notFound` value (an arbitrary value) if supplied,
 or returns void if `notFound` was not supplied.
 
-#### `mapletKeys maplet <> listlet`
+#### `mapletNth maplet n notFound? <> . | ~.`
 
-Returns a listlet of all the keys in the given maplet, in sorted
-order.
+Returns the `n`th (zero-based) mapping of the given maplet, if `n` is
+a valid intlet index into the maplet. If `n` is not a valid index
+(either an out-of-range intlet, or some other value), then this
+returns the `notFound` value (an arbitrary value) if supplied, or
+returns void if `notFound` was not supplied.
+
+The ordering of the mappings is by sort order of the keys.
+
+#### `mapletNthKey maplet n notFound? <> . | ~.`
+
+Returns the key of the `n`th (zero-based) mapping of the given maplet,
+if `n` is a valid intlet index into the maplet. If `n` is not a valid index
+(either an out-of-range intlet, or some other value), then this
+returns the `notFound` value (an arbitrary value) if supplied, or
+returns void if `notFound` was not supplied.
+
+The ordering of the mappings is by sort order of the keys.
+
+#### `mapletNthValue maplet n notFound? <> . | ~.`
+
+Returns the value of the `n`th (zero-based) mapping of the given maplet,
+if `n` is a valid intlet index into the maplet. If `n` is not a valid index
+(either an out-of-range intlet, or some other value), then this
+returns the `notFound` value (an arbitrary value) if supplied, or
+returns void if `notFound` was not supplied.
+
+The ordering of the mappings is by sort order of the keys.
 
 #### `mapletPut maplet key value <> maplet`
 
@@ -993,24 +1018,24 @@ These two scenarios can be easily differentiated by either noting a
 change in size (or not) between original and result, or by explicitly
 checking for the existence of `key` in the original.
 
-#### `mapletValues maplet <> listlet`
-
-Returns a listlet of all the values in the given maplet, in order
-of the keys (in sorted order).
-
 
 <br><br>
 ### Primitive Library: Highlets
+
+#### `highletHasValue highlet <> boolean`
+
+Returns an indication of whether or not the given highlet has
+a payload data value.
 
 #### `highletType highlet <> .`
 
 Returns the type tag value (an arbitrary value) of the given highlet.
 
-#### `highletValue highlet <> . | ~.`
+#### `highletValue highlet notFound? <> . | ~.`
 
 Returns the payload data value (an arbitrary value) of the given
-highlet, if any. Returns void if the given highlet is valueless.
-
+highlet, if any. If the highlet is valueless, returns the `notFound`
+value if supplied, or returns void if not.
 
 <br><br>
 ### Primitive Library: Functions and Code
@@ -1411,6 +1436,12 @@ Concatenates one or more maplets together into a single resulting
 maplet. If there are any duplicate keys among the arguments, then
 value associated with the last argument in which that key appears
 is the value that "wins" in the final result.
+
+#### `mapletForEach maplet function <> ~.`
+
+Calls the given function for each mapping in the given maplet. The
+function is called with two arguments, a value from the maplet and
+its corresponding key (in that order). Always returns void.
 
 #### `mapletMap maplet function <> maplet`
 

@@ -27,18 +27,6 @@ PRIM_IMPL(mapletDel) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletKeys) {
-    requireExactly(argCount, 1);
-    return datMapletKeys(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletValues) {
-    requireExactly(argCount, 1);
-    return datMapletValues(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapletGet) {
     requireRange(argCount, 2, 3);
 
@@ -49,6 +37,21 @@ PRIM_IMPL(mapletGet) {
     } else {
         return result;
     }
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapletNth) {
+    return doNth(datMapletNth, argCount, args);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapletNthKey) {
+    return doNth(datMapletNthKey, argCount, args);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapletNthValue) {
+    return doNth(datMapletNthValue, argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

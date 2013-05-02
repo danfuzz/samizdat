@@ -289,16 +289,30 @@ void datArrayFromListlet(zvalue *result, zvalue listlet);
 zvalue datMapletEmpty(void);
 
 /**
- * Gets a listlet of all the keys of the given maplet.
- */
-zvalue datMapletKeys(zvalue maplet);
-
-/**
  * Given a maplet, find the mapping of the given key and return the
  * corresponding value, or `NULL` if there is no such key. `maplet`
  * must be a maplet, and `key` must be a valid value.
  */
 zvalue datMapletGet(zvalue maplet, zvalue key);
+
+/**
+ * Given a maplet, returns the `n`th mapping. `maplet` must be a
+ * maplet, and `n` must be `< datSize(value)`. Mappings are returned
+ * as single-element maplets. Maplet ordering is by key.
+ */
+zvalue datMapletNth(zvalue maplet, zint n);
+
+/**
+ * Given a maplet, returns the `n`th key. `maplet` must be a
+ * maplet, and `n` must be `< datSize(value)`. Maplet ordering is by key.
+ */
+zvalue datMapletNthKey(zvalue maplet, zint n);
+
+/**
+ * Given a maplet, returns the `n`th value. `maplet` must be a
+ * maplet, and `n` must be `< datSize(value)`. Maplet ordering is by key.
+ */
+zvalue datMapletNthValue(zvalue maplet, zint n);
 
 /**
  * Gets the maplet resulting from putting the given mapping into the
@@ -318,11 +332,6 @@ zvalue datMapletAdd(zvalue maplet1, zvalue maplet2);
  * given maplet.
  */
 zvalue datMapletDel(zvalue maplet, zvalue key);
-
-/**
- * Gets a listlet of all the values of the given maplet.
- */
-zvalue datMapletValues(zvalue maplet);
 
 
 /*
