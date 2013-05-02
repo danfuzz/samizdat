@@ -19,15 +19,6 @@
  */
 
 /**
- * Execution context. This contains global variable bindings and
- * definitions / bindings of functions (both primitive and
- * in-language).  The contents of a context are *not* directly
- * accessible through instances of this type via the API. You have to
- * use the various accessor functions.
- */
-typedef struct ExecutionContext *zcontext;
-
-/**
  * Prototype for all functions bound into execution contexts. The
  * `state` is arbitrary closure state (passed in when the function
  * was bound).
@@ -56,26 +47,6 @@ zvalue langCall(zvalue functionId, zint argCount, const zvalue *args);
  * state. Returns the identifying uniqlet that binds to it.
  */
 zvalue langDefineFunction(zfunction function, void *state);
-
-
-/*
- * Execution contexts
- */
-
-/**
- * Constructs and returns a fresh execution context, valid for use as
- * an argument to `langEvalExpressionNode()` but without any variable
- * bindings in either as parent bindings or local variables.
- */
-zcontext langCtxNew(void);
-
-/**
- * Gets a maplet of all the bindings in the given context. Note
- * that this is a snapshot; any subsequent modification to the
- * bindings will have no effect on the result returned from this
- * function.
- */
-zvalue langMapletFromCtx(zcontext ctx);
 
 
 /*

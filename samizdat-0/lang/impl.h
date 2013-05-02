@@ -14,21 +14,6 @@
 #include "lang.h"
 
 
-/*
- * Execution Contexts
- */
-
-/**
- * Allocates an execution context set up with the given parent bindings
- * and initial local variable bindings.
- */
-zcontext ctxNewChild(zvalue parent, zvalue locals);
-
-
-/*
- * Other
- */
-
 /**
  * Tokenizes a stringlet using Samizdat Layer 0 token syntax. Returns
  * a listlet of tokens.
