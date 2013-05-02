@@ -289,11 +289,6 @@ void datArrayFromListlet(zvalue *result, zvalue listlet);
 zvalue datMapletEmpty(void);
 
 /**
- * Gets a listlet of all the keys of the given maplet.
- */
-zvalue datMapletKeys(zvalue maplet);
-
-/**
  * Given a maplet, find the mapping of the given key and return the
  * corresponding value, or `NULL` if there is no such key. `maplet`
  * must be a maplet, and `key` must be a valid value.
@@ -337,11 +332,6 @@ zvalue datMapletAdd(zvalue maplet1, zvalue maplet2);
  * given maplet.
  */
 zvalue datMapletDel(zvalue maplet, zvalue key);
-
-/**
- * Gets a listlet of all the values of the given maplet.
- */
-zvalue datMapletValues(zvalue maplet);
 
 
 /*

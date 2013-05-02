@@ -1008,11 +1008,6 @@ returns void if `notFound` was not supplied.
 
 The ordering of the mappings is by sort order of the keys.
 
-#### `mapletKeys maplet <> listlet`
-
-Returns a listlet of all the keys in the given maplet, in sorted
-order.
-
 #### `mapletPut maplet key value <> maplet`
 
 Returns a maplet just like the given one, except with a new binding
@@ -1022,11 +1017,6 @@ additional binding in cases where `maplet` didn't already bind `key`.
 These two scenarios can be easily differentiated by either noting a
 change in size (or not) between original and result, or by explicitly
 checking for the existence of `key` in the original.
-
-#### `mapletValues maplet <> listlet`
-
-Returns a listlet of all the values in the given maplet, in order
-of the keys (in sorted order).
 
 
 <br><br>
