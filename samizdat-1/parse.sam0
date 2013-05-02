@@ -272,10 +272,29 @@ parseExpressionImpl = orRule parseCall parseAtom;
 # Parses a `statement` node.
 parseStatement = orRule parseVarDef parseExpression;
 
+# Parses a `nonlocalExit` node.
+parseNonlocalExit = filterRule
+    (seqRule
+        [:@"<":]
+        [:@identifier:]
+        [:@">":]
+        (questRule parseExpression)
+        (starRule [:@";":]))
+    { result ::
+        varRef = [:@varRef (highletValue (listletNth result @1)):];
+        actuals = listletNth result @3;
+        <> apply makeCall varRef actuals
+    };
+
 # Parses a `yield` node.
 parseYield = filterRule
-    (seqRule [:@"<>":] parseExpression (starRule [:@";":]))
-    { result :: <> listletNth result @1; };
+    (seqRule [:@"<":] [:@">":] parseExpression (starRule [:@";":]))
+    { result :: <> listletNth result @2 };
+
+# Parses a `yieldDef` node.
+parseYieldDef = filterRule
+    (seqRule [:@"<":] [:@identifier:] [:@">":])
+    { result :: <> highletValue (listletNth result @1) };
 
 # Parses a `formal` node.
 parseFormal = filterRule
@@ -298,17 +317,23 @@ parseFormals = filterRule
     (plusRule parseFormal)
     { result :: <> [:@formals result:] };
 
-# `program` node helper: Parses `(formals? @"::")?`, yielding a maplet
-# (possibly empty).
+# `program` node helper: Parses `(formals? yieldDef? @"::")?`, yielding
+# a maplet (possibly empty).
 parseProgram1 = filterRule
     (questRule
         (filterRule
-            (seqRule (questRule parseFormals) [:@"::":])
+            (seqRule
+                (questRule parseFormals)
+                (questRule parseYieldDef)
+                [:@"::":])
             { result ::
-                formals = listletNth result @0;
-                <> ifValue { <> listletNth formals @0 }
-                    { result :: <> @[@formals=result] }
-                    { <> @[=] }
+                formals = ifValue { <> listletNth (listletNth result @0) @0 }
+                    { value :: <> @[@formals=value] }
+                    { <> @[=] };
+                yieldDef = ifValue { <> listletNth (listletNth result @1) @0 }
+                    { value :: <> @[@yieldDef=value] }
+                    { <> @[=] };
+                <> mapletAdd formals yieldDef
             }))
     { result ::
         <> ifValue { <> listletNth result @0 }
@@ -316,13 +341,13 @@ parseProgram1 = filterRule
             { <> @[=] }
     };
 
-# `program` node helper: Parses `(statement | yield)?`, yielding
+# `program` node helper: Parses `(statement | nonlocalExit | yield)?`, yielding
 # a maplet that maps `@yield` and `@statements`. Always Succeeds.
 parseProgram2 = filterRule
     (questRule
         (orRule
             (filterRule
-                parseStatement
+                (orRule parseStatement parseNonlocalExit)
                 { result :: <> @[@statements=@[result] @yield=@[=]] })
             (filterRule
                 parseYield
