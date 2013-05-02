@@ -11,6 +11,43 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(argsMap) {
+    requireAtLeast(argCount, 1);
+
+    zvalue function = args[0];
+
+    args++;
+    argCount--;
+
+    zvalue result[argCount];
+    for (zint i = 0; i < argCount; i++) {
+        result[i] = langCall(function, 1, &args[i]);
+    }
+
+    return datListletFromArray(argCount, result);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(argsReduce) {
+    requireAtLeast(argCount, 2);
+
+    zvalue function = args[0];
+    zvalue funArgs[2];
+
+    funArgs[0] = args[1];
+
+    args += 2;
+    argCount -= 2;
+
+    for (zint i = 0; i < argCount; i++) {
+        funArgs[1] = args[i];
+        funArgs[0] = langCall(function, 2, funArgs);
+    }
+
+    return funArgs[0];
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifTrue) {
     requireRange(argCount, 2, 3);
 

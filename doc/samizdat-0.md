@@ -606,7 +606,6 @@ makeMaplet = { rest* ::
 };
 ```
 
-
 #### `makeUniqlet() <> uniqlet`
 
 Returns a uniqlet that has never before been returned from this
@@ -620,7 +619,32 @@ v = @@;   is equivalent to   v = makeUniqlet();
 
 
 <br><br>
-### Primitive Library: Conditionals
+### Primitive Library: Conditionals and Iteration
+
+#### `argsMap function rest* <> listlet`
+
+Primitive mapping iterator. This calls the given function on each of
+the rest of the arguments in sequence, collecting all the results into a
+listlet, which is returned. The function is called with exactly one
+argument, namely the item to process.
+
+**Note:** Unlike most of the map/reduce functions, this one takes its
+function as the first argument. This is done specifically so that it is
+convenient to `apply` it.
+
+#### `argsReduce function base rest* <> . | ~.`
+
+Primitive reducing iterator. This calls the given function on each of the
+rest of the arguments in sequence, yielding a final reduction result.
+(That is, this is a left-reduce operation.) The function is called with
+exactly two arguments, first the previous reduction result (or the `base`
+for the first item in `rest`), and second the item to process. The return
+value of this call is the same as the return value of the final call to
+`function`.
+
+**Note:** Unlike most of the map/reduce functions, this one takes its
+function as the first argument. This is done specifically so that it is
+convenient to `apply` it.
 
 #### `ifTrue predicate trueFunction falseFunction? <> . | ~.`
 
