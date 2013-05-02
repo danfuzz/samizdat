@@ -8,8 +8,8 @@
 # This module is meant to be able to be defined in fairly incomplete
 # implementations of *Samizdat Layer 0*. In particular, this module
 # does not make any calls to non-primitive library functions, and
-# it limits its explicit primitive library function calls to:
-# `apply` `ifTrue` `listletAdd` `lowOrderIs`.
+# it limits its explicit primitive library function calls to
+# `apply` and `argsMap`.
 #
 # Unlike other modules, this one is arranged with helpers and
 # exports interspersed, specifically because the the `argsMap` helper
@@ -47,21 +47,6 @@ yCombinator = { function ::
 #
 # Y* combinator
 #
-
-# Takes a mapping function as a first argument, and uses it to
-# make a result listlet consisting of running that mapping function
-# on each of the rest of the arguments. This is along the lines of
-# `listletMap`. This function is used in preference to that one, mostly
-# to keep the dependencies of this module at a minimum. See note at
-# the top of this file.
-argsMap = yCombinator { argsMap ::
-    <> { function elem rest* ::
-        resultElem = @[(function elem)];
-        <> ifTrue { <> lowOrderIs rest @[] @0 }
-            { <> resultElem }
-            { <> listletAdd resultElem (apply argsMap function rest) }
-    }
-};
 
 # The U* combinator. This is like the U combinator, except expanded to
 # work for multiple function arguments, in this case both passed and
