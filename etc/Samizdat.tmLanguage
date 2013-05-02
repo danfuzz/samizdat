@@ -63,6 +63,12 @@
 			<string>&lt;&gt;</string>
 		</dict>
 		<dict>
+			<key>name</key>
+			<string>variable.parameter</string>
+			<key>match</key>
+			<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
+		</dict>
+		<dict>
 			<key>captures</key>
 			<dict>
 				<key>1</key>
