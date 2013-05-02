@@ -16,9 +16,18 @@
 
 /**
  * Returns a single-character stringlet.
- */
+  */
 static zvalue stringletFromChar(zchar ch) {
     return datStringletFromChars(1, &ch);
+}
+
+/**
+ * Calls `datStringletNth()`, converting the result into a proper zvalue.
+ */
+static zvalue valueFromStringletNth(zvalue stringlet, zint n) {
+    zint ch = datStringletNth(stringlet, n);
+
+    return (ch < 0) ? NULL : stringletFromChar(ch);
 }
 
 
@@ -53,19 +62,5 @@ PRIM_IMPL(stringletAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringletNth) {
-    requireRange(argCount, 2, 3);
-
-    zvalue result = NULL;
-    if (datTypeIs(args[1], DAT_INTLET)) {
-        zint ch = datStringletNth(args[0], datIntFromIntlet(args[1]));
-        if (ch >= 0) {
-            result = stringletFromChar(ch);
-        }
-    }
-
-    if (result == NULL) {
-        return (argCount == 3) ? args[2] : NULL;
-    } else {
-        return result;
-    }
+    return doNth(valueFromStringletNth, argCount, args);
 }

@@ -16,7 +16,7 @@
 
 # Generic for-each function. Instead of the value-to-iterate argument, this
 # takes an `nthFunc` of one argument.
-genericForEach = { base nthFunc function ::
+genericForEach = { nthFunc function ::
     whileReduce @0 { index ::
         <> ifValue { <> (nthFunc index) }
             { item ::
@@ -82,7 +82,7 @@ listletCat = { listlet rest* ::
 
 # Documented in Samizdat Layer 0 spec.
 listletForEach = { listlet function ::
-    <> genericForEach listlet { n :: <> listletNth listlet n } function
+    <> genericForEach { n :: <> listletNth listlet n } function
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -104,14 +104,26 @@ listletPrepend = { value listlet ::
 #
 # See comment in `listletReduce` (above) about in-file ordering.
 mapletReduce = { base maplet function ::
-    <> listletReduce base (mapletKeys maplet)
-        { reduction key :: <> function reduction (mapletGet maplet key) key }
+    <> genericReduce base { n :: <> mapletNth maplet n}
+        { reduction mapping ::
+            <> function reduction
+                (mapletNthValue mapping @0)
+                (mapletNthKey mapping @0)
+        }
 };
 
 # Documented in Samizdat Layer 0 spec.
 mapletCat = { maplet rest* ::
     <> listletReduce maplet rest
         { reduction value :: <> mapletAdd reduction value }
+};
+
+# Documented in Samizdat Layer 0 spec.
+mapletForEach = { maplet function ::
+    genericForEach { n :: <> mapletNth maplet n }
+        { mapping ::
+            function (mapletNthValue mapping @0) (mapletNthKey mapping @0)
+        }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -143,8 +155,8 @@ stringletCat = { stringlet rest* ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-stringletForEach = { listlet function ::
-    <> genericForEach listlet { n :: <> stringletNth listlet n } function
+stringletForEach = { stringlet function ::
+    <> genericForEach { n :: <> stringletNth listlet n } function
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -165,6 +177,7 @@ stringletMap = { stringlet function ::
     @listletPrepend = listletPrepend
     @listletReduce = listletReduce
     @mapletCat = mapletCat
+    @mapletForEach = mapletForEach
     @mapletMap = mapletMap
     @mapletReduce = mapletReduce
     @stringletCat = stringletCat

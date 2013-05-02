@@ -30,6 +30,18 @@ static zmapping *mapletElems(zvalue maplet) {
 }
 
 /**
+ * Allocates and returns a maplet with the single given mapping.
+ */
+static zvalue mapletFrom1(zvalue key, zvalue value) {
+    zvalue result = allocMaplet(1);
+    zmapping *elems = mapletElems(result);
+
+    elems->key = key;
+    elems->value = value;
+    return result;
+}
+
+/**
  * Given a maplet, find the index of the given key. `maplet` must be a
  * maplet. Returns the index of the key or `~insertionIndex` (a
  * negative number) if not found.
@@ -57,23 +69,6 @@ static zint mapletFind(zvalue maplet, zvalue key) {
     // represented.
 
     return ~min;
-}
-
-/**
- * Given a maplet, produce a listlet of either its keys or values.
- */
-static zvalue keysOrValues(zvalue maplet, bool wantKeys) {
-    datAssertMaplet(maplet);
-
-    zint size = datSize(maplet);
-    zmapping *elems = mapletElems(maplet);
-    zvalue result[size];
-
-    for (zint i = 0; i < size; i++) {
-        result[i] = wantKeys ? elems[i].key : elems[i].value;
-    }
-
-    return datListletFromArray(size, result);
 }
 
 
@@ -120,16 +115,6 @@ zorder datMapletOrder(zvalue v1, zvalue v2) {
 /* Documented in header. */
 zvalue datMapletEmpty(void) {
     return allocMaplet(0);
-}
-
-/* Documented in header. */
-zvalue datMapletKeys(zvalue maplet) {
-    return keysOrValues(maplet, true);
-}
-
-/* Documented in header. */
-zvalue datMapletValues(zvalue maplet) {
-    return keysOrValues(maplet, false);
 }
 
 /* Documented in header. */
@@ -199,4 +184,44 @@ zvalue datMapletDel(zvalue maplet, zvalue key) {
     memcpy(elems + index, oldElems + index + 1,
            (size - index) * sizeof(zmapping));
     return result;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue datMapletNth(zvalue maplet, zint n) {
+    datAssertMaplet(maplet);
+
+    if (!datHasNth(maplet, n)) {
+        return NULL;
+    }
+
+    if (datSize(maplet) == 1) {
+        return maplet;
+    }
+
+    zmapping *mapping = &mapletElems(maplet)[n];
+    return mapletFrom1(mapping->key, mapping->value);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue datMapletNthKey(zvalue maplet, zint n) {
+    datAssertMaplet(maplet);
+    datAssertNth(maplet, n);
+
+    if (!datHasNth(maplet, n)) {
+        return NULL;
+    }
+
+    return mapletElems(maplet)[n].key;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue datMapletNthValue(zvalue maplet, zint n) {
+    datAssertMaplet(maplet);
+    datAssertNth(maplet, n);
+
+    if (!datHasNth(maplet, n)) {
+        return NULL;
+    }
+
+    return mapletElems(maplet)[n].value;
 }
