@@ -543,7 +543,7 @@ DEF_PARSE(formals) {
 
     REJECT_IF(datSize(formals) == 0);
 
-    return datHighletFrom(STR_FORMALS, formals);
+    return formals;
 }
 
 /**

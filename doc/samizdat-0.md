@@ -277,7 +277,7 @@ program ::=
 # Note: nonLocalExit results in a statement.
 
 formals ::= formal+ ;
-# result: [:@formals @[formal ...]:]
+# result: @[<formal> ...]
 
 formal ::= @identifier (@"*" | @"?")? ;
 # result: @[@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]
@@ -388,18 +388,20 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `function` &mdash; `[:@function @[(@formals=formals)? (@yieldDef=name)?`
+#### `function` &mdash; `[:@function @[(@formals=@[formal+])? (@yieldDef=name)?`
 #### `@statements=@[statement*] (@yield=expression)?:]`
 
-* `@formals=[:@formals @[formal*]:]` (optional) &mdash; A `formals`
-  node (as defined below).
+* `@formals=@[formal+]` (optional) &mdash; An array of `formal`
+  elements (as defined below). This defines the formal arguments to
+  the function.
 
 * `@yieldDef=name` (optional) &mdash; A name (typically a stringlet) to
   bind as the nonlocal-exit function.
 
 * `@statements=@[statement*]` (required) &mdash; A listlet of statement
   nodes. A statement node must be either an expression node or a
-  `varDef` node (as defined below).
+  `varDef` node (as defined below). This defines the bulk of the
+  code to execute.
 
 * `@yield=expression` (optional) &mdash; An expression node representing
   the (local) result value for a call.
@@ -458,39 +460,33 @@ is the result of evaluation. If a binding is not found for it, then
 evaluation fails (terminating the runtime).
 
 <br><br>
-### Other Nodes
+### Other Nodes and Values
 
-These are node types that appear within the data payloads
+These are nodes and values that appear within the data payloads
 of various expression nodes.
 
-#### `formals` &mdash; `[:@formals @[formal*]:]`
-
-* `@[formal*]` (required) &mdash; Listlet of formal argument
-  declarations, each declaration as describe immediately below.
-
-This represents the formal arguments to a function. Each `formal`
-element of the must be a maplet that binds `@name` and optionally `@repeat`:
+#### `formal` &mdash; `@[@name=name (@repeat=repeat)?]`
 
 * `@name` (required) &mdash; an arbitrary value (but typically a stringlet),
   which indicates the name of the variable to be bound for this
-  argument.
+  formal.
 
-* `@repeat` (optional) &mdash; indicates (if present) that the number of actual
-  arguments bound by this formal is not exactly one. If present it must be
-  one of:
+* `@repeat` (optional) &mdash; indicates (if present) that the number of
+  actual arguments bound by this formal is not necessarily exactly one.
+  If present it must be one of:
 
-  * `@"*"` &mdash; indicates that this argument binds as many actual
+  * `@"*"` &mdash; indicates that this formal binds as many actual
     arguments as are available, including none. As such, this only really
-    makes sense as the `repeat` of the last formal, though the syntax
-    will tolerate it being on any formal. The argument variable as bound
-    is a listlet of all the passed actual arguments that were bound.
+    makes sense as the `repeat` of the last formal, though the surface syntax
+    will tolerate it being in any position. The bound argument variable
+    becomes a listlet of all the passed actual arguments that were bound.
 
-  * `@"?"` &mdash; indicates that this argument binds a single argument if
+  * `@"?"` &mdash; indicates that this formal binds a single argument if
     available, including none. As such, this only really makes sense if
-    only ever followed by other `?` formals or a `*` formal, though the
-    syntax will tolerate it being on any formal. The argument variable as
-    bound is a listlet, either of size one if an argument was bound or
-    of size zero if not.
+    only ever followed by other `?` formals and possibly a final `*` formal,
+    though the syntax will tolerate it being in any position. The bound
+    argument variable becomes a listlet, either of size one if an argument
+    was bound or of size zero if not.
 
 If no `@repeat` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the

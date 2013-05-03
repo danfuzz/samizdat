@@ -101,9 +101,6 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
         return ctx;
     }
 
-    datHighletAssertType(formals, STR_FORMALS);
-    formals = datHighletValue(formals);
-
     zint formalsSize = datSize(formals);
 
     for (zint i = 0, argAt = 0; i < formalsSize; i++) {

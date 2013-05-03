@@ -316,9 +316,7 @@ parseFormal = filterRule
     { result :: <> apply mapletAdd result };
 
 # Parses a `formals` node.
-parseFormals = filterRule
-    (plusRule @formal)
-    { result :: <> [:@formals result:] };
+parseFormals = plusRule @formal;
 
 # `program` node helper: Parses `(formals? yieldDef? @"::")?`, yielding
 # a maplet (possibly empty).
