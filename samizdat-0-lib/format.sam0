@@ -220,73 +220,76 @@ xArg = { state ::
 };
 
 # Formats a literal percent.
-xPercent = { state ::
+doPercent = { yield state ::
+    yield @"%";
+
     fmtAt = iadd @2 (mapletGet state @fmtAt);
-    nextState = mapletPut state @fmtAt fmtAt;
-    <> @[@result=@"%" @state=nextState];
+    <> mapletPut state @fmtAt fmtAt;
 };
 
 # Formats a literal quoted argument.
-xLiteral = { state ::
-    arg = xArg state;
+doLiteral = { yield state ::
+    yield (sourceStringlet (xArg state));
+
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
-    nextState = mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
-    <> @[@result=(sourceStringlet arg) @state=nextState];
+    <> mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
 };
 
 # Formats a literal quoted argument, without top-level adornment.
-xUnadornedLiteral = { state ::
-    arg = xArg state;
+doUnadornedLiteral = { yield state ::
+    yield (sourceStringletUnadorned (xArg state));
+
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
-    nextState = mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
-    <> @[@result=(sourceStringletUnadorned arg) @state=nextState];
+    <> mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
 };
 
 # Formats a stringlet argument.
-xStringlet = { state ::
-    arg = xArg state;
+doStringlet = { yield state ::
+    yield (xArg state);
+
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
-    nextState = mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
-    <> @[@result=arg @state=nextState];
+    <> mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
 };
 
 # Mapping from format escape characters to their respective handler functions.
 FORMATTERS = @[
-    @"%" = xPercent
-    @"q" = xLiteral
-    @"Q" = xUnadornedLiteral
-    @"s" = xStringlet
+    @"%" = doPercent
+    @"q" = doLiteral
+    @"Q" = doUnadornedLiteral
+    @"s" = doStringlet
 ];
 
 # Formats a plain character (that is, returns it as-is).
-xPlain = { state ch ::
+doPlain = { yield state ch ::
+    yield ch;
+
     fmtAt = iadd @1 (mapletGet state @fmtAt);
-    nextState = mapletPut state @fmtAt fmtAt;
-    <> @[@result=ch @state=nextState];
+    <> mapletPut state @fmtAt fmtAt;
 };
 
 # Formats an arbitrary escape.
-xEscape = { state ::
+doEscape = { yield state ::
     <> ifValue { <> xPeek1 state }
         { ch ::
             <> ifValue { <> mapletGet FORMATTERS ch }
-                { formatter :: <> formatter state ch }
-                { <> xPlain state }
+                { formatter :: <> formatter yield state ch }
+                { <> doPercent yield state }
         }
-        { <> xPlain state @"%" }
+        { <> doPercent yield state }
 };
 
 # Formats a single character out of the format string.
-formatOne = { state ::
+formatOne = { yield state ::
     <> ifValue { <> xPeek state }
         { ch ::
             <> ifTrue { <> eq ch @"%" }
-                { <> xEscape state }
-                { <> xPlain state ch }
+                { <> doEscape yield state }
+                { <> doPlain yield state ch }
         }
+        { yield() }
 };
 
 # Documented in Samizdat Layer 0 spec.

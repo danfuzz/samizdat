@@ -580,31 +580,39 @@ void).
 Constructs and returns an "object". In *Samizdat Layer 0* an object is
 merely the combination of a mutable `state` value (an arbitarary
 value) with an `implementation` function (an arbitrary function).
-The return value from this function is another function,
+The return value from the call to `object` is another function,
 referred to as the "object interface function".
 
 When the object interface function is called, it in turn calls the
-`implementation` function, passing it the state value as its first
-argument, along with any other arguments passed to the interface
-function (in the same order). The implementation function can do
-whatever it wants, but it is restricted it what it is allowed to return.
+`implementation` function, passing it the same arguments as it was
+called with, along with two additional arguments at the head of the
+argument list:
 
-* If the implementation function returns void, then void is also
-  returned from the interface function, and nothing else is done.
+* The first argument is a `yield` function. This function must be
+  called exactly once during the course of a call to `implementation`.
+  This is used to indicate the return value from the object interface
+  function. If `yield` is called with no argument, then the object
+  interface function returns void. If `yield` is called with one argument,
+  then the object interface function returns that value.
 
-* Otherwise, the implementation function must return a maplet.
+  When the `yield` function is called, it does *not* cause the
+  implementation function to return; it merely causes the eventual
+  result value (or void) to be cached until the function does finally
+  return.
 
-* If the returned maplet binds `@state`, then the object's state
-  is updated to be the `@state` value. This will become the value
-  passed to the implementation function for its next call.
+* The second argument is a `state` value. This is the latest state
+  for the object, as defined immediately below.
 
-* If the returned maplet binds `@result`, then the `@result` value
-  becomes the return value from the interface function.
+The implementation function can return either a value or void. If
+it returns a value, then the value becomes the new `state` for
+the object, replacing either the `state` originally passed to
+`object`, or whatever other state had been returned in the mean time.
 
-To avoid confusion, it is invalid (terminating the runtime) for an
-object implementation function to call its own interface function.
-To implement a recursive operation, it is necessary to do so without
-going through the interface.
+To avoid confusion as well as hew closely to the actor model,
+it is invalid (terminating the runtime) for an object implementation
+function to call its own interface function, either directly or
+indirectly. To implement a recursive operation, it is necessary to do
+so without going through the interface.
 
 #### `sam0Eval context expressionNode <> . | ~.`
 
