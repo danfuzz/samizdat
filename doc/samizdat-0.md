@@ -463,12 +463,12 @@ evaluation fails (terminating the runtime).
 These are node types that appear within the data payloads
 of various expression nodes.
 
-#### `formals` &mdash; `[:@formals @[declaration*]:]`
+#### `formals` &mdash; `[:@formals @[formal*]:]`
 
-* `@[declaration*]` (required) &mdash; Listlet of formal argument
+* `@[formal*]` (required) &mdash; Listlet of formal argument
   declarations, each declaration as describe immediately below.
 
-This represents the formal arguments to a function. Each `declaration`
+This represents the formal arguments to a function. Each `formal`
 element of the must be a maplet that binds `@name` and optionally `@repeat`:
 
 * `@name` (required) &mdash; an arbitrary value (but typically a stringlet),
