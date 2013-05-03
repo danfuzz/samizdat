@@ -9,8 +9,7 @@ Highlets
 
 #### `highletHasValue highlet <> boolean`
 
-Returns an indication of whether or not the given highlet has
-a payload data value.
+Returns `true` iff the given highlet has a non-void payload data value.
 
 #### `highletType highlet <> .`
 
