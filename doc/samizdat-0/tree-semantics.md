@@ -40,8 +40,7 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `function` &mdash; `[:@function @[(@formals=@[formal+])? (@yieldDef=name)?`
-#### `@statements=@[statement*] (@yield=expression)?:]`
+#### `function` &mdash; `[:@function @[(@formals=@[formal+])? (@yieldDef=name)?` `@statements=@[statement*] (@yield=expression)?:]`
 
 * `@formals=@[formal+]` (optional) &mdash; An array of `formal`
   elements (as defined below). This defines the formal arguments to
