@@ -116,6 +116,13 @@ RULES = @[
 # Main `tokenize` function
 #
 
+# Error helper, to read a line of text for reporting back.
+readLine = filterRule
+    (seqRule
+        (starRule (notCharSetRule @"\n"))
+        (questRule (charsRule @"\n")))
+    { result :: <> apply stringletCat (listletNth result @0) };
+
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
 tokenize = { programText ::
@@ -125,17 +132,9 @@ tokenize = { programText ::
 
     ifFalse { <> theEngine @eof }
         {
+            io0Note @"Extra text at end of program.";
             io0Note @"Pending text:";
-
-            { <break> ::
-                loop {
-                    ifValue { <> theEngine @read }
-                        { token :: io0Note (format @"    %q" token) }
-                        { <break> }
-                }
-            }();
-
-            io0Die @"Extra text at end of program."
+            io0Die (readLine theEngine);
         };
 
     <> theProgram;
