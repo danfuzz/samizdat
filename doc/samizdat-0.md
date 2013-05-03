@@ -6,7 +6,7 @@ The language is meant to provide a syntactically and semantically
 minimal way to build up and manipulate low-layer Samizdat data.
 
 *Samizdat Layer 0* is run by translating it into low-layer Samizdat
-data, as specified here, and running it with the indicated core
+data, as specified here, and running it with the specified core
 library bindings.
 
 
@@ -364,18 +364,22 @@ one would construct them in the source syntax of *Samizdat Layer 0*.
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `call` &mdash; `[:@call @[@function=function @actuals=actuals]:]`
+#### `call` &mdash; `[:@call @[@function=function @actuals=@[actual*]:]`
 
-This represents a function call. In the data payload, `function` is an
-arbitrary expression node, and `actuals` is a listlet of arbitrary
-expression nodes.
+* `@function=function` (required) &mdash; An expression node that must
+  evaluate to a function.
+
+* `@actuals=@[actual*]` (required) &mdash; A listlet of arbitrary expression
+  nodes, each of which must evaluate to a non-void value.
+
+This represents a function call.
 
 When run, first `function` and then the elements of `actuals` (in
 order) are evaluated. If `function` evaluates to something other than
 a function, the call fails (terminating the runtime). If any of the
-`actuals` evaluate to void, the call fails (terminating the runtime).
+`actuals` evaluates to void, the call fails (terminating the runtime).
 
-If there are too few actual arguments for the function (e.g. the
+If there are too few actual arguments for the function (e.g., the
 function requires at least three arguments, but only two are passed),
 then the call fails (terminating the runtime).
 
@@ -384,24 +388,36 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `function` &mdash; `[:@function @[(@formals=formals)? (@yieldDef=yieldDef)? @statements=statements (@yield=yield)?:]`
+#### `function` &mdash; `[:@function @[(@formals=formals)? (@yieldDef=name)?`
+#### `@statements=@[statement*] (@yield=expression)?:]`
 
-This represents a function definition. In the data payload, `formals`
-is optional but must be a `formals` node (as defined below) if present.
-`statements` must be a listlet, with each of the elements being either
-an expression node or a `varDef` node.
+* `@formals=[:@formals @[formal*]:]` (optional) &mdash; A `formals`
+  node (as defined below).
 
-The yield-related bindings are all optional. If present, `yieldDef` must
-be a stringlet. If present, `yield` must be an expression node.
+* `@yieldDef=name` (optional) &mdash; A name (typically a stringlet) to
+  bind as the nonlocal-exit function.
+
+* `@statements=@[statement*]` (required) &mdash; A listlet of statement
+  nodes. A statement node must be either an expression node or a
+  `varDef` node (as defined below).
+
+* `@yield=expression` (optional) &mdash; An expression node representing
+  the (local) result value for a call.
+
+This represents a function definition.
 
 When run, a closure (representation of the function as an in-model
-value) is created, which nascently binds as variables the names of all
-the formals to all the incoming actual arguments, and binds all other
-variable names to whatever they refer to in the static evaluation
-context. This closure is the result of evaluation. If there is a `yieldDef`,
-then that is bound as a nonlocal exit function, which, when called, causes
-this closure to exit. Nonlocal exit functions accept zero or one argument,
-zero to return void and one to return a value.
+value) is created, which binds as variables the names of all
+the formals to all the incoming actual arguments (as defined below),
+binds the `yieldDef` name if specified to a nonlocal-exit function,
+and binds all other variable names to whatever they already refer to in
+the lexical evaluation context. This closure is the result of evaluation.
+
+If a nonlocal-exit function is defined, then that function accepts zero
+or one argument. When called, it causes an immediate return from the active
+function that it was bound to, yielding as a result whatever was passed to
+it (including void). It is an error (terminating the runtime) to use a
+nonlocal-exit function after the active function it was bound to has exit.
 
 When the closure is actually called (e.g. by virtue of being the
 designated `function` in a `call` node), a fresh execution context is
@@ -413,18 +429,28 @@ result of the call is the same as the result of the `yield` evaluation
 (including possibly void) if a `yield` was present, or void if
 there was no `yield` to evaluate.
 
+**Note:** As a possible clarification about nonlocal-exit functions: Defining
+and using these amounts to something along the lines of `try` / `catch` in
+systems that are defined using those terms. In C terms, the facility is
+along the lines of `setjmp` / `longjmp`. In Lisp terms, the facility is
+an implementation of downward-passing continuations.
+
 #### `literal` &mdash; `[:@literal value:]`
 
-This represents arbitrary literal data. The data payload is
-an arbitrary value.
+* `value` (required) &mdash; Arbitrary data value.
 
-The data `value` is the result of evaluation, when a `literal`
-node is run. Evaluation never fails.
+This represents arbitrary literal data.
+
+The data `value` is the result of evaluation,
+
+When a `literal` node is run, the result of evaluation is `value`.
+Evaluation never fails.
 
 #### `varRef` &mdash; `[:@varRef name:]`
 
-This represents a by-name variable reference. `name` is an
-arbitrary value, but is most typically a stringlet.
+* `name` (required) &mdash; Name of a variable (typically a stringlet).
+
+This represents a by-name variable reference.
 
 When run, this causes the `name` to be looked up in the current
 execution context. If a binding is found for it, then the bound value
@@ -437,17 +463,19 @@ evaluation fails (terminating the runtime).
 These are node types that appear within the data payloads
 of various expression nodes.
 
-#### `formals` &mdash; `[:@formals declarations:]`
+#### `formals` &mdash; `[:@formals @[declaration*]:]`
 
-This represents the formal arguments to a function. `declarations`
-must be a listlet, and each element of the listlet must be
-a maplet that binds `@name` and optionally `@repeat`:
+* `@[declaration*]` (required) &mdash; Listlet of formal argument
+  declarations, each declaration as describe immediately below.
 
-* `@name` &mdash; an arbitrary value (but typically a stringlet),
+This represents the formal arguments to a function. Each `declaration`
+element of the must be a maplet that binds `@name` and optionally `@repeat`:
+
+* `@name` (required) &mdash; an arbitrary value (but typically a stringlet),
   which indicates the name of the variable to be bound for this
   argument.
 
-* `@repeat` &mdash; indicates (if present) that the number of actual
+* `@repeat` (optional) &mdash; indicates (if present) that the number of actual
   arguments bound by this formal is not exactly one. If present it must be
   one of:
 
@@ -468,15 +496,17 @@ If no `@repeat` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
-#### `varDef` &mdash; `[:@varDef @[@name=name @value=value]:]`
+#### `varDef` &mdash; `[:@varDef @[@name=name @value=expression]:]`
 
-This represents a variable definition as part of a function body.
-`name` is an arbitrary value (but typically a stringlet) representing
-the name of the variable to define, and `value` must be an expression
-node, indicating the value that the variable should be bound to.
+* `@name=name` &mdash; Variable name to define (typically a stringlet).
 
-When run, `value` is evaluated. If it evaluates to void, then
-evaluation fails (terminating the runtime). Otherwise, the evaluated
+* `@value=expression` &mdash; Expression node representing the value
+  that the variable should take on when defined.
+
+This represents a variable definition statement as part of a function body.
+
+When run, the `value` expression is evaluated. If it evaluates to void,
+then evaluation fails (terminating the runtime). Otherwise, the evaluated
 value is bound in the current (topmost) execution context to the
 indicated `name`.
 
