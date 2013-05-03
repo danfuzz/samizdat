@@ -1,7 +1,6 @@
 Samizdat Layer 0
 ================
 
-<br><br>
 Tree Syntax
 -----------
 
