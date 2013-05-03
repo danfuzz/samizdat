@@ -193,7 +193,7 @@ parseHighlet = filterRule
 
 # Parses a `uniqlet` node.
 parseUniqlet = filterRule
-    (tokenRule [:@"@@":])
+    [:@"@@":]
     { <> makeCall [:@varRef @makeUniqlet:] };
 
 # Parses a `binding` node.
@@ -247,7 +247,7 @@ parseIntlet = filterRule
 
 # Parses a `varRef` node.
 parseVarRef = filterRule
-    (tokenRule [:@identifier:])
+    [:@identifier:]
     { result :: <> [:@varRef (highletValue result):] };
 
 # Parses a `varDef` node.
@@ -303,7 +303,7 @@ parseYieldDef = filterRule
 parseFormal = filterRule
     (seqRule
         (filterRule
-            (tokenRule [:@identifier:])
+            [:@identifier:]
             { result :: <> @[@name = (highletValue result)] })
         (filterRule
             (questRule
