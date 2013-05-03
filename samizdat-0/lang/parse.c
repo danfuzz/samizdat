@@ -461,8 +461,7 @@ DEF_PARSE(optSemicolons) {
 DEF_PARSE(yield) {
     MARK();
 
-    MATCH_OR_REJECT(CH_LT);
-    MATCH_OR_REJECT(CH_GT);
+    MATCH_OR_REJECT(CH_DIAMOND);
     zvalue yield = PARSE_OR_REJECT(expression);
     PARSE(optSemicolons);
 

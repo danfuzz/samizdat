@@ -26,6 +26,7 @@ parsePunctuation = filterRule
     (orRule
         (charsRule @"@@")
         (charsRule @"::")
+        (charsRule @"<>")
         (charSetRule @"@:*;=-?<>{}()[]"))
     { result :: <> [:result:] };
 

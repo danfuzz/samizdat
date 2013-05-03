@@ -152,8 +152,8 @@ parseNonlocalExit = filterRule
 
 # Parses a `yield` node.
 parseYield = filterRule
-    (seqRule [:@"<":] [:@">":] @expression (starRule [:@";":]))
-    { result :: <> listletNth result @2 };
+    (seqRule [:@"<>":] @expression (starRule [:@";":]))
+    { result :: <> listletNth result @1 };
 
 # Parses a `yieldDef` node.
 parseYieldDef = filterRule

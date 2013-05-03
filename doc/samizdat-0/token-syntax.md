@@ -18,6 +18,7 @@ token ::=
 punctuation ::=
     "@@" | # result: [:@"@@":]
     "::" | # result: [:@"::":]
+    "<>" | # result: [:@"<>":]
     "@"  | # result: [:@"@":]
     ":"  | # result: [:@":":]
     "*"  | # result: [:@"*":]
