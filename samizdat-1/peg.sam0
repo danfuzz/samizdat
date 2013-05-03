@@ -1,0 +1,167 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# PEG-style parsing engine
+#
+# Note: All of the meta-rule functions accept as rules either parsing
+# functions per se or simple highlets to represent token-matching rules.
+#
+
+
+#
+# Helper functions
+#
+
+# Returns a rule which succeeds if the given token type is successfully
+# read.
+tokenRule = { token ::
+    type = highletType token;
+
+    <> { engine ::
+        <> ifValue { <> engine @peek }
+            { got ::
+                <> ifTrue { <> eq type (highletType got) }
+                    {
+                        engine @read;
+                        <> got
+                    }
+            }
+    }
+};
+
+# Returns a rule which succeeds if the given named parser rule
+# is successfully matched.
+namedRule = { rule ::
+    <> { engine :: <> (engine @rule rule) engine }
+};
+
+# Transforms named and token rules into functions.
+functionFromRule = { rule ::
+    <> ifTrue { <> isHighlet rule }
+        { <> tokenRule rule }
+        {
+            <> ifTrue { <> isStringlet rule }
+                { <> namedRule rule}
+                { <> rule }
+        }
+};
+
+
+#
+# Exported functions
+#
+
+# Makes a reader that's augmented with a method to perform rule lookup.
+pegEngine = { reader rules ::
+    <> { name rest* ::
+        <> ifTrue { <> eq name @rule }
+            { <> mapletGet rules (listletNth rest @0) }
+            { <> apply reader name rest }
+    }
+};
+
+
+# Returns a rule which succeeds if a given other rule succeeds, and
+# if so runs the given result filter function, passing it the rule
+# result, to produce the final result of processing.
+filterRule = { rule filterFunction ::
+    finalRule = functionFromRule rule;
+
+    <> { engine ::
+        <> ifValue { <> finalRule engine } filterFunction
+    }
+};
+
+# Returns a rule which succeeds if each of a list of other rules
+# succeeds in sequence (said list given in the form of separate arguments
+# to this function). The result, if successful, is a listlet of all
+# the rule results. This effectively implements the sequence "operator"
+# (null infix operator) in PEG.
+seqRule = { rules* ::
+    finalRules = listletMap rules functionFromRule;
+
+    <> { engine <out> ::
+        mark = engine @at;
+        <> listletReduce @[] finalRules
+            { results rule ::
+                <> ifValue { <> rule engine }
+                    { result :: <> listletAppend results result }
+                    {
+                        engine @reset mark;
+                        <out>
+                    }
+            }
+    }
+};
+
+# Returns a rule which succeeds if any of a list of other rules
+# succeeds (said list given in the form of separate arguments to this
+# function), trying them in order. The result is the same as the
+# result of whichever rule succeeded, or void if all the alternatives
+# failed. This effectively implements the ordered choice operator
+# (`|` infix) in PEG.
+orRule = { rules* ::
+    finalRules = listletMap rules functionFromRule;
+
+    <> { engine <out> ::
+        listletForEach finalRules
+            { rule ::
+                ifValue { <> rule engine }
+                    { result :: <out> result }
+            }
+    }
+};
+
+# Returns a rule which optionally parses a given other rule. The
+# rule when run always succeeds, yielding a listlet. The listlet will
+# have either zero or one element, depending on whether the inner
+# rule was matched. This effectively implements the zero-or-one
+# operator (`?` suffix) in PEG.
+questRule = { rule ::
+    finalRule = functionFromRule rule;
+
+    <> { engine ::
+        <> ifValue { <> finalRule engine }
+            { result :: <> @[result] }
+            { <> @[] }
+    }
+};
+
+# Returns a rule which parses zero or more repetitions of a given other
+# rule. The rule when run always succeeds, yielding a listlet of all
+# the results of matching. It will be a zero-length listlet if in fact
+# the inner rule never matched. This effectively implements the
+# zero-or-more operator (`*` suffix) in PEG.
+starRule = { rule ::
+    finalRule = functionFromRule rule;
+
+    <> { engine <out> ::
+        loopReduce @[] { result ::
+            <> ifValue { <> finalRule engine }
+                { match :: <> listletAppend result match }
+                { <out> result }
+        }
+    }
+};
+
+# Returns a rule which parses one or more repetitions of a given other
+# rule. The rule when successful yields a listlet of all the results of
+# matching and will be of size one or more. This effectively implements
+# the one-or-more operator (`+` suffix) in PEG.
+plusRule = { rule ::
+    <> filterRule
+        (seqRule rule (starRule rule))
+        { result :: <> apply listletPrepend result }
+};
+
+<> @[
+    @filterRule = filterRule
+    @orRule = orRule
+    @pegEngine = pegEngine
+    @plusRule = plusRule
+    @questRule = questRule
+    @seqRule = seqRule
+    @starRule = starRule
+]

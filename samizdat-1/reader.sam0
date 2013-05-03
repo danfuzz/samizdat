@@ -92,4 +92,4 @@ reader = { value ::
     ]
 };
 
-<> @[@reader = reader];
+<> @[@reader = reader]
