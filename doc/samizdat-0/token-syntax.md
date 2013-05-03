@@ -5,9 +5,13 @@ Token Syntax
 ------------
 
 The following is a BNF/PEG-like description of the tokens. A program
-is tokenized by repeatedly matching the top `token` rule.
+is tokenized by matching the top `file` rule, which results in a
+listlet of all the tokens.
 
 ```
+file ::= token* whitespace* ;
+# result: @[token*]
+
 token ::=
     whitespace*
     (punctuation | integer | string | identifier)
@@ -47,5 +51,5 @@ identifier ::=
 # result: [:@identifier <stringlet>:]
 
 whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
-# result: none; automatically ignored.
+# result: n/a; automatically ignored.
 ```
