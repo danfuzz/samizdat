@@ -6,98 +6,28 @@
 # Samizdat Layer 0 tokenizer
 #
 
-# Mapping from valid string escapes to their translated characters.
-STRING_ESCAPES = @[@"\\"=@"\\" @"\""=@"\"" @"n"=@"\n"];
+# Parses an entire file of tokens.
+parseFile = filterRule
+    (seqRule
+        (starRule @token)
+        (starRule @whitespace))
+    { result :: <> listletNth result @0 };
 
-# Parses a string escape.
-parseStringEscape = { reader ::
-    <> ifValue { <> reader @read }
-        { ch ::
-            <> ifValue { <> mapletGet STRING_ESCAPES ch }
-                { translation :: <> translation }
-        }
-};
+# Parses a single token.
+parseToken = filterRule
+    (seqRule
+        (starRule @whitespace)
+        (orRule @punctuation @integer @string @identifier))
+    { result :: <> listletNth result @1 };
 
-# Parses a single string character (including escapes).
-parseStringChar = { reader ::
-    <> ifValue { <> reader @peek }
-        { ch ::
-            <> ifTrue { <> ne ch @"\"" }
-                {
-                    reader @read;
-                    <> ifTrue { <> eq ch @"\\" }
-                        { <> parseStringEscape reader }
-                        { <> ch }
-                }
-        }
-};
-
-# Reads a double quote, if available.
-parseDoubleQuote = { reader ::
-    <> ifValue { <> reader @peek }
-        { ch ::
-            <> ifTrue { <> eq ch @"\"" }
-            {
-                reader @read;
-                <> ch
-            }
-        }
-};
-
-# Parses a string.
-parseString = { reader ::
-    reader @read; # Skip the open quote.
-
-    value = { <yield> ::
-        loopReduce @"" { result ::
-            <> ifValue { <> parseStringChar reader }
-                { ch :: <> stringletAdd result ch }
-                { <yield> result }
-            }
-    }();
-
-    # Skip the close quote, or complain if it was absent.
-    <> ifValue { <> parseDoubleQuote reader }
-        { <> [:@string value:] }
-        {
-            <> ifTrue { <> reader @eof }
-                { <> [:@error @"Unterminated string literal.":] }
-                { <> [:@error @"Invalid string escape sequence.":] }
-        }
-};
-
-# These are all the valid identifier characters, as a set-like maplet
-# (all elements map to `null`).
-IDENTIFIER_CHARS = listletReduce @[=]
-    @[
-        @"0" @"1" @"2" @"3" @"4" @"5" @"6" @"7" @"8" @"9" @"_"
-        @"a" @"b" @"c" @"d" @"e" @"f" @"g" @"h" @"i" @"j" @"k" @"l" @"m"
-        @"n" @"o" @"p" @"q" @"r" @"s" @"t" @"u" @"v" @"w" @"x" @"y" @"z"
-        @"A" @"B" @"C" @"D" @"E" @"F" @"G" @"H" @"I" @"J" @"K" @"L" @"M"
-        @"N" @"O" @"P" @"Q" @"R" @"S" @"T" @"U" @"V" @"W" @"X" @"Y" @"Z"
-    ]
-    { result ch :: <> mapletPut result ch null };
-
-# Parses a single identifier character.
-parseIdentifierChar = { reader ::
-    <> ifValue { <> reader @peek }
-        { ch ::
-            <> ifValue { <> mapletGet IDENTIFIER_CHARS ch }
-                {
-                    reader @read;
-                    <> ch
-                }
-        }
-};
-
-# Parses an identifier.
-parseIdentifier = { reader <out> ::
-    loopReduce @"" { result ::
-        <> ifValue { <> parseIdentifierChar reader }
-            { ch :: <> stringletAdd result ch }
-            { <out> [:@identifier result:] }
-    }
-};
+# Parses any of the punctuation characters or character sequences, yielding
+# a token whose type is the stringlet matched.
+parsePunctuation = filterRule
+    (orRule
+        (charsRule @"@@")
+        (charsRule @"::")
+        (charSetRule @"@:*;=-?<>{}()[]"))
+    { result :: <> [:result:] };
 
 # These are all the integer digits, as a maplet from stringlets to
 # digit values.
@@ -108,133 +38,107 @@ INTEGER_CHARS = listletReduce @[=]
         <> mapletPut result (stringletFromIntlet (iadd @48 n)) n
     };
 
-# Parses a single integer character, returning the digit value if successful.
-parseIntegerChar = { reader ::
-    <> ifValue { <> reader @peek }
-        { ch ::
-            <> ifValue { <> mapletGet INTEGER_CHARS ch }
-                { value ::
-                    reader @read;
-                    <> value
-                }
-        }
-};
-
-# Parses an integer.
-parseInteger = { reader <out> ::
-    loopReduce @0 { result ::
-        <> ifValue { <> parseIntegerChar reader }
-            { value :: <> iadd value (imul result @10) }
-            { <out> [:@integer result:] }
-    }
-};
-
-# Skips over all characters until and including a newline.
-skipUntilNewline = { reader <out> ::
-    loop {
-        ifValue { <> reader @read }
-            { ch :: ifTrue { <> eq ch @"\n" } { <out> } }
-            { <out> }
-    }
-};
-
-# Parsers for particular whitespace characters.
-WHITESPACE_DISPATCH = @[
-    @" "  = { reader :: reader @read }
-    @"\n" = { reader :: reader @read }
-    @"#"  = skipUntilNewline
-];
-
-# Skips any whitespace at the current cursor.
-skipWhitespace = { reader <out> ::
-    loop {
-        <> ifValue { <> reader @peek }
-            { ch ::
-                <> ifValue { <> mapletGet WHITESPACE_DISPATCH ch }
-                    { parser :: parser reader }
-                    { <out> }
-            }
-            { <out> }
-    }
-};
-
-# Single-character parser. Reads a single character, returning that
-# value directly as a token.
-oneCharParser = { reader :: <> [:(reader @read):] };
-
-# Makes a one-or-two-character parser, given a two-character string.
-# The result is a function which reads a character, and then peeks at
-# the next one. It consumes the second character only if it matches as
-# indicated.
-makeOneTwoParser = { twoChars ::
-    ch2 = stringletNth twoChars @1;
-    result1 = [:(stringletNth twoChars @0):];
-    result2 = [:twoChars:];
-
-    parser = { reader ::
-        reader @read; # Only ever called when the first character matched.
-        <> ifValue { <> reader @peek }
-            { ch ::
-                <> ifTrue { <> eq ch ch2 }
-                    { reader @read; <> result2 }
-                    { <> result1 }
-            }
+# Parses an `integer` token.
+parseInteger = filterRule
+    (plusRule
+        (filterRule
+            (charSetRule @"0123456789")
+            { result :: <> mapletGet INTEGER_CHARS result }))
+    { result ::
+        value = listletReduce @0 result
+            { result digit :: <> iadd digit (imul result @10) };
+        <> [:@integer value:]
     };
 
-    <> parser;
-};
+# Parses a single string character.
+parseString1 = orRule
+    (notCharSetRule @"\\\"")
+    (filterRule
+        (seqRule
+            (charsRule @"\\")
+            (orRule
+                (filterRule (charsRule @"\\") { <> @"\\" })
+                (filterRule (charsRule @"\"") { <> @"\"" })
+                (filterRule (charsRule @"n")  { <> @"\n" })))
+        { result :: <> listletNth result @1 });
 
-# Mapping from token start character to the corresponding parser to use.
-# Note that the identifier mappings need to be listed before the integer
-# ones, so that the latter overrides the ones that overlap with the former.
-TOKEN_DISPATCH = mapletCat
-    (mapletMap IDENTIFIER_CHARS { <> parseIdentifier })
-    (mapletMap INTEGER_CHARS { <> parseInteger })
-    @[
-        @"\"" = parseString
-        @"{"  = oneCharParser
-        @"}"  = oneCharParser
-        @"["  = oneCharParser
-        @"]"  = oneCharParser
-        @"("  = oneCharParser
-        @")"  = oneCharParser
-        @"<"  = oneCharParser
-        @">"  = oneCharParser
-        @"="  = oneCharParser
-        @"-"  = oneCharParser
-        @"?"  = oneCharParser
-        @";"  = oneCharParser
-        @"*"  = oneCharParser
-        @":"  = (makeOneTwoParser @"::")
-        @"@"  = (makeOneTwoParser @"@@")
-    ];
+# Parses a `string` token.
+parseString = filterRule
+    (seqRule
+        (charsRule @"\"")
+        (starRule parseString1)
+        (charsRule @"\""))
+    { result ::
+        value = apply stringletCat (listletNth result @1);
+        <> [:@string value:]
+    };
 
-# Reads a single token.
-readToken = { reader ::
-    skipWhitespace reader;
-    <> ifValue { <> reader @peek }
-        { ch ::
-            <> ifValue { <> mapletGet TOKEN_DISPATCH ch }
-                { parser :: <> parser reader }
-                {
-                    error = stringletCat @"No parser for character: "
-                        (sourceStringlet ch);
-                    skipUntilNewline reader; # Heuristic to help re-synch.
-                    <> [:@error error:];
-                }
-        }
-};
+# These are all the characters which are allowed to start an identifier.
+IDENTIFIER_START_CHARS =
+    @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+
+# These are all the characters which are allowed to be in an identifier.
+IDENTIFIER_CHARS = stringletAdd IDENTIFIER_START_CHARS @"0123456789";
+
+# Parses an `identifier` token.
+parseIdentifier = filterRule
+    (seqRule
+        (charSetRule IDENTIFIER_START_CHARS)
+        (starRule (charSetRule IDENTIFIER_CHARS)))
+    { result ::
+        value = stringletAdd
+            (listletNth result @0)
+            (apply stringletCat (listletNth result @1));
+        <> [:@identifier value:]
+    };
+
+# Parses a single whitespace character or a comment.
+parseWhitespace = orRule
+    (charSetRule @" \n")
+    (seqRule
+        (charsRule @"#")
+        (starRule (notCharSetRule @"\n"))
+        (charsRule @"\n"));
+
+# Maplet of all the tokenizer rules.
+RULES = @[
+    @file = parseFile
+    @identifier = parseIdentifier
+    @integer = parseInteger
+    @punctuation = parsePunctuation
+    @string = parseString
+    @token = parseToken
+    @whitespace = parseWhitespace
+];
+
+
+#
+# Main `tokenize` function
+#
 
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.
-tokenize = { programText <out> ::
+tokenize = { programText ::
     theReader = reader programText;
+    theEngine = pegEngine theReader RULES;
+    theProgram = parseFile theEngine;
 
-    <> loopReduce @[] { result ::
-        <> ifValue { <> readToken theReader }
-            { token :: <> listletAppend result token }
-            { <out> result }
-    }
+    ifFalse { <> theEngine @eof }
+        {
+            io0Note @"Pending text:";
+
+            { <break> ::
+                loop {
+                    ifValue { <> theEngine @read }
+                        { token :: io0Note (format @"    %q" token) }
+                        { <break> }
+                }
+            }();
+
+            io0Die @"Extra text at end of program."
+        };
+
+    <> theProgram;
 };
 
 <> @[@tokenize = tokenize]

@@ -156,8 +156,66 @@ plusRule = { rule ::
         { result :: <> apply listletPrepend result }
 };
 
+# Returns a tokenizer rule which matches the given sequence of characters
+# exactly, returning that stringlet.
+charsRule = { chars ::
+    <> { engine <out> ::
+        mark = engine @at;
+        stringletForEach chars
+            { ch ::
+                ifTrue { <> or { <> engine @eof } { <> ne (engine @read) ch } }
+                    {
+                        engine @reset mark;
+                        <out>
+                    }
+            };
+        <> chars;
+    }
+};
+
+# Returns a tokenizer rule which matches any of the given characters
+# (given as a stringlet of all the characters to match), returning
+# a single-character stringlet of the matched character.
+charSetRule = { chars ::
+    charSet = stringletReduce @[=] chars
+        { result ch :: <> mapletPut result ch null };
+
+    <> { engine <out> ::
+        ifValue { <> engine @peek }
+            { ch ::
+                ifTrue { <> mapletHasKey charSet ch }
+                    {
+                        engine @read;
+                        <out> ch
+                    }
+            }
+    }
+};
+
+# Returns a tokenizer rule which matches any character *but* one of the
+# given characters (given as a stringlet of all the characters to exclude),
+# returning a single-character stringlet of the matched character.
+notCharSetRule = { chars ::
+    charSet = stringletReduce @[=] chars
+        { result ch :: <> mapletPut result ch null };
+
+    <> { engine <out> ::
+        ifValue { <> engine @peek }
+            { ch ::
+                ifFalse { <> mapletHasKey charSet ch }
+                    {
+                        engine @read;
+                        <out> ch
+                    }
+            }
+    }
+};
+
 <> @[
+    @charSetRule = charSetRule
+    @charsRule = charsRule
     @filterRule = filterRule
+    @notCharSetRule = notCharSetRule
     @orRule = orRule
     @pegEngine = pegEngine
     @plusRule = plusRule
