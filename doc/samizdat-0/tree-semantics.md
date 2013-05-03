@@ -16,12 +16,12 @@ representative of how one would construct them in the source syntax of
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `call` &mdash; `[:@call @[@function=expression @actuals=@[actual*]:]`
+#### `call` &mdash; `[:@call @[@function=expression @actuals=@[expression*]:]`
 
 * `@function=expression` (required) &mdash; An expression node that must
   evaluate to a function.
 
-* `@actuals=@[actual*]` (required) &mdash; A listlet of arbitrary expression
+* `@actuals=@[expression*]` (required) &mdash; A listlet of arbitrary expression
   nodes, each of which must evaluate to a non-void value.
 
 This represents a function call.
