@@ -15,4 +15,4 @@ Contents:
 * [Token Syntax](token-syntax.md)
 * [Tree Syntax](tree-syntax.md)
 * [Tree Semantics](tree-semantics.md)
-* [Core Library](core-library.md)
+* [Core Library](library.md)
