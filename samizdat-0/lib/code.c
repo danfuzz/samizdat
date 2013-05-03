@@ -22,48 +22,84 @@
  * function registration in the implementation of the primitive `object`.
  */
 typedef struct {
-    /** In-model function value. */
-    zvalue function;
+    /** In-model service function. */
+    zvalue serviceFunction;
+
+    /** In-model yield (return result) function. */
+    zvalue yieldFunction;
 
     /** Arbitrary state value. */
     zvalue state;
 
     /** Busy flag, used to prevent recursion. */
     bool busy;
+
+    /** Most recently yielded value. */
+    zvalue yieldValue;
+
+    /** Yielded flag, used to prevent multi-yield per message. */
+    bool yielded;
 } Object;
 
 /**
- * The C function that is bound by the `object` primitive.
+ * The C function that is the bound in the direct result of an
+ * `object` primitive.
  */
 static zvalue callObject(void *state, zint argCount, const zvalue *args) {
     Object *object = state;
-    zvalue fullArgs[argCount + 1];
+    zvalue fullArgs[argCount + 2];
 
     if (object->busy) {
         die("Attempt to recursively call object.");
     }
 
     object->busy = true;
+    object->yieldValue = NULL;
+    object->yielded = false;
 
-    fullArgs[0] = object->state;
-    memcpy(fullArgs + 1, args, argCount * sizeof(zvalue));
+    fullArgs[0] = object->yieldFunction;
+    fullArgs[1] = object->state;
+    memcpy(fullArgs + 2, args, argCount * sizeof(zvalue));
 
-    zvalue resultMaplet = langCall(object->function, argCount + 1, fullArgs);
-    zvalue result;
+    zvalue newState = langCall(object->serviceFunction, argCount + 2, fullArgs);
 
-    if (resultMaplet == NULL) {
-        result = NULL;
-    } else {
-        zvalue newState = datMapletGet(resultMaplet, STR_STATE);
-        if (newState != NULL) {
-            object->state = newState;
-        }
-
-        result = datMapletGet(resultMaplet, STR_RESULT);
+    if (newState != NULL) {
+        object->state = newState;
     }
 
+    if (!object->yielded) {
+        die("Failure to yield from object.");
+    }
+
+    zvalue result = object->yieldValue;
+
     object->busy = false;
+    object->yieldValue = NULL;
+    object->yielded = false;
+
     return result;
+}
+
+/**
+ * The C function that is bound into yield functions.
+ */
+static zvalue callYield(void *state, zint argCount, const zvalue *args) {
+    requireRange(argCount, 0, 1);
+
+    Object *object = state;
+
+    if (!object->busy) {
+        die("Attempt to yield from inactive object.");
+    } else if (object->yielded) {
+        die("Attempt to double-yield from object.");
+    }
+
+    if (argCount == 1) {
+        object->yieldValue = args[0];
+    }
+
+    object->yielded = true;
+    return NULL;
 }
 
 
@@ -113,9 +149,12 @@ PRIM_IMPL(object) {
     requireExactly(argCount, 2);
 
     Object *object = zalloc(sizeof(Object));
-    object->function = args[0];
+    object->serviceFunction = args[0];
+    object->yieldFunction = langDefineFunction(callYield, object);
     object->state = args[1];
     object->busy = false;
+    object->yieldValue = NULL;
+    object->yielded = false;
 
     return langDefineFunction(callObject, object);
 }

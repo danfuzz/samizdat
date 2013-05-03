@@ -28,36 +28,39 @@ xNth = { state n :: <> (mapletGet state @nth) n };
 xSize = { state :: <> mapletGet state @size };
 
 # Gets the current cursor position.
-doAt = { state :: <> @[@result=(xAt state)] };
+doAt = { yield state :: yield (xAt state) };
 
 # Returns whether the reader is at EOF.
-doEof = { state :: <> @[@result=(ge (xAt state) (xSize state))] };
+doEof = { yield state :: yield (ge (xAt state) (xSize state)) };
 
 # Peeks at the next element without consuming it. Returns void at EOF.
-doPeek = { state ::
+doPeek = { yield state ::
     at = xAt state;
-    <> ifValue { <> xNth state at }
-        { value :: <> @[@result=value] };
+    ifValue { <> xNth state at }
+        { value :: yield value }
+        { yield() }
 };
 
 # Reads the next element, consuming it. Returns void at EOF.
-doRead = { state ::
+doRead = { yield state ::
     at = xAt state;
-    nextState = mapletPut state @at (iadd at @1);
-    <> ifValue { <> xNth state at }
-        { value :: <> @[@result=value @state=nextState] };
+    ifValue { <> xNth state at }
+        { value :: yield value }
+        { yield() };
+
+    <> mapletPut state @at (iadd at @1);
 };
 
 # Resets the cursor to the given value. It is only valid to
 # reset backwards (or no-oply reset to the current cursor).
-doReset = { state resetAt ::
+doReset = { yield state resetAt ::
     at = xAt state;
-    nextState = mapletPut state @at resetAt;
 
     ifTrue { <> or { <> lt resetAt @0 } { <> gt resetAt at } }
         { io0die (format @"Invalid reset value: %Q" resetAt) };
 
-    <> @[@state=nextState]
+    yield();
+    <> mapletPut state @at resetAt;
 };
 
 # Dispatch table.
@@ -70,8 +73,8 @@ READER_DISPATCH = @[
 ];
 
 # Performs method dispatch.
-readerDispatch = { state name rest* ::
-    <> apply (mapletGet READER_DISPATCH name) state rest
+readerDispatch = { yield state name rest* ::
+    <> apply (mapletGet READER_DISPATCH name) yield state rest
 };
 
 # Returns a lookahead-enabled reader. The given argument must be
