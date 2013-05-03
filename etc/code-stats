@@ -52,7 +52,9 @@ function getCount {
         dir='.'
     fi
 
-    wc -l $(find "${dir}" -name "$glob") |
+    wc -l $(find "${dir}" \
+        '(' -type d -name out -prune ')' \
+        -o -name "$glob") |
     awk '
     { count = $1; }
     END { print count; }'
@@ -65,6 +67,8 @@ function getCount {
 
 cd "${baseDir}"
 
+docs="$(getCount '*.md')"
+
 cHeader="$(getCount '*.h' samizdat-0)"
 cCode="$(getCount '*.c' samizdat-0)"
 (( cTotal = cHeader + cCode ))
@@ -74,12 +78,18 @@ sam1Code="$(getCount '*.sam0' samizdat-1)"
 demoCode="$(getCount '*.sam0' demo)"
 (( samTotal = sam0Code + sam1Code + demoCode ))
 
-(( total = cTotal + samTotal ))
+(( codeTotal = cTotal + samTotal ))
+(( total = codeTotal + docs ))
 
-(( per10k = samTotal * 10000 / total ))
+(( per10k = samTotal * 10000 / codeTotal ))
 (( samPercent = per10k / 100 ))
 (( samPercentFrac = per10k % 100 ))
 
+printf '\n'
+
+printf 'Docs\n'
+printf -- '----------------------\n'
+printf '  Docs       %5d\n' "${docs}"
 printf '\n'
 
 printf 'C Code\n'
@@ -100,5 +110,6 @@ printf '\n'
 printf 'Summary\n'
 printf -- '----------------------\n'
 printf '  Total      %5d\n' "${total}"
-printf '  Sam bulk      %2d.%02d%%\n' "${samPercent}" "${samPercentFrac}"
+printf '  Code Total %5d\n' "${codeTotal}"
+printf '  Sam Code %%    %2d.%02d%%\n' "${samPercent}" "${samPercentFrac}"
 printf '\n'
