@@ -36,9 +36,9 @@ or returns void if `notFound` was not supplied.
 <br><br>
 ### In-Language Definitions
 
-#### `stringletCat stringlet rest* <> stringlet`
+#### `stringletCat stringlets* <> stringlet`
 
-Concatenates one or more stringlets together into a single resulting
+Concatenates zero or more stringlets together into a single resulting
 stringlet.
 
 #### `stringletForEach stringlet function <> ~.`
