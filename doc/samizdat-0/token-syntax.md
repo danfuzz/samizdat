@@ -9,15 +9,11 @@ is tokenized by matching the top `file` rule, which results in a
 listlet of all the tokens.
 
 ```
-file ::= token* whitespace* ;
+file ::= (whitespace* token)* whitespace* ;
 # result: @[token*]
 
-token ::=
-    whitespace*
-    (punctuation | integer | string | identifier)
-    whitespace*
-;
-# result: same as the non-whitespace payload.
+token ::= punctuation | integer | string | identifier ;
+# result: same as whichever alternate was picked.
 
 punctuation ::=
     "@@" | # result: [:@"@@":]
