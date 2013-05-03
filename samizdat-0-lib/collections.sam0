@@ -156,7 +156,7 @@ stringletCat = { stringlet rest* ::
 
 # Documented in Samizdat Layer 0 spec.
 stringletForEach = { stringlet function ::
-    <> genericForEach { n :: <> stringletNth listlet n } function
+    <> genericForEach { n :: <> stringletNth stringlet n } function
 };
 
 # Documented in Samizdat Layer 0 spec.
