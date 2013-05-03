@@ -57,6 +57,7 @@ PRIM_FUNC(makeUniqlet);
 PRIM_FUNC(mapletAdd);
 PRIM_FUNC(mapletDel);
 PRIM_FUNC(mapletGet);
+PRIM_FUNC(mapletHasKey);
 PRIM_FUNC(mapletPut);
 PRIM_FUNC(mapletNth);
 PRIM_FUNC(mapletNthKey);

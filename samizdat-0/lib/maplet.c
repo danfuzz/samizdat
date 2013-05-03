@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -37,6 +38,12 @@ PRIM_IMPL(mapletGet) {
     } else {
         return result;
     }
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapletHasKey) {
+    requireExactly(argCount, 2);
+    return constBooleanFromBool(datMapletGet(args[0], args[1]) != NULL);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

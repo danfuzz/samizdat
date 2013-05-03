@@ -27,6 +27,10 @@ the given maplet. If there is no such mapping, then this
 returns the `notFound` value (an arbitrary value) if supplied,
 or returns void if `notFound` was not supplied.
 
+#### `mapletHasKey maplet key <> boolean`
+
+Returns `true` iff the given maplet has a mapping for the given key.
+
 #### `mapletNth maplet n notFound? <> . | ~.`
 
 Returns the `n`th (zero-based) mapping of the given maplet, if `n` is
