@@ -23,7 +23,7 @@ static const char *justDecode(zchar *result,
     }
 
     unsigned char ch = *string;
-    zint value; // Note: zint and not zchar for easier overflow detection.
+    zint value; // `zint` and not `zchar` is for saner overflow detection.
     int extraBytes;
     zint minValue;
 

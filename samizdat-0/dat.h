@@ -20,8 +20,10 @@
  */
 
 /**
- * Possible low-level data types. Note: The enum ordering is the same
- * as the type-based ordering for comparing values. See `datOrder()`.
+ * Possible low-level data types.
+ *
+ * **Note:** The enum ordering is the same as the type-based ordering for
+ * comparing values. See `datOrder()`.
  */
 typedef enum {
     DAT_INTLET = 1,

@@ -78,7 +78,7 @@ static zint mod(zint numerator, zint denominator) {
  * * We need to preserve the sign of the result, since we are simulating
  *   infinite-width integers.
  *
- * *Note:* We limit shifts to 32 bits here, relying on this to be
+ * **Note:** We limit shifts to 32 bits here, relying on this to be
  * meaning-preserving in the face of the `dat` layer's implementation
  * of the 32-bit width restriction on intlets.
  */

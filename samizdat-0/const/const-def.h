@@ -5,7 +5,7 @@
  */
 
 /*
- * Note: This file gets `#include`d multiple times, and so does not
+ * **Note:** This file gets `#include`d multiple times, and so does not
  * have the usual guard macros.
  *
  * `STR(name, "string")` defines a string constant.

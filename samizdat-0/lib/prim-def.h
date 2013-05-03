@@ -5,10 +5,10 @@
  */
 
 /*
- * Note: This file gets `#include`d multiple times, and so does not
- * have the usual guard macros.
- *
  * `PRIM_FUNC(name)` defines a primitive function with the given name.
+ *
+ * **Note:** This file gets `#include`d multiple times, and so does not
+ * have the usual guard macros.
  */
 
 PRIM_FUNC(apply);
