@@ -128,6 +128,11 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
 
     zint index = mapletFind(maplet, key);
     zint size = datSize(maplet);
+
+    if (size == 0) {
+        return mapletFrom1(key, value);
+    }
+
     zvalue result;
 
     if (index >= 0) {

@@ -39,8 +39,11 @@ unset newProg
 # Argument parsing
 #
 
-# Whether to compile for profiling
+# Whether to compile for profiling.
 profile='no'
+
+# Whether to compile with optimiaztions on.
+optimize='no'
 
 while [[ $1 != '' ]]; do
     opt="$1"
@@ -48,8 +51,10 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--profile]"
+        echo "${progName} [--optimize] [--profile]"
         exit
+    elif [[ ${opt} == '--optimize' ]]; then
+        optimize='yes'
     elif [[ ${opt} == '--profile' ]]; then
         profile='yes'
     elif [[ ${opt} =~ ^- ]]; then
@@ -77,6 +82,10 @@ if [[ ${profile} == 'yes' ]]; then
     CC=(cc -pg)
 else
     CC=(cc)
+fi
+
+if [[ ${optimize} == 'yes' ]]; then
+    CC=(${CC[@]} -O3)
 fi
 
 COMPILE_C=("${CC[@]}" -g -c -I"${progDir}")

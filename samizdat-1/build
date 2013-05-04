@@ -36,6 +36,36 @@ unset newProg
 
 
 #
+# Argument parsing
+#
+
+# Options to pass through to samizdat-0 build.
+build0Opts=()
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        echo "${progName} [--optimize] [--profile]"
+        exit
+    elif [[ ${opt} == '--optimize' ]]; then
+        build0Opts+=(${opt})
+    elif [[ ${opt} == '--profile' ]]; then
+        build0Opts+=(${opt})
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        exit 1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+
+#
 # Main script
 #
 
@@ -46,7 +76,7 @@ rm -rf "${OUT}" || exit 1
 mkdir -p "${OUT}" || exit 1
 
 echo 'Build samizdat-0...'
-"${baseDir}/samizdat-0/build" > /dev/null || exit 1
+"${baseDir}/samizdat-0/build" "${build0Opts[@]}" > /dev/null || exit 1
 echo 'Done!'
 echo ''
 

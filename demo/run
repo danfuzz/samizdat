@@ -46,6 +46,9 @@ layer='0'
 # Whether to super-validate. (Slow but useful.)
 validate='no'
 
+# Whether to compile with optimization.
+optimize='no'
+
 # Whether to run with iprofiler (OS X specific profile tool)
 iprofiler='no'
 
@@ -55,7 +58,8 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--sam0 | --sam1] [--iprofile] [--validate]"
+        echo "${progName} [--sam0 | --sam1] [--iprofile] [--optimize]"
+        echo "    [--validate]"
         exit
     elif [[ ${opt} == '--sam0' ]]; then
         layer='0'
@@ -63,6 +67,8 @@ while [[ $1 != '' ]]; do
         layer='1'
     elif [[ ${opt} == '--iprofiler' ]]; then
         iprofiler='yes'
+    elif [[ ${opt} == '--optimize' ]]; then
+        optimize='yes'
     elif [[ ${opt} == '--validate' ]]; then
         validate='yes'
     elif [[ ${opt} =~ ^- ]]; then
@@ -81,13 +87,18 @@ unset opt
 #
 
 opts=()
+buildOpts=()
+
+if [[ ${optimize} == 'yes' ]]; then
+    buildOpts=(--optimize)
+fi
 
 if [[ ${layer} == '0' ]]; then
-    "${baseDir}/samizdat-0/build" > /dev/null
+    "${baseDir}/samizdat-0/build" "${buildOpts[@]}" > /dev/null
     PATH="${PATH}:${baseDir}/out/samizdat-0"
     cmd=("samizdat-0")
 elif [[ ${layer} == '1' ]]; then
-    "${baseDir}/samizdat-1/build" > /dev/null
+    "${baseDir}/samizdat-1/build" "${buildOpts[@]}" > /dev/null
     PATH="${PATH}:${baseDir}/out/samizdat-0:${baseDir}/out/samizdat-1"
     cmd=("samizdat-1")
 else
