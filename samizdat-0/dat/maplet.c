@@ -169,14 +169,11 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
 /* TODO: Documented in header. */
 zvalue datMapletPutArrays(zvalue maplet, zint size,
                           const zvalue *keys, const zvalue *values) {
-    for (zint i = 0; i < size; i++) {
-        maplet = datMapletPut(maplet, keys[i], values[i]);
-    }
-
-    return maplet;
-
-#if 0
     datAssertMaplet(maplet);
+
+    if (size == 1) {
+        return datMapletPut(maplet, keys[0], values[0]);
+    }
 
     zint mapletSize = datSize(maplet);
     zint resultSize = mapletSize + size;
@@ -204,26 +201,22 @@ zvalue datMapletPutArrays(zvalue maplet, zint size,
 
     zint at = 0;
     for (zint i = 0; i < resultSize; i++) {
-        zmapping *m1 = &elems[i];
-
         if (at != i) {
-            elems[at] = *m1;
-            at++;
+            elems[at] = elems[i];
         }
+        at++;
 
         if (i == (resultSize - 1)) {
             break;
         }
 
-        zmapping *m2 = &elems[i + 1];
-        if (datOrder(m1->key, m2->key) == ZSAME) {
+        if (datOrder(elems[i].key, elems[i+1].key) == ZSAME) {
             i++;
         }
     }
 
     result->size = at;
     return result;
-#endif
 }
 
 /* Documented in header. */
