@@ -5,20 +5,22 @@
 #
 # Samizdat Layer 0 tokenizer
 #
+# The following is a near-transliteration of the token grammar in
+# the *Samizdat Layer 0* specification.
+#
 
 # Parses an entire file of tokens.
 parseFile = filterRule
     (seqRule
-        (starRule @token)
+        (starRule
+            (filterRule
+                (seqRule (starRule @whitespace) @token)
+                { result :: <> listletNth result @1 }))
         (starRule @whitespace))
     { result :: <> listletNth result @0 };
 
 # Parses a single token.
-parseToken = filterRule
-    (seqRule
-        (starRule @whitespace)
-        (orRule @punctuation @integer @string @identifier))
-    { result :: <> listletNth result @1 };
+parseToken = orRule @punctuation @integer @string @identifier;
 
 # Parses any of the punctuation characters or character sequences, yielding
 # a token whose type is the stringlet matched.
