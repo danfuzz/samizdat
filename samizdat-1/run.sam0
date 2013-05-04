@@ -69,22 +69,6 @@ makeCoreLibrary = {
     <> mainFunction libraryFiles
 };
 
-# Parses the command-line arguments.
-parseArgs = { args <out> ::
-    <> listletReduce @[@validate=false @args=@[]] args { result arg ::
-        <> ifTrue { <> eq arg @"--validate" }
-            { <> mapletPut result @validate true }
-            {
-                <> ifValue { <> mapletGet result @file }
-                    {
-                        args = listletAppend (mapletGet result @args) arg;
-                        <> mapletPut result @args args
-                    }
-                    { <> mapletPut result @file arg }
-            }
-    }
-};
-
 # Compiles the file named in the first argument in a fresh context,
 # and runs it, passing it an array consisting of its own file path
 # (in standard listlet-of-stringlet form) followed by the rest of the

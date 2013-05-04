@@ -1,0 +1,102 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `parseArgs` function, which parses command-line arguments.
+#
+
+#
+# Grammar:
+#
+# arguments ::= options ("--" wordBreak)? words ;
+# options ::= ((option | error) wordBreak)* ;
+# error ::= "-" ~("\0")+ ;
+# option ::= "--" key value? ;
+# key ::= ~("=" | "\0")+ ;
+# value ::= "=" word ;
+# words ::= (word wordBreak)* ;
+# word ::= ~("\0")* ;
+# wordBreak ::= "\0" ;
+#
+
+# The character @"\0".
+CHAR_0 ::= stringletFromIntlet 0;
+
+parseArguments = filterRule
+    (seqRule
+        @options
+        (charsRule (stringletAdd @"--" CHAR_0))
+        @words)
+    { result ::
+        # TODO
+        <> result
+    };
+
+parseOptions = starRule
+    (filterRule
+        (seqRule
+            (orRule @option @error)
+            wordBreak)
+        { result :: <> listletNth result @0 });
+
+parseError = filterRule
+    (seqRule
+        (charsRule @"-")
+        (plusRule (notCharSetRule CHAR_0)))
+    { result ::
+        elems = apply listletPrepend result;
+        value = apply stringletCat elems;
+        <> [:@error value:]
+    };
+
+parseOption = filterRule
+    (seqRule (charsRule @"--") @key (questRule @value))
+    { result ::
+        key = listletNth result @0;
+        valueHolder = listletNth result @1;
+        <> ifValue { <> listletNth valueHolder @0 }
+            { value :: <> [:@option @[@key=key @value=value]:] }
+            { <> [:@option @[@value=value]:] }
+    };
+
+parseKey = filterRule
+    (plusRule
+        (notCharSetRule (stringletAdd @"=" CHAR_0)))
+    { result :: <> apply stringletCat result };
+
+parseValue = filterRule
+    (seqRule (charsRule @"=") @word)
+    { result :: <> listletNth result @1 };
+
+parseWords = starRule
+    (filterRule
+        (seqRule @word @wordBreak)
+        { result :: <> listletNth result @0 });
+
+parseWord = filterRule
+    (starRule (notCharSetRule CHAR_0))
+    { result :: <> apply stringletCat result };
+
+parseWordBreak = charsRule CHAR_0;
+
+# Parses the command-line arguments. Starts by appending all the
+# arguments-as-given together with a "\0" at the end of each. Then
+# it uses the parser engine to split them back apart.
+parseArgs = { args <out> ::
+    # TODO: This is the old implementation.
+    <> listletReduce @[@validate=false @args=@[]] args { result arg ::
+        <> ifTrue { <> eq arg @"--validate" }
+            { <> mapletPut result @validate true }
+            {
+                <> ifValue { <> mapletGet result @file }
+                    {
+                        args = listletAppend (mapletGet result @args) arg;
+                        <> mapletPut result @args args
+                    }
+                    { <> mapletPut result @file arg }
+            }
+    }
+};
+
+<> @[@parseArgs = parseArgs]
