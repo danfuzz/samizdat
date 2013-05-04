@@ -24,8 +24,6 @@ static zvalue allocMaplet(zint size) {
  * Gets the elements array from a maplet.
  */
 static zmapping *mapletElems(zvalue maplet) {
-    datAssertMaplet(maplet);
-
     return ((DatMaplet *) maplet)->elems;
 }
 
@@ -156,11 +154,22 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
 
 /* Documented in header. */
 zvalue datMapletAdd(zvalue maplet1, zvalue maplet2) {
+    datAssertMaplet(maplet1);
+    datAssertMaplet(maplet2);
+
+    zint size1 = datSize(maplet1);
+    zint size2 = datSize(maplet2);
+
+    if (size1 == 0) {
+        return maplet2;
+    } else if (size2 == 0) {
+        return maplet1;
+    }
+
     zvalue result = maplet1;
-    zint size = datSize(maplet2);
     zmapping *elems = mapletElems(maplet2);
 
-    for (zint i = 0; i < size; i++) {
+    for (zint i = 0; i < size2; i++) {
         result = datMapletPut(result, elems[i].key, elems[i].value);
     }
 
