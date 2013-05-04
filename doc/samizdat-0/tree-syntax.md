@@ -39,7 +39,7 @@ formal ::= @identifier (@"*" | @"?")? ;
 yieldDef ::= @"<" @identifier @">" ;
 # result: <identifier.value>
 
-yield ::= @"<" @">" expression ";"* ;
+yield ::= @"<>" expression ";"* ;
 # result: <expression>
 
 nonlocalExit ::= @"<" @identifier @">" expression? ";"* ;
