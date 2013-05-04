@@ -48,8 +48,15 @@ nonlocalExit ::= @"<" @identifier @">" expression? @";"* ;
 statement ::= varDef | expression ;
 # result: <varDef> | <expression>
 
-expression ::= call | atom ;
+expression ::= call | unary ;
 # result: <same as whatever was parsed>
+
+unary ::= unaryCall | atom ;
+# result: <same as whatever was parsed>
+
+unaryCall ::= atom (@"(" @")")+ ;
+# result: (... (makeCall (makeCall atom))
+# Note: One `makeCall` per pair of parens.
 
 atom ::=
     varRef | intlet | stringlet |
@@ -75,8 +82,8 @@ stringlet ::= @"@" (@string | @identifier);
 emptyListlet ::= @"@" @"[" @"]" ;
 # result: [:@literal @[]:]
 
-listlet ::= @"@" @"[" atom+ @"]" ;
-# result: makeCall [:@varRef @makeListlet:] <atom>+
+listlet ::= @"@" @"[" unary+ @"]" ;
+# result: makeCall [:@varRef @makeListlet:] <unary>+
 
 emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 # result: [:@literal @[=]:]
@@ -84,17 +91,17 @@ emptyMaplet ::= @"@" @"[" @"=" @"]" ;
 maplet ::= @"@" @"[" binding+ @"]" ;
 # result: makeCall [:@varRef @makeMaplet:] (<binding key> <binding value>)+
 
-binding ::= atom @"=" atom ;
-# result: @[<key atom> <value atom>]
+binding ::= unary @"=" unary ;
+# result: @[<key unary> <value unary>]
 
 uniqlet ::= @"@@";
 # result: makeCall [:@varRef @makeUniqlet:]
 
-highlet ::= @"[" @":" atom atom? @":" @"]" ;
-# result: makeCall [:@varRef @makeHighlet:] <type atom> <value atom>?
+highlet ::= @"[" @":" unary unary? @":" @"]" ;
+# result: makeCall [:@varRef @makeHighlet:] <type unary> <value unary>?
 
-call ::= atom (@"(" @")" | atom+) ;
-# result: makeCall <function atom> <argument atom+>
+call ::= unary unary+ ;
+# result: makeCall <function unary> <argument unary>+
 
 # Function that returns an appropriately-formed `call` node.
 makeCall = { function actuals* ::
