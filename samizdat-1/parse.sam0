@@ -26,13 +26,7 @@ makeCall = { function actuals* ::
 
 # Parses a `call` node.
 parseCall = filterRule
-    (seqRule
-        @unary
-        (orRule
-            (plusRule @unary)
-            (filterRule
-                (seqRule [:@"(":] [:@")":])
-                { <> @[] })))
+    (seqRule @unary (plusRule @unary))
     { result ::
         <> apply makeCall (listletNth result @0) (listletNth result @1)
     };
