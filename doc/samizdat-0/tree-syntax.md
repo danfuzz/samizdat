@@ -39,10 +39,10 @@ formal ::= @identifier (@"*" | @"?")? ;
 yieldDef ::= @"<" @identifier @">" ;
 # result: <identifier.value>
 
-yield ::= @"<" @">" expression ";"* ;
+yield ::= @"<>" expression @";"* ;
 # result: <expression>
 
-nonlocalExit ::= @"<" @identifier @">" expression? ";"* ;
+nonlocalExit ::= @"<" @identifier @">" expression? @";"* ;
 # result: makeCall <identifier> <expression>?
 
 statement ::= varDef | expression ;
