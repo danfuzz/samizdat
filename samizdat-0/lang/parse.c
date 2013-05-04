@@ -188,29 +188,13 @@ DEF_PARSE(unaryPlus) {
 }
 
 /**
- * Parses `@"(" @")"` as part of parsing a `call` node.
- */
-DEF_PARSE(call1) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OPAREN);
-    MATCH_OR_REJECT(CH_CPAREN);
-
-    return EMPTY_LISTLET;
-}
-
-/**
  * Parses a `call` node.
  */
 DEF_PARSE(call) {
     MARK();
 
     zvalue function = PARSE_OR_REJECT(unary);
-
-    zvalue actuals = PARSE(call1);
-    if (actuals == NULL) {
-        actuals = PARSE_OR_REJECT(unaryPlus);
-    }
+    zvalue actuals = PARSE_OR_REJECT(unaryPlus);
 
     return makeCall(function, actuals);
 }
@@ -548,7 +532,7 @@ DEF_PARSE(nonlocalExit) {
 }
 
 /**
- * Helper for `formal`: Parses `(@"?" | @"*")?`. Returns either the
+ * Helper for `formal`: Parses `([:@"?":] | [:@"*":])?`. Returns either the
  * parsed token or `NULL` to indicate that neither was present.
  */
 DEF_PARSE(formal1) {
@@ -595,7 +579,7 @@ DEF_PARSE(formals) {
 }
 
 /**
- * Helper for `program`: Parses `(formals? yieldDef? @"::")`. Returns
+ * Helper for `program`: Parses `(formals? yieldDef? [:@"::":])`. Returns
  * a maplet of bindings to include in the final result, or `NULL` if
  * there were no valid declarations.
  */
