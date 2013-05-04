@@ -46,18 +46,23 @@ layer='0'
 # Whether to super-validate. (Slow but useful.)
 validate='no'
 
+# Whether to run with iprofiler (OS X specific profile tool)
+iprofiler='no'
+
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--sam0 | --sam1] [--validate]"
+        echo "${progName} [--sam0 | --sam1] [--iprofile] [--validate]"
         exit
     elif [[ ${opt} == '--sam0' ]]; then
         layer='0'
     elif [[ ${opt} == '--sam1' ]]; then
         layer='1'
+    elif [[ ${opt} == '--iprofiler' ]]; then
+        iprofiler='yes'
     elif [[ ${opt} == '--validate' ]]; then
         validate='yes'
     elif [[ ${opt} =~ ^- ]]; then
@@ -80,18 +85,27 @@ opts=()
 if [[ ${layer} == '0' ]]; then
     "${baseDir}/samizdat-0/build" > /dev/null
     PATH="${PATH}:${baseDir}/out/samizdat-0"
-    cmd="samizdat-0"
+    cmd=("samizdat-0")
 elif [[ ${layer} == '1' ]]; then
     "${baseDir}/samizdat-1/build" > /dev/null
     PATH="${PATH}:${baseDir}/out/samizdat-0:${baseDir}/out/samizdat-1"
-    cmd="samizdat-1"
+    cmd=("samizdat-1")
 else
     echo 'Unknown layer.' 1>&2
     exit 1
+fi
+
+if [[ ${iprofiler} == 'yes' ]]; then
+    cmd=("$(which samizdat-0)")
+    if [[ ${layer} == '1' ]]; then
+        cmd=("${cmd[@]}" "${baseDir}/out/samizdat-1/main.sam0")
+    fi
+    # May also want to use the -allocations option.
+    cmd=(iprofiler -T 20s -timeprofiler "${cmd[@]}")
 fi
 
 if [[ ${validate} == 'yes' ]]; then
     opts=(--validate)
 fi
 
-"${cmd}" "${opts[@]}" "${progDir}/main.sam0" "$@"
+"${cmd[@]}" "${opts[@]}" "${progDir}/main.sam0" "$@"
