@@ -26,13 +26,7 @@ makeCall = { function actuals* ::
 
 # Parses a `call` node.
 parseCall = filterRule
-    (seqRule
-        @atom
-        (orRule
-            (plusRule @atom)
-            (filterRule
-                (seqRule [:@"(":] [:@")":])
-                { <> @[] })))
+    (seqRule @unary (plusRule @unary))
     { result ::
         <> apply makeCall (listletNth result @0) (listletNth result @1)
     };
@@ -42,8 +36,8 @@ parseHighlet = filterRule
     (seqRule
         [:@"[":]
         [:@":":]
-        @atom
-        (questRule @atom)
+        @unary
+        (questRule @unary)
         [:@":":]
         [:@"]":])
     { result ::
@@ -59,7 +53,7 @@ parseUniqlet = filterRule
 
 # Parses a `binding` node.
 parseBinding = filterRule
-    (seqRule @atom [:@"=":] @atom)
+    (seqRule @unary [:@"=":] @unary)
     { result ::
         <> @[(listletNth result @0) (listletNth result @2)]
     };
@@ -79,7 +73,7 @@ parseEmptyMaplet = filterRule
 
 # Parses a `listlet` node.
 parseListlet = filterRule
-    (seqRule [:@"@":] [:@"[":] (plusRule @atom) [:@"]":])
+    (seqRule [:@"@":] [:@"[":] (plusRule @unary) [:@"]":])
     { result ::
         <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
     };
@@ -130,8 +124,23 @@ parseAtom = orRule @varRef @intlet @stringlet
     @emptyListlet @listlet @emptyMaplet @maplet
     @uniqlet @highlet @function @parenExpression;
 
+# Parses a `unaryCall` node.
+parseUnaryCall = filterRule
+    (seqRule
+        @atom
+        (plusRule (seqRule [:@"(":] [:@")":])))
+    { result ::
+        atom = listletNth result @0;
+        calls = listletNth result @1;
+        <> listletReduce atom calls
+            { result :: <> makeCall result }
+    };
+
+# Parses a `unary` node.
+parseUnary = orRule @unaryCall @atom;
+
 # Parses an `expression` node.
-parseExpression = orRule @call @atom;
+parseExpression = orRule @call @unary;
 
 # Parses a `statement` node.
 parseStatement = orRule @varDef @expression;
@@ -273,6 +282,8 @@ RULES = @[
     @program = parseProgram
     @statement = parseStatement
     @stringlet = parseStringlet
+    @unary = parseUnary
+    @unaryCall = parseUnaryCall
     @uniqlet = parseUniqlet
     @varDef = parseVarDef
     @varRef = parseVarRef

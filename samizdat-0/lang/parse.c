@@ -161,25 +161,25 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     REJECT_IF(tempResult == NULL)
 
 /* Defined below. */
-DEF_PARSE(atom);
+DEF_PARSE(unary);
 DEF_PARSE(expression);
 DEF_PARSE(function);
 
 /**
- * Parses `atom+`. Returns a listlet of parsed expressions.
+ * Parses `unary+`. Returns a listlet of parsed expressions.
  */
-DEF_PARSE(atomPlus) {
+DEF_PARSE(unaryPlus) {
     MARK();
 
     zvalue result = EMPTY_LISTLET;
 
     for (;;) {
-        zvalue atom = PARSE(atom);
-        if (atom == NULL) {
+        zvalue unary = PARSE(unary);
+        if (unary == NULL) {
             break;
         }
 
-        result = datListletAppend(result, atom);
+        result = datListletAppend(result, unary);
     }
 
     REJECT_IF(datSize(result) == 0);
@@ -205,11 +205,11 @@ DEF_PARSE(call1) {
 DEF_PARSE(call) {
     MARK();
 
-    zvalue function = PARSE_OR_REJECT(atom);
+    zvalue function = PARSE_OR_REJECT(unary);
 
     zvalue actuals = PARSE(call1);
     if (actuals == NULL) {
-        actuals = PARSE_OR_REJECT(atomPlus);
+        actuals = PARSE_OR_REJECT(unaryPlus);
     }
 
     return makeCall(function, actuals);
@@ -223,8 +223,8 @@ DEF_PARSE(highlet) {
 
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_COLON);
-    zvalue innerType = PARSE_OR_REJECT(atom);
-    zvalue innerValue = PARSE(atom); // It's okay for this to be NULL.
+    zvalue innerType = PARSE_OR_REJECT(unary);
+    zvalue innerValue = PARSE(unary); // It's okay for this to be NULL.
     MATCH_OR_REJECT(CH_COLON);
     MATCH_OR_REJECT(CH_CSQUARE);
 
@@ -254,9 +254,9 @@ DEF_PARSE(uniqlet) {
 DEF_PARSE(binding) {
     MARK();
 
-    zvalue key = PARSE_OR_REJECT(atom);
+    zvalue key = PARSE_OR_REJECT(unary);
     MATCH_OR_REJECT(CH_EQUAL);
-    zvalue value = PARSE_OR_REJECT(atom);
+    zvalue value = PARSE_OR_REJECT(unary);
 
     return datListletAppend(datListletAppend(EMPTY_LISTLET, key), value);
 }
@@ -309,10 +309,10 @@ DEF_PARSE(listlet) {
 
     MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
-    zvalue atoms = PARSE_OR_REJECT(atomPlus);
+    zvalue unaries = PARSE_OR_REJECT(unaryPlus);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_LISTLET), atoms);
+    return makeCall(makeVarRef(STR_MAKE_LISTLET), unaries);
 }
 
 /**
@@ -424,13 +424,62 @@ DEF_PARSE(atom) {
 }
 
 /**
+ * Helper for `unaryCall`: Parses `[:@"(":] [:@")":]`.
+ */
+DEF_PARSE(unaryCall1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OPAREN);
+    MATCH_OR_REJECT(CH_CPAREN);
+
+    return EMPTY_LISTLET; // Return an arbitrary non-`NULL` value.
+}
+
+/**
+ * Parses a `unaryCall` node.
+ */
+DEF_PARSE(unaryCall) {
+    MARK();
+
+    zvalue result = PARSE_OR_REJECT(atom);
+    bool any = false;
+
+    for (;;) {
+        if (PARSE(unaryCall1) == NULL) {
+            break;
+        }
+
+        result = makeCall(result, NULL);
+        any = true;
+    }
+
+    if (!any) {
+        REJECT();
+    }
+
+    return result;
+}
+
+/**
+ * Parses a `unary` node.
+ */
+DEF_PARSE(unary) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(unaryCall); }
+    if (result == NULL) { result = PARSE(atom); }
+
+    return result;
+}
+
+/**
  * Parses an `expression` node.
  */
 DEF_PARSE(expression) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(call); }
-    if (result == NULL) { result = PARSE(atom); }
+    if (result == NULL) { result = PARSE(unary); }
 
     return result;
 }
