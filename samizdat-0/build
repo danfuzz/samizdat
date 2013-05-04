@@ -36,6 +36,34 @@ unset newProg
 
 
 #
+# Argument parsing
+#
+
+# Whether to compile for profiling
+profile='no'
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        echo "${progName} [--profile]"
+        exit
+    elif [[ ${opt} == '--profile' ]]; then
+        profile='yes'
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        exit 1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+
+#
 # Main script
 #
 
@@ -45,9 +73,14 @@ OUT="${OUT:-${baseDir}/out}/${projectName}"
 rm -rf "${OUT}" || exit 1
 mkdir -p "${OUT}" || exit 1
 
-COMPILE_C=(cc -g -c -I"${progDir}")
-LINK_BIN=(cc -g)
+if [[ ${profile} == 'yes' ]]; then
+    CC=(cc -pg)
+else
+    CC=(cc)
+fi
 
+COMPILE_C=("${CC[@]}" -g -c -I"${progDir}")
+LINK_BIN=("${CC[@]}" -g)
 cd "${progDir}"
 
 C_SOURCES=($(find . -name '*.c'))
