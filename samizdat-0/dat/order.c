@@ -12,6 +12,38 @@
  */
 
 /* Documented in header. */
+bool datEq(zvalue v1, zvalue v2) {
+    if (v1 == v2) {
+        return true;
+    }
+
+    ztype t1 = datType(v1);
+    ztype t2 = datType(v2);
+
+    if (t1 != t2) {
+        return false;
+    }
+
+    zint size1 = datSize(v1);
+    zint size2 = datSize(v2);
+
+    if (size1 != size2) {
+        return false;
+    }
+
+    switch (t1) {
+        case DAT_INTLET:    return datIntletEq(v1, v2);
+        case DAT_STRINGLET: return datStringletEq(v1, v2);
+        case DAT_LISTLET:   return datListletEq(v1, v2);
+        case DAT_MAPLET:    return datMapletEq(v1, v2);
+        case DAT_UNIQLET:   return false;
+        case DAT_HIGHLET:   return datHighletEq(v1, v2);
+    }
+
+    die("Invalid type (shouldn't happen).");
+}
+
+/* Documented in header. */
 zorder datOrder(zvalue v1, zvalue v2) {
     if (v1 == v2) {
         return ZSAME;

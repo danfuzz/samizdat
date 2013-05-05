@@ -429,6 +429,13 @@ void datHighletAssertType(zvalue highlet, zvalue type);
  */
 
 /**
+ * Compares two values for equality. This exists in addition to
+ * `datOrder`, because it is possible for this function run much
+ * quicker in the not-equal case.
+ */
+bool datEq(zvalue v1, zvalue v2);
+
+/**
  * Compares two values, providing a full ordering. Returns one of the
  * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.

@@ -143,32 +143,57 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes);
 bool datHasNth(zvalue value, zint n);
 
 /**
- * Compares intlets.
+ * Compares intlets for equality. Only called when the sizes are the same.
+ */
+bool datIntletEq(zvalue v1, zvalue v2);
+
+/**
+ * Compares intlets for order.
  */
 zorder datIntletOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares stringlets.
+ * Compares stringlets for equality. Only called when the sizes are the same.
+ */
+bool datStringletEq(zvalue v1, zvalue v2);
+
+/**
+ * Compares stringlets for order.
  */
 zorder datStringletOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares listlets.
+ * Compares listlets for equality. Only called when the sizes are the same.
+ */
+bool datListletEq(zvalue v1, zvalue v2);
+
+/**
+ * Compares listlets for order.
  */
 zorder datListletOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares maplets.
+ * Compares maplets for equality. Only called when the sizes are the same.
+ */
+bool datMapletEq(zvalue v1, zvalue v2);
+
+/**
+ * Compares maplets for order.
  */
 zorder datMapletOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares uniqlets.
+ * Compares uniqlets for order.
  */
 zorder datUniqletOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares highlets.
+ * Compares highlets for equality. Only called when the sizes are the same.
+ */
+bool datHighletEq(zvalue v1, zvalue v2);
+
+/**
+ * Compares highlets for order.
  */
 zorder datHighletOrder(zvalue v1, zvalue v2);
 
