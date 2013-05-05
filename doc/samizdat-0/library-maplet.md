@@ -75,13 +75,6 @@ checking for the existence of `key` in the original.
 <br><br>
 ### In-Language Definitions
 
-#### `mapletCat maplets* <> maplet`
-
-Concatenates zero or more maplets together into a single resulting
-maplet. If there are any duplicate keys among the arguments, then
-value associated with the last argument in which that key appears
-is the value that "wins" in the final result.
-
 #### `mapletForEach maplet function <> ~.`
 
 Calls the given function for each mapping in the given maplet. The

@@ -59,11 +59,6 @@ listlet. If not, it is an error (terminating the runtime).
 Returns a listlet consisting of the elements of the given
 listlet argument followed by the given additional value.
 
-#### `listletCat listlets* <> listlet`
-
-Concatenates zero or more listlets together into a single resulting
-listlet.
-
 #### `listletForEach listlet function <> ~.`
 
 Calls the given function on each element of the given listlet.
