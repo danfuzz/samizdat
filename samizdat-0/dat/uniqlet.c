@@ -113,11 +113,3 @@ void *datUniqletGetValue(zvalue uniqlet, void *key) {
     return uniqletInfo(uniqlet)->value;
 }
 
-/* Documented in header. */
-void datUniqletSetValue(zvalue uniqlet, void *key, void *value) {
-    if (!datUniqletHasKey(uniqlet, key)) {
-        die("Wrong uniqlet key for set.");
-    }
-
-    uniqletInfo(uniqlet)->value = value;
-}
