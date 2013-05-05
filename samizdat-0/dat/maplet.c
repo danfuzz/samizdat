@@ -6,6 +6,7 @@
 
 #include "impl.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 
@@ -67,6 +68,14 @@ static zint mapletFind(zvalue maplet, zvalue key) {
     // represented.
 
     return ~min;
+}
+
+/**
+ * Mapping comparison function, passed to standard library sorting
+ * functions.
+ */
+static int mappingOrder(const void *m1, const void *m2) {
+    return datOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
 
@@ -158,6 +167,48 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
 }
 
 /* Documented in header. */
+zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings) {
+    datAssertMaplet(maplet);
+
+    if (size == 1) {
+        return datMapletPut(maplet, mappings[0].key, mappings[0].value);
+    }
+
+    zint mapletSize = datSize(maplet);
+    zint resultSize = mapletSize + size;
+    zvalue result = allocMaplet(resultSize);
+    zmapping *elems = mapletElems(result);
+
+    // Add all the mappings to the result, and sort it using mergesort.
+    // Mergesort is stable and operates best on sorted data, and as it
+    // happens the starting maplet is sorted.
+
+    memcpy(elems, mapletElems(maplet), mapletSize * sizeof(zmapping));
+    memcpy(&elems[mapletSize], mappings, size * sizeof(zmapping));
+    mergesort(elems, resultSize, sizeof(zmapping), mappingOrder);
+
+    // Remove all but the last of any sequence of equal-keys mappings.
+    // The last one is preferred, since by construction that's the last
+    // of any equal keys from the newly-added mappings.
+
+    zint at = 1;
+    for (zint i = 1; i < resultSize; i++) {
+        if (datOrder(elems[i].key, elems[at-1].key) == ZSAME) {
+            at--;
+        }
+
+        if (at != i) {
+            elems[at] = elems[i];
+        }
+
+        at++;
+    }
+
+    result->size = at;
+    return result;
+}
+
+/* Documented in header. */
 zvalue datMapletAdd(zvalue maplet1, zvalue maplet2) {
     datAssertMaplet(maplet1);
     datAssertMaplet(maplet2);
@@ -171,14 +222,7 @@ zvalue datMapletAdd(zvalue maplet1, zvalue maplet2) {
         return maplet1;
     }
 
-    zvalue result = maplet1;
-    zmapping *elems = mapletElems(maplet2);
-
-    for (zint i = 0; i < size2; i++) {
-        result = datMapletPut(result, elems[i].key, elems[i].value);
-    }
-
-    return result;
+    return datMapletAddArray(maplet1, size2, mapletElems(maplet2));
 }
 
 /* Documented in header. */

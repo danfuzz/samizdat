@@ -41,6 +41,14 @@ typedef enum {
  */
 typedef struct DatValue *zvalue;
 
+/**
+ * Arbitrary (key, value) mapping.
+ */
+typedef struct {
+    zvalue key;
+    zvalue value;
+} zmapping;
+
 
 /*
  * Basic Functions
@@ -322,6 +330,15 @@ zvalue datMapletNthValue(zvalue maplet, zint n);
  * existing mapping.
  */
 zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value);
+
+/**
+ * Gets the maplet resulting from putting the all the given mappings
+ * into the given maplet, in the order given (so, in particular, higher-index
+ * mappings take precedence over the lower-index mappings, when keys match).
+ * The effect is identical to calling a chain of `datMapletPut()`s on each
+ * of the mappings in order.
+ */
+zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings);
 
 /**
  * Combines the bindings of the two given maplets into a new maplet.
