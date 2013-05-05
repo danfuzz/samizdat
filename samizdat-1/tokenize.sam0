@@ -72,7 +72,7 @@ parseString = filterRule
         (starRule parseString1)
         (charsRule @"\""))
     { result ::
-        value = apply stringletCat (listletNth result @1);
+        value = apply stringletAdd (listletNth result @1);
         <> [:@string value:]
     };
 
@@ -91,7 +91,7 @@ parseIdentifier = filterRule
     { result ::
         value = stringletAdd
             (listletNth result @0)
-            (apply stringletCat (listletNth result @1));
+            (apply stringletAdd (listletNth result @1));
         <> [:@identifier value:]
     };
 
@@ -124,7 +124,7 @@ readLine = filterRule
     (seqRule
         (starRule (notCharSetRule @"\n"))
         (questRule (charsRule @"\n")))
-    { result :: <> apply stringletCat (listletNth result @0) };
+    { result :: <> apply stringletAdd (listletNth result @0) };
 
 # Tokenizes the given string, using Samizdat Layer 0 token syntax.
 # Returns a listlet of tokens.

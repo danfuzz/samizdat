@@ -75,12 +75,6 @@ listletAppend = { listlet value ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-listletCat = { listlets* ::
-    <> listletReduce @[] listlets
-        { reduction value :: <> listletAdd reduction value }
-};
-
-# Documented in Samizdat Layer 0 spec.
 listletForEach = { listlet function ::
     <> genericForEach { n :: <> listletNth listlet n } function
 };
@@ -110,12 +104,6 @@ mapletReduce = { base maplet function ::
                 (mapletNthValue mapping @0)
                 (mapletNthKey mapping @0)
         }
-};
-
-# Documented in Samizdat Layer 0 spec.
-mapletCat = { maplets* ::
-    <> listletReduce @[=] maplets
-        { reduction value :: <> mapletAdd reduction value }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -149,12 +137,6 @@ stringletReduce = { base stringlet function ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-stringletCat = { stringlets* ::
-    <> listletReduce @"" stringlets
-        { reduction value :: <> stringletAdd reduction value }
-};
-
-# Documented in Samizdat Layer 0 spec.
 stringletForEach = { stringlet function ::
     <> genericForEach { n :: <> stringletNth stringlet n } function
 };
@@ -171,16 +153,13 @@ stringletMap = { stringlet function ::
 
 <> @[
     @listletAppend = listletAppend
-    @listletCat = listletCat
     @listletForEach = listletForEach
     @listletMap = listletMap
     @listletPrepend = listletPrepend
     @listletReduce = listletReduce
-    @mapletCat = mapletCat
     @mapletForEach = mapletForEach
     @mapletMap = mapletMap
     @mapletReduce = mapletReduce
-    @stringletCat = stringletCat
     @stringletForEach = stringletForEach
     @stringletMap = stringletMap
     @stringletReduce = stringletReduce

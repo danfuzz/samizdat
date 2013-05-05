@@ -29,7 +29,7 @@ LIBRARY_FILES ::
 readLibraryFile = { name ::
     <> ifValue { <> mapletGet LIBRARY_FILES name }
         { result :: <> result }
-        { io0Die (stringletCat @"No such core library file: " name) }
+        { io0Die (stringletAdd @"No such core library file: " name) }
 };
 
 # Loads the named library file in the given context, returning a maplet

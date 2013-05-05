@@ -138,6 +138,15 @@ zvalue datListletAdd(zvalue listlet1, zvalue listlet2) {
     datAssertListlet(listlet1);
     datAssertListlet(listlet2);
 
+    zint size1 = datSize(listlet1);
+    zint size2 = datSize(listlet2);
+
+    if (size1 == 0) {
+        return listlet2;
+    } else if (size2 == 0) {
+        return listlet1;
+    }
+
     return listletFrom(datSize(listlet1), listletElems(listlet1), NULL,
                        datSize(listlet2), listletElems(listlet2));
 }
