@@ -13,10 +13,10 @@ Given a single-character stringlet, returns the character code
 of its sole character, as an intlet. It is an error (terminating
 the runtime) if `stringlet` is not a stringlet of size 1.
 
-#### `stringletAdd stringlet1 stringlet2 <> stringlet`
+#### `stringletAdd stringlets* <> stringlet`
 
 Returns a stringlet consisting of the concatenation of the contents
-of the two argument stringlets, in argument order.
+of all the argument stringlets, in argument order.
 
 #### `stringletFromIntlet intlet <> stringlet`
 
@@ -35,11 +35,6 @@ or returns void if `notFound` was not supplied.
 
 <br><br>
 ### In-Language Definitions
-
-#### `stringletCat stringlets* <> stringlet`
-
-Concatenates zero or more stringlets together into a single resulting
-stringlet.
 
 #### `stringletForEach stringlet function <> ~.`
 

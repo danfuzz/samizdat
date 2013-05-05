@@ -17,8 +17,13 @@
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapletAdd) {
-    requireExactly(argCount, 2);
-    return datMapletAdd(args[0], args[1]);
+    zvalue result = EMPTY_MAPLET;
+
+    for (zint i = 0; i < argCount; i++) {
+        result = datMapletAdd(result, args[i]);
+    }
+
+    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

@@ -7,11 +7,11 @@ Maplets
 <br><br>
 ### Primitive Definitions
 
-#### `mapletAdd maplet1 maplet2 <> maplet`
+#### `mapletAdd maplets* <> maplet`
 
 Returns a maplet consisting of the combination of the mappings of the
-two argument maplets. For any keys in common between the two maplets,
-the second argument's value is the one that ends up in the result.
+argument maplets. For any keys in common between the maplets,
+the lastmost argument's value is the one that ends up in the result.
 
 #### `mapletDel maplet key <> maplet`
 
@@ -74,13 +74,6 @@ checking for the existence of `key` in the original.
 
 <br><br>
 ### In-Language Definitions
-
-#### `mapletCat maplets* <> maplet`
-
-Concatenates zero or more maplets together into a single resulting
-maplet. If there are any duplicate keys among the arguments, then
-value associated with the last argument in which that key appears
-is the value that "wins" in the final result.
 
 #### `mapletForEach maplet function <> ~.`
 

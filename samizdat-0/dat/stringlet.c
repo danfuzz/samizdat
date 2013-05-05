@@ -84,6 +84,13 @@ zvalue datStringletAdd(zvalue str1, zvalue str2) {
 
     zint size1 = datSize(str1);
     zint size2 = datSize(str2);
+
+    if (size1 == 0) {
+        return str2;
+    } else if (size2 == 0) {
+        return str1;
+    }
+
     zvalue result = allocStringlet(size1 + size2);
 
     memcpy(stringletElems(result), stringletElems(str1),

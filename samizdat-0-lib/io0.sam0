@@ -49,7 +49,7 @@ resolveLinks = { sandboxDirectory path ::
 # Documented in Samizdat Layer 0 spec.
 io0SandboxedReader = { directory ::
     <> { path ::
-        fullPath = resolveLinks directory (listletCat directory path);
+        fullPath = resolveLinks directory (listletAdd directory path);
         <> io0ReadFileUtf8 fullPath;
     }
 };
