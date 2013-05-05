@@ -41,6 +41,14 @@ typedef enum {
  */
 typedef struct DatValue *zvalue;
 
+/**
+ * Arbitrary (key, value) mapping.
+ */
+typedef struct {
+    zvalue key;
+    zvalue value;
+} zmapping;
+
 
 /*
  * Basic Functions
@@ -327,6 +335,15 @@ zvalue datMapletPutArrays(zvalue maplet, zint size,
                           const zvalue *keys, const zvalue *values);
 
 /**
+ * Gets the maplet resulting from putting the all the given mappings
+ * into the given maplet, in the order given (so, in particular, higher-index
+ * mappings take precedence over the lower-index mappings, when keys match).
+ * The effect is identical to calling a chain of `datMapletPut()`s on each
+ * of the mappings in order.
+ */
+zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings);
+
+/**
  * Combines the bindings of the two given maplets into a new maplet.
  * For overlapping keys between the two, the second argument "wins".
  */
@@ -375,12 +392,6 @@ bool datUniqletHasKey(zvalue uniqlet, void *key);
  * the uniqlet's key is as given.
  */
 void *datUniqletGetValue(zvalue uniqlet, void *key);
-
-/**
- * Sets the value associated with the given uniqlet as given,
- * asserting that the uniqlet's key is as given.
- */
-void datUniqletSetValue(zvalue uniqlet, void *key, void *value);
 
 
 /*

@@ -14,7 +14,7 @@
 static void *functionKey = &functionKey;
 
 /**
- * Representation of a function in a registry.
+ * Representation of an in-language function.
  */
 typedef struct {
     /** The low-level callable function. */
