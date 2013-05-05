@@ -41,6 +41,14 @@ typedef enum {
  */
 typedef struct DatValue *zvalue;
 
+/**
+ * Arbitrary (key, value) mapping.
+ */
+typedef struct {
+    zvalue key;
+    zvalue value;
+} zmapping;
+
 
 /*
  * Basic Functions
