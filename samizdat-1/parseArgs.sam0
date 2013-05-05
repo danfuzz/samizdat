@@ -33,7 +33,15 @@ parseArguments = filterRule
         words = listletNth result @2;
         ifTrue { <> mapletGet optsErrors @errors }
             { io0Die @"Trouble with options." };
-        <> @[(mapletGet optsErrors @options) words];
+        ifTrue { <> eq (lowSize words) @0 }
+            { io0Die @"Missing file name." };
+        fileName = listletNth words @0;
+        args = listletDelNth words @0;
+        <> @[
+            @options = (mapletGet optsErrors @options)
+            @file = fileName
+            @args = args
+        ]
     };
 
 parseOptions = filterRule
@@ -106,7 +114,10 @@ RULES = @[
     @words = parseWords
 ];
 
-parseArgsNew = { args ::
+# Parses the command-line arguments. Starts by appending all the
+# arguments-as-given together with a "\0" at the end of each. Then
+# it uses the parser engine to split them back apart.
+parseArgs = { args ::
     # Make a unified string with each argument "\0"-terminated.
     argString = listletReduce @"" args
         { result arg ::
@@ -122,12 +133,7 @@ parseArgsNew = { args ::
 # Parses the command-line arguments. Starts by appending all the
 # arguments-as-given together with a "\0" at the end of each. Then
 # it uses the parser engine to split them back apart.
-parseArgs = { args <out> ::
-    ifValue { <> parseArgsNew args }
-        { args :: io0Note (format @"=== new-style args %q" args) }
-        { io0Note @"=== no args?" };
-    # io0Die @"woo";
-
+parseArgsOld = { args <out> ::
     # TODO: This is the old implementation.
     <> listletReduce @[@validate=false @args=@[]] args { result arg ::
         <> ifTrue { <> eq arg @"--validate" }

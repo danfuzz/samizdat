@@ -75,7 +75,8 @@ makeCoreLibrary = {
 # arguments as-is.
 run = { args* ::
     parsedArgs = parseArgs args;
-    validate = mapletGet parsedArgs @validate;
+    options = mapletGet parsedArgs @options;
+    validate = mapletGet options @validate false;
     file = mapletGet parsedArgs @file;
     argsPerSe = mapletGet parsedArgs @args;
 
