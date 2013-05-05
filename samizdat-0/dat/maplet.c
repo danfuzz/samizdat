@@ -170,7 +170,9 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
 zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings) {
     datAssertMaplet(maplet);
 
-    if (size == 1) {
+    if (size == 0) {
+        return maplet;
+    } else if (size == 1) {
         return datMapletPut(maplet, mappings[0].key, mappings[0].value);
     }
 
