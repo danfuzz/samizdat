@@ -33,6 +33,21 @@ static zchar *stringletElems(zvalue stringlet) {
  */
 
 /* Documented in header. */
+bool datStringletEq(zvalue v1, zvalue v2) {
+    zchar *e1 = stringletElems(v1);
+    zchar *e2 = stringletElems(v2);
+    zint size = datSize(v1);
+
+    for (zint i = 0; i < size; i++) {
+        if (e1[i] != e2[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* Documented in header. */
 zorder datStringletOrder(zvalue v1, zvalue v2) {
     zchar *e1 = stringletElems(v1);
     zchar *e2 = stringletElems(v2);

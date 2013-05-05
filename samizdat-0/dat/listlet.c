@@ -61,6 +61,21 @@ static zvalue listletFrom(zint size1, const zvalue *elems1, zvalue insert,
  */
 
 /* Documented in header. */
+bool datListletEq(zvalue v1, zvalue v2) {
+    zvalue *e1 = listletElems(v1);
+    zvalue *e2 = listletElems(v2);
+    zint size = datSize(v1);
+
+    for (zint i = 0; i < size; i++) {
+        if (!datEq(e1[i], e2[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* Documented in header. */
 zorder datListletOrder(zvalue v1, zvalue v2) {
     zvalue *e1 = listletElems(v1);
     zvalue *e2 = listletElems(v2);
