@@ -56,15 +56,7 @@ static zvalue frameGet(Frame *frame, zvalue name) {
 }
 
 static zvalue frameCollapse(Frame *frame) {
-    zvalue result = frame->base;
-    zmapping *locals = frame->locals;
-    zint size = frame->size;
-
-    for (zint i = frame->size - 1; i >= 0; i--) {
-        result = datMapletPut(result, locals[i].key, locals[i].value);
-    }
-
-    return result;
+    return datMapletPutArray(frame->base, frame->size, frame->locals);
 }
 
 /**

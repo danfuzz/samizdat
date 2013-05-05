@@ -331,8 +331,7 @@ zvalue datMapletNthValue(zvalue maplet, zint n);
  */
 zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value);
 
-zvalue datMapletPutArrays(zvalue maplet, zint size,
-                          const zvalue *keys, const zvalue *values);
+zvalue datMapletPutArray(zvalue maplet, zint size, const zmapping *mappings);
 
 /**
  * Combines the bindings of the two given maplets into a new maplet.

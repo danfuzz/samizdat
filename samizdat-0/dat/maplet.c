@@ -167,12 +167,11 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
 }
 
 /* TODO: Documented in header. */
-zvalue datMapletPutArrays(zvalue maplet, zint size,
-                          const zvalue *keys, const zvalue *values) {
+zvalue datMapletPutArray(zvalue maplet, zint size, const zmapping *mappings) {
     datAssertMaplet(maplet);
 
     if (size == 1) {
-        return datMapletPut(maplet, keys[0], values[0]);
+        return datMapletPut(maplet, mappings[0].key, mappings[0].value);
     }
 
     zint mapletSize = datSize(maplet);
@@ -182,11 +181,7 @@ zvalue datMapletPutArrays(zvalue maplet, zint size,
 
     // Add the new mappings to the result, and sort it.
 
-    for (zint i = 0; i < size; i++) {
-        elems[i].key = keys[i];
-        elems[i].value = values[i];
-    }
-
+    memcpy(elems, mappings, size * sizeof(zmapping));
     qsort(elems, size, sizeof(zmapping), mappingOrder);
 
     // Add the original maplet mappings, and then mergesort them.
