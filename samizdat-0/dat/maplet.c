@@ -222,14 +222,7 @@ zvalue datMapletAdd(zvalue maplet1, zvalue maplet2) {
         return maplet1;
     }
 
-    zvalue result = maplet1;
-    zmapping *elems = mapletElems(maplet2);
-
-    for (zint i = 0; i < size2; i++) {
-        result = datMapletPut(result, elems[i].key, elems[i].value);
-    }
-
-    return result;
+    return datMapletAddArray(maplet1, size2, mapletElems(maplet2));
 }
 
 /* Documented in header. */
