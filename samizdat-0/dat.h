@@ -331,9 +331,6 @@ zvalue datMapletNthValue(zvalue maplet, zint n);
  */
 zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value);
 
-zvalue datMapletPutArrays(zvalue maplet, zint size,
-                          const zvalue *keys, const zvalue *values);
-
 /**
  * Gets the maplet resulting from putting the all the given mappings
  * into the given maplet, in the order given (so, in particular, higher-index

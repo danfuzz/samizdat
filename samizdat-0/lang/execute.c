@@ -102,8 +102,7 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
     }
 
     zint formalsSize = datSize(formals);
-    zvalue names[formalsSize];
-    zvalue values[formalsSize];
+    zmapping mappings[formalsSize];
 
     for (zint i = 0, argAt = 0; i < formalsSize; i++) {
         zvalue formal = datListletNth(formals, i);
@@ -132,11 +131,11 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
             argAt++;
         }
 
-        names[i] = name;
-        values[i] = value;
+        mappings[i].key = name;
+        mappings[i].value = value;
     }
 
-    return datMapletPutArrays(ctx, formalsSize, names, values);
+    return datMapletAddArray(ctx, formalsSize, mappings);
 }
 
 /**
