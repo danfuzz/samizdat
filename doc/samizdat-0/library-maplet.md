@@ -7,11 +7,11 @@ Maplets
 <br><br>
 ### Primitive Definitions
 
-#### `mapletAdd maplet1 maplet2 <> maplet`
+#### `mapletAdd maplets* <> maplet`
 
 Returns a maplet consisting of the combination of the mappings of the
-two argument maplets. For any keys in common between the two maplets,
-the second argument's value is the one that ends up in the result.
+argument maplets. For any keys in common between the maplets,
+the lastmost argument's value is the one that ends up in the result.
 
 #### `mapletDel maplet key <> maplet`
 

@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -56,8 +57,13 @@ PRIM_IMPL(stringletFromIntlet) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringletAdd) {
-    requireExactly(argCount, 2);
-    return datStringletAdd(args[0], args[1]);
+    zvalue result = STR_EMPTY;
+
+    for (zint i = 0; i < argCount; i++) {
+        result = datStringletAdd(result, args[i]);
+    }
+
+    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

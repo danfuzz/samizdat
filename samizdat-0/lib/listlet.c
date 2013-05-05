@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
 
 #include <stddef.h>
@@ -23,8 +24,13 @@ PRIM_IMPL(listletInsNth) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletAdd) {
-    requireExactly(argCount, 2);
-    return datListletAdd(args[0], args[1]);
+    zvalue result = EMPTY_LISTLET;
+
+    for (zint i = 0; i < argCount; i++) {
+        result = datListletAdd(result, args[i]);
+    }
+
+    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

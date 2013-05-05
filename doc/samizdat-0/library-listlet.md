@@ -7,10 +7,10 @@ Listlets
 <br><br>
 ### Primitive Definitions
 
-#### `listletAdd listlet1 listlet2 <> listlet`
+#### `listletAdd listlets* <> listlet`
 
 Returns a listlet consisting of the concatenation of the elements
-of the two argument listlets, in argument order.
+of all the argument listlets, in argument order.
 
 #### `listletDelNth listlet n <> listlet`
 
