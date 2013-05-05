@@ -12,6 +12,10 @@
 #include <stddef.h>
 
 
+/*
+ * Execution frames
+ */
+
 enum {
     MAX_LOCALS = 50
 };
@@ -58,6 +62,11 @@ static zvalue frameGet(Frame *frame, zvalue name) {
 static zvalue frameCollapse(Frame *frame) {
     return datMapletAddArray(frame->base, frame->size, frame->locals);
 }
+
+
+/*
+ * Evaluation
+ */
 
 /**
  * Closure, that is, a function and its associated immutable bindings.
@@ -137,8 +146,7 @@ static zvalue nonlocalExit(void *state, zint argCount, const zvalue *args) {
 
 /**
  * Binds variables for all the formal arguments of the given
- * function (if any), returning a maplet of the bindings added
- * to the given base context.
+ * function (if any), into the given execution frame.
  */
 static void bindArguments(Frame *frame, zvalue functionNode,
                           zint argCount, const zvalue *args) {
@@ -182,8 +190,8 @@ static void bindArguments(Frame *frame, zvalue functionNode,
 }
 
 /**
- * Executes a variable definition, by updating the given variable
- * context as appropriate.
+ * Executes a variable definition, by updating the given execution frame,
+ * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = datHighletValue(varDef);
@@ -208,7 +216,7 @@ static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
     YieldState *yieldState = NULL;
 
     // Take the parent context as a base, and bind the formals and
-    // yieldDef (if present), creating an initial variable context.
+    // yieldDef (if present), creating an execution frame.
 
     Frame frame;
     frame.base = parentContext;
@@ -229,7 +237,7 @@ static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
         frameAdd(&frame, yieldDef, exitFunction);
     }
 
-    // Evaluate the statements, updating the variable context as needed.
+    // Evaluate the statements, updating the frame as needed.
 
     zint statementsSize = datSize(statements);
     for (zint i = 0; i < statementsSize; i++) {
@@ -353,9 +361,9 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  */
 
 /* Documented in header. */
-zvalue langEvalExpressionNode(zvalue ctx, zvalue node) {
+zvalue langEvalExpressionNode(zvalue context, zvalue node) {
     Frame frame;
-    frame.base = ctx;
+    frame.base = context;
     frame.size = 0;
 
     return execExpressionVoidOk(&frame, node);
