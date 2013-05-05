@@ -62,7 +62,7 @@ parseBinding = filterRule
 parseMaplet = filterRule
     (seqRule [:@"@":] [:@"[":] (plusRule @binding) [:@"]":])
     { result ::
-        bindings = apply listletCat (listletNth result @2);
+        bindings = apply listletAdd (listletNth result @2);
         <> apply makeCall [:@varRef @makeMaplet:] bindings
     };
 
@@ -247,7 +247,7 @@ parseProgram = filterRule
             (mapletGet lastClause @statements);
         <> [:
             @function
-            (mapletCat
+            (mapletAdd
                 formals
                 @[@statements=statements]
                 (mapletGet lastClause @yield))
