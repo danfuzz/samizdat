@@ -50,6 +50,8 @@ static void frameAdd(Frame *frame, zvalue name, zvalue value) {
 static zvalue frameGet(Frame *frame, zvalue name) {
     zmapping *locals = frame->locals;
 
+    // Scan in reverse, because we don't prevent duplicate names from
+    // being defined, and lookup should find the latest definition.
     for (zint i = frame->size - 1; i >= 0; i--) {
         if (datOrder(name, locals[i].key) == ZSAME) {
             return locals[i].value;
