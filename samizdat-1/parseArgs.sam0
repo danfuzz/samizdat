@@ -21,7 +21,7 @@
 #
 
 # The character @"\0".
-CHAR_0 ::= stringletFromIntlet 0;
+CHAR_0 = stringletFromIntlet @0;
 
 parseArguments = filterRule
     (seqRule
@@ -37,7 +37,7 @@ parseOptions = starRule
     (filterRule
         (seqRule
             (orRule @option @error)
-            wordBreak)
+            @wordBreak)
         { result :: <> listletNth result @0 });
 
 parseError = filterRule
@@ -46,7 +46,7 @@ parseError = filterRule
         (plusRule (notCharSetRule CHAR_0)))
     { result ::
         elems = apply listletPrepend result;
-        value = apply stringletCat elems;
+        value = apply stringletAdd elems;
         <> [:@error value:]
     };
 
@@ -63,7 +63,7 @@ parseOption = filterRule
 parseKey = filterRule
     (plusRule
         (notCharSetRule (stringletAdd @"=" CHAR_0)))
-    { result :: <> apply stringletCat result };
+    { result :: <> apply stringletAdd result };
 
 parseValue = filterRule
     (seqRule (charsRule @"=") @word)
@@ -76,7 +76,7 @@ parseWords = starRule
 
 parseWord = filterRule
     (starRule (notCharSetRule CHAR_0))
-    { result :: <> apply stringletCat result };
+    { result :: <> apply stringletAdd result };
 
 parseWordBreak = charsRule CHAR_0;
 
