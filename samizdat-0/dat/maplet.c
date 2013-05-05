@@ -166,8 +166,8 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
     return result;
 }
 
-/* TODO: Documented in header. */
-zvalue datMapletPutArray(zvalue maplet, zint size, const zmapping *mappings) {
+/* Documented in header. */
+zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings) {
     datAssertMaplet(maplet);
 
     if (size == 1) {
@@ -189,7 +189,7 @@ zvalue datMapletPutArray(zvalue maplet, zint size, const zmapping *mappings) {
 
     // Remove all but the last of any sequence of equal-keys mappings.
     // The last one is preferred, since by construction that's the last
-    // of any equal kes from the newly-added mappings.
+    // of any equal keys from the newly-added mappings.
 
     zint at = 1;
     for (zint i = 1; i < resultSize; i++) {

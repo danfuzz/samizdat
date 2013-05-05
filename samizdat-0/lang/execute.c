@@ -56,7 +56,7 @@ static zvalue frameGet(Frame *frame, zvalue name) {
 }
 
 static zvalue frameCollapse(Frame *frame) {
-    return datMapletPutArray(frame->base, frame->size, frame->locals);
+    return datMapletAddArray(frame->base, frame->size, frame->locals);
 }
 
 /**
