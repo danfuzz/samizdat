@@ -179,35 +179,29 @@ zvalue datMapletPutArray(zvalue maplet, zint size, const zmapping *mappings) {
     zvalue result = allocMaplet(resultSize);
     zmapping *elems = mapletElems(result);
 
-    // Add the new mappings to the result, and sort it.
+    // Add all the mappings to the result, and sort it using mergesort.
+    // Mergesort is stable and operates best on sorted data, and as it
+    // happens the starting maplet is sorted.
 
-    memcpy(elems, mappings, size * sizeof(zmapping));
-    qsort(elems, size, sizeof(zmapping), mappingOrder);
-
-    // Add the original maplet mappings, and then mergesort them.
-    // Mergesort is stable and operates best on sorted data, which
-    // is why we bother sorting the new mappings above.
-
-    memcpy(&elems[size], mapletElems(maplet), mapletSize * sizeof(zmapping));
+    memcpy(elems, mapletElems(maplet), mapletSize * sizeof(zmapping));
+    memcpy(&elems[mapletSize], mappings, size * sizeof(zmapping));
     mergesort(elems, resultSize, sizeof(zmapping), mappingOrder);
 
-    // Remove one of any pair of equal-keys mappings, preferring the earlier
-    // one, since by construction that's from the newly-added mappings.
+    // Remove all but the last of any sequence of equal-keys mappings.
+    // The last one is preferred, since by construction that's the last
+    // of any equal kes from the newly-added mappings.
 
-    zint at = 0;
-    for (zint i = 0; i < resultSize; i++) {
+    zint at = 1;
+    for (zint i = 1; i < resultSize; i++) {
+        if (datOrder(elems[i].key, elems[at-1].key) == ZSAME) {
+            at--;
+        }
+
         if (at != i) {
             elems[at] = elems[i];
         }
+
         at++;
-
-        if (i == (resultSize - 1)) {
-            break;
-        }
-
-        if (datOrder(elems[i].key, elems[i+1].key) == ZSAME) {
-            i++;
-        }
     }
 
     result->size = at;
