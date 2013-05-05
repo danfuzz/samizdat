@@ -6,6 +6,7 @@
 
 #include "impl.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 
@@ -67,6 +68,14 @@ static zint mapletFind(zvalue maplet, zvalue key) {
     // represented.
 
     return ~min;
+}
+
+/**
+ * Mapping comparison function, passed to standard library sorting
+ * functions.
+ */
+static int mappingOrder(const void *m1, const void *m2) {
+    return datOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
 
@@ -154,6 +163,59 @@ zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
 
     mapletElems(result)[index].key = key;
     mapletElems(result)[index].value = value;
+    return result;
+}
+
+/* TODO: Documented in header. */
+zvalue datMapletPutArrays(zvalue maplet, zint size,
+                          const zvalue *keys, const zvalue *values) {
+    datAssertMaplet(maplet);
+
+    if (size == 1) {
+        return datMapletPut(maplet, keys[0], values[0]);
+    }
+
+    zint mapletSize = datSize(maplet);
+    zint resultSize = mapletSize + size;
+    zvalue result = allocMaplet(resultSize);
+    zmapping *elems = mapletElems(result);
+
+    // Add the new mappings to the result, and sort it.
+
+    for (zint i = 0; i < size; i++) {
+        elems[i].key = keys[i];
+        elems[i].value = values[i];
+    }
+
+    qsort(elems, size, sizeof(zmapping), mappingOrder);
+
+    // Add the original maplet mappings, and then mergesort them.
+    // Mergesort is stable and operates best on sorted data, which
+    // is why we bother sorting the new mappings above.
+
+    memcpy(&elems[size], mapletElems(maplet), mapletSize * sizeof(zmapping));
+    mergesort(elems, resultSize, sizeof(zmapping), mappingOrder);
+
+    // Remove one of any pair of equal-keys mappings, preferring the earlier
+    // one, since by construction that's from the newly-added mappings.
+
+    zint at = 0;
+    for (zint i = 0; i < resultSize; i++) {
+        if (at != i) {
+            elems[at] = elems[i];
+        }
+        at++;
+
+        if (i == (resultSize - 1)) {
+            break;
+        }
+
+        if (datOrder(elems[i].key, elems[i+1].key) == ZSAME) {
+            i++;
+        }
+    }
+
+    result->size = at;
     return result;
 }
 
