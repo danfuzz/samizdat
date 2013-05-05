@@ -18,7 +18,7 @@ CHAR_159 = stringletFromIntlet @159;
 # Helper for optionally adorning results.
 adornIf = { adorn before value after ::
     <> ifTrue { <> adorn }
-        { <> stringletCat before value after }
+        { <> stringletAdd before value after }
         { <> value }
 };
 
@@ -64,7 +64,7 @@ stringletHexEscape = { ch ::
             }
     };
 
-    <> stringletCat @"\\x" (intletHex (intletFromStringlet ch)) @";"
+    <> stringletAdd @"\\x" (intletHex (intletFromStringlet ch)) @";"
 };
 
 # Maplet of special-case characters to their stringified forms.
@@ -101,7 +101,7 @@ doStringlet = { recurse stringlet adorn ::
 doListlet = { recurse listlet adorn ::
     body = listletReduce @"" listlet
         { reduction elem ::
-            <> stringletCat
+            <> stringletAdd
                 reduction
                 (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
                 (recurse elem)
@@ -114,7 +114,7 @@ doListlet = { recurse listlet adorn ::
 doMaplet = { recurse maplet adorn ::
     body = mapletReduce @"" maplet
         { reduction value key ::
-            <> stringletCat
+            <> stringletAdd
                 reduction
                 (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
                 (recurse key)
@@ -131,7 +131,7 @@ doMaplet = { recurse maplet adorn ::
 # Stringifies a highlet.
 doHighlet = { recurse highlet adorn ::
     type = highletType highlet;
-    result = stringletCat
+    result = stringletAdd
         (recurse type)
         (ifValue { <> highletValue highlet }
             { value :: <> stringletAdd @" " (recurse value) }
@@ -147,7 +147,7 @@ doUniqlet = { recurse uniqlet ::
 
 # Stringifies an unknown value type.
 doUnknown = { recurse unknown ::
-    <> stringletCat
+    <> stringletAdd
         @"@[(unknown) "
         (recurse (lowType value))
         @" "
