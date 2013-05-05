@@ -55,6 +55,11 @@ static zint intletValue(zvalue intlet) {
  */
 
 /* Documented in header. */
+bool datIntletEq(zvalue v1, zvalue v2) {
+    return intletValue(v1) == intletValue(v2);
+}
+
+/* Documented in header. */
 zorder datIntletOrder(zvalue v1, zvalue v2) {
     zint int1 = intletValue(v1);
     zint int2 = intletValue(v2);

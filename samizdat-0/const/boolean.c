@@ -14,9 +14,9 @@
 
 /* Documented in header. */
 bool constBoolFromBoolean(zvalue value) {
-    if (datOrder(value, CONST_FALSE) == 0) {
+    if (datEq(value, CONST_FALSE)) {
         return false;
-    } else if (datOrder(value, CONST_TRUE) == 0) {
+    } else if (datEq(value, CONST_TRUE)) {
         return true;
     }
 

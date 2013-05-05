@@ -41,9 +41,9 @@ static zvalue stringletFromPathListlet(zvalue pathListlet) {
             die("Invalid path component (contains null bytes): \"%s\"", str);
         } else if (strchr(str, '/') != NULL) {
             die("Invalid path component (contains slash): \"%s\"", str);
-        } else if ((datOrder(one, STR_EMPTY) == 0) ||
-            (datOrder(one, STR_CH_DOT) == 0) ||
-            (datOrder(one, STR_CH_DOTDOT) == 0)) {
+        } else if (datEq(one, STR_EMPTY) ||
+            datEq(one, STR_CH_DOT) ||
+            datEq(one, STR_CH_DOTDOT)) {
             die("Invalid path component: \"%s\"", str);
         }
 
@@ -74,14 +74,13 @@ static zvalue pathListletFromAbsolute(const char *path) {
         zint size = (slashAt != NULL) ? (slashAt - at) : strlen(at);
         zvalue one = datStringletFromUtf8(size, at);
 
-        if (datOrder(one, STR_CH_DOTDOT) == 0) {
+        if (datEq(one, STR_CH_DOTDOT)) {
             zint rsize = datSize(result);
             if (datSize(result) == 0) {
                 die("Invalid `..` component in path: \"%s\"", path);
             }
             result = datListletDelNth(result, rsize -1);
-        } else if (!((datOrder(one, STR_EMPTY) == 0) ||
-                     (datOrder(one, STR_CH_DOT) == 0))) {
+        } else if (!(datEq(one, STR_EMPTY) || datEq(one, STR_CH_DOT))) {
             result = datListletAppend(result, one);
         }
 

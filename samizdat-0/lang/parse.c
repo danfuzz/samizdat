@@ -58,7 +58,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
     zvalue result = datListletNth(state->tokens, state->at);
     zvalue resultType = datHighletType(result);
 
-    if (datOrder(type, resultType) != 0) {
+    if (!datEq(type, resultType)) {
         return NULL;
     }
 

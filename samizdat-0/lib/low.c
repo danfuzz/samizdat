@@ -9,6 +9,31 @@
 #include "util.h"
 
 
+/*
+ * Helper functions
+ */
+
+/**
+ * Does most of the work of `lowOrderIs`.
+ */
+static bool doLowOrderIs(zint argCount, const zvalue *args) {
+    zorder want = datIntFromIntlet(args[2]);
+
+    if ((argCount == 3) && (want == ZSAME)) {
+        return datEq(args[0], args[1]);
+    }
+
+    zorder comp = datOrder(args[0], args[1]);
+
+    return (comp == want) ||
+        ((argCount == 4) && (comp == datIntFromIntlet(args[3])));
+}
+
+
+/*
+ * Exported functions
+ */
+
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(lowOrder) {
     requireExactly(argCount, 2);
@@ -18,13 +43,7 @@ PRIM_IMPL(lowOrder) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(lowOrderIs) {
     requireRange(argCount, 3, 4);
-
-    zorder comp = datOrder(args[0], args[1]);
-    bool result =
-        (comp == datIntFromIntlet(args[2])) ||
-        ((argCount == 4) && (comp == datIntFromIntlet(args[3])));
-
-    return constBooleanFromBool(result);
+    return constBooleanFromBool(doLowOrderIs(argCount, args));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

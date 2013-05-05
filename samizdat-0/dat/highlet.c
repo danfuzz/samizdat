@@ -40,6 +40,18 @@ static zvalue newHighlet(zvalue type, zvalue value) {
  */
 
 /* Documented in header. */
+bool datHighletEq(zvalue v1, zvalue v2) {
+    HighletInfo *info1 = highletInfo(v1);
+    HighletInfo *info2 = highletInfo(v2);
+
+    if (!datEq(info1->type, info2->type)) {
+        return false;
+    }
+
+    return (info1->value == NULL) || datEq(info1->value, info2->value);
+}
+
+/* Documented in header. */
 zorder datHighletOrder(zvalue v1, zvalue v2) {
     HighletInfo *info1 = highletInfo(v1);
     HighletInfo *info2 = highletInfo(v2);
@@ -87,7 +99,7 @@ zvalue datHighletFrom(zvalue type, zvalue value) {
 
 /* Documented in header. */
 bool datHighletTypeIs(zvalue highlet, zvalue type) {
-    return (datOrder(datHighletType(highlet), type) == 0);
+    return (datEq(datHighletType(highlet), type));
 }
 
 /* Documented in header. */

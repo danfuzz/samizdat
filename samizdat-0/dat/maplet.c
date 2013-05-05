@@ -84,6 +84,21 @@ static int mappingOrder(const void *m1, const void *m2) {
  */
 
 /* Documented in header. */
+bool datMapletEq(zvalue v1, zvalue v2) {
+    zmapping *e1 = mapletElems(v1);
+    zmapping *e2 = mapletElems(v2);
+    zint size = datSize(v1);
+
+    for (zint i = 0; i < size; i++) {
+        if (!(datEq(e1[i].key, e2[i].key) && datEq(e1[i].value, e2[i].value))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* Documented in header. */
 zorder datMapletOrder(zvalue v1, zvalue v2) {
     zmapping *e1 = mapletElems(v1);
     zmapping *e2 = mapletElems(v2);
@@ -195,7 +210,7 @@ zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings) {
 
     zint at = 1;
     for (zint i = 1; i < resultSize; i++) {
-        if (datOrder(elems[i].key, elems[at-1].key) == ZSAME) {
+        if (datEq(elems[i].key, elems[at-1].key)) {
             at--;
         }
 
