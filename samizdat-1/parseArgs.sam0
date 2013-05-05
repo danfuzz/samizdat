@@ -11,7 +11,7 @@
 #
 # arguments ::= options ("--" wordBreak)? words ;
 # options ::= ((option | error) wordBreak)* ;
-# error ::= "-" ~("\0")+ ;
+# error ::= "-" ~("-" | "\0") ~("\0")*;
 # option ::= "--" key value? ;
 # key ::= ~("=" | "\0")+ ;
 # value ::= "=" word ;
@@ -31,25 +31,33 @@ parseArguments = filterRule
     { result ::
         optsErrors = listletNth result @0;
         words = listletNth result @2;
-        # TODO
-        <> result
+        ifTrue { <> mapletGet optsErrors @errors }
+            { io0Die @"Trouble with options." };
+        <> @[(mapletGet optsErrors @options) words];
     };
 
-parseOptions = starRule
-    (filterRule
-        (seqRule
-            (orRule @option @error)
-            @wordBreak)
-        { result :: <> listletNth result @0 });
+parseOptions = filterRule
+    (starRule
+       (filterRule
+            (seqRule (orRule @option @error) @wordBreak)
+            { result :: <> listletNth result @0 }))
+    { result ::
+        <> listletReduce @[@options=@[=] @errors=false] result
+            { result one :: <> one result }
+    };
 
 parseError = filterRule
     (seqRule
         (charsRule @"-")
-        (plusRule (notCharSetRule CHAR_0)))
+        (notCharSetRule (stringletAdd @"-" CHAR_0))
+        (starRule (notCharSetRule CHAR_0)))
     { result ::
-        elems = apply listletPrepend result;
-        value = apply stringletAdd elems;
-        <> @[@errors = @[value]]
+        c0 = listletNth result @0;
+        c1 = listletNth result @1;
+        more = listletNth result @2;
+        value = apply stringletAdd c0 c1 more;
+        io0Note (format @"Unknown option: %Q" value);
+        <> { result :: <> mapletPut result @errors true }
     };
 
 parseOption = filterRule
@@ -57,9 +65,13 @@ parseOption = filterRule
     { result ::
         key = listletNth result @1;
         valueHolder = listletNth result @2;
-        <> ifValue { <> listletNth valueHolder @0 }
-            { value :: <> @[@options = @[@key=key @value=value]] }
-            { <> @[@options = @[@key=key]] }
+        value = ifValue { <> listletNth valueHolder @0 }
+            { value :: <> value }
+            { <> true };
+        <> { result ::
+            options = mapletPut (mapletGet result @options) key value;
+            <> mapletPut result @options options
+        }
     };
 
 parseKey = filterRule
