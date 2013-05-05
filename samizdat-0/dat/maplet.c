@@ -210,7 +210,7 @@ zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings) {
 
     zint at = 1;
     for (zint i = 1; i < resultSize; i++) {
-        if (datOrder(elems[i].key, elems[at-1].key) == ZSAME) {
+        if (datEq(elems[i].key, elems[at-1].key)) {
             at--;
         }
 

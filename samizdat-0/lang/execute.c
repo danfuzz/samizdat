@@ -111,10 +111,10 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
         zvalue value;
 
         if (repeat != NULL) {
-            if (datOrder(repeat, TOK_CH_STAR) == 0) {
+            if (datEq(repeat, TOK_CH_STAR)) {
                 value = datListletFromArray(argCount - argAt, &args[argAt]);
                 argAt = argCount;
-            } else if (datOrder(repeat, TOK_CH_QMARK) == 0) {
+            } else if (datEq(repeat, TOK_CH_QMARK)) {
                 if (argAt < argCount) {
                     value = datListletFromArray(1, &args[argAt]);
                     argAt++;

@@ -99,7 +99,7 @@ zvalue datHighletFrom(zvalue type, zvalue value) {
 
 /* Documented in header. */
 bool datHighletTypeIs(zvalue highlet, zvalue type) {
-    return (datOrder(datHighletType(highlet), type) == 0);
+    return (datEq(datHighletType(highlet), type));
 }
 
 /* Documented in header. */
