@@ -54,15 +54,18 @@ nonlocalExit ::= [:@"<":] [:@identifier:] [:@">":] expression? ;
 statement ::= varDef | expression ;
 # result: <same as whatever choice matched>
 
-expression ::= call | unary ;
+expression ::= callExpression | unaryExpression ;
 # result: <same as whatever choice matched>
 
-unary ::= unaryCall | atom ;
+unaryExpression ::= unaryCall | atom ;
 # result: <same as whatever choice matched>
 
 unaryCall ::= atom ([:@"(":] [:@")":])+ ;
 # result: (... (makeCall (makeCall atom))
 # Note: One `makeCall` per pair of parens.
+
+callExpression ::= atom atom+ ;
+# result: makeCall atom atom+
 
 atom ::=
     varRef | intlet | stringlet |
@@ -88,8 +91,8 @@ stringlet ::= [:@"@":] (@string | @identifier);
 emptyListlet ::= [:@"@":] [:@"[":] [:@"]":] ;
 # result: [:@literal @[]:]
 
-listlet ::= [:@"@":] [:@"[":] unary+ [:@"]":] ;
-# result: makeCall [:@varRef @makeListlet:] unary+
+listlet ::= [:@"@":] [:@"[":] atom+ [:@"]":] ;
+# result: makeCall [:@varRef @makeListlet:] atom+
 
 emptyMaplet ::= [:@"@":] [:@"[":] [:@"=":] [:@"]":] ;
 # result: [:@literal @[=]:]
@@ -97,17 +100,14 @@ emptyMaplet ::= [:@"@":] [:@"[":] [:@"=":] [:@"]":] ;
 maplet ::= [:@"@":] [:@"[":] binding+ [:@"]":] ;
 # result: apply makeCall [:@varRef @makeMaplet:] (lisletAdd binding+)
 
-binding ::= unary [:@"=":] unary ;
-# result: @[unary unary] # key then value
+binding ::= atom [:@"=":] atom ;
+# result: @[atom atom] # key then value
 
 uniqlet ::= [:@"@@":];
 # result: makeCall [:@varRef @makeUniqlet:]
 
-highlet ::= [:@"[":] [:@":":] unary unary? [:@":":] [:@"]":] ;
-# result: makeCall [:@varRef @makeHighlet:] unary unary?
-
-call ::= unary unary+ ;
-# result: makeCall unary unary+
+highlet ::= [:@"[":] [:@":":] atom atom? [:@":":] [:@"]":] ;
+# result: makeCall [:@varRef @makeHighlet:] atom atom?
 
 # Function that returns an appropriately-formed `call` node.
 makeCall = { function actuals* ::
