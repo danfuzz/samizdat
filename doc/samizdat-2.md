@@ -65,7 +65,7 @@ binaryDigit ::= "0" | "1" ;
 # result: <intlet>
 
 identifier2 ::= "\\" string ;
-# result: [:@identifier <string.value>:]
+# result: [:@identifier (highletValue string):]
 ```
 
 
