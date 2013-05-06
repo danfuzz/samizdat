@@ -6,6 +6,33 @@
 
 #include "impl.h"
 
+#include <stddef.h>
+
+
+/*
+ * Helper definitions
+ */
+
+enum {
+    MAX_IMMORTALS = 100
+};
+
+/** The stack base. */
+static void *stackBase = NULL;
+
+/** Array of all immortal values. */
+static zvalue immortals[MAX_IMMORTALS];
+
+/** How many immortal values there are right now. */
+static zint immortalsSize = 0;
+
+/**
+ * Main garbage collection function.
+ */
+static void doGc(void *topOfStack) {
+    // Nothing to do...yet.
+}
+
 
 /*
  * Module functions
@@ -33,15 +60,25 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
 
 /* Documented in header. */
 void datImmortalize(zvalue value) {
-    // Nothing to do...yet.
+    if (immortalsSize == MAX_IMMORTALS) {
+        die("Too many immortal values");
+    }
+
+    immortals[immortalsSize] = value;
+    immortalsSize++;
 }
 
 /* Documented in header. */
 void datSetStackBase(void *base) {
-    // Nothing to do...yet.
+    if (stackBase != NULL) {
+        die("Stack base already set.");
+    }
+
+    stackBase = base;
 }
 
 /* Documented in header. */
 void datGc(void) {
-    // Nothing to do...yet.
+    int topOfStack = 0;
+    doGc(&topOfStack);
 }
