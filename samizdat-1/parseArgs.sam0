@@ -1,0 +1,152 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `parseArgs` function, which parses command-line arguments.
+#
+
+#
+# Grammar:
+#
+# arguments ::= options ("--" wordBreak)? words ;
+# options ::= ((option | error) wordBreak)* ;
+# error ::= "-" ~("-" | "\0") ~("\0")*;
+# option ::= "--" key value? ;
+# key ::= ~("=" | "\0")+ ;
+# value ::= "=" word ;
+# words ::= (word wordBreak)* ;
+# word ::= ~("\0")* ;
+# wordBreak ::= "\0" ;
+#
+
+# The character @"\0".
+CHAR_0 = stringletFromIntlet @0;
+
+parseArguments = filterRule
+    (seqRule
+        @options
+        (questRule (charsRule (stringletAdd @"--" CHAR_0)))
+        @words)
+    { result ::
+        optsErrors = listletNth result @0;
+        words = listletNth result @2;
+        ifTrue { <> mapletGet optsErrors @errors }
+            { io0Die @"Trouble with options." };
+        ifTrue { <> eq (lowSize words) @0 }
+            { io0Die @"Missing file name." };
+        fileName = listletNth words @0;
+        args = listletDelNth words @0;
+        <> @[
+            @options = (mapletGet optsErrors @options)
+            @file = fileName
+            @args = args
+        ]
+    };
+
+parseOptions = filterRule
+    (starRule
+       (filterRule
+            (seqRule (orRule @option @error) @wordBreak)
+            { result :: <> listletNth result @0 }))
+    { result ::
+        <> listletReduce @[@options=@[=] @errors=false] result
+            { result one :: <> one result }
+    };
+
+parseError = filterRule
+    (seqRule
+        (charsRule @"-")
+        (notCharSetRule (stringletAdd @"-" CHAR_0))
+        (starRule (notCharSetRule CHAR_0)))
+    { result ::
+        c0 = listletNth result @0;
+        c1 = listletNth result @1;
+        more = listletNth result @2;
+        value = apply stringletAdd c0 c1 more;
+        io0Note (format @"Unknown option: %Q" value);
+        <> { result :: <> mapletPut result @errors true }
+    };
+
+parseOption = filterRule
+    (seqRule (charsRule @"--") @key (questRule @value))
+    { result ::
+        key = listletNth result @1;
+        valueHolder = listletNth result @2;
+        value = ifValue { <> listletNth valueHolder @0 }
+            { value :: <> value }
+            { <> true };
+        <> { result ::
+            options = mapletPut (mapletGet result @options) key value;
+            <> mapletPut result @options options
+        }
+    };
+
+parseKey = filterRule
+    (plusRule
+        (notCharSetRule (stringletAdd @"=" CHAR_0)))
+    { result :: <> apply stringletAdd result };
+
+parseValue = filterRule
+    (seqRule (charsRule @"=") @word)
+    { result :: <> listletNth result @1 };
+
+parseWords = starRule
+    (filterRule
+        (seqRule @word @wordBreak)
+        { result :: <> listletNth result @0 });
+
+parseWord = filterRule
+    (starRule (notCharSetRule CHAR_0))
+    { result :: <> apply stringletAdd result };
+
+parseWordBreak = charsRule CHAR_0;
+
+RULES = @[
+    @arguments = parseArguments
+    @error = parseError
+    @key = parseKey
+    @option = parseOption
+    @options = parseOptions
+    @value = parseValue
+    @word = parseWord
+    @wordBreak = parseWordBreak
+    @words = parseWords
+];
+
+# Parses the command-line arguments. Starts by appending all the
+# arguments-as-given together with a "\0" at the end of each. Then
+# it uses the parser engine to split them back apart.
+parseArgs = { args ::
+    # Make a unified string with each argument "\0"-terminated.
+    argString = listletReduce @"" args
+        { result arg ::
+            <> stringletAdd result arg CHAR_0;
+        };
+
+    theReader = reader argString;
+    theEngine = pegEngine theReader RULES;
+
+    <> parseArguments theEngine;
+};
+
+# Parses the command-line arguments. Starts by appending all the
+# arguments-as-given together with a "\0" at the end of each. Then
+# it uses the parser engine to split them back apart.
+parseArgsOld = { args <out> ::
+    # TODO: This is the old implementation.
+    <> listletReduce @[@validate=false @args=@[]] args { result arg ::
+        <> ifTrue { <> eq arg @"--validate" }
+            { <> mapletPut result @validate true }
+            {
+                <> ifValue { <> mapletGet result @file }
+                    {
+                        args = listletAppend (mapletGet result @args) arg;
+                        <> mapletPut result @args args
+                    }
+                    { <> mapletPut result @file arg }
+            }
+    }
+};
+
+<> @[@parseArgs = parseArgs]
