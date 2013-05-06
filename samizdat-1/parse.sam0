@@ -185,7 +185,7 @@ parseFormal = filterRule
     { result :: <> apply mapletAdd result };
 
 # `programBody` node helper: Parses `(statement | nonlocalExit | yield)?`,
-# yielding a maplet that maps `@yield` and `@statements`. Always Succeeds.
+# yielding a maplet that maps `@yield` and `@statements`. Always succeeds.
 parseProgramBody1 = filterRule
     (questRule
         (orRule
