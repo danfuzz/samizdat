@@ -23,6 +23,13 @@ token ::= punctuation2 | punctuation |
     identifier2 | identifier
 ;
 
+keyword ::=
+    @"if"    | # result: [:@"if":]
+    @"else"  | # result: [:@"else":]
+    @"fn"    | # result: [:@"fn":]
+    @"while"   # result: [:@"while":]
+;
+
 punctuation2 ::=
     "==" | # result: [:@"==":]
     "!=" | # result: [:@"!=":]
@@ -39,7 +46,7 @@ punctuation2 ::=
     "/"  | # result: [:@"/":]
     "%"  | # result: [:@"%":]
     "!"  | # result: [:@"!":]
-    "~"  | # result: [:@"~":]
+    "~"    # result: [:@"~":]
 ;
 
 hexInteger ::= "0x" "-"? hexDigit+ ;
@@ -77,7 +84,10 @@ TODO: Sort this all out.
 # Statement rules
 #
 
-statement ::= ifStatement | whileStatement | varDef | expression ;
+statement ::=
+    ifStatement | whileStatement | functionStatement |
+    varDef | expression
+;
 # result: same as whichever choice matched.
 
 ifStatement ::=
@@ -91,6 +101,11 @@ whileStatement ::=
 # { <break> ::
 #     loop { ifTrue { <> expression } function { <break> } }
 # }()
+
+functionStatement ::=
+    @"fn" [:@identifier:] formals? yieldDef? @"{" statement* @"}"
+;
+# result: varDef of identifier to function.
 
 
 #
@@ -120,20 +135,20 @@ bitExpression ::=
     additiveExpression
     ((@"<<" | @">>" | @"&" | @"|" | @"^") bitExpressione)?
 ;
-# result: op expr1 expr2
+# result: \"op" expr1 expr2
 
 additiveExpression ::=
     multiplicativeExpression
     ((@"+" | @"-") additiveExpression)? ;
-# result: op expr1 expr2
+# result: \"op" expr1 expr2
 
 multiplicativeExpression ::=
     unaryExpression
     ((@"*" | @"/" | @"%") multiplicativeExpression)? ;
-# result: op expr1 expr2
+# result: \"op" expr1 expr2
 
 unaryPrefixExpression ::= (@"!" | @"~" | @"-")* unaryPostfixExpression ;
-# result: op1 (op2 (op3 ... expr))
+# result: \"op1" (\"op2" (\"op3" ... expr))
 
 unaryPostfixExpression ::=
     atom
