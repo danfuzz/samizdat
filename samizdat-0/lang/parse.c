@@ -496,7 +496,6 @@ DEF_PARSE(yield) {
 
     MATCH_OR_REJECT(CH_DIAMOND);
     zvalue yield = PARSE_OR_REJECT(expression);
-    PARSE(optSemicolons);
 
     return yield;
 }
@@ -633,6 +632,8 @@ DEF_PARSE(program) {
     } else {
         yield = PARSE(yield);
     }
+
+    PARSE(optSemicolons);
 
     zvalue value = mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
 

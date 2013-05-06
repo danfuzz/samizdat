@@ -151,8 +151,7 @@ parseNonlocalExit = filterRule
         [:@"<":]
         [:@identifier:]
         [:@">":]
-        (questRule @expression)
-        (starRule [:@";":]))
+        (questRule @expression))
     { result ::
         varRef = [:@varRef (highletValue (listletNth result @1)):];
         actuals = listletNth result @3;
@@ -161,7 +160,7 @@ parseNonlocalExit = filterRule
 
 # Parses a `yield` node.
 parseYield = filterRule
-    (seqRule [:@"<>":] @expression (starRule [:@";":]))
+    (seqRule [:@"<>":] @expression)
     { result :: <> listletNth result @1 };
 
 # Parses a `yieldDef` node.
@@ -238,7 +237,8 @@ parseProgram = filterRule
             (filterRule
                 (seqRule @statement (plusRule [:@";":]))
                 { result :: <> listletNth result @0 }))
-        parseProgram2)
+        parseProgram2
+        (starRule [:@";":]))
     { result ::
         formals = listletNth result @0;
         mostStatements = listletNth result @2;

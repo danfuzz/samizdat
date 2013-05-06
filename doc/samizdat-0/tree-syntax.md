@@ -18,7 +18,9 @@ function ::= [:@"{":] program [:@"}":] ;
 
 program ::=
     (formals? yieldDef? [:@"::":])?
-    [:@";":]* (statement [:@";":]+)* (statement | nonlocalExit | yield)? ;
+    [:@";":]* (statement [:@";":]+)* (statement | nonlocalExit | yield)?
+    [:@";":]*
+;
 # result: [:
 #             @function
 #             @[
@@ -39,10 +41,10 @@ formal ::= [:@identifier:] ([:@"*":] | [:@"?":])? ;
 yieldDef ::= [:@"<":] [:@identifier:] [:@">":] ;
 # result: highletValue identifier
 
-yield ::= [:@"<>":] expression [:@";":]* ;
+yield ::= [:@"<>":] expression ;
 # result: expression
 
-nonlocalExit ::= [:@"<":] [:@identifier:] [:@">":] expression? [:@";":]* ;
+nonlocalExit ::= [:@"<":] [:@identifier:] [:@">":] expression? ;
 # result: makeCall identifier expression?
 
 statement ::= varDef | expression ;
