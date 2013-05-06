@@ -30,7 +30,7 @@ parseHighlet = filterRule
         [:@"[":]
         [:@":":]
         @atom
-        (questRule @atom)
+        (optRule @atom)
         [:@":":]
         [:@"]":])
     { result ::
@@ -85,7 +85,7 @@ parseStringlet = filterRule
 
 # Parses an `intlet` node.
 parseIntlet = filterRule
-    (seqRule [:@"@":] (questRule [:@"-":]) [:@integer:])
+    (seqRule [:@"@":] (optRule [:@"-":]) [:@integer:])
     { result ::
         sign = ifTrue { <> eq (listletNth result @1) @[] }
             { <> @1 } { <> @-1 };
@@ -151,7 +151,7 @@ parseNonlocalExit = filterRule
         [:@"<":]
         [:@identifier:]
         [:@">":]
-        (questRule @expression))
+        (optRule @expression))
     { result ::
         varRef = [:@varRef (highletValue (listletNth result @1)):];
         actuals = listletNth result @3;
@@ -175,7 +175,7 @@ parseFormal = filterRule
             [:@identifier:]
             { result :: <> @[@name = (highletValue result)] })
         (filterRule
-            (questRule
+            (optRule
                 (orRule [:@"*":] [:@"?":]))
             { result ::
                 <> ifValue { <> listletNth result @0 }
@@ -187,7 +187,7 @@ parseFormal = filterRule
 # `programBody` node helper: Parses `(statement | nonlocalExit | yield)?`,
 # yielding a maplet that maps `@yield` and `@statements`. Always succeeds.
 parseProgramBody1 = filterRule
-    (questRule
+    (optRule
         (orRule
             (filterRule
                 (orRule @statement @nonlocalExit)
@@ -228,7 +228,7 @@ parseProgramDeclarations = filterRule
                     { <> @[@formals = result] }
                     { <> @[=] }
             })
-        (filterRule (questRule @yieldDef)
+        (filterRule (optRule @yieldDef)
             { result ::
                 <> ifValue { <> listletNth result @0 }
                     { yieldDef :: <> @[@yieldDef = yieldDef] }
@@ -239,7 +239,7 @@ parseProgramDeclarations = filterRule
 # `program` node helper: Parses `(programDeclarations [:@"::":])?`, yielding
 # a maplet (possibly empty).
 parseProgram1 = filterRule
-    (questRule (seqRule @programDeclarations [:@"::":]))
+    (optRule (seqRule @programDeclarations [:@"::":]))
     { result ::
         <> ifValue { <> listletNth result @0 }
             { match :: <> listletNth match @0 }
