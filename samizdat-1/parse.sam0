@@ -24,20 +24,13 @@ makeCall = { function actuals* ::
 # the *Samizdat Layer 0* specification.
 #
 
-# Parses a `call` node.
-parseCall = filterRule
-    (seqRule @unary (plusRule @unary))
-    { result ::
-        <> apply makeCall (listletNth result @0) (listletNth result @1)
-    };
-
 # Parses a `highlet` node.
 parseHighlet = filterRule
     (seqRule
         [:@"[":]
         [:@":":]
-        @unary
-        (questRule @unary)
+        @atom
+        (questRule @atom)
         [:@":":]
         [:@"]":])
     { result ::
@@ -53,7 +46,7 @@ parseUniqlet = filterRule
 
 # Parses a `binding` node.
 parseBinding = filterRule
-    (seqRule @unary [:@"=":] @unary)
+    (seqRule @atom [:@"=":] @atom)
     { result ::
         <> @[(listletNth result @0) (listletNth result @2)]
     };
@@ -73,7 +66,7 @@ parseEmptyMaplet = filterRule
 
 # Parses a `listlet` node.
 parseListlet = filterRule
-    (seqRule [:@"@":] [:@"[":] (plusRule @unary) [:@"]":])
+    (seqRule [:@"@":] [:@"[":] (plusRule @atom) [:@"]":])
     { result ::
         <> apply makeCall [:@varRef @makeListlet:] (listletNth result @2)
     };
@@ -124,8 +117,15 @@ parseAtom = orRule @varRef @intlet @stringlet
     @emptyListlet @listlet @emptyMaplet @maplet
     @uniqlet @highlet @function @parenExpression;
 
-# Parses a `unaryCall` node.
-parseUnaryCall = filterRule
+# Parses a `callExpression` node.
+parseCallExpression = filterRule
+    (seqRule @atom (plusRule @atom))
+    { result ::
+        <> apply makeCall (listletNth result @0) (listletNth result @1)
+    };
+
+# Parses a `unaryCallExpression` node.
+parseUnaryCallExpression = filterRule
     (seqRule
         @atom
         (plusRule (seqRule [:@"(":] [:@")":])))
@@ -136,11 +136,11 @@ parseUnaryCall = filterRule
             { result :: <> makeCall result }
     };
 
-# Parses a `unary` node.
-parseUnary = orRule @unaryCall @atom;
+# Parses a `unaryExpression` node.
+parseUnaryExpression = orRule @unaryCallExpression @atom;
 
 # Parses an `expression` node.
-parseExpression = orRule @call @unary;
+parseExpression = orRule @callExpression @unaryExpression;
 
 # Parses a `statement` node.
 parseStatement = orRule @varDef @expression;
@@ -263,7 +263,7 @@ parseFunction = filterRule
 RULES = @[
     @atom = parseAtom
     @binding = parseBinding
-    @call = parseCall
+    @callExpression = parseCallExpression
     @emptyListlet = parseEmptyListlet
     @emptyMaplet = parseEmptyMaplet
     @expression = parseExpression
@@ -280,8 +280,8 @@ RULES = @[
     @programDeclarations = parseProgramDeclarations
     @statement = parseStatement
     @stringlet = parseStringlet
-    @unary = parseUnary
-    @unaryCall = parseUnaryCall
+    @unaryExpression = parseUnaryExpression
+    @unaryCallExpression = parseUnaryCallExpression
     @uniqlet = parseUniqlet
     @varDef = parseVarDef
     @varRef = parseVarRef
