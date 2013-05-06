@@ -289,34 +289,4 @@ TREE0_RULES = @[
     @yieldDef = parseYieldDef
 ];
 
-
-#
-# Main `parse` function
-#
-
-# Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
-# syntax. Returns a `function` node.
-parse = { tokens ::
-    theReader = reader tokens;
-    theEngine = pegEngine theReader TREE0_RULES;
-    theProgram = parseProgram theEngine;
-
-    ifFalse { <> theEngine @eof }
-        {
-            io0Note @"Pending tokens:";
-
-            { <break> ::
-                loop {
-                    ifValue { <> theEngine @read }
-                        { token :: io0Note (format @"    %q" token) }
-                        { <break> }
-                }
-            }();
-
-            io0Die @"Extra tokens at end of program."
-        };
-
-    <> theProgram;
-};
-
-<> @[@parse = parse];
+<> @[@TREE0_RULES = TREE0_RULES]

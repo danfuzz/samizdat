@@ -22,7 +22,7 @@ readLine = filterRule
 tokenize = { rules text ::
     theReader = reader text;
     theEngine = pegEngine theReader rules;
-    result = theEngine @file;
+    result = (theEngine @rule @file) theEngine;
 
     ifFalse { <> theEngine @eof }
         {
@@ -39,7 +39,7 @@ tokenize = { rules text ::
 parseTree = { rules tokens ::
     theReader = reader tokens;
     theEngine = pegEngine theReader rules;
-    result = parseProgram theEngine;
+    result = (theEngine @rule @program) theEngine;
 
     ifFalse { <> theEngine @eof }
         {
