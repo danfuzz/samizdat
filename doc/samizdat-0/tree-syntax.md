@@ -27,6 +27,8 @@ program ::= (programDeclarations [:@"::":])? programBody ;
 
 programDeclarations ::= formal* yieldDef? ;
 # result: @[(@formals=@[formal*])? (yieldDef=yieldDef)?]
+# Note: The @formals mapping should only be included when there is at
+# least one formal.
 
 programBody ::=
     [:@";":]*
