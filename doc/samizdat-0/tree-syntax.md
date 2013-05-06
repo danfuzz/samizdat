@@ -57,10 +57,10 @@ statement ::= varDef | expression ;
 expression ::= callExpression | unaryExpression ;
 # result: <same as whatever choice matched>
 
-unaryExpression ::= unaryCall | atom ;
+unaryExpression ::= unaryCallExpression | atom ;
 # result: <same as whatever choice matched>
 
-unaryCall ::= atom ([:@"(":] [:@")":])+ ;
+unaryCallExpression ::= atom ([:@"(":] [:@")":])+ ;
 # result: (... (makeCall (makeCall atom))
 # Note: One `makeCall` per pair of parens.
 
