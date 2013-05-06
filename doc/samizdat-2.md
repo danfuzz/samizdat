@@ -18,7 +18,7 @@ rules.
 
 ```
 token ::= punctuation2 | punctuation |
-    integer2 | integer |
+    integer | hexInteger | binaryInteger |
     string |
     identifier2 | identifier
 ;
@@ -42,8 +42,23 @@ punctuation2 ::=
     "~"  | # result: [:@"~":]
 ;
 
-integer2 ::= "0x" hexDigit+ ;
+hexInteger ::= "0x" "-"? hexDigit+ ;
 # result: [:@integer <intlet>:]
+
+hexDigit ::=
+    "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" |
+    "a" | "b" | "c" | "d" | "e" | "f" |
+    "A" | "B" | "C" | "D" | "E" | "F" | "_" ;
+# result: <intlet> of digit value or -1 for "_"
+# Note: "_" is ignored (useful for readability).
+
+binaryInteger ::= "0b" "-"? binaryDigit+ ;
+# result: [:@integer <intlet>:]
+# Note: "_" is ignored (useful for readability).
+
+binaryDigit ::= "0" | "1" | "_" ;
+# result: <intlet> of digit value or -1 for "_"
+# Note: "_" is ignored (useful for readability).
 
 identifier2 ::= "\\" string ;
 # result: [:@identifier <string.value>:]
