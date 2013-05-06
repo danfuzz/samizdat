@@ -48,17 +48,14 @@ hexInteger ::= "0x" "-"? hexDigit+ ;
 hexDigit ::=
     "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" |
     "a" | "b" | "c" | "d" | "e" | "f" |
-    "A" | "B" | "C" | "D" | "E" | "F" | "_" ;
-# result: <intlet> of digit value or -1 for "_"
-# Note: "_" is ignored (useful for readability).
+    "A" | "B" | "C" | "D" | "E" | "F" ;
+# result: <intlet>
 
 binaryInteger ::= "0b" "-"? binaryDigit+ ;
 # result: [:@integer <intlet>:]
-# Note: "_" is ignored (useful for readability).
 
-binaryDigit ::= "0" | "1" | "_" ;
-# result: <intlet> of digit value or -1 for "_"
-# Note: "_" is ignored (useful for readability).
+binaryDigit ::= "0" | "1" ;
+# result: <intlet>
 
 identifier2 ::= "\\" string ;
 # result: [:@identifier <string.value>:]
@@ -76,22 +73,76 @@ rules.
 TODO: Sort this all out.
 
 ```
-# These are ordered by precedence, low to high.
+#
+# Statement rules
+#
 
-orExpression ::= (expr (@"||"))* expr ;
+statement ::= ifStatement | whileStatement | varDef | expression ;
+# result: same as whichever choice matched.
 
-andExpression ::= (expr (@"&&"))* expr ;
+ifStatement ::=
+    @"if" @"(" expression @")" function
+    (@"else" (ifStatement | function))?
+# result: ifTrue expression function (if|function)?
+
+whileStatement ::=
+    @"while" @"(" expression @")" function
+# result:
+# { <break> ::
+#     loop { ifTrue { <> expression } function { <break> } }
+# }()
+
+
+#
+# Expression rules. These are ordered by precedence, low to high.
+#
+
+expression ::= orExpression ;
+# result: <same as the orExpression>;
+
+orExpression ::= andExpression ((@"||") andExpression)* ;
+# result: or { <> expr1 } { <> expr2 } ...
+
+andExpression ::= compareExpression (@"&&" compareExpression)* ;
+# result: and { <> expr1 } { <> expr2 } ...
 
 compareExpression ::=
-    (expr (@"==" | @"!=" | @"<" | @">" | @"<=" | @">="))* expr ;
+    bitExpression
+    ((@"==" | @"!=" | @"<" | @">" | @"<=" | @">=") bitExpression)*
+;
+# result:
+# {
+#     e1 = expr1; e2 = expr2; ...
+#     <> and { <> e1 op e2 } { <> e2 op e3 } ...
+# }()
 
-bitExpression ::= (expr (@"<<" | @">>" | @"&" | @"|" | @"^"))* expr ;
+bitExpression ::=
+    additiveExpression
+    ((@"<<" | @">>" | @"&" | @"|" | @"^") bitExpressione)?
+;
+# result: op expr1 expr2
 
-addExpression ::= (expr (@"+" | @"-"))* expr ;
+additiveExpression ::=
+    multiplicativeExpression
+    ((@"+" | @"-") additiveExpression)? ;
+# result: op expr1 expr2
 
-multiplyExpression ::= (expr (@"*" | @"/" | @"%"))* expr ;
+multiplicativeExpression ::=
+    unaryExpression
+    ((@"*" | @"/" | @"%") multiplicativeExpression)? ;
+# result: op expr1 expr2
 
-unaryExpression ::= (@"!" | @"~")* expr ;
+unaryPrefixExpression ::= (@"!" | @"~" | @"-")* unaryPostfixExpression ;
+# result: op1 (op2 (op3 ... expr))
+
+unaryPostfixExpression ::=
+    atom
+    ( @"(" @")"
+    | @"[" expression @"]""
+    )*;
+# result: <call atom()>
+#       | \"[]" atom expression
+# etc.
 
 atom ::=
     varRef | intlet | [:@integer:] | stringlet | [:@string:] |
