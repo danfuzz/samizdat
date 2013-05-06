@@ -57,16 +57,6 @@ functionFromRule = { rule ::
 # Exported functions
 #
 
-# Makes a reader that's augmented with a method to perform rule lookup.
-pegEngine = { reader rules ::
-    <> { name rest* ::
-        <> ifTrue { <> eq name @rule }
-            { <> mapletGet rules (listletNth rest @0) }
-            { <> apply reader name rest }
-    }
-};
-
-
 # Returns a rule which succeeds if a given other rule succeeds, and
 # if so runs the given result filter function, passing it the rule
 # result, to produce the final result of processing.
@@ -212,6 +202,15 @@ notCharSetRule = { chars ::
                         <out> ch
                     }
             }
+    }
+};
+
+# Makes a reader that's augmented with a method to perform rule lookup.
+pegEngine = { reader rules ::
+    <> { name rest* ::
+        <> ifTrue { <> eq name @rule }
+            { <> mapletGet rules (listletNth rest @0) }
+            { <> apply reader name rest }
     }
 };
 
