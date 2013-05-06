@@ -1,0 +1,79 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# High-level driver for tokenization and tree parsing
+#
+
+#
+# Helper functions
+#
+
+# Tokenizer error helper, to read a line of text for reporting back to
+# the user.
+readLine = filterRule
+    (seqRule
+        (starRule (notCharSetRule @"\n"))
+        (optRule (charsRule @"\n")))
+    { result :: <> apply stringletAdd (listletNth result @0) };
+
+# Performs tokenization of the given text using the given tokenizer rules.
+tokenize = { rules text ::
+    theReader = reader text;
+    theEngine = pegEngine theReader rules;
+    result = (theEngine @rule @file) theEngine;
+
+    ifFalse { <> theEngine @eof }
+        {
+            io0Note @"Extra text at end of program.";
+            io0Note @"Pending text:";
+            io0Die (readLine theEngine);
+        };
+
+    <> result
+};
+
+# Performs tree parsing of the given tokenized text using the given tree
+# parsing rules.
+parseTree = { rules tokens ::
+    theReader = reader tokens;
+    theEngine = pegEngine theReader rules;
+    result = (theEngine @rule @program) theEngine;
+
+    ifFalse { <> theEngine @eof }
+        {
+            io0Note @"Pending tokens:";
+
+            { <break> ::
+                loop {
+                    ifValue { <> theEngine @read }
+                        { token :: io0Note (format @"    %q" token) }
+                        { <break> }
+                }
+            }();
+
+            io0Die @"Extra tokens at end of program."
+        };
+
+    <> result
+};
+
+
+#
+# Exported functions
+#
+
+# Given a token grammar and a tree grammar (both given as maplets of
+# name-to-rule bindings, return a combined parser that takes strings and
+# returns parsed programs. This assumes that the main token rule is `@file`
+# (to return the entire file as a listlet of parsed tokens) and the main
+# tree rule is `@program`.
+parser = { tokenRules treeRules ::
+    <> { text ::
+        tokens = tokenize tokenRules text;
+        <> parseTree treeRules tokens
+    }
+};
+
+<> @[@parser = parser]

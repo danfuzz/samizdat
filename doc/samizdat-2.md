@@ -20,7 +20,7 @@ rules.
 token ::= punctuation2 | punctuation |
     integer | hexInteger | binaryInteger |
     string |
-    identifier2 | identifier
+    keyword | identifier2 | identifier
 ;
 
 keyword ::=
@@ -65,7 +65,7 @@ binaryDigit ::= "0" | "1" ;
 # result: <intlet>
 
 identifier2 ::= "\\" string ;
-# result: [:@identifier <string.value>:]
+# result: [:@identifier (highletValue string):]
 ```
 
 
@@ -91,19 +91,19 @@ statement ::=
 # result: <same as whatever choice matched>
 
 ifStatement ::=
-    [:@"if":] [:@"(":] expression [:@")":] function
-    (@"else" (ifStatement | function))?
+    [:@if:] [:@"(":] expression [:@")":] function
+    ([:@else:] (ifStatement | function))?
 # result code: ifTrue expression function (if|function)?
 
 whileStatement ::=
-    [:@"while":] [:@"(":] expression [:@")":] function
+    [:@while:] [:@"(":] expression [:@")":] function
 # result code:
 # { <break> ::
 #     loop { ifTrue { <> expression } function { <break> } }
 # }()
 
 functionStatement ::=
-    [:@"fn":] [:@identifier:] formals? yieldDef? [:@"{":] statement* [:@"}":]
+    [:@fn:] [:@identifier:] formals? yieldDef? [:@"{":] statement* [:@"}":]
 ;
 # result: varDef of identifier to function.
 

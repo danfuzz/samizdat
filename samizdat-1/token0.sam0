@@ -104,7 +104,7 @@ parseWhitespace = orRule
         (charsRule @"\n"));
 
 # Maplet of all the tokenizer rules.
-RULES = @[
+TOKEN0_RULES = @[
     @file = parseFile
     @identifier = parseIdentifier
     @integer = parseInteger
@@ -114,33 +114,4 @@ RULES = @[
     @whitespace = parseWhitespace
 ];
 
-
-#
-# Main `tokenize` function
-#
-
-# Error helper, to read a line of text for reporting back.
-readLine = filterRule
-    (seqRule
-        (starRule (notCharSetRule @"\n"))
-        (optRule (charsRule @"\n")))
-    { result :: <> apply stringletAdd (listletNth result @0) };
-
-# Tokenizes the given string, using Samizdat Layer 0 token syntax.
-# Returns a listlet of tokens.
-tokenize = { programText ::
-    theReader = reader programText;
-    theEngine = pegEngine theReader RULES;
-    theProgram = parseFile theEngine;
-
-    ifFalse { <> theEngine @eof }
-        {
-            io0Note @"Extra text at end of program.";
-            io0Note @"Pending text:";
-            io0Die (readLine theEngine);
-        };
-
-    <> theProgram;
-};
-
-<> @[@tokenize = tokenize]
+<> @[@TOKEN0_RULES = TOKEN0_RULES]

@@ -90,11 +90,41 @@ stringletChar = { ch ::
         }
 };
 
+# These are all the characters which are allowed to start an identifier.
+IDENTIFIER_STARTS = stringletReduce @[=]
+    @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+    { result ch :: <> mapletPut result ch true };
+
+# These are all the characters which are allowed to be in an identifier.
+IDENTIFIER_CHARS = mapletAdd IDENTIFIER_STARTS
+    @[ @"0"=true @"1"=true @"2"=true @"3"=true @"4"=true
+       @"5"=true @"6"=true @"7"=true @"8"=true @"9"=true ];
+
+# Checks to see if the given stringlet has the form of an in-language
+# identifier.
+isIdentifier = { stringlet <out> ::
+    <> and
+        { <> gt (lowSize stringlet) @0 }
+        { <> mapletGet IDENTIFIER_STARTS (stringletNth stringlet @0) false }
+        {
+            stringletForEach stringlet
+                { ch ::
+                    ifFalse { <> mapletGet IDENTIFIER_CHARS ch false }
+                        { <out> false }
+                };
+            <> true
+        }
+};
+
 # Stringifies a stringlet.
 doStringlet = { recurse stringlet adorn ::
-    body = stringletReduce @"" stringlet
-        { reduction ch :: <> stringletAdd reduction (stringletChar ch) };
-    <> adornIf adorn @"@\"" body @"\""
+    <> ifTrue { <> isIdentifier stringlet }
+        { <> adornIf adorn @"@" stringlet @"" }
+        {
+            body = stringletReduce @"" stringlet
+                { result ch :: <> stringletAdd result (stringletChar ch) };
+            <> adornIf adorn @"@\"" body @"\""
+        }
 };
 
 # Stringifies a listlet.

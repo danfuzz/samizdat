@@ -10,6 +10,9 @@
 # particular, the embedded copy of samizdat-0-lib).
 READER ::
 
+# The "unadorned" layer 0 parser defined in this program.
+sam1Parser = parser TOKEN0_RULES TREE0_RULES;
+
 # Parses the given program text, yielding a `program` node. This also
 # compares the would-be result with the result of doing the same operation
 # using the samizdat-0 facilities for same, complaining if they're not
@@ -17,8 +20,7 @@ READER ::
 sam1Tree = { programText ::
     # Turn the text into a parse tree using the tokenizer and tree parser
     # defined in this program.
-    tokens = tokenize programText;
-    programNode = parse tokens;
+    programNode = sam1Parser programText;
 
     # Turn the text into a parse tree using the samizdat-0 implementation
     # of parsing.

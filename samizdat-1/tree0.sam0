@@ -260,7 +260,7 @@ parseFunction = filterRule
 # it's looked up through this maplet by name, which trivially allows for
 # mutually-recursive rules (since the rules refer directly to names and
 # not actual functions).
-RULES = @[
+TREE0_RULES = @[
     @atom = parseAtom
     @binding = parseBinding
     @callExpression = parseCallExpression
@@ -289,34 +289,4 @@ RULES = @[
     @yieldDef = parseYieldDef
 ];
 
-
-#
-# Main `parse` function
-#
-
-# Parses a listlet of tokens as a program, using Samizdat Layer 0 tree
-# syntax. Returns a `function` node.
-parse = { tokens ::
-    theReader = reader tokens;
-    theEngine = pegEngine theReader RULES;
-    theProgram = parseProgram theEngine;
-
-    ifFalse { <> theEngine @eof }
-        {
-            io0Note @"Pending tokens:";
-
-            { <break> ::
-                loop {
-                    ifValue { <> theEngine @read }
-                        { token :: io0Note (format @"    %q" token) }
-                        { <break> }
-                }
-            }();
-
-            io0Die @"Extra tokens at end of program."
-        };
-
-    <> theProgram;
-};
-
-<> @[@parse = parse];
+<> @[@TREE0_RULES = TREE0_RULES]
