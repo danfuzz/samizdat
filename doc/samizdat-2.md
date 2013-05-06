@@ -20,7 +20,7 @@ rules.
 token ::= punctuation2 | punctuation |
     integer | hexInteger | binaryInteger |
     string |
-    identifier2 | identifier
+    keyword | identifier2 | identifier
 ;
 
 keyword ::=
