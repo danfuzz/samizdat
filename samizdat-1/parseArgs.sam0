@@ -130,23 +130,4 @@ parseArgs = { args ::
     <> parseArguments theEngine;
 };
 
-# Parses the command-line arguments. Starts by appending all the
-# arguments-as-given together with a "\0" at the end of each. Then
-# it uses the parser engine to split them back apart.
-parseArgsOld = { args <out> ::
-    # TODO: This is the old implementation.
-    <> listletReduce @[@validate=false @args=@[]] args { result arg ::
-        <> ifTrue { <> eq arg @"--validate" }
-            { <> mapletPut result @validate true }
-            {
-                <> ifValue { <> mapletGet result @file }
-                    {
-                        args = listletAppend (mapletGet result @args) arg;
-                        <> mapletPut result @args args
-                    }
-                    { <> mapletPut result @file arg }
-            }
-    }
-};
-
 <> @[@parseArgs = parseArgs]
