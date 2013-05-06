@@ -25,3 +25,23 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
 
     return result;
 }
+
+
+/*
+ * Exported functions
+ */
+
+/* Documented in header. */
+void datImmortalize(zvalue value) {
+    // Nothing to do...yet.
+}
+
+/* Documented in header. */
+void datSetStackBase(void *base) {
+    // Nothing to do...yet.
+}
+
+/* Documented in header. */
+void datGc(void) {
+    // Nothing to do...yet.
+}

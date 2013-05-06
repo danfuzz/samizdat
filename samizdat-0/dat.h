@@ -444,4 +444,28 @@ bool datEq(zvalue v1, zvalue v2);
  */
 zorder datOrder(zvalue v1, zvalue v2);
 
+
+/*
+ * Memory management functions
+ */
+
+/**
+ * Marks the base of the stack. This has to be called from a function
+ * which (a) performs no other dat module calls, and (b) is the ancestor
+ * call of all functions which *do* make dat module calls. Pass it the
+ * address of a local variable.
+ */
+void datSetStackBase(void *base);
+
+/**
+ * Marks the given value as "immortal." It is considered a root and
+ * will never get freed.
+ */
+void datImmortalize(zvalue value);
+
+/**
+ * Forces a gc.
+ */
+void datGc(void);
+
 #endif
