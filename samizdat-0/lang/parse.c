@@ -557,10 +557,9 @@ DEF_PARSE(formal) {
 }
 
 /**
- * Parses a `formals` node.
+ * Parses `formal*`.
  */
-DEF_PARSE(formals) {
-    MARK();
+DEF_PARSE(formalStar) {
     zvalue formals = EMPTY_LISTLET;
 
     for (;;) {
@@ -572,33 +571,13 @@ DEF_PARSE(formals) {
         formals = datListletAppend(formals, formal);
     }
 
-    REJECT_IF(datSize(formals) == 0);
-
     return formals;
 }
 
 /**
- * Helper for `program`: Parses `(formals? yieldDef? [:@"::":])`. Returns
- * a maplet of bindings to include in the final result, or `NULL` if
- * there were no valid declarations.
+ * Parses a `programBody` node.
  */
-DEF_PARSE(program1) {
-    MARK();
-
-    // It's okay for either of these to be `NULL`.
-    zvalue formals = PARSE(formals);
-    zvalue yieldDef = PARSE(yieldDef);
-
-    MATCH_OR_REJECT(CH_COLONCOLON);
-
-    return mapletFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
-}
-
-/**
- * Parses a `program` node.
- */
-DEF_PARSE(program) {
-    zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
+DEF_PARSE(programBody) {
     zvalue statements = EMPTY_LISTLET;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
@@ -617,8 +596,8 @@ DEF_PARSE(program) {
             break;
         }
 
-        statements = datListletAppend(statements, statement);
         PARSE(optSemicolons);
+        statements = datListletAppend(statements, statement);
     }
 
     zvalue statement = PARSE(statement);
@@ -635,7 +614,44 @@ DEF_PARSE(program) {
 
     PARSE(optSemicolons);
 
-    zvalue value = mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+    return mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+}
+
+/**
+ * Parses a `programDeclarations` node.
+ */
+DEF_PARSE(programDeclarations) {
+    MARK();
+
+    zvalue formals = PARSE(formalStar);
+    zvalue yieldDef = PARSE(yieldDef); // It's okay for this to be `NULL`.
+
+    if (datSize(formals) == 0) {
+        // The spec indicates that the @formals mapping should be omitted
+        // when there aren't any formals.
+        formals = NULL;
+    }
+
+    return mapletFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
+}
+
+/**
+ * Helper for `program`: Parses `(programDeclarations [:@"::":])`.
+ */
+DEF_PARSE(program1) {
+    MARK();
+
+    zvalue result = PARSE(programDeclarations); // This never fails.
+    MATCH_OR_REJECT(CH_COLONCOLON);
+    return result;
+}
+
+/**
+ * Parses a `program` node.
+ */
+DEF_PARSE(program) {
+    zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
+    zvalue value = PARSE(programBody); // This never fails.
 
     if (declarations != NULL) {
         value = datMapletAdd(value, declarations);

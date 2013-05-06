@@ -16,24 +16,28 @@ regular expressions).
 function ::= [:@"{":] program [:@"}":] ;
 # result: <program>
 
-program ::=
-    (formals? yieldDef? [:@"::":])?
+program ::= (programDeclarations [:@"::":])? programBody ;
     [:@";":]* (statement [:@";":]+)* (statement | nonlocalExit | yield)?
     [:@";":]*
 ;
 # result: [:
 #             @function
-#             @[
-#                 (@formals=formals)?
-#                 (@yieldDef=yieldDef)?
-#                 @statements=@[statement+]
-#                 (@yield=yield)?
-#             ]
+#             (mapletAdd programDeclarations programBody)
 #         :]
-# Note: nonLocalExit results in a statement.
 
-formals ::= formal+ ;
-# result: @[formal+]
+programDeclarations ::= formal* yieldDef? ;
+# result: @[(@formals=@[formal*])? (yieldDef=yieldDef)?]
+# Note: The @formals mapping should only be included when there is at
+# least one formal.
+
+programBody ::=
+    [:@";":]*
+    (statement [:@";":]+)*
+    (statement | nonlocalExit | yield)?
+    [:@";":]*
+;
+# result: @[@statements=@[statement*] (@yield=yield)?]
+# Note: nonLocalExit results in a statement.
 
 formal ::= [:@identifier:] ([:@"*":] | [:@"?":])? ;
 # result: @[@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]

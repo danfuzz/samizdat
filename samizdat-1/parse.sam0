@@ -184,75 +184,72 @@ parseFormal = filterRule
             }))
     { result :: <> apply mapletAdd result };
 
-# Parses a `formals` node.
-parseFormals = plusRule @formal;
-
-# `program` node helper: Parses `(formals? yieldDef? @"::")?`, yielding
-# a maplet (possibly empty).
-parseProgram1 = filterRule
-    (questRule
-        (filterRule
-            (seqRule
-                (questRule @formals)
-                (questRule @yieldDef)
-                [:@"::":])
-            { result ::
-                formals = ifValue { <> listletNth (listletNth result @0) @0 }
-                    { value :: <> @[@formals=value] }
-                    { <> @[=] };
-                yieldDef = ifValue { <> listletNth (listletNth result @1) @0 }
-                    { value :: <> @[@yieldDef=value] }
-                    { <> @[=] };
-                <> mapletAdd formals yieldDef
-            }))
-    { result ::
-        <> ifValue { <> listletNth result @0 }
-            { result :: <> result }
-            { <> @[=] }
-    };
-
-# `program` node helper: Parses `(statement | nonlocalExit | yield)?`, yielding
-# a maplet that maps `@yield` and `@statements`. Always Succeeds.
-parseProgram2 = filterRule
+# `programBody` node helper: Parses `(statement | nonlocalExit | yield)?`,
+# yielding a maplet that maps `@yield` and `@statements`. Always Succeeds.
+parseProgramBody1 = filterRule
     (questRule
         (orRule
             (filterRule
                 (orRule @statement @nonlocalExit)
-                { result :: <> @[@statements=@[result] @yield=@[=]] })
+                { result :: <> @[@statements=@[result]] })
             (filterRule
                 @yield
-                { result :: <> @[@statements=@[] @yield=@[@yield=result]] })))
+                { result :: <> @[@statements=@[] @yield=result] })))
     { result ::
         <> ifValue { <> listletNth result @0 }
             { result :: <> result }
-            { <> @[@statements=@[] @yield=@[=]] }
+            { <> @[@statements=@[]] }
     };
 
-# Parses a `program` node.
-parseProgram = filterRule
+# Parses a `programBody` node.
+parseProgramBody = filterRule
     (seqRule
-        parseProgram1
         (starRule [:@";":])
         (starRule
             (filterRule
                 (seqRule @statement (plusRule [:@";":]))
                 { result :: <> listletNth result @0 }))
-        parseProgram2
+        parseProgramBody1
         (starRule [:@";":]))
     { result ::
-        formals = listletNth result @0;
-        mostStatements = listletNth result @2;
-        lastClause = listletNth result @3;
+        mostStatements = listletNth result @1;
+        lastClause = listletNth result @2;
         statements = listletAdd mostStatements
             (mapletGet lastClause @statements);
-        <> [:
-            @function
-            (mapletAdd
-                formals
-                @[@statements=statements]
-                (mapletGet lastClause @yield))
-        :]
+        <> mapletPut lastClause @statements statements;
     };
+
+# Parses a `programDeclarations` node.
+parseProgramDeclarations = filterRule
+    (seqRule
+        (filterRule (starRule @formal)
+            { result ::
+                <> ifTrue { <> ne result @[] }
+                    { <> @[@formals = result] }
+                    { <> @[=] }
+            })
+        (filterRule (questRule @yieldDef)
+            { result ::
+                <> ifValue { <> listletNth result @0 }
+                    { yieldDef :: <> @[@yieldDef = yieldDef] }
+                    { <> @[=] }
+            }))
+    { result :: <> apply mapletAdd result };
+
+# `program` node helper: Parses `(programDeclarations [:@"::":])?`, yielding
+# a maplet (possibly empty).
+parseProgram1 = filterRule
+    (questRule (seqRule @programDeclarations [:@"::":]))
+    { result ::
+        <> ifValue { <> listletNth result @0 }
+            { match :: <> listletNth match @0 }
+            { <> @[=] }
+    };
+
+# Parses a `program` node.
+parseProgram = filterRule
+    (seqRule parseProgram1 @programBody)
+    { result :: <> [:@function (apply mapletAdd result):] };
 
 # Parses a `function` node.
 parseFunction = filterRule
@@ -271,7 +268,6 @@ RULES = @[
     @emptyMaplet = parseEmptyMaplet
     @expression = parseExpression
     @formal = parseFormal
-    @formals = parseFormals
     @function = parseFunction
     @highlet = parseHighlet
     @intlet = parseIntlet
@@ -280,6 +276,8 @@ RULES = @[
     @nonlocalExit = parseNonlocalExit
     @parenExpression = parseParenExpression
     @program = parseProgram
+    @programBody = parseProgramBody
+    @programDeclarations = parseProgramDeclarations
     @statement = parseStatement
     @stringlet = parseStringlet
     @unary = parseUnary
