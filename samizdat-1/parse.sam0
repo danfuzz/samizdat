@@ -260,7 +260,7 @@ parseFunction = filterRule
 # it's looked up through this maplet by name, which trivially allows for
 # mutually-recursive rules (since the rules refer directly to names and
 # not actual functions).
-RULES = @[
+TREE0_RULES = @[
     @atom = parseAtom
     @binding = parseBinding
     @callExpression = parseCallExpression
@@ -298,7 +298,7 @@ RULES = @[
 # syntax. Returns a `function` node.
 parse = { tokens ::
     theReader = reader tokens;
-    theEngine = pegEngine theReader RULES;
+    theEngine = pegEngine theReader TREE0_RULES;
     theProgram = parseProgram theEngine;
 
     ifFalse { <> theEngine @eof }
