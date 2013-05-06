@@ -575,6 +575,49 @@ DEF_PARSE(formalStar) {
 }
 
 /**
+ * Parses a `programBody` node.
+ */
+DEF_PARSE(programBody) {
+    zvalue statements = EMPTY_LISTLET;
+    zvalue yield = NULL; // `NULL` is ok, as it's optional.
+
+    PARSE(optSemicolons);
+
+    for (;;) {
+        MARK();
+
+        zvalue statement = PARSE(statement);
+        if (statement == NULL) {
+            break;
+        }
+
+        if (MATCH(CH_SEMICOLON) == NULL) {
+            RESET();
+            break;
+        }
+
+        PARSE(optSemicolons);
+        statements = datListletAppend(statements, statement);
+    }
+
+    zvalue statement = PARSE(statement);
+
+    if (statement == NULL) {
+        statement = PARSE(nonlocalExit);
+    }
+
+    if (statement != NULL) {
+        statements = datListletAppend(statements, statement);
+    } else {
+        yield = PARSE(yield);
+    }
+
+    PARSE(optSemicolons);
+
+    return mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+}
+
+/**
  * Parses a `programDeclarations` node.
  */
 DEF_PARSE(programDeclarations) {
@@ -608,43 +651,7 @@ DEF_PARSE(program1) {
  */
 DEF_PARSE(program) {
     zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
-    zvalue statements = EMPTY_LISTLET;
-    zvalue yield = NULL; // `NULL` is ok, as it's optional.
-
-    PARSE(optSemicolons);
-
-    for (;;) {
-        MARK();
-
-        zvalue statement = PARSE(statement);
-        if (statement == NULL) {
-            break;
-        }
-
-        if (MATCH(CH_SEMICOLON) == NULL) {
-            RESET();
-            break;
-        }
-
-        statements = datListletAppend(statements, statement);
-        PARSE(optSemicolons);
-    }
-
-    zvalue statement = PARSE(statement);
-
-    if (statement == NULL) {
-        statement = PARSE(nonlocalExit);
-    }
-
-    if (statement != NULL) {
-        statements = datListletAppend(statements, statement);
-    } else {
-        yield = PARSE(yield);
-    }
-
-    PARSE(optSemicolons);
-
-    zvalue value = mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+    zvalue value = PARSE(programBody); // This never fails.
 
     if (declarations != NULL) {
         value = datMapletAdd(value, declarations);
