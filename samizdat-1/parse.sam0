@@ -184,30 +184,30 @@ parseFormal = filterRule
             }))
     { result :: <> apply mapletAdd result };
 
-# Parses a `formals` node.
-parseFormals = plusRule @formal;
+# Parses a `programDeclarations` node.
+parseProgramDeclarations = filterRule
+    (seqRule
+        (filterRule (starRule @formal)
+            { result ::
+                <> ifTrue { <> ne result @[] }
+                    { <> @[@formals = result] }
+                    { <> @[=] }
+            })
+        (filterRule (questRule @yieldDef)
+            { result ::
+                <> ifValue { <> listletNth result @0 }
+                    { yieldDef :: <> @[@yieldDef = yieldDef] }
+                    { <> @[=] }
+            }))
+    { result :: <> apply mapletAdd result };
 
-# `program` node helper: Parses `(formals? yieldDef? @"::")?`, yielding
+# `program` node helper: Parses `(programDeclarations [:@"::":])?`, yielding
 # a maplet (possibly empty).
 parseProgram1 = filterRule
-    (questRule
-        (filterRule
-            (seqRule
-                (questRule @formals)
-                (questRule @yieldDef)
-                [:@"::":])
-            { result ::
-                formals = ifValue { <> listletNth (listletNth result @0) @0 }
-                    { value :: <> @[@formals=value] }
-                    { <> @[=] };
-                yieldDef = ifValue { <> listletNth (listletNth result @1) @0 }
-                    { value :: <> @[@yieldDef=value] }
-                    { <> @[=] };
-                <> mapletAdd formals yieldDef
-            }))
+    (questRule (seqRule @programDeclarations [:@"::":]))
     { result ::
         <> ifValue { <> listletNth result @0 }
-            { result :: <> result }
+            { match :: <> listletNth match @0 }
             { <> @[=] }
     };
 
@@ -271,7 +271,6 @@ RULES = @[
     @emptyMaplet = parseEmptyMaplet
     @expression = parseExpression
     @formal = parseFormal
-    @formals = parseFormals
     @function = parseFunction
     @highlet = parseHighlet
     @intlet = parseIntlet
@@ -280,6 +279,7 @@ RULES = @[
     @nonlocalExit = parseNonlocalExit
     @parenExpression = parseParenExpression
     @program = parseProgram
+    @programDeclarations = parseProgramDeclarations
     @statement = parseStatement
     @stringlet = parseStringlet
     @unary = parseUnary
