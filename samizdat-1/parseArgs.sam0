@@ -26,7 +26,7 @@ CHAR_0 = stringletFromIntlet @0;
 parseArguments = filterRule
     (seqRule
         @options
-        (questRule (charsRule (stringletAdd @"--" CHAR_0)))
+        (optRule (charsRule (stringletAdd @"--" CHAR_0)))
         @words)
     { result ::
         optsErrors = listletNth result @0;
@@ -69,7 +69,7 @@ parseError = filterRule
     };
 
 parseOption = filterRule
-    (seqRule (charsRule @"--") @key (questRule @value))
+    (seqRule (charsRule @"--") @key (optRule @value))
     { result ::
         key = listletNth result @1;
         valueHolder = listletNth result @2;
