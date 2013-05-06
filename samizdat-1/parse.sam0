@@ -184,6 +184,41 @@ parseFormal = filterRule
             }))
     { result :: <> apply mapletAdd result };
 
+# `programBody` node helper: Parses `(statement | nonlocalExit | yield)?`,
+# yielding a maplet that maps `@yield` and `@statements`. Always Succeeds.
+parseProgramBody1 = filterRule
+    (questRule
+        (orRule
+            (filterRule
+                (orRule @statement @nonlocalExit)
+                { result :: <> @[@statements=@[result]] })
+            (filterRule
+                @yield
+                { result :: <> @[@statements=@[] @yield=result] })))
+    { result ::
+        <> ifValue { <> listletNth result @0 }
+            { result :: <> result }
+            { <> @[@statements=@[]] }
+    };
+
+# Parses a `programBody` node.
+parseProgramBody = filterRule
+    (seqRule
+        (starRule [:@";":])
+        (starRule
+            (filterRule
+                (seqRule @statement (plusRule [:@";":]))
+                { result :: <> listletNth result @0 }))
+        parseProgramBody1
+        (starRule [:@";":]))
+    { result ::
+        mostStatements = listletNth result @1;
+        lastClause = listletNth result @2;
+        statements = listletAdd mostStatements
+            (mapletGet lastClause @statements);
+        <> mapletPut lastClause @statements statements;
+    };
+
 # Parses a `programDeclarations` node.
 parseProgramDeclarations = filterRule
     (seqRule
@@ -211,48 +246,10 @@ parseProgram1 = filterRule
             { <> @[=] }
     };
 
-# `program` node helper: Parses `(statement | nonlocalExit | yield)?`, yielding
-# a maplet that maps `@yield` and `@statements`. Always Succeeds.
-parseProgram2 = filterRule
-    (questRule
-        (orRule
-            (filterRule
-                (orRule @statement @nonlocalExit)
-                { result :: <> @[@statements=@[result] @yield=@[=]] })
-            (filterRule
-                @yield
-                { result :: <> @[@statements=@[] @yield=@[@yield=result]] })))
-    { result ::
-        <> ifValue { <> listletNth result @0 }
-            { result :: <> result }
-            { <> @[@statements=@[] @yield=@[=]] }
-    };
-
 # Parses a `program` node.
 parseProgram = filterRule
-    (seqRule
-        parseProgram1
-        (starRule [:@";":])
-        (starRule
-            (filterRule
-                (seqRule @statement (plusRule [:@";":]))
-                { result :: <> listletNth result @0 }))
-        parseProgram2
-        (starRule [:@";":]))
-    { result ::
-        formals = listletNth result @0;
-        mostStatements = listletNth result @2;
-        lastClause = listletNth result @3;
-        statements = listletAdd mostStatements
-            (mapletGet lastClause @statements);
-        <> [:
-            @function
-            (mapletAdd
-                formals
-                @[@statements=statements]
-                (mapletGet lastClause @yield))
-        :]
-    };
+    (seqRule parseProgram1 @programBody)
+    { result :: <> [:@function (apply mapletAdd result):] };
 
 # Parses a `function` node.
 parseFunction = filterRule
@@ -279,6 +276,7 @@ RULES = @[
     @nonlocalExit = parseNonlocalExit
     @parenExpression = parseParenExpression
     @program = parseProgram
+    @programBody = parseProgramBody
     @programDeclarations = parseProgramDeclarations
     @statement = parseStatement
     @stringlet = parseStringlet
