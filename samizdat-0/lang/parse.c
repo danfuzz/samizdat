@@ -161,42 +161,30 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     REJECT_IF(tempResult == NULL)
 
 /* Defined below. */
-DEF_PARSE(unary);
+DEF_PARSE(atom);
 DEF_PARSE(expression);
 DEF_PARSE(function);
 
 /**
- * Parses `unary+`. Returns a listlet of parsed expressions.
+ * Parses `atom+`. Returns a listlet of parsed expressions.
  */
-DEF_PARSE(unaryPlus) {
+DEF_PARSE(atomPlus) {
     MARK();
 
     zvalue result = EMPTY_LISTLET;
 
     for (;;) {
-        zvalue unary = PARSE(unary);
-        if (unary == NULL) {
+        zvalue atom = PARSE(atom);
+        if (atom == NULL) {
             break;
         }
 
-        result = datListletAppend(result, unary);
+        result = datListletAppend(result, atom);
     }
 
     REJECT_IF(datSize(result) == 0);
 
     return result;
-}
-
-/**
- * Parses a `call` node.
- */
-DEF_PARSE(call) {
-    MARK();
-
-    zvalue function = PARSE_OR_REJECT(unary);
-    zvalue actuals = PARSE_OR_REJECT(unaryPlus);
-
-    return makeCall(function, actuals);
 }
 
 /**
@@ -207,8 +195,8 @@ DEF_PARSE(highlet) {
 
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_COLON);
-    zvalue innerType = PARSE_OR_REJECT(unary);
-    zvalue innerValue = PARSE(unary); // It's okay for this to be NULL.
+    zvalue innerType = PARSE_OR_REJECT(atom);
+    zvalue innerValue = PARSE(atom); // It's okay for this to be NULL.
     MATCH_OR_REJECT(CH_COLON);
     MATCH_OR_REJECT(CH_CSQUARE);
 
@@ -238,9 +226,9 @@ DEF_PARSE(uniqlet) {
 DEF_PARSE(binding) {
     MARK();
 
-    zvalue key = PARSE_OR_REJECT(unary);
+    zvalue key = PARSE_OR_REJECT(atom);
     MATCH_OR_REJECT(CH_EQUAL);
-    zvalue value = PARSE_OR_REJECT(unary);
+    zvalue value = PARSE_OR_REJECT(atom);
 
     return datListletAppend(datListletAppend(EMPTY_LISTLET, key), value);
 }
@@ -293,10 +281,10 @@ DEF_PARSE(listlet) {
 
     MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
-    zvalue unaries = PARSE_OR_REJECT(unaryPlus);
+    zvalue atoms = PARSE_OR_REJECT(atomPlus);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_LISTLET), unaries);
+    return makeCall(makeVarRef(STR_MAKE_LISTLET), atoms);
 }
 
 /**
@@ -408,9 +396,21 @@ DEF_PARSE(atom) {
 }
 
 /**
- * Helper for `unaryCall`: Parses `[:@"(":] [:@")":]`.
+ * Parses a `callExpression` node.
  */
-DEF_PARSE(unaryCall1) {
+DEF_PARSE(callExpression) {
+    MARK();
+
+    zvalue function = PARSE_OR_REJECT(atom);
+    zvalue actuals = PARSE_OR_REJECT(atomPlus);
+
+    return makeCall(function, actuals);
+}
+
+/**
+ * Helper for `unaryCallExpression`: Parses `[:@"(":] [:@")":]`.
+ */
+DEF_PARSE(unaryCallExpression1) {
     MARK();
 
     MATCH_OR_REJECT(CH_OPAREN);
@@ -420,16 +420,16 @@ DEF_PARSE(unaryCall1) {
 }
 
 /**
- * Parses a `unaryCall` node.
+ * Parses a `unaryCallExpression` node.
  */
-DEF_PARSE(unaryCall) {
+DEF_PARSE(unaryCallExpression) {
     MARK();
 
     zvalue result = PARSE_OR_REJECT(atom);
     bool any = false;
 
     for (;;) {
-        if (PARSE(unaryCall1) == NULL) {
+        if (PARSE(unaryCallExpression1) == NULL) {
             break;
         }
 
@@ -445,12 +445,12 @@ DEF_PARSE(unaryCall) {
 }
 
 /**
- * Parses a `unary` node.
+ * Parses a `unaryExpression` node.
  */
-DEF_PARSE(unary) {
+DEF_PARSE(unaryExpression) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(unaryCall); }
+    if (result == NULL) { result = PARSE(unaryCallExpression); }
     if (result == NULL) { result = PARSE(atom); }
 
     return result;
@@ -462,8 +462,8 @@ DEF_PARSE(unary) {
 DEF_PARSE(expression) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(call); }
-    if (result == NULL) { result = PARSE(unary); }
+    if (result == NULL) { result = PARSE(callExpression); }
+    if (result == NULL) { result = PARSE(unaryExpression); }
 
     return result;
 }
@@ -496,7 +496,6 @@ DEF_PARSE(yield) {
 
     MATCH_OR_REJECT(CH_DIAMOND);
     zvalue yield = PARSE_OR_REJECT(expression);
-    PARSE(optSemicolons);
 
     return yield;
 }
@@ -558,10 +557,9 @@ DEF_PARSE(formal) {
 }
 
 /**
- * Parses a `formals` node.
+ * Parses `formal*`.
  */
-DEF_PARSE(formals) {
-    MARK();
+DEF_PARSE(formalStar) {
     zvalue formals = EMPTY_LISTLET;
 
     for (;;) {
@@ -573,33 +571,13 @@ DEF_PARSE(formals) {
         formals = datListletAppend(formals, formal);
     }
 
-    REJECT_IF(datSize(formals) == 0);
-
     return formals;
 }
 
 /**
- * Helper for `program`: Parses `(formals? yieldDef? [:@"::":])`. Returns
- * a maplet of bindings to include in the final result, or `NULL` if
- * there were no valid declarations.
+ * Parses a `programBody` node.
  */
-DEF_PARSE(program1) {
-    MARK();
-
-    // It's okay for either of these to be `NULL`.
-    zvalue formals = PARSE(formals);
-    zvalue yieldDef = PARSE(yieldDef);
-
-    MATCH_OR_REJECT(CH_COLONCOLON);
-
-    return mapletFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
-}
-
-/**
- * Parses a `program` node.
- */
-DEF_PARSE(program) {
-    zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
+DEF_PARSE(programBody) {
     zvalue statements = EMPTY_LISTLET;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
@@ -618,8 +596,8 @@ DEF_PARSE(program) {
             break;
         }
 
-        statements = datListletAppend(statements, statement);
         PARSE(optSemicolons);
+        statements = datListletAppend(statements, statement);
     }
 
     zvalue statement = PARSE(statement);
@@ -634,7 +612,46 @@ DEF_PARSE(program) {
         yield = PARSE(yield);
     }
 
-    zvalue value = mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+    PARSE(optSemicolons);
+
+    return mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+}
+
+/**
+ * Parses a `programDeclarations` node.
+ */
+DEF_PARSE(programDeclarations) {
+    MARK();
+
+    zvalue formals = PARSE(formalStar);
+    zvalue yieldDef = PARSE(yieldDef); // It's okay for this to be `NULL`.
+
+    if (datSize(formals) == 0) {
+        // The spec indicates that the @formals mapping should be omitted
+        // when there aren't any formals.
+        formals = NULL;
+    }
+
+    return mapletFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
+}
+
+/**
+ * Helper for `program`: Parses `(programDeclarations [:@"::":])`.
+ */
+DEF_PARSE(program1) {
+    MARK();
+
+    zvalue result = PARSE(programDeclarations); // This never fails.
+    MATCH_OR_REJECT(CH_COLONCOLON);
+    return result;
+}
+
+/**
+ * Parses a `program` node.
+ */
+DEF_PARSE(program) {
+    zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
+    zvalue value = PARSE(programBody); // This never fails.
 
     if (declarations != NULL) {
         value = datMapletAdd(value, declarations);

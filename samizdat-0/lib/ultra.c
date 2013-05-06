@@ -27,13 +27,15 @@ PRIM_IMPL(makeListlet) {
 PRIM_IMPL(makeMaplet) {
     requireEven(argCount);
 
-    zvalue result = EMPTY_MAPLET;
+    zint size = argCount / 2;
+    zmapping mappings[size];
 
-    for (zint i = 0; i < argCount; i += 2) {
-        result = datMapletPut(result, args[i], args[i + 1]);
+    for (zint i = 0; i < size; i++) {
+        mappings[i].key = args[i * 2];
+        mappings[i].value = args[i * 2 + 1];
     }
 
-    return result;
+    return datMapletAddArray(EMPTY_MAPLET, size, mappings);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

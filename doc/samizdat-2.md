@@ -23,6 +23,13 @@ token ::= punctuation2 | punctuation |
     identifier2 | identifier
 ;
 
+keyword ::=
+    @"if"    | # result: [:@"if":]
+    @"else"  | # result: [:@"else":]
+    @"fn"    | # result: [:@"fn":]
+    @"while"   # result: [:@"while":]
+;
+
 punctuation2 ::=
     "==" | # result: [:@"==":]
     "!=" | # result: [:@"!=":]
@@ -39,7 +46,7 @@ punctuation2 ::=
     "/"  | # result: [:@"/":]
     "%"  | # result: [:@"%":]
     "!"  | # result: [:@"!":]
-    "~"  | # result: [:@"~":]
+    "~"    # result: [:@"~":]
 ;
 
 hexInteger ::= "0x" "-"? hexDigit+ ;
@@ -48,17 +55,14 @@ hexInteger ::= "0x" "-"? hexDigit+ ;
 hexDigit ::=
     "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" |
     "a" | "b" | "c" | "d" | "e" | "f" |
-    "A" | "B" | "C" | "D" | "E" | "F" | "_" ;
-# result: <intlet> of digit value or -1 for "_"
-# Note: "_" is ignored (useful for readability).
+    "A" | "B" | "C" | "D" | "E" | "F" ;
+# result: <intlet>
 
 binaryInteger ::= "0b" "-"? binaryDigit+ ;
 # result: [:@integer <intlet>:]
-# Note: "_" is ignored (useful for readability).
 
-binaryDigit ::= "0" | "1" | "_" ;
-# result: <intlet> of digit value or -1 for "_"
-# Note: "_" is ignored (useful for readability).
+binaryDigit ::= "0" | "1" ;
+# result: <intlet>
 
 identifier2 ::= "\\" string ;
 # result: [:@identifier <string.value>:]
@@ -76,26 +80,91 @@ rules.
 TODO: Sort this all out.
 
 ```
-# These are ordered by precedence, low to high.
+#
+# Statement rules
+#
 
-orExpression ::= (expr (@"||"))* expr ;
+statement ::=
+    ifStatement | whileStatement | functionStatement |
+    varDef | expression
+;
+# result: <same as whatever choice matched>
 
-andExpression ::= (expr (@"&&"))* expr ;
+ifStatement ::=
+    [:@"if":] [:@"(":] expression [:@")":] function
+    (@"else" (ifStatement | function))?
+# result code: ifTrue expression function (if|function)?
+
+whileStatement ::=
+    [:@"while":] [:@"(":] expression [:@")":] function
+# result code:
+# { <break> ::
+#     loop { ifTrue { <> expression } function { <break> } }
+# }()
+
+functionStatement ::=
+    [:@"fn":] [:@identifier:] formals? yieldDef? [:@"{":] statement* [:@"}":]
+;
+# result: varDef of identifier to function.
+
+
+#
+# Expression rules. These are ordered by precedence, low to high.
+#
+
+expression ::= orExpression ;
+# result: orExpression
+
+orExpression ::= andExpression (([:@"||":]) andExpression)* ;
+# result code: or { <> expr1 } { <> expr2 } ...
+
+andExpression ::= compareExpression ([:@"&&":] compareExpression)* ;
+# result code: and { <> expr1 } { <> expr2 } ...
 
 compareExpression ::=
-    (expr (@"==" | @"!=" | @"<" | @">" | @"<=" | @">="))* expr ;
+    bitExpression
+    (([:@"==":] | [:@"!=":] | [:@"<":] | [:@">":] | [:@"<=":] | [:@">=":])
+     bitExpression)*
+;
+# result code:
+# {
+#     e1 = expr1; e2 = expr2; ...
+#     <> and { <> e1 op e2 } { <> e2 op e3 } ...
+# }()
 
-bitExpression ::= (expr (@"<<" | @">>" | @"&" | @"|" | @"^"))* expr ;
+bitExpression ::=
+    additiveExpression
+    (([:@"<<":] | [:@">>":] | [:@"&":] | [:@"|":] | [:@"^":]) bitExpression)?
+;
+# result code: \"op" expr1 expr2
 
-addExpression ::= (expr (@"+" | @"-"))* expr ;
+additiveExpression ::=
+    multiplicativeExpression
+    (([:@"+":] | [:@"-":]) additiveExpression)?
+;
+# result code: \"op" expr1 expr2
 
-multiplyExpression ::= (expr (@"*" | @"/" | @"%"))* expr ;
+multiplicativeExpression ::=
+    unaryExpression
+    (([:@"*":] | [:@"/":] | [:@"%":]) multiplicativeExpression)?
+;
+# result code: \"op" expr1 expr2
 
-unaryExpression ::= (@"!" | @"~")* expr ;
+unaryPrefixExpression ::=
+    ([:@"!":] | [:@"~":] | [:@"-":])* unaryPostfixExpression
+;
+# result code: \"op1" (\"op2" (\"op3" ... expr))
+
+unaryPostfixExpression ::=
+    atom
+    ([:@"(":] [:@")":] | [:@"[":] expression [:@"]":] ))*
+;
+# result code: atom() | \"[]" atom expression
+# etc.
 
 atom ::=
     varRef | intlet | [:@integer:] | stringlet | [:@string:] |
     emptyListlet | listlet | emptyMaplet | maplet |
     uniqlet | highlet | function | parenExpression ;
-# result: <same as whatever was parsed>
+# result: <same as whatever choice matched>
 ```
