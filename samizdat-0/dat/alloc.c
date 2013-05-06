@@ -26,6 +26,31 @@ static zvalue immortals[MAX_IMMORTALS];
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
 
+/** List head for the list of all live objects. */
+static GcLinks liveHead = { &liveHead, &liveHead };
+
+/**
+ * Links the given value into the given list, removing it from its
+ * previous list (if any).
+ */
+static void enlist(GcLinks *head, zvalue value) {
+    GcLinks *vLinks = &value->links;
+
+    if (vLinks->next != NULL) {
+        GcLinks *next = vLinks->next;
+        GcLinks *prev = vLinks->prev;
+        next->prev = prev;
+        prev->next = next;
+    }
+
+    GcLinks *headNext = head->next;
+
+    vLinks->prev = head;
+    vLinks->next = headNext;
+    headNext->prev = vLinks;
+    head->next = vLinks;
+}
+
 /**
  * Main garbage collection function.
  */
@@ -45,7 +70,7 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     }
 
     zvalue result = zalloc(sizeof(DatValue) + extraBytes);
-
+    enlist(&liveHead, result);
     result->magic = DAT_VALUE_MAGIC;
     result->type = type;
     result->size = size;

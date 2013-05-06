@@ -43,6 +43,15 @@ static void assertType(zvalue value, ztype type) {
         typeName(type), value, typeName(value->type));
 }
 
+/**
+ * Returns whether the given pointer is properly aligned to be a
+ * value.
+ */
+static bool isAligned(void *maybeValue) {
+    zint bits = (zint) (void *) maybeValue;
+    return ((bits % DAT_VALUE_ALIGNMENT) == 0);
+}
+
 
 /*
  * Module functions
@@ -51,6 +60,30 @@ static void assertType(zvalue value, ztype type) {
 /* Documented in header. */
 bool datHasNth(zvalue value, zint n) {
     return (n >= 0) && (n < datSize(value));
+}
+
+/* Documented in header. */
+zvalue datConservativeValueCast(void *maybeValue) {
+    if (maybeValue == NULL) {
+        return NULL;
+    }
+
+    if (!isAligned(maybeValue)) {
+        return NULL;
+    }
+
+    zvalue value = maybeValue;
+    GcLinks *links = &value->links;
+
+    if (!(value->magic == DAT_VALUE_MAGIC) &&
+          isAligned(links->next) &&
+          isAligned(links->prev) &&
+          (links == links->next->prev) &&
+          (links == links->prev->next)) {
+        return NULL;
+    }
+
+    return value;
 }
 
 
@@ -64,15 +97,8 @@ void datAssertValid(zvalue value) {
         die("Null value.");
     }
 
-    zint bits = (zint) (void *) value;
-
-    if ((bits % DAT_VALUE_ALIGNMENT) != 0) {
-        die("Bad alignment for value: %p", value);
-    }
-
-    if (value->magic != DAT_VALUE_MAGIC) {
-        die("Incorrect magic for value: (%p)->magic == %#04x",
-            value, value->magic);
+    if (datConservativeValueCast(value) == NULL) {
+        die("Invalid value pointer: %p", value);
     }
 
     switch (value->type) {

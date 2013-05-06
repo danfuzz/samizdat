@@ -24,9 +24,23 @@ enum {
 };
 
 /**
+ * Links used for allocation lifecycle management. Every value is
+ * linked into a circularly linked list, which identifies its current
+ * fate / classification.
+ */
+typedef struct GcLinks {
+    struct GcLinks *next;
+    struct GcLinks *prev;
+} GcLinks;
+
+
+/**
  * Common fields across all values. Used as a header for other types.
  */
 typedef struct DatValue {
+    /** Gc links (see above). */
+    GcLinks links;
+
     /** Magic number. */
     uint32_t magic;
 
@@ -134,6 +148,12 @@ typedef struct {
  * initialized with the indicated type and size.
  */
 zvalue datAllocValue(ztype type, zint size, zint extraBytes);
+
+/**
+ * If the given pointer is reasonably believed to be a zvalue, returns it;
+ * otherwise returns `NULL`. This is used for conservative stack scanning.
+ */
+zvalue datConservativeValueCast(void *maybeValue);
 
 /**
  * Returns whether the given value (which must be valid) has an
