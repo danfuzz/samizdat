@@ -34,7 +34,11 @@ tokenRule = { token ::
 # Returns a rule which succeeds if the given named parser rule
 # is successfully matched.
 namedRule = { rule ::
-    <> { engine :: <> (engine @rule rule) engine }
+    <> { engine ::
+        <> ifValue { <> engine @rule rule }
+            { function :: <> function engine }
+            { io0Die (format @"Missing rule: %Q" rule) }
+        }
 };
 
 # Transforms named and token rules into functions.
