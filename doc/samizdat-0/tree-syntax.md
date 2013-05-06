@@ -13,48 +13,48 @@ their usual PEG interpretations (similar to their interpretation in
 regular expressions).
 
 ```
-function ::= @"{" program @"}" ;
+function ::= [:@"{":] program [:@"}":] ;
 # result: <program>
 
 program ::=
-    (formals? yieldDef? @"::")?
-    @";"* (statement @";"+)* (statement | nonlocalExit | yield)? ;
+    (formals? yieldDef? [:@"::":])?
+    [:@";":]* (statement [:@";":]+)* (statement | nonlocalExit | yield)? ;
 # result: [:
 #             @function
 #             @[
-#                 (@formals=<formals>)?
-#                 (@yieldDef=<yieldDef>)?
-#                 @statements=<listlet of non-empty statements>
-#                 (@yield=<yield>)?
+#                 (@formals=formals)?
+#                 (@yieldDef=yieldDef)?
+#                 @statements=@[statement+]
+#                 (@yield=yield)?
 #             ]
 #         :]
 # Note: nonLocalExit results in a statement.
 
 formals ::= formal+ ;
-# result: @[<formal> ...]
+# result: @[formal+]
 
-formal ::= @identifier (@"*" | @"?")? ;
+formal ::= [:@identifier:] ([:@"*":] | [:@"?":])? ;
 # result: @[@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]
 
-yieldDef ::= @"<" @identifier @">" ;
-# result: <identifier.value>
+yieldDef ::= [:@"<":] [:@identifier:] [:@">":] ;
+# result: highletValue identifier
 
-yield ::= @"<>" expression @";"* ;
-# result: <expression>
+yield ::= [:@"<>":] expression [:@";":]* ;
+# result: expression
 
-nonlocalExit ::= @"<" @identifier @">" expression? @";"* ;
-# result: makeCall <identifier> <expression>?
+nonlocalExit ::= [:@"<":] [:@identifier:] [:@">":] expression? [:@";":]* ;
+# result: makeCall identifier expression?
 
 statement ::= varDef | expression ;
-# result: <varDef> | <expression>
+# result: <same as whatever choice matched>
 
 expression ::= call | unary ;
-# result: <same as whatever was parsed>
+# result: <same as whatever choice matched>
 
 unary ::= unaryCall | atom ;
-# result: <same as whatever was parsed>
+# result: <same as whatever choice matched>
 
-unaryCall ::= atom (@"(" @")")+ ;
+unaryCall ::= atom ([:@"(":] [:@")":])+ ;
 # result: (... (makeCall (makeCall atom))
 # Note: One `makeCall` per pair of parens.
 
@@ -62,46 +62,46 @@ atom ::=
     varRef | intlet | stringlet |
     emptyListlet | listlet | emptyMaplet | maplet |
     uniqlet | highlet | function | parenExpression ;
-# result: <same as whatever was parsed>
+# result: <same as whatever choice matched>
 
-parenExpression ::= @"(" expression @")";
-# result: <expression>
+parenExpression ::= [:@"(":] expression [:@")":];
+# result: expression
 
-varDef ::= @identifier @"=" expression ;
-# result: [:@varDef @[@name=(highletValue identifier) @value=<expression>]:]
+varDef ::= [:@identifier:] [:@"=":] expression ;
+# result: [:@varDef @[@name=(highletValue identifier) @value=expression]:]
 
-varRef ::= @identifier ;
-# result: [:@varRef (highletValue <identifier>):]
+varRef ::= [:@identifier:] ;
+# result: [:@varRef (highletValue identifier):]
 
-intlet ::= @"@" @"-"? @integer ;
-# result: [:@literal (imul (@1|@-1) (highletValue <integer>)):]
+intlet ::= [:@"@":] [:@"-":]? [:@integer:] ;
+# result: [:@literal (imul (@1|@-1) (highletValue integer)):]
 
-stringlet ::= @"@" (@string | @identifier);
-# result: [:@literal (highletValue <string|identifier>):]
+stringlet ::= [:@"@":] (@string | @identifier);
+# result: [:@literal (highletValue (string|identifier)):]
 
-emptyListlet ::= @"@" @"[" @"]" ;
+emptyListlet ::= [:@"@":] [:@"[":] [:@"]":] ;
 # result: [:@literal @[]:]
 
-listlet ::= @"@" @"[" unary+ @"]" ;
-# result: makeCall [:@varRef @makeListlet:] <unary>+
+listlet ::= [:@"@":] [:@"[":] unary+ [:@"]":] ;
+# result: makeCall [:@varRef @makeListlet:] unary+
 
-emptyMaplet ::= @"@" @"[" @"=" @"]" ;
+emptyMaplet ::= [:@"@":] [:@"[":] [:@"=":] [:@"]":] ;
 # result: [:@literal @[=]:]
 
-maplet ::= @"@" @"[" binding+ @"]" ;
-# result: makeCall [:@varRef @makeMaplet:] (<binding key> <binding value>)+
+maplet ::= [:@"@":] [:@"[":] binding+ [:@"]":] ;
+# result: apply makeCall [:@varRef @makeMaplet:] (lisletAdd binding+)
 
-binding ::= unary @"=" unary ;
-# result: @[<key unary> <value unary>]
+binding ::= unary [:@"=":] unary ;
+# result: @[unary unary] # key then value
 
-uniqlet ::= @"@@";
+uniqlet ::= [:@"@@":];
 # result: makeCall [:@varRef @makeUniqlet:]
 
-highlet ::= @"[" @":" unary unary? @":" @"]" ;
-# result: makeCall [:@varRef @makeHighlet:] <type unary> <value unary>?
+highlet ::= [:@"[":] [:@":":] unary unary? [:@":":] [:@"]":] ;
+# result: makeCall [:@varRef @makeHighlet:] unary unary?
 
 call ::= unary unary+ ;
-# result: makeCall <function unary> <argument unary>+
+# result: makeCall unary unary+
 
 # Function that returns an appropriately-formed `call` node.
 makeCall = { function actuals* ::
