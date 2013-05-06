@@ -88,22 +88,22 @@ statement ::=
     ifStatement | whileStatement | functionStatement |
     varDef | expression
 ;
-# result: same as whichever choice matched.
+# result: <same as whatever choice matched>
 
 ifStatement ::=
-    @"if" @"(" expression @")" function
+    [:@"if":] [:@"(":] expression [:@")":] function
     (@"else" (ifStatement | function))?
-# result: ifTrue expression function (if|function)?
+# result code: ifTrue expression function (if|function)?
 
 whileStatement ::=
-    @"while" @"(" expression @")" function
-# result:
+    [:@"while":] [:@"(":] expression [:@")":] function
+# result code:
 # { <break> ::
 #     loop { ifTrue { <> expression } function { <break> } }
 # }()
 
 functionStatement ::=
-    @"fn" [:@identifier:] formals? yieldDef? @"{" statement* @"}"
+    [:@"fn":] [:@identifier:] formals? yieldDef? [:@"{":] statement* [:@"}":]
 ;
 # result: varDef of identifier to function.
 
@@ -113,19 +113,20 @@ functionStatement ::=
 #
 
 expression ::= orExpression ;
-# result: <same as the orExpression>;
+# result: orExpression
 
-orExpression ::= andExpression ((@"||") andExpression)* ;
-# result: or { <> expr1 } { <> expr2 } ...
+orExpression ::= andExpression (([:@"||":]) andExpression)* ;
+# result code: or { <> expr1 } { <> expr2 } ...
 
-andExpression ::= compareExpression (@"&&" compareExpression)* ;
-# result: and { <> expr1 } { <> expr2 } ...
+andExpression ::= compareExpression ([:@"&&":] compareExpression)* ;
+# result code: and { <> expr1 } { <> expr2 } ...
 
 compareExpression ::=
     bitExpression
-    ((@"==" | @"!=" | @"<" | @">" | @"<=" | @">=") bitExpression)*
+    (([:@"==":] | [:@"!=":] | [:@"<":] | [:@">":] | [:@"<=":] | [:@">=":])
+     bitExpression)*
 ;
-# result:
+# result code:
 # {
 #     e1 = expr1; e2 = expr2; ...
 #     <> and { <> e1 op e2 } { <> e2 op e3 } ...
@@ -133,35 +134,37 @@ compareExpression ::=
 
 bitExpression ::=
     additiveExpression
-    ((@"<<" | @">>" | @"&" | @"|" | @"^") bitExpressione)?
+    (([:@"<<":] | [:@">>":] | [:@"&":] | [:@"|":] | [:@"^":]) bitExpression)?
 ;
-# result: \"op" expr1 expr2
+# result code: \"op" expr1 expr2
 
 additiveExpression ::=
     multiplicativeExpression
-    ((@"+" | @"-") additiveExpression)? ;
-# result: \"op" expr1 expr2
+    (([:@"+":] | [:@"-":]) additiveExpression)?
+;
+# result code: \"op" expr1 expr2
 
 multiplicativeExpression ::=
     unaryExpression
-    ((@"*" | @"/" | @"%") multiplicativeExpression)? ;
-# result: \"op" expr1 expr2
+    (([:@"*":] | [:@"/":] | [:@"%":]) multiplicativeExpression)?
+;
+# result code: \"op" expr1 expr2
 
-unaryPrefixExpression ::= (@"!" | @"~" | @"-")* unaryPostfixExpression ;
-# result: \"op1" (\"op2" (\"op3" ... expr))
+unaryPrefixExpression ::=
+    ([:@"!":] | [:@"~":] | [:@"-":])* unaryPostfixExpression
+;
+# result code: \"op1" (\"op2" (\"op3" ... expr))
 
 unaryPostfixExpression ::=
     atom
-    ( @"(" @")"
-    | @"[" expression @"]""
-    )*;
-# result: <call atom()>
-#       | \"[]" atom expression
+    ([:@"(":] [:@")":] | [:@"[":] expression [:@"]":] ))*
+;
+# result code: atom() | \"[]" atom expression
 # etc.
 
 atom ::=
     varRef | intlet | [:@integer:] | stringlet | [:@string:] |
     emptyListlet | listlet | emptyMaplet | maplet |
     uniqlet | highlet | function | parenExpression ;
-# result: <same as whatever was parsed>
+# result: <same as whatever choice matched>
 ```
