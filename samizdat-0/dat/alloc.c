@@ -205,11 +205,11 @@ zvalue datConservativeValueCast(void *maybeValue) {
     zvalue value = maybeValue;
     GcLinks *links = &value->links;
 
-    if (!(value->magic == DAT_VALUE_MAGIC) &&
+    if (!((value->magic == DAT_VALUE_MAGIC) &&
           isAligned(links->next) &&
           isAligned(links->prev) &&
           (links == links->next->prev) &&
-          (links == links->prev->next)) {
+          (links == links->prev->next))) {
         return NULL;
     }
 
@@ -233,7 +233,13 @@ void datImmortalize(zvalue value) {
 
 /* Documented in header. */
 void datMark(zvalue value) {
-    if ((value == NULL) || value->links.marked) {
+    if (value == NULL) {
+        return;
+    }
+
+    datAssertValid(value);
+
+    if (value->links.marked) {
         return;
     }
 
