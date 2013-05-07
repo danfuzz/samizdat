@@ -69,6 +69,16 @@ zorder datHighletOrder(zvalue v1, zvalue v2) {
     }
 }
 
+/* Documented in header. */
+void datHighletMark(zvalue value) {
+    HighletInfo *info = highletInfo(value);
+
+    datMark(info->type);
+    if (info->value != NULL) {
+        datMark(info->value);
+    }
+}
+
 
 /*
  * Exported functions

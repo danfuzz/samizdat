@@ -97,6 +97,16 @@ zorder datListletOrder(zvalue v1, zvalue v2) {
     return (sz1 < sz2) ? ZLESS : ZMORE;
 }
 
+/* Documented in header. */
+void datListletMark(zvalue value) {
+    zint size = datSize(value);
+    zvalue *elems = listletElems(value);
+
+    for (zint i = 0; i < size; i++) {
+        datMark(elems[i]);
+    }
+}
+
 
 /*
  * Exported functions
@@ -162,8 +172,8 @@ zvalue datListletAdd(zvalue listlet1, zvalue listlet2) {
         return listlet1;
     }
 
-    return listletFrom(datSize(listlet1), listletElems(listlet1), NULL,
-                       datSize(listlet2), listletElems(listlet2));
+    return listletFrom(size1, listletElems(listlet1), NULL,
+                       size2, listletElems(listlet2));
 }
 
 zvalue datListletDelNth(zvalue listlet, zint n) {
