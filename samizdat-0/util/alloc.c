@@ -11,6 +11,17 @@
 
 
 /*
+ * Helper definitions
+ */
+
+/** Lowest observed (inclusive) valid heap address. */
+static void *heapBottom = NULL;
+
+/** Highest observed (exclusive) valid heap address. */
+static void *heapTop = NULL;
+
+
+/*
  * Exported functions
  */
 
@@ -27,5 +38,20 @@ void *zalloc(zint size) {
     }
 
     memset(result, 0, size);
+
+    if ((heapBottom == NULL) || (heapBottom > result)) {
+        heapBottom = result;
+    }
+
+    void *resultEnd = ((char *) result) + size;
+    if (heapTop < resultEnd) {
+        heapTop = resultEnd;
+    }
+
     return result;
+}
+
+/* Documented in header. */
+bool utilIsHeapAllocated(void *memory) {
+    return (memory >= heapBottom) && (memory < heapTop);
 }
