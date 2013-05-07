@@ -53,7 +53,7 @@ static zvalue frameGet(Frame *frame, zvalue name) {
     // Scan in reverse, because we don't prevent duplicate names from
     // being defined, and lookup should find the latest definition.
     for (zint i = frame->size - 1; i >= 0; i--) {
-        if (datOrder(name, locals[i].key) == ZSAME) {
+        if (datEq(name, locals[i].key)) {
             return locals[i].value;
         }
     }
