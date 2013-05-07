@@ -48,8 +48,8 @@ static void assertType(zvalue value, ztype type) {
  * value.
  */
 static bool isAligned(void *maybeValue) {
-    zint bits = (zint) (void *) maybeValue;
-    return ((bits % DAT_VALUE_ALIGNMENT) == 0);
+    intptr_t bits = (intptr_t) (void *) maybeValue;
+    return ((bits & (DAT_VALUE_ALIGNMENT - 1)) == 0);
 }
 
 
