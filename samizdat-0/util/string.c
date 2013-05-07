@@ -12,7 +12,7 @@
  */
 
 /* Documented in header. */
-const char *strGetEnd(zint stringBytes, const char *string) {
+const char *utilStringEnd(zint stringBytes, const char *string) {
     if (stringBytes < 0) {
         die("Invalid string size: %lld", stringBytes);
     }

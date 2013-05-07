@@ -65,7 +65,7 @@ bool utilIsHeapAllocated(void *memory);
  * validity of same. This just validates this as an address range,
  * not as valid string contents.
  */
-const char *strGetEnd(zint stringBytes, const char *string);
+const char *utilStringEnd(zint stringBytes, const char *string);
 
 
 /*
