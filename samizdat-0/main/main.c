@@ -26,7 +26,7 @@
  * file's componentized path as the first argument, followed by the
  * remaining original arguments as passed into this function.
  */
-int main(int argc, char **argv) {
+static void realMain(int argc, char **argv) {
     if (argc < 2) {
         die("Too few arguments.");
     }
@@ -44,9 +44,35 @@ int main(int argc, char **argv) {
     zvalue programText = ioReadFileUtf8(pathListlet);
     zvalue program = langNodeFromProgramText(programText);
     zvalue function = langEvalExpressionNode(ctx, program);
+
+    datGc();
+
     zvalue result = langApply(function, datListletFromArray(argCount, args));
 
     if ((result != NULL) && (datType(result) == DAT_INTLET)) {
         exit((int) datIntFromIntlet(result));
     }
+}
+
+/**
+ * Recursively calls either this function or the "real" main function.
+ * The recursion is done to (attempt to) guarantee that the compiler
+ * won't try to inline the "real" main, which could mess up the stack
+ * base calculation.
+ */
+static void recurseIntoRealMain(int recurseCount, int argc, char **argv) {
+    if (recurseCount == 0) {
+        realMain(argc, argv);
+    } else {
+        recurseIntoRealMain(recurseCount - 1, argc, argv);
+    }
+}
+
+/**
+ * Top-level main, which just does the requisite stack setup, and calls
+ * into the real main function.
+ */
+int main(int argc, char **argv) {
+    datSetStackBase(&argc);
+    recurseIntoRealMain(1, argc, argv);
 }

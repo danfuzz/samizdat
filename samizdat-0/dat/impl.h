@@ -24,9 +24,24 @@ enum {
 };
 
 /**
+ * Links and flags used for allocation lifecycle management. Every value is
+ * linked into a circularly linked list, which identifies its current
+ * fate / classification.
+ */
+typedef struct GcLinks {
+    struct GcLinks *next;
+    struct GcLinks *prev;
+    bool marked;
+} GcLinks;
+
+
+/**
  * Common fields across all values. Used as a header for other types.
  */
 typedef struct DatValue {
+    /** Gc links (see above). */
+    GcLinks links;
+
     /** Magic number. */
     uint32_t magic;
 
@@ -88,11 +103,11 @@ typedef struct {
     /** Uniqlet unique id. */
     zint id;
 
-    /** Sealer / unsealer key. */
-    void *key;
+    /** Dispatch table. */
+    DatUniqletDispatch *dispatch;
 
     /** Sealed box payload value. */
-    void *value;
+    void *state;
 } UniqletInfo;
 
 /**
@@ -134,6 +149,12 @@ typedef struct {
  * initialized with the indicated type and size.
  */
 zvalue datAllocValue(ztype type, zint size, zint extraBytes);
+
+/**
+ * If the given pointer is reasonably believed to be a zvalue, returns it;
+ * otherwise returns `NULL`. This is used for conservative stack scanning.
+ */
+zvalue datConservativeValueCast(void *maybeValue);
 
 /**
  * Returns whether the given value (which must be valid) has an
@@ -196,5 +217,30 @@ bool datHighletEq(zvalue v1, zvalue v2);
  * Compares highlets for order.
  */
 zorder datHighletOrder(zvalue v1, zvalue v2);
+
+/**
+ * Marks listlet contents for garbage collection.
+ */
+void datListletMark(zvalue value);
+
+/**
+ * Marks maplet contents for garbage collection.
+ */
+void datMapletMark(zvalue value);
+
+/**
+ * Marks highlet contents for garbage collection.
+ */
+void datHighletMark(zvalue value);
+
+/**
+ * Marks uniqlet contents for garbage collection.
+ */
+void datUniqletMark(zvalue value);
+
+/**
+ * Frees uniqlet contents during garbage collection.
+ */
+void datUniqletFree(zvalue value);
 
 #endif

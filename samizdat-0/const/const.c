@@ -47,17 +47,24 @@ void constInit(void) {
         return;
     }
 
-    #define STR(name, str) STR_##name = datStringletFromUtf8(-1, str)
+    #define STR(name, str) \
+        STR_##name = datStringletFromUtf8(-1, str); \
+        datImmortalize(STR_##name)
 
     #define TOK(name, str) \
         STR(name, str); \
-        TOK_##name = datHighletFrom(STR_##name, NULL);
+        TOK_##name = datHighletFrom(STR_##name, NULL); \
+        datImmortalize(TOK_##name)
 
     #include "const-def.h"
 
     CONST_FALSE = datHighletFrom(STR_BOOLEAN, datIntletFromInt(0));
     CONST_TRUE  = datHighletFrom(STR_BOOLEAN, datIntletFromInt(1));
-
     EMPTY_LISTLET = datListletFromArray(0, NULL);
     EMPTY_MAPLET = datMapletEmpty();
+
+    datImmortalize(CONST_FALSE);
+    datImmortalize(CONST_TRUE);
+    datImmortalize(EMPTY_LISTLET);
+    datImmortalize(EMPTY_MAPLET);
 }

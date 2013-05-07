@@ -10,8 +10,9 @@
 #include <stddef.h>
 
 
-/** Key for access to function-bearing uniqlets. Fun self-reference! */
-static void *functionKey = &functionKey;
+/*
+ * Helper definitions
+ */
 
 /**
  * Representation of an in-language function.
@@ -21,8 +22,29 @@ typedef struct {
     zfunction function;
 
     /** Arbitrary closure state. */
-    void *state;
+    zvalue state;
 } Function;
+
+/**
+ * Marks the function's state for garbage collection.
+ */
+static void functionMark(void *state) {
+    Function *function = state;
+    datMark(function->state);
+}
+
+/**
+ * Frees the function's state.
+ */
+static void functionFree(void *state) {
+    zfree(state);
+}
+
+/** Uniqlet dispatch table. */
+static DatUniqletDispatch FUNCTION_DISPATCH = {
+    functionMark,
+    functionFree
+};
 
 
 /*
@@ -30,13 +52,13 @@ typedef struct {
  */
 
 /* Documented in header. */
-zvalue langDefineFunction(zfunction function, void *state) {
+zvalue langDefineFunction(zfunction function, zvalue state) {
     Function *entry = zalloc(sizeof(Function));
 
     entry->function = function;
     entry->state = state;
 
-    return datUniqletWith(functionKey, entry);
+    return datUniqletWith(&FUNCTION_DISPATCH, entry);
 }
 
 /* Documented in header. */
@@ -47,7 +69,7 @@ zvalue langCall(zvalue functionId, zint argCount, const zvalue *args) {
         die("Function call argument inconsistency.");
     }
 
-    Function *entry = datUniqletGetValue(functionId, functionKey);
+    Function *entry = datUniqletGetValue(functionId, &FUNCTION_DISPATCH);
 
     return entry->function(entry->state, argCount, args);
 }
