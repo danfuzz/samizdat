@@ -27,10 +27,10 @@ static zvalue immortals[MAX_IMMORTALS];
 static zint immortalsSize = 0;
 
 /** List head for the list of all live values. */
-static GcLinks liveHead = { &liveHead, &liveHead };
+static GcLinks liveHead = { &liveHead, &liveHead, false };
 
 /** List head for the list of all doomed values. */
-static GcLinks doomedHead = { &doomedHead, &doomedHead };
+static GcLinks doomedHead = { &doomedHead, &doomedHead, false };
 
 /**
  * Links the given value into the given list, removing it from its
@@ -58,14 +58,24 @@ static void enlist(GcLinks *head, zvalue value) {
  * Main garbage collection function.
  */
 static void doGc(void *topOfStack) {
+    // Sanity check: If there have been no allocations, then there's nothing
+    // to do.
+
+    if (liveHead.next == &liveHead) {
+        return;
+    }
+
     // Start by dooming everything.
 
     doomedHead = liveHead;
+    doomedHead.next->prev = &doomedHead;
+    doomedHead.prev->next = &doomedHead;
     liveHead.next = &liveHead;
     liveHead.prev = &liveHead;
 
     // Starting with the roots of { immortals, stack references }, recursively
-    // mark everything.
+    // mark everything. This moves anything found to be alive onto the live
+    // list.
 
     for (zint i = 0; i < immortalsSize; i++) {
         datMark(immortals[i]);
@@ -78,9 +88,23 @@ static void doGc(void *topOfStack) {
         }
     }
 
-    // TODO: Free everything left on the doomed list.
+    // Free everything left on the doomed list.
 
-    // TODO: Unmark the live list.
+    for (GcLinks *item = doomedHead.next; item != &doomedHead; /*next*/) {
+        GcLinks *next = item->next;
+        // TODO: zfree(item);
+        item = next;
+    }
+
+    doomedHead.next = &doomedHead;
+    doomedHead.prev = &doomedHead;
+
+    // Unmark the live list.
+
+    for (GcLinks *item = liveHead.next; item != &liveHead; /*next*/) {
+        item->marked = false;
+        item = item->next;
+    }
 }
 
 
