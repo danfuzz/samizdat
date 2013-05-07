@@ -219,16 +219,20 @@ static void doGc(void *topOfStack) {
             die("Marked item on doomed list!");
         }
 
-        if (datType((zvalue) item) == DAT_UNIQLET) {
-            datUniqletFree((zvalue) item);
-        }
-
         // Need to grab `item->next` before freeing the item.
         GcLinks *next = item->next;
 
+        // Note: Can't use `datType()` here, since that builds in a
+        // sanity check, which will fail.
+        if (((zvalue) item)->type == DAT_UNIQLET) {
+            // Link the item to itself, so that its sanity check will
+            // still pass.
+            item->next = item->prev = item;
+            datUniqletFree((zvalue) item);
+        }
+
         // Prevent this from being mistaken for a live value.
-        item->next = NULL;
-        item->prev = NULL;
+        item->next = item->prev = NULL;
         item->marked = 999;
         ((zvalue) item)->magic = 999;
         ((zvalue) item)->type = 999;
