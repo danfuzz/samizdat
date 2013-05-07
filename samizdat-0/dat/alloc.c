@@ -131,6 +131,10 @@ static void doGc(void *topOfStack) {
     for (GcLinks *item = doomedHead.next; item != &doomedHead; /*next*/) {
         GcLinks *next = item->next;
 
+        if ((item->next->prev != item) || (item->prev->next != item)) {
+            die("Link corruption.");
+        }
+
         if (datType((zvalue) item) == DAT_UNIQLET) {
             datUniqletFree((zvalue) item);
         }
@@ -158,6 +162,11 @@ static void doGc(void *topOfStack) {
     for (GcLinks *item = liveHead.next; item != &liveHead; /*next*/) {
         item->marked = false;
         item = item->next;
+
+        if ((item->next->prev != item) || (item->prev->next != item)) {
+            die("Link corruption.");
+        }
+
         counter++;
     }
 
