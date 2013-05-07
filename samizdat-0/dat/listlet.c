@@ -97,6 +97,16 @@ zorder datListletOrder(zvalue v1, zvalue v2) {
     return (sz1 < sz2) ? ZLESS : ZMORE;
 }
 
+/* Documented in header. */
+void datListletMark(zvalue value) {
+    zint size = datSize(value);
+    zvalue *elems = listletElems(value);
+
+    for (zint i = 0; i < size; i++) {
+        datMark(elems[i]);
+    }
+}
+
 
 /*
  * Exported functions

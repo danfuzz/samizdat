@@ -68,7 +68,7 @@ zvalue datConservativeValueCast(void *maybeValue) {
         return NULL;
     }
 
-    if (!isAligned(maybeValue)) {
+    if (!(isAligned(maybeValue) && utilIsHeapAllocated(maybeValue))) {
         return NULL;
     }
 

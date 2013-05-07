@@ -26,8 +26,11 @@ static zvalue immortals[MAX_IMMORTALS];
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
 
-/** List head for the list of all live objects. */
+/** List head for the list of all live values. */
 static GcLinks liveHead = { &liveHead, &liveHead };
+
+/** List head for the list of all doomed values. */
+static GcLinks doomedHead = { &doomedHead, &doomedHead };
 
 /**
  * Links the given value into the given list, removing it from its
@@ -55,7 +58,29 @@ static void enlist(GcLinks *head, zvalue value) {
  * Main garbage collection function.
  */
 static void doGc(void *topOfStack) {
-    // Nothing to do...yet.
+    // Start by dooming everything.
+
+    doomedHead = liveHead;
+    liveHead.next = &liveHead;
+    liveHead.prev = &liveHead;
+
+    // Starting with the roots of { immortals, stack references }, recursively
+    // mark everything.
+
+    for (zint i = 0; i < immortalsSize; i++) {
+        datMark(immortals[i]);
+    }
+
+    for (void **stack = topOfStack; stack < (void **) stackBase; stack++) {
+        zvalue value = datConservativeValueCast(*stack);
+        if (value != NULL) {
+            datMark(value);
+        }
+    }
+
+    // TODO: Free everything left on the doomed list.
+
+    // TODO: Unmark the live list.
 }
 
 
@@ -76,6 +101,24 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     result->size = size;
 
     return result;
+}
+
+/* Documented in header. */
+void datMark(zvalue value) {
+    if (value->links.marked) {
+        return;
+    }
+
+    value->links.marked = true;
+    switch (value->type) {
+        case DAT_LISTLET: { datListletMark(value); break; }
+        case DAT_MAPLET:  { datMapletMark(value);  break; }
+        case DAT_UNIQLET: { datUniqletMark(value); break; }
+        case DAT_HIGHLET: { datHighletMark(value); break; }
+        default: {
+            // Nothing. The other types don't need sub-marking.
+        }
+    }
 }
 
 

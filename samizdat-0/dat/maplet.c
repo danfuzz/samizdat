@@ -129,6 +129,17 @@ zorder datMapletOrder(zvalue v1, zvalue v2) {
     return ZSAME;
 }
 
+/* Documented in header. */
+void datMapletMark(zvalue value) {
+    zint size = datSize(value);
+    zmapping *elems = mapletElems(value);
+
+    for (zint i = 0; i < size; i++) {
+        datMark(elems[i].key);
+        datMark(elems[i].value);
+    }
+}
+
 
 /*
  * Exported functions

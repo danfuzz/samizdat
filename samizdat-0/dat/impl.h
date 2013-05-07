@@ -24,13 +24,14 @@ enum {
 };
 
 /**
- * Links used for allocation lifecycle management. Every value is
+ * Links and flags used for allocation lifecycle management. Every value is
  * linked into a circularly linked list, which identifies its current
  * fate / classification.
  */
 typedef struct GcLinks {
     struct GcLinks *next;
     struct GcLinks *prev;
+    bool marked;
 } GcLinks;
 
 
@@ -163,6 +164,12 @@ zvalue datConservativeValueCast(void *maybeValue);
 bool datHasNth(zvalue value, zint n);
 
 /**
+ * Marks a value for garbage collection. This in turn calls a type-specific
+ * mark function when appropriate.
+ */
+void datMark(zvalue value);
+
+/**
  * Compares intlets for equality. Only called when the sizes are the same.
  */
 bool datIntletEq(zvalue v1, zvalue v2);
@@ -216,5 +223,25 @@ bool datHighletEq(zvalue v1, zvalue v2);
  * Compares highlets for order.
  */
 zorder datHighletOrder(zvalue v1, zvalue v2);
+
+/**
+ * Marks listlet contents for garbage collection.
+ */
+void datListletMark(zvalue value);
+
+/**
+ * Marks maplet contents for garbage collection.
+ */
+void datMapletMark(zvalue value);
+
+/**
+ * Marks highlet contents for garbage collection.
+ */
+void datHighletMark(zvalue value);
+
+/**
+ * Marks uniqlet contents for garbage collection.
+ */
+void datUniqletMark(zvalue value);
 
 #endif

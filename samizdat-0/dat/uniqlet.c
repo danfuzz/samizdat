@@ -81,6 +81,12 @@ zorder datUniqletOrder(zvalue v1, zvalue v2) {
     }
 }
 
+void datUniqletMark(zvalue value) {
+    UniqletInfo *info = uniqletInfo(value);
+
+    // TODO: Mark the payload!
+}
+
 
 /*
  * Exported functions
