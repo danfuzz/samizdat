@@ -19,7 +19,7 @@ enum {
     ALLOCATIONS_PER_GC = 100000,
 
     /** Whether to spew to the console during gc. */
-    CHATTY_GC = true,
+    CHATTY_GC = false,
 
     /** Maximum number of immortal values allowed. */
     MAX_IMMORTALS = 100,
@@ -70,6 +70,65 @@ static bool isAligned(void *maybeValue) {
 }
 
 /**
+ * Check the gc links on a value.
+ */
+static void checkLinks(zvalue value) {
+    GcLinks *links = &value->links;
+
+    if ((links->next->prev != links) || (links->prev->next != links)) {
+        die("Link corruption.");
+    }
+}
+
+/**
+ * Asserts that the value is valid, with thorough (and slow)
+ * checking.
+ */
+static void thoroughlyValidate(zvalue value) {
+    if (value == NULL) {
+        die("NULL value.");
+    }
+
+    if (datConservativeValueCast(value) == NULL) {
+        die("Invalid value pointer: %p", value);
+    }
+}
+
+/**
+ * Sanity check the circular list with the given head.
+ */
+static void sanityCheckList(GcLinks *head) {
+    for (GcLinks *item = head->next; item != head; item = item->next) {
+        zvalue one = (zvalue) item;
+        thoroughlyValidate(one);
+    }
+}
+
+/**
+ * Sanity check the links and tables.
+ */
+static void sanityCheck(bool force) {
+    if (!(force || THEYRE_OUT_TO_GET_ME)) {
+        return;
+    }
+
+    for (zint i = 0; i < immortalsSize; i++) {
+        zvalue one = immortals[i];
+        thoroughlyValidate(one);
+    }
+
+    for (zint i = 0; i < NEWBIES_SIZE; i++) {
+        zvalue one = newbies[i];
+        if (one != NULL) {
+            thoroughlyValidate(one);
+        }
+    }
+
+    sanityCheckList(&liveHead);
+    sanityCheckList(&doomedHead);
+}
+
+/**
  * Links the given value into the given list, removing it from its
  * previous list (if any).
  */
@@ -89,54 +148,6 @@ static void enlist(GcLinks *head, zvalue value) {
     vLinks->next = headNext;
     headNext->prev = vLinks;
     head->next = vLinks;
-}
-
-/**
- * Check the gc links on a value.
- */
-static void checkLinks(zvalue value) {
-    GcLinks *links = &value->links;
-
-    if ((links->next->prev != links) || (links->prev->next != links)) {
-        die("Link corruption.");
-    }
-}
-
-/**
- * Sanity check the circular list with the given head.
- */
-static void sanityCheckList(GcLinks *head) {
-    for (GcLinks *item = head->next; item != head; item = item->next) {
-        zvalue one = (zvalue) item;
-        datAssertValid(one);
-        checkLinks(one);
-    }
-}
-
-/**
- * Sanity check the links and tables.
- */
-static void sanityCheck(bool force) {
-    if (!(force || THEYRE_OUT_TO_GET_ME)) {
-        return;
-    }
-
-    for (zint i = 0; i < immortalsSize; i++) {
-        zvalue one = immortals[i];
-        datAssertValid(one);
-        checkLinks(one);
-    }
-
-    for (zint i = 0; i < NEWBIES_SIZE; i++) {
-        zvalue one = newbies[i];
-        if (one != NULL) {
-            datAssertValid(one);
-            checkLinks(one);
-        }
-    }
-
-    sanityCheckList(&liveHead);
-    sanityCheckList(&doomedHead);
 }
 
 /**
@@ -251,10 +262,10 @@ static void doGc(void *topOfStack) {
 
     // Unmark the live list.
 
+    sanityCheck(false);
+
     counter = 0;
     for (GcLinks *item = liveHead.next; item != &liveHead; /*next*/) {
-        checkLinks((zvalue) item);
-
         item->marked = false;
         item = item->next;
         counter++;
@@ -333,6 +344,28 @@ zvalue datConservativeValueCast(void *maybeValue) {
 /*
  * Exported functions
  */
+
+/* Documented in header. */
+void datAssertValid(zvalue value) {
+    if (value == NULL) {
+        die("Null value.");
+    }
+
+    switch (value->type) {
+        case DAT_INTLET:
+        case DAT_STRINGLET:
+        case DAT_LISTLET:
+        case DAT_MAPLET:
+        case DAT_UNIQLET:
+        case DAT_HIGHLET: {
+            break;
+        }
+        default: {
+            die("Invalid type for value: (%p)->type == %#04x",
+                value, value->type);
+        }
+    }
+}
 
 /* Documented in header. */
 void datImmortalize(zvalue value) {
