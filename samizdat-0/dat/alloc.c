@@ -14,8 +14,14 @@
  */
 
 enum {
+    /** Whether to spew to the console during gc. */
     CHATTY_GC = true,
-    MAX_IMMORTALS = 100
+
+    /** Maximum number of immortal values allowed. */
+    MAX_IMMORTALS = 100,
+
+    /** Number of allocations between each forced gc. */
+    ALLOCATIONS_PER_GC = 100000
 };
 
 /** The stack base. */
@@ -32,6 +38,18 @@ static GcLinks liveHead = { &liveHead, &liveHead, false };
 
 /** List head for the list of all doomed values. */
 static GcLinks doomedHead = { &doomedHead, &doomedHead, false };
+
+/** Number of allocations since the last garbage collection. */
+static zint allocationCount = 0;
+
+/**
+ * Returns whether the given pointer is properly aligned to be a
+ * value.
+ */
+static bool isAligned(void *maybeValue) {
+    intptr_t bits = (intptr_t) (void *) maybeValue;
+    return ((bits & (DAT_VALUE_ALIGNMENT - 1)) == 0);
+}
 
 /**
  * Links the given value into the given list, removing it from its
@@ -117,6 +135,11 @@ static void doGc(void *topOfStack) {
             datUniqletFree((zvalue) item);
         }
 
+        // Prevent this from being mistaken for a live value.
+        item->next = NULL;
+        item->prev = NULL;
+        ((zvalue) item)->magic = 0;
+
         zfree(item);
         item = next;
         counter++;
@@ -154,13 +177,43 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
         die("Invalid value size: %lld", size);
     }
 
+    if (allocationCount >= ALLOCATIONS_PER_GC) {
+        datGc();
+    }
+
     zvalue result = zalloc(sizeof(DatValue) + extraBytes);
     enlist(&liveHead, result);
     result->magic = DAT_VALUE_MAGIC;
     result->type = type;
     result->size = size;
 
+    allocationCount++;
+
     return result;
+}
+
+/* Documented in header. */
+zvalue datConservativeValueCast(void *maybeValue) {
+    if (maybeValue == NULL) {
+        return NULL;
+    }
+
+    if (!(isAligned(maybeValue) && utilIsHeapAllocated(maybeValue))) {
+        return NULL;
+    }
+
+    zvalue value = maybeValue;
+    GcLinks *links = &value->links;
+
+    if (!(value->magic == DAT_VALUE_MAGIC) &&
+          isAligned(links->next) &&
+          isAligned(links->prev) &&
+          (links == links->next->prev) &&
+          (links == links->prev->next)) {
+        return NULL;
+    }
+
+    return value;
 }
 
 
@@ -210,5 +263,7 @@ void datSetStackBase(void *base) {
 /* Documented in header. */
 void datGc(void) {
     int topOfStack = 0;
+
+    allocationCount = 0;
     doGc(&topOfStack);
 }

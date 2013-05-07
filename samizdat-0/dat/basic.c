@@ -43,15 +43,6 @@ static void assertType(zvalue value, ztype type) {
         typeName(type), value, typeName(value->type));
 }
 
-/**
- * Returns whether the given pointer is properly aligned to be a
- * value.
- */
-static bool isAligned(void *maybeValue) {
-    intptr_t bits = (intptr_t) (void *) maybeValue;
-    return ((bits & (DAT_VALUE_ALIGNMENT - 1)) == 0);
-}
-
 
 /*
  * Module functions
@@ -60,30 +51,6 @@ static bool isAligned(void *maybeValue) {
 /* Documented in header. */
 bool datHasNth(zvalue value, zint n) {
     return (n >= 0) && (n < datSize(value));
-}
-
-/* Documented in header. */
-zvalue datConservativeValueCast(void *maybeValue) {
-    if (maybeValue == NULL) {
-        return NULL;
-    }
-
-    if (!(isAligned(maybeValue) && utilIsHeapAllocated(maybeValue))) {
-        return NULL;
-    }
-
-    zvalue value = maybeValue;
-    GcLinks *links = &value->links;
-
-    if (!(value->magic == DAT_VALUE_MAGIC) &&
-          isAligned(links->next) &&
-          isAligned(links->prev) &&
-          (links == links->next->prev) &&
-          (links == links->prev->next)) {
-        return NULL;
-    }
-
-    return value;
 }
 
 
