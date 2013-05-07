@@ -180,6 +180,8 @@ void datMark(zvalue value) {
     }
 
     value->links.marked = true;
+    enlist(&liveHead, value);
+
     switch (value->type) {
         case DAT_LISTLET: { datListletMark(value); break; }
         case DAT_MAPLET:  { datMapletMark(value);  break; }
