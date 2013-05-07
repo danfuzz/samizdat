@@ -7,6 +7,7 @@
 #include "const.h"
 #include "io.h"
 #include "util.h"
+#include "zlimits.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -17,11 +18,6 @@
 /*
  * Helper definitions
  */
-
-enum {
-    /** Maximum readable file size, in bytes. */
-    MAX_FILE_SIZE = 100000
-};
 
 /**
  * Converts a listlet-of-stringlets path form into an absolute file name,
@@ -183,7 +179,7 @@ zvalue ioReadLink(zvalue pathListlet) {
 zvalue ioReadFileUtf8(zvalue pathListlet) {
     constInit();
 
-    char buf[MAX_FILE_SIZE];
+    char buf[IO_MAX_FILE_SIZE];
     FILE *in = openFile(pathListlet, "r");
     size_t amt = fread(buf, 1, sizeof(buf), in);
 

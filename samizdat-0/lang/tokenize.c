@@ -7,19 +7,10 @@
 #include "const.h"
 #include "impl.h"
 #include "util.h"
+#include "zlimits.h"
 
 #include <stddef.h>
 
-enum {
-    /** Maximum number of tokens in a given parse. */
-    MAX_TOKENS = 100000,
-
-    /** Maximum number of characters in an identifier. */
-    MAX_IDENTIFIER_CHARS = 40,
-
-    /** Maximum number of characters in a string. */
-    MAX_STRING_CHARS = 200
-};
 
 typedef struct {
     /** Stringlet being parsed. */
@@ -113,7 +104,7 @@ static zvalue tokenizeInteger(ParseState *state) {
  */
 static zvalue tokenizeIdentifier(ParseState *state) {
     zint size = 0;
-    zchar chars[MAX_IDENTIFIER_CHARS];
+    zchar chars[LANG_MAX_IDENTIFIER_CHARS];
 
     for (;;) {
         zint ch = peek(state);
@@ -148,7 +139,7 @@ static zvalue tokenizeString(ParseState *state) {
     read(state);
 
     zint size = 0;
-    zchar chars[MAX_STRING_CHARS];
+    zchar chars[LANG_MAX_STRING_CHARS];
 
     for (;;) {
         zint ch = peek(state);
@@ -254,7 +245,7 @@ static zvalue tokenizeOne(ParseState *state) {
 zvalue tokenize(zvalue stringlet) {
     constInit();
 
-    zvalue result[MAX_TOKENS];
+    zvalue result[LANG_MAX_TOKENS];
     ParseState state = { stringlet, datSize(stringlet), 0 };
     zint out = 0;
 

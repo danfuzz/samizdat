@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "zlimits.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -15,17 +16,8 @@
  */
 
 enum {
-    /** Number of allocations between each forced gc. */
-    ALLOCATIONS_PER_GC = 100000,
-
     /** Whether to spew to the console during gc. */
     CHATTY_GC = false,
-
-    /** Maximum number of immortal values allowed. */
-    MAX_IMMORTALS = 100,
-
-    /** Number of elements in the `newbies` array. */
-    NEWBIES_SIZE = 10,
 
     /** Whether to be paranoid about corruption checks. */
     THEYRE_OUT_TO_GET_ME = false
@@ -35,7 +27,7 @@ enum {
 static void *stackBase = NULL;
 
 /** Array of all immortal values. */
-static zvalue immortals[MAX_IMMORTALS];
+static zvalue immortals[DAT_MAX_IMMORTALS];
 
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
@@ -46,7 +38,7 @@ static zint immortalsSize = 0;
  * liveness is only by virtue of being in registers that didn't spill
  * "in time" for the gc.
  */
-static zvalue newbies[NEWBIES_SIZE];
+static zvalue newbies[DAT_NEWBIES_SIZE];
 
 /** Next index to use when storing to `newbies`. `-1` before initialized. */
 static zint newbiesNext = -1;
@@ -117,7 +109,7 @@ static void sanityCheck(bool force) {
         thoroughlyValidate(one);
     }
 
-    for (zint i = 0; i < NEWBIES_SIZE; i++) {
+    for (zint i = 0; i < DAT_NEWBIES_SIZE; i++) {
         zvalue one = newbies[i];
         if (one != NULL) {
             thoroughlyValidate(one);
@@ -186,7 +178,7 @@ static void doGc(void *topOfStack) {
     }
 
     counter = 0;
-    for (zint i = 0; i < NEWBIES_SIZE; i++) {
+    for (zint i = 0; i < DAT_NEWBIES_SIZE; i++) {
         zvalue one = newbies[i];
         if (one != NULL) {
             datMark(one);
@@ -288,7 +280,7 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
         die("Invalid value size: %lld", size);
     }
 
-    if (allocationCount >= ALLOCATIONS_PER_GC) {
+    if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
         datGc();
     } else {
         sanityCheck(false);
@@ -308,7 +300,7 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     }
 
     newbies[newbiesNext] = result;
-    newbiesNext = (newbiesNext + 1) % NEWBIES_SIZE;
+    newbiesNext = (newbiesNext + 1) % DAT_NEWBIES_SIZE;
 
     sanityCheck(false);
 
@@ -368,7 +360,7 @@ void datAssertValid(zvalue value) {
 
 /* Documented in header. */
 void datImmortalize(zvalue value) {
-    if (immortalsSize == MAX_IMMORTALS) {
+    if (immortalsSize == DAT_MAX_IMMORTALS) {
         die("Too many immortal values!");
     }
 
