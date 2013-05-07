@@ -74,12 +74,42 @@ static void enlist(GcLinks *head, zvalue value) {
 }
 
 /**
+ * Check the gc links on a value.
+ */
+static void checkLinks(zvalue value) {
+    GcLinks *links = &value->links;
+
+    if ((links->next->prev != links) || (links->prev->next != links)) {
+        die("Link corruption.");
+    }
+}
+
+/**
+ * Sanity check the links and tables.
+ */
+static void sanityCheck(void) {
+    for (zint i = 0; i < immortalsSize; i++) {
+        zvalue one = immortals[i];
+        datAssertValid(one);
+        checkLinks(one);
+    }
+
+    for (GcLinks *item = liveHead.next; item != &liveHead; item = item->next) {
+        zvalue one = (zvalue) item;
+        datAssertValid(one);
+        checkLinks(one);
+    }
+}
+
+/**
  * Main garbage collection function.
  */
 static void doGc(void *topOfStack) {
     zint counter; // Used throughout.
 
-    // Sanity check: If there have been no allocations, then there's nothing
+    sanityCheck();
+
+    // Quick check: If there have been no allocations, then there's nothing
     // to do.
 
     if (liveHead.next == &liveHead) {
@@ -129,20 +159,24 @@ static void doGc(void *topOfStack) {
 
     counter = 0;
     for (GcLinks *item = doomedHead.next; item != &doomedHead; /*next*/) {
-        GcLinks *next = item->next;
+        zvalue one = (zvalue) item;
+        checkLinks(one);
 
-        if ((item->next->prev != item) || (item->prev->next != item)) {
-            die("Link corruption.");
+        if (item->marked) {
+            die("Marked item on doomed list!");
         }
 
         if (datType((zvalue) item) == DAT_UNIQLET) {
             datUniqletFree((zvalue) item);
         }
 
+        // Need to grab `item->next` before freeing the item.
+        GcLinks *next = item->next;
+
         // Prevent this from being mistaken for a live value.
-        item->next = NULL;
-        item->prev = NULL;
-        ((zvalue) item)->magic = 0;
+        item->marked = 999;
+        ((zvalue) item)->magic = 999;
+        ((zvalue) item)->type = 999;
 
         zfree(item);
         item = next;
@@ -160,19 +194,18 @@ static void doGc(void *topOfStack) {
 
     counter = 0;
     for (GcLinks *item = liveHead.next; item != &liveHead; /*next*/) {
+        checkLinks((zvalue) item);
+
         item->marked = false;
         item = item->next;
-
-        if ((item->next->prev != item) || (item->prev->next != item)) {
-            die("Link corruption.");
-        }
-
         counter++;
     }
 
     if (CHATTY_GC) {
         note("GC: %lld live values remain.", counter);
     }
+
+    sanityCheck();
 }
 
 
@@ -186,9 +219,13 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
         die("Invalid value size: %lld", size);
     }
 
+    sanityCheck();
+
     if (allocationCount >= ALLOCATIONS_PER_GC) {
         datGc();
     }
+
+    sanityCheck();
 
     zvalue result = zalloc(sizeof(DatValue) + extraBytes);
     enlist(&liveHead, result);
@@ -197,6 +234,8 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     result->size = size;
 
     allocationCount++;
+
+    sanityCheck();
 
     return result;
 }
@@ -233,7 +272,7 @@ zvalue datConservativeValueCast(void *maybeValue) {
 /* Documented in header. */
 void datImmortalize(zvalue value) {
     if (immortalsSize == MAX_IMMORTALS) {
-        die("Too many immortal values");
+        die("Too many immortal values!");
     }
 
     immortals[immortalsSize] = value;
