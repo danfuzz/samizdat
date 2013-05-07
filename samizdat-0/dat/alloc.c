@@ -14,6 +14,9 @@
  */
 
 enum {
+    /** Number of allocations between each forced gc. */
+    ALLOCATIONS_PER_GC = 100000,
+
     /** Whether to spew to the console during gc. */
     CHATTY_GC = true,
 
@@ -21,10 +24,7 @@ enum {
     MAX_IMMORTALS = 100,
 
     /** Whether to be paranoid about corruption checks. */
-    THEYRE_OUT_TO_GET_ME = false,
-
-    /** Number of allocations between each forced gc. */
-    ALLOCATIONS_PER_GC = 100000
+    THEYRE_OUT_TO_GET_ME = false
 };
 
 /** The stack base. */
