@@ -7,6 +7,7 @@
 #include "impl.h"
 
 #include <stddef.h>
+#include <string.h>
 
 
 /*
@@ -23,6 +24,9 @@ enum {
     /** Maximum number of immortal values allowed. */
     MAX_IMMORTALS = 100,
 
+    /** Number of elements in the `newbies` array. */
+    NEWBIES_SIZE = 10,
+
     /** Whether to be paranoid about corruption checks. */
     THEYRE_OUT_TO_GET_ME = false
 };
@@ -35,6 +39,17 @@ static zvalue immortals[MAX_IMMORTALS];
 
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
+
+/**
+ * Array of recent allocations. These are exempted from gc (that is,
+ * declared "live") in order to deal with the possibility that their
+ * liveness is only by virtue of being in registers that didn't spill
+ * "in time" for the gc.
+ */
+static zvalue newbies[NEWBIES_SIZE];
+
+/** Next index to use when storing to `newbies`. `-1` before initialized. */
+static zint newbiesNext = -1;
 
 /** List head for the list of all live values. */
 static GcLinks liveHead = { &liveHead, &liveHead, false };
@@ -131,9 +146,9 @@ static void doGc(void *topOfStack) {
     liveHead.next = &liveHead;
     liveHead.prev = &liveHead;
 
-    // Starting with the roots of { immortals, stack references }, recursively
-    // mark everything. This moves anything found to be alive onto the live
-    // list.
+    // The root set consists of immortals, newbies, and the stack (scanned
+    // conservatively). Recursively mark thosee, which causes anything found
+    // to be alive onto the live list.
 
     for (zint i = 0; i < immortalsSize; i++) {
         datMark(immortals[i]);
@@ -143,8 +158,25 @@ static void doGc(void *topOfStack) {
         note("GC: Marked %lld immortals.", immortalsSize);
     }
 
+    counter = 0;
+    for (zint i = 0; i < NEWBIES_SIZE; i++) {
+        zvalue one = newbies[i];
+        if (one != NULL) {
+            datMark(one);
+            counter++;
+        }
+    }
+
+    if (CHATTY_GC) {
+        note("GC: Marked %lld newbies.", counter);
+    }
+
     // Align the stack pointer.
     topOfStack = (void *) ((intptr_t) topOfStack & ~(sizeof(void *) - 1));
+
+    if (CHATTY_GC) {
+        note("GC: Stack: %p .. %p", topOfStack, stackBase);
+    }
 
     counter = 0;
     for (void **stack = topOfStack; stack < (void **) stackBase; stack++) {
@@ -156,7 +188,6 @@ static void doGc(void *topOfStack) {
     }
 
     if (CHATTY_GC) {
-        note("GC: Stack: %p .. %p", topOfStack, stackBase);
         note("GC: Scanned %ld bytes of stack.",
              (char *) stackBase - (char *) topOfStack);
         note("GC: Found %lld live stack references.", counter);
@@ -239,6 +270,14 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     result->size = size;
 
     allocationCount++;
+
+    if (newbiesNext == -1) {
+        memset(newbies, 0, sizeof(newbies));
+        newbiesNext = 0;
+    }
+
+    newbies[newbiesNext] = result;
+    newbiesNext = (newbiesNext + 1) % NEWBIES_SIZE;
 
     sanityCheck(false);
 
