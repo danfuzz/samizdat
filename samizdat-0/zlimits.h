@@ -31,7 +31,7 @@ enum {
     /** Maximum number of characters in an identifier. */
     LANG_MAX_IDENTIFIER_CHARS = 40,
 
-    /** Maximum number of characters in a string constant. */
+    /** Maximum number of characters in a tokenized string constant. */
     LANG_MAX_STRING_CHARS = 200,
 
     /** Maximum number of disjoint heap allocation page ranges. */
