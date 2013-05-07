@@ -14,6 +14,7 @@
  */
 
 enum {
+    CHATTY_GC = true,
     MAX_IMMORTALS = 100
 };
 
@@ -81,29 +82,59 @@ static void doGc(void *topOfStack) {
         datMark(immortals[i]);
     }
 
+    if (CHATTY_GC) {
+        note("GC: Marked %lld immortals.", immortalsSize);
+    }
+
+    zint counter = 0;
+
     for (void **stack = topOfStack; stack < (void **) stackBase; stack++) {
         zvalue value = datConservativeValueCast(*stack);
         if (value != NULL) {
             datMark(value);
+            counter++;
         }
+    }
+
+    if (CHATTY_GC) {
+        note("GC: Scanned %ld bytes of stack.",
+             (char *) stackBase - (char *) topOfStack);
+        note("GC: Found %lld live stack references.", counter);
     }
 
     // Free everything left on the doomed list.
 
+    counter = 0;
     for (GcLinks *item = doomedHead.next; item != &doomedHead; /*next*/) {
         GcLinks *next = item->next;
-        // TODO: zfree(item);
+
+        if (datType((zvalue) item) == DAT_UNIQLET) {
+            datUniqletFree((zvalue) item);
+        }
+
+        zfree(item);
         item = next;
+        counter++;
     }
 
     doomedHead.next = &doomedHead;
     doomedHead.prev = &doomedHead;
 
+    if (CHATTY_GC) {
+        note("GC: Freed %lld dead values.", counter);
+    }
+
     // Unmark the live list.
 
+    counter = 0;
     for (GcLinks *item = liveHead.next; item != &liveHead; /*next*/) {
         item->marked = false;
         item = item->next;
+        counter++;
+    }
+
+    if (CHATTY_GC) {
+        note("GC: %lld live values remain.", counter);
     }
 }
 

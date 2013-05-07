@@ -75,9 +75,18 @@ zorder datUniqletOrder(zvalue v1, zvalue v2) {
 void datUniqletMark(zvalue value) {
     UniqletInfo *info = uniqletInfo(value);
 
-    // TODO: Mark the payload!
+    if (info->dispatch != NULL) {
+        info->dispatch->mark(info->state);
+    }
 }
 
+void datUniqletFree(zvalue value) {
+    UniqletInfo *info = uniqletInfo(value);
+
+    if (info->dispatch != NULL) {
+        info->dispatch->free(info->state);
+    }
+}
 
 /*
  * Exported functions

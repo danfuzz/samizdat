@@ -238,4 +238,9 @@ void datHighletMark(zvalue value);
  */
 void datUniqletMark(zvalue value);
 
+/**
+ * Frees uniqlet contents during garbage collection.
+ */
+void datUniqletFree(zvalue value);
+
 #endif
