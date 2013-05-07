@@ -17,15 +17,6 @@
 static zint theNextId = 0;
 
 /**
- * Asserts that the given key is valid as a uniqlet key.
- */
-static void assertValidUniqletKey(void *key) {
-    if (key == NULL) {
-        die("Invalid uniqlet key: NULL");
-    }
-}
-
-/**
  * Gets a pointer to the info of a uniqlet.
  */
 static UniqletInfo *uniqletInfo(zvalue uniqlet) {
@@ -45,7 +36,7 @@ static zint uniqletId(zvalue uniqlet) {
  * Allocates and initializes a uniqlet, without doing error-checking
  * on the arguments.
  */
-static zvalue newUniqlet(void *key, void *value) {
+static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
     zvalue result = datAllocValue(DAT_UNIQLET, 0, sizeof(UniqletInfo));
 
     if (theNextId < 0) {
@@ -55,8 +46,8 @@ static zvalue newUniqlet(void *key, void *value) {
 
     UniqletInfo *info = &((DatUniqlet *) result)->info;
     info->id = theNextId;
-    info->key = key;
-    info->value = value;
+    info->dispatch = dispatch;
+    info->state = state;
     theNextId++;
 
     return result;
@@ -98,24 +89,21 @@ zvalue datUniqlet(void) {
 }
 
 /* Documented in header. */
-zvalue datUniqletWith(void *key, void *value) {
-    assertValidUniqletKey(key);
-    return newUniqlet(key, value);
+zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
+    return newUniqlet(dispatch, state);
 }
 
 /* Documented in header. */
-bool datUniqletHasKey(zvalue uniqlet, void *key) {
-    assertValidUniqletKey(key);
-
-    return (key == uniqletInfo(uniqlet)->key);
+bool datUniqletHasKey(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+    return (dispatch == uniqletInfo(uniqlet)->dispatch);
 }
 
 /* Documented in header. */
-void *datUniqletGetValue(zvalue uniqlet, void *key) {
-    if (!datUniqletHasKey(uniqlet, key)) {
-        die("Wrong uniqlet key for get.");
+void *datUniqletGetValue(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+    if (!datUniqletHasKey(uniqlet, dispatch)) {
+        die("Wrong uniqlet dispatch table for get.");
     }
 
-    return uniqletInfo(uniqlet)->value;
+    return uniqletInfo(uniqlet)->state;
 }
 

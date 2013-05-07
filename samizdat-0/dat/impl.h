@@ -103,11 +103,11 @@ typedef struct {
     /** Uniqlet unique id. */
     zint id;
 
-    /** Sealer / unsealer key. */
-    void *key;
+    /** Dispatch table. */
+    DatUniqletDispatch *dispatch;
 
     /** Sealed box payload value. */
-    void *value;
+    void *state;
 } UniqletInfo;
 
 /**
