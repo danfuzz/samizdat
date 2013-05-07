@@ -247,7 +247,7 @@ static void doGc(void *topOfStack) {
         one->magic = 999;
         one->type = 999;
 
-        zfree(item);
+        utilFree(item);
         item = next;
         counter++;
     }
@@ -294,7 +294,7 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
         sanityCheck(false);
     }
 
-    zvalue result = zalloc(sizeof(DatValue) + extraBytes);
+    zvalue result = utilAlloc(sizeof(DatValue) + extraBytes);
     enlist(&liveHead, result);
     result->magic = DAT_VALUE_MAGIC;
     result->type = type;

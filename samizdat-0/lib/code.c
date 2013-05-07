@@ -57,7 +57,7 @@ static void objectMark(void *state) {
  * Frees an object state.
  */
 static void objectFree(void *state) {
-    zfree(state);
+    utilFree(state);
 }
 
 /** Uniqlet dispatch table. */
@@ -173,7 +173,7 @@ PRIM_IMPL(apply) {
 PRIM_IMPL(object) {
     requireExactly(argCount, 2);
 
-    Object *object = zalloc(sizeof(Object));
+    Object *object = utilAlloc(sizeof(Object));
     zvalue objectUniqlet = datUniqletWith(&OBJECT_DISPATCH, object);
 
     object->serviceFunction = args[0];

@@ -68,7 +68,7 @@ static void closureMark(void *state) {
  * Frees a closure state.
  */
 static void closureFree(void *state) {
-    zfree(state);
+    utilFree(state);
 }
 
 /** Uniqlet dispatch table for closures. */
@@ -90,7 +90,7 @@ static void yieldMark(void *state) {
  * Frees a yield state.
  */
 static void yieldFree(void *state) {
-    zfree(state);
+    utilFree(state);
 }
 
 /** Uniqlet dispatch table for yield states. */
@@ -215,7 +215,7 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
     zvalue ctx = bindArguments(parentContext, functionNode, argCount, args);
 
     if (yieldDef != NULL) {
-        yieldState = zalloc(sizeof(YieldState));
+        yieldState = utilAlloc(sizeof(YieldState));
         yieldState->active = true;
         yieldState->result = NULL;
 
@@ -265,7 +265,7 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
 static zvalue execFunction(zvalue ctx, zvalue function) {
     datHighletAssertType(function, STR_FUNCTION);
 
-    Closure *closure = zalloc(sizeof(Closure));
+    Closure *closure = utilAlloc(sizeof(Closure));
     closure->context = ctx;
     closure->function = datHighletValue(function);
 

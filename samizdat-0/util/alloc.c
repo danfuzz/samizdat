@@ -137,7 +137,7 @@ static void *heapTop = NULL;
  */
 
 /* Documented in header. */
-void *zalloc(zint size) {
+void *utilAlloc(zint size) {
     if (size < 0) {
         die("Invalid allocation size: %lld", size);
     }
@@ -155,7 +155,7 @@ void *zalloc(zint size) {
 }
 
 /* Documented in header. */
-void zfree(void *memory) {
+void utilFree(void *memory) {
     free(memory);
 }
 
