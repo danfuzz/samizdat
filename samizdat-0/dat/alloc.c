@@ -186,7 +186,7 @@ void datMark(zvalue value) {
         case DAT_UNIQLET: { datUniqletMark(value); break; }
         case DAT_HIGHLET: { datHighletMark(value); break; }
         default: {
-            // Nothing. The other types don't need sub-marking.
+            // Nothing to do here. The other types don't need sub-marking.
         }
     }
 }
