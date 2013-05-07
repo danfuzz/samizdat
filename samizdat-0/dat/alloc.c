@@ -20,6 +20,9 @@ enum {
     /** Maximum number of immortal values allowed. */
     MAX_IMMORTALS = 100,
 
+    /** Whether to be paranoid about corruption checks. */
+    THEYRE_OUT_TO_GET_ME = false,
+
     /** Number of allocations between each forced gc. */
     ALLOCATIONS_PER_GC = 100000
 };
@@ -87,7 +90,11 @@ static void checkLinks(zvalue value) {
 /**
  * Sanity check the links and tables.
  */
-static void sanityCheck(void) {
+static void sanityCheck(bool force) {
+    if (!(force || THEYRE_OUT_TO_GET_ME)) {
+        return;
+    }
+
     for (zint i = 0; i < immortalsSize; i++) {
         zvalue one = immortals[i];
         datAssertValid(one);
@@ -107,7 +114,7 @@ static void sanityCheck(void) {
 static void doGc(void *topOfStack) {
     zint counter; // Used throughout.
 
-    sanityCheck();
+    sanityCheck(false);
 
     // Quick check: If there have been no allocations, then there's nothing
     // to do.
@@ -205,7 +212,7 @@ static void doGc(void *topOfStack) {
         note("GC: %lld live values remain.", counter);
     }
 
-    sanityCheck();
+    sanityCheck(true);
 }
 
 
@@ -219,13 +226,11 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
         die("Invalid value size: %lld", size);
     }
 
-    sanityCheck();
-
     if (allocationCount >= ALLOCATIONS_PER_GC) {
         datGc();
+    } else {
+        sanityCheck(false);
     }
-
-    sanityCheck();
 
     zvalue result = zalloc(sizeof(DatValue) + extraBytes);
     enlist(&liveHead, result);
@@ -235,7 +240,7 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
 
     allocationCount++;
 
-    sanityCheck();
+    sanityCheck(false);
 
     return result;
 }
