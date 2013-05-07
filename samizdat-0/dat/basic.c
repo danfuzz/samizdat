@@ -59,39 +59,6 @@ bool datHasNth(zvalue value, zint n) {
  */
 
 /* Documented in header. */
-void datAssertValid(zvalue value) {
-    if (value == NULL) {
-        die("Null value.");
-    }
-
-    zint bits = (zint) (void *) value;
-
-    if ((bits % DAT_VALUE_ALIGNMENT) != 0) {
-        die("Bad alignment for value: %p", value);
-    }
-
-    if (value->magic != DAT_VALUE_MAGIC) {
-        die("Incorrect magic for value: (%p)->magic == %#04x",
-            value, value->magic);
-    }
-
-    switch (value->type) {
-        case DAT_INTLET:
-        case DAT_STRINGLET:
-        case DAT_LISTLET:
-        case DAT_MAPLET:
-        case DAT_UNIQLET:
-        case DAT_HIGHLET: {
-            break;
-        }
-        default: {
-            die("Invalid type for value: (%p)->type == %#04x",
-                value, value->type);
-        }
-    }
-}
-
-/* Documented in header. */
 void datAssertNth(zvalue value, zint n) {
     datAssertValid(value);
 
@@ -132,18 +99,15 @@ void datAssertHighlet(zvalue value) {
 
 /* Documented in header. */
 zint datSize(zvalue value) {
-    datAssertValid(value);
     return value->size;
 }
 
 /* Documented in header. */
 ztype datType(zvalue value) {
-    datAssertValid(value);
     return value->type;
 }
 
 /* Documented in header. */
 bool datTypeIs(zvalue value, ztype type) {
-    datAssertValid(value);
     return value->type == type;
 }

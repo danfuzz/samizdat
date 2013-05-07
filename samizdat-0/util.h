@@ -13,6 +13,8 @@
 
 #include "ztype.h"
 
+#include <stdbool.h>
+
 
 /*
  * Message functions
@@ -41,6 +43,17 @@ void die(const char *format, ...)
  * Allocates zeroed-out memory of the indicated size (in bytes).
  */
 void *zalloc(zint size);
+
+/**
+ * Frees memory previously allocated by `zalloc`.
+ */
+void zfree(void *memory);
+
+/**
+ * Returns whether this appears to be a pointer to heap-allocated memory
+ * (though not necessarily the start of an allocation).
+ */
+bool utilIsHeapAllocated(void *memory);
 
 
 /*

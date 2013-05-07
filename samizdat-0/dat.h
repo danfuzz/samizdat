@@ -49,6 +49,24 @@ typedef struct {
     zvalue value;
 } zmapping;
 
+/**
+ * Prototype for state access/manipulation functions. These are called on
+ * uniqlet state pointers, and on other non-value pointers that those may in
+ * turn point to.
+ */
+typedef void (*zstateFunction)(void *state);
+
+/**
+ * Dispatch table for uniqlets with state.
+ */
+typedef struct {
+    /** Function to call in order to do a gc mark on the uniqlet state. */
+    zstateFunction mark;
+
+    /** Function to call in order to free the uniqlet state's resources. */
+    zstateFunction free;
+} DatUniqletDispatch;
+
 
 /*
  * Basic Functions
@@ -364,31 +382,31 @@ zvalue datMapletDel(zvalue maplet, zvalue key);
 zvalue datUniqlet(void);
 
 /**
- * Gets a new uniqlet, associated with the given key and contents.
+ * Gets a new uniqlet, associated with the given dispatcher and contents.
  * The uniqueness guarantee is the same as with `datUniqlet()`.
  *
  * In addition, this provides a convenient way to effectively build an
  * identity mapping between uniqlets (as the keys) and arbitrary
- * non-dat-module data (as the values). Rather than store uniqlets
+ * non-dat-module data (as the state values). Rather than store uniqlets
  * as keys in an external structure, this inverts the relationship,
- * storing the `key` (that represents the map) and associated `value`
- * inside the uniqlet. In object-capability terms, the `key` is a
+ * storing the key (that represents the map) and associated `state`
+ * inside the uniqlet. In object-capability terms, the key is a
  * sealer/unsealer, and the uniqlet serves secondary duty as a sealed
- * box.
+ * box. In this case, the key is in fact the associated state dispatch table.
  */
-zvalue datUniqletWith(void *key, void *value);
+zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
 
 /**
  * Gets whether or not the given uniqlet has the given key. The `key`
  * must not be `NULL`.
  */
-bool datUniqletHasKey(zvalue uniqlet, void *key);
+bool datUniqletHasKey(zvalue uniqlet, DatUniqletDispatch *dispatch);
 
 /**
- * Gets the value associated with the given uniqlet, asserting that
- * the uniqlet's key is as given.
+ * Gets the state value associated with the given uniqlet, asserting that
+ * the uniqlet's dispatch table is as given.
  */
-void *datUniqletGetValue(zvalue uniqlet, void *key);
+void *datUniqletGetValue(zvalue uniqlet, DatUniqletDispatch *dispatch);
 
 
 /*
@@ -443,5 +461,36 @@ bool datEq(zvalue v1, zvalue v2);
  * value sorting.
  */
 zorder datOrder(zvalue v1, zvalue v2);
+
+
+/*
+ * Memory management functions
+ */
+
+/**
+ * Marks a value during garbage collection. This in turn calls a type-specific
+ * mark function when appropriate and may recurse arbitrarily. It is valid
+ * to pass `NULL` to this, but no other non-values are acceptable.
+ */
+void datMark(zvalue value);
+
+/**
+ * Sets the base of the stack. This has to be called from a function
+ * which (a) performs no other dat module calls, and (b) is the ancestor
+ * call of all functions which *do* make dat module calls. Pass it the
+ * address of a local variable.
+ */
+void datSetStackBase(void *base);
+
+/**
+ * Marks the given value as "immortal." It is considered a root and
+ * will never get freed.
+ */
+void datImmortalize(zvalue value);
+
+/**
+ * Forces a gc.
+ */
+void datGc(void);
 
 #endif
