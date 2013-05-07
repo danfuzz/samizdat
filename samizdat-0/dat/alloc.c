@@ -232,21 +232,20 @@ static void doGc(void *topOfStack) {
 
         // Need to grab `item->next` before freeing the item.
         GcLinks *next = item->next;
+        zvalue one = (zvalue) item;
 
-        // Note: Can't use `datType()` here, since that builds in a
-        // sanity check, which will fail.
-        if (((zvalue) item)->type == DAT_UNIQLET) {
+        if (datTypeIs(one, DAT_UNIQLET)) {
             // Link the item to itself, so that its sanity check will
             // still pass.
             item->next = item->prev = item;
-            datUniqletFree((zvalue) item);
+            datUniqletFree(one);
         }
 
         // Prevent this from being mistaken for a live value.
         item->next = item->prev = NULL;
         item->marked = 999;
-        ((zvalue) item)->magic = 999;
-        ((zvalue) item)->type = 999;
+        one->magic = 999;
+        one->type = 999;
 
         zfree(item);
         item = next;

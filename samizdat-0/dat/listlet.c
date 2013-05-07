@@ -172,8 +172,8 @@ zvalue datListletAdd(zvalue listlet1, zvalue listlet2) {
         return listlet1;
     }
 
-    return listletFrom(datSize(listlet1), listletElems(listlet1), NULL,
-                       datSize(listlet2), listletElems(listlet2));
+    return listletFrom(size1, listletElems(listlet1), NULL,
+                       size2, listletElems(listlet2));
 }
 
 zvalue datListletDelNth(zvalue listlet, zint n) {

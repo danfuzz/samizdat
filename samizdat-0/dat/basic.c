@@ -99,18 +99,15 @@ void datAssertHighlet(zvalue value) {
 
 /* Documented in header. */
 zint datSize(zvalue value) {
-    datAssertValid(value);
     return value->size;
 }
 
 /* Documented in header. */
 ztype datType(zvalue value) {
-    datAssertValid(value);
     return value->type;
 }
 
 /* Documented in header. */
 bool datTypeIs(zvalue value, ztype type) {
-    datAssertValid(value);
     return value->type == type;
 }

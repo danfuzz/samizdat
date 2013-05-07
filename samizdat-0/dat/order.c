@@ -13,6 +13,9 @@
 
 /* Documented in header. */
 bool datEq(zvalue v1, zvalue v2) {
+    datAssertValid(v1);
+    datAssertValid(v2);
+
     if (v1 == v2) {
         return true;
     }
@@ -45,6 +48,9 @@ bool datEq(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zorder datOrder(zvalue v1, zvalue v2) {
+    datAssertValid(v1);
+    datAssertValid(v2);
+
     if (v1 == v2) {
         return ZSAME;
     }
