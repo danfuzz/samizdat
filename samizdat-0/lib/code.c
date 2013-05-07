@@ -71,7 +71,7 @@ static DatUniqletDispatch OBJECT_DISPATCH = {
  * `object` primitive.
  */
 static zvalue callObject(zvalue state, zint argCount, const zvalue *args) {
-    Object *object = datUniqletGetValue(state, &OBJECT_DISPATCH);
+    Object *object = datUniqletGetState(state, &OBJECT_DISPATCH);
     zvalue fullArgs[argCount + 2];
 
     if (object->busy) {
@@ -111,7 +111,7 @@ static zvalue callObject(zvalue state, zint argCount, const zvalue *args) {
 static zvalue callYield(zvalue state, zint argCount, const zvalue *args) {
     requireRange(argCount, 0, 1);
 
-    Object *object = datUniqletGetValue(state, &OBJECT_DISPATCH);
+    Object *object = datUniqletGetState(state, &OBJECT_DISPATCH);
 
     if (!object->busy) {
         die("Attempt to yield from inactive object.");

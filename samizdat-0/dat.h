@@ -397,16 +397,15 @@ zvalue datUniqlet(void);
 zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
 
 /**
- * Gets whether or not the given uniqlet has the given key. The `key`
- * must not be `NULL`.
+ * Gets whether or not the given uniqlet has the given dispatch table.
  */
-bool datUniqletHasKey(zvalue uniqlet, DatUniqletDispatch *dispatch);
+bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch);
 
 /**
  * Gets the state value associated with the given uniqlet, asserting that
  * the uniqlet's dispatch table is as given.
  */
-void *datUniqletGetValue(zvalue uniqlet, DatUniqletDispatch *dispatch);
+void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch);
 
 
 /*

@@ -69,7 +69,7 @@ zvalue langCall(zvalue functionId, zint argCount, const zvalue *args) {
         die("Function call argument inconsistency.");
     }
 
-    Function *entry = datUniqletGetValue(functionId, &FUNCTION_DISPATCH);
+    Function *entry = datUniqletGetState(functionId, &FUNCTION_DISPATCH);
 
     return entry->function(entry->state, argCount, args);
 }

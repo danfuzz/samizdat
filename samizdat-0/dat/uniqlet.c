@@ -103,13 +103,13 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
 }
 
 /* Documented in header. */
-bool datUniqletHasKey(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch) {
     return (dispatch == uniqletInfo(uniqlet)->dispatch);
 }
 
 /* Documented in header. */
-void *datUniqletGetValue(zvalue uniqlet, DatUniqletDispatch *dispatch) {
-    if (!datUniqletHasKey(uniqlet, dispatch)) {
+void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+    if (!datUniqletHasDispatch(uniqlet, dispatch)) {
         die("Wrong uniqlet dispatch table for get.");
     }
 
