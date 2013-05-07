@@ -108,7 +108,7 @@ static zvalue execExpressionVoidOk(zvalue ctx, zvalue expression);
  * The C function that is bound to in order to perform nonlocal exit.
  */
 static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
-    YieldState *yield = datUniqletGetValue(state, &YIELD_DISPATCH);
+    YieldState *yield = datUniqletGetState(state, &YIELD_DISPATCH);
 
     if (yield->active) {
         yield->active = false;
@@ -200,7 +200,7 @@ static zvalue execVarDef(zvalue ctx, zvalue varDef) {
  * The C function that is bound to in order to execute interpreted code.
  */
 static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
-    Closure *closure = datUniqletGetValue(state, &CLOSURE_DISPATCH);
+    Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
     zvalue functionNode = closure->function;
     zvalue parentContext = closure->context;
 
