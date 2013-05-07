@@ -83,58 +83,39 @@ static int compareRanges(const void *r1, const void *r2) {
  */
 static void addPages(void *start, void *end) {
     PageRange range = pageRangeFromAddressRange(start, end);
-    bool needNew = true;
 
-    for (zint i = 0; i < rangesSize; i++) {
-        PageRange *one = &ranges[i];
-        if ((range.end < one->start) || (range.start > one->end)) {
-            // Totally disjoint with this one.
-            continue;
-        }
-
-        bool changed = false;
-
-        if (range.start < one->start) {
-            one->start = range.start;
-            changed = true;
-        }
-
-        if (range.end > one->end) {
-            one->end = range.end;
-            changed = true;
-        }
-
-        if (!changed) {
-            return;
-        }
-
-        needNew = false;
-        break;
+    if (utilIsHeapAllocated((void *) range.start) &&
+        utilIsHeapAllocated((void *) (range.end - 1))) {
+        return;
     }
 
-    if (needNew) {
-        // Need to add a new range.
-        if (rangesSize >= MAX_PAGE_RANGES) {
-            die("Too many heap page ranges!");
-        }
+    // Need to add a new range or extend an existing one.
 
-        ranges[rangesSize] = range;
-        rangesSize++;
-        mergesort(ranges, rangesSize, sizeof(PageRange), compareRanges);
-        note("=== now %lld", rangesSize);
+    if (rangesSize >= MAX_PAGE_RANGES) {
+        die("Too many heap page ranges!");
     }
 
-    // Combine adjacent ranges (if any).
+    ranges[rangesSize] = range;
+    rangesSize++;
+    mergesort(ranges, rangesSize, sizeof(PageRange), compareRanges);
+
+    // Combine adjacent ranges (if possible).
 
     zint at = 1;
     for (zint i = 1; i < rangesSize; i++) {
         PageRange *prev = &ranges[at - 1];
         PageRange *one = &ranges[i];
 
-        if (prev->end == one->start) {
+        if (prev->start == one->start) {
+            if (prev->end < one->end) {
+                prev->end = one->end;
+            }
+        } else if (prev->end >= one->start) {
             prev->end = one->end;
         } else {
-            ranges[at] = *one;
+            if (at != i) {
+                ranges[at] = *one;
+            }
             at++;
         }
     }
@@ -182,9 +163,21 @@ void zfree(void *memory) {
 bool utilIsHeapAllocated(void *memory) {
     intptr_t address = (intptr_t) memory;
 
-    for (zint i = 0; i < rangesSize; i++) {
-        PageRange *one = &ranges[i];
-        if ((address >= one->start) && (address < one->end)) {
+    zint min = 0;
+    zint max = rangesSize - 1;
+
+    // Binary search for the range that covers the address.
+    while (min <= max) {
+        zint guess = (min + max) / 2;
+        PageRange *one = &ranges[guess];
+
+        if (one->start > address) {
+            max = guess - 1;
+        } else if (one->end <= address) {
+            min = guess + 1;
+        }
+
+        if ((one->start <= address) && (one->end > address)) {
             return true;
         }
     }
