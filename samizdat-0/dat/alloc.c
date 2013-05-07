@@ -103,6 +103,17 @@ static void checkLinks(zvalue value) {
 }
 
 /**
+ * Sanity check the circular list with the given head.
+ */
+static void sanityCheckList(GcLinks *head) {
+    for (GcLinks *item = head->next; item != head; item = item->next) {
+        zvalue one = (zvalue) item;
+        datAssertValid(one);
+        checkLinks(one);
+    }
+}
+
+/**
  * Sanity check the links and tables.
  */
 static void sanityCheck(bool force) {
@@ -116,11 +127,16 @@ static void sanityCheck(bool force) {
         checkLinks(one);
     }
 
-    for (GcLinks *item = liveHead.next; item != &liveHead; item = item->next) {
-        zvalue one = (zvalue) item;
-        datAssertValid(one);
-        checkLinks(one);
+    for (zint i = 0; i < NEWBIES_SIZE; i++) {
+        zvalue one = newbies[i];
+        if (one != NULL) {
+            datAssertValid(one);
+            checkLinks(one);
+        }
     }
+
+    sanityCheckList(&liveHead);
+    sanityCheckList(&doomedHead);
 }
 
 /**
@@ -195,11 +211,10 @@ static void doGc(void *topOfStack) {
 
     // Free everything left on the doomed list.
 
+    sanityCheck(false);
+
     counter = 0;
     for (GcLinks *item = doomedHead.next; item != &doomedHead; /*next*/) {
-        zvalue one = (zvalue) item;
-        checkLinks(one);
-
         if (item->marked) {
             die("Marked item on doomed list!");
         }
@@ -212,6 +227,8 @@ static void doGc(void *topOfStack) {
         GcLinks *next = item->next;
 
         // Prevent this from being mistaken for a live value.
+        item->next = NULL;
+        item->prev = NULL;
         item->marked = 999;
         ((zvalue) item)->magic = 999;
         ((zvalue) item)->type = 999;
