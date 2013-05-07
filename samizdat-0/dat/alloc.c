@@ -59,6 +59,8 @@ static void enlist(GcLinks *head, zvalue value) {
  * Main garbage collection function.
  */
 static void doGc(void *topOfStack) {
+    zint counter; // Used throughout.
+
     // Sanity check: If there have been no allocations, then there's nothing
     // to do.
 
@@ -86,8 +88,10 @@ static void doGc(void *topOfStack) {
         note("GC: Marked %lld immortals.", immortalsSize);
     }
 
-    zint counter = 0;
+    // Align the stack pointer.
+    topOfStack = (void *) ((intptr_t) topOfStack & ~(sizeof(void *) - 1));
 
+    counter = 0;
     for (void **stack = topOfStack; stack < (void **) stackBase; stack++) {
         zvalue value = datConservativeValueCast(*stack);
         if (value != NULL) {
@@ -97,6 +101,7 @@ static void doGc(void *topOfStack) {
     }
 
     if (CHATTY_GC) {
+        note("GC: Stack: %p .. %p", topOfStack, stackBase);
         note("GC: Scanned %ld bytes of stack.",
              (char *) stackBase - (char *) topOfStack);
         note("GC: Found %lld live stack references.", counter);
