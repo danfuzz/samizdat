@@ -468,7 +468,14 @@ zorder datOrder(zvalue v1, zvalue v2);
  */
 
 /**
- * Marks the base of the stack. This has to be called from a function
+ * Marks a value during garbage collection. This in turn calls a type-specific
+ * mark function when appropriate and may recurse arbitrarily. It is valid
+ * to pass `NULL` to this, but no other non-values are acceptable.
+ */
+void datMark(zvalue value);
+
+/**
+ * Sets the base of the stack. This has to be called from a function
  * which (a) performs no other dat module calls, and (b) is the ancestor
  * call of all functions which *do* make dat module calls. Pass it the
  * address of a local variable.

@@ -164,12 +164,6 @@ zvalue datConservativeValueCast(void *maybeValue);
 bool datHasNth(zvalue value, zint n);
 
 /**
- * Marks a value for garbage collection. This in turn calls a type-specific
- * mark function when appropriate.
- */
-void datMark(zvalue value);
-
-/**
  * Compares intlets for equality. Only called when the sizes are the same.
  */
 bool datIntletEq(zvalue v1, zvalue v2);

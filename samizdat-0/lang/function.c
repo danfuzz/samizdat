@@ -22,7 +22,7 @@ typedef struct {
     zfunction function;
 
     /** Arbitrary closure state. */
-    void *state;
+    zvalue state;
 } Function;
 
 /**
@@ -30,15 +30,14 @@ typedef struct {
  */
 static void functionMark(void *state) {
     Function *function = state;
-    // TODO
+    datMark(function->state);
 }
 
 /**
  * Frees the function's state.
  */
 static void functionFree(void *state) {
-    Function *function = state;
-    // TODO
+    zfree(state);
 }
 
 /** Uniqlet dispatch table. */
@@ -53,7 +52,7 @@ static DatUniqletDispatch FUNCTION_DISPATCH = {
  */
 
 /* Documented in header. */
-zvalue langDefineFunction(zfunction function, void *state) {
+zvalue langDefineFunction(zfunction function, zvalue state) {
     Function *entry = zalloc(sizeof(Function));
 
     entry->function = function;

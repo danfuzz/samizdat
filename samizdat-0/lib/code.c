@@ -42,11 +42,36 @@ typedef struct {
 } Object;
 
 /**
+ * Marks an object state for garbage collection.
+ */
+static void objectMark(void *state) {
+    Object *object = state;
+
+    datMark(object->serviceFunction);
+    datMark(object->yieldFunction);
+    datMark(object->state);
+    datMark(object->yieldValue);
+}
+
+/**
+ * Frees an object state.
+ */
+static void objectFree(void *state) {
+    zfree(state);
+}
+
+/** Uniqlet dispatch table. */
+static DatUniqletDispatch OBJECT_DISPATCH = {
+    objectMark,
+    objectFree
+};
+
+/**
  * The C function that is the bound in the direct result of an
  * `object` primitive.
  */
-static zvalue callObject(void *state, zint argCount, const zvalue *args) {
-    Object *object = state;
+static zvalue callObject(zvalue state, zint argCount, const zvalue *args) {
+    Object *object = datUniqletGetValue(state, &OBJECT_DISPATCH);
     zvalue fullArgs[argCount + 2];
 
     if (object->busy) {
@@ -83,10 +108,10 @@ static zvalue callObject(void *state, zint argCount, const zvalue *args) {
 /**
  * The C function that is bound into yield functions.
  */
-static zvalue callYield(void *state, zint argCount, const zvalue *args) {
+static zvalue callYield(zvalue state, zint argCount, const zvalue *args) {
     requireRange(argCount, 0, 1);
 
-    Object *object = state;
+    Object *object = datUniqletGetValue(state, &OBJECT_DISPATCH);
 
     if (!object->busy) {
         die("Attempt to yield from inactive object.");
@@ -149,14 +174,16 @@ PRIM_IMPL(object) {
     requireExactly(argCount, 2);
 
     Object *object = zalloc(sizeof(Object));
+    zvalue objectUniqlet = datUniqletWith(&OBJECT_DISPATCH, object);
+
     object->serviceFunction = args[0];
-    object->yieldFunction = langDefineFunction(callYield, object);
+    object->yieldFunction = langDefineFunction(callYield, objectUniqlet);
     object->state = args[1];
     object->busy = false;
     object->yieldValue = NULL;
     object->yielded = false;
 
-    return langDefineFunction(callObject, object);
+    return langDefineFunction(callObject, objectUniqlet);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

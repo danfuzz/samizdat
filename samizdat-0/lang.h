@@ -23,7 +23,7 @@
  * `state` is arbitrary closure state (passed in when the function
  * was bound).
  */
-typedef zvalue (*zfunction)(void *state, zint argCount, const zvalue *args);
+typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
 
 
 /*
@@ -46,7 +46,7 @@ zvalue langCall(zvalue functionId, zint argCount, const zvalue *args);
  * Defines a function with associated (and arbitrary) closure
  * state. Returns the identifying uniqlet that binds to it.
  */
-zvalue langDefineFunction(zfunction function, void *state);
+zvalue langDefineFunction(zfunction function, zvalue state);
 
 
 /*

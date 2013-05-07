@@ -127,24 +127,6 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     return result;
 }
 
-/* Documented in header. */
-void datMark(zvalue value) {
-    if (value->links.marked) {
-        return;
-    }
-
-    value->links.marked = true;
-    switch (value->type) {
-        case DAT_LISTLET: { datListletMark(value); break; }
-        case DAT_MAPLET:  { datMapletMark(value);  break; }
-        case DAT_UNIQLET: { datUniqletMark(value); break; }
-        case DAT_HIGHLET: { datHighletMark(value); break; }
-        default: {
-            // Nothing. The other types don't need sub-marking.
-        }
-    }
-}
-
 
 /*
  * Exported functions
@@ -158,6 +140,24 @@ void datImmortalize(zvalue value) {
 
     immortals[immortalsSize] = value;
     immortalsSize++;
+}
+
+/* Documented in header. */
+void datMark(zvalue value) {
+    if ((value == NULL) || value->links.marked) {
+        return;
+    }
+
+    value->links.marked = true;
+    switch (value->type) {
+        case DAT_LISTLET: { datListletMark(value); break; }
+        case DAT_MAPLET:  { datMapletMark(value);  break; }
+        case DAT_UNIQLET: { datUniqletMark(value); break; }
+        case DAT_HIGHLET: { datHighletMark(value); break; }
+        default: {
+            // Nothing. The other types don't need sub-marking.
+        }
+    }
 }
 
 /* Documented in header. */

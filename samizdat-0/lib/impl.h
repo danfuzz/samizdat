@@ -50,10 +50,10 @@ void requireRange(zint argCount, zint min, zint max);
  * function prototype.
  */
 #define PRIM_IMPL(name) \
-    zvalue prim_##name(void *state, zint argCount, const zvalue *args)
+    zvalue prim_##name(zvalue state, zint argCount, const zvalue *args)
 
 /* Declarations for all the primitive functions */
-#define PRIM_FUNC(name) zvalue prim_##name(void *, zint, const zvalue *)
+#define PRIM_FUNC(name) zvalue prim_##name(zvalue, zint, const zvalue *)
 #include "prim-def.h"
 #undef PRIM_FUNC
 

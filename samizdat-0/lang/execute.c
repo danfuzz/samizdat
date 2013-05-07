@@ -12,6 +12,10 @@
 #include <stddef.h>
 
 
+/*
+ * Helper definitions
+ */
+
 /**
  * Closure, that is, a function and its associated immutable bindings.
  * Instances of this structure are bound as the closure state as part of
@@ -50,10 +54,51 @@ typedef struct {
     jmp_buf jumpBuf;
 } YieldState;
 
-
-/*
- * Helper functions
+/**
+ * Marks a closure state for garbage collection.
  */
+static void closureMark(void *state) {
+    Closure *closure = state;
+
+    datMark(closure->context);
+    datMark(closure->function);
+}
+
+/**
+ * Frees a closure state.
+ */
+static void closureFree(void *state) {
+    zfree(state);
+}
+
+/** Uniqlet dispatch table for closures. */
+static DatUniqletDispatch CLOSURE_DISPATCH = {
+    closureMark,
+    closureFree
+};
+
+/**
+ * Marks a yield state for garbage collection.
+ */
+static void yieldMark(void *state) {
+    YieldState *yield = state;
+
+    datMark(yield->result);
+}
+
+/**
+ * Frees a yield state.
+ */
+static void yieldFree(void *state) {
+    zfree(state);
+}
+
+/** Uniqlet dispatch table for yield states. */
+static DatUniqletDispatch YIELD_DISPATCH = {
+    yieldMark,
+    yieldFree
+};
+
 
 /* Defined below. */
 static zvalue execExpression(zvalue ctx, zvalue expression);
@@ -62,8 +107,8 @@ static zvalue execExpressionVoidOk(zvalue ctx, zvalue expression);
 /**
  * The C function that is bound to in order to perform nonlocal exit.
  */
-static zvalue nonlocalExit(void *state, zint argCount, const zvalue *args) {
-    YieldState *yield = state;
+static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
+    YieldState *yield = datUniqletGetValue(state, &YIELD_DISPATCH);
 
     if (yield->active) {
         yield->active = false;
@@ -154,8 +199,8 @@ static zvalue execVarDef(zvalue ctx, zvalue varDef) {
 /**
  * The C function that is bound to in order to execute interpreted code.
  */
-static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
-    Closure *closure = state;
+static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
+    Closure *closure = datUniqletGetValue(state, &CLOSURE_DISPATCH);
     zvalue functionNode = closure->function;
     zvalue parentContext = closure->context;
 
@@ -179,7 +224,9 @@ static zvalue execClosure(void *state, zint argCount, const zvalue *args) {
             return yieldState->result;
         }
 
-        zvalue exitFunction = langDefineFunction(nonlocalExit, yieldState);
+        zvalue exitFunction =
+            langDefineFunction(nonlocalExit,
+                               datUniqletWith(&YIELD_DISPATCH, yieldState));
         ctx = datMapletPut(ctx, yieldDef, exitFunction);
     }
 
@@ -222,7 +269,8 @@ static zvalue execFunction(zvalue ctx, zvalue function) {
     closure->context = ctx;
     closure->function = datHighletValue(function);
 
-    return langDefineFunction(execClosure, closure);
+    return langDefineFunction(execClosure,
+                              datUniqletWith(&CLOSURE_DISPATCH, closure));
 }
 
 /**
