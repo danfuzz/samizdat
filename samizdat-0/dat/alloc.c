@@ -275,6 +275,8 @@ void datImmortalize(zvalue value) {
         die("Too many immortal values!");
     }
 
+    datAssertValid(value);
+
     immortals[immortalsSize] = value;
     immortalsSize++;
 }
