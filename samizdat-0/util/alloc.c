@@ -52,6 +52,11 @@ void *zalloc(zint size) {
 }
 
 /* Documented in header. */
+void zfree(void *memory) {
+    free(memory);
+}
+
+/* Documented in header. */
 bool utilIsHeapAllocated(void *memory) {
     return (memory >= heapBottom) && (memory < heapTop);
 }
