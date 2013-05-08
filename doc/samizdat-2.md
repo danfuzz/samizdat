@@ -20,7 +20,7 @@ rules.
 token ::= punctuation2 | punctuation |
     integer | hexInteger | binaryInteger |
     string |
-    keyword | identifier2 | identifier
+    keyword | identifier
 ;
 # Note: The punctuation2 rule intentionally gets listed before the
 # integer rule, so that in this layer `-<digit>` gets interpreted as two
@@ -70,9 +70,6 @@ binaryInteger ::= "0b" binaryDigit+ ;
 
 binaryDigit ::= "0" | "1" ;
 # result: <integer>
-
-identifier2 ::= "\\" string ;
-# result: [:@identifier (highletValue string):]
 ```
 
 

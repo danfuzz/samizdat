@@ -46,9 +46,9 @@ countDowns = yStarCombinator
     };
 countDown2 = listNth countDowns 0;
 
-# Demo of formal argument repeat modifiers.
-blort = { foo bar? baz? more* ::
-    io0Note (format "%q %q %q %q" foo bar baz more);
+# Demo of formal argument repeat modifiers. Also of quoted identifiers.
+blort = { foo bar? \"weird name"? more* ::
+    io0Note (format "%q %q %q %q" foo bar \"weird name" more);
 };
 
 # Demo of reading a sibling file through a sandboxed reader.

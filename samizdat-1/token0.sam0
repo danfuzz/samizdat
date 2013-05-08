@@ -20,7 +20,7 @@ parseFile = filterRule
     { result :: <> listNth result 0 };
 
 # Parses a single token.
-parseToken = orRule @punctuation @integer @string @identifier;
+parseToken = orRule @punctuation @integer @string @identifier @quotedIdentifier;
 
 # Parses any of the punctuation characters or character sequences, yielding
 # a token whose type is the string matched.
@@ -85,6 +85,14 @@ IDENTIFIER_START_CHARS =
 # These are all the characters which are allowed to be in an identifier.
 IDENTIFIER_CHARS = stringAdd IDENTIFIER_START_CHARS "0123456789";
 
+# Parses a `quotedIdentifier` token.
+parseQuotedIdentifier = filterRule
+    (seqRule (charsRule "\\") @string)
+    { result ::
+        value = highletValue (listNth result 1);
+        <> [:@identifier value:]
+    };
+
 # Parses an `identifier` token.
 parseIdentifier = filterRule
     (seqRule
@@ -111,6 +119,7 @@ TOKEN0_RULES = [
     @identifier = parseIdentifier
     @integer = parseInteger
     @punctuation = parsePunctuation
+    @quotedIdentifier = parseQuotedIdentifier
     @string = parseString
     @token = parseToken
     @whitespace = parseWhitespace
