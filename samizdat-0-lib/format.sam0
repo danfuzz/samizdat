@@ -24,9 +24,7 @@ adornIf = { adorn before value after ::
 
 # These are all the integer digits, as a map from digit values to
 # strings.
-INTEGER_CHARS =
-    [ 0="0" 1="1" 2="2" 3="3" 4="4"
-      5="5" 6="6" 7="7" 8="8" 9="9" ];
+INTEGER_CHARS = [0="0" 1="1" 2="2" 3="3" 4="4" 5="5" 6="6" 7="7" 8="8" 9="9"];
 
 # Helper for stringifying integers, which does most of the conversion,
 # as well as prepending the given prefix.
