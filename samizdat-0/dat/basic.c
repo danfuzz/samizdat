@@ -20,7 +20,7 @@ static const char *typeName(ztype type) {
     switch (type) {
         case DAT_INTEGER:    return "integer";
         case DAT_STRING: return "string";
-        case DAT_LISTLET:   return "list";
+        case DAT_LIST:   return "list";
         case DAT_MAPLET:    return "map";
         case DAT_UNIQLET:   return "uniqlet";
         case DAT_HIGHLET:   return "highlet";
@@ -79,7 +79,7 @@ void datAssertString(zvalue value) {
 
 /* Documented in header. */
 void datAssertList(zvalue value) {
-    assertType(value, DAT_LISTLET);
+    assertType(value, DAT_LIST);
 }
 
 /* Documented in header. */

@@ -17,7 +17,7 @@
  * Allocates a list of the given size.
  */
 static zvalue allocList(zint size) {
-    return datAllocValue(DAT_LISTLET, size, size * sizeof(zvalue));
+    return datAllocValue(DAT_LIST, size, size * sizeof(zvalue));
 }
 
 /**

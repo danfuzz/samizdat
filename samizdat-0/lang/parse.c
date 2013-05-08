@@ -284,7 +284,7 @@ DEF_PARSE(list) {
     zvalue atoms = PARSE_OR_REJECT(atomPlus);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_LISTLET), atoms);
+    return makeCall(makeVarRef(STR_MAKE_LIST), atoms);
 }
 
 /**

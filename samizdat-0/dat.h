@@ -28,7 +28,7 @@
 typedef enum {
     DAT_INTEGER = 1,
     DAT_STRING,
-    DAT_LISTLET,
+    DAT_LIST,
     DAT_MAPLET,
     DAT_UNIQLET,
     DAT_HIGHLET

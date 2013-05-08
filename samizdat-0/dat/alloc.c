@@ -345,7 +345,7 @@ void datAssertValid(zvalue value) {
     switch (value->type) {
         case DAT_INTEGER:
         case DAT_STRING:
-        case DAT_LISTLET:
+        case DAT_LIST:
         case DAT_MAPLET:
         case DAT_UNIQLET:
         case DAT_HIGHLET: {
@@ -386,7 +386,7 @@ void datMark(zvalue value) {
     enlist(&liveHead, value);
 
     switch (value->type) {
-        case DAT_LISTLET: { datListMark(value); break; }
+        case DAT_LIST: { datListMark(value); break; }
         case DAT_MAPLET:  { datMapMark(value);  break; }
         case DAT_UNIQLET: { datUniqletMark(value); break; }
         case DAT_HIGHLET: { datHighletMark(value); break; }
