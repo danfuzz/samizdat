@@ -25,7 +25,7 @@
 			<key>name</key>
 			<string>string.quoted.double</string>
 			<key>begin</key>
-			<string>@?"</string>
+			<string>"</string>
 			<key>end</key>
 			<string>"</string>
 			<key>patterns</key>
@@ -42,7 +42,7 @@
 			<key>name</key>
 			<string>constant.numeric</string>
 			<key>match</key>
-			<string>@?-?\b[0-9]+\b</string>
+			<string>-?\b[0-9]+\b</string>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -54,7 +54,7 @@
 			<key>name</key>
 			<string>constant.language</string>
 			<key>match</key>
-			<string>\btrue\b|\bfalse\b|\bnull\b|@\[\]|@\[=\]|@@</string>
+			<string>\btrue\b|\bfalse\b|\bnull\b|\[\]|\[=\]|@@</string>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -83,7 +83,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>{([^:{}@"]*)(::)</string>
+			<string>{([^:{}@]*)(::)</string>
 		</dict>
 		<dict>
 			<key>captures</key>
