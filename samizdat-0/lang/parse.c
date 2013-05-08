@@ -319,16 +319,9 @@ DEF_PARSE(string) {
 DEF_PARSE(integer) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
-    bool negative = (MATCH(CH_MINUS) != NULL);
     zvalue integer = MATCH_OR_REJECT(INTEGER);
-    zvalue value = datHighletValue(integer);
 
-    if (negative) {
-        value = datIntegerFromInt(-datIntFromInteger(value));
-    }
-
-    return datHighletFrom(STR_LITERAL, value);
+    return datHighletFrom(STR_LITERAL, datHighletValue(integer));
 }
 
 /**

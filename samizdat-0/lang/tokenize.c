@@ -79,6 +79,13 @@ static void skipWhitespace(ParseState *state) {
  */
 static zvalue tokenizeInteger(ParseState *state) {
     zint value = 0;
+    zint sign = 1;
+    bool any = false;
+
+    if (peek(state) == '-') {
+        read(state);
+        sign = -1;
+    }
 
     for (;;) {
         zint ch = peek(state);
@@ -88,6 +95,7 @@ static zvalue tokenizeInteger(ParseState *state) {
         }
 
         read(state);
+        any = true;
         value = (value * 10) + (ch - '0');
 
         if (value >= 0x80000000) {
@@ -95,7 +103,11 @@ static zvalue tokenizeInteger(ParseState *state) {
         }
     }
 
-    zvalue integer = datIntegerFromInt(value);
+    if (!any) {
+        die("Invalid integer token (no digits).");
+    }
+
+    zvalue integer = datIntegerFromInt(value * sign);
     return datHighletFrom(STR_INTEGER, integer);
 }
 
@@ -204,7 +216,6 @@ static zvalue tokenizeOne(ParseState *state) {
         case ']':  read(state); return TOK_CH_CSQUARE;
         case '=':  read(state); return TOK_CH_EQUAL;
         case '>':  read(state); return TOK_CH_GT;
-        case '-':  read(state); return TOK_CH_MINUS;
         case '{':  read(state); return TOK_CH_OCURLY;
         case '(':  read(state); return TOK_CH_OPAREN;
         case '[':  read(state); return TOK_CH_OSQUARE;
@@ -224,6 +235,7 @@ static zvalue tokenizeOne(ParseState *state) {
                                          TOK_CH_LT, TOK_CH_DIAMOND);
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
+        case '-':
             return tokenizeInteger(state);
     }
 
