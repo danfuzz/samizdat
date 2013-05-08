@@ -44,7 +44,7 @@ integerBody = { start value <out> ::
 };
 
 # Map from integer sign values to the appropriate stringifier for each.
-INTLET_SIGNS = @[
+INTEGER_SIGNS = @[
     @-1 = { integer :: <> integerBody @"-" (ineg integer) }
     @0  = { <> @"0" }
     @1  = { integer :: <> integerBody @"" integer }
@@ -52,7 +52,7 @@ INTLET_SIGNS = @[
 
 # Stringifies an integer.
 doInteger = { recurse integer adorn ::
-    result = (mapGet INTLET_SIGNS (integerSign integer)) integer;
+    result = (mapGet INTEGER_SIGNS (integerSign integer)) integer;
     <> adornIf adorn @"@" result @""
 };
 

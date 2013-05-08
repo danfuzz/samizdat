@@ -18,7 +18,7 @@
  */
 static const char *typeName(ztype type) {
     switch (type) {
-        case DAT_INTLET:    return "integer";
+        case DAT_INTEGER:    return "integer";
         case DAT_STRINGLET: return "string";
         case DAT_LISTLET:   return "list";
         case DAT_MAPLET:    return "map";
@@ -69,7 +69,7 @@ void datAssertNth(zvalue value, zint n) {
 
 /* Documented in header. */
 void datAssertInteger(zvalue value) {
-    assertType(value, DAT_INTLET);
+    assertType(value, DAT_INTEGER);
 }
 
 /* Documented in header. */

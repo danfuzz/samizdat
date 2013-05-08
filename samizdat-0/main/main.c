@@ -49,7 +49,7 @@ static void realMain(int argc, char **argv) {
 
     zvalue result = langApply(function, datListFromArray(argCount, args));
 
-    if ((result != NULL) && (datType(result) == DAT_INTLET)) {
+    if ((result != NULL) && (datType(result) == DAT_INTEGER)) {
         exit((int) datIntFromInteger(result));
     }
 }
