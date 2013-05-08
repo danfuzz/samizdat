@@ -22,6 +22,12 @@ adornIf = { adorn before value after ::
         { <> value }
 };
 
+# These are all the integer digits, as a maplet from digit values to
+# stringlets.
+INTEGER_CHARS =
+    @[ @0=@"0" @1=@"1" @2=@"2" @3=@"3" @4=@"4"
+       @5=@"5" @6=@"6" @7=@"7" @8=@"8" @9=@"9" ];
+
 # Helper for stringifying intlets, which does most of the conversion,
 # as well as prepending the given prefix.
 intletBody = { start value <out> ::
@@ -30,8 +36,7 @@ intletBody = { start value <out> ::
         value = listletNth result @1;
         <> ifTrue { <> ne value @0 }
             {
-                # Note: 48 == "0"
-                digit = stringletFromIntlet (iadd (imod value @10) @48);
+                digit = mapletGet INTEGER_CHARS (imod value @10);
                 <> @[(stringletAdd digit text) (idiv value @10)];
             }
             { <out> stringletAdd start text }
