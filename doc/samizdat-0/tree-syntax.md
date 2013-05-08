@@ -88,16 +88,16 @@ integer ::= [:@"@":] [:@"-":]? [:@integer:] ;
 string ::= [:@"@":] (@string | @identifier);
 # result: [:@literal (highletValue (string|identifier)):]
 
-emptyList ::= [:@"@":] [:@"[":] [:@"]":] ;
+emptyList ::= [:@"[":] [:@"]":] ;
 # result: [:@literal []:]
 
-list ::= [:@"@":] [:@"[":] atom+ [:@"]":] ;
+list ::= [:@"[":] atom+ [:@"]":] ;
 # result: makeCall [:@varRef @makeList:] atom+
 
-emptyMap ::= [:@"@":] [:@"[":] [:@"=":] [:@"]":] ;
+emptyMap ::= [:@"[":] [:@"=":] [:@"]":] ;
 # result: [:@literal [=]:]
 
-map ::= [:@"@":] [:@"[":] binding+ [:@"]":] ;
+map ::= [:@"[":] binding+ [:@"]":] ;
 # result: apply makeCall [:@varRef @makeMap:] (lisletAdd binding+)
 
 binding ::= atom [:@"=":] atom ;
