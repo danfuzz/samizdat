@@ -88,13 +88,8 @@ parseString = orRule
 
 # Parses an `integer` node.
 parseInteger = filterRule
-    (seqRule [:"@":] (optRule [:"-":]) [:@integer:])
-    { result ::
-        sign = ifTrue { <> eq (listNth result 1) [] }
-            { <> 1 } { <> -1 };
-        value = imul sign (highletValue (listNth result 2));
-        <> [:@literal value:]
-    };
+    [:@integer:]
+    { result :: <> [:@literal (highletValue result):] };
 
 # Parses a `varRef` node.
 parseVarRef = filterRule

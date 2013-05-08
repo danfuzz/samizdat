@@ -29,7 +29,7 @@ parsePunctuation = filterRule
         (charsRule "@@")
         (charsRule "::")
         (charsRule "<>")
-        (charSetRule "@:*;=-?<>{}()[]"))
+        (charSetRule "@:*;=?<>{}()[]"))
     { result :: <> [:result:] };
 
 # These are all the integer digits, as a map from strings to
@@ -40,14 +40,19 @@ INTEGER_CHARS =
 
 # Parses an `integer` token.
 parseInteger = filterRule
-    (plusRule
+    (seqRule
         (filterRule
-            (charSetRule "0123456789")
-            { result :: <> mapGet INTEGER_CHARS result }))
+            (optRule (charsRule "-"))
+            { result :: <> ifTrue { <> eq result [] } { <> 1 } { <> -1 } })
+        (plusRule
+            (filterRule
+                (charSetRule "0123456789")
+                { result :: <> mapGet INTEGER_CHARS result })))
     { result ::
-        value = listReduce 0 result
+        sign = listNth result 0;
+        value = listReduce 0 (listNth result 1)
             { result digit :: <> iadd digit (imul result 10) };
-        <> [:@integer value:]
+        <> [:@integer (imul sign value):]
     };
 
 # Parses a single string character.
