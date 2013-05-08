@@ -26,7 +26,7 @@ program ::= (programDeclarations [:@"::":])? programBody ;
 #         :]
 
 programDeclarations ::= formal* yieldDef? ;
-# result: @[(@formals=@[formal*])? (yieldDef=yieldDef)?]
+# result: [(@formals=[formal*])? (yieldDef=yieldDef)?]
 # Note: The @formals mapping should only be included when there is at
 # least one formal.
 
@@ -36,11 +36,11 @@ programBody ::=
     (statement | nonlocalExit | yield)?
     [:@";":]*
 ;
-# result: @[@statements=@[statement*] (@yield=yield)?]
+# result: [@statements=[statement*] (@yield=yield)?]
 # Note: nonLocalExit results in a statement.
 
 formal ::= [:@identifier:] ([:@"*":] | [:@"?":])? ;
-# result: @[@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]
+# result: [@name=(highletValue identifier) (@repeat=[:(@"*"|@"?"):])?]
 
 yieldDef ::= [:@"<":] [:@identifier:] [:@">":] ;
 # result: highletValue identifier
@@ -77,7 +77,7 @@ parenExpression ::= [:@"(":] expression [:@")":];
 # result: expression
 
 varDef ::= [:@identifier:] [:@"=":] expression ;
-# result: [:@varDef @[@name=(highletValue identifier) @value=expression]:]
+# result: [:@varDef [@name=(highletValue identifier) @value=expression]:]
 
 varRef ::= [:@identifier:] ;
 # result: [:@varRef (highletValue identifier):]
@@ -89,19 +89,19 @@ string ::= [:@"@":] (@string | @identifier);
 # result: [:@literal (highletValue (string|identifier)):]
 
 emptyList ::= [:@"@":] [:@"[":] [:@"]":] ;
-# result: [:@literal @[]:]
+# result: [:@literal []:]
 
 list ::= [:@"@":] [:@"[":] atom+ [:@"]":] ;
 # result: makeCall [:@varRef @makeList:] atom+
 
 emptyMap ::= [:@"@":] [:@"[":] [:@"=":] [:@"]":] ;
-# result: [:@literal @[=]:]
+# result: [:@literal [=]:]
 
 map ::= [:@"@":] [:@"[":] binding+ [:@"]":] ;
 # result: apply makeCall [:@varRef @makeMap:] (lisletAdd binding+)
 
 binding ::= atom [:@"=":] atom ;
-# result: @[atom atom] # key then value
+# result: [atom atom] # key then value
 
 uniqlet ::= [:@"@@":];
 # result: makeCall [:@varRef @makeUniqlet:]
@@ -111,6 +111,6 @@ highlet ::= [:@"[":] [:@":":] atom atom? [:@":":] [:@"]":] ;
 
 # Function that returns an appropriately-formed `call` node.
 makeCall = { function actuals* ::
-    <> [:@call @[@function=function @actuals=actuals]:]
+    <> [:@call [@function=function @actuals=actuals]:]
 }
 ```

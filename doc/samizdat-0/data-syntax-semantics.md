@@ -79,14 +79,14 @@ omit the double-quote delimiters.
 
 A `list` is a sequence of zero or more other values.
 
-Lists are written as an initial `@[`, followed by zero or
+Lists are written as an initial `[`, followed by zero or
 more value representations, followed by a final `]`.
 
 ```
-@[]                           # the empty list
-@[@1]
-@[@blort @fizmo @igram]
-@[@[@1] @242 @-23]
+[]                            # the empty list
+[@1]
+[@blort @fizmo @igram]
+[[@1] @242 @-23]
 ```
 
 
@@ -97,21 +97,21 @@ from arbitrary keys to arbitrary values. Keys and values are both
 allowed to be any type of value. Notably, keys are *not* restricted to
 only being strings (or string-like things).
 
-Non-empty maps are written as an initial `@[`, followed by one or
+Non-empty maps are written as an initial `[`, followed by one or
 more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `=`, followed by the value
 representation.
 
 To avoid ambiguity with the empty list, the empty map is
-written as `@[=]`.
+written as `[=]`.
 
 ```
-@[=]                          # the empty map
-@[@1=@"number one"]
-@[@blort = @"potion; the ability to see in the dark"
-  @fizmo = @"spell; unclogs pipes"
-  @igram = @"spell; make purple things invisible"]
-@[@[@complex @data @as @key] = @"Handy!"]
+[=]                           # the empty map
+[@1=@"number one"]
+[@blort = @"potion; the ability to see in the dark"
+ @fizmo = @"spell; unclogs pipes"
+ @igram = @"spell; make purple things invisible"]
+[[@complex @data @as @key] = @"Handy!"]
 ```
 
 
@@ -151,7 +151,7 @@ value representation (another arbitrary value), followed by a final
 [:@boolean @1:]               # the value usually just written as `true`
 [:
   @spell
-  @[@name=@frotz @purpose=@"cause item to glow"]
+  [@name=@frotz @purpose=@"cause item to glow"]
 :]
 ```
 

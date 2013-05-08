@@ -188,7 +188,7 @@ unaryPostfixExpression ::=
 #         (etc.)
 
 atom ::=
-    varRef | integer | [:@integer:] | string | [:@string:] |
+    varRef | integer | string |
     emptyList | list | emptyMap | map |
     uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever choice matched>
@@ -197,6 +197,6 @@ atom ::=
 # result when evaluated is a no-args function which computes and returns
 # the indicated expression.
 makeThunk = { expression ::
-    <> [:@function @[@statements=@[] @yield=expression]]
+    <> [:@function [@statements=[] @yield=expression]]
 };
 ```

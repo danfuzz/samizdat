@@ -18,7 +18,7 @@ If any other arguments are supplied, then each of the initial `value`
 arguments is taken to be an arbitrary value, and the final `list`
 argument must be a list, whose contents are "flattened" into the
 final list of arguments to pass to the function. For example, this is
-a five-argument call: `apply fizmoFunc @foo @bar @baz @[@frob @twiddle]`
+a five-argument call: `apply fizmoFunc @foo @bar @baz [@frob @twiddle]`
 
 This function returns whatever the called function returned (including
 void).
@@ -152,7 +152,7 @@ U = λx.x x
 Y_sam = λf . U (λs . (λa . (f (U s)) a))
 ```
 
-#### `yStarCombinator functions* <> @[functions*]`
+#### `yStarCombinator functions* <> [functions*]`
 
 The Y* combinator, in a form suitable for use in Samizdat Layer 0 when
 defining sets of mutually-recursive functions.

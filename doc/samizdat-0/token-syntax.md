@@ -10,7 +10,7 @@ list of all the tokens.
 
 ```
 file ::= (whitespace* token)* whitespace* ;
-# result: @[token*]
+# result: [token*]
 
 token ::= punctuation | integer | string | identifier ;
 # result: same as whichever alternate was picked.
