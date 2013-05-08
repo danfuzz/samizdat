@@ -98,7 +98,7 @@ emptyMap ::= [:"[":] [:"=":] [:"]":] ;
 # result: [:@literal [=]:]
 
 map ::= [:"[":] binding+ [:"]":] ;
-# result: apply makeCall [:@varRef @makeMap:] (lisletAdd binding+)
+# result: apply makeCall [:@varRef @makeMap:] (listAdd binding+)
 
 binding ::= atom [:"=":] atom ;
 # result: [atom atom] # key then value
