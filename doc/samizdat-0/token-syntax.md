@@ -24,7 +24,6 @@ punctuation ::=
     "*"  | # result: [:"*":]
     ";"  | # result: [:";":]
     "="  | # result: [:"=":]
-    "-"  | # result: [:"-":]
     "?"  | # result: [:"?":]
     "<"  | # result: [:"<":]
     ">"  | # result: [:">":]
@@ -36,7 +35,7 @@ punctuation ::=
     "]"    # result: [:"]":]
 ;
 
-integer ::= ("0".."9")+ ;
+integer ::= "-"? ("0".."9")+ ;
 # result: [:@integer <integer>:]
 
 string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;

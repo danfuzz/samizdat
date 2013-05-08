@@ -37,15 +37,14 @@ that big). In the C implementation, there is actually a limitation that
 integers only have a 32-bit signed range, with out-of-range arithmetic
 results causing failure, not wraparound.
 
-Integers are written as an initial `@`, followed by an optional `-`
-(minus sign), followed by one or more decimal digits. The digits are
-interpreted in base 10 to form the number. (There is no hexadecimal
-representation.)
+Integers are written as an optional `-` (minus sign), followed by one or
+more decimal digits. The digits are interpreted in base 10 to form the
+number. (There is no hexadecimal representation.)
 
 ```
-@0
-@20
-@-234452
+0
+20
+-234452
 ```
 
 
@@ -84,9 +83,9 @@ more value representations, followed by a final `]`.
 
 ```
 []                            # the empty list
-[@1]
+[1]
 [@blort @fizmo @igram]
-[[@1] @242 @-23]
+[[1] 242 -23]
 ```
 
 
@@ -107,7 +106,7 @@ written as `[=]`.
 
 ```
 [=]                           # the empty map
-[@1="number one"]
+[1="number one"]
 [@blort = "potion; the ability to see in the dark"
  @fizmo = "spell; unclogs pipes"
  @igram = "spell; make purple things invisible"]
@@ -147,8 +146,8 @@ value representation (another arbitrary value), followed by a final
 
 ```
 [:@null:]                     # the value usually just written as `null`
-[:@boolean @0:]               # the value usually just written as `false`
-[:@boolean @1:]               # the value usually just written as `true`
+[:@boolean 0:]                # the value usually just written as `false`
+[:@boolean 1:]                # the value usually just written as `true`
 [:
   @spell
   [@name=@frotz @purpose="cause item to glow"]

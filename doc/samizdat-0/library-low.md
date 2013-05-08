@@ -15,7 +15,7 @@ a size, defined as follows:
 * `integer` &mdash; the number of significant bits (not bytes) in
   the value when represented in twos-complement form, including a
   high-order sign bit. The minimum size of an integer is 1, which
-  is the size of both `@0` and `@-1`.
+  is the size of both `0` and `-1`.
 
 * `string` &mdash; the number of characters.
 
@@ -23,9 +23,9 @@ a size, defined as follows:
 
 * `map` &mdash; the number of mappings (bindings).
 
-* `uniqlet` &mdash; always `@0`.
+* `uniqlet` &mdash; always `0`.
 
-* `highlet` &mdash; `@0` for a valueless highlet, or `@1` for a
+* `highlet` &mdash; `0` for a valueless highlet, or `1` for a
   valued highlet.
 
 #### `lowType value <> string`

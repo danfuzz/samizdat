@@ -10,7 +10,7 @@ Booleans And Comparison
 #### `lowOrder value1 value2 <> integer`
 
 Returns the order of the two given values in the total order of
-Samizdat low-layer values. This returns one of `@-1 @0 @1` indicating
+Samizdat low-layer values. This returns one of `-1 0 1` indicating
 how the two values sort with each other, using the reasonably
 standard meaning of those values:
 

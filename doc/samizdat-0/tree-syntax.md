@@ -82,8 +82,8 @@ varDef ::= [:@identifier:] [:"=":] expression ;
 varRef ::= [:@identifier:] ;
 # result: [:@varRef (highletValue identifier):]
 
-integer ::= [:"@":] [:"-":]? [:@integer:] ;
-# result: [:@literal (imul (@1|@-1) (highletValue integer)):]
+integer ::= [:@integer:] ;
+# result: [:@literal (highletValue integer):]
 
 string ::= (@string | [:"@":] @identifier);
 # result: [:@literal (highletValue (string|identifier)):]

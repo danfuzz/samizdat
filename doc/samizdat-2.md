@@ -22,6 +22,9 @@ token ::= punctuation2 | punctuation |
     string |
     keyword | identifier2 | identifier
 ;
+# Note: The punctuation2 rule intentionally gets listed before the
+# integer rule, so that in this layer `-<digit>` gets interpreted as two
+# tokens.
 
 keyword ::=
     "break"    | # result: [:@break:]
@@ -46,13 +49,14 @@ punctuation2 ::=
     "|"  | # result: [:"|":]
     "^"  | # result: [:"^":]
     "+"  | # result: [:"+":]
+    "-"  | # result: [:"-":]
     "/"  | # result: [:"/":]
     "%"  | # result: [:"%":]
     "!"  | # result: [:"!":]
     "~"    # result: [:"~":]
 ;
 
-hexInteger ::= "0x" "-"? hexDigit+ ;
+hexInteger ::= "0x" hexDigit+ ;
 # result: [:@integer <integer>:]
 
 hexDigit ::=
@@ -61,7 +65,7 @@ hexDigit ::=
     "A" | "B" | "C" | "D" | "E" | "F" ;
 # result: <integer>
 
-binaryInteger ::= "0b" "-"? binaryDigit+ ;
+binaryInteger ::= "0b" binaryDigit+ ;
 # result: [:@integer <integer>:]
 
 binaryDigit ::= "0" | "1" ;

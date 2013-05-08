@@ -17,7 +17,7 @@ Returns the binary-and (intersection of all one-bits) of the given values.
 
 #### `ibit integer n <> integer`
 
-Returns as an integer (`@0` or `@1`) the bit value in the first
+Returns as an integer (`0` or `1`) the bit value in the first
 argument at the bit position (zero-based) indicated by the second
 argument. It is an error (terminating the runtime) if the second
 argument is negative.
@@ -26,14 +26,14 @@ argument is negative.
 
 Returns the quotient of the given values (first over second),
 truncated (rounded toward zero) to yield an integer result. It is an
-error (terminating the runtime) if the second argument is `@0`.
+error (terminating the runtime) if the second argument is `0`.
 
 #### `imod integer1 integer2 <> integer`
 
 Returns the division modulus of the given values (first over
 second). The sign of the result will always match the sign of the
 second argument. It is an error (terminating the runtime) if the
-second argument is `@0`.
+second argument is `0`.
 
 `imod x y` can be thought of as the smallest magnitude value `m` with
 the same sign as `y` such that `isub x m` is a multiple of `y`.
@@ -65,7 +65,7 @@ Returns the binary-or (union of all one-bits) of the given values.
 Returns the truncated-division remainder of the given values (first
 over second). The sign of the result will always match the sign of the
 first argument. It is an error (terminating the runtime) if the second
-argument is `@0`.
+argument is `0`.
 
 `irem x y` can be defined as `isub x (imul (idiv x y) y)`.
 
@@ -77,7 +77,7 @@ numbers.
 Returns the first argument (an integer) bit-shifted an amount indicated
 by the second argument (also an integer). If `shift` is positive, this
 is a left-shift operation. If `shift` is negative, this is a right-shift
-operation. If `shift` is `@0`, this is a no-op, returning the first
+operation. If `shift` is `0`, this is a no-op, returning the first
 argument unchanged.
 
 **Note:** The `shift` argument is not limited in any particular way (not
@@ -109,5 +109,5 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 
 #### `integerSign integer <> integer`
 
-Returns the sign of the given value: `@-1` for negative values,
-`@1` for positive values, or `@0` for `@0`.
+Returns the sign of the given value: `-1` for negative values,
+`1` for positive values, or `0` for `0`.
