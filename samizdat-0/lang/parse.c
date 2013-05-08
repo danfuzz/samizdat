@@ -239,7 +239,6 @@ DEF_PARSE(binding) {
 DEF_PARSE(map) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
 
     zvalue bindings = EMPTY_LIST;
@@ -265,7 +264,6 @@ DEF_PARSE(map) {
 DEF_PARSE(emptyMap) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_EQUAL);
     MATCH_OR_REJECT(CH_CSQUARE);
@@ -279,7 +277,6 @@ DEF_PARSE(emptyMap) {
 DEF_PARSE(list) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
     zvalue atoms = PARSE_OR_REJECT(atomPlus);
     MATCH_OR_REJECT(CH_CSQUARE);
@@ -293,7 +290,6 @@ DEF_PARSE(list) {
 DEF_PARSE(emptyList) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_CSQUARE);
 
