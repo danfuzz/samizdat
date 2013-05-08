@@ -7,23 +7,23 @@
 #
 
 #
-# `sourceStringlet` and `sourceStringletUnadorned` functions
+# `sourceString` and `sourceStringUnadorned` functions
 #
 
-# Single-character stringlets `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
-CHAR_0 = stringletFromIntlet @0;
-CHAR_127 = stringletFromIntlet @127;
-CHAR_159 = stringletFromIntlet @159;
+# Single-character strings `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
+CHAR_0 = stringFromIntlet @0;
+CHAR_127 = stringFromIntlet @127;
+CHAR_159 = stringFromIntlet @159;
 
 # Helper for optionally adorning results.
 adornIf = { adorn before value after ::
     <> ifTrue { <> adorn }
-        { <> stringletAdd before value after }
+        { <> stringAdd before value after }
         { <> value }
 };
 
 # These are all the integer digits, as a maplet from digit values to
-# stringlets.
+# strings.
 INTEGER_CHARS =
     @[ @0=@"0" @1=@"1" @2=@"2" @3=@"3" @4=@"4"
        @5=@"5" @6=@"6" @7=@"7" @8=@"8" @9=@"9" ];
@@ -37,9 +37,9 @@ intletBody = { start value <out> ::
         <> ifTrue { <> ne value @0 }
             {
                 digit = mapletGet INTEGER_CHARS (imod value @10);
-                <> @[(stringletAdd digit text) (idiv value @10)];
+                <> @[(stringAdd digit text) (idiv value @10)];
             }
-            { <out> stringletAdd start text }
+            { <out> stringAdd start text }
     }
 };
 
@@ -56,20 +56,20 @@ doIntlet = { recurse intlet adorn ::
     <> adornIf adorn @"@" result @""
 };
 
-# Helper for stringifying stringlets: Returns the hex form for the given
+# Helper for stringifying strings: Returns the hex form for the given
 # character. Assumes it's not passed `@0`.
-stringletHexEscape = { ch ::
+stringHexEscape = { ch ::
     intletHex = { value ::
         <> ifTrue { <> eq value @0 }
             { <> @"" }
             {
-                digit = stringletNth @"0123456789abcdef" (imod value @16);
+                digit = stringNth @"0123456789abcdef" (imod value @16);
                 more = idiv value @16;
-                <> stringletAdd (intletHex more) digit
+                <> stringAdd (intletHex more) digit
             }
     };
 
-    <> stringletAdd @"\\x" (intletHex (intletFromStringlet ch)) @";"
+    <> stringAdd @"\\x" (intletHex (intletFromString ch)) @";"
 };
 
 # Maplet of special-case characters to their stringified forms.
@@ -80,9 +80,9 @@ SPECIAL_CHARS = @[
     @"\\"  = @"\\\\"
 ];
 
-# Helper for stringifying stringlets: Returns the converted form of the
+# Helper for stringifying strings: Returns the converted form of the
 # given character.
-stringletChar = { ch ::
+stringChar = { ch ::
     <> ifValue { <> mapletGet SPECIAL_CHARS ch }
         { special :: <> special }
         {
@@ -90,13 +90,13 @@ stringletChar = { ch ::
             <> ifTrue { <> or { <> lt ch @" " }
                               { <> and { <> ge ch CHAR_127 }
                                        { <> le ch CHAR_159 } } }
-                { <> stringletHexEscape ch }
+                { <> stringHexEscape ch }
                 { <> ch }
         }
 };
 
 # These are all the characters which are allowed to start an identifier.
-IDENTIFIER_STARTS = stringletReduce @[=]
+IDENTIFIER_STARTS = stringReduce @[=]
     @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
     { result ch :: <> mapletPut result ch true };
 
@@ -105,14 +105,14 @@ IDENTIFIER_CHARS = mapletAdd IDENTIFIER_STARTS
     @[ @"0"=true @"1"=true @"2"=true @"3"=true @"4"=true
        @"5"=true @"6"=true @"7"=true @"8"=true @"9"=true ];
 
-# Checks to see if the given stringlet has the form of an in-language
+# Checks to see if the given string has the form of an in-language
 # identifier.
-isIdentifier = { stringlet <out> ::
+isIdentifier = { string <out> ::
     <> and
-        { <> gt (lowSize stringlet) @0 }
-        { <> mapletGet IDENTIFIER_STARTS (stringletNth stringlet @0) false }
+        { <> gt (lowSize string) @0 }
+        { <> mapletGet IDENTIFIER_STARTS (stringNth string @0) false }
         {
-            stringletForEach stringlet
+            stringForEach string
                 { ch ::
                     ifFalse { <> mapletGet IDENTIFIER_CHARS ch false }
                         { <out> false }
@@ -121,13 +121,13 @@ isIdentifier = { stringlet <out> ::
         }
 };
 
-# Stringifies a stringlet.
-doStringlet = { recurse stringlet adorn ::
-    <> ifTrue { <> isIdentifier stringlet }
-        { <> adornIf adorn @"@" stringlet @"" }
+# Stringifies a string.
+doString = { recurse string adorn ::
+    <> ifTrue { <> isIdentifier string }
+        { <> adornIf adorn @"@" string @"" }
         {
-            body = stringletReduce @"" stringlet
-                { result ch :: <> stringletAdd result (stringletChar ch) };
+            body = stringReduce @"" string
+                { result ch :: <> stringAdd result (stringChar ch) };
             <> adornIf adorn @"@\"" body @"\""
         }
 };
@@ -136,7 +136,7 @@ doStringlet = { recurse stringlet adorn ::
 doListlet = { recurse listlet adorn ::
     body = listletReduce @"" listlet
         { reduction elem ::
-            <> stringletAdd
+            <> stringAdd
                 reduction
                 (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
                 (recurse elem)
@@ -149,7 +149,7 @@ doListlet = { recurse listlet adorn ::
 doMaplet = { recurse maplet adorn ::
     body = mapletReduce @"" maplet
         { reduction value key ::
-            <> stringletAdd
+            <> stringAdd
                 reduction
                 (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
                 (recurse key)
@@ -166,10 +166,10 @@ doMaplet = { recurse maplet adorn ::
 # Stringifies a highlet.
 doHighlet = { recurse highlet adorn ::
     type = highletType highlet;
-    result = stringletAdd
+    result = stringAdd
         (recurse type)
         (ifValue { <> highletValue highlet }
-            { value :: <> stringletAdd @" " (recurse value) }
+            { value :: <> stringAdd @" " (recurse value) }
             { <> @"" });
 
     <> adornIf adorn @"[:" result @":]"
@@ -182,7 +182,7 @@ doUniqlet = { recurse uniqlet ::
 
 # Stringifies an unknown value type.
 doUnknown = { recurse unknown ::
-    <> stringletAdd
+    <> stringAdd
         @"@[(unknown) "
         (recurse (lowType value))
         @" "
@@ -196,12 +196,12 @@ STRINGIFIERS = @[
     @intlet    = doIntlet
     @listlet   = doListlet
     @maplet    = doMaplet
-    @stringlet = doStringlet
+    @string = doString
     @uniqlet   = doUniqlet
 ];
 
 # Common handler for the two exported variants.
-sourceStringletGeneral = { selfRef value adorn ::
+sourceStringGeneral = { selfRef value adorn ::
     # The `selfRef` and `recurse` definitions here are effectively a
     # "manual inlining" of the Y combinator, necessitated by the fact that
     # *Samizdat Layer 0* doesn't allow use-before-def.
@@ -212,13 +212,13 @@ sourceStringletGeneral = { selfRef value adorn ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-sourceStringlet = { value ::
-    <> sourceStringletGeneral sourceStringletGeneral value true
+sourceString = { value ::
+    <> sourceStringGeneral sourceStringGeneral value true
 };
 
 # Documented in Samizdat Layer 0 spec.
-sourceStringletUnadorned = { value ::
-    <> sourceStringletGeneral sourceStringletGeneral value false
+sourceStringUnadorned = { value ::
+    <> sourceStringGeneral sourceStringGeneral value false
 };
 
 
@@ -233,13 +233,13 @@ xFmtAt = { state ::
 
 # Peeks at the current format string character.
 xPeek = { state ::
-    <> stringletNth (mapletGet state @fmt) (xFmtAt state)
+    <> stringNth (mapletGet state @fmt) (xFmtAt state)
 };
 
 # Peeks at the next format string character.
 xPeek1 = { state ::
     at = iadd @1 (xFmtAt state);
-    <> stringletNth (mapletGet state @fmt) at;
+    <> stringNth (mapletGet state @fmt) at;
 };
 
 # Gets the current argument consumption position.
@@ -264,7 +264,7 @@ doPercent = { yield state ::
 
 # Formats a literal quoted argument.
 doLiteral = { yield state ::
-    yield (sourceStringlet (xArg state));
+    yield (sourceString (xArg state));
 
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
@@ -273,15 +273,15 @@ doLiteral = { yield state ::
 
 # Formats a literal quoted argument, without top-level adornment.
 doUnadornedLiteral = { yield state ::
-    yield (sourceStringletUnadorned (xArg state));
+    yield (sourceStringUnadorned (xArg state));
 
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
     <> mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
 };
 
-# Formats a stringlet argument.
-doStringlet = { yield state ::
+# Formats a string argument.
+doString = { yield state ::
     yield (xArg state);
 
     argsAt = iadd @1 (xArgsAt state);
@@ -294,7 +294,7 @@ FORMATTERS = @[
     @"%" = doPercent
     @"q" = doLiteral
     @"Q" = doUnadornedLiteral
-    @"s" = doStringlet
+    @"s" = doString
 ];
 
 # Formats a plain character (that is, returns it as-is).
@@ -338,7 +338,7 @@ format = { formatString rest* <out> ::
 
     loopReduce @"" { result ::
         <> ifValue { <> formatter() }
-            { s :: <> stringletAdd result s }
+            { s :: <> stringAdd result s }
             { <out> result }
     }
 };
@@ -350,6 +350,6 @@ format = { formatString rest* <out> ::
 
 <> @[
     @format = format
-    @sourceStringlet = sourceStringlet
-    @sourceStringletUnadorned = sourceStringletUnadorned
+    @sourceString = sourceString
+    @sourceStringUnadorned = sourceStringUnadorned
 ]

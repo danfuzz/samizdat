@@ -301,9 +301,9 @@ DEF_PARSE(emptyListlet) {
 }
 
 /**
- * Parses a `stringlet` node.
+ * Parses a `string` node.
  */
-DEF_PARSE(stringlet) {
+DEF_PARSE(string) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
@@ -382,7 +382,7 @@ DEF_PARSE(atom) {
 
     if (result == NULL) { result = PARSE(varRef); }
     if (result == NULL) { result = PARSE(intlet); }
-    if (result == NULL) { result = PARSE(stringlet); }
+    if (result == NULL) { result = PARSE(string); }
     if (result == NULL) { result = PARSE(emptyListlet); }
     if (result == NULL) { result = PARSE(listlet); }
     if (result == NULL) { result = PARSE(emptyMaplet); }

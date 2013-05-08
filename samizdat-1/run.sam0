@@ -42,7 +42,7 @@ sam1Tree = { programText ::
 
 # Reads the named embedded library file.
 readLibraryFile = { name ::
-    <> READER @[@"samizdat-0-lib" (stringletAdd name @".sam0")]
+    <> READER @[@"samizdat-0-lib" (stringAdd name @".sam0")]
 };
 
 # Reads all the library files, returning a maplet from names to contents.
@@ -73,7 +73,7 @@ makeCoreLibrary = {
 
 # Compiles the file named in the first argument in a fresh context,
 # and runs it, passing it an array consisting of its own file path
-# (in standard listlet-of-stringlet form) followed by the rest of the
+# (in standard listlet-of-string form) followed by the rest of the
 # arguments as-is.
 run = { args* ::
     parsedArgs = parseArgs args;
@@ -91,7 +91,7 @@ run = { args* ::
         }
         { <> LIBRARY };
 
-    filePath = io0PathFromStringlet file;
+    filePath = io0PathFromString file;
     programText = io0ReadFileUtf8 filePath;
     programNode = sam1Tree programText;
 

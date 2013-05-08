@@ -48,7 +48,7 @@ void constInit(void) {
     }
 
     #define STR(name, str) \
-        STR_##name = datStringletFromUtf8(-1, str); \
+        STR_##name = datStringFromUtf8(-1, str); \
         datImmortalize(STR_##name)
 
     #define TOK(name, str) \

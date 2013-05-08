@@ -23,7 +23,7 @@ parseFile = filterRule
 parseToken = orRule @punctuation @integer @string @identifier;
 
 # Parses any of the punctuation characters or character sequences, yielding
-# a token whose type is the stringlet matched.
+# a token whose type is the string matched.
 parsePunctuation = filterRule
     (orRule
         (charsRule @"@@")
@@ -32,7 +32,7 @@ parsePunctuation = filterRule
         (charSetRule @"@:*;=-?<>{}()[]"))
     { result :: <> [:result:] };
 
-# These are all the integer digits, as a maplet from stringlets to
+# These are all the integer digits, as a maplet from strings to
 # digit values.
 INTEGER_CHARS =
     @[ @"0"=@0 @"1"=@1 @"2"=@2 @"3"=@3 @"4"=@4
@@ -69,7 +69,7 @@ parseString = filterRule
         (starRule parseString1)
         (charsRule @"\""))
     { result ::
-        value = apply stringletAdd (listletNth result @1);
+        value = apply stringAdd (listletNth result @1);
         <> [:@string value:]
     };
 
@@ -78,7 +78,7 @@ IDENTIFIER_START_CHARS =
     @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = stringletAdd IDENTIFIER_START_CHARS @"0123456789";
+IDENTIFIER_CHARS = stringAdd IDENTIFIER_START_CHARS @"0123456789";
 
 # Parses an `identifier` token.
 parseIdentifier = filterRule
@@ -86,9 +86,9 @@ parseIdentifier = filterRule
         (charSetRule IDENTIFIER_START_CHARS)
         (starRule (charSetRule IDENTIFIER_CHARS)))
     { result ::
-        value = stringletAdd
+        value = stringAdd
             (listletNth result @0)
-            (apply stringletAdd (listletNth result @1));
+            (apply stringAdd (listletNth result @1));
         <> [:@identifier value:]
     };
 

@@ -46,7 +46,7 @@ functionFromRule = { rule ::
     <> ifTrue { <> isHighlet rule }
         { <> tokenRule rule }
         {
-            <> ifTrue { <> isStringlet rule }
+            <> ifTrue { <> isString rule }
                 { <> namedRule rule}
                 { <> rule }
         }
@@ -151,11 +151,11 @@ plusRule = { rule ::
 };
 
 # Returns a tokenizer rule which matches the given sequence of characters
-# exactly, returning that stringlet.
+# exactly, returning that string.
 charsRule = { chars ::
     <> { engine <out> ::
         mark = engine @at;
-        stringletForEach chars
+        stringForEach chars
             { ch ::
                 ifTrue { <> or { <> engine @eof } { <> ne (engine @read) ch } }
                     {
@@ -168,10 +168,10 @@ charsRule = { chars ::
 };
 
 # Returns a tokenizer rule which matches any of the given characters
-# (given as a stringlet of all the characters to match), returning
-# a single-character stringlet of the matched character.
+# (given as a string of all the characters to match), returning
+# a single-character string of the matched character.
 charSetRule = { chars ::
-    charSet = stringletReduce @[=] chars
+    charSet = stringReduce @[=] chars
         { result ch :: <> mapletPut result ch null };
 
     <> { engine <out> ::
@@ -187,10 +187,10 @@ charSetRule = { chars ::
 };
 
 # Returns a tokenizer rule which matches any character *but* one of the
-# given characters (given as a stringlet of all the characters to exclude),
-# returning a single-character stringlet of the matched character.
+# given characters (given as a string of all the characters to exclude),
+# returning a single-character string of the matched character.
 notCharSetRule = { chars ::
-    charSet = stringletReduce @[=] chars
+    charSet = stringReduce @[=] chars
         { result ch :: <> mapletPut result ch null };
 
     <> { engine <out> ::

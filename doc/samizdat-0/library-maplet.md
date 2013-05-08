@@ -95,7 +95,7 @@ Similar to `argsMap`, if the function returns void, then no item is
 added for the corresponding element. This means the size of the
 result may be smaller than the size of the argument.
 
-See note on `stringletMap` about choice of argument order.
+See note on `stringMap` about choice of argument order.
 
 #### `mapletReduce base maplet function <> . | ~.`
 
@@ -112,4 +112,4 @@ previously-returned non-void value (or `base` value if there has
 yet to be a non-void function return) is what is passed to the
 subsequent iteration and returned at the end of the call.
 
-See note on `stringletMap` about choice of argument order.
+See note on `stringMap` about choice of argument order.

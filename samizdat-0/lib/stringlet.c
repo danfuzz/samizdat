@@ -16,19 +16,19 @@
  */
 
 /**
- * Returns a single-character stringlet.
+ * Returns a single-character string.
   */
-static zvalue stringletFromChar(zchar ch) {
-    return datStringletFromChars(1, &ch);
+static zvalue stringFromChar(zchar ch) {
+    return datStringFromChars(1, &ch);
 }
 
 /**
- * Calls `datStringletNth()`, converting the result into a proper zvalue.
+ * Calls `datStringNth()`, converting the result into a proper zvalue.
  */
-static zvalue valueFromStringletNth(zvalue stringlet, zint n) {
-    zint ch = datStringletNth(stringlet, n);
+static zvalue valueFromStringNth(zvalue string, zint n) {
+    zint ch = datStringNth(string, n);
 
-    return (ch < 0) ? NULL : stringletFromChar(ch);
+    return (ch < 0) ? NULL : stringFromChar(ch);
 }
 
 
@@ -37,36 +37,36 @@ static zvalue valueFromStringletNth(zvalue stringlet, zint n) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(intletFromStringlet) {
+PRIM_IMPL(intletFromString) {
     requireExactly(argCount, 1);
 
-    zvalue stringlet = args[0];
+    zvalue string = args[0];
 
-    if (datSize(stringlet) != 1) {
-        die("Invalid use of stringlet: size != 1");
+    if (datSize(string) != 1) {
+        die("Invalid use of string: size != 1");
     }
 
-    return datIntletFromInt(datStringletNth(stringlet, 0));
+    return datIntletFromInt(datStringNth(string, 0));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringletFromIntlet) {
+PRIM_IMPL(stringFromIntlet) {
     requireExactly(argCount, 1);
-    return stringletFromChar(datCharFromIntlet(args[0]));
+    return stringFromChar(datCharFromIntlet(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringletAdd) {
+PRIM_IMPL(stringAdd) {
     zvalue result = STR_EMPTY;
 
     for (zint i = 0; i < argCount; i++) {
-        result = datStringletAdd(result, args[i]);
+        result = datStringAdd(result, args[i]);
     }
 
     return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringletNth) {
-    return doNth(valueFromStringletNth, argCount, args);
+PRIM_IMPL(stringNth) {
+    return doNth(valueFromStringNth, argCount, args);
 }

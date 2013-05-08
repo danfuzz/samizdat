@@ -22,12 +22,12 @@ standard meaning of those values:
 
 Ordering is calculated as follows:
 
-The major order is by type &mdash; `intlet < stringlet < listlet <
+The major order is by type &mdash; `intlet < string < listlet <
 maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
 
 * Intlets order by integer value.
 
-* Listlets and stringlets order by pairwise corresponding-element
+* Listlets and strings order by pairwise corresponding-element
   comparison, with a strict prefix always ordering before its
   longer brethren.
 

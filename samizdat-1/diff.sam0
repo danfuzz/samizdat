@@ -85,9 +85,9 @@ diffListlet = { recurse context v1 v2 ::
         }
 };
 
-# Diffs stringlets.
-diffStringlet = { recurse context v1 v2 ::
-    <> report context v1 v2 @"Different stringlets."
+# Diffs strings.
+diffString = { recurse context v1 v2 ::
+    <> report context v1 v2 @"Different strings."
 };
 
 # Diffs uniqlets.
@@ -101,7 +101,7 @@ DIFF_FUNCTIONS = @[
     @intlet    = diffIntlet
     @listlet   = diffListlet
     @maplet    = diffMaplet
-    @stringlet = diffStringlet
+    @string = diffString
     @uniqlet   = diffUniqlet
 ];
 

@@ -21,12 +21,12 @@
 #
 
 # The character @"\0".
-CHAR_0 = stringletFromIntlet @0;
+CHAR_0 = stringFromIntlet @0;
 
 parseArguments = filterRule
     (seqRule
         @options
-        (optRule (charsRule (stringletAdd @"--" CHAR_0)))
+        (optRule (charsRule (stringAdd @"--" CHAR_0)))
         @words)
     { result ::
         optsErrors = listletNth result @0;
@@ -57,13 +57,13 @@ parseOptions = filterRule
 parseError = filterRule
     (seqRule
         (charsRule @"-")
-        (notCharSetRule (stringletAdd @"-" CHAR_0))
+        (notCharSetRule (stringAdd @"-" CHAR_0))
         (starRule (notCharSetRule CHAR_0)))
     { result ::
         c0 = listletNth result @0;
         c1 = listletNth result @1;
         more = listletNth result @2;
-        value = apply stringletAdd c0 c1 more;
+        value = apply stringAdd c0 c1 more;
         io0Note (format @"Unknown option: %Q" value);
         <> { result :: <> mapletPut result @errors true }
     };
@@ -84,8 +84,8 @@ parseOption = filterRule
 
 parseKey = filterRule
     (plusRule
-        (notCharSetRule (stringletAdd @"=" CHAR_0)))
-    { result :: <> apply stringletAdd result };
+        (notCharSetRule (stringAdd @"=" CHAR_0)))
+    { result :: <> apply stringAdd result };
 
 parseValue = filterRule
     (seqRule (charsRule @"=") @word)
@@ -98,7 +98,7 @@ parseWords = starRule
 
 parseWord = filterRule
     (starRule (notCharSetRule CHAR_0))
-    { result :: <> apply stringletAdd result };
+    { result :: <> apply stringAdd result };
 
 parseWordBreak = charsRule CHAR_0;
 
@@ -121,7 +121,7 @@ parseArgs = { args ::
     # Make a unified string with each argument "\0"-terminated.
     argString = listletReduce @"" args
         { result arg ::
-            <> stringletAdd result arg CHAR_0;
+            <> stringAdd result arg CHAR_0;
         };
 
     theReader = reader argString;

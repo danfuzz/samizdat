@@ -20,18 +20,18 @@
  */
 
 /**
- * Converts a listlet-of-stringlets path form into an absolute file name,
+ * Converts a listlet-of-strings path form into an absolute file name,
  * checking the components for sanity.
  */
-static zvalue stringletFromPathListlet(zvalue pathListlet) {
+static zvalue stringFromPathListlet(zvalue pathListlet) {
     zvalue result = STR_EMPTY;
     zint size = datSize(pathListlet);
 
     for (zint i = 0; i < size; i++) {
         zvalue one = datListletNth(pathListlet, i);
-        zint size = datUtf8SizeFromStringlet(one);
+        zint size = datUtf8SizeFromString(one);
         char str[size + 1];
-        datUtf8FromStringlet(size + 1, str, one);
+        datUtf8FromString(size + 1, str, one);
 
         if (strlen(str) != size) {
             die("Invalid path component (contains null bytes): \"%s\"", str);
@@ -43,15 +43,15 @@ static zvalue stringletFromPathListlet(zvalue pathListlet) {
             die("Invalid path component: \"%s\"", str);
         }
 
-        result = datStringletAdd(result, STR_CH_SLASH);
-        result = datStringletAdd(result, one);
+        result = datStringAdd(result, STR_CH_SLASH);
+        result = datStringAdd(result, one);
     }
 
     return result;
 }
 
 /**
- * Converts a simple string *absolute* path to the listlets-of-stringlets form.
+ * Converts a simple string *absolute* path to the listlets-of-strings form.
  * This doesn't resolve symlinks, but it does handle double-slashes, `.`
  * components, and `..` components. A trailing slash is represented in the
  * result as an empty path component.
@@ -68,7 +68,7 @@ static zvalue pathListletFromAbsolute(const char *path) {
     for (;;) {
         const char *slashAt = strchr(at, '/');
         zint size = (slashAt != NULL) ? (slashAt - at) : strlen(at);
-        zvalue one = datStringletFromUtf8(size, at);
+        zvalue one = datStringFromUtf8(size, at);
 
         if (datEq(one, STR_CH_DOTDOT)) {
             zint rsize = datSize(result);
@@ -96,14 +96,14 @@ static zvalue pathListletFromAbsolute(const char *path) {
 }
 
 /**
- * Opens the file with the given name (a stringlet), and with the
+ * Opens the file with the given name (a string), and with the
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
 static FILE *openFile(zvalue pathListlet, const char *mode) {
-    zvalue pathStringlet = stringletFromPathListlet(pathListlet);
-    zint pathSize = datUtf8SizeFromStringlet(pathStringlet);
+    zvalue pathString = stringFromPathListlet(pathListlet);
+    zint pathSize = datUtf8SizeFromString(pathString);
     char path[pathSize + 1];
-    datUtf8FromStringlet(pathSize + 1, path, pathStringlet);
+    datUtf8FromString(pathSize + 1, path, pathString);
 
     FILE *file = fopen(path, mode);
     if (file == NULL) {
@@ -143,11 +143,11 @@ zvalue ioPathListletFromUtf8(const char *path) {
 zvalue ioReadLink(zvalue pathListlet) {
     constInit();
 
-    zvalue pathStringlet = stringletFromPathListlet(pathListlet);
-    zint pathSize = datUtf8SizeFromStringlet(pathStringlet);
+    zvalue pathString = stringFromPathListlet(pathListlet);
+    zint pathSize = datUtf8SizeFromString(pathString);
     char path[pathSize + 4 + FILENAME_MAX + 1];
 
-    datUtf8FromStringlet(pathSize + 1, path, pathStringlet);
+    datUtf8FromString(pathSize + 1, path, pathString);
 
     char linkPath[FILENAME_MAX + 1];
     ssize_t size = readlink(path, linkPath, FILENAME_MAX);
@@ -193,16 +193,16 @@ zvalue ioReadFileUtf8(zvalue pathListlet) {
 
     fclose(in);
 
-    return datStringletFromUtf8(amt, buf);
+    return datStringFromUtf8(amt, buf);
 }
 
 /* Documented in header. */
 void ioWriteFileUtf8(zvalue pathListlet, zvalue text) {
     constInit();
 
-    zint utfSize = datUtf8SizeFromStringlet(text);
+    zint utfSize = datUtf8SizeFromString(text);
     char utf[utfSize + 1];
-    datUtf8FromStringlet(utfSize + 1, utf, text);
+    datUtf8FromString(utfSize + 1, utf, text);
 
     FILE *out = openFile(pathListlet, "w");
     zint amt = fwrite(utf, 1, utfSize, out);

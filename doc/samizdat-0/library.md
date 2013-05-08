@@ -48,7 +48,7 @@ will be returned, or one of `.` `~.` `. | ~.` as described in
 * [Conditionals And Iteration](library-conditional.md)
 * [General Low-Layer Values](library-low.md)
 * [Intlets](library-intlet.md)
-* [Stringlets](library-stringlet.md)
+* [Strings](library-string.md)
 * [Listlets](library-listlet.md)
 * [Maplets](library-maplet.md)
 * [Highlets](library-highlet.md)

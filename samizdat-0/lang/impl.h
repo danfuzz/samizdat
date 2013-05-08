@@ -15,10 +15,10 @@
 
 
 /**
- * Tokenizes a stringlet using Samizdat Layer 0 token syntax. Returns
+ * Tokenizes a string using Samizdat Layer 0 token syntax. Returns
  * a listlet of tokens.
  */
-zvalue tokenize(zvalue stringlet);
+zvalue tokenize(zvalue string);
 
 
 #endif

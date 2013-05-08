@@ -27,9 +27,9 @@ static zvalue getLibraryFiles(void) {
     #define LIB_FILE(name) \
         extern char name##_sam0[]; \
         extern unsigned int name##_sam0_len; \
-        zvalue LIB_NAME_##name = datStringletFromUtf8(-1, #name); \
+        zvalue LIB_NAME_##name = datStringFromUtf8(-1, #name); \
         zvalue LIB_TEXT_##name = \
-            datStringletFromUtf8(name##_sam0_len, name##_sam0); \
+            datStringFromUtf8(name##_sam0_len, name##_sam0); \
         result = datMapletPut(result, LIB_NAME_##name, LIB_TEXT_##name)
     #include "lib-def.h"
     #undef LIB_FILE
@@ -52,7 +52,7 @@ static zvalue primitiveContext(void) {
     // Bind all the primitive functions.
     #define PRIM_FUNC(name) \
         ctx = datMapletPut(ctx, \
-                           datStringletFromUtf8(-1, #name), \
+                           datStringFromUtf8(-1, #name), \
                            langDefineFunction(prim_##name, NULL))
     #include "prim-def.h"
 

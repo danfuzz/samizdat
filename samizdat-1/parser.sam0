@@ -16,7 +16,7 @@ readLine = filterRule
     (seqRule
         (starRule (notCharSetRule @"\n"))
         (optRule (charsRule @"\n")))
-    { result :: <> apply stringletAdd (listletNth result @0) };
+    { result :: <> apply stringAdd (listletNth result @0) };
 
 # Performs tokenization of the given text using the given tokenizer rules.
 tokenize = { rules text ::

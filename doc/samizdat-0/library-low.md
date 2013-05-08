@@ -17,7 +17,7 @@ a size, defined as follows:
   high-order sign bit. The minimum size of an intlet is 1, which
   is the size of both `@0` and `@-1`.
 
-* `stringlet` &mdash; the number of characters.
+* `string` &mdash; the number of characters.
 
 * `listlet` &mdash; the number of elements.
 
@@ -28,10 +28,10 @@ a size, defined as follows:
 * `highlet` &mdash; `@0` for a valueless highlet, or `@1` for a
   valued highlet.
 
-#### `lowType value <> stringlet`
+#### `lowType value <> string`
 
 Returns the type name of the low-layer type of the given value. The
-result will be one of: `@intlet` `@stringlet` `@listlet` `@maplet`
+result will be one of: `@intlet` `@string` `@listlet` `@maplet`
 `@uniqlet` `@highlet`
 
 
@@ -54,9 +54,9 @@ Returns `true` iff the given value is a listlet.
 
 Returns `true` iff the given value is a maplet.
 
-#### `isStringlet value <> boolean`
+#### `isString value <> boolean`
 
-Returns `true` iff the given value is a stringlet.
+Returns `true` iff the given value is a string.
 
 #### `isUniqlet value <> boolean`
 

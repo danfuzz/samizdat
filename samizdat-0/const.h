@@ -34,7 +34,7 @@ extern zvalue CONST_FALSE;
 /** The canonical `true` value. */
 extern zvalue CONST_TRUE;
 
-/** The canonical empty stringlet value (`@""`). */
+/** The canonical empty string value (`@""`). */
 extern zvalue STR_EMPTY;
 
 /** The canonical empty listlet value (`@[]`). */
@@ -59,7 +59,7 @@ bool constBoolFromBoolean(zvalue value);
 zvalue constBooleanFromBool(bool value);
 
 /**
- * Gets the stringlet representing the low-layer type of the given value.
+ * Gets the string representing the low-layer type of the given value.
  */
 zvalue constLowTypeName(zvalue value);
 

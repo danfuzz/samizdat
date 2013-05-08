@@ -40,11 +40,11 @@ integer ::= ("0".."9")+ ;
 # result: [:@integer <intlet>:]
 
 string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
-# result: [:@string <stringlet>:]
+# result: [:@string <string>:]
 
 identifier ::=
     ("_" | "a".."z" | "A".."Z") ("_" | "a".."z" | "A".."Z" | "0".."9")* ;
-# result: [:@identifier <stringlet>:]
+# result: [:@identifier <string>:]
 
 whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
 # result: n/a; automatically ignored.

@@ -64,15 +64,15 @@ typedef struct {
 } DatIntlet;
 
 /**
- * Stringlet structure.
+ * String structure.
  */
 typedef struct {
     /** Value header. */
     DatValue header;
 
-    /** Characters of the stringlet, in index order. */
+    /** Characters of the string, in index order. */
     zchar elems[0];
-} DatStringlet;
+} DatString;
 
 /**
  * Listlet structure.
@@ -174,14 +174,14 @@ bool datIntletEq(zvalue v1, zvalue v2);
 zorder datIntletOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares stringlets for equality. Only called when the sizes are the same.
+ * Compares strings for equality. Only called when the sizes are the same.
  */
-bool datStringletEq(zvalue v1, zvalue v2);
+bool datStringEq(zvalue v1, zvalue v2);
 
 /**
- * Compares stringlets for order.
+ * Compares strings for order.
  */
-zorder datStringletOrder(zvalue v1, zvalue v2);
+zorder datStringOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares listlets for equality. Only called when the sizes are the same.

@@ -56,11 +56,11 @@ representation.)
 ```
 
 
-### Stringlet
+### String
 
-A `stringlet` is a sequence of zero or more Unicode code points.
+A `string` is a sequence of zero or more Unicode code points.
 
-Stringlets are written as an initial `@"`, followed by zero or
+Strings are written as an initial `@"`, followed by zero or
 more character representations, followed by a final `"`.
 
 Characters are self-representing, except that there are three
@@ -70,12 +70,12 @@ Characters are self-representing, except that there are three
 * `\"` &mdash; a double quote
 * `\n` &mdash; newline (Unicode U+0010)
 
-If a stringlet's contents form a valid identifier (e.g. variable
+If a string's contents form a valid identifier (e.g. variable
 name) in the *Samizdat Layer 0* syntax, then it is valid to
 omit the double-quote delimiters.
 
 ```
-@""                           # the empty stringlet
+@""                           # the empty string
 @"Hello, Самиздат!"
 @"\"blort\" -- potion that enables one to see in the dark.\n"
 @fizmo

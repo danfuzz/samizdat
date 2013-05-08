@@ -40,7 +40,7 @@ STR(UP_LIBRARY,    "LIBRARY");
 STR(ACTUALS,       "actuals");
 STR(BOOLEAN,       "boolean");
 STR(CALL,          "call");
-STR(EMPTY,         ""); // The canonical empty stringlet (`@""`) value.
+STR(EMPTY,         ""); // The canonical empty string (`@""`) value.
 STR(FALSE,         "false");
 STR(FORMALS,       "formals");
 STR(FUNCTION,      "function");
@@ -62,7 +62,7 @@ STR(RESULT,        "result");
 STR(STATE,         "state");
 STR(STATEMENTS,    "statements");
 STR(STRING,        "string");
-STR(STRINGLET,     "stringlet");
+STR(STRINGLET,     "string");
 STR(TRUE,          "true");
 STR(TYPE,          "type");
 STR(UNIQLET,       "uniqlet");

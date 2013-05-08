@@ -14,17 +14,17 @@
  */
 
 /**
- * Allocates a stringlet of the given size.
+ * Allocates a string of the given size.
  */
-static zvalue allocStringlet(zint size) {
+static zvalue allocString(zint size) {
     return datAllocValue(DAT_STRINGLET, size, size * sizeof(zchar));
 }
 
 /**
  * Gets the array of `zvalue` elements from a listlet.
  */
-static zchar *stringletElems(zvalue stringlet) {
-    return ((DatStringlet *) stringlet)->elems;
+static zchar *stringElems(zvalue string) {
+    return ((DatString *) string)->elems;
 }
 
 
@@ -33,9 +33,9 @@ static zchar *stringletElems(zvalue stringlet) {
  */
 
 /* Documented in header. */
-bool datStringletEq(zvalue v1, zvalue v2) {
-    zchar *e1 = stringletElems(v1);
-    zchar *e2 = stringletElems(v2);
+bool datStringEq(zvalue v1, zvalue v2) {
+    zchar *e1 = stringElems(v1);
+    zchar *e2 = stringElems(v2);
     zint size = datSize(v1);
 
     for (zint i = 0; i < size; i++) {
@@ -48,9 +48,9 @@ bool datStringletEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder datStringletOrder(zvalue v1, zvalue v2) {
-    zchar *e1 = stringletElems(v1);
-    zchar *e2 = stringletElems(v2);
+zorder datStringOrder(zvalue v1, zvalue v2) {
+    zchar *e1 = stringElems(v1);
+    zchar *e2 = stringElems(v2);
     zint sz1 = datSize(v1);
     zint sz2 = datSize(v2);
     zint sz = (sz1 < sz2) ? sz1 : sz2;
@@ -79,23 +79,23 @@ zorder datStringletOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zint datStringletNth(zvalue stringlet, zint n) {
-    datAssertStringlet(stringlet);
-    return datHasNth(stringlet, n) ? stringletElems(stringlet)[n] : (zint) -1;
+zint datStringNth(zvalue string, zint n) {
+    datAssertString(string);
+    return datHasNth(string, n) ? stringElems(string)[n] : (zint) -1;
 }
 
 /* Documented in header. */
-zvalue datStringletFromChars(zint size, const zchar *chars) {
-    zvalue result = allocStringlet(size);
+zvalue datStringFromChars(zint size, const zchar *chars) {
+    zvalue result = allocString(size);
 
-    memcpy(stringletElems(result), chars, size * sizeof(zchar));
+    memcpy(stringElems(result), chars, size * sizeof(zchar));
     return result;
 }
 
 /* Documented in header. */
-zvalue datStringletAdd(zvalue str1, zvalue str2) {
-    datAssertStringlet(str1);
-    datAssertStringlet(str2);
+zvalue datStringAdd(zvalue str1, zvalue str2) {
+    datAssertString(str1);
+    datAssertString(str2);
 
     zint size1 = datSize(str1);
     zint size2 = datSize(str2);
@@ -106,17 +106,17 @@ zvalue datStringletAdd(zvalue str1, zvalue str2) {
         return str1;
     }
 
-    zvalue result = allocStringlet(size1 + size2);
+    zvalue result = allocString(size1 + size2);
 
-    memcpy(stringletElems(result), stringletElems(str1),
+    memcpy(stringElems(result), stringElems(str1),
            size1 * sizeof(zchar));
-    memcpy(stringletElems(result) + size1, stringletElems(str2),
+    memcpy(stringElems(result) + size1, stringElems(str2),
            size2 * sizeof(zchar));
     return result;
 }
 
 /* Documented in header. */
-zvalue datStringletFromUtf8(zint stringBytes, const char *string) {
+zvalue datStringFromUtf8(zint stringBytes, const char *string) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
     } else if (stringBytes < 0) {
@@ -124,18 +124,18 @@ zvalue datStringletFromUtf8(zint stringBytes, const char *string) {
     }
 
     zint decodedSize = utf8DecodeStringSize(stringBytes, string);
-    zvalue result = allocStringlet(decodedSize);
+    zvalue result = allocString(decodedSize);
 
-    utf8DecodeCharsFromString(stringletElems(result), stringBytes, string);
+    utf8DecodeCharsFromString(stringElems(result), stringBytes, string);
     return result;
 }
 
 /* Documented in header. */
-zint datUtf8SizeFromStringlet(zvalue stringlet) {
-    datAssertStringlet(stringlet);
+zint datUtf8SizeFromString(zvalue string) {
+    datAssertString(string);
 
-    zint size = datSize(stringlet);
-    zchar *elems = stringletElems(stringlet);
+    zint size = datSize(string);
+    zchar *elems = stringElems(string);
     zint result = 0;
 
     for (zint i = 0; i < size; i++) {
@@ -146,11 +146,11 @@ zint datUtf8SizeFromStringlet(zvalue stringlet) {
 }
 
 /* Documented in header. */
-void datUtf8FromStringlet(zint resultSize, char *result, zvalue stringlet) {
-    datAssertStringlet(stringlet);
+void datUtf8FromString(zint resultSize, char *result, zvalue string) {
+    datAssertString(string);
 
-    zint size = datSize(stringlet);
-    zchar *elems = stringletElems(stringlet);
+    zint size = datSize(string);
+    zchar *elems = stringElems(string);
     char *out = result;
 
     for (zint i = 0; i < size; i++) {
@@ -161,6 +161,6 @@ void datUtf8FromStringlet(zint resultSize, char *result, zvalue stringlet) {
     out++;
 
     if ((out - result) > resultSize) {
-        die("Buffer too small for utf8-encoded stringlet.");
+        die("Buffer too small for utf8-encoded string.");
     }
 }

@@ -46,7 +46,7 @@ void).
   elements (as defined below). This defines the formal arguments to
   the function.
 
-* `@yieldDef=name` (optional) &mdash; A name (typically a stringlet) to
+* `@yieldDef=name` (optional) &mdash; A name (typically a string) to
   bind as the nonlocal-exit function.
 
 * `@statements=@[statement*]` (required) &mdash; A listlet of statement
@@ -101,7 +101,7 @@ Evaluation never fails.
 
 #### `varRef` &mdash; `[:@varRef name:]`
 
-* `name` (required) &mdash; Name of a variable (typically a stringlet).
+* `name` (required) &mdash; Name of a variable (typically a string).
 
 This represents a by-name variable reference.
 
@@ -118,7 +118,7 @@ of various expression nodes.
 
 #### `formal` &mdash; `@[@name=name (@repeat=repeat)?]`
 
-* `@name` (required) &mdash; an arbitrary value (but typically a stringlet),
+* `@name` (required) &mdash; an arbitrary value (but typically a string),
   which indicates the name of the variable to be bound for this
   formal.
 
@@ -145,7 +145,7 @@ actual argument as passed (no extra wrapping).
 
 #### `varDef` &mdash; `[:@varDef @[@name=name @value=expression]:]`
 
-* `@name=name` &mdash; Variable name to define (typically a stringlet).
+* `@name=name` &mdash; Variable name to define (typically a string).
 
 * `@value=expression` &mdash; Expression node representing the value
   that the variable should take on when defined.

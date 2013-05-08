@@ -15,7 +15,7 @@
 
 /**
  * Converts a path string to an absolute form, as a listlet of path components,
- * where each component is a stringlet. If the original is a relative path,
+ * where each component is a string. If the original is a relative path,
  * the result will have the system's current working directory prepended.
  */
 zvalue ioPathListletFromUtf8(const char *path);
@@ -29,16 +29,16 @@ zvalue ioReadLink(zvalue pathListlet);
 
 /**
  * Reads the file with the given name in its entirety, interpreting
- * it as UTF-8. Returns a stringlet (listlet of Unicode-representing
+ * it as UTF-8. Returns a string (listlet of Unicode-representing
  * intlets) of the contents.
  *
  * The `pathListlet` represents an absolute filesystem path as individual
- * stringlets.
+ * strings.
  */
 zvalue ioReadFileUtf8(zvalue pathListlet);
 
 /**
- * Writes the given stringlet to the file with the given name, encoding
+ * Writes the given string to the file with the given name, encoding
  * it as UTF-8. `pathListlet` is as with `ioReadFileUtf8`.
  */
 void ioWriteFileUtf8(zvalue pathListlet, zvalue text);

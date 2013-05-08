@@ -13,10 +13,10 @@
 
 
 typedef struct {
-    /** Stringlet being parsed. */
+    /** String being parsed. */
     zvalue str;
 
-    /** Size of stringlet. */
+    /** Size of string. */
     zint size;
 
     /** Current read position. */
@@ -39,7 +39,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : datStringletNth(state->str, state->at);
+    return isEof(state) ? -1 : datStringNth(state->str, state->at);
 }
 
 /**
@@ -127,8 +127,8 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         return NULL;
     }
 
-    zvalue stringlet = datStringletFromChars(size, chars);
-    return datHighletFrom(STR_IDENTIFIER, stringlet);
+    zvalue string = datStringFromChars(size, chars);
+    return datHighletFrom(STR_IDENTIFIER, string);
 }
 
 /**
@@ -168,8 +168,8 @@ static zvalue tokenizeString(ParseState *state) {
         read(state);
     }
 
-    zvalue stringlet = datStringletFromChars(size, chars);
-    return datHighletFrom(STR_STRING, stringlet);
+    zvalue string = datStringFromChars(size, chars);
+    return datHighletFrom(STR_STRING, string);
 }
 
 /**
@@ -242,11 +242,11 @@ static zvalue tokenizeOne(ParseState *state) {
  */
 
 /* Documented in header. */
-zvalue tokenize(zvalue stringlet) {
+zvalue tokenize(zvalue string) {
     constInit();
 
     zvalue result[LANG_MAX_TOKENS];
-    ParseState state = { stringlet, datSize(stringlet), 0 };
+    ParseState state = { string, datSize(string), 0 };
     zint out = 0;
 
     for (;;) {

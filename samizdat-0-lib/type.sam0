@@ -27,8 +27,8 @@ isMaplet = { value ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-isStringlet = { value ::
-    <> eq (lowType value) @stringlet
+isString = { value ::
+    <> eq (lowType value) @string
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -41,6 +41,6 @@ isUniqlet = { value ::
     @isIntlet = isIntlet
     @isListlet = isListlet
     @isMaplet = isMaplet
-    @isStringlet = isStringlet
+    @isString = isString
     @isUniqlet = isUniqlet
 ]

@@ -97,10 +97,10 @@ void datAssertIntlet(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a stringlet. If not, this aborts the process
+ * furthermore that it is a string. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertStringlet(zvalue value);
+void datAssertString(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -197,54 +197,54 @@ zint datIntFromIntlet(zvalue intlet);
 
 
 /*
- * Stringlet functions.
+ * String functions.
  */
 
 /**
- * Given a stringlet, returns the `n`th element, which is in the
+ * Given a string, returns the `n`th element, which is in the
  * range of a 32-bit unsigned int. If `n` is out of range, this
  * returns `-1`.
  */
-zint datStringletNth(zvalue stringlet, zint n);
+zint datStringNth(zvalue string, zint n);
 
 /**
- * Gets the stringlet built from the given array of `zchar`s, of
+ * Gets the string built from the given array of `zchar`s, of
  * the given size.
  */
-zvalue datStringletFromChars(zint size, const zchar *chars);
+zvalue datStringFromChars(zint size, const zchar *chars);
 
 /**
- * Combines the characters of two stringlets, in order, into a new
- * stringlet. See `datListletAdd()` for discussion about the choice
+ * Combines the characters of two strings, in order, into a new
+ * string. See `datListletAdd()` for discussion about the choice
  * of name.
  */
-zvalue datStringletAdd(zvalue str1, zvalue str2);
+zvalue datStringAdd(zvalue str1, zvalue str2);
 
 /**
- * Gets the stringlet resulting from interpreting the given UTF-8
+ * Gets the string resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.
  */
-zvalue datStringletFromUtf8(zint stringBytes, const char *string);
+zvalue datStringFromUtf8(zint stringBytes, const char *string);
 
 /**
- * Gets the number of bytes required to encode the given stringlet
+ * Gets the number of bytes required to encode the given string
  * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
  */
-zint datUtf8SizeFromStringlet(zvalue stringlet);
+zint datUtf8SizeFromString(zvalue string);
 
 /**
- * Encodes the given stringlet as UTF-8 into the given buffer of the
+ * Encodes the given string as UTF-8 into the given buffer of the
  * given size in bytes. The buffer must be large enough to hold the entire
  * encoded result plus a terminating `'\0'` byte; if not, this function
  * will complain and exit the runtime. To be clear, the result *is*
  * `'\0'`-terminated.
  *
- * **Note:** If the given stringlet possibly contains any `U+0` code points,
+ * **Note:** If the given string possibly contains any `U+0` code points,
  * then the only "safe" way to use the result is as an explicitly-sized
  * buffer. (For example, `strlen()` might "lie".)
  */
-void datUtf8FromStringlet(zint resultSize, char *result, zvalue stringlet);
+void datUtf8FromString(zint resultSize, char *result, zvalue string);
 
 
 /*

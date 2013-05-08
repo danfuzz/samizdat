@@ -308,9 +308,9 @@ static zvalue execVarRef(zvalue ctx, zvalue varRef) {
     }
 
     if (datTypeIs(name, DAT_STRINGLET)) {
-        zint nameSize = datUtf8SizeFromStringlet(name);
+        zint nameSize = datUtf8SizeFromString(name);
         char nameStr[nameSize + 1];
-        datUtf8FromStringlet(nameSize + 1, nameStr, name);
+        datUtf8FromString(nameSize + 1, nameStr, name);
         die("No such variable: %s", nameStr);
     }
 
