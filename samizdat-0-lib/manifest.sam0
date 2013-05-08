@@ -15,7 +15,7 @@
     @conditional
     @const
     @format
-    @intlet
+    @integer
     @io0
     @main
     @meta
