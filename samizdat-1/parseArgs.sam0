@@ -20,25 +20,25 @@
 # wordBreak ::= "\0" ;
 #
 
-# The character @"\0".
-CHAR_0 = stringletFromIntlet @0;
+# The character "\0".
+CHAR_0 = stringFromInteger 0;
 
 parseArguments = filterRule
     (seqRule
         @options
-        (optRule (charsRule (stringletAdd @"--" CHAR_0)))
+        (optRule (charsRule (stringAdd "--" CHAR_0)))
         @words)
     { result ::
-        optsErrors = listletNth result @0;
-        words = listletNth result @2;
-        ifTrue { <> mapletGet optsErrors @errors }
-            { io0Die @"Trouble with options." };
-        ifTrue { <> eq (lowSize words) @0 }
-            { io0Die @"Missing file name." };
-        fileName = listletNth words @0;
-        args = listletDelNth words @0;
-        <> @[
-            @options = (mapletGet optsErrors @options)
+        optsErrors = listNth result 0;
+        words = listNth result 2;
+        ifTrue { <> mapGet optsErrors @errors }
+            { io0Die "Trouble with options." };
+        ifTrue { <> eq (lowSize words) 0 }
+            { io0Die "Missing file name." };
+        fileName = listNth words 0;
+        args = listDelNth words 0;
+        <> [
+            @options = (mapGet optsErrors @options)
             @file = fileName
             @args = args
         ]
@@ -48,61 +48,61 @@ parseOptions = filterRule
     (starRule
        (filterRule
             (seqRule (orRule @option @error) @wordBreak)
-            { result :: <> listletNth result @0 }))
+            { result :: <> listNth result 0 }))
     { result ::
-        <> listletReduce @[@options=@[=] @errors=false] result
+        <> listReduce [@options=[=] @errors=false] result
             { result one :: <> one result }
     };
 
 parseError = filterRule
     (seqRule
-        (charsRule @"-")
-        (notCharSetRule (stringletAdd @"-" CHAR_0))
+        (charsRule "-")
+        (notCharSetRule (stringAdd "-" CHAR_0))
         (starRule (notCharSetRule CHAR_0)))
     { result ::
-        c0 = listletNth result @0;
-        c1 = listletNth result @1;
-        more = listletNth result @2;
-        value = apply stringletAdd c0 c1 more;
-        io0Note (format @"Unknown option: %Q" value);
-        <> { result :: <> mapletPut result @errors true }
+        c0 = listNth result 0;
+        c1 = listNth result 1;
+        more = listNth result 2;
+        value = apply stringAdd c0 c1 more;
+        io0Note (format "Unknown option: %Q" value);
+        <> { result :: <> mapPut result @errors true }
     };
 
 parseOption = filterRule
-    (seqRule (charsRule @"--") @key (optRule @value))
+    (seqRule (charsRule "--") @key (optRule @value))
     { result ::
-        key = listletNth result @1;
-        valueHolder = listletNth result @2;
-        value = ifValue { <> listletNth valueHolder @0 }
+        key = listNth result 1;
+        valueHolder = listNth result 2;
+        value = ifValue { <> listNth valueHolder 0 }
             { value :: <> value }
             { <> true };
         <> { result ::
-            options = mapletPut (mapletGet result @options) key value;
-            <> mapletPut result @options options
+            options = mapPut (mapGet result @options) key value;
+            <> mapPut result @options options
         }
     };
 
 parseKey = filterRule
     (plusRule
-        (notCharSetRule (stringletAdd @"=" CHAR_0)))
-    { result :: <> apply stringletAdd result };
+        (notCharSetRule (stringAdd "=" CHAR_0)))
+    { result :: <> apply stringAdd result };
 
 parseValue = filterRule
-    (seqRule (charsRule @"=") @word)
-    { result :: <> listletNth result @1 };
+    (seqRule (charsRule "=") @word)
+    { result :: <> listNth result 1 };
 
 parseWords = starRule
     (filterRule
         (seqRule @word @wordBreak)
-        { result :: <> listletNth result @0 });
+        { result :: <> listNth result 0 });
 
 parseWord = filterRule
     (starRule (notCharSetRule CHAR_0))
-    { result :: <> apply stringletAdd result };
+    { result :: <> apply stringAdd result };
 
 parseWordBreak = charsRule CHAR_0;
 
-RULES = @[
+RULES = [
     @arguments = parseArguments
     @error = parseError
     @key = parseKey
@@ -119,9 +119,9 @@ RULES = @[
 # it uses the parser engine to split them back apart.
 parseArgs = { args ::
     # Make a unified string with each argument "\0"-terminated.
-    argString = listletReduce @"" args
+    argString = listReduce "" args
         { result arg ::
-            <> stringletAdd result arg CHAR_0;
+            <> stringAdd result arg CHAR_0;
         };
 
     theReader = reader argString;
@@ -130,4 +130,4 @@ parseArgs = { args ::
     <> parseArguments theEngine;
 };
 
-<> @[@parseArgs = parseArgs]
+<> [@parseArgs = parseArgs]

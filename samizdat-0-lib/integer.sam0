@@ -1,0 +1,19 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Integers
+#
+
+# Documented in Samizdat Layer 0 spec.
+integerSign = { integer ::
+    # The `iadd` call ensures that the value is an integer.
+    <> ifTrue { <> eq (iadd integer 0) 0 }
+        { <> 0 }
+        { <> ifTrue { <> gt integer 0 } { <> 1 } { <> -1 } }
+};
+
+<> [
+    @integerSign = integerSign
+]

@@ -53,29 +53,29 @@ typedef struct DatValue {
 } DatValue;
 
 /**
- * Intlet structure.
+ * Integer structure.
  */
 typedef struct {
     /** Value header. */
     DatValue header;
 
-    /** Integer value. See `datIntletFromInt()` about range restriction. */
+    /** Integer value. See `datIntegerFromInt()` about range restriction. */
     int32_t value;
-} DatIntlet;
+} DatInteger;
 
 /**
- * Stringlet structure.
+ * String structure.
  */
 typedef struct {
     /** Value header. */
     DatValue header;
 
-    /** Characters of the stringlet, in index order. */
+    /** Characters of the string, in index order. */
     zchar elems[0];
-} DatStringlet;
+} DatString;
 
 /**
- * Listlet structure.
+ * List structure.
  */
 typedef struct {
     /** Value header. */
@@ -83,10 +83,10 @@ typedef struct {
 
     /** List elements, in index order. */
     zvalue elems[0];
-} DatListlet;
+} DatList;
 
 /**
- * Maplet structure.
+ * Map structure.
  */
 typedef struct {
     /** Value header. */
@@ -94,7 +94,7 @@ typedef struct {
 
     /** List of mappings, in key-sorted order. */
     zmapping elems[0];
-} DatMaplet;
+} DatMap;
 
 /**
  * Uniqlet info.
@@ -164,44 +164,44 @@ zvalue datConservativeValueCast(void *maybeValue);
 bool datHasNth(zvalue value, zint n);
 
 /**
- * Compares intlets for equality. Only called when the sizes are the same.
+ * Compares integers for equality. Only called when the sizes are the same.
  */
-bool datIntletEq(zvalue v1, zvalue v2);
+bool datIntegerEq(zvalue v1, zvalue v2);
 
 /**
- * Compares intlets for order.
+ * Compares integers for order.
  */
-zorder datIntletOrder(zvalue v1, zvalue v2);
+zorder datIntegerOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares stringlets for equality. Only called when the sizes are the same.
+ * Compares strings for equality. Only called when the sizes are the same.
  */
-bool datStringletEq(zvalue v1, zvalue v2);
+bool datStringEq(zvalue v1, zvalue v2);
 
 /**
- * Compares stringlets for order.
+ * Compares strings for order.
  */
-zorder datStringletOrder(zvalue v1, zvalue v2);
+zorder datStringOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares listlets for equality. Only called when the sizes are the same.
+ * Compares lists for equality. Only called when the sizes are the same.
  */
-bool datListletEq(zvalue v1, zvalue v2);
+bool datListEq(zvalue v1, zvalue v2);
 
 /**
- * Compares listlets for order.
+ * Compares lists for order.
  */
-zorder datListletOrder(zvalue v1, zvalue v2);
+zorder datListOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares maplets for equality. Only called when the sizes are the same.
+ * Compares maps for equality. Only called when the sizes are the same.
  */
-bool datMapletEq(zvalue v1, zvalue v2);
+bool datMapEq(zvalue v1, zvalue v2);
 
 /**
- * Compares maplets for order.
+ * Compares maps for order.
  */
-zorder datMapletOrder(zvalue v1, zvalue v2);
+zorder datMapOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares uniqlets for order.
@@ -219,14 +219,14 @@ bool datHighletEq(zvalue v1, zvalue v2);
 zorder datHighletOrder(zvalue v1, zvalue v2);
 
 /**
- * Marks listlet contents for garbage collection.
+ * Marks list contents for garbage collection.
  */
-void datListletMark(zvalue value);
+void datListMark(zvalue value);
 
 /**
- * Marks maplet contents for garbage collection.
+ * Marks map contents for garbage collection.
  */
-void datMapletMark(zvalue value);
+void datMapMark(zvalue value);
 
 /**
  * Marks highlet contents for garbage collection.

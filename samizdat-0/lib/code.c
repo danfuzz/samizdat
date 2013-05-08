@@ -57,7 +57,7 @@ static void objectMark(void *state) {
  * Frees an object state.
  */
 static void objectFree(void *state) {
-    zfree(state);
+    utilFree(state);
 }
 
 /** Uniqlet dispatch table. */
@@ -144,13 +144,13 @@ PRIM_IMPL(apply) {
             return langCall(function, 0, NULL);
         }
         case 2: {
-            // Just a "rest" listlet.
+            // Just a "rest" list.
             return langApply(function, args[1]);
         }
     }
 
     // The hard case: We make a flattened array of all the initial arguments
-    // followed by the contents of the "rest" listlet.
+    // followed by the contents of the "rest" list.
 
     zvalue rest = args[argCount - 1];
     zint restSize = datSize(rest);
@@ -165,7 +165,7 @@ PRIM_IMPL(apply) {
         flatArgs[i] = args[i];
     }
 
-    datArrayFromListlet(flatArgs + argCount, rest);
+    datArrayFromList(flatArgs + argCount, rest);
     return langCall(function, flatSize, flatArgs);
 }
 
@@ -173,7 +173,7 @@ PRIM_IMPL(apply) {
 PRIM_IMPL(object) {
     requireExactly(argCount, 2);
 
-    Object *object = zalloc(sizeof(Object));
+    Object *object = utilAlloc(sizeof(Object));
     zvalue objectUniqlet = datUniqletWith(&OBJECT_DISPATCH, object);
 
     object->serviceFunction = args[0];

@@ -26,10 +26,10 @@
  * comparing values. See `datOrder()`.
  */
 typedef enum {
-    DAT_INTLET = 1,
-    DAT_STRINGLET,
-    DAT_LISTLET,
-    DAT_MAPLET,
+    DAT_INTEGER = 1,
+    DAT_STRING,
+    DAT_LIST,
+    DAT_MAP,
     DAT_UNIQLET,
     DAT_HIGHLET
 } ztype;
@@ -84,37 +84,37 @@ void datAssertValid(zvalue value);
  * Asserts that the given value is a valid `zvalue`, and that its size
  * accommodates accessing the `n`th element. This includes asserting that
  * `n >= 0`. Note that all non-negative `n` are valid for accessing
- * intlets (their size notwithstanding).
+ * integers (their size notwithstanding).
  */
 void datAssertNth(zvalue value, zint n);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is an intlet. If not, this aborts the process
+ * furthermore that it is an integer. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertIntlet(zvalue value);
+void datAssertInteger(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a stringlet. If not, this aborts the process
+ * furthermore that it is a string. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertStringlet(zvalue value);
+void datAssertString(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a listlet. If not, this aborts the process
+ * furthermore that it is a list. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertListlet(zvalue value);
+void datAssertList(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a maplet. If not, this aborts the process
+ * furthermore that it is a map. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertMaplet(zvalue value);
+void datAssertMap(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -151,224 +151,224 @@ zint datSize(zvalue value);
 
 
 /*
- * Intlet Functions
+ * Integer Functions
  */
 
 /**
- * Gets the `zchar` of the given intlet, asserting that the value
- * is in fact an intlet and in range for same.
+ * Gets the `zchar` of the given integer, asserting that the value
+ * is in fact an integer and in range for same.
  */
-zchar datCharFromIntlet(zvalue intlet);
+zchar datCharFromInteger(zvalue integer);
 
 /**
  * Given a 32-bit int value, returns the `n`th bit. This is just like
- * `datIntletGetBit()` except using a `zint` value. This function is
+ * `datIntegerGetBit()` except using a `zint` value. This function is
  * exported for the convenience of other modules.
  */
 bool datIntGetBit(zint value, zint n);
 
 /**
- * Given an intlet, returns the `n`th bit, counting from the least
- * significant bit. `intlet` must be an intlet. Returns `false` for a
+ * Given an integer, returns the `n`th bit, counting from the least
+ * significant bit. `integer` must be an integer. Returns `false` for a
  * `0` bit, and `true` for a `1` bit. If `n` references a bit beyond
  * the value's size, then the return value is the sign bit of the
  * value. It is an error if `n < 0`.
  */
-bool datIntletGetBit(zvalue intlet, zint n);
+bool datIntegerGetBit(zvalue integer, zint n);
 
 /**
- * Gets the sign of the given intlet. `intlet` must be an
- * intlet. Returns `false` for non-negative, and `true` for negative.
+ * Gets the sign of the given integer. `integer` must be an
+ * integer. Returns `false` for non-negative, and `true` for negative.
  */
-bool datIntletSign(zvalue intlet);
+bool datIntegerSign(zvalue integer);
 
 /**
- * Gets an intlet value equal to the given `zint`. In this
- * implementation, intlets are restricted to only taking on the range
+ * Gets an integer value equal to the given `zint`. In this
+ * implementation, integers are restricted to only taking on the range
  * of 32-bit signed quantities, when represented as twos-complement.
  */
-zvalue datIntletFromInt(zint value);
+zvalue datIntegerFromInt(zint value);
 
 /**
- * Gets a `zint` equal to the given intlet value. `intlet` must be an
- * intlet. It is an error if the value is out of range.
+ * Gets a `zint` equal to the given integer value. `integer` must be an
+ * integer. It is an error if the value is out of range.
  */
-zint datIntFromIntlet(zvalue intlet);
+zint datIntFromInteger(zvalue integer);
 
 
 /*
- * Stringlet functions.
+ * String functions.
  */
 
 /**
- * Given a stringlet, returns the `n`th element, which is in the
+ * Given a string, returns the `n`th element, which is in the
  * range of a 32-bit unsigned int. If `n` is out of range, this
  * returns `-1`.
  */
-zint datStringletNth(zvalue stringlet, zint n);
+zint datStringNth(zvalue string, zint n);
 
 /**
- * Gets the stringlet built from the given array of `zchar`s, of
+ * Gets the string built from the given array of `zchar`s, of
  * the given size.
  */
-zvalue datStringletFromChars(zint size, const zchar *chars);
+zvalue datStringFromChars(zint size, const zchar *chars);
 
 /**
- * Combines the characters of two stringlets, in order, into a new
- * stringlet. See `datListletAdd()` for discussion about the choice
+ * Combines the characters of two strings, in order, into a new
+ * string. See `datListAdd()` for discussion about the choice
  * of name.
  */
-zvalue datStringletAdd(zvalue str1, zvalue str2);
+zvalue datStringAdd(zvalue str1, zvalue str2);
 
 /**
- * Gets the stringlet resulting from interpreting the given UTF-8
+ * Gets the string resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.
  */
-zvalue datStringletFromUtf8(zint stringBytes, const char *string);
+zvalue datStringFromUtf8(zint stringBytes, const char *string);
 
 /**
- * Gets the number of bytes required to encode the given stringlet
+ * Gets the number of bytes required to encode the given string
  * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
  */
-zint datUtf8SizeFromStringlet(zvalue stringlet);
+zint datUtf8SizeFromString(zvalue string);
 
 /**
- * Encodes the given stringlet as UTF-8 into the given buffer of the
+ * Encodes the given string as UTF-8 into the given buffer of the
  * given size in bytes. The buffer must be large enough to hold the entire
  * encoded result plus a terminating `'\0'` byte; if not, this function
  * will complain and exit the runtime. To be clear, the result *is*
  * `'\0'`-terminated.
  *
- * **Note:** If the given stringlet possibly contains any `U+0` code points,
+ * **Note:** If the given string possibly contains any `U+0` code points,
  * then the only "safe" way to use the result is as an explicitly-sized
  * buffer. (For example, `strlen()` might "lie".)
  */
-void datUtf8FromStringlet(zint resultSize, char *result, zvalue stringlet);
+void datUtf8FromString(zint resultSize, char *result, zvalue string);
 
 
 /*
- * Listlet Functions
+ * List Functions
  */
 
 /**
- * Gets the listlet resulting from inserting the given value at the
- * given index in the given listlet. `n` must be non-negative and no
- * greater than the size of the given listlet.
+ * Gets the list resulting from inserting the given value at the
+ * given index in the given list. `n` must be non-negative and no
+ * greater than the size of the given list.
  */
-zvalue datListletInsNth(zvalue listlet, zint n, zvalue value);
+zvalue datListInsNth(zvalue list, zint n, zvalue value);
 
 /**
- * Given a listlet, returns the `n`th element. `listlet` must be a
- * listlet, and `n` must be `< datSize(value)`.
+ * Given a list, returns the `n`th element. `list` must be a
+ * list, and `n` must be `< datSize(value)`.
  */
-zvalue datListletNth(zvalue listlet, zint n);
+zvalue datListNth(zvalue list, zint n);
 
 /**
- * Gets the listlet resulting from appending the given value to the
- * given listlet.
+ * Gets the list resulting from appending the given value to the
+ * given list.
  */
-zvalue datListletAppend(zvalue listlet, zvalue value);
+zvalue datListAppend(zvalue list, zvalue value);
 
 /**
- * Gets the listlet resulting from setting the value at the
+ * Gets the list resulting from setting the value at the
  * given index to the given value. `n` must be non-negative
- * and no greater than the size of the given listlet.
+ * and no greater than the size of the given list.
  */
-zvalue datListletPutNth(zvalue listlet, zint n, zvalue value);
+zvalue datListPutNth(zvalue list, zint n, zvalue value);
 
 /**
- * Combines the elements of two listlets, in order, into a new
- * listlet.
+ * Combines the elements of two lists, in order, into a new
+ * list.
  *
- * Contrasting this with `datListlet{Append,Prepend}()` and above,
+ * Contrasting this with `datList{Append,Prepend}()` and above,
  * those functions operate
- * heterogeneously on a listlet and an element, whereas this one
- * operates on two peer listlets.
+ * heterogeneously on a list and an element, whereas this one
+ * operates on two peer lists.
  */
-zvalue datListletAdd(zvalue listlet1, zvalue listlet2);
+zvalue datListAdd(zvalue list1, zvalue list2);
 
 /**
- * Gets the listlet resulting from deleting the nth element of the
- * given listlet.
+ * Gets the list resulting from deleting the nth element of the
+ * given list.
  */
-zvalue datListletDelNth(zvalue listlet, zint n);
+zvalue datListDelNth(zvalue list, zint n);
 
 /**
- * Constructs a listlet from an array of `zvalue`s of the given size.
+ * Constructs a list from an array of `zvalue`s of the given size.
  */
-zvalue datListletFromArray(zint size, const zvalue *values);
+zvalue datListFromArray(zint size, const zvalue *values);
 
 /**
- * Copies all the values of the given listlet into the given result
+ * Copies all the values of the given list into the given result
  * array, which must be sized large enough to hold all of them.
  */
-void datArrayFromListlet(zvalue *result, zvalue listlet);
+void datArrayFromList(zvalue *result, zvalue list);
 
 
 /*
- * Maplet Functions
+ * Map Functions
  */
 
 /**
- * Gets an empty maplet value, i.e. `@[=]`. Note that this can return
+ * Gets an empty map value, i.e. `[=]`. Note that this can return
  * a different allocated value every time.
  */
-zvalue datMapletEmpty(void);
+zvalue datMapEmpty(void);
 
 /**
- * Given a maplet, find the mapping of the given key and return the
- * corresponding value, or `NULL` if there is no such key. `maplet`
- * must be a maplet, and `key` must be a valid value.
+ * Given a map, find the mapping of the given key and return the
+ * corresponding value, or `NULL` if there is no such key. `map`
+ * must be a map, and `key` must be a valid value.
  */
-zvalue datMapletGet(zvalue maplet, zvalue key);
+zvalue datMapGet(zvalue map, zvalue key);
 
 /**
- * Given a maplet, returns the `n`th mapping. `maplet` must be a
- * maplet, and `n` must be `< datSize(value)`. Mappings are returned
- * as single-element maplets. Maplet ordering is by key.
+ * Given a map, returns the `n`th mapping. `map` must be a
+ * map, and `n` must be `< datSize(value)`. Mappings are returned
+ * as single-element maps. Map ordering is by key.
  */
-zvalue datMapletNth(zvalue maplet, zint n);
+zvalue datMapNth(zvalue map, zint n);
 
 /**
- * Given a maplet, returns the `n`th key. `maplet` must be a
- * maplet, and `n` must be `< datSize(value)`. Maplet ordering is by key.
+ * Given a map, returns the `n`th key. `map` must be a
+ * map, and `n` must be `< datSize(value)`. Map ordering is by key.
  */
-zvalue datMapletNthKey(zvalue maplet, zint n);
+zvalue datMapNthKey(zvalue map, zint n);
 
 /**
- * Given a maplet, returns the `n`th value. `maplet` must be a
- * maplet, and `n` must be `< datSize(value)`. Maplet ordering is by key.
+ * Given a map, returns the `n`th value. `map` must be a
+ * map, and `n` must be `< datSize(value)`. Map ordering is by key.
  */
-zvalue datMapletNthValue(zvalue maplet, zint n);
+zvalue datMapNthValue(zvalue map, zint n);
 
 /**
- * Gets the maplet resulting from putting the given mapping into the
- * given maplet. This can either add a new mapping or replace an
+ * Gets the map resulting from putting the given mapping into the
+ * given map. This can either add a new mapping or replace an
  * existing mapping.
  */
-zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value);
+zvalue datMapPut(zvalue map, zvalue key, zvalue value);
 
 /**
- * Gets the maplet resulting from putting the all the given mappings
- * into the given maplet, in the order given (so, in particular, higher-index
+ * Gets the map resulting from putting the all the given mappings
+ * into the given map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
- * The effect is identical to calling a chain of `datMapletPut()`s on each
+ * The effect is identical to calling a chain of `datMapPut()`s on each
  * of the mappings in order.
  */
-zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings);
+zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings);
 
 /**
- * Combines the bindings of the two given maplets into a new maplet.
+ * Combines the bindings of the two given maps into a new map.
  * For overlapping keys between the two, the second argument "wins".
  */
-zvalue datMapletAdd(zvalue maplet1, zvalue maplet2);
+zvalue datMapAdd(zvalue map1, zvalue map2);
 
 /**
- * Gets a maplet resulting from the removal of the given key from the
- * given maplet.
+ * Gets a map resulting from the removal of the given key from the
+ * given map.
  */
-zvalue datMapletDel(zvalue maplet, zvalue key);
+zvalue datMapDel(zvalue map, zvalue key);
 
 
 /*

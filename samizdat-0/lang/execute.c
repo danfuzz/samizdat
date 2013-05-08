@@ -58,11 +58,11 @@ static zvalue frameGet(Frame *frame, zvalue name) {
         }
     }
 
-    return datMapletGet(frame->base, name);
+    return datMapGet(frame->base, name);
 }
 
 static zvalue frameCollapse(Frame *frame) {
-    return datMapletAddArray(frame->base, frame->size, frame->locals);
+    return datMapAddArray(frame->base, frame->size, frame->locals);
 }
 
 
@@ -122,7 +122,7 @@ static void closureMark(void *state) {
  * Frees a closure state.
  */
 static void closureFree(void *state) {
-    zfree(state);
+    utilFree(state);
 }
 
 /** Uniqlet dispatch table for closures. */
@@ -144,7 +144,7 @@ static void yieldMark(void *state) {
  * Frees a yield state.
  */
 static void yieldFree(void *state) {
-    zfree(state);
+    utilFree(state);
 }
 
 /** Uniqlet dispatch table for yield states. */
@@ -193,7 +193,7 @@ static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
  */
 static void bindArguments(Frame *frame, zvalue functionNode,
                           zint argCount, const zvalue *args) {
-    zvalue formals = datMapletGet(functionNode, STR_FORMALS);
+    zvalue formals = datMapGet(functionNode, STR_FORMALS);
 
     if (formals == NULL) {
         return;
@@ -202,21 +202,21 @@ static void bindArguments(Frame *frame, zvalue functionNode,
     zint formalsSize = datSize(formals);
 
     for (zint i = 0, argAt = 0; i < formalsSize; i++) {
-        zvalue formal = datListletNth(formals, i);
-        zvalue name = datMapletGet(formal, STR_NAME);
-        zvalue repeat = datMapletGet(formal, STR_REPEAT);
+        zvalue formal = datListNth(formals, i);
+        zvalue name = datMapGet(formal, STR_NAME);
+        zvalue repeat = datMapGet(formal, STR_REPEAT);
         zvalue value;
 
         if (repeat != NULL) {
             if (datEq(repeat, TOK_CH_STAR)) {
-                value = datListletFromArray(argCount - argAt, &args[argAt]);
+                value = datListFromArray(argCount - argAt, &args[argAt]);
                 argAt = argCount;
             } else if (datEq(repeat, TOK_CH_QMARK)) {
                 if (argAt < argCount) {
-                    value = datListletFromArray(1, &args[argAt]);
+                    value = datListFromArray(1, &args[argAt]);
                     argAt++;
                 } else {
-                    value = EMPTY_LISTLET;
+                    value = EMPTY_LIST;
                 }
             } else {
                 die("Unknown repeat modifier.");
@@ -238,8 +238,8 @@ static void bindArguments(Frame *frame, zvalue functionNode,
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = datHighletValue(varDef);
-    zvalue name = datMapletGet(nameValue, STR_NAME);
-    zvalue valueExpression = datMapletGet(nameValue, STR_VALUE);
+    zvalue name = datMapGet(nameValue, STR_NAME);
+    zvalue valueExpression = datMapGet(nameValue, STR_VALUE);
     zvalue value = execExpression(frame, valueExpression);
 
     frameAdd(frame, name, value);
@@ -253,9 +253,9 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
     zvalue functionNode = closure->function;
     zvalue parentContext = closure->context;
 
-    zvalue yieldDef = datMapletGet(functionNode, STR_YIELD_DEF);
-    zvalue statements = datMapletGet(functionNode, STR_STATEMENTS);
-    zvalue yield = datMapletGet(functionNode, STR_YIELD);
+    zvalue yieldDef = datMapGet(functionNode, STR_YIELD_DEF);
+    zvalue statements = datMapGet(functionNode, STR_STATEMENTS);
+    zvalue yield = datMapGet(functionNode, STR_YIELD);
     YieldState *yieldState = NULL;
 
     // Take the parent context as a base, and bind the formals and
@@ -267,7 +267,7 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
     bindArguments(&frame, functionNode, argCount, args);
 
     if (yieldDef != NULL) {
-        yieldState = zalloc(sizeof(YieldState));
+        yieldState = utilAlloc(sizeof(YieldState));
         yieldState->active = true;
         yieldState->result = NULL;
 
@@ -286,7 +286,7 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
 
     zint statementsSize = datSize(statements);
     for (zint i = 0; i < statementsSize; i++) {
-        zvalue one = datListletNth(statements, i);
+        zvalue one = datListNth(statements, i);
 
         if (datHighletTypeIs(one, STR_VAR_DEF)) {
             execVarDef(&frame, one);
@@ -317,7 +317,7 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
 static zvalue execFunction(Frame *frame, zvalue function) {
     datHighletAssertType(function, STR_FUNCTION);
 
-    Closure *closure = zalloc(sizeof(Closure));
+    Closure *closure = utilAlloc(sizeof(Closure));
     closure->context = frameCollapse(frame);
     closure->function = datHighletValue(function);
 
@@ -332,14 +332,14 @@ static zvalue execCall(Frame *frame, zvalue call) {
     datHighletAssertType(call, STR_CALL);
     call = datHighletValue(call);
 
-    zvalue function = datMapletGet(call, STR_FUNCTION);
-    zvalue actuals = datMapletGet(call, STR_ACTUALS);
+    zvalue function = datMapGet(call, STR_FUNCTION);
+    zvalue actuals = datMapGet(call, STR_ACTUALS);
     zvalue functionId = execExpression(frame, function);
 
     zint argCount = datSize(actuals);
     zvalue args[argCount];
     for (zint i = 0; i < argCount; i++) {
-        zvalue one = datListletNth(actuals, i);
+        zvalue one = datListNth(actuals, i);
         args[i] = execExpression(frame, one);
     }
 
@@ -359,10 +359,10 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
         return found;
     }
 
-    if (datTypeIs(name, DAT_STRINGLET)) {
-        zint nameSize = datUtf8SizeFromStringlet(name);
+    if (datTypeIs(name, DAT_STRING)) {
+        zint nameSize = datUtf8SizeFromString(name);
         char nameStr[nameSize + 1];
-        datUtf8FromStringlet(nameSize + 1, nameStr, name);
+        datUtf8FromString(nameSize + 1, nameStr, name);
         die("No such variable: %s", nameStr);
     }
 

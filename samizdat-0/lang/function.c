@@ -37,7 +37,7 @@ static void functionMark(void *state) {
  * Frees the function's state.
  */
 static void functionFree(void *state) {
-    zfree(state);
+    utilFree(state);
 }
 
 /** Uniqlet dispatch table. */
@@ -53,7 +53,7 @@ static DatUniqletDispatch FUNCTION_DISPATCH = {
 
 /* Documented in header. */
 zvalue langDefineFunction(zfunction function, zvalue state) {
-    Function *entry = zalloc(sizeof(Function));
+    Function *entry = utilAlloc(sizeof(Function));
 
     entry->function = function;
     entry->state = state;
@@ -79,6 +79,6 @@ zvalue langApply(zvalue functionId, zvalue args) {
     zint argCount = datSize(args);
     zvalue argsArray[argCount];
 
-    datArrayFromListlet(argsArray, args);
+    datArrayFromList(argsArray, args);
     return langCall(functionId, argCount, argsArray);
 }

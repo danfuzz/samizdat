@@ -41,7 +41,7 @@ static zvalue read(ParseState *state) {
         return NULL;
     }
 
-    zvalue result = datListletNth(state->tokens, state->at);
+    zvalue result = datListNth(state->tokens, state->at);
     state->at++;
 
     return result;
@@ -55,7 +55,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
         return NULL;
     }
 
-    zvalue result = datListletNth(state->tokens, state->at);
+    zvalue result = datListNth(state->tokens, state->at);
     zvalue resultType = datHighletType(result);
 
     if (!datEq(type, resultType)) {
@@ -91,32 +91,32 @@ static void reset(ParseState *state, zint mark) {
  */
 
 /**
- * Makes a 0-3 binding maplet. Values are allowed to be `NULL`, in
+ * Makes a 0-3 binding map. Values are allowed to be `NULL`, in
  * which case the corresponding key isn't included in the result.
  */
-static zvalue mapletFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+static zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
                           zvalue k3, zvalue v3) {
-    zvalue result = EMPTY_MAPLET;
+    zvalue result = EMPTY_MAP;
 
-    if (v1 != NULL) { result = datMapletPut(result, k1, v1); }
-    if (v2 != NULL) { result = datMapletPut(result, k2, v2); }
-    if (v3 != NULL) { result = datMapletPut(result, k3, v3); }
+    if (v1 != NULL) { result = datMapPut(result, k1, v1); }
+    if (v2 != NULL) { result = datMapPut(result, k2, v2); }
+    if (v3 != NULL) { result = datMapPut(result, k3, v3); }
 
     return result;
 }
 
 /**
- * Makes a 0-2 binding maplet.
+ * Makes a 0-2 binding map.
  */
-static zvalue mapletFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return mapletFrom3(k1, v1, k2, v2, NULL, NULL);
+static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    return mapFrom3(k1, v1, k2, v2, NULL, NULL);
 }
 
 /**
- * Makes a 0-1 binding maplet.
+ * Makes a 0-1 binding map.
  */
-static zvalue mapletFrom1(zvalue k1, zvalue v1) {
-    return mapletFrom3(k1, v1, NULL, NULL, NULL, NULL);
+static zvalue mapFrom1(zvalue k1, zvalue v1) {
+    return mapFrom3(k1, v1, NULL, NULL, NULL, NULL);
 }
 
 /**
@@ -131,10 +131,10 @@ static zvalue makeVarRef(zvalue name) {
  */
 static zvalue makeCall(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
-        actuals = EMPTY_LISTLET;
+        actuals = EMPTY_LIST;
     }
 
-    zvalue value = mapletFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
+    zvalue value = mapFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
 
     return datHighletFrom(STR_CALL, value);
 }
@@ -166,12 +166,12 @@ DEF_PARSE(expression);
 DEF_PARSE(function);
 
 /**
- * Parses `atom+`. Returns a listlet of parsed expressions.
+ * Parses `atom+`. Returns a list of parsed expressions.
  */
 DEF_PARSE(atomPlus) {
     MARK();
 
-    zvalue result = EMPTY_LISTLET;
+    zvalue result = EMPTY_LIST;
 
     for (;;) {
         zvalue atom = PARSE(atom);
@@ -179,7 +179,7 @@ DEF_PARSE(atomPlus) {
             break;
         }
 
-        result = datListletAppend(result, atom);
+        result = datListAppend(result, atom);
     }
 
     REJECT_IF(datSize(result) == 0);
@@ -200,10 +200,10 @@ DEF_PARSE(highlet) {
     MATCH_OR_REJECT(CH_COLON);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    zvalue args = datListletAppend(EMPTY_LISTLET, innerType);
+    zvalue args = datListAppend(EMPTY_LIST, innerType);
 
     if (innerValue != NULL) {
-        args = datListletAppend(args, innerValue);
+        args = datListAppend(args, innerValue);
     }
 
     return makeCall(makeVarRef(STR_MAKE_HIGHLET), args);
@@ -217,7 +217,7 @@ DEF_PARSE(uniqlet) {
 
     MATCH_OR_REJECT(CH_ATAT);
 
-    return makeCall(makeVarRef(STR_MAKE_UNIQLET), EMPTY_LISTLET);
+    return makeCall(makeVarRef(STR_MAKE_UNIQLET), EMPTY_LIST);
 }
 
 /**
@@ -230,19 +230,18 @@ DEF_PARSE(binding) {
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue value = PARSE_OR_REJECT(atom);
 
-    return datListletAppend(datListletAppend(EMPTY_LISTLET, key), value);
+    return datListAppend(datListAppend(EMPTY_LIST, key), value);
 }
 
 /**
- * Parses a `maplet` node.
+ * Parses a `map` node.
  */
-DEF_PARSE(maplet) {
+DEF_PARSE(map) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
 
-    zvalue bindings = EMPTY_LISTLET;
+    zvalue bindings = EMPTY_LIST;
 
     for (;;) {
         zvalue binding = PARSE(binding);
@@ -250,66 +249,63 @@ DEF_PARSE(maplet) {
             break;
         }
 
-        bindings = datListletAdd(bindings, binding);
+        bindings = datListAdd(bindings, binding);
     }
 
     REJECT_IF(datSize(bindings) == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_MAPLET), bindings);
+    return makeCall(makeVarRef(STR_MAKE_MAP), bindings);
 }
 
 /**
- * Parses an `emptyMaplet` node.
+ * Parses an `emptyMap` node.
  */
-DEF_PARSE(emptyMaplet) {
+DEF_PARSE(emptyMap) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_EQUAL);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return datHighletFrom(STR_LITERAL, EMPTY_MAPLET);
+    return datHighletFrom(STR_LITERAL, EMPTY_MAP);
 }
 
 /**
- * Parses a `listlet` node.
+ * Parses a `list` node.
  */
-DEF_PARSE(listlet) {
+DEF_PARSE(list) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
     zvalue atoms = PARSE_OR_REJECT(atomPlus);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_LISTLET), atoms);
+    return makeCall(makeVarRef(STR_MAKE_LIST), atoms);
 }
 
 /**
- * Parses an `emptyListlet` node.
+ * Parses an `emptyList` node.
  */
-DEF_PARSE(emptyListlet) {
+DEF_PARSE(emptyList) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return datHighletFrom(STR_LITERAL, EMPTY_LISTLET);
+    return datHighletFrom(STR_LITERAL, EMPTY_LIST);
 }
 
 /**
- * Parses a `stringlet` node.
+ * Parses a `string` node.
  */
-DEF_PARSE(stringlet) {
+DEF_PARSE(string) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
-
     zvalue string = MATCH(STRING);
+
     if (string == NULL) {
+        MATCH_OR_REJECT(CH_AT);
         string = MATCH_OR_REJECT(IDENTIFIER);
     }
 
@@ -318,21 +314,14 @@ DEF_PARSE(stringlet) {
 }
 
 /**
- * Parses an `intlet` node.
+ * Parses an `integer` node.
  */
-DEF_PARSE(intlet) {
+DEF_PARSE(integer) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
-    bool negative = (MATCH(CH_MINUS) != NULL);
     zvalue integer = MATCH_OR_REJECT(INTEGER);
-    zvalue value = datHighletValue(integer);
 
-    if (negative) {
-        value = datIntletFromInt(-datIntFromIntlet(value));
-    }
-
-    return datHighletFrom(STR_LITERAL, value);
+    return datHighletFrom(STR_LITERAL, datHighletValue(integer));
 }
 
 /**
@@ -357,7 +346,7 @@ DEF_PARSE(varDef) {
     zvalue expression = PARSE_OR_REJECT(expression);
 
     zvalue name = datHighletValue(identifier);
-    zvalue value = mapletFrom2(STR_NAME, name, STR_VALUE, expression);
+    zvalue value = mapFrom2(STR_NAME, name, STR_VALUE, expression);
     return datHighletFrom(STR_VAR_DEF, value);
 }
 
@@ -381,12 +370,12 @@ DEF_PARSE(atom) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varRef); }
-    if (result == NULL) { result = PARSE(intlet); }
-    if (result == NULL) { result = PARSE(stringlet); }
-    if (result == NULL) { result = PARSE(emptyListlet); }
-    if (result == NULL) { result = PARSE(listlet); }
-    if (result == NULL) { result = PARSE(emptyMaplet); }
-    if (result == NULL) { result = PARSE(maplet); }
+    if (result == NULL) { result = PARSE(integer); }
+    if (result == NULL) { result = PARSE(string); }
+    if (result == NULL) { result = PARSE(emptyList); }
+    if (result == NULL) { result = PARSE(list); }
+    if (result == NULL) { result = PARSE(emptyMap); }
+    if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(uniqlet); }
     if (result == NULL) { result = PARSE(highlet); }
     if (result == NULL) { result = PARSE(function); }
@@ -408,7 +397,7 @@ DEF_PARSE(callExpression) {
 }
 
 /**
- * Helper for `unaryCallExpression`: Parses `[:@"(":] [:@")":]`.
+ * Helper for `unaryCallExpression`: Parses `[:"(":] [:")":]`.
  */
 DEF_PARSE(unaryCallExpression1) {
     MARK();
@@ -416,7 +405,7 @@ DEF_PARSE(unaryCallExpression1) {
     MATCH_OR_REJECT(CH_OPAREN);
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return EMPTY_LISTLET; // Return an arbitrary non-`NULL` value.
+    return EMPTY_LIST; // Return an arbitrary non-`NULL` value.
 }
 
 /**
@@ -525,13 +514,13 @@ DEF_PARSE(nonlocalExit) {
 
     zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
     zvalue actuals =
-        (value == NULL) ? NULL : datListletAppend(EMPTY_LISTLET, value);
+        (value == NULL) ? NULL : datListAppend(EMPTY_LIST, value);
 
     return makeCall(name, actuals);
 }
 
 /**
- * Helper for `formal`: Parses `([:@"?":] | [:@"*":])?`. Returns either the
+ * Helper for `formal`: Parses `([:"?":] | [:"*":])?`. Returns either the
  * parsed token or `NULL` to indicate that neither was present.
  */
 DEF_PARSE(formal1) {
@@ -552,7 +541,7 @@ DEF_PARSE(formal) {
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
 
-    return mapletFrom2(STR_NAME, datHighletValue(identifier),
+    return mapFrom2(STR_NAME, datHighletValue(identifier),
                        STR_REPEAT, repeat);
 }
 
@@ -560,7 +549,7 @@ DEF_PARSE(formal) {
  * Parses `formal*`.
  */
 DEF_PARSE(formalStar) {
-    zvalue formals = EMPTY_LISTLET;
+    zvalue formals = EMPTY_LIST;
 
     for (;;) {
         zvalue formal = PARSE(formal);
@@ -568,7 +557,7 @@ DEF_PARSE(formalStar) {
             break;
         }
 
-        formals = datListletAppend(formals, formal);
+        formals = datListAppend(formals, formal);
     }
 
     return formals;
@@ -578,7 +567,7 @@ DEF_PARSE(formalStar) {
  * Parses a `programBody` node.
  */
 DEF_PARSE(programBody) {
-    zvalue statements = EMPTY_LISTLET;
+    zvalue statements = EMPTY_LIST;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
 
     PARSE(optSemicolons);
@@ -597,7 +586,7 @@ DEF_PARSE(programBody) {
         }
 
         PARSE(optSemicolons);
-        statements = datListletAppend(statements, statement);
+        statements = datListAppend(statements, statement);
     }
 
     zvalue statement = PARSE(statement);
@@ -607,14 +596,14 @@ DEF_PARSE(programBody) {
     }
 
     if (statement != NULL) {
-        statements = datListletAppend(statements, statement);
+        statements = datListAppend(statements, statement);
     } else {
         yield = PARSE(yield);
     }
 
     PARSE(optSemicolons);
 
-    return mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+    return mapFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
 }
 
 /**
@@ -632,11 +621,11 @@ DEF_PARSE(programDeclarations) {
         formals = NULL;
     }
 
-    return mapletFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
+    return mapFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
 }
 
 /**
- * Helper for `program`: Parses `(programDeclarations [:@"::":])`.
+ * Helper for `program`: Parses `(programDeclarations [:"::":])`.
  */
 DEF_PARSE(program1) {
     MARK();
@@ -654,7 +643,7 @@ DEF_PARSE(program) {
     zvalue value = PARSE(programBody); // This never fails.
 
     if (declarations != NULL) {
-        value = datMapletAdd(value, declarations);
+        value = datMapAdd(value, declarations);
     }
 
     return datHighletFrom(STR_FUNCTION, value);

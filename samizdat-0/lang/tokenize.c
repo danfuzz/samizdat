@@ -7,25 +7,16 @@
 #include "const.h"
 #include "impl.h"
 #include "util.h"
+#include "zlimits.h"
 
 #include <stddef.h>
 
-enum {
-    /** Maximum number of tokens in a given parse. */
-    MAX_TOKENS = 100000,
-
-    /** Maximum number of characters in an identifier. */
-    MAX_IDENTIFIER_CHARS = 40,
-
-    /** Maximum number of characters in a string. */
-    MAX_STRING_CHARS = 200
-};
 
 typedef struct {
-    /** Stringlet being parsed. */
+    /** String being parsed. */
     zvalue str;
 
-    /** Size of stringlet. */
+    /** Size of string. */
     zint size;
 
     /** Current read position. */
@@ -48,7 +39,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : datStringletNth(state->str, state->at);
+    return isEof(state) ? -1 : datStringNth(state->str, state->at);
 }
 
 /**
@@ -88,6 +79,13 @@ static void skipWhitespace(ParseState *state) {
  */
 static zvalue tokenizeInteger(ParseState *state) {
     zint value = 0;
+    zint sign = 1;
+    bool any = false;
+
+    if (peek(state) == '-') {
+        read(state);
+        sign = -1;
+    }
 
     for (;;) {
         zint ch = peek(state);
@@ -97,6 +95,7 @@ static zvalue tokenizeInteger(ParseState *state) {
         }
 
         read(state);
+        any = true;
         value = (value * 10) + (ch - '0');
 
         if (value >= 0x80000000) {
@@ -104,8 +103,12 @@ static zvalue tokenizeInteger(ParseState *state) {
         }
     }
 
-    zvalue intlet = datIntletFromInt(value);
-    return datHighletFrom(STR_INTEGER, intlet);
+    if (!any) {
+        die("Invalid integer token (no digits).");
+    }
+
+    zvalue integer = datIntegerFromInt(value * sign);
+    return datHighletFrom(STR_INTEGER, integer);
 }
 
 /**
@@ -113,7 +116,7 @@ static zvalue tokenizeInteger(ParseState *state) {
  */
 static zvalue tokenizeIdentifier(ParseState *state) {
     zint size = 0;
-    zchar chars[MAX_IDENTIFIER_CHARS];
+    zchar chars[LANG_MAX_IDENTIFIER_CHARS];
 
     for (;;) {
         zint ch = peek(state);
@@ -136,8 +139,8 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         return NULL;
     }
 
-    zvalue stringlet = datStringletFromChars(size, chars);
-    return datHighletFrom(STR_IDENTIFIER, stringlet);
+    zvalue string = datStringFromChars(size, chars);
+    return datHighletFrom(STR_IDENTIFIER, string);
 }
 
 /**
@@ -148,7 +151,7 @@ static zvalue tokenizeString(ParseState *state) {
     read(state);
 
     zint size = 0;
-    zchar chars[MAX_STRING_CHARS];
+    zchar chars[LANG_MAX_STRING_CHARS];
 
     for (;;) {
         zint ch = peek(state);
@@ -177,8 +180,8 @@ static zvalue tokenizeString(ParseState *state) {
         read(state);
     }
 
-    zvalue stringlet = datStringletFromChars(size, chars);
-    return datHighletFrom(STR_STRING, stringlet);
+    zvalue string = datStringFromChars(size, chars);
+    return datHighletFrom(STR_STRING, string);
 }
 
 /**
@@ -213,7 +216,6 @@ static zvalue tokenizeOne(ParseState *state) {
         case ']':  read(state); return TOK_CH_CSQUARE;
         case '=':  read(state); return TOK_CH_EQUAL;
         case '>':  read(state); return TOK_CH_GT;
-        case '-':  read(state); return TOK_CH_MINUS;
         case '{':  read(state); return TOK_CH_OCURLY;
         case '(':  read(state); return TOK_CH_OPAREN;
         case '[':  read(state); return TOK_CH_OSQUARE;
@@ -233,6 +235,7 @@ static zvalue tokenizeOne(ParseState *state) {
                                          TOK_CH_LT, TOK_CH_DIAMOND);
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
+        case '-':
             return tokenizeInteger(state);
     }
 
@@ -251,11 +254,11 @@ static zvalue tokenizeOne(ParseState *state) {
  */
 
 /* Documented in header. */
-zvalue tokenize(zvalue stringlet) {
+zvalue tokenize(zvalue string) {
     constInit();
 
-    zvalue result[MAX_TOKENS];
-    ParseState state = { stringlet, datSize(stringlet), 0 };
+    zvalue result[LANG_MAX_TOKENS];
+    ParseState state = { string, datSize(string), 0 };
     zint out = 0;
 
     for (;;) {
@@ -271,5 +274,5 @@ zvalue tokenize(zvalue stringlet) {
         out++;
     }
 
-    return datListletFromArray(out, result);
+    return datListFromArray(out, result);
 }

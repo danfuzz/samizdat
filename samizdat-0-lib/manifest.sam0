@@ -8,14 +8,14 @@
 # This lists all of the names of the core library files.
 #
 
-<> @[
+<> [
     @boolean
     @collections
     @combinator
     @conditional
     @const
     @format
-    @intlet
+    @integer
     @io0
     @main
     @meta

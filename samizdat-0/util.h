@@ -42,12 +42,12 @@ void die(const char *format, ...)
 /**
  * Allocates zeroed-out memory of the indicated size (in bytes).
  */
-void *zalloc(zint size);
+void *utilAlloc(zint size);
 
 /**
- * Frees memory previously allocated by `zalloc`.
+ * Frees memory previously allocated by `utilAlloc`.
  */
-void zfree(void *memory);
+void utilFree(void *memory);
 
 /**
  * Returns whether this appears to be a pointer to heap-allocated memory
@@ -65,7 +65,7 @@ bool utilIsHeapAllocated(void *memory);
  * validity of same. This just validates this as an address range,
  * not as valid string contents.
  */
-const char *strGetEnd(zint stringBytes, const char *string);
+const char *utilStringEnd(zint stringBytes, const char *string);
 
 
 /*

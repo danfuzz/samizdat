@@ -15,12 +15,12 @@
 /* Documented in header. */
 zvalue constLowTypeName(zvalue value) {
     switch (datType(value)) {
-        case DAT_INTLET:    return STR_INTLET;
-        case DAT_STRINGLET: return STR_STRINGLET;
-        case DAT_LISTLET:   return STR_LISTLET;
-        case DAT_MAPLET:    return STR_MAPLET;
-        case DAT_UNIQLET:   return STR_UNIQLET;
-        case DAT_HIGHLET:   return STR_HIGHLET;
+        case DAT_INTEGER: return STR_INTEGER;
+        case DAT_STRING:  return STR_STRING;
+        case DAT_LIST:    return STR_LIST;
+        case DAT_MAP:     return STR_MAP;
+        case DAT_UNIQLET: return STR_UNIQLET;
+        case DAT_HIGHLET: return STR_HIGHLET;
         default: {
             die("Invalid value type (shouldn't happen): %d", datType(value));
         }

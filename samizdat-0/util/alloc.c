@@ -5,6 +5,7 @@
  */
 
 #include "util.h"
+#include "zlimits.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -14,11 +15,6 @@
 /*
  * Helper definitions
  */
-
-enum {
-    /** Maximum number of disjoint page ranges allowed. */
-    MAX_PAGE_RANGES = 20
-};
 
 /**
  * Page address range. Each range indicates a section of memory that
@@ -40,7 +36,7 @@ static intptr_t PAGE_SIZE = 0;
 static intptr_t PAGE_MASK = 0;
 
 /** Array of observed page ranges. */
-static PageRange ranges[MAX_PAGE_RANGES];
+static PageRange ranges[UTIL_MAX_PAGE_RANGES];
 
 /** Number of active page ranges. */
 static zint rangesSize = 0;
@@ -91,7 +87,7 @@ static void addPages(void *start, void *end) {
 
     // Need to add a new range or extend an existing one.
 
-    if (rangesSize >= MAX_PAGE_RANGES) {
+    if (rangesSize >= UTIL_MAX_PAGE_RANGES) {
         die("Too many heap page ranges!");
     }
 
@@ -124,20 +120,12 @@ static void addPages(void *start, void *end) {
 }
 
 
-
-/** Lowest observed (inclusive) valid heap address. */
-static void *heapBottom = NULL;
-
-/** Highest observed (exclusive) valid heap address. */
-static void *heapTop = NULL;
-
-
 /*
  * Exported functions
  */
 
 /* Documented in header. */
-void *zalloc(zint size) {
+void *utilAlloc(zint size) {
     if (size < 0) {
         die("Invalid allocation size: %lld", size);
     }
@@ -155,7 +143,7 @@ void *zalloc(zint size) {
 }
 
 /* Documented in header. */
-void zfree(void *memory) {
+void utilFree(void *memory) {
     free(memory);
 }
 

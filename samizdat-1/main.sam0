@@ -23,11 +23,11 @@ SELF_PATH ARGS* ::
 # Reads a sibling file. Note: This is a call to a function-generating
 # function.
 readFile = io0SandboxedReader
-    (listletDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
+    (listDelNth SELF_PATH (isub (lowSize SELF_PATH) 1));
 
 # Loads a sibling file.
 loadFile = { ctx name ::
-    text = readFile @[(stringletAdd name @".sam0")];
+    text = readFile [(stringAdd name ".sam0")];
     tree = sam0Tree text;
     function = sam0Eval ctx tree;
 
@@ -37,8 +37,8 @@ loadFile = { ctx name ::
 # Loads the named libraries, each one in the context of the previously-defined
 # ones.
 loadAllLibraries = { ctx rest* ::
-    <> listletReduce ctx rest { result elem ::
-        <> mapletAdd result (loadFile result elem);
+    <> listReduce ctx rest { result elem ::
+        <> mapAdd result (loadFile result elem);
     }
 };
 
@@ -47,4 +47,4 @@ CONTEXT = loadAllLibraries (makeLibrary LIBRARY)
     @diff @reader @peg @parser @parseArgs @token0 @tree0 @run;
 
 # Call the `run` function to do the final deed.
-<> apply (mapletGet CONTEXT @run) ARGS
+<> apply (mapGet CONTEXT @run) ARGS
