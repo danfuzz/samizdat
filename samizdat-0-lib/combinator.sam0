@@ -63,7 +63,7 @@ yCombinator = { function ::
 # Documented in Samizdat Layer 0 spec.
 yStarCombinator = { functions* ::
     # The code here is meant to be exactly parallel to that of `yCombinator`,
-    # except with additional listlet mapping (including via the
+    # except with additional list mapping (including via the
     # `uStarCombinator` function) where necessitated by the multiple-function
     # nature of this variant.
 

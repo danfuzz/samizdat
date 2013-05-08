@@ -14,30 +14,30 @@
  */
 
 /**
- * Allocates a listlet of the given size.
+ * Allocates a list of the given size.
  */
-static zvalue allocListlet(zint size) {
+static zvalue allocList(zint size) {
     return datAllocValue(DAT_LISTLET, size, size * sizeof(zvalue));
 }
 
 /**
- * Gets the array of `zvalue` elements from a listlet.
+ * Gets the array of `zvalue` elements from a list.
  */
-static zvalue *listletElems(zvalue listlet) {
-    return ((DatListlet *) listlet)->elems;
+static zvalue *listElems(zvalue list) {
+    return ((DatList *) list)->elems;
 }
 
 /**
  * Combines up to two element arrays and an additional element into a
- * single new listlet. This can also be used for a single array by
+ * single new list. This can also be used for a single array by
  * passing `size2` as `0`. If `insert` is non-`NULL`, that element is
  * placed in between the two lists of array contents in the result
  */
-static zvalue listletFrom(zint size1, const zvalue *elems1, zvalue insert,
+static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
                           zint size2, const zvalue *elems2) {
     zint insertCount = (insert == NULL) ? 0 : 1;
-    zvalue result = allocListlet(size1 + size2 + insertCount);
-    zvalue *resultElems = listletElems(result);
+    zvalue result = allocList(size1 + size2 + insertCount);
+    zvalue *resultElems = listElems(result);
 
     if (size1 != 0) {
         memcpy(resultElems, elems1, size1 * sizeof(zvalue));
@@ -61,9 +61,9 @@ static zvalue listletFrom(zint size1, const zvalue *elems1, zvalue insert,
  */
 
 /* Documented in header. */
-bool datListletEq(zvalue v1, zvalue v2) {
-    zvalue *e1 = listletElems(v1);
-    zvalue *e2 = listletElems(v2);
+bool datListEq(zvalue v1, zvalue v2) {
+    zvalue *e1 = listElems(v1);
+    zvalue *e2 = listElems(v2);
     zint size = datSize(v1);
 
     for (zint i = 0; i < size; i++) {
@@ -76,9 +76,9 @@ bool datListletEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder datListletOrder(zvalue v1, zvalue v2) {
-    zvalue *e1 = listletElems(v1);
-    zvalue *e2 = listletElems(v2);
+zorder datListOrder(zvalue v1, zvalue v2) {
+    zvalue *e1 = listElems(v1);
+    zvalue *e2 = listElems(v2);
     zint sz1 = datSize(v1);
     zint sz2 = datSize(v2);
     zint sz = (sz1 < sz2) ? sz1 : sz2;
@@ -98,9 +98,9 @@ zorder datListletOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-void datListletMark(zvalue value) {
+void datListMark(zvalue value) {
     zint size = datSize(value);
-    zvalue *elems = listletElems(value);
+    zvalue *elems = listElems(value);
 
     for (zint i = 0; i < size; i++) {
         datMark(elems[i]);
@@ -113,90 +113,90 @@ void datListletMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datListletNth(zvalue listlet, zint n) {
-    datAssertListlet(listlet);
-    return datHasNth(listlet, n) ? listletElems(listlet)[n] : NULL;
+zvalue datListNth(zvalue list, zint n) {
+    datAssertList(list);
+    return datHasNth(list, n) ? listElems(list)[n] : NULL;
 }
 
 /* Documented in header. */
-zvalue datListletAppend(zvalue listlet, zvalue value) {
-    return datListletInsNth(listlet, datSize(listlet), value);
+zvalue datListAppend(zvalue list, zvalue value) {
+    return datListInsNth(list, datSize(list), value);
 }
 
 /* Documented in header. */
-zvalue datListletPutNth(zvalue listlet, zint n, zvalue value) {
-    datAssertListlet(listlet);
+zvalue datListPutNth(zvalue list, zint n, zvalue value) {
+    datAssertList(list);
     datAssertValid(value);
 
-    zint size = datSize(listlet);
+    zint size = datSize(list);
 
     if (n == size) {
-        return datListletInsNth(listlet, n, value);
+        return datListInsNth(list, n, value);
     }
 
-    datAssertNth(listlet, n);
+    datAssertNth(list, n);
 
-    zvalue result = listletFrom(size, listletElems(listlet), NULL, 0, NULL);
+    zvalue result = listFrom(size, listElems(list), NULL, 0, NULL);
 
-    listletElems(result)[n] = value;
+    listElems(result)[n] = value;
     return result;
 }
 
 /* Documented in header. */
-zvalue datListletInsNth(zvalue listlet, zint n, zvalue value) {
-    datAssertListlet(listlet);
+zvalue datListInsNth(zvalue list, zint n, zvalue value) {
+    datAssertList(list);
     datAssertValid(value);
 
-    zint size = datSize(listlet);
+    zint size = datSize(list);
 
     if (n != size) {
-        datAssertNth(listlet, n);
+        datAssertNth(list, n);
     }
 
-    zvalue *elems = listletElems(listlet);
-    return listletFrom(n, elems, value, size - n, elems + n);
+    zvalue *elems = listElems(list);
+    return listFrom(n, elems, value, size - n, elems + n);
 }
 
 
 /* Documented in header. */
-zvalue datListletAdd(zvalue listlet1, zvalue listlet2) {
-    datAssertListlet(listlet1);
-    datAssertListlet(listlet2);
+zvalue datListAdd(zvalue list1, zvalue list2) {
+    datAssertList(list1);
+    datAssertList(list2);
 
-    zint size1 = datSize(listlet1);
-    zint size2 = datSize(listlet2);
+    zint size1 = datSize(list1);
+    zint size2 = datSize(list2);
 
     if (size1 == 0) {
-        return listlet2;
+        return list2;
     } else if (size2 == 0) {
-        return listlet1;
+        return list1;
     }
 
-    return listletFrom(size1, listletElems(listlet1), NULL,
-                       size2, listletElems(listlet2));
+    return listFrom(size1, listElems(list1), NULL,
+                       size2, listElems(list2));
 }
 
-zvalue datListletDelNth(zvalue listlet, zint n) {
-    datAssertListlet(listlet);
-    datAssertNth(listlet, n);
+zvalue datListDelNth(zvalue list, zint n) {
+    datAssertList(list);
+    datAssertNth(list, n);
 
-    zvalue *elems = listletElems(listlet);
-    zint size = datSize(listlet);
+    zvalue *elems = listElems(list);
+    zint size = datSize(list);
 
-    return listletFrom(n, elems, NULL, size - n - 1, elems + n + 1);
+    return listFrom(n, elems, NULL, size - n - 1, elems + n + 1);
 }
 
 /* Documented in header. */
-zvalue datListletFromArray(zint size, const zvalue *values) {
+zvalue datListFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
         datAssertValid(values[i]);
     }
 
-    return listletFrom(size, values, NULL, 0, NULL);
+    return listFrom(size, values, NULL, 0, NULL);
 }
 
 /* Documented in header. */
-void datArrayFromListlet(zvalue *result, zvalue listlet) {
-    datAssertListlet(listlet);
-    memcpy(result, listletElems(listlet), listlet->size * sizeof(zvalue));
+void datArrayFromList(zvalue *result, zvalue list) {
+    datAssertList(list);
+    memcpy(result, listElems(list), list->size * sizeof(zvalue));
 }

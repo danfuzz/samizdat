@@ -32,8 +32,8 @@ INTEGER_CHARS =
 # as well as prepending the given prefix.
 integerBody = { start value <out> ::
     loopReduce @[@"" value] { result ::
-        text = listletNth result @0;
-        value = listletNth result @1;
+        text = listNth result @0;
+        value = listNth result @1;
         <> ifTrue { <> ne value @0 }
             {
                 digit = mapletGet INTEGER_CHARS (imod value @10);
@@ -132,9 +132,9 @@ doString = { recurse string adorn ::
         }
 };
 
-# Stringifies a listlet.
-doListlet = { recurse listlet adorn ::
-    body = listletReduce @"" listlet
+# Stringifies a list.
+doList = { recurse list adorn ::
+    body = listReduce @"" list
         { reduction elem ::
             <> stringAdd
                 reduction
@@ -194,7 +194,7 @@ doUnknown = { recurse unknown ::
 STRINGIFIERS = @[
     @highlet   = doHighlet
     @integer    = doInteger
-    @listlet   = doListlet
+    @list   = doList
     @maplet    = doMaplet
     @string = doString
     @uniqlet   = doUniqlet
@@ -249,7 +249,7 @@ xArgsAt = { state ::
 
 # Gets the current argument.
 xArg = { state ::
-    <> ifValue { <> listletNth (mapletGet state @args) (xArgsAt state) }
+    <> ifValue { <> listNth (mapletGet state @args) (xArgsAt state) }
         { value :: <> value }
         { <> @"(missing argument)" }
 };

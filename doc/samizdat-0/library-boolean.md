@@ -22,17 +22,17 @@ standard meaning of those values:
 
 Ordering is calculated as follows:
 
-The major order is by type &mdash; `integer < string < listlet <
+The major order is by type &mdash; `integer < string < list <
 maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
 
 * Integers order by integer value.
 
-* Listlets and strings order by pairwise corresponding-element
+* Lists and strings order by pairwise corresponding-element
   comparison, with a strict prefix always ordering before its
   longer brethren.
 
 * Maplets order by first comparing corresponding ordered lists
-  of keys with the same rules as listlet comparison. If the key
+  of keys with the same rules as list comparison. If the key
   lists are identical, then the result is the comparison of
   corresponding lists of values, in key order.
 

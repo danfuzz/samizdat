@@ -51,7 +51,7 @@ readAllLibraryFiles = {
     manifestProgram = sam1Tree (readLibraryFile @manifest);
     manifest = (sam0Eval (makeLibrary LIBRARY) manifestProgram)();
 
-    <> listletReduce @[=] manifest { result name ::
+    <> listReduce @[=] manifest { result name ::
         <> mapletPut result name (readLibraryFile name)
     }
 };
@@ -73,7 +73,7 @@ makeCoreLibrary = {
 
 # Compiles the file named in the first argument in a fresh context,
 # and runs it, passing it an array consisting of its own file path
-# (in standard listlet-of-string form) followed by the rest of the
+# (in standard list-of-string form) followed by the rest of the
 # arguments as-is.
 run = { args* ::
     parsedArgs = parseArgs args;

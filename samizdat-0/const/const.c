@@ -60,7 +60,7 @@ void constInit(void) {
 
     CONST_FALSE = datHighletFrom(STR_BOOLEAN, datIntegerFromInt(0));
     CONST_TRUE  = datHighletFrom(STR_BOOLEAN, datIntegerFromInt(1));
-    EMPTY_LISTLET = datListletFromArray(0, NULL);
+    EMPTY_LISTLET = datListFromArray(0, NULL);
     EMPTY_MAPLET = datMapletEmpty();
 
     datImmortalize(CONST_FALSE);

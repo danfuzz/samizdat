@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Collection library functions: string, listlet, and maplet
+# Collection library functions: string, list, and maplet
 #
 # These are all grouped together because the functionality implemented
 # for each is similar to the others.
@@ -31,8 +31,8 @@ genericForEach = { nthFunc function <out> ::
 # takes an `nthFunc` of one argument.
 genericReduce = { base nthFunc function <out> ::
     loopReduce @[base @0] { state ::
-        result = listletNth state @0;
-        index = listletNth state @1;
+        result = listNth state @0;
+        index = listNth state @1;
         <> ifValue { <> (nthFunc index) }
             { item ::
                 nextResult = ifValue { <> function result item index }
@@ -50,14 +50,14 @@ genericMap = { nthFunc function ::
     <> genericReduce @[] nthFunc
         { result item index ::
             <> ifValue { <> function item index }
-                { value :: <> listletInsNth result (lowSize result) value }
+                { value :: <> listInsNth result (lowSize result) value }
                 { <> result }
         }
 };
 
 
 #
-# Listlet
+# List
 #
 
 # Documented in Samizdat Layer 0 spec.
@@ -65,28 +65,28 @@ genericMap = { nthFunc function ::
 # **Note:** This one is out-of (alphabetical) order, because it's used
 # by other functions in this section, and *Samizdat Layer 0* does not allow
 # use-before-def.
-listletReduce = { base listlet function ::
-    <> genericReduce base { n :: <> listletNth listlet n } function
+listReduce = { base list function ::
+    <> genericReduce base { n :: <> listNth list n } function
 };
 
 # Documented in Samizdat Layer 0 spec.
-listletAppend = { listlet value ::
-    <> listletInsNth listlet (lowSize listlet) value
+listAppend = { list value ::
+    <> listInsNth list (lowSize list) value
 };
 
 # Documented in Samizdat Layer 0 spec.
-listletForEach = { listlet function ::
-    <> genericForEach { n :: <> listletNth listlet n } function
+listForEach = { list function ::
+    <> genericForEach { n :: <> listNth list n } function
 };
 
 # Documented in Samizdat Layer 0 spec.
-listletMap = { listlet function ::
-    <> genericMap { n :: <> listletNth listlet n } function
+listMap = { list function ::
+    <> genericMap { n :: <> listNth list n } function
 };
 
 # Documented in Samizdat Layer 0 spec.
-listletPrepend = { value listlet ::
-    <> listletInsNth listlet @0 value
+listPrepend = { value list ::
+    <> listInsNth list @0 value
 };
 
 
@@ -96,7 +96,7 @@ listletPrepend = { value listlet ::
 
 # Documented in Samizdat Layer 0 spec.
 #
-# See comment in `listletReduce` (above) about in-file ordering.
+# See comment in `listReduce` (above) about in-file ordering.
 mapletReduce = { base maplet function ::
     <> genericReduce base { n :: <> mapletNth maplet n}
         { reduction mapping ::
@@ -131,7 +131,7 @@ mapletMap = { maplet function ::
 
 # Documented in Samizdat Layer 0 spec.
 #
-# See comment in `listletReduce` (above) about in-file ordering.
+# See comment in `listReduce` (above) about in-file ordering.
 stringReduce = { base string function ::
     <> genericReduce base { n :: <> stringNth string n } function
 };
@@ -152,11 +152,11 @@ stringMap = { string function ::
 #
 
 <> @[
-    @listletAppend = listletAppend
-    @listletForEach = listletForEach
-    @listletMap = listletMap
-    @listletPrepend = listletPrepend
-    @listletReduce = listletReduce
+    @listAppend = listAppend
+    @listForEach = listForEach
+    @listMap = listMap
+    @listPrepend = listPrepend
+    @listReduce = listReduce
     @mapletForEach = mapletForEach
     @mapletMap = mapletMap
     @mapletReduce = mapletReduce

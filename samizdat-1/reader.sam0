@@ -4,7 +4,7 @@
 
 #
 # Lookahead / backtrackable reader, which operates on either
-# listlets or strings.
+# lists or strings.
 #
 
 
@@ -78,10 +78,10 @@ readerDispatch = { yield state name rest* ::
 };
 
 # Returns a lookahead-enabled reader. The given argument must be
-# either a listlet or a string.
+# either a list or a string.
 reader = { value ::
     nth = mapletGet
-        @[@listlet=listletNth @string=stringNth]
+        @[@list=listNth @string=stringNth]
         (lowType value);
     nthFunc = { n :: <> nth value n };
 

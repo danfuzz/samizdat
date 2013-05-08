@@ -262,5 +262,5 @@ zvalue tokenize(zvalue string) {
         out++;
     }
 
-    return datListletFromArray(out, result);
+    return datListFromArray(out, result);
 }

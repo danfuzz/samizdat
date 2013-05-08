@@ -49,7 +49,7 @@ will be returned, or one of `.` `~.` `. | ~.` as described in
 * [General Low-Layer Values](library-low.md)
 * [Integers](library-integer.md)
 * [Strings](library-string.md)
-* [Listlets](library-listlet.md)
+* [Lists](library-list.md)
 * [Maplets](library-maplet.md)
 * [Highlets](library-highlet.md)
 * [Functions And Code](library-code.md)

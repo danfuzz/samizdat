@@ -21,7 +21,7 @@ static zvalue allocString(zint size) {
 }
 
 /**
- * Gets the array of `zvalue` elements from a listlet.
+ * Gets the array of `zvalue` elements from a list.
  */
 static zchar *stringElems(zvalue string) {
     return ((DatString *) string)->elems;

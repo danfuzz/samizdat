@@ -58,7 +58,7 @@ PRIM_IMPL(io0PathFromString) {
     char str[size + 1];
     datUtf8FromString(size + 1, str, string);
 
-    return ioPathListletFromUtf8(str);
+    return ioPathListFromUtf8(str);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

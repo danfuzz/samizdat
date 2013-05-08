@@ -43,10 +43,10 @@ The given function is called with two arguments, namely the element (as a
 single-character string) and its index number (zero-based). Always returns
 void.
 
-#### `stringMap string function <> listlet`
+#### `stringMap string function <> list`
 
 Maps each element of a string using a mapping function, collecting
-the results into a listlet (note, not into a string). The given
+the results into a list (note, not into a string). The given
 function is called on each element (character), with two arguments,
 namely the element (as a single-character string) and its index
 number (zero-based).

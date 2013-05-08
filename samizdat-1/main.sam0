@@ -23,7 +23,7 @@ SELF_PATH ARGS* ::
 # Reads a sibling file. Note: This is a call to a function-generating
 # function.
 readFile = io0SandboxedReader
-    (listletDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
+    (listDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
 
 # Loads a sibling file.
 loadFile = { ctx name ::
@@ -37,7 +37,7 @@ loadFile = { ctx name ::
 # Loads the named libraries, each one in the context of the previously-defined
 # ones.
 loadAllLibraries = { ctx rest* ::
-    <> listletReduce ctx rest { result elem ::
+    <> listReduce ctx rest { result elem ::
         <> mapletAdd result (loadFile result elem);
     }
 };

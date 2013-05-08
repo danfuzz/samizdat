@@ -6,7 +6,7 @@ Token Syntax
 
 The following is a BNF/PEG-like description of the tokens. A program
 is tokenized by matching the top `file` rule, which results in a
-listlet of all the tokens.
+list of all the tokens.
 
 ```
 file ::= (whitespace* token)* whitespace* ;

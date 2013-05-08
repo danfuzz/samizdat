@@ -82,15 +82,15 @@ omit the double-quote delimiters.
 ```
 
 
-### Listlet
+### List
 
-A `listlet` is a sequence of zero or more other values.
+A `list` is a sequence of zero or more other values.
 
-Listlets are written as an initial `@[`, followed by zero or
+Lists are written as an initial `@[`, followed by zero or
 more value representations, followed by a final `]`.
 
 ```
-@[]                           # the empty listlet
+@[]                           # the empty list
 @[@1]
 @[@blort @fizmo @igram]
 @[@[@1] @242 @-23]
@@ -109,7 +109,7 @@ more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `=`, followed by the value
 representation.
 
-To avoid ambiguity with the empty listlet, the empty maplet is
+To avoid ambiguity with the empty list, the empty maplet is
 written as `@[=]`.
 
 ```

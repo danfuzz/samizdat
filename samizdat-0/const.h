@@ -37,7 +37,7 @@ extern zvalue CONST_TRUE;
 /** The canonical empty string value (`@""`). */
 extern zvalue STR_EMPTY;
 
-/** The canonical empty listlet value (`@[]`). */
+/** The canonical empty list value (`@[]`). */
 extern zvalue EMPTY_LISTLET;
 
 /** The canonical empty maplet value (`@[=]`). */

@@ -16,7 +16,7 @@ readLine = filterRule
     (seqRule
         (starRule (notCharSetRule @"\n"))
         (optRule (charsRule @"\n")))
-    { result :: <> apply stringAdd (listletNth result @0) };
+    { result :: <> apply stringAdd (listNth result @0) };
 
 # Performs tokenization of the given text using the given tokenizer rules.
 tokenize = { rules text ::
@@ -67,7 +67,7 @@ parseTree = { rules tokens ::
 # Given a token grammar and a tree grammar (both given as maplets of
 # name-to-rule bindings, return a combined parser that takes strings and
 # returns parsed programs. This assumes that the main token rule is `@file`
-# (to return the entire file as a listlet of parsed tokens) and the main
+# (to return the entire file as a list of parsed tokens) and the main
 # tree rule is `@program`.
 parser = { tokenRules treeRules ::
     <> { text ::

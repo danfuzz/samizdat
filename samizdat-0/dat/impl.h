@@ -75,7 +75,7 @@ typedef struct {
 } DatString;
 
 /**
- * Listlet structure.
+ * List structure.
  */
 typedef struct {
     /** Value header. */
@@ -83,7 +83,7 @@ typedef struct {
 
     /** List elements, in index order. */
     zvalue elems[0];
-} DatListlet;
+} DatList;
 
 /**
  * Maplet structure.
@@ -184,14 +184,14 @@ bool datStringEq(zvalue v1, zvalue v2);
 zorder datStringOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares listlets for equality. Only called when the sizes are the same.
+ * Compares lists for equality. Only called when the sizes are the same.
  */
-bool datListletEq(zvalue v1, zvalue v2);
+bool datListEq(zvalue v1, zvalue v2);
 
 /**
- * Compares listlets for order.
+ * Compares lists for order.
  */
-zorder datListletOrder(zvalue v1, zvalue v2);
+zorder datListOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares maplets for equality. Only called when the sizes are the same.
@@ -219,9 +219,9 @@ bool datHighletEq(zvalue v1, zvalue v2);
 zorder datHighletOrder(zvalue v1, zvalue v2);
 
 /**
- * Marks listlet contents for garbage collection.
+ * Marks list contents for garbage collection.
  */
-void datListletMark(zvalue value);
+void datListMark(zvalue value);
 
 /**
  * Marks maplet contents for garbage collection.

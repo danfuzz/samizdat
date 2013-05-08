@@ -31,23 +31,23 @@ static void realMain(int argc, char **argv) {
         die("Too few arguments.");
     }
 
-    zvalue pathListlet = ioPathListletFromUtf8(argv[1]);
+    zvalue pathList = ioPathListFromUtf8(argv[1]);
     zint argCount = argc - 1;
     zvalue args[argCount];
 
-    args[0] = pathListlet;
+    args[0] = pathList;
     for (int i = 1; i < argCount; i++) {
         args[i] = datStringFromUtf8(-1, argv[i + 1]);
     }
 
     zvalue ctx = libNewContext();
-    zvalue programText = ioReadFileUtf8(pathListlet);
+    zvalue programText = ioReadFileUtf8(pathList);
     zvalue program = langNodeFromProgramText(programText);
     zvalue function = langEvalExpressionNode(ctx, program);
 
     datGc();
 
-    zvalue result = langApply(function, datListletFromArray(argCount, args));
+    zvalue result = langApply(function, datListFromArray(argCount, args));
 
     if ((result != NULL) && (datType(result) == DAT_INTLET)) {
         exit((int) datIntFromInteger(result));

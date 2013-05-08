@@ -19,8 +19,8 @@ PRIM_IMPL(makeHighlet) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeListlet) {
-    return datListletFromArray(argCount, args);
+PRIM_IMPL(makeList) {
+    return datListFromArray(argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

@@ -11,40 +11,40 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listletPutNth) {
+PRIM_IMPL(listPutNth) {
     requireExactly(argCount, 3);
-    return datListletPutNth(args[0], datIntFromInteger(args[1]), args[2]);
+    return datListPutNth(args[0], datIntFromInteger(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listletInsNth) {
+PRIM_IMPL(listInsNth) {
     requireExactly(argCount, 3);
-    return datListletInsNth(args[0], datIntFromInteger(args[1]), args[2]);
+    return datListInsNth(args[0], datIntFromInteger(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listletAdd) {
+PRIM_IMPL(listAdd) {
     zvalue result = EMPTY_LISTLET;
 
     for (zint i = 0; i < argCount; i++) {
-        result = datListletAdd(result, args[i]);
+        result = datListAdd(result, args[i]);
     }
 
     return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listletNth) {
-    return doNth(datListletNth, argCount, args);
+PRIM_IMPL(listNth) {
+    return doNth(datListNth, argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listletDelNth) {
+PRIM_IMPL(listDelNth) {
     requireExactly(argCount, 2);
 
     if (!datTypeIs(args[1], DAT_INTLET)) {
         return args[0];
     }
 
-    return datListletDelNth(args[0], datIntFromInteger(args[1]));
+    return datListDelNth(args[0], datIntFromInteger(args[1]));
 }

@@ -20,15 +20,15 @@
  */
 
 /**
- * Converts a listlet-of-strings path form into an absolute file name,
+ * Converts a list-of-strings path form into an absolute file name,
  * checking the components for sanity.
  */
-static zvalue stringFromPathListlet(zvalue pathListlet) {
+static zvalue stringFromPathList(zvalue pathList) {
     zvalue result = STR_EMPTY;
-    zint size = datSize(pathListlet);
+    zint size = datSize(pathList);
 
     for (zint i = 0; i < size; i++) {
-        zvalue one = datListletNth(pathListlet, i);
+        zvalue one = datListNth(pathList, i);
         zint size = datUtf8SizeFromString(one);
         char str[size + 1];
         datUtf8FromString(size + 1, str, one);
@@ -51,12 +51,12 @@ static zvalue stringFromPathListlet(zvalue pathListlet) {
 }
 
 /**
- * Converts a simple string *absolute* path to the listlets-of-strings form.
+ * Converts a simple string *absolute* path to the lists-of-strings form.
  * This doesn't resolve symlinks, but it does handle double-slashes, `.`
  * components, and `..` components. A trailing slash is represented in the
  * result as an empty path component.
  */
-static zvalue pathListletFromAbsolute(const char *path) {
+static zvalue pathListFromAbsolute(const char *path) {
     if (path[0] == '\0') {
         return EMPTY_LISTLET;
     } else if (path[0] != '/') {
@@ -75,9 +75,9 @@ static zvalue pathListletFromAbsolute(const char *path) {
             if (datSize(result) == 0) {
                 die("Invalid `..` component in path: \"%s\"", path);
             }
-            result = datListletDelNth(result, rsize -1);
+            result = datListDelNth(result, rsize -1);
         } else if (!(datEq(one, STR_EMPTY) || datEq(one, STR_CH_DOT))) {
-            result = datListletAppend(result, one);
+            result = datListAppend(result, one);
         }
 
         if (slashAt == NULL) {
@@ -89,7 +89,7 @@ static zvalue pathListletFromAbsolute(const char *path) {
 
     if (path[strlen(path) - 1] == '/') {
         // Represent a trailing slash as an empty path component.
-        result = datListletAppend(result, STR_EMPTY);
+        result = datListAppend(result, STR_EMPTY);
     }
 
     return result;
@@ -99,8 +99,8 @@ static zvalue pathListletFromAbsolute(const char *path) {
  * Opens the file with the given name (a string), and with the
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
-static FILE *openFile(zvalue pathListlet, const char *mode) {
-    zvalue pathString = stringFromPathListlet(pathListlet);
+static FILE *openFile(zvalue pathList, const char *mode) {
+    zvalue pathString = stringFromPathList(pathList);
     zint pathSize = datUtf8SizeFromString(pathString);
     char path[pathSize + 1];
     datUtf8FromString(pathSize + 1, path, pathString);
@@ -119,11 +119,11 @@ static FILE *openFile(zvalue pathListlet, const char *mode) {
  */
 
 /* Documented in header. */
-zvalue ioPathListletFromUtf8(const char *path) {
+zvalue ioPathListFromUtf8(const char *path) {
     constInit();
 
     if (path[0] == '/') {
-        return pathListletFromAbsolute(path);
+        return pathListFromAbsolute(path);
     }
 
     // Concatenate the given path onto the current working directory.
@@ -136,14 +136,14 @@ zvalue ioPathListletFromUtf8(const char *path) {
 
     strcat(buf, "/");
     strcat(buf, path);
-    return pathListletFromAbsolute(buf);
+    return pathListFromAbsolute(buf);
 }
 
 /* Documented in header. */
-zvalue ioReadLink(zvalue pathListlet) {
+zvalue ioReadLink(zvalue pathList) {
     constInit();
 
-    zvalue pathString = stringFromPathListlet(pathListlet);
+    zvalue pathString = stringFromPathList(pathList);
     zint pathSize = datUtf8SizeFromString(pathString);
     char path[pathSize + 4 + FILENAME_MAX + 1];
 
@@ -166,21 +166,21 @@ zvalue ioReadLink(zvalue pathListlet) {
     if (linkPath[0] == '/') {
         // The link is absolute. Just use it, ignoring the path that led
         // up to it.
-        return ioPathListletFromUtf8(linkPath);
+        return ioPathListFromUtf8(linkPath);
     } else {
         // The link is relative. Need to use the passed-in prefix.
         strcat(path, "/../"); // To elide the name of the link in the result.
         strcat(path, linkPath);
-        return ioPathListletFromUtf8(path);
+        return ioPathListFromUtf8(path);
     }
 }
 
 /* Documented in header. */
-zvalue ioReadFileUtf8(zvalue pathListlet) {
+zvalue ioReadFileUtf8(zvalue pathList) {
     constInit();
 
     char buf[IO_MAX_FILE_SIZE];
-    FILE *in = openFile(pathListlet, "r");
+    FILE *in = openFile(pathList, "r");
     size_t amt = fread(buf, 1, sizeof(buf), in);
 
     if (ferror(in)) {
@@ -197,14 +197,14 @@ zvalue ioReadFileUtf8(zvalue pathListlet) {
 }
 
 /* Documented in header. */
-void ioWriteFileUtf8(zvalue pathListlet, zvalue text) {
+void ioWriteFileUtf8(zvalue pathList, zvalue text) {
     constInit();
 
     zint utfSize = datUtf8SizeFromString(text);
     char utf[utfSize + 1];
     datUtf8FromString(utfSize + 1, utf, text);
 
-    FILE *out = openFile(pathListlet, "w");
+    FILE *out = openFile(pathList, "w");
     zint amt = fwrite(utf, 1, utfSize, out);
 
     if (amt != utfSize) {

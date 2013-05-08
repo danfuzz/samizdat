@@ -150,18 +150,18 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
     zmapping mappings[formalsSize];
 
     for (zint i = 0, argAt = 0; i < formalsSize; i++) {
-        zvalue formal = datListletNth(formals, i);
+        zvalue formal = datListNth(formals, i);
         zvalue name = datMapletGet(formal, STR_NAME);
         zvalue repeat = datMapletGet(formal, STR_REPEAT);
         zvalue value;
 
         if (repeat != NULL) {
             if (datEq(repeat, TOK_CH_STAR)) {
-                value = datListletFromArray(argCount - argAt, &args[argAt]);
+                value = datListFromArray(argCount - argAt, &args[argAt]);
                 argAt = argCount;
             } else if (datEq(repeat, TOK_CH_QMARK)) {
                 if (argAt < argCount) {
-                    value = datListletFromArray(1, &args[argAt]);
+                    value = datListFromArray(1, &args[argAt]);
                     argAt++;
                 } else {
                     value = EMPTY_LISTLET;
@@ -234,7 +234,7 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
 
     zint statementsSize = datSize(statements);
     for (zint i = 0; i < statementsSize; i++) {
-        zvalue one = datListletNth(statements, i);
+        zvalue one = datListNth(statements, i);
 
         if (datHighletTypeIs(one, STR_VAR_DEF)) {
             ctx = execVarDef(ctx, one);
@@ -287,7 +287,7 @@ static zvalue execCall(zvalue ctx, zvalue call) {
     zint argCount = datSize(actuals);
     zvalue args[argCount];
     for (zint i = 0; i < argCount; i++) {
-        zvalue one = datListletNth(actuals, i);
+        zvalue one = datListNth(actuals, i);
         args[i] = execExpression(ctx, one);
     }
 

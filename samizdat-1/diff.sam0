@@ -9,7 +9,7 @@
 # Reports a difference.
 report = { context v1 v2 message ::
     io0Note message;
-    listletForEach context
+    listForEach context
         { item ::
             io0Note (format @"    at %Q" item);
             <> null
@@ -52,7 +52,7 @@ diffMaplet = { recurse context v1 v2 <out> ::
                 { value key ::
                     ifVoid { <> mapletGet v2 key }
                         {
-                            report (listletAppend context key) v1 v2
+                            report (listAppend context key) v1 v2
                                 @"Key mismatch.";
                             <out> false
                         }
@@ -69,17 +69,17 @@ diffMaplet = { recurse context v1 v2 <out> ::
         }
 };
 
-# Diffs listlets.
-diffListlet = { recurse context v1 v2 ::
+# Diffs lists.
+diffList = { recurse context v1 v2 ::
     size1 = lowSize v1;
     size2 = lowSize v2;
 
     <> and
         { <> recurse @size size1 size2 }
         {
-            listletForEach v1
+            listForEach v1
                 { elem index ::
-                    recurse index elem (listletNth v2 index)
+                    recurse index elem (listNth v2 index)
                 };
             <> false
         }
@@ -99,7 +99,7 @@ diffUniqlet = { recurse context v1 v2 ::
 DIFF_FUNCTIONS = @[
     @highlet   = diffHighlet
     @integer    = diffInteger
-    @listlet   = diffListlet
+    @list   = diffList
     @maplet    = diffMaplet
     @string = diffString
     @uniqlet   = diffUniqlet
@@ -109,13 +109,13 @@ DIFF_FUNCTIONS = @[
 innerDiff = { selfRef context v1 v2 ::
     type1 = lowType v1;
     type2 = lowType v2;
-    innerContext = listletAppend context type1;
+    innerContext = listAppend context type1;
 
     # The `selfRef` and `recurse` definitions here are effectively a
     # "manual inlining" of the Y combinator, necessitated by the fact that
     # *Samizdat Layer 0* doesn't allow use-before-def.
     recurse = { newContext v1 v2 ::
-        <> selfRef selfRef (listletAppend innerContext newContext) v1 v2
+        <> selfRef selfRef (listAppend innerContext newContext) v1 v2
     };
 
     <> ifTrue { <> ne v1 v2 }

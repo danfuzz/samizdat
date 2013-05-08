@@ -19,7 +19,7 @@ a size, defined as follows:
 
 * `string` &mdash; the number of characters.
 
-* `listlet` &mdash; the number of elements.
+* `list` &mdash; the number of elements.
 
 * `maplet` &mdash; the number of mappings (bindings).
 
@@ -31,7 +31,7 @@ a size, defined as follows:
 #### `lowType value <> string`
 
 Returns the type name of the low-layer type of the given value. The
-result will be one of: `@integer` `@string` `@listlet` `@maplet`
+result will be one of: `@integer` `@string` `@list` `@maplet`
 `@uniqlet` `@highlet`
 
 
@@ -46,9 +46,9 @@ Returns `true` iff the given value is a highlet.
 
 Returns `true` iff the given value is an integer.
 
-#### `isListlet value <> boolean`
+#### `isList value <> boolean`
 
-Returns `true` iff the given value is a listlet.
+Returns `true` iff the given value is a list.
 
 #### `isMaplet value <> boolean`
 

@@ -17,8 +17,8 @@ isInteger = { value ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-isListlet = { value ::
-    <> eq (lowType value) @listlet
+isList = { value ::
+    <> eq (lowType value) @list
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -39,7 +39,7 @@ isUniqlet = { value ::
 <> @[
     @isHighlet = isHighlet
     @isInteger = isInteger
-    @isListlet = isListlet
+    @isList = isList
     @isMaplet = isMaplet
     @isString = isString
     @isUniqlet = isUniqlet

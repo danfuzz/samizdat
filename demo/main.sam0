@@ -19,14 +19,14 @@ SELF_PATH ARGS* ::
 # self-recursive Samizdat function might end up looking when coverted
 # into Samizdat Layer 0 form.
 #
-# Returns a listlet with integer contents that count down from `n`,
+# Returns a list with integer contents that count down from `n`,
 # generated recursively. The "main" function literal here is wrapped
 # in an outer function layer, whose argument is used to achieve
 # recursion. See `xCombinator` above.
 countDown = yCombinator { countDown ::
     <> { n ::
         <> ifTrue { <> ge n @0 }
-            { <> listletPrepend n (countDown (isub n @1)) }
+            { <> listPrepend n (countDown (isub n @1)) }
             { <> @[] }
     }
 };
@@ -37,14 +37,14 @@ countDowns = yStarCombinator
     { f1 f2 ::
         <> { n ::
             <> ifTrue { <> gt n @0 }
-                { <> listletPrepend n (f2 (isub n @1)) }
+                { <> listPrepend n (f2 (isub n @1)) }
                 { <> @[@0] }
         }
     }
     { f1 f2 ::
-        <> { n :: <> listletPrepend @"and" (f1 n) }
+        <> { n :: <> listPrepend @"and" (f1 n) }
     };
-countDown2 = listletNth countDowns @0;
+countDown2 = listNth countDowns @0;
 
 # Demo of formal argument repeat modifiers.
 blort = { foo bar? baz? more* ::
@@ -54,7 +54,7 @@ blort = { foo bar? baz? more* ::
 # Demo of reading a sibling file through a sandboxed reader.
 sibling = {
     reader = io0SandboxedReader
-        (listletDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
+        (listDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
     text = reader @[@"sibling.txt"];
     io0Note text;
 };

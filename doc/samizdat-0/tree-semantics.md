@@ -21,7 +21,7 @@ is called for.
 * `@function=expression` (required) &mdash; An expression node that must
   evaluate to a function.
 
-* `@actuals=@[expression*]` (required) &mdash; A listlet of arbitrary expression
+* `@actuals=@[expression*]` (required) &mdash; A list of arbitrary expression
   nodes, each of which must evaluate to a non-void value.
 
 This represents a function call.
@@ -49,7 +49,7 @@ void).
 * `@yieldDef=name` (optional) &mdash; A name (typically a string) to
   bind as the nonlocal-exit function.
 
-* `@statements=@[statement*]` (required) &mdash; A listlet of statement
+* `@statements=@[statement*]` (required) &mdash; A list of statement
   nodes. A statement node must be either an expression node or a
   `varDef` node (as defined below). This defines the bulk of the
   code to execute.
@@ -130,13 +130,13 @@ of various expression nodes.
     arguments as are available, including none. As such, this only really
     makes sense as the `repeat` of the last formal, though the surface syntax
     will tolerate it being in any position. The bound argument variable
-    becomes a listlet of all the passed actual arguments that were bound.
+    becomes a list of all the passed actual arguments that were bound.
 
   * `@"?"` &mdash; indicates that this formal binds a single argument if
     available, including none. As such, this only really makes sense if
     only ever followed by other `?` formals and possibly a final `*` formal,
     though the syntax will tolerate it being in any position. The bound
-    argument variable becomes a listlet, either of size one if an argument
+    argument variable becomes a list, either of size one if an argument
     was bound or of size zero if not.
 
 If no `@repeat` is specified, then the given formal binds exactly one

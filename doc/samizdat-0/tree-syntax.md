@@ -69,7 +69,7 @@ callExpression ::= atom atom+ ;
 
 atom ::=
     varRef | integer | string |
-    emptyListlet | listlet | emptyMaplet | maplet |
+    emptyList | list | emptyMaplet | maplet |
     uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever choice matched>
 
@@ -88,11 +88,11 @@ integer ::= [:@"@":] [:@"-":]? [:@integer:] ;
 string ::= [:@"@":] (@string | @identifier);
 # result: [:@literal (highletValue (string|identifier)):]
 
-emptyListlet ::= [:@"@":] [:@"[":] [:@"]":] ;
+emptyList ::= [:@"@":] [:@"[":] [:@"]":] ;
 # result: [:@literal @[]:]
 
-listlet ::= [:@"@":] [:@"[":] atom+ [:@"]":] ;
-# result: makeCall [:@varRef @makeListlet:] atom+
+list ::= [:@"@":] [:@"[":] atom+ [:@"]":] ;
+# result: makeCall [:@varRef @makeList:] atom+
 
 emptyMaplet ::= [:@"@":] [:@"[":] [:@"=":] [:@"]":] ;
 # result: [:@literal @[=]:]

@@ -104,10 +104,10 @@ void datAssertString(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a listlet. If not, this aborts the process
+ * furthermore that it is a list. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertListlet(zvalue value);
+void datAssertList(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -215,7 +215,7 @@ zvalue datStringFromChars(zint size, const zchar *chars);
 
 /**
  * Combines the characters of two strings, in order, into a new
- * string. See `datListletAdd()` for discussion about the choice
+ * string. See `datListAdd()` for discussion about the choice
  * of name.
  */
 zvalue datStringAdd(zvalue str1, zvalue str2);
@@ -248,62 +248,62 @@ void datUtf8FromString(zint resultSize, char *result, zvalue string);
 
 
 /*
- * Listlet Functions
+ * List Functions
  */
 
 /**
- * Gets the listlet resulting from inserting the given value at the
- * given index in the given listlet. `n` must be non-negative and no
- * greater than the size of the given listlet.
+ * Gets the list resulting from inserting the given value at the
+ * given index in the given list. `n` must be non-negative and no
+ * greater than the size of the given list.
  */
-zvalue datListletInsNth(zvalue listlet, zint n, zvalue value);
+zvalue datListInsNth(zvalue list, zint n, zvalue value);
 
 /**
- * Given a listlet, returns the `n`th element. `listlet` must be a
- * listlet, and `n` must be `< datSize(value)`.
+ * Given a list, returns the `n`th element. `list` must be a
+ * list, and `n` must be `< datSize(value)`.
  */
-zvalue datListletNth(zvalue listlet, zint n);
+zvalue datListNth(zvalue list, zint n);
 
 /**
- * Gets the listlet resulting from appending the given value to the
- * given listlet.
+ * Gets the list resulting from appending the given value to the
+ * given list.
  */
-zvalue datListletAppend(zvalue listlet, zvalue value);
+zvalue datListAppend(zvalue list, zvalue value);
 
 /**
- * Gets the listlet resulting from setting the value at the
+ * Gets the list resulting from setting the value at the
  * given index to the given value. `n` must be non-negative
- * and no greater than the size of the given listlet.
+ * and no greater than the size of the given list.
  */
-zvalue datListletPutNth(zvalue listlet, zint n, zvalue value);
+zvalue datListPutNth(zvalue list, zint n, zvalue value);
 
 /**
- * Combines the elements of two listlets, in order, into a new
- * listlet.
+ * Combines the elements of two lists, in order, into a new
+ * list.
  *
- * Contrasting this with `datListlet{Append,Prepend}()` and above,
+ * Contrasting this with `datList{Append,Prepend}()` and above,
  * those functions operate
- * heterogeneously on a listlet and an element, whereas this one
- * operates on two peer listlets.
+ * heterogeneously on a list and an element, whereas this one
+ * operates on two peer lists.
  */
-zvalue datListletAdd(zvalue listlet1, zvalue listlet2);
+zvalue datListAdd(zvalue list1, zvalue list2);
 
 /**
- * Gets the listlet resulting from deleting the nth element of the
- * given listlet.
+ * Gets the list resulting from deleting the nth element of the
+ * given list.
  */
-zvalue datListletDelNth(zvalue listlet, zint n);
+zvalue datListDelNth(zvalue list, zint n);
 
 /**
- * Constructs a listlet from an array of `zvalue`s of the given size.
+ * Constructs a list from an array of `zvalue`s of the given size.
  */
-zvalue datListletFromArray(zint size, const zvalue *values);
+zvalue datListFromArray(zint size, const zvalue *values);
 
 /**
- * Copies all the values of the given listlet into the given result
+ * Copies all the values of the given list into the given result
  * array, which must be sized large enough to hold all of them.
  */
-void datArrayFromListlet(zvalue *result, zvalue listlet);
+void datArrayFromList(zvalue *result, zvalue list);
 
 
 /*

@@ -16,7 +16,7 @@
 
 /**
  * Tokenizes a string using Samizdat Layer 0 token syntax. Returns
- * a listlet of tokens.
+ * a list of tokens.
  */
 zvalue tokenize(zvalue string);
 
