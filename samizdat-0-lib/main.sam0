@@ -11,8 +11,8 @@
 
 # The following declares the arguments passed to the library itself.
 #
-# `LIBRARY_FILES` is expected to be a maplet from core library file names
-# to their contents as stringlets. These are read and loaded in order
+# `LIBRARY_FILES` is expected to be a map from core library file names
+# to their contents as strings. These are read and loaded in order
 # to create the final core library that then gets used as the global
 # context when loading regular programs.
 
@@ -24,22 +24,22 @@ LIBRARY_FILES ::
 #
 
 # "Reads" the named library file. Since the files are passed into
-# here in the form of a maplet binding file names to text contents, this
-# is really just a maplet lookup.
+# here in the form of a map binding file names to text contents, this
+# is really just a map lookup.
 readLibraryFile = { name ::
-    <> ifValue { <> mapletGet LIBRARY_FILES name }
+    <> ifValue { <> mapGet LIBRARY_FILES name }
         { result :: <> result }
-        { io0Die (stringletAdd @"No such core library file: " name) }
+        { io0Die (stringAdd "No such core library file: " name) }
 };
 
-# Loads the named library file in the given context, returning a maplet
+# Loads the named library file in the given context, returning a map
 # representing both the originally-given context *and* the bindings defined
-# by the named library. Each library file is expected to return a maplet of
+# by the named library. Each library file is expected to return a map of
 # bindings that it wishes to export.
 loadLibrary = { ctx name ::
     text = readLibraryFile name;
     tree = sam0Tree text;
-    function = sam0Eval (mapletPut ctx @LIBRARY ctx) tree;
+    function = sam0Eval (mapPut ctx @LIBRARY ctx) tree;
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -48,7 +48,7 @@ loadLibrary = { ctx name ::
 
     # The end result is the addition of the new bindings to the original
     # context.
-    <> mapletAdd ctx bindings;
+    <> mapAdd ctx bindings;
 };
 
 # Loads all of the named libraries, in order, allowing later libraries to
@@ -71,7 +71,7 @@ loadAllLibraries = { ctx names* ::
 # and the first, etc.).
 CORE_LIBRARY = loadAllLibraries
     LIBRARY
-    @combinator @const @boolean @type @conditional @intlet
+    @combinator @const @boolean @type @conditional @integer
     @collections @format @io0 @meta;
 
 <> CORE_LIBRARY

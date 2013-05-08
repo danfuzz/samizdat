@@ -22,14 +22,14 @@ v = [:key:];         is equivalent to   v = makeHighlet key;
 v = [:key value:];   is equivalent to   v = makeHighlet key value;
 ```
 
-#### `makeListlet rest* <> listlet`
+#### `makeList rest* <> list`
 
-Returns a listlet with the given elements (in argument order).
+Returns a list with the given elements (in argument order).
 These equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = @[v1];      is equivalent to   v = makeListlet v1;
-v = @[v1 v2];   is equivalent to   v = makeListlet v1 v2;
+v = [v1];      is equivalent to   v = makeList v1;
+v = [v1 v2];   is equivalent to   v = makeList v1 v2;
 [etc.]
 ```
 
@@ -44,12 +44,12 @@ implementation (without sacrificing clarity) &mdash; it makes sense to
 keep this defined as an "ultraprimitive":
 
 ```
-makeListlet = { rest* :: <> rest; };
+makeList = { rest* :: <> rest; };
 ```
 
-#### `makeMaplet rest* <> maplet`
+#### `makeMap rest* <> map`
 
-Returns a maplet with the given key-value bindings (in argument
+Returns a map with the given key-value bindings (in argument
 order), with each key-value pair represented as two consecutive
 arguments. The number of arguments passed to this function must be
 even. It is valid to repeat keys in the arguments to this function, in
@@ -58,8 +58,8 @@ list (in argument order) is the one that ends up in the result. These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = @[k1=v1];         is equivalent to   v = makeMaplet k1 v1;
-v = @[k1=v1 k2=v2];   is equivalent to   v = makeMaplet k1 v1 k2 v2;
+v = [k1=v1];         is equivalent to   v = makeMap k1 v1;
+v = [k1=v1 k2=v2];   is equivalent to   v = makeMap k1 v1 k2 v2;
 [etc.]
 ```
 
@@ -67,19 +67,19 @@ v = @[k1=v1 k2=v2];   is equivalent to   v = makeMaplet k1 v1 k2 v2;
 the function is happy to operate given zero arguments.
 
 **Note:** Technically, this function could be defined in-language as the
-following. (See `makeListlet` for discussion.):
+following. (See `makeList` for discussion.):
 
 ```
-makeMaplet = { rest* ::
+makeMap = { rest* ::
     makeStep = { key value rest* ::
-        restMap = apply makeMaplet rest;
-        <> ifValue { <> mapletGet restMap key; }
+        restMap = apply makeMap rest;
+        <> ifValue { <> mapGet restMap key; }
             { <> restMap; }
-            { <> mapletPut restMap key value; };
+            { <> mapPut restMap key value; };
     };
 
-    <> ifTrue { <> eq rest @[] }
-        { <> @[=]; }
+    <> ifTrue { <> eq rest [] }
+        { <> [=]; }
         { <> apply makeStep rest; };
 };
 ```

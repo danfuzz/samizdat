@@ -7,21 +7,21 @@ I/O
 <br><br>
 ### Primitive Definitions
 
-#### `io0Die stringlet? <> ~. (exits)`
+#### `io0Die string? <> ~. (exits)`
 
-Prints the given stringlet to the system console (as if with `io0Note`)
+Prints the given string to the system console (as if with `io0Note`)
 if supplied, and terminates the runtime with a failure status code (`1`).
 
-#### `io0Note stringlet <> ~.`
+#### `io0Note string <> ~.`
 
 Writes out a newline-terminated note to the system console or equivalent.
 This is intended for debugging, and as such this will generally end up
 emitting to the standard-error stream.
 
-#### `io0PathFromStringlet stringlet <> pathListlet`
+#### `io0PathFromString string <> pathList`
 
-Converts the given path stringlet to an absolute form, in the "form factor"
-that is used internally. The input `stringlet` is expected to be a
+Converts the given path string to an absolute form, in the "form factor"
+that is used internally. The input `string` is expected to be a
 "Posix-style" path:
 
 * Path components are separated by slashes (`"/"`).
@@ -34,29 +34,29 @@ that is used internally. The input `stringlet` is expected to be a
 * Empty path components (that is, if there are two slashes in a row)
   are ignored.
 
-* Path components of value `@"."` (canonically representing "this directory")
+* Path components of value `"."` (canonically representing "this directory")
   are ignored.
 
-* Path components of value `@".."` cause the previous non-`..` path component
+* Path components of value `".."` cause the previous non-`..` path component
   to be discarded. It is invalid (terminating the runtime) for such a
   component to "back up" beyond the filesystem root.
 
-The result is a listlet of path components, representing the absolute path.
-None of the components will be the empty stringlet (`@""`), except possibly
+The result is a list of path components, representing the absolute path.
+None of the components will be the empty string (`""`), except possibly
 the last. If the last component is empty, that is an indication that the
 original path ended with a trailing slash.
 
-#### `io0ReadFileUtf8 pathListlet <> stringlet`
+#### `io0ReadFileUtf8 pathList <> string`
 
 Reads the named file, using the underlying OS's functionality,
-interpreting the contents as UTF-8 encoded text. Returns a stringlet
+interpreting the contents as UTF-8 encoded text. Returns a string
 of the read and decoded text.
 
-`pathListlet` must be a listlet of the form described by `io0PathFromStringlet`
+`pathList` must be a list of the form described by `io0PathFromString`
 (see which). It is invalid (terminating the runtime) for a component to
-be any of `@""` `@"."` `@".."` or to contain a slash (`/`).
+be any of `""` `"."` `".."` or to contain a slash (`/`).
 
-#### `io0ReadLink pathListlet <> pathListlet | ~.`
+#### `io0ReadLink pathList <> pathList | ~.`
 
 Checks the filesystem to see if the given path refers to a symbolic
 link. If it does, then this returns the path which represents the
@@ -67,15 +67,15 @@ real file (for example).
 If the path does not refer to a symbolic link, then this function returns
 void.
 
-`pathListlet` must be a listlet of the form described by `io0PathFromStringlet`
+`pathList` must be a list of the form described by `io0PathFromString`
 (see which). See `io0ReadFileUtf8` for further discussion.
 
-#### `io0WriteFileUtf8 pathListlet text <> ~.`
+#### `io0WriteFileUtf8 pathList text <> ~.`
 
 Writes out the given text to the named file, using the underlying OS's
-functionality, and encoding the text (a stringlet) as a stream of UTF-8 bytes.
+functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 
-`pathListlet` must be a listlet of the form described by `io0PathFromStringlet`
+`pathList` must be a list of the form described by `io0PathFromString`
 (see which). See `io0ReadFileUtf8` for further discussion.
 
 
@@ -87,8 +87,8 @@ functionality, and encoding the text (a stringlet) as a stream of UTF-8 bytes.
 #### `io0SandboxedReader directory <> function`
 
 Returns a file reader function which is limited to *only* reading
-files from underneath the named directory (a path-listlet as
-described in `io0PathFromStringlet`). The return value from this call
+files from underneath the named directory (a path-list as
+described in `io0PathFromString`). The return value from this call
 behaves like `ioReadFileUtf8`, as if the given directory is both the
 root of the filesystem and is the current working directory. Symbolic
 links are respected, but only if the link target is under the named

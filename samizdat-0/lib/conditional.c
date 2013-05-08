@@ -30,7 +30,7 @@ PRIM_IMPL(argsMap) {
         }
     }
 
-    return datListletFromArray(at, result);
+    return datListFromArray(at, result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

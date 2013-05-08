@@ -8,18 +8,18 @@
 
 # Documented in Samizdat Layer 0 spec.
 makeLibrary = { ctx ::
-    <> mapletPut ctx @LIBRARY ctx
+    <> mapPut ctx @LIBRARY ctx
 };
 
 # The bindings added here end up being the entirety of what's
 # exported as `LIBRARY` to regular programs.
 
-LOCAL_BINDINGS = @[
+LOCAL_BINDINGS = [
     @makeLibrary = makeLibrary
 ];
 
-FINAL_LIBRARY = mapletAdd LIBRARY LOCAL_BINDINGS;
+FINAL_LIBRARY = mapAdd LIBRARY LOCAL_BINDINGS;
 
-<> mapletAdd
+<> mapAdd
     LOCAL_BINDINGS
-    @[@LIBRARY = FINAL_LIBRARY]
+    [@LIBRARY = FINAL_LIBRARY]

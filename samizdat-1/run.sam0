@@ -29,12 +29,12 @@ sam1Tree = { programText ::
     # Complain if the two parsed forms aren't identical.
     ifTrue { <> ne programNode0 programNode }
         {
-            io0Note @"Parser disagreement.";
+            io0Note "Parser disagreement.";
             diff programNode0 programNode;
-            io0Note @"";
-            io0Note (format @"v1\n----------\n%q\n" programNode0);
-            io0Note (format @"v2\n----------\n%q\n" programNode);
-            io0Die @"Ouch!";
+            io0Note "";
+            io0Note (format "v1\n----------\n%q\n" programNode0);
+            io0Note (format "v2\n----------\n%q\n" programNode);
+            io0Die "Ouch!";
         };
 
     <> programNode
@@ -42,17 +42,17 @@ sam1Tree = { programText ::
 
 # Reads the named embedded library file.
 readLibraryFile = { name ::
-    <> READER @[@"samizdat-0-lib" (stringletAdd name @".sam0")]
+    <> READER ["samizdat-0-lib" (stringAdd name ".sam0")]
 };
 
-# Reads all the library files, returning a maplet from names to contents.
+# Reads all the library files, returning a map from names to contents.
 readAllLibraryFiles = {
     # Use the manifest to figure out what all to read.
     manifestProgram = sam1Tree (readLibraryFile @manifest);
     manifest = (sam0Eval (makeLibrary LIBRARY) manifestProgram)();
 
-    <> listletReduce @[=] manifest { result name ::
-        <> mapletPut result name (readLibraryFile name)
+    <> listReduce [=] manifest { result name ::
+        <> mapPut result name (readLibraryFile name)
     }
 };
 
@@ -62,36 +62,36 @@ makeCoreLibrary = {
     # Make the core library context that will be used to load the embedded
     # core library. The only difference between this and the original core
     # library is the replacement of `sam0Tree` with `sam1Tree`.
-    subLibrary = makeLibrary (mapletPut LIBRARY @sam0Tree sam1Tree);
+    subLibrary = makeLibrary (mapPut LIBRARY @sam0Tree sam1Tree);
 
     libraryFiles = readAllLibraryFiles();
 
-    mainProgram = sam1Tree (mapletGet libraryFiles @main);
+    mainProgram = sam1Tree (mapGet libraryFiles @main);
     mainFunction = sam0Eval subLibrary mainProgram;
     <> mainFunction libraryFiles
 };
 
 # Compiles the file named in the first argument in a fresh context,
 # and runs it, passing it an array consisting of its own file path
-# (in standard listlet-of-stringlet form) followed by the rest of the
+# (in standard list-of-string form) followed by the rest of the
 # arguments as-is.
 run = { args* ::
     parsedArgs = parseArgs args;
-    options = mapletGet parsedArgs @options;
-    validate = mapletGet options @validate false;
-    file = mapletGet parsedArgs @file;
-    argsPerSe = mapletGet parsedArgs @args;
+    options = mapGet parsedArgs @options;
+    validate = mapGet options @validate false;
+    file = mapGet parsedArgs @file;
+    argsPerSe = mapGet parsedArgs @args;
 
     library = ifTrue { <> validate }
         {
-            io0Note @"Loading core library...";
+            io0Note "Loading core library...";
             lib = makeCoreLibrary();
-            io0Note @"Done!";
+            io0Note "Done!";
             <> lib
         }
         { <> LIBRARY };
 
-    filePath = io0PathFromStringlet file;
+    filePath = io0PathFromString file;
     programText = io0ReadFileUtf8 filePath;
     programNode = sam1Tree programText;
 
@@ -102,4 +102,4 @@ run = { args* ::
     <> apply function filePath argsPerSe
 };
 
-<> @[@run = run]
+<> [@run = run]

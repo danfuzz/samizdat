@@ -18,12 +18,12 @@
  */
 static const char *typeName(ztype type) {
     switch (type) {
-        case DAT_INTLET:    return "intlet";
-        case DAT_STRINGLET: return "stringlet";
-        case DAT_LISTLET:   return "listlet";
-        case DAT_MAPLET:    return "maplet";
-        case DAT_UNIQLET:   return "uniqlet";
-        case DAT_HIGHLET:   return "highlet";
+        case DAT_INTEGER: return "integer";
+        case DAT_STRING:  return "string";
+        case DAT_LIST:    return "list";
+        case DAT_MAP:     return "map";
+        case DAT_UNIQLET: return "uniqlet";
+        case DAT_HIGHLET: return "highlet";
     }
 
     return "<unknown-type>";
@@ -68,23 +68,23 @@ void datAssertNth(zvalue value, zint n) {
 }
 
 /* Documented in header. */
-void datAssertIntlet(zvalue value) {
-    assertType(value, DAT_INTLET);
+void datAssertInteger(zvalue value) {
+    assertType(value, DAT_INTEGER);
 }
 
 /* Documented in header. */
-void datAssertStringlet(zvalue value) {
-    assertType(value, DAT_STRINGLET);
+void datAssertString(zvalue value) {
+    assertType(value, DAT_STRING);
 }
 
 /* Documented in header. */
-void datAssertListlet(zvalue value) {
-    assertType(value, DAT_LISTLET);
+void datAssertList(zvalue value) {
+    assertType(value, DAT_LIST);
 }
 
 /* Documented in header. */
-void datAssertMaplet(zvalue value) {
-    assertType(value, DAT_MAPLET);
+void datAssertMap(zvalue value) {
+    assertType(value, DAT_MAP);
 }
 
 /* Documented in header. */

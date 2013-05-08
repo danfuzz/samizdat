@@ -11,13 +11,6 @@ First and foremost on the topic of semantics, all data values are
 immutable. For example, appending to or deleting from a list always
 results in a new list, with the original remaining unchanged.
 
-With regards to naming, to avoid naming conflicts with the type names
-used in the final language layer, in the low layer, type names get a
-suffix "let" (to imply "little version", like "booklet" is to "book").
-
-As with naming, to avoid higher layer syntactic conflicts, most low
-layer types are represented using an initial `@` character.
-
 Keep in mind that many of the restrictions and caveats mentioned
 (such as, for example, what can be backslash-escaped in a string)
 are specific to *Samizdat Layer 0*, with higher layers providing
@@ -36,31 +29,30 @@ thisIsNotCommentary   # ...but this *is* commentary.
 ```
 
 
-### Intlet
+### Integer
 
-An `intlet` is a signed arbitrary-precision integer value, sometimes
+An `integer` is a signed arbitrary-precision integer value, sometimes
 called a "bigint" or "BigInteger" (even though they aren't always actually
 that big). In the C implementation, there is actually a limitation that
-intlets only have a 32-bit signed range, with out-of-range arithmetic
+integers only have a 32-bit signed range, with out-of-range arithmetic
 results causing failure, not wraparound.
 
-Intlets are written as an initial `@`, followed by an optional `-`
-(minus sign), followed by one or more decimal digits. The digits are
-interpreted in base 10 to form the number. (There is no hexadecimal
-representation.)
+Integers are written as an optional `-` (minus sign), followed by one or
+more decimal digits. The digits are interpreted in base 10 to form the
+number. (There is no hexadecimal representation.)
 
 ```
-@0
-@20
-@-234452
+0
+20
+-234452
 ```
 
 
-### Stringlet
+### String
 
-A `stringlet` is a sequence of zero or more Unicode code points.
+A `string` is a sequence of zero or more Unicode code points.
 
-Stringlets are written as an initial `@"`, followed by zero or
+Strings are written as an initial `"`, followed by zero or
 more character representations, followed by a final `"`.
 
 Characters are self-representing, except that there are three
@@ -70,55 +62,55 @@ Characters are self-representing, except that there are three
 * `\"` &mdash; a double quote
 * `\n` &mdash; newline (Unicode U+0010)
 
-If a stringlet's contents form a valid identifier (e.g. variable
-name) in the *Samizdat Layer 0* syntax, then it is valid to
-omit the double-quote delimiters.
+If a string's contents form a valid identifier (e.g. variable
+name) in the *Samizdat Layer 0* syntax, then a second allowed
+form is `@` followed by the string's characters.
 
 ```
-@""                           # the empty stringlet
-@"Hello, Самиздат!"
-@"\"blort\" -- potion that enables one to see in the dark.\n"
+""                            # the empty string
+"Hello, Самиздат!"
+"\"blort\" -- potion that enables one to see in the dark.\n"
 @fizmo
 ```
 
 
-### Listlet
+### List
 
-A `listlet` is a sequence of zero or more other values.
+A `list` is a sequence of zero or more other values.
 
-Listlets are written as an initial `@[`, followed by zero or
+Lists are written as an initial `[`, followed by zero or
 more value representations, followed by a final `]`.
 
 ```
-@[]                           # the empty listlet
-@[@1]
-@[@blort @fizmo @igram]
-@[@[@1] @242 @-23]
+[]                            # the empty list
+[1]
+[@blort @fizmo @igram]
+[[1] 242 -23]
 ```
 
 
-### Maplet
+### Map
 
-A `maplet` is a sequence of zero or more mappings (also called bindings)
+A `map` is a sequence of zero or more mappings (also called bindings)
 from arbitrary keys to arbitrary values. Keys and values are both
 allowed to be any type of value. Notably, keys are *not* restricted to
 only being strings (or string-like things).
 
-Non-empty maplets are written as an initial `@[`, followed by one or
+Non-empty maps are written as an initial `[`, followed by one or
 more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `=`, followed by the value
 representation.
 
-To avoid ambiguity with the empty listlet, the empty maplet is
-written as `@[=]`.
+To avoid ambiguity with the empty list, the empty map is
+written as `[=]`.
 
 ```
-@[=]                          # the empty maplet
-@[@1=@"number one"]
-@[@blort = @"potion; the ability to see in the dark"
-  @fizmo = @"spell; unclogs pipes"
-  @igram = @"spell; make purple things invisible"]
-@[@[@complex @data @as @key] = @"Handy!"]
+[=]                           # the empty map
+[1="number one"]
+[@blort = "potion; the ability to see in the dark"
+ @fizmo = "spell; unclogs pipes"
+ @igram = "spell; make purple things invisible"]
+[[@complex @data @as @key] = "Handy!"]
 ```
 
 
@@ -154,11 +146,11 @@ value representation (another arbitrary value), followed by a final
 
 ```
 [:@null:]                     # the value usually just written as `null`
-[:@boolean @0:]               # the value usually just written as `false`
-[:@boolean @1:]               # the value usually just written as `true`
+[:@boolean 0:]                # the value usually just written as `false`
+[:@boolean 1:]                # the value usually just written as `true`
 [:
   @spell
-  @[@name=@frotz @purpose=@"cause item to glow"]
+  [@name=@frotz @purpose="cause item to glow"]
 :]
 ```
 

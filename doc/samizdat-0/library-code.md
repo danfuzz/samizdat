@@ -7,7 +7,7 @@ Functions And Code
 <br><br>
 ### Primitive Definitions
 
-#### `apply function (value* listlet)? <> . | ~.`
+#### `apply function (value* list)? <> . | ~.`
 
 Calls the given function with the given arguments.
 
@@ -15,10 +15,10 @@ It is valid to pass no arguments other than `function`, in which case the
 function is called with no arguments.
 
 If any other arguments are supplied, then each of the initial `value`
-arguments is taken to be an arbitrary value, and the final `listlet`
-argument must be a listlet, whose contents are "flattened" into the
+arguments is taken to be an arbitrary value, and the final `list`
+argument must be a list, whose contents are "flattened" into the
 final list of arguments to pass to the function. For example, this is
-a five-argument call: `apply fizmoFunc @foo @bar @baz @[@frob @twiddle]`
+a five-argument call: `apply fizmoFunc @foo @bar @baz [@frob @twiddle]`
 
 This function returns whatever the called function returned (including
 void).
@@ -69,7 +69,7 @@ which is a parse tree as specified in this document. It is valid for
 the expression to yield void, in which case this function returns
 void. Evaluation is performed in an execution context that includes
 all of the variable bindings indicated by `context`, which must be a
-maplet.
+map.
 
 Very notably, the result of calling `sam0Tree` is valid as the
 `expressionNode` argument here.
@@ -77,9 +77,9 @@ Very notably, the result of calling `sam0Tree` is valid as the
 It is recommended (but not required) that the given `context` include
 bindings for all of the library functions specified by this document.
 
-#### `sam0Tree stringlet <> functionNode`
+#### `sam0Tree string <> functionNode`
 
-Parses the given stringlet as a program written in *Samizdat Layer 0*.
+Parses the given string as a program written in *Samizdat Layer 0*.
 Returns a `function` node (as defined by the parse tree semantics)
 that represents the function.
 
@@ -152,13 +152,13 @@ U = λx.x x
 Y_sam = λf . U (λs . (λa . (f (U s)) a))
 ```
 
-#### `yStarCombinator functions* <> @[functions*]`
+#### `yStarCombinator functions* <> [functions*]`
 
 The Y* combinator, in a form suitable for use in Samizdat Layer 0 when
 defining sets of mutually-recursive functions.
 
 This is like `yCombinator`, except that it can take any number of
-functions as arguments, resulting in a listlet of mutual-recursion-enabled
+functions as arguments, resulting in a list of mutual-recursion-enabled
 result functions.
 
 If you want to make a set of N mututally-recursive functions in

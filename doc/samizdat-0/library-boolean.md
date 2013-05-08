@@ -7,10 +7,10 @@ Booleans And Comparison
 <br><br>
 ### Primitive Definitions
 
-#### `lowOrder value1 value2 <> intlet`
+#### `lowOrder value1 value2 <> integer`
 
 Returns the order of the two given values in the total order of
-Samizdat low-layer values. This returns one of `@-1 @0 @1` indicating
+Samizdat low-layer values. This returns one of `-1 0 1` indicating
 how the two values sort with each other, using the reasonably
 standard meaning of those values:
 
@@ -22,17 +22,17 @@ standard meaning of those values:
 
 Ordering is calculated as follows:
 
-The major order is by type &mdash; `intlet < stringlet < listlet <
-maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
+The major order is by type &mdash; `integer < string < list <
+map < uniqlet < highlet` &mdash; and minor order is type-dependant.
 
-* Intlets order by integer value.
+* Integers order by integer value.
 
-* Listlets and stringlets order by pairwise corresponding-element
+* Lists and strings order by pairwise corresponding-element
   comparison, with a strict prefix always ordering before its
   longer brethren.
 
-* Maplets order by first comparing corresponding ordered lists
-  of keys with the same rules as listlet comparison. If the key
+* Maps order by first comparing corresponding ordered lists
+  of keys with the same rules as list comparison. If the key
   lists are identical, then the result is the comparison of
   corresponding lists of values, in key order.
 
@@ -46,7 +46,7 @@ maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
 
 #### `lowOrderIs value1 value2 check1 check2? <> boolean`
 
-The two values are compared as with `lowOrder`. The intlet
+The two values are compared as with `lowOrder`. The integer
 result of that comparison are checked for equality with
 the one or two check values. If the comparison result is equal
 to either check value, this function returns `true`. Otherwise

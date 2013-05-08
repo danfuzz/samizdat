@@ -135,12 +135,12 @@ static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
 
 /**
  * Binds variables for all the formal arguments of the given
- * function (if any), returning a maplet of the bindings added
+ * function (if any), returning a map of the bindings added
  * to the given base context.
  */
 static zvalue bindArguments(zvalue ctx, zvalue functionNode,
                             zint argCount, const zvalue *args) {
-    zvalue formals = datMapletGet(functionNode, STR_FORMALS);
+    zvalue formals = datMapGet(functionNode, STR_FORMALS);
 
     if (formals == NULL) {
         return ctx;
@@ -150,21 +150,21 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
     zmapping mappings[formalsSize];
 
     for (zint i = 0, argAt = 0; i < formalsSize; i++) {
-        zvalue formal = datListletNth(formals, i);
-        zvalue name = datMapletGet(formal, STR_NAME);
-        zvalue repeat = datMapletGet(formal, STR_REPEAT);
+        zvalue formal = datListNth(formals, i);
+        zvalue name = datMapGet(formal, STR_NAME);
+        zvalue repeat = datMapGet(formal, STR_REPEAT);
         zvalue value;
 
         if (repeat != NULL) {
             if (datEq(repeat, TOK_CH_STAR)) {
-                value = datListletFromArray(argCount - argAt, &args[argAt]);
+                value = datListFromArray(argCount - argAt, &args[argAt]);
                 argAt = argCount;
             } else if (datEq(repeat, TOK_CH_QMARK)) {
                 if (argAt < argCount) {
-                    value = datListletFromArray(1, &args[argAt]);
+                    value = datListFromArray(1, &args[argAt]);
                     argAt++;
                 } else {
-                    value = EMPTY_LISTLET;
+                    value = EMPTY_LIST;
                 }
             } else {
                 die("Unknown repeat modifier.");
@@ -180,7 +180,7 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
         mappings[i].value = value;
     }
 
-    return datMapletAddArray(ctx, formalsSize, mappings);
+    return datMapAddArray(ctx, formalsSize, mappings);
 }
 
 /**
@@ -189,11 +189,11 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
  */
 static zvalue execVarDef(zvalue ctx, zvalue varDef) {
     zvalue nameValue = datHighletValue(varDef);
-    zvalue name = datMapletGet(nameValue, STR_NAME);
-    zvalue valueExpression = datMapletGet(nameValue, STR_VALUE);
+    zvalue name = datMapGet(nameValue, STR_NAME);
+    zvalue valueExpression = datMapGet(nameValue, STR_VALUE);
     zvalue value = execExpression(ctx, valueExpression);
 
-    return datMapletPut(ctx, name, value);
+    return datMapPut(ctx, name, value);
 }
 
 /**
@@ -204,9 +204,9 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
     zvalue functionNode = closure->function;
     zvalue parentContext = closure->context;
 
-    zvalue yieldDef = datMapletGet(functionNode, STR_YIELD_DEF);
-    zvalue statements = datMapletGet(functionNode, STR_STATEMENTS);
-    zvalue yield = datMapletGet(functionNode, STR_YIELD);
+    zvalue yieldDef = datMapGet(functionNode, STR_YIELD_DEF);
+    zvalue statements = datMapGet(functionNode, STR_STATEMENTS);
+    zvalue yield = datMapGet(functionNode, STR_YIELD);
     YieldState *yieldState = NULL;
 
     // Take the parent context as a base, and bind the formals and
@@ -227,14 +227,14 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
         zvalue exitFunction =
             langDefineFunction(nonlocalExit,
                                datUniqletWith(&YIELD_DISPATCH, yieldState));
-        ctx = datMapletPut(ctx, yieldDef, exitFunction);
+        ctx = datMapPut(ctx, yieldDef, exitFunction);
     }
 
     // Evaluate the statements, updating the variable context as needed.
 
     zint statementsSize = datSize(statements);
     for (zint i = 0; i < statementsSize; i++) {
-        zvalue one = datListletNth(statements, i);
+        zvalue one = datListNth(statements, i);
 
         if (datHighletTypeIs(one, STR_VAR_DEF)) {
             ctx = execVarDef(ctx, one);
@@ -280,14 +280,14 @@ static zvalue execCall(zvalue ctx, zvalue call) {
     datHighletAssertType(call, STR_CALL);
     call = datHighletValue(call);
 
-    zvalue function = datMapletGet(call, STR_FUNCTION);
-    zvalue actuals = datMapletGet(call, STR_ACTUALS);
+    zvalue function = datMapGet(call, STR_FUNCTION);
+    zvalue actuals = datMapGet(call, STR_ACTUALS);
     zvalue functionId = execExpression(ctx, function);
 
     zint argCount = datSize(actuals);
     zvalue args[argCount];
     for (zint i = 0; i < argCount; i++) {
-        zvalue one = datListletNth(actuals, i);
+        zvalue one = datListNth(actuals, i);
         args[i] = execExpression(ctx, one);
     }
 
@@ -301,16 +301,16 @@ static zvalue execVarRef(zvalue ctx, zvalue varRef) {
     datHighletAssertType(varRef, STR_VAR_REF);
 
     zvalue name = datHighletValue(varRef);
-    zvalue found = datMapletGet(ctx, name);
+    zvalue found = datMapGet(ctx, name);
 
     if (found != NULL) {
         return found;
     }
 
-    if (datTypeIs(name, DAT_STRINGLET)) {
-        zint nameSize = datUtf8SizeFromStringlet(name);
+    if (datTypeIs(name, DAT_STRING)) {
+        zint nameSize = datUtf8SizeFromString(name);
         char nameStr[nameSize + 1];
-        datUtf8FromStringlet(nameSize + 1, nameStr, name);
+        datUtf8FromString(nameSize + 1, nameStr, name);
         die("No such variable: %s", nameStr);
     }
 

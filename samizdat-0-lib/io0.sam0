@@ -15,11 +15,11 @@
 # given path, or equal to it.
 isPrefix = { prefix path ::
     <> or
-        { <> eq prefix @[] }
+        { <> eq prefix [] }
         { <> and
-            { <> ne path @[] }
-            { <> eq (listletNth prefix @0) (listletNth path @0) }
-            { <> isPrefix (listletDelNth prefix @0) (listletDelNth path @0) }
+            { <> ne path [] }
+            { <> eq (listNth prefix 0) (listNth path 0) }
+            { <> isPrefix (listDelNth prefix 0) (listDelNth path 0) }
         }
 };
 
@@ -31,14 +31,14 @@ resolveLinks = { sandboxDirectory path ::
             { <> path }
             { newPath ::
                 ifFalse { <> isPrefix sandboxDirectory newPath }
-                    { io0Die @"Symbolic link escapes sandbox directory." };
-                ifTrue { <> le limit @0 }
-                    { io0Die @"Too many links in symbolic link chain." };
-                <> resolveStep newPath (isub limit @1)
+                    { io0Die "Symbolic link escapes sandbox directory." };
+                ifTrue { <> le limit 0 }
+                    { io0Die "Too many links in symbolic link chain." };
+                <> resolveStep newPath (isub limit 1)
             }
     };
 
-    <> resolveStep path @50;
+    <> resolveStep path 50;
 };
 
 
@@ -49,11 +49,11 @@ resolveLinks = { sandboxDirectory path ::
 # Documented in Samizdat Layer 0 spec.
 io0SandboxedReader = { directory ::
     <> { path ::
-        fullPath = resolveLinks directory (listletAdd directory path);
+        fullPath = resolveLinks directory (listAdd directory path);
         <> io0ReadFileUtf8 fullPath;
     }
 };
 
-<> @[
+<> [
     @io0SandboxedReader = io0SandboxedReader
 ];
