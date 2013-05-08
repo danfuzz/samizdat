@@ -17,11 +17,11 @@
 # Generic for-each function. Instead of the value-to-iterate argument, this
 # takes an `nthFunc` of one argument.
 genericForEach = { nthFunc function <out> ::
-    loopReduce @0 { index ::
+    loopReduce 0 { index ::
         <> ifValue { <> (nthFunc index) }
             { item ::
                 function item index;
-                <> iadd index @1
+                <> iadd index 1
             }
             { <out> }
     }
@@ -30,15 +30,15 @@ genericForEach = { nthFunc function <out> ::
 # Generic reduce function. Instead of the value-to-reduce argument, this
 # takes an `nthFunc` of one argument.
 genericReduce = { base nthFunc function <out> ::
-    loopReduce [base @0] { state ::
-        result = listNth state @0;
-        index = listNth state @1;
+    loopReduce [base 0] { state ::
+        result = listNth state 0;
+        index = listNth state 1;
         <> ifValue { <> (nthFunc index) }
             { item ::
                 nextResult = ifValue { <> function result item index }
                     { value :: <> value }
                     { <> result };
-                <> [nextResult (iadd index @1)]
+                <> [nextResult (iadd index 1)]
             }
             { <out> result }
     }
@@ -86,7 +86,7 @@ listMap = { list function ::
 
 # Documented in Samizdat Layer 0 spec.
 listPrepend = { value list ::
-    <> listInsNth list @0 value
+    <> listInsNth list 0 value
 };
 
 
@@ -101,8 +101,8 @@ mapReduce = { base map function ::
     <> genericReduce base { n :: <> mapNth map n}
         { reduction mapping ::
             <> function reduction
-                (mapNthValue mapping @0)
-                (mapNthKey mapping @0)
+                (mapNthValue mapping 0)
+                (mapNthKey mapping 0)
         }
 };
 
@@ -110,7 +110,7 @@ mapReduce = { base map function ::
 mapForEach = { map function ::
     genericForEach { n :: <> mapNth map n }
         { mapping ::
-            function (mapNthValue mapping @0) (mapNthKey mapping @0)
+            function (mapNthValue mapping 0) (mapNthKey mapping 0)
         }
 };
 

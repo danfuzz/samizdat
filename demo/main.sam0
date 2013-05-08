@@ -25,8 +25,8 @@ SELF_PATH ARGS* ::
 # recursion. See `xCombinator` above.
 countDown = yCombinator { countDown ::
     <> { n ::
-        <> ifTrue { <> ge n @0 }
-            { <> listPrepend n (countDown (isub n @1)) }
+        <> ifTrue { <> ge n 0 }
+            { <> listPrepend n (countDown (isub n 1)) }
             { <> [] }
     }
 };
@@ -36,15 +36,15 @@ countDown = yCombinator { countDown ::
 countDowns = yStarCombinator
     { f1 f2 ::
         <> { n ::
-            <> ifTrue { <> gt n @0 }
-                { <> listPrepend n (f2 (isub n @1)) }
-                { <> [@0] }
+            <> ifTrue { <> gt n 0 }
+                { <> listPrepend n (f2 (isub n 1)) }
+                { <> [0] }
         }
     }
     { f1 f2 ::
         <> { n :: <> listPrepend "and" (f1 n) }
     };
-countDown2 = listNth countDowns @0;
+countDown2 = listNth countDowns 0;
 
 # Demo of formal argument repeat modifiers.
 blort = { foo bar? baz? more* ::
@@ -54,14 +54,14 @@ blort = { foo bar? baz? more* ::
 # Demo of reading a sibling file through a sandboxed reader.
 sibling = {
     reader = io0SandboxedReader
-        (listDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
+        (listDelNth SELF_PATH (isub (lowSize SELF_PATH) 1));
     text = reader ["sibling.txt"];
     io0Note text;
 };
 
 # Demo of nonlocal exit.
 exiter = { foo <out> ::
-    ifTrue { <> eq foo @1 }
+    ifTrue { <> eq foo 1 }
         { <out> "one" }
         { <out> }
 };
@@ -85,36 +85,36 @@ main = { selfPath name rest* ::
 
     process selfPath;
     process rest;
-    process @0;
-    process @98765;
-    process @-12345;
+    process 0;
+    process 98765;
+    process -12345;
     process [];
-    process [@-1];
-    process [@1 @-2];
-    process [@-1 @2 @300];
+    process [-1];
+    process [1 -2];
+    process [-1 2 300];
     process "";
     process "\"Blort.\" \n";
     process [=];
-    process [@1=@2];
-    process [@1=@2 @888=@1];
+    process [1=2];
+    process [1=2 888=1];
     process [@fizmo=@omzif @igram=@margi @blort=@trolb];
     process null;
     process false;
     process true;
     process @@;
-    process (countDown @10);
-    process (countDown2 @5);
+    process (countDown 10);
+    process (countDown2 5);
 
     sibling();
 
-    blort @1;
-    blort @1 @2;
-    blort @1 @2 @3;
-    blort @1 @2 @3 @4;
-    blort @1 @2 @3 @4 @5;
+    blort 1;
+    blort 1 2;
+    blort 1 2 3;
+    blort 1 2 3 4;
+    blort 1 2 3 4 5;
 
-    process (exiter @1);
-    ifValue { <> exiter @0 }
+    process (exiter 1);
+    ifValue { <> exiter 0 }
         { value :: process (format "Unexpected! %q" value) }
         { io0Note "The void." };
 };

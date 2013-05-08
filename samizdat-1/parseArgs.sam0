@@ -21,7 +21,7 @@
 #
 
 # The character "\0".
-CHAR_0 = stringFromInteger @0;
+CHAR_0 = stringFromInteger 0;
 
 parseArguments = filterRule
     (seqRule
@@ -29,14 +29,14 @@ parseArguments = filterRule
         (optRule (charsRule (stringAdd "--" CHAR_0)))
         @words)
     { result ::
-        optsErrors = listNth result @0;
-        words = listNth result @2;
+        optsErrors = listNth result 0;
+        words = listNth result 2;
         ifTrue { <> mapGet optsErrors @errors }
             { io0Die "Trouble with options." };
-        ifTrue { <> eq (lowSize words) @0 }
+        ifTrue { <> eq (lowSize words) 0 }
             { io0Die "Missing file name." };
-        fileName = listNth words @0;
-        args = listDelNth words @0;
+        fileName = listNth words 0;
+        args = listDelNth words 0;
         <> [
             @options = (mapGet optsErrors @options)
             @file = fileName
@@ -48,7 +48,7 @@ parseOptions = filterRule
     (starRule
        (filterRule
             (seqRule (orRule @option @error) @wordBreak)
-            { result :: <> listNth result @0 }))
+            { result :: <> listNth result 0 }))
     { result ::
         <> listReduce [@options=[=] @errors=false] result
             { result one :: <> one result }
@@ -60,9 +60,9 @@ parseError = filterRule
         (notCharSetRule (stringAdd "-" CHAR_0))
         (starRule (notCharSetRule CHAR_0)))
     { result ::
-        c0 = listNth result @0;
-        c1 = listNth result @1;
-        more = listNth result @2;
+        c0 = listNth result 0;
+        c1 = listNth result 1;
+        more = listNth result 2;
         value = apply stringAdd c0 c1 more;
         io0Note (format "Unknown option: %Q" value);
         <> { result :: <> mapPut result @errors true }
@@ -71,9 +71,9 @@ parseError = filterRule
 parseOption = filterRule
     (seqRule (charsRule "--") @key (optRule @value))
     { result ::
-        key = listNth result @1;
-        valueHolder = listNth result @2;
-        value = ifValue { <> listNth valueHolder @0 }
+        key = listNth result 1;
+        valueHolder = listNth result 2;
+        value = ifValue { <> listNth valueHolder 0 }
             { value :: <> value }
             { <> true };
         <> { result ::
@@ -89,12 +89,12 @@ parseKey = filterRule
 
 parseValue = filterRule
     (seqRule (charsRule "=") @word)
-    { result :: <> listNth result @1 };
+    { result :: <> listNth result 1 };
 
 parseWords = starRule
     (filterRule
         (seqRule @word @wordBreak)
-        { result :: <> listNth result @0 });
+        { result :: <> listNth result 0 });
 
 parseWord = filterRule
     (starRule (notCharSetRule CHAR_0))

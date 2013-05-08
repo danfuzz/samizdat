@@ -9,9 +9,9 @@
 # Documented in Samizdat Layer 0 spec.
 integerSign = { integer ::
     # The `iadd` call ensures that the value is an integer.
-    <> ifTrue { <> eq (iadd integer @0) @0 }
-        { <> @0 }
-        { <> ifTrue { <> gt integer @0 } { <> @1 } { <> @-1 } }
+    <> ifTrue { <> eq (iadd integer 0) 0 }
+        { <> 0 }
+        { <> ifTrue { <> gt integer 0 } { <> 1 } { <> -1 } }
 };
 
 <> [

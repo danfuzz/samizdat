@@ -15,9 +15,9 @@ parseFile = filterRule
         (starRule
             (filterRule
                 (seqRule (starRule @whitespace) @token)
-                { result :: <> listNth result @1 }))
+                { result :: <> listNth result 1 }))
         (starRule @whitespace))
-    { result :: <> listNth result @0 };
+    { result :: <> listNth result 0 };
 
 # Parses a single token.
 parseToken = orRule @punctuation @integer @string @identifier;
@@ -35,8 +35,8 @@ parsePunctuation = filterRule
 # These are all the integer digits, as a map from strings to
 # digit values.
 INTEGER_CHARS =
-    [ "0"=@0 "1"=@1 "2"=@2 "3"=@3 "4"=@4
-      "5"=@5 "6"=@6 "7"=@7 "8"=@8 "9"=@9 ];
+    [ "0"=0 "1"=1 "2"=2 "3"=3 "4"=4
+      "5"=5 "6"=6 "7"=7 "8"=8 "9"=9 ];
 
 # Parses an `integer` token.
 parseInteger = filterRule
@@ -45,8 +45,8 @@ parseInteger = filterRule
             (charSetRule "0123456789")
             { result :: <> mapGet INTEGER_CHARS result }))
     { result ::
-        value = listReduce @0 result
-            { result digit :: <> iadd digit (imul result @10) };
+        value = listReduce 0 result
+            { result digit :: <> iadd digit (imul result 10) };
         <> [:@integer value:]
     };
 
@@ -60,7 +60,7 @@ parseString1 = orRule
                 (filterRule (charsRule "\\") { <> "\\" })
                 (filterRule (charsRule "\"") { <> "\"" })
                 (filterRule (charsRule "n")  { <> "\n" })))
-        { result :: <> listNth result @1 });
+        { result :: <> listNth result 1 });
 
 # Parses a `string` token.
 parseString = filterRule
@@ -69,7 +69,7 @@ parseString = filterRule
         (starRule parseString1)
         (charsRule "\""))
     { result ::
-        value = apply stringAdd (listNth result @1);
+        value = apply stringAdd (listNth result 1);
         <> [:@string value:]
     };
 
@@ -87,8 +87,8 @@ parseIdentifier = filterRule
         (starRule (charSetRule IDENTIFIER_CHARS)))
     { result ::
         value = stringAdd
-            (listNth result @0)
-            (apply stringAdd (listNth result @1));
+            (listNth result 0)
+            (apply stringAdd (listNth result 1));
         <> [:@identifier value:]
     };
 

@@ -23,7 +23,7 @@ SELF_PATH ARGS* ::
 # Reads a sibling file. Note: This is a call to a function-generating
 # function.
 readFile = io0SandboxedReader
-    (listDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
+    (listDelNth SELF_PATH (isub (lowSize SELF_PATH) 1));
 
 # Loads a sibling file.
 loadFile = { ctx name ::

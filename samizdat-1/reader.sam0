@@ -48,7 +48,7 @@ doRead = { yield state ::
         { value :: yield value }
         { yield() };
 
-    <> mapPut state @at (iadd at @1);
+    <> mapPut state @at (iadd at 1);
 };
 
 # Resets the cursor to the given value. It is only valid to
@@ -56,7 +56,7 @@ doRead = { yield state ::
 doReset = { yield state resetAt ::
     at = xAt state;
 
-    ifTrue { <> or { <> lt resetAt @0 } { <> gt resetAt at } }
+    ifTrue { <> or { <> lt resetAt 0 } { <> gt resetAt at } }
         { io0die (format "Invalid reset value: %Q" resetAt) };
 
     yield();
@@ -86,7 +86,7 @@ reader = { value ::
     nthFunc = { n :: <> nth value n };
 
     <> object readerDispatch [
-        @at   = @0
+        @at   = 0
         @size = (lowSize value)
         @nth  = nthFunc
     ]

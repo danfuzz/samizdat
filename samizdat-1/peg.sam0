@@ -209,7 +209,7 @@ notCharSetRule = { chars ::
 pegEngine = { reader rules ::
     <> { name rest* ::
         <> ifTrue { <> eq name @rule }
-            { <> mapGet rules (listNth rest @0) }
+            { <> mapGet rules (listNth rest 0) }
             { <> apply reader name rest }
     }
 };

@@ -18,8 +18,8 @@ isPrefix = { prefix path ::
         { <> eq prefix [] }
         { <> and
             { <> ne path [] }
-            { <> eq (listNth prefix @0) (listNth path @0) }
-            { <> isPrefix (listDelNth prefix @0) (listDelNth path @0) }
+            { <> eq (listNth prefix 0) (listNth path 0) }
+            { <> isPrefix (listDelNth prefix 0) (listDelNth path 0) }
         }
 };
 
@@ -32,13 +32,13 @@ resolveLinks = { sandboxDirectory path ::
             { newPath ::
                 ifFalse { <> isPrefix sandboxDirectory newPath }
                     { io0Die "Symbolic link escapes sandbox directory." };
-                ifTrue { <> le limit @0 }
+                ifTrue { <> le limit 0 }
                     { io0Die "Too many links in symbolic link chain." };
-                <> resolveStep newPath (isub limit @1)
+                <> resolveStep newPath (isub limit 1)
             }
     };
 
-    <> resolveStep path @50;
+    <> resolveStep path 50;
 };
 
 
