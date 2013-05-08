@@ -19,9 +19,9 @@
  * Emits a note.
  */
 static void emitNote(zvalue message) {
-    zint size = datUtf8SizeFromStringlet(message);
+    zint size = datUtf8SizeFromString(message);
     char str[size + 1];
-    datUtf8FromStringlet(size + 1, str, message);
+    datUtf8FromString(size + 1, str, message);
 
     fwrite(str, 1, size, stderr);
     fputc('\n', stderr);
@@ -37,7 +37,7 @@ PRIM_IMPL(io0Die) {
     requireRange(argCount, 0, 1);
 
     zvalue message =
-        (argCount == 1) ? args[0] : datStringletFromUtf8(-1, "Alas");
+        (argCount == 1) ? args[0] : datStringFromUtf8(-1, "Alas");
     emitNote(message);
     exit(1);
 }
@@ -50,15 +50,15 @@ PRIM_IMPL(io0Note) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0PathFromStringlet) {
+PRIM_IMPL(io0PathFromString) {
     requireExactly(argCount, 1);
 
-    zvalue stringlet = args[0];
-    zint size = datUtf8SizeFromStringlet(stringlet);
+    zvalue string = args[0];
+    zint size = datUtf8SizeFromString(string);
     char str[size + 1];
-    datUtf8FromStringlet(size + 1, str, stringlet);
+    datUtf8FromString(size + 1, str, string);
 
-    return ioPathListletFromUtf8(str);
+    return ioPathListFromUtf8(str);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

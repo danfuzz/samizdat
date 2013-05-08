@@ -37,7 +37,7 @@ namedRule = { rule ::
     <> { engine ::
         <> ifValue { <> engine @rule rule }
             { function :: <> function engine }
-            { io0Die (format @"Missing rule: %Q" rule) }
+            { io0Die (format "Missing rule: %Q" rule) }
         }
 };
 
@@ -46,7 +46,7 @@ functionFromRule = { rule ::
     <> ifTrue { <> isHighlet rule }
         { <> tokenRule rule }
         {
-            <> ifTrue { <> isStringlet rule }
+            <> ifTrue { <> isString rule }
                 { <> namedRule rule}
                 { <> rule }
         }
@@ -70,18 +70,18 @@ filterRule = { rule filterFunction ::
 
 # Returns a rule which succeeds if each of a list of other rules
 # succeeds in sequence (said list given in the form of separate arguments
-# to this function). The result, if successful, is a listlet of all
+# to this function). The result, if successful, is a list of all
 # the rule results. This effectively implements the sequence "operator"
 # (null infix operator) in PEG.
 seqRule = { rules* ::
-    finalRules = listletMap rules functionFromRule;
+    finalRules = listMap rules functionFromRule;
 
     <> { engine <out> ::
         mark = engine @at;
-        <> listletReduce @[] finalRules
+        <> listReduce [] finalRules
             { results rule ::
                 <> ifValue { <> rule engine }
-                    { result :: <> listletAppend results result }
+                    { result :: <> listAppend results result }
                     {
                         engine @reset mark;
                         <out>
@@ -97,10 +97,10 @@ seqRule = { rules* ::
 # failed. This effectively implements the ordered choice operator
 # (`|` infix) in PEG.
 orRule = { rules* ::
-    finalRules = listletMap rules functionFromRule;
+    finalRules = listMap rules functionFromRule;
 
     <> { engine <out> ::
-        listletForEach finalRules
+        listForEach finalRules
             { rule ::
                 ifValue { <> rule engine }
                     { result :: <out> result }
@@ -109,7 +109,7 @@ orRule = { rules* ::
 };
 
 # Returns a rule which optionally parses a given other rule. The
-# rule when run always succeeds, yielding a listlet. The listlet will
+# rule when run always succeeds, yielding a list. The list will
 # have either zero or one element, depending on whether the inner
 # rule was matched. This effectively implements the zero-or-one
 # operator (`?` suffix) in PEG.
@@ -118,44 +118,44 @@ optRule = { rule ::
 
     <> { engine ::
         <> ifValue { <> finalRule engine }
-            { result :: <> @[result] }
-            { <> @[] }
+            { result :: <> [result] }
+            { <> [] }
     }
 };
 
 # Returns a rule which parses zero or more repetitions of a given other
-# rule. The rule when run always succeeds, yielding a listlet of all
-# the results of matching. It will be a zero-length listlet if in fact
+# rule. The rule when run always succeeds, yielding a list of all
+# the results of matching. It will be a zero-length list if in fact
 # the inner rule never matched. This effectively implements the
 # zero-or-more operator (`*` suffix) in PEG.
 starRule = { rule ::
     finalRule = functionFromRule rule;
 
     <> { engine <out> ::
-        loopReduce @[] { result ::
+        loopReduce [] { result ::
             <> ifValue { <> finalRule engine }
-                { match :: <> listletAppend result match }
+                { match :: <> listAppend result match }
                 { <out> result }
         }
     }
 };
 
 # Returns a rule which parses one or more repetitions of a given other
-# rule. The rule when successful yields a listlet of all the results of
+# rule. The rule when successful yields a list of all the results of
 # matching and will be of size one or more. This effectively implements
 # the one-or-more operator (`+` suffix) in PEG.
 plusRule = { rule ::
     <> filterRule
         (seqRule rule (starRule rule))
-        { result :: <> apply listletPrepend result }
+        { result :: <> apply listPrepend result }
 };
 
 # Returns a tokenizer rule which matches the given sequence of characters
-# exactly, returning that stringlet.
+# exactly, returning that string.
 charsRule = { chars ::
     <> { engine <out> ::
         mark = engine @at;
-        stringletForEach chars
+        stringForEach chars
             { ch ::
                 ifTrue { <> or { <> engine @eof } { <> ne (engine @read) ch } }
                     {
@@ -168,16 +168,16 @@ charsRule = { chars ::
 };
 
 # Returns a tokenizer rule which matches any of the given characters
-# (given as a stringlet of all the characters to match), returning
-# a single-character stringlet of the matched character.
+# (given as a string of all the characters to match), returning
+# a single-character string of the matched character.
 charSetRule = { chars ::
-    charSet = stringletReduce @[=] chars
-        { result ch :: <> mapletPut result ch null };
+    charSet = stringReduce [=] chars
+        { result ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
         ifValue { <> engine @peek }
             { ch ::
-                ifTrue { <> mapletHasKey charSet ch }
+                ifTrue { <> mapHasKey charSet ch }
                     {
                         engine @read;
                         <out> ch
@@ -187,16 +187,16 @@ charSetRule = { chars ::
 };
 
 # Returns a tokenizer rule which matches any character *but* one of the
-# given characters (given as a stringlet of all the characters to exclude),
-# returning a single-character stringlet of the matched character.
+# given characters (given as a string of all the characters to exclude),
+# returning a single-character string of the matched character.
 notCharSetRule = { chars ::
-    charSet = stringletReduce @[=] chars
-        { result ch :: <> mapletPut result ch null };
+    charSet = stringReduce [=] chars
+        { result ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
         ifValue { <> engine @peek }
             { ch ::
-                ifFalse { <> mapletHasKey charSet ch }
+                ifFalse { <> mapHasKey charSet ch }
                     {
                         engine @read;
                         <out> ch
@@ -209,12 +209,12 @@ notCharSetRule = { chars ::
 pegEngine = { reader rules ::
     <> { name rest* ::
         <> ifTrue { <> eq name @rule }
-            { <> mapletGet rules (listletNth rest @0) }
+            { <> mapGet rules (listNth rest 0) }
             { <> apply reader name rest }
     }
 };
 
-<> @[
+<> [
     @charSetRule = charSetRule
     @charsRule = charsRule
     @filterRule = filterRule

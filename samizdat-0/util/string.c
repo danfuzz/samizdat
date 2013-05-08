@@ -21,7 +21,7 @@ const char *utilStringEnd(zint stringBytes, const char *string) {
 
     if (result < string) {
         die("Invalid string size (pointer wraparound): %p + %lld",
-               string, stringBytes);
+            string, stringBytes);
     }
 
     return result;

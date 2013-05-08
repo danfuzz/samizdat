@@ -144,13 +144,13 @@ PRIM_IMPL(apply) {
             return langCall(function, 0, NULL);
         }
         case 2: {
-            // Just a "rest" listlet.
+            // Just a "rest" list.
             return langApply(function, args[1]);
         }
     }
 
     // The hard case: We make a flattened array of all the initial arguments
-    // followed by the contents of the "rest" listlet.
+    // followed by the contents of the "rest" list.
 
     zvalue rest = args[argCount - 1];
     zint restSize = datSize(rest);
@@ -165,7 +165,7 @@ PRIM_IMPL(apply) {
         flatArgs[i] = args[i];
     }
 
-    datArrayFromListlet(flatArgs + argCount, rest);
+    datArrayFromList(flatArgs + argCount, rest);
     return langCall(function, flatSize, flatArgs);
 }
 

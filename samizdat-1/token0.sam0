@@ -15,70 +15,75 @@ parseFile = filterRule
         (starRule
             (filterRule
                 (seqRule (starRule @whitespace) @token)
-                { result :: <> listletNth result @1 }))
+                { result :: <> listNth result 1 }))
         (starRule @whitespace))
-    { result :: <> listletNth result @0 };
+    { result :: <> listNth result 0 };
 
 # Parses a single token.
 parseToken = orRule @punctuation @integer @string @identifier;
 
 # Parses any of the punctuation characters or character sequences, yielding
-# a token whose type is the stringlet matched.
+# a token whose type is the string matched.
 parsePunctuation = filterRule
     (orRule
-        (charsRule @"@@")
-        (charsRule @"::")
-        (charsRule @"<>")
-        (charSetRule @"@:*;=-?<>{}()[]"))
+        (charsRule "@@")
+        (charsRule "::")
+        (charsRule "<>")
+        (charSetRule "@:*;=?<>{}()[]"))
     { result :: <> [:result:] };
 
-# These are all the integer digits, as a maplet from stringlets to
+# These are all the integer digits, as a map from strings to
 # digit values.
 INTEGER_CHARS =
-    @[ @"0"=@0 @"1"=@1 @"2"=@2 @"3"=@3 @"4"=@4
-       @"5"=@5 @"6"=@6 @"7"=@7 @"8"=@8 @"9"=@9 ];
+    [ "0"=0 "1"=1 "2"=2 "3"=3 "4"=4
+      "5"=5 "6"=6 "7"=7 "8"=8 "9"=9 ];
 
 # Parses an `integer` token.
 parseInteger = filterRule
-    (plusRule
+    (seqRule
         (filterRule
-            (charSetRule @"0123456789")
-            { result :: <> mapletGet INTEGER_CHARS result }))
+            (optRule (charsRule "-"))
+            { result :: <> ifTrue { <> eq result [] } { <> 1 } { <> -1 } })
+        (plusRule
+            (filterRule
+                (charSetRule "0123456789")
+                { result :: <> mapGet INTEGER_CHARS result })))
     { result ::
-        value = listletReduce @0 result
-            { result digit :: <> iadd digit (imul result @10) };
-        <> [:@integer value:]
+        sign = listNth result 0;
+        value = listReduce 0 (listNth result 1)
+            { result digit :: <> iadd digit (imul result 10) };
+        <> [:@integer (imul sign value):]
     };
 
 # Parses a single string character.
 parseString1 = orRule
-    (notCharSetRule @"\\\"")
+    (notCharSetRule "\\\"")
     (filterRule
         (seqRule
-            (charsRule @"\\")
+            (charsRule "\\")
             (orRule
-                (filterRule (charsRule @"\\") { <> @"\\" })
-                (filterRule (charsRule @"\"") { <> @"\"" })
-                (filterRule (charsRule @"n")  { <> @"\n" })))
-        { result :: <> listletNth result @1 });
+                (filterRule (charsRule "\\") { <> "\\" })
+                (filterRule (charsRule "\"") { <> "\"" })
+                (filterRule (charsRule "n")  { <> "\n" })))
+        { result :: <> listNth result 1 });
 
 # Parses a `string` token.
 parseString = filterRule
     (seqRule
-        (charsRule @"\"")
+        (charsRule "\"")
         (starRule parseString1)
-        (charsRule @"\""))
+        (charsRule "\""))
     { result ::
-        value = apply stringletAdd (listletNth result @1);
+        value = apply stringAdd (listNth result 1);
         <> [:@string value:]
     };
 
 # These are all the characters which are allowed to start an identifier.
 IDENTIFIER_START_CHARS =
-    @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = stringletAdd IDENTIFIER_START_CHARS @"0123456789";
+IDENTIFIER_CHARS = stringAdd IDENTIFIER_START_CHARS "0123456789";
 
 # Parses an `identifier` token.
 parseIdentifier = filterRule
@@ -86,22 +91,22 @@ parseIdentifier = filterRule
         (charSetRule IDENTIFIER_START_CHARS)
         (starRule (charSetRule IDENTIFIER_CHARS)))
     { result ::
-        value = stringletAdd
-            (listletNth result @0)
-            (apply stringletAdd (listletNth result @1));
+        value = stringAdd
+            (listNth result 0)
+            (apply stringAdd (listNth result 1));
         <> [:@identifier value:]
     };
 
 # Parses a single whitespace character or a comment.
 parseWhitespace = orRule
-    (charSetRule @" \n")
+    (charSetRule " \n")
     (seqRule
-        (charsRule @"#")
-        (starRule (notCharSetRule @"\n"))
-        (charsRule @"\n"));
+        (charsRule "#")
+        (starRule (notCharSetRule "\n"))
+        (charsRule "\n"));
 
-# Maplet of all the tokenizer rules.
-TOKEN0_RULES = @[
+# Map of all the tokenizer rules.
+TOKEN0_RULES = [
     @file = parseFile
     @identifier = parseIdentifier
     @integer = parseInteger
@@ -111,4 +116,4 @@ TOKEN0_RULES = @[
     @whitespace = parseWhitespace
 ];
 
-<> @[@TOKEN0_RULES = TOKEN0_RULES]
+<> [@TOKEN0_RULES = TOKEN0_RULES]

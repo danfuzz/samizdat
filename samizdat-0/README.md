@@ -23,7 +23,7 @@ later-named modules depending only on earlier-named ones):
   and a handful of assertions. Depends on util.
 
 * const &mdash; Commonly-used in-model constants. This includes things
-  like stringlets used during parsing, and the like. Depends on util
+  like strings used during parsing, and the like. Depends on util
   and dat.
 
 * io &mdash; I/O functions. This implements a minimal set of I/O

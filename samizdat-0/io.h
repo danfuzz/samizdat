@@ -14,33 +14,33 @@
 #include "dat.h"
 
 /**
- * Converts a path string to an absolute form, as a listlet of path components,
- * where each component is a stringlet. If the original is a relative path,
+ * Converts a path string to an absolute form, as a list of path components,
+ * where each component is a string. If the original is a relative path,
  * the result will have the system's current working directory prepended.
  */
-zvalue ioPathListletFromUtf8(const char *path);
+zvalue ioPathListFromUtf8(const char *path);
 
 /**
  * Gets symbolic link information about the file with the given name.
  * This returns the linked path if the file names a symbolic link, or
  * returns void if not.
  */
-zvalue ioReadLink(zvalue pathListlet);
+zvalue ioReadLink(zvalue pathList);
 
 /**
  * Reads the file with the given name in its entirety, interpreting
- * it as UTF-8. Returns a stringlet (listlet of Unicode-representing
- * intlets) of the contents.
+ * it as UTF-8. Returns a string (list of Unicode-representing
+ * integers) of the contents.
  *
- * The `pathListlet` represents an absolute filesystem path as individual
- * stringlets.
+ * The `pathList` represents an absolute filesystem path as individual
+ * strings.
  */
-zvalue ioReadFileUtf8(zvalue pathListlet);
+zvalue ioReadFileUtf8(zvalue pathList);
 
 /**
- * Writes the given stringlet to the file with the given name, encoding
- * it as UTF-8. `pathListlet` is as with `ioReadFileUtf8`.
+ * Writes the given string to the file with the given name, encoding
+ * it as UTF-8. `pathList` is as with `ioReadFileUtf8`.
  */
-void ioWriteFileUtf8(zvalue pathListlet, zvalue text);
+void ioWriteFileUtf8(zvalue pathList, zvalue text);
 
 #endif

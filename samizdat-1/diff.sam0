@@ -9,14 +9,14 @@
 # Reports a difference.
 report = { context v1 v2 message ::
     io0Note message;
-    listletForEach context
+    listForEach context
         { item ::
-            io0Note (format @"    at %Q" item);
+            io0Note (format "    at %Q" item);
             <> null
         };
-    io0Note @"";
-    io0Note (format @"v1 = %q" v1);
-    io0Note (format @"v2 = %q" v2);
+    io0Note "";
+    io0Note (format "v1 = %q" v1);
+    io0Note (format "v2 = %q" v2);
     <> false;
 };
 
@@ -35,87 +35,87 @@ diffHighlet = { recurse context v1 v2 ::
         { <> recurse @value value1 value2 }
 };
 
-# Diffs intlets.
-diffIntlet = { recurse context v1 v2 ::
-    <> report context v1 v2 @"Different intlets."
+# Diffs integers.
+diffInteger = { recurse context v1 v2 ::
+    <> report context v1 v2 "Different integers."
 };
 
-# Diffs maplets.
-diffMaplet = { recurse context v1 v2 <out> ::
+# Diffs maps.
+diffMap = { recurse context v1 v2 <out> ::
     size1 = lowSize v1;
     size2 = lowSize v2;
 
     <> and
         { <> recurse @size size1 size2 }
         {
-            mapletForEach v1
+            mapForEach v1
                 { value key ::
-                    ifVoid { <> mapletGet v2 key }
+                    ifVoid { <> mapGet v2 key }
                         {
-                            report (listletAppend context key) v1 v2
-                                @"Key mismatch.";
+                            report (listAppend context key) v1 v2
+                                "Key mismatch.";
                             <out> false
                         }
                 };
             <> true
         }
         {
-            mapletForEach v1
+            mapForEach v1
                 { value key ::
-                    ifFalse { <> recurse @[@key=key] value (mapletGet v2 key) }
+                    ifFalse { <> recurse [@key=key] value (mapGet v2 key) }
                         { <out> false }
                 };
             <> true
         }
 };
 
-# Diffs listlets.
-diffListlet = { recurse context v1 v2 ::
+# Diffs lists.
+diffList = { recurse context v1 v2 ::
     size1 = lowSize v1;
     size2 = lowSize v2;
 
     <> and
         { <> recurse @size size1 size2 }
         {
-            listletForEach v1
+            listForEach v1
                 { elem index ::
-                    recurse index elem (listletNth v2 index)
+                    recurse index elem (listNth v2 index)
                 };
             <> false
         }
 };
 
-# Diffs stringlets.
-diffStringlet = { recurse context v1 v2 ::
-    <> report context v1 v2 @"Different stringlets."
+# Diffs strings.
+diffString = { recurse context v1 v2 ::
+    <> report context v1 v2 "Different strings."
 };
 
 # Diffs uniqlets.
 diffUniqlet = { recurse context v1 v2 ::
-    <> report context v1 v2 @"Different uniqlets."
+    <> report context v1 v2 "Different uniqlets."
 };
 
 # Mapping from type names to diff functions.
-DIFF_FUNCTIONS = @[
-    @highlet   = diffHighlet
-    @intlet    = diffIntlet
-    @listlet   = diffListlet
-    @maplet    = diffMaplet
-    @stringlet = diffStringlet
-    @uniqlet   = diffUniqlet
+DIFF_FUNCTIONS = [
+    @highlet = diffHighlet
+    @integer = diffInteger
+    @list    = diffList
+    @map     = diffMap
+    @string  = diffString
+    @uniqlet = diffUniqlet
 ];
 
 # Inner diff. Returns an `eq` result.
 innerDiff = { selfRef context v1 v2 ::
     type1 = lowType v1;
     type2 = lowType v2;
-    innerContext = listletAppend context type1;
+    innerContext = listAppend context type1;
 
     # The `selfRef` and `recurse` definitions here are effectively a
     # "manual inlining" of the Y combinator, necessitated by the fact that
     # *Samizdat Layer 0* doesn't allow use-before-def.
     recurse = { newContext v1 v2 ::
-        <> selfRef selfRef (listletAppend innerContext newContext) v1 v2
+        <> selfRef selfRef (listAppend innerContext newContext) v1 v2
     };
 
     <> ifTrue { <> ne v1 v2 }
@@ -126,10 +126,10 @@ innerDiff = { selfRef context v1 v2 ::
             <> ifTrue { <> ne type1 type2 }
                 {
                     <> report context v1 v2
-                        (format @"Types differ: %q %q" type1 type2)
+                        (format "Types differ: %q %q" type1 type2)
                 }
                 {
-                    <> (mapletGet DIFF_FUNCTIONS type1) recurse innerContext
+                    <> (mapGet DIFF_FUNCTIONS type1) recurse innerContext
                         v1 v2
                 }
         }
@@ -138,7 +138,7 @@ innerDiff = { selfRef context v1 v2 ::
 
 # Compares two values structurally, reporting on the differences.
 diff = { v1 v2 ::
-    <> innerDiff innerDiff @[@top] v1 v2
+    <> innerDiff innerDiff [@top] v1 v2
 };
 
-<> @[@diff = diff]
+<> [@diff = diff]

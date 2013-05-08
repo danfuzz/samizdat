@@ -8,11 +8,11 @@ Conditionals And Iteration
 ### Primitive Definitions
 
 
-#### `argsMap function rest* <> listlet`
+#### `argsMap function rest* <> list`
 
 Primitive mapping iterator. This calls the given function on each of
 the rest of the arguments in sequence, collecting all the non-void
-results into a listlet, which is returned. The function is called with
+results into a list, which is returned. The function is called with
 exactly one argument, namely the item to process.
 
 **Note:** Unlike most of the map/reduce functions, this one takes its

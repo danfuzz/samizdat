@@ -32,7 +32,7 @@ typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
 
 /**
  * Calls a value which is presumed to be bound as a function, passing
- * it the given listlet of arguments.
+ * it the given list of arguments.
  */
 zvalue langApply(zvalue functionId, zvalue args);
 
