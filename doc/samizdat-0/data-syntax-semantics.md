@@ -11,13 +11,6 @@ First and foremost on the topic of semantics, all data values are
 immutable. For example, appending to or deleting from a list always
 results in a new list, with the original remaining unchanged.
 
-With regards to naming, to avoid naming conflicts with the type names
-used in the final language layer, in the low layer, type names get a
-suffix "let" (to imply "little version", like "booklet" is to "book").
-
-As with naming, to avoid higher layer syntactic conflicts, most low
-layer types are represented using an initial `@` character.
-
 Keep in mind that many of the restrictions and caveats mentioned
 (such as, for example, what can be backslash-escaped in a string)
 are specific to *Samizdat Layer 0*, with higher layers providing
