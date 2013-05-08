@@ -32,7 +32,7 @@ parsePunctuation = filterRule
         (charSetRule @"@:*;=-?<>{}()[]"))
     { result :: <> [:result:] };
 
-# These are all the integer digits, as a maplet from strings to
+# These are all the integer digits, as a map from strings to
 # digit values.
 INTEGER_CHARS =
     @[ @"0"=@0 @"1"=@1 @"2"=@2 @"3"=@3 @"4"=@4
@@ -43,7 +43,7 @@ parseInteger = filterRule
     (plusRule
         (filterRule
             (charSetRule @"0123456789")
-            { result :: <> mapletGet INTEGER_CHARS result }))
+            { result :: <> mapGet INTEGER_CHARS result }))
     { result ::
         value = listReduce @0 result
             { result digit :: <> iadd digit (imul result @10) };
@@ -100,7 +100,7 @@ parseWhitespace = orRule
         (starRule (notCharSetRule @"\n"))
         (charsRule @"\n"));
 
-# Maplet of all the tokenizer rules.
+# Map of all the tokenizer rules.
 TOKEN0_RULES = @[
     @file = parseFile
     @identifier = parseIdentifier

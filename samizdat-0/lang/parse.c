@@ -91,32 +91,32 @@ static void reset(ParseState *state, zint mark) {
  */
 
 /**
- * Makes a 0-3 binding maplet. Values are allowed to be `NULL`, in
+ * Makes a 0-3 binding map. Values are allowed to be `NULL`, in
  * which case the corresponding key isn't included in the result.
  */
-static zvalue mapletFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
+static zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
                           zvalue k3, zvalue v3) {
     zvalue result = EMPTY_MAPLET;
 
-    if (v1 != NULL) { result = datMapletPut(result, k1, v1); }
-    if (v2 != NULL) { result = datMapletPut(result, k2, v2); }
-    if (v3 != NULL) { result = datMapletPut(result, k3, v3); }
+    if (v1 != NULL) { result = datMapPut(result, k1, v1); }
+    if (v2 != NULL) { result = datMapPut(result, k2, v2); }
+    if (v3 != NULL) { result = datMapPut(result, k3, v3); }
 
     return result;
 }
 
 /**
- * Makes a 0-2 binding maplet.
+ * Makes a 0-2 binding map.
  */
-static zvalue mapletFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    return mapletFrom3(k1, v1, k2, v2, NULL, NULL);
+static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    return mapFrom3(k1, v1, k2, v2, NULL, NULL);
 }
 
 /**
- * Makes a 0-1 binding maplet.
+ * Makes a 0-1 binding map.
  */
-static zvalue mapletFrom1(zvalue k1, zvalue v1) {
-    return mapletFrom3(k1, v1, NULL, NULL, NULL, NULL);
+static zvalue mapFrom1(zvalue k1, zvalue v1) {
+    return mapFrom3(k1, v1, NULL, NULL, NULL, NULL);
 }
 
 /**
@@ -134,7 +134,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
         actuals = EMPTY_LISTLET;
     }
 
-    zvalue value = mapletFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
+    zvalue value = mapFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
 
     return datHighletFrom(STR_CALL, value);
 }
@@ -234,9 +234,9 @@ DEF_PARSE(binding) {
 }
 
 /**
- * Parses a `maplet` node.
+ * Parses a `map` node.
  */
-DEF_PARSE(maplet) {
+DEF_PARSE(map) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
@@ -260,9 +260,9 @@ DEF_PARSE(maplet) {
 }
 
 /**
- * Parses an `emptyMaplet` node.
+ * Parses an `emptyMap` node.
  */
-DEF_PARSE(emptyMaplet) {
+DEF_PARSE(emptyMap) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
@@ -357,7 +357,7 @@ DEF_PARSE(varDef) {
     zvalue expression = PARSE_OR_REJECT(expression);
 
     zvalue name = datHighletValue(identifier);
-    zvalue value = mapletFrom2(STR_NAME, name, STR_VALUE, expression);
+    zvalue value = mapFrom2(STR_NAME, name, STR_VALUE, expression);
     return datHighletFrom(STR_VAR_DEF, value);
 }
 
@@ -385,8 +385,8 @@ DEF_PARSE(atom) {
     if (result == NULL) { result = PARSE(string); }
     if (result == NULL) { result = PARSE(emptyList); }
     if (result == NULL) { result = PARSE(list); }
-    if (result == NULL) { result = PARSE(emptyMaplet); }
-    if (result == NULL) { result = PARSE(maplet); }
+    if (result == NULL) { result = PARSE(emptyMap); }
+    if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(uniqlet); }
     if (result == NULL) { result = PARSE(highlet); }
     if (result == NULL) { result = PARSE(function); }
@@ -552,7 +552,7 @@ DEF_PARSE(formal) {
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
 
-    return mapletFrom2(STR_NAME, datHighletValue(identifier),
+    return mapFrom2(STR_NAME, datHighletValue(identifier),
                        STR_REPEAT, repeat);
 }
 
@@ -614,7 +614,7 @@ DEF_PARSE(programBody) {
 
     PARSE(optSemicolons);
 
-    return mapletFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+    return mapFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
 }
 
 /**
@@ -632,7 +632,7 @@ DEF_PARSE(programDeclarations) {
         formals = NULL;
     }
 
-    return mapletFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
+    return mapFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
 }
 
 /**
@@ -654,7 +654,7 @@ DEF_PARSE(program) {
     zvalue value = PARSE(programBody); // This never fails.
 
     if (declarations != NULL) {
-        value = datMapletAdd(value, declarations);
+        value = datMapAdd(value, declarations);
     }
 
     return datHighletFrom(STR_FUNCTION, value);

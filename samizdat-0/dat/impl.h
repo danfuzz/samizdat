@@ -86,7 +86,7 @@ typedef struct {
 } DatList;
 
 /**
- * Maplet structure.
+ * Map structure.
  */
 typedef struct {
     /** Value header. */
@@ -94,7 +94,7 @@ typedef struct {
 
     /** List of mappings, in key-sorted order. */
     zmapping elems[0];
-} DatMaplet;
+} DatMap;
 
 /**
  * Uniqlet info.
@@ -194,14 +194,14 @@ bool datListEq(zvalue v1, zvalue v2);
 zorder datListOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares maplets for equality. Only called when the sizes are the same.
+ * Compares maps for equality. Only called when the sizes are the same.
  */
-bool datMapletEq(zvalue v1, zvalue v2);
+bool datMapEq(zvalue v1, zvalue v2);
 
 /**
- * Compares maplets for order.
+ * Compares maps for order.
  */
-zorder datMapletOrder(zvalue v1, zvalue v2);
+zorder datMapOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares uniqlets for order.
@@ -224,9 +224,9 @@ zorder datHighletOrder(zvalue v1, zvalue v2);
 void datListMark(zvalue value);
 
 /**
- * Marks maplet contents for garbage collection.
+ * Marks map contents for garbage collection.
  */
-void datMapletMark(zvalue value);
+void datMapMark(zvalue value);
 
 /**
  * Marks highlet contents for garbage collection.

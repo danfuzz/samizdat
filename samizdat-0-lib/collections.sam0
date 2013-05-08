@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Collection library functions: string, list, and maplet
+# Collection library functions: string, list, and map
 #
 # These are all grouped together because the functionality implemented
 # for each is similar to the others.
@@ -91,35 +91,35 @@ listPrepend = { value list ::
 
 
 #
-# Maplet
+# Map
 #
 
 # Documented in Samizdat Layer 0 spec.
 #
 # See comment in `listReduce` (above) about in-file ordering.
-mapletReduce = { base maplet function ::
-    <> genericReduce base { n :: <> mapletNth maplet n}
+mapReduce = { base map function ::
+    <> genericReduce base { n :: <> mapNth map n}
         { reduction mapping ::
             <> function reduction
-                (mapletNthValue mapping @0)
-                (mapletNthKey mapping @0)
+                (mapNthValue mapping @0)
+                (mapNthKey mapping @0)
         }
 };
 
 # Documented in Samizdat Layer 0 spec.
-mapletForEach = { maplet function ::
-    genericForEach { n :: <> mapletNth maplet n }
+mapForEach = { map function ::
+    genericForEach { n :: <> mapNth map n }
         { mapping ::
-            function (mapletNthValue mapping @0) (mapletNthKey mapping @0)
+            function (mapNthValue mapping @0) (mapNthKey mapping @0)
         }
 };
 
 # Documented in Samizdat Layer 0 spec.
-mapletMap = { maplet function ::
-    <> mapletReduce @[=] maplet
+mapMap = { map function ::
+    <> mapReduce @[=] map
         { reduction value key ::
             <> ifValue { <> function value key }
-                { newValue :: <> mapletPut reduction key newValue }
+                { newValue :: <> mapPut reduction key newValue }
                 { <> reduction }
         }
 };
@@ -157,9 +157,9 @@ stringMap = { string function ::
     @listMap = listMap
     @listPrepend = listPrepend
     @listReduce = listReduce
-    @mapletForEach = mapletForEach
-    @mapletMap = mapletMap
-    @mapletReduce = mapletReduce
+    @mapForEach = mapForEach
+    @mapMap = mapMap
+    @mapReduce = mapReduce
     @stringForEach = stringForEach
     @stringMap = stringMap
     @stringReduce = stringReduce

@@ -21,7 +21,7 @@ static const char *typeName(ztype type) {
         case DAT_INTLET:    return "integer";
         case DAT_STRINGLET: return "string";
         case DAT_LISTLET:   return "list";
-        case DAT_MAPLET:    return "maplet";
+        case DAT_MAPLET:    return "map";
         case DAT_UNIQLET:   return "uniqlet";
         case DAT_HIGHLET:   return "highlet";
     }
@@ -83,7 +83,7 @@ void datAssertList(zvalue value) {
 }
 
 /* Documented in header. */
-void datAssertMaplet(zvalue value) {
+void datAssertMap(zvalue value) {
     assertType(value, DAT_MAPLET);
 }
 

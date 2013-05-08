@@ -40,17 +40,17 @@ diffInteger = { recurse context v1 v2 ::
     <> report context v1 v2 @"Different integers."
 };
 
-# Diffs maplets.
-diffMaplet = { recurse context v1 v2 <out> ::
+# Diffs maps.
+diffMap = { recurse context v1 v2 <out> ::
     size1 = lowSize v1;
     size2 = lowSize v2;
 
     <> and
         { <> recurse @size size1 size2 }
         {
-            mapletForEach v1
+            mapForEach v1
                 { value key ::
-                    ifVoid { <> mapletGet v2 key }
+                    ifVoid { <> mapGet v2 key }
                         {
                             report (listAppend context key) v1 v2
                                 @"Key mismatch.";
@@ -60,9 +60,9 @@ diffMaplet = { recurse context v1 v2 <out> ::
             <> true
         }
         {
-            mapletForEach v1
+            mapForEach v1
                 { value key ::
-                    ifFalse { <> recurse @[@key=key] value (mapletGet v2 key) }
+                    ifFalse { <> recurse @[@key=key] value (mapGet v2 key) }
                         { <out> false }
                 };
             <> true
@@ -100,7 +100,7 @@ DIFF_FUNCTIONS = @[
     @highlet   = diffHighlet
     @integer    = diffInteger
     @list   = diffList
-    @maplet    = diffMaplet
+    @map    = diffMap
     @string = diffString
     @uniqlet   = diffUniqlet
 ];
@@ -129,7 +129,7 @@ innerDiff = { selfRef context v1 v2 ::
                         (format @"Types differ: %q %q" type1 type2)
                 }
                 {
-                    <> (mapletGet DIFF_FUNCTIONS type1) recurse innerContext
+                    <> (mapGet DIFF_FUNCTIONS type1) recurse innerContext
                         v1 v2
                 }
         }

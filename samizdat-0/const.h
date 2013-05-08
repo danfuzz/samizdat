@@ -40,7 +40,7 @@ extern zvalue STR_EMPTY;
 /** The canonical empty list value (`@[]`). */
 extern zvalue EMPTY_LISTLET;
 
-/** The canonical empty maplet value (`@[=]`). */
+/** The canonical empty map value (`@[=]`). */
 extern zvalue EMPTY_MAPLET;
 
 /**

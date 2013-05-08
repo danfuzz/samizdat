@@ -1,72 +1,72 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Maplets
+Maps
 -------
 
 <br><br>
 ### Primitive Definitions
 
-#### `mapletAdd maplets* <> maplet`
+#### `mapAdd maps* <> map`
 
-Returns a maplet consisting of the combination of the mappings of the
-argument maplets. For any keys in common between the maplets,
+Returns a map consisting of the combination of the mappings of the
+argument maps. For any keys in common between the maps,
 the lastmost argument's value is the one that ends up in the result.
 
-#### `mapletDel maplet key <> maplet`
+#### `mapDel map key <> map`
 
-Returns a maplet just like the one given as an argument, except that
+Returns a map just like the one given as an argument, except that
 the result does not have a binding for the key `key`. If the given
-maplet does not have `key` as a key, then this returns the given
-maplet as the result.
+map does not have `key` as a key, then this returns the given
+map as the result.
 
-#### `mapletGet maplet key notFound? <> . | ~.`
+#### `mapGet map key notFound? <> . | ~.`
 
 Returns the value mapped to the given key (an arbitrary value) in
-the given maplet. If there is no such mapping, then this
+the given map. If there is no such mapping, then this
 returns the `notFound` value (an arbitrary value) if supplied,
 or returns void if `notFound` was not supplied.
 
-#### `mapletHasKey maplet key <> boolean`
+#### `mapHasKey map key <> boolean`
 
-Returns `true` iff the given maplet has a mapping for the given key.
+Returns `true` iff the given map has a mapping for the given key.
 
-#### `mapletNth maplet n notFound? <> . | ~.`
+#### `mapNth map n notFound? <> . | ~.`
 
-Returns the `n`th (zero-based) mapping of the given maplet, if `n` is
-a valid integer index into the maplet. If `n` is not a valid index
+Returns the `n`th (zero-based) mapping of the given map, if `n` is
+a valid integer index into the map. If `n` is not a valid index
 (either an out-of-range integer, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied.
 
 The ordering of the mappings is by sort order of the keys.
 
-#### `mapletNthKey maplet n notFound? <> . | ~.`
+#### `mapNthKey map n notFound? <> . | ~.`
 
-Returns the key of the `n`th (zero-based) mapping of the given maplet,
-if `n` is a valid integer index into the maplet. If `n` is not a valid index
+Returns the key of the `n`th (zero-based) mapping of the given map,
+if `n` is a valid integer index into the map. If `n` is not a valid index
 (either an out-of-range integer, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied.
 
 The ordering of the mappings is by sort order of the keys.
 
-#### `mapletNthValue maplet n notFound? <> . | ~.`
+#### `mapNthValue map n notFound? <> . | ~.`
 
-Returns the value of the `n`th (zero-based) mapping of the given maplet,
-if `n` is a valid integer index into the maplet. If `n` is not a valid index
+Returns the value of the `n`th (zero-based) mapping of the given map,
+if `n` is a valid integer index into the map. If `n` is not a valid index
 (either an out-of-range integer, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied.
 
 The ordering of the mappings is by sort order of the keys.
 
-#### `mapletPut maplet key value <> maplet`
+#### `mapPut map key value <> map`
 
-Returns a maplet just like the given one, except with a new binding
+Returns a map just like the given one, except with a new binding
 for `key` to `value`. The result has a replacement for the existing
-binding for `key` in `maplet` if such a one existed, or has an
-additional binding in cases where `maplet` didn't already bind `key`.
+binding for `key` in `map` if such a one existed, or has an
+additional binding in cases where `map` didn't already bind `key`.
 These two scenarios can be easily differentiated by either noting a
 change in size (or not) between original and result, or by explicitly
 checking for the existence of `key` in the original.
@@ -75,16 +75,16 @@ checking for the existence of `key` in the original.
 <br><br>
 ### In-Language Definitions
 
-#### `mapletForEach maplet function <> ~.`
+#### `mapForEach map function <> ~.`
 
-Calls the given function for each mapping in the given maplet. The
-function is called with two arguments, a value from the maplet and
+Calls the given function for each mapping in the given map. The
+function is called with two arguments, a value from the map and
 its corresponding key (in that order). Always returns void.
 
-#### `mapletMap maplet function <> maplet`
+#### `mapMap map function <> map`
 
-Maps the values of a maplet using the given mapping function,
-resulting in a maplet whose keys are the same as the given maplet but
+Maps the values of a map using the given mapping function,
+resulting in a map whose keys are the same as the given map but
 whose values may differ. In key order, the function is called with
 two arguments representing the binding, a value and a key (in that
 order, because it is common enough to want to ignore the key). The
@@ -97,11 +97,11 @@ result may be smaller than the size of the argument.
 
 See note on `stringMap` about choice of argument order.
 
-#### `mapletReduce base maplet function <> . | ~.`
+#### `mapReduce base map function <> . | ~.`
 
-Reduces a maplet to a single value, given a base value and a reducer
+Reduces a map to a single value, given a base value and a reducer
 function, operating in key order. The given function is called on each
-maplet binding, with three arguments: the last (or base) reduction
+map binding, with three arguments: the last (or base) reduction
 result, the value associated with the binding, and its key. The
 function result becomes the reduction result, which is passed to the
 next call of `function` or becomes the return value of the call to

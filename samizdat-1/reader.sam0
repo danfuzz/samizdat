@@ -19,13 +19,13 @@
 # private non-dispatched functions.
 
 # Gets the cursor position.
-xAt = { state :: <> mapletGet state @at };
+xAt = { state :: <> mapGet state @at };
 
 # Gets the nth element.
-xNth = { state n :: <> (mapletGet state @nth) n };
+xNth = { state n :: <> (mapGet state @nth) n };
 
 # Gets the size.
-xSize = { state :: <> mapletGet state @size };
+xSize = { state :: <> mapGet state @size };
 
 # Gets the current cursor position.
 doAt = { yield state :: yield (xAt state) };
@@ -48,7 +48,7 @@ doRead = { yield state ::
         { value :: yield value }
         { yield() };
 
-    <> mapletPut state @at (iadd at @1);
+    <> mapPut state @at (iadd at @1);
 };
 
 # Resets the cursor to the given value. It is only valid to
@@ -60,7 +60,7 @@ doReset = { yield state resetAt ::
         { io0die (format @"Invalid reset value: %Q" resetAt) };
 
     yield();
-    <> mapletPut state @at resetAt;
+    <> mapPut state @at resetAt;
 };
 
 # Dispatch table.
@@ -74,13 +74,13 @@ READER_DISPATCH = @[
 
 # Performs method dispatch.
 readerDispatch = { yield state name rest* ::
-    <> apply (mapletGet READER_DISPATCH name) yield state rest
+    <> apply (mapGet READER_DISPATCH name) yield state rest
 };
 
 # Returns a lookahead-enabled reader. The given argument must be
 # either a list or a string.
 reader = { value ::
-    nth = mapletGet
+    nth = mapGet
         @[@list=listNth @string=stringNth]
         (lowType value);
     nthFunc = { n :: <> nth value n };

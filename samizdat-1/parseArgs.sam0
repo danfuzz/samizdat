@@ -31,14 +31,14 @@ parseArguments = filterRule
     { result ::
         optsErrors = listNth result @0;
         words = listNth result @2;
-        ifTrue { <> mapletGet optsErrors @errors }
+        ifTrue { <> mapGet optsErrors @errors }
             { io0Die @"Trouble with options." };
         ifTrue { <> eq (lowSize words) @0 }
             { io0Die @"Missing file name." };
         fileName = listNth words @0;
         args = listDelNth words @0;
         <> @[
-            @options = (mapletGet optsErrors @options)
+            @options = (mapGet optsErrors @options)
             @file = fileName
             @args = args
         ]
@@ -65,7 +65,7 @@ parseError = filterRule
         more = listNth result @2;
         value = apply stringAdd c0 c1 more;
         io0Note (format @"Unknown option: %Q" value);
-        <> { result :: <> mapletPut result @errors true }
+        <> { result :: <> mapPut result @errors true }
     };
 
 parseOption = filterRule
@@ -77,8 +77,8 @@ parseOption = filterRule
             { value :: <> value }
             { <> true };
         <> { result ::
-            options = mapletPut (mapletGet result @options) key value;
-            <> mapletPut result @options options
+            options = mapPut (mapGet result @options) key value;
+            <> mapPut result @options options
         }
     };
 

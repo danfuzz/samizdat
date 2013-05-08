@@ -172,12 +172,12 @@ charsRule = { chars ::
 # a single-character string of the matched character.
 charSetRule = { chars ::
     charSet = stringReduce @[=] chars
-        { result ch :: <> mapletPut result ch null };
+        { result ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
         ifValue { <> engine @peek }
             { ch ::
-                ifTrue { <> mapletHasKey charSet ch }
+                ifTrue { <> mapHasKey charSet ch }
                     {
                         engine @read;
                         <out> ch
@@ -191,12 +191,12 @@ charSetRule = { chars ::
 # returning a single-character string of the matched character.
 notCharSetRule = { chars ::
     charSet = stringReduce @[=] chars
-        { result ch :: <> mapletPut result ch null };
+        { result ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
         ifValue { <> engine @peek }
             { ch ::
-                ifFalse { <> mapletHasKey charSet ch }
+                ifFalse { <> mapHasKey charSet ch }
                     {
                         engine @read;
                         <out> ch
@@ -209,7 +209,7 @@ notCharSetRule = { chars ::
 pegEngine = { reader rules ::
     <> { name rest* ::
         <> ifTrue { <> eq name @rule }
-            { <> mapletGet rules (listNth rest @0) }
+            { <> mapGet rules (listNth rest @0) }
             { <> apply reader name rest }
     }
 };

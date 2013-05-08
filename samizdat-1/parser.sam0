@@ -64,7 +64,7 @@ parseTree = { rules tokens ::
 # Exported functions
 #
 
-# Given a token grammar and a tree grammar (both given as maplets of
+# Given a token grammar and a tree grammar (both given as maps of
 # name-to-rule bindings, return a combined parser that takes strings and
 # returns parsed programs. This assumes that the main token rule is `@file`
 # (to return the entire file as a list of parsed tokens) and the main

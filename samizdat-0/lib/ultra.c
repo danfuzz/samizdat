@@ -24,7 +24,7 @@ PRIM_IMPL(makeList) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeMaplet) {
+PRIM_IMPL(makeMap) {
     requireEven(argCount);
 
     zint size = argCount / 2;
@@ -35,7 +35,7 @@ PRIM_IMPL(makeMaplet) {
         mappings[i].value = args[i * 2 + 1];
     }
 
-    return datMapletAddArray(EMPTY_MAPLET, size, mappings);
+    return datMapAddArray(EMPTY_MAPLET, size, mappings);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

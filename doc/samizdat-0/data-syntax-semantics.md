@@ -97,23 +97,23 @@ more value representations, followed by a final `]`.
 ```
 
 
-### Maplet
+### Map
 
-A `maplet` is a sequence of zero or more mappings (also called bindings)
+A `map` is a sequence of zero or more mappings (also called bindings)
 from arbitrary keys to arbitrary values. Keys and values are both
 allowed to be any type of value. Notably, keys are *not* restricted to
 only being strings (or string-like things).
 
-Non-empty maplets are written as an initial `@[`, followed by one or
+Non-empty maps are written as an initial `@[`, followed by one or
 more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `=`, followed by the value
 representation.
 
-To avoid ambiguity with the empty list, the empty maplet is
+To avoid ambiguity with the empty list, the empty map is
 written as `@[=]`.
 
 ```
-@[=]                          # the empty maplet
+@[=]                          # the empty map
 @[@1=@"number one"]
 @[@blort = @"potion; the ability to see in the dark"
   @fizmo = @"spell; unclogs pipes"

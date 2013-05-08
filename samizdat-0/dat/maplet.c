@@ -15,25 +15,25 @@
  */
 
 /**
- * Allocates a maplet of the given size.
+ * Allocates a map of the given size.
  */
-static zvalue allocMaplet(zint size) {
+static zvalue allocMap(zint size) {
     return datAllocValue(DAT_MAPLET, size, size * sizeof(zmapping));
 }
 
 /**
- * Gets the elements array from a maplet.
+ * Gets the elements array from a map.
  */
-static zmapping *mapletElems(zvalue maplet) {
-    return ((DatMaplet *) maplet)->elems;
+static zmapping *mapElems(zvalue map) {
+    return ((DatMap *) map)->elems;
 }
 
 /**
- * Allocates and returns a maplet with the single given mapping.
+ * Allocates and returns a map with the single given mapping.
  */
-static zvalue mapletFrom1(zvalue key, zvalue value) {
-    zvalue result = allocMaplet(1);
-    zmapping *elems = mapletElems(result);
+static zvalue mapFrom1(zvalue key, zvalue value) {
+    zvalue result = allocMap(1);
+    zmapping *elems = mapElems(result);
 
     elems->key = key;
     elems->value = value;
@@ -41,17 +41,17 @@ static zvalue mapletFrom1(zvalue key, zvalue value) {
 }
 
 /**
- * Given a maplet, find the index of the given key. `maplet` must be a
- * maplet. Returns the index of the key or `~insertionIndex` (a
+ * Given a map, find the index of the given key. `map` must be a
+ * map. Returns the index of the key or `~insertionIndex` (a
  * negative number) if not found.
  */
-static zint mapletFind(zvalue maplet, zvalue key) {
-    datAssertMaplet(maplet);
+static zint mapFind(zvalue map, zvalue key) {
+    datAssertMap(map);
     datAssertValid(key);
 
-    zmapping *elems = mapletElems(maplet);
+    zmapping *elems = mapElems(map);
     zint min = 0;
-    zint max = maplet->size - 1;
+    zint max = map->size - 1;
 
     while (min <= max) {
         zint guess = (min + max) / 2;
@@ -84,9 +84,9 @@ static int mappingOrder(const void *m1, const void *m2) {
  */
 
 /* Documented in header. */
-bool datMapletEq(zvalue v1, zvalue v2) {
-    zmapping *e1 = mapletElems(v1);
-    zmapping *e2 = mapletElems(v2);
+bool datMapEq(zvalue v1, zvalue v2) {
+    zmapping *e1 = mapElems(v1);
+    zmapping *e2 = mapElems(v2);
     zint size = datSize(v1);
 
     for (zint i = 0; i < size; i++) {
@@ -99,9 +99,9 @@ bool datMapletEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder datMapletOrder(zvalue v1, zvalue v2) {
-    zmapping *e1 = mapletElems(v1);
-    zmapping *e2 = mapletElems(v2);
+zorder datMapOrder(zvalue v1, zvalue v2) {
+    zmapping *e1 = mapElems(v1);
+    zmapping *e2 = mapElems(v2);
     zint sz1 = datSize(v1);
     zint sz2 = datSize(v2);
     zint sz = (sz1 < sz2) ? sz1 : sz2;
@@ -130,9 +130,9 @@ zorder datMapletOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-void datMapletMark(zvalue value) {
+void datMapMark(zvalue value) {
     zint size = datSize(value);
-    zmapping *elems = mapletElems(value);
+    zmapping *elems = mapElems(value);
 
     for (zint i = 0; i < size; i++) {
         datMark(elems[i].key);
@@ -146,73 +146,73 @@ void datMapletMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datMapletEmpty(void) {
-    return allocMaplet(0);
+zvalue datMapEmpty(void) {
+    return allocMap(0);
 }
 
 /* Documented in header. */
-zvalue datMapletGet(zvalue maplet, zvalue key) {
-    zint index = mapletFind(maplet, key);
+zvalue datMapGet(zvalue map, zvalue key) {
+    zint index = mapFind(map, key);
 
-    return (index < 0) ? NULL : mapletElems(maplet)[index].value;
+    return (index < 0) ? NULL : mapElems(map)[index].value;
 }
 
 /* Documented in header. */
-zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value) {
+zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
     datAssertValid(value);
 
-    zint index = mapletFind(maplet, key);
-    zint size = datSize(maplet);
+    zint index = mapFind(map, key);
+    zint size = datSize(map);
 
     if (size == 0) {
-        return mapletFrom1(key, value);
+        return mapFrom1(key, value);
     }
 
     zvalue result;
 
     if (index >= 0) {
-        // The key exists in the given maplet, so we need to perform
+        // The key exists in the given map, so we need to perform
         // a replacement.
-        result = allocMaplet(size);
-        memcpy(mapletElems(result), mapletElems(maplet),
+        result = allocMap(size);
+        memcpy(mapElems(result), mapElems(map),
                size * sizeof(zmapping));
     } else {
         // The key wasn't found, so we need to insert a new one.
         index = ~index;
-        result = allocMaplet(size + 1);
-        memcpy(mapletElems(result), mapletElems(maplet),
+        result = allocMap(size + 1);
+        memcpy(mapElems(result), mapElems(map),
                index * sizeof(zmapping));
-        memcpy(mapletElems(result) + index + 1,
-               mapletElems(maplet) + index,
+        memcpy(mapElems(result) + index + 1,
+               mapElems(map) + index,
                (size - index) * sizeof(zmapping));
     }
 
-    mapletElems(result)[index].key = key;
-    mapletElems(result)[index].value = value;
+    mapElems(result)[index].key = key;
+    mapElems(result)[index].value = value;
     return result;
 }
 
 /* Documented in header. */
-zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings) {
-    datAssertMaplet(maplet);
+zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
+    datAssertMap(map);
 
     if (size == 0) {
-        return maplet;
+        return map;
     } else if (size == 1) {
-        return datMapletPut(maplet, mappings[0].key, mappings[0].value);
+        return datMapPut(map, mappings[0].key, mappings[0].value);
     }
 
-    zint mapletSize = datSize(maplet);
-    zint resultSize = mapletSize + size;
-    zvalue result = allocMaplet(resultSize);
-    zmapping *elems = mapletElems(result);
+    zint mapSize = datSize(map);
+    zint resultSize = mapSize + size;
+    zvalue result = allocMap(resultSize);
+    zmapping *elems = mapElems(result);
 
     // Add all the mappings to the result, and sort it using mergesort.
     // Mergesort is stable and operates best on sorted data, and as it
-    // happens the starting maplet is sorted.
+    // happens the starting map is sorted.
 
-    memcpy(elems, mapletElems(maplet), mapletSize * sizeof(zmapping));
-    memcpy(&elems[mapletSize], mappings, size * sizeof(zmapping));
+    memcpy(elems, mapElems(map), mapSize * sizeof(zmapping));
+    memcpy(&elems[mapSize], mappings, size * sizeof(zmapping));
     mergesort(elems, resultSize, sizeof(zmapping), mappingOrder);
 
     // Remove all but the last of any sequence of equal-keys mappings.
@@ -237,34 +237,34 @@ zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings) {
 }
 
 /* Documented in header. */
-zvalue datMapletAdd(zvalue maplet1, zvalue maplet2) {
-    datAssertMaplet(maplet1);
-    datAssertMaplet(maplet2);
+zvalue datMapAdd(zvalue map1, zvalue map2) {
+    datAssertMap(map1);
+    datAssertMap(map2);
 
-    zint size1 = datSize(maplet1);
-    zint size2 = datSize(maplet2);
+    zint size1 = datSize(map1);
+    zint size2 = datSize(map2);
 
     if (size1 == 0) {
-        return maplet2;
+        return map2;
     } else if (size2 == 0) {
-        return maplet1;
+        return map1;
     }
 
-    return datMapletAddArray(maplet1, size2, mapletElems(maplet2));
+    return datMapAddArray(map1, size2, mapElems(map2));
 }
 
 /* Documented in header. */
-zvalue datMapletDel(zvalue maplet, zvalue key) {
-    zint index = mapletFind(maplet, key);
+zvalue datMapDel(zvalue map, zvalue key) {
+    zint index = mapFind(map, key);
 
     if (index < 0) {
-        return maplet;
+        return map;
     }
 
-    zint size = datSize(maplet) - 1;
-    zvalue result = allocMaplet(size);
-    zmapping *elems = mapletElems(result);
-    zmapping *oldElems = mapletElems(maplet);
+    zint size = datSize(map) - 1;
+    zvalue result = allocMap(size);
+    zmapping *elems = mapElems(result);
+    zmapping *oldElems = mapElems(map);
 
     memcpy(elems, oldElems, index * sizeof(zmapping));
     memcpy(elems + index, oldElems + index + 1,
@@ -273,41 +273,41 @@ zvalue datMapletDel(zvalue maplet, zvalue key) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMapletNth(zvalue maplet, zint n) {
-    datAssertMaplet(maplet);
+zvalue datMapNth(zvalue map, zint n) {
+    datAssertMap(map);
 
-    if (!datHasNth(maplet, n)) {
+    if (!datHasNth(map, n)) {
         return NULL;
     }
 
-    if (datSize(maplet) == 1) {
-        return maplet;
+    if (datSize(map) == 1) {
+        return map;
     }
 
-    zmapping *mapping = &mapletElems(maplet)[n];
-    return mapletFrom1(mapping->key, mapping->value);
+    zmapping *mapping = &mapElems(map)[n];
+    return mapFrom1(mapping->key, mapping->value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMapletNthKey(zvalue maplet, zint n) {
-    datAssertMaplet(maplet);
-    datAssertNth(maplet, n);
+zvalue datMapNthKey(zvalue map, zint n) {
+    datAssertMap(map);
+    datAssertNth(map, n);
 
-    if (!datHasNth(maplet, n)) {
+    if (!datHasNth(map, n)) {
         return NULL;
     }
 
-    return mapletElems(maplet)[n].key;
+    return mapElems(map)[n].key;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMapletNthValue(zvalue maplet, zint n) {
-    datAssertMaplet(maplet);
-    datAssertNth(maplet, n);
+zvalue datMapNthValue(zvalue map, zint n) {
+    datAssertMap(map);
+    datAssertNth(map, n);
 
-    if (!datHasNth(maplet, n)) {
+    if (!datHasNth(map, n)) {
         return NULL;
     }
 
-    return mapletElems(maplet)[n].value;
+    return mapElems(map)[n].value;
 }

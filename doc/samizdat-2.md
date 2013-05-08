@@ -189,7 +189,7 @@ unaryPostfixExpression ::=
 
 atom ::=
     varRef | integer | [:@integer:] | string | [:@string:] |
-    emptyList | list | emptyMaplet | maplet |
+    emptyList | list | emptyMap | map |
     uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever choice matched>
 

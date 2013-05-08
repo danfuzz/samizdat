@@ -22,7 +22,7 @@ program ::= (programDeclarations [:@"::":])? programBody ;
 ;
 # result: [:
 #             @function
-#             (mapletAdd programDeclarations programBody)
+#             (mapAdd programDeclarations programBody)
 #         :]
 
 programDeclarations ::= formal* yieldDef? ;
@@ -69,7 +69,7 @@ callExpression ::= atom atom+ ;
 
 atom ::=
     varRef | integer | string |
-    emptyList | list | emptyMaplet | maplet |
+    emptyList | list | emptyMap | map |
     uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever choice matched>
 
@@ -94,11 +94,11 @@ emptyList ::= [:@"@":] [:@"[":] [:@"]":] ;
 list ::= [:@"@":] [:@"[":] atom+ [:@"]":] ;
 # result: makeCall [:@varRef @makeList:] atom+
 
-emptyMaplet ::= [:@"@":] [:@"[":] [:@"=":] [:@"]":] ;
+emptyMap ::= [:@"@":] [:@"[":] [:@"=":] [:@"]":] ;
 # result: [:@literal @[=]:]
 
-maplet ::= [:@"@":] [:@"[":] binding+ [:@"]":] ;
-# result: apply makeCall [:@varRef @makeMaplet:] (lisletAdd binding+)
+map ::= [:@"@":] [:@"[":] binding+ [:@"]":] ;
+# result: apply makeCall [:@varRef @makeMap:] (lisletAdd binding+)
 
 binding ::= atom [:@"=":] atom ;
 # result: @[atom atom] # key then value

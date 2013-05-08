@@ -16,27 +16,27 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletAdd) {
+PRIM_IMPL(mapAdd) {
     zvalue result = EMPTY_MAPLET;
 
     for (zint i = 0; i < argCount; i++) {
-        result = datMapletAdd(result, args[i]);
+        result = datMapAdd(result, args[i]);
     }
 
     return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletDel) {
+PRIM_IMPL(mapDel) {
     requireExactly(argCount, 2);
-    return datMapletDel(args[0], args[1]);
+    return datMapDel(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletGet) {
+PRIM_IMPL(mapGet) {
     requireRange(argCount, 2, 3);
 
-    zvalue result = datMapletGet(args[0], args[1]);
+    zvalue result = datMapGet(args[0], args[1]);
 
     if (result == NULL) {
         return (argCount == 3) ? args[2] : NULL;
@@ -46,28 +46,28 @@ PRIM_IMPL(mapletGet) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletHasKey) {
+PRIM_IMPL(mapHasKey) {
     requireExactly(argCount, 2);
-    return constBooleanFromBool(datMapletGet(args[0], args[1]) != NULL);
+    return constBooleanFromBool(datMapGet(args[0], args[1]) != NULL);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletNth) {
-    return doNth(datMapletNth, argCount, args);
+PRIM_IMPL(mapNth) {
+    return doNth(datMapNth, argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletNthKey) {
-    return doNth(datMapletNthKey, argCount, args);
+PRIM_IMPL(mapNthKey) {
+    return doNth(datMapNthKey, argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletNthValue) {
-    return doNth(datMapletNthValue, argCount, args);
+PRIM_IMPL(mapNthValue) {
+    return doNth(datMapNthValue, argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapletPut) {
+PRIM_IMPL(mapPut) {
     requireExactly(argCount, 3);
-    return datMapletPut(args[0], args[1], args[2]);
+    return datMapPut(args[0], args[1], args[2]);
 }

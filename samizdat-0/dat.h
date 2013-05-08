@@ -111,10 +111,10 @@ void datAssertList(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a maplet. If not, this aborts the process
+ * furthermore that it is a map. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertMaplet(zvalue value);
+void datAssertMap(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -307,68 +307,68 @@ void datArrayFromList(zvalue *result, zvalue list);
 
 
 /*
- * Maplet Functions
+ * Map Functions
  */
 
 /**
- * Gets an empty maplet value, i.e. `@[=]`. Note that this can return
+ * Gets an empty map value, i.e. `@[=]`. Note that this can return
  * a different allocated value every time.
  */
-zvalue datMapletEmpty(void);
+zvalue datMapEmpty(void);
 
 /**
- * Given a maplet, find the mapping of the given key and return the
- * corresponding value, or `NULL` if there is no such key. `maplet`
- * must be a maplet, and `key` must be a valid value.
+ * Given a map, find the mapping of the given key and return the
+ * corresponding value, or `NULL` if there is no such key. `map`
+ * must be a map, and `key` must be a valid value.
  */
-zvalue datMapletGet(zvalue maplet, zvalue key);
+zvalue datMapGet(zvalue map, zvalue key);
 
 /**
- * Given a maplet, returns the `n`th mapping. `maplet` must be a
- * maplet, and `n` must be `< datSize(value)`. Mappings are returned
- * as single-element maplets. Maplet ordering is by key.
+ * Given a map, returns the `n`th mapping. `map` must be a
+ * map, and `n` must be `< datSize(value)`. Mappings are returned
+ * as single-element maps. Map ordering is by key.
  */
-zvalue datMapletNth(zvalue maplet, zint n);
+zvalue datMapNth(zvalue map, zint n);
 
 /**
- * Given a maplet, returns the `n`th key. `maplet` must be a
- * maplet, and `n` must be `< datSize(value)`. Maplet ordering is by key.
+ * Given a map, returns the `n`th key. `map` must be a
+ * map, and `n` must be `< datSize(value)`. Map ordering is by key.
  */
-zvalue datMapletNthKey(zvalue maplet, zint n);
+zvalue datMapNthKey(zvalue map, zint n);
 
 /**
- * Given a maplet, returns the `n`th value. `maplet` must be a
- * maplet, and `n` must be `< datSize(value)`. Maplet ordering is by key.
+ * Given a map, returns the `n`th value. `map` must be a
+ * map, and `n` must be `< datSize(value)`. Map ordering is by key.
  */
-zvalue datMapletNthValue(zvalue maplet, zint n);
+zvalue datMapNthValue(zvalue map, zint n);
 
 /**
- * Gets the maplet resulting from putting the given mapping into the
- * given maplet. This can either add a new mapping or replace an
+ * Gets the map resulting from putting the given mapping into the
+ * given map. This can either add a new mapping or replace an
  * existing mapping.
  */
-zvalue datMapletPut(zvalue maplet, zvalue key, zvalue value);
+zvalue datMapPut(zvalue map, zvalue key, zvalue value);
 
 /**
- * Gets the maplet resulting from putting the all the given mappings
- * into the given maplet, in the order given (so, in particular, higher-index
+ * Gets the map resulting from putting the all the given mappings
+ * into the given map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
- * The effect is identical to calling a chain of `datMapletPut()`s on each
+ * The effect is identical to calling a chain of `datMapPut()`s on each
  * of the mappings in order.
  */
-zvalue datMapletAddArray(zvalue maplet, zint size, const zmapping *mappings);
+zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings);
 
 /**
- * Combines the bindings of the two given maplets into a new maplet.
+ * Combines the bindings of the two given maps into a new map.
  * For overlapping keys between the two, the second argument "wins".
  */
-zvalue datMapletAdd(zvalue maplet1, zvalue maplet2);
+zvalue datMapAdd(zvalue map1, zvalue map2);
 
 /**
- * Gets a maplet resulting from the removal of the given key from the
- * given maplet.
+ * Gets a map resulting from the removal of the given key from the
+ * given map.
  */
-zvalue datMapletDel(zvalue maplet, zvalue key);
+zvalue datMapDel(zvalue map, zvalue key);
 
 
 /*

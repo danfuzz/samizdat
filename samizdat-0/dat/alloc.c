@@ -387,7 +387,7 @@ void datMark(zvalue value) {
 
     switch (value->type) {
         case DAT_LISTLET: { datListMark(value); break; }
-        case DAT_MAPLET:  { datMapletMark(value);  break; }
+        case DAT_MAPLET:  { datMapMark(value);  break; }
         case DAT_UNIQLET: { datUniqletMark(value); break; }
         case DAT_HIGHLET: { datHighletMark(value); break; }
         default: {

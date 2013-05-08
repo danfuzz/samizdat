@@ -21,7 +21,7 @@ a size, defined as follows:
 
 * `list` &mdash; the number of elements.
 
-* `maplet` &mdash; the number of mappings (bindings).
+* `map` &mdash; the number of mappings (bindings).
 
 * `uniqlet` &mdash; always `@0`.
 
@@ -31,7 +31,7 @@ a size, defined as follows:
 #### `lowType value <> string`
 
 Returns the type name of the low-layer type of the given value. The
-result will be one of: `@integer` `@string` `@list` `@maplet`
+result will be one of: `@integer` `@string` `@list` `@map`
 `@uniqlet` `@highlet`
 
 
@@ -50,9 +50,9 @@ Returns `true` iff the given value is an integer.
 
 Returns `true` iff the given value is a list.
 
-#### `isMaplet value <> boolean`
+#### `isMap value <> boolean`
 
-Returns `true` iff the given value is a maplet.
+Returns `true` iff the given value is a map.
 
 #### `isString value <> boolean`
 

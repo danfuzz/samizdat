@@ -50,7 +50,7 @@ will be returned, or one of `.` `~.` `. | ~.` as described in
 * [Integers](library-integer.md)
 * [Strings](library-string.md)
 * [Lists](library-list.md)
-* [Maplets](library-maplet.md)
+* [Maps](library-map.md)
 * [Highlets](library-highlet.md)
 * [Functions And Code](library-code.md)
 * [I/O](library-io.md)

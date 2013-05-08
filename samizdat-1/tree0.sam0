@@ -51,16 +51,16 @@ parseBinding = filterRule
         <> @[(listNth result @0) (listNth result @2)]
     };
 
-# Parses a `maplet` node.
-parseMaplet = filterRule
+# Parses a `map` node.
+parseMap = filterRule
     (seqRule [:@"@":] [:@"[":] (plusRule @binding) [:@"]":])
     { result ::
         bindings = apply listAdd (listNth result @2);
-        <> apply makeCall [:@varRef @makeMaplet:] bindings
+        <> apply makeCall [:@varRef @makeMap:] bindings
     };
 
-# Parses a `emptyMaplet` node.
-parseEmptyMaplet = filterRule
+# Parses a `emptyMap` node.
+parseEmptyMap = filterRule
     (seqRule [:@"@":] [:@"[":] [:@"=":] [:@"]":])
     { <> [:@literal @[=]:] };
 
@@ -114,7 +114,7 @@ parseParenExpression = filterRule
 
 # Parses an `atom` node.
 parseAtom = orRule @varRef @integer @string
-    @emptyList @list @emptyMaplet @maplet
+    @emptyList @list @emptyMap @map
     @uniqlet @highlet @function @parenExpression;
 
 # Parses a `callExpression` node.
@@ -182,10 +182,10 @@ parseFormal = filterRule
                     { repeatToken :: <> @[@repeat = repeatToken] }
                     { <> @[=] }
             }))
-    { result :: <> apply mapletAdd result };
+    { result :: <> apply mapAdd result };
 
 # `programBody` node helper: Parses `(statement | nonlocalExit | yield)?`,
-# yielding a maplet that maps `@yield` and `@statements`. Always succeeds.
+# yielding a map that maps `@yield` and `@statements`. Always succeeds.
 parseProgramBody1 = filterRule
     (optRule
         (orRule
@@ -215,8 +215,8 @@ parseProgramBody = filterRule
         mostStatements = listNth result @1;
         lastClause = listNth result @2;
         statements = listAdd mostStatements
-            (mapletGet lastClause @statements);
-        <> mapletPut lastClause @statements statements;
+            (mapGet lastClause @statements);
+        <> mapPut lastClause @statements statements;
     };
 
 # Parses a `programDeclarations` node.
@@ -234,10 +234,10 @@ parseProgramDeclarations = filterRule
                     { yieldDef :: <> @[@yieldDef = yieldDef] }
                     { <> @[=] }
             }))
-    { result :: <> apply mapletAdd result };
+    { result :: <> apply mapAdd result };
 
 # `program` node helper: Parses `(programDeclarations [:@"::":])?`, yielding
-# a maplet (possibly empty).
+# a map (possibly empty).
 parseProgram1 = filterRule
     (optRule (seqRule @programDeclarations [:@"::":]))
     { result ::
@@ -249,15 +249,15 @@ parseProgram1 = filterRule
 # Parses a `program` node.
 parseProgram = filterRule
     (seqRule parseProgram1 @programBody)
-    { result :: <> [:@function (apply mapletAdd result):] };
+    { result :: <> [:@function (apply mapAdd result):] };
 
 # Parses a `function` node.
 parseFunction = filterRule
     (seqRule [:@"{":] @program [:@"}":])
     { result :: <> listNth result @1 };
 
-# Maplet of all of the parser rules. Any time a parser rule is needed,
-# it's looked up through this maplet by name, which trivially allows for
+# Map of all of the parser rules. Any time a parser rule is needed,
+# it's looked up through this map by name, which trivially allows for
 # mutually-recursive rules (since the rules refer directly to names and
 # not actual functions).
 TREE0_RULES = @[
@@ -265,14 +265,14 @@ TREE0_RULES = @[
     @binding = parseBinding
     @callExpression = parseCallExpression
     @emptyList = parseEmptyList
-    @emptyMaplet = parseEmptyMaplet
+    @emptyMap = parseEmptyMap
     @expression = parseExpression
     @formal = parseFormal
     @function = parseFunction
     @highlet = parseHighlet
     @integer = parseInteger
     @list = parseList
-    @maplet = parseMaplet
+    @map = parseMap
     @nonlocalExit = parseNonlocalExit
     @parenExpression = parseParenExpression
     @program = parseProgram

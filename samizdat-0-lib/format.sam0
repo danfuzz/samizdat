@@ -22,7 +22,7 @@ adornIf = { adorn before value after ::
         { <> value }
 };
 
-# These are all the integer digits, as a maplet from digit values to
+# These are all the integer digits, as a map from digit values to
 # strings.
 INTEGER_CHARS =
     @[ @0=@"0" @1=@"1" @2=@"2" @3=@"3" @4=@"4"
@@ -36,14 +36,14 @@ integerBody = { start value <out> ::
         value = listNth result @1;
         <> ifTrue { <> ne value @0 }
             {
-                digit = mapletGet INTEGER_CHARS (imod value @10);
+                digit = mapGet INTEGER_CHARS (imod value @10);
                 <> @[(stringAdd digit text) (idiv value @10)];
             }
             { <out> stringAdd start text }
     }
 };
 
-# Maplet from integer sign values to the appropriate stringifier for each.
+# Map from integer sign values to the appropriate stringifier for each.
 INTLET_SIGNS = @[
     @-1 = { integer :: <> integerBody @"-" (ineg integer) }
     @0  = { <> @"0" }
@@ -52,7 +52,7 @@ INTLET_SIGNS = @[
 
 # Stringifies an integer.
 doInteger = { recurse integer adorn ::
-    result = (mapletGet INTLET_SIGNS (integerSign integer)) integer;
+    result = (mapGet INTLET_SIGNS (integerSign integer)) integer;
     <> adornIf adorn @"@" result @""
 };
 
@@ -72,7 +72,7 @@ stringHexEscape = { ch ::
     <> stringAdd @"\\x" (integerHex (integerFromString ch)) @";"
 };
 
-# Maplet of special-case characters to their stringified forms.
+# Map of special-case characters to their stringified forms.
 SPECIAL_CHARS = @[
     CHAR_0 = @"\\0"
     @"\n"  = @"\\n"
@@ -83,7 +83,7 @@ SPECIAL_CHARS = @[
 # Helper for stringifying strings: Returns the converted form of the
 # given character.
 stringChar = { ch ::
-    <> ifValue { <> mapletGet SPECIAL_CHARS ch }
+    <> ifValue { <> mapGet SPECIAL_CHARS ch }
         { special :: <> special }
         {
             # This checks for the ranges of nonprinting control characters.
@@ -98,10 +98,10 @@ stringChar = { ch ::
 # These are all the characters which are allowed to start an identifier.
 IDENTIFIER_STARTS = stringReduce @[=]
     @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
-    { result ch :: <> mapletPut result ch true };
+    { result ch :: <> mapPut result ch true };
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = mapletAdd IDENTIFIER_STARTS
+IDENTIFIER_CHARS = mapAdd IDENTIFIER_STARTS
     @[ @"0"=true @"1"=true @"2"=true @"3"=true @"4"=true
        @"5"=true @"6"=true @"7"=true @"8"=true @"9"=true ];
 
@@ -110,11 +110,11 @@ IDENTIFIER_CHARS = mapletAdd IDENTIFIER_STARTS
 isIdentifier = { string <out> ::
     <> and
         { <> gt (lowSize string) @0 }
-        { <> mapletGet IDENTIFIER_STARTS (stringNth string @0) false }
+        { <> mapGet IDENTIFIER_STARTS (stringNth string @0) false }
         {
             stringForEach string
                 { ch ::
-                    ifFalse { <> mapletGet IDENTIFIER_CHARS ch false }
+                    ifFalse { <> mapGet IDENTIFIER_CHARS ch false }
                         { <out> false }
                 };
             <> true
@@ -145,9 +145,9 @@ doList = { recurse list adorn ::
     <> adornIf adorn @"@[" body @"]"
 };
 
-# Stringifies a maplet.
-doMaplet = { recurse maplet adorn ::
-    body = mapletReduce @"" maplet
+# Stringifies a map.
+doMap = { recurse map adorn ::
+    body = mapReduce @"" map
         { reduction value key ::
             <> stringAdd
                 reduction
@@ -195,7 +195,7 @@ STRINGIFIERS = @[
     @highlet   = doHighlet
     @integer    = doInteger
     @list   = doList
-    @maplet    = doMaplet
+    @map    = doMap
     @string = doString
     @uniqlet   = doUniqlet
 ];
@@ -207,7 +207,7 @@ sourceStringGeneral = { selfRef value adorn ::
     # *Samizdat Layer 0* doesn't allow use-before-def.
     recurse = { value :: <> selfRef selfRef value true };
 
-    stringifier = mapletGet STRINGIFIERS (lowType value) doUnknown;
+    stringifier = mapGet STRINGIFIERS (lowType value) doUnknown;
     <> stringifier recurse value adorn
 };
 
@@ -228,28 +228,28 @@ sourceStringUnadorned = { value ::
 
 # Gets the current format string position.
 xFmtAt = { state ::
-    <> (mapletGet state @fmtAt)
+    <> (mapGet state @fmtAt)
 };
 
 # Peeks at the current format string character.
 xPeek = { state ::
-    <> stringNth (mapletGet state @fmt) (xFmtAt state)
+    <> stringNth (mapGet state @fmt) (xFmtAt state)
 };
 
 # Peeks at the next format string character.
 xPeek1 = { state ::
     at = iadd @1 (xFmtAt state);
-    <> stringNth (mapletGet state @fmt) at;
+    <> stringNth (mapGet state @fmt) at;
 };
 
 # Gets the current argument consumption position.
 xArgsAt = { state ::
-    <> (mapletGet state @argsAt)
+    <> (mapGet state @argsAt)
 };
 
 # Gets the current argument.
 xArg = { state ::
-    <> ifValue { <> listNth (mapletGet state @args) (xArgsAt state) }
+    <> ifValue { <> listNth (mapGet state @args) (xArgsAt state) }
         { value :: <> value }
         { <> @"(missing argument)" }
 };
@@ -258,8 +258,8 @@ xArg = { state ::
 doPercent = { yield state ::
     yield @"%";
 
-    fmtAt = iadd @2 (mapletGet state @fmtAt);
-    <> mapletPut state @fmtAt fmtAt;
+    fmtAt = iadd @2 (mapGet state @fmtAt);
+    <> mapPut state @fmtAt fmtAt;
 };
 
 # Formats a literal quoted argument.
@@ -268,7 +268,7 @@ doLiteral = { yield state ::
 
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
-    <> mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
+    <> mapAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
 };
 
 # Formats a literal quoted argument, without top-level adornment.
@@ -277,7 +277,7 @@ doUnadornedLiteral = { yield state ::
 
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
-    <> mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
+    <> mapAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
 };
 
 # Formats a string argument.
@@ -286,7 +286,7 @@ doString = { yield state ::
 
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
-    <> mapletAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
+    <> mapAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
 };
 
 # Mapping from format escape characters to their respective handler functions.
@@ -301,15 +301,15 @@ FORMATTERS = @[
 doPlain = { yield state ch ::
     yield ch;
 
-    fmtAt = iadd @1 (mapletGet state @fmtAt);
-    <> mapletPut state @fmtAt fmtAt;
+    fmtAt = iadd @1 (mapGet state @fmtAt);
+    <> mapPut state @fmtAt fmtAt;
 };
 
 # Formats an arbitrary escape.
 doEscape = { yield state ::
     <> ifValue { <> xPeek1 state }
         { ch ::
-            <> ifValue { <> mapletGet FORMATTERS ch }
+            <> ifValue { <> mapGet FORMATTERS ch }
                 { formatter :: <> formatter yield state ch }
                 { <> doPercent yield state }
         }

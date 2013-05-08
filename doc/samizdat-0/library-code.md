@@ -69,7 +69,7 @@ which is a parse tree as specified in this document. It is valid for
 the expression to yield void, in which case this function returns
 void. Evaluation is performed in an execution context that includes
 all of the variable bindings indicated by `context`, which must be a
-maplet.
+map.
 
 Very notably, the result of calling `sam0Tree` is valid as the
 `expressionNode` argument here.

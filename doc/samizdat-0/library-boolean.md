@@ -23,7 +23,7 @@ standard meaning of those values:
 Ordering is calculated as follows:
 
 The major order is by type &mdash; `integer < string < list <
-maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
+map < uniqlet < highlet` &mdash; and minor order is type-dependant.
 
 * Integers order by integer value.
 
@@ -31,7 +31,7 @@ maplet < uniqlet < highlet` &mdash; and minor order is type-dependant.
   comparison, with a strict prefix always ordering before its
   longer brethren.
 
-* Maplets order by first comparing corresponding ordered lists
+* Maps order by first comparing corresponding ordered lists
   of keys with the same rules as list comparison. If the key
   lists are identical, then the result is the comparison of
   corresponding lists of values, in key order.

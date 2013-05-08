@@ -45,14 +45,14 @@ readLibraryFile = { name ::
     <> READER @[@"samizdat-0-lib" (stringAdd name @".sam0")]
 };
 
-# Reads all the library files, returning a maplet from names to contents.
+# Reads all the library files, returning a map from names to contents.
 readAllLibraryFiles = {
     # Use the manifest to figure out what all to read.
     manifestProgram = sam1Tree (readLibraryFile @manifest);
     manifest = (sam0Eval (makeLibrary LIBRARY) manifestProgram)();
 
     <> listReduce @[=] manifest { result name ::
-        <> mapletPut result name (readLibraryFile name)
+        <> mapPut result name (readLibraryFile name)
     }
 };
 
@@ -62,11 +62,11 @@ makeCoreLibrary = {
     # Make the core library context that will be used to load the embedded
     # core library. The only difference between this and the original core
     # library is the replacement of `sam0Tree` with `sam1Tree`.
-    subLibrary = makeLibrary (mapletPut LIBRARY @sam0Tree sam1Tree);
+    subLibrary = makeLibrary (mapPut LIBRARY @sam0Tree sam1Tree);
 
     libraryFiles = readAllLibraryFiles();
 
-    mainProgram = sam1Tree (mapletGet libraryFiles @main);
+    mainProgram = sam1Tree (mapGet libraryFiles @main);
     mainFunction = sam0Eval subLibrary mainProgram;
     <> mainFunction libraryFiles
 };
@@ -77,10 +77,10 @@ makeCoreLibrary = {
 # arguments as-is.
 run = { args* ::
     parsedArgs = parseArgs args;
-    options = mapletGet parsedArgs @options;
-    validate = mapletGet options @validate false;
-    file = mapletGet parsedArgs @file;
-    argsPerSe = mapletGet parsedArgs @args;
+    options = mapGet parsedArgs @options;
+    validate = mapGet options @validate false;
+    file = mapGet parsedArgs @file;
+    argsPerSe = mapGet parsedArgs @args;
 
     library = ifTrue { <> validate }
         {

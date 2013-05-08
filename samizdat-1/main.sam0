@@ -38,7 +38,7 @@ loadFile = { ctx name ::
 # ones.
 loadAllLibraries = { ctx rest* ::
     <> listReduce ctx rest { result elem ::
-        <> mapletAdd result (loadFile result elem);
+        <> mapAdd result (loadFile result elem);
     }
 };
 
@@ -47,4 +47,4 @@ CONTEXT = loadAllLibraries (makeLibrary LIBRARY)
     @diff @reader @peg @parser @parseArgs @token0 @tree0 @run;
 
 # Call the `run` function to do the final deed.
-<> apply (mapletGet CONTEXT @run) ARGS
+<> apply (mapGet CONTEXT @run) ARGS

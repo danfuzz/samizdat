@@ -38,7 +38,7 @@ bool datEq(zvalue v1, zvalue v2) {
         case DAT_INTLET:    return datIntegerEq(v1, v2);
         case DAT_STRINGLET: return datStringEq(v1, v2);
         case DAT_LISTLET:   return datListEq(v1, v2);
-        case DAT_MAPLET:    return datMapletEq(v1, v2);
+        case DAT_MAPLET:    return datMapEq(v1, v2);
         case DAT_UNIQLET:   return false;
         case DAT_HIGHLET:   return datHighletEq(v1, v2);
     }
@@ -68,7 +68,7 @@ zorder datOrder(zvalue v1, zvalue v2) {
         case DAT_INTLET:    return datIntegerOrder(v1, v2);
         case DAT_STRINGLET: return datStringOrder(v1, v2);
         case DAT_LISTLET:   return datListOrder(v1, v2);
-        case DAT_MAPLET:    return datMapletOrder(v1, v2);
+        case DAT_MAPLET:    return datMapOrder(v1, v2);
         case DAT_UNIQLET:   return datUniqletOrder(v1, v2);
         case DAT_HIGHLET:   return datHighletOrder(v1, v2);
     }
