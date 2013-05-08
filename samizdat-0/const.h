@@ -38,10 +38,10 @@ extern zvalue CONST_TRUE;
 extern zvalue STR_EMPTY;
 
 /** The canonical empty list value (`@[]`). */
-extern zvalue EMPTY_LISTLET;
+extern zvalue EMPTY_LIST;
 
 /** The canonical empty map value (`@[=]`). */
-extern zvalue EMPTY_MAPLET;
+extern zvalue EMPTY_MAP;
 
 /**
  * Initializes the constants, if necessary.

@@ -164,7 +164,7 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
                     value = datListFromArray(1, &args[argAt]);
                     argAt++;
                 } else {
-                    value = EMPTY_LISTLET;
+                    value = EMPTY_LIST;
                 }
             } else {
                 die("Unknown repeat modifier.");

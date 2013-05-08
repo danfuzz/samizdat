@@ -17,7 +17,7 @@
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapAdd) {
-    zvalue result = EMPTY_MAPLET;
+    zvalue result = EMPTY_MAP;
 
     for (zint i = 0; i < argCount; i++) {
         result = datMapAdd(result, args[i]);

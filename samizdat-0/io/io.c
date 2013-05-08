@@ -58,12 +58,12 @@ static zvalue stringFromPathList(zvalue pathList) {
  */
 static zvalue pathListFromAbsolute(const char *path) {
     if (path[0] == '\0') {
-        return EMPTY_LISTLET;
+        return EMPTY_LIST;
     } else if (path[0] != '/') {
         die("Invalid absolute path: \"%s\"", path);
     }
 
-    zvalue result = EMPTY_LISTLET;
+    zvalue result = EMPTY_LIST;
     const char *at = path + 1; // +1 to skip the initial '/'.
     for (;;) {
         const char *slashAt = strchr(at, '/');

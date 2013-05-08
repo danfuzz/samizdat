@@ -31,10 +31,10 @@ zvalue CONST_FALSE = NULL;
 zvalue CONST_TRUE = NULL;
 
 /* Documented in header. */
-zvalue EMPTY_LISTLET = NULL;
+zvalue EMPTY_LIST = NULL;
 
 /* Documented in header. */
-zvalue EMPTY_MAPLET = NULL;
+zvalue EMPTY_MAP = NULL;
 
 
 /*
@@ -60,11 +60,11 @@ void constInit(void) {
 
     CONST_FALSE = datHighletFrom(STR_BOOLEAN, datIntegerFromInt(0));
     CONST_TRUE  = datHighletFrom(STR_BOOLEAN, datIntegerFromInt(1));
-    EMPTY_LISTLET = datListFromArray(0, NULL);
-    EMPTY_MAPLET = datMapEmpty();
+    EMPTY_LIST = datListFromArray(0, NULL);
+    EMPTY_MAP = datMapEmpty();
 
     datImmortalize(CONST_FALSE);
     datImmortalize(CONST_TRUE);
-    datImmortalize(EMPTY_LISTLET);
-    datImmortalize(EMPTY_MAPLET);
+    datImmortalize(EMPTY_LIST);
+    datImmortalize(EMPTY_MAP);
 }

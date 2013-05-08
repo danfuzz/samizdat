@@ -20,7 +20,7 @@
  * of `samizdat-0-lib`.
  */
 static zvalue getLibraryFiles(void) {
-    zvalue result = EMPTY_MAPLET;
+    zvalue result = EMPTY_MAP;
 
     // This adds an element to `result` for each of the embedded files,
     // and sets up the static name constants.
@@ -41,7 +41,7 @@ static zvalue getLibraryFiles(void) {
  * Creates a context map with all the primitive definitions bound into it.
  */
 static zvalue primitiveContext(void) {
-    zvalue ctx = EMPTY_MAPLET;
+    zvalue ctx = EMPTY_MAP;
 
     // These both could have been defined in-language, but we already
     // have to make them be defined and accessible to C code, so we just

@@ -24,7 +24,7 @@ PRIM_IMPL(listInsNth) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listAdd) {
-    zvalue result = EMPTY_LISTLET;
+    zvalue result = EMPTY_LIST;
 
     for (zint i = 0; i < argCount; i++) {
         result = datListAdd(result, args[i]);
