@@ -17,7 +17,7 @@
  * Allocates a string of the given size.
  */
 static zvalue allocString(zint size) {
-    return datAllocValue(DAT_STRINGLET, size, size * sizeof(zchar));
+    return datAllocValue(DAT_STRING, size, size * sizeof(zchar));
 }
 
 /**

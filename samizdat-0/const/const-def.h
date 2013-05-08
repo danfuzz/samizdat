@@ -61,7 +61,6 @@ STR(RESULT,        "result");
 STR(STATE,         "state");
 STR(STATEMENTS,    "statements");
 STR(STRING,        "string");
-STR(STRINGLET,     "string");
 STR(TRUE,          "true");
 STR(TYPE,          "type");
 STR(UNIQLET,       "uniqlet");

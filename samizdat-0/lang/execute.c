@@ -307,7 +307,7 @@ static zvalue execVarRef(zvalue ctx, zvalue varRef) {
         return found;
     }
 
-    if (datTypeIs(name, DAT_STRINGLET)) {
+    if (datTypeIs(name, DAT_STRING)) {
         zint nameSize = datUtf8SizeFromString(name);
         char nameStr[nameSize + 1];
         datUtf8FromString(nameSize + 1, nameStr, name);
