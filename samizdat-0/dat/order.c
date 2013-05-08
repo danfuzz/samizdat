@@ -65,12 +65,12 @@ zorder datOrder(zvalue v1, zvalue v2) {
     }
 
     switch (t1) {
-        case DAT_INTEGER:    return datIntegerOrder(v1, v2);
-        case DAT_STRING: return datStringOrder(v1, v2);
-        case DAT_LIST:   return datListOrder(v1, v2);
-        case DAT_MAP:    return datMapOrder(v1, v2);
-        case DAT_UNIQLET:   return datUniqletOrder(v1, v2);
-        case DAT_HIGHLET:   return datHighletOrder(v1, v2);
+        case DAT_INTEGER: return datIntegerOrder(v1, v2);
+        case DAT_STRING:  return datStringOrder(v1, v2);
+        case DAT_LIST:    return datListOrder(v1, v2);
+        case DAT_MAP:     return datMapOrder(v1, v2);
+        case DAT_UNIQLET: return datUniqletOrder(v1, v2);
+        case DAT_HIGHLET: return datHighletOrder(v1, v2);
     }
 
     die("Invalid type (shouldn't happen).");
