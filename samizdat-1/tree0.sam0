@@ -53,27 +53,27 @@ parseBinding = filterRule
 
 # Parses a `map` node.
 parseMap = filterRule
-    (seqRule [:@"@":] [:@"[":] (plusRule @binding) [:@"]":])
+    (seqRule [:@"[":] (plusRule @binding) [:@"]":])
     { result ::
-        bindings = apply listAdd (listNth result @2);
+        bindings = apply listAdd (listNth result @1);
         <> apply makeCall [:@varRef @makeMap:] bindings
     };
 
 # Parses a `emptyMap` node.
 parseEmptyMap = filterRule
-    (seqRule [:@"@":] [:@"[":] [:@"=":] [:@"]":])
+    (seqRule [:@"[":] [:@"=":] [:@"]":])
     { <> [:@literal [=]:] };
 
 # Parses a `list` node.
 parseList = filterRule
-    (seqRule [:@"@":] [:@"[":] (plusRule @atom) [:@"]":])
+    (seqRule [:@"[":] (plusRule @atom) [:@"]":])
     { result ::
-        <> apply makeCall [:@varRef @makeList:] (listNth result @2)
+        <> apply makeCall [:@varRef @makeList:] (listNth result @1)
     };
 
 # Parses a `emptyList` node.
 parseEmptyList = filterRule
-    (seqRule [:@"@":] [:@"[":] [:@"]":])
+    (seqRule [:@"[":] [:@"]":])
     { <> [:@literal []:] };
 
 # Parses a `string` node.
