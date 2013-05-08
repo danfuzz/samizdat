@@ -34,15 +34,15 @@ that is used internally. The input `string` is expected to be a
 * Empty path components (that is, if there are two slashes in a row)
   are ignored.
 
-* Path components of value `@"."` (canonically representing "this directory")
+* Path components of value `"."` (canonically representing "this directory")
   are ignored.
 
-* Path components of value `@".."` cause the previous non-`..` path component
+* Path components of value `".."` cause the previous non-`..` path component
   to be discarded. It is invalid (terminating the runtime) for such a
   component to "back up" beyond the filesystem root.
 
 The result is a list of path components, representing the absolute path.
-None of the components will be the empty string (`@""`), except possibly
+None of the components will be the empty string (`""`), except possibly
 the last. If the last component is empty, that is an indication that the
 original path ended with a trailing slash.
 
@@ -54,7 +54,7 @@ of the read and decoded text.
 
 `pathList` must be a list of the form described by `io0PathFromString`
 (see which). It is invalid (terminating the runtime) for a component to
-be any of `@""` `@"."` `@".."` or to contain a slash (`/`).
+be any of `""` `"."` `".."` or to contain a slash (`/`).
 
 #### `io0ReadLink pathList <> pathList | ~.`
 

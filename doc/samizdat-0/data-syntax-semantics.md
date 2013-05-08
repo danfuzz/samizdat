@@ -53,7 +53,7 @@ representation.)
 
 A `string` is a sequence of zero or more Unicode code points.
 
-Strings are written as an initial `@"`, followed by zero or
+Strings are written as an initial `"`, followed by zero or
 more character representations, followed by a final `"`.
 
 Characters are self-representing, except that there are three
@@ -64,13 +64,13 @@ Characters are self-representing, except that there are three
 * `\n` &mdash; newline (Unicode U+0010)
 
 If a string's contents form a valid identifier (e.g. variable
-name) in the *Samizdat Layer 0* syntax, then it is valid to
-omit the double-quote delimiters.
+name) in the *Samizdat Layer 0* syntax, then a second allowed
+form is `@` followed by the string's characters.
 
 ```
-@""                           # the empty string
-@"Hello, Самиздат!"
-@"\"blort\" -- potion that enables one to see in the dark.\n"
+""                            # the empty string
+"Hello, Самиздат!"
+"\"blort\" -- potion that enables one to see in the dark.\n"
 @fizmo
 ```
 
@@ -107,11 +107,11 @@ written as `[=]`.
 
 ```
 [=]                           # the empty map
-[@1=@"number one"]
-[@blort = @"potion; the ability to see in the dark"
- @fizmo = @"spell; unclogs pipes"
- @igram = @"spell; make purple things invisible"]
-[[@complex @data @as @key] = @"Handy!"]
+[@1="number one"]
+[@blort = "potion; the ability to see in the dark"
+ @fizmo = "spell; unclogs pipes"
+ @igram = "spell; make purple things invisible"]
+[[@complex @data @as @key] = "Handy!"]
 ```
 
 
@@ -151,7 +151,7 @@ value representation (another arbitrary value), followed by a final
 [:@boolean @1:]               # the value usually just written as `true`
 [:
   @spell
-  [@name=@frotz @purpose=@"cause item to glow"]
+  [@name=@frotz @purpose="cause item to glow"]
 :]
 ```
 
