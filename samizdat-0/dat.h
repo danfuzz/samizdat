@@ -29,7 +29,7 @@ typedef enum {
     DAT_INTEGER = 1,
     DAT_STRING,
     DAT_LIST,
-    DAT_MAPLET,
+    DAT_MAP,
     DAT_UNIQLET,
     DAT_HIGHLET
 } ztype;

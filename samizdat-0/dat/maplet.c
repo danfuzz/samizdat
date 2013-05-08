@@ -18,7 +18,7 @@
  * Allocates a map of the given size.
  */
 static zvalue allocMap(zint size) {
-    return datAllocValue(DAT_MAPLET, size, size * sizeof(zmapping));
+    return datAllocValue(DAT_MAP, size, size * sizeof(zmapping));
 }
 
 /**

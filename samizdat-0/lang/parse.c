@@ -256,7 +256,7 @@ DEF_PARSE(map) {
     REJECT_IF(datSize(bindings) == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_MAPLET), bindings);
+    return makeCall(makeVarRef(STR_MAKE_MAP), bindings);
 }
 
 /**

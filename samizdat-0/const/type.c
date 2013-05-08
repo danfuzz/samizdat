@@ -18,7 +18,7 @@ zvalue constLowTypeName(zvalue value) {
         case DAT_INTEGER:    return STR_INTEGER;
         case DAT_STRING: return STR_STRING;
         case DAT_LIST:   return STR_LIST;
-        case DAT_MAPLET:    return STR_MAPLET;
+        case DAT_MAP:    return STR_MAP;
         case DAT_UNIQLET:   return STR_UNIQLET;
         case DAT_HIGHLET:   return STR_HIGHLET;
         default: {
