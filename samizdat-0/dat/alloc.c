@@ -386,8 +386,8 @@ void datMark(zvalue value) {
     enlist(&liveHead, value);
 
     switch (value->type) {
-        case DAT_LIST: { datListMark(value); break; }
-        case DAT_MAP:  { datMapMark(value);  break; }
+        case DAT_LIST:    { datListMark(value);    break; }
+        case DAT_MAP:     { datMapMark(value);     break; }
         case DAT_UNIQLET: { datUniqletMark(value); break; }
         case DAT_HIGHLET: { datHighletMark(value); break; }
         default: {

@@ -35,12 +35,12 @@ bool datEq(zvalue v1, zvalue v2) {
     }
 
     switch (t1) {
-        case DAT_INTEGER:    return datIntegerEq(v1, v2);
-        case DAT_STRING: return datStringEq(v1, v2);
-        case DAT_LIST:   return datListEq(v1, v2);
-        case DAT_MAP:    return datMapEq(v1, v2);
-        case DAT_UNIQLET:   return false;
-        case DAT_HIGHLET:   return datHighletEq(v1, v2);
+        case DAT_INTEGER: return datIntegerEq(v1, v2);
+        case DAT_STRING:  return datStringEq(v1, v2);
+        case DAT_LIST:    return datListEq(v1, v2);
+        case DAT_MAP:     return datMapEq(v1, v2);
+        case DAT_UNIQLET: return false;
+        case DAT_HIGHLET: return datHighletEq(v1, v2);
     }
 
     die("Invalid type (shouldn't happen).");

@@ -192,12 +192,12 @@ doUnknown = { recurse unknown ::
 
 # Mapping from low-layer type names to stringifiers.
 STRINGIFIERS = @[
-    @highlet   = doHighlet
-    @integer    = doInteger
-    @list   = doList
-    @map    = doMap
-    @string = doString
-    @uniqlet   = doUniqlet
+    @highlet = doHighlet
+    @integer = doInteger
+    @list    = doList
+    @map     = doMap
+    @string  = doString
+    @uniqlet = doUniqlet
 ];
 
 # Common handler for the two exported variants.

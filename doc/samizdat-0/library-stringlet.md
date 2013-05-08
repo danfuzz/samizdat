@@ -2,7 +2,7 @@ Samizdat Layer 0: Core Library
 ==============================
 
 Strings
-----------
+-------
 
 <br><br>
 ### Primitive Definitions

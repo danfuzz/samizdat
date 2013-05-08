@@ -97,12 +97,12 @@ diffUniqlet = { recurse context v1 v2 ::
 
 # Mapping from type names to diff functions.
 DIFF_FUNCTIONS = @[
-    @highlet   = diffHighlet
-    @integer    = diffInteger
-    @list   = diffList
-    @map    = diffMap
-    @string = diffString
-    @uniqlet   = diffUniqlet
+    @highlet = diffHighlet
+    @integer = diffInteger
+    @list    = diffList
+    @map     = diffMap
+    @string  = diffString
+    @uniqlet = diffUniqlet
 ];
 
 # Inner diff. Returns an `eq` result.
