@@ -42,7 +42,7 @@ sam1Tree = { programText ::
 
 # Reads the named embedded library file.
 readLibraryFile = { name ::
-    <> READER @[@"samizdat-0-lib" (stringAdd name @".sam0")]
+    <> READER [@"samizdat-0-lib" (stringAdd name @".sam0")]
 };
 
 # Reads all the library files, returning a map from names to contents.
@@ -51,7 +51,7 @@ readAllLibraryFiles = {
     manifestProgram = sam1Tree (readLibraryFile @manifest);
     manifest = (sam0Eval (makeLibrary LIBRARY) manifestProgram)();
 
-    <> listReduce @[=] manifest { result name ::
+    <> listReduce [=] manifest { result name ::
         <> mapPut result name (readLibraryFile name)
     }
 };
@@ -102,4 +102,4 @@ run = { args* ::
     <> apply function filePath argsPerSe
 };
 
-<> @[@run = run]
+<> [@run = run]

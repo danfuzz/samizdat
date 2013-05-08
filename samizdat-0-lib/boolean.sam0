@@ -35,7 +35,7 @@ not = { value ::
         }
 };
 
-<> @[
+<> [
     @eq = eq
     @ge = ge
     @gt = gt

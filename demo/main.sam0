@@ -27,7 +27,7 @@ countDown = yCombinator { countDown ::
     <> { n ::
         <> ifTrue { <> ge n @0 }
             { <> listPrepend n (countDown (isub n @1)) }
-            { <> @[] }
+            { <> [] }
     }
 };
 
@@ -38,7 +38,7 @@ countDowns = yStarCombinator
         <> { n ::
             <> ifTrue { <> gt n @0 }
                 { <> listPrepend n (f2 (isub n @1)) }
-                { <> @[@0] }
+                { <> [@0] }
         }
     }
     { f1 f2 ::
@@ -55,7 +55,7 @@ blort = { foo bar? baz? more* ::
 sibling = {
     reader = io0SandboxedReader
         (listDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
-    text = reader @[@"sibling.txt"];
+    text = reader [@"sibling.txt"];
     io0Note text;
 };
 
@@ -88,16 +88,16 @@ main = { selfPath name rest* ::
     process @0;
     process @98765;
     process @-12345;
-    process @[];
-    process @[@-1];
-    process @[@1 @-2];
-    process @[@-1 @2 @300];
+    process [];
+    process [@-1];
+    process [@1 @-2];
+    process [@-1 @2 @300];
     process @"";
     process @"\"Blort.\" \n";
-    process @[=];
-    process @[@1=@2];
-    process @[@1=@2 @888=@1];
-    process @[@fizmo=@omzif @igram=@margi @blort=@trolb];
+    process [=];
+    process [@1=@2];
+    process [@1=@2 @888=@1];
+    process [@fizmo=@omzif @igram=@margi @blort=@trolb];
     process null;
     process false;
     process true;

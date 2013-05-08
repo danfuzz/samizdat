@@ -14,7 +14,7 @@ makeLibrary = { ctx ::
 # The bindings added here end up being the entirety of what's
 # exported as `LIBRARY` to regular programs.
 
-LOCAL_BINDINGS = @[
+LOCAL_BINDINGS = [
     @makeLibrary = makeLibrary
 ];
 
@@ -22,4 +22,4 @@ FINAL_LIBRARY = mapAdd LIBRARY LOCAL_BINDINGS;
 
 <> mapAdd
     LOCAL_BINDINGS
-    @[@LIBRARY = FINAL_LIBRARY]
+    [@LIBRARY = FINAL_LIBRARY]

@@ -13,7 +13,7 @@
 
 # Returns a `call` node.
 makeCall = { function actuals* ::
-    <> [:@call @[@function=function @actuals=actuals]:]
+    <> [:@call [@function=function @actuals=actuals]:]
 };
 
 
@@ -48,7 +48,7 @@ parseUniqlet = filterRule
 parseBinding = filterRule
     (seqRule @atom [:@"=":] @atom)
     { result ::
-        <> @[(listNth result @0) (listNth result @2)]
+        <> [(listNth result @0) (listNth result @2)]
     };
 
 # Parses a `map` node.
@@ -62,7 +62,7 @@ parseMap = filterRule
 # Parses a `emptyMap` node.
 parseEmptyMap = filterRule
     (seqRule [:@"@":] [:@"[":] [:@"=":] [:@"]":])
-    { <> [:@literal @[=]:] };
+    { <> [:@literal [=]:] };
 
 # Parses a `list` node.
 parseList = filterRule
@@ -74,7 +74,7 @@ parseList = filterRule
 # Parses a `emptyList` node.
 parseEmptyList = filterRule
     (seqRule [:@"@":] [:@"[":] [:@"]":])
-    { <> [:@literal @[]:] };
+    { <> [:@literal []:] };
 
 # Parses a `string` node.
 parseString = filterRule
@@ -87,7 +87,7 @@ parseString = filterRule
 parseInteger = filterRule
     (seqRule [:@"@":] (optRule [:@"-":]) [:@integer:])
     { result ::
-        sign = ifTrue { <> eq (listNth result @1) @[] }
+        sign = ifTrue { <> eq (listNth result @1) [] }
             { <> @1 } { <> @-1 };
         value = imul sign (highletValue (listNth result @2));
         <> [:@literal value:]
@@ -104,7 +104,7 @@ parseVarDef = filterRule
     { result ::
         name = highletValue (listNth result @0);
         value = listNth result @2;
-        <> [:@varDef @[@name=name @value=value]:]
+        <> [:@varDef [@name=name @value=value]:]
     };
 
 # Parses a `parenExpression` node.
@@ -173,14 +173,14 @@ parseFormal = filterRule
     (seqRule
         (filterRule
             [:@identifier:]
-            { result :: <> @[@name = (highletValue result)] })
+            { result :: <> [@name = (highletValue result)] })
         (filterRule
             (optRule
                 (orRule [:@"*":] [:@"?":]))
             { result ::
                 <> ifValue { <> listNth result @0 }
-                    { repeatToken :: <> @[@repeat = repeatToken] }
-                    { <> @[=] }
+                    { repeatToken :: <> [@repeat = repeatToken] }
+                    { <> [=] }
             }))
     { result :: <> apply mapAdd result };
 
@@ -191,14 +191,14 @@ parseProgramBody1 = filterRule
         (orRule
             (filterRule
                 (orRule @statement @nonlocalExit)
-                { result :: <> @[@statements=@[result]] })
+                { result :: <> [@statements=[result]] })
             (filterRule
                 @yield
-                { result :: <> @[@statements=@[] @yield=result] })))
+                { result :: <> [@statements=[] @yield=result] })))
     { result ::
         <> ifValue { <> listNth result @0 }
             { result :: <> result }
-            { <> @[@statements=@[]] }
+            { <> [@statements=[]] }
     };
 
 # Parses a `programBody` node.
@@ -224,15 +224,15 @@ parseProgramDeclarations = filterRule
     (seqRule
         (filterRule (starRule @formal)
             { result ::
-                <> ifTrue { <> ne result @[] }
-                    { <> @[@formals = result] }
-                    { <> @[=] }
+                <> ifTrue { <> ne result [] }
+                    { <> [@formals = result] }
+                    { <> [=] }
             })
         (filterRule (optRule @yieldDef)
             { result ::
                 <> ifValue { <> listNth result @0 }
-                    { yieldDef :: <> @[@yieldDef = yieldDef] }
-                    { <> @[=] }
+                    { yieldDef :: <> [@yieldDef = yieldDef] }
+                    { <> [=] }
             }))
     { result :: <> apply mapAdd result };
 
@@ -243,7 +243,7 @@ parseProgram1 = filterRule
     { result ::
         <> ifValue { <> listNth result @0 }
             { match :: <> listNth match @0 }
-            { <> @[=] }
+            { <> [=] }
     };
 
 # Parses a `program` node.
@@ -260,7 +260,7 @@ parseFunction = filterRule
 # it's looked up through this map by name, which trivially allows for
 # mutually-recursive rules (since the rules refer directly to names and
 # not actual functions).
-TREE0_RULES = @[
+TREE0_RULES = [
     @atom = parseAtom
     @binding = parseBinding
     @callExpression = parseCallExpression
@@ -289,4 +289,4 @@ TREE0_RULES = @[
     @yieldDef = parseYieldDef
 ];
 
-<> @[@TREE0_RULES = TREE0_RULES]
+<> [@TREE0_RULES = TREE0_RULES]

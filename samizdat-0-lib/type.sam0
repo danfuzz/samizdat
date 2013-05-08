@@ -36,7 +36,7 @@ isUniqlet = { value ::
     <> eq (lowType value) @uniqlet
 };
 
-<> @[
+<> [
     @isHighlet = isHighlet
     @isInteger = isInteger
     @isList = isList

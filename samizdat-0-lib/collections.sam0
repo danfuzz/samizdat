@@ -30,7 +30,7 @@ genericForEach = { nthFunc function <out> ::
 # Generic reduce function. Instead of the value-to-reduce argument, this
 # takes an `nthFunc` of one argument.
 genericReduce = { base nthFunc function <out> ::
-    loopReduce @[base @0] { state ::
+    loopReduce [base @0] { state ::
         result = listNth state @0;
         index = listNth state @1;
         <> ifValue { <> (nthFunc index) }
@@ -38,7 +38,7 @@ genericReduce = { base nthFunc function <out> ::
                 nextResult = ifValue { <> function result item index }
                     { value :: <> value }
                     { <> result };
-                <> @[nextResult (iadd index @1)]
+                <> [nextResult (iadd index @1)]
             }
             { <out> result }
     }
@@ -47,7 +47,7 @@ genericReduce = { base nthFunc function <out> ::
 # Generic map function. Instead of the value-to-map argument, this
 # takes an `nthFunc` of one argument.
 genericMap = { nthFunc function ::
-    <> genericReduce @[] nthFunc
+    <> genericReduce [] nthFunc
         { result item index ::
             <> ifValue { <> function item index }
                 { value :: <> listInsNth result (lowSize result) value }
@@ -116,7 +116,7 @@ mapForEach = { map function ::
 
 # Documented in Samizdat Layer 0 spec.
 mapMap = { map function ::
-    <> mapReduce @[=] map
+    <> mapReduce [=] map
         { reduction value key ::
             <> ifValue { <> function value key }
                 { newValue :: <> mapPut reduction key newValue }
@@ -151,7 +151,7 @@ stringMap = { string function ::
 # Exports
 #
 
-<> @[
+<> [
     @listAppend = listAppend
     @listForEach = listForEach
     @listMap = listMap

@@ -14,6 +14,6 @@ integerSign = { integer ::
         { <> ifTrue { <> gt integer @0 } { <> @1 } { <> @-1 } }
 };
 
-<> @[
+<> [
     @integerSign = integerSign
 ]

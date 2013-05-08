@@ -64,7 +64,7 @@ doReset = { yield state resetAt ::
 };
 
 # Dispatch table.
-READER_DISPATCH = @[
+READER_DISPATCH = [
     @at    = doAt
     @eof   = doEof
     @peek  = doPeek
@@ -81,15 +81,15 @@ readerDispatch = { yield state name rest* ::
 # either a list or a string.
 reader = { value ::
     nth = mapGet
-        @[@list=listNth @string=stringNth]
+        [@list=listNth @string=stringNth]
         (lowType value);
     nthFunc = { n :: <> nth value n };
 
-    <> object readerDispatch @[
+    <> object readerDispatch [
         @at   = @0
         @size = (lowSize value)
         @nth  = nthFunc
     ]
 };
 
-<> @[@reader = reader]
+<> [@reader = reader]

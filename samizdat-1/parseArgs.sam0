@@ -37,7 +37,7 @@ parseArguments = filterRule
             { io0Die @"Missing file name." };
         fileName = listNth words @0;
         args = listDelNth words @0;
-        <> @[
+        <> [
             @options = (mapGet optsErrors @options)
             @file = fileName
             @args = args
@@ -50,7 +50,7 @@ parseOptions = filterRule
             (seqRule (orRule @option @error) @wordBreak)
             { result :: <> listNth result @0 }))
     { result ::
-        <> listReduce @[@options=@[=] @errors=false] result
+        <> listReduce [@options=[=] @errors=false] result
             { result one :: <> one result }
     };
 
@@ -102,7 +102,7 @@ parseWord = filterRule
 
 parseWordBreak = charsRule CHAR_0;
 
-RULES = @[
+RULES = [
     @arguments = parseArguments
     @error = parseError
     @key = parseKey
@@ -130,4 +130,4 @@ parseArgs = { args ::
     <> parseArguments theEngine;
 };
 
-<> @[@parseArgs = parseArgs]
+<> [@parseArgs = parseArgs]

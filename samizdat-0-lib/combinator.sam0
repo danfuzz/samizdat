@@ -80,7 +80,7 @@ yStarCombinator = { functions* ::
     <> uStarCombinator applicators;
 };
 
-<> @[
+<> [
     @yCombinator = yCombinator
     @yStarCombinator = yStarCombinator
 ]

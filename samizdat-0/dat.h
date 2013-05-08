@@ -311,7 +311,7 @@ void datArrayFromList(zvalue *result, zvalue list);
  */
 
 /**
- * Gets an empty map value, i.e. `@[=]`. Note that this can return
+ * Gets an empty map value, i.e. `[=]`. Note that this can return
  * a different allocated value every time.
  */
 zvalue datMapEmpty(void);

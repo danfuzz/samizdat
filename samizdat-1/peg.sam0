@@ -78,7 +78,7 @@ seqRule = { rules* ::
 
     <> { engine <out> ::
         mark = engine @at;
-        <> listReduce @[] finalRules
+        <> listReduce [] finalRules
             { results rule ::
                 <> ifValue { <> rule engine }
                     { result :: <> listAppend results result }
@@ -118,8 +118,8 @@ optRule = { rule ::
 
     <> { engine ::
         <> ifValue { <> finalRule engine }
-            { result :: <> @[result] }
-            { <> @[] }
+            { result :: <> [result] }
+            { <> [] }
     }
 };
 
@@ -132,7 +132,7 @@ starRule = { rule ::
     finalRule = functionFromRule rule;
 
     <> { engine <out> ::
-        loopReduce @[] { result ::
+        loopReduce [] { result ::
             <> ifValue { <> finalRule engine }
                 { match :: <> listAppend result match }
                 { <out> result }
@@ -171,7 +171,7 @@ charsRule = { chars ::
 # (given as a string of all the characters to match), returning
 # a single-character string of the matched character.
 charSetRule = { chars ::
-    charSet = stringReduce @[=] chars
+    charSet = stringReduce [=] chars
         { result ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
@@ -190,7 +190,7 @@ charSetRule = { chars ::
 # given characters (given as a string of all the characters to exclude),
 # returning a single-character string of the matched character.
 notCharSetRule = { chars ::
-    charSet = stringReduce @[=] chars
+    charSet = stringReduce [=] chars
         { result ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
@@ -214,7 +214,7 @@ pegEngine = { reader rules ::
     }
 };
 
-<> @[
+<> [
     @charSetRule = charSetRule
     @charsRule = charsRule
     @filterRule = filterRule

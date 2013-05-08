@@ -76,4 +76,4 @@ parser = { tokenRules treeRules ::
     }
 };
 
-<> @[@parser = parser]
+<> [@parser = parser]

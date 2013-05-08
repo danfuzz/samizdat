@@ -25,26 +25,26 @@ adornIf = { adorn before value after ::
 # These are all the integer digits, as a map from digit values to
 # strings.
 INTEGER_CHARS =
-    @[ @0=@"0" @1=@"1" @2=@"2" @3=@"3" @4=@"4"
+    [ @0=@"0" @1=@"1" @2=@"2" @3=@"3" @4=@"4"
        @5=@"5" @6=@"6" @7=@"7" @8=@"8" @9=@"9" ];
 
 # Helper for stringifying integers, which does most of the conversion,
 # as well as prepending the given prefix.
 integerBody = { start value <out> ::
-    loopReduce @[@"" value] { result ::
+    loopReduce [@"" value] { result ::
         text = listNth result @0;
         value = listNth result @1;
         <> ifTrue { <> ne value @0 }
             {
                 digit = mapGet INTEGER_CHARS (imod value @10);
-                <> @[(stringAdd digit text) (idiv value @10)];
+                <> [(stringAdd digit text) (idiv value @10)];
             }
             { <out> stringAdd start text }
     }
 };
 
 # Map from integer sign values to the appropriate stringifier for each.
-INTEGER_SIGNS = @[
+INTEGER_SIGNS = [
     @-1 = { integer :: <> integerBody @"-" (ineg integer) }
     @0  = { <> @"0" }
     @1  = { integer :: <> integerBody @"" integer }
@@ -73,7 +73,7 @@ stringHexEscape = { ch ::
 };
 
 # Map of special-case characters to their stringified forms.
-SPECIAL_CHARS = @[
+SPECIAL_CHARS = [
     CHAR_0 = @"\\0"
     @"\n"  = @"\\n"
     @"\""  = @"\\\""
@@ -96,13 +96,13 @@ stringChar = { ch ::
 };
 
 # These are all the characters which are allowed to start an identifier.
-IDENTIFIER_STARTS = stringReduce @[=]
+IDENTIFIER_STARTS = stringReduce [=]
     @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
     { result ch :: <> mapPut result ch true };
 
 # These are all the characters which are allowed to be in an identifier.
 IDENTIFIER_CHARS = mapAdd IDENTIFIER_STARTS
-    @[ @"0"=true @"1"=true @"2"=true @"3"=true @"4"=true
+    [ @"0"=true @"1"=true @"2"=true @"3"=true @"4"=true
        @"5"=true @"6"=true @"7"=true @"8"=true @"9"=true ];
 
 # Checks to see if the given string has the form of an in-language
@@ -142,7 +142,7 @@ doList = { recurse list adorn ::
                 (recurse elem)
         };
 
-    <> adornIf adorn @"@[" body @"]"
+    <> adornIf adorn @"[" body @"]"
 };
 
 # Stringifies a map.
@@ -158,7 +158,7 @@ doMap = { recurse map adorn ::
         };
 
     <> adornIf adorn
-        @"@["
+        @"["
         (ifTrue { <> eq body @"" } { <> @"=" } { <> body })
         @"]"
 };
@@ -183,7 +183,7 @@ doUniqlet = { recurse uniqlet ::
 # Stringifies an unknown value type.
 doUnknown = { recurse unknown ::
     <> stringAdd
-        @"@[(unknown) "
+        @"[(unknown) "
         (recurse (lowType value))
         @" "
         (recurse (lowSize value))
@@ -191,7 +191,7 @@ doUnknown = { recurse unknown ::
 };
 
 # Mapping from low-layer type names to stringifiers.
-STRINGIFIERS = @[
+STRINGIFIERS = [
     @highlet = doHighlet
     @integer = doInteger
     @list    = doList
@@ -268,7 +268,7 @@ doLiteral = { yield state ::
 
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
-    <> mapAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
+    <> mapAdd state [@fmtAt=fmtAt @argsAt=argsAt];
 };
 
 # Formats a literal quoted argument, without top-level adornment.
@@ -277,7 +277,7 @@ doUnadornedLiteral = { yield state ::
 
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
-    <> mapAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
+    <> mapAdd state [@fmtAt=fmtAt @argsAt=argsAt];
 };
 
 # Formats a string argument.
@@ -286,11 +286,11 @@ doString = { yield state ::
 
     argsAt = iadd @1 (xArgsAt state);
     fmtAt = iadd @2 (xFmtAt state);
-    <> mapAdd state @[@fmtAt=fmtAt @argsAt=argsAt];
+    <> mapAdd state [@fmtAt=fmtAt @argsAt=argsAt];
 };
 
 # Mapping from format escape characters to their respective handler functions.
-FORMATTERS = @[
+FORMATTERS = [
     @"%" = doPercent
     @"q" = doLiteral
     @"Q" = doUnadornedLiteral
@@ -329,7 +329,7 @@ formatOne = { yield state ::
 
 # Documented in Samizdat Layer 0 spec.
 format = { formatString rest* <out> ::
-    formatter = object formatOne @[
+    formatter = object formatOne [
         @fmt    = formatString
         @fmtAt  = @0
         @args   = rest
@@ -348,7 +348,7 @@ format = { formatString rest* <out> ::
 # Export mechanics
 #
 
-<> @[
+<> [
     @format = format
     @sourceString = sourceString
     @sourceStringUnadorned = sourceStringUnadorned

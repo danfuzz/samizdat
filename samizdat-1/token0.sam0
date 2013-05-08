@@ -35,7 +35,7 @@ parsePunctuation = filterRule
 # These are all the integer digits, as a map from strings to
 # digit values.
 INTEGER_CHARS =
-    @[ @"0"=@0 @"1"=@1 @"2"=@2 @"3"=@3 @"4"=@4
+    [ @"0"=@0 @"1"=@1 @"2"=@2 @"3"=@3 @"4"=@4
        @"5"=@5 @"6"=@6 @"7"=@7 @"8"=@8 @"9"=@9 ];
 
 # Parses an `integer` token.
@@ -101,7 +101,7 @@ parseWhitespace = orRule
         (charsRule @"\n"));
 
 # Map of all the tokenizer rules.
-TOKEN0_RULES = @[
+TOKEN0_RULES = [
     @file = parseFile
     @identifier = parseIdentifier
     @integer = parseInteger
@@ -111,4 +111,4 @@ TOKEN0_RULES = @[
     @whitespace = parseWhitespace
 ];
 
-<> @[@TOKEN0_RULES = TOKEN0_RULES]
+<> [@TOKEN0_RULES = TOKEN0_RULES]

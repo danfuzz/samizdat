@@ -15,9 +15,9 @@
 # given path, or equal to it.
 isPrefix = { prefix path ::
     <> or
-        { <> eq prefix @[] }
+        { <> eq prefix [] }
         { <> and
-            { <> ne path @[] }
+            { <> ne path [] }
             { <> eq (listNth prefix @0) (listNth path @0) }
             { <> isPrefix (listDelNth prefix @0) (listDelNth path @0) }
         }
@@ -54,6 +54,6 @@ io0SandboxedReader = { directory ::
     }
 };
 
-<> @[
+<> [
     @io0SandboxedReader = io0SandboxedReader
 ];
