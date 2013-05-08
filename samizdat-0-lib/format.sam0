@@ -52,8 +52,7 @@ INTEGER_SIGNS = [
 
 # Stringifies an integer.
 doInteger = { recurse integer adorn ::
-    result = (mapGet INTEGER_SIGNS (integerSign integer)) integer;
-    <> adornIf adorn "@" result ""
+    <> (mapGet INTEGER_SIGNS (integerSign integer)) integer
 };
 
 # Helper for stringifying strings: Returns the hex form for the given
