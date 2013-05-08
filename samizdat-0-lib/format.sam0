@@ -103,7 +103,7 @@ IDENTIFIER_STARTS = stringReduce [=]
 # These are all the characters which are allowed to be in an identifier.
 IDENTIFIER_CHARS = mapAdd IDENTIFIER_STARTS
     [ "0"=true "1"=true "2"=true "3"=true "4"=true
-       "5"=true "6"=true "7"=true "8"=true "9"=true ];
+      "5"=true "6"=true "7"=true "8"=true "9"=true ];
 
 # Checks to see if the given string has the form of an in-language
 # identifier.
@@ -128,7 +128,7 @@ doString = { recurse string adorn ::
         {
             body = stringReduce "" string
                 { result ch :: <> stringAdd result (stringChar ch) };
-            <> adornIf adorn "@\"" body "\""
+            <> adornIf adorn "\"" body "\""
         }
 };
 
