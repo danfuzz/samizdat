@@ -83,8 +83,8 @@ parseString = filterRule
         (orRule [:@string:] [:@identifier:]))
     { result :: <> [:@literal (highletValue (listletNth result @1)):] };
 
-# Parses an `intlet` node.
-parseIntlet = filterRule
+# Parses an `integer` node.
+parseInteger = filterRule
     (seqRule [:@"@":] (optRule [:@"-":]) [:@integer:])
     { result ::
         sign = ifTrue { <> eq (listletNth result @1) @[] }
@@ -113,7 +113,7 @@ parseParenExpression = filterRule
     { result :: <> listletNth result @1 };
 
 # Parses an `atom` node.
-parseAtom = orRule @varRef @intlet @string
+parseAtom = orRule @varRef @integer @string
     @emptyListlet @listlet @emptyMaplet @maplet
     @uniqlet @highlet @function @parenExpression;
 
@@ -270,7 +270,7 @@ TREE0_RULES = @[
     @formal = parseFormal
     @function = parseFunction
     @highlet = parseHighlet
-    @intlet = parseIntlet
+    @integer = parseInteger
     @listlet = parseListlet
     @maplet = parseMaplet
     @nonlocalExit = parseNonlocalExit

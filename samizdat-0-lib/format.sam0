@@ -11,9 +11,9 @@
 #
 
 # Single-character strings `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
-CHAR_0 = stringFromIntlet @0;
-CHAR_127 = stringFromIntlet @127;
-CHAR_159 = stringFromIntlet @159;
+CHAR_0 = stringFromInteger @0;
+CHAR_127 = stringFromInteger @127;
+CHAR_159 = stringFromInteger @159;
 
 # Helper for optionally adorning results.
 adornIf = { adorn before value after ::
@@ -28,9 +28,9 @@ INTEGER_CHARS =
     @[ @0=@"0" @1=@"1" @2=@"2" @3=@"3" @4=@"4"
        @5=@"5" @6=@"6" @7=@"7" @8=@"8" @9=@"9" ];
 
-# Helper for stringifying intlets, which does most of the conversion,
+# Helper for stringifying integers, which does most of the conversion,
 # as well as prepending the given prefix.
-intletBody = { start value <out> ::
+integerBody = { start value <out> ::
     loopReduce @[@"" value] { result ::
         text = listletNth result @0;
         value = listletNth result @1;
@@ -43,33 +43,33 @@ intletBody = { start value <out> ::
     }
 };
 
-# Maplet from intlet sign values to the appropriate stringifier for each.
+# Maplet from integer sign values to the appropriate stringifier for each.
 INTLET_SIGNS = @[
-    @-1 = { intlet :: <> intletBody @"-" (ineg intlet) }
+    @-1 = { integer :: <> integerBody @"-" (ineg integer) }
     @0  = { <> @"0" }
-    @1  = { intlet :: <> intletBody @"" intlet }
+    @1  = { integer :: <> integerBody @"" integer }
 ];
 
-# Stringifies an intlet.
-doIntlet = { recurse intlet adorn ::
-    result = (mapletGet INTLET_SIGNS (intletSign intlet)) intlet;
+# Stringifies an integer.
+doInteger = { recurse integer adorn ::
+    result = (mapletGet INTLET_SIGNS (integerSign integer)) integer;
     <> adornIf adorn @"@" result @""
 };
 
 # Helper for stringifying strings: Returns the hex form for the given
 # character. Assumes it's not passed `@0`.
 stringHexEscape = { ch ::
-    intletHex = { value ::
+    integerHex = { value ::
         <> ifTrue { <> eq value @0 }
             { <> @"" }
             {
                 digit = stringNth @"0123456789abcdef" (imod value @16);
                 more = idiv value @16;
-                <> stringAdd (intletHex more) digit
+                <> stringAdd (integerHex more) digit
             }
     };
 
-    <> stringAdd @"\\x" (intletHex (intletFromString ch)) @";"
+    <> stringAdd @"\\x" (integerHex (integerFromString ch)) @";"
 };
 
 # Maplet of special-case characters to their stringified forms.
@@ -193,7 +193,7 @@ doUnknown = { recurse unknown ::
 # Mapping from low-layer type names to stringifiers.
 STRINGIFIERS = @[
     @highlet   = doHighlet
-    @intlet    = doIntlet
+    @integer    = doInteger
     @listlet   = doListlet
     @maplet    = doMaplet
     @string = doString

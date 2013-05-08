@@ -53,19 +53,19 @@ punctuation2 ::=
 ;
 
 hexInteger ::= "0x" "-"? hexDigit+ ;
-# result: [:@integer <intlet>:]
+# result: [:@integer <integer>:]
 
 hexDigit ::=
     "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" |
     "a" | "b" | "c" | "d" | "e" | "f" |
     "A" | "B" | "C" | "D" | "E" | "F" ;
-# result: <intlet>
+# result: <integer>
 
 binaryInteger ::= "0b" "-"? binaryDigit+ ;
-# result: [:@integer <intlet>:]
+# result: [:@integer <integer>:]
 
 binaryDigit ::= "0" | "1" ;
-# result: <intlet>
+# result: <integer>
 
 identifier2 ::= "\\" string ;
 # result: [:@identifier (highletValue string):]
@@ -188,7 +188,7 @@ unaryPostfixExpression ::=
 #         (etc.)
 
 atom ::=
-    varRef | intlet | [:@integer:] | string | [:@string:] |
+    varRef | integer | [:@integer:] | string | [:@string:] |
     emptyListlet | listlet | emptyMaplet | maplet |
     uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever choice matched>

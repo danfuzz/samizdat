@@ -30,7 +30,7 @@ zvalue ioReadLink(zvalue pathListlet);
 /**
  * Reads the file with the given name in its entirety, interpreting
  * it as UTF-8. Returns a string (listlet of Unicode-representing
- * intlets) of the contents.
+ * integers) of the contents.
  *
  * The `pathListlet` represents an absolute filesystem path as individual
  * strings.

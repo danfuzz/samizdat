@@ -50,7 +50,7 @@ static void realMain(int argc, char **argv) {
     zvalue result = langApply(function, datListletFromArray(argCount, args));
 
     if ((result != NULL) && (datType(result) == DAT_INTLET)) {
-        exit((int) datIntFromIntlet(result));
+        exit((int) datIntFromInteger(result));
     }
 }
 

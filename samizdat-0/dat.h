@@ -84,16 +84,16 @@ void datAssertValid(zvalue value);
  * Asserts that the given value is a valid `zvalue`, and that its size
  * accommodates accessing the `n`th element. This includes asserting that
  * `n >= 0`. Note that all non-negative `n` are valid for accessing
- * intlets (their size notwithstanding).
+ * integers (their size notwithstanding).
  */
 void datAssertNth(zvalue value, zint n);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is an intlet. If not, this aborts the process
+ * furthermore that it is an integer. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertIntlet(zvalue value);
+void datAssertInteger(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -151,49 +151,49 @@ zint datSize(zvalue value);
 
 
 /*
- * Intlet Functions
+ * Integer Functions
  */
 
 /**
- * Gets the `zchar` of the given intlet, asserting that the value
- * is in fact an intlet and in range for same.
+ * Gets the `zchar` of the given integer, asserting that the value
+ * is in fact an integer and in range for same.
  */
-zchar datCharFromIntlet(zvalue intlet);
+zchar datCharFromInteger(zvalue integer);
 
 /**
  * Given a 32-bit int value, returns the `n`th bit. This is just like
- * `datIntletGetBit()` except using a `zint` value. This function is
+ * `datIntegerGetBit()` except using a `zint` value. This function is
  * exported for the convenience of other modules.
  */
 bool datIntGetBit(zint value, zint n);
 
 /**
- * Given an intlet, returns the `n`th bit, counting from the least
- * significant bit. `intlet` must be an intlet. Returns `false` for a
+ * Given an integer, returns the `n`th bit, counting from the least
+ * significant bit. `integer` must be an integer. Returns `false` for a
  * `0` bit, and `true` for a `1` bit. If `n` references a bit beyond
  * the value's size, then the return value is the sign bit of the
  * value. It is an error if `n < 0`.
  */
-bool datIntletGetBit(zvalue intlet, zint n);
+bool datIntegerGetBit(zvalue integer, zint n);
 
 /**
- * Gets the sign of the given intlet. `intlet` must be an
- * intlet. Returns `false` for non-negative, and `true` for negative.
+ * Gets the sign of the given integer. `integer` must be an
+ * integer. Returns `false` for non-negative, and `true` for negative.
  */
-bool datIntletSign(zvalue intlet);
+bool datIntegerSign(zvalue integer);
 
 /**
- * Gets an intlet value equal to the given `zint`. In this
- * implementation, intlets are restricted to only taking on the range
+ * Gets an integer value equal to the given `zint`. In this
+ * implementation, integers are restricted to only taking on the range
  * of 32-bit signed quantities, when represented as twos-complement.
  */
-zvalue datIntletFromInt(zint value);
+zvalue datIntegerFromInt(zint value);
 
 /**
- * Gets a `zint` equal to the given intlet value. `intlet` must be an
- * intlet. It is an error if the value is out of range.
+ * Gets a `zint` equal to the given integer value. `integer` must be an
+ * integer. It is an error if the value is out of range.
  */
-zint datIntFromIntlet(zvalue intlet);
+zint datIntFromInteger(zvalue integer);
 
 
 /*

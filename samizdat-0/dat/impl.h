@@ -53,15 +53,15 @@ typedef struct DatValue {
 } DatValue;
 
 /**
- * Intlet structure.
+ * Integer structure.
  */
 typedef struct {
     /** Value header. */
     DatValue header;
 
-    /** Integer value. See `datIntletFromInt()` about range restriction. */
+    /** Integer value. See `datIntegerFromInt()` about range restriction. */
     int32_t value;
-} DatIntlet;
+} DatInteger;
 
 /**
  * String structure.
@@ -164,14 +164,14 @@ zvalue datConservativeValueCast(void *maybeValue);
 bool datHasNth(zvalue value, zint n);
 
 /**
- * Compares intlets for equality. Only called when the sizes are the same.
+ * Compares integers for equality. Only called when the sizes are the same.
  */
-bool datIntletEq(zvalue v1, zvalue v2);
+bool datIntegerEq(zvalue v1, zvalue v2);
 
 /**
- * Compares intlets for order.
+ * Compares integers for order.
  */
-zorder datIntletOrder(zvalue v1, zvalue v2);
+zorder datIntegerOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares strings for equality. Only called when the sizes are the same.

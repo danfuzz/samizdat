@@ -37,7 +37,7 @@ static zvalue valueFromStringNth(zvalue string, zint n) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(intletFromString) {
+PRIM_IMPL(integerFromString) {
     requireExactly(argCount, 1);
 
     zvalue string = args[0];
@@ -46,13 +46,13 @@ PRIM_IMPL(intletFromString) {
         die("Invalid use of string: size != 1");
     }
 
-    return datIntletFromInt(datStringNth(string, 0));
+    return datIntegerFromInt(datStringNth(string, 0));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringFromIntlet) {
+PRIM_IMPL(stringFromInteger) {
     requireExactly(argCount, 1);
-    return stringFromChar(datCharFromIntlet(args[0]));
+    return stringFromChar(datCharFromInteger(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

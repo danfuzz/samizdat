@@ -47,7 +47,7 @@ will be returned, or one of `.` `~.` `. | ~.` as described in
 * [Ultraprimitives](library-ultra.md)
 * [Conditionals And Iteration](library-conditional.md)
 * [General Low-Layer Values](library-low.md)
-* [Intlets](library-intlet.md)
+* [Integers](library-integer.md)
 * [Strings](library-string.md)
 * [Listlets](library-listlet.md)
 * [Maplets](library-maplet.md)

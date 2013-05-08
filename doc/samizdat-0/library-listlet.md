@@ -15,8 +15,8 @@ of all the argument listlets, in argument order.
 #### `listletDelNth listlet n <> listlet`
 
 Returns a listlet just like the given one, except that the `n`th
-(zero-based) element is deleted, if `n` is a valid intlet index into
-the given listlet. If `n` is not a valid index (not an intlet, or with
+(zero-based) element is deleted, if `n` is a valid integer index into
+the given listlet. If `n` is not a valid index (not an integer, or with
 a value out of range), then this returns the original listlet as the
 result.
 
@@ -33,8 +33,8 @@ listlet. If not, it is an error (terminating the runtime).
 #### `listletNth listlet n notFound? <> . | ~.`
 
 Returns the `n`th (zero-based) element of the given listlet, if `n` is
-a valid intlet index into the listlet. If `n` is not a valid index
-(either an out-of-range intlet, or some other value), then this
+a valid integer index into the listlet. If `n` is not a valid index
+(either an out-of-range integer, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied.
 

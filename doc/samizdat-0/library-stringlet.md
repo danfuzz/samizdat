@@ -7,10 +7,10 @@ Strings
 <br><br>
 ### Primitive Definitions
 
-#### `intletFromString string <> intlet`
+#### `integerFromString string <> integer`
 
 Given a single-character string, returns the character code
-of its sole character, as an intlet. It is an error (terminating
+of its sole character, as an integer. It is an error (terminating
 the runtime) if `string` is not a string of size 1.
 
 #### `stringAdd strings* <> string`
@@ -18,17 +18,17 @@ the runtime) if `string` is not a string of size 1.
 Returns a string consisting of the concatenation of the contents
 of all the argument strings, in argument order.
 
-#### `stringFromIntlet intlet <> string`
+#### `stringFromInteger integer <> string`
 
 Returns a single-character string that consists of the character
-code indicated by the given intlet argument, which must be in the
+code indicated by the given integer argument, which must be in the
 range for representation as an unsigned 32-bit quantity.
 
 #### `stringNth string n notFound? <> . | ~.`
 
 Returns the `n`th (zero-based) element of the given string, as a
-single-element string, if `n` is a valid intlet index into the given
-string. If `n` is not valid (not an intlet, or out of range),
+single-element string, if `n` is a valid integer index into the given
+string. If `n` is not valid (not an integer, or out of range),
 then this returns the `notFound` value (an arbitrary value) if supplied,
 or returns void if `notFound` was not supplied.
 

@@ -13,13 +13,13 @@
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletPutNth) {
     requireExactly(argCount, 3);
-    return datListletPutNth(args[0], datIntFromIntlet(args[1]), args[2]);
+    return datListletPutNth(args[0], datIntFromInteger(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listletInsNth) {
     requireExactly(argCount, 3);
-    return datListletInsNth(args[0], datIntFromIntlet(args[1]), args[2]);
+    return datListletInsNth(args[0], datIntFromInteger(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -46,5 +46,5 @@ PRIM_IMPL(listletDelNth) {
         return args[0];
     }
 
-    return datListletDelNth(args[0], datIntFromIntlet(args[1]));
+    return datListletDelNth(args[0], datIntFromInteger(args[1]));
 }

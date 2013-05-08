@@ -12,7 +12,7 @@
  */
 
 enum {
-    /** Intlets are restricted to being in the range of `int32_t`. */
+    /** Integers are restricted to being in the range of `int32_t`. */
     MAX_BITS = 32
 };
 
@@ -42,11 +42,11 @@ static zint bitSize(zint value) {
 }
 
 /**
- * Gets the value of the given intlet as a `zint`. Doesn't do any
+ * Gets the value of the given integer as a `zint`. Doesn't do any
  * type checking.
  */
-static zint intletValue(zvalue intlet) {
-    return ((DatIntlet *) intlet)->value;
+static zint integerValue(zvalue integer) {
+    return ((DatInteger *) integer)->value;
 }
 
 
@@ -55,14 +55,14 @@ static zint intletValue(zvalue intlet) {
  */
 
 /* Documented in header. */
-bool datIntletEq(zvalue v1, zvalue v2) {
-    return intletValue(v1) == intletValue(v2);
+bool datIntegerEq(zvalue v1, zvalue v2) {
+    return integerValue(v1) == integerValue(v2);
 }
 
 /* Documented in header. */
-zorder datIntletOrder(zvalue v1, zvalue v2) {
-    zint int1 = intletValue(v1);
-    zint int2 = intletValue(v2);
+zorder datIntegerOrder(zvalue v1, zvalue v2) {
+    zint int1 = integerValue(v1);
+    zint int2 = integerValue(v2);
 
     if (int1 < int2) {
         return ZLESS;
@@ -79,11 +79,11 @@ zorder datIntletOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zchar datCharFromIntlet(zvalue intlet) {
-    zint value = datIntFromIntlet(intlet);
+zchar datCharFromInteger(zvalue integer) {
+    zint value = datIntFromInteger(integer);
 
     if ((value < 0) || (value >= 0x100000000)) {
-        die("Invalid intlet value for character: %lld", value);
+        die("Invalid integer value for character: %lld", value);
     }
 
     return (zchar) value;
@@ -101,31 +101,31 @@ bool datIntGetBit(zint value, zint n) {
 }
 
 /* Documented in header. */
-bool datIntletGetBit(zvalue intlet, zint n) {
-    datAssertIntlet(intlet);
-    return datIntGetBit(intletValue(intlet), n);
+bool datIntegerGetBit(zvalue integer, zint n) {
+    datAssertInteger(integer);
+    return datIntGetBit(integerValue(integer), n);
 }
 
 /* Documented in header. */
-bool datIntletSign(zvalue intlet) {
-    return datIntletGetBit(intlet, MAX_BITS - 1);
+bool datIntegerSign(zvalue integer) {
+    return datIntegerGetBit(integer, MAX_BITS - 1);
 }
 
 /* Documented in header. */
-zvalue datIntletFromInt(zint value) {
+zvalue datIntegerFromInt(zint value) {
     zint size = bitSize(value);
     zvalue result = datAllocValue(DAT_INTLET, size, sizeof(int32_t));
 
     if (size > MAX_BITS) {
-        die("Value too large to fit into intlet: %lld", value);
+        die("Value too large to fit into integer: %lld", value);
     }
 
-    ((DatIntlet *) result)->value = (int32_t) value;
+    ((DatInteger *) result)->value = (int32_t) value;
     return result;
 }
 
 /* Documented in header. */
-zint datIntFromIntlet(zvalue intlet) {
-    datAssertIntlet(intlet);
-    return intletValue(intlet);
+zint datIntFromInteger(zvalue integer) {
+    datAssertInteger(integer);
+    return integerValue(integer);
 }

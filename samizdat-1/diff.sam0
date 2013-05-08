@@ -35,9 +35,9 @@ diffHighlet = { recurse context v1 v2 ::
         { <> recurse @value value1 value2 }
 };
 
-# Diffs intlets.
-diffIntlet = { recurse context v1 v2 ::
-    <> report context v1 v2 @"Different intlets."
+# Diffs integers.
+diffInteger = { recurse context v1 v2 ::
+    <> report context v1 v2 @"Different integers."
 };
 
 # Diffs maplets.
@@ -98,7 +98,7 @@ diffUniqlet = { recurse context v1 v2 ::
 # Mapping from type names to diff functions.
 DIFF_FUNCTIONS = @[
     @highlet   = diffHighlet
-    @intlet    = diffIntlet
+    @integer    = diffInteger
     @listlet   = diffListlet
     @maplet    = diffMaplet
     @string = diffString

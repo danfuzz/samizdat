@@ -318,9 +318,9 @@ DEF_PARSE(string) {
 }
 
 /**
- * Parses an `intlet` node.
+ * Parses an `integer` node.
  */
-DEF_PARSE(intlet) {
+DEF_PARSE(integer) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
@@ -329,7 +329,7 @@ DEF_PARSE(intlet) {
     zvalue value = datHighletValue(integer);
 
     if (negative) {
-        value = datIntletFromInt(-datIntFromIntlet(value));
+        value = datIntegerFromInt(-datIntFromInteger(value));
     }
 
     return datHighletFrom(STR_LITERAL, value);
@@ -381,7 +381,7 @@ DEF_PARSE(atom) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varRef); }
-    if (result == NULL) { result = PARSE(intlet); }
+    if (result == NULL) { result = PARSE(integer); }
     if (result == NULL) { result = PARSE(string); }
     if (result == NULL) { result = PARSE(emptyListlet); }
     if (result == NULL) { result = PARSE(listlet); }

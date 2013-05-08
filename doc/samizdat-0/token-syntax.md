@@ -37,7 +37,7 @@ punctuation ::=
 ;
 
 integer ::= ("0".."9")+ ;
-# result: [:@integer <intlet>:]
+# result: [:@integer <integer>:]
 
 string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
 # result: [:@string <string>:]

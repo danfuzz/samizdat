@@ -95,8 +95,8 @@ static zvalue tokenizeInteger(ParseState *state) {
         }
     }
 
-    zvalue intlet = datIntletFromInt(value);
-    return datHighletFrom(STR_INTEGER, intlet);
+    zvalue integer = datIntegerFromInt(value);
+    return datHighletFrom(STR_INTEGER, integer);
 }
 
 /**

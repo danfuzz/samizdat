@@ -36,15 +36,15 @@ thisIsNotCommentary   # ...but this *is* commentary.
 ```
 
 
-### Intlet
+### Integer
 
-An `intlet` is a signed arbitrary-precision integer value, sometimes
+An `integer` is a signed arbitrary-precision integer value, sometimes
 called a "bigint" or "BigInteger" (even though they aren't always actually
 that big). In the C implementation, there is actually a limitation that
-intlets only have a 32-bit signed range, with out-of-range arithmetic
+integers only have a 32-bit signed range, with out-of-range arithmetic
 results causing failure, not wraparound.
 
-Intlets are written as an initial `@`, followed by an optional `-`
+Integers are written as an initial `@`, followed by an optional `-`
 (minus sign), followed by one or more decimal digits. The digits are
 interpreted in base 10 to form the number. (There is no hexadecimal
 representation.)

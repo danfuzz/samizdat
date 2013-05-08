@@ -7,14 +7,14 @@ General Low-Layer Values
 <br><br>
 ### Primitive Definitions
 
-#### `lowSize value <> intlet`
+#### `lowSize value <> integer`
 
 Returns the "size" of the given value. Every low-layer value has
 a size, defined as follows:
 
-* `intlet` &mdash; the number of significant bits (not bytes) in
+* `integer` &mdash; the number of significant bits (not bytes) in
   the value when represented in twos-complement form, including a
-  high-order sign bit. The minimum size of an intlet is 1, which
+  high-order sign bit. The minimum size of an integer is 1, which
   is the size of both `@0` and `@-1`.
 
 * `string` &mdash; the number of characters.
@@ -31,7 +31,7 @@ a size, defined as follows:
 #### `lowType value <> string`
 
 Returns the type name of the low-layer type of the given value. The
-result will be one of: `@intlet` `@string` `@listlet` `@maplet`
+result will be one of: `@integer` `@string` `@listlet` `@maplet`
 `@uniqlet` `@highlet`
 
 
@@ -42,9 +42,9 @@ result will be one of: `@intlet` `@string` `@listlet` `@maplet`
 
 Returns `true` iff the given value is a highlet.
 
-#### `isIntlet value <> boolean`
+#### `isInteger value <> boolean`
 
-Returns `true` iff the given value is an intlet.
+Returns `true` iff the given value is an integer.
 
 #### `isListlet value <> boolean`
 
