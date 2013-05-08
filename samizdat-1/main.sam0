@@ -27,7 +27,7 @@ readFile = io0SandboxedReader
 
 # Loads a sibling file.
 loadFile = { ctx name ::
-    text = readFile [(stringAdd name @".sam0")];
+    text = readFile [(stringAdd name ".sam0")];
     tree = sam0Tree text;
     function = sam0Eval ctx tree;
 

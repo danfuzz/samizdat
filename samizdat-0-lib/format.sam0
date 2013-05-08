@@ -10,7 +10,7 @@
 # `sourceString` and `sourceStringUnadorned` functions
 #
 
-# Single-character strings `@"\0"` `@"\x7f;"` and `@"\x9f;"`.
+# Single-character strings `"\0"` `"\x7f;"` and `"\x9f;"`.
 CHAR_0 = stringFromInteger @0;
 CHAR_127 = stringFromInteger @127;
 CHAR_159 = stringFromInteger @159;
@@ -25,13 +25,13 @@ adornIf = { adorn before value after ::
 # These are all the integer digits, as a map from digit values to
 # strings.
 INTEGER_CHARS =
-    [ @0=@"0" @1=@"1" @2=@"2" @3=@"3" @4=@"4"
-      @5=@"5" @6=@"6" @7=@"7" @8=@"8" @9=@"9" ];
+    [ @0="0" @1="1" @2="2" @3="3" @4="4"
+      @5="5" @6="6" @7="7" @8="8" @9="9" ];
 
 # Helper for stringifying integers, which does most of the conversion,
 # as well as prepending the given prefix.
 integerBody = { start value <out> ::
-    loopReduce [@"" value] { result ::
+    loopReduce ["" value] { result ::
         text = listNth result @0;
         value = listNth result @1;
         <> ifTrue { <> ne value @0 }
@@ -45,15 +45,15 @@ integerBody = { start value <out> ::
 
 # Map from integer sign values to the appropriate stringifier for each.
 INTEGER_SIGNS = [
-    @-1 = { integer :: <> integerBody @"-" (ineg integer) }
-    @0  = { <> @"0" }
-    @1  = { integer :: <> integerBody @"" integer }
+    @-1 = { integer :: <> integerBody "-" (ineg integer) }
+    @0  = { <> "0" }
+    @1  = { integer :: <> integerBody "" integer }
 ];
 
 # Stringifies an integer.
 doInteger = { recurse integer adorn ::
     result = (mapGet INTEGER_SIGNS (integerSign integer)) integer;
-    <> adornIf adorn @"@" result @""
+    <> adornIf adorn "@" result ""
 };
 
 # Helper for stringifying strings: Returns the hex form for the given
@@ -61,23 +61,23 @@ doInteger = { recurse integer adorn ::
 stringHexEscape = { ch ::
     integerHex = { value ::
         <> ifTrue { <> eq value @0 }
-            { <> @"" }
+            { <> "" }
             {
-                digit = stringNth @"0123456789abcdef" (imod value @16);
+                digit = stringNth "0123456789abcdef" (imod value @16);
                 more = idiv value @16;
                 <> stringAdd (integerHex more) digit
             }
     };
 
-    <> stringAdd @"\\x" (integerHex (integerFromString ch)) @";"
+    <> stringAdd "\\x" (integerHex (integerFromString ch)) ";"
 };
 
 # Map of special-case characters to their stringified forms.
 SPECIAL_CHARS = [
-    CHAR_0 = @"\\0"
-    @"\n"  = @"\\n"
-    @"\""  = @"\\\""
-    @"\\"  = @"\\\\"
+    CHAR_0 = "\\0"
+    "\n"  = "\\n"
+    "\""  = "\\\""
+    "\\"  = "\\\\"
 ];
 
 # Helper for stringifying strings: Returns the converted form of the
@@ -87,7 +87,7 @@ stringChar = { ch ::
         { special :: <> special }
         {
             # This checks for the ranges of nonprinting control characters.
-            <> ifTrue { <> or { <> lt ch @" " }
+            <> ifTrue { <> or { <> lt ch " " }
                               { <> and { <> ge ch CHAR_127 }
                                        { <> le ch CHAR_159 } } }
                 { <> stringHexEscape ch }
@@ -97,13 +97,13 @@ stringChar = { ch ::
 
 # These are all the characters which are allowed to start an identifier.
 IDENTIFIER_STARTS = stringReduce [=]
-    @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
     { result ch :: <> mapPut result ch true };
 
 # These are all the characters which are allowed to be in an identifier.
 IDENTIFIER_CHARS = mapAdd IDENTIFIER_STARTS
-    [ @"0"=true @"1"=true @"2"=true @"3"=true @"4"=true
-       @"5"=true @"6"=true @"7"=true @"8"=true @"9"=true ];
+    [ "0"=true "1"=true "2"=true "3"=true "4"=true
+       "5"=true "6"=true "7"=true "8"=true "9"=true ];
 
 # Checks to see if the given string has the form of an in-language
 # identifier.
@@ -124,43 +124,43 @@ isIdentifier = { string <out> ::
 # Stringifies a string.
 doString = { recurse string adorn ::
     <> ifTrue { <> isIdentifier string }
-        { <> adornIf adorn @"@" string @"" }
+        { <> adornIf adorn "@" string "" }
         {
-            body = stringReduce @"" string
+            body = stringReduce "" string
                 { result ch :: <> stringAdd result (stringChar ch) };
-            <> adornIf adorn @"@\"" body @"\""
+            <> adornIf adorn "@\"" body "\""
         }
 };
 
 # Stringifies a list.
 doList = { recurse list adorn ::
-    body = listReduce @"" list
+    body = listReduce "" list
         { reduction elem ::
             <> stringAdd
                 reduction
-                (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
+                (ifTrue { <> eq reduction "" } { <> "" } { <> " " })
                 (recurse elem)
         };
 
-    <> adornIf adorn @"[" body @"]"
+    <> adornIf adorn "[" body "]"
 };
 
 # Stringifies a map.
 doMap = { recurse map adorn ::
-    body = mapReduce @"" map
+    body = mapReduce "" map
         { reduction value key ::
             <> stringAdd
                 reduction
-                (ifTrue { <> eq reduction @"" } { <> @"" } { <> @" " })
+                (ifTrue { <> eq reduction "" } { <> "" } { <> " " })
                 (recurse key)
-                @"="
+                "="
                 (recurse value)
         };
 
     <> adornIf adorn
-        @"["
-        (ifTrue { <> eq body @"" } { <> @"=" } { <> body })
-        @"]"
+        "["
+        (ifTrue { <> eq body "" } { <> "=" } { <> body })
+        "]"
 };
 
 # Stringifies a highlet.
@@ -169,25 +169,25 @@ doHighlet = { recurse highlet adorn ::
     result = stringAdd
         (recurse type)
         (ifValue { <> highletValue highlet }
-            { value :: <> stringAdd @" " (recurse value) }
-            { <> @"" });
+            { value :: <> stringAdd " " (recurse value) }
+            { <> "" });
 
-    <> adornIf adorn @"[:" result @":]"
+    <> adornIf adorn "[:" result ":]"
 };
 
 # Stringifies a uniqlet.
 doUniqlet = { recurse uniqlet ::
-    <> @"@@"
+    <> "@@"
 };
 
 # Stringifies an unknown value type.
 doUnknown = { recurse unknown ::
     <> stringAdd
-        @"[(unknown) "
+        "[(unknown) "
         (recurse (lowType value))
-        @" "
+        " "
         (recurse (lowSize value))
-        @"]"
+        "]"
 };
 
 # Mapping from low-layer type names to stringifiers.
@@ -251,12 +251,12 @@ xArgsAt = { state ::
 xArg = { state ::
     <> ifValue { <> listNth (mapGet state @args) (xArgsAt state) }
         { value :: <> value }
-        { <> @"(missing argument)" }
+        { <> "(missing argument)" }
 };
 
 # Formats a literal percent.
 doPercent = { yield state ::
-    yield @"%";
+    yield "%";
 
     fmtAt = iadd @2 (mapGet state @fmtAt);
     <> mapPut state @fmtAt fmtAt;
@@ -291,10 +291,10 @@ doString = { yield state ::
 
 # Mapping from format escape characters to their respective handler functions.
 FORMATTERS = [
-    @"%" = doPercent
-    @"q" = doLiteral
-    @"Q" = doUnadornedLiteral
-    @"s" = doString
+    "%" = doPercent
+    "q" = doLiteral
+    "Q" = doUnadornedLiteral
+    "s" = doString
 ];
 
 # Formats a plain character (that is, returns it as-is).
@@ -320,7 +320,7 @@ doEscape = { yield state ::
 formatOne = { yield state ::
     <> ifValue { <> xPeek state }
         { ch ::
-            <> ifTrue { <> eq ch @"%" }
+            <> ifTrue { <> eq ch "%" }
                 { <> doEscape yield state }
                 { <> doPlain yield state ch }
         }
@@ -336,7 +336,7 @@ format = { formatString rest* <out> ::
         @argsAt = @0
     ];
 
-    loopReduce @"" { result ::
+    loopReduce "" { result ::
         <> ifValue { <> formatter() }
             { s :: <> stringAdd result s }
             { <out> result }

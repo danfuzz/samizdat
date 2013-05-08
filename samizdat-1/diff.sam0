@@ -11,12 +11,12 @@ report = { context v1 v2 message ::
     io0Note message;
     listForEach context
         { item ::
-            io0Note (format @"    at %Q" item);
+            io0Note (format "    at %Q" item);
             <> null
         };
-    io0Note @"";
-    io0Note (format @"v1 = %q" v1);
-    io0Note (format @"v2 = %q" v2);
+    io0Note "";
+    io0Note (format "v1 = %q" v1);
+    io0Note (format "v2 = %q" v2);
     <> false;
 };
 
@@ -37,7 +37,7 @@ diffHighlet = { recurse context v1 v2 ::
 
 # Diffs integers.
 diffInteger = { recurse context v1 v2 ::
-    <> report context v1 v2 @"Different integers."
+    <> report context v1 v2 "Different integers."
 };
 
 # Diffs maps.
@@ -53,7 +53,7 @@ diffMap = { recurse context v1 v2 <out> ::
                     ifVoid { <> mapGet v2 key }
                         {
                             report (listAppend context key) v1 v2
-                                @"Key mismatch.";
+                                "Key mismatch.";
                             <out> false
                         }
                 };
@@ -87,12 +87,12 @@ diffList = { recurse context v1 v2 ::
 
 # Diffs strings.
 diffString = { recurse context v1 v2 ::
-    <> report context v1 v2 @"Different strings."
+    <> report context v1 v2 "Different strings."
 };
 
 # Diffs uniqlets.
 diffUniqlet = { recurse context v1 v2 ::
-    <> report context v1 v2 @"Different uniqlets."
+    <> report context v1 v2 "Different uniqlets."
 };
 
 # Mapping from type names to diff functions.
@@ -126,7 +126,7 @@ innerDiff = { selfRef context v1 v2 ::
             <> ifTrue { <> ne type1 type2 }
                 {
                     <> report context v1 v2
-                        (format @"Types differ: %q %q" type1 type2)
+                        (format "Types differ: %q %q" type1 type2)
                 }
                 {
                     <> (mapGet DIFF_FUNCTIONS type1) recurse innerContext

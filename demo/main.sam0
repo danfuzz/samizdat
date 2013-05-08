@@ -42,27 +42,27 @@ countDowns = yStarCombinator
         }
     }
     { f1 f2 ::
-        <> { n :: <> listPrepend @"and" (f1 n) }
+        <> { n :: <> listPrepend "and" (f1 n) }
     };
 countDown2 = listNth countDowns @0;
 
 # Demo of formal argument repeat modifiers.
 blort = { foo bar? baz? more* ::
-    io0Note (format @"%q %q %q %q" foo bar baz more);
+    io0Note (format "%q %q %q %q" foo bar baz more);
 };
 
 # Demo of reading a sibling file through a sandboxed reader.
 sibling = {
     reader = io0SandboxedReader
         (listDelNth SELF_PATH (isub (lowSize SELF_PATH) @1));
-    text = reader [@"sibling.txt"];
+    text = reader ["sibling.txt"];
     io0Note text;
 };
 
 # Demo of nonlocal exit.
 exiter = { foo <out> ::
     ifTrue { <> eq foo @1 }
-        { <out> @"one" }
+        { <out> "one" }
         { <out> }
 };
 
@@ -80,8 +80,8 @@ main = { selfPath name rest* ::
     # Be welcoming.
 
     ifTrue { <> eq name @danfuzz }
-        { io0Note @"Hello, Danfuzz!\n" }
-        { io0Note @"Hello, Самиздат!\n" };
+        { io0Note "Hello, Danfuzz!\n" }
+        { io0Note "Hello, Самиздат!\n" };
 
     process selfPath;
     process rest;
@@ -92,8 +92,8 @@ main = { selfPath name rest* ::
     process [@-1];
     process [@1 @-2];
     process [@-1 @2 @300];
-    process @"";
-    process @"\"Blort.\" \n";
+    process "";
+    process "\"Blort.\" \n";
     process [=];
     process [@1=@2];
     process [@1=@2 @888=@1];
@@ -115,8 +115,8 @@ main = { selfPath name rest* ::
 
     process (exiter @1);
     ifValue { <> exiter @0 }
-        { value :: process (format @"Unexpected! %q" value) }
-        { io0Note @"The void." };
+        { value :: process (format "Unexpected! %q" value) }
+        { io0Note "The void." };
 };
 
 <> apply main SELF_PATH ARGS

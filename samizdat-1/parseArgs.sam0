@@ -20,21 +20,21 @@
 # wordBreak ::= "\0" ;
 #
 
-# The character @"\0".
+# The character "\0".
 CHAR_0 = stringFromInteger @0;
 
 parseArguments = filterRule
     (seqRule
         @options
-        (optRule (charsRule (stringAdd @"--" CHAR_0)))
+        (optRule (charsRule (stringAdd "--" CHAR_0)))
         @words)
     { result ::
         optsErrors = listNth result @0;
         words = listNth result @2;
         ifTrue { <> mapGet optsErrors @errors }
-            { io0Die @"Trouble with options." };
+            { io0Die "Trouble with options." };
         ifTrue { <> eq (lowSize words) @0 }
-            { io0Die @"Missing file name." };
+            { io0Die "Missing file name." };
         fileName = listNth words @0;
         args = listDelNth words @0;
         <> [
@@ -56,20 +56,20 @@ parseOptions = filterRule
 
 parseError = filterRule
     (seqRule
-        (charsRule @"-")
-        (notCharSetRule (stringAdd @"-" CHAR_0))
+        (charsRule "-")
+        (notCharSetRule (stringAdd "-" CHAR_0))
         (starRule (notCharSetRule CHAR_0)))
     { result ::
         c0 = listNth result @0;
         c1 = listNth result @1;
         more = listNth result @2;
         value = apply stringAdd c0 c1 more;
-        io0Note (format @"Unknown option: %Q" value);
+        io0Note (format "Unknown option: %Q" value);
         <> { result :: <> mapPut result @errors true }
     };
 
 parseOption = filterRule
-    (seqRule (charsRule @"--") @key (optRule @value))
+    (seqRule (charsRule "--") @key (optRule @value))
     { result ::
         key = listNth result @1;
         valueHolder = listNth result @2;
@@ -84,11 +84,11 @@ parseOption = filterRule
 
 parseKey = filterRule
     (plusRule
-        (notCharSetRule (stringAdd @"=" CHAR_0)))
+        (notCharSetRule (stringAdd "=" CHAR_0)))
     { result :: <> apply stringAdd result };
 
 parseValue = filterRule
-    (seqRule (charsRule @"=") @word)
+    (seqRule (charsRule "=") @word)
     { result :: <> listNth result @1 };
 
 parseWords = starRule
@@ -119,7 +119,7 @@ RULES = [
 # it uses the parser engine to split them back apart.
 parseArgs = { args ::
     # Make a unified string with each argument "\0"-terminated.
-    argString = listReduce @"" args
+    argString = listReduce "" args
         { result arg ::
             <> stringAdd result arg CHAR_0;
         };

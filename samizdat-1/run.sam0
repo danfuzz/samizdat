@@ -29,12 +29,12 @@ sam1Tree = { programText ::
     # Complain if the two parsed forms aren't identical.
     ifTrue { <> ne programNode0 programNode }
         {
-            io0Note @"Parser disagreement.";
+            io0Note "Parser disagreement.";
             diff programNode0 programNode;
-            io0Note @"";
-            io0Note (format @"v1\n----------\n%q\n" programNode0);
-            io0Note (format @"v2\n----------\n%q\n" programNode);
-            io0Die @"Ouch!";
+            io0Note "";
+            io0Note (format "v1\n----------\n%q\n" programNode0);
+            io0Note (format "v2\n----------\n%q\n" programNode);
+            io0Die "Ouch!";
         };
 
     <> programNode
@@ -42,7 +42,7 @@ sam1Tree = { programText ::
 
 # Reads the named embedded library file.
 readLibraryFile = { name ::
-    <> READER [@"samizdat-0-lib" (stringAdd name @".sam0")]
+    <> READER ["samizdat-0-lib" (stringAdd name ".sam0")]
 };
 
 # Reads all the library files, returning a map from names to contents.
@@ -84,9 +84,9 @@ run = { args* ::
 
     library = ifTrue { <> validate }
         {
-            io0Note @"Loading core library...";
+            io0Note "Loading core library...";
             lib = makeCoreLibrary();
-            io0Note @"Done!";
+            io0Note "Done!";
             <> lib
         }
         { <> LIBRARY };

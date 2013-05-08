@@ -37,7 +37,7 @@ namedRule = { rule ::
     <> { engine ::
         <> ifValue { <> engine @rule rule }
             { function :: <> function engine }
-            { io0Die (format @"Missing rule: %Q" rule) }
+            { io0Die (format "Missing rule: %Q" rule) }
         }
 };
 

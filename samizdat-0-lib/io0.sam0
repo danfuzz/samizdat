@@ -31,9 +31,9 @@ resolveLinks = { sandboxDirectory path ::
             { <> path }
             { newPath ::
                 ifFalse { <> isPrefix sandboxDirectory newPath }
-                    { io0Die @"Symbolic link escapes sandbox directory." };
+                    { io0Die "Symbolic link escapes sandbox directory." };
                 ifTrue { <> le limit @0 }
-                    { io0Die @"Too many links in symbolic link chain." };
+                    { io0Die "Too many links in symbolic link chain." };
                 <> resolveStep newPath (isub limit @1)
             }
     };

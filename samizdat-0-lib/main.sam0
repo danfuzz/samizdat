@@ -29,7 +29,7 @@ LIBRARY_FILES ::
 readLibraryFile = { name ::
     <> ifValue { <> mapGet LIBRARY_FILES name }
         { result :: <> result }
-        { io0Die (stringAdd @"No such core library file: " name) }
+        { io0Die (stringAdd "No such core library file: " name) }
 };
 
 # Loads the named library file in the given context, returning a map

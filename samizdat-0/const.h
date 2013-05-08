@@ -34,7 +34,7 @@ extern zvalue CONST_FALSE;
 /** The canonical `true` value. */
 extern zvalue CONST_TRUE;
 
-/** The canonical empty string value (`@""`). */
+/** The canonical empty string value (`""`). */
 extern zvalue STR_EMPTY;
 
 /** The canonical empty list value (`[]`). */

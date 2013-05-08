@@ -26,23 +26,23 @@ parseToken = orRule @punctuation @integer @string @identifier;
 # a token whose type is the string matched.
 parsePunctuation = filterRule
     (orRule
-        (charsRule @"@@")
-        (charsRule @"::")
-        (charsRule @"<>")
-        (charSetRule @"@:*;=-?<>{}()[]"))
+        (charsRule "@@")
+        (charsRule "::")
+        (charsRule "<>")
+        (charSetRule "@:*;=-?<>{}()[]"))
     { result :: <> [:result:] };
 
 # These are all the integer digits, as a map from strings to
 # digit values.
 INTEGER_CHARS =
-    [ @"0"=@0 @"1"=@1 @"2"=@2 @"3"=@3 @"4"=@4
-      @"5"=@5 @"6"=@6 @"7"=@7 @"8"=@8 @"9"=@9 ];
+    [ "0"=@0 "1"=@1 "2"=@2 "3"=@3 "4"=@4
+      "5"=@5 "6"=@6 "7"=@7 "8"=@8 "9"=@9 ];
 
 # Parses an `integer` token.
 parseInteger = filterRule
     (plusRule
         (filterRule
-            (charSetRule @"0123456789")
+            (charSetRule "0123456789")
             { result :: <> mapGet INTEGER_CHARS result }))
     { result ::
         value = listReduce @0 result
@@ -52,22 +52,22 @@ parseInteger = filterRule
 
 # Parses a single string character.
 parseString1 = orRule
-    (notCharSetRule @"\\\"")
+    (notCharSetRule "\\\"")
     (filterRule
         (seqRule
-            (charsRule @"\\")
+            (charsRule "\\")
             (orRule
-                (filterRule (charsRule @"\\") { <> @"\\" })
-                (filterRule (charsRule @"\"") { <> @"\"" })
-                (filterRule (charsRule @"n")  { <> @"\n" })))
+                (filterRule (charsRule "\\") { <> "\\" })
+                (filterRule (charsRule "\"") { <> "\"" })
+                (filterRule (charsRule "n")  { <> "\n" })))
         { result :: <> listNth result @1 });
 
 # Parses a `string` token.
 parseString = filterRule
     (seqRule
-        (charsRule @"\"")
+        (charsRule "\"")
         (starRule parseString1)
-        (charsRule @"\""))
+        (charsRule "\""))
     { result ::
         value = apply stringAdd (listNth result @1);
         <> [:@string value:]
@@ -75,10 +75,10 @@ parseString = filterRule
 
 # These are all the characters which are allowed to start an identifier.
 IDENTIFIER_START_CHARS =
-    @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = stringAdd IDENTIFIER_START_CHARS @"0123456789";
+IDENTIFIER_CHARS = stringAdd IDENTIFIER_START_CHARS "0123456789";
 
 # Parses an `identifier` token.
 parseIdentifier = filterRule
@@ -94,11 +94,11 @@ parseIdentifier = filterRule
 
 # Parses a single whitespace character or a comment.
 parseWhitespace = orRule
-    (charSetRule @" \n")
+    (charSetRule " \n")
     (seqRule
-        (charsRule @"#")
-        (starRule (notCharSetRule @"\n"))
-        (charsRule @"\n"));
+        (charsRule "#")
+        (starRule (notCharSetRule "\n"))
+        (charsRule "\n"));
 
 # Map of all the tokenizer rules.
 TOKEN0_RULES = [

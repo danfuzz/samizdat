@@ -57,7 +57,7 @@ doReset = { yield state resetAt ::
     at = xAt state;
 
     ifTrue { <> or { <> lt resetAt @0 } { <> gt resetAt at } }
-        { io0die (format @"Invalid reset value: %Q" resetAt) };
+        { io0die (format "Invalid reset value: %Q" resetAt) };
 
     yield();
     <> mapPut state @at resetAt;

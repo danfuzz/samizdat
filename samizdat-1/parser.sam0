@@ -14,8 +14,8 @@
 # the user.
 readLine = filterRule
     (seqRule
-        (starRule (notCharSetRule @"\n"))
-        (optRule (charsRule @"\n")))
+        (starRule (notCharSetRule "\n"))
+        (optRule (charsRule "\n")))
     { result :: <> apply stringAdd (listNth result @0) };
 
 # Performs tokenization of the given text using the given tokenizer rules.
@@ -26,8 +26,8 @@ tokenize = { rules text ::
 
     ifFalse { <> theEngine @eof }
         {
-            io0Note @"Extra text at end of program.";
-            io0Note @"Pending text:";
+            io0Note "Extra text at end of program.";
+            io0Note "Pending text:";
             io0Die (readLine theEngine);
         };
 
@@ -43,17 +43,17 @@ parseTree = { rules tokens ::
 
     ifFalse { <> theEngine @eof }
         {
-            io0Note @"Pending tokens:";
+            io0Note "Pending tokens:";
 
             { <break> ::
                 loop {
                     ifValue { <> theEngine @read }
-                        { token :: io0Note (format @"    %q" token) }
+                        { token :: io0Note (format "    %q" token) }
                         { <break> }
                 }
             }();
 
-            io0Die @"Extra tokens at end of program."
+            io0Die "Extra tokens at end of program."
         };
 
     <> result

@@ -40,7 +40,7 @@ STR(UP_LIBRARY,    "LIBRARY");
 STR(ACTUALS,       "actuals");
 STR(BOOLEAN,       "boolean");
 STR(CALL,          "call");
-STR(EMPTY,         ""); // The canonical empty string (`@""`) value.
+STR(EMPTY,         ""); // The canonical empty string (`""`) value.
 STR(FALSE,         "false");
 STR(FORMALS,       "formals");
 STR(FUNCTION,      "function");
