@@ -150,11 +150,14 @@ no uniqlet is equal to any other uniqlet. In practice, uniqlets are
 used to help bridge the divide between data and not-data, with some of
 the main not-data sorts of things in the system being functions.
 
-One way of thinking about uniqlets is that they are an "atomic
-unit of identity" which can be represented as pure data.
-
 Uniqlets are written as simply `@@`. Each mention of `@@` refers
 to a different value.
+
+One way of thinking about uniqlets is that they are an "atomic
+unit of identity" which can be represented as pure data. Another
+way is that, in Lisp terms, saying `@@` is like calling `gensym`
+or `make-symbol`, but without any string-like name associated with
+the result.
 
 ```
 @@
