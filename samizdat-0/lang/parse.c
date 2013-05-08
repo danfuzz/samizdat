@@ -302,10 +302,10 @@ DEF_PARSE(emptyList) {
 DEF_PARSE(string) {
     MARK();
 
-    MATCH_OR_REJECT(CH_AT);
-
     zvalue string = MATCH(STRING);
+
     if (string == NULL) {
+        MATCH_OR_REJECT(CH_AT);
         string = MATCH_OR_REJECT(IDENTIFIER);
     }
 
