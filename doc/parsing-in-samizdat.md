@@ -14,54 +14,54 @@ done as a unified tokenizer / tree parser. For simplicity, we don't bother
 with whitespace-related rules.
 
 ```
-parser digit {
+digit = {:
     ch=("0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9")
     :: <> isub (intFromString ch) (intFromString "0")
-};
+:};
 
-parser number {
+number = {:
     digits=digit+
     ::
     <> listReduce 0 digits { result digit :: <> iadd digit (imul result 10) }
-};
+:};
 
-parser atom {
+atom = {:
     number
     |
     "(" ex=addExpression ")" :: <> ex
-};
+:};
 
-parser addExpression {
+addExpression = {:
     ex1=mulExpression op=addOp ex2=addExpression
     :: <> op ex1 ex2
-};
+:};
 
-parser addOp {
+addOp = {:
     "+" :: <> iadd
     |
     "-" :: <> isub
-};
+:};
 
-parser mulExpression {
+mulExpression = {:
     ex1=unaryExpression op=mulOp ex2=mulExpression
     :: <> op ex1 ex2
-};
+:};
 
-parser mulOp {
+mulOp = {:
     "*" :: <> imul
     |
     "/" :: <> idiv
-};
+:};
 
-parser unaryExpression {
+unaryExpression = {:
     op=unaryOp ex=unaryExpression :: <> unaryOp ex
     |
     atom
-};
+:};
 
-parser main {
+main = {:
     (ex=addExpression "\n" :: io0Note (format "%q" ex))*
-};
+:};
 ```
 
 Example Translation to Samizdat-0
