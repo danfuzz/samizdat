@@ -89,7 +89,7 @@ digit = { yield input ::
         { yield input :: <> parseChars yield input "6" }
         { yield input :: <> parseChars yield input "7" }
         { yield input :: <> parseChars yield input "8" }
-        { yield input :: <> parseChars yield input "9" };
+        { yield input :: <> parseChars yield input "9" }
 };
 
 number = { yield input ::
@@ -157,7 +157,7 @@ unaryExpression = { yield input ::
 
     <> parseOr yield input
         { yield input ::
-            <> parseSeq yieldFilter input unaryOp unaryExpression;
+            <> parseSeq yieldFilter input unaryOp unaryExpression
         }
         atom
 };
