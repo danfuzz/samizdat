@@ -67,9 +67,19 @@ parser main {
 Example Translation to Samizdat-0
 ---------------------------------
 
+Note: The `yieldFilter` definitions would need to be refactored in order
+to make the translations "hygenic" (that is, avoid having them inadvertently
+bind to parser-expansion-internal variables).
+
+Assumption: `yield` is only called on a successful parse.
+
 ```
-digit = { yield input <out> ::
-    parser_ch = multiResult [@rest @yield] parseOr input
+digit = { yield input ::
+    yieldFilter = { ch ::
+        <> isub (integerFromString ch) (integerFromString "0")
+    };
+
+    <> parseOr yieldFilter input
         { yield input :: <> parseChars yield input "0" }
         { yield input :: <> parseChars yield input "1" }
         { yield input :: <> parseChars yield input "2" }
@@ -80,187 +90,88 @@ digit = { yield input <out> ::
         { yield input :: <> parseChars yield input "7" }
         { yield input :: <> parseChars yield input "8" }
         { yield input :: <> parseChars yield input "9" };
-    <> ifValue { <> mapGet parser_ch @yield }
-        { ch ::
-            yield (isub (intFromString ch) (intFromString "0"));
-            <out> mapGet parser_ch @rest
-        };
-
-    # Indicate failure to parse.
-    yield();
-    <out>
 };
 
-number = { yield input <out> ::
-    parser_digits = multiResult [@rest @yield] parsePlus digit;
-    ifValue { <> mapGet parser_digits @yield }
-        { digits ::
-            yield
-                (listReduce 0 digits
-                    { result digit :: <> iadd digit (imul result 10) });
-            <out> mapGet parser_digits @rest
-        };
+number = { yield input ::
+    yieldFilter = { digits ::
+        <> listReduce 0 digits
+            { result digit :: <> iadd digit (imul result 10) }
+    };
 
-    # Indicate failure to parse.
-    yield();
-    <out>
+    <> parsePlus yieldFilter input digit
 };
 
-atom = { yield input <out> ::
-    parser_1 = multiResult [@rest @yield] parseOr input
+atom = { yield input ::
+    yieldFilter = { value ::
+        <> apply { ignored_1 ex ignored_2 :: <> ex } value
+    };
+
+    <> parseOr yield input
         number
-        { yield input <out> ::
-            parser_2 = multiResult [@result @yield] parseSeq
+        { yield input ::
+            <> parseSeq yieldFilter input
                 { yield input :: <> parseChars yield input "(" }
                 addExpression
-                { yield input :: <> parseChars yield input ")" };
-            ifValue { <> mapGet parser_2 @yield }
-                { value ::
-                    apply { ignored_1 ex ignored_2 :: yield ex } value;
-                    <out> mapGet parser_2 @rest
-                };
-        };
-    ifValue { <> mapGet parser_1 @yield }
-        { value ::
-            yield value;
-            <out> mapGet parser_1 @rest
-        };
-
-    # Indicate failure to parse.
-    yield();
-    <out>
-};
-
-addExpression = { yield input <out> ::
-    parser_1 = multiResult [@result @yield] parseSeq
-        mulExpression addOp addExpression;
-    ifValue { <> mapGet parser_1 @yield }
-        { value ::
-            apply { ex1 op ex2 :: yield (op ex1 ex2) } value;
-            <out> mapGet parser_1 @rest
-        };
-
-    # Indicate failure to parse.
-    yield();
-    <out>
-};
-
-addOp = { yield input <out> ::
-    parser_1 = multiResult [@rest @yield] parseOr input
-        { yield input <out> ::
-            parser_2  = multiResult [@result @yield] parseChars "+";
-            ifValue { <> mapGet parser_2 @yield }
-                {
-                    yield iadd;
-                    <out> mapGet parser_ch @rest
-                }
+                { yield input :: <> parseChars yield input ")" }
         }
-        { yield input <out> ::
-            parser_2  = multiResult [@result @yield] parseChars "+";
-            ifValue { <> mapGet parser_2 @yield }
-                {
-                    yield isub;
-                    <out> mapGet parser_ch @rest
-                }
-        };
-    ifValue { <> mapGet parser_1 @yield }
-        { value ::
-            yield value;
-            <out> mapGet parser_1 @rest
-        };
-
-    # Indicate failure to parse.
-    yield();
-    <out>
 };
 
-mulExpression = { yield input <out> ::
-    parser_1 = multiResult [@result @yield] parseSeq
-        unaryExpression mulOp mulExpression;
-    ifValue { <> mapGet parser_1 @yield }
-        { value ::
-            apply { ex1 op ex2 :: yield (op ex1 ex2) } value;
-            <out> mapGet parser_1 @rest
-        };
+addExpression = { yield input ::
+    yieldFilter = { value ::
+        <> apply { ex1 op ex2 :: <> op ex1 ex2 } value
+    };
 
-    # Indicate failure to parse.
-    yield();
-    <out>
+    <> parseSeq yieldFilter input mulExpression addOp addExpression
 };
 
-mulOp = { yield input <out> ::
-    parser_1 = multiResult [@rest @yield] parseOr input
-        { yield input <out> ::
-            parser_2  = multiResult [@result @yield] parseChars "*";
-            ifValue { <> mapGet parser_2 @yield }
-                {
-                    yield imul;
-                    <out> mapGet parser_ch @rest
-                }
+addOp = { yield input ::
+    yieldFilter1 = { value :: <> iadd };
+    yieldFilter2 = { value :: <> isub };
+
+    <> parseOr yield input
+        { yield input :: <> parseChars yieldFilter1 input "+" }
+        { yield input :: <> parseChars yieldFilter2 input "-" }
+};
+
+mulExpression = { yield input ::
+    yieldFilter = { value ::
+        <> apply { ex1 op ex2 :: <> op ex1 ex2 } value
+    };
+
+    <> parseSeq yieldFilter input unaryExpression mulOp mulExpression
+};
+
+addOp = { yield input ::
+    yieldFilter1 = { value :: <> imul };
+    yieldFilter2 = { value :: <> idiv };
+
+    <> parseOr yield input
+        { yield input :: <> parseChars yieldFilter1 input "*" }
+        { yield input :: <> parseChars yieldFilter2 input "/" }
+};
+
+unaryExpression = { yield input ::
+    yieldFilter = { value ::
+        <> apply { op ex :: <> op ex } value
+    };
+
+    <> parseOr yield input
+        { yield input ::
+            <> parseSeq yieldFilter input unaryOp unaryExpression;
         }
-        { yield input <out> ::
-            parser_2  = multiResult [@result @yield] parseChars "/";
-            ifValue { <> mapGet parser_2 @yield }
-                {
-                    yield idiv;
-                    <out> mapGet parser_ch @rest
-                }
-        };
-    ifValue { <> mapGet parser_1 @yield }
-        { value ::
-            yield value;
-            <out> mapGet parser_1 @rest
-        };
-
-    # Indicate failure to parse.
-    yield();
-    <out>
+        atom
 };
 
-unaryExpression = { yield input <out> ::
-    parser_1 = multiResult [@rest @yield] parseOr input
-        { yield input <out> ::
-            parser_2 = multiResult [@result @yield] parseSeq
-                unaryOp
-                unaryExpression;
-            ifValue { <> mapGet parser_2 @yield }
-                { value ::
-                    apply { op ex :: yield (op ex) } value;
-                    <out> mapGet parser_2 @rest
-                };
-        }
-        atom;
-    ifValue { <> mapGet parser_1 @yield }
-        { value ::
-            yield value;
-            <out> mapGet parser_1 @rest
-        };
+main = { yield input ::
+    yieldFilter = { value ::
+        <> apply { ex ignored :: io0Note (format "%q" ex) } value
+    };
 
-    # Indicate failure to parse.
-    yield();
-    <out>
-};
-
-main = { yield input <out> ::
-    parser_1 = multiResult [@rest @yield] parseStar
-        { yield input <out> ::
-            parser_2 = multiResult [@result @yield] parseSeq
+    <> parseStar yield input
+        { yield input ::
+            <> parseSeq yieldFilter input
                 addExpression
-                { yield input :: <> parseChars yield input "\n" };
-            ifValue { <> mapGet parser_2 @yield }
-                { value ::
-                    apply { ex ignored :: io0Note (format "%q" ex) } value;
-                    yield();
-                    <out> mapGet parser_2 @rest
-                };
-
-            # Indicate failure to parse.
-            yield();
-            <out>
-        };
-
-    # Star rules always succeed.
-    yield (mapGet parser_1 @yield);
-    <out> mapGet parser_2 @rest
+                { yield input :: <> parseChars yield input "\n" }
+        }
 };
 ```
