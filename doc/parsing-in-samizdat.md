@@ -69,7 +69,21 @@ Example Translation to Samizdat-0
 
 Note: The `yieldFilter` definitions would need to be refactored in order
 to make the translations "hygenic" (that is, avoid having them inadvertently
-bind to parser-expansion-internal variables).
+bind to parser-expansion-internal variables). Basically, this:
+
+```
+rule = { yield input ::
+    yieldFilter = { ... filter ... }
+    ... rest of rule ...
+};
+
+=>
+
+rule = { yieldFilter ::
+    <> { yield input :: ... rest of rule ... }
+}
+{ ... filter ... };
+```
 
 Assumption: `yield` is only called on a successful parse.
 
