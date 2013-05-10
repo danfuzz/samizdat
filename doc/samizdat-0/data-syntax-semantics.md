@@ -11,6 +11,12 @@ First and foremost on the topic of semantics, all data values are
 immutable. For example, appending to or deleting from a list always
 results in a new list, with the original remaining unchanged.
 
+Most of the types mentioned here are primitive types implemented
+at a fairly low level of the language. A couple, though, are
+types that are defined as primitive values with a particular
+structure, and are universally a form of the `highlet` type
+(defined below) at the lowest layer.
+
 Keep in mind that many of the restrictions and caveats mentioned
 (such as, for example, what can be backslash-escaped in a string)
 are specific to *Samizdat Layer 0*, with higher layers providing
@@ -114,24 +120,6 @@ written as `[=]`.
 ```
 
 
-### Uniqlet
-
-A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
-no uniqlet is equal to any other uniqlet. In practice, uniqlets are
-used to help bridge the divide between data and not-data, with some of
-the main not-data sorts of things in the system being functions.
-
-One way of thinking about uniqlets is that they are an "atomic
-unit of identity" which can be represented as pure data.
-
-Uniqlets are written as simply `@@`. Each mention of `@@` refers
-to a different value.
-
-```
-@@
-```
-
-
 ### Highlet
 
 A `highlet` is a combination of a type tag value and an optional
@@ -152,6 +140,49 @@ value representation (another arbitrary value), followed by a final
   @spell
   [@name=@frotz @purpose="cause item to glow"]
 :]
+```
+
+
+### Uniqlet
+
+A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
+no uniqlet is equal to any other uniqlet. In practice, uniqlets are
+used to help bridge the divide between data and not-data, with some of
+the main not-data sorts of things in the system being functions.
+
+Uniqlets are written as simply `@@`. Each mention of `@@` refers
+to a different value.
+
+One way of thinking about uniqlets is that they are an "atomic
+unit of identity" which can be represented as pure data. Another
+way is that, in Lisp terms, saying `@@` is like calling `gensym`
+or `make-symbol`, but without any string-like name associated with
+the result.
+
+```
+@@
+```
+
+### Null (non-primitive)
+
+The value `null` is used when a value is needed for some reason or other
+but no particular value is otherwise suitable. The language defines
+a named constant `null` to refer to this value. This constant can be
+defined as:
+
+```
+null = [:@null:]
+```
+
+
+### Boolean (non-primitive)
+
+The two boolean values `true` and `false` represent truth values.
+The language defines these as named constants, which can be defined as:
+
+```
+false = [:@boolean 0:]
+true = [:@boolean 1:]
 ```
 
 

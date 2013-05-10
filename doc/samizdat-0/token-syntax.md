@@ -12,7 +12,7 @@ list of all the tokens.
 file ::= (whitespace* token)* whitespace* ;
 # result: [token*]
 
-token ::= punctuation | integer | string | identifier ;
+token ::= punctuation | integer | string | identifier | quotedIdentifier ;
 # result: same as whichever alternate was picked.
 
 punctuation ::=
@@ -44,6 +44,9 @@ string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
 identifier ::=
     ("_" | "a".."z" | "A".."Z") ("_" | "a".."z" | "A".."Z" | "0".."9")* ;
 # result: [:@identifier <string>:]
+
+quotedIdentifier ::= "\\" string
+# result: [:@identifier (highletValue string):]
 
 whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
 # result: n/a; automatically ignored.

@@ -185,6 +185,22 @@ static zvalue tokenizeString(ParseState *state) {
 }
 
 /**
+ * Parses a quoted identifier token, updating the given input position.
+ */
+static zvalue tokenizeQuotedIdentifier(ParseState *state) {
+    // Skip the backslash.
+    read(state);
+
+    if (peek(state) != '\"') {
+        die("Invalid quoted identifier.");
+    }
+
+    zvalue result = tokenizeString(state);
+    zvalue string = datHighletValue(result);
+    return datHighletFrom(STR_IDENTIFIER, string);
+}
+
+/**
  * Looks for a second character for a two-character token. If
  * found, returns the indicated token. If not found, either
  * returns the given one-character token or errors (the latter
@@ -224,6 +240,8 @@ static zvalue tokenizeOne(ParseState *state) {
         case '*':  read(state); return TOK_CH_STAR;
         case '\"':
             return tokenizeString(state);
+        case '\\':
+            return tokenizeQuotedIdentifier(state);
         case '@':
             return tokenizeOneOrTwoChars(state, '@',
                                          TOK_CH_AT, TOK_CH_ATAT);
