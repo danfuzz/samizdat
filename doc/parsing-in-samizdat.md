@@ -59,6 +59,10 @@ unaryExpression = {:
     atom
 :};
 
+unaryOp = {:
+    "-" :: <> ineg
+:}
+
 main = {:
     (ex=addExpression "\n" :: io0Note (format "%q" ex))*
 :};
@@ -174,6 +178,12 @@ unaryExpression = { yield input ::
             <> parseSeq yieldFilter input unaryOp unaryExpression
         }
         atom
+};
+
+unaryOp = { yield input ::
+    yieldFilter = { value :: <> ineg };
+
+    <> parseChars yieldFilter input "-"
 };
 
 main = { yield input ::
