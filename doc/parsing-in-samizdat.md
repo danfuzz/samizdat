@@ -35,11 +35,6 @@ the empty list).
 If parsing fails (a value was not `yield`ed), then the return value
 is ignored.
 
-### Grouping
-
-To override the default precedence of the syntax, any of the rest of
-these constructs may be enclosed in parentheses (`( ... )`).
-
 ### Matching character sequences
 
 The basic "terminal" in the context of a tokenizer is a character.
@@ -121,6 +116,12 @@ For example:
   assuming that `foo` is a properly-written parser function.
 
 * The parser `{: {: foo :} :}` will also match whatever `foo` matches.
+
+### Grouping
+
+To override the default precedence of the syntax, use the parser
+function literal form, per "Matching using other parser functions,"
+immediately above.
 
 ### Optionally matching an item
 
@@ -267,11 +268,13 @@ unaryOp = {:
 :}
 
 main = {:
-    (ex=addExpression "\n" ::
+    {:
+        ex=addExpression "\n"
+        ::
         io0Note (format "%q" ex);
         # Explicit yield here is so that parsing is considered successful.
         <> null
-    )*
+    :}*
 :};
 ```
 
