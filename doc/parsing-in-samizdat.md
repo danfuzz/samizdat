@@ -260,7 +260,11 @@ unaryOp = {:
 :}
 
 main = {:
-    (ex=addExpression "\n" :: io0Note (format "%q" ex))*
+    (ex=addExpression "\n" ::
+        io0Note (format "%q" ex);
+        # Explicit yield here is so that parsing is considered successful.
+        <> null
+    )*
 :};
 ```
 
