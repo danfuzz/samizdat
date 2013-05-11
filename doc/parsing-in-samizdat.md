@@ -164,7 +164,7 @@ To make sure an item would *not* match, the item can be preceded by an
 not-ampersand (`!&`). As with lookahead success, this will never "consume"
 any input.
 
-For example, the parser `{: &!"foobaz" "foo" :} will match the string
+For example, the parser `{: &!"foobaz" "foo" :}` will match the string
 `"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
 the lookahead `!&"foobaz"` would fail (because `"foobaz"` *would* match).
