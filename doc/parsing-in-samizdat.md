@@ -35,12 +35,17 @@ the empty list).
 If parsing fails (a value was not `yield`ed), then the return value
 is ignored.
 
+The default `yield` value of a parsing function is a list of all the items
+that it parsed, though that may be overridden by using a filtering clause
+(see below).
+
 ### Matching character sequences
 
 The basic "terminal" in the context of a tokenizer is a character.
 Within a parsing function, a double-quoted string is how to indicate
 that a sequence of characters is to be matched. The result of matching
-a sequence is a valueless highlet whose type is the the matched string.
+a character sequence is a valueless highlet whose type is the the matched
+string.
 
 For example, the parser `{: "foo" :}` will match the string `"foobar"`,
 resulting in the yielded value `[:@foo:]` and a remainder of `"bar"`.
@@ -49,7 +54,8 @@ resulting in the yielded value `[:@foo:]` and a remainder of `"bar"`.
 
 Tokens are generally represented as highlets, with the highlet type
 indicating the type of the token, and the highlet value optionally
-indicating a data payload.
+indicating a data payload. Tokens are the basic terminals in the
+context of tree parsing.
 
 Within a parsing function, a valueless highlet is how to indicate
 that a token of the indicated type is to be matched. The result of
@@ -57,16 +63,16 @@ matching is the full original token, including whatever data payload
 it happened to have.
 
 For example, the parser `{: [:@foo:] :}` will match the token list
-`[[:@foo:] [:@bar:]]`, resulting in the yielded value `[:@foo:]` and a
+`[[:@foo:] [:@bar:]]`, resulting in the yielded value `[[:@foo:]]` and a
 remainder of `[[:@bar:]]`.
 
-### Matching an arbitrary non-terminal item
+### Matching an arbitrary terminal item
 
-To match an arbitrary non-terminal item (character or token), use a
+To match an arbitrary terminal item (character or token), use a
 plain dot (`.`).
 
 For example, the parser `{: . . . :}` matches an arbitrary
-sequence of three non-terminals. (See "Matching sequences of items", below.)
+sequence of three terminals. (See "Matching sequences of items", below.)
 
 ### Matching the end-of-input
 
@@ -80,10 +86,10 @@ only if it's at the end of input.
 
 To match a set of characters (for tokenization) or tokens (for tree parsing),
 place them between "set brackets" `[| ... |]`. Characters of a character
-set can be combined for convenience, e.g. `[|"x" "y"|]` and `[|"xy"|]` are
-equivalent.
+set can be combined into a single string literal for convenience, e.g.
+`[|"x" "y"|]` and `[|"xy"|]` are equivalent.
 
-To match any non-terminal other than items from a particular set, precede the
+To match any terminal other than items from a particular set, precede the
 set contents with a complement (`~`), *inside* the set brackets. Note that
 there is a difference between a complemented set, which can consume one
 input value, and a lookahead failure of a set (`!&[| ... |]`, see below),
@@ -113,9 +119,12 @@ parsing function returns.
 For example:
 
 * The parser `{: foo :}` will match whatever `foo` matches,
-  assuming that `foo` is a properly-written parser function.
+  assuming that `foo` is a properly-written parser function. The yielded
+  result will be a single-element list of the `foo` parser's yield.
 
 * The parser `{: {: foo :} :}` will also match whatever `foo` matches.
+  The yielded result will be of the form `[[x]]` (that is, a list-of-a-list)
+  where `x` is whatever was yielded by `foo`.
 
 ### Grouping
 
@@ -148,8 +157,9 @@ cases where there is not even one resulting match.
 
 ### Matching sequences of items
 
-To match a sequence of items, the items are simply listed in order. The
-result of matching a sequence of items is an array of whatever was matched.
+To match a sequence of items, the items are simply listed in order. Per
+the overall definition of parser function semantics, the result of matching
+a sequence of items is a list of whatever was matched.
 
 For example, the parser `{: [:@foo:] [:@bar:] :}` will match the token
 list `[[:@foo:] [:@bar:] [:@baz:]]`, resulting in the yielded value
@@ -158,21 +168,23 @@ list `[[:@foo:] [:@bar:] [:@baz:]]`, resulting in the yielded value
 ### Lookahead success
 
 To match an item without "consuming" it from the input, the item can
-be preceded by an ampersand (`&`).
+be preceded by an ampersand (`&`). When matched, the yielded value
+of a lookahead is identical to what the underlying item yielded.
 
 For example, the parser `{: &"foobar" "foo" :}` will match the string
-`"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
-`"bar"`. However, the same parser will *fail* to match `"foobaz"` because
-the lookahead `&"foobar"` will fail.
+`"foobar"`, resulting in the yielded value `[[:@foobar:] [:@foo:]]` and a
+remainder of `"bar"`. However, the same parser will *fail* to match
+`"foobaz"` because the lookahead `&"foobar"` will fail.
 
 ### Lookahead failure
 
 To make sure an item would *not* match, the item can be preceded by an
 not-ampersand (`!&`). As with lookahead success, this will never "consume"
-any input.
+any input. When successful (that is, when lookahead fails), a lookahead
+failure yields `null`.
 
 For example, the parser `{: !&"foobaz" "foo" :}` will match the string
-`"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
+`"foobar"`, resulting in the yielded value `[null [:@foo:]]` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
 the lookahead `!&"foobaz"` will fail (because a `"foobaz"` lookahead *succeeds*
 match).
@@ -181,8 +193,8 @@ match).
 
 To override the default result of parsing, arbitrary code may be
 specified. To do so, introduce it with `::`. This may be followed
-by any number of `;`-separated statements, ending with a standard
-immediate-yield `<>` expression. In order to refer to the values
+by any number of `;`-separated statements, optionally ending with a standard
+yield expression (`<> ...`). In order to refer to the values
 that have matched, the items in question may be preceded by an assignment of
 the form `name =` (where `name` is an arbitrary identifier). Such
 an assignment must occur before any other prefix (such as `&`).
@@ -207,7 +219,7 @@ by vertical bars (`|`). The result of matching is the same as the result
 of whichever alternate was matched.
 
 For example, the parser `{: "f" | "foo" :}` will match the string `"foobar"`,
-resulting in the yielded value `[:@f:]` and a remainder of `"oobar"`. Note
+resulting in the yielded value `[[:@f:]]` and a remainder of `"oobar"`. Note
 that because of the prioritized ordering, the second alternate could never
 get picked in this case.
 
