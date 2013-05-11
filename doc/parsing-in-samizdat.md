@@ -187,6 +187,9 @@ that have matched, the items in question may be preceded by an assignment of
 the form `name =` (where `name` is an arbitrary identifier). Such
 an assignment must occur before any other prefix (such as `&`).
 
+The filtering form, when used, must be the last element of a parsing
+function.
+
 Note that, if the statements fail to yield a value, then the parse is
 considered to have failed.
 
@@ -220,7 +223,9 @@ Note: This example doesn't use all of the syntactic forms mentioned above.
 
 ```
 digit = {:
-    ch=[|"0123456789"|] :: <> isub (intFromString ch) (intFromString "0")
+    ch=[|"0123456789"|]
+    ::
+    <> isub (intFromString ch) (intFromString "0")
 :};
 
 number = {:
@@ -232,12 +237,13 @@ number = {:
 atom = {:
     number
     |
-    "(" ex=addExpression ")" :: <> ex
+    {: "(" ex=addExpression ")" :: <> ex :}
 :};
 
 addExpression = {:
     ex1=mulExpression op=addOp ex2=addExpression
-    :: <> op ex1 ex2
+    ::
+    <> op ex1 ex2
 :};
 
 addOp = {:
@@ -248,17 +254,18 @@ addOp = {:
 
 mulExpression = {:
     ex1=unaryExpression op=mulOp ex2=mulExpression
-    :: <> op ex1 ex2
+    ::
+    <> op ex1 ex2
 :};
 
 mulOp = {:
-    "*" :: <> imul
+    {: "*" :: <> imul :}
     |
-    "/" :: <> idiv
+    {: "/" :: <> idiv :}
 :};
 
 unaryExpression = {:
-    op=unaryOp ex=unaryExpression :: <> unaryOp ex
+    {: op=unaryOp ex=unaryExpression :: <> unaryOp ex :}
     |
     atom
 :};
