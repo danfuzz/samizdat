@@ -6,12 +6,207 @@ Parsing in Samizdat
 Since parsing is something so many programs have to do, Samizdat offers
 language-level facilities for building parsers.
 
+Syntax and Semantics
+--------------------
+
+The following list of parser forms is in precedence order, from
+tightest to loosest.
+
+### Parsing functions
+
+Parsing functions are written as a parsing expression inside "parsing
+braces" `{: ... :}`. Just as regular braces enclose an anonymous
+function / closure, parsing braces enclose an anonymous parsing
+function / closure.
+
+A parsing function is a function which takes two parameters, a `yield`
+function and an `input` state, and it is expected to (a) call `yield`
+with a parsed value if parsing was successful, (b) *not* call `yield`
+at all if parsing failed, (c) return a replacement `input` state meant
+to reflect what was parsed (if anything).
+
+The input state is expected to be a list of to-be-parsed elements, such
+as characters for tokenization, or tokens for a tree parser.
+
+If parsing succeeds and a value is `yield`ed, then the return value is
+expected to be a list of whatever input remained (including possibly
+the empty list).
+
+If parsing failed (a value was not `yield`ed), then the return value
+is ignored.
+
+### Grouping
+
+To override the default precedence of the syntax, any of the rest of
+these constructs may be enclosed in parentheses (`( ... )`).
+
+### Matching character sequences
+
+The basic "terminal" in the context of a tokenizer is a character.
+Within a parsing function, a double-quoted string is how to indicate
+that a sequence of characters is to be matched. The result of matching
+a sequence is a highlet whose type is the the matched string (and without
+a value).
+
+For example, the parser `{: "foo" :}` will match the string `"foobar"`,
+resulting in the yielded value `[:@foo:]` and a remainder of `"bar"`.
+
+### Matching tokens of a particular type
+
+Tokens are generally represented as highlets, with the highlet type
+indicating the type of the token, and the highlet value optionally
+indicating a data payload.
+
+Within a parsing function, a valueless highlet is how to indicate
+that a token of the indicated type is to be matched. The result of
+matching is the full original token, including whatever data payload
+it happened to have.
+
+For example, the parser `{: [:@foo:] :}` will match the token list
+`[[:@foo:] [:@bar:]]`, resulting in the yielded value `[:@foo:]` and a
+remainder of `[[:@bar:]]`.
+
+### Matching an arbitrary non-terminal item
+
+To match an arbitrary non-terminal item (character or token), use a
+plain dot (`.`).
+
+For example, the parser `{: . . . :}` matches an arbitrary
+sequence of three non-terminals. (See "Matching sequences of items", below.)
+
+### Matching the end-of-input
+
+To match the end of input, use a not-dot (`!.`). This only ever matches
+when there is no input available.
+
+For example, the parser `{: "foo" !. :}` will match the string `"foo"` but
+only if it's at the end of input.
+
+### Matching character sets
+
+In tokenization, to match any one of a selection of characters, specify
+the character set as a string, preceded with a dollar sign (`$`). To
+match anything *but* a particular selection of characters, precede
+the character set string with a not-dollar (`!$`)
+
+For example, the parser `{: $"blort" :}` will match any of the characters
+`b` `l` `o` `r` `t`. And the parser `{: $"\n" :} will match any character
+but a newline.
+
+### Matching token sets
+
+Similar to character sets, to match any one of a selection of tokens,
+specify the token set as a parenthesized list of tokens, preceded by
+a dollar sign (`$`) for set inclusion and not-dollar (`!$`) for set
+exclusion.
+
+For example, the parser `{: $([:@foo:] [:@bar:]) :}` will match either
+a `[:@foo:]` or a `[:@bar:]` token. And the parser
+`{: !$([:@foo:] [:@bar:]) :}` will match anything but a `[:@foo:]` or a
+`[:@bar:]` token.
+
+### Matching using other parser functions
+
+A parser function can delegate to another parser function by naming
+that other parser function (as a variable reference). The result of
+parsing is identical to whatever that other parsing function returned.
+
+For example, the parser `{: foo :}` will match whatever `foo` matches,
+assuming that `foo` is a properly-written parser function.
+
+### Optionally matching an item
+
+A parser item (character, token, function) may be made optional by
+following it with a question mark (`?`). So marked, parsing this
+item always succeeds, resulting in a list. If the underlying item was indeed
+matched, then the result is a single-element list of the item's parsing
+result. If the underlying item was not matched, then the result is an
+empty list.
+
+### Matching zero or more occurrences of an item
+
+To match a sequence of zero or more occurrences of an item, it can be
+followed by a star (`*`). So marked, parsing this item always
+succeeds (because zero items is a possibility), resulting in a list
+consisting of all the parsed results from matching the item, in order.
+
+### Matching one or more occurrences of an item
+
+To match a sequence of one or more occurrences of an item, it can be
+followed by a plus (`+`). So marked, if successful, the result is
+just like the result of a `*`-marked rule. However, this can fail in
+case there was not even one underlying item to match.
+
+### Matching sequences of items
+
+To match a sequence of items, the items are simply listed in order. The
+result of matching a sequence of items is an array of whatever was matched.
+
+For example, the parser `{: [:@foo:] [:@bar:] :}` will match the token
+list `[[:@foo:] [:@bar:] [:@baz:]]`, resulting in the yielded value
+`[[:@foo:] [:@bar:]]` and a remainder of `[[:@baz:]]`.
+
+### Lookahead success
+
+To match an item without "consuming" it from the input, the item can
+be preceded by an ampersand (`&`).
+
+For example, the parser `{: &"foobar" "foo" :} will match the string
+`"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
+`"bar"`. However, the same parser will *fail* to match `"foobaz"` because
+the lookahead `&"foobar"` would fail.
+
+### Lookahead failure
+
+To make sure an item would *not* match, the item can be preceded by an
+not-ampersand (`!&`). As with lookahead success, this will never "consume"
+any input.
+
+For example, the parser `{: &!"foobaz" "foo" :} will match the string
+`"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
+`"bar"`. However, the same parser will *fail* to match `"foobaz"` because
+the lookahead `!&"foobaz"` would fail (because `"foobaz"` *would* match).
+
+### Filtering results
+
+To override the default result of parsing, arbitrary code may be
+specified. To do so, introduce it with `::`. This may be followed
+by any number of `;`-separated statements, ending with a standard
+immediate-yield `<>` expression. In order to refer to the values
+that had matched, the items in question may be preceded by an assignment of
+the form `name =` (where `name` is an arbitrary identifier). Such
+an assignment has to occur before any other prefix (such as `&`).
+
+Note that, if the statements fail to yield a value, then the parse is
+considered to have failed.
+
+For example, the parser `{: "(" ex=expression ")" :: <> ex :}` will
+match any input that starts with an open parenthesis, followed by a
+match of the `expression` function (presumed to be another parser function),
+followed by a close parenthesis. The result of parsing will be the same
+as the result from the `expression` function.
+
+### Matching one of multiple alternates
+
+To match any one of a series of alternates, the alternates are listed in
+priority sequence (first one listed gets first "dibs", etc.), separated
+by vertical bars (`|`). The result of matching is the same as the result
+of whichever alternate was matched.
+
+For example, the parser `{: "f" | "foo" :}` will match the string `"foobar"`,
+resulting in the yielded value `[:@f:]` and a remainder of `"oobar"`. Note
+that because of the prioritized ordering, the second alternate could never
+get picked in this case.
+
+
 Example
 -------
 
 The classic "four function calculator" as an example. In this case, it is
 done as a unified tokenizer / tree parser. For simplicity, we don't bother
 with whitespace-related rules.
+
+Note: This example doesn't use all of the syntactic forms mentioned above.
 
 ```
 digit = {:
