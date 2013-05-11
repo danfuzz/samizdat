@@ -89,31 +89,38 @@ set can be combined for convenience, e.g. `[|"x" "y"|]` and `[|"xy"|]` are
 equivalent.
 
 To match any non-terminal other than items from a particular set, precede the
-set with a complement (`~`). Note that there is a difference between a
-complemented set, which can consume one input value, and a lookahead failure
-of a set (`!&[| ... |]`, see below), which never consumes input.
+set contents with a complement (`~`), *inside* the set brackets. Note that
+there is a difference between a complemented set, which can consume one
+input value, and a lookahead failure of a set (`!&[| ... |]`, see below),
+which never consumes input.
 
 For example:
 
 * The parser `{: [|"blort"|] :}` will match any of the characters
   `b` `l` `o` `r` or `t`.
 
-* The parser `{: ~[|"\n"|] :}` will match any character but a newline.
+* The parser `{: [|~ "\n"|] :}` will match any character but a newline.
 
 * The parser `{: [|[:@foo:] [:@bar:]|] :}` will match either
   a `[:@foo:]` or a `[:@bar:]` token.
 
-* The parser `{: ~[|[:@foo:] [:@bar:]|] :}` will match any token but a
+* The parser `{: [|~ [:@foo:] [:@bar:]|] :}` will match any token but a
   `[:@foo:]` or a `[:@bar:]` token.
 
 ### Matching using other parser functions
 
 A parser function can delegate to another parser function by naming
-that other parser function (as a variable reference). The result of
-parsing is identical to whatever that other parsing function returns.
+that other parser function (as a variable reference) or including it
+in-line as a function literal (either a parser function or a regular
+function). The result of parsing is identical to whatever that other
+parsing function returns.
 
-For example, the parser `{: foo :}` will match whatever `foo` matches,
-assuming that `foo` is a properly-written parser function.
+For example:
+
+* The parser `{: foo :}` will match whatever `foo` matches,
+  assuming that `foo` is a properly-written parser function.
+
+* The parser `{: {: foo :} :}` will also match whatever `foo` matches.
 
 ### Optionally matching an item
 
@@ -155,7 +162,7 @@ be preceded by an ampersand (`&`).
 For example, the parser `{: &"foobar" "foo" :}` will match the string
 `"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
-the lookahead `&"foobar"` would fail.
+the lookahead `&"foobar"` will fail.
 
 ### Lookahead failure
 
@@ -166,7 +173,8 @@ any input.
 For example, the parser `{: !&"foobaz" "foo" :}` will match the string
 `"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
-the lookahead `!&"foobaz"` would fail (because `"foobaz"` *would* match).
+the lookahead `!&"foobaz"` will fail (because a `"foobaz"` lookahead *succeeds*
+match).
 
 ### Filtering results
 
