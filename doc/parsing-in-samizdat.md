@@ -212,8 +212,7 @@ Note: This example doesn't use all of the syntactic forms mentioned above.
 
 ```
 digit = {:
-    ch=("0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9")
-    :: <> isub (intFromString ch) (intFromString "0")
+    ch=[|"0123456789"|] :: <> isub (intFromString ch) (intFromString "0")
 :};
 
 number = {:
@@ -294,17 +293,7 @@ digit = { yield input ::
         <> isub (integerFromString ch) (integerFromString "0")
     };
 
-    <> parseOr yieldFilter input
-        { yield input :: <> parseChars yield input "0" }
-        { yield input :: <> parseChars yield input "1" }
-        { yield input :: <> parseChars yield input "2" }
-        { yield input :: <> parseChars yield input "3" }
-        { yield input :: <> parseChars yield input "4" }
-        { yield input :: <> parseChars yield input "5" }
-        { yield input :: <> parseChars yield input "6" }
-        { yield input :: <> parseChars yield input "7" }
-        { yield input :: <> parseChars yield input "8" }
-        { yield input :: <> parseChars yield input "9" }
+    <> parseCharSet yieldFilter input "0123456789"
 };
 
 number = { yield input ::
