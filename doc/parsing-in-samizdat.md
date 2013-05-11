@@ -153,7 +153,7 @@ list `[[:@foo:] [:@bar:] [:@baz:]]`, resulting in the yielded value
 To match an item without "consuming" it from the input, the item can
 be preceded by an ampersand (`&`).
 
-For example, the parser `{: &"foobar" "foo" :} will match the string
+For example, the parser `{: &"foobar" "foo" :}` will match the string
 `"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
 the lookahead `&"foobar"` would fail.
