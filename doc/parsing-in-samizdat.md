@@ -82,28 +82,30 @@ when there is no input available.
 For example, the parser `{: "foo" !. :}` will match the string `"foo"` but
 only if it's at the end of input.
 
-### Matching character sets
+### Matching character or token sets
 
-In tokenization, to match any one of a selection of characters, specify
-the character set as a string, preceded with a dollar sign (`$`). To
-match anything *but* a particular selection of characters, precede
-the character set string with a not-dollar (`!$`)
+To match a set of characters (for tokenization) or tokens (for tree parsing),
+place them between "set brackets" `[| ... |]`. Characters of a character
+set can be combined for convenience, e.g. `[|"x" "y"|]` and `[|"xy"|]` are
+equivalent.
 
-For example, the parser `{: $"blort" :}` will match any of the characters
-`b` `l` `o` `r` `t`. And the parser `{: $"\n" :} will match any character
-but a newline.
+To match any non-terminal *but* one of a particular set, precede the
+set with a complement (`~`). Note that there is a difference between a
+complemented set, which can consume one input value, and a lookahead failure
+of a set (`!&[| ... |]`, see below), which never consumes input.
 
-### Matching token sets
+For example:
 
-Similar to character sets, to match any one of a selection of tokens,
-specify the token set as a parenthesized list of tokens, preceded by
-a dollar sign (`$`) for set inclusion and not-dollar (`!$`) for set
-exclusion.
+* The parser `{: [|"blort"|] :}` will match any of the characters
+  `b` `l` `o` `r` `t`.
 
-For example, the parser `{: $([:@foo:] [:@bar:]) :}` will match either
-a `[:@foo:]` or a `[:@bar:]` token. And the parser
-`{: !$([:@foo:] [:@bar:]) :}` will match anything but a `[:@foo:]` or a
-`[:@bar:]` token.
+* The parser `{: ~[|"\n"|] :}` will match any character but a newline.
+
+* The parser `{: [|[:@foo:] [:@bar:]|] :}` will match either
+  a `[:@foo:]` or a `[:@bar:]` token.
+
+* The parser `{: ~[|[:@foo:] [:@bar:]|] :}` will match any token but a
+  `[:@foo:]` or a `[:@bar:]` token.
 
 ### Matching using other parser functions
 
