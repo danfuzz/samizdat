@@ -19,20 +19,20 @@ braces" `{: ... :}`. Just as regular braces enclose an anonymous
 function / closure, parsing braces enclose an anonymous parsing
 function / closure.
 
-A parsing function is a function which takes two parameters, a `yield`
+A parsing function is a function which takes two parameters: a `yield`
 function and an `input` state, and it is expected to (a) call `yield`
 with a parsed value if parsing was successful, (b) *not* call `yield`
-at all if parsing failed, (c) return a replacement `input` state meant
-to reflect what was parsed (if anything).
+at all if parsing failed, and (c) return a replacement `input` state
+meant to reflect what was parsed (if anything).
 
 The input state is expected to be a list of to-be-parsed elements, such
-as characters for tokenization, or tokens for a tree parser.
+as characters for tokenization or tokens for a tree parser.
 
 If parsing succeeds and a value is `yield`ed, then the return value is
-expected to be a list of whatever input remained (including possibly
+expected to be a list of whatever input remains (including possibly
 the empty list).
 
-If parsing failed (a value was not `yield`ed), then the return value
+If parsing fails (a value was not `yield`ed), then the return value
 is ignored.
 
 ### Grouping
@@ -45,8 +45,7 @@ these constructs may be enclosed in parentheses (`( ... )`).
 The basic "terminal" in the context of a tokenizer is a character.
 Within a parsing function, a double-quoted string is how to indicate
 that a sequence of characters is to be matched. The result of matching
-a sequence is a highlet whose type is the the matched string (and without
-a value).
+a sequence is a valueless highlet whose type is the the matched string.
 
 For example, the parser `{: "foo" :}` will match the string `"foobar"`,
 resulting in the yielded value `[:@foo:]` and a remainder of `"bar"`.
@@ -89,7 +88,7 @@ place them between "set brackets" `[| ... |]`. Characters of a character
 set can be combined for convenience, e.g. `[|"x" "y"|]` and `[|"xy"|]` are
 equivalent.
 
-To match any non-terminal *but* one of a particular set, precede the
+To match any non-terminal excluding items from a particular set, precede the
 set with a complement (`~`). Note that there is a difference between a
 complemented set, which can consume one input value, and a lookahead failure
 of a set (`!&[| ... |]`, see below), which never consumes input.
@@ -97,7 +96,7 @@ of a set (`!&[| ... |]`, see below), which never consumes input.
 For example:
 
 * The parser `{: [|"blort"|] :}` will match any of the characters
-  `b` `l` `o` `r` `t`.
+  `b` `l` `o` `r` or `t`.
 
 * The parser `{: ~[|"\n"|] :}` will match any character but a newline.
 
@@ -111,33 +110,33 @@ For example:
 
 A parser function can delegate to another parser function by naming
 that other parser function (as a variable reference). The result of
-parsing is identical to whatever that other parsing function returned.
+parsing is identical to whatever that other parsing function returns.
 
 For example, the parser `{: foo :}` will match whatever `foo` matches,
 assuming that `foo` is a properly-written parser function.
 
 ### Optionally matching an item
 
-A parser item (character, token, function) may be made optional by
-following it with a question mark (`?`). So marked, parsing this
-item always succeeds, resulting in a list. If the underlying item was indeed
-matched, then the result is a single-element list of the item's parsing
-result. If the underlying item was not matched, then the result is an
-empty list.
+A parser item (character, token, or function) may be made optional by
+following it with a question mark (`?`). So marked, parsing this item
+always succeeds and results in a list. If the underlying item was
+indeed matched, then the result is a single-element list containing
+the item's parsing result. If the underlying item was not matched,
+then the result is an empty list.
 
 ### Matching zero or more occurrences of an item
 
 To match a sequence of zero or more occurrences of an item, it can be
 followed by a star (`*`). So marked, parsing this item always
-succeeds (because zero items is a possibility), resulting in a list
+succeeds (because zero items is a possibility), and results in a list
 consisting of all the parsed results from matching the item, in order.
 
 ### Matching one or more occurrences of an item
 
 To match a sequence of one or more occurrences of an item, it can be
 followed by a plus (`+`). So marked, if successful, the result is
-just like the result of a `*`-marked rule. However, this can fail in
-case there was not even one underlying item to match.
+just like the result of a `*`-marked rule. However, this will fail in
+cases where there is not even one resulting match.
 
 ### Matching sequences of items
 
@@ -175,18 +174,18 @@ To override the default result of parsing, arbitrary code may be
 specified. To do so, introduce it with `::`. This may be followed
 by any number of `;`-separated statements, ending with a standard
 immediate-yield `<>` expression. In order to refer to the values
-that had matched, the items in question may be preceded by an assignment of
+that have matched, the items in question may be preceded by an assignment of
 the form `name =` (where `name` is an arbitrary identifier). Such
-an assignment has to occur before any other prefix (such as `&`).
+an assignment must occur before any other prefix (such as `&`).
 
 Note that, if the statements fail to yield a value, then the parse is
 considered to have failed.
 
 For example, the parser `{: "(" ex=expression ")" :: <> ex :}` will
 match any input that starts with an open parenthesis, followed by a
-match of the `expression` function (presumed to be another parser function),
-followed by a close parenthesis. The result of parsing will be the same
-as the result from the `expression` function.
+match of the `expression` function (presumed here to be another parser
+function), followed by a close parenthesis. The result of parsing will
+be the same as the result from the `expression` function.
 
 ### Matching one of multiple alternates
 
