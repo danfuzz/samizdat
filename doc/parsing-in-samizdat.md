@@ -19,10 +19,10 @@ braces" `{: ... :}`. Just as regular braces enclose an anonymous
 function / closure, parsing braces enclose an anonymous parsing
 function / closure.
 
-A parsing function is a function which takes two parameters: a `yield`
-function and an `input` state, and it is expected to (a) call `yield`
-with a parsed value if parsing was successful, (b) *not* call `yield`
-at all if parsing failed, and (c) return a replacement `input` state
+A parsing function is a function which takes two parameters, namely a `yield`
+function and an `input` state. It is expected to (a) call `yield`
+with a parsed value if parsing is successful, (b) *not* call `yield`
+at all if parsing fails, and (c) return a replacement `input` state
 meant to reflect what was parsed (if anything).
 
 The input state is expected to be a list of to-be-parsed elements, such
@@ -88,7 +88,7 @@ place them between "set brackets" `[| ... |]`. Characters of a character
 set can be combined for convenience, e.g. `[|"x" "y"|]` and `[|"xy"|]` are
 equivalent.
 
-To match any non-terminal excluding items from a particular set, precede the
+To match any non-terminal other than items from a particular set, precede the
 set with a complement (`~`). Note that there is a difference between a
 complemented set, which can consume one input value, and a lookahead failure
 of a set (`!&[| ... |]`, see below), which never consumes input.
