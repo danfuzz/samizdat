@@ -259,9 +259,9 @@ addExpression = {:
 :};
 
 addOp = {:
-    "+" :: <> iadd
+    {: "+" :: <> iadd :}
     |
-    "-" :: <> isub
+    {: "-" :: <> isub :}
 :};
 
 mulExpression = {:
@@ -277,7 +277,7 @@ mulOp = {:
 :};
 
 unaryExpression = {:
-    {: op=unaryOp ex=unaryExpression :: <> unaryOp ex :}
+    {: op=unaryOp ex=unaryExpression :: <> op ex :}
     |
     atom
 :};
