@@ -95,7 +95,7 @@ stringChar = { ch ::
 # These are all the characters which are allowed to start an identifier.
 IDENTIFIER_STARTS = stringReduce [=]
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
-    { result ch :: <> mapPut result ch true };
+    { result . ch :: <> mapPut result ch true };
 
 # These are all the characters which are allowed to be in an identifier.
 IDENTIFIER_CHARS = mapAdd IDENTIFIER_STARTS
@@ -110,7 +110,7 @@ isIdentifier = { string <out> ::
         { <> mapGet IDENTIFIER_STARTS (stringNth string 0) false }
         {
             stringForEach string
-                { ch ::
+                { . ch ::
                     ifFalse { <> mapGet IDENTIFIER_CHARS ch false }
                         { <out> false }
                 };
@@ -124,7 +124,7 @@ doString = { recurse string adorn ::
         { <> adornIf adorn "@" string "" }
         {
             body = stringReduce "" string
-                { result ch :: <> stringAdd result (stringChar ch) };
+                { result . ch :: <> stringAdd result (stringChar ch) };
             <> adornIf adorn "\"" body "\""
         }
 };
@@ -132,7 +132,7 @@ doString = { recurse string adorn ::
 # Stringifies a list.
 doList = { recurse list adorn ::
     body = listReduce "" list
-        { reduction elem ::
+        { reduction . elem ::
             <> stringAdd
                 reduction
                 (ifTrue { <> eq reduction "" } { <> "" } { <> " " })
@@ -145,7 +145,7 @@ doList = { recurse list adorn ::
 # Stringifies a map.
 doMap = { recurse map adorn ::
     body = mapReduce "" map
-        { reduction value key ::
+        { reduction key value ::
             <> stringAdd
                 reduction
                 (ifTrue { <> eq reduction "" } { <> "" } { <> " " })
