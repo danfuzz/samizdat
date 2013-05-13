@@ -74,12 +74,12 @@ filterRule = { rule filterFunction ::
 # the rule results. This effectively implements the sequence "operator"
 # (null infix operator) in PEG.
 seqRule = { rules* ::
-    finalRules = listMap rules functionFromRule;
+    finalRules = listMap rules { . name :: <> functionFromRule name };
 
     <> { engine <out> ::
         mark = engine @at;
         <> listReduce [] finalRules
-            { results rule ::
+            { results . rule ::
                 <> ifValue { <> rule engine }
                     { result :: <> listAppend results result }
                     {
@@ -97,11 +97,11 @@ seqRule = { rules* ::
 # failed. This effectively implements the ordered choice operator
 # (`|` infix) in PEG.
 orRule = { rules* ::
-    finalRules = listMap rules functionFromRule;
+    finalRules = listMap rules { . name :: <> functionFromRule name };
 
     <> { engine <out> ::
         listForEach finalRules
-            { rule ::
+            { . rule ::
                 ifValue { <> rule engine }
                     { result :: <out> result }
             }
@@ -156,7 +156,7 @@ charsRule = { chars ::
     <> { engine <out> ::
         mark = engine @at;
         stringForEach chars
-            { ch ::
+            { . ch ::
                 ifTrue { <> or { <> engine @eof } { <> ne (engine @read) ch } }
                     {
                         engine @reset mark;
@@ -172,7 +172,7 @@ charsRule = { chars ::
 # a single-character string of the matched character.
 charSetRule = { chars ::
     charSet = stringReduce [=] chars
-        { result ch :: <> mapPut result ch null };
+        { result . ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
         ifValue { <> engine @peek }
@@ -191,7 +191,7 @@ charSetRule = { chars ::
 # returning a single-character string of the matched character.
 notCharSetRule = { chars ::
     charSet = stringReduce [=] chars
-        { result ch :: <> mapPut result ch null };
+        { result . ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
         ifValue { <> engine @peek }

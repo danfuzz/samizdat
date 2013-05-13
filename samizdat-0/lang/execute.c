@@ -147,21 +147,27 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
     }
 
     zint formalsSize = datSize(formals);
-    zmapping mappings[formalsSize];
+    zmapping bindings[formalsSize];
+    zint bindAt = 0;
 
     for (zint i = 0, argAt = 0; i < formalsSize; i++) {
         zvalue formal = datListNth(formals, i);
         zvalue name = datMapGet(formal, STR_NAME);
         zvalue repeat = datMapGet(formal, STR_REPEAT);
-        zvalue value;
+        bool ignore = (name == NULL);
+        zvalue value = NULL;
 
         if (repeat != NULL) {
             if (datEq(repeat, TOK_CH_STAR)) {
-                value = datListFromArray(argCount - argAt, &args[argAt]);
+                if (!ignore) {
+                    value = datListFromArray(argCount - argAt, &args[argAt]);
+                }
                 argAt = argCount;
             } else if (datEq(repeat, TOK_CH_QMARK)) {
                 if (argAt < argCount) {
-                    value = datListFromArray(1, &args[argAt]);
+                    if (!ignore) {
+                        value = datListFromArray(1, &args[argAt]);
+                    }
                     argAt++;
                 } else {
                     value = EMPTY_LIST;
@@ -169,18 +175,21 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
             } else {
                 die("Unknown repeat modifier.");
             }
-        } else if (i >= argCount) {
+        } else if (argAt >= argCount) {
             die("Too few arguments to function: %lld", argCount);
         } else {
             value = args[argAt];
             argAt++;
         }
 
-        mappings[i].key = name;
-        mappings[i].value = value;
+        if (!ignore) {
+            bindings[bindAt].key = name;
+            bindings[bindAt].value = value;
+            bindAt++;
+        }
     }
 
-    return datMapAddArray(ctx, formalsSize, mappings);
+    return datMapAddArray(ctx, bindAt, bindings);
 }
 
 /**

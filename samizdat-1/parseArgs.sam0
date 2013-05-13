@@ -51,7 +51,7 @@ parseOptions = filterRule
             { result :: <> listNth result 0 }))
     { result ::
         <> listReduce [@options=[=] @errors=false] result
-            { result one :: <> one result }
+            { result . one :: <> one result }
     };
 
 parseError = filterRule
@@ -120,7 +120,7 @@ RULES = [
 parseArgs = { args ::
     # Make a unified string with each argument "\0"-terminated.
     argString = listReduce "" args
-        { result arg ::
+        { result . arg ::
             <> stringAdd result arg CHAR_0;
         };
 

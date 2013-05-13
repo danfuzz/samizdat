@@ -39,17 +39,17 @@ or returns void if `notFound` was not supplied.
 #### `stringForEach string function <> ~.`
 
 Calls the given function on each element (character) of the given string.
-The given function is called with two arguments, namely the element (as a
-single-character string) and its index number (zero-based). Always returns
-void.
+The given function is called with two arguments, namely the element's
+index (zero-based) and the element's value (as a single-character string).
+Always returns void.
 
 #### `stringMap string function <> list`
 
 Maps each element of a string using a mapping function, collecting
 the results into a list (note, not into a string). The given
 function is called on each element (character), with two arguments,
-namely the element (as a single-character string) and its index
-number (zero-based).
+namely the element's index (zero-based) and the element's value
+(as a single-character string).
 
 Similar to `argsMap`, if the function returns void, then no item is
 added for the corresponding element. This means the size of the
@@ -66,10 +66,10 @@ Reduces a string to a single value, given a base value and a
 reducer function, operating in low-to-high index order (that is, this
 is a left-reduce operation). The given function is called once per
 string element (character), with three arguments: the last (or base)
-reduction result, the element (as a single-character string), and its
-index number (zero-based). The function result becomes the reduction
-result, which is passed to the next call of `function` or becomes the
-return value of the call to this function if it was the call for the
+reduction result, the element's index (zero-based), and the element's
+value (as a single-character string). The function result becomes the
+reduction result, which is passed to the next call of `function` or becomes
+the return value of the call to this function if it was the call for the
 final element.
 
 Similar to `argsReduce`, if the function returns void, then the

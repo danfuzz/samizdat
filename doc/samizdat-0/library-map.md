@@ -78,18 +78,17 @@ checking for the existence of `key` in the original.
 #### `mapForEach map function <> ~.`
 
 Calls the given function for each mapping in the given map. The
-function is called with two arguments, a value from the map and
-its corresponding key (in that order). Always returns void.
+function is called with two arguments, a key from the map and
+its corresponding value (in that order). Always returns void.
 
 #### `mapMap map function <> map`
 
 Maps the values of a map using the given mapping function,
 resulting in a map whose keys are the same as the given map but
 whose values may differ. In key order, the function is called with
-two arguments representing the binding, a value and a key (in that
-order, because it is common enough to want to ignore the key). The
-return value of the function becomes the bound value for the given
-key in the final result.
+two arguments representing the binding, a key and a value (in that
+order). The return value of the function becomes the bound value for
+the given key in the final result.
 
 Similar to `argsMap`, if the function returns void, then no item is
 added for the corresponding element. This means the size of the
@@ -102,7 +101,7 @@ See note on `stringMap` about choice of argument order.
 Reduces a map to a single value, given a base value and a reducer
 function, operating in key order. The given function is called on each
 map binding, with three arguments: the last (or base) reduction
-result, the value associated with the binding, and its key. The
+result, a key from the map, and its associated value. The
 function result becomes the reduction result, which is passed to the
 next call of `function` or becomes the return value of the call to
 this function if it was the call for the final binding.
