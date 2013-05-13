@@ -77,14 +77,9 @@ parseEmptyList = filterRule
     { <> [:"literal" []:] };
 
 # Parses a `string` node.
-parseString = orRule
-    (filterRule [:"string":]
-        { result :: <> [:"literal" (highletValue result):] })
-    (filterRule (seqRule [:"@":] [:"identifier":])
-        { result ::
-            identifier = listNth result 1;
-            <> [:"literal" (highletValue identifier):]
-        });
+parseString = filterRule
+    [:"string":]
+    { result :: <> [:"literal" (highletValue result):] };
 
 # Parses an `integer` node.
 parseInteger = filterRule
