@@ -62,15 +62,15 @@ list argument followed by the given additional value.
 #### `listForEach list function <> ~.`
 
 Calls the given function on each element of the given list.
-The given function is called with two arguments, namely the element
-and its index number (zero-based). Always returns void.
+The given function is called with two arguments, namely the element's
+index (zero-based) and value. Always returns void.
 
 #### `listMap list function <> list`
 
 Maps each element of a list using a mapping function, collecting
 the results into a new list. The given function is called on each
-list element, with two arguments, namely the element and its index
-number (zero-based).
+list element, with two arguments, namely the element's
+index (zero-based) and value.
 
 Similar to `argsMap`, if the function returns void, then no item is
 added for the corresponding element. This means the size of the
@@ -92,7 +92,7 @@ Reduces a list to a single value, given a base value and a reducer
 function, operating in low-to-high index order (that is, this is a
 left-reduce operation). The given function is called on each list
 element, with three arguments: the last (or base) reduction result,
-the element, and its index number (zero-based). The function result
+the element's index (zero-based), and its value. The function result
 becomes the reduction result, which is passed to the next call of
 `function` or becomes the return value of the call to this function if
 it was the call for the final element.
