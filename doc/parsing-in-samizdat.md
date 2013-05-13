@@ -20,10 +20,11 @@ function / closure, parsing braces enclose an anonymous parsing
 function / closure.
 
 A parsing function is a function which takes two parameters, namely a `yield`
-function and an `input` state. It is expected to (a) call `yield`
-with a parsed value if parsing is successful, (b) *not* call `yield`
-at all if parsing fails, and (c) return a replacement `input` state
-meant to reflect what was parsed (if anything).
+function and an `input` state. To indicate successful parsing, it is expected
+to (a) call `yield` with the result of parsing, and (b) return a replacement
+`input` state meant to reflect what was consumed from the original `input`
+(if anything). To indicate a parsing failure, the function is expected to
+(a) *not* call `yield` at all, and (b) return void.
 
 The input state is expected to be a list of to-be-parsed elements, such
 as characters for tokenization or tokens for a tree parser.
@@ -31,9 +32,6 @@ as characters for tokenization or tokens for a tree parser.
 If parsing succeeds and a value is `yield`ed, then the return value is
 expected to be a list of whatever input remains (including possibly
 the empty list).
-
-If parsing fails (a value was not `yield`ed), then the return value
-is ignored.
 
 The default `yield` value of a parsing function is whatever the yielded
 result is from the *last* item in the list of items to match in the
