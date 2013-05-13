@@ -17,9 +17,6 @@ function ::= [:"{":] program [:"}":] ;
 # result: <program>
 
 program ::= (programDeclarations [:"::":])? programBody ;
-    [:";":]* (statement [:";":]+)* (statement | nonlocalExit | yield)?
-    [:";":]*
-;
 # result: [:
 #             @function
 #             (mapAdd programDeclarations programBody)
