@@ -16,24 +16,24 @@ token ::= punctuation | integer | string | identifier | quotedIdentifier ;
 # result: same as whichever alternate was picked.
 
 punctuation ::=
-    "@@" | # result: @["@@"]
-    "::" | # result: @["::"]
-    "<>" | # result: @["<>"]
-    "@"  | # result: @["@"]
-    ":"  | # result: @[":"]
-    "."  | # result: @["."]
-    "*"  | # result: @["*"]
-    ";"  | # result: @[";"]
-    "="  | # result: @["="]
-    "?"  | # result: @["?"]
-    "<"  | # result: @["<"]
-    ">"  | # result: @[">"]
-    "{"  | # result: @["{"]
-    "}"  | # result: @["}"]
-    "("  | # result: @["("]
-    ")"  | # result: @[")"]
-    "["  | # result: @["["]
-    "]"    # result: @["]"]
+    "@@" | # result: @"@@"
+    "::" | # result: @"::"
+    "<>" | # result: @"<>"
+    "@"  | # result: @"@"
+    ":"  | # result: @":"
+    "."  | # result: @"."
+    "*"  | # result: @"*"
+    ";"  | # result: @";"
+    "="  | # result: @"="
+    "?"  | # result: @"?"
+    "<"  | # result: @"<"
+    ">"  | # result: @">"
+    "{"  | # result: @"{"
+    "}"  | # result: @"}"
+    "("  | # result: @"("
+    ")"  | # result: @")"
+    "["  | # result: @"["
+    "]"    # result: @"]"
 ;
 
 integer ::= "-"? ("0".."9")+ ;

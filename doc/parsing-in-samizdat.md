@@ -241,15 +241,15 @@ modifications to the *Samizdat Layer 0* tokenization syntax.
 ```
 punctuation =
     # ... original alternates from the base grammar ...
-    {/ "{/" :: <> @["{/"] /} |
-    {/ "/}" :: <> @["/}"] /} |
-    {/ "[/" :: <> @["[/"] /} |
-    {/ "/]" :: <> @["/]"] /} |
-    {/ "!." :: <> @["!."] /} |
-    {/ "!&" :: <> @["!&"] /} |
-    {/ "&"  :: <> @["&"]  /} |
-    {/ "|"  :: <> @["|"]  /} |
-    {/ "~"  :: <> @["~"]  /}
+    {/ "{/" :: <> @"{/" /} |
+    {/ "/}" :: <> @"/}" /} |
+    {/ "[/" :: <> @"[/" /} |
+    {/ "/]" :: <> @"/]" /} |
+    {/ "!." :: <> @"!." /} |
+    {/ "!&" :: <> @"!&" /} |
+    {/ "&"  :: <> @"&"  /} |
+    {/ "|"  :: <> @"|"  /} |
+    {/ "~"  :: <> @"~"  /}
 ;
 ```
 
@@ -263,7 +263,7 @@ modifications to the *Samizdat Layer 0* tree syntax.
 ```
 choiceExpression = {/
     first = atom
-    rest = {/ @["|"] atom /}*
+    rest = {/ @"|" atom /}*
     ::
     <> apply makeCall @["varRef" "choiceCombinator"] (listPrepend first rest)
 /};
@@ -275,10 +275,10 @@ atom =
 ;
 
 parserSetFunction = {/
-    @["[/"]
-    complement = @["~"]?
+    @"[/"
+    complement = @"~"?
     terminals = {/ @"string"* | @"identifier"* /}
-    @["/]"]
+    @"/]"
     ::
     type = ifTrue { <> eq complement [] }
         { <> "parserSet" }
@@ -287,14 +287,14 @@ parserSetFunction = {/
 /};
 
 parserFunction = {/
-    @["{/"] program=parserProgram @["/}"]
+    @"{/" program=parserProgram @"/}"
     ::
     <> program
 /};
 
 parserProgram = {/
     decls = {/
-        {/ decls=parserDeclarations @["::"] :: <> decls /}
+        {/ decls=parserDeclarations @"::" :: <> decls /}
         |
         {/ :: <> [=] /} # Empty declarations are valid.
     /}
@@ -314,10 +314,10 @@ parserDeclarations = {/
 /};
 
 parserItem = {/
-    name = {/ identifier @["="] /}?
-    lookahead = {/ @["&"] | @["!&"] /}?
+    name = {/ identifier @"=" /}?
+    lookahead = {/ @"&" | @"!&" /}?
     atom = parserAtom
-    repeat = {/ @["*"] | @["?"] /}
+    repeat = {/ @"*" | @"?" /}
     ::
     <> # TODO: Stuff goes here.
 /};
@@ -325,7 +325,7 @@ parserItem = {/
 parserAtom =
     {/ s=string :: <> @[ "matchChars" s ] /}
     |
-    {/ @["@["] s=string @["]"] :: <> @[ "matchToken" s] /}
+    {/ @"@[" s=string @"]" :: <> @[ "matchToken" s] /}
     |
     parserFunction
     |

@@ -13,10 +13,10 @@ their usual PEG interpretations (similar to their interpretation in
 regular expressions).
 
 ```
-function ::= @["{"] program @["}"] ;
+function ::= @"{" program @"}" ;
 # result: <program>
 
-program ::= (programDeclarations @["::"])? programBody ;
+program ::= (programDeclarations @"::")? programBody ;
 # result: @[
 #             "function"
 #             (mapAdd programDeclarations programBody)
@@ -28,25 +28,25 @@ programDeclarations ::= formal* yieldDef? ;
 # least one formal.
 
 programBody ::=
-    @[";"]*
-    (statement @[";"]+)*
+    @";"*
+    (statement @";"+)*
     (statement | nonlocalExit | yield)?
-    @[";"]*
+    @";"*
 ;
 # result: ["statements"=[statement*] ("yield"=yield)?]
 # Note: `nonLocalExit` results in a statement.
 
-formal ::= (@"identifier" | @["."]) (@["*"] | @["?"])? ;
+formal ::= (@"identifier" | @".") (@"*" | @"?")? ;
 # result: [("name"=(highletValue identifier))? ("repeat"=@[("*"|"?")])?]
 # Note: Binding for `"name"` omitted if name is specified as `.`.
 
-yieldDef ::= @["<"] @"identifier" @[">"] ;
+yieldDef ::= @"<" @"identifier" @">" ;
 # result: highletValue identifier
 
-yield ::= @["<>"] expression ;
+yield ::= @"<>" expression ;
 # result: expression
 
-nonlocalExit ::= @["<"] @"identifier" @[">"] expression? ;
+nonlocalExit ::= @"<" @"identifier" @">" expression? ;
 # result: makeCall identifier expression?
 
 statement ::= varDef | expression ;
@@ -58,7 +58,7 @@ expression ::= callExpression | unaryExpression ;
 unaryExpression ::= unaryCallExpression | atom ;
 # result: <same as whatever choice matched>
 
-unaryCallExpression ::= atom (@["("] @[")"])+ ;
+unaryCallExpression ::= atom (@"(" @")")+ ;
 # result: (... (makeCall (makeCall atom))
 # Note: One `makeCall` per pair of parens.
 
@@ -71,10 +71,10 @@ atom ::=
     uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever choice matched>
 
-parenExpression ::= @["("] expression @[")"];
+parenExpression ::= @"(" expression @")";
 # result: expression
 
-varDef ::= @"identifier" @["="] expression ;
+varDef ::= @"identifier" @"=" expression ;
 # result: @["varDef" ["name"=(highletValue identifier) "value"=expression]]
 
 varRef ::= @"identifier" ;
@@ -86,33 +86,33 @@ integer ::= @"integer" ;
 string ::= @"string" ;
 # result: @["literal" (highletValue string)]
 
-emptyList ::= @["["] @["]"] ;
+emptyList ::= @"[" @"]" ;
 # result: @["literal" []]
 
-list ::= @["["] atom+ @["]"] ;
+list ::= @"[" atom+ @"]" ;
 # result: makeCall @["varRef" "makeList"] atom+
 
-emptyMap ::= @["["] @["="] @["]"] ;
+emptyMap ::= @"[" @"=" @"]" ;
 # result: @["literal" [=]]
 
-map ::= @["["] binding+ @["]"] ;
+map ::= @"[" binding+ @"]" ;
 # result: apply makeCall @["varRef" "makeMap"] (listAdd binding+)
 
-binding ::= atom @["="] atom ;
+binding ::= atom @"=" atom ;
 # result: [atom atom] # key then value
 
-uniqlet ::= @["@@"];
+uniqlet ::= @"@@";
 # result: makeCall @["varRef" "makeUniqlet"]
 
 highlet ::=
-    @["@"] @["["] atom atom? @["]"]
+    @"@" @"[" atom atom? @"]"
     # result: makeCall @["varRef" "makeHighlet"] atom atom?
 |
-    @["@"] @"string"
+    @"@" @"string"
     # result: makeCall @["varRef" "makeHighlet"]
     #             @["literal" (highletValue string)]
 |
-    @["@"] @"identifier"
+    @"@" @"identifier"
     # result: makeCall @["varRef" "makeHighlet"]
     #             @["literal" (highletValue identifier)]
 ;

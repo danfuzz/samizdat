@@ -37,23 +37,23 @@ keyword ::=
 ;
 
 punctuation2 ::=
-    "==" | # result: @["=="]
-    "!=" | # result: @["!="]
-    "<=" | # result: @["<="]
-    ">=" | # result: @[">="]
-    "<<" | # result: @["<<"]
-    ">>" | # result: @[">>"]
-    "&&" | # result: @["&&"]
-    "||" | # result: @["||"]
-    "&"  | # result: @["&"]
-    "|"  | # result: @["|"]
-    "^"  | # result: @["^"]
-    "+"  | # result: @["+"]
-    "-"  | # result: @["-"]
-    "/"  | # result: @["/"]
-    "%"  | # result: @["%"]
-    "!"  | # result: @["!"]
-    "~"    # result: @["~"]
+    "==" | # result: @"=="
+    "!=" | # result: @"!="
+    "<=" | # result: @"<="
+    ">=" | # result: @">="
+    "<<" | # result: @"<<"
+    ">>" | # result: @">>"
+    "&&" | # result: @"&&"
+    "||" | # result: @"||"
+    "&"  | # result: @"&"
+    "|"  | # result: @"|"
+    "^"  | # result: @"^"
+    "+"  | # result: @"+"
+    "-"  | # result: @"-"
+    "/"  | # result: @"/"
+    "%"  | # result: @"%"
+    "!"  | # result: @"!"
+    "~"    # result: @"~"
 ;
 
 hexInteger ::= "0x" hexDigit+ ;
@@ -95,30 +95,30 @@ statement ::=
 ;
 # result: <same as whatever choice matched>
 
-breakStatement ::= @"break" (@["<"] identifier @[">";])? ;
+breakStatement ::= @"break" (@"<" identifier @[">";])? ;
 # result code: break() | \"break-<identifier>"()
 
-continueStatement ::= @"continue" (@["<"] identifier @[">";])? ;
+continueStatement ::= @"continue" (@"<" identifier @[">";])? ;
 # result code: continue() | \"continue-<identifier>"()
 
 ifStatement ::=
-    @"if" @["("] expression @[")"] function
+    @"if" @"(" expression @")" function
     (@"else" (ifStatement | function))?
 # result code: ifTrue expression function (if|function)?
 
 functionStatement ::=
-    @"fn" @"identifier" formals? @["{"] programBody @["}"]
+    @"fn" @"identifier" formals? @"{" programBody @"}"
 ;
 # result code: identifier = { formals? <return> ::
 #                  \"return-<identifier>" = return;
 #                  programBody
 #              }
 
-returnStatement ::= @"return" (@["<"] identifier @[">";])? expression? ;
+returnStatement ::= @"return" (@"<" identifier @[">";])? expression? ;
 # result code: return expression? | \"return-<identifier>" expression?
 
 whileStatement ::=
-    @"while" @"identifier"? @["("] expression @[")"] function
+    @"while" @"identifier"? @"(" expression @")" function
 # result code:
 # { <break> ::
 #     (\"break-<identifier>" = break;)?
@@ -136,17 +136,17 @@ whileStatement ::=
 expression ::= orExpression ;
 # result: orExpression
 
-orExpression ::= andExpression ((@["||"]) andExpression)* ;
+orExpression ::= andExpression ((@"||") andExpression)* ;
 # result: makeCall @["varRef" \"or"]
 #             (makeThunk expr1) (makeThunk expr2) ...
 
-andExpression ::= compareExpression (@["&&"] compareExpression)* ;
+andExpression ::= compareExpression (@"&&" compareExpression)* ;
 # result: makeCall @["varRef" \"and"]
 #             (makeThunk expr1) (makeThunk expr2) ...
 
 compareExpression ::=
     bitExpression
-    ((@["=="] | @["!="] | @["<"] | @[">"] | @["<="] | @[">="])
+    ((@"==" | @"!=" | @"<" | @">" | @"<=" | @">=")
      bitExpression)*
 ;
 # result: makeCall @["varRef" "orderChain"]
@@ -159,31 +159,31 @@ compareExpression ::=
 
 bitExpression ::=
     additiveExpression
-    ((@["<<"] | @[">>"] | @["&"] | @["|"] | @["^"]) bitExpression)?
+    ((@"<<" | @">>" | @"&" | @"|" | @"^") bitExpression)?
 ;
 # result: makeCall @["varRef" "<op>"] expr1 expr2
 
 additiveExpression ::=
     multiplicativeExpression
-    ((@["+"] | @["-"]) additiveExpression)?
+    ((@"+" | @"-") additiveExpression)?
 ;
 # result: makeCall @["varRef" "<op>"] expr1 expr2
 
 multiplicativeExpression ::=
     unaryExpression
-    ((@["*"] | @["/"] | @["%"]) multiplicativeExpression)?
+    ((@"*" | @"/" | @"%") multiplicativeExpression)?
 ;
 # result: makeCall @["varRef" "<op>"] expr1 expr2
 
 unaryPrefixExpression ::=
-    (@["!"] | @["~"] | @["-"])* unaryPostfixExpression
+    (@"!" | @"~" | @"-")* unaryPostfixExpression
 ;
 # result: ... (makeCall @["varRef" "<op>"] (makeCall @["varRef" "<op>"] expr))
 #         (etc.)
 
 unaryPostfixExpression ::=
     atom
-    (@["("] @[")"] | @["["] expression @["]"] ))*
+    (@"(" @")" | @"[" expression @"]" ))*
 ;
 # result: ... (makeCall @["varRef" "[]"] (makeCall atom) expression) ...
 #         (etc.)
