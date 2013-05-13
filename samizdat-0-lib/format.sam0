@@ -165,7 +165,7 @@ doHighlet = { recurse highlet adorn ::
             { value :: <> stringAdd " " (recurse value) }
             { <> "" });
 
-    <> adornIf adorn "[:" result ":]"
+    <> adornIf adorn "@[" result "]"
 };
 
 # Stringifies a uniqlet.

@@ -16,38 +16,38 @@ token ::= punctuation | integer | string | identifier | quotedIdentifier ;
 # result: same as whichever alternate was picked.
 
 punctuation ::=
-    "@@" | # result: [:"@@":]
-    "::" | # result: [:"::":]
-    "<>" | # result: [:"<>":]
-    "@"  | # result: [:"@":]
-    ":"  | # result: [:":":]
-    "."  | # result: [:".":]
-    "*"  | # result: [:"*":]
-    ";"  | # result: [:";":]
-    "="  | # result: [:"=":]
-    "?"  | # result: [:"?":]
-    "<"  | # result: [:"<":]
-    ">"  | # result: [:">":]
-    "{"  | # result: [:"{":]
-    "}"  | # result: [:"}":]
-    "("  | # result: [:"(":]
-    ")"  | # result: [:")":]
-    "["  | # result: [:"[":]
-    "]"    # result: [:"]":]
+    "@@" | # result: @["@@"]
+    "::" | # result: @["::"]
+    "<>" | # result: @["<>"]
+    "@"  | # result: @["@"]
+    ":"  | # result: @[":"]
+    "."  | # result: @["."]
+    "*"  | # result: @["*"]
+    ";"  | # result: @[";"]
+    "="  | # result: @["="]
+    "?"  | # result: @["?"]
+    "<"  | # result: @["<"]
+    ">"  | # result: @[">"]
+    "{"  | # result: @["{"]
+    "}"  | # result: @["}"]
+    "("  | # result: @["("]
+    ")"  | # result: @[")"]
+    "["  | # result: @["["]
+    "]"    # result: @["]"]
 ;
 
 integer ::= "-"? ("0".."9")+ ;
-# result: [:"integer" <integer>:]
+# result: @["integer" <integer>]
 
 string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
-# result: [:"string" <string>:]
+# result: @["string" <string>]
 
 identifier ::=
     ("_" | "a".."z" | "A".."Z") ("_" | "a".."z" | "A".."Z" | "0".."9")* ;
-# result: [:"identifier" <string>:]
+# result: @["identifier" <string>]
 
 quotedIdentifier ::= "\\" string
-# result: [:"identifier" (highletValue string):]
+# result: @["identifier" (highletValue string)]
 
 whitespace ::= " " | "\n" | "#" (~("\n"))* "\n" ;
 # result: n/a; automatically ignored.

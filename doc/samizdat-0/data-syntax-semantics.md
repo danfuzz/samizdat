@@ -167,7 +167,7 @@ a named constant `null` to refer to this value. This constant can be
 defined as:
 
 ```
-null = [:"null":]
+null = @["null"]
 ```
 
 
@@ -177,8 +177,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = [:"boolean" 0:]
-true = [:"boolean" 1:]
+false = @["boolean" 0]
+true = @["boolean" 1]
 ```
 
 

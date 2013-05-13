@@ -390,7 +390,7 @@ DEF_PARSE(callExpression) {
 }
 
 /**
- * Helper for `unaryCallExpression`: Parses `[:"(":] [:")":]`.
+ * Helper for `unaryCallExpression`: Parses `@["("] @[")"]`.
  */
 DEF_PARSE(unaryCallExpression1) {
     MARK();
@@ -513,7 +513,7 @@ DEF_PARSE(nonlocalExit) {
 }
 
 /**
- * Helper for `formal`: Parses `([:"?":] | [:"*":])?`. Returns either the
+ * Helper for `formal`: Parses `(@["?"] | @["*"])?`. Returns either the
  * parsed token or `NULL` to indicate that neither was present.
  */
 DEF_PARSE(formal1) {
@@ -626,7 +626,7 @@ DEF_PARSE(programDeclarations) {
 }
 
 /**
- * Helper for `program`: Parses `(programDeclarations [:"::":])`.
+ * Helper for `program`: Parses `(programDeclarations @["::"])`.
  */
 DEF_PARSE(program1) {
     MARK();

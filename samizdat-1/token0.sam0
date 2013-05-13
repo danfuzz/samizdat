@@ -30,7 +30,7 @@ parsePunctuation = filterRule
         (charsRule "::")
         (charsRule "<>")
         (charSetRule ".@:*;=?<>{}()[]"))
-    { result :: <> [:result:] };
+    { result :: <> @[result] };
 
 # These are all the integer digits, as a map from strings to
 # digit values.
@@ -50,7 +50,7 @@ parseInteger = filterRule
         sign = listNth result 0;
         value = listReduce 0 (listNth result 1)
             { result . digit :: <> iadd digit (imul result 10) };
-        <> [:"integer" (imul sign value):]
+        <> @["integer" (imul sign value)]
     };
 
 # Parses a single string character.
@@ -73,7 +73,7 @@ parseString = filterRule
         (charsRule "\""))
     { result ::
         value = apply stringAdd (listNth result 1);
-        <> [:"string" value:]
+        <> @["string" value]
     };
 
 # These are all the characters which are allowed to start an identifier.
@@ -88,7 +88,7 @@ parseQuotedIdentifier = filterRule
     (seqRule (charsRule "\\") "string")
     { result ::
         value = highletValue (listNth result 1);
-        <> [:"identifier" value:]
+        <> @["identifier" value]
     };
 
 # Parses an `identifier` token.
@@ -100,7 +100,7 @@ parseIdentifier = filterRule
         value = stringAdd
             (listNth result 0)
             (apply stringAdd (listNth result 1));
-        <> [:"identifier" value:]
+        <> @["identifier" value]
     };
 
 # Parses a single whitespace character or a comment.

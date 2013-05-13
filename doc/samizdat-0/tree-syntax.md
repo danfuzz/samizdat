@@ -13,14 +13,14 @@ their usual PEG interpretations (similar to their interpretation in
 regular expressions).
 
 ```
-function ::= [:"{":] program [:"}":] ;
+function ::= @["{"] program @["}"] ;
 # result: <program>
 
-program ::= (programDeclarations [:"::":])? programBody ;
-# result: [:
+program ::= (programDeclarations @["::"])? programBody ;
+# result: @[
 #             "function"
 #             (mapAdd programDeclarations programBody)
-#         :]
+#         ]
 
 programDeclarations ::= formal* yieldDef? ;
 # result: [("formals"=[formal*])? ("yieldDef"=yieldDef)?]
@@ -28,25 +28,25 @@ programDeclarations ::= formal* yieldDef? ;
 # least one formal.
 
 programBody ::=
-    [:";":]*
-    (statement [:";":]+)*
+    @[";"]*
+    (statement @[";"]+)*
     (statement | nonlocalExit | yield)?
-    [:";":]*
+    @[";"]*
 ;
 # result: ["statements"=[statement*] ("yield"=yield)?]
 # Note: `nonLocalExit` results in a statement.
 
-formal ::= ([:"identifier":] | [:".":]) ([:"*":] | [:"?":])? ;
-# result: [("name"=(highletValue identifier))? ("repeat"=[:("*"|"?"):])?]
+formal ::= (@["identifier"] | @["."]) (@["*"] | @["?"])? ;
+# result: [("name"=(highletValue identifier))? ("repeat"=@[("*"|"?")])?]
 # Note: Binding for `"name"` omitted if name is specified as `.`.
 
-yieldDef ::= [:"<":] [:"identifier":] [:">":] ;
+yieldDef ::= @["<"] @["identifier"] @[">"] ;
 # result: highletValue identifier
 
-yield ::= [:"<>":] expression ;
+yield ::= @["<>"] expression ;
 # result: expression
 
-nonlocalExit ::= [:"<":] [:"identifier":] [:">":] expression? ;
+nonlocalExit ::= @["<"] @["identifier"] @[">"] expression? ;
 # result: makeCall identifier expression?
 
 statement ::= varDef | expression ;
@@ -58,7 +58,7 @@ expression ::= callExpression | unaryExpression ;
 unaryExpression ::= unaryCallExpression | atom ;
 # result: <same as whatever choice matched>
 
-unaryCallExpression ::= atom ([:"(":] [:")":])+ ;
+unaryCallExpression ::= atom (@["("] @[")"])+ ;
 # result: (... (makeCall (makeCall atom))
 # Note: One `makeCall` per pair of parens.
 
@@ -71,44 +71,44 @@ atom ::=
     uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever choice matched>
 
-parenExpression ::= [:"(":] expression [:")":];
+parenExpression ::= @["("] expression @[")"];
 # result: expression
 
-varDef ::= [:"identifier":] [:"=":] expression ;
-# result: [:"varDef" ["name"=(highletValue identifier) "value"=expression]:]
+varDef ::= @["identifier"] @["="] expression ;
+# result: @["varDef" ["name"=(highletValue identifier) "value"=expression]]
 
-varRef ::= [:"identifier":] ;
-# result: [:"varRef" (highletValue identifier):]
+varRef ::= @["identifier"] ;
+# result: @["varRef" (highletValue identifier)]
 
-integer ::= [:"integer":] ;
-# result: [:"literal" (highletValue integer):]
+integer ::= @["integer"] ;
+# result: @["literal" (highletValue integer)]
 
-string ::= [:"string":] ;
-# result: [:"literal" (highletValue string):]
+string ::= @["string"] ;
+# result: @["literal" (highletValue string)]
 
-emptyList ::= [:"[":] [:"]":] ;
-# result: [:"literal" []:]
+emptyList ::= @["["] @["]"] ;
+# result: @["literal" []]
 
-list ::= [:"[":] atom+ [:"]":] ;
-# result: makeCall [:"varRef" "makeList":] atom+
+list ::= @["["] atom+ @["]"] ;
+# result: makeCall @["varRef" "makeList"] atom+
 
-emptyMap ::= [:"[":] [:"=":] [:"]":] ;
-# result: [:"literal" [=]:]
+emptyMap ::= @["["] @["="] @["]"] ;
+# result: @["literal" [=]]
 
-map ::= [:"[":] binding+ [:"]":] ;
-# result: apply makeCall [:"varRef" "makeMap":] (listAdd binding+)
+map ::= @["["] binding+ @["]"] ;
+# result: apply makeCall @["varRef" "makeMap"] (listAdd binding+)
 
-binding ::= atom [:"=":] atom ;
+binding ::= atom @["="] atom ;
 # result: [atom atom] # key then value
 
-uniqlet ::= [:"@@":];
-# result: makeCall [:"varRef" "makeUniqlet":]
+uniqlet ::= @["@@"];
+# result: makeCall @["varRef" "makeUniqlet"]
 
-highlet ::= [:"@":] [:"[":] atom atom? [:"]":] ;
-# result: makeCall [:"varRef" "makeHighlet":] atom atom?
+highlet ::= @["@"] @["["] atom atom? @["]"] ;
+# result: makeCall @["varRef" "makeHighlet"] atom atom?
 
 # Function that returns an appropriately-formed `call` node.
 makeCall = { function actuals* ::
-    <> [:"call" ["function"=function "actuals"=actuals]:]
+    <> @["call" ["function"=function "actuals"=actuals]]
 }
 ```
