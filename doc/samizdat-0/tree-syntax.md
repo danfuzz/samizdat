@@ -104,8 +104,18 @@ binding ::= atom @["="] atom ;
 uniqlet ::= @["@@"];
 # result: makeCall @["varRef" "makeUniqlet"]
 
-highlet ::= @["@"] @["["] atom atom? @["]"] ;
-# result: makeCall @["varRef" "makeHighlet"] atom atom?
+highlet ::=
+    @["@"] @["["] atom atom? @["]"]
+    # result: makeCall @["varRef" "makeHighlet"] atom atom?
+|
+    @["@"] @["string"]
+    # result: makeCall @["varRef" "makeHighlet"]
+    #             @["literal" (highletValue string)]
+|
+    @["@"] @["identifier"]
+    # result: makeCall @["varRef" "makeHighlet"]
+    #             @["literal" (highletValue identifier)]
+;
 
 # Function that returns an appropriately-formed `call` node.
 makeCall = { function actuals* ::
