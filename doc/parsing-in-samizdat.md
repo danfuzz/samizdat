@@ -90,6 +90,10 @@ place them between "set brackets" `[/ ... /]`. Characters of a character
 set can be combined into a single string literal for convenience, e.g.
 `[/"x" "y"/]` and `[/"xy"/]` are equivalent.
 
+Note that this syntax is valid at the same level as parsing functions and
+other atoms, and *not* limited to appearing within a parsing function's
+pattern.
+
 To match any terminal other than items from a particular set, precede the
 set contents with a complement (`~`), *inside* the set brackets. Note that
 there is a difference between a complemented set, which can consume one
@@ -98,15 +102,15 @@ which never consumes input.
 
 For example:
 
-* The parser `{/ [/"blort"/] /}` will match any of the characters
+* The parser `[/"blort"/]` will match any of the characters
   `b` `l` `o` `r` or `t`.
 
-* The parser `{/ [/~ "\n"/] /}` will match any character but a newline.
+* The parser `[/~ "\n"/]` will match any character but a newline.
 
-* The parser `{/ [/[:@foo:] [:@bar:]/] /}` will match either
+* The parser `[/[:@foo:] [:@bar:]/]` will match either
   a `[:@foo:]` or a `[:@bar:]` token.
 
-* The parser `{/ [/~ [:@foo:] [:@bar:]/] /}` will match any token but a
+* The parser `[/~ [:@foo:] [:@bar:]/]` will match any token but a
   `[:@foo:]` or a `[:@bar:]` token.
 
 ### Matching using other parser functions
@@ -218,10 +222,14 @@ priority sequence (first one listed gets first "dibs", etc.), separated
 by vertical bars (`|`). The result of matching is the same as the result
 of whichever alternate was matched.
 
-For example, the parser `{/ "f" | "foo" /}` will match the string `"foobar"`,
-resulting in the yielded value `[:@f:]` and a remainder of `"oobar"`. Note
-that because of the prioritized ordering, the second alternate could never
-get picked in this case.
+This expression is valid at the layer of Samizdat expressions, and
+not valid *within* a parser function pattern declaration. Note how
+the example below is constructed.
+
+For example, the parser `{/ "f" /} | {/ "foo" /}` will match the string
+`"foobar"`, resulting in the yielded value `[:@f:]` and a remainder of
+`"oobar"`. Note that because of the prioritized ordering, the second
+alternate could never get picked in this case.
 
 
 Token Syntax
@@ -231,7 +239,7 @@ The following is an in-language description of the parser tokens, as
 modifications to the *Samizdat Layer 0* tokenization syntax.
 
 ```
-punctuation = {/
+punctuation =
     # ... original alternates from the base grammar ...
     {/ "{/" :: <> [:"{/":] /} |
     {/ "/}" :: <> [:"/}":] /} |
@@ -242,7 +250,7 @@ punctuation = {/
     {/ "&"  :: <> [:"&":]  /} |
     {/ "|"  :: <> [:"|":]  /} |
     {/ "~"  :: <> [:"~":]  /}
-/};
+;
 ```
 
 
@@ -253,11 +261,18 @@ The following is an in-language description of the tree grammar, as
 modifications to the *Samizdat Layer 0* tree syntax.
 
 ```
-atom = {/
+choiceExpression = {/
+    first = atom
+    rest = {/ [:"|":] atom /}*
+    ::
+    <> apply makeCall [:@varRef "choiceCombinator":] (listPrepend first rest)
+/};
+
+atom =
     # ... original alternates from the base grammar ...
     parserSetFunction |
     parserFunction
-/};
+;
 
 parserSetFunction = {/
     [:"[/":]
@@ -289,7 +304,7 @@ parserProgram = {/
 /};
 
 parserDeclarations = {/
-    pattern = {/ parserSequence | parserAlternates /}
+    pattern = parserItem*
     yield = {/
         {/ yield = yieldDef :: <> [@yieldDef=yield] /}
         |
@@ -298,38 +313,19 @@ parserDeclarations = {/
     <> mapAdd [@pattern=pattern] yield
 /};
 
-parserAlternates = {/
-    first = parserAtomOptRepeat?
-    rest = {/ [:"|":] parserAtomOptRepeat? /}+
-    ::
-    <> [: @alternates (listPrepend first rest) :] }
-/};
-
-parserSequence = {/
-    items = parserItem*
-    ::
-    <> [:@sequence items:]
-/};
-
 parserItem = {/
     name = {/ identifier [:"=":] /}?
     lookahead = {/ [:"&":] | [:"!&":] /}?
-    atomOptRepeat = parserAtomOptRepeat
-    ::
-    <> # TODO: Stuff goes here.
-/};
-
-parserAtomOptRepeat = {/
     atom = parserAtom
     repeat = {/ [:"*":] | [:"?"] /}
     ::
     <> # TODO: Stuff goes here.
 /};
 
-parserAtom = {/
-    string
+parserAtom =
+    {/ s=string :: <> [: @matchChars s :] /}
     |
-    [:"[:"] string [:":]"]
+    {/ [:"[:"] s=string [:":]"] :: <> [: @matchToken s:] /}
     |
     parserFunction
     |
@@ -337,12 +333,10 @@ parserAtom = {/
     |
     varRef
     |
-    "."
+    {/ "." :: <> [: @matchAnyTerminal :] /}
     |
-    "!."
-    ::
-    <> # TODO: Stuff goes here.
-/};
+    {/ "!." :: <> [: @matchEof :] /}
+;
 ```
 
 
@@ -368,11 +362,11 @@ number = {/
     <> listReduce 0 digits { result digit :: <> iadd digit (imul result 10) }
 /};
 
-atom = {/
+atom =
     number
     |
     {/ "(" ex=addExpression ")" :: <> ex /}
-/};
+;
 
 addExpression = {/
     ex1=mulExpression op=addOp ex2=addExpression
@@ -380,11 +374,11 @@ addExpression = {/
     <> op ex1 ex2
 /};
 
-addOp = {/
+addOp =
     {/ "+" :: <> iadd /}
     |
     {/ "-" :: <> isub /}
-/};
+;
 
 mulExpression = {/
     ex1=unaryExpression op=mulOp ex2=mulExpression
@@ -392,17 +386,17 @@ mulExpression = {/
     <> op ex1 ex2
 /};
 
-mulOp = {/
+mulOp =
     {/ "*" :: <> imul /}
     |
     {/ "/" :: <> idiv /}
-/};
+;
 
-unaryExpression = {/
+unaryExpression =
     {/ op=unaryOp ex=unaryExpression :: <> op ex /}
     |
     atom
-/};
+;
 
 unaryOp = {/
     "-" :: <> ineg
