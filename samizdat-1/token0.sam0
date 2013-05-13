@@ -49,7 +49,7 @@ parseInteger = filterRule
     { result ::
         sign = listNth result 0;
         value = listReduce 0 (listNth result 1)
-            { result digit :: <> iadd digit (imul result 10) };
+            { result . digit :: <> iadd digit (imul result 10) };
         <> [:@integer (imul sign value):]
     };
 

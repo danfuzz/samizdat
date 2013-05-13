@@ -10,7 +10,7 @@
 report = { context v1 v2 message ::
     io0Note message;
     listForEach context
-        { item ::
+        { . item ::
             io0Note (format "    at %Q" item);
             <> null
         };
@@ -49,7 +49,7 @@ diffMap = { recurse context v1 v2 <out> ::
         { <> recurse @size size1 size2 }
         {
             mapForEach v1
-                { value key ::
+                { key value ::
                     ifVoid { <> mapGet v2 key }
                         {
                             report (listAppend context key) v1 v2
@@ -61,7 +61,7 @@ diffMap = { recurse context v1 v2 <out> ::
         }
         {
             mapForEach v1
-                { value key ::
+                { key value ::
                     ifFalse { <> recurse [@key=key] value (mapGet v2 key) }
                         { <out> false }
                 };
@@ -78,7 +78,7 @@ diffList = { recurse context v1 v2 ::
         { <> recurse @size size1 size2 }
         {
             listForEach v1
-                { elem index ::
+                { index elem ::
                     recurse index elem (listNth v2 index)
                 };
             <> false
