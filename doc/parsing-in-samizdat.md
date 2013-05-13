@@ -15,7 +15,7 @@ tightest to loosest.
 ### Parsing functions
 
 Parsing functions are written as a parsing expression inside "parsing
-braces" `{: ... :}`. Just as regular braces enclose an anonymous
+braces" `{/ ... /}`. Just as regular braces enclose an anonymous
 function / closure, parsing braces enclose an anonymous parsing
 function / closure.
 
@@ -48,7 +48,7 @@ that a sequence of characters is to be matched. The result of matching
 a character sequence is a valueless highlet whose type is the the matched
 string.
 
-For example, the parser `{: "foo" :}` will match the string `"foobar"`,
+For example, the parser `{/ "foo" /}` will match the string `"foobar"`,
 resulting in the yielded value `[:@foo:]` and a remainder of `"bar"`.
 
 ### Matching tokens of a particular type
@@ -63,7 +63,7 @@ that a token of the indicated type is to be matched. The result of
 matching is the full original token, including whatever data payload
 it happened to have.
 
-For example, the parser `{: [:@foo:] :}` will match the token list
+For example, the parser `{/ [:@foo:] /}` will match the token list
 `[[:@foo:] [:@bar:]]`, resulting in the yielded value `[:@foo:]` and a
 remainder of `[[:@bar:]]`.
 
@@ -72,7 +72,7 @@ remainder of `[[:@bar:]]`.
 To match an arbitrary terminal item (character or token), use a
 plain dot (`.`).
 
-For example, the parser `{: . . . :}` matches an arbitrary
+For example, the parser `{/ . . . /}` matches an arbitrary
 sequence of three terminals. (See "Matching sequences of items", below.)
 
 ### Matching the end-of-input
@@ -81,33 +81,33 @@ To match the end of input, use a not-dot (`!.`). This only ever matches
 when there is no input available. When matched, this yields the value
 `null`.
 
-For example, the parser `{: "foo" !. :}` will match the string `"foo"` but
+For example, the parser `{/ "foo" !. /}` will match the string `"foo"` but
 only if it's at the end of input.
 
 ### Matching character or token sets
 
 To match a set of characters (for tokenization) or tokens (for tree parsing),
-place them between "set brackets" `[| ... |]`. Characters of a character
+place them between "set brackets" `[/ ... /]`. Characters of a character
 set can be combined into a single string literal for convenience, e.g.
-`[|"x" "y"|]` and `[|"xy"|]` are equivalent.
+`[/"x" "y"/]` and `[/"xy"/]` are equivalent.
 
 To match any terminal other than items from a particular set, precede the
 set contents with a complement (`~`), *inside* the set brackets. Note that
 there is a difference between a complemented set, which can consume one
-input value, and a lookahead failure of a set (`!&[| ... |]`, see below),
+input item, and a lookahead failure of a set (`!&[/ ... /]`, see below),
 which never consumes input.
 
 For example:
 
-* The parser `{: [|"blort"|] :}` will match any of the characters
+* The parser `{/ [/"blort"/] /}` will match any of the characters
   `b` `l` `o` `r` or `t`.
 
-* The parser `{: [|~ "\n"|] :}` will match any character but a newline.
+* The parser `{/ [/~ "\n"/] /}` will match any character but a newline.
 
-* The parser `{: [|[:@foo:] [:@bar:]|] :}` will match either
+* The parser `{/ [/[:@foo:] [:@bar:]/] /}` will match either
   a `[:@foo:]` or a `[:@bar:]` token.
 
-* The parser `{: [|~ [:@foo:] [:@bar:]|] :}` will match any token but a
+* The parser `{/ [/~ [:@foo:] [:@bar:]/] /}` will match any token but a
   `[:@foo:]` or a `[:@bar:]` token.
 
 ### Matching using other parser functions
@@ -120,11 +120,11 @@ parsing function returns.
 
 For example:
 
-* The parser `{: foo :}` will match whatever `foo` matches,
+* The parser `{/ foo /}` will match whatever `foo` matches,
   assuming that `foo` is a properly-written parser function. The yielded
   result will be the same as the `foo` parser's yield.
 
-* The parser `{: {: foo :} :}` will also match whatever `foo` matches.
+* The parser `{/ {/ foo /} /}` will also match whatever `foo` matches.
   The yielded result will be the same as the `foo` parser's yield.
 
 ### Grouping
@@ -162,7 +162,7 @@ To match a sequence of items, the items are simply listed in order. Per
 the overall definition of parser function semantics, the result of matching
 a sequence of items is whatever the yield is from the *last* item listed.
 
-For example, the parser `{: [:@foo:] [:@bar:] :}` will match the token
+For example, the parser `{/ [:@foo:] [:@bar:] /}` will match the token
 list `[[:@foo:] [:@bar:] [:@baz:]]`, resulting in the yielded value
 `[:@bar:]` and a remainder of `[[:@baz:]]`.
 
@@ -172,7 +172,7 @@ To match an item without "consuming" it from the input, the item can
 be preceded by an ampersand (`&`). When matched, the yielded value
 of a lookahead is identical to what the underlying item yielded.
 
-For example, the parser `{: &"foobar" "foo" :}` will match the string
+For example, the parser `{/ &"foobar" "foo" /}` will match the string
 `"foobar"`, resulting in the yielded value `[:@foo:]` and a
 remainder of `"bar"`. However, the same parser will *fail* to match
 `"foobaz"` because the lookahead `&"foobar"` will fail.
@@ -184,7 +184,7 @@ not-ampersand (`!&`). As with lookahead success, this will never "consume"
 any input. When successful (that is, when lookahead fails), a lookahead
 failure yields `null`.
 
-For example, the parser `{: !&"foobaz" "foo" :}` will match the string
+For example, the parser `{/ !&"foobaz" "foo" /}` will match the string
 `"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
 the lookahead `!&"foobaz"` will fail (because a `"foobaz"` lookahead *succeeds*
@@ -206,7 +206,7 @@ function.
 Note that, if the statements fail to yield a value, then the parse is
 considered to have failed.
 
-For example, the parser `{: "(" ex=expression ")" :: <> ex :}` will
+For example, the parser `{/ "(" ex=expression ")" :: <> ex /}` will
 match any input that starts with an open parenthesis, followed by a
 match of the `expression` function (presumed here to be another parser
 function), followed by a close parenthesis. The result of parsing will
@@ -219,7 +219,7 @@ priority sequence (first one listed gets first "dibs", etc.), separated
 by vertical bars (`|`). The result of matching is the same as the result
 of whichever alternate was matched.
 
-For example, the parser `{: "f" | "foo" :}` will match the string `"foobar"`,
+For example, the parser `{/ "f" | "foo" /}` will match the string `"foobar"`,
 resulting in the yielded value `[:@f:]` and a remainder of `"oobar"`. Note
 that because of the prioritized ordering, the second alternate could never
 get picked in this case.
@@ -235,67 +235,67 @@ with whitespace-related rules.
 Note: This example doesn't use all of the syntactic forms mentioned above.
 
 ```
-digit = {:
-    ch=[|"0123456789"|]
+digit = {/
+    ch=[/"0123456789"/]
     ::
     <> isub (intFromString ch) (intFromString "0")
-:};
+/};
 
-number = {:
+number = {/
     digits=digit+
     ::
     <> listReduce 0 digits { result digit :: <> iadd digit (imul result 10) }
-:};
+/};
 
-atom = {:
+atom = {/
     number
     |
-    {: "(" ex=addExpression ")" :: <> ex :}
-:};
+    {/ "(" ex=addExpression ")" :: <> ex /}
+/};
 
-addExpression = {:
+addExpression = {/
     ex1=mulExpression op=addOp ex2=addExpression
     ::
     <> op ex1 ex2
-:};
+/};
 
-addOp = {:
-    {: "+" :: <> iadd :}
+addOp = {/
+    {/ "+" :: <> iadd /}
     |
-    {: "-" :: <> isub :}
-:};
+    {/ "-" :: <> isub /}
+/};
 
-mulExpression = {:
+mulExpression = {/
     ex1=unaryExpression op=mulOp ex2=mulExpression
     ::
     <> op ex1 ex2
-:};
+/};
 
-mulOp = {:
-    {: "*" :: <> imul :}
+mulOp = {/
+    {/ "*" :: <> imul /}
     |
-    {: "/" :: <> idiv :}
-:};
+    {/ "/" :: <> idiv /}
+/};
 
-unaryExpression = {:
-    {: op=unaryOp ex=unaryExpression :: <> op ex :}
+unaryExpression = {/
+    {/ op=unaryOp ex=unaryExpression :: <> op ex /}
     |
     atom
-:};
+/};
 
-unaryOp = {:
+unaryOp = {/
     "-" :: <> ineg
-:}
+/}
 
-main = {:
-    {:
+main = {/
+    {/
         ex=addExpression "\n"
         ::
         io0Note (format "%q" ex);
         # Explicit yield here is so that parsing is considered successful.
         <> null
-    :}*
-:};
+    /}*
+/};
 ```
 
 Example Translation to Samizdat-0
