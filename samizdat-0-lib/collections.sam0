@@ -48,7 +48,7 @@ genericReduce = { base nthFunc function <out> ::
 # takes an `nthFunc` of one argument.
 genericMap = { nthFunc function ::
     <> genericReduce [] nthFunc
-        { result item index ::
+        { result index item ::
             <> ifValue { <> function index item }
                 { value :: <> listInsNth result (lowSize result) value }
                 { <> result }
