@@ -29,7 +29,7 @@ parsePunctuation = filterRule
         (charsRule "@@")
         (charsRule "::")
         (charsRule "<>")
-        (charSetRule "@:*;=?<>{}()[]"))
+        (charSetRule ".@:*;=?<>{}()[]"))
     { result :: <> [:result:] };
 
 # These are all the integer digits, as a map from strings to
