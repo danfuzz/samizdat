@@ -35,8 +35,9 @@ the empty list).
 If parsing fails (a value was not `yield`ed), then the return value
 is ignored.
 
-The default `yield` value of a parsing function is a list of all the items
-that it parsed, though that may be overridden by using a filtering clause
+The default `yield` value of a parsing function is whatever the yielded
+result is from the *last* item in the list of items to match in the
+function. This default can be overridden by using a filtering clause
 (see below).
 
 ### Matching character sequences
@@ -63,7 +64,7 @@ matching is the full original token, including whatever data payload
 it happened to have.
 
 For example, the parser `{: [:@foo:] :}` will match the token list
-`[[:@foo:] [:@bar:]]`, resulting in the yielded value `[[:@foo:]]` and a
+`[[:@foo:] [:@bar:]]`, resulting in the yielded value `[:@foo:]` and a
 remainder of `[[:@bar:]]`.
 
 ### Matching an arbitrary terminal item
@@ -77,7 +78,8 @@ sequence of three terminals. (See "Matching sequences of items", below.)
 ### Matching the end-of-input
 
 To match the end of input, use a not-dot (`!.`). This only ever matches
-when there is no input available.
+when there is no input available. When matched, this yields the value
+`null`.
 
 For example, the parser `{: "foo" !. :}` will match the string `"foo"` but
 only if it's at the end of input.
@@ -120,11 +122,10 @@ For example:
 
 * The parser `{: foo :}` will match whatever `foo` matches,
   assuming that `foo` is a properly-written parser function. The yielded
-  result will be a single-element list of the `foo` parser's yield.
+  result will be the same as the `foo` parser's yield.
 
 * The parser `{: {: foo :} :}` will also match whatever `foo` matches.
-  The yielded result will be of the form `[[x]]` (that is, a list-of-a-list)
-  where `x` is whatever was yielded by `foo`.
+  The yielded result will be the same as the `foo` parser's yield.
 
 ### Grouping
 
@@ -159,11 +160,11 @@ cases where there is not even one resulting match.
 
 To match a sequence of items, the items are simply listed in order. Per
 the overall definition of parser function semantics, the result of matching
-a sequence of items is a list of whatever was matched.
+a sequence of items is whatever the yield is from the *last* item listed.
 
 For example, the parser `{: [:@foo:] [:@bar:] :}` will match the token
 list `[[:@foo:] [:@bar:] [:@baz:]]`, resulting in the yielded value
-`[[:@foo:] [:@bar:]]` and a remainder of `[[:@baz:]]`.
+`[:@bar:]` and a remainder of `[[:@baz:]]`.
 
 ### Lookahead success
 
@@ -172,7 +173,7 @@ be preceded by an ampersand (`&`). When matched, the yielded value
 of a lookahead is identical to what the underlying item yielded.
 
 For example, the parser `{: &"foobar" "foo" :}` will match the string
-`"foobar"`, resulting in the yielded value `[[:@foobar:] [:@foo:]]` and a
+`"foobar"`, resulting in the yielded value `[:@foo:]` and a
 remainder of `"bar"`. However, the same parser will *fail* to match
 `"foobaz"` because the lookahead `&"foobar"` will fail.
 
@@ -184,7 +185,7 @@ any input. When successful (that is, when lookahead fails), a lookahead
 failure yields `null`.
 
 For example, the parser `{: !&"foobaz" "foo" :}` will match the string
-`"foobar"`, resulting in the yielded value `[null [:@foo:]]` and a remainder of
+`"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
 the lookahead `!&"foobaz"` will fail (because a `"foobaz"` lookahead *succeeds*
 match).
@@ -219,7 +220,7 @@ by vertical bars (`|`). The result of matching is the same as the result
 of whichever alternate was matched.
 
 For example, the parser `{: "f" | "foo" :}` will match the string `"foobar"`,
-resulting in the yielded value `[[:@f:]]` and a remainder of `"oobar"`. Note
+resulting in the yielded value `[:@f:]` and a remainder of `"oobar"`. Note
 that because of the prioritized ordering, the second alternate could never
 get picked in this case.
 
