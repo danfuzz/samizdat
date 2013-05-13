@@ -253,6 +253,12 @@ The following is an in-language description of the tree grammar, as
 modifications to the *Samizdat Layer 0* tree syntax.
 
 ```
+atom = {/
+    # ... original alternates from the base grammar ...
+    parserSetFunction |
+    parserFunction
+/};
+
 parserSetFunction = {/
     [:"[/":]
     complement = [:"~":]?
@@ -283,27 +289,37 @@ parserProgram = {/
 /};
 
 parserDeclarations = {/
-    pattern = parserPattern
+    pattern = {/ parserSequence | parserAlternates /}
     yield = {/
         {/ yield = yieldDef :: <> [@yieldDef=yield] /}
         |
         {/ :: <> [=] /} # No yieldDef.
     ::
-    <> mapAdd [@items=items] yield
-/}
+    <> mapAdd [@pattern=pattern] yield
+/};
 
-parserPattern = {/
-    first = parserItem*
-    rest = {/ [:"|":] parserItem* /}*
+parserAlternates = {/
+    first = parserAtomOptRepeat?
+    rest = {/ [:"|":] parserAtomOptRepeat? /}+
     ::
-    <> ifTrue { <> eq rest [] }
-        { <> first }
-        { <> [: parserOr (listPrepend first rest) :] }
+    <> [: @alternates (listPrepend first rest) :] }
+/};
+
+parserSequence = {/
+    items = parserItem*
+    ::
+    <> [:@sequence items:]
 /};
 
 parserItem = {/
     name = {/ identifier [:"=":] /}?
     lookahead = {/ [:"&":] | [:"!&":] /}?
+    atomOptRepeat = parserAtomOptRepeat
+    ::
+    <> # TODO: Stuff goes here.
+/};
+
+parserAtomOptRepeat = {/
     atom = parserAtom
     repeat = {/ [:"*":] | [:"?"] /}
     ::
