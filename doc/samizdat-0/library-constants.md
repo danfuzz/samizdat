@@ -15,7 +15,7 @@ functions.
 The boolean value false.
 
 **Note:** Technically, this value could be defined in-language as
-`false = [:@boolean 0:]`. However, as a practical matter the
+`false = [:"boolean" 0:]`. However, as a practical matter the
 lowest layer of implementation needs to refer to this value, so
 it makes sense to allow it to be exported as a primitive.
 
@@ -24,7 +24,7 @@ it makes sense to allow it to be exported as a primitive.
 The boolean value true.
 
 **Note:** Technically, this value could be defined in-language as
-`true = [:@boolean 1:]`. However, as a practical matter the
+`true = [:"boolean" 1:]`. However, as a practical matter the
 lowest layer of implementation needs to refer to this value, so
 it makes sense to allow it to be exported as a primitive.
 
@@ -35,4 +35,4 @@ it makes sense to allow it to be exported as a primitive.
 #### `null`
 
 A value used when no other value is suitable, but when a value is
-nonetheless required. It can also be written as `[:@null:]`.
+nonetheless required. It can also be written as `[:"null":]`.

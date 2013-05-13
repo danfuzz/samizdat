@@ -76,7 +76,7 @@ form is `@` followed by the string's characters.
 ""                            # the empty string
 "Hello, Самиздат!"
 "\"blort\" -- potion that enables one to see in the dark.\n"
-@fizmo
+"fizmo"
 ```
 
 
@@ -90,7 +90,7 @@ more value representations, followed by a final `]`.
 ```
 []                            # the empty list
 [1]
-[@blort @fizmo @igram]
+["blort" "fizmo" "igram"]
 [[1] 242 -23]
 ```
 
@@ -113,10 +113,10 @@ written as `[=]`.
 ```
 [=]                           # the empty map
 [1="number one"]
-[@blort = "potion; the ability to see in the dark"
- @fizmo = "spell; unclogs pipes"
- @igram = "spell; make purple things invisible"]
-[[@complex @data @as @key] = "Handy!"]
+["blort" = "potion; the ability to see in the dark"
+ "fizmo" = "spell; unclogs pipes"
+ "igram" = "spell; make purple things invisible"]
+[["complex" "data" "as" "key"] = "Handy!"]
 ```
 
 
@@ -133,12 +133,12 @@ value representation (another arbitrary value), followed by a final
 `:]`.
 
 ```
-[:@null:]                     # the value usually just written as `null`
-[:@boolean 0:]                # the value usually just written as `false`
-[:@boolean 1:]                # the value usually just written as `true`
+[:"null":]                    # the value usually just written as `null`
+[:"boolean" 0:]               # the value usually just written as `false`
+[:"boolean" 1:]               # the value usually just written as `true`
 [:
-  @spell
-  [@name=@frotz @purpose="cause item to glow"]
+  "spell"
+  ["name"="frotz" "purpose"="cause item to glow"]
 :]
 ```
 
@@ -171,7 +171,7 @@ a named constant `null` to refer to this value. This constant can be
 defined as:
 
 ```
-null = [:@null:]
+null = [:"null":]
 ```
 
 
@@ -181,8 +181,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = [:@boolean 0:]
-true = [:@boolean 1:]
+false = [:"boolean" 0:]
+true = [:"boolean" 1:]
 ```
 
 

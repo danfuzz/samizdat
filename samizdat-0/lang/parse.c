@@ -624,7 +624,7 @@ DEF_PARSE(programDeclarations) {
     zvalue yieldDef = PARSE(yieldDef); // It's okay for this to be `NULL`.
 
     if (datSize(formals) == 0) {
-        // The spec indicates that the @formals mapping should be omitted
+        // The spec indicates that the "formals" mapping should be omitted
         // when there aren't any formals.
         formals = NULL;
     }

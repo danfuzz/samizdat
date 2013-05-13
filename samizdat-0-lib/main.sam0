@@ -39,7 +39,7 @@ readLibraryFile = { name ::
 loadLibrary = { ctx name ::
     text = readLibraryFile name;
     tree = sam0Tree text;
-    function = sam0Eval (mapPut ctx @LIBRARY ctx) tree;
+    function = sam0Eval (mapPut ctx "LIBRARY" ctx) tree;
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -71,7 +71,7 @@ loadAllLibraries = { ctx names* ::
 # and the first, etc.).
 CORE_LIBRARY = loadAllLibraries
     LIBRARY
-    @combinator @const @boolean @type @conditional @integer
-    @collections @format @io0 @meta;
+    "combinator" "const" "boolean" "type" "conditional" "integer"
+    "collections" "format" "io0" "meta";
 
 <> CORE_LIBRARY
