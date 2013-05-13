@@ -340,7 +340,7 @@ number = { yield input ::
 
 atom = { yield input ::
     yieldFilter = { value ::
-        <> apply { ignored_1 ex ignored_2 :: <> ex } value
+        <> apply { . ex . :: <> ex } value
     };
 
     <> parseOr yield input
@@ -407,7 +407,7 @@ unaryOp = { yield input ::
 
 main = { yield input ::
     yieldFilter = { value ::
-        <> apply { ex ignored :: io0Note (format "%q" ex) } value
+        <> apply { ex . :: io0Note (format "%q" ex) } value
     };
 
     <> parseStar yield input
