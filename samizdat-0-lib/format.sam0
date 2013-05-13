@@ -157,14 +157,21 @@ doMap = { recurse map adorn ::
 };
 
 # Stringifies a highlet.
-doHighlet = { recurse highlet adorn ::
+doHighlet = { recurse highlet adorn <out> ::
     type = highletType highlet;
-    result = stringAdd
-        (recurse type)
-        (ifValue { <> highletValue highlet }
-            { value :: <> stringAdd " " (recurse value) }
-            { <> "" });
+    valueString = ifValue { <> highletValue highlet }
+        { value :: <> stringAdd " " (recurse value) }
+        { <> "" };
 
+    ifTrue { <> and { <> isString type } { <> eq valueString "" } }
+        {
+            typeString = ifTrue { <> isIdentifier type }
+                { <> type }
+                { <> recurse type };
+            <out> adornIf adorn "@" typeString ""
+        };
+
+    result = stringAdd (recurse type) valueString;
     <> adornIf adorn "@[" result "]"
 };
 

@@ -104,6 +104,8 @@ main = { selfPath name rest* ::
     process null;
     process false;
     process true;
+    process @blort;
+    process @"%fizmo%";
     process @@;
     process (countDown 10);
     process (countDown2 5);
