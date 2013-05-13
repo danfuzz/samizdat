@@ -27,11 +27,10 @@ makeCall = { function actuals* ::
 # Parses a `highlet` node.
 parseHighlet = filterRule
     (seqRule
+        [:"@":]
         [:"[":]
-        [:":":]
         "atom"
         (optRule "atom")
-        [:":":]
         [:"]":])
     { result ::
         <> apply makeCall [:"varRef" "makeHighlet":]
