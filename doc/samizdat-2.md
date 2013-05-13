@@ -27,13 +27,13 @@ token ::= punctuation2 | punctuation |
 # tokens.
 
 keyword ::=
-    "break"    | # result: @["break"]
-    "continue" | # result: @["continue"]
-    "if"       | # result: @["if"]
-    "else"     | # result: @["else"]
-    "fn"       | # result: @["fn"]
-    "return"   | # result: @["return"]
-    "while"      # result: @["while"]
+    "break"    | # result: @"break"
+    "continue" | # result: @"continue"
+    "if"       | # result: @"if"
+    "else"     | # result: @"else"
+    "fn"       | # result: @"fn"
+    "return"   | # result: @"return"
+    "while"      # result: @"while"
 ;
 
 punctuation2 ::=
@@ -95,30 +95,30 @@ statement ::=
 ;
 # result: <same as whatever choice matched>
 
-breakStatement ::= @["break"] (@["<"] identifier @[">";])? ;
+breakStatement ::= @"break" (@["<"] identifier @[">";])? ;
 # result code: break() | \"break-<identifier>"()
 
-continueStatement ::= @["continue"] (@["<"] identifier @[">";])? ;
+continueStatement ::= @"continue" (@["<"] identifier @[">";])? ;
 # result code: continue() | \"continue-<identifier>"()
 
 ifStatement ::=
-    @["if"] @["("] expression @[")"] function
-    (@["else"] (ifStatement | function))?
+    @"if" @["("] expression @[")"] function
+    (@"else" (ifStatement | function))?
 # result code: ifTrue expression function (if|function)?
 
 functionStatement ::=
-    @["fn"] @["identifier"] formals? @["{"] programBody @["}"]
+    @"fn" @"identifier" formals? @["{"] programBody @["}"]
 ;
 # result code: identifier = { formals? <return> ::
 #                  \"return-<identifier>" = return;
 #                  programBody
 #              }
 
-returnStatement ::= @["return"] (@["<"] identifier @[">";])? expression? ;
+returnStatement ::= @"return" (@["<"] identifier @[">";])? expression? ;
 # result code: return expression? | \"return-<identifier>" expression?
 
 whileStatement ::=
-    @["while"] @["identifier"]? @["("] expression @[")"] function
+    @"while" @"identifier"? @["("] expression @[")"] function
 # result code:
 # { <break> ::
 #     (\"break-<identifier>" = break;)?

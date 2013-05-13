@@ -173,7 +173,7 @@ a named constant `null` to refer to this value. This constant can be
 defined as:
 
 ```
-null = @["null"]
+null = @null
 ```
 
 

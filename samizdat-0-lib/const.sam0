@@ -7,7 +7,7 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-null = @["null"];
+null = @"null";
 
 <> [
     "null" = null
