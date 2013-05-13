@@ -99,7 +99,7 @@ listPrepend = { value list ::
 # See comment in `listReduce` (above) about in-file ordering.
 mapReduce = { base map function ::
     <> genericReduce base { n :: <> mapNth map n}
-        { reduction mapping ::
+        { reduction . mapping ::
             <> function reduction (mapNthKey mapping 0) (mapNthValue mapping 0)
         }
 };
@@ -107,7 +107,7 @@ mapReduce = { base map function ::
 # Documented in Samizdat Layer 0 spec.
 mapForEach = { map function ::
     genericForEach { n :: <> mapNth map n }
-        { mapping :: function (mapNthKey mapping 0) (mapNthValue mapping 0) }
+        { . mapping :: function (mapNthKey mapping 0) (mapNthValue mapping 0) }
 };
 
 # Documented in Samizdat Layer 0 spec.
