@@ -193,11 +193,10 @@ DEF_PARSE(atomPlus) {
 DEF_PARSE(highlet) {
     MARK();
 
+    MATCH_OR_REJECT(CH_AT);
     MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_COLON);
     zvalue innerType = PARSE_OR_REJECT(atom);
     zvalue innerValue = PARSE(atom); // It's okay for this to be NULL.
-    MATCH_OR_REJECT(CH_COLON);
     MATCH_OR_REJECT(CH_CSQUARE);
 
     zvalue args = datListAppend(EMPTY_LIST, innerType);
