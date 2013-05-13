@@ -224,6 +224,112 @@ that because of the prioritized ordering, the second alternate could never
 get picked in this case.
 
 
+Token Syntax
+------------
+
+The following is an in-language description of the parser tokens, as
+modifications to the *Samizdat Layer 0* tokenization syntax.
+
+```
+punctuation = {/
+    # ... original alternates from the base grammar ...
+    {/ "{/" :: <> [:"{/":] /} |
+    {/ "/}" :: <> [:"/}":] /} |
+    {/ "[/" :: <> [:"[/":] /} |
+    {/ "/]" :: <> [:"/]":] /} |
+    {/ "!." :: <> [:"!.":] /} |
+    {/ "!&" :: <> [:"!&":] /} |
+    {/ "&"  :: <> [:"&":]  /} |
+    {/ "|"  :: <> [:"|":]  /} |
+    {/ "~"  :: <> [:"~":]  /}
+/};
+```
+
+
+Tree Syntax
+-----------
+
+The following is an in-language description of the tree grammar, as
+modifications to the *Samizdat Layer 0* tree syntax.
+
+```
+parserSetFunction = {/
+    [:"[/":]
+    complement = [:"~":]?
+    terminals = {/ [:@string:]* | [:@identifier:]* /}
+    [:"/]":]
+    ::
+    type = ifTrue { <> eq complement [] }
+        { <> @parserSet }
+        { <> @parserNotSet };
+    <> [: type terminals :]
+/};
+
+parserFunction = {/
+    [:"{/":] program=parserProgram [:"/}":]
+    ::
+    <> program
+/};
+
+parserProgram = {/
+    decls = {/
+        {/ decls=parserDeclarations [:"::":] :: <> decls /}
+        |
+        {/ :: <> [=] /} # Empty declarations are valid.
+    /}
+    body = programBody
+    ::
+    <> [: @parserFunction (mapAdd decls body) :]
+/};
+
+parserDeclarations = {/
+    pattern = parserPattern
+    yield = {/
+        {/ yield = yieldDef :: <> [@yieldDef=yield] /}
+        |
+        {/ :: <> [=] /} # No yieldDef.
+    ::
+    <> mapAdd [@items=items] yield
+/}
+
+parserPattern = {/
+    first = parserItem*
+    rest = {/ [:"|":] parserItem* /}*
+    ::
+    <> ifTrue { <> eq rest [] }
+        { <> first }
+        { <> [: parserOr (listPrepend first rest) :] }
+/};
+
+parserItem = {/
+    name = {/ identifier [:"=":] /}?
+    lookahead = {/ [:"&":] | [:"!&":] /}?
+    atom = parserAtom
+    repeat = {/ [:"*":] | [:"?"] /}
+    ::
+    <> # TODO: Stuff goes here.
+/};
+
+parserAtom = {/
+    string
+    |
+    [:"[:"] string [:":]"]
+    |
+    parserFunction
+    |
+    function
+    |
+    varRef
+    |
+    "."
+    |
+    "!."
+    ::
+    <> # TODO: Stuff goes here.
+/};
+```
+
+
 Example
 -------
 
