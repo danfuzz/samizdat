@@ -116,11 +116,12 @@ evaluation fails (terminating the runtime).
 These are nodes and values that appear within the data payloads
 of various expression nodes.
 
-#### `formal` &mdash; `[@name=name (@repeat=repeat)?]`
+#### `formal` &mdash; `[(@name=name)? (@repeat=repeat)?]`
 
-* `@name` (required) &mdash; an arbitrary value (but typically a string),
+* `@name` (optional) &mdash; an arbitrary value (but typically a string),
   which indicates the name of the variable to be bound for this
-  formal.
+  formal. If omitted, then this indicates an unused argument which is
+  not bound to a variable in the context of the function body.
 
 * `@repeat` (optional) &mdash; indicates (if present) that the number of
   actual arguments bound by this formal is not necessarily exactly one.

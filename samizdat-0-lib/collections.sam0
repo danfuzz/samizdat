@@ -20,7 +20,7 @@ genericForEach = { nthFunc function <out> ::
     loopReduce 0 { index ::
         <> ifValue { <> (nthFunc index) }
             { item ::
-                function item index;
+                function index item;
                 <> iadd index 1
             }
             { <out> }
@@ -35,7 +35,7 @@ genericReduce = { base nthFunc function <out> ::
         index = listNth state 1;
         <> ifValue { <> (nthFunc index) }
             { item ::
-                nextResult = ifValue { <> function result item index }
+                nextResult = ifValue { <> function result index item }
                     { value :: <> value }
                     { <> result };
                 <> [nextResult (iadd index 1)]
@@ -48,8 +48,8 @@ genericReduce = { base nthFunc function <out> ::
 # takes an `nthFunc` of one argument.
 genericMap = { nthFunc function ::
     <> genericReduce [] nthFunc
-        { result item index ::
-            <> ifValue { <> function item index }
+        { result index item ::
+            <> ifValue { <> function index item }
                 { value :: <> listInsNth result (lowSize result) value }
                 { <> result }
         }
@@ -99,26 +99,22 @@ listPrepend = { value list ::
 # See comment in `listReduce` (above) about in-file ordering.
 mapReduce = { base map function ::
     <> genericReduce base { n :: <> mapNth map n}
-        { reduction mapping ::
-            <> function reduction
-                (mapNthValue mapping 0)
-                (mapNthKey mapping 0)
+        { reduction . mapping ::
+            <> function reduction (mapNthKey mapping 0) (mapNthValue mapping 0)
         }
 };
 
 # Documented in Samizdat Layer 0 spec.
 mapForEach = { map function ::
     genericForEach { n :: <> mapNth map n }
-        { mapping ::
-            function (mapNthValue mapping 0) (mapNthKey mapping 0)
-        }
+        { . mapping :: function (mapNthKey mapping 0) (mapNthValue mapping 0) }
 };
 
 # Documented in Samizdat Layer 0 spec.
 mapMap = { map function ::
     <> mapReduce [=] map
-        { reduction value key ::
-            <> ifValue { <> function value key }
+        { reduction key value ::
+            <> ifValue { <> function key value }
                 { newValue :: <> mapPut reduction key newValue }
                 { <> reduction }
         }
