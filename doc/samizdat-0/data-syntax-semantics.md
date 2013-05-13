@@ -123,19 +123,19 @@ payload value. Highlets are the bridge between low-layer data and
 high-layer data (hence the name). Highlets are also used as the
 low-layer type returned by parsing (including tokenization) functions.
 
-Highlets are written as an initial `[:`, followed by a type tag
+Highlets are written as an initial `@[`, followed by a type tag
 representation (an arbitrary value), optionally followed by a payload
 value representation (another arbitrary value), followed by a final
-`:]`.
+`]`.
 
 ```
-[:"null":]                    # the value usually just written as `null`
-[:"boolean" 0:]               # the value usually just written as `false`
-[:"boolean" 1:]               # the value usually just written as `true`
-[:
+@["null"]                     # the value usually just written as `null`
+@["boolean" 0]                # the value usually just written as `false`
+@["boolean" 1]                # the value usually just written as `true`
+@[
   "spell"
   ["name"="frotz" "purpose"="cause item to glow"]
-:]
+]
 ```
 
 
