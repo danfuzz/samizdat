@@ -120,6 +120,13 @@ static zvalue mapFrom1(zvalue k1, zvalue v1) {
 }
 
 /**
+ * Constructs a `literal` node.
+ */
+static zvalue makeLiteral(zvalue value) {
+    return datHighletFrom(STR_LITERAL, value);
+}
+
+/**
  * Constructs a `varRef` node.
  */
 static zvalue makeVarRef(zvalue name) {
@@ -193,11 +200,26 @@ DEF_PARSE(atomPlus) {
 DEF_PARSE(highlet) {
     MARK();
 
+    zvalue innerType;
+    zvalue innerValue;
+
     MATCH_OR_REJECT(CH_AT);
-    MATCH_OR_REJECT(CH_OSQUARE);
-    zvalue innerType = PARSE_OR_REJECT(atom);
-    zvalue innerValue = PARSE(atom); // It's okay for this to be NULL.
-    MATCH_OR_REJECT(CH_CSQUARE);
+
+    innerType = MATCH(STRING);
+    if (innerType == NULL) {
+        innerType = MATCH(IDENTIFIER);
+    }
+    if (innerType != NULL) {
+        innerType = makeLiteral(datHighletValue(innerType));
+        innerValue = NULL;
+    }
+
+    if (innerType == NULL) {
+        MATCH_OR_REJECT(CH_OSQUARE);
+        innerType = PARSE_OR_REJECT(atom);
+        innerValue = PARSE(atom); // It's okay for this to be NULL.
+        MATCH_OR_REJECT(CH_CSQUARE);
+    }
 
     zvalue args = datListAppend(EMPTY_LIST, innerType);
 
@@ -267,7 +289,7 @@ DEF_PARSE(emptyMap) {
     MATCH_OR_REJECT(CH_EQUAL);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return datHighletFrom(STR_LITERAL, EMPTY_MAP);
+    return makeLiteral(EMPTY_MAP);
 }
 
 /**
@@ -292,7 +314,7 @@ DEF_PARSE(emptyList) {
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return datHighletFrom(STR_LITERAL, EMPTY_LIST);
+    return makeLiteral(EMPTY_LIST);
 }
 
 /**
@@ -303,7 +325,7 @@ DEF_PARSE(string) {
 
     zvalue string = MATCH_OR_REJECT(STRING);
 
-    return datHighletFrom(STR_LITERAL, datHighletValue(string));
+    return makeLiteral(datHighletValue(string));
 }
 
 /**
@@ -314,7 +336,7 @@ DEF_PARSE(integer) {
 
     zvalue integer = MATCH_OR_REJECT(INTEGER);
 
-    return datHighletFrom(STR_LITERAL, datHighletValue(integer));
+    return makeLiteral(datHighletValue(integer));
 }
 
 /**
