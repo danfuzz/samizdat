@@ -302,15 +302,9 @@ DEF_PARSE(emptyList) {
 DEF_PARSE(string) {
     MARK();
 
-    zvalue string = MATCH(STRING);
+    zvalue string = MATCH_OR_REJECT(STRING);
 
-    if (string == NULL) {
-        MATCH_OR_REJECT(CH_AT);
-        string = MATCH_OR_REJECT(IDENTIFIER);
-    }
-
-    zvalue value = datHighletValue(string);
-    return datHighletFrom(STR_LITERAL, value);
+    return datHighletFrom(STR_LITERAL, datHighletValue(string));
 }
 
 /**
