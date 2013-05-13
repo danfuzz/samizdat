@@ -538,8 +538,11 @@ DEF_PARSE(formal1) {
 DEF_PARSE(formal) {
     MARK();
 
-    zvalue identifier = MATCH(IDENTIFIER);
-    if (identifier == NULL) {
+    zvalue name = MATCH(IDENTIFIER);
+
+    if (name != NULL) {
+        name = datHighletValue(name);
+    } else {
         // If there was no identifier, then the only valid form for a formal
         // is if this is an unnamed / unused argument.
         MATCH_OR_REJECT(CH_DOT);
@@ -547,8 +550,7 @@ DEF_PARSE(formal) {
 
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
 
-    return mapFrom2(STR_NAME, datHighletValue(identifier),
-                    STR_REPEAT, repeat);
+    return mapFrom2(STR_NAME, name, STR_REPEAT, repeat);
 }
 
 /**
