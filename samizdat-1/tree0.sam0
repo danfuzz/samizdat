@@ -25,18 +25,27 @@ makeCall = { function actuals* ::
 #
 
 # Parses a `highlet` node.
-parseHighlet = filterRule
-    (seqRule
-        @["@"]
-        @["["]
-        "atom"
-        (optRule "atom")
-        @["]"])
-    { result ::
-        <> apply makeCall @["varRef" "makeHighlet"]
-            (listNth result 2)
-            (listNth result 3)
-    };
+parseHighlet = orRule
+    (filterRule
+        (seqRule
+            @["@"]
+            @["["]
+            "atom"
+            (optRule "atom")
+            @["]"])
+        { result ::
+            <> apply makeCall @["varRef" "makeHighlet"]
+                (listNth result 2)
+                (listNth result 3)
+        })
+    (filterRule
+        (seqRule
+            @["@"]
+            (orRule @["string"] @["identifier"]))
+        { result ::
+            value = highletValue (listNth result 1);
+            <> makeCall @["varRef" "makeHighlet"] @["literal" value];
+        });
 
 # Parses a `uniqlet` node.
 parseUniqlet = filterRule
