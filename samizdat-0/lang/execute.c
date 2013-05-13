@@ -205,15 +205,20 @@ static void bindArguments(Frame *frame, zvalue functionNode,
         zvalue formal = datListNth(formals, i);
         zvalue name = datMapGet(formal, STR_NAME);
         zvalue repeat = datMapGet(formal, STR_REPEAT);
-        zvalue value;
+        bool ignore = (name == NULL);
+        zvalue value = NULL;
 
         if (repeat != NULL) {
             if (datEq(repeat, TOK_CH_STAR)) {
-                value = datListFromArray(argCount - argAt, &args[argAt]);
+                if (!ignore) {
+                    value = datListFromArray(argCount - argAt, &args[argAt]);
+                }
                 argAt = argCount;
             } else if (datEq(repeat, TOK_CH_QMARK)) {
                 if (argAt < argCount) {
-                    value = datListFromArray(1, &args[argAt]);
+                    if (!ignore) {
+                        value = datListFromArray(1, &args[argAt]);
+                    }
                     argAt++;
                 } else {
                     value = EMPTY_LIST;
@@ -221,14 +226,16 @@ static void bindArguments(Frame *frame, zvalue functionNode,
             } else {
                 die("Unknown repeat modifier.");
             }
-        } else if (i >= argCount) {
+        } else if (argAt >= argCount) {
             die("Too few arguments to function: %lld", argCount);
         } else {
             value = args[argAt];
             argAt++;
         }
 
-        frameAdd(frame, name, value);
+        if (!ignore) {
+            frameAdd(frame, name, value);
+        }
     }
 }
 

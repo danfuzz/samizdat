@@ -51,7 +51,7 @@ readAllLibraryFiles = {
     manifestProgram = sam1Tree (readLibraryFile @manifest);
     manifest = (sam0Eval (makeLibrary LIBRARY) manifestProgram)();
 
-    <> listReduce [=] manifest { result name ::
+    <> listReduce [=] manifest { result . name ::
         <> mapPut result name (readLibraryFile name)
     }
 };

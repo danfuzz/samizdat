@@ -169,9 +169,13 @@ parseYieldDef = filterRule
 # Parses a `formal` node.
 parseFormal = filterRule
     (seqRule
-        (filterRule
-            [:@identifier:]
-            { result :: <> [@name = (highletValue result)] })
+        (orRule
+            (filterRule
+                [:@identifier:]
+                { result :: <> [@name = (highletValue result)] })
+            (filterRule
+                [:".":]
+                { <> [=] }))
         (filterRule
             (optRule
                 (orRule [:"*":] [:"?":]))

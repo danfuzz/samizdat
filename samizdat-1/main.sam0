@@ -37,7 +37,7 @@ loadFile = { ctx name ::
 # Loads the named libraries, each one in the context of the previously-defined
 # ones.
 loadAllLibraries = { ctx rest* ::
-    <> listReduce ctx rest { result elem ::
+    <> listReduce ctx rest { result . elem ::
         <> mapAdd result (loadFile result elem);
     }
 };
