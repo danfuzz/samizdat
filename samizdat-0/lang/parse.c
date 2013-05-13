@@ -95,7 +95,7 @@ static void reset(ParseState *state, zint mark) {
  * which case the corresponding key isn't included in the result.
  */
 static zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
-                          zvalue k3, zvalue v3) {
+                       zvalue k3, zvalue v3) {
     zvalue result = EMPTY_MAP;
 
     if (v1 != NULL) { result = datMapPut(result, k1, v1); }
@@ -538,11 +538,17 @@ DEF_PARSE(formal1) {
 DEF_PARSE(formal) {
     MARK();
 
-    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
+    zvalue identifier = MATCH(IDENTIFIER);
+    if (identifier == NULL) {
+        // If there was no identifier, then the only valid form for a formal
+        // is if this is an unnamed / unused argument.
+        MATCH_OR_REJECT(CH_DOT);
+    }
+
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
 
     return mapFrom2(STR_NAME, datHighletValue(identifier),
-                       STR_REPEAT, repeat);
+                    STR_REPEAT, repeat);
 }
 
 /**
