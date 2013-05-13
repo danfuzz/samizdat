@@ -41,7 +41,7 @@ parseHighlet = orRule
     (filterRule
         (seqRule
             @"@"
-            (orRule @"string" @"identifier"))
+            (orRule @string @identifier))
         { result ::
             value = highletValue (listNth result 1);
             <> makeCall @["varRef" "makeHighlet"] @["literal" value];
@@ -86,22 +86,22 @@ parseEmptyList = filterRule
 
 # Parses a `string` node.
 parseString = filterRule
-    @"string"
+    @string
     { result :: <> @["literal" (highletValue result)] };
 
 # Parses an `integer` node.
 parseInteger = filterRule
-    @"integer"
+    @integer
     { result :: <> @["literal" (highletValue result)] };
 
 # Parses a `varRef` node.
 parseVarRef = filterRule
-    @"identifier"
+    @identifier
     { result :: <> @["varRef" (highletValue result)] };
 
 # Parses a `varDef` node.
 parseVarDef = filterRule
-    (seqRule @"identifier" @"=" "expression")
+    (seqRule @identifier @"=" "expression")
     { result ::
         name = highletValue (listNth result 0);
         value = listNth result 2;
@@ -150,7 +150,7 @@ parseStatement = orRule "varDef" "expression";
 parseNonlocalExit = filterRule
     (seqRule
         @"<"
-        @"identifier"
+        @identifier
         @">"
         (optRule "expression"))
     { result ::
@@ -166,7 +166,7 @@ parseYield = filterRule
 
 # Parses a `yieldDef` node.
 parseYieldDef = filterRule
-    (seqRule @"<" @"identifier" @">")
+    (seqRule @"<" @identifier @">")
     { result :: <> highletValue (listNth result 1) };
 
 # Parses a `formal` node.
@@ -174,7 +174,7 @@ parseFormal = filterRule
     (seqRule
         (orRule
             (filterRule
-                @"identifier"
+                @identifier
                 { result :: <> ["name" = (highletValue result)] })
             (filterRule
                 @"."

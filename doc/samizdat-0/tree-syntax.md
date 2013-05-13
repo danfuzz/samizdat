@@ -36,17 +36,17 @@ programBody ::=
 # result: ["statements"=[statement*] ("yield"=yield)?]
 # Note: `nonLocalExit` results in a statement.
 
-formal ::= (@"identifier" | @".") (@"*" | @"?")? ;
+formal ::= (@identifier | @".") (@"*" | @"?")? ;
 # result: [("name"=(highletValue identifier))? ("repeat"=@[("*"|"?")])?]
 # Note: Binding for `"name"` omitted if name is specified as `.`.
 
-yieldDef ::= @"<" @"identifier" @">" ;
+yieldDef ::= @"<" @identifier @">" ;
 # result: highletValue identifier
 
 yield ::= @"<>" expression ;
 # result: expression
 
-nonlocalExit ::= @"<" @"identifier" @">" expression? ;
+nonlocalExit ::= @"<" @identifier @">" expression? ;
 # result: makeCall identifier expression?
 
 statement ::= varDef | expression ;
@@ -74,16 +74,16 @@ atom ::=
 parenExpression ::= @"(" expression @")";
 # result: expression
 
-varDef ::= @"identifier" @"=" expression ;
+varDef ::= @identifier @"=" expression ;
 # result: @["varDef" ["name"=(highletValue identifier) "value"=expression]]
 
-varRef ::= @"identifier" ;
+varRef ::= @identifier ;
 # result: @["varRef" (highletValue identifier)]
 
-integer ::= @"integer" ;
+integer ::= @integer ;
 # result: @["literal" (highletValue integer)]
 
-string ::= @"string" ;
+string ::= @string ;
 # result: @["literal" (highletValue string)]
 
 emptyList ::= @"[" @"]" ;
@@ -108,11 +108,11 @@ highlet ::=
     @"@" @"[" atom atom? @"]"
     # result: makeCall @["varRef" "makeHighlet"] atom atom?
 |
-    @"@" @"string"
+    @"@" @string
     # result: makeCall @["varRef" "makeHighlet"]
     #             @["literal" (highletValue string)]
 |
-    @"@" @"identifier"
+    @"@" @identifier
     # result: makeCall @["varRef" "makeHighlet"]
     #             @["literal" (highletValue identifier)]
 ;

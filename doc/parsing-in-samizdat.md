@@ -48,7 +48,7 @@ a character sequence is a valueless highlet whose type is the the matched
 string.
 
 For example, the parser `{/ "foo" /}` will match the string `"foobar"`,
-resulting in the yielded value `@"foo"` and a remainder of `"bar"`.
+resulting in the yielded value `@foo` and a remainder of `"bar"`.
 
 ### Matching tokens of a particular type
 
@@ -62,9 +62,9 @@ that a token of the indicated type is to be matched. The result of
 matching is the full original token, including whatever data payload
 it happened to have.
 
-For example, the parser `{/ @"foo" /}` will match the token list
-`[@"foo" @"bar"]`, resulting in the yielded value `@"foo"` and a
-remainder of `[@"bar"]`.
+For example, the parser `{/ @foo /}` will match the token list
+`[@foo @bar]`, resulting in the yielded value `@foo` and a
+remainder of `[@bar]`.
 
 ### Matching an arbitrary terminal item
 
@@ -107,11 +107,11 @@ For example:
 
 * The parser `[/~ "\n"/]` will match any character but a newline.
 
-* The parser `[/@"foo" @"bar"/]` will match either
-  a `@"foo"` or a `@"bar"` token.
+* The parser `[/@foo @bar/]` will match either
+  a `@foo` or a `@bar` token.
 
-* The parser `[/~ @"foo" @"bar"/]` will match any token but a
-  `@"foo"` or a `@"bar"` token.
+* The parser `[/~ @foo @bar/]` will match any token but a
+  `@foo` or a `@bar` token.
 
 ### Matching using other parser functions
 
@@ -165,9 +165,9 @@ To match a sequence of items, the items are simply listed in order. Per
 the overall definition of parser function semantics, the result of matching
 a sequence of items is whatever the yield is from the *last* item listed.
 
-For example, the parser `{/ @"foo" @"bar" /}` will match the token
-list `[@"foo" @"bar" @"baz"]`, resulting in the yielded value
-`@"bar"` and a remainder of `[@"baz"]`.
+For example, the parser `{/ @foo @bar /}` will match the token
+list `[@foo @bar @baz]`, resulting in the yielded value
+`@bar` and a remainder of `[@baz]`.
 
 ### Lookahead success
 
@@ -176,7 +176,7 @@ be preceded by an ampersand (`&`). When matched, the yielded value
 of a lookahead is identical to what the underlying item yielded.
 
 For example, the parser `{/ &"foobar" "foo" /}` will match the string
-`"foobar"`, resulting in the yielded value `@"foo"` and a
+`"foobar"`, resulting in the yielded value `@foo` and a
 remainder of `"bar"`. However, the same parser will *fail* to match
 `"foobaz"` because the lookahead `&"foobar"` will fail.
 
@@ -188,7 +188,7 @@ any input. When successful (that is, when lookahead fails), a lookahead
 failure yields `null`.
 
 For example, the parser `{/ !&"foobaz" "foo" /}` will match the string
-`"foobar"`, resulting in the yielded value `@"foo"` and a remainder of
+`"foobar"`, resulting in the yielded value `@foo` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
 the lookahead `!&"foobaz"` will fail (because a `"foobaz"` lookahead *succeeds*
 match).
@@ -227,7 +227,7 @@ not valid *within* a parser function pattern declaration. Note how
 the example below is constructed.
 
 For example, the parser `{/ "f" /} | {/ "foo" /}` will match the string
-`"foobar"`, resulting in the yielded value `@"f"` and a remainder of
+`"foobar"`, resulting in the yielded value `@f` and a remainder of
 `"oobar"`. Note that because of the prioritized ordering, the second
 alternate could never get picked in this case.
 
@@ -277,7 +277,7 @@ atom =
 parserSetFunction = {/
     @"[/"
     complement = @"~"?
-    terminals = {/ @"string"* | @"identifier"* /}
+    terminals = {/ @string* | @identifier* /}
     @"/]"
     ::
     type = ifTrue { <> eq complement [] }
