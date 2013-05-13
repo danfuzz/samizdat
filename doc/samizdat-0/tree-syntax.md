@@ -83,8 +83,8 @@ varRef ::= [:"identifier":] ;
 integer ::= [:"integer":] ;
 # result: [:"literal" (highletValue integer):]
 
-string ::= ("string" | [:"@":] "identifier");
-# result: [:"literal" (highletValue (string|identifier)):]
+string ::= [:"string":] ;
+# result: [:"literal" (highletValue string):]
 
 emptyList ::= [:"[":] [:"]":] ;
 # result: [:"literal" []:]

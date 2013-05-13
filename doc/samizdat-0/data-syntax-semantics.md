@@ -68,10 +68,6 @@ Characters are self-representing, except that there are three
 * `\"` &mdash; a double quote
 * `\n` &mdash; newline (Unicode U+0010)
 
-If a string's contents form a valid identifier (e.g. variable
-name) in the *Samizdat Layer 0* syntax, then a second allowed
-form is `@` followed by the string's characters.
-
 ```
 ""                            # the empty string
 "Hello, Самиздат!"
