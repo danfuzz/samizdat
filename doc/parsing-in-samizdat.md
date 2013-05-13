@@ -24,7 +24,8 @@ function and an `input` state. To indicate successful parsing, it is expected
 to (a) call `yield` with the result of parsing, and (b) return a replacement
 `input` state meant to reflect what was consumed from the original `input`
 (if anything). To indicate a parsing failure, the function is expected to
-(a) *not* call `yield` at all, and (b) return void.
+(a) call `yield` with no argument to indicate a void yield, and (b)
+return void.
 
 The input state is expected to be a list of to-be-parsed elements, such
 as characters for tokenization or tokens for a tree parser.
