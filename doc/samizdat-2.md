@@ -76,10 +76,10 @@ statement ::=
 ;
 # result: <same as whatever choice matched>
 
-breakStatement ::= @break (@"<" identifier @[">";])? ;
+breakStatement ::= @break (@"<" identifier @">")? ;
 # result code: break() | \"break-<identifier>"()
 
-continueStatement ::= @continue (@"<" identifier @[">";])? ;
+continueStatement ::= @continue (@"<" identifier @">"])? ;
 # result code: continue() | \"continue-<identifier>"()
 
 ifStatement ::=
@@ -95,7 +95,7 @@ functionStatement ::=
 #                  programBody
 #              }
 
-returnStatement ::= @return (@"<" identifier @[">";])? expression? ;
+returnStatement ::= @return (@"<" identifier @">")? expression? ;
 # result code: return expression? | \"return-<identifier>" expression?
 
 whileStatement ::=
@@ -164,7 +164,7 @@ unaryPrefixExpression ::=
 
 unaryPostfixExpression ::=
     atom
-    (@"(" @")" | @"[" expression @"]" ))*
+    (@"()" | @"[" expression @"]" ))*
 ;
 # result: ... (makeCall @["varRef" "[]"] (makeCall atom) expression) ...
 #         (etc.)
