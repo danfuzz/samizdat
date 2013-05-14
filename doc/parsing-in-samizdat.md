@@ -95,7 +95,7 @@ other atoms, and *not* limited to appearing within a parsing function's
 pattern.
 
 To match any terminal other than items from a particular set, precede the
-set contents with a complement (`~`), *inside* the set brackets. Note that
+set contents with a not/bang (`!`), *inside* the set brackets. Note that
 there is a difference between a complemented set, which can consume one
 input item, and a lookahead failure of a set (`!&[/ ... /]`, see below),
 which never consumes input.
@@ -105,12 +105,12 @@ For example:
 * The parser `[/"blort"/]` will match any of the characters
   `b` `l` `o` `r` or `t`.
 
-* The parser `[/~ "\n"/]` will match any character but a newline.
+* The parser `[/! "\n"/]` will match any character but a newline.
 
 * The parser `[/@foo @bar/]` will match either
   a `@foo` or a `@bar` token.
 
-* The parser `[/~ @foo @bar/]` will match any token but a
+* The parser `[/! @foo @bar/]` will match any token but a
   `@foo` or a `@bar` token.
 
 ### Matching using other parser functions
@@ -230,6 +230,11 @@ For example, the parser `{/ $"f" /} | {/ $"foo" /}` will match the string
 `"foobar"`, resulting in the yielded value `@f` and a remainder of
 `"oobar"`. Note that because of the prioritized ordering, the second
 alternate could never get picked in this case.
+
+### Future direction: Destructuring bind
+
+If in the future a "destructuring bind" form is supported, then it
+will probably be introduced by an approximate/tilde (`~`).
 
 
 Token Syntax
