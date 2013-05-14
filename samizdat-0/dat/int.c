@@ -42,11 +42,11 @@ static zint bitSize(zint value) {
 }
 
 /**
- * Gets the value of the given integer as a `zint`. Doesn't do any
+ * Gets the value of the given int as a `zint`. Doesn't do any
  * type checking.
  */
-static zint intValue(zvalue integer) {
-    return ((DatInt *) integer)->value;
+static zint intValue(zvalue intval) {
+    return ((DatInt *) intval)->value;
 }
 
 
@@ -79,11 +79,11 @@ zorder datIntOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zchar datCharFromInt(zvalue integer) {
-    zint value = datZintFromInt(integer);
+zchar datCharFromInt(zvalue intval) {
+    zint value = datZintFromInt(intval);
 
     if ((value < 0) || (value >= 0x100000000)) {
-        die("Invalid integer value for character: %lld", value);
+        die("Invalid int value for character: %lld", value);
     }
 
     return (zchar) value;
@@ -101,14 +101,14 @@ bool datZintGetBit(zint value, zint n) {
 }
 
 /* Documented in header. */
-bool datIntGetBit(zvalue integer, zint n) {
-    datAssertInt(integer);
-    return datZintGetBit(intValue(integer), n);
+bool datIntGetBit(zvalue intval, zint n) {
+    datAssertInt(intval);
+    return datZintGetBit(intValue(intval), n);
 }
 
 /* Documented in header. */
-bool datIntSign(zvalue integer) {
-    return datIntGetBit(integer, MAX_BITS - 1);
+bool datIntSign(zvalue intval) {
+    return datIntGetBit(intval, MAX_BITS - 1);
 }
 
 /* Documented in header. */
@@ -117,7 +117,7 @@ zvalue datIntFromZint(zint value) {
     zvalue result = datAllocValue(DAT_INT, size, sizeof(int32_t));
 
     if (size > MAX_BITS) {
-        die("Value too large to fit into integer: %lld", value);
+        die("Value too large to fit into int: %lld", value);
     }
 
     ((DatInt *) result)->value = (int32_t) value;
@@ -125,7 +125,7 @@ zvalue datIntFromZint(zint value) {
 }
 
 /* Documented in header. */
-zint datZintFromInt(zvalue integer) {
-    datAssertInt(integer);
-    return intValue(integer);
+zint datZintFromInt(zvalue intval) {
+    datAssertInt(intval);
+    return intValue(intval);
 }
