@@ -45,7 +45,7 @@ static zint bitSize(zint value) {
  * Gets the value of the given integer as a `zint`. Doesn't do any
  * type checking.
  */
-static zint integerValue(zvalue integer) {
+static zint intValue(zvalue integer) {
     return ((DatInt *) integer)->value;
 }
 
@@ -56,13 +56,13 @@ static zint integerValue(zvalue integer) {
 
 /* Documented in header. */
 bool datIntEq(zvalue v1, zvalue v2) {
-    return integerValue(v1) == integerValue(v2);
+    return intValue(v1) == intValue(v2);
 }
 
 /* Documented in header. */
 zorder datIntOrder(zvalue v1, zvalue v2) {
-    zint int1 = integerValue(v1);
-    zint int2 = integerValue(v2);
+    zint int1 = intValue(v1);
+    zint int2 = intValue(v2);
 
     if (int1 < int2) {
         return ZLESS;
@@ -103,7 +103,7 @@ bool datZintGetBit(zint value, zint n) {
 /* Documented in header. */
 bool datIntGetBit(zvalue integer, zint n) {
     datAssertInt(integer);
-    return datZintGetBit(integerValue(integer), n);
+    return datZintGetBit(intValue(integer), n);
 }
 
 /* Documented in header. */
@@ -127,5 +127,5 @@ zvalue datIntFromZint(zint value) {
 /* Documented in header. */
 zint datZintFromInt(zvalue integer) {
     datAssertInt(integer);
-    return integerValue(integer);
+    return intValue(integer);
 }

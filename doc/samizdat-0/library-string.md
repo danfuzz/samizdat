@@ -7,7 +7,7 @@ Strings
 <br><br>
 ### Primitive Definitions
 
-#### `integerFromString string <> integer`
+#### `intFromString string <> integer`
 
 Given a single-character string, returns the character code
 of its sole character, as an integer. It is an error (terminating

@@ -37,7 +37,7 @@ static zvalue valueFromStringNth(zvalue string, zint n) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(integerFromString) {
+PRIM_IMPL(intFromString) {
     requireExactly(argCount, 1);
 
     zvalue string = args[0];

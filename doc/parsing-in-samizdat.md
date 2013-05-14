@@ -530,7 +530,7 @@ Example Translation to Samizdat Layer 0
 digit = pexSequence
     (pexCharSet "0123456789")
     (pexCode { ch ::
-        <> isub (integerFromString ch) (integerFromString "0")
+        <> isub (intFromString ch) (intFromString "0")
     });
 
 number = pexSequence
