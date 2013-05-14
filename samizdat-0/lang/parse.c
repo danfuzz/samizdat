@@ -523,7 +523,7 @@ DEF_PARSE(nonlocalExit) {
 }
 
 /**
- * Helper for `formal`: Parses `(@"?" | @"*")?`. Returns either the
+ * Helper for `formal`: Parses `(@"?" | @"*" | @"+")?`. Returns either the
  * parsed token or `NULL` to indicate that neither was present.
  */
 DEF_PARSE(formal1) {
@@ -531,6 +531,7 @@ DEF_PARSE(formal1) {
 
     if (result == NULL) { result = MATCH(CH_QMARK); }
     if (result == NULL) { result = MATCH(CH_STAR); }
+    if (result == NULL) { result = MATCH(CH_PLUS); }
 
     return result;
 }

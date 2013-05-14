@@ -163,6 +163,13 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
                     value = datListFromArray(argCount - argAt, &args[argAt]);
                 }
                 argAt = argCount;
+            } else if (datEq(repeat, TOK_CH_PLUS)) {
+                if (argAt >= argCount) {
+                    die("Too few arguments to function: %lld", argCount);
+                } else if (!ignore) {
+                    value = datListFromArray(argCount - argAt, &args[argAt]);
+                }
+                argAt = argCount;
             } else if (datEq(repeat, TOK_CH_QMARK)) {
                 if (argAt < argCount) {
                     if (!ignore) {
