@@ -283,7 +283,7 @@ parserSetFunction = {/
     type = ifTrue { <> eq complement [] }
         { <> "parserSet" }
         { <> "parserNotSet" };
-    <> @[ type terminals ]
+    <> @[type terminals]
 /};
 
 parserFunction = {/
@@ -300,7 +300,7 @@ parserProgram = {/
     /}
     body = programBody
     ::
-    <> @[ "parserFunction" (mapAdd decls body) ]
+    <> @["parserFunction" (mapAdd decls body)]
 /};
 
 parserDeclarations = {/
@@ -323,9 +323,9 @@ parserItem = {/
 /};
 
 parserAtom =
-    {/ s=string :: <> @[ "matchChars" s ] /}
+    {/ s=string :: <> @["matchChars" s] /}
     |
-    {/ @"@[" s=string @"]" :: <> @[ "matchToken" s] /}
+    {/ @"@[" s=string @"]" :: <> @["matchToken" s] /}
     |
     parserFunction
     |
@@ -333,9 +333,9 @@ parserAtom =
     |
     varRef
     |
-    {/ "." :: <> @[ "matchAnyTerminal" ] /}
+    {/ "." :: <> @matchDot /}
     |
-    {/ "!." :: <> @[ "matchEof" ] /}
+    {/ "!." :: <> @matchNotDot /}
 ;
 ```
 
