@@ -44,7 +44,7 @@ loadAllLibraries = { ctx rest* ::
 
 # Put together the final execution context.
 CONTEXT = loadAllLibraries (makeLibrary LIBRARY)
-    @diff @reader @peg @parser @parseArgs @token0 @tree0 @run;
+    "diff" "reader" "peg" "parser" "parseArgs" "token0" "tree0" "run";
 
 # Call the `run` function to do the final deed.
-<> apply (mapGet CONTEXT @run) ARGS
+<> apply (mapGet CONTEXT "run") ARGS

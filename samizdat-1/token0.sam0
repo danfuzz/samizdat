@@ -14,13 +14,13 @@ parseFile = filterRule
     (seqRule
         (starRule
             (filterRule
-                (seqRule (starRule @whitespace) @token)
+                (seqRule (starRule "whitespace") "token")
                 { result :: <> listNth result 1 }))
-        (starRule @whitespace))
+        (starRule "whitespace"))
     { result :: <> listNth result 0 };
 
 # Parses a single token.
-parseToken = orRule @punctuation @integer @string @identifier @quotedIdentifier;
+parseToken = orRule "punctuation" "integer" "string" "identifier" "quotedIdentifier";
 
 # Parses any of the punctuation characters or character sequences, yielding
 # a token whose type is the string matched.
@@ -30,7 +30,7 @@ parsePunctuation = filterRule
         (charsRule "::")
         (charsRule "<>")
         (charSetRule ".@:*;=?<>{}()[]"))
-    { result :: <> [:result:] };
+    { result :: <> @[result] };
 
 # These are all the integer digits, as a map from strings to
 # digit values.
@@ -50,7 +50,7 @@ parseInteger = filterRule
         sign = listNth result 0;
         value = listReduce 0 (listNth result 1)
             { result . digit :: <> iadd digit (imul result 10) };
-        <> [:@integer (imul sign value):]
+        <> @["integer" (imul sign value)]
     };
 
 # Parses a single string character.
@@ -73,7 +73,7 @@ parseString = filterRule
         (charsRule "\""))
     { result ::
         value = apply stringAdd (listNth result 1);
-        <> [:@string value:]
+        <> @["string" value]
     };
 
 # These are all the characters which are allowed to start an identifier.
@@ -85,10 +85,10 @@ IDENTIFIER_CHARS = stringAdd IDENTIFIER_START_CHARS "0123456789";
 
 # Parses a `quotedIdentifier` token.
 parseQuotedIdentifier = filterRule
-    (seqRule (charsRule "\\") @string)
+    (seqRule (charsRule "\\") "string")
     { result ::
         value = highletValue (listNth result 1);
-        <> [:@identifier value:]
+        <> @["identifier" value]
     };
 
 # Parses an `identifier` token.
@@ -100,7 +100,7 @@ parseIdentifier = filterRule
         value = stringAdd
             (listNth result 0)
             (apply stringAdd (listNth result 1));
-        <> [:@identifier value:]
+        <> @["identifier" value]
     };
 
 # Parses a single whitespace character or a comment.
@@ -113,14 +113,14 @@ parseWhitespace = orRule
 
 # Map of all the tokenizer rules.
 TOKEN0_RULES = [
-    @file = parseFile
-    @identifier = parseIdentifier
-    @integer = parseInteger
-    @punctuation = parsePunctuation
-    @quotedIdentifier = parseQuotedIdentifier
-    @string = parseString
-    @token = parseToken
-    @whitespace = parseWhitespace
+    "file" = parseFile
+    "identifier" = parseIdentifier
+    "integer" = parseInteger
+    "punctuation" = parsePunctuation
+    "quotedIdentifier" = parseQuotedIdentifier
+    "string" = parseString
+    "token" = parseToken
+    "whitespace" = parseWhitespace
 ];
 
-<> [@TOKEN0_RULES = TOKEN0_RULES]
+<> ["TOKEN0_RULES" = TOKEN0_RULES]

@@ -31,8 +31,8 @@ a size, defined as follows:
 #### `lowType value <> string`
 
 Returns the type name of the low-layer type of the given value. The
-result will be one of: `@integer` `@string` `@list` `@map`
-`@uniqlet` `@highlet`
+result will be one of: `"integer"` `"string"` `"list"` `"map"`
+`"uniqlet"` `"highlet"`
 
 
 <br><br>

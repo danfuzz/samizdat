@@ -13,7 +13,7 @@
 
 # Returns a `call` node.
 makeCall = { function actuals* ::
-    <> [:@call [@function=function @actuals=actuals]:]
+    <> @["call" ["function"=function "actuals"=actuals]]
 };
 
 
@@ -25,99 +25,102 @@ makeCall = { function actuals* ::
 #
 
 # Parses a `highlet` node.
-parseHighlet = filterRule
-    (seqRule
-        [:"[":]
-        [:":":]
-        @atom
-        (optRule @atom)
-        [:":":]
-        [:"]":])
-    { result ::
-        <> apply makeCall [:@varRef @makeHighlet:]
-            (listNth result 2)
-            (listNth result 3)
-    };
+parseHighlet = orRule
+    (filterRule
+        (seqRule
+            @"@"
+            @"["
+            "atom"
+            (optRule "atom")
+            @"]")
+        { result ::
+            <> apply makeCall @["varRef" "makeHighlet"]
+                (listNth result 2)
+                (listNth result 3)
+        })
+    (filterRule
+        (seqRule
+            @"@"
+            (orRule @string @identifier))
+        { result ::
+            value = highletValue (listNth result 1);
+            <> makeCall @["varRef" "makeHighlet"] @["literal" value];
+        });
 
 # Parses a `uniqlet` node.
 parseUniqlet = filterRule
-    [:"@@":]
-    { <> makeCall [:@varRef @makeUniqlet:] };
+    @"@@"
+    { <> makeCall @["varRef" "makeUniqlet"] };
 
 # Parses a `binding` node.
 parseBinding = filterRule
-    (seqRule @atom [:"=":] @atom)
+    (seqRule "atom" @"=" "atom")
     { result ::
         <> [(listNth result 0) (listNth result 2)]
     };
 
 # Parses a `map` node.
 parseMap = filterRule
-    (seqRule [:"[":] (plusRule @binding) [:"]":])
+    (seqRule @"[" (plusRule "binding") @"]")
     { result ::
         bindings = apply listAdd (listNth result 1);
-        <> apply makeCall [:@varRef @makeMap:] bindings
+        <> apply makeCall @["varRef" "makeMap"] bindings
     };
 
 # Parses a `emptyMap` node.
 parseEmptyMap = filterRule
-    (seqRule [:"[":] [:"=":] [:"]":])
-    { <> [:@literal [=]:] };
+    (seqRule @"[" @"=" @"]")
+    { <> @["literal" [=]] };
 
 # Parses a `list` node.
 parseList = filterRule
-    (seqRule [:"[":] (plusRule @atom) [:"]":])
+    (seqRule @"[" (plusRule "atom") @"]")
     { result ::
-        <> apply makeCall [:@varRef @makeList:] (listNth result 1)
+        <> apply makeCall @["varRef" "makeList"] (listNth result 1)
     };
 
 # Parses a `emptyList` node.
 parseEmptyList = filterRule
-    (seqRule [:"[":] [:"]":])
-    { <> [:@literal []:] };
+    (seqRule @"[" @"]")
+    { <> @["literal" []] };
 
 # Parses a `string` node.
-parseString = orRule
-    (filterRule [:@string:]
-        { result :: <> [:@literal (highletValue result):] })
-    (filterRule (seqRule [:"@":] [:@identifier:])
-        { result ::
-            identifier = listNth result 1;
-            <> [:@literal (highletValue identifier):]
-        });
+parseString = filterRule
+    @string
+    { result :: <> @["literal" (highletValue result)] };
 
 # Parses an `integer` node.
 parseInteger = filterRule
-    [:@integer:]
-    { result :: <> [:@literal (highletValue result):] };
+    @integer
+    { result :: <> @["literal" (highletValue result)] };
 
 # Parses a `varRef` node.
 parseVarRef = filterRule
-    [:@identifier:]
-    { result :: <> [:@varRef (highletValue result):] };
+    @identifier
+    { result :: <> @["varRef" (highletValue result)] };
 
 # Parses a `varDef` node.
 parseVarDef = filterRule
-    (seqRule [:@identifier:] [:"=":] @expression)
+    (seqRule @identifier @"=" "expression")
     { result ::
         name = highletValue (listNth result 0);
         value = listNth result 2;
-        <> [:@varDef [@name=name @value=value]:]
+        <> @["varDef" ["name"=name "value"=value]]
     };
 
 # Parses a `parenExpression` node.
 parseParenExpression = filterRule
-    (seqRule [:"(":] @expression [:")":])
+    (seqRule @"(" "expression" @")")
     { result :: <> listNth result 1 };
 
 # Parses an `atom` node.
-parseAtom = orRule @varRef @integer @string
-    @emptyList @list @emptyMap @map
-    @uniqlet @highlet @function @parenExpression;
+parseAtom = orRule "varRef" "integer" "string"
+    "emptyList" "list" "emptyMap" "map"
+    "uniqlet" "highlet" "function" "parenExpression";
 
 # Parses a `callExpression` node.
 parseCallExpression = filterRule
-    (seqRule @atom (plusRule @atom))
+    (seqRule "atom" (plusRule "atom"))
     { result ::
         <> apply makeCall (listNth result 0) (listNth result 1)
     };
@@ -125,8 +128,8 @@ parseCallExpression = filterRule
 # Parses a `unaryCallExpression` node.
 parseUnaryCallExpression = filterRule
     (seqRule
-        @atom
-        (plusRule (seqRule [:"(":] [:")":])))
+        "atom"
+        (plusRule (seqRule @"(" @")")))
     { result ::
         atom = listNth result 0;
         calls = listNth result 1;
@@ -135,35 +138,35 @@ parseUnaryCallExpression = filterRule
     };
 
 # Parses a `unaryExpression` node.
-parseUnaryExpression = orRule @unaryCallExpression @atom;
+parseUnaryExpression = orRule "unaryCallExpression" "atom";
 
 # Parses an `expression` node.
-parseExpression = orRule @callExpression @unaryExpression;
+parseExpression = orRule "callExpression" "unaryExpression";
 
 # Parses a `statement` node.
-parseStatement = orRule @varDef @expression;
+parseStatement = orRule "varDef" "expression";
 
 # Parses a `nonlocalExit` node.
 parseNonlocalExit = filterRule
     (seqRule
-        [:"<":]
-        [:@identifier:]
-        [:">":]
-        (optRule @expression))
+        @"<"
+        @identifier
+        @">"
+        (optRule "expression"))
     { result ::
-        varRef = [:@varRef (highletValue (listNth result 1)):];
+        varRef = @["varRef" (highletValue (listNth result 1))];
         actuals = listNth result 3;
         <> apply makeCall varRef actuals
     };
 
 # Parses a `yield` node.
 parseYield = filterRule
-    (seqRule [:"<>":] @expression)
+    (seqRule @"<>" "expression")
     { result :: <> listNth result 1 };
 
 # Parses a `yieldDef` node.
 parseYieldDef = filterRule
-    (seqRule [:"<":] [:@identifier:] [:">":])
+    (seqRule @"<" @identifier @">")
     { result :: <> highletValue (listNth result 1) };
 
 # Parses a `formal` node.
@@ -171,77 +174,77 @@ parseFormal = filterRule
     (seqRule
         (orRule
             (filterRule
-                [:@identifier:]
-                { result :: <> [@name = (highletValue result)] })
+                @identifier
+                { result :: <> ["name" = (highletValue result)] })
             (filterRule
-                [:".":]
+                @"."
                 { <> [=] }))
         (filterRule
             (optRule
-                (orRule [:"*":] [:"?":]))
+                (orRule @"*" @"?"))
             { result ::
                 <> ifValue { <> listNth result 0 }
-                    { repeatToken :: <> [@repeat = repeatToken] }
+                    { repeatToken :: <> ["repeat" = repeatToken] }
                     { <> [=] }
             }))
     { result :: <> apply mapAdd result };
 
 # `programBody` node helper: Parses `(statement | nonlocalExit | yield)?`,
-# yielding a map that maps `@yield` and `@statements`. Always succeeds.
+# yielding a map that maps `"yield"` and `"statements"`. Always succeeds.
 parseProgramBody1 = filterRule
     (optRule
         (orRule
             (filterRule
-                (orRule @statement @nonlocalExit)
-                { result :: <> [@statements=[result]] })
+                (orRule "statement" "nonlocalExit")
+                { result :: <> ["statements"=[result]] })
             (filterRule
-                @yield
-                { result :: <> [@statements=[] @yield=result] })))
+                "yield"
+                { result :: <> ["statements"=[] "yield"=result] })))
     { result ::
         <> ifValue { <> listNth result 0 }
             { result :: <> result }
-            { <> [@statements=[]] }
+            { <> ["statements"=[]] }
     };
 
 # Parses a `programBody` node.
 parseProgramBody = filterRule
     (seqRule
-        (starRule [:";":])
+        (starRule @";")
         (starRule
             (filterRule
-                (seqRule @statement (plusRule [:";":]))
+                (seqRule "statement" (plusRule @";"))
                 { result :: <> listNth result 0 }))
         parseProgramBody1
-        (starRule [:";":]))
+        (starRule @";"))
     { result ::
         mostStatements = listNth result 1;
         lastClause = listNth result 2;
         statements = listAdd mostStatements
-            (mapGet lastClause @statements);
-        <> mapPut lastClause @statements statements;
+            (mapGet lastClause "statements");
+        <> mapPut lastClause "statements" statements;
     };
 
 # Parses a `programDeclarations` node.
 parseProgramDeclarations = filterRule
     (seqRule
-        (filterRule (starRule @formal)
+        (filterRule (starRule "formal")
             { result ::
                 <> ifTrue { <> ne result [] }
-                    { <> [@formals = result] }
+                    { <> ["formals" = result] }
                     { <> [=] }
             })
-        (filterRule (optRule @yieldDef)
+        (filterRule (optRule "yieldDef")
             { result ::
                 <> ifValue { <> listNth result 0 }
-                    { yieldDef :: <> [@yieldDef = yieldDef] }
+                    { yieldDef :: <> ["yieldDef" = yieldDef] }
                     { <> [=] }
             }))
     { result :: <> apply mapAdd result };
 
-# `program` node helper: Parses `(programDeclarations [:"::":])?`, yielding
+# `program` node helper: Parses `(programDeclarations @"::")?`, yielding
 # a map (possibly empty).
 parseProgram1 = filterRule
-    (optRule (seqRule @programDeclarations [:"::":]))
+    (optRule (seqRule "programDeclarations" @"::"))
     { result ::
         <> ifValue { <> listNth result 0 }
             { match :: <> listNth match 0 }
@@ -250,12 +253,12 @@ parseProgram1 = filterRule
 
 # Parses a `program` node.
 parseProgram = filterRule
-    (seqRule parseProgram1 @programBody)
-    { result :: <> [:@function (apply mapAdd result):] };
+    (seqRule parseProgram1 "programBody")
+    { result :: <> @["function" (apply mapAdd result)] };
 
 # Parses a `function` node.
 parseFunction = filterRule
-    (seqRule [:"{":] @program [:"}":])
+    (seqRule @"{" "program" @"}")
     { result :: <> listNth result 1 };
 
 # Map of all of the parser rules. Any time a parser rule is needed,
@@ -263,32 +266,32 @@ parseFunction = filterRule
 # mutually-recursive rules (since the rules refer directly to names and
 # not actual functions).
 TREE0_RULES = [
-    @atom = parseAtom
-    @binding = parseBinding
-    @callExpression = parseCallExpression
-    @emptyList = parseEmptyList
-    @emptyMap = parseEmptyMap
-    @expression = parseExpression
-    @formal = parseFormal
-    @function = parseFunction
-    @highlet = parseHighlet
-    @integer = parseInteger
-    @list = parseList
-    @map = parseMap
-    @nonlocalExit = parseNonlocalExit
-    @parenExpression = parseParenExpression
-    @program = parseProgram
-    @programBody = parseProgramBody
-    @programDeclarations = parseProgramDeclarations
-    @statement = parseStatement
-    @string = parseString
-    @unaryExpression = parseUnaryExpression
-    @unaryCallExpression = parseUnaryCallExpression
-    @uniqlet = parseUniqlet
-    @varDef = parseVarDef
-    @varRef = parseVarRef
-    @yield = parseYield
-    @yieldDef = parseYieldDef
+    "atom" = parseAtom
+    "binding" = parseBinding
+    "callExpression" = parseCallExpression
+    "emptyList" = parseEmptyList
+    "emptyMap" = parseEmptyMap
+    "expression" = parseExpression
+    "formal" = parseFormal
+    "function" = parseFunction
+    "highlet" = parseHighlet
+    "integer" = parseInteger
+    "list" = parseList
+    "map" = parseMap
+    "nonlocalExit" = parseNonlocalExit
+    "parenExpression" = parseParenExpression
+    "program" = parseProgram
+    "programBody" = parseProgramBody
+    "programDeclarations" = parseProgramDeclarations
+    "statement" = parseStatement
+    "string" = parseString
+    "unaryExpression" = parseUnaryExpression
+    "unaryCallExpression" = parseUnaryCallExpression
+    "uniqlet" = parseUniqlet
+    "varDef" = parseVarDef
+    "varRef" = parseVarRef
+    "yield" = parseYield
+    "yieldDef" = parseYieldDef
 ];
 
-<> [@TREE0_RULES = TREE0_RULES]
+<> ["TREE0_RULES" = TREE0_RULES]

@@ -68,15 +68,11 @@ Characters are self-representing, except that there are three
 * `\"` &mdash; a double quote
 * `\n` &mdash; newline (Unicode U+0010)
 
-If a string's contents form a valid identifier (e.g. variable
-name) in the *Samizdat Layer 0* syntax, then a second allowed
-form is `@` followed by the string's characters.
-
 ```
 ""                            # the empty string
 "Hello, Самиздат!"
 "\"blort\" -- potion that enables one to see in the dark.\n"
-@fizmo
+"fizmo"
 ```
 
 
@@ -90,7 +86,7 @@ more value representations, followed by a final `]`.
 ```
 []                            # the empty list
 [1]
-[@blort @fizmo @igram]
+["blort" "fizmo" "igram"]
 [[1] 242 -23]
 ```
 
@@ -113,10 +109,10 @@ written as `[=]`.
 ```
 [=]                           # the empty map
 [1="number one"]
-[@blort = "potion; the ability to see in the dark"
- @fizmo = "spell; unclogs pipes"
- @igram = "spell; make purple things invisible"]
-[[@complex @data @as @key] = "Handy!"]
+["blort" = "potion; the ability to see in the dark"
+ "fizmo" = "spell; unclogs pipes"
+ "igram" = "spell; make purple things invisible"]
+[["complex" "data" "as" "key"] = "Handy!"]
 ```
 
 
@@ -127,19 +123,25 @@ payload value. Highlets are the bridge between low-layer data and
 high-layer data (hence the name). Highlets are also used as the
 low-layer type returned by parsing (including tokenization) functions.
 
-Highlets are written as an initial `[:`, followed by a type tag
+Highlets are written as an initial `@[`, followed by a type tag
 representation (an arbitrary value), optionally followed by a payload
 value representation (another arbitrary value), followed by a final
-`:]`.
+`]`.
+
+Valueless highlets whose type tag is a string constant can be abbreviated
+as `@"type"`. If that string constant has the form of a valid
+identifier, then the highlet can be further abbreviated as just `@type`.
 
 ```
-[:@null:]                     # the value usually just written as `null`
-[:@boolean 0:]                # the value usually just written as `false`
-[:@boolean 1:]                # the value usually just written as `true`
-[:
-  @spell
-  [@name=@frotz @purpose="cause item to glow"]
-:]
+@["null"]                     # the value usually just written as `null`
+@"null"                       # same as above
+@null                         # same as above
+@["boolean" 0]                # the value usually just written as `false`
+@["boolean" 1]                # the value usually just written as `true`
+@[
+  "spell"
+  ["name"="frotz" "purpose"="cause item to glow"]
+]
 ```
 
 
@@ -171,7 +173,7 @@ a named constant `null` to refer to this value. This constant can be
 defined as:
 
 ```
-null = [:@null:]
+null = @null
 ```
 
 
@@ -181,8 +183,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = [:@boolean 0:]
-true = [:@boolean 1:]
+false = @["boolean" 0]
+true = @["boolean" 1]
 ```
 
 

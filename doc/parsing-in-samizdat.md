@@ -20,10 +20,12 @@ function / closure, parsing braces enclose an anonymous parsing
 function / closure.
 
 A parsing function is a function which takes two parameters, namely a `yield`
-function and an `input` state. It is expected to (a) call `yield`
-with a parsed value if parsing is successful, (b) *not* call `yield`
-at all if parsing fails, and (c) return a replacement `input` state
-meant to reflect what was parsed (if anything).
+function and an `input` state. To indicate successful parsing, it is expected
+to (a) call `yield` with the result of parsing, and (b) return a replacement
+`input` state meant to reflect what was consumed from the original `input`
+(if anything). To indicate a parsing failure, the function is expected to
+(a) call `yield` with no argument to indicate a void yield, and (b)
+return void.
 
 The input state is expected to be a list of to-be-parsed elements, such
 as characters for tokenization or tokens for a tree parser.
@@ -31,9 +33,6 @@ as characters for tokenization or tokens for a tree parser.
 If parsing succeeds and a value is `yield`ed, then the return value is
 expected to be a list of whatever input remains (including possibly
 the empty list).
-
-If parsing fails (a value was not `yield`ed), then the return value
-is ignored.
 
 The default `yield` value of a parsing function is whatever the yielded
 result is from the *last* item in the list of items to match in the
@@ -49,7 +48,7 @@ a character sequence is a valueless highlet whose type is the the matched
 string.
 
 For example, the parser `{/ "foo" /}` will match the string `"foobar"`,
-resulting in the yielded value `[:@foo:]` and a remainder of `"bar"`.
+resulting in the yielded value `@foo` and a remainder of `"bar"`.
 
 ### Matching tokens of a particular type
 
@@ -63,9 +62,9 @@ that a token of the indicated type is to be matched. The result of
 matching is the full original token, including whatever data payload
 it happened to have.
 
-For example, the parser `{/ [:@foo:] /}` will match the token list
-`[[:@foo:] [:@bar:]]`, resulting in the yielded value `[:@foo:]` and a
-remainder of `[[:@bar:]]`.
+For example, the parser `{/ @foo /}` will match the token list
+`[@foo @bar]`, resulting in the yielded value `@foo` and a
+remainder of `[@bar]`.
 
 ### Matching an arbitrary terminal item
 
@@ -91,6 +90,10 @@ place them between "set brackets" `[/ ... /]`. Characters of a character
 set can be combined into a single string literal for convenience, e.g.
 `[/"x" "y"/]` and `[/"xy"/]` are equivalent.
 
+Note that this syntax is valid at the same level as parsing functions and
+other atoms, and *not* limited to appearing within a parsing function's
+pattern.
+
 To match any terminal other than items from a particular set, precede the
 set contents with a complement (`~`), *inside* the set brackets. Note that
 there is a difference between a complemented set, which can consume one
@@ -99,16 +102,16 @@ which never consumes input.
 
 For example:
 
-* The parser `{/ [/"blort"/] /}` will match any of the characters
+* The parser `[/"blort"/]` will match any of the characters
   `b` `l` `o` `r` or `t`.
 
-* The parser `{/ [/~ "\n"/] /}` will match any character but a newline.
+* The parser `[/~ "\n"/]` will match any character but a newline.
 
-* The parser `{/ [/[:@foo:] [:@bar:]/] /}` will match either
-  a `[:@foo:]` or a `[:@bar:]` token.
+* The parser `[/@foo @bar/]` will match either
+  a `@foo` or a `@bar` token.
 
-* The parser `{/ [/~ [:@foo:] [:@bar:]/] /}` will match any token but a
-  `[:@foo:]` or a `[:@bar:]` token.
+* The parser `[/~ @foo @bar/]` will match any token but a
+  `@foo` or a `@bar` token.
 
 ### Matching using other parser functions
 
@@ -162,9 +165,9 @@ To match a sequence of items, the items are simply listed in order. Per
 the overall definition of parser function semantics, the result of matching
 a sequence of items is whatever the yield is from the *last* item listed.
 
-For example, the parser `{/ [:@foo:] [:@bar:] /}` will match the token
-list `[[:@foo:] [:@bar:] [:@baz:]]`, resulting in the yielded value
-`[:@bar:]` and a remainder of `[[:@baz:]]`.
+For example, the parser `{/ @foo @bar /}` will match the token
+list `[@foo @bar @baz]`, resulting in the yielded value
+`@bar` and a remainder of `[@baz]`.
 
 ### Lookahead success
 
@@ -173,7 +176,7 @@ be preceded by an ampersand (`&`). When matched, the yielded value
 of a lookahead is identical to what the underlying item yielded.
 
 For example, the parser `{/ &"foobar" "foo" /}` will match the string
-`"foobar"`, resulting in the yielded value `[:@foo:]` and a
+`"foobar"`, resulting in the yielded value `@foo` and a
 remainder of `"bar"`. However, the same parser will *fail* to match
 `"foobaz"` because the lookahead `&"foobar"` will fail.
 
@@ -185,7 +188,7 @@ any input. When successful (that is, when lookahead fails), a lookahead
 failure yields `null`.
 
 For example, the parser `{/ !&"foobaz" "foo" /}` will match the string
-`"foobar"`, resulting in the yielded value `[:@foo:]` and a remainder of
+`"foobar"`, resulting in the yielded value `@foo` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
 the lookahead `!&"foobaz"` will fail (because a `"foobaz"` lookahead *succeeds*
 match).
@@ -219,10 +222,122 @@ priority sequence (first one listed gets first "dibs", etc.), separated
 by vertical bars (`|`). The result of matching is the same as the result
 of whichever alternate was matched.
 
-For example, the parser `{/ "f" | "foo" /}` will match the string `"foobar"`,
-resulting in the yielded value `[:@f:]` and a remainder of `"oobar"`. Note
-that because of the prioritized ordering, the second alternate could never
-get picked in this case.
+This expression is valid at the layer of Samizdat expressions, and
+not valid *within* a parser function pattern declaration. Note how
+the example below is constructed.
+
+For example, the parser `{/ "f" /} | {/ "foo" /}` will match the string
+`"foobar"`, resulting in the yielded value `@f` and a remainder of
+`"oobar"`. Note that because of the prioritized ordering, the second
+alternate could never get picked in this case.
+
+
+Token Syntax
+------------
+
+The following is an in-language description of the parser tokens, as
+modifications to the *Samizdat Layer 0* tokenization syntax.
+
+```
+punctuation =
+    # ... original alternates from the base grammar ...
+    {/ "{/" :: <> @"{/" /} |
+    {/ "/}" :: <> @"/}" /} |
+    {/ "[/" :: <> @"[/" /} |
+    {/ "/]" :: <> @"/]" /} |
+    {/ "!." :: <> @"!." /} |
+    {/ "!&" :: <> @"!&" /} |
+    {/ "&"  :: <> @"&"  /} |
+    {/ "|"  :: <> @"|"  /} |
+    {/ "~"  :: <> @"~"  /}
+;
+```
+
+
+Tree Syntax
+-----------
+
+The following is an in-language description of the tree grammar, as
+modifications to the *Samizdat Layer 0* tree syntax.
+
+```
+choiceExpression = {/
+    first = atom
+    rest = {/ @"|" atom /}*
+    ::
+    <> apply makeCall @["varRef" "choiceCombinator"] (listPrepend first rest)
+/};
+
+atom =
+    # ... original alternates from the base grammar ...
+    parserSetFunction |
+    parserFunction
+;
+
+parserSetFunction = {/
+    @"[/"
+    complement = @"~"?
+    terminals = {/ @string* | @identifier* /}
+    @"/]"
+    ::
+    type = ifTrue { <> eq complement [] }
+        { <> "parserSet" }
+        { <> "parserNotSet" };
+    <> @[ type terminals ]
+/};
+
+parserFunction = {/
+    @"{/" program=parserProgram @"/}"
+    ::
+    <> program
+/};
+
+parserProgram = {/
+    decls = {/
+        {/ decls=parserDeclarations @"::" :: <> decls /}
+        |
+        {/ :: <> [=] /} # Empty declarations are valid.
+    /}
+    body = programBody
+    ::
+    <> @[ "parserFunction" (mapAdd decls body) ]
+/};
+
+parserDeclarations = {/
+    pattern = parserItem*
+    yield = {/
+        {/ yield = yieldDef :: <> ["yieldDef"=yield] /}
+        |
+        {/ :: <> [=] /} # No yieldDef.
+    ::
+    <> mapAdd ["pattern"=pattern] yield
+/};
+
+parserItem = {/
+    name = {/ identifier @"=" /}?
+    lookahead = {/ @"&" | @"!&" /}?
+    atom = parserAtom
+    repeat = {/ @"*" | @"?" /}
+    ::
+    <> # TODO: Stuff goes here.
+/};
+
+parserAtom =
+    {/ s=string :: <> @[ "matchChars" s ] /}
+    |
+    {/ @"@[" s=string @"]" :: <> @[ "matchToken" s] /}
+    |
+    parserFunction
+    |
+    function
+    |
+    varRef
+    |
+    {/ "." :: <> @[ "matchAnyTerminal" ] /}
+    |
+    {/ "!." :: <> @[ "matchEof" ] /}
+;
+```
 
 
 Example
@@ -247,11 +362,11 @@ number = {/
     <> listReduce 0 digits { result digit :: <> iadd digit (imul result 10) }
 /};
 
-atom = {/
+atom =
     number
     |
     {/ "(" ex=addExpression ")" :: <> ex /}
-/};
+;
 
 addExpression = {/
     ex1=mulExpression op=addOp ex2=addExpression
@@ -259,11 +374,11 @@ addExpression = {/
     <> op ex1 ex2
 /};
 
-addOp = {/
+addOp =
     {/ "+" :: <> iadd /}
     |
     {/ "-" :: <> isub /}
-/};
+;
 
 mulExpression = {/
     ex1=unaryExpression op=mulOp ex2=mulExpression
@@ -271,17 +386,17 @@ mulExpression = {/
     <> op ex1 ex2
 /};
 
-mulOp = {/
+mulOp =
     {/ "*" :: <> imul /}
     |
     {/ "/" :: <> idiv /}
-/};
+;
 
-unaryExpression = {/
+unaryExpression =
     {/ op=unaryOp ex=unaryExpression :: <> op ex /}
     |
     atom
-/};
+;
 
 unaryOp = {/
     "-" :: <> ineg
@@ -341,7 +456,7 @@ number = { yield input ::
 
 atom = { yield input ::
     yieldFilter = { value ::
-        <> apply { ignored_1 ex ignored_2 :: <> ex } value
+        <> apply { . ex . :: <> ex } value
     };
 
     <> parseOr yield input
@@ -408,7 +523,7 @@ unaryOp = { yield input ::
 
 main = { yield input ::
     yieldFilter = { value ::
-        <> apply { ex ignored :: io0Note (format "%q" ex) } value
+        <> apply { ex . :: io0Note (format "%q" ex) } value
     };
 
     <> parseStar yield input

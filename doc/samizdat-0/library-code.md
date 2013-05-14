@@ -18,7 +18,7 @@ If any other arguments are supplied, then each of the initial `value`
 arguments is taken to be an arbitrary value, and the final `list`
 argument must be a list, whose contents are "flattened" into the
 final list of arguments to pass to the function. For example, this is
-a five-argument call: `apply fizmoFunc @foo @bar @baz [@frob @twiddle]`
+a five-argument call: `apply fizmoFunc "foo" "bar" "baz" ["frob" "twiddle"]`
 
 This function returns whatever the called function returned (including
 void).

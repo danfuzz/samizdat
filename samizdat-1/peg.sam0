@@ -20,11 +20,11 @@ tokenRule = { token ::
     type = highletType token;
 
     <> { engine ::
-        <> ifValue { <> engine @peek }
+        <> ifValue { <> engine "peek" }
             { got ::
                 <> ifTrue { <> eq type (highletType got) }
                     {
-                        engine @read;
+                        engine "read";
                         <> got
                     }
             }
@@ -35,7 +35,7 @@ tokenRule = { token ::
 # is successfully matched.
 namedRule = { rule ::
     <> { engine ::
-        <> ifValue { <> engine @rule rule }
+        <> ifValue { <> engine "rule" rule }
             { function :: <> function engine }
             { io0Die (format "Missing rule: %Q" rule) }
         }
@@ -77,13 +77,13 @@ seqRule = { rules* ::
     finalRules = listMap rules { . name :: <> functionFromRule name };
 
     <> { engine <out> ::
-        mark = engine @at;
+        mark = engine "at";
         <> listReduce [] finalRules
             { results . rule ::
                 <> ifValue { <> rule engine }
                     { result :: <> listAppend results result }
                     {
-                        engine @reset mark;
+                        engine "reset" mark;
                         <out>
                     }
             }
@@ -154,12 +154,12 @@ plusRule = { rule ::
 # exactly, returning that string.
 charsRule = { chars ::
     <> { engine <out> ::
-        mark = engine @at;
+        mark = engine "at";
         stringForEach chars
             { . ch ::
-                ifTrue { <> or { <> engine @eof } { <> ne (engine @read) ch } }
+                ifTrue { <> or { <> engine "eof" } { <> ne (engine "read") ch } }
                     {
-                        engine @reset mark;
+                        engine "reset" mark;
                         <out>
                     }
             };
@@ -175,11 +175,11 @@ charSetRule = { chars ::
         { result . ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
-        ifValue { <> engine @peek }
+        ifValue { <> engine "peek" }
             { ch ::
                 ifTrue { <> mapHasKey charSet ch }
                     {
-                        engine @read;
+                        engine "read";
                         <out> ch
                     }
             }
@@ -194,11 +194,11 @@ notCharSetRule = { chars ::
         { result . ch :: <> mapPut result ch null };
 
     <> { engine <out> ::
-        ifValue { <> engine @peek }
+        ifValue { <> engine "peek" }
             { ch ::
                 ifFalse { <> mapHasKey charSet ch }
                     {
-                        engine @read;
+                        engine "read";
                         <out> ch
                     }
             }
@@ -208,21 +208,21 @@ notCharSetRule = { chars ::
 # Makes a reader that's augmented with a method to perform rule lookup.
 pegEngine = { reader rules ::
     <> { name rest* ::
-        <> ifTrue { <> eq name @rule }
+        <> ifTrue { <> eq name "rule" }
             { <> mapGet rules (listNth rest 0) }
             { <> apply reader name rest }
     }
 };
 
 <> [
-    @charSetRule = charSetRule
-    @charsRule = charsRule
-    @filterRule = filterRule
-    @notCharSetRule = notCharSetRule
-    @orRule = orRule
-    @pegEngine = pegEngine
-    @plusRule = plusRule
-    @optRule = optRule
-    @seqRule = seqRule
-    @starRule = starRule
+    "charSetRule" = charSetRule
+    "charsRule" = charsRule
+    "filterRule" = filterRule
+    "notCharSetRule" = notCharSetRule
+    "orRule" = orRule
+    "pegEngine" = pegEngine
+    "plusRule" = plusRule
+    "optRule" = optRule
+    "seqRule" = seqRule
+    "starRule" = starRule
 ]
