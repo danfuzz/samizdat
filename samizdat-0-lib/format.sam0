@@ -24,7 +24,7 @@ adornIf = { adorn before value after ::
 
 # These are all the integer digits, as a map from digit values to
 # strings.
-INTEGER_CHARS = [0="0" 1="1" 2="2" 3="3" 4="4" 5="5" 6="6" 7="7" 8="8" 9="9"];
+INT_CHARS = [0="0" 1="1" 2="2" 3="3" 4="4" 5="5" 6="6" 7="7" 8="8" 9="9"];
 
 # Helper for stringifying integers, which does most of the conversion,
 # as well as prepending the given prefix.
@@ -34,7 +34,7 @@ intBody = { start value <out> ::
         value = listNth result 1;
         <> ifTrue { <> ne value 0 }
             {
-                digit = mapGet INTEGER_CHARS (imod value 10);
+                digit = mapGet INT_CHARS (imod value 10);
                 <> [(stringAdd digit text) (idiv value 10)];
             }
             { <out> stringAdd start text }
@@ -42,7 +42,7 @@ intBody = { start value <out> ::
 };
 
 # Map from integer sign values to the appropriate stringifier for each.
-INTEGER_SIGNS = [
+INT_SIGNS = [
     -1 = { integer :: <> intBody "-" (ineg integer) }
     0  = { <> "0" }
     1  = { integer :: <> intBody "" integer }
@@ -50,7 +50,7 @@ INTEGER_SIGNS = [
 
 # Stringifies an integer.
 doInt = { recurse integer adorn ::
-    <> (mapGet INTEGER_SIGNS (intSign integer)) integer
+    <> (mapGet INT_SIGNS (intSign integer)) integer
 };
 
 # Helper for stringifying strings: Returns the hex form for the given

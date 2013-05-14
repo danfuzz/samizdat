@@ -53,7 +53,7 @@ zvalue doNth(znth function, zint argCount, const zvalue *args) {
     requireRange(argCount, 2, 3);
 
     zvalue result = NULL;
-    if (datTypeIs(args[1], DAT_INTEGER)) {
+    if (datTypeIs(args[1], DAT_INT)) {
         result = function(args[0], datZintFromInt(args[1]));
     }
 

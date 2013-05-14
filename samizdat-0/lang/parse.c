@@ -334,7 +334,7 @@ DEF_PARSE(string) {
 DEF_PARSE(integer) {
     MARK();
 
-    zvalue integer = MATCH_OR_REJECT(INTEGER);
+    zvalue integer = MATCH_OR_REJECT(INT);
 
     return makeLiteral(datHighletValue(integer));
 }

@@ -26,7 +26,7 @@
  * comparing values. See `datOrder()`.
  */
 typedef enum {
-    DAT_INTEGER = 1,
+    DAT_INT = 1,
     DAT_STRING,
     DAT_LIST,
     DAT_MAP,

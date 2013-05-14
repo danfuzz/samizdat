@@ -114,7 +114,7 @@ bool datIntSign(zvalue integer) {
 /* Documented in header. */
 zvalue datIntFromZint(zint value) {
     zint size = bitSize(value);
-    zvalue result = datAllocValue(DAT_INTEGER, size, sizeof(int32_t));
+    zvalue result = datAllocValue(DAT_INT, size, sizeof(int32_t));
 
     if (size > MAX_BITS) {
         die("Value too large to fit into integer: %lld", value);

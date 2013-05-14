@@ -36,7 +36,7 @@ parsePunctuation = filterRule
 
 # These are all the integer digits, as a map from strings to
 # digit values.
-INTEGER_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
+INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
 
 # Parses an `integer` token.
 parseInt = filterRule
@@ -47,7 +47,7 @@ parseInt = filterRule
         (plusRule
             (filterRule
                 (charSetRule "0123456789")
-                { result :: <> mapGet INTEGER_CHARS result })))
+                { result :: <> mapGet INT_CHARS result })))
     { result ::
         sign = listNth result 0;
         value = listReduce 0 (listNth result 1)

@@ -108,7 +108,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue integer = datIntFromZint(value * sign);
-    return datHighletFrom(STR_INTEGER, integer);
+    return datHighletFrom(STR_INT, integer);
 }
 
 /**

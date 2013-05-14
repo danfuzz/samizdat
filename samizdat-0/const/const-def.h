@@ -47,7 +47,7 @@ STR(FORMALS,       "formals");
 STR(FUNCTION,      "function");
 STR(HIGHLET,       "highlet");
 STR(IDENTIFIER,    "identifier");
-STR(INTEGER,       "integer");
+STR(INT,           "integer");
 STR(LIST,          "list");
 STR(LITERAL,       "literal");
 STR(MAKE_HIGHLET,  "makeHighlet");
