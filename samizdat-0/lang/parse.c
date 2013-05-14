@@ -412,18 +412,6 @@ DEF_PARSE(callExpression) {
 }
 
 /**
- * Helper for `unaryCallExpression`: Parses `@"(" @")"`.
- */
-DEF_PARSE(unaryCallExpression1) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OPAREN);
-    MATCH_OR_REJECT(CH_CPAREN);
-
-    return EMPTY_LIST; // Return an arbitrary non-`NULL` value.
-}
-
-/**
  * Parses a `unaryCallExpression` node.
  */
 DEF_PARSE(unaryCallExpression) {
@@ -433,7 +421,7 @@ DEF_PARSE(unaryCallExpression) {
     bool any = false;
 
     for (;;) {
-        if (PARSE(unaryCallExpression1) == NULL) {
+        if (MATCH(CH_PARENPAREN) == NULL) {
             break;
         }
 
