@@ -84,13 +84,13 @@ void datAssertValid(zvalue value);
  * Asserts that the given value is a valid `zvalue`, and that its size
  * accommodates accessing the `n`th element. This includes asserting that
  * `n >= 0`. Note that all non-negative `n` are valid for accessing
- * integers (their size notwithstanding).
+ * ints (their size notwithstanding).
  */
 void datAssertNth(zvalue value, zint n);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is an integer. If not, this aborts the process
+ * furthermore that it is an int. If not, this aborts the process
  * with a diagnostic message.
  */
 void datAssertInt(zvalue value);
@@ -155,10 +155,10 @@ zint datSize(zvalue value);
  */
 
 /**
- * Gets the `zchar` of the given integer, asserting that the value
- * is in fact an integer and in range for same.
+ * Gets the `zchar` of the given int, asserting that the value
+ * is in fact an int and in range for same.
  */
-zchar datCharFromInt(zvalue integer);
+zchar datCharFromInt(zvalue intval);
 
 /**
  * Given a 32-bit int value, returns the `n`th bit. This is just like
@@ -168,32 +168,32 @@ zchar datCharFromInt(zvalue integer);
 bool datZintGetBit(zint value, zint n);
 
 /**
- * Given an integer, returns the `n`th bit, counting from the least
- * significant bit. `integer` must be an integer. Returns `false` for a
+ * Given an int, returns the `n`th bit, counting from the least
+ * significant bit. `intval` must be an int. Returns `false` for a
  * `0` bit, and `true` for a `1` bit. If `n` references a bit beyond
  * the value's size, then the return value is the sign bit of the
  * value. It is an error if `n < 0`.
  */
-bool datIntGetBit(zvalue integer, zint n);
+bool datIntGetBit(zvalue intval, zint n);
 
 /**
- * Gets the sign of the given integer. `integer` must be an
- * integer. Returns `false` for non-negative, and `true` for negative.
+ * Gets the sign of the given int. `intval` must be an
+ * int. Returns `false` for non-negative, and `true` for negative.
  */
-bool datIntSign(zvalue integer);
+bool datIntSign(zvalue intval);
 
 /**
- * Gets an integer value equal to the given `zint`. In this
- * implementation, integers are restricted to only taking on the range
+ * Gets an int value equal to the given `zint`. In this
+ * implementation, ints are restricted to only taking on the range
  * of 32-bit signed quantities, when represented as twos-complement.
  */
 zvalue datIntFromZint(zint value);
 
 /**
- * Gets a `zint` equal to the given integer value. `integer` must be an
- * integer. It is an error if the value is out of range.
+ * Gets a `zint` equal to the given int value. `intval` must be an
+ * int. It is an error if the value is out of range.
  */
-zint datZintFromInt(zvalue integer);
+zint datZintFromInt(zvalue intval);
 
 
 /*
