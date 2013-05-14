@@ -274,6 +274,10 @@ For example:
 * The parser `{/ [! @foo @bar] /}` will match any terminal but a `@foo`
   or a `@bar` token.
 
+Future direction: It may become possible to name ranges of characters,
+e.g. `["a".."z" "0".."9"]`, and it may become possible to name symbolic
+sets, e.g. `[whitespace punctuation "z"]`.
+
 ### Running arbitrary code instead of consuming input (terminal)
 
 To cause arbitrary code to run in the context of parsing, place that code
@@ -315,6 +319,7 @@ modifications to the *Samizdat Layer 0* tokenization syntax.
 ```
 punctuation = {/
     # ... original alternates from the base grammar ...
+    "()" | # Note: This one should be moved to Layer 0.
     "{/" |
     "/}" |
     "!." |
@@ -366,11 +371,7 @@ namePex = {/
 
 lookaheadPex = {/
     (
-        lookahead = (
-            @"&" { <> "match" }
-        |
-            @"!&" { <> "notMatch" }
-        )
+        lookahead = [@"&" @"!&"]
         pex = repeatPex
         { <> @[lookahead pex] }
     )
@@ -381,13 +382,7 @@ lookaheadPex = {/
 repeatPex = {/
     atom = parserAtom
     (
-        repeat = (
-            @"?" { <> "zeroOrOne" }
-        |
-            @"*" { <> "zeroOrMore" }
-        |
-            @"+" { <> "oneOrMore" }
-        )
+        repeat = [@"?" @"*" @"+"]
         { <> @[repeat atom] }
     |
         { <> atom }
@@ -405,11 +400,11 @@ parserAtom = {/
     str = @string
     { <> @["chars" str] }
 |
-    @"." { <> @any }
+    @"."
 |
-    @"!." { <> @eof }
+    @"!."
 |
-    @"(" @")" { <> @empty }
+    @"()"
 |
     parserSet
 |
