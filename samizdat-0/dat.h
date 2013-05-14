@@ -158,14 +158,14 @@ zint datSize(zvalue value);
  * Gets the `zchar` of the given integer, asserting that the value
  * is in fact an integer and in range for same.
  */
-zchar datCharFromInteger(zvalue integer);
+zchar datCharFromInt(zvalue integer);
 
 /**
  * Given a 32-bit int value, returns the `n`th bit. This is just like
- * `datIntegerGetBit()` except using a `zint` value. This function is
+ * `datIntGetBit()` except using a `zint` value. This function is
  * exported for the convenience of other modules.
  */
-bool datIntGetBit(zint value, zint n);
+bool datZintGetBit(zint value, zint n);
 
 /**
  * Given an integer, returns the `n`th bit, counting from the least
@@ -174,26 +174,26 @@ bool datIntGetBit(zint value, zint n);
  * the value's size, then the return value is the sign bit of the
  * value. It is an error if `n < 0`.
  */
-bool datIntegerGetBit(zvalue integer, zint n);
+bool datIntGetBit(zvalue integer, zint n);
 
 /**
  * Gets the sign of the given integer. `integer` must be an
  * integer. Returns `false` for non-negative, and `true` for negative.
  */
-bool datIntegerSign(zvalue integer);
+bool datIntSign(zvalue integer);
 
 /**
  * Gets an integer value equal to the given `zint`. In this
  * implementation, integers are restricted to only taking on the range
  * of 32-bit signed quantities, when represented as twos-complement.
  */
-zvalue datIntegerFromInt(zint value);
+zvalue datIntFromZint(zint value);
 
 /**
  * Gets a `zint` equal to the given integer value. `integer` must be an
  * integer. It is an error if the value is out of range.
  */
-zint datIntFromInteger(zvalue integer);
+zint datZintFromInt(zvalue integer);
 
 
 /*

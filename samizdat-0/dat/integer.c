@@ -79,8 +79,8 @@ zorder datIntegerOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zchar datCharFromInteger(zvalue integer) {
-    zint value = datIntFromInteger(integer);
+zchar datCharFromInt(zvalue integer) {
+    zint value = datZintFromInt(integer);
 
     if ((value < 0) || (value >= 0x100000000)) {
         die("Invalid integer value for character: %lld", value);
@@ -90,7 +90,7 @@ zchar datCharFromInteger(zvalue integer) {
 }
 
 /* Documented in header. */
-bool datIntGetBit(zint value, zint n) {
+bool datZintGetBit(zint value, zint n) {
     if (n < 0) {
         die("Attempt to access negative bit index: %lld", n);
     } else if (n >= MAX_BITS) {
@@ -101,18 +101,18 @@ bool datIntGetBit(zint value, zint n) {
 }
 
 /* Documented in header. */
-bool datIntegerGetBit(zvalue integer, zint n) {
+bool datIntGetBit(zvalue integer, zint n) {
     datAssertInteger(integer);
-    return datIntGetBit(integerValue(integer), n);
+    return datZintGetBit(integerValue(integer), n);
 }
 
 /* Documented in header. */
-bool datIntegerSign(zvalue integer) {
-    return datIntegerGetBit(integer, MAX_BITS - 1);
+bool datIntSign(zvalue integer) {
+    return datIntGetBit(integer, MAX_BITS - 1);
 }
 
 /* Documented in header. */
-zvalue datIntegerFromInt(zint value) {
+zvalue datIntFromZint(zint value) {
     zint size = bitSize(value);
     zvalue result = datAllocValue(DAT_INTEGER, size, sizeof(int32_t));
 
@@ -125,7 +125,7 @@ zvalue datIntegerFromInt(zint value) {
 }
 
 /* Documented in header. */
-zint datIntFromInteger(zvalue integer) {
+zint datZintFromInt(zvalue integer) {
     datAssertInteger(integer);
     return integerValue(integer);
 }

@@ -46,13 +46,13 @@ PRIM_IMPL(integerFromString) {
         die("Invalid use of string: size != 1");
     }
 
-    return datIntegerFromInt(datStringNth(string, 0));
+    return datIntFromZint(datStringNth(string, 0));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringFromInteger) {
     requireExactly(argCount, 1);
-    return stringFromChar(datCharFromInteger(args[0]));
+    return stringFromChar(datCharFromInt(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

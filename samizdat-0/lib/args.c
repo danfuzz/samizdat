@@ -54,7 +54,7 @@ zvalue doNth(znth function, zint argCount, const zvalue *args) {
 
     zvalue result = NULL;
     if (datTypeIs(args[1], DAT_INTEGER)) {
-        result = function(args[0], datIntFromInteger(args[1]));
+        result = function(args[0], datZintFromInt(args[1]));
     }
 
     if (result == NULL) {

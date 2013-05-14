@@ -59,7 +59,7 @@ typedef struct {
     /** Value header. */
     DatValue header;
 
-    /** Integer value. See `datIntegerFromInt()` about range restriction. */
+    /** Integer value. See `datIntFromZint()` about range restriction. */
     int32_t value;
 } DatInteger;
 
