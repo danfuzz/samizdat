@@ -178,11 +178,10 @@ parseFormal = filterRule
                 @"."
                 { <> [=] }))
         (filterRule
-            (optRule
-                (orRule @"?" @"*" @"+"))
+            (optRule (orRule @"?" @"*" @"+"))
             { result ::
                 <> ifValue { <> listNth result 0 }
-                    { repeatToken :: <> ["repeat" = repeatToken] }
+                    { token :: <> ["repeat" = (highletType token)] }
                     { <> [=] }
             }))
     { result :: <> apply mapAdd result };

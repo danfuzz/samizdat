@@ -524,16 +524,20 @@ DEF_PARSE(nonlocalExit) {
 
 /**
  * Helper for `formal`: Parses `(@"?" | @"*" | @"+")?`. Returns either the
- * parsed token or `NULL` to indicate that neither was present.
+ * parsed token payload or `NULL` to indicate that no alternate matched.
  */
 DEF_PARSE(formal1) {
+    MARK();
+
     zvalue result = NULL;
 
     if (result == NULL) { result = MATCH(CH_QMARK); }
     if (result == NULL) { result = MATCH(CH_STAR); }
     if (result == NULL) { result = MATCH(CH_PLUS); }
 
-    return result;
+    REJECT_IF(result == NULL);
+
+    return datHighletType(result);
 }
 
 /**
