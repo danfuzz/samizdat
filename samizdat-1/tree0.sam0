@@ -127,9 +127,7 @@ parseCallExpression = filterRule
 
 # Parses a `unaryCallExpression` node.
 parseUnaryCallExpression = filterRule
-    (seqRule
-        "atom"
-        (plusRule (seqRule @"(" @")")))
+    (seqRule "atom" (plusRule @"()"))
     { result ::
         atom = listNth result 0;
         calls = listNth result 1;

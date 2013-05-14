@@ -20,7 +20,8 @@ parseFile = filterRule
     { result :: <> listNth result 0 };
 
 # Parses a single token.
-parseToken = orRule "punctuation" "integer" "string" "identifier" "quotedIdentifier";
+parseToken = orRule
+    "punctuation" "integer" "string" "identifier" "quotedIdentifier";
 
 # Parses any of the punctuation characters or character sequences, yielding
 # a token whose type is the string matched.
@@ -29,6 +30,7 @@ parsePunctuation = filterRule
         (charsRule "@@")
         (charsRule "::")
         (charsRule "<>")
+        (charsRule "()")
         (charSetRule ".@:*;=?<>{}()[]"))
     { result :: <> @[result] };
 
