@@ -309,6 +309,7 @@ parserDeclarations = {/
         {/ yield = yieldDef :: <> ["yieldDef"=yield] /}
         |
         {/ :: <> [=] /} # No yieldDef.
+    /}
     ::
     <> mapAdd ["pattern"=pattern] yield
 /};
@@ -323,9 +324,15 @@ parserItem = {/
 /};
 
 parserAtom =
-    {/ s=string :: <> @["matchChars" s] /}
+    {/ @string /}
     |
-    {/ @"@[" s=string @"]" :: <> @["matchToken" s] /}
+    {/
+        @"@" value={/ @string | @identifier /}
+        ::
+        <> @["token" (highletValue value)]
+    /}
+    |
+    {/ @"@" i=@identifier :: <> @["token" (highletValue i)] /}
     |
     parserFunction
     |
