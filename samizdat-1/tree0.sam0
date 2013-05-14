@@ -179,7 +179,7 @@ parseFormal = filterRule
                 { <> [=] }))
         (filterRule
             (optRule
-                (orRule @"*" @"?"))
+                (orRule @"?" @"*" @"+"))
             { result ::
                 <> ifValue { <> listNth result 0 }
                     { repeatToken :: <> ["repeat" = repeatToken] }
