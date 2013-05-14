@@ -260,7 +260,7 @@ To match any terminal *other than* items from a particular set, precede the
 set contents with a not/bang (`!`), *inside* the brackets. Note that
 there is a difference between a complemented set (that is, this form), which
 will consume one input terminal when successful, and a lookahead failure of
-a set (`!&[ ... ]`), which never consumes input (see above for details).
+a set (`![ ... ]`), which never consumes input (see above for details).
 
 For example:
 

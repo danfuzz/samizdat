@@ -31,7 +31,10 @@ functionName argument argument? argument* <> returnValue
 
 * `argument?` &mdash; An optional argument.
 
-* `argument*` &mdash; Any number of optional arguments (including none)
+* `argument*` &mdash; Any number of optional arguments (including none).
+
+* `argument+` &mdash; Any positive number of optional arguments (that is,
+  at least one).
 
 * `returnValue` &mdash; The possible kind(s) of return value.
 
