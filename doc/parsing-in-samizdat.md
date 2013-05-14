@@ -234,6 +234,21 @@ For example, the parser `{/ "foo" !. /}` will match the string `"foo"` but
 only if it's at the end of input, resulting in the yielded value `null`
 and a remainder of `[]`.
 
+### Successfully matching nothing (terminal)
+
+To explicitly match an empty list of terminals, use an empty pair of
+parentheses (`()`). This always succeeds without consuming any input,
+yielding the result value `null`.
+
+For example:
+
+* The parser `{/ () /}` always succeeds, resulting in the yielded
+  value `null`.
+
+* The parser `{/ "foo" | () /}` always succeeds, resulting in the yielded
+  value `@foo` if the input begins with `"foo"`, or resulting in the
+  yielded value `null` if not.
+
 ### Matching character or token sets (terminal)
 
 To match a set of characters (for tokenization) or tokens (for tree parsing),
@@ -298,18 +313,14 @@ The following is an in-language description of the parser tokens, as
 modifications to the *Samizdat Layer 0* tokenization syntax.
 
 ```
-punctuation =
+punctuation = {/
     # ... original alternates from the base grammar ...
-    {/ $"{/" :: <> @"{/" /} |
-    {/ $"/}" :: <> @"/}" /} |
-    {/ $"[/" :: <> @"[/" /} |
-    {/ $"/]" :: <> @"/]" /} |
-    {/ $"!." :: <> @"!." /} |
-    {/ $"!&" :: <> @"!&" /} |
-    {/ $"&"  :: <> @"&"  /} |
-    {/ $"|"  :: <> @"|"  /} |
-    {/ $"~"  :: <> @"~"  /}
-;
+    "{/" |
+    "/}" |
+    "!." |
+    "!&" |
+    ["&" "|"]
+/};
 ```
 
 
@@ -320,89 +331,106 @@ The following is an in-language description of the tree grammar, as
 modifications to the *Samizdat Layer 0* tree syntax.
 
 ```
-choiceExpression = {/
-    first = atom
-    rest = {/ @"|" atom /}*
-    ::
-    <> apply makeCall @["varRef" "choiceCombinator"] (listPrepend first rest)
-/};
-
-atom =
+atom = {/
     # ... original alternates from the base grammar ...
-    parserSetFunction |
-    parserFunction
-;
-
-parserSetFunction = {/
-    @"[/"
-    complement = @"~"?
-    terminals = {/ @string* | @identifier* /}
-    @"/]"
-    ::
-    type = ifTrue { <> eq complement [] }
-        { <> "parserSet" }
-        { <> "parserNotSet" };
-    <> @[type terminals]
+    | parser
 /};
 
-parserFunction = {/
-    @"{/" program=parserProgram @"/}"
-    ::
-    <> program
+# Note: Using the label "pex" to denote various "Parser EXpression" types.
+parser = {/
+    @"{/" pex=choicePex @"/}"
+    { <> @["parser" pex] }
 /};
 
-parserProgram = {/
-    decls = {/
-        {/ decls=parserDeclarations @"::" :: <> decls /}
+choicePex = {/
+    first = sequencePex
+    rest = (@"|" sequencePex)*
+    { <> @["choice" (listPrepend first rest)] }
+/};
+
+sequencePex = {/
+    items = namePex+
+    { <> @["sequence" items] }
+/};
+
+namePex = {/
+    (
+        name = identifier
+        @"="
+        pex = lookaheadPex
+        { <> @["varDef" ["name"=name "value"=pex]] }
+    )
+|
+    lookaheadPex
+/};
+
+lookaheadPex = {/
+    (
+        lookahead = (
+            @"&" { <> "match" }
         |
-        {/ :: <> [=] /} # Empty declarations are valid.
-    /}
-    body = programBody
-    ::
-    <> @["parserFunction" (mapAdd decls body)]
+            @"!&" { <> "notMatch" }
+        )
+        pex = repeatPex
+        { <> @[lookahead pex] }
+    )
+|
+    repeatPex
 /};
 
-parserDeclarations = {/
-    pattern = parserItem*
-    yield = {/
-        {/ yield = yieldDef :: <> ["yieldDef"=yield] /}
-        |
-        {/ :: <> [=] /} # No yieldDef.
-    /}
-    ::
-    <> mapAdd ["pattern"=pattern] yield
-/};
-
-parserItem = {/
-    name = {/ identifier @"=" /}?
-    lookahead = {/ @"&" | @"!&" /}?
+repeatPex = {/
     atom = parserAtom
-    repeat = {/ @"*" | @"?" /}
-    ::
-    <> # TODO: Stuff goes here.
+    (
+        repeat = (
+            @"?" { <> "zeroOrOne" }
+        |
+            @"*" { <> "zeroOrMore" }
+        |
+            @"+" { <> "oneOrMore" }
+        )
+        { <> @[repeat atom] }
+    |
+        { <> atom }
+    )
 /};
 
-parserAtom =
-    {/ @string /}
-    |
-    {/
-        @"@" value={/ @string | @identifier /}
-        ::
-        <> @["token" (highletValue value)]
-    /}
-    |
-    {/ @"@" i=@identifier :: <> @["token" (highletValue i)] /}
-    |
-    parserFunction
-    |
-    function
-    |
-    varRef
-    |
-    {/ @"." :: <> @matchDot /}
-    |
-    {/ @"!." :: <> @matchNotDot /}
-;
+parserAtom = {/
+    name = identifier
+    { <> @["varRef" (highletValue name)] }
+|
+    @"@"
+    type = identifier
+    { <> @["token" (highletValue name)] }
+|
+    str = @string
+    { <> @["chars" str] }
+|
+    @"." { <> @any }
+|
+    @"!." { <> @eof }
+|
+    @"(" @")" { <> @empty }
+|
+    parserSet
+|
+    @"{"
+    yieldDef = (yieldDef? @"::")?
+    body = programBody
+    @"}"
+    {
+        <> ... # TODO
+    }
+/};
+
+parserSet = {/
+    @"["
+    complement = @"!"?
+    terminals = (@string* | @identifier*)
+    @"]"
+    {
+        <> ... # TODO
+    }
+/};
 ```
 
 
