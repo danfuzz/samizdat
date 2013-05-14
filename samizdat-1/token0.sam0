@@ -21,7 +21,7 @@ parseFile = filterRule
 
 # Parses a single token.
 parseToken = orRule
-    "punctuation" "integer" "string" "identifier" "quotedIdentifier";
+    "punctuation" "int" "string" "identifier" "quotedIdentifier";
 
 # Parses any of the punctuation characters or character sequences, yielding
 # a token whose type is the string matched.
@@ -52,7 +52,7 @@ parseInt = filterRule
         sign = listNth result 0;
         value = listReduce 0 (listNth result 1)
             { result . digit :: <> iadd digit (imul result 10) };
-        <> @["integer" (imul sign value)]
+        <> @["int" (imul sign value)]
     };
 
 # Parses a single string character.
@@ -117,7 +117,7 @@ parseWhitespace = orRule
 TOKEN0_RULES = [
     "file" = parseFile
     "identifier" = parseIdentifier
-    "integer" = parseInt
+    "int" = parseInt
     "punctuation" = parsePunctuation
     "quotedIdentifier" = parseQuotedIdentifier
     "string" = parseString

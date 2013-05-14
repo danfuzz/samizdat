@@ -18,7 +18,7 @@
  */
 static const char *typeName(ztype type) {
     switch (type) {
-        case DAT_INT:     return "integer";
+        case DAT_INT:     return "int";
         case DAT_STRING:  return "string";
         case DAT_LIST:    return "list";
         case DAT_MAP:     return "map";

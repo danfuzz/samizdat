@@ -193,7 +193,7 @@ doUnknown = { recurse unknown ::
 # Mapping from low-layer type names to stringifiers.
 STRINGIFIERS = [
     "highlet" = doHighlet
-    "integer" = doInt
+    "int"     = doInt
     "list"    = doList
     "map"     = doMap
     "string"  = doString
