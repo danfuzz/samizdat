@@ -19,13 +19,13 @@ braces" `{/ ... /}`. Just as regular braces enclose an anonymous
 function / closure, parsing braces enclose an anonymous parsing
 function / closure.
 
-A parsing function is a function which takes two parameters, namely a `yield`
-function and an `input` state. To indicate successful parsing, it is expected
-to (a) call `yield` with the result of parsing, and (b) return a replacement
-`input` state meant to reflect what was consumed from the original `input`
-(if anything). To indicate a parsing failure, the function is expected to
-(a) call `yield` with no argument to indicate a void yield, and (b)
-return void.
+When evaluated, the result of a parsing function literal is a (regular)
+function of two arguments, `yield` and `input`. To indicate successful
+parsing, the parsing function (a) calls `yield` with the result of parsing,
+and (b) returns a replacement `input` state meant to reflect what was
+consumed from the original `input` (if anything). To indicate a parsing
+failure, the parsing function (a) calls `yield` with no argument to indicate
+a void yield, and (b) returns void.
 
 The input state is expected to be a list of to-be-parsed elements, such
 as characters for tokenization or tokens for a tree parser.
@@ -38,6 +38,12 @@ The default `yield` value of a parsing function is whatever the yielded
 result is from the *last* item in the list of items to match in the
 function. This default can be overridden by using a filtering clause
 (see below).
+
+**Note:** It is perfectly acceptable to define parsing functions as
+regular functions with the prescribed formal arguments. As long as they
+obey the parsing function contract, they should have no trouble interoperating
+with parsing functions expanded from the parsing function literal syntax
+described here.
 
 ### Matching character sequences
 
@@ -399,7 +405,7 @@ mulExpression = {/
 /};
 
 mulOp =
-    {/ $"*"] :: <> imul /}
+    {/ $"*" :: <> imul /}
     |
     {/ $"/" :: <> idiv /}
 ;
@@ -425,8 +431,8 @@ main = {/
 /};
 ```
 
-Example Translation to Samizdat-0
----------------------------------
+Example Translation to Samizdat Layer 0
+---------------------------------------
 
 Note: The `yieldFilter` definitions would need to be refactored in order
 to make the translations "hygenic" (that is, avoid having them inadvertently
