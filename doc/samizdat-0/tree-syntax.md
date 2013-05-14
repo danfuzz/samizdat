@@ -36,8 +36,11 @@ programBody ::=
 # result: ["statements"=[statement*] ("yield"=yield)?]
 # Note: `nonLocalExit` results in a statement.
 
-formal ::= (@identifier | @".") (@"*" | @"?")? ;
-# result: [("name"=(highletValue identifier))? ("repeat"=@[("*"|"?")])?]
+formal ::= (@identifier | @".") repeat=(@"?" | @"*" | @"+")? ;
+# result: [
+#             ("name" = (highletValue identifier))?
+#             ("repeat" = (highletType repeat))?
+#         ]
 # Note: Binding for `"name"` omitted if name is specified as `.`.
 
 yieldDef ::= @"<" @identifier @">" ;
