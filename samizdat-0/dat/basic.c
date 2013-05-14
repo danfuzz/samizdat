@@ -68,7 +68,7 @@ void datAssertNth(zvalue value, zint n) {
 }
 
 /* Documented in header. */
-void datAssertInteger(zvalue value) {
+void datAssertInt(zvalue value) {
     assertType(value, DAT_INTEGER);
 }
 

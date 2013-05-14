@@ -93,7 +93,7 @@ void datAssertNth(zvalue value, zint n);
  * furthermore that it is an integer. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertInteger(zvalue value);
+void datAssertInt(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and

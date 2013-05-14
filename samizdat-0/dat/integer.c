@@ -55,12 +55,12 @@ static zint integerValue(zvalue integer) {
  */
 
 /* Documented in header. */
-bool datIntegerEq(zvalue v1, zvalue v2) {
+bool datIntEq(zvalue v1, zvalue v2) {
     return integerValue(v1) == integerValue(v2);
 }
 
 /* Documented in header. */
-zorder datIntegerOrder(zvalue v1, zvalue v2) {
+zorder datIntOrder(zvalue v1, zvalue v2) {
     zint int1 = integerValue(v1);
     zint int2 = integerValue(v2);
 
@@ -102,7 +102,7 @@ bool datZintGetBit(zint value, zint n) {
 
 /* Documented in header. */
 bool datIntGetBit(zvalue integer, zint n) {
-    datAssertInteger(integer);
+    datAssertInt(integer);
     return datZintGetBit(integerValue(integer), n);
 }
 
@@ -126,6 +126,6 @@ zvalue datIntFromZint(zint value) {
 
 /* Documented in header. */
 zint datZintFromInt(zvalue integer) {
-    datAssertInteger(integer);
+    datAssertInt(integer);
     return integerValue(integer);
 }

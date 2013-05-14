@@ -166,12 +166,12 @@ bool datHasNth(zvalue value, zint n);
 /**
  * Compares integers for equality. Only called when the sizes are the same.
  */
-bool datIntegerEq(zvalue v1, zvalue v2);
+bool datIntEq(zvalue v1, zvalue v2);
 
 /**
  * Compares integers for order.
  */
-zorder datIntegerOrder(zvalue v1, zvalue v2);
+zorder datIntOrder(zvalue v1, zvalue v2);
 
 /**
  * Compares strings for equality. Only called when the sizes are the same.
