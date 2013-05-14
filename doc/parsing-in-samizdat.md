@@ -445,70 +445,75 @@ Note: This example doesn't use all of the syntactic forms mentioned above.
 
 ```
 digit = {/
-    ch=[/"0123456789"/]
-    ::
-    <> isub (intFromString ch) (intFromString "0")
+    ch=["0123456789"]
+    {
+        <> isub (intFromString ch) (intFromString "0")
+    }
 /};
 
 number = {/
     digits=digit+
-    ::
-    <> listReduce 0 digits { result digit :: <> iadd digit (imul result 10) }
+    {
+        <> listReduce 0 digits
+            { result digit :: <> iadd digit (imul result 10) }
+    }
 /};
 
-atom =
+atom = {/
     number
-    |
-    {/ $"(" ex=addExpression $")" :: <> ex /}
-;
+|
+    "(" ex=addExpression ")"
+    { <> ex }
+/};
 
 addExpression = {/
     ex1=mulExpression op=addOp ex2=addExpression
-    ::
-    <> op ex1 ex2
+    { <> op ex1 ex2 }
 /};
 
-addOp =
-    {/ $"+" :: <> iadd /}
-    |
-    {/ $"-" :: <> isub /}
-;
+addOp = {/
+    "+" { <> iadd }
+|
+    "-" { <> isub }
+/};
 
 mulExpression = {/
     ex1=unaryExpression op=mulOp ex2=mulExpression
-    ::
-    <> op ex1 ex2
+    { <> op ex1 ex2 }
 /};
 
-mulOp =
-    {/ $"*" :: <> imul /}
-    |
-    {/ $"/" :: <> idiv /}
-;
+mulOp = {/
+    "*" { <> imul }
+|
+    "/" { <> idiv }
+/};
 
-unaryExpression =
-    {/ op=unaryOp ex=unaryExpression :: <> op ex /}
-    |
+unaryExpression = {/
+    op=unaryOp
+    ex=unaryExpression
+    { <> op ex }
+|
     atom
-;
+/};
 
 unaryOp = {/
-    $"-" :: <> ineg
-/}
+    "-" { <> ineg }
+/};
 
 main = {/
-    {/
-        ex=addExpression $"\n"
-        ::
-        io0Note (format "%q" ex);
-        # Explicit yield here is so that parsing is considered successful.
-        <> null
-    /}*
+    (
+        ex = addExpression
+        "\n"
+        { io0Note (format "%q" ex) }
+        () # Explicit empty-match here to indicate successful parsing.
+    )*
 /};
 ```
 
 Example Translation to Samizdat Layer 0
 ---------------------------------------
+
+**Note:** This section is very out-of-date.
 
 Note: The `yieldFilter` definitions would need to be refactored in order
 to make the translations "hygenic" (that is, avoid having them inadvertently
