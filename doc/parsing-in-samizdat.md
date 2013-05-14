@@ -6,6 +6,32 @@ Parsing in Samizdat
 Since parsing is something so many programs have to do, Samizdat offers
 language-level facilities for building parsers.
 
+The foundation of parsing is the parsing function. A parsing function is
+a regular in-language function with specific requirements for formal
+arguments and behavior.
+
+A parsing function always accepts exactly two arguments. The first argument
+is a `yield` function. The `yield` function is used to indicate the result of
+parsing, which can either be an arbitrary non-void value to indicate
+parsing success, or void to indicate parsing failure. The second argument
+is the `input`. The input is a list of elements to be parsed.
+
+A parsing function, upon success when called, must do two things: It must
+call its `yield` to indicate the non-void result of parsing. Then,
+it must return a replacement `input` for use as the input to subsequent
+parsers, that reflects the removal of whatever elements were consumed
+by the parsing (including none). If the parsing function consumed all of
+its given input, then it must return `[]` (that is, the empty list).
+
+A parsing function, upon failure when called, must do two things: It must
+call its `yield` with no argument to indicate a void result of parsing.
+Then, it must also return void.
+
+The syntax below provides a convenient way to define standard-form
+parsing functions. It is perfectly acceptable to mix-and-match the parsing
+functions defined using this syntax with ones defined more "manually".
+
+
 Syntax and Semantics
 --------------------
 
