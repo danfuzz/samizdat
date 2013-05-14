@@ -42,12 +42,12 @@ function. This default can be overridden by using a filtering clause
 ### Matching character sequences
 
 The basic "terminal" in the context of a tokenizer is a character.
-Within a parsing function, a double-quoted string is how to indicate
-that a sequence of characters is to be matched. The result of matching
-a character sequence is a valueless highlet whose type is the the matched
-string.
+Within a parsing function, a dollar sign (`$`) followed by a
+double-quoted string is how to indicate that a literal sequence of characters
+is to be matched. The result of matching a character sequence is a
+valueless highlet whose type is the the matched string.
 
-For example, the parser `{/ "foo" /}` will match the string `"foobar"`,
+For example, the parser `{/ $"foo" /}` will match the string `"foobar"`,
 resulting in the yielded value `@foo` and a remainder of `"bar"`.
 
 ### Matching tokens of a particular type
@@ -80,7 +80,7 @@ To match the end of input, use a not-dot (`!.`). This only ever matches
 when there is no input available. When matched, this yields the value
 `null`.
 
-For example, the parser `{/ "foo" !. /}` will match the string `"foo"` but
+For example, the parser `{/ $"foo" !. /}` will match the string `"foo"` but
 only if it's at the end of input.
 
 ### Matching character or token sets
@@ -175,7 +175,7 @@ To match an item without "consuming" it from the input, the item can
 be preceded by an ampersand (`&`). When matched, the yielded value
 of a lookahead is identical to what the underlying item yielded.
 
-For example, the parser `{/ &"foobar" "foo" /}` will match the string
+For example, the parser `{/ &$"foobar" $"foo" /}` will match the string
 `"foobar"`, resulting in the yielded value `@foo` and a
 remainder of `"bar"`. However, the same parser will *fail* to match
 `"foobaz"` because the lookahead `&"foobar"` will fail.
@@ -187,11 +187,11 @@ not-ampersand (`!&`). As with lookahead success, this will never "consume"
 any input. When successful (that is, when lookahead fails), a lookahead
 failure yields `null`.
 
-For example, the parser `{/ !&"foobaz" "foo" /}` will match the string
+For example, the parser `{/ !&$"foobaz" $"foo" /}` will match the string
 `"foobar"`, resulting in the yielded value `@foo` and a remainder of
 `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
-the lookahead `!&"foobaz"` will fail (because a `"foobaz"` lookahead *succeeds*
-match).
+the lookahead `!&$"foobaz"` will fail (because a `"foobaz"` lookahead
+*succeeds* in matching).
 
 ### Filtering results
 
@@ -226,7 +226,7 @@ This expression is valid at the layer of Samizdat expressions, and
 not valid *within* a parser function pattern declaration. Note how
 the example below is constructed.
 
-For example, the parser `{/ "f" /} | {/ "foo" /}` will match the string
+For example, the parser `{/ $"f" /} | {/ $"foo" /}` will match the string
 `"foobar"`, resulting in the yielded value `@f` and a remainder of
 `"oobar"`. Note that because of the prioritized ordering, the second
 alternate could never get picked in this case.
@@ -241,15 +241,15 @@ modifications to the *Samizdat Layer 0* tokenization syntax.
 ```
 punctuation =
     # ... original alternates from the base grammar ...
-    {/ "{/" :: <> @"{/" /} |
-    {/ "/}" :: <> @"/}" /} |
-    {/ "[/" :: <> @"[/" /} |
-    {/ "/]" :: <> @"/]" /} |
-    {/ "!." :: <> @"!." /} |
-    {/ "!&" :: <> @"!&" /} |
-    {/ "&"  :: <> @"&"  /} |
-    {/ "|"  :: <> @"|"  /} |
-    {/ "~"  :: <> @"~"  /}
+    {/ $"{/" :: <> @"{/" /} |
+    {/ $"/}" :: <> @"/}" /} |
+    {/ $"[/" :: <> @"[/" /} |
+    {/ $"/]" :: <> @"/]" /} |
+    {/ $"!." :: <> @"!." /} |
+    {/ $"!&" :: <> @"!&" /} |
+    {/ $"&"  :: <> @"&"  /} |
+    {/ $"|"  :: <> @"|"  /} |
+    {/ $"~"  :: <> @"~"  /}
 ;
 ```
 
@@ -340,9 +340,9 @@ parserAtom =
     |
     varRef
     |
-    {/ "." :: <> @matchDot /}
+    {/ @"." :: <> @matchDot /}
     |
-    {/ "!." :: <> @matchNotDot /}
+    {/ @"!." :: <> @matchNotDot /}
 ;
 ```
 
@@ -372,7 +372,7 @@ number = {/
 atom =
     number
     |
-    {/ "(" ex=addExpression ")" :: <> ex /}
+    {/ $"(" ex=addExpression $")" :: <> ex /}
 ;
 
 addExpression = {/
@@ -382,9 +382,9 @@ addExpression = {/
 /};
 
 addOp =
-    {/ "+" :: <> iadd /}
+    {/ $"+" :: <> iadd /}
     |
-    {/ "-" :: <> isub /}
+    {/ $"-" :: <> isub /}
 ;
 
 mulExpression = {/
@@ -394,9 +394,9 @@ mulExpression = {/
 /};
 
 mulOp =
-    {/ "*" :: <> imul /}
+    {/ $"*"] :: <> imul /}
     |
-    {/ "/" :: <> idiv /}
+    {/ $"/" :: <> idiv /}
 ;
 
 unaryExpression =
@@ -406,12 +406,12 @@ unaryExpression =
 ;
 
 unaryOp = {/
-    "-" :: <> ineg
+    $"-" :: <> ineg
 /}
 
 main = {/
     {/
-        ex=addExpression "\n"
+        ex=addExpression $"\n"
         ::
         io0Note (format "%q" ex);
         # Explicit yield here is so that parsing is considered successful.
