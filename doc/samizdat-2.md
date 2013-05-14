@@ -19,56 +19,37 @@ rules.
 ```
 token ::= punctuation2 | punctuation |
     integer | hexInteger | binaryInteger |
-    string |
-    keyword | identifier
+    string | keyword | identifier
 ;
 # Note: The punctuation2 rule intentionally gets listed before the
 # integer rule, so that in this layer `-<digit>` gets interpreted as two
 # tokens.
 
 keyword ::=
-    "break"    | # result: @break
-    "continue" | # result: @continue
-    "if"       | # result: @if
-    "else"     | # result: @else
-    "fn"       | # result: @fn
-    "return"   | # result: @return
-    "while"      # result: @while
+    "break"    |
+    "continue" |
+    "else"     |
+    "fn"       |
+    "if"       |
+    "return"   |
+    "while"
 ;
 
 punctuation2 ::=
-    "==" | # result: @"=="
-    "!=" | # result: @"!="
-    "<=" | # result: @"<="
-    ">=" | # result: @">="
-    "<<" | # result: @"<<"
-    ">>" | # result: @">>"
-    "&&" | # result: @"&&"
-    "||" | # result: @"||"
-    "&"  | # result: @"&"
-    "|"  | # result: @"|"
-    "^"  | # result: @"^"
-    "+"  | # result: @"+"
-    "-"  | # result: @"-"
-    "/"  | # result: @"/"
-    "%"  | # result: @"%"
-    "!"  | # result: @"!"
-    "~"    # result: @"~"
+    "==" | "!=" | "<=" | ">=" | "<<" | ">>" | "&&" | "||" |
+    ["&|^+-/%!~"]
 ;
 
 hexInteger ::= "0x" hexDigit+ ;
 # result: @["integer" <integer>]
 
-hexDigit ::=
-    "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" |
-    "a" | "b" | "c" | "d" | "e" | "f" |
-    "A" | "B" | "C" | "D" | "E" | "F" ;
+hexDigit ::= ["0".."9" "a".."f" "A".."F"] ;
 # result: <integer>
 
 binaryInteger ::= "0b" binaryDigit+ ;
 # result: @["integer" <integer>]
 
-binaryDigit ::= "0" | "1" ;
+binaryDigit ::= ["01"] ;
 # result: <integer>
 ```
 
