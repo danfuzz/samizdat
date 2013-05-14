@@ -393,20 +393,17 @@ parserAtom = {/
     name = identifier
     { <> @["varRef" (highletValue name)] }
 |
-    @"@"
-    type = identifier
-    { <> @["token" (highletValue name)] }
+    parserString
 |
-    str = @string
-    { <> @["chars" str] }
+    parserToken
+|
+    parserSet
 |
     @"."
 |
     @"!."
 |
     @"()"
-|
-    parserSet
 |
     @"{"
     yieldDef = (
@@ -424,12 +421,27 @@ parserAtom = {/
 
 parserSet = {/
     @"["
-    complement = @"!"?
-    terminals = (@string* | @identifier*)
+    type = (
+        @"!" { <> "notSet" }
+    |
+        { <> "set" }
+    )
+    terminals = (parserString+ | parserToken+)
     @"]"
     {
-        <> ... # TODO
+        <> @[type terminals]
     }
+/};
+
+parserString = {/
+    str = @string
+    { <> @["chars" str] }
+/};
+
+parserToken = {/
+    @"@"
+    type = (@identifier | @string)
+    { <> @["token" (highletValue type)] }
 /};
 ```
 
