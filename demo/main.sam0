@@ -48,7 +48,12 @@ countDown2 = listNth countDowns 0;
 
 # Demo of formal argument repeat modifiers. Also of quoted identifiers.
 blort = { foo bar? \"weird name"? more* ::
-    io0Note (format "%q %q %q %q" foo bar \"weird name" more);
+    io0Note (format "%q %q %q %q" foo bar \"weird name" more)
+};
+
+# Demo of `+` argument repeat modifier.
+stuff = { items+ ::
+    io0Note (format "stuff: %q" items)
 };
 
 # Demo of reading a sibling file through a sandboxed reader.
@@ -117,6 +122,8 @@ main = { selfPath name rest* ::
     blort 1 2 3;
     blort 1 2 3 4;
     blort 1 2 3 4 5;
+    stuff 1;
+    stuff 1 2;
 
     process (exiter 1);
     ifValue { <> exiter 0 }
