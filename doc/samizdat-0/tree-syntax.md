@@ -58,7 +58,7 @@ expression ::= callExpression | unaryExpression ;
 unaryExpression ::= unaryCallExpression | atom ;
 # result: <same as whatever choice matched>
 
-unaryCallExpression ::= atom (@"(" @")")+ ;
+unaryCallExpression ::= atom (@"()")+ ;
 # result: (... (makeCall (makeCall atom))
 # Note: One `makeCall` per pair of parens.
 
