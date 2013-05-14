@@ -499,8 +499,11 @@ main = {/
     (
         ex = addExpression
         "\n"
-        { io0Note (format "%q" ex) }
-        () # Explicit empty-match here to indicate successful parsing.
+        {
+            io0Note (format "%q" ex)
+            # Explicit yield here to indicate successful parsing.
+            <> null
+        }
     )*
 /};
 ```
@@ -508,123 +511,60 @@ main = {/
 Example Translation to Samizdat Layer 0
 ---------------------------------------
 
-**Note:** This section is very out-of-date.
-
-Note: The `yieldFilter` definitions would need to be refactored in order
-to make the translations "hygenic" (that is, avoid having them inadvertently
-bind to parser-expansion-internal variables). Basically, this:
-
 ```
-rule = { yield input ::
-    yieldFilter = { ... filter ... }
-    ... rest of rule ...
-};
-
-=>
-
-rule = { yieldFilter ::
-    <> { yield input :: ... rest of rule ... }
-}
-{ ... filter ... };
-```
-
-Assumption: `yield` is only called on a successful parse.
-
-```
-digit = { yield input ::
-    yieldFilter = { ch ::
+digit = pexSequence
+    (pexCharSet "0123456789")
+    (pexCode { ch ::
         <> isub (integerFromString ch) (integerFromString "0")
-    };
+    });
 
-    <> parseCharSet yieldFilter input "0123456789"
-};
-
-number = { yield input ::
-    yieldFilter = { digits ::
+number = pexSequence
+    (pexPlus digit)
+    (pexCode { digits ::
         <> listReduce 0 digits
             { result digit :: <> iadd digit (imul result 10) }
-    };
+    });
 
-    <> parsePlus yieldFilter input digit
-};
+atom = pexChoice
+    number
+    (pexSequence
+        (pexChars "(")
+        addExpression
+        (pexChars ")")
+        (pexCode { . ex . :: <> ex }));
 
-atom = { yield input ::
-    yieldFilter = { value ::
-        <> apply { . ex . :: <> ex } value
-    };
+addExpression = pexSequence
+    mulExpression
+    addOp
+    addExpression
+    (pexCode { ex1 op ex2 :: <> op ex1 ex2 });
 
-    <> parseOr yield input
-        number
-        { yield input ::
-            <> parseSeq yieldFilter input
-                { yield input :: <> parseChars yield input "(" }
-                addExpression
-                { yield input :: <> parseChars yield input ")" }
-        }
-};
+addOp = pexChoice
+    (pexSequence (pexChars "+") { <> iadd })
+    (pexSequence (pexChars "-") { <> isub });
 
-addExpression = { yield input ::
-    yieldFilter = { value ::
-        <> apply { ex1 op ex2 :: <> op ex1 ex2 } value
-    };
+mulExpression = pexSequence
+    unaryExpression
+    mulOp
+    mulExpression
+    (pexCode { ex1 op ex2 :: <> op ex1 ex2 });
 
-    <> parseSeq yieldFilter input mulExpression addOp addExpression
-};
+mulOp = pexChoice
+    (pexSequence (pexChars "*") { <> imul })
+    (pexSequence (pexChars "/") { <> idiv });
 
-addOp = { yield input ::
-    yieldFilter1 = { value :: <> iadd };
-    yieldFilter2 = { value :: <> isub };
+unaryExpression = pexSequence
+    unaryOp
+    unaryExpression
+    (pexCode { op ex :: <> op ex });
 
-    <> parseOr yield input
-        { yield input :: <> parseChars yieldFilter1 input "+" }
-        { yield input :: <> parseChars yieldFilter2 input "-" }
-};
+unaryOp = pexSequence (pexChars "-") { <> ineg });
 
-mulExpression = { yield input ::
-    yieldFilter = { value ::
-        <> apply { ex1 op ex2 :: <> op ex1 ex2 } value
-    };
-
-    <> parseSeq yieldFilter input unaryExpression mulOp mulExpression
-};
-
-addOp = { yield input ::
-    yieldFilter1 = { value :: <> imul };
-    yieldFilter2 = { value :: <> idiv };
-
-    <> parseOr yield input
-        { yield input :: <> parseChars yieldFilter1 input "*" }
-        { yield input :: <> parseChars yieldFilter2 input "/" }
-};
-
-unaryExpression = { yield input ::
-    yieldFilter = { value ::
-        <> apply { op ex :: <> op ex } value
-    };
-
-    <> parseOr yield input
-        { yield input ::
-            <> parseSeq yieldFilter input unaryOp unaryExpression
-        }
-        atom
-};
-
-unaryOp = { yield input ::
-    yieldFilter = { value :: <> ineg };
-
-    <> parseChars yieldFilter input "-"
-};
-
-main = { yield input ::
-    yieldFilter = { value ::
-        <> apply { ex . :: io0Note (format "%q" ex) } value
-    };
-
-    <> parseStar yield input
-        { yield input ::
-            <> parseSeq yieldFilter input
-                addExpression
-                { yield input :: <> parseChars yield input "\n" }
-        }
-};
+main = pexStar (pexSequence
+    addExpression
+    (pexChars "\n")
+    (pexCode { ex . ::
+        io0Note (format "%q" ex);
+        <> null
+    }));
 ```
