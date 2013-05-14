@@ -16,27 +16,10 @@ token ::= punctuation | integer | string | identifier | quotedIdentifier ;
 # result: same as whichever alternate was picked.
 
 punctuation ::=
-    "@@" | # result: @"@@"
-    "::" | # result: @"::"
-    "<>" | # result: @"<>"
-    "()" | # result: @"()"
-    "@"  | # result: @"@"
-    ":"  | # result: @":"
-    "."  | # result: @"."
-    "*"  | # result: @"*"
-    ";"  | # result: @";"
-    "="  | # result: @"="
-    "?"  | # result: @"?"
-    "+"  | # result: @"+"
-    "<"  | # result: @"<"
-    ">"  | # result: @">"
-    "{"  | # result: @"{"
-    "}"  | # result: @"}"
-    "("  | # result: @"("
-    ")"  | # result: @")"
-    "["  | # result: @"["
-    "]"    # result: @"]"
+    "@@" | "::" | "<>" | "()" |
+    ["@:.=+?;*<>{}()[]"]
 ;
+# result: a valueless highlet with the matched string as its type tag.
 
 integer ::= "-"? ["0".."9"]+ ;
 # result: @["integer" <integer>]
