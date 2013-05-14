@@ -319,7 +319,6 @@ modifications to the *Samizdat Layer 0* tokenization syntax.
 ```
 punctuation = {/
     # ... original alternates from the base grammar ...
-    "()" | # Note: This one should be moved to Layer 0.
     "{/" |
     "/}" |
     "!." |
