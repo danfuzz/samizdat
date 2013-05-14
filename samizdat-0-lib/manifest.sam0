@@ -9,15 +9,15 @@
 #
 
 <> [
-    @boolean
-    @collections
-    @combinator
-    @conditional
-    @const
-    @format
-    @integer
-    @io0
-    @main
-    @meta
-    @type
+    "boolean"
+    "collections"
+    "combinator"
+    "conditional"
+    "const"
+    "format"
+    "integer"
+    "io0"
+    "main"
+    "meta"
+    "type"
 ]

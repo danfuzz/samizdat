@@ -10,22 +10,22 @@
 
 # Object state consists of:
 #
-# * `@nth` &mdash; Function to use to get the nth item of the value being
+# * `"nth"` &mdash; Function to use to get the nth item of the value being
 #   read.
-# * `@size` &mdash; The size of the value (in elements / characters).
-# * `@at` &mdash; The current cursor position.
+# * `"size"` &mdash; The size of the value (in elements / characters).
+# * `"at"` &mdash; The current cursor position.
 #
 # Convention: `do` prefix for public exposed functions, and `x` prefix for
 # private non-dispatched functions.
 
 # Gets the cursor position.
-xAt = { state :: <> mapGet state @at };
+xAt = { state :: <> mapGet state "at" };
 
 # Gets the nth element.
-xNth = { state n :: <> (mapGet state @nth) n };
+xNth = { state n :: <> (mapGet state "nth") n };
 
 # Gets the size.
-xSize = { state :: <> mapGet state @size };
+xSize = { state :: <> mapGet state "size" };
 
 # Gets the current cursor position.
 doAt = { yield state :: yield (xAt state) };
@@ -48,7 +48,7 @@ doRead = { yield state ::
         { value :: yield value }
         { yield() };
 
-    <> mapPut state @at (iadd at 1);
+    <> mapPut state "at" (iadd at 1);
 };
 
 # Resets the cursor to the given value. It is only valid to
@@ -60,16 +60,16 @@ doReset = { yield state resetAt ::
         { io0die (format "Invalid reset value: %Q" resetAt) };
 
     yield();
-    <> mapPut state @at resetAt;
+    <> mapPut state "at" resetAt;
 };
 
 # Dispatch table.
 READER_DISPATCH = [
-    @at    = doAt
-    @eof   = doEof
-    @peek  = doPeek
-    @read  = doRead
-    @reset = doReset
+    "at"    = doAt
+    "eof"   = doEof
+    "peek"  = doPeek
+    "read"  = doRead
+    "reset" = doReset
 ];
 
 # Performs method dispatch.
@@ -81,15 +81,15 @@ readerDispatch = { yield state name rest* ::
 # either a list or a string.
 reader = { value ::
     nth = mapGet
-        [@list=listNth @string=stringNth]
+        ["list"=listNth "string"=stringNth]
         (lowType value);
     nthFunc = { n :: <> nth value n };
 
     <> object readerDispatch [
-        @at   = 0
-        @size = (lowSize value)
-        @nth  = nthFunc
+        "at"   = 0
+        "size" = (lowSize value)
+        "nth"  = nthFunc
     ]
 };
 
-<> [@reader = reader]
+<> ["reader" = reader]

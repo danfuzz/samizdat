@@ -18,8 +18,8 @@ and optional data payload value (also an arbitrary value). These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = [:key:];         is equivalent to   v = makeHighlet key;
-v = [:key value:];   is equivalent to   v = makeHighlet key value;
+v = @[key];         is equivalent to   v = makeHighlet key;
+v = @[key value];   is equivalent to   v = makeHighlet key value;
 ```
 
 #### `makeList rest* <> list`

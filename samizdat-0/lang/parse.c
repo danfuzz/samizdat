@@ -120,6 +120,13 @@ static zvalue mapFrom1(zvalue k1, zvalue v1) {
 }
 
 /**
+ * Constructs a `literal` node.
+ */
+static zvalue makeLiteral(zvalue value) {
+    return datHighletFrom(STR_LITERAL, value);
+}
+
+/**
  * Constructs a `varRef` node.
  */
 static zvalue makeVarRef(zvalue name) {
@@ -193,12 +200,26 @@ DEF_PARSE(atomPlus) {
 DEF_PARSE(highlet) {
     MARK();
 
-    MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_COLON);
-    zvalue innerType = PARSE_OR_REJECT(atom);
-    zvalue innerValue = PARSE(atom); // It's okay for this to be NULL.
-    MATCH_OR_REJECT(CH_COLON);
-    MATCH_OR_REJECT(CH_CSQUARE);
+    zvalue innerType;
+    zvalue innerValue;
+
+    MATCH_OR_REJECT(CH_AT);
+
+    innerType = MATCH(STRING);
+    if (innerType == NULL) {
+        innerType = MATCH(IDENTIFIER);
+    }
+    if (innerType != NULL) {
+        innerType = makeLiteral(datHighletValue(innerType));
+        innerValue = NULL;
+    }
+
+    if (innerType == NULL) {
+        MATCH_OR_REJECT(CH_OSQUARE);
+        innerType = PARSE_OR_REJECT(atom);
+        innerValue = PARSE(atom); // It's okay for this to be NULL.
+        MATCH_OR_REJECT(CH_CSQUARE);
+    }
 
     zvalue args = datListAppend(EMPTY_LIST, innerType);
 
@@ -268,7 +289,7 @@ DEF_PARSE(emptyMap) {
     MATCH_OR_REJECT(CH_EQUAL);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return datHighletFrom(STR_LITERAL, EMPTY_MAP);
+    return makeLiteral(EMPTY_MAP);
 }
 
 /**
@@ -293,7 +314,7 @@ DEF_PARSE(emptyList) {
     MATCH_OR_REJECT(CH_OSQUARE);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return datHighletFrom(STR_LITERAL, EMPTY_LIST);
+    return makeLiteral(EMPTY_LIST);
 }
 
 /**
@@ -302,15 +323,9 @@ DEF_PARSE(emptyList) {
 DEF_PARSE(string) {
     MARK();
 
-    zvalue string = MATCH(STRING);
+    zvalue string = MATCH_OR_REJECT(STRING);
 
-    if (string == NULL) {
-        MATCH_OR_REJECT(CH_AT);
-        string = MATCH_OR_REJECT(IDENTIFIER);
-    }
-
-    zvalue value = datHighletValue(string);
-    return datHighletFrom(STR_LITERAL, value);
+    return makeLiteral(datHighletValue(string));
 }
 
 /**
@@ -321,7 +336,7 @@ DEF_PARSE(integer) {
 
     zvalue integer = MATCH_OR_REJECT(INTEGER);
 
-    return datHighletFrom(STR_LITERAL, datHighletValue(integer));
+    return makeLiteral(datHighletValue(integer));
 }
 
 /**
@@ -397,7 +412,7 @@ DEF_PARSE(callExpression) {
 }
 
 /**
- * Helper for `unaryCallExpression`: Parses `[:"(":] [:")":]`.
+ * Helper for `unaryCallExpression`: Parses `@"(" @")"`.
  */
 DEF_PARSE(unaryCallExpression1) {
     MARK();
@@ -520,7 +535,7 @@ DEF_PARSE(nonlocalExit) {
 }
 
 /**
- * Helper for `formal`: Parses `([:"?":] | [:"*":])?`. Returns either the
+ * Helper for `formal`: Parses `(@"?" | @"*")?`. Returns either the
  * parsed token or `NULL` to indicate that neither was present.
  */
 DEF_PARSE(formal1) {
@@ -624,7 +639,7 @@ DEF_PARSE(programDeclarations) {
     zvalue yieldDef = PARSE(yieldDef); // It's okay for this to be `NULL`.
 
     if (datSize(formals) == 0) {
-        // The spec indicates that the @formals mapping should be omitted
+        // The spec indicates that the "formals" mapping should be omitted
         // when there aren't any formals.
         formals = NULL;
     }
@@ -633,7 +648,7 @@ DEF_PARSE(programDeclarations) {
 }
 
 /**
- * Helper for `program`: Parses `(programDeclarations [:"::":])`.
+ * Helper for `program`: Parses `(programDeclarations @"::")`.
  */
 DEF_PARSE(program1) {
     MARK();

@@ -148,15 +148,15 @@ stringMap = { string function ::
 #
 
 <> [
-    @listAppend = listAppend
-    @listForEach = listForEach
-    @listMap = listMap
-    @listPrepend = listPrepend
-    @listReduce = listReduce
-    @mapForEach = mapForEach
-    @mapMap = mapMap
-    @mapReduce = mapReduce
-    @stringForEach = stringForEach
-    @stringMap = stringMap
-    @stringReduce = stringReduce
+    "listAppend" = listAppend
+    "listForEach" = listForEach
+    "listMap" = listMap
+    "listPrepend" = listPrepend
+    "listReduce" = listReduce
+    "mapForEach" = mapForEach
+    "mapMap" = mapMap
+    "mapReduce" = mapReduce
+    "stringForEach" = stringForEach
+    "stringMap" = stringMap
+    "stringReduce" = stringReduce
 ]

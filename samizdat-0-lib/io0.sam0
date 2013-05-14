@@ -55,5 +55,5 @@ io0SandboxedReader = { directory ::
 };
 
 <> [
-    @io0SandboxedReader = io0SandboxedReader
+    "io0SandboxedReader" = io0SandboxedReader
 ];

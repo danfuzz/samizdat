@@ -22,9 +22,9 @@ readLine = filterRule
 tokenize = { rules text ::
     theReader = reader text;
     theEngine = pegEngine theReader rules;
-    result = (theEngine @rule @file) theEngine;
+    result = (theEngine "rule" "file") theEngine;
 
-    ifFalse { <> theEngine @eof }
+    ifFalse { <> theEngine "eof" }
         {
             io0Note "Extra text at end of program.";
             io0Note "Pending text:";
@@ -39,15 +39,15 @@ tokenize = { rules text ::
 parseTree = { rules tokens ::
     theReader = reader tokens;
     theEngine = pegEngine theReader rules;
-    result = (theEngine @rule @program) theEngine;
+    result = (theEngine "rule" "program") theEngine;
 
-    ifFalse { <> theEngine @eof }
+    ifFalse { <> theEngine "eof" }
         {
             io0Note "Pending tokens:";
 
             { <break> ::
                 loop {
-                    ifValue { <> theEngine @read }
+                    ifValue { <> theEngine "read" }
                         { token :: io0Note (format "    %q" token) }
                         { <break> }
                 }
@@ -66,9 +66,9 @@ parseTree = { rules tokens ::
 
 # Given a token grammar and a tree grammar (both given as maps of
 # name-to-rule bindings, return a combined parser that takes strings and
-# returns parsed programs. This assumes that the main token rule is `@file`
+# returns parsed programs. This assumes that the main token rule is `"file"`
 # (to return the entire file as a list of parsed tokens) and the main
-# tree rule is `@program`.
+# tree rule is `"program"`.
 parser = { tokenRules treeRules ::
     <> { text ::
         tokens = tokenize tokenRules text;
@@ -76,4 +76,4 @@ parser = { tokenRules treeRules ::
     }
 };
 
-<> [@parser = parser]
+<> ["parser" = parser]

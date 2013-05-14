@@ -16,12 +16,12 @@ representative of how one would construct them in the source syntax of
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `call` &mdash; `[:@call [@function=expression @actuals=[expression*]:]`
+#### `call` &mdash; `@["call" ["function"=expression "actuals"=[expression*]]`
 
-* `@function=expression` (required) &mdash; An expression node that must
+* `"function"=expression` (required) &mdash; An expression node that must
   evaluate to a function.
 
-* `@actuals=[expression*]` (required) &mdash; A list of arbitrary expression
+* `"actuals"=[expression*]` (required) &mdash; A list of arbitrary expression
   nodes, each of which must evaluate to a non-void value.
 
 This represents a function call.
@@ -40,21 +40,21 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `function` &mdash; `[:@function [(@formals=[formal+])? (@yieldDef=name)?` `@statements=[statement*] (@yield=expression)?:]`
+#### `function` &mdash; `@["function" [("formals"=[formal+])? ("yieldDef"=name)?` `"statements"=[statement*] ("yield"=expression)?]`
 
-* `@formals=[formal+]` (optional) &mdash; An array of `formal`
+* `"formals"=[formal+]` (optional) &mdash; An array of `formal`
   elements (as defined below). This defines the formal arguments to
   the function.
 
-* `@yieldDef=name` (optional) &mdash; A name (typically a string) to
+* `"yieldDef"=name` (optional) &mdash; A name (typically a string) to
   bind as the nonlocal-exit function.
 
-* `@statements=[statement*]` (required) &mdash; A list of statement
+* `"statements"=[statement*]` (required) &mdash; A list of statement
   nodes. A statement node must be either an expression node or a
   `varDef` node (as defined below). This defines the bulk of the
   code to execute.
 
-* `@yield=expression` (optional) &mdash; An expression node representing
+* `"yield"=expression` (optional) &mdash; An expression node representing
   the (local) result value for a call.
 
 This represents a function definition.
@@ -88,7 +88,7 @@ systems that are defined using those terms. In C terms, the facility is
 along the lines of `setjmp` / `longjmp`. In Lisp terms, the facility is
 an implementation of downward-passing continuations.
 
-#### `literal` &mdash; `[:@literal value:]`
+#### `literal` &mdash; `@["literal" value]`
 
 * `value` (required) &mdash; Arbitrary data value.
 
@@ -99,7 +99,7 @@ The data `value` is the result of evaluation,
 When a `literal` node is run, the result of evaluation is `value`.
 Evaluation never fails.
 
-#### `varRef` &mdash; `[:@varRef name:]`
+#### `varRef` &mdash; `@["varRef" name]`
 
 * `name` (required) &mdash; Name of a variable (typically a string).
 
@@ -116,14 +116,14 @@ evaluation fails (terminating the runtime).
 These are nodes and values that appear within the data payloads
 of various expression nodes.
 
-#### `formal` &mdash; `[(@name=name)? (@repeat=repeat)?]`
+#### `formal` &mdash; `[("name"=name)? ("repeat"=repeat)?]`
 
-* `@name` (optional) &mdash; an arbitrary value (but typically a string),
+* `"name"` (optional) &mdash; an arbitrary value (but typically a string),
   which indicates the name of the variable to be bound for this
   formal. If omitted, then this indicates an unused argument which is
   not bound to a variable in the context of the function body.
 
-* `@repeat` (optional) &mdash; indicates (if present) that the number of
+* `"repeat"` (optional) &mdash; indicates (if present) that the number of
   actual arguments bound by this formal is not necessarily exactly one.
   If present it must be one of:
 
@@ -140,15 +140,15 @@ of various expression nodes.
     argument variable becomes a list, either of size one if an argument
     was bound or of size zero if not.
 
-If no `@repeat` is specified, then the given formal binds exactly one
+If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
-#### `varDef` &mdash; `[:@varDef [@name=name @value=expression]:]`
+#### `varDef` &mdash; `@["varDef" ["name"=name "value"=expression]]`
 
-* `@name=name` &mdash; Variable name to define (typically a string).
+* `"name"=name` &mdash; Variable name to define (typically a string).
 
-* `@value=expression` &mdash; Expression node representing the value
+* `"value"=expression` &mdash; Expression node representing the value
   that the variable should take on when defined.
 
 This represents a variable definition statement as part of a function body.

@@ -30,9 +30,9 @@ diffHighlet = { recurse context v1 v2 ::
     value2 = highletValue v2 null;
 
     <> and
-        { <> recurse @type type1 type2 }
-        { <> recurse @hasValue has1 has2 }
-        { <> recurse @value value1 value2 }
+        { <> recurse "type" type1 type2 }
+        { <> recurse "hasValue" has1 has2 }
+        { <> recurse "value" value1 value2 }
 };
 
 # Diffs integers.
@@ -46,7 +46,7 @@ diffMap = { recurse context v1 v2 <out> ::
     size2 = lowSize v2;
 
     <> and
-        { <> recurse @size size1 size2 }
+        { <> recurse "size" size1 size2 }
         {
             mapForEach v1
                 { key value ::
@@ -62,7 +62,7 @@ diffMap = { recurse context v1 v2 <out> ::
         {
             mapForEach v1
                 { key value ::
-                    ifFalse { <> recurse [@key=key] value (mapGet v2 key) }
+                    ifFalse { <> recurse ["key"=key] value (mapGet v2 key) }
                         { <out> false }
                 };
             <> true
@@ -75,7 +75,7 @@ diffList = { recurse context v1 v2 ::
     size2 = lowSize v2;
 
     <> and
-        { <> recurse @size size1 size2 }
+        { <> recurse "size" size1 size2 }
         {
             listForEach v1
                 { index elem ::
@@ -97,12 +97,12 @@ diffUniqlet = { recurse context v1 v2 ::
 
 # Mapping from type names to diff functions.
 DIFF_FUNCTIONS = [
-    @highlet = diffHighlet
-    @integer = diffInteger
-    @list    = diffList
-    @map     = diffMap
-    @string  = diffString
-    @uniqlet = diffUniqlet
+    "highlet" = diffHighlet
+    "integer" = diffInteger
+    "list"    = diffList
+    "map"     = diffMap
+    "string"  = diffString
+    "uniqlet" = diffUniqlet
 ];
 
 # Inner diff. Returns an `eq` result.
@@ -138,7 +138,7 @@ innerDiff = { selfRef context v1 v2 ::
 
 # Compares two values structurally, reporting on the differences.
 diff = { v1 v2 ::
-    <> innerDiff innerDiff [@top] v1 v2
+    <> innerDiff innerDiff ["top"] v1 v2
 };
 
-<> [@diff = diff]
+<> ["diff" = diff]

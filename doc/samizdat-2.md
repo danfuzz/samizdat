@@ -27,37 +27,37 @@ token ::= punctuation2 | punctuation |
 # tokens.
 
 keyword ::=
-    "break"    | # result: [:@break:]
-    "continue" | # result: [:@continue:]
-    "if"       | # result: [:@if]
-    "else"     | # result: [:@else:]
-    "fn"       | # result: [:@fn:]
-    "return"   | # result: [:@return:]
-    "while"      # result: [:@while:]
+    "break"    | # result: @break
+    "continue" | # result: @continue
+    "if"       | # result: @if
+    "else"     | # result: @else
+    "fn"       | # result: @fn
+    "return"   | # result: @return
+    "while"      # result: @while
 ;
 
 punctuation2 ::=
-    "==" | # result: [:"==":]
-    "!=" | # result: [:"!=":]
-    "<=" | # result: [:"<=":]
-    ">=" | # result: [:">=":]
-    "<<" | # result: [:"<<":]
-    ">>" | # result: [:">>":]
-    "&&" | # result: [:"&&":]
-    "||" | # result: [:"||":]
-    "&"  | # result: [:"&":]
-    "|"  | # result: [:"|":]
-    "^"  | # result: [:"^":]
-    "+"  | # result: [:"+":]
-    "-"  | # result: [:"-":]
-    "/"  | # result: [:"/":]
-    "%"  | # result: [:"%":]
-    "!"  | # result: [:"!":]
-    "~"    # result: [:"~":]
+    "==" | # result: @"=="
+    "!=" | # result: @"!="
+    "<=" | # result: @"<="
+    ">=" | # result: @">="
+    "<<" | # result: @"<<"
+    ">>" | # result: @">>"
+    "&&" | # result: @"&&"
+    "||" | # result: @"||"
+    "&"  | # result: @"&"
+    "|"  | # result: @"|"
+    "^"  | # result: @"^"
+    "+"  | # result: @"+"
+    "-"  | # result: @"-"
+    "/"  | # result: @"/"
+    "%"  | # result: @"%"
+    "!"  | # result: @"!"
+    "~"    # result: @"~"
 ;
 
 hexInteger ::= "0x" hexDigit+ ;
-# result: [:@integer <integer>:]
+# result: @["integer" <integer>]
 
 hexDigit ::=
     "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" |
@@ -66,7 +66,7 @@ hexDigit ::=
 # result: <integer>
 
 binaryInteger ::= "0b" binaryDigit+ ;
-# result: [:@integer <integer>:]
+# result: @["integer" <integer>]
 
 binaryDigit ::= "0" | "1" ;
 # result: <integer>
@@ -95,30 +95,30 @@ statement ::=
 ;
 # result: <same as whatever choice matched>
 
-breakStatement ::= [:@break:] ([:"<":] identifier [:">";])? ;
+breakStatement ::= @break (@"<" identifier @[">";])? ;
 # result code: break() | \"break-<identifier>"()
 
-continueStatement ::= [:@continue:] ([:"<":] identifier [:">";])? ;
+continueStatement ::= @continue (@"<" identifier @[">";])? ;
 # result code: continue() | \"continue-<identifier>"()
 
 ifStatement ::=
-    [:@if:] [:"(":] expression [:")":] function
-    ([:@else:] (ifStatement | function))?
+    @if @"(" expression @")" function
+    (@else (ifStatement | function))?
 # result code: ifTrue expression function (if|function)?
 
 functionStatement ::=
-    [:@fn:] [:@identifier:] formals? [:"{":] programBody [:"}":]
+    @fn @identifier formals? @"{" programBody @"}"
 ;
 # result code: identifier = { formals? <return> ::
 #                  \"return-<identifier>" = return;
 #                  programBody
 #              }
 
-returnStatement ::= [:@return:] ([:"<":] identifier [:">";])? expression? ;
+returnStatement ::= @return (@"<" identifier @[">";])? expression? ;
 # result code: return expression? | \"return-<identifier>" expression?
 
 whileStatement ::=
-    [:@while:] [:@identifier:]? [:"(":] expression [:")":] function
+    @while @identifier? @"(" expression @")" function
 # result code:
 # { <break> ::
 #     (\"break-<identifier>" = break;)?
@@ -136,22 +136,22 @@ whileStatement ::=
 expression ::= orExpression ;
 # result: orExpression
 
-orExpression ::= andExpression (([:"||":]) andExpression)* ;
-# result: makeCall [:@varRef \"or":]
+orExpression ::= andExpression ((@"||") andExpression)* ;
+# result: makeCall @["varRef" \"or"]
 #             (makeThunk expr1) (makeThunk expr2) ...
 
-andExpression ::= compareExpression ([:"&&":] compareExpression)* ;
-# result: makeCall [:@varRef \"and":]
+andExpression ::= compareExpression (@"&&" compareExpression)* ;
+# result: makeCall @["varRef" \"and"]
 #             (makeThunk expr1) (makeThunk expr2) ...
 
 compareExpression ::=
     bitExpression
-    (([:"==":] | [:"!=":] | [:"<":] | [:">":] | [:"<=":] | [:">=":])
+    ((@"==" | @"!=" | @"<" | @">" | @"<=" | @">=")
      bitExpression)*
 ;
-# result: makeCall [:@varRef @orderChain:]
-#             (makeThunk expr1) [:@varRef "<op1>":]
-#             (makeThunk expr2) [:@varRef "<op2>":]
+# result: makeCall @["varRef" "orderChain"]
+#             (makeThunk expr1) @["varRef" "<op1>"]
+#             (makeThunk expr2) @["varRef" "<op2>"]
 #             ...;
 # Note: The orderChain function is defined to call the indicated ops with
 # pairs of values derived from the thunks, guaranteeing that each thunk
@@ -159,33 +159,33 @@ compareExpression ::=
 
 bitExpression ::=
     additiveExpression
-    (([:"<<":] | [:">>":] | [:"&":] | [:"|":] | [:"^":]) bitExpression)?
+    ((@"<<" | @">>" | @"&" | @"|" | @"^") bitExpression)?
 ;
-# result: makeCall [:@varRef "<op>":] expr1 expr2
+# result: makeCall @["varRef" "<op>"] expr1 expr2
 
 additiveExpression ::=
     multiplicativeExpression
-    (([:"+":] | [:"-":]) additiveExpression)?
+    ((@"+" | @"-") additiveExpression)?
 ;
-# result: makeCall [:@varRef "<op>":] expr1 expr2
+# result: makeCall @["varRef" "<op>"] expr1 expr2
 
 multiplicativeExpression ::=
     unaryExpression
-    (([:"*":] | [:"/":] | [:"%":]) multiplicativeExpression)?
+    ((@"*" | @"/" | @"%") multiplicativeExpression)?
 ;
-# result: makeCall [:@varRef "<op>":] expr1 expr2
+# result: makeCall @["varRef" "<op>"] expr1 expr2
 
 unaryPrefixExpression ::=
-    ([:"!":] | [:"~":] | [:"-":])* unaryPostfixExpression
+    (@"!" | @"~" | @"-")* unaryPostfixExpression
 ;
-# result: ... (makeCall [:@varRef "<op>":] (makeCall [:@varRef "<op>":] expr))
+# result: ... (makeCall @["varRef" "<op>"] (makeCall @["varRef" "<op>"] expr))
 #         (etc.)
 
 unaryPostfixExpression ::=
     atom
-    ([:"(":] [:")":] | [:"[":] expression [:"]":] ))*
+    (@"(" @")" | @"[" expression @"]" ))*
 ;
-# result: ... (makeCall [:@varRef "[]":] (makeCall atom) expression) ...
+# result: ... (makeCall @["varRef" "[]"] (makeCall atom) expression) ...
 #         (etc.)
 
 atom ::=
@@ -198,6 +198,6 @@ atom ::=
 # result when evaluated is a no-args function which computes and returns
 # the indicated expression.
 makeThunk = { expression ::
-    <> [:@function [@statements=[] @yield=expression]]
+    <> @["function" ["statements"=[] "yield"=expression]]
 };
 ```

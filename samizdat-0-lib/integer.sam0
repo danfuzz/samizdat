@@ -15,5 +15,5 @@ integerSign = { integer ::
 };
 
 <> [
-    @integerSign = integerSign
+    "integerSign" = integerSign
 ]
