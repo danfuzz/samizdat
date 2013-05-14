@@ -127,18 +127,22 @@ of various expression nodes.
   actual arguments bound by this formal is not necessarily exactly one.
   If present it must be one of:
 
-  * `"*"` &mdash; indicates that this formal binds as many actual
-    arguments as are available, including none. As such, this only really
-    makes sense as the `repeat` of the last formal, though the surface syntax
-    will tolerate it being in any position. The bound argument variable
-    becomes a list of all the passed actual arguments that were bound.
-
   * `"?"` &mdash; indicates that this formal binds a single argument if
     available, including none. As such, this only really makes sense if
     only ever followed by other `?` formals and possibly a final `*` formal,
     though the syntax will tolerate it being in any position. The bound
     argument variable becomes a list, either of size one if an argument
     was bound or of size zero if not.
+
+  * `"*"` &mdash; indicates that this formal binds as many actual
+    arguments as are available, including none. As such, this only really
+    makes sense as the `repeat` of the last formal, though the surface syntax
+    will tolerate it being in any position. The bound argument variable
+    becomes a list of all the passed actual arguments that were bound.
+
+  * `"+"` &mdash; indicates that this formal binds as many actual
+    arguments as are available, and it must bind at least one. Other than
+    the minumum of one, this is identical to the `"*"` modifier.
 
 If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
