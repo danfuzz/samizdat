@@ -18,7 +18,7 @@ the runtime) if `string` is not a string of size 1.
 Returns a string consisting of the concatenation of the contents
 of all the argument strings, in argument order.
 
-#### `stringFromInteger integer <> string`
+#### `stringFromInt integer <> string`
 
 Returns a single-character string that consists of the character
 code indicated by the given integer argument, which must be in the

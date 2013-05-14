@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Integers
---------
+Ints
+----
 
 <br><br>
 ### Primitive Definitions

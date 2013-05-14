@@ -11,9 +11,9 @@
 #
 
 # Single-character strings `"\0"` `"\x7f;"` and `"\x9f;"`.
-CHAR_0 = stringFromInteger 0;
-CHAR_127 = stringFromInteger 127;
-CHAR_159 = stringFromInteger 159;
+CHAR_0 = stringFromInt 0;
+CHAR_127 = stringFromInt 127;
+CHAR_159 = stringFromInt 159;
 
 # Helper for optionally adorning results.
 adornIf = { adorn before value after ::
@@ -49,7 +49,7 @@ INTEGER_SIGNS = [
 ];
 
 # Stringifies an integer.
-doInteger = { recurse integer adorn ::
+doInt = { recurse integer adorn ::
     <> (mapGet INTEGER_SIGNS (integerSign integer)) integer
 };
 
@@ -193,7 +193,7 @@ doUnknown = { recurse unknown ::
 # Mapping from low-layer type names to stringifiers.
 STRINGIFIERS = [
     "highlet" = doHighlet
-    "integer" = doInteger
+    "integer" = doInt
     "list"    = doList
     "map"     = doMap
     "string"  = doString

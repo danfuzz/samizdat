@@ -77,7 +77,7 @@ static void skipWhitespace(ParseState *state) {
 /**
  * Parses an integer token, updating the given input position.
  */
-static zvalue tokenizeInteger(ParseState *state) {
+static zvalue tokenizeInt(ParseState *state) {
     zint value = 0;
     zint sign = 1;
     bool any = false;
@@ -258,7 +258,7 @@ static zvalue tokenizeOne(ParseState *state) {
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
         case '-':
-            return tokenizeInteger(state);
+            return tokenizeInt(state);
     }
 
     zvalue result = tokenizeIdentifier(state);

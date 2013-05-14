@@ -90,7 +90,7 @@ parseString = filterRule
     { result :: <> @["literal" (highletValue result)] };
 
 # Parses an `integer` node.
-parseInteger = filterRule
+parseInt = filterRule
     @integer
     { result :: <> @["literal" (highletValue result)] };
 
@@ -272,7 +272,7 @@ TREE0_RULES = [
     "formal" = parseFormal
     "function" = parseFunction
     "highlet" = parseHighlet
-    "integer" = parseInteger
+    "integer" = parseInt
     "list" = parseList
     "map" = parseMap
     "nonlocalExit" = parseNonlocalExit

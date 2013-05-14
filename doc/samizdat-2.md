@@ -18,7 +18,7 @@ rules.
 
 ```
 token ::= punctuation2 | punctuation |
-    integer | hexInteger | binaryInteger |
+    integer | hexInt | binaryInt |
     string | keyword | identifier
 ;
 # Note: The punctuation2 rule intentionally gets listed before the
@@ -40,13 +40,13 @@ punctuation2 ::=
     ["&|^+-/%!~"]
 ;
 
-hexInteger ::= "0x" hexDigit+ ;
+hexInt ::= "0x" hexDigit+ ;
 # result: @["integer" <integer>]
 
 hexDigit ::= ["0".."9" "a".."f" "A".."F"] ;
 # result: <integer>
 
-binaryInteger ::= "0b" binaryDigit+ ;
+binaryInt ::= "0b" binaryDigit+ ;
 # result: @["integer" <integer>]
 
 binaryDigit ::= ["01"] ;

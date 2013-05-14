@@ -39,7 +39,7 @@ parsePunctuation = filterRule
 INTEGER_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
 
 # Parses an `integer` token.
-parseInteger = filterRule
+parseInt = filterRule
     (seqRule
         (filterRule
             (optRule (charsRule "-"))
@@ -117,7 +117,7 @@ parseWhitespace = orRule
 TOKEN0_RULES = [
     "file" = parseFile
     "identifier" = parseIdentifier
-    "integer" = parseInteger
+    "integer" = parseInt
     "punctuation" = parsePunctuation
     "quotedIdentifier" = parseQuotedIdentifier
     "string" = parseString

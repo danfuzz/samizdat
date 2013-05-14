@@ -42,7 +42,7 @@ result will be one of: `"integer"` `"string"` `"list"` `"map"`
 
 Returns `true` iff the given value is a highlet.
 
-#### `isInteger value <> boolean`
+#### `isInt value <> boolean`
 
 Returns `true` iff the given value is an integer.
 

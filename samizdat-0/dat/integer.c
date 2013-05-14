@@ -12,7 +12,7 @@
  */
 
 enum {
-    /** Integers are restricted to being in the range of `int32_t`. */
+    /** Ints are restricted to being in the range of `int32_t`. */
     MAX_BITS = 32
 };
 
@@ -46,7 +46,7 @@ static zint bitSize(zint value) {
  * type checking.
  */
 static zint integerValue(zvalue integer) {
-    return ((DatInteger *) integer)->value;
+    return ((DatInt *) integer)->value;
 }
 
 
@@ -120,7 +120,7 @@ zvalue datIntFromZint(zint value) {
         die("Value too large to fit into integer: %lld", value);
     }
 
-    ((DatInteger *) result)->value = (int32_t) value;
+    ((DatInt *) result)->value = (int32_t) value;
     return result;
 }
 

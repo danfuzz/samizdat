@@ -25,7 +25,7 @@ Ordering is calculated as follows:
 The major order is by type &mdash; `integer < string < list <
 map < uniqlet < highlet` &mdash; and minor order is type-dependant.
 
-* Integers order by integer value.
+* Ints order by integer value.
 
 * Lists and strings order by pairwise corresponding-element
   comparison, with a strict prefix always ordering before its

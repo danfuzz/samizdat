@@ -53,15 +53,15 @@ typedef struct DatValue {
 } DatValue;
 
 /**
- * Integer structure.
+ * Int structure.
  */
 typedef struct {
     /** Value header. */
     DatValue header;
 
-    /** Integer value. See `datIntFromZint()` about range restriction. */
+    /** Int value. See `datIntFromZint()` about range restriction. */
     int32_t value;
-} DatInteger;
+} DatInt;
 
 /**
  * String structure.

@@ -151,7 +151,7 @@ zint datSize(zvalue value);
 
 
 /*
- * Integer Functions
+ * Int Functions
  */
 
 /**

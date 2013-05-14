@@ -36,7 +36,7 @@ diffHighlet = { recurse context v1 v2 ::
 };
 
 # Diffs integers.
-diffInteger = { recurse context v1 v2 ::
+diffInt = { recurse context v1 v2 ::
     <> report context v1 v2 "Different integers."
 };
 
@@ -98,7 +98,7 @@ diffUniqlet = { recurse context v1 v2 ::
 # Mapping from type names to diff functions.
 DIFF_FUNCTIONS = [
     "highlet" = diffHighlet
-    "integer" = diffInteger
+    "integer" = diffInt
     "list"    = diffList
     "map"     = diffMap
     "string"  = diffString

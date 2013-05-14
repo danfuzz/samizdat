@@ -66,5 +66,5 @@ PRIM_FUNC(object);
 PRIM_FUNC(sam0Eval);
 PRIM_FUNC(sam0Tree);
 PRIM_FUNC(stringAdd);
-PRIM_FUNC(stringFromInteger);
+PRIM_FUNC(stringFromInt);
 PRIM_FUNC(stringNth);

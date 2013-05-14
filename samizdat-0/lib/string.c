@@ -50,7 +50,7 @@ PRIM_IMPL(integerFromString) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringFromInteger) {
+PRIM_IMPL(stringFromInt) {
     requireExactly(argCount, 1);
     return stringFromChar(datCharFromInt(args[0]));
 }
