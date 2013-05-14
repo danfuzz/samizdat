@@ -25,32 +25,32 @@ CHAR_0 = stringFromInteger 0;
 
 parseArguments = filterRule
     (seqRule
-        @options
+        "options"
         (optRule (charsRule (stringAdd "--" CHAR_0)))
-        @words)
+        "words")
     { result ::
         optsErrors = listNth result 0;
         words = listNth result 2;
-        ifTrue { <> mapGet optsErrors @errors }
+        ifTrue { <> mapGet optsErrors "errors" }
             { io0Die "Trouble with options." };
         ifTrue { <> eq (lowSize words) 0 }
             { io0Die "Missing file name." };
         fileName = listNth words 0;
         args = listDelNth words 0;
         <> [
-            @options = (mapGet optsErrors @options)
-            @file = fileName
-            @args = args
+            "options" = (mapGet optsErrors "options")
+            "file" = fileName
+            "args" = args
         ]
     };
 
 parseOptions = filterRule
     (starRule
        (filterRule
-            (seqRule (orRule @option @error) @wordBreak)
+            (seqRule (orRule "option" "error") "wordBreak")
             { result :: <> listNth result 0 }))
     { result ::
-        <> listReduce [@options=[=] @errors=false] result
+        <> listReduce ["options"=[=] "errors"=false] result
             { result . one :: <> one result }
     };
 
@@ -65,11 +65,11 @@ parseError = filterRule
         more = listNth result 2;
         value = apply stringAdd c0 c1 more;
         io0Note (format "Unknown option: %Q" value);
-        <> { result :: <> mapPut result @errors true }
+        <> { result :: <> mapPut result "errors" true }
     };
 
 parseOption = filterRule
-    (seqRule (charsRule "--") @key (optRule @value))
+    (seqRule (charsRule "--") "key" (optRule "value"))
     { result ::
         key = listNth result 1;
         valueHolder = listNth result 2;
@@ -77,8 +77,8 @@ parseOption = filterRule
             { value :: <> value }
             { <> true };
         <> { result ::
-            options = mapPut (mapGet result @options) key value;
-            <> mapPut result @options options
+            options = mapPut (mapGet result "options") key value;
+            <> mapPut result "options" options
         }
     };
 
@@ -88,12 +88,12 @@ parseKey = filterRule
     { result :: <> apply stringAdd result };
 
 parseValue = filterRule
-    (seqRule (charsRule "=") @word)
+    (seqRule (charsRule "=") "word")
     { result :: <> listNth result 1 };
 
 parseWords = starRule
     (filterRule
-        (seqRule @word @wordBreak)
+        (seqRule "word" "wordBreak")
         { result :: <> listNth result 0 });
 
 parseWord = filterRule
@@ -103,15 +103,15 @@ parseWord = filterRule
 parseWordBreak = charsRule CHAR_0;
 
 RULES = [
-    @arguments = parseArguments
-    @error = parseError
-    @key = parseKey
-    @option = parseOption
-    @options = parseOptions
-    @value = parseValue
-    @word = parseWord
-    @wordBreak = parseWordBreak
-    @words = parseWords
+    "arguments" = parseArguments
+    "error" = parseError
+    "key" = parseKey
+    "option" = parseOption
+    "options" = parseOptions
+    "value" = parseValue
+    "word" = parseWord
+    "wordBreak" = parseWordBreak
+    "words" = parseWords
 ];
 
 # Parses the command-line arguments. Starts by appending all the
@@ -130,4 +130,4 @@ parseArgs = { args ::
     <> parseArguments theEngine;
 };
 
-<> [@parseArgs = parseArgs]
+<> ["parseArgs" = parseArgs]
