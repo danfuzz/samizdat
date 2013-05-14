@@ -292,7 +292,7 @@ code block are available to be used in the code block.
 
 For example:
 
-* The parser `{/ { <> 23 } /}` will always succeed, yielding the integer
+* The parser `{/ { <> 23 } /}` will always succeed, yielding the int
   value `23` and consuming no input.
 
 * The parser `{/ { "stuff" } /}` will always fail, since the code block never

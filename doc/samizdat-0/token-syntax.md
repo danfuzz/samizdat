@@ -12,7 +12,7 @@ list of all the tokens.
 file ::= (whitespace* token)* whitespace* ;
 # result: [token*]
 
-token ::= punctuation | integer | string | identifier | quotedIdentifier ;
+token ::= punctuation | int | string | identifier | quotedIdentifier ;
 # result: same as whichever alternate was picked.
 
 punctuation ::=
@@ -21,8 +21,8 @@ punctuation ::=
 ;
 # result: a valueless highlet with the matched string as its type tag.
 
-integer ::= "-"? ["0".."9"]+ ;
-# result: @["integer" <integer>]
+int ::= "-"? ["0".."9"]+ ;
+# result: @["int" <int>]
 
 string ::= "\"" ([! "\\" "\""] | ("\\" ["\\" "\"" "n"]))* "\"" ;
 # result: @["string" <string>]

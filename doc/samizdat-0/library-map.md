@@ -34,8 +34,8 @@ Returns `true` iff the given map has a mapping for the given key.
 #### `mapNth map n notFound? <> . | ~.`
 
 Returns the `n`th (zero-based) mapping of the given map, if `n` is
-a valid integer index into the map. If `n` is not a valid index
-(either an out-of-range integer, or some other value), then this
+a valid int index into the map. If `n` is not a valid index
+(either an out-of-range int, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied.
 
@@ -44,8 +44,8 @@ The ordering of the mappings is by sort order of the keys.
 #### `mapNthKey map n notFound? <> . | ~.`
 
 Returns the key of the `n`th (zero-based) mapping of the given map,
-if `n` is a valid integer index into the map. If `n` is not a valid index
-(either an out-of-range integer, or some other value), then this
+if `n` is a valid int index into the map. If `n` is not a valid index
+(either an out-of-range int, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied.
 
@@ -54,8 +54,8 @@ The ordering of the mappings is by sort order of the keys.
 #### `mapNthValue map n notFound? <> . | ~.`
 
 Returns the value of the `n`th (zero-based) mapping of the given map,
-if `n` is a valid integer index into the map. If `n` is not a valid index
-(either an out-of-range integer, or some other value), then this
+if `n` is a valid int index into the map. If `n` is not a valid index
+(either an out-of-range int, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied.
 

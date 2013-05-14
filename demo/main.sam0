@@ -19,7 +19,7 @@ SELF_PATH ARGS* ::
 # self-recursive Samizdat function might end up looking when coverted
 # into Samizdat Layer 0 form.
 #
-# Returns a list with integer contents that count down from `n`,
+# Returns a list with int contents that count down from `n`,
 # generated recursively. The "main" function literal here is wrapped
 # in an outer function layer, whose argument is used to achieve
 # recursion. See `xCombinator` above.

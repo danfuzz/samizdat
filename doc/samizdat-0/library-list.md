@@ -15,8 +15,8 @@ of all the argument lists, in argument order.
 #### `listDelNth list n <> list`
 
 Returns a list just like the given one, except that the `n`th
-(zero-based) element is deleted, if `n` is a valid integer index into
-the given list. If `n` is not a valid index (not an integer, or with
+(zero-based) element is deleted, if `n` is a valid int index into
+the given list. If `n` is not a valid index (not an int, or with
 a value out of range), then this returns the original list as the
 result.
 
@@ -33,8 +33,8 @@ list. If not, it is an error (terminating the runtime).
 #### `listNth list n notFound? <> . | ~.`
 
 Returns the `n`th (zero-based) element of the given list, if `n` is
-a valid integer index into the list. If `n` is not a valid index
-(either an out-of-range integer, or some other value), then this
+a valid int index into the list. If `n` is not a valid index
+(either an out-of-range int, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied.
 

@@ -18,11 +18,11 @@ rules.
 
 ```
 token ::= punctuation2 | punctuation |
-    integer | hexInt | binaryInt |
+    int | hexInt | binaryInt |
     string | keyword | identifier
 ;
 # Note: The punctuation2 rule intentionally gets listed before the
-# integer rule, so that in this layer `-<digit>` gets interpreted as two
+# int rule, so that in this layer `-<digit>` gets interpreted as two
 # tokens.
 
 keyword ::=
@@ -41,16 +41,16 @@ punctuation2 ::=
 ;
 
 hexInt ::= "0x" hexDigit+ ;
-# result: @["integer" <integer>]
+# result: @["int" <int>]
 
 hexDigit ::= ["0".."9" "a".."f" "A".."F"] ;
-# result: <integer>
+# result: <int>
 
 binaryInt ::= "0b" binaryDigit+ ;
-# result: @["integer" <integer>]
+# result: @["int" <int>]
 
 binaryDigit ::= ["01"] ;
-# result: <integer>
+# result: <int>
 ```
 
 
@@ -170,7 +170,7 @@ unaryPostfixExpression ::=
 #         (etc.)
 
 atom ::=
-    varRef | integer | string |
+    varRef | int | string |
     emptyList | list | emptyMap | map |
     uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever choice matched>

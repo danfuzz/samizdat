@@ -37,10 +37,10 @@ thisIsNotCommentary   # ...but this *is* commentary.
 
 ### Int
 
-An `integer` is a signed arbitrary-precision integer value, sometimes
+An `int` is a signed arbitrary-precision integer value, sometimes
 called a "bigint" or "BigInteger" (even though they aren't always actually
 that big). In the C implementation, there is actually a limitation that
-integers only have a 32-bit signed range, with out-of-range arithmetic
+ints only have a 32-bit signed range, with out-of-range arithmetic
 results causing failure, not wraparound.
 
 Ints are written as an optional `-` (minus sign), followed by one or
