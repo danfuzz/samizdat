@@ -409,12 +409,17 @@ parserAtom = {/
     parserSet
 |
     @"{"
-    yieldDef = (yieldDef? @"::")?
+    yieldDef = (
+        y = yieldDef
+        @"::"
+        { <> ["yieldDef" = y] }
+    |
+        @"::"?
+        { <> [=] }
+    )
     body = programBody
     @"}"
-    {
-        <> ... # TODO
-    }
+    { <> @["function" (mapAdd yieldDef body)] }
 /};
 
 parserSet = {/
