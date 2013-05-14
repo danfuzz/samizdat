@@ -7,7 +7,7 @@ Functions And Code
 <br><br>
 ### Primitive Definitions
 
-#### `apply function (value* list)? <> . | ~.`
+#### `apply function value* list? <> . | ~.`
 
 Calls the given function with the given arguments.
 
