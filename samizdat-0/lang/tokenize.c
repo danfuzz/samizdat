@@ -75,7 +75,7 @@ static void skipWhitespace(ParseState *state) {
 }
 
 /**
- * Parses an integer token, updating the given input position.
+ * Parses an int token, updating the given input position.
  */
 static zvalue tokenizeInt(ParseState *state) {
     zint value = 0;
@@ -99,16 +99,16 @@ static zvalue tokenizeInt(ParseState *state) {
         value = (value * 10) + (ch - '0');
 
         if (value >= 0x80000000) {
-            die("Overlarge integer token.");
+            die("Overlarge int token.");
         }
     }
 
     if (!any) {
-        die("Invalid integer token (no digits).");
+        die("Invalid int token (no digits).");
     }
 
-    zvalue integer = datIntFromZint(value * sign);
-    return datHighletFrom(STR_INT, integer);
+    zvalue intval = datIntFromZint(value * sign);
+    return datHighletFrom(STR_INT, intval);
 }
 
 /**

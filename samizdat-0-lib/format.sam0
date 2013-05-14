@@ -22,11 +22,11 @@ adornIf = { adorn before value after ::
         { <> value }
 };
 
-# These are all the integer digits, as a map from digit values to
+# These are all the decimal int digits, as a map from digit values to
 # strings.
 INT_CHARS = [0="0" 1="1" 2="2" 3="3" 4="4" 5="5" 6="6" 7="7" 8="8" 9="9"];
 
-# Helper for stringifying integers, which does most of the conversion,
+# Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
 intBody = { start value <out> ::
     loopReduce ["" value] { result ::
@@ -41,16 +41,16 @@ intBody = { start value <out> ::
     }
 };
 
-# Map from integer sign values to the appropriate stringifier for each.
+# Map from int sign values to the appropriate stringifier for each.
 INT_SIGNS = [
-    -1 = { integer :: <> intBody "-" (ineg integer) }
+    -1 = { int :: <> intBody "-" (ineg int) }
     0  = { <> "0" }
-    1  = { integer :: <> intBody "" integer }
+    1  = { int :: <> intBody "" int }
 ];
 
-# Stringifies an integer.
-doInt = { recurse integer adorn ::
-    <> (mapGet INT_SIGNS (intSign integer)) integer
+# Stringifies an int.
+doInt = { recurse int adorn ::
+    <> (mapGet INT_SIGNS (intSign int)) int
 };
 
 # Helper for stringifying strings: Returns the hex form for the given
