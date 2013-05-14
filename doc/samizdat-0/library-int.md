@@ -7,28 +7,28 @@ Ints
 <br><br>
 ### Primitive Definitions
 
-#### `iadd integer1 integer2 <> integer`
+#### `iadd int1 int2 <> int`
 
 Returns the sum of the given values.
 
-#### `iand integer1 integer2 <> integer`
+#### `iand int1 int2 <> int`
 
 Returns the binary-and (intersection of all one-bits) of the given values.
 
-#### `ibit integer n <> integer`
+#### `ibit int n <> int`
 
-Returns as an integer (`0` or `1`) the bit value in the first
+Returns as an int (`0` or `1`) the bit value in the first
 argument at the bit position (zero-based) indicated by the second
 argument. It is an error (terminating the runtime) if the second
 argument is negative.
 
-#### `idiv integer1 integer2 <> integer`
+#### `idiv int1 int2 <> int`
 
 Returns the quotient of the given values (first over second),
-truncated (rounded toward zero) to yield an integer result. It is an
+truncated (rounded toward zero) to yield an int result. It is an
 error (terminating the runtime) if the second argument is `0`.
 
-#### `imod integer1 integer2 <> integer`
+#### `imod int1 int2 <> int`
 
 Returns the division modulus of the given values (first over
 second). The sign of the result will always match the sign of the
@@ -43,24 +43,24 @@ the same sign as `y` such that `isub x m` is a multiple of `y`.
 **Note:** This differs from the `irem` in the treatment of negative
 numbers.
 
-#### `imul integer1 integer2 <> integer`
+#### `imul int1 int2 <> int`
 
 Returns the product of the given values.
 
-#### `ineg integer <> integer`
+#### `ineg int <> int`
 
 Returns the negation (same magnitude, opposite sign) of the given
 value.
 
-#### `inot integer <> integer`
+#### `inot int <> int`
 
 Returns the binary complement (all bits opposite) of the given value.
 
-#### `ior integer1 integer2 <> integer`
+#### `ior int1 int2 <> int`
 
 Returns the binary-or (union of all one-bits) of the given values.
 
-#### `irem integer1 integer2 <> integer`
+#### `irem int1 int2 <> int`
 
 Returns the truncated-division remainder of the given values (first
 over second). The sign of the result will always match the sign of the
@@ -72,10 +72,10 @@ argument is `0`.
 **Note:** This differs from the `imod` in the treatment of negative
 numbers.
 
-#### `ishl integer shift <> integer`
+#### `ishl int shift <> int`
 
-Returns the first argument (an integer) bit-shifted an amount indicated
-by the second argument (also an integer). If `shift` is positive, this
+Returns the first argument (an int) bit-shifted an amount indicated
+by the second argument (also an int). If `shift` is positive, this
 is a left-shift operation. If `shift` is negative, this is a right-shift
 operation. If `shift` is `0`, this is a no-op, returning the first
 argument unchanged.
@@ -83,23 +83,23 @@ argument unchanged.
 **Note:** The `shift` argument is not limited in any particular way (not
 masked, etc.).
 
-#### `ishr integer shift <> integer`
+#### `ishr int shift <> int`
 
 Returns the first argument bit-shifted by an amount indicated by the
 second argument. This is identical to `ishl`, except that the sense of
 positive and negative `shift` is reversed.
 
 **Note:** Unlike some other languages, there is no unsigned right-shift
-operation in *Samizdat Layer 0*. This is because integers are unlimited
+operation in *Samizdat Layer 0*. This is because ints are unlimited
 in bit width, and so there is no way to define such an operation. If
 you need "unsigned" operations, just operate consistently on
-non-negative integers.
+non-negative ints.
 
-#### `isub integer1 integer2 <> integer`
+#### `isub int1 int2 <> int`
 
 Returns the difference of the given values (first minus second).
 
-#### `ixor integer1 integer2 <> integer`
+#### `ixor int1 int2 <> int`
 
 Returns the binary-xor (bitwise not-equal) of the given values.
 
@@ -107,7 +107,7 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 <br><br>
 ### In-Language Definitions
 
-#### `integerSign integer <> integer`
+#### `intSign int <> int`
 
 Returns the sign of the given value: `-1` for negative values,
 `1` for positive values, or `0` for `0`.
