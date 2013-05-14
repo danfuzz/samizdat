@@ -97,7 +97,7 @@ When so marked, the item's yield is the same as what it would have
 yielded without the mark.
 
 To indicate that an item must not be matched, precede it by a
-not-ampersand (`!&`). When so marked, the item's yield is always
+not/bang (`!`). When so marked, the item's yield is always
 `null` when successful, where "success" means *failing* to match the
 item in question.
 
@@ -108,10 +108,10 @@ For example:
   remainder of `"bar"`. However, the same parser will *fail* to match
   `"foobaz"` because the lookahead `&"foobar"` will fail.
 
-* The parser `{/ !&"foobaz" "foo" /}` will match the string
+* The parser `{/ !"foobaz" "foo" /}` will match the string
   `"foobar"`, resulting in the yielded value `@foo` and a remainder of
   `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
-  the lookahead `!&"foobaz"` will fail (because a `"foobaz"` lookahead
+  the lookahead `!"foobaz"` will fail (because a `"foobaz"` lookahead
   will *succeed* in matching).
 
 ### Repeat matching
@@ -322,8 +322,7 @@ punctuation = {/
     "{/" |
     "/}" |
     "!." |
-    "!&" |
-    ["&" "|"]
+    ["&" "|" "!"]
 /};
 ```
 
@@ -370,7 +369,7 @@ namePex = {/
 
 lookaheadPex = {/
     (
-        lookahead = [@"&" @"!&"]
+        lookahead = [@"&" @"!"]
         pex = repeatPex
         { <> @[lookahead pex] }
     )
