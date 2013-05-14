@@ -329,14 +329,14 @@ DEF_PARSE(string) {
 }
 
 /**
- * Parses an `integer` node.
+ * Parses an `int` node.
  */
-DEF_PARSE(integer) {
+DEF_PARSE(int) {
     MARK();
 
-    zvalue integer = MATCH_OR_REJECT(INT);
+    zvalue intval = MATCH_OR_REJECT(INT);
 
-    return makeLiteral(datHighletValue(integer));
+    return makeLiteral(datHighletValue(intval));
 }
 
 /**
@@ -385,7 +385,7 @@ DEF_PARSE(atom) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varRef); }
-    if (result == NULL) { result = PARSE(integer); }
+    if (result == NULL) { result = PARSE(int); }
     if (result == NULL) { result = PARSE(string); }
     if (result == NULL) { result = PARSE(emptyList); }
     if (result == NULL) { result = PARSE(list); }
