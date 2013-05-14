@@ -24,7 +24,7 @@ punctuation ::=
 integer ::= "-"? ["0".."9"]+ ;
 # result: @["integer" <integer>]
 
-string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
+string ::= "\"" ([! "\\" "\""] | ("\\" ["\\" "\"" "n"]))* "\"" ;
 # result: @["string" <string>]
 
 identifier ::=
@@ -34,6 +34,6 @@ identifier ::=
 quotedIdentifier ::= "\\" string
 # result: @["identifier" (highletValue string)]
 
-whitespace ::= [" \n"] | "#" (~("\n"))* "\n" ;
+whitespace ::= [" " "\n"] | "#" [! "\n"]* "\n" ;
 # result: n/a; automatically ignored.
 ```
