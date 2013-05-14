@@ -35,217 +35,18 @@ functions defined using this syntax with ones defined more "manually".
 Syntax and Semantics
 --------------------
 
-The following list of parser forms is in precedence order, from
-tightest to loosest.
+The following list of parser forms. With respect to the
+expression forms, they are is in precedence, from loosest to tightest.
 
 ### Parsing functions
 
-Parsing functions are written as a parsing expression inside "parsing
-braces" `{/ ... /}`. Just as regular braces enclose an anonymous
+Parsing functions are written as a single parsing expression inside
+"parsing braces" `{/ ... /}`. Just as regular braces enclose an anonymous
 function / closure, parsing braces enclose an anonymous parsing
 function / closure.
 
-When evaluated, the result of a parsing function literal is a (regular)
-function of two arguments, `yield` and `input`. To indicate successful
-parsing, the parsing function (a) calls `yield` with the result of parsing,
-and (b) returns a replacement `input` state meant to reflect what was
-consumed from the original `input` (if anything). To indicate a parsing
-failure, the parsing function (a) calls `yield` with no argument to indicate
-a void yield, and (b) returns void.
-
-The input state is expected to be a list of to-be-parsed elements, such
-as characters for tokenization or tokens for a tree parser.
-
-If parsing succeeds and a value is `yield`ed, then the return value is
-expected to be a list of whatever input remains (including possibly
-the empty list).
-
-The default `yield` value of a parsing function is whatever the yielded
-result is from the *last* item in the list of items to match in the
-function. This default can be overridden by using a filtering clause
-(see below).
-
-**Note:** It is perfectly acceptable to define parsing functions as
-regular functions with the prescribed formal arguments. As long as they
-obey the parsing function contract, they should have no trouble interoperating
-with parsing functions expanded from the parsing function literal syntax
-described here.
-
-### Matching character sequences
-
-The basic "terminal" in the context of a tokenizer is a character.
-Within a parsing function, a dollar sign (`$`) followed by a
-double-quoted string is how to indicate that a literal sequence of characters
-is to be matched. The result of matching a character sequence is a
-valueless highlet whose type is the the matched string.
-
-For example, the parser `{/ $"foo" /}` will match the string `"foobar"`,
-resulting in the yielded value `@foo` and a remainder of `"bar"`.
-
-### Matching tokens of a particular type
-
-Tokens are generally represented as highlets, with the highlet type
-indicating the type of the token, and the highlet value optionally
-indicating a data payload. Tokens are the basic terminals in the
-context of tree parsing.
-
-Within a parsing function, a valueless highlet is how to indicate
-that a token of the indicated type is to be matched. The result of
-matching is the full original token, including whatever data payload
-it happened to have.
-
-For example, the parser `{/ @foo /}` will match the token list
-`[@foo @bar]`, resulting in the yielded value `@foo` and a
-remainder of `[@bar]`.
-
-### Matching an arbitrary terminal item
-
-To match an arbitrary terminal item (character or token), use a
-plain dot (`.`).
-
-For example, the parser `{/ . . . /}` matches an arbitrary
-sequence of three terminals. (See "Matching sequences of items", below.)
-
-### Matching the end-of-input
-
-To match the end of input, use a not-dot (`!.`). This only ever matches
-when there is no input available. When matched, this yields the value
-`null`.
-
-For example, the parser `{/ $"foo" !. /}` will match the string `"foo"` but
-only if it's at the end of input.
-
-### Matching character or token sets
-
-To match a set of characters (for tokenization) or tokens (for tree parsing),
-place them between "set brackets" `[/ ... /]`. Characters of a character
-set can be combined into a single string literal for convenience, e.g.
-`[/"x" "y"/]` and `[/"xy"/]` are equivalent.
-
-Note that this syntax is valid at the same level as parsing functions and
-other atoms, and *not* limited to appearing within a parsing function's
-pattern.
-
-To match any terminal other than items from a particular set, precede the
-set contents with a not/bang (`!`), *inside* the set brackets. Note that
-there is a difference between a complemented set, which can consume one
-input item, and a lookahead failure of a set (`!&[/ ... /]`, see below),
-which never consumes input.
-
-For example:
-
-* The parser `[/"blort"/]` will match any of the characters
-  `b` `l` `o` `r` or `t`.
-
-* The parser `[/! "\n"/]` will match any character but a newline.
-
-* The parser `[/@foo @bar/]` will match either
-  a `@foo` or a `@bar` token.
-
-* The parser `[/! @foo @bar/]` will match any token but a
-  `@foo` or a `@bar` token.
-
-### Matching using other parser functions
-
-A parser function can delegate to another parser function by naming
-that other parser function (as a variable reference) or including it
-in-line as a function literal (either a parser function or a regular
-function). The result of parsing is identical to whatever that other
-parsing function returns.
-
-For example:
-
-* The parser `{/ foo /}` will match whatever `foo` matches,
-  assuming that `foo` is a properly-written parser function. The yielded
-  result will be the same as the `foo` parser's yield.
-
-* The parser `{/ {/ foo /} /}` will also match whatever `foo` matches.
-  The yielded result will be the same as the `foo` parser's yield.
-
-### Grouping
-
-To override the default precedence of the syntax, use the parser
-function literal form, per "Matching using other parser functions,"
-immediately above.
-
-### Optionally matching an item
-
-A parser item (character, token, or function) may be made optional by
-following it with a question mark (`?`). So marked, parsing this item
-always succeeds and results in a list. If the underlying item was
-indeed matched, then the result is a single-element list containing
-the item's parsing result. If the underlying item was not matched,
-then the result is an empty list.
-
-### Matching zero or more occurrences of an item
-
-To match a sequence of zero or more occurrences of an item, it can be
-followed by a star (`*`). So marked, parsing this item always
-succeeds (because zero items is a possibility), and results in a list
-consisting of all the parsed results from matching the item, in order.
-
-### Matching one or more occurrences of an item
-
-To match a sequence of one or more occurrences of an item, it can be
-followed by a plus (`+`). So marked, if successful, the result is
-just like the result of a `*`-marked rule. However, this will fail in
-cases where there is not even one resulting match.
-
-### Matching sequences of items
-
-To match a sequence of items, the items are simply listed in order. Per
-the overall definition of parser function semantics, the result of matching
-a sequence of items is whatever the yield is from the *last* item listed.
-
-For example, the parser `{/ @foo @bar /}` will match the token
-list `[@foo @bar @baz]`, resulting in the yielded value
-`@bar` and a remainder of `[@baz]`.
-
-### Lookahead success
-
-To match an item without "consuming" it from the input, the item can
-be preceded by an ampersand (`&`). When matched, the yielded value
-of a lookahead is identical to what the underlying item yielded.
-
-For example, the parser `{/ &$"foobar" $"foo" /}` will match the string
-`"foobar"`, resulting in the yielded value `@foo` and a
-remainder of `"bar"`. However, the same parser will *fail* to match
-`"foobaz"` because the lookahead `&"foobar"` will fail.
-
-### Lookahead failure
-
-To make sure an item would *not* match, the item can be preceded by an
-not-ampersand (`!&`). As with lookahead success, this will never "consume"
-any input. When successful (that is, when lookahead fails), a lookahead
-failure yields `null`.
-
-For example, the parser `{/ !&$"foobaz" $"foo" /}` will match the string
-`"foobar"`, resulting in the yielded value `@foo` and a remainder of
-`"bar"`. However, the same parser will *fail* to match `"foobaz"` because
-the lookahead `!&$"foobaz"` will fail (because a `"foobaz"` lookahead
-*succeeds* in matching).
-
-### Filtering results
-
-To override the default result of parsing, arbitrary code may be
-specified. To do so, introduce it with `::`. This may be followed
-by any number of `;`-separated statements, optionally ending with a standard
-yield expression (`<> ...`). In order to refer to the values
-that have matched, the items in question may be preceded by an assignment of
-the form `name =` (where `name` is an arbitrary identifier). Such
-an assignment must occur before any other prefix (such as `&`).
-
-The filtering form, when used, must be the last element of a parsing
-function.
-
-Note that, if the statements fail to yield a value, then the parse is
-considered to have failed.
-
-For example, the parser `{/ "(" ex=expression ")" :: <> ex /}` will
-match any input that starts with an open parenthesis, followed by a
-match of the `expression` function (presumed here to be another parser
-function), followed by a close parenthesis. The result of parsing will
-be the same as the result from the `expression` function.
+The result of calling a parsing function is the same as the result of
+the expression it contains.
 
 ### Matching one of multiple alternates
 
@@ -254,14 +55,235 @@ priority sequence (first one listed gets first "dibs", etc.), separated
 by vertical bars (`|`). The result of matching is the same as the result
 of whichever alternate was matched.
 
-This expression is valid at the layer of Samizdat expressions, and
-not valid *within* a parser function pattern declaration. Note how
-the example below is constructed.
-
-For example, the parser `{/ $"f" /} | {/ $"foo" /}` will match the string
+For example, the parser `{/ "f" | "foobar" /}` will match the string
 `"foobar"`, resulting in the yielded value `@f` and a remainder of
 `"oobar"`. Note that because of the prioritized ordering, the second
 alternate could never get picked in this case.
+
+### Matching sequences of items
+
+To match a sequence of items, the items are simply listed in order.
+The result of matching a sequence of items is the yielded result from
+the *last* item listed.
+
+For example, the parser `{/ @foo @bar /}` will match the token
+list `[@foo @bar @baz]`, resulting in the yielded value
+`@bar` and a remainder of `[@baz]`.
+
+### Binding a named variable to an item match
+
+In order to use the result of a matched item in a code block (see below),
+it is possible to bind a variable to the result. To do so, precede the
+item with an identifier name followed by an equal sign (`=`).
+
+Variables are in scope at any point after the successful match of the
+item they are bound to. Notably, a variable from one `|`-delimited
+alternate will *not* be bound for any other alternate.
+
+For example, the parser `{/ f=@foo b=@bar X /}` will match the token
+list `[@foo @bar @baz]`, resulting in the yielded value
+`@bar` and a remainder of `[@baz]`. At the point marked `X`, a local
+variable `f` will be bound to the matched yield of `@foo`, and a local
+variable `b` will be bound to the matched yield of `@bar`.
+
+### Lookahead
+
+To perform matching tests without "consuming" any input, an item
+can be preceded by a marker to indicate that the item *must* or *must not*
+be matched.
+
+To indicate that an item must be matched, precede it by an ampersand (`&`).
+When so marked, the item's yield is the same as what it would have
+yielded without the mark.
+
+To indicate that an item must not be matched, precede it by a
+not-ampersand (`!&`). When so marked, the item's yield is always
+`null` when successful, where "success" means *failing* to match the
+item in question.
+
+For example:
+
+* The parser `{/ &"foobar" "foo" /}` will match the string
+  `"foobar"`, resulting in the yielded value `@foo` and a
+  remainder of `"bar"`. However, the same parser will *fail* to match
+  `"foobaz"` because the lookahead `&"foobar"` will fail.
+
+* The parser `{/ !&"foobaz" "foo" /}` will match the string
+  `"foobar"`, resulting in the yielded value `@foo` and a remainder of
+  `"bar"`. However, the same parser will *fail* to match `"foobaz"` because
+  the lookahead `!&"foobaz"` will fail (because a `"foobaz"` lookahead
+  will *succeed* in matching).
+
+### Repeat matching
+
+It is possible to alter the number of times an item matched by
+appending one of three suffixes to the item. In all such cases, the
+result of matching is a *list* of the items matched. It is possible
+with two of these suffixes to successfully match zero items; in
+these cases, the result of matching is the empty list.
+
+To match an item either zero or one time, follow it with a question
+mark (`?`). If the item *can* be matched, it *will* be matched.
+
+To match an item zero or more times, follow it with a star (`*`). The
+item will be matched as many times as possible, including none.
+
+To match an item one or more times, follow it with a plus (`+`).
+The item will be matched as many times as possible. If it could not
+be matched at all, then the match will fail.
+
+For example:
+
+* The parser `{/ "f"? /}` will match the string `"foobar"`, resulting
+  in the yielded value `[@f]` and a remainder of `"oobar"`. The
+  same parser will match the string `"blort"`, resulting in the
+  yielded value `[]` and a remainder of `"blort"`.
+
+* The parser `{/ "f"* /}` will match the string `"ffffuuuu"`, resulting
+  in the yielded value `[@f @f @f @f]` and a remainder of `"uuuu"`. The
+  same parser will match the string `"blort"`, resulting in the
+  yielded value `[]` and a remainder of `"blort"`.
+
+* The parser `{/ "f"+ /}` will match the string `"ffizmo"`, resulting
+  in the yielded value `[@f @f]` and a remainder of `"izmo"`. The
+  same parser will fail to match the string `"blort"`, since there is
+  not even a single `"f"` at the start of the input.
+
+### Grouping
+
+To override the default precedence of the syntax, a parsing expression
+can be placed between parentheses (`( ... )`). The result of a parenthesized
+expression is the same as result of the expression so parenthesized.
+
+For example*
+
+* The parser `{/ (@foo @bar) /}` is equivalent to the parser
+  `{/ @foo @bar /}`.
+
+* The parser `{/ (@foo | @bar) @baz /}` is equivalent to the parser
+  `{/ @foo @baz | @bar @baz /}`.
+
+* The parser `{/ zamboni=(@foo | @bar) X }` will match either a `@foo`
+  token or a `@bar` token, and at the point marked `X` a variable named
+  `zamboni` will be bound with the result of parsing the `@foo`-or-`@bar`.
+
+### Matching using other parser functions (terminal)
+
+A parser function can delegate to another parser function by naming
+that other parser function (as a variable reference). The result of parsing
+is identical to whatever that other parsing function returns.
+
+For example:
+
+* The parser `{/ foo /}` will match whatever `foo` matches,
+  assuming that `foo` is a properly-written parser function. The yielded
+  result will be the same as the `foo` parser's yield.
+
+### Matching a single token (terminal)
+
+Tokens are the basic terminals in the context of tree parsing. When
+performing tree parsing, tokens are represented as highlets, with the
+highlet type indicating the type of the token, and the highlet value
+optionally indicating a data payload.
+
+To match a single token, name the token in one of the shorthand
+highlet forms `@type` or `@"type"`. This will succeed in matching any
+token whose type tag is as given, yielding that token directly
+(including any payload data) as the result.
+
+For example, the parser `{/ @foo /}` will match the token list
+`[@foo @bar]`, resulting in the yielded value `@foo` and a
+remainder of `[@bar]`.
+
+### Matching a sequence of one or more characters (terminal)
+
+Characters are the basic terminals in the context of tokenization.
+When performing tokenization, characters are represented as single-element
+strings.
+
+To match a single literal character, write the character as a regular
+string literal. To match a sequence of two or more characters, write the
+character list as a multi-character string literal. In both cases, a
+successful match will result in a *single* token (highlet) whose type
+tag is the matched string.
+
+For example:
+
+* The parser `{/ "f" /}` will match the string `"foobar"`, resulting in
+the yielded value `@f` and a remainder of `"oobar"`.
+
+* The parser `{/ "foo" /}` will match the string `"foobar"`, resulting in
+the yielded value `@foo` and a remainder of `"bar"`.
+
+### Matching an arbitrary terminal item (terminal)
+
+To match an arbitrary terminal item (character or token), use a
+plain dot (`.`).
+
+For example, the parser `{/ . . . /}` matches an arbitrary
+sequence of three terminals, with the result being the value of the
+third terminal.
+
+### Matching the end-of-input (terminal)
+
+To match the end of input, use a not-dot (`!.`). This only ever matches
+when there is no input available (that is, when the input is `[]`). When
+matched, this always yields the result value `null`.
+
+For example, the parser `{/ "foo" !. /}` will match the string `"foo"` but
+only if it's at the end of input, resulting in the yielded value `null`
+and a remainder of `[]`.
+
+### Matching character or token sets (terminal)
+
+To match a set of characters (for tokenization) or tokens (for tree parsing),
+list them between square brackets (`[ ... ]`). Characters of a character
+set can be combined into a single string literal for convenience, e.g.
+`["x" "y"]` and `["xy"]` are equivalent.
+
+To match any terminal *other than* items from a particular set, precede the
+set contents with a not/bang (`!`), *inside* the brackets. Note that
+there is a difference between a complemented set (that is, this form), which
+will consume one input terminal when successful, and a lookahead failure of
+a set (`!&[ ... ]`), which never consumes input (see above for details).
+
+For example:
+
+* The parser `{/ ["blort"] /}` or its equivalent `{/ ["b" "l" "o" "r" "t"] /}`
+  will match any of the characters `b` `l` `o` `r` or `t`.
+
+* The parser `{/ [! "\n"] /}` will match any terminal but a newline.
+
+* The parser `{/ [@foo @bar] /}` will match either a `@foo` or a `@bar` token.
+
+* The parser `{/ [! @foo @bar] /}` will match any terminal but a `@foo`
+  or a `@bar` token.
+
+### Running arbitrary code instead of consuming input (terminal)
+
+To cause arbitrary code to run in the context of parsing, place that code
+between regular braces (`{ ... }`). This is a variant of the anonymous
+function syntax, where it is valid to define a yield variable (`<name>`)
+but not any formal arguments. In order for parsing to succeed, the code must
+yield a value, which then interacts with the rest of the parsing rules as
+would any other parsing result.
+
+Any bound parsing result variables (see above) that are in scope of the
+code block are available to be used in the code block.
+
+For example:
+
+* The parser `{/ { <> 23 } /}` will always succeed, yielding the integer
+  value `23` and consuming no input.
+
+* The parser `{/ { "stuff" } /}` will always fail, since the code block never
+  yields a value.
+
+* The parser `{/ f=@foo { <> [[[f]]] } /}` will match the input `[@foo @bar]`,
+  resulting in the yielded value `[[[@foo]]]` and a remainder of `[@bar]`.
+
+* The parser `{/ f=@foo { <out> :: <out> [[[f]]] } /}` is just like the
+  previous example, except it is written with an explicit yield definition.
 
 ### Future direction: Destructuring bind
 
