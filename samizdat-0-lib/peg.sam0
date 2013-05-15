@@ -55,8 +55,8 @@ yieldBoxDispatch = { yield state name rest* ::
 yieldBox = {
     obj = object yieldBoxDispatch null;
     <> [
-        "get" = { <> obj "get" }
-        "set" = { value? :: <> apply obj "set" value }
+        "get" = (partialApply obj ["get"])
+        "set" = (partialApply obj ["set"])
     ]
 };
 
