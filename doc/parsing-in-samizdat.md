@@ -292,7 +292,7 @@ code block are available to be used in the code block.
 
 For example:
 
-* The parser `{/ { <> 23 } /}` will always succeed, yielding the integer
+* The parser `{/ { <> 23 } /}` will always succeed, yielding the int
   value `23` and consuming no input.
 
 * The parser `{/ { "stuff" } /}` will always fail, since the code block never
@@ -530,7 +530,7 @@ Example Translation to Samizdat Layer 0
 digit = pexSequence
     (pexCharSet "0123456789")
     (pexCode { ch ::
-        <> isub (integerFromString ch) (integerFromString "0")
+        <> isub (intFromString ch) (intFromString "0")
     });
 
 number = pexSequence

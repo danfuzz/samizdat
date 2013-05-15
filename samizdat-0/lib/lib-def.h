@@ -19,7 +19,7 @@ LIB_FILE(conditional);
 LIB_FILE(collections);
 LIB_FILE(const);
 LIB_FILE(format);
-LIB_FILE(integer);
+LIB_FILE(int);
 LIB_FILE(io0);
 LIB_FILE(main);
 LIB_FILE(meta);

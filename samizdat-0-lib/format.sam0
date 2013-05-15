@@ -11,9 +11,9 @@
 #
 
 # Single-character strings `"\0"` `"\x7f;"` and `"\x9f;"`.
-CHAR_0 = stringFromInteger 0;
-CHAR_127 = stringFromInteger 127;
-CHAR_159 = stringFromInteger 159;
+CHAR_0 = stringFromInt 0;
+CHAR_127 = stringFromInt 127;
+CHAR_159 = stringFromInt 159;
 
 # Helper for optionally adorning results.
 adornIf = { adorn before value after ::
@@ -22,51 +22,51 @@ adornIf = { adorn before value after ::
         { <> value }
 };
 
-# These are all the integer digits, as a map from digit values to
+# These are all the decimal int digits, as a map from digit values to
 # strings.
-INTEGER_CHARS = [0="0" 1="1" 2="2" 3="3" 4="4" 5="5" 6="6" 7="7" 8="8" 9="9"];
+INT_CHARS = [0="0" 1="1" 2="2" 3="3" 4="4" 5="5" 6="6" 7="7" 8="8" 9="9"];
 
-# Helper for stringifying integers, which does most of the conversion,
+# Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
-integerBody = { start value <out> ::
+intBody = { start value <out> ::
     loopReduce ["" value] { result ::
         text = listNth result 0;
         value = listNth result 1;
         <> ifTrue { <> ne value 0 }
             {
-                digit = mapGet INTEGER_CHARS (imod value 10);
+                digit = mapGet INT_CHARS (imod value 10);
                 <> [(stringAdd digit text) (idiv value 10)];
             }
             { <out> stringAdd start text }
     }
 };
 
-# Map from integer sign values to the appropriate stringifier for each.
-INTEGER_SIGNS = [
-    -1 = { integer :: <> integerBody "-" (ineg integer) }
+# Map from int sign values to the appropriate stringifier for each.
+INT_SIGNS = [
+    -1 = { int :: <> intBody "-" (ineg int) }
     0  = { <> "0" }
-    1  = { integer :: <> integerBody "" integer }
+    1  = { int :: <> intBody "" int }
 ];
 
-# Stringifies an integer.
-doInteger = { recurse integer adorn ::
-    <> (mapGet INTEGER_SIGNS (integerSign integer)) integer
+# Stringifies an int.
+doInt = { recurse int adorn ::
+    <> (mapGet INT_SIGNS (intSign int)) int
 };
 
 # Helper for stringifying strings: Returns the hex form for the given
 # character. Assumes it's not passed `0`.
 stringHexEscape = { ch ::
-    integerHex = { value ::
+    intHex = { value ::
         <> ifTrue { <> eq value 0 }
             { <> "" }
             {
                 digit = stringNth "0123456789abcdef" (imod value 16);
                 more = idiv value 16;
-                <> stringAdd (integerHex more) digit
+                <> stringAdd (intHex more) digit
             }
     };
 
-    <> stringAdd "\\x" (integerHex (integerFromString ch)) ";"
+    <> stringAdd "\\x" (intHex (intFromString ch)) ";"
 };
 
 # Map of special-case characters to their stringified forms.
@@ -193,7 +193,7 @@ doUnknown = { recurse unknown ::
 # Mapping from low-layer type names to stringifiers.
 STRINGIFIERS = [
     "highlet" = doHighlet
-    "integer" = doInteger
+    "int"     = doInt
     "list"    = doList
     "map"     = doMap
     "string"  = doString

@@ -30,7 +30,7 @@ zvalue ioReadLink(zvalue pathList);
 /**
  * Reads the file with the given name in its entirety, interpreting
  * it as UTF-8. Returns a string (list of Unicode-representing
- * integers) of the contents.
+ * ints) of the contents.
  *
  * The `pathList` represents an absolute filesystem path as individual
  * strings.

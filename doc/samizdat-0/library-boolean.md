@@ -7,7 +7,7 @@ Booleans And Comparison
 <br><br>
 ### Primitive Definitions
 
-#### `lowOrder value1 value2 <> integer`
+#### `lowOrder value1 value2 <> int`
 
 Returns the order of the two given values in the total order of
 Samizdat low-layer values. This returns one of `-1 0 1` indicating
@@ -22,10 +22,10 @@ standard meaning of those values:
 
 Ordering is calculated as follows:
 
-The major order is by type &mdash; `integer < string < list <
+The major order is by type &mdash; `int < string < list <
 map < uniqlet < highlet` &mdash; and minor order is type-dependant.
 
-* Integers order by integer value.
+* Ints order by integer value.
 
 * Lists and strings order by pairwise corresponding-element
   comparison, with a strict prefix always ordering before its
@@ -46,7 +46,7 @@ map < uniqlet < highlet` &mdash; and minor order is type-dependant.
 
 #### `lowOrderIs value1 value2 check1 check2? <> boolean`
 
-The two values are compared as with `lowOrder`. The integer
+The two values are compared as with `lowOrder`. The int
 result of that comparison are checked for equality with
 the one or two check values. If the comparison result is equal
 to either check value, this function returns `true`. Otherwise

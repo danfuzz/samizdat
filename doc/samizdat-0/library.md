@@ -50,7 +50,7 @@ will be returned, or one of `.` `~.` `. | ~.` as described in
 * [Ultraprimitives](library-ultra.md)
 * [Conditionals And Iteration](library-conditional.md)
 * [General Low-Layer Values](library-low.md)
-* [Integers](library-integer.md)
+* [Ints](library-int.md)
 * [Strings](library-string.md)
 * [Lists](library-list.md)
 * [Maps](library-map.md)

@@ -15,7 +15,7 @@
 /* Documented in header. */
 zvalue constLowTypeName(zvalue value) {
     switch (datType(value)) {
-        case DAT_INTEGER: return STR_INTEGER;
+        case DAT_INT:     return STR_INT;
         case DAT_STRING:  return STR_STRING;
         case DAT_LIST:    return STR_LIST;
         case DAT_MAP:     return STR_MAP;

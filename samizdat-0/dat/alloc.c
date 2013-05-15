@@ -343,7 +343,7 @@ void datAssertValid(zvalue value) {
     }
 
     switch (value->type) {
-        case DAT_INTEGER:
+        case DAT_INT:
         case DAT_STRING:
         case DAT_LIST:
         case DAT_MAP:

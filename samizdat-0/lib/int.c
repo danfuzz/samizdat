@@ -15,17 +15,17 @@
 #define UNARY_PRIM(name, op) \
     PRIM_IMPL(name) { \
         requireExactly(argCount, 1); \
-        zint x = datIntFromInteger(args[0]); \
-        return datIntegerFromInt((op)); \
+        zint x = datZintFromInt(args[0]); \
+        return datIntFromZint((op)); \
     } \
     extern int semicolonRequiredHere
 
 #define BINARY_PRIM(name, op) \
     PRIM_IMPL(name) { \
         requireExactly(argCount, 2); \
-        zint x = datIntFromInteger(args[0]); \
-        zint y = datIntFromInteger(args[1]); \
-        return datIntegerFromInt((op)); \
+        zint x = datZintFromInt(args[0]); \
+        zint y = datZintFromInt(args[1]); \
+        return datIntFromZint((op)); \
     } \
     extern int semicolonRequiredHere
 
@@ -80,7 +80,7 @@ static zint mod(zint numerator, zint denominator) {
  *
  * **Note:** We limit shifts to 32 bits here, relying on this to be
  * meaning-preserving in the face of the `dat` layer's implementation
- * of the 32-bit width restriction on integers.
+ * of the 32-bit width restriction on ints.
  */
 static zint shl(zint value, zint shift) {
     if (shift == 0) {
@@ -112,7 +112,7 @@ UNARY_PRIM(inot, ~x);
 
 BINARY_PRIM(iadd, x + y);
 BINARY_PRIM(iand, x & y);
-BINARY_PRIM(ibit, datIntGetBit(x, y));
+BINARY_PRIM(ibit, datZintGetBit(x, y));
 BINARY_PRIM(idiv, div(x, y));
 BINARY_PRIM(imod, mod(x, y));
 BINARY_PRIM(imul, x * y);

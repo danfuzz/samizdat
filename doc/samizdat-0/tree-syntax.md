@@ -69,7 +69,7 @@ callExpression ::= atom atom+ ;
 # result: makeCall atom atom+
 
 atom ::=
-    varRef | integer | string |
+    varRef | int | string |
     emptyList | list | emptyMap | map |
     uniqlet | highlet | function | parenExpression ;
 # result: <same as whatever choice matched>
@@ -83,8 +83,8 @@ varDef ::= @identifier @"=" expression ;
 varRef ::= @identifier ;
 # result: @["varRef" (highletValue identifier)]
 
-integer ::= @integer ;
-# result: @["literal" (highletValue integer)]
+int ::= @int ;
+# result: @["literal" (highletValue int)]
 
 string ::= @string ;
 # result: @["literal" (highletValue string)]

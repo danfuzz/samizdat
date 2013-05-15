@@ -12,36 +12,19 @@ list of all the tokens.
 file ::= (whitespace* token)* whitespace* ;
 # result: [token*]
 
-token ::= punctuation | integer | string | identifier | quotedIdentifier ;
+token ::= punctuation | int | string | identifier | quotedIdentifier ;
 # result: same as whichever alternate was picked.
 
 punctuation ::=
-    "@@" | # result: @"@@"
-    "::" | # result: @"::"
-    "<>" | # result: @"<>"
-    "()" | # result: @"()"
-    "@"  | # result: @"@"
-    ":"  | # result: @":"
-    "."  | # result: @"."
-    "*"  | # result: @"*"
-    ";"  | # result: @";"
-    "="  | # result: @"="
-    "?"  | # result: @"?"
-    "+"  | # result: @"+"
-    "<"  | # result: @"<"
-    ">"  | # result: @">"
-    "{"  | # result: @"{"
-    "}"  | # result: @"}"
-    "("  | # result: @"("
-    ")"  | # result: @")"
-    "["  | # result: @"["
-    "]"    # result: @"]"
+    "@@" | "::" | "<>" | "()" |
+    ["@:.=+?;*<>{}()[]"]
 ;
+# result: a valueless highlet with the matched string as its type tag.
 
-integer ::= "-"? ["0".."9"]+ ;
-# result: @["integer" <integer>]
+int ::= "-"? ["0".."9"]+ ;
+# result: @["int" <int>]
 
-string ::= "\"" (~("\\"|"\"") | ("\\" ("\\"|"\""|"n")))* "\"" ;
+string ::= "\"" ([! "\\" "\""] | ("\\" ["\\" "\"" "n"]))* "\"" ;
 # result: @["string" <string>]
 
 identifier ::=
@@ -51,6 +34,6 @@ identifier ::=
 quotedIdentifier ::= "\\" string
 # result: @["identifier" (highletValue string)]
 
-whitespace ::= [" \n"] | "#" (~("\n"))* "\n" ;
+whitespace ::= [" " "\n"] | "#" [! "\n"]* "\n" ;
 # result: n/a; automatically ignored.
 ```

@@ -12,8 +12,8 @@ isHighlet = { value ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-isInteger = { value ::
-    <> eq (lowType value) "integer"
+isInt = { value ::
+    <> eq (lowType value) "int"
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -38,7 +38,7 @@ isUniqlet = { value ::
 
 <> [
     "isHighlet" = isHighlet
-    "isInteger" = isInteger
+    "isInt" = isInt
     "isList" = isList
     "isMap" = isMap
     "isString" = isString

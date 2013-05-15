@@ -71,7 +71,7 @@ loadAllLibraries = { ctx names* ::
 # and the first, etc.).
 CORE_LIBRARY = loadAllLibraries
     LIBRARY
-    "combinator" "const" "boolean" "type" "conditional" "integer"
+    "combinator" "const" "boolean" "type" "conditional" "int"
     "collections" "format" "io0" "meta";
 
 <> CORE_LIBRARY

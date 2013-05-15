@@ -21,7 +21,7 @@
 #
 
 # The character "\0".
-CHAR_0 = stringFromInteger 0;
+CHAR_0 = stringFromInt 0;
 
 parseArguments = filterRule
     (seqRule

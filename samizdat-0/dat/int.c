@@ -12,7 +12,7 @@
  */
 
 enum {
-    /** Integers are restricted to being in the range of `int32_t`. */
+    /** Ints are restricted to being in the range of `int32_t`. */
     MAX_BITS = 32
 };
 
@@ -42,11 +42,11 @@ static zint bitSize(zint value) {
 }
 
 /**
- * Gets the value of the given integer as a `zint`. Doesn't do any
+ * Gets the value of the given int as a `zint`. Doesn't do any
  * type checking.
  */
-static zint integerValue(zvalue integer) {
-    return ((DatInteger *) integer)->value;
+static zint intValue(zvalue intval) {
+    return ((DatInt *) intval)->value;
 }
 
 
@@ -55,14 +55,14 @@ static zint integerValue(zvalue integer) {
  */
 
 /* Documented in header. */
-bool datIntegerEq(zvalue v1, zvalue v2) {
-    return integerValue(v1) == integerValue(v2);
+bool datIntEq(zvalue v1, zvalue v2) {
+    return intValue(v1) == intValue(v2);
 }
 
 /* Documented in header. */
-zorder datIntegerOrder(zvalue v1, zvalue v2) {
-    zint int1 = integerValue(v1);
-    zint int2 = integerValue(v2);
+zorder datIntOrder(zvalue v1, zvalue v2) {
+    zint int1 = intValue(v1);
+    zint int2 = intValue(v2);
 
     if (int1 < int2) {
         return ZLESS;
@@ -79,18 +79,18 @@ zorder datIntegerOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zchar datCharFromInteger(zvalue integer) {
-    zint value = datIntFromInteger(integer);
+zchar datCharFromInt(zvalue intval) {
+    zint value = datZintFromInt(intval);
 
     if ((value < 0) || (value >= 0x100000000)) {
-        die("Invalid integer value for character: %lld", value);
+        die("Invalid int value for character: %lld", value);
     }
 
     return (zchar) value;
 }
 
 /* Documented in header. */
-bool datIntGetBit(zint value, zint n) {
+bool datZintGetBit(zint value, zint n) {
     if (n < 0) {
         die("Attempt to access negative bit index: %lld", n);
     } else if (n >= MAX_BITS) {
@@ -101,31 +101,31 @@ bool datIntGetBit(zint value, zint n) {
 }
 
 /* Documented in header. */
-bool datIntegerGetBit(zvalue integer, zint n) {
-    datAssertInteger(integer);
-    return datIntGetBit(integerValue(integer), n);
+bool datIntGetBit(zvalue intval, zint n) {
+    datAssertInt(intval);
+    return datZintGetBit(intValue(intval), n);
 }
 
 /* Documented in header. */
-bool datIntegerSign(zvalue integer) {
-    return datIntegerGetBit(integer, MAX_BITS - 1);
+bool datIntSign(zvalue intval) {
+    return datIntGetBit(intval, MAX_BITS - 1);
 }
 
 /* Documented in header. */
-zvalue datIntegerFromInt(zint value) {
+zvalue datIntFromZint(zint value) {
     zint size = bitSize(value);
-    zvalue result = datAllocValue(DAT_INTEGER, size, sizeof(int32_t));
+    zvalue result = datAllocValue(DAT_INT, size, sizeof(int32_t));
 
     if (size > MAX_BITS) {
-        die("Value too large to fit into integer: %lld", value);
+        die("Value too large to fit into int: %lld", value);
     }
 
-    ((DatInteger *) result)->value = (int32_t) value;
+    ((DatInt *) result)->value = (int32_t) value;
     return result;
 }
 
 /* Documented in header. */
-zint datIntFromInteger(zvalue integer) {
-    datAssertInteger(integer);
-    return integerValue(integer);
+zint datZintFromInt(zvalue intval) {
+    datAssertInt(intval);
+    return intValue(intval);
 }

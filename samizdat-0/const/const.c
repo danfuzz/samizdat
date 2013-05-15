@@ -58,8 +58,8 @@ void constInit(void) {
 
     #include "const-def.h"
 
-    CONST_FALSE = datHighletFrom(STR_BOOLEAN, datIntegerFromInt(0));
-    CONST_TRUE  = datHighletFrom(STR_BOOLEAN, datIntegerFromInt(1));
+    CONST_FALSE = datHighletFrom(STR_BOOLEAN, datIntFromZint(0));
+    CONST_TRUE  = datHighletFrom(STR_BOOLEAN, datIntFromZint(1));
     EMPTY_LIST = datListFromArray(0, NULL);
     EMPTY_MAP = datMapEmpty();
 

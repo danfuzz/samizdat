@@ -15,7 +15,7 @@
     "conditional"
     "const"
     "format"
-    "integer"
+    "int"
     "io0"
     "main"
     "meta"
