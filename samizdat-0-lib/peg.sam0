@@ -122,6 +122,19 @@ pegRuleLookaheadAny = { yield state ::
 #
 # Note: This function is listed out of (sort) order, because it's used
 # by subsequent rule constructors.
+pegMakeCode = { function ::
+    <> { yield state items* ::
+        ifValue { <> apply function items }
+            { result :: yield result }
+            { yield() };
+        <> state
+    }
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+#
+# Note: This function is listed out of (sort) order, because it's used
+# by subsequent rule constructors.
 pegMakeSequence = { rules* <out> ::
     # Trivial case: No rules. Return the empty rule.
     ifTrue { <> eq rules [] }
@@ -141,9 +154,8 @@ pegMakeSequence = { rules* <out> ::
                 ybox = yieldBox();
                 <> ifValue { <> apply rule (mapGet ybox "set") state values }
                     { newState ::
-                        value = (mapGet ybox "get")();
-                        results = listAppend values value;
-                        <> [newState results]
+                        newValues = listAppend values ((mapGet ybox "get")());
+                        <> [newState newValues]
                     }
                     {
                         # Propagate the failure.
@@ -159,6 +171,30 @@ pegMakeSequence = { rules* <out> ::
     }
 };
 
+# TODO: Documented in Samizdat Layer 0 spec.
+#
+# Note: This function is listed out of (sort) order, because it's used
+# by subsequent rule constructors.
+pegMakeStar = { rule ::
+    <> { yield state items* <out> ::
+        loopReduce [state []]
+            { results ::
+                state = listNth results 0;
+                values = listNth results 1;
+                ybox = yieldBox();
+                <> ifValue { <> apply rule (mapGet ybox "set") state items }
+                    { newState ::
+                        newValues = listAppend values ((mapGet ybox "get")());
+                        <> [newState newValues]
+                    }
+                    {
+                        yield values;
+                        <out> state
+                    }
+            }
+    }
+};
+
 # Helper for `pegMakeCharSet` and `pegMakeCharSetComplement`, which
 # takes a `sense` argument and produces the desired matcher.
 genericMakeCharSet = { sense strings* ::
@@ -171,16 +207,12 @@ genericMakeCharSet = { sense strings* ::
     # This is implemented as, in effect, `(&. &set .)`, which
     # allows us to keep the main matcher function here much simpler.
 
-    match = { yield state item ::
+    match = { item ::
         <> ifTrue { <> mapGet set item oppositeSense }
-            {
-                yield item;
-                <> state;
-            }
-            { yield() }
+            { <> item }
     };
 
-    <> pegSequence pegRuleLookaheadAny match pegRuleAny
+    <> pegSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
@@ -200,16 +232,6 @@ pegMakeChars = { string <out> ::
         { <out> pegRuleEmpty };
 
     io0Die "TODO"
-};
-
-# TODO: Documented in Samizdat Layer 0 spec.
-pegMakeCode = { function ::
-    <> { yield state items* ::
-        ifValue { <> apply function items }
-            { result :: yield result }
-            { yield() };
-        <> state
-    }
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
@@ -251,12 +273,10 @@ pegMakeOpt = { rule ::
 
 # TODO: Documented in Samizdat Layer 0 spec.
 pegMakePlus = { rule ::
-    io0Die "TODO"
-};
-
-# TODO: Documented in Samizdat Layer 0 spec.
-pegMakeStar = { rule ::
-    io0Die "TODO"
+    # This is implemented as, in effect,
+    # `(first=rule rest=rule* { <> [first rest*] })`, which allows us to
+    # minimize code duplication.
+    <> pegMakeSequence rule (pegMakeStar rule) (pegMakeCode listPrepend)
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
