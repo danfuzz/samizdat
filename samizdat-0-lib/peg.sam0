@@ -141,7 +141,7 @@ pegMakeSequence = { rules* <out> ::
         { <out> pegRuleEmpty };
 
     # Trivial case: One rule. Return that rule directly.
-    ifTrue { <> eq (lowSize rules 1) }
+    ifTrue { <> eq (lowSize rules) 1 }
         { <out> listFirst rules };
 
     # The general case. Each rule after the first gets passed as additional
@@ -270,7 +270,7 @@ pegMakeChoice = { rules* ::
         { <out> pegRuleEmpty };
 
     # Trivial case: One rule. Return that rule directly.
-    ifTrue { <> eq (lowSize rules 1) }
+    ifTrue { <> eq (lowSize rules) 1 }
         { <out> listFirst rules };
 
 
@@ -396,7 +396,7 @@ pegApply = { rule input ::
     inputList = ifTrue { <> isString input }
         {
             # Make a list of each character as a separate element.
-            <> stringReduce [] argString
+            <> stringReduce [] input
                 { result ch :: <> listAppend result ch }
         }
         { <> input };
