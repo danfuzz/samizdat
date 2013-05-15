@@ -188,7 +188,7 @@ true = @["boolean" 1]
 ```
 
 
-### `.`, `~.`, and void
+### `.`, `!.`, and void
 
 In *Samizdat Layer 0*, it is possible for functions to return without
 yielding a value. Such functions are referred to as "void functions"
@@ -203,11 +203,12 @@ function. However, the *Samizdat Layer 0* library provides the
 to call a function but doesn't know up-front whether or not it will yield
 a value.
 
-In code-like function descriptions, a void result is written `~.`,
+In code-like function descriptions, a void result is written `!.`,
 which can be read as "not anything" (or with more technical accuracy,
-"the complement of any value"). Relatedly, a result that is a value
+"the failure to match any value"). Relatedly, a result that is a value
 but without any further specifics is written as `.`. If a function can
 possibly return a value *or* return void, that is written as `. |
-~.`. None of these forms is *Samizdat Layer 0* syntax, but it is meant
+!.`. None of these forms is *Samizdat Layer 0* syntax, but it is meant
 to be suggestive of the matching syntax used in higher layers of the
-system (where `.` means "any value", and `~` means set-complement).
+system (where `.` means "any value", `!` means lookahead-failure, and
+`|` is used to represent parsing alternatives).

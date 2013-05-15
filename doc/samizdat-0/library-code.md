@@ -7,7 +7,7 @@ Functions And Code
 <br><br>
 ### Primitive Definitions
 
-#### `apply function value* list? <> . | ~.`
+#### `apply function value* list? <> . | !.`
 
 Calls the given function with the given arguments.
 
@@ -62,7 +62,7 @@ function to call its own interface function, either directly or
 indirectly. To implement a recursive operation, it is necessary to do
 so without going through the interface.
 
-#### `sam0Eval context expressionNode <> . | ~.`
+#### `sam0Eval context expressionNode <> . | !.`
 
 Returns the evaluation result of executing the given expression node,
 which is a parse tree as specified in this document. It is valid for

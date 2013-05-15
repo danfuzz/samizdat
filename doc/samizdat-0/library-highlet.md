@@ -15,7 +15,7 @@ Returns `true` iff the given highlet has a non-void payload data value.
 
 Returns the type tag value (an arbitrary value) of the given highlet.
 
-#### `highletValue highlet notFound? <> . | ~.`
+#### `highletValue highlet notFound? <> . | !.`
 
 Returns the payload data value (an arbitrary value) of the given
 highlet, if any. If the highlet is valueless, returns the `notFound`
