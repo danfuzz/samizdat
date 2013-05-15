@@ -1,0 +1,218 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# PEG (Parsing Expression Grammar) support
+#
+
+
+#
+# Yield box
+#
+# Interpretation of `state`:
+#
+# * `null` -- `set` has not yet been called.
+# * `[]` -- `set` has been called with no argument. (That is, yield void.)
+# * `[x]` -- `set` has been called with argument `x`.
+
+# Yield box `set` implementation.
+doSet = { yield state value? ::
+    ifTrue { <> ne state null }
+        { io0Die "Attempt to multi-yield from peg rule." };
+
+    yield();
+    <> value
+};
+
+# Yield box `get` implementation.
+doGet = { yield state ::
+    ifTrue { <> eq state null }
+        { io0Die "Peg rule failed to yield." };
+
+    apply yield state
+};
+
+# Dispatch table.
+YIELD_BOX_DISPATCH = [
+    "get" = doGet
+    "set" = doSet
+];
+
+# Performs method dispatch.
+yieldBoxDispatch = { yield state name rest* ::
+    <> apply (mapGet YIELD_BOX_DISPATCH name) yield state rest
+};
+
+# Constructs a set-once "yield box". This returns a map that binds `set` and
+# `get`, each of which is a function.
+#
+# The `set` function will allow itself to be called exactly once, taking at
+# most one argument. Subsequent calls will fail.
+#
+# The `get` function will only succeed after `set` has been called, returning
+# whatever had been passed to `set` (including void).
+yieldBox = {
+    obj = object yieldBoxDispatch null;
+    <> [
+        "get" = { <> obj "get" }
+        "set" = { value? :: <> apply obj "set" value }
+    ]
+};
+
+
+#
+# Exported functions
+#
+
+#
+# Simple rules
+#
+
+# Peg rule that matches, consumes, and yields an arbitrary terminal item.
+pegRuleAny = { yield state ::
+    <> ifValue { <> listFirst state }
+        { item ::
+            yield item;
+            <> listDelNth state 0;
+        }
+        { yield(); }
+};
+
+# Peg rule that always succeeds, yielding `null` and consuming no input.
+pegRuleEmpty = { yield state ::
+    yield null;
+    <> state
+};
+
+# Peg rule that matches at eof, yielding `null`.
+pegRuleEof = { yield state ::
+    <> ifTrue { <> eq state [] }
+        {
+            yield null;
+            <> state;
+        }
+        { yield(); }
+};
+
+
+#
+# Rule constructors
+#
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeCharSet = { string ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeCharSetComplement = { string ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeChars = { string ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeCode = { function ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeLookaheadSuccess = { rule ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeLookaheadFailure = { rule ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeOpt = { rule ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakePlus = { rule ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeSequence = { rules* <out> ::
+    # Trivial case: No rules. Return the empty rule.
+    ifTrue { <> eq rules [] }
+        { <out> pegRuleEmpty };
+
+    # Trivial case: One rule. Return that rule directly.
+    ifTrue { <> eq (lowSize rules 1) }
+        { <out> listFirst rules };
+
+    # The general case.
+    <> { yield state <out> ::
+        reduction = listReduce [state []] rules
+            { results . rule ::
+                state = listNth results 0;
+                values = listNth results 1;
+                ybox = yieldBox();
+                <> ifValue { <> apply rule (mapGet ybox "set") state values }
+                    { newState ::
+                        value = (mapGet ybox "get")();
+                        results = listAppend values value;
+                        <> [newState results]
+                    }
+                    {
+                        # Propagate the failure.
+                        yield();
+                        <out>
+                    }
+            };
+
+        state = listNth reduction 0;
+        results = listNth reduction 1;
+        yield (listLast results);
+        <> state;
+    }
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeStar = { rule ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeToken = { token ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeTokenSet = { tokens ::
+    io0Die "TODO"
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeTokenSetComplement = { tokens ::
+    io0Die "TODO"
+};
+
+
+<> [
+    "pegMakeCharSet" = pegMakeCharSet
+    "pegMakeCharSetComplement" = pegMakeCharSetComplement
+    "pegMakeChars" = pegMakeChars
+    "pegMakeCode" = pegMakeCode
+    "pegMakeLookaheadSuccess" = pegMakeLookaheadSuccess
+    "pegMakeLookaheadFailure" = pegMakeLookaheadFailure
+    "pegMakeOpt" = pegMakeOpt
+    "pegMakePlus" = pegMakePlus
+    "pegMakeSequence" = pegMakeSequence
+    "pegMakeStar" = pegMakeStar
+    "pegMakeToken" = pegMakeToken
+    "pegMakeTokenSet" = pegMakeTokenSet
+    "pegMakeTokenSetComplement" = pegMakeTokenSetComplement
+    "pegRuleAny" = pegRuleAny
+    "pegRuleEmpty" = pegRuleEmpty
+    "pegRuleEof" = pegRuleEof
+];
