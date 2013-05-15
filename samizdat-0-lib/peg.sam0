@@ -279,7 +279,7 @@ pegMakeChoice = { rules* ::
         listForEach rules
             { . rule ::
                 ybox = yieldBox();
-                <> ifValue { <> apply rule (mapGet ybox "set") state values }
+                <> ifValue { <> apply rule (mapGet ybox "set") state }
                     { newState ::
                         yield ((mapGet ybox "get")());
                         <out> newState
