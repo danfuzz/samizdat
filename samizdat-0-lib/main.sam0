@@ -37,6 +37,8 @@ readLibraryFile = { name ::
 # by the named library. Each library file is expected to return a map of
 # bindings that it wishes to export.
 loadLibrary = { ctx name ::
+    io0Note (stringAdd "    " name);
+
     text = readLibraryFile name;
     tree = sam0Tree text;
     function = sam0Eval (mapPut ctx "LIBRARY" ctx) tree;
@@ -66,6 +68,8 @@ loadAllLibraries = { ctx names* ::
 # Main export mechanics
 #
 
+io0Note "Loading core library...";
+
 # The argument list here is all the library files in dependency order.
 # (First depends only on the primitives, second can depend on primitives
 # and the first, etc.).
@@ -75,5 +79,8 @@ CORE_LIBRARY = loadAllLibraries
     "collections" "format" "io0" "peg"
     # This one always needs to be the last one loaded.
     "meta";
+
+io0Note "    [fin]";
+io0Note "";
 
 <> CORE_LIBRARY

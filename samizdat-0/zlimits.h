@@ -35,7 +35,7 @@ enum {
     LANG_MAX_STRING_CHARS = 200,
 
     /** Maximum number of disjoint heap allocation page ranges. */
-    UTIL_MAX_PAGE_RANGES = 20
+    UTIL_MAX_PAGE_RANGES = 40
 };
 
 #endif
