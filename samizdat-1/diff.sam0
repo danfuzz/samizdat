@@ -35,9 +35,9 @@ diffHighlet = { recurse context v1 v2 ::
         { <> recurse "value" value1 value2 }
 };
 
-# Diffs integers.
+# Diffs ints.
 diffInt = { recurse context v1 v2 ::
-    <> report context v1 v2 "Different integers."
+    <> report context v1 v2 "Different ints."
 };
 
 # Diffs maps.
