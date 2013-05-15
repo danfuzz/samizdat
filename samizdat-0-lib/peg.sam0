@@ -387,7 +387,32 @@ pegMakeTokenSetComplement = { tokens* ::
 };
 
 
+#
+# Top-level driver
+#
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegApply = { rule input ::
+    inputList = ifTrue { <> isString input }
+        {
+            # Make a list of each character as a separate element.
+            <> stringReduce [] argString
+                { result ch :: <> listAppend result ch }
+        }
+        { <> input };
+
+    ybox = yieldBox();
+    <> ifValue { <> rule (mapGet ybox "set") inputList }
+        { <> (ybox "get")() }
+};
+
+
+#
+# Export mechanics
+#
+
 <> [
+    "pegApply" = pegApply
     "pegMakeCharSet" = pegMakeCharSet
     "pegMakeCharSetComplement" = pegMakeCharSetComplement
     "pegMakeChar" = pegMakeChar
