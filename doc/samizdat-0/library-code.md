@@ -87,6 +87,18 @@ that represents the function.
 <br><br>
 ### In-Language Definitions
 
+#### `partialApply function value* list? <> function`
+
+Partial function application. This takes a function and a number of arguments
+to call it with, in standard `apply` form (that is, zero or more individual
+arguments ended with a list-of-the-rest), and returns a new function. The
+new function, when called, in turn calls the original function with the
+arguments specified here as the first arguments, followed by any arguments
+passed to the new function.
+
+For example, `partialApply iadd [2]` is a function which when called returns
+the sum of 2 and whatever value it was passed.
+
 #### `yCombinator function <> function`
 
 The Y combinator, in a form suitable for use in Samizdat Layer 0 when
