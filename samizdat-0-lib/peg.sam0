@@ -269,7 +269,22 @@ pegMakeChoice = { rules* ::
     ifTrue { <> eq (lowSize rules 1) }
         { <out> listFirst rules };
 
-    io0Die "TODO"
+
+    # The general case.
+    <> { yield state <out> ::
+        listForEach rules
+            { . rule ::
+                ybox = yieldBox();
+                <> ifValue { <> apply rule (mapGet ybox "set") state values }
+                    { newState ::
+                        yield ((mapGet ybox "get")());
+                        <out> newState
+                    }
+            };
+
+        # No rule succeeded.
+        yield();
+    }
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
