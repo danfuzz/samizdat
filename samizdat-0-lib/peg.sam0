@@ -235,7 +235,18 @@ pegMakeLookaheadFailure = { rule ::
 
 # TODO: Documented in Samizdat Layer 0 spec.
 pegMakeOpt = { rule ::
-    io0Die "TODO"
+    <> { yield state items* ::
+        ybox = yieldBox();
+        <> ifValue { <> apply rule (mapGet ybox "set") state items }
+            { newState ::
+                yield [((mapGet ybox "get")())];
+                <> newState
+            }
+            {
+                yield [];
+                <> state
+            }
+    }
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
