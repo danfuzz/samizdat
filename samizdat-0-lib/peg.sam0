@@ -85,11 +85,29 @@ pegRuleEmpty = { yield state ::
     <> state
 };
 
-# Peg rule that matches at eof, yielding `null`.
+# Peg rule that always fails.
+pegRuleFail = { yield state ::
+    yield;
+};
+
+# Peg rule that matches at eof, yielding `null`. This is the equivalent
+# of `!.` in usual peg syntax.
 pegRuleEof = { yield state ::
     <> ifTrue { <> eq state [] }
         {
             yield null;
+            <> state;
+        }
+        { yield(); }
+};
+
+# Peg rule that matches anywhere but eof, yielding the next terminal but
+# not consuming it. This is the equivalent of `&.` in usual peg syntax,
+# hence the name.
+pegRuleLookaheadAny = { yield state ::
+    <> ifValue { <> listFirst state }
+        { item ::
+            yield item;
             <> state;
         }
         { yield(); }
@@ -101,12 +119,28 @@ pegRuleEof = { yield state ::
 #
 
 # TODO: Documented in Samizdat Layer 0 spec.
-pegMakeCharSet = { string ::
-    io0Die "TODO"
+pegMakeCharSet = { strings* ::
+    # Make a set-like map of all the strings' characters.
+    set = stringReduce [=] (apply stringAdd strings)
+        { result ch :: <> mapPut result ch true };
+
+    <> { yield state <out> ::
+        ifValue { <> listFirst state }
+            { item ::
+                ifTrue { <> mapGet set item false }
+                    {
+                        yield item;
+                        <out> listDelNth state 0
+                    }
+            };
+
+        # Either eof or no match.
+        yield()
+    };
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
-pegMakeCharSetComplement = { string ::
+pegMakeCharSetComplement = { strings* ::
     io0Die "TODO"
 };
 
@@ -215,4 +249,6 @@ pegMakeTokenSetComplement = { tokens ::
     "pegRuleAny" = pegRuleAny
     "pegRuleEmpty" = pegRuleEmpty
     "pegRuleEof" = pegRuleEof
+    "pegRuleFail" = pegRuleFail
+    "pegRuleLookaheadAny" = pegRuleLookaheadAny
 ];
