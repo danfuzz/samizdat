@@ -197,12 +197,16 @@ pegMakeStar = { rule ::
 
 # Helper for `pegMakeCharSet` and `pegMakeCharSetComplement`, which
 # takes a `sense` argument and produces the desired rule.
-genericMakeCharSet = { sense strings* ::
+genericMakeCharSet = { sense strings* <out> ::
     oppositeSense = not sense;
 
     # Make a set-like map of all the strings' characters.
     set = stringReduce [=] (apply stringAdd strings)
         { result ch :: <> mapPut result ch sense };
+
+    # Trivial case: Empty set. Return an apropriate absolute rule.
+    ifTrue { <> eq (lowSize set) 0 }
+        { <out> ifTrue { <> sense } { <> pegRuleFail } { <> pegRuleAny } };
 
     # This is implemented as, in effect, `(&. &set .)`, which
     # allows us to keep the main matcher function here much simpler.
@@ -350,12 +354,16 @@ pegMakeToken = { token ::
 
 # Helper for `pegMakeTokenSet` and `pegMakeTokenSetComplement`, which
 # takes a `sense` argument and produces the desired rule.
-genericMakeTokenSet = { sense tokens ::
+genericMakeTokenSet = { sense tokens <out> ::
     oppositeSense = not sense;
 
     # Make a set-like map of all the token types.
     set = listReduce [=] tokens
         { result token :: <> mapPut result (highletType token) sense };
+
+    # Trivial case: Empty set. Return an apropriate absolute rule.
+    ifTrue { <> eq (lowSize set) 0 }
+        { <out> ifTrue { <> sense } { <> pegRuleFail } { <> pegRuleAny } };
 
     # This is implemented as, in effect, `(&. &set .)`, which
     # allows us to keep the main matcher function here much simpler.
