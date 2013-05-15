@@ -261,6 +261,14 @@ pegMakeChars = { string <out> ::
 
 # TODO: Documented in Samizdat Layer 0 spec.
 pegMakeChoice = { rules* ::
+    # Trivial case: No rules. Return the empty rule.
+    ifTrue { <> eq rules [] }
+        { <out> pegRuleEmpty };
+
+    # Trivial case: One rule. Return that rule directly.
+    ifTrue { <> eq (lowSize rules 1) }
+        { <out> listFirst rules };
+
     io0Die "TODO"
 };
 
