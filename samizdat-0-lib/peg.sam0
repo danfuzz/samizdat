@@ -216,7 +216,7 @@ genericMakeCharSet = { sense strings* <out> ::
             { <> item }
     };
 
-    <> pegSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+    <> pegMakeSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
@@ -239,7 +239,7 @@ pegMakeChar = { ch ::
             { <> item }
     };
 
-    <> pegSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+    <> pegMakeSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
@@ -260,7 +260,7 @@ pegMakeChars = { string <out> ::
     chars = stringReduce [] string
         { result ch :: listAppend result (pegMakeChar ch) };
 
-    <> apply pegSequence (listAppend chars (pegMakeCode { <> string }))
+    <> apply pegMakeSequence (listAppend chars (pegMakeCode { <> string }))
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
@@ -349,7 +349,7 @@ pegMakeToken = { token ::
             { <> item }
     };
 
-    <> pegSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+    <> pegMakeSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
 };
 
 # Helper for `pegMakeTokenSet` and `pegMakeTokenSetComplement`, which
@@ -373,7 +373,7 @@ genericMakeTokenSet = { sense tokens <out> ::
             { <> item }
     };
 
-    <> pegSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+    <> pegMakeSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
