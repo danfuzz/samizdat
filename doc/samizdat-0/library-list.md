@@ -59,11 +59,25 @@ list. If not, it is an error (terminating the runtime).
 Returns a list consisting of the elements of the given
 list argument followed by the given additional value.
 
+#### `listFirst list notFound? <> . | ~.`
+
+Returns the first element of the given list or the given `notFound` value
+if the list is empty. Returns void if the list is empty and `notFound`
+is not supplied. This is just a convenient shorthand for
+`listNth list 0 notFound?`.
+
 #### `listForEach list function <> ~.`
 
 Calls the given function on each element of the given list.
 The given function is called with two arguments, namely the element's
 index (zero-based) and value. Always returns void.
+
+#### `listLast list notFound? <> . | ~.`
+
+Returns the last element of the given list or the given `notFound` value
+if the list is empty. Returns void if the list is empty and `notFound`
+is not supplied. This is just a convenient shorthand for
+`listNth list (isub (lowSize list) 1) notFound?`.
 
 #### `listMap list function <> list`
 
