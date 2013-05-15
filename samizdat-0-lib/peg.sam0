@@ -226,11 +226,41 @@ pegMakeCharSetComplement = { strings* ::
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
+pegMakeChar = { ch ::
+    # This is implemented as, in effect, `(&. &"ch" .)`, which
+    # allows us to keep the main matcher function here much simpler.
+
+    match = { item ::
+        <> ifTrue { <> eq item ch }
+            { <> item }
+    };
+
+    <> pegSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
 pegMakeChars = { string <out> ::
     # Trivial case: Empty string. Return the empty rule.
     ifTrue { <> eq string "" }
         { <out> pegRuleEmpty };
 
+
+    # Trivial case: One-char string. Return a simple one-char rule.
+    ifTrue { <> eq (lowSize string) 1 }
+        { <out> pegMakeChar string };
+
+    # This is implemented as, in effect, `("1" "2" ... { <> string })`,
+    # which allows us to minimize code duplication.
+
+    # Make a list of rules per character.
+    chars = stringReduce [] string
+        { result ch :: listAppend result (pegMakeChar ch) };
+
+    <> apply pegSequence (listAppend chars (pegMakeCode { <> string }))
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeChoice = { rules* ::
     io0Die "TODO"
 };
 
@@ -329,7 +359,9 @@ pegMakeTokenSetComplement = { tokens* ::
 <> [
     "pegMakeCharSet" = pegMakeCharSet
     "pegMakeCharSetComplement" = pegMakeCharSetComplement
+    "pegMakeChar" = pegMakeChar
     "pegMakeChars" = pegMakeChars
+    "pegMakeChoice" = pegMakeChoice
     "pegMakeCode" = pegMakeCode
     "pegMakeLookaheadSuccess" = pegMakeLookaheadSuccess
     "pegMakeLookaheadFailure" = pegMakeLookaheadFailure
