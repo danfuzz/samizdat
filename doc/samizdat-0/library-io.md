@@ -7,12 +7,12 @@ I/O
 <br><br>
 ### Primitive Definitions
 
-#### `io0Die string? <> ~. (exits)`
+#### `io0Die string? <> !. (exits)`
 
 Prints the given string to the system console (as if with `io0Note`)
 if supplied, and terminates the runtime with a failure status code (`1`).
 
-#### `io0Note string <> ~.`
+#### `io0Note string <> !.`
 
 Writes out a newline-terminated note to the system console or equivalent.
 This is intended for debugging, and as such this will generally end up
@@ -56,7 +56,7 @@ of the read and decoded text.
 (see which). It is invalid (terminating the runtime) for a component to
 be any of `""` `"."` `".."` or to contain a slash (`/`).
 
-#### `io0ReadLink pathList <> pathList | ~.`
+#### `io0ReadLink pathList <> pathList | !.`
 
 Checks the filesystem to see if the given path refers to a symbolic
 link. If it does, then this returns the path which represents the
@@ -70,7 +70,7 @@ void.
 `pathList` must be a list of the form described by `io0PathFromString`
 (see which). See `io0ReadFileUtf8` for further discussion.
 
-#### `io0WriteFileUtf8 pathList text <> ~.`
+#### `io0WriteFileUtf8 pathList text <> !.`
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.

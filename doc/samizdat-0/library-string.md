@@ -24,7 +24,7 @@ Returns a single-character string that consists of the character
 code indicated by the given int argument, which must be in the
 range for representation as an unsigned 32-bit quantity.
 
-#### `stringNth string n notFound? <> . | ~.`
+#### `stringNth string n notFound? <> . | !.`
 
 Returns the `n`th (zero-based) element of the given string, as a
 single-element string, if `n` is a valid int index into the given
@@ -36,7 +36,7 @@ or returns void if `notFound` was not supplied.
 <br><br>
 ### In-Language Definitions
 
-#### `stringForEach string function <> ~.`
+#### `stringForEach string function <> !.`
 
 Calls the given function on each element (character) of the given string.
 The given function is called with two arguments, namely the element's
@@ -60,7 +60,7 @@ function argument is the *last* one and not the *first* one. This is
 specifically done to make it natural to write a multi-line function
 without losing track of the other two arguments.
 
-#### `stringReduce base string function <> . | ~.`
+#### `stringReduce base string function <> . | !.`
 
 Reduces a string to a single value, given a base value and a
 reducer function, operating in low-to-high index order (that is, this
