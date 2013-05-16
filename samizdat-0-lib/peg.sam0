@@ -166,10 +166,10 @@ pegMakeSequence = { rules* <out> ::
                     }
             };
 
-        state = listNth reduction 0;
+        newState = listNth reduction 0;
         results = listNth reduction 1;
         yield (listLast results);
-        <> state;
+        <> newState;
     }
 };
 
@@ -250,7 +250,6 @@ pegMakeChars = { string <out> ::
     ifTrue { <> eq string "" }
         { <out> pegRuleEmpty };
 
-
     # Trivial case: One-char string. Return a simple one-char rule.
     ifTrue { <> eq (lowSize string) 1 }
         { <out> pegMakeChar string };
@@ -281,7 +280,7 @@ pegMakeChoice = { rules* ::
         listForEach rules
             { . rule ::
                 ybox = yieldBox();
-                <> ifValue { <> apply rule (mapGet ybox "set") state }
+                <> ifValue { <> rule (mapGet ybox "set") state }
                     { newState ::
                         yield ((mapGet ybox "get")());
                         <out> newState
@@ -402,6 +401,9 @@ pegApply = { rule input ::
                 { result ch :: <> listAppend result ch }
         }
         { <> input };
+
+    ifFalse { <> isList inputList }
+        { io0Die "Attempt to parse non-list." };
 
     ybox = yieldBox();
     <> ifValue { <> rule (mapGet ybox "set") inputList }
