@@ -124,10 +124,12 @@ pegRuleLookaheadAny = { yield state ::
 # by subsequent rule constructors.
 pegMakeCode = { function ::
     <> { yield state items* ::
-        ifValue { <> apply function items }
-            { result :: yield result }
+        <> ifValue { <> apply function items }
+            { result ::
+                yield result;
+                <> state
+            }
             { yield() };
-        <> state
     }
 };
 
