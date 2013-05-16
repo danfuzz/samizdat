@@ -4,36 +4,70 @@ Samizdat Layer 0
 Token Syntax
 ------------
 
-The following is a BNF/PEG-like description of the tokens. A program
-is tokenized by matching the top `file` rule, which results in a
+The following is a BNF/PEG-like description of the tokens. This definition
+uses syntax which is nearly identical to the parser syntax provided at the
+higher layer.
+
+A program is tokenized by matching the `file` rule, resulting in a
 list of all the tokens.
 
 ```
-file ::= (whitespace* token)* whitespace* ;
-# result: [token*]
+whitespace = {/
+    [" " "\n"] | "#" [! "\n"]* "\n"
+    # Note: The yielded result is always ignored.
+/};
 
-token ::= punctuation | int | string | identifier | quotedIdentifier ;
-# result: same as whichever alternate was picked.
+punctuation = {/
+    "@@" | "::" | "<>" | "()" | ["@:.=+?;*<>{}()[]"]
+/};
 
-punctuation ::=
-    "@@" | "::" | "<>" | "()" |
-    ["@:.=+?;*<>{}()[]"]
-;
-# result: a valueless highlet with the matched string as its type tag.
+char = {/
+    (
+        ch = [! "\\" "\""]
+        { <> highletValue ch }
+    )
+|
+    (
+        "\\"
+        (
+            "\\" { <> "\\" } |
+            "\"" { <> "\"" } |
+            "n"  { <> "\n" } |
+            "\0" { <> "\0" }
+        )
+    )
+/};
 
-int ::= "-"? ["0".."9"]+ ;
-# result: @["int" <int>]
+string = {/
+    "\""
+    chars = char*
+    "\""
+    { <> @["string" (stringFromTokens chars)] }
+/}
 
-string ::= "\"" ([! "\\" "\""] | ("\\" ["\\" "\"" "n" "0"]))* "\"" ;
-# result: @["string" <string>]
+identifier = {/
+    first = ["_" "a".."z" "A".."Z"]
+    rest = ["_" "a".."z" "A".."Z" "0".."9"]*
+    { <> @["identifier" (apply stringFromTokens first rest)] }
+/};
 
-identifier ::=
-    ["_" "a".."z" "A".."Z"] ["_" "a".."z" "A".."Z" "0".."9"]* ;
-# result: @["identifier" <string>]
+quotedIdentifier = {/
+    "\\" s=string
+    { <> @["identifier" (highletValue s)] }
+/};
 
-quotedIdentifier ::= "\\" string
-# result: @["identifier" (highletValue string)]
+int = {/
+    sign = "-"?
+    digits = ["0".."9"]+
+    { <> ... @["int" ...] }
+/};
 
-whitespace ::= [" " "\n"] | "#" [! "\n"]* "\n" ;
-# result: n/a; automatically ignored.
+token = {/
+    punctuation | int | string | identifier | quotedIdentifier
+/};
+
+file = {/
+    tokens=(whitespace* token)* whitespace*
+    { <> tokens }
+/};
 ```
