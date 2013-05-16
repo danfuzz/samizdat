@@ -121,7 +121,7 @@ pegRuleLookaheadAny = { yield state ::
 # The following are all listed out of (sort) order, because they are
 # used as helpers in the implementation of subsequent rule constructors.
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeCode = { function ::
     <> { yield state items* ::
         <> ifValue { <> apply function items }
@@ -133,7 +133,7 @@ pegMakeCode = { function ::
     }
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeSequence = { rules* <out> ::
     # Trivial case: No rules. Return the empty rule.
     ifTrue { <> eq rules [] }
@@ -170,7 +170,7 @@ pegMakeSequence = { rules* <out> ::
     }
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeMainSequence = { rules* ::
     subRule = apply pegMakeSequence rules;
 
@@ -179,7 +179,7 @@ pegMakeMainSequence = { rules* ::
     }
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeStar = { rule ::
     <> { yield state items* <out> ::
         loopReduce [state []]
@@ -200,7 +200,7 @@ pegMakeStar = { rule ::
     }
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeToken = { token ::
     # This is implemented as, in effect, `(&. &@token .)`, which
     # allows us to keep the main matcher function here much simpler.
@@ -252,22 +252,22 @@ genericMakeCharSet = { sense strings* <out> ::
     <> genericMakeTokenSet sense tokens
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeCharSet = { strings* ::
     <> apply genericMakeCharSet true strings
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeCharSetComplement = { strings* ::
     <> apply genericMakeCharSet false strings
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeChar = { ch ::
     <> pegMakeToken @[ch]
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeChars = { string <out> ::
     # Trivial case: Empty string. Return the empty rule.
     ifTrue { <> eq string "" }
@@ -288,7 +288,7 @@ pegMakeChars = { string <out> ::
         (listAppend chars (pegMakeCode { <> @[string] }))
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeChoice = { rules* ::
     # Trivial case: No rules. Return the empty rule.
     ifTrue { <> eq rules [] }
@@ -316,7 +316,7 @@ pegMakeChoice = { rules* ::
     }
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeLookaheadSuccess = { rule ::
     <> { yield state items* ::
         <> ifValue { <> apply rule yield state items }
@@ -324,7 +324,7 @@ pegMakeLookaheadSuccess = { rule ::
     }
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeLookaheadFailure = { rule ::
     <> { yield state items* ::
         ybox = yieldBox();
@@ -337,7 +337,7 @@ pegMakeLookaheadFailure = { rule ::
     }
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeOpt = { rule ::
     <> { yield state items* ::
         ybox = yieldBox();
@@ -353,7 +353,7 @@ pegMakeOpt = { rule ::
     }
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakePlus = { rule ::
     # This is implemented as, in effect,
     # `(items=rule* { ... (lowSize match) ... })`, which allows us to
@@ -367,12 +367,12 @@ pegMakePlus = { rule ::
     <> pegMakeMainSequence (pegMakeStar rule) (pegMakeCode checkSize)
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeTokenSet = { tokens* ::
     <> genericMakeTokenSet true tokens
 };
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegMakeTokenSetComplement = { tokens* ::
     <> genericMakeTokenSet false tokens
 };
@@ -382,7 +382,7 @@ pegMakeTokenSetComplement = { tokens* ::
 # Top-level driver
 #
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
 pegApply = { rule input ::
     inputList = ifTrue { <> isString input }
         {
