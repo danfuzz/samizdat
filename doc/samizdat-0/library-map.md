@@ -20,7 +20,7 @@ the result does not have a binding for the key `key`. If the given
 map does not have `key` as a key, then this returns the given
 map as the result.
 
-#### `mapGet map key notFound? <> . | ~.`
+#### `mapGet map key notFound? <> . | !.`
 
 Returns the value mapped to the given key (an arbitrary value) in
 the given map. If there is no such mapping, then this
@@ -31,7 +31,7 @@ or returns void if `notFound` was not supplied.
 
 Returns `true` iff the given map has a mapping for the given key.
 
-#### `mapNth map n notFound? <> . | ~.`
+#### `mapNth map n notFound? <> . | !.`
 
 Returns the `n`th (zero-based) mapping of the given map, if `n` is
 a valid int index into the map. If `n` is not a valid index
@@ -41,7 +41,7 @@ returns void if `notFound` was not supplied.
 
 The ordering of the mappings is by sort order of the keys.
 
-#### `mapNthKey map n notFound? <> . | ~.`
+#### `mapNthKey map n notFound? <> . | !.`
 
 Returns the key of the `n`th (zero-based) mapping of the given map,
 if `n` is a valid int index into the map. If `n` is not a valid index
@@ -51,7 +51,7 @@ returns void if `notFound` was not supplied.
 
 The ordering of the mappings is by sort order of the keys.
 
-#### `mapNthValue map n notFound? <> . | ~.`
+#### `mapNthValue map n notFound? <> . | !.`
 
 Returns the value of the `n`th (zero-based) mapping of the given map,
 if `n` is a valid int index into the map. If `n` is not a valid index
@@ -75,7 +75,7 @@ checking for the existence of `key` in the original.
 <br><br>
 ### In-Language Definitions
 
-#### `mapForEach map function <> ~.`
+#### `mapForEach map function <> !.`
 
 Calls the given function for each mapping in the given map. The
 function is called with two arguments, a key from the map and
@@ -96,7 +96,7 @@ result may be smaller than the size of the argument.
 
 See note on `stringMap` about choice of argument order.
 
-#### `mapReduce base map function <> . | ~.`
+#### `mapReduce base map function <> . | !.`
 
 Reduces a map to a single value, given a base value and a reducer
 function, operating in key order. The given function is called on each

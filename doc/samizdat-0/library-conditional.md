@@ -19,7 +19,7 @@ exactly one argument, namely the item to process.
 function as the first argument. This is done specifically so that it is
 convenient to `apply` it.
 
-#### `argsReduce function base rest* <> . | ~.`
+#### `argsReduce function base rest* <> . | !.`
 
 Primitive reducing iterator. This calls the given function on each of the
 rest of the arguments in sequence, yielding a final reduction result.
@@ -33,7 +33,7 @@ reduction result to a would-be next function call.
 function as the first argument. This is done specifically so that it is
 convenient to `apply` it.
 
-#### `ifTrue predicate trueFunction falseFunction? <> . | ~.`
+#### `ifTrue predicate trueFunction falseFunction? <> . | !.`
 
 Primitive boolean conditional. This calls the given predicate with no
 arguments, expecting it to return a boolean.
@@ -46,7 +46,7 @@ The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
 
-#### `ifValue function valueFunction voidFunction? <> . | ~.`
+#### `ifValue function valueFunction voidFunction? <> . | !.`
 
 Primitive value conditional. This calls the given function with no
 arguments, taking note of its return value or lack thereof.
@@ -60,14 +60,14 @@ The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
 
-#### `loop function <> ~.`
+#### `loop function <> !.`
 
 Primitive unconditional loop construct. This repeatedly calls the given
 function with no arguments.
 
 In order for the loop to terminate, the function must use a nonlocal exit.
 
-#### `loopReduce base function <> ~.`
+#### `loopReduce base function <> !.`
 
 Primitive unconditional loop construct, with reduce semantics. This repeatedly
 calls the given function with a single argument. The argument is the
@@ -89,12 +89,12 @@ them returns `false`, in which case this function also returns
 `false`. If no predicate returns `false`, this function returns
 `true`.
 
-#### `ifFalse predicate falseFunction trueFunction? <> . | ~.`
+#### `ifFalse predicate falseFunction trueFunction? <> . | !.`
 
 This is identical to `ifTrue` except that the order of the second
 and third arguments is reversed.
 
-#### `ifVoid function voidFunction valueFunction? <> . | ~.`
+#### `ifVoid function voidFunction valueFunction? <> . | !.`
 
 This is identical to `ifValue` except that the order of the second
 and third arguments is reversed.

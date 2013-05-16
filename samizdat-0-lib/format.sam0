@@ -11,7 +11,6 @@
 #
 
 # Single-character strings `"\0"` `"\x7f;"` and `"\x9f;"`.
-CHAR_0 = stringFromInt 0;
 CHAR_127 = stringFromInt 127;
 CHAR_159 = stringFromInt 159;
 
@@ -71,10 +70,10 @@ stringHexEscape = { ch ::
 
 # Map of special-case characters to their stringified forms.
 SPECIAL_CHARS = [
-    CHAR_0 = "\\0"
-    "\n"  = "\\n"
-    "\""  = "\\\""
-    "\\"  = "\\\\"
+    "\0" = "\\0"
+    "\n" = "\\n"
+    "\"" = "\\\""
+    "\\" = "\\\\"
 ];
 
 # Helper for stringifying strings: Returns the converted form of the

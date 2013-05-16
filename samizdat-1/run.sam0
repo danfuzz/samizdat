@@ -84,9 +84,7 @@ run = { args* ::
 
     library = ifTrue { <> validate }
         {
-            io0Note "Loading core library...";
             lib = makeCoreLibrary();
-            io0Note "Done!";
             <> lib
         }
         { <> LIBRARY };

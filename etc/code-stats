@@ -54,7 +54,7 @@ function getCount {
 
     wc -l $(find "${dir}" \
         '(' -type d -name out -prune ')' \
-        -o -name "$glob") |
+        -o -name "${glob}" -print) |
     awk '
     { count = $1; }
     END { print count; }'

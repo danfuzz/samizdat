@@ -98,7 +98,7 @@ main = { selfPath name rest* ::
     process [1 -2];
     process [-1 2 300];
     process "";
-    process "\"Blort.\" \n";
+    process "\"Blort.\" \\ \0 \n";
     process [=];
     process [1=2];
     process [1=2 888=1];
@@ -122,6 +122,7 @@ main = { selfPath name rest* ::
     blort 1 2 3;
     blort 1 2 3 4;
     blort 1 2 3 4 5;
+    (partialApply blort 1 [2 3 4]) 5 6;
     stuff 1;
     stuff 1 2;
 

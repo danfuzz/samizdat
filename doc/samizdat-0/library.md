@@ -41,15 +41,16 @@ functionName argument argument? argument* <> returnValue
 In an actual function specification, `argument`s are replaced with names
 that indicate the type of value expected. Similarly, `returnValue`
 is replaced with either the type returned, a more specific value that
-will be returned, or one of `.` `~.` `. | ~.` as described in
+will be returned, or one of `.` `!.` `. | !.` as described in
 [the section about data types](data-syntax-semantics.md).
 
 ### Contents
 
 * [Constants](library-constants.md)
 * [Ultraprimitives](library-ultra.md)
-* [Conditionals And Iteration](library-conditional.md)
 * [General Low-Layer Values](library-low.md)
+* [Conditionals And Iteration](library-conditional.md)
+* [Booleans And Comparison](library-boolean.md)
 * [Ints](library-int.md)
 * [Strings](library-string.md)
 * [Lists](library-list.md)
@@ -57,6 +58,6 @@ will be returned, or one of `.` `~.` `. | ~.` as described in
 * [Highlets](library-highlet.md)
 * [Functions And Code](library-code.md)
 * [I/O](library-io.md)
-* [Meta-Library](library-meta.md)
-* [Booleans And Comparison](library-boolean.md)
 * [String Formatting](library-format.md)
+* [Parsing](library-peg.md)
+* [Meta-Library](library-meta.md)

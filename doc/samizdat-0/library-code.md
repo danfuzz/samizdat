@@ -7,7 +7,7 @@ Functions And Code
 <br><br>
 ### Primitive Definitions
 
-#### `apply function value* list? <> . | ~.`
+#### `apply function value* list? <> . | !.`
 
 Calls the given function with the given arguments.
 
@@ -62,7 +62,7 @@ function to call its own interface function, either directly or
 indirectly. To implement a recursive operation, it is necessary to do
 so without going through the interface.
 
-#### `sam0Eval context expressionNode <> . | ~.`
+#### `sam0Eval context expressionNode <> . | !.`
 
 Returns the evaluation result of executing the given expression node,
 which is a parse tree as specified in this document. It is valid for
@@ -86,6 +86,18 @@ that represents the function.
 
 <br><br>
 ### In-Language Definitions
+
+#### `partialApply function value* list? <> function`
+
+Partial function application. This takes a function and a number of arguments
+to call it with, in standard `apply` form (that is, zero or more individual
+arguments ended with a list-of-the-rest), and returns a new function. The
+new function, when called, in turn calls the original function with the
+arguments specified here as the first arguments, followed by any arguments
+passed to the new function.
+
+For example, `partialApply iadd [2]` is a function which when called returns
+the sum of 2 and whatever value it was passed.
 
 #### `yCombinator function <> function`
 

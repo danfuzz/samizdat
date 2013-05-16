@@ -170,6 +170,8 @@ static zvalue tokenizeString(ParseState *state) {
                 // These pass through as-is.
             } else if (ch == 'n') {
                 ch = '\n';
+            } else if (ch == '0') {
+                ch = '\0';
             } else {
                 die("Invalid string escape character: %#llx", ch);
             }
