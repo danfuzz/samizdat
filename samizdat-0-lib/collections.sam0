@@ -139,6 +139,12 @@ stringForEach = { string function ::
 };
 
 # Documented in Samizdat Layer 0 spec.
+stringFromTokenList = { tokens ::
+    <> listReduce "" tokens
+        { result . token :: <> stringAdd result (highletType token) };
+};
+
+# Documented in Samizdat Layer 0 spec.
 stringMap = { string function ::
     <> genericMap { n :: <> stringNth string n } function
 };
@@ -165,6 +171,7 @@ stringReduce = { base string function ::
     "mapMap" = mapMap
     "mapReduce" = mapReduce
     "stringForEach" = stringForEach
+    "stringFromTokenList" = stringFromTokenList
     "stringMap" = stringMap
     "stringReduce" = stringReduce
 ]

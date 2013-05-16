@@ -10,30 +10,6 @@
 # Helper functions
 #
 
-# Tokenizer error helper, to read a line of text for reporting back to
-# the user.
-readLine = filterRule
-    (seqRule
-        (starRule (notCharSetRule "\n"))
-        (optRule (charsRule "\n")))
-    { result :: <> apply stringAdd (listNth result 0) };
-
-# Performs tokenization of the given text using the given tokenizer rules.
-tokenize = { rules text ::
-    theReader = reader text;
-    theEngine = pegEngine theReader rules;
-    result = (theEngine "rule" "file") theEngine;
-
-    ifFalse { <> theEngine "eof" }
-        {
-            io0Note "Extra text at end of program.";
-            io0Note "Pending text:";
-            io0Die (readLine theEngine);
-        };
-
-    <> result
-};
-
 # Performs tree parsing of the given tokenized text using the given tree
 # parsing rules.
 parseTree = { rules tokens ::
@@ -64,14 +40,12 @@ parseTree = { rules tokens ::
 # Exported functions
 #
 
-# Given a token grammar and a tree grammar (both given as maps of
-# name-to-rule bindings, return a combined parser that takes strings and
-# returns parsed programs. This assumes that the main token rule is `"file"`
-# (to return the entire file as a list of parsed tokens) and the main
-# tree rule is `"program"`.
-parser = { tokenRules treeRules ::
+# Given a tokenizer parser rule and a tree grammar (the latter given as a map
+# of name-to-rule bindings, return a combined parser that takes strings and
+# returns parsed programs. This assumes that the main tree rule is `"program"`.
+parser = { tokenize treeRules ::
     <> { text ::
-        tokens = tokenize tokenRules text;
+        tokens = tokenize text;
         <> parseTree treeRules tokens
     }
 };
