@@ -6,6 +6,12 @@
 # `parseArgs` function, which parses command-line arguments.
 #
 
+# Helper to turn a list of character-tokens into a single string.
+stringFromTokens = { tokens ::
+    <> listReduce "" tokens
+        { result . token :: <> stringAdd result (highletType token) };
+};
+
 # wordBreak = {/ "\0" /}
 parseWordBreak = pegMakeChar "\0";
 
@@ -17,7 +23,7 @@ parseWord = pegMakeMainSequence
     (pegMakeStar (pegMakeCharSetComplement "\0"))
     parseWordBreak
     (pegMakeCode { chars . ::
-        <> apply stringAdd chars
+        <> stringFromTokens chars
     });
 
 # key = {/
@@ -27,7 +33,7 @@ parseWord = pegMakeMainSequence
 parseKey = pegMakeMainSequence
     (pegMakeStar (pegMakeCharSetComplement "=\0"))
     (pegMakeCode { chars ::
-        <> apply stringAdd chars
+        <> stringFromTokens chars
     });
 
 # keyValue = {/
@@ -58,8 +64,8 @@ parseError = pegMakeMainSequence
     (pegMakeChar "-")
     (pegMakeCharSetComplement "-\0")
     parseWord
-    (pegMakeCode { args* ::
-        value = apply stringAdd args;
+    (pegMakeCode { ch1 ch2 word ::
+        value = stringAdd (stringFromTokens ch1 ch2) word;
         io0Note (format "Unknown option: %Q" value);
         <> [error = true]
     });

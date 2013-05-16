@@ -200,17 +200,29 @@ pegMakeStar = { rule ::
     }
 };
 
-# The following are built partially in terms of the preceding
-# rule constructors.
+# TODO: Documented in Samizdat Layer 0 spec.
+pegMakeToken = { token ::
+    # This is implemented as, in effect, `(&. &@token .)`, which
+    # allows us to keep the main matcher function here much simpler.
 
-# Helper for `pegMakeCharSet` and `pegMakeCharSetComplement`, which
-# takes a `sense` argument and produces the desired rule.
-genericMakeCharSet = { sense strings* <out> ::
+    tokenType = highletType token;
+
+    match = { item ::
+        <> ifTrue { <> eq (highletType item) tokenType }
+            { <> item }
+    };
+
+    <> pegMakeMainSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+};
+
+# Helper for `pegMake*Set*`, which takes a `sense` argument and produces the
+# desired rule.
+genericMakeTokenSet = { sense tokens <out> ::
     oppositeSense = not sense;
 
-    # Make a set-like map of all the strings' characters.
-    set = stringReduce [=] (apply stringAdd strings)
-        { result . ch :: <> mapPut result ch sense };
+    # Make a set-like map of all the token types.
+    set = listReduce [=] tokens
+        { result . token :: <> mapPut result (highletType token) sense };
 
     # Trivial case: Empty set. Return an apropriate absolute rule.
     ifTrue { <> eq (lowSize set) 0 }
@@ -220,11 +232,24 @@ genericMakeCharSet = { sense strings* <out> ::
     # allows us to keep the main matcher function here much simpler.
 
     match = { item ::
-        <> ifTrue { <> mapGet set item oppositeSense }
+        <> ifTrue { <> mapGet set (highletType item) oppositeSense }
             { <> item }
     };
 
     <> pegMakeMainSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+};
+
+# The following are built partially in terms of the preceding
+# rule constructors.
+
+# Helper for `pegMakeCharSet` and `pegMakeCharSetComplement`, which
+# takes a `sense` argument and produces the desired rule.
+genericMakeCharSet = { sense strings* <out> ::
+    # Make a list of all the strings' characters as tokens.
+    tokens = stringReduce [] (apply stringAdd strings)
+        { result . ch :: <> listAppend result @[ch] };
+
+    <> genericMakeTokenSet sense tokens
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
@@ -239,15 +264,7 @@ pegMakeCharSetComplement = { strings* ::
 
 # TODO: Documented in Samizdat Layer 0 spec.
 pegMakeChar = { ch ::
-    # This is implemented as, in effect, `(&. &"ch" .)`, which
-    # allows us to keep the main matcher function here much simpler.
-
-    match = { item ::
-        <> ifTrue { <> eq item ch }
-            { <> item }
-    };
-
-    <> pegMakeMainSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+    <> pegMakeToken @[ch]
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
@@ -258,7 +275,7 @@ pegMakeChars = { string <out> ::
 
     # Trivial case: One-char string. Return a simple one-char rule.
     ifTrue { <> eq (lowSize string) 1 }
-        { <out> pegMakeChar string };
+        { <out> pegMakeToken @[string] };
 
     # This is implemented as, in effect, `("1" "2" ... { <> string })`,
     # which allows us to minimize code duplication.
@@ -267,7 +284,8 @@ pegMakeChars = { string <out> ::
     chars = stringReduce [] string
         { result . ch :: <> listAppend result (pegMakeChar ch) };
 
-    <> apply pegMakeMainSequence (listAppend chars (pegMakeCode { <> string }))
+    <> apply pegMakeMainSequence
+        (listAppend chars (pegMakeCode { <> @[string] }))
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
@@ -346,46 +364,7 @@ pegMakePlus = { rule ::
             { <> items }
     };
 
-    <> pegMakeSequence (pegMakeStar rule) (pegMakeCode checkSize)
-};
-
-# TODO: Documented in Samizdat Layer 0 spec.
-pegMakeToken = { token ::
-    # This is implemented as, in effect, `(&. &@token .)`, which
-    # allows us to keep the main matcher function here much simpler.
-
-    tokenType = highletType token;
-
-    match = { item ::
-        <> ifTrue { <> eq (highletType item) tokenType }
-            { <> item }
-    };
-
-    <> pegMakeSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
-};
-
-# Helper for `pegMakeTokenSet` and `pegMakeTokenSetComplement`, which
-# takes a `sense` argument and produces the desired rule.
-genericMakeTokenSet = { sense tokens <out> ::
-    oppositeSense = not sense;
-
-    # Make a set-like map of all the token types.
-    set = listReduce [=] tokens
-        { result . token :: <> mapPut result (highletType token) sense };
-
-    # Trivial case: Empty set. Return an apropriate absolute rule.
-    ifTrue { <> eq (lowSize set) 0 }
-        { <out> ifTrue { <> sense } { <> pegRuleFail } { <> pegRuleAny } };
-
-    # This is implemented as, in effect, `(&. &set .)`, which
-    # allows us to keep the main matcher function here much simpler.
-
-    match = { item ::
-        <> ifTrue { <> mapGet set (highletType item) oppositeSense }
-            { <> item }
-    };
-
-    <> pegMakeSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+    <> pegMakeMainSequence (pegMakeStar rule) (pegMakeCode checkSize)
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
@@ -407,9 +386,9 @@ pegMakeTokenSetComplement = { tokens* ::
 pegApply = { rule input ::
     inputList = ifTrue { <> isString input }
         {
-            # Make a list of each character as a separate element.
+            # Make a list of each character as a separate token.
             <> stringReduce [] input
-                { result . ch :: <> listAppend result ch }
+                { result . ch :: <> listAppend result @[ch] }
         }
         { <> input };
 
