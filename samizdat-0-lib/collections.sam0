@@ -171,6 +171,7 @@ stringReduce = { base string function ::
     "mapMap" = mapMap
     "mapReduce" = mapReduce
     "stringForEach" = stringForEach
+    "stringFromTokenList" = stringFromTokenList
     "stringMap" = stringMap
     "stringReduce" = stringReduce
 ]
