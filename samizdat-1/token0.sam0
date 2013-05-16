@@ -64,7 +64,8 @@ parseString1 = orRule
             (orRule
                 (filterRule (charsRule "\\") { <> "\\" })
                 (filterRule (charsRule "\"") { <> "\"" })
-                (filterRule (charsRule "n")  { <> "\n" })))
+                (filterRule (charsRule "n")  { <> "\n" })
+                (filterRule (charsRule "0")  { <> "\0" })))
         { result :: <> listNth result 1 });
 
 # Parses a `string` token.

@@ -24,7 +24,7 @@ punctuation ::=
 int ::= "-"? ["0".."9"]+ ;
 # result: @["int" <int>]
 
-string ::= "\"" ([! "\\" "\""] | ("\\" ["\\" "\"" "n"]))* "\"" ;
+string ::= "\"" ([! "\\" "\""] | ("\\" ["\\" "\"" "n" "0"]))* "\"" ;
 # result: @["string" <string>]
 
 identifier ::=
