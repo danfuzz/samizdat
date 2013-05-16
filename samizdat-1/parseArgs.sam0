@@ -16,7 +16,7 @@ parseWordBreak = pegMakeChar CHAR_0;
 #     chars=[! "\0"]* wordBreak
 #     { <> apply stringAdd chars }
 # /}
-parseWord = pegMakeSequence
+parseWord = pegMakeMainSequence
     (pegMakeStar (pegMakeCharSetComplement CHAR_0))
     parseWordBreak
     (pegMakeCode { chars . ::
@@ -27,7 +27,7 @@ parseWord = pegMakeSequence
 #     chars=[! "=\0"]*
 #     { <> apply stringAdd chars }
 # /}
-parseKey = pegMakeSequence
+parseKey = pegMakeMainSequence
     (pegMakeStar (pegMakeCharSetComplement (stringAdd "=" CHAR_0)))
     (pegMakeCode { chars ::
         <> apply stringAdd chars
@@ -37,7 +37,7 @@ parseKey = pegMakeSequence
 #     "--" k=key "=" v=word
 #     { <> [k = v] }
 # /}
-parseKeyValue = pegMakeSequence
+parseKeyValue = pegMakeMainSequence
     (pegMakeChars "--")
     parseKey
     (pegMakeChar "=")
@@ -48,7 +48,7 @@ parseKeyValue = pegMakeSequence
 #     "--" w=word
 #     { <> [w = true] }
 # /}
-parseFlag = pegMakeSequence
+parseFlag = pegMakeMainSequence
     (pegMakeChars "--")
     parseWord
     (pegMakeCode { . w :: <> [w = true] });
@@ -57,7 +57,7 @@ parseFlag = pegMakeSequence
 #     "-" [! "-\0"] word
 #     { ... <> [error = true] }
 # /}
-parseError = pegMakeSequence
+parseError = pegMakeMainSequence
     (pegMakeChar "-")
     (pegMakeCharSetComplement (stringAdd "-" CHAR_0))
     parseWord
@@ -76,7 +76,7 @@ parseOption = pegMakeChoice parseFlag parseKeyValue parseError;
 #     optList=option* ("--" wordBreak)? words=word*
 #     { ... <> ["options"=options "file"=file "args"=args] }
 # /}
-parseArguments = pegMakeSequence
+parseArguments = pegMakeMainSequence
     (pegMakeStar parseOption)
     (pegMakeOpt (pegMakeSequence (pegMakeChars "--") parseWordBreak))
     (pegMakeStar parseWord)

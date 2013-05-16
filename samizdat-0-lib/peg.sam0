@@ -314,6 +314,18 @@ pegMakeLookaheadFailure = { rule ::
 };
 
 # TODO: Documented in Samizdat Layer 0 spec.
+#
+# Note: This is just like `sequence` except that it resets the
+# extra `items*` to empty.
+pegMakeMainSequence = { rules* ::
+    subRule = apply pegMakeSequence rules;
+
+    <> { yield state items* ::
+        <> subRule yield state
+    }
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
 pegMakeOpt = { rule ::
     <> { yield state items* ::
         ybox = yieldBox();
@@ -426,6 +438,7 @@ pegApply = { rule input ::
     "pegMakeCode" = pegMakeCode
     "pegMakeLookaheadSuccess" = pegMakeLookaheadSuccess
     "pegMakeLookaheadFailure" = pegMakeLookaheadFailure
+    "pegMakeMainSequence" = pegMakeMainSequence
     "pegMakeOpt" = pegMakeOpt
     "pegMakePlus" = pegMakePlus
     "pegMakeSequence" = pegMakeSequence
