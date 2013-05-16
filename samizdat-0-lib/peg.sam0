@@ -149,7 +149,7 @@ pegMakeSequence = { rules* <out> ::
     # The general case. Each rule after the first gets passed as additional
     # arguments the matched results of all the previous rules, in order.
     <> { yield state items* <out> ::
-        reduction = listReduce [state []] rules
+        reduction = listReduce [state items] rules
             { results . rule ::
                 state = listNth results 0;
                 values = listNth results 1;
