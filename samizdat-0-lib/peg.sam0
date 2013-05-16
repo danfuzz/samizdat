@@ -259,7 +259,7 @@ pegMakeChars = { string <out> ::
 
     # Make a list of rules per character.
     chars = stringReduce [] string
-        { result ch :: <> listAppend result (pegMakeChar ch) };
+        { result . ch :: <> listAppend result (pegMakeChar ch) };
 
     <> apply pegMakeSequence (listAppend chars (pegMakeCode { <> string }))
 };
