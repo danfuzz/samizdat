@@ -108,11 +108,7 @@ parseToken = pegMakeMainSequence
         parseInt
         parseString
         parseIdentifier
-        parseQuotedIdentifier)
-    (pegMakeCode { tok ::
-        io0Note (format "token %q" tok);
-        <> tok
-    });
+        parseQuotedIdentifier);
 
 # Documented in Samizdat Layer 0 spec.
 parseFile = pegMakeMainSequence
