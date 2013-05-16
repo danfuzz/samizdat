@@ -395,7 +395,6 @@ pegApply = { rule input ::
     ifFalse { <> isList inputList }
         { io0Die "Attempt to parse non-list." };
 
-    io0Note (format "Input: %q" inputList);
     ybox = yieldBox();
     <> ifValue { <> rule (mapGet ybox "set") inputList }
         { <> (mapGet ybox "get")() }
