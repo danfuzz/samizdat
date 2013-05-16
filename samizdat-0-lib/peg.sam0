@@ -419,7 +419,7 @@ pegApply = { rule input ::
     io0Note (format "Input: %q" inputList);
     ybox = yieldBox();
     <> ifValue { <> rule (mapGet ybox "set") inputList }
-        { <> (ybox "get")() }
+        { <> (mapGet ybox "get")() }
 };
 
 
