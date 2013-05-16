@@ -398,13 +398,14 @@ pegApply = { rule input ::
         {
             # Make a list of each character as a separate element.
             <> stringReduce [] input
-                { result ch :: <> listAppend result ch }
+                { result . ch :: <> listAppend result ch }
         }
         { <> input };
 
     ifFalse { <> isList inputList }
         { io0Die "Attempt to parse non-list." };
 
+    io0Note (format "Input: %q" inputList);
     ybox = yieldBox();
     <> ifValue { <> rule (mapGet ybox "set") inputList }
         { <> (ybox "get")() }
