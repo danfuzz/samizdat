@@ -6,117 +6,99 @@
 # `parseArgs` function, which parses command-line arguments.
 #
 
-#
-# Grammar:
-#
-# arguments ::= options ("--" wordBreak)? words ;
-# options ::= ((option | error) wordBreak)* ;
-# error ::= "-" ~("-" | "\0") ~("\0")*;
-# option ::= "--" key value? ;
-# key ::= ~("=" | "\0")+ ;
-# value ::= "=" word ;
-# words ::= (word wordBreak)* ;
-# word ::= ~("\0")* ;
-# wordBreak ::= "\0" ;
-#
-
 # The character "\0".
 CHAR_0 = stringFromInt 0;
 
-parseArguments = filterRule
-    (seqRule
-        "options"
-        (optRule (charsRule (stringAdd "--" CHAR_0)))
-        "words")
-    { result ::
-        optsErrors = listNth result 0;
-        words = listNth result 2;
-        ifTrue { <> mapGet optsErrors "errors" }
+# wordBreak = {/ "\0" /}
+parseWordBreak = pegMakeChar CHAR_0;
+
+# word = {/
+#     chars=[! "\0"]* wordBreak
+#     { <> apply stringAdd chars }
+# /}
+parseWord = pegMakeSequence
+    (pegMakeStar (pegMakeCharSetComplement CHAR_0))
+    parseWordBreak
+    (pegMakeCode { chars . ::
+        <> apply stringAdd chars
+    });
+
+# key = {/
+#     chars=[! "=\0"]*
+#     { <> apply stringAdd chars }
+# /}
+parseKey = pegMakeSequence
+    (pegMakeStar (pegMakeCharSetComplement (stringAdd "=" CHAR_0)))
+    (pegMakeCode { chars ::
+        <> apply stringAdd chars
+    });
+
+# keyValue = {/
+#     "--" k=key "=" v=word
+#     { <> [k = v] }
+# /}
+parseKeyValue = pegMakeSequence
+    (pegMakeChars "--")
+    parseKey
+    (pegMakeChar "=")
+    parseWord
+    (pegMakeCode { . k . v :: <> [k = v] });
+
+# flag = {/
+#     "--" w=word
+#     { <> [w = true] }
+# /}
+parseFlag = pegMakeSequence
+    (pegMakeChars "--")
+    parseWord
+    (pegMakeCode { . w :: <> [w = true] });
+
+# error = {/
+#     "-" [! "-\0"] word
+#     { ... <> [error = true] }
+# /}
+parseError = pegMakeSequence
+    (pegMakeChar "-")
+    (pegMakeCharSetComplement (stringAdd "-" CHAR_0))
+    parseWord
+    (pegMakeCode { args* ::
+        value = apply stringAdd args;
+        io0Note (format "Unknown option: %Q" value);
+        <> [error = true]
+    });
+
+# option = {/
+#     flag | keyValue | error
+# /}
+parseOption = pegMakeChoice parseFlag parseKeyValue parseError;
+
+# arguments = {/
+#     optList=option* ("--" wordBreak)? words=word*
+#     { ... <> ["options"=options "file"=file "args"=args] }
+# /}
+parseArguments = pegMakeSequence
+    (pegMakeStar parseOption)
+    (pegMakeOpt (pegMakeSequence (pegMakeChars "--") parseWordBreak))
+    (pegMakeStar parseWord)
+    (pegMakeCode { optList . words ::
+        options = apply mapAdd optList;
+        ifTrue { <> mapGet options "error" false }
             { io0Die "Trouble with options." };
         ifTrue { <> eq (lowSize words) 0 }
             { io0Die "Missing file name." };
-        fileName = listNth words 0;
+        io0Note "zzz q0";
+        file = listNth words 0;
         args = listDelNth words 0;
         <> [
-            "options" = (mapGet optsErrors "options")
-            "file" = fileName
+            "options" = options
+            "file" = file
             "args" = args
         ]
-    };
-
-parseOptions = filterRule
-    (starRule
-       (filterRule
-            (seqRule (orRule "option" "error") "wordBreak")
-            { result :: <> listNth result 0 }))
-    { result ::
-        <> listReduce ["options"=[=] "errors"=false] result
-            { result . one :: <> one result }
-    };
-
-parseError = filterRule
-    (seqRule
-        (charsRule "-")
-        (notCharSetRule (stringAdd "-" CHAR_0))
-        (starRule (notCharSetRule CHAR_0)))
-    { result ::
-        c0 = listNth result 0;
-        c1 = listNth result 1;
-        more = listNth result 2;
-        value = apply stringAdd c0 c1 more;
-        io0Note (format "Unknown option: %Q" value);
-        <> { result :: <> mapPut result "errors" true }
-    };
-
-parseOption = filterRule
-    (seqRule (charsRule "--") "key" (optRule "value"))
-    { result ::
-        key = listNth result 1;
-        valueHolder = listNth result 2;
-        value = ifValue { <> listNth valueHolder 0 }
-            { value :: <> value }
-            { <> true };
-        <> { result ::
-            options = mapPut (mapGet result "options") key value;
-            <> mapPut result "options" options
-        }
-    };
-
-parseKey = filterRule
-    (plusRule
-        (notCharSetRule (stringAdd "=" CHAR_0)))
-    { result :: <> apply stringAdd result };
-
-parseValue = filterRule
-    (seqRule (charsRule "=") "word")
-    { result :: <> listNth result 1 };
-
-parseWords = starRule
-    (filterRule
-        (seqRule "word" "wordBreak")
-        { result :: <> listNth result 0 });
-
-parseWord = filterRule
-    (starRule (notCharSetRule CHAR_0))
-    { result :: <> apply stringAdd result };
-
-parseWordBreak = charsRule CHAR_0;
-
-RULES = [
-    "arguments" = parseArguments
-    "error" = parseError
-    "key" = parseKey
-    "option" = parseOption
-    "options" = parseOptions
-    "value" = parseValue
-    "word" = parseWord
-    "wordBreak" = parseWordBreak
-    "words" = parseWords
-];
+    });
 
 # Parses the command-line arguments. Starts by appending all the
 # arguments-as-given together with a "\0" at the end of each. Then
-# it uses the parser engine to split them back apart.
+# it uses the peg grammar above to split them back apart.
 parseArgs = { args ::
     # Make a unified string with each argument "\0"-terminated.
     argString = listReduce "" args
@@ -124,10 +106,7 @@ parseArgs = { args ::
             <> stringAdd result arg CHAR_0;
         };
 
-    theReader = reader argString;
-    theEngine = pegEngine theReader RULES;
-
-    <> parseArguments theEngine;
+    <> pegApply parseArguments argString
 };
 
 <> ["parseArgs" = parseArgs]
