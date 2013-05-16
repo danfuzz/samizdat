@@ -32,7 +32,7 @@ parseChar = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeSequence
             (pegMakeCharSetComplement "\\\"")
-            (pegMakeCode { ch :: <> highletValue ch }))
+            (pegMakeCode { ch :: <> highletType ch }))
         (pegMakeSequence
             (pegMakeChar "\\")
             (pegMakeChoice
@@ -51,7 +51,7 @@ parseString = pegMakeMainSequence
     (pegMakeStar parseChar)
     (pegMakeChar "\"")
     (pegMakeCode { . chars . ::
-        <> @["string" (stringFromTokenList chars)]
+        <> @["string" (apply stringAdd chars)]
     });
 
 # These are all the characters which are allowed to start an identifier.
@@ -143,7 +143,7 @@ parseFileOrError = pegMakeMainSequence
             (pegMakeCode { errorLines ::
                 io0Note "Extra text at end of program.";
                 io0Note "Pending text:";
-                io0Die (format "  %Q" (listNth errorLines 0))
+                io0Die (format "  %s" (listNth errorLines 0))
             })));
 
 # Performs tokenization of the given file contents.
