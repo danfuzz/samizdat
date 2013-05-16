@@ -144,7 +144,8 @@ parseFileOrError = pegMakeMainSequence
                 io0Note "Extra text at end of program.";
                 io0Note "Pending text:";
                 io0Die (format "  %s" (listNth errorLines 0))
-            })));
+            })))
+    (pegMakeCode { tokens . :: <> tokens });
 
 # Performs tokenization of the given file contents.
 tokenize0 = { programText ::
