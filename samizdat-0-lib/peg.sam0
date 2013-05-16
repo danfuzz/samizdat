@@ -407,14 +407,14 @@ pegApply = { rule input ::
 
 <> [
     "pegApply" = pegApply
+    "pegMakeChar" = pegMakeChar
     "pegMakeCharSet" = pegMakeCharSet
     "pegMakeCharSetComplement" = pegMakeCharSetComplement
-    "pegMakeChar" = pegMakeChar
     "pegMakeChars" = pegMakeChars
     "pegMakeChoice" = pegMakeChoice
     "pegMakeCode" = pegMakeCode
-    "pegMakeLookaheadSuccess" = pegMakeLookaheadSuccess
     "pegMakeLookaheadFailure" = pegMakeLookaheadFailure
+    "pegMakeLookaheadSuccess" = pegMakeLookaheadSuccess
     "pegMakeMainSequence" = pegMakeMainSequence
     "pegMakeOpt" = pegMakeOpt
     "pegMakePlus" = pegMakePlus
