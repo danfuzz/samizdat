@@ -43,6 +43,14 @@ The given function is called with two arguments, namely the element's
 index (zero-based) and the element's value (as a single-character string).
 Always returns void.
 
+#### `stringFromTokenList tokens <> string`
+
+Takes a list of tokenizer-style character tokens (that is, highlets whose
+type tags are each a single-character string), returning the result
+of concatenating all the characters together in order.
+
+This function is intended to aid in the building of tokenizers.
+
 #### `stringMap string function <> list`
 
 Maps each element of a string using a mapping function, collecting
