@@ -34,6 +34,9 @@ enum {
     /** Maximum number of characters in a tokenized string constant. */
     LANG_MAX_STRING_CHARS = 200,
 
+    /** Maximum number of active stack frames. */
+    UTIL_MAX_CALL_STACK_DEPTH = 1000,
+
     /** Maximum number of disjoint heap allocation page ranges. */
     UTIL_MAX_PAGE_RANGES = 40
 };

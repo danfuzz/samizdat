@@ -10,6 +10,7 @@
 
 #include <setjmp.h>
 #include <stddef.h>
+#include <string.h>
 
 
 /*
@@ -237,8 +238,11 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
         yieldState->active = true;
         yieldState->result = NULL;
 
+        zint mark = debugMark();
+
         if (setjmp(yieldState->jumpBuf) != 0) {
             // Here is where we land if and when `longjmp` is called.
+            debugReset(mark);
             return yieldState->result;
         }
 
@@ -292,6 +296,24 @@ static zvalue execFunction(zvalue ctx, zvalue function) {
 }
 
 /**
+ * Helper for `execCall`. This is the function that handles emitting
+ * a context string for a call, when dumping the stack.
+ */
+static char *callReporter(void *state) {
+    zvalue expressionNode = state;
+
+    if (datHighletTypeIs(expressionNode, STR_VAR_REF)) {
+        zvalue name = datHighletValue(expressionNode);
+        zint nameSize = datUtf8SizeFromString(name);
+        char nameStr[nameSize + 1];
+        datUtf8FromString(nameSize + 1, nameStr, name);
+        return strdup(nameStr);
+    } else {
+        return "(unknown)";
+    }
+}
+
+/**
  * Executes a `call` form.
  */
 static zvalue execCall(zvalue ctx, zvalue call) {
@@ -309,7 +331,11 @@ static zvalue execCall(zvalue ctx, zvalue call) {
         args[i] = execExpression(ctx, one);
     }
 
-    return langCall(functionId, argCount, args);
+    debugPush(callReporter, function);
+    zvalue result = langCall(functionId, argCount, args);
+    debugPop();
+
+    return result;
 }
 
 /**
