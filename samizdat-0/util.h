@@ -21,6 +21,12 @@
  */
 
 /**
+ * Function added to the "death context", which is expected to return
+ * some sort of interesting string.
+ */
+typedef char *(*zcontextFunction)(void *state);
+
+/**
  * Emits a debugging message. Arguments are as with `printf()`.
  */
 void note(const char *format, ...)
@@ -28,11 +34,34 @@ void note(const char *format, ...)
 
 /**
  * Dies (aborts the process) with the given message. Arguments are as
- * with `printf()`.
+ * with `printf()`. If there is any active stack context (more
+ * `deathPush*()`es than `deathPop()`s), then that context is appended
+ * to the death report.
  */
 void die(const char *format, ...)
     __attribute__((noreturn))
     __attribute__((format (printf, 1, 2)));
+
+/**
+ * Adds a stack layer to the current context, for emission in case
+ * of death.
+ */
+void debugPush(zcontextFunction function, void *state);
+
+/**
+ * Pops the top layer of death / debug context.
+ */
+void debugPop(void);
+
+/**
+ * Gets a "mark" representing the current debug stack depth.
+ */
+zint debugMark(void);
+
+/**
+ * Resets the debug stack to what it was at the given mark.
+ */
+void debugReset(zint mark);
 
 
 /*
