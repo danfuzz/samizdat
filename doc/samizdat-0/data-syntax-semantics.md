@@ -61,12 +61,13 @@ A `string` is a sequence of zero or more Unicode code points.
 Strings are written as an initial `"`, followed by zero or
 more character representations, followed by a final `"`.
 
-Characters are self-representing, except that there are three
-(and only three) backslash-quoted escapes:
+Characters are self-representing, except that there are four
+(and only four) backslash-quoted escapes:
 
 * `\\` &mdash; backslash itself
 * `\"` &mdash; a double quote
 * `\n` &mdash; newline (Unicode U+0010)
+* `\0` &mdash; the null character (Unicode U+0000)
 
 ```
 ""                            # the empty string
