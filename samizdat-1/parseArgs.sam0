@@ -82,11 +82,11 @@ parseArguments = pegMakeSequence
     (pegMakeStar parseWord)
     (pegMakeCode { optList . words ::
         options = apply mapAdd optList;
+        io0Note (format "=== Got: %q %q" options words);
         ifTrue { <> mapGet options "error" false }
             { io0Die "Trouble with options." };
         ifTrue { <> eq (lowSize words) 0 }
             { io0Die "Missing file name." };
-        io0Note "zzz q0";
         file = listNth words 0;
         args = listDelNth words 0;
         <> [
