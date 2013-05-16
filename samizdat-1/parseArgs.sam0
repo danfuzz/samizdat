@@ -79,7 +79,6 @@ parseArguments = pegMakeMainSequence
     (pegMakeStar parseWord)
     (pegMakeCode { optList . words ::
         options = apply mapAdd optList;
-        io0Note (format "=== Got: %q %q" options words);
         ifTrue { <> mapGet options "error" false }
             { io0Die "Trouble with options." };
         ifTrue { <> eq (lowSize words) 0 }

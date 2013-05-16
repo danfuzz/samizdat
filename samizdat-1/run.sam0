@@ -76,9 +76,7 @@ makeCoreLibrary = {
 # (in standard list-of-string form) followed by the rest of the
 # arguments as-is.
 run = { args* ::
-    io0Note "=== Parsing args...";
     parsedArgs = parseArgs args;
-    io0Note (format "=== Parsed args: %q" parsedArgs);
     options = mapGet parsedArgs "options";
     validate = mapGet options "validate" false;
     file = mapGet parsedArgs "file";
