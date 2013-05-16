@@ -41,7 +41,7 @@ parseChar = pegMakeMainSequence
                 (pegMakeSequence
                     (pegMakeChar "\"") (pegMakeCode { <> "\"" }))
                 (pegMakeSequence
-                    (pegMakeChar "n") (pegMakeCode { <> "\\" }))
+                    (pegMakeChar "n") (pegMakeCode { <> "\n" }))
                 (pegMakeSequence
                     (pegMakeChar "0") (pegMakeCode { <> "\0" })))));
 
