@@ -148,7 +148,7 @@ pegMakeSequence = { rules* <out> ::
 
     # The general case. Each rule after the first gets passed as additional
     # arguments the matched results of all the previous rules, in order.
-    <> { yield state <out> ::
+    <> { yield state items* <out> ::
         reduction = listReduce [state []] rules
             { results . rule ::
                 state = listNth results 0;
@@ -276,11 +276,11 @@ pegMakeChoice = { rules* ::
 
 
     # The general case.
-    <> { yield state <out> ::
+    <> { yield state items* <out> ::
         listForEach rules
             { . rule ::
                 ybox = yieldBox();
-                <> ifValue { <> rule (mapGet ybox "set") state }
+                <> ifValue { <> apply rule (mapGet ybox "set") state items }
                     { newState ::
                         yield ((mapGet ybox "get")());
                         <out> newState
