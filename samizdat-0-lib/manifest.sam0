@@ -19,5 +19,6 @@
     "io0"
     "main"
     "meta"
+    "peg"
     "type"
 ]

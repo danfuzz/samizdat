@@ -1,0 +1,431 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# PEG (Parsing Expression Grammar) support
+#
+
+
+#
+# Yield box
+#
+# Interpretation of `state`:
+#
+# * `null` -- `set` has not yet been called.
+# * `[]` -- `set` has been called with no argument. (That is, yield void.)
+# * `[x]` -- `set` has been called with argument `x`.
+
+# Yield box `set` implementation.
+doSet = { yield state value? ::
+    ifTrue { <> ne state null }
+        { io0Die "Attempt to multi-yield from peg rule." };
+
+    yield();
+    <> value
+};
+
+# Yield box `get` implementation.
+doGet = { yield state ::
+    ifTrue { <> eq state null }
+        { io0Die "Peg rule failed to yield." };
+
+    apply yield state
+};
+
+# Dispatch table.
+YIELD_BOX_DISPATCH = [
+    "get" = doGet
+    "set" = doSet
+];
+
+# Performs method dispatch.
+yieldBoxDispatch = { yield state name rest* ::
+    <> apply (mapGet YIELD_BOX_DISPATCH name) yield state rest
+};
+
+# Constructs a set-once "yield box". This returns a map that binds `set` and
+# `get`, each of which is a function.
+#
+# The `set` function will allow itself to be called exactly once, taking at
+# most one argument. Subsequent calls will fail.
+#
+# The `get` function will only succeed after `set` has been called, returning
+# whatever had been passed to `set` (including void).
+yieldBox = {
+    obj = object yieldBoxDispatch null;
+    <> [
+        "get" = (partialApply obj ["get"])
+        "set" = (partialApply obj ["set"])
+    ]
+};
+
+
+#
+# Exported functions
+#
+
+#
+# Simple rules
+#
+
+# Peg rule that matches, consumes, and yields an arbitrary terminal item.
+pegRuleAny = { yield state ::
+    <> ifValue { <> listFirst state }
+        { item ::
+            yield item;
+            <> listDelNth state 0;
+        }
+        { yield() }
+};
+
+# Peg rule that always succeeds, yielding `null` and consuming no input.
+pegRuleEmpty = { yield state ::
+    yield null;
+    <> state
+};
+
+# Peg rule that always fails.
+pegRuleFail = { yield state ::
+    yield;
+};
+
+# Peg rule that matches at eof, yielding `null`. This is the equivalent
+# of `!.` in usual peg syntax.
+pegRuleEof = { yield state ::
+    <> ifTrue { <> eq state [] }
+        {
+            yield null;
+            <> state;
+        }
+        { yield() }
+};
+
+# Peg rule that matches anywhere but eof, yielding the next terminal but
+# not consuming it. This is the equivalent of `&.` in usual peg syntax,
+# hence the name.
+pegRuleLookaheadAny = { yield state ::
+    <> ifValue { <> listFirst state }
+        { item ::
+            yield item;
+            <> state
+        }
+        { yield() }
+};
+
+
+#
+# Rule constructors
+#
+
+# The following are all listed out of (sort) order, because they are
+# used as helpers in the implementation of subsequent rule constructors.
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeCode = { function ::
+    <> { yield state items* ::
+        <> ifValue { <> apply function items }
+            { result ::
+                yield result;
+                <> state
+            }
+            { yield() };
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeSequence = { rules* <out> ::
+    # Trivial case: No rules. Return the empty rule.
+    ifTrue { <> eq rules [] }
+        { <out> pegRuleEmpty };
+
+    # Trivial case: One rule. Return that rule directly.
+    ifTrue { <> eq (lowSize rules) 1 }
+        { <out> listFirst rules };
+
+    # The general case. Each rule after the first gets passed as additional
+    # arguments the matched results of all the previous rules, in order.
+    <> { yield state items* <out> ::
+        reduction = listReduce [state items] rules
+            { results . rule ::
+                state = listNth results 0;
+                values = listNth results 1;
+                ybox = yieldBox();
+                <> ifValue { <> apply rule (mapGet ybox "set") state values }
+                    { newState ::
+                        newValues = listAppend values ((mapGet ybox "get")());
+                        <> [newState newValues]
+                    }
+                    {
+                        # Propagate the failure.
+                        yield();
+                        <out>
+                    }
+            };
+
+        newState = listNth reduction 0;
+        results = listNth reduction 1;
+        yield (listLast results);
+        <> newState
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeMainSequence = { rules* ::
+    subRule = apply pegMakeSequence rules;
+
+    <> { yield state items* ::
+        <> subRule yield state
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeStar = { rule ::
+    <> { yield state items* <out> ::
+        loopReduce [state []]
+            { results ::
+                state = listNth results 0;
+                values = listNth results 1;
+                ybox = yieldBox();
+                <> ifValue { <> apply rule (mapGet ybox "set") state items }
+                    { newState ::
+                        newValues = listAppend values ((mapGet ybox "get")());
+                        <> [newState newValues]
+                    }
+                    {
+                        yield values;
+                        <out> state
+                    }
+            }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeToken = { token ::
+    # This is implemented as, in effect, `(&. &@token .)`, which
+    # allows us to keep the main matcher function here much simpler.
+
+    tokenType = highletType token;
+
+    match = { item ::
+        <> ifTrue { <> eq (highletType item) tokenType }
+            { <> item }
+    };
+
+    <> pegMakeMainSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+};
+
+# Helper for `pegMake*Set*`, which takes a `sense` argument and produces the
+# desired rule.
+genericMakeTokenSet = { sense tokens <out> ::
+    oppositeSense = not sense;
+
+    # Make a set-like map of all the token types.
+    set = listReduce [=] tokens
+        { result . token :: <> mapPut result (highletType token) sense };
+
+    # Trivial case: Empty set. Return an apropriate absolute rule.
+    ifTrue { <> eq (lowSize set) 0 }
+        { <out> ifTrue { <> sense } { <> pegRuleFail } { <> pegRuleAny } };
+
+    # This is implemented as, in effect, `(&. &set .)`, which
+    # allows us to keep the main matcher function here much simpler.
+
+    match = { item ::
+        <> ifTrue { <> mapGet set (highletType item) oppositeSense }
+            { <> item }
+    };
+
+    <> pegMakeMainSequence pegRuleLookaheadAny (pegMakeCode match) pegRuleAny
+};
+
+# The following are built partially in terms of the preceding
+# rule constructors.
+
+# Helper for `pegMakeCharSet` and `pegMakeCharSetComplement`, which
+# takes a `sense` argument and produces the desired rule.
+genericMakeCharSet = { sense strings* <out> ::
+    # Make a list of all the strings' characters as tokens.
+    tokens = stringReduce [] (apply stringAdd strings)
+        { result . ch :: <> listAppend result @[ch] };
+
+    <> genericMakeTokenSet sense tokens
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeCharSet = { strings* ::
+    <> apply genericMakeCharSet true strings
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeCharSetComplement = { strings* ::
+    <> apply genericMakeCharSet false strings
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeChar = { ch ::
+    <> pegMakeToken @[ch]
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeChars = { string <out> ::
+    # Trivial case: Empty string. Return the empty rule.
+    ifTrue { <> eq string "" }
+        { <out> pegRuleEmpty };
+
+    # Trivial case: One-char string. Return a simple one-char rule.
+    ifTrue { <> eq (lowSize string) 1 }
+        { <out> pegMakeToken @[string] };
+
+    # This is implemented as, in effect, `("1" "2" ... { <> string })`,
+    # which allows us to minimize code duplication.
+
+    # Make a list of rules per character.
+    chars = stringReduce [] string
+        { result . ch :: <> listAppend result (pegMakeChar ch) };
+
+    <> apply pegMakeMainSequence
+        (listAppend chars (pegMakeCode { <> @[string] }))
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeChoice = { rules* ::
+    # Trivial case: No rules. Return the empty rule.
+    ifTrue { <> eq rules [] }
+        { <out> pegRuleEmpty };
+
+    # Trivial case: One rule. Return that rule directly.
+    ifTrue { <> eq (lowSize rules) 1 }
+        { <out> listFirst rules };
+
+
+    # The general case.
+    <> { yield state items* <out> ::
+        listForEach rules
+            { . rule ::
+                ybox = yieldBox();
+                <> ifValue { <> apply rule (mapGet ybox "set") state items }
+                    { newState ::
+                        yield ((mapGet ybox "get")());
+                        <out> newState
+                    }
+            };
+
+        # No rule succeeded.
+        yield()
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeLookaheadSuccess = { rule ::
+    <> { yield state items* ::
+        <> ifValue { <> apply rule yield state items }
+            { <> state }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeLookaheadFailure = { rule ::
+    <> { yield state items* ::
+        ybox = yieldBox();
+        <> ifValue { <> apply rule (mapGet ybox "set") state items }
+            { yield() }
+            {
+                yield null;
+                <> state
+            }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeOpt = { rule ::
+    <> { yield state items* ::
+        ybox = yieldBox();
+        <> ifValue { <> apply rule (mapGet ybox "set") state items }
+            { newState ::
+                yield [((mapGet ybox "get")())];
+                <> newState
+            }
+            {
+                yield [];
+                <> state
+            }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakePlus = { rule ::
+    # This is implemented as, in effect,
+    # `(items=rule* { ... (lowSize match) ... })`, which allows us to
+    # minimize code duplication.
+
+    checkSize = { items ::
+        <> ifTrue { <> ne (lowSize items) 0 }
+            { <> items }
+    };
+
+    <> pegMakeMainSequence (pegMakeStar rule) (pegMakeCode checkSize)
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeTokenSet = { tokens* ::
+    <> genericMakeTokenSet true tokens
+};
+
+# Documented in Samizdat Layer 0 spec.
+pegMakeTokenSetComplement = { tokens* ::
+    <> genericMakeTokenSet false tokens
+};
+
+
+#
+# Top-level driver
+#
+
+# Documented in Samizdat Layer 0 spec.
+pegApply = { rule input ::
+    inputList = ifTrue { <> isString input }
+        {
+            # Make a list of each character as a separate token.
+            <> stringReduce [] input
+                { result . ch :: <> listAppend result @[ch] }
+        }
+        { <> input };
+
+    ifFalse { <> isList inputList }
+        { io0Die "Attempt to parse non-list." };
+
+    ybox = yieldBox();
+    <> ifValue { <> rule (mapGet ybox "set") inputList }
+        { <> (mapGet ybox "get")() }
+};
+
+
+#
+# Export mechanics
+#
+
+<> [
+    "pegApply" = pegApply
+    "pegMakeChar" = pegMakeChar
+    "pegMakeCharSet" = pegMakeCharSet
+    "pegMakeCharSetComplement" = pegMakeCharSetComplement
+    "pegMakeChars" = pegMakeChars
+    "pegMakeChoice" = pegMakeChoice
+    "pegMakeCode" = pegMakeCode
+    "pegMakeLookaheadFailure" = pegMakeLookaheadFailure
+    "pegMakeLookaheadSuccess" = pegMakeLookaheadSuccess
+    "pegMakeMainSequence" = pegMakeMainSequence
+    "pegMakeOpt" = pegMakeOpt
+    "pegMakePlus" = pegMakePlus
+    "pegMakeSequence" = pegMakeSequence
+    "pegMakeStar" = pegMakeStar
+    "pegMakeToken" = pegMakeToken
+    "pegMakeTokenSet" = pegMakeTokenSet
+    "pegMakeTokenSetComplement" = pegMakeTokenSetComplement
+    "pegRuleAny" = pegRuleAny
+    "pegRuleEmpty" = pegRuleEmpty
+    "pegRuleEof" = pegRuleEof
+    "pegRuleFail" = pegRuleFail
+    "pegRuleLookaheadAny" = pegRuleLookaheadAny
+]
