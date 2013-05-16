@@ -9,75 +9,50 @@
 # the *Samizdat Layer 0* specification.
 #
 
-# Parses an entire file of tokens.
-parseFile = filterRule
-    (seqRule
-        (starRule
-            (filterRule
-                (seqRule (starRule "whitespace") "token")
-                { result :: <> listNth result 1 }))
-        (starRule "whitespace"))
-    { result :: <> listNth result 0 };
+# Documented in Samizdat Layer 0 spec.
+parseWhitespace = pegMakeMainSequence
+    (pegMakeChoice
+        (pegMakeCharSet " \n")
+        (pegMakeSequence
+            (pegMakeChar "#")
+            (pegMakeStar (pegMakeCharSetComplement "\n"))
+            (pegMakeChar "\n")));
 
-# Parses a single token.
-parseToken = orRule
-    "punctuation" "int" "string" "identifier" "quotedIdentifier";
+# Documented in Samizdat Layer 0 spec.
+parsePunctuation = pegMakeMainSequence
+    (pegMakeChoice
+        (pegMakeChars "@@")
+        (pegMakeChars "::")
+        (pegMakeChars "<>")
+        (pegMakeChars "()")
+        (pegMakeCharSet "@:.=+?;*<>{}()[]"));
 
-# Parses any of the punctuation characters or character sequences, yielding
-# a token whose type is the string matched.
-parsePunctuation = filterRule
-    (orRule
-        (charsRule "@@")
-        (charsRule "::")
-        (charsRule "<>")
-        (charsRule "()")
-        (charSetRule ".@:*;=?+<>{}()[]"))
-    { result :: <> @[result] };
+# Documented in Samizdat Layer 0 spec.
+parseChar = pegMakeMainSequence
+    (pegMakeChoice
+        (pegMakeSequence
+            (pegMakeCharSetComplement "\\\"")
+            (pegMakeCode { ch :: <> highletValue ch }))
+        (pegMakeSequence
+            (pegMakeChar "\\")
+            (pegMakeChoice
+                (pegMakeSequence
+                    (pegMakeChar "\\") (pegMakeCode { <> "\\" }))
+                (pegMakeSequence
+                    (pegMakeChar "\"") (pegMakeCode { <> "\"" }))
+                (pegMakeSequence
+                    (pegMakeChar "n") (pegMakeCode { <> "\\" }))
+                (pegMakeSequence
+                    (pegMakeChar "0") (pegMakeCode { <> "\0" })))));
 
-# These are all the int digits, as a map from strings to
-# digit values.
-INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
-
-# Parses an `int` token.
-parseInt = filterRule
-    (seqRule
-        (filterRule
-            (optRule (charsRule "-"))
-            { result :: <> ifTrue { <> eq result [] } { <> 1 } { <> -1 } })
-        (plusRule
-            (filterRule
-                (charSetRule "0123456789")
-                { result :: <> mapGet INT_CHARS result })))
-    { result ::
-        sign = listNth result 0;
-        value = listReduce 0 (listNth result 1)
-            { result . digit :: <> iadd digit (imul result 10) };
-        <> @["int" (imul sign value)]
-    };
-
-# Parses a single string character.
-parseString1 = orRule
-    (notCharSetRule "\\\"")
-    (filterRule
-        (seqRule
-            (charsRule "\\")
-            (orRule
-                (filterRule (charsRule "\\") { <> "\\" })
-                (filterRule (charsRule "\"") { <> "\"" })
-                (filterRule (charsRule "n")  { <> "\n" })
-                (filterRule (charsRule "0")  { <> "\0" })))
-        { result :: <> listNth result 1 });
-
-# Parses a `string` token.
-parseString = filterRule
-    (seqRule
-        (charsRule "\"")
-        (starRule parseString1)
-        (charsRule "\""))
-    { result ::
-        value = apply stringAdd (listNth result 1);
-        <> @["string" value]
-    };
+# Documented in Samizdat Layer 0 spec.
+parseString = pegMakeMainSequence
+    (pegMakeChar "\"")
+    (pegMakeStar parseChar)
+    (pegMakeChar "\"")
+    (pegMakeCode { . chars . ::
+        <> @["string" (stringFromTokens chars)]
+    });
 
 # These are all the characters which are allowed to start an identifier.
 IDENTIFIER_START_CHARS =
@@ -86,44 +61,92 @@ IDENTIFIER_START_CHARS =
 # These are all the characters which are allowed to be in an identifier.
 IDENTIFIER_CHARS = stringAdd IDENTIFIER_START_CHARS "0123456789";
 
-# Parses a `quotedIdentifier` token.
-parseQuotedIdentifier = filterRule
-    (seqRule (charsRule "\\") "string")
-    { result ::
-        value = highletValue (listNth result 1);
-        <> @["identifier" value]
-    };
+# Documented in Samizdat Layer 0 spec.
+parseIdentifier = pegMakeMainSequence
+    (pegMakeCharSet IDENTIFIER_START_CHARS)
+    (pegMakeStar (pegMakeCharSet IDENTIFIER_CHARS))
+    (pegMakeCode { first rest ::
+        <> @["identifier" (apply stringFromTokenList first rest)]
+    });
 
-# Parses an `identifier` token.
-parseIdentifier = filterRule
-    (seqRule
-        (charSetRule IDENTIFIER_START_CHARS)
-        (starRule (charSetRule IDENTIFIER_CHARS)))
-    { result ::
-        value = stringAdd
-            (listNth result 0)
-            (apply stringAdd (listNth result 1));
-        <> @["identifier" value]
-    };
+# Documented in Samizdat Layer 0 spec.
+parseQuotedIdentifier = pegMakeMainSequence
+    (pegMakeChar "\\")
+    parseString
+    (pegMakeCode { . s ::
+        <> @["identifier" (highletValue s)]
+    });
 
-# Parses a single whitespace character or a comment.
-parseWhitespace = orRule
-    (charSetRule " \n")
-    (seqRule
-        (charsRule "#")
-        (starRule (notCharSetRule "\n"))
-        (charsRule "\n"));
+# These are all the int digits, as a map from strings to
+# digit values.
+INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
 
-# Map of all the tokenizer rules.
-TOKEN0_RULES = [
-    "file" = parseFile
-    "identifier" = parseIdentifier
-    "int" = parseInt
-    "punctuation" = parsePunctuation
-    "quotedIdentifier" = parseQuotedIdentifier
-    "string" = parseString
-    "token" = parseToken
-    "whitespace" = parseWhitespace
-];
+# Helper to convert digit characters to digit values.
+intFromDigitChar = { ch :: <> mapGet INT_CHARS ch };
 
-<> ["TOKEN0_RULES" = TOKEN0_RULES]
+# Documented in Samizdat Layer 0 spec.
+parseInt = pegMakeMainSequence
+    (pegMakeChoice
+        (pegMakeSequence
+            (pegMakeChar "-")
+            (pegMakeCode { . :: <> -1 }))
+        (pegMakeCode { <> 1 }))
+    (pegMakePlus
+        (pegMakeMainSequence
+            (pegMakeCharSet "0123456789")
+            (pegMakeCode intFromDigitChar)))
+    (pegMakeCode { sign digits ::
+        value = listReduce 0 digits
+            { result . digit :: <> iadd digit (imul result 10) };
+        <> @["int" (imul sign value)]
+    });
+
+# Documented in Samizdat Layer 0 spec.
+parseToken = pegMakeMainSequence
+    (pegMakeChoice
+        parsePunctuation
+        parseInt
+        parseString
+        parseIdentifier
+        parseQuotedIdentifier);
+
+# Documented in Samizdat Layer 0 spec.
+parseFile = pegMakeMainSequence
+    (pegMakeStar
+        (pegMakeSequence
+            (pegMakeStar parseWhitespace)
+            parseToken))
+    (pegMakeStar parseWhitespace)
+    (pegMakeCode { tokens . ::
+        <> tokens
+    });
+
+# Documented in Samizdat Layer 0 spec.
+parseErrorLine = pegMakeMainSequence
+    pegRuleLookaheadAny
+    (pegMakeStar (pegMakeCharSetComplement "\n"))
+    (pegMakeChoice
+        (pegMakeChar "\n")
+        pegRuleEof)
+    (pegMakeCode { . chars . :: <> stringFromTokenList chars });
+
+# Documented in Samizdat Layer 0 spec.
+parseFileOrError = pegMakeMainSequence
+    parseFile
+    (pegMakeOpt
+        (pegMakeMainSequence
+            (pegMakePlus parseErrorLine)
+            (pegMakeCode { errorLines ::
+                io0Note "Extra text at end of program.";
+                io0Note "Pending text:";
+                io0Die (format "  %Q" (listNth errorLines 0))
+            })));
+
+# Performs tokenization of the given file contents.
+tokenize0 = { programText ::
+    <> pegApply parseFileOrError programText
+};
+
+<> [
+    "tokenize0" = tokenize0
+]
