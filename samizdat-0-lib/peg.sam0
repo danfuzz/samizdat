@@ -204,7 +204,7 @@ genericMakeCharSet = { sense strings* <out> ::
 
     # Make a set-like map of all the strings' characters.
     set = stringReduce [=] (apply stringAdd strings)
-        { result ch :: <> mapPut result ch sense };
+        { result . ch :: <> mapPut result ch sense };
 
     # Trivial case: Empty set. Return an apropriate absolute rule.
     ifTrue { <> eq (lowSize set) 0 }
@@ -259,7 +259,7 @@ pegMakeChars = { string <out> ::
 
     # Make a list of rules per character.
     chars = stringReduce [] string
-        { result ch :: listAppend result (pegMakeChar ch) };
+        { result ch :: <> listAppend result (pegMakeChar ch) };
 
     <> apply pegMakeSequence (listAppend chars (pegMakeCode { <> string }))
 };
@@ -377,7 +377,7 @@ genericMakeTokenSet = { sense tokens <out> ::
 
     # Make a set-like map of all the token types.
     set = listReduce [=] tokens
-        { result token :: <> mapPut result (highletType token) sense };
+        { result . token :: <> mapPut result (highletType token) sense };
 
     # Trivial case: Empty set. Return an apropriate absolute rule.
     ifTrue { <> eq (lowSize set) 0 }
