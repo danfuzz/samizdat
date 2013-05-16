@@ -6,18 +6,15 @@
 # `parseArgs` function, which parses command-line arguments.
 #
 
-# The character "\0".
-CHAR_0 = stringFromInt 0;
-
 # wordBreak = {/ "\0" /}
-parseWordBreak = pegMakeChar CHAR_0;
+parseWordBreak = pegMakeChar "\0";
 
 # word = {/
 #     chars=[! "\0"]* wordBreak
 #     { <> apply stringAdd chars }
 # /}
 parseWord = pegMakeMainSequence
-    (pegMakeStar (pegMakeCharSetComplement CHAR_0))
+    (pegMakeStar (pegMakeCharSetComplement "\0"))
     parseWordBreak
     (pegMakeCode { chars . ::
         <> apply stringAdd chars
@@ -28,7 +25,7 @@ parseWord = pegMakeMainSequence
 #     { <> apply stringAdd chars }
 # /}
 parseKey = pegMakeMainSequence
-    (pegMakeStar (pegMakeCharSetComplement (stringAdd "=" CHAR_0)))
+    (pegMakeStar (pegMakeCharSetComplement "=\0"))
     (pegMakeCode { chars ::
         <> apply stringAdd chars
     });
@@ -59,7 +56,7 @@ parseFlag = pegMakeMainSequence
 # /}
 parseError = pegMakeMainSequence
     (pegMakeChar "-")
-    (pegMakeCharSetComplement (stringAdd "-" CHAR_0))
+    (pegMakeCharSetComplement "-\0")
     parseWord
     (pegMakeCode { args* ::
         value = apply stringAdd args;
@@ -103,7 +100,7 @@ parseArgs = { args ::
     # Make a unified string with each argument "\0"-terminated.
     argString = listReduce "" args
         { result . arg ::
-            <> stringAdd result arg CHAR_0;
+            <> stringAdd result arg "\0";
         };
 
     <> pegApply parseArguments argString
