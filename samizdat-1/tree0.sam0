@@ -290,9 +290,28 @@ implFunction = pegMakeMainSequence
     (pegMakeCode { . prog . :: <> prog });
 fwdFunction implFunction;
 
+# Reports the given list of pending tokens as part of error processing.
+reportError = { pending ::
+    io0Note "Pending tokens:";
+
+    listForEach pending
+        { . token :: io0Note (format "    %q" token) };
+
+    io0Die "\nExtra tokens at end of program."
+};
+
+# Documented in Samizdat Layer 0 spec.
+parseProgramOrError = pegMakeMainSequence
+    parseProgram
+    (pegMakeOpt
+        (pegMakeMainSequence
+            (pegMakePlus pegRuleAny)
+            (pegMakeCode { pending :: reportError pending })))
+    (pegMakeCode { prog :: <> prog });
+
 # Performs parsing of the given token list.
 parse0 = { programTokens ::
-    <> pegApply parseProgram programTokens
+    <> pegApply parseProgramOrError programTokens
 };
 
 <> [

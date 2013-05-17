@@ -9,7 +9,8 @@ This definition uses syntax which is identical to the parser syntax
 implemented at a higher layer.
 
 A program is parsed by matching the `program` rule, which yields a
-`function` node.
+`function` node. For simple error handling, the rule `programOrError`
+can be used.
 
 ```
 # Returns a `call` node.
@@ -241,6 +242,15 @@ function = {/
     @"{"
     prog = program
     @"}"
+    { <> prog }
+/};
+
+programOrError = {/
+    prog = program
+    (
+        pending = .+
+        { <> ... io0Die ... }
+    )?
     { <> prog }
 /};
 ```
