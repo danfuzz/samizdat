@@ -14,7 +14,83 @@
 
 
 /*
- * Helper definitions
+ * Execution frames
+ */
+
+/**
+ * Active execution frame. These are passed around within this file,
+ * as code executes, and can become referenced by closures that are
+ * released "in the wild".
+ */
+typedef struct Frame {
+    /** Parent closure value. May be `NULL`. */
+    zvalue parentClosure;
+
+    /** Parent frame. May be `NULL`. */
+    struct Frame *parentFrame;
+
+    /** Variables defined in this frame, as a map from names to values. */
+    zvalue vars;
+} Frame;
+
+static void frameMark(Frame *frame) {
+    datMark(frame->vars);
+    datMark(frame->parentClosure);
+}
+
+/**
+ * Dies with a message, citing a variable name.
+ */
+static void dieForVariable(const char *message, zvalue name) {
+    if (datTypeIs(name, DAT_STRING)) {
+        zint nameSize = datUtf8SizeFromString(name);
+        char nameStr[nameSize + 1];
+        datUtf8FromString(nameSize + 1, nameStr, name);
+        die("%s: %s", message, nameStr);
+    }
+
+    die("%s: (strange name)", message);
+}
+
+/**
+ * Adds a new variable to the given frame.
+ */
+static void frameAdd(Frame *frame, zvalue name, zvalue value) {
+    if (datMapGet(frame->vars, name) != NULL) {
+        dieForVariable("Variable already defined", name);
+    }
+
+    frame->vars = datMapPut(frame->vars, name, value);
+}
+
+/**
+ * Gets a variable's value out of the given frame.
+ */
+static zvalue frameGet(Frame *frame, zvalue name) {
+    while (frame != NULL) {
+        zvalue result = datMapGet(frame->vars, name);
+
+        if (result != NULL) {
+            return result;
+        }
+
+        frame = frame->parentFrame;
+    }
+
+    dieForVariable("Variable not defined", name);
+    return NULL; // Keeps the compiler happy.
+}
+
+/**
+ * Snapshots the given frame into the given target.
+ */
+static void frameSnap(Frame *target, Frame *source) {
+    *target = *source;
+}
+
+
+/*
+ * Evaluation
  */
 
 /**
@@ -24,10 +100,10 @@
  */
 typedef struct {
     /**
-     * Parent variable context (which was the current context when
-     * the function was defined).
+     * Snapshot of the frame that was active at the moment the closure was
+     * constructed.
      */
-    zvalue context;
+    Frame frame;
 
     /**
      * Function definition, which includes a list of formals and the
@@ -61,7 +137,7 @@ typedef struct {
 static void closureMark(void *state) {
     Closure *closure = state;
 
-    datMark(closure->context);
+    frameMark(&closure->frame);
     datMark(closure->function);
 }
 
@@ -102,8 +178,8 @@ static DatUniqletDispatch YIELD_DISPATCH = {
 
 
 /* Defined below. */
-static zvalue execExpression(zvalue ctx, zvalue expression);
-static zvalue execExpressionVoidOk(zvalue ctx, zvalue expression);
+static zvalue execExpression(Frame *frame, zvalue expression);
+static zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
 
 /**
  * The C function that is bound to in order to perform nonlocal exit.
@@ -136,20 +212,17 @@ static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
 
 /**
  * Binds variables for all the formal arguments of the given
- * function (if any), returning a map of the bindings added
- * to the given base context.
+ * function (if any), into the given execution frame.
  */
-static zvalue bindArguments(zvalue ctx, zvalue functionNode,
-                            zint argCount, const zvalue *args) {
+static void bindArguments(Frame *frame, zvalue functionNode,
+                          zint argCount, const zvalue *args) {
     zvalue formals = datMapGet(functionNode, STR_FORMALS);
 
     if (formals == NULL) {
-        return ctx;
+        return;
     }
 
     zint formalsSize = datSize(formals);
-    zmapping bindings[formalsSize];
-    zint bindAt = 0;
 
     for (zint i = 0, argAt = 0; i < formalsSize; i++) {
         zvalue formal = datListNth(formals, i);
@@ -193,26 +266,22 @@ static zvalue bindArguments(zvalue ctx, zvalue functionNode,
         }
 
         if (!ignore) {
-            bindings[bindAt].key = name;
-            bindings[bindAt].value = value;
-            bindAt++;
+            frameAdd(frame, name, value);
         }
     }
-
-    return datMapAddArray(ctx, bindAt, bindings);
 }
 
 /**
- * Executes a variable definition, by updating the given variable
- * context as appropriate.
+ * Executes a variable definition, by updating the given execution frame,
+ * as appropriate.
  */
-static zvalue execVarDef(zvalue ctx, zvalue varDef) {
+static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = datHighletValue(varDef);
     zvalue name = datMapGet(nameValue, STR_NAME);
     zvalue valueExpression = datMapGet(nameValue, STR_VALUE);
-    zvalue value = execExpression(ctx, valueExpression);
+    zvalue value = execExpression(frame, valueExpression);
 
-    return datMapPut(ctx, name, value);
+    frameAdd(frame, name, value);
 }
 
 /**
@@ -221,17 +290,21 @@ static zvalue execVarDef(zvalue ctx, zvalue varDef) {
 static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
     Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
     zvalue functionNode = closure->function;
-    zvalue parentContext = closure->context;
+    Frame *parentFrame = &closure->frame;
 
     zvalue yieldDef = datMapGet(functionNode, STR_YIELD_DEF);
     zvalue statements = datMapGet(functionNode, STR_STATEMENTS);
     zvalue yield = datMapGet(functionNode, STR_YIELD);
     YieldState *yieldState = NULL;
 
-    // Take the parent context as a base, and bind the formals and
-    // yieldDef (if present), creating an initial variable context.
+    // With the closure's frame as the parent, bind the formals and
+    // yieldDef (if present), creating a new execution frame.
 
-    zvalue ctx = bindArguments(parentContext, functionNode, argCount, args);
+    Frame frame;
+    frame.parentClosure = state;
+    frame.parentFrame = parentFrame;
+    frame.vars = EMPTY_MAP;
+    bindArguments(&frame, functionNode, argCount, args);
 
     if (yieldDef != NULL) {
         yieldState = utilAlloc(sizeof(YieldState));
@@ -249,19 +322,19 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
         zvalue exitFunction =
             langDefineFunction(nonlocalExit,
                                datUniqletWith(&YIELD_DISPATCH, yieldState));
-        ctx = datMapPut(ctx, yieldDef, exitFunction);
+        frameAdd(&frame, yieldDef, exitFunction);
     }
 
-    // Evaluate the statements, updating the variable context as needed.
+    // Evaluate the statements, updating the frame as needed.
 
     zint statementsSize = datSize(statements);
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = datListNth(statements, i);
 
         if (datHighletTypeIs(one, STR_VAR_DEF)) {
-            ctx = execVarDef(ctx, one);
+            execVarDef(&frame, one);
         } else {
-            execExpressionVoidOk(ctx, one);
+            execExpressionVoidOk(&frame, one);
         }
     }
 
@@ -271,7 +344,7 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
     zvalue result = NULL;
 
     if (yield != NULL) {
-        result = execExpressionVoidOk(ctx, yield);
+        result = execExpressionVoidOk(&frame, yield);
     }
 
     if (yieldState != NULL) {
@@ -284,11 +357,12 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
 /**
  * Executes a `function` form.
  */
-static zvalue execFunction(zvalue ctx, zvalue function) {
+static zvalue execFunction(Frame *frame, zvalue function) {
     datHighletAssertType(function, STR_FUNCTION);
 
     Closure *closure = utilAlloc(sizeof(Closure));
-    closure->context = ctx;
+
+    frameSnap(&closure->frame, frame);
     closure->function = datHighletValue(function);
 
     return langDefineFunction(execClosure,
@@ -316,19 +390,19 @@ static char *callReporter(void *state) {
 /**
  * Executes a `call` form.
  */
-static zvalue execCall(zvalue ctx, zvalue call) {
+static zvalue execCall(Frame *frame, zvalue call) {
     datHighletAssertType(call, STR_CALL);
     call = datHighletValue(call);
 
     zvalue function = datMapGet(call, STR_FUNCTION);
     zvalue actuals = datMapGet(call, STR_ACTUALS);
-    zvalue functionId = execExpression(ctx, function);
+    zvalue functionId = execExpression(frame, function);
 
     zint argCount = datSize(actuals);
     zvalue args[argCount];
     for (zint i = 0; i < argCount; i++) {
         zvalue one = datListNth(actuals, i);
-        args[i] = execExpression(ctx, one);
+        args[i] = execExpression(frame, one);
     }
 
     debugPush(callReporter, function);
@@ -341,39 +415,26 @@ static zvalue execCall(zvalue ctx, zvalue call) {
 /**
  * Executes a `varRef` form.
  */
-static zvalue execVarRef(zvalue ctx, zvalue varRef) {
+static zvalue execVarRef(Frame *frame, zvalue varRef) {
     datHighletAssertType(varRef, STR_VAR_REF);
 
     zvalue name = datHighletValue(varRef);
-    zvalue found = datMapGet(ctx, name);
-
-    if (found != NULL) {
-        return found;
-    }
-
-    if (datTypeIs(name, DAT_STRING)) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        die("No such variable: %s", nameStr);
-    }
-
-    die("No such variable: (strange name)");
+    return frameGet(frame, name);
 }
 
 /**
  * Executes an `expression` form, with the result possibly being
  * `void` (represented as `NULL`).
  */
-static zvalue execExpressionVoidOk(zvalue ctx, zvalue e) {
+static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     if (datHighletTypeIs(e, STR_LITERAL))
         return datHighletValue(e);
     else if (datHighletTypeIs(e, STR_VAR_REF))
-        return execVarRef(ctx, e);
+        return execVarRef(frame, e);
     else if (datHighletTypeIs(e, STR_CALL))
-        return execCall(ctx, e);
+        return execCall(frame, e);
     else if (datHighletTypeIs(e, STR_FUNCTION))
-        return execFunction(ctx, e);
+        return execFunction(frame, e);
     else {
         die("Invalid expression type.");
     }
@@ -383,8 +444,8 @@ static zvalue execExpressionVoidOk(zvalue ctx, zvalue e) {
  * Executes an `expression` form, with the result never allowed to be
  * `void`.
  */
-static zvalue execExpression(zvalue ctx, zvalue expression) {
-    zvalue result = execExpressionVoidOk(ctx, expression);
+static zvalue execExpression(Frame *frame, zvalue expression) {
+    zvalue result = execExpressionVoidOk(frame, expression);
 
     if (result == NULL) {
         die("Invalid use of void expression result.");
@@ -399,6 +460,11 @@ static zvalue execExpression(zvalue ctx, zvalue expression) {
  */
 
 /* Documented in header. */
-zvalue langEvalExpressionNode(zvalue ctx, zvalue node) {
-    return execExpressionVoidOk(ctx, node);
+zvalue langEvalExpressionNode(zvalue context, zvalue node) {
+    Frame frame;
+    frame.parentClosure = NULL;
+    frame.parentFrame = NULL;
+    frame.vars = context;
+
+    return execExpressionVoidOk(&frame, node);
 }
