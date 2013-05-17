@@ -44,20 +44,21 @@ yieldBoxDispatch = { yield state name rest* ::
     <> apply (mapGet YIELD_BOX_DISPATCH name) yield state rest
 };
 
-# Constructs a set-once "yield box". This returns a map that binds `set` and
-# `get`, each of which is a function.
+# Constructs a set-once "yield box". This returns an object with `get` and
+# `set` methods.
 #
-# The `set` function will allow itself to be called exactly once, taking at
+# The `set` method allows itself to be called exactly once, taking at
 # most one argument. Subsequent calls will fail.
 #
-# The `get` function will only succeed after `set` has been called, returning
+# The `get` method only succeeds after `set` has been called, returning
 # whatever had been passed to `set` (including void).
 yieldBox = {
-    obj = object yieldBoxDispatch null;
-    <> [
-        "get" = (partialApply obj ["get"])
-        "set" = (partialApply obj ["set"])
-    ]
+    <> object yieldBoxDispatch null
+};
+
+# Gets the "set" function from a yield box.
+setterFromBox = { ybox ::
+    <> partialApply ybox ["set"]
 };
 
 
@@ -151,9 +152,9 @@ pegMakeSequence = { rules* <out> ::
                 state = listNth results 0;
                 values = listNth results 1;
                 ybox = yieldBox();
-                <> ifValue { <> apply rule (mapGet ybox "set") state values }
+                <> ifValue { <> apply rule (setterFromBox ybox) state values }
                     { newState ::
-                        newValues = listAppend values ((mapGet ybox "get")());
+                        newValues = listAppend values (ybox "get");
                         <> [newState newValues]
                     }
                     {
@@ -187,9 +188,9 @@ pegMakeStar = { rule ::
                 state = listNth results 0;
                 values = listNth results 1;
                 ybox = yieldBox();
-                <> ifValue { <> apply rule (mapGet ybox "set") state items }
+                <> ifValue { <> apply rule (setterFromBox ybox) state items }
                     { newState ::
-                        newValues = listAppend values ((mapGet ybox "get")());
+                        newValues = listAppend values (ybox "get");
                         <> [newState newValues]
                     }
                     {
@@ -224,7 +225,7 @@ genericMakeTokenSet = { sense tokens <out> ::
     set = listReduce [=] tokens
         { result . token :: <> mapPut result (highletType token) sense };
 
-    # Trivial case: Empty set. Return an apropriate absolute rule.
+    # Trivial case: Empty set. Return an appropriate absolute rule.
     ifTrue { <> eq (lowSize set) 0 }
         { <out> ifTrue { <> sense } { <> pegRuleFail } { <> pegRuleAny } };
 
@@ -290,23 +291,22 @@ pegMakeChars = { string <out> ::
 
 # Documented in Samizdat Layer 0 spec.
 pegMakeChoice = { rules* ::
-    # Trivial case: No rules. Return the empty rule.
+    # Trivial case: No rules. Return the failure rule.
     ifTrue { <> eq rules [] }
-        { <out> pegRuleEmpty };
+        { <out> pegRuleFail };
 
     # Trivial case: One rule. Return that rule directly.
     ifTrue { <> eq (lowSize rules) 1 }
         { <out> listFirst rules };
-
 
     # The general case.
     <> { yield state items* <out> ::
         listForEach rules
             { . rule ::
                 ybox = yieldBox();
-                <> ifValue { <> apply rule (mapGet ybox "set") state items }
+                <> ifValue { <> apply rule (setterFromBox ybox) state items }
                     { newState ::
-                        yield ((mapGet ybox "get")());
+                        yield (ybox "get");
                         <out> newState
                     }
             };
@@ -325,10 +325,19 @@ pegMakeLookaheadSuccess = { rule ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-pegMakeLookaheadFailure = { rule ::
+pegMakeLookaheadFailure = { rule <out> ::
+    # Optimiziation: Representation of `!.`.
+    ifTrue { <> eq rule pegRuleAny }
+        { <out> pegRuleEof };
+
+    # Optimization: Representation of `!()`.
+    ifTrue { <> eq rule pegRuleEmpty }
+        { <out> pegRuleFail };
+
+    # The general case.
     <> { yield state items* ::
         ybox = yieldBox();
-        <> ifValue { <> apply rule (mapGet ybox "set") state items }
+        <> ifValue { <> apply rule (setterFromBox ybox) state items }
             { yield() }
             {
                 yield null;
@@ -341,9 +350,9 @@ pegMakeLookaheadFailure = { rule ::
 pegMakeOpt = { rule ::
     <> { yield state items* ::
         ybox = yieldBox();
-        <> ifValue { <> apply rule (mapGet ybox "set") state items }
+        <> ifValue { <> apply rule (setterFromBox ybox) state items }
             { newState ::
-                yield [((mapGet ybox "get")())];
+                yield [(ybox "get")];
                 <> newState
             }
             {
@@ -396,8 +405,8 @@ pegApply = { rule input ::
         { io0Die "Attempt to parse non-list." };
 
     ybox = yieldBox();
-    <> ifValue { <> rule (mapGet ybox "set") inputList }
-        { <> (mapGet ybox "get")() }
+    <> ifValue { <> rule (setterFromBox ybox) inputList }
+        { <> (ybox "get") }
 };
 
 
