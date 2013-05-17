@@ -280,7 +280,7 @@ doUnadornedLiteral = { yield state ::
 };
 
 # Formats a string argument.
-doString = { yield state ::
+doPlainString = { yield state ::
     yield (xArg state);
 
     argsAt = iadd 1 (xArgsAt state);
@@ -293,7 +293,7 @@ FORMATTERS = [
     "%" = doPercent
     "q" = doLiteral
     "Q" = doUnadornedLiteral
-    "s" = doString
+    "s" = doPlainString
 ];
 
 # Formats a plain character (that is, returns it as-is).
