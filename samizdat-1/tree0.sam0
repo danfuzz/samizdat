@@ -245,7 +245,7 @@ parseProgramBody = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeMainSequence
             (pegMakeChoice parseStatement parseNonlocalExit)
-            (pegMakeCode { s :: <> ["statements" = s] }))
+            (pegMakeCode { s :: <> ["statements" = [s]] }))
         (pegMakeMainSequence
             parseYield
             (pegMakeCode { y :: <> mapAdd ["statements" = []] y }))
