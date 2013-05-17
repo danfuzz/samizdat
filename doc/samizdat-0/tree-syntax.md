@@ -83,7 +83,7 @@ highlet = {/
         @"[" type=atom value=atom? @"]"
         { <> apply makeCallName "makeHighlet" type value }
     |
-        type=(@string | @identifier)
+        type=[@string @identifier]
         { <> makeCallName "makeHighlet" (makeLiteral (highletValue type)) }
     )
 /};
@@ -153,14 +153,19 @@ nonlocalExit = {/
 
 yield = {/
     @"<>"
-    expression
+    (
+        ex = expression
+        { <> ["yield" = ex] }
+    |
+        { <> [=] }
+    )
 /};
 
 yieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> highletValue identifier }
+    { <> highletValue name }
 /};
 
 formal = {/
@@ -175,6 +180,7 @@ formal = {/
     |
         { <> [=] }
     )
+
     { <> mapAdd name repeat }
 /};
 
@@ -192,7 +198,7 @@ programBody = {/
         { <> ["statements" = [s]] }
     |
         y = yield
-        { <> ["statements" = [] "yield" = y] }
+        { <> mapAdd ["statements" = []] y }
     |
         { <> ["statements" = []] }
     )
@@ -228,7 +234,7 @@ programDeclarations = {/
 program = {/
     decls = (programDeclarations | { <> [=] })
     body = programBody
-    { <> mapAdd decls body }
+    { <> @["function" (mapAdd decls body)] }
 /};
 
 function = {/
