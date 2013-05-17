@@ -481,15 +481,14 @@ DEF_PARSE(optSemicolons) {
 }
 
 /**
- * Parses a `yield` node.
+ * Parses a `yield` node. Returns `NULL` either if no diamond is present
+ * or if it is a void yield.
  */
 DEF_PARSE(yield) {
     MARK();
 
     MATCH_OR_REJECT(CH_DIAMOND);
-    zvalue yield = PARSE_OR_REJECT(expression);
-
-    return yield;
+    return PARSE(expression);
 }
 
 /**
