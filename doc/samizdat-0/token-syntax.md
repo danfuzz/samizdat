@@ -25,7 +25,7 @@ punctuation = {/
 char = {/
     (
         ch = [! "\\" "\""]
-        { <> highletValue ch }
+        { <> highletType ch }
     )
 |
     (
@@ -43,7 +43,7 @@ string = {/
     "\""
     chars = char*
     "\""
-    { <> @["string" (stringFromTokens chars)] }
+    { <> @["string" (apply stringAdd chars)] }
 /}
 
 identifier = {/
