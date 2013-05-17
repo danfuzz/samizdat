@@ -225,7 +225,7 @@ genericMakeTokenSet = { sense tokens <out> ::
     set = listReduce [=] tokens
         { result . token :: <> mapPut result (highletType token) sense };
 
-    # Trivial case: Empty set. Return an apropriate absolute rule.
+    # Trivial case: Empty set. Return an appropriate absolute rule.
     ifTrue { <> eq (lowSize set) 0 }
         { <out> ifTrue { <> sense } { <> pegRuleFail } { <> pegRuleAny } };
 
@@ -291,14 +291,13 @@ pegMakeChars = { string <out> ::
 
 # Documented in Samizdat Layer 0 spec.
 pegMakeChoice = { rules* ::
-    # Trivial case: No rules. Return the empty rule.
+    # Trivial case: No rules. Return the failure rule.
     ifTrue { <> eq rules [] }
-        { <out> pegRuleEmpty };
+        { <out> pegRuleFail };
 
     # Trivial case: One rule. Return that rule directly.
     ifTrue { <> eq (lowSize rules) 1 }
         { <out> listFirst rules };
-
 
     # The general case.
     <> { yield state items* <out> ::
