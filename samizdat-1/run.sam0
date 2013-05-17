@@ -11,7 +11,10 @@
 READER ::
 
 # The "unadorned" layer 0 parser defined in this program.
-sam1Parser = parser tokenize0 TREE0_RULES;
+sam1Parser = { programText ::
+    tokens = tokenize0 programText;
+    <> tree0 tokens
+};
 
 # Parses the given program text, yielding a `program` node. This also
 # compares the would-be result with the result of doing the same operation
