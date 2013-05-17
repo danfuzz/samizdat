@@ -40,13 +40,12 @@ parseTree = { rules tokens ::
 # Exported functions
 #
 
-# Given a tokenizer parser rule and a tree grammar (the latter given as a map
-# of name-to-rule bindings, return a combined parser that takes strings and
-# returns parsed programs. This assumes that the main tree rule is `"program"`.
-parser = { tokenize treeRules ::
+# Given a tokenizer parser rule and a tree parser, return a combined
+# parser that takes strings and returns parsed programs.
+parser = { tokenize parse ::
     <> { text ::
         tokens = tokenize text;
-        <> parseTree treeRules tokens
+        <> parse tokens
     }
 };
 
