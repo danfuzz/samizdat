@@ -325,7 +325,16 @@ pegMakeLookaheadSuccess = { rule ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-pegMakeLookaheadFailure = { rule ::
+pegMakeLookaheadFailure = { rule <out> ::
+    # Optimiziation: Representation of `!.`.
+    ifTrue { <> eq rule pegRuleAny }
+        { <out> pegRuleEof };
+
+    # Optimization: Representation of `!()`.
+    ifTrue { <> eq rule pegRuleEmpty }
+        { <out> pegRuleFail };
+
+    # The general case.
     <> { yield state items* ::
         ybox = yieldBox();
         <> ifValue { <> apply rule (mapGet ybox "set") state items }

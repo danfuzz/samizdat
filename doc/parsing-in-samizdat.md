@@ -321,7 +321,6 @@ punctuation = {/
     # ... original alternates from the base grammar ...
     "{/" |
     "/}" |
-    "!." |
     ["&" "|" "!"]
 /};
 ```
@@ -397,8 +396,6 @@ parserAtom = {/
     parserSet
 |
     @"."
-|
-    @"!."
 |
     @"()"
 |
