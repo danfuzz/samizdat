@@ -358,10 +358,10 @@ sequencePex = {/
 
 namePex = {/
     (
-        name = identifier
+        name = @identifier
         @"="
         pex = lookaheadPex
-        { <> @["varDef" ["name"=name "value"=pex]] }
+        { <> @["varDef" ["name"=(highletValue name) "value"=pex]] }
     )
 |
     lookaheadPex
@@ -388,8 +388,7 @@ repeatPex = {/
 /};
 
 parserAtom = {/
-    name = identifier
-    { <> @["varRef" (highletValue name)] }
+    varRef
 |
     parserString
 |
