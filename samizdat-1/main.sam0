@@ -27,6 +27,8 @@ readFile = io0SandboxedReader
 
 # Loads a sibling file.
 loadFile = { ctx name ::
+    io0Note (format "    %Q" name);
+
     text = readFile [(stringAdd name ".sam0")];
     tree = sam0Tree text;
     function = sam0Eval ctx tree;
@@ -42,9 +44,14 @@ loadAllLibraries = { ctx rest* ::
     }
 };
 
+io0Note "Loading samizdat-1...";
+
 # Put together the final execution context.
 CONTEXT = loadAllLibraries (makeLibrary LIBRARY)
-    "diff" "reader" "peg" "parser" "parseArgs" "token0" "tree0" "run";
+    "diff" "reader" "peg" "parseArgs" "token0" "tree0" "run";
+
+io0Note "    [fin]";
+io0Note "";
 
 # Call the `run` function to do the final deed.
 <> apply (mapGet CONTEXT "run") ARGS

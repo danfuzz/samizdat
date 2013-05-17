@@ -5,123 +5,252 @@ Tree Syntax
 -----------
 
 The following is a BNF/PEG-like description of the node / tree syntax.
+This definition uses syntax which is identical to the parser syntax
+implemented at a higher layer.
+
 A program is parsed by matching the `program` rule, which yields a
-`function` node. On the right-hand side of rules, a string literal
-indicates a token whose `type` is the literal value, and an identifier
-indicates a tree syntax rule to match. All of `*` `+` `?` `|` `(` `)` have
-their usual PEG interpretations (similar to their interpretation in
-regular expressions).
+`function` node. For simple error handling, the rule `programOrError`
+can be used.
 
 ```
-function ::= @"{" program @"}" ;
-# result: <program>
-
-program ::= (programDeclarations @"::")? programBody ;
-# result: @[
-#             "function"
-#             (mapAdd programDeclarations programBody)
-#         ]
-
-programDeclarations ::= formal* yieldDef? ;
-# result: [("formals"=[formal*])? ("yieldDef"=yieldDef)?]
-# Note: The "formals" mapping should only be included when there is at
-# least one formal.
-
-programBody ::=
-    @";"*
-    (statement @";"+)*
-    (statement | nonlocalExit | yield)?
-    @";"*
-;
-# result: ["statements"=[statement*] ("yield"=yield)?]
-# Note: `nonLocalExit` results in a statement.
-
-formal ::= (@identifier | @".") repeat=(@"?" | @"*" | @"+")? ;
-# result: [
-#             ("name" = (highletValue identifier))?
-#             ("repeat" = (highletType repeat))?
-#         ]
-# Note: Binding for `"name"` omitted if name is specified as `.`.
-
-yieldDef ::= @"<" @identifier @">" ;
-# result: highletValue identifier
-
-yield ::= @"<>" expression ;
-# result: expression
-
-nonlocalExit ::= @"<" @identifier @">" expression? ;
-# result: makeCall identifier expression?
-
-statement ::= varDef | expression ;
-# result: <same as whatever choice matched>
-
-expression ::= callExpression | unaryExpression ;
-# result: <same as whatever choice matched>
-
-unaryExpression ::= unaryCallExpression | atom ;
-# result: <same as whatever choice matched>
-
-unaryCallExpression ::= atom (@"()")+ ;
-# result: (... (makeCall (makeCall atom))
-# Note: One `makeCall` per pair of parens.
-
-callExpression ::= atom atom+ ;
-# result: makeCall atom atom+
-
-atom ::=
-    varRef | int | string |
-    emptyList | list | emptyMap | map |
-    uniqlet | highlet | function | parenExpression ;
-# result: <same as whatever choice matched>
-
-parenExpression ::= @"(" expression @")";
-# result: expression
-
-varDef ::= @identifier @"=" expression ;
-# result: @["varDef" ["name"=(highletValue identifier) "value"=expression]]
-
-varRef ::= @identifier ;
-# result: @["varRef" (highletValue identifier)]
-
-int ::= @int ;
-# result: @["literal" (highletValue int)]
-
-string ::= @string ;
-# result: @["literal" (highletValue string)]
-
-emptyList ::= @"[" @"]" ;
-# result: @["literal" []]
-
-list ::= @"[" atom+ @"]" ;
-# result: makeCall @["varRef" "makeList"] atom+
-
-emptyMap ::= @"[" @"=" @"]" ;
-# result: @["literal" [=]]
-
-map ::= @"[" binding+ @"]" ;
-# result: apply makeCall @["varRef" "makeMap"] (listAdd binding+)
-
-binding ::= atom @"=" atom ;
-# result: [atom atom] # key then value
-
-uniqlet ::= @"@@";
-# result: makeCall @["varRef" "makeUniqlet"]
-
-highlet ::=
-    @"@" @"[" atom atom? @"]"
-    # result: makeCall @["varRef" "makeHighlet"] atom atom?
-|
-    @"@" @string
-    # result: makeCall @["varRef" "makeHighlet"]
-    #             @["literal" (highletValue string)]
-|
-    @"@" @identifier
-    # result: makeCall @["varRef" "makeHighlet"]
-    #             @["literal" (highletValue identifier)]
-;
-
-# Function that returns an appropriately-formed `call` node.
+# Returns a `call` node.
 makeCall = { function actuals* ::
     <> @["call" ["function"=function "actuals"=actuals]]
-}
+};
+
+# Returns a `varRef` node.
+makeVarRef = { name ::
+    <> @["varRef" name]
+};
+
+# Returns a `call` node that names a function as a `varRef`.
+makeCallName = { name actuals* ::
+    <> @["call" ["function"=(makeVarRef name) "actuals"=actuals]]
+};
+
+# Returns a `literal` node.
+makeLiteral = { value ::
+    <> @["literal" value]
+};
+
+# forward declaration: atom
+# forward declaration: expression
+# forward declaration: function
+
+int = {/
+    @int
+    { <> makeLiteral (highletValue int) }
+/};
+
+string = {/
+    @string
+    { <> makeLiteral (highletValue string) }
+/};
+
+emptyList = {/
+    @"[" @"]"
+    { <> makeLiteral [] }
+/};
+
+list = {/
+    @"["
+    atoms = atom+
+    @"]"
+    { <> apply makeCallName "makeList" atoms }
+/};
+
+emptyMap = {/
+    @"[" @"=" @"]"
+    { <> makeLiteral [=] }
+/};
+
+binding = {/
+    key = atom
+    @"="
+    value = atom
+    { <> [key value] }
+/};
+
+map = {/
+    @"["
+    bindings = binding+
+    @"]"
+    { <> apply makeCallName "makeMap" (apply listAdd bindings) }
+/};
+
+highlet = {/
+    @"@"
+    (
+        @"[" type=atom value=atom? @"]"
+        { <> apply makeCallName "makeHighlet" type value }
+    |
+        type=[@string @identifier]
+        { <> makeCallName "makeHighlet" (makeLiteral (highletValue type)) }
+    )
+/};
+
+uniqlet = {/
+    @"@@"
+    { <> makeCallName "makeUniqlet" }
+/};
+
+varRef = {/
+    name = @identifier
+    { <> makeVarRef (highletValue name) }
+/};
+
+varDef ::= {/
+    name = @identifier
+    @"="
+    ex = expression
+    { <> @["varDef" ["name"=(highletValue name) "value"=ex]] }
+/};
+
+parenExpression ::= {/
+    @"("
+    ex = expression
+    @")"
+    { <> ex }
+/};
+
+atom = {/
+    varRef | int | string |
+    emptyList | list | emptyMap | map |
+    uniqlet | highlet | function | parenExpression
+/};
+
+callExpression = {/
+    function = atom
+    args = atom+
+    { <> apply makeCall function args }
+/};
+
+unaryCallExpression = {/
+    function = atom
+    calls = @"()"+
+    # Note: One `makeCall` per pair of parens.
+    { <> (... (makeCall (makeCall atom))) }
+/};
+
+unaryExpression = {/
+    unaryCallExpression | atom
+/};
+
+expression = {/
+    callExpression | unaryExpression
+/};
+
+statement = {/
+    varDef | expression
+/};
+
+nonlocalExit = {/
+    @"<"
+    name = varRef
+    @">"
+    ex = expression?
+    { <> apply makeCall name ex }
+/};
+
+yield = {/
+    @"<>"
+    (
+        ex = expression
+        { <> ["yield" = ex] }
+    |
+        { <> [=] }
+    )
+/};
+
+yieldDef = {/
+    @"<"
+    name = @identifier
+    @">"
+    { <> highletValue name }
+/};
+
+formal = {/
+    name = (
+        n=@identifier { <> ["name" = (highletValue n)] }
+    |
+        @"." { <> [=] }
+    )
+
+    repeat = (
+        r=[@"?" @"*" @"+"] { <> ["repeat" = (highletType r)] }
+    |
+        { <> [=] }
+    )
+
+    { <> mapAdd name repeat }
+/};
+
+programBody = {/
+    @";"*
+
+    most = (
+        s = statement
+        @";"+
+        { <> s }
+    )*
+
+    last = (
+        s = (statement | nonlocalExit)
+        { <> ["statements" = [s]] }
+    |
+        y = yield
+        { <> mapAdd ["statements" = []] y }
+    |
+        { <> ["statements" = []] }
+    )
+
+    @";"*
+
+    {
+        allStatements = listAdd most (mapGet last "statements");
+        <> mapPut last "statements" allStatements
+    }
+/};
+
+programDeclarations = {/
+    formals = (
+        fs = formal+
+        { <> ["formals" = fs] }
+    |
+        { <> [=] }
+    )
+
+    yieldDef = (
+        y = yieldDef
+        { <> ["yieldDef" = y] }
+    |
+        { <> [=] }
+    )
+
+    @"::"
+
+    { <> mapAdd formals yieldDef }
+/};
+
+program = {/
+    decls = (programDeclarations | { <> [=] })
+    body = programBody
+    { <> @["function" (mapAdd decls body)] }
+/};
+
+function = {/
+    @"{"
+    prog = program
+    @"}"
+    { <> prog }
+/};
+
+programOrError = {/
+    prog = program
+    (
+        pending = .+
+        { <> ... io0Die ... }
+    )?
+    { <> prog }
+/};
 ```

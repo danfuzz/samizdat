@@ -11,9 +11,41 @@
 # Helper functions
 #
 
+# Object service function used by `makeForwardDeclaration`.
+forwardService = { yield state value? ::
+    <> ifTrue { <> eq value [] }
+        { yield state }
+        {
+            yield();
+            <> listNth value 0
+        }
+};
+
+# Simple value storage box, to effectively implement forward declaration
+# of parser rules. Call the result with a value to set it, or with no
+# argument to get the previously-set value.
+makeForwardDeclaration = {
+    <> object forwardService null;
+};
+
 # Returns a `call` node.
 makeCall = { function actuals* ::
     <> @["call" ["function"=function "actuals"=actuals]]
+};
+
+# Returns a `varRef` node.
+makeVarRef = { name ::
+    <> @["varRef" name]
+};
+
+# Returns a `call` node that names a function as a `varRef`.
+makeCallName = { name actuals* ::
+    <> @["call" ["function"=(makeVarRef name) "actuals"=actuals]]
+};
+
+# Returns a `literal` node.
+makeLiteral = { value ::
+    <> @["literal" value]
 };
 
 
@@ -24,271 +56,264 @@ makeCall = { function actuals* ::
 # the *Samizdat Layer 0* specification.
 #
 
-# Parses a `highlet` node.
-parseHighlet = orRule
-    (filterRule
-        (seqRule
-            @"@"
-            @"["
-            "atom"
-            (optRule "atom")
-            @"]")
-        { result ::
-            <> apply makeCall @["varRef" "makeHighlet"]
-                (listNth result 2)
-                (listNth result 3)
-        })
-    (filterRule
-        (seqRule
-            @"@"
-            (orRule @string @identifier))
-        { result ::
-            value = highletValue (listNth result 1);
-            <> makeCall @["varRef" "makeHighlet"] @["literal" value];
-        });
+# Forward declarations for atom, expression, and function.
 
-# Parses a `uniqlet` node.
-parseUniqlet = filterRule
-    @"@@"
-    { <> makeCall @["varRef" "makeUniqlet"] };
+fwdAtom = makeForwardDeclaration();
+fwdExpression = makeForwardDeclaration();
+fwdFunction = makeForwardDeclaration();
 
-# Parses a `binding` node.
-parseBinding = filterRule
-    (seqRule "atom" @"=" "atom")
-    { result ::
-        <> [(listNth result 0) (listNth result 2)]
-    };
+parseAtom = { args* :: <> apply (fwdAtom()) args };
+parseExpression = { args* :: <> apply (fwdExpression()) args };
+parseFunction = { args* :: <> apply (fwdFunction()) args };
 
-# Parses a `map` node.
-parseMap = filterRule
-    (seqRule @"[" (plusRule "binding") @"]")
-    { result ::
-        bindings = apply listAdd (listNth result 1);
-        <> apply makeCall @["varRef" "makeMap"] bindings
-    };
+# Documented in Samizdat Layer 0 spec.
+parseInt = pegMakeMainSequence
+    (pegMakeToken @int)
+    (pegMakeCode { int :: <> makeLiteral (highletValue int) });
 
-# Parses a `emptyMap` node.
-parseEmptyMap = filterRule
-    (seqRule @"[" @"=" @"]")
-    { <> @["literal" [=]] };
+# Documented in Samizdat Layer 0 spec.
+parseString = pegMakeMainSequence
+    (pegMakeToken @string)
+    (pegMakeCode { string :: <> makeLiteral (highletValue string) });
 
-# Parses a `list` node.
-parseList = filterRule
-    (seqRule @"[" (plusRule "atom") @"]")
-    { result ::
-        <> apply makeCall @["varRef" "makeList"] (listNth result 1)
-    };
+# Documented in Samizdat Layer 0 spec.
+parseEmptyList = pegMakeMainSequence
+    (pegMakeToken @"[")
+    (pegMakeToken @"]")
+    (pegMakeCode { . . :: <> makeLiteral [] });
 
-# Parses a `emptyList` node.
-parseEmptyList = filterRule
-    (seqRule @"[" @"]")
-    { <> @["literal" []] };
+# Documented in Samizdat Layer 0 spec.
+parseList = pegMakeMainSequence
+    (pegMakeToken @"[")
+    (pegMakeStar parseAtom)
+    (pegMakeToken @"]")
+    (pegMakeCode { . atoms . :: <> apply makeCallName "makeList" atoms });
 
-# Parses a `string` node.
-parseString = filterRule
-    @string
-    { result :: <> @["literal" (highletValue result)] };
+# Documented in Samizdat Layer 0 spec.
+parseEmptyMap = pegMakeMainSequence
+    (pegMakeToken @"[")
+    (pegMakeToken @"=")
+    (pegMakeToken @"]")
+    (pegMakeCode { . . . :: <> makeLiteral [=] });
 
-# Parses an `int` node.
-parseInt = filterRule
-    @int
-    { result :: <> @["literal" (highletValue result)] };
+# Documented in Samizdat Layer 0 spec.
+parseBinding = pegMakeMainSequence
+    parseAtom
+    (pegMakeToken @"=")
+    parseAtom
+    (pegMakeCode { key . value :: <> [key value] });
 
-# Parses a `varRef` node.
-parseVarRef = filterRule
-    @identifier
-    { result :: <> @["varRef" (highletValue result)] };
+# Documented in Samizdat Layer 0 spec.
+parseMap = pegMakeMainSequence
+    (pegMakeToken @"[")
+    (pegMakePlus parseBinding)
+    (pegMakeToken @"]")
+    (pegMakeCode { . bindings . ::
+        <> apply makeCallName "makeMap" (apply listAdd bindings)
+    });
 
-# Parses a `varDef` node.
-parseVarDef = filterRule
-    (seqRule @identifier @"=" "expression")
-    { result ::
-        name = highletValue (listNth result 0);
-        value = listNth result 2;
-        <> @["varDef" ["name"=name "value"=value]]
-    };
+# Documented in Samizdat Layer 0 spec.
+parseHighlet = pegMakeMainSequence
+    (pegMakeToken @"@")
+    (pegMakeChoice
+        (pegMakeMainSequence
+            (pegMakeToken @"[")
+            parseAtom
+            (pegMakeOpt parseAtom)
+            (pegMakeToken @"]")
+            (pegMakeCode { . type value . ::
+                <> apply makeCallName "makeHighlet" type value
+            }))
+        (pegMakeMainSequence
+            (pegMakeTokenSet @string @identifier)
+            (pegMakeCode { type ::
+                <> makeCallName "makeHighlet" (makeLiteral (highletValue type))
+            })));
 
-# Parses a `parenExpression` node.
-parseParenExpression = filterRule
-    (seqRule @"(" "expression" @")")
-    { result :: <> listNth result 1 };
+# Documented in Samizdat Layer 0 spec.
+parseUniqlet = pegMakeMainSequence
+    (pegMakeToken @"@@")
+    (pegMakeCode { . :: <> makeCallName "makeUniqlet" });
 
-# Parses an `atom` node.
-parseAtom = orRule "varRef" "int" "string"
-    "emptyList" "list" "emptyMap" "map"
-    "uniqlet" "highlet" "function" "parenExpression";
+# Documented in Samizdat Layer 0 spec.
+parseVarRef = pegMakeMainSequence
+    (pegMakeToken @identifier)
+    (pegMakeCode { name :: <> makeVarRef (highletValue name) });
 
-# Parses a `callExpression` node.
-parseCallExpression = filterRule
-    (seqRule "atom" (plusRule "atom"))
-    { result ::
-        <> apply makeCall (listNth result 0) (listNth result 1)
-    };
+# Documented in Samizdat Layer 0 spec.
+parseVarDef = pegMakeMainSequence
+    (pegMakeToken @identifier)
+    (pegMakeToken @"=")
+    parseExpression
+    (pegMakeCode { name . ex ::
+        <> @["varDef" ["name"=(highletValue name) "value"=ex]]
+    });
 
-# Parses a `unaryCallExpression` node.
-parseUnaryCallExpression = filterRule
-    (seqRule "atom" (plusRule @"()"))
-    { result ::
-        atom = listNth result 0;
-        calls = listNth result 1;
-        <> listReduce atom calls
+# Documented in Samizdat Layer 0 spec.
+parseParenExpression = pegMakeMainSequence
+    (pegMakeToken @"(")
+    parseExpression
+    (pegMakeToken @")")
+    (pegMakeCode { . ex . :: <> ex });
+
+# Documented in Samizdat Layer 0 spec.
+implAtom = pegMakeMainSequence
+    (pegMakeChoice
+        parseVarRef parseInt parseString
+        parseEmptyList parseList parseEmptyMap parseMap
+        parseUniqlet parseHighlet parseFunction parseParenExpression);
+fwdAtom implAtom;
+
+# Documented in Samizdat Layer 0 spec.
+parseCallExpression = pegMakeMainSequence
+    parseAtom
+    (pegMakePlus parseAtom)
+    (pegMakeCode { function args :: <> apply makeCall function args });
+
+# Documented in Samizdat Layer 0 spec.
+parseUnaryCallExpression = pegMakeMainSequence
+    parseAtom
+    (pegMakePlus (pegMakeToken @"()"))
+    (pegMakeCode { function calls ::
+        <> listReduce function calls
             { result :: <> makeCall result }
-    };
+    });
 
-# Parses a `unaryExpression` node.
-parseUnaryExpression = orRule "unaryCallExpression" "atom";
+# Documented in Samizdat Layer 0 spec.
+parseUnaryExpression = pegMakeMainSequence
+    (pegMakeChoice parseUnaryCallExpression parseAtom);
 
-# Parses an `expression` node.
-parseExpression = orRule "callExpression" "unaryExpression";
+# Documented in Samizdat Layer 0 spec.
+implExpression = pegMakeMainSequence
+    (pegMakeChoice parseCallExpression parseUnaryExpression);
+fwdExpression implExpression;
 
-# Parses a `statement` node.
-parseStatement = orRule "varDef" "expression";
+# Documented in Samizdat Layer 0 spec.
+parseStatement = pegMakeMainSequence
+    (pegMakeChoice parseVarDef parseExpression);
 
-# Parses a `nonlocalExit` node.
-parseNonlocalExit = filterRule
-    (seqRule
-        @"<"
-        @identifier
-        @">"
-        (optRule "expression"))
-    { result ::
-        varRef = @["varRef" (highletValue (listNth result 1))];
-        actuals = listNth result 3;
-        <> apply makeCall varRef actuals
-    };
+# Documented in Samizdat Layer 0 spec.
+parseNonlocalExit = pegMakeMainSequence
+    (pegMakeToken @"<")
+    parseVarRef
+    (pegMakeToken @">")
+    (pegMakeOpt parseExpression)
+    (pegMakeCode { . name . ex :: <> apply makeCall name ex });
 
-# Parses a `yield` node.
-parseYield = filterRule
-    (seqRule @"<>" "expression")
-    { result :: <> listNth result 1 };
+# Documented in Samizdat Layer 0 spec.
+parseYield = pegMakeMainSequence
+    (pegMakeToken @"<>")
+    (pegMakeChoice
+        (pegMakeMainSequence
+            parseExpression
+            (pegMakeCode { ex :: <> ["yield" = ex] }))
+        (pegMakeMainSequence
+            (pegMakeCode { :: <> [=] })));
 
-# Parses a `yieldDef` node.
-parseYieldDef = filterRule
-    (seqRule @"<" @identifier @">")
-    { result :: <> highletValue (listNth result 1) };
+# Documented in Samizdat Layer 0 spec.
+parseYieldDef = pegMakeMainSequence
+    (pegMakeToken @"<")
+    (pegMakeToken @identifier)
+    (pegMakeToken @">")
+    (pegMakeCode { . name . :: <> highletValue name });
 
-# Parses a `formal` node.
-parseFormal = filterRule
-    (seqRule
-        (orRule
-            (filterRule
-                @identifier
-                { result :: <> ["name" = (highletValue result)] })
-            (filterRule
-                @"."
-                { <> [=] }))
-        (filterRule
-            (optRule (orRule @"?" @"*" @"+"))
-            { result ::
-                <> ifValue { <> listNth result 0 }
-                    { token :: <> ["repeat" = (highletType token)] }
-                    { <> [=] }
-            }))
-    { result :: <> apply mapAdd result };
+# Documented in Samizdat Layer 0 spec.
+parseFormal = pegMakeMainSequence
+    (pegMakeChoice
+        (pegMakeMainSequence
+            (pegMakeToken @identifier)
+            (pegMakeCode { n :: <> ["name" = (highletValue n)] }))
+        (pegMakeMainSequence
+            (pegMakeToken @".")
+            (pegMakeCode { . :: <> [=] })))
+    (pegMakeChoice
+        (pegMakeMainSequence
+            (pegMakeTokenSet @"?" @"*" @"+")
+            (pegMakeCode { r :: <> ["repeat" = (highletType r)] }))
+        (pegMakeMainSequence
+            (pegMakeCode { <> [=] })))
+    (pegMakeCode { name repeat :: <> mapAdd name repeat });
 
-# `programBody` node helper: Parses `(statement | nonlocalExit | yield)?`,
-# yielding a map that maps `"yield"` and `"statements"`. Always succeeds.
-parseProgramBody1 = filterRule
-    (optRule
-        (orRule
-            (filterRule
-                (orRule "statement" "nonlocalExit")
-                { result :: <> ["statements"=[result]] })
-            (filterRule
-                "yield"
-                { result :: <> ["statements"=[] "yield"=result] })))
-    { result ::
-        <> ifValue { <> listNth result 0 }
-            { result :: <> result }
-            { <> ["statements"=[]] }
-    };
+# Documented in Samizdat Layer 0 spec.
+parseProgramBody = pegMakeMainSequence
+    (pegMakeStar (pegMakeToken @";"))
+    (pegMakeStar
+        (pegMakeMainSequence
+            parseStatement
+            (pegMakePlus (pegMakeToken @";"))
+            (pegMakeCode { s . :: <> s })))
+    (pegMakeChoice
+        (pegMakeMainSequence
+            (pegMakeChoice parseStatement parseNonlocalExit)
+            (pegMakeCode { s :: <> ["statements" = [s]] }))
+        (pegMakeMainSequence
+            parseYield
+            (pegMakeCode { y :: <> mapAdd ["statements" = []] y }))
+        (pegMakeMainSequence
+            (pegMakeCode { :: <> ["statements" = []] })))
+    (pegMakeStar (pegMakeToken @";"))
+    (pegMakeCode { . most last . ::
+        allStatements = listAdd most (mapGet last "statements");
+        <> mapPut last "statements" allStatements
+    });
 
-# Parses a `programBody` node.
-parseProgramBody = filterRule
-    (seqRule
-        (starRule @";")
-        (starRule
-            (filterRule
-                (seqRule "statement" (plusRule @";"))
-                { result :: <> listNth result 0 }))
-        parseProgramBody1
-        (starRule @";"))
-    { result ::
-        mostStatements = listNth result 1;
-        lastClause = listNth result 2;
-        statements = listAdd mostStatements
-            (mapGet lastClause "statements");
-        <> mapPut lastClause "statements" statements;
-    };
+# Documented in Samizdat Layer 0 spec.
+parseProgramDeclarations = pegMakeMainSequence
+    (pegMakeChoice
+        (pegMakeMainSequence
+            (pegMakePlus parseFormal)
+            (pegMakeCode { fs :: <> ["formals" = fs] }))
+        (pegMakeMainSequence
+            (pegMakeCode { <> [=] })))
+    (pegMakeChoice
+        (pegMakeMainSequence
+            parseYieldDef
+            (pegMakeCode { y :: <> ["yieldDef" = y] }))
+        (pegMakeMainSequence
+            (pegMakeCode { <> [=] })))
+    (pegMakeToken @"::")
+    (pegMakeCode { formals yieldDef . :: <> mapAdd formals yieldDef });
 
-# Parses a `programDeclarations` node.
-parseProgramDeclarations = filterRule
-    (seqRule
-        (filterRule (starRule "formal")
-            { result ::
-                <> ifTrue { <> ne result [] }
-                    { <> ["formals" = result] }
-                    { <> [=] }
-            })
-        (filterRule (optRule "yieldDef")
-            { result ::
-                <> ifValue { <> listNth result 0 }
-                    { yieldDef :: <> ["yieldDef" = yieldDef] }
-                    { <> [=] }
-            }))
-    { result :: <> apply mapAdd result };
+# Documented in Samizdat Layer 0 spec.
+parseProgram = pegMakeMainSequence
+    (pegMakeChoice
+        parseProgramDeclarations
+        (pegMakeCode { <> [=] }))
+    parseProgramBody
+    (pegMakeCode { decls body :: <> @["function" (mapAdd decls body)] });
 
-# `program` node helper: Parses `(programDeclarations @"::")?`, yielding
-# a map (possibly empty).
-parseProgram1 = filterRule
-    (optRule (seqRule "programDeclarations" @"::"))
-    { result ::
-        <> ifValue { <> listNth result 0 }
-            { match :: <> listNth match 0 }
-            { <> [=] }
-    };
+# Documented in Samizdat Layer 0 spec.
+implFunction = pegMakeMainSequence
+    (pegMakeToken @"{")
+    parseProgram
+    (pegMakeToken @"}")
+    (pegMakeCode { . prog . :: <> prog });
+fwdFunction implFunction;
 
-# Parses a `program` node.
-parseProgram = filterRule
-    (seqRule parseProgram1 "programBody")
-    { result :: <> @["function" (apply mapAdd result)] };
+# Reports the given list of pending tokens as part of error processing.
+reportError = { pending ::
+    io0Note "Pending tokens:";
 
-# Parses a `function` node.
-parseFunction = filterRule
-    (seqRule @"{" "program" @"}")
-    { result :: <> listNth result 1 };
+    listForEach pending
+        { . token :: io0Note (format "    %q" token) };
 
-# Map of all of the parser rules. Any time a parser rule is needed,
-# it's looked up through this map by name, which trivially allows for
-# mutually-recursive rules (since the rules refer directly to names and
-# not actual functions).
-TREE0_RULES = [
-    "atom" = parseAtom
-    "binding" = parseBinding
-    "callExpression" = parseCallExpression
-    "emptyList" = parseEmptyList
-    "emptyMap" = parseEmptyMap
-    "expression" = parseExpression
-    "formal" = parseFormal
-    "function" = parseFunction
-    "highlet" = parseHighlet
-    "int" = parseInt
-    "list" = parseList
-    "map" = parseMap
-    "nonlocalExit" = parseNonlocalExit
-    "parenExpression" = parseParenExpression
-    "program" = parseProgram
-    "programBody" = parseProgramBody
-    "programDeclarations" = parseProgramDeclarations
-    "statement" = parseStatement
-    "string" = parseString
-    "unaryExpression" = parseUnaryExpression
-    "unaryCallExpression" = parseUnaryCallExpression
-    "uniqlet" = parseUniqlet
-    "varDef" = parseVarDef
-    "varRef" = parseVarRef
-    "yield" = parseYield
-    "yieldDef" = parseYieldDef
-];
+    io0Die "\nExtra tokens at end of program."
+};
 
-<> ["TREE0_RULES" = TREE0_RULES]
+# Documented in Samizdat Layer 0 spec.
+parseProgramOrError = pegMakeMainSequence
+    parseProgram
+    (pegMakeOpt
+        (pegMakeMainSequence
+            (pegMakePlus pegRuleAny)
+            (pegMakeCode { pending :: reportError pending })))
+    (pegMakeCode { prog :: <> prog });
+
+# Performs tree parsing of the given token list.
+tree0 = { programTokens ::
+    <> pegApply parseProgramOrError programTokens
+};
+
+<> [
+    "tree0" = tree0
+]
