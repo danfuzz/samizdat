@@ -420,7 +420,7 @@ parserSet = {/
     |
         { <> "set" }
     )
-    terminals = (parserString+ | parserToken+)
+    terminals = (parserString* | parserToken*)
     @"]"
     {
         <> @[type terminals]
