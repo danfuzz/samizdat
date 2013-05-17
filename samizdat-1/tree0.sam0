@@ -309,11 +309,11 @@ parseProgramOrError = pegMakeMainSequence
             (pegMakeCode { pending :: reportError pending })))
     (pegMakeCode { prog :: <> prog });
 
-# Performs parsing of the given token list.
-parse0 = { programTokens ::
+# Performs tree parsing of the given token list.
+tree0 = { programTokens ::
     <> pegApply parseProgramOrError programTokens
 };
 
 <> [
-    "parse0" = parse0
+    "tree0" = tree0
 ]
