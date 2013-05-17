@@ -257,8 +257,9 @@ Parser rule which always fails.
 This is a direct parser rule, meant to be referred to by value instead of
 called directly.
 
-This is equivalent to the syntactic form `{/ { } /}`. (That is, an empty
-code block.)
+This is equivalent to the syntactic form `{/ !() /}`. (That is, attempting
+to find a lookahead failure for the empty rule, said rule which always
+succeeds.)
 
 #### Rule: `pegRuleLookaheadAny`
 

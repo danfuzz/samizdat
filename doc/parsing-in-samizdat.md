@@ -419,7 +419,7 @@ parserAtom = {/
 parserSet = {/
     @"["
     type = (
-        @"!" { <> "notSet" }
+        @"!" { <> "setComplement" }
     |
         { <> "set" }
     )
