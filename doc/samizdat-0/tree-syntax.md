@@ -12,40 +12,55 @@ A program is parsed by matching the `program` rule, which yields a
 `function` node.
 
 ```
-# Function that returns an appropriately-formed `call` node.
+# Returns a `call` node.
 makeCall = { function actuals* ::
     <> @["call" ["function"=function "actuals"=actuals]]
 };
 
-# forward-declaration: atom
-# forward-declaration: expression
-# forward-declaration: function
+# Returns a `varRef` node.
+makeVarRef = { name ::
+    <> @["varRef" name]
+};
+
+# Returns a `call` node that names a function as a `varRef`.
+makeCallName = { name actuals* ::
+    <> @["call" ["function"=(makeVarRef name) "actuals"=actuals]]
+};
+
+# Returns a `literal` node.
+makeLiteral = { value ::
+    <> @["literal" value]
+};
+
+# forward declaration: atom
+# forward declaration: expression
+# forward declaration: function
 
 int = {/
     @int
-    { <> @["literal" (highletValue int)] }
+    { <> makeLiteral (highletValue int) }
 /};
 
 string = {/
     @string
-    { <> @["literal" (highletValue string)] }
+    { <> makeLiteral (highletValue string) }
 /};
 
 emptyList = {/
     @"[" @"]"
-    { <> @["literal" []] }
+    { <> makeLiteral [] }
 /};
 
 list = {/
     @"["
     atoms = atom+
     @"]"
-    { <> apply makeCall @["varRef" "makeList"] atoms }
+    { <> apply makeCallName "makeList" atoms }
 /};
 
 emptyMap = {/
     @"[" @"=" @"]"
-    { <> @["literal" [=]] }
+    { <> makeLiteral [=] }
 /};
 
 binding = {/
@@ -59,25 +74,28 @@ map = {/
     @"["
     bindings = binding+
     @"]"
-    { <> apply makeCall @["varRef" "makeMap"] (apply listAdd bindings) }
+    { <> apply makeCallName "makeMap" (apply listAdd bindings) }
 /};
 
 highlet = {/
-    @"@" @"[" type=atom value=atom? @"]"
-    { <> apply makeCall @["varRef" "makeHighlet"] type value }
-|
-    @"@" type=(@string | @identifier)
-    { <> makeCall @["varRef" "makeHighlet"] @["literal" (highletValue type)] }
+    @"@"
+    (
+        @"[" type=atom value=atom? @"]"
+        { <> apply makeCallName "makeHighlet" type value }
+    |
+        type=(@string | @identifier)
+        { <> makeCallName "makeHighlet" (makeLiteral (highletValue type)) }
+    )
 /};
 
 uniqlet = {/
     @"@@"
-    { <> makeCall @["varRef" "makeUniqlet"] }
+    { <> makeCallName "makeUniqlet" }
 /};
 
 varRef = {/
     name = @identifier
-    { <> @["varRef" (highletValue name)] }
+    { <> makeVarRef (highletValue name) }
 /};
 
 varDef ::= {/
