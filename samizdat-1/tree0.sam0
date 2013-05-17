@@ -222,7 +222,7 @@ parseFormal = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeMainSequence
             (pegMakeToken @identifier)
-            (pegMakeCode { n :: <> ["name" = n] }))
+            (pegMakeCode { n :: <> ["name" = (highletValue n)] }))
         (pegMakeMainSequence
             (pegMakeToken @".")
             (pegMakeCode { . :: <> [=] })))
@@ -267,7 +267,7 @@ parseProgramDeclarations = pegMakeMainSequence
             (pegMakeCode { <> [=] })))
     (pegMakeChoice
         (pegMakeMainSequence
-            (pegMakePlus parseYieldDef)
+            parseYieldDef
             (pegMakeCode { y :: <> ["yieldDef" = y] }))
         (pegMakeMainSequence
             (pegMakeCode { <> [=] })))

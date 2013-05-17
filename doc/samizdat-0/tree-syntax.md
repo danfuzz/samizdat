@@ -170,7 +170,7 @@ yieldDef = {/
 
 formal = {/
     name = (
-        n=@identifier { <> ["name" = n] }
+        n=@identifier { <> ["name" = (highletValue n)] }
     |
         @"." { <> [=] }
     )
