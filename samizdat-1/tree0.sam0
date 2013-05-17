@@ -11,6 +11,23 @@
 # Helper functions
 #
 
+# Object service function used by `makeForwardDeclaration`.
+forwardService = { yield state value? ::
+    <> ifTrue { <> eq value [] }
+        { yield state }
+        {
+            yield();
+            <> listNth value 0
+        }
+};
+
+# Simple value storage box, to effectively implement forward declaration
+# of parser rules. Call the result with a value to set it, or with no
+# argument to get the previously-set value.
+makeForwardDeclaration = {
+    <> object forwardService null;
+};
+
 # Returns a `call` node.
 makeCall = { function actuals* ::
     <> @["call" ["function"=function "actuals"=actuals]]
@@ -39,9 +56,15 @@ makeLiteral = { value ::
 # the *Samizdat Layer 0* specification.
 #
 
-# forward-declaration: atom
-# forward-declaration: expression
-# forward-declaration: function
+# Forward declarations for atom, expression, and function.
+
+fwdAtom = makeForwardDeclaration();
+fwdExpression = makeForwardDeclaration();
+fwdFunction = makeForwardDeclaration();
+
+parseAtom = { args* :: <> apply (fwdAtom()) args };
+parseExpression = { args* :: <> apply (fwdExpression()) args };
+parseFunction = { args* :: <> apply (fwdFunction()) args };
 
 # Documented in Samizdat Layer 0 spec.
 parseInt = pegMakeMainSequence
@@ -134,11 +157,12 @@ parseParenExpression = pegMakeMainSequence
     (pegMakeCode { . ex . :: <> ex });
 
 # Documented in Samizdat Layer 0 spec.
-parseAtom = pegMakeMainSequence
+implAtom = pegMakeMainSequence
     (pegMakeChoice
         parseVarRef parseInt parseString
         parseEmptyList parseList parseEmptyMap parseMap
-        parseUniqlet parseHighlet parseFunction parenExpression);
+        parseUniqlet parseHighlet parseFunction parseParenExpression);
+fwdAtom implAtom;
 
 # Documented in Samizdat Layer 0 spec.
 parseCallExpression = pegMakeMainSequence
@@ -160,8 +184,9 @@ parseUnaryExpression = pegMakeMainSequence
     (pegMakeChoice parseUnaryCallExpression parseAtom);
 
 # Documented in Samizdat Layer 0 spec.
-parseExpression = pegMakeMainSequence
+implExpression = pegMakeMainSequence
     (pegMakeChoice parseCallExpression parseUnaryExpression);
+fwdExpression implExpression;
 
 # Documented in Samizdat Layer 0 spec.
 parseStatement = pegMakeMainSequence
@@ -258,11 +283,12 @@ parseProgram = pegMakeMainSequence
     (pegMakeCode { decls body :: <> @["function" (mapAdd decls body)] });
 
 # Documented in Samizdat Layer 0 spec.
-parseFunction = pegMakeMainSequence
+implFunction = pegMakeMainSequence
     (pegMakeToken @"{")
     parseProgram
     (pegMakeToken @"}")
     (pegMakeCode { . prog . :: <> prog });
+fwdFunction implFunction;
 
 # Performs parsing of the given token list.
 parse0 = { programTokens ::
