@@ -17,53 +17,75 @@
  * Execution frames
  */
 
-enum {
-    MAX_LOCALS = 50
-};
-
 /**
- * Active execution frame. These are passed around within this file
- * only, as code executes.
+ * Active execution frame. These are passed around within this file,
+ * as code executes, and can become referenced by closures that are
+ * released "in the wild".
  */
 typedef struct Frame {
-    /** Base variable maplet. */
-    zvalue base;
+    /** Parent closure value. May be `NULL`. */
+    zvalue parentClosure;
 
-    /** Number of additional local variables. */
-    zint size;
+    /** Parent frame. May be `NULL`. */
+    struct Frame *parentFrame;
 
-    /** Additional local variables. */
-    zmapping locals[MAX_LOCALS];
+    /** Variables defined in this frame, as a map from names to values. */
+    zvalue vars;
 } Frame;
 
+static void frameMark(Frame *frame) {
+    datMark(frame->vars);
+    datMark(frame->parentClosure);
+}
+
+/**
+ * Dies with a message, citing a variable name.
+ */
+static void dieForVariable(const char *message, zvalue name) {
+    if (datTypeIs(name, DAT_STRING)) {
+        zint nameSize = datUtf8SizeFromString(name);
+        char nameStr[nameSize + 1];
+        datUtf8FromString(nameSize + 1, nameStr, name);
+        die("%s: %s", message, nameStr);
+    }
+
+    die("%s: (strange name)", message);
+}
+
+/**
+ * Adds a new variable to the given frame.
+ */
 static void frameAdd(Frame *frame, zvalue name, zvalue value) {
-    zint size = frame->size;
-
-    if (size >= MAX_LOCALS) {
-        die("Too many local variables!");
+    if (datMapGet(frame->vars, name) != NULL) {
+        dieForVariable("Variable already defined", name);
     }
 
-    frame->locals[size].key = name;
-    frame->locals[size].value = value;
-    frame->size = size + 1;
+    frame->vars = datMapPut(frame->vars, name, value);
 }
 
+/**
+ * Gets a variable's value out of the given frame.
+ */
 static zvalue frameGet(Frame *frame, zvalue name) {
-    zmapping *locals = frame->locals;
+    while (frame != NULL) {
+        zvalue result = datMapGet(frame->vars, name);
 
-    // Scan in reverse, because we don't prevent duplicate names from
-    // being defined, and lookup should find the latest definition.
-    for (zint i = frame->size - 1; i >= 0; i--) {
-        if (datEq(name, locals[i].key)) {
-            return locals[i].value;
+        if (result != NULL) {
+            return result;
         }
+
+        frame = frame->parentFrame;
     }
 
-    return datMapGet(frame->base, name);
+    dieForVariable("Variable not defined", name);
+    return NULL; // Keeps the compiler happy.
 }
 
-static zvalue frameCollapse(Frame *frame) {
-    return datMapAddArray(frame->base, frame->size, frame->locals);
+/**
+ * Snapshots the given frame into the given target.
+ */
+static void frameSnap(Frame *target, Frame *source) {
+    *target = *source;
 }
 
 
@@ -78,10 +100,10 @@ static zvalue frameCollapse(Frame *frame) {
  */
 typedef struct {
     /**
-     * Parent variable context (which was the current context when
-     * the function was defined).
+     * Snapshot of the frame that was active at the moment the closure was
+     * constructed.
      */
-    zvalue context;
+    Frame frame;
 
     /**
      * Function definition, which includes a list of formals and the
@@ -115,7 +137,7 @@ typedef struct {
 static void closureMark(void *state) {
     Closure *closure = state;
 
-    datMark(closure->context);
+    frameMark(&closure->frame);
     datMark(closure->function);
 }
 
@@ -268,19 +290,20 @@ static void execVarDef(Frame *frame, zvalue varDef) {
 static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
     Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
     zvalue functionNode = closure->function;
-    zvalue parentContext = closure->context;
+    Frame *parentFrame = &closure->frame;
 
     zvalue yieldDef = datMapGet(functionNode, STR_YIELD_DEF);
     zvalue statements = datMapGet(functionNode, STR_STATEMENTS);
     zvalue yield = datMapGet(functionNode, STR_YIELD);
     YieldState *yieldState = NULL;
 
-    // Take the parent context as a base, and bind the formals and
-    // yieldDef (if present), creating an execution frame.
+    // With the closure's frame as the parent, bind the formals and
+    // yieldDef (if present), creating a new execution frame.
 
     Frame frame;
-    frame.base = parentContext;
-    frame.size = 0;
+    frame.parentClosure = state;
+    frame.parentFrame = parentFrame;
+    frame.vars = EMPTY_MAP;
     bindArguments(&frame, functionNode, argCount, args);
 
     if (yieldDef != NULL) {
@@ -338,7 +361,8 @@ static zvalue execFunction(Frame *frame, zvalue function) {
     datHighletAssertType(function, STR_FUNCTION);
 
     Closure *closure = utilAlloc(sizeof(Closure));
-    closure->context = frameCollapse(frame);
+
+    frameSnap(&closure->frame, frame);
     closure->function = datHighletValue(function);
 
     return langDefineFunction(execClosure,
@@ -395,20 +419,7 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
     datHighletAssertType(varRef, STR_VAR_REF);
 
     zvalue name = datHighletValue(varRef);
-    zvalue found = frameGet(frame, name);
-
-    if (found != NULL) {
-        return found;
-    }
-
-    if (datTypeIs(name, DAT_STRING)) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        die("No such variable: %s", nameStr);
-    }
-
-    die("No such variable: (strange name)");
+    return frameGet(frame, name);
 }
 
 /**
@@ -451,8 +462,9 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
 /* Documented in header. */
 zvalue langEvalExpressionNode(zvalue context, zvalue node) {
     Frame frame;
-    frame.base = context;
-    frame.size = 0;
+    frame.parentClosure = NULL;
+    frame.parentFrame = NULL;
+    frame.vars = context;
 
     return execExpressionVoidOk(&frame, node);
 }
