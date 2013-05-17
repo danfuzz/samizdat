@@ -5,8 +5,8 @@ Tree Syntax
 -----------
 
 The following is a BNF/PEG-like description of the node / tree syntax.
-This definition uses syntax which is nearly identical to the parser
-syntax provided at the higher layer.
+This definition uses syntax which is identical to the parser syntax
+implemented at a higher layer.
 
 A program is parsed by matching the `program` rule, which yields a
 `function` node.
@@ -21,110 +21,202 @@ makeCall = { function actuals* ::
 # forward-declaration: expression
 # forward-declaration: function
 
-int ::= @int ;
-# result: @["literal" (highletValue int)]
+int = {/
+    @int
+    { <> @["literal" (highletValue int)] }
+/};
 
-string ::= @string ;
-# result: @["literal" (highletValue string)]
+string = {/
+    @string
+    { <> @["literal" (highletValue string)] }
+/};
 
-emptyList ::= @"[" @"]" ;
-# result: @["literal" []]
+emptyList = {/
+    @"[" @"]"
+    { <> @["literal" []] }
+/};
 
-list ::= @"[" atom+ @"]" ;
-# result: makeCall @["varRef" "makeList"] atom+
+list = {/
+    @"["
+    atoms = atom+
+    @"]"
+    { <> apply makeCall @["varRef" "makeList"] atoms }
+/};
 
-emptyMap ::= @"[" @"=" @"]" ;
-# result: @["literal" [=]]
+emptyMap = {/
+    @"[" @"=" @"]"
+    { <> @["literal" [=]] }
+/};
 
-binding ::= atom @"=" atom ;
-# result: [atom atom] # key then value
+binding = {/
+    key = atom
+    @"="
+    value = atom
+    { <> [key value] }
+/};
 
-map ::= @"[" binding+ @"]" ;
-# result: apply makeCall @["varRef" "makeMap"] (listAdd binding+)
+map = {/
+    @"["
+    bindings = binding+
+    @"]"
+    { <> apply makeCall @["varRef" "makeMap"] (apply listAdd bindings) }
+/};
 
-highlet ::=
-    @"@" @"[" atom atom? @"]"
-    # result: makeCall @["varRef" "makeHighlet"] atom atom?
+highlet = {/
+    @"@" @"[" type=atom value=atom? @"]"
+    { <> apply makeCall @["varRef" "makeHighlet"] type value }
 |
-    @"@" @string
-    # result: makeCall @["varRef" "makeHighlet"]
-    #             @["literal" (highletValue string)]
-|
-    @"@" @identifier
-    # result: makeCall @["varRef" "makeHighlet"]
-    #             @["literal" (highletValue identifier)]
-;
+    @"@" type=(@string | @identifier)
+    { <> makeCall @["varRef" "makeHighlet"] @["literal" (highletValue type)] }
+/};
 
-uniqlet ::= @"@@";
-# result: makeCall @["varRef" "makeUniqlet"]
+uniqlet = {/
+    @"@@"
+    { <> makeCall @["varRef" "makeUniqlet"] }
+/};
 
-varRef ::= @identifier ;
-# result: @["varRef" (highletValue identifier)]
+varRef = {/
+    name = @identifier
+    { <> @["varRef" (highletValue name)] }
+/};
 
-varDef ::= @identifier @"=" expression ;
-# result: @["varDef" ["name"=(highletValue identifier) "value"=expression]]
+varDef ::= {/
+    name = @identifier
+    @"="
+    ex = expression
+    { <> @["varDef" ["name"=(highletValue name) "value"=ex]] }
+/};
 
-parenExpression ::= @"(" expression @")";
-# result: expression
+parenExpression ::= {/
+    @"("
+    ex = expression
+    @")"
+    { <> ex }
+/};
 
-atom ::=
+atom = {/
     varRef | int | string |
     emptyList | list | emptyMap | map |
-    uniqlet | highlet | function | parenExpression ;
-# result: <same as whatever choice matched>
+    uniqlet | highlet | function | parenExpression
+/};
 
-callExpression ::= atom atom+ ;
-# result: makeCall atom atom+
+callExpression = {/
+    function = atom
+    args = atom+
+    { <> apply makeCall function args }
+/};
 
-unaryCallExpression ::= atom (@"()")+ ;
-# result: (... (makeCall (makeCall atom))
-# Note: One `makeCall` per pair of parens.
+unaryCallExpression = {/
+    function = atom
+    calls = @"()"+
+    # Note: One `makeCall` per pair of parens.
+    { <> (... (makeCall (makeCall atom))) }
+/};
 
-unaryExpression ::= unaryCallExpression | atom ;
-# result: <same as whatever choice matched>
+unaryExpression = {/
+    unaryCallExpression | atom
+/};
 
-expression ::= callExpression | unaryExpression ;
-# result: <same as whatever choice matched>
+expression = {/
+    callExpression | unaryExpression
+/};
 
-statement ::= varDef | expression ;
-# result: <same as whatever choice matched>
+statement = {/
+    varDef | expression
+/};
 
-nonlocalExit ::= @"<" @identifier @">" expression? ;
-# result: makeCall identifier expression?
+nonlocalExit = {/
+    @"<"
+    name = varRef
+    @">"
+    ex = expression?
+    { <> apply makeCall name ex }
+/};
 
-yield ::= @"<>" expression ;
-# result: expression
+yield = {/
+    @"<>"
+    expression
+/};
 
-yieldDef ::= @"<" @identifier @">" ;
-# result: highletValue identifier
+yieldDef = {/
+    @"<"
+    name = @identifier
+    @">"
+    { <> highletValue identifier }
+/};
 
-formal ::= (@identifier | @".") repeat=(@"?" | @"*" | @"+")? ;
-# result: [
-#             ("name" = (highletValue identifier))?
-#             ("repeat" = (highletType repeat))?
-#         ]
-# Note: Binding for `"name"` omitted if name is specified as `.`.
+formal = {/
+    name = (
+        n=@identifier { <> ["name" = n] }
+    |
+        @"." { <> [=] }
+    )
 
-programBody ::=
+    repeat = (
+        r=[@"?" @"*" @"+"] { <> ["repeat" = (highletType r)] }
+    |
+        { <> [=] }
+    )
+    { <> mapAdd name repeat }
+/};
+
+programBody = {/
     @";"*
-    (statement @";"+)*
-    (statement | nonlocalExit | yield)?
+
+    most = (
+        s = statement
+        @";"+
+        { <> s }
+    )*
+
+    last = (
+        s = (statement | nonlocalExit)
+        { <> ["statements" = [s]] }
+    |
+        y = yield
+        { <> ["statements" = [] "yield" = y] }
+    |
+        { <> ["statements" = []] }
+    )
+
     @";"*
-;
-# result: ["statements"=[statement*] ("yield"=yield)?]
-# Note: `nonLocalExit` results in a statement.
 
-programDeclarations ::= formal* yieldDef? ;
-# result: [("formals"=[formal*])? ("yieldDef"=yieldDef)?]
-# Note: The "formals" mapping should only be included when there is at
-# least one formal.
+    {
+        allStatements = listAdd most (mapGet last "statements");
+        <> mapPut last "statements" allStatements
+    }
+/};
 
-program ::= (programDeclarations @"::")? programBody ;
-# result: @[
-#             "function"
-#             (mapAdd programDeclarations programBody)
-#         ]
+programDeclarations = {/
+    formals = (
+        fs = formal+
+        { <> ["formals" = fs] }
+    |
+        { <> [=] }
+    )
 
-function ::= @"{" program @"}" ;
-# result: <program>
+    yieldDef = (
+        y = yieldDef
+        { <> ["yieldDef" = y] }
+    |
+        { <> [=] }
+    )
+
+    @"::"
+
+    { <> mapAdd formals yieldDef }
+/};
+
+program = {/
+    decls = (programDeclarations | { <> [=] })
+    body = programBody
+    { <> mapAdd decls body }
+/};
+
+function = {/
+    @"{"
+    prog = program
+    @"}"
+    { <> prog }
+/};
 ```
