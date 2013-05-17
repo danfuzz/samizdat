@@ -208,7 +208,7 @@ parseYield = pegMakeMainSequence
             parseExpression
             (pegMakeCode { ex :: <> ["yield" = ex] }))
         (pegMakeMainSequence
-            (pegMakeCode { . :: <> [=] })));
+            (pegMakeCode { :: <> [=] })));
 
 # Documented in Samizdat Layer 0 spec.
 parseYieldDef = pegMakeMainSequence
