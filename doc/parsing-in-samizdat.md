@@ -321,7 +321,6 @@ punctuation = {/
     # ... original alternates from the base grammar ...
     "{/" |
     "/}" |
-    "!." |
     ["&" "|" "!"]
 /};
 ```
@@ -358,10 +357,10 @@ sequencePex = {/
 
 namePex = {/
     (
-        name = identifier
+        name = @identifier
         @"="
         pex = lookaheadPex
-        { <> @["varDef" ["name"=name "value"=pex]] }
+        { <> @["varDef" ["name"=(highletValue name) "value"=pex]] }
     )
 |
     lookaheadPex
@@ -388,8 +387,7 @@ repeatPex = {/
 /};
 
 parserAtom = {/
-    name = identifier
-    { <> @["varRef" (highletValue name)] }
+    varRef
 |
     parserString
 |
@@ -398,8 +396,6 @@ parserAtom = {/
     parserSet
 |
     @"."
-|
-    @"!."
 |
     @"()"
 |
@@ -420,11 +416,11 @@ parserAtom = {/
 parserSet = {/
     @"["
     type = (
-        @"!" { <> "notSet" }
+        @"!" { <> "setComplement" }
     |
         { <> "set" }
     )
-    terminals = (parserString+ | parserToken+)
+    terminals = (parserString* | parserToken*)
     @"]"
     {
         <> @[type terminals]
@@ -527,59 +523,70 @@ Example Translation to Samizdat Layer 0
 ---------------------------------------
 
 ```
-digit = pexSequence
-    (pexCharSet "0123456789")
-    (pexCode { ch ::
+digit = pegMakeMainSequence
+    (pegMakeCharSet "0123456789")
+    (pegMakeCode { ch ::
         <> isub (intFromString ch) (intFromString "0")
     });
 
-number = pexSequence
-    (pexPlus digit)
-    (pexCode { digits ::
+number = pegMakeMainSequence
+    (pegMakePlus digit)
+    (pegMakeCode { digits ::
         <> listReduce 0 digits
             { result digit :: <> iadd digit (imul result 10) }
     });
 
-atom = pexChoice
+atom = pegMakeChoice
     number
-    (pexSequence
-        (pexChars "(")
+    (pegMakeSequence
+        (pegMakeChar "(")
         addExpression
-        (pexChars ")")
-        (pexCode { . ex . :: <> ex }));
+        (pegMakeChar ")")
+        (pegMakeCode { . ex . :: <> ex }));
 
-addExpression = pexSequence
+addExpression = pegMakeMainSequence
     mulExpression
     addOp
     addExpression
-    (pexCode { ex1 op ex2 :: <> op ex1 ex2 });
+    (pegMakeCode { ex1 op ex2 :: <> op ex1 ex2 });
 
-addOp = pexChoice
-    (pexSequence (pexChars "+") { <> iadd })
-    (pexSequence (pexChars "-") { <> isub });
+addOp = pegMakeChoice
+    (pegMakeSequence
+        (pegMakeChar "+")
+        (pegMakeCode { <> iadd }))
+    (pegMakeSequence
+        (pegMakeChar "-")
+        (pegMakeCode { <> isub }));
 
-mulExpression = pexSequence
+mulExpression = pegMakeMainSequence
     unaryExpression
     mulOp
     mulExpression
-    (pexCode { ex1 op ex2 :: <> op ex1 ex2 });
+    (pegMakeCode { ex1 op ex2 :: <> op ex1 ex2 });
 
-mulOp = pexChoice
-    (pexSequence (pexChars "*") { <> imul })
-    (pexSequence (pexChars "/") { <> idiv });
+mulOp = pegMakeChoice
+    (pegMakeSequence
+        (pegMakeChar "*")
+        (pegMakeCode { <> imul }))
+    (pegMakeSequence
+        (pegMakeChar "/")
+        (pegMakeCode { <> idiv }));
 
-unaryExpression = pexSequence
+unaryExpression = pegMakeMainSequence
     unaryOp
     unaryExpression
-    (pexCode { op ex :: <> op ex });
+    (pegMakeCode { op ex :: <> op ex });
 
-unaryOp = pexSequence (pexChars "-") { <> ineg });
+unaryOp = pegMakeMainSequence
+    (pegMakeChar "-")
+    (pegMakeCode { <> ineg });
 
-main = pexStar (pexSequence
-    addExpression
-    (pexChars "\n")
-    (pexCode { ex . ::
-        io0Note (format "%q" ex);
-        <> null
-    }));
+main = pegMakeStar
+    (pegMakeSequence
+        addExpression
+        (pegMakeChar "\n")
+        (pegMakeCode { ex . ::
+            io0Note (format "%q" ex);
+            <> null
+        }));
 ```
