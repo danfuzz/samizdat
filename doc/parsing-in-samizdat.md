@@ -538,7 +538,7 @@ number = pegMakeMainSequence
 
 atom = pegMakeChoice
     number
-    (pegMakeSequence
+    (pegMakeMainSequence
         (pegMakeChar "(")
         addExpression
         (pegMakeChar ")")
@@ -582,7 +582,7 @@ unaryOp = pegMakeMainSequence
     (pegMakeCode { <> ineg });
 
 main = pegMakeStar
-    (pegMakeSequence
+    (pegMakeMainSequence
         addExpression
         (pegMakeChar "\n")
         (pegMakeCode { ex . ::
