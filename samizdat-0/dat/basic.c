@@ -23,7 +23,7 @@ static const char *typeName(ztype type) {
         case DAT_LIST:    return "list";
         case DAT_MAP:     return "map";
         case DAT_UNIQLET: return "uniqlet";
-        case DAT_TOKEN: return "token";
+        case DAT_TOKEN:   return "token";
     }
 
     return "<unknown-type>";
