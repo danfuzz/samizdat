@@ -23,7 +23,7 @@ standard meaning of those values:
 Ordering is calculated as follows:
 
 The major order is by type &mdash; `int < string < list <
-map < uniqlet < token` &mdash; and minor order is type-dependant.
+map < token < uniqlet` &mdash; and minor order is type-dependant.
 
 * Ints order by integer value.
 
@@ -36,13 +36,13 @@ map < uniqlet < token` &mdash; and minor order is type-dependant.
   lists are identical, then the result is the comparison of
   corresponding lists of values, in key order.
 
-* Any given uniqlet never compares as identical to anything but
-  itself. Any two uniqlets have a consistent, transitive, and
-  commutative &mdash; but otherwise arbitrary &mdash; ordering.
-
 * Tokens compare by type as primary, and value as secondary.
   With types equal, tokens without a value order earlier than
   ones with a value.
+
+* Any given uniqlet never compares as identical to anything but
+  itself. Any two uniqlets have a consistent, transitive, and
+  commutative &mdash; but otherwise arbitrary &mdash; ordering.
 
 #### `lowOrderIs value1 value2 check1 check2? <> boolean`
 
