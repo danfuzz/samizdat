@@ -20,7 +20,7 @@ report = { context v1 v2 message ::
     <> false;
 };
 
-# Diffs highlets.
+# Diffs tokens.
 diffToken = { recurse context v1 v2 ::
     type1 = highletType v1;
     type2 = highletType v2;

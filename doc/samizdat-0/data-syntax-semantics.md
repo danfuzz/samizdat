@@ -129,7 +129,7 @@ representation (an arbitrary value), optionally followed by a payload
 value representation (another arbitrary value), followed by a final
 `]`.
 
-Valueless highlets whose type tag is a string constant can be abbreviated
+Valueless tokens whose type tag is a string constant can be abbreviated
 as `@"type"`. If that string constant has the form of a valid
 identifier, then the token can be further abbreviated as just `@type`.
 

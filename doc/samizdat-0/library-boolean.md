@@ -41,7 +41,7 @@ map < uniqlet < token` &mdash; and minor order is type-dependant.
   commutative &mdash; but otherwise arbitrary &mdash; ordering.
 
 * Tokens compare by type as primary, and value as secondary.
-  With types equal, highlets without a value order earlier than
+  With types equal, tokens without a value order earlier than
   ones with a value.
 
 #### `lowOrderIs value1 value2 check1 check2? <> boolean`

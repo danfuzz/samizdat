@@ -182,7 +182,7 @@ For example:
 ### Matching a single token (terminal)
 
 Tokens are the basic terminals in the context of tree parsing. When
-performing tree parsing, tokens are represented as highlets, with the
+performing tree parsing, tokens are represented as tokens, with the
 token type indicating the type of the token, and the token value
 optionally indicating a data payload.
 

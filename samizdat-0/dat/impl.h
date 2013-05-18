@@ -209,12 +209,12 @@ zorder datMapOrder(zvalue v1, zvalue v2);
 zorder datUniqletOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares highlets for equality. Only called when the sizes are the same.
+ * Compares tokens for equality. Only called when the sizes are the same.
  */
 bool datTokenEq(zvalue v1, zvalue v2);
 
 /**
- * Compares highlets for order.
+ * Compares tokens for order.
  */
 zorder datTokenOrder(zvalue v1, zvalue v2);
 

@@ -21,7 +21,7 @@ parsing mechanism). There are helper functions which take strings and
 automatically convert them into this form.
 
 When building tree parsers, the input elements are expected to be
-tokens per se, that is, highlets whose type tag is taken to indicate a
+tokens per se, that is, tokens whose type tag is taken to indicate a
 token type.
 
 The output of the functions named `pegMake*` are all parsing rules. These

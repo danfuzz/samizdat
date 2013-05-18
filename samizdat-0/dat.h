@@ -419,7 +419,7 @@ zvalue datTokenType(zvalue token);
 
 /**
  * Gets the value associated with a token. This is `NULL` for
- * valueless highlets (unsurprisingly).
+ * valueless tokens (unsurprisingly).
  */
 zvalue datTokenValue(zvalue token);
 
