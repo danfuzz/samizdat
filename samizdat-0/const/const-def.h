@@ -45,12 +45,12 @@ STR(EMPTY,         ""); // The canonical empty string (`""`) value.
 STR(FALSE,         "false");
 STR(FORMALS,       "formals");
 STR(FUNCTION,      "function");
-STR(HIGHLET,       "highlet");
+STR(TOKEN,       "highlet");
 STR(IDENTIFIER,    "identifier");
 STR(INT,           "int");
 STR(LIST,          "list");
 STR(LITERAL,       "literal");
-STR(MAKE_HIGHLET,  "makeToken");
+STR(MAKE_TOKEN,  "makeToken");
 STR(MAKE_LIST,     "makeList");
 STR(MAKE_MAP,      "makeMap");
 STR(MAKE_UNIQLET,  "makeUniqlet");

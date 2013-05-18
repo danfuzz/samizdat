@@ -23,7 +23,7 @@ static const char *typeName(ztype type) {
         case DAT_LIST:    return "list";
         case DAT_MAP:     return "map";
         case DAT_UNIQLET: return "uniqlet";
-        case DAT_HIGHLET: return "highlet";
+        case DAT_TOKEN: return "highlet";
     }
 
     return "<unknown-type>";
@@ -94,7 +94,7 @@ void datAssertUniqlet(zvalue value) {
 
 /* Documented in header. */
 void datAssertToken(zvalue value) {
-    assertType(value, DAT_HIGHLET);
+    assertType(value, DAT_TOKEN);
 }
 
 /* Documented in header. */

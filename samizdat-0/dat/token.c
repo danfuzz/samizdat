@@ -25,7 +25,7 @@ static TokenInfo *highletInfo(zvalue highlet) {
  * on the arguments.
  */
 static zvalue newToken(zvalue type, zvalue value) {
-    zvalue result = datAllocValue(DAT_HIGHLET, 0, sizeof(TokenInfo));
+    zvalue result = datAllocValue(DAT_TOKEN, 0, sizeof(TokenInfo));
     TokenInfo *info = highletInfo(result);
 
     result->size = (value == NULL) ? 0 : 1;

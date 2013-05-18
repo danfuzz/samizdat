@@ -227,7 +227,7 @@ DEF_PARSE(highlet) {
         args = datListAppend(args, innerValue);
     }
 
-    return makeCall(makeVarRef(STR_MAKE_HIGHLET), args);
+    return makeCall(makeVarRef(STR_MAKE_TOKEN), args);
 }
 
 /**
