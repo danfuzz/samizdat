@@ -45,7 +45,7 @@ Always returns void.
 
 #### `stringFromTokenList tokens <> string`
 
-Takes a list of tokenizer-style character tokens (that is, highlets whose
+Takes a list of tokenizer-style character tokens (that is, tokens whose
 type tags are each a single-character string), returning the result
 of concatenating all the characters together in order.
 

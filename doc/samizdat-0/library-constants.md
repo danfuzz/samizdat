@@ -36,4 +36,4 @@ it makes sense to allow it to be exported as a primitive.
 
 A value used when no other value is suitable, but when a value is
 nonetheless required. It is defined as `@null`, that is, a valueless
-highlet with type tag `"null"`.
+token with type tag `"null"`.

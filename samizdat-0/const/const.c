@@ -53,13 +53,13 @@ void constInit(void) {
 
     #define TOK(name, str) \
         STR(name, str); \
-        TOK_##name = datHighletFrom(STR_##name, NULL); \
+        TOK_##name = datTokenFrom(STR_##name, NULL); \
         datImmortalize(TOK_##name)
 
     #include "const-def.h"
 
-    CONST_FALSE = datHighletFrom(STR_BOOLEAN, datIntFromZint(0));
-    CONST_TRUE  = datHighletFrom(STR_BOOLEAN, datIntFromZint(1));
+    CONST_FALSE = datTokenFrom(STR_BOOLEAN, datIntFromZint(0));
+    CONST_TRUE  = datTokenFrom(STR_BOOLEAN, datIntFromZint(1));
     EMPTY_LIST = datListFromArray(0, NULL);
     EMPTY_MAP = datMapEmpty();
 

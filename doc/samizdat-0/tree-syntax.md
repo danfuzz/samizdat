@@ -39,12 +39,12 @@ makeLiteral = { value ::
 
 int = {/
     @int
-    { <> makeLiteral (highletValue int) }
+    { <> makeLiteral (tokenValue int) }
 /};
 
 string = {/
     @string
-    { <> makeLiteral (highletValue string) }
+    { <> makeLiteral (tokenValue string) }
 /};
 
 emptyList = {/
@@ -78,14 +78,14 @@ map = {/
     { <> apply makeCallName "makeMap" (apply listAdd bindings) }
 /};
 
-highlet = {/
+token = {/
     @"@"
     (
         @"[" type=atom value=atom? @"]"
-        { <> apply makeCallName "makeHighlet" type value }
+        { <> apply makeCallName "makeToken" type value }
     |
         type=[@string @identifier]
-        { <> makeCallName "makeHighlet" (makeLiteral (highletValue type)) }
+        { <> makeCallName "makeToken" (makeLiteral (tokenValue type)) }
     )
 /};
 
@@ -96,14 +96,14 @@ uniqlet = {/
 
 varRef = {/
     name = @identifier
-    { <> makeVarRef (highletValue name) }
+    { <> makeVarRef (tokenValue name) }
 /};
 
 varDef ::= {/
     name = @identifier
     @"="
     ex = expression
-    { <> @["varDef" ["name"=(highletValue name) "value"=ex]] }
+    { <> @["varDef" ["name"=(tokenValue name) "value"=ex]] }
 /};
 
 parenExpression ::= {/
@@ -116,7 +116,7 @@ parenExpression ::= {/
 atom = {/
     varRef | int | string |
     emptyList | list | emptyMap | map |
-    uniqlet | highlet | function | parenExpression
+    uniqlet | token | function | parenExpression
 /};
 
 callExpression = {/
@@ -166,18 +166,18 @@ yieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> highletValue name }
+    { <> tokenValue name }
 /};
 
 formal = {/
     name = (
-        n=@identifier { <> ["name" = (highletValue n)] }
+        n=@identifier { <> ["name" = (tokenValue n)] }
     |
         @"." { <> [=] }
     )
 
     repeat = (
-        r=[@"?" @"*" @"+"] { <> ["repeat" = (highletType r)] }
+        r=[@"?" @"*" @"+"] { <> ["repeat" = (tokenType r)] }
     |
         { <> [=] }
     )

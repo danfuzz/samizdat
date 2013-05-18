@@ -56,7 +56,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
     }
 
     zvalue result = datListNth(state->tokens, state->at);
-    zvalue resultType = datHighletType(result);
+    zvalue resultType = datTokenType(result);
 
     if (!datEq(type, resultType)) {
         return NULL;
@@ -123,14 +123,14 @@ static zvalue mapFrom1(zvalue k1, zvalue v1) {
  * Constructs a `literal` node.
  */
 static zvalue makeLiteral(zvalue value) {
-    return datHighletFrom(STR_LITERAL, value);
+    return datTokenFrom(STR_LITERAL, value);
 }
 
 /**
  * Constructs a `varRef` node.
  */
 static zvalue makeVarRef(zvalue name) {
-    return datHighletFrom(STR_VAR_REF, name);
+    return datTokenFrom(STR_VAR_REF, name);
 }
 
 /**
@@ -143,7 +143,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 
     zvalue value = mapFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
 
-    return datHighletFrom(STR_CALL, value);
+    return datTokenFrom(STR_CALL, value);
 }
 
 
@@ -195,9 +195,9 @@ DEF_PARSE(atomPlus) {
 }
 
 /**
- * Parses a `highlet` node.
+ * Parses a `token` node.
  */
-DEF_PARSE(highlet) {
+DEF_PARSE(token) {
     MARK();
 
     zvalue innerType;
@@ -210,7 +210,7 @@ DEF_PARSE(highlet) {
         innerType = MATCH(IDENTIFIER);
     }
     if (innerType != NULL) {
-        innerType = makeLiteral(datHighletValue(innerType));
+        innerType = makeLiteral(datTokenValue(innerType));
         innerValue = NULL;
     }
 
@@ -227,7 +227,7 @@ DEF_PARSE(highlet) {
         args = datListAppend(args, innerValue);
     }
 
-    return makeCall(makeVarRef(STR_MAKE_HIGHLET), args);
+    return makeCall(makeVarRef(STR_MAKE_TOKEN), args);
 }
 
 /**
@@ -325,7 +325,7 @@ DEF_PARSE(string) {
 
     zvalue string = MATCH_OR_REJECT(STRING);
 
-    return makeLiteral(datHighletValue(string));
+    return makeLiteral(datTokenValue(string));
 }
 
 /**
@@ -336,7 +336,7 @@ DEF_PARSE(int) {
 
     zvalue intval = MATCH_OR_REJECT(INT);
 
-    return makeLiteral(datHighletValue(intval));
+    return makeLiteral(datTokenValue(intval));
 }
 
 /**
@@ -347,7 +347,7 @@ DEF_PARSE(varRef) {
 
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
 
-    return makeVarRef(datHighletValue(identifier));
+    return makeVarRef(datTokenValue(identifier));
 }
 
 /**
@@ -360,9 +360,9 @@ DEF_PARSE(varDef) {
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue expression = PARSE_OR_REJECT(expression);
 
-    zvalue name = datHighletValue(identifier);
+    zvalue name = datTokenValue(identifier);
     zvalue value = mapFrom2(STR_NAME, name, STR_VALUE, expression);
-    return datHighletFrom(STR_VAR_DEF, value);
+    return datTokenFrom(STR_VAR_DEF, value);
 }
 
 /**
@@ -392,7 +392,7 @@ DEF_PARSE(atom) {
     if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(uniqlet); }
-    if (result == NULL) { result = PARSE(highlet); }
+    if (result == NULL) { result = PARSE(token); }
     if (result == NULL) { result = PARSE(function); }
     if (result == NULL) { result = PARSE(parenExpression); }
 
@@ -501,7 +501,7 @@ DEF_PARSE(yieldDef) {
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     MATCH_OR_REJECT(CH_GT);
 
-    return datHighletValue(identifier);
+    return datTokenValue(identifier);
 }
 
 /**
@@ -536,7 +536,7 @@ DEF_PARSE(formal1) {
 
     REJECT_IF(result == NULL);
 
-    return datHighletType(result);
+    return datTokenType(result);
 }
 
 /**
@@ -548,7 +548,7 @@ DEF_PARSE(formal) {
     zvalue name = MATCH(IDENTIFIER);
 
     if (name != NULL) {
-        name = datHighletValue(name);
+        name = datTokenValue(name);
     } else {
         // If there was no identifier, then the only valid form for a formal
         // is if this is an unnamed / unused argument.
@@ -661,7 +661,7 @@ DEF_PARSE(program) {
         value = datMapAdd(value, declarations);
     }
 
-    return datHighletFrom(STR_FUNCTION, value);
+    return datTokenFrom(STR_FUNCTION, value);
 }
 
 /**

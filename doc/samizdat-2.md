@@ -172,7 +172,7 @@ unaryPostfixExpression ::=
 atom ::=
     varRef | int | string |
     emptyList | list | emptyMap | map |
-    uniqlet | highlet | function | parenExpression ;
+    uniqlet | token | function | parenExpression ;
 # result: <same as whatever choice matched>
 
 # Makes a thunk (function node) out of an expression node. The

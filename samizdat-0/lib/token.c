@@ -11,22 +11,22 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(highletHasValue) {
+PRIM_IMPL(tokenHasValue) {
     requireExactly(argCount, 1);
-    return constBooleanFromBool(datHighletValue(args[0]) != NULL);
+    return constBooleanFromBool(datTokenValue(args[0]) != NULL);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(highletType) {
+PRIM_IMPL(tokenType) {
     requireExactly(argCount, 1);
-    return datHighletType(args[0]);
+    return datTokenType(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(highletValue) {
+PRIM_IMPL(tokenValue) {
     requireRange(argCount, 1, 2);
 
-    zvalue result = datHighletValue(args[0]);
+    zvalue result = datTokenValue(args[0]);
 
     if ((result == NULL) && (argCount == 2)) {
         return args[1];
