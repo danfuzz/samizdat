@@ -11,11 +11,11 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeHighlet) {
+PRIM_IMPL(makeToken) {
     requireRange(argCount, 1, 2);
 
     zvalue value = (argCount == 2) ? args[1] : NULL;
-    return datHighletFrom(args[0], value);
+    return datTokenFrom(args[0], value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

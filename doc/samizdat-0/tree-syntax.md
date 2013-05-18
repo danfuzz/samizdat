@@ -82,10 +82,10 @@ highlet = {/
     @"@"
     (
         @"[" type=atom value=atom? @"]"
-        { <> apply makeCallName "makeHighlet" type value }
+        { <> apply makeCallName "makeToken" type value }
     |
         type=[@string @identifier]
-        { <> makeCallName "makeHighlet" (makeLiteral (highletValue type)) }
+        { <> makeCallName "makeToken" (makeLiteral (highletValue type)) }
     )
 /};
 

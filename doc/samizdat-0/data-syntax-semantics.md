@@ -117,14 +117,14 @@ written as `[=]`.
 ```
 
 
-### Highlet
+### Token
 
 A `highlet` is a combination of a type tag value and an optional
-payload value. Highlets are the bridge between low-layer data and
-high-layer data (hence the name). Highlets are also used as the
+payload value. Tokens are the bridge between low-layer data and
+high-layer data (hence the name). Tokens are also used as the
 low-layer type returned by parsing (including tokenization) functions.
 
-Highlets are written as an initial `@[`, followed by a type tag
+Tokens are written as an initial `@[`, followed by a type tag
 representation (an arbitrary value), optionally followed by a payload
 value representation (another arbitrary value), followed by a final
 `]`.

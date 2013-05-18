@@ -38,7 +38,7 @@ result will be one of: `"int"` `"string"` `"list"` `"map"`
 <br><br>
 ### In-Language Definitions
 
-#### `isHighlet value <> boolean`
+#### `isToken value <> boolean`
 
 Returns `true` iff the given value is a highlet.
 

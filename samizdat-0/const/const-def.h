@@ -50,7 +50,7 @@ STR(IDENTIFIER,    "identifier");
 STR(INT,           "int");
 STR(LIST,          "list");
 STR(LITERAL,       "literal");
-STR(MAKE_HIGHLET,  "makeHighlet");
+STR(MAKE_HIGHLET,  "makeToken");
 STR(MAKE_LIST,     "makeList");
 STR(MAKE_MAP,      "makeMap");
 STR(MAKE_UNIQLET,  "makeUniqlet");

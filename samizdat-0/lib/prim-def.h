@@ -50,7 +50,7 @@ PRIM_FUNC(lowOrder);
 PRIM_FUNC(lowOrderIs);
 PRIM_FUNC(lowSize);
 PRIM_FUNC(lowType);
-PRIM_FUNC(makeHighlet);
+PRIM_FUNC(makeToken);
 PRIM_FUNC(makeList);
 PRIM_FUNC(makeMap);
 PRIM_FUNC(makeUniqlet);

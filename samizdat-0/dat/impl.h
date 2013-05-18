@@ -122,7 +122,7 @@ typedef struct {
 } DatUniqlet;
 
 /**
- * Highlet info.
+ * Token info.
  */
 typedef struct {
     /** Type tag. Never `NULL`. */
@@ -130,18 +130,18 @@ typedef struct {
 
     /** Associated value. Possibly `NULL`. */
     zvalue value;
-} HighletInfo;
+} TokenInfo;
 
 /**
- * Highlet structure.
+ * Token structure.
  */
 typedef struct {
     /** Value header. */
     DatValue header;
 
-    /** Highlet info. */
-    HighletInfo info;
-} DatHighlet;
+    /** Token info. */
+    TokenInfo info;
+} DatToken;
 
 /**
  * Allocates memory, sized to include a `DatValue` header plus the
@@ -211,12 +211,12 @@ zorder datUniqletOrder(zvalue v1, zvalue v2);
 /**
  * Compares highlets for equality. Only called when the sizes are the same.
  */
-bool datHighletEq(zvalue v1, zvalue v2);
+bool datTokenEq(zvalue v1, zvalue v2);
 
 /**
  * Compares highlets for order.
  */
-zorder datHighletOrder(zvalue v1, zvalue v2);
+zorder datTokenOrder(zvalue v1, zvalue v2);
 
 /**
  * Marks list contents for garbage collection.
@@ -231,7 +231,7 @@ void datMapMark(zvalue value);
 /**
  * Marks highlet contents for garbage collection.
  */
-void datHighletMark(zvalue value);
+void datTokenMark(zvalue value);
 
 /**
  * Marks uniqlet contents for garbage collection.

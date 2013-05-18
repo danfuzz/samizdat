@@ -40,7 +40,7 @@ map < uniqlet < highlet` &mdash; and minor order is type-dependant.
   itself. Any two uniqlets have a consistent, transitive, and
   commutative &mdash; but otherwise arbitrary &mdash; ordering.
 
-* Highlets compare by type as primary, and value as secondary.
+* Tokens compare by type as primary, and value as secondary.
   With types equal, highlets without a value order earlier than
   ones with a value.
 

@@ -21,7 +21,7 @@ report = { context v1 v2 message ::
 };
 
 # Diffs highlets.
-diffHighlet = { recurse context v1 v2 ::
+diffToken = { recurse context v1 v2 ::
     type1 = highletType v1;
     type2 = highletType v2;
     has1 = highletHasValue v1;
@@ -97,7 +97,7 @@ diffUniqlet = { recurse context v1 v2 ::
 
 # Mapping from type names to diff functions.
 DIFF_FUNCTIONS = [
-    "highlet" = diffHighlet
+    "highlet" = diffToken
     "int"     = diffInt
     "list"    = diffList
     "map"     = diffMap

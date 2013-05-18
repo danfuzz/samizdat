@@ -55,7 +55,7 @@ will be returned, or one of `.` `!.` `. | !.` as described in
 * [Strings](library-string.md)
 * [Lists](library-list.md)
 * [Maps](library-map.md)
-* [Highlets](library-highlet.md)
+* [Tokens](library-highlet.md)
 * [Functions And Code](library-code.md)
 * [I/O](library-io.md)
 * [String Formatting](library-format.md)

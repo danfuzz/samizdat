@@ -113,7 +113,7 @@ parseMap = pegMakeMainSequence
     });
 
 # Documented in Samizdat Layer 0 spec.
-parseHighlet = pegMakeMainSequence
+parseToken = pegMakeMainSequence
     (pegMakeToken @"@")
     (pegMakeChoice
         (pegMakeMainSequence
@@ -122,12 +122,12 @@ parseHighlet = pegMakeMainSequence
             (pegMakeOpt parseAtom)
             (pegMakeToken @"]")
             (pegMakeCode { . type value . ::
-                <> apply makeCallName "makeHighlet" type value
+                <> apply makeCallName "makeToken" type value
             }))
         (pegMakeMainSequence
             (pegMakeTokenSet @string @identifier)
             (pegMakeCode { type ::
-                <> makeCallName "makeHighlet" (makeLiteral (highletValue type))
+                <> makeCallName "makeToken" (makeLiteral (highletValue type))
             })));
 
 # Documented in Samizdat Layer 0 spec.
@@ -161,7 +161,7 @@ implAtom = pegMakeMainSequence
     (pegMakeChoice
         parseVarRef parseInt parseString
         parseEmptyList parseList parseEmptyMap parseMap
-        parseUniqlet parseHighlet parseFunction parseParenExpression);
+        parseUniqlet parseToken parseFunction parseParenExpression);
 fwdAtom implAtom;
 
 # Documented in Samizdat Layer 0 spec.

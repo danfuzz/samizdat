@@ -156,7 +156,7 @@ doMap = { recurse map adorn ::
 };
 
 # Stringifies a highlet.
-doHighlet = { recurse highlet adorn <out> ::
+doToken = { recurse highlet adorn <out> ::
     type = highletType highlet;
     valueString = ifValue { <> highletValue highlet }
         { value :: <> stringAdd " " (recurse value) }
@@ -191,7 +191,7 @@ doUnknown = { recurse unknown ::
 
 # Mapping from low-layer type names to stringifiers.
 STRINGIFIERS = [
-    "highlet" = doHighlet
+    "highlet" = doToken
     "int"     = doInt
     "list"    = doList
     "map"     = doMap

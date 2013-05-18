@@ -16,17 +16,17 @@
 /**
  * Gets a pointer to the highlet's info.
  */
-static HighletInfo *highletInfo(zvalue highlet) {
-    return &((DatHighlet *) highlet)->info;
+static TokenInfo *highletInfo(zvalue highlet) {
+    return &((DatToken *) highlet)->info;
 }
 
 /**
  * Allocates and initializes a highlet, without doing error-checking
  * on the arguments.
  */
-static zvalue newHighlet(zvalue type, zvalue value) {
-    zvalue result = datAllocValue(DAT_HIGHLET, 0, sizeof(HighletInfo));
-    HighletInfo *info = highletInfo(result);
+static zvalue newToken(zvalue type, zvalue value) {
+    zvalue result = datAllocValue(DAT_HIGHLET, 0, sizeof(TokenInfo));
+    TokenInfo *info = highletInfo(result);
 
     result->size = (value == NULL) ? 0 : 1;
     info->type = type;
@@ -40,9 +40,9 @@ static zvalue newHighlet(zvalue type, zvalue value) {
  */
 
 /* Documented in header. */
-bool datHighletEq(zvalue v1, zvalue v2) {
-    HighletInfo *info1 = highletInfo(v1);
-    HighletInfo *info2 = highletInfo(v2);
+bool datTokenEq(zvalue v1, zvalue v2) {
+    TokenInfo *info1 = highletInfo(v1);
+    TokenInfo *info2 = highletInfo(v2);
 
     if (!datEq(info1->type, info2->type)) {
         return false;
@@ -52,9 +52,9 @@ bool datHighletEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder datHighletOrder(zvalue v1, zvalue v2) {
-    HighletInfo *info1 = highletInfo(v1);
-    HighletInfo *info2 = highletInfo(v2);
+zorder datTokenOrder(zvalue v1, zvalue v2) {
+    TokenInfo *info1 = highletInfo(v1);
+    TokenInfo *info2 = highletInfo(v2);
 
     zorder result = datOrder(info1->type, info2->type);
 
@@ -70,8 +70,8 @@ zorder datHighletOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-void datHighletMark(zvalue value) {
-    HighletInfo *info = highletInfo(value);
+void datTokenMark(zvalue value) {
+    TokenInfo *info = highletInfo(value);
 
     datMark(info->type);
     if (info->value != NULL) {
@@ -85,36 +85,36 @@ void datHighletMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datHighletType(zvalue highlet) {
-    datAssertHighlet(highlet);
+zvalue datTokenType(zvalue highlet) {
+    datAssertToken(highlet);
     return highletInfo(highlet)->type;
 }
 
 /* Documented in header. */
-zvalue datHighletValue(zvalue highlet) {
-    datAssertHighlet(highlet);
+zvalue datTokenValue(zvalue highlet) {
+    datAssertToken(highlet);
     return highletInfo(highlet)->value;
 }
 
 /* Documented in header. */
-zvalue datHighletFrom(zvalue type, zvalue value) {
+zvalue datTokenFrom(zvalue type, zvalue value) {
     datAssertValid(type);
 
     if (value != NULL) {
         datAssertValid(value);
     }
 
-    return newHighlet(type, value);
+    return newToken(type, value);
 }
 
 /* Documented in header. */
-bool datHighletTypeIs(zvalue highlet, zvalue type) {
-    return (datEq(datHighletType(highlet), type));
+bool datTokenTypeIs(zvalue highlet, zvalue type) {
+    return (datEq(datTokenType(highlet), type));
 }
 
 /* Documented in header. */
-void datHighletAssertType(zvalue highlet, zvalue type) {
-    if (!datHighletTypeIs(highlet, type)) {
+void datTokenAssertType(zvalue highlet, zvalue type) {
+    if (!datTokenTypeIs(highlet, type)) {
         die("Type mismatch.");
     }
 }

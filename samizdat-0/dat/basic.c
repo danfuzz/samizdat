@@ -93,7 +93,7 @@ void datAssertUniqlet(zvalue value) {
 }
 
 /* Documented in header. */
-void datAssertHighlet(zvalue value) {
+void datAssertToken(zvalue value) {
     assertType(value, DAT_HIGHLET);
 }
 

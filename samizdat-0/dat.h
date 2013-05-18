@@ -128,7 +128,7 @@ void datAssertUniqlet(zvalue value);
  * that it is a highlet (a high-layer value). If not, this aborts the
  * process with a diagnostic message.
  */
-void datAssertHighlet(zvalue value);
+void datAssertToken(zvalue value);
 
 /**
  * Returns whether the given value has the given low-layer type.
@@ -409,36 +409,36 @@ void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch);
 
 
 /*
- * Highlet Functions
+ * Token Functions
  */
 
 /**
  * Gets the type tag of a highlet.
  */
-zvalue datHighletType(zvalue highlet);
+zvalue datTokenType(zvalue highlet);
 
 /**
  * Gets the value associated with a highlet. This is `NULL` for
  * valueless highlets (unsurprisingly).
  */
-zvalue datHighletValue(zvalue highlet);
+zvalue datTokenValue(zvalue highlet);
 
 /**
  * Returns a possibly-valued highlet. The given value must either
  * be a valid value or `NULL`.
  */
-zvalue datHighletFrom(zvalue type, zvalue value);
+zvalue datTokenFrom(zvalue type, zvalue value);
 
 /**
  * Returns whether or not the type of the given highlet equals the
  * given value.
  */
-bool datHighletTypeIs(zvalue highlet, zvalue type);
+bool datTokenTypeIs(zvalue highlet, zvalue type);
 
 /**
  * Asserts that the given value is a highlet whose type is as given.
  */
-void datHighletAssertType(zvalue highlet, zvalue type);
+void datTokenAssertType(zvalue highlet, zvalue type);
 
 
 /*
