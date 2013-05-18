@@ -4,7 +4,7 @@ Samizdat
 This is the source for the Samizdat programming language, or "Sam" if
 you want to be terse.
 
-Find lots of documentation in [the docs/ directory](docs).
+Find lots of documentation in [the doc/ directory](doc).
 
 - - - - -
 
