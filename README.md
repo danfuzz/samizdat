@@ -1,10 +1,10 @@
 Samizdat
 ========
 
-This is the source for the Samizdat programming language, or "Sami" if
+This is the source for the Samizdat programming language, or "Sam" if
 you want to be terse.
 
-Watch this space!
+Find lots of documentation in [the docs/ directory](docs).
 
 - - - - -
 
