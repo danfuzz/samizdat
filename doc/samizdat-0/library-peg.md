@@ -15,7 +15,7 @@ higher-level tokens with either simply a tree-like rule invocation or
 to produce tree structures per se).
 
 When building tokenizers, the input elements are taken to be in the form
-of character-as-token items. Each element is a highlet whose type tag is
+of character-as-token items. Each element is a token whose type tag is
 a single-string character (and whose value if any is irrelevant for the
 parsing mechanism). There are helper functions which take strings and
 automatically convert them into this form.

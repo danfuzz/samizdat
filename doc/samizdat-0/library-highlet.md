@@ -7,18 +7,18 @@ Tokens
 <br><br>
 ### Primitive Definitions
 
-#### `highletHasValue highlet <> boolean`
+#### `highletHasValue token <> boolean`
 
-Returns `true` iff the given highlet has a non-void payload data value.
+Returns `true` iff the given token has a non-void payload data value.
 
-#### `highletType highlet <> .`
+#### `highletType token <> .`
 
-Returns the type tag value (an arbitrary value) of the given highlet.
+Returns the type tag value (an arbitrary value) of the given token.
 
-#### `highletValue highlet notFound? <> . | !.`
+#### `highletValue token notFound? <> . | !.`
 
 Returns the payload data value (an arbitrary value) of the given
-highlet, if any. If the highlet is valueless, returns the `notFound`
+token, if any. If the token is valueless, returns the `notFound`
 value if supplied, or returns void if not.
 
 

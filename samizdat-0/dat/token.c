@@ -14,14 +14,14 @@
  */
 
 /**
- * Gets a pointer to the highlet's info.
+ * Gets a pointer to the token's info.
  */
-static TokenInfo *highletInfo(zvalue highlet) {
-    return &((DatToken *) highlet)->info;
+static TokenInfo *highletInfo(zvalue token) {
+    return &((DatToken *) token)->info;
 }
 
 /**
- * Allocates and initializes a highlet, without doing error-checking
+ * Allocates and initializes a token, without doing error-checking
  * on the arguments.
  */
 static zvalue newToken(zvalue type, zvalue value) {
@@ -85,15 +85,15 @@ void datTokenMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datTokenType(zvalue highlet) {
-    datAssertToken(highlet);
-    return highletInfo(highlet)->type;
+zvalue datTokenType(zvalue token) {
+    datAssertToken(token);
+    return highletInfo(token)->type;
 }
 
 /* Documented in header. */
-zvalue datTokenValue(zvalue highlet) {
-    datAssertToken(highlet);
-    return highletInfo(highlet)->value;
+zvalue datTokenValue(zvalue token) {
+    datAssertToken(token);
+    return highletInfo(token)->value;
 }
 
 /* Documented in header. */
@@ -108,13 +108,13 @@ zvalue datTokenFrom(zvalue type, zvalue value) {
 }
 
 /* Documented in header. */
-bool datTokenTypeIs(zvalue highlet, zvalue type) {
-    return (datEq(datTokenType(highlet), type));
+bool datTokenTypeIs(zvalue token, zvalue type) {
+    return (datEq(datTokenType(token), type));
 }
 
 /* Documented in header. */
-void datTokenAssertType(zvalue highlet, zvalue type) {
-    if (!datTokenTypeIs(highlet, type)) {
+void datTokenAssertType(zvalue token, zvalue type) {
+    if (!datTokenTypeIs(token, type)) {
         die("Type mismatch.");
     }
 }

@@ -45,7 +45,7 @@ STR(EMPTY,         ""); // The canonical empty string (`""`) value.
 STR(FALSE,         "false");
 STR(FORMALS,       "formals");
 STR(FUNCTION,      "function");
-STR(TOKEN,       "highlet");
+STR(TOKEN,       "token");
 STR(IDENTIFIER,    "identifier");
 STR(INT,           "int");
 STR(LIST,          "list");

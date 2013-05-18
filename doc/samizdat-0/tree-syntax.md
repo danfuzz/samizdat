@@ -78,7 +78,7 @@ map = {/
     { <> apply makeCallName "makeMap" (apply listAdd bindings) }
 /};
 
-highlet = {/
+token = {/
     @"@"
     (
         @"[" type=atom value=atom? @"]"
@@ -116,7 +116,7 @@ parenExpression ::= {/
 atom = {/
     varRef | int | string |
     emptyList | list | emptyMap | map |
-    uniqlet | highlet | function | parenExpression
+    uniqlet | token | function | parenExpression
 /};
 
 callExpression = {/

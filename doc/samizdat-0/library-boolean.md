@@ -23,7 +23,7 @@ standard meaning of those values:
 Ordering is calculated as follows:
 
 The major order is by type &mdash; `int < string < list <
-map < uniqlet < highlet` &mdash; and minor order is type-dependant.
+map < uniqlet < token` &mdash; and minor order is type-dependant.
 
 * Ints order by integer value.
 

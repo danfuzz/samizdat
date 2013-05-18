@@ -229,7 +229,7 @@ void datListMark(zvalue value);
 void datMapMark(zvalue value);
 
 /**
- * Marks highlet contents for garbage collection.
+ * Marks token contents for garbage collection.
  */
 void datTokenMark(zvalue value);
 

@@ -14,7 +14,7 @@ results in a new list, with the original remaining unchanged.
 Most of the types mentioned here are primitive types implemented
 at a fairly low level of the language. A couple, though, are
 types that are defined as primitive values with a particular
-structure, and are universally a form of the `highlet` type
+structure, and are universally a form of the `token` type
 (defined below) at the lowest layer.
 
 Keep in mind that many of the restrictions and caveats mentioned
@@ -119,7 +119,7 @@ written as `[=]`.
 
 ### Token
 
-A `highlet` is a combination of a type tag value and an optional
+A `token` is a combination of a type tag value and an optional
 payload value. Tokens are the bridge between low-layer data and
 high-layer data (hence the name). Tokens are also used as the
 low-layer type returned by parsing (including tokenization) functions.
@@ -131,7 +131,7 @@ value representation (another arbitrary value), followed by a final
 
 Valueless highlets whose type tag is a string constant can be abbreviated
 as `@"type"`. If that string constant has the form of a valid
-identifier, then the highlet can be further abbreviated as just `@type`.
+identifier, then the token can be further abbreviated as just `@type`.
 
 ```
 @["null"]                     # the value usually just written as `null`

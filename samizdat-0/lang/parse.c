@@ -195,9 +195,9 @@ DEF_PARSE(atomPlus) {
 }
 
 /**
- * Parses a `highlet` node.
+ * Parses a `token` node.
  */
-DEF_PARSE(highlet) {
+DEF_PARSE(token) {
     MARK();
 
     zvalue innerType;
@@ -392,7 +392,7 @@ DEF_PARSE(atom) {
     if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(uniqlet); }
-    if (result == NULL) { result = PARSE(highlet); }
+    if (result == NULL) { result = PARSE(token); }
     if (result == NULL) { result = PARSE(function); }
     if (result == NULL) { result = PARSE(parenExpression); }
 

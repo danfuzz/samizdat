@@ -183,11 +183,11 @@ For example:
 
 Tokens are the basic terminals in the context of tree parsing. When
 performing tree parsing, tokens are represented as highlets, with the
-highlet type indicating the type of the token, and the highlet value
+token type indicating the type of the token, and the token value
 optionally indicating a data payload.
 
 To match a single token, name the token in one of the shorthand
-highlet forms `@type` or `@"type"`. This will succeed in matching any
+token forms `@type` or `@"type"`. This will succeed in matching any
 token whose type tag is as given, yielding that token directly
 (including any payload data) as the result.
 
@@ -204,7 +204,7 @@ strings.
 To match a single literal character, write the character as a regular
 string literal. To match a sequence of two or more characters, write the
 character list as a multi-character string literal. In both cases, a
-successful match will result in a *single* token (highlet) whose type
+successful match will result in a *single* token (token) whose type
 tag is the matched string.
 
 For example:
