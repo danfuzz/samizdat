@@ -360,7 +360,7 @@ namePex = {/
         name = @identifier
         @"="
         pex = lookaheadPex
-        { <> @["varDef" ["name"=(highletValue name) "value"=pex]] }
+        { <> @["varDef" ["name"=(tokenValue name) "value"=pex]] }
     )
 |
     lookaheadPex
@@ -435,7 +435,7 @@ parserString = {/
 parserToken = {/
     @"@"
     type = (@identifier | @string)
-    { <> @["token" (highletValue type)] }
+    { <> @["token" (tokenValue type)] }
 /};
 ```
 

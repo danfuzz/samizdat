@@ -74,7 +74,7 @@ parseQuotedIdentifier = pegMakeMainSequence
     (pegMakeChar "\\")
     parseString
     (pegMakeCode { . s ::
-        <> @["identifier" (highletValue s)]
+        <> @["identifier" (tokenValue s)]
     });
 
 # These are all the int digits, as a map from strings to

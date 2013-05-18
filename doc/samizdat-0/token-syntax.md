@@ -54,7 +54,7 @@ identifier = {/
 
 quotedIdentifier = {/
     "\\" s=string
-    { <> @["identifier" (highletValue s)] }
+    { <> @["identifier" (tokenValue s)] }
 /};
 
 int = {/

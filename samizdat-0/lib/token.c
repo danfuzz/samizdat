@@ -11,7 +11,7 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(highletHasValue) {
+PRIM_IMPL(tokenHasValue) {
     requireExactly(argCount, 1);
     return constBooleanFromBool(datTokenValue(args[0]) != NULL);
 }
@@ -23,7 +23,7 @@ PRIM_IMPL(highletType) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(highletValue) {
+PRIM_IMPL(tokenValue) {
     requireRange(argCount, 1, 2);
 
     zvalue result = datTokenValue(args[0]);

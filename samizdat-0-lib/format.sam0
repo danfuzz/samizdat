@@ -158,7 +158,7 @@ doMap = { recurse map adorn ::
 # Stringifies a token.
 doToken = { recurse token adorn <out> ::
     type = highletType token;
-    valueString = ifValue { <> highletValue token }
+    valueString = ifValue { <> tokenValue token }
         { value :: <> stringAdd " " (recurse value) }
         { <> "" };
 

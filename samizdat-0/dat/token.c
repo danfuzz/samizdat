@@ -16,7 +16,7 @@
 /**
  * Gets a pointer to the token's info.
  */
-static TokenInfo *highletInfo(zvalue token) {
+static TokenInfo *tokenInfo(zvalue token) {
     return &((DatToken *) token)->info;
 }
 
@@ -26,7 +26,7 @@ static TokenInfo *highletInfo(zvalue token) {
  */
 static zvalue newToken(zvalue type, zvalue value) {
     zvalue result = datAllocValue(DAT_TOKEN, 0, sizeof(TokenInfo));
-    TokenInfo *info = highletInfo(result);
+    TokenInfo *info = tokenInfo(result);
 
     result->size = (value == NULL) ? 0 : 1;
     info->type = type;
@@ -41,8 +41,8 @@ static zvalue newToken(zvalue type, zvalue value) {
 
 /* Documented in header. */
 bool datTokenEq(zvalue v1, zvalue v2) {
-    TokenInfo *info1 = highletInfo(v1);
-    TokenInfo *info2 = highletInfo(v2);
+    TokenInfo *info1 = tokenInfo(v1);
+    TokenInfo *info2 = tokenInfo(v2);
 
     if (!datEq(info1->type, info2->type)) {
         return false;
@@ -53,8 +53,8 @@ bool datTokenEq(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zorder datTokenOrder(zvalue v1, zvalue v2) {
-    TokenInfo *info1 = highletInfo(v1);
-    TokenInfo *info2 = highletInfo(v2);
+    TokenInfo *info1 = tokenInfo(v1);
+    TokenInfo *info2 = tokenInfo(v2);
 
     zorder result = datOrder(info1->type, info2->type);
 
@@ -71,7 +71,7 @@ zorder datTokenOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 void datTokenMark(zvalue value) {
-    TokenInfo *info = highletInfo(value);
+    TokenInfo *info = tokenInfo(value);
 
     datMark(info->type);
     if (info->value != NULL) {
@@ -87,13 +87,13 @@ void datTokenMark(zvalue value) {
 /* Documented in header. */
 zvalue datTokenType(zvalue token) {
     datAssertToken(token);
-    return highletInfo(token)->type;
+    return tokenInfo(token)->type;
 }
 
 /* Documented in header. */
 zvalue datTokenValue(zvalue token) {
     datAssertToken(token);
-    return highletInfo(token)->value;
+    return tokenInfo(token)->value;
 }
 
 /* Documented in header. */
