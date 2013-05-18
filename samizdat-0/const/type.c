@@ -20,7 +20,7 @@ zvalue constLowTypeName(zvalue value) {
         case DAT_LIST:    return STR_LIST;
         case DAT_MAP:     return STR_MAP;
         case DAT_UNIQLET: return STR_UNIQLET;
-        case DAT_TOKEN: return STR_TOKEN;
+        case DAT_TOKEN:   return STR_TOKEN;
         default: {
             die("Invalid value type (shouldn't happen): %d", datType(value));
         }
