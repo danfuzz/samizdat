@@ -97,7 +97,7 @@ diffUniqlet = { recurse context v1 v2 ::
 
 # Mapping from type names to diff functions.
 DIFF_FUNCTIONS = [
-    "token" = diffToken
+    "token"   = diffToken
     "int"     = diffInt
     "list"    = diffList
     "map"     = diffMap
