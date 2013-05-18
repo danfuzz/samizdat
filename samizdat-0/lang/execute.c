@@ -276,7 +276,7 @@ static void bindArguments(Frame *frame, zvalue functionNode,
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue nameValue = datHighletValue(varDef);
+    zvalue nameValue = datTokenValue(varDef);
     zvalue name = datMapGet(nameValue, STR_NAME);
     zvalue valueExpression = datMapGet(nameValue, STR_VALUE);
     zvalue value = execExpression(frame, valueExpression);
@@ -331,7 +331,7 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = datListNth(statements, i);
 
-        if (datHighletTypeIs(one, STR_VAR_DEF)) {
+        if (datTokenTypeIs(one, STR_VAR_DEF)) {
             execVarDef(&frame, one);
         } else {
             execExpressionVoidOk(&frame, one);
@@ -358,12 +358,12 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
  * Executes a `function` form.
  */
 static zvalue execFunction(Frame *frame, zvalue function) {
-    datHighletAssertType(function, STR_FUNCTION);
+    datTokenAssertType(function, STR_FUNCTION);
 
     Closure *closure = utilAlloc(sizeof(Closure));
 
     frameSnap(&closure->frame, frame);
-    closure->function = datHighletValue(function);
+    closure->function = datTokenValue(function);
 
     return langDefineFunction(execClosure,
                               datUniqletWith(&CLOSURE_DISPATCH, closure));
@@ -376,8 +376,8 @@ static zvalue execFunction(Frame *frame, zvalue function) {
 static char *callReporter(void *state) {
     zvalue expressionNode = state;
 
-    if (datHighletTypeIs(expressionNode, STR_VAR_REF)) {
-        zvalue name = datHighletValue(expressionNode);
+    if (datTokenTypeIs(expressionNode, STR_VAR_REF)) {
+        zvalue name = datTokenValue(expressionNode);
         zint nameSize = datUtf8SizeFromString(name);
         char nameStr[nameSize + 1];
         datUtf8FromString(nameSize + 1, nameStr, name);
@@ -391,8 +391,8 @@ static char *callReporter(void *state) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    datHighletAssertType(call, STR_CALL);
-    call = datHighletValue(call);
+    datTokenAssertType(call, STR_CALL);
+    call = datTokenValue(call);
 
     zvalue function = datMapGet(call, STR_FUNCTION);
     zvalue actuals = datMapGet(call, STR_ACTUALS);
@@ -416,9 +416,9 @@ static zvalue execCall(Frame *frame, zvalue call) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    datHighletAssertType(varRef, STR_VAR_REF);
+    datTokenAssertType(varRef, STR_VAR_REF);
 
-    zvalue name = datHighletValue(varRef);
+    zvalue name = datTokenValue(varRef);
     return frameGet(frame, name);
 }
 
@@ -427,13 +427,13 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    if (datHighletTypeIs(e, STR_LITERAL))
-        return datHighletValue(e);
-    else if (datHighletTypeIs(e, STR_VAR_REF))
+    if (datTokenTypeIs(e, STR_LITERAL))
+        return datTokenValue(e);
+    else if (datTokenTypeIs(e, STR_VAR_REF))
         return execVarRef(frame, e);
-    else if (datHighletTypeIs(e, STR_CALL))
+    else if (datTokenTypeIs(e, STR_CALL))
         return execCall(frame, e);
-    else if (datHighletTypeIs(e, STR_FUNCTION))
+    else if (datTokenTypeIs(e, STR_FUNCTION))
         return execFunction(frame, e);
     else {
         die("Invalid expression type.");

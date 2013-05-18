@@ -108,7 +108,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = datIntFromZint(value * sign);
-    return datHighletFrom(STR_INT, intval);
+    return datTokenFrom(STR_INT, intval);
 }
 
 /**
@@ -140,7 +140,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     }
 
     zvalue string = datStringFromChars(size, chars);
-    return datHighletFrom(STR_IDENTIFIER, string);
+    return datTokenFrom(STR_IDENTIFIER, string);
 }
 
 /**
@@ -183,7 +183,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = datStringFromChars(size, chars);
-    return datHighletFrom(STR_STRING, string);
+    return datTokenFrom(STR_STRING, string);
 }
 
 /**
@@ -198,8 +198,8 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue string = datHighletValue(result);
-    return datHighletFrom(STR_IDENTIFIER, string);
+    zvalue string = datTokenValue(result);
+    return datTokenFrom(STR_IDENTIFIER, string);
 }
 
 /**

@@ -11,15 +11,15 @@ parse trees as produced by `sam0Tree` (see which).
 ### Primitive Definitions
 
 
-#### `makeHighlet type value? <> highlet`
+#### `makeToken type value? <> token`
 
-Returns a highlet with the given type tag (an arbitrary value)
+Returns a token with the given type tag (an arbitrary value)
 and optional data payload value (also an arbitrary value). These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = @[key];         is equivalent to   v = makeHighlet key;
-v = @[key value];   is equivalent to   v = makeHighlet key value;
+v = @[key];         is equivalent to   v = makeToken key;
+v = @[key value];   is equivalent to   v = makeToken key value;
 ```
 
 #### `makeList rest* <> list`

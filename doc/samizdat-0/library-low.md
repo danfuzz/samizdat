@@ -25,22 +25,22 @@ a size, defined as follows:
 
 * `uniqlet` &mdash; always `0`.
 
-* `highlet` &mdash; `0` for a valueless highlet, or `1` for a
-  valued highlet.
+* `token` &mdash; `0` for a valueless token, or `1` for a
+  valued token.
 
 #### `lowType value <> string`
 
 Returns the type name of the low-layer type of the given value. The
 result will be one of: `"int"` `"string"` `"list"` `"map"`
-`"uniqlet"` `"highlet"`
+`"uniqlet"` `"token"`
 
 
 <br><br>
 ### In-Language Definitions
 
-#### `isHighlet value <> boolean`
+#### `isToken value <> boolean`
 
-Returns `true` iff the given value is a highlet.
+Returns `true` iff the given value is a token.
 
 #### `isInt value <> boolean`
 
