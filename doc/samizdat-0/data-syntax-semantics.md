@@ -121,8 +121,9 @@ written as `[=]`.
 
 A `token` is a combination of a type tag value and an optional
 payload value. Tokens are the bridge between low-layer data and
-high-layer data (hence the name). Tokens are also used as the
-low-layer type returned by parsing (including tokenization) functions.
+high-layer data. Tokens are also used as the low-layer type
+returned by parsing (including tokenization) functions (which is
+the direct origin of the name).
 
 Tokens are written as an initial `@[`, followed by a type tag
 representation (an arbitrary value), optionally followed by a payload
