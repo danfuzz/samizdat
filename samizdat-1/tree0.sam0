@@ -229,7 +229,7 @@ parseFormal = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeMainSequence
             (pegMakeTokenSet @"?" @"*" @"+")
-            (pegMakeCode { r :: <> ["repeat" = (highletType r)] }))
+            (pegMakeCode { r :: <> ["repeat" = (tokenType r)] }))
         (pegMakeMainSequence
             (pegMakeCode { <> [=] })))
     (pegMakeCode { name repeat :: <> mapAdd name repeat });

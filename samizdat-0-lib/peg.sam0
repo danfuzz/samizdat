@@ -206,10 +206,10 @@ pegMakeToken = { token ::
     # This is implemented as, in effect, `(&. &@token .)`, which
     # allows us to keep the main matcher function here much simpler.
 
-    type = highletType token;
+    type = tokenType token;
 
     match = { item ::
-        <> ifTrue { <> eq (highletType item) type }
+        <> ifTrue { <> eq (tokenType item) type }
             { <> item }
     };
 
@@ -223,7 +223,7 @@ genericMakeTokenSet = { sense tokens <out> ::
 
     # Make a set-like map of all the token types.
     set = listReduce [=] tokens
-        { result . token :: <> mapPut result (highletType token) sense };
+        { result . token :: <> mapPut result (tokenType token) sense };
 
     # Trivial case: Empty set. Return an appropriate absolute rule.
     ifTrue { <> eq (lowSize set) 0 }
@@ -233,7 +233,7 @@ genericMakeTokenSet = { sense tokens <out> ::
     # allows us to keep the main matcher function here much simpler.
 
     match = { item ::
-        <> ifTrue { <> mapGet set (highletType item) oppositeSense }
+        <> ifTrue { <> mapGet set (tokenType item) oppositeSense }
             { <> item }
     };
 

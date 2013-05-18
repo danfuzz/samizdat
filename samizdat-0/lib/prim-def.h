@@ -15,7 +15,7 @@ PRIM_FUNC(apply);
 PRIM_FUNC(argsMap);
 PRIM_FUNC(argsReduce);
 PRIM_FUNC(tokenHasValue);
-PRIM_FUNC(highletType);
+PRIM_FUNC(tokenType);
 PRIM_FUNC(tokenValue);
 PRIM_FUNC(iadd);
 PRIM_FUNC(iand);

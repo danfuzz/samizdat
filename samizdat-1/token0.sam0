@@ -32,7 +32,7 @@ parseChar = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeSequence
             (pegMakeCharSetComplement "\\\"")
-            (pegMakeCode { ch :: <> highletType ch }))
+            (pegMakeCode { ch :: <> tokenType ch }))
         (pegMakeSequence
             (pegMakeChar "\\")
             (pegMakeChoice
@@ -82,7 +82,7 @@ parseQuotedIdentifier = pegMakeMainSequence
 INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
 
 # Helper to convert digit characters to digit values.
-intFromDigitChar = { ch :: <> mapGet INT_CHARS (highletType ch) };
+intFromDigitChar = { ch :: <> mapGet INT_CHARS (tokenType ch) };
 
 # Documented in Samizdat Layer 0 spec.
 parseInt = pegMakeMainSequence

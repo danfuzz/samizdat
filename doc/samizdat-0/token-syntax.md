@@ -25,7 +25,7 @@ punctuation = {/
 char = {/
     (
         ch = [! "\\" "\""]
-        { <> highletType ch }
+        { <> tokenType ch }
     )
 |
     (

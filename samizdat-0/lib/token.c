@@ -17,7 +17,7 @@ PRIM_IMPL(tokenHasValue) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(highletType) {
+PRIM_IMPL(tokenType) {
     requireExactly(argCount, 1);
     return datTokenType(args[0]);
 }

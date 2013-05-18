@@ -177,7 +177,7 @@ formal = {/
     )
 
     repeat = (
-        r=[@"?" @"*" @"+"] { <> ["repeat" = (highletType r)] }
+        r=[@"?" @"*" @"+"] { <> ["repeat" = (tokenType r)] }
     |
         { <> [=] }
     )

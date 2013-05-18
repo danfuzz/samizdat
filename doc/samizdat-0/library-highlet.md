@@ -11,7 +11,7 @@ Tokens
 
 Returns `true` iff the given token has a non-void payload data value.
 
-#### `highletType token <> .`
+#### `tokenType token <> .`
 
 Returns the type tag value (an arbitrary value) of the given token.
 
