@@ -206,10 +206,10 @@ pegMakeToken = { token ::
     # This is implemented as, in effect, `(&. &@token .)`, which
     # allows us to keep the main matcher function here much simpler.
 
-    tokenType = highletType token;
+    type = highletType token;
 
     match = { item ::
-        <> ifTrue { <> eq (highletType item) tokenType }
+        <> ifTrue { <> eq (highletType item) type }
             { <> item }
     };
 
