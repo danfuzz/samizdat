@@ -89,6 +89,12 @@ void datAssertValid(zvalue value);
 void datAssertNth(zvalue value, zint n);
 
 /**
+ * Like `datAssertNth` but also accepts the case where `n` is the size
+ * of the value.
+ */
+void datAssertNthOrSize(zvalue value, zint n);
+
+/**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is an int. If not, this aborts the process
  * with a diagnostic message.
@@ -293,6 +299,12 @@ zvalue datListAdd(zvalue list1, zvalue list2);
  * given list.
  */
 zvalue datListDelNth(zvalue list, zint n);
+
+/**
+ * Gets the list consisting of the given "slice" of elements
+ * (start inclusive, end exclusive) of the list.
+ */
+zvalue datListSlice(zvalue list, zint start, zint end);
 
 /**
  * Constructs a list from an array of `zvalue`s of the given size.

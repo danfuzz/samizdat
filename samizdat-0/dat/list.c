@@ -34,7 +34,7 @@ static zvalue *listElems(zvalue list) {
  * placed in between the two lists of array contents in the result
  */
 static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
-                          zint size2, const zvalue *elems2) {
+                       zint size2, const zvalue *elems2) {
     zint insertCount = (insert == NULL) ? 0 : 1;
     zvalue result = allocList(size1 + size2 + insertCount);
     zvalue *resultElems = listElems(result);
@@ -146,14 +146,11 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value) {
 zvalue datListInsNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
     datAssertValid(value);
+    datAssertNthOrSize(list, n);
 
     zint size = datSize(list);
-
-    if (n != size) {
-        datAssertNth(list, n);
-    }
-
     zvalue *elems = listElems(list);
+
     return listFrom(n, elems, value, size - n, elems + n);
 }
 
@@ -172,10 +169,10 @@ zvalue datListAdd(zvalue list1, zvalue list2) {
         return list1;
     }
 
-    return listFrom(size1, listElems(list1), NULL,
-                       size2, listElems(list2));
+    return listFrom(size1, listElems(list1), NULL, size2, listElems(list2));
 }
 
+/* Documented in header. */
 zvalue datListDelNth(zvalue list, zint n) {
     datAssertList(list);
     datAssertNth(list, n);
@@ -199,4 +196,17 @@ zvalue datListFromArray(zint size, const zvalue *values) {
 void datArrayFromList(zvalue *result, zvalue list) {
     datAssertList(list);
     memcpy(result, listElems(list), list->size * sizeof(zvalue));
+}
+
+/* Documented in header. */
+zvalue datListSlice(zvalue list, zint start, zint end) {
+    datAssertList(list);
+
+    if ((start < 0) || (end < 0) || (end < start)) {
+        die("Invalid slice range: (%lld..!%lld)", start, end);
+    }
+
+    datAssertNthOrSize(list, end);
+
+    return listFrom(end - start, &listElems(list)[start], NULL, 0, NULL);
 }

@@ -63,7 +63,16 @@ void datAssertNth(zvalue value, zint n) {
     datAssertValid(value);
 
     if (!datHasNth(value, n)) {
-        die("Invalid index: %lld; size %lld", n, value->size);
+        die("Invalid index: %lld; size %lld", n, datSize(value));
+    }
+}
+
+/* Documented in header. */
+void datAssertNthOrSize(zvalue value, zint n) {
+    datAssertValid(value);
+
+    if ((n != datSize(value)) && !datHasNth(value, n)) {
+        die("Invalid index: %lld; size %lld", n, datSize(value));
     }
 }
 

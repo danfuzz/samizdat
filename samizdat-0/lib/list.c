@@ -48,3 +48,14 @@ PRIM_IMPL(listDelNth) {
 
     return datListDelNth(args[0], datZintFromInt(args[1]));
 }
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listSlice) {
+    requireAtLeast(argCount, 2);
+
+    zvalue list = args[0];
+    zint startIndex = datZintFromInt(args[1]);
+    zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : datSize(list);
+
+    return datListSlice(list, startIndex, endIndex);
+}

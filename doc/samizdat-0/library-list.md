@@ -49,6 +49,14 @@ exactly like `listAppend`.
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
 
+#### `listSlice list start end <> list`
+
+Returns a list consisting of a "slice" of elements of the given
+list, from the `start` index (inclusive) through the `end` index
+(exclusive). `start` and `end` must both be ints, must be valid indices
+into `list` (with the list size being a valid index), and must form a
+range (though possibly empty) with `start <= end`.
+
 
 <br><br>
 ### In-Language Definitions
