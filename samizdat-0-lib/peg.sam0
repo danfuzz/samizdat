@@ -88,7 +88,7 @@ pegRuleEmpty = { yield state ::
 
 # Peg rule that always fails.
 pegRuleFail = { yield state ::
-    yield;
+    yield()
 };
 
 # Peg rule that matches at eof, yielding `null`. This is the equivalent
