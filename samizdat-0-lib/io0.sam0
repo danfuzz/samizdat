@@ -13,32 +13,35 @@
 
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
-isPrefix = { prefix path ::
-    <> or
-        { <> eq prefix [] }
-        { <> and
-            { <> ne path [] }
-            { <> eq (listNth prefix 0) (listNth path 0) }
-            { <> isPrefix (listDelNth prefix 0) (listDelNth path 0) }
-        }
+isPrefix = { prefix path <out> ::
+    prefixSize = lowSize prefix;
+
+    ifTrue { <> gt prefixSize (lowSize path) }
+        {
+            # The "prefix" is longer than the path, so it can't actually be
+            # a prefix.
+            <out> false
+        };
+
+    <> eq prefix (listSlice path 0 prefixSize)
 };
 
 # Helper for `io0SandboxedReader` which does symbolic link resolution,
 # respecting the sandbox directory.
-resolveLinks = { sandboxDirectory path ::
-    resolveStep = { path limit ::
-        <> ifVoid { <> io0ReadLink path }
-            { <> path }
-            { newPath ::
-                ifFalse { <> isPrefix sandboxDirectory newPath }
-                    { io0Die "Symbolic link escapes sandbox directory." };
-                ifTrue { <> le limit 0 }
-                    { io0Die "Too many links in symbolic link chain." };
-                <> resolveStep newPath (isub limit 1)
-            }
-    };
+resolveLinks = { sandboxDirectory path <out> ::
+    loopReduce [path 50] { result ::
+        path = listNth result 0;
+        limit = listNth result 1;
 
-    <> resolveStep path 50;
+        ifTrue { <> le limit 0 }
+            { io0Die "Too many links in symbolic link chain." };
+        ifFalse { <> isPrefix sandboxDirectory path }
+            { io0Die "Symbolic link escapes sandbox directory." };
+
+        <> ifValue { <> io0ReadLink path }
+            { newPath :: <> [newPath (isub limit 1)] }
+            { <out> path }
+    }
 };
 
 
