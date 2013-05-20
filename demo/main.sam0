@@ -58,8 +58,7 @@ stuff = { items+ ::
 
 # Demo of reading a sibling file through a sandboxed reader.
 sibling = {
-    reader = io0SandboxedReader
-        (listDelNth SELF_PATH (isub (lowSize SELF_PATH) 1));
+    reader = io0SandboxedReader (listButLast SELF_PATH);
     text = reader ["sibling.txt"];
     io0Note text;
 };
