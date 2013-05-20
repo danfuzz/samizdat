@@ -307,6 +307,10 @@ fwdFunction implFunction;
 # Samizdat Layer 1 definitions
 #
 
+# `choicePex` is the top-level parsing expression node type.
+fwdChoicePex = makeForwardDeclaration();
+choicePex = { args* :: <> apply (fwdChoicePex()) args };
+
 implParser = pegMakeMainSequence
     (pegMakeCode { io0Die "TODO" });
 fwdParser implParser;
