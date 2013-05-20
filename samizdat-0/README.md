@@ -1,9 +1,31 @@
 Samizdat Layer 0
 ================
 
-This is an implementation of the *Samizdat Layer 0* language.
+This is an implementation of the *Samizdat Layer 0* language, written in
+C.
 
-- - - - -
+The goals of this implementation, in priority order, are:
+
+* Correctness.
+* Debugability.
+* Readability.
+* Smallness.
+* Efficiency.
+
+This program is written in C in a style which is meant to be
+verifiably correct by inspection. That is, the implementation
+prefers clarity and obviousness over trickiness and efficiency. In
+addition, it uses a minimum of C library functionality and eschews
+the use of macros *except* as guards on header files and to
+reduce noisy boilerplate.
+
+The language parser and runtime do the bare minimum of error
+checking, attempting to fail fast in the face of any errors but not to
+provide much in the way of meaningful messages.
+
+
+Structure
+---------
 
 The code is structured into "modules", with each module's code in a
 directory with the module's name, and with "exports" from that module

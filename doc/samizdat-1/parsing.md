@@ -1,8 +1,6 @@
 Parsing in Samizdat
 ===================
 
-[It's not yet clear what layer this will end up at.]
-
 Since parsing is something so many programs have to do, Samizdat offers
 language-level facilities for building parsers.
 

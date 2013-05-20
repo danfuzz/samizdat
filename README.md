@@ -6,72 +6,36 @@ you want to be terse.
 
 Find lots of documentation in [the doc/ directory](doc).
 
-- - - - -
+Overview
+--------
 
-Plan of attack
---------------
+The following is an overview of the pieces of the system that currently
+exist (if incompletely), followed by pieces that are merely planned.
+
+### Existing pieces
 
 * `samizdat-0` &mdash; *Samizdat Layer 0* interpreter.
 
-  Tool that accepts input in the form of minimalistic source code, and
-  runs it. The language it accepts is meant to be a "parti" of final
-  Samizdat, that is, it embodies *just* the main thrusts of the
-  language with very little embellishment. This language is called
-  *Samizdat Layer 0*.
-
-  *Samizdat Layer 0* also defines a minimal core library. A subset
-  of that library is implemented directly in `samizdat-0` as
-  primitive functions. The remainder of the library is implemented
-  in *Samizdat Layer 0* in terms of that library and the language
-  syntax.
-
-  Finally, *Samizdat Layer 0* defines an executable parse tree
-  format. This format, along with API defined by the
-  primitively-defined part of the core library, are the analog to a
-  bytecode specification in systems that are bytecode-based.
-
-  The language parser and runtime do the bare minimum of error
-  checking, attempting to fail fast in the face of an error but not to
-  provide much in the way of meaningful messages.
-
-  `samizdat-0` is written in C in a style which is meant to be
-  verifiably correct by inspection. That is, the implementation
-  prefers clarity and obviousness over trickiness and efficiency. In
-  addition, it uses a minimum of C library functionality and eschews
-  the use of macros *except* as guards on header files and to
-  reduce noisy boilerplate.
+  This is an interpreter for the *Samizdat Layer 0* language. See
+  [the spec](doc/samizdat-0/README.md) and
+  [the implementation's README](samizdat-0/README.md) for more details.
 
 * `samizdat-0-lib` &mdash; *Samizdat Layer 0* in-language core library.
 
-  This is a library of code which implements the parts of the
-  *Samizdat Layer 0* core library which are possible to implement
-  in terms of `samizdat-0`'s primitive functions.
-
-  `samizdat-0-lib` is written in *Samizdat Layer 0*. It is
-  incorporated into both `samizdat-0` and `samizdat-1` such that
-  programs run with either of those tools automatically see the
-  full core library definition.
+  This is an implementation of the non-primitive portion of the
+  *Samizdat Layer 0* core library. See [the spec](doc/samizdat-0/README.md)
+  and [the implementation's README](samizdat-0-lib/README.md) for more details.
 
 * `samizdat-1` &mdash; *Samizdat Layer 1* interpreter.
 
-  Tool that accepts input written in *Samizdat Layer 0*, but
-  which provides more robust error reporting than `samizdat-0`.
+  This is an interpreter for the *Samizdat Layer 1* language. See
+  [the spec](doc/samizdat-0/README.md) and
+  [the implementation's README](samizdat-1/README.md) for more details.
 
-  `samizdat-1` is itself written in *Samizdat Layer 0*, in a style
-  which mostly "absorbs" the core data library and entirely "reifies"
-  the token and tree parsers. In particular, `samizdat-1` translates
-  input program text into the identical executable tree form as is
-  used by `samizdat-0`.
+  *Samizdat Layer 1* is a strict superset of *Samizdat Layer 0*, adding
+  new syntax in support of parser definition.
 
-  The point of `samizdat-1` is twofold:
-
-  * Make for a much nicer experience developing and debugging
-    programs written in *Samizdat Layer 0*, compared to `samizdat-0`.
-
-  * Provide some validation (via correlation) of the `samizdat-0`
-    token and tree parser implementations. In particular, the source
-    code for `samizdat-1` should produce truly identical trees
-    when compiled by either `samizdat-0` or by `samizdat-1` itself.
+### Planned pieces
 
 * `samizdat-2` &hellip; `samizdat-N` &mdash; *Samizdat Layers 2
   through N* interpreters.
