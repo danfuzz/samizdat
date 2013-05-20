@@ -77,6 +77,16 @@ Returns void if the list is empty and `notFound` is not supplied.
 This is similar to `listSlice list 1` or `listDelNth list 0`, except
 that this function has non-error behavior when the list is empty.
 
+#### `listButLast list notFound? <> . | !.`
+
+Returns a list consisting of all the elements of the given list
+except for the last element (that is, all but the last element). If
+the given list is empty, this returns the given `notFound` value.
+Returns void if the list is empty and `notFound` is not supplied.
+This is similar to `listSlice list 0 (isub (lowSize list) 1)` or
+`listDelNth list (isub (lowSize list) 1)`, except that this function
+has non-error behavior when the list is empty.
+
 #### `listFirst list notFound? <> . | !.`
 
 Returns the first element of the given list or the given `notFound` value
