@@ -66,6 +66,13 @@ listAppend = { list value ::
 };
 
 # Documented in Samizdat Layer 0 spec.
+listButFirst = { list notFound? <out> ::
+    <> ifTrue { <> eq list [] }
+        { <> apply out notFound }
+        { <> listSlice list 1 }
+};
+
+# Documented in Samizdat Layer 0 spec.
 listFirst = { list notFound? ::
     <> apply listNth list 0 notFound
 };
@@ -161,6 +168,7 @@ stringReduce = { base string function ::
 
 <> [
     "listAppend" = listAppend
+    "listButFirst" = listButFirst
     "listFirst" = listFirst
     "listForEach" = listForEach
     "listLast" = listLast

@@ -98,9 +98,9 @@ main = { selfPath name rest* ::
     process -12345;
     process [];
     process [-1];
-    process [1 -2];
+    process (listButFirst [0 1 -2]);
     process [-1 2 300];
-    process "";
+    process (listButFirst [] "");
     process "\"Blort.\" \\ \0 \n";
     process [=];
     process [1=2];

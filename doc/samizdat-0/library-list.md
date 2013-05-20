@@ -68,6 +68,15 @@ specified, it defaults to the end of the list.
 Returns a list consisting of the elements of the given
 list argument followed by the given additional value.
 
+#### `listButFirst list notFound? <> . | !.`
+
+Returns a list consisting of all the elements of the given list
+except for the first element (that is, all but the first element). If
+the given list is empty, this returns the given `notFound` value.
+Returns void if the list is empty and `notFound` is not supplied.
+This is similar to `listSlice list 1` or `listDelNth list 0`, except
+that this function has non-error behavior when the list is empty.
+
 #### `listFirst list notFound? <> . | !.`
 
 Returns the first element of the given list or the given `notFound` value
