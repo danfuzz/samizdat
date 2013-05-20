@@ -29,7 +29,7 @@ exist (if incompletely), followed by pieces that are merely planned.
 * `samizdat-1` &mdash; *Samizdat Layer 1* interpreter.
 
   This is an interpreter for the *Samizdat Layer 1* language. See
-  [the spec](doc/samizdat-0/README.md) and
+  [the spec](doc/samizdat-1/README.md) and
   [the implementation's README](samizdat-1/README.md) for more details.
 
   *Samizdat Layer 1* is a strict superset of *Samizdat Layer 0*, adding
