@@ -319,7 +319,10 @@ implParser = pegMakeMainSequence
 fwdParser implParser;
 
 parseParenPex = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakeToken @"(")
+    parseChoicePex
+    (pegMakeToken @")")
+    (pegMakeCode { . pex . :: <> pex });
 
 parseParserString = pegMakeMainSequence
     (pegMakeCode { io0Die "TODO" });
