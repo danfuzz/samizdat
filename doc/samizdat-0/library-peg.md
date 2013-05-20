@@ -96,15 +96,6 @@ character-as-token of the parsed character.
 This is equivalent to the syntactic form
 `{/ [! "string1" "string2" "etc."] /}`.
 
-#### `pegMakeChars string <> rule`
-
-Makes and returns a parser rule which matches a sequence of characters
-exactly, consuming them from the input upon success. `string` must be a
-string. The result of successful parsing is a valueless token with
-`string` as its type tag.
-
-This is equivalent to the syntactic form `{/ "string" /}`.
-
 #### `pegMakeChoice rules* <> rule`
 
 Makes and returns a parser rule which performs an ordered choice amongst
@@ -193,6 +184,15 @@ This rule always succeeds, including if the given rule is never matched,
 in which case this rule yields the empty list.
 
 This is equivalent to the syntactic form `{/ rule* /}`.
+
+#### `pegMakeString string <> rule`
+
+Makes and returns a parser rule which matches a sequence of characters
+exactly, consuming them from the input upon success. `string` must be a
+string. The result of successful parsing is a valueless token with
+`string` as its type tag.
+
+This is equivalent to the syntactic form `{/ "string" /}`.
 
 #### `pegMakeToken token <> rule`
 
