@@ -76,15 +76,18 @@ In order to use the result of a matched item in a code block (see below),
 it is possible to bind a variable to the result. To do so, precede the
 item with an identifier name followed by an equal sign (`=`).
 
-Variables are in scope at any point after the successful match of the
-item they are bound to. Notably, a variable from one `|`-delimited
-alternate will *not* be bound for any other alternate.
+Variables are in scope immediately after the successful match of the
+item they are bound to, and until the sequence the item is part of
+is finished (e.g. syntactically via a close paren or a close parsing
+brace). Notably, a variable from one `|`-delimited alternate will *not*
+be bound for any other alternate.
 
-For example, the parser `{/ f=@foo b=@bar X /}` will match the token
+For example, the parser `{/ (f=@foo b=@bar X) Y /}` will match the token
 list `[@foo @bar @baz]`, resulting in the yielded value
 `@bar` and a remainder of `[@baz]`. At the point marked `X`, a local
 variable `f` will be bound to the matched yield of `@foo`, and a local
-variable `b` will be bound to the matched yield of `@bar`.
+variable `b` will be bound to the matched yield of `@bar`. At the point
+marked `Y`, `f` and `b` are no longer in scope.
 
 ### Lookahead
 
