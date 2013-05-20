@@ -4,7 +4,18 @@ Samizdat
 This is the source for the Samizdat programming language, or "Sam" if
 you want to be terse.
 
-Find lots of documentation in [the doc/ directory](doc).
+Samizdat is a high-level programming language somewhere down the
+family lineage from all of [ALGOL](http://en.wikipedia.org/wiki/ALGOL),
+[Lisp](http://en.wikipedia.org/wiki/LISP), and
+[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk). It is
+intended that the language be an attractive target for use in
+text processing, free-form data structure manipulation, and general
+systems programming.
+
+Find lots of documentation in [the doc/ directory](doc), including
+a handful of [shout-outs](doc/shout-outs.md) that may help understand
+where the system is coming from (both literally and figuratively).
+
 
 Overview
 --------
@@ -82,69 +93,3 @@ exist (if incompletely), followed by pieces that are merely planned.
 * ?
 
 * Profit!
-
-- - - - -
-
-Samizdat Programming Language In N Shout-Outs
-=============================================
-
-Samizdat is a high-level programming language somewhere down the
-family lineage from all of
-[ALGOL](http://en.wikipedia.org/wiki/ALGOL),
-[Lisp](http://en.wikipedia.org/wiki/LISP), and
-[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk). It is
-intended that the language be an attractive target for use in
-text processing, free-form data structure manipulation, and general
-systems programming.
-
-The language came about as a second-order effect of the author's
-desire to explore the intersection of all of
-[promise](http://en.wikipedia.org/wiki/Promise_%28programming%29)-based
-[object-capability](http://en.wikipedia.org/wiki/Object-capability_model)
-computation, the [actor model](http://en.wikipedia.org/wiki/Actor_model) of
-concurrency, maximally pure / immutable data models, and [software transactional
-memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
-(STM). The Samizdat language has a mostly-immutable data model and
-generally has "capability nature", but it does not innately implement
-promises, actors, or STM. However, it is intended to be a fertile
-substrate on which to explore these topics, while still being a
-practical and compelling language in its own right.
-
-Samizdat's syntax bears the influences of
-[C](http://en.wikipedia.org/wiki/C_%28programming_language%29),
-[E](http://en.wikipedia.org/wiki/E_%28programming_language%29),
-[Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
-Smalltalk, [Java](http://en.wikipedia.org/wiki/Java_%28programming_language%29),
-[JavaScript](http://en.wikipedia.org/wiki/JavaScript), and traditional
-[Backus-Naur Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)
-(BNF).
-
-The Samizdat core data model was influenced by Lisp,
-[Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
-[Clojure](http://en.wikipedia.org/wiki/Clojure), and JavaScript.
-
-Samizdat's parsing semantics were influenced by the recent work on
-[Parsing Expression
-Grammars](http://en.wikipedia.org/wiki/Parsing_expression_grammar) (PEGs),
-particularly [OMeta](http://tinlizzie.org/ometa/), tempered by a lot
-of practical experience with [ANTLR](http://en.wikipedia.org/wiki/ANTLR),
-[Awk](http://en.wikipedia.org/wiki/AWK),
-[Lex](http://en.wikipedia.org/wiki/Lex_%28software%29) /
-[Flex](http://en.wikipedia.org/wiki/Flex_lexical_analyser),
-and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
-[Bison](http://en.wikipedia.org/wiki/GNU_bison). Additionally,
-[SNOBOL](http://en.wikipedia.org/wiki/SNOBOL) deserves credit for blazing
-the trail for general-purpose languages that make parsing a first-class
-operation.
-
-The Samizdat core library was influenced by
-[Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29)
-and Awk.
-
-The implementation tactics used to build Samizdat were informed by
-[Scheme-48](http://en.wikipedia.org/wiki/Scheme_48),
-the [Jikes RVM](http://en.wikipedia.org/wiki/Jikes_RVM)
-(formerly a.k.a. Jalape&ntilde;o), and
-[Squeak](http://en.wikipedia.org/wiki/Squeak), with a tip o' the
-hat to each of [PyPy](http://en.wikipedia.org/wiki/PyPy) and
-[Chicken](http://en.wikipedia.org/wiki/Chicken_%28Scheme_implementation%29).
