@@ -24,26 +24,26 @@ This corresponds to the syntax `{/ pex /}`.
 
 ### Terminal parsing expression nodes
 
-#### @["."]
+#### `@["."]`
 
 Representation of the "match anything" rule.
 
 This corresponds to the syntax `.`.
 
-#### @["()"]
+#### `@["()"]`
 
 Representation of the "always succeed" (no-op) rule.
 
 This corresponds to the syntax `()`.
 
-#### @["[]" charSet]
+#### `@["[]" charSet]`
 
 Representation of a character set rule. `charSet` must be a string, which
 is taken to be an unordered set of characters.
 
 This corresponds to the syntax `["charSet"]`.
 
-#### @["[]" tokenSet]
+#### `@["[]" tokenSet]`
 
 Representation of a token set rule. `tokenSet` must be a list of tokens,
 which is taken to be an unordered set of token types (token values are
@@ -51,14 +51,14 @@ ignored).
 
 This corresponds to the syntax `[token1 token2 etc]`.
 
-#### @["[!]" charSet]
+#### `@["[!]" charSet]`
 
 Representation of a character set complement rule. `charSet` must be a string,
 which is taken to be an unordered set of characters.
 
 This corresponds to the syntax `[! "charSet"]`.
 
-#### @["[!]" tokenSet]
+#### `@["[!]" tokenSet]`
 
 Representation of a token set complement rule. `tokenSet` must be a list of
 tokens, which is taken to be an unordered set of token types (token values
@@ -66,7 +66,7 @@ are ignored).
 
 This corresponds to the syntax `[! token1 token2 etc]`.
 
-#### @["{}" [("yieldDef"=name)? statements=[statement*] ("yield"=expression)?]]
+#### `@["{}" [("yieldDef"=name)? statements=[statement*] ("yield"=expression)?]]`
 
 Representation of a code expression.
 
@@ -86,21 +86,21 @@ etc; <> yield }`.
 
 ### Non-terminal parsing expression nodes
 
-#### @["choice" [pex*]]
+#### `@["choice" [pex*]]`
 
 Representation of an ordered choice of items to match. Each element
 of the list must be a parsing expression node.
 
 This corresponds to the syntax `pex1 | pex2 | etc`.
 
-#### @["sequence" [pex*]]
+#### `@["sequence" [pex*]]`
 
 Representation of a sequence of items to match, in order. Each element
 of the list must be a parsing expression node.
 
 This corresponds to the syntax `pex1 pex2 etc`.
 
-#### @["varDef" ["name"=name "value"=pex]]
+#### `@["varDef" ["name"=name "value"=pex]]`
 
 Representation of a name-bound expression.
 
@@ -111,35 +111,35 @@ Representation of a name-bound expression.
 
 This corresponds to the syntax `name = pex`.
 
-#### @["&" pex]
+#### `@["&" pex]`
 
 Representation of a lookahead-success expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `&pex`.
 
-#### @["!" pex]
+#### `@["!" pex]`
 
 Representation of a lookahead-failure expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `!pex`.
 
-#### @["?" pex]
+#### `@["?" pex]`
 
 Representation of an optional (zero-or-one) expression. `pex` must be a
 parsing expression node.
 
 This corresponds to the syntax `pex?`.
 
-#### @["*" pex]
+#### `@["*" pex]`
 
 Representation of a star (zero-or-more) expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `pex*`.
 
-#### @["+" pex]
+#### `@["+" pex]`
 
 Representation of a plus (one-or-more) expression. `pex` must be a parsing
 expression node.
