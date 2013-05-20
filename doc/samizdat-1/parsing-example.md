@@ -101,9 +101,9 @@ number = pegMakeMainSequence
 atom = pegMakeChoice
     number
     (pegMakeMainSequence
-        (pegMakeChar "(")
+        (pegMakeToken "(")
         addExpression
-        (pegMakeChar ")")
+        (pegMakeToken ")")
         (pegMakeCode { . ex . :: <> ex }));
 
 addExpression = pegMakeMainSequence
@@ -114,10 +114,10 @@ addExpression = pegMakeMainSequence
 
 addOp = pegMakeChoice
     (pegMakeSequence
-        (pegMakeChar "+")
+        (pegMakeToken "+")
         (pegMakeCode { <> iadd }))
     (pegMakeSequence
-        (pegMakeChar "-")
+        (pegMakeToken "-")
         (pegMakeCode { <> isub }));
 
 mulExpression = pegMakeMainSequence
@@ -128,10 +128,10 @@ mulExpression = pegMakeMainSequence
 
 mulOp = pegMakeChoice
     (pegMakeSequence
-        (pegMakeChar "*")
+        (pegMakeToken "*")
         (pegMakeCode { <> imul }))
     (pegMakeSequence
-        (pegMakeChar "/")
+        (pegMakeToken "/")
         (pegMakeCode { <> idiv }));
 
 unaryExpression = pegMakeMainSequence
@@ -140,13 +140,13 @@ unaryExpression = pegMakeMainSequence
     (pegMakeCode { op ex :: <> op ex });
 
 unaryOp = pegMakeMainSequence
-    (pegMakeChar "-")
+    (pegMakeToken "-")
     (pegMakeCode { <> ineg });
 
 main = pegMakeStar
     (pegMakeMainSequence
         addExpression
-        (pegMakeChar "\n")
+        (pegMakeToken "\n")
         (pegMakeCode { ex . ::
             io0Note (format "%q" ex);
             <> null

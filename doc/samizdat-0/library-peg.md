@@ -68,15 +68,6 @@ rule yields on the input.
 `input` must either be a list or a string. If it is a string, this function
 automatically converts it into a list of character-as-token values.
 
-#### `pegMakeChar ch <> rule`
-
-Makes and returns a parser rule which matches the given character,
-consuming it from the input upon success. `ch` must be a single-character
-string. The result of successful parsing is a character-as-token of the
-character in question.
-
-This is equivalent to the syntactic form `{/ "ch" /}`.
-
 #### `pegMakeCharSet strings* <> rule`
 
 Makes and returns a parser rule which matches any character of any of

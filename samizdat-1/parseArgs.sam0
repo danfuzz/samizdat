@@ -7,7 +7,7 @@
 #
 
 # wordBreak = {/ "\0" /}
-parseWordBreak = pegMakeChar "\0";
+parseWordBreak = pegMakeToken "\0";
 
 # word = {/
 #     chars=[! "\0"]* wordBreak
@@ -37,7 +37,7 @@ parseKey = pegMakeMainSequence
 parseKeyValue = pegMakeMainSequence
     (pegMakeString "--")
     parseKey
-    (pegMakeChar "=")
+    (pegMakeToken "=")
     parseWord
     (pegMakeCode { . k . v :: <> [k = v] });
 
@@ -55,7 +55,7 @@ parseFlag = pegMakeMainSequence
 #     { ... <> [error = true] }
 # /}
 parseError = pegMakeMainSequence
-    (pegMakeChar "-")
+    (pegMakeToken "-")
     (pegMakeCharSetComplement "-\0")
     parseWord
     (pegMakeCode { ch1 ch2 word ::
