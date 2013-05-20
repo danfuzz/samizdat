@@ -85,15 +85,10 @@ void datTokenMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datTokenType(zvalue token) {
-    datAssertToken(token);
-    return tokenInfo(token)->type;
-}
-
-/* Documented in header. */
-zvalue datTokenValue(zvalue token) {
-    datAssertToken(token);
-    return tokenInfo(token)->value;
+void datTokenAssertType(zvalue token, zvalue type) {
+    if (!datTokenTypeIs(token, type)) {
+        die("Type mismatch.");
+    }
 }
 
 /* Documented in header. */
@@ -108,13 +103,18 @@ zvalue datTokenFrom(zvalue type, zvalue value) {
 }
 
 /* Documented in header. */
+zvalue datTokenType(zvalue token) {
+    datAssertToken(token);
+    return tokenInfo(token)->type;
+}
+
+/* Documented in header. */
 bool datTokenTypeIs(zvalue token, zvalue type) {
     return (datEq(datTokenType(token), type));
 }
 
 /* Documented in header. */
-void datTokenAssertType(zvalue token, zvalue type) {
-    if (!datTokenTypeIs(token, type)) {
-        die("Type mismatch.");
-    }
+zvalue datTokenValue(zvalue token) {
+    datAssertToken(token);
+    return tokenInfo(token)->value;
 }

@@ -113,47 +113,10 @@ void datListMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datListNth(zvalue list, zint n) {
+void datArrayFromList(zvalue *result, zvalue list) {
     datAssertList(list);
-    return datHasNth(list, n) ? listElems(list)[n] : NULL;
+    memcpy(result, listElems(list), list->size * sizeof(zvalue));
 }
-
-/* Documented in header. */
-zvalue datListAppend(zvalue list, zvalue value) {
-    return datListInsNth(list, datSize(list), value);
-}
-
-/* Documented in header. */
-zvalue datListPutNth(zvalue list, zint n, zvalue value) {
-    datAssertList(list);
-    datAssertValid(value);
-
-    zint size = datSize(list);
-
-    if (n == size) {
-        return datListInsNth(list, n, value);
-    }
-
-    datAssertNth(list, n);
-
-    zvalue result = listFrom(size, listElems(list), NULL, 0, NULL);
-
-    listElems(result)[n] = value;
-    return result;
-}
-
-/* Documented in header. */
-zvalue datListInsNth(zvalue list, zint n, zvalue value) {
-    datAssertList(list);
-    datAssertValid(value);
-    datAssertNthOrSize(list, n);
-
-    zint size = datSize(list);
-    zvalue *elems = listElems(list);
-
-    return listFrom(n, elems, value, size - n, elems + n);
-}
-
 
 /* Documented in header. */
 zvalue datListAdd(zvalue list1, zvalue list2) {
@@ -170,6 +133,11 @@ zvalue datListAdd(zvalue list1, zvalue list2) {
     }
 
     return listFrom(size1, listElems(list1), NULL, size2, listElems(list2));
+}
+
+/* Documented in header. */
+zvalue datListAppend(zvalue list, zvalue value) {
+    return datListInsNth(list, datSize(list), value);
 }
 
 /* Documented in header. */
@@ -193,9 +161,40 @@ zvalue datListFromArray(zint size, const zvalue *values) {
 }
 
 /* Documented in header. */
-void datArrayFromList(zvalue *result, zvalue list) {
+zvalue datListInsNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
-    memcpy(result, listElems(list), list->size * sizeof(zvalue));
+    datAssertValid(value);
+    datAssertNthOrSize(list, n);
+
+    zint size = datSize(list);
+    zvalue *elems = listElems(list);
+
+    return listFrom(n, elems, value, size - n, elems + n);
+}
+
+/* Documented in header. */
+zvalue datListNth(zvalue list, zint n) {
+    datAssertList(list);
+    return datHasNth(list, n) ? listElems(list)[n] : NULL;
+}
+
+/* Documented in header. */
+zvalue datListPutNth(zvalue list, zint n, zvalue value) {
+    datAssertList(list);
+    datAssertValid(value);
+
+    zint size = datSize(list);
+
+    if (n == size) {
+        return datListInsNth(list, n, value);
+    }
+
+    datAssertNth(list, n);
+
+    zvalue result = listFrom(size, listElems(list), NULL, 0, NULL);
+
+    listElems(result)[n] = value;
+    return result;
 }
 
 /* Documented in header. */

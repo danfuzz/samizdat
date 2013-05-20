@@ -73,12 +73,25 @@ typedef struct {
  */
 
 /**
- * Asserts that the given value is a valid `zvalue` (non-`NULL` and
- * seems to actually have the right form). This performs reasonable,
- * but not exhaustive, tests. If not valid, this aborts the process
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is an int. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertValid(zvalue value);
+void datAssertInt(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a list. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertList(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a map. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertMap(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and that its size
@@ -96,31 +109,17 @@ void datAssertNthOrSize(zvalue value, zint n);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is an int. If not, this aborts the process
- * with a diagnostic message.
- */
-void datAssertInt(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a string. If not, this aborts the process
  * with a diagnostic message.
  */
 void datAssertString(zvalue value);
 
 /**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a list. If not, this aborts the process
- * with a diagnostic message.
+ * Asserts that the given value is a valid `zvalue`, and furthermore
+ * that it is a token (a high-layer value). If not, this aborts the
+ * process with a diagnostic message.
  */
-void datAssertList(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a map. If not, this aborts the process
- * with a diagnostic message.
- */
-void datAssertMap(zvalue value);
+void datAssertToken(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -130,11 +129,19 @@ void datAssertMap(zvalue value);
 void datAssertUniqlet(zvalue value);
 
 /**
- * Asserts that the given value is a valid `zvalue`, and furthermore
- * that it is a token (a high-layer value). If not, this aborts the
- * process with a diagnostic message.
+ * Asserts that the given value is a valid `zvalue` (non-`NULL` and
+ * seems to actually have the right form). This performs reasonable,
+ * but not exhaustive, tests. If not valid, this aborts the process
+ * with a diagnostic message.
  */
-void datAssertToken(zvalue value);
+void datAssertValid(zvalue value);
+
+/**
+ * Gets the size of the given value. `value` must be a valid value.
+ * See the *Samizdat Layer 0* specification for details on
+ * what low-layer "size" means.
+ */
+zint datSize(zvalue value);
 
 /**
  * Returns whether the given value has the given low-layer type.
@@ -148,12 +155,6 @@ bool datTypeIs(zvalue value, ztype type);
  */
 ztype datType(zvalue value);
 
-/**
- * Gets the size of the given value. `value` must be a valid value.
- * See the *Samizdat Layer 0* specification for details on
- * what low-layer "size" means.
- */
-zint datSize(zvalue value);
 
 
 /*
@@ -167,11 +168,11 @@ zint datSize(zvalue value);
 zchar datCharFromInt(zvalue intval);
 
 /**
- * Given a 32-bit int value, returns the `n`th bit. This is just like
- * `datIntGetBit()` except using a `zint` value. This function is
- * exported for the convenience of other modules.
+ * Gets an int value equal to the given `zint`. In this
+ * implementation, ints are restricted to only taking on the range
+ * of 32-bit signed quantities, when represented as twos-complement.
  */
-bool datZintGetBit(zint value, zint n);
+zvalue datIntFromZint(zint value);
 
 /**
  * Given an int, returns the `n`th bit, counting from the least
@@ -189,35 +190,22 @@ bool datIntGetBit(zvalue intval, zint n);
 bool datIntSign(zvalue intval);
 
 /**
- * Gets an int value equal to the given `zint`. In this
- * implementation, ints are restricted to only taking on the range
- * of 32-bit signed quantities, when represented as twos-complement.
- */
-zvalue datIntFromZint(zint value);
-
-/**
  * Gets a `zint` equal to the given int value. `intval` must be an
  * int. It is an error if the value is out of range.
  */
 zint datZintFromInt(zvalue intval);
 
+/**
+ * Given a 32-bit int value, returns the `n`th bit. This is just like
+ * `datIntGetBit()` except using a `zint` value. This function is
+ * exported for the convenience of other modules.
+ */
+bool datZintGetBit(zint value, zint n);
+
 
 /*
  * String functions.
  */
-
-/**
- * Given a string, returns the `n`th element, which is in the
- * range of a 32-bit unsigned int. If `n` is out of range, this
- * returns `-1`.
- */
-zint datStringNth(zvalue string, zint n);
-
-/**
- * Gets the string built from the given array of `zchar`s, of
- * the given size.
- */
-zvalue datStringFromChars(zint size, const zchar *chars);
 
 /**
  * Combines the characters of two strings, in order, into a new
@@ -227,6 +215,12 @@ zvalue datStringFromChars(zint size, const zchar *chars);
 zvalue datStringAdd(zvalue str1, zvalue str2);
 
 /**
+ * Gets the string built from the given array of `zchar`s, of
+ * the given size.
+ */
+zvalue datStringFromChars(zint size, const zchar *chars);
+
+/**
  * Gets the string resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.
@@ -234,10 +228,11 @@ zvalue datStringAdd(zvalue str1, zvalue str2);
 zvalue datStringFromUtf8(zint stringBytes, const char *string);
 
 /**
- * Gets the number of bytes required to encode the given string
- * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
+ * Given a string, returns the `n`th element, which is in the
+ * range of a 32-bit unsigned int. If `n` is out of range, this
+ * returns `-1`.
  */
-zint datUtf8SizeFromString(zvalue string);
+zint datStringNth(zvalue string, zint n);
 
 /**
  * Encodes the given string as UTF-8 into the given buffer of the
@@ -252,10 +247,50 @@ zint datUtf8SizeFromString(zvalue string);
  */
 void datUtf8FromString(zint resultSize, char *result, zvalue string);
 
+/**
+ * Gets the number of bytes required to encode the given string
+ * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
+ */
+zint datUtf8SizeFromString(zvalue string);
+
 
 /*
  * List Functions
  */
+
+/**
+ * Copies all the values of the given list into the given result
+ * array, which must be sized large enough to hold all of them.
+ */
+void datArrayFromList(zvalue *result, zvalue list);
+
+/**
+ * Combines the elements of two lists, in order, into a new
+ * list.
+ *
+ * Contrasting this with `datList{Append,Prepend}()` and above,
+ * those functions operate
+ * heterogeneously on a list and an element, whereas this one
+ * operates on two peer lists.
+ */
+zvalue datListAdd(zvalue list1, zvalue list2);
+
+/**
+ * Gets the list resulting from appending the given value to the
+ * given list.
+ */
+zvalue datListAppend(zvalue list, zvalue value);
+
+/**
+ * Gets the list resulting from deleting the nth element of the
+ * given list.
+ */
+zvalue datListDelNth(zvalue list, zint n);
+
+/**
+ * Constructs a list from an array of `zvalue`s of the given size.
+ */
+zvalue datListFromArray(zint size, const zvalue *values);
 
 /**
  * Gets the list resulting from inserting the given value at the
@@ -271,12 +306,6 @@ zvalue datListInsNth(zvalue list, zint n, zvalue value);
 zvalue datListNth(zvalue list, zint n);
 
 /**
- * Gets the list resulting from appending the given value to the
- * given list.
- */
-zvalue datListAppend(zvalue list, zvalue value);
-
-/**
  * Gets the list resulting from setting the value at the
  * given index to the given value. `n` must be non-negative
  * and no greater than the size of the given list.
@@ -284,43 +313,36 @@ zvalue datListAppend(zvalue list, zvalue value);
 zvalue datListPutNth(zvalue list, zint n, zvalue value);
 
 /**
- * Combines the elements of two lists, in order, into a new
- * list.
- *
- * Contrasting this with `datList{Append,Prepend}()` and above,
- * those functions operate
- * heterogeneously on a list and an element, whereas this one
- * operates on two peer lists.
- */
-zvalue datListAdd(zvalue list1, zvalue list2);
-
-/**
- * Gets the list resulting from deleting the nth element of the
- * given list.
- */
-zvalue datListDelNth(zvalue list, zint n);
-
-/**
  * Gets the list consisting of the given "slice" of elements
  * (start inclusive, end exclusive) of the list.
  */
 zvalue datListSlice(zvalue list, zint start, zint end);
 
-/**
- * Constructs a list from an array of `zvalue`s of the given size.
- */
-zvalue datListFromArray(zint size, const zvalue *values);
-
-/**
- * Copies all the values of the given list into the given result
- * array, which must be sized large enough to hold all of them.
- */
-void datArrayFromList(zvalue *result, zvalue list);
-
 
 /*
  * Map Functions
  */
+
+/**
+ * Gets the map resulting from putting the all the given mappings
+ * into the given map, in the order given (so, in particular, higher-index
+ * mappings take precedence over the lower-index mappings, when keys match).
+ * The effect is identical to calling a chain of `datMapPut()`s on each
+ * of the mappings in order.
+ */
+zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings);
+
+/**
+ * Combines the bindings of the two given maps into a new map.
+ * For overlapping keys between the two, the second argument "wins".
+ */
+zvalue datMapAdd(zvalue map1, zvalue map2);
+
+/**
+ * Gets a map resulting from the removal of the given key from the
+ * given map.
+ */
+zvalue datMapDel(zvalue map, zvalue key);
 
 /**
  * Gets an empty map value, i.e. `[=]`. Note that this can return
@@ -361,27 +383,6 @@ zvalue datMapNthValue(zvalue map, zint n);
  */
 zvalue datMapPut(zvalue map, zvalue key, zvalue value);
 
-/**
- * Gets the map resulting from putting the all the given mappings
- * into the given map, in the order given (so, in particular, higher-index
- * mappings take precedence over the lower-index mappings, when keys match).
- * The effect is identical to calling a chain of `datMapPut()`s on each
- * of the mappings in order.
- */
-zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings);
-
-/**
- * Combines the bindings of the two given maps into a new map.
- * For overlapping keys between the two, the second argument "wins".
- */
-zvalue datMapAdd(zvalue map1, zvalue map2);
-
-/**
- * Gets a map resulting from the removal of the given key from the
- * given map.
- */
-zvalue datMapDel(zvalue map, zvalue key);
-
 
 /*
  * Uniqlet Functions
@@ -392,6 +393,17 @@ zvalue datMapDel(zvalue map, zvalue key);
  * produce a value unequal to any other uniqlet (in any given process).
  */
 zvalue datUniqlet(void);
+
+/**
+ * Gets the state value associated with the given uniqlet, asserting that
+ * the uniqlet's dispatch table is as given.
+ */
+void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch);
+
+/**
+ * Gets whether or not the given uniqlet has the given dispatch table.
+ */
+bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch);
 
 /**
  * Gets a new uniqlet, associated with the given dispatcher and contents.
@@ -408,32 +420,15 @@ zvalue datUniqlet(void);
  */
 zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
 
-/**
- * Gets whether or not the given uniqlet has the given dispatch table.
- */
-bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch);
-
-/**
- * Gets the state value associated with the given uniqlet, asserting that
- * the uniqlet's dispatch table is as given.
- */
-void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch);
-
 
 /*
  * Token Functions
  */
 
 /**
- * Gets the type tag of a token.
+ * Asserts that the given value is a token whose type is as given.
  */
-zvalue datTokenType(zvalue token);
-
-/**
- * Gets the value associated with a token. This is `NULL` for
- * valueless tokens (unsurprisingly).
- */
-zvalue datTokenValue(zvalue token);
+void datTokenAssertType(zvalue token, zvalue type);
 
 /**
  * Returns a possibly-valued token. The given value must either
@@ -442,15 +437,21 @@ zvalue datTokenValue(zvalue token);
 zvalue datTokenFrom(zvalue type, zvalue value);
 
 /**
+ * Gets the type tag of a token.
+ */
+zvalue datTokenType(zvalue token);
+
+/**
  * Returns whether or not the type of the given token equals the
  * given value.
  */
 bool datTokenTypeIs(zvalue token, zvalue type);
 
 /**
- * Asserts that the given value is a token whose type is as given.
+ * Gets the value associated with a token. This is `NULL` for
+ * valueless tokens (unsurprisingly).
  */
-void datTokenAssertType(zvalue token, zvalue type);
+zvalue datTokenValue(zvalue token);
 
 
 /*
@@ -479,6 +480,17 @@ zorder datOrder(zvalue v1, zvalue v2);
  */
 
 /**
+ * Forces a gc.
+ */
+void datGc(void);
+
+/**
+ * Marks the given value as "immortal." It is considered a root and
+ * will never get freed.
+ */
+void datImmortalize(zvalue value);
+
+/**
  * Marks a value during garbage collection. This in turn calls a type-specific
  * mark function when appropriate and may recurse arbitrarily. It is valid
  * to pass `NULL` to this, but no other non-values are acceptable.
@@ -492,16 +504,5 @@ void datMark(zvalue value);
  * address of a local variable.
  */
 void datSetStackBase(void *base);
-
-/**
- * Marks the given value as "immortal." It is considered a root and
- * will never get freed.
- */
-void datImmortalize(zvalue value);
-
-/**
- * Forces a gc.
- */
-void datGc(void);
 
 #endif

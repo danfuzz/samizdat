@@ -146,50 +146,20 @@ void datMapMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datMapEmpty(void) {
-    return allocMap(0);
-}
+zvalue datMapAdd(zvalue map1, zvalue map2) {
+    datAssertMap(map1);
+    datAssertMap(map2);
 
-/* Documented in header. */
-zvalue datMapGet(zvalue map, zvalue key) {
-    zint index = mapFind(map, key);
+    zint size1 = datSize(map1);
+    zint size2 = datSize(map2);
 
-    return (index < 0) ? NULL : mapElems(map)[index].value;
-}
-
-/* Documented in header. */
-zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
-    datAssertValid(value);
-
-    zint index = mapFind(map, key);
-    zint size = datSize(map);
-
-    if (size == 0) {
-        return mapFrom1(key, value);
+    if (size1 == 0) {
+        return map2;
+    } else if (size2 == 0) {
+        return map1;
     }
 
-    zvalue result;
-
-    if (index >= 0) {
-        // The key exists in the given map, so we need to perform
-        // a replacement.
-        result = allocMap(size);
-        memcpy(mapElems(result), mapElems(map),
-               size * sizeof(zmapping));
-    } else {
-        // The key wasn't found, so we need to insert a new one.
-        index = ~index;
-        result = allocMap(size + 1);
-        memcpy(mapElems(result), mapElems(map),
-               index * sizeof(zmapping));
-        memcpy(mapElems(result) + index + 1,
-               mapElems(map) + index,
-               (size - index) * sizeof(zmapping));
-    }
-
-    mapElems(result)[index].key = key;
-    mapElems(result)[index].value = value;
-    return result;
+    return datMapAddArray(map1, size2, mapElems(map2));
 }
 
 /* Documented in header. */
@@ -237,23 +207,6 @@ zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
 }
 
 /* Documented in header. */
-zvalue datMapAdd(zvalue map1, zvalue map2) {
-    datAssertMap(map1);
-    datAssertMap(map2);
-
-    zint size1 = datSize(map1);
-    zint size2 = datSize(map2);
-
-    if (size1 == 0) {
-        return map2;
-    } else if (size2 == 0) {
-        return map1;
-    }
-
-    return datMapAddArray(map1, size2, mapElems(map2));
-}
-
-/* Documented in header. */
 zvalue datMapDel(zvalue map, zvalue key) {
     zint index = mapFind(map, key);
 
@@ -270,6 +223,18 @@ zvalue datMapDel(zvalue map, zvalue key) {
     memcpy(elems + index, oldElems + index + 1,
            (size - index) * sizeof(zmapping));
     return result;
+}
+
+/* Documented in header. */
+zvalue datMapEmpty(void) {
+    return allocMap(0);
+}
+
+/* Documented in header. */
+zvalue datMapGet(zvalue map, zvalue key) {
+    zint index = mapFind(map, key);
+
+    return (index < 0) ? NULL : mapElems(map)[index].value;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -310,4 +275,39 @@ zvalue datMapNthValue(zvalue map, zint n) {
     }
 
     return mapElems(map)[n].value;
+}
+
+/* Documented in header. */
+zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
+    datAssertValid(value);
+
+    zint index = mapFind(map, key);
+    zint size = datSize(map);
+
+    if (size == 0) {
+        return mapFrom1(key, value);
+    }
+
+    zvalue result;
+
+    if (index >= 0) {
+        // The key exists in the given map, so we need to perform
+        // a replacement.
+        result = allocMap(size);
+        memcpy(mapElems(result), mapElems(map),
+               size * sizeof(zmapping));
+    } else {
+        // The key wasn't found, so we need to insert a new one.
+        index = ~index;
+        result = allocMap(size + 1);
+        memcpy(mapElems(result), mapElems(map),
+               index * sizeof(zmapping));
+        memcpy(mapElems(result) + index + 1,
+               mapElems(map) + index,
+               (size - index) * sizeof(zmapping));
+    }
+
+    mapElems(result)[index].key = key;
+    mapElems(result)[index].value = value;
+    return result;
 }

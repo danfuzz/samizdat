@@ -90,14 +90,16 @@ zchar datCharFromInt(zvalue intval) {
 }
 
 /* Documented in header. */
-bool datZintGetBit(zint value, zint n) {
-    if (n < 0) {
-        die("Attempt to access negative bit index: %lld", n);
-    } else if (n >= MAX_BITS) {
-        n = MAX_BITS - 1;
+zvalue datIntFromZint(zint value) {
+    zint size = bitSize(value);
+    zvalue result = datAllocValue(DAT_INT, size, sizeof(int32_t));
+
+    if (size > MAX_BITS) {
+        die("Value too large to fit into int: %lld", value);
     }
 
-    return (bool) ((value >> n) & 1);
+    ((DatInt *) result)->value = (int32_t) value;
+    return result;
 }
 
 /* Documented in header. */
@@ -112,20 +114,18 @@ bool datIntSign(zvalue intval) {
 }
 
 /* Documented in header. */
-zvalue datIntFromZint(zint value) {
-    zint size = bitSize(value);
-    zvalue result = datAllocValue(DAT_INT, size, sizeof(int32_t));
-
-    if (size > MAX_BITS) {
-        die("Value too large to fit into int: %lld", value);
-    }
-
-    ((DatInt *) result)->value = (int32_t) value;
-    return result;
-}
-
-/* Documented in header. */
 zint datZintFromInt(zvalue intval) {
     datAssertInt(intval);
     return intValue(intval);
+}
+
+/* Documented in header. */
+bool datZintGetBit(zint value, zint n) {
+    if (n < 0) {
+        die("Attempt to access negative bit index: %lld", n);
+    } else if (n >= MAX_BITS) {
+        n = MAX_BITS - 1;
+    }
+
+    return (bool) ((value >> n) & 1);
 }

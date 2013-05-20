@@ -79,20 +79,6 @@ zorder datStringOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zint datStringNth(zvalue string, zint n) {
-    datAssertString(string);
-    return datHasNth(string, n) ? stringElems(string)[n] : (zint) -1;
-}
-
-/* Documented in header. */
-zvalue datStringFromChars(zint size, const zchar *chars) {
-    zvalue result = allocString(size);
-
-    memcpy(stringElems(result), chars, size * sizeof(zchar));
-    return result;
-}
-
-/* Documented in header. */
 zvalue datStringAdd(zvalue str1, zvalue str2) {
     datAssertString(str1);
     datAssertString(str2);
@@ -116,6 +102,14 @@ zvalue datStringAdd(zvalue str1, zvalue str2) {
 }
 
 /* Documented in header. */
+zvalue datStringFromChars(zint size, const zchar *chars) {
+    zvalue result = allocString(size);
+
+    memcpy(stringElems(result), chars, size * sizeof(zchar));
+    return result;
+}
+
+/* Documented in header. */
 zvalue datStringFromUtf8(zint stringBytes, const char *string) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
@@ -131,18 +125,9 @@ zvalue datStringFromUtf8(zint stringBytes, const char *string) {
 }
 
 /* Documented in header. */
-zint datUtf8SizeFromString(zvalue string) {
+zint datStringNth(zvalue string, zint n) {
     datAssertString(string);
-
-    zint size = datSize(string);
-    zchar *elems = stringElems(string);
-    zint result = 0;
-
-    for (zint i = 0; i < size; i++) {
-        result += (utf8EncodeOne(NULL, elems[i]) - (char *) NULL);
-    }
-
-    return result;
+    return datHasNth(string, n) ? stringElems(string)[n] : (zint) -1;
 }
 
 /* Documented in header. */
@@ -163,4 +148,19 @@ void datUtf8FromString(zint resultSize, char *result, zvalue string) {
     if ((out - result) > resultSize) {
         die("Buffer too small for utf8-encoded string.");
     }
+}
+
+/* Documented in header. */
+zint datUtf8SizeFromString(zvalue string) {
+    datAssertString(string);
+
+    zint size = datSize(string);
+    zchar *elems = stringElems(string);
+    zint result = 0;
+
+    for (zint i = 0; i < size; i++) {
+        result += (utf8EncodeOne(NULL, elems[i]) - (char *) NULL);
+    }
+
+    return result;
 }
