@@ -2,13 +2,14 @@ License for Samizdat
 ====================
 
 Samizdat was written by the Samizdat Authors, including Dan Bornstein
-and possibly others. See the associated file <AUTHORS.md> for details.
+and possibly others. See the associated file [AUTHORS.md](AUTHORS.md)
+for details.
 
 Samizdat is licensed under the Apache License, version 2.0. The full
 text of the license is reproduced below.
 
 **Note:** Instead of the usual highly-verbose file header recommended
-in the Appendix to the License, this project uses the following brief
+in the Appendix to the License, this project uses the following briefer
 file header:
 
 ```
