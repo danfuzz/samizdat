@@ -1,8 +1,8 @@
-Parsing in Samizdat
-===================
+Samizdat 1 Parsing Syntax And Semantics
+=======================================
 
-Since parsing is something so many programs have to do, Samizdat offers
-language-level facilities for building parsers.
+Since parsing is something so many programs have to do, *Samizdat Layer 1*
+offers language-level facilities for building parsers.
 
 The foundation of parsing is the parsing function. A parsing function is
 a regular in-language function with specific requirements for formal
