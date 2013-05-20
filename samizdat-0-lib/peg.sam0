@@ -75,7 +75,7 @@ pegRuleAny = { yield state ::
     <> ifValue { <> listFirst state }
         { item ::
             yield item;
-            <> listDelNth state 0;
+            <> listButFirst state;
         }
         { yield() }
 };

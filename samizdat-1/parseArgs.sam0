@@ -83,8 +83,8 @@ parseArguments = pegMakeMainSequence
             { io0Die "Trouble with options." };
         ifTrue { <> eq (lowSize words) 0 }
             { io0Die "Missing file name." };
-        file = listNth words 0;
-        args = listDelNth words 0;
+        file = listFirst words;
+        args = listButFirst words;
         <> [
             "options" = options
             "file" = file
