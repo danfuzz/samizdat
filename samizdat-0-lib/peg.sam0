@@ -269,27 +269,6 @@ pegMakeChar = { ch ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-pegMakeChars = { string <out> ::
-    # Trivial case: Empty string. Return the empty rule.
-    ifTrue { <> eq string "" }
-        { <out> pegRuleEmpty };
-
-    # Trivial case: One-char string. Return a simple one-char rule.
-    ifTrue { <> eq (lowSize string) 1 }
-        { <out> pegMakeToken @[string] };
-
-    # This is implemented as, in effect, `("1" "2" ... { <> string })`,
-    # which allows us to minimize code duplication.
-
-    # Make a list of rules per character.
-    chars = stringReduce [] string
-        { result . ch :: <> listAppend result (pegMakeChar ch) };
-
-    <> apply pegMakeMainSequence
-        (listAppend chars (pegMakeCode { <> @[string] }))
-};
-
-# Documented in Samizdat Layer 0 spec.
 pegMakeChoice = { rules* ::
     # Trivial case: No rules. Return the failure rule.
     ifTrue { <> eq rules [] }
@@ -377,6 +356,27 @@ pegMakePlus = { rule ::
 };
 
 # Documented in Samizdat Layer 0 spec.
+pegMakeString = { string <out> ::
+    # Trivial case: Empty string. Return the empty rule.
+    ifTrue { <> eq string "" }
+        { <out> pegRuleEmpty };
+
+    # Trivial case: One-char string. Return a simple one-char rule.
+    ifTrue { <> eq (lowSize string) 1 }
+        { <out> pegMakeToken @[string] };
+
+    # This is implemented as, in effect, `("1" "2" ... { <> string })`,
+    # which allows us to minimize code duplication.
+
+    # Make a list of rules per character.
+    chars = stringReduce [] string
+        { result . ch :: <> listAppend result (pegMakeChar ch) };
+
+    <> apply pegMakeMainSequence
+        (listAppend chars (pegMakeCode { <> @[string] }))
+};
+
+# Documented in Samizdat Layer 0 spec.
 pegMakeTokenSet = { tokens* ::
     <> genericMakeTokenSet true tokens
 };
@@ -419,7 +419,6 @@ pegApply = { rule input ::
     "pegMakeChar" = pegMakeChar
     "pegMakeCharSet" = pegMakeCharSet
     "pegMakeCharSetComplement" = pegMakeCharSetComplement
-    "pegMakeChars" = pegMakeChars
     "pegMakeChoice" = pegMakeChoice
     "pegMakeCode" = pegMakeCode
     "pegMakeLookaheadFailure" = pegMakeLookaheadFailure
@@ -429,6 +428,7 @@ pegApply = { rule input ::
     "pegMakePlus" = pegMakePlus
     "pegMakeSequence" = pegMakeSequence
     "pegMakeStar" = pegMakeStar
+    "pegMakeString" = pegMakeString
     "pegMakeToken" = pegMakeToken
     "pegMakeTokenSet" = pegMakeTokenSet
     "pegMakeTokenSetComplement" = pegMakeTokenSetComplement

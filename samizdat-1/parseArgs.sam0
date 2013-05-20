@@ -35,7 +35,7 @@ parseKey = pegMakeMainSequence
 #     { <> [k = v] }
 # /}
 parseKeyValue = pegMakeMainSequence
-    (pegMakeChars "--")
+    (pegMakeString "--")
     parseKey
     (pegMakeChar "=")
     parseWord
@@ -46,7 +46,7 @@ parseKeyValue = pegMakeMainSequence
 #     { <> [w = true] }
 # /}
 parseFlag = pegMakeMainSequence
-    (pegMakeChars "--")
+    (pegMakeString "--")
     parseWord
     (pegMakeCode { . w :: <> [w = true] });
 
@@ -75,7 +75,7 @@ parseOption = pegMakeChoice parseFlag parseKeyValue parseError;
 # /}
 parseArguments = pegMakeMainSequence
     (pegMakeStar parseOption)
-    (pegMakeOpt (pegMakeSequence (pegMakeChars "--") parseWordBreak))
+    (pegMakeOpt (pegMakeSequence (pegMakeString "--") parseWordBreak))
     (pegMakeStar parseWord)
     (pegMakeCode { optList . words ::
         options = apply mapAdd optList;
