@@ -388,19 +388,14 @@ repeatPex = {/
     )
 /};
 
-parserAtom = {/
-    varRef
-|
-    parserString
-|
-    parserToken
-|
-    parserSet
-|
-    @"."
-|
-    @"()"
-|
+parenPex = {/
+    @"("
+    pex = choicePex
+    @")"
+    { <> pex }
+/};
+
+parserCode = {/
     @"{"
 
     yieldDef = (
@@ -416,6 +411,24 @@ parserAtom = {/
     @"}"
 
     { <> @["function" (mapAdd yieldDef body)] }
+/};
+
+parserAtom = {/
+    varRef
+|
+    parserString
+|
+    parserToken
+|
+    parserSet
+|
+    parserCode
+|
+    @"."
+|
+    @"()"
+|
+    parenPex
 /};
 
 parserSet = {/
