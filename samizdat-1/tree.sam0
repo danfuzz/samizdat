@@ -309,11 +309,48 @@ fwdFunction implFunction;
 
 # `choicePex` is the top-level parsing expression node type.
 fwdChoicePex = makeForwardDeclaration();
-choicePex = { args* :: <> apply (fwdChoicePex()) args };
+parseChoicePex = { args* :: <> apply (fwdChoicePex()) args };
 
 implParser = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakeToken @"{/")
+    parseChoicePex
+    (pegMakeToken @"/}")
+    (pegMakeCode { . pex . :: <> @["parser" pex] });
 fwdParser implParser;
+
+parseParenPex = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+parseParserString = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+parseParserToken = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+parseParserSet = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+parseParserCode = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+parseParserAtom = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+parseRepeatPex = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+parseLookaheadPex = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+parseNamePex = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+parseSequencePex = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+
+implChoicePex = pegMakeMainSequence
+    (pegMakeCode { io0Die "TODO" });
+fwdChoicePex implChoicePex;
 
 
 #
