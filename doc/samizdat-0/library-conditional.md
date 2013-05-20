@@ -15,9 +15,10 @@ the rest of the arguments in sequence, collecting all the non-void
 results into a list, which is returned. The function is called with
 exactly one argument, namely the item to process.
 
-**Note:** Unlike most of the map/reduce functions, this one takes its
-function as the first argument. This is done specifically so that it is
-convenient to `apply` it.
+**Note:** Unlike most of the map/reduce functions defined in *Samizdat
+Layer 0*, this one takes its function as the *first* and not the
+*last* argument. This is done specifically so that it is convenient to
+`apply` it.
 
 #### `argsReduce function base rest* <> . | !.`
 
@@ -29,9 +30,7 @@ the `base` for the first item in `rest`), and second the item to process.
 The return value of this call is what would have been passed as the
 reduction result to a would-be next function call.
 
-**Note:** Unlike most of the map/reduce functions, this one takes its
-function as the first argument. This is done specifically so that it is
-convenient to `apply` it.
+**Note:** See `argsMap` for discussion about the choice of argument order.
 
 #### `ifTrue predicate trueFunction falseFunction? <> . | !.`
 

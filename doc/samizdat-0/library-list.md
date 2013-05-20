@@ -100,6 +100,8 @@ Calls the given function on each element of the given list.
 The given function is called with two arguments, namely the element's
 index (zero-based) and value. Always returns void.
 
+**Note:** See `stringMap` for discussion about choice of argument order.
+
 #### `listLast list notFound? <> . | !.`
 
 Returns the last element of the given list or the given `notFound` value
@@ -118,7 +120,7 @@ Similar to `argsMap`, if the function returns void, then no item is
 added for the corresponding element. This means the size of the
 result may be smaller than the size of the argument.
 
-See note on `stringMap` about choice of argument order.
+**Note:** See `stringMap` for discussion about choice of argument order.
 
 #### `listPrepend value list <> list`
 
@@ -144,4 +146,4 @@ previously-returned non-void value (or `base` value if there has
 yet to be a non-void function return) is what is passed to the
 subsequent iteration and returned at the end of the call.
 
-See note on `stringMap` about choice of argument order.
+**Note:** See `stringMap` for discussion about choice of argument order.

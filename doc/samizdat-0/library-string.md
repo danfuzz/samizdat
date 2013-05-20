@@ -43,6 +43,8 @@ The given function is called with two arguments, namely the element's
 index (zero-based) and the element's value (as a single-character string).
 Always returns void.
 
+**Note:** See `stringMap` for discussion about choice of argument order.
+
 #### `stringFromTokenList tokens <> string`
 
 Takes a list of tokenizer-style character tokens (that is, tokens whose
@@ -85,4 +87,4 @@ previously-returned non-void value (or `base` value if there has
 yet to be a non-void function return) is what is passed to the
 subsequent iteration and returned at the end of the call.
 
-See note on `stringMap` about choice of argument order.
+**Note:** See `stringMap` for discussion about choice of argument order.
