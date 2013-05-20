@@ -401,6 +401,7 @@ parserAtom = {/
     @"()"
 |
     @"{"
+
     yieldDef = (
         y = yieldDef
         @"::"
@@ -409,19 +410,24 @@ parserAtom = {/
         @"::"?
         { <> [=] }
     )
+
     body = programBody
     @"}"
+
     { <> @["function" (mapAdd yieldDef body)] }
 /};
 
 parserSet = {/
     @"["
+
     type = (
         @"!" { <> "setComplement" }
     |
         { <> "set" }
     )
+
     terminals = (parserString* | parserToken*)
+
     @"]"
     {
         <> @[type terminals]
