@@ -147,10 +147,10 @@ parseFileOrError = pegMakeMainSequence
     (pegMakeCode { tokens . :: <> tokens });
 
 # Performs tokenization of the given file contents.
-tokenize0 = { programText ::
+tokenize = { programText ::
     <> pegApply parseFileOrError programText
 };
 
 <> [
-    "tokenize0" = tokenize0
+    "tokenize" = tokenize
 ]

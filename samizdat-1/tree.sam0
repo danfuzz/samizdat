@@ -336,10 +336,10 @@ parseProgramOrError = pegMakeMainSequence
     (pegMakeCode { prog :: <> prog });
 
 # Performs tree parsing of the given token list.
-tree0 = { programTokens ::
+treeFromTokens = { programTokens ::
     <> pegApply parseProgramOrError programTokens
 };
 
 <> [
-    "tree0" = tree0
+    "treeFromTokens" = treeFromTokens
 ]
