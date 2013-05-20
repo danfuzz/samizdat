@@ -363,8 +363,7 @@ parenPex = {/
 /};
 
 parserString = {/
-    str = @string
-    { <> @["chars" str] }
+    @string
 /};
 
 parserToken = {/
@@ -377,12 +376,22 @@ parserSet = {/
     @"["
 
     type = (
-        @"!" { <> "setComplement" }
+        @"!" { <> "!" }
     |
-        { <> "set" }
+        { <> "&" }
     )
 
-    terminals = (parserString* | parserToken*)
+    terminals = (
+        strings = parserString*
+        {
+            <> listReduce "" strings
+                { result . s ::
+                    <> stringAdd result (tokenValue s)
+                }
+        }
+    |
+        parserToken*
+    )
 
     @"]"
     {
@@ -419,9 +428,9 @@ parserAtom = {/
 |
     parserCode
 |
-    @"."
+    @"." { <> "." }
 |
-    @"()"
+    @"()" { <> "()" }
 |
     parenPex
 /};
