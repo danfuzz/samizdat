@@ -334,58 +334,25 @@ Tree Syntax
 The following is an in-language description of the tree grammar, as
 modifications to the *Samizdat Layer 0* tree syntax.
 
+**Note:** The grammar uses the label "pex" to denote various
+"Parser EXpression" types.
+
 ```
+# forward declaration: parser
+# forward declaration: choicePex
+
 atom = {/
     # ... original alternates from the base grammar ...
-    | parser
+    # The lookahead is just to make it clear that Samizdat Layer 1 can
+    # only be "activated" with that one specific token.
+    | &"{/" parser
 /};
 
-# Note: Using the label "pex" to denote various "Parser EXpression" types.
 parser = {/
-    @"{/" pex=choicePex @"/}"
+    @"{/"
+    pex = choicePex
+    @"/}"
     { <> @["parser" pex] }
-/};
-
-choicePex = {/
-    first = sequencePex
-    rest = (@"|" sequencePex)*
-    { <> @["choice" (listPrepend first rest)] }
-/};
-
-sequencePex = {/
-    items = namePex+
-    { <> @["sequence" items] }
-/};
-
-namePex = {/
-    (
-        name = @identifier
-        @"="
-        pex = lookaheadPex
-        { <> @["varDef" ["name"=(tokenValue name) "value"=pex]] }
-    )
-|
-    lookaheadPex
-/};
-
-lookaheadPex = {/
-    (
-        lookahead = [@"&" @"!"]
-        pex = repeatPex
-        { <> @[lookahead pex] }
-    )
-|
-    repeatPex
-/};
-
-repeatPex = {/
-    atom = parserAtom
-    (
-        repeat = [@"?" @"*" @"+"]
-        { <> @[repeat atom] }
-    |
-        { <> atom }
-    )
 /};
 
 parenPex = {/
@@ -393,6 +360,34 @@ parenPex = {/
     pex = choicePex
     @")"
     { <> pex }
+/};
+
+parserString = {/
+    str = @string
+    { <> @["chars" str] }
+/};
+
+parserToken = {/
+    @"@"
+    type = (@identifier | @string)
+    { <> @["token" (tokenValue type)] }
+/};
+
+parserSet = {/
+    @"["
+
+    type = (
+        @"!" { <> "setComplement" }
+    |
+        { <> "set" }
+    )
+
+    terminals = (parserString* | parserToken*)
+
+    @"]"
+    {
+        <> @[type terminals]
+    }
 /};
 
 parserCode = {/
@@ -431,32 +426,46 @@ parserAtom = {/
     parenPex
 /};
 
-parserSet = {/
-    @"["
-
-    type = (
-        @"!" { <> "setComplement" }
+repeatPex = {/
+    atom = parserAtom
+    (
+        repeat = [@"?" @"*" @"+"]
+        { <> @[repeat atom] }
     |
-        { <> "set" }
+        { <> atom }
     )
-
-    terminals = (parserString* | parserToken*)
-
-    @"]"
-    {
-        <> @[type terminals]
-    }
 /};
 
-parserString = {/
-    str = @string
-    { <> @["chars" str] }
+lookaheadPex = {/
+    (
+        lookahead = [@"&" @"!"]
+        pex = repeatPex
+        { <> @[lookahead pex] }
+    )
+|
+    repeatPex
 /};
 
-parserToken = {/
-    @"@"
-    type = (@identifier | @string)
-    { <> @["token" (tokenValue type)] }
+namePex = {/
+    (
+        name = @identifier
+        @"="
+        pex = lookaheadPex
+        { <> @["varDef" ["name"=(tokenValue name) "value"=pex]] }
+    )
+|
+    lookaheadPex
+/};
+
+sequencePex = {/
+    items = namePex+
+    { <> @["sequence" items] }
+/};
+
+choicePex = {/
+    first = sequencePex
+    rest = (@"|" sequencePex)*
+    { <> @["choice" (listPrepend first rest)] }
 /};
 ```
 
