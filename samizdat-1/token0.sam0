@@ -18,14 +18,17 @@ parseWhitespace = pegMakeMainSequence
             (pegMakeStar (pegMakeCharSetComplement "\n"))
             (pegMakeChar "\n")));
 
-# Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
 parsePunctuation = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeChars "@@")
         (pegMakeChars "::")
         (pegMakeChars "<>")
         (pegMakeChars "()")
-        (pegMakeCharSet "@:.=+?;*<>{}()[]"));
+        (pegMakeChars "{/") # Defined by Samizdat Layer 1.
+        (pegMakeChars "/}") # Defined by Samizdat Layer 1.
+        # The latter three characters are defined by Samizdat Layer 1.
+        (pegMakeCharSet "@:.=+?;*<>{}()[]" "&|!"));
 
 # Documented in Samizdat Layer 0 spec.
 parseChar = pegMakeMainSequence
