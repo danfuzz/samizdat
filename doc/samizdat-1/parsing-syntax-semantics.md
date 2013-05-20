@@ -1,5 +1,10 @@
-Samizdat 1 Parsing Syntax And Semantics
-=======================================
+Samizdat Layer 1
+================
+
+Parsing Syntax And Semantics In A Nutshell
+------------------------------------------
+
+### Overview
 
 Since parsing is something so many programs have to do, *Samizdat Layer 1*
 offers language-level facilities for building parsers.
@@ -30,13 +35,12 @@ parsing functions. It is perfectly acceptable to mix-and-match the parsing
 functions defined using this syntax with ones defined more "manually".
 
 
-Syntax and Semantics
---------------------
+### Details
 
 The following list of parser forms. With respect to the
 expression forms, they are is in precedence, from loosest to tightest.
 
-### Parsing functions
+#### Parsing functions
 
 Parsing functions are written as a single parsing expression inside
 "parsing braces" `{/ ... /}`. Just as regular braces enclose an anonymous
@@ -46,7 +50,7 @@ function / closure.
 The result of calling a parsing function is the same as the result of
 the expression it contains.
 
-### Matching one of multiple alternates
+#### Matching one of multiple alternates
 
 To match any one of a series of alternates, the alternates are listed in
 priority sequence (first one listed gets first "dibs", etc.), separated
@@ -58,7 +62,7 @@ For example, the parser `{/ "f" | "foobar" /}` will match the string
 `"oobar"`. Note that because of the prioritized ordering, the second
 alternate could never get picked in this case.
 
-### Matching sequences of items
+#### Matching sequences of items
 
 To match a sequence of items, the items are simply listed in order.
 The result of matching a sequence of items is the yielded result from
@@ -68,7 +72,7 @@ For example, the parser `{/ @foo @bar /}` will match the token
 list `[@foo @bar @baz]`, resulting in the yielded value
 `@bar` and a remainder of `[@baz]`.
 
-### Binding a named variable to an item match
+#### Binding a named variable to an item match
 
 In order to use the result of a matched item in a code block (see below),
 it is possible to bind a variable to the result. To do so, precede the
@@ -87,7 +91,7 @@ variable `f` will be bound to the matched yield of `@foo`, and a local
 variable `b` will be bound to the matched yield of `@bar`. At the point
 marked `Y`, `f` and `b` are no longer in scope.
 
-### Lookahead
+#### Lookahead
 
 To perform matching tests without "consuming" any input, an item
 can be preceded by a marker to indicate that the item *must* or *must not*
@@ -115,7 +119,7 @@ For example:
   the lookahead `!"foobaz"` will fail (because a `"foobaz"` lookahead
   will *succeed* in matching).
 
-### Repeat matching
+#### Repeat matching
 
 It is possible to alter the number of times an item matched by
 appending one of three suffixes to the item. In all such cases, the
@@ -150,7 +154,7 @@ For example:
   same parser will fail to match the string `"blort"`, since there is
   not even a single `"f"` at the start of the input.
 
-### Grouping
+#### Grouping
 
 To override the default precedence of the syntax, a parsing expression
 can be placed between parentheses (`( ... )`). The result of a parenthesized
@@ -168,7 +172,7 @@ For example*
   token or a `@bar` token, and at the point marked `X` a variable named
   `zamboni` will be bound with the result of parsing the `@foo`-or-`@bar`.
 
-### Matching using other parser functions (terminal)
+#### Matching using other parser functions (terminal)
 
 A parser function can delegate to another parser function by naming
 that other parser function (as a variable reference). The result of parsing
@@ -180,7 +184,7 @@ For example:
   assuming that `foo` is a properly-written parser function. The yielded
   result will be the same as the `foo` parser's yield.
 
-### Matching a single token (terminal)
+#### Matching a single token (terminal)
 
 Tokens are the basic terminals in the context of tree parsing. When
 performing tree parsing, tokens are represented &mdash; hopefully
@@ -197,7 +201,7 @@ For example, the parser `{/ @foo /}` will match the token list
 `[@foo @bar]`, resulting in the yielded value `@foo` and a
 remainder of `[@bar]`.
 
-### Matching a sequence of one or more characters (terminal)
+#### Matching a sequence of one or more characters (terminal)
 
 Characters are the basic terminals in the context of tokenization.
 When performing tokenization, characters are represented as single-element
@@ -217,7 +221,7 @@ the yielded value `@f` and a remainder of `"oobar"`.
 * The parser `{/ "foo" /}` will match the string `"foobar"`, resulting in
 the yielded value `@foo` and a remainder of `"bar"`.
 
-### Matching an arbitrary terminal item (terminal)
+#### Matching an arbitrary terminal item (terminal)
 
 To match an arbitrary terminal item (character or token), use a
 plain dot (`.`).
@@ -226,7 +230,7 @@ For example, the parser `{/ . . . /}` matches an arbitrary
 sequence of three terminals, with the result being the value of the
 third terminal.
 
-### Matching the end-of-input (terminal)
+#### Matching the end-of-input (terminal)
 
 To match the end of input, use a not-dot (`!.`). This only ever matches
 when there is no input available (that is, when the input is `[]`). When
@@ -236,7 +240,7 @@ For example, the parser `{/ "foo" !. /}` will match the string `"foo"` but
 only if it's at the end of input, resulting in the yielded value `null`
 and a remainder of `[]`.
 
-### Successfully matching nothing (terminal)
+#### Successfully matching nothing (terminal)
 
 To explicitly match an empty list of terminals, use an empty pair of
 parentheses (`()`). This always succeeds without consuming any input,
@@ -251,7 +255,7 @@ For example:
   value `@foo` if the input begins with `"foo"`, or resulting in the
   yielded value `null` if not.
 
-### Matching character or token sets (terminal)
+#### Matching character or token sets (terminal)
 
 To match a set of characters (for tokenization) or tokens (for tree parsing),
 list them between square brackets (`[ ... ]`). Characters of a character
@@ -280,7 +284,7 @@ Future direction: It may become possible to name ranges of characters,
 e.g. `["a".."z" "0".."9"]`, and it may become possible to name symbolic
 sets, e.g. `[whitespace punctuation "z"]`.
 
-### Running arbitrary code instead of consuming input (terminal)
+#### Running arbitrary code instead of consuming input (terminal)
 
 To cause arbitrary code to run in the context of parsing, place that code
 between regular braces (`{ ... }`). This is a variant of the anonymous
@@ -306,471 +310,7 @@ For example:
 * The parser `{/ f=@foo { <out> :: <out> [[[f]]] } /}` is just like the
   previous example, except it is written with an explicit yield definition.
 
-### Future direction: Destructuring bind
+#### Future direction: Destructuring bind
 
 If in the future a "destructuring bind" form is supported, then it
 will probably be introduced by an approximate/tilde (`~`).
-
-
-Token Syntax
-------------
-
-The following is an in-language description of the parser tokens, as
-modifications to the *Samizdat Layer 0* tokenization syntax.
-
-```
-punctuation = {/
-    # ... original alternates from the base grammar ...
-    "{/" |
-    "/}" |
-    ["&" "|" "!"]
-/};
-```
-
-
-Tree Syntax
------------
-
-The following is an in-language description of the tree grammar, as
-modifications to the *Samizdat Layer 0* tree syntax.
-
-**Note:** The grammar uses the label "pex" to denote various
-"Parser EXpression" types.
-
-```
-# forward declaration: parser
-# forward declaration: choicePex
-
-atom = {/
-    # ... original alternates from the base grammar ...
-    # The lookahead is just to make it clear that Samizdat Layer 1 can
-    # only be "activated" with that one specific token.
-    | &"{/" parser
-/};
-
-parser = {/
-    @"{/"
-    pex = choicePex
-    @"/}"
-    { <> @["parser" pex] }
-/};
-
-parenPex = {/
-    @"("
-    pex = choicePex
-    @")"
-    { <> pex }
-/};
-
-parserString = {/
-    @string
-/};
-
-parserToken = {/
-    @"@"
-    type = (@identifier | @string)
-    { <> @["token" (tokenValue type)] }
-/};
-
-parserSet = {/
-    @"["
-
-    type = (
-        @"!" { <> "[!]" }
-    |
-        { <> "[]" }
-    )
-
-    terminals = (
-        strings = parserString*
-        {
-            <> listReduce "" strings
-                { result . s ::
-                    <> stringAdd result (tokenValue s)
-                }
-        }
-    |
-        parserToken*
-    )
-
-    @"]"
-    {
-        <> @[type terminals]
-    }
-/};
-
-parserCode = {/
-    @"{"
-
-    yieldDef = (
-        y = yieldDef
-        @"::"
-        { <> ["yieldDef" = y] }
-    |
-        @"::"?
-        { <> [=] }
-    )
-
-    body = programBody
-    @"}"
-
-    { <> @["function" (mapAdd yieldDef body)] }
-/};
-
-parserAtom = {/
-    varRef
-|
-    parserString
-|
-    parserToken
-|
-    parserSet
-|
-    parserCode
-|
-    @"." { <> "." }
-|
-    @"()" { <> "()" }
-|
-    parenPex
-/};
-
-repeatPex = {/
-    atom = parserAtom
-    (
-        repeat = [@"?" @"*" @"+"]
-        { <> @[repeat atom] }
-    |
-        { <> atom }
-    )
-/};
-
-lookaheadPex = {/
-    (
-        lookahead = [@"&" @"!"]
-        pex = repeatPex
-        { <> @[lookahead pex] }
-    )
-|
-    repeatPex
-/};
-
-namePex = {/
-    (
-        name = @identifier
-        @"="
-        pex = lookaheadPex
-        { <> @["varDef" ["name"=(tokenValue name) "value"=pex]] }
-    )
-|
-    lookaheadPex
-/};
-
-sequencePex = {/
-    items = namePex+
-    { <> @["sequence" items] }
-/};
-
-choicePex = {/
-    first = sequencePex
-    rest = (@"|" sequencePex)*
-    { <> @["choice" (listPrepend first rest)] }
-/};
-```
-
-Tree Semantics
---------------
-
-The node types and contents used in the parsed form of the parser syntax
-have a fairly direct correspondence to the surface syntax. Most of the
-"operator" nodes have token types whose name is the same as the corresponding
-syntactic operator. The highest layer of nodes have token types that are
-(English) words, both to help distinguish them as well as to avoid the
-problem that a "sequence" has no syntactic operator.
-
-### Regular expression nodes
-
-#### @["parser" pex]
-
-Representation of an anonymous parsing function. `pex` must be a parsing
-expression node, that is, any of the node types defined here other than
-this one.
-
-This corresponds to the syntax `{/ pex /}`.
-
-
-### Terminal parsing expression nodes
-
-#### @["."]
-
-Representation of the "match anything" rule.
-
-This corresponds to the syntax `.`.
-
-#### @["()"]
-
-Representation of the "always succeed" (no-op) rule.
-
-This corresponds to the syntax `()`.
-
-#### @["[]" charSet]
-
-Representation of a character set rule. `charSet` must be a string, which
-is taken to be an unordered set of characters.
-
-This corresponds to the syntax `["charSet"]`.
-
-#### @["[]" tokenSet]
-
-Representation of a token set rule. `tokenSet` must be a list of tokens,
-which is taken to be an unordered set of token types (token values are
-ignored).
-
-This corresponds to the syntax `[token1 token2 etc]`.
-
-#### @["[!]" charSet]
-
-Representation of a character set complement rule. `charSet` must be a string,
-which is taken to be an unordered set of characters.
-
-This corresponds to the syntax `[! "charSet"]`.
-
-#### @["[!]" tokenSet]
-
-Representation of a token set complement rule. `tokenSet` must be a list of
-tokens, which is taken to be an unordered set of token types (token values
-are ignored).
-
-This corresponds to the syntax `[! token1 token2 etc]`.
-
-#### @["{}" [("yieldDef"=name)? statements=[statement*] ("yield"=expression)?]]
-
-Representation of a code expression.
-
-* `"yieldDef"=name` (optional) &mdash; A name (typically a string) to bind
-  as the nonlocal-exit function.
-
-* `"statements"=[statement*]` (required) — A list of statement nodes.
-  Statement nodes are as defined by the *Samizdat Layer 0* specification.
-
-* `"yield"=expression` (optional) — An expression node representing the
-  (local) result value for the code. Expression nodes are as defined
-  by the *Samizdat Layer 0* specification.
-
-This corresponds to the syntax `{ <yieldDef> :: statement1; statement2;
-etc; <> yield }`.
-
-
-### Non-terminal parsing expression nodes
-
-#### @["choice" [pex*]]
-
-Representation of an ordered choice of items to match. Each element
-of the list must be a parsing expression node.
-
-This corresponds to the syntax `pex1 | pex2 | etc`.
-
-#### @["sequence" [pex*]]
-
-Representation of a sequence of items to match, in order. Each element
-of the list must be a parsing expression node.
-
-This corresponds to the syntax `pex1 pex2 etc`.
-
-#### @["varDef" ["name"=name "value"=pex]]
-
-Representation of a name-bound expression.
-
-* `"name"=name` (required) &mdash; An arbitrary literal name
-  (typically a string).
-
-* `"value"=pex` (required) &mdash; A parsing expression node.
-
-This corresponds to the syntax `name = pex`.
-
-#### @["&" pex]
-
-Representation of a lookahead-success expression. `pex` must be a parsing
-expression node.
-
-This corresponds to the syntax `&pex`.
-
-#### @["!" pex]
-
-Representation of a lookahead-failure expression. `pex` must be a parsing
-expression node.
-
-This corresponds to the syntax `!pex`.
-
-#### @["?" pex]
-
-Representation of an optional (zero-or-one) expression. `pex` must be a
-parsing expression node.
-
-This corresponds to the syntax `pex?`.
-
-#### @["*" pex]
-
-Representation of a star (zero-or-more) expression. `pex` must be a parsing
-expression node.
-
-This corresponds to the syntax `pex*`.
-
-#### @["+" pex]
-
-Representation of a plus (one-or-more) expression. `pex` must be a parsing
-expression node.
-
-This corresponds to the syntax `pex+`.
-
-
-Example
--------
-
-The classic "four function calculator" as an example. In this case, it is
-done as a unified tokenizer / tree parser. For simplicity, we don't bother
-with whitespace-related rules.
-
-Note: This example doesn't use all of the syntactic forms mentioned above.
-
-```
-digit = {/
-    ch=["0123456789"]
-    {
-        <> isub (intFromString ch) (intFromString "0")
-    }
-/};
-
-number = {/
-    digits=digit+
-    {
-        <> listReduce 0 digits
-            { result digit :: <> iadd digit (imul result 10) }
-    }
-/};
-
-atom = {/
-    number
-|
-    "(" ex=addExpression ")"
-    { <> ex }
-/};
-
-addExpression = {/
-    ex1=mulExpression op=addOp ex2=addExpression
-    { <> op ex1 ex2 }
-/};
-
-addOp = {/
-    "+" { <> iadd }
-|
-    "-" { <> isub }
-/};
-
-mulExpression = {/
-    ex1=unaryExpression op=mulOp ex2=mulExpression
-    { <> op ex1 ex2 }
-/};
-
-mulOp = {/
-    "*" { <> imul }
-|
-    "/" { <> idiv }
-/};
-
-unaryExpression = {/
-    op=unaryOp
-    ex=unaryExpression
-    { <> op ex }
-|
-    atom
-/};
-
-unaryOp = {/
-    "-" { <> ineg }
-/};
-
-main = {/
-    (
-        ex = addExpression
-        "\n"
-        {
-            io0Note (format "%q" ex)
-            # Explicit yield here to indicate successful parsing.
-            <> null
-        }
-    )*
-/};
-```
-
-Example Translation to Samizdat Layer 0
----------------------------------------
-
-```
-digit = pegMakeMainSequence
-    (pegMakeCharSet "0123456789")
-    (pegMakeCode { ch ::
-        <> isub (intFromString ch) (intFromString "0")
-    });
-
-number = pegMakeMainSequence
-    (pegMakePlus digit)
-    (pegMakeCode { digits ::
-        <> listReduce 0 digits
-            { result digit :: <> iadd digit (imul result 10) }
-    });
-
-atom = pegMakeChoice
-    number
-    (pegMakeMainSequence
-        (pegMakeChar "(")
-        addExpression
-        (pegMakeChar ")")
-        (pegMakeCode { . ex . :: <> ex }));
-
-addExpression = pegMakeMainSequence
-    mulExpression
-    addOp
-    addExpression
-    (pegMakeCode { ex1 op ex2 :: <> op ex1 ex2 });
-
-addOp = pegMakeChoice
-    (pegMakeSequence
-        (pegMakeChar "+")
-        (pegMakeCode { <> iadd }))
-    (pegMakeSequence
-        (pegMakeChar "-")
-        (pegMakeCode { <> isub }));
-
-mulExpression = pegMakeMainSequence
-    unaryExpression
-    mulOp
-    mulExpression
-    (pegMakeCode { ex1 op ex2 :: <> op ex1 ex2 });
-
-mulOp = pegMakeChoice
-    (pegMakeSequence
-        (pegMakeChar "*")
-        (pegMakeCode { <> imul }))
-    (pegMakeSequence
-        (pegMakeChar "/")
-        (pegMakeCode { <> idiv }));
-
-unaryExpression = pegMakeMainSequence
-    unaryOp
-    unaryExpression
-    (pegMakeCode { op ex :: <> op ex });
-
-unaryOp = pegMakeMainSequence
-    (pegMakeChar "-")
-    (pegMakeCode { <> ineg });
-
-main = pegMakeStar
-    (pegMakeMainSequence
-        addExpression
-        (pegMakeChar "\n")
-        (pegMakeCode { ex . ::
-            io0Note (format "%q" ex);
-            <> null
-        }));
-```
