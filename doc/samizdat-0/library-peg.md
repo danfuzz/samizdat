@@ -194,13 +194,16 @@ string. The result of successful parsing is a valueless token with
 
 This is equivalent to the syntactic form `{/ "string" /}`.
 
-#### `pegMakeToken token <> rule`
+#### `pegMakeToken type <> rule`
 
 Makes and returns a parser rule which matches any token with the same
-type as the given token. Upon success, the rule consumes and yields
-the matched token.
+type as given. `type` is an arbitrary value, but is typically
+a string. Upon success, the rule consumes and yields the matched token.
 
-This is equivalent to the syntactic form `{/ @token /}`.
+This is also used to match single characters in tokenizers.
+
+This is equivalent to the syntactic form `{/ @token /}` or `{/ "ch" /}`
+(where `ch` represents a single character).
 
 #### `pegMakeTokenSet tokens* <> rule`
 
