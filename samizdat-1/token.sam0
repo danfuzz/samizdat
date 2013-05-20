@@ -18,14 +18,17 @@ parseWhitespace = pegMakeMainSequence
             (pegMakeStar (pegMakeCharSetComplement "\n"))
             (pegMakeChar "\n")));
 
-# Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
 parsePunctuation = pegMakeMainSequence
     (pegMakeChoice
-        (pegMakeChars "@@")
-        (pegMakeChars "::")
-        (pegMakeChars "<>")
-        (pegMakeChars "()")
-        (pegMakeCharSet "@:.=+?;*<>{}()[]"));
+        (pegMakeString "@@")
+        (pegMakeString "::")
+        (pegMakeString "<>")
+        (pegMakeString "()")
+        (pegMakeString "{/") # Defined by Samizdat Layer 1.
+        (pegMakeString "/}") # Defined by Samizdat Layer 1.
+        # The latter three characters are defined by Samizdat Layer 1.
+        (pegMakeCharSet "@:.=+?;*<>{}()[]" "&|!"));
 
 # Documented in Samizdat Layer 0 spec.
 parseChar = pegMakeMainSequence
@@ -144,10 +147,10 @@ parseFileOrError = pegMakeMainSequence
     (pegMakeCode { tokens . :: <> tokens });
 
 # Performs tokenization of the given file contents.
-tokenize0 = { programText ::
+tokenize = { programText ::
     <> pegApply parseFileOrError programText
 };
 
 <> [
-    "tokenize0" = tokenize0
+    "tokenize" = tokenize
 ]
