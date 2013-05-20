@@ -6,14 +6,16 @@ Tree Semantics
 
 The node types and contents used in the parsed form of the parser syntax
 have a fairly direct correspondence to the surface syntax. Most of the
-"operator" nodes have token types whose name is the same as the corresponding
-syntactic operator. The highest layer of nodes have token types that are
+nodes have token types whose name is the exactly the corresponding
+syntactic operator or reminiscent of the corresponding syntactic forms.
+As exceptions, the highest layer of nodes have token types that are
 (English) words, both to help distinguish them as well as to avoid the
-problem that a "sequence" has no syntactic operator.
+problem that a "sequence" has no syntactic operator; and the most basic
+token and string terminals are named `token` and `string`.
 
 ### Regular expression nodes
 
-#### @["parser" pex]
+#### `@["parser" pex]`
 
 Representation of an anonymous parsing function. `pex` must be a parsing
 expression node, that is, any of the node types defined here other than
@@ -23,6 +25,23 @@ This corresponds to the syntax `{/ pex /}`.
 
 
 ### Terminal parsing expression nodes
+
+#### `@["token" type]`
+
+Representation of a token-match terminal. This is also used for
+single-character matches in tokenizers. `type` must be a token. The
+type of the token is what is matched; the payload value, if anything,
+is ignored.
+
+This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes
+a single character).
+
+#### `@["string" string]`
+
+Representation of a multi-character sequence match. `string` must be a
+string.
+
+This corresponds to the syntax `"string"`.
 
 #### `@["."]`
 
