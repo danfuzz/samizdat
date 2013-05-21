@@ -10,27 +10,19 @@
 # particular, the embedded copy of samizdat-0-lib).
 READER ::
 
-# The "unadorned" parser defined in this program.
-treeFromText = { programText ::
-    tokens = tokenize programText;
-    <> treeFromTokens tokens
-};
-
 # Parses the given program text, yielding a `program` node. This also
 # compares the would-be result with the result of doing the same operation
 # using the samizdat-0 facilities for same, complaining if they're not
 # equal.
-sam1Tree = { programText ::
-    # Turn the text into a parse tree using the tokenizer and tree parser
-    # defined in this program.
-    programNode = treeFromText programText;
+sam1ValidatedTree = { programText ::
+    # Parse the text using the layer 1 parsers.
+    programNode1 = sam1Tree programText;
 
-    # Turn the text into a parse tree using the samizdat-0 implementation
-    # of parsing.
+    # Do the same using the layer 0 parsers.
     programNode0 = sam0Tree programText;
 
     # Complain if the two parsed forms aren't identical.
-    ifTrue { <> ne programNode0 programNode }
+    ifTrue { <> ne programNode0 programNode1 }
         {
             io0Note "Parser disagreement.";
             diff programNode0 programNode;
@@ -40,7 +32,7 @@ sam1Tree = { programText ::
             io0Die "Ouch!";
         };
 
-    <> programNode
+    <> programNode1
 };
 
 # Reads the named embedded library file.
@@ -51,12 +43,14 @@ readLibraryFile = { name ::
 # Reads all the library files, returning a map from names to contents.
 readAllLibraryFiles = {
     # Use the manifest to figure out what all to read.
-    manifestProgram = sam1Tree (readLibraryFile "manifest");
-    manifest = (sam0Eval (makeLibrary LIBRARY) manifestProgram)();
+    manifestText = readLibraryFile "manifest";
+    manifestProgram = sam0Eval LIBRARY (sam0Tree manifestText);
+    manifestBindings = manifestProgram();
+    BOOTSTRAP_FILES = mapGet manifestBindings "BOOTSTRAP_FILES";
+    MANIFEST = mapGet manifestBindings "MANIFEST";
 
-    <> listReduce [=] manifest { result . name ::
-        <> mapPut result name (readLibraryFile name)
-    }
+    <> listReduce [=] (listAdd BOOTSTRAP_FILES MANIFEST)
+        { result . name :: <> mapPut result name (readLibraryFile name) }
 };
 
 # Makes the core library by using this program's parser to parse the library
@@ -64,8 +58,8 @@ readAllLibraryFiles = {
 makeCoreLibrary = {
     # Make the core library context that will be used to load the embedded
     # core library. The only difference between this and the original core
-    # library is the replacement of `sam0Tree` with `sam1Tree`.
-    subLibrary = makeLibrary (mapPut LIBRARY "sam0Tree" sam1Tree);
+    # library is the replacement of `sam0Tree` with `sam1ValidatedTree`.
+    subLibrary = makeLibrary (mapPut LIBRARY "sam0Tree" sam1ValidatedTree);
 
     libraryFiles = readAllLibraryFiles();
 

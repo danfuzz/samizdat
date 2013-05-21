@@ -5,7 +5,7 @@
  */
 
 #include "const.h"
-#include "impl.h"
+#include "lang.h"
 #include "util.h"
 
 #include <stddef.h>
@@ -686,10 +686,17 @@ DEF_PARSE(function) {
  */
 
 /* Documented in header. */
-zvalue langNodeFromProgramText(zvalue programText) {
+zvalue langTree0(zvalue program) {
     constInit();
 
-    zvalue tokens = tokenize(programText);
+    zvalue tokens;
+
+    if (datTypeIs(program, DAT_STRING)) {
+        tokens = langTokenize0(program);
+    } else {
+        tokens = program;
+    }
+
     ParseState state = { tokens, datSize(tokens), 0 };
     zvalue result = parse_program(&state);
 

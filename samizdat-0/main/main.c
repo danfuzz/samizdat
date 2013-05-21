@@ -42,8 +42,8 @@ static void realMain(int argc, char **argv) {
 
     zvalue ctx = libNewContext();
     zvalue programText = ioReadFileUtf8(pathList);
-    zvalue program = langNodeFromProgramText(programText);
-    zvalue function = langEvalExpressionNode(ctx, program);
+    zvalue program = langTree0(programText);
+    zvalue function = langEval0(ctx, program);
 
     datGc();
 

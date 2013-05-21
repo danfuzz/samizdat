@@ -1,0 +1,17 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Samizdat Layer 1 Evaluation
+#
+
+# Documented in Samizdat Layer 0 spec.
+sam1Eval = { context expressionNode ::
+    # TODO: Deal with the additional node types.
+    <> sam0Eval context expressionNode
+};
+
+<> [
+    "sam1Eval" = sam1Eval
+]

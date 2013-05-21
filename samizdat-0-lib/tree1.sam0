@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Samizdat Layer 0 tree parser
+# Samizdat Layer 1 tree parser
 #
 
 
@@ -452,11 +452,15 @@ parseProgramOrError = pegMakeMainSequence
             (pegMakeCode { pending :: reportError pending })))
     (pegMakeCode { prog :: <> prog });
 
-# Performs tree parsing of the given token list.
-treeFromTokens = { programTokens ::
-    <> pegApply parseProgramOrError programTokens
+# Performs tree parsing of the given string or token list.
+sam1Tree = { program ::
+    tokens = ifTrue { <> isString program }
+        { <> sam1Tokenize program }
+        { <> program };
+
+    <> pegApply parseProgramOrError tokens
 };
 
 <> [
-    "treeFromTokens" = treeFromTokens
+    "sam1Tree" = sam1Tree
 ]

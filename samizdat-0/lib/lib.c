@@ -52,8 +52,8 @@ static zvalue primitiveContext(void) {
     // Bind all the primitive functions.
     #define PRIM_FUNC(name) \
         ctx = datMapPut(ctx, \
-                           datStringFromUtf8(-1, #name), \
-                           langDefineFunction(prim_##name, NULL))
+                        datStringFromUtf8(-1, #name), \
+                        langDefineFunction(prim_##name, NULL))
     #include "prim-def.h"
 
     // Include a binding for a map of all the primitive bindings
@@ -70,10 +70,10 @@ static zvalue primitiveContext(void) {
 static zvalue getLibrary(void) {
     zvalue libraryFiles = getLibraryFiles();
     zvalue mainText = datMapGet(libraryFiles, STR_MAIN);
-    zvalue mainProgram = langNodeFromProgramText(mainText);
+    zvalue mainProgram = langTree0(mainText);
 
     zvalue ctx = primitiveContext();
-    zvalue mainFunction = langEvalExpressionNode(ctx, mainProgram);
+    zvalue mainFunction = langEval0(ctx, mainProgram);
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.

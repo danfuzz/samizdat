@@ -5,20 +5,35 @@
 #
 # File manifest for the library.
 #
-# This lists all of the names of the core library files.
-#
+# This lists all of the names of the core library files, listed in
+# dependency order. That is, the first one depends only on the primitives,
+# the second can depend on primitives and the first, etc.
+
+BOOTSTRAP_FILES = [
+    "manifest"
+    "main"
+];
+
+MANIFEST = [
+    # Layer 0 in-language core library.
+    "combinator"
+    "const"
+    "boolean"
+    "type"
+    "conditional"
+    "int"
+    "collections"
+    "format"
+    "io0"
+    "peg"
+
+    # Layer 1 implementation.
+    "tokenize1"
+    "tree1"
+    "eval1"
+];
 
 <> [
-    "boolean"
-    "collections"
-    "combinator"
-    "conditional"
-    "const"
-    "format"
-    "int"
-    "io0"
-    "main"
-    "meta"
-    "peg"
-    "type"
+    "BOOTSTRAP_FILES" = BOOTSTRAP_FILES
+    "MANIFEST" = MANIFEST
 ]
