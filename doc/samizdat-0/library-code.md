@@ -96,6 +96,19 @@ semantics, that represents the parsed program.
 <br><br>
 ### In-Language Definitions
 
+#### `forwardFunction() <> function`
+
+Simple function forward declaration utility. The result of a call to this
+function is another function, called the "forwarding function". The first
+time the forwarding function is called, it expects to be passed another
+function, called the "target" function. Every subsequent time the
+forwarding function is called, it passes the arguments directly to the
+target function, and returns whatever the target function returned
+(including void).
+
+This function is meant to make it a little easier to deal with the fact
+that *Samizdat Layer 0* prohibits use-before-def.
+
 #### `makeLibrary map <> map`
 
 Takes a library binding map and returns one that is just like the

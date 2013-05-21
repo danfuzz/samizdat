@@ -11,23 +11,6 @@
 # Helper functions
 #
 
-# Object service function used by `makeForwardDeclaration`.
-forwardService = { yield state value? ::
-    <> ifTrue { <> eq value [] }
-        { yield state }
-        {
-            yield();
-            <> listNth value 0
-        }
-};
-
-# Simple value storage box, to effectively implement forward declaration
-# of parser rules. Call the result with a value to set it, or with no
-# argument to get the previously-set value.
-makeForwardDeclaration = {
-    <> object forwardService null;
-};
-
 # Returns a `call` node.
 makeCall = { function actuals* ::
     <> @["call" ["function"=function "actuals"=actuals]]
@@ -61,16 +44,10 @@ makeLiteral = { value ::
 #
 
 # Forward declarations for atom, expression, function, and parser.
-
-fwdAtom = makeForwardDeclaration();
-fwdExpression = makeForwardDeclaration();
-fwdFunction = makeForwardDeclaration();
-fwdParser = makeForwardDeclaration();
-
-parseAtom = { args* :: <> apply (fwdAtom()) args };
-parseExpression = { args* :: <> apply (fwdExpression()) args };
-parseFunction = { args* :: <> apply (fwdFunction()) args };
-parseParser = { args* :: <> apply (fwdParser()) args };
+parseAtom = forwardFunction();
+parseExpression = forwardFunction();
+parseFunction = forwardFunction();
+parseParser = forwardFunction();
 
 # Documented in Samizdat Layer 0 spec.
 parseInt = pegMakeMainSequence
@@ -174,7 +151,7 @@ implAtom = pegMakeMainSequence
         (pegMakeSequence
             (pegMakeLookaheadSuccess (pegMakeToken "{/"))
             parseParser));
-fwdAtom implAtom;
+parseAtom implAtom;
 
 # Documented in Samizdat Layer 0 spec.
 parseCallExpression = pegMakeMainSequence
@@ -198,7 +175,7 @@ parseUnaryExpression = pegMakeMainSequence
 # Documented in Samizdat Layer 0 spec.
 implExpression = pegMakeMainSequence
     (pegMakeChoice parseCallExpression parseUnaryExpression);
-fwdExpression implExpression;
+parseExpression implExpression;
 
 # Documented in Samizdat Layer 0 spec.
 parseStatement = pegMakeMainSequence
@@ -300,7 +277,7 @@ implFunction = pegMakeMainSequence
     parseProgram
     (pegMakeToken "}")
     (pegMakeCode { . prog . :: <> prog });
-fwdFunction implFunction;
+parseFunction implFunction;
 
 
 #
@@ -308,15 +285,14 @@ fwdFunction implFunction;
 #
 
 # `choicePex` is the top-level parsing expression node type.
-fwdChoicePex = makeForwardDeclaration();
-parseChoicePex = { args* :: <> apply (fwdChoicePex()) args };
+parseChoicePex = forwardFunction();
 
 implParser = pegMakeMainSequence
     (pegMakeToken "{/")
     parseChoicePex
     (pegMakeToken "/}")
     (pegMakeCode { . pex . :: <> @["parser" pex] });
-fwdParser implParser;
+parseParser implParser;
 
 parseParenPex = pegMakeMainSequence
     (pegMakeToken "(")
@@ -426,7 +402,7 @@ implChoicePex = pegMakeMainSequence
             (pegMakeToken "|")
             parseSequencePex))
     (pegMakeCode { first rest :: <> listPrepend first rest });
-fwdChoicePex implChoicePex;
+parseChoicePex implChoicePex;
 
 
 #

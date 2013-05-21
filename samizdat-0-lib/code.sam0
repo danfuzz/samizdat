@@ -7,8 +7,39 @@
 #
 
 #
+# Helper functions
+#
+
+# Object implementation function used by `forwardFunction`.
+forwardFunctionImpl = { yield state args* ::
+    <> ifTrue { <> eq state null }
+        {
+            <> ifValue { <> listFirst args }
+                { function ::
+                    ifFalse { <> isUniqlet function }
+                        { io0Die "Attempt to forward to non-function." };
+                    yield();
+                    <> function;
+                }
+                { io0Die "Attempt to forward to void." }
+        }
+        { yield state }
+};
+
+
+#
 # Exported functions
 #
+
+# Documented in Samizdat Layer 0 spec.
+forwardFunction = {
+    forwardObject = object forwardFunctionImpl null;
+
+    <> { args* ::
+        <> ifValue { <> apply forwardObject args }
+            { function :: <> apply function args }
+    }
+};
 
 # Documented in Samizdat Layer 0 spec.
 makeLibrary = { ctx ::
@@ -26,6 +57,7 @@ partialApply = { function args* <out> ::
 };
 
 <> [
+    "forwardFunction" = forwardFunction
     "makeLibrary" = makeLibrary
     "partialApply" = partialApply
 ]
