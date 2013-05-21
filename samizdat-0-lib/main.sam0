@@ -76,9 +76,10 @@ io0Note "Loading core library...";
 CORE_LIBRARY = loadAllLibraries
     LIBRARY
     "combinator" "const" "boolean" "type" "conditional" "int"
-    "collections" "format" "io0" "peg" "tokenize1" "tree1"
-    # This one always needs to be the last one loaded.
-    "meta";
+    "collections" "format" "io0" "peg"
+    "tokenize1" "tree1" "eval1" # Layer 1 implementation.
+    "meta" # This one always needs to be the last one loaded.
+;
 
 io0Note "    [fin]";
 io0Note "";
