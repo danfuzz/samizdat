@@ -6,11 +6,70 @@
 # Samizdat Layer 1 Evaluation
 #
 
-# Iterates / visits the given expression node, transforming parser
-# subtrees into layer 0 function nodes.
-convertParsers = { node ::
+# Forward declaration of convertExpression.
+convertExpression = forwardFunction();
+
+# Does parser conversion of an expression or statement list.
+convertList = { nodes ::
+    <> listMap nodes { . node :: <> convertExpression node };
+};
+
+# Does parser conversion of a `parser` node. This is where the juicy stuff
+# happens!
+convertParser = { node ::
     # TODO
 };
+
+# Does parser conversion of a `call` node.
+convertCall = { node ::
+    value = tokenValue node;
+    function = convertExpression (mapGet value "function");
+    actuals = convertList (mapGet value "actuals");
+
+    <> @["call" ["function"=function "actuals"=actuals]]
+};
+
+# Does parser conversion of a `function` node.
+convertFunction = { node ::
+    value = tokenValue node;
+    statements = convertList (mapGet value "statements");
+    yield = ifValue { <> mapGet value "yield" }
+        { yield :: <> ["yield" = (convertExpression yield)] };
+        { <> [=] };
+
+    <> mapAdd node ["statements" = statements] yield;
+};
+
+# Does parser conversion of a `varDef` node.
+convertVarDef = { node ::
+    nodeValue = tokenValue node;
+    value = convertExpression (mapGet nodeValue "value");
+
+    <> mapPut node "value" value;
+};
+
+# Does no-op node conversion.
+convertNop = { node :: <> node };
+
+# Map of types to node converters.
+CONVERT_EXPRESSION_MAP = [
+    "call" = convertCall
+    "function" = convertFunction
+    "literal" = convertNop
+    "parser" = convertParser
+    "varDef" = convertVarDef
+    "varRef" = convertNop
+];
+
+# Iterates / visits the given expression or statement node, transforming
+# parser subtrees into layer 0 function nodes.
+convertExpressionImpl = { node ::
+    nodeType = tokenType node;
+    <> ifTrue { <> eq nodeType "parser" }
+        { <> functionFromParser node }
+        { <> node }
+};
+convertExpression convertExpressionImpl;
 
 
 #
