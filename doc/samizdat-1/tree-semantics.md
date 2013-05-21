@@ -106,25 +106,12 @@ of the list must be a parsing expression node.
 
 This corresponds to the syntax `pex1 | pex2 | etc`.
 
-#### `@["sequence" [pex*]]`
+#### `@["sequence" [pexOrVarDef*]]`
 
 Representation of a sequence of items to match, in order. Each element
-of the list must be a parsing expression node.
+of the list must be a parsing expression node or a `varDef` node.
 
 This corresponds to the syntax `pex1 pex2 etc`.
-
-#### `@["varDef" ["name"=name "value"=pex]]`
-
-Representation of a name-bound expression. These are *only* ever valid
-as direct elements of the array of parsing nodes attached to a `sequence`
-node. Anywhere else is an error.
-
-* `"name"=name` (required) &mdash; An arbitrary literal name
-  (typically a string).
-
-* `"value"=pex` (required) &mdash; A parsing expression node.
-
-This corresponds to the syntax `name = pex`.
 
 #### `@["&" pex]`
 
@@ -161,3 +148,17 @@ expression node.
 
 This corresponds to the syntax `pex+`.
 
+### Other nodes
+
+#### `@["varDef" ["name"=name "value"=pex]]`
+
+Representation of a name-bound expression. These are *only* ever valid
+as direct elements of the array of parsing nodes attached to a `sequence`
+node. Anywhere else is an error.
+
+* `"name"=name` (required) &mdash; An arbitrary literal name
+  (typically a string).
+
+* `"value"=pex` (required) &mdash; A parsing expression node.
+
+This corresponds to the syntax `name = pex`.
