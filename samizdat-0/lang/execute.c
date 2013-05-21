@@ -5,7 +5,7 @@
  */
 
 #include "const.h"
-#include "impl.h"
+#include "lang.h"
 #include "util.h"
 
 #include <setjmp.h>

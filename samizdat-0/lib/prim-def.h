@@ -65,6 +65,7 @@ PRIM_FUNC(mapNthKey);
 PRIM_FUNC(mapNthValue);
 PRIM_FUNC(object);
 PRIM_FUNC(sam0Eval);
+PRIM_FUNC(sam0Tokenize);
 PRIM_FUNC(sam0Tree);
 PRIM_FUNC(stringAdd);
 PRIM_FUNC(stringFromInt);

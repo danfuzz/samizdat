@@ -78,12 +78,20 @@ It is recommended (but not required) that the given `context` include
 bindings for all of the library functions specified by this document.
 See `makeLibrary` for further suggestions and information.
 
-#### `sam0Tree string <> functionNode`
+#### `sam0Tokenize string <> [token*]`
 
-Parses the given string as a program written in *Samizdat Layer 0*.
-Returns a `function` node (as defined by the parse tree semantics)
-that represents the function.
+Parses the given string as a series of tokens per the *Samizdat Layer 0*
+token grammar. Returns a list of parsed tokens.
 
+#### `sam0Tree program <> functionNode`
+
+Parses the given program as a top-level program written in
+*Samizdat Layer 0*. `program` must be either a string or a list of tokens.
+If it is a string, then this function builds in a call to `sam0Tokenize`
+to first convert it to a list of tokens.
+
+Returns a `function` node, as defined by the *Samizdat Layer 0* parse tree
+semantics, that represents the parsed program.
 
 <br><br>
 ### In-Language Definitions

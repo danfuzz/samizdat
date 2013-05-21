@@ -187,9 +187,15 @@ PRIM_IMPL(object) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(sam0Tokenize) {
+    requireExactly(argCount, 1);
+    return langTokenize0(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(sam0Tree) {
     requireExactly(argCount, 1);
-    return langNodeFromProgramText(args[0]);
+    return langTree0(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
