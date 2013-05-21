@@ -25,10 +25,10 @@ sam1ValidatedTree = { programText ::
     ifTrue { <> ne programNode0 programNode1 }
         {
             io0Note "Parser disagreement.";
-            diff programNode0 programNode;
+            diff programNode0 programNode1;
             io0Note "";
             io0Note (format "v1\n----------\n%q\n" programNode0);
-            io0Note (format "v2\n----------\n%q\n" programNode);
+            io0Note (format "v2\n----------\n%q\n" programNode1);
             io0Die "Ouch!";
         };
 
@@ -88,7 +88,7 @@ run = { args* ::
 
     filePath = io0PathFromString file;
     programText = io0ReadFileUtf8 filePath;
-    programNode = sam1Tree programText;
+    programNode = sam1ValidatedTree programText;
 
     # Evaluate the program in the context of the samizdat-0 core library.
     function = sam1Eval (makeLibrary library) programNode;
