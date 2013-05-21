@@ -5,7 +5,7 @@
  */
 
 #include "const.h"
-#include "impl.h"
+#include "lang.h"
 #include "util.h"
 
 #include <setjmp.h>
@@ -460,7 +460,7 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
  */
 
 /* Documented in header. */
-zvalue langEvalExpressionNode(zvalue context, zvalue node) {
+zvalue langEval0(zvalue context, zvalue node) {
     Frame frame;
     frame.parentClosure = NULL;
     frame.parentFrame = NULL;

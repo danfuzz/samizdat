@@ -5,7 +5,7 @@
  */
 
 #include "const.h"
-#include "impl.h"
+#include "lang.h"
 #include "util.h"
 #include "zlimits.h"
 
@@ -274,11 +274,11 @@ static zvalue tokenizeOne(ParseState *state) {
 
 
 /*
- * Module functions
+ * Exported functions
  */
 
 /* Documented in header. */
-zvalue tokenize(zvalue string) {
+zvalue langTokenize0(zvalue string) {
     constInit();
 
     zvalue result[LANG_MAX_TOKENS];

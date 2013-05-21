@@ -3,10 +3,10 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Samizdat Layer 0 tokenizer
+# Samizdat Layer 1 tokenizer
 #
 # The following is a near-transliteration of the token grammar in
-# the *Samizdat Layer 0* specification.
+# the *Samizdat Layer 0* and *Samizdat Layer 1* specifications.
 #
 
 # Documented in Samizdat Layer 0 spec.
@@ -147,10 +147,10 @@ parseFileOrError = pegMakeMainSequence
     (pegMakeCode { tokens . :: <> tokens });
 
 # Performs tokenization of the given file contents.
-tokenize = { programText ::
+sam1Tokenize = { programText ::
     <> pegApply parseFileOrError programText
 };
 
 <> [
-    "tokenize" = tokenize
+    "sam1Tokenize" = sam1Tokenize
 ]
