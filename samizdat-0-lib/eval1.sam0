@@ -15,112 +15,124 @@ convertList = { nodes ::
     <> listMap nodes { . node :: <> convertExpression node };
 };
 
-# Converts a pex to a named function call of the converted inner pex.
-callNameWithPex = { node names functionName ::
-    convertedNode = convertPex (nodeValue node) names;
+# Constructs a named function call with the given arguments, each of
+# which must be a (non-parsing) expression node.
+callNameWithExpressions = { functionName args* ::
+    <> @["call" ["function"=@["varRef" functionName] "actuals"=args]]
+};
 
-    <> @[
-        "call"
-        [
-            "function" = @["varRef" functionName]
-            "actuals" = [convertedNode]
-        ]
-    ]
+# Converts a pex to a named function call of the converted inner pex.
+callNameWithPex = { node formals functionName ::
+    convertedNode = convertPex (nodeValue node) formals;
+    <> callNameWithExpressions functionName convertedNode
 };
 
 # Converts a pex to a named function call of the given literal arguments.
-callNameWithLiterals = { name args* ::
+callNameWithLiterals = { functionName args* ::
     literalArgs = listMap args { . arg :: <> @["literal" arg] };
-
-    <> @[
-        "call"
-        [
-            "function" = @["varRef" functionName]
-            "actuals" = literalArgs
-        ]
-    ]
+    <> apply callNameWithExpressions literalArgs
 };
 
 # Converts a `choice` pex node.
-convertPexChoice = { node names ::
-    io0Die "TODO";
+convertPexChoice = { node formals ::
+    pexes = tokenValue node;
+    convertedPexes = listMap pexes { . pex  :: <> convertPex pex formals };
+    <> apply callNameWithExpressions "pegMakeChoice" convertedPexes
 };
 
 # Converts a `sequence` pex node.
-convertPexSequence = { node names ::
-    io0Die "TODO";
+convertPexSequence = { node formals ::
+    pexes = tokenValue node;
+
+    # Extract the formals out of any `varDef` nodes.
+    newFormals = listMap pexes { . pex ::
+        <> ifTrue { <> eq (tokenType pex "varDef") }
+            { <> ["name" = (mapGet (tokenValue pex) "name")] }
+            { <> [=] }
+    };
+
+    # Convert all the pexes, passing in appropriately-extended formals
+    # lists to each conversion.
+    convertedPexes = listMap pexes { n pex  ::
+        orig = ifTrue { <> eq (tokenType pex "varDef") }
+            { <> mapGet (tokenValue pex) "value" }
+            { <> pex };
+        <> convertPex pex (listAdd formals (listSlice newFormals 0 n))
+    };
+
+    <> apply callNameWithExpressions "pegMakeSequence" convertedPexes
 };
 
 # Converts a `string` pex node.
-convertPexString = { node names ::
+convertPexString = { node formals ::
     <> callNameWithLiterals "pegMakeString" (tokenValue node)
 };
 
 # Converts a `token` pex node.
-convertPexToken = { node names ::
+convertPexToken = { node formals ::
     <> callNameWithLiterals "pegMakeToken" (tokenValue node)
 };
 
 # Converts a `varDef` pex node.
-convertPexVarDef = { node names ::
+convertPexVarDef = { node formals ::
     io0Die "TODO";
 };
 
 # Converts a `varRef` pex node.
-convertPexVarRef = { node names ::
+convertPexVarRef = { node formals ::
     # `varRef` in the context of a pex just translates to the same `varRef`
     # in the context of an expression / statement.
     <> node;
 };
 
 # Converts a `.` pex node.
-convertPexDot = { node names ::
+convertPexDot = { node formals ::
     <> @["varRef" "pegRuleAny"]
 };
 
 # Converts an `()` pex node.
-convertPexEmpty = { node names ::
+convertPexEmpty = { node formals ::
     <> @["varRef" "pegRuleEmpty"]
 };
 
 # Converts a `[]` pex node.
-convertPexSet = { node names ::
+convertPexSet = { node formals ::
     <> apply callNameWithLiterals "pegMakeTokenSet" (tokenValue node);
 };
 
 # Converts a `[!]` pex node.
-convertPexSetComplement = { node names ::
+convertPexSetComplement = { node formals ::
     <> apply callNameWithLiterals "pegMakeTokenSetComplement" (tokenValue node);
 };
 
 # Converts a `{}` pex node.
-convertPexCode = { node names ::
+convertPexCode = { node formals ::
     io0Die "TODO";
 };
 
 # Converts a `&` pex node.
-convertPexLookaheadSuccess = { node names ::
-    <> callNameWithPex node names "pegMakeLookaheadSuccess";
+convertPexLookaheadSuccess = { node formals ::
+    <> callNameWithPex node formals "pegMakeLookaheadSuccess";
 };
 
 # Converts a `!` pex node.
-convertPexLookaheadFailure = { node names ::
-    <> callNameWithPex node names "pegMakeLookaheadFailure";
+convertPexLookaheadFailure = { node formals ::
+    <> callNameWithPex node formals "pegMakeLookaheadFailure";
 };
 
 # Converts a `?` pex node.
-convertPexOpt = { node names ::
-    <> callNameWithPex node names "pegMakeOpt";
+convertPexOpt = { node formals ::
+    <> callNameWithPex node formals "pegMakeOpt";
 };
 
 # Converts a `*` pex node.
-convertPexStar = { node names ::
-    <> callNameWithPex node names "pegMakeStar";
+convertPexStar = { node formals ::
+    <> callNameWithPex node formals "pegMakeStar";
 };
 
 # Converts a `+` pex node.
-convertPexPlus = { node names ::
-    <> callNameWithPex node names "pegMakePlus";
+convertPexPlus = { node formals ::
+    <> callNameWithPex node formals "pegMakePlus";
 };
 
 # Map of types to parsing expression node converters.
@@ -143,10 +155,11 @@ CONVERT_PEX_MAP = [
     "+"        = convertPexPlus
 ];
 
-# Dispatches to an appropriate parser node converter. `names` is the
-# list of lexically bound result names, in order.
-convertPexImpl = { node names ::
-    <> (mapGet CONVERT_PEX_MAP (tokenType node)) node names;
+# Dispatches to an appropriate parser node converter. `formals` is the
+# list of lexically bound result names, in order, in the form of `formals`
+# values as defined by the Samizdat Layer 0 tree semanics spec.
+convertPexImpl = { node formals ::
+    <> (mapGet CONVERT_PEX_MAP (tokenType node)) node formals;
 };
 convertPex convertPexImpl;
 
