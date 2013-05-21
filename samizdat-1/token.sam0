@@ -14,9 +14,9 @@ parseWhitespace = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeCharSet " \n")
         (pegMakeSequence
-            (pegMakeChar "#")
+            (pegMakeToken "#")
             (pegMakeStar (pegMakeCharSetComplement "\n"))
-            (pegMakeChar "\n")));
+            (pegMakeToken "\n")));
 
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
 parsePunctuation = pegMakeMainSequence
@@ -37,22 +37,22 @@ parseChar = pegMakeMainSequence
             (pegMakeCharSetComplement "\\\"")
             (pegMakeCode { ch :: <> tokenType ch }))
         (pegMakeSequence
-            (pegMakeChar "\\")
+            (pegMakeToken "\\")
             (pegMakeChoice
                 (pegMakeSequence
-                    (pegMakeChar "\\") (pegMakeCode { <> "\\" }))
+                    (pegMakeToken "\\") (pegMakeCode { <> "\\" }))
                 (pegMakeSequence
-                    (pegMakeChar "\"") (pegMakeCode { <> "\"" }))
+                    (pegMakeToken "\"") (pegMakeCode { <> "\"" }))
                 (pegMakeSequence
-                    (pegMakeChar "n") (pegMakeCode { <> "\n" }))
+                    (pegMakeToken "n") (pegMakeCode { <> "\n" }))
                 (pegMakeSequence
-                    (pegMakeChar "0") (pegMakeCode { <> "\0" })))));
+                    (pegMakeToken "0") (pegMakeCode { <> "\0" })))));
 
 # Documented in Samizdat Layer 0 spec.
 parseString = pegMakeMainSequence
-    (pegMakeChar "\"")
+    (pegMakeToken "\"")
     (pegMakeStar parseChar)
-    (pegMakeChar "\"")
+    (pegMakeToken "\"")
     (pegMakeCode { . chars . ::
         <> @["string" (apply stringAdd chars)]
     });
@@ -74,7 +74,7 @@ parseIdentifier = pegMakeMainSequence
 
 # Documented in Samizdat Layer 0 spec.
 parseQuotedIdentifier = pegMakeMainSequence
-    (pegMakeChar "\\")
+    (pegMakeToken "\\")
     parseString
     (pegMakeCode { . s ::
         <> @["identifier" (tokenValue s)]
@@ -91,7 +91,7 @@ intFromDigitChar = { ch :: <> mapGet INT_CHARS (tokenType ch) };
 parseInt = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeSequence
-            (pegMakeChar "-")
+            (pegMakeToken "-")
             (pegMakeCode { . :: <> -1 }))
         (pegMakeCode { <> 1 }))
     (pegMakePlus
@@ -129,7 +129,7 @@ parseErrorLine = pegMakeMainSequence
     pegRuleLookaheadAny
     (pegMakeStar (pegMakeCharSetComplement "\n"))
     (pegMakeChoice
-        (pegMakeChar "\n")
+        (pegMakeToken "\n")
         pegRuleEof)
     (pegMakeCode { . chars . :: <> stringFromTokenList chars });
 

@@ -68,15 +68,6 @@ rule yields on the input.
 `input` must either be a list or a string. If it is a string, this function
 automatically converts it into a list of character-as-token values.
 
-#### `pegMakeChar ch <> rule`
-
-Makes and returns a parser rule which matches the given character,
-consuming it from the input upon success. `ch` must be a single-character
-string. The result of successful parsing is a character-as-token of the
-character in question.
-
-This is equivalent to the syntactic form `{/ "ch" /}`.
-
 #### `pegMakeCharSet strings* <> rule`
 
 Makes and returns a parser rule which matches any character of any of
@@ -194,28 +185,33 @@ string. The result of successful parsing is a valueless token with
 
 This is equivalent to the syntactic form `{/ "string" /}`.
 
-#### `pegMakeToken token <> rule`
+#### `pegMakeToken type <> rule`
 
 Makes and returns a parser rule which matches any token with the same
-type as the given token. Upon success, the rule consumes and yields
-the matched token.
+type as given. `type` is an arbitrary value, but is typically
+a string. Upon success, the rule consumes and yields the matched token.
 
-This is equivalent to the syntactic form `{/ @token /}`.
+This is also used to match single characters in tokenizers.
 
-#### `pegMakeTokenSet tokens* <> rule`
+This is equivalent to the syntactic form `{/ @token /}` or `{/ "ch" /}`
+(where `ch` represents a single character).
+
+#### `pegMakeTokenSet types* <> rule`
 
 Makes and returns a parser rule which matches a token whose type
-matches that of any of the given tokens, consuming it upon success.
-Each argument must be a token. The result of successful parsing is
+matches that of any of the given types, consuming it upon success.
+Each argument is taken to be a token type, which is typically
+(but not necessarily) a string. The result of successful parsing is
 whatever token was matched.
 
 This is equivalent to the syntactic form `{/ [@token1 @token2 @etc] /}`.
 
-#### `pegMakeTokenSetComplement string* <> rule`
+#### `pegMakeTokenSetComplement types* <> rule`
 
 Makes and returns a parser rule which matches a token whose type
 matches none of any of the given tokens, consuming it upon success.
-Each argument must be a token. The result of successful parsing is
+Each argument is taken to be a token type, which is typically
+(but not necessarily) a string. The result of successful parsing is
 whatever token was matched.
 
 This is equivalent to the syntactic form `{/ [! @token1 @token2 @etc] /}`.

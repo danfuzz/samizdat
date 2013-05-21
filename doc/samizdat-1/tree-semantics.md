@@ -29,9 +29,8 @@ This corresponds to the syntax `{/ pex /}`.
 #### `@["token" type]`
 
 Representation of a token-match terminal. This is also used for
-single-character matches in tokenizers. `type` must be a token. The
-type of the token is what is matched; the payload value, if anything,
-is ignored.
+single-character matches in tokenizers. `type` must be a string. This
+indicates that a token of the given type is to be matched.
 
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes
 a single character).
@@ -55,35 +54,22 @@ Representation of the "always succeed" (no-op) rule.
 
 This corresponds to the syntax `()`.
 
-#### `@["[]" charSet]`
-
-Representation of a character set rule. `charSet` must be a string, which
-is taken to be an unordered set of characters.
-
-This corresponds to the syntax `["charSet"]`.
-
 #### `@["[]" tokenSet]`
 
-Representation of a token set rule. `tokenSet` must be a list of tokens,
-which is taken to be an unordered set of token types (token values are
-ignored).
+Representation of a token set rule. This is also used for matching
+character sets in tokenizers. `tokenSet` must be a list of strings,
+which is taken to be an unordered set of token types to match.
 
-This corresponds to the syntax `[token1 token2 etc]`.
-
-#### `@["[!]" charSet]`
-
-Representation of a character set complement rule. `charSet` must be a string,
-which is taken to be an unordered set of characters.
-
-This corresponds to the syntax `[! "charSet"]`.
+This corresponds to the syntax `[token1 token2 etc]` or `["charsToMatch"]`.
 
 #### `@["[!]" tokenSet]`
 
-Representation of a token set complement rule. `tokenSet` must be a list of
-tokens, which is taken to be an unordered set of token types (token values
-are ignored).
+Representation of a token set complement rule. This is also used for matching
+character set complements in tokenizers. `tokenSet` must be a list of
+strings, which is taken to be an unordered set of token types to not-match.
 
-This corresponds to the syntax `[! token1 token2 etc]`.
+This corresponds to the syntax `[! token1 token2 etc]` or
+`[! "charsToNotMatch"]`.
 
 #### `@["{}" [("yieldDef"=name)? statements=[statement*] ("yield"=expression)?]]`
 
