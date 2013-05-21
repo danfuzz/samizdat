@@ -364,7 +364,18 @@ parseParserSet = pegMakeMainSequence
     (pegMakeCode { . type terminals . :: <> @[type terminals] });
 
 parseParserCode = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakeToken "{")
+    (pegMakeChoice
+        (pegMakeMainSequence
+            parseYieldDef
+            (pegMakeToken "::")
+            (pegMakeCode { y :: <> ["yieldDef" = y] }))
+        (pegMakeSequence
+            (pegMakeOpt (pegMakeToken "::"))
+            (pegMakeCode { <> [=] })))
+    parseProgramBody
+    (pegMakeToken "}")
+    (pegMakeCode { . yieldDef body :: @["function" (mapAdd yieldDef body)] });
 
 parseParserAtom = pegMakeMainSequence
     (pegMakeChoice
