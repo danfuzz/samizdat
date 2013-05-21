@@ -13,7 +13,7 @@ As exceptions, the highest layer of nodes have token types that are
 problem that a "sequence" has no syntactic operator; and the most basic
 token and string terminals are named `token` and `string`.
 
-### Regular expression nodes
+### Normal (non-parsing) expression nodes
 
 #### `@["parser" pex]`
 
