@@ -393,7 +393,7 @@ parseRepeatPex = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeSequence
             (pegMakeTokenSet "?" "*" "+")
-            (pegMakeCode { atom repeat :: <> @[repeat atom] }))
+            (pegMakeCode { atom repeat :: <> @[(tokenType repeat) atom] }))
         (pegMakeCode { atom :: <> atom }));
 
 parseLookaheadPex = pegMakeMainSequence
@@ -401,7 +401,7 @@ parseLookaheadPex = pegMakeMainSequence
         (pegMakeSequence
             (pegMakeTokenSet "&" "!")
             parseRepeatPex
-            (pegMakeCode { lookahead pex :: <> @[lookahead pex] }))
+            (pegMakeCode { lookahead pex :: <> @[(tokenType lookahead) pex] }))
         parseRepeatPex);
 
 parseNamePex = pegMakeMainSequence
