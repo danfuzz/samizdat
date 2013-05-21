@@ -9,7 +9,7 @@
 # implementations of *Samizdat Layer 0*. In particular, this module
 # does not make any calls to non-primitive library functions, and
 # it limits its explicit primitive library function calls to
-# `apply`, `argsMap`, `listAdd`, and `mapPut`.
+# `apply` and `argsMap`.
 
 #
 # Helper functions
@@ -44,21 +44,6 @@ uStarCombinator = { functions ::
 #
 # Exported functions
 #
-
-# Documented in Samizdat Layer 0 spec.
-makeLibrary = { ctx ::
-    <> mapPut ctx "LIBRARY" ctx
-};
-
-# Documented in Samizdat Layer 0 spec.
-partialApply = { function args* <out> ::
-    # This mouthful takes an "apply-style" argument list (that is, a number
-    # of individual arguments followed at the end by a list-of-the-rest), and
-    # returns a single unified list of arguments.
-    argsList = apply apply { args* :: <> args } args;
-
-    <> { more* :: <> apply function (listAdd argsList more) }
-};
 
 # Documented in Samizdat Layer 0 spec.
 yCombinator = { function ::
@@ -96,8 +81,6 @@ yStarCombinator = { functions* ::
 };
 
 <> [
-    "makeLibrary" = makeLibrary
-    "partialApply" = partialApply
     "yCombinator" = yCombinator
     "yStarCombinator" = yStarCombinator
 ]

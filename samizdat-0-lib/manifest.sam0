@@ -17,6 +17,7 @@ BOOTSTRAP_FILES = [
 MANIFEST = [
     # Layer 0 in-language core library.
     "combinator.sam0"
+    "code.sam0"
     "const.sam0"
     "boolean.sam0"
     "type.sam0"

@@ -17,6 +17,7 @@ LIB_FILE(boolean);
 LIB_FILE(combinator);
 LIB_FILE(conditional);
 LIB_FILE(collections);
+LIB_FILE(code);
 LIB_FILE(const);
 LIB_FILE(eval1);
 LIB_FILE(format);
