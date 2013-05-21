@@ -64,10 +64,7 @@ CONVERT_EXPRESSION_MAP = [
 # Iterates / visits the given expression or statement node, transforming
 # parser subtrees into layer 0 function nodes.
 convertExpressionImpl = { node ::
-    nodeType = tokenType node;
-    <> ifTrue { <> eq nodeType "parser" }
-        { <> functionFromParser node }
-        { <> node }
+    <> (mapGet CONVERT_EXPRESSION_MAP (tokenType node)) node;
 };
 convertExpression convertExpressionImpl;
 
