@@ -9,7 +9,7 @@ semantic support for parsing expression grammar (PEG) definition.
 
 Contents:
 
-* [Parsing Syntax And Semantics](parsing-syntax-semantics.md)
+* [Parsing Syntax And Semantics In A Nutshell](parsing-syntax-semantics.md)
 * [Token Syntax](token-syntax.md)
 * [Tree Syntax](tree-syntax.md)
 * [Tree Semantics](tree-semantics.md)
