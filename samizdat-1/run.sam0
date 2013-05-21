@@ -43,12 +43,14 @@ readLibraryFile = { name ::
 # Reads all the library files, returning a map from names to contents.
 readAllLibraryFiles = {
     # Use the manifest to figure out what all to read.
-    manifestProgram = sam1Tree (readLibraryFile "manifest");
-    manifest = (sam0Eval (makeLibrary LIBRARY) manifestProgram)();
+    manifestText = readLibraryFile "manifest";
+    manifestProgram = sam0Eval LIBRARY (sam0Tree manifestText);
+    manifestBindings = manifestProgram();
+    BOOTSTRAP_FILES = mapGet manifestBindings "BOOTSTRAP_FILES";
+    MANIFEST = mapGet manifestBindings "MANIFEST";
 
-    <> listReduce [=] manifest { result . name ::
-        <> mapPut result name (readLibraryFile name)
-    }
+    <> listReduce [=] (listAdd BOOTSTRAP_FILES MANIFEST)
+        { result . name :: <> mapPut result name (readLibraryFile name) }
 };
 
 # Makes the core library by using this program's parser to parse the library

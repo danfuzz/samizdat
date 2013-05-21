@@ -70,15 +70,11 @@ loadAllLibraries = { ctx names* ::
 
 io0Note "Loading core library...";
 
-# The argument list here is all the library files in dependency order.
-# (First depends only on the primitives, second can depend on primitives
-# and the first, etc.).
-CORE_LIBRARY = loadAllLibraries
-    LIBRARY
-    "combinator" "const" "boolean" "type" "conditional" "int"
-    "collections" "format" "io0" "peg"
-    "tokenize1" "tree1" "eval1" # Layer 1 implementation.
-;
+# Read the manifest file, to figure out what all to load and in what order.
+MANIFEST = mapGet (loadLibrary LIBRARY "manifest") "MANIFEST";
+
+# Use the manifest to build up the core library.
+CORE_LIBRARY = apply loadAllLibraries LIBRARY MANIFEST;
 
 # "Manually" run `makeLibrary` to produce the final core library.
 FINAL_LIBRARY = mapPut CORE_LIBRARY "LIBRARY" CORE_LIBRARY;
