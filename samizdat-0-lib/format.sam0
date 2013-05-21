@@ -10,6 +10,9 @@
 # `sourceString` and `sourceStringUnadorned` functions
 #
 
+# Forward declaration of `sourceString`
+callSourceString = forwardFunction();
+
 # Single-character strings `"\0"` `"\x7f;"` and `"\x9f;"`.
 CHAR_127 = stringFromInt 127;
 CHAR_159 = stringFromInt 159;
@@ -48,7 +51,7 @@ INT_SIGNS = [
 ];
 
 # Stringifies an int.
-doInt = { recurse int adorn ::
+doInt = { int adorn ::
     <> (mapGet INT_SIGNS (intSign int)) int
 };
 
@@ -118,35 +121,35 @@ isIdentifier = { string <out> ::
 };
 
 # Stringifies a string.
-doString = { recurse string adorn ::
+doString = { string adorn ::
     body = stringReduce "" string
         { result . ch :: <> stringAdd result (stringChar ch) };
     <> adornIf adorn "\"" body "\""
 };
 
 # Stringifies a list.
-doList = { recurse list adorn ::
+doList = { list adorn ::
     body = listReduce "" list
         { reduction . elem ::
             <> stringAdd
                 reduction
                 (ifTrue { <> eq reduction "" } { <> "" } { <> " " })
-                (recurse elem)
+                (callSourceString elem)
         };
 
     <> adornIf adorn "[" body "]"
 };
 
 # Stringifies a map.
-doMap = { recurse map adorn ::
+doMap = { map adorn ::
     body = mapReduce "" map
         { reduction key value ::
             <> stringAdd
                 reduction
                 (ifTrue { <> eq reduction "" } { <> "" } { <> " " })
-                (recurse key)
+                (callSourceString key)
                 "="
-                (recurse value)
+                (callSourceString value)
         };
 
     <> adornIf adorn
@@ -156,36 +159,36 @@ doMap = { recurse map adorn ::
 };
 
 # Stringifies a token.
-doToken = { recurse token adorn <out> ::
+doToken = { token adorn <out> ::
     type = tokenType token;
     valueString = ifValue { <> tokenValue token }
-        { value :: <> stringAdd " " (recurse value) }
+        { value :: <> stringAdd " " (callSourceString value) }
         { <> "" };
 
     ifTrue { <> and { <> isString type } { <> eq valueString "" } }
         {
             typeString = ifTrue { <> isIdentifier type }
                 { <> type }
-                { <> recurse type };
+                { <> callSourceString type };
             <out> adornIf adorn "@" typeString ""
         };
 
-    result = stringAdd (recurse type) valueString;
+    result = stringAdd (callSourceString type) valueString;
     <> adornIf adorn "@[" result "]"
 };
 
 # Stringifies a uniqlet.
-doUniqlet = { recurse uniqlet ::
+doUniqlet = { uniqlet ::
     <> "@@"
 };
 
 # Stringifies an unknown value type.
-doUnknown = { recurse unknown ::
+doUnknown = { unknown ::
     <> stringAdd
         "[(unknown) "
-        (recurse (lowType value))
+        (callSourceString (lowType value))
         " "
-        (recurse (lowSize value))
+        (callSourceString (lowSize value))
         "]"
 };
 
@@ -200,24 +203,20 @@ STRINGIFIERS = [
 ];
 
 # Common handler for the two exported variants.
-sourceStringGeneral = { selfRef value adorn ::
-    # The `selfRef` and `recurse` definitions here are effectively a
-    # "manual inlining" of the Y combinator, necessitated by the fact that
-    # *Samizdat Layer 0* doesn't allow use-before-def.
-    recurse = { value :: <> selfRef selfRef value true };
-
+sourceStringGeneral = { value adorn ::
     stringifier = mapGet STRINGIFIERS (lowType value) doUnknown;
-    <> stringifier recurse value adorn
+    <> stringifier value adorn
 };
 
 # Documented in Samizdat Layer 0 spec.
 sourceString = { value ::
-    <> sourceStringGeneral sourceStringGeneral value true
+    <> sourceStringGeneral value true
 };
+callSourceString sourceString;
 
 # Documented in Samizdat Layer 0 spec.
 sourceStringUnadorned = { value ::
-    <> sourceStringGeneral sourceStringGeneral value false
+    <> sourceStringGeneral value false
 };
 
 
