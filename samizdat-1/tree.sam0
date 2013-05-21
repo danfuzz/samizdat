@@ -350,13 +350,31 @@ parseParserAtom = pegMakeMainSequence
         parseParenPex);
 
 parseRepeatPex = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    parseParserAtom
+    (pegMakeChoice
+        (pegMakeSequence
+            (pegMakeTokenSet "?" "*" "+")
+            (pegMakeCode { atom repeat :: <> @[repeat atom] }))
+        (pegMakeCode { atom :: <> atom }));
 
 parseLookaheadPex = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakeChoice
+        (pegMakeSequence
+            (pegMakeTokenSet "&" "!")
+            parseRepeatPex
+            (pegMakeCode { lookahead pex :: <> @[lookahead pex] }))
+        parseRepeatPex);
 
 parseNamePex = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakeChoice
+        (pegMakeSequence
+            (pegMakeToken "identifier")
+            (pegMakeToken "=")
+            parseLookaheadPex
+            (pegMakeCode { name . pex ::
+                <> @["varDef" ["name"=(tokenValue name) "value"=pex]]
+            }))
+        parseLookaheadPex);
 
 parseSequencePex = pegMakeMainSequence
     (pegMakePlus parseNamePex)
