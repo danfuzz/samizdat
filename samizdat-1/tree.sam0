@@ -328,7 +328,9 @@ parseParserString = pegMakeMainSequence
     (pegMakeCode { io0Die "TODO" });
 
 parseParserToken = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakeToken "@")
+    (pegMakeTokenSet "identifier" "string")
+    (pegMakeCode { . type :: <> (tokenValue type) });
 
 parseParserSet = pegMakeMainSequence
     (pegMakeCode { io0Die "TODO" });
@@ -337,7 +339,15 @@ parseParserCode = pegMakeMainSequence
     (pegMakeCode { io0Die "TODO" });
 
 parseParserAtom = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakeChoice
+        parseVarRef
+        parseParserString
+        parseParserToken
+        parseParserSet
+        parseParserCode
+        (pegMakeToken ".")
+        (pegMakeToken "()")
+        parseParenPex);
 
 parseRepeatPex = pegMakeMainSequence
     (pegMakeCode { io0Die "TODO" });
@@ -349,10 +359,16 @@ parseNamePex = pegMakeMainSequence
     (pegMakeCode { io0Die "TODO" });
 
 parseSequencePex = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakePlus parseNamePex)
+    (pegMakeCode { items :: <> @["sequence" items] });
 
 implChoicePex = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    parseSequencePex
+    (pegMakeStar
+        (pegMakeMainSequence
+            (pegMakeToken "|")
+            parseSequencePex))
+    (pegMakeCode { first rest :: <> listPrepend first rest });
 fwdChoicePex implChoicePex;
 
 
