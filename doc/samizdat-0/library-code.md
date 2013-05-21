@@ -99,6 +99,25 @@ passed to the new function.
 For example, `partialApply iadd [2]` is a function which when called returns
 the sum of 2 and whatever value it was passed.
 
+#### `sam1Tokenize string <> [token*]`
+
+*Samizdat Layer 1* tokenizer. This parses a string according to the
+*Samizdat Layer 1* tokenization rules, returning a list of tokens,
+per the *Samizdat Layer 1* specification.
+
+This function is part of the bridge between layers 0 and 1.
+
+#### `sam1Tree program <> functionNode`
+
+*Samizdat Layer 1* tree parser. This parses a program according to the
+*Samizdat Layer 1* parsing rules, returning a top-level function node,
+per the *Samizdat Layer 1* specification. `program` must be either
+a string or a list of tokens. If it is a string, then this function
+builds in a call to `sam1Tokenize` to first convert it to a list of
+tokens.
+
+This function is part of the bridge between layers 0 and 1.
+
 #### `yCombinator function <> function`
 
 The Y combinator, in a form suitable for use in Samizdat Layer 0 when
