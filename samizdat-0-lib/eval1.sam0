@@ -21,12 +21,22 @@ convertTODO = { node ::
 
 # Map of types to parsing expression node converters.
 CONVERT_PEX_MAP = [
-    "string" = convertTODO
-    "token" = convertTODO
-    "." = convertTODO
-    "()" = convertTODO
-    "varDef" = convertTODO
-    "varRef" = convertTODO
+    "choice"   = convertTODO
+    "sequence" = convertTODO
+    "string"   = convertTODO
+    "token"    = convertTODO
+    "varDef"   = convertTODO
+    "varRef"   = convertTODO
+    "."        = convertTODO
+    "()"       = convertTODO
+    "[]"       = convertTODO
+    "[!]"      = convertTODO
+    "{}"       = convertTODO
+    "&"        = convertTODO
+    "!"        = convertTODO
+    "?"        = convertTODO
+    "*"        = convertTODO
+    "+"        = convertTODO
 ];
 
 # Dispatches to an appropriate parser node converter.
@@ -74,12 +84,12 @@ convertNop = { node :: <> node };
 
 # Map of types to expression node converters.
 CONVERT_EXPRESSION_MAP = [
-    "call" = convertCall
+    "call"     = convertCall
     "function" = convertFunction
-    "literal" = convertNop
-    "parser" = convertParser
-    "varDef" = convertVarDef
-    "varRef" = convertNop
+    "literal"  = convertNop
+    "parser"   = convertParser
+    "varDef"   = convertVarDef
+    "varRef"   = convertNop
 ];
 
 # Iterates / visits the given expression or statement node, transforming
