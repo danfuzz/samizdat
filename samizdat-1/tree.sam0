@@ -131,7 +131,7 @@ parseToken = pegMakeMainSequence
                 <> apply makeCallName "makeToken" type value
             }))
         (pegMakeMainSequence
-            (pegMakeTokenSet @string @identifier)
+            (pegMakeTokenSet "string" "identifier")
             (pegMakeCode { type ::
                 <> makeCallName "makeToken" (makeLiteral (tokenValue type))
             })));
@@ -240,7 +240,7 @@ parseFormal = pegMakeMainSequence
             (pegMakeCode { . :: <> [=] })))
     (pegMakeChoice
         (pegMakeMainSequence
-            (pegMakeTokenSet @"?" @"*" @"+")
+            (pegMakeTokenSet "?" "*" "+")
             (pegMakeCode { r :: <> ["repeat" = (tokenType r)] }))
         (pegMakeMainSequence
             (pegMakeCode { <> [=] })))

@@ -216,12 +216,12 @@ pegMakeToken = { type ::
 
 # Helper for `pegMake*Set*`, which takes a `sense` argument and produces the
 # desired rule.
-genericMakeTokenSet = { sense tokens <out> ::
+genericMakeTokenSet = { sense types <out> ::
     oppositeSense = not sense;
 
     # Make a set-like map of all the token types.
-    set = listReduce [=] tokens
-        { result . token :: <> mapPut result (tokenType token) sense };
+    set = listReduce [=] types
+        { result . type :: <> mapPut result type sense };
 
     # Trivial case: Empty set. Return an appropriate absolute rule.
     ifTrue { <> eq (lowSize set) 0 }
@@ -245,10 +245,10 @@ genericMakeTokenSet = { sense tokens <out> ::
 # takes a `sense` argument and produces the desired rule.
 genericMakeCharSet = { sense strings* <out> ::
     # Make a list of all the strings' characters as tokens.
-    tokens = stringReduce [] (apply stringAdd strings)
-        { result . ch :: <> listAppend result @[ch] };
+    types = stringReduce [] (apply stringAdd strings)
+        { result . ch :: <> listAppend result ch };
 
-    <> genericMakeTokenSet sense tokens
+    <> genericMakeTokenSet sense types
 };
 
 # Documented in Samizdat Layer 0 spec.

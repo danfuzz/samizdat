@@ -196,20 +196,22 @@ This is also used to match single characters in tokenizers.
 This is equivalent to the syntactic form `{/ @token /}` or `{/ "ch" /}`
 (where `ch` represents a single character).
 
-#### `pegMakeTokenSet tokens* <> rule`
+#### `pegMakeTokenSet types* <> rule`
 
 Makes and returns a parser rule which matches a token whose type
-matches that of any of the given tokens, consuming it upon success.
-Each argument must be a token. The result of successful parsing is
+matches that of any of the given types, consuming it upon success.
+Each argument is taken to be a token type, which is typically
+(but not necessarily) a string. The result of successful parsing is
 whatever token was matched.
 
 This is equivalent to the syntactic form `{/ [@token1 @token2 @etc] /}`.
 
-#### `pegMakeTokenSetComplement string* <> rule`
+#### `pegMakeTokenSetComplement types* <> rule`
 
 Makes and returns a parser rule which matches a token whose type
 matches none of any of the given tokens, consuming it upon success.
-Each argument must be a token. The result of successful parsing is
+Each argument is taken to be a token type, which is typically
+(but not necessarily) a string. The result of successful parsing is
 whatever token was matched.
 
 This is equivalent to the syntactic form `{/ [! @token1 @token2 @etc] /}`.
