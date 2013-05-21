@@ -18,11 +18,11 @@ is called for.
 
 #### `call` &mdash; `@["call" ["function"=expression "actuals"=[expression*]]`
 
-* `"function"=expression` (required) &mdash; An expression node that must
+* `"function" = expression` (required) &mdash; An expression node that must
   evaluate to a function.
 
-* `"actuals"=[expression*]` (required) &mdash; A list of arbitrary expression
-  nodes, each of which must evaluate to a non-void value.
+* `"actuals" = [expression*]` (required) &mdash; A list of arbitrary
+  expression nodes, each of which must evaluate to a non-void value.
 
 This represents a function call.
 
@@ -42,19 +42,19 @@ void).
 
 #### `function` &mdash; `@["function" [("formals"=[formal+])? ("yieldDef"=name)?` `"statements"=[statement*] ("yield"=expression)?]`
 
-* `"formals"=[formal+]` (optional) &mdash; An array of `formal`
+* `"formals" = [formal+]` (optional) &mdash; An array of `formal`
   elements (as defined below). This defines the formal arguments to
   the function.
 
-* `"yieldDef"=name` (optional) &mdash; A name (typically a string) to
+* `"yieldDef" = name` (optional) &mdash; A name (typically a string) to
   bind as the nonlocal-exit function.
 
-* `"statements"=[statement*]` (required) &mdash; A list of statement
+* `"statements" = [statement*]` (required) &mdash; A list of statement
   nodes. A statement node must be either an expression node or a
   `varDef` node (as defined below). This defines the bulk of the
   code to execute.
 
-* `"yield"=expression` (optional) &mdash; An expression node representing
+* `"yield" = expression` (optional) &mdash; An expression node representing
   the (local) result value for a call.
 
 This represents a function definition.
@@ -150,9 +150,9 @@ actual argument as passed (no extra wrapping).
 
 #### `varDef` &mdash; `@["varDef" ["name"=name "value"=expression]]`
 
-* `"name"=name` &mdash; Variable name to define (typically a string).
+* `"name" = name` &mdash; Variable name to define (typically a string).
 
-* `"value"=expression` &mdash; Expression node representing the value
+* `"value" = expression` &mdash; Expression node representing the value
   that the variable should take on when defined.
 
 This represents a variable definition statement as part of a function body.

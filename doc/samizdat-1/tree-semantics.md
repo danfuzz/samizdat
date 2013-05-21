@@ -83,13 +83,13 @@ This corresponds to the syntax `[! token1 token2 etc]` or
 
 Representation of a code expression.
 
-* `"yieldDef"=name` (optional) &mdash; A name (typically a string) to bind
+* `"yieldDef" = name` (optional) &mdash; A name (typically a string) to bind
   as the nonlocal-exit function.
 
-* `"statements"=[statement*]` (required) — A list of statement nodes.
+* `"statements" = [statement*]` (required) — A list of statement nodes.
   Statement nodes are as defined by the *Samizdat Layer 0* specification.
 
-* `"yield"=expression` (optional) — An expression node representing the
+* `"yield" = expression` (optional) — An expression node representing the
   (local) result value for the code. Expression nodes are as defined
   by the *Samizdat Layer 0* specification.
 
@@ -156,9 +156,9 @@ Representation of a name-bound expression. These are *only* ever valid
 as direct elements of the array of parsing nodes attached to a `sequence`
 node. Anywhere else is an error.
 
-* `"name"=name` (required) &mdash; An arbitrary literal name
+* `"name" = name` (required) &mdash; An arbitrary literal name
   (typically a string).
 
-* `"value"=pex` (required) &mdash; A parsing expression node.
+* `"value" = pex` (required) &mdash; A parsing expression node.
 
 This corresponds to the syntax `name = pex`.
