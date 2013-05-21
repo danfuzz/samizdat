@@ -15,6 +15,32 @@ convertList = { nodes ::
     <> listMap nodes { . node :: <> convertExpression node };
 };
 
+# Converts a pex to a named function call of the converted inner pex.
+callNameWithPex = { node names functionName ::
+    convertedNode = convertPex (nodeValue node) names;
+
+    <> @[
+        "call"
+        [
+            "function" = @["varRef" functionName]
+            "actuals" = [convertedNode]
+        ]
+    ]
+};
+
+# Converts a pex to a named function call of the given literal arguments.
+callNameWithLiterals = { name args* ::
+    literalArgs = listMap args { . arg :: <> @["literal" arg] };
+
+    <> @[
+        "call"
+        [
+            "function" = @["varRef" functionName]
+            "actuals" = literalArgs
+        ]
+    ]
+};
+
 # Converts a `choice` pex node.
 convertPexChoice = { node names ::
     io0Die "TODO";
@@ -27,12 +53,12 @@ convertPexSequence = { node names ::
 
 # Converts a `string` pex node.
 convertPexString = { node names ::
-    io0Die "TODO";
+    <> callNameWithLiterals "pegMakeString" (tokenValue node)
 };
 
 # Converts a `token` pex node.
 convertPexToken = { node names ::
-    io0Die "TODO";
+    <> callNameWithLiterals "pegMakeToken" (tokenValue node)
 };
 
 # Converts a `varDef` pex node.
@@ -42,27 +68,29 @@ convertPexVarDef = { node names ::
 
 # Converts a `varRef` pex node.
 convertPexVarRef = { node names ::
-    io0Die "TODO";
+    # `varRef` in the context of a pex just translates to the same `varRef`
+    # in the context of an expression / statement.
+    <> node;
 };
 
 # Converts a `.` pex node.
 convertPexDot = { node names ::
-    io0Die "TODO";
+    <> @["varRef" "pegRuleAny"]
 };
 
 # Converts an `()` pex node.
 convertPexEmpty = { node names ::
-    io0Die "TODO";
+    <> @["varRef" "pegRuleEmpty"]
 };
 
 # Converts a `[]` pex node.
 convertPexSet = { node names ::
-    io0Die "TODO";
+    <> apply callNameWithLiterals "pegMakeTokenSet" (tokenValue node);
 };
 
 # Converts a `[!]` pex node.
 convertPexSetComplement = { node names ::
-    io0Die "TODO";
+    <> apply callNameWithLiterals "pegMakeTokenSetComplement" (tokenValue node);
 };
 
 # Converts a `{}` pex node.
@@ -72,27 +100,27 @@ convertPexCode = { node names ::
 
 # Converts a `&` pex node.
 convertPexLookaheadSuccess = { node names ::
-    io0Die "TODO";
+    <> callNameWithPex node names "pegMakeLookaheadSuccess";
 };
 
 # Converts a `!` pex node.
 convertPexLookaheadFailure = { node names ::
-    io0Die "TODO";
+    <> callNameWithPex node names "pegMakeLookaheadFailure";
 };
 
 # Converts a `?` pex node.
 convertPexOpt = { node names ::
-    io0Die "TODO";
+    <> callNameWithPex node names "pegMakeOpt";
 };
 
 # Converts a `*` pex node.
 convertPexStar = { node names ::
-    io0Die "TODO";
+    <> callNameWithPex node names "pegMakeStar";
 };
 
 # Converts a `+` pex node.
 convertPexPlus = { node names ::
-    io0Die "TODO";
+    <> callNameWithPex node names "pegMakePlus";
 };
 
 # Map of types to parsing expression node converters.
@@ -125,7 +153,7 @@ convertPex convertPexImpl;
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
 convertParser = { node ::
-    <> convertPex (nodeValue node) [];
+    <> convertPex (tokenValue node) [];
 };
 
 # Does parser conversion of a `call` node.
