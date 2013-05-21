@@ -6,6 +6,9 @@
 # Structural value diff.
 #
 
+# Forward declaration of `innerDiff`.
+innerDiff = forwardFunction();
+
 # Reports a difference.
 report = { context v1 v2 message ::
     io0Note message;
@@ -21,7 +24,7 @@ report = { context v1 v2 message ::
 };
 
 # Diffs tokens.
-diffToken = { recurse context v1 v2 ::
+diffToken = { context v1 v2 ::
     type1 = tokenType v1;
     type2 = tokenType v2;
     has1 = tokenHasValue v1;
@@ -30,23 +33,23 @@ diffToken = { recurse context v1 v2 ::
     value2 = tokenValue v2 null;
 
     <> and
-        { <> recurse "type" type1 type2 }
-        { <> recurse "hasValue" has1 has2 }
-        { <> recurse "value" value1 value2 }
+        { <> innerDiff context "type" type1 type2 }
+        { <> innerDiff context "hasValue" has1 has2 }
+        { <> innerDiff context "value" value1 value2 }
 };
 
 # Diffs ints.
-diffInt = { recurse context v1 v2 ::
+diffInt = { context v1 v2 ::
     <> report context v1 v2 "Different ints."
 };
 
 # Diffs maps.
-diffMap = { recurse context v1 v2 <out> ::
+diffMap = { context v1 v2 <out> ::
     size1 = lowSize v1;
     size2 = lowSize v2;
 
     <> and
-        { <> recurse "size" size1 size2 }
+        { <> innerDiff context "size" size1 size2 }
         {
             mapForEach v1
                 { key value ::
@@ -62,7 +65,8 @@ diffMap = { recurse context v1 v2 <out> ::
         {
             mapForEach v1
                 { key value ::
-                    ifFalse { <> recurse ["key"=key] value (mapGet v2 key) }
+                    value2 = mapGet v2 key;
+                    ifFalse { <> innerDiff context ["key"=key] value value2 }
                         { <out> false }
                 };
             <> true
@@ -70,28 +74,28 @@ diffMap = { recurse context v1 v2 <out> ::
 };
 
 # Diffs lists.
-diffList = { recurse context v1 v2 ::
+diffList = { context v1 v2 ::
     size1 = lowSize v1;
     size2 = lowSize v2;
 
     <> and
-        { <> recurse "size" size1 size2 }
+        { <> innerDiff context "size" size1 size2 }
         {
             listForEach v1
                 { index elem ::
-                    recurse index elem (listNth v2 index)
+                    innerDiff context index elem (listNth v2 index)
                 };
             <> false
         }
 };
 
 # Diffs strings.
-diffString = { recurse context v1 v2 ::
+diffString = { context v1 v2 ::
     <> report context v1 v2 "Different strings."
 };
 
 # Diffs uniqlets.
-diffUniqlet = { recurse context v1 v2 ::
+diffUniqlet = { context v1 v2 ::
     <> report context v1 v2 "Different uniqlets."
 };
 
@@ -106,17 +110,10 @@ DIFF_FUNCTIONS = [
 ];
 
 # Inner diff. Returns an `eq` result.
-innerDiff = { selfRef context v1 v2 ::
+innerDiffImpl = { context newContext v1 v2 ::
     type1 = lowType v1;
     type2 = lowType v2;
-    innerContext = listAppend context type1;
-
-    # The `selfRef` and `recurse` definitions here are effectively a
-    # "manual inlining" of the Y combinator, necessitated by the fact that
-    # *Samizdat Layer 0* doesn't allow use-before-def.
-    recurse = { newContext v1 v2 ::
-        <> selfRef selfRef (listAppend innerContext newContext) v1 v2
-    };
+    innerContext = listAdd context [newContext type1];
 
     <> ifTrue { <> ne v1 v2 }
         {
@@ -129,16 +126,16 @@ innerDiff = { selfRef context v1 v2 ::
                         (format "Types differ: %q %q" type1 type2)
                 }
                 {
-                    <> (mapGet DIFF_FUNCTIONS type1) recurse innerContext
-                        v1 v2
+                    <> (mapGet DIFF_FUNCTIONS type1) innerContext v1 v2
                 }
         }
         { <> true }
 };
+innerDiff innerDiffImpl;
 
 # Compares two values structurally, reporting on the differences.
 diff = { v1 v2 ::
-    <> innerDiff innerDiff ["top"] v1 v2
+    <> innerDiff [] "top" v1 v2
 };
 
 <> ["diff" = diff]
