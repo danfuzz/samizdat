@@ -91,7 +91,7 @@ run = { args* ::
     programNode = sam1Tree programText;
 
     # Evaluate the program in the context of the samizdat-0 core library.
-    function = sam0Eval (makeLibrary library) programNode;
+    function = sam1Eval (makeLibrary library) programNode;
 
     # Run it!
     <> apply function filePath argsPerSe
