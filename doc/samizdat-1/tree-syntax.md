@@ -39,7 +39,7 @@ parserString = {/
     s = @string
     {
         value = tokenValue s;
-        <> ifTrue { eq (lowSize value) 1 }
+        <> ifTrue { <> eq (lowSize value) 1 }
             { <> @["token" value] }
             { <> s }
     }
