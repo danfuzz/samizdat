@@ -121,7 +121,7 @@ repeatPex = {/
     atom = parserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[repeat atom] }
+        { <> @[(tokenType repeat) atom] }
     |
         { <> atom }
     )
@@ -131,7 +131,7 @@ lookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = repeatPex
-        { <> @[lookahead pex] }
+        { <> @[(tokenType lookahead) pex] }
     )
 |
     repeatPex
