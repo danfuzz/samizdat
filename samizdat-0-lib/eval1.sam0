@@ -15,40 +15,117 @@ convertList = { nodes ::
     <> listMap nodes { . node :: <> convertExpression node };
 };
 
-convertTODO = { node ::
+# Converts a `choice` pex node.
+convertPexChoice = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `sequence` pex node.
+convertPexSequence = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `string` pex node.
+convertPexString = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `token` pex node.
+convertPexToken = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `varDef` pex node.
+convertPexVarDef = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `varRef` pex node.
+convertPexVarRef = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `.` pex node.
+convertPexDot = { node names ::
+    io0Die "TODO";
+};
+
+# Converts an `()` pex node.
+convertPexEmpty = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `[]` pex node.
+convertPexSet = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `[!]` pex node.
+convertPexSetComplement = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `{}` pex node.
+convertPexCode = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `&` pex node.
+convertPexLookaheadSuccess = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `!` pex node.
+convertPexLookaheadFailure = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `?` pex node.
+convertPexOpt = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `*` pex node.
+convertPexStar = { node names ::
+    io0Die "TODO";
+};
+
+# Converts a `+` pex node.
+convertPexPlus = { node names ::
     io0Die "TODO";
 };
 
 # Map of types to parsing expression node converters.
 CONVERT_PEX_MAP = [
-    "choice"   = convertTODO
-    "sequence" = convertTODO
-    "string"   = convertTODO
-    "token"    = convertTODO
-    "varDef"   = convertTODO
-    "varRef"   = convertTODO
-    "."        = convertTODO
-    "()"       = convertTODO
-    "[]"       = convertTODO
-    "[!]"      = convertTODO
-    "{}"       = convertTODO
-    "&"        = convertTODO
-    "!"        = convertTODO
-    "?"        = convertTODO
-    "*"        = convertTODO
-    "+"        = convertTODO
+    "choice"   = convertPexChoice
+    "sequence" = convertPexSequence
+    "string"   = convertPexString
+    "token"    = convertPexToken
+    "varDef"   = convertPexVarDef
+    "varRef"   = convertPexVarRef
+    "."        = convertPexDot
+    "()"       = convertPexEmpty
+    "[]"       = convertPexSet
+    "[!]"      = convertPexSetComplement
+    "{}"       = convertPexCode
+    "&"        = convertPexLookaheadSuccess
+    "!"        = convertPexLookaheadFailure
+    "?"        = convertPexOpt
+    "*"        = convertPexStar
+    "+"        = convertPexPlus
 ];
 
-# Dispatches to an appropriate parser node converter.
-convertPexImpl = { node ::
-    <> (mapGet CONVERT_PEX_MAP (tokenType node)) node;
+# Dispatches to an appropriate parser node converter. `names` is the
+# list of lexically bound result names, in order.
+convertPexImpl = { node names ::
+    <> (mapGet CONVERT_PEX_MAP (tokenType node)) node names;
 };
 convertPex convertPexImpl;
 
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
 convertParser = { node ::
-    <> convertPex (nodeValue node);
+    <> convertPex (nodeValue node) [];
 };
 
 # Does parser conversion of a `call` node.
