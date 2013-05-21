@@ -53,7 +53,7 @@ STR(MAKE_LIST,     "makeList");
 STR(MAKE_MAP,      "makeMap");
 STR(MAKE_TOKEN,    "makeToken");
 STR(MAKE_UNIQLET,  "makeUniqlet");
-STR(MAIN,          "main");
+STR(MAIN_SAM0,     "main.sam0");
 STR(MAP,           "map");
 STR(NAME,          "name");
 STR(REPEAT,        "repeat");

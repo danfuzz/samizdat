@@ -10,27 +10,27 @@
 # the second can depend on primitives and the first, etc.
 
 BOOTSTRAP_FILES = [
-    "manifest"
-    "main"
+    "manifest.sam0"
+    "main.sam0"
 ];
 
 MANIFEST = [
     # Layer 0 in-language core library.
-    "combinator"
-    "const"
-    "boolean"
-    "type"
-    "conditional"
-    "int"
-    "collections"
-    "format"
-    "io0"
-    "peg"
+    "combinator.sam0"
+    "const.sam0"
+    "boolean.sam0"
+    "type.sam0"
+    "conditional.sam0"
+    "int.sam0"
+    "collections.sam0"
+    "format.sam0"
+    "io0.sam0"
+    "peg.sam0"
 
     # Layer 1 implementation.
-    "tokenize1"
-    "tree1"
-    "eval1"
+    "tokenize1.sam0"
+    "tree1.sam0"
+    "eval1.sam0"
 ];
 
 <> [

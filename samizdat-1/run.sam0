@@ -37,13 +37,13 @@ sam1ValidatedTree = { programText ::
 
 # Reads the named embedded library file.
 readLibraryFile = { name ::
-    <> READER ["samizdat-0-lib" (stringAdd name ".sam0")]
+    <> READER ["samizdat-0-lib" name]
 };
 
 # Reads all the library files, returning a map from names to contents.
 readAllLibraryFiles = {
     # Use the manifest to figure out what all to read.
-    manifestText = readLibraryFile "manifest";
+    manifestText = readLibraryFile "manifest.sam0";
     manifestProgram = sam0Eval LIBRARY (sam0Tree manifestText);
     manifestBindings = manifestProgram();
     BOOTSTRAP_FILES = mapGet manifestBindings "BOOTSTRAP_FILES";
@@ -63,7 +63,7 @@ makeCoreLibrary = {
 
     libraryFiles = readAllLibraryFiles();
 
-    mainProgram = sam1Tree (mapGet libraryFiles "main");
+    mainProgram = sam1Tree (mapGet libraryFiles "main.sam0");
     mainFunction = sam0Eval subLibrary mainProgram;
     <> mainFunction libraryFiles
 };

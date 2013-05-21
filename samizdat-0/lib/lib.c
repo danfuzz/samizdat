@@ -27,7 +27,7 @@ static zvalue getLibraryFiles(void) {
     #define LIB_FILE(name) \
         extern char name##_sam0[]; \
         extern unsigned int name##_sam0_len; \
-        zvalue LIB_NAME_##name = datStringFromUtf8(-1, #name); \
+        zvalue LIB_NAME_##name = datStringFromUtf8(-1, #name ".sam0"); \
         zvalue LIB_TEXT_##name = \
             datStringFromUtf8(name##_sam0_len, name##_sam0); \
         result = datMapPut(result, LIB_NAME_##name, LIB_TEXT_##name)
@@ -69,7 +69,7 @@ static zvalue primitiveContext(void) {
  */
 static zvalue getLibrary(void) {
     zvalue libraryFiles = getLibraryFiles();
-    zvalue mainText = datMapGet(libraryFiles, STR_MAIN);
+    zvalue mainText = datMapGet(libraryFiles, STR_MAIN_SAM0);
     zvalue mainProgram = langTree0(mainText);
 
     zvalue ctx = primitiveContext();

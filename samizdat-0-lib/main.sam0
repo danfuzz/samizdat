@@ -71,7 +71,7 @@ loadAllLibraries = { ctx names* ::
 io0Note "Loading core library...";
 
 # Read the manifest file, to figure out what all to load and in what order.
-MANIFEST = mapGet (loadLibrary LIBRARY "manifest") "MANIFEST";
+MANIFEST = mapGet (loadLibrary LIBRARY "manifest.sam0") "MANIFEST";
 
 # Use the manifest to build up the core library.
 CORE_LIBRARY = apply loadAllLibraries LIBRARY MANIFEST;

@@ -28,7 +28,7 @@ readFile = io0SandboxedReader (listButLast SELF_PATH);
 loadFile = { ctx name ::
     io0Note (format "    %Q" name);
 
-    text = readFile [(stringAdd name ".sam0")];
+    text = readFile [name];
     tree = sam0Tree text;
     function = sam0Eval ctx tree;
 
@@ -47,7 +47,7 @@ io0Note "Loading samizdat-1...";
 
 # Put together the final execution context.
 CONTEXT = loadAllLibraries (makeLibrary LIBRARY)
-    "diff" "parseArgs" "run";
+    "diff.sam0" "parseArgs.sam0" "run.sam0";
 
 io0Note "    [fin]";
 io0Note "";
