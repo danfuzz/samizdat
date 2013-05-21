@@ -54,6 +54,15 @@ zvalue langDefineFunction(zfunction function, zvalue state);
  */
 
 /**
+ * Evaluates the given expression node in the given variable
+ * context. Returns the evaluated value of the expression, which
+ * will be `NULL` if the expression did not yield a value.
+ *
+ * See the *Samizdat Layer 0* spec for details on expression nodes.
+ */
+zvalue langEval0(zvalue ctx, zvalue node);
+
+/**
  * Tokenizes the given program text into a list of tokens, suitable
  * for passing to `langTree0()`.
  *
@@ -71,15 +80,6 @@ zvalue langTokenize0(zvalue programText);
  * See the *Samizdat Layer 0* spec for details about the grammar.
  */
 zvalue langTree0(zvalue program);
-
-/**
- * Evaluates the given expression node in the given variable
- * context. Returns the evaluated value of the expression, which
- * will be `NULL` if the expression did not yield a value.
- *
- * See the *Samizdat Layer 0* spec for details on expression nodes.
- */
-zvalue langEval0(zvalue ctx, zvalue node);
 
 
 #endif
