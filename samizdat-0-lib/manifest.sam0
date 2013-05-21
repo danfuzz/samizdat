@@ -19,7 +19,6 @@
     "int"
     "io0"
     "main"
-    "meta"
     "peg"
     "tokenize1"
     "tree1"

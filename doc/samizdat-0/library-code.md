@@ -76,6 +76,7 @@ Very notably, the result of calling `sam0Tree` is valid as the
 
 It is recommended (but not required) that the given `context` include
 bindings for all of the library functions specified by this document.
+See `makeLibrary` for further suggestions and information.
 
 #### `sam0Tree string <> functionNode`
 
@@ -86,6 +87,15 @@ that represents the function.
 
 <br><br>
 ### In-Language Definitions
+
+#### `makeLibrary map <> map`
+
+Takes a library binding map and returns one that is just like the
+one given, except that the key `"LIBRARY"` is bound to the given
+map. This makes a `LIBRARY` binding into a form suitable for
+passing as the library / global context argument to evaluation
+functions (such as `sam0Eval`), in that callees can rightfully expect
+there to be a binding for `LIBRARY`.
 
 #### `partialApply function value* list? <> function`
 

@@ -78,10 +78,12 @@ CORE_LIBRARY = loadAllLibraries
     "combinator" "const" "boolean" "type" "conditional" "int"
     "collections" "format" "io0" "peg"
     "tokenize1" "tree1" "eval1" # Layer 1 implementation.
-    "meta" # This one always needs to be the last one loaded.
 ;
+
+# "Manually" run `makeLibrary` to produce the final core library.
+FINAL_LIBRARY = mapPut CORE_LIBRARY "LIBRARY" CORE_LIBRARY;
 
 io0Note "    [fin]";
 io0Note "";
 
-<> CORE_LIBRARY
+<> FINAL_LIBRARY
