@@ -57,19 +57,22 @@ parserSet = {/
     terminals = (
         strings = parserString*
         {
-            <> listReduce "" strings
-                { result . s ::
-                    <> stringAdd result (tokenValue s)
-                }
+            oneString = listReduce "" strings
+                { result . s :: <> stringAdd result (tokenValue s) };
+            <> stringReduce [] oneString
+                { result . ch :: <> listAppend result ch }
         }
     |
-        parserToken*
+        tokens = parserToken*
+        {
+            <> listReduce [] tokens
+                { result . t :: <> listAppend result (tokenValue t) }
+        }
     )
 
     @"]"
-    {
-        <> @[type terminals]
-    }
+
+    { <> @[type terminals] }
 /};
 
 parserCode = {/
