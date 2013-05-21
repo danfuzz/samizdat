@@ -6,18 +6,39 @@
 # Samizdat Layer 1 Evaluation
 #
 
-# Forward declaration of convertExpression.
+# Forward declaration of `convertExpression` and `convertPex`.
 convertExpression = forwardFunction();
+convertPex = forwardFunction();
 
 # Does parser conversion of an expression or statement list.
 convertList = { nodes ::
     <> listMap nodes { . node :: <> convertExpression node };
 };
 
+convertTODO = { node ::
+    io0Die "TODO";
+};
+
+# Map of types to parsing expression node converters.
+CONVERT_PEX_MAP = [
+    "string" = convertTODO
+    "token" = convertTODO
+    "." = convertTODO
+    "()" = convertTODO
+    "varDef" = convertTODO
+    "varRef" = convertTODO
+];
+
+# Dispatches to an appropriate parser node converter.
+convertPexImpl = { node ::
+    <> (mapGet CONVERT_PEX_MAP (tokenType node)) node;
+};
+convertPex convertPexImpl;
+
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
 convertParser = { node ::
-    # TODO
+    <> convertPex (nodeValue node);
 };
 
 # Does parser conversion of a `call` node.
@@ -51,7 +72,7 @@ convertVarDef = { node ::
 # Does no-op node conversion.
 convertNop = { node :: <> node };
 
-# Map of types to node converters.
+# Map of types to expression node converters.
 CONVERT_EXPRESSION_MAP = [
     "call" = convertCall
     "function" = convertFunction

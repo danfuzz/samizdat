@@ -26,6 +26,13 @@ This corresponds to the syntax `{/ pex /}`.
 
 ### Terminal parsing expression nodes
 
+#### `@["string" string]`
+
+Representation of a multi-character sequence match. `string` must be a
+string.
+
+This corresponds to the syntax `"string"`.
+
 #### `@["token" type]`
 
 Representation of a token-match terminal. This is also used for
@@ -35,12 +42,13 @@ indicates that a token of the given type is to be matched.
 This corresponds to the syntax `@token` or `"ch"` (where `ch` denotes
 a single character).
 
-#### `@["string" string]`
+#### `@["varRef" name]`
 
-Representation of a multi-character sequence match. `string` must be a
-string.
+Representation of a call out to a named parsing function. `name` is
+an arbitrary value, but typically a string.
 
-This corresponds to the syntax `"string"`.
+This corresponds to the syntax `name` (that is, a normal variable
+reference).
 
 #### `@["."]`
 
