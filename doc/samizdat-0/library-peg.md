@@ -75,6 +75,11 @@ the given strings, consuming it upon success. Each argument must be
 a string. The result of successful parsing is a character-as-token of the
 parsed character.
 
+This function exists primarily to aid in "by hand" parser implementation
+in *Samizdat Layer 0* (as opposed to using the higher layer syntax), as
+it is merely a convenient wrapper for a call to `pegMakeTokenSet` (see
+which).
+
 This is equivalent to the syntactic form `{/ ["string1" "string2" "etc"] /}`.
 
 #### `pegMakeCharSetComplement string* <> rule`
@@ -83,6 +88,11 @@ Makes and returns a parser rule which matches any character *except*
 one found in any of the given strings, consuming it upon success.
 Each argument must be a string. The result of successful parsing is a
 character-as-token of the parsed character.
+
+This function exists primarily to aid in "by hand" parser implementation
+in *Samizdat Layer 0* (as opposed to using the higher layer syntax), as
+it is merely a convenient wrapper for a call to `pegMakeTokenSetComplement`
+(see which).
 
 This is equivalent to the syntactic form
 `{/ [! "string1" "string2" "etc."] /}`.
