@@ -6,6 +6,17 @@
 # Samizdat Layer 1 Evaluation
 #
 
+# Iterates / visits the given expression node, transforming parser
+# subtrees into layer 0 function nodes.
+convertParsers = { node ::
+    # TODO
+};
+
+
+#
+# Exported functions
+#
+
 # Documented in Samizdat Layer 0 spec.
 sam1Eval = { context expressionNode ::
     # TODO: Deal with the additional node types.
