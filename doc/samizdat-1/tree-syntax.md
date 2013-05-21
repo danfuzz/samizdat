@@ -41,7 +41,7 @@ parserString = {/
 
 parserToken = {/
     @"@"
-    type = (@identifier | @string)
+    type = [@identifier @string]
     { <> @["token" (tokenValue type)] }
 /};
 
