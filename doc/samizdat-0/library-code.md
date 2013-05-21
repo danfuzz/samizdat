@@ -117,6 +117,15 @@ passed to the new function.
 For example, `partialApply iadd [2]` is a function which when called returns
 the sum of 2 and whatever value it was passed.
 
+#### `sam1Eval context expressionNode <> . | !.`
+
+Returns the evaluation result of executing the given *Samizdat Layer 1*
+expression node. This is just like `sam0Eval`, except for the specification
+used to interpret the node.
+
+Very notably, the result of calling `sam1Tree` is valid as the
+`expressionNode` argument here.
+
 #### `sam1Tokenize string <> [token*]`
 
 *Samizdat Layer 1* tokenizer. This parses a string according to the
