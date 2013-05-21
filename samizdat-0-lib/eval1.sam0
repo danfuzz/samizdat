@@ -73,11 +73,6 @@ convertPexToken = { node formals ::
     <> callNameWithLiterals "pegMakeToken" (tokenValue node)
 };
 
-# Converts a `varDef` pex node.
-convertPexVarDef = { node formals ::
-    io0Die "TODO";
-};
-
 # Converts a `varRef` pex node.
 convertPexVarRef = { node formals ::
     # `varRef` in the context of a pex just translates to the same `varRef`
@@ -144,7 +139,6 @@ CONVERT_PEX_MAP = [
     "sequence" = convertPexSequence
     "string"   = convertPexString
     "token"    = convertPexToken
-    "varDef"   = convertPexVarDef
     "varRef"   = convertPexVarRef
     "."        = convertPexDot
     "()"       = convertPexEmpty
