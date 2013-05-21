@@ -22,22 +22,22 @@ convertParser = { node ::
 
 # Does parser conversion of a `call` node.
 convertCall = { node ::
-    value = tokenValue node;
-    function = convertExpression (mapGet value "function");
-    actuals = convertList (mapGet value "actuals");
+    nodeValue = tokenValue node;
+    function = convertExpression (mapGet nodeValue "function");
+    actuals = convertList (mapGet nodeValue "actuals");
 
-    <> @["call" ["function"=function "actuals"=actuals]]
+    <> @["call" (mapAdd nodeValue ["function"=function "actuals"=actuals])]
 };
 
 # Does parser conversion of a `function` node.
 convertFunction = { node ::
-    value = tokenValue node;
-    statements = convertList (mapGet value "statements");
-    yield = ifValue { <> mapGet value "yield" }
-        { yield :: <> ["yield" = (convertExpression yield)] };
+    nodeValue = tokenValue node;
+    statements = convertList (mapGet nodeValue "statements");
+    yield = ifValue { <> mapGet nodeValue "yield" }
+        { yield :: <> ["yield" = (convertExpression yield)] }
         { <> [=] };
 
-    <> mapAdd node ["statements" = statements] yield;
+    <> @["function" (mapAdd nodeValue ["statements" = statements] yield)];
 };
 
 # Does parser conversion of a `varDef` node.
@@ -45,7 +45,7 @@ convertVarDef = { node ::
     nodeValue = tokenValue node;
     value = convertExpression (mapGet nodeValue "value");
 
-    <> mapPut node "value" value;
+    <> @["varDef" (mapPut nodeValue "value" value)];
 };
 
 # Does no-op node conversion.
@@ -75,8 +75,8 @@ convertExpression convertExpressionImpl;
 
 # Documented in Samizdat Layer 0 spec.
 sam1Eval = { context expressionNode ::
-    # TODO: Deal with the additional node types.
-    <> sam0Eval context expressionNode
+    convertedNode = convertExpression expressionNode;
+    <> sam0Eval context convertedNode
 };
 
 <> [
