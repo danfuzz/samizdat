@@ -325,7 +325,13 @@ parseParenPex = pegMakeMainSequence
     (pegMakeCode { . pex . :: <> pex });
 
 parseParserString = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakeToken "string")
+    (pegMakeCode { s ::
+        value = tokenValue s;
+        <> ifTrue { <> eq (lowSize value) 1 }
+            { <> @["token" value] }
+            { <> s }
+    });
 
 parseParserToken = pegMakeMainSequence
     (pegMakeToken "@")
@@ -333,7 +339,31 @@ parseParserToken = pegMakeMainSequence
     (pegMakeCode { . type :: <> (tokenValue type) });
 
 parseParserSet = pegMakeMainSequence
-    (pegMakeCode { io0Die "TODO" });
+    (pegMakeToken "[")
+    (pegMakeChoice
+        (pegMakeSequence
+            (pegMakeToken "!")
+            (pegMakeCode { <> "[!]" }))
+        (pegMakeCode { <> "[]" }))
+    (pegMakeChoice
+        (pegMakeMainSequence
+            (pegMakeStar (pegMakeToken "string"))
+            (pegMakeCode { strings ::
+                oneString = listReduce "" strings
+                    { result . s :: <> stringAdd result (tokenValue s) };
+                <> stringReduce [] oneString
+                    { result . ch :: <> listAppend result ch }
+            }))
+        (pegMakeMainSequence
+            (pegMakeStar parseParserToken)
+            (pegMakeCode { tokens ::
+                <> listReduce [] tokens
+                    { result . t :: <> listAppend result (tokenValue t) }
+            })))
+    (pegMakeToken "]")
+    (pegMakeCode { . type terminals . ::
+        io0Die "TODO"
+    });
 
 parseParserCode = pegMakeMainSequence
     (pegMakeCode { io0Die "TODO" });
