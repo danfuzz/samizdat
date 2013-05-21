@@ -361,9 +361,7 @@ parseParserSet = pegMakeMainSequence
                     { result . t :: <> listAppend result (tokenValue t) }
             })))
     (pegMakeToken "]")
-    (pegMakeCode { . type terminals . ::
-        io0Die "TODO"
-    });
+    (pegMakeCode { . type terminals . :: <> @[type terminals] });
 
 parseParserCode = pegMakeMainSequence
     (pegMakeCode { io0Die "TODO" });
