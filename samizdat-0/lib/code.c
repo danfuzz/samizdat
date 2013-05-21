@@ -205,5 +205,5 @@ PRIM_IMPL(sam0Eval) {
     zvalue ctx = args[0];
     zvalue expressionNode = args[1];
 
-    return langEvalExpressionNode(ctx, expressionNode);
+    return langEval0(ctx, expressionNode);
 }

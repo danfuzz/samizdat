@@ -73,7 +73,7 @@ static zvalue getLibrary(void) {
     zvalue mainProgram = langTree0(mainText);
 
     zvalue ctx = primitiveContext();
-    zvalue mainFunction = langEvalExpressionNode(ctx, mainProgram);
+    zvalue mainFunction = langEval0(ctx, mainProgram);
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.

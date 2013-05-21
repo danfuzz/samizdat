@@ -63,7 +63,7 @@ zvalue langTokenize0(zvalue programText);
 
 /**
  * Compiles the given program text into a parse tree form, suitable
- * for passing to `langEvalExpressionNode()`. `program` must either
+ * for passing to `langEval0()`. `program` must either
  * be a string or a list of tokens, and it must represent a top-level
  * program in Samizdat Layer 0. The result is a `function` node in the
  * *Samizdat Layer 0* parse tree form.
@@ -79,7 +79,7 @@ zvalue langTree0(zvalue program);
  *
  * See the *Samizdat Layer 0* spec for details on expression nodes.
  */
-zvalue langEvalExpressionNode(zvalue ctx, zvalue node);
+zvalue langEval0(zvalue ctx, zvalue node);
 
 
 #endif
