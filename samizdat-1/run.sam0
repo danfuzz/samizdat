@@ -15,16 +15,14 @@ READER ::
 # using the samizdat-0 facilities for same, complaining if they're not
 # equal.
 sam1ValidatedTree = { programText ::
-    # Turn the text into a parse tree using the tokenizer and tree parser
-    # defined in this program.
-    programNode = sam1Tree programText;
+    # Parse the text using the layer 1 parsers.
+    programNode1 = sam1Tree programText;
 
-    # Turn the text into a parse tree using the samizdat-0 implementation
-    # of parsing.
+    # Do the same using the layer 0 parsers.
     programNode0 = sam0Tree programText;
 
     # Complain if the two parsed forms aren't identical.
-    ifTrue { <> ne programNode0 programNode }
+    ifTrue { <> ne programNode0 programNode1 }
         {
             io0Note "Parser disagreement.";
             diff programNode0 programNode;
@@ -34,7 +32,7 @@ sam1ValidatedTree = { programText ::
             io0Die "Ouch!";
         };
 
-    <> programNode
+    <> programNode1
 };
 
 # Reads the named embedded library file.
