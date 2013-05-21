@@ -107,7 +107,10 @@ convertPexSetComplement = { node formals ::
 
 # Converts a `{}` pex node.
 convertPexCode = { node formals ::
-    io0Die "TODO";
+    # Use the lexical `formals` context to make a regular function node,
+    # and just convert that.
+    functionPayload = mapPut (tokenValue node) "formals" formals;
+    <> convertExpression @["function" functionPayload];
 };
 
 # Converts a `&` pex node.
