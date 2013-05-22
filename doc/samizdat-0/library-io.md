@@ -88,6 +88,8 @@ None of the components will be the empty string (`""`), except possibly
 the last. If the last component is empty, that is an indication that the
 original path ended with a trailing slash.
 
+It is an error (terminating the runtime) if `string` is empty (`""`).
+
 #### `io0SandboxedReader directory <> function`
 
 Returns a file reader function which is limited to *only* reading
