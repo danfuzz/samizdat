@@ -24,7 +24,7 @@ zvalue ioFlatCwd(void);
  * a simple string. If the file does not name a symbolic link, this returns
  * `NULL`.
  */
-zvalue ioFlatReadLink(zvalue pathList);
+zvalue ioFlatReadLink(zvalue flatPath);
 
 /**
  * Reads the file with the given name in its entirety, interpreting

@@ -12,27 +12,23 @@ I/O
 Prints the given string to the system console (as if with `io0Note`)
 if supplied, and terminates the runtime with a failure status code (`1`).
 
-#### `io0FlatCwd <> flatString`
+#### `io0FlatCwd <> flatPath`
 
 Returns the current working directory of the process, as a
 string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `io0FlatReadLink path <> flatString | !.`
+#### `io0FlatReadLink flatPath <> flatPath | !.`
 
-Checks the filesystem to see if the given path refers to a symbolic
-link. If it does, then this returns the string which represents the
-direct resolution of that link. It does not try to re-resolve
+Checks the filesystem to see if the given path (given as a flat string)
+refers to a symbolic link. If it does, then this returns the string which
+represents the direct resolution of that link. It does not try to re-resolve
 the result iteratively, so the result may not actually refer to a
-real file (for example). It also does not convert the result into a
-componentized path; it's just a string.
+real file (for example).
 
 If the path does not refer to a symbolic link, then this function returns
 void.
-
-`pathList` must be a list of the form described by `io0PathFromFlat`
-(see which). See `io0ReadFileUtf8` for further discussion.
 
 This function is a thin veneer over the standard Posix call `readlink()`.
 
@@ -64,7 +60,7 @@ functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 <br><br>
 ### In-Language Definitions
 
-#### `io0FlatFromPath path <> flatString`
+#### `io0FlatFromPath path <> flatPath`
 
 Converts the given path list to an absolute "Posix-style" flat string.
 This is the reverse of the operation specified in `io0PathFromFlat`.
@@ -79,7 +75,7 @@ constraints are violated.
 * No path component other than the final one may be empty (that is,
   equal to `""`).
 
-#### `io0PathFromFlat flatString <> path`
+#### `io0PathFromFlat flatPath <> path`
 
 Converts the given path string to an absolute form, in the "form factor"
 that is used internally. The input `string` is expected to be a

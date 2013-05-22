@@ -91,13 +91,12 @@ zvalue ioFlatCwd(void) {
 }
 
 /* Documented in header. */
-zvalue ioFlatReadLink(zvalue pathList) {
+zvalue ioFlatReadLink(zvalue flatPath) {
     constInit();
 
-    zvalue pathString = stringFromPathList(pathList);
-    zint pathSize = datUtf8SizeFromString(pathString);
+    zint pathSize = datUtf8SizeFromString(flatPath);
     char path[pathSize + 1];
-    datUtf8FromString(pathSize + 1, path, pathString);
+    datUtf8FromString(pathSize + 1, path, flatPath);
 
     struct stat statBuf;
     if (lstat(path, &statBuf) != 0) {
