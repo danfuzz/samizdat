@@ -33,6 +33,12 @@ static void emitNote(zvalue message) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(io0CwdString) {
+    requireExactly(argCount, 0);
+    return ioCwdString();
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0Die) {
     requireRange(argCount, 0, 1);
 
@@ -50,27 +56,15 @@ PRIM_IMPL(io0Note) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0PathFromString) {
-    requireExactly(argCount, 1);
-
-    zvalue string = args[0];
-    zint size = datUtf8SizeFromString(string);
-    char str[size + 1];
-    datUtf8FromString(size + 1, str, string);
-
-    return ioPathListFromUtf8(str);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0ReadFileUtf8) {
     requireExactly(argCount, 1);
     return ioReadFileUtf8(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0ReadLink) {
+PRIM_IMPL(io0ReadLinkString) {
     requireExactly(argCount, 1);
-    return ioReadLink(args[0]);
+    return ioReadLinkString(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

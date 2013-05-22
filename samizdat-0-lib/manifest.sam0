@@ -29,8 +29,8 @@ MANIFEST = [
     "collections.sam0"
     "code.sam0"
     "format.sam0"
-    "io0.sam0"
     "peg.sam0"
+    "io0.sam0"
     "meta.sam0"
 
     # Layer 1 implementation.

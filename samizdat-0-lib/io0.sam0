@@ -11,6 +11,28 @@
 # Helper functions
 #
 
+# Helper for `io0PathFromString` which parses absolute path strings
+# into components. The grammar is basically
+# `{/ (("/"+ "." &"/")* "/"+ !("." !.) component=[! "/"]*)+ /}`, with code to
+# convert each `component` into a string (per se). Notably, this takes care
+# of ignoring double slashes (or triple, etc.) and `.` components, but it
+# leaves the handling of `..` components to a higher layer.
+parsePathString = pegMakePlus
+    (pegMakeSequence
+        (pegMakeStar
+            (pegMakeSequence
+                (pegMakePlus (pegMakeToken "/"))
+                (pegMakeToken ".")
+                (pegMakeLookaheadSuccess (pegMakeToken "/"))))
+        (pegMakePlus (pegMakeToken "/"))
+        (pegMakeLookaheadFailure
+            (pegMakeSequence
+                (pegMakeToken ".")
+                pegRuleEof))
+        (pegMakeMainSequence
+            (pegMakeStar (pegMakeCharSetComplement "/"))
+            (pegMakeCode { chars :: <> stringFromTokenList chars })));
+
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
 isPrefix = { prefix path <out> ::
@@ -26,8 +48,51 @@ isPrefix = { prefix path <out> ::
     <> eq prefix (listSlice path 0 prefixSize)
 };
 
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 0 spec.
+io0PathFromString = { string ::
+    # Reject the empty string.
+    ifTrue { <> eq string "" }
+        { io0Die "Invalid path (empty)." };
+
+    # Prepend the current directory if the path isn't absolute.
+    absoluteString = ifTrue { <> eq (stringNth string 0) "/" }
+        { <> string }
+        { <> stringAdd (io0CwdString()) "/" string };
+
+    # Do the first layer of parsing.
+    components = pegApply parsePathString absoluteString;
+
+    # Handle `..` components, to produce the final result.
+    <> listReduce [] components { result . one ::
+        <> ifTrue { <> eq one ".." }
+            {
+                ifTrue { <> eq result [] }
+                    {
+                        io0Die (format
+                            "Invalid `..` component in path: %q" string)
+                    };
+                <> listButLast result
+            }
+            { <> listAppend result one }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+io0ReadLink = { path ::
+    <> ifValue { <> io0ReadLinkString path }
+        { newPath :: <> io0PathFromString newPath }
+};
+
 # Helper for `io0SandboxedReader` which does symbolic link resolution,
 # respecting the sandbox directory.
+#
+# This is located in the "exported" section, as it makes use of
+# the exported function `io0ReadLink`, defined above.
 resolveLinks = { sandboxDirectory path <out> ::
     loopReduce [path 50] { result ::
         path = listNth result 0;
@@ -44,11 +109,6 @@ resolveLinks = { sandboxDirectory path <out> ::
     }
 };
 
-
-#
-# Exported functions
-#
-
 # Documented in Samizdat Layer 0 spec.
 io0SandboxedReader = { directory ::
     <> { path ::
@@ -58,5 +118,7 @@ io0SandboxedReader = { directory ::
 };
 
 <> [
+    "io0PathFromString" = io0PathFromString
+    "io0ReadLink" = io0ReadLink
     "io0SandboxedReader" = io0SandboxedReader
 ];
