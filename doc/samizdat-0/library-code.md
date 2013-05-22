@@ -78,15 +78,6 @@ target function, and returns whatever the target function returned
 This function is meant to make it a little easier to deal with the fact
 that *Samizdat Layer 0* prohibits use-before-def.
 
-#### `makeLibrary map <> map`
-
-Takes a library binding map and returns one that is just like the
-one given, except that the key `"LIBRARY"` is bound to the given
-map. This makes a `LIBRARY` binding into a form suitable for
-passing as the library / global context argument to evaluation
-functions (such as `sam0Eval`), in that callees can rightfully expect
-there to be a binding for `LIBRARY`.
-
 #### `partialApply function value* list? <> function`
 
 Partial function application. This takes a function and a number of arguments
