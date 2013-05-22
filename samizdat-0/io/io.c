@@ -4,7 +4,6 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "const.h"
 #include "io.h"
 #include "util.h"
 #include "zlimits.h"
@@ -22,45 +21,13 @@
  */
 
 /**
- * Converts a list-of-strings path form into an absolute file name,
- * checking the components for sanity.
- */
-static zvalue stringFromPathList(zvalue pathList) {
-    zvalue result = STR_EMPTY;
-    zint size = datSize(pathList);
-
-    for (zint i = 0; i < size; i++) {
-        zvalue one = datListNth(pathList, i);
-        zint size = datUtf8SizeFromString(one);
-        char str[size + 1];
-        datUtf8FromString(size + 1, str, one);
-
-        if (strlen(str) != size) {
-            die("Invalid path component (contains null bytes): \"%s\"", str);
-        } else if (strchr(str, '/') != NULL) {
-            die("Invalid path component (contains slash): \"%s\"", str);
-        } else if (datEq(one, STR_EMPTY) ||
-            datEq(one, STR_CH_DOT) ||
-            datEq(one, STR_CH_DOTDOT)) {
-            die("Invalid path component: \"%s\"", str);
-        }
-
-        result = datStringAdd(result, STR_CH_SLASH);
-        result = datStringAdd(result, one);
-    }
-
-    return result;
-}
-
-/**
  * Opens the file with the given name (a string), and with the
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
-static FILE *openFile(zvalue pathList, const char *mode) {
-    zvalue pathString = stringFromPathList(pathList);
-    zint pathSize = datUtf8SizeFromString(pathString);
+static FILE *openFile(zvalue flatPath, const char *mode) {
+    zint pathSize = datUtf8SizeFromString(flatPath);
     char path[pathSize + 1];
-    datUtf8FromString(pathSize + 1, path, pathString);
+    datUtf8FromString(pathSize + 1, path, flatPath);
 
     FILE *file = fopen(path, mode);
     if (file == NULL) {
@@ -92,8 +59,6 @@ zvalue ioFlatCwd(void) {
 
 /* Documented in header. */
 zvalue ioFlatReadLink(zvalue flatPath) {
-    constInit();
-
     zint pathSize = datUtf8SizeFromString(flatPath);
     char path[pathSize + 1];
     datUtf8FromString(pathSize + 1, path, flatPath);
@@ -129,11 +94,9 @@ zvalue ioFlatReadLink(zvalue flatPath) {
 }
 
 /* Documented in header. */
-zvalue ioReadFileUtf8(zvalue pathList) {
-    constInit();
-
+zvalue ioFlatReadFileUtf8(zvalue flatPath) {
     char buf[IO_MAX_FILE_SIZE];
-    FILE *in = openFile(pathList, "r");
+    FILE *in = openFile(flatPath, "r");
     size_t amt = fread(buf, 1, sizeof(buf), in);
 
     if (ferror(in)) {
@@ -150,14 +113,12 @@ zvalue ioReadFileUtf8(zvalue pathList) {
 }
 
 /* Documented in header. */
-void ioWriteFileUtf8(zvalue pathList, zvalue text) {
-    constInit();
-
+void ioFlatWriteFileUtf8(zvalue flatPath, zvalue text) {
     zint utfSize = datUtf8SizeFromString(text);
     char utf[utfSize + 1];
     datUtf8FromString(utfSize + 1, utf, text);
 
-    FILE *out = openFile(pathList, "w");
+    FILE *out = openFile(flatPath, "w");
     zint amt = fwrite(utf, 1, utfSize, out);
 
     if (amt != utfSize) {

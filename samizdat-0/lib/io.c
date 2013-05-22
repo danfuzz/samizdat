@@ -56,9 +56,9 @@ PRIM_IMPL(io0Note) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0ReadFileUtf8) {
+PRIM_IMPL(io0FlatReadFileUtf8) {
     requireExactly(argCount, 1);
-    return ioReadFileUtf8(args[0]);
+    return ioFlatReadFileUtf8(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -68,8 +68,8 @@ PRIM_IMPL(io0FlatReadLink) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0WriteFileUtf8) {
+PRIM_IMPL(io0FlatWriteFileUtf8) {
     requireExactly(argCount, 2);
-    ioWriteFileUtf8(args[0], args[1]);
+    ioFlatWriteFileUtf8(args[0], args[1]);
     return NULL;
 }

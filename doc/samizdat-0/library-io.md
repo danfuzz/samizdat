@@ -38,23 +38,16 @@ Writes out a newline-terminated note to the system console or equivalent.
 This is intended for debugging, and as such this will generally end up
 emitting to the standard-error stream.
 
-#### `io0ReadFileUtf8 path <> string`
+#### `io0FlatReadFileUtf8 flatPath <> string`
 
 Reads the named file, using the underlying OS's functionality,
 interpreting the contents as UTF-8 encoded text. Returns a string
 of the read and decoded text.
 
-`pathList` must be a list of the form described by `io0PathFromFlat`
-(see which). It is invalid (terminating the runtime) for a component to
-be any of `""` `"."` `".."` or to contain a slash (`/`).
-
-#### `io0WriteFileUtf8 path text <> !.`
+#### `io0FlatWriteFileUtf8 flatPath text <> !.`
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
-
-`pathList` must be a list of the form described by `io0PathFromFlat`
-(see which). See `io0ReadFileUtf8` for further discussion.
 
 
 <br><br>
@@ -105,6 +98,13 @@ original path ended with a trailing slash.
 
 It is an error (terminating the runtime) if `string` is empty (`""`).
 
+#### `io0ReadFileUtf8 path <> string`
+
+Reads the named file, using the underlying OS's functionality,
+interpreting the contents as UTF-8 encoded text. Returns a string
+of the read and decoded text. `path` must be a componentized path-list,
+such as might have been returned from `io0PathFromFlat`.
+
 #### `io0ReadLink path <> path | !.`
 
 Checks the filesystem to see if the given path refers to a symbolic
@@ -124,10 +124,17 @@ void.
 Returns a file reader function which is limited to *only* reading
 files from underneath the named directory (a path-list as
 described in `io0PathFromFlat`). The return value from this call
-behaves like `ioReadFileUtf8`, as if the given directory is both the
+behaves like `ioFlatReadFileUtf8`, as if the given directory is both the
 root of the filesystem and is the current working directory. Symbolic
 links are respected, but only if the link target is under the named
 directory.
 
 This function is meant to help enable a "supervisor" to build a sandbox
 from which untrusted code can read its own files.
+
+#### `io0WriteFileUtf8 flatPath text <> !.`
+
+Writes out the given text to the named file, using the underlying OS's
+functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
+`path` must be a componentized path-list, such as might have been returned
+from `io0PathFromFlat`.

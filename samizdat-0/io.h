@@ -30,16 +30,13 @@ zvalue ioFlatReadLink(zvalue flatPath);
  * Reads the file with the given name in its entirety, interpreting
  * it as UTF-8. Returns a string (list of Unicode-representing
  * ints) of the contents.
- *
- * The `pathList` represents an absolute filesystem path as individual
- * strings.
  */
-zvalue ioReadFileUtf8(zvalue pathList);
+zvalue ioFlatReadFileUtf8(zvalue flatPath);
 
 /**
  * Writes the given string to the file with the given name, encoding
- * it as UTF-8. `pathList` is as with `ioReadFileUtf8`.
+ * it as UTF-8.
  */
-void ioWriteFileUtf8(zvalue pathList, zvalue text);
+void ioFlatWriteFileUtf8(zvalue flatPath, zvalue text);
 
 #endif
