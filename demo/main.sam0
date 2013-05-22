@@ -70,6 +70,14 @@ exiter = { foo <out> ::
         { <out> }
 };
 
+# Demo of `mutableBox`.
+boxer = {
+    box = mutableBox 10;
+
+    listForEach [1 2 3] { . n :: box (iadd (box()) n) };
+    <> box()
+};
+
 # Emits the stringified version of the given value to the console.
 process = { value ::
     io0Note (sourceString value);
@@ -118,6 +126,7 @@ main = { selfPath name rest* ::
     process @@;
     process (countDown 10);
     process (countDown2 5);
+    process (boxer());
 
     sibling();
 
