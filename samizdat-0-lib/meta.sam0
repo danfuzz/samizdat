@@ -14,7 +14,6 @@
 META_NAME_MAP = [
     "sam0" = ["eval"="sam0Eval" "tokenize"="sam0Tokenize" "tree"="sam0Tree"]
     "sam1" = ["eval"="sam1Eval" "tokenize"="sam1Tokenize" "tree"="sam1Tree"]
-    "sam"  = ["eval"="samEval"  "tokenize"="samTokenize"  "tree"="samTree"]
 ];
 
 
@@ -38,9 +37,10 @@ metaFunctions = { context fileName ::
         { <> "" }
         { <> stringSlice fileName (iadd dotAt 1) };
 
+    # Note: As the layers get added, the default here should change.
     nameMap = ifValue { <> mapGet META_NAME_MAP suffix }
         { map :: <> map }
-        { <> mapGet META_NAME_MAP "sam" };
+        { <> mapGet META_NAME_MAP "sam1" };
 
     <> mapMap nameMap { . v ::
         <> ifValue { <> mapGet context v }
