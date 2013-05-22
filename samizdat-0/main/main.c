@@ -18,36 +18,35 @@
  */
 
 /**
- * Main driver for Samizdat Layer 0. Takes the first argument to
- * be a file name. Reads the file, and compiles it to an executable
- * parse tree in an execution context consisting of the Samizdat Layer
- * 0 core library. It evaluates that tree, which should evaluate to
- * a function. It then calls that function, passing it the original
- * file's componentized path as the first argument, followed by the
- * remaining original arguments as passed into this function.
+ * Main driver for Samizdat Layer 0. This makes a library context, and
+ * uses the `samCommandLine` function defined therein to do all the
+ * real work.
  */
 static void realMain(int argc, char **argv) {
-    if (argc < 2) {
+    if (argc < 1) {
         die("Too few arguments.");
     }
 
-    zvalue pathList = ioPathListFromUtf8(argv[1]);
-    zint argCount = argc - 1;
-    zvalue args[argCount];
+    zvalue context = libNewContext();
 
-    args[0] = pathList;
-    for (int i = 1; i < argCount; i++) {
-        args[i] = datStringFromUtf8(-1, argv[i + 1]);
+    // The first argumengt to `samCommandLine` is the context. The
+    // rest are the original command-line arguments (per se, so not
+    // including C's `argv[0]`).
+
+    zvalue args[argc];
+
+    args[0] = context;
+    for (int i = 1; i < argc; i++) {
+        args[i] = datStringFromUtf8(-1, argv[i]);
     }
+    zvalue argsList = datListFromArray(argc, args);
 
-    zvalue ctx = libNewContext();
-    zvalue programText = ioReadFileUtf8(pathList);
-    zvalue program = langTree0(programText);
-    zvalue function = langEval0(ctx, program);
-
+    // Force a garbage collection here, mainly to get a reasonably early
+    // failure if gc is broken.
     datGc();
 
-    zvalue result = langApply(function, datListFromArray(argCount, args));
+    zvalue samCommandLine = datMapGet(context, STR_SAM_COMMAND_LINE);
+    zvalue result = langApply(samCommandLine, argsList);
 
     if ((result != NULL) && (datType(result) == DAT_INT)) {
         exit((int) datZintFromInt(result));
