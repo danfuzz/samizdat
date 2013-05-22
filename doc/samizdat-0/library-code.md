@@ -78,6 +78,28 @@ target function, and returns whatever the target function returned
 This function is meant to make it a little easier to deal with the fact
 that *Samizdat Layer 0* prohibits use-before-def.
 
+#### `mutableBox value? <> function`
+
+Simple mutable box utility. The result of a call to this function is
+another function, called the "box access function". The box access function
+can be called either with or without an argument. If it is called without
+an argument, then it returns the current content value of its box. If it
+is called with an argument, then that argument becomes the new box content
+value, and the box access function returns the same value it was passed.
+
+The initial box content value is the `value` given to the original function
+call. If no `value` was passed, then it is invalid (terminating the runtime)
+for the box access function to be called with no argument until it has been
+called at least once with an argument.
+
+This function is meant to be the primary way to define (what amount to)
+mutable variables, in that *Samizdat Layer 0* only provides immutably-bound
+variables. It is hoped that this facility will be used as minimally as
+possible, so as to not preclude the system from performing functional-style
+optimizations.
+
+**Note:** "Boxes" are sometimes also known as "cells".
+
 #### `partialApply function value* list? <> function`
 
 Partial function application. This takes a function and a number of arguments

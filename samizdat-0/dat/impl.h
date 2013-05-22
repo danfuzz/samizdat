@@ -151,6 +151,26 @@ typedef struct {
 zvalue datAllocValue(ztype type, zint size, zint extraBytes);
 
 /**
+ * Asserts that the given value is a valid `zvalue`, and that its size
+ * accommodates accessing the `n`th element. This includes asserting that
+ * `n >= 0`. Note that all non-negative `n` are valid for accessing
+ * ints (their size notwithstanding).
+ */
+void datAssertNth(zvalue value, zint n);
+
+/**
+ * Like `datAssertNth` but also accepts the case where `n` is the size
+ * of the value.
+ */
+void datAssertNthOrSize(zvalue value, zint n);
+
+/**
+ * Asserts that the given range is valid for a `slice`-like operation
+ * on the given value.
+ */
+void datAssertSliceRange(zvalue value, zint start, zint end);
+
+/**
  * If the given pointer is reasonably believed to be a zvalue, returns it;
  * otherwise returns `NULL`. This is used for conservative stack scanning.
  */

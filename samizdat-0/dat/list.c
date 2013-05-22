@@ -200,12 +200,7 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value) {
 /* Documented in header. */
 zvalue datListSlice(zvalue list, zint start, zint end) {
     datAssertList(list);
-
-    if ((start < 0) || (end < 0) || (end < start)) {
-        die("Invalid slice range: (%lld..!%lld)", start, end);
-    }
-
-    datAssertNthOrSize(list, end);
+    datAssertSliceRange(list, start, end);
 
     return listFrom(end - start, &listElems(list)[start], NULL, 0, NULL);
 }
