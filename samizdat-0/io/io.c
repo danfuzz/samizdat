@@ -76,7 +76,7 @@ static FILE *openFile(zvalue pathList, const char *mode) {
  */
 
 /* Documented in header. */
-zvalue ioCwdString(void) {
+zvalue ioFlatCwd(void) {
     // The maximum buffer size is determined per the recommendation
     // in the Posix docs for `getcwd`.
 
@@ -91,7 +91,7 @@ zvalue ioCwdString(void) {
 }
 
 /* Documented in header. */
-zvalue ioReadLinkString(zvalue pathList) {
+zvalue ioFlatReadLink(zvalue pathList) {
     constInit();
 
     zvalue pathString = stringFromPathList(pathList);

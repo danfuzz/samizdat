@@ -16,7 +16,7 @@
 /**
  * Returns `getcwd()` as a string.
  */
-zvalue ioCwdString(void);
+zvalue ioFlatCwd(void);
 
 /**
  * Gets symbolic link information about the file with the given name.
@@ -24,7 +24,7 @@ zvalue ioCwdString(void);
  * a simple string. If the file does not name a symbolic link, this returns
  * `NULL`.
  */
-zvalue ioReadLinkString(zvalue pathList);
+zvalue ioFlatReadLink(zvalue pathList);
 
 /**
  * Reads the file with the given name in its entirety, interpreting

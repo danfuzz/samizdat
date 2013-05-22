@@ -7,17 +7,34 @@ I/O
 <br><br>
 ### Primitive Definitions
 
-#### `io0CwdString <> string`
+#### `io0Die string? <> !. (exits)`
+
+Prints the given string to the system console (as if with `io0Note`)
+if supplied, and terminates the runtime with a failure status code (`1`).
+
+#### `io0FlatCwd <> string`
 
 Returns the current working directory of the process, as a
 string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `io0Die string? <> !. (exits)`
+#### `io0FlatReadLink pathList <> string | !.`
 
-Prints the given string to the system console (as if with `io0Note`)
-if supplied, and terminates the runtime with a failure status code (`1`).
+Checks the filesystem to see if the given path refers to a symbolic
+link. If it does, then this returns the string which represents the
+direct resolution of that link. It does not try to re-resolve
+the result iteratively, so the result may not actually refer to a
+real file (for example). It also does not convert the result into a
+componentized path; it's just a string.
+
+If the path does not refer to a symbolic link, then this function returns
+void.
+
+`pathList` must be a list of the form described by `io0PathFromString`
+(see which). See `io0ReadFileUtf8` for further discussion.
+
+This function is a thin veneer over the standard Posix call `readlink()`.
 
 #### `io0Note string <> !.`
 
@@ -34,23 +51,6 @@ of the read and decoded text.
 `pathList` must be a list of the form described by `io0PathFromString`
 (see which). It is invalid (terminating the runtime) for a component to
 be any of `""` `"."` `".."` or to contain a slash (`/`).
-
-#### `io0ReadLinkString pathList <> string | !.`
-
-Checks the filesystem to see if the given path refers to a symbolic
-link. If it does, then this returns the string which represents the
-direct resolution of that link. It does not try to re-resolve
-the result iteratively, so the result may not actually refer to a
-real file (for example). It also does not convert the result into a
-componentized path; it's just a string.
-
-If the path does not refer to a symbolic link, then this function returns
-void.
-
-`pathList` must be a list of the form described by `io0PathFromString`
-(see which). See `io0ReadFileUtf8` for further discussion.
-
-This function is a thin veneer over the standard Posix call `readlink()`.
 
 #### `io0WriteFileUtf8 pathList text <> !.`
 

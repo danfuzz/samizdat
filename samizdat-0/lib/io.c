@@ -33,9 +33,9 @@ static void emitNote(zvalue message) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0CwdString) {
+PRIM_IMPL(io0FlatCwd) {
     requireExactly(argCount, 0);
-    return ioCwdString();
+    return ioFlatCwd();
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -62,9 +62,9 @@ PRIM_IMPL(io0ReadFileUtf8) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0ReadLinkString) {
+PRIM_IMPL(io0FlatReadLink) {
     requireExactly(argCount, 1);
-    return ioReadLinkString(args[0]);
+    return ioFlatReadLink(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

@@ -62,7 +62,7 @@ io0PathFromString = { string ::
     # Prepend the current directory if the path isn't absolute.
     absoluteString = ifTrue { <> eq (stringNth string 0) "/" }
         { <> string }
-        { <> stringAdd (io0CwdString()) "/" string };
+        { <> stringAdd (io0FlatCwd()) "/" string };
 
     # Do the first layer of parsing.
     components = pegApply parsePathString absoluteString;
@@ -84,7 +84,7 @@ io0PathFromString = { string ::
 
 # Documented in Samizdat Layer 0 spec.
 io0ReadLink = { path ::
-    <> ifValue { <> io0ReadLinkString path }
+    <> ifValue { <> io0FlatReadLink path }
         { newPath :: <> io0PathFromString newPath }
 };
 
