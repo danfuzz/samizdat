@@ -52,7 +52,25 @@ metaFunctions = { context fileName ::
     }
 };
 
+# Documented in Samizdat Layer 0 spec.
+samCommandLine = { context args* ::
+    # TODO: Be more complete. In particular, parse reasonable options,
+    # for some value of the term "reasonable".
+
+    fileName = listFirst args "/dev/stdin";
+    argWords = listButFirst args [];
+    filePath = io0PathFromString fileName;
+    metas = metaFunctions context (listLast filePath);
+
+    programText = io0ReadFileUtf8 filePath;
+    parsedProgram = (mapGet metas "tree") programText;
+    evalledProgram = (mapGet metas "eval") parsedProgram;
+
+    <> apply evalledProgram argWords
+};
+
 <> [
     "makeLibrary" = makeLibrary
     "metaFunctions" = metaFunctions
+    "samCommandLine" = samCommandLine
 ]
