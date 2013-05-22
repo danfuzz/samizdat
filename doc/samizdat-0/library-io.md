@@ -12,14 +12,14 @@ I/O
 Prints the given string to the system console (as if with `io0Note`)
 if supplied, and terminates the runtime with a failure status code (`1`).
 
-#### `io0FlatCwd <> string`
+#### `io0FlatCwd <> flatString`
 
 Returns the current working directory of the process, as a
 string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `io0FlatReadLink pathList <> string | !.`
+#### `io0FlatReadLink path <> flatString | !.`
 
 Checks the filesystem to see if the given path refers to a symbolic
 link. If it does, then this returns the string which represents the
@@ -42,7 +42,7 @@ Writes out a newline-terminated note to the system console or equivalent.
 This is intended for debugging, and as such this will generally end up
 emitting to the standard-error stream.
 
-#### `io0ReadFileUtf8 pathList <> string`
+#### `io0ReadFileUtf8 path <> string`
 
 Reads the named file, using the underlying OS's functionality,
 interpreting the contents as UTF-8 encoded text. Returns a string
@@ -52,7 +52,7 @@ of the read and decoded text.
 (see which). It is invalid (terminating the runtime) for a component to
 be any of `""` `"."` `".."` or to contain a slash (`/`).
 
-#### `io0WriteFileUtf8 pathList text <> !.`
+#### `io0WriteFileUtf8 path text <> !.`
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
@@ -64,7 +64,7 @@ functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 <br><br>
 ### In-Language Definitions
 
-#### `io0PathFromFlat string <> pathList`
+#### `io0PathFromFlat flatString <> pathList`
 
 Converts the given path string to an absolute form, in the "form factor"
 that is used internally. The input `string` is expected to be a
@@ -94,7 +94,7 @@ original path ended with a trailing slash.
 
 It is an error (terminating the runtime) if `string` is empty (`""`).
 
-#### `io0ReadLink pathList <> pathList | !.`
+#### `io0ReadLink path <> path | !.`
 
 Checks the filesystem to see if the given path refers to a symbolic
 link. If it does, then this returns the path which represents the
