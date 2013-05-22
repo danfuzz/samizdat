@@ -48,24 +48,6 @@ isPrefix = { prefix path <out> ::
     <> eq prefix (listSlice path 0 prefixSize)
 };
 
-# Helper for `io0SandboxedReader` which does symbolic link resolution,
-# respecting the sandbox directory.
-resolveLinks = { sandboxDirectory path <out> ::
-    loopReduce [path 50] { result ::
-        path = listNth result 0;
-        limit = listNth result 1;
-
-        ifTrue { <> le limit 0 }
-            { io0Die "Too many links in symbolic link chain." };
-        ifFalse { <> isPrefix sandboxDirectory path }
-            { io0Die "Symbolic link escapes sandbox directory." };
-
-        <> ifValue { <> io0ReadLink path }
-            { newPath :: <> [newPath (isub limit 1)] }
-            { <out> path }
-    }
-};
-
 
 #
 # Exported functions
@@ -101,6 +83,33 @@ io0PathFromString = { string ::
 };
 
 # Documented in Samizdat Layer 0 spec.
+io0ReadLink = { path ::
+    <> ifValue { <> io0ReadLinkString path }
+        { newPath :: <> io0PathFromString newPath }
+};
+
+# Helper for `io0SandboxedReader` which does symbolic link resolution,
+# respecting the sandbox directory.
+#
+# This is located in the "exported" section, as it makes use of
+# the exported function `io0ReadLink`, defined above.
+resolveLinks = { sandboxDirectory path <out> ::
+    loopReduce [path 50] { result ::
+        path = listNth result 0;
+        limit = listNth result 1;
+
+        ifTrue { <> le limit 0 }
+            { io0Die "Too many links in symbolic link chain." };
+        ifFalse { <> isPrefix sandboxDirectory path }
+            { io0Die "Symbolic link escapes sandbox directory." };
+
+        <> ifValue { <> io0ReadLink path }
+            { newPath :: <> [newPath (isub limit 1)] }
+            { <out> path }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
 io0SandboxedReader = { directory ::
     <> { path ::
         fullPath = resolveLinks directory (listAdd directory path);
@@ -110,5 +119,6 @@ io0SandboxedReader = { directory ::
 
 <> [
     "io0PathFromString" = io0PathFromString
+    "io0ReadLink" = io0ReadLink
     "io0SandboxedReader" = io0SandboxedReader
 ];

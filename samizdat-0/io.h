@@ -19,18 +19,12 @@
 zvalue ioCwdString(void);
 
 /**
- * Converts a path string to an absolute form, as a list of path components,
- * where each component is a string. If the original is a relative path,
- * the result will have the system's current working directory prepended.
- */
-zvalue ioPathListFromUtf8(const char *path);
-
-/**
  * Gets symbolic link information about the file with the given name.
- * This returns the linked path if the file names a symbolic link, or
- * returns void if not.
+ * It the file names a symbolic link, then this returns the linked path as
+ * a simple string. If the file does not name a symbolic link, this returns
+ * `NULL`.
  */
-zvalue ioReadLink(zvalue pathList);
+zvalue ioReadLinkString(zvalue pathList);
 
 /**
  * Reads the file with the given name in its entirety, interpreting
