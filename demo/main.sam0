@@ -128,7 +128,7 @@ main = { selfPath name rest* ::
     process (countDown2 5);
     process (boxer());
     process (metaFunctions LIBRARY "blort.sam0");
-    process (io0PathFromString "///foo//////./bar/../baz");
+    process (io0PathFromFlat "///foo//////./bar/../baz");
 
     sibling();
 

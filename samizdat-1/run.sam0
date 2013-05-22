@@ -86,7 +86,7 @@ run = { args* ::
         }
         { <> LIBRARY };
 
-    filePath = io0PathFromString file;
+    filePath = io0PathFromFlat file;
     programText = io0ReadFileUtf8 filePath;
     programNode = sam1ValidatedTree programText;
 

@@ -31,7 +31,7 @@ componentized path; it's just a string.
 If the path does not refer to a symbolic link, then this function returns
 void.
 
-`pathList` must be a list of the form described by `io0PathFromString`
+`pathList` must be a list of the form described by `io0PathFromFlat`
 (see which). See `io0ReadFileUtf8` for further discussion.
 
 This function is a thin veneer over the standard Posix call `readlink()`.
@@ -48,7 +48,7 @@ Reads the named file, using the underlying OS's functionality,
 interpreting the contents as UTF-8 encoded text. Returns a string
 of the read and decoded text.
 
-`pathList` must be a list of the form described by `io0PathFromString`
+`pathList` must be a list of the form described by `io0PathFromFlat`
 (see which). It is invalid (terminating the runtime) for a component to
 be any of `""` `"."` `".."` or to contain a slash (`/`).
 
@@ -57,14 +57,14 @@ be any of `""` `"."` `".."` or to contain a slash (`/`).
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 
-`pathList` must be a list of the form described by `io0PathFromString`
+`pathList` must be a list of the form described by `io0PathFromFlat`
 (see which). See `io0ReadFileUtf8` for further discussion.
 
 
 <br><br>
 ### In-Language Definitions
 
-#### `io0PathFromString string <> pathList`
+#### `io0PathFromFlat string <> pathList`
 
 Converts the given path string to an absolute form, in the "form factor"
 that is used internally. The input `string` is expected to be a
@@ -105,14 +105,14 @@ real file (for example).
 If the path does not refer to a symbolic link, then this function returns
 void.
 
-`pathList` must be a list of the form described by `io0PathFromString`
+`pathList` must be a list of the form described by `io0PathFromFlat`
 (see which). See `io0ReadFileUtf8` for further discussion.
 
 #### `io0SandboxedReader directory <> function`
 
 Returns a file reader function which is limited to *only* reading
 files from underneath the named directory (a path-list as
-described in `io0PathFromString`). The return value from this call
+described in `io0PathFromFlat`). The return value from this call
 behaves like `ioReadFileUtf8`, as if the given directory is both the
 root of the filesystem and is the current working directory. Symbolic
 links are respected, but only if the link target is under the named

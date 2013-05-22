@@ -59,7 +59,7 @@ samCommandLine = { context args* ::
 
     fileName = listFirst args "/dev/stdin";
     argWords = listButFirst args [];
-    filePath = io0PathFromString fileName;
+    filePath = io0PathFromFlat fileName;
     metas = metaFunctions context (listLast filePath);
 
     programText = io0ReadFileUtf8 filePath;
