@@ -32,15 +32,6 @@ readLibraryFile = { name ::
         { io0Die (stringAdd "No such core library file: " name) }
 };
 
-# Given a file name, return the names to look up in order to parse and
-# evaluate the file. The result is based on the suffix of the file name.
-processingFunctionNames = { name ::
-    lastChar = stringNth name (isub (lowSize name) 1);
-    prefix = stringAdd "sam" lastChar;
-
-    <> ["tree"=(stringAdd prefix "Tree") "eval"=(stringAdd prefix "Eval")]
-};
-
 # Loads the named library file in the given context, returning a map
 # representing both the originally-given context *and* the bindings defined
 # by the named library. Each library file is expected to return a map of
@@ -48,9 +39,13 @@ processingFunctionNames = { name ::
 loadLibrary = { ctx name ::
     io0Note (stringAdd "    " name);
 
-    functionNames = processingFunctionNames name;
-    treeFunction = mapGet ctx (mapGet functionNames "tree");
-    evalFunction = mapGet ctx (mapGet functionNames "eval");
+    # If `metaFunctions` is available, use it to get the proper parser and
+    # evaluator. Otherwise, default to the layer 0 functions.
+    metas = ifValue { <> mapGet ctx "metaFunctions" }
+        { metaFunctions :: <> metaFunctions ctx name }
+        { <> ["eval"=sam0Eval "tree"=sam0Tree] };
+    treeFunction = mapGet metas "tree";
+    evalFunction = mapGet metas "eval";
 
     text = readLibraryFile name;
     tree = treeFunction text;
