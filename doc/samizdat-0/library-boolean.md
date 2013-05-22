@@ -25,7 +25,7 @@ Ordering is calculated as follows:
 The major order is by type &mdash; `int < string < list <
 map < token < uniqlet` &mdash; and minor order is type-dependant.
 
-* Ints order by integer value.
+* Ints order by integer value, low to high.
 
 * Lists and strings order by pairwise corresponding-element
   comparison, with a strict prefix always ordering before its
@@ -41,8 +41,8 @@ map < token < uniqlet` &mdash; and minor order is type-dependant.
   ones with a value.
 
 * Any given uniqlet never compares as identical to anything but
-  itself. Any two uniqlets have a consistent, transitive, and
-  commutative &mdash; but otherwise arbitrary &mdash; ordering.
+  itself. There is a total ordering of uniqlets, which is consistent,
+  transitive, and symmetric &mdash; but otherwise arbitrary.
 
 #### `lowOrderIs value1 value2 check1 check2? <> boolean`
 
