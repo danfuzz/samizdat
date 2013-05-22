@@ -70,3 +70,4 @@ PRIM_FUNC(sam0Tree);
 PRIM_FUNC(stringAdd);
 PRIM_FUNC(stringFromInt);
 PRIM_FUNC(stringNth);
+PRIM_FUNC(stringSlice);

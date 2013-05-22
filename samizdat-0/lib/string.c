@@ -70,3 +70,14 @@ PRIM_IMPL(stringAdd) {
 PRIM_IMPL(stringNth) {
     return doNth(valueFromStringNth, argCount, args);
 }
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(stringSlice) {
+    requireAtLeast(argCount, 2);
+
+    zvalue string = args[0];
+    zint startIndex = datZintFromInt(args[1]);
+    zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : datSize(string);
+
+    return datStringSlice(string, startIndex, endIndex);
+}
