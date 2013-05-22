@@ -15,7 +15,7 @@ BOOTSTRAP_FILES = [
     "main.sam0"
 ];
 
-# This lists all of the names of the core library files, listed in
+# The following is a list of the names of all the core library files, in
 # dependency order. That is, the first one depends only on the primitives,
 # the second can depend on primitives and the first, etc.
 MANIFEST = [
