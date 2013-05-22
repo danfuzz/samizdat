@@ -32,6 +32,15 @@ string. If `n` is not valid (not an int, or out of range),
 then this returns the `notFound` value (an arbitrary value) if supplied,
 or returns void if `notFound` was not supplied.
 
+#### `stringSlice list start end? <> list`
+
+Returns a string consisting of a "slice" of elements of the given
+string, from the `start` index (inclusive) through the `end` index
+(exclusive). `start` and `end` must both be ints, must be valid indices
+into `string` (with the string size being a valid index), and must form a
+range (though possibly empty) with `start <= end`. If `end` is not
+specified, it defaults to the end of the string.
+
 
 <br><br>
 ### In-Language Definitions
