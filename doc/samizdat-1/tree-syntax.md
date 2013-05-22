@@ -71,10 +71,7 @@ parserSet = {/
         }
     |
         tokens = parserToken*
-        {
-            <> listReduce [] tokens
-                { result . t :: <> listAppend result (tokenValue t) }
-        }
+        { <> listMap tokens { . t :: <> tokenValue t } }
     )
 
     @"]"
