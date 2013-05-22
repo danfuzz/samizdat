@@ -131,6 +131,14 @@ zint datStringNth(zvalue string, zint n) {
 }
 
 /* Documented in header. */
+zvalue datStringSlice(zvalue string, zint start, zint end) {
+    datAssertString(string);
+    datAssertSliceRange(string, start, end);
+
+    return datStringFromChars(end - start, &stringElems(string)[start]);
+}
+
+/* Documented in header. */
 void datUtf8FromString(zint resultSize, char *result, zvalue string) {
     datAssertString(string);
 

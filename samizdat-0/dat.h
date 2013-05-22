@@ -94,20 +94,6 @@ void datAssertList(zvalue value);
 void datAssertMap(zvalue value);
 
 /**
- * Asserts that the given value is a valid `zvalue`, and that its size
- * accommodates accessing the `n`th element. This includes asserting that
- * `n >= 0`. Note that all non-negative `n` are valid for accessing
- * ints (their size notwithstanding).
- */
-void datAssertNth(zvalue value, zint n);
-
-/**
- * Like `datAssertNth` but also accepts the case where `n` is the size
- * of the value.
- */
-void datAssertNthOrSize(zvalue value, zint n);
-
-/**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a string. If not, this aborts the process
  * with a diagnostic message.
@@ -235,6 +221,12 @@ zvalue datStringFromUtf8(zint stringBytes, const char *string);
 zint datStringNth(zvalue string, zint n);
 
 /**
+ * Gets the string consisting of the given "slice" of elements
+ * (start inclusive, end exclusive) of the given string.
+ */
+zvalue datStringSlice(zvalue string, zint start, zint end);
+
+/**
  * Encodes the given string as UTF-8 into the given buffer of the
  * given size in bytes. The buffer must be large enough to hold the entire
  * encoded result plus a terminating `'\0'` byte; if not, this function
@@ -314,7 +306,7 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value);
 
 /**
  * Gets the list consisting of the given "slice" of elements
- * (start inclusive, end exclusive) of the list.
+ * (start inclusive, end exclusive) of the given list.
  */
 zvalue datListSlice(zvalue list, zint start, zint end);
 
