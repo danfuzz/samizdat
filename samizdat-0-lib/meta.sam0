@@ -1,0 +1,31 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Meta functions
+#
+
+#
+# Helper functions
+#
+
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 0 spec.
+makeLibrary = { context ::
+    <> mapPut context "LIBRARY" context
+};
+
+# Documented in Samizdat Layer 0 spec.
+metaFunctions = { context fileName ::
+    io0Die "TODO"
+};
+
+<> [
+    "makeLibrary" = makeLibrary
+    "metaFunctions" = metaFunctions
+]
