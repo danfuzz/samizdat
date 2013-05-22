@@ -42,11 +42,6 @@ forwardFunction = {
 };
 
 # Documented in Samizdat Layer 0 spec.
-makeLibrary = { ctx ::
-    <> mapPut ctx "LIBRARY" ctx
-};
-
-# Documented in Samizdat Layer 0 spec.
 partialApply = { function args* <out> ::
     # This mouthful takes an "apply-style" argument list (that is, a number
     # of individual arguments followed at the end by a list-of-the-rest), and
@@ -58,6 +53,5 @@ partialApply = { function args* <out> ::
 
 <> [
     "forwardFunction" = forwardFunction
-    "makeLibrary" = makeLibrary
     "partialApply" = partialApply
 ]

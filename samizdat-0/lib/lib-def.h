@@ -25,6 +25,7 @@ LIB_FILE(int);
 LIB_FILE(io0);
 LIB_FILE(main);
 LIB_FILE(manifest);
+LIB_FILE(meta);
 LIB_FILE(peg);
 LIB_FILE(tokenize1);
 LIB_FILE(tree1);
