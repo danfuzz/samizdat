@@ -64,9 +64,9 @@ samCommandLine = { context args* ::
 
     programText = io0ReadFileUtf8 filePath;
     parsedProgram = (mapGet metas "tree") programText;
-    evalledProgram = (mapGet metas "eval") parsedProgram;
+    evalledProgram = (mapGet metas "eval") context parsedProgram;
 
-    <> apply evalledProgram argWords
+    <> apply evalledProgram filePath argWords
 };
 
 <> [
