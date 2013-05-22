@@ -9,9 +9,11 @@
 #include "util.h"
 #include "zlimits.h"
 
-#include <stdio.h>
-#include <string.h>
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 
@@ -51,51 +53,6 @@ static zvalue stringFromPathList(zvalue pathList) {
 }
 
 /**
- * Converts a simple string *absolute* path to the lists-of-strings form.
- * This doesn't resolve symlinks, but it does handle double-slashes, `.`
- * components, and `..` components. A trailing slash is represented in the
- * result as an empty path component.
- */
-static zvalue pathListFromAbsolute(const char *path) {
-    if (path[0] == '\0') {
-        return EMPTY_LIST;
-    } else if (path[0] != '/') {
-        die("Invalid absolute path: \"%s\"", path);
-    }
-
-    zvalue result = EMPTY_LIST;
-    const char *at = path + 1; // +1 to skip the initial '/'.
-    for (;;) {
-        const char *slashAt = strchr(at, '/');
-        zint size = (slashAt != NULL) ? (slashAt - at) : strlen(at);
-        zvalue one = datStringFromUtf8(size, at);
-
-        if (datEq(one, STR_CH_DOTDOT)) {
-            zint rsize = datSize(result);
-            if (datSize(result) == 0) {
-                die("Invalid `..` component in path: \"%s\"", path);
-            }
-            result = datListDelNth(result, rsize -1);
-        } else if (!(datEq(one, STR_EMPTY) || datEq(one, STR_CH_DOT))) {
-            result = datListAppend(result, one);
-        }
-
-        if (slashAt == NULL) {
-            break;
-        }
-
-        at = slashAt + 1;
-    }
-
-    if (path[strlen(path) - 1] == '/') {
-        // Represent a trailing slash as an empty path component.
-        result = datListAppend(result, STR_EMPTY);
-    }
-
-    return result;
-}
-
-/**
  * Opens the file with the given name (a string), and with the
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
@@ -119,60 +76,57 @@ static FILE *openFile(zvalue pathList, const char *mode) {
  */
 
 /* Documented in header. */
-zvalue ioPathListFromUtf8(const char *path) {
-    constInit();
+zvalue ioCwdString(void) {
+    // The maximum buffer size is determined per the recommendation
+    // in the Posix docs for `getcwd`.
 
-    if (path[0] == '/') {
-        return pathListFromAbsolute(path);
+    long maxSize = pathconf(".", _PC_PATH_MAX);
+    char buf[maxSize + 1];
+
+    if (getcwd(buf, maxSize) == NULL) {
+        die("Trouble with getcwd(): %s", strerror(errno));
     }
 
-    // Concatenate the given path onto the current working directory.
-    int size = strlen(path) + FILENAME_MAX + 1; // +1 for the '/'.
-    char buf[size];
-
-    if (getcwd(buf, size) == NULL) {
-        die("Can't get cwd: %s", strerror(errno));
-    }
-
-    strcat(buf, "/");
-    strcat(buf, path);
-    return pathListFromAbsolute(buf);
+    return datStringFromUtf8(-1, buf);
 }
 
 /* Documented in header. */
-zvalue ioReadLink(zvalue pathList) {
+zvalue ioReadLinkString(zvalue pathList) {
     constInit();
 
     zvalue pathString = stringFromPathList(pathList);
     zint pathSize = datUtf8SizeFromString(pathString);
-    char path[pathSize + 4 + FILENAME_MAX + 1];
-
+    char path[pathSize + 1];
     datUtf8FromString(pathSize + 1, path, pathString);
 
-    char linkPath[FILENAME_MAX + 1];
-    ssize_t size = readlink(path, linkPath, FILENAME_MAX);
-
-    if (size < 0) {
-        if ((errno == EINVAL) || (errno == ENOENT) || (errno == ENOTDIR)) {
-            // Not a symlink, or file not found, or invalid component, none
-            // of which are really errors from the perspective of this function.
+    struct stat statBuf;
+    if (lstat(path, &statBuf) != 0) {
+        if ((errno == ENOENT) || (errno == ENOTDIR)) {
+            // File not found or invalid component, neither of which
+            // are really errors from the perspective of this function.
             return NULL;
         }
-        die("Trouble with readlink: %s", strerror(errno));
+        die("Trouble with lstat(): %s", strerror(errno));
     }
 
-    linkPath[size] = '\0';
-
-    if (linkPath[0] == '/') {
-        // The link is absolute. Just use it, ignoring the path that led
-        // up to it.
-        return ioPathListFromUtf8(linkPath);
-    } else {
-        // The link is relative. Need to use the passed-in prefix.
-        strcat(path, "/../"); // To elide the name of the link in the result.
-        strcat(path, linkPath);
-        return ioPathListFromUtf8(path);
+    if (!S_ISLNK(statBuf.st_mode)) {
+        // Not a symlink.
+        return NULL;
     }
+
+    // The required link buffer size is determined per the (oblique)
+    // recommendation in the Posix docs for `readlink`.
+
+    size_t linkSize = statBuf.st_size;
+    char linkPath[linkSize];
+    ssize_t linkResult = readlink(path, linkPath, linkSize);
+    if (linkResult < 0) {
+        die("Trouble with readlink(): %s", strerror(errno));
+    } else if (linkResult != linkSize) {
+        die("Strange readlink() result: %ld", (long) linkResult);
+    }
+
+    return datStringFromUtf8(linkSize, linkPath);
 }
 
 /* Documented in header. */
