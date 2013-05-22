@@ -10,6 +10,7 @@
 #include "zlimits.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
@@ -117,6 +118,21 @@ static FILE *openFile(zvalue pathList, const char *mode) {
 /*
  * Exported functions
  */
+
+/* Documented in header. */
+zvalue ioCwdString(void) {
+    // The maximum buffer size is determined per the recommendation
+    // in the Posix docs for `getcwd`.
+
+    long maxSize = pathconf(".", _PC_PATH_MAX);
+    char buf[maxSize + 1];
+
+    if (getcwd(buf, maxSize) == NULL) {
+        die("Can't get cwd: %s", strerror(errno));
+    }
+
+    return datStringFromUtf8(-1, buf);
+}
 
 /* Documented in header. */
 zvalue ioPathListFromUtf8(const char *path) {

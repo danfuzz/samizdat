@@ -27,6 +27,7 @@ PRIM_FUNC(imul);
 PRIM_FUNC(ineg);
 PRIM_FUNC(inot);
 PRIM_FUNC(intFromString);
+PRIM_FUNC(io0CwdString);
 PRIM_FUNC(io0Die);
 PRIM_FUNC(io0Note);
 PRIM_FUNC(io0PathFromString);

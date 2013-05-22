@@ -14,6 +14,11 @@
 #include "dat.h"
 
 /**
+ * Returns `getcwd()` as a string.
+ */
+zvalue ioCwdString(void);
+
+/**
  * Converts a path string to an absolute form, as a list of path components,
  * where each component is a string. If the original is a relative path,
  * the result will have the system's current working directory prepended.

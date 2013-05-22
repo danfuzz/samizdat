@@ -33,6 +33,12 @@ static void emitNote(zvalue message) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(io0CwdString) {
+    requireExactly(argCount, 0);
+    return ioCwdString();
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0Die) {
     requireRange(argCount, 0, 1);
 
