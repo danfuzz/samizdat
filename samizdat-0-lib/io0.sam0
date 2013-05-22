@@ -84,8 +84,20 @@ io0PathFromString = { string ::
 
     # Do the first layer of parsing.
     components = pegApply parsePathString absoluteString;
-    io0Note (format "=== %q" components);
-    <> ["TODO"]
+
+    # Handle `..` components, to produce the final result.
+    <> listReduce [] components { result . one ::
+        <> ifTrue { <> eq one ".." }
+            {
+                ifTrue { <> eq result [] }
+                    {
+                        io0Die (format
+                            "Invalid `..` component in path: %q" string)
+                    };
+                <> listButLast result
+            }
+            { <> listAppend result one }
+    }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -97,6 +109,6 @@ io0SandboxedReader = { directory ::
 };
 
 <> [
-    "xio0PathFromString" = io0PathFromString
+    "io0PathFromString" = io0PathFromString
     "io0SandboxedReader" = io0SandboxedReader
 ];
