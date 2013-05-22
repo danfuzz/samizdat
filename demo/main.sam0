@@ -127,6 +127,7 @@ main = { selfPath name rest* ::
     process (countDown 10);
     process (countDown2 5);
     process (boxer());
+    process (metaFunctions LIBRARY "blort.sam0");
 
     sibling();
 
