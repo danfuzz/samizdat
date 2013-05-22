@@ -64,7 +64,22 @@ functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 <br><br>
 ### In-Language Definitions
 
-#### `io0PathFromFlat flatString <> pathList`
+#### `io0FlatFromPath path <> flatString`
+
+Converts the given path list to an absolute "Posix-style" flat string.
+This is the reverse of the operation specified in `io0PathFromFlat`.
+
+It is an error (terminating the runtime) if any of the following
+constraints are violated.
+
+* No path component may be `"."` or `".."`.
+
+* No path component may contain a character of value `"/"` or `"\0"`.
+
+* No path component other than the final one may be empty (that is,
+  equal to `""`).
+
+#### `io0PathFromFlat flatString <> path`
 
 Converts the given path string to an absolute form, in the "form factor"
 that is used internally. The input `string` is expected to be a

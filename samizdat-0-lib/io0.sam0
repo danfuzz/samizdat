@@ -54,6 +54,19 @@ isPrefix = { prefix path <out> ::
 #
 
 # Documented in Samizdat Layer 0 spec.
+io0FlatFromPath = { path ::
+    <> listReduce "" path { result n one ::
+        ifTrue { <> eq one "." }
+            { io0Die (format "Invalid `.` component in path: %q" path) };
+        ifTrue { <> eq one ".." }
+            { io0Die (format "Invalid `..` component in path: %q" path) };
+        ifTrue { <> and { <> eq one "" } { <> ne n (isub (lowSize path) 1) } }
+            { io0Die (format "Invalid empty component in path: %q" path) };
+        <> stringAdd result "/" one
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
 io0PathFromFlat = { string ::
     # Reject the empty string.
     ifTrue { <> eq string "" }
@@ -118,6 +131,7 @@ io0SandboxedReader = { directory ::
 };
 
 <> [
+    "io0FlatFromPath" = io0FlatFromPath
     "io0PathFromFlat" = io0PathFromFlat
     "io0ReadLink" = io0ReadLink
     "io0SandboxedReader" = io0SandboxedReader
