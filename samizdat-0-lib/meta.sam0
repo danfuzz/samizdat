@@ -14,7 +14,6 @@
 META_NAME_MAP = [
     "sam0" = ["eval"="sam0Eval" "tokenize"="sam0Tokenize" "tree"="sam0Tree"]
     "sam1" = ["eval"="sam1Eval" "tokenize"="sam1Tokenize" "tree"="sam1Tree"]
-    "sam"  = ["eval"="samEval"  "tokenize"="samTokenize"  "tree"="samTree"]
 ];
 
 
@@ -38,9 +37,10 @@ metaFunctions = { context fileName ::
         { <> "" }
         { <> stringSlice fileName (iadd dotAt 1) };
 
+    # Note: As the layers get added, the default here should change.
     nameMap = ifValue { <> mapGet META_NAME_MAP suffix }
         { map :: <> map }
-        { <> mapGet META_NAME_MAP "sam" };
+        { <> mapGet META_NAME_MAP "sam1" };
 
     <> mapMap nameMap { . v ::
         <> ifValue { <> mapGet context v }
@@ -52,7 +52,25 @@ metaFunctions = { context fileName ::
     }
 };
 
+# Documented in Samizdat Layer 0 spec.
+samCommandLine = { context args* ::
+    # TODO: Be more complete. In particular, parse reasonable options,
+    # for some value of the term "reasonable".
+
+    fileName = listFirst args "/dev/stdin";
+    argWords = listButFirst args [];
+    filePath = io0PathFromString fileName;
+    metas = metaFunctions context (listLast filePath);
+
+    programText = io0ReadFileUtf8 filePath;
+    parsedProgram = (mapGet metas "tree") programText;
+    evalledProgram = (mapGet metas "eval") context parsedProgram;
+
+    <> apply evalledProgram filePath argWords
+};
+
 <> [
     "makeLibrary" = makeLibrary
     "metaFunctions" = metaFunctions
+    "samCommandLine" = samCommandLine
 ]
