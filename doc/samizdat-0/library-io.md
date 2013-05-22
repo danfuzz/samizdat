@@ -7,6 +7,11 @@ I/O
 <br><br>
 ### Primitive Definitions
 
+#### `io0CwdString <> string`
+
+Returns the current working directory of the process, as a
+string. This is a thin veneer over the standard Posix call `getcwd()`.
+
 #### `io0Die string? <> !. (exits)`
 
 Prints the given string to the system console (as if with `io0Note`)
@@ -17,34 +22,6 @@ if supplied, and terminates the runtime with a failure status code (`1`).
 Writes out a newline-terminated note to the system console or equivalent.
 This is intended for debugging, and as such this will generally end up
 emitting to the standard-error stream.
-
-#### `io0PathFromString string <> pathList`
-
-Converts the given path string to an absolute form, in the "form factor"
-that is used internally. The input `string` is expected to be a
-"Posix-style" path:
-
-* Path components are separated by slashes (`"/"`).
-
-* A path-initial slash indicates an absolute path.
-
-* If there is no path-initial slash, then the result has the system's
-  "current working directory" prepended.
-
-* Empty path components (that is, if there are two slashes in a row)
-  are ignored.
-
-* Path components of value `"."` (canonically representing "this directory")
-  are ignored.
-
-* Path components of value `".."` cause the previous non-`..` path component
-  to be discarded. It is invalid (terminating the runtime) for such a
-  component to "back up" beyond the filesystem root.
-
-The result is a list of path components, representing the absolute path.
-None of the components will be the empty string (`""`), except possibly
-the last. If the last component is empty, that is an indication that the
-original path ended with a trailing slash.
 
 #### `io0ReadFileUtf8 pathList <> string`
 
@@ -83,6 +60,33 @@ functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 <br><br>
 ### In-Language Definitions
 
+#### `io0PathFromString string <> pathList`
+
+Converts the given path string to an absolute form, in the "form factor"
+that is used internally. The input `string` is expected to be a
+"Posix-style" path:
+
+* Path components are separated by slashes (`"/"`).
+
+* A path-initial slash indicates an absolute path.
+
+* If there is no path-initial slash, then the result has the system's
+  "current working directory" prepended.
+
+* Empty path components (that is, if there are two slashes in a row)
+  are ignored.
+
+* Path components of value `"."` (canonically representing "this directory")
+  are ignored.
+
+* Path components of value `".."` cause the previous non-`..` path component
+  to be discarded. It is invalid (terminating the runtime) for such a
+  component to "back up" beyond the filesystem root.
+
+The result is a list of path components, representing the absolute path.
+None of the components will be the empty string (`""`), except possibly
+the last. If the last component is empty, that is an indication that the
+original path ended with a trailing slash.
 
 #### `io0SandboxedReader directory <> function`
 
