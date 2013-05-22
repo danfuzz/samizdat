@@ -33,9 +33,6 @@ TOK(CH_QMARK,      "?");
 TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
 
-STR(CH_DOTDOT,     "..");
-STR(CH_SLASH,      "/");
-
 STR(UP_LIBRARY,       "LIBRARY");
 
 STR(ACTUALS,          "actuals");
