@@ -30,7 +30,7 @@ callNameWithPex = { node formals functionName ::
 # Converts a pex to a named function call of the given literal arguments.
 callNameWithLiterals = { functionName args* ::
     literalArgs = listMap args { . arg :: <> @["literal" arg] };
-    <> apply callNameWithExpressions literalArgs
+    <> apply callNameWithExpressions functionName literalArgs
 };
 
 # Converts a `choice` pex node.
