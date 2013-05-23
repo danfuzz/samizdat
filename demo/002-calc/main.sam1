@@ -22,6 +22,9 @@ applyAll = { initialValue functions ::
         { result . function :: <> function result }
 };
 
+# Forward declaration of `addExpression`.
+addExpression = forwardFunction();
+
 digit = {/
     ch = ["0123456789"]
     { <> isub (intFromString ch) (intFromString "0") }
@@ -76,7 +79,7 @@ addOp = {/
     "-" { <> isub }
 /};
 
-addExpression = {/
+addExpressionImpl = {/
     firstEx = mulExpression
     opExes = (
         op = addOp
@@ -85,6 +88,7 @@ addExpression = {/
     )*
     { <> applyAll firstEx opExes }
 /};
+addExpression addExpressionImpl;
 
 main = {/
     (
