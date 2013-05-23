@@ -6,6 +6,10 @@
 	<array>
 		<string>sam</string>
 		<string>sam0</string>
+		<string>sam1</string>
+		<string>sam2</string>
+		<string>sam3</string>
+		<string>sam4</string>
 	</array>
 	<key>foldingStartMarker</key>
 	<string>{ *(#.*)?$</string>
