@@ -50,6 +50,25 @@ PRIM_IMPL(listDelNth) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listReverse) {
+    requireExactly(argCount, 1);
+
+    zvalue list = args[0];
+    zint size = datSize(list);
+    zvalue elems[size];
+
+    datArrayFromList(elems, list);
+
+    for (int low = 0, high = size - 1; low < high; low++, high--) {
+        zvalue temp = elems[low];
+        elems[low] = elems[high];
+        elems[high] = temp;
+    }
+
+    return datListFromArray(size, elems);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listSlice) {
     requireAtLeast(argCount, 2);
 

@@ -44,6 +44,7 @@ PRIM_FUNC(listDelNth);
 PRIM_FUNC(listInsNth);
 PRIM_FUNC(listNth);
 PRIM_FUNC(listPutNth);
+PRIM_FUNC(listReverse);
 PRIM_FUNC(listSlice);
 PRIM_FUNC(loop);
 PRIM_FUNC(loopReduce);

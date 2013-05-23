@@ -49,6 +49,11 @@ exactly like `listAppend`.
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
 
+#### `listReverse list <> list`
+
+Returns a list consisting of the elements of the given list, but in the
+opposite order.
+
 #### `listSlice list start end? <> list`
 
 Returns a list consisting of a "slice" of elements of the given
