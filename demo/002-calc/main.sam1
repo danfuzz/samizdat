@@ -25,11 +25,13 @@ applyAll = { initialValue functions ::
 # Forward declaration of `addExpression`.
 addExpression = forwardFunction();
 
+# Parses a single digit, yielding its value as an int.
 digit = {/
     ch = ["0123456789"]
     { <> isub (intFromString ch) (intFromString "0") }
 /};
 
+# Parses a whole number (non-negative integer), yielding its value as an int.
 number = {/
     digits = digit+
     {
@@ -38,6 +40,9 @@ number = {/
     }
 /};
 
+# Parses an atomic expression. In this case it's either a number or a
+# parenthesized expression. Yields the number or evaluated expression result,
+# respectively.
 atom = {/
     number
 |
@@ -47,22 +52,34 @@ atom = {/
     { <> ex }
 /};
 
+# Parses a unary (in this case, prefix) operation, yielding it corresponding
+# function.
 unaryOp = {/
     "-" { <> ineg }
+|
+    "+" { <> { x :: <> x } }
 /};
 
+# Parses a unary expression, that is, a series of unary operators followed
+# by an atom, yielding the evaluated result.
 unaryExpression = {/
     ops = unaryOp*
     ex = atom
     { <> applyAll ex (listReverse ops) }
 /};
 
+# Parses an infix binary multiplicative operation, yielding it corresponding
+# function.
 mulOp = {/
     "*" { <> imul }
 |
     "/" { <> idiv }
+|
+    "%" { <> irem }
 /};
 
+# Parses a multiplicative expression, that is, a series of unary expressions
+# separated by multiplicative operators, yielding the evaluated result.
 mulExpression = {/
     firstEx = unaryExpression
     opExes = (
@@ -73,12 +90,16 @@ mulExpression = {/
     { <> applyAll firstEx opExes }
 /};
 
+# Parses an infix binary additive operation, yielding it corresponding
+# function.
 addOp = {/
     "+" { <> iadd }
 |
     "-" { <> isub }
 /};
 
+# Parses an additive expression, that is, a series of multiplicative
+# expressions separated by additive, yielding the evaluated result.
 addExpressionImpl = {/
     firstEx = mulExpression
     opExes = (
@@ -90,7 +111,9 @@ addExpressionImpl = {/
 /};
 addExpression addExpressionImpl;
 
-main = {/
+# Evaluates all the expressions passed to it, printing the evaluated results
+# in order. Each expression is expected to be terminated with a newline.
+evalExpressions = {/
     (
         ex = addExpression
         "\n"
