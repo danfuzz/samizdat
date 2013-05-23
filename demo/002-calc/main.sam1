@@ -99,7 +99,7 @@ addOp = {/
 /};
 
 # Parses an additive expression, that is, a series of multiplicative
-# expressions separated by additive, yielding the evaluated result.
+# expressions separated by additive operators, yielding the evaluated result.
 addExpressionImpl = {/
     firstEx = mulExpression
     opExes = (
