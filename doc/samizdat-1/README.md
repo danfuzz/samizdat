@@ -13,4 +13,3 @@ Contents:
 * [Token Syntax](token-syntax.md)
 * [Tree Syntax](tree-syntax.md)
 * [Tree Semantics](tree-semantics.md)
-* [Parsing Example](parsing-example.md)
