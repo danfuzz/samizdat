@@ -73,9 +73,9 @@ cHeader="$(getCount '*.h' samizdat-0)"
 cCode="$(getCount '*.c' samizdat-0)"
 (( cTotal = cHeader + cCode ))
 
-sam0Code="$(getCount '*.sam0' samizdat-0-lib)"
-sam1Code="$(getCount '*.sam0' samizdat-1)"
-demoCode="$(getCount '*.sam0' demo)"
+sam0Code="$(getCount '*.sam*' samizdat-0-lib)"
+sam1Code="$(getCount '*.sam*' samizdat-1)"
+demoCode="$(getCount '*.sam*' demo)"
 (( samTotal = sam0Code + sam1Code + demoCode ))
 
 (( codeTotal = cTotal + samTotal ))
