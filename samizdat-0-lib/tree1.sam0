@@ -402,7 +402,7 @@ implChoicePex = pegMakeMainSequence
         (pegMakeMainSequence
             (pegMakeToken "|")
             parseSequencePex))
-    (pegMakeCode { first rest :: <> listPrepend first rest });
+    (pegMakeCode { first rest :: <> @["choice" (listPrepend first rest)] });
 parseChoicePex implChoicePex;
 
 
