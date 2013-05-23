@@ -125,20 +125,15 @@ evalExpressions = {/
     )*
 /};
 
-calculate = { exprString ::
-    # TODO
-    <> 10;
-};
-
 
 #
 # Main function
 #
 
 main = { args* ::
-    exprString = listReduce "" args { result . one :: <> stringAdd result one };
-    result = calculate exprString;
-    io0Note (format "%q" result);
+    exprString = listReduce "" args
+        { result . one :: <> stringAdd result one "\n" };
+    pegApply evalExpressions exprString;
 };
 
 <> apply main ARGS
