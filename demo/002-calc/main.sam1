@@ -15,6 +15,74 @@ SELF_PATH ARGS* ::
 # Helper definitions
 #
 
+digit = {/
+    ch=["0123456789"]
+    {
+        <> isub (intFromString ch) (intFromString "0")
+    }
+/};
+
+number = {/
+    digits=digit+
+    {
+        <> listReduce 0 digits
+            { result digit :: <> iadd digit (imul result 10) }
+    }
+/};
+
+atom = {/
+    number
+|
+    "(" ex=addExpression ")"
+    { <> ex }
+/};
+
+addExpression = {/
+    ex1=mulExpression op=addOp ex2=addExpression
+    { <> op ex1 ex2 }
+/};
+
+addOp = {/
+    "+" { <> iadd }
+|
+    "-" { <> isub }
+/};
+
+mulExpression = {/
+    ex1=unaryExpression op=mulOp ex2=mulExpression
+    { <> op ex1 ex2 }
+/};
+
+mulOp = {/
+    "*" { <> imul }
+|
+    "/" { <> idiv }
+/};
+
+unaryExpression = {/
+    op=unaryOp
+    ex=unaryExpression
+    { <> op ex }
+|
+    atom
+/};
+
+unaryOp = {/
+    "-" { <> ineg }
+/};
+
+main = {/
+    (
+        ex = addExpression
+        "\n"
+        {
+            io0Note (format "%q" ex)
+            # Explicit yield here to indicate successful parsing.
+            <> null
+        }
+    )*
+/};
+
 calculate = { exprString ::
     # TODO
     <> 10;
