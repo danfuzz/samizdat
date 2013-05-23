@@ -52,7 +52,7 @@ atom = {/
     { <> ex }
 /};
 
-# Parses a unary (in this case, prefix) operation, yielding it corresponding
+# Parses a unary (in this case, prefix) operation, yielding its corresponding
 # function.
 unaryOp = {/
     "-" { <> ineg }
@@ -68,7 +68,7 @@ unaryExpression = {/
     { <> applyAll ex (listReverse ops) }
 /};
 
-# Parses an infix binary multiplicative operation, yielding it corresponding
+# Parses an infix binary multiplicative operation, yielding its corresponding
 # function.
 mulOp = {/
     "*" { <> imul }
@@ -90,7 +90,7 @@ mulExpression = {/
     { <> applyAll firstEx opExes }
 /};
 
-# Parses an infix binary additive operation, yielding it corresponding
+# Parses an infix binary additive operation, yielding its corresponding
 # function.
 addOp = {/
     "+" { <> iadd }
