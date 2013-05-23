@@ -262,7 +262,7 @@ pegMakeCharSetComplement = { strings* ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-pegMakeChoice = { rules* ::
+pegMakeChoice = { rules* <out> ::
     # Trivial case: No rules. Return the failure rule.
     ifTrue { <> eq rules [] }
         { <out> pegRuleFail };
