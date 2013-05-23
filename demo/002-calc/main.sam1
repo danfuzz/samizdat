@@ -37,30 +37,8 @@ atom = {/
     { <> ex }
 /};
 
-addExpression = {/
-    ex1 = mulExpression
-    op = addOp
-    ex2 = addExpression
-    { <> op ex1 ex2 }
-/};
-
-addOp = {/
-    "+" { <> iadd }
-|
-    "-" { <> isub }
-/};
-
-mulExpression = {/
-    ex1 = unaryExpression
-    op = mulOp
-    ex2 = mulExpression
-    { <> op ex1 ex2 }
-/};
-
-mulOp = {/
-    "*" { <> imul }
-|
-    "/" { <> idiv }
+unaryOp = {/
+    "-" { <> ineg }
 /};
 
 unaryExpression = {/
@@ -71,8 +49,30 @@ unaryExpression = {/
     atom
 /};
 
-unaryOp = {/
-    "-" { <> ineg }
+mulOp = {/
+    "*" { <> imul }
+|
+    "/" { <> idiv }
+/};
+
+mulExpression = {/
+    ex1 = unaryExpression
+    op = mulOp
+    ex2 = mulExpression
+    { <> op ex1 ex2 }
+/};
+
+addOp = {/
+    "+" { <> iadd }
+|
+    "-" { <> isub }
+/};
+
+addExpression = {/
+    ex1 = mulExpression
+    op = addOp
+    ex2 = addExpression
+    { <> op ex1 ex2 }
 /};
 
 main = {/
