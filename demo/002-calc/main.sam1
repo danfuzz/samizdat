@@ -21,7 +21,7 @@ digit = {/
 /};
 
 number = {/
-    digits=digit+
+    digits = digit+
     {
         <> listReduce 0 digits
             { result digit :: <> iadd digit (imul result 10) }
