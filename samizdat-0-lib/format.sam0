@@ -45,9 +45,9 @@ intBody = { start value <out> ::
 
 # Map from int sign values to the appropriate stringifier for each.
 INT_SIGNS = [
-    -1 = { int :: <> intBody "-" (ineg int) }
-    0  = { <> "0" }
-    1  = { int :: <> intBody "" int }
+    (-1) = { int :: <> intBody "-" (ineg int) }
+    0    = { <> "0" }
+    1    = { int :: <> intBody "" int }
 ];
 
 # Stringifies an int.

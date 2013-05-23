@@ -33,7 +33,7 @@ metaFunctions = { context fileName ::
             { <> n }
     };
 
-    suffix = ifTrue { <> eq dotAt -1 }
+    suffix = ifTrue { <> eq dotAt (-1) }
         { <> "" }
         { <> stringSlice fileName (iadd dotAt 1) };
 

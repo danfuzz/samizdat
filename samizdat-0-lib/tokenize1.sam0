@@ -92,7 +92,7 @@ parseInt = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeSequence
             (pegMakeToken "-")
-            (pegMakeCode { . :: <> -1 }))
+            (pegMakeCode { . :: <> (-1) }))
         (pegMakeCode { <> 1 }))
     (pegMakePlus
         (pegMakeMainSequence
