@@ -28,7 +28,7 @@ progName="$(basename "${prog}")"
 progDir="$(dirname "${prog}")"
 cd "${progDir}"
 progDir="${PWD}"
-cd ..
+cd ../..
 baseDir="${PWD}"
 cd "${origDir}"
 unset prog
