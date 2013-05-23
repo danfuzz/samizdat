@@ -94,7 +94,7 @@ parserCode = {/
     body = programBody
     @"}"
 
-    { <> @["function" (mapAdd yieldDef body)] }
+    { <> @["{}" (mapAdd yieldDef body)] }
 /};
 
 parserAtom = {/
