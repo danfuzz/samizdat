@@ -15,6 +15,13 @@ SELF_PATH ARGS* ::
 # Helper definitions
 #
 
+# Takes an initial value and a list of one-argument functions, and
+# does a reduction by applying each of the functions in order.
+applyAll = { initialValue functions ::
+    <> listReduce initialValue functions
+        { result . function :: <> function result }
+};
+
 digit = {/
     ch = ["0123456789"]
     { <> isub (intFromString ch) (intFromString "0") }
@@ -44,10 +51,7 @@ unaryOp = {/
 unaryExpression = {/
     ops = unaryOp*
     ex = atom
-    {
-        <> listReduce ex (listReverse ops)
-            { result . op :: <> op result }
-    }
+    { <> applyAll ex (listReverse ops) }
 /};
 
 mulOp = {/
@@ -57,10 +61,13 @@ mulOp = {/
 /};
 
 mulExpression = {/
-    ex1 = unaryExpression
-    op = mulOp
-    ex2 = mulExpression
-    { <> op ex1 ex2 }
+    firstEx = unaryExpression
+    opExes = (
+        op = mulOp
+        ex = unaryExpression
+        { <> { n :: <> op n ex } }
+    )*
+    { <> applyAll firstEx opExes }
 /};
 
 addOp = {/
@@ -70,10 +77,13 @@ addOp = {/
 /};
 
 addExpression = {/
-    ex1 = mulExpression
-    op = addOp
-    ex2 = addExpression
-    { <> op ex1 ex2 }
+    firstEx = mulExpression
+    opExes = (
+        op = addOp
+        ex = mulExpression
+        { <> { n :: <> op n ex } }
+    )*
+    { <> applyAll firstEx opExes }
 /};
 
 main = {/
