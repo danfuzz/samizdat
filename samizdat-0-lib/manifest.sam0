@@ -33,7 +33,7 @@ MANIFEST = [
     "io0.sam0"
     "meta.sam0"
 
-    # Layer 1 implementation.
+    # Layer 1 language implementation.
     "tokenize1.sam0"
     "tree1.sam0"
     "eval1.sam0"
