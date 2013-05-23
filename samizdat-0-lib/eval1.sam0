@@ -164,7 +164,7 @@ convertPex convertPexImpl;
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
 convertParser = { node ::
-    <> convertPex (tokenValue node) []
+    <> callNameWithPex node [] "pegMakeMainSequence"
 };
 
 # Does parser conversion of a `call` node.
