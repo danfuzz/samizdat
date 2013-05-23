@@ -42,11 +42,12 @@ unaryOp = {/
 /};
 
 unaryExpression = {/
-    op = unaryOp
-    ex = unaryExpression
-    { <> op ex }
-|
-    atom
+    ops = unaryOp*
+    ex = atom
+    {
+        <> listReduce ex (listReverse ops)
+            { result . op :: <> op result }
+    }
 /};
 
 mulOp = {/
