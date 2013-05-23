@@ -13,10 +13,22 @@
 
 # Helper for `io0PathFromFlat` which parses absolute path strings
 # into components. The grammar is basically
-# `{/ (("/"+ "." &"/")* "/"+ !("." !.) component=[! "/"]*)+ /}`, with code to
-# convert each `component` into a string (per se). Notably, this takes care
-# of ignoring double slashes (or triple, etc.) and `.` components, but it
-# leaves the handling of `..` components to a higher layer.
+#
+# ```
+# {/
+#    (
+#       ("/"+ "." &"/")*
+#       "/"+
+#       !("." !.)
+#       component = [! "/"]*
+#    )+
+# /}
+# ```
+#
+# with code to convert each `component` into a string (per se). Notably,
+# this takes care of ignoring double slashes (or triple, etc.) and `.`
+# components, but it leaves the handling of `..` components to a higher
+# layer.
 parsePathString = pegMakePlus
     (pegMakeSequence
         (pegMakeStar
