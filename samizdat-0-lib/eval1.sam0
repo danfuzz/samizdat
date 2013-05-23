@@ -54,10 +54,10 @@ convertPexSequence = { node formals ::
     # Convert all the pexes, passing in appropriately-extended formals
     # lists to each conversion.
     convertedPexes = listMap pexes { n pex  ::
-        orig = ifTrue { <> eq (tokenType pex) "varDef" }
+        subPex = ifTrue { <> eq (tokenType pex) "varDef" }
             { <> mapGet (tokenValue pex) "value" }
             { <> pex };
-        <> convertPex pex (listAdd formals (listSlice newFormals 0 n))
+        <> convertPex subPex (listAdd formals (listSlice newFormals 0 n))
     };
 
     <> apply callNameWithExpressions "pegMakeSequence" convertedPexes
