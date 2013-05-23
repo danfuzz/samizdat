@@ -12,7 +12,7 @@ convertPex = forwardFunction();
 
 # Does parser conversion of an expression or statement list.
 convertList = { nodes ::
-    <> listMap nodes { . node :: <> convertExpression node };
+    <> listMap nodes { . node :: <> convertExpression node }
 };
 
 # Constructs a named function call with the given arguments, each of
@@ -77,7 +77,7 @@ convertPexToken = { node formals ::
 convertPexVarRef = { node formals ::
     # `varRef` in the context of a pex just translates to the same `varRef`
     # in the context of an expression / statement.
-    <> node;
+    <> node
 };
 
 # Converts a `.` pex node.
@@ -92,12 +92,12 @@ convertPexEmpty = { node formals ::
 
 # Converts a `[]` pex node.
 convertPexSet = { node formals ::
-    <> apply callNameWithLiterals "pegMakeTokenSet" (tokenValue node);
+    <> apply callNameWithLiterals "pegMakeTokenSet" (tokenValue node)
 };
 
 # Converts a `[!]` pex node.
 convertPexSetComplement = { node formals ::
-    <> apply callNameWithLiterals "pegMakeTokenSetComplement" (tokenValue node);
+    <> apply callNameWithLiterals "pegMakeTokenSetComplement" (tokenValue node)
 };
 
 # Converts a `{}` pex node.
@@ -105,32 +105,33 @@ convertPexCode = { node formals ::
     # Use the lexical `formals` context to make a regular function node,
     # and just convert that.
     functionPayload = mapPut (tokenValue node) "formals" formals;
-    <> convertExpression @["function" functionPayload];
+    convertedFunction = convertExpression @["function" functionPayload];
+    <> callNameWithExpressions "pegMakeCode" convertedFunction
 };
 
 # Converts a `&` pex node.
 convertPexLookaheadSuccess = { node formals ::
-    <> callNameWithPex node formals "pegMakeLookaheadSuccess";
+    <> callNameWithPex node formals "pegMakeLookaheadSuccess"
 };
 
 # Converts a `!` pex node.
 convertPexLookaheadFailure = { node formals ::
-    <> callNameWithPex node formals "pegMakeLookaheadFailure";
+    <> callNameWithPex node formals "pegMakeLookaheadFailure"
 };
 
 # Converts a `?` pex node.
 convertPexOpt = { node formals ::
-    <> callNameWithPex node formals "pegMakeOpt";
+    <> callNameWithPex node formals "pegMakeOpt"
 };
 
 # Converts a `*` pex node.
 convertPexStar = { node formals ::
-    <> callNameWithPex node formals "pegMakeStar";
+    <> callNameWithPex node formals "pegMakeStar"
 };
 
 # Converts a `+` pex node.
 convertPexPlus = { node formals ::
-    <> callNameWithPex node formals "pegMakePlus";
+    <> callNameWithPex node formals "pegMakePlus"
 };
 
 # Map of types to parsing expression node converters.
@@ -156,14 +157,14 @@ CONVERT_PEX_MAP = [
 # list of lexically bound result names, in order, in the form of `formals`
 # values as defined by the Samizdat Layer 0 tree semanics spec.
 convertPexImpl = { node formals ::
-    <> (mapGet CONVERT_PEX_MAP (tokenType node)) node formals;
+    <> (mapGet CONVERT_PEX_MAP (tokenType node)) node formals
 };
 convertPex convertPexImpl;
 
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
 convertParser = { node ::
-    <> convertPex (tokenValue node) [];
+    <> convertPex (tokenValue node) []
 };
 
 # Does parser conversion of a `call` node.
@@ -183,7 +184,7 @@ convertFunction = { node ::
         { yield :: <> ["yield" = (convertExpression yield)] }
         { <> [=] };
 
-    <> @["function" (mapAdd nodeValue ["statements" = statements] yield)];
+    <> @["function" (mapAdd nodeValue ["statements" = statements] yield)]
 };
 
 # Does parser conversion of a `varDef` node.
@@ -191,7 +192,7 @@ convertVarDef = { node ::
     nodeValue = tokenValue node;
     value = convertExpression (mapGet nodeValue "value");
 
-    <> @["varDef" (mapPut nodeValue "value" value)];
+    <> @["varDef" (mapPut nodeValue "value" value)]
 };
 
 # Does no-op node conversion.
@@ -210,7 +211,7 @@ CONVERT_EXPRESSION_MAP = [
 # Iterates / visits the given expression or statement node, transforming
 # parser subtrees into layer 0 function nodes.
 convertExpressionImpl = { node ::
-    <> (mapGet CONVERT_EXPRESSION_MAP (tokenType node)) node;
+    <> (mapGet CONVERT_EXPRESSION_MAP (tokenType node)) node
 };
 convertExpression convertExpressionImpl;
 
