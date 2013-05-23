@@ -23,7 +23,7 @@ callNameWithExpressions = { functionName args* ::
 
 # Converts a pex to a named function call of the converted inner pex.
 callNameWithPex = { node formals functionName ::
-    convertedNode = convertPex (nodeValue node) formals;
+    convertedNode = convertPex (tokenValue node) formals;
     <> callNameWithExpressions functionName convertedNode
 };
 
