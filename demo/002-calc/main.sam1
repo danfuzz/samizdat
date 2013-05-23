@@ -28,7 +28,7 @@ addExpression = forwardFunction();
 # Parses a single digit, yielding its value as an int.
 digit = {/
     ch = ["0123456789"]
-    { <> isub (intFromString (tokenValue ch)) (intFromString "0") }
+    { <> isub (intFromString (tokenType ch)) (intFromString "0") }
 /};
 
 # Parses a whole number (non-negative integer), yielding its value as an int.
@@ -36,7 +36,7 @@ number = {/
     digits = digit+
     {
         <> listReduce 0 digits
-            { result digit :: <> iadd digit (imul result 10) }
+            { result . digit :: <> iadd digit (imul result 10) }
     }
 /};
 
