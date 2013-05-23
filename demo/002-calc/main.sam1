@@ -16,10 +16,8 @@ SELF_PATH ARGS* ::
 #
 
 digit = {/
-    ch=["0123456789"]
-    {
-        <> isub (intFromString ch) (intFromString "0")
-    }
+    ch = ["0123456789"]
+    { <> isub (intFromString ch) (intFromString "0") }
 /};
 
 number = {/
@@ -33,12 +31,16 @@ number = {/
 atom = {/
     number
 |
-    "(" ex=addExpression ")"
+    "("
+    ex = addExpression
+    ")"
     { <> ex }
 /};
 
 addExpression = {/
-    ex1=mulExpression op=addOp ex2=addExpression
+    ex1 = mulExpression
+    op = addOp
+    ex2 = addExpression
     { <> op ex1 ex2 }
 /};
 
@@ -49,7 +51,9 @@ addOp = {/
 /};
 
 mulExpression = {/
-    ex1=unaryExpression op=mulOp ex2=mulExpression
+    ex1 = unaryExpression
+    op = mulOp
+    ex2 = mulExpression
     { <> op ex1 ex2 }
 /};
 
@@ -60,8 +64,8 @@ mulOp = {/
 /};
 
 unaryExpression = {/
-    op=unaryOp
-    ex=unaryExpression
+    op = unaryOp
+    ex = unaryExpression
     { <> op ex }
 |
     atom
