@@ -37,6 +37,11 @@ MANIFEST = [
     "tokenize1.sam0"
     "tree1.sam0"
     "eval1.sam0"
+
+    # Layer 2 language implementation.
+    "tokenize2.sam1"
+    "tree2.sam1"
+    "eval2.sam1"
 ];
 
 <> [

@@ -1,0 +1,32 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Samizdat Layer 2 Tree Parser
+#
+
+#
+# Helper functions
+#
+
+# TODO
+
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 1 spec.
+sam2Tree = { program ::
+    tokens = ifTrue { <> isString program }
+        { <> sam2Tokenize program }
+        { <> program };
+
+    io0Die "TODO";
+    #<> pegApply parseProgramOrError tokens
+};
+
+<> [
+    "sam2Tree" = sam2Tree
+]

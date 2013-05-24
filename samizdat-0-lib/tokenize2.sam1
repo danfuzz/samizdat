@@ -1,0 +1,28 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Samizdat Layer 2 Tokenizer
+#
+
+#
+# Helper functions
+#
+
+# TODO
+
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 1 spec.
+sam2Tokenize = { programText ::
+    io0Die "TODO";
+    # <> pegApply parseFileOrError programText
+};
+
+<> [
+    "sam2Tokenize" = sam2Tokenize
+]

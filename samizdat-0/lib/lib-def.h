@@ -30,3 +30,7 @@ LIB_FILE(peg, sam0);
 LIB_FILE(tokenize1, sam0);
 LIB_FILE(tree1, sam0);
 LIB_FILE(type, sam0);
+
+LIB_FILE(eval2, sam1);
+LIB_FILE(tokenize2, sam1);
+LIB_FILE(tree2, sam1);

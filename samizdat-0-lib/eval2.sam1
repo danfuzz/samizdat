@@ -1,0 +1,31 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Samizdat Layer 2 Evaluation
+#
+
+#
+# Helper functions
+#
+
+# TODO
+convertExpression = { node ::
+    io0Die "TODO";
+};
+
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 1 spec.
+sam2Eval = { context expressionNode ::
+    convertedNode = convertExpression expressionNode;
+    <> sam0Eval context convertedNode
+};
+
+<> [
+    "sam2Eval" = sam2Eval
+]
