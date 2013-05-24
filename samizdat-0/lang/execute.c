@@ -272,7 +272,8 @@ static void bindArguments(Frame *frame, zvalue functionNode,
     }
 
     if (argAt != argCount) {
-        die("Function called with too many arguments: %lld", argCount);
+        die("Function called with too many arguments: %lld > %lld",
+            argCount, argAt);
     }
 }
 
