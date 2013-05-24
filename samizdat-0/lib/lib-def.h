@@ -5,28 +5,28 @@
  */
 
 /*
- * `LIB_FILE(name)` defines an in-language core library file with the given
- * name. These are all `.sam0` source files that get embedded into the
- * `samizdat-0` executable.
+ * `LIB_FILE(name, ext)` defines an in-language core library file with the
+ * given name and file extension. These are all Samizdat source files that
+ * get embedded into the `samizdat-0` executable.
  *
  * **Note:** This file gets `#include`d as source, and so does not have the
  * usual guard macros.
  */
 
-LIB_FILE(boolean);
-LIB_FILE(combinator);
-LIB_FILE(conditional);
-LIB_FILE(collections);
-LIB_FILE(code);
-LIB_FILE(const);
-LIB_FILE(eval1);
-LIB_FILE(format);
-LIB_FILE(int);
-LIB_FILE(io0);
-LIB_FILE(main);
-LIB_FILE(manifest);
-LIB_FILE(meta);
-LIB_FILE(peg);
-LIB_FILE(tokenize1);
-LIB_FILE(tree1);
-LIB_FILE(type);
+LIB_FILE(boolean, sam0);
+LIB_FILE(combinator, sam0);
+LIB_FILE(conditional, sam0);
+LIB_FILE(collections, sam0);
+LIB_FILE(code, sam0);
+LIB_FILE(const, sam0);
+LIB_FILE(eval1, sam0);
+LIB_FILE(format, sam0);
+LIB_FILE(int, sam0);
+LIB_FILE(io0, sam0);
+LIB_FILE(main, sam0);
+LIB_FILE(manifest, sam0);
+LIB_FILE(meta, sam0);
+LIB_FILE(peg, sam0);
+LIB_FILE(tokenize1, sam0);
+LIB_FILE(tree1, sam0);
+LIB_FILE(type, sam0);

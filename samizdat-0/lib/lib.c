@@ -24,13 +24,16 @@ static zvalue getLibraryFiles(void) {
 
     // This adds an element to `result` for each of the embedded files,
     // and sets up the static name constants.
-    #define LIB_FILE(name) \
-        extern char name##_sam0[]; \
-        extern unsigned int name##_sam0_len; \
-        zvalue LIB_NAME_##name = datStringFromUtf8(-1, #name ".sam0"); \
-        zvalue LIB_TEXT_##name = \
-            datStringFromUtf8(name##_sam0_len, name##_sam0); \
-        result = datMapPut(result, LIB_NAME_##name, LIB_TEXT_##name)
+    #define LIB_FILE(name, ext) do { \
+        extern unsigned int name##_##ext##_len; \
+        extern char name##_##ext[]; \
+        unsigned int len = name##_##ext##_len; \
+        char *text = name##_##ext; \
+        zvalue datName = datStringFromUtf8(-1, #name "." #ext); \
+        zvalue datText = datStringFromUtf8(len, text); \
+        result = datMapPut(result, datName, datText); \
+    } while(0)
+
     #include "lib-def.h"
     #undef LIB_FILE
 
