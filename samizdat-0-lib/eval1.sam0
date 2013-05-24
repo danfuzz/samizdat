@@ -6,6 +6,11 @@
 # Samizdat Layer 1 Evaluation
 #
 
+
+#
+# Helper functions
+#
+
 # Forward declaration of `convertExpression` and `convertPex`.
 convertExpression = forwardFunction();
 convertPex = forwardFunction();

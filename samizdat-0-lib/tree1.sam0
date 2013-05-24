@@ -428,7 +428,7 @@ parseProgramOrError = pegMakeMainSequence
             (pegMakeCode { pending :: reportError pending })))
     (pegMakeCode { prog . :: <> prog });
 
-# Performs tree parsing of the given string or token list.
+# Documented in Samizdat Layer 0 spec.
 sam1Tree = { program ::
     tokens = ifTrue { <> isString program }
         { <> sam1Tokenize program }

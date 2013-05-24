@@ -9,6 +9,10 @@
 # the *Samizdat Layer 0* and *Samizdat Layer 1* specifications.
 #
 
+#
+# Helper functions
+#
+
 # Documented in Samizdat Layer 0 spec.
 parseWhitespace = pegMakeMainSequence
     (pegMakeChoice
@@ -146,7 +150,12 @@ parseFileOrError = pegMakeMainSequence
             })))
     (pegMakeCode { tokens . :: <> tokens });
 
-# Performs tokenization of the given file contents.
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 0 spec.
 sam1Tokenize = { programText ::
     <> pegApply parseFileOrError programText
 };
