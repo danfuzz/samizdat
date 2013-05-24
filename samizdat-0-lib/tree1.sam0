@@ -165,7 +165,7 @@ parseUnaryCallExpression = pegMakeMainSequence
     (pegMakePlus (pegMakeToken "()"))
     (pegMakeCode { function calls ::
         <> listReduce function calls
-            { result :: <> makeCall result }
+            { result . . :: <> makeCall result }
     });
 
 # Documented in Samizdat Layer 0 spec.
