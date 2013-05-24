@@ -93,7 +93,7 @@ LINK_BIN=("${CC[@]}" -g)
 cd "${progDir}"
 
 C_SOURCES=($(find . -name '*.c'))
-LIB_SOURCES=($(find ../samizdat-0-lib -name '*.sam0'))
+LIB_SOURCES=($(find ../samizdat-0-lib -name '*.sam*'))
 
 for file in "${LIB_SOURCES[@]}"; do
     inDir="$(dirname "${file}")"
