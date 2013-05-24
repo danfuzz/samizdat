@@ -308,7 +308,7 @@ doEscape = { yield state ::
     <> ifValue { <> xPeek1 state }
         { ch ::
             <> ifValue { <> mapGet FORMATTERS ch }
-                { formatter :: <> formatter yield state ch }
+                { formatter :: <> formatter yield state }
                 { <> doPercent yield state }
         }
         { <> doPercent yield state }
