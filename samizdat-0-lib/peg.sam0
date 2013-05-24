@@ -175,7 +175,7 @@ pegMakeSequence = { rules* <out> ::
 pegMakeMainSequence = { rules* ::
     subRule = apply pegMakeSequence rules;
 
-    <> { yield state items* ::
+    <> { yield state .* ::
         <> subRule yield state
     }
 };
@@ -366,7 +366,7 @@ pegMakeString = { string <out> ::
         { result . ch :: <> listAppend result (pegMakeToken ch) };
 
     <> apply pegMakeMainSequence
-        (listAppend chars (pegMakeCode { <> @[string] }))
+        (listAppend chars (pegMakeCode { .* :: <> @[string] }))
 };
 
 # Documented in Samizdat Layer 0 spec.
