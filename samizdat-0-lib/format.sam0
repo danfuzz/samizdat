@@ -178,12 +178,12 @@ doToken = { token adorn <out> ::
 };
 
 # Stringifies a uniqlet.
-doUniqlet = { uniqlet ::
+doUniqlet = { uniqlet . ::
     <> "@@"
 };
 
 # Stringifies an unknown value type.
-doUnknown = { unknown ::
+doUnknown = { unknown . ::
     <> stringAdd
         "[(unknown) "
         (callSourceString (lowType value))
