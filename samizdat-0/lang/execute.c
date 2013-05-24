@@ -223,8 +223,9 @@ static void bindArguments(Frame *frame, zvalue functionNode,
     }
 
     zint formalsSize = datSize(formals);
+    zint argAt = 0;
 
-    for (zint i = 0, argAt = 0; i < formalsSize; i++) {
+    for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = datListNth(formals, i);
         zvalue name = datMapGet(formal, STR_NAME);
         zvalue repeat = datMapGet(formal, STR_REPEAT);
@@ -259,7 +260,7 @@ static void bindArguments(Frame *frame, zvalue functionNode,
                 die("Unknown repeat modifier.");
             }
         } else if (argAt >= argCount) {
-            die("Too few arguments to function: %lld", argCount);
+            die("Function called with too few arguments: %lld", argCount);
         } else {
             value = args[argAt];
             argAt++;
@@ -268,6 +269,10 @@ static void bindArguments(Frame *frame, zvalue functionNode,
         if (!ignore) {
             frameAdd(frame, name, value);
         }
+    }
+
+    if (argAt != argCount) {
+        die("Function called with too many arguments: %lld", argCount);
     }
 }
 
