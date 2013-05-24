@@ -197,7 +197,7 @@ parseYield = pegMakeMainSequence
             parseExpression
             (pegMakeCode { ex :: <> ["yield" = ex] }))
         (pegMakeMainSequence
-            (pegMakeCode { :: <> [=] })));
+            (pegMakeCode { <> [=] })));
 
 # Documented in Samizdat Layer 0 spec.
 parseYieldDef = pegMakeMainSequence
@@ -239,7 +239,7 @@ parseProgramBody = pegMakeMainSequence
             parseYield
             (pegMakeCode { y :: <> mapAdd ["statements" = []] y }))
         (pegMakeMainSequence
-            (pegMakeCode { :: <> ["statements" = []] })))
+            (pegMakeCode { <> ["statements" = []] })))
     (pegMakeStar (pegMakeToken ";"))
     (pegMakeCode { . most last . ::
         allStatements = listAdd most (mapGet last "statements");
@@ -317,10 +317,11 @@ parseParserToken = pegMakeMainSequence
 parseParserSet = pegMakeMainSequence
     (pegMakeToken "[")
     (pegMakeChoice
-        (pegMakeSequence
+        (pegMakeMainSequence
             (pegMakeToken "!")
-            (pegMakeCode { <> "[!]" }))
-        (pegMakeCode { <> "[]" }))
+            (pegMakeCode { . :: <> "[!]" }))
+        (pegMakeMainSequence
+            (pegMakeCode { <> "[]" })))
     (pegMakeChoice
         (pegMakeMainSequence
             (pegMakeStar (pegMakeToken "string"))
@@ -344,10 +345,10 @@ parseParserCode = pegMakeMainSequence
         (pegMakeMainSequence
             parseYieldDef
             (pegMakeToken "::")
-            (pegMakeCode { y :: <> ["yieldDef" = y] }))
-        (pegMakeSequence
+            (pegMakeCode { y . :: <> ["yieldDef" = y] }))
+        (pegMakeMainSequence
             (pegMakeOpt (pegMakeToken "::"))
-            (pegMakeCode { <> [=] })))
+            (pegMakeCode { . :: <> [=] })))
     parseProgramBody
     (pegMakeToken "}")
     (pegMakeCode { . yieldDef body :: <> @["{}" (mapAdd yieldDef body)] });
@@ -425,7 +426,7 @@ parseProgramOrError = pegMakeMainSequence
         (pegMakeMainSequence
             (pegMakePlus pegRuleAny)
             (pegMakeCode { pending :: reportError pending })))
-    (pegMakeCode { prog :: <> prog });
+    (pegMakeCode { prog . :: <> prog });
 
 # Performs tree parsing of the given string or token list.
 sam1Tree = { program ::
