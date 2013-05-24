@@ -71,7 +71,7 @@ setterFromBox = { ybox ::
 #
 
 # Peg rule that matches, consumes, and yields an arbitrary terminal item.
-pegRuleAny = { yield state ::
+pegRuleAny = { yield state .* ::
     <> ifValue { <> listFirst state }
         { item ::
             yield item;
@@ -81,19 +81,19 @@ pegRuleAny = { yield state ::
 };
 
 # Peg rule that always succeeds, yielding `null` and consuming no input.
-pegRuleEmpty = { yield state ::
+pegRuleEmpty = { yield state .* ::
     yield null;
     <> state
 };
 
 # Peg rule that always fails.
-pegRuleFail = { yield state ::
+pegRuleFail = { yield state .* ::
     yield()
 };
 
 # Peg rule that matches at eof, yielding `null`. This is the equivalent
 # of `!.` in usual peg syntax.
-pegRuleEof = { yield state ::
+pegRuleEof = { yield state .* ::
     <> ifTrue { <> eq state [] }
         {
             yield null;
@@ -105,7 +105,7 @@ pegRuleEof = { yield state ::
 # Peg rule that matches anywhere but eof, yielding the next terminal but
 # not consuming it. This is the equivalent of `&.` in usual peg syntax,
 # hence the name.
-pegRuleLookaheadAny = { yield state ::
+pegRuleLookaheadAny = { yield state .* ::
     <> ifValue { <> listFirst state }
         { item ::
             yield item;
