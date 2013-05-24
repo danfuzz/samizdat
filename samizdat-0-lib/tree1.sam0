@@ -351,7 +351,7 @@ parseParserCode = pegMakeMainSequence
             (pegMakeCode { . :: <> [=] })))
     parseProgramBody
     (pegMakeToken "}")
-    (pegMakeCode { . yieldDef body :: <> @["{}" (mapAdd yieldDef body)] });
+    (pegMakeCode { . yieldDef body . :: <> @["{}" (mapAdd yieldDef body)] });
 
 parseParserAtom = pegMakeMainSequence
     (pegMakeChoice
