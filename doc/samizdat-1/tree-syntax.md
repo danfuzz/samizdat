@@ -62,7 +62,7 @@ parserSet = {/
     )
 
     terminals = (
-        strings = @string*
+        strings = @string+
         {
             oneString = listReduce "" strings
                 { result . s :: <> stringAdd result (tokenValue s) };

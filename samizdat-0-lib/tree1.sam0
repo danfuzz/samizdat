@@ -312,7 +312,7 @@ parseParserString = pegMakeMainSequence
 parseParserToken = pegMakeMainSequence
     (pegMakeToken "@")
     (pegMakeTokenSet "identifier" "string")
-    (pegMakeCode { . type :: <> (tokenValue type) });
+    (pegMakeCode { . type :: <> @["token" (tokenValue type)] });
 
 parseParserSet = pegMakeMainSequence
     (pegMakeToken "[")
@@ -324,7 +324,7 @@ parseParserSet = pegMakeMainSequence
             (pegMakeCode { <> "[]" })))
     (pegMakeChoice
         (pegMakeMainSequence
-            (pegMakeStar (pegMakeToken "string"))
+            (pegMakePlus (pegMakeToken "string"))
             (pegMakeCode { strings ::
                 oneString = listReduce "" strings
                     { result . s :: <> stringAdd result (tokenValue s) };
