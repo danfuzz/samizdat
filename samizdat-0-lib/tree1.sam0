@@ -312,14 +312,14 @@ parseParserString = pegMakeMainSequence
 parseParserCharRange = pegMakeMainSequence
     (pegMakeToken "string")
     (pegMakeCode { start ::
-        <> ifTrue { <> eq (lowSize start) 1 }
-            { <> intFromString start }
+        <> ifTrue { <> eq (lowSize (tokenValue start)) 1 }
+            { <> intFromString (tokenValue start) }
     })
     (pegMakeToken "..")
     (pegMakeToken "string")
     (pegMakeCode { . . . end ::
-        <> ifTrue { <> eq (lowSize end) 1 }
-            { <> intFromString end }
+        <> ifTrue { <> eq (lowSize (tokenValue end)) 1 }
+            { <> intFromString (tokenValue end) }
     })
     (pegMakeCode { . startInt . . endInt <out> ::
         loopReduce [startInt ""] { result ::
