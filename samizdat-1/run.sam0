@@ -73,11 +73,14 @@ makeCoreLibrary = {
 # (in standard list-of-string form) followed by the rest of the
 # arguments as-is.
 run = { args* ::
-    parsedArgs = parseArgs args;
+    parsedArgs = parseArgs0 args;
+    allArgs = mapGet parsedArgs "args";
     options = mapGet parsedArgs "options";
     validate = mapGet options "validate" false;
-    file = mapGet parsedArgs "file";
-    argsPerSe = mapGet parsedArgs "args";
+
+    ifTrue { <> eq allArgs [] } { io0Die "Missing file name." };
+    file = listFirst allArgs;
+    argsPerSe = listButFirst allArgs;
 
     library = ifTrue { <> validate }
         {
