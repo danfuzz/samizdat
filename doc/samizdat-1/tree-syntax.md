@@ -49,14 +49,14 @@ parserString = {/
 parserCharRange = {/
     start = @string
     startInt = {
-        <> ifTrue { <> eq (lowSize start) 1 }
-            { <> intFromString start }
+        <> ifTrue { <> eq (lowSize (tokenValue start)) 1 }
+            { <> intFromString (tokenValue start) }
     }
     @".."
     end = @string
     endInt = {
-        <> ifTrue { <> eq (lowSize end) 1 }
-            { <> intFromString end }
+        <> ifTrue { <> eq (lowSize (tokenValue end)) 1 }
+            { <> intFromString (tokenValue end) }
     }
     {
         reduction = loopReduce [startInt ""] { ... endInt ... };
