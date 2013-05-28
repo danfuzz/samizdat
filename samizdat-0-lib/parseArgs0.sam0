@@ -16,24 +16,20 @@ parseWordBreak = pegMakeToken "\0";
 
 # word = {/
 #     chars=[! "\0"]* wordBreak
-#     { <> apply stringAdd chars }
+#     { <> apply stringFromTokenList chars }
 # /}
 parseWord = pegMakeMainSequence
     (pegMakeStar (pegMakeCharSetComplement "\0"))
     parseWordBreak
-    (pegMakeCode { chars . ::
-        <> stringFromTokenList chars
-    });
+    (pegMakeCode { chars . :: <> stringFromTokenList chars });
 
 # key = {/
 #     chars=[! "=\0"]*
-#     { <> apply stringAdd chars }
+#     { <> stringFromTokenList chars }
 # /}
 parseKey = pegMakeMainSequence
     (pegMakeStar (pegMakeCharSetComplement "=\0"))
-    (pegMakeCode { chars ::
-        <> stringFromTokenList chars
-    });
+    (pegMakeCode { chars :: <> stringFromTokenList chars });
 
 # keyValue = {/
 #     "--" k=key "=" v=word
@@ -70,9 +66,9 @@ parseError = pegMakeMainSequence
     });
 
 # option = {/
-#     flag | keyValue | error
+#     keyValue | flag | error
 # /}
-parseOption = pegMakeChoice parseFlag parseKeyValue parseError;
+parseOption = pegMakeChoice parseKeyValue parseFlag parseError;
 
 # arguments = {/
 #     optList=option* ("--" wordBreak)? words=word*
