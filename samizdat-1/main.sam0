@@ -47,7 +47,7 @@ io0Note "Loading samizdat-1...";
 
 # Put together the final execution context.
 CONTEXT = loadAllLibraries (makeLibrary LIBRARY)
-    "diff.sam0" "parseArgs.sam0" "run.sam0";
+    "diff.sam0" "run.sam0";
 
 io0Note "    [fin]";
 io0Note "";

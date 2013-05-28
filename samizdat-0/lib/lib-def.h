@@ -26,6 +26,7 @@ LIB_FILE(io0, sam0);
 LIB_FILE(main, sam0);
 LIB_FILE(manifest, sam0);
 LIB_FILE(meta, sam0);
+LIB_FILE(parseArgs0, sam0);
 LIB_FILE(peg, sam0);
 LIB_FILE(tokenize1, sam0);
 LIB_FILE(tree1, sam0);
