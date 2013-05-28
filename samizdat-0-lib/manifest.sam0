@@ -31,6 +31,7 @@ MANIFEST = [
     "format.sam0"
     "peg.sam0"
     "io0.sam0"
+    "parseArgs0.sam0"
     "meta.sam0"
 
     # Layer 1 language implementation.

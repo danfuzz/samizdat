@@ -58,6 +58,6 @@ will be returned, or one of `.` `!.` `. | !.` as described in
 * [Tokens](library-token.md)
 * [Functions And Code](library-code.md)
 * [I/O](library-io.md)
-* [String Formatting](library-format.md)
+* [String Formatting And Argument Parsing](library-format.md)
 * [Parsing](library-peg.md)
 * [Meta-Library](library-meta.md)
