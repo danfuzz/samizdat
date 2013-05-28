@@ -60,7 +60,7 @@ parserCharRange = {/
     }
     {
         reduction = loopReduce [startInt ""] { ... endInt ... };
-        <> listLast reduction
+        <> @["string" (listLast reduction)]
     }
 /};
 
