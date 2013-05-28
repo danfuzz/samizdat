@@ -309,6 +309,27 @@ parseParserString = pegMakeMainSequence
             { <> s }
     });
 
+parseParserCharRange = pegMakeMainSequence
+    (pegMakeToken "string")
+    (pegMakeCode { start ::
+        <> ifTrue { <> eq (lowSize start) 1 }
+            { <> intFromString start }
+    })
+    (pegMakeToken "..")
+    (pegMakeToken "string")
+    (pegMakeCode { . . . end ::
+        <> ifTrue { <> eq (lowSize end) 1 }
+            { <> intFromString end }
+    })
+    (pegMakeCode { . startInt . . endInt <out> ::
+        loopReduce [startInt ""] { result ::
+            at = listFirst result;
+            soFar = listLast result;
+            ifTrue { <> gt at endInt } { <out> soFar };
+            <> [(iadd at 1) (stringAdd soFar (stringFromInt at))]
+        }
+    });
+
 parseParserToken = pegMakeMainSequence
     (pegMakeToken "@")
     (pegMakeTokenSet "identifier" "string")
