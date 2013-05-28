@@ -31,12 +31,277 @@ makeLiteral = { value ::
     <> @["literal" value]
 };
 
+# Reports the given list of pending tokens as part of error processing.
+reportError = { pending ::
+    io0Note "Pending tokens:";
+
+    listForEach pending
+        { . token :: io0Note (format "    %q" token) };
+
+    io0Die "\nExtra tokens at end of program."
+};
+
 
 #
 # Grammar rules
 #
 
-# TODO
+# Forward declarations for atom, expression, function, and parser.
+parseAtom = forwardFunction();
+parseExpression = forwardFunction();
+parseFunction = forwardFunction();
+parseParser = forwardFunction();
+
+# Parses an integer literal.
+parseInt = {/
+    i = @int
+    { <> makeLiteral (tokenValue i) }
+/};
+
+# Parses a string literal.
+parseString = {/
+    s = @string
+    { <> makeLiteral (tokenValue s) }
+/};
+
+# Parses an empty list literal.
+parseEmptyList = {/
+    @"[" @"]"
+    { <> makeLiteral [] }
+/};
+
+# Parses a list literal.
+parseList = {/
+    @"["
+    atoms = parseAtom+
+    @"]"
+    { <> apply makeCallName "makeList" atoms }
+/};
+
+# Parses an empty map literal.
+parseEmptyMap = {/
+    @"[" @"=" @"]"
+    { <> makeLiteral [=] }
+/};
+
+# Parses a mapping (element of a map).
+parseMapping = {/
+    key = parseAtom
+    @"="
+    value = parseAtom
+    { <> [key value] }
+/};
+
+# Parses a map literal.
+parseMap = {/
+    @"["
+    mappings = parseMapping+
+    @"]"
+    { <> apply makeCallName "makeMap" (apply listAdd mapping) }
+/};
+
+# Parses a token literal.
+parseToken = {/
+    @"@"
+    (
+        @"[" type=parseAtom value=parseAtom? @"]"
+        { <> apply makeCallName "makeToken" type value }
+    |
+        type = [@string @identifier]
+        { <> makeCallName "makeToken" (makeLiteral (tokenValue type)) }
+    )
+/};
+
+# Parses a uniqlet literal.
+parseUniqlet = {/
+    @"@@"
+    { <> makeCallName "makeUniqlet" }
+/};
+
+# Parses a variable reference.
+parseVarRef = {/
+    name = @identifier
+    { <> makeVarRef (tokenValue name) }
+/};
+
+# Parses a variable definition.
+parseVarDef = {/
+    name = @identifier
+    @"="
+    ex = parseExpression
+    { <> @["varDef" ["name"=(tokenValue name) "value"=ex]] }
+/};
+
+# Parses a parenthesized expression.
+parseParenExpression = {/
+    @"("
+    ex = parseExpression
+    @")"
+    { <> ex }
+/};
+
+# Parses an atomic expression.
+implAtom = {/
+    parseVarRef | parseInt | parseString |
+    parseEmptyList | parseList | parseEmptyMap | parseMap |
+    parseUniqlet | parseToken | parseFunction | parseParenExpression
+/};
+parseAtom implAtom;
+
+# Parses a function call expression.
+parseCallExpression = {/
+    function = parseAtom
+    args = parseAtom+
+    { <> apply makeCall function args }
+/};
+
+# Parses a unary (no-argument) call expression.
+parseUnaryCallExpression = {/
+    function = parseAtom
+    calls = @"()"+
+    {
+        # Note: One `makeCall` per pair of parens.
+        <> listReduce function calls
+            { result . . :: <> makeCall result }
+    }
+/};
+
+# Parses a unary expression.
+parseUnaryExpression = {/
+    parseUnaryCallExpression | parseAtom
+/};
+
+# Parses a general expression.
+implExpression = {/
+    parseCallExpression | parseUnaryExpression
+/};
+parseExpression implExpression;
+
+# Parses a statement.
+parseStatement = {/
+    parseVarDef | parseExpression
+/};
+
+# Parses a non-local exit / return.
+parseNonlocalExit = {/
+    @"<"
+    name = parseVarRef
+    @">"
+    ex = parseExpression?
+    { <> apply makeCall name ex }
+/};
+
+# Parses a local yield / return.
+parseYield = {/
+    @"<>"
+    (
+        ex = parseExpression
+        { <> ["yield" = ex] }
+    |
+        { <> [=] }
+    )
+/};
+
+# Parses a yield / non-local exit definition.
+parseYieldDef = {/
+    @"<"
+    name = @identifier
+    @">"
+    { <> tokenValue name }
+/};
+
+# Parses a formal argument decalaration.
+parseFormal = {/
+    name = (
+        n = @identifier
+        { <> ["name" = (tokenValue n)] }
+    |
+        @"." { <> [=] }
+    )
+
+    repeat = (
+        r = [@"?" @"*" @"+"]
+        { <> ["repeat" = (tokenType r)] }
+    |
+        { <> [=] }
+    )
+
+    { <> mapAdd name repeat }
+/};
+
+# Parses a program body (statements plus optional yield).
+parseProgramBody = {/
+    @";"*
+
+    most = (
+        s = parseStatement
+        @";"+
+        { <> s }
+    )*
+
+    last = (
+        s = (parseStatement | parseNonlocalExit)
+        { <> ["statements" = [s]] }
+    |
+        y = parseYield
+        { <> mapAdd ["statements" = []] y }
+    |
+        { <> ["statements" = []] }
+    )
+
+    @";"*
+
+    {
+        allStatements = listAdd most (mapGet last "statements");
+        <> mapPut last "statements" allStatements
+    }
+/};
+
+# Parses program / function declarations.
+parseProgramDeclarations = {/
+    formals = (
+        fs = parseFormal+
+        { <> ["formals" = fs] }
+    |
+        { <> [=] }
+    )
+
+    yieldDef = (
+        y = parseYieldDef
+        { <> ["yieldDef" = y] }
+    |
+        { <> [=] }
+    )
+
+    @"::"
+
+    { <> mapAdd formals yieldDef }
+/};
+
+# Parses a program (top-level program or contents inside function braces).
+parseProgram = {/
+    decls = (parseProgramDeclarations | { <> [=] })
+    body = parseProgramBody
+    { <> @["function" (mapAdd decls body)] }
+/};
+
+# Parses a function (in-line anonymous function).
+implFunction = {/
+    @"{"
+    prog = parseProgram
+    @"}"
+    { <> prog }
+/};
+parseFunction implFunction;
+
+parseProgramOrError = {/
+    prog = parseProgram
+    (
+        pending = .+
+        { reportError pending }
+    )?
+    { <> prog }
+/};
 
 
 #
@@ -49,8 +314,7 @@ sam2Tree = { program ::
         { <> sam2Tokenize program }
         { <> program };
 
-    io0Die "TODO";
-    #<> pegApply parseProgramOrError tokens
+    <> pegApply parseProgramOrError tokens
 };
 
 <> [
