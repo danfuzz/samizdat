@@ -59,7 +59,7 @@ static zvalue primitiveContext(void) {
                         langDefineFunction(prim_##name, NULL))
     #include "prim-def.h"
 
-    // Include a binding for a map of all the primitive bindings
+    // Include a mapping for a map of all the primitive bindings
     // (other than this one, since values can't self-reference).
     ctx = datMapPut(ctx, STR_UP_LIBRARY, ctx);
 
