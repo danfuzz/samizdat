@@ -81,7 +81,7 @@ tokQuotedIdentifier = {/
 tokInt = {/
     sign = ("-" { <> -1 } | { <> 1 })
     digits = (
-        ch = ["0123456789"]
+        ch = ["0".."9"]
         { <> intFromDigitChar ch }
     )+
 
