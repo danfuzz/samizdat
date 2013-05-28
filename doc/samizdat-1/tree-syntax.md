@@ -46,6 +46,20 @@ parserString = {/
     }
 /};
 
+parserStringRange = {/
+    start = @string
+    { <> ifTrue { <> eq (lowSize start) 1 } { <> null }}
+    @".."
+    end = @string
+    { <> ifTrue { <> eq (lowSize end) 1 } { <> null }}
+    {
+        startInt = intFromString start;
+        endInt = intFromString end;
+        reduction = loopReduce [startInt ""] { ... endInt ... };
+        <> listLast reduction
+    }
+/};
+
 parserToken = {/
     @"@"
     type = [@identifier @string]
@@ -62,7 +76,7 @@ parserSet = {/
     )
 
     terminals = (
-        strings = @string+
+        strings = (parserStringRange | @string)+
         {
             oneString = listReduce "" strings
                 { result . s :: <> stringAdd result (tokenValue s) };
