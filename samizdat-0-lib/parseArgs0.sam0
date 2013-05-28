@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# `parseArgs` function, which parses command-line arguments.
+# `parseArgs0` function, which parses command-line arguments.
 #
 
 
