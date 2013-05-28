@@ -259,8 +259,11 @@ For example:
 
 To match a set of characters (for tokenization) or tokens (for tree parsing),
 list them between square brackets (`[ ... ]`). Characters of a character
-set can be combined into a single string literal for convenience, e.g.
-`["x" "y"]` and `["xy"]` are equivalent.
+set can be combined into a single string literal for convenience; e.g.
+`["x" "y"]` and `["xy"]` are equivalent. In addition, ranges of characters
+can be represented as the characters (in the form of single-character
+strings) separated with the token `..`; e.g. `["a".."d"]` and `["abcd"]`
+are equivalent.
 
 To match any terminal *other than* items from a particular set, precede the
 set contents with a not/bang (`!`), *inside* the brackets. Note that
@@ -275,14 +278,15 @@ For example:
 
 * The parser `{/ [! "\n"] /}` will match any terminal but a newline.
 
+* The parser `{/ ["A".."Z"] /}` will match any upper-case ASCII letter.
+
 * The parser `{/ [@foo @bar] /}` will match either a `@foo` or a `@bar` token.
 
 * The parser `{/ [! @foo @bar] /}` will match any terminal but a `@foo`
   or a `@bar` token.
 
-Future direction: It may become possible to name ranges of characters,
-e.g. `["a".."z" "0".."9"]`, and it may become possible to name symbolic
-sets, e.g. `[whitespace punctuation "z"]`.
+Future direction: It may become possible to name symbolic character
+sets, such as for example `[whitespace punctuation "z"]`.
 
 #### Running arbitrary code instead of consuming input (terminal)
 

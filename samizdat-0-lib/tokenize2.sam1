@@ -65,8 +65,8 @@ tokString = {/
 
 # Parses an identifier (in the usual form).
 tokIdentifier = {/
-    first = ["_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"]
-    rest = ["_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"]*
+    first = ["_" "a".."z" "A".."Z"]
+    rest = ["_" "a".."z" "A".."Z" "0".."9"]*
     { <> @["identifier" (apply stringFromTokenList first rest)] }
 /};
 
@@ -81,7 +81,7 @@ tokQuotedIdentifier = {/
 tokInt = {/
     sign = ("-" { <> -1 } | { <> 1 })
     digits = (
-        ch = ["0123456789"]
+        ch = ["0".."9"]
         { <> intFromDigitChar ch }
     )+
 
