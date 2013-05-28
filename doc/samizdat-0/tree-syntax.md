@@ -99,14 +99,14 @@ varRef = {/
     { <> makeVarRef (tokenValue name) }
 /};
 
-varDef ::= {/
+varDef = {/
     name = @identifier
     @"="
     ex = expression
     { <> @["varDef" ["name"=(tokenValue name) "value"=ex]] }
 /};
 
-parenExpression ::= {/
+parenExpression = {/
     @"("
     ex = expression
     @")"
