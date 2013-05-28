@@ -131,4 +131,8 @@ path to itself (see `io0PathFromFlat`), and then any additional
 arguments that were passed to this function. This function returns whatever
 was returned by the inner function call (including void).
 
-**Note:** There are currently no defined command-line options.
+Currently recognized command-line options:
+
+* `--file-suffix="suffix"` &mdash; acts as if the input file name ended
+  with `".suffix"` instead of whatever it happened to end with. This can
+  be used to force a particular language layer to be used.
