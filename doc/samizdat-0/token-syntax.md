@@ -46,7 +46,7 @@ string = {/
     chars = stringChar*
     "\""
     { <> @["string" (apply stringAdd chars)] }
-/}
+/};
 
 identifier = {/
     first = ["_" "a".."z" "A".."Z"]
@@ -55,13 +55,18 @@ identifier = {/
 /};
 
 quotedIdentifier = {/
-    "\\" s=string
+    "\\"
+    s = string
     { <> @["identifier" (tokenValue s)] }
 /};
 
 int = {/
-    sign = ("-" { <> -1 } | { <> 1})
-    digits = (ch=["0".."9"] { <> intFromDigitChar ch })+
+    sign = ("-" { <> -1 } | { <> 1 })
+    digits = (
+        ch = ["0".."9"]
+        { <> intFromDigitChar ch }
+    )+
+
     { <> ... @["int" ...] }
 /};
 
