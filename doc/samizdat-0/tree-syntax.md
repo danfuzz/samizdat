@@ -38,13 +38,13 @@ makeLiteral = { value ::
 # forward declaration: function
 
 int = {/
-    @int
-    { <> makeLiteral (tokenValue int) }
+    i = @int
+    { <> makeLiteral (tokenValue i) }
 /};
 
 string = {/
-    @string
-    { <> makeLiteral (tokenValue string) }
+    s = @string
+    { <> makeLiteral (tokenValue s) }
 /};
 
 emptyList = {/
