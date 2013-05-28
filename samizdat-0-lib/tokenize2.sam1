@@ -10,7 +10,106 @@
 # Helper functions
 #
 
-# TODO
+# Parses whitespace and comments. **Note:** The yielded result is always
+# ignored.
+tokWhitespace = {/
+    [" " "\n"]
+|
+    "#" [! "\n"]* "\n"
+/};
+
+# Parses punctuation and operators. The lookahead is done to avoid bothering
+# with the choice expression unless we have a definite match.
+tokPunctuation = {/
+    &["@:.=+?;*<>{}()[]"]
+    ("@@" | "::" | "<>" | "()" | .)
+/};
+
+# Parses a single character, inside a quoted string.
+tokStringChar = {/
+    (
+        ch = [! "\\" "\""]
+        { <> tokenType ch }
+    )
+|
+    (
+        "\\"
+        (
+            "\\" { <> "\\" } |
+            "\"" { <> "\"" } |
+            "n"  { <> "\n" } |
+            "0"  { <> "\0" }
+        )
+    )
+/};
+
+# Parses a quoted string.
+tokString = {/
+    "\""
+    chars = tokStringChar*
+    "\""
+    { <> @["string" (apply stringAdd chars)] }
+/};
+
+# Parses an identifier (in the usual form).
+tokIdentifier = {/
+    first = ["_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+    rest = ["_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"]*
+    { <> @["identifier" (apply stringFromTokenList first rest)] }
+/};
+
+# Parses the quoted-string identifier form.
+tokQuotedIdentifier = {/
+    "\\"
+    s = tokString
+    { <> @["identifier" (tokenValue s)] }
+/};
+
+# These are all the int digits, as a map from strings to
+# digit values.
+INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
+
+# Helper to convert digit characters to digit values.
+intFromDigitChar = { ch :: <> mapGet INT_CHARS (tokenType ch) };
+
+# Parses an integer literal.
+tokInt = {/
+    sign = ("-" { <> -1 } | { <> 1 })
+    digits = (
+        ch = ["0123456789"]
+        { <> intFromDigitChar ch }
+    )+
+
+    {
+        positiveValue = listReduce 0 digits
+            { result . digit :: <> (iadd (imul result 10) digit) };
+        <> imul sign positiveValue
+    }
+/};
+
+# "Parses" an unrecognized character. This also consumes any further characters
+# on the same line, in an attempt to resynch the input.
+tokError = {/
+    badCh = .
+    [! "\n"]*
+    {
+        msg = format "Unrecognized character: %q" (tokenType badCh);
+        <> @["error" msg]
+    }
+/};
+
+# Parses an arbitrary token or error.
+tokToken = {/
+    tokPunctuation | tokInt | tokString | tokIdentifier | tokQuotedIdentifier
+|
+    tokError
+/};
+
+# Parses a file of tokens, yielding a list of them.
+tokFile = {/
+    tokens=(tokWhitespace* tokToken)* tokWhitespace*
+    { <> tokens }
+/};
 
 
 #
@@ -19,8 +118,7 @@
 
 # Documented in Samizdat Layer 1 spec.
 sam2Tokenize = { programText ::
-    io0Die "TODO";
-    # <> pegApply parseFileOrError programText
+    <> pegApply tokFile programText
 };
 
 <> [
