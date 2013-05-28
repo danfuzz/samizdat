@@ -325,7 +325,7 @@ parseParserCharRange = pegMakeMainSequence
         loopReduce [startInt ""] { result ::
             at = listFirst result;
             soFar = listLast result;
-            ifTrue { <> gt at endInt } { <out> soFar };
+            ifTrue { <> gt at endInt } { <out> @["string" soFar] };
             <> [(iadd at 1) (stringAdd soFar (stringFromInt at))]
         }
     });
