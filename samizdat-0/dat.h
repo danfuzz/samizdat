@@ -325,7 +325,7 @@ zvalue datListSlice(zvalue list, zint start, zint end);
 zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings);
 
 /**
- * Combines the bindings of the two given maps into a new map.
+ * Combines the mappings of the two given maps into a new map.
  * For overlapping keys between the two, the second argument "wins".
  */
 zvalue datMapAdd(zvalue map1, zvalue map2);

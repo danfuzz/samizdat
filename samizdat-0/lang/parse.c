@@ -91,7 +91,7 @@ static void reset(ParseState *state, zint mark) {
  */
 
 /**
- * Makes a 0-3 binding map. Values are allowed to be `NULL`, in
+ * Makes a 0-3 mapping map. Values are allowed to be `NULL`, in
  * which case the corresponding key isn't included in the result.
  */
 static zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
@@ -106,14 +106,14 @@ static zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
 }
 
 /**
- * Makes a 0-2 binding map.
+ * Makes a 0-2 mapping map.
  */
 static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
     return mapFrom3(k1, v1, k2, v2, NULL, NULL);
 }
 
 /**
- * Makes a 0-1 binding map.
+ * Makes a 0-1 mapping map.
  */
 static zvalue mapFrom1(zvalue k1, zvalue v1) {
     return mapFrom3(k1, v1, NULL, NULL, NULL, NULL);
@@ -242,9 +242,9 @@ DEF_PARSE(uniqlet) {
 }
 
 /**
- * Parses a `binding` node.
+ * Parses a `mapping` node.
  */
-DEF_PARSE(binding) {
+DEF_PARSE(mapping) {
     MARK();
 
     zvalue key = PARSE_OR_REJECT(atom);
@@ -262,21 +262,21 @@ DEF_PARSE(map) {
 
     MATCH_OR_REJECT(CH_OSQUARE);
 
-    zvalue bindings = EMPTY_LIST;
+    zvalue mappings = EMPTY_LIST;
 
     for (;;) {
-        zvalue binding = PARSE(binding);
-        if (binding == NULL) {
+        zvalue mapping = PARSE(mapping);
+        if (mapping == NULL) {
             break;
         }
 
-        bindings = datListAdd(bindings, binding);
+        mappings = datListAdd(mappings, mapping);
     }
 
-    REJECT_IF(datSize(bindings) == 0);
+    REJECT_IF(datSize(mappings) == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_MAP), bindings);
+    return makeCall(makeVarRef(STR_MAKE_MAP), mappings);
 }
 
 /**

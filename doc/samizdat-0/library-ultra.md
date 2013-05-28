@@ -49,11 +49,11 @@ makeList = { rest* :: <> rest; };
 
 #### `makeMap rest* <> map`
 
-Returns a map with the given key-value bindings (in argument
+Returns a map with the given key-value mappings (in argument
 order), with each key-value pair represented as two consecutive
 arguments. The number of arguments passed to this function must be
 even. It is valid to repeat keys in the arguments to this function, in
-which case the *final* value binding for any given key in the argument
+which case the *final* value mapping for any given key in the argument
 list (in argument order) is the one that ends up in the result. These
 equivalences hold for *Samizdat Layer 0* source code:
 

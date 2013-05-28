@@ -64,7 +64,7 @@ emptyMap = {/
     { <> makeLiteral [=] }
 /};
 
-binding = {/
+mapping = {/
     key = atom
     @"="
     value = atom
@@ -73,9 +73,9 @@ binding = {/
 
 map = {/
     @"["
-    bindings = binding+
+    mappings = mapping+
     @"]"
-    { <> apply makeCallName "makeMap" (apply listAdd bindings) }
+    { <> apply makeCallName "makeMap" (apply listAdd mappings) }
 /};
 
 token = {/

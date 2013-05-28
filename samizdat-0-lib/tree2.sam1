@@ -6,8 +6,34 @@
 # Samizdat Layer 2 Tree Parser
 #
 
+
 #
 # Helper functions
+#
+
+# Returns a `call` node.
+makeCall = { function actuals* ::
+    <> @["call" ["function"=function "actuals"=actuals]]
+};
+
+# Returns a `varRef` node.
+makeVarRef = { name ::
+    <> @["varRef" name]
+};
+
+# Returns a `call` node that names a function as a `varRef`.
+makeCallName = { name actuals* ::
+    <> @["call" ["function"=(makeVarRef name) "actuals"=actuals]]
+};
+
+# Returns a `literal` node.
+makeLiteral = { value ::
+    <> @["literal" value]
+};
+
+
+#
+# Grammar rules
 #
 
 # TODO

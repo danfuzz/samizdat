@@ -80,7 +80,7 @@ parseEmptyMap = pegMakeMainSequence
     (pegMakeCode { . . . :: <> makeLiteral [=] });
 
 # Documented in Samizdat Layer 0 spec.
-parseBinding = pegMakeMainSequence
+parseMapping = pegMakeMainSequence
     parseAtom
     (pegMakeToken "=")
     parseAtom
@@ -89,10 +89,10 @@ parseBinding = pegMakeMainSequence
 # Documented in Samizdat Layer 0 spec.
 parseMap = pegMakeMainSequence
     (pegMakeToken "[")
-    (pegMakePlus parseBinding)
+    (pegMakePlus parseMapping)
     (pegMakeToken "]")
-    (pegMakeCode { . bindings . ::
-        <> apply makeCallName "makeMap" (apply listAdd bindings)
+    (pegMakeCode { . mappings . ::
+        <> apply makeCallName "makeMap" (apply listAdd mappings)
     });
 
 # Documented in Samizdat Layer 0 spec.

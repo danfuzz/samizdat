@@ -10,6 +10,18 @@
 # Helper functions
 #
 
+# These are all the int digits, as a map from strings to
+# digit values.
+INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
+
+# Helper to convert digit characters to digit values.
+intFromDigitChar = { ch :: <> mapGet INT_CHARS (tokenType ch) };
+
+
+#
+# Grammar rules
+#
+
 # Parses whitespace and comments. **Note:** The yielded result is always
 # ignored.
 tokWhitespace = {/
@@ -64,13 +76,6 @@ tokQuotedIdentifier = {/
     s = tokString
     { <> @["identifier" (tokenValue s)] }
 /};
-
-# These are all the int digits, as a map from strings to
-# digit values.
-INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
-
-# Helper to convert digit characters to digit values.
-intFromDigitChar = { ch :: <> mapGet INT_CHARS (tokenType ch) };
 
 # Parses an integer literal.
 tokInt = {/

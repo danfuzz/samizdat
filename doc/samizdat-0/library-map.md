@@ -16,7 +16,7 @@ the lastmost argument's value is the one that ends up in the result.
 #### `mapDel map key <> map`
 
 Returns a map just like the one given as an argument, except that
-the result does not have a binding for the key `key`. If the given
+the result does not have a mapping for the key `key`. If the given
 map does not have `key` as a key, then this returns the given
 map as the result.
 
@@ -64,10 +64,10 @@ The ordering of the mappings is by sort order of the keys.
 
 #### `mapPut map key value <> map`
 
-Returns a map just like the given one, except with a new binding
+Returns a map just like the given one, except with a new mapping
 for `key` to `value`. The result has a replacement for the existing
-binding for `key` in `map` if such a one existed, or has an
-additional binding in cases where `map` didn't already bind `key`.
+mapping for `key` in `map` if such a one existed, or has an
+additional mapping in cases where `map` didn't already bind `key`.
 These two scenarios can be easily differentiated by either noting a
 change in size (or not) between original and result, or by explicitly
 checking for the existence of `key` in the original.
@@ -89,7 +89,7 @@ its corresponding value (in that order). Always returns void.
 Maps the values of a map using the given mapping function,
 resulting in a map whose keys are the same as the given map but
 whose values may differ. In key order, the function is called with
-two arguments representing the binding, a key and a value (in that
+two arguments representing the mapping, a key and a value (in that
 order). The return value of the function becomes the bound value for
 the given key in the final result.
 
@@ -103,11 +103,11 @@ result may be smaller than the size of the argument.
 
 Reduces a map to a single value, given a base value and a reducer
 function, operating in key order. The given function is called on each
-map binding, with three arguments: the last (or base) reduction
+mapping, with three arguments: the last (or base) reduction
 result, a key from the map, and its associated value. The
 function result becomes the reduction result, which is passed to the
 next call of `function` or becomes the return value of the call to
-this function if it was the call for the final binding.
+this function if it was the call for the final mapping.
 
 Similar to `argsReduce`, if the function returns void, then the
 previously-returned non-void value (or `base` value if there has
