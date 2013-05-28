@@ -14,7 +14,7 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-parseWhitespace = pegMakeMainSequence
+tokWhitespace = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeCharSet " \n")
         (pegMakeSequence
@@ -23,7 +23,7 @@ parseWhitespace = pegMakeMainSequence
             (pegMakeToken "\n")));
 
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
-parsePunctuation = pegMakeMainSequence
+tokPunctuation = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeString "@@")
         (pegMakeString "::")
@@ -35,7 +35,7 @@ parsePunctuation = pegMakeMainSequence
         (pegMakeCharSet "@:.=+?;*<>{}()[]" "&|!"));
 
 # Documented in Samizdat Layer 0 spec.
-parseStringChar = pegMakeMainSequence
+tokStringChar = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeSequence
             (pegMakeCharSetComplement "\\\"")
@@ -53,9 +53,9 @@ parseStringChar = pegMakeMainSequence
                     (pegMakeToken "0") (pegMakeCode { . :: <> "\0" })))));
 
 # Documented in Samizdat Layer 0 spec.
-parseString = pegMakeMainSequence
+tokString = pegMakeMainSequence
     (pegMakeToken "\"")
-    (pegMakeStar parseStringChar)
+    (pegMakeStar tokStringChar)
     (pegMakeToken "\"")
     (pegMakeCode { . chars . ::
         <> @["string" (apply stringAdd chars)]
@@ -69,7 +69,7 @@ IDENTIFIER_START_CHARS =
 IDENTIFIER_CHARS = stringAdd IDENTIFIER_START_CHARS "0123456789";
 
 # Documented in Samizdat Layer 0 spec.
-parseIdentifier = pegMakeMainSequence
+tokIdentifier = pegMakeMainSequence
     (pegMakeCharSet IDENTIFIER_START_CHARS)
     (pegMakeStar (pegMakeCharSet IDENTIFIER_CHARS))
     (pegMakeCode { first rest ::
@@ -77,9 +77,9 @@ parseIdentifier = pegMakeMainSequence
     });
 
 # Documented in Samizdat Layer 0 spec.
-parseQuotedIdentifier = pegMakeMainSequence
+tokQuotedIdentifier = pegMakeMainSequence
     (pegMakeToken "\\")
-    parseString
+    tokString
     (pegMakeCode { . s ::
         <> @["identifier" (tokenValue s)]
     });
@@ -92,7 +92,7 @@ INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
 intFromDigitChar = { ch :: <> mapGet INT_CHARS (tokenType ch) };
 
 # Documented in Samizdat Layer 0 spec.
-parseInt = pegMakeMainSequence
+tokInt = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeSequence
             (pegMakeToken "-")
@@ -109,46 +109,34 @@ parseInt = pegMakeMainSequence
     });
 
 # Documented in Samizdat Layer 0 spec.
-parseToken = pegMakeMainSequence
-    (pegMakeChoice
-        parsePunctuation
-        parseInt
-        parseString
-        parseIdentifier
-        parseQuotedIdentifier);
-
-# Documented in Samizdat Layer 0 spec.
-parseFile = pegMakeMainSequence
-    (pegMakeStar
-        (pegMakeSequence
-            (pegMakeStar parseWhitespace)
-            parseToken))
-    (pegMakeStar parseWhitespace)
-    (pegMakeCode { tokens . ::
-        <> tokens
+tokError = pegMakeMainSequence
+    pegRuleAny
+    (pegMakeStar (pegMakeCharSetComplement "\n"))
+    (pegMakeCode { badCh . ::
+        msg = format "Unrecognized character: %q" (tokenType badCh);
+        <> @["error" msg]
     });
 
 # Documented in Samizdat Layer 0 spec.
-parseErrorLine = pegMakeMainSequence
-    pegRuleLookaheadAny
-    (pegMakeStar (pegMakeCharSetComplement "\n"))
+tokToken = pegMakeMainSequence
     (pegMakeChoice
-        (pegMakeToken "\n")
-        pegRuleEof)
-    (pegMakeCode { . chars . :: <> stringFromTokenList chars });
+        tokPunctuation
+        tokInt
+        tokString
+        tokIdentifier
+        tokQuotedIdentifier
+        tokError);
 
 # Documented in Samizdat Layer 0 spec.
-parseFileOrError = pegMakeMainSequence
-    parseFile
-    (pegMakeOpt
-        (pegMakeMainSequence
-            (pegMakePlus parseErrorLine)
-            (pegMakeCode { errorLines ::
-                io0Note "Extra text at end of program.";
-                io0Note "Pending text:";
-                io0Die (format "  %s" (listNth errorLines 0))
-            })))
-    (pegMakeCode { tokens . :: <> tokens });
+tokFile = pegMakeMainSequence
+    (pegMakeStar
+        (pegMakeSequence
+            (pegMakeStar tokWhitespace)
+            tokToken))
+    (pegMakeStar tokWhitespace)
+    (pegMakeCode { tokens . ::
+        <> tokens
+    });
 
 
 #
@@ -157,7 +145,7 @@ parseFileOrError = pegMakeMainSequence
 
 # Documented in Samizdat Layer 0 spec.
 sam1Tokenize = { programText ::
-    <> pegApply parseFileOrError programText
+    <> pegApply tokFile programText
 };
 
 <> [

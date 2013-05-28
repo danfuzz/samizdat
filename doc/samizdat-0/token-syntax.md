@@ -9,8 +9,8 @@ uses syntax which is nearly identical to the parser syntax provided at the
 higher layer.
 
 A program is tokenized by matching the `file` rule, resulting in a
-list of all the tokens. For simple error handling, the `fileOrError`
-rule can be used instead.
+list of all the tokens. Tokenization errors are represented in the
+result as tokens of type `"error"`.
 
 ```
 # Note: The yielded result is always ignored.
@@ -70,28 +70,18 @@ int = {/
     { <> ... @["int" ...] }
 /};
 
+error = {/
+    badCh = .
+    [! "\n"]*
+    { <> @["error" ... (tokenType badCh) ...] }
+/};
+
 token = {/
-    punctuation | int | string | identifier | quotedIdentifier
+    punctuation | int | string | identifier | quotedIdentifier | error
 /};
 
 file = {/
     tokens=(whitespace* token)* whitespace*
-    { <> tokens }
-/};
-
-errorLine = {/
-    &.
-    chars=[! "\n"]*
-    ("\n" | !.)
-    { <> stringFromTokenList chars }
-/};
-
-fileOrError = {/
-    tokens=file
-    (
-        errorLines=errorLine+
-        { ... io0Die ... }
-    )?
     { <> tokens }
 /};
 ```
