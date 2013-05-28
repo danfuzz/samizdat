@@ -46,7 +46,11 @@ reportError = { pending ::
 # Grammar rules
 #
 
-# Forward declarations for atom, expression, function, and parser.
+#
+# Samizdat Layer 0 definitions
+#
+
+# Forward declarations.
 parseAtom = forwardFunction();
 parseExpression = forwardFunction();
 parseFunction = forwardFunction();
@@ -144,7 +148,9 @@ parseParenExpression = {/
 implAtom = {/
     parseVarRef | parseInt | parseString |
     parseEmptyList | parseList | parseEmptyMap | parseMap |
-    parseUniqlet | parseToken | parseFunction | parseParenExpression
+    parseUniqlet | parseToken | parseFunction | parseParenExpression |
+    # Defined by Samizdat Layer 1.
+    &"{/" parseParser
 /};
 parseAtom implAtom;
 
@@ -294,6 +300,8 @@ implFunction = {/
 /};
 parseFunction implFunction;
 
+# Top-level rule to parse a program with possible error afterwards.
+# Note that an empty string is a valid program.
 parseProgramOrError = {/
     prog = parseProgram
     (
@@ -302,6 +310,188 @@ parseProgramOrError = {/
     )?
     { <> prog }
 /};
+
+
+#
+# Samizdat Layer 1 definitions
+#
+
+# Forward declaration.
+parseChoicePex = forwardFunction();
+
+# Parse a parser function.
+implParser = {/
+    @"{/"
+    pex = parseChoicePex
+    @"/}"
+    { <> @["parser" pex] }
+/};
+parseParser implParser;
+
+# Parse a parenthesized parsing expression.
+parseParenPex = {/
+    @"("
+    pex = parseChoicePex
+    @")"
+    { <> pex }
+/};
+
+# Parse a string literal parsing expression.
+parseParserString = {/
+    s = @string
+    {
+        value = tokenValue s;
+        <> ifTrue { <> eq (lowSize value) 1 }
+            { <> @["token" value] }
+            { <> s }
+    }
+/};
+
+# Parse a character range parsing expression.
+parseParserCharRange = {/
+    start = @string
+    startInt = {
+        <> ifTrue { <> eq (lowSize (tokenValue start)) 1 }
+            { <> intFromString (tokenValue start) }
+    }
+    @".."
+    end = @string
+    endInt = {
+        <> ifTrue { <> eq (lowSize (tokenValue end)) 1 }
+            { <> intFromString (tokenValue end) }
+    }
+    {
+        loopReduce [startInt ""] { result ::
+            at = listFirst result;
+            soFar = listLast result;
+            ifTrue { <> gt at endInt } { <out> @["string" soFar] };
+            <> [(iadd at 1) (stringAdd soFar (stringFromInt at))]
+        }
+    }
+/};
+
+# Parse a token literal parsing expression.
+parseParserToken = {/
+    @"@"
+    type = [@identifier @string]
+    { <> @["token" (tokenValue type)] }
+/};
+
+# Parse a set (or set complement) parsing expression.
+parseParserSet = {/
+    @"["
+
+    type = (
+        @"!" { <> "[!]" }
+    |
+        { <> "[]" }
+    )
+
+    terminals = (
+        strings = (parseParserCharRange | @string)+
+        {
+            oneString = listReduce "" strings
+                { result . s :: <> stringAdd result (tokenValue s) };
+            <> stringReduce [] oneString
+                { result . ch :: <> listAppend result ch }
+        }
+    |
+        tokens = parseParserToken*
+        { <> listMap tokens { . t :: <> tokenValue t } }
+    )
+
+    @"]"
+
+    { <> @[type terminals] }
+/};
+
+# Parse a code block parsing expression.
+parseParserCode = {/
+    @"{"
+
+    yieldDef = (
+        y = parseYieldDef
+        @"::"
+        { <> ["yieldDef" = y] }
+    |
+        @"::"?
+        { <> [=] }
+    )
+
+    body = parseProgramBody
+    @"}"
+
+    { <> @["{}" (mapAdd yieldDef body)] }
+/};
+
+# Parse an atomic parsing expression.
+parseParserAtom = {/
+    parseVarRef
+|
+    parseParserString
+|
+    parseParserToken
+|
+    parseParserSet
+|
+    parseParserCode
+|
+    @"."
+|
+    @"()"
+|
+    parseParenPex
+/};
+
+# Parse a repeat (or not) parsing expression.
+parseRepeatPex = {/
+    atom = parseParserAtom
+    (
+        repeat = [@"?" @"*" @"+"]
+        { <> @[(tokenType repeat) atom] }
+    |
+        { <> atom }
+    )
+/};
+
+# Parse a lookahead (or not) parsing expression. This covers both lookahead
+# success and lookahead failure.
+parseLookaheadPex = {/
+    (
+        lookahead = [@"&" @"!"]
+        pex = parseRepeatPex
+        { <> @[(tokenType lookahead) pex] }
+    )
+|
+    parseRepeatPex
+/};
+
+# Parse a name (or not) parsing expression.
+parseNamePex = {/
+    (
+        name = @identifier
+        @"="
+        pex = parseLookaheadPex
+        { <> @["varDef" ["name"=(tokenValue name) "value"=pex]] }
+    )
+|
+    parseLookaheadPex
+/};
+
+# Parse a sequence parsing expression. This includes a sequence of length
+# one.
+parseSequencePex = {/
+    items = parseNamePex+
+    { <> @["sequence" items] }
+/};
+
+# Parse a choice parsing expression. This includes a single choice.
+implChoicePex = {/
+    first = parseSequencePex
+    rest = (@"|" parseSequencePex)*
+    { <> @["choice" (listPrepend first rest)] }
+/};
+parseChoicePex implChoicePex;
 
 
 #
