@@ -345,7 +345,8 @@ parseParserSet = pegMakeMainSequence
             (pegMakeCode { <> "[]" })))
     (pegMakeChoice
         (pegMakeMainSequence
-            (pegMakePlus (pegMakeToken "string"))
+            (pegMakePlus
+                (pegMakeChoice parseParserCharRange (pegMakeToken "string")))
             (pegMakeCode { strings ::
                 oneString = listReduce "" strings
                     { result . s :: <> stringAdd result (tokenValue s) };
