@@ -84,7 +84,7 @@ token = {/
         @"[" type=atom value=atom? @"]"
         { <> apply makeCallName "makeToken" type value }
     |
-        type=[@string @identifier]
+        type = [@string @identifier]
         { <> makeCallName "makeToken" (makeLiteral (tokenValue type)) }
     )
 /};
@@ -128,8 +128,11 @@ callExpression = {/
 unaryCallExpression = {/
     function = atom
     calls = @"()"+
-    # Note: One `makeCall` per pair of parens.
-    { <> (... (makeCall (makeCall atom))) }
+    {
+        # Note: One `makeCall` per pair of parens.
+        <> listReduce function calls
+            { result . . :: <> makeCall result }
+    }
 /};
 
 unaryExpression = {/
@@ -171,13 +174,15 @@ yieldDef = {/
 
 formal = {/
     name = (
-        n=@identifier { <> ["name" = (tokenValue n)] }
+        n = @identifier
+        { <> ["name" = (tokenValue n)] }
     |
         @"." { <> [=] }
     )
 
     repeat = (
-        r=[@"?" @"*" @"+"] { <> ["repeat" = (tokenType r)] }
+        r = [@"?" @"*" @"+"]
+        { <> ["repeat" = (tokenType r)] }
     |
         { <> [=] }
     )
@@ -249,7 +254,7 @@ programOrError = {/
     prog = program
     (
         pending = .+
-        { <> ... io0Die ... }
+        { ... io0Die ... pending ... }
     )?
     { <> prog }
 /};
