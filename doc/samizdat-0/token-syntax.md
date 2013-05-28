@@ -13,16 +13,18 @@ list of all the tokens. For simple error handling, the `fileOrError`
 rule can be used instead.
 
 ```
+# Note: The yielded result is always ignored.
 whitespace = {/
-    [" " "\n"] | "#" [! "\n"]* "\n"
-    # Note: The yielded result is always ignored.
+    [" " "\n"]
+|
+    "#" [! "\n"]* "\n"
 /};
 
 punctuation = {/
     "@@" | "::" | "<>" | "()" | ["@:.=+?;*<>{}()[]"]
 /};
 
-char = {/
+stringChar = {/
     (
         ch = [! "\\" "\""]
         { <> tokenType ch }
@@ -41,7 +43,7 @@ char = {/
 
 string = {/
     "\""
-    chars = char*
+    chars = stringChar*
     "\""
     { <> @["string" (apply stringAdd chars)] }
 /}

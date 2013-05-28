@@ -35,7 +35,7 @@ parsePunctuation = pegMakeMainSequence
         (pegMakeCharSet "@:.=+?;*<>{}()[]" "&|!"));
 
 # Documented in Samizdat Layer 0 spec.
-parseChar = pegMakeMainSequence
+parseStringChar = pegMakeMainSequence
     (pegMakeChoice
         (pegMakeSequence
             (pegMakeCharSetComplement "\\\"")
@@ -55,7 +55,7 @@ parseChar = pegMakeMainSequence
 # Documented in Samizdat Layer 0 spec.
 parseString = pegMakeMainSequence
     (pegMakeToken "\"")
-    (pegMakeStar parseChar)
+    (pegMakeStar parseStringChar)
     (pegMakeToken "\"")
     (pegMakeCode { . chars . ::
         <> @["string" (apply stringAdd chars)]
