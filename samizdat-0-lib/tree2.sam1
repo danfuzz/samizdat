@@ -165,7 +165,7 @@ parseCallExpression = {/
 # to apply when applying the prefix.
 parsePrefixOperator = {/
     operator = [@"+" @"-" @"!"]
-    { <> makeVarRef (tokenValue operator) }
+    { <> makeVarRef (stringAdd "unary" (tokenType operator)) }
 /};
 
 # Parses a unary postfix operator. This yields a function (per se) to call
