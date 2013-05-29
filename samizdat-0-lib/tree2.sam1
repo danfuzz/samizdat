@@ -101,7 +101,7 @@ parseMap = {/
     @"["
     mappings = parseMapping+
     @"]"
-    { <> apply makeCallName "makeMap" (apply listAdd mapping) }
+    { <> apply makeCallName "makeMap" (apply listAdd mappings) }
 /};
 
 # Parses a token literal.
