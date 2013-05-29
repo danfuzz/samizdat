@@ -38,7 +38,7 @@ GET_MAP = [
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"[]" = { value indices* <out> ::
+\"unary[]" = { value indices* <out> ::
     <> listReduce value indices
         { result . index ::
             <> ifValue { <> mapGet GET_MAP (lowType result) }
@@ -54,5 +54,5 @@ GET_MAP = [
     "unary+" = \"unary+"
     "unary-" = \"unary-"
     "unary!" = \"unary!"
-    "[]" = \"[]"
+    "unary[]" = \"unary[]"
 ]

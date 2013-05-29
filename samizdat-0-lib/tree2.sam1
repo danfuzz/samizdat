@@ -178,7 +178,7 @@ parsePostfixOperator = {/
     @"["
     atoms = parseAtom+
     @"]"
-    { <> { node :: <> apply makeCall (makeVarRef "[]") node atoms } }
+    { <> { node :: <> apply makeCall (makeVarRef "unary[]") node atoms } }
 /};
 
 # Parses a unary expression. This is an atom, optionally surrounded on
