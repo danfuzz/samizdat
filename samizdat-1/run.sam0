@@ -24,7 +24,7 @@ sam1ValidatedTree = { programText ::
     # Complain if the two parsed forms aren't identical.
     ifTrue { <> ne(programNode0, programNode1) }
         {
-            io0Note "Parser disagreement.";
+            io0Note("Parser disagreement.");
             diff(programNode0, programNode1);
             io0Note("");
             io0Note(format("v1\n----------\n%q\n", programNode0));
