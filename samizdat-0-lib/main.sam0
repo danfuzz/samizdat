@@ -27,9 +27,9 @@ LIBRARY_FILES ::
 # here in the form of a map binding file names to text contents, this
 # is really just a map lookup.
 readLibraryFile = { name ::
-    <> ifValue { <> mapGet LIBRARY_FILES name }
+    <> ifValue { <> mapGet(LIBRARY_FILES, name) }
         { result :: <> result }
-        { io0Die (stringAdd "No such core library file: " name) }
+        { io0Die(stringAdd("No such core library file: ", name)) }
 };
 
 # Loads the named library file in the given context, returning a map
@@ -37,19 +37,19 @@ readLibraryFile = { name ::
 # by the named library. Each library file is expected to return a map of
 # bindings that it wishes to export.
 loadLibrary = { ctx name ::
-    io0Note (stringAdd "    " name);
+    io0Note(stringAdd("    ", name));
 
     # If `metaFunctions` is available, use it to get the proper parser and
     # evaluator. Otherwise, default to the layer 0 functions.
-    metas = ifValue { <> mapGet ctx "metaFunctions" }
-        { metaFunctions :: <> metaFunctions ctx name }
+    metas = ifValue { <> mapGet(ctx, "metaFunctions") }
+        { metaFunctions :: <> metaFunctions(ctx, name) }
         { <> ["eval"=sam0Eval "tree"=sam0Tree] };
-    treeFunction = mapGet metas "tree";
-    evalFunction = mapGet metas "eval";
+    treeFunction = mapGet(metas, "tree");
+    evalFunction = mapGet(metas, "eval");
 
-    text = readLibraryFile name;
-    tree = treeFunction text;
-    function = evalFunction (mapPut ctx "LIBRARY" ctx) tree;
+    text = readLibraryFile(name);
+    tree = treeFunction(text);
+    function = evalFunction(mapPut(ctx, "LIBRARY", ctx), tree);
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -58,17 +58,17 @@ loadLibrary = { ctx name ::
 
     # The end result is the addition of the new bindings to the original
     # context.
-    <> mapAdd ctx bindings;
+    <> mapAdd(ctx, bindings);
 };
 
 # Loads all of the named libraries, in order, allowing later libraries to
 # depend on earlier ones. The first listed library can depend only on the
 # given context.
 loadAllLibraries = { ctx names* ::
-    <> apply argsReduce
-        { result name :: <> loadLibrary result name }
-        ctx
-        names
+    <> apply(argsReduce,
+        { result name :: <> loadLibrary result name },
+        ctx,
+        names)
 };
 
 
@@ -76,18 +76,18 @@ loadAllLibraries = { ctx names* ::
 # Main export mechanics
 #
 
-io0Note "Loading core library...";
+io0Note("Loading core library...");
 
 # Read the manifest file, to figure out what all to load and in what order.
-MANIFEST = mapGet (loadLibrary LIBRARY "manifest.sam0") "MANIFEST";
+MANIFEST = mapGet(loadLibrary(LIBRARY, "manifest.sam0"), "MANIFEST");
 
 # Use the manifest to build up the core library.
-CORE_LIBRARY = apply loadAllLibraries LIBRARY MANIFEST;
+CORE_LIBRARY = apply(loadAllLibraries, LIBRARY, MANIFEST);
 
 # "Manually" run `makeLibrary` to produce the final core library.
-FINAL_LIBRARY = mapPut CORE_LIBRARY "LIBRARY" CORE_LIBRARY;
+FINAL_LIBRARY = mapPut(CORE_LIBRARY, "LIBRARY", CORE_LIBRARY);
 
-io0Note "    [fin]";
-io0Note "";
+io0Note("    [fin]");
+io0Note("");
 
 <> FINAL_LIBRARY
