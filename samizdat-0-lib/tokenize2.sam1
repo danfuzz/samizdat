@@ -104,8 +104,12 @@ tokError = {/
 /};
 
 # Parses an arbitrary token or error.
+#
+# **Note:** Ints are parsed ahead of punctuation, so that a `-` attached
+# to a digit gets interpreted as part of a negative number literal and not
+# a separate operator.
 tokToken = {/
-    tokPunctuation | tokInt | tokString | tokIdentifier | tokQuotedIdentifier
+    tokInt | tokPunctuation | tokString | tokIdentifier | tokQuotedIdentifier
 |
     tokError
 /};
