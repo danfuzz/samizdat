@@ -28,7 +28,7 @@ progName="$(basename "${prog}")"
 progDir="$(dirname "${prog}")"
 cd "${progDir}"
 progDir="${PWD}"
-cd ../..
+cd ..
 baseDir="${PWD}"
 cd "${origDir}"
 unset prog
@@ -59,7 +59,7 @@ while [[ $1 != '' ]]; do
         break
     elif [[ ${opt} == '--help' ]]; then
         echo "${progName} [--sam0 | --sam1 | --sam2] [--iprofile] [--optimize]"
-        echo "    [--validate]"
+        echo "    [--validate] demo-name arg..."
         exit
     elif [[ ${opt} == '--sam0' ]]; then
         layer='0'
@@ -83,10 +83,47 @@ while [[ $1 != '' ]]; do
 done
 unset opt
 
+name="$1"
+shift
+
+if [[ ${name} == '' ]]; then
+    echo 'Missing demo name.' 1>&2
+fi
+
 
 #
 # Main script
 #
+
+# Find the demo directory, expanding from the given name if necessary.
+
+if [[ ! ${name} =~ ^/ ]]; then
+    names=($(find "${progDir}" -type d -name "${name}*"))
+    case "${#names[@]}" in
+        (0) echo "Not found: ${name}" 1>&2 ;;
+        (1) : ;;
+        (*) echo "Multiple matches: ${name}" 1>&2 ;;
+    esac
+    name="${names[0]}"
+fi
+
+# Ensure it's a readable directory .
+
+if [[ ! (-r ${name} && -d ${name}) ]]; then
+    echo "Not a readable directory: ${name}" 1>&2
+    exit 1
+fi
+
+# Find the "main" script.
+
+mainFile="$(cd "${name}"; find . -name 'main.sam*')"
+
+if [[ ${mainFile} == '' ]]; then
+    echo "No main script in directory: ${name}" 1>&2
+    exit 1
+fi
+
+# Build the executable, and set up how to call it.
 
 buildOpts=()
 
@@ -114,4 +151,8 @@ if [[ ${validate} == 'yes' ]]; then
     cmd+=(--validate)
 fi
 
-"${cmd[@]}" "${progDir}/main.sam0" "$@"
+# Run it in the demo dir, passing it the main script name and any other
+# arguments passed to this script.
+
+cd "${name}"
+"${cmd[@]}" "${mainFile}" "$@"
