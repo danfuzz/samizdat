@@ -17,11 +17,6 @@ GET_MAP = [
     "map" = mapGet
 ];
 
-# "Getter" to use for types that don't have indices.
-getNothing = { value ::
-    # This space intentionally left blank.
-};
-
 
 #
 # Exported functions
