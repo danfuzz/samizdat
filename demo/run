@@ -28,7 +28,7 @@ progName="$(basename "${prog}")"
 progDir="$(dirname "${prog}")"
 cd "${progDir}"
 progDir="${PWD}"
-cd ../..
+cd ..
 baseDir="${PWD}"
 cd "${origDir}"
 unset prog
@@ -41,7 +41,7 @@ unset newProg
 #
 
 # Which Samizdat layer to use.
-layer='0'
+layer=''
 
 # Whether to super-validate. (Slow but useful.)
 validate='no'
@@ -58,13 +58,15 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--sam0 | --sam1] [--iprofile] [--optimize]"
-        echo "    [--validate]"
+        echo "${progName} [--sam0 | --sam1 | --sam2] [--iprofile] [--optimize]"
+        echo "    [--validate] demo-name arg..."
         exit
     elif [[ ${opt} == '--sam0' ]]; then
         layer='0'
     elif [[ ${opt} == '--sam1' ]]; then
         layer='1'
+    elif [[ ${opt} == '--sam2' ]]; then
+        layer='2'
     elif [[ ${opt} == '--iprofiler' ]]; then
         iprofiler='yes'
     elif [[ ${opt} == '--optimize' ]]; then
@@ -81,42 +83,76 @@ while [[ $1 != '' ]]; do
 done
 unset opt
 
+name="$1"
+shift
+
+if [[ ${name} == '' ]]; then
+    echo 'Missing demo name.' 1>&2
+fi
+
 
 #
 # Main script
 #
 
-opts=()
+# Find the demo directory, expanding from the given name if necessary.
+
+if [[ ! ${name} =~ ^/ ]]; then
+    names=($(find "${progDir}" -type d -name "${name}*"))
+    case "${#names[@]}" in
+        (0) echo "Not found: ${name}" 1>&2 ;;
+        (1) : ;;
+        (*) echo "Multiple matches: ${name}" 1>&2 ;;
+    esac
+    name="${names[0]}"
+fi
+
+# Ensure it's a readable directory .
+
+if [[ ! (-r ${name} && -d ${name}) ]]; then
+    echo "Not a readable directory: ${name}" 1>&2
+    exit 1
+fi
+
+# Find the "main" script.
+
+mainFile="$(cd "${name}"; find . -name 'main.sam*')"
+
+if [[ ${mainFile} == '' ]]; then
+    echo "No main script in directory: ${name}" 1>&2
+    exit 1
+fi
+
+# Build the executable, and set up how to call it.
+
 buildOpts=()
 
 if [[ ${optimize} == 'yes' ]]; then
     buildOpts=(--optimize)
 fi
 
-if [[ ${layer} == '0' ]]; then
-    "${baseDir}/samizdat-0/build" "${buildOpts[@]}" > /dev/null
-    PATH="${PATH}:${baseDir}/out/samizdat-0"
-    cmd=("samizdat-0")
-elif [[ ${layer} == '1' ]]; then
-    "${baseDir}/samizdat-1/build" "${buildOpts[@]}" > /dev/null
-    PATH="${PATH}:${baseDir}/out/samizdat-0:${baseDir}/out/samizdat-1"
-    cmd=("samizdat-1")
-else
-    echo 'Unknown layer.' 1>&2
-    exit 1
+"${baseDir}/samizdat-0/build" "${buildOpts[@]}" > /dev/null || exit 1
+PATH="${PATH}:${baseDir}/out/samizdat-0"
+cmd=("samizdat-0")
+
+if [[ ${layer} != '' ]]; then
+    cmd+=(--file-suffix="sam${layer}")
 fi
 
 if [[ ${iprofiler} == 'yes' ]]; then
     cmd=("$(which samizdat-0)")
-    if [[ ${layer} == '1' ]]; then
-        cmd=("${cmd[@]}" "${baseDir}/out/samizdat-1/main.sam0")
-    fi
     # May also want to use the -allocations option.
     cmd=(iprofiler -T 20s -timeprofiler "${cmd[@]}")
 fi
 
 if [[ ${validate} == 'yes' ]]; then
-    opts=(--validate)
+    # Note: Doesn't do anything right now. It's a leftover from the separate
+    # samizdat-1 executable.
+    cmd+=(--validate)
 fi
 
-"${cmd[@]}" "${opts[@]}" "${progDir}/main.sam0" "$@"
+# Run it in the demo dir, passing it the main script name and any other
+# arguments passed to this script.
+
+cd "${name}"
+"${cmd[@]}" "${mainFile}" "$@"

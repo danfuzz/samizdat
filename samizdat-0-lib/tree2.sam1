@@ -161,20 +161,40 @@ parseCallExpression = {/
     { <> apply makeCall function args }
 /};
 
-# Parses a unary (no-argument) call expression.
-parseUnaryCallExpression = {/
-    function = parseAtom
-    calls = @"()"+
-    {
-        # Note: One `makeCall` per pair of parens.
-        <> listReduce function calls
-            { result . . :: <> makeCall result }
-    }
+# Parses a unary prefix operator. This yields a `varRef` node for the function
+# to apply when applying the prefix.
+parsePrefixOperator = {/
+    operator = [@"+" @"-" @"!"]
+    { <> makeVarRef (stringAdd "unary" (tokenType operator)) }
 /};
 
-# Parses a unary expression.
+# Parses a unary postfix operator. This yields a function (per se) to call
+# in order to construct a node that represents the appropriate ultimate
+# function call.
+parsePostfixOperator = {/
+    @"()"
+    { <> { node :: <> makeCall node} }
+|
+    @"["
+    atoms = parseAtom+
+    @"]"
+    { <> { node :: <> apply makeCall (makeVarRef "unary[]") node atoms } }
+/};
+
+# Parses a unary expression. This is an atom, optionally surrounded on
+# either side by any number of unary operators. Postfix operators
+# take precedence over (are applied before) the prefix operators.
 parseUnaryExpression = {/
-    parseUnaryCallExpression | parseAtom
+    prefixes = parsePrefixOperator*
+    atom = parseAtom
+    postfixes = parsePostfixOperator*
+
+    {
+        withPosts = listReduce atom postfixes
+            { result . postfix :: <> postfix result };
+        <> listReduce withPosts (listReverse prefixes)
+            { result . prefix :: <> makeCall prefix result }
+    }
 /};
 
 # Parses a general expression.

@@ -77,7 +77,7 @@ error = {/
 /};
 
 token = {/
-    punctuation | int | string | identifier | quotedIdentifier | error
+    int | punctuation | string | identifier | quotedIdentifier | error
 /};
 
 file = {/
