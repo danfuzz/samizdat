@@ -242,7 +242,9 @@ static void bindArguments(Frame *frame, zvalue functionNode,
                 argAt = argCount;
             } else if (datEq(repeat, STR_CH_PLUS)) {
                 if (argAt >= argCount) {
-                    die("Too few arguments to function: %lld", argCount);
+                    die("Function called with too few arguments "
+                        "(plus argument): %lld",
+                        argCount);
                 } else if (!ignore) {
                     value = datListFromArray(argCount - argAt, &args[argAt]);
                 }
