@@ -1,0 +1,54 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Unary operator demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH ARGS* ::
+
+
+#
+# Helper definitions
+#
+
+# Prints out the given value.
+out = { value ::
+    io0Note (format "%q" value)
+};
+
+# Something to call.
+returnString = {
+    <> "Fun times!"
+};
+
+# Something to call.
+returnList= {
+    <> [0 1 2 3 ["blort"="fizmo"]];
+};
+
+
+#
+# Main tests
+#
+
+out (+0);
+out (- 10);
+out (- - 20);
+out (- - + - + 30);
+out (!false);
+out (!true);
+out (!!true);
+out (!!!true);
+out (returnString());
+out (["zero" "one" "two"][1]);
+out (["a"=1 "b"=2 "c"=3]["c"]);
+out ([[0 1 2] [10 11 12] [20 21 22]][2 2]);
+out (-[[0 1 2] [10 11 12] [20 21 22]][1 0]);
+out (returnList()[1]);
+out (returnList()[4 "blort"]);
+
+<> 0

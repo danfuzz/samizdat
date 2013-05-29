@@ -1,0 +1,58 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Unary operators
+#
+
+#
+# Helper definitions
+#
+
+# Map from low-layer types to corresponding "get" functions.
+GET_MAP = [
+    "list" = listNth
+    "string" = stringNth
+    "map" = mapGet
+];
+
+
+#
+# Exported functions
+#
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"unary+" = { value ::
+    <> iadd 0 value
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"unary-" = { value ::
+    <> ineg value
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"unary!" = { value ::
+    <> not value
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"unary[]" = { value indices* <out> ::
+    <> listReduce value indices
+        { result . index ::
+            <> ifValue { <> mapGet GET_MAP (lowType result) }
+                { getter ::
+                    <> ifValue { <> getter result index }
+                        { got :: <> got }
+                }
+                { <out> }
+        }
+};
+
+<> [
+    "unary+" = \"unary+"
+    "unary-" = \"unary-"
+    "unary!" = \"unary!"
+    "unary[]" = \"unary[]"
+]
