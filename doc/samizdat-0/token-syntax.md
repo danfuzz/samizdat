@@ -27,7 +27,7 @@ punctuation = {/
 stringChar = {/
     (
         ch = [! "\\" "\""]
-        { <> tokenType ch }
+        { <> tokenType(ch) }
     )
 |
     (
@@ -45,26 +45,26 @@ string = {/
     "\""
     chars = stringChar*
     "\""
-    { <> @["string" (apply stringAdd chars)] }
+    { <> @["string" (apply(stringAdd, chars))] }
 /};
 
 identifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
-    { <> @["identifier" (stringFromTokenList (listPrepend first rest))] }
+    { <> @["identifier" (stringFromTokenList(listPrepend(first, rest)))] }
 /};
 
 quotedIdentifier = {/
     "\\"
     s = string
-    { <> @["identifier" (tokenValue s)] }
+    { <> @["identifier" (tokenValue(s))] }
 /};
 
 int = {/
     sign = ("-" { <> -1 } | { <> 1 })
     digits = (
         ch = ["0".."9"]
-        { <> intFromDigitChar ch }
+        { <> intFromDigitChar(ch) }
     )+
 
     { <> ... @["int" ...] }
@@ -73,7 +73,7 @@ int = {/
 error = {/
     badCh = .
     [! "\n"]*
-    { <> @["error" ... (tokenType badCh) ...] }
+    { <> @["error" ... tokenType(badCh) ...] }
 /};
 
 token = {/
