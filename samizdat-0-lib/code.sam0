@@ -12,32 +12,32 @@
 
 # Object implementation function used by `mutableBox`.
 boxImpl = { yield state value? ::
-    <> ifValue { <> listFirst value }
+    <> ifValue { <> listFirst(value) }
         { boxValue ::
-            yield boxValue;
+            yield(boxValue);
             <> value
         }
         {
-            <> ifValue { <> listFirst state }
-                { boxValue :: yield boxValue }
-                { io0Die "Attempt to access un-set box." }
+            <> ifValue { <> listFirst(state) }
+                { boxValue :: yield(boxValue) }
+                { io0Die("Attempt to access un-set box.") }
         }
 };
 
 # Object implementation function used by `forwardFunction`.
 forwardFunctionImpl = { yield state args* ::
-    <> ifTrue { <> eq state null }
+    <> ifTrue { <> eq(state, null) }
         {
-            <> ifValue { <> listFirst args }
+            <> ifValue { <> listFirst(args) }
                 { function ::
-                    ifFalse { <> isUniqlet function }
-                        { io0Die "Attempt to forward to non-function." };
+                    ifFalse { <> isUniqlet(function) }
+                        { io0Die("Attempt to forward to non-function.") };
                     yield();
                     <> function;
                 }
-                { io0Die "Attempt to forward to void." }
+                { io0Die("Attempt to forward to void.") }
         }
-        { yield state }
+        { yield(state) }
 };
 
 
@@ -47,17 +47,17 @@ forwardFunctionImpl = { yield state args* ::
 
 # Documented in Samizdat Layer 0 spec.
 forwardFunction = {
-    forwardObject = object forwardFunctionImpl null;
+    forwardObject = object(forwardFunctionImpl, null);
 
     <> { args* ::
-        <> ifValue { <> apply forwardObject args }
-            { function :: <> apply function args }
+        <> ifValue { <> apply(forwardObject, args) }
+            { function :: <> apply(function, args) }
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
 mutableBox = { value? ::
-    <> object boxImpl value
+    <> object(boxImpl, value)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -65,9 +65,9 @@ partialApply = { function args* <out> ::
     # This mouthful takes an "apply-style" argument list (that is, a number
     # of individual arguments followed at the end by a list-of-the-rest), and
     # returns a single unified list of arguments.
-    argsList = apply apply { args* :: <> args } args;
+    argsList = apply(apply({ args* :: <> args }, args);
 
-    <> { more* :: <> apply function (listAdd argsList more) }
+    <> { more* :: <> apply(function, listAdd(argsList, more)) }
 };
 
 <> [

@@ -35,9 +35,9 @@ uCombinator = { function :: <> function function };
 # "Y*". That is, the Y combinator uses the U combinator in the same way
 # that the Y* combinator uses this function.
 uStarCombinator = { functions ::
-    <> apply argsMap
-        { function :: <> apply function functions }
-        functions;
+    <> apply(argsMap,
+        { function :: <> apply(function, functions) },
+        functions)
 };
 
 
@@ -53,11 +53,11 @@ yCombinator = { function ::
 
     applicator = { selfRef ::
         <> { args* ::
-            <> apply (function (uCombinator selfRef)) args
+            <> apply(function(uCombinator(selfRef)), args)
         }
     };
 
-    <> uCombinator applicator;
+    <> uCombinator(applicator);
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -67,17 +67,17 @@ yStarCombinator = { functions* ::
     # `uStarCombinator` function) where necessitated by the multiple-function
     # nature of this variant.
 
-    applicators = apply argsMap
+    applicators = apply(argsMap,
         { function ::
             <> { selfRefs* ::
                 <> { args* ::
-                    <> apply (apply function (uStarCombinator selfRefs)) args
+                    <> apply(apply(function, uStarCombinator(selfRefs)), args)
                 }
             }
-        }
-        functions;
+        },
+        functions);
 
-    <> uStarCombinator applicators;
+    <> uStarCombinator(applicators);
 };
 
 <> [
