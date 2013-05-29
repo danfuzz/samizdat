@@ -22,8 +22,9 @@ convertExpression = { node ::
 
 # Documented in Samizdat Layer 1 spec.
 sam2Eval = { context expressionNode ::
-    convertedNode = convertExpression expressionNode;
-    <> sam0Eval context convertedNode
+    <> sam1Eval context expressionNode
+    #convertedNode = convertExpression expressionNode;
+    #<> sam0Eval context convertedNode
 };
 
 <> [
