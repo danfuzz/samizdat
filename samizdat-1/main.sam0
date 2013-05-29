@@ -22,35 +22,35 @@ SELF_PATH ARGS* ::
 
 # Reads a sibling file. Note: This is a call to a function-generating
 # function.
-readFile = io0SandboxedReader (listButLast SELF_PATH);
+readFile = io0SandboxedReader(listButLast(SELF_PATH));
 
 # Loads a sibling file.
 loadFile = { ctx name ::
-    io0Note (format "    %Q" name);
+    io0Note(format("    %Q", name));
 
-    text = readFile [name];
-    tree = sam0Tree text;
-    function = sam0Eval ctx tree;
+    text = readFile([name]);
+    tree = sam0Tree(text);
+    function = sam0Eval(ctx, tree);
 
-    <> function readFile
+    <> function(readFile)
 };
 
 # Loads the named libraries, each one in the context of the previously-defined
 # ones.
 loadAllLibraries = { ctx rest* ::
-    <> listReduce ctx rest { result . elem ::
-        <> mapAdd result (loadFile result elem);
+    <> listReduce(ctx, rest) { result . elem ::
+        <> mapAdd(result, loadFile(result, elem));
     }
 };
 
-io0Note "Loading samizdat-1...";
+io0Note("Loading samizdat-1...");
 
 # Put together the final execution context.
-CONTEXT = loadAllLibraries (makeLibrary LIBRARY)
-    "diff.sam0" "run.sam0";
+CONTEXT = loadAllLibraries(makeLibrary(LIBRARY),
+    "diff.sam0", "run.sam0");
 
-io0Note "    [fin]";
-io0Note "";
+io0Note("    [fin]");
+io0Note("");
 
 # Call the `run` function to do the final deed.
-<> apply (mapGet CONTEXT "run") ARGS
+<> apply(mapGet(CONTEXT, "run"), ARGS)
