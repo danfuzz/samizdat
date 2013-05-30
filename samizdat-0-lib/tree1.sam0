@@ -43,8 +43,7 @@ makeLiteral = { value ::
 # Samizdat Layer 0 definitions
 #
 
-# Forward declarations for atom, expression, function, and parser.
-parseAtom = forwardFunction();
+# Forward declarations for expression, function, and parser.
 parseExpression = forwardFunction();
 parseFunction = forwardFunction();
 parseParser = forwardFunction();
@@ -60,12 +59,6 @@ parseString = pegMakeMainSequence(
     pegMakeCode { string :: <> makeLiteral(tokenValue(string)) });
 
 # Documented in Samizdat Layer 0 spec.
-parseEmptyList = pegMakeMainSequence(
-    pegMakeToken("["),
-    pegMakeToken("]"),
-    pegMakeCode { . . :: <> makeLiteral([]) });
-
-# Documented in Samizdat Layer 0 spec.
 parseUnadornedList = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
@@ -77,9 +70,13 @@ parseUnadornedList = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 parseList = pegMakeMainSequence(
     pegMakeToken("["),
-    pegMakeStar(parseAtom),
+    parseUnadornedList,
     pegMakeToken("]"),
-    pegMakeCode { . atoms . :: <> apply(makeCallName, "makeList", atoms) });
+    pegMakeCode { . expressions . ::
+        <> ifTrue { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> apply(makeCallName, "makeList", expressions) }
+    });
 
 # Documented in Samizdat Layer 0 spec.
 parseEmptyMap = pegMakeMainSequence(
@@ -90,18 +87,20 @@ parseEmptyMap = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 parseMapping = pegMakeMainSequence(
-    parseAtom,
+    parseExpression,
     pegMakeToken("="),
-    parseAtom,
+    parseExpression,
     pegMakeCode { key . value :: <> [key, value] });
 
 # Documented in Samizdat Layer 0 spec.
 parseMap = pegMakeMainSequence(
     pegMakeToken("["),
     pegMakePlus(parseMapping),
+    pegMakeStar(pegMakeSequence(pegMakeToken(","), parseMapping)),
     pegMakeToken("]"),
-    pegMakeCode { . mappings . ::
-        <> apply(makeCallName, "makeMap", apply(listAdd, mappings))
+    pegMakeCode { . first rest . ::
+        mappings = apply(listAdd, first, rest);
+        <> apply(makeCallName, "makeMap", mappings)
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -110,8 +109,8 @@ parseToken = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakeToken("["),
-            parseAtom,
-            pegMakeOpt(parseAtom),
+            parseExpression,
+            pegMakeOpt(pegMakeSequence(pegMakeToken("="), parseExpression)),
             pegMakeToken("]"),
             pegMakeCode { . type value . ::
                 <> apply(makeCallName, "makeToken", type, value)
@@ -149,10 +148,10 @@ parseParenExpression = pegMakeMainSequence(
     pegMakeCode { . ex . :: <> ex });
 
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
-implAtom = pegMakeMainSequence(
+parseAtom = pegMakeMainSequence(
     pegMakeChoice(
         parseVarRef, parseInt, parseString,
-        parseEmptyList, parseList, parseEmptyMap, parseMap,
+        parseList, parseEmptyMap, parseMap,
         parseUniqlet, parseToken, parseFunction,
         parseParenExpression,
         # Defined by Samizdat Layer 1. The lookahead is just to make
@@ -160,7 +159,6 @@ implAtom = pegMakeMainSequence(
         pegMakeSequence(
             pegMakeLookaheadSuccess(pegMakeToken("{/")),
             parseParser)));
-parseAtom(implAtom);
 
 # Documented in Samizdat Layer 0 spec.
 parseActualsList = pegMakeMainSequence(
