@@ -43,7 +43,7 @@ parsePathString = pegMakePlus(
                 pegRuleEof)),
         pegMakeMainSequence(
             pegMakeStar(pegMakeCharSetComplement("/")),
-            pegMakeCode { chars :: <> stringFromTokenList chars })));
+            pegMakeCode { chars :: <> stringFromTokenList(chars) })));
 
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
