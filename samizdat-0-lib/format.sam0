@@ -159,8 +159,18 @@ doMap = { map adorn ::
         "]")
 };
 
+# Tokens with special conversions
+TOKEN_SPECIALS = [
+    false = "false",
+    null  = "null",
+    true  = "true"
+];
+
 # Stringifies a token.
 doToken = { token adorn <out> ::
+    ifValue { <> mapGet(TOKEN_SPECIALS, token) }
+        { string :: <out> string };
+
     type = tokenType(token);
     valueString = ifValue { <> tokenValue(token) }
         { value :: <> stringAdd(" = ", callSourceString(value)) }
