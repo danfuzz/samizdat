@@ -74,6 +74,16 @@ parseEmptyList = {/
     { <> makeLiteral([]) }
 /};
 
+# Parses an "unadorned" (no bracketing) list. Yields a list (per se)
+# of contents.
+parseUnadornedList = {/
+    first = parseExpression
+    rest = (@"," parseExpression)*
+    { <> listPrepend(first, rest) }
+|
+    { <> [] }
+/};
+
 # Parses a list literal.
 parseList = {/
     @"["
@@ -154,11 +164,19 @@ implAtom = {/
 /};
 parseAtom(implAtom);
 
-# Parses a function call expression.
-parseCallExpression = {/
-    function = parseAtom
-    args = parseAtom+
-    { <> apply(makeCall, function, args) }
+# Parses a list of "actual" (as opposed to formal) arguments to a function.
+# Yields a list of expression nodes.
+parseActualsList = {/
+    @"()"
+    parseFunction*
+|
+    @"("
+    normalActuals = parseUnadornedList
+    @")"
+    functionActuals = parseFunction*
+    { <> listAdd(normalActuals, functionActuals) }
+|
+    parseFunction+
 /};
 
 # Parses a unary prefix operator. This yields a `varRef` node for the function
@@ -172,8 +190,8 @@ parsePrefixOperator = {/
 # in order to construct a node that represents the appropriate ultimate
 # function call.
 parsePostfixOperator = {/
-    @"()"
-    { <> { node :: <> makeCall(node) } }
+    actuals = parseActualsList
+    { <> { node :: <> apply(makeCall, node, actuals) } }
 |
     @"["
     atoms = parseAtom+
@@ -198,9 +216,7 @@ parseUnaryExpression = {/
 /};
 
 # Parses a general expression.
-implExpression = {/
-    parseCallExpression | parseUnaryExpression
-/};
+implExpression = parseUnaryExpression;
 parseExpression(implExpression);
 
 # Parses a statement.
