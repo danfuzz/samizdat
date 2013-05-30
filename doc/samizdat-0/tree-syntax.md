@@ -15,22 +15,22 @@ can be used.
 ```
 # Returns a `call` node.
 makeCall = { function actuals* ::
-    <> @["call" ["function"=function "actuals"=actuals]]
+    <> @["call" = ["function"=function, "actuals"=actuals]]
 };
 
 # Returns a `varRef` node.
 makeVarRef = { name ::
-    <> @["varRef" name]
+    <> @["varRef" = name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 makeCallName = { name actuals* ::
-    <> @["call" ["function"=(makeVarRef(name)) "actuals"=actuals]]
+    <> @["call" = ["function"=(makeVarRef(name)) "actuals"=actuals]]
 };
 
 # Returns a `literal` node.
 makeLiteral = { value ::
-    <> @["literal" value]
+    <> @["literal" = value]
 };
 
 # forward declaration: expression
@@ -74,7 +74,7 @@ mapping = {/
     key = expression
     @"="
     value = expression
-    { <> [key value] }
+    { <> [key, value] }
 /};
 
 map = {/
@@ -97,7 +97,7 @@ token = {/
         @"]"
         { <> apply(makeCallName, "makeToken", type, value) }
     |
-        type = [@string @identifier]
+        type = [@string, @identifier]
         { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
     )
 /};
@@ -116,7 +116,7 @@ varDef = {/
     name = @identifier
     @"="
     ex = expression
-    { <> @["varDef" ["name"=(tokenValue(name)) "value"=ex]] }
+    { <> @["varDef" = ["name"=(tokenValue(name)), "value"=ex]] }
 /};
 
 parenExpression = {/

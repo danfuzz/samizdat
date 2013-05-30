@@ -57,7 +57,7 @@ identifier = {/
 quotedIdentifier = {/
     "\\"
     s = string
-    { <> @["identifier" (tokenValue(s))] }
+    { <> @["identifier" = (tokenValue(s))] }
 /};
 
 int = {/
@@ -67,13 +67,13 @@ int = {/
         { <> intFromDigitChar(ch) }
     )+
 
-    { <> ... @["int" ...] }
+    { <> ... @["int" = ...] }
 /};
 
 error = {/
     badCh = .
     [! "\n"]*
-    { <> @["error" ... tokenType(badCh) ...] }
+    { <> @["error" = ... tokenType(badCh) ...] }
 /};
 
 token = {/

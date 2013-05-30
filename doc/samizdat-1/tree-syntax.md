@@ -26,7 +26,7 @@ parser = {/
     @"{/"
     pex = choicePex
     @"/}"
-    { <> @["parser" pex] }
+    { <> @["parser" = pex] }
 /};
 
 parenPex = {/
@@ -41,7 +41,7 @@ parserString = {/
     {
         value = tokenValue(s);
         <> ifTrue { <> eq(lowSize(value), 1) }
-            { <> @["token" value] }
+            { <> @["token" = value] }
             { <> s }
     }
 /};
@@ -49,7 +49,7 @@ parserString = {/
 parserToken = {/
     @"@"
     type = [@identifier @string]
-    { <> @["token" (tokenValue(type))] }
+    { <> @["token" = (tokenValue(type))] }
 /};
 
 # Handles regular string literals and character ranges.
@@ -69,8 +69,8 @@ parserSetString = {/
                 { <> intFromString(endValue) }
         }
         {
-            reduction = loopReduce [startInt ""] { ... endInt ... };
-            <> @["string" (listLast(reduction))]
+            reduction = loopReduce [startInt, ""] { ... endInt ... };
+            <> @["string" = (listLast(reduction))]
         }
     |
         { <> s }
@@ -149,7 +149,7 @@ repeatPex = {/
     atom = parserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(tokenType(repeat)) atom] }
+        { <> @[(tokenType(repeat)) = atom] }
     |
         { <> atom }
     )
@@ -159,7 +159,7 @@ lookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = repeatPex
-        { <> @[(tokenType(lookahead)) pex] }
+        { <> @[(tokenType(lookahead)) = pex] }
     )
 |
     repeatPex
@@ -170,7 +170,7 @@ namePex = {/
         name = @identifier
         @"="
         pex = lookaheadPex
-        { <> @["varDef" ["name"=(tokenValue(name)) "value"=pex]] }
+        { <> @["varDef" ["name"=(tokenValue(name)), "value"=pex]] }
     )
 |
     lookaheadPex
@@ -178,12 +178,12 @@ namePex = {/
 
 sequencePex = {/
     items = namePex+
-    { <> @["sequence" items] }
+    { <> @["sequence" = items] }
 /};
 
 choicePex = {/
     first = sequencePex
     rest = (@"|" sequencePex)*
-    { <> @["choice" (listPrepend(first, rest))] }
+    { <> @["choice" = (listPrepend(first, rest))] }
 /};
 ```
