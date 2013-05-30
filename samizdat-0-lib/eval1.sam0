@@ -179,7 +179,7 @@ convertCall = { node ::
     function = convertExpression(mapGet(nodeValue, "function"));
     actuals = convertList(mapGet(nodeValue, "actuals"));
 
-    <> @["call" (mapAdd(nodeValue, ["function"=function, "actuals"=actuals]))]
+    <> @["call" = mapAdd(nodeValue, ["function"=function, "actuals"=actuals])]
 };
 
 # Does parser conversion of a `function` node.
@@ -190,7 +190,7 @@ convertFunction = { node ::
         { yield :: <> ["yield" = (convertExpression(yield))] }
         { <> [=] };
 
-    <> @["function" (mapAdd(nodeValue, ["statements" = statements], yield))]
+    <> @["function" = mapAdd(nodeValue, ["statements" = statements], yield)]
 };
 
 # Does parser conversion of a `varDef` node.
@@ -198,7 +198,7 @@ convertVarDef = { node ::
     nodeValue = tokenValue(node);
     value = convertExpression(mapGet(nodeValue, "value"));
 
-    <> @["varDef" (mapPut(nodeValue, "value", value))]
+    <> @["varDef" = mapPut(nodeValue, "value", value)]
 };
 
 # Does no-op node conversion.
