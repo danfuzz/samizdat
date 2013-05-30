@@ -97,7 +97,7 @@ stringChar = { ch ::
 # These are all the characters which are allowed to start an identifier.
 IDENTIFIER_STARTS = stringReduce([=],
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_")
-    { result . ch :: <> mapPut result ch true };
+    { result . ch :: <> mapPut(result, ch, true) };
 
 # These are all the characters which are allowed to be in an identifier.
 IDENTIFIER_CHARS = mapAdd(IDENTIFIER_STARTS,
