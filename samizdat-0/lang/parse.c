@@ -231,57 +231,6 @@ DEF_PARSE(string) {
 }
 
 /**
- * Parses an `emptyMap` node.
- */
-DEF_PARSE(emptyMap) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_EQUAL);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeLiteral(EMPTY_MAP);
-}
-
-/**
- * Parses a `mapping` node.
- */
-DEF_PARSE(mapping) {
-    MARK();
-
-    zvalue key = PARSE_OR_REJECT(atom);
-    MATCH_OR_REJECT(CH_EQUAL);
-    zvalue value = PARSE_OR_REJECT(atom);
-
-    return datListAppend(datListAppend(EMPTY_LIST, key), value);
-}
-
-/**
- * Parses a `map` node.
- */
-DEF_PARSE(map) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-
-    zvalue mappings = EMPTY_LIST;
-
-    for (;;) {
-        zvalue mapping = PARSE(mapping);
-        if (mapping == NULL) {
-            break;
-        }
-
-        mappings = datListAdd(mappings, mapping);
-    }
-
-    REJECT_IF(datSize(mappings) == 0);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeCall(makeVarRef(STR_MAKE_MAP), mappings);
-}
-
-/**
  * Parses an `emptyList` node.
  */
 DEF_PARSE(emptyList) {
@@ -336,6 +285,57 @@ DEF_PARSE(list) {
     MATCH_OR_REJECT(CH_CSQUARE);
 
     return makeCall(makeVarRef(STR_MAKE_LIST), atoms);
+}
+
+/**
+ * Parses an `emptyMap` node.
+ */
+DEF_PARSE(emptyMap) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+    MATCH_OR_REJECT(CH_EQUAL);
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    return makeLiteral(EMPTY_MAP);
+}
+
+/**
+ * Parses a `mapping` node.
+ */
+DEF_PARSE(mapping) {
+    MARK();
+
+    zvalue key = PARSE_OR_REJECT(atom);
+    MATCH_OR_REJECT(CH_EQUAL);
+    zvalue value = PARSE_OR_REJECT(atom);
+
+    return datListAppend(datListAppend(EMPTY_LIST, key), value);
+}
+
+/**
+ * Parses a `map` node.
+ */
+DEF_PARSE(map) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+
+    zvalue mappings = EMPTY_LIST;
+
+    for (;;) {
+        zvalue mapping = PARSE(mapping);
+        if (mapping == NULL) {
+            break;
+        }
+
+        mappings = datListAdd(mappings, mapping);
+    }
+
+    REJECT_IF(datSize(mappings) == 0);
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    return makeCall(makeVarRef(STR_MAKE_MAP), mappings);
 }
 
 /**
