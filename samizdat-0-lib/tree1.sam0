@@ -66,6 +66,15 @@ parseEmptyList = pegMakeMainSequence(
     pegMakeCode { . . :: <> makeLiteral([]) });
 
 # Documented in Samizdat Layer 0 spec.
+parseUnadornedList = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
+            parseExpression,
+            pegMakeSequence(pegMakeToken(","), parseExpression),
+            pegMakeCode { first rest :: <> listPrepend(first, rest) }),
+        pegMakeCode { <> [] }));
+
+# Documented in Samizdat Layer 0 spec.
 parseList = pegMakeMainSequence(
     pegMakeToken("["),
     pegMakeStar(parseAtom),
@@ -154,27 +163,33 @@ implAtom = pegMakeMainSequence(
 parseAtom(implAtom);
 
 # Documented in Samizdat Layer 0 spec.
-parseCallExpression = pegMakeMainSequence(
-    parseAtom,
-    pegMakePlus(parseAtom),
-    pegMakeCode { function args :: <> apply(makeCall, function, args) });
+parseActualsList = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
+            pegMakeToken("()"),
+            pegMakeStar(parseFunction)),
+        pegMakeSequence(
+            pegMakeToken("("),
+            parseUnadornedList,
+            pegMakeToken(")"),
+            pegMakeStar(parseFunction),
+            pegMakeCode { . normalActuals . functionActuals ::
+                <> listAdd(normalActuals, functionActuals)
+            }),
+        pegMakePlus(parseFunction)));
 
 # Documented in Samizdat Layer 0 spec.
-parseUnaryCallExpression = pegMakeMainSequence(
+parseCallExpression = pegMakeMainSequence(
     parseAtom,
-    pegMakePlus(pegMakeToken("()")),
-    pegMakeCode { function calls ::
-        <> listReduce(function, calls)
-            { result . . :: <> makeCall(result) }
+    pegMakeStar(parseActualsList),
+    pegMakeCode { base actualsLists ::
+        <> listReduce(base, actualsLists) { result . list ::
+            <> apply(makeCall, result, list)
+        }
     });
 
 # Documented in Samizdat Layer 0 spec.
-parseUnaryExpression = pegMakeMainSequence(
-    pegMakeChoice(parseUnaryCallExpression, parseAtom));
-
-# Documented in Samizdat Layer 0 spec.
-implExpression = pegMakeMainSequence(
-    pegMakeChoice(parseCallExpression, parseUnaryExpression));
+implExpression = parseCallExpression;
 parseExpression(implExpression);
 
 # Documented in Samizdat Layer 0 spec.
