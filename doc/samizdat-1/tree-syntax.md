@@ -19,7 +19,7 @@ atom = {/
 |
     # The lookahead is just to make it clear that Samizdat Layer 1 can
     # only be "activated" with that one specific token.
-    &"{/" parser
+    &@"{/" parser
 /};
 
 parser = {/

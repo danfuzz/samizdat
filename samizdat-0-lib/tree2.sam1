@@ -150,7 +150,7 @@ implAtom = {/
     parseEmptyList | parseList | parseEmptyMap | parseMap |
     parseUniqlet | parseToken | parseFunction | parseParenExpression |
     # Defined by Samizdat Layer 1.
-    &"{/" parseParser
+    &@"{/" parseParser
 /};
 parseAtom implAtom;
 
