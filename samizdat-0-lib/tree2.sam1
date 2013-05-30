@@ -464,7 +464,7 @@ parseParserCode = {/
     body = parseProgramBody
     @"}"
 
-    { <> @["{}" (mapAdd(yieldDef, body))] }
+    { <> @["{}" = mapAdd(yieldDef, body)] }
 /};
 
 # Parse an atomic parsing expression.
