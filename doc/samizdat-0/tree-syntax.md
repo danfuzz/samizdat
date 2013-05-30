@@ -138,14 +138,22 @@ actualsList = {/
 /};
 
 callExpression = {/
-    func = atom
-    actuals = actualsList
-    codeActuals = function*
-    { <> apply(makeCall, func, listAdd(actuals, codeActuals)) }
+    base = atom
+    actualsLists = (
+        actuals = actualsList
+        codeActuals = function*
+        { <> listAdd(actuals, codeActuals) }
+    )*
+
+    {
+        <> listReduce(base, actualsLists) { result . list ::
+            <> apply(makeCall, result, list)
+        }
+    }
 /};
 
 expression = {/
-    callExpression | atom
+    callExpression
 /};
 
 statement = {/
