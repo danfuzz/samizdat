@@ -320,10 +320,17 @@ DEF_PARSE(map) {
 
     MATCH_OR_REJECT(CH_OSQUARE);
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
-    REJECT_IF(datSize(mappings) == 0);
+    zint size = datSize(mappings);
+    REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_MAP), mappings);
+    // Combine all the mappings into a flat list.
+    zvalue args = EMPTY_LIST;
+    for (zint i = 0; i < size; i++) {
+        args = datListAdd(args, datListNth(mappings, i));
+    }
+
+    return makeCall(makeVarRef(STR_MAKE_MAP), args);
 }
 
 /**
