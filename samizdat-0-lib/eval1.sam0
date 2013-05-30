@@ -17,7 +17,7 @@ convertPex = forwardFunction();
 
 # Does parser conversion of an expression or statement list.
 convertList = { nodes ::
-    <> listMap(nodes) { . node :: <> convertExpression node }
+    <> listMap(nodes) { . node :: <> convertExpression(node) }
 };
 
 # Constructs a named function call with the given arguments, each of
@@ -41,7 +41,7 @@ callNameWithLiterals = { functionName args* ::
 # Converts a `choice` pex node.
 convertPexChoice = { node formals ::
     pexes = tokenValue(node);
-    convertedPexes = listMap(pexes) { . pex  :: <> convertPex pex formals };
+    convertedPexes = listMap(pexes) { . pex  :: <> convertPex(pex, formals) };
     <> apply(callNameWithExpressions, "pegMakeChoice", convertedPexes)
 };
 
