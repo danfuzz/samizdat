@@ -152,8 +152,11 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
  */
 
 /* Definitions to help avoid boilerplate in the parser functions. */
-#define DEF_PARSE(name) static zvalue parse_##name(ParseState *state)
-#define PARSE(name) parse_##name(state)
+#define RULE(name) parse_##name
+#define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
+#define PARSE(name) RULE(name)(state)
+#define PARSE_STAR(name) parseStar(RULE(name), state)
+#define PARSE_PLUS(name) parsePlus(RULE(name), state)
 #define MATCH(tokenType) readMatch(state, (STR_##tokenType))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
@@ -173,22 +176,30 @@ DEF_PARSE(expression);
 DEF_PARSE(function);
 
 /**
- * Parses `atom+`. Returns a list of parsed expressions.
+ * Parses `x*` for an arbitrary rule `x`. Returns a list of parsed expressions.
  */
-DEF_PARSE(atomPlus) {
-    MARK();
-
+zvalue parseStar(zvalue (*rule)(ParseState *), ParseState *state) {
     zvalue result = EMPTY_LIST;
 
     for (;;) {
-        zvalue atom = PARSE(atom);
-        if (atom == NULL) {
+        zvalue one = rule(state);
+        if (one == NULL) {
             break;
         }
 
-        result = datListAppend(result, atom);
+        result = datListAppend(result, one);
     }
 
+    return result;
+}
+
+/**
+ * Parses `x+` for an arbitrary rule `x`. Returns a list of parsed expressions.
+ */
+zvalue parsePlus(zvalue (*rule)(ParseState *), ParseState *state) {
+    MARK();
+
+    zvalue result = parseStar(rule, state);
     REJECT_IF(datSize(result) == 0);
 
     return result;
@@ -299,7 +310,8 @@ DEF_PARSE(list) {
     MARK();
 
     MATCH_OR_REJECT(CH_OSQUARE);
-    zvalue atoms = PARSE_OR_REJECT(atomPlus);
+    zvalue atoms = PARSE_PLUS(atom);
+    REJECT_IF(atoms == NULL);
     MATCH_OR_REJECT(CH_CSQUARE);
 
     return makeCall(makeVarRef(STR_MAKE_LIST), atoms);
@@ -315,6 +327,37 @@ DEF_PARSE(emptyList) {
     MATCH_OR_REJECT(CH_CSQUARE);
 
     return makeLiteral(EMPTY_LIST);
+}
+
+/**
+ * Parses an `unadornedList` node.
+ */
+DEF_PARSE(unadornedList) {
+    zvalue atom = PARSE(atom);
+
+    if (atom == NULL) {
+        return EMPTY_LIST;
+    }
+
+    zvalue result = datListAppend(EMPTY_LIST, atom);
+
+    for (;;) {
+        MARK();
+
+        if (! MATCH(CH_COMMA)) {
+            break;
+        }
+
+        atom = PARSE(atom);
+        if (atom == NULL) {
+            RESET();
+            break;
+        }
+
+        result = datListAppend(result, atom);
+    }
+
+    return result;
 }
 
 /**
@@ -400,50 +443,41 @@ DEF_PARSE(atom) {
 }
 
 /**
+ * Parses an `actualsList` node.
+ */
+DEF_PARSE(actualsList) {
+    MARK();
+
+    if (MATCH(CH_PARENPAREN)) {
+        return PARSE_STAR(function);
+    }
+
+    if (MATCH(CH_OPAREN)) {
+        zvalue normalActuals = PARSE(unadornedList); // This never fails.
+        MATCH_OR_REJECT(CH_CPAREN);
+        zvalue functionActuals = PARSE_STAR(function); // This never fails.
+        return datListAdd(normalActuals, functionActuals);
+    }
+
+    return PARSE_PLUS(function);
+}
+
+/**
  * Parses a `callExpression` node.
  */
 DEF_PARSE(callExpression) {
     MARK();
 
-    zvalue function = PARSE_OR_REJECT(atom);
-    zvalue actuals = PARSE_OR_REJECT(atomPlus);
-
-    return makeCall(function, actuals);
-}
-
-/**
- * Parses a `unaryCallExpression` node.
- */
-DEF_PARSE(unaryCallExpression) {
-    MARK();
-
     zvalue result = PARSE_OR_REJECT(atom);
-    bool any = false;
 
     for (;;) {
-        if (MATCH(CH_PARENPAREN) == NULL) {
+        zvalue actualsList = PARSE(actualsList);
+        if (actualsList == NULL) {
             break;
         }
 
-        result = makeCall(result, NULL);
-        any = true;
+        result = makeCall(result, actualsList);
     }
-
-    if (!any) {
-        REJECT();
-    }
-
-    return result;
-}
-
-/**
- * Parses a `unaryExpression` node.
- */
-DEF_PARSE(unaryExpression) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(unaryCallExpression); }
-    if (result == NULL) { result = PARSE(atom); }
 
     return result;
 }
@@ -452,12 +486,7 @@ DEF_PARSE(unaryExpression) {
  * Parses an `expression` node.
  */
 DEF_PARSE(expression) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(callExpression); }
-    if (result == NULL) { result = PARSE(unaryExpression); }
-
-    return result;
+    return PARSE(callExpression);
 }
 
 /**
