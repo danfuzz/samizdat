@@ -119,28 +119,26 @@ atom = {/
     uniqlet | token | function | parenExpression
 /};
 
+actualsList = {/
+    (@"()" | "@(" @")")
+    { <> [] }
+|
+    @"("
+    first = atom
+    rest = (@"," atom)*
+    @")"
+    { <> apply listPrepend first rest }
+/};
+
 callExpression = {/
-    function = atom
-    args = atom+
-    { <> apply makeCall function args }
-/};
-
-unaryCallExpression = {/
-    function = atom
-    calls = @"()"+
-    {
-        # Note: One `makeCall` per pair of parens.
-        <> listReduce function calls
-            { result . . :: <> makeCall result }
-    }
-/};
-
-unaryExpression = {/
-    unaryCallExpression | atom
+    func = atom
+    actuals = actualsList
+    codeActuals = function*
+    { <> apply makeCall func (listAdd actuals codeActuals) }
 /};
 
 expression = {/
-    callExpression | unaryExpression
+    callExpression | atom
 /};
 
 statement = {/
