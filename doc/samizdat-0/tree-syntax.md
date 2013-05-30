@@ -25,7 +25,7 @@ makeVarRef = { name ::
 
 # Returns a `call` node that names a function as a `varRef`.
 makeCallName = { name actuals* ::
-    <> @["call" = ["function"=(makeVarRef(name)) "actuals"=actuals]]
+    <> @["call" = ["function"=(makeVarRef(name)), "actuals"=actuals]]
 };
 
 # Returns a `literal` node.
