@@ -256,6 +256,19 @@ DEF_PARSE(uniqlet) {
 }
 
 /**
+ * Parses an `emptyMap` node.
+ */
+DEF_PARSE(emptyMap) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+    MATCH_OR_REJECT(CH_EQUAL);
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    return makeLiteral(EMPTY_MAP);
+}
+
+/**
  * Parses a `mapping` node.
  */
 DEF_PARSE(mapping) {
@@ -291,33 +304,6 @@ DEF_PARSE(map) {
     MATCH_OR_REJECT(CH_CSQUARE);
 
     return makeCall(makeVarRef(STR_MAKE_MAP), mappings);
-}
-
-/**
- * Parses an `emptyMap` node.
- */
-DEF_PARSE(emptyMap) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_EQUAL);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeLiteral(EMPTY_MAP);
-}
-
-/**
- * Parses a `list` node.
- */
-DEF_PARSE(list) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    zvalue atoms = PARSE_PLUS(atom);
-    REJECT_IF(atoms == NULL);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeCall(makeVarRef(STR_MAKE_LIST), atoms);
 }
 
 /**
@@ -361,6 +347,20 @@ DEF_PARSE(unadornedList) {
     }
 
     return result;
+}
+
+/**
+ * Parses a `list` node.
+ */
+DEF_PARSE(list) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+    zvalue atoms = PARSE_PLUS(atom);
+    REJECT_IF(atoms == NULL);
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    return makeCall(makeVarRef(STR_MAKE_LIST), atoms);
 }
 
 /**
