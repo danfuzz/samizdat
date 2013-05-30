@@ -133,8 +133,8 @@ actualsList = {/
 |
     @"("
     normalActuals = unadornedList
-    functionActuals = function*
     @")"
+    functionActuals = function*
     { <> listAdd(normalActuals, functionActuals) }
 |
     function+
