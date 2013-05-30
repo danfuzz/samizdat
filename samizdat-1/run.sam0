@@ -37,7 +37,7 @@ sam1ValidatedTree = { programText ::
 
 # Reads the named embedded library file.
 readLibraryFile = { name ::
-    <> READER ["samizdat-0-lib" name]
+    <> READER ["samizdat-0-lib", name]
 };
 
 # Reads all the library files, returning a map from names to contents.

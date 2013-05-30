@@ -74,7 +74,7 @@ exiter = { foo <out> ::
 boxer = {
     box = mutableBox(10);
 
-    listForEach([1 2 3]) { . n :: box(iadd(box(), n)) };
+    listForEach([1, 2, 3]) { . n :: box(iadd(box(), n)) };
     <> box()
 };
 
@@ -105,16 +105,16 @@ main = { selfPath name rest* ::
     process(-12345);
     process([]);
     process([(-1)]);
-    process(listButFirst([0 1 (-2)]));
-    process(listReverse(listButLast([(-1) 2 300 999])));
+    process(listButFirst([0, 1, -2]));
+    process(listReverse(listButLast([-1, 2, 300, 999])));
     process(listButFirst([], ""));
     process(listButLast([], "Самиздат"));
     process("\"Blort.\" \\ \0 \n");
     process(stringSlice("muffins", 1, 6));
     process([=]);
     process([1=2]);
-    process([1=2 888=1]);
-    process(["fizmo"="omzif" "igram"="margi" "blort"="trolb"]);
+    process([1=2, 888=1]);
+    process(["fizmo"="omzif", "igram"="margi", "blort"="trolb"]);
     process(@["null"]);
     process(@"null");
     process(@null);
@@ -129,7 +129,7 @@ main = { selfPath name rest* ::
     process(boxer());
     process(metaFunctions(LIBRARY, "blort.sam0"));
     process(io0PathFromFlat("///foo//////./bar/../baz"));
-    process(io0FlatFromPath(["fizmo" "igram" "blort" ""]));
+    process(io0FlatFromPath(["fizmo", "igram", "blort", ""]));
 
     sibling();
 
@@ -138,7 +138,7 @@ main = { selfPath name rest* ::
     blort(1, 2, 3);
     blort(1, 2, 3, 4);
     blort(1, 2, 3, 4, 5);
-    partialApply(blort, 1, [2 3 4])(5, 6);
+    partialApply(blort, 1, [2, 3, 4])(5, 6);
     stuff(1);
     stuff(1, 2);
 
