@@ -51,7 +51,6 @@ reportError = { pending ::
 #
 
 # Forward declarations.
-parseAtom = forwardFunction();
 parseExpression = forwardFunction();
 parseFunction = forwardFunction();
 parseParser = forwardFunction();
@@ -68,12 +67,6 @@ parseString = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
-# Parses an empty list literal.
-parseEmptyList = {/
-    @"[" @"]"
-    { <> makeLiteral([]) }
-/};
-
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
 parseUnadornedList = {/
@@ -87,9 +80,13 @@ parseUnadornedList = {/
 # Parses a list literal.
 parseList = {/
     @"["
-    atoms = parseAtom+
+    expressions = parseUnadornedList+
     @"]"
-    { <> apply(makeCallName, "makeList", atoms) }
+    {
+        <> ifTrue { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> apply(makeCallName, "makeList", expressions) }
+    }
 /};
 
 # Parses an empty map literal.
@@ -100,25 +97,32 @@ parseEmptyMap = {/
 
 # Parses a mapping (element of a map).
 parseMapping = {/
-    key = parseAtom
+    key = parseExpression
     @"="
-    value = parseAtom
+    value = parseExpression
     { <> [key, value] }
 /};
 
 # Parses a map literal.
 parseMap = {/
     @"["
-    mappings = parseMapping+
+    first = parseMapping
+    rest = (@"," parseMapping)*
     @"]"
-    { <> apply(makeCallName, "makeMap", apply(listAdd, mappings)) }
+    {
+        mappings = apply(listAdd, first, rest);
+        <> apply(makeCallName, "makeMap", mappings)
+    }
 /};
 
 # Parses a token literal.
 parseToken = {/
     @"@"
     (
-        @"[" type=parseAtom value=parseAtom? @"]"
+        @"["
+        type = parseExpression
+        value = (@"=" parseExpression)?
+        @"]"
         { <> apply(makeCallName, "makeToken", type, value) }
     |
         type = [@string @identifier]
@@ -155,14 +159,13 @@ parseParenExpression = {/
 /};
 
 # Parses an atomic expression.
-implAtom = {/
+parseAtom = {/
     parseVarRef | parseInt | parseString |
-    parseEmptyList | parseList | parseEmptyMap | parseMap |
+    parseList | parseEmptyMap | parseMap |
     parseUniqlet | parseToken | parseFunction | parseParenExpression |
     # Defined by Samizdat Layer 1.
     &@"{/" parseParser
 /};
-parseAtom(implAtom);
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
@@ -194,9 +197,13 @@ parsePostfixOperator = {/
     { <> { node :: <> apply(makeCall, node, actuals) } }
 |
     @"["
-    atoms = parseAtom+
+    first = parseExpression
+    rest = (@"," parseExpression)*
     @"]"
-    { <> { node :: <> apply(makeCall, makeVarRef("unary[]"), node, atoms) } }
+    {
+        exprs = listPrepend(first, rest);
+        <> { node :: <> apply(makeCall, makeVarRef("unary[]"), node, exprs) }
+    }
 /};
 
 # Parses a unary expression. This is an atom, optionally surrounded on
