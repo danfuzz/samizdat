@@ -55,7 +55,7 @@ emptyList = {/
 unadornedList = {/
     first = expression
     rest = (@"," expression)*
-    { <> apply(listPrepend, first, rest) }
+    { <> listPrepend(first, rest) }
 |
     { <> [] }
 /};
