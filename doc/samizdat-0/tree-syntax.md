@@ -97,7 +97,7 @@ token = {/
         @"]"
         { <> apply(makeCallName, "makeToken", type, value) }
     |
-        type = [@string, @identifier]
+        type = [@string @identifier]
         { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
     )
 /};
