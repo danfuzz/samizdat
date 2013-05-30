@@ -21,7 +21,7 @@ parseWordBreak = pegMakeToken("\0");
 parseWord = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSetComplement("\0")),
     parseWordBreak,
-    pegMakeCode { chars . :: <> stringFromTokenList chars });
+    pegMakeCode { chars . :: <> stringFromTokenList(chars) });
 
 # key = {/
 #     chars=[! "=\0"]*
@@ -29,7 +29,7 @@ parseWord = pegMakeMainSequence(
 # /}
 parseKey = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSetComplement("=\0")),
-    pegMakeCode { chars :: <> stringFromTokenList chars });
+    pegMakeCode { chars :: <> stringFromTokenList(chars) });
 
 # keyValue = {/
 #     "--" k=key "=" v=word
