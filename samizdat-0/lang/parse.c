@@ -170,6 +170,9 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     tempResult = PARSE(name); \
     REJECT_IF(tempResult == NULL)
 
+/* Function prototype for all parser functions */
+typedef zvalue (*parserFunction)(ParseState *);
+
 /* Defined below. */
 DEF_PARSE(atom);
 DEF_PARSE(expression);
@@ -178,7 +181,7 @@ DEF_PARSE(function);
 /**
  * Parses `x*` for an arbitrary rule `x`. Returns a list of parsed expressions.
  */
-zvalue parseStar(zvalue (*rule)(ParseState *), ParseState *state) {
+zvalue parseStar(parserFunction rule, ParseState *state) {
     zvalue result = EMPTY_LIST;
 
     for (;;) {
@@ -196,7 +199,7 @@ zvalue parseStar(zvalue (*rule)(ParseState *), ParseState *state) {
 /**
  * Parses `x+` for an arbitrary rule `x`. Returns a list of parsed expressions.
  */
-zvalue parsePlus(zvalue (*rule)(ParseState *), ParseState *state) {
+zvalue parsePlus(parserFunction rule, ParseState *state) {
     MARK();
 
     zvalue result = parseStar(rule, state);
