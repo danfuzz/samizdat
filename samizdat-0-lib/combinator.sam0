@@ -21,7 +21,7 @@
 # writing a call to it (instead just "manually" expanding it where needed).
 # It is included and used here, specifically so that the common structure
 # between the two Y combinator variants is more obvious.
-uCombinator = { function :: <> function function };
+uCombinator = { function :: <> function(function) };
 
 # The U* combinator. This is like the U combinator, except expanded to
 # work for multiple function arguments, in this case both passed and
