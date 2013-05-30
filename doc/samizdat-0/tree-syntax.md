@@ -25,7 +25,7 @@ makeVarRef = { name ::
 
 # Returns a `call` node that names a function as a `varRef`.
 makeCallName = { name actuals* ::
-    <> @["call" ["function"=(makeVarRef name) "actuals"=actuals]]
+    <> @["call" ["function"=(makeVarRef(name)) "actuals"=actuals]]
 };
 
 # Returns a `literal` node.
@@ -39,29 +39,29 @@ makeLiteral = { value ::
 
 int = {/
     i = @int
-    { <> makeLiteral (tokenValue i) }
+    { <> makeLiteral(tokenValue(i)) }
 /};
 
 string = {/
     s = @string
-    { <> makeLiteral (tokenValue s) }
+    { <> makeLiteral(tokenValue(s)) }
 /};
 
 emptyList = {/
     @"[" @"]"
-    { <> makeLiteral [] }
+    { <> makeLiteral([]) }
 /};
 
 list = {/
     @"["
     atoms = atom+
     @"]"
-    { <> apply makeCallName "makeList" atoms }
+    { <> apply(makeCallName, "makeList", atoms) }
 /};
 
 emptyMap = {/
     @"[" @"=" @"]"
-    { <> makeLiteral [=] }
+    { <> makeLiteral([=]) }
 /};
 
 mapping = {/
@@ -75,35 +75,35 @@ map = {/
     @"["
     mappings = mapping+
     @"]"
-    { <> apply makeCallName "makeMap" (apply listAdd mappings) }
+    { <> apply(makeCallName, "makeMap", apply(listAdd, mappings)) }
 /};
 
 token = {/
     @"@"
     (
         @"[" type=atom value=atom? @"]"
-        { <> apply makeCallName "makeToken" type value }
+        { <> apply(makeCallName, "makeToken", type, value) }
     |
         type = [@string @identifier]
-        { <> makeCallName "makeToken" (makeLiteral (tokenValue type)) }
+        { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
     )
 /};
 
 uniqlet = {/
     @"@@"
-    { <> makeCallName "makeUniqlet" }
+    { <> makeCallName("makeUniqlet") }
 /};
 
 varRef = {/
     name = @identifier
-    { <> makeVarRef (tokenValue name) }
+    { <> makeVarRef(tokenValue(name)) }
 /};
 
 varDef = {/
     name = @identifier
     @"="
     ex = expression
-    { <> @["varDef" ["name"=(tokenValue name) "value"=ex]] }
+    { <> @["varDef" ["name"=(tokenValue(name)) "value"=ex]] }
 /};
 
 parenExpression = {/
@@ -127,14 +127,14 @@ actualsList = {/
     first = atom
     rest = (@"," atom)*
     @")"
-    { <> apply listPrepend first rest }
+    { <> apply(listPrepend, first, rest) }
 /};
 
 callExpression = {/
     func = atom
     actuals = actualsList
     codeActuals = function*
-    { <> apply makeCall func (listAdd actuals codeActuals) }
+    { <> apply(makeCall, func, listAdd(actuals, codeActuals)) }
 /};
 
 expression = {/
@@ -150,7 +150,7 @@ nonlocalExit = {/
     name = varRef
     @">"
     ex = expression?
-    { <> apply makeCall name ex }
+    { <> apply(makeCall, name, ex) }
 /};
 
 yield = {/
@@ -167,25 +167,25 @@ yieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> tokenValue name }
+    { <> tokenValue(name) }
 /};
 
 formal = {/
     name = (
         n = @identifier
-        { <> ["name" = (tokenValue n)] }
+        { <> ["name" = (tokenValue(n))] }
     |
         @"." { <> [=] }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> ["repeat" = (tokenType r)] }
+        { <> ["repeat" = (tokenType(r))] }
     |
         { <> [=] }
     )
 
-    { <> mapAdd name repeat }
+    { <> mapAdd(name, repeat) }
 /};
 
 programBody = {/
@@ -202,7 +202,7 @@ programBody = {/
         { <> ["statements" = [s]] }
     |
         y = yield
-        { <> mapAdd ["statements" = []] y }
+        { <> mapAdd(["statements" = []], y) }
     |
         { <> ["statements" = []] }
     )
@@ -210,8 +210,8 @@ programBody = {/
     @";"*
 
     {
-        allStatements = listAdd most (mapGet last "statements");
-        <> mapPut last "statements" allStatements
+        allStatements = listAdd(most, mapGet(last, "statements"));
+        <> mapPut(last, "statements", allStatements)
     }
 /};
 
@@ -232,13 +232,13 @@ programDeclarations = {/
 
     @"::"
 
-    { <> mapAdd formals yieldDef }
+    { <> mapAdd(formals, yieldDef) }
 /};
 
 program = {/
     decls = (programDeclarations | { <> [=] })
     body = programBody
-    { <> @["function" (mapAdd decls body)] }
+    { <> @["function" (mapAdd(decls, body))] }
 /};
 
 function = {/
