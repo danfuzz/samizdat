@@ -184,7 +184,7 @@ pegMakeMainSequence = { rules* ::
 # Documented in Samizdat Layer 0 spec.
 pegMakeStar = { rule ::
     <> { yield state items* <out> ::
-        loopReduce([state, []])
+        loopReduce([state []])
             { results ::
                 state = listNth(results, 0);
                 values = listNth(results, 1);
@@ -247,7 +247,7 @@ genericMakeTokenSet = { sense types <out> ::
 genericMakeCharSet = { sense strings* <out> ::
     # Make a list of all the strings' characters as tokens.
     types = stringReduce([], apply(stringAdd, strings))
-        { result . ch :: <> listAppend result ch };
+        { result . ch :: <> listAppend(result, ch) };
 
     <> genericMakeTokenSet(sense, types)
 };
