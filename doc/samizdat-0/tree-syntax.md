@@ -52,6 +52,14 @@ emptyList = {/
     { <> makeLiteral([]) }
 /};
 
+unadornedList = {/
+    first = atom
+    rest = (@"," atom)*
+    { <> apply(listPrepend, first, rest) }
+|
+    { <> [] }
+/};
+
 list = {/
     @"["
     atoms = atom+
@@ -120,14 +128,13 @@ atom = {/
 /};
 
 actualsList = {/
-    (@"()" | "@(" @")")
+    @"()"
     { <> [] }
 |
     @"("
-    first = atom
-    rest = (@"," atom)*
+    actuals = unadornedList
     @")"
-    { <> apply(listPrepend, first, rest) }
+    { <> actuals }
 /};
 
 callExpression = {/
