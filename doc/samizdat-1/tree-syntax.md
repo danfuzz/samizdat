@@ -39,8 +39,8 @@ parenPex = {/
 parserString = {/
     s = @string
     {
-        value = tokenValue s;
-        <> ifTrue { <> eq (lowSize value) 1 }
+        value = tokenValue(s);
+        <> ifTrue { <> eq(lowSize(value), 1) }
             { <> @["token" value] }
             { <> s }
     }
@@ -49,7 +49,7 @@ parserString = {/
 parserToken = {/
     @"@"
     type = [@identifier @string]
-    { <> @["token" (tokenValue type)] }
+    { <> @["token" (tokenValue(type))] }
 /};
 
 # Handles regular string literals and character ranges.
@@ -58,19 +58,19 @@ parserSetString = {/
     (
         @".."
         startInt = {
-            startValue = tokenValue s;
-            <> ifTrue { <> eq (lowSize startValue) 1 }
-                { <> intFromString startValue }
+            startValue = tokenValue(s);
+            <> ifTrue { <> eq(lowSize(startValue), 1) }
+                { <> intFromString(startValue) }
         }
         end = @string
         endInt = {
-            endValue = tokenValue end;
-            <> ifTrue { <> eq (lowSize endValue) 1 }
-                { <> intFromString endValue }
+            endValue = tokenValue(end);
+            <> ifTrue { <> eq(lowSize(endValue), 1) }
+                { <> intFromString(endValue) }
         }
         {
             reduction = loopReduce [startInt ""] { ... endInt ... };
-            <> @["string" (listLast reduction)]
+            <> @["string" (listLast(reduction))]
         }
     |
         { <> s }
@@ -90,18 +90,18 @@ parserSet = {/
         first = parserSetString
         rest = (@"," parserSetString)*
         {
-            strings = listPrepend first rest;
-            oneString = listReduce "" strings
-                { result . s :: <> stringAdd result (tokenValue s) };
+            strings = listPrepend(first, rest);
+            oneString = listReduce("", strings)
+                { result . s :: <> stringAdd(result, tokenValue(s)) };
             <> stringReduce [] oneString
-                { result . ch :: <> listAppend result ch }
+                { result . ch :: <> listAppend(result, ch) }
         }
     |
         first = parserToken
         rest = (@"," parserToken)*
         {
-            tokens = listPrepend first rest;
-            <> listMap tokens { . t :: <> tokenValue t }
+            tokens = listPrepend(first, rest);
+            <> listMap(tokens) { . t :: <> tokenValue(t) }
         }
     |
         { <> [] }
@@ -127,7 +127,7 @@ parserCode = {/
     body = programBody
     @"}"
 
-    { <> @["{}" (mapAdd yieldDef body)] }
+    { <> @["{}" (mapAdd(yieldDef, body))] }
 /};
 
 parserAtom = {/
@@ -152,7 +152,7 @@ repeatPex = {/
     atom = parserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(tokenType repeat) atom] }
+        { <> @[(tokenType(repeat)) atom] }
     |
         { <> atom }
     )
@@ -162,7 +162,7 @@ lookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = repeatPex
-        { <> @[(tokenType lookahead) pex] }
+        { <> @[(tokenType(lookahead)) pex] }
     )
 |
     repeatPex
@@ -173,7 +173,7 @@ namePex = {/
         name = @identifier
         @"="
         pex = lookaheadPex
-        { <> @["varDef" ["name"=(tokenValue name) "value"=pex]] }
+        { <> @["varDef" ["name"=(tokenValue(name)) "value"=pex]] }
     )
 |
     lookaheadPex
@@ -187,6 +187,6 @@ sequencePex = {/
 choicePex = {/
     first = sequencePex
     rest = (@"|" sequencePex)*
-    { <> @["choice" (listPrepend first rest)] }
+    { <> @["choice" (listPrepend(first, rest))] }
 /};
 ```
