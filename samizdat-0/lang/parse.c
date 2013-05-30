@@ -209,50 +209,25 @@ zvalue parsePlus(parserFunction rule, ParseState *state) {
 }
 
 /**
- * Parses a `token` node.
+ * Parses an `int` node.
  */
-DEF_PARSE(token) {
+DEF_PARSE(int) {
     MARK();
 
-    zvalue innerType;
-    zvalue innerValue;
+    zvalue intval = MATCH_OR_REJECT(INT);
 
-    MATCH_OR_REJECT(CH_AT);
-
-    innerType = MATCH(STRING);
-    if (innerType == NULL) {
-        innerType = MATCH(IDENTIFIER);
-    }
-    if (innerType != NULL) {
-        innerType = makeLiteral(datTokenValue(innerType));
-        innerValue = NULL;
-    }
-
-    if (innerType == NULL) {
-        MATCH_OR_REJECT(CH_OSQUARE);
-        innerType = PARSE_OR_REJECT(atom);
-        innerValue = PARSE(atom); // It's okay for this to be NULL.
-        MATCH_OR_REJECT(CH_CSQUARE);
-    }
-
-    zvalue args = datListAppend(EMPTY_LIST, innerType);
-
-    if (innerValue != NULL) {
-        args = datListAppend(args, innerValue);
-    }
-
-    return makeCall(makeVarRef(STR_MAKE_TOKEN), args);
+    return makeLiteral(datTokenValue(intval));
 }
 
 /**
- * Parses a `uniqlet` node.
+ * Parses a `string` node.
  */
-DEF_PARSE(uniqlet) {
+DEF_PARSE(string) {
     MARK();
 
-    MATCH_OR_REJECT(CH_ATAT);
+    zvalue string = MATCH_OR_REJECT(STRING);
 
-    return makeCall(makeVarRef(STR_MAKE_UNIQLET), EMPTY_LIST);
+    return makeLiteral(datTokenValue(string));
 }
 
 /**
@@ -364,26 +339,52 @@ DEF_PARSE(list) {
 }
 
 /**
- * Parses a `string` node.
+ * Parses a `token` node.
  */
-DEF_PARSE(string) {
+DEF_PARSE(token) {
     MARK();
 
-    zvalue string = MATCH_OR_REJECT(STRING);
+    zvalue innerType;
+    zvalue innerValue;
 
-    return makeLiteral(datTokenValue(string));
+    MATCH_OR_REJECT(CH_AT);
+
+    innerType = MATCH(STRING);
+    if (innerType == NULL) {
+        innerType = MATCH(IDENTIFIER);
+    }
+    if (innerType != NULL) {
+        innerType = makeLiteral(datTokenValue(innerType));
+        innerValue = NULL;
+    }
+
+    if (innerType == NULL) {
+        MATCH_OR_REJECT(CH_OSQUARE);
+        innerType = PARSE_OR_REJECT(atom);
+        innerValue = PARSE(atom); // It's okay for this to be NULL.
+        MATCH_OR_REJECT(CH_CSQUARE);
+    }
+
+    zvalue args = datListAppend(EMPTY_LIST, innerType);
+
+    if (innerValue != NULL) {
+        args = datListAppend(args, innerValue);
+    }
+
+    return makeCall(makeVarRef(STR_MAKE_TOKEN), args);
 }
 
 /**
- * Parses an `int` node.
+ * Parses a `uniqlet` node.
  */
-DEF_PARSE(int) {
+DEF_PARSE(uniqlet) {
     MARK();
 
-    zvalue intval = MATCH_OR_REJECT(INT);
+    MATCH_OR_REJECT(CH_ATAT);
 
-    return makeLiteral(datTokenValue(intval));
+    return makeCall(makeVarRef(STR_MAKE_UNIQLET), EMPTY_LIST);
 }
+
 
 /**
  * Parses a `varRef` node.
