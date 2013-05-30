@@ -95,7 +95,7 @@ parseMapping = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 parseMap = pegMakeMainSequence(
     pegMakeToken("["),
-    pegMakePlus(parseMapping),
+    parseMapping,
     pegMakeStar(pegMakeSequence(pegMakeToken(","), parseMapping)),
     pegMakeToken("]"),
     pegMakeCode { . first rest . ::
