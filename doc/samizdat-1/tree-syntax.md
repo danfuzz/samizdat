@@ -46,28 +46,35 @@ parserString = {/
     }
 /};
 
-parserCharRange = {/
-    start = @string
-    startInt = {
-        <> ifTrue { <> eq (lowSize (tokenValue start)) 1 }
-            { <> intFromString (tokenValue start) }
-    }
-    @".."
-    end = @string
-    endInt = {
-        <> ifTrue { <> eq (lowSize (tokenValue end)) 1 }
-            { <> intFromString (tokenValue end) }
-    }
-    {
-        reduction = loopReduce [startInt ""] { ... endInt ... };
-        <> @["string" (listLast reduction)]
-    }
-/};
-
 parserToken = {/
     @"@"
     type = [@identifier @string]
     { <> @["token" (tokenValue type)] }
+/};
+
+# Handles regular string literals and character ranges.
+parserSetString = {/
+    s = @string
+    (
+        @".."
+        startInt = {
+            startValue = tokenValue s;
+            <> ifTrue { <> eq (lowSize startValue) 1 }
+                { <> intFromString startValue }
+        }
+        end = @string
+        endInt = {
+            endValue = tokenValue end;
+            <> ifTrue { <> eq (lowSize endValue) 1 }
+                { <> intFromString endValue }
+        }
+        {
+            reduction = loopReduce [startInt ""] { ... endInt ... };
+            <> @["string" (listLast reduction)]
+        }
+    |
+        { <> s }
+    )
 /};
 
 parserSet = {/
@@ -80,16 +87,24 @@ parserSet = {/
     )
 
     terminals = (
-        strings = (parserCharRange | @string)+
+        first = parserSetString
+        rest = (@"," parserSetString)*
         {
+            strings = listPrepend first rest;
             oneString = listReduce "" strings
                 { result . s :: <> stringAdd result (tokenValue s) };
             <> stringReduce [] oneString
                 { result . ch :: <> listAppend result ch }
         }
     |
-        tokens = parserToken*
-        { <> listMap tokens { . t :: <> tokenValue t } }
+        first = parserToken
+        rest = (@"," parserToken)*
+        {
+            tokens = listPrepend first rest;
+            <> listMap tokens { . t :: <> tokenValue t }
+        }
+    |
+        { <> [] }
     )
 
     @"]"
