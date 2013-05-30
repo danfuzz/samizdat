@@ -385,7 +385,6 @@ DEF_PARSE(uniqlet) {
     return makeCall(makeVarRef(STR_MAKE_UNIQLET), EMPTY_LIST);
 }
 
-
 /**
  * Parses a `varRef` node.
  */
