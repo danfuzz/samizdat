@@ -33,7 +33,6 @@ makeLiteral = { value ::
     <> @["literal" value]
 };
 
-# forward declaration: atom
 # forward declaration: expression
 # forward declaration: function
 
@@ -47,11 +46,6 @@ string = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
-emptyList = {/
-    @"[" @"]"
-    { <> makeLiteral([]) }
-/};
-
 unadornedList = {/
     first = expression
     rest = (@"," expression)*
@@ -62,9 +56,13 @@ unadornedList = {/
 
 list = {/
     @"["
-    atoms = atom+
+    expressions = unadornedList
     @"]"
-    { <> apply(makeCallName, "makeList", atoms) }
+    {
+        ifTrue { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> apply(makeCallName, "makeList", expressions) }
+    }
 /};
 
 emptyMap = {/
@@ -73,23 +71,30 @@ emptyMap = {/
 /};
 
 mapping = {/
-    key = atom
+    key = expression
     @"="
-    value = atom
+    value = expression
     { <> [key value] }
 /};
 
 map = {/
     @"["
-    mappings = mapping+
+    first = mapping
+    rest = (@"," mapping)*
     @"]"
-    { <> apply(makeCallName, "makeMap", apply(listAdd, mappings)) }
+    {
+        mappings = apply(listAdd, first, rest);
+        <> apply(makeCallName, "makeMap", mappings)
+    }
 /};
 
 token = {/
     @"@"
     (
-        @"[" type=atom value=atom? @"]"
+        @"["
+        type = expression
+        value = (@"=" expression)?
+        @"]"
         { <> apply(makeCallName, "makeToken", type, value) }
     |
         type = [@string @identifier]
@@ -123,7 +128,7 @@ parenExpression = {/
 
 atom = {/
     varRef | int | string |
-    emptyList | list | emptyMap | map |
+    list | emptyMap | map |
     uniqlet | token | function | parenExpression
 /};
 
