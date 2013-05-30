@@ -129,21 +129,20 @@ atom = {/
 
 actualsList = {/
     @"()"
-    { <> [] }
+    function*
 |
     @"("
-    actuals = unadornedList
+    normalActuals = unadornedList
+    functionActuals = function*
     @")"
-    { <> actuals }
+    { <> listAdd(normalActuals, functionActuals) }
+|
+    function+
 /};
 
 callExpression = {/
     base = atom
-    actualsLists = (
-        actuals = actualsList
-        codeActuals = function*
-        { <> listAdd(actuals, codeActuals) }
-    )*
+    actualsLists = actualsList*
 
     {
         <> listReduce(base, actualsLists) { result . list ::
