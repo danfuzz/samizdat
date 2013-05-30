@@ -157,6 +157,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 #define PARSE(name) RULE(name)(state)
 #define PARSE_STAR(name) parseStar(RULE(name), state)
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
+#define PARSE_COMMA_SEQ(name) parseCommaSequence(RULE(name), state)
 #define MATCH(tokenType) readMatch(state, (STR_##tokenType))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
@@ -174,12 +175,11 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 typedef zvalue (*parserFunction)(ParseState *);
 
 /* Defined below. */
-DEF_PARSE(atom);
 DEF_PARSE(expression);
 DEF_PARSE(function);
 
 /**
- * Parses `x*` for an arbitrary rule `x`. Returns a list of parsed expressions.
+ * Parses `x*` for an arbitrary rule `x`. Returns a list of parsed `x` results.
  */
 zvalue parseStar(parserFunction rule, ParseState *state) {
     zvalue result = EMPTY_LIST;
@@ -197,13 +197,45 @@ zvalue parseStar(parserFunction rule, ParseState *state) {
 }
 
 /**
- * Parses `x+` for an arbitrary rule `x`. Returns a list of parsed expressions.
+ * Parses `x+` for an arbitrary rule `x`. Returns a list of parsed `x` results.
  */
 zvalue parsePlus(parserFunction rule, ParseState *state) {
     MARK();
 
     zvalue result = parseStar(rule, state);
     REJECT_IF(datSize(result) == 0);
+
+    return result;
+}
+
+/**
+ * Parses `(x (@"," x)*)?` for an arbitrary rule `x`. Returns a list of
+ * parsed `x` results.
+ */
+zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
+    zvalue item = rule(state);
+
+    if (item == NULL) {
+        return EMPTY_LIST;
+    }
+
+    zvalue result = datListAppend(EMPTY_LIST, item);
+
+    for (;;) {
+        MARK();
+
+        if (! MATCH(CH_COMMA)) {
+            break;
+        }
+
+        item = rule(state);
+        if (item == NULL) {
+            RESET();
+            break;
+        }
+
+        result = datListAppend(result, item);
+    }
 
     return result;
 }
@@ -231,46 +263,10 @@ DEF_PARSE(string) {
 }
 
 /**
- * Parses an `emptyList` node.
- */
-DEF_PARSE(emptyList) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeLiteral(EMPTY_LIST);
-}
-
-/**
  * Parses an `unadornedList` node.
  */
 DEF_PARSE(unadornedList) {
-    zvalue item = PARSE(expression);
-
-    if (item == NULL) {
-        return EMPTY_LIST;
-    }
-
-    zvalue result = datListAppend(EMPTY_LIST, item);
-
-    for (;;) {
-        MARK();
-
-        if (! MATCH(CH_COMMA)) {
-            break;
-        }
-
-        item = PARSE(expression);
-        if (item == NULL) {
-            RESET();
-            break;
-        }
-
-        result = datListAppend(result, item);
-    }
-
-    return result;
+    return PARSE_COMMA_SEQ(expression);
 }
 
 /**
@@ -280,11 +276,14 @@ DEF_PARSE(list) {
     MARK();
 
     MATCH_OR_REJECT(CH_OSQUARE);
-    zvalue atoms = PARSE_PLUS(atom);
-    REJECT_IF(atoms == NULL);
+    zvalue expressions = PARSE(unadornedList);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_LIST), atoms);
+    if (datSize(expressions) == 0) {
+        return makeLiteral(EMPTY_LIST);
+    } else {
+        return makeCall(makeVarRef(STR_MAKE_LIST), expressions);
+    }
 }
 
 /**
@@ -306,9 +305,9 @@ DEF_PARSE(emptyMap) {
 DEF_PARSE(mapping) {
     MARK();
 
-    zvalue key = PARSE_OR_REJECT(atom);
+    zvalue key = PARSE_OR_REJECT(expression);
     MATCH_OR_REJECT(CH_EQUAL);
-    zvalue value = PARSE_OR_REJECT(atom);
+    zvalue value = PARSE_OR_REJECT(expression);
 
     return datListAppend(datListAppend(EMPTY_LIST, key), value);
 }
@@ -320,18 +319,7 @@ DEF_PARSE(map) {
     MARK();
 
     MATCH_OR_REJECT(CH_OSQUARE);
-
-    zvalue mappings = EMPTY_LIST;
-
-    for (;;) {
-        zvalue mapping = PARSE(mapping);
-        if (mapping == NULL) {
-            break;
-        }
-
-        mappings = datListAdd(mappings, mapping);
-    }
-
+    zvalue mappings = PARSE_COMMA_SEQ(mapping);
     REJECT_IF(datSize(mappings) == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
@@ -350,9 +338,11 @@ DEF_PARSE(token) {
     MATCH_OR_REJECT(CH_AT);
 
     innerType = MATCH(STRING);
+
     if (innerType == NULL) {
         innerType = MATCH(IDENTIFIER);
     }
+
     if (innerType != NULL) {
         innerType = makeLiteral(datTokenValue(innerType));
         innerValue = NULL;
@@ -360,8 +350,18 @@ DEF_PARSE(token) {
 
     if (innerType == NULL) {
         MATCH_OR_REJECT(CH_OSQUARE);
-        innerType = PARSE_OR_REJECT(atom);
-        innerValue = PARSE(atom); // It's okay for this to be NULL.
+        innerType = PARSE_OR_REJECT(expression);
+
+        if (MATCH(CH_EQUAL)) {
+            // Note: Strictly speaking this doesn't quite follow the spec.
+            // However, there is no meaningful difference, in that the only
+            // difference is *how* errors are recognized, not *whether* they
+            // are.
+            innerValue = PARSE_OR_REJECT(expression);
+        } else {
+            innerValue = NULL;
+        }
+
         MATCH_OR_REJECT(CH_CSQUARE);
     }
 
@@ -433,7 +433,6 @@ DEF_PARSE(atom) {
     if (result == NULL) { result = PARSE(varRef); }
     if (result == NULL) { result = PARSE(int); }
     if (result == NULL) { result = PARSE(string); }
-    if (result == NULL) { result = PARSE(emptyList); }
     if (result == NULL) { result = PARSE(list); }
     if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
