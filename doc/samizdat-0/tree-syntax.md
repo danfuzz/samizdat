@@ -59,7 +59,7 @@ list = {/
     expressions = unadornedList
     @"]"
     {
-        ifTrue { <> eq(expressions, []) }
+        <> ifTrue { <> eq(expressions, []) }
             { <> makeLiteral([]) }
             { <> apply(makeCallName, "makeList", expressions) }
     }
