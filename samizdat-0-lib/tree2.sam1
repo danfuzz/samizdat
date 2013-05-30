@@ -18,7 +18,7 @@ makeCall = { function actuals* ::
 
 # Returns a `varRef` node.
 makeVarRef = { name ::
-    <> @["varRef" name]
+    <> @["varRef" = name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
@@ -397,7 +397,7 @@ parseParserCharRange = {/
             { <> intFromString(tokenValue(end)) }
     }
     {
-        loopReduce([startInt ""]) { result ::
+        loopReduce([startInt, ""]) { result ::
             at = listFirst(result);
             soFar = listLast(result);
             ifTrue { <> gt(at, endInt) } { <out> @["string" = soFar] };
@@ -508,7 +508,7 @@ parseNamePex = {/
         name = @identifier
         @"="
         pex = parseLookaheadPex
-        { <> @["varDef" ["name"=tokenValue(name), "value"=pex]] }
+        { <> @["varDef" = ["name"=tokenValue(name), "value"=pex]] }
     )
 |
     parseLookaheadPex
