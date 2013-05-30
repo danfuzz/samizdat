@@ -70,7 +70,7 @@ parseUnadornedList = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             parseExpression,
-            pegMakeSequence(pegMakeToken(","), parseExpression),
+            pegMakeStar(pegMakeSequence(pegMakeToken(","), parseExpression)),
             pegMakeCode { first rest :: <> listPrepend(first, rest) }),
         pegMakeCode { <> [] }));
 
