@@ -131,7 +131,7 @@ io0ReadLink = { path ::
 # This is located in the "exported" section, as it makes use of
 # the exported function `io0ReadLink`, defined above.
 resolveLinks = { sandboxDirectory path <out> ::
-    loopReduce([path 50]) { result ::
+    loopReduce([path, 50]) { result ::
         path = listNth(result, 0);
         limit = listNth(result, 1);
 
@@ -141,7 +141,7 @@ resolveLinks = { sandboxDirectory path <out> ::
             { io0Die("Symbolic link escapes sandbox directory.") };
 
         <> ifValue { <> io0ReadLink(path) }
-            { newPath :: <> [newPath (isub(limit, 1))] }
+            { newPath :: <> [newPath, (isub(limit, 1))] }
             { <out> path }
     }
 };
@@ -160,10 +160,10 @@ io0WriteFileUtf8 = { path ::
 };
 
 <> [
-    "io0FlatFromPath" = io0FlatFromPath
-    "io0PathFromFlat" = io0PathFromFlat
-    "io0ReadFileUtf8" = io0ReadFileUtf8
-    "io0ReadLink" = io0ReadLink
-    "io0SandboxedReader" = io0SandboxedReader
+    "io0FlatFromPath" = io0FlatFromPath,
+    "io0PathFromFlat" = io0PathFromFlat,
+    "io0ReadFileUtf8" = io0ReadFileUtf8,
+    "io0ReadLink" = io0ReadLink,
+    "io0SandboxedReader" = io0SandboxedReader,
     "io0WriteFileUtf8" = io0WriteFileUtf8
 ];

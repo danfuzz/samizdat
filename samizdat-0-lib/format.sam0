@@ -26,18 +26,19 @@ adornIf = { adorn before value after ::
 
 # These are all the decimal int digits, as a map from digit values to
 # strings.
-INT_CHARS = [0="0" 1="1" 2="2" 3="3" 4="4" 5="5" 6="6" 7="7" 8="8" 9="9"];
+INT_CHARS =
+    [0="0", 1="1", 2="2", 3="3", 4="4", 5="5", 6="6", 7="7", 8="8", 9="9"];
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
 intBody = { start value <out> ::
-    loopReduce(["" value]) { result ::
+    loopReduce(["", value]) { result ::
         text = listNth(result, 0);
         value = listNth(result, 1);
         <> ifTrue { <> ne(value, 0) }
             {
                 digit = mapGet(INT_CHARS, imod(value, 10));
-                <> [(stringAdd(digit, text)) (idiv(value, 10))];
+                <> [stringAdd(digit, text), idiv(value, 10)];
             }
             { <out> stringAdd(start, text) }
     }
@@ -45,8 +46,8 @@ intBody = { start value <out> ::
 
 # Map from int sign values to the appropriate stringifier for each.
 INT_SIGNS = [
-    -1 = { int :: <> intBody("-", ineg(int)) }
-    0  = { <> "0" }
+    -1 = { int :: <> intBody("-", ineg(int)) },
+    0  = { <> "0" },
     1  = { int :: <> intBody("", int) }
 ];
 
@@ -73,9 +74,9 @@ stringHexEscape = { ch ::
 
 # Map of special-case characters to their stringified forms.
 SPECIAL_CHARS = [
-    "\0" = "\\0"
-    "\n" = "\\n"
-    "\"" = "\\\""
+    "\0" = "\\0",
+    "\n" = "\\n",
+    "\"" = "\\\"",
     "\\" = "\\\\"
 ];
 
@@ -101,8 +102,8 @@ IDENTIFIER_STARTS = stringReduce([=],
 
 # These are all the characters which are allowed to be in an identifier.
 IDENTIFIER_CHARS = mapAdd(IDENTIFIER_STARTS,
-    [ "0"=true "1"=true "2"=true "3"=true "4"=true
-      "5"=true "6"=true "7"=true "8"=true "9"=true ]);
+    [ "0"=true, "1"=true, "2"=true, "3"=true, "4"=true,
+      "5"=true, "6"=true, "7"=true, "8"=true, "9"=true ]);
 
 # Checks to see if the given string has the form of an in-language
 # identifier.
@@ -194,11 +195,11 @@ doUnknown = { unknown . ::
 
 # Mapping from low-layer type names to stringifiers.
 STRINGIFIERS = [
-    "token"   = doToken
-    "int"     = doInt
-    "list"    = doList
-    "map"     = doMap
-    "string"  = doString
+    "token"   = doToken,
+    "int"     = doInt,
+    "list"    = doList,
+    "map"     = doMap,
+    "string"  = doString,
     "uniqlet" = doUniqlet
 ];
 
@@ -266,7 +267,7 @@ doLiteral = { yield state ::
 
     argsAt = iadd(1, xArgsAt(state));
     fmtAt = iadd(2, xFmtAt(state));
-    <> mapAdd(state, ["fmtAt"=fmtAt "argsAt"=argsAt]);
+    <> mapAdd(state, ["fmtAt"=fmtAt, "argsAt"=argsAt]);
 };
 
 # Formats a literal quoted argument, without top-level adornment.
@@ -275,7 +276,7 @@ doUnadornedLiteral = { yield state ::
 
     argsAt = iadd(1, xArgsAt(state));
     fmtAt = iadd(2, xFmtAt(state));
-    <> mapAdd(state, ["fmtAt"=fmtAt "argsAt"=argsAt]);
+    <> mapAdd(state, ["fmtAt"=fmtAt, "argsAt"=argsAt]);
 };
 
 # Formats a string argument.
@@ -284,14 +285,14 @@ doPlainString = { yield state ::
 
     argsAt = iadd(1, xArgsAt(state));
     fmtAt = iadd(2, xFmtAt(state));
-    <> mapAdd(state, ["fmtAt"=fmtAt "argsAt"=argsAt]);
+    <> mapAdd(state, ["fmtAt"=fmtAt, "argsAt"=argsAt]);
 };
 
 # Mapping from format escape characters to their respective handler functions.
 FORMATTERS = [
-    "%" = doPercent
-    "q" = doLiteral
-    "Q" = doUnadornedLiteral
+    "%" = doPercent,
+    "q" = doLiteral,
+    "Q" = doUnadornedLiteral,
     "s" = doPlainString
 ];
 
@@ -328,9 +329,9 @@ formatOne = { yield state ::
 # Documented in Samizdat Layer 0 spec.
 format = { formatString rest* <out> ::
     formatter = object(formatOne, [
-        "fmt"    = formatString
-        "fmtAt"  = 0
-        "args"   = rest
+        "fmt"    = formatString,
+        "fmtAt"  = 0,
+        "args"   = rest,
         "argsAt" = 0
     ]);
 
@@ -347,7 +348,7 @@ format = { formatString rest* <out> ::
 #
 
 <> [
-    "format" = format
-    "sourceString" = sourceString
+    "format" = format,
+    "sourceString" = sourceString,
     "sourceStringUnadorned" = sourceStringUnadorned
 ]

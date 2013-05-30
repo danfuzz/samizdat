@@ -83,7 +83,7 @@ parseArguments = pegMakeMainSequence(
         ifTrue { <> mapGet(options, "error", false) }
             { io0Die("Trouble with options.") };
         <> [
-            "options" = options
+            "options" = options,
             "args" = args
         ]
     });

@@ -30,7 +30,7 @@ genericForEach = { nthFunc function <out> ::
 # Generic reduce function. Instead of the value-to-reduce argument, this
 # takes an `nthFunc` of one argument.
 genericReduce = { base nthFunc function <out> ::
-    loopReduce([base 0]) { state ::
+    loopReduce([base, 0]) { state ::
         result = listNth(state, 0);
         index = listNth(state, 1);
         <> ifValue { <> nthFunc(index) }
@@ -38,7 +38,7 @@ genericReduce = { base nthFunc function <out> ::
                 nextResult = ifValue { <> function(result, index, item) }
                     { value :: <> value }
                     { <> result };
-                <> [nextResult (iadd(index, 1))]
+                <> [nextResult, iadd(index, 1)]
             }
             { <out> result }
     }
@@ -177,20 +177,20 @@ stringReduce = { base string function ::
 #
 
 <> [
-    "listAppend" = listAppend
-    "listButFirst" = listButFirst
-    "listButLast" = listButLast
-    "listFirst" = listFirst
-    "listForEach" = listForEach
-    "listLast" = listLast
-    "listMap" = listMap
-    "listPrepend" = listPrepend
-    "listReduce" = listReduce
-    "mapForEach" = mapForEach
-    "mapMap" = mapMap
-    "mapReduce" = mapReduce
-    "stringForEach" = stringForEach
-    "stringFromTokenList" = stringFromTokenList
-    "stringMap" = stringMap
+    "listAppend" = listAppend,
+    "listButFirst" = listButFirst,
+    "listButLast" = listButLast,
+    "listFirst" = listFirst,
+    "listForEach" = listForEach,
+    "listLast" = listLast,
+    "listMap" = listMap,
+    "listPrepend" = listPrepend,
+    "listReduce" = listReduce,
+    "mapForEach" = mapForEach,
+    "mapMap" = mapMap,
+    "mapReduce" = mapReduce,
+    "stringForEach" = stringForEach,
+    "stringFromTokenList" = stringFromTokenList,
+    "stringMap" = stringMap,
     "stringReduce" = stringReduce
 ]

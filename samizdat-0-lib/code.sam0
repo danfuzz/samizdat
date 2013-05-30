@@ -71,7 +71,7 @@ partialApply = { function args* <out> ::
 };
 
 <> [
-    "forwardFunction" = forwardFunction
-    "mutableBox" = mutableBox
+    "forwardFunction" = forwardFunction,
+    "mutableBox" = mutableBox,
     "partialApply" = partialApply
 ]

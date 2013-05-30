@@ -12,7 +12,8 @@
 
 # These are all the int digits, as a map from strings to
 # digit values.
-INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
+INT_CHARS =
+    ["0"=0, "1"=1, "2"=2, "3"=3, "4"=4, "5"=5, "6"=6, "7"=7, "8"=8, "9"=9];
 
 # Helper to convert digit characters to digit values.
 intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
@@ -60,21 +61,21 @@ tokString = {/
     "\""
     chars = tokStringChar*
     "\""
-    { <> @["string" (apply(stringAdd, chars))] }
+    { <> @["string" = apply(stringAdd, chars)] }
 /};
 
 # Parses an identifier (in the usual form).
 tokIdentifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
-    { <> @["identifier" (stringFromTokenList(listPrepend(first, rest)))] }
+    { <> @["identifier" = stringFromTokenList(listPrepend(first, rest))] }
 /};
 
 # Parses the quoted-string identifier form.
 tokQuotedIdentifier = {/
     "\\"
     s = tokString
-    { <> @["identifier" (tokenValue(s))] }
+    { <> @["identifier" = tokenValue(s)] }
 /};
 
 # Parses an integer literal.
@@ -88,7 +89,7 @@ tokInt = {/
     {
         positiveValue = listReduce(0, digits)
             { result . digit :: <> iadd(imul(result, 10), digit) };
-        <> @["int" (imul(sign, positiveValue))]
+        <> @["int" = imul(sign, positiveValue)]
     }
 /};
 
@@ -99,7 +100,7 @@ tokError = {/
     [! "\n"]*
     {
         msg = format("Unrecognized character: %q", tokenType(badCh));
-        <> @["error" msg]
+        <> @["error" = msg]
     }
 /};
 

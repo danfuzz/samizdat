@@ -13,7 +13,7 @@
 
 # Returns a `call` node.
 makeCall = { function actuals* ::
-    <> @["call" ["function"=function "actuals"=actuals]]
+    <> @["call" = ["function"=function, "actuals"=actuals]]
 };
 
 # Returns a `varRef` node.
@@ -23,12 +23,12 @@ makeVarRef = { name ::
 
 # Returns a `call` node that names a function as a `varRef`.
 makeCallName = { name actuals* ::
-    <> @["call" ["function"=(makeVarRef(name)) "actuals"=actuals]]
+    <> @["call" = ["function"=makeVarRef(name), "actuals"=actuals]]
 };
 
 # Returns a `literal` node.
 makeLiteral = { value ::
-    <> @["literal" value]
+    <> @["literal" = value]
 };
 
 # Reports the given list of pending tokens as part of error processing.
@@ -103,7 +103,7 @@ parseMapping = {/
     key = parseAtom
     @"="
     value = parseAtom
-    { <> [key value] }
+    { <> [key, value] }
 /};
 
 # Parses a map literal.
@@ -143,7 +143,7 @@ parseVarDef = {/
     name = @identifier
     @"="
     ex = parseExpression
-    { <> @["varDef" ["name"=(tokenValue(name)) "value"=ex]] }
+    { <> @["varDef" = ["name"=tokenValue(name), "value"=ex]] }
 /};
 
 # Parses a parenthesized expression.
@@ -256,14 +256,14 @@ parseYieldDef = {/
 parseFormal = {/
     name = (
         n = @identifier
-        { <> ["name" = (tokenValue(n))] }
+        { <> ["name" = tokenValue(n)] }
     |
         @"." { <> [=] }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> ["repeat" = (tokenType(r))] }
+        { <> ["repeat" = tokenType(r)] }
     |
         { <> [=] }
     )
@@ -324,7 +324,7 @@ parseProgramDeclarations = {/
 parseProgram = {/
     decls = (parseProgramDeclarations | { <> [=] })
     body = parseProgramBody
-    { <> @["function" (mapAdd(decls, body))] }
+    { <> @["function" = mapAdd(decls, body)] }
 /};
 
 # Parses a function (in-line anonymous function).
@@ -360,7 +360,7 @@ implParser = {/
     @"{/"
     pex = parseChoicePex
     @"/}"
-    { <> @["parser" pex] }
+    { <> @["parser" = pex] }
 /};
 parseParser(implParser);
 
@@ -378,7 +378,7 @@ parseParserString = {/
     {
         value = tokenValue(s);
         <> ifTrue { <> eq(lowSize(value), 1) }
-            { <> @["token" value] }
+            { <> @["token" = value] }
             { <> s }
     }
 /};
@@ -400,8 +400,8 @@ parseParserCharRange = {/
         loopReduce([startInt ""]) { result ::
             at = listFirst(result);
             soFar = listLast(result);
-            ifTrue { <> gt(at, endInt) } { <out> @["string" soFar] };
-            <> [(iadd(at, 1)) (stringAdd(soFar, stringFromInt(at)))]
+            ifTrue { <> gt(at, endInt) } { <out> @["string" = soFar] };
+            <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
         }
     }
 /};
@@ -410,7 +410,7 @@ parseParserCharRange = {/
 parseParserToken = {/
     @"@"
     type = [@identifier @string]
-    { <> @["token" (tokenValue(type))] }
+    { <> @["token" = tokenValue(type)] }
 /};
 
 # Parse a set (or set complement) parsing expression.
@@ -438,7 +438,7 @@ parseParserSet = {/
 
     @"]"
 
-    { <> @[type terminals] }
+    { <> @[type = terminals] }
 /};
 
 # Parse a code block parsing expression.
@@ -484,7 +484,7 @@ parseRepeatPex = {/
     atom = parseParserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(tokenType(repeat)) atom] }
+        { <> @[tokenType(repeat) = atom] }
     |
         { <> atom }
     )
@@ -496,7 +496,7 @@ parseLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = parseRepeatPex
-        { <> @[(tokenType(lookahead)) pex] }
+        { <> @[tokenType(lookahead) = pex] }
     )
 |
     parseRepeatPex
@@ -508,7 +508,7 @@ parseNamePex = {/
         name = @identifier
         @"="
         pex = parseLookaheadPex
-        { <> @["varDef" ["name"=(tokenValue(name)) "value"=pex]] }
+        { <> @["varDef" ["name"=tokenValue(name), "value"=pex]] }
     )
 |
     parseLookaheadPex
@@ -518,14 +518,14 @@ parseNamePex = {/
 # one.
 parseSequencePex = {/
     items = parseNamePex+
-    { <> @["sequence" items] }
+    { <> @["sequence" = items] }
 /};
 
 # Parse a choice parsing expression. This includes a single choice.
 implChoicePex = {/
     first = parseSequencePex
     rest = (@"|" parseSequencePex)*
-    { <> @["choice" (listPrepend(first, rest))] }
+    { <> @["choice" = listPrepend(first, rest)] }
 /};
 parseChoicePex(implChoicePex);
 

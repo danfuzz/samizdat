@@ -37,8 +37,8 @@ or = { predicates* <out> ::
 };
 
 <> [
-    "and" = and
-    "ifFalse" = ifFalse
-    "ifVoid" = ifVoid
+    "and" = and,
+    "ifFalse" = ifFalse,
+    "ifVoid" = ifVoid,
     "or" = or
 ]

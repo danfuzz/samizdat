@@ -12,8 +12,8 @@
 
 # Map from low-layer types to corresponding "get" functions.
 GET_MAP = [
-    "list" = listNth
-    "string" = stringNth
+    "list" = listNth,
+    "string" = stringNth,
     "map" = mapGet
 ];
 
@@ -51,8 +51,8 @@ GET_MAP = [
 };
 
 <> [
-    "unary+" = \"unary+"
-    "unary-" = \"unary-"
-    "unary!" = \"unary!"
+    "unary+" = \"unary+",
+    "unary-" = \"unary-",
+    "unary!" = \"unary!",
     "unary[]" = \"unary[]"
 ]
