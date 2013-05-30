@@ -197,13 +197,10 @@ parsePostfixOperator = {/
     { <> { node :: <> apply(makeCall, node, actuals) } }
 |
     @"["
-    first = parseExpression
-    rest = (@"," parseExpression)*
+    exprs = parseUnadornedList
+    { <> ifTrue { <> ne(exprs, []) } { <> null } }
     @"]"
-    {
-        exprs = listPrepend(first, rest);
-        <> { node :: <> apply(makeCall, makeVarRef("unary[]"), node, exprs) }
-    }
+    { <> { node :: <> apply(makeCall, makeVarRef("unary[]"), node, exprs) } }
 /};
 
 # Parses a unary expression. This is an atom, optionally surrounded on
