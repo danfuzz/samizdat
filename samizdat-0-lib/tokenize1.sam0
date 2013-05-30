@@ -33,7 +33,7 @@ tokPunctuation = pegMakeMainSequence(
         pegMakeString("{/"), # Defined by Samizdat Layer 1.
         pegMakeString("/}"), # Defined by Samizdat Layer 1.
         # The latter three characters are defined by Samizdat Layer 1.
-        pegMakeCharSet("@:.=+?;*<>{}()[]" "&|!")));
+        pegMakeCharSet("@:.=+?;*<>{}()[]", "&|!")));
 
 # Documented in Samizdat Layer 0 spec.
 tokStringChar = pegMakeMainSequence(
@@ -80,7 +80,7 @@ tokIdentifier = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 tokQuotedIdentifier = pegMakeMainSequence(
     pegMakeToken("\\"),
-    tokString.
+    tokString,
     pegMakeCode { . s ::
         <> @["identifier" (tokenValue(s))]
     });
@@ -98,7 +98,7 @@ tokInt = pegMakeMainSequence(
         pegMakeSequence(
             pegMakeToken("-"),
             pegMakeCode { . :: <> -1 }),
-        pegMakeCode { <> 1 })
+        pegMakeCode { <> 1 }),
     pegMakePlus(
         pegMakeMainSequence(
             pegMakeCharSet("0123456789"),
@@ -133,7 +133,7 @@ tokFile = pegMakeMainSequence(
     pegMakeStar(
         pegMakeSequence(
             pegMakeStar(tokWhitespace),
-            tokToken))
+            tokToken)),
     pegMakeStar(tokWhitespace),
     pegMakeCode { tokens . ::
         <> tokens
