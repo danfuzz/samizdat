@@ -336,13 +336,13 @@ DEF_PARSE(emptyList) {
  * Parses an `unadornedList` node.
  */
 DEF_PARSE(unadornedList) {
-    zvalue atom = PARSE(atom);
+    zvalue item = PARSE(expression);
 
-    if (atom == NULL) {
+    if (item == NULL) {
         return EMPTY_LIST;
     }
 
-    zvalue result = datListAppend(EMPTY_LIST, atom);
+    zvalue result = datListAppend(EMPTY_LIST, item);
 
     for (;;) {
         MARK();
@@ -351,13 +351,13 @@ DEF_PARSE(unadornedList) {
             break;
         }
 
-        atom = PARSE(atom);
-        if (atom == NULL) {
+        item = PARSE(expression);
+        if (item == NULL) {
             RESET();
             break;
         }
 
-        result = datListAppend(result, atom);
+        result = datListAppend(result, item);
     }
 
     return result;
