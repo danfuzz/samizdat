@@ -66,7 +66,7 @@ loadLibrary = { ctx name ::
 # given context.
 loadAllLibraries = { ctx names* ::
     <> apply(argsReduce,
-        { result name :: <> loadLibrary result name },
+        { result name :: <> loadLibrary(result, name) },
         ctx,
         names)
 };
