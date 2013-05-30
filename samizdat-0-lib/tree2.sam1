@@ -80,7 +80,7 @@ parseUnadornedList = {/
 # Parses a list literal.
 parseList = {/
     @"["
-    expressions = parseUnadornedList+
+    expressions = parseUnadornedList
     @"]"
     {
         <> ifTrue { <> eq(expressions, []) }
