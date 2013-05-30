@@ -152,7 +152,7 @@ implAtom = {/
     # Defined by Samizdat Layer 1.
     &@"{/" parseParser
 /};
-parseAtom implAtom;
+parseAtom(implAtom);
 
 # Parses a function call expression.
 parseCallExpression = {/
@@ -252,7 +252,7 @@ parseFormal = {/
         { <> [=] }
     )
 
-    { <> mapAdd name repeat }
+    { <> mapAdd(name, repeat) }
 /};
 
 # Parses a program body (statements plus optional yield).
@@ -270,7 +270,7 @@ parseProgramBody = {/
         { <> ["statements" = [s]] }
     |
         y = parseYield
-        { <> mapAdd ["statements" = []] y }
+        { <> mapAdd(["statements" = []], y) }
     |
         { <> ["statements" = []] }
     )
