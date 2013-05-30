@@ -53,8 +53,8 @@ emptyList = {/
 /};
 
 unadornedList = {/
-    first = atom
-    rest = (@"," atom)*
+    first = expression
+    rest = (@"," expression)*
     { <> apply(listPrepend, first, rest) }
 |
     { <> [] }
