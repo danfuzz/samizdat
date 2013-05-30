@@ -62,7 +62,7 @@ stringHexEscape = { ch ::
         <> ifTrue { <> eq(value, 0) }
             { <> "" }
             {
-                digit = stringNth("0123456789abcdef", imod(value, 16);
+                digit = stringNth("0123456789abcdef", imod(value, 16));
                 more = idiv(value, 16);
                 <> stringAdd(intHex(more), digit)
             }
