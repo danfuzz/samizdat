@@ -27,7 +27,7 @@ returnString = {
 
 # Something to call.
 returnList= {
-    <> [0 1 2 3 ["blort"="fizmo"]];
+    <> [0, 1, 2, 3, ["blort" = "fizmo"]];
 };
 
 
