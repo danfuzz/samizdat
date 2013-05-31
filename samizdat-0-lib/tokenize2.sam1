@@ -23,19 +23,45 @@ intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 # Grammar rules
 #
 
+# Parses a `/* ... */` comment, with nesting.
+tokMultilineComment = forwardFunction();
+implMultilineComment = {/
+    "/*"
+
+    (
+        tokMultilineComment
+    |
+        [! "*"]
+    |
+        "*" [! "/"]
+    )*
+
+    "*/"
+/};
+tokMultilineComment(implMultilineComment);
+
 # Parses whitespace and comments. **Note:** The yielded result is always
 # ignored.
 tokWhitespace = {/
     [" " "\n"]
 |
     "#" [! "\n"]* "\n"
+|
+    tokMultilineComment
 /};
 
 # Parses punctuation and operators. The lookahead is done to avoid bothering
 # with the choice expression unless we have a definite match.
 tokPunctuation = {/
     &["-/&|!@:,.=+?;*<>{}()[]"]
-    ("@@" | "::" | "<>" | "()" | "&&" | ".." | "{/" | "/}" | .)
+    (
+        "@@" | "::" | "<>" | "()" | "&&" | ".." | "{/" | "/}"
+    |
+        "/*" .*
+        { <> @["error" = "Unterminated comment."] }
+    |
+        .
+    )
 /};
 
 # Parses a single character, inside a quoted string.
@@ -60,8 +86,13 @@ tokStringChar = {/
 tokString = {/
     "\""
     chars = tokStringChar*
-    "\""
-    { <> @["string" = apply(stringAdd, chars)] }
+
+    (
+        "\""
+        { <> @["string" = apply(stringAdd, chars)] }
+    |
+        { <> @["error" = "Unterminated string literal."] }
+    )
 /};
 
 # Parses an identifier (in the usual form).
