@@ -387,34 +387,41 @@ parseParserString = {/
     }
 /};
 
-# Parse a character range parsing expression.
-parseParserCharRange = {/
-    start = @string
-    startInt = {
-        <> ifTrue { <> eq(lowSize(tokenValue(start)), 1) }
-            { <> intFromString(tokenValue(start)) }
-    }
-    @".."
-    end = @string
-    endInt = {
-        <> ifTrue { <> eq(lowSize(tokenValue(end)), 1) }
-            { <> intFromString(tokenValue(end)) }
-    }
-    {
-        loopReduce([startInt, ""]) { result ::
-            at = listFirst(result);
-            soFar = listLast(result);
-            ifTrue { <> gt(at, endInt) } { <out> @["string" = soFar] };
-            <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
-        }
-    }
-/};
-
 # Parse a token literal parsing expression.
 parseParserToken = {/
     @"@"
     type = [@identifier @string]
     { <> @["token" = tokenValue(type)] }
+/};
+
+# Parse a string or character range parsing expression, used when defining
+# sets.
+parseParserSetString = {/
+    s = @string
+    (
+        @".."
+        startInt = {
+            startValue = tokenValue(s);
+            <> ifTrue { <> eq(lowSize(startValue), 1) }
+                { <> intFromString(startValue) }
+        }
+        end = @string
+        endInt = {
+            endValue = tokenValue(end);
+            <> ifTrue { <> eq(lowSize(endValue), 1) }
+                { <> intFromString(endValue) }
+        }
+        {
+            loopReduce([startInt, ""]) { result ::
+                at = listFirst(result);
+                soFar = listLast(result);
+                ifTrue { <> gt(at, endInt) } { <out> @["string" = soFar] };
+                <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
+            }
+        }
+    |
+        { <> s }
+    )
 /};
 
 # Parse a set (or set complement) parsing expression.
@@ -428,7 +435,7 @@ parseParserSet = {/
     )
 
     terminals = (
-        strings = (parseParserCharRange | @string)+
+        strings = parseParserSetString+
         {
             oneString = listReduce("", strings)
                 { result . s :: <> stringAdd(result, tokenValue(s)) };
@@ -436,8 +443,10 @@ parseParserSet = {/
                 { result . ch :: <> listAppend(result, ch) }
         }
     |
-        tokens = parseParserToken*
+        tokens = parseParserToken+
         { <> listMap(tokens) { . t :: <> tokenValue(t) } }
+    |
+        { <> [] }
     )
 
     @"]"
