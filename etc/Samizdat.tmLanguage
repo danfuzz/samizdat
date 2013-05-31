@@ -44,6 +44,23 @@
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>constant.other</string>
+			<key>begin</key>
+			<string>@"</string>
+			<key>end</key>
+			<string>"</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>name</key>
+					<string>constant.character.escape</string>
+					<key>match</key>
+					<string>\\([0nrt\\"]|x.*;)</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>constant.numeric</string>
 			<key>match</key>
 			<string>-?\b[0-9]+\b</string>
@@ -99,7 +116,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>\(([_a-zA-Z0-9]*)\b</string>
+			<string>([_a-zA-Z0-9]*)\b(?= *[\({])</string>
 		</dict>
 		<dict>
 			<key>captures</key>
