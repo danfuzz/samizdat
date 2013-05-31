@@ -57,6 +57,12 @@ tokPunctuation = {/
     (
         "@@" | "::" | "<>" | "()" | "&&" | ".." | "{/" | "/}"
     |
+        # Note: We check this error condition here instead of in the
+        # comment parsing code, because comments get parsed as whitespace,
+        # which gets ignored. Rather than changing to not-quite-ignore
+        # whitespace -- which would be messy -- we instead notice `/*` here
+        # where we're parsing other punctuation. This is clean but a little
+        # non-obvious, hence this comment.
         "/*" .*
         { <> @["error" = "Unterminated comment."] }
     |
