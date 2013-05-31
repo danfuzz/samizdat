@@ -117,16 +117,15 @@ tokQuotedIdentifier = {/
 
 # Parses an integer literal.
 tokInt = {/
-    sign = ("-" { <> -1 } | { <> 1 })
     digits = (
         ch = ["0".."9"]
         { <> intFromDigitChar(ch) }
     )+
 
     {
-        positiveValue = listReduce(0, digits)
+        value = listReduce(0, digits)
             { result . digit :: <> iadd(imul(result, 10), digit) };
-        <> @["int" = imul(sign, positiveValue)]
+        <> @["int" = value]
     }
 /};
 
@@ -142,12 +141,8 @@ tokError = {/
 /};
 
 # Parses an arbitrary token or error.
-#
-# **Note:** Ints are parsed ahead of punctuation, so that a `-` attached
-# to a digit gets interpreted as part of a negative number literal and not
-# a separate operator.
 tokToken = {/
-    tokInt | tokPunctuation | tokString | tokIdentifier | tokQuotedIdentifier
+    tokPunctuation | tokInt | tokString | tokIdentifier | tokQuotedIdentifier
 |
     tokError
 /};
