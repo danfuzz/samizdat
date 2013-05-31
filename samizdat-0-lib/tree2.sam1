@@ -8,7 +8,7 @@
 
 
 #
-# Helper functions
+# Helper definitions
 #
 
 # Returns a `call` node.
@@ -30,6 +30,21 @@ makeCallName = { name actuals* ::
 makeLiteral = { value ::
     <> @["literal" = value]
 };
+
+# Map of token types to corresponding unary operator function name variable
+# references.
+UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]"])
+    { result . name ::
+        <> mapPut(result, name, makeVarRef(stringAdd("unary", name)))
+    };
+
+# Map of token types to corresponding binary operator function name variable
+# references.
+BINARY_OPERATORS = listReduce([=],
+    ["+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">="])
+    { result . name ::
+        <> mapPut(result, name, makeVarRef(stringAdd("binary", name)))
+    };
 
 # Reports the given list of pending tokens as part of error processing.
 reportError = { pending ::
@@ -186,7 +201,7 @@ parseActualsList = {/
 # to apply when applying the prefix.
 parsePrefixOperator = {/
     operator = [@"+" @"-" @"!"]
-    { <> makeVarRef(stringAdd("unary", tokenType(operator))) }
+    { <> mapGet(UNARY_OPERATORS, tokenType(operator)) }
 /};
 
 # Parses a unary postfix operator. This yields a function (per se) to call
@@ -200,7 +215,10 @@ parsePostfixOperator = {/
     exprs = parseUnadornedList
     &&(ne(exprs, []))
     @"]"
-    { <> { node :: <> apply(makeCall, makeVarRef("unary[]"), node, exprs) } }
+    {
+        function = mapGet(UNARY_OPERATORS, "[]");
+        <> { node :: <> apply(makeCall, function, node, exprs) }
+    }
 /};
 
 # Parses a unary expression. This is an atom, optionally surrounded on
