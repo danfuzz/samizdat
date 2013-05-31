@@ -13,7 +13,7 @@
 # Forward declaration of `sourceString`
 callSourceString = forwardFunction();
 
-# Single-character strings `"\0"` `"\x7f;"` and `"\x9f;"`.
+# Single-character strings `"\x7f;"` and `"\x9f;"`.
 CHAR_127 = stringFromInt(127);
 CHAR_159 = stringFromInt(159);
 
