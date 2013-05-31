@@ -124,8 +124,25 @@ parserCode = {/
     body = programBody
     @"}"
 
-    { <> @["{}" (mapAdd(yieldDef, body))] }
+    { <> @["{}" = (mapAdd(yieldDef, body))] }
 /};
+
+parserPredicate = {/
+    @"&&"
+    predicate = parenExpression
+    { <> @["&&" = predicate] }
+/};
+
+### NOTE: Predicates will expand to something like this.
+    {
+        predicateThunk =
+            @["function" = ["statements"=[], "yield"=predicate]];
+        nullThunk =
+            @["function" = ["statements"=[], "yield"=makeLiteral(null)]];
+        statement = makeCall(makeVarRef("ifTrue"), predicateThunk, nullThunk);
+        <> @["{}" = ["statements"=[statement]]]
+    }
+### END NOTE
 
 parserAtom = {/
     varRef
@@ -137,6 +154,8 @@ parserAtom = {/
     parserSet
 |
     parserCode
+|
+    parserPredicate
 |
     @"."
 |

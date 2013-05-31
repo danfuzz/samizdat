@@ -314,6 +314,25 @@ For example:
 * The parser `{/ f=@foo { <out> :: <out> [[[f]]] } /}` is just like the
   previous example, except it is written with an explicit yield definition.
 
+#### Running an arbitrary predicate instead of consuming input (terminal)
+
+As a variant of running code, it is possible to run a boolean predicate,
+which fails the rule should the predicate be false. To do this,
+place the predicate expression in parentheses preceded by a double
+ampersand (`&&(...)`). The value of the predicate if bound as a variable
+is always `null`.
+
+Any bound parsing result variables (see above) that are in scope of the
+predicate are available to be used in the expression.
+
+For example:
+
+* The parser `{/ &&(true) /}` will always succeed, yielding `null` and
+  consuming no input.
+
+* The parser `{/ x=. &&(isToken(x)) { <> x } /}` will match and yield
+  a single terminal, as long as that terminal is a token.
+
 #### Future direction: Destructuring bind
 
 If in the future a "destructuring bind" form is supported, then it
