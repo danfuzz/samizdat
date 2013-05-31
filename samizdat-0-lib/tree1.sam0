@@ -322,31 +322,36 @@ parseParserString = pegMakeMainSequence(
             { <> s }
     });
 
-parseParserCharRange = pegMakeMainSequence(
-    pegMakeToken("string"),
-    pegMakeCode { start ::
-        <> ifTrue { <> eq(lowSize(tokenValue(start)), 1) }
-            { <> intFromString(tokenValue(start)) }
-    },
-    pegMakeToken(".."),
-    pegMakeToken("string"),
-    pegMakeCode { . . . end ::
-        <> ifTrue { <> eq(lowSize(tokenValue(end)), 1) }
-            { <> intFromString(tokenValue(end)) }
-    },
-    pegMakeCode { . startInt . . endInt <out> ::
-        loopReduce([startInt, ""]) { result ::
-            at = listFirst(result);
-            soFar = listLast(result);
-            ifTrue { <> gt(at, endInt) } { <out> @["string" = soFar] };
-            <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
-        }
-    });
-
 parseParserToken = pegMakeMainSequence(
     pegMakeToken("@"),
     pegMakeTokenSet("identifier", "string"),
     pegMakeCode { . type :: <> @["token" = tokenValue(type)] });
+
+parseParserSetString = pegMakeMainSequence(
+    pegMakeToken("string"),
+    pegMakeChoice(
+        pegMakeSequence(
+            pegMakeToken(".."),
+            pegMakeCode { s . ::
+                startValue = tokenValue(s);
+                <> ifTrue { <> eq(lowSize(startValue), 1) }
+                    { <> intFromString(startValue) }
+            },
+            pegMakeToken("string"),
+            pegMakeCode { . . . end ::
+                endValue = tokenValue(end);
+                <> ifTrue { <> eq(lowSize(endValue), 1) }
+                    { <> intFromString(endValue) }
+            },
+            pegMakeCode { . . startInt . endInt <out> ::
+                loopReduce([startInt, ""]) { result ::
+                    at = listFirst(result);
+                    soFar = listLast(result);
+                    ifTrue { <> gt(at, endInt) } { <out> @["string" = soFar] };
+                    <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
+                }
+            }),
+        pegMakeCode { s :: <> s }));
 
 parseParserSet = pegMakeMainSequence(
     pegMakeToken("["),
@@ -358,8 +363,7 @@ parseParserSet = pegMakeMainSequence(
             pegMakeCode { <> "[]" })),
     pegMakeChoice(
         pegMakeMainSequence(
-            pegMakePlus(
-                pegMakeChoice(parseParserCharRange, pegMakeToken("string"))),
+            pegMakePlus(parseParserSetString),
             pegMakeCode { strings ::
                 oneString = listReduce("", strings)
                     { result . s :: <> stringAdd(result, tokenValue(s)) };
@@ -367,10 +371,12 @@ parseParserSet = pegMakeMainSequence(
                     { result . ch :: <> listAppend(result, ch) }
             }),
         pegMakeMainSequence(
-            pegMakeStar(parseParserToken),
+            pegMakePlus(parseParserToken),
             pegMakeCode { tokens ::
                 <> listMap(tokens) { . t :: <> tokenValue(t) }
-            })),
+            }),
+        pegMakeMainSequence(
+            pegMakeCode { <> [] })),
     pegMakeToken("]"),
     pegMakeCode { . type terminals . :: <> @[type = terminals] });
 
