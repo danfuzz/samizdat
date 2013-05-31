@@ -69,7 +69,7 @@ parserSetString = {/
                 { <> intFromString(endValue) }
         }
         {
-            reduction = loopReduce [startInt, ""] { ... endInt ... };
+            reduction = loopReduce([startInt, ""]) { ... endInt ... };
             <> @["string" = (listLast(reduction))]
         }
     |
@@ -91,7 +91,7 @@ parserSet = {/
         {
             oneString = listReduce("", strings)
                 { result . s :: <> stringAdd(result, tokenValue(s)) };
-            <> stringReduce [] oneString
+            <> stringReduce([], oneString)
                 { result . ch :: <> listAppend(result, ch) }
         }
     |
@@ -106,7 +106,7 @@ parserSet = {/
 
     @"]"
 
-    { <> @[type terminals] }
+    { <> @[type = terminals] }
 /};
 
 parserCode = {/
@@ -178,7 +178,7 @@ namePex = {/
         name = @identifier
         @"="
         pex = lookaheadPex
-        { <> @["varDef" ["name"=(tokenValue(name)), "value"=pex]] }
+        { <> @["varDef" = ["name"=(tokenValue(name)), "value"=pex]] }
     )
 |
     lookaheadPex
