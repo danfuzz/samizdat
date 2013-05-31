@@ -11,7 +11,7 @@
 # (e.g. just to get the text) can use the list here to avoid having to
 # name them explicitly.
 BOOTSTRAP_FILES = [
-    "manifest.sam0"
+    "manifest.sam0",
     "main.sam0"
 ];
 
@@ -20,35 +20,35 @@ BOOTSTRAP_FILES = [
 # the second can depend on primitives and the first, etc.
 MANIFEST = [
     # Layer 0 in-language core library.
-    "combinator.sam0"
-    "const.sam0"
-    "boolean.sam0"
-    "type.sam0"
-    "conditional.sam0"
-    "int.sam0"
-    "collections.sam0"
-    "code.sam0"
-    "format.sam0"
-    "peg.sam0"
-    "io0.sam0"
-    "parseArgs0.sam0"
-    "meta.sam0"
+    "combinator.sam0",
+    "const.sam0",
+    "boolean.sam0",
+    "type.sam0",
+    "conditional.sam0",
+    "int.sam0",
+    "collections.sam0",
+    "code.sam0",
+    "format.sam0",
+    "peg.sam0",
+    "io0.sam0",
+    "parseArgs0.sam0",
+    "meta.sam0",
 
     # Layer 1 language implementation.
-    "tokenize1.sam0"
-    "tree1.sam0"
-    "eval1.sam0"
+    "tokenize1.sam0",
+    "tree1.sam0",
+    "eval1.sam0",
 
     # Layer 2 language implementation.
-    "tokenize2.sam1"
-    "tree2.sam1"
-    "eval2.sam1"
+    "tokenize2.sam1",
+    "tree2.sam1",
+    "eval2.sam1",
 
     # Layer 2 library implementation.
     "unaryOperators.sam2"
 ];
 
 <> [
-    "BOOTSTRAP_FILES" = BOOTSTRAP_FILES
+    "BOOTSTRAP_FILES" = BOOTSTRAP_FILES,
     "MANIFEST" = MANIFEST
 ]

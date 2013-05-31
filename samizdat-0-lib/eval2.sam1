@@ -12,7 +12,7 @@
 
 # TODO
 convertExpression = { node ::
-    io0Die "TODO";
+    io0Die("TODO");
 };
 
 
@@ -22,7 +22,7 @@ convertExpression = { node ::
 
 # Documented in Samizdat Layer 1 spec.
 sam2Eval = { context expressionNode ::
-    <> sam1Eval context expressionNode
+    <> sam1Eval(context, expressionNode)
     #convertedNode = convertExpression expressionNode;
     #<> sam0Eval context convertedNode
 };

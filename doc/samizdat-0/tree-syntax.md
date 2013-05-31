@@ -15,95 +15,108 @@ can be used.
 ```
 # Returns a `call` node.
 makeCall = { function actuals* ::
-    <> @["call" ["function"=function "actuals"=actuals]]
+    <> @["call" = ["function"=function, "actuals"=actuals]]
 };
 
 # Returns a `varRef` node.
 makeVarRef = { name ::
-    <> @["varRef" name]
+    <> @["varRef" = name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 makeCallName = { name actuals* ::
-    <> @["call" ["function"=(makeVarRef name) "actuals"=actuals]]
+    <> @["call" = ["function"=(makeVarRef(name)), "actuals"=actuals]]
 };
 
 # Returns a `literal` node.
 makeLiteral = { value ::
-    <> @["literal" value]
+    <> @["literal" = value]
 };
 
-# forward declaration: atom
 # forward declaration: expression
 # forward declaration: function
 
 int = {/
     i = @int
-    { <> makeLiteral (tokenValue i) }
+    { <> makeLiteral(tokenValue(i)) }
 /};
 
 string = {/
     s = @string
-    { <> makeLiteral (tokenValue s) }
+    { <> makeLiteral(tokenValue(s)) }
 /};
 
-emptyList = {/
-    @"[" @"]"
-    { <> makeLiteral [] }
+unadornedList = {/
+    first = expression
+    rest = (@"," expression)*
+    { <> listPrepend(first, rest) }
+|
+    { <> [] }
 /};
 
 list = {/
     @"["
-    atoms = atom+
+    expressions = unadornedList
     @"]"
-    { <> apply makeCallName "makeList" atoms }
+    {
+        <> ifTrue { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> apply(makeCallName, "makeList", expressions) }
+    }
 /};
 
 emptyMap = {/
     @"[" @"=" @"]"
-    { <> makeLiteral [=] }
+    { <> makeLiteral([=]) }
 /};
 
 mapping = {/
-    key = atom
+    key = expression
     @"="
-    value = atom
-    { <> [key value] }
+    value = expression
+    { <> [key, value] }
 /};
 
 map = {/
     @"["
-    mappings = mapping+
+    first = mapping
+    rest = (@"," mapping)*
     @"]"
-    { <> apply makeCallName "makeMap" (apply listAdd mappings) }
+    {
+        mappings = apply(listAdd, first, rest);
+        <> apply(makeCallName, "makeMap", mappings)
+    }
 /};
 
 token = {/
     @"@"
     (
-        @"[" type=atom value=atom? @"]"
-        { <> apply makeCallName "makeToken" type value }
+        @"["
+        type = expression
+        value = (@"=" expression)?
+        @"]"
+        { <> apply(makeCallName, "makeToken", type, value) }
     |
         type = [@string @identifier]
-        { <> makeCallName "makeToken" (makeLiteral (tokenValue type)) }
+        { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
     )
 /};
 
 uniqlet = {/
     @"@@"
-    { <> makeCallName "makeUniqlet" }
+    { <> makeCallName("makeUniqlet") }
 /};
 
 varRef = {/
     name = @identifier
-    { <> makeVarRef (tokenValue name) }
+    { <> makeVarRef(tokenValue(name)) }
 /};
 
 varDef = {/
     name = @identifier
     @"="
     ex = expression
-    { <> @["varDef" ["name"=(tokenValue name) "value"=ex]] }
+    { <> @["varDef" = ["name"=(tokenValue(name)), "value"=ex]] }
 /};
 
 parenExpression = {/
@@ -115,32 +128,36 @@ parenExpression = {/
 
 atom = {/
     varRef | int | string |
-    emptyList | list | emptyMap | map |
+    list | emptyMap | map |
     uniqlet | token | function | parenExpression
 /};
 
-callExpression = {/
-    function = atom
-    args = atom+
-    { <> apply makeCall function args }
+actualsList = {/
+    @"()"
+    function*
+|
+    @"("
+    normalActuals = unadornedList
+    @")"
+    functionActuals = function*
+    { <> listAdd(normalActuals, functionActuals) }
+|
+    function+
 /};
 
-unaryCallExpression = {/
-    function = atom
-    calls = @"()"+
+callExpression = {/
+    base = atom
+    actualsLists = actualsList*
+
     {
-        # Note: One `makeCall` per pair of parens.
-        <> listReduce function calls
-            { result . . :: <> makeCall result }
+        <> listReduce(base, actualsLists) { result . list ::
+            <> apply(makeCall, result, list)
+        }
     }
 /};
 
-unaryExpression = {/
-    unaryCallExpression | atom
-/};
-
 expression = {/
-    callExpression | unaryExpression
+    callExpression
 /};
 
 statement = {/
@@ -152,7 +169,7 @@ nonlocalExit = {/
     name = varRef
     @">"
     ex = expression?
-    { <> apply makeCall name ex }
+    { <> apply(makeCall, name, ex) }
 /};
 
 yield = {/
@@ -169,25 +186,25 @@ yieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> tokenValue name }
+    { <> tokenValue(name) }
 /};
 
 formal = {/
     name = (
         n = @identifier
-        { <> ["name" = (tokenValue n)] }
+        { <> ["name" = (tokenValue(n))] }
     |
         @"." { <> [=] }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> ["repeat" = (tokenType r)] }
+        { <> ["repeat" = (tokenType(r))] }
     |
         { <> [=] }
     )
 
-    { <> mapAdd name repeat }
+    { <> mapAdd(name, repeat) }
 /};
 
 programBody = {/
@@ -204,7 +221,7 @@ programBody = {/
         { <> ["statements" = [s]] }
     |
         y = yield
-        { <> mapAdd ["statements" = []] y }
+        { <> mapAdd(["statements" = []], y) }
     |
         { <> ["statements" = []] }
     )
@@ -212,8 +229,8 @@ programBody = {/
     @";"*
 
     {
-        allStatements = listAdd most (mapGet last "statements");
-        <> mapPut last "statements" allStatements
+        allStatements = listAdd(most, mapGet(last, "statements"));
+        <> mapPut(last, "statements", allStatements)
     }
 /};
 
@@ -234,13 +251,13 @@ programDeclarations = {/
 
     @"::"
 
-    { <> mapAdd formals yieldDef }
+    { <> mapAdd(formals, yieldDef) }
 /};
 
 program = {/
     decls = (programDeclarations | { <> [=] })
     body = programBody
-    { <> @["function" (mapAdd decls body)] }
+    { <> @["function" (mapAdd(decls, body))] }
 /};
 
 function = {/

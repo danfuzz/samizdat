@@ -19,14 +19,14 @@ atom = {/
 |
     # The lookahead is just to make it clear that Samizdat Layer 1 can
     # only be "activated" with that one specific token.
-    &"{/" parser
+    &@"{/" parser
 /};
 
 parser = {/
     @"{/"
     pex = choicePex
     @"/}"
-    { <> @["parser" pex] }
+    { <> @["parser" = pex] }
 /};
 
 parenPex = {/
@@ -39,35 +39,42 @@ parenPex = {/
 parserString = {/
     s = @string
     {
-        value = tokenValue s;
-        <> ifTrue { <> eq (lowSize value) 1 }
-            { <> @["token" value] }
+        value = tokenValue(s);
+        <> ifTrue { <> eq(lowSize(value), 1) }
+            { <> @["token" = value] }
             { <> s }
-    }
-/};
-
-parserCharRange = {/
-    start = @string
-    startInt = {
-        <> ifTrue { <> eq (lowSize (tokenValue start)) 1 }
-            { <> intFromString (tokenValue start) }
-    }
-    @".."
-    end = @string
-    endInt = {
-        <> ifTrue { <> eq (lowSize (tokenValue end)) 1 }
-            { <> intFromString (tokenValue end) }
-    }
-    {
-        reduction = loopReduce [startInt ""] { ... endInt ... };
-        <> @["string" (listLast reduction)]
     }
 /};
 
 parserToken = {/
     @"@"
     type = [@identifier @string]
-    { <> @["token" (tokenValue type)] }
+    { <> @["token" = (tokenValue(type))] }
+/};
+
+# Handles regular string literals and character ranges.
+parserSetString = {/
+    s = @string
+    (
+        @".."
+        startInt = {
+            startValue = tokenValue(s);
+            <> ifTrue { <> eq(lowSize(startValue), 1) }
+                { <> intFromString(startValue) }
+        }
+        end = @string
+        endInt = {
+            endValue = tokenValue(end);
+            <> ifTrue { <> eq(lowSize(endValue), 1) }
+                { <> intFromString(endValue) }
+        }
+        {
+            reduction = loopReduce([startInt, ""]) { ... endInt ... };
+            <> @["string" = (listLast(reduction))]
+        }
+    |
+        { <> s }
+    )
 /};
 
 parserSet = {/
@@ -80,21 +87,26 @@ parserSet = {/
     )
 
     terminals = (
-        strings = (parserCharRange | @string)+
+        strings = parserSetString+
         {
-            oneString = listReduce "" strings
-                { result . s :: <> stringAdd result (tokenValue s) };
-            <> stringReduce [] oneString
-                { result . ch :: <> listAppend result ch }
+            oneString = listReduce("", strings)
+                { result . s :: <> stringAdd(result, tokenValue(s)) };
+            <> stringReduce([], oneString)
+                { result . ch :: <> listAppend(result, ch) }
         }
     |
-        tokens = parserToken*
-        { <> listMap tokens { . t :: <> tokenValue t } }
+        tokens = parserToken+
+        {
+            tokens = listPrepend(first, rest);
+            <> listMap(tokens) { . t :: <> tokenValue(t) }
+        }
+    |
+        { <> [] }
     )
 
     @"]"
 
-    { <> @[type terminals] }
+    { <> @[type = terminals] }
 /};
 
 parserCode = {/
@@ -112,7 +124,13 @@ parserCode = {/
     body = programBody
     @"}"
 
-    { <> @["{}" (mapAdd yieldDef body)] }
+    { <> @["{}" = (mapAdd(yieldDef, body))] }
+/};
+
+parserPredicate = {/
+    @"&&"
+    predicate = parenExpression
+    { <> @["&&" = predicate] }
 /};
 
 parserAtom = {/
@@ -126,6 +144,8 @@ parserAtom = {/
 |
     parserCode
 |
+    parserPredicate
+|
     @"."
 |
     @"()"
@@ -137,7 +157,7 @@ repeatPex = {/
     atom = parserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(tokenType repeat) atom] }
+        { <> @[(tokenType(repeat)) = atom] }
     |
         { <> atom }
     )
@@ -147,7 +167,7 @@ lookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = repeatPex
-        { <> @[(tokenType lookahead) pex] }
+        { <> @[(tokenType(lookahead)) = pex] }
     )
 |
     repeatPex
@@ -158,7 +178,7 @@ namePex = {/
         name = @identifier
         @"="
         pex = lookaheadPex
-        { <> @["varDef" ["name"=(tokenValue name) "value"=pex]] }
+        { <> @["varDef" = ["name"=(tokenValue(name)), "value"=pex]] }
     )
 |
     lookaheadPex
@@ -166,12 +186,12 @@ namePex = {/
 
 sequencePex = {/
     items = namePex+
-    { <> @["sequence" items] }
+    { <> @["sequence" = items] }
 /};
 
 choicePex = {/
     first = sequencePex
     rest = (@"|" sequencePex)*
-    { <> @["choice" (listPrepend first rest)] }
+    { <> @["choice" = (listPrepend(first, rest))] }
 /};
 ```

@@ -16,7 +16,7 @@ representative of how one would construct them in the source syntax of
 Each of these node types can appear anywhere an "expression"
 is called for.
 
-#### `call` &mdash; `@["call" ["function"=expression "actuals"=[expression*]]`
+#### `call` &mdash; `@["call" = ["function"=expression, "actuals"=[expression*]]`
 
 * `"function" = expression` (required) &mdash; An expression node that must
   evaluate to a function.
@@ -40,7 +40,7 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `function` &mdash; `@["function" [("formals"=[formal+])? ("yieldDef"=name)?` `"statements"=[statement*] ("yield"=expression)?]`
+#### `function` &mdash; `@["function" = [("formals"=[formal+])?, ("yieldDef"=name)?,` `"statements"=[statement*], ("yield"=expression)?]`
 
 * `"formals" = [formal+]` (optional) &mdash; An array of `formal`
   elements (as defined below). This defines the formal arguments to
@@ -88,7 +88,7 @@ systems that are defined using those terms. In C terms, the facility is
 along the lines of `setjmp` / `longjmp`. In Lisp terms, the facility is
 an implementation of downward-passing continuations.
 
-#### `literal` &mdash; `@["literal" value]`
+#### `literal` &mdash; `@["literal" = value]`
 
 * `value` (required) &mdash; Arbitrary data value.
 
@@ -99,7 +99,7 @@ The data `value` is the result of evaluation,
 When a `literal` node is run, the result of evaluation is `value`.
 Evaluation never fails.
 
-#### `varRef` &mdash; `@["varRef" name]`
+#### `varRef` &mdash; `@["varRef" = name]`
 
 * `name` (required) &mdash; Name of a variable (typically a string).
 
@@ -116,7 +116,7 @@ evaluation fails (terminating the runtime).
 These are nodes and values that appear within the data payloads
 of various expression nodes.
 
-#### `formal` &mdash; `[("name"=name)? ("repeat"=repeat)?]`
+#### `formal` &mdash; `[("name"=name)?, ("repeat"=repeat)?]`
 
 * `"name"` (optional) &mdash; an arbitrary value (but typically a string),
   which indicates the name of the variable to be bound for this
@@ -148,7 +148,7 @@ If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
 
-#### `varDef` &mdash; `@["varDef" ["name"=name "value"=expression]]`
+#### `varDef` &mdash; `@["varDef" = ["name"=name, "value"=expression]]`
 
 * `"name" = name` &mdash; Variable name to define (typically a string).
 

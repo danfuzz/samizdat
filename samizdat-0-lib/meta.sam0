@@ -12,9 +12,9 @@
 
 # Map from file name suffixes to names of parsing and evaluation functions.
 META_NAME_MAP = [
-    "sam0" = ["eval"="sam0Eval" "tokenize"="sam0Tokenize" "tree"="sam0Tree"]
-    "sam1" = ["eval"="sam1Eval" "tokenize"="sam1Tokenize" "tree"="sam1Tree"]
-    "sam2" = ["eval"="sam2Eval" "tokenize"="sam2Tokenize" "tree"="sam2Tree"]
+    "sam0" = ["eval"="sam0Eval", "tokenize"="sam0Tokenize", "tree"="sam0Tree"],
+    "sam1" = ["eval"="sam1Eval", "tokenize"="sam1Tokenize", "tree"="sam1Tree"],
+    "sam2" = ["eval"="sam2Eval", "tokenize"="sam2Tokenize", "tree"="sam2Tree"]
 ];
 
 
@@ -24,60 +24,60 @@ META_NAME_MAP = [
 
 # Documented in Samizdat Layer 0 spec.
 makeLibrary = { context ::
-    <> mapPut context "LIBRARY" context
+    <> mapPut(context, "LIBRARY", context)
 };
 
 # Documented in Samizdat Layer 0 spec.
 metaFunctions = { context fileName ::
-    dotAt = stringReduce (-1) fileName { result n ch ::
-        <> ifTrue { <> eq ch "." }
+    dotAt = stringReduce(-1, fileName) { result n ch ::
+        <> ifTrue { <> eq(ch, ".") }
             { <> n }
     };
 
-    suffix = ifTrue { <> eq dotAt (-1) }
+    suffix = ifTrue { <> eq(dotAt, -1) }
         { <> "" }
-        { <> stringSlice fileName (iadd dotAt 1) };
+        { <> stringSlice(fileName, iadd(dotAt, 1)) };
 
     # Note: As the layers get added, the default here should change.
-    nameMap = ifValue { <> mapGet META_NAME_MAP suffix }
+    nameMap = ifValue { <> mapGet(META_NAME_MAP, suffix) }
         { map :: <> map }
-        { <> mapGet META_NAME_MAP "sam1" };
+        { <> mapGet(META_NAME_MAP, "sam1") };
 
-    <> mapMap nameMap { . v ::
-        <> ifValue { <> mapGet context v }
+    <> mapMap(nameMap) { . v ::
+        <> ifValue { <> mapGet(context, v) }
             { newValue :: <> newValue }
             {
-                io0Die
-                    (stringAdd "Missing implementation for meta-function: " v)
+                io0Die(
+                    stringAdd("Missing implementation for meta-function: ", v))
             }
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
 samCommandLine = { context rawArgs* ::
-    parsedArgs = parseArgs0 rawArgs;
-    options = mapGet parsedArgs "options";
-    argWords = mapGet parsedArgs "args";
+    parsedArgs = parseArgs0(rawArgs);
+    options = mapGet(parsedArgs, "options");
+    argWords = mapGet(parsedArgs, "args");
 
-    fileName = listFirst argWords "/dev/stdin";
-    filePath = io0PathFromFlat fileName;
-    args = listButFirst argWords [];
+    fileName = listFirst(argWords, "/dev/stdin");
+    filePath = io0PathFromFlat(fileName);
+    args = listButFirst(argWords, []);
 
-    nameForLookup = ifValue { <> mapGet options "file-suffix" }
-        { suffix :: <> stringAdd "x." suffix }
-        { <> (listLast filePath) };
+    nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
+        { suffix :: <> stringAdd("x.", suffix) }
+        { <> listLast(filePath) };
 
-    metas = metaFunctions context nameForLookup;
+    metas = metaFunctions(context, nameForLookup);
 
-    programText = io0ReadFileUtf8 filePath;
-    parsedProgram = (mapGet metas "tree") programText;
-    evalledProgram = (mapGet metas "eval") context parsedProgram;
+    programText = io0ReadFileUtf8(filePath);
+    parsedProgram = mapGet(metas, "tree")(programText);
+    evalledProgram = mapGet(metas, "eval")(context, parsedProgram);
 
-    <> apply evalledProgram filePath args
+    <> apply(evalledProgram, filePath, args)
 };
 
 <> [
-    "makeLibrary" = makeLibrary
-    "metaFunctions" = metaFunctions
+    "makeLibrary" = makeLibrary,
+    "metaFunctions" = metaFunctions,
     "samCommandLine" = samCommandLine
 ]

@@ -152,8 +152,12 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
  */
 
 /* Definitions to help avoid boilerplate in the parser functions. */
-#define DEF_PARSE(name) static zvalue parse_##name(ParseState *state)
-#define PARSE(name) parse_##name(state)
+#define RULE(name) parse_##name
+#define DEF_PARSE(name) static zvalue RULE(name)(ParseState *state)
+#define PARSE(name) RULE(name)(state)
+#define PARSE_STAR(name) parseStar(RULE(name), state)
+#define PARSE_PLUS(name) parsePlus(RULE(name), state)
+#define PARSE_COMMA_SEQ(name) parseCommaSequence(RULE(name), state)
 #define MATCH(tokenType) readMatch(state, (STR_##tokenType))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
@@ -167,31 +171,166 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     tempResult = PARSE(name); \
     REJECT_IF(tempResult == NULL)
 
+/* Function prototype for all parser functions */
+typedef zvalue (*parserFunction)(ParseState *);
+
 /* Defined below. */
-DEF_PARSE(atom);
 DEF_PARSE(expression);
 DEF_PARSE(function);
 
 /**
- * Parses `atom+`. Returns a list of parsed expressions.
+ * Parses `x*` for an arbitrary rule `x`. Returns a list of parsed `x` results.
  */
-DEF_PARSE(atomPlus) {
-    MARK();
-
+zvalue parseStar(parserFunction rule, ParseState *state) {
     zvalue result = EMPTY_LIST;
 
     for (;;) {
-        zvalue atom = PARSE(atom);
-        if (atom == NULL) {
+        zvalue one = rule(state);
+        if (one == NULL) {
             break;
         }
 
-        result = datListAppend(result, atom);
+        result = datListAppend(result, one);
     }
 
+    return result;
+}
+
+/**
+ * Parses `x+` for an arbitrary rule `x`. Returns a list of parsed `x` results.
+ */
+zvalue parsePlus(parserFunction rule, ParseState *state) {
+    MARK();
+
+    zvalue result = parseStar(rule, state);
     REJECT_IF(datSize(result) == 0);
 
     return result;
+}
+
+/**
+ * Parses `(x (@"," x)*)?` for an arbitrary rule `x`. Returns a list of
+ * parsed `x` results.
+ */
+zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
+    zvalue item = rule(state);
+
+    if (item == NULL) {
+        return EMPTY_LIST;
+    }
+
+    zvalue result = datListAppend(EMPTY_LIST, item);
+
+    for (;;) {
+        MARK();
+
+        if (! MATCH(CH_COMMA)) {
+            break;
+        }
+
+        item = rule(state);
+        if (item == NULL) {
+            RESET();
+            break;
+        }
+
+        result = datListAppend(result, item);
+    }
+
+    return result;
+}
+
+/**
+ * Parses an `int` node.
+ */
+DEF_PARSE(int) {
+    MARK();
+
+    zvalue intval = MATCH_OR_REJECT(INT);
+
+    return makeLiteral(datTokenValue(intval));
+}
+
+/**
+ * Parses a `string` node.
+ */
+DEF_PARSE(string) {
+    MARK();
+
+    zvalue string = MATCH_OR_REJECT(STRING);
+
+    return makeLiteral(datTokenValue(string));
+}
+
+/**
+ * Parses an `unadornedList` node.
+ */
+DEF_PARSE(unadornedList) {
+    return PARSE_COMMA_SEQ(expression);
+}
+
+/**
+ * Parses a `list` node.
+ */
+DEF_PARSE(list) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+    zvalue expressions = PARSE(unadornedList);
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    if (datSize(expressions) == 0) {
+        return makeLiteral(EMPTY_LIST);
+    } else {
+        return makeCall(makeVarRef(STR_MAKE_LIST), expressions);
+    }
+}
+
+/**
+ * Parses an `emptyMap` node.
+ */
+DEF_PARSE(emptyMap) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+    MATCH_OR_REJECT(CH_EQUAL);
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    return makeLiteral(EMPTY_MAP);
+}
+
+/**
+ * Parses a `mapping` node.
+ */
+DEF_PARSE(mapping) {
+    MARK();
+
+    zvalue key = PARSE_OR_REJECT(expression);
+    MATCH_OR_REJECT(CH_EQUAL);
+    zvalue value = PARSE_OR_REJECT(expression);
+
+    return datListAppend(datListAppend(EMPTY_LIST, key), value);
+}
+
+/**
+ * Parses a `map` node.
+ */
+DEF_PARSE(map) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+    zvalue mappings = PARSE_COMMA_SEQ(mapping);
+    zint size = datSize(mappings);
+    REJECT_IF(size == 0);
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    // Combine all the mappings into a flat list.
+    zvalue args = EMPTY_LIST;
+    for (zint i = 0; i < size; i++) {
+        args = datListAdd(args, datListNth(mappings, i));
+    }
+
+    return makeCall(makeVarRef(STR_MAKE_MAP), args);
 }
 
 /**
@@ -206,9 +345,11 @@ DEF_PARSE(token) {
     MATCH_OR_REJECT(CH_AT);
 
     innerType = MATCH(STRING);
+
     if (innerType == NULL) {
         innerType = MATCH(IDENTIFIER);
     }
+
     if (innerType != NULL) {
         innerType = makeLiteral(datTokenValue(innerType));
         innerValue = NULL;
@@ -216,8 +357,18 @@ DEF_PARSE(token) {
 
     if (innerType == NULL) {
         MATCH_OR_REJECT(CH_OSQUARE);
-        innerType = PARSE_OR_REJECT(atom);
-        innerValue = PARSE(atom); // It's okay for this to be NULL.
+        innerType = PARSE_OR_REJECT(expression);
+
+        if (MATCH(CH_EQUAL)) {
+            // Note: Strictly speaking this doesn't quite follow the spec.
+            // However, there is no meaningful difference, in that the only
+            // difference is *how* errors are recognized, not *whether* they
+            // are.
+            innerValue = PARSE_OR_REJECT(expression);
+        } else {
+            innerValue = NULL;
+        }
+
         MATCH_OR_REJECT(CH_CSQUARE);
     }
 
@@ -239,104 +390,6 @@ DEF_PARSE(uniqlet) {
     MATCH_OR_REJECT(CH_ATAT);
 
     return makeCall(makeVarRef(STR_MAKE_UNIQLET), EMPTY_LIST);
-}
-
-/**
- * Parses a `mapping` node.
- */
-DEF_PARSE(mapping) {
-    MARK();
-
-    zvalue key = PARSE_OR_REJECT(atom);
-    MATCH_OR_REJECT(CH_EQUAL);
-    zvalue value = PARSE_OR_REJECT(atom);
-
-    return datListAppend(datListAppend(EMPTY_LIST, key), value);
-}
-
-/**
- * Parses a `map` node.
- */
-DEF_PARSE(map) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-
-    zvalue mappings = EMPTY_LIST;
-
-    for (;;) {
-        zvalue mapping = PARSE(mapping);
-        if (mapping == NULL) {
-            break;
-        }
-
-        mappings = datListAdd(mappings, mapping);
-    }
-
-    REJECT_IF(datSize(mappings) == 0);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeCall(makeVarRef(STR_MAKE_MAP), mappings);
-}
-
-/**
- * Parses an `emptyMap` node.
- */
-DEF_PARSE(emptyMap) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_EQUAL);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeLiteral(EMPTY_MAP);
-}
-
-/**
- * Parses a `list` node.
- */
-DEF_PARSE(list) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    zvalue atoms = PARSE_OR_REJECT(atomPlus);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeCall(makeVarRef(STR_MAKE_LIST), atoms);
-}
-
-/**
- * Parses an `emptyList` node.
- */
-DEF_PARSE(emptyList) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeLiteral(EMPTY_LIST);
-}
-
-/**
- * Parses a `string` node.
- */
-DEF_PARSE(string) {
-    MARK();
-
-    zvalue string = MATCH_OR_REJECT(STRING);
-
-    return makeLiteral(datTokenValue(string));
-}
-
-/**
- * Parses an `int` node.
- */
-DEF_PARSE(int) {
-    MARK();
-
-    zvalue intval = MATCH_OR_REJECT(INT);
-
-    return makeLiteral(datTokenValue(intval));
 }
 
 /**
@@ -387,7 +440,6 @@ DEF_PARSE(atom) {
     if (result == NULL) { result = PARSE(varRef); }
     if (result == NULL) { result = PARSE(int); }
     if (result == NULL) { result = PARSE(string); }
-    if (result == NULL) { result = PARSE(emptyList); }
     if (result == NULL) { result = PARSE(list); }
     if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
@@ -400,50 +452,41 @@ DEF_PARSE(atom) {
 }
 
 /**
+ * Parses an `actualsList` node.
+ */
+DEF_PARSE(actualsList) {
+    MARK();
+
+    if (MATCH(CH_PARENPAREN)) {
+        return PARSE_STAR(function);
+    }
+
+    if (MATCH(CH_OPAREN)) {
+        zvalue normalActuals = PARSE(unadornedList); // This never fails.
+        MATCH_OR_REJECT(CH_CPAREN);
+        zvalue functionActuals = PARSE_STAR(function); // This never fails.
+        return datListAdd(normalActuals, functionActuals);
+    }
+
+    return PARSE_PLUS(function);
+}
+
+/**
  * Parses a `callExpression` node.
  */
 DEF_PARSE(callExpression) {
     MARK();
 
-    zvalue function = PARSE_OR_REJECT(atom);
-    zvalue actuals = PARSE_OR_REJECT(atomPlus);
-
-    return makeCall(function, actuals);
-}
-
-/**
- * Parses a `unaryCallExpression` node.
- */
-DEF_PARSE(unaryCallExpression) {
-    MARK();
-
     zvalue result = PARSE_OR_REJECT(atom);
-    bool any = false;
 
     for (;;) {
-        if (MATCH(CH_PARENPAREN) == NULL) {
+        zvalue actualsList = PARSE(actualsList);
+        if (actualsList == NULL) {
             break;
         }
 
-        result = makeCall(result, NULL);
-        any = true;
+        result = makeCall(result, actualsList);
     }
-
-    if (!any) {
-        REJECT();
-    }
-
-    return result;
-}
-
-/**
- * Parses a `unaryExpression` node.
- */
-DEF_PARSE(unaryExpression) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(unaryCallExpression); }
-    if (result == NULL) { result = PARSE(atom); }
 
     return result;
 }
@@ -452,12 +495,7 @@ DEF_PARSE(unaryExpression) {
  * Parses an `expression` node.
  */
 DEF_PARSE(expression) {
-    zvalue result = NULL;
-
-    if (result == NULL) { result = PARSE(callExpression); }
-    if (result == NULL) { result = PARSE(unaryExpression); }
-
-    return result;
+    return PARSE(callExpression);
 }
 
 /**
