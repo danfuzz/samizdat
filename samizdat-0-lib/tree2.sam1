@@ -473,6 +473,13 @@ parseParserCode = {/
     { <> @["{}" = mapAdd(yieldDef, body)] }
 /};
 
+# Parse a predicate parsing expression.
+parseParserPredicate = {/
+    @"&&"
+    predicate = parseParenExpression
+    { <> @["&&" = predicate] }
+/};
+
 # Parse an atomic parsing expression.
 parseParserAtom = {/
     parseVarRef
@@ -484,6 +491,8 @@ parseParserAtom = {/
     parseParserSet
 |
     parseParserCode
+|
+    parseParserPredicate
 |
     @"."
 |
