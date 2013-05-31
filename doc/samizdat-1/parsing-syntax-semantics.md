@@ -69,7 +69,7 @@ The result of matching a sequence of items is the yielded result from
 the *last* item listed.
 
 For example, the parser `{/ @foo @bar /}` will match the token
-list `[@foo @bar @baz]`, resulting in the yielded value
+list `[@foo, @bar, @baz]`, resulting in the yielded value
 `@bar` and a remainder of `[@baz]`.
 
 #### Binding a named variable to an item match
@@ -85,7 +85,7 @@ brace). Notably, a variable from one `|`-delimited alternate will *not*
 be bound for any other alternate.
 
 For example, the parser `{/ (f=@foo b=@bar X) Y /}` will match the token
-list `[@foo @bar @baz]`, resulting in the yielded value
+list `[@foo, @bar, @baz]`, resulting in the yielded value
 `@bar` and a remainder of `[@baz]`. At the point marked `X`, a local
 variable `f` will be bound to the matched yield of `@foo`, and a local
 variable `b` will be bound to the matched yield of `@bar`. At the point
@@ -145,12 +145,12 @@ For example:
   yielded value `[]` and a remainder of `"blort"`.
 
 * The parser `{/ "f"* /}` will match the string `"ffffuuuu"`, resulting
-  in the yielded value `[@f @f @f @f]` and a remainder of `"uuuu"`. The
+  in the yielded value `[@f, @f, @f, @f]` and a remainder of `"uuuu"`. The
   same parser will match the string `"blort"`, resulting in the
   yielded value `[]` and a remainder of `"blort"`.
 
 * The parser `{/ "f"+ /}` will match the string `"ffizmo"`, resulting
-  in the yielded value `[@f @f]` and a remainder of `"izmo"`. The
+  in the yielded value `[@f, @f]` and a remainder of `"izmo"`. The
   same parser will fail to match the string `"blort"`, since there is
   not even a single `"f"` at the start of the input.
 
@@ -198,7 +198,7 @@ token whose type tag is as given, yielding that token directly
 (including any payload data) as the result.
 
 For example, the parser `{/ @foo /}` will match the token list
-`[@foo @bar]`, resulting in the yielded value `@foo` and a
+`[@foo, @bar]`, resulting in the yielded value `@foo` and a
 remainder of `[@bar]`.
 
 #### Matching a sequence of one or more characters (terminal)
