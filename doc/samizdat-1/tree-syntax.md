@@ -87,7 +87,7 @@ parserSet = {/
     )
 
     terminals = (
-        strings = parserSetString*
+        strings = parserSetString+
         {
             oneString = listReduce("", strings)
                 { result . s :: <> stringAdd(result, tokenValue(s)) };
@@ -95,7 +95,7 @@ parserSet = {/
                 { result . ch :: <> listAppend(result, ch) }
         }
     |
-        tokens = parserToken*
+        tokens = parserToken+
         {
             tokens = listPrepend(first, rest);
             <> listMap(tokens) { . t :: <> tokenValue(t) }
