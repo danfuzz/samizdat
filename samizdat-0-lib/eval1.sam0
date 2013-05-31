@@ -110,9 +110,27 @@ convertPexSetComplement = { node formals ::
 convertPexCode = { node formals ::
     # Use the lexical `formals` context to make a regular function node,
     # and just convert that.
+
     functionPayload = mapPut(tokenValue(node), "formals", formals);
     convertedFunction = convertExpression(@["function" = functionPayload]);
+
     <> callNameWithExpressions("pegMakeCode", convertedFunction)
+};
+
+# Converts a `&&` pex node.
+convertPexPredicate = { node formals ::
+    # This wraps the predicate in code, along these lines:
+    #     `{ <> ifTrue { <> PREDICATE_CODE } { <> null } }`
+    # Having done that, this calls `convertPexCode` (immediately above)
+    # to perform the rest of the wrapping.
+
+    predicateThunk =
+        @["function" = ["statements"=[], "yield"=predicate]];
+    nullThunk =
+        @["function" = ["statements"=[], "yield"=makeLiteral(null)]];
+    statement = makeCall(makeVarRef("ifTrue"), predicateThunk, nullThunk);
+    codeNode = @["{}" = ["statements"=[statement]]];
+    <> convertPexCode(codeNode, formals)
 };
 
 # Converts a `&` pex node.
@@ -152,6 +170,7 @@ CONVERT_PEX_MAP = [
     "[]"       = convertPexSet,
     "[!]"      = convertPexSetComplement,
     "{}"       = convertPexCode,
+    "&&"       = convertPexPredicate,
     "&"        = convertPexLookaheadSuccess,
     "!"        = convertPexLookaheadFailure,
     "?"        = convertPexOpt,
