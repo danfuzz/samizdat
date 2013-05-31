@@ -20,10 +20,15 @@ convertList = { nodes ::
     <> listMap(nodes) { . node :: <> convertExpression(node) }
 };
 
+# Constructs a function call.
+makeCall = { function args* ::
+    <> @["call" = ["function"=function, "actuals"=args]]
+};
+
 # Constructs a named function call with the given arguments, each of
 # which must be a (non-parsing) expression node.
 callNameWithExpressions = { functionName args* ::
-    <> @["call" = ["function"=@["varRef" = functionName], "actuals"=args]]
+    <> apply(makeCall, @["varRef" = functionName], args);
 };
 
 # Converts a pex to a named function call of the converted inner pex.
@@ -32,7 +37,7 @@ callNameWithPex = { node formals functionName ::
     <> callNameWithExpressions(functionName, convertedNode)
 };
 
-# Converts a pex to a named function call of the given literal arguments.
+# Constructs a named function call of the given literal arguments.
 callNameWithLiterals = { functionName args* ::
     literalArgs = listMap(args) { . arg :: <> @["literal" = arg] };
     <> apply(callNameWithExpressions, functionName, literalArgs)
@@ -124,12 +129,15 @@ convertPexPredicate = { node formals ::
     # Having done that, this calls `convertPexCode` (immediately above)
     # to perform the rest of the wrapping.
 
-    predicateThunk =
-        @["function" = ["statements"=[], "yield"=predicate]];
-    nullThunk =
-        @["function" = ["statements"=[], "yield"=makeLiteral(null)]];
-    statement = makeCall(makeVarRef("ifTrue"), predicateThunk, nullThunk);
-    codeNode = @["{}" = ["statements"=[statement]]];
+    predicate = tokenValue(node);
+    predicateThunk = @["function" = ["statements"=[], "yield"=predicate]];
+    nullThunk = @["function" = [
+        "statements" = [],
+        "yield" = callNameWithLiterals("makeToken", "null")
+    ]];
+    yield = callNameWithExpressions("ifTrue", predicateThunk, nullThunk);
+    codeNode = @["{}" = ["statements"=[], "yield"=yield]];
+
     <> convertPexCode(codeNode, formals)
 };
 
