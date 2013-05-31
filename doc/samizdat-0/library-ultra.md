@@ -18,8 +18,8 @@ and optional data payload value (also an arbitrary value). These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = @[key];         is equivalent to   v = makeToken key;
-v = @[key value];   is equivalent to   v = makeToken key value;
+v = @[key];         is equivalent to   v = makeToken(key);
+v = @[key = value]; is equivalent to   v = makeToken(key, value);
 ```
 
 #### `makeList rest* <> list`
@@ -28,8 +28,8 @@ Returns a list with the given elements (in argument order).
 These equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = [v1];      is equivalent to   v = makeList v1;
-v = [v1 v2];   is equivalent to   v = makeList v1 v2;
+v = [v1];      is equivalent to   v = makeList(v1);
+v = [v1, v2];  is equivalent to   v = makeList(v1, v2);
 [etc.]
 ```
 
@@ -58,8 +58,8 @@ list (in argument order) is the one that ends up in the result. These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = [k1=v1];         is equivalent to   v = makeMap k1 v1;
-v = [k1=v1 k2=v2];   is equivalent to   v = makeMap k1 v1 k2 v2;
+v = [k1=v1];         is equivalent to   v = makeMap(k1, v1);
+v = [k1=v1, k2=v2];  is equivalent to   v = makeMap(k1, v1, k2, v2);
 [etc.]
 ```
 
@@ -72,15 +72,15 @@ following. (See `makeList` for discussion.):
 ```
 makeMap = { rest* ::
     makeStep = { key value rest* ::
-        restMap = apply makeMap rest;
-        <> ifValue { <> mapGet restMap key; }
+        restMap = apply(makeMap, rest);
+        <> ifValue { <> mapGet(restMap, key); }
             { <> restMap; }
-            { <> mapPut restMap key value; };
+            { <> mapPut(restMap, key, value); };
     };
 
-    <> ifTrue { <> eq rest [] }
+    <> ifTrue { <> eq(rest, []) }
         { <> [=]; }
-        { <> apply makeStep rest; };
+        { <> apply(makeStep, rest); };
 };
 ```
 

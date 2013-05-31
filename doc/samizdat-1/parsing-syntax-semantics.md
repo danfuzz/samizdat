@@ -69,7 +69,7 @@ The result of matching a sequence of items is the yielded result from
 the *last* item listed.
 
 For example, the parser `{/ @foo @bar /}` will match the token
-list `[@foo @bar @baz]`, resulting in the yielded value
+list `[@foo, @bar, @baz]`, resulting in the yielded value
 `@bar` and a remainder of `[@baz]`.
 
 #### Binding a named variable to an item match
@@ -85,7 +85,7 @@ brace). Notably, a variable from one `|`-delimited alternate will *not*
 be bound for any other alternate.
 
 For example, the parser `{/ (f=@foo b=@bar X) Y /}` will match the token
-list `[@foo @bar @baz]`, resulting in the yielded value
+list `[@foo, @bar, @baz]`, resulting in the yielded value
 `@bar` and a remainder of `[@baz]`. At the point marked `X`, a local
 variable `f` will be bound to the matched yield of `@foo`, and a local
 variable `b` will be bound to the matched yield of `@bar`. At the point
@@ -145,12 +145,12 @@ For example:
   yielded value `[]` and a remainder of `"blort"`.
 
 * The parser `{/ "f"* /}` will match the string `"ffffuuuu"`, resulting
-  in the yielded value `[@f @f @f @f]` and a remainder of `"uuuu"`. The
+  in the yielded value `[@f, @f, @f, @f]` and a remainder of `"uuuu"`. The
   same parser will match the string `"blort"`, resulting in the
   yielded value `[]` and a remainder of `"blort"`.
 
 * The parser `{/ "f"+ /}` will match the string `"ffizmo"`, resulting
-  in the yielded value `[@f @f]` and a remainder of `"izmo"`. The
+  in the yielded value `[@f, @f]` and a remainder of `"izmo"`. The
   same parser will fail to match the string `"blort"`, since there is
   not even a single `"f"` at the start of the input.
 
@@ -198,7 +198,7 @@ token whose type tag is as given, yielding that token directly
 (including any payload data) as the result.
 
 For example, the parser `{/ @foo /}` will match the token list
-`[@foo @bar]`, resulting in the yielded value `@foo` and a
+`[@foo, @bar]`, resulting in the yielded value `@foo` and a
 remainder of `[@bar]`.
 
 #### Matching a sequence of one or more characters (terminal)
@@ -313,6 +313,25 @@ For example:
 
 * The parser `{/ f=@foo { <out> :: <out> [[[f]]] } /}` is just like the
   previous example, except it is written with an explicit yield definition.
+
+#### Running an arbitrary predicate instead of consuming input (terminal)
+
+As a variant of running code, it is possible to run a boolean predicate,
+which fails the rule should the predicate be false. To do this,
+place the predicate expression in parentheses preceded by a double
+ampersand (`&&(...)`). The value of the predicate if bound as a variable
+is always `null`.
+
+Any bound parsing result variables (see above) that are in scope of the
+predicate are available to be used in the expression.
+
+For example:
+
+* The parser `{/ &&(true) /}` will always succeed, yielding `null` and
+  consuming no input.
+
+* The parser `{/ x=. &&(isToken(x)) { <> x } /}` will match and yield
+  a single terminal, as long as that terminal is a token.
 
 #### Future direction: Destructuring bind
 

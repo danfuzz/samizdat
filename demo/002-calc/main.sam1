@@ -18,8 +18,8 @@ SELF_PATH ARGS* ::
 # Takes an initial value and a list of one-argument functions, and
 # does a reduction by applying each of the functions in order.
 applyAll = { initialValue functions ::
-    <> listReduce initialValue functions
-        { result . function :: <> function result }
+    <> listReduce(initialValue, functions)
+        { result . function :: <> function(result) }
 };
 
 # Forward declaration of `addExpression`.
@@ -28,15 +28,15 @@ addExpression = forwardFunction();
 # Parses a single digit, yielding its value as an int.
 digit = {/
     ch = ["0123456789"]
-    { <> isub (intFromString (tokenType ch)) (intFromString "0") }
+    { <> isub(intFromString(tokenType(ch)), intFromString("0")) }
 /};
 
 # Parses a whole number (non-negative integer), yielding its value as an int.
 number = {/
     digits = digit+
     {
-        <> listReduce 0 digits
-            { result . digit :: <> iadd digit (imul result 10) }
+        <> listReduce(0, digits)
+            { result . digit :: <> iadd(digit, imul(result, 10)) }
     }
 /};
 
@@ -65,7 +65,7 @@ unaryOp = {/
 unaryExpression = {/
     ops = unaryOp*
     ex = atom
-    { <> applyAll ex (listReverse ops) }
+    { <> applyAll(ex, listReverse(ops)) }
 /};
 
 # Parses an infix binary multiplicative operation, yielding its corresponding
@@ -85,9 +85,9 @@ mulExpression = {/
     opExes = (
         op = mulOp
         ex = unaryExpression
-        { <> { n :: <> op n ex } }
+        { <> { n :: <> op(n, ex) } }
     )*
-    { <> applyAll firstEx opExes }
+    { <> applyAll(firstEx, opExes) }
 /};
 
 # Parses an infix binary additive operation, yielding its corresponding
@@ -105,11 +105,11 @@ addExpressionImpl = {/
     opExes = (
         op = addOp
         ex = mulExpression
-        { <> { n :: <> op n ex } }
+        { <> { n :: <> op(n, ex) } }
     )*
-    { <> applyAll firstEx opExes }
+    { <> applyAll(firstEx, opExes) }
 /};
-addExpression addExpressionImpl;
+addExpression(addExpressionImpl);
 
 # Evaluates all the expressions passed to it, printing the evaluated results
 # in order. Each expression is expected to be terminated with a newline.
@@ -118,7 +118,7 @@ evalExpressions = {/
         ex = addExpression
         "\n"
         {
-            io0Note (format "%q" ex);
+            io0Note(format("%q", ex));
             # Explicit yield here to indicate successful parsing.
             <> null
         }
@@ -131,9 +131,9 @@ evalExpressions = {/
 #
 
 main = { args* ::
-    exprString = listReduce "" args
-        { result . one :: <> stringAdd result one "\n" };
-    pegApply evalExpressions exprString;
+    exprString = listReduce("", args)
+        { result . one :: <> stringAdd(result, one, "\n") };
+    pegApply(evalExpressions, exprString);
 };
 
-<> apply main ARGS
+<> apply(main, ARGS)

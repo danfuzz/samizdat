@@ -13,32 +13,32 @@
 
 # Returns a `call` node.
 makeCall = { function actuals* ::
-    <> @["call" ["function"=function "actuals"=actuals]]
+    <> @["call" = ["function"=function, "actuals"=actuals]]
 };
 
 # Returns a `varRef` node.
 makeVarRef = { name ::
-    <> @["varRef" name]
+    <> @["varRef" = name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 makeCallName = { name actuals* ::
-    <> @["call" ["function"=(makeVarRef name) "actuals"=actuals]]
+    <> @["call" = ["function"=makeVarRef(name), "actuals"=actuals]]
 };
 
 # Returns a `literal` node.
 makeLiteral = { value ::
-    <> @["literal" value]
+    <> @["literal" = value]
 };
 
 # Reports the given list of pending tokens as part of error processing.
 reportError = { pending ::
-    io0Note "Pending tokens:";
+    io0Note("Pending tokens:");
 
-    listForEach pending
-        { . token :: io0Note (format "    %q" token) };
+    listForEach(pending)
+        { . token :: io0Note(format("    %q", token)) };
 
-    io0Die "\nExtra tokens at end of program."
+    io0Die("\nExtra tokens at end of program.")
 };
 
 
@@ -51,7 +51,6 @@ reportError = { pending ::
 #
 
 # Forward declarations.
-parseAtom = forwardFunction();
 parseExpression = forwardFunction();
 parseFunction = forwardFunction();
 parseParser = forwardFunction();
@@ -59,73 +58,88 @@ parseParser = forwardFunction();
 # Parses an integer literal.
 parseInt = {/
     i = @int
-    { <> makeLiteral (tokenValue i) }
+    { <> makeLiteral(tokenValue(i)) }
 /};
 
 # Parses a string literal.
 parseString = {/
     s = @string
-    { <> makeLiteral (tokenValue s) }
+    { <> makeLiteral(tokenValue(s)) }
 /};
 
-# Parses an empty list literal.
-parseEmptyList = {/
-    @"[" @"]"
-    { <> makeLiteral [] }
+# Parses an "unadorned" (no bracketing) list. Yields a list (per se)
+# of contents.
+parseUnadornedList = {/
+    first = parseExpression
+    rest = (@"," parseExpression)*
+    { <> listPrepend(first, rest) }
+|
+    { <> [] }
 /};
 
 # Parses a list literal.
 parseList = {/
     @"["
-    atoms = parseAtom+
+    expressions = parseUnadornedList
     @"]"
-    { <> apply makeCallName "makeList" atoms }
+    {
+        <> ifTrue { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> apply(makeCallName, "makeList", expressions) }
+    }
 /};
 
 # Parses an empty map literal.
 parseEmptyMap = {/
     @"[" @"=" @"]"
-    { <> makeLiteral [=] }
+    { <> makeLiteral([=]) }
 /};
 
 # Parses a mapping (element of a map).
 parseMapping = {/
-    key = parseAtom
+    key = parseExpression
     @"="
-    value = parseAtom
-    { <> [key value] }
+    value = parseExpression
+    { <> [key, value] }
 /};
 
 # Parses a map literal.
 parseMap = {/
     @"["
-    mappings = parseMapping+
+    first = parseMapping
+    rest = (@"," parseMapping)*
     @"]"
-    { <> apply makeCallName "makeMap" (apply listAdd mappings) }
+    {
+        mappings = apply(listAdd, first, rest);
+        <> apply(makeCallName, "makeMap", mappings)
+    }
 /};
 
 # Parses a token literal.
 parseToken = {/
     @"@"
     (
-        @"[" type=parseAtom value=parseAtom? @"]"
-        { <> apply makeCallName "makeToken" type value }
+        @"["
+        type = parseExpression
+        value = (@"=" parseExpression)?
+        @"]"
+        { <> apply(makeCallName, "makeToken", type, value) }
     |
         type = [@string @identifier]
-        { <> makeCallName "makeToken" (makeLiteral (tokenValue type)) }
+        { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
     )
 /};
 
 # Parses a uniqlet literal.
 parseUniqlet = {/
     @"@@"
-    { <> makeCallName "makeUniqlet" }
+    { <> makeCallName("makeUniqlet") }
 /};
 
 # Parses a variable reference.
 parseVarRef = {/
     name = @identifier
-    { <> makeVarRef (tokenValue name) }
+    { <> makeVarRef(tokenValue(name)) }
 /};
 
 # Parses a variable definition.
@@ -133,7 +147,7 @@ parseVarDef = {/
     name = @identifier
     @"="
     ex = parseExpression
-    { <> @["varDef" ["name"=(tokenValue name) "value"=ex]] }
+    { <> @["varDef" = ["name"=tokenValue(name), "value"=ex]] }
 /};
 
 # Parses a parenthesized expression.
@@ -145,40 +159,48 @@ parseParenExpression = {/
 /};
 
 # Parses an atomic expression.
-implAtom = {/
+parseAtom = {/
     parseVarRef | parseInt | parseString |
-    parseEmptyList | parseList | parseEmptyMap | parseMap |
+    parseList | parseEmptyMap | parseMap |
     parseUniqlet | parseToken | parseFunction | parseParenExpression |
     # Defined by Samizdat Layer 1.
-    &"{/" parseParser
+    &@"{/" parseParser
 /};
-parseAtom implAtom;
 
-# Parses a function call expression.
-parseCallExpression = {/
-    function = parseAtom
-    args = parseAtom+
-    { <> apply makeCall function args }
+# Parses a list of "actual" (as opposed to formal) arguments to a function.
+# Yields a list of expression nodes.
+parseActualsList = {/
+    @"()"
+    parseFunction*
+|
+    @"("
+    normalActuals = parseUnadornedList
+    @")"
+    functionActuals = parseFunction*
+    { <> listAdd(normalActuals, functionActuals) }
+|
+    parseFunction+
 /};
 
 # Parses a unary prefix operator. This yields a `varRef` node for the function
 # to apply when applying the prefix.
 parsePrefixOperator = {/
     operator = [@"+" @"-" @"!"]
-    { <> makeVarRef (stringAdd "unary" (tokenType operator)) }
+    { <> makeVarRef(stringAdd("unary", tokenType(operator))) }
 /};
 
 # Parses a unary postfix operator. This yields a function (per se) to call
 # in order to construct a node that represents the appropriate ultimate
 # function call.
 parsePostfixOperator = {/
-    @"()"
-    { <> { node :: <> makeCall node} }
+    actuals = parseActualsList
+    { <> { node :: <> apply(makeCall, node, actuals) } }
 |
     @"["
-    atoms = parseAtom+
+    exprs = parseUnadornedList
+    &&(ne(exprs, []))
     @"]"
-    { <> { node :: <> apply makeCall (makeVarRef "unary[]") node atoms } }
+    { <> { node :: <> apply(makeCall, makeVarRef("unary[]"), node, exprs) } }
 /};
 
 # Parses a unary expression. This is an atom, optionally surrounded on
@@ -190,18 +212,16 @@ parseUnaryExpression = {/
     postfixes = parsePostfixOperator*
 
     {
-        withPosts = listReduce atom postfixes
-            { result . postfix :: <> postfix result };
-        <> listReduce withPosts (listReverse prefixes)
-            { result . prefix :: <> makeCall prefix result }
+        withPosts = listReduce(atom, postfixes)
+            { result . postfix :: <> postfix(result) };
+        <> listReduce(withPosts, listReverse(prefixes))
+            { result . prefix :: <> makeCall(prefix, result) }
     }
 /};
 
 # Parses a general expression.
-implExpression = {/
-    parseCallExpression | parseUnaryExpression
-/};
-parseExpression implExpression;
+implExpression = parseUnaryExpression;
+parseExpression(implExpression);
 
 # Parses a statement.
 parseStatement = {/
@@ -214,7 +234,7 @@ parseNonlocalExit = {/
     name = parseVarRef
     @">"
     ex = parseExpression?
-    { <> apply makeCall name ex }
+    { <> apply(makeCall, name, ex) }
 /};
 
 # Parses a local yield / return.
@@ -233,26 +253,26 @@ parseYieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> tokenValue name }
+    { <> tokenValue(name) }
 /};
 
 # Parses a formal argument decalaration.
 parseFormal = {/
     name = (
         n = @identifier
-        { <> ["name" = (tokenValue n)] }
+        { <> ["name" = tokenValue(n)] }
     |
         @"." { <> [=] }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> ["repeat" = (tokenType r)] }
+        { <> ["repeat" = tokenType(r)] }
     |
         { <> [=] }
     )
 
-    { <> mapAdd name repeat }
+    { <> mapAdd(name, repeat) }
 /};
 
 # Parses a program body (statements plus optional yield).
@@ -270,7 +290,7 @@ parseProgramBody = {/
         { <> ["statements" = [s]] }
     |
         y = parseYield
-        { <> mapAdd ["statements" = []] y }
+        { <> mapAdd(["statements" = []], y) }
     |
         { <> ["statements" = []] }
     )
@@ -278,8 +298,8 @@ parseProgramBody = {/
     @";"*
 
     {
-        allStatements = listAdd most (mapGet last "statements");
-        <> mapPut last "statements" allStatements
+        allStatements = listAdd(most, mapGet(last, "statements"));
+        <> mapPut(last, "statements", allStatements)
     }
 /};
 
@@ -301,14 +321,14 @@ parseProgramDeclarations = {/
 
     @"::"
 
-    { <> mapAdd formals yieldDef }
+    { <> mapAdd(formals, yieldDef) }
 /};
 
 # Parses a program (top-level program or contents inside function braces).
 parseProgram = {/
     decls = (parseProgramDeclarations | { <> [=] })
     body = parseProgramBody
-    { <> @["function" (mapAdd decls body)] }
+    { <> @["function" = mapAdd(decls, body)] }
 /};
 
 # Parses a function (in-line anonymous function).
@@ -318,7 +338,7 @@ implFunction = {/
     @"}"
     { <> prog }
 /};
-parseFunction implFunction;
+parseFunction(implFunction);
 
 # Top-level rule to parse a program with possible error afterwards.
 # Note that an empty string is a valid program.
@@ -326,7 +346,7 @@ parseProgramOrError = {/
     prog = parseProgram
     (
         pending = .+
-        { reportError pending }
+        { reportError(pending) }
     )?
     { <> prog }
 /};
@@ -344,9 +364,9 @@ implParser = {/
     @"{/"
     pex = parseChoicePex
     @"/}"
-    { <> @["parser" pex] }
+    { <> @["parser" = pex] }
 /};
-parseParser implParser;
+parseParser(implParser);
 
 # Parse a parenthesized parsing expression.
 parseParenPex = {/
@@ -360,33 +380,10 @@ parseParenPex = {/
 parseParserString = {/
     s = @string
     {
-        value = tokenValue s;
-        <> ifTrue { <> eq (lowSize value) 1 }
-            { <> @["token" value] }
+        value = tokenValue(s);
+        <> ifTrue { <> eq(lowSize(value), 1) }
+            { <> @["token" = value] }
             { <> s }
-    }
-/};
-
-# Parse a character range parsing expression.
-parseParserCharRange = {/
-    start = @string
-    startInt = {
-        <> ifTrue { <> eq (lowSize (tokenValue start)) 1 }
-            { <> intFromString (tokenValue start) }
-    }
-    @".."
-    end = @string
-    endInt = {
-        <> ifTrue { <> eq (lowSize (tokenValue end)) 1 }
-            { <> intFromString (tokenValue end) }
-    }
-    {
-        loopReduce [startInt ""] { result ::
-            at = listFirst result;
-            soFar = listLast result;
-            ifTrue { <> gt at endInt } { <out> @["string" soFar] };
-            <> [(iadd at 1) (stringAdd soFar (stringFromInt at))]
-        }
     }
 /};
 
@@ -394,7 +391,37 @@ parseParserCharRange = {/
 parseParserToken = {/
     @"@"
     type = [@identifier @string]
-    { <> @["token" (tokenValue type)] }
+    { <> @["token" = tokenValue(type)] }
+/};
+
+# Parse a string or character range parsing expression, used when defining
+# sets.
+parseParserSetString = {/
+    s = @string
+    (
+        @".."
+        startInt = {
+            startValue = tokenValue(s);
+            <> ifTrue { <> eq(lowSize(startValue), 1) }
+                { <> intFromString(startValue) }
+        }
+        end = @string
+        endInt = {
+            endValue = tokenValue(end);
+            <> ifTrue { <> eq(lowSize(endValue), 1) }
+                { <> intFromString(endValue) }
+        }
+        {
+            loopReduce([startInt, ""]) { result ::
+                at = listFirst(result);
+                soFar = listLast(result);
+                ifTrue { <> gt(at, endInt) } { <out> @["string" = soFar] };
+                <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
+            }
+        }
+    |
+        { <> s }
+    )
 /};
 
 # Parse a set (or set complement) parsing expression.
@@ -408,21 +435,23 @@ parseParserSet = {/
     )
 
     terminals = (
-        strings = (parseParserCharRange | @string)+
+        strings = parseParserSetString+
         {
-            oneString = listReduce "" strings
-                { result . s :: <> stringAdd result (tokenValue s) };
-            <> stringReduce [] oneString
-                { result . ch :: <> listAppend result ch }
+            oneString = listReduce("", strings)
+                { result . s :: <> stringAdd(result, tokenValue(s)) };
+            <> stringReduce ([], oneString)
+                { result . ch :: <> listAppend(result, ch) }
         }
     |
-        tokens = parseParserToken*
-        { <> listMap tokens { . t :: <> tokenValue t } }
+        tokens = parseParserToken+
+        { <> listMap(tokens) { . t :: <> tokenValue(t) } }
+    |
+        { <> [] }
     )
 
     @"]"
 
-    { <> @[type terminals] }
+    { <> @[type = terminals] }
 /};
 
 # Parse a code block parsing expression.
@@ -441,7 +470,14 @@ parseParserCode = {/
     body = parseProgramBody
     @"}"
 
-    { <> @["{}" (mapAdd yieldDef body)] }
+    { <> @["{}" = mapAdd(yieldDef, body)] }
+/};
+
+# Parse a predicate parsing expression.
+parseParserPredicate = {/
+    @"&&"
+    predicate = parseParenExpression
+    { <> @["&&" = predicate] }
 /};
 
 # Parse an atomic parsing expression.
@@ -456,6 +492,8 @@ parseParserAtom = {/
 |
     parseParserCode
 |
+    parseParserPredicate
+|
     @"."
 |
     @"()"
@@ -468,7 +506,7 @@ parseRepeatPex = {/
     atom = parseParserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(tokenType repeat) atom] }
+        { <> @[tokenType(repeat) = atom] }
     |
         { <> atom }
     )
@@ -480,7 +518,7 @@ parseLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = parseRepeatPex
-        { <> @[(tokenType lookahead) pex] }
+        { <> @[tokenType(lookahead) = pex] }
     )
 |
     parseRepeatPex
@@ -492,7 +530,7 @@ parseNamePex = {/
         name = @identifier
         @"="
         pex = parseLookaheadPex
-        { <> @["varDef" ["name"=(tokenValue name) "value"=pex]] }
+        { <> @["varDef" = ["name"=tokenValue(name), "value"=pex]] }
     )
 |
     parseLookaheadPex
@@ -502,16 +540,16 @@ parseNamePex = {/
 # one.
 parseSequencePex = {/
     items = parseNamePex+
-    { <> @["sequence" items] }
+    { <> @["sequence" = items] }
 /};
 
 # Parse a choice parsing expression. This includes a single choice.
 implChoicePex = {/
     first = parseSequencePex
     rest = (@"|" parseSequencePex)*
-    { <> @["choice" (listPrepend first rest)] }
+    { <> @["choice" = listPrepend(first, rest)] }
 /};
-parseChoicePex implChoicePex;
+parseChoicePex(implChoicePex);
 
 
 #
@@ -520,11 +558,11 @@ parseChoicePex implChoicePex;
 
 # Documented in Samizdat Layer 1 spec.
 sam2Tree = { program ::
-    tokens = ifTrue { <> isString program }
-        { <> sam2Tokenize program }
+    tokens = ifTrue { <> isString(program) }
+        { <> sam2Tokenize(program) }
         { <> program };
 
-    <> pegApply parseProgramOrError tokens
+    <> pegApply(parseProgramOrError, tokens)
 };
 
 <> [

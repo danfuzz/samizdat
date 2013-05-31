@@ -12,10 +12,11 @@
 
 # These are all the int digits, as a map from strings to
 # digit values.
-INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
+INT_CHARS =
+    ["0"=0, "1"=1, "2"=2, "3"=3, "4"=4, "5"=5, "6"=6, "7"=7, "8"=8, "9"=9];
 
 # Helper to convert digit characters to digit values.
-intFromDigitChar = { ch :: <> mapGet INT_CHARS (tokenType ch) };
+intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 
 
 #
@@ -33,15 +34,15 @@ tokWhitespace = {/
 # Parses punctuation and operators. The lookahead is done to avoid bothering
 # with the choice expression unless we have a definite match.
 tokPunctuation = {/
-    &["-/&!@:.=+?;*<>{}()[]"]
-    ("@@" | "::" | "<>" | "()" | ".." | "{/" | "/}" | .)
+    &["-/&|!@:,.=+?;*<>{}()[]"]
+    ("@@" | "::" | "<>" | "()" | "&&" | ".." | "{/" | "/}" | .)
 /};
 
 # Parses a single character, inside a quoted string.
 tokStringChar = {/
     (
         ch = [! "\\" "\""]
-        { <> tokenType ch }
+        { <> tokenType(ch) }
     )
 |
     (
@@ -60,21 +61,21 @@ tokString = {/
     "\""
     chars = tokStringChar*
     "\""
-    { <> @["string" (apply stringAdd chars)] }
+    { <> @["string" = apply(stringAdd, chars)] }
 /};
 
 # Parses an identifier (in the usual form).
 tokIdentifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
-    { <> @["identifier" (stringFromTokenList (listPrepend first rest))] }
+    { <> @["identifier" = stringFromTokenList(listPrepend(first, rest))] }
 /};
 
 # Parses the quoted-string identifier form.
 tokQuotedIdentifier = {/
     "\\"
     s = tokString
-    { <> @["identifier" (tokenValue s)] }
+    { <> @["identifier" = tokenValue(s)] }
 /};
 
 # Parses an integer literal.
@@ -82,13 +83,13 @@ tokInt = {/
     sign = ("-" { <> -1 } | { <> 1 })
     digits = (
         ch = ["0".."9"]
-        { <> intFromDigitChar ch }
+        { <> intFromDigitChar(ch) }
     )+
 
     {
-        positiveValue = listReduce 0 digits
-            { result . digit :: <> iadd (imul result 10) digit };
-        <> @["int" (imul sign positiveValue)]
+        positiveValue = listReduce(0, digits)
+            { result . digit :: <> iadd(imul(result, 10), digit) };
+        <> @["int" = imul(sign, positiveValue)]
     }
 /};
 
@@ -98,8 +99,8 @@ tokError = {/
     badCh = .
     [! "\n"]*
     {
-        msg = format "Unrecognized character: %q" (tokenType badCh);
-        <> @["error" msg]
+        msg = format("Unrecognized character: %q", tokenType(badCh));
+        <> @["error" = msg]
     }
 /};
 
@@ -127,7 +128,7 @@ tokFile = {/
 
 # Documented in Samizdat Layer 1 spec.
 sam2Tokenize = { programText ::
-    <> pegApply tokFile programText
+    <> pegApply(tokFile, programText)
 };
 
 <> [

@@ -82,13 +82,14 @@ Characters are self-representing, except that there are four
 A `list` is a sequence of zero or more other values.
 
 Lists are written as an initial `[`, followed by zero or
-more value representations, followed by a final `]`.
+more value representations, followed by a final `]`. Values
+are separated with commas (`,`).
 
 ```
 []                            # the empty list
 [1]
-["blort" "fizmo" "igram"]
-[[1] 242 -23]
+["blort", "fizmo", "igram"]
+[[1], 242, -23]
 ```
 
 
@@ -102,7 +103,7 @@ only being strings (or string-like things).
 Non-empty maps are written as an initial `[`, followed by one or
 more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `=`, followed by the value
-representation.
+representation. Mappings are separated with commas.
 
 To avoid ambiguity with the empty list, the empty map is
 written as `[=]`.
@@ -110,10 +111,10 @@ written as `[=]`.
 ```
 [=]                           # the empty map
 [1="number one"]
-["blort" = "potion; the ability to see in the dark"
- "fizmo" = "spell; unclogs pipes"
+["blort" = "potion; the ability to see in the dark",
+ "fizmo" = "spell; unclogs pipes",
  "igram" = "spell; make purple things invisible"]
-[["complex" "data" "as" "key"] = "Handy!"]
+[["complex", "data", "as", "key"] = "Handy!"]
 ```
 
 
@@ -126,9 +127,9 @@ returned by parsing (including tokenization) functions (which is
 the direct origin of the name).
 
 Tokens are written as an initial `@[`, followed by a type tag
-representation (an arbitrary value), optionally followed by a payload
-value representation (another arbitrary value), followed by a final
-`]`.
+representation (an arbitrary value), optionally followed by an
+`=` and a payload value representation (another arbitrary value),
+followed by a final `]`.
 
 Valueless tokens whose type tag is a string constant can be abbreviated
 as `@"type"`. If that string constant has the form of a valid
@@ -138,11 +139,11 @@ identifier, then the token can be further abbreviated as just `@type`.
 @["null"]                     # the value usually just written as `null`
 @"null"                       # same as above
 @null                         # same as above
-@["boolean" 0]                # the value usually just written as `false`
-@["boolean" 1]                # the value usually just written as `true`
+@["boolean" = 0]              # the value usually just written as `false`
+@["boolean" = 1]              # the value usually just written as `true`
 @[
-  "spell"
-  ["name"="frotz" "purpose"="cause item to glow"]
+  "spell" =
+  ["name"="frotz", "purpose"="cause item to glow"]
 ]
 ```
 
@@ -186,8 +187,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = @["boolean" 0]
-true = @["boolean" 1]
+false = @["boolean" = 0]
+true = @["boolean" = 1]
 ```
 
 

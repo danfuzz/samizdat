@@ -232,6 +232,7 @@ static zvalue tokenizeOne(ParseState *state) {
         case '}':  read(state); return TOK_CH_CCURLY;
         case ')':  read(state); return TOK_CH_CPAREN;
         case ']':  read(state); return TOK_CH_CSQUARE;
+        case ',':  read(state); return TOK_CH_COMMA;
         case '.':  read(state); return TOK_CH_DOT;
         case '=':  read(state); return TOK_CH_EQUAL;
         case '>':  read(state); return TOK_CH_GT;

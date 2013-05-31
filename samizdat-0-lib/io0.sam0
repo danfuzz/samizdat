@@ -29,35 +29,35 @@
 # this takes care of ignoring double slashes (or triple, etc.) and `.`
 # components, but it leaves the handling of `..` components to a higher
 # layer.
-parsePathString = pegMakePlus
-    (pegMakeSequence
-        (pegMakeStar
-            (pegMakeSequence
-                (pegMakePlus (pegMakeToken "/"))
-                (pegMakeToken ".")
-                (pegMakeLookaheadSuccess (pegMakeToken "/"))))
-        (pegMakePlus (pegMakeToken "/"))
-        (pegMakeLookaheadFailure
-            (pegMakeSequence
-                (pegMakeToken ".")
-                pegRuleEof))
-        (pegMakeMainSequence
-            (pegMakeStar (pegMakeCharSetComplement "/"))
-            (pegMakeCode { chars :: <> stringFromTokenList chars })));
+parsePathString = pegMakePlus(
+    pegMakeSequence(
+        pegMakeStar(
+            pegMakeSequence(
+                pegMakePlus(pegMakeToken("/")),
+                pegMakeToken("."),
+                pegMakeLookaheadSuccess(pegMakeToken("/")))),
+        pegMakePlus(pegMakeToken("/")),
+        pegMakeLookaheadFailure(
+            pegMakeSequence(
+                pegMakeToken("."),
+                pegRuleEof)),
+        pegMakeMainSequence(
+            pegMakeStar(pegMakeCharSetComplement("/")),
+            pegMakeCode { chars :: <> stringFromTokenList(chars) })));
 
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
 isPrefix = { prefix path <out> ::
-    prefixSize = lowSize prefix;
+    prefixSize = lowSize(prefix);
 
-    ifTrue { <> gt prefixSize (lowSize path) }
+    ifTrue { <> gt(prefixSize, lowSize(path)) }
         {
             # The "prefix" is longer than the path, so it can't actually be
             # a prefix.
             <out> false
         };
 
-    <> eq prefix (listSlice path 0 prefixSize)
+    <> eq(prefix, listSlice(path, 0, prefixSize))
 };
 
 
@@ -67,61 +67,62 @@ isPrefix = { prefix path <out> ::
 
 # Documented in Samizdat Layer 0 spec.
 io0FlatFromPath = { path ::
-    <> listReduce "" path { result n one ::
-        ifTrue { <> eq one "." }
-            { io0Die (format "Invalid `.` component in path: %q" path) };
-        ifTrue { <> eq one ".." }
-            { io0Die (format "Invalid `..` component in path: %q" path) };
-        ifTrue { <> and { <> eq one "" } { <> ne n (isub (lowSize path) 1) } }
-            { io0Die (format "Invalid empty component in path: %q" path) };
-        stringForEach one { . ch ::
-            ifTrue { <> eq ch "/" }
-                { io0Die (format "Invalid `/` in path: %q" path) };
-            ifTrue { <> eq ch "\0" }
-                { io0Die (format "Invalid `\\0` in path: %q" path) };
+    <> listReduce("", path) { result n one ::
+        ifTrue { <> eq(one, ".") }
+            { io0Die(format("Invalid `.` component in path: %q", path)) };
+        ifTrue { <> eq(one, "..") }
+            { io0Die(format("Invalid `..` component in path: %q", path)) };
+        ifTrue
+            { <> and { <> eq(one, "") } { <> ne(n, isub(lowSize(path), 1)) } }
+            { io0Die(format("Invalid empty component in path: %q", path)) };
+        stringForEach(one) { . ch ::
+            ifTrue { <> eq(ch, "/") }
+                { io0Die(format("Invalid `/` in path: %q", path)) };
+            ifTrue { <> eq(ch, "\0") }
+                { io0Die(format("Invalid `\\0` in path: %q", path)) };
         };
-        <> stringAdd result "/" one
+        <> stringAdd(result, "/", one)
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
 io0PathFromFlat = { string ::
     # Reject the empty string.
-    ifTrue { <> eq string "" }
-        { io0Die "Invalid path (empty)." };
+    ifTrue { <> eq(string, "") }
+        { io0Die("Invalid path (empty).") };
 
     # Prepend the current directory if the path isn't absolute.
-    absoluteString = ifTrue { <> eq (stringNth string 0) "/" }
+    absoluteString = ifTrue { <> eq(stringNth(string, 0), "/") }
         { <> string }
-        { <> stringAdd (io0FlatCwd()) "/" string };
+        { <> stringAdd(io0FlatCwd(), "/", string) };
 
     # Do the first layer of parsing.
-    components = pegApply parsePathString absoluteString;
+    components = pegApply(parsePathString, absoluteString);
 
     # Handle `..` components, to produce the final result.
-    <> listReduce [] components { result . one ::
-        <> ifTrue { <> eq one ".." }
+    <> listReduce([], components) { result . one ::
+        <> ifTrue { <> eq(one, "..") }
             {
-                ifTrue { <> eq result [] }
+                ifTrue { <> eq(result, []) }
                     {
-                        io0Die (format
-                            "Invalid `..` component in path: %q" string)
+                        io0Die(format(
+                            "Invalid `..` component in path: %q", string))
                     };
-                <> listButLast result
+                <> listButLast(result)
             }
-            { <> listAppend result one }
+            { <> listAppend(result, one) }
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
 io0ReadFileUtf8 = { path ::
-    <> io0FlatReadFileUtf8 (io0FlatFromPath path)
+    <> io0FlatReadFileUtf8(io0FlatFromPath(path))
 };
 
 # Documented in Samizdat Layer 0 spec.
 io0ReadLink = { path ::
-    <> ifValue { <> io0FlatReadLink (io0FlatFromPath path) }
-        { newPath :: <> io0PathFromFlat newPath }
+    <> ifValue { <> io0FlatReadLink(io0FlatFromPath(path)) }
+        { newPath :: <> io0PathFromFlat(newPath) }
 };
 
 # Helper for `io0SandboxedReader` which does symbolic link resolution,
@@ -130,17 +131,17 @@ io0ReadLink = { path ::
 # This is located in the "exported" section, as it makes use of
 # the exported function `io0ReadLink`, defined above.
 resolveLinks = { sandboxDirectory path <out> ::
-    loopReduce [path 50] { result ::
-        path = listNth result 0;
-        limit = listNth result 1;
+    loopReduce([path, 50]) { result ::
+        path = listNth(result, 0);
+        limit = listNth(result, 1);
 
-        ifTrue { <> le limit 0 }
-            { io0Die "Too many links in symbolic link chain." };
-        ifFalse { <> isPrefix sandboxDirectory path }
-            { io0Die "Symbolic link escapes sandbox directory." };
+        ifTrue { <> le(limit, 0) }
+            { io0Die("Too many links in symbolic link chain.") };
+        ifFalse { <> isPrefix(sandboxDirectory, path) }
+            { io0Die("Symbolic link escapes sandbox directory.") };
 
-        <> ifValue { <> io0ReadLink path }
-            { newPath :: <> [newPath (isub limit 1)] }
+        <> ifValue { <> io0ReadLink(path) }
+            { newPath :: <> [newPath, (isub(limit, 1))] }
             { <out> path }
     }
 };
@@ -148,21 +149,21 @@ resolveLinks = { sandboxDirectory path <out> ::
 # Documented in Samizdat Layer 0 spec.
 io0SandboxedReader = { directory ::
     <> { path ::
-        fullPath = resolveLinks directory (listAdd directory path);
-        <> io0ReadFileUtf8 fullPath;
+        fullPath = resolveLinks(directory, listAdd(directory, path));
+        <> io0ReadFileUtf8(fullPath);
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
 io0WriteFileUtf8 = { path ::
-    <> io0FlatWriteFileUtf8 (io0FlatFromPath path)
+    <> io0FlatWriteFileUtf8(io0FlatFromPath(path))
 };
 
 <> [
-    "io0FlatFromPath" = io0FlatFromPath
-    "io0PathFromFlat" = io0PathFromFlat
-    "io0ReadFileUtf8" = io0ReadFileUtf8
-    "io0ReadLink" = io0ReadLink
-    "io0SandboxedReader" = io0SandboxedReader
+    "io0FlatFromPath" = io0FlatFromPath,
+    "io0PathFromFlat" = io0PathFromFlat,
+    "io0ReadFileUtf8" = io0ReadFileUtf8,
+    "io0ReadLink" = io0ReadLink,
+    "io0SandboxedReader" = io0SandboxedReader,
     "io0WriteFileUtf8" = io0WriteFileUtf8
 ];

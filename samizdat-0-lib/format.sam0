@@ -14,106 +14,107 @@
 callSourceString = forwardFunction();
 
 # Single-character strings `"\0"` `"\x7f;"` and `"\x9f;"`.
-CHAR_127 = stringFromInt 127;
-CHAR_159 = stringFromInt 159;
+CHAR_127 = stringFromInt(127);
+CHAR_159 = stringFromInt(159);
 
 # Helper for optionally adorning results.
 adornIf = { adorn before value after ::
     <> ifTrue { <> adorn }
-        { <> stringAdd before value after }
+        { <> stringAdd(before, value, after) }
         { <> value }
 };
 
 # These are all the decimal int digits, as a map from digit values to
 # strings.
-INT_CHARS = [0="0" 1="1" 2="2" 3="3" 4="4" 5="5" 6="6" 7="7" 8="8" 9="9"];
+INT_CHARS =
+    [0="0", 1="1", 2="2", 3="3", 4="4", 5="5", 6="6", 7="7", 8="8", 9="9"];
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
 intBody = { start value <out> ::
-    loopReduce ["" value] { result ::
-        text = listNth result 0;
-        value = listNth result 1;
-        <> ifTrue { <> ne value 0 }
+    loopReduce(["", value]) { result ::
+        text = listNth(result, 0);
+        value = listNth(result, 1);
+        <> ifTrue { <> ne(value, 0) }
             {
-                digit = mapGet INT_CHARS (imod value 10);
-                <> [(stringAdd digit text) (idiv value 10)];
+                digit = mapGet(INT_CHARS, imod(value, 10));
+                <> [stringAdd(digit, text), idiv(value, 10)];
             }
-            { <out> stringAdd start text }
+            { <out> stringAdd(start, text) }
     }
 };
 
 # Map from int sign values to the appropriate stringifier for each.
 INT_SIGNS = [
-    (-1) = { int :: <> intBody "-" (ineg int) }
-    0    = { <> "0" }
-    1    = { int :: <> intBody "" int }
+    -1 = { int :: <> intBody("-", ineg(int)) },
+    0  = { <> "0" },
+    1  = { int :: <> intBody("", int) }
 ];
 
 # Stringifies an int.
 doInt = { int adorn ::
-    <> (mapGet INT_SIGNS (intSign int)) int
+    <> mapGet(INT_SIGNS, intSign(int))(int)
 };
 
 # Helper for stringifying strings: Returns the hex form for the given
 # character. Assumes it's not passed `0`.
 stringHexEscape = { ch ::
     intHex = { value ::
-        <> ifTrue { <> eq value 0 }
+        <> ifTrue { <> eq(value, 0) }
             { <> "" }
             {
-                digit = stringNth "0123456789abcdef" (imod value 16);
-                more = idiv value 16;
-                <> stringAdd (intHex more) digit
+                digit = stringNth("0123456789abcdef", imod(value, 16));
+                more = idiv(value, 16);
+                <> stringAdd(intHex(more), digit)
             }
     };
 
-    <> stringAdd "\\x" (intHex (intFromString ch)) ";"
+    <> stringAdd("\\x", intHex(intFromString(ch)), ";")
 };
 
 # Map of special-case characters to their stringified forms.
 SPECIAL_CHARS = [
-    "\0" = "\\0"
-    "\n" = "\\n"
-    "\"" = "\\\""
+    "\0" = "\\0",
+    "\n" = "\\n",
+    "\"" = "\\\"",
     "\\" = "\\\\"
 ];
 
 # Helper for stringifying strings: Returns the converted form of the
 # given character.
 stringChar = { ch ::
-    <> ifValue { <> mapGet SPECIAL_CHARS ch }
+    <> ifValue { <> mapGet(SPECIAL_CHARS, ch) }
         { special :: <> special }
         {
             # This checks for the ranges of nonprinting control characters.
-            <> ifTrue { <> or { <> lt ch " " }
-                              { <> and { <> ge ch CHAR_127 }
-                                       { <> le ch CHAR_159 } } }
-                { <> stringHexEscape ch }
+            <> ifTrue { <> or { <> lt(ch, " ") }
+                              { <> and { <> ge(ch, CHAR_127) }
+                                       { <> le(ch, CHAR_159) } } }
+                { <> stringHexEscape(ch) }
                 { <> ch }
         }
 };
 
 # These are all the characters which are allowed to start an identifier.
-IDENTIFIER_STARTS = stringReduce [=]
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
-    { result . ch :: <> mapPut result ch true };
+IDENTIFIER_STARTS = stringReduce([=],
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_")
+    { result . ch :: <> mapPut(result, ch, true) };
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = mapAdd IDENTIFIER_STARTS
-    [ "0"=true "1"=true "2"=true "3"=true "4"=true
-      "5"=true "6"=true "7"=true "8"=true "9"=true ];
+IDENTIFIER_CHARS = mapAdd(IDENTIFIER_STARTS,
+    [ "0"=true, "1"=true, "2"=true, "3"=true, "4"=true,
+      "5"=true, "6"=true, "7"=true, "8"=true, "9"=true ]);
 
 # Checks to see if the given string has the form of an in-language
 # identifier.
 isIdentifier = { string <out> ::
     <> and
-        { <> gt (lowSize string) 0 }
-        { <> mapGet IDENTIFIER_STARTS (stringNth string 0) false }
+        { <> gt(lowSize(string), 0) }
+        { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0), false) }
         {
-            stringForEach string
+            stringForEach(string)
                 { . ch ::
-                    ifFalse { <> mapGet IDENTIFIER_CHARS ch false }
+                    ifFalse { <> mapGet(IDENTIFIER_CHARS, ch, false) }
                         { <out> false }
                 };
             <> true
@@ -122,59 +123,69 @@ isIdentifier = { string <out> ::
 
 # Stringifies a string.
 doString = { string adorn ::
-    body = stringReduce "" string
-        { result . ch :: <> stringAdd result (stringChar ch) };
-    <> adornIf adorn "\"" body "\""
+    body = stringReduce("", string)
+        { result . ch :: <> stringAdd(result, stringChar(ch)) };
+    <> adornIf(adorn, "\"", body, "\"")
 };
 
 # Stringifies a list.
 doList = { list adorn ::
-    body = listReduce "" list
+    body = listReduce("", list)
         { reduction . elem ::
-            <> stringAdd
-                reduction
-                (ifTrue { <> eq reduction "" } { <> "" } { <> " " })
-                (callSourceString elem)
+            <> stringAdd(
+                reduction,
+                ifTrue { <> eq(reduction, "") } { <> "" } { <> ", " },
+                callSourceString(elem))
         };
 
-    <> adornIf adorn "[" body "]"
+    <> adornIf(adorn, "[", body, "]")
 };
 
 # Stringifies a map.
 doMap = { map adorn ::
-    body = mapReduce "" map
+    body = mapReduce("", map)
         { reduction key value ::
-            <> stringAdd
-                reduction
-                (ifTrue { <> eq reduction "" } { <> "" } { <> " " })
-                (callSourceString key)
-                "="
-                (callSourceString value)
+            <> stringAdd(
+                reduction,
+                ifTrue { <> eq(reduction, "") } { <> "" } { <> ", " },
+                callSourceString(key),
+                "=",
+                callSourceString(value))
         };
 
-    <> adornIf adorn
-        "["
-        (ifTrue { <> eq body "" } { <> "=" } { <> body })
-        "]"
+    <> adornIf(adorn,
+        "[",
+        ifTrue { <> eq(body, "") } { <> "=" } { <> body },
+        "]")
 };
+
+# Tokens with special conversions
+TOKEN_SPECIALS = [
+    false = "false",
+    null  = "null",
+    true  = "true"
+];
 
 # Stringifies a token.
 doToken = { token adorn <out> ::
-    type = tokenType token;
-    valueString = ifValue { <> tokenValue token }
-        { value :: <> stringAdd " " (callSourceString value) }
+    ifValue { <> mapGet(TOKEN_SPECIALS, token) }
+        { string :: <out> string };
+
+    type = tokenType(token);
+    valueString = ifValue { <> tokenValue(token) }
+        { value :: <> stringAdd(" = ", callSourceString(value)) }
         { <> "" };
 
-    ifTrue { <> and { <> isString type } { <> eq valueString "" } }
+    ifTrue { <> and { <> isString(type) } { <> eq(valueString, "") } }
         {
-            typeString = ifTrue { <> isIdentifier type }
+            typeString = ifTrue { <> isIdentifier(type) }
                 { <> type }
-                { <> callSourceString type };
-            <out> adornIf adorn "@" typeString ""
+                { <> callSourceString(type) };
+            <out> adornIf(adorn, "@", typeString, "")
         };
 
-    result = stringAdd (callSourceString type) valueString;
-    <> adornIf adorn "@[" result "]"
+    result = stringAdd(callSourceString(type), valueString);
+    <> adornIf(adorn, "@[", result, "]")
 };
 
 # Stringifies a uniqlet.
@@ -184,39 +195,39 @@ doUniqlet = { uniqlet . ::
 
 # Stringifies an unknown value type.
 doUnknown = { unknown . ::
-    <> stringAdd
-        "[(unknown) "
-        (callSourceString (lowType value))
-        " "
-        (callSourceString (lowSize value))
-        "]"
+    <> stringAdd(
+        "[(unknown) ",
+        callSourceString(lowType(value)),
+        " ",
+        callSourceString(lowSize(value)),
+        "]")
 };
 
 # Mapping from low-layer type names to stringifiers.
 STRINGIFIERS = [
-    "token"   = doToken
-    "int"     = doInt
-    "list"    = doList
-    "map"     = doMap
-    "string"  = doString
+    "token"   = doToken,
+    "int"     = doInt,
+    "list"    = doList,
+    "map"     = doMap,
+    "string"  = doString,
     "uniqlet" = doUniqlet
 ];
 
 # Common handler for the two exported variants.
 sourceStringGeneral = { value adorn ::
-    stringifier = mapGet STRINGIFIERS (lowType value) doUnknown;
-    <> stringifier value adorn
+    stringifier = mapGet(STRINGIFIERS, lowType(value), doUnknown);
+    <> stringifier(value, adorn)
 };
 
 # Documented in Samizdat Layer 0 spec.
 sourceString = { value ::
-    <> sourceStringGeneral value true
+    <> sourceStringGeneral(value, true)
 };
-callSourceString sourceString;
+callSourceString(sourceString);
 
 # Documented in Samizdat Layer 0 spec.
 sourceStringUnadorned = { value ::
-    <> sourceStringGeneral value false
+    <> sourceStringGeneral(value, false)
 };
 
 
@@ -226,117 +237,117 @@ sourceStringUnadorned = { value ::
 
 # Gets the current format string position.
 xFmtAt = { state ::
-    <> (mapGet state "fmtAt")
+    <> mapGet(state, "fmtAt")
 };
 
 # Peeks at the current format string character.
 xPeek = { state ::
-    <> stringNth (mapGet state "fmt") (xFmtAt state)
+    <> stringNth(mapGet(state, "fmt"), xFmtAt(state))
 };
 
 # Peeks at the next format string character.
 xPeek1 = { state ::
-    at = iadd 1 (xFmtAt state);
-    <> stringNth (mapGet state "fmt") at;
+    at = iadd(1, xFmtAt(state));
+    <> stringNth(mapGet(state, "fmt"), at)
 };
 
 # Gets the current argument consumption position.
 xArgsAt = { state ::
-    <> (mapGet state "argsAt")
+    <> mapGet(state, "argsAt")
 };
 
 # Gets the current argument.
 xArg = { state ::
-    <> ifValue { <> listNth (mapGet state "args") (xArgsAt state) }
+    <> ifValue { <> listNth(mapGet(state, "args"), xArgsAt(state)) }
         { value :: <> value }
         { <> "(missing argument)" }
 };
 
 # Formats a literal percent.
 doPercent = { yield state ::
-    yield "%";
+    yield("%");
 
-    fmtAt = iadd 2 (mapGet state "fmtAt");
-    <> mapPut state "fmtAt" fmtAt;
+    fmtAt = iadd(2, mapGet(state, "fmtAt"));
+    <> mapPut(state, "fmtAt", fmtAt);
 };
 
 # Formats a literal quoted argument.
 doLiteral = { yield state ::
-    yield (sourceString (xArg state));
+    yield(sourceString(xArg(state)));
 
-    argsAt = iadd 1 (xArgsAt state);
-    fmtAt = iadd 2 (xFmtAt state);
-    <> mapAdd state ["fmtAt"=fmtAt "argsAt"=argsAt];
+    argsAt = iadd(1, xArgsAt(state));
+    fmtAt = iadd(2, xFmtAt(state));
+    <> mapAdd(state, ["fmtAt"=fmtAt, "argsAt"=argsAt]);
 };
 
 # Formats a literal quoted argument, without top-level adornment.
 doUnadornedLiteral = { yield state ::
-    yield (sourceStringUnadorned (xArg state));
+    yield(sourceStringUnadorned(xArg(state)));
 
-    argsAt = iadd 1 (xArgsAt state);
-    fmtAt = iadd 2 (xFmtAt state);
-    <> mapAdd state ["fmtAt"=fmtAt "argsAt"=argsAt];
+    argsAt = iadd(1, xArgsAt(state));
+    fmtAt = iadd(2, xFmtAt(state));
+    <> mapAdd(state, ["fmtAt"=fmtAt, "argsAt"=argsAt]);
 };
 
 # Formats a string argument.
 doPlainString = { yield state ::
-    yield (xArg state);
+    yield(xArg(state));
 
-    argsAt = iadd 1 (xArgsAt state);
-    fmtAt = iadd 2 (xFmtAt state);
-    <> mapAdd state ["fmtAt"=fmtAt "argsAt"=argsAt];
+    argsAt = iadd(1, xArgsAt(state));
+    fmtAt = iadd(2, xFmtAt(state));
+    <> mapAdd(state, ["fmtAt"=fmtAt, "argsAt"=argsAt]);
 };
 
 # Mapping from format escape characters to their respective handler functions.
 FORMATTERS = [
-    "%" = doPercent
-    "q" = doLiteral
-    "Q" = doUnadornedLiteral
+    "%" = doPercent,
+    "q" = doLiteral,
+    "Q" = doUnadornedLiteral,
     "s" = doPlainString
 ];
 
 # Formats a plain character (that is, returns it as-is).
 doPlain = { yield state ch ::
-    yield ch;
+    yield(ch);
 
-    fmtAt = iadd 1 (mapGet state "fmtAt");
-    <> mapPut state "fmtAt" fmtAt;
+    fmtAt = iadd(1, mapGet(state, "fmtAt"));
+    <> mapPut(state, "fmtAt", fmtAt);
 };
 
 # Formats an arbitrary escape.
 doEscape = { yield state ::
-    <> ifValue { <> xPeek1 state }
+    <> ifValue { <> xPeek1(state) }
         { ch ::
-            <> ifValue { <> mapGet FORMATTERS ch }
-                { formatter :: <> formatter yield state }
-                { <> doPercent yield state }
+            <> ifValue { <> mapGet(FORMATTERS, ch) }
+                { formatter :: <> formatter(yield, state) }
+                { <> doPercent(yield, state) }
         }
-        { <> doPercent yield state }
+        { <> doPercent(yield, state) }
 };
 
 # Formats a single character out of the format string.
 formatOne = { yield state ::
-    <> ifValue { <> xPeek state }
+    <> ifValue { <> xPeek(state) }
         { ch ::
-            <> ifTrue { <> eq ch "%" }
-                { <> doEscape yield state }
-                { <> doPlain yield state ch }
+            <> ifTrue { <> eq(ch, "%") }
+                { <> doEscape(yield, state) }
+                { <> doPlain(yield, state, ch) }
         }
         { yield() }
 };
 
 # Documented in Samizdat Layer 0 spec.
 format = { formatString rest* <out> ::
-    formatter = object formatOne [
-        "fmt"    = formatString
-        "fmtAt"  = 0
-        "args"   = rest
+    formatter = object(formatOne, [
+        "fmt"    = formatString,
+        "fmtAt"  = 0,
+        "args"   = rest,
         "argsAt" = 0
-    ];
+    ]);
 
-    loopReduce "" { result ::
+    loopReduce("") { result ::
         <> ifValue { <> formatter() }
-            { s :: <> stringAdd result s }
+            { s :: <> stringAdd(result, s) }
             { <out> result }
     }
 };
@@ -347,7 +358,7 @@ format = { formatString rest* <out> ::
 #
 
 <> [
-    "format" = format
-    "sourceString" = sourceString
+    "format" = format,
+    "sourceString" = sourceString,
     "sourceStringUnadorned" = sourceStringUnadorned
 ]

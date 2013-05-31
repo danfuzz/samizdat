@@ -14,52 +14,53 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-tokWhitespace = pegMakeMainSequence
-    (pegMakeChoice
-        (pegMakeCharSet " \n")
-        (pegMakeSequence
-            (pegMakeToken "#")
-            (pegMakeStar (pegMakeCharSetComplement "\n"))
-            (pegMakeToken "\n")));
+tokWhitespace = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeCharSet(" \n"),
+        pegMakeSequence(
+            pegMakeToken("#"),
+            pegMakeStar(pegMakeCharSetComplement("\n")),
+            pegMakeToken("\n"))));
 
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
-tokPunctuation = pegMakeMainSequence
-    (pegMakeChoice
-        (pegMakeString "@@")
-        (pegMakeString "::")
-        (pegMakeString "<>")
-        (pegMakeString "()")
-        (pegMakeString "..") # Defined by Samizdat Layer 1.
-        (pegMakeString "{/") # Defined by Samizdat Layer 1.
-        (pegMakeString "/}") # Defined by Samizdat Layer 1.
+tokPunctuation = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeString("@@"),
+        pegMakeString("::"),
+        pegMakeString("<>"),
+        pegMakeString("()"),
+        pegMakeString("&&"), # Defined by Samizdat Layer 1.
+        pegMakeString(".."), # Defined by Samizdat Layer 1.
+        pegMakeString("{/"), # Defined by Samizdat Layer 1.
+        pegMakeString("/}"), # Defined by Samizdat Layer 1.
         # The latter three characters are defined by Samizdat Layer 1.
-        (pegMakeCharSet "@:.=+?;*<>{}()[]" "&|!"));
+        pegMakeCharSet("@:.,=+?;*<>{}()[]", "&|!")));
 
 # Documented in Samizdat Layer 0 spec.
-tokStringChar = pegMakeMainSequence
-    (pegMakeChoice
-        (pegMakeSequence
-            (pegMakeCharSetComplement "\\\"")
-            (pegMakeCode { ch :: <> tokenType ch }))
-        (pegMakeSequence
-            (pegMakeToken "\\")
-            (pegMakeChoice
-                (pegMakeMainSequence
-                    (pegMakeToken "\\") (pegMakeCode { . :: <> "\\" }))
-                (pegMakeMainSequence
-                    (pegMakeToken "\"") (pegMakeCode { . :: <> "\"" }))
-                (pegMakeMainSequence
-                    (pegMakeToken "n") (pegMakeCode { . :: <> "\n" }))
-                (pegMakeMainSequence
-                    (pegMakeToken "0") (pegMakeCode { . :: <> "\0" })))));
+tokStringChar = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
+            pegMakeCharSetComplement("\\\""),
+            pegMakeCode { ch :: <> tokenType(ch) }),
+        pegMakeSequence(
+            pegMakeToken("\\"),
+            pegMakeChoice(
+                pegMakeMainSequence(
+                    pegMakeToken("\\"), pegMakeCode { . :: <> "\\" }),
+                pegMakeMainSequence(
+                    pegMakeToken("\""), pegMakeCode { . :: <> "\"" }),
+                pegMakeMainSequence(
+                    pegMakeToken("n"), pegMakeCode { . :: <> "\n" }),
+                pegMakeMainSequence(
+                    pegMakeToken("0"), pegMakeCode { . :: <> "\0" })))));
 
 # Documented in Samizdat Layer 0 spec.
-tokString = pegMakeMainSequence
-    (pegMakeToken "\"")
-    (pegMakeStar tokStringChar)
-    (pegMakeToken "\"")
-    (pegMakeCode { . chars . ::
-        <> @["string" (apply stringAdd chars)]
+tokString = pegMakeMainSequence(
+    pegMakeToken("\""),
+    pegMakeStar(tokStringChar),
+    pegMakeToken("\""),
+    pegMakeCode { . chars . ::
+        <> @["string" = apply(stringAdd, chars)]
     });
 
 # These are all the characters which are allowed to start an identifier.
@@ -67,75 +68,76 @@ IDENTIFIER_START_CHARS =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = stringAdd IDENTIFIER_START_CHARS "0123456789";
+IDENTIFIER_CHARS = stringAdd(IDENTIFIER_START_CHARS, "0123456789");
 
 # Documented in Samizdat Layer 0 spec.
-tokIdentifier = pegMakeMainSequence
-    (pegMakeCharSet IDENTIFIER_START_CHARS)
-    (pegMakeStar (pegMakeCharSet IDENTIFIER_CHARS))
-    (pegMakeCode { first rest ::
-        <> @["identifier" (stringFromTokenList (listPrepend first rest))]
+tokIdentifier = pegMakeMainSequence(
+    pegMakeCharSet(IDENTIFIER_START_CHARS),
+    pegMakeStar(pegMakeCharSet(IDENTIFIER_CHARS)),
+    pegMakeCode { first rest ::
+        <> @["identifier" = stringFromTokenList(listPrepend(first, rest))]
     });
 
 # Documented in Samizdat Layer 0 spec.
-tokQuotedIdentifier = pegMakeMainSequence
-    (pegMakeToken "\\")
-    tokString
-    (pegMakeCode { . s ::
-        <> @["identifier" (tokenValue s)]
+tokQuotedIdentifier = pegMakeMainSequence(
+    pegMakeToken("\\"),
+    tokString,
+    pegMakeCode { . s ::
+        <> @["identifier" = (tokenValue(s))]
     });
 
 # These are all the int digits, as a map from strings to
 # digit values.
-INT_CHARS = ["0"=0 "1"=1 "2"=2 "3"=3 "4"=4 "5"=5 "6"=6 "7"=7 "8"=8 "9"=9];
+INT_CHARS =
+    ["0"=0, "1"=1, "2"=2, "3"=3, "4"=4, "5"=5, "6"=6, "7"=7, "8"=8, "9"=9];
 
 # Given a decimal digit, returns the digit value.
-intFromDigitChar = { ch :: <> mapGet INT_CHARS (tokenType ch) };
+intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 
 # Documented in Samizdat Layer 0 spec.
-tokInt = pegMakeMainSequence
-    (pegMakeChoice
-        (pegMakeSequence
-            (pegMakeToken "-")
-            (pegMakeCode { . :: <> (-1) }))
-        (pegMakeCode { <> 1 }))
-    (pegMakePlus
-        (pegMakeMainSequence
-            (pegMakeCharSet "0123456789")
-            (pegMakeCode intFromDigitChar)))
-    (pegMakeCode { sign digits ::
-        value = listReduce 0 digits
-            { result . digit :: <> iadd digit (imul result 10) };
-        <> @["int" (imul sign value)]
+tokInt = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
+            pegMakeToken("-"),
+            pegMakeCode { . :: <> -1 }),
+        pegMakeCode { <> 1 }),
+    pegMakePlus(
+        pegMakeMainSequence(
+            pegMakeCharSet("0123456789"),
+            pegMakeCode(intFromDigitChar))),
+    pegMakeCode { sign digits ::
+        value = listReduce(0, digits)
+            { result . digit :: <> iadd(digit, imul(result, 10)) };
+        <> @["int" = imul(sign, value)]
     });
 
 # Documented in Samizdat Layer 0 spec.
-tokError = pegMakeMainSequence
-    pegRuleAny
-    (pegMakeStar (pegMakeCharSetComplement "\n"))
-    (pegMakeCode { badCh . ::
-        msg = format "Unrecognized character: %q" (tokenType badCh);
-        <> @["error" msg]
+tokError = pegMakeMainSequence(
+    pegRuleAny,
+    pegMakeStar(pegMakeCharSetComplement("\n")),
+    pegMakeCode { badCh . ::
+        msg = format("Unrecognized character: %q", tokenType(badCh));
+        <> @["error" = msg]
     });
 
 # Documented in Samizdat Layer 0 spec.
-tokToken = pegMakeMainSequence
-    (pegMakeChoice
-        tokInt
-        tokPunctuation
-        tokString
-        tokIdentifier
-        tokQuotedIdentifier
-        tokError);
+tokToken = pegMakeMainSequence(
+    pegMakeChoice(
+        tokInt,
+        tokPunctuation,
+        tokString,
+        tokIdentifier,
+        tokQuotedIdentifier,
+        tokError));
 
 # Documented in Samizdat Layer 0 spec.
-tokFile = pegMakeMainSequence
-    (pegMakeStar
-        (pegMakeSequence
-            (pegMakeStar tokWhitespace)
-            tokToken))
-    (pegMakeStar tokWhitespace)
-    (pegMakeCode { tokens . ::
+tokFile = pegMakeMainSequence(
+    pegMakeStar(
+        pegMakeSequence(
+            pegMakeStar(tokWhitespace),
+            tokToken)),
+    pegMakeStar(tokWhitespace),
+    pegMakeCode { tokens . ::
         <> tokens
     });
 
@@ -146,7 +148,7 @@ tokFile = pegMakeMainSequence
 
 # Documented in Samizdat Layer 0 spec.
 sam1Tokenize = { programText ::
-    <> pegApply tokFile programText
+    <> pegApply(tokFile, programText)
 };
 
 <> [
