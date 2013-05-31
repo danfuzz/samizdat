@@ -198,7 +198,7 @@ parsePostfixOperator = {/
 |
     @"["
     exprs = parseUnadornedList
-    { <> ifTrue { <> ne(exprs, []) } { <> null } }
+    &&(ne(exprs, []))
     @"]"
     { <> { node :: <> apply(makeCall, makeVarRef("unary[]"), node, exprs) } }
 /};
