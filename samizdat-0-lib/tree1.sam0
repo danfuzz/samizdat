@@ -394,6 +394,11 @@ parseParserCode = pegMakeMainSequence(
     pegMakeToken("}"),
     pegMakeCode { . yieldDef body . :: <> @["{}" = mapAdd(yieldDef, body)] });
 
+parseParserPredicate = pegMakeMainSequence(
+    pegMakeToken("&&"),
+    parseParenExpression,
+    pegMakeCode { . predicate :: <> @["&&" = predicate] });
+
 parseParserAtom = pegMakeMainSequence(
     pegMakeChoice(
         parseVarRef,
@@ -401,6 +406,7 @@ parseParserAtom = pegMakeMainSequence(
         parseParserToken,
         parseParserSet,
         parseParserCode,
+        parseParserPredicate,
         pegMakeToken("."),
         pegMakeToken("()"),
         parseParenPex));
