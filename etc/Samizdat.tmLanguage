@@ -20,10 +20,21 @@
 	<key>patterns</key>
 	<array>
 		<dict>
-			<key>name</key>
-			<string>comment.line.number-sign</string>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>comment.line.number-sign</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.comment</string>
+				</dict>
+			</dict>
 			<key>match</key>
-			<string>#.*$</string>
+			<string>((#+).*)$</string>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -88,6 +99,23 @@
 			<string>variable.parameter</string>
 			<key>match</key>
 			<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>variable.other</string>
+			<key>begin</key>
+			<string>\\"</string>
+			<key>end</key>
+			<string>"</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>name</key>
+					<string>constant.character.escape</string>
+					<key>match</key>
+					<string>\\([0nrt\\"]|x.*;)</string>
+				</dict>
+			</array>
 		</dict>
 		<dict>
 			<key>captures</key>
