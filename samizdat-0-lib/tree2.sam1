@@ -457,7 +457,7 @@ parseParserSet = {/
         {
             oneString = listReduce("", strings)
                 { result . s :: <> stringAdd(result, tokenValue(s)) };
-            <> stringReduce ([], oneString)
+            <> stringReduce([], oneString)
                 { result . ch :: <> listAppend(result, ch) }
         }
     |
