@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Binary operator demo.
+# Binary operator demo. Also demos hex and binary numbers, and "digit spaces".
 #
 
 
@@ -25,6 +25,13 @@ out = { value ::
 # Main tests
 #
 
+# Different bases, and digit spaces.
+out(1);
+out(1_234);
+out(0x1004);
+out(0b1111_1010);
+
+# Operators.
 out(1 + 2);
 out(2 - 1);
 out(3 * 4);
