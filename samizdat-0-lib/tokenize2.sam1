@@ -7,7 +7,7 @@
 #
 
 #
-# Helper functions
+# Helper definitions
 #
 
 # These are all the int digits, as a map from strings to
@@ -17,6 +17,17 @@ INT_CHARS =
 
 # Helper to convert digit characters to digit values.
 intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
+
+# Map of all the "named" operators (whose character set includes some symbol
+# characters too, to allow for the value-general ordering operators), from
+# strings of the unadorned name to valueless tokens whose type is the adorned
+# name.
+NAMED_OPERATORS = listReduce([=],
+    [
+        "==", "!=", "<", ">", "<=", ">=",
+        "and", "eqv", "nand", "nor", "not", "or", "shl", "shr", "xor"
+    ])
+    { result . name :: <> mapPut(result, name, @[stringAdd(".", name, ".")]) };
 
 
 #
@@ -55,6 +66,21 @@ tokWhitespace = {/
 tokPunctuation = {/
     &["-/%&|!@:,.=+?;*<>{}()[]"]
     (
+        # These are all the "named" operators.
+        "."
+        name = ["a".."z" "A".."Z" "!=<>"]+
+        "."
+        {
+            nameString = stringFromTokenList(name);
+            <> ifValue { <> mapGet(NAMED_OPERATORS, nameString) }
+                { token :: <> token }
+                {
+                    message =
+                        format("Unrecognized named operator: %q", nameString);
+                    <> @["error" = message]
+                }
+        }
+    |
         "@@" | "::" | "<>" | "()" | "&&" | ".." | "{/" | "/}"
     |
         # Note: We check this error condition here instead of in the
