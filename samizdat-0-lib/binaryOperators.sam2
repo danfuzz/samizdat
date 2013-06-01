@@ -36,11 +36,59 @@
     <> irem(v1, v2)
 };
 
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.and." = { v1 v2 ::
+    <> iand(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.eqv." = { v1 v2 ::
+    <> inot(ixor(v1, v2))
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.nand." = { v1 v2 ::
+    <> inot(iand(v1, v2))
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.nor." = { v1 v2 ::
+    <> inot(ior(v1, v2))
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.or." = { v1 v2 ::
+    <> ior(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.shl." = { v1 v2 ::
+    <> ishl(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.shr." = { v1 v2 ::
+    <> ishr(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.xor." = { v1 v2 ::
+    <> ixor(v1, v2)
+};
+
 
 <> [
-    "binary+" = \"binary+",
-    "binary-" = \"binary-",
-    "binary*" = \"binary*",
-    "binary/" = \"binary/",
-    "binary%" = \"binary%"
+    "binary+"      = \"binary+",
+    "binary-"      = \"binary-",
+    "binary*"      = \"binary*",
+    "binary/"      = \"binary/",
+    "binary%"      = \"binary%",
+    "binary.and."  = \"binary.and.",
+    "binary.eqv."  = \"binary.eqv.",
+    "binary.nand." = \"binary.nand.",
+    "binary.nor."  = \"binary.nor.",
+    "binary.or."   = \"binary.or.",
+    "binary.shl."  = \"binary.shl.",
+    "binary.shr."  = \"binary.shr.",
+    "binary.xor."  = \"binary.xor."
 ]
