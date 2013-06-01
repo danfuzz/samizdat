@@ -31,6 +31,16 @@ makeLiteral = { value ::
     <> @["literal" = value]
 };
 
+# Helper for parsing binary operator expressions, which puts together
+# a sequence of function calls.
+makeBinaryCalls = { firstEx opExList ::
+    <> listReduce(firstEx, opExList) { result . opEx ::
+        op = listFirst(opEx);
+        ex = listLast(opEx);
+        <> makeCall(mapGet(BINARY_OPERATORS, op), result, ex)
+    }
+};
+
 # Map of token types to corresponding unary operator function name variable
 # references.
 UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]"])
@@ -237,8 +247,38 @@ parseUnaryExpression = {/
     }
 /};
 
+# Parses a multiplicative expression. (Binary infix operator expressions
+# are listed from tightest to loosest binding / precedence.)
+parseMulExpression = {/
+    firstEx = parseUnaryExpression
+    opExes = (
+        op = [@"*" @"/" @"%"]
+        ex = parseUnaryExpression
+        { <> [op, ex] }
+    )*
+
+    { <> makeBinaryCalls(firstEx, opExes) }
+/};
+
+# Parses an additive expression.
+parseAddExpression = {/
+    firstEx = parseMulExpression
+    opExes = (
+        op = [@"+" @"-"]
+        ex = parseMulExpression
+        { <> [op, ex] }
+    )*
+
+    { <> makeBinaryCalls(firstEx, opExes) }
+/};
+
+# TODO: Bitwise expressions here.
+# TODO: Equality / comparison expressions here.
+# TODO: && here.
+# TODO: || here.
+
 # Parses a general expression.
-implExpression = parseUnaryExpression;
+implExpression = parseAddExpression;
 parseExpression(implExpression);
 
 # Parses a statement.
