@@ -45,7 +45,8 @@ MANIFEST = [
     "eval2.sam1",
 
     # Layer 2 library implementation.
-    "unaryOperators.sam2"
+    "unaryOperators.sam2",
+    "binaryOperators.sam2"
 ];
 
 <> [

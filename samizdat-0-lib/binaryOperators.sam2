@@ -1,0 +1,46 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Binary operators
+#
+
+
+#
+# Exported functions
+#
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary+" = { v1 v2 ::
+    <> iadd(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary-" = { v1 v2 ::
+    <> isub(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary*" = { v1 v2 ::
+    <> imul(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary/" = { v1 v2 ::
+    <> idiv(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary%" = { v1 v2 ::
+    <> irem(v1, v2)
+};
+
+
+<> [
+    "binary+" = \"binary+",
+    "binary-" = \"binary-",
+    "binary*" = \"binary*",
+    "binary/" = \"binary/",
+    "binary%" = \"binary%"
+]
