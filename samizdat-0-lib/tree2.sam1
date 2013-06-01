@@ -31,16 +31,6 @@ makeLiteral = { value ::
     <> @["literal" = value]
 };
 
-# Helper for parsing binary operator expressions, which puts together
-# a sequence of function calls.
-makeBinaryCalls = { firstEx opExList ::
-    <> listReduce(firstEx, opExList) { result . opEx ::
-        op = listFirst(opEx);
-        ex = listLast(opEx);
-        <> makeCall(mapGet(BINARY_OPERATORS, op), result, ex)
-    }
-};
-
 # Map of token types to corresponding unary operator function name variable
 # references.
 UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]"])
@@ -55,6 +45,16 @@ BINARY_OPERATORS = listReduce([=],
     { result . name ::
         <> mapPut(result, name, makeVarRef(stringAdd("binary", name)))
     };
+
+# Helper for parsing binary operator expressions, which puts together
+# a sequence of function calls.
+makeBinaryCalls = { firstEx opExList ::
+    <> listReduce(firstEx, opExList) { result . opEx ::
+        op = listFirst(opEx);
+        ex = listLast(opEx);
+        <> makeCall(mapGet(BINARY_OPERATORS, tokenType(op)), result, ex)
+    }
+};
 
 # Reports the given list of pending tokens as part of error processing.
 reportError = { pending ::
