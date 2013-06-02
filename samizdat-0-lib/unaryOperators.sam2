@@ -50,9 +50,15 @@ GET_MAP = [
         }
 };
 
+# TODO: Documented in Samizdat Layer 2 spec.
+\"unary.not." = { value ::
+    <> inot(value)
+};
+
 <> [
-    "unary+" = \"unary+",
-    "unary-" = \"unary-",
-    "unary!" = \"unary!",
-    "unary[]" = \"unary[]"
+    "unary+"     = \"unary+",
+    "unary-"     = \"unary-",
+    "unary!"     = \"unary!",
+    "unary[]"    = \"unary[]",
+    "unary.not." = \"unary.not."
 ]
