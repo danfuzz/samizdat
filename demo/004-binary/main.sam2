@@ -20,6 +20,11 @@ out = { value ::
     io0Note(format("%q", value))
 };
 
+# Prints out the given value in hex.
+outHex = { value ::
+    io0Note(format("%x", value))
+};
+
 
 #
 # Main tests
@@ -40,5 +45,14 @@ out(5 % 2);
 out(1 + 2 * 3);
 out((1 + 2) * 3);
 out(2 * 3 * 4 + 5);
+
+outHex(0xfff0 .and. 0x0fff);
+outHex(0xfff0 .eqv. 0x0fff .and. 0xffffff);
+outHex(0xfff0 .nand. 0x0fff .and. 0xffffff);
+outHex(0xfff0 .nor. 0x0fff .and. 0xffffff);
+outHex(0xfff0 .or. 0x0fff);
+outHex(0xfff0 .xor. 0x0fff);
+outHex(0x00ff .shl. 0x8);
+outHex(0xff00 .shr. 0x8);
 
 <> 0
