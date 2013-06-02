@@ -33,7 +33,7 @@ makeLiteral = { value ::
 
 # Map of token types to corresponding unary operator function name variable
 # references.
-UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]"])
+UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]", ".not."])
     { result . name ::
         <> mapPut(result, name, makeVarRef(stringAdd("unary", name)))
     };
@@ -41,7 +41,14 @@ UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]"])
 # Map of token types to corresponding binary operator function name variable
 # references.
 BINARY_OPERATORS = listReduce([=],
-    ["+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">="])
+    [
+        "+", "-", "*", "/", "%",
+        "==", "!=", "<", ">", "<=", ">=",
+        ".==.", ".!=.", ".<.", ".>.", ".<=.", ".>=.",
+        ".and.", ".eqv.", ".nand.", ".nor.", ".not.", ".or.",
+        ".shl.", ".shr.", ".xor."
+    ]
+    )
     { result . name ::
         <> mapPut(result, name, makeVarRef(stringAdd("binary", name)))
     };
@@ -210,7 +217,7 @@ parseActualsList = {/
 # Parses a unary prefix operator. This yields a `varRef` node for the function
 # to apply when applying the prefix.
 parsePrefixOperator = {/
-    operator = [@"+" @"-" @"!"]
+    operator = [@"+" @"-" @"!" @".not."]
     { <> mapGet(UNARY_OPERATORS, tokenType(operator)) }
 /};
 
@@ -272,13 +279,27 @@ parseAddExpression = {/
     { <> makeBinaryCalls(firstEx, opExes) }
 /};
 
-# TODO: Bitwise expressions here.
+# Parses an bitwise expression.
+parseBitExpression = {/
+    firstEx = parseAddExpression
+    opExes = (
+        op = [
+            @".and." @".eqv." @".nand." @".nor." @".or."
+            @".shl." @".shr." @".xor."
+        ]
+        ex = parseAddExpression
+        { <> [op, ex] }
+    )*
+
+    { <> makeBinaryCalls(firstEx, opExes) }
+/};
+
 # TODO: Equality / comparison expressions here.
 # TODO: && here.
 # TODO: || here.
 
 # Parses a general expression.
-implExpression = parseAddExpression;
+implExpression = parseBitExpression;
 parseExpression(implExpression);
 
 # Parses a statement.
