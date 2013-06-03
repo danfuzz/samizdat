@@ -446,8 +446,13 @@ parseNonlocalExit = {/
     @"<"
     name = parseVarRef
     @">"
-    ex = parseExpression?
-    { <> apply(makeCall, name, ex) }
+
+    (
+        ex = parseExpression
+        { <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+    |
+        { <> makeCall(makeVarRef("nonlocalExit"), name) }
+    )
 /};
 
 # Parses a local yield / return.
