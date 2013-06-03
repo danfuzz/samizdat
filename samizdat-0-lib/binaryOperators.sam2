@@ -179,10 +179,15 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-compareChain = { functions values* ::
-    # TODO: Implement this.
-    io0Note(format("=== compare %q %q", functions, values));
-    <> false;
+compareChain = { functions values* <out> ::
+    listForEach(functions) { index function ::
+        v1 = listNth(values, index);
+        v2 = listNth(values, iadd(index, 1));
+        ifFalse { <> function(v1, v2) }
+            { <out> false }
+    };
+
+    <> true
 };
 
 <> [
