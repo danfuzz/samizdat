@@ -31,6 +31,19 @@ makeLiteral = { value ::
     <> @["literal" = value]
 };
 
+# Returns node representing a thunk (no-arg function) that returns the
+# expression represented by the given node.
+makeThunk = { expression ::
+    <> @["function" = ["statements"=[], "yield"=expression]]
+};
+
+# An expression representing a thunk (no-arg function) that returns
+# `false`.
+FALSE_THUNK = makeThunk(makeLiteral(false));
+
+# An expression representing a thunk that returns `true`.
+TRUE_THUNK = makeThunk(makeLiteral(true));
+
 # Map of token types to corresponding unary operator function name variable
 # references.
 UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]", ".not."])
@@ -335,11 +348,34 @@ parseCompareExpression = {/
     )
 /};
 
-# TODO: && here.
-# TODO: || here.
+# Parses a short-circuit logical-and expression.
+parseAndExpression = {/
+    first = parseCompareExpression
+    rest = (@"&&" parseCompareExpression)*
+
+    {
+        <> listReduce(first, rest) { result . ex ::
+            <> makeCallName(
+                "ifTrue", makeThunk(result), makeThunk(ex), FALSE_THUNK);
+        }
+    }
+/};
+
+# Parses a short-circuit logical-or expression.
+parseOrExpression = {/
+    first = parseAndExpression
+    rest = (@"||" parseAndExpression)*
+
+    {
+        <> listReduce(first, rest) { result . ex ::
+            <> makeCallName(
+                "ifTrue", makeThunk(result), TRUE_THUNK, makeThunk(ex));
+        }
+    }
+/};
 
 # Parses a general expression.
-implExpression = parseCompareExpression;
+implExpression = parseOrExpression;
 parseExpression(implExpression);
 
 # Parses a statement.
