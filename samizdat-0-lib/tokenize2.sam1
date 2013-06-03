@@ -35,6 +35,13 @@ NAMED_OPERATORS = listReduce([=],
     ])
     { result . name :: <> mapPut(result, name, @[stringAdd(".", name, ".")]) };
 
+# Map of all the keywords, from their string name to valueless tokens. These
+# are (to a first approximation) operators whose spellings match the
+# tokenization syntax of identifiers.
+KEYWORDS = listReduce([=],
+    ["if"])
+    { result . name :: <> mapPut(result, name, @[name]) };
+
 
 #
 # Grammar rules
@@ -134,11 +141,16 @@ tokString = {/
     )
 /};
 
-# Parses an identifier (in the usual form).
+# Parses an identifier (in the usual form). This also parses keywords.
 tokIdentifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
-    { <> @["identifier" = stringFromTokenList(listPrepend(first, rest))] }
+    {
+        string = stringFromTokenList(listPrepend(first, rest));
+        <> ifValue { <> mapGet(KEYWORDS, string) }
+            { keyword :: <> keyword }
+            { <> @["identifier" = string] }
+    }
 /};
 
 # Parses the quoted-string identifier form.
