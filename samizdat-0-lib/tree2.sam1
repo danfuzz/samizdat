@@ -79,7 +79,7 @@ reportError = { pending ::
 #
 
 #
-# Samizdat Layer 0 definitions
+# Main language definitions
 #
 
 # Forward declarations.
@@ -432,7 +432,7 @@ parseProgramOrError = {/
 
 
 #
-# Samizdat Layer 1 definitions
+# Parser language definitions
 #
 
 # Forward declaration.
