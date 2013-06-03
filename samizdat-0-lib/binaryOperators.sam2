@@ -7,44 +7,80 @@
 #
 
 
+
+#
+# Helper definitions
+#
+
+# Verifies that it should be possible to compare the two given values,
+# terminating the runtime if not.
+assertComparable = { v1 v2 ::
+    type1 = lowType(v1);
+    type2 = lowType(v2);
+
+    ifTrue { <> ne(type1, type2)}
+        { io0Die(format("Incomparable values: %q, %q"), v1, v2); };
+
+    ifTrue { <> eq(type1, "token") }
+        {
+            tok1 = tokenType(v1);
+            tok2 = tokenType(v2);
+            ifTrue { <> ne(tok1, tok2)}
+                { io0Die(format("Incomparable values: %q, %q"), v1, v2); };
+        };
+};
+
+
 #
 # Exported functions
 #
 
 # TODO: Documented in Samizdat Layer 2 spec.
 \"binary==" = { v1 v2 ::
-    # TODO: Needs to be high-type-specific.
-    io0Die("TODO")
+    assertComparable(v1, v2);
+
+    # TODO: Needs to do special things for some token types (e.g. floats).
+    <> eq(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 \"binary!=" = { v1 v2 ::
-    # TODO: Needs to be high-type-specific.
-    io0Die("TODO")
+    assertComparable(v1, v2);
+
+    # TODO: Needs to do special things for some token types (e.g. floats).
+    <> ne(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 \"binary<" = { v1 v2 ::
-    # TODO: Needs to be high-type-specific.
-    io0Die("TODO")
+    assertComparable(v1, v2);
+
+    # TODO: Needs to do special things for some token types (e.g. floats).
+    <> lt(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 \"binary>" = { v1 v2 ::
-    # TODO: Needs to be high-type-specific.
-    io0Die("TODO")
+    assertComparable(v1, v2);
+
+    # TODO: Needs to do special things for some token types (e.g. floats).
+    <> gt(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 \"binary<=" = { v1 v2 ::
-    # TODO: Needs to be high-type-specific.
-    io0Die("TODO")
+    assertComparable(v1, v2);
+
+    # TODO: Needs to do special things for some token types (e.g. floats).
+    <> le(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 \"binary>=" = { v1 v2 ::
-    # TODO: Needs to be high-type-specific.
-    io0Die("TODO")
+    assertComparable(v1, v2);
+
+    # TODO: Needs to do special things for some token types (e.g. floats).
+    <> ge(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
