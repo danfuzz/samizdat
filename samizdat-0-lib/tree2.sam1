@@ -376,8 +376,64 @@ parseOrExpression = {/
     )
 /};
 
+# Parses an if expression.
+parseIfExpression = {/
+    @if
+    firstCondition = parseParenExpression
+    firstThen = parseFunction
+
+    elseIfThens = (
+        @else
+        @if
+        condition = parseParenExpression
+        then = parseFunction
+        { <> [condition, then] }
+    )*
+
+    finalElse = (
+        @else
+        parseFunction
+    )?
+
+    (
+        # Unchained if-then or if-then-else.
+        &&(eq(lowSize(elseIfThens), 0))
+        {
+            <> apply(makeCallName, "ifTrue",
+                makeThunk(firstCondition), firstThen, finalElse)
+        }
+    |
+        # General chained form.
+        {
+            # Make separate conditions and thens arrays.
+            arrays = listReduce(
+                [[makeThunk(firstCondition)], [firstThen]],
+                elseIfThens)
+                { result . one ::
+                    conditions = listFirst(result);
+                    thens = listLast(result);
+                    condition = makeThunk(listFirst(one));
+                    then = listLast(one);
+                    <> [
+                        listAppend(conditions, condition),
+                        listAppend(thens, then)
+                    ]
+                };
+
+            conditions = apply(makeCallName, "makeList", listFirst(arrays));
+            thens = listAdd(listLast(arrays), finalElse);
+
+            <> apply(makeCallName, "ifChain", conditions, thens);
+        }
+    )
+/};
+
 # Parses a general expression.
-implExpression = parseOrExpression;
+implExpression = {/
+    parseOrExpression
+|
+    parseIfExpression
+/};
 parseExpression(implExpression);
 
 # Parses a statement.
