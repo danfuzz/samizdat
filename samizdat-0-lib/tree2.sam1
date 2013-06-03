@@ -37,12 +37,12 @@ makeThunk = { expression ::
     <> @["function" = ["statements"=[], "yield"=expression]]
 };
 
-# An expression representing a thunk (no-arg function) that returns
-# `false`.
-FALSE_THUNK = makeThunk(makeLiteral(false));
-
-# An expression representing a thunk that returns `true`.
-TRUE_THUNK = makeThunk(makeLiteral(true));
+# Returns a `call` node that names a function as a `varRef` and passes
+# "thunked" versions of each of the given actual arguments.
+makeCallNameThunks = { name actuals* ::
+    thunks = listMap(actuals) { . one :: <> makeThunk(one) };
+    <> apply(makeCallName, name, thunks)
+};
 
 # Map of token types to corresponding unary operator function name variable
 # references.
@@ -353,12 +353,13 @@ parseAndExpression = {/
     first = parseCompareExpression
     rest = (@"&&" parseCompareExpression)*
 
-    {
-        <> listReduce(first, rest) { result . ex ::
-            <> makeCallName(
-                "ifTrue", makeThunk(result), makeThunk(ex), FALSE_THUNK);
-        }
-    }
+    (
+        # Not actually a logical-and expression.
+        &&(eq(lowSize(rest), 0))
+        { <> first }
+    |
+        { <> apply(makeCallNameThunks, "and", first, rest) }
+    )
 /};
 
 # Parses a short-circuit logical-or expression.
@@ -366,12 +367,13 @@ parseOrExpression = {/
     first = parseAndExpression
     rest = (@"||" parseAndExpression)*
 
-    {
-        <> listReduce(first, rest) { result . ex ::
-            <> makeCallName(
-                "ifTrue", makeThunk(result), TRUE_THUNK, makeThunk(ex));
-        }
-    }
+    (
+        # Not actually a logical-or expression.
+        &&(eq(lowSize(rest), 0))
+        { <> first }
+    |
+        { <> apply(makeCallNameThunks, "or", first, rest) }
+    )
 /};
 
 # Parses a general expression.
