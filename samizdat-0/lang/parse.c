@@ -120,6 +120,21 @@ static zvalue mapFrom1(zvalue k1, zvalue v1) {
 }
 
 /**
+ * Makes a 1 element list.
+ */
+static zvalue listFrom1(zvalue e1) {
+    return datListFromArray(1, &e1);
+}
+
+/**
+ * Makes a 2 element list.
+ */
+static zvalue listFrom2(zvalue e1, zvalue e2) {
+    zvalue elems[2] = { e1, e2 };
+    return datListFromArray(2, elems);
+}
+
+/**
  * Constructs a `literal` node.
  */
 static zvalue makeLiteral(zvalue value) {
@@ -142,8 +157,15 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
-
     return datTokenFrom(STR_CALL, value);
+}
+
+/**
+ * Constructs a thunk node (function of no arguments), from an expression node.
+ */
+static zvalue makeThunk(zvalue expression) {
+    zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
+    return datTokenFrom(STR_FUNCTION, value);
 }
 
 
@@ -219,7 +241,7 @@ zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
         return EMPTY_LIST;
     }
 
-    zvalue result = datListAppend(EMPTY_LIST, item);
+    zvalue result = listFrom1(item);
 
     for (;;) {
         MARK();
@@ -309,7 +331,7 @@ DEF_PARSE(mapping) {
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return datListAppend(datListAppend(EMPTY_LIST, key), value);
+    return listFrom2(key, value);
 }
 
 /**
@@ -372,7 +394,7 @@ DEF_PARSE(token) {
         MATCH_OR_REJECT(CH_CSQUARE);
     }
 
-    zvalue args = datListAppend(EMPTY_LIST, innerType);
+    zvalue args = listFrom1(innerType);
 
     if (innerValue != NULL) {
         args = datListAppend(args, innerValue);
@@ -553,10 +575,10 @@ DEF_PARSE(nonlocalExit) {
     MATCH_OR_REJECT(CH_GT);
 
     zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
-    zvalue actuals =
-        (value == NULL) ? NULL : datListAppend(EMPTY_LIST, value);
+    zvalue actuals = (value == NULL)
+        ? listFrom1(name) : listFrom2(name, makeThunk(value));
 
-    return makeCall(name, actuals);
+    return makeCall(makeVarRef(STR_NONLOCAL_EXIT), actuals);
 }
 
 /**

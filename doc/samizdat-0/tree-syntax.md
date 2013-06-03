@@ -33,6 +33,11 @@ makeLiteral = { value ::
     <> @["literal" = value]
 };
 
+# Returns a `function` node representing a thunk of an expression.
+makeThunk = { expression ::
+    <> @["function" = @["statements"=[] "yield"=expression]];
+};
+
 # forward declaration: expression
 # forward declaration: function
 
@@ -168,8 +173,13 @@ nonlocalExit = {/
     @"<"
     name = varRef
     @">"
-    ex = expression?
-    { <> apply(makeCall, name, ex) }
+
+    (
+        ex = expression
+        { <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+    |
+        { <> makeCall(makeVarRef("nonlocalExit"), name) }
+    )
 /};
 
 yield = {/

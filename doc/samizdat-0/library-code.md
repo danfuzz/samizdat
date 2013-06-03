@@ -23,6 +23,24 @@ a five-argument call: `apply fizmoFunc "foo" "bar" "baz" ["frob" "twiddle"]`
 This function returns whatever the called function returned (including
 void).
 
+#### `nonlocalExit yieldFunction thunk? <> . | !.`
+
+Helper for calling nonlocal exit functions. This takes a function of
+zero-or-one argument &mdash; such as in particular the "yield" functions
+defined when using nonlocal exit syntax &mdash; and an optional thunk
+(function of no arguments).
+
+If `thunk` is passed, then this function call calls `thunk()`. If the call
+to `thunk` returns a value, then it then calls `yieldFunction` passing it
+that value. If the call to `thunk` returns void, then it calls `yieldFunction`
+with no arguments.
+
+If `thunk` is not passed, then this function calls `yieldFunction` with no
+arguments.
+
+It is an error (terminating the runtime) if the call to `yieldFunction`
+returns to this function.
+
 #### `object implementation state <> function`
 
 Constructs and returns an "object". In *Samizdat Layer 0* an object is
@@ -64,16 +82,6 @@ so without going through the interface.
 
 <br><br>
 ### In-Language Definitions
-
-#### `callOptValue function thunk <> . | !.`
-
-Helper for pass-through calling of arbitrary functions. This takes a
-function of zero-or-one argument (such as notably yield functions) and
-a thunk (function of no arguments). It calls `thunk()`. If the call
-to `thunk` returns a value, then it then calls `function` passing it that
-value. If the call to `thunk` returns void, then it calls `function`
-with no arguments. This function returns whatever the call to `function`
-returned.
 
 #### `forwardFunction() <> function`
 

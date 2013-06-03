@@ -170,6 +170,28 @@ PRIM_IMPL(apply) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(nonlocalExit) {
+    requireRange(argCount, 1, 2);
+
+    zvalue yieldFunction = args[0];
+    zvalue value;
+
+    if (argCount == 1) {
+        value = NULL;
+    } else {
+        value = langCall(args[1], 0, NULL);
+    }
+
+    if (value == NULL) {
+        langCall(yieldFunction, 0, NULL);
+    } else {
+        langCall(yieldFunction, 1, &value);
+    }
+
+    die("Nonlocal exit function did not perform nonlocal exit.");
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(object) {
     requireExactly(argCount, 2);
 

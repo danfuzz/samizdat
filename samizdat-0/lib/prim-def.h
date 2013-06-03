@@ -64,6 +64,7 @@ PRIM_FUNC(mapPut);
 PRIM_FUNC(mapNth);
 PRIM_FUNC(mapNthKey);
 PRIM_FUNC(mapNthValue);
+PRIM_FUNC(nonlocalExit);
 PRIM_FUNC(object);
 PRIM_FUNC(sam0Eval);
 PRIM_FUNC(sam0Tokenize);

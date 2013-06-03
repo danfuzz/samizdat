@@ -54,6 +54,7 @@ STR(MAKE_UNIQLET,     "makeUniqlet");
 STR(MAIN_SAM0,        "main.sam0");
 STR(MAP,              "map");
 STR(NAME,             "name");
+STR(NONLOCAL_EXIT,    "nonlocalExit");
 STR(REPEAT,           "repeat");
 STR(RESULT,           "result");
 STR(SAM_COMMAND_LINE, "samCommandLine");
