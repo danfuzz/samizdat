@@ -39,7 +39,7 @@ NAMED_OPERATORS = listReduce([=],
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
 KEYWORDS = listReduce([=],
-    ["if"])
+    ["else", "if"])
     { result . name :: <> mapPut(result, name, @[name]) };
 
 
