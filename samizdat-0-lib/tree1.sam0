@@ -31,6 +31,12 @@ makeLiteral = { value ::
     <> @["literal" = value]
 };
 
+# Returns node representing a thunk (no-arg function) that returns the
+# expression represented by the given node.
+makeThunk = { expression ::
+    <> @["function" = ["statements"=[], "yield"=expression]]
+};
+
 
 #
 # Grammar rules
@@ -199,8 +205,15 @@ parseNonlocalExit = pegMakeMainSequence(
     pegMakeToken("<"),
     parseVarRef,
     pegMakeToken(">"),
-    pegMakeOpt(parseExpression),
-    pegMakeCode { . name . ex :: <> apply(makeCall, name, ex) });
+    pegMakeChoice(
+        pegMakeSequence(
+            parseExpression,
+            pegMakeCode { . name . ex ::
+                <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex))
+            }),
+        pegMakeCode { . name . ::
+            <> makeCall(makeVarRef("nonlocalExit"), name)
+        }));
 
 # Documented in Samizdat Layer 0 spec.
 parseYield = pegMakeMainSequence(
