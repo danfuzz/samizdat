@@ -190,6 +190,18 @@ compareChain = { functions values* <out> ::
     <> true
 };
 
+# TODO: Documented in Samizdat Layer 2 spec.
+ifChain = { functions thens* <out> ::
+    listForEach(functions) { index function ::
+        ifTrue { <> function() }
+            { <out> listNth(thens, index)() }
+    };
+
+    # Optional final else clause.
+    <> ifTrue { <> gt(lowSize(thens), lowSize(functions)) }
+        { <> listLast(thens)() }
+};
+
 <> [
     "binary+"      = \"binary+",
     "binary-"      = \"binary-",
@@ -216,5 +228,6 @@ compareChain = { functions values* <out> ::
     "binary.shl."  = \"binary.shl.",
     "binary.shr."  = \"binary.shr.",
     "binary.xor."  = \"binary.xor.",
-    "compareChain" = compareChain
+    "compareChain" = compareChain,
+    "ifChain"      = ifChain
 ]
