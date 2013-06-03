@@ -323,15 +323,14 @@ parseCompareExpression = {/
             arrays = listReduce([[], []], opExes) { result . one ::
                 ops = listFirst(result);
                 exes = listLast(result);
-                op = listFirst(one);
+                op = mapGet(BINARY_OPERATORS, tokenType(listFirst(one)));
                 ex = listLast(one);
-                opRef = makeVarRef(mapGet(BINARY_OPERATORS, tokenType(op)));
-                <> [listAppend(ops, opRef), listAppend(exes, ex)]
+                <> [listAppend(ops, op), listAppend(exes, ex)]
             };
             ops = apply(makeCallName, "makeList", listFirst(arrays));
             exes = listLast(arrays);
 
-            <> apply(makeCallName, "compareChain", ops, exes);
+            <> apply(makeCallName, "compareChain", ops, firstEx, exes);
         }
     )
 /};
