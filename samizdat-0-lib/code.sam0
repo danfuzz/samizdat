@@ -46,6 +46,13 @@ forwardFunctionImpl = { yield state args* ::
 #
 
 # Documented in Samizdat Layer 0 spec.
+callOptValue = { function thunk ::
+    <> ifValue { <> thunk() }
+        { value :: <> function(value) }
+        { <> function() }
+};
+
+# Documented in Samizdat Layer 0 spec.
 forwardFunction = {
     forwardObject = object(forwardFunctionImpl, null);
 
@@ -71,6 +78,7 @@ partialApply = { function args* <out> ::
 };
 
 <> [
+    "callOptValue" = callOptValue,
     "forwardFunction" = forwardFunction,
     "mutableBox" = mutableBox,
     "partialApply" = partialApply

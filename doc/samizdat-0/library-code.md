@@ -65,6 +65,16 @@ so without going through the interface.
 <br><br>
 ### In-Language Definitions
 
+#### `callOptValue function thunk <> . | !.`
+
+Helper for pass-through calling of arbitrary functions. This takes a
+function of zero-or-one argument (such as notably yield functions) and
+a thunk (function of no arguments). It calls `thunk()`. If the call
+to `thunk` returns a value, then it then calls `function` passing it that
+value. If the call to `thunk` returns void, then it calls `function`
+with no arguments. This function returns whatever the call to `function`
+returned.
+
 #### `forwardFunction() <> function`
 
 Simple function forward declaration utility. The result of a call to this
