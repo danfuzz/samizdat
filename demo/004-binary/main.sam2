@@ -79,4 +79,24 @@ out(2 > 3 == 3);
 out(4 < 5 == 6);
 out(9 < 10 < 11 < 12 != 12);
 
+out(true && true);
+out(true && true && true);
+out(1 == 1 && 2 == 2);
+out(1 == 1 && 2 == 2 && 3 == 3);
+out(1 == 1 && 2 == 2 && 3 == 3 && 4 == 4);
+
+out(false && true);
+out(false && false);
+out(1 == 1 && 1 == 2);
+out(1 == 1 && 1 == 2 && 3 == 3);
+out(1 == 2 && 2 == 2 && 3 == 3);
+
+out(true || true);
+out(true || false);
+out(false || true || false);
+
+out(false || false);
+out(false || false || false);
+out(false || false || false || false);
+
 <> 0
