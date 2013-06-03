@@ -12,6 +12,72 @@
 #
 
 # TODO: Documented in Samizdat Layer 2 spec.
+\"binary==" = { v1 v2 ::
+    # TODO: Needs to be high-type-specific.
+    io0Die("TODO")
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary!=" = { v1 v2 ::
+    # TODO: Needs to be high-type-specific.
+    io0Die("TODO")
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary<" = { v1 v2 ::
+    # TODO: Needs to be high-type-specific.
+    io0Die("TODO")
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary>" = { v1 v2 ::
+    # TODO: Needs to be high-type-specific.
+    io0Die("TODO")
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary<=" = { v1 v2 ::
+    # TODO: Needs to be high-type-specific.
+    io0Die("TODO")
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary>=" = { v1 v2 ::
+    # TODO: Needs to be high-type-specific.
+    io0Die("TODO")
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.==." = { v1 v2 ::
+    <> eq(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.!=." = { v1 v2 ::
+    <> ne(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.<." = { v1 v2 ::
+    <> lt(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.>." = { v1 v2 ::
+    <> gt(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.<=." = { v1 v2 ::
+    <> le(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary.>=." = { v1 v2 ::
+    <> ge(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
 \"binary+" = { v1 v2 ::
     <> iadd(v1, v2)
 };
@@ -76,6 +142,12 @@
     <> ixor(v1, v2)
 };
 
+# TODO: Documented in Samizdat Layer 2 spec.
+compareChain = { functions values* ::
+    # TODO: Implement this.
+    io0Note(format("=== compare %q %q", functions, values));
+    <> false;
+};
 
 <> [
     "binary+"      = \"binary+",
@@ -83,6 +155,18 @@
     "binary*"      = \"binary*",
     "binary/"      = \"binary/",
     "binary%"      = \"binary%",
+    "binary=="     = \"binary==",
+    "binary!="     = \"binary!=",
+    "binary<"      = \"binary<",
+    "binary>"      = \"binary>",
+    "binary<="     = \"binary<=",
+    "binary>="     = \"binary>=",
+    "binary.==."   = \"binary.==.",
+    "binary.!=."   = \"binary.!=.",
+    "binary.<."    = \"binary.<.",
+    "binary.>."    = \"binary.>.",
+    "binary.<=."   = \"binary.<=.",
+    "binary.>=."   = \"binary.>=.",
     "binary.and."  = \"binary.and.",
     "binary.eqv."  = \"binary.eqv.",
     "binary.nand." = \"binary.nand.",
@@ -90,5 +174,6 @@
     "binary.or."   = \"binary.or.",
     "binary.shl."  = \"binary.shl.",
     "binary.shr."  = \"binary.shr.",
-    "binary.xor."  = \"binary.xor."
+    "binary.xor."  = \"binary.xor.",
+    "compareChain" = compareChain
 ]

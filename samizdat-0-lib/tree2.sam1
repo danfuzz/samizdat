@@ -294,12 +294,47 @@ parseBitExpression = {/
     { <> makeBinaryCalls(firstEx, opExes) }
 /};
 
-# TODO: Equality / comparison expressions here.
+# Parses an equality expression. The syntax here is the mathematical
+# style of `x < y < z` meaning `x < y && y < z`, supported by the
+# `compareChain` library function.
+parseCompareExpression = {/
+    firstEx = parseBitExpression
+    opExes = (
+        op = [
+            @"=="   @"!="   @"<"   @">"   @"<="   @">="
+            @".==." @".!=." @".<." @".>." @".<=." @".>=."
+        ]
+        ex = parseBitExpression
+        { <> [op, ex] }
+    )*
+
+    (
+        &&(eq(lowSize(opExes), 0))
+        { <> firstEx }
+    |
+        {
+            # Make separate ops and exes arrays.
+            arrays = listReduce([[], []], opExes) { result . one ::
+                ops = listFirst(result);
+                exes = listLast(result);
+                op = listFirst(one);
+                ex = listLast(one);
+                opRef = makeVarRef(mapGet(BINARY_OPERATORS, tokenType(op)));
+                <> [listAppend(ops, opRef), listAppend(exes, ex)]
+            };
+            ops = apply(makeCallName, "makeList", listFirst(arrays));
+            exes = listLast(arrays);
+
+            <> apply(makeCallName, "compareChain", ops, exes);
+        }
+    )
+/};
+
 # TODO: && here.
 # TODO: || here.
 
 # Parses a general expression.
-implExpression = parseBitExpression;
+implExpression = parseCompareExpression;
 parseExpression(implExpression);
 
 # Parses a statement.
