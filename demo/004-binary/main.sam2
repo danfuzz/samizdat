@@ -55,4 +55,27 @@ outHex(0xfff0 .xor. 0x0fff);
 outHex(0x00ff .shl. 0x8);
 outHex(0xff00 .shr. 0x8);
 
+out(1 == 1);
+out(1 != 2);
+out(1 < 2);
+out(2 > 1);
+out(1 <= 2);
+out(2 >= 2);
+
+out(1 != 1);
+out(1 == 2);
+out(1 >= 2);
+out(2 <= 1);
+out(1 > 2);
+out(2 < 2);
+
+out(1 < 2 < 3);
+out(1 == 1 > 0);
+out(10 >= 5 < 9);
+out(2 != 3 != 4);
+
+out(1 != 1 < 2);
+out(2 > 3 == 3);
+out(4 < 5 == 6);
+
 <> 0
