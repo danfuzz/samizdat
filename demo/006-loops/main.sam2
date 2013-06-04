@@ -1,0 +1,25 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Loop expression demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH ARGS* ::
+
+
+#
+# Main tests
+#
+
+box = mutableBox(0);
+
+while (box() < 10) {
+    io0Note(format("Value is %q.", box()));
+    box(box() + 1)
+};
+
+<> 0
