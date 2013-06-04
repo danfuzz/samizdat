@@ -30,8 +30,7 @@ intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 # name.
 NAMED_OPERATORS = listReduce([=],
     [
-        "==", "!=", "<", ">", "<=", ">=",
-        "and", "eqv", "nand", "nor", "not", "or", "shl", "shr", "xor"
+        "==", "!=", "<", ">", "<=", ">="
     ])
     { result . name :: <> mapPut(result, name, @[stringAdd(".", name, ".")]) };
 
@@ -77,7 +76,7 @@ tokWhitespace = {/
 # Parses punctuation and operators. The lookahead is done to avoid bothering
 # with the choice expression unless we have a definite match.
 tokPunctuation = {/
-    &["-/%&|!@:,.=+?;*<>{}()[]"]
+    &["-/%&|^!@:,.=+?;*<>{}()[]"]
     (
         # These are all the "named" operators.
         "."
@@ -94,6 +93,8 @@ tokPunctuation = {/
                 }
         }
     |
+        "&&&" | "|||" | "^^^" | "!!!" | "<<<" | ">>>"
+    |
         "@@" | "::" | "<>" | "()" | "&&" | "||" | ".." | "{/" | "/}" |
         "==" | "!=" | "<=" | ">="
     |
@@ -106,6 +107,7 @@ tokPunctuation = {/
         "/*" .*
         { <> @["error" = "Unterminated comment."] }
     |
+        # Single-character punctuation / operator.
         .
     )
 /};

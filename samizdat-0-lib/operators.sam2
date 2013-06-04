@@ -43,6 +43,56 @@ assertComparable = { v1 v2 ::
 #
 
 # TODO: Documented in Samizdat Layer 2 spec.
+\"binary+" = { v1 v2 ::
+    <> iadd(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary-" = { v1 v2 ::
+    <> isub(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary*" = { v1 v2 ::
+    <> imul(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary/" = { v1 v2 ::
+    <> idiv(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary%" = { v1 v2 ::
+    <> irem(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary&&&" = { v1 v2 ::
+    <> iand(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary|||" = { v1 v2 ::
+    <> ior(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary^^^" = { v1 v2 ::
+    <> ixor(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary<<<" = { v1 v2 ::
+    <> ishl(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"binary>>>" = { v1 v2 ::
+    <> ishr(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
 \"binary==" = { v1 v2 ::
     assertComparable(v1, v2);
 
@@ -121,71 +171,6 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary+" = { v1 v2 ::
-    <> iadd(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary-" = { v1 v2 ::
-    <> isub(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary*" = { v1 v2 ::
-    <> imul(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary/" = { v1 v2 ::
-    <> idiv(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary%" = { v1 v2 ::
-    <> irem(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary.and." = { v1 v2 ::
-    <> iand(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary.eqv." = { v1 v2 ::
-    <> inot(ixor(v1, v2))
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary.nand." = { v1 v2 ::
-    <> inot(iand(v1, v2))
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary.nor." = { v1 v2 ::
-    <> inot(ior(v1, v2))
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary.or." = { v1 v2 ::
-    <> ior(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary.shl." = { v1 v2 ::
-    <> ishl(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary.shr." = { v1 v2 ::
-    <> ishr(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-\"binary.xor." = { v1 v2 ::
-    <> ixor(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
 \"unary+" = { value ::
     <> iadd(0, value)
 };
@@ -214,7 +199,7 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"unary.not." = { value ::
+\"unary!!!" = { value ::
     <> inot(value)
 };
 
@@ -248,6 +233,11 @@ ifChain = { functions thens* <out> ::
     "binary*"      = \"binary*",
     "binary/"      = \"binary/",
     "binary%"      = \"binary%",
+    "binary&&&"    = \"binary&&&",
+    "binary|||"    = \"binary|||",
+    "binary^^^"    = \"binary^^^",
+    "binary<<<"    = \"binary<<<",
+    "binary>>>"    = \"binary>>>",
     "binary=="     = \"binary==",
     "binary!="     = \"binary!=",
     "binary<"      = \"binary<",
@@ -260,19 +250,11 @@ ifChain = { functions thens* <out> ::
     "binary.>."    = \"binary.>.",
     "binary.<=."   = \"binary.<=.",
     "binary.>=."   = \"binary.>=.",
-    "binary.and."  = \"binary.and.",
-    "binary.eqv."  = \"binary.eqv.",
-    "binary.nand." = \"binary.nand.",
-    "binary.nor."  = \"binary.nor.",
-    "binary.or."   = \"binary.or.",
-    "binary.shl."  = \"binary.shl.",
-    "binary.shr."  = \"binary.shr.",
-    "binary.xor."  = \"binary.xor.",
     "unary+"       = \"unary+",
     "unary-"       = \"unary-",
     "unary!"       = \"unary!",
     "unary[]"      = \"unary[]",
-    "unary.not."   = \"unary.not.",
+    "unary!!!"     = \"unary!!!",
     "compareChain" = compareChain,
     "ifChain"      = ifChain
 ]
