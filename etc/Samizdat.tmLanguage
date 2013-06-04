@@ -38,6 +38,14 @@
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>comment.block</string>
+			<key>begin</key>
+			<string>/\*</string>
+			<key>end</key>
+			<string>\*/</string>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>string.quoted.double</string>
 			<key>begin</key>
 			<string>"</string>
@@ -86,7 +94,7 @@
 			<key>name</key>
 			<string>keyword.control</string>
 			<key>match</key>
-			<string>\b(if|else)\b</string>
+			<string>\b(break|continue|def|do|else|fn|if|return|var|while)\b</string>
 		</dict>
 		<dict>
 			<key>name</key>
