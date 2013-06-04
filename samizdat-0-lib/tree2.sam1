@@ -480,7 +480,7 @@ parseWhileExpression = {/
                 makeCallName("ifTrue",
                     makeThunk(condition),
                     code,
-                    makeThunk(makeCallNonlocalExit("break")))
+                    makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
             ]
         ]];
 
