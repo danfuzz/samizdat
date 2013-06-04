@@ -36,5 +36,4 @@ LIB_FILE(eval2, sam1);
 LIB_FILE(tokenize2, sam1);
 LIB_FILE(tree2, sam1);
 
-LIB_FILE(binaryOperators, sam2);
-LIB_FILE(unaryOperators, sam2);
+LIB_FILE(operators, sam2);

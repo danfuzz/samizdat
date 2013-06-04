@@ -12,6 +12,13 @@
 # Helper definitions
 #
 
+# Map from low-layer types to corresponding "get" functions.
+GET_MAP = [
+    "list" = listNth,
+    "string" = stringNth,
+    "map" = mapGet
+];
+
 # Verifies that it should be possible to compare the two given values,
 # terminating the runtime if not.
 assertComparable = { v1 v2 ::
@@ -179,6 +186,39 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
+\"unary+" = { value ::
+    <> iadd(0, value)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"unary-" = { value ::
+    <> ineg(value)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"unary!" = { value ::
+    <> not(value)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"unary[]" = { value indices* <out> ::
+    <> listReduce(value, indices)
+        { result . index ::
+            <> ifValue { <> mapGet(GET_MAP, lowType(result)) }
+                { getter ::
+                    <> ifValue { <> getter(result, index) }
+                        { got :: <> got }
+                }
+                { <out> }
+        }
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+\"unary.not." = { value ::
+    <> inot(value)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
 compareChain = { functions values* <out> ::
     listForEach(functions) { index function ::
         v1 = listNth(values, index);
@@ -228,6 +268,11 @@ ifChain = { functions thens* <out> ::
     "binary.shl."  = \"binary.shl.",
     "binary.shr."  = \"binary.shr.",
     "binary.xor."  = \"binary.xor.",
+    "unary+"       = \"unary+",
+    "unary-"       = \"unary-",
+    "unary!"       = \"unary!",
+    "unary[]"      = \"unary[]",
+    "unary.not."   = \"unary.not.",
     "compareChain" = compareChain,
     "ifChain"      = ifChain
 ]
