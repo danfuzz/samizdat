@@ -16,6 +16,11 @@ makeCall = { function actuals* ::
     <> @["call" = ["function"=function, "actuals"=actuals]]
 };
 
+# Returns a `varDef` node.
+makeVarDef = { name value ::
+    <> @["varDef" = ["name"=name, "value"=value]]
+};
+
 # Returns a `varRef` node.
 makeVarRef = { name ::
     <> @["varRef" = name]
@@ -200,7 +205,7 @@ parseVarDef = {/
     name = @identifier
     @"="
     ex = parseExpression
-    { <> @["varDef" = ["name"=tokenValue(name), "value"=ex]] }
+    { <> makeVarDef(tokenValue(name), ex) }
 /};
 
 # Parses a parenthesized expression.
