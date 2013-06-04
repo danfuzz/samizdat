@@ -532,7 +532,7 @@ parseDoExpression = {/
         {
             <> makeCallName("ifFalse",
                 makeThunk(ex),
-                makeCallNonlocalExit(makeVarRef("break")))
+                makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
         }
     )?
 
