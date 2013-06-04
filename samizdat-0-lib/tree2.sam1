@@ -464,6 +464,8 @@ parseIfExpression = {/
 #     }
 # }()
 # ```
+#
+# with the initial break assignment omitted if there is no yield def.
 parseWhileExpression = {/
     @"while"
     yieldDef = (
@@ -495,6 +497,62 @@ parseWhileExpression = {/
     }
 /};
 
+# Parses a do expression. The translation is along these lines:
+#
+# ```
+# do <out> { <next> :: stat1; stat2 } while (expr)
+# ```
+#
+# =>
+#
+# ```
+# { <\"break"> ::
+#     out = \"break";
+#     loop { <\"continue"> ::
+#         { <next> :: stat1; stat2 }();
+#         ifFalse { <> expr }
+#             { <\"break"> }
+#     }
+# }()
+# ```
+#
+# with the initial break assignment omitted if there is no yield def, and
+# with the `ifTrue` statement omitted if there is no `while` at the end
+# of the `do`.
+parseDoExpression = {/
+    @"do"
+    yieldDef = (
+        y = parseYieldDef
+        { <> makeVarDef(y, makeVarRef("break")) }
+    )?
+    code = parseFunction
+    condition = (
+        @"while"
+        ex = parseParenExpression
+        {
+            <> makeCallName("ifFalse",
+                makeThunk(ex),
+                makeCallNonlocalExit(makeVarRef("break")))
+        }
+    )?
+
+    {
+        loopFunction = @["function" = [
+            "yieldDef" = "continue",
+            "statements" = listPrepend(makeCall(code), condition)
+        ]];
+
+        mainFunction = @["function" = [
+            "yieldDef" = "break",
+            "statements" = listAppend(yieldDef,
+                makeCallName("loop", loopFunction)
+            )
+        ]];
+
+        <> makeCall(mainFunction)
+    }
+/};
+
 # Parses a general expression.
 implExpression = {/
     parseOrExpression
@@ -502,6 +560,8 @@ implExpression = {/
     parseIfExpression
 |
     parseWhileExpression
+|
+    parseDoExpression
 /};
 parseExpression(implExpression);
 
