@@ -465,9 +465,7 @@ parseWhileExpression = {/
     yieldDef = (
         y = parseYieldDef
         { <> makeVarDef(y, makeVarRef("break")) }
-    |
-        []
-    )
+    )?
     code = parseFunction
 
     {
