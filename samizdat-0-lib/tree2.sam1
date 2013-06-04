@@ -523,10 +523,10 @@ parseNonlocalExit = {/
 |
     @"break"
     value = parseExpression?
-    { <> apply(makeCallNonlocalExit, "break", value) }
+    { <> apply(makeCallNonlocalExit, makeVarRef("break"), value) }
 |
     @"continue"
-    { <> makeCallNonlocalExit("continue") }
+    { <> makeCallNonlocalExit(makeVarRef("continue")) }
 /};
 
 # Parses a local yield / return.
