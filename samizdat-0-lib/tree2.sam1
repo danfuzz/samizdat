@@ -44,6 +44,15 @@ makeCallNameThunks = { name actuals* ::
     <> apply(makeCallName, name, thunks)
 };
 
+# Returns a `call` node to a nonlocal exit with the given name and
+# with optional expression value. The expression if supplied is automatically
+# "thunked".
+makeCallNonlocalExit = { name expression? ::
+    <> ifValue { <> listFirst(expression) }
+        { ex :: <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+        { <> makeCall(makeVarRef("nonlocalExit"), name) }
+};
+
 # Map of token types to corresponding unary operator function name variable
 # references.
 UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]", "!!!"])
@@ -211,6 +220,14 @@ parseAtom = {/
     &@"{/" parseParser
 /};
 
+# Parses a yield / non-local exit definition.
+parseYieldDef = {/
+    @"<"
+    name = @identifier
+    @">"
+    { <> tokenValue(name) }
+/};
+
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
 parseActualsList = {/
@@ -374,20 +391,20 @@ parseOrExpression = {/
 
 # Parses an if expression.
 parseIfExpression = {/
-    @if
+    @"if"
     firstCondition = parseParenExpression
     firstThen = parseFunction
 
     elseIfThens = (
-        @else
-        @if
+        @"else"
+        @"if"
         condition = parseParenExpression
         then = parseFunction
         { <> [condition, then] }
     )*
 
     finalElse = (
-        @else
+        @"else"
         parseFunction
     )?
 
@@ -424,11 +441,64 @@ parseIfExpression = {/
     )
 /};
 
+# Parses a while expression. The translation is along these lines:
+#
+# ```
+# while (expr) <out> { <next> :: stat1; stat2 }
+# ```
+#
+# =>
+#
+# ```
+# { <\"break"> ::
+#     out = \"break";
+#     loop { <\"continue"> ::
+#         ifTrue { <> expr }
+#             { <next> :: stat1; stat2 }
+#             { <\"break"> }
+#     }
+# }()
+# ```
+parseWhileExpression = {/
+    @"while"
+    condition = parseParenExpression
+    yieldDef = (
+        y = parseYieldDef
+        { <> makeVarDef(y, makeVarRef("break")) }
+    |
+        []
+    )
+    code = parseFunction
+
+    {
+        loopFunction = @["function" = [
+            "yieldDef" = "continue",
+            "statements" = [
+                makeCallName("ifTrue",
+                    makeThunk(condition),
+                    code,
+                    makeThunk(makeCallNonlocalExit("break")))
+            ]
+        ]];
+
+        mainFunction = @["function" = [
+            "yieldDef" = "break",
+            "statements" = listAppend(yieldDef,
+                makeCallName("loop", loopFunction)
+            )
+        ]];
+
+        <> makeCall(mainFunction)
+    }
+/};
+
 # Parses a general expression.
 implExpression = {/
     parseOrExpression
 |
     parseIfExpression
+|
+    parseWhileExpression
 /};
 parseExpression(implExpression);
 
@@ -437,18 +507,23 @@ parseStatement = {/
     parseVarDef | parseExpression
 /};
 
-# Parses a non-local exit / return.
+# Parses a non-local exit / return. All of the form matched by this rule
+# have the dual properties of (a) necessarily being at the end of a code
+# block, and (b) being represented as a function call in the underlying
+# function representation of code blocks.
 parseNonlocalExit = {/
     @"<"
     name = parseVarRef
     @">"
-
-    (
-        ex = parseExpression
-        { <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
-    |
-        { <> makeCall(makeVarRef("nonlocalExit"), name) }
-    )
+    value = parseExpression?
+    { <> apply(makeCallNonlocalExit, name, value) }
+|
+    @"break"
+    value = parseExpression?
+    { <> apply(makeCallNonlocalExit, "break", value) }
+|
+    @"continue"
+    { <> makeCallNonlocalExit("continue") }
 /};
 
 # Parses a local yield / return.
@@ -460,14 +535,6 @@ parseYield = {/
     |
         { <> [=] }
     )
-/};
-
-# Parses a yield / non-local exit definition.
-parseYieldDef = {/
-    @"<"
-    name = @identifier
-    @">"
-    { <> tokenValue(name) }
 /};
 
 # Parses a formal argument decalaration.
