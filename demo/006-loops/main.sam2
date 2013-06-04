@@ -58,4 +58,30 @@ result2 = while <out> (box() < 50) {
 
 io0Note(format("Result 2 is %q.", result2));
 
+do {
+    box(box() + 1);
+    if (box() == 55) {
+        break
+    };
+    io0Note(format("Value is %q.", box()))
+};
+
+result3 = do <out> {
+    box(box() + 1);
+    if (box() == 60) {
+        <out> "igram"
+    };
+    io0Note(format("Value is %q.", box()))
+};
+
+io0Note(format("Result 3 is %q.", result3));
+
+do {
+    box(box() + 1);
+    if (box() < 65) {
+        continue
+    };
+    io0Note(format("Value is %q.", box()))
+} while(box() < 70);
+
 <> 0
