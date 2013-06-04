@@ -46,7 +46,7 @@ makeCallNameThunks = { name actuals* ::
 
 # Map of token types to corresponding unary operator function name variable
 # references.
-UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]", ".not."])
+UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]", "!!!"])
     { result . name ::
         <> mapPut(result, name, makeVarRef(stringAdd("unary", name)))
     };
@@ -56,10 +56,9 @@ UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]", ".not."])
 BINARY_OPERATORS = listReduce([=],
     [
         "+", "-", "*", "/", "%",
+        "&&&", "|||", "^^^", "<<<", ">>>",
         "==", "!=", "<", ">", "<=", ">=",
-        ".==.", ".!=.", ".<.", ".>.", ".<=.", ".>=.",
-        ".and.", ".eqv.", ".nand.", ".nor.", ".not.", ".or.",
-        ".shl.", ".shr.", ".xor."
+        "\\==", "\\!=", "\\<", "\\>", "\\<=", "\\>="
     ]
     )
     { result . name ::
@@ -230,7 +229,7 @@ parseActualsList = {/
 # Parses a unary prefix operator. This yields a `varRef` node for the function
 # to apply when applying the prefix.
 parsePrefixOperator = {/
-    operator = [@"+" @"-" @"!" @".not."]
+    operator = [@"+" @"-" @"!" @"!!!"]
     { <> mapGet(UNARY_OPERATORS, tokenType(operator)) }
 /};
 
@@ -296,10 +295,7 @@ parseAddExpression = {/
 parseBitExpression = {/
     firstEx = parseAddExpression
     opExes = (
-        op = [
-            @".and." @".eqv." @".nand." @".nor." @".or."
-            @".shl." @".shr." @".xor."
-        ]
+        op = [@"&&&" @"|||" @"^^^" @"<<<" @">>>"]
         ex = parseAddExpression
         { <> [op, ex] }
     )*
@@ -315,7 +311,7 @@ parseCompareExpression = {/
     opExes = (
         op = [
             @"=="   @"!="   @"<"   @">"   @"<="   @">="
-            @".==." @".!=." @".<." @".>." @".<=." @".>=."
+            @"\\==" @"\\!=" @"\\<" @"\\>" @"\\<=" @"\\>="
         ]
         ex = parseBitExpression
         { <> [op, ex] }
