@@ -24,17 +24,6 @@ INT_CHARS = [
 # Helper to convert digit characters to digit values.
 intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 
-# Map of all the "named" operators (whose character set includes some symbol
-# characters too, to allow for the value-general ordering operators), from
-# strings of the unadorned name to valueless tokens whose type is the adorned
-# name.
-NAMED_OPERATORS = listReduce([=],
-    [
-        "==", "!=", "<", ">", "<=", ">=",
-        "and", "eqv", "nand", "nor", "not", "or", "shl", "shr", "xor"
-    ])
-    { result . name :: <> mapPut(result, name, @[stringAdd(".", name, ".")]) };
-
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
@@ -77,22 +66,11 @@ tokWhitespace = {/
 # Parses punctuation and operators. The lookahead is done to avoid bothering
 # with the choice expression unless we have a definite match.
 tokPunctuation = {/
-    &["-/%&|!@:,.=+?;*<>{}()[]"]
+    &["\\-/%&|^!@:,.=+?;*<>{}()[]"]
     (
-        # These are all the "named" operators.
-        "."
-        name = ["a".."z" "A".."Z" "!=<>"]+
-        "."
-        {
-            nameString = stringFromTokenList(name);
-            <> ifValue { <> mapGet(NAMED_OPERATORS, nameString) }
-                { token :: <> token }
-                {
-                    message =
-                        format("Unrecognized named operator: %q", nameString);
-                    <> @["error" = message]
-                }
-        }
+        "\\==" | "\\!=" | "\\<=" | "\\>=" | "\\<" | "\\>"
+    |
+        "&&&" | "|||" | "^^^" | "!!!" | "<<<" | ">>>"
     |
         "@@" | "::" | "<>" | "()" | "&&" | "||" | ".." | "{/" | "/}" |
         "==" | "!=" | "<=" | ">="
@@ -106,6 +84,7 @@ tokPunctuation = {/
         "/*" .*
         { <> @["error" = "Unterminated comment."] }
     |
+        # Single-character punctuation / operator.
         .
     )
 /};
@@ -204,9 +183,14 @@ tokError = {/
 
 # Parses an arbitrary token or error.
 tokToken = {/
-    tokPunctuation | tokString | tokIdentifier | tokQuotedIdentifier
+    tokString | tokIdentifier | tokQuotedIdentifier
 |
-    # This needs to be listed *after* the identifier rule, to prevent
+    # This needs to be listed after the quoted identifier rule, to
+    # prevent `\"...` from being treated as a `\` token followed by
+    # a string.
+    tokPunctuation
+|
+    # This needs to be listed after the identifier rule, to prevent
     # an identifier-initial `_` from triggering this rule.
     tokInt
 |

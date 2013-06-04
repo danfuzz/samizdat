@@ -46,14 +46,11 @@ out(1 + 2 * 3);
 out((1 + 2) * 3);
 out(2 * 3 * 4 + 5);
 
-outHex(0xfff0 .and. 0x0fff);
-outHex(0xfff0 .eqv. 0x0fff .and. 0xffffff);
-outHex(0xfff0 .nand. 0x0fff .and. 0xffffff);
-outHex(0xfff0 .nor. 0x0fff .and. 0xffffff);
-outHex(0xfff0 .or. 0x0fff);
-outHex(0xfff0 .xor. 0x0fff);
-outHex(0x00ff .shl. 0x8);
-outHex(0xff00 .shr. 0x8);
+outHex(0xfff0 &&& 0x0fff);
+outHex(0xfff0 ||| 0x0fff);
+outHex(0xfff0 ^^^ 0x0fff);
+outHex(0x00ff <<< 0x8);
+outHex(0xff00 >>> 0x8);
 
 out(1 == 1);
 out(1 != 2);
@@ -61,6 +58,9 @@ out(1 < 2);
 out(2 > 1);
 out(1 <= 2);
 out(2 >= 2);
+out("a" \== "a");
+out("a" \!= "b");
+out("a" \< "b");
 
 out(1 != 1);
 out(1 == 2);
@@ -68,6 +68,9 @@ out(1 >= 2);
 out(2 <= 1);
 out(1 > 2);
 out(2 < 2);
+out([1] \> [1]);
+out([1] \<= [0]);
+out([1] \>= [2]);
 
 out(1 < 2 < 3);
 out(1 == 1 > 0);
