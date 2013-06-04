@@ -18,8 +18,44 @@ SELF_PATH ARGS* ::
 box = mutableBox(0);
 
 while (box() < 10) {
-    io0Note(format("Value is %q.", box()));
-    box(box() + 1)
+    box(box() + 1);
+    io0Note(format("Value is %q.", box()))
 };
+
+while (box() < 20) {
+    box(box() + 1);
+    if (box() < 15) {
+        continue
+    };
+    io0Note(format("Value is %q.", box()))
+};
+
+while (box() < 30) { <next> ::
+    box(box() + 1);
+    if (box() < 25) {
+        <next>
+    };
+    io0Note(format("Value is %q.", box()))
+};
+
+result1 = while (box() < 40) {
+    box(box() + 1);
+    if (box() == 35) {
+        break "blort"
+    };
+    io0Note(format("Value is %q.", box()))
+};
+
+io0Note(format("Result 1 is %q.", result1));
+
+result2 = while <out> (box() < 50) {
+    box(box() + 1);
+    if (box() == 45) {
+        <out> "fizmo"
+    };
+    io0Note(format("Value is %q.", box()))
+};
+
+io0Note(format("Result 2 is %q.", result2));
 
 <> 0
