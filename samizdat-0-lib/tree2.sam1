@@ -517,7 +517,7 @@ parseWhileExpression = {/
 # ```
 #
 # with the initial break assignment omitted if there is no yield def, and
-# with the `ifTrue` statement omitted if there is no `while` at the end
+# with the `ifFalse` statement omitted if there is no `while` at the end
 # of the `do`.
 parseDoExpression = {/
     @"do"
