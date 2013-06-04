@@ -141,32 +141,32 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary.==." = { v1 v2 ::
+\"binary\\==" = { v1 v2 ::
     <> eq(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary.!=." = { v1 v2 ::
+\"binary\\!=" = { v1 v2 ::
     <> ne(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary.<." = { v1 v2 ::
+\"binary\\<" = { v1 v2 ::
     <> lt(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary.>." = { v1 v2 ::
+\"binary\\>" = { v1 v2 ::
     <> gt(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary.<=." = { v1 v2 ::
+\"binary\\<=" = { v1 v2 ::
     <> le(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary.>=." = { v1 v2 ::
+\"binary\\>=" = { v1 v2 ::
     <> ge(v1, v2)
 };
 
@@ -244,12 +244,12 @@ ifChain = { functions thens* <out> ::
     "binary>"      = \"binary>",
     "binary<="     = \"binary<=",
     "binary>="     = \"binary>=",
-    "binary.==."   = \"binary.==.",
-    "binary.!=."   = \"binary.!=.",
-    "binary.<."    = \"binary.<.",
-    "binary.>."    = \"binary.>.",
-    "binary.<=."   = \"binary.<=.",
-    "binary.>=."   = \"binary.>=.",
+    "binary\\=="   = \"binary\\==",
+    "binary\\!="   = \"binary\\!=",
+    "binary\\<"    = \"binary\\<",
+    "binary\\>"    = \"binary\\>",
+    "binary\\<="   = \"binary\\<=",
+    "binary\\>="   = \"binary\\>=",
     "unary+"       = \"unary+",
     "unary-"       = \"unary-",
     "unary!"       = \"unary!",
