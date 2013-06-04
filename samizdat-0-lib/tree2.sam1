@@ -466,11 +466,11 @@ parseIfExpression = {/
 # ```
 parseWhileExpression = {/
     @"while"
-    condition = parseParenExpression
     yieldDef = (
         y = parseYieldDef
         { <> makeVarDef(y, makeVarRef("break")) }
     )?
+    condition = parseParenExpression
     code = parseFunction
 
     {
