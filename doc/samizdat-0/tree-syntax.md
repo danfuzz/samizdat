@@ -217,6 +217,14 @@ formal = {/
     { <> mapAdd(name, repeat) }
 /};
 
+formalsList = {/
+    first = formal
+    rest = (@"," formal)*
+    { <> listPrepend(first, rest) }
+|
+    { <> [] }
+/};
+
 programBody = {/
     @";"*
 
@@ -245,13 +253,6 @@ programBody = {/
 /};
 
 programDeclarations = {/
-    formals = (
-        fs = formal+
-        { <> ["formals" = fs] }
-    |
-        { <> [=] }
-    )
-
     yieldDef = (
         y = yieldDef
         { <> ["yieldDef" = y] }
@@ -259,9 +260,16 @@ programDeclarations = {/
         { <> [=] }
     )
 
+    formals = formalsList
+
     @"::"
 
-    { <> mapAdd(formals, yieldDef) }
+    {
+        formalsMap = ifTrue { <> eq(formals, []) }
+            { <> [=] }
+            { <> ["formals" = formals] };
+        <> mapAdd(formalsMap, yieldDef)
+    }
 /};
 
 program = {/
