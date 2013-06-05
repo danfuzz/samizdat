@@ -11,7 +11,7 @@ parse trees as produced by `sam0Tree` (see which).
 ### Primitive Definitions
 
 
-#### `makeToken type value? <> token`
+#### `makeToken(type, value?) <> token`
 
 Returns a token with the given type tag (an arbitrary value)
 and optional data payload value (also an arbitrary value). These
@@ -22,7 +22,7 @@ v = @[key];         is equivalent to   v = makeToken(key);
 v = @[key = value]; is equivalent to   v = makeToken(key, value);
 ```
 
-#### `makeList rest* <> list`
+#### `makeList(rest*) <> list`
 
 Returns a list with the given elements (in argument order).
 These equivalences hold for *Samizdat Layer 0* source code:
@@ -47,7 +47,7 @@ keep this defined as an "ultraprimitive":
 makeList = { rest* :: <> rest; };
 ```
 
-#### `makeMap rest* <> map`
+#### `makeMap(rest*) <> map`
 
 Returns a map with the given key-value mappings (in argument
 order), with each key-value pair represented as two consecutive
