@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH ARGS* ::
+SELF_PATH, ARGS* ::
 
 
 #
@@ -17,9 +17,9 @@ SELF_PATH ARGS* ::
 
 # Takes an initial value and a list of one-argument functions, and
 # does a reduction by applying each of the functions in order.
-applyAll = { initialValue functions ::
+applyAll = { initialValue, functions ::
     <> listReduce(initialValue, functions)
-        { result . function :: <> function(result) }
+        { result, ., function :: <> function(result) }
 };
 
 # Forward declaration of `addExpression`.
@@ -36,7 +36,7 @@ number = {/
     digits = digit+
     {
         <> listReduce(0, digits)
-            { result . digit :: <> iadd(digit, imul(result, 10)) }
+            { result, ., digit :: <> iadd(digit, imul(result, 10)) }
     }
 /};
 
@@ -132,7 +132,7 @@ evalExpressions = {/
 
 main = { args* ::
     exprString = listReduce("", args)
-        { result . one :: <> stringAdd(result, one, "\n") };
+        { result, ., one :: <> stringAdd(result, one, "\n") };
     pegApply(evalExpressions, exprString);
 };
 

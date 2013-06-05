@@ -621,21 +621,10 @@ DEF_PARSE(formal) {
 }
 
 /**
- * Parses `formal*`.
+ * Parses a `formalsList` node.
  */
-DEF_PARSE(formalStar) {
-    zvalue formals = EMPTY_LIST;
-
-    for (;;) {
-        zvalue formal = PARSE(formal);
-        if (formal == NULL) {
-            break;
-        }
-
-        formals = datListAppend(formals, formal);
-    }
-
-    return formals;
+DEF_PARSE(formalsList) {
+    return PARSE_COMMA_SEQ(formal);
 }
 
 /**
@@ -687,8 +676,8 @@ DEF_PARSE(programBody) {
 DEF_PARSE(programDeclarations) {
     MARK();
 
-    zvalue formals = PARSE(formalStar);
     zvalue yieldDef = PARSE(yieldDef); // It's okay for this to be `NULL`.
+    zvalue formals = PARSE(formalsList);
 
     if (datSize(formals) == 0) {
         // The spec indicates that the "formals" mapping should be omitted

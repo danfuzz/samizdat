@@ -7,19 +7,19 @@ I/O
 <br><br>
 ### Primitive Definitions
 
-#### `io0Die string? <> !. (exits)`
+#### `io0Die(string?) <> !. # Terminates the runtime.`
 
 Prints the given string to the system console (as if with `io0Note`)
 if supplied, and terminates the runtime with a failure status code (`1`).
 
-#### `io0FlatCwd <> flatPath`
+#### `io0FlatCwd() <> flatPath`
 
 Returns the current working directory of the process, as a
 string.
 
 This function is a thin veneer over the standard Posix call `getcwd()`.
 
-#### `io0FlatReadLink flatPath <> flatPath | !.`
+#### `io0FlatReadLink(flatPath) <> flatPath | !.`
 
 Checks the filesystem to see if the given path (given as a flat string)
 refers to a symbolic link. If it does, then this returns the string which
@@ -32,19 +32,19 @@ void.
 
 This function is a thin veneer over the standard Posix call `readlink()`.
 
-#### `io0Note string <> !.`
+#### `io0Note(string) <> !.`
 
 Writes out a newline-terminated note to the system console or equivalent.
 This is intended for debugging, and as such this will generally end up
 emitting to the standard-error stream.
 
-#### `io0FlatReadFileUtf8 flatPath <> string`
+#### `io0FlatReadFileUtf8(flatPath) <> string`
 
 Reads the named file, using the underlying OS's functionality,
 interpreting the contents as UTF-8 encoded text. Returns a string
 of the read and decoded text.
 
-#### `io0FlatWriteFileUtf8 flatPath text <> !.`
+#### `io0FlatWriteFileUtf8(flatPath, text) <> !.`
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
@@ -53,7 +53,7 @@ functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 <br><br>
 ### In-Language Definitions
 
-#### `io0FlatFromPath path <> flatPath`
+#### `io0FlatFromPath(path) <> flatPath`
 
 Converts the given path list to an absolute "Posix-style" flat string.
 This is the reverse of the operation specified in `io0PathFromFlat`.
@@ -68,7 +68,7 @@ constraints are violated.
 * No path component other than the final one may be empty (that is,
   equal to `""`).
 
-#### `io0PathFromFlat flatPath <> path`
+#### `io0PathFromFlat(flatPath) <> path`
 
 Converts the given path string to an absolute form, in the "form factor"
 that is used internally. The input `string` is expected to be a
@@ -98,14 +98,14 @@ original path ended with a trailing slash.
 
 It is an error (terminating the runtime) if `string` is empty (`""`).
 
-#### `io0ReadFileUtf8 path <> string`
+#### `io0ReadFileUtf8(path) <> string`
 
 Reads the named file, using the underlying OS's functionality,
 interpreting the contents as UTF-8 encoded text. Returns a string
 of the read and decoded text. `path` must be a componentized path-list,
 such as might have been returned from `io0PathFromFlat`.
 
-#### `io0ReadLink path <> path | !.`
+#### `io0ReadLink(path) <> path | !.`
 
 Checks the filesystem to see if the given path refers to a symbolic
 link. If it does, then this returns the path which represents the
@@ -119,7 +119,7 @@ void.
 `pathList` must be a list of the form described by `io0PathFromFlat`
 (see which). See `io0ReadFileUtf8` for further discussion.
 
-#### `io0SandboxedReader directory <> function`
+#### `io0SandboxedReader(directory) <> function`
 
 Returns a file reader function which is limited to *only* reading
 files from underneath the named directory (a path-list as
@@ -132,7 +132,7 @@ directory.
 This function is meant to help enable a "supervisor" to build a sandbox
 from which untrusted code can read its own files.
 
-#### `io0WriteFileUtf8 flatPath text <> !.`
+#### `io0WriteFileUtf8(flatPath, text) <> !.`
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.

@@ -29,7 +29,7 @@ intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 # tokenization syntax of identifiers.
 KEYWORDS = listReduce([=],
     ["break", "continue", "do", "else", "fn", "if", "return", "while"])
-    { result . name :: <> mapPut(result, name, @[name]) };
+    { result, ., name :: <> mapPut(result, name, @[name]) };
 
 
 #
@@ -161,7 +161,7 @@ tokInt = {/
     )
 
     {
-        value = listReduce(0, digits) { result . digit ::
+        value = listReduce(0, digits) { result, ., digit ::
             <> ifTrue { <> eq(digit, -1) }
                 { <> result }
                 { <> iadd(imul(result, base), digit) }

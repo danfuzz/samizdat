@@ -7,7 +7,7 @@ Functions And Code
 <br><br>
 ### Primitive Definitions
 
-#### `apply function value* list? <> . | !.`
+#### `apply(function, value*, list?) <> . | !.`
 
 Calls the given function with the given arguments.
 
@@ -23,7 +23,7 @@ a five-argument call: `apply fizmoFunc "foo" "bar" "baz" ["frob" "twiddle"]`
 This function returns whatever the called function returned (including
 void).
 
-#### `nonlocalExit yieldFunction thunk? <> . | !.`
+#### `nonlocalExit(yieldFunction, thunk?) <> . | !.`
 
 Helper for calling nonlocal exit functions. This takes a function of
 zero-or-one argument &mdash; such as in particular the "yield" functions
@@ -41,7 +41,7 @@ arguments.
 It is an error (terminating the runtime) if the call to `yieldFunction`
 returns to this function.
 
-#### `object implementation state <> function`
+#### `object(implementation, state) <> function`
 
 Constructs and returns an "object". In *Samizdat Layer 0* an object is
 merely the combination of a mutable `state` value (an arbitarary
@@ -99,7 +99,7 @@ whatever the target function returned (including void).
 This function is meant to make it a little easier to deal with the fact
 that *Samizdat Layer 0* prohibits use-before-def.
 
-#### `mutableBox value? <> function`
+#### `mutableBox(value?) <> function`
 
 Simple mutable box utility. The result of a call to this function is
 another function, called the "box access function". The box access function
@@ -121,7 +121,7 @@ optimizations.
 
 **Note:** "Boxes" are sometimes also known as "cells".
 
-#### `partialApply function value* list? <> function`
+#### `partialApply(function, value*, list?) <> function`
 
 Partial function application. This takes a function and a number of arguments
 to call it with, in standard `apply` form (that is, zero or more individual
@@ -130,10 +130,11 @@ new function, when called, in turn calls the original function with the
 arguments specified here as the first arguments, followed by any arguments
 passed to the new function.
 
-For example, `partialApply iadd [2]` is a function which when called returns
-the sum of 2 and whatever value it was passed.
+For example, `partialApply(iadd, [2])` is a function which when called returns
+the sum of 2 and whatever value it was passed. `partialApply(iadd, 2, [])` means
+the same thing.
 
-#### `yCombinator function <> function`
+#### `yCombinator(function) <> function`
 
 The Y combinator, in a form suitable for use in Samizdat Layer 0 when
 defining self-recursive functions.
@@ -198,7 +199,7 @@ U = λx.x x
 Y_sam = λf . U (λs . (λa . (f (U s)) a))
 ```
 
-#### `yStarCombinator functions* <> [functions*]`
+#### `yStarCombinator(functions*) <> [functions*]`
 
 The Y* combinator, in a form suitable for use in Samizdat Layer 0 when
 defining sets of mutually-recursive functions.

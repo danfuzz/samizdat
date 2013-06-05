@@ -50,7 +50,7 @@ readAllLibraryFiles = {
     MANIFEST = mapGet(manifestBindings, "MANIFEST");
 
     <> listReduce([=], listAdd(BOOTSTRAP_FILES, MANIFEST))
-        { result . name :: <> mapPut(result, name, readLibraryFile(name)) }
+        { result, ., name :: <> mapPut(result, name, readLibraryFile(name)) }
 };
 
 # Makes the core library by using this program's parser to parse the library

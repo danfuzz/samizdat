@@ -60,7 +60,7 @@ syntax that is built into *Samizdat Layer 0*.
 <br><br>
 ### In-Language Definitions
 
-#### `pegApply rule input <> . | !.`
+#### `pegApply(rule, input) <> . | !.`
 
 Applies a parser rule to the given input, yielding whatever result the
 rule yields on the input.
@@ -68,7 +68,7 @@ rule yields on the input.
 `input` must either be a list or a string. If it is a string, this function
 automatically converts it into a list of character-as-token values.
 
-#### `pegMakeCharSet strings* <> rule`
+#### `pegMakeCharSet(strings*) <> rule`
 
 Makes and returns a parser rule which matches any character of any of
 the given strings, consuming it upon success. Each argument must be
@@ -82,7 +82,7 @@ which).
 
 This is equivalent to the syntactic form `{/ ["string1" "string2" "etc"] /}`.
 
-#### `pegMakeCharSetComplement string* <> rule`
+#### `pegMakeCharSetComplement(string*) <> rule`
 
 Makes and returns a parser rule which matches any character *except*
 one found in any of the given strings, consuming it upon success.
@@ -97,7 +97,7 @@ it is merely a convenient wrapper for a call to `pegMakeTokenSetComplement`
 This is equivalent to the syntactic form
 `{/ [! "string1" "string2" "etc."] /}`.
 
-#### `pegMakeChoice rules* <> rule`
+#### `pegMakeChoice(rules*) <> rule`
 
 Makes and returns a parser rule which performs an ordered choice amongst
 the given rules. Upon success, it passes back the yield and replacement
@@ -105,7 +105,7 @@ state of whichever alternate rule succeeded.
 
 This is equivalent to the syntactic form `{/ rule1 | rule2 | etc /}`.
 
-#### `pegMakeCode function <> rule`
+#### `pegMakeCode(function) <> rule`
 
 Makes and returns a parser rule which runs the given function. `function`
 must be a function. When called, it is passed as arguments all the
@@ -116,7 +116,7 @@ input.
 
 This is equivalent to the syntactic form `{/ ... { arg1 arg2 etc :: code } /}`.
 
-#### `pegMakeLookaheadFailure rule <> rule`
+#### `pegMakeLookaheadFailure(rule) <> rule`
 
 Makes and returns a parser rule which runs a given other rule, suppressing
 its usual yield and state update behavior. Instead, if the other rule
@@ -125,7 +125,7 @@ yielding `null` and consuming no input.
 
 This is equivalent to the syntactic form `{/ !rule /}`.
 
-#### `pegMakeLookaheadSuccess rule <> rule`
+#### `pegMakeLookaheadSuccess(rule) <> rule`
 
 Makes and returns a parser rule which runs a given other rule, suppressing
 its usual state update behavior. Instead, if the other rule succeeds, this
@@ -133,7 +133,7 @@ rule also succeeds, yielding the same value but *not* consuming any input.
 
 This is equivalent to the syntactic form `{/ &rule /}`.
 
-#### `pegMakeMainSequence rules* <> rule`
+#### `pegMakeMainSequence(rules*) <> rule`
 
 Makes and returns a parser rule which runs a sequence of given other rules
 (in order). This is identical to `pegMakeSequence` (see which), except that
@@ -141,7 +141,7 @@ it provides a fresh (empty) parsed item scope.
 
 This is equivalent to the syntactic form `{/ rule1 rule2 etc /}`.
 
-#### `pegMakeOpt rule <> rule`
+#### `pegMakeOpt(rule) <> rule`
 
 Makes and returns a parser rule which optionally matches a given rule.
 When called, the given other rule is matched whenever possible. This
@@ -152,7 +152,7 @@ rule fails, this one yields an empty list and does not consume any input.
 
 This is equivalent to the syntactic form `{/ rule? /}`.
 
-#### `pegMakePlus rule <> rule`
+#### `pegMakePlus(rule) <> rule`
 
 Makes and returns a parser rule which matches a given rule repeatedly.
 When called, the given other rule is matched as many times as possible.
@@ -162,7 +162,7 @@ This rule will succeed only if the given rule is matched at least once.
 
 This is equivalent to the syntactic form `{/ rule+ /}`.
 
-#### `pegMakeSequence rules* <> rule`
+#### `pegMakeSequence(rules*) <> rule`
 
 Makes and returns a parser rule which runs a sequence of given other rules
 (in order). This rule is successful only when all the given rules
@@ -175,7 +175,7 @@ first result from the "closest" enclosing main sequence.
 
 This is equivalent to the syntactic form `{/ ... (rule1 rule2 etc) ... /}`.
 
-#### `pegMakeStar rule <> rule`
+#### `pegMakeStar(rule) <> rule`
 
 Makes and returns a parser rule which matches a given rule repeatedly.
 When called, the given other rule is matched as many times as possible.
@@ -186,7 +186,7 @@ in which case this rule yields the empty list.
 
 This is equivalent to the syntactic form `{/ rule* /}`.
 
-#### `pegMakeString string <> rule`
+#### `pegMakeString(string) <> rule`
 
 Makes and returns a parser rule which matches a sequence of characters
 exactly, consuming them from the input upon success. `string` must be a
@@ -195,7 +195,7 @@ string. The result of successful parsing is a valueless token with
 
 This is equivalent to the syntactic form `{/ "string" /}`.
 
-#### `pegMakeToken type <> rule`
+#### `pegMakeToken(type) <> rule`
 
 Makes and returns a parser rule which matches any token with the same
 type as given. `type` is an arbitrary value, but is typically
@@ -206,7 +206,7 @@ This is also used to match single characters in tokenizers.
 This is equivalent to the syntactic form `{/ @token /}` or `{/ "ch" /}`
 (where `ch` represents a single character).
 
-#### `pegMakeTokenSet types* <> rule`
+#### `pegMakeTokenSet(types*) <> rule`
 
 Makes and returns a parser rule which matches a token whose type
 matches that of any of the given types, consuming it upon success.
@@ -216,7 +216,7 @@ whatever token was matched.
 
 This is equivalent to the syntactic form `{/ [@token1 @token2 @etc] /}`.
 
-#### `pegMakeTokenSetComplement types* <> rule`
+#### `pegMakeTokenSetComplement(types*) <> rule`
 
 Makes and returns a parser rule which matches a token whose type
 matches none of any of the given tokens, consuming it upon success.
