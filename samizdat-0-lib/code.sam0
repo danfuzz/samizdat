@@ -30,6 +30,8 @@ forwardFunctionImpl = { yield state args* ::
         {
             <> ifValue { <> listFirst(args) }
                 { function ::
+                    ifTrue { <> ne(lowSize(args), 1) }
+                        { io0Die("Attempt to forward too many arguments.") };
                     ifFalse { <> isUniqlet(function) }
                         { io0Die("Attempt to forward to non-function.") };
                     yield();
@@ -52,6 +54,7 @@ forwardFunction = {
     <> { args* ::
         <> ifValue { <> apply(forwardObject, args) }
             { function :: <> apply(function, args) }
+            { <> listFirst(args) }
     }
 };
 

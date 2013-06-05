@@ -86,12 +86,15 @@ so without going through the interface.
 #### `forwardFunction() <> function`
 
 Simple function forward declaration utility. The result of a call to this
-function is another function, called the "forwarding function". The first
-time the forwarding function is called, it expects to be passed another
-function, called the "target" function. Every subsequent time the
-forwarding function is called, it passes the arguments directly to the
-target function, and returns whatever the target function returned
-(including void).
+function is another function, called the "forwarding function".
+
+The first time the forwarding function is called, it expects to be passed
+another function, called the "target" function. It keeps this target function
+as internal state, and it returns it as a result of the (first) call.
+
+Every subsequent time the forwarding function is called, it passes the
+arguments it is called with directly to the target function, and returns
+whatever the target function returned (including void).
 
 This function is meant to make it a little easier to deal with the fact
 that *Samizdat Layer 0* prohibits use-before-def.
