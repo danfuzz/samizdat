@@ -654,6 +654,15 @@ parseFormal = {/
     { <> mapAdd(name, repeat) }
 /};
 
+# Parses a list of formal arguments, with no surrounding parentheses.
+parseFormalsList = {/
+    first = parseFormal
+    rest = (@"," parseFormal)*
+    { <> listPrepend(first, rest) }
+|
+    { <> [] }
+/};
+
 # Parses a program body (statements plus optional yield).
 parseProgramBody = {/
     @";"*
@@ -684,13 +693,6 @@ parseProgramBody = {/
 
 # Parses program / function declarations.
 parseProgramDeclarations = {/
-    formals = (
-        fs = parseFormal+
-        { <> ["formals" = fs] }
-    |
-        { <> [=] }
-    )
-
     yieldDef = (
         y = parseYieldDef
         { <> ["yieldDef" = y] }
@@ -698,9 +700,16 @@ parseProgramDeclarations = {/
         { <> [=] }
     )
 
+    formals = parseFormalsList
+
     @"::"
 
-    { <> mapAdd(formals, yieldDef) }
+    {
+        formalsMap = ifTrue { <> eq(formals, []) }
+            { <> [=] }
+            { <> ["formals" = formals] };
+        <> mapAdd(formalsMap, yieldDef)
+    }
 /};
 
 # Parses a program (top-level program or contents inside function braces).
