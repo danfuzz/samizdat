@@ -7,7 +7,7 @@ General Low-Layer Values
 <br><br>
 ### Primitive Definitions
 
-#### `lowSize value <> int`
+#### `lowSize(value) <> int`
 
 Returns the "size" of the given value. Every low-layer value has
 a size, defined as follows:
@@ -28,7 +28,7 @@ a size, defined as follows:
 * `token` &mdash; `0` for a valueless token, or `1` for a
   valued token.
 
-#### `lowType value <> string`
+#### `lowType(value)<> string`
 
 Returns the type name of the low-layer type of the given value. The
 result will be one of: `"int"` `"string"` `"list"` `"map"`
@@ -38,26 +38,26 @@ result will be one of: `"int"` `"string"` `"list"` `"map"`
 <br><br>
 ### In-Language Definitions
 
-#### `isToken value <> boolean`
+#### `isToken(value) <> boolean`
 
 Returns `true` iff the given value is a token.
 
-#### `isInt value <> boolean`
+#### `isInt(value)<> boolean`
 
 Returns `true` iff the given value is an int.
 
-#### `isList value <> boolean`
+#### `isList(value)<> boolean`
 
 Returns `true` iff the given value is a list.
 
-#### `isMap value <> boolean`
+#### `isMap(value)<> boolean`
 
 Returns `true` iff the given value is a map.
 
-#### `isString value <> boolean`
+#### `isString(value)<> boolean`
 
 Returns `true` iff the given value is a string.
 
-#### `isUniqlet value <> boolean`
+#### `isUniqlet(value)<> boolean`
 
 Returns `true` iff the given value is a uniqlet.

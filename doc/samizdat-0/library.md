@@ -22,7 +22,7 @@ the following form, meant to mimic how functions are defined in the
 language:
 
 ```
-functionName argument argument? argument* <> returnValue
+functionName(argument, argument?, argument*) <> returnValue
 ```
 
 * `functionName` &mdash; The name of the function.

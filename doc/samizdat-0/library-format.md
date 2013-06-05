@@ -13,7 +13,7 @@ String Formatting And Argument Parsing
 <br><br>
 ### In-Language Definitions
 
-#### `format formatString rest* <> string`
+#### `format(formatString, rest*) <> string`
 
 Using the given `formatString`, format the remaining arguments, returning
 a string. Formatting syntax is in the style of C's `printf()`. Specifically,
@@ -36,7 +36,7 @@ The following are the format codes and their meanings:
 * `%Q` &mdash; "Quotes" the argument without top-level adornment through
   `sourceStringUnadorned` (see which).
 
-#### `parseArgs0 argList <> map`
+#### `parseArgs0(argList) <> map`
 
 Very simple command-line option / argument parser. This accepts a list of
 string arguments, and returns a parsed interpretation of them, as a map
@@ -57,7 +57,7 @@ of exactly `-` (which often means "standard input" or "standard output").
 Finally, this implementation explicitly rejects (terminating the runtime)
 any argument in "option context" that begins with just a single `-`.
 
-#### `sourceString value <> string`
+#### `sourceString(value) <> string`
 
 Converts an arbitrary value into a string representation form
 that is meant to mimic the Samizdat source syntax.
@@ -74,7 +74,7 @@ language:
   non-printing characters other than newline that are in the Latin-1
   code point range.
 
-#### `sourceStringUnadorned value <> string`
+#### `sourceStringUnadorned(value) <> string`
 
 This is just like `sourceString`, except that top-level adornment
 (quotes, etc.) are not produced.
