@@ -14,7 +14,7 @@ can be used.
 
 ```
 # Returns a `call` node.
-makeCall = { function actuals* ::
+makeCall = { function, actuals* ::
     <> @["call" = ["function"=function, "actuals"=actuals]]
 };
 
