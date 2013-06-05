@@ -28,7 +28,7 @@ makeLibrary = { context ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-metaFunctions = { context fileName ::
+metaFunctions = { context, fileName ::
     dotAt = stringReduce(-1, fileName) { result n ch ::
         <> ifTrue { <> eq(ch, ".") }
             { <> n }
@@ -54,7 +54,7 @@ metaFunctions = { context fileName ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-samCommandLine = { context rawArgs* ::
+samCommandLine = { context, rawArgs* ::
     parsedArgs = parseArgs0(rawArgs);
     options = mapGet(parsedArgs, "options");
     argWords = mapGet(parsedArgs, "args");

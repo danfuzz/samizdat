@@ -11,7 +11,7 @@
 #
 
 # Object implementation function used by `mutableBox`.
-boxImpl = { yield state value? ::
+boxImpl = { yield, state, value? ::
     <> ifValue { <> listFirst(value) }
         { boxValue ::
             yield(boxValue);
@@ -25,7 +25,7 @@ boxImpl = { yield state value? ::
 };
 
 # Object implementation function used by `forwardFunction`.
-forwardFunctionImpl = { yield state args* ::
+forwardFunctionImpl = { yield, state, args* ::
     <> ifTrue { <> eq(state, null) }
         {
             <> ifValue { <> listFirst(args) }
@@ -64,7 +64,7 @@ mutableBox = { value? ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-partialApply = { function args* <out> ::
+partialApply = { <out> function, args* ::
     # This mouthful takes an "apply-style" argument list (that is, a number
     # of individual arguments followed at the end by a list-of-the-rest), and
     # returns a single unified list of arguments.

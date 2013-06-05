@@ -47,7 +47,7 @@ parsePathString = pegMakePlus(
 
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
-isPrefix = { prefix path <out> ::
+isPrefix = { <out> prefix, path, ::
     prefixSize = lowSize(prefix);
 
     ifTrue { <> gt(prefixSize, lowSize(path)) }
@@ -67,7 +67,7 @@ isPrefix = { prefix path <out> ::
 
 # Documented in Samizdat Layer 0 spec.
 io0FlatFromPath = { path ::
-    <> listReduce("", path) { result n one ::
+    <> listReduce("", path) { result, n, one ::
         ifTrue { <> eq(one, ".") }
             { io0Die(format("Invalid `.` component in path: %q", path)) };
         ifTrue { <> eq(one, "..") }
@@ -130,7 +130,7 @@ io0ReadLink = { path ::
 #
 # This is located in the "exported" section, as it makes use of
 # the exported function `io0ReadLink`, defined above.
-resolveLinks = { sandboxDirectory path <out> ::
+resolveLinks = { <out> sandboxDirectory, path ::
     loopReduce([path, 50]) { result ::
         path = listNth(result, 0);
         limit = listNth(result, 1);
