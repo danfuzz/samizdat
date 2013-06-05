@@ -250,6 +250,15 @@ parseFormal = pegMakeMainSequence(
     pegMakeCode { name, repeat :: <> mapAdd(name, repeat) });
 
 # Documented in Samizdat Layer 0 spec.
+parseFormalsList = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
+            parseFormal,
+            pegMakeStar(pegMakeSequence(pegMakeToken(","), parseFormal)),
+            pegMakeCode { first, rest :: <> listPrepend(first, rest) }),
+        pegMakeCode { <> [] }));
+
+# Documented in Samizdat Layer 0 spec.
 parseProgramBody = pegMakeMainSequence(
     pegMakeStar(pegMakeToken(";")),
     pegMakeStar(
@@ -276,18 +285,18 @@ parseProgramBody = pegMakeMainSequence(
 parseProgramDeclarations = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeMainSequence(
-            pegMakePlus(parseFormal),
-            pegMakeCode { fs :: <> ["formals" = fs] }),
-        pegMakeMainSequence(
-            pegMakeCode { <> [=] })),
-    pegMakeChoice(
-        pegMakeMainSequence(
             parseYieldDef,
             pegMakeCode { y :: <> ["yieldDef" = y] }),
         pegMakeMainSequence(
             pegMakeCode { <> [=] })),
+    parseFormalsList,
     pegMakeToken("::"),
-    pegMakeCode { formals, yieldDef, . :: <> mapAdd(formals, yieldDef) });
+    pegMakeCode { yieldDef, formals, . ::
+        formalsMap = ifTrue { <> eq(formals, []) }
+            { <> [=] }
+            { <> ["formals" = formals] };
+        <> mapAdd(formalsMap, yieldDef)
+    });
 
 # Documented in Samizdat Layer 0 spec.
 parseProgram = pegMakeMainSequence(
