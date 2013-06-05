@@ -166,7 +166,7 @@ assertComparable = { v1, v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary\\>=" = { v1 v2 ::
+\"binary\\>=" = { v1, v2 ::
     <> ge(v1, v2)
 };
 
