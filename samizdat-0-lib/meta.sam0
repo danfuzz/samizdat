@@ -29,7 +29,7 @@ makeLibrary = { context ::
 
 # Documented in Samizdat Layer 0 spec.
 metaFunctions = { context, fileName ::
-    dotAt = stringReduce(-1, fileName) { result n ch ::
+    dotAt = stringReduce(-1, fileName) { result, n, ch ::
         <> ifTrue { <> eq(ch, ".") }
             { <> n }
     };
@@ -43,7 +43,7 @@ metaFunctions = { context, fileName ::
         { map :: <> map }
         { <> mapGet(META_NAME_MAP, "sam1") };
 
-    <> mapMap(nameMap) { . v ::
+    <> mapMap(nameMap) { ., v ::
         <> ifValue { <> mapGet(context, v) }
             { newValue :: <> newValue }
             {

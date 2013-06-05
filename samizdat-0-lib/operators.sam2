@@ -21,7 +21,7 @@ GET_MAP = [
 
 # Verifies that it should be possible to compare the two given values,
 # terminating the runtime if not.
-assertComparable = { v1 v2 ::
+assertComparable = { v1, v2 ::
     type1 = lowType(v1);
     type2 = lowType(v2);
 
@@ -43,57 +43,57 @@ assertComparable = { v1 v2 ::
 #
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary+" = { v1 v2 ::
+\"binary+" = { v1, v2 ::
     <> iadd(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary-" = { v1 v2 ::
+\"binary-" = { v1, v2 ::
     <> isub(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary*" = { v1 v2 ::
+\"binary*" = { v1, v2 ::
     <> imul(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary/" = { v1 v2 ::
+\"binary/" = { v1, v2 ::
     <> idiv(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary%" = { v1 v2 ::
+\"binary%" = { v1, v2 ::
     <> irem(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary&&&" = { v1 v2 ::
+\"binary&&&" = { v1, v2 ::
     <> iand(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary|||" = { v1 v2 ::
+\"binary|||" = { v1, v2 ::
     <> ior(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary^^^" = { v1 v2 ::
+\"binary^^^" = { v1, v2 ::
     <> ixor(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary<<<" = { v1 v2 ::
+\"binary<<<" = { v1, v2 ::
     <> ishl(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary>>>" = { v1 v2 ::
+\"binary>>>" = { v1, v2 ::
     <> ishr(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary==" = { v1 v2 ::
+\"binary==" = { v1, v2 ::
     assertComparable(v1, v2);
 
     # TODO: Needs to do special things for some token types (e.g. floats).
@@ -101,7 +101,7 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary!=" = { v1 v2 ::
+\"binary!=" = { v1, v2 ::
     assertComparable(v1, v2);
 
     # TODO: Needs to do special things for some token types (e.g. floats).
@@ -109,7 +109,7 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary<" = { v1 v2 ::
+\"binary<" = { v1, v2 ::
     assertComparable(v1, v2);
 
     # TODO: Needs to do special things for some token types (e.g. floats).
@@ -117,7 +117,7 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary>" = { v1 v2 ::
+\"binary>" = { v1, v2 ::
     assertComparable(v1, v2);
 
     # TODO: Needs to do special things for some token types (e.g. floats).
@@ -125,7 +125,7 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary<=" = { v1 v2 ::
+\"binary<=" = { v1, v2 ::
     assertComparable(v1, v2);
 
     # TODO: Needs to do special things for some token types (e.g. floats).
@@ -133,7 +133,7 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary>=" = { v1 v2 ::
+\"binary>=" = { v1, v2 ::
     assertComparable(v1, v2);
 
     # TODO: Needs to do special things for some token types (e.g. floats).
@@ -141,27 +141,27 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary\\==" = { v1 v2 ::
+\"binary\\==" = { v1, v2 ::
     <> eq(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary\\!=" = { v1 v2 ::
+\"binary\\!=" = { v1, v2 ::
     <> ne(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary\\<" = { v1 v2 ::
+\"binary\\<" = { v1, v2 ::
     <> lt(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary\\>" = { v1 v2 ::
+\"binary\\>" = { v1, v2 ::
     <> gt(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"binary\\<=" = { v1 v2 ::
+\"binary\\<=" = { v1, v2 ::
     <> le(v1, v2)
 };
 
@@ -186,9 +186,9 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-\"unary[]" = { value indices* <out> ::
+\"unary[]" = { <out> value, indices* ::
     <> listReduce(value, indices)
-        { result . index ::
+        { result, ., index ::
             <> ifValue { <> mapGet(GET_MAP, lowType(result)) }
                 { getter ::
                     <> ifValue { <> getter(result, index) }
@@ -204,8 +204,8 @@ assertComparable = { v1 v2 ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-compareChain = { functions values* <out> ::
-    listForEach(functions) { index function ::
+compareChain = { <out> functions, values* ::
+    listForEach(functions) { index, function ::
         v1 = listNth(values, index);
         v2 = listNth(values, iadd(index, 1));
         ifFalse { <> function(v1, v2) }
@@ -216,8 +216,8 @@ compareChain = { functions values* <out> ::
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-ifChain = { functions thens* <out> ::
-    listForEach(functions) { index function ::
+ifChain = { <out> functions, thens* ::
+    listForEach(functions) { index, function ::
         ifTrue { <> function() }
             { <out> listNth(thens, index)() }
     };

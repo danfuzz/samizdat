@@ -47,7 +47,7 @@ parsePathString = pegMakePlus(
 
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
-isPrefix = { <out> prefix, path, ::
+isPrefix = { <out> prefix, path ::
     prefixSize = lowSize(prefix);
 
     ifTrue { <> gt(prefixSize, lowSize(path)) }
@@ -75,7 +75,7 @@ io0FlatFromPath = { path ::
         ifTrue
             { <> and { <> eq(one, "") } { <> ne(n, isub(lowSize(path), 1)) } }
             { io0Die(format("Invalid empty component in path: %q", path)) };
-        stringForEach(one) { . ch ::
+        stringForEach(one) { ., ch ::
             ifTrue { <> eq(ch, "/") }
                 { io0Die(format("Invalid `/` in path: %q", path)) };
             ifTrue { <> eq(ch, "\0") }
@@ -100,7 +100,7 @@ io0PathFromFlat = { string ::
     components = pegApply(parsePathString, absoluteString);
 
     # Handle `..` components, to produce the final result.
-    <> listReduce([], components) { result . one ::
+    <> listReduce([], components) { result, ., one ::
         <> ifTrue { <> eq(one, "..") }
             {
                 ifTrue { <> eq(result, []) }

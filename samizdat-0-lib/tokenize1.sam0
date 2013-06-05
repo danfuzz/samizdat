@@ -59,7 +59,7 @@ tokString = pegMakeMainSequence(
     pegMakeToken("\""),
     pegMakeStar(tokStringChar),
     pegMakeToken("\""),
-    pegMakeCode { . chars . ::
+    pegMakeCode { ., chars, . ::
         <> @["string" = apply(stringAdd, chars)]
     });
 
@@ -74,7 +74,7 @@ IDENTIFIER_CHARS = stringAdd(IDENTIFIER_START_CHARS, "0123456789");
 tokIdentifier = pegMakeMainSequence(
     pegMakeCharSet(IDENTIFIER_START_CHARS),
     pegMakeStar(pegMakeCharSet(IDENTIFIER_CHARS)),
-    pegMakeCode { first rest ::
+    pegMakeCode { first, rest ::
         <> @["identifier" = stringFromTokenList(listPrepend(first, rest))]
     });
 
@@ -82,7 +82,7 @@ tokIdentifier = pegMakeMainSequence(
 tokQuotedIdentifier = pegMakeMainSequence(
     pegMakeToken("\\"),
     tokString,
-    pegMakeCode { . s ::
+    pegMakeCode { ., s ::
         <> @["identifier" = (tokenValue(s))]
     });
 
@@ -105,9 +105,9 @@ tokInt = pegMakeMainSequence(
         pegMakeMainSequence(
             pegMakeCharSet("0123456789"),
             pegMakeCode(intFromDigitChar))),
-    pegMakeCode { sign digits ::
+    pegMakeCode { sign, digits ::
         value = listReduce(0, digits)
-            { result . digit :: <> iadd(digit, imul(result, 10)) };
+            { result, ., digit :: <> iadd(digit, imul(result, 10)) };
         <> @["int" = imul(sign, value)]
     });
 
@@ -115,7 +115,7 @@ tokInt = pegMakeMainSequence(
 tokError = pegMakeMainSequence(
     pegRuleAny,
     pegMakeStar(pegMakeCharSetComplement("\n")),
-    pegMakeCode { badCh . ::
+    pegMakeCode { badCh, . ::
         msg = format("Unrecognized character: %q", tokenType(badCh));
         <> @["error" = msg]
     });
@@ -137,7 +137,7 @@ tokFile = pegMakeMainSequence(
             pegMakeStar(tokWhitespace),
             tokToken)),
     pegMakeStar(tokWhitespace),
-    pegMakeCode { tokens . ::
+    pegMakeCode { tokens, . ::
         <> tokens
     });
 

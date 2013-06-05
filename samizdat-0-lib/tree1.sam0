@@ -12,7 +12,7 @@
 #
 
 # Returns a `call` node.
-makeCall = { function actuals* ::
+makeCall = { function, actuals* ::
     <> @["call" = ["function"=function, "actuals"=actuals]]
 };
 
@@ -22,7 +22,7 @@ makeVarRef = { name ::
 };
 
 # Returns a `call` node that names a function as a `varRef`.
-makeCallName = { name actuals* ::
+makeCallName = { name, actuals* ::
     <> @["call" = ["function"=makeVarRef(name), "actuals"=actuals]]
 };
 
@@ -70,7 +70,7 @@ parseUnadornedList = pegMakeMainSequence(
         pegMakeSequence(
             parseExpression,
             pegMakeStar(pegMakeSequence(pegMakeToken(","), parseExpression)),
-            pegMakeCode { first rest :: <> listPrepend(first, rest) }),
+            pegMakeCode { first, rest :: <> listPrepend(first, rest) }),
         pegMakeCode { <> [] }));
 
 # Documented in Samizdat Layer 0 spec.
@@ -78,7 +78,7 @@ parseList = pegMakeMainSequence(
     pegMakeToken("["),
     parseUnadornedList,
     pegMakeToken("]"),
-    pegMakeCode { . expressions . ::
+    pegMakeCode { ., expressions, . ::
         <> ifTrue { <> eq(expressions, []) }
             { <> makeLiteral([]) }
             { <> apply(makeCallName, "makeList", expressions) }
@@ -89,14 +89,14 @@ parseEmptyMap = pegMakeMainSequence(
     pegMakeToken("["),
     pegMakeToken("="),
     pegMakeToken("]"),
-    pegMakeCode { . . . :: <> makeLiteral([=]) });
+    pegMakeCode { ., ., . :: <> makeLiteral([=]) });
 
 # Documented in Samizdat Layer 0 spec.
 parseMapping = pegMakeMainSequence(
     parseExpression,
     pegMakeToken("="),
     parseExpression,
-    pegMakeCode { key . value :: <> [key, value] });
+    pegMakeCode { key, ., value :: <> [key, value] });
 
 # Documented in Samizdat Layer 0 spec.
 parseMap = pegMakeMainSequence(
@@ -104,7 +104,7 @@ parseMap = pegMakeMainSequence(
     parseMapping,
     pegMakeStar(pegMakeSequence(pegMakeToken(","), parseMapping)),
     pegMakeToken("]"),
-    pegMakeCode { . first rest . ::
+    pegMakeCode { ., first, rest, . ::
         mappings = apply(listAdd, first, rest);
         <> apply(makeCallName, "makeMap", mappings)
     });
@@ -118,7 +118,7 @@ parseToken = pegMakeMainSequence(
             parseExpression,
             pegMakeOpt(pegMakeSequence(pegMakeToken("="), parseExpression)),
             pegMakeToken("]"),
-            pegMakeCode { . type value . ::
+            pegMakeCode { ., type, value, . ::
                 <> apply(makeCallName, "makeToken", type, value)
             }),
         pegMakeMainSequence(
@@ -142,7 +142,7 @@ parseVarDef = pegMakeMainSequence(
     pegMakeToken("identifier"),
     pegMakeToken("="),
     parseExpression,
-    pegMakeCode { name . ex ::
+    pegMakeCode { name, ., ex ::
         <> @["varDef" = ["name"=tokenValue(name), "value"=ex]]
     });
 
@@ -151,7 +151,7 @@ parseParenExpression = pegMakeMainSequence(
     pegMakeToken("("),
     parseExpression,
     pegMakeToken(")"),
-    pegMakeCode { . ex . :: <> ex });
+    pegMakeCode { ., ex, . :: <> ex });
 
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
 parseAtom = pegMakeMainSequence(
@@ -177,7 +177,7 @@ parseActualsList = pegMakeMainSequence(
             parseUnadornedList,
             pegMakeToken(")"),
             pegMakeStar(parseClosure),
-            pegMakeCode { . normalActuals . closureActuals ::
+            pegMakeCode { ., normalActuals, ., closureActuals ::
                 <> listAdd(normalActuals, closureActuals)
             }),
         pegMakePlus(parseClosure)));
@@ -186,8 +186,8 @@ parseActualsList = pegMakeMainSequence(
 parseCallExpression = pegMakeMainSequence(
     parseAtom,
     pegMakeStar(parseActualsList),
-    pegMakeCode { base actualsLists ::
-        <> listReduce(base, actualsLists) { result . list ::
+    pegMakeCode { base, actualsLists ::
+        <> listReduce(base, actualsLists) { result, ., list ::
             <> apply(makeCall, result, list)
         }
     });
@@ -208,10 +208,10 @@ parseNonlocalExit = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             parseExpression,
-            pegMakeCode { . name . ex ::
+            pegMakeCode { ., name, ., ex ::
                 <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex))
             }),
-        pegMakeCode { . name . ::
+        pegMakeCode { ., name, . ::
             <> makeCall(makeVarRef("nonlocalExit"), name)
         }));
 
@@ -230,7 +230,7 @@ parseYieldDef = pegMakeMainSequence(
     pegMakeToken("<"),
     pegMakeToken("identifier"),
     pegMakeToken(">"),
-    pegMakeCode { . name . :: <> tokenValue(name) });
+    pegMakeCode { ., name, . :: <> tokenValue(name) });
 
 # Documented in Samizdat Layer 0 spec.
 parseFormal = pegMakeMainSequence(
@@ -247,7 +247,7 @@ parseFormal = pegMakeMainSequence(
             pegMakeCode { r :: <> ["repeat" = tokenType(r)] }),
         pegMakeMainSequence(
             pegMakeCode { <> [=] })),
-    pegMakeCode { name repeat :: <> mapAdd(name, repeat) });
+    pegMakeCode { name, repeat :: <> mapAdd(name, repeat) });
 
 # Documented in Samizdat Layer 0 spec.
 parseProgramBody = pegMakeMainSequence(
@@ -256,7 +256,7 @@ parseProgramBody = pegMakeMainSequence(
         pegMakeMainSequence(
             parseStatement,
             pegMakePlus(pegMakeToken(";")),
-            pegMakeCode { s . :: <> s })),
+            pegMakeCode { s, . :: <> s })),
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakeChoice(parseStatement, parseNonlocalExit),
@@ -267,7 +267,7 @@ parseProgramBody = pegMakeMainSequence(
         pegMakeMainSequence(
             pegMakeCode { <> ["statements" = []] })),
     pegMakeStar(pegMakeToken(";")),
-    pegMakeCode { . most last . ::
+    pegMakeCode { ., most, last, . ::
         allStatements = listAdd(most, mapGet(last, "statements"));
         <> mapPut(last, "statements", allStatements)
     });
@@ -287,7 +287,7 @@ parseProgramDeclarations = pegMakeMainSequence(
         pegMakeMainSequence(
             pegMakeCode { <> [=] })),
     pegMakeToken("::"),
-    pegMakeCode { formals yieldDef . :: <> mapAdd(formals, yieldDef) });
+    pegMakeCode { formals, yieldDef, . :: <> mapAdd(formals, yieldDef) });
 
 # Documented in Samizdat Layer 0 spec.
 parseProgram = pegMakeMainSequence(
@@ -295,14 +295,14 @@ parseProgram = pegMakeMainSequence(
         parseProgramDeclarations,
         pegMakeCode { <> [=] }),
     parseProgramBody,
-    pegMakeCode { decls body :: <> @["function" = mapAdd(decls, body)] });
+    pegMakeCode { decls, body :: <> @["function" = mapAdd(decls, body)] });
 
 # Documented in Samizdat Layer 0 spec.
 implClosure = pegMakeMainSequence(
     pegMakeToken("{"),
     parseProgram,
     pegMakeToken("}"),
-    pegMakeCode { . prog . :: <> prog });
+    pegMakeCode { ., prog, . :: <> prog });
 parseClosure(implClosure);
 
 
@@ -317,14 +317,14 @@ implParser = pegMakeMainSequence(
     pegMakeToken("{/"),
     parseChoicePex,
     pegMakeToken("/}"),
-    pegMakeCode { . pex . :: <> @["parser" = pex] });
+    pegMakeCode { ., pex, . :: <> @["parser" = pex] });
 parseParser(implParser);
 
 parseParenPex = pegMakeMainSequence(
     pegMakeToken("("),
     parseChoicePex,
     pegMakeToken(")"),
-    pegMakeCode { . pex . :: <> pex });
+    pegMakeCode { ., pex, . :: <> pex });
 
 parseParserString = pegMakeMainSequence(
     pegMakeToken("string"),
@@ -338,25 +338,25 @@ parseParserString = pegMakeMainSequence(
 parseParserToken = pegMakeMainSequence(
     pegMakeToken("@"),
     pegMakeTokenSet("identifier", "string"),
-    pegMakeCode { . type :: <> @["token" = tokenValue(type)] });
+    pegMakeCode { ., type :: <> @["token" = tokenValue(type)] });
 
 parseParserSetString = pegMakeMainSequence(
     pegMakeToken("string"),
     pegMakeChoice(
         pegMakeSequence(
             pegMakeToken(".."),
-            pegMakeCode { s . ::
+            pegMakeCode { s, . ::
                 startValue = tokenValue(s);
                 <> ifTrue { <> eq(lowSize(startValue), 1) }
                     { <> intFromString(startValue) }
             },
             pegMakeToken("string"),
-            pegMakeCode { . . . end ::
+            pegMakeCode { ., ., ., end ::
                 endValue = tokenValue(end);
                 <> ifTrue { <> eq(lowSize(endValue), 1) }
                     { <> intFromString(endValue) }
             },
-            pegMakeCode { . . startInt . endInt <out> ::
+            pegMakeCode { <out> ., ., startInt, ., endInt ::
                 loopReduce([startInt, ""]) { result ::
                     at = listFirst(result);
                     soFar = listLast(result);
@@ -379,19 +379,19 @@ parseParserSet = pegMakeMainSequence(
             pegMakePlus(parseParserSetString),
             pegMakeCode { strings ::
                 oneString = listReduce("", strings)
-                    { result . s :: <> stringAdd(result, tokenValue(s)) };
+                    { result, ., s :: <> stringAdd(result, tokenValue(s)) };
                 <> stringReduce([], oneString)
-                    { result . ch :: <> listAppend(result, ch) }
+                    { result, ., ch :: <> listAppend(result, ch) }
             }),
         pegMakeMainSequence(
             pegMakePlus(parseParserToken),
             pegMakeCode { tokens ::
-                <> listMap(tokens) { . t :: <> tokenValue(t) }
+                <> listMap(tokens) { ., t :: <> tokenValue(t) }
             }),
         pegMakeMainSequence(
             pegMakeCode { <> [] })),
     pegMakeToken("]"),
-    pegMakeCode { . type terminals . :: <> @[type = terminals] });
+    pegMakeCode { ., type, terminals, . :: <> @[type = terminals] });
 
 parseParserCode = pegMakeMainSequence(
     pegMakeToken("{"),
@@ -399,18 +399,20 @@ parseParserCode = pegMakeMainSequence(
         pegMakeMainSequence(
             parseYieldDef,
             pegMakeToken("::"),
-            pegMakeCode { y . :: <> ["yieldDef" = y] }),
+            pegMakeCode { y, . :: <> ["yieldDef" = y] }),
         pegMakeMainSequence(
             pegMakeOpt(pegMakeToken("::")),
             pegMakeCode { . :: <> [=] })),
     parseProgramBody,
     pegMakeToken("}"),
-    pegMakeCode { . yieldDef body . :: <> @["{}" = mapAdd(yieldDef, body)] });
+    pegMakeCode { ., yieldDef, body, . ::
+        <> @["{}" = mapAdd(yieldDef, body)]
+    });
 
 parseParserPredicate = pegMakeMainSequence(
     pegMakeToken("&&"),
     parseParenExpression,
-    pegMakeCode { . predicate :: <> @["&&" = predicate] });
+    pegMakeCode { ., predicate :: <> @["&&" = predicate] });
 
 parseParserAtom = pegMakeMainSequence(
     pegMakeChoice(
@@ -429,7 +431,7 @@ parseRepeatPex = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeTokenSet("?", "*", "+"),
-            pegMakeCode { atom repeat :: <> @[tokenType(repeat) = atom] }),
+            pegMakeCode { atom, repeat :: <> @[tokenType(repeat) = atom] }),
         pegMakeCode { atom :: <> atom }));
 
 parseLookaheadPex = pegMakeMainSequence(
@@ -437,7 +439,7 @@ parseLookaheadPex = pegMakeMainSequence(
         pegMakeSequence(
             pegMakeTokenSet("&", "!"),
             parseRepeatPex,
-            pegMakeCode { lookahead pex :: <> @[tokenType(lookahead) = pex] }),
+            pegMakeCode { lookahead, pex :: <> @[tokenType(lookahead) = pex] }),
         parseRepeatPex));
 
 parseNamePex = pegMakeMainSequence(
@@ -446,7 +448,7 @@ parseNamePex = pegMakeMainSequence(
             pegMakeToken("identifier"),
             pegMakeToken("="),
             parseLookaheadPex,
-            pegMakeCode { name . pex ::
+            pegMakeCode { name, ., pex ::
                 <> @["varDef" = ["name"=tokenValue(name), "value"=pex]]
             }),
         parseLookaheadPex));
@@ -461,7 +463,7 @@ implChoicePex = pegMakeMainSequence(
         pegMakeMainSequence(
             pegMakeToken("|"),
             parseSequencePex)),
-    pegMakeCode { first rest :: <> @["choice" = listPrepend(first, rest)] });
+    pegMakeCode { first, rest :: <> @["choice" = listPrepend(first, rest)] });
 parseChoicePex(implChoicePex);
 
 
@@ -474,7 +476,7 @@ reportError = { pending ::
     io0Note("Pending tokens:");
 
     listForEach(pending)
-        { . token :: io0Note(format("    %q", token)) };
+        { ., token :: io0Note(format("    %q", token)) };
 
     io0Die("\nExtra tokens at end of program.")
 };
@@ -486,7 +488,7 @@ parseProgramOrError = pegMakeMainSequence(
         pegMakeMainSequence(
             pegMakePlus(pegRuleAny),
             pegMakeCode { pending :: reportError(pending) })),
-    pegMakeCode { prog . :: <> prog });
+    pegMakeCode { prog, . :: <> prog });
 
 # Documented in Samizdat Layer 0 spec.
 sam1Tree = { program ::

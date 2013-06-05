@@ -17,7 +17,7 @@ convertPex = forwardFunction();
 
 # Does parser conversion of an expression or statement list.
 convertList = { nodes ::
-    <> listMap(nodes) { . node :: <> convertExpression(node) }
+    <> listMap(nodes) { ., node :: <> convertExpression(node) }
 };
 
 # Constructs a function call.
@@ -157,7 +157,7 @@ convertPexOpt = { node, formals ::
 };
 
 # Converts a `*` pex node.
-convertPexStar = { node formals ::
+convertPexStar = { node, formals ::
     <> callNameWithPex(node, formals, "pegMakeStar")
 };
 
