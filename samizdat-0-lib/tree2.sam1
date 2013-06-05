@@ -293,7 +293,7 @@ parseUnaryExpression = {/
 parseMulExpression = {/
     firstEx = parseUnaryExpression
     opExes = (
-        op = [@"*" @"/" @"%"]
+        op = [@"*" @"/" @"%" @"<<<" @">>>"]
         ex = parseUnaryExpression
         { <> [op, ex] }
     )*
@@ -305,20 +305,8 @@ parseMulExpression = {/
 parseAddExpression = {/
     firstEx = parseMulExpression
     opExes = (
-        op = [@"+" @"-"]
+        op = [@"+" @"-" @"&&&" @"|||" @"^^^"]
         ex = parseMulExpression
-        { <> [op, ex] }
-    )*
-
-    { <> makeBinaryCalls(firstEx, opExes) }
-/};
-
-# Parses an bitwise expression.
-parseBitExpression = {/
-    firstEx = parseAddExpression
-    opExes = (
-        op = [@"&&&" @"|||" @"^^^" @"<<<" @">>>"]
-        ex = parseAddExpression
         { <> [op, ex] }
     )*
 
@@ -329,18 +317,18 @@ parseBitExpression = {/
 # style of `x < y < z` meaning `x < y && y < z`, supported by the
 # `compareChain` library function.
 parseCompareExpression = {/
-    firstEx = parseBitExpression
+    firstEx = parseAddExpression
     opExes = (
         op = [
             @"=="   @"!="   @"<"   @">"   @"<="   @">="
             @"\\==" @"\\!=" @"\\<" @"\\>" @"\\<=" @"\\>="
         ]
-        ex = parseBitExpression
+        ex = parseAddExpression
         { <> [op, ex] }
     )*
 
     (
-        # Not actually a comparison expression.
+        # No actual comparisons (just a simple pass-through to `addExpression`).
         &&(eq(lowSize(opExes), 0))
         { <> firstEx }
     |
