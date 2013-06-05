@@ -36,7 +36,7 @@ readLibraryFile = { name ::
 # representing both the originally-given context *and* the bindings defined
 # by the named library. Each library file is expected to return a map of
 # bindings that it wishes to export.
-loadLibrary = { ctx name ::
+loadLibrary = { ctx, name ::
     io0Note(stringAdd("    ", name));
 
     # If `metaFunctions` is available, use it to get the proper parser and
@@ -64,9 +64,9 @@ loadLibrary = { ctx name ::
 # Loads all of the named libraries, in order, allowing later libraries to
 # depend on earlier ones. The first listed library can depend only on the
 # given context.
-loadAllLibraries = { ctx names* ::
+loadAllLibraries = { ctx, names* ::
     <> apply(argsReduce,
-        { result name :: <> loadLibrary(result, name) },
+        { result, name :: <> loadLibrary(result, name) },
         ctx,
         names)
 };
