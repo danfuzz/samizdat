@@ -21,7 +21,7 @@ parseWordBreak = pegMakeToken("\0");
 parseWord = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSetComplement("\0")),
     parseWordBreak,
-    pegMakeCode { chars . :: <> stringFromTokenList(chars) });
+    pegMakeCode { chars, . :: <> stringFromTokenList(chars) });
 
 # key = {/
 #     chars=[! "=\0"]*
@@ -40,7 +40,7 @@ parseKeyValue = pegMakeMainSequence(
     parseKey,
     pegMakeToken("="),
     parseWord,
-    pegMakeCode { . k . v :: <> [k = v] });
+    pegMakeCode { ., k, ., v :: <> [k = v] });
 
 # flag = {/
 #     "--" w=word
@@ -49,7 +49,7 @@ parseKeyValue = pegMakeMainSequence(
 parseFlag = pegMakeMainSequence(
     pegMakeString("--"),
     parseWord,
-    pegMakeCode { . w :: <> [w = true] });
+    pegMakeCode { ., w :: <> [w = true] });
 
 # error = {/
 #     "-" [! "-\0"] word
@@ -59,7 +59,7 @@ parseError = pegMakeMainSequence(
     pegMakeToken("-"),
     pegMakeCharSetComplement("-\0"),
     parseWord,
-    pegMakeCode { ch1 ch2 word ::
+    pegMakeCode { ch1, ch2, word ::
         value = stringAdd(stringFromTokens(ch1, ch2), word);
         io0Note(format("Unknown option: %Q", value));
         <> [error = true]
@@ -78,7 +78,7 @@ parseArguments = pegMakeMainSequence(
     pegMakeStar(parseOption),
     pegMakeOpt(pegMakeSequence(pegMakeString("--"), parseWordBreak)),
     pegMakeStar(parseWord),
-    pegMakeCode { optList . args ::
+    pegMakeCode { optList, ., args ::
         options = apply(mapAdd, optList);
         ifTrue { <> mapGet(options, "error", false) }
             { io0Die("Trouble with options.") };
@@ -97,7 +97,7 @@ parseArguments = pegMakeMainSequence(
 parseArgs0 = { args ::
     # Make a unified string with each argument "\0"-terminated.
     argString = listReduce("", args)
-        { result . arg ::
+        { result, ., arg ::
             <> stringAdd(result, arg, "\0");
         };
 

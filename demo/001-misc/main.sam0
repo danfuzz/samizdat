@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH ARGS* ::
+SELF_PATH, ARGS* ::
 
 
 #
@@ -34,20 +34,20 @@ countDown = yCombinator { countDown ::
 # Example of mutual recursion using `yStarCombinator`. See discussion
 # above.
 countDowns = yStarCombinator
-    { f1 f2 ::
+    { f1, f2 ::
         <> { n ::
             <> ifTrue { <> gt(n, 0) }
                 { <> listPrepend(n, f2(isub(n, 1))) }
                 { <> [0] }
         }
     }
-    { f1 f2 ::
+    { f1, f2 ::
         <> { n :: <> listPrepend("and", f1(n)) }
     };
 countDown2 = listNth(countDowns, 0);
 
 # Demo of formal argument repeat modifiers. Also of quoted identifiers.
-blort = { foo bar? \"weird name"? more* ::
+blort = { foo, bar?, \"weird name"?, more* ::
     io0Note(format("%q %q %q %q", foo, bar, \"weird name", more))
 };
 
@@ -64,7 +64,7 @@ sibling = {
 };
 
 # Demo of nonlocal exit.
-exiter = { foo <out> ::
+exiter = { <out> foo ::
     ifTrue { <> eq(foo, 1) }
         { <out> "one" }
         { <out> }
@@ -74,7 +74,7 @@ exiter = { foo <out> ::
 boxer = {
     box = mutableBox(10);
 
-    listForEach([1, 2, 3]) { . n :: box(iadd(box(), n)) };
+    listForEach([1, 2, 3]) { ., n :: box(iadd(box(), n)) };
     <> box()
 };
 
@@ -91,7 +91,7 @@ process = { value ::
 # Main function
 #
 
-main = { selfPath name rest* ::
+main = { selfPath, name, rest* ::
     # Be welcoming.
 
     ifTrue { <> eq(name, "danfuzz") }

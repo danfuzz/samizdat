@@ -7,7 +7,7 @@ Booleans And Comparison
 <br><br>
 ### Primitive Definitions
 
-#### `lowOrder value1 value2 <> int`
+#### `lowOrder(value1, value2) <> int`
 
 Returns the order of the two given values in the total order of
 Samizdat low-layer values. This returns one of `-1 0 1` indicating
@@ -44,7 +44,7 @@ map < token < uniqlet` &mdash; and minor order is type-dependant.
   itself. There is a total ordering of uniqlets, which is consistent,
   transitive, and symmetric &mdash; but otherwise arbitrary.
 
-#### `lowOrderIs value1 value2 check1 check2? <> boolean`
+#### `lowOrderIs(value1, value2, check1, check2?) <> boolean`
 
 The two values are compared as with `lowOrder`. The int
 result of that comparison are checked for equality with
@@ -61,37 +61,37 @@ comparators in-language.
 <br><br>
 ### In-Language Definitions
 
-#### `eq value1 value2 <> boolean`
+#### `eq(value1, value2) <> boolean`
 
 Checks for equality. Returns `true` iff the two given values are
 identical.
 
-#### `le value1 value2 <> boolean`
+#### `le(value1, value2) <> boolean`
 
 Checks for a less-than-or-equal relationship. Returns `true` iff the
 first value orders before the second or is identical to it.
 
-#### `lt value1 value2 <> boolean`
+#### `lt(value1, value2) <> boolean`
 
 Checks for a less-than relationship. Returns `true` iff the first value
 orders before the second.
 
-#### `ge value1 value2 <> boolean`
+#### `ge(value1, value2) <> boolean`
 
 Checks for a greater-than-or-equal relationship. Returns `true` iff the
 first value orders after the second or is identical to it.
 
-#### `gt value1 value2 <> boolean`
+#### `gt(value1, value2) <> boolean`
 
 Checks for a greater-than relationship. Returns `true` iff the first value
 orders after the second.
 
-#### `ne value1 value2 <> boolean`
+#### `ne(value1, value2) <> boolean`
 
 Checks for inequality. Returns `true` iff the two given values are not
 identical.
 
-#### `not boolean <> boolean`
+#### `not(boolean) <> boolean`
 
 Returns the opposite boolean to the one given.
 

@@ -7,24 +7,24 @@ Strings
 <br><br>
 ### Primitive Definitions
 
-#### `intFromString string <> int`
+#### `intFromString(string) <> int`
 
 Given a single-character string, returns the character code
 of its sole character, as an int. It is an error (terminating
 the runtime) if `string` is not a string of size 1.
 
-#### `stringAdd strings* <> string`
+#### `stringAdd(strings*) <> string`
 
 Returns a string consisting of the concatenation of the contents
 of all the argument strings, in argument order.
 
-#### `stringFromInt int <> string`
+#### `stringFromInt(int) <> string`
 
 Returns a single-character string that consists of the character
 code indicated by the given int argument, which must be in the
 range for representation as an unsigned 32-bit quantity.
 
-#### `stringNth string n notFound? <> . | !.`
+#### `stringNth(string, n, notFound?) <> . | !.`
 
 Returns the `n`th (zero-based) element of the given string, as a
 single-element string, if `n` is a valid int index into the given
@@ -32,7 +32,7 @@ string. If `n` is not valid (not an int, or out of range),
 then this returns the `notFound` value (an arbitrary value) if supplied,
 or returns void if `notFound` was not supplied.
 
-#### `stringSlice list start end? <> list`
+#### `stringSlice(list, start, end?) <> list`
 
 Returns a string consisting of a "slice" of elements of the given
 string, from the `start` index (inclusive) through the `end` index
@@ -45,7 +45,7 @@ specified, it defaults to the end of the string.
 <br><br>
 ### In-Language Definitions
 
-#### `stringForEach string function <> !.`
+#### `stringForEach(string, function) <> !.`
 
 Calls the given function on each element (character) of the given string.
 The given function is called with two arguments, namely the element's
@@ -54,7 +54,7 @@ Always returns void.
 
 **Note:** See `stringMap` for discussion about choice of argument order.
 
-#### `stringFromTokenList tokens <> string`
+#### `stringFromTokenList(tokens) <> string`
 
 Takes a list of tokenizer-style character tokens (that is, tokens whose
 type tags are each a single-character string), returning the result
@@ -62,7 +62,7 @@ of concatenating all the characters together in order.
 
 This function is intended to aid in the building of tokenizers.
 
-#### `stringMap string function <> list`
+#### `stringMap(string, function) <> list`
 
 Maps each element of a string using a mapping function, collecting
 the results into a list (note, not into a string). The given
@@ -79,7 +79,7 @@ function argument is the *last* one and not the *first* one. This is
 specifically done to make it natural to write a multi-line function
 without losing track of the other two arguments.
 
-#### `stringReduce base string function <> . | !.`
+#### `stringReduce(base, string, function) <> . | !.`
 
 Reduces a string to a single value, given a base value and a
 reducer function, operating in low-to-high index order (that is, this

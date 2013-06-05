@@ -14,7 +14,7 @@ can be used.
 
 ```
 # Returns a `call` node.
-makeCall = { function actuals* ::
+makeCall = { function, actuals* ::
     <> @["call" = ["function"=function, "actuals"=actuals]]
 };
 
@@ -24,7 +24,7 @@ makeVarRef = { name ::
 };
 
 # Returns a `call` node that names a function as a `varRef`.
-makeCallName = { name actuals* ::
+makeCallName = { name, actuals* ::
     <> @["call" = ["function"=(makeVarRef(name)), "actuals"=actuals]]
 };
 
@@ -35,7 +35,7 @@ makeLiteral = { value ::
 
 # Returns a `function` node representing a thunk of an expression.
 makeThunk = { expression ::
-    <> @["function" = @["statements"=[] "yield"=expression]];
+    <> @["function" = @["statements"=[], "yield"=expression]];
 };
 
 # forward declaration: closure
@@ -217,6 +217,14 @@ formal = {/
     { <> mapAdd(name, repeat) }
 /};
 
+formalsList = {/
+    first = formal
+    rest = (@"," formal)*
+    { <> listPrepend(first, rest) }
+|
+    { <> [] }
+/};
+
 programBody = {/
     @";"*
 
@@ -245,13 +253,6 @@ programBody = {/
 /};
 
 programDeclarations = {/
-    formals = (
-        fs = formal+
-        { <> ["formals" = fs] }
-    |
-        { <> [=] }
-    )
-
     yieldDef = (
         y = yieldDef
         { <> ["yieldDef" = y] }
@@ -259,9 +260,16 @@ programDeclarations = {/
         { <> [=] }
     )
 
+    formals = formalsList
+
     @"::"
 
-    { <> mapAdd(formals, yieldDef) }
+    {
+        formalsMap = ifTrue { <> eq(formals, []) }
+            { <> [=] }
+            { <> ["formals" = formals] };
+        <> mapAdd(formalsMap, yieldDef)
+    }
 /};
 
 program = {/

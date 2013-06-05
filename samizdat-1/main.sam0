@@ -13,7 +13,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH ARGS* ::
+SELF_PATH, ARGS* ::
 
 
 #
@@ -25,7 +25,7 @@ SELF_PATH ARGS* ::
 readFile = io0SandboxedReader(listButLast(SELF_PATH));
 
 # Loads a sibling file.
-loadFile = { ctx name ::
+loadFile = { ctx, name ::
     io0Note(format("    %Q", name));
 
     text = readFile([name]);
@@ -37,8 +37,8 @@ loadFile = { ctx name ::
 
 # Loads the named libraries, each one in the context of the previously-defined
 # ones.
-loadAllLibraries = { ctx rest* ::
-    <> listReduce(ctx, rest) { result . elem ::
+loadAllLibraries = { ctx, rest* ::
+    <> listReduce(ctx, rest) { result, ., elem ::
         <> mapAdd(result, loadFile(result, elem));
     }
 };
