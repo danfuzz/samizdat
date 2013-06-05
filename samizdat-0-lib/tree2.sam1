@@ -109,8 +109,8 @@ reportError = { pending ::
 #
 
 # Forward declarations.
+parseClosure = forwardFunction();
 parseExpression = forwardFunction();
-parseFunction = forwardFunction();
 parseParser = forwardFunction();
 
 # Parses an integer literal.
@@ -220,7 +220,7 @@ parseParenExpression = {/
 parseAtom = {/
     parseVarRef | parseInt | parseString |
     parseList | parseEmptyMap | parseMap |
-    parseUniqlet | parseToken | parseFunction | parseParenExpression |
+    parseUniqlet | parseToken | parseClosure | parseParenExpression |
     # Defined by Samizdat Layer 1.
     &@"{/" parseParser
 /};
@@ -237,15 +237,15 @@ parseYieldDef = {/
 # Yields a list of expression nodes.
 parseActualsList = {/
     @"()"
-    parseFunction*
+    parseClosure*
 |
     @"("
     normalActuals = parseUnadornedList
     @")"
-    functionActuals = parseFunction*
-    { <> listAdd(normalActuals, functionActuals) }
+    closureActuals = parseClosure*
+    { <> listAdd(normalActuals, closureActuals) }
 |
-    parseFunction+
+    parseClosure+
 /};
 
 # Parses a unary prefix operator. This yields a `varRef` node for the function
@@ -386,19 +386,19 @@ parseOrExpression = {/
 parseIfExpression = {/
     @"if"
     firstCondition = parseParenExpression
-    firstThen = parseFunction
+    firstThen = parseClosure
 
     elseIfThens = (
         @"else"
         @"if"
         condition = parseParenExpression
-        then = parseFunction
+        then = parseClosure
         { <> [condition, then] }
     )*
 
     finalElse = (
         @"else"
-        parseFunction
+        parseClosure
     )?
 
     (
@@ -461,7 +461,7 @@ parseWhileExpression = {/
         { <> makeVarDef(y, makeVarRef("break")) }
     )?
     condition = parseParenExpression
-    code = parseFunction
+    code = parseClosure
 
     {
         loopFunction = @["function" = [
@@ -513,7 +513,7 @@ parseDoExpression = {/
         y = parseYieldDef
         { <> makeVarDef(y, makeVarRef("break")) }
     )?
-    code = parseFunction
+    code = parseClosure
     condition = (
         @"while"
         ex = parseParenExpression
@@ -710,14 +710,14 @@ parseProgram = {/
     { <> @["function" = mapAdd(decls, body)] }
 /};
 
-# Parses a function (in-line anonymous function).
-implFunction = {/
+# Parses a closure (in-line anonymous function, with no extra bindings).
+implClosure = {/
     @"{"
     prog = parseProgram
     @"}"
     { <> prog }
 /};
-parseFunction(implFunction);
+parseClosure(implClosure);
 
 # Top-level rule to parse a program with possible error afterwards.
 # Note that an empty string is a valid program.

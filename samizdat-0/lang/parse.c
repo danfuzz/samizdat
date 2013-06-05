@@ -197,8 +197,8 @@ static zvalue makeThunk(zvalue expression) {
 typedef zvalue (*parserFunction)(ParseState *);
 
 /* Defined below. */
+DEF_PARSE(closure);
 DEF_PARSE(expression);
-DEF_PARSE(function);
 
 /**
  * Parses `x*` for an arbitrary rule `x`. Returns a list of parsed `x` results.
@@ -467,7 +467,7 @@ DEF_PARSE(atom) {
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(uniqlet); }
     if (result == NULL) { result = PARSE(token); }
-    if (result == NULL) { result = PARSE(function); }
+    if (result == NULL) { result = PARSE(closure); }
     if (result == NULL) { result = PARSE(parenExpression); }
 
     return result;
@@ -480,17 +480,17 @@ DEF_PARSE(actualsList) {
     MARK();
 
     if (MATCH(CH_PARENPAREN)) {
-        return PARSE_STAR(function);
+        return PARSE_STAR(closure);
     }
 
     if (MATCH(CH_OPAREN)) {
         zvalue normalActuals = PARSE(unadornedList); // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
-        zvalue functionActuals = PARSE_STAR(function); // This never fails.
-        return datListAdd(normalActuals, functionActuals);
+        zvalue closureActuals = PARSE_STAR(closure); // This never fails.
+        return datListAdd(normalActuals, closureActuals);
     }
 
-    return PARSE_PLUS(function);
+    return PARSE_PLUS(closure);
 }
 
 /**
@@ -725,9 +725,9 @@ DEF_PARSE(program) {
 }
 
 /**
- * Parses a `function` node.
+ * Parses a `closure` node.
  */
-DEF_PARSE(function) {
+DEF_PARSE(closure) {
     MARK();
 
     MATCH_OR_REJECT(CH_OCURLY);

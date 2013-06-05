@@ -38,8 +38,8 @@ makeThunk = { expression ::
     <> @["function" = @["statements"=[] "yield"=expression]];
 };
 
+# forward declaration: closure
 # forward declaration: expression
-# forward declaration: function
 
 int = {/
     i = @int
@@ -134,20 +134,20 @@ parenExpression = {/
 atom = {/
     varRef | int | string |
     list | emptyMap | map |
-    uniqlet | token | function | parenExpression
+    uniqlet | token | closure | parenExpression
 /};
 
 actualsList = {/
     @"()"
-    function*
+    closure*
 |
     @"("
     normalActuals = unadornedList
     @")"
-    functionActuals = function*
-    { <> listAdd(normalActuals, functionActuals) }
+    closureActuals = closure*
+    { <> listAdd(normalActuals, closureActuals) }
 |
-    function+
+    closure+
 /};
 
 callExpression = {/
@@ -270,7 +270,7 @@ program = {/
     { <> @["function" (mapAdd(decls, body))] }
 /};
 
-function = {/
+closure = {/
     @"{"
     prog = program
     @"}"

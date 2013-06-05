@@ -49,9 +49,9 @@ makeThunk = { expression ::
 # Samizdat Layer 0 definitions
 #
 
-# Forward declarations for expression, function, and parser.
+# Forward declarations.
+parseClosure = forwardFunction();
 parseExpression = forwardFunction();
-parseFunction = forwardFunction();
 parseParser = forwardFunction();
 
 # Documented in Samizdat Layer 0 spec.
@@ -158,7 +158,7 @@ parseAtom = pegMakeMainSequence(
     pegMakeChoice(
         parseVarRef, parseInt, parseString,
         parseList, parseEmptyMap, parseMap,
-        parseUniqlet, parseToken, parseFunction,
+        parseUniqlet, parseToken, parseClosure,
         parseParenExpression,
         # Defined by Samizdat Layer 1. The lookahead is just to make
         # it clear what is required to "jump into" Layer 1 parsing.
@@ -171,16 +171,16 @@ parseActualsList = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeToken("()"),
-            pegMakeStar(parseFunction)),
+            pegMakeStar(parseClosure)),
         pegMakeSequence(
             pegMakeToken("("),
             parseUnadornedList,
             pegMakeToken(")"),
-            pegMakeStar(parseFunction),
-            pegMakeCode { . normalActuals . functionActuals ::
-                <> listAdd(normalActuals, functionActuals)
+            pegMakeStar(parseClosure),
+            pegMakeCode { . normalActuals . closureActuals ::
+                <> listAdd(normalActuals, closureActuals)
             }),
-        pegMakePlus(parseFunction)));
+        pegMakePlus(parseClosure)));
 
 # Documented in Samizdat Layer 0 spec.
 parseCallExpression = pegMakeMainSequence(
@@ -298,12 +298,12 @@ parseProgram = pegMakeMainSequence(
     pegMakeCode { decls body :: <> @["function" = mapAdd(decls, body)] });
 
 # Documented in Samizdat Layer 0 spec.
-implFunction = pegMakeMainSequence(
+implClosure = pegMakeMainSequence(
     pegMakeToken("{"),
     parseProgram,
     pegMakeToken("}"),
     pegMakeCode { . prog . :: <> prog });
-parseFunction(implFunction);
+parseClosure(implClosure);
 
 
 #
