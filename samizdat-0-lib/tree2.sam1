@@ -541,6 +541,49 @@ parseDoExpression = {/
     }
 /};
 
+# Parses a fn (function with `return` binding) expression. The translation
+# is along these lines:
+#
+# ```
+# fn <out> name(arg1, arg2) { stat1; stat2 }
+# ```
+#
+# =>
+#
+# ```
+# {/
+#     name = forwardFunction();
+#     <> name {/ arg1 arg2 <\"return"> ::
+#         out = \"return";
+#         stat1;
+#         stat2
+#     /};
+# /}()
+# ```
+#
+# And:
+#
+# ```
+# fn <out> (arg1, arg2) { stat1; stat2 }
+# ```
+#
+# ```
+# {/ arg1 arg2 <\"return"> ::
+#     out = \"return";
+#     stat1;
+#     stat2
+# /}
+# ```
+#
+# with the initial return assignment omitted (in both cases) if there is no
+# yield def.
+parseFnExpression = {/
+    @"fn"
+    yieldDef = parseYieldDef?
+    name = @identifier?
+    !() # TODO
+/};
+
 # Parses a general expression.
 implExpression = {/
     parseOrExpression
@@ -550,6 +593,8 @@ implExpression = {/
     parseWhileExpression
 |
     parseDoExpression
+|
+    parseFnExpression
 /};
 parseExpression(implExpression);
 
@@ -569,10 +614,12 @@ parseNonlocalExit = {/
     value = parseExpression?
     { <> apply(makeCallNonlocalExit, name, value) }
 |
-    @"break"
+    op = [@"break" @"return"]
     value = parseExpression?
-    { <> apply(makeCallNonlocalExit, makeVarRef("break"), value) }
+    { <> apply(makeCallNonlocalExit, makeVarRef(tokenType(op)), value) }
 |
+    # This one is separate from `break` and `return`, because it doesn't
+    # accept a value.
     @"continue"
     { <> makeCallNonlocalExit(makeVarRef("continue")) }
 /};
