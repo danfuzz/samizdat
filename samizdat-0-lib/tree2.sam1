@@ -12,12 +12,12 @@
 #
 
 # Returns a `call` node.
-makeCall = { function actuals* ::
+makeCall = { function, actuals* ::
     <> @["call" = ["function"=function, "actuals"=actuals]]
 };
 
 # Returns a `varDef` node.
-makeVarDef = { name value ::
+makeVarDef = { name, value ::
     <> @["varDef" = ["name"=name, "value"=value]]
 };
 
@@ -27,7 +27,7 @@ makeVarRef = { name ::
 };
 
 # Returns a `call` node that names a function as a `varRef`.
-makeCallName = { name actuals* ::
+makeCallName = { name, actuals* ::
     <> @["call" = ["function"=makeVarRef(name), "actuals"=actuals]]
 };
 
@@ -44,15 +44,15 @@ makeThunk = { expression ::
 
 # Returns a `call` node that names a function as a `varRef` and passes
 # "thunked" versions of each of the given actual arguments.
-makeCallNameThunks = { name actuals* ::
-    thunks = listMap(actuals) { . one :: <> makeThunk(one) };
+makeCallNameThunks = { name, actuals* ::
+    thunks = listMap(actuals) { ., one :: <> makeThunk(one) };
     <> apply(makeCallName, name, thunks)
 };
 
 # Returns a `call` node to a nonlocal exit with the given name and
 # with optional expression value. The expression if supplied is automatically
 # "thunked".
-makeCallNonlocalExit = { name expression? ::
+makeCallNonlocalExit = { name, expression? ::
     <> ifValue { <> listFirst(expression) }
         { ex :: <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
         { <> makeCall(makeVarRef("nonlocalExit"), name) }
@@ -61,7 +61,7 @@ makeCallNonlocalExit = { name expression? ::
 # Map of token types to corresponding unary operator function name variable
 # references.
 UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]", "!!!"])
-    { result . name ::
+    { result, ., name ::
         <> mapPut(result, name, makeVarRef(stringAdd("unary", name)))
     };
 
@@ -75,14 +75,14 @@ BINARY_OPERATORS = listReduce([=],
         "\\==", "\\!=", "\\<", "\\>", "\\<=", "\\>="
     ]
     )
-    { result . name ::
+    { result, ., name ::
         <> mapPut(result, name, makeVarRef(stringAdd("binary", name)))
     };
 
 # Helper for parsing binary operator expressions, which puts together
 # a sequence of function calls.
-makeBinaryCalls = { firstEx opExList ::
-    <> listReduce(firstEx, opExList) { result . opEx ::
+makeBinaryCalls = { firstEx, opExList ::
+    <> listReduce(firstEx, opExList) { result, ., opEx ::
         op = listFirst(opEx);
         ex = listLast(opEx);
         <> makeCall(mapGet(BINARY_OPERATORS, tokenType(op)), result, ex)
@@ -94,7 +94,7 @@ reportError = { pending ::
     io0Note("Pending tokens:");
 
     listForEach(pending)
-        { . token :: io0Note(format("    %q", token)) };
+        { ., token :: io0Note(format("    %q", token)) };
 
     io0Die("\nExtra tokens at end of program.")
 };
@@ -282,9 +282,9 @@ parseUnaryExpression = {/
 
     {
         withPosts = listReduce(atom, postfixes)
-            { result . postfix :: <> postfix(result) };
+            { result, ., postfix :: <> postfix(result) };
         <> listReduce(withPosts, listReverse(prefixes))
-            { result . prefix :: <> makeCall(prefix, result) }
+            { result, ., prefix :: <> makeCall(prefix, result) }
     }
 /};
 
@@ -339,7 +339,7 @@ parseCompareExpression = {/
         # The general case of two or more comparison operators.
         {
             # Make separate ops and exes arrays.
-            arrays = listReduce([[], []], opExes) { result . one ::
+            arrays = listReduce([[], []], opExes) { result, ., one ::
                 ops = listFirst(result);
                 exes = listLast(result);
                 op = mapGet(BINARY_OPERATORS, tokenType(listFirst(one)));
@@ -415,7 +415,7 @@ parseIfExpression = {/
             arrays = listReduce(
                 [[makeThunk(firstCondition)], [firstThen]],
                 elseIfThens)
-                { result . one ::
+                { result, ., one ::
                     conditions = listFirst(result);
                     thens = listLast(result);
                     condition = makeThunk(listFirst(one));
@@ -817,13 +817,13 @@ parseParserSet = {/
         strings = parseParserSetString+
         {
             oneString = listReduce("", strings)
-                { result . s :: <> stringAdd(result, tokenValue(s)) };
+                { result, ., s :: <> stringAdd(result, tokenValue(s)) };
             <> stringReduce([], oneString)
-                { result . ch :: <> listAppend(result, ch) }
+                { result, ., ch :: <> listAppend(result, ch) }
         }
     |
         tokens = parseParserToken+
-        { <> listMap(tokens) { . t :: <> tokenValue(t) } }
+        { <> listMap(tokens) { ., t :: <> tokenValue(t) } }
     |
         { <> [] }
     )
