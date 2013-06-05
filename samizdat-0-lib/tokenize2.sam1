@@ -161,7 +161,7 @@ tokInt = {/
     )
 
     {
-        value = listReduce(0, digits) { result . digit ::
+        value = listReduce(0, digits) { result, ., digit ::
             <> ifTrue { <> eq(digit, -1) }
                 { <> result }
                 { <> iadd(imul(result, base), digit) }
