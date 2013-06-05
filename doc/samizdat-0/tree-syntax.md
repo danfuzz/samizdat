@@ -35,7 +35,7 @@ makeLiteral = { value ::
 
 # Returns a `function` node representing a thunk of an expression.
 makeThunk = { expression ::
-    <> @["function" = @["statements"=[] "yield"=expression]];
+    <> @["function" = @["statements"=[], "yield"=expression]];
 };
 
 # forward declaration: closure
