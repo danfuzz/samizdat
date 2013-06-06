@@ -870,7 +870,7 @@ parseWhileExpression = {/
     code = parseNullaryClosure
 
     {
-        loopFunction = @["function" = [
+        loopClosure = @["closure" = [
             "yieldDef" = "continue",
             "statements" = [
                 makeCallName("ifTrue",
@@ -880,14 +880,14 @@ parseWhileExpression = {/
             ]
         ]];
 
-        mainFunction = @["function" = [
+        mainClosure = @["closure" = [
             "yieldDef" = "break",
             "statements" = listAppend(breakDef,
-                makeCallName("loop", loopFunction)
+                makeCallName("loop", loopClosure)
             )
         ]];
 
-        <> makeCall(mainFunction)
+        <> makeCall(mainClosure)
     }
 /};
 
@@ -928,19 +928,19 @@ parseDoExpression = {/
     )?
 
     {
-        loopFunction = @["function" = [
+        loopClosure = @["closure" = [
             "yieldDef" = "continue",
             "statements" = listPrepend(makeCall(code), condition)
         ]];
 
-        mainFunction = @["function" = [
+        mainClosure = @["closure" = [
             "yieldDef" = "break",
             "statements" = listAppend(breakDef,
-                makeCallName("loop", loopFunction)
+                makeCallName("loop", loopClosure)
             )
         ]];
 
-        <> makeCall(mainFunction)
+        <> makeCall(mainClosure)
     }
 /};
 
