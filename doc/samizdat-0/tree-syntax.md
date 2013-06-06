@@ -192,11 +192,13 @@ yield = {/
     )
 /};
 
-yieldDef = {/
+optYieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> tokenValue(name) }
+    { <> ["yieldDef" = tokenValue(name)] }
+|
+    { <> [=] }
 /};
 
 formal = {/
@@ -253,18 +255,12 @@ programBody = {/
 /};
 
 programDeclarations = {/
-    yieldDef = (
-        y = yieldDef
-        { <> ["yieldDef" = y] }
-    |
-        { <> [=] }
-    )
-
+    yieldDef = optYieldDef
     formals = formalsList
 
     @"::"
 
-    { <> mapAdd(formals, yieldDef) }
+    { <> mapAdd(formals, optYieldDef) }
 /};
 
 program = {/
