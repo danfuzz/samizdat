@@ -322,6 +322,15 @@ parseClosure(implClosure);
 # `choicePex` is the top-level parsing expression node type.
 parseChoicePex = forwardFunction();
 
+# Documented in Samizdat Layer 1 spec.
+parseNullaryClosure = pegMakeMainSequence(
+    parseClosure,
+    pegMakeCode { closure ::
+        ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
+            { io0Die("Invalid formal argument in parser code block.") };
+        <> closure
+    });
+
 implParser = pegMakeMainSequence(
     pegMakeToken("{/"),
     parseChoicePex,
@@ -403,13 +412,8 @@ parseParserSet = pegMakeMainSequence(
     pegMakeCode { ., type, terminals, . :: <> @[type = terminals] });
 
 parseParserCode = pegMakeMainSequence(
-    parseClosure,
-    pegMakeCode { closure ::
-        closureBody = tokenValue(closure);
-        ifTrue { <> mapHasKey(closureBody, "formals") }
-            { io0Die("Invalid formal argument in parser code block.") };
-        <> @["{}" = closureBody]
-    });
+    parseNullaryClosure,
+    pegMakeCode { closure :: <> @["{}" = tokenValue(closure)] });
 
 parseParserPredicate = pegMakeMainSequence(
     pegMakeToken("&&"),

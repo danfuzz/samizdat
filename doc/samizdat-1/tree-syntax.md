@@ -22,6 +22,16 @@ atom = {/
     &@"{/" parser
 /};
 
+parseNullaryClosure = {/
+    closure = parseClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
+            { io0Die("Invalid formal argument in parser code block.") };
+        <> closure
+    }
+/};
+
 parser = {/
     @"{/"
     pex = choicePex
@@ -110,14 +120,8 @@ parserSet = {/
 /};
 
 parserCode = {/
-    closure = parseClosure
-
-    {
-        closureBody = tokenValue(closure);
-        ifTrue { <> mapHasKey(closureBody, "formals") }
-            { io0Die("Invalid formal argument in parser code block.") };
-        <> @["{}" = closureBody]
-    }
+    closure = parseNullaryClosure
+    { <> @["{}" = tokenValue(closure)] }
 /};
 
 parserPredicate = {/

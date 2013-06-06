@@ -225,6 +225,24 @@ parseAtom = {/
     &@"{/" parseParser
 /};
 
+# Parses a closure which must not define any formal arguments. This is done
+# by parsing an arbitrary closure and then verifying that it does not
+# declare formals. This is preferable to not-including formal argument
+# syntax, because (a) no rule wants to differentiate these cases (rules either
+# wants an arbitrary closure or a specifically-constrained kind); (b) it
+# reduces redundancy in the syntax, and (c) the error case on the former
+# would be more obscure (as in just something like "unexpected token" on
+# the would-be formal argument).
+parseNullaryClosure = {/
+    closure = parseClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
+            { io0Die("Invalid formal argument in parser code block.") };
+        <> closure
+    }
+/};
+
 # Parses a yield / non-local exit definition.
 parseYieldDef = {/
     @"<"
@@ -844,18 +862,8 @@ parseParserSet = {/
 
 # Parse a code block parsing expression.
 parseParserCode = {/
-    closure = parseClosure
-
-    {
-        # Validate that the closure has no formals, giving a sensible
-        # error if not. This is preferable to not-including formal argument
-        # syntax, because (a) it reduces redundancy, and (b) the error
-        # case on the former would be more obscure.
-        closureBody = tokenValue(closure);
-        ifTrue { <> mapHasKey(closureBody, "formals") }
-            { io0Die("Invalid formal argument in parser code block.") };
-        <> @["{}" = closureBody]
-    }
+    closure = parseNullaryClosure
+    { <> @["{}" = tokenValue(closure) ] }
 /};
 
 # Parse a predicate parsing expression.
