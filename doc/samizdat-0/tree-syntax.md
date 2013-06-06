@@ -220,9 +220,9 @@ formal = {/
 formalsList = {/
     first = formal
     rest = (@"," formal)*
-    { <> listPrepend(first, rest) }
+    { <> ["formals" = listPrepend(first, rest)] }
 |
-    { <> [] }
+    { <> [=] }
 /};
 
 programBody = {/
@@ -264,18 +264,13 @@ programDeclarations = {/
 
     @"::"
 
-    {
-        formalsMap = ifTrue { <> eq(formals, []) }
-            { <> [=] }
-            { <> ["formals" = formals] };
-        <> mapAdd(formalsMap, yieldDef)
-    }
+    { <> mapAdd(formals, yieldDef) }
 /};
 
 program = {/
     decls = (programDeclarations | { <> [=] })
     body = programBody
-    { <> @["function" (mapAdd(decls, body))] }
+    { <> @["function" = (mapAdd(decls, body))] }
 /};
 
 closure = {/
