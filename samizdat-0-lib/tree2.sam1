@@ -296,9 +296,9 @@ parseFormal = {/
 parseFormalsList = {/
     first = parseFormal
     rest = (@"," parseFormal)*
-    { <> listPrepend(first, rest) }
+    { <> ["formals" = listPrepend(first, rest)] }
 |
-    { <> [] }
+    { <> [=] }
 /};
 
 # Parses a program body (statements plus optional yield).
@@ -342,12 +342,7 @@ parseProgramDeclarations = {/
 
     @"::"
 
-    {
-        formalsMap = ifTrue { <> eq(formals, []) }
-            { <> [=] }
-            { <> ["formals" = formals] };
-        <> mapAdd(formalsMap, yieldDef)
-    }
+    { <> mapAdd(formals, yieldDef) }
 /};
 
 # Parses a program (top-level program or contents inside function braces).
@@ -587,6 +582,55 @@ parseChoicePex(implChoicePex);
 # Samizdat Layer 2 definitions
 #
 
+# Parses a closure which must have neither formal arguments nor a yield
+# definition. See `parseNullaryClosure` above for discussion.
+parseCodeOnlyClosure = {/
+    closure = parseNullaryClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(closure), "yieldDef") }
+            { io0Die("Invalid yield definition in code block.") };
+        <> closure
+    }
+/};
+
+# Common parsing for `fn` statements and expressions. The syntax for
+# both is identical, except that the statement form requires that the
+# function be named. The result of this rule is a node suitable for
+# use as a statement, except that if it is actually to be used as such,
+# code needs to validate that it has a name.
+parseFnCommon = {/
+    @"fn"
+
+    yieldDef = (
+        y = parseYieldDef
+        { <> ["yieldDef" = y] }
+    |
+        { <> [=] }
+    )
+
+    name = (
+        n = @identifier
+        { <> ["name" = n] }
+    |
+        { <> [=] }
+    )
+
+    formals = (
+        @"()"
+        { <> [=] }
+    |
+        @"("
+        f = parseFormalsList
+        @")"
+        { <> f }
+    )
+
+    code = parseCodeOnlyClosure
+
+    { <> @["fn" = mapAdd(tokenValue(code), yieldDef, name, formals)] }
+/};
+
 # Parses a non-local exit / return. All of the form matched by this rule
 # have the dual properties of (a) necessarily being at the end of a code
 # block, and (b) being represented as a function call in the underlying
@@ -608,18 +652,6 @@ implNonlocalExit = {/
     { <> makeCallNonlocalExit(makeVarRef("continue")) }
 /};
 parseNonlocalExit(implNonlocalExit);
-
-# Parses a closure which must have neither formal arguments nor a yield
-# definition. See `parseNullaryClosure` above for discussion.
-parseCodeOnlyClosure = {/
-    closure = parseNullaryClosure
-
-    {
-        ifTrue { <> mapHasKey(tokenValue(closure), "yieldDef") }
-            { io0Die("Invalid yield definition in code block.") };
-        <> closure
-    }
-/};
 
 # Parses a unary prefix operator. This yields a `varRef` node for the function
 # to apply when applying the prefix.
@@ -951,12 +983,7 @@ parseDoExpression = {/
 # with the initial return assignment omitted (in both cases) if there is no
 # yield def.
 parseFnExpression = {/
-    @"fn"
-    yieldDef = parseYieldDef?
-    name = @identifier?
-    @"("
-    @")"
-    code = parseCodeOnlyClosure
+    fn = parseFnCommon
     !() # TODO
 /};
 
