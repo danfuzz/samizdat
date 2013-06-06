@@ -227,12 +227,14 @@ parseAtom = {/
     &@"{/" parseParser
 /};
 
-# Parses a yield / non-local exit definition.
-parseYieldDef = {/
+# Parses an optional yield / non-local exit definition.
+parseOptYieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> tokenValue(name) }
+    { <> ["yieldDef" = tokenValue(name)] }
+|
+    { <> [=] }
 /};
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
@@ -331,13 +333,7 @@ parseProgramBody = {/
 
 # Parses program / function declarations.
 parseProgramDeclarations = {/
-    yieldDef = (
-        y = parseYieldDef
-        { <> ["yieldDef" = y] }
-    |
-        { <> [=] }
-    )
-
+    yieldDef = parseOptYieldDef
     formals = parseFormalsList
 
     @"::"
@@ -602,12 +598,7 @@ parseCodeOnlyClosure = {/
 parseFnCommon = {/
     @"fn"
 
-    yieldDef = (
-        y = parseYieldDef
-        { <> ["yieldDef" = y] }
-    |
-        { <> [=] }
-    )
+    yieldDef = parseOptYieldDef
 
     name = (
         n = @identifier
@@ -839,6 +830,19 @@ parseIfExpression = {/
     )
 /};
 
+# Parses the optional yield definition that's associated with the `break`
+# exit of a loop. This always results in a list, which is empty if there
+# is no yield definition present, or is a single-element list of an
+# appropriate variable definition and assignment.
+parseOptBreakDef = {/
+    y = parseOptYieldDef
+
+    {
+        <> ifTrue { <> ne(y, [=]) }
+            { <> makeVarDef(mapValue(y), makeVarRef("break")) }
+    }?
+/};
+
 # Parses a while expression. The translation is along these lines:
 #
 # ```
@@ -861,10 +865,7 @@ parseIfExpression = {/
 # with the initial break assignment omitted if there is no yield def.
 parseWhileExpression = {/
     @"while"
-    yieldDef = (
-        y = parseYieldDef
-        { <> makeVarDef(y, makeVarRef("break")) }
-    )?
+    breakDef = parseOptBreakDef
     condition = parseParenExpression
     code = parseNullaryClosure
 
@@ -881,7 +882,7 @@ parseWhileExpression = {/
 
         mainFunction = @["function" = [
             "yieldDef" = "break",
-            "statements" = listAppend(yieldDef,
+            "statements" = listAppend(breakDef,
                 makeCallName("loop", loopFunction)
             )
         ]];
@@ -914,10 +915,7 @@ parseWhileExpression = {/
 # of the `do`.
 parseDoExpression = {/
     @"do"
-    yieldDef = (
-        y = parseYieldDef
-        { <> makeVarDef(y, makeVarRef("break")) }
-    )?
+    breakDef = parseOptBreakDef
     code = parseNullaryClosure
     condition = (
         @"while"
@@ -937,7 +935,7 @@ parseDoExpression = {/
 
         mainFunction = @["function" = [
             "yieldDef" = "break",
-            "statements" = listAppend(yieldDef,
+            "statements" = listAppend(breakDef,
                 makeCallName("loop", loopFunction)
             )
         ]];
