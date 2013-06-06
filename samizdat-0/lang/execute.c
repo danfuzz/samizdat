@@ -105,11 +105,8 @@ typedef struct {
      */
     Frame frame;
 
-    /**
-     * Function definition, which includes a list of formals and the
-     * block to run.
-     */
-    zvalue function;
+    /** Node that represents the fixed definition of the closure. */
+    zvalue node;
 } Closure;
 
 /**
@@ -138,7 +135,7 @@ static void closureMark(void *state) {
     Closure *closure = state;
 
     frameMark(&closure->frame);
-    datMark(closure->function);
+    datMark(closure->node);
 }
 
 /**
@@ -214,9 +211,9 @@ static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
  * Binds variables for all the formal arguments of the given
  * function (if any), into the given execution frame.
  */
-static void bindArguments(Frame *frame, zvalue functionNode,
+static void bindArguments(Frame *frame, zvalue node,
                           zint argCount, const zvalue *args) {
-    zvalue formals = datMapGet(functionNode, STR_FORMALS);
+    zvalue formals = datMapGet(node, STR_FORMALS);
 
     if (formals == NULL) {
         return;
@@ -295,14 +292,14 @@ static void execVarDef(Frame *frame, zvalue varDef) {
 /**
  * The C function that is bound to in order to execute interpreted code.
  */
-static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
+static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
     Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
-    zvalue functionNode = closure->function;
+    zvalue node = closure->node;
     Frame *parentFrame = &closure->frame;
 
-    zvalue yieldDef = datMapGet(functionNode, STR_YIELD_DEF);
-    zvalue statements = datMapGet(functionNode, STR_STATEMENTS);
-    zvalue yield = datMapGet(functionNode, STR_YIELD);
+    zvalue yieldDef = datMapGet(node, STR_YIELD_DEF);
+    zvalue statements = datMapGet(node, STR_STATEMENTS);
+    zvalue yield = datMapGet(node, STR_YIELD);
     YieldState *yieldState = NULL;
 
     // With the closure's frame as the parent, bind the formals and
@@ -312,7 +309,7 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
     frame.parentClosure = state;
     frame.parentFrame = parentFrame;
     frame.vars = EMPTY_MAP;
-    bindArguments(&frame, functionNode, argCount, args);
+    bindArguments(&frame, node, argCount, args);
 
     if (yieldDef != NULL) {
         yieldState = utilAlloc(sizeof(YieldState));
@@ -363,17 +360,17 @@ static zvalue execClosure(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /**
- * Executes a `function` form.
+ * Executes a `closure` form.
  */
-static zvalue execFunction(Frame *frame, zvalue function) {
-    datTokenAssertType(function, STR_FUNCTION);
+static zvalue execClosure(Frame *frame, zvalue closureNode) {
+    datTokenAssertType(closureNode, STR_CLOSURE);
 
     Closure *closure = utilAlloc(sizeof(Closure));
 
     frameSnap(&closure->frame, frame);
-    closure->function = datTokenValue(function);
+    closure->node = datTokenValue(closureNode);
 
-    return langDefineFunction(execClosure,
+    return langDefineFunction(callClosure,
                               datUniqletWith(&CLOSURE_DISPATCH, closure));
 }
 
@@ -441,8 +438,8 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         return execVarRef(frame, e);
     else if (datTokenTypeIs(e, STR_CALL))
         return execCall(frame, e);
-    else if (datTokenTypeIs(e, STR_FUNCTION))
-        return execFunction(frame, e);
+    else if (datTokenTypeIs(e, STR_CLOSURE))
+        return execClosure(frame, e);
     else {
         die("Invalid expression type.");
     }
