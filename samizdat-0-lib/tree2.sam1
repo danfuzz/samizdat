@@ -404,13 +404,13 @@ parseOrExpression = {/
 parseIfExpression = {/
     @"if"
     firstCondition = parseParenExpression
-    firstThen = parseClosure
+    firstThen = parseNullaryClosure
 
     elseIfThens = (
         @"else"
         @"if"
         condition = parseParenExpression
-        then = parseClosure
+        then = parseNullaryClosure
         { <> [condition, then] }
     )*
 
@@ -479,7 +479,7 @@ parseWhileExpression = {/
         { <> makeVarDef(y, makeVarRef("break")) }
     )?
     condition = parseParenExpression
-    code = parseClosure
+    code = parseNullaryClosure
 
     {
         loopFunction = @["function" = [
@@ -531,7 +531,7 @@ parseDoExpression = {/
         y = parseYieldDef
         { <> makeVarDef(y, makeVarRef("break")) }
     )?
-    code = parseClosure
+    code = parseNullaryClosure
     condition = (
         @"while"
         ex = parseParenExpression
