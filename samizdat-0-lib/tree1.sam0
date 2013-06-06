@@ -403,19 +403,12 @@ parseParserSet = pegMakeMainSequence(
     pegMakeCode { ., type, terminals, . :: <> @[type = terminals] });
 
 parseParserCode = pegMakeMainSequence(
-    pegMakeToken("{"),
-    pegMakeChoice(
-        pegMakeMainSequence(
-            parseYieldDef,
-            pegMakeToken("::"),
-            pegMakeCode { y, . :: <> ["yieldDef" = y] }),
-        pegMakeMainSequence(
-            pegMakeOpt(pegMakeToken("::")),
-            pegMakeCode { . :: <> [=] })),
-    parseProgramBody,
-    pegMakeToken("}"),
-    pegMakeCode { ., yieldDef, body, . ::
-        <> @["{}" = mapAdd(yieldDef, body)]
+    parseClosure,
+    pegMakeCode { closure ::
+        closureBody = tokenValue(closure);
+        ifTrue { <> mapHasKey(closureBody, "formals") }
+            { io0Die("Invalid formal argument in parser code block.") };
+        <> @["{}" = closureBody]
     });
 
 parseParserPredicate = pegMakeMainSequence(

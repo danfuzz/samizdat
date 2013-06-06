@@ -844,21 +844,18 @@ parseParserSet = {/
 
 # Parse a code block parsing expression.
 parseParserCode = {/
-    @"{"
+    closure = parseClosure
 
-    yieldDef = (
-        y = parseYieldDef
-        @"::"
-        { <> ["yieldDef" = y] }
-    |
-        @"::"?
-        { <> [=] }
-    )
-
-    body = parseProgramBody
-    @"}"
-
-    { <> @["{}" = mapAdd(yieldDef, body)] }
+    {
+        # Validate that the closure has no formals, giving a sensible
+        # error if not. This is preferable to not-including formal argument
+        # syntax, because (a) it reduces redundancy, and (b) the error
+        # case on the former would be more obscure.
+        closureBody = tokenValue(closure);
+        ifTrue { <> mapHasKey(closureBody, "formals") }
+            { io0Die("Invalid formal argument in parser code block.") };
+        <> @["{}" = closureBody]
+    }
 /};
 
 # Parse a predicate parsing expression.

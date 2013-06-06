@@ -110,21 +110,14 @@ parserSet = {/
 /};
 
 parserCode = {/
-    @"{"
+    closure = parseClosure
 
-    yieldDef = (
-        y = yieldDef
-        @"::"
-        { <> ["yieldDef" = y] }
-    |
-        @"::"?
-        { <> [=] }
-    )
-
-    body = programBody
-    @"}"
-
-    { <> @["{}" = (mapAdd(yieldDef, body))] }
+    {
+        closureBody = tokenValue(closure);
+        ifTrue { <> mapHasKey(closureBody, "formals") }
+            { io0Die("Invalid formal argument in parser code block.") };
+        <> @["{}" = closureBody]
+    }
 /};
 
 parserPredicate = {/
