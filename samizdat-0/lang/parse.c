@@ -552,16 +552,24 @@ DEF_PARSE(yield) {
 }
 
 /**
- * Parses a `yieldDef` node.
+ * Helper for `optYieldDef` which parses the non-empty case.
  */
-DEF_PARSE(yieldDef) {
+DEF_PARSE(optYieldDef1) {
     MARK();
 
     MATCH_OR_REJECT(CH_LT);
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     MATCH_OR_REJECT(CH_GT);
 
-    return datTokenValue(identifier);
+    return mapFrom1(STR_YIELD_DEF, datTokenValue(identifier));
+}
+
+/**
+ * Parses an `optYieldDef` node.
+ */
+DEF_PARSE(optYieldDef) {
+    zvalue result = PARSE(optYieldDef1);
+    return (result != NULL) ? result : EMPTY_MAP;
 }
 
 /**
@@ -678,14 +686,11 @@ DEF_PARSE(programBody) {
 DEF_PARSE(programDeclarations) {
     MARK();
 
-    zvalue yieldDef = PARSE(yieldDef); // It's okay for this to be `NULL`.
-    zvalue result = PARSE(formalsList); // This is always a map.
+    // Both of these are always maps (possibly empty).
+    zvalue yieldDef = PARSE(optYieldDef);
+    zvalue formals = PARSE(formalsList);
 
-    if (yieldDef != NULL) {
-        result = datMapPut(result, STR_YIELD_DEF, yieldDef);
-    }
-
-    return result;
+    return datMapAdd(formals, yieldDef);
 }
 
 /**
