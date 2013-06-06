@@ -558,8 +558,8 @@ parseNamePex = {/
     parseLookaheadPex
 /};
 
-# Parses a sequence parsing expression. This includes a sequence of length
-# one.
+# Parses a sequence parsing expression. This includes sequences of length
+# one, but it does *not* parse empty (zero-length) sequences.
 parseSequencePex = {/
     items = parseNamePex+
     { <> @["sequence" = items] }
