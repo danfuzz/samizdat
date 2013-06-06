@@ -40,7 +40,7 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `function` &mdash; `@["function" = [("formals"=[formal+])?, ("yieldDef"=name)?,` `"statements"=[statement*], ("yield"=expression)?]`
+#### `closure` &mdash; `@["closure" = [("formals"=[formal+])?, ("yieldDef"=name)?,` `"statements"=[statement*], ("yield"=expression)?]`
 
 * `"formals" = [formal+]` (optional) &mdash; An array of `formal`
   elements (as defined below). This defines the formal arguments to
@@ -57,14 +57,15 @@ void).
 * `"yield" = expression` (optional) &mdash; An expression node representing
   the (local) result value for a call.
 
-This represents a function definition.
+This represents a closure (anonymous function) definition.
 
-When run, a closure (representation of the function as an in-model
+When run, a closure function (representation of the closure as an in-model
 value) is created, which binds as variables the names of all
 the formals to all the incoming actual arguments (as defined below),
 binds the `yieldDef` name if specified to a nonlocal-exit function,
 and binds all other variable names to whatever they already refer to in
-the lexical evaluation context. This closure is the result of evaluation.
+the lexical evaluation context. This closure function is the result of
+evaluation.
 
 If a nonlocal-exit function is defined, then that function accepts zero
 or one argument. When called, it causes an immediate return from the active
@@ -72,7 +73,7 @@ function that it was bound to, yielding as a result whatever was passed to
 it (including void). It is an error (terminating the runtime) to use a
 nonlocal-exit function after the active function it was bound to has exit.
 
-When the closure is actually called (e.g. by virtue of being the
+When the closure function is actually called (e.g. by virtue of being the
 designated `function` in a `call` node), a fresh execution context is
 created, in which the actual arguments are bound to the formals. If
 there are too few actual arguments, the call fails (terminating the
@@ -86,7 +87,7 @@ there was no `yield` to evaluate.
 and using these amounts to something along the lines of `try` / `catch` in
 systems that are defined using those terms. In C terms, the facility is
 along the lines of `setjmp` / `longjmp`. In Lisp terms, the facility is
-an implementation of downward-passing continuations.
+an implementation of downward-passed / upward-called continuations.
 
 #### `literal` &mdash; `@["literal" = value]`
 
