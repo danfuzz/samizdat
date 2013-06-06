@@ -113,13 +113,13 @@ convertPexSetComplement = { node, formals ::
 
 # Converts a `{}` pex node.
 convertPexCode = { node, formals ::
-    # Use the lexical `formals` context to make a regular function node,
+    # Use the lexical `formals` context to make a regular closure node,
     # and just convert that.
 
-    functionPayload = mapPut(tokenValue(node), "formals", formals);
-    convertedFunction = convertExpression(@["function" = functionPayload]);
+    closurePayload = mapPut(tokenValue(node), "formals", formals);
+    convertedClosure = convertExpression(@["closure" = closurePayload]);
 
-    <> callNameWithExpressions("pegMakeCode", convertedFunction)
+    <> callNameWithExpressions("pegMakeCode", convertedClosure)
 };
 
 # Converts a `&&` pex node.
@@ -130,8 +130,8 @@ convertPexPredicate = { node, formals ::
     # to perform the rest of the wrapping.
 
     predicate = tokenValue(node);
-    predicateThunk = @["function" = ["statements"=[], "yield"=predicate]];
-    nullThunk = @["function" = [
+    predicateThunk = @["closure" = ["statements"=[], "yield"=predicate]];
+    nullThunk = @["closure" = [
         "statements" = [],
         "yield" = callNameWithLiterals("makeToken", "null")
     ]];
@@ -209,15 +209,15 @@ convertCall = { node ::
     <> @["call" = mapAdd(nodeValue, ["function"=function, "actuals"=actuals])]
 };
 
-# Does parser conversion of a `function` node.
-convertFunction = { node ::
+# Does parser conversion of a `closure` node.
+convertClosure = { node ::
     nodeValue = tokenValue(node);
     statements = convertList(mapGet(nodeValue, "statements"));
     yield = ifValue { <> mapGet(nodeValue, "yield") }
         { yield :: <> ["yield" = (convertExpression(yield))] }
         { <> [=] };
 
-    <> @["function" = mapAdd(nodeValue, ["statements" = statements], yield)]
+    <> @["closure" = mapAdd(nodeValue, ["statements" = statements], yield)]
 };
 
 # Does parser conversion of a `varDef` node.
@@ -233,12 +233,12 @@ convertNop = { node :: <> node };
 
 # Map of types to expression node converters.
 CONVERT_EXPRESSION_MAP = [
-    "call"     = convertCall,
-    "function" = convertFunction,
-    "literal"  = convertNop,
-    "parser"   = convertParser,
-    "varDef"   = convertVarDef,
-    "varRef"   = convertNop
+    "call"    = convertCall,
+    "closure" = convertClosure,
+    "literal" = convertNop,
+    "parser"  = convertParser,
+    "varDef"  = convertVarDef,
+    "varRef"  = convertNop
 ];
 
 # Iterates / visits the given expression or statement node, transforming
