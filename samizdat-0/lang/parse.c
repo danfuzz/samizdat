@@ -165,7 +165,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
  */
 static zvalue makeThunk(zvalue expression) {
     zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
-    return datTokenFrom(STR_FUNCTION, value);
+    return datTokenFrom(STR_CLOSURE, value);
 }
 
 
@@ -715,7 +715,7 @@ DEF_PARSE(program) {
         value = datMapAdd(value, declarations);
     }
 
-    return datTokenFrom(STR_FUNCTION, value);
+    return datTokenFrom(STR_CLOSURE, value);
 }
 
 /**
