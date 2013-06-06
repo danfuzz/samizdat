@@ -238,6 +238,17 @@ zvalue datMapGet(zvalue map, zvalue key) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+zvalue datMapKey(zvalue map) {
+    datAssertMap(map);
+
+    if (datSize(map) != 1) {
+        die("Invalid use of map: size != 1");
+    }
+
+    return mapElems(map)[0].key;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 zvalue datMapNth(zvalue map, zint n) {
     datAssertMap(map);
 
@@ -251,30 +262,6 @@ zvalue datMapNth(zvalue map, zint n) {
 
     zmapping *mapping = &mapElems(map)[n];
     return mapFrom1(mapping->key, mapping->value);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-zvalue datMapNthKey(zvalue map, zint n) {
-    datAssertMap(map);
-    datAssertNth(map, n);
-
-    if (!datHasNth(map, n)) {
-        return NULL;
-    }
-
-    return mapElems(map)[n].key;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-zvalue datMapNthValue(zvalue map, zint n) {
-    datAssertMap(map);
-    datAssertNth(map, n);
-
-    if (!datHasNth(map, n)) {
-        return NULL;
-    }
-
-    return mapElems(map)[n].value;
 }
 
 /* Documented in header. */
@@ -310,4 +297,15 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
     mapElems(result)[index].key = key;
     mapElems(result)[index].value = value;
     return result;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue datMapValue(zvalue map) {
+    datAssertMap(map);
+
+    if (datSize(map) != 1) {
+        die("Invalid use of map: size != 1");
+    }
+
+    return mapElems(map)[0].value;
 }

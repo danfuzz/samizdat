@@ -31,6 +31,10 @@ or returns void if `notFound` was not supplied.
 
 Returns `true` iff the given map has a mapping for the given key.
 
+#### `mapKey(map) <> .`
+
+Returns the sole key of the given map, which must be a single-mapping map.
+
 #### `mapNth(map, n, notFound?) <> . | !.`
 
 Returns the `n`th (zero-based) mapping of the given map, if `n` is
@@ -38,27 +42,8 @@ a valid int index into the map. If `n` is not a valid index
 (either an out-of-range int, or some other value), then this
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied. When given a valid index,
-the return value is a single-mapping map.
-
-The ordering of the mappings is by sort order of the keys.
-
-#### `mapNthKey(map, n, notFound?) <> . | !.`
-
-Returns the key of the `n`th (zero-based) mapping of the given map,
-if `n` is a valid int index into the map. If `n` is not a valid index
-(either an out-of-range int, or some other value), then this
-returns the `notFound` value (an arbitrary value) if supplied, or
-returns void if `notFound` was not supplied.
-
-The ordering of the mappings is by sort order of the keys.
-
-#### `mapNthValue(map, n, notFound?) <> . | !.`
-
-Returns the value of the `n`th (zero-based) mapping of the given map,
-if `n` is a valid int index into the map. If `n` is not a valid index
-(either an out-of-range int, or some other value), then this
-returns the `notFound` value (an arbitrary value) if supplied, or
-returns void if `notFound` was not supplied.
+the return value is a single-mapping map, which is suitable as the
+argument to `mapKey` and `mapValue`.
 
 The ordering of the mappings is by sort order of the keys.
 
@@ -71,6 +56,10 @@ additional mapping in cases where `map` didn't already bind `key`.
 These two scenarios can be easily differentiated by either noting a
 change in size (or not) between original and result, or by explicitly
 checking for the existence of `key` in the original.
+
+#### `mapValue(map) <> .`
+
+Returns the sole value of the given map, which must be a single-mapping map.
 
 
 <br><br>

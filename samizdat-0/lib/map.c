@@ -52,22 +52,24 @@ PRIM_IMPL(mapHasKey) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapKey) {
+    requireExactly(argCount, 1);
+    return datMapKey(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapNth) {
     return doNth(datMapNth, argCount, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapNthKey) {
-    return doNth(datMapNthKey, argCount, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapNthValue) {
-    return doNth(datMapNthValue, argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapPut) {
     requireExactly(argCount, 3);
     return datMapPut(args[0], args[1], args[2]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mapValue) {
+    requireExactly(argCount, 1);
+    return datMapValue(args[0]);
 }

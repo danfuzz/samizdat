@@ -350,6 +350,12 @@ zvalue datMapEmpty(void);
 zvalue datMapGet(zvalue map, zvalue key);
 
 /**
+ * Given a single-mapping map, returns its sole key. `map` must be a
+ * map.
+ */
+zvalue datMapKey(zvalue map);
+
+/**
  * Given a map, returns the `n`th mapping. `map` must be a
  * map, and `n` must be `< datSize(value)`. Mappings are returned
  * as single-element maps. Map ordering is by key.
@@ -357,23 +363,17 @@ zvalue datMapGet(zvalue map, zvalue key);
 zvalue datMapNth(zvalue map, zint n);
 
 /**
- * Given a map, returns the `n`th key. `map` must be a
- * map, and `n` must be `< datSize(value)`. Map ordering is by key.
- */
-zvalue datMapNthKey(zvalue map, zint n);
-
-/**
- * Given a map, returns the `n`th value. `map` must be a
- * map, and `n` must be `< datSize(value)`. Map ordering is by key.
- */
-zvalue datMapNthValue(zvalue map, zint n);
-
-/**
  * Gets the map resulting from putting the given mapping into the
  * given map. This can either add a new mapping or replace an
  * existing mapping.
  */
 zvalue datMapPut(zvalue map, zvalue key, zvalue value);
+
+/**
+ * Given a single-mapping map, returns its sole value. `map` must be a
+ * map.
+ */
+zvalue datMapValue(zvalue map);
 
 
 /*
