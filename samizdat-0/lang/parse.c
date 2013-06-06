@@ -624,7 +624,9 @@ DEF_PARSE(formal) {
  * Parses a `formalsList` node.
  */
 DEF_PARSE(formalsList) {
-    return PARSE_COMMA_SEQ(formal);
+    zvalue result = PARSE_COMMA_SEQ(formal);
+
+    return (datSize(result) == 0) ? EMPTY_MAP : mapFrom1(STR_FORMALS, result);
 }
 
 /**
@@ -677,15 +679,13 @@ DEF_PARSE(programDeclarations) {
     MARK();
 
     zvalue yieldDef = PARSE(yieldDef); // It's okay for this to be `NULL`.
-    zvalue formals = PARSE(formalsList);
+    zvalue result = PARSE(formalsList); // This is always a map.
 
-    if (datSize(formals) == 0) {
-        // The spec indicates that the "formals" mapping should be omitted
-        // when there aren't any formals.
-        formals = NULL;
+    if (yieldDef != NULL) {
+        result = datMapPut(result, STR_YIELD_DEF, yieldDef);
     }
 
-    return mapFrom2(STR_FORMALS, formals, STR_YIELD_DEF, yieldDef);
+    return result;
 }
 
 /**

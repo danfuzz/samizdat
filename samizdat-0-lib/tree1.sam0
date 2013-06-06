@@ -255,8 +255,10 @@ parseFormalsList = pegMakeMainSequence(
         pegMakeSequence(
             parseFormal,
             pegMakeStar(pegMakeSequence(pegMakeToken(","), parseFormal)),
-            pegMakeCode { first, rest :: <> listPrepend(first, rest) }),
-        pegMakeCode { <> [] }));
+            pegMakeCode { first, rest ::
+                <> ["formals" = listPrepend(first, rest)]
+            }),
+        pegMakeCode { <> [=] }));
 
 # Documented in Samizdat Layer 0 spec.
 parseProgramBody = pegMakeMainSequence(
@@ -291,12 +293,7 @@ parseProgramDeclarations = pegMakeMainSequence(
             pegMakeCode { <> [=] })),
     parseFormalsList,
     pegMakeToken("::"),
-    pegMakeCode { yieldDef, formals, . ::
-        formalsMap = ifTrue { <> eq(formals, []) }
-            { <> [=] }
-            { <> ["formals" = formals] };
-        <> mapAdd(formalsMap, yieldDef)
-    });
+    pegMakeCode { yieldDef, formals, . :: <> mapAdd(formals, yieldDef) });
 
 # Documented in Samizdat Layer 0 spec.
 parseProgram = pegMakeMainSequence(
