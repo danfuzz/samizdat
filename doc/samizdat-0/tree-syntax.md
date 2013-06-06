@@ -260,7 +260,7 @@ programDeclarations = {/
 
     @"::"
 
-    { <> mapAdd(formals, optYieldDef) }
+    { <> mapAdd(formals, yieldDef) }
 /};
 
 program = {/
