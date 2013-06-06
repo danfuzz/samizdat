@@ -27,7 +27,7 @@ parseNullaryClosure = {/
 
     {
         ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
-            { io0Die("Invalid formal argument in parser code block.") };
+            { io0Die("Invalid formal argument in code block.") };
         <> closure
     }
 /};

@@ -238,7 +238,19 @@ parseNullaryClosure = {/
 
     {
         ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
-            { io0Die("Invalid formal argument in parser code block.") };
+            { io0Die("Invalid formal argument in code block.") };
+        <> closure
+    }
+/};
+
+# Parses a closure which must have neither formal arguments nor a yield
+# definition. See `parseNullaryClosure` above for discussion.
+parseCodeOnlyClosure = {/
+    closure = parseNullaryClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(closure), "yieldDef") }
+            { io0Die("Invalid yield definition in code block.") };
         <> closure
     }
 /};
@@ -599,6 +611,9 @@ parseFnExpression = {/
     @"fn"
     yieldDef = parseYieldDef?
     name = @identifier?
+    @"("
+    @")"
+    code = parseCodeOnlyClosure
     !() # TODO
 /};
 
