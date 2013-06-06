@@ -170,7 +170,7 @@ static zvalue makeThunk(zvalue expression) {
 
 
 /*
- * Parsing functions
+ * Parsing helper functions
  */
 
 /* Definitions to help avoid boilerplate in the parser functions. */
@@ -195,10 +195,6 @@ static zvalue makeThunk(zvalue expression) {
 
 /* Function prototype for all parser functions */
 typedef zvalue (*parserFunction)(ParseState *);
-
-/* Defined below. */
-DEF_PARSE(closure);
-DEF_PARSE(expression);
 
 /**
  * Parses `x*` for an arbitrary rule `x`. Returns a list of parsed `x` results.
@@ -263,8 +259,26 @@ zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
 }
 
 /**
- * Parses an `int` node.
+ * Parses zero or more semicolons. Always returns `NULL`.
  */
+DEF_PARSE(optSemicolons) {
+    while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
+    return NULL;
+}
+
+
+/*
+ * Samizdat 0 Tree Grammar
+ *
+ * The following is a near-direct transliterations of the tree syntax
+ * rules from the Samizdat Layer 0 spec.
+ */
+
+/* Defined below. */
+DEF_PARSE(closure);
+DEF_PARSE(expression);
+
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(int) {
     MARK();
 
@@ -273,9 +287,7 @@ DEF_PARSE(int) {
     return makeLiteral(datTokenValue(intval));
 }
 
-/**
- * Parses a `string` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(string) {
     MARK();
 
@@ -284,16 +296,12 @@ DEF_PARSE(string) {
     return makeLiteral(datTokenValue(string));
 }
 
-/**
- * Parses an `unadornedList` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(unadornedList) {
     return PARSE_COMMA_SEQ(expression);
 }
 
-/**
- * Parses a `list` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(list) {
     MARK();
 
@@ -308,9 +316,7 @@ DEF_PARSE(list) {
     }
 }
 
-/**
- * Parses an `emptyMap` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(emptyMap) {
     MARK();
 
@@ -321,9 +327,7 @@ DEF_PARSE(emptyMap) {
     return makeLiteral(EMPTY_MAP);
 }
 
-/**
- * Parses a `mapping` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(mapping) {
     MARK();
 
@@ -334,9 +338,7 @@ DEF_PARSE(mapping) {
     return listFrom2(key, value);
 }
 
-/**
- * Parses a `map` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(map) {
     MARK();
 
@@ -355,9 +357,7 @@ DEF_PARSE(map) {
     return makeCall(makeVarRef(STR_MAKE_MAP), args);
 }
 
-/**
- * Parses a `token` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(token) {
     MARK();
 
@@ -403,9 +403,7 @@ DEF_PARSE(token) {
     return makeCall(makeVarRef(STR_MAKE_TOKEN), args);
 }
 
-/**
- * Parses a `uniqlet` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(uniqlet) {
     MARK();
 
@@ -414,9 +412,7 @@ DEF_PARSE(uniqlet) {
     return makeCall(makeVarRef(STR_MAKE_UNIQLET), EMPTY_LIST);
 }
 
-/**
- * Parses a `varRef` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(varRef) {
     MARK();
 
@@ -425,9 +421,7 @@ DEF_PARSE(varRef) {
     return makeVarRef(datTokenValue(identifier));
 }
 
-/**
- * Parses a `varDef` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(varDef) {
     MARK();
 
@@ -440,9 +434,7 @@ DEF_PARSE(varDef) {
     return datTokenFrom(STR_VAR_DEF, value);
 }
 
-/**
- * Parses a `parenExpression` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(parenExpression) {
     MARK();
 
@@ -453,9 +445,7 @@ DEF_PARSE(parenExpression) {
     return expression;
 }
 
-/**
- * Parses an `atom` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(atom) {
     zvalue result = NULL;
 
@@ -473,9 +463,7 @@ DEF_PARSE(atom) {
     return result;
 }
 
-/**
- * Parses an `actualsList` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(actualsList) {
     MARK();
 
@@ -493,9 +481,7 @@ DEF_PARSE(actualsList) {
     return PARSE_PLUS(closure);
 }
 
-/**
- * Parses a `callExpression` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(callExpression) {
     MARK();
 
@@ -513,16 +499,12 @@ DEF_PARSE(callExpression) {
     return result;
 }
 
-/**
- * Parses an `expression` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression) {
     return PARSE(callExpression);
 }
 
-/**
- * Parses a `statement` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(statement) {
     zvalue result = NULL;
 
@@ -533,16 +515,10 @@ DEF_PARSE(statement) {
 }
 
 /**
- * Parses zero or more semicolons. Always returns `NULL`.
- */
-DEF_PARSE(optSemicolons) {
-    while (MATCH(CH_SEMICOLON) != NULL) /* empty */ ;
-    return NULL;
-}
-
-/**
- * Parses a `yield` node. Returns `NULL` either if no diamond is present
- * or if it is a void yield.
+ * Documented in Samizdat Layer 0 spec. This implementation differs from the
+ * spec in that it will return `NULL` either if no diamond is present
+ * or if it is a void yield. This is compensated for by matching changes to
+ * the implementation of `programBody`, below.
  */
 DEF_PARSE(yield) {
     MARK();
@@ -564,17 +540,13 @@ DEF_PARSE(optYieldDef1) {
     return mapFrom1(STR_YIELD_DEF, datTokenValue(identifier));
 }
 
-/**
- * Parses an `optYieldDef` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(optYieldDef) {
     zvalue result = PARSE(optYieldDef1);
     return (result != NULL) ? result : EMPTY_MAP;
 }
 
-/**
- * Parses a `nonlocalExit` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(nonlocalExit) {
     MARK();
 
@@ -590,7 +562,7 @@ DEF_PARSE(nonlocalExit) {
 }
 
 /**
- * Helper for `formal`: Parses `(@"?" | @"*" | @"+")?`. Returns either the
+ * Helper for `formal`: Parses `[@"?" @"*" @"+"]?`. Returns either the
  * parsed token payload or `NULL` to indicate that no alternate matched.
  */
 DEF_PARSE(formal1) {
@@ -607,9 +579,7 @@ DEF_PARSE(formal1) {
     return datTokenType(result);
 }
 
-/**
- * Parses a `formal` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(formal) {
     MARK();
 
@@ -628,18 +598,14 @@ DEF_PARSE(formal) {
     return mapFrom2(STR_NAME, name, STR_REPEAT, repeat);
 }
 
-/**
- * Parses a `formalsList` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(formalsList) {
     zvalue result = PARSE_COMMA_SEQ(formal);
 
     return (datSize(result) == 0) ? EMPTY_MAP : mapFrom1(STR_FORMALS, result);
 }
 
-/**
- * Parses a `programBody` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(programBody) {
     zvalue statements = EMPTY_LIST;
     zvalue yield = NULL; // `NULL` is ok, as it's optional.
@@ -680,9 +646,7 @@ DEF_PARSE(programBody) {
     return mapFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
 }
 
-/**
- * Parses a `programDeclarations` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(programDeclarations) {
     MARK();
 
@@ -704,9 +668,7 @@ DEF_PARSE(program1) {
     return result;
 }
 
-/**
- * Parses a `program` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(program) {
     zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
     zvalue value = PARSE(programBody); // This never fails.
@@ -718,9 +680,7 @@ DEF_PARSE(program) {
     return datTokenFrom(STR_CLOSURE, value);
 }
 
-/**
- * Parses a `closure` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(closure) {
     MARK();
 
