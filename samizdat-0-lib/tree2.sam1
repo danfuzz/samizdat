@@ -780,7 +780,7 @@ parseProgramOrError = {/
 # Forward declaration.
 parseChoicePex = forwardFunction();
 
-# Parse a parser function.
+# Parses a parser function.
 implParser = {/
     @"{/"
     pex = parseChoicePex
@@ -789,7 +789,7 @@ implParser = {/
 /};
 parseParser(implParser);
 
-# Parse a parenthesized parsing expression.
+# Parses a parenthesized parsing expression.
 parseParenPex = {/
     @"("
     pex = parseChoicePex
@@ -797,7 +797,7 @@ parseParenPex = {/
     { <> pex }
 /};
 
-# Parse a string literal parsing expression.
+# Parses a string literal parsing expression.
 parseParserString = {/
     s = @string
     {
@@ -808,14 +808,14 @@ parseParserString = {/
     }
 /};
 
-# Parse a token literal parsing expression.
+# Parses a token literal parsing expression.
 parseParserToken = {/
     @"@"
     type = [@identifier @string]
     { <> @["token" = tokenValue(type)] }
 /};
 
-# Parse a string or character range parsing expression, used when defining
+# Parses a string or character range parsing expression, used when defining
 # sets.
 parseParserSetString = {/
     s = @string
@@ -845,7 +845,7 @@ parseParserSetString = {/
     )
 /};
 
-# Parse a set (or set complement) parsing expression.
+# Parses a set (or set complement) parsing expression.
 parseParserSet = {/
     @"["
 
@@ -875,20 +875,20 @@ parseParserSet = {/
     { <> @[type = terminals] }
 /};
 
-# Parse a code block parsing expression.
+# Parses a code block parsing expression.
 parseParserCode = {/
     closure = parseNullaryClosure
     { <> @["{}" = tokenValue(closure) ] }
 /};
 
-# Parse a predicate parsing expression.
+# Parses a predicate parsing expression.
 parseParserPredicate = {/
     @"&&"
     predicate = parseParenExpression
     { <> @["&&" = predicate] }
 /};
 
-# Parse an atomic parsing expression.
+# Parses an atomic parsing expression.
 parseParserAtom = {/
     parseVarRef
 |
@@ -909,7 +909,7 @@ parseParserAtom = {/
     parseParenPex
 /};
 
-# Parse a repeat (or not) parsing expression.
+# Parses a repeat (or not) parsing expression.
 parseRepeatPex = {/
     atom = parseParserAtom
     (
@@ -920,7 +920,7 @@ parseRepeatPex = {/
     )
 /};
 
-# Parse a lookahead (or not) parsing expression. This covers both lookahead
+# Parses a lookahead (or not) parsing expression. This covers both lookahead
 # success and lookahead failure.
 parseLookaheadPex = {/
     (
@@ -932,7 +932,7 @@ parseLookaheadPex = {/
     parseRepeatPex
 /};
 
-# Parse a name (or not) parsing expression.
+# Parses a name (or not) parsing expression.
 parseNamePex = {/
     (
         name = @identifier
@@ -944,14 +944,14 @@ parseNamePex = {/
     parseLookaheadPex
 /};
 
-# Parse a sequence parsing expression. This includes a sequence of length
+# Parses a sequence parsing expression. This includes a sequence of length
 # one.
 parseSequencePex = {/
     items = parseNamePex+
     { <> @["sequence" = items] }
 /};
 
-# Parse a choice parsing expression. This includes a single choice.
+# Parses a choice parsing expression. This includes a single choice.
 implChoicePex = {/
     first = parseSequencePex
     rest = (@"|" parseSequencePex)*
