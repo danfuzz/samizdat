@@ -39,7 +39,7 @@ makeLiteral = { value ::
 # Returns node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 makeThunk = { expression ::
-    <> @["function" = ["statements"=[], "yield"=expression]]
+    <> @["closure" = ["statements"=[], "yield"=expression]]
 };
 
 # Returns a `call` node that names a function as a `varRef` and passes
@@ -345,7 +345,7 @@ parseProgramDeclarations = {/
 parseProgram = {/
     decls = (parseProgramDeclarations | { <> [=] })
     body = parseProgramBody
-    { <> @["function" = mapAdd(decls, body)] }
+    { <> @["closure" = mapAdd(decls, body)] }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
