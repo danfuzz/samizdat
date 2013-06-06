@@ -9,7 +9,7 @@ This definition uses syntax which is identical to the parser syntax
 implemented at a higher layer.
 
 A program is parsed by matching the `program` rule, which yields a
-`function` node. For simple error handling, the rule `programOrError`
+`closure` node. For simple error handling, the rule `programOrError`
 can be used.
 
 ```
@@ -33,9 +33,9 @@ makeLiteral = { value ::
     <> @["literal" = value]
 };
 
-# Returns a `function` node representing a thunk of an expression.
+# Returns a `closure` node representing a thunk of an expression.
 makeThunk = { expression ::
-    <> @["function" = @["statements"=[], "yield"=expression]];
+    <> @["closure" = @["statements"=[], "yield"=expression]];
 };
 
 # forward declaration: closure
@@ -266,7 +266,7 @@ programDeclarations = {/
 program = {/
     decls = (programDeclarations | { <> [=] })
     body = programBody
-    { <> @["function" = (mapAdd(decls, body))] }
+    { <> @["closure" = (mapAdd(decls, body))] }
 /};
 
 closure = {/
