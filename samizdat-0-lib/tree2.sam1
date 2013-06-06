@@ -105,12 +105,14 @@ reportError = { pending ::
 #
 
 #
-# Main language definitions
+# Samizdat Layer 0 definitions
 #
 
 # Forward declarations.
 parseClosure = forwardFunction();
 parseExpression = forwardFunction();
+
+# Forward declaration required for integrating layer 1 definitions.
 parseParser = forwardFunction();
 
 # Parses an integer literal.
@@ -225,36 +227,6 @@ parseAtom = {/
     &@"{/" parseParser
 /};
 
-# Parses a closure which must not define any formal arguments. This is done
-# by parsing an arbitrary closure and then verifying that it does not
-# declare formals. This is preferable to not-including formal argument
-# syntax, because (a) no rule wants to differentiate these cases (rules either
-# wants an arbitrary closure or a specifically-constrained kind); (b) it
-# reduces redundancy in the syntax, and (c) the error case on the former
-# would be more obscure (as in just something like "unexpected token" on
-# the would-be formal argument).
-parseNullaryClosure = {/
-    closure = parseClosure
-
-    {
-        ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
-            { io0Die("Invalid formal argument in code block.") };
-        <> closure
-    }
-/};
-
-# Parses a closure which must have neither formal arguments nor a yield
-# definition. See `parseNullaryClosure` above for discussion.
-parseCodeOnlyClosure = {/
-    closure = parseNullaryClosure
-
-    {
-        ifTrue { <> mapHasKey(tokenValue(closure), "yieldDef") }
-            { io0Die("Invalid yield definition in code block.") };
-        <> closure
-    }
-/};
-
 # Parses a yield / non-local exit definition.
 parseYieldDef = {/
     @"<"
@@ -276,6 +248,377 @@ parseActualsList = {/
     { <> listAdd(normalActuals, closureActuals) }
 |
     parseClosure+
+/};
+
+# Note: `callExpression` and `expression` from layer 0 are omitted
+# here, as they are subsumed by the layer 2 definition (below).
+
+# Parses a statement.
+parseStatement = {/
+    parseVarDef | parseExpression
+/};
+
+# Note: `nonlocalExit` from layer 0 is replaced with a forward here, as it
+# is subsumed by the layer 2 definition (below).
+parseNonlocalExit = forwardFunction();
+
+# Parses a local yield / return.
+parseYield = {/
+    @"<>"
+    (
+        ex = parseExpression
+        { <> ["yield" = ex] }
+    |
+        { <> [=] }
+    )
+/};
+
+# Parses a formal argument decalaration.
+parseFormal = {/
+    name = (
+        n = @identifier
+        { <> ["name" = tokenValue(n)] }
+    |
+        @"." { <> [=] }
+    )
+
+    repeat = (
+        r = [@"?" @"*" @"+"]
+        { <> ["repeat" = tokenType(r)] }
+    |
+        { <> [=] }
+    )
+
+    { <> mapAdd(name, repeat) }
+/};
+
+# Parses a list of formal arguments, with no surrounding parentheses.
+parseFormalsList = {/
+    first = parseFormal
+    rest = (@"," parseFormal)*
+    { <> listPrepend(first, rest) }
+|
+    { <> [] }
+/};
+
+# Parses a program body (statements plus optional yield).
+parseProgramBody = {/
+    @";"*
+
+    most = (
+        s = parseStatement
+        @";"+
+        { <> s }
+    )*
+
+    last = (
+        s = (parseStatement | parseNonlocalExit)
+        { <> ["statements" = [s]] }
+    |
+        y = parseYield
+        { <> mapAdd(["statements" = []], y) }
+    |
+        { <> ["statements" = []] }
+    )
+
+    @";"*
+
+    {
+        allStatements = listAdd(most, mapGet(last, "statements"));
+        <> mapPut(last, "statements", allStatements)
+    }
+/};
+
+# Parses program / function declarations.
+parseProgramDeclarations = {/
+    yieldDef = (
+        y = parseYieldDef
+        { <> ["yieldDef" = y] }
+    |
+        { <> [=] }
+    )
+
+    formals = parseFormalsList
+
+    @"::"
+
+    {
+        formalsMap = ifTrue { <> eq(formals, []) }
+            { <> [=] }
+            { <> ["formals" = formals] };
+        <> mapAdd(formalsMap, yieldDef)
+    }
+/};
+
+# Parses a program (top-level program or contents inside function braces).
+parseProgram = {/
+    decls = (parseProgramDeclarations | { <> [=] })
+    body = parseProgramBody
+    { <> @["function" = mapAdd(decls, body)] }
+/};
+
+# Parses a closure (in-line anonymous function, with no extra bindings).
+implClosure = {/
+    @"{"
+    prog = parseProgram
+    @"}"
+    { <> prog }
+/};
+parseClosure(implClosure);
+
+# Top-level rule to parse a program with possible error afterwards.
+# Note that an empty string is a valid program.
+parseProgramOrError = {/
+    prog = parseProgram
+    (
+        pending = .+
+        { reportError(pending) }
+    )?
+    { <> prog }
+/};
+
+
+#
+# Samizdat Layer 1 definitions
+#
+
+# Forward declaration.
+parseChoicePex = forwardFunction();
+
+# Parses a closure which must not define any formal arguments. This is done
+# by parsing an arbitrary closure and then verifying that it does not
+# declare formals. This is preferable to not-including formal argument
+# syntax, because (a) no rule wants to differentiate these cases (rules either
+# wants an arbitrary closure or a specifically-constrained kind); (b) it
+# reduces redundancy in the syntax, and (c) the error case on the former
+# would be more obscure (as in just something like "unexpected token" on
+# the would-be formal argument).
+parseNullaryClosure = {/
+    closure = parseClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
+            { io0Die("Invalid formal argument in code block.") };
+        <> closure
+    }
+/};
+
+# Parses a parser function.
+implParser = {/
+    @"{/"
+    pex = parseChoicePex
+    @"/}"
+    { <> @["parser" = pex] }
+/};
+parseParser(implParser);
+
+# Parses a parenthesized parsing expression.
+parseParenPex = {/
+    @"("
+    pex = parseChoicePex
+    @")"
+    { <> pex }
+/};
+
+# Parses a string literal parsing expression.
+parseParserString = {/
+    s = @string
+    {
+        value = tokenValue(s);
+        <> ifTrue { <> eq(lowSize(value), 1) }
+            { <> @["token" = value] }
+            { <> s }
+    }
+/};
+
+# Parses a token literal parsing expression.
+parseParserToken = {/
+    @"@"
+    type = [@identifier @string]
+    { <> @["token" = tokenValue(type)] }
+/};
+
+# Parses a string or character range parsing expression, used when defining
+# sets.
+parseParserSetString = {/
+    s = @string
+    (
+        @".."
+        startInt = {
+            startValue = tokenValue(s);
+            <> ifTrue { <> eq(lowSize(startValue), 1) }
+                { <> intFromString(startValue) }
+        }
+        end = @string
+        endInt = {
+            endValue = tokenValue(end);
+            <> ifTrue { <> eq(lowSize(endValue), 1) }
+                { <> intFromString(endValue) }
+        }
+        {
+            loopReduce([startInt, ""]) { result ::
+                at = listFirst(result);
+                soFar = listLast(result);
+                ifTrue { <> gt(at, endInt) } { <out> @["string" = soFar] };
+                <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
+            }
+        }
+    |
+        { <> s }
+    )
+/};
+
+# Parses a set (or set complement) parsing expression.
+parseParserSet = {/
+    @"["
+
+    type = (
+        @"!" { <> "[!]" }
+    |
+        { <> "[]" }
+    )
+
+    terminals = (
+        strings = parseParserSetString+
+        {
+            oneString = listReduce("", strings)
+                { result, ., s :: <> stringAdd(result, tokenValue(s)) };
+            <> stringReduce([], oneString)
+                { result, ., ch :: <> listAppend(result, ch) }
+        }
+    |
+        tokens = parseParserToken+
+        { <> listMap(tokens) { ., t :: <> tokenValue(t) } }
+    |
+        { <> [] }
+    )
+
+    @"]"
+
+    { <> @[type = terminals] }
+/};
+
+# Parses a code block parsing expression.
+parseParserCode = {/
+    closure = parseNullaryClosure
+    { <> @["{}" = tokenValue(closure) ] }
+/};
+
+# Parses a predicate parsing expression.
+parseParserPredicate = {/
+    @"&&"
+    predicate = parseParenExpression
+    { <> @["&&" = predicate] }
+/};
+
+# Parses an atomic parsing expression.
+parseParserAtom = {/
+    parseVarRef
+|
+    parseParserString
+|
+    parseParserToken
+|
+    parseParserSet
+|
+    parseParserCode
+|
+    parseParserPredicate
+|
+    @"."
+|
+    @"()"
+|
+    parseParenPex
+/};
+
+# Parses a repeat (or not) parsing expression.
+parseRepeatPex = {/
+    atom = parseParserAtom
+    (
+        repeat = [@"?" @"*" @"+"]
+        { <> @[tokenType(repeat) = atom] }
+    |
+        { <> atom }
+    )
+/};
+
+# Parses a lookahead (or not) parsing expression. This covers both lookahead
+# success and lookahead failure.
+parseLookaheadPex = {/
+    (
+        lookahead = [@"&" @"!"]
+        pex = parseRepeatPex
+        { <> @[tokenType(lookahead) = pex] }
+    )
+|
+    parseRepeatPex
+/};
+
+# Parses a name (or not) parsing expression.
+parseNamePex = {/
+    (
+        name = @identifier
+        @"="
+        pex = parseLookaheadPex
+        { <> @["varDef" = ["name"=tokenValue(name), "value"=pex]] }
+    )
+|
+    parseLookaheadPex
+/};
+
+# Parses a sequence parsing expression. This includes a sequence of length
+# one.
+parseSequencePex = {/
+    items = parseNamePex+
+    { <> @["sequence" = items] }
+/};
+
+# Parses a choice parsing expression. This includes a single choice.
+implChoicePex = {/
+    first = parseSequencePex
+    rest = (@"|" parseSequencePex)*
+    { <> @["choice" = listPrepend(first, rest)] }
+/};
+parseChoicePex(implChoicePex);
+
+
+#
+# Samizdat Layer 2 definitions
+#
+
+# Parses a non-local exit / return. All of the form matched by this rule
+# have the dual properties of (a) necessarily being at the end of a code
+# block, and (b) being represented as a function call in the underlying
+# function representation of code blocks.
+implNonlocalExit = {/
+    @"<"
+    name = parseVarRef
+    @">"
+    value = parseExpression?
+    { <> apply(makeCallNonlocalExit, name, value) }
+|
+    op = [@"break" @"return"]
+    value = parseExpression?
+    { <> apply(makeCallNonlocalExit, makeVarRef(tokenType(op)), value) }
+|
+    # This one is separate from `break` and `return`, because it doesn't
+    # accept a value.
+    @"continue"
+    { <> makeCallNonlocalExit(makeVarRef("continue")) }
+/};
+parseNonlocalExit(implNonlocalExit);
+
+# Parses a closure which must have neither formal arguments nor a yield
+# definition. See `parseNullaryClosure` above for discussion.
+parseCodeOnlyClosure = {/
+    closure = parseNullaryClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(closure), "yieldDef") }
+            { io0Die("Invalid yield definition in code block.") };
+        <> closure
+    }
 /};
 
 # Parses a unary prefix operator. This yields a `varRef` node for the function
@@ -630,334 +973,6 @@ implExpression = {/
     parseFnExpression
 /};
 parseExpression(implExpression);
-
-# Parses a statement.
-parseStatement = {/
-    parseVarDef | parseExpression
-/};
-
-# Parses a non-local exit / return. All of the form matched by this rule
-# have the dual properties of (a) necessarily being at the end of a code
-# block, and (b) being represented as a function call in the underlying
-# function representation of code blocks.
-parseNonlocalExit = {/
-    @"<"
-    name = parseVarRef
-    @">"
-    value = parseExpression?
-    { <> apply(makeCallNonlocalExit, name, value) }
-|
-    op = [@"break" @"return"]
-    value = parseExpression?
-    { <> apply(makeCallNonlocalExit, makeVarRef(tokenType(op)), value) }
-|
-    # This one is separate from `break` and `return`, because it doesn't
-    # accept a value.
-    @"continue"
-    { <> makeCallNonlocalExit(makeVarRef("continue")) }
-/};
-
-# Parses a local yield / return.
-parseYield = {/
-    @"<>"
-    (
-        ex = parseExpression
-        { <> ["yield" = ex] }
-    |
-        { <> [=] }
-    )
-/};
-
-# Parses a formal argument decalaration.
-parseFormal = {/
-    name = (
-        n = @identifier
-        { <> ["name" = tokenValue(n)] }
-    |
-        @"." { <> [=] }
-    )
-
-    repeat = (
-        r = [@"?" @"*" @"+"]
-        { <> ["repeat" = tokenType(r)] }
-    |
-        { <> [=] }
-    )
-
-    { <> mapAdd(name, repeat) }
-/};
-
-# Parses a list of formal arguments, with no surrounding parentheses.
-parseFormalsList = {/
-    first = parseFormal
-    rest = (@"," parseFormal)*
-    { <> listPrepend(first, rest) }
-|
-    { <> [] }
-/};
-
-# Parses a program body (statements plus optional yield).
-parseProgramBody = {/
-    @";"*
-
-    most = (
-        s = parseStatement
-        @";"+
-        { <> s }
-    )*
-
-    last = (
-        s = (parseStatement | parseNonlocalExit)
-        { <> ["statements" = [s]] }
-    |
-        y = parseYield
-        { <> mapAdd(["statements" = []], y) }
-    |
-        { <> ["statements" = []] }
-    )
-
-    @";"*
-
-    {
-        allStatements = listAdd(most, mapGet(last, "statements"));
-        <> mapPut(last, "statements", allStatements)
-    }
-/};
-
-# Parses program / function declarations.
-parseProgramDeclarations = {/
-    yieldDef = (
-        y = parseYieldDef
-        { <> ["yieldDef" = y] }
-    |
-        { <> [=] }
-    )
-
-    formals = parseFormalsList
-
-    @"::"
-
-    {
-        formalsMap = ifTrue { <> eq(formals, []) }
-            { <> [=] }
-            { <> ["formals" = formals] };
-        <> mapAdd(formalsMap, yieldDef)
-    }
-/};
-
-# Parses a program (top-level program or contents inside function braces).
-parseProgram = {/
-    decls = (parseProgramDeclarations | { <> [=] })
-    body = parseProgramBody
-    { <> @["function" = mapAdd(decls, body)] }
-/};
-
-# Parses a closure (in-line anonymous function, with no extra bindings).
-implClosure = {/
-    @"{"
-    prog = parseProgram
-    @"}"
-    { <> prog }
-/};
-parseClosure(implClosure);
-
-# Top-level rule to parse a program with possible error afterwards.
-# Note that an empty string is a valid program.
-parseProgramOrError = {/
-    prog = parseProgram
-    (
-        pending = .+
-        { reportError(pending) }
-    )?
-    { <> prog }
-/};
-
-
-#
-# Parser language definitions
-#
-
-# Forward declaration.
-parseChoicePex = forwardFunction();
-
-# Parses a parser function.
-implParser = {/
-    @"{/"
-    pex = parseChoicePex
-    @"/}"
-    { <> @["parser" = pex] }
-/};
-parseParser(implParser);
-
-# Parses a parenthesized parsing expression.
-parseParenPex = {/
-    @"("
-    pex = parseChoicePex
-    @")"
-    { <> pex }
-/};
-
-# Parses a string literal parsing expression.
-parseParserString = {/
-    s = @string
-    {
-        value = tokenValue(s);
-        <> ifTrue { <> eq(lowSize(value), 1) }
-            { <> @["token" = value] }
-            { <> s }
-    }
-/};
-
-# Parses a token literal parsing expression.
-parseParserToken = {/
-    @"@"
-    type = [@identifier @string]
-    { <> @["token" = tokenValue(type)] }
-/};
-
-# Parses a string or character range parsing expression, used when defining
-# sets.
-parseParserSetString = {/
-    s = @string
-    (
-        @".."
-        startInt = {
-            startValue = tokenValue(s);
-            <> ifTrue { <> eq(lowSize(startValue), 1) }
-                { <> intFromString(startValue) }
-        }
-        end = @string
-        endInt = {
-            endValue = tokenValue(end);
-            <> ifTrue { <> eq(lowSize(endValue), 1) }
-                { <> intFromString(endValue) }
-        }
-        {
-            loopReduce([startInt, ""]) { result ::
-                at = listFirst(result);
-                soFar = listLast(result);
-                ifTrue { <> gt(at, endInt) } { <out> @["string" = soFar] };
-                <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
-            }
-        }
-    |
-        { <> s }
-    )
-/};
-
-# Parses a set (or set complement) parsing expression.
-parseParserSet = {/
-    @"["
-
-    type = (
-        @"!" { <> "[!]" }
-    |
-        { <> "[]" }
-    )
-
-    terminals = (
-        strings = parseParserSetString+
-        {
-            oneString = listReduce("", strings)
-                { result, ., s :: <> stringAdd(result, tokenValue(s)) };
-            <> stringReduce([], oneString)
-                { result, ., ch :: <> listAppend(result, ch) }
-        }
-    |
-        tokens = parseParserToken+
-        { <> listMap(tokens) { ., t :: <> tokenValue(t) } }
-    |
-        { <> [] }
-    )
-
-    @"]"
-
-    { <> @[type = terminals] }
-/};
-
-# Parses a code block parsing expression.
-parseParserCode = {/
-    closure = parseNullaryClosure
-    { <> @["{}" = tokenValue(closure) ] }
-/};
-
-# Parses a predicate parsing expression.
-parseParserPredicate = {/
-    @"&&"
-    predicate = parseParenExpression
-    { <> @["&&" = predicate] }
-/};
-
-# Parses an atomic parsing expression.
-parseParserAtom = {/
-    parseVarRef
-|
-    parseParserString
-|
-    parseParserToken
-|
-    parseParserSet
-|
-    parseParserCode
-|
-    parseParserPredicate
-|
-    @"."
-|
-    @"()"
-|
-    parseParenPex
-/};
-
-# Parses a repeat (or not) parsing expression.
-parseRepeatPex = {/
-    atom = parseParserAtom
-    (
-        repeat = [@"?" @"*" @"+"]
-        { <> @[tokenType(repeat) = atom] }
-    |
-        { <> atom }
-    )
-/};
-
-# Parses a lookahead (or not) parsing expression. This covers both lookahead
-# success and lookahead failure.
-parseLookaheadPex = {/
-    (
-        lookahead = [@"&" @"!"]
-        pex = parseRepeatPex
-        { <> @[tokenType(lookahead) = pex] }
-    )
-|
-    parseRepeatPex
-/};
-
-# Parses a name (or not) parsing expression.
-parseNamePex = {/
-    (
-        name = @identifier
-        @"="
-        pex = parseLookaheadPex
-        { <> @["varDef" = ["name"=tokenValue(name), "value"=pex]] }
-    )
-|
-    parseLookaheadPex
-/};
-
-# Parses a sequence parsing expression. This includes a sequence of length
-# one.
-parseSequencePex = {/
-    items = parseNamePex+
-    { <> @["sequence" = items] }
-/};
-
-# Parses a choice parsing expression. This includes a single choice.
-implChoicePex = {/
-    first = parseSequencePex
-    rest = (@"|" parseSequencePex)*
-    { <> @["choice" = listPrepend(first, rest)] }
-/};
-parseChoicePex(implChoicePex);
 
 
 #
