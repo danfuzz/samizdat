@@ -634,7 +634,7 @@ parseFnCommon = {/
 
     name = (
         n = @identifier
-        { <> ["name" = n] }
+        { <> ["name" = tokenValue(n)] }
     |
         { <> [=] }
     )
@@ -1013,7 +1013,7 @@ parseFnExpression = {/
                 "statements" = [
                     makeVarDef(name, makeCallName("forwardFunction"))
                 ],
-                "yield" = makeCall(name, closure)
+                "yield" = makeCall(makeVarRef(name), closure)
             ]];
 
             <> makeCall(mainClosure)
