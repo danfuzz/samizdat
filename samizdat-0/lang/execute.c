@@ -96,7 +96,7 @@ static void frameSnap(Frame *target, Frame *source) {
 /**
  * Closure, that is, a function and its associated immutable bindings.
  * Instances of this structure are bound as the closure state as part of
- * function registration in `execFunction()`.
+ * function registration in `execClosure()`.
  */
 typedef struct {
     /**
