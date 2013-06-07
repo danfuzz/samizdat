@@ -653,7 +653,7 @@ parseFnCommon = {/
 
     {
         codeMap = tokenValue(code);
-        statements = mapAdd(returnDef, mapGet(codeMap, "statements"));
+        statements = listAdd(returnDef, mapGet(codeMap, "statements"));
         <> mapAdd(codeMap, name, formals,
             ["yieldDef"="return", "statements"=statements])
     }
