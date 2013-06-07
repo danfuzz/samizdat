@@ -209,15 +209,16 @@ convertCall = { node ::
     <> @["call" = mapAdd(nodeValue, ["function"=function, "actuals"=actuals])]
 };
 
-# Does parser conversion of a `closure` node.
-convertClosure = { node ::
+# Does parser conversion of a `closure` or `fnDef` node.
+convertClosureLike = { node ::
+    nodeType = tokenType(node);
     nodeValue = tokenValue(node);
     statements = convertList(mapGet(nodeValue, "statements"));
     yield = ifValue { <> mapGet(nodeValue, "yield") }
         { yield :: <> ["yield" = (convertExpression(yield))] }
         { <> [=] };
 
-    <> @["closure" = mapAdd(nodeValue, ["statements" = statements], yield)]
+    <> @[nodeType = mapAdd(nodeValue, ["statements" = statements], yield)]
 };
 
 # Does parser conversion of a `varDef` node.
@@ -234,7 +235,8 @@ convertNop = { node :: <> node };
 # Map of types to expression node converters.
 CONVERT_EXPRESSION_MAP = [
     "call"    = convertCall,
-    "closure" = convertClosure,
+    "closure" = convertClosureLike,
+    "fnDef"   = convertClosureLike,
     "literal" = convertNop,
     "parser"  = convertParser,
     "varDef"  = convertVarDef,
