@@ -127,7 +127,7 @@ convertPexPredicate = { node, formals ::
     # This wraps the predicate in code, along these lines:
     #     `{ <> ifTrue { <> PREDICATE_CODE } { <> null } }`
     # Having done that, this calls `convertPexCode` (immediately above)
-    # to perform the rest of the wrapping.
+    # to perform the rest of the conversion.
 
     predicate = tokenValue(node);
     predicateThunk = @["closure" = ["statements"=[], "yield"=predicate]];
