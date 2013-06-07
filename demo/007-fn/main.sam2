@@ -23,7 +23,7 @@ func1 = fn (x) {
 io0Note(func1(10));
 
 func2 = fn <out> (x*) {
-    io0Note(format("func1 %q", x));
+    io0Note(format("func2 %q", x));
     <out> "func2"
 };
 
