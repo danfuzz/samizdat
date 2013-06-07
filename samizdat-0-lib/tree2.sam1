@@ -252,16 +252,10 @@ parseActualsList = {/
     parseClosure+
 /};
 
-# Note: `callExpression` and `expression` from layer 0 are omitted
-# here, as they are subsumed by the layer 2 definition (below).
-
-# Parses a statement.
-parseStatement = {/
-    parseVarDef | parseExpression
-/};
-
-# Note: `nonlocalExit` from layer 0 is replaced with a forward here, as it
-# is subsumed by the layer 2 definition (below).
+# `callExpression` and `expression` from layer 0 are omitted here, and
+# `statement` and `nonlocalExit` are replaced with forwarded functions here.
+# These are all subsumed by more featureful layer 2 definitions, below.
+parseStatement = forwardFunction();
 parseNonlocalExit = forwardFunction();
 
 # Parses a local yield / return.
@@ -1036,6 +1030,24 @@ implExpression = {/
     parseFnExpression
 /};
 parseExpression(implExpression);
+
+# Parses a `fn` definition statement. The syntax here is the same as
+# what's recognized by `parseFnCommon`, except that the name is required.
+# We don't error out (terminate the runtime) on a missing name, though, as
+# that just means that we're looking at a legit `fn` expression, which will
+# get successfully parsed by the `expression` alternative of `statement`.
+parseFnDef = {/
+    funcMap = parseFnCommon
+    &&(mapHasKey(funcMap, "name"))
+
+    { <> @["fnDef" = funcMap] }
+/};
+
+# Parses a statement.
+implStatement = {/
+    parseVarDef | parseFnDef | parseExpression
+/};
+parseStatement(implStatement);
 
 
 #
