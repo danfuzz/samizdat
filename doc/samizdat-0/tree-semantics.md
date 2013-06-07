@@ -6,9 +6,9 @@ Tree Semantics
 
 These are all the node types and other data types that can occur in a
 parse tree, such that it can be compiled (or "compile-equivalent"ed) by
-`sam0Eval` (and the like). These are presented in a form meant to be
-representative of how one would construct them in the source syntax of
-*Samizdat Layer 0*.
+`sam0Eval` (and the like, with caveats as noted). These are presented in
+a form meant to be representative of how one would construct them in the
+source syntax of *Samizdat Layer 0*.
 
 <br><br>
 ### Expression Nodes
@@ -117,12 +117,36 @@ evaluation fails (terminating the runtime).
 These are nodes and values that appear within the data payloads
 of various expression nodes.
 
+
+#### `fnDef` &mdash; `@["fnDef" = ["name"=name, ("formals"=[formal+])?, ("yieldDef"=name)?,` `"statements"=[statement*], ("yield"=expression)?]`
+
+* `"name" = name` (required) &mdash; The name of the function.
+
+* `"formals" = [formal+]` (optional) &mdash; Same meaning as for
+  `closure` nodes (see which).
+
+* `"yieldDef" = name` (optional) &mdash; Same meaning as for
+  `closure` nodes (see which).
+
+* `"statements" = [statement*]` (required) &mdash; Same meaning as for
+  `closure` nodes (see which).
+
+* `"yield" = expression` (optional) &mdash; Same meaning as for
+  `closure` nodes (see which).
+
+This represents a statement-level function definition. This is similar to
+assigning the variable `name` to the result of evaluating `fn ...` as an
+expression, with one twist: In a statement list, multiple `fnDef`s in a
+row can mutually self-reference.
+
+**Note:** This node type is not recognized by `sam0Eval()` or `sam1Eval()`.
+
 #### `formal` &mdash; `[("name"=name)?, ("repeat"=repeat)?]`
 
 * `"name"` (optional) &mdash; an arbitrary value (but typically a string),
   which indicates the name of the variable to be bound for this
   formal. If omitted, then this indicates an unused argument which is
-  not bound to a variable in the context of the function body.
+  not bound to a variable in the context of the closure body.
 
 * `"repeat"` (optional) &mdash; indicates (if present) that the number of
   actual arguments bound by this formal is not necessarily exactly one.
@@ -156,7 +180,7 @@ actual argument as passed (no extra wrapping).
 * `"value" = expression` &mdash; Expression node representing the value
   that the variable should take on when defined.
 
-This represents a variable definition statement as part of a function body.
+This represents a variable definition statement as part of a closure body.
 
 When run, the `value` expression is evaluated. If it evaluates to void,
 then evaluation fails (terminating the runtime). Otherwise, the evaluated
