@@ -1,0 +1,43 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Function expression demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Main tests
+#
+
+func1 = fn (x) {
+    io0Note(format("func1 %q", x));
+    return "func1"
+};
+
+io0Note(func1(10));
+
+func2 = fn <out> (x*) {
+    io0Note(format("func1 %q", x));
+    <out> "func2"
+};
+
+io0Note(func2(20, "twenty"));
+
+# Recursive call.
+func3 = fn whee(x) {
+    io0Note(format("func3 %q", x));
+    if (x < 5) {
+        whee(x + 1);
+        return "func3"
+    }
+};
+
+io0Note(func3(1));
+
+<> 0
