@@ -42,6 +42,7 @@ STR(CALL,             "call");
 STR(CLOSURE,          "closure");
 STR(EMPTY,            ""); // The canonical empty string (`""`) value.
 STR(FALSE,            "false");
+STR(FN_DEF,           "fnDef");
 STR(FORMALS,          "formals");
 STR(FUNCTION,         "function");
 STR(IDENTIFIER,       "identifier");
