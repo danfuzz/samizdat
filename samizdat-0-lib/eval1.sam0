@@ -221,6 +221,13 @@ convertClosureLike = { node ::
     <> @[nodeType = mapAdd(nodeValue, ["statements" = statements], yield)]
 };
 
+# Does parser conversion of an `interpolate` node.
+convertInterpolate = { node ::
+    value = convertExpression(tokenValue(node));
+
+    <> @["interpolate" = value];
+};
+
 # Does parser conversion of a `varDef` node.
 convertVarDef = { node ::
     nodeValue = tokenValue(node);
@@ -232,15 +239,16 @@ convertVarDef = { node ::
 # Does no-op node conversion.
 convertNop = { node :: <> node };
 
-# Map of types to expression node converters.
+# Map of types to expression/statement node converters.
 CONVERT_EXPRESSION_MAP = [
-    "call"    = convertCall,
-    "closure" = convertClosureLike,
-    "fnDef"   = convertClosureLike,
-    "literal" = convertNop,
-    "parser"  = convertParser,
-    "varDef"  = convertVarDef,
-    "varRef"  = convertNop
+    "call"        = convertCall,
+    "closure"     = convertClosureLike,
+    "fnDef"       = convertClosureLike,
+    "interpolate" = convertInterpolate,
+    "literal"     = convertNop,
+    "parser"      = convertParser,
+    "varDef"      = convertVarDef,
+    "varRef"      = convertNop
 ];
 
 # Iterates / visits the given expression or statement node, transforming
