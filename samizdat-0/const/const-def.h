@@ -47,6 +47,7 @@ STR(FORMALS,          "formals");
 STR(FUNCTION,         "function");
 STR(IDENTIFIER,       "identifier");
 STR(INT,              "int");
+STR(INTERPOLATE,      "interpolate");
 STR(LIST,             "list");
 STR(LITERAL,          "literal");
 STR(MAKE_LIST,        "makeList");

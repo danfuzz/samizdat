@@ -331,13 +331,54 @@ static zvalue execCall(Frame *frame, zvalue call) {
 
     zint argCount = datSize(actuals);
     zvalue args[argCount];
+
+    // If there are any interpolated arguments, then `interpolate` is
+    // set to `true`, and `fullCount` indicates the count of arguments
+    // after interpolation.
+    zint fullCount = 0;
+    bool interpolate = false;
+
     for (zint i = 0; i < argCount; i++) {
         zvalue one = datListNth(actuals, i);
-        args[i] = execExpression(frame, one);
+        if (datTokenTypeIs(one, STR_INTERPOLATE)) {
+            zvalue eval = execExpression(frame, datTokenValue(one));
+            if (!datTypeIs(eval, DAT_LIST)) {
+                die("Attempt to interpolate non-list.");
+            }
+            args[i] = eval;
+            fullCount += datSize(eval);
+            interpolate = true;
+        } else {
+            args[i] = execExpression(frame, one);
+            fullCount++;
+        }
     }
 
+    zvalue result;
+
     debugPush(callReporter, function);
-    zvalue result = langCall(functionId, argCount, args);
+
+    if (interpolate) {
+        zvalue fullArgs[fullCount];
+        zint at = 0;
+
+        // Build the flattened argument list.
+        for (zint i = 0; i < argCount; i++) {
+            zvalue one = datListNth(actuals, i);
+            if (datTokenTypeIs(one, STR_INTERPOLATE)) {
+                datArrayFromList(&fullArgs[at], one);
+                at += datSize(one);
+            } else {
+                fullArgs[at] = args[i];
+                at++;
+            }
+        }
+
+        result = langCall(functionId, fullCount, fullArgs);
+    } else {
+        result = langCall(functionId, argCount, args);
+    }
+
     debugPop();
 
     return result;
