@@ -21,6 +21,8 @@
 /**
  * Dies with a message, citing a variable name.
  */
+static void dieForVariable(const char *message, zvalue name)
+    __attribute__((noreturn));
 static void dieForVariable(const char *message, zvalue name) {
     if (datTypeIs(name, DAT_STRING)) {
         zint nameSize = datUtf8SizeFromString(name);
@@ -73,7 +75,6 @@ zvalue frameGet(Frame *frame, zvalue name) {
     }
 
     dieForVariable("Variable not defined", name);
-    return NULL; // Keeps the compiler happy.
 }
 
 /* Documented in header. */
