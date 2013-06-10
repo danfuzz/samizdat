@@ -5,7 +5,7 @@
  */
 
 /*
- * Nonlocal exit structs
+ * Nonlocal exit handling
  */
 
 #include "impl.h"
