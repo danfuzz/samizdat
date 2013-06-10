@@ -84,6 +84,11 @@ makeMap = { rest* ::
 };
 ```
 
+#### `makeRange(start, end) <> list`
+
+Returns a list consisting of the values ranging from `start` to `end`
+inclusive. Both arguments must be of type int.
+
 #### `makeUniqlet() <> uniqlet`
 
 Returns a uniqlet that has never before been returned from this
