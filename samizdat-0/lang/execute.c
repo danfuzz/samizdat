@@ -5,88 +5,12 @@
  */
 
 #include "const.h"
-#include "lang.h"
+#include "impl.h"
 #include "util.h"
 
 #include <setjmp.h>
 #include <stddef.h>
 #include <string.h>
-
-
-/*
- * Execution frames
- */
-
-/**
- * Active execution frame. These are passed around within this file,
- * as code executes, and can become referenced by closures that are
- * released "in the wild".
- */
-typedef struct Frame {
-    /** Parent closure value. May be `NULL`. */
-    zvalue parentClosure;
-
-    /** Parent frame. May be `NULL`. */
-    struct Frame *parentFrame;
-
-    /** Variables defined in this frame, as a map from names to values. */
-    zvalue vars;
-} Frame;
-
-static void frameMark(Frame *frame) {
-    datMark(frame->vars);
-    datMark(frame->parentClosure);
-}
-
-/**
- * Dies with a message, citing a variable name.
- */
-static void dieForVariable(const char *message, zvalue name) {
-    if (datTypeIs(name, DAT_STRING)) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        die("%s: %s", message, nameStr);
-    }
-
-    die("%s: (strange name)", message);
-}
-
-/**
- * Adds a new variable to the given frame.
- */
-static void frameAdd(Frame *frame, zvalue name, zvalue value) {
-    if (datMapGet(frame->vars, name) != NULL) {
-        dieForVariable("Variable already defined", name);
-    }
-
-    frame->vars = datMapPut(frame->vars, name, value);
-}
-
-/**
- * Gets a variable's value out of the given frame.
- */
-static zvalue frameGet(Frame *frame, zvalue name) {
-    while (frame != NULL) {
-        zvalue result = datMapGet(frame->vars, name);
-
-        if (result != NULL) {
-            return result;
-        }
-
-        frame = frame->parentFrame;
-    }
-
-    dieForVariable("Variable not defined", name);
-    return NULL; // Keeps the compiler happy.
-}
-
-/**
- * Snapshots the given frame into the given target.
- */
-static void frameSnap(Frame *target, Frame *source) {
-    *target = *source;
-}
 
 
 /*
