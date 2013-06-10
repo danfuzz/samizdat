@@ -1,0 +1,61 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Function statement demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Main tests
+#
+
+fn func1(x) {
+    io0Note(format("func1 %q", x));
+    return "func1"
+};
+
+io0Note(func1(10));
+
+fn <out> func2(x*) {
+    io0Note(format("func2 %q", x));
+    <out> "func2"
+};
+
+io0Note(func2(20, "twenty"));
+
+# Self-recursion.
+fn func3(x) {
+    io0Note(format("func3 %q", x));
+    if (x < 5) {
+        func3(x + 1);
+        return "func3"
+    }
+};
+
+io0Note(func3(1));
+
+# Mutual recursion.
+fn recFunc1(x) {
+    io0Note(format("recFunc1 %q", x));
+    if (x < 5) {
+        recFunc2(x + 1);
+    };
+    return "recFunc1"
+};
+
+fn recFunc2(x) {
+    io0Note(format("recFunc2 %q", x));
+    if (x < 5) {
+        recFunc1(x + 1);
+    }
+};
+
+io0Note(recFunc1(1));
+
+<> 0
