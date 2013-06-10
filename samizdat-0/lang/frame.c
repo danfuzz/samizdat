@@ -38,6 +38,14 @@ static void dieForVariable(const char *message, zvalue name) {
  */
 
 /* Documented in header. */
+void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
+    zvalue vars) {
+    frame->parentFrame = parentFrame;
+    frame->parentClosure = parentClosure;
+    frame->vars = vars;
+}
+
+/* Documented in header. */
 void frameMark(Frame *frame) {
     datMark(frame->vars);
     datMark(frame->parentClosure);

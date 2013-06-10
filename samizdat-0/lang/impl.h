@@ -33,6 +33,12 @@ typedef struct Frame {
 } Frame;
 
 /**
+ * Initializes the given frame.
+ */
+void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
+    zvalue vars);
+
+/**
  * Does gc value marking.
  */
 void frameMark(Frame *frame);

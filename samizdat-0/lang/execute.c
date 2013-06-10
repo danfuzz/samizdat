@@ -74,11 +74,8 @@ typedef struct {
     /** Closure being called (in uniqlet wrapper). */
     zvalue closureValue;
 
-    /** Closure being called. */
+    /** Closure being called (struct pointer). */
     Closure *closure;
-
-    /** The closure's associated map value. */
-    zvalue defMap;
 
     /** Argument count. */
     zint argCount;
@@ -163,10 +160,9 @@ static void bindArguments(Frame *frame, zvalue node,
 static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     zvalue closureValue = callState->closureValue;
     Closure *closure = callState->closure;
-    zvalue defMap = callState->defMap;
+    zvalue defMap = closure->defMap;
     zint argCount = callState->argCount;
     const zvalue *args = callState->args;
-    Frame *parentFrame = &closure->frame;
 
     zvalue statements = datMapGet(defMap, STR_STATEMENTS);
     zvalue yield = datMapGet(defMap, STR_YIELD);
@@ -175,9 +171,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    frame.parentClosure = closureValue;
-    frame.parentFrame = parentFrame;
-    frame.vars = EMPTY_MAP;
+    frameInit(&frame, &closure->frame, closureValue, EMPTY_MAP);
     bindArguments(&frame, defMap, argCount, args);
 
     if (exitFunction != NULL) {
@@ -227,10 +221,9 @@ static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
  */
 static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
     Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
-    zvalue defMap = closure->defMap;
-    CallState callState = { state, closure, defMap, argCount, args };
+    CallState callState = { state, closure, argCount, args };
 
-    if (datMapGet(defMap, STR_YIELD_DEF) != NULL) {
+    if (datMapGet(closure->defMap, STR_YIELD_DEF) != NULL) {
         return nleCall(callClosureWithNle, &callState);
     } else {
         return callClosureMain(&callState, NULL);
@@ -400,9 +393,7 @@ static zvalue execExpression(Frame *frame, zvalue expression) {
 /* Documented in header. */
 zvalue langEval0(zvalue context, zvalue node) {
     Frame frame;
-    frame.parentClosure = NULL;
-    frame.parentFrame = NULL;
-    frame.vars = context;
 
+    frameInit(&frame, NULL, NULL, context);
     return execExpressionVoidOk(&frame, node);
 }
