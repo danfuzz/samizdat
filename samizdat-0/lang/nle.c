@@ -39,7 +39,7 @@ typedef struct {
 } NleState;
 
 /**
- * Marks a yield state for garbage collection.
+ * Marks a nonlocal exit state for garbage collection.
  */
 static void nleMark(void *state) {
     NleState *nleState = state;
@@ -47,7 +47,7 @@ static void nleMark(void *state) {
 }
 
 /**
- * Frees a yield state.
+ * Frees a nonlocal exit state.
  */
 static void nleFree(void *state) {
     utilFree(state);
