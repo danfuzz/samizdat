@@ -13,6 +13,9 @@
 
 #include "lang.h"
 
+/** Function called into by `nleCall`. */
+typedef zvalue (*znleFunction)(void *state, zvalue exitFunction);
+
 /**
  * Active execution frame. These are passed around during evaluation
  * as code executes, and can become referenced by closures that are
@@ -48,5 +51,11 @@ zvalue frameGet(Frame *frame, zvalue name);
  * Snapshots the given frame into the given target.
  */
 void frameSnap(Frame *target, Frame *source);
+
+/**
+ * Sets up a nonlocal exit, and calls the given function with the
+ * given state and a nonlocal exit function.
+ */
+zvalue nleCall(znleFunction function, void *state);
 
 #endif
