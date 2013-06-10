@@ -20,7 +20,7 @@ enum {
     DAT_MAX_IMMORTALS = 100,
 
     /** Number of elements in the `newbies` array. */
-    DAT_NEWBIES_SIZE = 1000,
+    DAT_NEWBIES_SIZE = 5000,
 
     /** Maximum readable file size, in bytes. */
     IO_MAX_FILE_SIZE = 100000,

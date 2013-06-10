@@ -7,6 +7,7 @@
 #include "impl.h"
 #include "zlimits.h"
 
+#include <setjmp.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -35,8 +36,9 @@ static zint immortalsSize = 0;
 /**
  * Array of recent allocations. These are exempted from gc (that is,
  * declared "live") in order to deal with the possibility that their
- * liveness is only by virtue of being in registers that didn't spill
- * "in time" for the gc.
+ * liveness is only by virtue of having interior pointers. TODO: This
+ * is an imperfect heuristic, as sometimes older objects are only alive
+ * due to interior pointers as well.
  */
 static zvalue newbies[DAT_NEWBIES_SIZE];
 
@@ -407,8 +409,13 @@ void datSetStackBase(void *base) {
 
 /* Documented in header. */
 void datGc(void) {
-    int topOfStack = 0;
+    // This `jmp_buf` is both used as a top-of-stack pointer and as a way
+    // to get any references that were only in registers to be on the stack
+    // (via the call to `setjmp`)
+    jmp_buf jumpBuf;
+
+    setjmp(jumpBuf);
 
     allocationCount = 0;
-    doGc(&topOfStack);
+    doGc(&jumpBuf);
 }
