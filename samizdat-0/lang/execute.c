@@ -14,7 +14,7 @@
 
 
 /*
- * Yields (non-local exit structs)
+ * Nonlocal exit structs
  */
 
 /**
@@ -34,38 +34,37 @@ typedef struct {
 
     /** Jump buffer, used for nonlocal exit. */
     jmp_buf jumpBuf;
-} YieldState;
+} NleState;
 
 /**
  * Marks a yield state for garbage collection.
  */
-static void yieldMark(void *state) {
-    YieldState *yield = state;
-
-    datMark(yield->result);
+static void nleMark(void *state) {
+    NleState *nleState = state;
+    datMark(nleState->result);
 }
 
 /**
  * Frees a yield state.
  */
-static void yieldFree(void *state) {
+static void nleFree(void *state) {
     utilFree(state);
 }
 
-/** Uniqlet dispatch table for yield states. */
-static DatUniqletDispatch YIELD_DISPATCH = {
-    yieldMark,
-    yieldFree
+/** Uniqlet dispatch table for nonlocal exit states. */
+static DatUniqletDispatch NLE_DISPATCH = {
+    nleMark,
+    nleFree
 };
 
 /**
  * The C function that is bound to in order to perform nonlocal exit.
  */
 static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
-    YieldState *yield = datUniqletGetState(state, &YIELD_DISPATCH);
+    NleState *nleState = datUniqletGetState(state, &NLE_DISPATCH);
 
-    if (yield->active) {
-        yield->active = false;
+    if (nleState->active) {
+        nleState->active = false;
     } else {
         die("Attempt to use out-of-scope nonlocal exit.");
     }
@@ -76,7 +75,7 @@ static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
             break;
         }
         case 1: {
-            yield->result = args[0];
+            nleState->result = args[0];
             break;
         }
         default: {
@@ -84,7 +83,7 @@ static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
         }
     }
 
-    longjmp(yield->jumpBuf, 1);
+    longjmp(nleState->jumpBuf, 1);
 }
 
 
@@ -221,7 +220,7 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
     zvalue yieldDef = datMapGet(defMap, STR_YIELD_DEF);
     zvalue statements = datMapGet(defMap, STR_STATEMENTS);
     zvalue yield = datMapGet(defMap, STR_YIELD);
-    YieldState *yieldState = NULL;
+    NleState *nleState = NULL;
 
     // With the closure's frame as the parent, bind the formals and
     // yieldDef (if present), creating a new execution frame.
@@ -233,21 +232,20 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
     bindArguments(&frame, defMap, argCount, args);
 
     if (yieldDef != NULL) {
-        yieldState = utilAlloc(sizeof(YieldState));
-        yieldState->active = true;
-        yieldState->result = NULL;
+        nleState = utilAlloc(sizeof(NleState));
+        nleState->active = true;
+        nleState->result = NULL;
 
         zint mark = debugMark();
 
-        if (setjmp(yieldState->jumpBuf) != 0) {
+        if (setjmp(nleState->jumpBuf) != 0) {
             // Here is where we land if and when `longjmp` is called.
             debugReset(mark);
-            return yieldState->result;
+            return nleState->result;
         }
 
-        zvalue exitFunction =
-            langDefineFunction(nonlocalExit,
-                               datUniqletWith(&YIELD_DISPATCH, yieldState));
+        zvalue exitFunction = langDefineFunction(nonlocalExit,
+            datUniqletWith(&NLE_DISPATCH, nleState));
         frameAdd(&frame, yieldDef, exitFunction);
     }
 
@@ -285,8 +283,8 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
         result = execExpressionVoidOk(&frame, yield);
     }
 
-    if (yieldState != NULL) {
-        yieldState->active = false;
+    if (nleState != NULL) {
+        nleState->active = false;
     }
 
     return result;
