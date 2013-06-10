@@ -8,83 +8,8 @@
 #include "impl.h"
 #include "util.h"
 
-#include <setjmp.h>
 #include <stddef.h>
 #include <string.h>
-
-
-/*
- * Nonlocal exit structs
- */
-
-/**
- * Nonlocal exit pending state. Instances of this structure are bound as
- * the closure state as part of call setup for closures that have a
- * `yieldDef`.
- */
-typedef struct {
-    /**
-     * Whether this state is active, in that there is a valid nonlocal exit
-     * that could land here.
-     */
-    bool active;
-
-    /** Return value thrown here via nonlocal exit. `NULL` for void. */
-    zvalue result;
-
-    /** Jump buffer, used for nonlocal exit. */
-    jmp_buf jumpBuf;
-} NleState;
-
-/**
- * Marks a yield state for garbage collection.
- */
-static void nleMark(void *state) {
-    NleState *nleState = state;
-    datMark(nleState->result);
-}
-
-/**
- * Frees a yield state.
- */
-static void nleFree(void *state) {
-    utilFree(state);
-}
-
-/** Uniqlet dispatch table for nonlocal exit states. */
-static DatUniqletDispatch NLE_DISPATCH = {
-    nleMark,
-    nleFree
-};
-
-/**
- * The C function that is bound to in order to perform nonlocal exit.
- */
-static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
-    NleState *nleState = datUniqletGetState(state, &NLE_DISPATCH);
-
-    if (nleState->active) {
-        nleState->active = false;
-    } else {
-        die("Attempt to use out-of-scope nonlocal exit.");
-    }
-
-    switch (argCount) {
-        case 0: {
-            // Nothing to do.
-            break;
-        }
-        case 1: {
-            nleState->result = args[0];
-            break;
-        }
-        default: {
-            die("Too many arguments for nonlocal exit: %lld", argCount);
-        }
-    }
-
-    longjmp(nleState->jumpBuf, 1);
-}
 
 
 /*
@@ -139,6 +64,28 @@ static DatUniqletDispatch CLOSURE_DISPATCH = {
     closureMark,
     closureFree
 };
+
+/**
+ * Function call state. This is used during function call setup. Pointers
+ * to these are passed directly within this file as well as passed
+ * indirectly via the nonlocal exit handling code.
+ */
+typedef struct {
+    /** Closure being called (in uniqlet wrapper). */
+    zvalue closureValue;
+
+    /** Closure being called. */
+    Closure *closure;
+
+    /** The closure's associated map value. */
+    zvalue defMap;
+
+    /** Argument count. */
+    zint argCount;
+
+    /** Array of arguments. */
+    const zvalue *args;
+} CallState;
 
 /**
  * Binds variables for all the formal arguments of the given
@@ -210,43 +157,32 @@ static void bindArguments(Frame *frame, zvalue node,
 }
 
 /**
- * The C function that is bound to in order to execute interpreted code.
+ * Helper that does the main work of `callClosure`, including nonlocal
+ * exit binding when appropriate.
  */
-static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
-    Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
-    zvalue defMap = closure->defMap;
+static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
+    zvalue closureValue = callState->closureValue;
+    Closure *closure = callState->closure;
+    zvalue defMap = callState->defMap;
+    zint argCount = callState->argCount;
+    const zvalue *args = callState->args;
     Frame *parentFrame = &closure->frame;
 
-    zvalue yieldDef = datMapGet(defMap, STR_YIELD_DEF);
     zvalue statements = datMapGet(defMap, STR_STATEMENTS);
     zvalue yield = datMapGet(defMap, STR_YIELD);
-    NleState *nleState = NULL;
 
     // With the closure's frame as the parent, bind the formals and
-    // yieldDef (if present), creating a new execution frame.
+    // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    frame.parentClosure = state;
+    frame.parentClosure = closureValue;
     frame.parentFrame = parentFrame;
     frame.vars = EMPTY_MAP;
     bindArguments(&frame, defMap, argCount, args);
 
-    if (yieldDef != NULL) {
-        nleState = utilAlloc(sizeof(NleState));
-        nleState->active = true;
-        nleState->result = NULL;
-
-        zint mark = debugMark();
-
-        if (setjmp(nleState->jumpBuf) != 0) {
-            // Here is where we land if and when `longjmp` is called.
-            debugReset(mark);
-            return nleState->result;
-        }
-
-        zvalue exitFunction = langDefineFunction(nonlocalExit,
-            datUniqletWith(&NLE_DISPATCH, nleState));
-        frameAdd(&frame, yieldDef, exitFunction);
+    if (exitFunction != NULL) {
+        zvalue name = datMapGet(defMap, STR_YIELD_DEF);
+        frameAdd(&frame, name, exitFunction);
     }
 
     // Evaluate the statements, updating the frame as needed.
@@ -276,18 +212,29 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
 
     // Evaluate the yield expression if present, and return the final
     // result.
+    return (yield == NULL) ? NULL : execExpressionVoidOk(&frame, yield);
+}
 
-    zvalue result = NULL;
+/**
+ * Nonlocal exit callthrough function. This is called by `nleCall`.
+ */
+static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
+    return callClosureMain((CallState *) state, exitFunction);
+}
 
-    if (yield != NULL) {
-        result = execExpressionVoidOk(&frame, yield);
+/**
+ * The C function that is bound to in order to execute interpreted code.
+ */
+static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
+    Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
+    zvalue defMap = closure->defMap;
+    CallState callState = { state, closure, defMap, argCount, args };
+
+    if (datMapGet(defMap, STR_YIELD_DEF) != NULL) {
+        return nleCall(callClosureWithNle, &callState);
+    } else {
+        return callClosureMain(&callState, NULL);
     }
-
-    if (nleState != NULL) {
-        nleState->active = false;
-    }
-
-    return result;
 }
 
 /**
