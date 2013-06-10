@@ -5,7 +5,7 @@
  */
 
 #include "const.h"
-#include "lang.h"
+#include "impl.h"
 #include "util.h"
 
 #include <setjmp.h>
@@ -14,100 +14,8 @@
 
 
 /*
- * Execution frames
+ * Nonlocal exit structs
  */
-
-/**
- * Active execution frame. These are passed around within this file,
- * as code executes, and can become referenced by closures that are
- * released "in the wild".
- */
-typedef struct Frame {
-    /** Parent closure value. May be `NULL`. */
-    zvalue parentClosure;
-
-    /** Parent frame. May be `NULL`. */
-    struct Frame *parentFrame;
-
-    /** Variables defined in this frame, as a map from names to values. */
-    zvalue vars;
-} Frame;
-
-static void frameMark(Frame *frame) {
-    datMark(frame->vars);
-    datMark(frame->parentClosure);
-}
-
-/**
- * Dies with a message, citing a variable name.
- */
-static void dieForVariable(const char *message, zvalue name) {
-    if (datTypeIs(name, DAT_STRING)) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        die("%s: %s", message, nameStr);
-    }
-
-    die("%s: (strange name)", message);
-}
-
-/**
- * Adds a new variable to the given frame.
- */
-static void frameAdd(Frame *frame, zvalue name, zvalue value) {
-    if (datMapGet(frame->vars, name) != NULL) {
-        dieForVariable("Variable already defined", name);
-    }
-
-    frame->vars = datMapPut(frame->vars, name, value);
-}
-
-/**
- * Gets a variable's value out of the given frame.
- */
-static zvalue frameGet(Frame *frame, zvalue name) {
-    while (frame != NULL) {
-        zvalue result = datMapGet(frame->vars, name);
-
-        if (result != NULL) {
-            return result;
-        }
-
-        frame = frame->parentFrame;
-    }
-
-    dieForVariable("Variable not defined", name);
-    return NULL; // Keeps the compiler happy.
-}
-
-/**
- * Snapshots the given frame into the given target.
- */
-static void frameSnap(Frame *target, Frame *source) {
-    *target = *source;
-}
-
-
-/*
- * Evaluation
- */
-
-/**
- * Closure, that is, a function and its associated immutable bindings.
- * Instances of this structure are bound as the closure state as part of
- * function registration in `execClosure()`.
- */
-typedef struct {
-    /**
-     * Snapshot of the frame that was active at the moment the closure was
-     * constructed.
-     */
-    Frame frame;
-
-    /** Node that represents the fixed definition of the closure. */
-    zvalue node;
-} Closure;
 
 /**
  * Nonlocal exit pending state. Instances of this structure are bound as
@@ -126,7 +34,88 @@ typedef struct {
 
     /** Jump buffer, used for nonlocal exit. */
     jmp_buf jumpBuf;
-} YieldState;
+} NleState;
+
+/**
+ * Marks a yield state for garbage collection.
+ */
+static void nleMark(void *state) {
+    NleState *nleState = state;
+    datMark(nleState->result);
+}
+
+/**
+ * Frees a yield state.
+ */
+static void nleFree(void *state) {
+    utilFree(state);
+}
+
+/** Uniqlet dispatch table for nonlocal exit states. */
+static DatUniqletDispatch NLE_DISPATCH = {
+    nleMark,
+    nleFree
+};
+
+/**
+ * The C function that is bound to in order to perform nonlocal exit.
+ */
+static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
+    NleState *nleState = datUniqletGetState(state, &NLE_DISPATCH);
+
+    if (nleState->active) {
+        nleState->active = false;
+    } else {
+        die("Attempt to use out-of-scope nonlocal exit.");
+    }
+
+    switch (argCount) {
+        case 0: {
+            // Nothing to do.
+            break;
+        }
+        case 1: {
+            nleState->result = args[0];
+            break;
+        }
+        default: {
+            die("Too many arguments for nonlocal exit: %lld", argCount);
+        }
+    }
+
+    longjmp(nleState->jumpBuf, 1);
+}
+
+
+/*
+ * Closures
+ */
+
+/* Defined below. */
+static zvalue execExpression(Frame *frame, zvalue expression);
+static zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
+static void execVarDef(Frame *frame, zvalue varDef);
+static void execFnDefs(Frame *frame, zvalue statements, zint start, zint end);
+
+/**
+ * Closure, that is, a function and its associated immutable bindings.
+ * Instances of this structure are bound as the closure state as part of
+ * function registration in `execClosure()`.
+ */
+typedef struct {
+    /**
+     * Snapshot of the frame that was active at the moment the closure was
+     * constructed.
+     */
+    Frame frame;
+
+    /**
+     * Closure payload map that represents the fixed definition of the
+     * closure. This can be the payload of either a `closure` or a
+     * `fnDef` node.
+     */
+    zvalue defMap;
+} Closure;
 
 /**
  * Marks a closure state for garbage collection.
@@ -135,7 +124,7 @@ static void closureMark(void *state) {
     Closure *closure = state;
 
     frameMark(&closure->frame);
-    datMark(closure->node);
+    datMark(closure->defMap);
 }
 
 /**
@@ -150,62 +139,6 @@ static DatUniqletDispatch CLOSURE_DISPATCH = {
     closureMark,
     closureFree
 };
-
-/**
- * Marks a yield state for garbage collection.
- */
-static void yieldMark(void *state) {
-    YieldState *yield = state;
-
-    datMark(yield->result);
-}
-
-/**
- * Frees a yield state.
- */
-static void yieldFree(void *state) {
-    utilFree(state);
-}
-
-/** Uniqlet dispatch table for yield states. */
-static DatUniqletDispatch YIELD_DISPATCH = {
-    yieldMark,
-    yieldFree
-};
-
-
-/* Defined below. */
-static zvalue execExpression(Frame *frame, zvalue expression);
-static zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
-
-/**
- * The C function that is bound to in order to perform nonlocal exit.
- */
-static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
-    YieldState *yield = datUniqletGetState(state, &YIELD_DISPATCH);
-
-    if (yield->active) {
-        yield->active = false;
-    } else {
-        die("Attempt to use out-of-scope nonlocal exit.");
-    }
-
-    switch (argCount) {
-        case 0: {
-            // Nothing to do.
-            break;
-        }
-        case 1: {
-            yield->result = args[0];
-            break;
-        }
-        default: {
-            die("Too many arguments for nonlocal exit: %lld", argCount);
-        }
-    }
-
-    longjmp(yield->jumpBuf, 1);
-}
 
 /**
  * Binds variables for all the formal arguments of the given
@@ -277,30 +210,17 @@ static void bindArguments(Frame *frame, zvalue node,
 }
 
 /**
- * Executes a variable definition, by updating the given execution frame,
- * as appropriate.
- */
-static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue nameValue = datTokenValue(varDef);
-    zvalue name = datMapGet(nameValue, STR_NAME);
-    zvalue valueExpression = datMapGet(nameValue, STR_VALUE);
-    zvalue value = execExpression(frame, valueExpression);
-
-    frameAdd(frame, name, value);
-}
-
-/**
  * The C function that is bound to in order to execute interpreted code.
  */
 static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
     Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
-    zvalue node = closure->node;
+    zvalue defMap = closure->defMap;
     Frame *parentFrame = &closure->frame;
 
-    zvalue yieldDef = datMapGet(node, STR_YIELD_DEF);
-    zvalue statements = datMapGet(node, STR_STATEMENTS);
-    zvalue yield = datMapGet(node, STR_YIELD);
-    YieldState *yieldState = NULL;
+    zvalue yieldDef = datMapGet(defMap, STR_YIELD_DEF);
+    zvalue statements = datMapGet(defMap, STR_STATEMENTS);
+    zvalue yield = datMapGet(defMap, STR_YIELD);
+    NleState *nleState = NULL;
 
     // With the closure's frame as the parent, bind the formals and
     // yieldDef (if present), creating a new execution frame.
@@ -309,24 +229,23 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
     frame.parentClosure = state;
     frame.parentFrame = parentFrame;
     frame.vars = EMPTY_MAP;
-    bindArguments(&frame, node, argCount, args);
+    bindArguments(&frame, defMap, argCount, args);
 
     if (yieldDef != NULL) {
-        yieldState = utilAlloc(sizeof(YieldState));
-        yieldState->active = true;
-        yieldState->result = NULL;
+        nleState = utilAlloc(sizeof(NleState));
+        nleState->active = true;
+        nleState->result = NULL;
 
         zint mark = debugMark();
 
-        if (setjmp(yieldState->jumpBuf) != 0) {
+        if (setjmp(nleState->jumpBuf) != 0) {
             // Here is where we land if and when `longjmp` is called.
             debugReset(mark);
-            return yieldState->result;
+            return nleState->result;
         }
 
-        zvalue exitFunction =
-            langDefineFunction(nonlocalExit,
-                               datUniqletWith(&YIELD_DISPATCH, yieldState));
+        zvalue exitFunction = langDefineFunction(nonlocalExit,
+            datUniqletWith(&NLE_DISPATCH, nleState));
         frameAdd(&frame, yieldDef, exitFunction);
     }
 
@@ -336,7 +255,19 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = datListNth(statements, i);
 
-        if (datTokenTypeIs(one, STR_VAR_DEF)) {
+        if (datTokenTypeIs(one, STR_FN_DEF)) {
+            // Look for immediately adjacent `fnDef` nodes, and process
+            // them all together.
+            zint end = i + 1;
+            for (/*end*/; end < statementsSize; end++) {
+                zvalue one = datListNth(statements, end);
+                if (!datTokenTypeIs(one, STR_FN_DEF)) {
+                    break;
+                }
+            }
+            execFnDefs(&frame, statements, i, end);
+            i = end - 1;
+        } else if (datTokenTypeIs(one, STR_VAR_DEF)) {
             execVarDef(&frame, one);
         } else {
             execExpressionVoidOk(&frame, one);
@@ -352,11 +283,73 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
         result = execExpressionVoidOk(&frame, yield);
     }
 
-    if (yieldState != NULL) {
-        yieldState->active = false;
+    if (nleState != NULL) {
+        nleState->active = false;
     }
 
     return result;
+}
+
+/**
+ * Helper for evaluating `closure` and `fnDef` nodes. This does the
+ * evaluation, and allows a pointer to the `Closure` struct to be
+ * returned (via an out argument).
+ */
+static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
+    Closure *closure = utilAlloc(sizeof(Closure));
+
+    frameSnap(&closure->frame, frame);
+    closure->defMap = datTokenValue(node);
+
+    if (resultClosure != NULL) {
+        *resultClosure = closure;
+    }
+
+    return langDefineFunction(callClosure,
+                              datUniqletWith(&CLOSURE_DISPATCH, closure));
+}
+
+
+/*
+ * Node evaluation
+ */
+
+/**
+ * Executes a variable definition, by updating the given execution frame,
+ * as appropriate.
+ */
+static void execVarDef(Frame *frame, zvalue varDef) {
+    zvalue nameValue = datTokenValue(varDef);
+    zvalue name = datMapGet(nameValue, STR_NAME);
+    zvalue valueExpression = datMapGet(nameValue, STR_VALUE);
+    zvalue value = execExpression(frame, valueExpression);
+
+    frameAdd(frame, name, value);
+}
+
+/**
+ * Executes a sequence of one or more statement-level function definitions,
+ * from the `start` index (inclusive) to the `end` index (exclusive) in the
+ * given `statements` list.
+ */
+static void execFnDefs(Frame *frame, zvalue statements, zint start, zint end) {
+    zint size = end - start;
+    Closure *closures[size];
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = datListNth(statements, start + i);
+        zvalue fnMap = datTokenValue(one);
+        zvalue name = datMapGet(fnMap, STR_NAME);
+        frameAdd(frame, name, buildClosure(&closures[i], frame, one));
+    }
+
+    // Rewrite the local variable context of all the constructed closures
+    // to be the *current* context. This allows for self-recursion when
+    // `size == 1` and mutual recursion when `size > 1`.
+
+    for (zint i = 0; i < size; i++) {
+        frameSnap(&closures[i]->frame, frame);
+    }
 }
 
 /**
@@ -364,14 +357,7 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
  */
 static zvalue execClosure(Frame *frame, zvalue closureNode) {
     datTokenAssertType(closureNode, STR_CLOSURE);
-
-    Closure *closure = utilAlloc(sizeof(Closure));
-
-    frameSnap(&closure->frame, frame);
-    closure->node = datTokenValue(closureNode);
-
-    return langDefineFunction(callClosure,
-                              datUniqletWith(&CLOSURE_DISPATCH, closure));
+    return buildClosure(NULL, frame, closureNode);
 }
 
 /**
