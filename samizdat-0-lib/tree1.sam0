@@ -120,8 +120,7 @@ parseMap = pegMakeMainSequence(
     pegMakeStar(pegMakeSequence(pegMakeToken(","), parseMapping)),
     pegMakeToken("]"),
     pegMakeCode { ., first, rest, . ::
-        mappings = listAdd(first, rest*);
-        <> makeCallName("makeMap", mappings*)
+        <> makeCallName("makeMap", first*, listAdd(rest*)*)
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -193,7 +192,7 @@ parseActualsList = pegMakeMainSequence(
             pegMakeToken(")"),
             pegMakeStar(parseClosure),
             pegMakeCode { ., normalActuals, ., closureActuals ::
-                <> listAdd(normalActuals, closureActuals)
+                <> [normalActuals*, closureActuals*]
             }),
         pegMakePlus(parseClosure)));
 
@@ -297,7 +296,7 @@ parseProgramBody = pegMakeMainSequence(
             pegMakeCode { <> ["statements" = []] })),
     pegMakeStar(pegMakeToken(";")),
     pegMakeCode { ., most, last, . ::
-        allStatements = listAdd(most, mapGet(last, "statements"));
+        allStatements = [most*, mapGet(last, "statements")*];
         <> mapPut(last, "statements", allStatements)
     });
 

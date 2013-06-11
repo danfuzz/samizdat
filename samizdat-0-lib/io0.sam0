@@ -149,7 +149,7 @@ resolveLinks = { <out> sandboxDirectory, path ::
 # Documented in Samizdat Layer 0 spec.
 io0SandboxedReader = { directory ::
     <> { path ::
-        fullPath = resolveLinks(directory, listAdd(directory, path));
+        fullPath = resolveLinks(directory, [directory*, path*]);
         <> io0ReadFileUtf8(fullPath);
     }
 };

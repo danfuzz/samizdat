@@ -185,10 +185,7 @@ parseMap = {/
     first = parseMapping
     rest = (@"," parseMapping)*
     @"]"
-    {
-        mappings = listAdd(first, rest*);
-        <> makeCallName("makeMap", mappings*)
-    }
+    { <> makeCallName("makeMap", first*, listAdd(rest*)*) }
 /};
 
 # Parses a token literal.
@@ -263,7 +260,7 @@ parseActualsList = {/
     normalActuals = parseUnadornedList
     @")"
     closureActuals = parseClosure*
-    { <> listAdd(normalActuals, closureActuals) }
+    { <> [normalActuals*, closureActuals*] }
 |
     parseClosure+
 /};
@@ -336,7 +333,7 @@ parseProgramBody = {/
     @";"*
 
     {
-        allStatements = listAdd(most, mapGet(last, "statements"));
+        allStatements = [most*, mapGet(last, "statements")*];
         <> mapPut(last, "statements", allStatements)
     }
 /};
@@ -663,7 +660,7 @@ parseFnCommon = {/
 
     {
         codeMap = tokenValue(code);
-        statements = listAdd(returnDef, mapGet(codeMap, "statements"));
+        statements = [returnDef*, mapGet(codeMap, "statements")*];
         <> mapAdd(codeMap, name, formals,
             ["yieldDef"="return", "statements"=statements])
     }
@@ -870,7 +867,7 @@ parseIfExpression = {/
                 };
 
             conditions = makeCallName("makeList", listFirst(arrays)*);
-            thens = listAdd(listLast(arrays), finalElse);
+            thens = [listLast(arrays)*, finalElse*];
 
             <> makeCallName("ifChain", conditions, thens*);
         }

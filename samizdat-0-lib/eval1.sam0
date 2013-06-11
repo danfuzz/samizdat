@@ -67,7 +67,7 @@ convertPexSequence = { node, formals ::
         subPex = ifTrue { <> eq(tokenType(pex), "varDef") }
             { <> mapGet(tokenValue(pex), "value") }
             { <> pex };
-        <> convertPex(subPex, listAdd(formals, listSlice(newFormals, 0, n)))
+        <> convertPex(subPex, [formals*, listSlice(newFormals, 0, n)*])
     };
 
     <> callNameWithExpressions("pegMakeSequence", convertedPexes*)
