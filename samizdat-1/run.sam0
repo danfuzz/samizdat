@@ -97,7 +97,7 @@ run = { args* ::
     function = sam1Eval(makeLibrary(library), programNode);
 
     # Run it!
-    <> apply(function, filePath, argsPerSe)
+    <> function(filePath, argsPerSe*)
 };
 
 <> ["run" = run]
