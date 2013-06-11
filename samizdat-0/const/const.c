@@ -67,4 +67,8 @@ void constInit(void) {
     datImmortalize(CONST_TRUE);
     datImmortalize(EMPTY_LIST);
     datImmortalize(EMPTY_MAP);
+
+    // Force a garbage collection here, mainly to get a reasonably early
+    // failure if gc is broken.
+    datGc();
 }

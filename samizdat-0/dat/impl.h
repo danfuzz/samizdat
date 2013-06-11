@@ -146,7 +146,8 @@ typedef struct {
 /**
  * Allocates memory, sized to include a `DatValue` header plus the
  * indicated number of extra bytes. The `DatValue` header is
- * initialized with the indicated type and size.
+ * initialized with the indicated type and size. The resulting value
+ * is added to the stack.
  */
 zvalue datAllocValue(ztype type, zint size, zint extraBytes);
 

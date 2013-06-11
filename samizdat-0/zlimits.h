@@ -14,13 +14,13 @@
 
 enum {
     /** Number of allocations between each forced gc. */
-    DAT_ALLOCATIONS_PER_GC = 200000,
+    DAT_ALLOCATIONS_PER_GC = 500000,
 
     /** Maximum number of immortal values allowed. */
     DAT_MAX_IMMORTALS = 100,
 
-    /** Number of elements in the `newbies` array. */
-    DAT_NEWBIES_SIZE = 5000,
+    /** Maximum number of references on the stack. */
+    DAT_MAX_STACK = 50000,
 
     /** Maximum readable file size, in bytes. */
     IO_MAX_FILE_SIZE = 100000,

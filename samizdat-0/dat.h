@@ -67,6 +67,9 @@ typedef struct {
     zstateFunction free;
 } DatUniqletDispatch;
 
+/** Type for local value stack pointers. */
+typedef const zvalue *zstackPointer;
+
 
 /*
  * Basic Functions
@@ -472,6 +475,22 @@ zorder datOrder(zvalue v1, zvalue v2);
  */
 
 /**
+ * Indicates the start of a new frame of references on the stack.
+ * The return value can subsequently be passed to `datFrameEnd` to
+ * indicate that this frame is no longer active.
+ */
+zstackPointer datFrameStart(void);
+
+/**
+ * Indicates that the frame whose start returned the given stack pointer
+ * is no longer active. If the given additional value is non-`NULL` it is
+ * added to the frame being "returned" to. It is valid to return to any
+ * frame above the current one, not just the immediately-previous frame;
+ * non-immediate return can happen during a nonlocal exit.
+ */
+void datFrameReturn(zstackPointer savedStack, zvalue returnValue);
+
+/**
  * Forces a gc.
  */
 void datGc(void);
@@ -488,13 +507,5 @@ void datImmortalize(zvalue value);
  * to pass `NULL` to this, but no other non-values are acceptable.
  */
 void datMark(zvalue value);
-
-/**
- * Sets the base of the stack. This has to be called from a function
- * which (a) performs no other dat module calls, and (b) is the ancestor
- * call of all functions which *do* make dat module calls. Pass it the
- * address of a local variable.
- */
-void datSetStackBase(void *base);
 
 #endif
