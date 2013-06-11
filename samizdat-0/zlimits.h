@@ -14,7 +14,7 @@
 
 enum {
     /** Number of allocations between each forced gc. */
-    DAT_ALLOCATIONS_PER_GC = 200000,
+    DAT_ALLOCATIONS_PER_GC = 500000,
 
     /** Maximum number of immortal values allowed. */
     DAT_MAX_IMMORTALS = 100,
