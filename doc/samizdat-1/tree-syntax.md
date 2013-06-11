@@ -100,15 +100,15 @@ parserSet = {/
         strings = parserSetString+
         {
             oneString = listReduce("", strings)
-                { result . s :: <> stringAdd(result, tokenValue(s)) };
+                { result, ., s :: <> stringAdd(result, tokenValue(s)) };
             <> stringReduce([], oneString)
-                { result . ch :: <> listAppend(result, ch) }
+                { result, ., ch :: <> listAppend(result, ch) }
         }
     |
         tokens = parserToken+
         {
             tokens = listPrepend(first, rest);
-            <> listMap(tokens) { . t :: <> tokenValue(t) }
+            <> listMap(tokens) { ., t :: <> tokenValue(t) }
         }
     |
         { <> [] }
