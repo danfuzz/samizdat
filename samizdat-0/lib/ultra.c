@@ -55,21 +55,33 @@ PRIM_IMPL(makeRange) {
         die("Bad order for range.");
     }
 
-    // TODO: Handle more than just int ranges.
-    if (type != DAT_INT) {
-        die("Bad type for range.");
+    if (type == DAT_INT) {
+        zint startInt = datZintFromInt(start);
+        zint endInt = datZintFromInt(end);
+        zint size = endInt - startInt + 1;
+        zvalue values[size];
+
+        for (zint i = 0; i < size; i++) {
+            values[i] = constIntFromZint(startInt + i);
+        }
+
+        return datListFromArray(size, values);
+    } else if (type == DAT_STRING) {
+        datAssertStringSize1(start);
+        datAssertStringSize1(end);
+        zchar startCh = datStringNth(start, 0);
+        zchar endCh = datStringNth(end, 0);
+        zint size = endCh - startCh + 1;
+        zvalue values[size];
+
+        for (zint i = 0; i < size; i++) {
+            values[i] = constStringFromZchar(startCh + i);
+        }
+
+        return datListFromArray(size, values);
     }
 
-    zint startInt = datZintFromInt(start);
-    zint endInt = datZintFromInt(end);
-    zint size = endInt - startInt + 1;
-    zvalue values[size];
-
-    for (zint i = 0; i < size; i++) {
-        values[i] = constIntFromZint(startInt + i);
-    }
-
-    return datListFromArray(size, values);
+    die("Bad type for range.");
 }
 
 /* Documented in Samizdat Layer 0 spec. */
