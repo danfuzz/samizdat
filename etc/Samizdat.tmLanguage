@@ -94,7 +94,7 @@
 			<key>name</key>
 			<string>keyword.control</string>
 			<key>match</key>
-			<string>\b(break|case|continue|def|do|else|fn|if|return|switch|var|while)\b</string>
+			<string>\b(break|case|continue|def|default|do|else|fn|if|return|switch|var|while)\b</string>
 		</dict>
 		<dict>
 			<key>name</key>
