@@ -65,11 +65,26 @@ parseString = pegMakeMainSequence(
     pegMakeCode { string :: <> makeLiteral(tokenValue(string)) });
 
 # Documented in Samizdat Layer 0 spec.
+parseListElement = pegMakeMainSequence(
+    parseExpression,
+    pegMakeChoice(
+        pegMakeSequence(
+            pegMakeToken("*"),
+            pegMakeCode { ex, . :: <> @["interpolate" = ex] }),
+        pegMakeSequence(
+            pegMakeToken(".."),
+            parseExpression,
+            pegMakeCode { ex, ., end ::
+                <> @["interpolate" = makeCallName("makeRange", ex, end)]
+            }),
+        pegMakeCode { ex :: <> ex }));
+
+# Documented in Samizdat Layer 0 spec.
 parseUnadornedList = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            parseExpression,
-            pegMakeStar(pegMakeSequence(pegMakeToken(","), parseExpression)),
+            parseListElement,
+            pegMakeStar(pegMakeSequence(pegMakeToken(","), parseListElement)),
             pegMakeCode { first, rest :: <> listPrepend(first, rest) }),
         pegMakeCode { <> [] }));
 
