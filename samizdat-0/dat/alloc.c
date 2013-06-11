@@ -7,7 +7,6 @@
 #include "impl.h"
 #include "zlimits.h"
 
-#include <setjmp.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -137,7 +136,7 @@ static void enlist(GcLinks *head, zvalue value) {
 /**
  * Main garbage collection function.
  */
-static void doGc(void *topOfStack) {
+static void doGc(void) {
     zint counter; // Used throughout.
 
     sanityCheck(false);
@@ -351,15 +350,8 @@ void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
 
 /* Documented in header. */
 void datGc(void) {
-    // This `jmp_buf` is both used as a top-of-stack pointer and as a way
-    // to get any references that were only in registers to be on the stack
-    // (via the call to `setjmp`)
-    jmp_buf jumpBuf;
-
-    setjmp(jumpBuf);
-
     allocationCount = 0;
-    doGc(&jumpBuf);
+    doGc();
 }
 
 /* Documented in header. */
