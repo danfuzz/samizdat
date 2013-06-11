@@ -15,12 +15,12 @@ SELF_PATH, ARGS* ::
 # Helper function
 #
 
-fn out(args*) {
-    io0Note(format("Got: %q", args));
+out = { args* ::
+    io0Note(format("Got: %q", args))
 };
 
-fn ten() {
-    return 10;
+ten = {
+    <> 10
 };
 
 
