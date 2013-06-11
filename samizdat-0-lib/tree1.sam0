@@ -96,7 +96,7 @@ parseList = pegMakeMainSequence(
     pegMakeCode { ., expressions, . ::
         <> ifTrue { <> eq(expressions, []) }
             { <> makeLiteral([]) }
-            { <> apply(makeCallName, "makeList", expressions) }
+            { <> makeCallName("makeList", expressions*) }
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -120,8 +120,8 @@ parseMap = pegMakeMainSequence(
     pegMakeStar(pegMakeSequence(pegMakeToken(","), parseMapping)),
     pegMakeToken("]"),
     pegMakeCode { ., first, rest, . ::
-        mappings = apply(listAdd, first, rest);
-        <> apply(makeCallName, "makeMap", mappings)
+        mappings = listAdd(first, rest*);
+        <> makeCallName("makeMap", mappings*)
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -134,7 +134,7 @@ parseToken = pegMakeMainSequence(
             pegMakeOpt(pegMakeSequence(pegMakeToken("="), parseExpression)),
             pegMakeToken("]"),
             pegMakeCode { ., type, value, . ::
-                <> apply(makeCallName, "makeToken", type, value)
+                <> makeCallName("makeToken", type, value*)
             }),
         pegMakeMainSequence(
             pegMakeTokenSet("string", "identifier"),
@@ -203,7 +203,7 @@ parseCallExpression = pegMakeMainSequence(
     pegMakeStar(parseActualsList),
     pegMakeCode { base, actualsLists ::
         <> listReduce(base, actualsLists) { result, ., list ::
-            <> apply(makeCall, result, list)
+            <> makeCall(result, list*)
         }
     });
 

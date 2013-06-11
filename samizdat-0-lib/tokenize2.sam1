@@ -114,7 +114,7 @@ tokString = {/
 
     (
         "\""
-        { <> @["string" = apply(stringAdd, chars)] }
+        { <> @["string" = stringAdd(chars*)] }
     |
         { <> @["error" = "Unterminated string literal."] }
     )

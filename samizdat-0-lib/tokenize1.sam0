@@ -60,7 +60,7 @@ tokString = pegMakeMainSequence(
     pegMakeStar(tokStringChar),
     pegMakeToken("\""),
     pegMakeCode { ., chars, . ::
-        <> @["string" = apply(stringAdd, chars)]
+        <> @["string" = stringAdd(chars*)]
     });
 
 # These are all the characters which are allowed to start an identifier.
