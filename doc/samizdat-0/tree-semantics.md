@@ -186,7 +186,7 @@ Nodes of this type are valid within the `actuals` list of a `call`
 node.
 
 As part of call evaluation, each `interpolate` node is evaluated,
-and the contents of the resulting list become individual actual arguments
+and the elements of the resulting list become individual actual arguments
 to the call, rather than the list itself being a single argument.
 
 It is an error (terminating the runtime) if `expression` evaluates to
