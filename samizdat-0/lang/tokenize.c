@@ -139,7 +139,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         return NULL;
     }
 
-    zvalue string = datStringFromChars(size, chars);
+    zvalue string = datStringFromZchars(size, chars);
     return datTokenFrom(STR_IDENTIFIER, string);
 }
 
@@ -182,7 +182,7 @@ static zvalue tokenizeString(ParseState *state) {
         read(state);
     }
 
-    zvalue string = datStringFromChars(size, chars);
+    zvalue string = datStringFromZchars(size, chars);
     return datTokenFrom(STR_STRING, string);
 }
 

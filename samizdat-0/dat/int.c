@@ -79,7 +79,7 @@ zorder datIntOrder(zvalue v1, zvalue v2) {
  */
 
 /* Documented in header. */
-zchar datCharFromInt(zvalue intval) {
+zchar datZcharFromInt(zvalue intval) {
     zint value = datZintFromInt(intval);
 
     if ((value < 0) || (value >= 0x100000000)) {

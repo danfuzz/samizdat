@@ -154,7 +154,7 @@ ztype datType(zvalue value);
  * Gets the `zchar` of the given int, asserting that the value
  * is in fact an int and in range for same.
  */
-zchar datCharFromInt(zvalue intval);
+zchar datZcharFromInt(zvalue intval);
 
 /**
  * Gets an int value equal to the given `zint`. In this
@@ -207,7 +207,7 @@ zvalue datStringAdd(zvalue str1, zvalue str2);
  * Gets the string built from the given array of `zchar`s, of
  * the given size.
  */
-zvalue datStringFromChars(zint size, const zchar *chars);
+zvalue datStringFromZchars(zint size, const zchar *chars);
 
 /**
  * Gets the string resulting from interpreting the given UTF-8

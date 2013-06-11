@@ -70,7 +70,7 @@ void constInit(void) {
     #include "const-def.h"
 
     for (zchar ch = 0; ch < 128; ch++) {
-        SINGLE_CHARS[ch] = datStringFromChars(1, &ch);
+        SINGLE_CHARS[ch] = datStringFromZchars(1, &ch);
         datImmortalize(SINGLE_CHARS[ch]);
     }
 
@@ -95,11 +95,11 @@ void constInit(void) {
 }
 
 /* Documented in header. */
-zvalue constStringFromChar(zchar value) {
+zvalue constStringFromZchar(zchar value) {
     if (value < 128) {
         return SINGLE_CHARS[value];
     } else {
-        return datStringFromChars(1, &value);
+        return datStringFromZchars(1, &value);
     }
 }
 

@@ -102,7 +102,7 @@ zvalue datStringAdd(zvalue str1, zvalue str2) {
 }
 
 /* Documented in header. */
-zvalue datStringFromChars(zint size, const zchar *chars) {
+zvalue datStringFromZchars(zint size, const zchar *chars) {
     zvalue result = allocString(size);
 
     memcpy(stringElems(result), chars, size * sizeof(zchar));
@@ -135,7 +135,7 @@ zvalue datStringSlice(zvalue string, zint start, zint end) {
     datAssertString(string);
     datAssertSliceRange(string, start, end);
 
-    return datStringFromChars(end - start, &stringElems(string)[start]);
+    return datStringFromZchars(end - start, &stringElems(string)[start]);
 }
 
 /* Documented in header. */

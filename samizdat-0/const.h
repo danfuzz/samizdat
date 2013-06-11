@@ -69,7 +69,7 @@ zvalue constIntFromZint(zint value);
 /**
  * Converts a C `zchar` to an in-model single-character string.
  */
-zvalue constStringFromChar(zchar value);
+zvalue constStringFromZchar(zchar value);
 
 /**
  * Gets the string representing the low-layer type of the given value.
