@@ -46,7 +46,7 @@ makeThunk = { expression ::
 # "thunked" versions of each of the given actual arguments.
 makeCallNameThunks = { name, actuals* ::
     thunks = listMap(actuals) { ., one :: <> makeThunk(one) };
-    <> apply(makeCallName, name, thunks)
+    <> makeCallName(name, thunks*)
 };
 
 # Returns a `call` node to a nonlocal exit with the given name and
