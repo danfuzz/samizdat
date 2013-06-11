@@ -39,18 +39,6 @@ static zvalue stack[DAT_MAX_STACK];
 /** Current stack size. */
 static zint stackSize = 0;
 
-/**
- * Array of recent allocations. These are exempted from gc (that is,
- * declared "live") in order to deal with the possibility that their
- * liveness is only by virtue of having interior pointers. TODO: This
- * is an imperfect heuristic, as sometimes older objects are only alive
- * due to interior pointers as well.
- */
-static zvalue newbies[DAT_NEWBIES_SIZE];
-
-/** Next index to use when storing to `newbies`. `-1` before initialized. */
-static zint newbiesNext = -1;
-
 /** List head for the list of all live values. */
 static GcLinks liveHead = { &liveHead, &liveHead, false };
 
@@ -120,13 +108,6 @@ static void sanityCheck(bool force) {
         thoroughlyValidate(stack[i]);
     }
 
-    for (zint i = 0; i < DAT_NEWBIES_SIZE; i++) {
-        zvalue one = newbies[i];
-        if (one != NULL) {
-            thoroughlyValidate(one);
-        }
-    }
-
     sanityCheckList(&liveHead);
     sanityCheckList(&doomedHead);
 }
@@ -176,9 +157,9 @@ static void doGc(void *topOfStack) {
     liveHead.next = &liveHead;
     liveHead.prev = &liveHead;
 
-    // The root set consists of immortals, newbies, and the stack (scanned
-    // conservatively). Recursively mark thosee, which causes anything found
-    // to be alive onto the live list.
+    // The root set consists of immortals and the stack. Recursively mark
+    // those, which causes anything found to be alive to be linked into
+    // the live list.
 
     for (zint i = 0; i < immortalsSize; i++) {
         datMark(immortals[i]);
@@ -186,19 +167,6 @@ static void doGc(void *topOfStack) {
 
     if (CHATTY_GC) {
         note("GC: Marked %lld immortals.", immortalsSize);
-    }
-
-    counter = 0;
-    for (zint i = 0; i < DAT_NEWBIES_SIZE; i++) {
-        zvalue one = newbies[i];
-        if (one != NULL) {
-            datMark(one);
-            counter++;
-        }
-    }
-
-    if (CHATTY_GC) {
-        note("GC: Marked %lld newbies.", counter);
     }
 
     for (zint i = 0; i < stackSize; i++) {
@@ -304,14 +272,6 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     stackPush(result);
 
     allocationCount++;
-
-    if (newbiesNext == -1) {
-        memset(newbies, 0, sizeof(newbies));
-        newbiesNext = 0;
-    }
-
-    newbies[newbiesNext] = result;
-    newbiesNext = (newbiesNext + 1) % DAT_NEWBIES_SIZE;
 
     sanityCheck(false);
 

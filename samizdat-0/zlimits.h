@@ -19,9 +19,6 @@ enum {
     /** Maximum number of immortal values allowed. */
     DAT_MAX_IMMORTALS = 100,
 
-    /** Number of elements in the `newbies` array. */
-    DAT_NEWBIES_SIZE = 5000,
-
     /** Maximum number of references on the stack. */
     DAT_MAX_STACK = 50000,
 
