@@ -34,10 +34,7 @@ PRIM_IMPL(intFromString) {
     requireExactly(argCount, 1);
 
     zvalue string = args[0];
-
-    if (datSize(string) != 1) {
-        die("Invalid use of string: size != 1");
-    }
+    datAssertStringSize1(string);
 
     return constIntFromZint(datStringNth(string, 0));
 }

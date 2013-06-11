@@ -94,6 +94,14 @@ void datAssertString(zvalue value) {
 }
 
 /* Documented in header. */
+void datAssertStringSize1(zvalue value) {
+    datAssertString(value);
+    if (datSize(value) != 1) {
+        die("Not a size 1 string.");
+    }
+}
+
+/* Documented in header. */
 void datAssertList(zvalue value) {
     assertType(value, DAT_LIST);
 }
@@ -101,6 +109,14 @@ void datAssertList(zvalue value) {
 /* Documented in header. */
 void datAssertMap(zvalue value) {
     assertType(value, DAT_MAP);
+}
+
+/* Documented in header. */
+void datAssertMapSize1(zvalue value) {
+    datAssertMap(value);
+    if (datSize(value) != 1) {
+        die("Not a size 1 map.");
+    }
 }
 
 /* Documented in header. */

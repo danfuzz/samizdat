@@ -98,10 +98,24 @@ void datAssertMap(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a map, and even furthermore that its size
+ * is `1`. If not, this aborts the process with a diagnostic message.
+ */
+void datAssertMapSize1(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a string. If not, this aborts the process
  * with a diagnostic message.
  */
 void datAssertString(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a string, and even furthermore that its size
+ * is `1`. If not, this aborts the process with a diagnostic message.
+ */
+void datAssertStringSize1(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and furthermore

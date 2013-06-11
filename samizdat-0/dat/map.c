@@ -239,12 +239,7 @@ zvalue datMapGet(zvalue map, zvalue key) {
 
 /* Documented in Samizdat Layer 0 spec. */
 zvalue datMapKey(zvalue map) {
-    datAssertMap(map);
-
-    if (datSize(map) != 1) {
-        die("Invalid use of map: size != 1");
-    }
-
+    datAssertMapSize1(map);
     return mapElems(map)[0].key;
 }
 
@@ -301,11 +296,6 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
 
 /* Documented in Samizdat Layer 0 spec. */
 zvalue datMapValue(zvalue map) {
-    datAssertMap(map);
-
-    if (datSize(map) != 1) {
-        die("Invalid use of map: size != 1");
-    }
-
+    datAssertMapSize1(map);
     return mapElems(map)[0].value;
 }
