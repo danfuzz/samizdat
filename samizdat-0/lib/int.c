@@ -4,6 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -16,7 +17,7 @@
     PRIM_IMPL(name) { \
         requireExactly(argCount, 1); \
         zint x = datZintFromInt(args[0]); \
-        return datIntFromZint((op)); \
+        return constIntFromZint((op)); \
     } \
     extern int semicolonRequiredHere
 
@@ -25,7 +26,7 @@
         requireExactly(argCount, 2); \
         zint x = datZintFromInt(args[0]); \
         zint y = datZintFromInt(args[1]); \
-        return datIntFromZint((op)); \
+        return constIntFromZint((op)); \
     } \
     extern int semicolonRequiredHere
 

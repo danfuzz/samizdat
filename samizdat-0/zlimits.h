@@ -13,11 +13,17 @@
 #define _ZLIMITS_H_
 
 enum {
+    /** Number of small int constants to keep as preallocated values. */
+    CONST_SMALL_INT_COUNT = 1000,
+
+    /** Minumum (lowest value) small int constant to keep. */
+    CONST_SMALL_INT_MIN = -300,
+
     /** Number of allocations between each forced gc. */
     DAT_ALLOCATIONS_PER_GC = 500000,
 
     /** Maximum number of immortal values allowed. */
-    DAT_MAX_IMMORTALS = 100,
+    DAT_MAX_IMMORTALS = 1250,
 
     /** Maximum number of references on the stack. */
     DAT_MAX_STACK = 50000,

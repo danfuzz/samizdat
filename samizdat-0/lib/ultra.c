@@ -66,7 +66,7 @@ PRIM_IMPL(makeRange) {
     zvalue values[size];
 
     for (zint i = 0; i < size; i++) {
-        values[i] = datIntFromZint(startInt + i);
+        values[i] = constIntFromZint(startInt + i);
     }
 
     return datListFromArray(size, values);

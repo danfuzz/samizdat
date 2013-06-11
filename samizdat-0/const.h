@@ -43,6 +43,9 @@ extern zvalue EMPTY_LIST;
 /** The canonical empty map value (`[=]`). */
 extern zvalue EMPTY_MAP;
 
+/** Array of single-character strings for character codes `0..127` */
+extern zvalue SINGLE_CHARS[128];
+
 /**
  * Initializes the constants, if necessary.
  */
@@ -57,6 +60,16 @@ bool constBoolFromBoolean(zvalue value);
  * Converts a C `bool` to an in-model boolean value.
  */
 zvalue constBooleanFromBool(bool value);
+
+/**
+ * Converts a C `zint` to an in-model int value.
+ */
+zvalue constIntFromZint(zint value);
+
+/**
+ * Converts a C `zchar` to an in-model single-character string.
+ */
+zvalue constStringFromChar(zchar value);
 
 /**
  * Gets the string representing the low-layer type of the given value.

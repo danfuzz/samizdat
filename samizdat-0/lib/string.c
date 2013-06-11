@@ -16,19 +16,12 @@
  */
 
 /**
- * Returns a single-character string.
-  */
-static zvalue stringFromChar(zchar ch) {
-    return datStringFromChars(1, &ch);
-}
-
-/**
  * Calls `datStringNth()`, converting the result into a proper zvalue.
  */
 static zvalue valueFromStringNth(zvalue string, zint n) {
     zint ch = datStringNth(string, n);
 
-    return (ch < 0) ? NULL : stringFromChar(ch);
+    return (ch < 0) ? NULL : constStringFromChar(ch);
 }
 
 
@@ -46,13 +39,13 @@ PRIM_IMPL(intFromString) {
         die("Invalid use of string: size != 1");
     }
 
-    return datIntFromZint(datStringNth(string, 0));
+    return constIntFromZint(datStringNth(string, 0));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringFromInt) {
     requireExactly(argCount, 1);
-    return stringFromChar(datCharFromInt(args[0]));
+    return constStringFromChar(datCharFromInt(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

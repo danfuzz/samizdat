@@ -5,6 +5,7 @@
  */
 
 #include "const.h"
+#include "zlimits.h"
 
 #include <stddef.h>
 
@@ -36,6 +37,16 @@ zvalue EMPTY_LIST = NULL;
 /* Documented in header. */
 zvalue EMPTY_MAP = NULL;
 
+/** Array of single-character strings for character codes `0..127`. */
+zvalue SINGLE_CHARS[128];
+
+/** Array of small integer values. */
+zvalue SMALL_INTS[CONST_SMALL_INT_COUNT];
+
+enum {
+    /** Max (exclusive) small int value. */
+    CONST_SMALL_INT_MAX = CONST_SMALL_INT_MIN + CONST_SMALL_INT_COUNT
+};
 
 /*
  * Module functions
@@ -58,8 +69,18 @@ void constInit(void) {
 
     #include "const-def.h"
 
-    CONST_FALSE = datTokenFrom(STR_BOOLEAN, datIntFromZint(0));
-    CONST_TRUE  = datTokenFrom(STR_BOOLEAN, datIntFromZint(1));
+    for (zchar ch = 0; ch < 128; ch++) {
+        SINGLE_CHARS[ch] = datStringFromChars(1, &ch);
+        datImmortalize(SINGLE_CHARS[ch]);
+    }
+
+    for (zint i = 0; i < CONST_SMALL_INT_COUNT; i++) {
+        SMALL_INTS[i] = datIntFromZint(i + CONST_SMALL_INT_MIN);
+        datImmortalize(SMALL_INTS[i]);
+    }
+
+    CONST_FALSE = datTokenFrom(STR_BOOLEAN, constIntFromZint(0));
+    CONST_TRUE  = datTokenFrom(STR_BOOLEAN, constIntFromZint(1));
     EMPTY_LIST = datListFromArray(0, NULL);
     EMPTY_MAP = datMapEmpty();
 
@@ -71,4 +92,22 @@ void constInit(void) {
     // Force a garbage collection here, mainly to get a reasonably early
     // failure if gc is broken.
     datGc();
+}
+
+/* Documented in header. */
+zvalue constStringFromChar(zchar value) {
+    if (value < 128) {
+        return SINGLE_CHARS[value];
+    } else {
+        return datStringFromChars(1, &value);
+    }
+}
+
+/* Documented in header. */
+zvalue constIntFromZint(zint value) {
+    if ((value >= CONST_SMALL_INT_MIN) && (value < CONST_SMALL_INT_MAX)) {
+        return SMALL_INTS[value - CONST_SMALL_INT_MIN];
+    } else {
+        return datIntFromZint(value);
+    }
 }

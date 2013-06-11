@@ -37,7 +37,7 @@ static bool doLowOrderIs(zint argCount, const zvalue *args) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(lowOrder) {
     requireExactly(argCount, 2);
-    return datIntFromZint(datOrder(args[0], args[1]));
+    return constIntFromZint(datOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -49,7 +49,7 @@ PRIM_IMPL(lowOrderIs) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(lowSize) {
     requireExactly(argCount, 1);
-    return datIntFromZint(datSize(args[0]));
+    return constIntFromZint(datSize(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
