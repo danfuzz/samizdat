@@ -49,7 +49,7 @@ readAllLibraryFiles = {
     BOOTSTRAP_FILES = mapGet(manifestBindings, "BOOTSTRAP_FILES");
     MANIFEST = mapGet(manifestBindings, "MANIFEST");
 
-    <> listReduce([=], listAdd(BOOTSTRAP_FILES, MANIFEST))
+    <> listReduce([=], [BOOTSTRAP_FILES*, MANIFEST*])
         { result, ., name :: <> mapPut(result, name, readLibraryFile(name)) }
 };
 
@@ -97,7 +97,7 @@ run = { args* ::
     function = sam1Eval(makeLibrary(library), programNode);
 
     # Run it!
-    <> apply(function, filePath, argsPerSe)
+    <> function(filePath, argsPerSe*)
 };
 
 <> ["run" = run]

@@ -53,4 +53,4 @@ io0Note("    [fin]");
 io0Note("");
 
 # Call the `run` function to do the final deed.
-<> apply(mapGet(CONTEXT, "run"), ARGS)
+<> mapGet(CONTEXT, "run")(ARGS*)

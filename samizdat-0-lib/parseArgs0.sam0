@@ -16,7 +16,7 @@ parseWordBreak = pegMakeToken("\0");
 
 # word = {/
 #     chars=[! "\0"]* wordBreak
-#     { <> apply stringFromTokenList chars }
+#     { <> stringFromTokenList(chars) }
 # /}
 parseWord = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSetComplement("\0")),
@@ -25,7 +25,7 @@ parseWord = pegMakeMainSequence(
 
 # key = {/
 #     chars=[! "=\0"]*
-#     { <> stringFromTokenList chars }
+#     { <> stringFromTokenList(chars) }
 # /}
 parseKey = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSetComplement("=\0")),
@@ -72,14 +72,14 @@ parseOption = pegMakeChoice(parseKeyValue, parseFlag, parseError);
 
 # arguments = {/
 #     optList=option* ("--" wordBreak)? words=word*
-#     { ... <> ["options"=options "file"=file "args"=args] }
+#     { ... <> ["options"=options, "file"=file, "args"=args] }
 # /}
 parseArguments = pegMakeMainSequence(
     pegMakeStar(parseOption),
     pegMakeOpt(pegMakeSequence(pegMakeString("--"), parseWordBreak)),
     pegMakeStar(parseWord),
     pegMakeCode { optList, ., args ::
-        options = apply(mapAdd, optList);
+        options = mapAdd(optList*);
         ifTrue { <> mapGet(options, "error", false) }
             { io0Die("Trouble with options.") };
         <> [

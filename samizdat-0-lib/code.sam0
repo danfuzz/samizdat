@@ -52,8 +52,8 @@ forwardFunction = {
     forwardObject = object(forwardFunctionImpl, null);
 
     <> { args* ::
-        <> ifValue { <> apply(forwardObject, args) }
-            { function :: <> apply(function, args) }
+        <> ifValue { <> forwardObject(args*) }
+            { function :: <> function(args*) }
             { <> listFirst(args) }
     }
 };
@@ -68,9 +68,9 @@ partialApply = { <out> function, args* ::
     # This mouthful takes an "apply-style" argument list (that is, a number
     # of individual arguments followed at the end by a list-of-the-rest), and
     # returns a single unified list of arguments.
-    argsList = apply(apply, { args* :: <> args }, args);
+    argsList = apply({ args* :: <> args }, args*);
 
-    <> { more* :: <> apply(function, listAdd(argsList, more)) }
+    <> { more* :: <> function(argsList*, more*) }
 };
 
 <> [

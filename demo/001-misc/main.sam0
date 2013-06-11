@@ -26,7 +26,7 @@ SELF_PATH, ARGS* ::
 countDown = yCombinator { countDown ::
     <> { n ::
         <> ifTrue { <> ge(n, 0) }
-            { <> listPrepend(n, countDown(isub(n, 1))) }
+            { <> [n, countDown(isub(n, 1))*] }
             { <> [] }
     }
 };
@@ -37,12 +37,12 @@ countDowns = yStarCombinator
     { f1, f2 ::
         <> { n ::
             <> ifTrue { <> gt(n, 0) }
-                { <> listPrepend(n, f2(isub(n, 1))) }
+                { <> [n, f2(isub(n, 1))*] }
                 { <> [0] }
         }
     }
     { f1, f2 ::
-        <> { n :: <> listPrepend("and", f1(n)) }
+        <> { n :: <> ["and", f1(n)*] }
     };
 countDown2 = listNth(countDowns, 0);
 

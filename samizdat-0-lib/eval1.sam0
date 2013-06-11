@@ -28,7 +28,7 @@ makeCall = { function, args* ::
 # Constructs a named function call with the given arguments, each of
 # which must be a (non-parsing) expression node.
 callNameWithExpressions = { functionName, args* ::
-    <> apply(makeCall, @["varRef" = functionName], args);
+    <> makeCall(@["varRef" = functionName], args*);
 };
 
 # Converts a pex to a named function call of the converted inner pex.
@@ -40,14 +40,14 @@ callNameWithPex = { node, formals, functionName ::
 # Constructs a named function call of the given literal arguments.
 callNameWithLiterals = { functionName, args* ::
     literalArgs = listMap(args) { ., arg :: <> @["literal" = arg] };
-    <> apply(callNameWithExpressions, functionName, literalArgs)
+    <> callNameWithExpressions(functionName, literalArgs*)
 };
 
 # Converts a `choice` pex node.
 convertPexChoice = { node, formals ::
     pexes = tokenValue(node);
     convertedPexes = listMap(pexes) { ., pex  :: <> convertPex(pex, formals) };
-    <> apply(callNameWithExpressions, "pegMakeChoice", convertedPexes)
+    <> callNameWithExpressions("pegMakeChoice", convertedPexes*)
 };
 
 # Converts a `sequence` pex node.
@@ -67,10 +67,10 @@ convertPexSequence = { node, formals ::
         subPex = ifTrue { <> eq(tokenType(pex), "varDef") }
             { <> mapGet(tokenValue(pex), "value") }
             { <> pex };
-        <> convertPex(subPex, listAdd(formals, listSlice(newFormals, 0, n)))
+        <> convertPex(subPex, [formals*, listSlice(newFormals, 0, n)*])
     };
 
-    <> apply(callNameWithExpressions, "pegMakeSequence", convertedPexes)
+    <> callNameWithExpressions("pegMakeSequence", convertedPexes*)
 };
 
 # Converts a `string` pex node.
@@ -102,13 +102,12 @@ convertPexEmpty = { node, formals ::
 
 # Converts a `[]` pex node.
 convertPexSet = { node, formals ::
-    <> apply(callNameWithLiterals, "pegMakeTokenSet", tokenValue(node))
+    <> callNameWithLiterals("pegMakeTokenSet", tokenValue(node)*)
 };
 
 # Converts a `[!]` pex node.
 convertPexSetComplement = { node, formals ::
-    <> apply(callNameWithLiterals,
-        "pegMakeTokenSetComplement", tokenValue(node));
+    <> callNameWithLiterals("pegMakeTokenSetComplement", tokenValue(node)*);
 };
 
 # Converts a `{}` pex node.
@@ -221,6 +220,13 @@ convertClosureLike = { node ::
     <> @[nodeType = mapAdd(nodeValue, ["statements" = statements], yield)]
 };
 
+# Does parser conversion of an `interpolate` node.
+convertInterpolate = { node ::
+    value = convertExpression(tokenValue(node));
+
+    <> @["interpolate" = value];
+};
+
 # Does parser conversion of a `varDef` node.
 convertVarDef = { node ::
     nodeValue = tokenValue(node);
@@ -232,15 +238,16 @@ convertVarDef = { node ::
 # Does no-op node conversion.
 convertNop = { node :: <> node };
 
-# Map of types to expression node converters.
+# Map of types to expression/statement node converters.
 CONVERT_EXPRESSION_MAP = [
-    "call"    = convertCall,
-    "closure" = convertClosureLike,
-    "fnDef"   = convertClosureLike,
-    "literal" = convertNop,
-    "parser"  = convertParser,
-    "varDef"  = convertVarDef,
-    "varRef"  = convertNop
+    "call"        = convertCall,
+    "closure"     = convertClosureLike,
+    "fnDef"       = convertClosureLike,
+    "interpolate" = convertInterpolate,
+    "literal"     = convertNop,
+    "parser"      = convertParser,
+    "varDef"      = convertVarDef,
+    "varRef"      = convertNop
 ];
 
 # Iterates / visits the given expression or statement node, transforming

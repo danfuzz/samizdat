@@ -1,0 +1,40 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# List / argument interpolation demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper function
+#
+
+out = { args* ::
+    io0Note(format("Got: %q", args))
+};
+
+ten = {
+    <> 10
+};
+
+
+#
+# Main tests
+#
+
+io0Note("Testing...");
+out(makeRange(1, 3));
+out([1..3]);
+out([1..3]*);
+out(1..3);
+out("x", 10..15);
+out(ten()..15, "y");
+out(["a", "b", "c"]*, ["d", "e", "f", ["g"]*]*);
+
+<> 0

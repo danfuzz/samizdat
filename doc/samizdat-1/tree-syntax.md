@@ -100,15 +100,15 @@ parserSet = {/
         strings = parserSetString+
         {
             oneString = listReduce("", strings)
-                { result . s :: <> stringAdd(result, tokenValue(s)) };
+                { result, ., s :: <> stringAdd(result, tokenValue(s)) };
             <> stringReduce([], oneString)
-                { result . ch :: <> listAppend(result, ch) }
+                { result, ., ch :: <> [result*, ch] }
         }
     |
         tokens = parserToken+
         {
-            tokens = listPrepend(first, rest);
-            <> listMap(tokens) { . t :: <> tokenValue(t) }
+            tokens = [first, rest*];
+            <> listMap(tokens) { ., t :: <> tokenValue(t) }
         }
     |
         { <> [] }
@@ -189,6 +189,6 @@ sequencePex = {/
 choicePex = {/
     first = sequencePex
     rest = (@"|" sequencePex)*
-    { <> @["choice" = (listPrepend(first, rest))] }
+    { <> @["choice" = [first, rest*]] }
 /};
 ```

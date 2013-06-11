@@ -73,7 +73,7 @@ samCommandLine = { context, rawArgs* ::
     parsedProgram = mapGet(metas, "tree")(programText);
     evalledProgram = mapGet(metas, "eval")(context, parsedProgram);
 
-    <> apply(evalledProgram, filePath, args)
+    <> evalledProgram(filePath, args*)
 };
 
 <> [

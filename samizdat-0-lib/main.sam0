@@ -65,10 +65,10 @@ loadLibrary = { ctx, name ::
 # depend on earlier ones. The first listed library can depend only on the
 # given context.
 loadAllLibraries = { ctx, names* ::
-    <> apply(argsReduce,
+    <> argsReduce(
         { result, name :: <> loadLibrary(result, name) },
         ctx,
-        names)
+        names*)
 };
 
 
@@ -82,7 +82,7 @@ io0Note("Loading core library...");
 MANIFEST = mapGet(loadLibrary(LIBRARY, "manifest.sam0"), "MANIFEST");
 
 # Use the manifest to build up the core library.
-CORE_LIBRARY = apply(loadAllLibraries, LIBRARY, MANIFEST);
+CORE_LIBRARY = loadAllLibraries(LIBRARY, MANIFEST*);
 
 # "Manually" run `makeLibrary` to produce the final core library.
 FINAL_LIBRARY = mapPut(CORE_LIBRARY, "LIBRARY", CORE_LIBRARY);
