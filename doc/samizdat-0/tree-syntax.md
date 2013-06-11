@@ -91,10 +91,10 @@ emptyMap = {/
 /};
 
 mapping = {/
-    key = expression
+    key = listElement
     @"="
     value = expression
-    { <> [key, value] }
+    { <> makeCallName("makeList", value, key) }
 /};
 
 map = {/
@@ -102,10 +102,7 @@ map = {/
     first = mapping
     rest = (@"," mapping)*
     @"]"
-    {
-        mappings = listAdd(first, rest*);
-        <> makeCallName("makeMap", mappings*)
-    }
+    { <> makeCallName("makeMap", first, rest*) }
 /};
 
 token = {/

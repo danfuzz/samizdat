@@ -360,11 +360,11 @@ DEF_PARSE(emptyMap) {
 DEF_PARSE(mapping) {
     MARK();
 
-    zvalue key = PARSE_OR_REJECT(expression);
+    zvalue key = PARSE_OR_REJECT(listElement);
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return listFrom2(key, value);
+    return makeCall(makeVarRef(STR_MAKE_LIST), listFrom2(value, key));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -377,13 +377,7 @@ DEF_PARSE(map) {
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    // Combine all the mappings into a flat list.
-    zvalue args = EMPTY_LIST;
-    for (zint i = 0; i < size; i++) {
-        args = datListAdd(args, datListNth(mappings, i));
-    }
-
-    return makeCall(makeVarRef(STR_MAKE_MAP), args);
+    return makeCall(makeVarRef(STR_MAKE_MAP), mappings);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

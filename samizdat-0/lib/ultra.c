@@ -26,14 +26,34 @@ PRIM_IMPL(makeList) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeMap) {
-    requireEven(argCount);
+    if (argCount == 0) {
+        return EMPTY_MAP;
+    }
 
-    zint size = argCount / 2;
+    // Count all the keys, which could be greater than the number of arguments
+    // due to multikey bindings.
+    zint size = 0;
+    for (zint i = 0; i < argCount; i++) {
+        datAssertList(args[i]);
+        zint oneSize = datSize(args[i]);
+        if (oneSize < 2) {
+            die("Invalid mapping argument: size %lld", oneSize);
+        }
+        size += oneSize - 1;
+    }
+
     zmapping mappings[size];
+    zint at = 0;
 
-    for (zint i = 0; i < size; i++) {
-        mappings[i].key = args[i * 2];
-        mappings[i].value = args[i * 2 + 1];
+    for (zint i = 0; i < argCount; i++) {
+        zvalue one = args[i];
+        zint oneSize = datSize(one);
+        zvalue value = datListNth(one, 0);
+        for (zint j = 1; j < oneSize; j++) {
+            mappings[at].key = datListNth(one, j);
+            mappings[at].value = value;
+            at++;
+        }
     }
 
     return datMapAddArray(EMPTY_MAP, size, mappings);

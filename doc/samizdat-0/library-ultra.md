@@ -49,39 +49,22 @@ makeList = { rest* :: <> rest; };
 
 #### `makeMap(rest*) <> map`
 
-Returns a map with the given key-value mappings (in argument
-order), with each key-value pair represented as two consecutive
-arguments. The number of arguments passed to this function must be
-even. It is valid to repeat keys in the arguments to this function, in
+Returns a map with the given key-value mappings, built up in argument
+order. Each argument must be a list of at least two elements. The first
+element is the value to bind into the map, and the rest of the elements
+are keys to which the element is to be bound.
+
+It is valid to repeat keys in the arguments to this function, in
 which case the *final* value mapping for any given key in the argument
 list (in argument order) is the one that ends up in the result. These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = [k1=v1];         is equivalent to   v = makeMap(k1, v1);
-v = [k1=v1, k2=v2];  is equivalent to   v = makeMap(k1, v1, k2, v2);
+v = [k1=v1];         is equivalent to   v = makeMap([v1, k1]);
+v = [k1=v1, k2=v2];  is equivalent to   v = makeMap([v1, k1], [v2, k2]);
 [etc.]
-```
 
-**Note:** The equivalence requires at least two arguments, even though
-the function is happy to operate given zero arguments.
-
-**Note:** Technically, this function could be defined in-language as the
-following. (See `makeList` for discussion.):
-
-```
-makeMap = { rest* ::
-    makeStep = { key, value, rest* ::
-        restMap = makeMap(rest*);
-        <> ifValue { <> mapGet(restMap, key); }
-            { <> restMap; }
-            { <> mapPut(restMap, key, value); };
-    };
-
-    <> ifTrue { <> eq(rest, []) }
-        { <> [=]; }
-        { <> makeStep(rest*); };
-};
+v = [k1..k2=v];      is equivalent to   v = makeMap([v, k1..k2]);
 ```
 
 #### `makeRange(start, end) <> list`
