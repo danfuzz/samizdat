@@ -296,9 +296,38 @@ DEF_PARSE(string) {
     return makeLiteral(datTokenValue(string));
 }
 
+/**
+ * Helper for `listElement`: Parses `(@".." expression)`.
+ */
+DEF_PARSE(listElement1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_DOTDOT);
+    return PARSE_OR_REJECT(expression);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(listElement) {
+    MARK();
+
+    zvalue ex = PARSE_OR_REJECT(expression);
+
+    if (MATCH(CH_STAR)) {
+        return datTokenFrom(STR_INTERPOLATE, ex);
+    } else {
+        zvalue end = PARSE(listElement1);
+        if (end != NULL) {
+            ex = makeCall(makeVarRef(STR_MAKE_RANGE), listFrom2(ex, end));
+            return datTokenFrom(STR_INTERPOLATE, ex);
+        }
+    }
+
+    return ex;
+}
+
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(unadornedList) {
-    return PARSE_COMMA_SEQ(expression);
+    return PARSE_COMMA_SEQ(listElement);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
