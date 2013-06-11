@@ -364,12 +364,13 @@ static zvalue execCall(Frame *frame, zvalue call) {
 
         // Build the flattened argument list.
         for (zint i = 0; i < argCount; i++) {
-            zvalue one = datListNth(actuals, i);
-            if (datTokenTypeIs(one, STR_INTERPOLATE)) {
-                datArrayFromList(&fullArgs[at], one);
-                at += datSize(one);
+            zvalue oneNode = datListNth(actuals, i);
+            zvalue oneArg = args[i];
+            if (datTokenTypeIs(oneNode, STR_INTERPOLATE)) {
+                datArrayFromList(&fullArgs[at], oneArg);
+                at += datSize(oneArg);
             } else {
-                fullArgs[at] = args[i];
+                fullArgs[at] = oneArg;
                 at++;
             }
         }
