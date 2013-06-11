@@ -148,7 +148,7 @@ parseListElement = {/
 parseUnadornedList = {/
     first = parseListElement
     rest = (@"," parseListElement)*
-    { <> listPrepend(first, rest) }
+    { <> [first, rest*] }
 |
     { <> [] }
 /};
@@ -308,7 +308,7 @@ parseFormal = {/
 parseFormalsList = {/
     first = parseFormal
     rest = (@"," parseFormal)*
-    { <> ["formals" = listPrepend(first, rest)] }
+    { <> ["formals" = [first, rest*]] }
 |
     { <> [=] }
 /};
@@ -579,7 +579,7 @@ parseSequencePex = {/
 implChoicePex = {/
     first = parseSequencePex
     rest = (@"|" parseSequencePex)*
-    { <> @["choice" = listPrepend(first, rest)] }
+    { <> @["choice" = [first, rest*]] }
 /};
 parseChoicePex(implChoicePex);
 
@@ -975,7 +975,7 @@ parseDoExpression = {/
     {
         loopClosure = @["closure" = [
             "yieldDef" = "continue",
-            "statements" = listPrepend(makeCall(code), condition)
+            "statements" = [makeCall(code), condition*]
         ]];
 
         mainClosure = @["closure" = [

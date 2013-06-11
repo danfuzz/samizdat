@@ -51,7 +51,7 @@ string = {/
 identifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
-    { <> @["identifier" = stringFromTokenList(listPrepend(first, rest))] }
+    { <> @["identifier" = stringFromTokenList([first, rest*])] }
 /};
 
 quotedIdentifier = {/

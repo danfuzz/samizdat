@@ -107,7 +107,7 @@ parserSet = {/
     |
         tokens = parserToken+
         {
-            tokens = listPrepend(first, rest);
+            tokens = [first, rest*];
             <> listMap(tokens) { ., t :: <> tokenValue(t) }
         }
     |
@@ -189,6 +189,6 @@ sequencePex = {/
 choicePex = {/
     first = sequencePex
     rest = (@"|" sequencePex)*
-    { <> @["choice" = (listPrepend(first, rest))] }
+    { <> @["choice" = [first, rest*]] }
 /};
 ```

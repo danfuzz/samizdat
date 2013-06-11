@@ -85,7 +85,7 @@ parseUnadornedList = pegMakeMainSequence(
         pegMakeSequence(
             parseListElement,
             pegMakeStar(pegMakeSequence(pegMakeToken(","), parseListElement)),
-            pegMakeCode { first, rest :: <> listPrepend(first, rest) }),
+            pegMakeCode { first, rest :: <> [first, rest*] }),
         pegMakeCode { <> [] }));
 
 # Documented in Samizdat Layer 0 spec.
@@ -274,7 +274,7 @@ parseFormalsList = pegMakeMainSequence(
             parseFormal,
             pegMakeStar(pegMakeSequence(pegMakeToken(","), parseFormal)),
             pegMakeCode { first, rest ::
-                <> ["formals" = listPrepend(first, rest)]
+                <> ["formals" = [first, rest*]]
             }),
         pegMakeCode { <> [=] }));
 
@@ -479,7 +479,7 @@ implChoicePex = pegMakeMainSequence(
         pegMakeMainSequence(
             pegMakeToken("|"),
             parseSequencePex)),
-    pegMakeCode { first, rest :: <> @["choice" = listPrepend(first, rest)] });
+    pegMakeCode { first, rest :: <> @["choice" = [first, rest*]] });
 parseChoicePex(implChoicePex);
 
 

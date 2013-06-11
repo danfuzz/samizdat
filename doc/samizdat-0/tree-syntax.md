@@ -69,7 +69,7 @@ listElement = {/
 unadornedList = {/
     first = listElement
     rest = (@"," listElement)*
-    { <> listPrepend(first, rest) }
+    { <> [first, rest*] }
 |
     { <> [] }
 /};
@@ -237,7 +237,7 @@ formal = {/
 formalsList = {/
     first = formal
     rest = (@"," formal)*
-    { <> ["formals" = listPrepend(first, rest)] }
+    { <> ["formals" = [first, rest*]] }
 |
     { <> [=] }
 /};
