@@ -7,7 +7,6 @@
 #include "impl.h"
 #include "zlimits.h"
 
-#include <setjmp.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -24,9 +23,6 @@ enum {
     THEYRE_OUT_TO_GET_ME = false
 };
 
-/** The stack base. */
-static void *stackBase = NULL;
-
 /** Array of all immortal values. */
 static zvalue immortals[DAT_MAX_IMMORTALS];
 
@@ -34,16 +30,13 @@ static zvalue immortals[DAT_MAX_IMMORTALS];
 static zint immortalsSize = 0;
 
 /**
- * Array of recent allocations. These are exempted from gc (that is,
- * declared "live") in order to deal with the possibility that their
- * liveness is only by virtue of having interior pointers. TODO: This
- * is an imperfect heuristic, as sometimes older objects are only alive
- * due to interior pointers as well.
+ * Stack of references. This is what is scanned in lieu of scanning
+ * the "real" stack during gc.
  */
-static zvalue newbies[DAT_NEWBIES_SIZE];
+static zvalue stack[DAT_MAX_STACK];
 
-/** Next index to use when storing to `newbies`. `-1` before initialized. */
-static zint newbiesNext = -1;
+/** Current stack size. */
+static zint stackSize = 0;
 
 /** List head for the list of all live values. */
 static GcLinks liveHead = { &liveHead, &liveHead, false };
@@ -107,15 +100,11 @@ static void sanityCheck(bool force) {
     }
 
     for (zint i = 0; i < immortalsSize; i++) {
-        zvalue one = immortals[i];
-        thoroughlyValidate(one);
+        thoroughlyValidate(immortals[i]);
     }
 
-    for (zint i = 0; i < DAT_NEWBIES_SIZE; i++) {
-        zvalue one = newbies[i];
-        if (one != NULL) {
-            thoroughlyValidate(one);
-        }
+    for (zint i = 0; i < stackSize; i++) {
+        thoroughlyValidate(stack[i]);
     }
 
     sanityCheckList(&liveHead);
@@ -147,7 +136,7 @@ static void enlist(GcLinks *head, zvalue value) {
 /**
  * Main garbage collection function.
  */
-static void doGc(void *topOfStack) {
+static void doGc(void) {
     zint counter; // Used throughout.
 
     sanityCheck(false);
@@ -167,9 +156,9 @@ static void doGc(void *topOfStack) {
     liveHead.next = &liveHead;
     liveHead.prev = &liveHead;
 
-    // The root set consists of immortals, newbies, and the stack (scanned
-    // conservatively). Recursively mark thosee, which causes anything found
-    // to be alive onto the live list.
+    // The root set consists of immortals and the stack. Recursively mark
+    // those, which causes anything found to be alive to be linked into
+    // the live list.
 
     for (zint i = 0; i < immortalsSize; i++) {
         datMark(immortals[i]);
@@ -179,39 +168,12 @@ static void doGc(void *topOfStack) {
         note("GC: Marked %lld immortals.", immortalsSize);
     }
 
-    counter = 0;
-    for (zint i = 0; i < DAT_NEWBIES_SIZE; i++) {
-        zvalue one = newbies[i];
-        if (one != NULL) {
-            datMark(one);
-            counter++;
-        }
+    for (zint i = 0; i < stackSize; i++) {
+        datMark(stack[i]);
     }
 
     if (CHATTY_GC) {
-        note("GC: Marked %lld newbies.", counter);
-    }
-
-    // Align the stack pointer.
-    topOfStack = (void *) ((intptr_t) topOfStack & ~(sizeof(void *) - 1));
-
-    if (CHATTY_GC) {
-        note("GC: Stack: %p .. %p", topOfStack, stackBase);
-    }
-
-    counter = 0;
-    for (void **stack = topOfStack; stack < (void **) stackBase; stack++) {
-        zvalue value = datConservativeValueCast(*stack);
-        if (value != NULL) {
-            datMark(value);
-            counter++;
-        }
-    }
-
-    if (CHATTY_GC) {
-        note("GC: Scanned %ld bytes of stack.",
-             (char *) stackBase - (char *) topOfStack);
-        note("GC: Found %lld live stack references.", counter);
+        note("GC: Marked %lld stack values.", stackSize);
     }
 
     // Free everything left on the doomed list.
@@ -271,6 +233,18 @@ static void doGc(void *topOfStack) {
     sanityCheck(true);
 }
 
+/**
+ * Pushes a value onto the stack.
+ */
+static void stackPush(zvalue value) {
+    if (stackSize >= DAT_MAX_STACK) {
+        die("Value stack overflow.");
+    }
+
+    stack[stackSize] = value;
+    stackSize++;
+}
+
 
 /*
  * Module functions
@@ -289,20 +263,14 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     }
 
     zvalue result = utilAlloc(sizeof(DatValue) + extraBytes);
-    enlist(&liveHead, result);
     result->magic = DAT_VALUE_MAGIC;
     result->type = type;
     result->size = size;
 
+    enlist(&liveHead, result);
+    stackPush(result);
+
     allocationCount++;
-
-    if (newbiesNext == -1) {
-        memset(newbies, 0, sizeof(newbies));
-        newbiesNext = 0;
-    }
-
-    newbies[newbiesNext] = result;
-    newbiesNext = (newbiesNext + 1) % DAT_NEWBIES_SIZE;
 
     sanityCheck(false);
 
@@ -361,6 +329,32 @@ void datAssertValid(zvalue value) {
 }
 
 /* Documented in header. */
+zstackPointer datFrameStart(void) {
+    return &stack[stackSize];
+}
+
+/* Documented in header. */
+void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
+    zint returnSize = savedStack - stack;
+
+    if (returnSize > stackSize) {
+        die("Cannot return to deeper frame.");
+    }
+
+    stackSize = returnSize;
+
+    if (returnValue != NULL) {
+        stackPush(returnValue);
+    }
+}
+
+/* Documented in header. */
+void datGc(void) {
+    allocationCount = 0;
+    doGc();
+}
+
+/* Documented in header. */
 void datImmortalize(zvalue value) {
     if (immortalsSize == DAT_MAX_IMMORTALS) {
         die("Too many immortal values!");
@@ -396,26 +390,4 @@ void datMark(zvalue value) {
             // Nothing to do here. The other types don't need sub-marking.
         }
     }
-}
-
-/* Documented in header. */
-void datSetStackBase(void *base) {
-    if (stackBase != NULL) {
-        die("Stack base already set.");
-    }
-
-    stackBase = base;
-}
-
-/* Documented in header. */
-void datGc(void) {
-    // This `jmp_buf` is both used as a top-of-stack pointer and as a way
-    // to get any references that were only in registers to be on the stack
-    // (via the call to `setjmp`)
-    jmp_buf jumpBuf;
-
-    setjmp(jumpBuf);
-
-    allocationCount = 0;
-    doGc(&jumpBuf);
 }

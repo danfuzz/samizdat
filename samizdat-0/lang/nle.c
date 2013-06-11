@@ -100,11 +100,14 @@ zvalue nleCall(znleFunction function, void *state) {
     nleState->result = NULL;
 
     zint mark = debugMark();
+    zstackPointer save = datFrameStart();
 
     if (setjmp(nleState->jumpBuf) != 0) {
         // Here is where we land if and when `longjmp` is called.
+        zvalue result = nleState->result;
         debugReset(mark);
-        return nleState->result;
+        datFrameReturn(save, result);
+        return result;
     }
 
     zvalue exitFunction = langDefineFunction(nonlocalExit,
@@ -112,5 +115,6 @@ zvalue nleCall(znleFunction function, void *state) {
     zvalue result = function(state, exitFunction);
 
     nleState->active = false;
+    datFrameReturn(save, result);
     return result;
 }
