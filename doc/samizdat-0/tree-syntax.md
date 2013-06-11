@@ -94,7 +94,7 @@ mapping = {/
     key = listElement
     @"="
     value = expression
-    { <> makeCallName("makeList", key, value) }
+    { <> makeCallName("makeList", value, key) }
 /};
 
 map = {/
