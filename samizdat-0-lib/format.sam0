@@ -108,14 +108,10 @@ stringChar = { ch ::
 };
 
 # These are all the characters which are allowed to start an identifier.
-IDENTIFIER_STARTS = stringReduce([=],
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_")
-    { result, ., ch :: <> mapPut(result, ch, true) };
+IDENTIFIER_STARTS = ["a".."z" = true, "A".."Z" = true, "_" = true ];
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = mapAdd(IDENTIFIER_STARTS,
-    [ "0"=true, "1"=true, "2"=true, "3"=true, "4"=true,
-      "5"=true, "6"=true, "7"=true, "8"=true, "9"=true ]);
+IDENTIFIER_CHARS = mapAdd(IDENTIFIER_STARTS, ["0".."9" = true]);
 
 # Checks to see if the given string has the form of an in-language
 # identifier.
