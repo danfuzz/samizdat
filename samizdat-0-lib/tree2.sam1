@@ -127,11 +127,27 @@ parseString = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
+# Parses a list element.
+parseListElement = {/
+    ex = parseExpression
+
+    (
+        @"*"
+        { <> @["interpolate" = ex] }
+    |
+        @".."
+        end = parseExpression
+        { <> @["interpolate" = makeCallName("makeRange", ex, end)] }
+    |
+        { <> ex }
+    )
+/};
+
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
 parseUnadornedList = {/
-    first = parseExpression
-    rest = (@"," parseExpression)*
+    first = parseListElement
+    rest = (@"," parseListElement)*
     { <> listPrepend(first, rest) }
 |
     { <> [] }
