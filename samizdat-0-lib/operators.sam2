@@ -25,16 +25,17 @@ fn assertComparable(v1, v2) {
     type1 = lowType(v1);
     type2 = lowType(v2);
 
-    ifTrue { <> ne(type1, type2)}
-        { io0Die(format("Incomparable values: %q, %q"), v1, v2); };
+    if (ne(type1, type2)) {
+        io0Die(format("Incomparable values: %q, %q"), v1, v2)
+    };
 
-    ifTrue { <> eq(type1, "token") }
-        {
-            tok1 = tokenType(v1);
-            tok2 = tokenType(v2);
-            ifTrue { <> ne(tok1, tok2)}
-                { io0Die(format("Incomparable values: %q, %q"), v1, v2); };
-        };
+    if (eq(type1, "token")) {
+        tok1 = tokenType(v1);
+        tok2 = tokenType(v2);
+        if (ne(tok1, tok2)) {
+            io0Die(format("Incomparable values: %q, %q"), v1, v2)
+        }
+    }
 };
 
 
@@ -218,13 +219,15 @@ fn compareChain(functions, values*) {
 # TODO: Documented in Samizdat Layer 2 spec.
 fn ifChain(functions, thens*) {
     listForEach(functions) { index, function ::
-        ifTrue { <> function() }
-            { return listNth(thens, index)() }
+        if (function()) {
+            return listNth(thens, index)()
+        }
     };
 
     # Optional final else clause.
-    <> ifTrue { <> gt(lowSize(thens), lowSize(functions)) }
-        { <> listLast(thens)() }
+    if (gt(lowSize(thens), lowSize(functions))) {
+        return listLast(thens)()
+    }
 };
 
 <> [
