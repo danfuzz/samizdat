@@ -51,9 +51,24 @@ string = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
+listElement = {/
+    ex = expression
+
+    (
+        @"*"
+        { <> @["interpolate" = ex] }
+    |
+        @".."
+        end = expression
+        { <> @["interpolate" = makeCallName("makeRange", ex, end)] }
+    |
+        { <> ex }
+    )
+/};
+
 unadornedList = {/
-    first = expression
-    rest = (@"," expression)*
+    first = listElement
+    rest = (@"," listElement)*
     { <> listPrepend(first, rest) }
 |
     { <> [] }
