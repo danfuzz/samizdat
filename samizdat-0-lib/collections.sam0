@@ -68,20 +68,20 @@ listAppend = { list, value ::
 # Documented in Samizdat Layer 0 spec.
 listButFirst = { <out> list, notFound? ::
     <> ifTrue { <> eq(list, []) }
-        { <> apply(out, notFound) }
+        { <> out(notFound*) }
         { <> listSlice(list, 1) }
 };
 
 # Documented in Samizdat Layer 0 spec.
 listButLast = { <out> list, notFound? ::
     <> ifTrue { <> eq(list, []) }
-        { <> apply(out, notFound) }
+        { <> out(notFound*) }
         { <> listSlice(list, 0, isub(lowSize(list), 1)) }
 };
 
 # Documented in Samizdat Layer 0 spec.
 listFirst = { list, notFound? ::
-    <> apply(listNth, list, 0, notFound)
+    <> listNth(list, 0, notFound*)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -91,7 +91,7 @@ listForEach = { list, function ::
 
 # Documented in Samizdat Layer 0 spec.
 listLast = { list, notFound? ::
-    <> apply(listNth, list, isub(lowSize(list), 1), notFound)
+    <> listNth(list, isub(lowSize(list), 1), notFound*)
 };
 
 # Documented in Samizdat Layer 0 spec.
