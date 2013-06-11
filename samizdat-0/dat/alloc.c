@@ -24,9 +24,6 @@ enum {
     THEYRE_OUT_TO_GET_ME = false
 };
 
-/** The (C / real) stack base. */
-static void *stackBase = NULL;
-
 /** Array of all immortal values. */
 static zvalue immortals[DAT_MAX_IMMORTALS];
 
@@ -207,28 +204,6 @@ static void doGc(void *topOfStack) {
 
     if (CHATTY_GC) {
         note("GC: Marked %lld stack values.", stackSize);
-    }
-
-    // Align the stack pointer.
-    topOfStack = (void *) ((intptr_t) topOfStack & ~(sizeof(void *) - 1));
-
-    if (CHATTY_GC) {
-        note("GC: Stack: %p .. %p", topOfStack, stackBase);
-    }
-
-    counter = 0;
-    for (void **stack = topOfStack; stack < (void **) stackBase; stack++) {
-        zvalue value = datConservativeValueCast(*stack);
-        if (value != NULL) {
-            datMark(value);
-            counter++;
-        }
-    }
-
-    if (CHATTY_GC) {
-        note("GC: Scanned %ld bytes of stack.",
-             (char *) stackBase - (char *) topOfStack);
-        note("GC: Found %lld live stack references.", counter);
     }
 
     // Free everything left on the doomed list.
@@ -460,13 +435,4 @@ void datMark(zvalue value) {
             // Nothing to do here. The other types don't need sub-marking.
         }
     }
-}
-
-/* Documented in header. */
-void datSetStackBase(void *base) {
-    if (stackBase != NULL) {
-        die("Stack base already set.");
-    }
-
-    stackBase = base;
 }

@@ -508,12 +508,4 @@ void datImmortalize(zvalue value);
  */
 void datMark(zvalue value);
 
-/**
- * Sets the base of the stack. This has to be called from a function
- * which (a) performs no other dat module calls, and (b) is the ancestor
- * call of all functions which *do* make dat module calls. Pass it the
- * address of a local variable.
- */
-void datSetStackBase(void *base);
-
 #endif
