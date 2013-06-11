@@ -108,10 +108,10 @@ parseEmptyMap = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 parseMapping = pegMakeMainSequence(
-    parseExpression,
+    parseListElement,
     pegMakeToken("="),
     parseExpression,
-    pegMakeCode { key, ., value :: <> [key, value] });
+    pegMakeCode { key, ., value :: <> makeCallName("makeList", value, key) });
 
 # Documented in Samizdat Layer 0 spec.
 parseMap = pegMakeMainSequence(
@@ -120,7 +120,7 @@ parseMap = pegMakeMainSequence(
     pegMakeStar(pegMakeSequence(pegMakeToken(","), parseMapping)),
     pegMakeToken("]"),
     pegMakeCode { ., first, rest, . ::
-        <> makeCallName("makeMap", first*, listAdd(rest*)*)
+        <> makeCallName("makeMap", first, rest*)
     });
 
 # Documented in Samizdat Layer 0 spec.

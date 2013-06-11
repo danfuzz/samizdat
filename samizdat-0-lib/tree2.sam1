@@ -173,10 +173,10 @@ parseEmptyMap = {/
 
 # Parses a mapping (element of a map).
 parseMapping = {/
-    key = parseExpression
+    key = parseListElement
     @"="
     value = parseExpression
-    { <> [key, value] }
+    { <> makeCallName("makeList", value, key) }
 /};
 
 # Parses a map literal.
@@ -185,7 +185,7 @@ parseMap = {/
     first = parseMapping
     rest = (@"," parseMapping)*
     @"]"
-    { <> makeCallName("makeMap", first*, listAdd(rest*)*) }
+    { <> makeCallName("makeMap", first, rest*) }
 /};
 
 # Parses a token literal.
