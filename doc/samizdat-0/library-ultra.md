@@ -71,8 +71,8 @@ following. (See `makeList` for discussion.):
 
 ```
 makeMap = { rest* ::
-    makeStep = { key value rest* ::
-        restMap = apply(makeMap, rest);
+    makeStep = { key, value, rest* ::
+        restMap = makeMap(rest*);
         <> ifValue { <> mapGet(restMap, key); }
             { <> restMap; }
             { <> mapPut(restMap, key, value); };
@@ -80,7 +80,7 @@ makeMap = { rest* ::
 
     <> ifTrue { <> eq(rest, []) }
         { <> [=]; }
-        { <> apply(makeStep, rest); };
+        { <> makeStep(rest*); };
 };
 ```
 
