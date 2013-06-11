@@ -114,7 +114,7 @@ tokString = {/
 
     (
         "\""
-        { <> @["string" = apply(stringAdd, chars)] }
+        { <> @["string" = stringAdd(chars*)] }
     |
         { <> @["error" = "Unterminated string literal."] }
     )
@@ -125,7 +125,7 @@ tokIdentifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
     {
-        string = stringFromTokenList(listPrepend(first, rest));
+        string = stringFromTokenList([first, rest*]);
         <> ifValue { <> mapGet(KEYWORDS, string) }
             { keyword :: <> keyword }
             { <> @["identifier" = string] }

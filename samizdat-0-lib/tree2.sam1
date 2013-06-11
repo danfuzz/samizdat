@@ -46,7 +46,7 @@ makeThunk = { expression ::
 # "thunked" versions of each of the given actual arguments.
 makeCallNameThunks = { name, actuals* ::
     thunks = listMap(actuals) { ., one :: <> makeThunk(one) };
-    <> apply(makeCallName, name, thunks)
+    <> makeCallName(name, thunks*)
 };
 
 # Returns a `call` node to a nonlocal exit with the given name and
@@ -127,12 +127,28 @@ parseString = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
+# Parses a list element.
+parseListElement = {/
+    ex = parseExpression
+
+    (
+        @"*"
+        { <> @["interpolate" = ex] }
+    |
+        @".."
+        end = parseExpression
+        { <> @["interpolate" = makeCallName("makeRange", ex, end)] }
+    |
+        { <> ex }
+    )
+/};
+
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
 parseUnadornedList = {/
-    first = parseExpression
-    rest = (@"," parseExpression)*
-    { <> listPrepend(first, rest) }
+    first = parseListElement
+    rest = (@"," parseListElement)*
+    { <> [first, rest*] }
 |
     { <> [] }
 /};
@@ -145,7 +161,7 @@ parseList = {/
     {
         <> ifTrue { <> eq(expressions, []) }
             { <> makeLiteral([]) }
-            { <> apply(makeCallName, "makeList", expressions) }
+            { <> makeCallName("makeList", expressions*) }
     }
 /};
 
@@ -169,10 +185,7 @@ parseMap = {/
     first = parseMapping
     rest = (@"," parseMapping)*
     @"]"
-    {
-        mappings = apply(listAdd, first, rest);
-        <> apply(makeCallName, "makeMap", mappings)
-    }
+    { <> makeCallName("makeMap", first*, listAdd(rest*)*) }
 /};
 
 # Parses a token literal.
@@ -183,7 +196,7 @@ parseToken = {/
         type = parseExpression
         value = (@"=" parseExpression)?
         @"]"
-        { <> apply(makeCallName, "makeToken", type, value) }
+        { <> makeCallName("makeToken", type, value*) }
     |
         type = [@string @identifier]
         { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
@@ -247,7 +260,7 @@ parseActualsList = {/
     normalActuals = parseUnadornedList
     @")"
     closureActuals = parseClosure*
-    { <> listAdd(normalActuals, closureActuals) }
+    { <> [normalActuals*, closureActuals*] }
 |
     parseClosure+
 /};
@@ -292,7 +305,7 @@ parseFormal = {/
 parseFormalsList = {/
     first = parseFormal
     rest = (@"," parseFormal)*
-    { <> ["formals" = listPrepend(first, rest)] }
+    { <> ["formals" = [first, rest*]] }
 |
     { <> [=] }
 /};
@@ -320,7 +333,7 @@ parseProgramBody = {/
     @";"*
 
     {
-        allStatements = listAdd(most, mapGet(last, "statements"));
+        allStatements = [most*, mapGet(last, "statements")*];
         <> mapPut(last, "statements", allStatements)
     }
 /};
@@ -469,7 +482,7 @@ parseParserSet = {/
             oneString = listReduce("", strings)
                 { result, ., s :: <> stringAdd(result, tokenValue(s)) };
             <> stringReduce([], oneString)
-                { result, ., ch :: <> listAppend(result, ch) }
+                { result, ., ch :: <> [result*, ch] }
         }
     |
         tokens = parseParserToken+
@@ -563,7 +576,7 @@ parseSequencePex = {/
 implChoicePex = {/
     first = parseSequencePex
     rest = (@"|" parseSequencePex)*
-    { <> @["choice" = listPrepend(first, rest)] }
+    { <> @["choice" = [first, rest*]] }
 /};
 parseChoicePex(implChoicePex);
 
@@ -647,7 +660,7 @@ parseFnCommon = {/
 
     {
         codeMap = tokenValue(code);
-        statements = listAdd(returnDef, mapGet(codeMap, "statements"));
+        statements = [returnDef*, mapGet(codeMap, "statements")*];
         <> mapAdd(codeMap, name, formals,
             ["yieldDef"="return", "statements"=statements])
     }
@@ -662,11 +675,11 @@ implNonlocalExit = {/
     name = parseVarRef
     @">"
     value = parseExpression?
-    { <> apply(makeCallNonlocalExit, name, value) }
+    { <> makeCallNonlocalExit(name, value*) }
 |
     op = [@"break" @"return"]
     value = parseExpression?
-    { <> apply(makeCallNonlocalExit, makeVarRef(tokenType(op)), value) }
+    { <> makeCallNonlocalExit(makeVarRef(tokenType(op)), value*) }
 |
     # This one is separate from `break` and `return`, because it doesn't
     # accept a value.
@@ -687,7 +700,7 @@ parsePrefixOperator = {/
 # function call.
 parsePostfixOperator = {/
     actuals = parseActualsList
-    { <> { node :: <> apply(makeCall, node, actuals) } }
+    { <> { node :: <> makeCall(node, actuals*) } }
 |
     @"["
     exprs = parseUnadornedList
@@ -695,7 +708,7 @@ parsePostfixOperator = {/
     @"]"
     {
         function = mapGet(UNARY_OPERATORS, "[]");
-        <> { node :: <> apply(makeCall, function, node, exprs) }
+        <> { node :: <> makeCall(function, node, exprs*) }
     }
 /};
 
@@ -771,12 +784,12 @@ parseCompareExpression = {/
                 exes = listLast(result);
                 op = mapGet(BINARY_OPERATORS, tokenType(listFirst(one)));
                 ex = listLast(one);
-                <> [listAppend(ops, op), listAppend(exes, ex)]
+                <> [[ops*, op], [exes*, ex]]
             };
-            ops = apply(makeCallName, "makeList", listFirst(arrays));
+            ops = makeCallName("makeList", listFirst(arrays)*);
             exes = listLast(arrays);
 
-            <> apply(makeCallName, "compareChain", ops, firstEx, exes);
+            <> makeCallName("compareChain", ops, firstEx, exes*);
         }
     )
 /};
@@ -791,7 +804,7 @@ parseAndExpression = {/
         &&(eq(lowSize(rest), 0))
         { <> first }
     |
-        { <> apply(makeCallNameThunks, "and", first, rest) }
+        { <> makeCallNameThunks("and", first, rest*) }
     )
 /};
 
@@ -805,7 +818,7 @@ parseOrExpression = {/
         &&(eq(lowSize(rest), 0))
         { <> first }
     |
-        { <> apply(makeCallNameThunks, "or", first, rest) }
+        { <> makeCallNameThunks("or", first, rest*) }
     )
 /};
 
@@ -832,8 +845,8 @@ parseIfExpression = {/
         # Unchained if-then or if-then-else.
         &&(eq(lowSize(elseIfThens), 0))
         {
-            <> apply(makeCallName, "ifTrue",
-                makeThunk(firstCondition), firstThen, finalElse)
+            <> makeCallName("ifTrue",
+                makeThunk(firstCondition), firstThen, finalElse*)
         }
     |
         # General chained form.
@@ -848,15 +861,15 @@ parseIfExpression = {/
                     condition = makeThunk(listFirst(one));
                     then = listLast(one);
                     <> [
-                        listAppend(conditions, condition),
-                        listAppend(thens, then)
+                        [conditions*, condition],
+                        [thens*, then]
                     ]
                 };
 
-            conditions = apply(makeCallName, "makeList", listFirst(arrays));
-            thens = listAdd(listLast(arrays), finalElse);
+            conditions = makeCallName("makeList", listFirst(arrays)*);
+            thens = [listLast(arrays)*, finalElse*];
 
-            <> apply(makeCallName, "ifChain", conditions, thens);
+            <> makeCallName("ifChain", conditions, thens*);
         }
     )
 /};
@@ -913,9 +926,7 @@ parseWhileExpression = {/
 
         mainClosure = @["closure" = [
             "yieldDef" = "break",
-            "statements" = listAppend(breakDef,
-                makeCallName("loop", loopClosure)
-            )
+            "statements" = [breakDef*, makeCallName("loop", loopClosure)]
         ]];
 
         <> makeCall(mainClosure)
@@ -961,14 +972,12 @@ parseDoExpression = {/
     {
         loopClosure = @["closure" = [
             "yieldDef" = "continue",
-            "statements" = listPrepend(makeCall(code), condition)
+            "statements" = [makeCall(code), condition*]
         ]];
 
         mainClosure = @["closure" = [
             "yieldDef" = "break",
-            "statements" = listAppend(breakDef,
-                makeCallName("loop", loopClosure)
-            )
+            "statements" = [breakDef*, makeCallName("loop", loopClosure)]
         ]];
 
         <> makeCall(mainClosure)

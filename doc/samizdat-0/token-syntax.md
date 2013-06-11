@@ -21,7 +21,7 @@ whitespace = {/
 /};
 
 punctuation = {/
-    "@@" | "::" | "<>" | "()" | ["@:.,=+?;*<>{}()[]"]
+    "@@" | "::" | ".." | "<>" | "()" | ["@:.,=+?;*<>{}()[]"]
 /};
 
 stringChar = {/
@@ -45,19 +45,19 @@ string = {/
     "\""
     chars = stringChar*
     "\""
-    { <> @["string" (apply(stringAdd, chars))] }
+    { <> @["string" = stringAdd(chars*)] }
 /};
 
 identifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
-    { <> @["identifier" (stringFromTokenList(listPrepend(first, rest)))] }
+    { <> @["identifier" = stringFromTokenList([first, rest*])] }
 /};
 
 quotedIdentifier = {/
     "\\"
     s = string
-    { <> @["identifier" = (tokenValue(s))] }
+    { <> @["identifier" = tokenValue(s)] }
 /};
 
 int = {/

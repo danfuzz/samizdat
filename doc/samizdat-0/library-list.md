@@ -67,12 +67,6 @@ specified, it defaults to the end of the list.
 <br><br>
 ### In-Language Definitions
 
-
-#### `listAppend(list, value) <> list`
-
-Returns a list consisting of the elements of the given
-list argument followed by the given additional value.
-
 #### `listButFirst(list, notFound?) <> . | !.`
 
 Returns a list consisting of all the elements of the given list
@@ -127,14 +121,6 @@ added for the corresponding element. This means the size of the
 result may be smaller than the size of the argument.
 
 **Note:** See `stringMap` for discussion about choice of argument order.
-
-#### `listPrepend(value, list) <> list`
-
-Returns a list consisting of the given first value followed by the
-elements of the given list argument.
-
-**Note:** The arguments are given in an order meant to reflect the
-result (and not list-first).
 
 #### `listReduce(base, list, function) <> . | !.`
 

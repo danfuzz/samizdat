@@ -18,7 +18,8 @@ If any other arguments are supplied, then each of the initial `value`
 arguments is taken to be an arbitrary value, and the final `list`
 argument must be a list, whose contents are "flattened" into the
 final list of arguments to pass to the function. For example, this is
-a five-argument call: `apply fizmoFunc "foo" "bar" "baz" ["frob" "twiddle"]`
+a five-argument call:
+`apply(fizmoFunc, "foo", "bar", "baz", ["frob" "twiddle"])`
 
 This function returns whatever the called function returned (including
 void).
@@ -212,22 +213,22 @@ If you want to make a set of N mututally-recursive functions in
 *Samizdat Layer 0*, you can write it like this:
 
 ```
-myRecursiveFunctions = xCombinator
-    { selfCall1 selfCall2 ... ::
+myRecursiveFunctions = yStarCombinator
+    { selfCall1, selfCall2, ... ::
         # Inner function.
-        <> { myArg1 myArg2 ... ::
+        <> { myArg1, myArg2, ... ::
             ... my code ...
-            selfCall1 args ... # Call this function self-recursively.
-            selfCall2 args ... # Call the other function.
+            selfCall1(args, ...) # Call this function self-recursively.
+            selfCall2(args, ...) # Call the other function.
             ... my code ...
         }
     }
-    { selfCall1 selfCall2 ... ::
+    { selfCall1, selfCall2, ... ::
         # Inner function.
-        <> { myArg1 myArg2 ... ::
+        <> { myArg1, myArg2, ... ::
             ... my code ...
-            selfCall1 args ... # Call the other function.
-            selfCall2 args ... # Call this function self-recursively.
+            selfCall1(args, ...) # Call the other function.
+            selfCall2(args, ...) # Call this function self-recursively.
             ... my code ...
         }
     };

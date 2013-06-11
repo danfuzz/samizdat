@@ -51,10 +51,25 @@ string = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
+listElement = {/
+    ex = expression
+
+    (
+        @"*"
+        { <> @["interpolate" = ex] }
+    |
+        @".."
+        end = expression
+        { <> @["interpolate" = makeCallName("makeRange", ex, end)] }
+    |
+        { <> ex }
+    )
+/};
+
 unadornedList = {/
-    first = expression
-    rest = (@"," expression)*
-    { <> listPrepend(first, rest) }
+    first = listElement
+    rest = (@"," listElement)*
+    { <> [first, rest*] }
 |
     { <> [] }
 /};
@@ -66,7 +81,7 @@ list = {/
     {
         <> ifTrue { <> eq(expressions, []) }
             { <> makeLiteral([]) }
-            { <> apply(makeCallName, "makeList", expressions) }
+            { <> makeCallName("makeList", expressions*) }
     }
 /};
 
@@ -88,8 +103,8 @@ map = {/
     rest = (@"," mapping)*
     @"]"
     {
-        mappings = apply(listAdd, first, rest);
-        <> apply(makeCallName, "makeMap", mappings)
+        mappings = listAdd(first, rest*);
+        <> makeCallName("makeMap", mappings*)
     }
 /};
 
@@ -100,7 +115,7 @@ token = {/
         type = expression
         value = (@"=" expression)?
         @"]"
-        { <> apply(makeCallName, "makeToken", type, value) }
+        { <> makeCallName("makeToken", type, value*) }
     |
         type = [@string @identifier]
         { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
@@ -156,7 +171,7 @@ callExpression = {/
 
     {
         <> listReduce(base, actualsLists) { result . list ::
-            <> apply(makeCall, result, list)
+            <> makeCall(result, list*)
         }
     }
 /};
@@ -222,7 +237,7 @@ formal = {/
 formalsList = {/
     first = formal
     rest = (@"," formal)*
-    { <> ["formals" = listPrepend(first, rest)] }
+    { <> ["formals" = [first, rest*]] }
 |
     { <> [=] }
 /};

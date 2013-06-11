@@ -6,6 +6,7 @@
 
 #include "const.h"
 #include "impl.h"
+#include "util.h"
 
 #include <stddef.h>
 
@@ -36,6 +37,39 @@ PRIM_IMPL(makeMap) {
     }
 
     return datMapAddArray(EMPTY_MAP, size, mappings);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeRange) {
+    requireExactly(argCount, 2);
+
+    zvalue start = args[0];
+    zvalue end = args[1];
+    ztype type = datType(start);
+
+    if (type != datType(end)) {
+        die("Type mismatch on range.");
+    }
+
+    if (datOrder(start, end) > 0) {
+        die("Bad order for range.");
+    }
+
+    // TODO: Handle more than just int ranges.
+    if (type != DAT_INT) {
+        die("Bad type for range.");
+    }
+
+    zint startInt = datZintFromInt(start);
+    zint endInt = datZintFromInt(end);
+    zint size = endInt - startInt + 1;
+    zvalue values[size];
+
+    for (zint i = 0; i < size; i++) {
+        values[i] = datIntFromZint(startInt + i);
+    }
+
+    return datListFromArray(size, values);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
