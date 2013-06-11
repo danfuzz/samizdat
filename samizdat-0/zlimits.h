@@ -22,6 +22,9 @@ enum {
     /** Number of elements in the `newbies` array. */
     DAT_NEWBIES_SIZE = 5000,
 
+    /** Maximum number of references on the stack. */
+    DAT_MAX_STACK = 50000,
+
     /** Maximum readable file size, in bytes. */
     IO_MAX_FILE_SIZE = 100000,
 

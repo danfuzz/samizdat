@@ -27,6 +27,7 @@ static void realMain(int argc, char **argv) {
         die("Too few arguments.");
     }
 
+    zstackPointer save = datFrameStart();
     zvalue context = libNewContext();
 
     // The first argumengt to `samCommandLine` is the context. The
@@ -40,6 +41,10 @@ static void realMain(int argc, char **argv) {
         args[i] = datStringFromUtf8(-1, argv[i]);
     }
     zvalue argsList = datListFromArray(argc, args);
+
+    // `argsList` refers to `context`, so it's safe to keep referring to
+    // the latter, immediately below.
+    datFrameReturn(save, argsList);
 
     // Force a garbage collection here, mainly to get a reasonably early
     // failure if gc is broken.

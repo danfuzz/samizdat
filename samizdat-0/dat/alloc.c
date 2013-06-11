@@ -24,7 +24,7 @@ enum {
     THEYRE_OUT_TO_GET_ME = false
 };
 
-/** The stack base. */
+/** The (C / real) stack base. */
 static void *stackBase = NULL;
 
 /** Array of all immortal values. */
@@ -32,6 +32,15 @@ static zvalue immortals[DAT_MAX_IMMORTALS];
 
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
+
+/**
+ * Stack of references. This is what is scanned in lieu of scanning
+ * the "real" stack during gc.
+ */
+static zvalue stack[DAT_MAX_STACK];
+
+/** Current stack size. */
+static zint stackSize = 0;
 
 /**
  * Array of recent allocations. These are exempted from gc (that is,
@@ -192,6 +201,14 @@ static void doGc(void *topOfStack) {
         note("GC: Marked %lld newbies.", counter);
     }
 
+    for (zint i = 0; i < stackSize; i++) {
+        datMark(stack[i]);
+    }
+
+    if (CHATTY_GC) {
+        note("GC: Marked %lld stack values.", stackSize);
+    }
+
     // Align the stack pointer.
     topOfStack = (void *) ((intptr_t) topOfStack & ~(sizeof(void *) - 1));
 
@@ -271,6 +288,18 @@ static void doGc(void *topOfStack) {
     sanityCheck(true);
 }
 
+/**
+ * Pushes a value onto the stack.
+ */
+static void stackPush(zvalue value) {
+    if (stackSize >= DAT_MAX_STACK) {
+        die("Value stack overflow.");
+    }
+
+    stack[stackSize] = value;
+    stackSize++;
+}
+
 
 /*
  * Module functions
@@ -289,10 +318,12 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     }
 
     zvalue result = utilAlloc(sizeof(DatValue) + extraBytes);
-    enlist(&liveHead, result);
     result->magic = DAT_VALUE_MAGIC;
     result->type = type;
     result->size = size;
+
+    enlist(&liveHead, result);
+    stackPush(result);
 
     allocationCount++;
 
@@ -361,6 +392,39 @@ void datAssertValid(zvalue value) {
 }
 
 /* Documented in header. */
+zstackPointer datFrameStart(void) {
+    return &stack[stackSize];
+}
+
+/* Documented in header. */
+void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
+    zint returnSize = savedStack - stack;
+
+    if (returnSize > stackSize) {
+        die("Cannot return to deeper frame.");
+    }
+
+    stackSize = returnSize;
+
+    if (returnValue != NULL) {
+        stackPush(returnValue);
+    }
+}
+
+/* Documented in header. */
+void datGc(void) {
+    // This `jmp_buf` is both used as a top-of-stack pointer and as a way
+    // to get any references that were only in registers to be on the stack
+    // (via the call to `setjmp`)
+    jmp_buf jumpBuf;
+
+    setjmp(jumpBuf);
+
+    allocationCount = 0;
+    doGc(&jumpBuf);
+}
+
+/* Documented in header. */
 void datImmortalize(zvalue value) {
     if (immortalsSize == DAT_MAX_IMMORTALS) {
         die("Too many immortal values!");
@@ -405,17 +469,4 @@ void datSetStackBase(void *base) {
     }
 
     stackBase = base;
-}
-
-/* Documented in header. */
-void datGc(void) {
-    // This `jmp_buf` is both used as a top-of-stack pointer and as a way
-    // to get any references that were only in registers to be on the stack
-    // (via the call to `setjmp`)
-    jmp_buf jumpBuf;
-
-    setjmp(jumpBuf);
-
-    allocationCount = 0;
-    doGc(&jumpBuf);
 }

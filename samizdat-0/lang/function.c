@@ -71,7 +71,10 @@ zvalue langCall(zvalue functionId, zint argCount, const zvalue *args) {
 
     Function *entry = datUniqletGetState(functionId, &FUNCTION_DISPATCH);
 
-    return entry->function(entry->state, argCount, args);
+    zstackPointer save = datFrameStart();
+    zvalue result = entry->function(entry->state, argCount, args);
+    datFrameReturn(save, result);
+    return result;
 }
 
 /* Documented in header. */
@@ -80,5 +83,9 @@ zvalue langApply(zvalue functionId, zvalue args) {
     zvalue argsArray[argCount];
 
     datArrayFromList(argsArray, args);
-    return langCall(functionId, argCount, argsArray);
+
+    zstackPointer save = datFrameStart();
+    zvalue result = langCall(functionId, argCount, argsArray);
+    datFrameReturn(save, result);
+    return result;
 }
