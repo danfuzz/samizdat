@@ -46,8 +46,8 @@ int main(int argc, char **argv) {
     // the latter, immediately below.
     datFrameReturn(save, argsList);
 
-    // Force a garbage collection here, mainly to get a reasonably early
-    // failure if gc is broken.
+    // Force a garbage collection here, to have a maximally clean slate when
+    // moving into main program execution.
     datGc();
 
     zvalue samCommandLine = datMapGet(context, STR_SAM_COMMAND_LINE);
