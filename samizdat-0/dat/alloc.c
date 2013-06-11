@@ -113,8 +113,11 @@ static void sanityCheck(bool force) {
     }
 
     for (zint i = 0; i < immortalsSize; i++) {
-        zvalue one = immortals[i];
-        thoroughlyValidate(one);
+        thoroughlyValidate(immortals[i]);
+    }
+
+    for (zint i = 0; i < stackSize; i++) {
+        thoroughlyValidate(stack[i]);
     }
 
     for (zint i = 0; i < DAT_NEWBIES_SIZE; i++) {
