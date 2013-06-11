@@ -57,7 +57,7 @@ diffMap = { <out> context, v1, v2 ::
                 { key, value ::
                     ifVoid { <> mapGet(v2, key) }
                         {
-                            report(listAppend(context, key), v1, v2,
+                            report([context*, key], v1, v2,
                                 "Key mismatch.");
                             <out> false
                         }

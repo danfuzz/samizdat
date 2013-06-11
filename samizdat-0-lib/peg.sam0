@@ -155,7 +155,7 @@ pegMakeSequence = { <out> rules* ::
                 <> ifValue
                     { <> rule(setterFromBox(ybox), state, values*) }
                     { newState ::
-                        newValues = listAppend(values, ybox("get"));
+                        newValues = [values*, ybox("get")];
                         <> [newState, newValues]
                     }
                     {
@@ -191,7 +191,7 @@ pegMakeStar = { rule ::
                 ybox = yieldBox();
                 <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
                     { newState ::
-                        newValues = listAppend(values, ybox("get"));
+                        newValues = [values*, ybox("get")];
                         <> [newState, newValues]
                     }
                     {
@@ -247,7 +247,7 @@ genericMakeTokenSet = { <out> sense, types ::
 genericMakeCharSet = { <out> sense, strings* ::
     # Make a list of all the strings' characters as tokens.
     types = stringReduce([], stringAdd(strings*))
-        { result, ., ch :: <> listAppend(result, ch) };
+        { result, ., ch :: <> [result*, ch] };
 
     <> genericMakeTokenSet(sense, types)
 };
@@ -368,7 +368,7 @@ pegMakeString = { <out> string ::
 
     # Make a list of rules per character.
     chars = stringReduce([], string)
-        { result, ., ch :: <> listAppend(result, pegMakeToken(ch)) };
+        { result, ., ch :: <> [result*, pegMakeToken(ch)] };
 
     <> pegMakeMainSequence(chars*, pegMakeCode { .* :: <> @[string] })
 };
@@ -394,7 +394,7 @@ pegApply = { rule, input ::
         {
             # Make a list of each character as a separate token.
             <> stringReduce([], input)
-                { result, ., ch :: <> listAppend(result, @[ch]) }
+                { result, ., ch :: <> [result*, @[ch]] }
         }
         { <> input };
 

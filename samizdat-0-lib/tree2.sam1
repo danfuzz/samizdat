@@ -485,7 +485,7 @@ parseParserSet = {/
             oneString = listReduce("", strings)
                 { result, ., s :: <> stringAdd(result, tokenValue(s)) };
             <> stringReduce([], oneString)
-                { result, ., ch :: <> listAppend(result, ch) }
+                { result, ., ch :: <> [result*, ch] }
         }
     |
         tokens = parseParserToken+
@@ -787,7 +787,7 @@ parseCompareExpression = {/
                 exes = listLast(result);
                 op = mapGet(BINARY_OPERATORS, tokenType(listFirst(one)));
                 ex = listLast(one);
-                <> [listAppend(ops, op), listAppend(exes, ex)]
+                <> [[ops*, op], [exes*, ex]]
             };
             ops = makeCallName("makeList", listFirst(arrays)*);
             exes = listLast(arrays);
@@ -864,8 +864,8 @@ parseIfExpression = {/
                     condition = makeThunk(listFirst(one));
                     then = listLast(one);
                     <> [
-                        listAppend(conditions, condition),
-                        listAppend(thens, then)
+                        [conditions*, condition],
+                        [thens*, then]
                     ]
                 };
 
@@ -929,9 +929,7 @@ parseWhileExpression = {/
 
         mainClosure = @["closure" = [
             "yieldDef" = "break",
-            "statements" = listAppend(breakDef,
-                makeCallName("loop", loopClosure)
-            )
+            "statements" = [breakDef*, makeCallName("loop", loopClosure)]
         ]];
 
         <> makeCall(mainClosure)
@@ -982,9 +980,7 @@ parseDoExpression = {/
 
         mainClosure = @["closure" = [
             "yieldDef" = "break",
-            "statements" = listAppend(breakDef,
-                makeCallName("loop", loopClosure)
-            )
+            "statements" = [breakDef*, makeCallName("loop", loopClosure)]
         ]];
 
         <> makeCall(mainClosure)

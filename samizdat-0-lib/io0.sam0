@@ -110,7 +110,7 @@ io0PathFromFlat = { string ::
                     };
                 <> listButLast(result)
             }
-            { <> listAppend(result, one) }
+            { <> [result*, one] }
     }
 };
 
