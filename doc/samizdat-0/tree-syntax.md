@@ -95,10 +95,15 @@ mapping = {/
     @":"
     value = expression
     { <> makeCallName("makeList", value, key) }
+|
+    map = expression
+    @"*"
+    { <> map }
 /};
 
 map = {/
     @"["
+    (@":" @",")?
     first = mapping
     rest = (@"," mapping)*
     @"]"
