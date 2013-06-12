@@ -40,7 +40,7 @@ parseKeyValue = pegMakeMainSequence(
     parseKey,
     pegMakeToken("="),
     parseWord,
-    pegMakeCode { ., k, ., v :: <> [k = v] });
+    pegMakeCode { ., k, ., v :: <> [k: v] });
 
 # flag = {/
 #     "--" w=word
@@ -49,7 +49,7 @@ parseKeyValue = pegMakeMainSequence(
 parseFlag = pegMakeMainSequence(
     pegMakeString("--"),
     parseWord,
-    pegMakeCode { ., w :: <> [w = true] });
+    pegMakeCode { ., w :: <> [w: true] });
 
 # error = {/
 #     "-" [! "-\0"] word
@@ -62,7 +62,7 @@ parseError = pegMakeMainSequence(
     pegMakeCode { ch1, ch2, word ::
         value = stringAdd(stringFromTokens(ch1, ch2), word);
         io0Note(format("Unknown option: %Q", value));
-        <> [error = true]
+        <> ["error": true]
     });
 
 # option = {/

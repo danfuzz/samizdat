@@ -13,8 +13,9 @@
 # These are all the hexadecimal int digits, as a map from digit values to
 # single-character strings.
 INT_CHARS = [
-    0="0", 1="1", 2="2", 3="3", 4="4", 5="5", 6="6", 7="7", 8="8", 9="9",
-    10="a", 11="b", 12="c", 13="d", 14="e", 15="f"
+    0: "0", 1: "1", 2: "2", 3: "3", 4: "4",
+    5: "5", 6: "6", 7: "7", 8: "8", 9: "9",
+    10: "a", 11: "b", 12: "c", 13: "d", 14: "e", 15: "f"
 ];
 
 # Helper for stringifying ints, which does most of the conversion,
@@ -108,10 +109,10 @@ stringChar = { ch ::
 };
 
 # These are all the characters which are allowed to start an identifier.
-IDENTIFIER_STARTS = ["a".."z" = true, "A".."Z" = true, "_" = true ];
+IDENTIFIER_STARTS = ["a".."z": true, "A".."Z": true, "_": true ];
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = mapAdd(IDENTIFIER_STARTS, ["0".."9" = true]);
+IDENTIFIER_CHARS = mapAdd(IDENTIFIER_STARTS, ["0".."9": true]);
 
 # Checks to see if the given string has the form of an in-language
 # identifier.
@@ -169,9 +170,9 @@ doMap = { map, adorn ::
 
 # Tokens with special conversions
 TOKEN_SPECIALS = [
-    false = "false",
-    null  = "null",
-    true  = "true"
+    false: "false",
+    null:  "null",
+    true:  "true"
 ];
 
 # Stringifies a token.
@@ -277,7 +278,7 @@ xUsualUpdate = { state ::
     argsAt = iadd(1, xArgsAt(state));
     fmtAt = iadd(2, xFmtAt(state));
 
-    <> mapAdd(state, ["fmtAt"=fmtAt, "argsAt"=argsAt]);
+    <> mapAdd(state, ["fmtAt": fmtAt, "argsAt": argsAt]);
 };
 
 # Formats a literal percent.
