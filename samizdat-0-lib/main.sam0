@@ -58,7 +58,7 @@ loadLibrary = { ctx, name ::
 
     # The end result is the addition of the new bindings to the original
     # context.
-    <> mapAdd(ctx, bindings);
+    <> [:, ctx*, bindings*];
 };
 
 # Loads all of the named libraries, in order, allowing later libraries to

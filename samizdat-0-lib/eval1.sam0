@@ -205,7 +205,7 @@ convertCall = { node ::
     function = convertExpression(mapGet(nodeValue, "function"));
     actuals = convertList(mapGet(nodeValue, "actuals"));
 
-    <> @["call": mapAdd(nodeValue, ["function": function, "actuals": actuals])]
+    <> @["call": [nodeValue*, "function": function, "actuals": actuals]]
 };
 
 # Does parser conversion of a `closure` or `fnDef` node.
@@ -214,10 +214,10 @@ convertClosureLike = { node ::
     nodeValue = tokenValue(node);
     statements = convertList(mapGet(nodeValue, "statements"));
     yield = ifValue { <> mapGet(nodeValue, "yield") }
-        { yield :: <> ["yield": (convertExpression(yield))] }
+        { yield :: <> ["yield": convertExpression(yield)] }
         { <> [:] };
 
-    <> @[nodeType: mapAdd(nodeValue, ["statements": statements], yield)]
+    <> @[nodeType: [nodeValue*, "statements": statements, yield*]]
 };
 
 # Does parser conversion of an `interpolate` node.

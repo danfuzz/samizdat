@@ -112,7 +112,7 @@ stringChar = { ch ::
 IDENTIFIER_STARTS = ["a".."z": true, "A".."Z": true, "_": true ];
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = mapAdd(IDENTIFIER_STARTS, ["0".."9": true]);
+IDENTIFIER_CHARS = [IDENTIFIER_STARTS*, "0".."9": true];
 
 # Checks to see if the given string has the form of an in-language
 # identifier.
@@ -278,7 +278,7 @@ xUsualUpdate = { state ::
     argsAt = iadd(1, xArgsAt(state));
     fmtAt = iadd(2, xFmtAt(state));
 
-    <> mapAdd(state, ["fmtAt": fmtAt, "argsAt": argsAt]);
+    <> [state*, "fmtAt": fmtAt, "argsAt": argsAt];
 };
 
 # Formats a literal percent.

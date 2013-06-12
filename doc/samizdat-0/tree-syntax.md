@@ -233,7 +233,7 @@ formal = {/
         { <> [:] }
     )
 
-    { <> mapAdd(name, repeat) }
+    { <> [:, name*, repeat*] }
 /};
 
 formalsList = {/
@@ -258,7 +258,7 @@ programBody = {/
         { <> ["statements": [s]] }
     |
         y = yield
-        { <> mapAdd(["statements": []], y) }
+        { <> ["statements": [], y*] }
     |
         { <> ["statements": []] }
     )
@@ -277,13 +277,13 @@ programDeclarations = {/
 
     @"::"
 
-    { <> mapAdd(formals, yieldDef) }
+    { <> [:, formals*, yieldDef*] }
 /};
 
 program = {/
     decls = (programDeclarations | { <> [:] })
     body = programBody
-    { <> @["closure": mapAdd(decls, body)] }
+    { <> @["closure": [:, decls*, body*]] }
 /};
 
 closure = {/
