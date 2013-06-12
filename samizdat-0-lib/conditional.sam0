@@ -36,9 +36,20 @@ or = { <out> predicates* ::
         predicates*)
 };
 
+# Documented in Samizdat Layer 0 spec.
+\"switch" = { value, cases, defaultFunction? ::
+    <> ifValue { <> mapGet(cases, value) }
+        { function :: <> function() }
+        {
+            <> ifValue { <> listNth(defaultFunction, 0) }
+                { function :: <> function() }
+        }
+};
+
 <> [
     "and" = and,
     "ifFalse" = ifFalse,
     "ifVoid" = ifVoid,
-    "or" = or
+    "or" = or,
+    "switch" = \"switch"
 ]
