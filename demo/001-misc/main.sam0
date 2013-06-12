@@ -112,8 +112,8 @@ main = { selfPath, name, rest* ::
     process("\"Blort.\" \\ \0 \n");
     process(stringSlice("muffins", 1, 6));
     process([:]);
-    process([1=2]);
-    process([1=2, 888=1]);
+    process([1: 2]);
+    process([1: 2, 888: 1]);
     process(["fizmo": "omzif", "igram": "margi", "blort": "trolb"]);
     process(@["null"]);
     process(@"null");
@@ -123,7 +123,7 @@ main = { selfPath, name, rest* ::
     process(true);
     process(@blort);
     process(@"%fizmo%");
-    process(@["potion" = "blort"]);
+    process(@["potion": "blort"]);
     process(@@);
     process(countDown(10));
     process(countDown2(5));
