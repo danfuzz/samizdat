@@ -356,8 +356,10 @@ DEF_PARSE(emptyMap) {
     return makeLiteral(EMPTY_MAP);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(mapping) {
+/**
+ * Helper for `mapping`: Parses `listElement @":" expression`.
+ */
+DEF_PARSE(mapping1) {
     MARK();
 
     zvalue key = PARSE_OR_REJECT(listElement);
@@ -367,11 +369,38 @@ DEF_PARSE(mapping) {
     return makeCall(makeVarRef(STR_MAKE_LIST), listFrom2(value, key));
 }
 
+/**
+ * Helper for `mapping`: Parses `expression @"*"`.
+ */
+DEF_PARSE(mapping2) {
+    MARK();
+
+    zvalue map = PARSE_OR_REJECT(expression);
+    MATCH_OR_REJECT(CH_STAR);
+
+    return map;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(mapping) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(mapping1); }
+    if (result == NULL) { result = PARSE(mapping2); }
+
+    return result;
+}
+
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(map) {
     MARK();
 
     MATCH_OR_REJECT(CH_OSQUARE);
+
+    if (MATCH(CH_COLON)) {
+        MATCH_OR_REJECT(CH_COMMA);
+    }
+
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
     zint size = datSize(mappings);
     REJECT_IF(size == 0);
