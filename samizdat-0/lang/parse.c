@@ -350,7 +350,7 @@ DEF_PARSE(emptyMap) {
     MARK();
 
     MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_EQUAL);
+    MATCH_OR_REJECT(CH_COLON);
     MATCH_OR_REJECT(CH_CSQUARE);
 
     return makeLiteral(EMPTY_MAP);
@@ -361,7 +361,7 @@ DEF_PARSE(mapping) {
     MARK();
 
     zvalue key = PARSE_OR_REJECT(listElement);
-    MATCH_OR_REJECT(CH_EQUAL);
+    MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 
     return makeCall(makeVarRef(STR_MAKE_LIST), listFrom2(value, key));
@@ -404,7 +404,7 @@ DEF_PARSE(token) {
         MATCH_OR_REJECT(CH_OSQUARE);
         innerType = PARSE_OR_REJECT(expression);
 
-        if (MATCH(CH_EQUAL)) {
+        if (MATCH(CH_COLON)) {
             // Note: Strictly speaking this doesn't quite follow the spec.
             // However, there is no meaningful difference, in that the only
             // difference is *how* errors are recognized, not *whether* they
