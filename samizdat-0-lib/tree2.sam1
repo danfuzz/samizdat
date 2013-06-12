@@ -822,6 +822,48 @@ parseOrExpression = {/
     )
 /};
 
+# Parses a `fn` (function with `return` binding) expression. The translation
+# is as described in `parseFnCommon` (above) if the function is not given a
+# name. If the function *is* given a name, the translation is along the
+# following lines:
+#
+# ```
+# fn <out> name(arg1, arg2) { stat1; stat2 }
+# ```
+#
+# =>
+#
+# ```
+# {/
+#     name = forwardFunction();
+#     <> name {/ arg1 arg2 <\"return"> ::
+#         out = \"return";
+#         stat1;
+#         stat2
+#     /}
+# /}()
+# ```
+parseFnExpression = {/
+    funcMap = parseFnCommon
+    closure = { <> @["closure" = funcMap] }
+
+    (
+        name = { <> mapGet(funcMap, "name") }
+        {
+            mainClosure = @["closure" = [
+                "statements" = [
+                    makeVarDef(name, makeCallName("forwardFunction"))
+                ],
+                "yield" = makeCall(makeVarRef(name), closure)
+            ]];
+
+            <> makeCall(mainClosure)
+        }
+    |
+        { <> closure }
+    )
+/};
+
 # Parses an if expression.
 parseIfExpression = {/
     @"if"
@@ -887,10 +929,87 @@ parseOptBreakDef = {/
     }?
 /};
 
+# Helper for switch expressions: Parse a regular case.
+parseSwitchCase = {/
+    key = parseListElement
+    @":"
+    code = parseNullaryClosure
+    { <> makeCallName("makeList", code, key) }
+/};
+
+# Helper for switch expressions: Parse a default case.
+parseSwitchDefault = {/
+    @"default"
+    @":"
+    parseNullaryClosure
+/};
+
+# Parses a switch expression. The translation is along these lines:
+#
+# ```
+# switch <out> (value) {
+#     ex1: { stat1a; stat1b }
+#     ex2: { stat2a; stat2b }
+#     default: { statDefault }
+# }
+# ```
+#
+# =>
+#
+# ```
+# { <\"break"> ::
+#     out = \"break";
+#     <> \"switch"(
+#         value,
+#         [
+#             ex1 = { stat1a; stat1b },
+#             ex2 = { stat2a; stat2b },
+#         ])
+#         { statDefault }
+# }
+# ```
+#
+# with the initial break assignment omitted if there is no yield def.
+parseSwitchExpression = {/
+    @"switch"
+    breakDef = parseOptBreakDef
+    value = parseParenExpression
+
+    @"{"
+
+    cases1 = parseSwitchCase*
+    optDefault = parseSwitchDefault?
+    cases2 = parseSwitchCase*
+
+    (
+        # Detect double default clause as an explicit error.
+        parseSwitchDefault
+        { io0Die("Multiple default clauses.") }
+    )?
+
+    @"}"
+
+    {
+        switchCall = makeCallName("switch",
+            value,
+            makeCallName("makeMap", cases1*, cases2*),
+            optDefault*);
+
+        mainClosure = @["closure" = [
+            "yieldDef" = "break",
+            "statements" = [breakDef*],
+            "yield" = switchCall
+        ]];
+
+        <> makeCall(mainClosure)
+    }
+/};
+
+
 # Parses a while expression. The translation is along these lines:
 #
 # ```
-# while (expr) <out> { <next> :: stat1; stat2 }
+# while <out> (expr) { <next> :: stat1; stat2 }
 # ```
 #
 # =>
@@ -984,59 +1103,25 @@ parseDoExpression = {/
     }
 /};
 
-# Parses a `fn` (function with `return` binding) expression. The translation
-# is as described in `parseFnCommon` (above) if the function is not given a
-# name. If the function *is* given a name, the translation is along the
-# following lines:
-#
-# ```
-# fn <out> name(arg1, arg2) { stat1; stat2 }
-# ```
-#
-# =>
-#
-# ```
-# {/
-#     name = forwardFunction();
-#     <> name {/ arg1 arg2 <\"return"> ::
-#         out = \"return";
-#         stat1;
-#         stat2
-#     /}
-# /}()
-# ```
-parseFnExpression = {/
-    funcMap = parseFnCommon
-    closure = { <> @["closure" = funcMap] }
-
-    (
-        name = { <> mapGet(funcMap, "name") }
-        {
-            mainClosure = @["closure" = [
-                "statements" = [
-                    makeVarDef(name, makeCallName("forwardFunction"))
-                ],
-                "yield" = makeCall(makeVarRef(name), closure)
-            ]];
-
-            <> makeCall(mainClosure)
-        }
-    |
-        { <> closure }
-    )
-/};
-
 # Parses a general expression.
 implExpression = {/
+    # This one's the top level "regular-looking" expression (in that it
+    # covers the territory of C-style expressions).
     parseOrExpression
 |
-    parseIfExpression
+    # This one is only nominally "regular-looking" (in that not many C
+    # family languages have function expressions).
+    parseFnExpression
 |
-    parseWhileExpression
+    # This one and the rest are "statement-like" expressions (in that they
+    # look like corresponding statements from C-derived languages).
+    parseIfExpression
 |
     parseDoExpression
 |
-    parseFnExpression
+    parseSwitchExpression
+|
+    parseWhileExpression
 /};
 parseExpression(implExpression);
 
