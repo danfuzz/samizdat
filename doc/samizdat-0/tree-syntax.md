@@ -96,8 +96,7 @@ emptyMap = {/
 /};
 
 mapping = {/
-    key = (identifierString | listElement)
-    @":"
+    key = (identifierString @":" | listElement @":")
     value = expression
     { <> makeCallName("makeList", value, key) }
 |
