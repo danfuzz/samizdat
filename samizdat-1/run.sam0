@@ -100,4 +100,4 @@ run = { args* ::
     <> function(filePath, argsPerSe*)
 };
 
-<> ["run" = run]
+<> ["run": run]
