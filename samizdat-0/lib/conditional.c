@@ -92,7 +92,9 @@ PRIM_IMPL(loop) {
 
     zvalue function = args[0];
     for (;;) {
+        zstackPointer save = datFrameStart();
         langCall(function, 0, NULL);
+        datFrameReturn(save, NULL);
     }
 }
 
@@ -100,6 +102,7 @@ PRIM_IMPL(loop) {
 PRIM_IMPL(loopReduce) {
     requireExactly(argCount, 2);
 
+    zstackPointer save = datFrameStart();
     zvalue result = args[0];
     zvalue function = args[1];
 
@@ -107,6 +110,7 @@ PRIM_IMPL(loopReduce) {
         zvalue next = langCall(function, 1, &result);
         if (next != NULL) {
             result = next;
+            datFrameReset(save, result);
         }
     }
 }

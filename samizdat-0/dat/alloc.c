@@ -334,6 +334,14 @@ zstackPointer datFrameStart(void) {
 }
 
 /* Documented in header. */
+void datFrameReset(zstackPointer savedStack, zvalue stackedValue) {
+    // The difference between this function and `datFrameReturn` is
+    // one of intent, even though the implementation is (blatantly)
+    // identical.
+    datFrameReturn(savedStack, stackedValue);
+}
+
+/* Documented in header. */
 void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
     zint returnSize = savedStack - stack;
 
