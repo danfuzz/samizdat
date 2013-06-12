@@ -37,11 +37,17 @@ zvalue EMPTY_LIST = NULL;
 /* Documented in header. */
 zvalue EMPTY_MAP = NULL;
 
-/** Array of single-character strings for character codes `0..127`. */
-zvalue SINGLE_CHARS[128];
+/** Array of single-character strings, for character codes `0..127`. */
+static zvalue SINGLE_CHAR_STRINGS[128];
+
+/**
+ * Array of valueless tokens whose types are all single-character strings,
+ * for character codes `0..127`.
+ */
+static zvalue SINGLE_CHAR_TOKENS[128];
 
 /** Array of small integer values. */
-zvalue SMALL_INTS[CONST_SMALL_INT_COUNT];
+static zvalue SMALL_INTS[CONST_SMALL_INT_COUNT];
 
 enum {
     /** Max (exclusive) small int value. */
@@ -70,8 +76,10 @@ void constInit(void) {
     #include "const-def.h"
 
     for (zchar ch = 0; ch < 128; ch++) {
-        SINGLE_CHARS[ch] = datStringFromZchars(1, &ch);
-        datImmortalize(SINGLE_CHARS[ch]);
+        SINGLE_CHAR_STRINGS[ch] = datStringFromZchars(1, &ch);
+        SINGLE_CHAR_TOKENS[ch] = datTokenFrom(SINGLE_CHAR_STRINGS[ch], NULL);
+        datImmortalize(SINGLE_CHAR_STRINGS[ch]);
+        datImmortalize(SINGLE_CHAR_TOKENS[ch]);
     }
 
     for (zint i = 0; i < CONST_SMALL_INT_COUNT; i++) {
@@ -97,10 +105,24 @@ void constInit(void) {
 /* Documented in header. */
 zvalue constStringFromZchar(zchar value) {
     if (value < 128) {
-        return SINGLE_CHARS[value];
+        return SINGLE_CHAR_STRINGS[value];
     } else {
         return datStringFromZchars(1, &value);
     }
+}
+
+/* Documented in header. */
+zvalue constTokenFrom(zvalue type, zvalue value) {
+    if ((value == NULL) &&
+        datTypeIs(type, DAT_STRING) &&
+        (datSize(type) == 1)) {
+        zchar typeCh = datStringNth(type, 0);
+        if (typeCh < 128) {
+            return SINGLE_CHAR_TOKENS[typeCh];
+        }
+    }
+
+    return datTokenFrom(type, value);
 }
 
 /* Documented in header. */

@@ -43,9 +43,6 @@ extern zvalue EMPTY_LIST;
 /** The canonical empty map value (`[=]`). */
 extern zvalue EMPTY_MAP;
 
-/** Array of single-character strings for character codes `0..127` */
-extern zvalue SINGLE_CHARS[128];
-
 /**
  * Initializes the constants, if necessary.
  */
@@ -70,6 +67,12 @@ zvalue constIntFromZint(zint value);
  * Converts a C `zchar` to an in-model single-character string.
  */
 zvalue constStringFromZchar(zchar value);
+
+/**
+ * This is the same as `datTokenFrom`, except that in some cases, this
+ * will reuse a pre-existing value.
+ */
+zvalue constTokenFrom(zvalue type, zvalue value);
 
 /**
  * Gets the string representing the low-layer type of the given value.

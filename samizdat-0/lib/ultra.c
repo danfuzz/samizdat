@@ -16,11 +16,15 @@ PRIM_IMPL(makeToken) {
     requireRange(argCount, 1, 2);
 
     zvalue value = (argCount == 2) ? args[1] : NULL;
-    return datTokenFrom(args[0], value);
+    return constTokenFrom(args[0], value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeList) {
+    if (argCount == 0) {
+        return EMPTY_LIST;
+    }
+
     return datListFromArray(argCount, args);
 }
 
