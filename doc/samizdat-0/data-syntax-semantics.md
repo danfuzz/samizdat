@@ -114,6 +114,9 @@ more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
+As a short-hand, a string key with the same form as an identifier can
+be written without the quotes.
+
 A group of mappings with multiple keys that map to the same value
 can be written in a short-hand using the same range and
 interpolation syntax as with lists.
@@ -124,6 +127,7 @@ written as `[:]`.
 ```
 [:]                           # the empty map
 [1: "number one"]
+[two: 2]                      # the same as ["two": 2]
 ["blort": "potion; the ability to see in the dark",
  "fizmo": "spell; unclogs pipes",
  "igram": "spell; make purple things invisible"]

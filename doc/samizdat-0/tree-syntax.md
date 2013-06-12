@@ -51,6 +51,11 @@ string = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
+identifierString = {/
+    i = @identifier
+    { <> makeLiteral(tokenValue(s)) }
+/};
+
 listElement = {/
     ex = expression
 
@@ -91,7 +96,7 @@ emptyMap = {/
 /};
 
 mapping = {/
-    key = listElement
+    key = (identifierString | listElement)
     @":"
     value = expression
     { <> makeCallName("makeList", value, key) }
