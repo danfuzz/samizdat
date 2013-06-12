@@ -177,11 +177,16 @@ parseMapping = {/
     @":"
     value = parseExpression
     { <> makeCallName("makeList", value, key) }
+|
+    map = parseExpression
+    @"*"
+    { <> map }
 /};
 
 # Parses a map literal.
 parseMap = {/
     @"["
+    (@":" @",")?
     first = parseMapping
     rest = (@"," parseMapping)*
     @"]"
