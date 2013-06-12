@@ -36,7 +36,7 @@ parser = {/
     @"{/"
     pex = choicePex
     @"/}"
-    { <> @["parser" = pex] }
+    { <> @["parser": pex] }
 /};
 
 parenPex = {/
@@ -51,7 +51,7 @@ parserString = {/
     {
         value = tokenValue(s);
         <> ifTrue { <> eq(lowSize(value), 1) }
-            { <> @["token" = value] }
+            { <> @["token": value] }
             { <> s }
     }
 /};
@@ -59,7 +59,7 @@ parserString = {/
 parserToken = {/
     @"@"
     type = [@identifier @string]
-    { <> @["token" = (tokenValue(type))] }
+    { <> @["token": tokenValue(type)] }
 /};
 
 # Handles regular string literals and character ranges.
@@ -80,7 +80,7 @@ parserSetString = {/
         }
         {
             reduction = loopReduce([startInt, ""]) { ... endInt ... };
-            <> @["string" = (listLast(reduction))]
+            <> @["string": listLast(reduction)]
         }
     |
         { <> s }
@@ -116,18 +116,18 @@ parserSet = {/
 
     @"]"
 
-    { <> @[type = terminals] }
+    { <> @[type: terminals] }
 /};
 
 parserCode = {/
     closure = parseNullaryClosure
-    { <> @["{}" = tokenValue(closure)] }
+    { <> @["{}": tokenValue(closure)] }
 /};
 
 parserPredicate = {/
     @"&&"
     predicate = parenExpression
-    { <> @["&&" = predicate] }
+    { <> @["&&": predicate] }
 /};
 
 parserAtom = {/
@@ -154,7 +154,7 @@ repeatPex = {/
     atom = parserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(tokenType(repeat)) = atom] }
+        { <> @[tokenType(repeat): atom] }
     |
         { <> atom }
     )
@@ -164,7 +164,7 @@ lookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = repeatPex
-        { <> @[(tokenType(lookahead)) = pex] }
+        { <> @[tokenType(lookahead): pex] }
     )
 |
     repeatPex
@@ -175,7 +175,7 @@ namePex = {/
         name = @identifier
         @"="
         pex = lookaheadPex
-        { <> @["varDef" = ["name"=(tokenValue(name)), "value"=pex]] }
+        { <> @["varDef": ["name": tokenValue(name), "value": pex]] }
     )
 |
     lookaheadPex
@@ -183,12 +183,12 @@ namePex = {/
 
 sequencePex = {/
     items = namePex+
-    { <> @["sequence" = items] }
+    { <> @["sequence": items] }
 /};
 
 choicePex = {/
     first = sequencePex
     rest = (@"|" sequencePex)*
-    { <> @["choice" = [first, rest*]] }
+    { <> @["choice": [first, rest*]] }
 /};
 ```
