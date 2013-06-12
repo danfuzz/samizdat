@@ -867,6 +867,7 @@ parseFnExpression = {/
 # Parses an if expression.
 parseIfExpression = {/
     @"if"
+    yieldDef = parseOptYieldDef
     firstCondition = parseParenExpression
     firstThen = parseNullaryClosure
 
@@ -883,7 +884,7 @@ parseIfExpression = {/
         parseClosure
     )?
 
-    (
+    mainCall = (
         # Unchained if-then or if-then-else.
         &&(eq(lowSize(elseIfThens), 0))
         {
@@ -913,6 +914,22 @@ parseIfExpression = {/
 
             <> makeCallName("ifChain", conditions, thens*);
         }
+    )
+
+    (
+        # There was a yield def; wrap the whole thing in a thunk-call.
+        &&(ne(yieldDef, [=]))
+        {
+            mainClosure = @["closure" = [
+                "yieldDef" = mapValue(yieldDef),
+                "statements" = [],
+                "yield" = mainCall
+            ]];
+
+            <> makeCall(mainClosure)
+        }
+    |
+        { <> mainCall }
     )
 /};
 

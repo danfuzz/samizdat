@@ -71,4 +71,20 @@ if (1 == 2) {
     io0Note("1 is not 2 or 3")
 };
 
+blort1 = if (1 == 1) {
+    <> "1 is 1"
+} else {
+    <> "1 is not 1?!"
+};
+
+io0Note(blort1);
+
+blort2 = if <out> (1 == 2) {
+    <out> "1 is 2?!"
+} else {
+    <out> "1 is not 2"
+};
+
+io0Note(blort2);
+
 <> 0
