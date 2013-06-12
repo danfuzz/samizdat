@@ -306,7 +306,7 @@ parseProgramBody = pegMakeMainSequence(
     pegMakeStar(pegMakeToken(";")),
     pegMakeCode { ., most, last, . ::
         allStatements = [most*, mapGet(last, "statements")*];
-        <> mapPut(last, "statements", allStatements)
+        <> [last*, "statements": allStatements]
     });
 
 # Documented in Samizdat Layer 0 spec.

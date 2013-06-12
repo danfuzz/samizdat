@@ -267,7 +267,7 @@ programBody = {/
 
     {
         allStatements = listAdd(most, mapGet(last, "statements"));
-        <> mapPut(last, "statements", allStatements)
+        <> [last*, "statements": allStatements]
     }
 /};
 
