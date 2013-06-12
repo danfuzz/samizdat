@@ -296,6 +296,15 @@ DEF_PARSE(string) {
     return makeLiteral(datTokenValue(string));
 }
 
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(identifierString) {
+    MARK();
+
+    zvalue ident = MATCH_OR_REJECT(IDENTIFIER);
+
+    return makeLiteral(datTokenValue(ident));
+}
+
 /**
  * Helper for `listElement`: Parses `(@".." expression)`.
  */
@@ -357,13 +366,27 @@ DEF_PARSE(emptyMap) {
 }
 
 /**
- * Helper for `mapping`: Parses `listElement @":" expression`.
+ * Helper for `mapping`: Parses `(identifierString @":" | listElement @":")
+ * expression`.
  */
 DEF_PARSE(mapping1) {
     MARK();
 
-    zvalue key = PARSE_OR_REJECT(listElement);
-    MATCH_OR_REJECT(CH_COLON);
+    zvalue key = PARSE(identifierString);
+    if (key != NULL) {
+        if (!MATCH(CH_COLON)) {
+            RESET();
+            key = NULL;
+        } else {
+            die("=== NEEDS A FIX!");
+        }
+    }
+
+    if (key == NULL) {
+        key = PARSE_OR_REJECT(listElement);
+        MATCH_OR_REJECT(CH_COLON);
+    }
+
     zvalue value = PARSE_OR_REJECT(expression);
 
     return makeCall(makeVarRef(STR_MAKE_LIST), listFrom2(value, key));
