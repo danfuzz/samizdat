@@ -167,14 +167,14 @@ parseList = {/
 
 # Parses an empty map literal.
 parseEmptyMap = {/
-    @"[" @"=" @"]"
+    @"[" @":" @"]"
     { <> makeLiteral([:]) }
 /};
 
 # Parses a mapping (element of a map).
 parseMapping = {/
     key = parseListElement
-    @"="
+    @":"
     value = parseExpression
     { <> makeCallName("makeList", value, key) }
 /};
@@ -194,7 +194,7 @@ parseToken = {/
     (
         @"["
         type = parseExpression
-        value = (@"=" parseExpression)?
+        value = (@":" parseExpression)?
         @"]"
         { <> makeCallName("makeToken", type, value*) }
     |
