@@ -158,13 +158,13 @@ doMap = { map, adorn ::
                 reduction,
                 ifTrue { <> eq(reduction, "") } { <> "" } { <> ", " },
                 callSourceString(key),
-                "=",
+                ": ",
                 callSourceString(value))
         };
 
     <> adornIf(adorn,
         "[",
-        ifTrue { <> eq(body, "") } { <> "=" } { <> body },
+        ifTrue { <> eq(body, "") } { <> ":" } { <> body },
         "]")
 };
 
@@ -182,7 +182,7 @@ doToken = { <out> token, adorn ::
 
     type = tokenType(token);
     valueString = ifValue { <> tokenValue(token) }
-        { value :: <> stringAdd(" = ", callSourceString(value)) }
+        { value :: <> stringAdd(": ", callSourceString(value)) }
         { <> "" };
 
     ifTrue { <> and { <> isString(type) } { <> eq(valueString, "") } }
