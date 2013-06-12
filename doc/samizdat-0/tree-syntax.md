@@ -167,7 +167,7 @@ callExpression = {/
     actualsLists = actualsList*
 
     {
-        <> listReduce(base, actualsLists) { result . list ::
+        <> listReduce(base, actualsLists) { result, ., list ::
             <> makeCall(result, list*)
         }
     }
