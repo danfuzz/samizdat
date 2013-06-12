@@ -33,23 +33,23 @@ parseKey = pegMakeMainSequence(
 
 # keyValue = {/
 #     "--" k=key "=" v=word
-#     { <> [k: v] }
+#     { <> [(k): v] }
 # /}
 parseKeyValue = pegMakeMainSequence(
     pegMakeString("--"),
     parseKey,
     pegMakeToken("="),
     parseWord,
-    pegMakeCode { ., k, ., v :: <> [k: v] });
+    pegMakeCode { ., k, ., v :: <> [(k): v] });
 
 # flag = {/
 #     "--" w=word
-#     { <> [w: true] }
+#     { <> [(w): true] }
 # /}
 parseFlag = pegMakeMainSequence(
     pegMakeString("--"),
     parseWord,
-    pegMakeCode { ., w :: <> [w: true] });
+    pegMakeCode { ., w :: <> [(w): true] });
 
 # error = {/
 #     "-" [! "-\0"] word

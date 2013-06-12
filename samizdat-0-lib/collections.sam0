@@ -127,7 +127,7 @@ mapMap = { map, function ::
     <> mapReduce([:], map)
         { reduction, key, value ::
             <> ifValue { <> function(key, value) }
-                { newValue :: <> [reduction*, key: newValue] }
+                { newValue :: <> [reduction*, (key): newValue] }
                 { <> reduction }
         }
 };

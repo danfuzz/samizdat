@@ -170,9 +170,9 @@ doMap = { map, adorn ::
 
 # Tokens with special conversions
 TOKEN_SPECIALS = [
-    false: "false",
-    null:  "null",
-    true:  "true"
+    (false): "false",
+    (null):  "null",
+    (true):  "true"
 ];
 
 # Stringifies a token.
