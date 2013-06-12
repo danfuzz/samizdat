@@ -24,7 +24,7 @@ META_NAME_MAP = [
 
 # Documented in Samizdat Layer 0 spec.
 makeLibrary = { context ::
-    <> mapPut(context, "LIBRARY", context)
+    <> [context*, "LIBRARY": context]
 };
 
 # Documented in Samizdat Layer 0 spec.

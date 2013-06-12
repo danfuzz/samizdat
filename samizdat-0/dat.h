@@ -333,6 +333,12 @@ zvalue datListSlice(zvalue list, zint start, zint end);
  */
 
 /**
+ * Copies all the mappings of the given map into the given result
+ * array, which must be sized large enough to hold all of them.
+ */
+void datArrayFromMap(zmapping *result, zvalue map);
+
+/**
  * Gets the map resulting from putting the all the given mappings
  * into the given map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).

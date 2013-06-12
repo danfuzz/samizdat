@@ -222,7 +222,7 @@ genericMakeTokenSet = { <out> sense, types ::
 
     # Make a set-like map of all the token types.
     set = listReduce([:], types)
-        { result, ., type :: <> mapPut(result, type, sense) };
+        { result, ., type :: <> [result*, type: sense] };
 
     # Trivial case: Empty set. Return an appropriate absolute rule.
     ifTrue { <> eq(lowSize(set), 0) }
