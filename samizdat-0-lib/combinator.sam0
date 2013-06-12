@@ -81,6 +81,6 @@ yStarCombinator = { functions* ::
 };
 
 <> [
-    "yCombinator" = yCombinator,
-    "yStarCombinator" = yStarCombinator
+    "yCombinator": yCombinator,
+    "yStarCombinator": yStarCombinator
 ]
