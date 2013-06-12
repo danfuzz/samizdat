@@ -303,7 +303,7 @@ parseFormal = {/
         { <> [:] }
     )
 
-    { <> mapAdd(name, repeat) }
+    { <> [:, name*, repeat*] }
 /};
 
 # Parses a list of formal arguments, with no surrounding parentheses.
@@ -330,7 +330,7 @@ parseProgramBody = {/
         { <> ["statements": [s]] }
     |
         y = parseYield
-        { <> mapAdd(["statements": []], y) }
+        { <> ["statements": [], y*] }
     |
         { <> ["statements": []] }
     )
@@ -350,14 +350,14 @@ parseProgramDeclarations = {/
 
     @"::"
 
-    { <> mapAdd(formals, yieldDef) }
+    { <> [:, formals*, yieldDef*] }
 /};
 
 # Parses a program (top-level program or contents inside function braces).
 parseProgram = {/
     decls = (parseProgramDeclarations | { <> [:] })
     body = parseProgramBody
-    { <> @["closure": mapAdd(decls, body)] }
+    { <> @["closure": [:, decls*, body*]] }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
@@ -666,8 +666,11 @@ parseFnCommon = {/
     {
         codeMap = tokenValue(code);
         statements = [returnDef*, mapGet(codeMap, "statements")*];
-        <> mapAdd(codeMap, name, formals,
-            ["yieldDef": "return", "statements": statements])
+        <> [
+            codeMap*, name*, formals*,
+            "yieldDef": "return",
+            "statements": statements
+        ]
     }
 /};
 
