@@ -160,10 +160,10 @@ io0WriteFileUtf8 = { path ::
 };
 
 <> [
-    "io0FlatFromPath" = io0FlatFromPath,
-    "io0PathFromFlat" = io0PathFromFlat,
-    "io0ReadFileUtf8" = io0ReadFileUtf8,
-    "io0ReadLink" = io0ReadLink,
-    "io0SandboxedReader" = io0SandboxedReader,
-    "io0WriteFileUtf8" = io0WriteFileUtf8
+    "io0FlatFromPath": io0FlatFromPath,
+    "io0PathFromFlat": io0PathFromFlat,
+    "io0ReadFileUtf8": io0ReadFileUtf8,
+    "io0ReadLink": io0ReadLink,
+    "io0SandboxedReader": io0SandboxedReader,
+    "io0WriteFileUtf8": io0WriteFileUtf8
 ];

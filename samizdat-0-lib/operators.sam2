@@ -14,9 +14,9 @@
 
 # Map from low-layer types to corresponding "get" functions.
 GET_MAP = [
-    "list" = listNth,
-    "string" = stringNth,
-    "map" = mapGet
+    "list": listNth,
+    "string": stringNth,
+    "map": mapGet
 ];
 
 # Verifies that it should be possible to compare the two given values,
@@ -231,33 +231,33 @@ fn ifChain(functions, thens*) {
 };
 
 <> [
-    "binary+"      = \"binary+",
-    "binary-"      = \"binary-",
-    "binary*"      = \"binary*",
-    "binary/"      = \"binary/",
-    "binary%"      = \"binary%",
-    "binary&&&"    = \"binary&&&",
-    "binary|||"    = \"binary|||",
-    "binary^^^"    = \"binary^^^",
-    "binary<<<"    = \"binary<<<",
-    "binary>>>"    = \"binary>>>",
-    "binary=="     = \"binary==",
-    "binary!="     = \"binary!=",
-    "binary<"      = \"binary<",
-    "binary>"      = \"binary>",
-    "binary<="     = \"binary<=",
-    "binary>="     = \"binary>=",
-    "binary\\=="   = \"binary\\==",
-    "binary\\!="   = \"binary\\!=",
-    "binary\\<"    = \"binary\\<",
-    "binary\\>"    = \"binary\\>",
-    "binary\\<="   = \"binary\\<=",
-    "binary\\>="   = \"binary\\>=",
-    "unary+"       = \"unary+",
-    "unary-"       = \"unary-",
-    "unary!"       = \"unary!",
-    "unary[]"      = \"unary[]",
-    "unary!!!"     = \"unary!!!",
-    "compareChain" = compareChain,
-    "ifChain"      = ifChain
+    "binary+":      \"binary+",
+    "binary-":      \"binary-",
+    "binary*":      \"binary*",
+    "binary/":      \"binary/",
+    "binary%":      \"binary%",
+    "binary&&&":    \"binary&&&",
+    "binary|||":    \"binary|||",
+    "binary^^^":    \"binary^^^",
+    "binary<<<":    \"binary<<<",
+    "binary>>>":    \"binary>>>",
+    "binary==":     \"binary==",
+    "binary!=":     \"binary!=",
+    "binary<":      \"binary<",
+    "binary>":      \"binary>",
+    "binary<=":     \"binary<=",
+    "binary>=":     \"binary>=",
+    "binary\\==":   \"binary\\==",
+    "binary\\!=":   \"binary\\!=",
+    "binary\\<":    \"binary\\<",
+    "binary\\>":    \"binary\\>",
+    "binary\\<=":   \"binary\\<=",
+    "binary\\>=":   \"binary\\>=",
+    "unary+":       \"unary+",
+    "unary-":       \"unary-",
+    "unary!":       \"unary!",
+    "unary[]":      \"unary[]",
+    "unary!!!":     \"unary!!!",
+    "compareChain": compareChain,
+    "ifChain":      ifChain
 ]

@@ -43,7 +43,7 @@ loadLibrary = { ctx, name ::
     # evaluator. Otherwise, default to the layer 0 functions.
     metas = ifValue { <> mapGet(ctx, "metaFunctions") }
         { metaFunctions :: <> metaFunctions(ctx, name) }
-        { <> ["eval"=sam0Eval, "tree"=sam0Tree] };
+        { <> ["eval": sam0Eval, "tree": sam0Tree] };
     treeFunction = mapGet(metas, "tree");
     evalFunction = mapGet(metas, "eval");
 

@@ -15,10 +15,11 @@
 # includes a mapping of `"_"` to `-1` for the implementation of the
 # "digit space" syntax.
 INT_CHARS = [
-    "0"=0, "1"=1, "2"=2, "3"=3, "4"=4, "5"=5, "6"=6, "7"=7, "8"=8, "9"=9,
-    "a"=10, "b"=11, "c"=12, "d"=13, "e"=14, "f"=15,
-    "A"=10, "B"=11, "C"=12, "D"=13, "E"=14, "F"=15,
-    "_"=-1
+    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
+    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
+    "a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15,
+    "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15,
+    "_": -1
 ];
 
 # Helper to convert digit characters to digit values.
@@ -27,7 +28,7 @@ intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
-KEYWORDS = listReduce([=],
+KEYWORDS = listReduce([:],
     [ "break", "case", "continue", "def", "default", "do", "else", "fn",
       "if", "return", "switch", "var", "while" ])
     { result, ., name :: <> mapPut(result, name, @[name]) };
@@ -83,7 +84,7 @@ tokPunctuation = {/
         # where we're parsing other punctuation. This is clean but a little
         # non-obvious, hence this comment.
         "/*" .*
-        { <> @["error" = "Unterminated comment."] }
+        { <> @["error": "Unterminated comment."] }
     |
         # Single-character punctuation / operator.
         .
@@ -115,9 +116,9 @@ tokString = {/
 
     (
         "\""
-        { <> @["string" = stringAdd(chars*)] }
+        { <> @["string": stringAdd(chars*)] }
     |
-        { <> @["error" = "Unterminated string literal."] }
+        { <> @["error": "Unterminated string literal."] }
     )
 /};
 
@@ -129,7 +130,7 @@ tokIdentifier = {/
         string = stringFromTokenList([first, rest*]);
         <> ifValue { <> mapGet(KEYWORDS, string) }
             { keyword :: <> keyword }
-            { <> @["identifier" = string] }
+            { <> @["identifier": string] }
     }
 /};
 
@@ -137,7 +138,7 @@ tokIdentifier = {/
 tokQuotedIdentifier = {/
     "\\"
     s = tokString
-    { <> @["identifier" = tokenValue(s)] }
+    { <> @["identifier": tokenValue(s)] }
 /};
 
 # Parses an integer literal.
@@ -167,7 +168,7 @@ tokInt = {/
                 { <> result }
                 { <> iadd(imul(result, base), digit) }
         };
-        <> @["int" = value]
+        <> @["int": value]
     }
 /};
 
@@ -178,7 +179,7 @@ tokError = {/
     [! "\n"]*
     {
         msg = format("Unrecognized character: %q", tokenType(badCh));
-        <> @["error" = msg]
+        <> @["error": msg]
     }
 /};
 
@@ -215,5 +216,5 @@ sam2Tokenize = { programText ::
 };
 
 <> [
-    "sam2Tokenize" = sam2Tokenize
+    "sam2Tokenize": sam2Tokenize
 ]

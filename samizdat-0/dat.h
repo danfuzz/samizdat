@@ -354,7 +354,7 @@ zvalue datMapAdd(zvalue map1, zvalue map2);
 zvalue datMapDel(zvalue map, zvalue key);
 
 /**
- * Gets an empty map value, i.e. `[=]`. Note that this can return
+ * Gets an empty map value, i.e. `[:]`. Note that this can return
  * a different allocated value every time.
  */
 zvalue datMapEmpty(void);

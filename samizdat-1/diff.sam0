@@ -69,7 +69,7 @@ diffMap = { <out> context, v1, v2 ::
                 { key, value ::
                     value2 = mapGet(v2, key);
                     ifFalse
-                        { <> innerDiff(context, ["key"=key], value, value2) }
+                        { <> innerDiff(context, ["key": key], value, value2) }
                         { <out> false }
                 };
             <> true
@@ -104,12 +104,12 @@ diffUniqlet = { context, v1, v2 ::
 
 # Mapping from type names to diff functions.
 DIFF_FUNCTIONS = [
-    "token"   = diffToken,
-    "int"     = diffInt,
-    "list"    = diffList,
-    "map"     = diffMap,
-    "string"  = diffString,
-    "uniqlet" = diffUniqlet
+    "token":   diffToken,
+    "int":     diffInt,
+    "list":    diffList,
+    "map":     diffMap,
+    "string":  diffString,
+    "uniqlet": diffUniqlet
 ];
 
 # Inner diff. Returns an `eq` result.
@@ -141,4 +141,4 @@ diff = { v1, v2 ::
     <> innerDiff([], "top", v1, v2)
 };
 
-<> ["diff" = diff]
+<> ["diff": diff]

@@ -27,7 +27,7 @@ returnString = {
 
 # Something to call.
 returnList = {
-    <> [0, 1, 2, 3, ["blort" = "fizmo"]];
+    <> [0, 1, 2, 3, ["blort": "fizmo"]];
 };
 
 
@@ -46,7 +46,7 @@ out(!!true);
 out(! ! !true);
 out(returnString());
 out(["zero", "one", "two"][1]);
-out(["a"=1, "b"=2, "c"=3]["c"]);
+out(["a": 1, "b": 2, "c": 3]["c"]);
 out([[0, 1, 2], [10, 11, 12], [20, 21, 22]][2, 2]);
 out(-[[0, 1, 2], [10, 11, 12] [20, 21, 22]][1, 0]);
 out(returnList()[1]);

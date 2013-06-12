@@ -42,7 +42,7 @@ Very simple command-line option / argument parser. This accepts a list of
 string arguments, and returns a parsed interpretation of them, as a map
 with the following mappings:
 
-* `"options" = [("opt" = value)*]` &mdash; Map of `--`-named options. If
+* `"options": [("opt": value)*]` &mdash; Map of `--`-named options. If
   the option had a specified value by being in the form `--name=value`, then
   the option's value is a string. If the option had no value, by being in
   the form `--name` (with no equal sign), then the option's value is `true`.
