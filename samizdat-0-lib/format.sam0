@@ -278,7 +278,7 @@ xUsualUpdate = { state ::
     argsAt = iadd(1, xArgsAt(state));
     fmtAt = iadd(2, xFmtAt(state));
 
-    <> [state*, "fmtAt": fmtAt, "argsAt": argsAt];
+    <> [state*, "fmtAt": fmtAt, "argsAt": argsAt]
 };
 
 # Formats a literal percent.
@@ -286,7 +286,7 @@ doPercent = { yield, state ::
     yield("%");
 
     fmtAt = iadd(2, mapGet(state, "fmtAt"));
-    <> mapPut(state, "fmtAt", fmtAt);
+    <> [state*, "fmtAt": fmtAt]
 };
 
 # Formats a literal quoted argument.
@@ -327,7 +327,7 @@ doPlain = { yield, state, ch ::
     yield(ch);
 
     fmtAt = iadd(1, mapGet(state, "fmtAt"));
-    <> mapPut(state, "fmtAt", fmtAt);
+    <> [state*, "fmtAt": fmtAt]
 };
 
 # Formats an arbitrary escape.

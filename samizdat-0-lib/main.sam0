@@ -49,7 +49,7 @@ loadLibrary = { ctx, name ::
 
     text = readLibraryFile(name);
     tree = treeFunction(text);
-    function = evalFunction(mapPut(ctx, "LIBRARY", ctx), tree);
+    function = evalFunction([ctx*, "LIBRARY": ctx], tree);
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -84,8 +84,8 @@ MANIFEST = mapGet(loadLibrary(LIBRARY, "manifest.sam0"), "MANIFEST");
 # Use the manifest to build up the core library.
 CORE_LIBRARY = loadAllLibraries(LIBRARY, MANIFEST*);
 
-# "Manually" run `makeLibrary` to produce the final core library.
-FINAL_LIBRARY = mapPut(CORE_LIBRARY, "LIBRARY", CORE_LIBRARY);
+# "Manually" inline `makeLibrary` to produce the final core library.
+FINAL_LIBRARY = [CORE_LIBRARY*, "LIBRARY": CORE_LIBRARY];
 
 io0Note("    [fin]");
 io0Note("");
