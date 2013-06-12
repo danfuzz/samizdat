@@ -33,7 +33,7 @@ parseKey = pegMakeMainSequence(
 
 # keyValue = {/
 #     "--" k=key "=" v=word
-#     { <> [k = v] }
+#     { <> [k: v] }
 # /}
 parseKeyValue = pegMakeMainSequence(
     pegMakeString("--"),
@@ -44,7 +44,7 @@ parseKeyValue = pegMakeMainSequence(
 
 # flag = {/
 #     "--" w=word
-#     { <> [w = true] }
+#     { <> [w: true] }
 # /}
 parseFlag = pegMakeMainSequence(
     pegMakeString("--"),
@@ -53,7 +53,7 @@ parseFlag = pegMakeMainSequence(
 
 # error = {/
 #     "-" [! "-\0"] word
-#     { ... <> [error = true] }
+#     { ... <> ["error": true] }
 # /}
 parseError = pegMakeMainSequence(
     pegMakeToken("-"),
@@ -72,7 +72,7 @@ parseOption = pegMakeChoice(parseKeyValue, parseFlag, parseError);
 
 # arguments = {/
 #     optList=option* ("--" wordBreak)? words=word*
-#     { ... <> ["options"=options, "file"=file, "args"=args] }
+#     { ... <> ["options": options, "args": args] }
 # /}
 parseArguments = pegMakeMainSequence(
     pegMakeStar(parseOption),

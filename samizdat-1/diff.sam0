@@ -69,7 +69,7 @@ diffMap = { <out> context, v1, v2 ::
                 { key, value ::
                     value2 = mapGet(v2, key);
                     ifFalse
-                        { <> innerDiff(context, ["key"=key], value, value2) }
+                        { <> innerDiff(context, ["key": key], value, value2) }
                         { <out> false }
                 };
             <> true
