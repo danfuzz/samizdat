@@ -108,18 +108,27 @@ parseEmptyMap = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 parseMapping = pegMakeMainSequence(
-    parseListElement,
-    pegMakeToken(":"),
-    parseExpression,
-    pegMakeCode { key, ., value :: <> makeCallName("makeList", value, key) });
+    pegMakeChoice(
+        pegMakeSequence(
+            parseListElement,
+            pegMakeToken(":"),
+            parseExpression,
+            pegMakeCode { key, ., value ::
+                <> makeCallName("makeList", value, key)
+            }),
+        pegMakeSequence(
+            parseExpression,
+            pegMakeToken("*"),
+            pegMakeCode { map, . :: <> map })));
 
 # Documented in Samizdat Layer 0 spec.
 parseMap = pegMakeMainSequence(
     pegMakeToken("["),
+    pegMakeOpt(pegMakeSequence(pegMakeToken(":"), pegMakeToken(","))),
     parseMapping,
     pegMakeStar(pegMakeSequence(pegMakeToken(","), parseMapping)),
     pegMakeToken("]"),
-    pegMakeCode { ., first, rest, . ::
+    pegMakeCode { ., ., first, rest, . ::
         <> makeCallName("makeMap", first, rest*)
     });
 
@@ -264,7 +273,7 @@ parseFormal = pegMakeMainSequence(
             pegMakeCode { r :: <> ["repeat": tokenType(r)] }),
         pegMakeMainSequence(
             pegMakeCode { <> [:] })),
-    pegMakeCode { name, repeat :: <> mapAdd(name, repeat) });
+    pegMakeCode { name, repeat :: <> [:, name*, repeat*] });
 
 # Documented in Samizdat Layer 0 spec.
 parseFormalsList = pegMakeMainSequence(
@@ -291,13 +300,13 @@ parseProgramBody = pegMakeMainSequence(
             pegMakeCode { s :: <> ["statements": [s]] }),
         pegMakeMainSequence(
             parseYield,
-            pegMakeCode { y :: <> mapAdd(["statements": []], y) }),
+            pegMakeCode { y :: <> ["statements": [], y*] }),
         pegMakeMainSequence(
             pegMakeCode { <> ["statements": []] })),
     pegMakeStar(pegMakeToken(";")),
     pegMakeCode { ., most, last, . ::
         allStatements = [most*, mapGet(last, "statements")*];
-        <> mapPut(last, "statements", allStatements)
+        <> [last*, "statements": allStatements]
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -305,7 +314,7 @@ parseProgramDeclarations = pegMakeMainSequence(
     parseOptYieldDef,
     parseFormalsList,
     pegMakeToken("::"),
-    pegMakeCode { yieldDef, formals, . :: <> mapAdd(formals, yieldDef) });
+    pegMakeCode { yieldDef, formals, . :: <> [:, formals*, yieldDef*] });
 
 # Documented in Samizdat Layer 0 spec.
 parseProgram = pegMakeMainSequence(
@@ -313,7 +322,7 @@ parseProgram = pegMakeMainSequence(
         parseProgramDeclarations,
         pegMakeCode { <> [:] }),
     parseProgramBody,
-    pegMakeCode { decls, body :: <> @["closure": mapAdd(decls, body)] });
+    pegMakeCode { decls, body :: <> @["closure": [:, decls*, body*]] });
 
 # Documented in Samizdat Layer 0 spec.
 implClosure = pegMakeMainSequence(

@@ -62,7 +62,7 @@ makeCallNonlocalExit = { name, expression? ::
 # references.
 UNARY_OPERATORS = listReduce([:], ["+", "-", "!", "[]", "!!!"])
     { result, ., name ::
-        <> mapPut(result, name, makeVarRef(stringAdd("unary", name)))
+        <> [result*, name: makeVarRef(stringAdd("unary", name))]
     };
 
 # Map of token types to corresponding binary operator function name variable
@@ -76,7 +76,7 @@ BINARY_OPERATORS = listReduce([:],
     ]
     )
     { result, ., name ::
-        <> mapPut(result, name, makeVarRef(stringAdd("binary", name)))
+        <> [result*, name: makeVarRef(stringAdd("binary", name))]
     };
 
 # Helper for parsing binary operator expressions, which puts together
@@ -177,11 +177,16 @@ parseMapping = {/
     @":"
     value = parseExpression
     { <> makeCallName("makeList", value, key) }
+|
+    map = parseExpression
+    @"*"
+    { <> map }
 /};
 
 # Parses a map literal.
 parseMap = {/
     @"["
+    (@":" @",")?
     first = parseMapping
     rest = (@"," parseMapping)*
     @"]"
@@ -298,7 +303,7 @@ parseFormal = {/
         { <> [:] }
     )
 
-    { <> mapAdd(name, repeat) }
+    { <> [:, name*, repeat*] }
 /};
 
 # Parses a list of formal arguments, with no surrounding parentheses.
@@ -325,7 +330,7 @@ parseProgramBody = {/
         { <> ["statements": [s]] }
     |
         y = parseYield
-        { <> mapAdd(["statements": []], y) }
+        { <> ["statements": [], y*] }
     |
         { <> ["statements": []] }
     )
@@ -334,7 +339,7 @@ parseProgramBody = {/
 
     {
         allStatements = [most*, mapGet(last, "statements")*];
-        <> mapPut(last, "statements", allStatements)
+        <> [last*, "statements": allStatements]
     }
 /};
 
@@ -345,14 +350,14 @@ parseProgramDeclarations = {/
 
     @"::"
 
-    { <> mapAdd(formals, yieldDef) }
+    { <> [:, formals*, yieldDef*] }
 /};
 
 # Parses a program (top-level program or contents inside function braces).
 parseProgram = {/
     decls = (parseProgramDeclarations | { <> [:] })
     body = parseProgramBody
-    { <> @["closure": mapAdd(decls, body)] }
+    { <> @["closure": [:, decls*, body*]] }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
@@ -661,8 +666,11 @@ parseFnCommon = {/
     {
         codeMap = tokenValue(code);
         statements = [returnDef*, mapGet(codeMap, "statements")*];
-        <> mapAdd(codeMap, name, formals,
-            ["yieldDef": "return", "statements": statements])
+        <> [
+            codeMap*, name*, formals*,
+            "yieldDef": "return",
+            "statements": statements
+        ]
     }
 /};
 

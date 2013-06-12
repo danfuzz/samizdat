@@ -115,7 +115,7 @@ convertPexCode = { node, formals ::
     # Use the lexical `formals` context to make a regular closure node,
     # and just convert that.
 
-    closurePayload = mapPut(tokenValue(node), "formals", formals);
+    closurePayload = [tokenValue(node)*, "formals": formals];
     convertedClosure = convertExpression(@["closure": closurePayload]);
 
     <> callNameWithExpressions("pegMakeCode", convertedClosure)
@@ -205,7 +205,7 @@ convertCall = { node ::
     function = convertExpression(mapGet(nodeValue, "function"));
     actuals = convertList(mapGet(nodeValue, "actuals"));
 
-    <> @["call": mapAdd(nodeValue, ["function": function, "actuals": actuals])]
+    <> @["call": [nodeValue*, "function": function, "actuals": actuals]]
 };
 
 # Does parser conversion of a `closure` or `fnDef` node.
@@ -214,10 +214,10 @@ convertClosureLike = { node ::
     nodeValue = tokenValue(node);
     statements = convertList(mapGet(nodeValue, "statements"));
     yield = ifValue { <> mapGet(nodeValue, "yield") }
-        { yield :: <> ["yield": (convertExpression(yield))] }
+        { yield :: <> ["yield": convertExpression(yield)] }
         { <> [:] };
 
-    <> @[nodeType: mapAdd(nodeValue, ["statements": statements], yield)]
+    <> @[nodeType: [nodeValue*, yield*, "statements": statements]]
 };
 
 # Does parser conversion of an `interpolate` node.
@@ -232,7 +232,7 @@ convertVarDef = { node ::
     nodeValue = tokenValue(node);
     value = convertExpression(mapGet(nodeValue, "value"));
 
-    <> @["varDef": mapPut(nodeValue, "value", value)]
+    <> @["varDef": [nodeValue*, "value": value]]
 };
 
 # Does no-op node conversion.

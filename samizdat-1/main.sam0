@@ -39,7 +39,7 @@ loadFile = { ctx, name ::
 # ones.
 loadAllLibraries = { ctx, rest* ::
     <> listReduce(ctx, rest) { result, ., elem ::
-        <> mapAdd(result, loadFile(result, elem));
+        <> [:, result*, loadFile(result, elem)*];
     }
 };
 

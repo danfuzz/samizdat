@@ -95,10 +95,15 @@ mapping = {/
     @":"
     value = expression
     { <> makeCallName("makeList", value, key) }
+|
+    map = expression
+    @"*"
+    { <> map }
 /};
 
 map = {/
     @"["
+    (@":" @",")?
     first = mapping
     rest = (@"," mapping)*
     @"]"
@@ -228,7 +233,7 @@ formal = {/
         { <> [:] }
     )
 
-    { <> mapAdd(name, repeat) }
+    { <> [:, name*, repeat*] }
 /};
 
 formalsList = {/
@@ -253,7 +258,7 @@ programBody = {/
         { <> ["statements": [s]] }
     |
         y = yield
-        { <> mapAdd(["statements": []], y) }
+        { <> ["statements": [], y*] }
     |
         { <> ["statements": []] }
     )
@@ -262,7 +267,7 @@ programBody = {/
 
     {
         allStatements = listAdd(most, mapGet(last, "statements"));
-        <> mapPut(last, "statements", allStatements)
+        <> [last*, "statements": allStatements]
     }
 /};
 
@@ -272,13 +277,13 @@ programDeclarations = {/
 
     @"::"
 
-    { <> mapAdd(formals, yieldDef) }
+    { <> [:, formals*, yieldDef*] }
 /};
 
 program = {/
     decls = (programDeclarations | { <> [:] })
     body = programBody
-    { <> @["closure": mapAdd(decls, body)] }
+    { <> @["closure": [:, decls*, body*]] }
 /};
 
 closure = {/
