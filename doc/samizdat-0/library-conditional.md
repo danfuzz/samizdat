@@ -104,3 +104,15 @@ Short-circuit disjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
 them returns `true`, in which case this function also returns
 `true`. If no predicate returns `true`, this function returns `false`.
+
+#### `\"switch"(value, cases, defaultFunction?) <> . | !.`
+
+Value dispatcher. Takes an arbitrary `value` and a map of `cases`. This
+looks up the value as a key in the case map. If it finds a mapping, the
+mapping's value is called as a function with no arguments. If it does not
+find a mapping and a `defaultFunction` is supplied, then that function is
+called with no arguments.
+
+The result of a call to this function is the same as the result of whatever
+function was called in turn (including void). If no function was called,
+this function returns void.
