@@ -21,16 +21,29 @@
 static zvalue makeMap1(zint argCount, const zvalue *args, bool reversed) {
     // Count the number of mappings, that will be used when building a map,
     // which can be either bigger or smaller than `argCount` (or the same).
-    // Also validates that all arguments are lists.
+    // Also validates that all arguments are maps or appropriate-sized lists.
 
     zint size = 0;
     for (zint i = 0; i < argCount; i++) {
-        datAssertList(args[i]);
-        zint oneSize = datSize(args[i]);
-        if (oneSize < 2) {
-            die("Invalid mapping argument: size %lld", oneSize);
+        zvalue one = args[i];
+        zint oneSize = datSize(one);
+
+        switch (datType(one)) {
+            case DAT_MAP: {
+                size += oneSize;
+                break;
+            }
+            case DAT_LIST: {
+                if (oneSize < 2) {
+                    die("Invalid mapping argument: list of size %lld", oneSize);
+                }
+                size += oneSize - 1;
+                break;
+            }
+            default: {
+                die("Invalid mapping argument.");
+            }
         }
-        size += oneSize - 1;
     }
 
     if (size == 0) {
@@ -38,17 +51,32 @@ static zvalue makeMap1(zint argCount, const zvalue *args, bool reversed) {
     }
 
     zmapping mappings[size];
-    zint at = reversed ? (size - 1) : 0;
-    zint atDir = reversed ? -1 : 1;
+    zint at = reversed ? size : 0;
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = args[i];
         zint oneSize = datSize(one);
-        zvalue value = datListNth(one, 0);
-        for (zint j = 1; j < oneSize; j++) {
-            mappings[at].key = datListNth(one, j);
-            mappings[at].value = value;
-            at += atDir;
+
+        switch (datType(one)) {
+            case DAT_MAP: {
+                if (reversed) { at -= oneSize; }
+                datArrayFromMap(&mappings[at], one);
+                if (!reversed) { at += oneSize; }
+                break;
+            }
+            case DAT_LIST: {
+                zvalue value = datListNth(one, 0);
+                for (zint j = 1; j < oneSize; j++) {
+                    if (reversed) { at--; }
+                    mappings[at].key = datListNth(one, j);
+                    mappings[at].value = value;
+                    if (!reversed) { at++; }
+                }
+                break;
+            }
+            default: {
+                die("Shouldn't happen.");
+            }
         }
     }
 

@@ -146,6 +146,12 @@ void datMapMark(zvalue value) {
  */
 
 /* Documented in header. */
+void datArrayFromMap(zmapping *result, zvalue map) {
+    datAssertMap(map);
+    memcpy(result, mapElems(map), map->size * sizeof(zmapping));
+}
+
+/* Documented in header. */
 zvalue datMapAdd(zvalue map1, zvalue map2) {
     datAssertMap(map1);
     datAssertMap(map2);
