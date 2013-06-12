@@ -1,0 +1,51 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Switch expression demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper functions.
+#
+
+fn powerName(value) {
+    <> switch <out> (value) {
+        1: { <> "one" }
+        2: { <out> "two" }
+        4: { return "four" }
+        8: { <> "eight" }
+        default: { <> "um..." }
+    }
+};
+
+fn interpolator(value, keys) {
+    <> switch (value) {
+        keys*: { <> "Yes" }
+        10: { <> "Constant override" }
+        value * 0: { <> "Calculated override" }
+        default: { <> "No" }
+    }
+};
+
+#
+# Main tests
+#
+
+io0Note(powerName(1));
+io0Note(powerName(2));
+io0Note(powerName(3));
+io0Note(powerName(4));
+
+io0Note(interpolator(1, [1, 2, 3]));
+io0Note(interpolator(2, [4..6]));
+io0Note(interpolator(10, [8..18]));
+io0Note(interpolator(0, [0, 5]));
+
+<> 0
