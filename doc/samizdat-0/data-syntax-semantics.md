@@ -85,11 +85,20 @@ Lists are written as an initial `[`, followed by zero or
 more value representations, followed by a final `]`. Values
 are separated with commas (`,`).
 
+A range of either ints or single-character strings can be included
+in a list using the syntax `start..end`, where `start` and `end` are
+either both ints or both single-character strings.
+
+The contents of other lists can be "interpolated" into a list (that is,
+have their elements become elements of the result) by placing a `*`
+after the list.
+
 ```
 []                            # the empty list
 [1]
 ["blort", "fizmo", "igram"]
 [[1], 242, -23]
+[[1, 2]*, 3..5, "a".."c"]     # the same as [1, 2, 3, 4, 5, "a", "b", "c"]
 ```
 
 
@@ -102,19 +111,25 @@ only being strings (or string-like things).
 
 Non-empty maps are written as an initial `[`, followed by one or
 more mappings, followed by a final `]`. Mappings are written as
-the key representation, followed by an `=`, followed by the value
+the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
+A group of mappings with multiple keys that map to the same value
+can be written in a short-hand using the same range and
+interpolation syntax as with lists.
+
 To avoid ambiguity with the empty list, the empty map is
-written as `[=]`.
+written as `[:]`.
 
 ```
-[=]                           # the empty map
-[1="number one"]
-["blort" = "potion; the ability to see in the dark",
- "fizmo" = "spell; unclogs pipes",
- "igram" = "spell; make purple things invisible"]
-[["complex", "data", "as", "key"] = "Handy!"]
+[:]                           # the empty map
+[1: "number one"]
+["blort": "potion; the ability to see in the dark",
+ "fizmo": "spell; unclogs pipes",
+ "igram": "spell; make purple things invisible"]
+[["complex", "data", "as", "key"]: "Handy!"]
+[0..9: "digits", 10: "not a digit"]
+[["these", "map", "to", "the"]*: "same value"]
 ```
 
 
@@ -128,7 +143,7 @@ the direct origin of the name).
 
 Tokens are written as an initial `@[`, followed by a type tag
 representation (an arbitrary value), optionally followed by an
-`=` and a payload value representation (another arbitrary value),
+`:` and a payload value representation (another arbitrary value),
 followed by a final `]`.
 
 Valueless tokens whose type tag is a string constant can be abbreviated
@@ -139,11 +154,11 @@ identifier, then the token can be further abbreviated as just `@type`.
 @["null"]                     # the value usually just written as `null`
 @"null"                       # same as above
 @null                         # same as above
-@["boolean" = 0]              # the value usually just written as `false`
-@["boolean" = 1]              # the value usually just written as `true`
+@["boolean": 0]               # the value usually just written as `false`
+@["boolean": 1]               # the value usually just written as `true`
 @[
   "spell" =
-  ["name"="frotz", "purpose"="cause item to glow"]
+  ["name": "frotz", "purpose": "cause item to glow"]
 ]
 ```
 
@@ -187,8 +202,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = @["boolean" = 0]
-true = @["boolean" = 1]
+false = @["boolean": 0]
+true = @["boolean": 1]
 ```
 
 
