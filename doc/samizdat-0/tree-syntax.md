@@ -86,13 +86,13 @@ list = {/
 /};
 
 emptyMap = {/
-    @"[" @"=" @"]"
+    @"[" @":" @"]"
     { <> makeLiteral([=]) }
 /};
 
 mapping = {/
     key = listElement
-    @"="
+    @":"
     value = expression
     { <> makeCallName("makeList", value, key) }
 /};
@@ -110,7 +110,7 @@ token = {/
     (
         @"["
         type = expression
-        value = (@"=" expression)?
+        value = (@":" expression)?
         @"]"
         { <> makeCallName("makeToken", type, value*) }
     |
