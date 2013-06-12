@@ -58,7 +58,7 @@ convertPexSequence = { node, formals ::
     newFormals = listMap(pexes) { ., pex ::
         <> ifTrue { <> eq(tokenType(pex), "varDef") }
             { <> ["name" = (mapGet(tokenValue(pex), "name"))] }
-            { <> [=] }
+            { <> [:] }
     };
 
     # Convert all the pexes, passing in appropriately-extended formals
@@ -215,7 +215,7 @@ convertClosureLike = { node ::
     statements = convertList(mapGet(nodeValue, "statements"));
     yield = ifValue { <> mapGet(nodeValue, "yield") }
         { yield :: <> ["yield" = (convertExpression(yield))] }
-        { <> [=] };
+        { <> [:] };
 
     <> @[nodeType = mapAdd(nodeValue, ["statements" = statements], yield)]
 };

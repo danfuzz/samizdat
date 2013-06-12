@@ -111,7 +111,7 @@ main = { selfPath, name, rest* ::
     process(listButLast([], "Самиздат"));
     process("\"Blort.\" \\ \0 \n");
     process(stringSlice("muffins", 1, 6));
-    process([=]);
+    process([:]);
     process([1=2]);
     process([1=2, 888=1]);
     process(["fizmo"="omzif", "igram"="margi", "blort"="trolb"]);

@@ -104,7 +104,7 @@ parseEmptyMap = pegMakeMainSequence(
     pegMakeToken("["),
     pegMakeToken("="),
     pegMakeToken("]"),
-    pegMakeCode { ., ., . :: <> makeLiteral([=]) });
+    pegMakeCode { ., ., . :: <> makeLiteral([:]) });
 
 # Documented in Samizdat Layer 0 spec.
 parseMapping = pegMakeMainSequence(
@@ -237,7 +237,7 @@ parseYield = pegMakeMainSequence(
             parseExpression,
             pegMakeCode { ex :: <> ["yield" = ex] }),
         pegMakeMainSequence(
-            pegMakeCode { <> [=] })));
+            pegMakeCode { <> [:] })));
 
 # Documented in Samizdat Layer 0 spec.
 parseOptYieldDef = pegMakeMainSequence(
@@ -247,7 +247,7 @@ parseOptYieldDef = pegMakeMainSequence(
             pegMakeToken("identifier"),
             pegMakeToken(">"),
             pegMakeCode { ., name, . :: <> ["yieldDef" = tokenValue(name)] }),
-        pegMakeCode { <> [=] }));
+        pegMakeCode { <> [:] }));
 
 # Documented in Samizdat Layer 0 spec.
 parseFormal = pegMakeMainSequence(
@@ -257,13 +257,13 @@ parseFormal = pegMakeMainSequence(
             pegMakeCode { n :: <> ["name" = tokenValue(n)] }),
         pegMakeMainSequence(
             pegMakeToken("."),
-            pegMakeCode { . :: <> [=] })),
+            pegMakeCode { . :: <> [:] })),
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakeTokenSet("?", "*", "+"),
             pegMakeCode { r :: <> ["repeat" = tokenType(r)] }),
         pegMakeMainSequence(
-            pegMakeCode { <> [=] })),
+            pegMakeCode { <> [:] })),
     pegMakeCode { name, repeat :: <> mapAdd(name, repeat) });
 
 # Documented in Samizdat Layer 0 spec.
@@ -275,7 +275,7 @@ parseFormalsList = pegMakeMainSequence(
             pegMakeCode { first, rest ::
                 <> ["formals" = [first, rest*]]
             }),
-        pegMakeCode { <> [=] }));
+        pegMakeCode { <> [:] }));
 
 # Documented in Samizdat Layer 0 spec.
 parseProgramBody = pegMakeMainSequence(
@@ -311,7 +311,7 @@ parseProgramDeclarations = pegMakeMainSequence(
 parseProgram = pegMakeMainSequence(
     pegMakeChoice(
         parseProgramDeclarations,
-        pegMakeCode { <> [=] }),
+        pegMakeCode { <> [:] }),
     parseProgramBody,
     pegMakeCode { decls, body :: <> @["closure" = mapAdd(decls, body)] });
 

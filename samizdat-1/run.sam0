@@ -49,7 +49,7 @@ readAllLibraryFiles = {
     BOOTSTRAP_FILES = mapGet(manifestBindings, "BOOTSTRAP_FILES");
     MANIFEST = mapGet(manifestBindings, "MANIFEST");
 
-    <> listReduce([=], [BOOTSTRAP_FILES*, MANIFEST*])
+    <> listReduce([:], [BOOTSTRAP_FILES*, MANIFEST*])
         { result, ., name :: <> mapPut(result, name, readLibraryFile(name)) }
 };
 

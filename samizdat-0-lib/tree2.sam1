@@ -60,14 +60,14 @@ makeCallNonlocalExit = { name, expression? ::
 
 # Map of token types to corresponding unary operator function name variable
 # references.
-UNARY_OPERATORS = listReduce([=], ["+", "-", "!", "[]", "!!!"])
+UNARY_OPERATORS = listReduce([:], ["+", "-", "!", "[]", "!!!"])
     { result, ., name ::
         <> mapPut(result, name, makeVarRef(stringAdd("unary", name)))
     };
 
 # Map of token types to corresponding binary operator function name variable
 # references.
-BINARY_OPERATORS = listReduce([=],
+BINARY_OPERATORS = listReduce([:],
     [
         "+", "-", "*", "/", "%",
         "&&&", "|||", "^^^", "<<<", ">>>",
@@ -168,7 +168,7 @@ parseList = {/
 # Parses an empty map literal.
 parseEmptyMap = {/
     @"[" @"=" @"]"
-    { <> makeLiteral([=]) }
+    { <> makeLiteral([:]) }
 /};
 
 # Parses a mapping (element of a map).
@@ -247,7 +247,7 @@ parseOptYieldDef = {/
     @">"
     { <> ["yieldDef" = tokenValue(name)] }
 |
-    { <> [=] }
+    { <> [:] }
 /};
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
@@ -278,7 +278,7 @@ parseYield = {/
         ex = parseExpression
         { <> ["yield" = ex] }
     |
-        { <> [=] }
+        { <> [:] }
     )
 /};
 
@@ -288,14 +288,14 @@ parseFormal = {/
         n = @identifier
         { <> ["name" = tokenValue(n)] }
     |
-        @"." { <> [=] }
+        @"." { <> [:] }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
         { <> ["repeat" = tokenType(r)] }
     |
-        { <> [=] }
+        { <> [:] }
     )
 
     { <> mapAdd(name, repeat) }
@@ -307,7 +307,7 @@ parseFormalsList = {/
     rest = (@"," parseFormal)*
     { <> ["formals" = [first, rest*]] }
 |
-    { <> [=] }
+    { <> [:] }
 /};
 
 # Parses a program body (statements plus optional yield).
@@ -350,7 +350,7 @@ parseProgramDeclarations = {/
 
 # Parses a program (top-level program or contents inside function braces).
 parseProgram = {/
-    decls = (parseProgramDeclarations | { <> [=] })
+    decls = (parseProgramDeclarations | { <> [:] })
     body = parseProgramBody
     { <> @["closure" = mapAdd(decls, body)] }
 /};
@@ -643,12 +643,12 @@ parseFnCommon = {/
         n = @identifier
         { <> ["name" = tokenValue(n)] }
     |
-        { <> [=] }
+        { <> [:] }
     )
 
     formals = (
         @"()"
-        { <> [=] }
+        { <> [:] }
     |
         @"("
         f = parseFormalsList
@@ -918,7 +918,7 @@ parseIfExpression = {/
 
     (
         # There was a yield def; wrap the whole thing in a thunk-call.
-        &&(ne(yieldDef, [=]))
+        &&(ne(yieldDef, [:]))
         {
             mainClosure = @["closure" = [
                 "yieldDef" = mapValue(yieldDef),
@@ -941,7 +941,7 @@ parseOptBreakDef = {/
     y = parseOptYieldDef
 
     {
-        <> ifTrue { <> ne(y, [=]) }
+        <> ifTrue { <> ne(y, [:]) }
             { <> makeVarDef(mapValue(y), makeVarRef("break")) }
     }?
 /};

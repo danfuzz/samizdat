@@ -27,7 +27,7 @@ intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
-KEYWORDS = listReduce([=],
+KEYWORDS = listReduce([:],
     [ "break", "case", "continue", "def", "default", "do", "else", "fn",
       "if", "return", "switch", "var", "while" ])
     { result, ., name :: <> mapPut(result, name, @[name]) };
