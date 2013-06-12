@@ -87,7 +87,7 @@ list = {/
 
 emptyMap = {/
     @"[" @":" @"]"
-    { <> makeLiteral([=]) }
+    { <> makeLiteral([:]) }
 /};
 
 mapping = {/
@@ -198,7 +198,7 @@ yield = {/
     @"<>"
     (
         ex = expression
-        { <> ["yield" = ex] }
+        { <> ["yield": ex] }
     |
         { <> [:] }
     )
