@@ -400,23 +400,17 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    zstackPointer save = datFrameStart();
-    zvalue result;
-
     if (datTokenTypeIs(e, STR_LITERAL))
-        result = datTokenValue(e);
+        return datTokenValue(e);
     else if (datTokenTypeIs(e, STR_VAR_REF))
-        result = execVarRef(frame, e);
+        return execVarRef(frame, e);
     else if (datTokenTypeIs(e, STR_CALL))
-        result = execCall(frame, e);
+        return execCall(frame, e);
     else if (datTokenTypeIs(e, STR_CLOSURE))
-        result = execClosure(frame, e);
+        return execClosure(frame, e);
     else {
         die("Invalid expression type.");
     }
-
-    datFrameReturn(save, result);
-    return result;
 }
 
 /**
