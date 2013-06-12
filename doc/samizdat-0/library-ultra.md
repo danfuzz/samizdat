@@ -10,18 +10,6 @@ parse trees as produced by `sam0Tree` (see which).
 <br><br>
 ### Primitive Definitions
 
-
-#### `makeToken(type, value?) <> token`
-
-Returns a token with the given type tag (an arbitrary value)
-and optional data payload value (also an arbitrary value). These
-equivalences hold for *Samizdat Layer 0* source code:
-
-```
-v = @[key];         is equivalent to   v = makeToken(key);
-v = @[key = value]; is equivalent to   v = makeToken(key, value);
-```
-
 #### `makeList(rest*) <> list`
 
 Returns a list with the given elements (in argument order).
@@ -67,10 +55,27 @@ v = [k1=v1, k2=v2];  is equivalent to   v = makeMap([v1, k1], [v2, k2]);
 v = [k1..k2=v];      is equivalent to   v = makeMap([v, k1..k2]);
 ```
 
+#### `makeMapReversed(rest*) <> map`
+
+This is the same as `makeMap`, except in how duplicate keys are resolved.
+In this function, the *first* value mapping for any given key is the one
+that ends up in the result.
+
 #### `makeRange(start, end) <> list`
 
 Returns a list consisting of the values ranging from `start` to `end`
 inclusive. Both arguments must be of type int.
+
+#### `makeToken(type, value?) <> token`
+
+Returns a token with the given type tag (an arbitrary value)
+and optional data payload value (also an arbitrary value). These
+equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = @[key];         is equivalent to   v = makeToken(key);
+v = @[key = value]; is equivalent to   v = makeToken(key, value);
+```
 
 #### `makeUniqlet() <> uniqlet`
 

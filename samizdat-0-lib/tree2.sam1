@@ -931,10 +931,10 @@ parseOptBreakDef = {/
 
 # Helper for switch expressions: Parse a regular case.
 parseSwitchCase = {/
-    key = parseListElement
+    key = parseUnadornedList
     @":"
     code = parseNullaryClosure
-    { <> makeCallName("makeList", code, key) }
+    { <> makeCallName("makeList", code, key*) }
 /};
 
 # Helper for switch expressions: Parse a default case.
@@ -963,13 +963,15 @@ parseSwitchDefault = {/
 #         value,
 #         [
 #             ex1 = { stat1a; stat1b },
-#             ex2 = { stat2a; stat2b },
+#             ex2 = { stat2a; stat2b }
 #         ])
 #         { statDefault }
 # }
 # ```
 #
-# with the initial break assignment omitted if there is no yield def.
+# with the initial break assignment omitted if there is no yield def,
+# and with overrides of map keys switched around so the *first* key
+# wins.
 parseSwitchExpression = {/
     @"switch"
     breakDef = parseOptBreakDef
@@ -992,7 +994,7 @@ parseSwitchExpression = {/
     {
         switchCall = makeCallName("switch",
             value,
-            makeCallName("makeMap", cases1*, cases2*),
+            makeCallName("makeMapReversed", cases1*, cases2*),
             optDefault*);
 
         mainClosure = @["closure" = [

@@ -11,13 +11,54 @@
 #include <stddef.h>
 
 
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeToken) {
-    requireRange(argCount, 1, 2);
+/*
+ * Helper functions
+ */
 
-    zvalue value = (argCount == 2) ? args[1] : NULL;
-    return constTokenFrom(args[0], value);
+/**
+ * Helper for `makeMap` and `makeMapReverse`, which does most of the work.
+ */
+static zvalue makeMap1(zint argCount, const zvalue *args, bool reversed) {
+    // Count the number of mappings, that will be used when building a map,
+    // which can be either bigger or smaller than `argCount` (or the same).
+    // Also validates that all arguments are lists.
+
+    zint size = 0;
+    for (zint i = 0; i < argCount; i++) {
+        datAssertList(args[i]);
+        zint oneSize = datSize(args[i]);
+        if (oneSize < 2) {
+            die("Invalid mapping argument: size %lld", oneSize);
+        }
+        size += oneSize - 1;
+    }
+
+    if (size == 0) {
+        return EMPTY_MAP;
+    }
+
+    zmapping mappings[size];
+    zint at = reversed ? (size - 1) : 0;
+    zint atDir = reversed ? -1 : 1;
+
+    for (zint i = 0; i < argCount; i++) {
+        zvalue one = args[i];
+        zint oneSize = datSize(one);
+        zvalue value = datListNth(one, 0);
+        for (zint j = 1; j < oneSize; j++) {
+            mappings[at].key = datListNth(one, j);
+            mappings[at].value = value;
+            at += atDir;
+        }
+    }
+
+    return datMapAddArray(EMPTY_MAP, size, mappings);
 }
+
+
+/*
+ * Exported functions
+ */
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeList) {
@@ -30,37 +71,12 @@ PRIM_IMPL(makeList) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeMap) {
-    if (argCount == 0) {
-        return EMPTY_MAP;
-    }
+    return makeMap1(argCount, args, false);
+}
 
-    // Count all the keys, which could be greater than the number of arguments
-    // due to multikey bindings.
-    zint size = 0;
-    for (zint i = 0; i < argCount; i++) {
-        datAssertList(args[i]);
-        zint oneSize = datSize(args[i]);
-        if (oneSize < 2) {
-            die("Invalid mapping argument: size %lld", oneSize);
-        }
-        size += oneSize - 1;
-    }
-
-    zmapping mappings[size];
-    zint at = 0;
-
-    for (zint i = 0; i < argCount; i++) {
-        zvalue one = args[i];
-        zint oneSize = datSize(one);
-        zvalue value = datListNth(one, 0);
-        for (zint j = 1; j < oneSize; j++) {
-            mappings[at].key = datListNth(one, j);
-            mappings[at].value = value;
-            at++;
-        }
-    }
-
-    return datMapAddArray(EMPTY_MAP, size, mappings);
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeMapReversed) {
+    return makeMap1(argCount, args, true);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -106,6 +122,14 @@ PRIM_IMPL(makeRange) {
     }
 
     die("Bad type for range.");
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeToken) {
+    requireRange(argCount, 1, 2);
+
+    zvalue value = (argCount == 2) ? args[1] : NULL;
+    return constTokenFrom(args[0], value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

@@ -21,15 +21,16 @@ fn powerName(value) {
         2: { <out> "two" }
         4: { return "four" }
         8: { <> "eight" }
-        default: { <> "um..." }
+        1..4: { <> "um..." }
+        default: { <> "uh..." }
     }
 };
 
 fn interpolator(value, keys) {
     <> switch (value) {
-        keys*: { <> "Yes" }
-        10: { <> "Constant override" }
+        10, 11: { <> "Constant override" }
         value * 0: { <> "Calculated override" }
+        keys*: { <> "Yes" }
         default: { <> "No" }
     }
 };
@@ -38,14 +39,17 @@ fn interpolator(value, keys) {
 # Main tests
 #
 
+io0Note(powerName(0));
 io0Note(powerName(1));
 io0Note(powerName(2));
 io0Note(powerName(3));
 io0Note(powerName(4));
+io0Note(powerName(5));
 
 io0Note(interpolator(1, [1, 2, 3]));
 io0Note(interpolator(2, [4..6]));
 io0Note(interpolator(10, [8..18]));
+io0Note(interpolator(11, [8..18]));
 io0Note(interpolator(0, [0, 5]));
 
 <> 0
