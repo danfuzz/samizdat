@@ -157,7 +157,7 @@ actualsList = {/
     normalActuals = unadornedList
     @")"
     closureActuals = closure*
-    { <> listAdd(normalActuals, closureActuals) }
+    { <> [normalActuals*, closureActuals*] }
 |
     closure+
 /};
