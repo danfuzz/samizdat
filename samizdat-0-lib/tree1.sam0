@@ -515,5 +515,5 @@ sam1Tree = { program ::
 };
 
 <> [
-    "sam1Tree" = sam1Tree
+    "sam1Tree": sam1Tree
 ]

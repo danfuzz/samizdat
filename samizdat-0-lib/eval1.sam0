@@ -167,22 +167,22 @@ convertPexPlus = { node, formals ::
 
 # Map of types to parsing expression node converters.
 CONVERT_PEX_MAP = [
-    "choice"   = convertPexChoice,
-    "sequence" = convertPexSequence,
-    "string"   = convertPexString,
-    "token"    = convertPexToken,
-    "varRef"   = convertPexVarRef,
-    "."        = convertPexDot,
-    "()"       = convertPexEmpty,
-    "[]"       = convertPexSet,
-    "[!]"      = convertPexSetComplement,
-    "{}"       = convertPexCode,
-    "&&"       = convertPexPredicate,
-    "&"        = convertPexLookaheadSuccess,
-    "!"        = convertPexLookaheadFailure,
-    "?"        = convertPexOpt,
-    "*"        = convertPexStar,
-    "+"        = convertPexPlus
+    "choice":   convertPexChoice,
+    "sequence": convertPexSequence,
+    "string":   convertPexString,
+    "token":    convertPexToken,
+    "varRef":   convertPexVarRef,
+    ".":        convertPexDot,
+    "()":       convertPexEmpty,
+    "[]":       convertPexSet,
+    "[!]":      convertPexSetComplement,
+    "{}":       convertPexCode,
+    "&&":       convertPexPredicate,
+    "&":        convertPexLookaheadSuccess,
+    "!":        convertPexLookaheadFailure,
+    "?":        convertPexOpt,
+    "*":        convertPexStar,
+    "+":        convertPexPlus
 ];
 
 # Dispatches to an appropriate parser node converter. `formals` is the
@@ -240,14 +240,14 @@ convertNop = { node :: <> node };
 
 # Map of types to expression/statement node converters.
 CONVERT_EXPRESSION_MAP = [
-    "call"        = convertCall,
-    "closure"     = convertClosureLike,
-    "fnDef"       = convertClosureLike,
-    "interpolate" = convertInterpolate,
-    "literal"     = convertNop,
-    "parser"      = convertParser,
-    "varDef"      = convertVarDef,
-    "varRef"      = convertNop
+    "call":        convertCall,
+    "closure":     convertClosureLike,
+    "fnDef":       convertClosureLike,
+    "interpolate": convertInterpolate,
+    "literal":     convertNop,
+    "parser":      convertParser,
+    "varDef":      convertVarDef,
+    "varRef":      convertNop
 ];
 
 # Iterates / visits the given expression or statement node, transforming
@@ -269,5 +269,5 @@ sam1Eval = { context, expressionNode ::
 };
 
 <> [
-    "sam1Eval" = sam1Eval
+    "sam1Eval": sam1Eval
 ]

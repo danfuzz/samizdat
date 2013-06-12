@@ -152,5 +152,5 @@ sam1Tokenize = { programText ::
 };
 
 <> [
-    "sam1Tokenize" = sam1Tokenize
+    "sam1Tokenize": sam1Tokenize
 ]

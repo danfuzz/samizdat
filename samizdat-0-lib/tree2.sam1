@@ -851,10 +851,10 @@ parseFnExpression = {/
         name = { <> mapGet(funcMap, "name") }
         {
             mainClosure = @["closure" = [
-                "statements" = [
+                "statements": [
                     makeVarDef(name, makeCallName("forwardFunction"))
                 ],
-                "yield" = makeCall(makeVarRef(name), closure)
+                "yield": makeCall(makeVarRef(name), closure)
             ]];
 
             <> makeCall(mainClosure)
@@ -921,9 +921,9 @@ parseIfExpression = {/
         &&(ne(yieldDef, [:]))
         {
             mainClosure = @["closure" = [
-                "yieldDef" = mapValue(yieldDef),
-                "statements" = [],
-                "yield" = mainCall
+                "yieldDef": mapValue(yieldDef),
+                "statements": [],
+                "yield": mainCall
             ]];
 
             <> makeCall(mainClosure)
@@ -1014,10 +1014,10 @@ parseSwitchExpression = {/
             makeCallName("makeMapReversed", cases1*, cases2*),
             optDefault*);
 
-        mainClosure = @["closure" = [
-            "yieldDef" = "break",
-            "statements" = [breakDef*],
-            "yield" = switchCall
+        mainClosure = @["closure": [
+            "yieldDef": "break",
+            "statements": [breakDef*],
+            "yield": switchCall
         ]];
 
         <> makeCall(mainClosure)
@@ -1052,9 +1052,9 @@ parseWhileExpression = {/
     code = parseNullaryClosure
 
     {
-        loopClosure = @["closure" = [
-            "yieldDef" = "continue",
-            "statements" = [
+        loopClosure = @["closure": [
+            "yieldDef": "continue",
+            "statements": [
                 makeCallName("ifTrue",
                     makeThunk(condition),
                     code,
@@ -1062,9 +1062,9 @@ parseWhileExpression = {/
             ]
         ]];
 
-        mainClosure = @["closure" = [
-            "yieldDef" = "break",
-            "statements" = [breakDef*, makeCallName("loop", loopClosure)]
+        mainClosure = @["closure": [
+            "yieldDef": "break",
+            "statements": [breakDef*, makeCallName("loop", loopClosure)]
         ]];
 
         <> makeCall(mainClosure)
@@ -1108,14 +1108,14 @@ parseDoExpression = {/
     )?
 
     {
-        loopClosure = @["closure" = [
-            "yieldDef" = "continue",
-            "statements" = [makeCall(code), condition*]
+        loopClosure = @["closure": [
+            "yieldDef": "continue",
+            "statements": [makeCall(code), condition*]
         ]];
 
-        mainClosure = @["closure" = [
-            "yieldDef" = "break",
-            "statements" = [breakDef*, makeCallName("loop", loopClosure)]
+        mainClosure = @["closure": [
+            "yieldDef": "break",
+            "statements": [breakDef*, makeCallName("loop", loopClosure)]
         ]];
 
         <> makeCall(mainClosure)
@@ -1177,5 +1177,5 @@ sam2Tree = { program ::
 };
 
 <> [
-    "sam2Tree" = sam2Tree
+    "sam2Tree": sam2Tree
 ]

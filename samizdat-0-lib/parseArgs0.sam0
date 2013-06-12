@@ -82,10 +82,7 @@ parseArguments = pegMakeMainSequence(
         options = mapAdd(optList*);
         ifTrue { <> mapGet(options, "error", false) }
             { io0Die("Trouble with options.") };
-        <> [
-            "options" = options,
-            "args" = args
-        ]
+        <> ["options": options, "args": args]
     });
 
 
@@ -105,4 +102,4 @@ parseArgs0 = { args ::
     <> pegApply(parseArguments, argString)
 };
 
-<> ["parseArgs0" = parseArgs0]
+<> ["parseArgs0": parseArgs0]
