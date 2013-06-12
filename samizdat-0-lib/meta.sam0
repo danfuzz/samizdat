@@ -12,9 +12,9 @@
 
 # Map from file name suffixes to names of parsing and evaluation functions.
 META_NAME_MAP = [
-    "sam0" = ["eval"="sam0Eval", "tokenize"="sam0Tokenize", "tree"="sam0Tree"],
-    "sam1" = ["eval"="sam1Eval", "tokenize"="sam1Tokenize", "tree"="sam1Tree"],
-    "sam2" = ["eval"="sam2Eval", "tokenize"="sam2Tokenize", "tree"="sam2Tree"]
+    "sam0": ["eval":"sam0Eval", "tokenize":"sam0Tokenize", "tree":"sam0Tree"],
+    "sam1": ["eval":"sam1Eval", "tokenize":"sam1Tokenize", "tree":"sam1Tree"],
+    "sam2": ["eval":"sam2Eval", "tokenize":"sam2Tokenize", "tree":"sam2Tree"]
 ];
 
 
@@ -77,7 +77,7 @@ samCommandLine = { context, rawArgs* ::
 };
 
 <> [
-    "makeLibrary" = makeLibrary,
-    "metaFunctions" = metaFunctions,
-    "samCommandLine" = samCommandLine
+    "makeLibrary": makeLibrary,
+    "metaFunctions": metaFunctions,
+    "samCommandLine": samCommandLine
 ]

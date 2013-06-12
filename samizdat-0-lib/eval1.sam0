@@ -22,13 +22,13 @@ convertList = { nodes ::
 
 # Constructs a function call.
 makeCall = { function, args* ::
-    <> @["call" = ["function"=function, "actuals"=args]]
+    <> @["call": ["function": function, "actuals": args]]
 };
 
 # Constructs a named function call with the given arguments, each of
 # which must be a (non-parsing) expression node.
 callNameWithExpressions = { functionName, args* ::
-    <> makeCall(@["varRef" = functionName], args*);
+    <> makeCall(@["varRef": functionName], args*);
 };
 
 # Converts a pex to a named function call of the converted inner pex.
@@ -39,7 +39,7 @@ callNameWithPex = { node, formals, functionName ::
 
 # Constructs a named function call of the given literal arguments.
 callNameWithLiterals = { functionName, args* ::
-    literalArgs = listMap(args) { ., arg :: <> @["literal" = arg] };
+    literalArgs = listMap(args) { ., arg :: <> @["literal": arg] };
     <> callNameWithExpressions(functionName, literalArgs*)
 };
 
@@ -57,8 +57,8 @@ convertPexSequence = { node, formals ::
     # Extract the formals out of any `varDef` nodes.
     newFormals = listMap(pexes) { ., pex ::
         <> ifTrue { <> eq(tokenType(pex), "varDef") }
-            { <> ["name" = (mapGet(tokenValue(pex), "name"))] }
-            { <> [=] }
+            { <> ["name": mapGet(tokenValue(pex), "name")] }
+            { <> [:] }
     };
 
     # Convert all the pexes, passing in appropriately-extended formals
@@ -92,12 +92,12 @@ convertPexVarRef = { node, formals ::
 
 # Converts a `.` pex node.
 convertPexDot = { node, formals ::
-    <> @["varRef" = "pegRuleAny"]
+    <> @["varRef": "pegRuleAny"]
 };
 
 # Converts an `()` pex node.
 convertPexEmpty = { node, formals ::
-    <> @["varRef" = "pegRuleEmpty"]
+    <> @["varRef": "pegRuleEmpty"]
 };
 
 # Converts a `[]` pex node.
@@ -116,7 +116,7 @@ convertPexCode = { node, formals ::
     # and just convert that.
 
     closurePayload = mapPut(tokenValue(node), "formals", formals);
-    convertedClosure = convertExpression(@["closure" = closurePayload]);
+    convertedClosure = convertExpression(@["closure": closurePayload]);
 
     <> callNameWithExpressions("pegMakeCode", convertedClosure)
 };
@@ -129,13 +129,13 @@ convertPexPredicate = { node, formals ::
     # to perform the rest of the conversion.
 
     predicate = tokenValue(node);
-    predicateThunk = @["closure" = ["statements"=[], "yield"=predicate]];
-    nullThunk = @["closure" = [
-        "statements" = [],
-        "yield" = callNameWithLiterals("makeToken", "null")
+    predicateThunk = @["closure": ["statements": [], "yield": predicate]];
+    nullThunk = @["closure": [
+        "statements": [],
+        "yield": callNameWithLiterals("makeToken", "null")
     ]];
     yield = callNameWithExpressions("ifTrue", predicateThunk, nullThunk);
-    codeNode = @["{}" = ["statements"=[], "yield"=yield]];
+    codeNode = @["{}": ["statements": [], "yield": yield]];
 
     <> convertPexCode(codeNode, formals)
 };
@@ -167,22 +167,22 @@ convertPexPlus = { node, formals ::
 
 # Map of types to parsing expression node converters.
 CONVERT_PEX_MAP = [
-    "choice"   = convertPexChoice,
-    "sequence" = convertPexSequence,
-    "string"   = convertPexString,
-    "token"    = convertPexToken,
-    "varRef"   = convertPexVarRef,
-    "."        = convertPexDot,
-    "()"       = convertPexEmpty,
-    "[]"       = convertPexSet,
-    "[!]"      = convertPexSetComplement,
-    "{}"       = convertPexCode,
-    "&&"       = convertPexPredicate,
-    "&"        = convertPexLookaheadSuccess,
-    "!"        = convertPexLookaheadFailure,
-    "?"        = convertPexOpt,
-    "*"        = convertPexStar,
-    "+"        = convertPexPlus
+    "choice":   convertPexChoice,
+    "sequence": convertPexSequence,
+    "string":   convertPexString,
+    "token":    convertPexToken,
+    "varRef":   convertPexVarRef,
+    ".":        convertPexDot,
+    "()":       convertPexEmpty,
+    "[]":       convertPexSet,
+    "[!]":      convertPexSetComplement,
+    "{}":       convertPexCode,
+    "&&":       convertPexPredicate,
+    "&":        convertPexLookaheadSuccess,
+    "!":        convertPexLookaheadFailure,
+    "?":        convertPexOpt,
+    "*":        convertPexStar,
+    "+":        convertPexPlus
 ];
 
 # Dispatches to an appropriate parser node converter. `formals` is the
@@ -205,7 +205,7 @@ convertCall = { node ::
     function = convertExpression(mapGet(nodeValue, "function"));
     actuals = convertList(mapGet(nodeValue, "actuals"));
 
-    <> @["call" = mapAdd(nodeValue, ["function"=function, "actuals"=actuals])]
+    <> @["call": mapAdd(nodeValue, ["function": function, "actuals": actuals])]
 };
 
 # Does parser conversion of a `closure` or `fnDef` node.
@@ -214,17 +214,17 @@ convertClosureLike = { node ::
     nodeValue = tokenValue(node);
     statements = convertList(mapGet(nodeValue, "statements"));
     yield = ifValue { <> mapGet(nodeValue, "yield") }
-        { yield :: <> ["yield" = (convertExpression(yield))] }
-        { <> [=] };
+        { yield :: <> ["yield": (convertExpression(yield))] }
+        { <> [:] };
 
-    <> @[nodeType = mapAdd(nodeValue, ["statements" = statements], yield)]
+    <> @[nodeType: mapAdd(nodeValue, ["statements": statements], yield)]
 };
 
 # Does parser conversion of an `interpolate` node.
 convertInterpolate = { node ::
     value = convertExpression(tokenValue(node));
 
-    <> @["interpolate" = value];
+    <> @["interpolate": value];
 };
 
 # Does parser conversion of a `varDef` node.
@@ -232,7 +232,7 @@ convertVarDef = { node ::
     nodeValue = tokenValue(node);
     value = convertExpression(mapGet(nodeValue, "value"));
 
-    <> @["varDef" = mapPut(nodeValue, "value", value)]
+    <> @["varDef": mapPut(nodeValue, "value", value)]
 };
 
 # Does no-op node conversion.
@@ -240,14 +240,14 @@ convertNop = { node :: <> node };
 
 # Map of types to expression/statement node converters.
 CONVERT_EXPRESSION_MAP = [
-    "call"        = convertCall,
-    "closure"     = convertClosureLike,
-    "fnDef"       = convertClosureLike,
-    "interpolate" = convertInterpolate,
-    "literal"     = convertNop,
-    "parser"      = convertParser,
-    "varDef"      = convertVarDef,
-    "varRef"      = convertNop
+    "call":        convertCall,
+    "closure":     convertClosureLike,
+    "fnDef":       convertClosureLike,
+    "interpolate": convertInterpolate,
+    "literal":     convertNop,
+    "parser":      convertParser,
+    "varDef":      convertVarDef,
+    "varRef":      convertNop
 ];
 
 # Iterates / visits the given expression or statement node, transforming
@@ -269,5 +269,5 @@ sam1Eval = { context, expressionNode ::
 };
 
 <> [
-    "sam1Eval" = sam1Eval
+    "sam1Eval": sam1Eval
 ]

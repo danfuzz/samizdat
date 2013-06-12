@@ -40,7 +40,7 @@ extern zvalue STR_EMPTY;
 /** The canonical empty list value (`[]`). */
 extern zvalue EMPTY_LIST;
 
-/** The canonical empty map value (`[=]`). */
+/** The canonical empty map value (`[:]`). */
 extern zvalue EMPTY_MAP;
 
 /**

@@ -37,10 +37,10 @@ isUniqlet = { value ::
 };
 
 <> [
-    "isToken" = isToken,
-    "isInt" = isInt,
-    "isList" = isList,
-    "isMap" = isMap,
-    "isString" = isString,
-    "isUniqlet" = isUniqlet
+    "isToken": isToken,
+    "isInt": isInt,
+    "isList": isList,
+    "isMap": isMap,
+    "isString": isString,
+    "isUniqlet": isUniqlet
 ]

@@ -179,6 +179,6 @@ atom ::=
 # result when evaluated is a no-args function which computes and returns
 # the indicated expression.
 makeThunk = { expression ::
-    <> @["function" ["statements"=[] "yield"=expression]]
+    <> @["function": ["statements": [], "yield": expression]]
 };
 ```

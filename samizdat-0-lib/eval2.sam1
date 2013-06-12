@@ -28,5 +28,5 @@ sam2Eval = { context, expressionNode ::
 };
 
 <> [
-    "sam2Eval" = sam2Eval
+    "sam2Eval": sam2Eval
 ]
