@@ -57,7 +57,7 @@ convertPexSequence = { node, formals ::
     # Extract the formals out of any `varDef` nodes.
     newFormals = listMap(pexes) { ., pex ::
         <> ifTrue { <> eq(tokenType(pex), "varDef") }
-            { <> ["name" = (mapGet(tokenValue(pex), "name"))] }
+            { <> ["name": mapGet(tokenValue(pex), "name")] }
             { <> [:] }
     };
 
