@@ -125,6 +125,7 @@ map = {/
 
 token = {/
     @"@"
+
     tokenArgs = (
         @"["
         type = identifierString

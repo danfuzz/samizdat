@@ -127,6 +127,11 @@ parseString = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
+parseIdentifierString = {/
+    i = @identifier
+    { <> makeLiteral(tokenValue(i)) }
+/};
+
 # Parses a list element.
 parseListElement = {/
     ex = parseExpression
@@ -173,8 +178,17 @@ parseEmptyMap = {/
 
 # Parses a mapping (element of a map).
 parseMapping = {/
-    key = parseListElement
-    @":"
+    key = (
+        k = parseIdentifierString
+        @":"
+        { io0Die("=== eek sam2 mapping") }
+        { <> k }
+    |
+        k = parseListElement
+        @":"
+        { <> k }
+    )
+
     value = parseExpression
     { <> makeCallName("makeList", value, key) }
 |
@@ -196,16 +210,26 @@ parseMap = {/
 # Parses a token literal.
 parseToken = {/
     @"@"
-    (
+
+    tokenArgs = (
+        @"["
+        type = parseIdentifierString
+        value = (@":" parseExpression)?
+        @"]"
+        { io0Die("=== eek sam2 token") }
+        { <> [type, value*] }
+    |
         @"["
         type = parseExpression
         value = (@":" parseExpression)?
         @"]"
-        { <> makeCallName("makeToken", type, value*) }
+        { <> [type, value*] }
     |
-        type = [@string @identifier]
-        { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
+        type = (parseString | parseIdentifierString)
+        { <> [type] }
     )
+
+    { <> makeCallName("makeToken", tokenArgs*) }
 /};
 
 # Parses a uniqlet literal.
