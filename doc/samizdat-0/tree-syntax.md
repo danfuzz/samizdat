@@ -96,7 +96,16 @@ emptyMap = {/
 /};
 
 mapping = {/
-    key = (identifierString @":" | listElement @":")
+    key = (
+        k = identifierString
+        @":"
+        { <> k }
+    |
+        k = listElement
+        @":"
+        { <> k }
+    )
+
     value = expression
     { <> makeCallName("makeList", value, key) }
 |
@@ -118,7 +127,15 @@ token = {/
     @"@"
     (
         @"["
-        type = expression
+
+        type = (
+            t = identifierString
+            &[@":" @"]"]
+            { <> t }
+        |
+            expression
+        )
+
         value = (@":" expression)?
         @"]"
         { <> makeCallName("makeToken", type, value*) }
