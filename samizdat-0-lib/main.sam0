@@ -43,13 +43,13 @@ loadLibrary = { ctx, name ::
     # evaluator. Otherwise, default to the layer 0 functions.
     metas = ifValue { <> mapGet(ctx, "metaFunctions") }
         { metaFunctions :: <> metaFunctions(ctx, name) }
-        { <> ["eval": sam0Eval, "tree": sam0Tree] };
+        { <> [eval: sam0Eval, tree: sam0Tree] };
     treeFunction = mapGet(metas, "tree");
     evalFunction = mapGet(metas, "eval");
 
     text = readLibraryFile(name);
     tree = treeFunction(text);
-    function = evalFunction([ctx*, "LIBRARY": ctx], tree);
+    function = evalFunction([ctx*, LIBRARY: ctx], tree);
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -85,7 +85,7 @@ MANIFEST = mapGet(loadLibrary(LIBRARY, "manifest.sam0"), "MANIFEST");
 CORE_LIBRARY = loadAllLibraries(LIBRARY, MANIFEST*);
 
 # "Manually" inline `makeLibrary` to produce the final core library.
-FINAL_LIBRARY = [CORE_LIBRARY*, "LIBRARY": CORE_LIBRARY];
+FINAL_LIBRARY = [CORE_LIBRARY*, LIBRARY: CORE_LIBRARY];
 
 io0Note("    [fin]");
 io0Note("");

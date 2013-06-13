@@ -164,18 +164,18 @@ stringReduce = { base, string, function ::
 #
 
 <> [
-    "listButFirst": listButFirst,
-    "listButLast": listButLast,
-    "listFirst": listFirst,
-    "listForEach": listForEach,
-    "listLast": listLast,
-    "listMap": listMap,
-    "listReduce": listReduce,
-    "mapForEach": mapForEach,
-    "mapMap": mapMap,
-    "mapReduce": mapReduce,
-    "stringForEach": stringForEach,
-    "stringFromTokenList": stringFromTokenList,
-    "stringMap": stringMap,
-    "stringReduce": stringReduce
+    listButFirst: listButFirst,
+    listButLast: listButLast,
+    listFirst: listFirst,
+    listForEach: listForEach,
+    listLast: listLast,
+    listMap: listMap,
+    listReduce: listReduce,
+    mapForEach: mapForEach,
+    mapMap: mapMap,
+    mapReduce: mapReduce,
+    stringForEach: stringForEach,
+    stringFromTokenList: stringFromTokenList,
+    stringMap: stringMap,
+    stringReduce: stringReduce
 ]

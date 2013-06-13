@@ -214,12 +214,12 @@ doUnknown = { unknown, . ::
 
 # Mapping from low-layer type names to stringifiers.
 STRINGIFIERS = [
-    "token":   doToken,
-    "int":     doInt,
-    "list":    doList,
-    "map":     doMap,
-    "string":  doString,
-    "uniqlet": doUniqlet
+    token:   doToken,
+    int:     doInt,
+    list:    doList,
+    map:     doMap,
+    string:  doString,
+    uniqlet: doUniqlet
 ];
 
 # Common handler for the two exported variants.
@@ -278,7 +278,7 @@ xUsualUpdate = { state ::
     argsAt = iadd(1, xArgsAt(state));
     fmtAt = iadd(2, xFmtAt(state));
 
-    <> [state*, "fmtAt": fmtAt, "argsAt": argsAt]
+    <> [state*, fmtAt: fmtAt, argsAt: argsAt]
 };
 
 # Formats a literal percent.
@@ -286,7 +286,7 @@ doPercent = { yield, state ::
     yield("%");
 
     fmtAt = iadd(2, mapGet(state, "fmtAt"));
-    <> [state*, "fmtAt": fmtAt]
+    <> [state*, fmtAt: fmtAt]
 };
 
 # Formats a literal quoted argument.
@@ -316,10 +316,10 @@ doHex = { yield, state ::
 # Mapping from format escape characters to their respective handler functions.
 FORMATTERS = [
     "%": doPercent,
-    "q": doLiteral,
-    "Q": doUnadornedLiteral,
-    "s": doPlainString,
-    "x": doHex
+    q:   doLiteral,
+    Q:   doUnadornedLiteral,
+    s:   doPlainString,
+    x:   doHex
 ];
 
 # Formats a plain character (that is, returns it as-is).
@@ -327,7 +327,7 @@ doPlain = { yield, state, ch ::
     yield(ch);
 
     fmtAt = iadd(1, mapGet(state, "fmtAt"));
-    <> [state*, "fmtAt": fmtAt]
+    <> [state*, fmtAt: fmtAt]
 };
 
 # Formats an arbitrary escape.
@@ -355,10 +355,10 @@ formatOne = { yield, state ::
 # Documented in Samizdat Layer 0 spec.
 format = { <out> formatString, rest* ::
     formatter = object(formatOne, [
-        "fmt":    formatString,
-        "fmtAt":  0,
-        "args":   rest,
-        "argsAt": 0
+        fmt:    formatString,
+        fmtAt:  0,
+        args:   rest,
+        argsAt: 0
     ]);
 
     loopReduce("") { result ::
@@ -374,7 +374,7 @@ format = { <out> formatString, rest* ::
 #
 
 <> [
-    "format": format,
-    "sourceString": sourceString,
-    "sourceStringUnadorned": sourceStringUnadorned
+    format: format,
+    sourceString: sourceString,
+    sourceStringUnadorned: sourceStringUnadorned
 ]

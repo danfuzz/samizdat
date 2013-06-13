@@ -36,11 +36,11 @@ not = { value ::
 };
 
 <> [
-    "eq":  eq,
-    "ge":  ge,
-    "gt":  gt,
-    "le":  le,
-    "lt":  lt,
-    "ne":  ne,
-    "not": not
+    eq:  eq,
+    ge:  ge,
+    gt:  gt,
+    le:  le,
+    lt:  lt,
+    ne:  ne,
+    not: not
 ]
