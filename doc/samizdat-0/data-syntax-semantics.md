@@ -114,6 +114,9 @@ more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
+As a short-hand, a string key with the same form as an identifier can
+be written without the quotes.
+
 A group of mappings with multiple keys that map to the same value
 can be written in a short-hand using the same range and
 interpolation syntax as with lists.
@@ -124,6 +127,9 @@ written as `[:]`.
 ```
 [:]                           # the empty map
 [1: "number one"]
+[two: 2]                      # the same as ["two": 2]
+[true: "yes"]                 # the same as ["true": "yes"]
+[(true): "yes"]               # key is (the boolean value) `true`, not a string
 ["blort": "potion; the ability to see in the dark",
  "fizmo": "spell; unclogs pipes",
  "igram": "spell; make purple things invisible"]
@@ -150,15 +156,21 @@ Valueless tokens whose type tag is a string constant can be abbreviated
 as `@"type"`. If that string constant has the form of a valid
 identifier, then the token can be further abbreviated as just `@type`.
 
+Similarly, in the bracketed form, a string type tag which is of identifier
+form can be represented without the quotes.
+
 ```
 @["null"]                     # the value usually just written as `null`
+@[null]                       # the value usually just written as `null`
 @"null"                       # same as above
 @null                         # same as above
+@[(null)]                     # a valueless token with type `null`
 @["boolean": 0]               # the value usually just written as `false`
+@[boolean: 0]                 # same as above
 @["boolean": 1]               # the value usually just written as `true`
 @[
-  "spell" =
-  ["name": "frotz", "purpose": "cause item to glow"]
+  "spell":
+  [name: "frotz", purpose: "cause item to glow"]
 ]
 ```
 
@@ -202,8 +214,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = @["boolean": 0]
-true = @["boolean": 1]
+false = @[boolean: 0]
+true = @[boolean: 1]
 ```
 
 

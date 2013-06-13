@@ -296,6 +296,15 @@ DEF_PARSE(string) {
     return makeLiteral(datTokenValue(string));
 }
 
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(identifierString) {
+    MARK();
+
+    zvalue ident = MATCH_OR_REJECT(IDENTIFIER);
+
+    return makeLiteral(datTokenValue(ident));
+}
+
 /**
  * Helper for `listElement`: Parses `(@".." expression)`.
  */
@@ -357,13 +366,25 @@ DEF_PARSE(emptyMap) {
 }
 
 /**
- * Helper for `mapping`: Parses `listElement @":" expression`.
+ * Helper for `mapping`: Parses `(identifierString @":" | listElement @":")
+ * expression`.
  */
 DEF_PARSE(mapping1) {
     MARK();
 
-    zvalue key = PARSE_OR_REJECT(listElement);
-    MATCH_OR_REJECT(CH_COLON);
+    zvalue key = PARSE(identifierString);
+    if (key != NULL) {
+        if (!MATCH(CH_COLON)) {
+            RESET();
+            key = NULL;
+        }
+    }
+
+    if (key == NULL) {
+        key = PARSE_OR_REJECT(listElement);
+        MATCH_OR_REJECT(CH_COLON);
+    }
+
     zvalue value = PARSE_OR_REJECT(expression);
 
     return makeCall(makeVarRef(STR_MAKE_LIST), listFrom2(value, key));
@@ -409,48 +430,81 @@ DEF_PARSE(map) {
     return makeCall(makeVarRef(STR_MAKE_MAP), mappings);
 }
 
+/**
+ * Helper for `token`: Parses `@"[" identifierString (@":" expression)? @"]"`.
+ */
+DEF_PARSE(token1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+
+    zvalue type = PARSE_OR_REJECT(identifierString);
+    zvalue result;
+
+    if (MATCH(CH_COLON)) {
+        // Note: Strictly speaking this doesn't quite follow the spec.
+        // However, there is no meaningful difference, in that the only
+        // difference is *how* errors are recognized, not *whether* they
+        // are.
+        zvalue value = PARSE_OR_REJECT(expression);
+        result = listFrom2(type, value);
+    } else {
+        result = listFrom1(type);
+    }
+
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    return result;
+}
+
+/**
+ * Helper for `token`: Parses `@"[" expression (@":" expression)? @"]"`.
+ */
+DEF_PARSE(token2) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+
+    zvalue type = PARSE_OR_REJECT(expression);
+    zvalue result;
+
+    if (MATCH(CH_COLON)) {
+        // See note above for discussion.
+        zvalue value = PARSE_OR_REJECT(expression);
+        result = listFrom2(type, value);
+    } else {
+        result = listFrom1(type);
+    }
+
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    return result;
+}
+
+/**
+ * Helper for `token`: Parses `string | identifierString`.
+ */
+DEF_PARSE(token3) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(string); }
+    if (result == NULL) { result = PARSE(identifierString); }
+    if (result == NULL) { return NULL; }
+
+    return listFrom1(result);
+}
+
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(token) {
     MARK();
 
-    zvalue innerType;
-    zvalue innerValue;
-
     MATCH_OR_REJECT(CH_AT);
 
-    innerType = MATCH(STRING);
-
-    if (innerType == NULL) {
-        innerType = MATCH(IDENTIFIER);
-    }
-
-    if (innerType != NULL) {
-        innerType = makeLiteral(datTokenValue(innerType));
-        innerValue = NULL;
-    }
-
-    if (innerType == NULL) {
-        MATCH_OR_REJECT(CH_OSQUARE);
-        innerType = PARSE_OR_REJECT(expression);
-
-        if (MATCH(CH_COLON)) {
-            // Note: Strictly speaking this doesn't quite follow the spec.
-            // However, there is no meaningful difference, in that the only
-            // difference is *how* errors are recognized, not *whether* they
-            // are.
-            innerValue = PARSE_OR_REJECT(expression);
-        } else {
-            innerValue = NULL;
-        }
-
-        MATCH_OR_REJECT(CH_CSQUARE);
-    }
-
-    zvalue args = listFrom1(innerType);
-
-    if (innerValue != NULL) {
-        args = datListAppend(args, innerValue);
-    }
+    zvalue args = NULL;
+    if (args == NULL) { args = PARSE(token1); }
+    if (args == NULL) { args = PARSE(token2); }
+    if (args == NULL) { args = PARSE(token3); }
+    REJECT_IF(args == NULL);
 
     return makeCall(makeVarRef(STR_MAKE_TOKEN), args);
 }

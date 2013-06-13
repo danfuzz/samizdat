@@ -13,33 +13,33 @@
 
 # Returns a `call` node.
 makeCall = { function, actuals* ::
-    <> @["call": ["function": function, "actuals": actuals]]
+    <> @[call: [function: function, actuals: actuals]]
 };
 
 # Returns a `varDef` node.
 makeVarDef = { name, value ::
-    <> @["varDef": ["name": name, "value": value]]
+    <> @[varDef: [name: name, value: value]]
 };
 
 # Returns a `varRef` node.
 makeVarRef = { name ::
-    <> @["varRef": name]
+    <> @[varRef: name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 makeCallName = { name, actuals* ::
-    <> @["call": ["function": makeVarRef(name), "actuals": actuals]]
+    <> @[call: [function: makeVarRef(name), actuals: actuals]]
 };
 
 # Returns a `literal` node.
 makeLiteral = { value ::
-    <> @["literal": value]
+    <> @[literal: value]
 };
 
 # Returns node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 makeThunk = { expression ::
-    <> @["closure": ["statements": [], "yield": expression]]
+    <> @[closure: [statements: [], yield: expression]]
 };
 
 # Returns a `call` node that names a function as a `varRef` and passes
@@ -62,7 +62,7 @@ makeCallNonlocalExit = { name, expression? ::
 # references.
 UNARY_OPERATORS = listReduce([:], ["+", "-", "!", "[]", "!!!"])
     { result, ., name ::
-        <> [result*, name: makeVarRef(stringAdd("unary", name))]
+        <> [result*, (name): makeVarRef(stringAdd("unary", name))]
     };
 
 # Map of token types to corresponding binary operator function name variable
@@ -76,7 +76,7 @@ BINARY_OPERATORS = listReduce([:],
     ]
     )
     { result, ., name ::
-        <> [result*, name: makeVarRef(stringAdd("binary", name))]
+        <> [result*, (name): makeVarRef(stringAdd("binary", name))]
     };
 
 # Helper for parsing binary operator expressions, which puts together
@@ -127,17 +127,22 @@ parseString = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
+parseIdentifierString = {/
+    i = @identifier
+    { <> makeLiteral(tokenValue(i)) }
+/};
+
 # Parses a list element.
 parseListElement = {/
     ex = parseExpression
 
     (
         @"*"
-        { <> @["interpolate": ex] }
+        { <> @[interpolate: ex] }
     |
         @".."
         end = parseExpression
-        { <> @["interpolate": makeCallName("makeRange", ex, end)] }
+        { <> @[interpolate: makeCallName("makeRange", ex, end)] }
     |
         { <> ex }
     )
@@ -173,8 +178,16 @@ parseEmptyMap = {/
 
 # Parses a mapping (element of a map).
 parseMapping = {/
-    key = parseListElement
-    @":"
+    key = (
+        k = parseIdentifierString
+        @":"
+        { <> k }
+    |
+        k = parseListElement
+        @":"
+        { <> k }
+    )
+
     value = parseExpression
     { <> makeCallName("makeList", value, key) }
 |
@@ -196,16 +209,25 @@ parseMap = {/
 # Parses a token literal.
 parseToken = {/
     @"@"
-    (
+
+    tokenArgs = (
+        @"["
+        type = parseIdentifierString
+        value = (@":" parseExpression)?
+        @"]"
+        { <> [type, value*] }
+    |
         @"["
         type = parseExpression
         value = (@":" parseExpression)?
         @"]"
-        { <> makeCallName("makeToken", type, value*) }
+        { <> [type, value*] }
     |
-        type = [@string @identifier]
-        { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
+        type = (parseString | parseIdentifierString)
+        { <> [type] }
     )
+
+    { <> makeCallName("makeToken", tokenArgs*) }
 /};
 
 # Parses a uniqlet literal.
@@ -250,7 +272,7 @@ parseOptYieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> ["yieldDef": tokenValue(name)] }
+    { <> [yieldDef: tokenValue(name)] }
 |
     { <> [:] }
 /};
@@ -281,7 +303,7 @@ parseYield = {/
     @"<>"
     (
         ex = parseExpression
-        { <> ["yield": ex] }
+        { <> [yield: ex] }
     |
         { <> [:] }
     )
@@ -291,14 +313,14 @@ parseYield = {/
 parseFormal = {/
     name = (
         n = @identifier
-        { <> ["name": tokenValue(n)] }
+        { <> [name: tokenValue(n)] }
     |
         @"." { <> [:] }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> ["repeat": tokenType(r)] }
+        { <> [repeat: tokenType(r)] }
     |
         { <> [:] }
     )
@@ -310,7 +332,7 @@ parseFormal = {/
 parseFormalsList = {/
     first = parseFormal
     rest = (@"," parseFormal)*
-    { <> ["formals": [first, rest*]] }
+    { <> [formals: [first, rest*]] }
 |
     { <> [:] }
 /};
@@ -327,19 +349,19 @@ parseProgramBody = {/
 
     last = (
         s = (parseStatement | parseNonlocalExit)
-        { <> ["statements": [s]] }
+        { <> [statements: [s]] }
     |
         y = parseYield
-        { <> ["statements": [], y*] }
+        { <> [statements: [], y*] }
     |
-        { <> ["statements": []] }
+        { <> [statements: []] }
     )
 
     @";"*
 
     {
         allStatements = [most*, mapGet(last, "statements")*];
-        <> [last*, "statements": allStatements]
+        <> [last*, statements: allStatements]
     }
 /};
 
@@ -357,7 +379,7 @@ parseProgramDeclarations = {/
 parseProgram = {/
     decls = (parseProgramDeclarations | { <> [:] })
     body = parseProgramBody
-    { <> @["closure": [:, decls*, body*]] }
+    { <> @[closure: [:, decls*, body*]] }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
@@ -411,7 +433,7 @@ implParser = {/
     @"{/"
     pex = parseChoicePex
     @"/}"
-    { <> @["parser": pex] }
+    { <> @[parser: pex] }
 /};
 parseParser(implParser);
 
@@ -429,7 +451,7 @@ parseParserString = {/
     {
         value = tokenValue(s);
         <> ifTrue { <> eq(lowSize(value), 1) }
-            { <> @["token": value] }
+            { <> @[token: value] }
             { <> s }
     }
 /};
@@ -438,7 +460,7 @@ parseParserString = {/
 parseParserToken = {/
     @"@"
     type = [@identifier @string]
-    { <> @["token": tokenValue(type)] }
+    { <> @[token: tokenValue(type)] }
 /};
 
 # Parses a string or character range parsing expression, used when defining
@@ -462,7 +484,7 @@ parseParserSetString = {/
             loopReduce([startInt, ""]) { result ::
                 at = listFirst(result);
                 soFar = listLast(result);
-                ifTrue { <> gt(at, endInt) } { <out> @["string": soFar] };
+                ifTrue { <> gt(at, endInt) } { <out> @[string: soFar] };
                 <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
             }
         }
@@ -498,7 +520,7 @@ parseParserSet = {/
 
     @"]"
 
-    { <> @[type: terminals] }
+    { <> @[(type): terminals] }
 /};
 
 # Parses a code block parsing expression.
@@ -564,7 +586,7 @@ parseNamePex = {/
         name = @identifier
         @"="
         pex = parseLookaheadPex
-        { <> @["varDef": ["name": tokenValue(name), "value": pex]] }
+        { <> @[varDef: [name: tokenValue(name), value: pex]] }
     )
 |
     parseLookaheadPex
@@ -574,14 +596,14 @@ parseNamePex = {/
 # one, but it does *not* parse empty (zero-length) sequences.
 parseSequencePex = {/
     items = parseNamePex+
-    { <> @["sequence": items] }
+    { <> @[sequence: items] }
 /};
 
 # Parses a choice parsing expression. This includes a single choice.
 implChoicePex = {/
     first = parseSequencePex
     rest = (@"|" parseSequencePex)*
-    { <> @["choice": [first, rest*]] }
+    { <> @[choice: [first, rest*]] }
 /};
 parseChoicePex(implChoicePex);
 
@@ -646,7 +668,7 @@ parseFnCommon = {/
 
     name = (
         n = @identifier
-        { <> ["name": tokenValue(n)] }
+        { <> [name: tokenValue(n)] }
     |
         { <> [:] }
     )
@@ -668,8 +690,8 @@ parseFnCommon = {/
         statements = [returnDef*, mapGet(codeMap, "statements")*];
         <> [
             codeMap*, name*, formals*,
-            "yieldDef": "return",
-            "statements": statements
+            yieldDef: "return",
+            statements: statements
         ]
     }
 /};
@@ -853,16 +875,16 @@ parseOrExpression = {/
 # ```
 parseFnExpression = {/
     funcMap = parseFnCommon
-    closure = { <> @["closure": funcMap] }
+    closure = { <> @[closure: funcMap] }
 
     (
         name = { <> mapGet(funcMap, "name") }
         {
-            mainClosure = @["closure": [
-                "statements": [
+            mainClosure = @[closure: [
+                statements: [
                     makeVarDef(name, makeCallName("forwardFunction"))
                 ],
-                "yield": makeCall(makeVarRef(name), closure)
+                yield: makeCall(makeVarRef(name), closure)
             ]];
 
             <> makeCall(mainClosure)
@@ -928,10 +950,10 @@ parseIfExpression = {/
         # There was a yield def; wrap the whole thing in a thunk-call.
         &&(ne(yieldDef, [:]))
         {
-            mainClosure = @["closure": [
-                "yieldDef": mapValue(yieldDef),
-                "statements": [],
-                "yield": mainCall
+            mainClosure = @[closure: [
+                yieldDef: mapValue(yieldDef),
+                statements: [],
+                yield: mainCall
             ]];
 
             <> makeCall(mainClosure)
@@ -1022,10 +1044,10 @@ parseSwitchExpression = {/
             makeCallName("makeMapReversed", cases1*, cases2*),
             optDefault*);
 
-        mainClosure = @["closure": [
-            "yieldDef": "break",
-            "statements": [breakDef*],
-            "yield": switchCall
+        mainClosure = @[closure: [
+            yieldDef: "break",
+            statements: [breakDef*],
+            yield: switchCall
         ]];
 
         <> makeCall(mainClosure)
@@ -1060,9 +1082,9 @@ parseWhileExpression = {/
     code = parseNullaryClosure
 
     {
-        loopClosure = @["closure": [
-            "yieldDef": "continue",
-            "statements": [
+        loopClosure = @[closure: [
+            yieldDef: "continue",
+            statements: [
                 makeCallName("ifTrue",
                     makeThunk(condition),
                     code,
@@ -1070,9 +1092,9 @@ parseWhileExpression = {/
             ]
         ]];
 
-        mainClosure = @["closure": [
-            "yieldDef": "break",
-            "statements": [breakDef*, makeCallName("loop", loopClosure)]
+        mainClosure = @[closure: [
+            yieldDef: "break",
+            statements: [breakDef*, makeCallName("loop", loopClosure)]
         ]];
 
         <> makeCall(mainClosure)
@@ -1116,14 +1138,14 @@ parseDoExpression = {/
     )?
 
     {
-        loopClosure = @["closure": [
-            "yieldDef": "continue",
-            "statements": [makeCall(code), condition*]
+        loopClosure = @[closure: [
+            yieldDef: "continue",
+            statements: [makeCall(code), condition*]
         ]];
 
-        mainClosure = @["closure": [
-            "yieldDef": "break",
-            "statements": [breakDef*, makeCallName("loop", loopClosure)]
+        mainClosure = @[closure: [
+            yieldDef: "break",
+            statements: [breakDef*, makeCallName("loop", loopClosure)]
         ]];
 
         <> makeCall(mainClosure)
@@ -1161,7 +1183,7 @@ parseFnDef = {/
     funcMap = parseFnCommon
     &&(mapHasKey(funcMap, "name"))
 
-    { <> @["fnDef": funcMap] }
+    { <> @[fnDef: funcMap] }
 /};
 
 # Parses a statement.
@@ -1185,5 +1207,5 @@ sam2Tree = { program ::
 };
 
 <> [
-    "sam2Tree": sam2Tree
+    sam2Tree: sam2Tree
 ]
