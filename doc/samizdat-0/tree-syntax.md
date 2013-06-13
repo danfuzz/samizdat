@@ -125,24 +125,24 @@ map = {/
 
 token = {/
     @"@"
-    (
+    tokenArgs = (
         @"["
-
-        type = (
-            t = identifierString
-            &[@":" @"]"]
-            { <> t }
-        |
-            expression
-        )
-
+        type = identifierString
         value = (@":" expression)?
         @"]"
-        { <> makeCallName("makeToken", type, value*) }
+        { <> [type, value*] }
     |
-        type = [@string @identifier]
-        { <> makeCallName("makeToken", makeLiteral(tokenValue(type))) }
+        @"["
+        type = expression
+        value = (@":" expression)?
+        @"]"
+        { <> [type, value*] }
+    |
+        type = (string | identifierString)
+        { <> [type] }
     )
+
+    { <> makeCallName("makeToken", tokenArgs*) }
 /};
 
 uniqlet = {/
