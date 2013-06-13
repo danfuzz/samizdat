@@ -29,8 +29,8 @@ intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
 KEYWORDS = listReduce([:],
-    [ "break", "case", "continue", "def", "default", "do", "else", "fn",
-      "if", "return", "switch", "var", "while" ])
+    [ "break", "continue", "def", "default", "do", "else", "export", "fn",
+      "if", "import", "module", "return", "switch", "var", "while" ])
     { result, ., name :: <> [result*, (name): @[(name)]] };
 
 
