@@ -15,27 +15,27 @@ can be used.
 ```
 # Returns a `call` node.
 makeCall = { function, actuals* ::
-    <> @["call": ["function": function, "actuals": actuals]]
+    <> @[call: [function: function, actuals: actuals]]
 };
 
 # Returns a `varRef` node.
 makeVarRef = { name ::
-    <> @["varRef": name]
+    <> @[varRef: name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 makeCallName = { name, actuals* ::
-    <> @["call": ["function": makeVarRef(name), "actuals": actuals]]
+    <> @[call: [function: makeVarRef(name), actuals: actuals]]
 };
 
 # Returns a `literal` node.
 makeLiteral = { value ::
-    <> @["literal": value]
+    <> @[literal: value]
 };
 
 # Returns a `closure` node representing a thunk of an expression.
 makeThunk = { expression ::
-    <> @["closure": @["statements": [], "yield": expression]];
+    <> @[closure: @[statements: [], yield: expression]];
 };
 
 # forward declaration: closure
@@ -61,11 +61,11 @@ listElement = {/
 
     (
         @"*"
-        { <> @["interpolate": ex] }
+        { <> @[interpolate: ex] }
     |
         @".."
         end = expression
-        { <> @["interpolate": makeCallName("makeRange", ex, end)] }
+        { <> @[interpolate: makeCallName("makeRange", ex, end)] }
     |
         { <> ex }
     )
@@ -160,7 +160,7 @@ varDef = {/
     name = @identifier
     @"="
     ex = expression
-    { <> @["varDef": ["name": tokenValue(name), "value": ex]] }
+    { <> @[varDef: [name: tokenValue(name), value: ex]] }
 /};
 
 parenExpression = {/
@@ -225,7 +225,7 @@ yield = {/
     @"<>"
     (
         ex = expression
-        { <> ["yield": ex] }
+        { <> [yield: ex] }
     |
         { <> [:] }
     )
@@ -235,7 +235,7 @@ optYieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> ["yieldDef": tokenValue(name)] }
+    { <> [yieldDef: tokenValue(name)] }
 |
     { <> [:] }
 /};
@@ -243,14 +243,14 @@ optYieldDef = {/
 formal = {/
     name = (
         n = @identifier
-        { <> ["name": tokenValue(n)] }
+        { <> [name: tokenValue(n)] }
     |
         @"." { <> [:] }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> ["repeat": tokenType(r)] }
+        { <> [repeat: tokenType(r)] }
     |
         { <> [:] }
     )
@@ -261,7 +261,7 @@ formal = {/
 formalsList = {/
     first = formal
     rest = (@"," formal)*
-    { <> ["formals": [first, rest*]] }
+    { <> [formals: [first, rest*]] }
 |
     { <> [:] }
 /};
@@ -277,19 +277,19 @@ programBody = {/
 
     last = (
         s = (statement | nonlocalExit)
-        { <> ["statements": [s]] }
+        { <> [statements: [s]] }
     |
         y = yield
-        { <> ["statements": [], y*] }
+        { <> [statements: [], y*] }
     |
-        { <> ["statements": []] }
+        { <> [statements: []] }
     )
 
     @";"*
 
     {
         allStatements = listAdd(most, mapGet(last, "statements"));
-        <> [last*, "statements": allStatements]
+        <> [last*, statements: allStatements]
     }
 /};
 
@@ -305,7 +305,7 @@ programDeclarations = {/
 program = {/
     decls = (programDeclarations | { <> [:] })
     body = programBody
-    { <> @["closure": [:, decls*, body*]] }
+    { <> @[closure: [:, decls*, body*]] }
 /};
 
 closure = {/
