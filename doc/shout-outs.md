@@ -14,7 +14,7 @@ concurrency, maximally pure / immutable data models, and [software transactional
 memory](http://en.wikipedia.org/wiki/Software_transactional_memory)
 (STM). The Samizdat language has a mostly-immutable data model and
 generally has "capability nature", but it does not innately implement
-promises, actors, or STM. However, it is intended to be a fertile
+promises, actors, or STM (yet). It is intended to be a fertile
 substrate on which to explore these topics, while still being a
 practical and compelling language in its own right.
 
@@ -25,10 +25,9 @@ Samizdat's syntax can be traced in part to
 [JavaScript](http://en.wikipedia.org/wiki/JavaScript), and
 [E](http://en.wikipedia.org/wiki/E_%28programming_language%29). Its
 other syntactic influences include
-[Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29),
-[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk), and traditional
+[Smalltalk](http://en.wikipedia.org/wiki/Smalltalk) and traditional
 [Backus-Naur Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)
-(BNF).
+(BNF), with an honorable mention to [Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29) for early inspiration.
 
 Samizdat's execution model probably owes its biggest debt to Smalltalk.
 
