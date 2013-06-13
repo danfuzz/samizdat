@@ -59,7 +59,7 @@ makeCoreLibrary = {
     # Make the core library context that will be used to load the embedded
     # core library. The only difference between this and the original core
     # library is the replacement of `sam0Tree` with `sam1ValidatedTree`.
-    subLibrary = makeLibrary([LIBRARY*, "sam0Tree": sam1ValidatedTree]);
+    subLibrary = makeLibrary([LIBRARY*, sam0Tree: sam1ValidatedTree]);
 
     libraryFiles = readAllLibraryFiles();
 
@@ -100,4 +100,4 @@ run = { args* ::
     <> function(filePath, argsPerSe*)
 };
 
-<> ["run": run]
+<> [run: run]
