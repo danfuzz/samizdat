@@ -16,8 +16,8 @@ Returns a list with the given elements (in argument order).
 These equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = [v1];      is equivalent to   v = makeList(v1);
-v = [v1, v2];  is equivalent to   v = makeList(v1, v2);
+v = [v1];      is equivalent to  v = makeList(v1);
+v = [v1, v2];  is equivalent to  v = makeList(v1, v2);
 [etc.]
 ```
 
@@ -32,7 +32,7 @@ implementation (without sacrificing clarity) &mdash; it makes sense to
 keep this defined as an "ultraprimitive":
 
 ```
-makeList = { rest* :: <> rest; };
+makeList = { rest* :: <> rest };
 ```
 
 #### `makeMap(rest*) <> map`
@@ -50,12 +50,12 @@ list (in argument order) is the one that ends up in the result. These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = [k1: v1];         is equivalent to   v = makeMap([v1, k1]);
-v = [k1: v1, k2: v2]; is equivalent to   v = makeMap([v1, k1], [v2, k2]);
+v = [(k1): v1];          is equivalent to  v = makeMap([v1, k1]);
+v = [(k1): v1, k2: v2];  is equivalent to  v = makeMap([v1, k1], [v2, k2]);
 [etc.]
 
-v = [k1..k2: v];      is equivalent to   v = makeMap([v, k1..k2]);
-v = [m1*, m2*];       is equivalent to   v = makeMap(m1, m2);
+v = [k1..k2: v];         is equivalent to  v = makeMap([v, k1..k2]);
+v = [m1*, m2*];          is equivalent to  v = makeMap(m1, m2);
 ```
 
 #### `makeMapReversed(rest*) <> map`
@@ -76,8 +76,8 @@ and optional data payload value (also an arbitrary value). These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = @[key];         is equivalent to   v = makeToken(key);
-v = @[key: value];  is equivalent to   v = makeToken(key, value);
+v = @[(key)];         is equivalent to  v = makeToken(key);
+v = @[(key): value];  is equivalent to  v = makeToken(key, value);
 ```
 
 #### `makeUniqlet() <> uniqlet`
@@ -88,7 +88,7 @@ source exist). This equivalence holds for *Samizdat Layer 0* source
 code:
 
 ```
-v = @@;   is equivalent to   v = makeUniqlet();
+v = @@;  is equivalent to  v = makeUniqlet();
 ```
 
 

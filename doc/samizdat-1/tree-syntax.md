@@ -116,7 +116,7 @@ parserSet = {/
 
     @"]"
 
-    { <> @[type: terminals] }
+    { <> @[(type): terminals] }
 /};
 
 parserCode = {/
