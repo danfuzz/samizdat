@@ -128,6 +128,8 @@ written as `[:]`.
 [:]                           # the empty map
 [1: "number one"]
 [two: 2]                      # the same as ["two": 2]
+[true: "yes"]                 # the same as ["true": "yes"]
+[(true): "yes"]               # key is (the boolean value) `true`, not a string
 ["blort": "potion; the ability to see in the dark",
  "fizmo": "spell; unclogs pipes",
  "igram": "spell; make purple things invisible"]
