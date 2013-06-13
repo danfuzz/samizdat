@@ -35,8 +35,8 @@ doGet = { yield, state ::
 
 # Dispatch table.
 YIELD_BOX_DISPATCH = [
-    "get": doGet,
-    "set": doSet
+    get: doGet,
+    set: doSet
 ];
 
 # Performs method dispatch.
@@ -412,25 +412,25 @@ pegApply = { rule, input ::
 #
 
 <> [
-    "pegApply": pegApply,
-    "pegMakeCharSet": pegMakeCharSet,
-    "pegMakeCharSetComplement": pegMakeCharSetComplement,
-    "pegMakeChoice": pegMakeChoice,
-    "pegMakeCode": pegMakeCode,
-    "pegMakeLookaheadFailure": pegMakeLookaheadFailure,
-    "pegMakeLookaheadSuccess": pegMakeLookaheadSuccess,
-    "pegMakeMainSequence": pegMakeMainSequence,
-    "pegMakeOpt": pegMakeOpt,
-    "pegMakePlus": pegMakePlus,
-    "pegMakeSequence": pegMakeSequence,
-    "pegMakeStar": pegMakeStar,
-    "pegMakeString": pegMakeString,
-    "pegMakeToken": pegMakeToken,
-    "pegMakeTokenSet": pegMakeTokenSet,
-    "pegMakeTokenSetComplement": pegMakeTokenSetComplement,
-    "pegRuleAny": pegRuleAny,
-    "pegRuleEmpty": pegRuleEmpty,
-    "pegRuleEof": pegRuleEof,
-    "pegRuleFail": pegRuleFail,
-    "pegRuleLookaheadAny": pegRuleLookaheadAny
+    pegApply: pegApply,
+    pegMakeCharSet: pegMakeCharSet,
+    pegMakeCharSetComplement: pegMakeCharSetComplement,
+    pegMakeChoice: pegMakeChoice,
+    pegMakeCode: pegMakeCode,
+    pegMakeLookaheadFailure: pegMakeLookaheadFailure,
+    pegMakeLookaheadSuccess: pegMakeLookaheadSuccess,
+    pegMakeMainSequence: pegMakeMainSequence,
+    pegMakeOpt: pegMakeOpt,
+    pegMakePlus: pegMakePlus,
+    pegMakeSequence: pegMakeSequence,
+    pegMakeStar: pegMakeStar,
+    pegMakeString: pegMakeString,
+    pegMakeToken: pegMakeToken,
+    pegMakeTokenSet: pegMakeTokenSet,
+    pegMakeTokenSetComplement: pegMakeTokenSetComplement,
+    pegRuleAny: pegRuleAny,
+    pegRuleEmpty: pegRuleEmpty,
+    pegRuleEof: pegRuleEof,
+    pegRuleFail: pegRuleFail,
+    pegRuleLookaheadAny: pegRuleLookaheadAny
 ]

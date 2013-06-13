@@ -84,7 +84,7 @@ tokPunctuation = {/
         # where we're parsing other punctuation. This is clean but a little
         # non-obvious, hence this comment.
         "/*" .*
-        { <> @["error": "Unterminated comment."] }
+        { <> @[error: "Unterminated comment."] }
     |
         # Single-character punctuation / operator.
         .
@@ -116,9 +116,9 @@ tokString = {/
 
     (
         "\""
-        { <> @["string": stringAdd(chars*)] }
+        { <> @[string: stringAdd(chars*)] }
     |
-        { <> @["error": "Unterminated string literal."] }
+        { <> @[error: "Unterminated string literal."] }
     )
 /};
 
@@ -130,7 +130,7 @@ tokIdentifier = {/
         string = stringFromTokenList([first, rest*]);
         <> ifValue { <> mapGet(KEYWORDS, string) }
             { keyword :: <> keyword }
-            { <> @["identifier": string] }
+            { <> @[identifier: string] }
     }
 /};
 
@@ -138,7 +138,7 @@ tokIdentifier = {/
 tokQuotedIdentifier = {/
     "\\"
     s = tokString
-    { <> @["identifier": tokenValue(s)] }
+    { <> @[identifier: tokenValue(s)] }
 /};
 
 # Parses an integer literal.
@@ -168,7 +168,7 @@ tokInt = {/
                 { <> result }
                 { <> iadd(imul(result, base), digit) }
         };
-        <> @["int": value]
+        <> @[int: value]
     }
 /};
 
@@ -179,7 +179,7 @@ tokError = {/
     [! "\n"]*
     {
         msg = format("Unrecognized character: %q", tokenType(badCh));
-        <> @["error": msg]
+        <> @[error: msg]
     }
 /};
 
@@ -216,5 +216,5 @@ sam2Tokenize = { programText ::
 };
 
 <> [
-    "sam2Tokenize": sam2Tokenize
+    sam2Tokenize: sam2Tokenize
 ]
