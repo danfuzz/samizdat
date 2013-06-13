@@ -217,7 +217,7 @@ convertClosureLike = { node ::
         { yield :: <> ["yield": convertExpression(yield)] }
         { <> [:] };
 
-    <> @[nodeType: [nodeValue*, yield*, "statements": statements]]
+    <> @[(nodeType): [nodeValue*, yield*, "statements": statements]]
 };
 
 # Does parser conversion of an `interpolate` node.

@@ -427,7 +427,7 @@ parseParserSet = pegMakeMainSequence(
         pegMakeMainSequence(
             pegMakeCode { <> [] })),
     pegMakeToken("]"),
-    pegMakeCode { ., type, terminals, . :: <> @[type: terminals] });
+    pegMakeCode { ., type, terminals, . :: <> @[(type): terminals] });
 
 parseParserCode = pegMakeMainSequence(
     parseNullaryClosure,

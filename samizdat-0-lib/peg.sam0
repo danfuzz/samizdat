@@ -370,7 +370,7 @@ pegMakeString = { <out> string ::
     chars = stringReduce([], string)
         { result, ., ch :: <> [result*, pegMakeToken(ch)] };
 
-    <> pegMakeMainSequence(chars*, pegMakeCode { .* :: <> @[string] })
+    <> pegMakeMainSequence(chars*, pegMakeCode { .* :: <> @[(string)] })
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -394,7 +394,7 @@ pegApply = { rule, input ::
         {
             # Make a list of each character as a separate token.
             <> stringReduce([], input)
-                { result, ., ch :: <> [result*, @[ch]] }
+                { result, ., ch :: <> [result*, @[(ch)]] }
         }
         { <> input };
 
