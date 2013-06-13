@@ -65,6 +65,11 @@ parseString = pegMakeMainSequence(
     pegMakeCode { string :: <> makeLiteral(tokenValue(string)) });
 
 # Documented in Samizdat Layer 0 spec.
+parseIdentifierString = pegMakeMainSequence(
+    pegMakeToken("identifier"),
+    pegMakeCode { i :: <> makeLiteral(tokenValue(i)) });
+
+# Documented in Samizdat Layer 0 spec.
 parseListElement = pegMakeMainSequence(
     parseExpression,
     pegMakeChoice(
@@ -110,10 +115,18 @@ parseEmptyMap = pegMakeMainSequence(
 parseMapping = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            parseListElement,
-            pegMakeToken(":"),
+            pegMakeChoice(
+                pegMakeSequence(
+                    parseIdentifierString,
+                    pegMakeToken(":"),
+                    pegMakeCode { k, . :: io0Die("=== eek sam1 mapping") },
+                    pegMakeCode { k, . :: <> k }),
+                pegMakeSequence(
+                    parseListElement,
+                    pegMakeToken(":"),
+                    pegMakeCode { k, . :: <> k })),
             parseExpression,
-            pegMakeCode { key, ., value ::
+            pegMakeCode { key, value ::
                 <> makeCallName("makeList", value, key)
             }),
         pegMakeSequence(
