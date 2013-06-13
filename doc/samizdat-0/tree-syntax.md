@@ -53,7 +53,7 @@ string = {/
 
 identifierString = {/
     i = @identifier
-    { <> makeLiteral(tokenValue(s)) }
+    { <> makeLiteral(tokenValue(i)) }
 /};
 
 listElement = {/
