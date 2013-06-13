@@ -114,10 +114,11 @@ IDENTIFIER_STARTS = ["a".."z": true, "A".."Z": true, "_": true ];
 # These are all the characters which are allowed to be in an identifier.
 IDENTIFIER_CHARS = [IDENTIFIER_STARTS*, "0".."9": true];
 
-# Checks to see if the given string has the form of an in-language
-# identifier.
+# Checks to see if the given value is a string with the form of an
+# in-language identifier.
 isIdentifier = { <out> string ::
     <> and
+        { <> isString(string) }
         { <> gt(lowSize(string), 0) }
         { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0), false) }
         {
@@ -157,7 +158,9 @@ doMap = { map, adorn ::
             <> stringAdd(
                 reduction,
                 ifTrue { <> eq(reduction, "") } { <> "" } { <> ", " },
-                callSourceString(key),
+                ifTrue { <> isIdentifier(key) }
+                    { <> key }
+                    { <> callSourceString(key) },
                 ": ",
                 callSourceString(value))
         };
@@ -181,19 +184,17 @@ doToken = { <out> token, adorn ::
         { string :: <out> string };
 
     type = tokenType(token);
+    typeString = ifTrue { <> isIdentifier(type) }
+        { <> type }
+        { <> callSourceString(type) };
     valueString = ifValue { <> tokenValue(token) }
         { value :: <> stringAdd(": ", callSourceString(value)) }
         { <> "" };
 
     ifTrue { <> and { <> isString(type) } { <> eq(valueString, "") } }
-        {
-            typeString = ifTrue { <> isIdentifier(type) }
-                { <> type }
-                { <> callSourceString(type) };
-            <out> adornIf(adorn, "@", typeString, "")
-        };
+        { <out> adornIf(adorn, "@", typeString, "") };
 
-    result = stringAdd(callSourceString(type), valueString);
+    result = stringAdd(typeString, valueString);
     <> adornIf(adorn, "@[", result, "]")
 };
 
