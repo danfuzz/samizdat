@@ -89,6 +89,10 @@ makeBinaryCalls = { firstEx, opExList ::
     }
 };
 
+# Set-like map of all lowercase identifier characters. Used to figure
+# out if we're looking at a keyword in the `identifierString` rule.
+LOWER_ALPHA = ["a".."z": true];
+
 # Reports the given list of pending tokens as part of error processing.
 reportError = { pending ::
     io0Note("Pending tokens:");
@@ -127,9 +131,20 @@ parseString = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
+# Parses an identifier or identifier-like keyword, returning a string
+# literal.
 parseIdentifierString = {/
     i = @identifier
     { <> makeLiteral(tokenValue(i)) }
+|
+    token = .
+    &&(not(tokenHasValue(token)))
+    {
+        type = tokenType(token);
+        firstCh = stringNth(type, 0);
+        <> ifTrue { <> mapHasKey(LOWER_ALPHA, firstCh) }
+            { <> makeLiteral(type) }
+    }
 /};
 
 # Parses a list element.
