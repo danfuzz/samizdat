@@ -62,7 +62,7 @@ makeCallNonlocalExit = { name, expression? ::
 # references.
 UNARY_OPERATORS = listReduce([:], ["+", "-", "!", "[]", "!!!"])
     { result, ., name ::
-        <> [result*, name: makeVarRef(stringAdd("unary", name))]
+        <> [result*, (name): makeVarRef(stringAdd("unary", name))]
     };
 
 # Map of token types to corresponding binary operator function name variable
@@ -76,7 +76,7 @@ BINARY_OPERATORS = listReduce([:],
     ]
     )
     { result, ., name ::
-        <> [result*, name: makeVarRef(stringAdd("binary", name))]
+        <> [result*, (name): makeVarRef(stringAdd("binary", name))]
     };
 
 # Helper for parsing binary operator expressions, which puts together
@@ -498,7 +498,7 @@ parseParserSet = {/
 
     @"]"
 
-    { <> @[type: terminals] }
+    { <> @[(type): terminals] }
 /};
 
 # Parses a code block parsing expression.

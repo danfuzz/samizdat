@@ -31,7 +31,7 @@ intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 KEYWORDS = listReduce([:],
     [ "break", "case", "continue", "def", "default", "do", "else", "fn",
       "if", "return", "switch", "var", "while" ])
-    { result, ., name :: <> [result*, name: @[name]] };
+    { result, ., name :: <> [result*, (name): @[(name)]] };
 
 
 #
