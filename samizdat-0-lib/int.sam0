@@ -15,5 +15,5 @@ intSign = { int ::
 };
 
 <> [
-    "intSign": intSign
+    intSign: intSign
 ]

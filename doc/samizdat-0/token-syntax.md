@@ -45,19 +45,19 @@ string = {/
     "\""
     chars = stringChar*
     "\""
-    { <> @["string": stringAdd(chars*)] }
+    { <> @[string: stringAdd(chars*)] }
 /};
 
 identifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
-    { <> @["identifier": stringFromTokenList([first, rest*])] }
+    { <> @[identifier: stringFromTokenList([first, rest*])] }
 /};
 
 quotedIdentifier = {/
     "\\"
     s = string
-    { <> @["identifier": tokenValue(s)] }
+    { <> @[identifier: tokenValue(s)] }
 /};
 
 int = {/
@@ -67,13 +67,13 @@ int = {/
         { <> intFromDigitChar(ch) }
     )+
 
-    { <> ... @["int": ...] }
+    { <> ... @[int: ...] }
 /};
 
 error = {/
     badCh = .
     [! "\n"]*
-    { <> @["error": ... tokenType(badCh) ...] }
+    { <> @[error: ... tokenType(badCh) ...] }
 /};
 
 token = {/
