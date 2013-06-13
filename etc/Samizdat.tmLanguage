@@ -46,6 +46,12 @@
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>constant.numeric</string>
+			<key>match</key>
+			<string>-?\b[0-9]+\b</string>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>string.quoted.double</string>
 			<key>begin</key>
 			<string>"</string>
@@ -79,16 +85,33 @@
 			</array>
 		</dict>
 		<dict>
-			<key>name</key>
-			<string>constant.numeric</string>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>string.unquoted</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator</string>
+				</dict>
+			</dict>
 			<key>match</key>
-			<string>-?\b[0-9]+\b</string>
+			<string>([_a-zA-Z][_a-zA-Z0-9]*)(:)</string>
 		</dict>
 		<dict>
 			<key>name</key>
 			<string>constant.other</string>
 			<key>match</key>
 			<string>@[_a-zA-Z][_a-zA-Z0-9]*</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>constant.other</string>
+			<key>match</key>
+			<string>@\[[_a-zA-Z][_a-zA-Z0-9]*\]</string>
 		</dict>
 		<dict>
 			<key>name</key>
