@@ -181,7 +181,6 @@ parseMapping = {/
     key = (
         k = parseIdentifierString
         @":"
-        { io0Die("=== eek sam2 mapping") }
         { <> k }
     |
         k = parseListElement
@@ -216,7 +215,6 @@ parseToken = {/
         type = parseIdentifierString
         value = (@":" parseExpression)?
         @"]"
-        { io0Die("=== eek sam2 token") }
         { <> [type, value*] }
     |
         @"["

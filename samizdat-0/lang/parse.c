@@ -377,8 +377,6 @@ DEF_PARSE(mapping1) {
         if (!MATCH(CH_COLON)) {
             RESET();
             key = NULL;
-        } else {
-            die("=== NEEDS A FIX!");
         }
     }
 
@@ -455,7 +453,6 @@ DEF_PARSE(token1) {
     }
 
     MATCH_OR_REJECT(CH_CSQUARE);
-    die("=== NEEDS A TOKEN FIX!");
 
     return result;
 }

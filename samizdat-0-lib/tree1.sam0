@@ -119,7 +119,6 @@ parseMapping = pegMakeMainSequence(
                 pegMakeSequence(
                     parseIdentifierString,
                     pegMakeToken(":"),
-                    pegMakeCode { k, . :: io0Die("=== eek sam1 mapping") },
                     pegMakeCode { k, . :: <> k }),
                 pegMakeSequence(
                     parseListElement,
@@ -154,7 +153,6 @@ parseToken = pegMakeMainSequence(
             parseIdentifierString,
             pegMakeOpt(pegMakeSequence(pegMakeToken(":"), parseExpression)),
             pegMakeToken("]"),
-            pegMakeCode { ., type, value, . :: io0Die("=== eek sam1 token") },
             pegMakeCode { ., type, value, . :: <> [type, value*] }),
         pegMakeMainSequence(
             pegMakeToken("["),
