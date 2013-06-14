@@ -13,7 +13,7 @@
 
 
 /*
- * Helper definitions
+ * Object helper definitions
  */
 
 /**
@@ -60,7 +60,7 @@ static void objectFree(void *state) {
     utilFree(state);
 }
 
-/** Uniqlet dispatch table. */
+/** Uniqlet dispatch table for objects. */
 static DatUniqletDispatch OBJECT_DISPATCH = {
     objectMark,
     objectFree
@@ -129,6 +129,47 @@ static zvalue callYield(zvalue state, zint argCount, const zvalue *args) {
 
 
 /*
+ * Box helper definitions
+ */
+
+/**
+ * Box state. Instances of this structure are bound as the closure state
+ * as part of function registration in the implementation of the box
+ * constructor primitives.
+ */
+typedef struct {
+    /** Content value. */
+    zvalue value;
+
+    /** True iff this is a set-once (yield) box. */
+    bool setOnce;
+
+    /** True iff it is valid to set this box. */
+    bool canSet;
+} Box;
+
+/**
+ * Marks a box state for garbage collection.
+ */
+static void boxMark(void *state) {
+    datMark(((Box *) state)->value);
+}
+
+/**
+ * Frees an object state.
+ */
+static void boxFree(void *state) {
+    utilFree(state);
+}
+
+/** Uniqlet dispatch table for boxes. */
+static DatUniqletDispatch BOX_DISPATCH = {
+    boxMark,
+    boxFree
+};
+
+
+/*
  * Exported primitives
  */
 
@@ -167,6 +208,29 @@ PRIM_IMPL(apply) {
 
     datArrayFromList(flatArgs + argCount, rest);
     return langCall(function, flatSize, flatArgs);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(boxGet) {
+    requireRange(argCount, 1, 2);
+    die("TODO");
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(boxIsSet) {
+    requireExactly(argCount, 1);
+    die("TODO");
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(boxSet) {
+    requireRange(argCount, 1, 2);
+    die("TODO");
+}
+
+PRIM_IMPL(mutableBox) {
+    requireRange(argCount, 0, 1);
+    die("TODO");
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -228,4 +292,10 @@ PRIM_IMPL(sam0Eval) {
     zvalue expressionNode = args[1];
 
     return langEval0(ctx, expressionNode);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(yieldBox) {
+    requireExactly(argCount, 1);
+    die("TODO");
 }
