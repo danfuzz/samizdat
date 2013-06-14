@@ -329,7 +329,7 @@ PRIM_IMPL(sam0Eval) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(yieldBox) {
-    requireExactly(argCount, 1);
+    requireExactly(argCount, 0);
 
     Box *box = utilAlloc(sizeof(Box));
 
