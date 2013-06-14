@@ -10,12 +10,13 @@ A few of the functions in this module are concerned with "boxes".
 A box is a holder for some other value. Boxes are sometimes also known
 as "cells".
 
-In addition to the box constructor functions, the two functions that
+In addition to the box constructor functions, the three functions that
 deal with boxes are `boxGet` to get the contents of a box (or void if
-the box value has yet to be set) and `boxSet` to set the contents of
-a box.
+the box value has yet to be set), `boxSet` to set the contents of
+a box, and `boxIsSet` to indicate whether `boxSet` has been called
+(which is not the same as `boxGet` returning non-void).
 
-In addition, if the set value of a box is a function, then it is valid
+If the set value of a box is a function, then it is valid
 to call the box as a function, which passes the call through to the
 set value. It is an error (terminating the runtime) to make a
 function call on an unset box or a box whose set value is not a function
@@ -42,15 +43,24 @@ a five-argument call:
 This function returns whatever the called function returned (including
 void).
 
-#### `boxGet(box) <> . | !.`
+#### `boxGet(box, ifNotSet?) <> . | !.`
 
-Gets the value inside a box, or returns void if the box does not (yet) have
-a value. `box` must be a box as returned by either `mutableBox` or `yieldBox`.
+Gets the value inside a box. If the box does not (yet) have a value, this
+returns the `ifNotSet` value if suppplied or void if not. `box` must be
+a box as returned by either `mutableBox` or `yieldBox`.
 
-#### `boxSet(box, value) <> .`
+#### `boxIsSet(box) <> boolean`
 
-Sets the value of a box to the given value. This function always returns
-`value`. `box` must be a box as returned by either `mutableBox` or `yieldBox`.
+Returns `true` if the `box` was either initialized with a value or has
+had `boxSet` called on it (whether with a value or void). `box` must be a
+box as returned by either `mutableBox` or `yieldBox`.
+
+#### `boxSet(box, value?) <> .`
+
+Sets the value of a box to the given value, or to void if `value` is
+not supplied. This function always returns `value` (or void if `value` is
+not supplied). `box` must be a box as returned by either `mutableBox` or
+`yieldBox`.
 
 It is an error (terminating the runtime) for `box` to be a yield box on
 which `boxSet` has already been called.
