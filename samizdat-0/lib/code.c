@@ -237,6 +237,11 @@ PRIM_IMPL(boxSet) {
     requireRange(argCount, 1, 2);
 
     Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
+
+    if (box->isSet && box->setOnce) {
+        die("Attempt to re-set yield box.");
+    }
+
     zvalue result = (argCount == 2) ? args[1] : NULL;
     box->value = result;
     box->isSet = true;
