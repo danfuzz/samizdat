@@ -144,8 +144,8 @@ typedef struct {
     /** True iff this is a set-once (yield) box. */
     bool setOnce;
 
-    /** True iff it is valid to set this box. */
-    bool canSet;
+    /** True iff the box is considered to be set (see spec for details). */
+    bool isSet;
 } Box;
 
 /**
@@ -213,24 +213,52 @@ PRIM_IMPL(apply) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(boxGet) {
     requireRange(argCount, 1, 2);
-    die("TODO");
+
+    Box *box = datUniqletGetState(state, &BOX_DISPATCH);
+    zvalue result = box->value;
+
+    if ((result == NULL) && (argCount == 2)) {
+        return args[1];
+    } else {
+        return result;
+    }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(boxIsSet) {
     requireExactly(argCount, 1);
-    die("TODO");
+
+    Box *box = datUniqletGetState(state, &BOX_DISPATCH);
+    return constBooleanFromBool(box->isSet);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(boxSet) {
     requireRange(argCount, 1, 2);
-    die("TODO");
+
+    Box *box = datUniqletGetState(state, &BOX_DISPATCH);
+    zvalue result = (argCount == 2) ? args[1] : NULL;
+    box->value = result;
+    box->isSet = true;
+
+    return result;
 }
 
 PRIM_IMPL(mutableBox) {
     requireRange(argCount, 0, 1);
-    die("TODO");
+
+    Box *box = utilAlloc(sizeof(Box));
+
+    if (argCount == 1) {
+        box->value = args[0];
+        box->isSet = true;
+    } else {
+        box->value = NULL;
+        box->isSet = false;
+    }
+
+    box->setOnce = false;
+    return datUniqletWith(&BOX_DISPATCH, box);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -297,5 +325,12 @@ PRIM_IMPL(sam0Eval) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(yieldBox) {
     requireExactly(argCount, 1);
-    die("TODO");
+
+    Box *box = utilAlloc(sizeof(Box));
+
+    box->value = NULL;
+    box->isSet = false;
+    box->setOnce = true;
+
+    return datUniqletWith(&BOX_DISPATCH, box);
 }
