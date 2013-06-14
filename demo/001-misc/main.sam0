@@ -74,8 +74,8 @@ exiter = { <out> foo ::
 boxer = {
     box = mutableBox(10);
 
-    listForEach([1, 2, 3]) { ., n :: box(iadd(box(), n)) };
-    <> box()
+    listForEach([1, 2, 3]) { ., n :: boxSet(box, iadd(boxGet(box), n)) };
+    <> boxGet(box)
 };
 
 # Emits the stringified version of the given value to the console.

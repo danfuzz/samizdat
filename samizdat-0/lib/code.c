@@ -13,7 +13,7 @@
 
 
 /*
- * Helper definitions
+ * Object helper definitions
  */
 
 /**
@@ -60,7 +60,7 @@ static void objectFree(void *state) {
     utilFree(state);
 }
 
-/** Uniqlet dispatch table. */
+/** Uniqlet dispatch table for objects. */
 static DatUniqletDispatch OBJECT_DISPATCH = {
     objectMark,
     objectFree
@@ -129,6 +129,47 @@ static zvalue callYield(zvalue state, zint argCount, const zvalue *args) {
 
 
 /*
+ * Box helper definitions
+ */
+
+/**
+ * Box state. Instances of this structure are bound as the closure state
+ * as part of function registration in the implementation of the box
+ * constructor primitives.
+ */
+typedef struct {
+    /** Content value. */
+    zvalue value;
+
+    /** True iff this is a set-once (yield) box. */
+    bool setOnce;
+
+    /** True iff the box is considered to be set (see spec for details). */
+    bool isSet;
+} Box;
+
+/**
+ * Marks a box state for garbage collection.
+ */
+static void boxMark(void *state) {
+    datMark(((Box *) state)->value);
+}
+
+/**
+ * Frees an object state.
+ */
+static void boxFree(void *state) {
+    utilFree(state);
+}
+
+/** Uniqlet dispatch table for boxes. */
+static DatUniqletDispatch BOX_DISPATCH = {
+    boxMark,
+    boxFree
+};
+
+
+/*
  * Exported primitives
  */
 
@@ -167,6 +208,62 @@ PRIM_IMPL(apply) {
 
     datArrayFromList(flatArgs + argCount, rest);
     return langCall(function, flatSize, flatArgs);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(boxGet) {
+    requireRange(argCount, 1, 2);
+
+    Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
+    zvalue result = box->value;
+
+    if ((result == NULL) && (argCount == 2)) {
+        return args[1];
+    } else {
+        return result;
+    }
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(boxIsSet) {
+    requireExactly(argCount, 1);
+
+    Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
+    return constBooleanFromBool(box->isSet);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(boxSet) {
+    requireRange(argCount, 1, 2);
+
+    Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
+
+    if (box->isSet && box->setOnce) {
+        die("Attempt to re-set yield box.");
+    }
+
+    zvalue result = (argCount == 2) ? args[1] : NULL;
+    box->value = result;
+    box->isSet = true;
+
+    return result;
+}
+
+PRIM_IMPL(mutableBox) {
+    requireRange(argCount, 0, 1);
+
+    Box *box = utilAlloc(sizeof(Box));
+
+    if (argCount == 1) {
+        box->value = args[0];
+        box->isSet = true;
+    } else {
+        box->value = NULL;
+        box->isSet = false;
+    }
+
+    box->setOnce = false;
+    return datUniqletWith(&BOX_DISPATCH, box);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -228,4 +325,17 @@ PRIM_IMPL(sam0Eval) {
     zvalue expressionNode = args[1];
 
     return langEval0(ctx, expressionNode);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(yieldBox) {
+    requireExactly(argCount, 0);
+
+    Box *box = utilAlloc(sizeof(Box));
+
+    box->value = NULL;
+    box->isSet = false;
+    box->setOnce = true;
+
+    return datUniqletWith(&BOX_DISPATCH, box);
 }
