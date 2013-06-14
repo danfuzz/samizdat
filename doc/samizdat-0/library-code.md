@@ -16,12 +16,6 @@ the box value has yet to be set), `boxSet` to set the contents of
 a box, and `boxIsSet` to indicate whether `boxSet` has been called
 (which is not the same as `boxGet` returning non-void).
 
-If the set value of a box is a function, then it is valid
-to call the box as a function, which passes the call through to the
-set value. It is an error (terminating the runtime) to make a
-function call on an unset box or a box whose set value is not a function
-(including another box that is also a function).
-
 
 <br><br>
 ### Primitive Definitions
