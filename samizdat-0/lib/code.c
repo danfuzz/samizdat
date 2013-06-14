@@ -214,7 +214,7 @@ PRIM_IMPL(apply) {
 PRIM_IMPL(boxGet) {
     requireRange(argCount, 1, 2);
 
-    Box *box = datUniqletGetState(state, &BOX_DISPATCH);
+    Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
     zvalue result = box->value;
 
     if ((result == NULL) && (argCount == 2)) {
@@ -228,7 +228,7 @@ PRIM_IMPL(boxGet) {
 PRIM_IMPL(boxIsSet) {
     requireExactly(argCount, 1);
 
-    Box *box = datUniqletGetState(state, &BOX_DISPATCH);
+    Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
     return constBooleanFromBool(box->isSet);
 }
 
@@ -236,7 +236,7 @@ PRIM_IMPL(boxIsSet) {
 PRIM_IMPL(boxSet) {
     requireRange(argCount, 1, 2);
 
-    Box *box = datUniqletGetState(state, &BOX_DISPATCH);
+    Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
     zvalue result = (argCount == 2) ? args[1] : NULL;
     box->value = result;
     box->isSet = true;
