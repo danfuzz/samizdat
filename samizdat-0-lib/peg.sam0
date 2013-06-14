@@ -8,57 +8,12 @@
 
 
 #
-# Yield box.
+# Helper functions
 #
-# Interpretation of `state`:
-#
-# * `null` -- `set` has not yet been called.
-# * `[]` -- `set` has been called with no argument. (That is, yield void.)
-# * `[x]` -- `set` has been called with argument `x`.
 
-# Yield box `set` implementation.
-doSet = { yield, state, value? ::
-    ifTrue { <> ne(state, null) }
-        { io0Die("Attempt to multi-yield from peg rule.") };
-
-    yield();
-    <> value
-};
-
-# Yield box `get` implementation.
-doGet = { yield, state ::
-    ifTrue { <> eq(state, null) }
-        { io0Die("Peg rule failed to yield.") };
-
-    yield(state*)
-};
-
-# Dispatch table.
-YIELD_BOX_DISPATCH = [
-    get: doGet,
-    set: doSet
-];
-
-# Performs method dispatch.
-yieldBoxDispatch = { yield, state, name, rest* ::
-    <> mapGet(YIELD_BOX_DISPATCH, name)(yield, state, rest*)
-};
-
-# Constructs a set-once "yield box". This returns an object with `get` and
-# `set` methods.
-#
-# The `set` method allows itself to be called exactly once, taking at
-# most one argument. Subsequent calls will fail.
-#
-# The `get` method only succeeds after `set` has been called, returning
-# whatever had been passed to `set` (including void).
-yieldBox = {
-    <> object(yieldBoxDispatch, null)
-};
-
-# Gets the "set" function from a yield box.
-setterFromBox = { ybox ::
-    <> partialApply(ybox, ["set"])
+# Makes a setter function for a box.
+setterFromBox = { box ::
+    <> partialApply(boxSet, [box]);
 };
 
 
@@ -155,7 +110,7 @@ pegMakeSequence = { <out> rules* ::
                 <> ifValue
                     { <> rule(setterFromBox(ybox), state, values*) }
                     { newState ::
-                        newValues = [values*, ybox("get")];
+                        newValues = [values*, boxGet(ybox)];
                         <> [newState, newValues]
                     }
                     {
@@ -191,7 +146,7 @@ pegMakeStar = { rule ::
                 ybox = yieldBox();
                 <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
                     { newState ::
-                        newValues = [values*, ybox("get")];
+                        newValues = [values*, boxGet(ybox)];
                         <> [newState, newValues]
                     }
                     {
@@ -279,7 +234,7 @@ pegMakeChoice = { <out> rules* ::
                 ybox = yieldBox();
                 <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
                     { newState ::
-                        yield(ybox("get"));
+                        yield(boxGet(ybox));
                         <out> newState
                     }
             };
@@ -325,7 +280,7 @@ pegMakeOpt = { rule ::
         ybox = yieldBox();
         <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
             { newState ::
-                yield([(ybox("get"))]);
+                yield([boxGet(ybox)]);
                 <> newState
             }
             {
@@ -403,7 +358,7 @@ pegApply = { rule, input ::
 
     ybox = yieldBox();
     <> ifValue { <> rule(setterFromBox(ybox), inputList) }
-        { <> ybox("get") }
+        { <> boxGet(ybox) }
 };
 
 

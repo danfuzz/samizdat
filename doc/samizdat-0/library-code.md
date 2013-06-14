@@ -4,6 +4,19 @@ Samizdat Layer 0: Core Library
 Functions And Code
 ------------------
 
+### Boxes
+
+A few of the functions in this module are concerned with "boxes".
+A box is a holder for some other value. Boxes are sometimes also known
+as "cells".
+
+In addition to the box constructor functions, the three functions that
+deal with boxes are `boxGet` to get the contents of a box (or void if
+the box value has yet to be set), `boxSet` to set the contents of
+a box, and `boxIsSet` to indicate whether `boxSet` has been called
+(which is not the same as `boxGet` returning non-void).
+
+
 <br><br>
 ### Primitive Definitions
 
@@ -23,6 +36,44 @@ a five-argument call:
 
 This function returns whatever the called function returned (including
 void).
+
+#### `boxGet(box, ifNotSet?) <> . | !.`
+
+Gets the value inside a box. If the box does not (yet) have a value, this
+returns the `ifNotSet` value if suppplied or void if not. `box` must be
+a box as returned by either `mutableBox` or `yieldBox`.
+
+#### `boxIsSet(box) <> boolean`
+
+Returns `true` if the `box` was either initialized with a value or has
+had `boxSet` called on it (whether with a value or void). `box` must be a
+box as returned by either `mutableBox` or `yieldBox`.
+
+#### `boxSet(box, value?) <> .`
+
+Sets the value of a box to the given value, or to void if `value` is
+not supplied. This function always returns `value` (or void if `value` is
+not supplied). `box` must be a box as returned by either `mutableBox` or
+`yieldBox`.
+
+It is an error (terminating the runtime) for `box` to be a yield box on
+which `boxSet` has already been called.
+
+#### `mutableBox(value?) <> function`
+
+Creates a mutable box, with optional pre-set value. The result of a call to
+this function is a box which can be set any number of times using
+`boxSet`. The contents of the box are accessible by calling `boxGet`.
+
+The initial box content value is the `value` given to this function. This
+is what is returned from `boxGet` until `boxSet` is called to replace it.
+If `value` is not supplied, `boxGet` returns void until `boxSet` is called.
+
+This function is meant to be the primary way to define (what amount to)
+mutable variables, in that *Samizdat Layer 0* only provides immutably-bound
+variables. It is hoped that this facility will be used as minimally as
+possible, so as to not preclude the system from performing functional-style
+optimizations.
 
 #### `nonlocalExit(yieldFunction, thunk?) <> . | !.`
 
@@ -81,6 +132,18 @@ function to call its own interface function, either directly or
 indirectly. To implement a recursive operation, it is necessary to do
 so without going through the interface.
 
+#### `yieldBox() <> function`
+
+Creates a set-once "yield box". The result of a call to this function is a
+box which can be set at most once, using `boxSet`. Subsequent attempts to
+set the box value will fail (terminating the runtime). The contents of the
+box are accessible by calling `boxGet`. `boxGet` returns void until
+`boxSet` is called.
+
+This function is meant to be the primary way to capture the yielded values
+from functions (such as object service functions and parser functions) which
+expect to yield values by calling a function.
+
 <br><br>
 ### In-Language Definitions
 
@@ -99,28 +162,6 @@ whatever the target function returned (including void).
 
 This function is meant to make it a little easier to deal with the fact
 that *Samizdat Layer 0* prohibits use-before-def.
-
-#### `mutableBox(value?) <> function`
-
-Simple mutable box utility. The result of a call to this function is
-another function, called the "box access function". The box access function
-can be called either with or without an argument. If it is called without
-an argument, then it returns the current content value of its box. If it
-is called with an argument, then that argument becomes the new box content
-value, and the box access function returns the same value it was passed.
-
-The initial box content value is the `value` given to the original function
-call. If no `value` was passed, then it is invalid (terminating the runtime)
-for the box access function to be called with no argument until it has been
-called at least once with an argument.
-
-This function is meant to be the primary way to define (what amount to)
-mutable variables, in that *Samizdat Layer 0* only provides immutably-bound
-variables. It is hoped that this facility will be used as minimally as
-possible, so as to not preclude the system from performing functional-style
-optimizations.
-
-**Note:** "Boxes" are sometimes also known as "cells".
 
 #### `partialApply(function, value*, list?) <> function`
 
