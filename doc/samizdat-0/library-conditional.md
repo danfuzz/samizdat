@@ -17,8 +17,8 @@ exactly one argument, namely the item to process.
 
 **Note:** Unlike most of the map/reduce functions defined in *Samizdat
 Layer 0*, this one takes its function as the *first* and not the
-*last* argument. This is done specifically so that it is convenient to
-`apply` it.
+*last* argument. This was done to make it convenient to use with `apply`
+(except that `apply` no longer exists. TODO!)
 
 #### `argsReduce(function, base, rest*) <> . | !.`
 

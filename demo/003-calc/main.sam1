@@ -136,4 +136,4 @@ main = { args* ::
     pegApply(evalExpressions, exprString);
 };
 
-<> apply(main, ARGS)
+<> main(ARGS*)

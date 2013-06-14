@@ -144,7 +144,7 @@ main = { selfPath, name, rest* ::
     blort(1, 2, 3);
     blort(1, 2, 3, 4);
     blort(1, 2, 3, 4, 5);
-    partialApply(blort, 1, [2, 3, 4])(5, 6);
+    partialApply(blort, 1, 2, 3, 4)(5, 6);
     stuff(1);
     stuff(1, 2);
 
@@ -154,4 +154,4 @@ main = { selfPath, name, rest* ::
         { io0Note("The void.") };
 };
 
-<> apply(main, SELF_PATH, ARGS)
+<> main(SELF_PATH, ARGS*)

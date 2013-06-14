@@ -13,7 +13,7 @@
 
 # Makes a setter function for a box.
 setterFromBox = { box ::
-    <> partialApply(boxSet, [box]);
+    <> partialApply(boxSet, box);
 };
 
 

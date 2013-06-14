@@ -20,23 +20,6 @@ a box, and `boxIsSet` to indicate whether `boxSet` has been called
 <br><br>
 ### Primitive Definitions
 
-#### `apply(function, value*, list?) <> . | !.`
-
-Calls the given function with the given arguments.
-
-It is valid to pass no arguments other than `function`, in which case the
-function is called with no arguments.
-
-If any other arguments are supplied, then each of the initial `value`
-arguments is taken to be an arbitrary value, and the final `list`
-argument must be a list, whose contents are "flattened" into the
-final list of arguments to pass to the function. For example, this is
-a five-argument call:
-`apply(fizmoFunc, "foo", "bar", "baz", ["frob" "twiddle"])`
-
-This function returns whatever the called function returned (including
-void).
-
 #### `boxGet(box, ifNotSet?) <> . | !.`
 
 Gets the value inside a box. If the box does not (yet) have a value, this
@@ -163,18 +146,15 @@ whatever the target function returned (including void).
 This function is meant to make it a little easier to deal with the fact
 that *Samizdat Layer 0* prohibits use-before-def.
 
-#### `partialApply(function, value*, list?) <> function`
+#### `partialApply(function, value*) <> function`
 
 Partial function application. This takes a function and a number of arguments
-to call it with, in standard `apply` form (that is, zero or more individual
-arguments ended with a list-of-the-rest), and returns a new function. The
-new function, when called, in turn calls the original function with the
-arguments specified here as the first arguments, followed by any arguments
-passed to the new function.
+to call it with, returning a new function. The new function, when called,
+in turn calls the original function with the arguments specified here as
+the first arguments, followed by any arguments passed to the new function.
 
-For example, `partialApply(iadd, [2])` is a function which when called returns
-the sum of 2 and whatever value it was passed. `partialApply(iadd, 2, [])` means
-the same thing.
+For example, `partialApply(iadd, 2)` is a function which when called returns
+the sum of 2 and whatever value it was passed.
 
 #### `yCombinator(function) <> function`
 
