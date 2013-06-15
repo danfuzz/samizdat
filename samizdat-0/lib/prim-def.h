@@ -11,8 +11,6 @@
  * have the usual guard macros.
  */
 
-PRIM_FUNC(argsMap);
-PRIM_FUNC(argsReduce);
 PRIM_FUNC(boxGet);
 PRIM_FUNC(boxIsSet);
 PRIM_FUNC(boxSet);
