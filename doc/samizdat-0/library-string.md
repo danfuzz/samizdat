@@ -70,7 +70,7 @@ function is called on each element (character), with two arguments,
 namely the element's index (zero-based) and the element's value
 (as a single-character string).
 
-Similar to `argsMap`, if the function returns void, then no item is
+Similar to `listMap`, if the function returns void, then no item is
 added for the corresponding element. This means the size of the
 result may be smaller than the size of the argument.
 
@@ -91,7 +91,7 @@ reduction result, which is passed to the next call of `function` or becomes
 the return value of the call to this function if it was the call for the
 final element.
 
-Similar to `argsReduce`, if the function returns void, then the
+Similar to `listReduce`, if the function returns void, then the
 previously-returned non-void value (or `base` value if there has
 yet to be a non-void function return) is what is passed to the
 subsequent iteration and returned at the end of the call.

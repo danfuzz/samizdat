@@ -7,31 +7,6 @@ Conditionals And Iteration
 <br><br>
 ### Primitive Definitions
 
-
-#### `argsMap(function, rest*) <> list`
-
-Primitive mapping iterator. This calls the given function on each of
-the rest of the arguments in sequence, collecting all the non-void
-results into a list, which is returned. The function is called with
-exactly one argument, namely the item to process.
-
-**Note:** Unlike most of the map/reduce functions defined in *Samizdat
-Layer 0*, this one takes its function as the *first* and not the
-*last* argument. This was done to make it convenient to use with `apply`
-(except that `apply` no longer exists. TODO!)
-
-#### `argsReduce(function, base, rest*) <> . | !.`
-
-Primitive reducing iterator. This calls the given function on each of the
-rest of the arguments in sequence, yielding a final reduction result.
-(That is, this is a left-reduce operation.) The function is called with
-exactly two arguments, first the previous non-void reduction result (or
-the `base` for the first item in `rest`), and second the item to process.
-The return value of this call is what would have been passed as the
-reduction result to a would-be next function call.
-
-**Note:** See `argsMap` for discussion about the choice of argument order.
-
 #### `ifTrue(predicate, trueFunction, falseFunction?) <> . | !.`
 
 Primitive boolean conditional. This calls the given predicate with no

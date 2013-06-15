@@ -9,7 +9,7 @@
 # implementations of *Samizdat Layer 0*. In particular, this module
 # does not make any calls to non-primitive library functions, and
 # it limits its explicit primitive library function calls to just
-# `argsMap`.
+# `listMap`.
 
 #
 # Helper functions
@@ -35,9 +35,8 @@ uCombinator = { function :: <> function(function) };
 # "Y*". That is, the Y combinator uses the U combinator in the same way
 # that the Y* combinator uses this function.
 uStarCombinator = { functions ::
-    <> argsMap(
-        { function :: <> function(functions*) },
-        functions*)
+    <> listMap(functions)
+        { ., function :: <> function(functions*) }
 };
 
 
@@ -67,15 +66,14 @@ yStarCombinator = { functions* ::
     # `uStarCombinator` function) where necessitated by the multiple-function
     # nature of this variant.
 
-    applicators = argsMap(
-        { function ::
+    applicators = listMap(functions)
+        { ., function ::
             <> { selfRefs* ::
                 <> { args* ::
                     <> function(uStarCombinator(selfRefs)*)(args*)
                 }
             }
-        },
-        functions*);
+        };
 
     <> uStarCombinator(applicators);
 };

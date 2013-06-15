@@ -11,8 +11,6 @@
  * have the usual guard macros.
  */
 
-PRIM_FUNC(argsMap);
-PRIM_FUNC(argsReduce);
 PRIM_FUNC(boxGet);
 PRIM_FUNC(boxIsSet);
 PRIM_FUNC(boxSet);
@@ -41,6 +39,8 @@ PRIM_FUNC(ixor);
 PRIM_FUNC(listAdd);
 PRIM_FUNC(listDelNth);
 PRIM_FUNC(listInsNth);
+PRIM_FUNC(listMap);
+PRIM_FUNC(listReduce);
 PRIM_FUNC(listNth);
 PRIM_FUNC(listPutNth);
 PRIM_FUNC(listReverse);
