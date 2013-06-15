@@ -30,6 +30,19 @@ are shifted up by one index.
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
 
+#### `listMap(list, function) <> list`
+
+Maps each element of a list using a mapping function, collecting
+the results into a new list. The given function is called on each
+list element, with two arguments, namely the element's
+index (zero-based) and value.
+
+If the function returns void for any given call, then no item is added for
+the corresponding element. This means the size of the result may be
+smaller than the size of the argument.
+
+**Note:** See `stringMap` for discussion about choice of argument order.
+
 #### `listNth(list, n, notFound?) <> . | !.`
 
 Returns the `n`th (zero-based) element of the given list, if `n` is
@@ -48,6 +61,24 @@ exactly like `listAppend`.
 
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
+
+#### `listReduce(base, list, function) <> . | !.`
+
+Reduces a list to a single value, given a base value and a reducer
+function, operating in low-to-high index order (that is, this is a
+left-reduce operation). The given function is called on each list
+element, with three arguments: the last (or base) reduction result,
+the element's index (zero-based), and its value. The function result
+becomes the reduction result, which is passed to the next call of
+`function` or becomes the return value of the call to this function if
+it was the call for the final element.
+
+If the function returns void for any given call, then the previously-returned
+non-void value (or `base` value if there has yet to be a non-void function
+return) is what is passed to the subsequent iteration and returned at the
+end of the call.
+
+**Note:** See `stringMap` for discussion about choice of argument order.
 
 #### `listReverse(list) <> list`
 
@@ -108,34 +139,3 @@ Returns the last element of the given list or the given `notFound` value
 if the list is empty. Returns void if the list is empty and `notFound`
 is not supplied. This is just a convenient shorthand for
 `listNth list (isub (lowSize list) 1) notFound?`.
-
-#### `listMap(list, function) <> list`
-
-Maps each element of a list using a mapping function, collecting
-the results into a new list. The given function is called on each
-list element, with two arguments, namely the element's
-index (zero-based) and value.
-
-Similar to `argsMap`, if the function returns void, then no item is
-added for the corresponding element. This means the size of the
-result may be smaller than the size of the argument.
-
-**Note:** See `stringMap` for discussion about choice of argument order.
-
-#### `listReduce(base, list, function) <> . | !.`
-
-Reduces a list to a single value, given a base value and a reducer
-function, operating in low-to-high index order (that is, this is a
-left-reduce operation). The given function is called on each list
-element, with three arguments: the last (or base) reduction result,
-the element's index (zero-based), and its value. The function result
-becomes the reduction result, which is passed to the next call of
-`function` or becomes the return value of the call to this function if
-it was the call for the final element.
-
-Similar to `argsReduce`, if the function returns void, then the
-previously-returned non-void value (or `base` value if there has
-yet to be a non-void function return) is what is passed to the
-subsequent iteration and returned at the end of the call.
-
-**Note:** See `stringMap` for discussion about choice of argument order.
