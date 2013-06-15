@@ -65,10 +65,8 @@ loadLibrary = { ctx, name ::
 # depend on earlier ones. The first listed library can depend only on the
 # given context.
 loadAllLibraries = { ctx, names* ::
-    <> argsReduce(
-        { result, name :: <> loadLibrary(result, name) },
-        ctx,
-        names*)
+    <> listReduce(ctx, names)
+        { result, ., name :: <> loadLibrary(result, name) }
 };
 
 
