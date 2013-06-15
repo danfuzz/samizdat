@@ -11,18 +11,6 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listPutNth) {
-    requireExactly(argCount, 3);
-    return datListPutNth(args[0], datZintFromInt(args[1]), args[2]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listInsNth) {
-    requireExactly(argCount, 3);
-    return datListInsNth(args[0], datZintFromInt(args[1]), args[2]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listAdd) {
     zvalue result = EMPTY_LIST;
 
@@ -34,11 +22,6 @@ PRIM_IMPL(listAdd) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listNth) {
-    return doNth(datListNth, argCount, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listDelNth) {
     requireExactly(argCount, 2);
 
@@ -47,6 +30,81 @@ PRIM_IMPL(listDelNth) {
     }
 
     return datListDelNth(args[0], datZintFromInt(args[1]));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listInsNth) {
+    requireExactly(argCount, 3);
+    return datListInsNth(args[0], datZintFromInt(args[1]), args[2]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listMap) {
+    requireExactly(argCount, 2);
+
+    zvalue list = args[0];
+    zvalue function = args[1];
+    zint size = datSize(list);
+    zvalue result[size];
+    zvalue subArgs[2];
+    zint at = 0;
+
+    datAssertList(list);
+
+    for (zint i = 0; i < size; i++) {
+        subArgs[0] = datIntFromZint(i);
+        subArgs[1] = datListNth(list, i);
+
+        zvalue one = langCall(function, 2, subArgs);
+
+        if (one != NULL) {
+            result[at] = one;
+            at++;
+        }
+    }
+
+    return datListFromArray(at, result);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listNth) {
+    return doNth(datListNth, argCount, args);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listPutNth) {
+    requireExactly(argCount, 3);
+    return datListPutNth(args[0], datZintFromInt(args[1]), args[2]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listReduce) {
+    requireExactly(argCount, 3);
+
+    zstackPointer save = datFrameStart();
+
+    zvalue list = args[1];
+    zvalue function = args[2];
+    zint size = datSize(list);
+    zvalue subArgs[3];
+
+    datAssertList(list);
+    subArgs[0] = args[0];
+
+    for (zint i = 0; i < size; i++) {
+        subArgs[1] = datIntFromZint(i);
+        subArgs[2] = datListNth(list, i);
+
+        zvalue one = langCall(function, 3, subArgs);
+
+        if (one != NULL) {
+            subArgs[0] = one;
+            datFrameReset(save, one);
+        }
+    }
+
+    datFrameReturn(save, subArgs[0]);
+    return subArgs[0];
 }
 
 /* Documented in Samizdat Layer 0 spec. */
