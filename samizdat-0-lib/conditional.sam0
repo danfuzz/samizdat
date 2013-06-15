@@ -8,10 +8,8 @@
 
 # Documented in Samizdat Layer 0 spec.
 and = { <out> predicates* ::
-    <> argsReduce(
-        { result, predicate :: ifTrue(predicate) {} { <out> false } },
-        true,
-        predicates*)
+    <> listReduce(true, predicates)
+        { result, ., predicate :: ifTrue(predicate) {} { <out> false } }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -30,10 +28,8 @@ ifVoid = { predicate, voidFunction, valueFunction? ::
 
 # Documented in Samizdat Layer 0 spec.
 or = { <out> predicates* ::
-    <> argsReduce(
-        { result, predicate :: ifTrue(predicate) { <out> true } },
-        false,
-        predicates*)
+    <> listReduce(false, predicates)
+        { result, ., predicate :: ifTrue(predicate) { <out> true } }
 };
 
 # Documented in Samizdat Layer 0 spec.

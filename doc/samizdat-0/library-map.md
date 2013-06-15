@@ -82,7 +82,7 @@ two arguments representing the mapping, a key and a value (in that
 order). The return value of the function becomes the bound value for
 the given key in the final result.
 
-Similar to `argsMap`, if the function returns void, then no item is
+Similar to `listMap`, if the function returns void, then no item is
 added for the corresponding element. This means the size of the
 result may be smaller than the size of the argument.
 
@@ -98,7 +98,7 @@ function result becomes the reduction result, which is passed to the
 next call of `function` or becomes the return value of the call to
 this function if it was the call for the final mapping.
 
-Similar to `argsReduce`, if the function returns void, then the
+Similar to `listReduce`, if the function returns void, then the
 previously-returned non-void value (or `base` value if there has
 yet to be a non-void function return) is what is passed to the
 subsequent iteration and returned at the end of the call.

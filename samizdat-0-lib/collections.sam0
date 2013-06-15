@@ -89,16 +89,6 @@ listLast = { list, notFound? ::
     <> listNth(list, isub(lowSize(list), 1), notFound*)
 };
 
-# Documented in Samizdat Layer 0 spec.
-listMap = { list, function ::
-    <> genericMap({ n :: <> listNth(list, n) }, function)
-};
-
-# Documented in Samizdat Layer 0 spec.
-listReduce = { base, list, function ::
-    <> genericReduce(base, { n :: <> listNth(list, n) }, function)
-};
-
 
 #
 # Map
@@ -169,8 +159,6 @@ stringReduce = { base, string, function ::
     listFirst: listFirst,
     listForEach: listForEach,
     listLast: listLast,
-    listMap: listMap,
-    listReduce: listReduce,
     mapForEach: mapForEach,
     mapMap: mapMap,
     mapReduce: mapReduce,
