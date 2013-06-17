@@ -15,20 +15,20 @@ result as tokens of type `"error"`.
 ```
 # A map from strings to their corresponding keywords, one mapping for each
 # identifier-like keyword.
-KEYWORDS = [def: @def, fn: @fn];
+def KEYWORDS = [def: @def, fn: @fn];
 
 # Note: The yielded result is always ignored.
-whitespace = {/
+def whitespace = {/
     [" " "\n"]
 |
     "#" [! "\n"]* "\n"
 /};
 
-punctuation = {/
+def punctuation = {/
     "@@" | "::" | ".." | "<>" | "()" | ["@:.,=+?;*<>{}()[]"]
 /};
 
-stringChar = {/
+def stringChar = {/
     (
         ch = [! "\\" "\""]
         { <> tokenType(ch) }
@@ -45,31 +45,31 @@ stringChar = {/
     )
 /};
 
-string = {/
+def string = {/
     "\""
     chars = stringChar*
     "\""
     { <> @[string: stringAdd(chars*)] }
 /};
 
-identifier = {/
+def identifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
     {
-        string = stringFromTokenList([first, rest*]);
+        def string = stringFromTokenList([first, rest*]);
         <> ifValue { <> mapGet(KEYWORDS, string) }
             { keyword :: <> keyword }
             { <> @[identifier: string] }
     }
 /};
 
-quotedIdentifier = {/
+def quotedIdentifier = {/
     "\\"
     s = string
     { <> @[identifier: tokenValue(s)] }
 /};
 
-int = {/
+def int = {/
     sign = ("-" { <> -1 } | { <> 1 })
     digits = (
         ch = ["0".."9"]
@@ -79,17 +79,17 @@ int = {/
     { <> ... @[int: ...] }
 /};
 
-error = {/
+def error = {/
     badCh = .
     [! "\n"]*
     { <> @[error: ... tokenType(badCh) ...] }
 /};
 
-token = {/
+def token = {/
     int | punctuation | string | identifier | quotedIdentifier | error
 /};
 
-file = {/
+def file = {/
     tokens=(whitespace* token)* whitespace*
     { <> tokens }
 /};
