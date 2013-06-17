@@ -259,6 +259,7 @@ def parseVarRef = {/
 
 # Parses a variable definition.
 def parseVarDef = {/
+    @"def"
     name = @identifier
     @"="
     ex = parseExpression
