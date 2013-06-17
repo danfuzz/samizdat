@@ -128,7 +128,7 @@ main = { selfPath, name, rest* ::
     process(@["^zorch^": ["scorch"]]);
     process(@if); # Demos that keywords can be used as token types.
     process(@[while]); # Ditto.
-    process([do: "done"]); # Likewise, for map keys.
+    process([def: "defined", do: "done"]); # Likewise, for map keys.
     process(@@);
     process(countDown(10));
     process(countDown2(5));
