@@ -298,11 +298,13 @@ DEF_PARSE(string) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(identifierString) {
-    MARK();
+    zvalue result = NULL;
 
-    zvalue ident = MATCH_OR_REJECT(IDENTIFIER);
+    if (result == NULL) { result = MATCH(STRING); }
+    if (result == NULL) { result = MATCH(IDENTIFIER); }
+    if (result == NULL) { return NULL; }
 
-    return makeLiteral(datTokenValue(ident));
+    return makeLiteral(datTokenValue(result));
 }
 
 /**
@@ -482,14 +484,13 @@ DEF_PARSE(token2) {
 }
 
 /**
- * Helper for `token`: Parses `string | identifierString`.
+ * Helper for `token`: Parses `identifierString` returning a list of the
+ * parsed value if successful.
  */
 DEF_PARSE(token3) {
-    zvalue result = NULL;
+    MARK();
 
-    if (result == NULL) { result = PARSE(string); }
-    if (result == NULL) { result = PARSE(identifierString); }
-    if (result == NULL) { return NULL; }
+    zvalue result = PARSE_OR_REJECT(identifierString);
 
     return listFrom1(result);
 }
