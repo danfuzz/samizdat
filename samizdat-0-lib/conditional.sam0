@@ -47,5 +47,5 @@ or = { <out> predicates* ::
     ifFalse: ifFalse,
     ifVoid: ifVoid,
     or: or,
-    "switch": \"switch"
+    switch: \"switch"
 ]
