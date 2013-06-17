@@ -13,6 +13,10 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
+# Set-like map of all lowercase identifier characters. Used to figure
+# out if we're looking at a keyword in the `identifierString` rule.
+LOWER_ALPHA = ["a".."z": true];
+
 # Returns a `call` node.
 makeCall = { function, actuals* ::
     <> @[call: [function: function, actuals: actuals]]
@@ -54,6 +58,15 @@ string = {/
 identifierString = {/
     s = [@identifier @string]
     { <> makeLiteral(tokenValue(s)) }
+|
+    token = .
+    &&(not(tokenHasValue(token)))
+    {
+        type = tokenType(token);
+        firstCh = stringNth(type, 0);
+        <> ifTrue { <> mapHasKey(LOWER_ALPHA, firstCh) }
+            { <> makeLiteral(type) }
+    }
 /};
 
 listElement = {/

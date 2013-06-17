@@ -13,6 +13,10 @@ list of all the tokens. Tokenization errors are represented in the
 result as tokens of type `"error"`.
 
 ```
+# A map from strings to their corresponding keywords, one mapping for each
+# identifier-like keyword.
+KEYWORDS = [def: @def, fn: @fn];
+
 # Note: The yielded result is always ignored.
 whitespace = {/
     [" " "\n"]
@@ -51,7 +55,12 @@ string = {/
 identifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
-    { <> @[identifier: stringFromTokenList([first, rest*])] }
+    {
+        string = stringFromTokenList([first, rest*]);
+        <> ifValue { <> mapGet(string, KEYWORDS) }
+            { keyword: <> keyword }
+            { @[identifier: string] }
+    }
 /};
 
 quotedIdentifier = {/
