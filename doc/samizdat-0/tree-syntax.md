@@ -52,8 +52,8 @@ string = {/
 /};
 
 identifierString = {/
-    i = @identifier
-    { <> makeLiteral(tokenValue(i)) }
+    s = [@identifier @string]
+    { <> makeLiteral(tokenValue(s)) }
 /};
 
 listElement = {/
@@ -139,7 +139,7 @@ token = {/
         @"]"
         { <> [type, value*] }
     |
-        type = (string | identifierString)
+        type = identifierString
         { <> [type] }
     )
 

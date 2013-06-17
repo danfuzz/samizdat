@@ -131,11 +131,11 @@ parseString = {/
     { <> makeLiteral(tokenValue(s)) }
 /};
 
-# Parses an identifier or identifier-like keyword, returning a string
-# literal.
+# Parses an identifier, identifier-like keyword, or string literal,
+# returning a string literal in all cases.
 parseIdentifierString = {/
-    i = @identifier
-    { <> makeLiteral(tokenValue(i)) }
+    s = [@identifier @string]
+    { <> makeLiteral(tokenValue(s)) }
 |
     token = .
     &&(not(tokenHasValue(token)))
@@ -238,7 +238,7 @@ parseToken = {/
         @"]"
         { <> [type, value*] }
     |
-        type = (parseString | parseIdentifierString)
+        type = parseIdentifierString
         { <> [type] }
     )
 
