@@ -539,6 +539,7 @@ DEF_PARSE(varRef) {
 DEF_PARSE(varDef) {
     MARK();
 
+    MATCH_OR_REJECT(DEF);
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue expression = PARSE_OR_REJECT(expression);
