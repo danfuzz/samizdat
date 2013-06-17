@@ -170,6 +170,7 @@ varRef = {/
 /};
 
 varDef = {/
+    @"def"
     name = @identifier
     @"="
     ex = expression
