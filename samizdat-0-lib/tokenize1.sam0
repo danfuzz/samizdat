@@ -14,10 +14,10 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-KEYWORDS = [def: @def, fn: @fn];
+def KEYWORDS = [def: @def, fn: @fn];
 
 # Documented in Samizdat Layer 0 spec.
-tokWhitespace = pegMakeMainSequence(
+def tokWhitespace = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeCharSet(" \n"),
         pegMakeSequence(
@@ -26,7 +26,7 @@ tokWhitespace = pegMakeMainSequence(
             pegMakeToken("\n"))));
 
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
-tokPunctuation = pegMakeMainSequence(
+def tokPunctuation = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeString("@@"),
         pegMakeString("::"),
@@ -40,7 +40,7 @@ tokPunctuation = pegMakeMainSequence(
         pegMakeCharSet("@:.,=+?;*<>{}()[]", "&|!")));
 
 # Documented in Samizdat Layer 0 spec.
-tokStringChar = pegMakeMainSequence(
+def tokStringChar = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeCharSetComplement("\\\""),
@@ -58,7 +58,7 @@ tokStringChar = pegMakeMainSequence(
                     pegMakeToken("0"), pegMakeCode { . :: <> "\0" })))));
 
 # Documented in Samizdat Layer 0 spec.
-tokString = pegMakeMainSequence(
+def tokString = pegMakeMainSequence(
     pegMakeToken("\""),
     pegMakeStar(tokStringChar),
     pegMakeToken("\""),
@@ -67,25 +67,25 @@ tokString = pegMakeMainSequence(
     });
 
 # These are all the characters which are allowed to start an identifier.
-IDENTIFIER_START_CHARS =
+def IDENTIFIER_START_CHARS =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = stringAdd(IDENTIFIER_START_CHARS, "0123456789");
+def IDENTIFIER_CHARS = stringAdd(IDENTIFIER_START_CHARS, "0123456789");
 
 # Documented in Samizdat Layer 0 spec.
-tokIdentifier = pegMakeMainSequence(
+def tokIdentifier = pegMakeMainSequence(
     pegMakeCharSet(IDENTIFIER_START_CHARS),
     pegMakeStar(pegMakeCharSet(IDENTIFIER_CHARS)),
     pegMakeCode { first, rest ::
-        string = stringFromTokenList([first, rest*]);
+        def string = stringFromTokenList([first, rest*]);
         <> ifValue { <> mapGet(KEYWORDS, string) }
             { keyword :: <> keyword }
             { <> @[identifier: string] }
     });
 
 # Documented in Samizdat Layer 0 spec.
-tokQuotedIdentifier = pegMakeMainSequence(
+def tokQuotedIdentifier = pegMakeMainSequence(
     pegMakeToken("\\"),
     tokString,
     pegMakeCode { ., s ::
@@ -94,16 +94,16 @@ tokQuotedIdentifier = pegMakeMainSequence(
 
 # These are all the int digits, as a map from strings to
 # digit values.
-INT_CHARS = [
+def INT_CHARS = [
     "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
     "5": 5, "6": 6, "7": 7, "8": 8, "9": 9
 ];
 
 # Given a decimal digit, returns the digit value.
-intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
+def intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 
 # Documented in Samizdat Layer 0 spec.
-tokInt = pegMakeMainSequence(
+def tokInt = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeToken("-"),
@@ -114,22 +114,22 @@ tokInt = pegMakeMainSequence(
             pegMakeCharSet("0123456789"),
             pegMakeCode(intFromDigitChar))),
     pegMakeCode { sign, digits ::
-        value = listReduce(0, digits)
+        def value = listReduce(0, digits)
             { result, ., digit :: <> iadd(digit, imul(result, 10)) };
         <> @[int: imul(sign, value)]
     });
 
 # Documented in Samizdat Layer 0 spec.
-tokError = pegMakeMainSequence(
+def tokError = pegMakeMainSequence(
     pegRuleAny,
     pegMakeStar(pegMakeCharSetComplement("\n")),
     pegMakeCode { badCh, . ::
-        msg = format("Unrecognized character: %q", tokenType(badCh));
+        def msg = format("Unrecognized character: %q", tokenType(badCh));
         <> @[error: msg]
     });
 
 # Documented in Samizdat Layer 0 spec.
-tokToken = pegMakeMainSequence(
+def tokToken = pegMakeMainSequence(
     pegMakeChoice(
         tokInt,
         tokPunctuation,
@@ -139,7 +139,7 @@ tokToken = pegMakeMainSequence(
         tokError));
 
 # Documented in Samizdat Layer 0 spec.
-tokFile = pegMakeMainSequence(
+def tokFile = pegMakeMainSequence(
     pegMakeStar(
         pegMakeSequence(
             pegMakeStar(tokWhitespace),
@@ -155,7 +155,7 @@ tokFile = pegMakeMainSequence(
 #
 
 # Documented in Samizdat Layer 0 spec.
-sam1Tokenize = { programText ::
+def sam1Tokenize = { programText ::
     <> pegApply(tokFile, programText)
 };
 

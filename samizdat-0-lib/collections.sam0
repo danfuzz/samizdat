@@ -16,7 +16,7 @@
 
 # Generic for-each function. Instead of the value-to-iterate argument, this
 # takes an `nthFunc` of one argument.
-genericForEach = { <out> nthFunc, function ::
+def genericForEach = { <out> nthFunc, function ::
     loopReduce(0) { index ::
         <> ifValue { <> nthFunc(index) }
             { item ::
@@ -29,13 +29,13 @@ genericForEach = { <out> nthFunc, function ::
 
 # Generic reduce function. Instead of the value-to-reduce argument, this
 # takes an `nthFunc` of one argument.
-genericReduce = { <out> base, nthFunc, function ::
+def genericReduce = { <out> base, nthFunc, function ::
     loopReduce([base, 0]) { state ::
-        result = listNth(state, 0);
-        index = listNth(state, 1);
+        def result = listNth(state, 0);
+        def index = listNth(state, 1);
         <> ifValue { <> nthFunc(index) }
             { item ::
-                nextResult = ifValue { <> function(result, index, item) }
+                def nextResult = ifValue { <> function(result, index, item) }
                     { value :: <> value }
                     { <> result };
                 <> [nextResult, iadd(index, 1)]
@@ -46,7 +46,7 @@ genericReduce = { <out> base, nthFunc, function ::
 
 # Generic map function. Instead of the value-to-map argument, this
 # takes an `nthFunc` of one argument.
-genericMap = { nthFunc, function ::
+def genericMap = { nthFunc, function ::
     <> genericReduce([], nthFunc)
         { result, index, item ::
             <> ifValue { <> function(index, item) }
@@ -61,31 +61,31 @@ genericMap = { nthFunc, function ::
 #
 
 # Documented in Samizdat Layer 0 spec.
-listButFirst = { <out> list, notFound? ::
+def listButFirst = { <out> list, notFound? ::
     <> ifTrue { <> eq(list, []) }
         { <> out(notFound*) }
         { <> listSlice(list, 1) }
 };
 
 # Documented in Samizdat Layer 0 spec.
-listButLast = { <out> list, notFound? ::
+def listButLast = { <out> list, notFound? ::
     <> ifTrue { <> eq(list, []) }
         { <> out(notFound*) }
         { <> listSlice(list, 0, isub(lowSize(list), 1)) }
 };
 
 # Documented in Samizdat Layer 0 spec.
-listFirst = { list, notFound? ::
+def listFirst = { list, notFound? ::
     <> listNth(list, 0, notFound*)
 };
 
 # Documented in Samizdat Layer 0 spec.
-listForEach = { list, function ::
+def listForEach = { list, function ::
     <> genericForEach({ n :: <> listNth(list, n) }, function)
 };
 
 # Documented in Samizdat Layer 0 spec.
-listLast = { list, notFound? ::
+def listLast = { list, notFound? ::
     <> listNth(list, isub(lowSize(list), 1), notFound*)
 };
 
@@ -99,7 +99,7 @@ listLast = { list, notFound? ::
 # **Note:** This one is out-of (alphabetical) order, because it's used
 # by other functions in this section, and *Samizdat Layer 0* does not allow
 # use-before-def.
-mapReduce = { base, map, function ::
+def mapReduce = { base, map, function ::
     <> genericReduce(base) { n :: <> mapNth(map, n) }
         { reduction, ., mapping ::
             <> function(reduction, mapKey(mapping), mapValue(mapping))
@@ -107,13 +107,13 @@ mapReduce = { base, map, function ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-mapForEach = { map, function ::
+def mapForEach = { map, function ::
     genericForEach { n :: <> mapNth(map, n) }
         { ., mapping :: function(mapKey(mapping), mapValue(mapping)) }
 };
 
 # Documented in Samizdat Layer 0 spec.
-mapMap = { map, function ::
+def mapMap = { map, function ::
     <> mapReduce([:], map)
         { reduction, key, value ::
             <> ifValue { <> function(key, value) }
@@ -128,23 +128,23 @@ mapMap = { map, function ::
 #
 
 # Documented in Samizdat Layer 0 spec.
-stringForEach = { string, function ::
+def stringForEach = { string, function ::
     <> genericForEach({ n :: <> stringNth(string, n) }, function)
 };
 
 # Documented in Samizdat Layer 0 spec.
-stringFromTokenList = { tokens ::
+def stringFromTokenList = { tokens ::
     <> listReduce("", tokens)
         { result, ., token :: <> stringAdd(result, tokenType(token)) };
 };
 
 # Documented in Samizdat Layer 0 spec.
-stringMap = { string, function ::
+def stringMap = { string, function ::
     <> genericMap({ n :: <> stringNth(string, n) }, function)
 };
 
 # Documented in Samizdat Layer 0 spec.
-stringReduce = { base, string, function ::
+def stringReduce = { base, string, function ::
     <> genericReduce(base, { n :: <> stringNth(string, n) }, function)
 };
 

@@ -21,7 +21,7 @@
 # writing a call to it (instead just "manually" expanding it where needed).
 # It is included and used here, specifically so that the common structure
 # between the two Y combinator variants is more obvious.
-uCombinator = { function :: <> function(function) };
+def uCombinator = { function :: <> function(function) };
 
 # The U* combinator. This is like the U combinator, except expanded to
 # work for multiple function arguments, in this case both passed and
@@ -34,7 +34,7 @@ uCombinator = { function :: <> function(function) };
 # function, but the name "U*" makes for a nice parallel with the name
 # "Y*". That is, the Y combinator uses the U combinator in the same way
 # that the Y* combinator uses this function.
-uStarCombinator = { functions ::
+def uStarCombinator = { functions ::
     <> listMap(functions)
         { ., function :: <> function(functions*) }
 };
@@ -45,12 +45,12 @@ uStarCombinator = { functions ::
 #
 
 # Documented in Samizdat Layer 0 spec.
-yCombinator = { function ::
+def yCombinator = { function ::
     # Although it is coded here using a variable assignment, it's just
     # for readability and not a strict necessity. That is, the definition
     # of `applicator` doesn't directly refer to the variable `applicator`.
 
-    applicator = { selfRef ::
+    def applicator = { selfRef ::
         <> { args* ::
             <> function(uCombinator(selfRef))(args*)
         }
@@ -60,13 +60,13 @@ yCombinator = { function ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-yStarCombinator = { functions* ::
+def yStarCombinator = { functions* ::
     # The code here is meant to be exactly parallel to that of `yCombinator`,
     # except with additional list mapping (including via the
     # `uStarCombinator` function) where necessitated by the multiple-function
     # nature of this variant.
 
-    applicators = listMap(functions)
+    def applicators = listMap(functions)
         { ., function ::
             <> { selfRefs* ::
                 <> { args* ::

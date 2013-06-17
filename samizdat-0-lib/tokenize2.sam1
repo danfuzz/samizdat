@@ -14,7 +14,7 @@
 # includes hex digits as well, in both lower and upper case. Finally, this
 # includes a mapping of `"_"` to `-1` for the implementation of the
 # "digit space" syntax.
-INT_CHARS = [
+def INT_CHARS = [
     "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
     "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
     "a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15,
@@ -23,12 +23,12 @@ INT_CHARS = [
 ];
 
 # Helper to convert digit characters to digit values.
-intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
+def intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
 
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
-KEYWORDS = listReduce([:],
+def KEYWORDS = listReduce([:],
     [ "break", "continue", "def", "default", "do", "else", "export", "fn",
       "if", "import", "module", "return", "switch", "var", "while" ])
     { result, ., name :: <> [result*, (name): @[(name)]] };
@@ -39,8 +39,8 @@ KEYWORDS = listReduce([:],
 #
 
 # Parses a `/* ... */` comment, with nesting.
-tokMultilineComment = forwardFunction();
-implMultilineComment = {/
+def tokMultilineComment = forwardFunction();
+def implMultilineComment = {/
     "/*"
 
     (
@@ -57,7 +57,7 @@ tokMultilineComment(implMultilineComment);
 
 # Parses whitespace and comments. **Note:** The yielded result is always
 # ignored.
-tokWhitespace = {/
+def tokWhitespace = {/
     [" " "\n"]
 |
     "#" [! "\n"]* "\n"
@@ -67,7 +67,7 @@ tokWhitespace = {/
 
 # Parses punctuation and operators. The lookahead is done to avoid bothering
 # with the choice expression unless we have a definite match.
-tokPunctuation = {/
+def tokPunctuation = {/
     &["\\-/%&|^!@:,.=+?;*<>{}()[]"]
     (
         "\\==" | "\\!=" | "\\<=" | "\\>=" | "\\<" | "\\>"
@@ -92,7 +92,7 @@ tokPunctuation = {/
 /};
 
 # Parses a single character, inside a quoted string.
-tokStringChar = {/
+def tokStringChar = {/
     (
         ch = [! "\\" "\""]
         { <> tokenType(ch) }
@@ -110,7 +110,7 @@ tokStringChar = {/
 /};
 
 # Parses a quoted string.
-tokString = {/
+def tokString = {/
     "\""
     chars = tokStringChar*
 
@@ -123,7 +123,7 @@ tokString = {/
 /};
 
 # Parses an identifier (in the usual form). This also parses keywords.
-tokIdentifier = {/
+def tokIdentifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
     {
@@ -135,14 +135,14 @@ tokIdentifier = {/
 /};
 
 # Parses the quoted-string identifier form.
-tokQuotedIdentifier = {/
+def tokQuotedIdentifier = {/
     "\\"
     s = tokString
     { <> @[identifier: tokenValue(s)] }
 /};
 
 # Parses an integer literal.
-tokInt = {/
+def tokInt = {/
     base = (
         "0x" { <> 16 }
     |
@@ -163,7 +163,7 @@ tokInt = {/
     )
 
     {
-        value = listReduce(0, digits) { result, ., digit ::
+        def value = listReduce(0, digits) { result, ., digit ::
             <> ifTrue { <> eq(digit, -1) }
                 { <> result }
                 { <> iadd(imul(result, base), digit) }
@@ -174,17 +174,17 @@ tokInt = {/
 
 # "Parses" an unrecognized character. This also consumes any further characters
 # on the same line, in an attempt to resynch the input.
-tokError = {/
+def tokError = {/
     badCh = .
     [! "\n"]*
     {
-        msg = format("Unrecognized character: %q", tokenType(badCh));
+        def msg = format("Unrecognized character: %q", tokenType(badCh));
         <> @[error: msg]
     }
 /};
 
 # Parses an arbitrary token or error.
-tokToken = {/
+def tokToken = {/
     tokString | tokIdentifier | tokQuotedIdentifier
 |
     # This needs to be listed after the quoted identifier rule, to
@@ -200,7 +200,7 @@ tokToken = {/
 /};
 
 # Parses a file of tokens, yielding a list of them.
-tokFile = {/
+def tokFile = {/
     tokens=(tokWhitespace* tokToken)* tokWhitespace*
     { <> tokens }
 /};
@@ -211,7 +211,7 @@ tokFile = {/
 #
 
 # Documented in Samizdat Layer 1 spec.
-sam2Tokenize = { programText ::
+def sam2Tokenize = { programText ::
     <> pegApply(tokFile, programText)
 };
 
