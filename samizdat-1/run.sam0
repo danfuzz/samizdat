@@ -14,12 +14,12 @@ READER ::
 # compares the would-be result with the result of doing the same operation
 # using the samizdat-0 facilities for same, complaining if they're not
 # equal.
-sam1ValidatedTree = { programText ::
+def sam1ValidatedTree = { programText ::
     # Parse the text using the layer 1 parsers.
-    programNode1 = sam1Tree(programText);
+    def programNode1 = sam1Tree(programText);
 
     # Do the same using the layer 0 parsers.
-    programNode0 = sam0Tree(programText);
+    def programNode0 = sam0Tree(programText);
 
     # Complain if the two parsed forms aren't identical.
     ifTrue { <> ne(programNode0, programNode1) }
@@ -36,18 +36,18 @@ sam1ValidatedTree = { programText ::
 };
 
 # Reads the named embedded library file.
-readLibraryFile = { name ::
+def readLibraryFile = { name ::
     <> READER(["samizdat-0-lib", name])
 };
 
 # Reads all the library files, returning a map from names to contents.
-readAllLibraryFiles = {
+def readAllLibraryFiles = {
     # Use the manifest to figure out what all to read.
-    manifestText = readLibraryFile("manifest.sam0");
-    manifestProgram = sam0Eval(LIBRARY, sam0Tree(manifestText));
-    manifestBindings = manifestProgram();
-    BOOTSTRAP_FILES = mapGet(manifestBindings, "BOOTSTRAP_FILES");
-    MANIFEST = mapGet(manifestBindings, "MANIFEST");
+    def manifestText = readLibraryFile("manifest.sam0");
+    def manifestProgram = sam0Eval(LIBRARY, sam0Tree(manifestText));
+    def manifestBindings = manifestProgram();
+    def BOOTSTRAP_FILES = mapGet(manifestBindings, "BOOTSTRAP_FILES");
+    def MANIFEST = mapGet(manifestBindings, "MANIFEST");
 
     <> listReduce([:], [BOOTSTRAP_FILES*, MANIFEST*])
         { result, ., name :: <> [result*, (name): readLibraryFile(name)] }
@@ -55,16 +55,16 @@ readAllLibraryFiles = {
 
 # Makes the core library by using this program's parser to parse the library
 # source text.
-makeCoreLibrary = {
+def makeCoreLibrary = {
     # Make the core library context that will be used to load the embedded
     # core library. The only difference between this and the original core
     # library is the replacement of `sam0Tree` with `sam1ValidatedTree`.
-    subLibrary = makeLibrary([LIBRARY*, sam0Tree: sam1ValidatedTree]);
+    def subLibrary = makeLibrary([LIBRARY*, sam0Tree: sam1ValidatedTree]);
 
-    libraryFiles = readAllLibraryFiles();
+    def libraryFiles = readAllLibraryFiles();
 
-    mainProgram = sam1Tree(mapGet(libraryFiles, "main.sam0"));
-    mainFunction = sam0Eval(subLibrary, mainProgram);
+    def mainProgram = sam1Tree(mapGet(libraryFiles, "main.sam0"));
+    def mainFunction = sam0Eval(subLibrary, mainProgram);
     <> mainFunction(libraryFiles)
 };
 
@@ -72,29 +72,29 @@ makeCoreLibrary = {
 # and runs it, passing it an array consisting of its own file path
 # (in standard list-of-string form) followed by the rest of the
 # arguments as-is.
-run = { args* ::
-    parsedArgs = parseArgs0(args);
-    allArgs = mapGet(parsedArgs, "args");
-    options = mapGet(parsedArgs, "options");
-    validate = mapGet(options, "validate", false);
+def run = { args* ::
+    def parsedArgs = parseArgs0(args);
+    def allArgs = mapGet(parsedArgs, "args");
+    def options = mapGet(parsedArgs, "options");
+    def validate = mapGet(options, "validate", false);
 
     ifTrue { <> eq(allArgs, []) } { io0Die("Missing file name.") };
-    file = listFirst(allArgs);
-    argsPerSe = listButFirst(allArgs);
+    def file = listFirst(allArgs);
+    def argsPerSe = listButFirst(allArgs);
 
-    library = ifTrue { <> validate }
+    def library = ifTrue { <> validate }
         {
-            lib = makeCoreLibrary();
+            def lib = makeCoreLibrary();
             <> lib
         }
         { <> LIBRARY };
 
-    filePath = io0PathFromFlat(file);
-    programText = io0ReadFileUtf8(filePath);
-    programNode = sam1ValidatedTree(programText);
+    def filePath = io0PathFromFlat(file);
+    def programText = io0ReadFileUtf8(filePath);
+    def programNode = sam1ValidatedTree(programText);
 
     # Evaluate the program in the context of the samizdat-0 core library.
-    function = sam1Eval(makeLibrary(library), programNode);
+    def function = sam1Eval(makeLibrary(library), programNode);
 
     # Run it!
     <> function(filePath, argsPerSe*)
