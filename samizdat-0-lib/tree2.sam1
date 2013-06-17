@@ -749,11 +749,23 @@ parsePostfixOperator = {/
 |
     @"["
     exprs = parseUnadornedList
-    &&(ne(exprs, []))
     @"]"
+
+    (
+        &&(eq(exprs, []))
+        { io0Die("Missing index value(s) from index expression.") }
+    )?
+
     {
         function = mapGet(UNARY_OPERATORS, "[]");
         <> { node :: <> makeCall(function, node, exprs*) }
+    }
+|
+    names = (@"." parseIdentifierString)+
+
+    {
+        function = mapGet(UNARY_OPERATORS, "[]");
+        <> { node :: <> makeCall(function, node, names*) }
     }
 /};
 
