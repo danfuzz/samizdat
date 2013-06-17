@@ -11,6 +11,10 @@
 # Helper definitions
 #
 
+# Set-like map of all lowercase identifier characters. Used to figure
+# out if we're looking at a keyword in the `identifierString` rule.
+LOWER_ALPHA = ["a".."z": true];
+
 # Returns a `call` node.
 makeCall = { function, actuals* ::
     <> @[call: [function: function, actuals: actuals]]
@@ -88,10 +92,6 @@ makeBinaryCalls = { firstEx, opExList ::
         <> makeCall(mapGet(BINARY_OPERATORS, tokenType(op)), result, ex)
     }
 };
-
-# Set-like map of all lowercase identifier characters. Used to figure
-# out if we're looking at a keyword in the `identifierString` rule.
-LOWER_ALPHA = ["a".."z": true];
 
 # Reports the given list of pending tokens as part of error processing.
 reportError = { pending ::
