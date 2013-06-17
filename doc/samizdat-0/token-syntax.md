@@ -57,9 +57,9 @@ identifier = {/
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
     {
         string = stringFromTokenList([first, rest*]);
-        <> ifValue { <> mapGet(string, KEYWORDS) }
-            { keyword: <> keyword }
-            { @[identifier: string] }
+        <> ifValue { <> mapGet(KEYWORDS, string) }
+            { keyword :: <> keyword }
+            { <> @[identifier: string] }
     }
 /};
 
