@@ -60,12 +60,14 @@ def identifierString = {/
     { <> makeLiteral(tokenValue(s)) }
 |
     token = .
-    &&(not(tokenHasValue(token)))
     {
-        def type = tokenType(token);
-        def firstCh = stringNth(type, 0);
-        <> ifTrue { <> mapHasKey(LOWER_ALPHA, firstCh) }
-            { <> makeLiteral(type) }
+        <> ifFalse { <> tokenHasValue(token) }
+            {
+                def type = tokenType(token);
+                def firstCh = stringNth(type, 0);
+                <> ifTrue { <> mapHasKey(LOWER_ALPHA, firstCh) }
+                    { <> makeLiteral(type) }
+            }
     }
 /};
 
