@@ -177,10 +177,11 @@ def parseVarRef = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 def parseVarDef = pegMakeMainSequence(
+    pegMakeToken("def"),
     pegMakeToken("identifier"),
     pegMakeToken("="),
     parseExpression,
-    pegMakeCode { name, ., ex ::
+    pegMakeCode { ., name, ., ex ::
         <> @[varDef: [name: tokenValue(name), value: ex]]
     });
 
