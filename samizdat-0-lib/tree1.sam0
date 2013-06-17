@@ -66,8 +66,8 @@ parseString = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 parseIdentifierString = pegMakeMainSequence(
-    pegMakeToken("identifier"),
-    pegMakeCode { i :: <> makeLiteral(tokenValue(i)) });
+    pegMakeTokenSet("identifier", "string"),
+    pegMakeCode { s :: <> makeLiteral(tokenValue(s)) });
 
 # Documented in Samizdat Layer 0 spec.
 parseListElement = pegMakeMainSequence(
@@ -161,9 +161,7 @@ parseToken = pegMakeMainSequence(
             pegMakeToken("]"),
             pegMakeCode { ., type, value, . :: <> [type, value*] }),
         pegMakeMainSequence(
-            pegMakeChoice(
-                pegMakeToken("string"),
-                pegMakeToken("identifierString")),
+            parseIdentifierString,
             pegMakeCode { type :: <> [type] })),
     pegMakeCode { ., tokenArgs :: <> makeCallName("makeToken", tokenArgs*) });
 
