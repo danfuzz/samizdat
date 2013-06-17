@@ -201,3 +201,26 @@ The language defines these as named constants, which can be defined as:
 false = @[boolean: 0]
 true = @[boolean: 1]
 ```
+
+
+### `.`, `!.`, and void
+
+It is possible for functions to return without yielding a value.
+Such functions are referred to as "void functions" and one can say that
+such a function "returns void" or "returns a void result".
+
+Unlike some languages (notably JavaScript), it is invalid to try to
+assign the void non-value (`undefined` is the JavaScript equivalent)
+to a variable or to pass it as a parameter to some other
+function. However, the Samizdat library provides the `ifValue` and `ifVoid`
+functions to let code act sensibly when it needs to call a function but
+doesn't know up-front whether or not it will yield a value.
+
+**Note:** When describing functions in this (and related) documents,
+a void result is written `!.`, which can be read as "not anything"
+(or with more technical accuracy, "the failure to match any value").
+Relatedly, a result that is a value but without any further specifics is
+written as `.`. If a function can possibly return a value *or* return void,
+that is written as `. | !.`. While not proper syntax in the language per
+se, these are meant to be suggestive of the syntax used in function
+argument declaration and in defining parsers.
