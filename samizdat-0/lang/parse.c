@@ -302,9 +302,16 @@ DEF_PARSE(identifierString) {
 
     if (result == NULL) { result = MATCH(STRING); }
     if (result == NULL) { result = MATCH(IDENTIFIER); }
+    if (result == NULL) { result = MATCH(DEF); }
+    if (result == NULL) { result = MATCH(FN); }
     if (result == NULL) { return NULL; }
 
-    return makeLiteral(datTokenValue(result));
+    zvalue value = datTokenValue(result);
+    if (value == NULL) {
+        value = datTokenType(result);
+    }
+
+    return makeLiteral(value);
 }
 
 /**

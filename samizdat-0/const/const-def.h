@@ -34,6 +34,8 @@ TOK(CH_PLUS,       "+");
 TOK(CH_QMARK,      "?");
 TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
+TOK(DEF,           "def");
+TOK(FN,            "fn");
 
 STR(UP_LIBRARY,       "LIBRARY");
 
