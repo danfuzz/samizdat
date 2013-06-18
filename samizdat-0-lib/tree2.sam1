@@ -677,11 +677,8 @@ def parseFnCommon = {/
     # This is a variable definition statement which binds the yield def
     # name to the `return` function, if there is in fact a yield def present.
     returnDef = (
-        y = parseOptYieldDef
-        {
-            <> ifValue { <> mapGet(y, "yieldDef") }
-                { yieldName :: <> makeVarDef(yieldName, makeVarRef("return")) }
-        }
+        y = parseYieldDef
+        { <> makeVarDef(y, makeVarRef("return")) }
     )?
 
     name = (
@@ -998,12 +995,10 @@ def parseIfExpression = {/
 # is no yield definition present, or is a single-element list of an
 # appropriate variable definition and assignment.
 def parseOptBreakDef = {/
-    y = parseOptYieldDef
-
-    {
-        <> ifTrue { <> ne(y, [:]) }
-            { <> makeVarDef(mapValue(y), makeVarRef("break")) }
-    }?
+    (
+        y = parseYieldDef
+        { <> makeVarDef(y, makeVarRef("break")) }
+    )?
 /};
 
 # Helper for switch expressions: Parse a regular case.
