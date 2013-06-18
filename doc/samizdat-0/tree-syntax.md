@@ -45,11 +45,16 @@ def makeThunk = { expression ::
 # forward declaration: programBody
 # forward declaration: expression
 
-def optYieldDef = {/
+def yieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> [yieldDef: tokenValue(name)] }
+    { <> tokenValue(name) }
+/};
+
+def optYieldDef = {/
+    y = yieldDef
+    { <> [yieldDef: y] }
 |
     { <> [:] }
 /};
