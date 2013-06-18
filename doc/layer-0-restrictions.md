@@ -1,11 +1,13 @@
 Samizdat Layer 0 Restrictions
 =============================
 
-This document describes how the *Samizdat Layer 0* implementation differs
-from the full language.
+*Samizdat 0* is the system in which the full Samizdat implementation is
+written. It implements several "layers" of language, with *Samizdat Layer 0*
+being the most basic language, and each subsequent layer being (practically
+speaking) a strict superset of the layer that it is build directly upon.
 
-*Samizdat Layer 0* is the language and system in which the full Samizdat
-implementation is written.
+This document describes how the various layers of *Samizdat 0* differ
+from the full language.
 
 
 Ints
