@@ -645,7 +645,8 @@ parseChoicePex(implChoicePex);
 # Common parsing for `fn` statements and expressions. The syntax for
 # both is identical, except that the statement form requires that the
 # function be named. The result of this rule is a map identical in form to
-# a closure payload, except that `name` may also be bound.
+# what's required for a closure payload, except that `name` may also
+# be bound.
 #
 # The result of this rule is suitable for use as a `closure` node
 # payload. And as long as `name` is bound, the result is valid to use
@@ -658,7 +659,7 @@ parseChoicePex(implChoicePex);
 # ```
 #
 # ```
-# { arg1 arg2 <\"return"> ::
+# { <\"return"> arg1, arg2 ::
 #     def out = \"return";
 #     stat1;
 #     stat2
@@ -882,7 +883,7 @@ def parseOrExpression = {/
 # Parses a `fn` (function with `return` binding) expression. The translation
 # is as described in `parseFnCommon` (above) if the function is not given a
 # name. If the function *is* given a name, the translation is along the
-# following lines:
+# following lines (so as to enable self-recursion):
 #
 # ```
 # fn <out> name(arg1, arg2) { stat1; stat2 }
@@ -893,11 +894,11 @@ def parseOrExpression = {/
 # ```
 # {
 #     def name = forwardFunction();
-#     <> name {/ arg1 arg2 <\"return"> ::
+#     <> name { <\"return"> arg1, arg2 ::
 #         def out = \"return";
 #         stat1;
 #         stat2
-#     /}
+#     }
 # }()
 # ```
 def parseFnExpression = {/
@@ -929,19 +930,19 @@ def parseIfExpression = {/
     @if
     yieldDef = parseOptYieldDef
     firstCondition = parseParenExpression
-    firstThen = parseNullaryClosure
+    firstThen = parseCodeOnlyClosure
 
     elseIfThens = (
         @else
         @if
         condition = parseParenExpression
-        then = parseNullaryClosure
+        then = parseCodeOnlyClosure
         { <> [condition, then] }
     )*
 
     finalElse = (
         @else
-        parseClosure
+        parseCodeOnlyClosure
     )?
 
     mainCall = (
@@ -1008,7 +1009,7 @@ def parseOptBreakDef = {/
 def parseSwitchCase = {/
     key = parseUnadornedList
     @":"
-    code = parseNullaryClosure
+    code = parseCodeOnlyClosure
     { <> makeCallName("makeList", code, key*) }
 /};
 
@@ -1016,7 +1017,7 @@ def parseSwitchCase = {/
 def parseSwitchDefault = {/
     @default
     @":"
-    parseNullaryClosure
+    parseCodeOnlyClosure
 /};
 
 # Parses a switch expression. The translation is along these lines:
