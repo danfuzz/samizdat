@@ -658,11 +658,11 @@ parseChoicePex(implChoicePex);
 # ```
 #
 # ```
-# {/ arg1 arg2 <\"return"> ::
+# { arg1 arg2 <\"return"> ::
 #     def out = \"return";
 #     stat1;
 #     stat2
-# /}
+# }
 # ```
 #
 # with:
@@ -891,14 +891,14 @@ def parseOrExpression = {/
 # =>
 #
 # ```
-# {/
+# {
 #     def name = forwardFunction();
 #     <> name {/ arg1 arg2 <\"return"> ::
 #         def out = \"return";
 #         stat1;
 #         stat2
 #     /}
-# /}()
+# }()
 # ```
 def parseFnExpression = {/
     funcMap = parseFnCommon
@@ -921,7 +921,10 @@ def parseFnExpression = {/
     )
 /};
 
-# Parses an if expression.
+# Parses an if expression. With a single test, this translates into
+# a call to `ifTrue`. With multiple tests, this translates into a
+# call to `ifChain`. In either case, if the expression has a yield
+# def, the main call is wrapped in a thunk-call.
 def parseIfExpression = {/
     @if
     yieldDef = parseOptYieldDef
