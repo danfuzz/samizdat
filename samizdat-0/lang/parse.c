@@ -279,6 +279,32 @@ DEF_PARSE(closure);
 DEF_PARSE(expression);
 
 /* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(nullaryClosure) {
+    MARK();
+
+    zvalue c = PARSE_OR_REJECT(closure);
+
+    if (datMapGet(datTokenValue(c), STR_FORMALS) != NULL) {
+        die("Invalid formal argument in code block.");
+    }
+
+    return c;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(codeOnlyClosure) {
+    MARK();
+
+    zvalue c = PARSE_OR_REJECT(nullaryClosure);
+
+    if (datMapGet(datTokenValue(c), STR_YIELD_DEF) != NULL) {
+        die("Invalid yield definition in code block.");
+    }
+
+    return c;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(int) {
     MARK();
 

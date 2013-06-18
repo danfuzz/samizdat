@@ -59,6 +59,24 @@ def parseExpression = forwardFunction();
 def parseParser = forwardFunction();
 
 # Documented in Samizdat Layer 0 spec.
+def parseNullaryClosure = pegMakeMainSequence(
+    parseClosure,
+    pegMakeCode { c ::
+        ifTrue { <> mapHasKey(tokenValue(c), "formals") }
+            { io0Die("Invalid formal argument in code block.") };
+        <> c
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parseCodeOnlyClosure = pegMakeMainSequence(
+    parseNullaryClosure,
+    pegMakeCode { c ::
+        ifTrue { <> mapHasKey(tokenValue(c), "yieldDef") }
+            { io0Die("Invalid yield definition in code block.") };
+        <> c
+    });
+
+# Documented in Samizdat Layer 0 spec.
 def parseInt = pegMakeMainSequence(
     pegMakeToken("int"),
     pegMakeCode { int :: <> makeLiteral(tokenValue(int)) });
@@ -372,15 +390,6 @@ parseClosure(implClosure);
 
 # `choicePex` is the top-level parsing expression node type.
 def parseChoicePex = forwardFunction();
-
-# Documented in Samizdat Layer 1 spec.
-def parseNullaryClosure = pegMakeMainSequence(
-    parseClosure,
-    pegMakeCode { closure ::
-        ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
-            { io0Die("Invalid formal argument in code block.") };
-        <> closure
-    });
 
 def implParser = pegMakeMainSequence(
     pegMakeToken("{/"),

@@ -119,6 +119,29 @@ def parseExpression = forwardFunction();
 # Forward declaration required for integrating layer 1 definitions.
 def parseParser = forwardFunction();
 
+# Parses a closure which must not define any formal arguments.
+def parseNullaryClosure = {/
+    c = parseClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(c), "formals") }
+            { io0Die("Invalid formal argument in code block.") };
+        <> c
+    }
+/};
+
+# Parses a closure which must have neither formal arguments nor a yield
+# definition.
+def parseCodeOnlyClosure = {/
+    c = parseNullaryClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(c), "yieldDef") }
+            { io0Die("Invalid yield definition in code block.") };
+        <> c
+    }
+/};
+
 # Parses an integer literal.
 def parseInt = {/
     i = @int
@@ -428,24 +451,6 @@ def parseProgramOrError = {/
 # Forward declaration.
 def parseChoicePex = forwardFunction();
 
-# Parses a closure which must not define any formal arguments. This is done
-# by parsing an arbitrary closure and then verifying that it does not
-# declare formals. This is preferable to not-including formal argument
-# syntax, because (a) no rule wants to differentiate these cases (rules either
-# wants an arbitrary closure or a specifically-constrained kind); (b) it
-# reduces redundancy in the syntax, and (c) the error case on the former
-# would be more obscure (as in just something like "unexpected token" on
-# the would-be formal argument).
-def parseNullaryClosure = {/
-    closure = parseClosure
-
-    {
-        ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
-            { io0Die("Invalid formal argument in code block.") };
-        <> closure
-    }
-/};
-
 # Parses a parser function.
 def implParser = {/
     @"{/"
@@ -629,18 +634,6 @@ parseChoicePex(implChoicePex);
 #
 # Samizdat Layer 2 definitions
 #
-
-# Parses a closure which must have neither formal arguments nor a yield
-# definition. See `parseNullaryClosure` above for discussion.
-def parseCodeOnlyClosure = {/
-    closure = parseNullaryClosure
-
-    {
-        ifTrue { <> mapHasKey(tokenValue(closure), "yieldDef") }
-            { io0Die("Invalid yield definition in code block.") };
-        <> closure
-    }
-/};
 
 # Common parsing for `fn` statements and expressions. The syntax for
 # both is identical, except that the statement form requires that the
