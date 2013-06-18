@@ -27,5 +27,5 @@ in int literals.
 Strings
 -------
 
-Hexadecimal escapes are not recognized. Parsing of these is implemented
-in Layer 2.
+Hexadecimal escapes are not recognized in string literals. Parsing of
+these is implemented in Layer 2.
