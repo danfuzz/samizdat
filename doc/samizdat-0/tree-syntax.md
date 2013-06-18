@@ -42,8 +42,100 @@ def makeThunk = { expression ::
     <> @[closure: @[statements: [], yield: expression]];
 };
 
-# forward declaration: closure
+# forward declaration: programBody
 # forward declaration: expression
+
+def yieldDef = {/
+    @"<"
+    name = @identifier
+    @">"
+    { <> tokenValue(name) }
+/};
+
+def optYieldDef = {/
+    y = yieldDef
+    { <> [yieldDef: y] }
+|
+    { <> [:] }
+/};
+
+def formal = {/
+    name = (
+        n = @identifier
+        { <> [name: tokenValue(n)] }
+    |
+        @"." { <> [:] }
+    )
+
+    repeat = (
+        r = [@"?" @"*" @"+"]
+        { <> [repeat: tokenType(r)] }
+    |
+        { <> [:] }
+    )
+
+    { <> [:, name*, repeat*] }
+/};
+
+def formalsList = {/
+    first = formal
+    rest = (@"," formal)*
+    { <> [formals: [first, rest*]] }
+|
+    { <> [:] }
+/};
+
+def programDeclarations = {/
+    yieldDef = optYieldDef
+    formals = formalsList
+
+    @"::"
+
+    { <> [:, formals*, yieldDef*] }
+/};
+
+def program = {/
+    decls = (programDeclarations | { <> [:] })
+    body = programBody
+    { <> @[closure: [:, decls*, body*]] }
+/};
+
+def closure = {/
+    @"{"
+    prog = program
+    @"}"
+    { <> prog }
+/};
+
+# Parses a closure which must not define any formal arguments. This is done
+# by parsing an arbitrary closure and then verifying that it does not
+# declare formals. This is preferable to not-including formal argument
+# syntax, because (a) no rule wants to differentiate these cases (rules either
+# want an arbitrary closure or a specifically-constrained kind); (b) it
+# reduces redundancy in the syntax, and (c) the error case on the former
+# would be more obscure (as in just something like "unexpected token" on
+# the would-be formal argument).
+def nullaryClosure = {/
+    c = closure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(c), "formals") }
+            { io0Die("Invalid formal argument in code block.") };
+        <> c
+    }
+/};
+
+# Parses a closure which must have neither formal arguments nor a yield
+# definition. See `parseNullaryClosure` above for discussion.
+def codeOnlyClosure = {/
+    c = nullaryClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(c), "yieldDef") }
+            { io0Die("Invalid yield definition in code block.") };
+        <> c
+    }
+/};
 
 def int = {/
     i = @int
@@ -247,41 +339,6 @@ def yield = {/
     )
 /};
 
-def optYieldDef = {/
-    @"<"
-    name = @identifier
-    @">"
-    { <> [yieldDef: tokenValue(name)] }
-|
-    { <> [:] }
-/};
-
-def formal = {/
-    name = (
-        n = @identifier
-        { <> [name: tokenValue(n)] }
-    |
-        @"." { <> [:] }
-    )
-
-    repeat = (
-        r = [@"?" @"*" @"+"]
-        { <> [repeat: tokenType(r)] }
-    |
-        { <> [:] }
-    )
-
-    { <> [:, name*, repeat*] }
-/};
-
-def formalsList = {/
-    first = formal
-    rest = (@"," formal)*
-    { <> [formals: [first, rest*]] }
-|
-    { <> [:] }
-/};
-
 def programBody = {/
     @";"*
 
@@ -307,28 +364,6 @@ def programBody = {/
         def allStatements = listAdd(most, mapGet(last, "statements"));
         <> [last*, statements: allStatements]
     }
-/};
-
-def programDeclarations = {/
-    yieldDef = optYieldDef
-    formals = formalsList
-
-    @"::"
-
-    { <> [:, formals*, yieldDef*] }
-/};
-
-def program = {/
-    decls = (programDeclarations | { <> [:] })
-    body = programBody
-    { <> @[closure: [:, decls*, body*]] }
-/};
-
-def closure = {/
-    @"{"
-    prog = program
-    @"}"
-    { <> prog }
 /};
 
 def programOrError = {/

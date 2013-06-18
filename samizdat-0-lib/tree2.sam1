@@ -113,11 +113,104 @@ def reportError = { pending ::
 #
 
 # Forward declarations.
-def parseClosure = forwardFunction();
+def parseProgramBody = forwardFunction();
 def parseExpression = forwardFunction();
 
 # Forward declaration required for integrating layer 1 definitions.
 def parseParser = forwardFunction();
+
+# Parses a yield / non-local exit definition, yielding the def name.
+def parseYieldDef = {/
+    @"<"
+    name = @identifier
+    @">"
+    { <> tokenValue(name) }
+/};
+
+# Parses an optional yield / non-local exit definition, always yielding
+# a map (an empty map if no yield def was present).
+def parseOptYieldDef = {/
+    y = parseYieldDef
+    { <> [yieldDef: y] }
+|
+    { <> [:] }
+/};
+
+# Parses a formal argument decalaration.
+def parseFormal = {/
+    name = (
+        n = @identifier
+        { <> [name: tokenValue(n)] }
+    |
+        @"." { <> [:] }
+    )
+
+    repeat = (
+        r = [@"?" @"*" @"+"]
+        { <> [repeat: tokenType(r)] }
+    |
+        { <> [:] }
+    )
+
+    { <> [:, name*, repeat*] }
+/};
+
+# Parses a list of formal arguments, with no surrounding parentheses.
+def parseFormalsList = {/
+    first = parseFormal
+    rest = (@"," parseFormal)*
+    { <> [formals: [first, rest*]] }
+|
+    { <> [:] }
+/};
+
+# Parses program / function declarations.
+def parseProgramDeclarations = {/
+    yieldDef = parseOptYieldDef
+    formals = parseFormalsList
+
+    @"::"
+
+    { <> [:, formals*, yieldDef*] }
+/};
+
+# Parses a program (top-level program or contents inside function braces).
+def parseProgram = {/
+    decls = (parseProgramDeclarations | { <> [:] })
+    body = parseProgramBody
+    { <> @[closure: [:, decls*, body*]] }
+/};
+
+# Parses a closure (in-line anonymous function, with no extra bindings).
+def parseClosure = {/
+    @"{"
+    prog = parseProgram
+    @"}"
+    { <> prog }
+/};
+
+# Parses a closure which must not define any formal arguments.
+def parseNullaryClosure = {/
+    c = parseClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(c), "formals") }
+            { io0Die("Invalid formal argument in code block.") };
+        <> c
+    }
+/};
+
+# Parses a closure which must have neither formal arguments nor a yield
+# definition.
+def parseCodeOnlyClosure = {/
+    c = parseNullaryClosure
+
+    {
+        ifTrue { <> mapHasKey(tokenValue(c), "yieldDef") }
+            { io0Die("Invalid yield definition in code block.") };
+        <> c
+    }
+/};
 
 # Parses an integer literal.
 def parseInt = {/
@@ -285,16 +378,6 @@ def parseAtom = {/
     &@"{/" parseParser
 /};
 
-# Parses an optional yield / non-local exit definition.
-def parseOptYieldDef = {/
-    @"<"
-    name = @identifier
-    @">"
-    { <> [yieldDef: tokenValue(name)] }
-|
-    { <> [:] }
-/};
-
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
 def parseActualsList = {/
@@ -327,36 +410,8 @@ def parseYield = {/
     )
 /};
 
-# Parses a formal argument decalaration.
-def parseFormal = {/
-    name = (
-        n = @identifier
-        { <> [name: tokenValue(n)] }
-    |
-        @"." { <> [:] }
-    )
-
-    repeat = (
-        r = [@"?" @"*" @"+"]
-        { <> [repeat: tokenType(r)] }
-    |
-        { <> [:] }
-    )
-
-    { <> [:, name*, repeat*] }
-/};
-
-# Parses a list of formal arguments, with no surrounding parentheses.
-def parseFormalsList = {/
-    first = parseFormal
-    rest = (@"," parseFormal)*
-    { <> [formals: [first, rest*]] }
-|
-    { <> [:] }
-/};
-
 # Parses a program body (statements plus optional yield).
-def parseProgramBody = {/
+def implProgramBody = {/
     @";"*
 
     most = (
@@ -382,32 +437,7 @@ def parseProgramBody = {/
         <> [last*, statements: allStatements]
     }
 /};
-
-# Parses program / function declarations.
-def parseProgramDeclarations = {/
-    yieldDef = parseOptYieldDef
-    formals = parseFormalsList
-
-    @"::"
-
-    { <> [:, formals*, yieldDef*] }
-/};
-
-# Parses a program (top-level program or contents inside function braces).
-def parseProgram = {/
-    decls = (parseProgramDeclarations | { <> [:] })
-    body = parseProgramBody
-    { <> @[closure: [:, decls*, body*]] }
-/};
-
-# Parses a closure (in-line anonymous function, with no extra bindings).
-def implClosure = {/
-    @"{"
-    prog = parseProgram
-    @"}"
-    { <> prog }
-/};
-parseClosure(implClosure);
+parseProgramBody(implProgramBody);
 
 # Top-level rule to parse a program with possible error afterwards.
 # Note that an empty string is a valid program.
@@ -427,24 +457,6 @@ def parseProgramOrError = {/
 
 # Forward declaration.
 def parseChoicePex = forwardFunction();
-
-# Parses a closure which must not define any formal arguments. This is done
-# by parsing an arbitrary closure and then verifying that it does not
-# declare formals. This is preferable to not-including formal argument
-# syntax, because (a) no rule wants to differentiate these cases (rules either
-# wants an arbitrary closure or a specifically-constrained kind); (b) it
-# reduces redundancy in the syntax, and (c) the error case on the former
-# would be more obscure (as in just something like "unexpected token" on
-# the would-be formal argument).
-def parseNullaryClosure = {/
-    closure = parseClosure
-
-    {
-        ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
-            { io0Die("Invalid formal argument in code block.") };
-        <> closure
-    }
-/};
 
 # Parses a parser function.
 def implParser = {/
@@ -630,26 +642,14 @@ parseChoicePex(implChoicePex);
 # Samizdat Layer 2 definitions
 #
 
-# Parses a closure which must have neither formal arguments nor a yield
-# definition. See `parseNullaryClosure` above for discussion.
-def parseCodeOnlyClosure = {/
-    closure = parseNullaryClosure
-
-    {
-        ifTrue { <> mapHasKey(tokenValue(closure), "yieldDef") }
-            { io0Die("Invalid yield definition in code block.") };
-        <> closure
-    }
-/};
-
 # Common parsing for `fn` statements and expressions. The syntax for
 # both is identical, except that the statement form requires that the
 # function be named. The result of this rule is a map identical in form to
 # a closure payload, except that `name` may also be bound.
 #
-# If `name` is *not* bound, the result is suitable for use as a `closure` node
-# payload. And if `name` *is* bound, it is valid to use the result as the
-# payload for a `fnDef` node.
+# The result of this rule is suitable for use as a `closure` node
+# payload. And as long as `name` is bound, the result is valid to use
+# as the payload for a `fnDef` node.
 #
 # The translation is along these lines:
 #
@@ -677,11 +677,8 @@ def parseFnCommon = {/
     # This is a variable definition statement which binds the yield def
     # name to the `return` function, if there is in fact a yield def present.
     returnDef = (
-        y = parseOptYieldDef
-        {
-            <> ifValue { <> mapGet(y, "yieldDef") }
-                { yieldName :: <> makeVarDef(yieldName, makeVarRef("return")) }
-        }
+        y = parseYieldDef
+        { <> makeVarDef(y, makeVarRef("return")) }
     )?
 
     name = (
@@ -998,12 +995,10 @@ def parseIfExpression = {/
 # is no yield definition present, or is a single-element list of an
 # appropriate variable definition and assignment.
 def parseOptBreakDef = {/
-    y = parseOptYieldDef
-
-    {
-        <> ifTrue { <> ne(y, [:]) }
-            { <> makeVarDef(mapValue(y), makeVarRef("break")) }
-    }?
+    (
+        y = parseYieldDef
+        { <> makeVarDef(y, makeVarRef("break")) }
+    )?
 /};
 
 # Helper for switch expressions: Parse a regular case.
