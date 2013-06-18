@@ -11,7 +11,7 @@
 #
 
 # Map from file name suffixes to names of parsing and evaluation functions.
-META_NAME_MAP = [
+def META_NAME_MAP = [
     sam0: [eval: "sam0Eval", tokenize: "sam0Tokenize", tree: "sam0Tree"],
     sam1: [eval: "sam1Eval", tokenize: "sam1Tokenize", tree: "sam1Tree"],
     sam2: [eval: "sam2Eval", tokenize: "sam2Tokenize", tree: "sam2Tree"]
@@ -23,23 +23,23 @@ META_NAME_MAP = [
 #
 
 # Documented in Samizdat Layer 0 spec.
-makeLibrary = { context ::
+def makeLibrary = { context ::
     <> [context*, LIBRARY: context]
 };
 
 # Documented in Samizdat Layer 0 spec.
-metaFunctions = { context, fileName ::
-    dotAt = stringReduce(-1, fileName) { result, n, ch ::
+def metaFunctions = { context, fileName ::
+    def dotAt = stringReduce(-1, fileName) { result, n, ch ::
         <> ifTrue { <> eq(ch, ".") }
             { <> n }
     };
 
-    suffix = ifTrue { <> eq(dotAt, -1) }
+    def suffix = ifTrue { <> eq(dotAt, -1) }
         { <> "" }
         { <> stringSlice(fileName, iadd(dotAt, 1)) };
 
     # Note: As the layers get added, the default here should change.
-    nameMap = ifValue { <> mapGet(META_NAME_MAP, suffix) }
+    def nameMap = ifValue { <> mapGet(META_NAME_MAP, suffix) }
         { map :: <> map }
         { <> mapGet(META_NAME_MAP, "sam1") };
 
@@ -54,24 +54,24 @@ metaFunctions = { context, fileName ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-samCommandLine = { context, rawArgs* ::
-    parsedArgs = parseArgs0(rawArgs);
-    options = mapGet(parsedArgs, "options");
-    argWords = mapGet(parsedArgs, "args");
+def samCommandLine = { context, rawArgs* ::
+    def parsedArgs = parseArgs0(rawArgs);
+    def options = mapGet(parsedArgs, "options");
+    def argWords = mapGet(parsedArgs, "args");
 
-    fileName = listFirst(argWords, "/dev/stdin");
-    filePath = io0PathFromFlat(fileName);
-    args = listButFirst(argWords, []);
+    def fileName = listFirst(argWords, "/dev/stdin");
+    def filePath = io0PathFromFlat(fileName);
+    def args = listButFirst(argWords, []);
 
-    nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
+    def nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
         { suffix :: <> stringAdd("x.", suffix) }
         { <> listLast(filePath) };
 
-    metas = metaFunctions(context, nameForLookup);
+    def metas = metaFunctions(context, nameForLookup);
 
-    programText = io0ReadFileUtf8(filePath);
-    parsedProgram = mapGet(metas, "tree")(programText);
-    evalledProgram = mapGet(metas, "eval")(context, parsedProgram);
+    def programText = io0ReadFileUtf8(filePath);
+    def parsedProgram = mapGet(metas, "tree")(programText);
+    def evalledProgram = mapGet(metas, "eval")(context, parsedProgram);
 
     <> evalledProgram(filePath, args*)
 };

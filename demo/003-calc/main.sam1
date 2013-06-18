@@ -17,22 +17,22 @@ SELF_PATH, ARGS* ::
 
 # Takes an initial value and a list of one-argument functions, and
 # does a reduction by applying each of the functions in order.
-applyAll = { initialValue, functions ::
+def applyAll = { initialValue, functions ::
     <> listReduce(initialValue, functions)
         { result, ., function :: <> function(result) }
 };
 
 # Forward declaration of `addExpression`.
-addExpression = forwardFunction();
+def addExpression = forwardFunction();
 
 # Parses a single digit, yielding its value as an int.
-digit = {/
+def digit = {/
     ch = ["0123456789"]
     { <> isub(intFromString(tokenType(ch)), intFromString("0")) }
 /};
 
 # Parses a whole number (non-negative integer), yielding its value as an int.
-number = {/
+def number = {/
     digits = digit+
     {
         <> listReduce(0, digits)
@@ -43,7 +43,7 @@ number = {/
 # Parses an atomic expression. In this case it's either a number or a
 # parenthesized expression. Yields the number or evaluated expression result,
 # respectively.
-atom = {/
+def atom = {/
     number
 |
     "("
@@ -54,7 +54,7 @@ atom = {/
 
 # Parses a unary (in this case, prefix) operation, yielding its corresponding
 # function.
-unaryOp = {/
+def unaryOp = {/
     "-" { <> ineg }
 |
     "+" { <> { x :: <> x } }
@@ -62,7 +62,7 @@ unaryOp = {/
 
 # Parses a unary expression, that is, a series of unary operators followed
 # by an atom, yielding the evaluated result.
-unaryExpression = {/
+def unaryExpression = {/
     ops = unaryOp*
     ex = atom
     { <> applyAll(ex, listReverse(ops)) }
@@ -70,7 +70,7 @@ unaryExpression = {/
 
 # Parses an infix binary multiplicative operation, yielding its corresponding
 # function.
-mulOp = {/
+def mulOp = {/
     "*" { <> imul }
 |
     "/" { <> idiv }
@@ -80,7 +80,7 @@ mulOp = {/
 
 # Parses a multiplicative expression, that is, a series of unary expressions
 # separated by multiplicative operators, yielding the evaluated result.
-mulExpression = {/
+def mulExpression = {/
     firstEx = unaryExpression
     opExes = (
         op = mulOp
@@ -92,7 +92,7 @@ mulExpression = {/
 
 # Parses an infix binary additive operation, yielding its corresponding
 # function.
-addOp = {/
+def addOp = {/
     "+" { <> iadd }
 |
     "-" { <> isub }
@@ -100,7 +100,7 @@ addOp = {/
 
 # Parses an additive expression, that is, a series of multiplicative
 # expressions separated by additive operators, yielding the evaluated result.
-addExpressionImpl = {/
+def addExpressionImpl = {/
     firstEx = mulExpression
     opExes = (
         op = addOp
@@ -113,7 +113,7 @@ addExpression(addExpressionImpl);
 
 # Evaluates all the expressions passed to it, printing the evaluated results
 # in order. Each expression is expected to be terminated with a newline.
-evalExpressions = {/
+def evalExpressions = {/
     (
         ex = addExpression
         "\n"
@@ -130,8 +130,8 @@ evalExpressions = {/
 # Main function
 #
 
-main = { args* ::
-    exprString = listReduce("", args)
+def main = { args* ::
+    def exprString = listReduce("", args)
         { result, ., one :: <> stringAdd(result, one, "\n") };
     pegApply(evalExpressions, exprString);
 };

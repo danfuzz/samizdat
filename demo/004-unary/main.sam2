@@ -16,22 +16,22 @@ SELF_PATH, ARGS* ::
 #
 
 # Prints out the given value.
-out = { value ::
+def out = { value ::
     io0Note(format("%q", value))
 };
 
 # Something to call.
-returnString = {
+def returnString = {
     <> "Fun times!"
 };
 
 # Something to call.
-returnList = {
+def returnList = {
     <> [0, 1, 2, 3, [blort: "fizmo"]];
 };
 
 # Something to call.
-returnMap = {
+def returnMap = {
     <> [a: "aardvark", b: "bear", cats: [c: "cougar", o: "ocelot"]];
 };
 

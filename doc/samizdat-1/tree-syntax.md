@@ -14,7 +14,7 @@ modifications to the *Samizdat Layer 0* tree syntax.
 # forward declaration: parser
 # forward declaration: choicePex
 
-atom = {/
+def atom = {/
     # ... original alternates from the base grammar ...
 |
     # The lookahead is just to make it clear that Samizdat Layer 1 can
@@ -22,7 +22,7 @@ atom = {/
     &@"{/" parser
 /};
 
-parseNullaryClosure = {/
+def parseNullaryClosure = {/
     closure = parseClosure
 
     {
@@ -32,54 +32,54 @@ parseNullaryClosure = {/
     }
 /};
 
-parser = {/
+def parser = {/
     @"{/"
     pex = choicePex
     @"/}"
     { <> @[parser: pex] }
 /};
 
-parenPex = {/
+def parenPex = {/
     @"("
     pex = choicePex
     @")"
     { <> pex }
 /};
 
-parserString = {/
+def parserString = {/
     s = @string
     {
-        value = tokenValue(s);
+        def value = tokenValue(s);
         <> ifTrue { <> eq(lowSize(value), 1) }
             { <> @[token: value] }
             { <> s }
     }
 /};
 
-parserToken = {/
+def parserToken = {/
     @"@"
-    type = [@identifier @string]
+    type = identifierString
     { <> @[token: tokenValue(type)] }
 /};
 
 # Handles regular string literals and character ranges.
-parserSetString = {/
+def parserSetString = {/
     s = @string
     (
         @".."
         startInt = {
-            startValue = tokenValue(s);
+            def startValue = tokenValue(s);
             <> ifTrue { <> eq(lowSize(startValue), 1) }
                 { <> intFromString(startValue) }
         }
         end = @string
         endInt = {
-            endValue = tokenValue(end);
+            def endValue = tokenValue(end);
             <> ifTrue { <> eq(lowSize(endValue), 1) }
                 { <> intFromString(endValue) }
         }
         {
-            reduction = loopReduce([startInt, ""]) { ... endInt ... };
+            def reduction = loopReduce([startInt, ""]) { ... endInt ... };
             <> @[string: listLast(reduction)]
         }
     |
@@ -87,7 +87,7 @@ parserSetString = {/
     )
 /};
 
-parserSet = {/
+def parserSet = {/
     @"["
 
     type = (
@@ -99,7 +99,7 @@ parserSet = {/
     terminals = (
         strings = parserSetString+
         {
-            oneString = listReduce("", strings)
+            def oneString = listReduce("", strings)
                 { result, ., s :: <> stringAdd(result, tokenValue(s)) };
             <> stringReduce([], oneString)
                 { result, ., ch :: <> [result*, ch] }
@@ -107,7 +107,7 @@ parserSet = {/
     |
         tokens = parserToken+
         {
-            tokens = [first, rest*];
+            def tokens = [first, rest*];
             <> listMap(tokens) { ., t :: <> tokenValue(t) }
         }
     |
@@ -119,18 +119,18 @@ parserSet = {/
     { <> @[(type): terminals] }
 /};
 
-parserCode = {/
+def parserCode = {/
     closure = parseNullaryClosure
     { <> @["{}": tokenValue(closure)] }
 /};
 
-parserPredicate = {/
+def parserPredicate = {/
     @"&&"
     predicate = parenExpression
     { <> @["&&": predicate] }
 /};
 
-parserAtom = {/
+def parserAtom = {/
     varRef
 |
     parserString
@@ -150,7 +150,7 @@ parserAtom = {/
     parenPex
 /};
 
-repeatPex = {/
+def repeatPex = {/
     atom = parserAtom
     (
         repeat = [@"?" @"*" @"+"]
@@ -160,7 +160,7 @@ repeatPex = {/
     )
 /};
 
-lookaheadPex = {/
+def lookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = repeatPex
@@ -170,7 +170,7 @@ lookaheadPex = {/
     repeatPex
 /};
 
-namePex = {/
+def namePex = {/
     (
         name = @identifier
         @"="
@@ -181,12 +181,12 @@ namePex = {/
     lookaheadPex
 /};
 
-sequencePex = {/
+def sequencePex = {/
     items = namePex+
     { <> @[sequence: items] }
 /};
 
-choicePex = {/
+def choicePex = {/
     first = sequencePex
     rest = (@"|" sequencePex)*
     { <> @[choice: [first, rest*]] }

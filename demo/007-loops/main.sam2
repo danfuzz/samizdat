@@ -15,73 +15,73 @@ SELF_PATH, ARGS* ::
 # Main tests
 #
 
-box = mutableBox(0);
+def box = mutableBox(0);
 
-while (box() < 10) {
-    box(box() + 1);
-    io0Note(format("Value is %q.", box()))
+while (boxGet(box) < 10) {
+    boxSet(box, boxGet(box) + 1);
+    io0Note(format("Value is %q.", boxGet(box)))
 };
 
-while (box() < 20) {
-    box(box() + 1);
-    if (box() < 15) {
+while (boxGet(box) < 20) {
+    boxSet(box, boxGet(box) + 1);
+    if (boxGet(box) < 15) {
         continue
     };
-    io0Note(format("Value is %q.", box()))
+    io0Note(format("Value is %q.", boxGet(box)))
 };
 
-while (box() < 30) { <next> ::
-    box(box() + 1);
-    if (box() < 25) {
+while (boxGet(box) < 30) { <next> ::
+    boxSet(box, boxGet(box) + 1);
+    if (boxGet(box) < 25) {
         <next>
     };
-    io0Note(format("Value is %q.", box()))
+    io0Note(format("Value is %q.", boxGet(box)))
 };
 
-result1 = while (box() < 40) {
-    box(box() + 1);
-    if (box() == 35) {
+def result1 = while (boxGet(box) < 40) {
+    boxSet(box, boxGet(box) + 1);
+    if (boxGet(box) == 35) {
         break "blort"
     };
-    io0Note(format("Value is %q.", box()))
+    io0Note(format("Value is %q.", boxGet(box)))
 };
 
 io0Note(format("Result 1 is %q.", result1));
 
-result2 = while <out> (box() < 50) {
-    box(box() + 1);
-    if (box() == 45) {
+def result2 = while <out> (boxGet(box) < 50) {
+    boxSet(box, boxGet(box) + 1);
+    if (boxGet(box) == 45) {
         <out> "fizmo"
     };
-    io0Note(format("Value is %q.", box()))
+    io0Note(format("Value is %q.", boxGet(box)))
 };
 
 io0Note(format("Result 2 is %q.", result2));
 
 do {
-    box(box() + 1);
-    if (box() == 55) {
+    boxSet(box, boxGet(box) + 1);
+    if (boxGet(box) == 55) {
         break
     };
-    io0Note(format("Value is %q.", box()))
+    io0Note(format("Value is %q.", boxGet(box)))
 };
 
-result3 = do <out> {
-    box(box() + 1);
-    if (box() == 60) {
+def result3 = do <out> {
+    boxSet(box, boxGet(box) + 1);
+    if (boxGet(box) == 60) {
         <out> "igram"
     };
-    io0Note(format("Value is %q.", box()))
+    io0Note(format("Value is %q.", boxGet(box)))
 };
 
 io0Note(format("Result 3 is %q.", result3));
 
 do {
-    box(box() + 1);
-    if (box() < 65) {
+    boxSet(box, boxGet(box) + 1);
+    if (boxGet(box) < 65) {
         continue
     };
-    io0Note(format("Value is %q.", box()))
-} while(box() < 70);
+    io0Note(format("Value is %q.", boxGet(box)))
+} while(boxGet(box) < 70);
 
 <> 0

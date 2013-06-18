@@ -29,7 +29,7 @@
 # this takes care of ignoring double slashes (or triple, etc.) and `.`
 # components, but it leaves the handling of `..` components to a higher
 # layer.
-parsePathString = pegMakePlus(
+def parsePathString = pegMakePlus(
     pegMakeSequence(
         pegMakeStar(
             pegMakeSequence(
@@ -47,8 +47,8 @@ parsePathString = pegMakePlus(
 
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
-isPrefix = { <out> prefix, path ::
-    prefixSize = lowSize(prefix);
+def isPrefix = { <out> prefix, path ::
+    def prefixSize = lowSize(prefix);
 
     ifTrue { <> gt(prefixSize, lowSize(path)) }
         {
@@ -66,7 +66,7 @@ isPrefix = { <out> prefix, path ::
 #
 
 # Documented in Samizdat Layer 0 spec.
-io0FlatFromPath = { path ::
+def io0FlatFromPath = { path ::
     <> listReduce("", path) { result, n, one ::
         ifTrue { <> eq(one, ".") }
             { io0Die(format("Invalid `.` component in path: %q", path)) };
@@ -86,18 +86,18 @@ io0FlatFromPath = { path ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-io0PathFromFlat = { string ::
+def io0PathFromFlat = { string ::
     # Reject the empty string.
     ifTrue { <> eq(string, "") }
         { io0Die("Invalid path (empty).") };
 
     # Prepend the current directory if the path isn't absolute.
-    absoluteString = ifTrue { <> eq(stringNth(string, 0), "/") }
+    def absoluteString = ifTrue { <> eq(stringNth(string, 0), "/") }
         { <> string }
         { <> stringAdd(io0FlatCwd(), "/", string) };
 
     # Do the first layer of parsing.
-    components = pegApply(parsePathString, absoluteString);
+    def components = pegApply(parsePathString, absoluteString);
 
     # Handle `..` components, to produce the final result.
     <> listReduce([], components) { result, ., one ::
@@ -115,12 +115,12 @@ io0PathFromFlat = { string ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-io0ReadFileUtf8 = { path ::
+def io0ReadFileUtf8 = { path ::
     <> io0FlatReadFileUtf8(io0FlatFromPath(path))
 };
 
 # Documented in Samizdat Layer 0 spec.
-io0ReadLink = { path ::
+def io0ReadLink = { path ::
     <> ifValue { <> io0FlatReadLink(io0FlatFromPath(path)) }
         { newPath :: <> io0PathFromFlat(newPath) }
 };
@@ -130,10 +130,10 @@ io0ReadLink = { path ::
 #
 # This is located in the "exported" section, as it makes use of
 # the exported function `io0ReadLink`, defined above.
-resolveLinks = { <out> sandboxDirectory, path ::
+def resolveLinks = { <out> sandboxDirectory, path ::
     loopReduce([path, 50]) { result ::
-        path = listNth(result, 0);
-        limit = listNth(result, 1);
+        def path = listNth(result, 0);
+        def limit = listNth(result, 1);
 
         ifTrue { <> le(limit, 0) }
             { io0Die("Too many links in symbolic link chain.") };
@@ -147,15 +147,15 @@ resolveLinks = { <out> sandboxDirectory, path ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-io0SandboxedReader = { directory ::
+def io0SandboxedReader = { directory ::
     <> { path ::
-        fullPath = resolveLinks(directory, [directory*, path*]);
+        def fullPath = resolveLinks(directory, [directory*, path*]);
         <> io0ReadFileUtf8(fullPath);
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
-io0WriteFileUtf8 = { path ::
+def io0WriteFileUtf8 = { path ::
     <> io0FlatWriteFileUtf8(io0FlatFromPath(path))
 };
 

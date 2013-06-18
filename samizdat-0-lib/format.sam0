@@ -12,7 +12,7 @@
 
 # These are all the hexadecimal int digits, as a map from digit values to
 # single-character strings.
-INT_CHARS = [
+def INT_CHARS = [
     0: "0", 1: "1", 2: "2", 3: "3", 4: "4",
     5: "5", 6: "6", 7: "7", 8: "8", 9: "9",
     10: "a", 11: "b", 12: "c", 13: "d", 14: "e", 15: "f"
@@ -20,13 +20,13 @@ INT_CHARS = [
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
-intBody = { <out> start, value, base ::
+def intBody = { <out> start, value, base ::
     loopReduce(["", value]) { result ::
-        text = listNth(result, 0);
-        value = listNth(result, 1);
+        def text = listNth(result, 0);
+        def value = listNth(result, 1);
         <> ifTrue { <> ne(value, 0) }
             {
-                digit = mapGet(INT_CHARS, imod(value, base));
+                def digit = mapGet(INT_CHARS, imod(value, base));
                 <> [stringAdd(digit, text), idiv(value, base)];
             }
             { <out> stringAdd(start, text) }
@@ -34,14 +34,14 @@ intBody = { <out> start, value, base ::
 };
 
 # Map from int sign values to the appropriate stringifier for each.
-INT_SIGNS = [
+def INT_SIGNS = [
     -1: { int, base :: <> intBody("-", ineg(int), base) },
     0:  { int, base :: <> "0" },
     1:  { int, base :: <> intBody("", int, base) }
 ];
 
 # Stringifies an int using the given base.
-stringFromIntBase = { int, base ::
+def stringFromIntBase = { int, base ::
     <> mapGet(INT_SIGNS, intSign(int))(int, base)
 };
 
@@ -51,33 +51,33 @@ stringFromIntBase = { int, base ::
 #
 
 # Forward declaration of `sourceString`
-callSourceString = forwardFunction();
+def callSourceString = forwardFunction();
 
 # Single-character strings `"\x7f;"` and `"\x9f;"`.
-CHAR_127 = stringFromInt(127);
-CHAR_159 = stringFromInt(159);
+def CHAR_127 = stringFromInt(127);
+def CHAR_159 = stringFromInt(159);
 
 # Helper for optionally adorning results.
-adornIf = { adorn, before, value, after ::
+def adornIf = { adorn, before, value, after ::
     <> ifTrue { <> adorn }
         { <> stringAdd(before, value, after) }
         { <> value }
 };
 
 # Stringifies an int.
-doInt = { int, adorn ::
+def doInt = { int, adorn ::
     <> stringFromIntBase(int, 10)
 };
 
 # Helper for stringifying strings: Returns the hex form for the given
 # character. Assumes it's not passed `0`.
-stringHexEscape = { ch ::
-    intHex = { value ::
+def stringHexEscape = { ch ::
+    def intHex = { value ::
         <> ifTrue { <> eq(value, 0) }
             { <> "" }
             {
-                digit = stringNth("0123456789abcdef", imod(value, 16));
-                more = idiv(value, 16);
+                def digit = stringNth("0123456789abcdef", imod(value, 16));
+                def more = idiv(value, 16);
                 <> stringAdd(intHex(more), digit)
             }
     };
@@ -86,7 +86,7 @@ stringHexEscape = { ch ::
 };
 
 # Map of special-case characters to their stringified forms.
-SPECIAL_CHARS = [
+def SPECIAL_CHARS = [
     "\0": "\\0",
     "\n": "\\n",
     "\"": "\\\"",
@@ -95,7 +95,7 @@ SPECIAL_CHARS = [
 
 # Helper for stringifying strings: Returns the converted form of the
 # given character.
-stringChar = { ch ::
+def stringChar = { ch ::
     <> ifValue { <> mapGet(SPECIAL_CHARS, ch) }
         { special :: <> special }
         {
@@ -109,14 +109,14 @@ stringChar = { ch ::
 };
 
 # These are all the characters which are allowed to start an identifier.
-IDENTIFIER_STARTS = ["a".."z": true, "A".."Z": true, "_": true ];
+def IDENTIFIER_STARTS = ["a".."z": true, "A".."Z": true, "_": true ];
 
 # These are all the characters which are allowed to be in an identifier.
-IDENTIFIER_CHARS = [IDENTIFIER_STARTS*, "0".."9": true];
+def IDENTIFIER_CHARS = [IDENTIFIER_STARTS*, "0".."9": true];
 
 # Checks to see if the given value is a string with the form of an
 # in-language identifier.
-isIdentifier = { <out> string ::
+def isIdentifier = { <out> string ::
     <> and
         { <> isString(string) }
         { <> gt(lowSize(string), 0) }
@@ -132,15 +132,15 @@ isIdentifier = { <out> string ::
 };
 
 # Stringifies a string.
-doString = { string, adorn ::
-    body = stringReduce("", string)
+def doString = { string, adorn ::
+    def body = stringReduce("", string)
         { result, ., ch :: <> stringAdd(result, stringChar(ch)) };
     <> adornIf(adorn, "\"", body, "\"")
 };
 
 # Stringifies a list.
-doList = { list, adorn ::
-    body = listReduce("", list)
+def doList = { list, adorn ::
+    def body = listReduce("", list)
         { reduction, ., elem ::
             <> stringAdd(
                 reduction,
@@ -152,8 +152,8 @@ doList = { list, adorn ::
 };
 
 # Stringifies a map.
-doMap = { map, adorn ::
-    body = mapReduce("", map)
+def doMap = { map, adorn ::
+    def body = mapReduce("", map)
         { reduction, key, value ::
             <> stringAdd(
                 reduction,
@@ -172,39 +172,39 @@ doMap = { map, adorn ::
 };
 
 # Tokens with special conversions
-TOKEN_SPECIALS = [
+def TOKEN_SPECIALS = [
     (false): "false",
     (null):  "null",
     (true):  "true"
 ];
 
 # Stringifies a token.
-doToken = { <out> token, adorn ::
+def doToken = { <out> token, adorn ::
     ifValue { <> mapGet(TOKEN_SPECIALS, token) }
         { string :: <out> string };
 
-    type = tokenType(token);
-    typeString = ifTrue { <> isIdentifier(type) }
+    def type = tokenType(token);
+    def typeString = ifTrue { <> isIdentifier(type) }
         { <> type }
         { <> callSourceString(type) };
-    valueString = ifValue { <> tokenValue(token) }
+    def valueString = ifValue { <> tokenValue(token) }
         { value :: <> stringAdd(": ", callSourceString(value)) }
         { <> "" };
 
     ifTrue { <> and { <> isString(type) } { <> eq(valueString, "") } }
         { <out> adornIf(adorn, "@", typeString, "") };
 
-    result = stringAdd(typeString, valueString);
+    def result = stringAdd(typeString, valueString);
     <> adornIf(adorn, "@[", result, "]")
 };
 
 # Stringifies a uniqlet.
-doUniqlet = { uniqlet, . ::
+def doUniqlet = { uniqlet, . ::
     <> "@@"
 };
 
 # Stringifies an unknown value type.
-doUnknown = { unknown, . ::
+def doUnknown = { unknown, . ::
     <> stringAdd(
         "[(unknown) ",
         callSourceString(lowType(value)),
@@ -214,7 +214,7 @@ doUnknown = { unknown, . ::
 };
 
 # Mapping from low-layer type names to stringifiers.
-STRINGIFIERS = [
+def STRINGIFIERS = [
     token:   doToken,
     int:     doInt,
     list:    doList,
@@ -224,19 +224,19 @@ STRINGIFIERS = [
 ];
 
 # Common handler for the two exported variants.
-sourceStringGeneral = { value, adorn ::
-    stringifier = mapGet(STRINGIFIERS, lowType(value), doUnknown);
+def sourceStringGeneral = { value, adorn ::
+    def stringifier = mapGet(STRINGIFIERS, lowType(value), doUnknown);
     <> stringifier(value, adorn)
 };
 
 # Documented in Samizdat Layer 0 spec.
-sourceString = { value ::
+def sourceString = { value ::
     <> sourceStringGeneral(value, true)
 };
 callSourceString(sourceString);
 
 # Documented in Samizdat Layer 0 spec.
-sourceStringUnadorned = { value ::
+def sourceStringUnadorned = { value ::
     <> sourceStringGeneral(value, false)
 };
 
@@ -246,28 +246,28 @@ sourceStringUnadorned = { value ::
 #
 
 # Gets the current format string position.
-xFmtAt = { state ::
+def xFmtAt = { state ::
     <> mapGet(state, "fmtAt")
 };
 
 # Peeks at the current format string character.
-xPeek = { state ::
+def xPeek = { state ::
     <> stringNth(mapGet(state, "fmt"), xFmtAt(state))
 };
 
 # Peeks at the next format string character.
-xPeek1 = { state ::
-    at = iadd(1, xFmtAt(state));
+def xPeek1 = { state ::
+    def at = iadd(1, xFmtAt(state));
     <> stringNth(mapGet(state, "fmt"), at)
 };
 
 # Gets the current argument consumption position.
-xArgsAt = { state ::
+def xArgsAt = { state ::
     <> mapGet(state, "argsAt")
 };
 
 # Gets the current argument.
-xArg = { state ::
+def xArg = { state ::
     <> ifValue { <> listNth(mapGet(state, "args"), xArgsAt(state)) }
         { value :: <> value }
         { <> "(missing argument)" }
@@ -275,47 +275,47 @@ xArg = { state ::
 
 # Performs the standard update of state after processing a `%`,
 # consuming one argument and two format characters.
-xUsualUpdate = { state ::
-    argsAt = iadd(1, xArgsAt(state));
-    fmtAt = iadd(2, xFmtAt(state));
+def xUsualUpdate = { state ::
+    def argsAt = iadd(1, xArgsAt(state));
+    def fmtAt = iadd(2, xFmtAt(state));
 
     <> [state*, fmtAt: fmtAt, argsAt: argsAt]
 };
 
 # Formats a literal percent.
-doPercent = { yield, state ::
+def doPercent = { yield, state ::
     yield("%");
 
-    fmtAt = iadd(2, mapGet(state, "fmtAt"));
+    def fmtAt = iadd(2, mapGet(state, "fmtAt"));
     <> [state*, fmtAt: fmtAt]
 };
 
 # Formats a literal quoted argument.
-doLiteral = { yield, state ::
+def doLiteral = { yield, state ::
     yield(sourceString(xArg(state)));
     <> xUsualUpdate(state)
 };
 
 # Formats a literal quoted argument, without top-level adornment.
-doUnadornedLiteral = { yield, state ::
+def doUnadornedLiteral = { yield, state ::
     yield(sourceStringUnadorned(xArg(state)));
     <> xUsualUpdate(state)
 };
 
 # Formats a string argument.
-doPlainString = { yield, state ::
+def doPlainString = { yield, state ::
     yield(xArg(state));
     <> xUsualUpdate(state)
 };
 
 # Formats a hex int argument.
-doHex = { yield, state ::
+def doHex = { yield, state ::
     yield(stringFromIntBase(xArg(state), 16));
     <> xUsualUpdate(state)
 };
 
 # Mapping from format escape characters to their respective handler functions.
-FORMATTERS = [
+def FORMATTERS = [
     "%": doPercent,
     q:   doLiteral,
     Q:   doUnadornedLiteral,
@@ -324,15 +324,15 @@ FORMATTERS = [
 ];
 
 # Formats a plain character (that is, returns it as-is).
-doPlain = { yield, state, ch ::
+def doPlain = { yield, state, ch ::
     yield(ch);
 
-    fmtAt = iadd(1, mapGet(state, "fmtAt"));
+    def fmtAt = iadd(1, mapGet(state, "fmtAt"));
     <> [state*, fmtAt: fmtAt]
 };
 
 # Formats an arbitrary escape.
-doEscape = { yield, state ::
+def doEscape = { yield, state ::
     <> ifValue { <> xPeek1(state) }
         { ch ::
             <> ifValue { <> mapGet(FORMATTERS, ch) }
@@ -343,7 +343,7 @@ doEscape = { yield, state ::
 };
 
 # Formats a single character out of the format string.
-formatOne = { yield, state ::
+def formatOne = { yield, state ::
     <> ifValue { <> xPeek(state) }
         { ch ::
             <> ifTrue { <> eq(ch, "%") }
@@ -354,8 +354,8 @@ formatOne = { yield, state ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-format = { <out> formatString, rest* ::
-    formatter = object(formatOne, [
+def format = { <out> formatString, rest* ::
+    def formatter = object(formatOne, [
         fmt:    formatString,
         fmtAt:  0,
         args:   rest,

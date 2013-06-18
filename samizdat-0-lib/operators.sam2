@@ -13,7 +13,7 @@
 #
 
 # Map from low-layer types to corresponding "get" functions.
-GET_MAP = [
+def GET_MAP = [
     list: listNth,
     string: stringNth,
     map: mapGet
@@ -22,16 +22,16 @@ GET_MAP = [
 # Verifies that it should be possible to compare the two given values,
 # terminating the runtime if not.
 fn assertComparable(v1, v2) {
-    type1 = lowType(v1);
-    type2 = lowType(v2);
+    def type1 = lowType(v1);
+    def type2 = lowType(v2);
 
     if (ne(type1, type2)) {
         io0Die(format("Incomparable values: %q, %q"), v1, v2)
     };
 
     if (eq(type1, "token")) {
-        tok1 = tokenType(v1);
-        tok2 = tokenType(v2);
+        def tok1 = tokenType(v1);
+        def tok2 = tokenType(v2);
         if (ne(tok1, tok2)) {
             io0Die(format("Incomparable values: %q, %q"), v1, v2)
         }
@@ -207,8 +207,8 @@ fn \"unary!!!"(value) {
 # TODO: Documented in Samizdat Layer 2 spec.
 fn compareChain(functions, values*) {
     listForEach(functions) { index, function ::
-        v1 = listNth(values, index);
-        v2 = listNth(values, iadd(index, 1));
+        def v1 = listNth(values, index);
+        def v2 = listNth(values, iadd(index, 1));
         ifFalse { <> function(v1, v2) }
             { return false }
     };
