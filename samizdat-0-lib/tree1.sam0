@@ -59,13 +59,18 @@ def parseExpression = forwardFunction();
 def parseParser = forwardFunction();
 
 # Documented in Samizdat Layer 0 spec.
+def parseYieldDef = pegMakeMainSequence(
+    pegMakeToken("<"),
+    pegMakeToken("identifier"),
+    pegMakeToken(">"),
+    pegMakeCode { ., name, . :: <> tokenValue(name) });
+
+# Documented in Samizdat Layer 0 spec.
 def parseOptYieldDef = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            pegMakeToken("<"),
-            pegMakeToken("identifier"),
-            pegMakeToken(">"),
-            pegMakeCode { ., name, . :: <> [yieldDef: tokenValue(name)] }),
+            parseYieldDef,
+            pegMakeCode { y :: <> [yieldDef: y] }),
         pegMakeCode { <> [:] }));
 
 # Documented in Samizdat Layer 0 spec.

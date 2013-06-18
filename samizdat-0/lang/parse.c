@@ -280,23 +280,21 @@ DEF_PARSE(programBody);
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression);
 
-/**
- * Helper for `optYieldDef` which parses the non-empty case.
- */
-DEF_PARSE(optYieldDef1) {
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(yieldDef) {
     MARK();
 
     MATCH_OR_REJECT(CH_LT);
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     MATCH_OR_REJECT(CH_GT);
 
-    return mapFrom1(STR_YIELD_DEF, datTokenValue(identifier));
+    return datTokenValue(identifier);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(optYieldDef) {
-    zvalue result = PARSE(optYieldDef1);
-    return (result != NULL) ? result : EMPTY_MAP;
+    zvalue result = PARSE(yieldDef);
+    return (result != NULL) ? mapFrom1(STR_YIELD_DEF, result) : EMPTY_MAP;
 }
 
 /**
