@@ -261,7 +261,7 @@ def parseVarRef = {/
 
 # Parses a variable definition.
 def parseVarDef = {/
-    @"def"
+    @def
     name = @identifier
     @"="
     ex = parseExpression
@@ -672,7 +672,7 @@ def parseCodeOnlyClosure = {/
 # * the key `name` bound to the function name, if a name was defined. (This
 #   is not representable in lower-layer surface syntax.)
 def parseFnCommon = {/
-    @"fn"
+    @fn
 
     # This is a variable definition statement which binds the yield def
     # name to the `return` function, if there is in fact a yield def present.
@@ -725,13 +725,13 @@ def implNonlocalExit = {/
     value = parseExpression?
     { <> makeCallNonlocalExit(name, value*) }
 |
-    op = [@"break" @"return"]
+    op = [@break @return]
     value = parseExpression?
     { <> makeCallNonlocalExit(makeVarRef(tokenType(op)), value*) }
 |
     # This one is separate from `break` and `return`, because it doesn't
     # accept a value.
-    @"continue"
+    @continue
     { <> makeCallNonlocalExit(makeVarRef("continue")) }
 /};
 parseNonlocalExit(implNonlocalExit);
@@ -926,21 +926,21 @@ def parseFnExpression = {/
 
 # Parses an if expression.
 def parseIfExpression = {/
-    @"if"
+    @if
     yieldDef = parseOptYieldDef
     firstCondition = parseParenExpression
     firstThen = parseNullaryClosure
 
     elseIfThens = (
-        @"else"
-        @"if"
+        @else
+        @if
         condition = parseParenExpression
         then = parseNullaryClosure
         { <> [condition, then] }
     )*
 
     finalElse = (
-        @"else"
+        @else
         parseClosure
     )?
 
@@ -1016,7 +1016,7 @@ def parseSwitchCase = {/
 
 # Helper for switch expressions: Parse a default case.
 def parseSwitchDefault = {/
-    @"default"
+    @default
     @":"
     parseNullaryClosure
 /};
@@ -1050,7 +1050,7 @@ def parseSwitchDefault = {/
 # and with overrides of map keys switched around so the *first* key
 # wins.
 def parseSwitchExpression = {/
-    @"switch"
+    @switch
     breakDef = parseOptBreakDef
     value = parseParenExpression
 
@@ -1106,7 +1106,7 @@ def parseSwitchExpression = {/
 #
 # with the initial break assignment omitted if there is no yield def.
 def parseWhileExpression = {/
-    @"while"
+    @while
     breakDef = parseOptBreakDef
     condition = parseParenExpression
     code = parseNullaryClosure
@@ -1154,11 +1154,11 @@ def parseWhileExpression = {/
 # with the `ifFalse` statement omitted if there is no `while` at the end
 # of the `do`.
 def parseDoExpression = {/
-    @"do"
+    @do
     breakDef = parseOptBreakDef
     code = parseNullaryClosure
     condition = (
-        @"while"
+        @while
         ex = parseParenExpression
         {
             <> makeCallName("ifFalse",
