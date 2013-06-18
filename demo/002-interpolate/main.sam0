@@ -15,11 +15,11 @@ SELF_PATH, ARGS* ::
 # Helper function
 #
 
-out = { args* ::
+def out = { args* ::
     io0Note(format("Got: %q", args))
 };
 
-ten = {
+def ten = {
     <> 10
 };
 

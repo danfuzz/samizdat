@@ -23,7 +23,7 @@ SELF_PATH, ARGS* ::
 # generated recursively. The "main" function literal here is wrapped
 # in an outer function layer, whose argument is used to achieve
 # recursion.
-countDown = yCombinator { countDown ::
+def countDown = yCombinator { countDown ::
     <> { n ::
         <> ifTrue { <> ge(n, 0) }
             { <> [n, countDown(isub(n, 1))*] }
@@ -33,7 +33,7 @@ countDown = yCombinator { countDown ::
 
 # Example of mutual recursion using `yStarCombinator`. See discussion
 # above.
-countDowns = yStarCombinator
+def countDowns = yStarCombinator
     { f1, f2 ::
         <> { n ::
             <> ifTrue { <> gt(n, 0) }
@@ -44,42 +44,42 @@ countDowns = yStarCombinator
     { f1, f2 ::
         <> { n :: <> ["and", f1(n)*] }
     };
-countDown2 = listNth(countDowns, 0);
+def countDown2 = listNth(countDowns, 0);
 
 # Demo of formal argument repeat modifiers. Also of quoted identifiers.
-blort = { foo, bar?, \"weird name"?, more* ::
+def blort = { foo, bar?, \"weird name"?, more* ::
     io0Note(format("%q %q %q %q", foo, bar, \"weird name", more))
 };
 
 # Demo of `+` argument repeat modifier.
-stuff = { items+ ::
+def stuff = { items+ ::
     io0Note(format("stuff: %q", items))
 };
 
 # Demo of reading a sibling file through a sandboxed reader.
-sibling = {
-    reader = io0SandboxedReader(listButLast(SELF_PATH));
-    text = reader(["sibling.txt"]);
+def sibling = {
+    def reader = io0SandboxedReader(listButLast(SELF_PATH));
+    def text = reader(["sibling.txt"]);
     io0Note(text);
 };
 
 # Demo of nonlocal exit.
-exiter = { <out> foo ::
+def exiter = { <out> foo ::
     ifTrue { <> eq(foo, 1) }
         { <out> "one" }
         { <out> }
 };
 
 # Demo of `mutableBox`.
-boxer = {
-    box = mutableBox(10);
+def boxer = {
+    def box = mutableBox(10);
 
     listForEach([1, 2, 3]) { ., n :: boxSet(box, iadd(boxGet(box), n)) };
     <> boxGet(box)
 };
 
 # Emits the stringified version of the given value to the console.
-process = { value ::
+def process = { value ::
     io0Note(sourceString(value));
 
     # Test of explicit void yield.
@@ -91,7 +91,7 @@ process = { value ::
 # Main function
 #
 
-main = { selfPath, name, rest* ::
+def main = { selfPath, name, rest* ::
     # Be welcoming.
 
     ifTrue { <> eq(name, "danfuzz") }

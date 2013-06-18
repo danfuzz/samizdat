@@ -15,7 +15,7 @@ SELF_PATH, ARGS* ::
 # Main tests
 #
 
-box = mutableBox(0);
+def box = mutableBox(0);
 
 while (box() < 10) {
     box(box() + 1);
@@ -38,7 +38,7 @@ while (box() < 30) { <next> ::
     io0Note(format("Value is %q.", box()))
 };
 
-result1 = while (box() < 40) {
+def result1 = while (box() < 40) {
     box(box() + 1);
     if (box() == 35) {
         break "blort"
@@ -48,7 +48,7 @@ result1 = while (box() < 40) {
 
 io0Note(format("Result 1 is %q.", result1));
 
-result2 = while <out> (box() < 50) {
+def result2 = while <out> (box() < 50) {
     box(box() + 1);
     if (box() == 45) {
         <out> "fizmo"
@@ -66,7 +66,7 @@ do {
     io0Note(format("Value is %q.", box()))
 };
 
-result3 = do <out> {
+def result3 = do <out> {
     box(box() + 1);
     if (box() == 60) {
         <out> "igram"
