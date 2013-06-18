@@ -477,7 +477,7 @@ def parseParserString = {/
 # Parses a token literal parsing expression.
 def parseParserToken = {/
     @"@"
-    type = [@identifier @string]
+    type = parseIdentifierString
     { <> @[token: tokenValue(type)] }
 /};
 
