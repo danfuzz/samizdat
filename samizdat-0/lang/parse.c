@@ -274,9 +274,122 @@ DEF_PARSE(optSemicolons) {
  * rules from the Samizdat Layer 0 spec.
  */
 
-/* Defined below. */
-DEF_PARSE(closure);
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(programBody);
+
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression);
+
+/**
+ * Helper for `optYieldDef` which parses the non-empty case.
+ */
+DEF_PARSE(optYieldDef1) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_LT);
+    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
+    MATCH_OR_REJECT(CH_GT);
+
+    return mapFrom1(STR_YIELD_DEF, datTokenValue(identifier));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(optYieldDef) {
+    zvalue result = PARSE(optYieldDef1);
+    return (result != NULL) ? result : EMPTY_MAP;
+}
+
+/**
+ * Helper for `formal`: Parses `[@"?" @"*" @"+"]?`. Returns either the
+ * parsed token payload or `NULL` to indicate that no alternate matched.
+ */
+DEF_PARSE(formal1) {
+    MARK();
+
+    zvalue result = NULL;
+
+    if (result == NULL) { result = MATCH(CH_QMARK); }
+    if (result == NULL) { result = MATCH(CH_STAR); }
+    if (result == NULL) { result = MATCH(CH_PLUS); }
+
+    REJECT_IF(result == NULL);
+
+    return datTokenType(result);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(formal) {
+    MARK();
+
+    zvalue name = MATCH(IDENTIFIER);
+
+    if (name != NULL) {
+        name = datTokenValue(name);
+    } else {
+        // If there was no identifier, then the only valid form for a formal
+        // is if this is an unnamed / unused argument.
+        MATCH_OR_REJECT(CH_DOT);
+    }
+
+    zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
+
+    return mapFrom2(STR_NAME, name, STR_REPEAT, repeat);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(formalsList) {
+    zvalue result = PARSE_COMMA_SEQ(formal);
+
+    return (datSize(result) == 0) ? EMPTY_MAP : mapFrom1(STR_FORMALS, result);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(programDeclarations) {
+    MARK();
+
+    // Both of these are always maps (possibly empty).
+    zvalue yieldDef = PARSE(optYieldDef);
+    zvalue formals = PARSE(formalsList);
+
+    return datMapAdd(formals, yieldDef);
+}
+
+/**
+ * Helper for `program`: Parses `(programDeclarations @"::")`.
+ */
+DEF_PARSE(program1) {
+    MARK();
+
+    zvalue result = PARSE(programDeclarations); // This never fails.
+    MATCH_OR_REJECT(CH_COLONCOLON);
+    return result;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(program) {
+    zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
+    zvalue value = PARSE(programBody); // This never fails.
+
+    if (declarations != NULL) {
+        value = datMapAdd(value, declarations);
+    }
+
+    return datTokenFrom(STR_CLOSURE, value);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(closure) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OCURLY);
+
+    // This always succeeds. See note in `parseProgram` above.
+    zvalue result = PARSE(program);
+
+    MATCH_OR_REJECT(CH_CCURLY);
+
+    return result;
+}
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(nullaryClosure) {
@@ -668,25 +781,6 @@ DEF_PARSE(yield) {
     return PARSE(expression);
 }
 
-/**
- * Helper for `optYieldDef` which parses the non-empty case.
- */
-DEF_PARSE(optYieldDef1) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_LT);
-    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
-    MATCH_OR_REJECT(CH_GT);
-
-    return mapFrom1(STR_YIELD_DEF, datTokenValue(identifier));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(optYieldDef) {
-    zvalue result = PARSE(optYieldDef1);
-    return (result != NULL) ? result : EMPTY_MAP;
-}
-
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(nonlocalExit) {
     MARK();
@@ -700,50 +794,6 @@ DEF_PARSE(nonlocalExit) {
         ? listFrom1(name) : listFrom2(name, makeThunk(value));
 
     return makeCall(makeVarRef(STR_NONLOCAL_EXIT), actuals);
-}
-
-/**
- * Helper for `formal`: Parses `[@"?" @"*" @"+"]?`. Returns either the
- * parsed token payload or `NULL` to indicate that no alternate matched.
- */
-DEF_PARSE(formal1) {
-    MARK();
-
-    zvalue result = NULL;
-
-    if (result == NULL) { result = MATCH(CH_QMARK); }
-    if (result == NULL) { result = MATCH(CH_STAR); }
-    if (result == NULL) { result = MATCH(CH_PLUS); }
-
-    REJECT_IF(result == NULL);
-
-    return datTokenType(result);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(formal) {
-    MARK();
-
-    zvalue name = MATCH(IDENTIFIER);
-
-    if (name != NULL) {
-        name = datTokenValue(name);
-    } else {
-        // If there was no identifier, then the only valid form for a formal
-        // is if this is an unnamed / unused argument.
-        MATCH_OR_REJECT(CH_DOT);
-    }
-
-    zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
-
-    return mapFrom2(STR_NAME, name, STR_REPEAT, repeat);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(formalsList) {
-    zvalue result = PARSE_COMMA_SEQ(formal);
-
-    return (datSize(result) == 0) ? EMPTY_MAP : mapFrom1(STR_FORMALS, result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -785,54 +835,6 @@ DEF_PARSE(programBody) {
     PARSE(optSemicolons);
 
     return mapFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(programDeclarations) {
-    MARK();
-
-    // Both of these are always maps (possibly empty).
-    zvalue yieldDef = PARSE(optYieldDef);
-    zvalue formals = PARSE(formalsList);
-
-    return datMapAdd(formals, yieldDef);
-}
-
-/**
- * Helper for `program`: Parses `(programDeclarations @"::")`.
- */
-DEF_PARSE(program1) {
-    MARK();
-
-    zvalue result = PARSE(programDeclarations); // This never fails.
-    MATCH_OR_REJECT(CH_COLONCOLON);
-    return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(program) {
-    zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
-    zvalue value = PARSE(programBody); // This never fails.
-
-    if (declarations != NULL) {
-        value = datMapAdd(value, declarations);
-    }
-
-    return datTokenFrom(STR_CLOSURE, value);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(closure) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OCURLY);
-
-    // This always succeeds. See note in `parseProgram` above.
-    zvalue result = PARSE(program);
-
-    MATCH_OR_REJECT(CH_CCURLY);
-
-    return result;
 }
 
 

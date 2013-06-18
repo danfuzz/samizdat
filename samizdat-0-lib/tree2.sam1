@@ -113,11 +113,74 @@ def reportError = { pending ::
 #
 
 # Forward declarations.
-def parseClosure = forwardFunction();
+def parseProgramBody = forwardFunction();
 def parseExpression = forwardFunction();
 
 # Forward declaration required for integrating layer 1 definitions.
 def parseParser = forwardFunction();
+
+# Parses an optional yield / non-local exit definition.
+def parseOptYieldDef = {/
+    @"<"
+    name = @identifier
+    @">"
+    { <> [yieldDef: tokenValue(name)] }
+|
+    { <> [:] }
+/};
+
+# Parses a formal argument decalaration.
+def parseFormal = {/
+    name = (
+        n = @identifier
+        { <> [name: tokenValue(n)] }
+    |
+        @"." { <> [:] }
+    )
+
+    repeat = (
+        r = [@"?" @"*" @"+"]
+        { <> [repeat: tokenType(r)] }
+    |
+        { <> [:] }
+    )
+
+    { <> [:, name*, repeat*] }
+/};
+
+# Parses a list of formal arguments, with no surrounding parentheses.
+def parseFormalsList = {/
+    first = parseFormal
+    rest = (@"," parseFormal)*
+    { <> [formals: [first, rest*]] }
+|
+    { <> [:] }
+/};
+
+# Parses program / function declarations.
+def parseProgramDeclarations = {/
+    yieldDef = parseOptYieldDef
+    formals = parseFormalsList
+
+    @"::"
+
+    { <> [:, formals*, yieldDef*] }
+/};
+
+# Parses a program (top-level program or contents inside function braces).
+def parseProgram = {/
+    decls = (parseProgramDeclarations | { <> [:] })
+    body = parseProgramBody
+    { <> @[closure: [:, decls*, body*]] }
+/};
+
+# Parses a closure (in-line anonymous function, with no extra bindings).
+def parseClosure = {/
+    @"{"
+    prog = parseProgram
+    @"}"
+    { <> prog }
+/};
 
 # Parses a closure which must not define any formal arguments.
 def parseNullaryClosure = {/
@@ -308,16 +371,6 @@ def parseAtom = {/
     &@"{/" parseParser
 /};
 
-# Parses an optional yield / non-local exit definition.
-def parseOptYieldDef = {/
-    @"<"
-    name = @identifier
-    @">"
-    { <> [yieldDef: tokenValue(name)] }
-|
-    { <> [:] }
-/};
-
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
 def parseActualsList = {/
@@ -350,36 +403,8 @@ def parseYield = {/
     )
 /};
 
-# Parses a formal argument decalaration.
-def parseFormal = {/
-    name = (
-        n = @identifier
-        { <> [name: tokenValue(n)] }
-    |
-        @"." { <> [:] }
-    )
-
-    repeat = (
-        r = [@"?" @"*" @"+"]
-        { <> [repeat: tokenType(r)] }
-    |
-        { <> [:] }
-    )
-
-    { <> [:, name*, repeat*] }
-/};
-
-# Parses a list of formal arguments, with no surrounding parentheses.
-def parseFormalsList = {/
-    first = parseFormal
-    rest = (@"," parseFormal)*
-    { <> [formals: [first, rest*]] }
-|
-    { <> [:] }
-/};
-
 # Parses a program body (statements plus optional yield).
-def parseProgramBody = {/
+def implProgramBody = {/
     @";"*
 
     most = (
@@ -405,32 +430,7 @@ def parseProgramBody = {/
         <> [last*, statements: allStatements]
     }
 /};
-
-# Parses program / function declarations.
-def parseProgramDeclarations = {/
-    yieldDef = parseOptYieldDef
-    formals = parseFormalsList
-
-    @"::"
-
-    { <> [:, formals*, yieldDef*] }
-/};
-
-# Parses a program (top-level program or contents inside function braces).
-def parseProgram = {/
-    decls = (parseProgramDeclarations | { <> [:] })
-    body = parseProgramBody
-    { <> @[closure: [:, decls*, body*]] }
-/};
-
-# Parses a closure (in-line anonymous function, with no extra bindings).
-def implClosure = {/
-    @"{"
-    prog = parseProgram
-    @"}"
-    { <> prog }
-/};
-parseClosure(implClosure);
+parseProgramBody(implProgramBody);
 
 # Top-level rule to parse a program with possible error afterwards.
 # Note that an empty string is a valid program.

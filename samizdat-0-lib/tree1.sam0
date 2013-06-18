@@ -54,9 +54,69 @@ def makeThunk = { expression ::
 #
 
 # Forward declarations.
-def parseClosure = forwardFunction();
+def parseProgramBody = forwardFunction();
 def parseExpression = forwardFunction();
 def parseParser = forwardFunction();
+
+# Documented in Samizdat Layer 0 spec.
+def parseOptYieldDef = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
+            pegMakeToken("<"),
+            pegMakeToken("identifier"),
+            pegMakeToken(">"),
+            pegMakeCode { ., name, . :: <> [yieldDef: tokenValue(name)] }),
+        pegMakeCode { <> [:] }));
+
+# Documented in Samizdat Layer 0 spec.
+def parseFormal = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeMainSequence(
+            pegMakeToken("identifier"),
+            pegMakeCode { n :: <> [name: tokenValue(n)] }),
+        pegMakeMainSequence(
+            pegMakeToken("."),
+            pegMakeCode { . :: <> [:] })),
+    pegMakeChoice(
+        pegMakeMainSequence(
+            pegMakeTokenSet("?", "*", "+"),
+            pegMakeCode { r :: <> [repeat: tokenType(r)] }),
+        pegMakeMainSequence(
+            pegMakeCode { <> [:] })),
+    pegMakeCode { name, repeat :: <> [:, name*, repeat*] });
+
+# Documented in Samizdat Layer 0 spec.
+def parseFormalsList = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
+            parseFormal,
+            pegMakeStar(pegMakeSequence(pegMakeToken(","), parseFormal)),
+            pegMakeCode { first, rest ::
+                <> [formals: [first, rest*]]
+            }),
+        pegMakeCode { <> [:] }));
+
+# Documented in Samizdat Layer 0 spec.
+def parseProgramDeclarations = pegMakeMainSequence(
+    parseOptYieldDef,
+    parseFormalsList,
+    pegMakeToken("::"),
+    pegMakeCode { yieldDef, formals, . :: <> [:, formals*, yieldDef*] });
+
+# Documented in Samizdat Layer 0 spec.
+def parseProgram = pegMakeMainSequence(
+    pegMakeChoice(
+        parseProgramDeclarations,
+        pegMakeCode { <> [:] }),
+    parseProgramBody,
+    pegMakeCode { decls, body :: <> @[closure: [:, decls*, body*]] });
+
+# Documented in Samizdat Layer 0 spec.
+def parseClosure = pegMakeMainSequence(
+    pegMakeToken("{"),
+    parseProgram,
+    pegMakeToken("}"),
+    pegMakeCode { ., prog, . :: <> prog });
 
 # Documented in Samizdat Layer 0 spec.
 def parseNullaryClosure = pegMakeMainSequence(
@@ -300,45 +360,7 @@ def parseYield = pegMakeMainSequence(
             pegMakeCode { <> [:] })));
 
 # Documented in Samizdat Layer 0 spec.
-def parseOptYieldDef = pegMakeMainSequence(
-    pegMakeChoice(
-        pegMakeSequence(
-            pegMakeToken("<"),
-            pegMakeToken("identifier"),
-            pegMakeToken(">"),
-            pegMakeCode { ., name, . :: <> [yieldDef: tokenValue(name)] }),
-        pegMakeCode { <> [:] }));
-
-# Documented in Samizdat Layer 0 spec.
-def parseFormal = pegMakeMainSequence(
-    pegMakeChoice(
-        pegMakeMainSequence(
-            pegMakeToken("identifier"),
-            pegMakeCode { n :: <> [name: tokenValue(n)] }),
-        pegMakeMainSequence(
-            pegMakeToken("."),
-            pegMakeCode { . :: <> [:] })),
-    pegMakeChoice(
-        pegMakeMainSequence(
-            pegMakeTokenSet("?", "*", "+"),
-            pegMakeCode { r :: <> [repeat: tokenType(r)] }),
-        pegMakeMainSequence(
-            pegMakeCode { <> [:] })),
-    pegMakeCode { name, repeat :: <> [:, name*, repeat*] });
-
-# Documented in Samizdat Layer 0 spec.
-def parseFormalsList = pegMakeMainSequence(
-    pegMakeChoice(
-        pegMakeSequence(
-            parseFormal,
-            pegMakeStar(pegMakeSequence(pegMakeToken(","), parseFormal)),
-            pegMakeCode { first, rest ::
-                <> [formals: [first, rest*]]
-            }),
-        pegMakeCode { <> [:] }));
-
-# Documented in Samizdat Layer 0 spec.
-def parseProgramBody = pegMakeMainSequence(
+def implProgramBody = pegMakeMainSequence(
     pegMakeStar(pegMakeToken(";")),
     pegMakeStar(
         pegMakeMainSequence(
@@ -359,29 +381,7 @@ def parseProgramBody = pegMakeMainSequence(
         def allStatements = [most*, mapGet(last, "statements")*];
         <> [last*, statements: allStatements]
     });
-
-# Documented in Samizdat Layer 0 spec.
-def parseProgramDeclarations = pegMakeMainSequence(
-    parseOptYieldDef,
-    parseFormalsList,
-    pegMakeToken("::"),
-    pegMakeCode { yieldDef, formals, . :: <> [:, formals*, yieldDef*] });
-
-# Documented in Samizdat Layer 0 spec.
-def parseProgram = pegMakeMainSequence(
-    pegMakeChoice(
-        parseProgramDeclarations,
-        pegMakeCode { <> [:] }),
-    parseProgramBody,
-    pegMakeCode { decls, body :: <> @[closure: [:, decls*, body*]] });
-
-# Documented in Samizdat Layer 0 spec.
-def implClosure = pegMakeMainSequence(
-    pegMakeToken("{"),
-    parseProgram,
-    pegMakeToken("}"),
-    pegMakeCode { ., prog, . :: <> prog });
-parseClosure(implClosure);
+parseProgramBody(implProgramBody);
 
 
 #
