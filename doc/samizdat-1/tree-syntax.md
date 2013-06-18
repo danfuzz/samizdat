@@ -58,7 +58,7 @@ def parserString = {/
 
 def parserToken = {/
     @"@"
-    type = [@identifier @string]
+    type = identifierString
     { <> @[token: tokenValue(type)] }
 /};
 

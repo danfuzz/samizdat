@@ -406,7 +406,7 @@ def parseParserString = pegMakeMainSequence(
 
 def parseParserToken = pegMakeMainSequence(
     pegMakeToken("@"),
-    pegMakeTokenSet("identifier", "string"),
+    parseIdentifierString,
     pegMakeCode { ., type :: <> @[token: tokenValue(type)] });
 
 def parseParserSetString = pegMakeMainSequence(
