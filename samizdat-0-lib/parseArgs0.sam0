@@ -11,75 +11,75 @@
 # Helper definitions
 #
 
-# wordBreak = {/ "\0" /}
-parseWordBreak = pegMakeToken("\0");
+# def wordBreak = {/ "\0" /}
+def parseWordBreak = pegMakeToken("\0");
 
-# word = {/
+# def word = {/
 #     chars=[! "\0"]* wordBreak
 #     { <> stringFromTokenList(chars) }
 # /}
-parseWord = pegMakeMainSequence(
+def parseWord = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSetComplement("\0")),
     parseWordBreak,
     pegMakeCode { chars, . :: <> stringFromTokenList(chars) });
 
-# key = {/
+# def key = {/
 #     chars=[! "=\0"]*
 #     { <> stringFromTokenList(chars) }
 # /}
-parseKey = pegMakeMainSequence(
+def parseKey = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSetComplement("=\0")),
     pegMakeCode { chars :: <> stringFromTokenList(chars) });
 
-# keyValue = {/
+# def keyValue = {/
 #     "--" k=key "=" v=word
 #     { <> [(k): v] }
 # /}
-parseKeyValue = pegMakeMainSequence(
+def parseKeyValue = pegMakeMainSequence(
     pegMakeString("--"),
     parseKey,
     pegMakeToken("="),
     parseWord,
     pegMakeCode { ., k, ., v :: <> [(k): v] });
 
-# flag = {/
+# def flag = {/
 #     "--" w=word
 #     { <> [(w): true] }
 # /}
-parseFlag = pegMakeMainSequence(
+def parseFlag = pegMakeMainSequence(
     pegMakeString("--"),
     parseWord,
     pegMakeCode { ., w :: <> [(w): true] });
 
-# error = {/
+# def error = {/
 #     "-" [! "-\0"] word
 #     { ... <> [error: true] }
 # /}
-parseError = pegMakeMainSequence(
+def parseError = pegMakeMainSequence(
     pegMakeToken("-"),
     pegMakeCharSetComplement("-\0"),
     parseWord,
     pegMakeCode { ch1, ch2, word ::
-        value = stringAdd(stringFromTokens(ch1, ch2), word);
+        def value = stringAdd(stringFromTokens(ch1, ch2), word);
         io0Note(format("Unknown option: %Q", value));
         <> [error: true]
     });
 
-# option = {/
+# def option = {/
 #     keyValue | flag | error
 # /}
-parseOption = pegMakeChoice(parseKeyValue, parseFlag, parseError);
+def parseOption = pegMakeChoice(parseKeyValue, parseFlag, parseError);
 
-# arguments = {/
+# def arguments = {/
 #     optList=option* ("--" wordBreak)? words=word*
 #     { ... <> [options: options, args: args] }
 # /}
-parseArguments = pegMakeMainSequence(
+def parseArguments = pegMakeMainSequence(
     pegMakeStar(parseOption),
     pegMakeOpt(pegMakeSequence(pegMakeString("--"), parseWordBreak)),
     pegMakeStar(parseWord),
     pegMakeCode { optList, ., args ::
-        options = mapAdd(optList*);
+        def options = mapAdd(optList*);
         ifTrue { <> mapGet(options, "error", false) }
             { io0Die("Trouble with options.") };
         <> [options: options, args: args]
@@ -91,9 +91,9 @@ parseArguments = pegMakeMainSequence(
 #
 
 # Documented in Samizdat Layer 0 spec.
-parseArgs0 = { args ::
+def parseArgs0 = { args ::
     # Make a unified string with each argument "\0"-terminated.
-    argString = listReduce("", args)
+    def argString = listReduce("", args)
         { result, ., arg ::
             <> stringAdd(result, arg, "\0");
         };

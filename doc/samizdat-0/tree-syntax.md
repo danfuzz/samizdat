@@ -13,50 +13,65 @@ A program is parsed by matching the `program` rule, which yields a
 can be used.
 
 ```
+# Set-like map of all lowercase identifier characters. Used to figure
+# out if we're looking at a keyword in the `identifierString` rule.
+def LOWER_ALPHA = ["a".."z": true];
+
 # Returns a `call` node.
-makeCall = { function, actuals* ::
+def makeCall = { function, actuals* ::
     <> @[call: [function: function, actuals: actuals]]
 };
 
 # Returns a `varRef` node.
-makeVarRef = { name ::
+def makeVarRef = { name ::
     <> @[varRef: name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
-makeCallName = { name, actuals* ::
+def makeCallName = { name, actuals* ::
     <> @[call: [function: makeVarRef(name), actuals: actuals]]
 };
 
 # Returns a `literal` node.
-makeLiteral = { value ::
+def makeLiteral = { value ::
     <> @[literal: value]
 };
 
 # Returns a `closure` node representing a thunk of an expression.
-makeThunk = { expression ::
+def makeThunk = { expression ::
     <> @[closure: @[statements: [], yield: expression]];
 };
 
 # forward declaration: closure
 # forward declaration: expression
 
-int = {/
+def int = {/
     i = @int
     { <> makeLiteral(tokenValue(i)) }
 /};
 
-string = {/
+def string = {/
     s = @string
     { <> makeLiteral(tokenValue(s)) }
 /};
 
-identifierString = {/
+def identifierString = {/
     s = [@identifier @string]
     { <> makeLiteral(tokenValue(s)) }
+|
+    token = .
+    {
+        <> ifFalse { <> tokenHasValue(token) }
+            {
+                def type = tokenType(token);
+                def firstCh = stringNth(type, 0);
+                <> ifTrue { <> mapHasKey(LOWER_ALPHA, firstCh) }
+                    { <> makeLiteral(type) }
+            }
+    }
 /};
 
-listElement = {/
+def listElement = {/
     ex = expression
 
     (
@@ -71,7 +86,7 @@ listElement = {/
     )
 /};
 
-unadornedList = {/
+def unadornedList = {/
     first = listElement
     rest = (@"," listElement)*
     { <> [first, rest*] }
@@ -79,7 +94,7 @@ unadornedList = {/
     { <> [] }
 /};
 
-list = {/
+def list = {/
     @"["
     expressions = unadornedList
     @"]"
@@ -90,12 +105,12 @@ list = {/
     }
 /};
 
-emptyMap = {/
+def emptyMap = {/
     @"[" @":" @"]"
     { <> makeLiteral([:]) }
 /};
 
-mapping = {/
+def mapping = {/
     key = (
         k = identifierString
         @":"
@@ -114,7 +129,7 @@ mapping = {/
     { <> map }
 /};
 
-map = {/
+def map = {/
     @"["
     (@":" @",")?
     first = mapping
@@ -123,7 +138,7 @@ map = {/
     { <> makeCallName("makeMap", first, rest*) }
 /};
 
-token = {/
+def token = {/
     @"@"
 
     tokenArgs = (
@@ -146,37 +161,38 @@ token = {/
     { <> makeCallName("makeToken", tokenArgs*) }
 /};
 
-uniqlet = {/
+def uniqlet = {/
     @"@@"
     { <> makeCallName("makeUniqlet") }
 /};
 
-varRef = {/
+def varRef = {/
     name = @identifier
     { <> makeVarRef(tokenValue(name)) }
 /};
 
-varDef = {/
+def varDef = {/
+    @"def"
     name = @identifier
     @"="
     ex = expression
     { <> @[varDef: [name: tokenValue(name), value: ex]] }
 /};
 
-parenExpression = {/
+def parenExpression = {/
     @"("
     ex = expression
     @")"
     { <> ex }
 /};
 
-atom = {/
+def atom = {/
     varRef | int | string |
     list | emptyMap | map |
     uniqlet | token | closure | parenExpression
 /};
 
-actualsList = {/
+def actualsList = {/
     @"()"
     closure*
 |
@@ -189,7 +205,7 @@ actualsList = {/
     closure+
 /};
 
-callExpression = {/
+def callExpression = {/
     base = atom
     actualsLists = actualsList*
 
@@ -200,15 +216,15 @@ callExpression = {/
     }
 /};
 
-expression = {/
+def expression = {/
     callExpression
 /};
 
-statement = {/
+def statement = {/
     varDef | expression
 /};
 
-nonlocalExit = {/
+def nonlocalExit = {/
     @"<"
     name = varRef
     @">"
@@ -221,7 +237,7 @@ nonlocalExit = {/
     )
 /};
 
-yield = {/
+def yield = {/
     @"<>"
     (
         ex = expression
@@ -231,7 +247,7 @@ yield = {/
     )
 /};
 
-optYieldDef = {/
+def optYieldDef = {/
     @"<"
     name = @identifier
     @">"
@@ -240,7 +256,7 @@ optYieldDef = {/
     { <> [:] }
 /};
 
-formal = {/
+def formal = {/
     name = (
         n = @identifier
         { <> [name: tokenValue(n)] }
@@ -258,7 +274,7 @@ formal = {/
     { <> [:, name*, repeat*] }
 /};
 
-formalsList = {/
+def formalsList = {/
     first = formal
     rest = (@"," formal)*
     { <> [formals: [first, rest*]] }
@@ -266,7 +282,7 @@ formalsList = {/
     { <> [:] }
 /};
 
-programBody = {/
+def programBody = {/
     @";"*
 
     most = (
@@ -288,12 +304,12 @@ programBody = {/
     @";"*
 
     {
-        allStatements = listAdd(most, mapGet(last, "statements"));
+        def allStatements = listAdd(most, mapGet(last, "statements"));
         <> [last*, statements: allStatements]
     }
 /};
 
-programDeclarations = {/
+def programDeclarations = {/
     yieldDef = optYieldDef
     formals = formalsList
 
@@ -302,20 +318,20 @@ programDeclarations = {/
     { <> [:, formals*, yieldDef*] }
 /};
 
-program = {/
+def program = {/
     decls = (programDeclarations | { <> [:] })
     body = programBody
     { <> @[closure: [:, decls*, body*]] }
 /};
 
-closure = {/
+def closure = {/
     @"{"
     prog = program
     @"}"
     { <> prog }
 /};
 
-programOrError = {/
+def programOrError = {/
     prog = program
     (
         pending = .+

@@ -11,7 +11,7 @@
 #
 
 # Object implementation function used by `forwardFunction`.
-forwardFunctionImpl = { yield, state, args* ::
+def forwardFunctionImpl = { yield, state, args* ::
     <> ifTrue { <> eq(state, null) }
         {
             <> ifValue { <> listFirst(args) }
@@ -34,8 +34,8 @@ forwardFunctionImpl = { yield, state, args* ::
 #
 
 # Documented in Samizdat Layer 0 spec.
-forwardFunction = {
-    forwardObject = object(forwardFunctionImpl, null);
+def forwardFunction = {
+    def forwardObject = object(forwardFunctionImpl, null);
 
     <> { args* ::
         <> ifValue { <> forwardObject(args*) }
@@ -45,7 +45,7 @@ forwardFunction = {
 };
 
 # Documented in Samizdat Layer 0 spec.
-partialApply = { <out> function, args* ::
+def partialApply = { <out> function, args* ::
     <> { more* :: <> function(args*, more*) }
 };
 

@@ -10,7 +10,7 @@
 # rest of the library, but things that want to iterate over all the files
 # (e.g. just to get the text) can use the list here to avoid having to
 # name them explicitly.
-BOOTSTRAP_FILES = [
+def BOOTSTRAP_FILES = [
     "manifest.sam0",
     "main.sam0"
 ];
@@ -18,7 +18,7 @@ BOOTSTRAP_FILES = [
 # The following is a list of the names of all the core library files, in
 # dependency order. That is, the first one depends only on the primitives,
 # the second can depend on primitives and the first, etc.
-MANIFEST = [
+def MANIFEST = [
     # Layer 0 in-language core library.
     "combinator.sam0",
     "const.sam0",

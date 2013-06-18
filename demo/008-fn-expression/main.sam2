@@ -15,14 +15,14 @@ SELF_PATH, ARGS* ::
 # Main tests
 #
 
-func1 = fn (x) {
+def func1 = fn (x) {
     io0Note(format("func1 %q", x));
     return "func1"
 };
 
 io0Note(func1(10));
 
-func2 = fn <out> (x*) {
+def func2 = fn <out> (x*) {
     io0Note(format("func2 %q", x));
     <out> "func2"
 };
@@ -30,7 +30,7 @@ func2 = fn <out> (x*) {
 io0Note(func2(20, "twenty"));
 
 # Recursive call.
-func3 = fn whee(x) {
+def func3 = fn whee(x) {
     io0Note(format("func3 %q", x));
     if (x < 5) {
         whee(x + 1);
