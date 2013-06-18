@@ -42,8 +42,65 @@ def makeThunk = { expression ::
     <> @[closure: @[statements: [], yield: expression]];
 };
 
-# forward declaration: closure
+# forward declaration: programBody
 # forward declaration: expression
+
+def optYieldDef = {/
+    @"<"
+    name = @identifier
+    @">"
+    { <> [yieldDef: tokenValue(name)] }
+|
+    { <> [:] }
+/};
+
+def formal = {/
+    name = (
+        n = @identifier
+        { <> [name: tokenValue(n)] }
+    |
+        @"." { <> [:] }
+    )
+
+    repeat = (
+        r = [@"?" @"*" @"+"]
+        { <> [repeat: tokenType(r)] }
+    |
+        { <> [:] }
+    )
+
+    { <> [:, name*, repeat*] }
+/};
+
+def formalsList = {/
+    first = formal
+    rest = (@"," formal)*
+    { <> [formals: [first, rest*]] }
+|
+    { <> [:] }
+/};
+
+def programDeclarations = {/
+    yieldDef = optYieldDef
+    formals = formalsList
+
+    @"::"
+
+    { <> [:, formals*, yieldDef*] }
+/};
+
+def program = {/
+    decls = (programDeclarations | { <> [:] })
+    body = programBody
+    { <> @[closure: [:, decls*, body*]] }
+/};
+
+def closure = {/
+    @"{"
+    prog = program
+    @"}"
+    { <> prog }
+/};
 
 # Parses a closure which must not define any formal arguments. This is done
 # by parsing an arbitrary closure and then verifying that it does not
@@ -277,41 +334,6 @@ def yield = {/
     )
 /};
 
-def optYieldDef = {/
-    @"<"
-    name = @identifier
-    @">"
-    { <> [yieldDef: tokenValue(name)] }
-|
-    { <> [:] }
-/};
-
-def formal = {/
-    name = (
-        n = @identifier
-        { <> [name: tokenValue(n)] }
-    |
-        @"." { <> [:] }
-    )
-
-    repeat = (
-        r = [@"?" @"*" @"+"]
-        { <> [repeat: tokenType(r)] }
-    |
-        { <> [:] }
-    )
-
-    { <> [:, name*, repeat*] }
-/};
-
-def formalsList = {/
-    first = formal
-    rest = (@"," formal)*
-    { <> [formals: [first, rest*]] }
-|
-    { <> [:] }
-/};
-
 def programBody = {/
     @";"*
 
@@ -337,28 +359,6 @@ def programBody = {/
         def allStatements = listAdd(most, mapGet(last, "statements"));
         <> [last*, statements: allStatements]
     }
-/};
-
-def programDeclarations = {/
-    yieldDef = optYieldDef
-    formals = formalsList
-
-    @"::"
-
-    { <> [:, formals*, yieldDef*] }
-/};
-
-def program = {/
-    decls = (programDeclarations | { <> [:] })
-    body = programBody
-    { <> @[closure: [:, decls*, body*]] }
-/};
-
-def closure = {/
-    @"{"
-    prog = program
-    @"}"
-    { <> prog }
 /};
 
 def programOrError = {/
