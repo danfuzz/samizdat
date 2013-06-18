@@ -22,16 +22,6 @@ def atom = {/
     &@"{/" parser
 /};
 
-def parseNullaryClosure = {/
-    closure = parseClosure
-
-    {
-        ifTrue { <> mapHasKey(tokenValue(closure), "formals") }
-            { io0Die("Invalid formal argument in code block.") };
-        <> closure
-    }
-/};
-
 def parser = {/
     @"{/"
     pex = choicePex
