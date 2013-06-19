@@ -17,7 +17,7 @@ The following list is ordered from highest (tightest binding) to lowest
 Postfix operators have the highest precedence in the language, binding
 more tightly than any other operators, including prefix operators.
 
-#### Apply function &mdash; `expression(arg, arg, ...) { closure } { closure } ...`
+#### Apply function &mdash; `expression(arg, arg, ...) { block } { block } ...`
 
 To apply an expression as a function, place arguments to apply it to
 between parentheses. The result of this expression is the same as the result
@@ -25,9 +25,9 @@ of the function call. If the function call returned void, then
 the expression's result is also a void.
 
 In order to make it convenient to define control-structure-like functions,
-any number of closure literals may follow the closing parenthesis. All such
-closures are taken to be additional arguments to the function. For example,
-`foo(bar) { baz }` means the same thing as `foo(bar, { baz })`.
+any number of block closure literals may follow the closing parenthesis. All
+such closures are taken to be additional arguments to the function.
+For example, `foo(bar) { baz }` means the same thing as `foo(bar, { baz })`.
 
 If there are no arguments (including no closure arguments), parentheses are
 required to unambiguously indicate that function application is to be
