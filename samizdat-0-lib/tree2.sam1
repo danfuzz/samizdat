@@ -768,6 +768,21 @@ def parsePostfixOperator = {/
         def function = mapGet(UNARY_OPERATORS, "[]");
         <> { node :: <> makeCall(function, node, names*) }
     }
+|
+    @"?"
+    {
+        def thenClosure = @[closure: [
+            formals: [[name: "value"]],
+            statements: [],
+            yield: makeCallName("makeList", makeVarRef("value"))
+        ]];
+        def elseClosure = makeThunk(makeLiteral([]));
+
+        <> { node ::
+            def nodeThunk = makeThunk(node);
+            <> makeCallName("ifValue", nodeThunk, thenClosure, elseClosure)
+        }
+    }
 /};
 
 # Parses a unary expression. This is an atom, optionally surrounded on

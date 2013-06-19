@@ -21,6 +21,11 @@ def out = { value ::
 };
 
 # Something to call.
+def returnVoid = {
+    # Nothing to see here!
+};
+
+# Something to call.
 def returnString = {
     <> "Fun times!"
 };
@@ -58,5 +63,7 @@ out(returnList()[1]);
 out(returnList()[4, "blort"]);
 out(returnMap().a);
 out(returnMap().cats.o);
+out(returnVoid()?);
+out(returnString()?);
 
 <> 0
