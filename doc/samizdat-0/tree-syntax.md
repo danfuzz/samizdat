@@ -411,7 +411,7 @@ def parenExpression = {/
 
 def atom = {/
     varRef | int | string | list | emptyMap | map | uniqlet | token |
-    closure | fnExpression | parenExpression
+    closure | parenExpression
 /};
 
 def actualsList = {/
@@ -439,7 +439,7 @@ def callExpression = {/
 /};
 
 def expression = {/
-    callExpression
+    callExpression | fnExpression
 /};
 
 def statement = {/
