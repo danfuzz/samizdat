@@ -42,4 +42,4 @@ syntax as an operator. Expression operator syntax is implemented in Layer
 Parsing
 -------
 
-Parsing closure syntax is not recognized. This is implemented in Layer 1.
+Parsing closure syntax is not recognized at all. This is implemented in Layer 1.
