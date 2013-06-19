@@ -773,20 +773,29 @@ parseChoicePex(implChoicePex);
 # block, and (b) being represented as a function call in the underlying
 # function representation of code blocks.
 def implNonlocalExit = {/
-    @"<"
-    name = parseVarRef
-    @">"
-    value = parseExpression?
+    name = (
+        @"<"
+        n = parseVarRef
+        @">"
+        { <> n }
+    |
+        op = [@break @continue @return]
+        { <> makeVarRef(tokenType(op)) }
+    )
+
+    value = (
+        ex = parseExpression
+        {
+            # The test for a valued `continue` is done explicitly here way
+            # (rather than just letting the rule fail) in order to make the
+            # error message more sensible.
+            ifTrue { <> eq(tokenValue(name), "continue") }
+                { io0Die("Invalid use of continue with value.") };
+            <> ex
+        }
+    )?
+
     { <> makeCallNonlocalExit(name, value*) }
-|
-    op = [@break @return]
-    value = parseExpression?
-    { <> makeCallNonlocalExit(makeVarRef(tokenType(op)), value*) }
-|
-    # This one is separate from `break` and `return`, because it doesn't
-    # accept a value.
-    @continue
-    { <> makeCallNonlocalExit(makeVarRef("continue")) }
 /};
 parseNonlocalExit(implNonlocalExit);
 
