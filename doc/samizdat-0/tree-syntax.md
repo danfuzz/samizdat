@@ -18,39 +18,39 @@ can be used.
 def LOWER_ALPHA = ["a".."z": true];
 
 # Returns a `call` node.
-def makeCall = { function, actuals* ::
+fn makeCall(function, actuals*) {
     <> @[call: [function: function, actuals: actuals]]
 };
 
 # Returns a `varDef` node.
-def makeVarDef = { name, value ::
+fn makeVarDef(name, value) {
     <> @[varDef: [name: name, value: value]
 };
 
 # Returns a `varRef` node.
-def makeVarRef = { name ::
+fn makeVarRef(name) {
     <> @[varRef: name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
-def makeCallName = { name, actuals* ::
+fn makeCallName(name, actuals*) {
     <> @[call: [function: makeVarRef(name), actuals: actuals]]
 };
 
 # Returns a `literal` node.
-def makeLiteral = { value ::
+fn makeLiteral(value) {
     <> @[literal: value]
 };
 
 # Returns a `closure` node representing a thunk of an expression.
-def makeThunk = { expression ::
+fn makeThunk(expression) {
     <> @[closure: @[statements: [], yield: expression]];
 };
 
 # Returns a `call` node to a nonlocal exit with the given name and
 # with optional expression value. The expression if supplied is automatically
 # "thunked".
-def makeCallNonlocalExit = { name, expression? ::
+fn makeCallNonlocalExit(name, expression?) {
     <> ifValue { <> listFirst(expression) }
         { ex :: <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
         { <> makeCall(makeVarRef("nonlocalExit"), name) }
