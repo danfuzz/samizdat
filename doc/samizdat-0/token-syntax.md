@@ -15,7 +15,7 @@ result as tokens of type `"error"`.
 ```
 # A map from strings to their corresponding keywords, one mapping for each
 # identifier-like keyword.
-def KEYWORDS = [def: @def, fn: @fn];
+def KEYWORDS = [def: @def, fn: @fn, return: @return];
 
 # Note: The yielded result is always ignored.
 def whitespace = {/

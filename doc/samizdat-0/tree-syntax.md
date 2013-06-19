@@ -47,6 +47,15 @@ def makeThunk = { expression ::
     <> @[closure: @[statements: [], yield: expression]];
 };
 
+# Returns a `call` node to a nonlocal exit with the given name and
+# with optional expression value. The expression if supplied is automatically
+# "thunked".
+def makeCallNonlocalExit = { name, expression? ::
+    <> ifValue { <> listFirst(expression) }
+        { ex :: <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+        { <> makeCall(makeVarRef("nonlocalExit"), name) }
+};
+
 # forward declaration: programBody
 # forward declaration: expression
 
@@ -447,16 +456,18 @@ def statement = {/
 /};
 
 def nonlocalExit = {/
-    @"<"
-    name = varRef
-    @">"
-
-    (
-        ex = expression
-        { <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+    name = (
+        @"<"
+        n = parseVarRef
+        @">"
+        { <> n }
     |
-        { <> makeCall(makeVarRef("nonlocalExit"), name) }
+        @return
+        { <> "return" }
     )
+
+    value = parseExpression?
+    { <> makeCallNonlocalExit(name, value*) }
 /};
 
 def yield = {/
