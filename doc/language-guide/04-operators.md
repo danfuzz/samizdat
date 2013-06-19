@@ -31,7 +31,8 @@ For example, `foo(bar) { baz }` means the same thing as `foo(bar, { baz })`.
 
 If there are no arguments (including no closure arguments), parentheses are
 required to unambiguously indicate that function application is to be
-performed.
+performed. That is, `foo()` and `foo { block }` are both function calls,
+but plain `foo` is just a variable reference.
 
 As with list literal syntax, an argument whose type is a list can have
 its contents "interpolated" into a function call argument list by following
