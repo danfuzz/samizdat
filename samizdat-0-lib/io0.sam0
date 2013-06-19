@@ -47,14 +47,14 @@ def parsePathString = pegMakePlus(
 
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
-def isPrefix = { <out> prefix, path ::
+fn isPrefix(prefix, path) {
     def prefixSize = lowSize(prefix);
 
     ifTrue { <> gt(prefixSize, lowSize(path)) }
         {
             # The "prefix" is longer than the path, so it can't actually be
             # a prefix.
-            <out> false
+            return false
         };
 
     <> eq(prefix, listSlice(path, 0, prefixSize))
@@ -130,7 +130,7 @@ fn io0ReadLink(path) {
 #
 # This is located in the "exported" section, as it makes use of
 # the exported function `io0ReadLink`, defined above.
-def resolveLinks = { <out> sandboxDirectory, path ::
+fn resolveLinks(sandboxDirectory, path) {
     loopReduce([path, 50]) { result ::
         def path = listNth(result, 0);
         def limit = listNth(result, 1);
@@ -142,7 +142,7 @@ def resolveLinks = { <out> sandboxDirectory, path ::
 
         <> ifValue { <> io0ReadLink(path) }
             { newPath :: <> [newPath, (isub(limit, 1))] }
-            { <out> path }
+            { return path }
     }
 };
 

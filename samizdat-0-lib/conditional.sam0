@@ -7,9 +7,9 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-def and = { <out> predicates* ::
+fn and(predicates*) {
     <> listReduce(true, predicates)
-        { result, ., predicate :: ifTrue(predicate) {} { <out> false } }
+        { result, ., predicate :: ifTrue(predicate) {} { return false } }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -27,13 +27,13 @@ fn ifVoid(predicate, voidFunction, valueFunction?) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-def or = { <out> predicates* ::
+fn or(predicates*) {
     <> listReduce(false, predicates)
-        { result, ., predicate :: ifTrue(predicate) { <out> true } }
+        { result, ., predicate :: ifTrue(predicate) { return true } }
 };
 
 # Documented in Samizdat Layer 0 spec.
-def \"switch" = { value, cases, defaultFunction? ::
+fn \"switch"(value, cases, defaultFunction?) {
     <> ifValue { <> mapGet(cases, value) }
         { function :: <> function() }
         {

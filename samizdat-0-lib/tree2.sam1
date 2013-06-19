@@ -1076,8 +1076,8 @@ def parseSwitchDefault = {/
 #     <> \"switch"(
 #         value,
 #         [
-#             def ex1 = { stat1a; stat1b },
-#             def ex2 = { stat2a; stat2b }
+#             (ex1): { stat1a; stat1b },
+#             (ex2): { stat2a; stat2b }
 #         ])
 #         { statDefault }
 # }

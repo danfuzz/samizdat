@@ -20,7 +20,7 @@ def INT_CHARS = [
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
-def intBody = { <out> start, value, base ::
+fn intBody(start, value, base) {
     loopReduce(["", value]) { result ::
         def text = listNth(result, 0);
         def value = listNth(result, 1);
@@ -29,7 +29,7 @@ def intBody = { <out> start, value, base ::
                 def digit = mapGet(INT_CHARS, imod(value, base));
                 <> [stringAdd(digit, text), idiv(value, base)];
             }
-            { <out> stringAdd(start, text) }
+            { return stringAdd(start, text) }
     }
 };
 
@@ -116,7 +116,7 @@ def IDENTIFIER_CHARS = [IDENTIFIER_STARTS*, "0".."9": true];
 
 # Checks to see if the given value is a string with the form of an
 # in-language identifier.
-def isIdentifier = { <out> string ::
+fn isIdentifier(string) {
     <> and
         { <> isString(string) }
         { <> gt(lowSize(string), 0) }
@@ -125,7 +125,7 @@ def isIdentifier = { <out> string ::
             stringForEach(string)
                 { ., ch ::
                     ifFalse { <> mapGet(IDENTIFIER_CHARS, ch, false) }
-                        { <out> false }
+                        { return false }
                 };
             <> true
         }
@@ -179,9 +179,9 @@ def TOKEN_SPECIALS = [
 ];
 
 # Stringifies a token.
-def doToken = { <out> token, adorn ::
+fn doToken(token, adorn) {
     ifValue { <> mapGet(TOKEN_SPECIALS, token) }
-        { string :: <out> string };
+        { string :: return string };
 
     def type = tokenType(token);
     def typeString = ifTrue { <> isIdentifier(type) }
@@ -192,19 +192,19 @@ def doToken = { <out> token, adorn ::
         { <> "" };
 
     ifTrue { <> and { <> isString(type) } { <> eq(valueString, "") } }
-        { <out> adornIf(adorn, "@", typeString, "") };
+        { return adornIf(adorn, "@", typeString, "") };
 
     def result = stringAdd(typeString, valueString);
     <> adornIf(adorn, "@[", result, "]")
 };
 
 # Stringifies a uniqlet.
-def doUniqlet = { uniqlet, . ::
+fn doUniqlet(uniqlet, .) {
     <> "@@"
 };
 
 # Stringifies an unknown value type.
-def doUnknown = { unknown, . ::
+fn doUnknown(unknown, .) {
     <> stringAdd(
         "[(unknown) ",
         callSourceString(lowType(value)),
@@ -354,7 +354,7 @@ fn formatOne(yield, state) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-def format = { <out> formatString, rest* ::
+fn format(formatString, rest*) {
     def formatter = object(formatOne, [
         fmt:    formatString,
         fmtAt:  0,
@@ -365,7 +365,7 @@ def format = { <out> formatString, rest* ::
     loopReduce("") { result ::
         <> ifValue { <> formatter() }
             { s :: <> stringAdd(result, s) }
-            { <out> result }
+            { return result }
     }
 };
 

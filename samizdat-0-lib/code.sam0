@@ -34,7 +34,7 @@ fn forwardFunctionImpl(yield, state, args*) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-def forwardFunction = {
+fn forwardFunction() {
     def forwardObject = object(forwardFunctionImpl, null);
 
     <> { args* ::
@@ -45,7 +45,7 @@ def forwardFunction = {
 };
 
 # Documented in Samizdat Layer 0 spec.
-def partialApply = { <out> function, args* ::
+fn partialApply(function, args*) {
     <> { more* :: <> function(args*, more*) }
 };
 
