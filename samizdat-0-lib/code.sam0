@@ -11,7 +11,7 @@
 #
 
 # Object implementation function used by `forwardFunction`.
-def forwardFunctionImpl = { yield, state, args* ::
+fn forwardFunctionImpl(yield, state, args*) {
     <> ifTrue { <> eq(state, null) }
         {
             <> ifValue { <> listFirst(args) }

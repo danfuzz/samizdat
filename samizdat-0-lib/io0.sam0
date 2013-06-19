@@ -66,7 +66,7 @@ def isPrefix = { <out> prefix, path ::
 #
 
 # Documented in Samizdat Layer 0 spec.
-def io0FlatFromPath = { path ::
+fn io0FlatFromPath(path) {
     <> listReduce("", path) { result, n, one ::
         ifTrue { <> eq(one, ".") }
             { io0Die(format("Invalid `.` component in path: %q", path)) };
@@ -86,7 +86,7 @@ def io0FlatFromPath = { path ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def io0PathFromFlat = { string ::
+fn io0PathFromFlat(string) {
     # Reject the empty string.
     ifTrue { <> eq(string, "") }
         { io0Die("Invalid path (empty).") };
@@ -115,12 +115,12 @@ def io0PathFromFlat = { string ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def io0ReadFileUtf8 = { path ::
+fn io0ReadFileUtf8(path) {
     <> io0FlatReadFileUtf8(io0FlatFromPath(path))
 };
 
 # Documented in Samizdat Layer 0 spec.
-def io0ReadLink = { path ::
+fn io0ReadLink(path) {
     <> ifValue { <> io0FlatReadLink(io0FlatFromPath(path)) }
         { newPath :: <> io0PathFromFlat(newPath) }
 };
@@ -147,7 +147,7 @@ def resolveLinks = { <out> sandboxDirectory, path ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def io0SandboxedReader = { directory ::
+fn io0SandboxedReader(directory) {
     <> { path ::
         def fullPath = resolveLinks(directory, [directory*, path*]);
         <> io0ReadFileUtf8(fullPath);
@@ -155,7 +155,7 @@ def io0SandboxedReader = { directory ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def io0WriteFileUtf8 = { path ::
+fn io0WriteFileUtf8(path) {
     <> io0FlatWriteFileUtf8(io0FlatFromPath(path))
 };
 

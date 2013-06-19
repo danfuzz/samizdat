@@ -7,25 +7,25 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-def eq = { v1, v2 :: <> lowOrderIs(v1, v2, 0) };
+fn eq(v1, v2) { <> lowOrderIs(v1, v2, 0) };
 
 # Documented in Samizdat Layer 0 spec.
-def ge = { v1, v2 :: <> lowOrderIs(v1, v2, 1, 0) };
+fn ge(v1, v2) { <> lowOrderIs(v1, v2, 1, 0) };
 
 # Documented in Samizdat Layer 0 spec.
-def gt = { v1, v2 :: <> lowOrderIs(v1, v2, 1) };
+fn gt(v1, v2) { <> lowOrderIs(v1, v2, 1) };
 
 # Documented in Samizdat Layer 0 spec.
-def lt = { v1, v2 :: <> lowOrderIs(v1, v2, -1) };
+fn lt(v1, v2) { <> lowOrderIs(v1, v2, -1) };
 
 # Documented in Samizdat Layer 0 spec.
-def le = { v1, v2 :: <> lowOrderIs(v1, v2, -1, 0) };
+fn le(v1, v2) { <> lowOrderIs(v1, v2, -1, 0) };
 
 # Documented in Samizdat Layer 0 spec.
-def ne = { v1, v2 :: <> lowOrderIs(v1, v2, -1, 1) };
+fn ne(v1, v2) { <> lowOrderIs(v1, v2, -1, 1) };
 
 # Documented in Samizdat Layer 0 spec.
-def not = { value ::
+fn not(value) {
     <> ifTrue { <> eq(value, true) }
         { <> false }
         {

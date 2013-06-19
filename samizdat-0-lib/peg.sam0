@@ -12,7 +12,7 @@
 #
 
 # Makes a setter function for a box.
-def setterFromBox = { box ::
+fn setterFromBox(box) {
     <> partialApply(boxSet, box);
 };
 
@@ -78,7 +78,7 @@ def pegRuleLookaheadAny = { yield, state, .* ::
 # used as helpers in the implementation of subsequent rule constructors.
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeCode = { function ::
+fn pegMakeCode(function) {
     <> { yield, state, items* ::
         <> ifValue { <> function(items*) }
             { result ::
@@ -128,7 +128,7 @@ def pegMakeSequence = { <out> rules* ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeMainSequence = { rules* ::
+fn pegMakeMainSequence(rules*) {
     def subRule = pegMakeSequence(rules*);
 
     <> { yield, state, .* ::
@@ -137,7 +137,7 @@ def pegMakeMainSequence = { rules* ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeStar = { rule ::
+fn pegMakeStar(rule) {
     <> { <out> yield, state, items* ::
         loopReduce([state, []])
             { results ::
@@ -158,11 +158,11 @@ def pegMakeStar = { rule ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeToken = { type ::
+fn pegMakeToken(type) {
     # This is implemented as, in effect, `(&. &@token .)`, which
     # allows us to keep the main matcher function here much simpler.
 
-    def match = { item ::
+    fn match(item) {
         <> ifTrue { <> eq(tokenType(item), type) }
             { <> item }
     };
@@ -186,7 +186,7 @@ def genericMakeTokenSet = { <out> sense, types ::
     # This is implemented as, in effect, `(&. &set .)`, which
     # allows us to keep the main matcher function here much simpler.
 
-    def match = { item ::
+    fn match(item) {
         <> ifTrue { <> mapGet(set, tokenType(item), oppositeSense) }
             { <> item }
     };
@@ -208,12 +208,12 @@ def genericMakeCharSet = { <out> sense, strings* ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeCharSet = { strings* ::
+fn pegMakeCharSet(strings*) {
     <> genericMakeCharSet(true, strings*)
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeCharSetComplement = { strings* ::
+fn pegMakeCharSetComplement(strings*) {
     <> genericMakeCharSet(false, strings*)
 };
 
@@ -245,7 +245,7 @@ def pegMakeChoice = { <out> rules* ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeLookaheadSuccess = { rule ::
+fn pegMakeLookaheadSuccess(rule) {
     <> { yield, state, items* ::
         <> ifValue { <> rule(yield, state, items*) }
             { <> state }
@@ -275,7 +275,7 @@ def pegMakeLookaheadFailure = { <out> rule ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeOpt = { rule ::
+fn pegMakeOpt(rule) {
     <> { yield, state, items* ::
         def ybox = yieldBox();
         <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
@@ -291,7 +291,7 @@ def pegMakeOpt = { rule ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakePlus = { rule ::
+fn pegMakePlus(rule) {
     # This is implemented as, in effect,
     # `(def items=rule* { ... lowSize(match) ... })`, which allows us to
     # minimize code duplication. Note: We can't impose a "main sequence"
@@ -299,7 +299,7 @@ def pegMakePlus = { rule ::
     # check code slightly more straightforward -- because `rule` may
     # contain back-references which would thereby get lopped off.
 
-    def checkSize = { items* ::
+    fn checkSize(items*) {
         def starMatch = listLast(items);
         <> ifTrue { <> ne(lowSize(starMatch), 0) }
             { <> starMatch }
@@ -329,12 +329,12 @@ def pegMakeString = { <out> string ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeTokenSet = { tokens* ::
+fn pegMakeTokenSet(tokens*) {
     <> genericMakeTokenSet(true, tokens)
 };
 
 # Documented in Samizdat Layer 0 spec.
-def pegMakeTokenSetComplement = { tokens* ::
+fn pegMakeTokenSetComplement(tokens*) {
     <> genericMakeTokenSet(false, tokens)
 };
 
@@ -344,7 +344,7 @@ def pegMakeTokenSetComplement = { tokens* ::
 #
 
 # Documented in Samizdat Layer 0 spec.
-def pegApply = { rule, input ::
+fn pegApply(rule, input) {
     def inputList = ifTrue { <> isString(input) }
         {
             # Make a list of each character as a separate token.
