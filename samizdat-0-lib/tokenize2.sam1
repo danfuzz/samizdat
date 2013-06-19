@@ -23,7 +23,7 @@ def INT_CHARS = [
 ];
 
 # Helper to convert digit characters to digit values.
-def intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
+fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
@@ -211,7 +211,7 @@ def tokFile = {/
 #
 
 # Documented in Samizdat Layer 1 spec.
-def sam2Tokenize = { programText ::
+fn sam2Tokenize(programText) {
     <> pegApply(tokFile, programText)
 };
 

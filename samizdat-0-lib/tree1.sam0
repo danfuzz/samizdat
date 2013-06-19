@@ -16,29 +16,43 @@
 def LOWER_ALPHA = ["a".."z": true];
 
 # Returns a `call` node.
-def makeCall = { function, actuals* ::
+fn makeCall(function, actuals*) {
     <> @[call: [function: function, actuals: actuals]]
 };
 
+# Returns a `varDef` node.
+fn makeVarDef(name, value) {
+    <> @[varDef: [name: name, value: value]]
+};
+
 # Returns a `varRef` node.
-def makeVarRef = { name ::
+fn makeVarRef(name) {
     <> @[varRef: name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
-def makeCallName = { name, actuals* ::
+fn makeCallName(name, actuals*) {
     <> @[call: [function: makeVarRef(name), actuals: actuals]]
 };
 
 # Returns a `literal` node.
-def makeLiteral = { value ::
+fn makeLiteral(value) {
     <> @[literal: value]
 };
 
 # Returns node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
-def makeThunk = { expression ::
+fn makeThunk(expression) {
     <> @[closure: [statements: [], yield: expression]]
+};
+
+# Returns a `call` node to a nonlocal exit with the given name and
+# with optional expression value. The expression if supplied is automatically
+# "thunked".
+fn makeCallNonlocalExit(name, expression?) {
+    <> ifValue { <> listFirst(expression) }
+        { ex :: <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+        { <> makeCall(makeVarRef("nonlocalExit"), name) }
 };
 
 
@@ -140,6 +154,65 @@ def parseCodeOnlyClosure = pegMakeMainSequence(
             { io0Die("Invalid yield definition in code block.") };
         <> c
     });
+
+# Documented in Samizdat Layer 0 spec.
+def parseFnCommon = pegMakeMainSequence(
+    pegMakeToken("fn"),
+    pegMakeOpt(
+        pegMakeMainSequence(
+            parseYieldDef,
+            pegMakeCode { y :: <> makeVarDef(y, makeVarRef("return")) })),
+    pegMakeChoice(
+        pegMakeMainSequence(
+            pegMakeToken("identifier"),
+            pegMakeCode { n :: <> [name: tokenValue(n)] }),
+        pegMakeMainSequence(pegMakeCode { <> [:] })),
+    pegMakeChoice(
+        pegMakeMainSequence(
+            pegMakeToken("()"),
+            pegMakeCode { . :: <> [:] }),
+        pegMakeMainSequence(
+            pegMakeToken("("),
+            parseFormalsList,
+            pegMakeToken(")"),
+            pegMakeCode { ., f, . :: <> f })),
+    parseCodeOnlyClosure,
+    pegMakeCode { ., returnDef, name, formals, code ::
+        def codeMap = tokenValue(code);
+        def statements = [returnDef*, mapGet(codeMap, "statements")*];
+        <> [
+            codeMap*, name*, formals*,
+            yieldDef: "return",
+            statements: statements
+        ]
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parseFnDef = pegMakeMainSequence(
+    parseFnCommon,
+    pegMakeCode { funcMap ::
+        <> ifTrue { <> mapHasKey(funcMap, "name") }
+            { <> @[fnDef: funcMap] }
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parseFnExpression = pegMakeMainSequence(
+    parseFnCommon,
+    pegMakeCode { funcMap :: <> @[closure: funcMap] },
+    pegMakeChoice(
+        pegMakeSequence(
+            pegMakeCode { funcMap, . :: <> mapGet(funcMap, "name") },
+            pegMakeCode { funcMap, closure, name ::
+                def mainClosure = @[closure: [
+                    statements: [
+                        makeVarDef(name, makeCallName("forwardFunction"))
+                    ],
+                    yield: makeCall(makeVarRef(name), closure)
+                ]];
+
+                <> makeCall(mainClosure)
+            }),
+        pegMakeCode { ., closure :: <> closure }));
 
 # Documented in Samizdat Layer 0 spec.
 def parseInt = pegMakeMainSequence(
@@ -282,7 +355,7 @@ def parseVarDef = pegMakeMainSequence(
     pegMakeToken("="),
     parseExpression,
     pegMakeCode { ., name, ., ex ::
-        <> @[varDef: [name: tokenValue(name), value: ex]]
+        <> makeVarDef(tokenValue(name), ex)
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -332,27 +405,32 @@ def parseCallExpression = pegMakeMainSequence(
     });
 
 # Documented in Samizdat Layer 0 spec.
-def implExpression = parseCallExpression;
+def implExpression = pegMakeChoice(
+    parseCallExpression,
+    parseFnExpression);
 parseExpression(implExpression);
 
 # Documented in Samizdat Layer 0 spec.
-def parseStatement = pegMakeMainSequence(
-    pegMakeChoice(parseVarDef, parseExpression));
+def parseStatement = pegMakeChoice(
+    parseVarDef,
+    parseFnDef,
+    parseExpression);
 
 # Documented in Samizdat Layer 0 spec.
 def parseNonlocalExit = pegMakeMainSequence(
-    pegMakeToken("<"),
-    parseVarRef,
-    pegMakeToken(">"),
     pegMakeChoice(
         pegMakeSequence(
-            parseExpression,
-            pegMakeCode { ., name, ., ex ::
-                <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex))
-            }),
-        pegMakeCode { ., name, . ::
-            <> makeCall(makeVarRef("nonlocalExit"), name)
-        }));
+            pegMakeToken("<"),
+            parseVarRef,
+            pegMakeToken(">"),
+            pegMakeCode { ., n, . :: <> n }),
+        pegMakeSequence(
+            pegMakeToken("return"),
+            pegMakeCode { . :: <> makeVarRef("return") })),
+    pegMakeOpt(parseExpression),
+    pegMakeCode { name, value ::
+        <> makeCallNonlocalExit(name, value*)
+    });
 
 # Documented in Samizdat Layer 0 spec.
 def parseYield = pegMakeMainSequence(
@@ -543,7 +621,7 @@ parseChoicePex(implChoicePex);
 #
 
 # Reports the given list of pending tokens as part of error processing.
-def reportError = { pending ::
+fn reportError(pending) {
     io0Note("Pending tokens:");
 
     listForEach(pending)
@@ -562,7 +640,7 @@ def parseProgramOrError = pegMakeMainSequence(
     pegMakeCode { prog, . :: <> prog });
 
 # Documented in Samizdat Layer 0 spec.
-def sam1Tree = { program ::
+fn sam1Tree(program) {
     def tokens = ifTrue { <> isString(program) }
         { <> sam1Tokenize(program) }
         { <> program };

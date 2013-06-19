@@ -16,12 +16,12 @@ SELF_PATH, ARGS* ::
 #
 
 # Prints out the given value.
-def out = { value ::
+fn out(value) {
     io0Note(format("%q", value))
 };
 
 # Prints out the given value in hex.
-def outHex = { value ::
+fn outHex(value) {
     io0Note(format("%x", value))
 };
 

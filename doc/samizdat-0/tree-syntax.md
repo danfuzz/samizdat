@@ -18,28 +18,42 @@ can be used.
 def LOWER_ALPHA = ["a".."z": true];
 
 # Returns a `call` node.
-def makeCall = { function, actuals* ::
+fn makeCall(function, actuals*) {
     <> @[call: [function: function, actuals: actuals]]
 };
 
+# Returns a `varDef` node.
+fn makeVarDef(name, value) {
+    <> @[varDef: [name: name, value: value]
+};
+
 # Returns a `varRef` node.
-def makeVarRef = { name ::
+fn makeVarRef(name) {
     <> @[varRef: name]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
-def makeCallName = { name, actuals* ::
+fn makeCallName(name, actuals*) {
     <> @[call: [function: makeVarRef(name), actuals: actuals]]
 };
 
 # Returns a `literal` node.
-def makeLiteral = { value ::
+fn makeLiteral(value) {
     <> @[literal: value]
 };
 
 # Returns a `closure` node representing a thunk of an expression.
-def makeThunk = { expression ::
+fn makeThunk(expression) {
     <> @[closure: @[statements: [], yield: expression]];
+};
+
+# Returns a `call` node to a nonlocal exit with the given name and
+# with optional expression value. The expression if supplied is automatically
+# "thunked".
+fn makeCallNonlocalExit(name, expression?) {
+    <> ifValue { <> listFirst(expression) }
+        { ex :: <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+        { <> makeCall(makeVarRef("nonlocalExit"), name) }
 };
 
 # forward declaration: programBody
@@ -135,6 +149,132 @@ def codeOnlyClosure = {/
             { io0Die("Invalid yield definition in code block.") };
         <> c
     }
+/};
+
+# Common parsing for `fn` statements and expressions. The syntax for
+# both is identical, except that the statement form requires that the
+# function be named. The result of this rule is a map identical in form to
+# what's required for a closure payload, except that `name` may also
+# be bound.
+#
+# The result of this rule is suitable for use as a `closure` node
+# payload. And as long as `name` is bound, the result is valid to use
+# as the payload for a `fnDef` node.
+#
+# The translation is along these lines:
+#
+# ```
+# fn <out> name(arg1, arg2) { stat1; stat2 }
+# ```
+#
+# ```
+# { <\"return"> arg1, arg2 ::
+#     def out = \"return";
+#     stat1;
+#     stat2
+# }
+# ```
+#
+# with:
+#
+# * no yield def binding statement if an explicit yield def was not present.
+#
+# * the key `name` bound to the function name, if a name was defined. (This
+#   is not representable in lower-layer surface syntax.)
+def fnCommon = {/
+    @fn
+
+    # This is a variable definition statement which binds the yield def
+    # name to the `return` function, if there is in fact a yield def present.
+    returnDef = (
+        y = yieldDef
+        { <> makeVarDef(y, makeVarRef("return")) }
+    )?
+
+    name = (
+        n = @identifier
+        { <> [name: tokenValue(n)] }
+    |
+        { <> [:] }
+    )
+
+    formals = (
+        @"()"
+        { <> [:] }
+    |
+        @"("
+        f = formalsList
+        @")"
+        { <> f }
+    )
+
+    code = codeOnlyClosure
+
+    {
+        def codeMap = tokenValue(code);
+        def statements = [returnDef*, mapGet(codeMap, "statements")*];
+        <> [
+            codeMap*, name*, formals*,
+            yieldDef: "return",
+            statements: statements
+        ]
+    }
+/};
+
+# Parses a `fn` definition statement. The syntax here is the same as
+# what's recognized by `parseFnCommon`, except that the name is required.
+# We don't error out (terminate the runtime) on a missing name, though, as
+# that just means that we're looking at a legit `fn` expression, which will
+# get successfully parsed by the `expression` alternative of `statement`.
+def fnDef = {/
+    funcMap = fnCommon
+
+    {
+        <> ifTrue { <> mapHasKey(funcMap, "name") }
+            { <> @[fnDef: funcMap] }
+    }
+/};
+
+# Parses a `fn` (function with `return` binding) expression. The translation
+# is as described in `parseFnCommon` (above) if the function is not given a
+# name. If the function *is* given a name, the translation is along the
+# following lines (so as to enable self-recursion):
+#
+# ```
+# fn <out> name(arg1, arg2) { stat1; stat2 }
+# ```
+#
+# =>
+#
+# ```
+# {
+#     def name = forwardFunction();
+#     <> name { <\"return"> arg1, arg2 ::
+#         def out = \"return";
+#         stat1;
+#         stat2
+#     }
+# }()
+# ```
+def fnExpression = {/
+    funcMap = fnCommon
+    closure = { <> @[closure: funcMap] }
+
+    (
+        name = { <> mapGet(funcMap, "name") }
+        {
+            def mainClosure = @[closure: [
+                statements: [
+                    makeVarDef(name, makeCallName("forwardFunction"))
+                ],
+                yield: makeCall(makeVarRef(name), closure)
+            ]];
+
+            <> makeCall(mainClosure)
+        }
+    |
+        { <> closure }
+    )
 /};
 
 def int = {/
@@ -268,7 +408,7 @@ def varDef = {/
     name = @identifier
     @"="
     ex = expression
-    { <> @[varDef: [name: tokenValue(name), value: ex]] }
+    { <> makeVarDef(tokenValue(name), ex) }
 /};
 
 def parenExpression = {/
@@ -279,9 +419,8 @@ def parenExpression = {/
 /};
 
 def atom = {/
-    varRef | int | string |
-    list | emptyMap | map |
-    uniqlet | token | closure | parenExpression
+    varRef | int | string | list | emptyMap | map | uniqlet | token |
+    closure | parenExpression
 /};
 
 def actualsList = {/
@@ -309,24 +448,26 @@ def callExpression = {/
 /};
 
 def expression = {/
-    callExpression
+    callExpression | fnExpression
 /};
 
 def statement = {/
-    varDef | expression
+    varDef | fnDef | expression
 /};
 
 def nonlocalExit = {/
-    @"<"
-    name = varRef
-    @">"
-
-    (
-        ex = expression
-        { <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+    name = (
+        @"<"
+        n = parseVarRef
+        @">"
+        { <> n }
     |
-        { <> makeCall(makeVarRef("nonlocalExit"), name) }
+        @return
+        { <> makeVarRef("return") }
     )
+
+    value = parseExpression?
+    { <> makeCallNonlocalExit(name, value*) }
 /};
 
 def yield = {/

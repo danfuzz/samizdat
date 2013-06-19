@@ -141,13 +141,13 @@ static zvalue tokenizeIdentifier(ParseState *state) {
 
     zvalue string = datStringFromZchars(size, chars);
 
-    if (datEq(string, STR_DEF)) {
-        return TOK_DEF;
-    } else if (datEq(string, STR_FN)) {
-        return TOK_FN;
-    } else {
-        return datTokenFrom(STR_IDENTIFIER, string);
+    switch (chars[0]) {
+        case 'd': { if (datEq(string, STR_DEF))    return TOK_DEF;    break; }
+        case 'f': { if (datEq(string, STR_FN))     return TOK_FN;     break; }
+        case 'r': { if (datEq(string, STR_RETURN)) return TOK_RETURN; break; }
     }
+
+    return datTokenFrom(STR_IDENTIFIER, string);
 }
 
 /**

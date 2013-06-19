@@ -14,7 +14,7 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-def KEYWORDS = [def: @def, fn: @fn];
+def KEYWORDS = [def: @def, fn: @fn, return: @return];
 
 # Documented in Samizdat Layer 0 spec.
 def tokWhitespace = pegMakeMainSequence(
@@ -100,7 +100,7 @@ def INT_CHARS = [
 ];
 
 # Given a decimal digit, returns the digit value.
-def intFromDigitChar = { ch :: <> mapGet(INT_CHARS, tokenType(ch)) };
+fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 
 # Documented in Samizdat Layer 0 spec.
 def tokInt = pegMakeMainSequence(
@@ -155,7 +155,7 @@ def tokFile = pegMakeMainSequence(
 #
 
 # Documented in Samizdat Layer 0 spec.
-def sam1Tokenize = { programText ::
+fn sam1Tokenize(programText) {
     <> pegApply(tokFile, programText)
 };
 
