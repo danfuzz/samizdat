@@ -463,7 +463,7 @@ def nonlocalExit = {/
         { <> n }
     |
         @return
-        { <> "return" }
+        { <> makeVarRef("return") }
     )
 
     value = parseExpression?
