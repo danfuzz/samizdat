@@ -41,7 +41,7 @@ fn readLibraryFile(name) {
 };
 
 # Reads all the library files, returning a map from names to contents.
-def readAllLibraryFiles = {
+fn readAllLibraryFiles() {
     # Use the manifest to figure out what all to read.
     def manifestText = readLibraryFile("manifest.sam0");
     def manifestProgram = sam0Eval(LIBRARY, sam0Tree(manifestText));
@@ -55,7 +55,7 @@ def readAllLibraryFiles = {
 
 # Makes the core library by using this program's parser to parse the library
 # source text.
-def makeCoreLibrary = {
+fn makeCoreLibrary() {
     # Make the core library context that will be used to load the embedded
     # core library. The only difference between this and the original core
     # library is the replacement of `sam0Tree` with `sam1ValidatedTree`.

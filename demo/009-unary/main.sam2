@@ -21,22 +21,22 @@ fn out(value) {
 };
 
 # Something to call.
-def returnVoid = {
+fn returnVoid() {
     # Nothing to see here!
 };
 
 # Something to call.
-def returnString = {
+fn returnString() {
     <> "Fun times!"
 };
 
 # Something to call.
-def returnList = {
+fn returnList() {
     <> [0, 1, 2, 3, [blort: "fizmo"]];
 };
 
 # Something to call.
-def returnMap = {
+fn returnMap() {
     <> [a: "aardvark", b: "bear", cats: [c: "cougar", o: "ocelot"]];
 };
 

@@ -19,7 +19,7 @@ fn out(args*) {
     io0Note(format("Got: %q", args))
 };
 
-def ten = {
+fn ten() {
     <> 10
 };
 

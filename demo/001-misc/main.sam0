@@ -47,7 +47,7 @@ def countDowns = yStarCombinator
 def countDown2 = listNth(countDowns, 0);
 
 # Demo of formal argument repeat modifiers. Also of quoted identifiers.
-def blort = { foo, bar?, \"weird name"?, more* ::
+fn blort(foo, bar?, \"weird name"?, more*) {
     io0Note(format("%q %q %q %q", foo, bar, \"weird name", more))
 };
 
@@ -57,21 +57,21 @@ fn stuff(items+) {
 };
 
 # Demo of reading a sibling file through a sandboxed reader.
-def sibling = {
+fn sibling() {
     def reader = io0SandboxedReader(listButLast(SELF_PATH));
     def text = reader(["sibling.txt"]);
     io0Note(text);
 };
 
 # Demo of nonlocal exit.
-def exiter = { <out> foo ::
+fn <out> exiter(foo) {
     ifTrue { <> eq(foo, 1) }
         { <out> "one" }
         { <out> }
 };
 
 # Demo of `mutableBox`.
-def boxer = {
+fn boxer() {
     def box = mutableBox(10);
 
     listForEach([1, 2, 3]) { ., n :: boxSet(box, iadd(boxGet(box), n)) };

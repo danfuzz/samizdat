@@ -46,7 +46,7 @@ fn diffInt(context, v1, v2) {
 };
 
 # Diffs maps.
-def diffMap = { <out> context, v1, v2 ::
+fn diffMap(context, v1, v2) {
     def size1 = lowSize(v1);
     def size2 = lowSize(v2);
 
@@ -59,7 +59,7 @@ def diffMap = { <out> context, v1, v2 ::
                         {
                             report([context*, key], v1, v2,
                                 "Key mismatch.");
-                            <out> false
+                            return false
                         }
                 };
             <> true
@@ -70,7 +70,7 @@ def diffMap = { <out> context, v1, v2 ::
                     def value2 = mapGet(v2, key);
                     ifFalse
                         { <> innerDiff(context, [key: key], value, value2) }
-                        { <out> false }
+                        { return false }
                 };
             <> true
         }
