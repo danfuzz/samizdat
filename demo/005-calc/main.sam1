@@ -17,7 +17,7 @@ SELF_PATH, ARGS* ::
 
 # Takes an initial value and a list of one-argument functions, and
 # does a reduction by applying each of the functions in order.
-def applyAll = { initialValue, functions ::
+fn applyAll(initialValue, functions) {
     <> listReduce(initialValue, functions)
         { result, ., function :: <> function(result) }
 };
@@ -130,7 +130,7 @@ def evalExpressions = {/
 # Main function
 #
 
-def main = { args* ::
+fn main(args*) {
     def exprString = listReduce("", args)
         { result, ., one :: <> stringAdd(result, one, "\n") };
     pegApply(evalExpressions, exprString);

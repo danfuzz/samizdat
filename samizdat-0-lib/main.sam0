@@ -26,7 +26,7 @@ LIBRARY_FILES ::
 # "Reads" the named library file. Since the files are passed into
 # here in the form of a map binding file names to text contents, this
 # is really just a map lookup.
-def readLibraryFile = { name ::
+fn readLibraryFile(name) {
     <> ifValue { <> mapGet(LIBRARY_FILES, name) }
         { result :: <> result }
         { io0Die(stringAdd("No such core library file: ", name)) }
@@ -36,7 +36,7 @@ def readLibraryFile = { name ::
 # representing both the originally-given context *and* the bindings defined
 # by the named library. Each library file is expected to return a map of
 # bindings that it wishes to export.
-def loadLibrary = { ctx, name ::
+fn loadLibrary(ctx, name) {
     io0Note(stringAdd("    ", name));
 
     # If `metaFunctions` is available, use it to get the proper parser and
@@ -64,7 +64,7 @@ def loadLibrary = { ctx, name ::
 # Loads all of the named libraries, in order, allowing later libraries to
 # depend on earlier ones. The first listed library can depend only on the
 # given context.
-def loadAllLibraries = { ctx, names* ::
+fn loadAllLibraries(ctx, names*) {
     <> listReduce(ctx, names)
         { result, ., name :: <> loadLibrary(result, name) }
 };

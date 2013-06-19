@@ -20,7 +20,7 @@ def INT_CHARS = [
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
-def intBody = { <out> start, value, base ::
+fn intBody(start, value, base) {
     loopReduce(["", value]) { result ::
         def text = listNth(result, 0);
         def value = listNth(result, 1);
@@ -29,7 +29,7 @@ def intBody = { <out> start, value, base ::
                 def digit = mapGet(INT_CHARS, imod(value, base));
                 <> [stringAdd(digit, text), idiv(value, base)];
             }
-            { <out> stringAdd(start, text) }
+            { return stringAdd(start, text) }
     }
 };
 
@@ -41,7 +41,7 @@ def INT_SIGNS = [
 ];
 
 # Stringifies an int using the given base.
-def stringFromIntBase = { int, base ::
+fn stringFromIntBase(int, base) {
     <> mapGet(INT_SIGNS, intSign(int))(int, base)
 };
 
@@ -58,21 +58,21 @@ def CHAR_127 = stringFromInt(127);
 def CHAR_159 = stringFromInt(159);
 
 # Helper for optionally adorning results.
-def adornIf = { adorn, before, value, after ::
+fn adornIf(adorn, before, value, after) {
     <> ifTrue { <> adorn }
         { <> stringAdd(before, value, after) }
         { <> value }
 };
 
 # Stringifies an int.
-def doInt = { int, adorn ::
+fn doInt(int, adorn) {
     <> stringFromIntBase(int, 10)
 };
 
 # Helper for stringifying strings: Returns the hex form for the given
 # character. Assumes it's not passed `0`.
-def stringHexEscape = { ch ::
-    def intHex = { value ::
+fn stringHexEscape(ch) {
+    fn intHex(value) {
         <> ifTrue { <> eq(value, 0) }
             { <> "" }
             {
@@ -95,7 +95,7 @@ def SPECIAL_CHARS = [
 
 # Helper for stringifying strings: Returns the converted form of the
 # given character.
-def stringChar = { ch ::
+fn stringChar(ch) {
     <> ifValue { <> mapGet(SPECIAL_CHARS, ch) }
         { special :: <> special }
         {
@@ -116,7 +116,7 @@ def IDENTIFIER_CHARS = [IDENTIFIER_STARTS*, "0".."9": true];
 
 # Checks to see if the given value is a string with the form of an
 # in-language identifier.
-def isIdentifier = { <out> string ::
+fn isIdentifier(string) {
     <> and
         { <> isString(string) }
         { <> gt(lowSize(string), 0) }
@@ -125,21 +125,21 @@ def isIdentifier = { <out> string ::
             stringForEach(string)
                 { ., ch ::
                     ifFalse { <> mapGet(IDENTIFIER_CHARS, ch, false) }
-                        { <out> false }
+                        { return false }
                 };
             <> true
         }
 };
 
 # Stringifies a string.
-def doString = { string, adorn ::
+fn doString(string, adorn) {
     def body = stringReduce("", string)
         { result, ., ch :: <> stringAdd(result, stringChar(ch)) };
     <> adornIf(adorn, "\"", body, "\"")
 };
 
 # Stringifies a list.
-def doList = { list, adorn ::
+fn doList(list, adorn) {
     def body = listReduce("", list)
         { reduction, ., elem ::
             <> stringAdd(
@@ -152,7 +152,7 @@ def doList = { list, adorn ::
 };
 
 # Stringifies a map.
-def doMap = { map, adorn ::
+fn doMap(map, adorn) {
     def body = mapReduce("", map)
         { reduction, key, value ::
             <> stringAdd(
@@ -179,9 +179,9 @@ def TOKEN_SPECIALS = [
 ];
 
 # Stringifies a token.
-def doToken = { <out> token, adorn ::
+fn doToken(token, adorn) {
     ifValue { <> mapGet(TOKEN_SPECIALS, token) }
-        { string :: <out> string };
+        { string :: return string };
 
     def type = tokenType(token);
     def typeString = ifTrue { <> isIdentifier(type) }
@@ -192,19 +192,19 @@ def doToken = { <out> token, adorn ::
         { <> "" };
 
     ifTrue { <> and { <> isString(type) } { <> eq(valueString, "") } }
-        { <out> adornIf(adorn, "@", typeString, "") };
+        { return adornIf(adorn, "@", typeString, "") };
 
     def result = stringAdd(typeString, valueString);
     <> adornIf(adorn, "@[", result, "]")
 };
 
 # Stringifies a uniqlet.
-def doUniqlet = { uniqlet, . ::
+fn doUniqlet(uniqlet, .) {
     <> "@@"
 };
 
 # Stringifies an unknown value type.
-def doUnknown = { unknown, . ::
+fn doUnknown(unknown, .) {
     <> stringAdd(
         "[(unknown) ",
         callSourceString(lowType(value)),
@@ -224,19 +224,19 @@ def STRINGIFIERS = [
 ];
 
 # Common handler for the two exported variants.
-def sourceStringGeneral = { value, adorn ::
+fn sourceStringGeneral(value, adorn) {
     def stringifier = mapGet(STRINGIFIERS, lowType(value), doUnknown);
     <> stringifier(value, adorn)
 };
 
 # Documented in Samizdat Layer 0 spec.
-def sourceString = { value ::
+fn sourceString(value) {
     <> sourceStringGeneral(value, true)
 };
 callSourceString(sourceString);
 
 # Documented in Samizdat Layer 0 spec.
-def sourceStringUnadorned = { value ::
+fn sourceStringUnadorned(value) {
     <> sourceStringGeneral(value, false)
 };
 
@@ -246,28 +246,28 @@ def sourceStringUnadorned = { value ::
 #
 
 # Gets the current format string position.
-def xFmtAt = { state ::
+fn xFmtAt(state) {
     <> mapGet(state, "fmtAt")
 };
 
 # Peeks at the current format string character.
-def xPeek = { state ::
+fn xPeek(state) {
     <> stringNth(mapGet(state, "fmt"), xFmtAt(state))
 };
 
 # Peeks at the next format string character.
-def xPeek1 = { state ::
+fn xPeek1(state) {
     def at = iadd(1, xFmtAt(state));
     <> stringNth(mapGet(state, "fmt"), at)
 };
 
 # Gets the current argument consumption position.
-def xArgsAt = { state ::
+fn xArgsAt(state) {
     <> mapGet(state, "argsAt")
 };
 
 # Gets the current argument.
-def xArg = { state ::
+fn xArg(state) {
     <> ifValue { <> listNth(mapGet(state, "args"), xArgsAt(state)) }
         { value :: <> value }
         { <> "(missing argument)" }
@@ -275,7 +275,7 @@ def xArg = { state ::
 
 # Performs the standard update of state after processing a `%`,
 # consuming one argument and two format characters.
-def xUsualUpdate = { state ::
+fn xUsualUpdate(state) {
     def argsAt = iadd(1, xArgsAt(state));
     def fmtAt = iadd(2, xFmtAt(state));
 
@@ -283,7 +283,7 @@ def xUsualUpdate = { state ::
 };
 
 # Formats a literal percent.
-def doPercent = { yield, state ::
+fn doPercent(yield, state) {
     yield("%");
 
     def fmtAt = iadd(2, mapGet(state, "fmtAt"));
@@ -291,25 +291,25 @@ def doPercent = { yield, state ::
 };
 
 # Formats a literal quoted argument.
-def doLiteral = { yield, state ::
+fn doLiteral(yield, state) {
     yield(sourceString(xArg(state)));
     <> xUsualUpdate(state)
 };
 
 # Formats a literal quoted argument, without top-level adornment.
-def doUnadornedLiteral = { yield, state ::
+fn doUnadornedLiteral(yield, state) {
     yield(sourceStringUnadorned(xArg(state)));
     <> xUsualUpdate(state)
 };
 
 # Formats a string argument.
-def doPlainString = { yield, state ::
+fn doPlainString(yield, state) {
     yield(xArg(state));
     <> xUsualUpdate(state)
 };
 
 # Formats a hex int argument.
-def doHex = { yield, state ::
+fn doHex(yield, state) {
     yield(stringFromIntBase(xArg(state), 16));
     <> xUsualUpdate(state)
 };
@@ -324,7 +324,7 @@ def FORMATTERS = [
 ];
 
 # Formats a plain character (that is, returns it as-is).
-def doPlain = { yield, state, ch ::
+fn doPlain(yield, state, ch) {
     yield(ch);
 
     def fmtAt = iadd(1, mapGet(state, "fmtAt"));
@@ -332,7 +332,7 @@ def doPlain = { yield, state, ch ::
 };
 
 # Formats an arbitrary escape.
-def doEscape = { yield, state ::
+fn doEscape(yield, state) {
     <> ifValue { <> xPeek1(state) }
         { ch ::
             <> ifValue { <> mapGet(FORMATTERS, ch) }
@@ -343,7 +343,7 @@ def doEscape = { yield, state ::
 };
 
 # Formats a single character out of the format string.
-def formatOne = { yield, state ::
+fn formatOne(yield, state) {
     <> ifValue { <> xPeek(state) }
         { ch ::
             <> ifTrue { <> eq(ch, "%") }
@@ -354,7 +354,7 @@ def formatOne = { yield, state ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def format = { <out> formatString, rest* ::
+fn format(formatString, rest*) {
     def formatter = object(formatOne, [
         fmt:    formatString,
         fmtAt:  0,
@@ -365,7 +365,7 @@ def format = { <out> formatString, rest* ::
     loopReduce("") { result ::
         <> ifValue { <> formatter() }
             { s :: <> stringAdd(result, s) }
-            { <out> result }
+            { return result }
     }
 };
 

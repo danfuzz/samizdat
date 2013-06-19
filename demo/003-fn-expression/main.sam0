@@ -32,10 +32,11 @@ io0Note(func2(20, "twenty"));
 # Recursive call.
 def func3 = fn whee(x) {
     io0Note(format("func3 %q", x));
-    if (x < 5) {
-        whee(x + 1);
-        return "func3"
-    }
+    ifTrue { <> lt(x, 5) }
+        {
+            whee(iadd(x, 1));
+            return "func3"
+        }
 };
 
 io0Note(func3(1));

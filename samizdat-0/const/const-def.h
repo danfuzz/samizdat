@@ -36,6 +36,7 @@ TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
 TOK(DEF,           "def");
 TOK(FN,            "fn");
+TOK(RETURN,        "return");
 
 STR(UP_LIBRARY,       "LIBRARY");
 
@@ -47,6 +48,7 @@ STR(EMPTY,            ""); // The canonical empty string (`""`) value.
 STR(FALSE,            "false");
 STR(FN_DEF,           "fnDef");
 STR(FORMALS,          "formals");
+STR(FORWARD_FUNCTION, "forwardFunction");
 STR(FUNCTION,         "function");
 STR(IDENTIFIER,       "identifier");
 STR(INT,              "int");

@@ -23,12 +23,12 @@ def META_NAME_MAP = [
 #
 
 # Documented in Samizdat Layer 0 spec.
-def makeLibrary = { context ::
+fn makeLibrary(context) {
     <> [context*, LIBRARY: context]
 };
 
 # Documented in Samizdat Layer 0 spec.
-def metaFunctions = { context, fileName ::
+fn metaFunctions(context, fileName) {
     def dotAt = stringReduce(-1, fileName) { result, n, ch ::
         <> ifTrue { <> eq(ch, ".") }
             { <> n }
@@ -54,7 +54,7 @@ def metaFunctions = { context, fileName ::
 };
 
 # Documented in Samizdat Layer 0 spec.
-def samCommandLine = { context, rawArgs* ::
+fn samCommandLine(context, rawArgs*) {
     def parsedArgs = parseArgs0(rawArgs);
     def options = mapGet(parsedArgs, "options");
     def argWords = mapGet(parsedArgs, "args");

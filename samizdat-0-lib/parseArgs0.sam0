@@ -91,7 +91,7 @@ def parseArguments = pegMakeMainSequence(
 #
 
 # Documented in Samizdat Layer 0 spec.
-def parseArgs0 = { args ::
+fn parseArgs0(args) {
     # Make a unified string with each argument "\0"-terminated.
     def argString = listReduce("", args)
         { result, ., arg ::

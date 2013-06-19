@@ -16,42 +16,42 @@ def convertExpression = forwardFunction();
 def convertPex = forwardFunction();
 
 # Does parser conversion of an expression or statement list.
-def convertList = { nodes ::
+fn convertList(nodes) {
     <> listMap(nodes) { ., node :: <> convertExpression(node) }
 };
 
 # Constructs a function call.
-def makeCall = { function, args* ::
+fn makeCall(function, args*) {
     <> @[call: [function: function, actuals: args]]
 };
 
 # Constructs a named function call with the given arguments, each of
 # which must be a (non-parsing) expression node.
-def callNameWithExpressions = { functionName, args* ::
+fn callNameWithExpressions(functionName, args*) {
     <> makeCall(@[varRef: functionName], args*);
 };
 
 # Converts a pex to a named function call of the converted inner pex.
-def callNameWithPex = { node, formals, functionName ::
+fn callNameWithPex(node, formals, functionName) {
     def convertedNode = convertPex(tokenValue(node), formals);
     <> callNameWithExpressions(functionName, convertedNode)
 };
 
 # Constructs a named function call of the given literal arguments.
-def callNameWithLiterals = { functionName, args* ::
+fn callNameWithLiterals(functionName, args*) {
     def literalArgs = listMap(args) { ., arg :: <> @[literal: arg] };
     <> callNameWithExpressions(functionName, literalArgs*)
 };
 
 # Converts a `choice` pex node.
-def convertPexChoice = { node, formals ::
+fn convertPexChoice(node, formals) {
     def pexes = tokenValue(node);
     def convertedPexes = listMap(pexes) { ., pex  :: <> convertPex(pex, formals) };
     <> callNameWithExpressions("pegMakeChoice", convertedPexes*)
 };
 
 # Converts a `sequence` pex node.
-def convertPexSequence = { node, formals ::
+fn convertPexSequence(node, formals) {
     def pexes = tokenValue(node);
 
     # Extract the formals out of any `varDef` nodes.
@@ -74,44 +74,44 @@ def convertPexSequence = { node, formals ::
 };
 
 # Converts a `string` pex node.
-def convertPexString = { node, formals ::
+fn convertPexString(node, formals) {
     <> callNameWithLiterals("pegMakeString", tokenValue(node))
 };
 
 # Converts a `token` pex node.
-def convertPexToken = { node, formals ::
+fn convertPexToken(node, formals) {
     <> callNameWithLiterals("pegMakeToken", tokenValue(node))
 };
 
 # Converts a `varRef` pex node.
-def convertPexVarRef = { node, formals ::
+fn convertPexVarRef(node, formals) {
     # `varRef` in the context of a pex just translates to the same `varRef`
     # in the context of an expression / statement.
     <> node
 };
 
 # Converts a `.` pex node.
-def convertPexDot = { node, formals ::
+fn convertPexDot(node, formals) {
     <> @[varRef: "pegRuleAny"]
 };
 
 # Converts an `()` pex node.
-def convertPexEmpty = { node, formals ::
+fn convertPexEmpty(node, formals) {
     <> @[varRef: "pegRuleEmpty"]
 };
 
 # Converts a `[]` pex node.
-def convertPexSet = { node, formals ::
+fn convertPexSet(node, formals) {
     <> callNameWithLiterals("pegMakeTokenSet", tokenValue(node)*)
 };
 
 # Converts a `[!]` pex node.
-def convertPexSetComplement = { node, formals ::
+fn convertPexSetComplement(node, formals) {
     <> callNameWithLiterals("pegMakeTokenSetComplement", tokenValue(node)*);
 };
 
 # Converts a `{}` pex node.
-def convertPexCode = { node, formals ::
+fn convertPexCode(node, formals) {
     # Use the lexical `formals` context to make a regular closure node,
     # and just convert that.
 
@@ -122,7 +122,7 @@ def convertPexCode = { node, formals ::
 };
 
 # Converts a `&&` pex node.
-def convertPexPredicate = { node, formals ::
+fn convertPexPredicate(node, formals) {
     # This wraps the predicate in code, along these lines:
     #     `{ <> ifTrue { <> PREDICATE_CODE } { <> null } }`
     # Having done that, this calls `convertPexCode` (immediately above)
@@ -141,27 +141,27 @@ def convertPexPredicate = { node, formals ::
 };
 
 # Converts a `&` pex node.
-def convertPexLookaheadSuccess = { node, formals ::
+fn convertPexLookaheadSuccess(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeLookaheadSuccess")
 };
 
 # Converts a `!` pex node.
-def convertPexLookaheadFailure = { node, formals ::
+fn convertPexLookaheadFailure(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeLookaheadFailure")
 };
 
 # Converts a `?` pex node.
-def convertPexOpt = { node, formals ::
+fn convertPexOpt(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeOpt")
 };
 
 # Converts a `*` pex node.
-def convertPexStar = { node, formals ::
+fn convertPexStar(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeStar")
 };
 
 # Converts a `+` pex node.
-def convertPexPlus = { node, formals ::
+fn convertPexPlus(node, formals) {
     <> callNameWithPex(node, formals, "pegMakePlus")
 };
 
@@ -188,19 +188,19 @@ def CONVERT_PEX_MAP = [
 # Dispatches to an appropriate parser node converter. `formals` is the
 # list of lexically bound result names, in order, in the form of `formals`
 # values as defined by the Samizdat Layer 0 tree semanics spec.
-def convertPexImpl = { node, formals ::
+fn convertPexImpl(node, formals) {
     <> mapGet(CONVERT_PEX_MAP, tokenType(node))(node, formals)
 };
 convertPex(convertPexImpl);
 
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
-def convertParser = { node ::
+fn convertParser(node) {
     <> callNameWithPex(node, [], "pegMakeMainSequence")
 };
 
 # Does parser conversion of a `call` node.
-def convertCall = { node ::
+fn convertCall(node) {
     def nodeValue = tokenValue(node);
     def function = convertExpression(mapGet(nodeValue, "function"));
     def actuals = convertList(mapGet(nodeValue, "actuals"));
@@ -209,7 +209,7 @@ def convertCall = { node ::
 };
 
 # Does parser conversion of a `closure` or `fnDef` node.
-def convertClosureLike = { node ::
+fn convertClosureLike(node) {
     def nodeType = tokenType(node);
     def nodeValue = tokenValue(node);
     def statements = convertList(mapGet(nodeValue, "statements"));
@@ -221,14 +221,14 @@ def convertClosureLike = { node ::
 };
 
 # Does parser conversion of an `interpolate` node.
-def convertInterpolate = { node ::
+fn convertInterpolate(node) {
     def value = convertExpression(tokenValue(node));
 
     <> @[interpolate: value];
 };
 
 # Does parser conversion of a `varDef` node.
-def convertVarDef = { node ::
+fn convertVarDef(node) {
     def nodeValue = tokenValue(node);
     def value = convertExpression(mapGet(nodeValue, "value"));
 
@@ -236,7 +236,7 @@ def convertVarDef = { node ::
 };
 
 # Does no-op node conversion.
-def convertNop = { node :: <> node };
+fn convertNop(node) { <> node };
 
 # Map of types to expression/statement node converters.
 def CONVERT_EXPRESSION_MAP = [
@@ -252,7 +252,7 @@ def CONVERT_EXPRESSION_MAP = [
 
 # Iterates / visits the given expression or statement node, transforming
 # parser subtrees into layer 0 function nodes.
-def convertExpressionImpl = { node ::
+fn convertExpressionImpl(node) {
     <> mapGet(CONVERT_EXPRESSION_MAP, tokenType(node))(node)
 };
 convertExpression(convertExpressionImpl);
@@ -263,7 +263,7 @@ convertExpression(convertExpressionImpl);
 #
 
 # Documented in Samizdat Layer 0 spec.
-def sam1Eval = { context, expressionNode ::
+fn sam1Eval(context, expressionNode) {
     def convertedNode = convertExpression(expressionNode);
     <> sam0Eval(context, convertedNode)
 };

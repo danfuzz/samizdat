@@ -12,7 +12,7 @@ READER ::
 def innerDiff = forwardFunction();
 
 # Reports a difference.
-def report = { context, v1, v2, message ::
+fn report(context, v1, v2, message) {
     io0Note(message);
     listForEach(context)
         { ., item ::
@@ -26,7 +26,7 @@ def report = { context, v1, v2, message ::
 };
 
 # Diffs tokens.
-def diffToken = { context, v1, v2 ::
+fn diffToken(context, v1, v2) {
     def type1 = tokenType(v1);
     def type2 = tokenType(v2);
     def has1 = tokenHasValue(v1);
@@ -41,12 +41,12 @@ def diffToken = { context, v1, v2 ::
 };
 
 # Diffs ints.
-def diffInt = { context, v1, v2 ::
+fn diffInt(context, v1, v2) {
     <> report(context, v1, v2, "Different ints.")
 };
 
 # Diffs maps.
-def diffMap = { <out> context, v1, v2 ::
+fn diffMap(context, v1, v2) {
     def size1 = lowSize(v1);
     def size2 = lowSize(v2);
 
@@ -59,7 +59,7 @@ def diffMap = { <out> context, v1, v2 ::
                         {
                             report([context*, key], v1, v2,
                                 "Key mismatch.");
-                            <out> false
+                            return false
                         }
                 };
             <> true
@@ -70,14 +70,14 @@ def diffMap = { <out> context, v1, v2 ::
                     def value2 = mapGet(v2, key);
                     ifFalse
                         { <> innerDiff(context, [key: key], value, value2) }
-                        { <out> false }
+                        { return false }
                 };
             <> true
         }
 };
 
 # Diffs lists.
-def diffList = { context, v1, v2 ::
+fn diffList(context, v1, v2) {
     def size1 = lowSize(v1);
     def size2 = lowSize(v2);
 
@@ -93,12 +93,12 @@ def diffList = { context, v1, v2 ::
 };
 
 # Diffs strings.
-def diffString = { context, v1, v2 ::
+fn diffString(context, v1, v2) {
     <> report(context, v1, v2, "Different strings.")
 };
 
 # Diffs uniqlets.
-def diffUniqlet = { context, v1, v2 ::
+fn diffUniqlet(context, v1, v2) {
     <> report(context, v1, v2, "Different uniqlets.")
 };
 
@@ -113,7 +113,7 @@ def DIFF_FUNCTIONS = [
 ];
 
 # Inner diff. Returns an `eq` result.
-def innerDiffImpl = { context, newContext, v1, v2 ::
+fn innerDiffImpl(context, newContext, v1, v2) {
     def type1 = lowType(v1);
     def type2 = lowType(v2);
     def innerContext = [context*, newContext, type1];
@@ -137,7 +137,7 @@ def innerDiffImpl = { context, newContext, v1, v2 ::
 innerDiff(innerDiffImpl);
 
 # Compares two values structurally, reporting on the differences.
-def diff = { v1, v2 ::
+fn diff(v1, v2) {
     <> innerDiff([], "top", v1, v2)
 };
 

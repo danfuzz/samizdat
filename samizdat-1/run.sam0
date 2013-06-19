@@ -14,7 +14,7 @@ READER ::
 # compares the would-be result with the result of doing the same operation
 # using the samizdat-0 facilities for same, complaining if they're not
 # equal.
-def sam1ValidatedTree = { programText ::
+fn sam1ValidatedTree(programText) {
     # Parse the text using the layer 1 parsers.
     def programNode1 = sam1Tree(programText);
 
@@ -36,12 +36,12 @@ def sam1ValidatedTree = { programText ::
 };
 
 # Reads the named embedded library file.
-def readLibraryFile = { name ::
+fn readLibraryFile(name) {
     <> READER(["samizdat-0-lib", name])
 };
 
 # Reads all the library files, returning a map from names to contents.
-def readAllLibraryFiles = {
+fn readAllLibraryFiles() {
     # Use the manifest to figure out what all to read.
     def manifestText = readLibraryFile("manifest.sam0");
     def manifestProgram = sam0Eval(LIBRARY, sam0Tree(manifestText));
@@ -55,7 +55,7 @@ def readAllLibraryFiles = {
 
 # Makes the core library by using this program's parser to parse the library
 # source text.
-def makeCoreLibrary = {
+fn makeCoreLibrary() {
     # Make the core library context that will be used to load the embedded
     # core library. The only difference between this and the original core
     # library is the replacement of `sam0Tree` with `sam1ValidatedTree`.
@@ -72,7 +72,7 @@ def makeCoreLibrary = {
 # and runs it, passing it an array consisting of its own file path
 # (in standard list-of-string form) followed by the rest of the
 # arguments as-is.
-def run = { args* ::
+fn run(args*) {
     def parsedArgs = parseArgs0(args);
     def allArgs = mapGet(parsedArgs, "args");
     def options = mapGet(parsedArgs, "options");
