@@ -33,7 +33,13 @@ If there are no arguments (including no closure arguments), parentheses are
 required to unambiguously indicate that function application is to be
 performed.
 
-All of the expression to apply and all of the arguments must be non-void.
+As with list literal syntax, an argument whose type is a list can have
+its contents "interpolated" into a function call argument list by following
+the argument with a star. For example, `foo(bar, [1, 2]*)` means the
+same thing as `foo(bar, 1, 2)`. This works for all argument expressions
+(not just literals), so long as the expression evaluates to a list.
+
+The expression to apply and all of the arguments must be non-void.
 
 #### Access collection &mdash; `expression[index, index, ...]`
 
@@ -49,7 +55,7 @@ such a form, it is okay for the indexed elements to not exist, in which case
 the entire expression has a void result. It is *not* okay for a found element
 to not be indexable (resulting in termination of the runtime).
 
-All of the expression to index into and all of the indices must be non-void.
+The expression to index into and all of the indices must be non-void.
 
 **Note:** The difference between `x[y, z]` and `x[y][z]` is that it is not
 an error in the former for `x[y]` to be void, whereas in the latter `x[y]`
