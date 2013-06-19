@@ -48,6 +48,7 @@ STR(EMPTY,            ""); // The canonical empty string (`""`) value.
 STR(FALSE,            "false");
 STR(FN_DEF,           "fnDef");
 STR(FORMALS,          "formals");
+STR(FORWARD_FUNCTION, "forwardFunction");
 STR(FUNCTION,         "function");
 STR(IDENTIFIER,       "identifier");
 STR(INT,              "int");
