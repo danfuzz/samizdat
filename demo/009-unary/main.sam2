@@ -16,7 +16,7 @@ SELF_PATH, ARGS* ::
 #
 
 # Prints out the given value.
-def out = { value ::
+fn out(value) {
     io0Note(format("%q", value))
 };
 

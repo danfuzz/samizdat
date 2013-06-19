@@ -52,7 +52,7 @@ def blort = { foo, bar?, \"weird name"?, more* ::
 };
 
 # Demo of `+` argument repeat modifier.
-def stuff = { items+ ::
+fn stuff(items+) {
     io0Note(format("stuff: %q", items))
 };
 
@@ -79,7 +79,7 @@ def boxer = {
 };
 
 # Emits the stringified version of the given value to the console.
-def process = { value ::
+fn process(value) {
     io0Note(sourceString(value));
 
     # Test of explicit void yield.
@@ -91,7 +91,7 @@ def process = { value ::
 # Main function
 #
 
-def main = { selfPath, name, rest* ::
+fn main(selfPath, name, rest*) {
     # Be welcoming.
 
     ifTrue { <> eq(name, "danfuzz") }

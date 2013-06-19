@@ -14,7 +14,7 @@ READER ::
 # compares the would-be result with the result of doing the same operation
 # using the samizdat-0 facilities for same, complaining if they're not
 # equal.
-def sam1ValidatedTree = { programText ::
+fn sam1ValidatedTree(programText) {
     # Parse the text using the layer 1 parsers.
     def programNode1 = sam1Tree(programText);
 
@@ -36,7 +36,7 @@ def sam1ValidatedTree = { programText ::
 };
 
 # Reads the named embedded library file.
-def readLibraryFile = { name ::
+fn readLibraryFile(name) {
     <> READER(["samizdat-0-lib", name])
 };
 
@@ -72,7 +72,7 @@ def makeCoreLibrary = {
 # and runs it, passing it an array consisting of its own file path
 # (in standard list-of-string form) followed by the rest of the
 # arguments as-is.
-def run = { args* ::
+fn run(args*) {
     def parsedArgs = parseArgs0(args);
     def allArgs = mapGet(parsedArgs, "args");
     def options = mapGet(parsedArgs, "options");
