@@ -217,17 +217,42 @@ static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
 }
 
 /**
+ * Helper for `callClosure`. This is the function that handles emitting
+ * a context string for a call, when dumping the stack.
+ */
+static char *callReporter(void *state) {
+    zvalue defMap = state;
+    zvalue name = datMapGet(defMap, STR_NAME);
+
+    if (name != NULL) {
+        zint nameSize = datUtf8SizeFromString(name);
+        char nameStr[nameSize + 1];
+        datUtf8FromString(nameSize + 1, nameStr, name);
+        return strdup(nameStr);
+    } else {
+        return "(unknown)";
+    }
+}
+
+/**
  * The C function that is bound to in order to execute interpreted code.
  */
 static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
     Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
     CallState callState = { state, closure, argCount, args };
 
+    debugPush(callReporter, closure->defMap);
+
+    zvalue result;
+
     if (datMapGet(closure->defMap, STR_YIELD_DEF) != NULL) {
-        return nleCall(callClosureWithNle, &callState);
+        result = nleCall(callClosureWithNle, &callState);
     } else {
-        return callClosureMain(&callState, NULL);
+        result = callClosureMain(&callState, NULL);
     }
+
+    debugPop();
+    return result;
 }
 
 /**
@@ -301,24 +326,6 @@ static zvalue execClosure(Frame *frame, zvalue closureNode) {
 }
 
 /**
- * Helper for `execCall`. This is the function that handles emitting
- * a context string for a call, when dumping the stack.
- */
-static char *callReporter(void *state) {
-    zvalue expressionNode = state;
-
-    if (datTokenTypeIs(expressionNode, STR_VAR_REF)) {
-        zvalue name = datTokenValue(expressionNode);
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        return strdup(nameStr);
-    } else {
-        return "(unknown)";
-    }
-}
-
-/**
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
@@ -354,10 +361,6 @@ static zvalue execCall(Frame *frame, zvalue call) {
         }
     }
 
-    zvalue result;
-
-    debugPush(callReporter, function);
-
     if (interpolate) {
         zvalue fullArgs[fullCount];
         zint at = 0;
@@ -375,14 +378,10 @@ static zvalue execCall(Frame *frame, zvalue call) {
             }
         }
 
-        result = langCall(functionId, fullCount, fullArgs);
+        return langCall(functionId, fullCount, fullArgs);
     } else {
-        result = langCall(functionId, argCount, args);
+        return langCall(functionId, argCount, args);
     }
-
-    debugPop();
-
-    return result;
 }
 
 /**
