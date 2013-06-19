@@ -20,6 +20,11 @@ def makeCall = { function, actuals* ::
     <> @[call: [function: function, actuals: actuals]]
 };
 
+# Returns a `varDef` node.
+def makeVarDef = { name, value ::
+    <> @[varDef: [name: name, value: value]]
+};
+
 # Returns a `varRef` node.
 def makeVarRef = { name ::
     <> @[varRef: name]
@@ -282,7 +287,7 @@ def parseVarDef = pegMakeMainSequence(
     pegMakeToken("="),
     parseExpression,
     pegMakeCode { ., name, ., ex ::
-        <> @[varDef: [name: tokenValue(name), value: ex]]
+        <> makeVarDef(tokenValue(name), ex)
     });
 
 # Documented in Samizdat Layer 0 spec.
