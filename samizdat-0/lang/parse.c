@@ -142,6 +142,14 @@ static zvalue makeLiteral(zvalue value) {
 }
 
 /**
+ * Constructs a `varDef` node.
+ */
+static zvalue makeVarDef(zvalue name, zvalue value) {
+    zvalue payload = mapFrom2(STR_NAME, name, STR_VALUE, value);
+    return datTokenFrom(STR_VAR_DEF, payload);
+}
+
+/**
  * Constructs a `varRef` node.
  */
 static zvalue makeVarRef(zvalue name) {
@@ -683,8 +691,7 @@ DEF_PARSE(varDef) {
     zvalue expression = PARSE_OR_REJECT(expression);
 
     zvalue name = datTokenValue(identifier);
-    zvalue value = mapFrom2(STR_NAME, name, STR_VALUE, expression);
-    return datTokenFrom(STR_VAR_DEF, value);
+    return makeVarDef(name, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -780,13 +787,36 @@ DEF_PARSE(yield) {
     return PARSE(expression);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(nonlocalExit) {
+/**
+ * Helper for `nonlocalExit`: Parses `@"<" varRef @">"`.
+ */
+DEF_PARSE(nonlocalExit1) {
     MARK();
 
     MATCH_OR_REJECT(CH_LT);
     zvalue name = PARSE_OR_REJECT(varRef);
     MATCH_OR_REJECT(CH_GT);
+
+    return name;
+}
+
+/**
+ * Helper for `nonlocalExit`: Parses `@"return"`.
+ */
+DEF_PARSE(nonlocalExit2) {
+    MARK();
+
+    MATCH_OR_REJECT(RETURN);
+    return makeVarRef(STR_RETURN);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(nonlocalExit) {
+    zvalue name = NULL;
+
+    if (name == NULL) { name = PARSE(nonlocalExit1); }
+    if (name == NULL) { name = PARSE(nonlocalExit2); }
+    if (name == NULL) { return NULL; }
 
     zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
     zvalue actuals = (value == NULL)
