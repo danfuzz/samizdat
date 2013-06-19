@@ -14,7 +14,7 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-def KEYWORDS = [def: @def, fn: @fn];
+def KEYWORDS = [def: @def, fn: @fn, return: @return];
 
 # Documented in Samizdat Layer 0 spec.
 def tokWhitespace = pegMakeMainSequence(
