@@ -441,6 +441,7 @@ DEF_PARSE(identifierString) {
     if (result == NULL) { result = MATCH(IDENTIFIER); }
     if (result == NULL) { result = MATCH(DEF); }
     if (result == NULL) { result = MATCH(FN); }
+    if (result == NULL) { result = MATCH(RETURN); }
     if (result == NULL) { return NULL; }
 
     zvalue value = datTokenValue(result);

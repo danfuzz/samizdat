@@ -36,6 +36,7 @@ TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
 TOK(DEF,           "def");
 TOK(FN,            "fn");
+TOK(RETURN,        "return");
 
 STR(UP_LIBRARY,       "LIBRARY");
 
