@@ -5,7 +5,11 @@ Expression Operators
 --------------------
 
 Samizdat provides many of the same operators found throughout the C family,
-as well as a few new ones.
+as well as a few new ones. In Samizdat, all infix operators are
+left-associative, that is 'x op y op z' is equivalent to `(x op y) op z`.
+
+The following list is ordered from highest (tightest binding) to lowest
+(loosest binding) precedence.
 
 
 ### Postfix Operators (Precedence 7, highest / tightest)
@@ -108,18 +112,109 @@ expression results in an int, and results in the bitwise complement of
 the inner expression's result.
 
 
-### Infix Operators
-
-As is usual for C family languages, infix operators are grouped into
-several precedence layers. The following list is ordered from highest
-(tightest binding) to lowest (loosest binding) precedence.
-
 ### Multiplicative Infix Operators (Precedence 5)
+
+#### Multiplication &mdash; `expression * expression`
+
+This asserts that both expressions result in numbers, and results in the
+product of the two numbers.
+
+#### Division &mdash; `expression / expression`
+
+This asserts that both expressions result in numbers, and results in the
+quotient of the two numbers (first over second).
+
+#### Remainder &mdash; `expression % expression`
+
+This asserts that both expressions result in numbers, and results in the
+remainder after division of the two numbers (first over second).
+
+#### Bitwise shift left &mdash; `expression <<< expression`
+
+This asserts that both expressions result in ints, and results in the
+first one shifted left by the number of bits indicated by the second one.
+If the second expression results in a negative number, this instead becomes
+a right shift.
+
+#### Bitwise shift right &mdash; `expression <<< expression`
+
+This asserts that both expressions result in ints, and results in the
+first one shifted right by the number of bits indicated by the second one.
+If the second expression results in a negative number, this instead becomes
+a left shift.
+
 
 ### Additive Infix Operators (Precedence 4)
 
+#### Addition &mdash; `expression * expression`
+
+This asserts that both expressions result in numbers, and results in the
+sum of the two numbers.
+
+#### Subtraction &mdash; `expression - expression`
+
+This asserts that both expressions result in numbers, and results in the
+difference of the two numbers (first minus second).
+
+#### Bitwise and &mdash; `expression &&& expression`
+
+This asserts that both expressions result in ints, and results in the
+bitwise and of the two numbers.
+
+#### Bitwise or &mdash; `expression ||| expression`
+
+This asserts that both expressions result in ints, and results in the
+bitwise or of the two numbers.
+
+#### Bitwise xor &mdash; `expression ^^^ expression`
+
+This asserts that both expressions result in ints, and results in the
+bitwise xor of the two numbers.
+
+
 ### Comparison Infix Operators (Precedence 3)
 
-### Logical And Operator (Precedence 2)
+Comparisons in Samizdat are chainable: `x < y <= z` is the same as saying
+`(x < y) && (y <= z)` with the additional guarantee that `y` is only
+evaluated once.
 
-### Logical Or Operator (Precedence 1, lowest / loosest)
+#### Same-type comparison &mdash; `== != < > <= >=`
+
+These are the same-type comparison operators. These result in `false` if
+the two expressions are not of the same type. If they *are* of the same
+type, then the comparison result depends on the type.
+
+TODO: Expand on this.
+
+#### Total-order comparison &mdash; `\== \!= \< \> \<= \>=`
+
+These are total-order comparison operators. There is a total ordering of
+values within Samizdat, and these operators' results are based on that
+ordering.
+
+**Note:** This can sometimes have surprising results, e.g. when comparing
+ints and floating point numbers.
+
+TODO: Expand on this.
+
+### Logical And Operator (Precedence 2) &mdash; `expression && expression`
+
+This is a short-circuit logical and. When evaluating this operator, the first
+(left-hand) expression is evaluated. If that results in `false`, then the
+entire expression results in `false`. Otherwise, the second (right-hand)
+expression is evaluated, and its result becomes the result of the outer
+expression.
+
+**Future direction:** Samizdat may switch to a logic model where, for
+the purpose of conditionals, void means false, and non-void means true.
+
+### Logical Or Operator (Precedence 1, lowest / loosest) &mdash; `expression || expression`
+
+This is a short-circuit logical and. When evaluating this operator, the first
+(left-hand) expression is evaluated. If that results in anything but `false`,
+then the entire expression results in that same value. Otherwise, the second
+(right-hand) expression is evaluated, and its result becomes the result of
+the outer expression.
+
+**Future direction:** Samizdat may switch to a logic model where, for
+the purpose of conditionals, void means false, and non-void means true.
