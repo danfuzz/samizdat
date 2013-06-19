@@ -443,7 +443,7 @@ DEF_PARSE(fnCommon1) {
  */
 DEF_PARSE(fnCommon2) {
     zvalue n = MATCH(IDENTIFIER);
-    return mapFrom1(STR_NAME, n);
+    return mapFrom1(STR_NAME, datTokenValue(n));
 }
 
 /**
