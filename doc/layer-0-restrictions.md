@@ -32,12 +32,26 @@ Strings
 Hexadecimal escapes are not recognized in string literals. Parsing of
 these is implemented in Layer 2.
 
+Variable Definition
+-------------------
+
+Only immutable variable definitions (`def name = ...`) are recognized.
+TODO: Mutable variable definitions are implemented in Layer 2.
+
 Operators
 ---------
 
 No expression operators are recognized, unless you count function call
 syntax as an operator. Expression operator syntax is implemented in Layer
 2.
+
+Control Constructs
+------------------
+
+No control expressions are recognized (`if`, `do`, `while`, etc.). These
+are implemented in Layer 2.
+
+**Note:** Function statements and expressions *are* recognized in Layer 0.
 
 Parsing
 -------
