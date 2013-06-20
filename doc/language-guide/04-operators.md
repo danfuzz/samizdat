@@ -84,6 +84,23 @@ it. If the inner expression results in a value, the outer expression results
 in a single-element list of the result. If the inner expression results in
 void, the outer expression results in the empty list.
 
+#### Interpolate list value &mdash; `expression*`
+
+The star postfix operator is the converse of the question mark postfix
+operator (above). It takes an expression whose value must be a list of
+either zero or one element, and results in the lists's sole value or
+void (the latter given the empty list).
+
+It is valid to use this operator to possibly-yield a value (that is, yield
+either a value or void) from a function. Inside expressions, it is only
+valid to use it to extract the sole value from a single-element list
+(since void expressions aren't valid other than at yield points).
+
+**Note:** A postfix star expression as an element of a function call
+argument list, as a list literal element, or as a map literal key has
+a slightly different (but related) meaning. See the documentation on
+those constructs for more details.
+
 
 ### Prefix Operators (Precedence 6)
 
