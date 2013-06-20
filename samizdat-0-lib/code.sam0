@@ -15,21 +15,25 @@
 fn forwardFunction() {
     def box = yieldBox();
 
+    fn doForward(optFunction?, args*) {
+        ifTrue { <> eq(optFunction, []) }
+            { io0Die("Attempt to forward to void.") };
+        ifTrue { <> ne(args, []) }
+            { io0Die("Attempt to forward too many arguments.") };
+
+        def function = listFirst(optFunction);
+
+        ifFalse { <> isUniqlet(function) }
+            { io0Die("Attempt to forward to non-function.") };
+
+        boxSet(box, function);
+        <> function
+    };
+
     fn forwarder(args*) {
         <> ifValue { <> boxGet(box) }
             { function :: <> function(args*) }
-            {
-                <> ifValue { <> listFirst(args) }
-                    { function ::
-                        ifTrue { <> ne(lowSize(args), 1) }
-                            { io0Die("Attempt to forward too many arguments.") };
-                        ifFalse { <> isUniqlet(function) }
-                            { io0Die("Attempt to forward to non-function.") };
-                        boxSet(box, function);
-                        <> function
-                    }
-                    { io0Die("Attempt to forward to void.") }
-            }
+            { <> doForward(args*) }
     };
 
     <> forwarder
