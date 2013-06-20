@@ -216,9 +216,12 @@ such a function "returns void" or "returns a void result".
 Unlike some languages (notably JavaScript), it is invalid to try to
 assign the void non-value (`undefined` is the JavaScript equivalent)
 to a variable or to pass it as a parameter to some other
-function. However, the Samizdat library provides the `ifValue` and `ifVoid`
-functions to let code act sensibly when it needs to call a function but
-doesn't know up-front whether or not it will yield a value.
+function. However, the Samizdat library provides several facilities
+to help deal with cases where code needs to act sensibly without
+knowing up-front whether or not a given expression will yield a value.
+The facilities include the `ifValue` and `ifVoid` library functions,
+the question mark (`?`) postfix operator, and argument and list element
+interpolation.
 
 **Note:** When describing functions in this (and related) documents,
 a void result is written `!.`, which can be read as "not anything"

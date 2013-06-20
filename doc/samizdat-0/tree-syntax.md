@@ -458,7 +458,7 @@ def statement = {/
 def nonlocalExit = {/
     name = (
         @"<"
-        n = parseVarRef
+        n = varRef
         @">"
         { <> n }
     |
@@ -466,14 +466,14 @@ def nonlocalExit = {/
         { <> makeVarRef("return") }
     )
 
-    value = parseExpression?
+    value = listElement?
     { <> makeCallNonlocalExit(name, value*) }
 /};
 
 def yield = {/
     @"<>"
     (
-        ex = expression
+        ex = listElement
         { <> [yield: ex] }
     |
         { <> [:] }

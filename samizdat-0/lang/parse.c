@@ -897,7 +897,7 @@ DEF_PARSE(yield) {
     MARK();
 
     MATCH_OR_REJECT(CH_DIAMOND);
-    return PARSE(expression);
+    return PARSE(listElement);
 }
 
 /**
@@ -931,7 +931,7 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { name = PARSE(nonlocalExit2); }
     if (name == NULL) { return NULL; }
 
-    zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
+    zvalue value = PARSE(listElement); // It's okay for this to be `NULL`.
     zvalue actuals = (value == NULL)
         ? listFrom1(name) : listFrom2(name, makeThunk(value));
 
