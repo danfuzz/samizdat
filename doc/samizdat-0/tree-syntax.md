@@ -297,21 +297,9 @@ def identifierString = {/
     }
 /};
 
-def listElement = {/
-    ex = expression
-
-    (
-        @".."
-        end = expression
-        { <> @[interpolate: makeCallName("makeRange", ex, end)] }
-    |
-        { <> ex }
-    )
-/};
-
 def unadornedList = {/
-    first = listElement
-    rest = (@"," listElement)*
+    first = expression
+    rest = (@"," expression)*
     { <> [first, rest*] }
 |
     { <> [] }
@@ -339,7 +327,7 @@ def mapping = {/
         @":"
         { <> k }
     |
-        k = listElement
+        k = expression
         @":"
         { <> k }
     )
@@ -427,17 +415,6 @@ def actualsList = {/
     closure+
 /};
 
-def callExpression = {/
-    base = atom
-    actualsLists = actualsList*
-
-    {
-        <> listReduce(base, actualsLists) { result, ., list ::
-            <> makeCall(result, list*)
-        }
-    }
-/};
-
 def postfixOperator = {/
     actuals = actualsList
     { <> { node :: <> makeCall(node, actuals*) } }
@@ -456,8 +433,22 @@ def unaryExpression = {/
     }
 /};
 
+def infixExpression {/
+    first = unaryExpression
+    rest = (
+        @".."
+        ex = unaryExpression
+        { <> { node :: @[interpolate: makeCallName("makeRange", node, ex)] } }
+    )*
+
+    {
+        <> listReduce(first, rest)
+            { result, ., postfix :: <> postfix(result) }
+    }
+/};
+
 def expression = {/
-    unaryExpression | fnExpression
+    infixExpression | fnExpression
 /};
 
 def statement = {/
@@ -475,14 +466,14 @@ def nonlocalExit = {/
         { <> makeVarRef("return") }
     )
 
-    value = listElement?
+    value = expression?
     { <> makeCallNonlocalExit(name, value*) }
 /};
 
 def yield = {/
     @"<>"
     (
-        ex = listElement
+        ex = expression
         { <> [yield: ex] }
     |
         { <> [:] }
