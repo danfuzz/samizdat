@@ -1,0 +1,37 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# If clause demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper functions
+#
+
+fn out(string) {
+    io0Note(format("Got: %q", string))
+};
+
+#
+# Main tests
+#
+
+out("");
+out("a");
+out("blort");
+out("\0");
+out("\n");
+out("\"");
+out("\\");
+out("\x0;");
+out("Hello \x46,75,7a,7a;");
+out("\x1_f612;");
+
+<> 0
