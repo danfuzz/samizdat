@@ -50,14 +50,18 @@ backslash-quoted escapes are recognized:
 * `\n` &mdash; newline (Unicode U+0010).
 * `\0` &mdash; the null character (Unicode U+0000).
 * `\xNNNN;` &mdash; arbitrary character escape. `NNNN` represents one
-  or more hexadecimal digits.
+  or more hexadecimal digits. Additional adjacent hexadecimal character
+  specifiers can be included by separating them with commas. As with int
+  literals, underscores are ignored and may be used for readability.
 
 ```
 ""                            # the empty string
 "Hello, Самиздат!"
 "\"blort\" -- potion that enables one to see in the dark.\n"
 "fizmo"
-"\x1f612;"                    # same as "😒"
+"\x0;"                        # same as "\0"
+"\x46,75,7a,7a;"              # same as "Fuzz"
+"\x1_f612;"                   # same as "😒"
 ```
 
 
