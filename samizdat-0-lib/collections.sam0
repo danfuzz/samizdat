@@ -61,16 +61,16 @@ fn genericMap(nthFunc, function) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn <out> listButFirst(list, notFound?) {
+fn listButFirst(list, notFound?) {
     <> ifTrue { <> eq(list, []) }
-        { <> out(notFound*) }
+        { <> notFound* }
         { <> listSlice(list, 1) }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn <out> listButLast(list, notFound?) {
+fn listButLast(list, notFound?) {
     <> ifTrue { <> eq(list, []) }
-        { <> out(notFound*) }
+        { <> notFound* }
         { <> listSlice(list, 0, isub(lowSize(list), 1)) }
 };
 
