@@ -136,7 +136,7 @@ expression results in an int, and results in the bitwise complement of
 the inner expression's result.
 
 
-### Range Operator (Precedence 6) &mdash; `expression .. expression`
+### Range Operator (Precedence 6) &mdash; `expression..expression`
 
 This indicates a range of values of ints or characters. The two expressions
 must be of the same type, either ints or strings. If strings, the expressions
