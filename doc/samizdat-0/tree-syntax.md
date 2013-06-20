@@ -435,7 +435,11 @@ def rangeExpression {/
     ops = (
         @".."
         ex = unaryExpression
-        { <> { node :: @[interpolate: makeCallName("makeRange", node, ex)] } }
+        {
+            <> { node ::
+                <> @[interpolate: makeCallName("makeRange", node, ex)]
+            }
+        }
     )*
 
     { <> listReduce(base, ops) { result, ., op :: <> op(result) } }
