@@ -6,28 +6,6 @@
 # Code functions
 #
 
-#
-# Helper functions
-#
-
-# Object implementation function used by `forwardFunction`.
-fn forwardFunctionImpl(yield, state, args*) {
-    <> ifTrue { <> eq(state, null) }
-        {
-            <> ifValue { <> listFirst(args) }
-                { function ::
-                    ifTrue { <> ne(lowSize(args), 1) }
-                        { io0Die("Attempt to forward too many arguments.") };
-                    ifFalse { <> isUniqlet(function) }
-                        { io0Die("Attempt to forward to non-function.") };
-                    yield();
-                    <> function;
-                }
-                { io0Die("Attempt to forward to void.") }
-        }
-        { yield(state) }
-};
-
 
 #
 # Exported functions
@@ -35,13 +13,26 @@ fn forwardFunctionImpl(yield, state, args*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn forwardFunction() {
-    def forwardObject = object(forwardFunctionImpl, null);
+    def box = mutableBox();
 
-    <> { args* ::
-        <> ifValue { <> forwardObject(args*) }
+    fn forwarder(args*) {
+        <> ifValue { <> boxGet(box) }
             { function :: <> function(args*) }
-            { <> listFirst(args) }
-    }
+            {
+                <> ifValue { <> listFirst(args) }
+                    { function ::
+                        ifTrue { <> ne(lowSize(args), 1) }
+                            { io0Die("Attempt to forward too many arguments.") };
+                        ifFalse { <> isUniqlet(function) }
+                            { io0Die("Attempt to forward to non-function.") };
+                        boxSet(box, function);
+                        <> function
+                    }
+                    { io0Die("Attempt to forward to void.") }
+            }
+    };
+
+    <> forwarder
 };
 
 # Documented in Samizdat Layer 0 spec.
