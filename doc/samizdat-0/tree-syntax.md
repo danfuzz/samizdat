@@ -425,30 +425,24 @@ def postfixOperator = {/
 
 def unaryExpression = {/
     base = atom
-    postfixes = postfixOperator*
+    ops = postfixOperator*
 
-    {
-        <> listReduce(base, postfixes)
-            { result, ., postfix :: <> postfix(result) }
-    }
+    { <> listReduce(base, ops) { result, ., op :: <> op(result) } }
 /};
 
-def infixExpression {/
-    first = unaryExpression
-    rest = (
+def rangeExpression {/
+    base = unaryExpression
+    ops = (
         @".."
         ex = unaryExpression
         { <> { node :: @[interpolate: makeCallName("makeRange", node, ex)] } }
     )*
 
-    {
-        <> listReduce(first, rest)
-            { result, ., postfix :: <> postfix(result) }
-    }
+    { <> listReduce(base, ops) { result, ., op :: <> op(result) } }
 /};
 
 def expression = {/
-    infixExpression | fnExpression
+    rangeExpression | fnExpression
 /};
 
 def statement = {/
