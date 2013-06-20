@@ -79,7 +79,8 @@ either both ints or both single-character strings.
 
 The contents of other lists can be "interpolated" into a list (that is,
 have their elements become elements of the result) by placing a `*`
-after the inner list.
+after the inner list. A void (non-valued) expression result counts as an
+empty list for the purposes of interpolation.
 
 ```
 []                            # the empty list
