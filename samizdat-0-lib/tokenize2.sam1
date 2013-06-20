@@ -33,6 +33,15 @@ def KEYWORDS = listReduce([:],
       "if", "import", "module", "return", "switch", "var", "while" ])
     { result, ., name :: <> [result*, (name): @[(name)]] };
 
+# Converts a list of digit values into an int, given the base.
+fn intFromDigitList(base, digits) {
+    <> listReduce(0, digits) { result, ., digit ::
+        <> ifTrue { <> eq(digit, -1) }
+            { <> result }
+            { <> iadd(imul(result, base), digit) }
+    }
+};
+
 
 #
 # Grammar rules
@@ -91,6 +100,55 @@ def tokPunctuation = {/
     )
 /};
 
+# Parses a single binary digit (or spacer), returning its value.
+def tokBinDigit = {/
+    ch = ["_01"]
+    { <> intFromDigitChar(ch) }
+/};
+
+# Parses a single decimal digit (or spacer), returning its value.
+def tokDecDigit = {/
+    ch = ["_" "0".."9"]
+    { <> intFromDigitChar(ch) }
+/};
+
+# Parses a single hexadecimal digit (or spacer), returning its value.
+def tokHexDigit = {/
+    ch = ["_" "0".."9" "a".."f" "A".."F"]
+    { <> intFromDigitChar(ch) }
+/};
+
+# Parses an integer literal.
+def tokInt = {/
+    base = (
+        "0x" { <> 16 }
+    |
+        "0b" { <> 2 }
+    |
+        { <> 10 }
+    )
+
+    digits = (
+        &&(eq(base, 10))
+        tokDecDigit+
+    |
+        &&(eq(base, 16))
+        tokHexDigit+
+    |
+        &&(eq(base, 2))
+        tokBinDigit+
+    )
+
+    { <> @[int: intFromDigitList(base, digits)] }
+/};
+
+# Parses a single hexadecimal character. This is called during `\x...;`
+# parsing.
+def tokHexChar = {/
+    digits = tokHexDigit+
+    { <> stringFromInt(intFromDigitList(16, digits)) }
+/};
+
 # Parses a single character, inside a quoted string.
 def tokStringChar = {/
     (
@@ -105,6 +163,16 @@ def tokStringChar = {/
             "\"" { <> "\"" } |
             "n"  { <> "\n" } |
             "0"  { <> "\0" }
+        |
+            "x"
+            (
+                first = tokHexChar
+                more = ("," tokHexChar)*
+                ";"
+                { <> stringAdd(first, more*) }
+            |
+                { <> @[error: "Invalid hexadecimal character literal."] }
+            )
         )
     )
 /};
@@ -139,37 +207,6 @@ def tokQuotedIdentifier = {/
     "\\"
     s = tokString
     { <> @[identifier: tokenValue(s)] }
-/};
-
-# Parses an integer literal.
-def tokInt = {/
-    base = (
-        "0x" { <> 16 }
-    |
-        "0b" { <> 2 }
-    |
-        { <> 10 }
-    )
-
-    digits = (
-        &&(eq(base, 10))
-        (ch=["_" "0".."9"] { <> intFromDigitChar(ch) })+
-    |
-        &&(eq(base, 16))
-        (ch=["_" "0".."9" "a".."f" "A".."F"] { <> intFromDigitChar(ch) })+
-    |
-        &&(eq(base, 2))
-        (ch=["_01"] { <> intFromDigitChar(ch) })+
-    )
-
-    {
-        def value = listReduce(0, digits) { result, ., digit ::
-            <> ifTrue { <> eq(digit, -1) }
-                { <> result }
-                { <> iadd(imul(result, base), digit) }
-        };
-        <> @[int: value]
-    }
 /};
 
 # "Parses" an unrecognized character. This also consumes any further characters
