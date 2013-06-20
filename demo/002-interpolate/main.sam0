@@ -23,6 +23,13 @@ fn ten() {
     <> 10
 };
 
+fn yieldTest(x) {
+    <> x*
+};
+
+fn nonlocalTest(x) {
+    return x*
+};
 
 #
 # Main tests
@@ -40,5 +47,21 @@ out(["a".."z"]);
 out(["0".."9": "woo"]);
 out([["f", "u", "z"]*: "muffins"]);
 out([:, [0..6: "blort"]*, [5..9: "fizmo"]*]);
+
+ifValue { <> yieldTest([]) }
+    { value :: <> out(value) }
+    { out("void") };
+
+ifValue { <> nonlocalTest([]) }
+    { value :: <> out(value) }
+    { out("void") };
+
+ifValue { <> yieldTest(["blort"]) }
+    { value :: <> out(value) }
+    { out("void") };
+
+ifValue { <> nonlocalTest(["fizmo"]) }
+    { value :: <> out(value) }
+    { out("void") };
 
 <> 0

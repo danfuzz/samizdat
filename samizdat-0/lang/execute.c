@@ -206,7 +206,30 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
 
     // Evaluate the yield expression if present, and return the final
     // result.
-    return (yield == NULL) ? NULL : execExpressionVoidOk(&frame, yield);
+
+    if (yield == NULL) {
+        return NULL;
+    } else if (datTokenTypeIs(yield, STR_INTERPOLATE)) {
+        zvalue result = execExpression(&frame, datTokenValue(yield));
+        if (result == NULL) {
+            die("Attempt to yield-interpolate void.");
+        } else if (!datTypeIs(result, DAT_LIST)) {
+            die("Attempt to yield-interpolate non-list.");
+        }
+
+        zint size = datSize(result);
+        switch (size) {
+            case 0: {
+                return NULL;
+            }
+            case 1: {
+                return datListNth(result, 0);
+            }
+        }
+        die("Attempt to yield-interpolate multiple values.");
+    } else {
+        return execExpressionVoidOk(&frame, yield);
+    }
 }
 
 /**
@@ -349,11 +372,15 @@ static zvalue execCall(Frame *frame, zvalue call) {
         zvalue one = datListNth(actuals, i);
         if (datTokenTypeIs(one, STR_INTERPOLATE)) {
             zvalue eval = execExpression(frame, datTokenValue(one));
-            if (!datTypeIs(eval, DAT_LIST)) {
-                die("Attempt to interpolate non-list.");
+            if (eval == NULL) {
+                die("Attempt to interpolate void.");
+            } else {
+                if (!datTypeIs(eval, DAT_LIST)) {
+                    die("Attempt to interpolate non-list.");
+                }
+                args[i] = eval;
+                fullCount += datSize(eval);
             }
-            args[i] = eval;
-            fullCount += datSize(eval);
             interpolate = true;
         } else {
             args[i] = execExpression(frame, one);

@@ -529,7 +529,7 @@ def parseNonlocalExit = forwardFunction();
 def parseYield = {/
     @"<>"
     (
-        ex = parseExpression
+        ex = parseListElement
         { <> [yield: ex] }
     |
         { <> [:] }
@@ -784,7 +784,7 @@ def implNonlocalExit = {/
     )
 
     value = (
-        ex = parseExpression
+        ex = parseListElement
         {
             # The test for a valued `continue` is done explicitly here way
             # (rather than just letting the rule fail) in order to make the
