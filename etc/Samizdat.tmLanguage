@@ -63,7 +63,7 @@
 					<key>name</key>
 					<string>constant.character.escape</string>
 					<key>match</key>
-					<string>\\([0nrt\\"]|x.*;)</string>
+					<string>\\([0nrt\\"]|x[0-9a-fA-F,_]*;?)</string>
 				</dict>
 			</array>
 		</dict>
