@@ -204,10 +204,8 @@ def parseFnExpression = pegMakeMainSequence(
             pegMakeCode { funcMap, . :: <> mapGet(funcMap, "name") },
             pegMakeCode { funcMap, closure, name ::
                 def mainClosure = @[closure: [
-                    statements: [
-                        makeVarDef(name, makeCallName("forwardFunction"))
-                    ],
-                    yield: makeCall(makeVarRef(name), closure)
+                    statements: [@[fnDef: funcMap]],
+                    yield: makeVarRef(name)
                 ]];
 
                 <> makeCall(mainClosure)

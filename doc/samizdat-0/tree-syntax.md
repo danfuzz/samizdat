@@ -241,19 +241,15 @@ def fnDef = {/
 # following lines (so as to enable self-recursion):
 #
 # ```
-# fn <out> name(arg1, arg2) { stat1; stat2 }
+# fn <out> name ...
 # ```
 #
 # =>
 #
 # ```
 # {
-#     def name = forwardFunction();
-#     <> name { <\"return"> arg1, arg2 ::
-#         def out = \"return";
-#         stat1;
-#         stat2
-#     }
+#     fn <out> name ...;
+#     <> name
 # }()
 # ```
 def fnExpression = {/
@@ -264,10 +260,8 @@ def fnExpression = {/
         name = { <> mapGet(funcMap, "name") }
         {
             def mainClosure = @[closure: [
-                statements: [
-                    makeVarDef(name, makeCallName("forwardFunction"))
-                ],
-                yield: makeCall(makeVarRef(name), closure)
+                statements: [@[fnDef: funcMap]],
+                yield: makeVarRef(name)
             ]];
 
             <> makeCall(mainClosure)

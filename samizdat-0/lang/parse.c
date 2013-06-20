@@ -520,12 +520,9 @@ DEF_PARSE(fnExpression) {
         STR_CLOSURE,
         mapFrom2(
             STR_STATEMENTS,
-            listFrom1(
-                makeVarDef(
-                    name,
-                    makeCall(makeVarRef(STR_FORWARD_FUNCTION), NULL))),
+            listFrom1(datTokenFrom(STR_FN_DEF, funcMap)),
             STR_YIELD,
-            makeCall(makeVarRef(name), listFrom1(closure))));
+            makeVarRef(name)));
 
     return makeCall(mainClosure, NULL);
 }
