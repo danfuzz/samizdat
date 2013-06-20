@@ -207,29 +207,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // Evaluate the yield expression if present, and return the final
     // result.
 
-    if (yield == NULL) {
-        return NULL;
-    } else if (datTokenTypeIs(yield, STR_INTERPOLATE)) {
-        zvalue result = execExpression(&frame, datTokenValue(yield));
-        if (result == NULL) {
-            die("Attempt to yield-interpolate void.");
-        } else if (!datTypeIs(result, DAT_LIST)) {
-            die("Attempt to yield-interpolate non-list.");
-        }
-
-        zint size = datSize(result);
-        switch (size) {
-            case 0: {
-                return NULL;
-            }
-            case 1: {
-                return datListNth(result, 0);
-            }
-        }
-        die("Attempt to yield-interpolate multiple values.");
-    } else {
-        return execExpressionVoidOk(&frame, yield);
-    }
+    return (yield == NULL) ? NULL : execExpressionVoidOk(&frame, yield);
 }
 
 /**
@@ -422,6 +400,33 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
 }
 
 /**
+ * Executes an `interpolate` form.
+ */
+static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
+    datTokenAssertType(interpolate, STR_INTERPOLATE);
+
+    zvalue result = execExpressionVoidOk(frame, datTokenValue(interpolate));
+
+    if (result == NULL) {
+        die("Attempt to interpolate void.");
+    } else if (!datTypeIs(result, DAT_LIST)) {
+        die("Attempt to interpolate non-list.");
+    }
+
+    zint size = datSize(result);
+    switch (size) {
+        case 0: {
+            return NULL;
+        }
+        case 1: {
+            return datListNth(result, 0);
+        }
+    }
+
+    die("Attempt to interpolate multiple values.");
+}
+
+/**
  * Executes an `expression` form, with the result possibly being
  * `void` (represented as `NULL`).
  */
@@ -434,6 +439,8 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         return execCall(frame, e);
     else if (datTokenTypeIs(e, STR_CLOSURE))
         return execClosure(frame, e);
+    else if (datTokenTypeIs(e, STR_INTERPOLATE))
+        return execInterpolate(frame, e);
     else {
         die("Invalid expression type.");
     }
