@@ -301,9 +301,6 @@ def listElement = {/
     ex = expression
 
     (
-        @"*"
-        { <> @[interpolate: ex] }
-    |
         @".."
         end = expression
         { <> @[interpolate: makeCallName("makeRange", ex, end)] }
@@ -441,8 +438,26 @@ def callExpression = {/
     }
 /};
 
+def postfixOperator = {/
+    actuals = actualsList
+    { <> { node :: <> makeCall(node, actuals*) } }
+|
+    @"*"
+    { <> { node :: <> @[interpolate: node] } }
+/};
+
+def unaryExpression = {/
+    base = atom
+    postfixes = postfixOperator*
+
+    {
+        <> listReduce(base, postfixes)
+            { result, ., postfix :: <> postfix(result) }
+    }
+/};
+
 def expression = {/
-    callExpression | fnExpression
+    unaryExpression | fnExpression
 /};
 
 def statement = {/
