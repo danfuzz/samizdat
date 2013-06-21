@@ -49,6 +49,7 @@ Operators
 
 The only operators regognized in Layer 0 are:
 
+* `-expr` &mdash; Unary negation, strictly limited to operating on ints.
 * `expr*` &mdash; Interpolation.
 * `expr..expr` &mdash; Ranges.
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
