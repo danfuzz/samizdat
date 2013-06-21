@@ -1,0 +1,38 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Int literal demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper functions
+#
+
+fn out(string) {
+    io0Note(format("Got: %q", string))
+};
+
+#
+# Main tests
+#
+
+out(0);
+out(-9);
+out(20);
+out(1_234_452);
+out(0x1234abcd);            # Decimal 305441741.
+out(0x-_ABCDEF);            # Decimal -11259375.
+out(0b0);
+out(0b1);
+out(0b-1);
+out(0b-11);                 # Decimal -3.
+out(0b1011_0111_1110_1111); # Decimal 47087.
+
+<> 0
