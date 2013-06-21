@@ -1,0 +1,117 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Entity map converter
+#
+# This program accepts the `entity-map.txt` file as input, outputting a
+# (very large) map literal corresponding to its contents.
+#
+
+SELF_PATH, ARGS* ::
+
+# Map from hex digit strings to values.
+def DIGIT_CHARS = [
+    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
+    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
+    "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15
+];
+
+# Parses the end of a line, which consists of any number of spaces, optionally
+# followed by a comment, and finally followed by a newline.
+def parLineEnd = {/
+    " "*
+    ("#" [! "\n"]*)?
+    "\n"
+/};
+
+# Parses a comma, optionally surrounded by whitespace.
+def parComma = {/
+    " "*
+    ","
+    " "*
+/};
+
+# Parses a single code point, yielding a single-character string.
+def parCodePoint = {/
+    " "*
+    "U+"
+    digits = (
+        ch = ["0".."9" "A".."F"]
+        { <> DIGIT_CHARS[tokenType(ch)] }
+    )+
+
+    {
+        def value = 65;
+        # TODO: Why is the following not parsing successfully?
+        #def value = listReduce(0, digits)
+        #    { result, ., digit :: <> result * 16 + digit };
+        <> stringFromInt(value)
+    }
+/};
+
+# Parses a list of code points, yielding a combined string.
+def parCodePoints = {/
+    codes = parCodePoint+
+    { <> stringAdd(codes*) }
+/};
+
+# Parses an entry description.
+def parDescription = {/
+    [! ",\n"]*
+/};
+
+# Parses an entity name.
+def parName = {/
+    chars = ["a".."z" "A".."Z" "0".."9" "."]+
+    { <> stringFromTokenList(chars) }
+/};
+
+# Parses a single content line.
+def parContentLine = {/
+    string = parCodePoints
+    parComma
+    parDescription
+    names = (parComma parName)+
+    {
+        # TODO.
+        io0Note(format("%q = %q", names, string));
+        <> [names*: string]
+    }
+/};
+
+# Parses the entire file.
+def parFile = {/
+    lines = (
+        # Skip empty lines.
+        parLineEnd*
+        parContentLine
+    )*
+
+    # Skip trailing empty lines.
+    parLineEnd*
+
+    (
+        extras = [! "\n"]+
+        {
+            def string = stringFromTokenList(extras);
+            io0Die(format("Unexpected line: %q", string))
+        }
+    )?
+
+    {
+        def result = mapAdd(lines*);
+        io0Note("\nRESULT\n");
+        io0Note(format("%q", result));
+        <> result
+    }
+/};
+
+def path = [listButLast(SELF_PATH)*, "entity-map.txt"];
+io0Note(format("Processing file: %q", path));
+
+def text = io0ReadFileUtf8(path);
+def result = pegApply(parFile, text);
+
+<> 0
