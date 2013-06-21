@@ -35,6 +35,6 @@ out("\\");
 out("\x0;");
 out("Hello \x46,75,7a,7a;");
 out("\x1_F612;");
-out("\&zigarr;");
+out("\&zigrarr;");
 
 <> 0
