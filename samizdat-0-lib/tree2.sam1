@@ -658,7 +658,7 @@ def parseParserSetString = {/
             <> ifTrue { <> eq(lowSize(endValue), 1) }
                 { <> intFromString(endValue) }
         }
-        {
+        { <out> ::
             loopReduce([startInt, ""]) { result ::
                 def at = listFirst(result);
                 def soFar = listLast(result);
