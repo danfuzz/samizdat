@@ -417,7 +417,7 @@ def actualsList = {/
 
 def prefixOperator = {/
     @"-"
-    { <> { node :: <> makeCallName("unary-", node) } }
+    { <> { node :: <> makeCallName("ineg", node) } }
 /};
 
 def postfixOperator = {/
