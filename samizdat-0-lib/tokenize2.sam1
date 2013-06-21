@@ -153,6 +153,16 @@ def tokHexChar = {/
     { <> stringFromInt(intFromDigitList(16, digits)) }
 /};
 
+# Parses a single entity-named character. This is called during `\&...;`
+# parsing.
+def tokNamedChar = {/
+    chars = ["a".."z" "A".."Z" "0".."9" "."]+
+    {
+        def name = stringFromTokenList(chars);
+        <> mapGet(ENTITY_MAP, name)
+    }
+/};
+
 # Parses a single character, inside a quoted string.
 def tokStringChar = {/
     (
@@ -166,6 +176,8 @@ def tokStringChar = {/
             "\\" { <> "\\" } |
             "\"" { <> "\"" } |
             "n"  { <> "\n" } |
+            "r"  { <> "\r" } |
+            "t"  { <> "\t" } |
             "0"  { <> "\0" }
         |
             "x"
@@ -177,6 +189,18 @@ def tokStringChar = {/
             |
                 { <> @[error: "Invalid hexadecimal character literal."] }
             )
+        |
+            "&"
+            (
+                first = tokNamedChar
+                more = ("," tokNamedChar)*
+                ";"
+                { <> stringAdd(first, more*) }
+            |
+                { <> @[error: "Invalid named character literal."] }
+            )
+        |
+            { <> @[error: "Invalid character literal escape sequence."] }
         )
     )
 /};
@@ -188,7 +212,12 @@ def tokString = {/
 
     (
         "\""
-        { <> @[string: stringAdd(chars*)] }
+        { <out> ::
+            # Propagate any character parsing error outward.
+            listForEach(chars)
+                { ., ch :: ifTrue { <> isToken(ch) } { <out> ch } };
+            <> @[string: stringAdd(chars*)]
+        }
     |
         { <> @[error: "Unterminated string literal."] }
     )

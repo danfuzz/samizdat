@@ -20,6 +20,7 @@ def BOOTSTRAP_FILES = [
 # the second can depend on primitives and the first, etc.
 def MANIFEST = [
     # Layer 0 in-language core library.
+    "entityMap.sam0",
     "combinator.sam0",
     "const.sam0",
     "boolean.sam0",

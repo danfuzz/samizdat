@@ -37,3 +37,14 @@ it makes sense to allow it to be exported as a primitive.
 A value used when no other value is suitable, but when a value is
 nonetheless required. It is defined as `@null`, that is, a valueless
 token with type tag `"null"`.
+
+#### `ENTITY_MAP`
+
+Map of entity names to their string values. This is a map from strings to
+strings, where the keys are XML entity names (such as `"lt" "gt" "zigrarr"`)
+and the corresponding values are the strings represented by those entity
+names (such as, correspondingly, `"<" ">" "⇝"`).
+
+The set of entities is intended to track the XML spec for same, which
+as of this writing can be found at
+<http://www.w3.org/TR/xml-entity-names/bycodes.html>.
