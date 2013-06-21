@@ -74,7 +74,7 @@ backslash-quoted escapes are recognized:
 "\x0;"                        # same as "\0"
 "\x46,75,7a,7a;"              # same as "Fuzz"
 "\x1_F612;"                   # same as "😒"
-"\&zigarr;"                   # same as "\x21dd;" or "⇝"
+"\&zigrarr;"                  # same as "\x21dd;" or "⇝"
 "\"blort\" \&mdash; potion that enables one to see in the dark.\n"
 ```
 
