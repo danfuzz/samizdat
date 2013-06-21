@@ -43,10 +43,8 @@ def parCodePoint = {/
     )+
 
     {
-        def value = 65;
-        # TODO: Why is the following not parsing successfully?
-        #def value = listReduce(0, digits)
-        #    { result, ., digit :: <> result * 16 + digit };
+        def value = listReduce(0, digits)
+            { result, ., digit :: <> result * 16 + digit };
         <> stringFromInt(value)
     }
 /};
