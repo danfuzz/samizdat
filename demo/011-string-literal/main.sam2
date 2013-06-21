@@ -36,5 +36,6 @@ out("\x0;");
 out("Hello \x46,75,7a,7a;");
 out("\x1_F60F;");
 out("\&zigrarr;");
+out("\&mu,nu;");
 
 <> 0
