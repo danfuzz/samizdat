@@ -124,7 +124,7 @@ def outText = format("# Copyright 2013 the Samizdat Authors (Dan Bornstein et al
 # of this file need to be updated.
 
 # Documented in the specification.
-ENTITY_MAP = [
+def ENTITY_MAP = [
 %s    [:]*
 ];
 

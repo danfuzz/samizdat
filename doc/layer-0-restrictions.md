@@ -26,8 +26,8 @@ in int literals.
 Strings
 -------
 
-Hexadecimal escapes are not recognized in string literals. Parsing of
-these is implemented in Layer 2.
+Neither hexadecimal nor entity escapes are recognized in string literals.
+Parsing of these is implemented in Layer 2.
 
 Variable Definition
 -------------------

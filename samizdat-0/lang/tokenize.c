@@ -167,14 +167,19 @@ static zvalue tokenizeString(ParseState *state) {
         } else if (ch == '\\') {
             read(state);
             ch = peek(state);
-            if ((ch == '\"') || (ch == '\\')) {
-                // These pass through as-is.
-            } else if (ch == 'n') {
-                ch = '\n';
-            } else if (ch == '0') {
-                ch = '\0';
-            } else {
-                die("Invalid string escape character: %#llx", ch);
+            switch (ch) {
+                case '0': { ch = '\0'; break; }
+                case 'n': { ch = '\n'; break; }
+                case 'r': { ch = '\r'; break; }
+                case 't': { ch = '\t'; break; }
+                case '\"':
+                case '\\': {
+                    // These pass through as-is.
+                    break;
+                }
+                default: {
+                    die("Invalid string escape character: %#llx", ch);
+                }
             }
         }
 

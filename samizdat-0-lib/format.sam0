@@ -89,6 +89,8 @@ fn stringHexEscape(ch) {
 def SPECIAL_CHARS = [
     "\0": "\\0",
     "\n": "\\n",
+    "\r": "\\r",
+    "\t": "\\t",
     "\"": "\\\"",
     "\\": "\\\\"
 ];

@@ -53,21 +53,31 @@ backslash-quoted escapes are recognized:
 
 * `\\` &mdash; backslash itself.
 * `\"` &mdash; a double quote.
-* `\n` &mdash; newline (Unicode U+0010).
+* `\n` &mdash; newline (Unicode U+000a).
+* `\r` &mdash; carriage return (Unicode U+000d).
+* `\t` &mdash; tab (Unicode U+0009).
 * `\0` &mdash; the null character (Unicode U+0000).
 * `\xNNNN;` &mdash; arbitrary character escape. `NNNN` represents one
   or more hexadecimal digits. Additional adjacent hexadecimal character
   specifiers can be included by separating them with commas. As with int
   literals, underscores are ignored and may be used for readability.
+* `\&name;` &mdash; XML entity name. `name` represents any of the standard
+  XML entity names. As with hexadecimal escapes, multiple entity names
+  can be included by separating them with commas. See [the XML spec for entity
+  names](http://www.w3.org/TR/xml-entity-names/bycodes.html) for a full
+  list of names.
 
 ```
 ""                            # the empty string
-"Hello, Самиздат!"
-"\"blort\" -- potion that enables one to see in the dark.\n"
+"a"
 "fizmo"
+"Hello, Самиздат!"
 "\x0;"                        # same as "\0"
 "\x46,75,7a,7a;"              # same as "Fuzz"
-"\x1_f612;"                   # same as "😒"
+"\x1_F60F;"                   # same as "😏"
+"\&zigrarr;"                  # same as "\x21dd;" or "⇝"
+"\&mu,nu;"                    # same as "μν"
+"\"blort\" \&mdash; potion that enables one to see in the dark.\n"
 ```
 
 
