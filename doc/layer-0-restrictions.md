@@ -20,9 +20,6 @@ In the surface syntax, base 10 is the only recognized form for int
 constants. Layer 2 introduces syntax for hexadecimal and binary int
 constants.
 
-In the surface syntax, a minus sign before a decimal digit is taken to
-be part of the int literal. In Layer 2, such a minus sign is an operator.
-
 In the surface syntax, underscores are not recognized as digit spacers
 in int literals.
 
