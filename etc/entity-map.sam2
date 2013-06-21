@@ -11,13 +11,6 @@
 
 SELF_PATH, ARGS* ::
 
-# Map from hex digit strings to values.
-def DIGIT_CHARS = [
-    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
-    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
-    "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15
-];
-
 # Parses the end of a line, which consists of any number of spaces, optionally
 # followed by a comment, and finally followed by a newline.
 def parLineEnd = {/
@@ -33,26 +26,33 @@ def parComma = {/
     " "*
 /};
 
-# Parses a single code point, yielding a single-character string.
+# Parses a single code point, yielding the hex constant as a string. Leading
+# zeroes are omitted from the result.
 def parCodePoint = {/
     " "*
     "U+"
-    digits = (
-        ch = ["0".."9" "A".."F"]
-        { <> DIGIT_CHARS[tokenType(ch)] }
-    )+
+    "0"*
+    digits = ["0".."9" "A".."F"]+
 
     {
-        def value = listReduce(0, digits)
-            { result, ., digit :: <> result * 16 + digit };
-        <> stringFromInt(value)
+        def result = stringFromTokenList(digits);
+        <> if (result == "") { <> "0" } else { <> result }
     }
 /};
 
-# Parses a list of code points, yielding a combined string.
+# Parses a list of code points, yielding a string containing a "\x...;"
+# form.
 def parCodePoints = {/
     codes = parCodePoint+
-    { <> stringAdd(codes*) }
+    {
+        def value = listReduce("", codes) { result, index, code ::
+            <> stringAdd(
+                result,
+                (if (index != 0) { <> "," })?*,
+                code)
+        };
+        <> stringAdd("\\x", value, ";")
+    }
 /};
 
 # Parses an entry description.
