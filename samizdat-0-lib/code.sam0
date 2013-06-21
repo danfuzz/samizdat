@@ -21,7 +21,7 @@ fn forwardFunction() {
         ifTrue { <> ne(args, []) }
             { io0Die("Attempt to forward too many arguments.") };
 
-        def function = listFirst(optFunction);
+        def function = optFunction*;
 
         ifFalse { <> isUniqlet(function) }
             { io0Die("Attempt to forward to non-function.") };
