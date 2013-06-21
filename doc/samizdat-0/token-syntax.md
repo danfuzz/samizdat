@@ -25,7 +25,7 @@ def whitespace = {/
 /};
 
 def punctuation = {/
-    "@@" | "::" | ".." | "<>" | "()" | ["@:.,=+?;*<>{}()[]"]
+    "@@" | "::" | ".." | "<>" | "()" | ["@:.,=-+?;*<>{}()[]"]
 /};
 
 def stringChar = {/
@@ -70,7 +70,6 @@ def quotedIdentifier = {/
 /};
 
 def int = {/
-    sign = ("-" { <> -1 } | { <> 1 })
     digits = (
         ch = ["0".."9"]
         { <> intFromDigitChar(ch) }

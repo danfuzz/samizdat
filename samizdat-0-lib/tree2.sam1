@@ -362,27 +362,11 @@ def parseIdentifierString = {/
     }
 /};
 
-# Parses a list element.
-def parseListElement = {/
-    ex = parseExpression
-
-    (
-        @"*"
-        { <> @[interpolate: ex] }
-    |
-        @".."
-        end = parseExpression
-        { <> @[interpolate: makeCallName("makeRange", ex, end)] }
-    |
-        { <> ex }
-    )
-/};
-
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
 def parseUnadornedList = {/
-    first = parseListElement
-    rest = (@"," parseListElement)*
+    first = parseExpression
+    rest = (@"," parseExpression)*
     { <> [first, rest*] }
 |
     { <> [] }
@@ -413,7 +397,7 @@ def parseMapping = {/
         @":"
         { <> k }
     |
-        k = parseListElement
+        k = parseExpression
         @":"
         { <> k }
     )
@@ -422,8 +406,14 @@ def parseMapping = {/
     { <> makeCallName("makeList", value, key) }
 |
     map = parseExpression
-    @"*"
-    { <> map }
+    {
+        # We do a check to make sure the given expression is an interpolate
+        # (which is the only way it can be valid). Note that
+        # `expression @"*"` won't do the trick, since by the time we're here,
+        # if there was a `*` it would have become part of the expression.
+        <> ifTrue { <> eq(tokenType(map), "interpolate") }
+            { <> tokenValue(map) }
+    }
 /};
 
 # Parses a map literal.
@@ -513,7 +503,45 @@ def parseActualsList = {/
     parseClosure+
 /};
 
-# `callExpression` and `expression` from layer 0 are omitted here, and
+# `prefixOperator` and `postfixOperator` from layer 0 are replaced with
+# forwarded functions here. These are subsumed by more featureful layer 2
+# definitions, below.
+def parsePrefixOperator = forwardFunction();
+def parsePostfixOperator = forwardFunction();
+
+# Parses a unary expression. This is an atom, optionally surrounded on
+# either side by any number of unary operators. Postfix operators
+# take precedence over (are applied before) the prefix operators.
+def parseUnaryExpression = {/
+    prefixes = parsePrefixOperator*
+    base = parseAtom
+    postfixes = parsePostfixOperator*
+
+    {
+        def withPosts = listReduce(base, postfixes)
+            { result, ., op :: <> op(result) };
+        <> listReduce(withPosts, listReverse(prefixes))
+            { result, ., op :: <> op(result) }
+    }
+/};
+
+# Parses a range expression.
+def parseRangeExpression = {/
+    base = parseUnaryExpression
+    ops = (
+        @".."
+        ex = parseUnaryExpression
+        {
+            <> { node ::
+                <> @[interpolate: makeCallName("makeRange", node, ex)]
+            }
+        }
+    )*
+
+    { <> listReduce(base, ops) { result, ., op :: <> op(result) } }
+/};
+
+# `expression` from layer 0 is omitted here (it's forwarded earlier), and
 # `statement` and `nonlocalExit` are replaced with forwarded functions here.
 # These are all subsumed by more featureful layer 2 definitions, below.
 def parseStatement = forwardFunction();
@@ -523,7 +551,7 @@ def parseNonlocalExit = forwardFunction();
 def parseYield = {/
     @"<>"
     (
-        ex = parseListElement
+        ex = parseExpression
         { <> [yield: ex] }
     |
         { <> [:] }
@@ -778,9 +806,9 @@ def implNonlocalExit = {/
     )
 
     value = (
-        ex = parseListElement
+        ex = parseExpression
         {
-            # The test for a valued `continue` is done explicitly here way
+            # The test for a valued `continue` is done explicitly here
             # (rather than just letting the rule fail) in order to make the
             # error message more sensible.
             ifTrue { <> eq(tokenValue(name), "continue") }
@@ -793,19 +821,26 @@ def implNonlocalExit = {/
 /};
 parseNonlocalExit(implNonlocalExit);
 
-# Parses a unary prefix operator. This yields a `varRef` node for the function
-# to apply when applying the prefix.
-def parsePrefixOperator = {/
+# Parses a unary prefix operator. This yields a function (per se) that
+# takes a node and yields a call to the appropriate operator function.
+def implPrefixOperator = {/
     operator = [@"+" @"-" @"!" @"!!!"]
-    { <> mapGet(UNARY_OPERATORS, tokenType(operator)) }
+    {
+        def name = mapGet(UNARY_OPERATORS, tokenType(operator));
+        <> { node :: <> makeCall(name, node) }
+    }
 /};
+parsePrefixOperator(implPrefixOperator);
 
 # Parses a unary postfix operator. This yields a function (per se) to call
 # in order to construct a node that represents the appropriate ultimate
 # function call.
-def parsePostfixOperator = {/
+def implPostfixOperator = {/
     actuals = parseActualsList
     { <> { node :: <> makeCall(node, actuals*) } }
+|
+    @"*"
+    { <> { node :: <> @[interpolate: node] } }
 |
     @"["
     exprs = parseUnadornedList
@@ -843,30 +878,14 @@ def parsePostfixOperator = {/
         }
     }
 /};
+parsePostfixOperator(implPostfixOperator);
 
-# Parses a unary expression. This is an atom, optionally surrounded on
-# either side by any number of unary operators. Postfix operators
-# take precedence over (are applied before) the prefix operators.
-def parseUnaryExpression = {/
-    prefixes = parsePrefixOperator*
-    atom = parseAtom
-    postfixes = parsePostfixOperator*
-
-    {
-        def withPosts = listReduce(atom, postfixes)
-            { result, ., postfix :: <> postfix(result) };
-        <> listReduce(withPosts, listReverse(prefixes))
-            { result, ., prefix :: <> makeCall(prefix, result) }
-    }
-/};
-
-# Parses a multiplicative expression. (Binary infix operator expressions
-# are listed from tightest to loosest binding / precedence.)
+# Parses a multiplicative expression.
 def parseMulExpression = {/
-    firstEx = parseUnaryExpression
+    firstEx = parseRangeExpression
     opExes = (
         op = [@"*" @"/" @"%" @"<<<" @">>>"]
-        ex = parseUnaryExpression
+        ex = parseRangeExpression
         { <> [op, ex] }
     )*
 

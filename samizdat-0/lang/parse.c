@@ -595,7 +595,7 @@ DEF_PARSE(listElement) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(unadornedList) {
-    return PARSE_COMMA_SEQ(listElement);
+    return PARSE_COMMA_SEQ(expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -625,7 +625,7 @@ DEF_PARSE(emptyMap) {
 }
 
 /**
- * Helper for `mapping`: Parses `(identifierString @":" | listElement @":")
+ * Helper for `mapping`: Parses `(identifierString @":" | expression @":")
  * expression`.
  */
 DEF_PARSE(mapping1) {
@@ -640,7 +640,7 @@ DEF_PARSE(mapping1) {
     }
 
     if (key == NULL) {
-        key = PARSE_OR_REJECT(listElement);
+        key = PARSE_OR_REJECT(expression);
         MATCH_OR_REJECT(CH_COLON);
     }
 
@@ -650,15 +650,15 @@ DEF_PARSE(mapping1) {
 }
 
 /**
- * Helper for `mapping`: Parses `expression @"*"`.
+ * Helper for `mapping`: Parses a guaranteed-interpolate `expression`.
  */
 DEF_PARSE(mapping2) {
     MARK();
 
     zvalue map = PARSE_OR_REJECT(expression);
-    MATCH_OR_REJECT(CH_STAR);
+    REJECT_IF(!datTokenTypeIs(map, STR_INTERPOLATE));
 
-    return map;
+    return datTokenValue(map);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -846,28 +846,81 @@ DEF_PARSE(actualsList) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(callExpression) {
+DEF_PARSE(prefixOperator) {
+    // We differ from the spec here, merely returning a token if matched.
+    // The corresponding `unaryExpression` code just notes the number of
+    // minuses matched in order to make the right number of calls.
+    return MATCH(CH_MINUS);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(postfixOperator) {
+    // We differ from the spec here, returning an actuals list directly
+    // or a `*` token. The corresponding `unaryExpression` code decodes
+    // these as appropriate.
+
+    zvalue result = NULL;
+    if (result == NULL) { result = PARSE(actualsList); }
+    if (result == NULL) { result = MATCH(CH_STAR); }
+    return result;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(unaryExpression) {
     MARK();
 
+    zvalue prefixes = PARSE_STAR(prefixOperator);
     zvalue result = PARSE_OR_REJECT(atom);
+    zvalue postfixes = PARSE_STAR(postfixOperator);
 
-    for (;;) {
-        zvalue actualsList = PARSE(actualsList);
-        if (actualsList == NULL) {
-            break;
+    zint size = datSize(postfixes);
+    for (zint i = 0; i < size; i++) {
+        zvalue one = datListNth(postfixes, i);
+        if (datTypeIs(one, DAT_LIST)) {
+            result = makeCall(result, one);
+        } else if (datEq(one, TOK_CH_STAR)) {
+            result = datTokenFrom(STR_INTERPOLATE, result);
+        } else {
+            die("Unexpected postfix.");
         }
+    }
 
-        result = makeCall(result, actualsList);
+    for (zint i = datSize(prefixes) - 1; i >= 0; i--) {
+        zvalue one = datListNth(prefixes, i);
+        if (datEq(one, TOK_CH_MINUS)) {
+            result = makeCall(makeVarRef(STR_INEG), listFrom1(result));
+        } else {
+            die("Unexpected prefix.");
+        }
     }
 
     return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(rangeExpression) {
+    MARK();
+
+    // We differ from the spec here in not recognizing chained `x..y..z`
+    // expressions, which arguably shouldn't really be part of the syntax
+    // anyway.
+
+    zvalue base = PARSE_OR_REJECT(unaryExpression);
+
+    if (MATCH(CH_DOTDOT) == NULL) {
+        return base;
+    }
+
+    zvalue ex = PARSE_OR_REJECT(unaryExpression);
+    zvalue call = makeCall(makeVarRef(STR_MAKE_RANGE), listFrom2(base, ex));
+    return datTokenFrom(STR_INTERPOLATE, call);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(callExpression); }
+    if (result == NULL) { result = PARSE(rangeExpression); }
     if (result == NULL) { result = PARSE(fnExpression); }
 
     return result;
@@ -894,7 +947,7 @@ DEF_PARSE(yield) {
     MARK();
 
     MATCH_OR_REJECT(CH_DIAMOND);
-    return PARSE(listElement);
+    return PARSE(expression);
 }
 
 /**
@@ -928,7 +981,7 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { name = PARSE(nonlocalExit2); }
     if (name == NULL) { return NULL; }
 
-    zvalue value = PARSE(listElement); // It's okay for this to be `NULL`.
+    zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
     zvalue actuals = (value == NULL)
         ? listFrom1(name) : listFrom2(name, makeThunk(value));
 
