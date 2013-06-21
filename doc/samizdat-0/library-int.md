@@ -107,7 +107,12 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 <br><br>
 ### In-Language Definitions
 
-#### `intSign(int) <> int`
+#### `iabs(int) <> int`
+
+Returns the absolute value of the given value. This is `value` itself if
+it is non-negative, or `-value` if it is negative values.
+
+#### `isign(int) <> int`
 
 Returns the sign of the given value: `-1` for negative values,
 `1` for positive values, or `0` for `0`.

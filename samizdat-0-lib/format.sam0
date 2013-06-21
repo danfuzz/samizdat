@@ -42,7 +42,7 @@ def INT_SIGNS = [
 
 # Stringifies an int using the given base.
 fn stringFromIntBase(int, base) {
-    <> mapGet(INT_SIGNS, intSign(int))(int, base)
+    <> mapGet(INT_SIGNS, isign(int))(int, base)
 };
 
 
