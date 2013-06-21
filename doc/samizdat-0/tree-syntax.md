@@ -415,6 +415,11 @@ def actualsList = {/
     closure+
 /};
 
+def prefixOperator = {/
+    @"-"
+    { <> { node :: <> makeCallName("unary-", node) } }
+/};
+
 def postfixOperator = {/
     actuals = actualsList
     { <> { node :: <> makeCall(node, actuals*) } }
@@ -424,10 +429,16 @@ def postfixOperator = {/
 /};
 
 def unaryExpression = {/
+    prefixes = prefixOperator*
     base = atom
-    ops = postfixOperator*
+    postfixes = postfixOperator*
 
-    { <> listReduce(base, ops) { result, ., op :: <> op(result) } }
+    {
+        def withPosts = listReduce(base, postfixes)
+            { result, ., op :: <> op(result) };
+        <> listReduce(withPosts, listReverse(prefixes))
+            { result, ., op :: <> op(result) }
+    }
 /};
 
 def rangeExpression {/
