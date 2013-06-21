@@ -155,8 +155,8 @@ fn io0SandboxedReader(directory) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn io0WriteFileUtf8(path) {
-    <> io0FlatWriteFileUtf8(io0FlatFromPath(path))
+fn io0WriteFileUtf8(path, text) {
+    <> io0FlatWriteFileUtf8(io0FlatFromPath(path), text)
 };
 
 <> [
