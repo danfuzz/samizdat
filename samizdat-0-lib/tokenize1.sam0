@@ -55,6 +55,10 @@ def tokStringChar = pegMakeMainSequence(
                 pegMakeMainSequence(
                     pegMakeToken("n"), pegMakeCode { . :: <> "\n" }),
                 pegMakeMainSequence(
+                    pegMakeToken("r"), pegMakeCode { . :: <> "\r" }),
+                pegMakeMainSequence(
+                    pegMakeToken("t"), pegMakeCode { . :: <> "\t" }),
+                pegMakeMainSequence(
                     pegMakeToken("0"), pegMakeCode { . :: <> "\0" })))));
 
 # Documented in Samizdat Layer 0 spec.
