@@ -62,9 +62,10 @@ backslash-quoted escapes are recognized:
   specifiers can be included by separating them with commas. As with int
   literals, underscores are ignored and may be used for readability.
 * `\&name;` &mdash; XML entity name. `name` represents any of the standard
-  XML entity names. See [the XML spec for entity
+  XML entity names. As with hexadecimal escapes, multiple entity names
+  can be included by separating them with commas. See [the XML spec for entity
   names](http://www.w3.org/TR/xml-entity-names/bycodes.html) for a full
-  list.
+  list of names.
 
 ```
 ""                            # the empty string
@@ -75,6 +76,7 @@ backslash-quoted escapes are recognized:
 "\x46,75,7a,7a;"              # same as "Fuzz"
 "\x1_F60F;"                   # same as "😏"
 "\&zigrarr;"                  # same as "\x21dd;" or "⇝"
+"\&mu,nu;"                    # same as "μν"
 "\"blort\" \&mdash; potion that enables one to see in the dark.\n"
 ```
 
