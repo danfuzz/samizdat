@@ -11,8 +11,12 @@
 
 SELF_PATH, ARGS* ::
 
-# Map for converting hex characters to lower case.
-def LOWER_CASE_MAP = [A: "a", B: "b", C: "c", D: "d", E: "e", F: "f"];
+# Map of hex digit tokens to int values.
+def DIGIT_VALUES = [
+    @"0": 0,  @"1": 1,  @"2": 2,  @"3": 3,  @"4": 4,
+    @"5": 5,  @"6": 6,  @"7": 7,  @"8": 8,  @"9": 9,
+    @"A": 10, @"B": 11, @"C": 12, @"D": 13, @"E": 14, @"F": 15
+];
 
 # Parses the end of a line, which consists of any number of spaces, optionally
 # followed by a comment, and finally followed by a newline.
@@ -29,39 +33,27 @@ def parComma = {/
     " "*
 /};
 
-# Parses a single code point, yielding the hex constant as a string. Leading
-# zeroes are omitted from the result.
+# Parses a single code point, yielding the value as a single-character string.
 def parCodePoint = {/
     " "*
     "U+"
     "0"*
     digits = (
         ch = ["0".."9" "A".."F"]
-        {
-            def value = tokenType(ch);
-            <> mapGet(LOWER_CASE_MAP, value, value)
-        }
+        { <> DIGIT_VALUES[ch] }
     )+
 
     {
-        def result = stringAdd(digits*);
-        <> if (result == "") { <> "0" } else { <> result }
+        def value = listReduce(0, digits)
+            { result, ., digit :: <> result * 16 + digit };
+        <> stringFromInt(value);
     }
 /};
 
-# Parses a list of code points, yielding a string containing a "\x...;"
-# form.
+# Parses a list of code points, yielding a converted string of them.
 def parCodePoints = {/
     codes = parCodePoint+
-    {
-        def value = listReduce("", codes) { result, index, code ::
-            <> stringAdd(
-                result,
-                (if (index != 0) { <> "," })?*,
-                code)
-        };
-        <> stringAdd("\\x", value, ";")
-    }
+    { <> stringAdd(codes*) }
 /};
 
 # Parses an entry description.
@@ -107,17 +99,18 @@ def parFile = {/
 /};
 
 def inPath = [listButLast(SELF_PATH)*, "entity-map.txt"];
-def outPath = [listButLast(SELF_PATH)*, "entity-map-processed.txt"];
+def outPath = [listButLast(SELF_PATH)*, "entityMap.sam"];
 io0Note(format("Processing file: %q", inPath));
 
 def text = io0ReadFileUtf8(inPath);
 def result = pegApply(parFile, text);
 
 def resultText = mapReduce("", result) { result, key, value ::
-    def line = format("    \"%s\" = \"%s\"\n", key, value);
-    <> stringAdd(result, line);
+    <> stringAdd(result, format("    %q: %q,\n", key, value));
 };
 
+# Note: The `[:]*` at the end of the map is a hacky way to avoid having to
+# omit the comma from the last "real" mapping line.
 def outText = format("# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
@@ -130,11 +123,12 @@ def outText = format("# Copyright 2013 the Samizdat Authors (Dan Bornstein et al
 # entity-map.txt file as input. Rerun that program should the contents
 # of this file need to be updated.
 
-XML_ENTITIES = [
-%s
+# Documented in the specification.
+ENTITY_MAP = [
+%s    [:]*
 ];
 
-<> [ XML_ENTITIES: XML_ENTITIES ]
+<> [ ENTITY_MAP: ENTITY_MAP ]
 ",
 resultText);
 
