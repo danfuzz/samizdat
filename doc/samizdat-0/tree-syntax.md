@@ -336,8 +336,14 @@ def mapping = {/
     { <> makeCallName("makeList", value, key) }
 |
     map = expression
-    @"*"
-    { <> map }
+    {
+        # We do a check to make sure the given expression is an interpolate
+        # (which is the only way it can be valid). Note that
+        # `expression @"*"` won't do the trick, since by the time we're here,
+        # if there was a `*` it would have become part of the expression.
+        <> ifTrue { <> eq(tokenType(map), "interpolate") }
+            { <> tokenValue(map) }
+    }
 /};
 
 def map = {/
