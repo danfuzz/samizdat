@@ -37,7 +37,7 @@ def tokPunctuation = pegMakeMainSequence(
         pegMakeString("{/"), # Defined by Samizdat Layer 1.
         pegMakeString("/}"), # Defined by Samizdat Layer 1.
         # The latter three characters are defined by Samizdat Layer 1.
-        pegMakeCharSet("@:.,=+?;*<>{}()[]", "&|!")));
+        pegMakeCharSet("@:.,=-+?;*<>{}()[]", "&|!")));
 
 # Documented in Samizdat Layer 0 spec.
 def tokStringChar = pegMakeMainSequence(
@@ -104,19 +104,14 @@ fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 
 # Documented in Samizdat Layer 0 spec.
 def tokInt = pegMakeMainSequence(
-    pegMakeChoice(
-        pegMakeSequence(
-            pegMakeToken("-"),
-            pegMakeCode { . :: <> -1 }),
-        pegMakeCode { <> 1 }),
     pegMakePlus(
         pegMakeMainSequence(
             pegMakeCharSet("0123456789"),
             pegMakeCode(intFromDigitChar))),
-    pegMakeCode { sign, digits ::
+    pegMakeCode { digits ::
         def value = listReduce(0, digits)
             { result, ., digit :: <> iadd(digit, imul(result, 10)) };
-        <> @[int: imul(sign, value)]
+        <> @[int: value]
     });
 
 # Documented in Samizdat Layer 0 spec.
