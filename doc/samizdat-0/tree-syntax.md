@@ -430,7 +430,10 @@ def postfixOperator = {/
     actuals = actualsList
     { <> { node :: <> makeCall(node, actuals*) } }
 |
-    @"*"
+    # The lookahead failure here is to make the grammar prefer `*` to be
+    # treated as a binary op. (`*` is only defined as postfix in layer 0,
+    # but higher layers augment its meaning.)
+    @"*" !expression
     { <> { node :: <> @[interpolate: node] } }
 /};
 

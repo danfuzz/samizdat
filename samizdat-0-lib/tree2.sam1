@@ -839,7 +839,9 @@ def implPostfixOperator = {/
     actuals = parseActualsList
     { <> { node :: <> makeCall(node, actuals*) } }
 |
-    @"*"
+    # The lookahead failure here is to make the grammar prefer `*` to be
+    # treated as a binary op.
+    @"*" !parseExpression
     { <> { node :: <> @[interpolate: node] } }
 |
     @"["
