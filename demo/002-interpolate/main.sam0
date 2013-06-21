@@ -23,6 +23,10 @@ fn ten() {
     <> 10
 };
 
+fn list5() {
+    <> [5]
+};
+
 fn yieldTest(x) {
     <> x*
 };
@@ -63,5 +67,14 @@ ifValue { <> yieldTest(["blort"]) }
 ifValue { <> nonlocalTest(["fizmo"]) }
     { value :: <> out(value) }
     { out("void") };
+
+# The negative here forces the interpolated expression not to be considered
+# a function argument.
+out(-(list5()*));
+
+def five = list5()*;
+out(five);
+
+out([blort: list5()*]);
 
 <> 0

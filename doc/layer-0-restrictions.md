@@ -38,12 +38,27 @@ Variable Definition
 Only immutable variable definitions (`def name = ...`) are recognized.
 TODO: Mutable variable definitions are implemented in Layer 2.
 
+Parsing
+-------
+
+Parsing syntax (parsing blocks and parsing operators) is not recognized at
+all. This is implemented in Layer 1.
+
 Operators
 ---------
 
-No expression operators are recognized, unless you count function call
-syntax as an operator. Expression operator syntax is implemented in Layer
-2.
+The only operators regognized in Layer 0 are:
+
+* `-expr` &mdash; Unary negation, strictly limited to operating on ints.
+* `expr*` &mdash; Interpolation.
+* `expr..expr` &mdash; Ranges, but not chained ranges (`x..y..z`), which
+  aren't all that useful anyway.
+* `expr(expr, ...) { block } ...` &mdash; Function calls.
+* `<> expr` &mdash; Local yield.
+* `return expr` &mdash; Function return.
+
+Parsing expression operator syntax is implemented in Layer 1.
+Full expression operator syntax is implemented in Layer 2.
 
 Control Constructs
 ------------------
@@ -53,7 +68,3 @@ are implemented in Layer 2.
 
 **Note:** Function statements and expressions *are* recognized in Layer 0.
 
-Parsing
--------
-
-Parsing closure syntax is not recognized at all. This is implemented in Layer 1.

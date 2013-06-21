@@ -90,6 +90,28 @@ systems that are defined using those terms. In C terms, the facility is
 along the lines of `setjmp` / `longjmp`. In Lisp terms, the facility is
 an implementation of downward-passed / upward-called continuations.
 
+#### `interpolate` &mdash; `@[interpolate: expression]`
+
+* `expression` &mdash; Expression node, which must yield a list when
+  evaluated.
+
+This represents the interpolation of a list, either as an expression per
+se or with special rules as part of an argument list.
+
+As a regular expression, the node's `expression` is evaluated and must
+result in a list. If the list is empty, then the result of evaluation
+of this node is void. If the list has a single element, then the result
+of evaluation is that single element value. All other evaluations are
+invalid (terminating the runtime).
+
+As part of function call argument evaluation, each `interpolate` node is
+evaluated, and the elements of the resulting list become individual actual
+arguments to the call, rather than the list itself being a single argument.
+
+It is an error (terminating the runtime) either if `expression` evaluates to
+something other than a list, or it evaluates to a list of size greater than
+one when being used as anything but a function call argument.
+
 #### `literal` &mdash; `@[literal: value]`
 
 * `value` (required) &mdash; Arbitrary data value.
@@ -175,22 +197,6 @@ multiple `fnDef`s in a row can mutually self-reference.
 If no `"repeat"` is specified, then the given formal binds exactly one
 actual argument. The argument variable as bound is the same as the
 actual argument as passed (no extra wrapping).
-
-#### `interpolate` &mdash; `@[interpolate: expression]`
-
-* `expression` &mdash; Expression node, which must yield a list when
-  evaluated.
-
-This represents an interpolated list as part of an argument list.
-Nodes of this type are valid within the `actuals` list of a `call`
-node.
-
-As part of call evaluation, each `interpolate` node is evaluated,
-and the elements of the resulting list become individual actual arguments
-to the call, rather than the list itself being a single argument.
-
-It is an error (terminating the runtime) if `expression` evaluates to
-something other than a list.
 
 #### `varDef` &mdash; `@[varDef: [name: name, value: expression]]`
 

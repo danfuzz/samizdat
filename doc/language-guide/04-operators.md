@@ -12,7 +12,7 @@ The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
 
 
-### Postfix Operators (Precedence 7, highest / tightest)
+### Postfix Operators (Precedence 8, highest / tightest)
 
 Postfix operators have the highest precedence in the language, binding
 more tightly than any other operators, including prefix operators.
@@ -84,8 +84,25 @@ it. If the inner expression results in a value, the outer expression results
 in a single-element list of the result. If the inner expression results in
 void, the outer expression results in the empty list.
 
+#### Interpolate list value &mdash; `expression*`
 
-### Prefix Operators (Precedence 6)
+The star postfix operator is the converse of the question mark postfix
+operator (above). It takes an expression whose value must be a list of
+either zero or one element, and results in the lists's sole value or
+void (the latter given the empty list).
+
+It is valid to use this operator to possibly-yield a value (that is, yield
+either a value or void) from a function. Inside expressions, it is only
+valid to use it to extract the sole value from a single-element list
+(since void expressions aren't valid other than at yield points).
+
+**Note:** A postfix star expression as an element of a function call
+argument list, as a list literal element, or as a map literal key has
+a slightly different (but related) meaning. See the documentation on
+those constructs for more details.
+
+
+### Prefix Operators (Precedence 7)
 
 Prefix operators are higher in precedence than infix operators, but lower
 in precedence than postfix operators.
@@ -117,6 +134,21 @@ the purpose of conditionals, void means false, and non-void means true.
 Placing a triple-bang in front of an expression asserts that the inner
 expression results in an int, and results in the bitwise complement of
 the inner expression's result.
+
+
+### Range Operator (Precedence 6) &mdash; `expression..expression`
+
+This indicates a range of values of ints or characters. The two expressions
+must be of the same type, either ints or strings. If strings, the expressions
+must each be of size 1. It is an error (terminating the runtime) if types
+and sizes are inappropriate. It is also an error (terminating the
+runtime) if the left expression sorts as after the right expression
+(that is, if `left > right`).
+
+The result of evaluating this expression is an interpolation of the
+range of elements. As such, if the range is more than one value, then
+it is only valid where general interpolations are valid (e.g. as list
+elements).
 
 
 ### Multiplicative Infix Operators (Precedence 5)

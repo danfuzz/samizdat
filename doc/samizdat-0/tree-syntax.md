@@ -297,24 +297,9 @@ def identifierString = {/
     }
 /};
 
-def listElement = {/
-    ex = expression
-
-    (
-        @"*"
-        { <> @[interpolate: ex] }
-    |
-        @".."
-        end = expression
-        { <> @[interpolate: makeCallName("makeRange", ex, end)] }
-    |
-        { <> ex }
-    )
-/};
-
 def unadornedList = {/
-    first = listElement
-    rest = (@"," listElement)*
+    first = expression
+    rest = (@"," expression)*
     { <> [first, rest*] }
 |
     { <> [] }
@@ -342,7 +327,7 @@ def mapping = {/
         @":"
         { <> k }
     |
-        k = listElement
+        k = expression
         @":"
         { <> k }
     )
@@ -351,8 +336,14 @@ def mapping = {/
     { <> makeCallName("makeList", value, key) }
 |
     map = expression
-    @"*"
-    { <> map }
+    {
+        # We do a check to make sure the given expression is an interpolate
+        # (which is the only way it can be valid). Note that
+        # `expression @"*"` won't do the trick, since by the time we're here,
+        # if there was a `*` it would have become part of the expression.
+        <> ifTrue { <> eq(tokenType(map), "interpolate") }
+            { <> tokenValue(map) }
+    }
 /};
 
 def map = {/
@@ -430,19 +421,49 @@ def actualsList = {/
     closure+
 /};
 
-def callExpression = {/
+def prefixOperator = {/
+    @"-"
+    { <> { node :: <> makeCallName("ineg", node) } }
+/};
+
+def postfixOperator = {/
+    actuals = actualsList
+    { <> { node :: <> makeCall(node, actuals*) } }
+|
+    @"*"
+    { <> { node :: <> @[interpolate: node] } }
+/};
+
+def unaryExpression = {/
+    prefixes = prefixOperator*
     base = atom
-    actualsLists = actualsList*
+    postfixes = postfixOperator*
 
     {
-        <> listReduce(base, actualsLists) { result, ., list ::
-            <> makeCall(result, list*)
-        }
+        def withPosts = listReduce(base, postfixes)
+            { result, ., op :: <> op(result) };
+        <> listReduce(withPosts, listReverse(prefixes))
+            { result, ., op :: <> op(result) }
     }
 /};
 
+def rangeExpression {/
+    base = unaryExpression
+    ops = (
+        @".."
+        ex = unaryExpression
+        {
+            <> { node ::
+                <> @[interpolate: makeCallName("makeRange", node, ex)]
+            }
+        }
+    )*
+
+    { <> listReduce(base, ops) { result, ., op :: <> op(result) } }
+/};
+
 def expression = {/
-    callExpression | fnExpression
+    rangeExpression | fnExpression
 /};
 
 def statement = {/
@@ -460,14 +481,14 @@ def nonlocalExit = {/
         { <> makeVarRef("return") }
     )
 
-    value = listElement?
+    value = expression?
     { <> makeCallNonlocalExit(name, value*) }
 /};
 
 def yield = {/
     @"<>"
     (
-        ex = listElement
+        ex = expression
         { <> [yield: ex] }
     |
         { <> [:] }

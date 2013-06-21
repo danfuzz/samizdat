@@ -79,13 +79,7 @@ static void skipWhitespace(ParseState *state) {
  */
 static zvalue tokenizeInt(ParseState *state) {
     zint value = 0;
-    zint sign = 1;
     bool any = false;
-
-    if (peek(state) == '-') {
-        read(state);
-        sign = -1;
-    }
 
     for (;;) {
         zint ch = peek(state);
@@ -107,7 +101,7 @@ static zvalue tokenizeInt(ParseState *state) {
         die("Invalid int token (no digits).");
     }
 
-    zvalue intval = constIntFromZint(value * sign);
+    zvalue intval = constIntFromZint(value);
     return datTokenFrom(STR_INT, intval);
 }
 
@@ -242,6 +236,7 @@ static zvalue tokenizeOne(ParseState *state) {
         case ',':  read(state); return TOK_CH_COMMA;
         case '=':  read(state); return TOK_CH_EQUAL;
         case '>':  read(state); return TOK_CH_GT;
+        case '-':  read(state); return TOK_CH_MINUS;
         case '{':  read(state); return TOK_CH_OCURLY;
         case '[':  read(state); return TOK_CH_OSQUARE;
         case '?':  read(state); return TOK_CH_QMARK;
@@ -269,7 +264,6 @@ static zvalue tokenizeOne(ParseState *state) {
                                          TOK_CH_OPAREN, TOK_CH_PARENPAREN);
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
-        case '-':
             return tokenizeInt(state);
     }
 
