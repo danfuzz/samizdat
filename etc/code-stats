@@ -74,9 +74,9 @@ cCode="$(getCount '*.c' samizdat-0)"
 (( cTotal = cHeader + cCode ))
 
 sam0Code="$(getCount '*.sam*' samizdat-0-lib)"
-sam1Code="$(getCount '*.sam*' samizdat-1)"
 demoCode="$(getCount '*.sam*' demo)"
-(( samTotal = sam0Code + sam1Code + demoCode ))
+samTotal="$(getCount '*.sam*')"
+(( otherSam = samTotal - sam0Code - demoCode ))
 
 (( codeTotal = cTotal + samTotal ))
 (( total = codeTotal + docs ))
@@ -102,8 +102,8 @@ printf '\n'
 printf 'Samizdat Code\n'
 printf -- '----------------------\n'
 printf '  Library    %5d\n' "${sam0Code}"
-printf '  Samizdat-1 %5d\n' "${sam1Code}"
 printf '  Demo       %5d\n' "${demoCode}"
+printf '  Other      %5d\n' "${otherSam}"
 printf '  Total      %5d\n' "${samTotal}"
 printf '\n'
 
