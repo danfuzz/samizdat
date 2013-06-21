@@ -57,20 +57,15 @@ def parserSetString = {/
     s = @string
     (
         @".."
-        startInt = {
-            def startValue = tokenValue(s);
-            <> ifTrue { <> eq(lowSize(startValue), 1) }
-                { <> intFromString(startValue) }
-        }
         end = @string
-        endInt = {
-            def endValue = tokenValue(end);
-            <> ifTrue { <> eq(lowSize(endValue), 1) }
-                { <> intFromString(endValue) }
-        }
         {
-            def reduction = loopReduce([startInt, ""]) { ... endInt ... };
-            <> @[string: listLast(reduction)]
+            def startChar = tokenValue(s);
+            def endChar = tokenValue(end);
+            <> ifTrue
+                { <> and
+                    { <> eq(lowSize(startChar), 1) }
+                    { <> eq(lowSize(endChar), 1) } }
+                { <> @[string: stringAdd([startChar..endChar]*)] }
         }
     |
         { <> s }

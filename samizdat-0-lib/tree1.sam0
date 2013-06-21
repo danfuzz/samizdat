@@ -528,24 +528,15 @@ def parseParserSetString = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeToken(".."),
-            pegMakeCode { s, . ::
-                def startValue = tokenValue(s);
-                <> ifTrue { <> eq(lowSize(startValue), 1) }
-                    { <> intFromString(startValue) }
-            },
             pegMakeToken("string"),
-            pegMakeCode { ., ., ., end ::
-                def endValue = tokenValue(end);
-                <> ifTrue { <> eq(lowSize(endValue), 1) }
-                    { <> intFromString(endValue) }
-            },
-            pegMakeCode { <out> ., ., startInt, ., endInt ::
-                loopReduce([startInt, ""]) { result ::
-                    def at = listFirst(result);
-                    def soFar = listLast(result);
-                    ifTrue { <> gt(at, endInt) } { <out> @[string: soFar] };
-                    <> [iadd(at, 1), stringAdd(soFar, stringFromInt(at))]
-                }
+            pegMakeCode { s, ., end ::
+                def startChar = tokenValue(s);
+                def endChar = tokenValue(end);
+                <> ifTrue
+                    { <> and
+                        { <> eq(lowSize(startChar), 1) }
+                        { <> eq(lowSize(endChar), 1) } }
+                    { <> @[string: stringAdd([startChar..endChar]*)] }
             }),
         pegMakeCode { s :: <> s }));
 
