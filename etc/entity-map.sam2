@@ -11,6 +11,9 @@
 
 SELF_PATH, ARGS* ::
 
+# Map for converting hex characters to lower case.
+def LOWER_CASE_MAP = [A: "a", B: "b", C: "c", D: "d", E: "e", F: "f"];
+
 # Parses the end of a line, which consists of any number of spaces, optionally
 # followed by a comment, and finally followed by a newline.
 def parLineEnd = {/
@@ -32,10 +35,16 @@ def parCodePoint = {/
     " "*
     "U+"
     "0"*
-    digits = ["0".."9" "A".."F"]+
+    digits = (
+        ch = ["0".."9" "A".."F"]
+        {
+            def value = tokenType(ch);
+            <> mapGet(LOWER_CASE_MAP, value, value)
+        }
+    )+
 
     {
-        def result = stringFromTokenList(digits);
+        def result = stringAdd(digits*);
         <> if (result == "") { <> "0" } else { <> result }
     }
 /};
@@ -72,11 +81,7 @@ def parContentLine = {/
     parComma
     parDescription
     names = (parComma parName)+
-    {
-        # TODO.
-        io0Note(format("%q = %q", names, string));
-        <> [names*: string]
-    }
+    { <> [names*: string] }
 /};
 
 # Parses the entire file.
@@ -98,18 +103,41 @@ def parFile = {/
         }
     )?
 
-    {
-        def result = mapAdd(lines*);
-        io0Note("\nRESULT\n");
-        io0Note(format("%q", result));
-        <> result
-    }
+    { <> mapAdd(lines*) }
 /};
 
-def path = [listButLast(SELF_PATH)*, "entity-map.txt"];
-io0Note(format("Processing file: %q", path));
+def inPath = [listButLast(SELF_PATH)*, "entity-map.txt"];
+def outPath = [listButLast(SELF_PATH)*, "entity-map-processed.txt"];
+io0Note(format("Processing file: %q", inPath));
 
-def text = io0ReadFileUtf8(path);
+def text = io0ReadFileUtf8(inPath);
 def result = pegApply(parFile, text);
+
+def resultText = mapReduce("", result) { result, key, value ::
+    def line = format("    \"%s\" = \"%s\"\n", key, value);
+    <> stringAdd(result, line);
+};
+
+def outText = format("# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+#
+# GENERATED FILE. DO NOT MODIFY DIRECTLY.
+# GENERATED FILE. DO NOT MODIFY DIRECTLY.
+# GENERATED FILE. DO NOT MODIFY DIRECTLY.
+#
+# This file was generated with the entity-map program based on the
+# entity-map.txt file as input. Rerun that program should the contents
+# of this file need to be updated.
+
+XML_ENTITIES = [
+%s
+];
+
+<> [ XML_ENTITIES: XML_ENTITIES ]
+",
+resultText);
+
+io0WriteFileUtf8(outPath, outText);
 
 <> 0
