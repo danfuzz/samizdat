@@ -179,6 +179,20 @@ def tokStringChar = {/
             |
                 { <> @[error: "Invalid hexadecimal character literal."] }
             )
+        |
+            "&"
+            (
+                chars = ["a".."z" "A".."Z" "0".."9" "."]+
+                ";"
+                {
+                    def name = stringFromTokenList(chars);
+                    <> mapGet(ENTITY_MAP, name)
+                }
+            |
+                { <> @[error: "Invalid named character literal."] }
+            )
+        |
+            { <> @[error: "Invalid character literal escape sequence."] }
         )
     )
 /};
