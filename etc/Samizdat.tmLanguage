@@ -115,27 +115,27 @@
 		</dict>
 		<dict>
 			<key>name</key>
+			<string>variable.parameter</string>
+			<key>match</key>
+			<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
+		</dict>
+		<dict>
+			<key>name</key>
 			<string>keyword.control</string>
 			<key>match</key>
 			<string>\b(break|continue|def|default|do|else|export|fn|if|import|module|return|switch|var|while)\b</string>
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>constant.language</string>
-			<key>match</key>
-			<string>\btrue\b|\bfalse\b|\bnull\b|\[\]|\[=\]|@@</string>
-		</dict>
-		<dict>
-			<key>name</key>
 			<string>keyword.operator</string>
 			<key>match</key>
-			<string>&lt;&gt;</string>
+			<string>&amp;&amp;?&amp;?|\|\|?\|?|\^\^?\^?|\\?&lt;&lt;?&lt;?|\\?&gt;&gt;?&gt;?|!!?!?|\\?==?|\\?!=|\\?&lt;=|\\?&gt;=|&lt;&gt;|\.\.|\+|-|\*|/|%</string>
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>variable.parameter</string>
+			<string>constant.language</string>
 			<key>match</key>
-			<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
+			<string>\btrue\b|\bfalse\b|\bnull\b|\[\]|\[:\]|@@</string>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -198,7 +198,7 @@
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>([_a-zA-Z][_a-zA-Z0-9]*) *(=)</string>
+			<string>([_a-zA-Z][_a-zA-Z0-9]*) *(=)(?!=)</string>
 		</dict>
 	</array>
 	<key>scopeName</key>
