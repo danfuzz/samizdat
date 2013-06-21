@@ -33,13 +33,17 @@ def KEYWORDS = listReduce([:],
       "if", "import", "module", "return", "switch", "var", "while" ])
     { result, ., name :: <> [result*, (name): @[(name)]] };
 
-# Converts a list of digit values into an int, given the base.
-fn intFromDigitList(base, digits) {
-    <> listReduce(0, digits) { result, ., digit ::
+# Converts a list of digit values into an int, given the base. If `baseSign`
+# is negative, this indicates that the result should be negative.
+fn intFromDigitList(baseSign, digits) {
+    def base = iabs(baseSign);
+    def value = listReduce(0, digits) { result, ., digit ::
         <> ifTrue { <> eq(digit, -1) }
             { <> result }
             { <> iadd(imul(result, base), digit) }
-    }
+    };
+
+    <> imul(value, isign(baseSign))
 };
 
 
@@ -120,26 +124,26 @@ def tokHexDigit = {/
 
 # Parses an integer literal.
 def tokInt = {/
-    base = (
-        "0x" { <> 16 }
+    baseSign = (
+        "0x" ("-" { <> -16 } | { <> 16 })
     |
-        "0b" { <> 2 }
+        "0b" ("-" { <> -2 } | { <> 2 })
     |
         { <> 10 }
     )
 
     digits = (
-        &&(eq(base, 10))
+        &&(eq(baseSign, 10))
         tokDecDigit+
     |
-        &&(eq(base, 16))
+        &&(eq(iabs(baseSign), 16))
         tokHexDigit+
     |
-        &&(eq(base, 2))
+        &&(eq(iabs(baseSign), 2))
         tokBinDigit+
     )
 
-    { <> @[int: intFromDigitList(base, digits)] }
+    { <> @[int: intFromDigitList(baseSign, digits)] }
 /};
 
 # Parses a single hexadecimal character. This is called during `\x...;`
