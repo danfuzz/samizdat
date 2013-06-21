@@ -44,7 +44,7 @@ enum {
     UTIL_MAX_CALL_STACK_DEPTH = 2000,
 
     /** Maximum number of disjoint heap allocation page ranges. */
-    UTIL_MAX_PAGE_RANGES = 200
+    UTIL_MAX_PAGE_RANGES = 400
 };
 
 #endif
