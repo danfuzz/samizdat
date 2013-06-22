@@ -189,7 +189,7 @@ a left shift.
 
 ### Additive Infix Operators (Precedence 4)
 
-#### Addition &mdash; `expression * expression`
+#### Addition &mdash; `expression + expression`
 
 This asserts that both expressions result in numbers, and results in the
 sum of the two numbers.
