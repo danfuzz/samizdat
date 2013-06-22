@@ -50,7 +50,7 @@ fn makeThunk(expression) {
 # with optional expression value. The expression if supplied is automatically
 # "thunked".
 fn makeCallNonlocalExit(name, expression?) {
-    <> ifValue { <> listFirst(expression) }
+    <> ifValue { <> expression* }
         { ex :: <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
         { <> makeCall(makeVarRef("nonlocalExit"), name) }
 };
