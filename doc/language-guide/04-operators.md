@@ -19,10 +19,10 @@ more tightly than any other operators, including prefix operators.
 
 #### Apply function &mdash; `expression(arg, arg, ...) { block } { block } ...`
 
-To apply an expression as a function, place arguments to apply it to
-between parentheses. The result of this expression is the same as the result
-of the function call. If the function call returned void, then
-the expression's result is also a void.
+To apply an expression as a function, follow it with a list of comma-separated
+arguments to apply it to, between parentheses. The result of this expression
+is the same as the result of the function call. If the function call returns
+void, then the expression's result is also a void.
 
 In order to make it convenient to define control-structure-like functions,
 any number of block closure literals may follow the closing parenthesis. All
@@ -55,6 +55,10 @@ indices may be placed within the square brackets, separated by commas. With
 such a form, it is okay for the indexed elements to not exist, in which case
 the entire expression has a void result. It is *not* okay for a found element
 to not be indexable (resulting in termination of the runtime).
+
+As with function calls, a star after an index expression indicates
+interpolation. If used, the so-interpolated expression must evaluate to
+a list.
 
 The expression to index into and all of the indices must be non-void.
 
