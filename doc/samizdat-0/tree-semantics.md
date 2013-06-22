@@ -90,6 +90,23 @@ systems that are defined using those terms. In C terms, the facility is
 along the lines of `setjmp` / `longjmp`. In Lisp terms, the facility is
 an implementation of downward-passed / upward-called continuations.
 
+#### `expression` &mdash; `@[expression: expression]`
+
+* `expression` &mdash; Arbitrary expression node.
+
+A node with type `expression` per se is merely a pass-through to its
+enclosed expression. In most positions, it is effectively a no-op.
+However, it is useful to disambiguate argument or list element
+interpolation from regular expression interpolation.
+
+For example, in terms of surface syntax, `foo(bar*)` is a call to `foo`
+with an interpolation of all of `bar`'s (zero or more) elements as
+arguments, whereas `foo((bar*))` is a single-argument call to `foo`,
+with the implied (and asserted) a single element of list `bar` as the
+argument.
+
+TODO: Not yet implemented.
+
 #### `interpolate` &mdash; `@[interpolate: expression]`
 
 * `expression` &mdash; Expression node, which must yield a list when
