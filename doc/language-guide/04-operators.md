@@ -261,3 +261,15 @@ the outer expression.
 
 **Future direction:** Samizdat may switch to a logic model where, for
 the purpose of conditionals, void means false, and non-void means true.
+
+### Value/Void Logical And Operator (Precedence 2) &mdash; `expression & expression`
+
+TODO: Document and implement this.
+
+### Value/Void Logical Or Operator (Precedence 2) &mdash; `expression & expression`
+
+TODO: Document and implement this.
+
+**Note:** The question-mark-colon trinary operator from C (and descendants)
+is obviated in Samizdat by this and the value/void-and operator. `x ? y : z`
+in C can generally be turned into `x & y | z` in Samizdat.
