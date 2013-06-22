@@ -68,9 +68,13 @@ ifValue { <> nonlocalTest(["fizmo"]) }
     { value :: <> out(value) }
     { out("void") };
 
-# The negative here forces the interpolated expression not to be considered
-# a function argument.
-out(-(list5()*));
+# The extra parens here force the interpolated expression not to be considered
+# at function argument level.
+out((list5()*));
+
+# Likewise the minus sign here (because it binds looser than the
+# interpolation star).
+out(-list5()*);
 
 def five = list5()*;
 out(five);
