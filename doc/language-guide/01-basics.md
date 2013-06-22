@@ -48,7 +48,11 @@ continues. */ thisIsNotCommentary
 
 Most non-comment lines in a Samizdat program are part of one statement
 or other, while *within* a statement most of the text is part of an
-expression.
+expression. The distinction is that statements can only appear at
+the "top level" of a program or function definition, while expressions
+can directly contain other expressions, bottoming out at simple "atoms"
+such as variable names and literal constant values (such as numbers
+and strings).
 
 Statements are separated by semicolons (`;`). In addition (TODO), there
 is implicit statement separation based on the indentation level of
