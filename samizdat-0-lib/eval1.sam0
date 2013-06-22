@@ -220,11 +220,14 @@ fn convertClosureLike(node) {
     <> @[(nodeType): [nodeValue*, yield*, statements: statements]]
 };
 
-# Does parser conversion of an `interpolate` node.
-fn convertInterpolate(node) {
-    def value = convertExpression(tokenValue(node));
+# Does parser conversion of a node whose payload value is an
+# arbitrary expression. This includes `expression` (per se) and
+# `interpolate` nodes.
+fn convertExpressionPayload(node) {
+    def nodeType = tokenType(node);
+    def nodeValue = convertExpression(tokenValue(node));
 
-    <> @[interpolate: value];
+    <> @[(nodeType): nodeValue]
 };
 
 # Does parser conversion of a `varDef` node.
@@ -242,8 +245,9 @@ fn convertNop(node) { <> node };
 def CONVERT_EXPRESSION_MAP = [
     call:        convertCall,
     closure:     convertClosureLike,
+    expression:  convertExpressionPayload,
     fnDef:       convertClosureLike,
-    interpolate: convertInterpolate,
+    interpolate: convertExpressionPayload,
     literal:     convertNop,
     parser:      convertParser,
     varDef:      convertVarDef,
