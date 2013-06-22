@@ -107,8 +107,6 @@ of `bar`'s (zero or more) elements as arguments, whereas `foo((bar*))`
 is a single-argument call to `foo`, with the implied (and asserted)
 a single element of list `bar` as the argument.
 
-TODO: Not yet implemented.
-
 #### `interpolate` &mdash; `@[interpolate: expression]`
 
 * `expression` &mdash; Expression node, which must yield a list when
