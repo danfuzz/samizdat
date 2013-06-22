@@ -476,7 +476,7 @@ def parseParenExpression = {/
     @"("
     ex = parseExpression
     @")"
-    { <> ex }
+    { <> @[expression: ex] }
 /};
 
 # Parses an atomic expression.

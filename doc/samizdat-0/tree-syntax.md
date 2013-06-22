@@ -400,7 +400,7 @@ def parenExpression = {/
     @"("
     ex = expression
     @")"
-    { <> ex }
+    { <> @[expression: ex] }
 /};
 
 def atom = {/
