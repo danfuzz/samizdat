@@ -52,6 +52,7 @@ The only operators regognized in Layer 0 are:
   aren't all that useful anyway.
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
 * `<> expr` &mdash; Local yield.
+* `<out> exr` &mdash; Named nonlocal return.
 * `return expr` &mdash; Function return.
 
 Parsing expression operator syntax is implemented in Layer 1.
