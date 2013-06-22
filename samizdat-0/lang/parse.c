@@ -806,7 +806,7 @@ DEF_PARSE(parenExpression) {
     zvalue expression = PARSE_OR_REJECT(expression);
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return expression;
+    return datTokenFrom(STR_EXPRESSION, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
