@@ -55,7 +55,7 @@ v = [(k1): v1, k2: v2];  is equivalent to  v = makeMap([v1, k1], [v2, k2]);
 [etc.]
 
 v = [k1..k2: v];         is equivalent to  v = makeMap([v, k1..k2]);
-v = [m1*, m2*];          is equivalent to  v = makeMap(m1, m2);
+v = [:, m1*, m2*];       is equivalent to  v = makeMap(m1, m2);
 ```
 
 #### `makeMapReversed(rest*) <> map`
