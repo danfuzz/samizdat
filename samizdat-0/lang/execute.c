@@ -440,7 +440,7 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     else if (datTokenTypeIs(e, STR_CLOSURE))
         return execClosure(frame, e);
     else if (datTokenTypeIs(e, STR_EXPRESSION))
-        return execClosure(frame, datTokenValue(e));
+        return execExpressionVoidOk(frame, datTokenValue(e));
     else if (datTokenTypeIs(e, STR_INTERPOLATE))
         return execInterpolate(frame, e);
     else {
