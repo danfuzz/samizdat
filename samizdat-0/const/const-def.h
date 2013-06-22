@@ -46,6 +46,7 @@ STR(BOOLEAN,          "boolean");
 STR(CALL,             "call");
 STR(CLOSURE,          "closure");
 STR(EMPTY,            ""); // The canonical empty string (`""`) value.
+STR(EXPRESSION,       "expression");
 STR(FALSE,            "false");
 STR(FN_DEF,           "fnDef");
 STR(FORMALS,          "formals");
