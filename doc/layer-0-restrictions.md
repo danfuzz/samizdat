@@ -26,20 +26,20 @@ in int literals.
 Strings
 -------
 
-Neither hexadecimal nor entity escapes are recognized in string literals.
-Parsing of these is implemented in Layer 2.
+Neither hexadecimal nor entity escapes are recognized in string literals
+in Layer 0. Parsing of these is implemented in Layer 2.
 
 Variable Definition
 -------------------
 
-Only immutable variable definitions (`def name = ...`) are recognized.
-TODO: Mutable variable definitions are implemented in Layer 2.
+Only immutable variable definitions (`def name = ...`) are recognized in
+Layer 0. TODO: Mutable variable definitions are implemented in Layer 2.
 
 Parsing
 -------
 
 Parsing syntax (parsing blocks and parsing operators) is not recognized at
-all. This is implemented in Layer 1.
+all in Layer 0. This is implemented in Layer 1.
 
 Operators
 ---------
@@ -61,8 +61,8 @@ Full expression operator syntax is implemented in Layer 2.
 Control Constructs
 ------------------
 
-No control expressions are recognized (`if`, `do`, `while`, etc.). These
-are implemented in Layer 2.
+No control expressions are recognized (`if`, `do`, `while`, etc.) in Layer 0.
+These are implemented in Layer 2.
 
 **Note:** `fn` statements and expressions *are* recognized in Layer 0.
 
