@@ -48,7 +48,19 @@
 			<key>name</key>
 			<string>constant.numeric</string>
 			<key>match</key>
-			<string>-?\b[0-9]+\b</string>
+			<string>-?\b[0-9_]+\b</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>constant.numeric</string>
+			<key>match</key>
+			<string>\b0x-?[0-9a-fA-F_]+\b</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>constant.numeric</string>
+			<key>match</key>
+			<string>\b0b-?[01_]+\b</string>
 		</dict>
 		<dict>
 			<key>name</key>
