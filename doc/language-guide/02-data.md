@@ -125,6 +125,12 @@ A group of mappings with multiple keys that map to the same value
 can be written in a short-hand using the same range and
 interpolation syntax as with lists.
 
+An entire other map can be interpolated into a new map by listing the
+map to interpolate followed by a `*`. To avoid ambiguity between a
+list and a map that is just full of interpolation, a map may optionally
+start with a "degenerate" element of just `:` (as demonstrated in the
+final example below).
+
 To avoid ambiguity with the empty list, the empty map is
 written as `[:]`.
 
@@ -140,6 +146,8 @@ written as `[:]`.
 [["complex", "data", "as", "key"]: "Handy!"]
 [0..9: "digits", 10: "not a digit"]
 [["these", "map", "to", "the"]*: "same value"]
+[first: 1, [second: 2, third: 3]*]
+[:, [first: 1]*, [second: 2, third: 3]*]
 ```
 
 
