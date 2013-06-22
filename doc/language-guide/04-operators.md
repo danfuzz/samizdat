@@ -101,9 +101,9 @@ valid to use it to extract the sole value from a single-element list
 (since void expressions aren't valid other than at yield points).
 
 **Note:** A postfix star expression as an element of a function call
-argument list, as a list literal element, or as a map literal key has
-a slightly different (but related) meaning. See the documentation on
-those constructs for more details.
+argument list, as a collection index, as a list literal element, or as
+a map literal key has a slightly different (but related) meaning. See
+the documentation on those constructs for more details.
 
 
 ### Prefix Operators (Precedence 7)
