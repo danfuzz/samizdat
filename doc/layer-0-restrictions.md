@@ -64,5 +64,5 @@ Control Constructs
 No control expressions are recognized (`if`, `do`, `while`, etc.). These
 are implemented in Layer 2.
 
-**Note:** Function statements and expressions *are* recognized in Layer 0.
+**Note:** `fn` statements and expressions *are* recognized in Layer 0.
 
