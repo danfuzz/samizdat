@@ -1,10 +1,16 @@
-Samizdat Layer 0
-================
+Samizdat 0 Library Guide
+========================
 
-Core Library
-------------
+The following sections define the core library for *Samizdat 0*.
 
-The following sections define the core library for *Samizdat Layer 0*.
+The core library isn't as minimal as the language itself, but it is still
+intended to be more on the minimal side of things. Beyond the true
+essentials, the library contains bindings that have proven to be useful
+in practice for building programs in the language. A subset of the library
+is defined to be "primitive", that is written into the lowest layer of
+language implementation as primitive functions. The remainder of the library
+is implemented in-language in terms of the primitive functions and the
+language syntax.
 
 Each section covers definitions for one conceptual area, either
 concerning a data type or some more nebulous concept.
@@ -13,7 +19,7 @@ Each section is divided into two subsections, one for primitive
 defintions, and one for in-language definitions. From the perspective of
 "client" code written in the language, there is no distinction between the
 two sections, but from the perspective of implementation, there is.
-In particular, an implementation of *Samizdat Layer 0* must provide the
+In particular, an implementation of *Samizdat 0* must provide the
 primitive definitions, but it can rely on the canonical in-language library
 source for the remainder, which is written in terms of the primitives.
 

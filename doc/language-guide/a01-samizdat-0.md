@@ -2,7 +2,7 @@ Samizdat Language Guide
 =======================
 
 Appendix: *Samizdat 0* Implementation Restrictions
-------------------------------------------------
+--------------------------------------------------
 
 *Samizdat 0* is the system in which the full Samizdat implementation is
 written. It implements several "layers" of language, with *Samizdat Layer 0*
