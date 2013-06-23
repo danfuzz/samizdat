@@ -29,7 +29,6 @@ bytecode-based.
 
 Contents:
 
-* [Data Syntax And Semantics In A Nutshell](data-syntax-semantics.md)
 * [Token Syntax](token-syntax.md)
 * [Tree Syntax](tree-syntax.md)
 * [Tree Semantics](tree-semantics.md)
