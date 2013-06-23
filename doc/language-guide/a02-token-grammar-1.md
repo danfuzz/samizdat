@@ -34,6 +34,7 @@ def punctuation = {/
     ["@:.,=-+?;*<>{}()[]" "&|!"]  # The latter string is just for *Layer 1*.
 /};
 
+# Note: Additional rules for string character parsing are defined in *Layer 2*.
 def stringChar = {/
     (
         ch = [! "\\" "\""]
@@ -50,7 +51,6 @@ def stringChar = {/
             "r"  { <> "\r" } |
             "t"  { <> "\t" } |
             "0"  { <> "\0" }
-            # Note: Additional rules for strings are defined in *Layer 2*.
         )
     )
 /};
