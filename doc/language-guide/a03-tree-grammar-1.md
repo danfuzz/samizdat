@@ -440,11 +440,13 @@ def actualsList = {/
     closure+
 /};
 
+# Note: There are additional prefix operators in *Layer 2* and beyond.
 def prefixOperator = {/
     @"-"
     { <> { node :: <> makeCallName("ineg", node) } }
 /};
 
+# Note: There are additional postfix operators in *Layer 2* and beyond.
 def postfixOperator = {/
     actuals = actualsList
     { <> { node :: <> makeCall(node, actuals*) } }
@@ -484,6 +486,7 @@ def rangeExpression {/
     { <> listReduce(base, ops) { result, ., op :: <> op(result) } }
 /};
 
+# Note: There are additional expression rules in *Layer 2* and beyond.
 def expression = {/
     rangeExpression | fnExpression
 /};
@@ -492,6 +495,7 @@ def statement = {/
     varDef | fnDef | expression
 /};
 
+# Note: There are additional nonlocal exit rules in *Layer 2* and beyond.
 def nonlocalExit = {/
     name = (
         @"<"
