@@ -14,3 +14,4 @@ Contents:
 * [Control Constructs](05-control.md)
 * [Modules](06-modules.md)
 * [Parsing](07-parsing.md)
+* [Parse Tree Forms](08-parse-trees.md)
