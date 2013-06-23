@@ -7,6 +7,10 @@ Data Types
 Samizdat has a small handful of atomic data types and a few compound data
 types. There are also a few special named constant values.
 
+The examples in this section all use literal value for all parts of
+values, but it is worth noting that the language syntax allows arbitrary
+expressions anywhere where a literal value occurs in these examples.
+
 
 ### Int
 
