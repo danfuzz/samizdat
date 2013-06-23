@@ -166,9 +166,14 @@ def tokNamedChar = {/
 # Parses a single character, inside a quoted string.
 def tokStringChar = {/
     (
-        ch = [! "\\" "\""]
+        ch = [! "\\" "\"" "\n"]
         { <> tokenType(ch) }
     )
+|
+    # This is the rule that ignores spaces after newlines.
+    "\n"
+    " "*
+    { <> "\n" }
 |
     (
         "\\"
@@ -180,6 +185,10 @@ def tokStringChar = {/
             "r"  { <> "\r" } |
             "t"  { <> "\t" } |
             "0"  { <> "\0" }
+        |
+            # This is the rule that ignores the newline after end-of-line `\`.
+            " "* "\n" " "*
+            { <> "" }
         |
             "x"
             (
