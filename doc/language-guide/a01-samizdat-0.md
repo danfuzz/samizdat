@@ -50,8 +50,12 @@ in int literals.
 
 #### Strings
 
-Neither hexadecimal nor entity escapes are recognized in string literals
-in Layer 0. Parsing of these is implemented in Layer 2.
+In Layer 0, the only backslash escapes that are recognized are the
+trivial one-character ones. *Not* included are hexadecimal escapes,
+entity escapes, or newline ignoring. In addition, space-after-newline
+collapsing is *not* performed.
+
+Handling of all of these is implemented in Layer 2.
 
 #### Variable Definition
 
