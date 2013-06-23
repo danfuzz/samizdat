@@ -1,18 +1,23 @@
-Samizdat Layer 0
-================
+Samizdat Language Guide
+=======================
 
-Tree Syntax
------------
+Appendix: *Samizdat Layer 1* Tree Grammar
+-----------------------------------------
 
-The following is a BNF/PEG-like description of the node / tree syntax.
-This definition uses syntax which is identical to the parser syntax
-implemented at a higher layer.
+The following is a nearly complete tree grammar for *Samizdat Layer 1*,
+written in *Samizdat Layer 1*, with commentary calling out the parts
+that are needed specifically for *Layer 1*. Anything left unmarked is
+needed for *Layer 0*.
 
 A program is parsed by matching the `program` rule, which yields a
 `closure` node. For simple error handling, the rule `programOrError`
 can be used.
 
 ```
+#
+# Helper functions
+#
+
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = ["a".."z": true];
@@ -56,8 +61,18 @@ fn makeCallNonlocalExit(name, expression?) {
         { <> makeCall(makeVarRef("nonlocalExit"), name) }
 };
 
+
+#
+# *Layer 0* rules.
+#
+# With the exception of the forward declaration of `parser` and the
+# so-commented clause in the `atom` rule, the following is exactly and only
+# the grammar for *Layer 0*.
+#
+
 # forward declaration: programBody
 # forward declaration: expression
+# forward declaration: parser       # Needed for *Layer 1*.
 
 def yieldDef = {/
     @"<"
@@ -406,6 +421,10 @@ def parenExpression = {/
 def atom = {/
     varRef | int | string | list | emptyMap | map | uniqlet | token |
     closure | parenExpression
+|
+    # The lookahead is just to make it clear that *Layer 1* can
+    # only be "activated" with that one specific token.
+    &@"{/" parser
 /};
 
 def actualsList = {/
@@ -532,5 +551,172 @@ def programOrError = {/
         { ... io0Die ... pending ... }
     )?
     { <> prog }
+/};
+
+
+#
+# *Layer 1* rules.
+#
+# The remainder of this grammar consists of the definitions required
+# to implement *Layer 1*, above and beyond the above.
+#
+# **Note:** The grammar uses the label "pex" to denote various
+# "Parser EXpression" types.
+
+# forward declaration: choicePex
+
+def parser = {/
+    @"{/"
+    pex = choicePex
+    @"/}"
+    { <> @[parser: pex] }
+/};
+
+def parenPex = {/
+    @"("
+    pex = choicePex
+    @")"
+    { <> pex }
+/};
+
+def parserString = {/
+    s = @string
+    {
+        def value = tokenValue(s);
+        <> ifTrue { <> eq(lowSize(value), 1) }
+            { <> @[token: value] }
+            { <> s }
+    }
+/};
+
+def parserToken = {/
+    @"@"
+    type = identifierString
+    { <> @[token: tokenValue(type)] }
+/};
+
+# Handles regular string literals and character ranges.
+def parserSetString = {/
+    s = @string
+    (
+        @".."
+        end = @string
+        {
+            def startChar = tokenValue(s);
+            def endChar = tokenValue(end);
+            <> ifTrue
+                { <> and
+                    { <> eq(lowSize(startChar), 1) }
+                    { <> eq(lowSize(endChar), 1) } }
+                { <> @[string: stringAdd([startChar..endChar]*)] }
+        }
+    |
+        { <> s }
+    )
+/};
+
+def parserSet = {/
+    @"["
+
+    type = (
+        @"!" { <> "[!]" }
+    |
+        { <> "[]" }
+    )
+
+    terminals = (
+        strings = parserSetString+
+        {
+            def oneString = listReduce("", strings)
+                { result, ., s :: <> stringAdd(result, tokenValue(s)) };
+            <> stringReduce([], oneString)
+                { result, ., ch :: <> [result*, ch] }
+        }
+    |
+        tokens = parserToken+
+        {
+            def tokens = [first, rest*];
+            <> listMap(tokens) { ., t :: <> tokenValue(t) }
+        }
+    |
+        { <> [] }
+    )
+
+    @"]"
+
+    { <> @[(type): terminals] }
+/};
+
+def parserCode = {/
+    closure = parseNullaryClosure
+    { <> @["{}": tokenValue(closure)] }
+/};
+
+def parserPredicate = {/
+    @"&&"
+    predicate = parenExpression
+    { <> @["&&": predicate] }
+/};
+
+def parserAtom = {/
+    varRef
+|
+    parserString
+|
+    parserToken
+|
+    parserSet
+|
+    parserCode
+|
+    parserPredicate
+|
+    @"."
+|
+    @"()"
+|
+    parenPex
+/};
+
+def repeatPex = {/
+    atom = parserAtom
+    (
+        repeat = [@"?" @"*" @"+"]
+        { <> @[tokenType(repeat): atom] }
+    |
+        { <> atom }
+    )
+/};
+
+def lookaheadPex = {/
+    (
+        lookahead = [@"&" @"!"]
+        pex = repeatPex
+        { <> @[tokenType(lookahead): pex] }
+    )
+|
+    repeatPex
+/};
+
+def namePex = {/
+    (
+        name = @identifier
+        @"="
+        pex = lookaheadPex
+        { <> @[varDef: [name: tokenValue(name), value: pex]] }
+    )
+|
+    lookaheadPex
+/};
+
+def sequencePex = {/
+    items = namePex+
+    { <> @[sequence: items] }
+/};
+
+def choicePex = {/
+    first = sequencePex
+    rest = (@"|" sequencePex)*
+    { <> @[choice: [first, rest*]] }
 /};
 ```

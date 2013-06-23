@@ -5,8 +5,12 @@ Execution Parse Trees
 ---------------------
 
 Samizdat source code is itself parsed into a well-specified parse tree form
-before being executed (or being prepared for execution). This section
-details all of the data structures of this form.
+before being executed (or being prepared for execution). This format,
+along with API defined by the primitively-defined part of the core library,
+are the analog to a bytecode specification in systems that are
+bytecode-based.
+
+This section details all of the data structures of this form.
 
 This section does *not* cover the forms used when building parsers. Parser
 parse trees are covered in a later section. To be clear, those forms are

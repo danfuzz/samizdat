@@ -22,14 +22,6 @@ language implementation as primitive functions. The remainder of the library
 is implemented in-language in terms of the primitive functions and the
 language syntax.
 
-This specification includes an executable parse tree format. This format,
-along with API defined by the primitively-defined part of the core library,
-are the analog to a bytecode specification in systems that are
-bytecode-based.
-
 Contents:
 
-* [Token Syntax](token-syntax.md)
-* [Tree Syntax](tree-syntax.md)
-* [Tree Semantics](tree-semantics.md)
 * [Core Library](library.md)

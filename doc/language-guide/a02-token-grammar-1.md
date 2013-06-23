@@ -1,16 +1,17 @@
-Samizdat Layer 0
-================
+Samizdat Language Guide
+=======================
 
-Token Syntax
-------------
+Appendix: *Samizdat Layer 1* Token Grammar
+------------------------------------------
 
-The following is a BNF/PEG-like description of the tokens. This definition
-uses syntax which is nearly identical to the parser syntax provided at the
-higher layer.
+The following is a nearly complete token grammar for *Samizdat Layer 1*,
+written in *Samizdat Layer 1*, with commentary calling out the parts
+that are needed specifically for *Layer 1*. Anything left unmarked is
+needed for *Layer 0*.
 
 A program is tokenized by matching the `file` rule, resulting in a
 list of all the tokens. Tokenization errors are represented in the
-result as tokens of type `"error"`.
+result as tokens of type `error`.
 
 ```
 # A map from strings to their corresponding keywords, one mapping for each
@@ -25,7 +26,10 @@ def whitespace = {/
 /};
 
 def punctuation = {/
-    "@@" | "::" | ".." | "<>" | "()" | ["@:.,=-+?;*<>{}()[]"]
+    "@@" | "::" | ".." |
+    "<>" | "()" |
+    "{/" | "/}" | "&&" |          # These are only needed in *Layer 1*.
+    ["@:.,=-+?;*<>{}()[]" "&|!"]  # The latter string is just for *Layer 1*.
 /};
 
 def stringChar = {/

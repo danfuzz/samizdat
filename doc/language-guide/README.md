@@ -16,3 +16,9 @@ Contents:
 * [Parsing](07-parsing.md)
 * [Execution Parse Trees](08-execution-trees.md)
 * [Parser Parse Trees](09-parser-trees.md)
+
+Appendix:
+
+* [*Samizdat 0* Implementation Restrictions](a01-samizdat-0.md)
+* [*Layer 1* Token Grammar](a02-token-grammar-1.md)
+* [*Layer 1* Tree Grammar](a03-tree-grammar-1.md)
