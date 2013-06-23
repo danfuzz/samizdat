@@ -96,6 +96,12 @@ to continue a string constant across lines without introducing newlines.
 "\&zigrarr;"                  # same as "\x21dd;" or "⇝"
 "\&mu,nu;"                    # same as "μν"
 "\"blort\" \&mdash; potion that enables one to see in the dark.\n"
+
+# same as "* A couple\n  of lines.\n"
+"\
+    * A couple
+   \  of lines.
+"
 ```
 
 
