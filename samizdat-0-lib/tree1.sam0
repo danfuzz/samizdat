@@ -40,7 +40,7 @@ fn makeLiteral(value) {
     <> @[literal: value]
 };
 
-# Returns node representing a thunk (no-arg function) that returns the
+# Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
     <> @[closure: [statements: [], yield: expression]]
