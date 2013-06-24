@@ -61,6 +61,10 @@ comparators in-language.
 <br><br>
 ### In-Language Definitions
 
+#### `booleanFromLogic(logic?) <> boolean`
+
+TODO: Document.
+
 #### `eq(value1, value2) <> logic`
 
 Checks for equality. Returns `value2` if the two given values are
@@ -71,6 +75,10 @@ identical. Otherwise returns void.
 Checks for a less-than-or-equal relationship. Returns `value2` if the
 first value orders before the second or is identical to it.
 Otherwise returns void.
+
+#### `logicFromBoolean(boolean) <> logic`
+
+TODO: Document.
 
 #### `lt(value1, value2) <> logic`
 
