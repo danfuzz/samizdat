@@ -20,6 +20,13 @@ fn out(value) {
     io0Note(format("%q", value))
 };
 
+# Prints out the given logic result.
+fn outLogic(value?) {
+    ifTrue { <> eq(value, []) }
+        { io0Note("Logical false.") }
+        { io0Note("Logical true.") }
+};
+
 # Something to call.
 fn returnVoid() {
     # Nothing to see here!
@@ -50,10 +57,6 @@ out(- 10);
 out(- - 20);
 out(- - + - + 30);
 out(!!! -1);
-out(!false);
-out(!true);
-out(!!true);
-out(! ! !true);
 out(returnString());
 out(["zero", "one", "two"][1]);
 out([a: 1, b: 2, c: 3]["c"]);
@@ -65,5 +68,13 @@ out(returnMap().a);
 out(returnMap().cats.o);
 out(returnVoid()?);
 out(returnString()?);
+
+# Logical ops. These expressions can yield void, which is why they're
+# wrapped in `?` expressions.
+outLogic((!returnVoid())?*);
+outLogic((!true)?*);
+outLogic((!false)?*);    # This one is the documented surprising result.
+outLogic((! !true)?*);
+outLogic((! ! !true)?*);
 
 <> 0

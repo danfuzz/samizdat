@@ -40,7 +40,7 @@ fn makeLiteral(value) {
     <> @[literal: value]
 };
 
-# Returns node representing a thunk (no-arg function) that returns the
+# Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
     <> @[closure: [statements: [], yield: expression]]
@@ -815,10 +815,18 @@ parseNonlocalExit(implNonlocalExit);
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
 def implPrefixOperator = {/
-    operator = [@"+" @"-" @"!" @"!!!"]
+    operator = [@"+" @"-" @"!!!"]
     {
         def name = mapGet(UNARY_OPERATORS, tokenType(operator));
         <> { node :: <> makeCall(name, node) }
+    }
+|
+    @"!"
+    {
+        # `!` is special, since it's effectively a control construct.
+        <> { node ::
+            <> makeCallNameThunks("ifFalse", node, makeLiteral(true))
+        }
     }
 /};
 parsePrefixOperator(implPrefixOperator);

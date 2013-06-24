@@ -182,11 +182,6 @@ fn \"unary-"(value) {
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-fn \"unary!"(value) {
-    <> not(value)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary[]"(value, indices*) {
     <> listReduce(value, indices)
         { result, ., index ::
@@ -255,7 +250,6 @@ fn ifChain(functions, thens*) {
     "binary\\>=":   \"binary\\>=",
     "unary+":       \"unary+",
     "unary-":       \"unary-",
-    "unary!":       \"unary!",
     "unary[]":      \"unary[]",
     "unary!!!":     \"unary!!!",
     compareChain:   compareChain,
