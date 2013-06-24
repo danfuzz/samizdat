@@ -14,7 +14,7 @@
 PRIM_IMPL(ifTrue) {
     requireRange(argCount, 2, 3);
 
-    if (constBoolFromBoolean(langCall(args[0], 0, NULL))) {
+    if (langCall(args[0], 0, NULL) != NULL) {
         return langCall(args[1], 0, NULL);
     } else if (argCount == 3) {
         return langCall(args[2], 0, NULL);
