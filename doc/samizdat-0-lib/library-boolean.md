@@ -44,52 +44,54 @@ map < token < uniqlet` &mdash; and minor order is type-dependant.
   itself. There is a total ordering of uniqlets, which is consistent,
   transitive, and symmetric &mdash; but otherwise arbitrary.
 
-#### `lowOrderIs(value1, value2, check1, check2?) <> boolean`
+#### `lowOrderIs(value1, value2, check1, check2?) <> logic`
 
 The two values are compared as with `lowOrder`. The int
 result of that comparison are checked for equality with
 the one or two check values. If the comparison result is equal
-to either check value, this function returns `true`. Otherwise
-it returns `false`.
+to either check value, this function returns `value2`. Otherwise
+it returns void.
 
 **Note:** This function exists in order to provide a primitive
-comparison function that returns a boolean. Without it (or something
-like it), there would be no way to define boolean-returning
+comparison function that returns a logic result. Without it (or something
+like it), there would be no way to define logic-semantics
 comparators in-language.
 
 
 <br><br>
 ### In-Language Definitions
 
-#### `eq(value1, value2) <> boolean`
+#### `eq(value1, value2) <> logic`
 
-Checks for equality. Returns `true` iff the two given values are
-identical.
+Checks for equality. Returns `value2` if the two given values are
+identical. Otherwise returns void.
 
-#### `le(value1, value2) <> boolean`
+#### `le(value1, value2) <> logic`
 
-Checks for a less-than-or-equal relationship. Returns `true` iff the
+Checks for a less-than-or-equal relationship. Returns `value2` if the
 first value orders before the second or is identical to it.
+Otherwise returns void.
 
-#### `lt(value1, value2) <> boolean`
+#### `lt(value1, value2) <> logic`
 
-Checks for a less-than relationship. Returns `true` iff the first value
-orders before the second.
+Checks for a less-than relationship. Returns `value2` if the first value
+orders before the second. Otherwise returns void.
 
-#### `ge(value1, value2) <> boolean`
+#### `ge(value1, value2) <> logic`
 
-Checks for a greater-than-or-equal relationship. Returns `true` iff the
+Checks for a greater-than-or-equal relationship. Returns `value2` if the
 first value orders after the second or is identical to it.
+Otherwise returns void.
 
-#### `gt(value1, value2) <> boolean`
+#### `gt(value1, value2) <> logic`
 
-Checks for a greater-than relationship. Returns `true` iff the first value
-orders after the second.
+Checks for a greater-than relationship. Returns `value2` if the first value
+orders after the second. Otherwise returns void.
 
-#### `ne(value1, value2) <> boolean`
+#### `ne(value1, value2) <> logic`
 
-Checks for inequality. Returns `true` iff the two given values are not
-identical.
+Checks for inequality. Returns `value2` if the two given values are not
+identical. Otherwise returns void.
 
 #### `not(boolean) <> boolean`
 

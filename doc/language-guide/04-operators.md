@@ -12,7 +12,7 @@ The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
 
 
-### Postfix Operators (Precedence 8, highest / tightest)
+### Postfix Operators (Precedence 10, highest / tightest)
 
 Postfix operators have the highest precedence in the language, binding
 more tightly than any other operators, including prefix operators.
@@ -106,7 +106,7 @@ a map literal key has a slightly different (but related) meaning. See
 the documentation on those constructs for more details.
 
 
-### Prefix Operators (Precedence 7)
+### Prefix Operators (Precedence 9)
 
 Prefix operators are higher in precedence than infix operators, but lower
 in precedence than postfix operators.
@@ -126,12 +126,13 @@ inner expression's result.
 #### Logical not &mdash; `!expression`
 
 Placing a bang (exclamation point) in front of an expression reverses
-the logical sense of the expression. If the inner expression is the
-boolean value `false`, the outer expression's result is `true`. In all
-other cases, the outer expression's result is `false`.
+the logical sense of the expression. If the inner expression evaluates
+to any value (not void), the outer expression's result is void. If
+the inner expression evaluates to void, then the outer expression's
+result is the value `true`.
 
-**Future direction:** Samizdat may switch to a logic model where, for
-the purpose of conditionals, void means false, and non-void means true.
+**Note:** Samizdat logic expressions are based on the idea of void as
+false and any value as true.
 
 #### Bitwise complement &mdash; `!!!expression`
 
@@ -140,7 +141,7 @@ expression results in an int, and results in the bitwise complement of
 the inner expression's result.
 
 
-### Range Operator (Precedence 6) &mdash; `expression..expression`
+### Range Operator (Precedence 8) &mdash; `expression..expression`
 
 This indicates a range of values of ints or characters. The two expressions
 must be of the same type, either ints or strings. If strings, the expressions
@@ -155,7 +156,7 @@ it is only valid where general interpolations are valid (e.g. as list
 elements).
 
 
-### Multiplicative Infix Operators (Precedence 5)
+### Multiplicative Infix Operators (Precedence 7)
 
 #### Multiplication &mdash; `expression * expression`
 
@@ -187,7 +188,7 @@ If the second expression results in a negative number, this instead becomes
 a left shift.
 
 
-### Additive Infix Operators (Precedence 4)
+### Additive Infix Operators (Precedence 6)
 
 #### Addition &mdash; `expression + expression`
 
@@ -215,7 +216,7 @@ This asserts that both expressions result in ints, and results in the
 bitwise xor of the two numbers.
 
 
-### Comparison Infix Operators (Precedence 3)
+### Comparison Infix Operators (Precedence 5)
 
 Comparisons in Samizdat are chainable: `x < y <= z` is the same as saying
 `(x < y) && (y <= z)` with the additional guarantee that `y` is only
@@ -240,7 +241,7 @@ ints and floating point numbers.
 
 TODO: Expand on this.
 
-### Logical And Operator (Precedence 2) &mdash; `expression && expression`
+### Logical And Operator (Precedence 4) &mdash; `expression && expression`
 
 This is a short-circuit logical and. When evaluating this operator, the first
 (left-hand) expression is evaluated. If that results in `false`, then the
@@ -248,28 +249,39 @@ entire expression results in `false`. Otherwise, the second (right-hand)
 expression is evaluated, and its result becomes the result of the outer
 expression.
 
-**Future direction:** Samizdat may switch to a logic model where, for
-the purpose of conditionals, void means false, and non-void means true.
+### Logical Or Operator (Precedence 3) &mdash; `expression || expression`
 
-### Logical Or Operator (Precedence 1, lowest / loosest) &mdash; `expression || expression`
-
-This is a short-circuit logical and. When evaluating this operator, the first
+This is a short-circuit logical or. When evaluating this operator, the first
 (left-hand) expression is evaluated. If that results in anything but `false`,
 then the entire expression results in that same value. Otherwise, the second
 (right-hand) expression is evaluated, and its result becomes the result of
 the outer expression.
 
-**Future direction:** Samizdat may switch to a logic model where, for
-the purpose of conditionals, void means false, and non-void means true.
-
 ### Value/Void Logical And Operator (Precedence 2) &mdash; `expression & expression`
 
-TODO: Document and implement this.
+This is short-circuit logical and. When evaluating this operator, the first
+(left-hand) expression is evaluated. If that results in void, then the
+entire expression results in void. Otherwise, the second (right-hand)
+expression is evaluated, and its result (whether a value or void) becomes
+the result of the outer expression.
 
-### Value/Void Logical Or Operator (Precedence 2) &mdash; `expression & expression`
+**Note:** Samizdat logic expressions are based on the idea of void as
+false and any value as true.
 
-TODO: Document and implement this.
+### Value/Void Logical Or Operator (Precedence 1) &mdash; `expression & expression`
+
+This is a short-circuit logical or. When evaluating this operator, the first
+(left-hand) expression is evaluated. If that results in a value (but not void),
+then the entire expression results in that same value. Otherwise, the second
+(right-hand) expression is evaluated, and its result (whether a value or
+void) becomes the result of the outer expression.
+
+**Note:** Samizdat logic expressions are based on the idea of void as
+false and any value as true.
 
 **Note:** The question-mark-colon trinary operator from C (and descendants)
-is obviated in Samizdat by this and the value/void-and operator. `x ? y : z`
-in C can generally be turned into `x & y | z` in Samizdat.
+is obviated in Samizdat by this and the value/void-and operator.
+`x ? y : z` in C can generally be turned into `x & y | z` in Samizdat,
+as long as `y` is never void. If `y` can legitimately be void, then the
+slightly longer form `x & y || !x & z` is equivalent (though will evaluate
+`x` twice).
