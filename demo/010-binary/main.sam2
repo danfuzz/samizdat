@@ -25,6 +25,11 @@ fn outHex(value) {
     io0Note(format("%x", value))
 };
 
+# Returns void.
+fn returnVoid() {
+    <>
+};
+
 
 #
 # Main tests
@@ -108,5 +113,29 @@ out(false || true || false);
 out(false || false);
 out(false || false || false);
 out(false || false || false || false);
+
+# Logical ops. The ones expected to be "falsey" are surrounded by `&&` to
+# make them easily printable.
+out("Logic 1");
+out(1 & 2);
+out(1 & 2 & "blort");
+out((1 == 1) & (2 == 2));
+out((1 == 1) & (2 == 2) & (3 == 3));
+out((1 == 1) & (2 == 2) & (3 == 3) & (4 == 4));
+
+out(&& (returnVoid() & "a"));
+out(&& (returnVoid() & returnVoid()));
+out(&& ((1 == 1) & (1 == 2)));
+out(&& ((1 == 1) & (1 == 2) & (3 == 3)));
+out(&& ((1 == 2) & (2 == 2) & (3 == 3)));
+
+out("Logic 2");
+out(true | true);
+out(true | returnVoid());
+out(returnVoid() | true | returnVoid());
+
+out(&& (returnVoid() | returnVoid()));
+out(&& (returnVoid() | returnVoid() | returnVoid()));
+out(&& (returnVoid() | returnVoid() | returnVoid() | returnVoid()));
 
 <> 0
