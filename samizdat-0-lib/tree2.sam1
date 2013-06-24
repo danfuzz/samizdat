@@ -64,7 +64,7 @@ fn makeCallNameThunks(name, actuals*) {
 
 # Map of token types to corresponding unary operator function name variable
 # references.
-def UNARY_OPERATORS = listReduce([:], ["+", "-", "[]", "!!!"])
+def UNARY_OPERATORS = listReduce([:], ["+", "-", "&", "[]", "!!!"])
     { result, ., name ::
         <> [result*, (name): makeVarRef(stringAdd("unary", name))]
     };
@@ -815,13 +815,15 @@ parseNonlocalExit(implNonlocalExit);
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
 def implPrefixOperator = {/
-    operator = [@"+" @"-" @"!!!"]
+    operator = [@"+" @"-" @"&" @"!!!"]
     {
         def name = mapGet(UNARY_OPERATORS, tokenType(operator));
         <> { node :: <> makeCall(name, node) }
     }
 |
-    # `!` is special, since it's effectively a control construct.
+    # The remainder of the prefix operators are all specially converted,
+    # because they are control constructs and not simple function
+    # applications.
     @"!"
     {
         <> { node ::
@@ -829,7 +831,6 @@ def implPrefixOperator = {/
         }
     }
 |
-    # Likewise, `&&`.
     @"&&"
     {
         <> { node ::
