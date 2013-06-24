@@ -93,8 +93,9 @@ orders after the second. Otherwise returns void.
 Checks for inequality. Returns `value2` if the two given values are not
 identical. Otherwise returns void.
 
-#### `not(boolean) <> boolean`
+#### `not(value?) <> logic`
 
-Returns the opposite boolean to the one given.
+Returns an opposite logical value to the one given. If given any value,
+this returns void. If called without an argument, this returns the
+value `true`.
 
-**Note:** Only accepts boolean arguments.
