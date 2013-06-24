@@ -124,6 +124,9 @@ One kind of yield is applicable in the context of a function definition
   with named yield (above), it is a fatal error to try to yield from a
   function invocation which has already yielded.
 
+The remaining forms of yield are associated with looping constructs
+and are described along with those constructs.
+
 
 ### Functions
 
