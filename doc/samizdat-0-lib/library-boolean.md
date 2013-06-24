@@ -92,3 +92,9 @@ orders after the second. Otherwise returns void.
 
 Checks for inequality. Returns `value2` if the two given values are not
 identical. Otherwise returns void.
+
+#### `not(value) <> boolean`
+
+Returns the opposite boolean value to the one given. If given `true`,
+this returns `false`. If given `false`, this returns `true`. It is
+an error (terminating the runtime) to pass any other value.
