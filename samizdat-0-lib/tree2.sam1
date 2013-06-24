@@ -956,10 +956,38 @@ def parseCompareExpression = {/
     )
 /};
 
-# Parses a short-circuit logical-and expression.
-def parseAndExpression = {/
+# Parses a short-circuit boolean-and expression.
+def parseBooleanAndExpression = {/
     first = parseCompareExpression
     rest = (@"&&" parseCompareExpression)*
+
+    (
+        # Not actually a boolean-and expression.
+        &&(eq(lowSize(rest), 0))
+        { <> first }
+    |
+        { <> makeCallNameThunks("booleanAnd", first, rest*) }
+    )
+/};
+
+# Parses a short-circuit boolean-or expression.
+def parseBooleanOrExpression = {/
+    first = parseBooleanAndExpression
+    rest = (@"||" parseBooleanAndExpression)*
+
+    (
+        # Not actually a boolean-or expression.
+        &&(eq(lowSize(rest), 0))
+        { <> first }
+    |
+        { <> makeCallNameThunks("booleanOr", first, rest*) }
+    )
+/};
+
+# Parses a short-circuit logical-and expression.
+def parseLogicAndExpression = {/
+    first = parseBooleanOrExpression
+    rest = (@"&" parseBooleanOrExpression)*
 
     (
         # Not actually a logical-and expression.
@@ -971,9 +999,9 @@ def parseAndExpression = {/
 /};
 
 # Parses a short-circuit logical-or expression.
-def parseOrExpression = {/
-    first = parseAndExpression
-    rest = (@"||" parseAndExpression)*
+def parseLogicOrExpression = {/
+    first = parseLogicAndExpression
+    rest = (@"|" parseLogicAndExpression)*
 
     (
         # Not actually a logical-or expression.
@@ -1247,7 +1275,7 @@ def parseDoExpression = {/
 def implExpression = {/
     # This one's the top level "regular-looking" expression (in that it
     # covers the territory of C-style expressions).
-    parseOrExpression
+    parseLogicOrExpression
 |
     # This one is only nominally "regular-looking" (in that not many C
     # family languages have function expressions).

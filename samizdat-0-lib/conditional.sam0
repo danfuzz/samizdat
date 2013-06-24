@@ -15,6 +15,28 @@ fn and(predicates*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn booleanAnd(predicates*) {
+    listForEach(predicates)
+        { ., predicate ::
+            ifVoid { <> logicFromBoolean(predicate()) }
+                { return false }
+        };
+
+    <> true
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn booleanOr(predicates*) {
+    listForEach(predicates)
+        { ., predicate ::
+            ifValue { <> logicFromBoolean(predicate()) }
+                { . :: return true }
+        };
+
+    <> false
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn ifFalse(predicate, falseFunction, trueFunction?) {
     <> ifValue { <> trueFunction* }
         { trueFunction :: <> ifTrue(predicate, trueFunction, falseFunction) }
@@ -48,6 +70,8 @@ fn \"switch"(value, cases, defaultFunction?) {
 
 <> [
     and: and,
+    booleanAnd: booleanAnd,
+    booleanOr: booleanOr,
     ifFalse: ifFalse,
     ifVoid: ifVoid,
     or: or,
