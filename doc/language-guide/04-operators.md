@@ -134,6 +134,19 @@ result is the value `true`.
 **Note:** Samizdat logic expressions are based on the idea of void as
 false and any value as true.
 
+#### Convert logical truth value to boolean &mdash; `&& expression`
+
+A unary double-and takes a logical truth value &mdash; where
+any value represents true, and void represents false &mdash; resulting
+in the boolean equivalent. That is, if the inner `expression` yields a value
+(not void), the outer expression yields `true`. And if the inner
+`expression` yields void, the outer expression yields `false`.
+
+This operator is useful in a couple of cases: It allows a logic expression
+to consistently bottomed out in a real value, for storage in a variable
+or as part of a data structure. It also allows a logic expression to
+be a component of a larger enclosing boolean expression.
+
 #### Bitwise complement &mdash; `!!!expression`
 
 Placing a triple-bang in front of an expression asserts that the inner
