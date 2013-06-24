@@ -63,7 +63,11 @@ comparators in-language.
 
 #### `booleanFromLogic(logic?) <> boolean`
 
-TODO: Document.
+Bridge between boolean and logic values. If called with no argument,
+this returns `true`. If called with any argument, this returns `false`.
+
+This is useful for taking a logic result from a function call and turning
+it into flag value, such as might be stored within a data structure.
 
 #### `eq(value1, value2) <> logic`
 
@@ -78,7 +82,11 @@ Otherwise returns void.
 
 #### `logicFromBoolean(boolean) <> logic`
 
-TODO: Document.
+Bridge between boolean and logic values. If called with `true` this
+returns void. If called with `false`, this returns `true`.
+
+This is useful for taking a flag value and using it in a logical
+expression (such as might be the expression checked in an `if` statement).
 
 #### `lt(value1, value2) <> logic`
 
