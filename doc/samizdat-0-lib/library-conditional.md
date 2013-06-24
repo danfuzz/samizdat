@@ -57,13 +57,35 @@ In order for the loop to terminate, the function must use a nonlocal exit.
 
 #### `and(predicates*) <> logic`
 
-Short-circuit conjunction. Takes an arbitrary number of predicates,
+Short-circuit logic conjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
 them returns void, in which case this function also returns
 void. If no predicate returns void, this function returns whatever
 value was returned by the last predicate.
 
 If no predicates were supplied, this returns `true`.
+
+#### `booleanAnd(predicates*) <> boolean`
+
+Short-circuit boolean conjunction. Takes an arbitrary number of predicates,
+each a no-argument function. Calls each of them in turn until one of
+them returns `false`, in which case this function also returns
+`false`. If no predicate returns `false`, this function returns `true`.
+
+If no predicates were supplied, this returns `true`. It is an error
+(terminating the runtime) if any predicate returns anything other than
+a boolean value.
+
+#### `booleanOr(predicates*) <> boolean`
+
+Short-circuit boolean disjunction. Takes an arbitrary number of predicates,
+each a no-argument function. Calls each of them in turn until one of
+them returns `true`, in which case this function also returns
+`true`. If no predicate returns `true`, this function returns `false`.
+
+If no predicates were supplied, this returns `false`. It is an error
+(terminating the runtime) if any predicate returns anything other than
+a boolean value.
 
 #### `ifFalse(predicate, falseFunction, trueFunction?) <> . | !.`
 
@@ -77,7 +99,7 @@ and third arguments is reversed.
 
 #### `or(predicates*) <> logic`
 
-Short-circuit disjunction. Takes an arbitrary number of predicates,
+Short-circuit logic disjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
 them returns a value (not void), in which case this function also returns
 that value. If no predicate returns a value (including if no
