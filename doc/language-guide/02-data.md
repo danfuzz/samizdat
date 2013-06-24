@@ -50,18 +50,26 @@ the constant.
 A `string` is a sequence of zero or more Unicode code points.
 
 Strings are written as an initial `"`, followed by zero or
-more character representations, followed by a final `"`.
+more character representations, followed by a final `"`. Characters are
+self-representing, with a few exceptions, as follows.
 
-Characters are self-representing, except that the following
-backslash-quoted escapes are recognized:
+In order to aid in formatting multi-line strings, any spaces after
+a newline within a string constant are ignored. To start a line with
+a space, use `\/` before it, as described below.
 
-* `\\` &mdash; backslash itself.
-* `\"` &mdash; a double quote.
-* `\n` &mdash; newline (Unicode U+000a).
-* `\r` &mdash; carriage return (Unicode U+000d).
-* `\t` &mdash; tab (Unicode U+0009).
-* `\0` &mdash; the null character (Unicode U+0000).
-* `\xNNNN;` &mdash; arbitrary character escape. `NNNN` represents one
+A backslash (`\`) introduces an escape sequence. Most (but not all)
+such escape sequences cause one or more characters to be substituted
+for the escape sequence.
+
+The following are the character substitution escape sequences:
+
+* `\\` &mdash; Backslash itself.
+* `\"` &mdash; Double quote itself.
+* `\n` &mdash; Newline (Unicode U+000a).
+* `\r` &mdash; Carriage return (Unicode U+000d).
+* `\t` &mdash; Tab (Unicode U+0009).
+* `\0` &mdash; The null character (Unicode U+0000).
+* `\xNNNN;` &mdash; Arbitrary character escape. `NNNN` represents one
   or more hexadecimal digits. Additional adjacent hexadecimal character
   specifiers can be included by separating them with commas. As with int
   literals, underscores are ignored and may be used for readability.
@@ -70,6 +78,20 @@ backslash-quoted escapes are recognized:
   can be included by separating them with commas. See [the XML spec for entity
   names](http://www.w3.org/TR/xml-entity-names/bycodes.html) for a full
   list of names.
+
+There are two additional backslash escapes, neither of which cause any
+characters to be included in the result:
+
+* A backslash that is at the end of a line, or only followed by spaces
+  at the end of the line, causes the immediately-subsequent newline to
+  be ignored. That is, this allows one to continue a string constant
+  across lines without introducing newlines.
+
+* The sequence `\/` is ignored entirely, and causes no other effect. Its
+  point is to mark the end of ignored spaces at the beginning of a line.
+  It is valid to use `\/` in front of every line's main content, or *just*
+  in front of lines that need it, depending on visual appeal and personal
+  taste.
 
 ```
 ""                            # the empty string
@@ -82,6 +104,12 @@ backslash-quoted escapes are recognized:
 "\&zigrarr;"                  # same as "\x21dd;" or "⇝"
 "\&mu,nu;"                    # same as "μν"
 "\"blort\" \&mdash; potion that enables one to see in the dark.\n"
+
+# same as "* A couple\n  of lines.\n"
+"\
+    * A couple
+  \/  of lines.
+"
 ```
 
 
