@@ -55,7 +55,7 @@ self-representing, with a few exceptions, as follows.
 
 In order to aid in formatting multi-line strings, any spaces after
 a newline within a string constant are ignored. To start a line with
-a space, use `\ ` (backslash-space) as described below.
+a space, use `\/` before it, as described below.
 
 A backslash (`\`) introduces an escape sequence. Most (but not all)
 such escape sequences cause one or more characters to be substituted
@@ -65,7 +65,6 @@ The following are the character substitution escape sequences:
 
 * `\\` &mdash; Backslash itself.
 * `\"` &mdash; Double quote itself.
-* `\ ` (that is, backslash-space) &mdash; Space itself.
 * `\n` &mdash; Newline (Unicode U+000a).
 * `\r` &mdash; Carriage return (Unicode U+000d).
 * `\t` &mdash; Tab (Unicode U+0009).
@@ -80,10 +79,19 @@ The following are the character substitution escape sequences:
   names](http://www.w3.org/TR/xml-entity-names/bycodes.html) for a full
   list of names.
 
-There is one additional backslash escape: A backslash that is at the end of
-a line, or only followed by spaces at the end of the line, causes the
-immediately-subsequent newline to be ignored. That is, this allows one
-to continue a string constant across lines without introducing newlines.
+There are two additional backslash escapes, neither of which cause any
+characters to be included in the result:
+
+* A backslash that is at the end of a line, or only followed by spaces
+  at the end of the line, causes the immediately-subsequent newline to
+  be ignored. That is, this allows one to continue a string constant
+  across lines without introducing newlines.
+
+* The sequence `\/` is ignored entirely, and causes no other effect. Its
+  point is to mark the end of ignored spaces at the beginning of a line.
+  It is valid to use `\/` in front of every line's main content, or *just*
+  in front of lines that need it, depending on visual appeal and personal
+  taste.
 
 ```
 ""                            # the empty string
@@ -100,7 +108,7 @@ to continue a string constant across lines without introducing newlines.
 # same as "* A couple\n  of lines.\n"
 "\
     * A couple
-   \  of lines.
+  \/  of lines.
 "
 ```
 
