@@ -39,6 +39,6 @@ out("\&zigrarr;");
 out("\&mu,nu;");
 out("\
     * A couple
-   \  of lines.
+  \/  of lines.
     ");
 <> 0
