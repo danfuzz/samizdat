@@ -54,7 +54,7 @@ fn isPrefix(prefix, path) {
         {
             # The "prefix" is longer than the path, so it can't actually be
             # a prefix.
-            return false
+            return
         };
 
     <> eq(prefix, listSlice(path, 0, prefixSize))

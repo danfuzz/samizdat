@@ -126,8 +126,8 @@ fn isIdentifier(string) {
         {
             stringForEach(string)
                 { ., ch ::
-                    ifFalse { <> mapGet(IDENTIFIER_CHARS, ch, false) }
-                        { return false }
+                    ifFalse { <> mapGet(IDENTIFIER_CHARS, ch) }
+                        { return }
                 };
             <> true
         }

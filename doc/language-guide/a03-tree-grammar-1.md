@@ -303,7 +303,7 @@ def identifierString = {/
 |
     token = .
     {
-        <> ifFalse { <> tokenHasValue(token) }
+        <> ifVoid { <> tokenValue(token) }
             {
                 def type = tokenType(token);
                 def firstCh = stringNth(type, 0);
