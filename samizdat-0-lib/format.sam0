@@ -122,7 +122,7 @@ fn isIdentifier(string) {
     <> and
         { <> isString(string) }
         { <> gt(lowSize(string), 0) }
-        { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0), false) }
+        { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0)) }
         {
             stringForEach(string)
                 { ., ch ::

@@ -22,7 +22,6 @@ fn report(context, v1, v2, message) {
     io0Note("");
     io0Note(format("v1 = %q", v1));
     io0Note(format("v2 = %q", v2));
-    <> false;
 };
 
 # Diffs tokens.
@@ -59,7 +58,7 @@ fn diffMap(context, v1, v2) {
                         {
                             report([context*, key], v1, v2,
                                 "Key mismatch.");
-                            return false
+                            return
                         }
                 };
             <> true
@@ -70,7 +69,7 @@ fn diffMap(context, v1, v2) {
                     def value2 = mapGet(v2, key);
                     ifFalse
                         { <> innerDiff(context, [key: key], value, value2) }
-                        { return false }
+                        { return }
                 };
             <> true
         }
@@ -87,8 +86,7 @@ fn diffList(context, v1, v2) {
             listForEach(v1)
                 { index, elem ::
                     innerDiff(context, index, elem, listNth(v2, index))
-                };
-            <> false
+                }
         }
 };
 
