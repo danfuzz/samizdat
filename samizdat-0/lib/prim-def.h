@@ -75,7 +75,6 @@ PRIM_FUNC(stringAdd);
 PRIM_FUNC(stringFromInt);
 PRIM_FUNC(stringNth);
 PRIM_FUNC(stringSlice);
-PRIM_FUNC(tokenHasValue);
 PRIM_FUNC(tokenType);
 PRIM_FUNC(tokenValue);
 PRIM_FUNC(yieldBox);

@@ -28,14 +28,11 @@ fn report(context, v1, v2, message) {
 fn diffToken(context, v1, v2) {
     def type1 = tokenType(v1);
     def type2 = tokenType(v2);
-    def has1 = tokenHasValue(v1);
-    def has2 = tokenHasValue(v2);
-    def value1 = tokenValue(v1, null);
-    def value2 = tokenValue(v2, null);
+    def value1 = tokenValue(v1)?;
+    def value2 = tokenValue(v2)?;
 
     <> and
         { <> innerDiff(context, "type", type1, type2) }
-        { <> innerDiff(context, "hasValue", has1, has2) }
         { <> innerDiff(context, "value", value1, value2) }
 };
 
