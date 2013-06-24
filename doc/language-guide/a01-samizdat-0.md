@@ -42,11 +42,11 @@ Ints only have a 32-bit signed range, with out-of-range arithmetic
 results causing failure, not wraparound.
 
 In the surface syntax, base 10 is the only recognized form for int
-constants. Layer 2 introduces syntax for hexadecimal and binary int
-constants.
+constants in Layer 0. Layer 2 introduces syntax for hexadecimal and
+binary int constants.
 
-In the surface syntax, underscores are not recognized as digit spacers
-in int literals.
+In the Layer 0 surface syntax, underscores are not recognized as
+digit spacers in int literals. Layer 2 introduces this syntax.
 
 #### Strings
 
