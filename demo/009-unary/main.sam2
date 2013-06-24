@@ -62,11 +62,15 @@ out(returnMap().cats.o);
 out(returnVoid()?);
 out(returnString()?);
 
-# Logical ops.
+# Boolean/logic conversion.
 out(&& (returnVoid()));
 out(&& (returnString()));
 out(&& true);
 out(&& false);   # This one is the documented surprising result.
+out((& true)?);
+out((& false)?);
+
+# Logical ops.
 out(&& (!returnVoid()));
 out(&& (!returnString()));
 out(&& !true);
