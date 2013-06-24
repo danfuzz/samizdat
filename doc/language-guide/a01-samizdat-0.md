@@ -52,8 +52,8 @@ in int literals.
 
 In Layer 0, the only backslash escapes that are recognized are the
 trivial one-character ones. *Not* included are hexadecimal escapes,
-entity escapes, or newline ignoring. In addition, space-after-newline
-collapsing is *not* performed.
+entity escapes, `\/`, or the ignoring of newlines. In addition,
+space-after-newline collapsing is *not* performed.
 
 Handling of all of these is implemented in Layer 2.
 
