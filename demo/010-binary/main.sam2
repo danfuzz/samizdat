@@ -130,9 +130,9 @@ out(&& ((1 == 1) & (1 == 2) & (3 == 3)));
 out(&& ((1 == 2) & (2 == 2) & (3 == 3)));
 
 out("Logic 2");
-out(true | true);
-out(true | returnVoid());
-out(returnVoid() | true | returnVoid());
+out(10 | true);
+out(20 | returnVoid());
+out(returnVoid() | 30 | returnVoid());
 
 out(&& (returnVoid() | returnVoid()));
 out(&& (returnVoid() | returnVoid() | returnVoid()));
