@@ -18,7 +18,8 @@ how their declarations look, and there are a couple of semantic differences
 as well, as detailed below.
 
 With the exception of the top level of a program, every closure has
-curly brace delimiters  (`{...}`), and
+curly brace delimiters  (`{...}`), and with few exceptions curly braces
+are only used to indicate a closure of some form or another.
 
 Every closure can be declared to take arguments, and every closure can
 yield (return) a value. With only one exception, the curly braces are *only*
