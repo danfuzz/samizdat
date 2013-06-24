@@ -126,8 +126,9 @@ def outText = format("\
 
     # Documented in the specification.
     def ENTITY_MAP = [
-    %s    [:]*
-    ];
+  \/%s\
+  \/    [:]*
+  \/];
 
     <> [ ENTITY_MAP: ENTITY_MAP ]
     ",
