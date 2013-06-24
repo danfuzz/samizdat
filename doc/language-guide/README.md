@@ -9,7 +9,7 @@ Contents:
 
 * [The Basics](01-basics.md)
 * [Data Types](02-data.md)
-* [Blocks and Functions](03-functions.md)
+* [Functions and Blocks](03-functions.md)
 * [Expression Operators](04-operators.md)
 * [Control Constructs](05-control.md)
 * [Modules](06-modules.md)

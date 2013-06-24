@@ -172,9 +172,16 @@ written as `[:]`.
 [two: 2]                      # the same as ["two": 2]
 [true: "yes"]                 # the same as ["true": "yes"]
 [(true): "yes"]               # key is (the boolean value) `true`, not a string
-["blort": "potion; the ability to see in the dark",
- "fizmo": "spell; unclogs pipes",
- "igram": "spell; make purple things invisible"]
+
+[
+    "blort":  "potion; the ability to see in the dark",
+    "borch":  "spell; insect soporific",
+    "fizmo":  "spell; unclogs pipes",
+    "frotz":  "spell; cause object to glow",
+    "ignatz": "potion; unknown effect",
+    "igram":  "spell; make purple things invisible"
+]
+
 [["complex", "data", "as", "key"]: "Handy!"]
 [0..9: "digits", 10: "not a digit"]
 [["these", "map", "to", "the"]*: "same value"]

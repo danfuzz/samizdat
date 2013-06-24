@@ -54,9 +54,8 @@ can directly contain other expressions, bottoming out at simple "atoms"
 such as variable names and literal constant values (such as numbers
 and strings).
 
-Statements are separated by semicolons (`;`). In addition (TODO), there
-is implicit statement separation based on the indentation level of
-adjacent lines.
+The various forms of statement and expression are described in more
+detail in later sections of this guide.
 
 
 ### Variables
