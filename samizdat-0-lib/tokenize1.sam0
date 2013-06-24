@@ -53,8 +53,6 @@ def tokStringChar = pegMakeMainSequence(
                 pegMakeMainSequence(
                     pegMakeToken("\""), pegMakeCode { . :: <> "\"" }),
                 pegMakeMainSequence(
-                    pegMakeToken(" "), pegMakeCode { . :: <> " " }),
-                pegMakeMainSequence(
                     pegMakeToken("n"), pegMakeCode { . :: <> "\n" }),
                 pegMakeMainSequence(
                     pegMakeToken("r"), pegMakeCode { . :: <> "\r" }),
