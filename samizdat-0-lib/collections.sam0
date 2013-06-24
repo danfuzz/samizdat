@@ -80,11 +80,6 @@ fn listFirst(list, notFound?) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listForEach(list, function) {
-    <> genericForEach({ n :: <> listNth(list, n) }, function)
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn listLast(list, notFound?) {
     <> listNth(list, isub(lowSize(list), 1), notFound*)
 };
@@ -157,7 +152,6 @@ fn stringReduce(base, string, function) {
     listButFirst: listButFirst,
     listButLast: listButLast,
     listFirst: listFirst,
-    listForEach: listForEach,
     listLast: listLast,
     mapForEach: mapForEach,
     mapMap: mapMap,
