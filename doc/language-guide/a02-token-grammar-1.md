@@ -16,6 +16,8 @@ result as tokens of type `error`.
 ```
 # A map from strings to their corresponding keywords, one mapping for each
 # identifier-like keyword.
+#
+# Note: Additional keywords are defined in *Layer 2*.
 def KEYWORDS = [def: @def, fn: @fn, return: @return];
 
 # Note: The yielded result is always ignored.
@@ -32,6 +34,7 @@ def punctuation = {/
     ["@:.,=-+?;*<>{}()[]" "&|!"]  # The latter string is just for *Layer 1*.
 /};
 
+# Note: Additional rules for string character parsing are defined in *Layer 2*.
 def stringChar = {/
     (
         ch = [! "\\" "\""]

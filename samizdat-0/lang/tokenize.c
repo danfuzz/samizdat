@@ -174,7 +174,7 @@ static zvalue tokenizeString(ParseState *state) {
                 case 't': { ch = '\t'; break; }
                 case '\"':
                 case '\\': {
-                    // These pass through as-is.
+                    // These all pass through as-is.
                     break;
                 }
                 default: {
