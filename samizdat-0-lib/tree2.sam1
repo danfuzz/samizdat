@@ -64,7 +64,7 @@ fn makeCallNameThunks(name, actuals*) {
 
 # Map of token types to corresponding unary operator function name variable
 # references.
-def UNARY_OPERATORS = listReduce([:], ["+", "-", "!", "[]", "!!!"])
+def UNARY_OPERATORS = listReduce([:], ["+", "-", "[]", "!!!"])
     { result, ., name ::
         <> [result*, (name): makeVarRef(stringAdd("unary", name))]
     };
@@ -821,11 +821,20 @@ def implPrefixOperator = {/
         <> { node :: <> makeCall(name, node) }
     }
 |
+    # `!` is special, since it's effectively a control construct.
     @"!"
     {
-        # `!` is special, since it's effectively a control construct.
         <> { node ::
             <> makeCallNameThunks("ifVoid", node, makeLiteral(true))
+        }
+    }
+|
+    # Likewise, `&&`.
+    @"&&"
+    {
+        <> { node ::
+            <> makeCallNameThunks("ifTrue",
+                node, makeLiteral(true), makeLiteral(false))
         }
     }
 /};
