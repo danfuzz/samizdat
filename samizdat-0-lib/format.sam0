@@ -59,7 +59,7 @@ def CHAR_159 = stringFromInt(159);
 
 # Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
-    <> ifTrue { <> adorn }
+    <> ifTrue { <> logicFromBoolean(adorn) }
         { <> stringAdd(before, value, after) }
         { <> value }
 };

@@ -141,7 +141,7 @@ def parseClosure = pegMakeMainSequence(
 def parseNullaryClosure = pegMakeMainSequence(
     parseClosure,
     pegMakeCode { c ::
-        ifTrue { <> mapHasKey(tokenValue(c), "formals") }
+        ifTrue { <> mapGet(tokenValue(c), "formals") }
             { io0Die("Invalid formal argument in code block.") };
         <> c
     });
@@ -150,7 +150,7 @@ def parseNullaryClosure = pegMakeMainSequence(
 def parseCodeOnlyClosure = pegMakeMainSequence(
     parseNullaryClosure,
     pegMakeCode { c ::
-        ifTrue { <> mapHasKey(tokenValue(c), "yieldDef") }
+        ifTrue { <> mapGet(tokenValue(c), "yieldDef") }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     });
@@ -191,7 +191,7 @@ def parseFnCommon = pegMakeMainSequence(
 def parseFnDef = pegMakeMainSequence(
     parseFnCommon,
     pegMakeCode { funcMap ::
-        <> ifTrue { <> mapHasKey(funcMap, "name") }
+        <> ifTrue { <> mapGet(funcMap, "name") }
             { <> @[fnDef: funcMap] }
     });
 
@@ -235,7 +235,7 @@ def parseIdentifierString = pegMakeMainSequence(
                     {
                         def type = tokenType(token);
                         def firstCh = stringNth(type, 0);
-                        <> ifTrue { <> mapHasKey(LOWER_ALPHA, firstCh) }
+                        <> ifTrue { <> mapGet(LOWER_ALPHA, firstCh) }
                             { <> makeLiteral(type) }
                     }
                 })));

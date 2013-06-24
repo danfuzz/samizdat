@@ -82,7 +82,7 @@ fn run(args*) {
     def file = listFirst(allArgs);
     def argsPerSe = listButFirst(allArgs);
 
-    def library = ifTrue { <> validate }
+    def library = ifTrue { <> logicFromBoolean(validate) }
         {
             def lib = makeCoreLibrary();
             <> lib

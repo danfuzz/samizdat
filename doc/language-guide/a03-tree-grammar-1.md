@@ -149,7 +149,7 @@ def nullaryClosure = {/
     c = closure
 
     {
-        ifTrue { <> mapHasKey(tokenValue(c), "formals") }
+        ifTrue { <> mapGet(tokenValue(c), "formals") }
             { io0Die("Invalid formal argument in code block.") };
         <> c
     }
@@ -161,7 +161,7 @@ def codeOnlyClosure = {/
     c = nullaryClosure
 
     {
-        ifTrue { <> mapHasKey(tokenValue(c), "yieldDef") }
+        ifTrue { <> mapGet(tokenValue(c), "yieldDef") }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     }
@@ -246,7 +246,7 @@ def fnDef = {/
     funcMap = fnCommon
 
     {
-        <> ifTrue { <> mapHasKey(funcMap, "name") }
+        <> ifTrue { <> mapGet(funcMap, "name") }
             { <> @[fnDef: funcMap] }
     }
 /};
@@ -307,7 +307,7 @@ def identifierString = {/
             {
                 def type = tokenType(token);
                 def firstCh = stringNth(type, 0);
-                <> ifTrue { <> mapHasKey(LOWER_ALPHA, firstCh) }
+                <> ifTrue { <> mapGet(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
     }

@@ -181,13 +181,17 @@ fn genericMakeTokenSet(sense, types) {
 
     # Trivial case: Empty set. Return an appropriate absolute rule.
     ifTrue { <> eq(lowSize(set), 0) }
-        { return ifTrue { <> sense } { <> pegRuleFail } { <> pegRuleAny } };
+        {
+            return ifTrue { <> logicFromBoolean(sense) }
+                { <> pegRuleFail }
+                { <> pegRuleAny }
+        };
 
     # This is implemented as, in effect, `(&. &set .)`, which
     # allows us to keep the main matcher function here much simpler.
 
     fn match(item) {
-        <> ifTrue { <> mapGet(set, tokenType(item), oppositeSense) }
+        <> ifTrue { <> logicFromBoolean(mapGet(set, tokenType(item), oppositeSense)) }
             { <> item }
     };
 
