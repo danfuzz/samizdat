@@ -64,21 +64,27 @@ This is the same as `makeMap`, except in how duplicate keys are resolved.
 In this function, the *first* value mapping for any given key is the one
 that ends up in the result.
 
-#### `makeRange(first, limit, increment?) <> list`
+#### `makeRangeExclusive(first, limit, increment?) <> list`
 
-Returns a list consisting of the values ranging from `first` to `limit`
-inclusive, skipping by the `increment` value, which defaults to `1`.
-`first` and `limit` must both be ints or both be single-character strings.
-The `increment` argument if supplied must be an int.
+Returns a list consisting of the values ranging from `first` inclusive
+to `limit` exclusive, skipping by the `increment` value, which defaults
+to `1`. `first` and `limit` must both be ints or both be single-character
+strings. The `increment` argument if supplied must be an int.
 
 If `limit` is in the wrong "direction" from `first` (depending on the
 sign of `increment`), the result is the empty list.
 
-If `limit - first` is not a multiple of `increment`, then `limit` is not
-included in the result.
-
 As a special degenerate case, if `increment` is `0`, the result is always
 `[first]` (that is, a single-element list containing `first`).
+
+#### `makeRangeInclusive(first, limit, increment?) <> list`
+
+Returns a list consisting of the values ranging from `first` to `limit`
+inclusive. Other than being inclusive on the `limit` value, this function
+behaves identically to `makeRangeExclusive`.
+
+Note that, if `limit - first` is not a whole multiple of `increment`,
+then `limit` is not included in the result.
 
 #### `makeToken(type, value?) <> token`
 
