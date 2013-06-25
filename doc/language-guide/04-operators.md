@@ -178,13 +178,11 @@ the inner expression's result.
 This indicates a range of values of ints or characters. The two expressions
 must be of the same type, either ints or strings. If strings, the expressions
 must each be of size 1. It is an error (terminating the runtime) if types
-and sizes are inappropriate. It is also an error (terminating the
-runtime) if the left expression sorts as after the right expression
-(that is, if `left > right`).
+and sizes are inappropriate. If `left > right`, the range is empty.
 
 The result of evaluating this expression is an interpolation of the
-range of elements. As such, if the range is more than one value, then
-it is only valid where general interpolations are valid (e.g. as list
+range of elements. As such, if the range is empty or has more than one value,
+then it is only valid where general interpolations are valid (e.g. as list
 elements).
 
 

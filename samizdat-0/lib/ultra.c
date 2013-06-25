@@ -120,7 +120,7 @@ PRIM_IMPL(makeRange) {
     }
 
     if (datOrder(start, end) > 0) {
-        die("Bad order for range.");
+        return EMPTY_LIST;
     }
 
     if (type == DAT_INT) {
