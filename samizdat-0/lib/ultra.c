@@ -109,47 +109,62 @@ PRIM_IMPL(makeMapReversed) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeRange) {
-    requireExactly(argCount, 2);
+    requireRange(argCount, 2, 3);
 
-    zvalue start = args[0];
-    zvalue end = args[1];
-    ztype type = datType(start);
+    zvalue first = args[0];
+    zvalue limit = args[1];
+    ztype type = datType(first);
+    bool ints;
+    zint firstInt;
+    zint limitInt;
+    zint increment;
 
-    if (type != datType(end)) {
+    if (type != datType(limit)) {
         die("Type mismatch on range.");
+    } else if (type == DAT_INT) {
+        ints = true;
+    } else if (type == DAT_STRING) {
+        ints = false;
+    } else {
+        die("Bad type for range.");
     }
 
-    if (datOrder(start, end) > 0) {
+    if (ints) {
+        firstInt = datZintFromInt(first);
+        limitInt = datZintFromInt(limit);
+    } else {
+        datAssertStringSize1(first);
+        datAssertStringSize1(limit);
+        firstInt = datStringNth(first, 0);
+        limitInt = datStringNth(limit, 0);
+    }
+
+    if (argCount == 3) {
+        increment = datZintFromInt(args[2]);
+        if (increment == 0) {
+            // Arrange for this special case to work out below.
+            limitInt = firstInt;
+            increment = 1;
+        }
+    } else {
+        increment = 1;
+    }
+
+    // The `+ increment` is because the range is end-inclusive.
+    zint size = (limitInt - firstInt + increment) / increment;
+
+    if (size <= 0) {
         return EMPTY_LIST;
     }
 
-    if (type == DAT_INT) {
-        zint startInt = datZintFromInt(start);
-        zint endInt = datZintFromInt(end);
-        zint size = endInt - startInt + 1;
-        zvalue values[size];
+    zvalue values[size];
 
-        for (zint i = 0; i < size; i++) {
-            values[i] = constIntFromZint(startInt + i);
-        }
-
-        return datListFromArray(size, values);
-    } else if (type == DAT_STRING) {
-        datAssertStringSize1(start);
-        datAssertStringSize1(end);
-        zchar startCh = datStringNth(start, 0);
-        zchar endCh = datStringNth(end, 0);
-        zint size = endCh - startCh + 1;
-        zvalue values[size];
-
-        for (zint i = 0; i < size; i++) {
-            values[i] = constStringFromZchar(startCh + i);
-        }
-
-        return datListFromArray(size, values);
+    for (zint i = 0, v = firstInt; i < size; i++, v += increment) {
+        values[i] =
+            ints ? constIntFromZint(v) : constStringFromZchar((zchar) v);
     }
 
-    die("Bad type for range.");
+    return datListFromArray(size, values);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
