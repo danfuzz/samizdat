@@ -176,7 +176,10 @@ Having done so, it is then possible to refer to the indicated name
 in any of the consequent blocks.
 
 **Note:** Unlike other languages in the C tradition, *Samizdat* does
-not allow consequent blocks to fall through.
+not allow consequent blocks to fall through. So, a block-final
+`break` isn't necessary. And if there is partial code in common
+between cases, the thing to do is factor it out into a separate
+function.
 
 TODO: Neither `else` handling nor name binding has yet been implemented.
 
