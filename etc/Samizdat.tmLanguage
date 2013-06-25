@@ -147,7 +147,7 @@
 			<key>name</key>
 			<string>keyword.operator</string>
 			<key>match</key>
-			<string>&amp;&amp;?&amp;?|\|\|?\|?|\^\^?\^?|\\?&lt;&lt;?&lt;?|\\?&gt;&gt;?&gt;?|!!?!?|\\?==?|\\?!=|\\?&lt;=|\\?&gt;=|&lt;&gt;|\.\.|\+|-|\*|/|%</string>
+			<string>&amp;&amp;?&amp;?|\|\|?\|?|\^\^?\^?|\\?&lt;&lt;?&lt;?|\\?&gt;&gt;?&gt;?|!!?!?|\\?==?|\\?!=|\\?&lt;=|\\?&gt;=|&lt;&gt;|\.\.|\+|-|\*|/|%|\?</string>
 		</dict>
 		<dict>
 			<key>name</key>
