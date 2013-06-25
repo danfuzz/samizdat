@@ -916,8 +916,9 @@ def parseAddExpression = {/
 /};
 
 # Parses a comparison expression. The syntax here is the mathematical
-# style of `x < y < z` meaning `x < y && y < z`, supported by the
-# `compareChain` library function.
+# style of `x < y < z` meaning `x < y && y < z`. This semantics
+# falls naturally out of the left-associativity of the expression
+# along with the value-or-void logic model, as defined by the language.
 def parseCompareExpression = {/
     firstEx = parseAddExpression
     opExes = (
@@ -929,31 +930,7 @@ def parseCompareExpression = {/
         { <> [op, ex] }
     )*
 
-    (
-        # No actual comparisons (just a simple pass-through to `addExpression`).
-        &&(eq(lowSize(opExes), 0))
-        { <> firstEx }
-    |
-        # Just one operator, so no need to chain.
-        &&(eq(lowSize(opExes), 1))
-        { <> makeBinaryCalls(firstEx, opExes) }
-    |
-        # The general case of two or more comparison operators.
-        {
-            # Make separate ops and exes arrays.
-            def arrays = listReduce([[], []], opExes) { result, ., one ::
-                def ops = listFirst(result);
-                def exes = listLast(result);
-                def op = mapGet(BINARY_OPERATORS, tokenType(listFirst(one)));
-                def ex = listLast(one);
-                <> [[ops*, op], [exes*, ex]]
-            };
-            def ops = makeCallName("makeList", listFirst(arrays)*);
-            def exes = listLast(arrays);
-
-            <> makeCallName("compareChain", ops, firstEx, exes*);
-        }
-    )
+    { <> makeBinaryCalls(firstEx, opExes) }
 /};
 
 # Parses a short-circuit boolean-and expression.
