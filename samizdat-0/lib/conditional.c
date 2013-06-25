@@ -11,7 +11,7 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(ifTrue) {
+PRIM_IMPL(ifIs) {
     requireRange(argCount, 2, 3);
 
     if (langCall(args[0], 0, NULL) != NULL) {

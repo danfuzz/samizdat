@@ -112,12 +112,12 @@ fn innerDiffImpl(context, newContext, v1, v2) {
     def type2 = lowType(v2);
     def innerContext = [context*, newContext, type1];
 
-    <> ifTrue { <> ne(v1, v2) }
+    <> ifIs { <> ne(v1, v2) }
         {
             def type1 = lowType(v1);
             def type2 = lowType(v2);
 
-            <> ifTrue { <> ne(type1, type2) }
+            <> ifIs { <> ne(type1, type2) }
                 {
                     <> report(context, v1, v2,
                         format("Types differ: %q %q", type1, type2))

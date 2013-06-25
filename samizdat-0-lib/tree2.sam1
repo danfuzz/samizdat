@@ -194,7 +194,7 @@ def parseNullaryClosure = {/
     c = parseClosure
 
     {
-        ifTrue { <> mapGet(tokenValue(c), "formals") }
+        ifIs { <> mapGet(tokenValue(c), "formals") }
             { io0Die("Invalid formal argument in code block.") };
         <> c
     }
@@ -206,7 +206,7 @@ def parseCodeOnlyClosure = {/
     c = parseNullaryClosure
 
     {
-        ifTrue { <> mapGet(tokenValue(c), "yieldDef") }
+        ifIs { <> mapGet(tokenValue(c), "yieldDef") }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     }
@@ -291,7 +291,7 @@ def parseFnDef = {/
     funcMap = parseFnCommon
 
     {
-        <> ifTrue { <> mapGet(funcMap, "name") }
+        <> ifIs { <> mapGet(funcMap, "name") }
             { <> @[fnDef: funcMap] }
     }
 /};
@@ -356,7 +356,7 @@ def parseIdentifierString = {/
             {
                 def type = tokenType(token);
                 def firstCh = stringNth(type, 0);
-                <> ifTrue { <> mapGet(LOWER_ALPHA, firstCh) }
+                <> ifIs { <> mapGet(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
     }
@@ -378,7 +378,7 @@ def parseList = {/
     expressions = parseUnadornedList
     @"]"
     {
-        <> ifTrue { <> eq(expressions, []) }
+        <> ifIs { <> eq(expressions, []) }
             { <> makeLiteral([]) }
             { <> makeCallName("makeList", expressions*) }
     }
@@ -411,7 +411,7 @@ def parseMapping = {/
         # (which is the only way it can be valid). Note that
         # `expression @"*"` won't do the trick, since by the time we're here,
         # if there was a `*` it would have become part of the expression.
-        <> ifTrue { <> eq(tokenType(map), "interpolate") }
+        <> ifIs { <> eq(tokenType(map), "interpolate") }
             { <> tokenValue(map) }
     }
 /};
@@ -628,7 +628,7 @@ def parseParserString = {/
     s = @string
     {
         def value = tokenValue(s);
-        <> ifTrue { <> eq(lowSize(value), 1) }
+        <> ifIs { <> eq(lowSize(value), 1) }
             { <> @[token: value] }
             { <> s }
     }
@@ -651,7 +651,7 @@ def parseParserSetString = {/
         {
             def startChar = tokenValue(s);
             def endChar = tokenValue(end);
-            <> ifTrue
+            <> ifIs
                 { <> and
                     { <> eq(lowSize(startChar), 1) }
                     { <> eq(lowSize(endChar), 1) } }
@@ -802,7 +802,7 @@ def implNonlocalExit = {/
             # The test for a valued `continue` is done explicitly here
             # (rather than just letting the rule fail) in order to make the
             # error message more sensible.
-            ifTrue { <> eq(tokenValue(name), "continue") }
+            ifIs { <> eq(tokenValue(name), "continue") }
                 { io0Die("Invalid use of continue with value.") };
             <> ex
         }
@@ -834,7 +834,7 @@ def implPrefixOperator = {/
     @"&&"
     {
         <> { node ::
-            <> makeCallNameThunks("ifTrue",
+            <> makeCallNameThunks("ifIs",
                 node, makeLiteral(true), makeLiteral(false))
         }
     }
@@ -1013,7 +1013,7 @@ def parseLogicOrExpression = {/
 /};
 
 # Parses an if expression. With a single test, this translates into
-# a call to `ifTrue`. With multiple tests, this translates into a
+# a call to `ifIs`. With multiple tests, this translates into a
 # call to `ifChain`. In either case, if the expression has a yield
 # def, the main call is wrapped in a thunk-call.
 def parseIfExpression = {/
@@ -1039,7 +1039,7 @@ def parseIfExpression = {/
         # Unchained if-then or if-then-else.
         &&(eq(lowSize(elseIfThens), 0))
         {
-            <> makeCallName("ifTrue",
+            <> makeCallName("ifIs",
                 makeThunk(firstCondition), firstThen, finalElse*)
         }
     |
@@ -1186,7 +1186,7 @@ def parseSwitchExpression = {/
 # { <\"break"> ::
 #     def out = \"break";
 #     loop { <\"continue"> ::
-#         ifTrue { <> expr }
+#         ifIs { <> expr }
 #             { <next> :: stat1; stat2 }
 #             { <\"break"> }
 #     }
@@ -1204,7 +1204,7 @@ def parseWhileExpression = {/
         def loopClosure = @[closure: [
             yieldDef: "continue",
             statements: [
-                makeCallName("ifTrue",
+                makeCallName("ifIs",
                     makeThunk(condition),
                     code,
                     makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
@@ -1306,7 +1306,7 @@ parseStatement(implStatement);
 
 # Documented in Samizdat Layer 1 spec.
 fn sam2Tree(program) {
-    def tokens = ifTrue { <> isString(program) }
+    def tokens = ifIs { <> isString(program) }
         { <> sam2Tokenize(program) }
         { <> program };
 

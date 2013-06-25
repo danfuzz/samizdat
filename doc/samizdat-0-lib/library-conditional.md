@@ -7,18 +7,22 @@ Conditionals And Iteration
 <br><br>
 ### Primitive Definitions
 
-#### `ifTrue(predicate, trueFunction, falseFunction?) <> . | !.`
+#### `ifIs(predicate, isFunction, notFunction?) <> . | !.`
 
 Primitive logic conditional. This calls the given predicate with no
 arguments, taking note of its return value or lack thereof.
 
-If the predicate returns a value, then the `trueFunction` is called
+If the predicate returns a value, then the `isFunction` is called
 with no arguments. If the predicate returns void, then the
-`falseFunction` (if any) is called with no arguments.
+`notFunction` (if any) is called with no arguments.
 
 The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
+
+This function is identical to `ifValue`, except that in the value case,
+this function calls the consequent function with no arguments, whereas
+`ifIs` calls it with an argument.
 
 #### `ifValue(function, valueFunction, voidFunction?) <> . | !.`
 
@@ -33,6 +37,10 @@ any) is called with no arguments.
 The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
+
+This function is identical to `ifIs`, except that in the value case,
+this function calls the consequent function with an argument, whereas
+`ifIs` calls it with no arguments.
 
 #### `loop(function) <> !.`
 
@@ -87,9 +95,9 @@ If no predicates were supplied, this returns `false`. It is an error
 (terminating the runtime) if any predicate returns anything other than
 a boolean value.
 
-#### `ifNot(predicate, falseFunction, trueFunction?) <> . | !.`
+#### `ifNot(predicate, notFunction, isFunction?) <> . | !.`
 
-This is identical to `ifTrue` except that the order of the second
+This is identical to `ifIs` except that the order of the second
 and third arguments is reversed.
 
 #### `ifVoid(function, voidFunction, valueFunction?) <> . | !.`

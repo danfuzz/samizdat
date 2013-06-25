@@ -80,7 +80,7 @@ def parseArguments = pegMakeMainSequence(
     pegMakeStar(parseWord),
     pegMakeCode { optList, ., args ::
         def options = mapAdd(optList*);
-        ifTrue { <> mapGet(options, "error") }
+        ifIs { <> mapGet(options, "error") }
             { io0Die("Trouble with options.") };
         <> [options: options, args: args]
     });

@@ -141,7 +141,7 @@ def parseClosure = pegMakeMainSequence(
 def parseNullaryClosure = pegMakeMainSequence(
     parseClosure,
     pegMakeCode { c ::
-        ifTrue { <> mapGet(tokenValue(c), "formals") }
+        ifIs { <> mapGet(tokenValue(c), "formals") }
             { io0Die("Invalid formal argument in code block.") };
         <> c
     });
@@ -150,7 +150,7 @@ def parseNullaryClosure = pegMakeMainSequence(
 def parseCodeOnlyClosure = pegMakeMainSequence(
     parseNullaryClosure,
     pegMakeCode { c ::
-        ifTrue { <> mapGet(tokenValue(c), "yieldDef") }
+        ifIs { <> mapGet(tokenValue(c), "yieldDef") }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     });
@@ -191,7 +191,7 @@ def parseFnCommon = pegMakeMainSequence(
 def parseFnDef = pegMakeMainSequence(
     parseFnCommon,
     pegMakeCode { funcMap ::
-        <> ifTrue { <> mapGet(funcMap, "name") }
+        <> ifIs { <> mapGet(funcMap, "name") }
             { <> @[fnDef: funcMap] }
     });
 
@@ -235,7 +235,7 @@ def parseIdentifierString = pegMakeMainSequence(
                     {
                         def type = tokenType(token);
                         def firstCh = stringNth(type, 0);
-                        <> ifTrue { <> mapGet(LOWER_ALPHA, firstCh) }
+                        <> ifIs { <> mapGet(LOWER_ALPHA, firstCh) }
                             { <> makeLiteral(type) }
                     }
                 })));
@@ -255,7 +255,7 @@ def parseList = pegMakeMainSequence(
     parseUnadornedList,
     pegMakeToken("]"),
     pegMakeCode { ., expressions, . ::
-        <> ifTrue { <> eq(expressions, []) }
+        <> ifIs { <> eq(expressions, []) }
             { <> makeLiteral([]) }
             { <> makeCallName("makeList", expressions*) }
     });
@@ -287,7 +287,7 @@ def parseMapping = pegMakeMainSequence(
         pegMakeSequence(
             parseExpression,
             pegMakeCode { map ::
-                <> ifTrue { <> eq(tokenType(map), "interpolate") }
+                <> ifIs { <> eq(tokenType(map), "interpolate") }
                     { <> tokenValue(map) }
             })));
 
@@ -513,7 +513,7 @@ def parseParserString = pegMakeMainSequence(
     pegMakeToken("string"),
     pegMakeCode { s ::
         def value = tokenValue(s);
-        <> ifTrue { <> eq(lowSize(value), 1) }
+        <> ifIs { <> eq(lowSize(value), 1) }
             { <> @[token: value] }
             { <> s }
     });
@@ -532,7 +532,7 @@ def parseParserSetString = pegMakeMainSequence(
             pegMakeCode { s, ., end ::
                 def startChar = tokenValue(s);
                 def endChar = tokenValue(end);
-                <> ifTrue
+                <> ifIs
                     { <> and
                         { <> eq(lowSize(startChar), 1) }
                         { <> eq(lowSize(endChar), 1) } }
@@ -654,7 +654,7 @@ def parseProgramOrError = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 fn sam1Tree(program) {
-    def tokens = ifTrue { <> isString(program) }
+    def tokens = ifIs { <> isString(program) }
         { <> sam1Tokenize(program) }
         { <> program };
 

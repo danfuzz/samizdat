@@ -16,9 +16,9 @@ fn forwardFunction() {
     def box = yieldBox();
 
     fn doForward(optFunction?, args*) {
-        ifTrue { <> eq(optFunction, []) }
+        ifIs { <> eq(optFunction, []) }
             { io0Die("Attempt to forward to void.") };
-        ifTrue { <> ne(args, []) }
+        ifIs { <> ne(args, []) }
             { io0Die("Attempt to forward too many arguments.") };
 
         def function = optFunction*;

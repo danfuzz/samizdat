@@ -12,7 +12,7 @@
 
 # Performs a type check, for the given type name.
 fn isType(value, typeName) {
-    <> ifTrue { <> eq(lowType(value), typeName) }
+    <> ifIs { <> eq(lowType(value), typeName) }
         { <> value }
 };
 
