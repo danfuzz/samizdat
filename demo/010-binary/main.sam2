@@ -57,17 +57,18 @@ outHex(0xfff0 ^^^ 0x0fff);
 outHex(0x00ff <<< 0x8);
 outHex(0xff00 >>> 0x8);
 
-# Ordering.
+# Ordering. The ones expected to be "falsey" are surrounded by `&&` to
+# make them easily printable.
 out("Order 1");
-out(&&(1 == 1));
-out(&&(1 != 2));
-out(&&(1 < 2));
-out(&&(2 > 1));
-out(&&(1 <= 2));
-out(&&(2 >= 2));
-out(&&("a" \== "a"));
-out(&&("a" \!= "b"));
-out(&&("a" \< "b"));
+out(1 == 1);
+out(1 != 2);
+out(1 < 3);
+out(5 > 4);
+out(1 <= 5);
+out(6 >= 6);
+out("a" \== "a");
+out("a" \!= "b");
+out("a" \< "c");
 
 out("Order 2");
 out(&&(1 != 1));
@@ -81,10 +82,10 @@ out(&&([1] \<= [0]));
 out(&&([1] \>= [2]));
 
 out("Order 3");
-out(&&(1 < 2 < 3));
-out(&&(1 == 1 > 0));
-out(&&(10 >= 5 < 9));
-out(&&(2 != 3 != 4));
+out(1 < 2 < 20);
+out(100 == 100 > 21);
+out(10 >= 5 < 22);
+out(2 != 3 != 23);
 
 out(&&(1 != 1 < 2));
 out(&&(2 > 3 == 3));
@@ -118,10 +119,10 @@ out(false || false || false || false);
 # make them easily printable.
 out("Logic 1");
 out(1 & 2);
-out(1 & 2 & "blort");
-out((1 == 1) & (2 == 2));
-out((1 == 1) & (2 == 2) & (3 == 3));
-out((1 == 1) & (2 == 2) & (3 == 3) & (4 == 4));
+out(1 & 2 & "three");
+out((1 == 1) & (4 == 4));
+out((1 == 1) & (2 == 2) & (5 == 5));
+out((1 == 1) & (2 == 2) & (3 == 3) & (6 == 6));
 
 out(&& (returnVoid() & "a"));
 out(&& (returnVoid() & returnVoid()));
