@@ -56,7 +56,7 @@ fn convertPexSequence(node, formals) {
 
     # Extract the formals out of any `varDef` nodes.
     def newFormals = listMap(pexes) { ., pex ::
-        <> ifTrue { <> eq(tokenType(pex), "varDef") }
+        <> ifIs { <> eq(tokenType(pex), "varDef") }
             { <> [name: mapGet(tokenValue(pex), "name")] }
             { <> [:] }
     };
@@ -64,7 +64,7 @@ fn convertPexSequence(node, formals) {
     # Convert all the pexes, passing in appropriately-extended formals
     # lists to each conversion.
     def convertedPexes = listMap(pexes) { n, pex  ::
-        def subPex = ifTrue { <> eq(tokenType(pex), "varDef") }
+        def subPex = ifIs { <> eq(tokenType(pex), "varDef") }
             { <> mapGet(tokenValue(pex), "value") }
             { <> pex };
         <> convertPex(subPex, [formals*, listSlice(newFormals, 0, n)*])
@@ -124,7 +124,7 @@ fn convertPexCode(node, formals) {
 # Converts a `&&` pex node.
 fn convertPexPredicate(node, formals) {
     # This wraps the predicate in code, along these lines:
-    #     `{ <> ifTrue { <> PREDICATE_CODE } { <> null } }`
+    #     `{ <> ifIs { <> PREDICATE_CODE } { <> null } }`
     # Having done that, this calls `convertPexCode` (immediately above)
     # to perform the rest of the conversion.
 
@@ -134,7 +134,7 @@ fn convertPexPredicate(node, formals) {
         statements: [],
         yield: callNameWithLiterals("makeToken", "null")
     ]];
-    def yield = callNameWithExpressions("ifTrue", predicateThunk, nullThunk);
+    def yield = callNameWithExpressions("ifIs", predicateThunk, nullThunk);
     def codeNode = @["{}": [statements: [], yield: yield]];
 
     <> convertPexCode(codeNode, formals)

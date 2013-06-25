@@ -47,7 +47,8 @@ fn makeLiteral(value) {
     <> @[literal: value]
 };
 
-# Returns a `closure` node representing a thunk of an expression.
+# Returns a node representing a thunk (no-arg function) that returns the
+# expression represented by the given node.
 fn makeThunk(expression) {
     <> @[closure: @[statements: [], yield: expression]];
 };
@@ -148,7 +149,7 @@ def nullaryClosure = {/
     c = closure
 
     {
-        ifTrue { <> mapHasKey(tokenValue(c), "formals") }
+        ifIs { <> mapGet(tokenValue(c), "formals") }
             { io0Die("Invalid formal argument in code block.") };
         <> c
     }
@@ -160,7 +161,7 @@ def codeOnlyClosure = {/
     c = nullaryClosure
 
     {
-        ifTrue { <> mapHasKey(tokenValue(c), "yieldDef") }
+        ifIs { <> mapGet(tokenValue(c), "yieldDef") }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     }
@@ -245,7 +246,7 @@ def fnDef = {/
     funcMap = fnCommon
 
     {
-        <> ifTrue { <> mapHasKey(funcMap, "name") }
+        <> ifIs { <> mapGet(funcMap, "name") }
             { <> @[fnDef: funcMap] }
     }
 /};
@@ -302,11 +303,11 @@ def identifierString = {/
 |
     token = .
     {
-        <> ifFalse { <> tokenHasValue(token) }
+        <> ifVoid { <> tokenValue(token) }
             {
                 def type = tokenType(token);
                 def firstCh = stringNth(type, 0);
-                <> ifTrue { <> mapHasKey(LOWER_ALPHA, firstCh) }
+                <> ifIs { <> mapGet(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
     }
@@ -325,7 +326,7 @@ def list = {/
     expressions = unadornedList
     @"]"
     {
-        <> ifTrue { <> eq(expressions, []) }
+        <> ifIs { <> eq(expressions, []) }
             { <> makeLiteral([]) }
             { <> makeCallName("makeList", expressions*) }
     }
@@ -356,7 +357,7 @@ def mapping = {/
         # (which is the only way it can be valid). Note that
         # `expression @"*"` won't do the trick, since by the time we're here,
         # if there was a `*` it would have become part of the expression.
-        <> ifTrue { <> eq(tokenType(map), "interpolate") }
+        <> ifIs { <> eq(tokenType(map), "interpolate") }
             { <> tokenValue(map) }
     }
 /};
@@ -587,7 +588,7 @@ def parserString = {/
     s = @string
     {
         def value = tokenValue(s);
-        <> ifTrue { <> eq(lowSize(value), 1) }
+        <> ifIs { <> eq(lowSize(value), 1) }
             { <> @[token: value] }
             { <> s }
     }
@@ -608,7 +609,7 @@ def parserSetString = {/
         {
             def startChar = tokenValue(s);
             def endChar = tokenValue(end);
-            <> ifTrue
+            <> ifIs
                 { <> and
                     { <> eq(lowSize(startChar), 1) }
                     { <> eq(lowSize(endChar), 1) } }

@@ -272,6 +272,11 @@ false = @[boolean: 0]
 true = @[boolean: 1]
 ```
 
+These values are most useful when placed into variables and passed
+as parameters to indicate flags. They are not particularly useful
+for combination into logical expressions. See the section on "Logic" below
+for details.
+
 
 ### `.`, `!.`, and void
 
@@ -297,3 +302,15 @@ written as `.`. If a function can possibly return a value *or* return void,
 that is written as `. | !.`. While not proper syntax in the language per
 se, these are meant to be suggestive of the syntax used in function
 argument declaration and in defining parsers.
+
+
+### Logic
+
+Samizdat logic expressions are based on the idea of void as
+false and any value as true. By convention, if a logic expression
+or function has no better non-void value to return, it will use the
+boolean value `true`.
+
+Somewhat confusingly &mdash; but necessary to avoid certain
+ambiguities &mdash; the boolean value `false` counts as true, as
+far as logical expressions are concerned.

@@ -7,22 +7,26 @@ Conditionals And Iteration
 <br><br>
 ### Primitive Definitions
 
-#### `ifTrue(predicate, trueFunction, falseFunction?) <> . | !.`
+#### `ifIs(predicate, isFunction, notFunction?) <> . | !.`
 
-Primitive boolean conditional. This calls the given predicate with no
-arguments, expecting it to return a boolean.
+Primitive logic conditional. This calls the given predicate with no
+arguments, taking note of its return value or lack thereof.
 
-If the predicate returns `true`, then the `trueFunction` is called
-with no arguments. If the predicate returns `false`, then the
-`falseFunction` (if any) is called with no arguments.
+If the predicate returns a value, then the `isFunction` is called
+with no arguments. If the predicate returns void, then the
+`notFunction` (if any) is called with no arguments.
 
 The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
 
+This function is identical to `ifValue`, except that in the value case,
+this function calls the consequent function with no arguments, whereas
+`ifIs` calls it with an argument.
+
 #### `ifValue(function, valueFunction, voidFunction?) <> . | !.`
 
-Primitive value conditional. This calls the given function with no
+Primitive logic conditional. This calls the given function with no
 arguments, taking note of its return value or lack thereof.
 
 If the function returns a value, then the `valueFunction` is called
@@ -33,6 +37,10 @@ any) is called with no arguments.
 The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
+
+This function is identical to `ifIs`, except that in the value case,
+this function calls the consequent function with an argument, whereas
+`ifIs` calls it with no arguments.
 
 #### `loop(function) <> !.`
 
@@ -55,17 +63,41 @@ In order for the loop to terminate, the function must use a nonlocal exit.
 <br><br>
 ### In-Language Definitions
 
-#### `and(predicates*) <> boolean`
+#### `and(predicates*) <> logic`
 
-Short-circuit conjunction. Takes an arbitrary number of predicates,
+Short-circuit logic conjunction. Takes an arbitrary number of predicates,
+each a no-argument function. Calls each of them in turn until one of
+them returns void, in which case this function also returns
+void. If no predicate returns void, this function returns whatever
+value was returned by the last predicate.
+
+If no predicates were supplied, this returns `true`.
+
+#### `booleanAnd(predicates*) <> boolean`
+
+Short-circuit boolean conjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
 them returns `false`, in which case this function also returns
-`false`. If no predicate returns `false`, this function returns
-`true`.
+`false`. If no predicate returns `false`, this function returns `true`.
 
-#### `ifFalse(predicate, falseFunction, trueFunction?) <> . | !.`
+If no predicates were supplied, this returns `true`. It is an error
+(terminating the runtime) if any predicate returns anything other than
+a boolean value.
 
-This is identical to `ifTrue` except that the order of the second
+#### `booleanOr(predicates*) <> boolean`
+
+Short-circuit boolean disjunction. Takes an arbitrary number of predicates,
+each a no-argument function. Calls each of them in turn until one of
+them returns `true`, in which case this function also returns
+`true`. If no predicate returns `true`, this function returns `false`.
+
+If no predicates were supplied, this returns `false`. It is an error
+(terminating the runtime) if any predicate returns anything other than
+a boolean value.
+
+#### `ifNot(predicate, notFunction, isFunction?) <> . | !.`
+
+This is identical to `ifIs` except that the order of the second
 and third arguments is reversed.
 
 #### `ifVoid(function, voidFunction, valueFunction?) <> . | !.`
@@ -73,12 +105,13 @@ and third arguments is reversed.
 This is identical to `ifValue` except that the order of the second
 and third arguments is reversed.
 
-#### `or(predicates*) <> boolean`
+#### `or(predicates*) <> logic`
 
-Short-circuit disjunction. Takes an arbitrary number of predicates,
+Short-circuit logic disjunction. Takes an arbitrary number of predicates,
 each a no-argument function. Calls each of them in turn until one of
-them returns `true`, in which case this function also returns
-`true`. If no predicate returns `true`, this function returns `false`.
+them returns a value (not void), in which case this function also returns
+that value. If no predicate returns a value (including if no
+predicates were supplied), this function returns void.
 
 #### `\"switch"(value, cases, defaultFunction?) <> . | !.`
 

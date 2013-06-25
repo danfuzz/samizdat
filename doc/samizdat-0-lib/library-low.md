@@ -38,26 +38,26 @@ result will be one of: `"int"` `"string"` `"list"` `"map"`
 <br><br>
 ### In-Language Definitions
 
-#### `isToken(value) <> boolean`
+#### `isToken(value) <> logic`
 
-Returns `true` iff the given value is a token.
+Returns the given `value` if it is a token. Returns void if not.
 
-#### `isInt(value)<> boolean`
+#### `isInt(value) <> logic`
 
-Returns `true` iff the given value is an int.
+Returns the given `value` if it is an int. Returns void if not.
 
-#### `isList(value)<> boolean`
+#### `isList(value) <> logic`
 
-Returns `true` iff the given value is a list.
+Returns the given `value` if it is a list. Returns void if not.
 
-#### `isMap(value)<> boolean`
+#### `isMap(value) <> logic`
 
-Returns `true` iff the given value is a map.
+Returns the given `value` if it is a map. Returns void if not.
 
-#### `isString(value)<> boolean`
+#### `isString(value) <> logic`
 
-Returns `true` iff the given value is a string.
+Returns the given `value` if it is a string. Returns void if not.
 
-#### `isUniqlet(value)<> boolean`
+#### `isUniqlet(value) <> logic`
 
-Returns `true` iff the given value is a uniqlet.
+Returns the given `value` if it is a uniqlet. Returns void if not.

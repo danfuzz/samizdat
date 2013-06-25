@@ -82,6 +82,6 @@ do {
         continue
     };
     io0Note(format("Value is %q.", boxGet(box)))
-} while(boxGet(box) < 70);
+} while (boxGet(box) < 70);
 
 <> 0

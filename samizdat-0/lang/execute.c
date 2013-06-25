@@ -349,19 +349,21 @@ static zvalue execCall(Frame *frame, zvalue call) {
     for (zint i = 0; i < argCount; i++) {
         zvalue one = datListNth(actuals, i);
         if (datTokenTypeIs(one, STR_INTERPOLATE)) {
-            zvalue eval = execExpression(frame, datTokenValue(one));
+            zvalue eval = execExpressionVoidOk(frame, datTokenValue(one));
             if (eval == NULL) {
-                die("Attempt to interpolate void.");
-            } else {
-                if (!datTypeIs(eval, DAT_LIST)) {
-                    die("Attempt to interpolate non-list.");
-                }
-                args[i] = eval;
-                fullCount += datSize(eval);
+                return NULL;
+            } else if (!datTypeIs(eval, DAT_LIST)) {
+                die("Attempt to interpolate non-list.");
             }
+            args[i] = eval;
+            fullCount += datSize(eval);
             interpolate = true;
         } else {
-            args[i] = execExpression(frame, one);
+            zvalue eval = execExpressionVoidOk(frame, one);
+            if (eval == NULL) {
+                return NULL;
+            }
+            args[i] = eval;
             fullCount++;
         }
     }

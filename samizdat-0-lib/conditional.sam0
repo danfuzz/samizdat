@@ -9,27 +9,53 @@
 # Documented in Samizdat Layer 0 spec.
 fn and(predicates*) {
     <> listReduce(true, predicates)
-        { result, ., predicate :: ifTrue(predicate) {} { return false } }
+        { ., ., predicate ::
+            <> ifValue(predicate) { value :: <> value } { return }
+        }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn ifFalse(predicate, falseFunction, trueFunction?) {
-    <> ifValue { <> listNth(trueFunction, 0) }
-        { trueFunction :: <> ifTrue(predicate, trueFunction, falseFunction) }
-        { <> ifTrue(predicate, {}, falseFunction) }
+fn booleanAnd(predicates*) {
+    listForEach(predicates)
+        { ., predicate ::
+            ifVoid { <> logicFromBoolean(predicate()) }
+                { return false }
+        };
+
+    <> true
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn booleanOr(predicates*) {
+    listForEach(predicates)
+        { ., predicate ::
+            ifValue { <> logicFromBoolean(predicate()) }
+                { . :: return true }
+        };
+
+    <> false
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn ifNot(predicate, notFunction, isFunction?) {
+    <> ifValue { <> isFunction* }
+        { trueFunction :: <> ifIs(predicate, isFunction, notFunction) }
+        { <> ifIs(predicate, {}, notFunction) }
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn ifVoid(predicate, voidFunction, valueFunction?) {
-    <> ifValue { <> listNth(valueFunction, 0) }
+    <> ifValue { <> valueFunction* }
         { valueFunction :: <> ifValue(predicate, valueFunction, voidFunction) }
         { <> ifValue(predicate, {}, voidFunction) }
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn or(predicates*) {
-    <> listReduce(false, predicates)
-        { result, ., predicate :: ifTrue(predicate) { return true } }
+    listForEach(predicates)
+        { ., predicate ::
+            ifValue(predicate) { value :: return value }
+        }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -43,9 +69,11 @@ fn \"switch"(value, cases, defaultFunction?) {
 };
 
 <> [
-    and: and,
-    ifFalse: ifFalse,
-    ifVoid: ifVoid,
-    or: or,
-    switch: \"switch"
+    and:        and,
+    booleanAnd: booleanAnd,
+    booleanOr:  booleanOr,
+    ifNot:      ifNot,
+    ifVoid:     ifVoid,
+    or:         or,
+    switch:     \"switch"
 ]

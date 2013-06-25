@@ -11,12 +11,6 @@
 
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(tokenHasValue) {
-    requireExactly(argCount, 1);
-    return constBooleanFromBool(datTokenValue(args[0]) != NULL);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(tokenType) {
     requireExactly(argCount, 1);
     return datTokenType(args[0]);

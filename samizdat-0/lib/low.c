@@ -8,6 +8,8 @@
 #include "impl.h"
 #include "util.h"
 
+#include <stddef.h>
+
 
 /*
  * Helper functions
@@ -43,7 +45,7 @@ PRIM_IMPL(lowOrder) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(lowOrderIs) {
     requireRange(argCount, 3, 4);
-    return constBooleanFromBool(doLowOrderIs(argCount, args));
+    return doLowOrderIs(argCount, args) ? args[1] : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

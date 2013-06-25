@@ -58,7 +58,7 @@ variables. It is hoped that this facility will be used as minimally as
 possible, so as to not preclude the system from performing functional-style
 optimizations.
 
-#### `nonlocalExit(yieldFunction, thunk?) <> . | !.`
+#### `nonlocalExit(yieldFunction, thunk?) <> !. # Returns elsewhere.`
 
 Helper for calling nonlocal exit functions. This takes a function of
 zero-or-one argument &mdash; such as in particular the "yield" functions
