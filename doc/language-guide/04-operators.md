@@ -173,17 +173,46 @@ expression results in an int, and results in the bitwise complement of
 the inner expression's result.
 
 
-### Range Operator (Precedence 8) &mdash; `expression..expression`
+### Range Operators (Precedence 8)
 
-This indicates a range of values of ints or characters. The two expressions
-must be of the same type, either ints or strings. If strings, the expressions
-must each be of size 1. It is an error (terminating the runtime) if types
-and sizes are inappropriate. If `left > right`, the range is empty.
+The range operators are used to build up ranges of values of ints or
+characters (the latter in the form of single-element strings).
 
-The result of evaluating this expression is an interpolation of the
-range of elements. As such, if the range is empty or has more than one value,
-then it is only valid where general interpolations are valid (e.g. as list
-elements).
+Ranges all consist of at least two sub-expressions, namely a `first`
+(initial) value and a `limit` value. Ranges can also optionally
+be specified with an `increment` expression. If not specified,
+the `increment` defaults to `1`. Even if the `first` and `limit` are
+strings, the `increment` if specified must always be an int.
+
+Ranges all bottom out in their evaluation to calls to one of the
+functions `makeRangeExclusive` or `makeRangeInclusive`. Refer to the
+documentation on those functions for how to interpret the various
+combinations.
+
+**Note:** Unlike most binary operators, the range operators have no
+operator associativity, in that `x..y..z..huhwhat` is a syntax error.
+
+#### Inclusive range with increment 1 &mdash; `first..limit`
+
+This is equivalent to `makeRangeInclusive(first, limit, 1)`.
+
+#### Inclusive range with arbitrary increment &mdash; `first..increment..limit`
+
+This is equivalent to `makeRangeInclusive(first, limit, increment)`.
+
+TODO: This is not yet implemented.
+
+#### Exclusive range with increment 1 &mdash; `first..!limit`
+
+This is equivalent to `makeRangeExclusive(first, limit, 1)`.
+
+TODO: This is not yet implemented.
+
+#### Exclusive range with arbitrary increment &mdash; `first..increment..!limit`
+
+This is equivalent to `makeRangeExclusive(first, limit, increment)`.
+
+TODO: This is not yet implemented.
 
 
 ### Multiplicative Infix Operators (Precedence 7)
