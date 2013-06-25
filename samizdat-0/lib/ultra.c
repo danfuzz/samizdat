@@ -83,32 +83,10 @@ static zvalue makeMap1(zint argCount, const zvalue *args, bool reversed) {
     return datMapAddArray(EMPTY_MAP, size, mappings);
 }
 
-
-/*
- * Exported functions
+/**
+ * Helper for `makeRange*`, which does most of the work.
  */
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeList) {
-    if (argCount == 0) {
-        return EMPTY_LIST;
-    }
-
-    return datListFromArray(argCount, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeMap) {
-    return makeMap1(argCount, args, false);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeMapReversed) {
-    return makeMap1(argCount, args, true);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeRange) {
+static zvalue makeRange1(zint argCount, const zvalue *args, bool inclusive) {
     requireRange(argCount, 2, 3);
 
     zvalue first = args[0];
@@ -145,13 +123,17 @@ PRIM_IMPL(makeRange) {
             // Arrange for this special case to work out below.
             limitInt = firstInt;
             increment = 1;
+            inclusive = true;
         }
     } else {
         increment = 1;
     }
 
-    // The `+ increment` is because the range is end-inclusive.
-    zint size = (limitInt - firstInt + increment) / increment;
+    if (!inclusive) {
+        limitInt += (increment > 0) ? -1 : 1;
+    }
+
+    zint size = (limitInt + increment - firstInt) / increment;
 
     if (size <= 0) {
         return EMPTY_LIST;
@@ -165,6 +147,40 @@ PRIM_IMPL(makeRange) {
     }
 
     return datListFromArray(size, values);
+}
+
+
+/*
+ * Exported functions
+ */
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeList) {
+    if (argCount == 0) {
+        return EMPTY_LIST;
+    }
+
+    return datListFromArray(argCount, args);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeMap) {
+    return makeMap1(argCount, args, false);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeMapReversed) {
+    return makeMap1(argCount, args, true);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeRangeInclusive) {
+    return makeRange1(argCount, args, true);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeRangeExclusive) {
+    return makeRange1(argCount, args, false);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

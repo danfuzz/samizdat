@@ -73,8 +73,8 @@ The only operators regognized in Layer 0 are:
 
 * `-expr` &mdash; Unary negation, strictly limited to operating on ints.
 * `expr*` &mdash; Interpolation.
-* `expr..expr` &mdash; Ranges, but not chained ranges (`x..y..z`), which
-  aren't all that useful anyway.
+* `expr..expr` &mdash; Ranges, but not range-with-increment (`x..y..z`),
+  nor limit-exclusive ranges (`x..!y` or `x..y..!z`).
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
 * `<> expr` &mdash; Local yield.
 * `<out> exr` &mdash; Named nonlocal return.
