@@ -136,7 +136,20 @@ switch (expression) {
 }
 ```
 
-It is possible to define a yield name for the expression as a whole.
+In order to yield from the expression other than at the end of a
+test block, a `break` statement can be used. This is a non-local yield
+and as such must be the final statement of the (inner) block it appears
+in. `break` takes an optional expression argument. If present, its value
+becomes the overall value of the outer `switch` expression. If not present,
+the outer expression's result is void.
+
+```
+switch (expression) {
+    ... break expression ...
+}
+```
+
+It is also possible to define a yield name for the expression as a whole.
 To do so, place it immediately after the `switch`, like so:
 
 ```
@@ -146,7 +159,9 @@ switch <out> (expression) {
 ```
 
 Having done so, it is possible to use named yield in any of the
-consequent blocks with the so-defined name.
+consequent blocks with the so-defined name. This is just like `break`,
+except that it allows one to yield out of a nested context that
+also binds a `break`.
 
 If the value of the dispatch expression is of interest, it can be bound
 to a variable by turning the expression into an assignment, like so:
@@ -181,11 +196,11 @@ any arguments. It *may* have a yield definition (as described below).
 This form is evaluated by evaluating the given block, ignoring any
 result it may yield, and then evaluating the block again, ad infinitum.
 
-In order to yield a value from the expression, a `break` statement can
+In order to yield from the expression, a `break` statement can
 be used. This is a non-local yield and as such must be the final statement
 of the block it appears in. `break` takes an optional expression argument.
 If present, its value becomes the overall value of the outer `do`
-expression. If not present, the other expression's result is void.
+expression. If not present, the outer expression's result is void.
 
 ```
 do {
