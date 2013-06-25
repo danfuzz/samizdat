@@ -22,21 +22,17 @@ fn report(context, v1, v2, message) {
     io0Note("");
     io0Note(format("v1 = %q", v1));
     io0Note(format("v2 = %q", v2));
-    <> false;
 };
 
 # Diffs tokens.
 fn diffToken(context, v1, v2) {
     def type1 = tokenType(v1);
     def type2 = tokenType(v2);
-    def has1 = tokenHasValue(v1);
-    def has2 = tokenHasValue(v2);
-    def value1 = tokenValue(v1, null);
-    def value2 = tokenValue(v2, null);
+    def value1 = tokenValue(v1)?;
+    def value2 = tokenValue(v2)?;
 
     <> and
         { <> innerDiff(context, "type", type1, type2) }
-        { <> innerDiff(context, "hasValue", has1, has2) }
         { <> innerDiff(context, "value", value1, value2) }
 };
 
@@ -59,7 +55,7 @@ fn diffMap(context, v1, v2) {
                         {
                             report([context*, key], v1, v2,
                                 "Key mismatch.");
-                            return false
+                            return
                         }
                 };
             <> true
@@ -68,9 +64,8 @@ fn diffMap(context, v1, v2) {
             mapForEach(v1)
                 { key, value ::
                     def value2 = mapGet(v2, key);
-                    ifFalse
-                        { <> innerDiff(context, [key: key], value, value2) }
-                        { return false }
+                    ifNot { <> innerDiff(context, [key: key], value, value2) }
+                        { return }
                 };
             <> true
         }
@@ -87,8 +82,7 @@ fn diffList(context, v1, v2) {
             listForEach(v1)
                 { index, elem ::
                     innerDiff(context, index, elem, listNth(v2, index))
-                };
-            <> false
+                }
         }
 };
 
@@ -118,12 +112,12 @@ fn innerDiffImpl(context, newContext, v1, v2) {
     def type2 = lowType(v2);
     def innerContext = [context*, newContext, type1];
 
-    <> ifTrue { <> ne(v1, v2) }
+    <> ifIs { <> ne(v1, v2) }
         {
             def type1 = lowType(v1);
             def type2 = lowType(v2);
 
-            <> ifTrue { <> ne(type1, type2) }
+            <> ifIs { <> ne(type1, type2) }
                 {
                     <> report(context, v1, v2,
                         format("Types differ: %q %q", type1, type2))

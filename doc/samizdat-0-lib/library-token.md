@@ -7,10 +7,6 @@ Tokens
 <br><br>
 ### Primitive Definitions
 
-#### `tokenHasValue(token) <> boolean`
-
-Returns `true` iff the given token has a non-void payload data value.
-
 #### `tokenType(token) <> .`
 
 Returns the type tag value (an arbitrary value) of the given token.

@@ -25,7 +25,7 @@ SELF_PATH, ARGS* ::
 # recursion.
 def countDown = yCombinator { countDown ::
     <> { n ::
-        <> ifTrue { <> ge(n, 0) }
+        <> ifIs { <> ge(n, 0) }
             { <> [n, countDown(isub(n, 1))*] }
             { <> [] }
     }
@@ -36,7 +36,7 @@ def countDown = yCombinator { countDown ::
 def countDowns = yStarCombinator
     { f1, f2 ::
         <> { n ::
-            <> ifTrue { <> gt(n, 0) }
+            <> ifIs { <> gt(n, 0) }
                 { <> [n, f2(isub(n, 1))*] }
                 { <> [0] }
         }
@@ -65,7 +65,7 @@ fn sibling() {
 
 # Demo of nonlocal exit.
 fn <out> exiter(foo) {
-    ifTrue { <> eq(foo, 1) }
+    ifIs { <> eq(foo, 1) }
         { <out> "one" }
         { <out> }
 };
@@ -94,7 +94,7 @@ fn process(value) {
 fn main(selfPath, name, rest*) {
     # Be welcoming.
 
-    ifTrue { <> eq(name, "danfuzz") }
+    ifIs { <> eq(name, "danfuzz") }
         { io0Note("Hello, Danfuzz!\n") }
         { io0Note("Hello, Самиздат!\n") };
 

@@ -32,7 +32,7 @@ io0Note(func2(20, "twenty"));
 # Self-recursion.
 fn func3(x) {
     io0Note(format("func3 %q", x));
-    ifTrue { <> lt(x, 5) }
+    ifIs { <> lt(x, 5) }
         {
             func3(iadd(x, 1));
             return "func3"
@@ -44,7 +44,7 @@ io0Note(func3(1));
 # Mutual recursion.
 fn recFunc1(x) {
     io0Note(format("recFunc1 %q", x));
-    ifTrue { <> lt(x, 5) }
+    ifIs { <> lt(x, 5) }
         { recFunc2(iadd(x, 1)) };
 
     return "recFunc1"
@@ -52,7 +52,7 @@ fn recFunc1(x) {
 
 fn recFunc2(x) {
     io0Note(format("recFunc2 %q", x));
-    ifTrue { <> lt(x, 5) }
+    ifIs { <> lt(x, 5) }
         { recFunc1(iadd(x, 1)) };
 };
 

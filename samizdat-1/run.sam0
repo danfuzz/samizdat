@@ -22,7 +22,7 @@ fn sam1ValidatedTree(programText) {
     def programNode0 = sam0Tree(programText);
 
     # Complain if the two parsed forms aren't identical.
-    ifTrue { <> ne(programNode0, programNode1) }
+    ifIs { <> ne(programNode0, programNode1) }
         {
             io0Note("Parser disagreement.");
             diff(programNode0, programNode1);
@@ -78,11 +78,11 @@ fn run(args*) {
     def options = mapGet(parsedArgs, "options");
     def validate = mapGet(options, "validate", false);
 
-    ifTrue { <> eq(allArgs, []) } { io0Die("Missing file name.") };
+    ifIs { <> eq(allArgs, []) } { io0Die("Missing file name.") };
     def file = listFirst(allArgs);
     def argsPerSe = listButFirst(allArgs);
 
-    def library = ifTrue { <> validate }
+    def library = ifIs { <> logicFromBoolean(validate) }
         {
             def lib = makeCoreLibrary();
             <> lib

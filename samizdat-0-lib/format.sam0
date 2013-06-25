@@ -24,7 +24,7 @@ fn intBody(start, value, base) {
     loopReduce(["", value]) { result ::
         def text = listNth(result, 0);
         def value = listNth(result, 1);
-        <> ifTrue { <> ne(value, 0) }
+        <> ifIs { <> ne(value, 0) }
             {
                 def digit = mapGet(INT_CHARS, imod(value, base));
                 <> [stringAdd(digit, text), idiv(value, base)];
@@ -59,7 +59,7 @@ def CHAR_159 = stringFromInt(159);
 
 # Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
-    <> ifTrue { <> adorn }
+    <> ifIs { <> logicFromBoolean(adorn) }
         { <> stringAdd(before, value, after) }
         { <> value }
 };
@@ -73,7 +73,7 @@ fn doInt(int, adorn) {
 # character. Assumes it's not passed `0`.
 fn stringHexEscape(ch) {
     fn intHex(value) {
-        <> ifTrue { <> eq(value, 0) }
+        <> ifIs { <> eq(value, 0) }
             { <> "" }
             {
                 def digit = stringNth("0123456789abcdef", imod(value, 16));
@@ -102,7 +102,7 @@ fn stringChar(ch) {
         { special :: <> special }
         {
             # This checks for the ranges of nonprinting control characters.
-            <> ifTrue { <> or { <> lt(ch, " ") }
+            <> ifIs { <> or { <> lt(ch, " ") }
                               { <> and { <> ge(ch, CHAR_127) }
                                        { <> le(ch, CHAR_159) } } }
                 { <> stringHexEscape(ch) }
@@ -122,12 +122,12 @@ fn isIdentifier(string) {
     <> and
         { <> isString(string) }
         { <> gt(lowSize(string), 0) }
-        { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0), false) }
+        { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0)) }
         {
             stringForEach(string)
                 { ., ch ::
-                    ifFalse { <> mapGet(IDENTIFIER_CHARS, ch, false) }
-                        { return false }
+                    ifNot { <> mapGet(IDENTIFIER_CHARS, ch) }
+                        { return }
                 };
             <> true
         }
@@ -146,7 +146,7 @@ fn doList(list, adorn) {
         { reduction, ., elem ::
             <> stringAdd(
                 reduction,
-                ifTrue { <> eq(reduction, "") } { <> "" } { <> ", " },
+                ifIs { <> eq(reduction, "") } { <> "" } { <> ", " },
                 callSourceString(elem))
         };
 
@@ -159,8 +159,8 @@ fn doMap(map, adorn) {
         { reduction, key, value ::
             <> stringAdd(
                 reduction,
-                ifTrue { <> eq(reduction, "") } { <> "" } { <> ", " },
-                ifTrue { <> isIdentifier(key) }
+                ifIs { <> eq(reduction, "") } { <> "" } { <> ", " },
+                ifIs { <> isIdentifier(key) }
                     { <> key }
                     { <> callSourceString(key) },
                 ": ",
@@ -169,7 +169,7 @@ fn doMap(map, adorn) {
 
     <> adornIf(adorn,
         "[",
-        ifTrue { <> eq(body, "") } { <> ":" } { <> body },
+        ifIs { <> eq(body, "") } { <> ":" } { <> body },
         "]")
 };
 
@@ -186,14 +186,14 @@ fn doToken(token, adorn) {
         { string :: return string };
 
     def type = tokenType(token);
-    def typeString = ifTrue { <> isIdentifier(type) }
+    def typeString = ifIs { <> isIdentifier(type) }
         { <> type }
         { <> callSourceString(type) };
     def valueString = ifValue { <> tokenValue(token) }
         { value :: <> stringAdd(": ", callSourceString(value)) }
         { <> "" };
 
-    ifTrue { <> and { <> isString(type) } { <> eq(valueString, "") } }
+    ifIs { <> and { <> isString(type) } { <> eq(valueString, "") } }
         { return adornIf(adorn, "@", typeString, "") };
 
     def result = stringAdd(typeString, valueString);
@@ -348,7 +348,7 @@ fn doEscape(yield, state) {
 fn formatOne(yield, state) {
     <> ifValue { <> xPeek(state) }
         { ch ::
-            <> ifTrue { <> eq(ch, "%") }
+            <> ifIs { <> eq(ch, "%") }
                 { <> doEscape(yield, state) }
                 { <> doPlain(yield, state, ch) }
         }

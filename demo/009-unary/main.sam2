@@ -50,10 +50,6 @@ out(- 10);
 out(- - 20);
 out(- - + - + 30);
 out(!!! -1);
-out(!false);
-out(!true);
-out(!!true);
-out(! ! !true);
 out(returnString());
 out(["zero", "one", "two"][1]);
 out([a: 1, b: 2, c: 3]["c"]);
@@ -65,5 +61,22 @@ out(returnMap().a);
 out(returnMap().cats.o);
 out(returnVoid()?);
 out(returnString()?);
+
+# Boolean/logic conversion.
+out(&& (returnVoid()));
+out(&& (returnString()));
+out(&& true);
+out(&& false);   # This one is the documented surprising result.
+out((& true)?);
+out((& false)?);
+
+# Logical ops.
+out(&& (!returnVoid()));
+out(&& (!returnString()));
+out(&& !true);
+out(&& !false);  # This one is the documented surprising result.
+out(&& ! !10);
+out(&& ! !"fuzzy bunnies");
+out(&& ! ! !@fizmo);
 
 <> 0

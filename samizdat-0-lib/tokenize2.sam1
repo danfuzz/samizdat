@@ -38,7 +38,7 @@ def KEYWORDS = listReduce([:],
 fn intFromDigitList(baseSign, digits) {
     def base = iabs(baseSign);
     def value = listReduce(0, digits) { result, ., digit ::
-        <> ifTrue { <> eq(digit, -1) }
+        <> ifIs { <> eq(digit, -1) }
             { <> result }
             { <> iadd(imul(result, base), digit) }
     };
@@ -226,7 +226,7 @@ def tokString = {/
         { <out> ::
             # Propagate any character parsing error outward.
             listForEach(chars)
-                { ., ch :: ifTrue { <> isToken(ch) } { <out> ch } };
+                { ., ch :: ifIs { <> isToken(ch) } { <out> ch } };
             <> @[string: stringAdd(chars*)]
         }
     |

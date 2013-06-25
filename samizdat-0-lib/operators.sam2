@@ -182,8 +182,8 @@ fn \"unary-"(value) {
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-fn \"unary!"(value) {
-    <> not(value)
+fn \"unary&"(value) {
+    <> logicFromBoolean(value)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
@@ -202,18 +202,6 @@ fn \"unary[]"(value, indices*) {
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary!!!"(value) {
     <> inot(value)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn compareChain(functions, values*) {
-    listForEach(functions) { index, function ::
-        def v1 = listNth(values, index);
-        def v2 = listNth(values, iadd(index, 1));
-        ifFalse { <> function(v1, v2) }
-            { return false }
-    };
-
-    <> true
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
@@ -255,9 +243,8 @@ fn ifChain(functions, thens*) {
     "binary\\>=":   \"binary\\>=",
     "unary+":       \"unary+",
     "unary-":       \"unary-",
-    "unary!":       \"unary!",
+    "unary&":       \"unary&",
     "unary[]":      \"unary[]",
     "unary!!!":     \"unary!!!",
-    compareChain:   compareChain,
     ifChain:        ifChain
 ]

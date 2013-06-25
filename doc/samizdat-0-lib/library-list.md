@@ -20,6 +20,14 @@ the given list. If `n` is not a valid index (not an int, or with
 a value out of range), then this returns the original list as the
 result.
 
+#### `listForEach(list, function) <> !.`
+
+Calls the given function on each element of the given list.
+The given function is called with two arguments, namely the element's
+index (zero-based) and value. Always returns void.
+
+**Note:** See `stringMap` for discussion about choice of argument order.
+
 #### `listInsNth(list, n, value) <> list`
 
 Returns a list just like the given one, except that the `n`th
@@ -124,14 +132,6 @@ Returns the first element of the given list or the given `notFound` value
 if the list is empty. Returns void if the list is empty and `notFound`
 is not supplied. This is just a convenient shorthand for
 `listNth list 0 notFound?`.
-
-#### `listForEach(list, function) <> !.`
-
-Calls the given function on each element of the given list.
-The given function is called with two arguments, namely the element's
-index (zero-based) and value. Always returns void.
-
-**Note:** See `stringMap` for discussion about choice of argument order.
 
 #### `listLast(list, notFound?) <> . | !.`
 
