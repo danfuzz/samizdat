@@ -37,7 +37,7 @@ fn booleanOr(predicates*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn ifFalse(predicate, falseFunction, trueFunction?) {
+fn ifNot(predicate, falseFunction, trueFunction?) {
     <> ifValue { <> trueFunction* }
         { trueFunction :: <> ifTrue(predicate, trueFunction, falseFunction) }
         { <> ifTrue(predicate, {}, falseFunction) }
@@ -69,11 +69,11 @@ fn \"switch"(value, cases, defaultFunction?) {
 };
 
 <> [
-    and: and,
+    and:        and,
     booleanAnd: booleanAnd,
-    booleanOr: booleanOr,
-    ifFalse: ifFalse,
-    ifVoid: ifVoid,
-    or: or,
-    switch: \"switch"
+    booleanOr:  booleanOr,
+    ifNot:      ifNot,
+    ifVoid:     ifVoid,
+    or:         or,
+    switch:     \"switch"
 ]

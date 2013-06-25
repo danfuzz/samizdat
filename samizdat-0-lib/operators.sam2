@@ -209,7 +209,7 @@ fn compareChain(functions, values*) {
     listForEach(functions) { index, function ::
         def v1 = listNth(values, index);
         def v2 = listNth(values, iadd(index, 1));
-        ifFalse { <> function(v1, v2) }
+        ifNot { <> function(v1, v2) }
             { return }
     };
 

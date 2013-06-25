@@ -87,7 +87,7 @@ If no predicates were supplied, this returns `false`. It is an error
 (terminating the runtime) if any predicate returns anything other than
 a boolean value.
 
-#### `ifFalse(predicate, falseFunction, trueFunction?) <> . | !.`
+#### `ifNot(predicate, falseFunction, trueFunction?) <> . | !.`
 
 This is identical to `ifTrue` except that the order of the second
 and third arguments is reversed.

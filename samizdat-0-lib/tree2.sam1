@@ -1233,14 +1233,14 @@ def parseWhileExpression = {/
 #     def out = \"break";
 #     loop { <\"continue"> ::
 #         { <next> :: stat1; stat2 }();
-#         ifFalse { <> expr }
+#         ifNot { <> expr }
 #             { <\"break"> }
 #     }
 # }()
 # ```
 #
 # with the initial break assignment omitted if there is no yield def, and
-# with the `ifFalse` statement omitted if there is no `while` at the end
+# with the `ifNot` statement omitted if there is no `while` at the end
 # of the `do`.
 def parseDoExpression = {/
     @do
@@ -1250,7 +1250,7 @@ def parseDoExpression = {/
         @while
         ex = parseParenExpression
         {
-            <> makeCallName("ifFalse",
+            <> makeCallName("ifNot",
                 makeThunk(ex),
                 makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
         }

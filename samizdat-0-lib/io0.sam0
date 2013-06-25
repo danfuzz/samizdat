@@ -137,7 +137,7 @@ fn resolveLinks(sandboxDirectory, path) {
 
         ifTrue { <> le(limit, 0) }
             { io0Die("Too many links in symbolic link chain.") };
-        ifFalse { <> isPrefix(sandboxDirectory, path) }
+        ifNot { <> isPrefix(sandboxDirectory, path) }
             { io0Die("Symbolic link escapes sandbox directory.") };
 
         <> ifValue { <> io0ReadLink(path) }

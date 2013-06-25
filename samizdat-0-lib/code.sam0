@@ -23,7 +23,7 @@ fn forwardFunction() {
 
         def function = optFunction*;
 
-        ifFalse { <> isUniqlet(function) }
+        ifNot { <> isUniqlet(function) }
             { io0Die("Attempt to forward to non-function.") };
 
         boxSet(box, function);

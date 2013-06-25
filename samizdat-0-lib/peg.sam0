@@ -357,7 +357,7 @@ fn pegApply(rule, input) {
         }
         { <> input };
 
-    ifFalse { <> isList(inputList) }
+    ifNot { <> isList(inputList) }
         { io0Die("Attempt to parse non-list.") };
 
     def ybox = yieldBox();
