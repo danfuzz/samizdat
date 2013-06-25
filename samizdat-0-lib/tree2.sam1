@@ -533,7 +533,7 @@ def parseRangeExpression = {/
         ex = parseUnaryExpression
         {
             <> { node ::
-                <> @[interpolate: makeCallName("makeRange", node, ex)]
+                <> @[interpolate: makeCallName("makeRangeInclusive", node, ex)]
             }
         }
     )*
