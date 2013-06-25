@@ -479,7 +479,7 @@ def rangeExpression {/
         ex = unaryExpression
         {
             <> { node ::
-                <> @[interpolate: makeCallName("makeRange", node, ex)]
+                <> @[interpolate: makeCallName("makeRangeInclusive", node, ex)]
             }
         }
     )*

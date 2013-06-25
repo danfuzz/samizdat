@@ -419,7 +419,10 @@ def parseRangeExpression = pegMakeMainSequence(
             parseUnaryExpression,
             pegMakeCode { ., ex ::
                 <> { node ::
-                    <> @[interpolate: makeCallName("makeRange", node, ex)]
+                    <> @[
+                        interpolate:
+                        makeCallName("makeRangeInclusive", node, ex)
+                    ]
                 }
             })),
     pegMakeCode { base, ops ::

@@ -585,7 +585,9 @@ DEF_PARSE(listElement) {
     } else {
         zvalue end = PARSE(listElement1);
         if (end != NULL) {
-            ex = makeCall(makeVarRef(STR_MAKE_RANGE), listFrom2(ex, end));
+            ex = makeCall(
+                makeVarRef(STR_MAKE_RANGE_INCLUSIVE),
+                listFrom2(ex, end));
             return datTokenFrom(STR_INTERPOLATE, ex);
         }
     }
@@ -901,9 +903,8 @@ DEF_PARSE(unaryExpression) {
 DEF_PARSE(rangeExpression) {
     MARK();
 
-    // We differ from the spec here in not recognizing chained `x..y..z`
-    // expressions, which arguably shouldn't really be part of the syntax
-    // anyway.
+    // We differ from the spec here in not recognizing three-argument
+    // range expressions (`x..y..z`).
 
     zvalue base = PARSE_OR_REJECT(unaryExpression);
 
@@ -912,7 +913,9 @@ DEF_PARSE(rangeExpression) {
     }
 
     zvalue ex = PARSE_OR_REJECT(unaryExpression);
-    zvalue call = makeCall(makeVarRef(STR_MAKE_RANGE), listFrom2(base, ex));
+    zvalue call = makeCall(
+        makeVarRef(STR_MAKE_RANGE_INCLUSIVE),
+        listFrom2(base, ex));
     return datTokenFrom(STR_INTERPOLATE, call);
 }
 
