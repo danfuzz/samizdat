@@ -20,9 +20,13 @@ more tightly than any other operators, including prefix operators.
 #### Apply function &mdash; `expression(arg, arg, ...) { block } { block } ...`
 
 To apply an expression as a function, follow it with a list of comma-separated
-arguments to apply it to, between parentheses. The result of this expression
-is the same as the result of the function call. If the function call returns
-void, then the expression's result is also a void.
+arguments to apply it to, between parentheses. The arguments are evaluated
+in order, and then the function is called with these arguments. The result
+of the apply expression is the same as the result of the function call.
+If the function call returns void, then the expression's result is also a void.
+
+If any of the arguments evaluates to void, then subsequent arguments are
+not evaluated, the function isn't called, and the expression yields void.
 
 In order to make it convenient to define control-structure-like functions,
 any number of block closure literals may follow the closing parenthesis. All
@@ -40,7 +44,8 @@ the argument with a star. For example, `foo(bar, [1, 2]*)` means the
 same thing as `foo(bar, 1, 2)`. This works for all argument expressions
 (not just literals), so long as the expression evaluates to a list.
 
-The expression to apply and all of the arguments must be non-void.
+The expression to apply must be non-void. Per the above, it is valid for
+an argument to be void, but that stops the evaluation of the expression.
 
 #### Access collection &mdash; `expression[index, index, ...]`
 
