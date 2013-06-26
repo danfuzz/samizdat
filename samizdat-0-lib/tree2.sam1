@@ -71,17 +71,21 @@ def UNARY_OPERATORS = listReduce([:], ["+", "-", "&", "[]", "!!!"])
 
 # Map of token types to corresponding binary operator function name variable
 # references.
-def BINARY_OPERATORS = listReduce([:],
-    [
-        "+", "-", "*", "/", "%",
-        "&&&", "|||", "^^^", "<<<", ">>>",
-        "==", "!=", "<", ">", "<=", ">=",
-        "\\==", "\\!=", "\\<", "\\>", "\\<=", "\\>="
-    ]
-    )
-    { result, ., name ::
-        <> [result*, (name): makeVarRef(stringAdd("binary", name))]
-    };
+def BINARY_OPERATORS = [
+    (listReduce(
+        [:],
+        [
+            "+", "-", "*", "/", "%",
+            "&&&", "|||", "^^^", "<<<", ">>>",
+            "==", "!=", "<", ">", "<=", ">=",
+            "\\==", "\\!=", "\\<", "\\>", "\\<=", "\\>="
+        ])
+        { result, ., name ::
+            <> [result*, (name): makeVarRef(stringAdd("binary", name))]
+        })*,
+    "..":  makeVarRef("makeRangeInclusive"),
+    "..!": makeVarRef("makeRangeExclusive")
+];
 
 # Helper for parsing binary operator expressions, which puts together
 # a sequence of function calls.
@@ -527,18 +531,46 @@ def parseUnaryExpression = {/
 
 # Parses a range expression.
 def parseRangeExpression = {/
+    # To provide for more sensible error messages, this rule first accepts
+    # arbitrarily chained range expressions, and then explicitly rejects
+    # all but the four valid range variants and the fall-through of not
+    # actually being a range.
+
     base = parseUnaryExpression
-    ops = (
-        @".."
+    opExes = (
+        op = [@".." @"..!"]
         ex = parseUnaryExpression
-        {
-            <> { node ::
-                <> @[interpolate: makeCallName("makeRangeInclusive", node, ex)]
-            }
-        }
+        { <> [tokenType(op), ex] }
     )*
 
-    { <> listReduce(base, ops) { result, ., op :: <> op(result) } }
+    { <out> ::
+        ifIs { <> eq(opExes,[]) }
+            { <out> base };
+
+        def restSize = lowSize(opExes);
+
+        ifIs { <> gt(restSize, 2) }
+            { io0Die("Invalid chained range expression.") };
+
+        def last = listLast(opExes);
+        def lastOp = listNth(last, 0);
+        def lastEx = listNth(last, 1);
+
+        def increment = ifIs { <> eq(restSize, 2) }
+            {
+                def first = listFirst(opExes);
+                def firstOp = listNth(first, 0);
+                def firstEx = listNth(first, 1);
+
+                ifIs { <> eq(firstOp, "..!") }
+                    { io0Die("Invalid use of exclusive range operator.") };
+
+                <> [firstEx]
+            }
+            { <> [] };
+
+        <> makeCall(mapGet(BINARY_OPERATORS, lastOp), base, lastEx, increment*);
+    }
 /};
 
 # `expression` from layer 0 is omitted here (it's forwarded earlier), and
