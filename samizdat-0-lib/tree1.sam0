@@ -268,20 +268,25 @@ def parseEmptyMap = pegMakeMainSequence(
     pegMakeCode { ., ., . :: <> makeLiteral([:]) });
 
 # Documented in Samizdat Layer 0 spec.
+def parseMapKeyAtom = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
+            parseIdentifierString,
+            pegMakeLookaheadSuccess(pegMakeToken(":")),
+            pegMakeCode { k, . :: <> k }),
+        parseExpression));
+
+# Documented in Samizdat Layer 0 spec.
+def parseMapKey = parseMapKeyAtom;
+
+# Documented in Samizdat Layer 0 spec.
 def parseMapping = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            pegMakeChoice(
-                pegMakeSequence(
-                    parseIdentifierString,
-                    pegMakeToken(":"),
-                    pegMakeCode { k, . :: <> k }),
-                pegMakeSequence(
-                    parseExpression,
-                    pegMakeToken(":"),
-                    pegMakeCode { k, . :: <> k })),
+            parseMapKey,
+            pegMakeToken(":"),
             parseExpression,
-            pegMakeCode { key, value ::
+            pegMakeCode { key, ., value ::
                 <> makeCallName("makeList", value, key)
             }),
         pegMakeSequence(
