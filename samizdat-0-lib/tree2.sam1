@@ -569,7 +569,10 @@ def parseRangeExpression = {/
             }
             { <> [] };
 
-        <> makeCall(mapGet(BINARY_OPERATORS, lastOp), base, lastEx, increment*);
+        <> @[
+            interpolate:
+            makeCall(mapGet(BINARY_OPERATORS, lastOp), base, lastEx, increment*)
+        ]
     }
 /};
 
