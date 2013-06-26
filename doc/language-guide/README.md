@@ -12,10 +12,11 @@ Contents:
 * [Functions and Blocks](03-functions.md)
 * [Expression Operators](04-operators.md)
 * [Control Constructs](05-control.md)
-* [Modules](06-modules.md)
-* [Parsing](07-parsing.md)
-* [Execution Parse Trees](08-execution-trees.md)
-* [Parser Parse Trees](09-parser-trees.md)
+* [Parsing](06-parsing.md)
+* [Modules](07-modules.md)
+* [Actors](08-actors.md)
+* [Execution Parse Trees](09-execution-trees.md)
+* [Parser Parse Trees](10-parser-trees.md)
 
 Appendix:
 
