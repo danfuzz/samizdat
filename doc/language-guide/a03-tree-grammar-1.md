@@ -7,7 +7,8 @@ Appendix: *Samizdat Layer 1* Tree Grammar
 The following is a nearly complete tree grammar for *Samizdat Layer 1*,
 written in *Samizdat Layer 1*, with commentary calling out the parts
 that are needed specifically for *Layer 1*. Anything left unmarked is
-needed for *Layer 0*.
+also needed for *Layer 0*. In addition, places where higher layers add
+or vary rules are noted in comments.
 
 A program is parsed by matching the `program` rule, which yields a
 `closure` node. For simple error handling, the rule `programOrError`
