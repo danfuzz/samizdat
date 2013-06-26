@@ -155,7 +155,10 @@ be written without the quotes.
 
 A group of mappings with multiple keys that map to the same value
 can be written in a short-hand using the same range and
-interpolation syntax as with lists.
+interpolation syntax as with lists. In addition, a comma-separated
+list of keys enclosed in parentheses can be used in the key position;
+in this form, naked identifiers have the same string-literal interpretation
+as with individual identifiers.
 
 An entire other map can be interpolated into a new map by listing the
 map to interpolate followed by a `*`. To avoid ambiguity between a
@@ -184,7 +187,12 @@ written as `[:]`.
 
 [["complex", "data", "as", "key"]: "Handy!"]
 [0..9: "digits", 10: "not a digit"]
+
+# The first two here are equivalent. The third contains a variable reference
+# to `the`.
 [["these", "map", "to", "the"]*: "same value"]
+[(these, map, "to", the): "same value"]
+[(these, map, "to", (the)): "same value"]
 
 # These are all equivalent.
 [first: 1, second: 2, third: 3]
@@ -192,6 +200,7 @@ written as `[:]`.
 [:, [first: 1]*, [second: 2, third: 3]*]
 ```
 
+TODO: Parenthesized lists of keys are not yet implemented.
 
 ### Token
 

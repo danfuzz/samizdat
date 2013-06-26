@@ -119,15 +119,15 @@ In case no consequent block is evaluated, the overall expression result
 is void.
 
 If multiple different expressions should match a single consequent
-block, they can be listed before the block, separated by commas. In
-addition, range and argument interpolation syntax works here. The
-syntax for what is accepted is identical to that for keys in map
-literals, including the shorthand of being ablue to use identifiers
-as strings:
+block, the same syntax is used to represent this as is used for
+multiple binding of keys to a single value in map literals. This
+includes list interpolation, ranges, and parenthesized lists of
+expressions. In addition, the same identifier-as-string shorthands
+apply:
 
 ```
 switch (expression) {
-    testExpression1(), testExpression2(), testExpression3(): {
+    (testExpression1(), testExpression2(), testExpression3()): {
         block123
     }
     4..6: {
@@ -138,6 +138,9 @@ switch (expression) {
     }
     name: {
         nameBlock
+    }
+    (north, south, east, west): {
+        directionBlock
     }
 }
 ```
@@ -187,7 +190,10 @@ not allow consequent blocks to fall through. So, a block-final
 between cases, the thing to do is factor it out into a separate
 function.
 
-TODO: Neither `else` handling nor name binding has yet been implemented.
+TODO: As yet unimplemented:
+* `else` handling
+* name binding of the dispatch expression
+* the current spec for parenthesized key lists
 
 ### Unconditional loop &mdash; `do`
 
