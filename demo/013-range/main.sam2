@@ -1,0 +1,57 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Range demo, with layer 2 syntax.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper functions
+#
+
+# Prints out the given value, which is expected to be a list.
+fn out(list) {
+    io0Note(format("Got: %q", list))
+};
+
+#
+# Main tests
+#
+
+io0Note("Inclusive, default increment (layer 0 syntax)...");
+out([100..110]);
+out(["U".."Z"]);
+out([9..9]);
+out([9..0]);
+out(["f".."f"]);
+out(["f".."a"]);
+
+io0Note("\nInclusive, explicit increment...");
+out([0..200..1000]);
+out(["a"..5.."z"]);
+out([10..-1..1]);
+out(["F"..-2.."A"]);
+out([9..0..9]);
+
+io0Note("\nExclusive, default increment...");
+out([100..!110]);
+out(["U"..!"Z"]);
+out([9..!9]);
+out([9..!0]);
+out(["f"..!"f"]);
+out(["f"..!"a"]);
+
+io0Note("\nExclusive, explicit increment...");
+out([0..200..!1000]);
+out(["a"..5..!"z"]);
+out([10..-1..!1]);
+out(["F"..-2..!"A"]);
+out([9..0..!9]);
+
+<> 0
