@@ -15,8 +15,8 @@ SELF_PATH, ARGS* ::
 # Helper functions
 #
 
-fn out(string) {
-    io0Note(format("Got: %q", string))
+fn out(v) {
+    io0Note(format("Got: %q", v))
 };
 
 #
