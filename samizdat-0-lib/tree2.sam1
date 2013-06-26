@@ -401,18 +401,35 @@ def parseEmptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
+# Parses an "atomic" map key (as opposed to the parens-and-commas form).
+def parseMapKeyAtom = {/
+    # The lookahead at the end of the rule is to ensure we are not looking
+    # at a more complicated expression. `@","` and `@")"` are matched here,
+    # so that this rule can stay the same in *Layer 2*.
+    k = parseIdentifierString
+    &[@":" @"," @")"]
+    { <> k }
+|
+    parseExpression
+/};
+
+# Parses an arbitrary map key. Note: This rule is nontrivial in *Layer 2*.
+def parseMapKey = {/
+    # Note: This clause is only active for a list of two or more items.
+    # A single parenthesized item is properly covered by the second alternate.
+    @"("
+    firstKey = parseMapKeyAtom
+    moreKeys = (@"," parseMapKeyAtom)+
+    @")"
+    { <> @[interpolate: makeCallName("makeList", firstKey, moreKeys*)] }
+|
+    parseMapKeyAtom
+/};
+
 # Parses a mapping (element of a map).
 def parseMapping = {/
-    key = (
-        k = parseIdentifierString
-        @":"
-        { <> k }
-    |
-        k = parseExpression
-        @":"
-        { <> k }
-    )
-
+    key = parseMapKey
+    @":"
     value = parseExpression
     { <> makeCallName("makeList", value, key) }
 |
