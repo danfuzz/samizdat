@@ -1116,19 +1116,27 @@ def parseOptBreakDef = {/
     )?
 /};
 
-# Helper for switch expressions: Parse a regular case.
+# Helper for switch expressions: Parse a single case, including
+# `default` and `else` cases. Returns a map that binds `keys` and
+# `code`.
 def parseSwitchCase = {/
-    key = parseUnadornedList
-    @":"
-    code = parseCodeOnlyClosure
-    { <> makeCallName("makeList", code, key*) }
-/};
+    keys = (
+        special = [@default @else]
+        @":"
+        { <> special }
+    |
+        name = parseIdentifierString
+        @":"
+        { <> @[expression: [name]] }
+    |
+        k = parseUnadornedList
+        @":"
+        { <> @[expression: [k*]] }
+    )
 
-# Helper for switch expressions: Parse a default case.
-def parseSwitchDefault = {/
-    @default
-    @":"
-    parseCodeOnlyClosure
+    code = parseCodeOnlyClosure
+
+    { <> [code: code, keys: keys] }
 /};
 
 # Parses a switch expression. The translation is along these lines:
@@ -1166,22 +1174,42 @@ def parseSwitchExpression = {/
 
     @"{"
 
-    cases1 = parseSwitchCase*
-    optDefault = parseSwitchDefault?
-    cases2 = parseSwitchCase*
-
-    (
-        # Detect double default clause as an explicit error.
-        parseSwitchDefault
-        { io0Die("Multiple default clauses.") }
-    )?
+    cases = parseSwitchCase*
 
     @"}"
 
     {
+        def optDefault = listMap(cases) { ., case ::
+            <> ifIs { <> eq(mapGet(case, "keys"), @default) }
+                { <> mapGet(case, "code") }
+        };
+
+        def optElse = listMap(cases) { ., case ::
+            <> ifIs { <> eq(mapGet(case, "keys"), @else) }
+                { <> mapGet(case, "code") }
+        };
+
+        def regularCases = listMap(cases) { ., case ::
+            def keys = mapGet(case, "keys");
+            <> ifIs { <> eq(tokenType(keys), "expression") }
+                {
+                    <> makeCallName("makeList",
+                        mapGet(case, "code"),
+                        tokenValue(keys)*)
+                }
+        };
+
+        ifIs { <> gt(lowSize(optDefault), 1) }
+            { io0Die("Multiple default cases in switch.") };
+
+        ifIs { <> gt(lowSize(optElse), 1) }
+            { io0Die("Multiple else cases in switch.") };
+
+        # TODO: Handle else.
+
         def switchCall = makeCallName("switch",
             value,
-            makeCallName("makeMapReversed", cases1*, cases2*),
+            makeCallName("makeMapReversed", regularCases*),
             optDefault*);
 
         def mainClosure = @[closure: [
