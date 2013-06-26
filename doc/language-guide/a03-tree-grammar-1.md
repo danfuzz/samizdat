@@ -472,19 +472,17 @@ def unaryExpression = {/
     }
 /};
 
+# Note: There are additional forms of range in *Layer 2* and beyond.
 def rangeExpression {/
     base = unaryExpression
-    ops = (
-        @".."
-        ex = unaryExpression
-        {
-            <> { node ::
-                <> @[interpolate: makeCallName("makeRangeInclusive", node, ex)]
-            }
-        }
-    )*
 
-    { <> listReduce(base, ops) { result, ., op :: <> op(result) } }
+    (
+        @".."
+        limit = unaryExpression
+        { <> @[interpolate: makeCallName("makeRangeInclusive", base, limit)] }
+    |
+        { <> base }
+    )
 /};
 
 # Note: There are additional expression rules in *Layer 2* and beyond.

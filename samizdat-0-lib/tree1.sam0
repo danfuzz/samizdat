@@ -413,21 +413,17 @@ def parseUnaryExpression = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 def parseRangeExpression = pegMakeMainSequence(
     parseUnaryExpression,
-    pegMakeStar(
-        pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
             pegMakeToken(".."),
             parseUnaryExpression,
-            pegMakeCode { ., ex ::
-                <> { node ::
-                    <> @[
-                        interpolate:
-                        makeCallName("makeRangeInclusive", node, ex)
-                    ]
-                }
-            })),
-    pegMakeCode { base, ops ::
-        <> listReduce(base, ops) { result, ., op :: <> op(result) }
-    });
+            pegMakeCode { base, ., limit ::
+                <> @[
+                    interpolate:
+                    makeCallName("makeRangeInclusive", base, limit)
+                ]
+            }),
+        pegMakeCode { base :: <> base }));
 
 # Documented in Samizdat Layer 0 spec.
 def implExpression = pegMakeChoice(
