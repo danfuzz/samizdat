@@ -120,11 +120,14 @@ is void.
 
 If multiple different expressions should match a single consequent
 block, they can be listed before the block, separated by commas. In
-addition, range and argument interpolation syntax works here:
+addition, range and argument interpolation syntax works here. The
+syntax for what is accepted is identical to that for keys in map
+literals, including the shorthand of being ablue to use identifiers
+as strings:
 
 ```
 switch (expression) {
-    test1, test2, test3: {
+    testExpression1(), testExpression2(), testExpression3(): {
         block123
     }
     4..6: {
@@ -132,6 +135,9 @@ switch (expression) {
     }
     ["fizmo", "igram", secretSpellName()]*: {
         spellBlock
+    }
+    name: {
+        nameBlock
     }
 }
 ```
