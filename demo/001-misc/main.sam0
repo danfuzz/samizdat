@@ -129,6 +129,7 @@ fn main(selfPath, name, rest*) {
     process(@if); # Demos that keywords can be used as token types.
     process(@[while]); # Ditto.
     process([def: "defined", do: "done"]); # Likewise, for map keys.
+    process(@[(null)]);
     process(@@);
     process(countDown(10));
     process(countDown2(5));

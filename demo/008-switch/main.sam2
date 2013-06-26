@@ -17,21 +17,24 @@ SELF_PATH, ARGS* ::
 
 fn powerName(value) {
     <> switch <out> (value) {
-        1: { <> "one" }
-        2: { <out> "two" }
-        4: { return "four" }
-        8: { <> "eight" }
+        1:    { <> "one" }
+        2:    { <out> "two" }
+        4:    { return "four" }
+        8:    { <> "eight" }
         1..4: { <> "um..." }
+        (5, 6, blort): {
+            <> "wha?"
+        }
         default: { <> "uh..." }
     }
 };
 
 fn interpolator(value, keys) {
     <> switch (value) {
-        10, 11: { <> "Constant override" }
-        value * 0: { <> "Calculated override" }
-        keys*: { <> "Yes" }
-        default: { <> "No" }
+        (10, 11): { <> "Constant override" }
+        value * 0:   { <> "Calculated override" }
+        keys*:       { <> "Yes" }
+        default:     { <> "No" }
     }
 };
 
@@ -39,12 +42,19 @@ fn interpolator(value, keys) {
 # Main tests
 #
 
+io0Note("Power...");
+
 io0Note(powerName(0));
 io0Note(powerName(1));
 io0Note(powerName(2));
 io0Note(powerName(3));
 io0Note(powerName(4));
 io0Note(powerName(5));
+io0Note(powerName(6));
+io0Note(powerName(7));
+io0Note(powerName("blort"));
+
+io0Note("\nInterpolate...");
 
 io0Note(interpolator(1, [1, 2, 3]));
 io0Note(interpolator(2, [4..6]));
