@@ -200,19 +200,13 @@ This is equivalent to `makeRangeInclusive(first, limit)`.
 
 This is equivalent to `makeRangeInclusive(first, limit, increment)`.
 
-TODO: This is not yet implemented.
-
 #### Exclusive range with increment 1 &mdash; `first..!limit`
 
 This is equivalent to `makeRangeExclusive(first, limit)`.
 
-TODO: This is not yet implemented.
-
 #### Exclusive range with arbitrary increment &mdash; `first..increment..!limit`
 
 This is equivalent to `makeRangeExclusive(first, limit, increment)`.
-
-TODO: This is not yet implemented.
 
 
 ### Multiplicative Infix Operators (Precedence 7)
@@ -279,15 +273,21 @@ bitwise xor of the two numbers.
 
 Comparisons in Samizdat are chainable: `x < y <= z` is the same as saying
 `(x < y) && (y <= z)` with the additional guarantee that `y` is only
-evaluated once.
+evaluated once. This falls naturally out of the value-or-void logic
+model of the language.
 
 #### Same-type comparison &mdash; `== != < > <= >=`
 
-These are the same-type comparison operators. These result in `false` if
+These are the same-type comparison operators. These result in `void` if
 the two expressions are not of the same type. If they *are* of the same
-type, then the comparison result depends on the type.
+type, then the comparison result depends on the type, yielding the
+right-hand value to represent logical-true.
 
-TODO: Expand on this.
+If the two expressions are of the same type, the result of the
+operator corresponds to the behavior of the library function `lowOrder`
+(see which).
+
+TODO: Expand on what's up with non-primitive types.
 
 #### Total-order comparison &mdash; `\== \!= \< \> \<= \>=`
 
@@ -295,51 +295,55 @@ These are total-order comparison operators. There is a total ordering of
 values within Samizdat, and these operators' results are based on that
 ordering.
 
+These expressions correspond to calls to the library functions
+`eq` `ne` `lt` `gt` `le` and `ge` (with the obvious mapping of operator
+to function). See the definition of those functions for more details.
+
 **Note:** This can sometimes have surprising results, e.g. when comparing
 ints and floating point numbers.
 
-TODO: Expand on this.
+### Boolean-And Operator (Precedence 4) &mdash; `expression && expression`
 
-### Logical And Operator (Precedence 4) &mdash; `expression && expression`
-
-This is a short-circuit logical and. When evaluating this operator, the first
-(left-hand) expression is evaluated. If that results in `false`, then the
-entire expression results in `false`. Otherwise, the second (right-hand)
-expression is evaluated, and its result becomes the result of the outer
-expression.
-
-### Logical Or Operator (Precedence 3) &mdash; `expression || expression`
-
-This is a short-circuit logical or. When evaluating this operator, the first
-(left-hand) expression is evaluated. If that results in anything but `false`,
-then the entire expression results in that same value. Otherwise, the second
-(right-hand) expression is evaluated, and its result becomes the result of
-the outer expression.
-
-### Value/Void Logical And Operator (Precedence 2) &mdash; `expression & expression`
-
-This is short-circuit logical and. When evaluating this operator, the first
-(left-hand) expression is evaluated. If that results in void, then the
-entire expression results in void. Otherwise, the second (right-hand)
-expression is evaluated, and its result (whether a value or void) becomes
+This is a short-circuit boolean-and (conjunction). When evaluating this
+operator, the first (left-hand) expression is evaluated. If that results
+in `false`, then the entire expression results in `false`. Otherwise,
+the second (right-hand) expression is evaluated, and its result becomes
 the result of the outer expression.
 
-**Note:** Samizdat logic expressions are based on the idea of void as
-false and any value as true.
+Both expressions must yield booleans. It is a fatal error if an
+evaluated expression does not yield a boolean. However, the right-hand
+expression is not necessarily evaluated.
 
-### Value/Void Logical Or Operator (Precedence 1) &mdash; `expression & expression`
+### Boolean-Or Operator (Precedence 3) &mdash; `expression || expression`
 
-This is a short-circuit logical or. When evaluating this operator, the first
-(left-hand) expression is evaluated. If that results in a value (but not void),
-then the entire expression results in that same value. Otherwise, the second
+This is a short-circuit boolean-or (disjunction). When evaluating this
+operator, the first (left-hand) expression is evaluated. If that results in
+anything `true`, then the entire expression results in `true`.
+Otherwise, the second (right-hand) expression is evaluated, and its
+result becomes the result of the outer expression.
+
+Both expressions must yield booleans. It is a fatal error if an
+evaluated expression does not yield a boolean. However, the right-hand
+expression is not necessarily evaluated.
+
+### Value/Void Logical-And Operator (Precedence 2) &mdash; `expression & expression`
+
+This is short-circuit logical-and (conjunction). When evaluating this
+operator, the first (left-hand) expression is evaluated. If that results
+in void, then the entire expression results in void. Otherwise, the second
 (right-hand) expression is evaluated, and its result (whether a value or
 void) becomes the result of the outer expression.
 
-**Note:** Samizdat logic expressions are based on the idea of void as
-false and any value as true.
+### Value/Void Logical-Or Operator (Precedence 1) &mdash; `expression & expression`
+
+This is a short-circuit logical-or (disjunction). When evaluating this
+operator, the first (left-hand) expression is evaluated. If that results
+in a value (but not void), then the entire expression results in that same
+value. Otherwise, the second (right-hand) expression is evaluated, and its
+result (whether a value or void) becomes the result of the outer expression.
 
 **Note:** The question-mark-colon trinary operator from C (and descendants)
-is obviated in Samizdat by this and the value/void-and operator.
+is obviated in Samizdat by this and the logical-and operator.
 `x ? y : z` in C can generally be turned into `x & y | z` in Samizdat,
 as long as `y` is never void. If `y` can legitimately be void, then the
 slightly longer form `x & y || !x & z` is equivalent (though will evaluate
