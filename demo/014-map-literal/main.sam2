@@ -1,0 +1,48 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Map literal demo, *Layer 2* specific.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper functions
+#
+
+fn out(v) {
+    io0Note(format("Got: %q", v))
+};
+
+#
+# Main tests
+#
+
+
+io0Note("Layer 0...");
+
+out([:]);
+out([1: 2]);
+out([1: 2, 888: 1]);
+out(["fizmo": "omzif"]);
+out([fizmo: "omzif", igram: "margi", blort: "trolb"]);
+out(["#stuff": "muff", ["x", "y"]: "zee"]);
+out([def: "defined", do: "done"]); # Keywords should be "stringified".
+out([true: 10, (true): 20]); # First key is a string, second is a boolean.
+out(["0".."9": "woo"]);
+out([["f", "u", "z"]*: "muffins"]);
+out([:, [0..6: "blort"]*, [5..9: "fizmo"]*]);
+
+io0Note("\nLayer 2...");
+
+out([("a", "b"): 10]);
+out([(a, b): 20]);
+out([(true, (true)): 30]);
+out([(1, 2, 3, a, b, c): 10, (1, 3, b): 20]);
+
+<> 0

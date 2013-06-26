@@ -85,6 +85,21 @@ static void reset(ParseState *state, zint mark) {
     state->at = mark;
 }
 
+/**
+ * Peeks at the next token, checking against the given type.
+ */
+static zvalue peekMatch(ParseState *state, zvalue type) {
+    zint mark = cursor(state);
+    zvalue result = readMatch(state, type);
+
+    if (result == NULL) {
+        return NULL;
+    }
+
+    reset(state, mark);
+    return result;
+}
+
 
 /*
  * Node constructors and related helpers
@@ -189,6 +204,7 @@ static zvalue makeThunk(zvalue expression) {
 #define PARSE_PLUS(name) parsePlus(RULE(name), state)
 #define PARSE_COMMA_SEQ(name) parseCommaSequence(RULE(name), state)
 #define MATCH(tokenType) readMatch(state, (STR_##tokenType))
+#define PEEK(tokenType) peekMatch(state, (STR_##tokenType))
 #define MARK() zint mark = cursor(state); zvalue tempResult
 #define RESET() do { reset(state, mark); } while (0)
 #define REJECT() do { RESET(); return NULL; } while (0)
@@ -626,26 +642,35 @@ DEF_PARSE(emptyMap) {
     return makeLiteral(EMPTY_MAP);
 }
 
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(mapKeyAtom) {
+    MARK();
+
+    zvalue k = PARSE(identifierString);
+
+    if (k != NULL) {
+        if (PEEK(CH_COLON) != NULL) {
+            return k;
+        }
+        RESET();
+    }
+
+    return PARSE(expression);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(mapKey) {
+    return PARSE(mapKeyAtom);
+}
+
 /**
- * Helper for `mapping`: Parses `(identifierString @":" | expression @":")
- * expression`.
+ * Helper for `mapping`: Parses `mapKey @":" expression`.
  */
 DEF_PARSE(mapping1) {
     MARK();
 
-    zvalue key = PARSE(identifierString);
-    if (key != NULL) {
-        if (!MATCH(CH_COLON)) {
-            RESET();
-            key = NULL;
-        }
-    }
-
-    if (key == NULL) {
-        key = PARSE_OR_REJECT(expression);
-        MATCH_OR_REJECT(CH_COLON);
-    }
-
+    zvalue key = PARSE_OR_REJECT(mapKey);
+    MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 
     return makeCall(makeVarRef(STR_MAKE_LIST), listFrom2(value, key));

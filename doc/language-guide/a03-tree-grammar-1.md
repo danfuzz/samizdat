@@ -338,19 +338,24 @@ def emptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-def mapping = {/
-    key = (
-        # Note: *Layer 2* introduces additional syntax here.
-    #|
-        k = identifierString
-        @":"
-        { <> k }
-    |
-        k = expression
-        @":"
-        { <> k }
-    )
+# Parses an "atomic" map key (as opposed to the parens-and-commas form).
+def mapKeyAtom = {/
+    # The lookahead at the end of the rule is to ensure we are not looking
+    # at a more complicated expression. `@","` and `@")"` are matched here,
+    # so that this rule can stay the same in *Layer 2*.
+    k = identifierString
+    &[@":" @"," @")"]
+    { <> k }
+|
+    expression
+/};
 
+# Parses an arbitrary map key. Note: This rule is nontrivial in *Layer 2*.
+def mapKey = mapKeyAtom;
+
+def mapping = {/
+    key = mapKey
+    @":"
     value = expression
     { <> makeCallName("makeList", value, key) }
 |

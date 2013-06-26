@@ -116,6 +116,13 @@ def IDENTIFIER_STARTS = ["a".."z": true, "A".."Z": true, "_": true ];
 # These are all the characters which are allowed to be in an identifier.
 def IDENTIFIER_CHARS = [IDENTIFIER_STARTS*, "0".."9": true];
 
+# Tokens with special conversions.
+def TOKEN_SPECIALS = [
+    (false): "false",
+    (null):  "null",
+    (true):  "true"
+];
+
 # Checks to see if the given value is a string with the form of an
 # in-language identifier.
 fn isIdentifier(string) {
@@ -131,6 +138,17 @@ fn isIdentifier(string) {
                 };
             <> true
         }
+};
+
+# Stringifies a key (or token type).
+fn keyString(key) {
+    ifIs { <> isIdentifier(key) }
+        { return key };
+
+    ifValue { <> mapGet(TOKEN_SPECIALS, key) }
+        { string :: return stringAdd("(", string, ")") };
+
+    <> callSourceString(key)
 };
 
 # Stringifies a string.
@@ -160,9 +178,7 @@ fn doMap(map, adorn) {
             <> stringAdd(
                 reduction,
                 ifIs { <> eq(reduction, "") } { <> "" } { <> ", " },
-                ifIs { <> isIdentifier(key) }
-                    { <> key }
-                    { <> callSourceString(key) },
+                keyString(key),
                 ": ",
                 callSourceString(value))
         };
@@ -173,22 +189,13 @@ fn doMap(map, adorn) {
         "]")
 };
 
-# Tokens with special conversions
-def TOKEN_SPECIALS = [
-    (false): "false",
-    (null):  "null",
-    (true):  "true"
-];
-
 # Stringifies a token.
 fn doToken(token, adorn) {
     ifValue { <> mapGet(TOKEN_SPECIALS, token) }
         { string :: return string };
 
     def type = tokenType(token);
-    def typeString = ifIs { <> isIdentifier(type) }
-        { <> type }
-        { <> callSourceString(type) };
+    def typeString = keyString(type);
     def valueString = ifValue { <> tokenValue(token) }
         { value :: <> stringAdd(": ", callSourceString(value)) }
         { <> "" };
