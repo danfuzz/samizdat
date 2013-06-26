@@ -159,7 +159,7 @@ in the boolean equivalent. That is, if the inner `expression` yields a value
 `expression` yields void, the outer expression yields `false`.
 
 This operator is useful in a couple of cases: It allows a logic expression
-to consistently bottomed out in a real value, for storage in a variable
+to consistently bottom out in a bona fide value, for storage in a variable
 or as part of a data structure. It also allows a logic expression to
 be a component of a larger enclosing boolean expression.
 
