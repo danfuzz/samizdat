@@ -355,6 +355,7 @@ def mapKey = mapKeyAtom;
 
 def mapping = {/
     key = mapKey
+    @":"
     value = expression
     { <> makeCallName("makeList", value, key) }
 |
