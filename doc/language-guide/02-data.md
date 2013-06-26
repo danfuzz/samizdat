@@ -200,7 +200,6 @@ written as `[:]`.
 [:, [first: 1]*, [second: 2, third: 3]*]
 ```
 
-TODO: Parenthesized lists of keys are not yet implemented.
 
 ### Token
 

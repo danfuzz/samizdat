@@ -193,7 +193,6 @@ function.
 TODO: As yet unimplemented:
 * `else` handling
 * name binding of the dispatch expression
-* the current spec for parenthesized key lists
 
 ### Unconditional loop &mdash; `do`
 
