@@ -57,6 +57,11 @@ space-after-newline collapsing is *not* performed.
 
 Handling of all of these is implemented in Layer 2.
 
+#### Maps
+
+In Layer 0, parenthesized comma-separated lists of keys are not
+recognized. This is implemented in Layer 2.
+
 #### Variable Definition
 
 Only immutable variable definitions (`def name = ...`) are recognized in
