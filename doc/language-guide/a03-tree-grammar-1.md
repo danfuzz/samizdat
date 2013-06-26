@@ -338,6 +338,7 @@ def emptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
+# Note: Layer 2 introduces additional syntax for this rule.
 def mapping = {/
     key = (
         k = identifierString
