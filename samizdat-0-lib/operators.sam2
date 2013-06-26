@@ -207,15 +207,13 @@ fn \"unary!!!"(value) {
 # TODO: Documented in Samizdat Layer 2 spec.
 fn ifChain(functions, thens*) {
     listForEach(functions) { index, function ::
-        if (function()) {
-            return listNth(thens, index)()
-        }
+        ifValue { <> function() }
+            { value :: return listNth(thens, index)(value) }
     };
 
     # Optional final else clause.
-    if (gt(lowSize(thens), lowSize(functions))) {
-        return listLast(thens)()
-    }
+    ifIs { <> gt(lowSize(thens), lowSize(functions)) }
+        { return listLast(thens)() }
 };
 
 <> [

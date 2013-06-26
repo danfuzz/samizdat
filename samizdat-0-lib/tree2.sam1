@@ -62,6 +62,13 @@ fn makeCallNameThunks(name, actuals*) {
     <> makeCallName(name, thunks*)
 };
 
+# Returns a `closure` node like the one given, except with the `formals`
+# binding replaced with a list of the single given argument. The `formal`
+# must be a formal argument map as described in the execution tree spec.
+fn closureWithFormal(closure, formal) {
+    <> @[closure: [tokenValue(closure)*, formals: [formal]]]
+};
+
 # Map of token types to corresponding unary operator function name variable
 # references.
 def UNARY_OPERATORS = listReduce([:], ["+", "-", "&", "[]", "!!!"])
@@ -1051,8 +1058,10 @@ def parseIfExpression = {/
         # Unchained if-then or if-then-else.
         &&(eq(lowSize(elseIfThens), 0))
         {
-            <> makeCallName("ifIs",
-                makeThunk(firstCondition), firstThen, finalElse*)
+            <> makeCallName("ifValue",
+                makeThunk(firstCondition),
+                closureWithFormal(firstThen, [:]),
+                finalElse*)
         }
     |
         # General chained form.
@@ -1065,7 +1074,7 @@ def parseIfExpression = {/
                     def conditions = listFirst(result);
                     def thens = listLast(result);
                     def condition = makeThunk(listFirst(one));
-                    def then = listLast(one);
+                    def then = closureWithFormal(listLast(one), [:]);
                     <> [
                         [conditions*, condition],
                         [thens*, then]
