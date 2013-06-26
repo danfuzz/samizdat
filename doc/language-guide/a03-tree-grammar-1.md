@@ -197,7 +197,7 @@ def codeOnlyClosure = {/
 # * no yield def binding statement if an explicit yield def was not present.
 #
 # * the key `name` bound to the function name, if a name was defined. (This
-#   is not representable in lower-layer surface syntax.)
+#   is not representable in the block syntax.)
 def fnCommon = {/
     @fn
 
@@ -338,9 +338,10 @@ def emptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-# Note: Layer 2 introduces additional syntax for this rule.
 def mapping = {/
     key = (
+        # Note: *Layer 2* introduces additional syntax here.
+    #|
         k = identifierString
         @":"
         { <> k }
@@ -444,21 +445,23 @@ def actualsList = {/
 /};
 
 # Note: There are additional prefix operators in *Layer 2* and beyond.
+# This rule still exists in *Layer 2* but is totally rewritten.
 def prefixOperator = {/
     @"-"
     { <> { node :: <> makeCallName("ineg", node) } }
 /};
 
-# Note: There are additional postfix operators in *Layer 2* and beyond.
 def postfixOperator = {/
     actuals = actualsList
     { <> { node :: <> makeCall(node, actuals*) } }
 |
     # The lookahead failure here is to make the grammar prefer `*` to be
-    # treated as a binary op. (`*` is only defined as postfix in layer 0,
+    # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
     # but higher layers augment its meaning.)
     @"*" !expression
     { <> { node :: <> @[interpolate: node] } }
+#|
+    # Note: *Layer 2* adds additional rules here.
 /};
 
 def unaryExpression = {/
@@ -474,8 +477,9 @@ def unaryExpression = {/
     }
 /};
 
-# Note: There are additional forms of range in *Layer 2* and beyond.
-def rangeExpression {/
+# Note: *Layer 2* introduces additional range variants. This rule is
+# totally rewritten at that layer.
+def rangeExpression = {/
     base = unaryExpression
 
     (
@@ -488,15 +492,19 @@ def rangeExpression {/
 /};
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
+# This rule is totally rewritten at that layer.
 def expression = {/
     rangeExpression | fnExpression
 /};
 
+# Note: There are additional expression rules in *Layer 2* and beyond.
+# This rule is totally rewritten at that layer.
 def statement = {/
     varDef | fnDef | expression
 /};
 
 # Note: There are additional nonlocal exit rules in *Layer 2* and beyond.
+# This rule still exists but has several additions.
 def nonlocalExit = {/
     name = (
         @"<"
