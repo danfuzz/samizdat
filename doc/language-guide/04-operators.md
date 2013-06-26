@@ -194,7 +194,7 @@ operator associativity, in that `x..y..z..huhwhat` is a syntax error.
 
 #### Inclusive range with increment 1 &mdash; `first..limit`
 
-This is equivalent to `makeRangeInclusive(first, limit, 1)`.
+This is equivalent to `makeRangeInclusive(first, limit)`.
 
 #### Inclusive range with arbitrary increment &mdash; `first..increment..limit`
 
@@ -204,7 +204,7 @@ TODO: This is not yet implemented.
 
 #### Exclusive range with increment 1 &mdash; `first..!limit`
 
-This is equivalent to `makeRangeExclusive(first, limit, 1)`.
+This is equivalent to `makeRangeExclusive(first, limit)`.
 
 TODO: This is not yet implemented.
 
