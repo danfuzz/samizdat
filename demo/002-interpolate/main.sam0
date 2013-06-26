@@ -58,7 +58,7 @@ out(makeRangeExclusive(0, 14, 5));
 out(makeRangeExclusive(0, 15, 5));
 out(makeRangeExclusive(0, 16, 5));
 
-io0Note("Range expressions...");
+io0Note("\nRange expressions...");
 out([1..3]);
 out([1..3]*);
 out(1..3);
@@ -69,7 +69,7 @@ out(["0".."9": "woo"]);
 out([["f", "u", "z"]*: "muffins"]);
 out([:, [0..6: "blort"]*, [5..9: "fizmo"]*]);
 
-io0Note("Other interpolations...");
+io0Note("\nOther interpolations...");
 out(["a", "b", "c"]*, ["d", "e", "f", ["g"]*]*);
 out([[1, 2, 3]*: 6]);
 
