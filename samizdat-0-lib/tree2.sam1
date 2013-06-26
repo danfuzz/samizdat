@@ -1190,8 +1190,13 @@ def parseSwitchExpression = {/
         };
 
         def regularCases = listMap(cases) { ., case ::
-            <> ifIs { <> eq(mapGet(case, "keys"), @expression) }
-                { <> makeCallName("makeList", mapGet(case, "code"), keys*) }
+            def keys = mapGet(case, "keys");
+            <> ifIs { <> eq(tokenType(keys), "expression") }
+                {
+                    <> makeCallName("makeList",
+                        mapGet(case, "code"),
+                        tokenValue(keys)*)
+                }
         };
 
         ifIs { <> gt(lowSize(optDefault), 1) }
