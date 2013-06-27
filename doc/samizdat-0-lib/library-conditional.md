@@ -112,16 +112,3 @@ each a no-argument function. Calls each of them in turn until one of
 them returns a value (not void), in which case this function also returns
 that value. If no predicate returns a value (including if no
 predicates were supplied), this function returns void.
-
-#### `\"switch"(cases, defaultFunction, value) <> . | !.`
-
-Value dispatcher in support of `switch` expressions. Takes a map of
-`cases`, a `defaultFunction`, and an arbitrary value. When called,
-this looks up the value as a key in the `cases` map. If it finds a
-mapping, the mapping's value is called as a function, giving it `value`
-as its single argument. If it does not find a mapping and a `defaultFunction`
-is supplied, then that function is called with `value` as its single argument.
-
-The result of a call to this function is the same as the result of whatever
-function was called in turn (including void). If no function was called,
-this function returns void.
