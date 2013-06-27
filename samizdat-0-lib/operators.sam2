@@ -204,18 +204,6 @@ fn \"unary!!!"(value) {
     <> inot(value)
 };
 
-# TODO: Documented in Samizdat Layer 2 spec.
-fn ifChain(functions, thens*) {
-    listForEach(functions) { index, function ::
-        ifValue { <> function() }
-            { value :: return listNth(thens, index)(value) }
-    };
-
-    # Optional final else clause.
-    ifIs { <> gt(lowSize(thens), lowSize(functions)) }
-        { return listLast(thens)() }
-};
-
 <> [
     "binary+":      \"binary+",
     "binary-":      \"binary-",
@@ -243,6 +231,5 @@ fn ifChain(functions, thens*) {
     "unary-":       \"unary-",
     "unary&":       \"unary&",
     "unary[]":      \"unary[]",
-    "unary!!!":     \"unary!!!",
-    ifChain:        ifChain
+    "unary!!!":     \"unary!!!"
 ]
