@@ -46,6 +46,15 @@ fn elser(item?) {
     }
 };
 
+fn namer(value) {
+    <> switch (x = value) {
+        (1, 2, 3): { <> imul(x, 10)   }
+        (4, 5, 6): { <> imul(x, 100)  }
+        default:   { <> imul(x, 1000) }
+    }
+};
+
+
 #
 # Main tests
 #
@@ -75,5 +84,14 @@ io0Note(elser("blort"));
 io0Note(elser("fizmo"));
 io0Note(elser());
 io0Note(format("%q", elser("igram")?)); # `?` because we expect void.
+
+io0Note("\nNames...");
+io0Note(format("%q", namer(1)));
+io0Note(format("%q", namer(2)));
+io0Note(format("%q", namer(3)));
+io0Note(format("%q", namer(4)));
+io0Note(format("%q", namer(5)));
+io0Note(format("%q", namer(6)));
+io0Note(format("%q", namer(7)));
 
 <> 0
