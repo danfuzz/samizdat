@@ -37,12 +37,8 @@
 			<string>((#+).*)$</string>
 		</dict>
 		<dict>
-			<key>name</key>
-			<string>comment.block</string>
-			<key>begin</key>
-			<string>/\*</string>
-			<key>end</key>
-			<string>\*/</string>
+			<key>include</key>
+			<string>#comment-content</string>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -113,7 +109,7 @@
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>keyword.operator</string>
+					<string>punctuation.definition</string>
 				</dict>
 			</dict>
 			<key>match</key>
@@ -145,15 +141,21 @@
 		</dict>
 		<dict>
 			<key>name</key>
-			<string>keyword.operator</string>
-			<key>match</key>
-			<string>&amp;&amp;?&amp;?|\|\|?\|?|\^\^?\^?|\\?&lt;&lt;?&lt;?|\\?&gt;&gt;?&gt;?|!!?!?|\\?==?|\\?!=|\\?&lt;=|\\?&gt;=|&lt;&gt;|\.\.|\+|-|\*|/|%|\?</string>
-		</dict>
-		<dict>
-			<key>name</key>
 			<string>constant.language</string>
 			<key>match</key>
 			<string>\btrue\b|\bfalse\b|\bnull\b|\[\]|\[:\]|@@</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>punctuation.definition</string>
+			<key>match</key>
+			<string>\{/?|/?\}|\[|\]|\:</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>keyword.operator</string>
+			<key>match</key>
+			<string>&amp;&amp;?&amp;?|\|\|?\|?|\^\^?\^?|\\?&lt;&lt;?&lt;?|\\?&gt;&gt;?&gt;?|!!?!?|\\?==?|\\?!=|\\?&lt;=|\\?&gt;=|&lt;&gt;|\.\.|\+|-|\*|/|%|\?</string>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -183,7 +185,7 @@
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>keyword.operator</string>
+					<string>punctuation.definition</string>
 				</dict>
 			</dict>
 			<key>match</key>
@@ -219,6 +221,25 @@
 			<string>([_a-zA-Z][_a-zA-Z0-9]*) *(=)(?!=)</string>
 		</dict>
 	</array>
+	<key>repository</key>
+	<dict>
+		<key>comment-content</key>
+		<dict>
+			<key>name</key>
+			<string>comment.block</string>
+			<key>begin</key>
+			<string>/\*</string>
+			<key>end</key>
+			<string>\*/</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#comment-content</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>scopeName</key>
 	<string>source.samizdat</string>
 	<key>uuid</key>
