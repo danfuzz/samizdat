@@ -1207,6 +1207,17 @@ def parseSwitchCase = {/
     { <> [code: code, keys: keys] }
 /};
 
+# Tree for the second argument to the `ifValue` inside a `switch` translation.
+# This expression is constant across all switches, and it's most easily
+# constructed by using the built-in parser.
+def SWITCH_DISPATCH_CLOSURE = sam0Tree("
+    args ::
+    <> { cases, defaultFunction, value ::
+        <> ifValue { <> mapGet(cases, value) }
+            { function :: <> function(value) }
+            { <> defaultFunction(value) }
+    }(args*)");
+
 # Parses a switch expression. The translation is along these lines:
 #
 # ```
@@ -1232,7 +1243,13 @@ def parseSwitchCase = {/
 #                 test
 #             ]
 #         }
-#         { args :: <> \"switch"(args*) }
+#         { args ::
+#             <> { cases, defaultFunction, value ::
+#                 <> ifValue { <> mapGet(cases, value) }
+#                     { function :: <> function(value) }
+#                     { <> defaultFunction(value) }
+#             }(args*)
+#         }
 #         { statElse }
 # }()
 # ```
@@ -1303,12 +1320,7 @@ def parseSwitchExpression = {/
 
         def ifCall = makeCallName("ifValue",
             testBody,
-            @[closure: [
-                formals: [[name: "args"]],
-                statements: [],
-                yield: makeCallName("switch",
-                    @[interpolate: makeVarRef("args")])
-            ]],
+            SWITCH_DISPATCH_CLOSURE,
             optElse*);
 
         def mainClosure = @[closure: [
