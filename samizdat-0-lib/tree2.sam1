@@ -1059,7 +1059,7 @@ def parseTestClause = {/
     formal = (
         name = @identifier
         @"="
-        { <> [name: name] }
+        { <> [name: tokenValue(name)] }
     |
         { <> [:] }
     )
