@@ -13,6 +13,110 @@ expressions. While not always necessary, when combining these forms into
 complex expressions, it is often a good idea to place them in parentheses
 to avoid ambiguity.
 
+### Common features
+
+There are a few features that are common across nearly all control
+constructs (with exceptions as noted).
+
+#### Parenthesized test expression
+
+These constructs all use an explicitly parenthesized test expression.
+
+For example:
+
+```
+opName (x == 10) ...
+```
+
+#### Test expression name binding
+
+When the result of a test expression is of use &mdash; that is, when it is
+more than just a simple logical expression &mdash; its result can be
+bound to a variable which is then available in the associated consequent
+clause. To do that, add a `name = ` assignment prefix to the test expression.
+
+For example:
+
+```
+opName (varName = someCalculation()) {
+    ... varName ...
+}
+```
+
+#### Nonlocal yield
+
+Most control constructs (all but `if`) implicitly define a "break
+context" that goes with a special `break` keyword. This keyword can be used in
+yield context (that is, as the last statement of a block).
+`break expression` causes the control construct to immediately yield
+the evaluated value of the given expression. `break` with no expression
+causes the control construct to immediately yield void.
+
+For example:
+
+```
+opName (expression) {
+    ...
+    break resultExpression
+    ...
+}
+```
+
+In addition, all control constructs (including `if`) allow explicit
+yield definition. To do so, place the yield name between angle brackets
+immediately after the control operator name. With this done, the defined
+yield name can be used in nonlocal exit statements to exit from the
+control construct.
+
+For example:
+
+```
+opName <out> (expression) {
+    ...
+    <out> resultExpression
+    ...
+}
+```
+
+This latter form is meant to make it easier to break out of
+a nested context in which there is an inner break context which
+is to be skipped over.
+
+#### Early loop continuation
+
+All the looping control constructs define a "continue context" that goes
+with a special `continue` keyword. This keyword can be used in
+yield context (that is, as the last statement of a block). Calling `continue`
+causes the loop to restart at its top. It is never valid to pass an
+expression to `continue`.
+
+For example:
+
+```
+loopOp (expression) {
+    ...
+    continue
+    ...
+}
+```
+
+In addition, all the looping control constructs allow explicit
+continuation yield definition. To do so, place the yield name in the
+usual block definition position. With this done, the defined
+yield name can be used in nonlocal exit statements to continue the loop.
+
+For example:
+
+```
+opName (expression) { <next> ::
+    ...
+    <next>
+    ...
+}
+```
+
+This latter form is meant to make it easier to continue a
+loop in which other loops are nested.
 
 ### Conditional expression &mdash; `if...else`
 
@@ -20,7 +124,7 @@ An `if` expression can be used both to perform logical conditional
 dispatch, per se, as well as to act on a result from an expression that
 might turn out to be void.
 
-The purely conditional form of `if` is:
+The basic form of `if` is:
 
 ```
 if (expression1) {
@@ -48,31 +152,10 @@ yielded logical-true, the block `elseBlock` block is evaluated,
 with its result becoming the overall expression result. In case no
 consequent block is evaluated, the overall expression result is void.
 
-It is possible to define a yield name for the expression as a whole.
-To do so, place it immediately after the initial `if`, like so:
+`if` expressions support both explicit yield definition and
+test expression name binding.
 
-```
-if <out> (expression) {
-    ... <out> ...
-} else ... {
-    ... <out> ...
-}
-```
-
-Having done so, it is possible to use named yield in any of the
-consequent blocks with the so-defined name.
-
-If the value of a test expression is of interest, it can be bound
-to a variable by turning the expression into an assignment, like so:
-
-```
-if (name = expression) {
-    ... name ...
-} ...
-```
-
-Having done so, it is then possible to refer to the indicated name
-in the consequent block associated with that particular test.
+`if` expressions do *not* define a break or continue context.
 
 ### Value dispatch &mdash; `switch`
 
@@ -143,48 +226,15 @@ switch (expression) {
 }
 ```
 
-In order to yield from the expression other than at the end of a
-test block, a `break` statement can be used. This is a non-local yield
-and as such must be the final statement of the (inner) block it appears
-in. `break` takes an optional expression argument. If present, its value
-becomes the overall value of the outer `switch` expression. If not present,
-the outer expression's result is void.
+`switch` expressions support both explicit yield definition and
+test expression name binding. `switch` expressions define a break
+context.
 
-```
-switch (expression) {
-    ... break expression ...
-}
-```
-
-It is also possible to define a yield name for the expression as a whole.
-To do so, place it immediately after the `switch`, like so:
-
-```
-switch <out> (expression) {
-    ... <out> ...
-}
-```
-
-Having done so, it is possible to use named yield in any of the
-consequent blocks with the so-defined name. This is just like `break`,
-except that it allows one to yield out of a nested context that
-also binds a `break`.
-
-If the value of the dispatch expression is of interest, it can be bound
-to a variable by turning the expression into an assignment, like so:
-
-```
-switch (name = expression) {
-    ... name ...
-} ...
-```
-
-Having done so, it is then possible to refer to the indicated name
-in any of the consequent blocks.
+`switch` expressions do *not* define a continue context.
 
 **Note:** Unlike other languages in the C tradition, *Samizdat* does
 not allow consequent blocks to fall through. So, a block-final
-`break` isn't necessary. And if there is partial code in common
+`break` isn't ever necessary. If there is partial code in common
 between cases, the thing to do is factor it out into a separate
 function.
 
@@ -201,60 +251,21 @@ do {
 ```
 
 The block can have any number of statements, but it must not declare
-any arguments. It *may* have a yield definition (as described below).
+any arguments. It *may* have a yield definition, which serves as
+an explicit continuation name (as described above).
 
 This form is evaluated by evaluating the given block, ignoring any
 result it may yield, and then evaluating the block again, ad infinitum.
 
-In order to yield from the expression, a `break` statement can
-be used. This is a non-local yield and as such must be the final statement
-of the block it appears in. `break` takes an optional expression argument.
-If present, its value becomes the overall value of the outer `do`
-expression. If not present, the outer expression's result is void.
+Unconditional `do` expressions support explicit yield definition
+and define both break and continue contexts.
 
-```
-do {
-    ...
-    break expression
-}
-```
+Unconditional `do` expressions, not having a test, naturally do
+not support test expression name binding.
 
-It is possible to cut evaluation of an iteration short by using a
-`continue` statement. As with `break`, `continue` is a non-local
-yield statement. Unlike `break`, `continue` must not be given
-an argument.
+**Note:**  The only way an unconditional `do` expression ever yields
+a value is by explicit `break` or nonlocal exit.
 
-```
-do {
-    ...
-    continue
-}
-```
-
-It is possible to define a yield name for the expression as a whole.
-To do so, place it immediately after the `do`, like so:
-
-```
-do <out> {
-    ... <out> ...
-}
-```
-
-With this variant, the named yield can be used just like `break`. The
-purpose of this variant is to allow breaking out of nested loops.
-
-Similarly, it is possible to define a yield name for a single
-iteration. To do so, place it in the declaration position of the block,
-like so:
-
-```
-do { <next> ::
-    ... <next> ...
-}
-
-With this variant, the named yield van be used just like `continue`.
-As with the overall yield name, the purpose of this variant is to
-allow continuation within nested loops.
 
 ### Conditional loop &mdash; `while` and `do ... while`
 
@@ -275,17 +286,8 @@ With this form, `expression` is evaluated at the start of each iteration,
 and the block is only evaluated if the expression evaluates to
 logical-true. If not, the outer expression terminates, yielding void.
 
-If the value of the test expression is of interest, it can be bound
-to a variable by turning the expression into an assignment, like so:
-
-```
-while (name = expression) {
-    ... name ...
-} ...
-```
-
-Having done so, it is then possible to refer to the indicated name
-in the block.
+`while` expressions support explicit yield definition and test expression
+name binding, and define both break and continue contexts.
 
 If the test is better done after at least one iteration, the
 `do...while` form can be used:
@@ -296,10 +298,12 @@ do {
 } while (expression)
 ```
 
-Name binding is *not* valid with this variant.
+`do...while` expressions support explicit yield definition,
+and define both break and continue contexts.
 
-`break`, `continue`, and the two forms of yield definition all work
-with `while` and `do...while` expressions in the same way as
-with unconditional `do` expressions.
+`do...while` expressions do *not* support test expression name binding,
+since the first iteration can't possibly have a binding for the
+test expression, and the language doesn't allow variables to be bound
+to void.
 
-TODO: Name binding is not yet implemented.
+TODO: Name binding is not yet implemented for the `while` form.
