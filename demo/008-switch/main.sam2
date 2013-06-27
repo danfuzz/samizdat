@@ -31,10 +31,18 @@ fn powerName(value) {
 
 fn interpolator(value, keys) {
     <> switch (value) {
-        (10, 11): { <> "Constant override" }
-        value * 0:   { <> "Calculated override" }
-        keys*:       { <> "Yes" }
-        default:     { <> "No" }
+        (10, 11):  { <> "Constant override" }
+        value * 0: { <> "Calculated override" }
+        keys*:     { <> "Yes" }
+        default:   { <> "No" }
+    }
+};
+
+fn elser(item?) {
+    <> switch (item*) {
+        blort: { <> "See in the dark." }
+        fizmo: { <> "Unclog pipes." }
+        else:  { <> "Mysterious non-item." }
     }
 };
 
@@ -61,5 +69,11 @@ io0Note(interpolator(2, [4..6]));
 io0Note(interpolator(10, [8..18]));
 io0Note(interpolator(11, [8..18]));
 io0Note(interpolator(0, [0, 5]));
+
+io0Note("\nElse...");
+io0Note(elser("blort"));
+io0Note(elser("fizmo"));
+io0Note(elser());
+io0Note(format("%q", elser("igram")?)); # `?` because we expect void.
 
 <> 0
