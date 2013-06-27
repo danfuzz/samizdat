@@ -190,9 +190,7 @@ not allow consequent blocks to fall through. So, a block-final
 between cases, the thing to do is factor it out into a separate
 function.
 
-TODO: As yet unimplemented:
-* `else` handling
-* name binding of the dispatch expression
+TODO: Name binding of the dispatch expression is not yet handled.
 
 ### Unconditional loop &mdash; `do`
 
