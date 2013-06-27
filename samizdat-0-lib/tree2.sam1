@@ -1271,7 +1271,7 @@ def parseSwitchExpression = {/
 
         def optElse = listMap(cases) { ., case ::
             <> ifIs { <> eq(mapGet(case, "keys"), @else) }
-                { <> closureWithFormal(mapGet(case, "code"), formal) }
+                { <> mapGet(case, "code") }
         };
 
         def regularCases = listMap(cases) { ., case ::
@@ -1290,13 +1290,16 @@ def parseSwitchExpression = {/
         ifIs { <> gt(lowSize(optElse), 1) }
             { io0Die("Multiple else cases in switch.") };
 
+        # Note: The `test` is wrapped in an expression node to prevent
+        # interpolation expressions from being misinterpreted as argument
+        # interpolation into the `makeList` function call being constructed.
         def testBody = makeThunk(
                 makeCallName("makeList",
                     makeCallName("makeMapReversed", regularCases*),
                     ifValue { <> optDefault* }
-                        { value :: <> value }
+                        { value :: <> closureWithFormal(value, formal) }
                         { <> closureWithFormal(YIELD_VOID_THUNK, [:]) },
-                    test));
+                    @[expression: test]));
 
         def ifCall = makeCallName("ifValue",
             testBody,
