@@ -122,7 +122,7 @@ if (x = returnVoid()) {
     io0Note("Um?!")
 } else if (y = returnFrotz()) {
     io0Note(y)
-} else if (x = returnFizmo()) {
+} else if (x = returnIgram()) {
     io0Note(x)
 };
 
@@ -130,7 +130,7 @@ if (x = returnVoid()) {
     io0Note("Um?!")
 } else if (y = returnVoid()) {
     io0Note("Um?!")
-} else if (x = returnFizmo()) {
+} else if (x = returnIgram()) {
     io0Note(x)
 } else {
     io0Note("Um?!")
