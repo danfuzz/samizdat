@@ -183,7 +183,7 @@ def codeOnlyClosure = {/
 # ```
 # fn <out> name(arg1, arg2) { stat1; stat2 }
 # ```
-#
+# =>
 # ```
 # { <\"return"> arg1, arg2 ::
 #     def out = \"return";
@@ -260,9 +260,7 @@ def fnDef = {/
 # ```
 # fn <out> name ...
 # ```
-#
 # =>
-#
 # ```
 # {
 #     fn <out> name ...;

@@ -69,6 +69,9 @@ fn closureWithFormal(closure, formal) {
     <> @[closure: [tokenValue(closure)*, formals: [formal]]]
 };
 
+# A no-argument yield-void thunk.
+def YIELD_VOID_THUNK = @[closure: [statements: []]];
+
 # Map of token types to corresponding unary operator function name variable
 # references.
 def UNARY_OPERATORS = listReduce([:], ["+", "-", "&", "[]", "!!!"])
@@ -238,7 +241,7 @@ def parseCodeOnlyClosure = {/
 # ```
 # fn <out> name(arg1, arg2) { stat1; stat2 }
 # ```
-#
+# =>
 # ```
 # { <\"return"> arg1, arg2 ::
 #     def out = \"return";
@@ -315,9 +318,7 @@ def parseFnDef = {/
 # ```
 # fn <out> name ...
 # ```
-#
 # =>
-#
 # ```
 # {
 #     fn <out> name ...;
@@ -1157,27 +1158,39 @@ def parseSwitchCase = {/
 #     ex1: { stat1a; stat1b }
 #     ex2: { stat2a; stat2b }
 #     default: { statDefault }
+#     else: { statElse }
 # }
 # ```
-#
 # =>
-#
 # ```
 # { <\"break"> ::
 #     def out = \"break";
-#     <> \"switch"(
-#         value,
-#         [
-#             (ex1): { stat1a; stat1b },
-#             (ex2): { stat2a; stat2b }
-#         ])
-#         { statDefault }
-# }
+#     <> ifValue
+#         {
+#             <> [
+#                 [
+#                     (ex1): { stat1a; stat1b },
+#                     (ex2): { stat2a; stat2b }
+#                 ],
+#                 { statDefault },
+#                 value
+#             ]
+#         }
+#         { args :: <> \"switch"(args*) }
+#         { statElse }
+# }()
 # ```
 #
-# with the initial break assignment omitted if there is no yield def,
-# and with overrides of map keys switched around so the *first* key
-# wins.
+# with:
+# * The initial break assignment omitted if there is no yield def.
+# * Overrides of map keys switched around so the *first* key wins.
+# * The `statElse` block omitted if there is no `else` clause.
+# * The `statDefault` block replaced with `{}` (that is, a yield-void thunk)
+#   if there is no `default` clause.
+#
+# Note that the translation here is arranged so that the expressions to
+# evaluate and all the case bodies only see the expected variable bindings,
+# and not any "implementation detail" local variables.
 def parseSwitchExpression = {/
     @switch
     breakDef = parseOptBreakDef
@@ -1216,17 +1229,28 @@ def parseSwitchExpression = {/
         ifIs { <> gt(lowSize(optElse), 1) }
             { io0Die("Multiple else cases in switch.") };
 
-        # TODO: Handle else.
+        def testBody = makeThunk(
+                makeCallName("makeList",
+                    makeCallName("makeMapReversed", regularCases*),
+                    ifValue { <> optDefault* }
+                        { value :: <> value }
+                        { <> YIELD_VOID_THUNK },
+                    value));
 
-        def switchCall = makeCallName("switch",
-            value,
-            makeCallName("makeMapReversed", regularCases*),
-            optDefault*);
+        def ifCall = makeCallName("ifValue",
+            testBody,
+            @[closure: [
+                formals: [[name: "args"]],
+                statements: [],
+                yield: makeCallName("switch",
+                    @[interpolate: makeVarRef("args")])
+            ]],
+            optElse*);
 
         def mainClosure = @[closure: [
             yieldDef: "break",
             statements: [breakDef*],
-            yield: switchCall
+            yield: ifCall
         ]];
 
         <> makeCall(mainClosure)
@@ -1239,9 +1263,7 @@ def parseSwitchExpression = {/
 # ```
 # while <out> (expr) { <next> :: stat1; stat2 }
 # ```
-#
 # =>
-#
 # ```
 # { <\"break"> ::
 #     def out = \"break";
@@ -1285,9 +1307,7 @@ def parseWhileExpression = {/
 # ```
 # do <out> { <next> :: stat1; stat2 } while (expr)
 # ```
-#
 # =>
-#
 # ```
 # { <\"break"> ::
 #     def out = \"break";
