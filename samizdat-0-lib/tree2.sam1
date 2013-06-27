@@ -76,6 +76,9 @@ fn closureWithYieldDef(closure, name) {
 # A no-argument yield-void thunk.
 def YIELD_VOID_THUNK = @[closure: [statements: []]];
 
+# A single-argument yield-void function.
+def YIELD_VOID_FN_1 = closureWithFormal(YIELD_VOID_THUNK, [:]);
+
 # Map of token types to corresponding unary operator function name variable
 # references.
 def UNARY_OPERATORS = mapMap([
@@ -1315,7 +1318,7 @@ def parseSwitchExpression = {/
                     makeCallName("makeMapReversed", regularCases*),
                     ifValue { <> optDefault* }
                         { value :: <> closureWithFormal(value, formal) }
-                        { <> closureWithFormal(YIELD_VOID_THUNK, [:]) },
+                        { <> YIELD_VOID_FN_1 },
                     @[expression: test]));
 
         def ifCall = makeCallName("ifValue",
@@ -1337,34 +1340,40 @@ def parseSwitchExpression = {/
 # Parses a while expression. The translation is along these lines:
 #
 # ```
-# while <out> (expr) { <next> :: stat1; stat2 }
+# while <out> (name = test) { <next> :: stat1; stat2 }
 # ```
 # =>
 # ```
 # { <\"break"> ::
 #     def out = \"break";
 #     loop { <\"continue"> ::
-#         ifIs { <> expr }
-#             { <next> :: stat1; stat2 }
+#         ifValue { <> test }
+#             { <next> name :: stat1; stat2 }
 #             { <\"break"> }
 #     }
 # }()
 # ```
 #
-# with the initial break assignment omitted if there is no yield def.
+# with:
+# * the initial break assignment omitted if there is no yield def.
+# * the body argument declaration changed to `.` if there is no
+#   test expression name binding.
 def parseWhileExpression = {/
     @while
     breakDef = parseOptBreakDef
-    condition = parseParenExpression
+    testClause = parseTestClause
     code = parseNullaryClosure
 
     {
+        def formal = mapGet(testClause, "formal");
+        def test = mapGet(testClause, "test");
+
         def loopClosure = @[closure: [
             yieldDef: "continue",
             statements: [
-                makeCallName("ifIs",
-                    makeThunk(condition),
-                    code,
+                makeCallName("ifValue",
+                    makeThunk(test),
+                    closureWithFormal(code, formal),
                     makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
             ]
         ]];
@@ -1389,7 +1398,8 @@ def parseWhileExpression = {/
 #     def out = \"break";
 #     loop { <\"continue"> ::
 #         { <next> :: stat1; stat2 }();
-#         ifNot { <> expr }
+#         ifValue { <> expr }
+#             { . :: }
 #             { <\"break"> }
 #     }
 # }()
@@ -1406,8 +1416,9 @@ def parseDoExpression = {/
         @while
         ex = parseParenExpression
         {
-            <> makeCallName("ifNot",
+            <> makeCallName("ifValue",
                 makeThunk(ex),
+                YIELD_VOID_FN_1,
                 makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
         }
     )?
