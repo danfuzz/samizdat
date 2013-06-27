@@ -69,6 +69,10 @@ fn closureWithFormal(closure, formal) {
     <> @[closure: [tokenValue(closure)*, formals: [formal]]]
 };
 
+fn closureWithYieldDef(closure, name) {
+    <> @[closure: [tokenValue(closure)*, yieldDef: name]]
+};
+
 # A no-argument yield-void thunk.
 def YIELD_VOID_THUNK = @[closure: [statements: []]];
 
@@ -1122,36 +1126,40 @@ def parseIfExpression = {/
         { <> YIELD_VOID_THUNK }
     )
 
-    mainCall = {
+    mainThunk = {
         # This builds the full expression from back to front (inner to outer).
         def clauses = listReverse(
             [[firstCondition*, then: firstThen], elseIfThens*]);
 
+        # To keep things simple, partial results are always thunks, so that
+        # they can be slotted directly into place as the third argument to
+        # an enclosing `ifValue`. At the end -- in the choice clause below --
+        # we either add a yield def to the thunk and make wrap it in a call,
+        # or unwrap it into a straight call, depending on if the original
+        # `if` has a yield def or not.
         <> listReduce(finalElse, clauses) { result, ., clause ::
             def formal = mapGet(clause, "formal");
             def test = mapGet(clause, "test");
             def then = mapGet(clause, "then");
-            <> makeCallName("ifValue",
-                makeThunk(test),
-                closureWithFormal(then, formal),
-                result)
+            <> makeThunk(
+                makeCallName("ifValue",
+                    makeThunk(test),
+                    closureWithFormal(then, formal),
+                    result))
         }
     }
 
     (
-        # There was a yield def; wrap the whole thing in a thunk-call.
+        # There was a yield def. Add the yield def to the thunk, and wrap
+        # that in a call.
         &&(ne(yieldDef, [:]))
         {
-            def mainClosure = @[closure: [
-                yieldDef: mapValue(yieldDef),
-                statements: [],
-                yield: mainCall
-            ]];
-
+            def mainClosure =
+                closureWithYieldDef(mainThunk, mapValue(yieldDef));
             <> makeCall(mainClosure)
         }
     |
-        { <> mainCall }
+        { <> mapGet(tokenValue(mainThunk), "yield") }
     )
 /};
 
