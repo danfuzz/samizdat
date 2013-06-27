@@ -58,19 +58,11 @@ fn or(predicates*) {
         }
 };
 
-# Documented in Samizdat Layer 0 spec.
-fn \"switch"(cases, defaultFunction, value) {
-    <> ifValue { <> mapGet(cases, value) }
-        { function :: <> function() }
-        { <> defaultFunction() }
-};
-
 <> [
     and:        and,
     booleanAnd: booleanAnd,
     booleanOr:  booleanOr,
     ifNot:      ifNot,
     ifVoid:     ifVoid,
-    or:         or,
-    switch:     \"switch"
+    or:         or
 ]

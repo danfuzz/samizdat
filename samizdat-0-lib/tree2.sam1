@@ -1119,7 +1119,7 @@ def parseTestClause = {/
 # * the `elseStat` block as `{}` (that is yield-void) if there was no
 #   `else` clause.
 # * the then-clause argument declarations changed to `.` for any
-#   clase where no name binding was present.
+#   clause where no name binding was present.
 # * arbitrary nesting of additional clauses.
 def parseIfExpression = {/
     @if
@@ -1207,10 +1207,21 @@ def parseSwitchCase = {/
     { <> [code: code, keys: keys] }
 /};
 
+# Tree for the second argument to the `ifValue` inside a `switch` translation.
+# This expression is constant across all switches, and it's most easily
+# constructed by using the built-in parser.
+def SWITCH_DISPATCH_CLOSURE = sam0Tree("
+    args ::
+    <> { cases, defaultFunction, value ::
+        <> ifValue { <> mapGet(cases, value) }
+            { function :: <> function(value) }
+            { <> defaultFunction(value) }
+    }(args*)");
+
 # Parses a switch expression. The translation is along these lines:
 #
 # ```
-# switch <out> (value) {
+# switch <out> (name = test) {
 #     ex1: { stat1a; stat1b }
 #     ex2: { stat2a; stat2b }
 #     default: { statDefault }
@@ -1225,14 +1236,20 @@ def parseSwitchCase = {/
 #         {
 #             <> [
 #                 [
-#                     (ex1): { stat1a; stat1b },
-#                     (ex2): { stat2a; stat2b }
+#                     (ex1): { name :: stat1a; stat1b },
+#                     (ex2): { name :: stat2a; stat2b }
 #                 ],
-#                 { statDefault },
-#                 value
+#                 { name :: statDefault },
+#                 test
 #             ]
 #         }
-#         { args :: <> \"switch"(args*) }
+#         { args ::
+#             <> { cases, defaultFunction, value ::
+#                 <> ifValue { <> mapGet(cases, value) }
+#                     { function :: <> function(value) }
+#                     { <> defaultFunction(value) }
+#             }(args*)
+#         }
 #         { statElse }
 # }()
 # ```
@@ -1241,8 +1258,10 @@ def parseSwitchCase = {/
 # * The initial break assignment omitted if there is no yield def.
 # * Overrides of map keys switched around so the *first* key wins.
 # * The `statElse` block omitted if there is no `else` clause.
-# * The `statDefault` block replaced with `{}` (that is, a yield-void thunk)
-#   if there is no `default` clause.
+# * The `statDefault` block replaced with `{ . :: }` (that is, a yield-void
+#   one-arg function) if there is no `default` clause.
+# * the consequent closure argument declarations changed to `.` for any
+#   if no name binding was present.
 #
 # Note that the translation here is arranged so that the expressions to
 # evaluate and all the case bodies only see the expected variable bindings,
@@ -1250,7 +1269,7 @@ def parseSwitchCase = {/
 def parseSwitchExpression = {/
     @switch
     breakDef = parseOptBreakDef
-    value = parseParenExpression
+    testClause = parseTestClause
 
     @"{"
 
@@ -1259,9 +1278,12 @@ def parseSwitchExpression = {/
     @"}"
 
     {
+        def formal = mapGet(testClause, "formal");
+        def test = mapGet(testClause, "test");
+
         def optDefault = listMap(cases) { ., case ::
             <> ifIs { <> eq(mapGet(case, "keys"), @default) }
-                { <> mapGet(case, "code") }
+                { <> closureWithFormal(mapGet(case, "code"), formal) }
         };
 
         def optElse = listMap(cases) { ., case ::
@@ -1274,7 +1296,7 @@ def parseSwitchExpression = {/
             <> ifIs { <> eq(tokenType(keys), "expression") }
                 {
                     <> makeCallName("makeList",
-                        mapGet(case, "code"),
+                        closureWithFormal(mapGet(case, "code"), formal),
                         tokenValue(keys))
                 }
         };
@@ -1285,22 +1307,20 @@ def parseSwitchExpression = {/
         ifIs { <> gt(lowSize(optElse), 1) }
             { io0Die("Multiple else cases in switch.") };
 
+        # Note: The `test` is wrapped in an expression node to prevent
+        # interpolation expressions from being misinterpreted as argument
+        # interpolation into the `makeList` function call being constructed.
         def testBody = makeThunk(
                 makeCallName("makeList",
                     makeCallName("makeMapReversed", regularCases*),
                     ifValue { <> optDefault* }
-                        { value :: <> value }
-                        { <> YIELD_VOID_THUNK },
-                    value));
+                        { value :: <> closureWithFormal(value, formal) }
+                        { <> closureWithFormal(YIELD_VOID_THUNK, [:]) },
+                    @[expression: test]));
 
         def ifCall = makeCallName("ifValue",
             testBody,
-            @[closure: [
-                formals: [[name: "args"]],
-                statements: [],
-                yield: makeCallName("switch",
-                    @[interpolate: makeVarRef("args")])
-            ]],
+            SWITCH_DISPATCH_CLOSURE,
             optElse*);
 
         def mainClosure = @[closure: [
