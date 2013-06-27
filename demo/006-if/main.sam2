@@ -12,6 +12,27 @@ SELF_PATH, ARGS* ::
 
 
 #
+# Helper functions
+#
+
+fn returnBlort() {
+    <> "blort"
+};
+
+fn returnFrotz() {
+    <> "frotz"
+};
+
+fn returnIgram() {
+    <> "igram"
+};
+
+fn returnVoid() {
+    # I can see through time.
+};
+
+
+#
 # Main tests
 #
 
@@ -86,5 +107,49 @@ def blort2 = if <out> (1 == 2) {
 };
 
 io0Note(blort2);
+
+if (x = returnBlort()) {
+    io0Note(x)
+};
+
+if (x = returnBlort()) {
+    io0Note(x)
+} else {
+    io0Note("Um?!")
+};
+
+if (x = returnVoid()) {
+    io0Note("Um?!")
+} else {
+    io0Note("The expected void.")
+};
+
+if (x = returnVoid()) {
+    io0Note("Um?!")
+} else if (y = returnFrotz()) {
+    io0Note(y)
+} else if (x = returnIgram()) {
+    io0Note(x)
+};
+
+if (x = returnVoid()) {
+    io0Note("Um?!")
+} else if (y = returnBlort()) {
+    io0Note(y)
+} else if (y = returnFrotz()) {
+    io0Note(y)
+} else if (x = returnIgram()) {
+    io0Note(x)
+};
+
+if (x = returnVoid()) {
+    io0Note("Um?!")
+} else if (y = returnVoid()) {
+    io0Note("Um?!")
+} else if (x = returnIgram()) {
+    io0Note(x)
+} else {
+    io0Note("Um?!")
+};
 
 <> 0

@@ -74,8 +74,6 @@ if (name = expression) {
 Having done so, it is then possible to refer to the indicated name
 in the consequent block associated with that particular test.
 
-TODO: Name binding is not yet implemented.
-
 ### Value dispatch &mdash; `switch`
 
 To dispatch to a block based on the value of an expression, use
