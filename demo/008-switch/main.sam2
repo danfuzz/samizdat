@@ -42,7 +42,7 @@ fn elser(item?) {
     <> switch (item*) {
         blort: { <> "See in the dark." }
         fizmo: { <> "Unclog pipes." }
-        else:  { <> "Mysterious item." }
+        else:  { <> "Mysterious non-item." }
     }
 };
 
@@ -73,7 +73,7 @@ io0Note(interpolator(0, [0, 5]));
 io0Note("\nElse...");
 io0Note(elser("blort"));
 io0Note(elser("fizmo"));
-io0Note(elser("frotz"));
-io0Note(elser("igram")?); # `?` because we expect void.
+io0Note(elser());
+io0Note(format("%q", elser("igram")?)); # `?` because we expect void.
 
 <> 0
