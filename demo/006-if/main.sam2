@@ -120,6 +120,12 @@ if (x = returnBlort()) {
 
 if (x = returnVoid()) {
     io0Note("Um?!")
+} else {
+    io0Note("The expected void.")
+};
+
+if (x = returnVoid()) {
+    io0Note("Um?!")
 } else if (y = returnFrotz()) {
     io0Note(y)
 } else if (x = returnIgram()) {
@@ -144,12 +150,6 @@ if (x = returnVoid()) {
     io0Note(x)
 } else {
     io0Note("Um?!")
-};
-
-if (x = returnVoid()) {
-    io0Note("Um?!")
-} else {
-    io0Note("The expected void.")
 };
 
 <> 0
