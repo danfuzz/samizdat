@@ -891,7 +891,7 @@ def implPrefixOperator = {/
     @"!"
     {
         <> { node ::
-            <> makeCallNameThunks("ifVoid", node, makeLiteral(true))
+            <> makeCallNameThunks("ifNot", node, makeLiteral(true))
         }
     }
 |
