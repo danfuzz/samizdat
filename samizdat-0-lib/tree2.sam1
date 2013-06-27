@@ -78,28 +78,44 @@ def YIELD_VOID_THUNK = @[closure: [statements: []]];
 
 # Map of token types to corresponding unary operator function name variable
 # references.
-def UNARY_OPERATORS = listReduce([:], ["+", "-", "&", "[]", "!!!"])
-    { result, ., name ::
-        <> [result*, (name): makeVarRef(stringAdd("unary", name))]
-    };
+def UNARY_OPERATORS = mapMap([
+    "+":    "unary+",
+    "-":    "unary-",
+    "&":    "unary&",
+    "[]":   "unary[]",
+    "!!!":  "inot"
+    ])
+    { key, value :: <> makeVarRef(value) };
 
 # Map of token types to corresponding binary operator function name variable
 # references.
-def BINARY_OPERATORS = [
-    (listReduce(
-        [:],
-        [
-            "+", "-", "*", "/", "%",
-            "&&&", "|||", "^^^", "<<<", ">>>",
-            "==", "!=", "<", ">", "<=", ">=",
-            "\\==", "\\!=", "\\<", "\\>", "\\<=", "\\>="
-        ])
-        { result, ., name ::
-            <> [result*, (name): makeVarRef(stringAdd("binary", name))]
-        })*,
-    "..":  makeVarRef("makeRangeInclusive"),
-    "..!": makeVarRef("makeRangeExclusive")
-];
+def BINARY_OPERATORS = mapMap([
+    "+":    "binary+",
+    "-":    "binary-",
+    "*":    "binary*",
+    "/":    "binary/",
+    "%":    "binary%",
+    "==":   "binary==",
+    "!=":   "binary!=",
+    "<":    "binary<",
+    ">":    "binary>",
+    "<=":   "binary<=",
+    ">=":   "binary>=",
+    "&&&":  "iand",
+    "|||":  "ior",
+    "^^^":  "ixor",
+    "<<<":  "ishl",
+    ">>>":  "ishr",
+    "\\==": "eq",
+    "\\!=": "ne",
+    "\\<":  "lt",
+    "\\>":  "gt",
+    "\\<=": "le",
+    "\\>=": "ge",
+    "..":   "makeRangeInclusive",
+    "..!":  "makeRangeExclusive"
+    ])
+    { key, value :: <> makeVarRef(value) };
 
 # Helper for parsing binary operator expressions, which puts together
 # a sequence of function calls.

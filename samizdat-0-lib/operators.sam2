@@ -14,9 +14,9 @@
 
 # Map from low-layer types to corresponding "get" functions.
 def GET_MAP = [
-    list: listNth,
+    list:   listNth,
     string: stringNth,
-    map: mapGet
+    map:    mapGet
 ];
 
 # Verifies that it should be possible to compare the two given values,
@@ -25,17 +25,14 @@ fn assertComparable(v1, v2) {
     def type1 = lowType(v1);
     def type2 = lowType(v2);
 
-    if (ne(type1, type2)) {
-        io0Die(format("Incomparable values: %q, %q"), v1, v2)
-    };
+    ifIs { <> ne(type1, type2) }
+        { io0Die(format("Incomparable values: %q, %q"), v1, v2) };
 
-    if (eq(type1, "token")) {
-        def tok1 = tokenType(v1);
-        def tok2 = tokenType(v2);
-        if (ne(tok1, tok2)) {
-            io0Die(format("Incomparable values: %q, %q"), v1, v2)
+    ifIs { <> eq(type1, "token") }
+        {
+            ifIs { <> ne(tokenType(v1), tokenType(v2)) }
+                { io0Die(format("Incomparable values: %q, %q"), v1, v2) }
         }
-    }
 };
 
 
@@ -66,31 +63,6 @@ fn \"binary/"(v1, v2) {
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"binary%"(v1, v2) {
     <> irem(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary&&&"(v1, v2) {
-    <> iand(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary|||"(v1, v2) {
-    <> ior(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary^^^"(v1, v2) {
-    <> ixor(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary<<<"(v1, v2) {
-    <> ishl(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary>>>"(v1, v2) {
-    <> ishr(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
@@ -142,36 +114,6 @@ fn \"binary>="(v1, v2) {
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary\\=="(v1, v2) {
-    <> eq(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary\\!="(v1, v2) {
-    <> ne(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary\\<"(v1, v2) {
-    <> lt(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary\\>"(v1, v2) {
-    <> gt(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary\\<="(v1, v2) {
-    <> le(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary\\>="(v1, v2) {
-    <> ge(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary+"(value) {
     <> iadd(0, value)
 };
@@ -199,37 +141,20 @@ fn \"unary[]"(value, indices*) {
         }
 };
 
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"unary!!!"(value) {
-    <> inot(value)
-};
-
 <> [
     "binary+":      \"binary+",
     "binary-":      \"binary-",
     "binary*":      \"binary*",
     "binary/":      \"binary/",
     "binary%":      \"binary%",
-    "binary&&&":    \"binary&&&",
-    "binary|||":    \"binary|||",
-    "binary^^^":    \"binary^^^",
-    "binary<<<":    \"binary<<<",
-    "binary>>>":    \"binary>>>",
     "binary==":     \"binary==",
     "binary!=":     \"binary!=",
     "binary<":      \"binary<",
     "binary>":      \"binary>",
     "binary<=":     \"binary<=",
     "binary>=":     \"binary>=",
-    "binary\\==":   \"binary\\==",
-    "binary\\!=":   \"binary\\!=",
-    "binary\\<":    \"binary\\<",
-    "binary\\>":    \"binary\\>",
-    "binary\\<=":   \"binary\\<=",
-    "binary\\>=":   \"binary\\>=",
     "unary+":       \"unary+",
     "unary-":       \"unary-",
     "unary&":       \"unary&",
-    "unary[]":      \"unary[]",
-    "unary!!!":     \"unary!!!"
+    "unary[]":      \"unary[]"
 ]
