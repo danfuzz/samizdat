@@ -1049,62 +1049,94 @@ def parseLogicOrExpression = {/
     )
 /};
 
-# Parses an if expression. With a single test, this translates into
-# a call to `ifIs`. With multiple tests, this translates into a
-# call to `ifChain`. In either case, if the expression has a yield
-# def, the main call is wrapped in a thunk-call.
+# Parses a parenthesized test clause, yielding a map of the form
+# @[formal: ..., test: ...], with `formal` bound to a formal argument
+# declaration and `test` bound to the test expression. If no formal was
+# parsed, `formal` is bound to `[:]`.
+def parseTestClause = {/
+    @"("
+
+    formal = (
+        name = @identifier
+        @"="
+        { <> [name: name] }
+    |
+        { <> [:] }
+    )
+
+    test = parseExpression
+    @")"
+
+    { <> [formal: formal, test: test] }
+/};
+
+# Parses an if expression. The translation is along the lines of:
+#
+# ```
+# if <out> (name1 = expr1) {
+#     thenStat1
+# } else if (name2 = expr2) {
+#     thenStat2
+# } else {
+#     elseStat
+# }
+# ```
+# =>
+# ```
+# { <out> ::
+#     <> ifValue { <> expr1 }
+#         { name1 :: thenStat1 }
+#         {
+#             ifValue { <> expr2 }
+#                 { name2 :: thenStat2 }
+#                 { elseStat }
+#         }
+# }()
+# ```
+#
+# with:
+# * the outer thunk-call omitted if there was no yield definition.
+# * the `elseStat` block as `{}` (that is yield-void) if there was no
+#   `else` clause.
+# * the then-clause argument declarations changed to `.` for any
+#   clase where no name binding was present.
+# * arbitrary nesting of additional clauses.
 def parseIfExpression = {/
     @if
     yieldDef = parseOptYieldDef
-    firstCondition = parseParenExpression
+    firstCondition = parseTestClause
     firstThen = parseCodeOnlyClosure
 
     elseIfThens = (
         @else
         @if
-        condition = parseParenExpression
+        condition = parseTestClause
         then = parseCodeOnlyClosure
-        { <> [condition, then] }
+        { <> [condition*, then: then] }
     )*
 
     finalElse = (
         @else
         parseCodeOnlyClosure
-    )?
-
-    mainCall = (
-        # Unchained if-then or if-then-else.
-        &&(eq(lowSize(elseIfThens), 0))
-        {
-            <> makeCallName("ifValue",
-                makeThunk(firstCondition),
-                closureWithFormal(firstThen, [:]),
-                finalElse*)
-        }
     |
-        # General chained form.
-        {
-            # Make separate conditions and thens arrays.
-            def arrays = listReduce(
-                [[makeThunk(firstCondition)], [firstThen]],
-                elseIfThens)
-                { result, ., one ::
-                    def conditions = listFirst(result);
-                    def thens = listLast(result);
-                    def condition = makeThunk(listFirst(one));
-                    def then = closureWithFormal(listLast(one), [:]);
-                    <> [
-                        [conditions*, condition],
-                        [thens*, then]
-                    ]
-                };
-
-            def conditions = makeCallName("makeList", listFirst(arrays)*);
-            def thens = [listLast(arrays)*, finalElse*];
-
-            <> makeCallName("ifChain", conditions, thens*);
-        }
+        { <> YIELD_VOID_THUNK }
     )
+
+    mainCall = {
+        # This builds the full expression from back to front (inner to outer).
+        def clauses = listReverse(
+            [[firstCondition*, then: firstThen], elseIfThens*]);
+
+        <> listReduce(finalElse, clauses) { result, ., clause ::
+            def formal = mapGet(clause, "formal");
+            def test = mapGet(clause, "test");
+            def then = mapGet(clause, "then");
+            <> makeCallName("ifValue",
+                makeThunk(test),
+                closureWithFormal(then, formal),
+                result)
+        }
+    }
 
     (
         # There was a yield def; wrap the whole thing in a thunk-call.
