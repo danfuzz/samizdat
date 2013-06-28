@@ -136,13 +136,13 @@ def tokInt = {/
     )
 
     digits = (
-        &&(eq(baseSign, 10))
+        { <> eq(baseSign, 10) }
         tokDecDigit+
     |
-        &&(eq(iabs(baseSign), 16))
+        { <> eq(iabs(baseSign), 16) }
         tokHexDigit+
     |
-        &&(eq(iabs(baseSign), 2))
+        { <> eq(iabs(baseSign), 2) }
         tokBinDigit+
     )
 

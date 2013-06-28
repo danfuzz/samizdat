@@ -941,7 +941,7 @@ def implPostfixOperator = {/
     @"]"
 
     (
-        &&(eq(exprs, []))
+        { <> eq(exprs, []) }
         { io0Die("Missing index value(s) from index expression.") }
     )?
 
@@ -1023,7 +1023,7 @@ def parseBooleanAndExpression = {/
 
     (
         # Not actually a boolean-and expression.
-        &&(eq(lowSize(rest), 0))
+        { <> eq(lowSize(rest), 0) }
         { <> first }
     |
         { <> makeCallNameThunks("booleanAnd", first, rest*) }
@@ -1037,7 +1037,7 @@ def parseBooleanOrExpression = {/
 
     (
         # Not actually a boolean-or expression.
-        &&(eq(lowSize(rest), 0))
+        { <> eq(lowSize(rest), 0) }
         { <> first }
     |
         { <> makeCallNameThunks("booleanOr", first, rest*) }
@@ -1051,7 +1051,7 @@ def parseLogicAndExpression = {/
 
     (
         # Not actually a logical-and expression.
-        &&(eq(lowSize(rest), 0))
+        { <> eq(lowSize(rest), 0) }
         { <> first }
     |
         { <> makeCallNameThunks("and", first, rest*) }
@@ -1065,7 +1065,7 @@ def parseLogicOrExpression = {/
 
     (
         # Not actually a logical-or expression.
-        &&(eq(lowSize(rest), 0))
+        { <> eq(lowSize(rest), 0) }
         { <> first }
     |
         { <> makeCallNameThunks("or", first, rest*) }
@@ -1171,7 +1171,7 @@ def parseIfExpression = {/
     (
         # There was a yield def. Add the yield def to the thunk, and wrap
         # that in a call.
-        &&(ne(yieldDef, [:]))
+        { <> ne(yieldDef, [:]) }
         {
             def mainClosure =
                 closureWithYieldDef(mainThunk, mapValue(yieldDef));
