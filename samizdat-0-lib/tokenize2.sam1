@@ -29,8 +29,11 @@ fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
 def KEYWORDS = listReduce([:],
-    [ "break", "continue", "def", "default", "do", "else", "export", "fn",
-      "if", "import", "module", "return", "switch", "var", "while" ])
+    [
+        "break", "collect", "continue", "def", "default", "do", "else",
+        "export", "fn", "for", "if", "import", "in", "module", "reduce",
+        "return", "switch", "var", "while"
+    ])
     { result, ., name :: <> [result*, (name): @[(name)]] };
 
 # Converts a list of digit values into an int, given the base. If `baseSign`
