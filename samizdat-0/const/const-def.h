@@ -39,7 +39,7 @@ TOK(DEF,           "def");
 TOK(FN,            "fn");
 TOK(RETURN,        "return");
 
-STR(UP_LIBRARY,       "LIBRARY");
+STR(UP_LIBRARY,           "LIBRARY");
 
 STR(ACTUALS,              "actuals");
 STR(BOOLEAN,              "boolean");
