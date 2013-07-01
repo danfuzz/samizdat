@@ -16,6 +16,36 @@ the box value has yet to be set), `boxSet` to set the contents of
 a box, and `boxIsSet` to indicate whether `boxSet` has been called
 (which is not the same as `boxGet` returning non-void).
 
+### Generators
+
+In *Samizdat*, generators are the primary means of "spreading" a computation
+across elements of a collection. Most basically, a generator is just
+a function (possibly, but not necessarily a pure function) with a particular
+contract.
+
+The contract is as follows:
+
+* A generator as a function always accepts exactly one argument. That
+  argument is (or is the equivalent of) a "yield box".
+
+* When a generator is not "voided" (out of elements), calling it causes
+  two things to be done:
+
+  * It calls `boxSet(box, value)` on its argument in order to yield
+    one value out of itself.
+  * It returns a new generator as a result which, when called, yields
+    the *next* value, and so on.
+
+* When a generator has yielded its final element, it returns a voided
+  generator.
+
+* When a voided generator is called, it does these two things:
+
+  * It calls `boxSet(box)` (with no payload argument) on its argument
+    in order to yield void.
+  * It returns void.
+
+TODO: Generators are not yet used anywhere in the system.
 
 <br><br>
 ### Primitive Definitions
