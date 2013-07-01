@@ -332,8 +332,9 @@ For example:
 
 * The parser `{/ &&(false) /}` will always fail.
 
-* The parser `{/ x=. &&(isToken(x)) { <> x } /}` will match and yield
-  a single terminal, as long as that terminal is a token.
+* The parser `{/ x=. &&(foo(x)) { <> x } /}` will match and yield
+  a single terminal, as long as a call to `foo` on that terminal returns
+  `true`.
 
 #### Future direction: Destructuring bind
 
