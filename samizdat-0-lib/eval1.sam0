@@ -124,17 +124,12 @@ fn convertPexCode(node, formals) {
 # Converts a `&&` pex node.
 fn convertPexPredicate(node, formals) {
     # This wraps the predicate in code, along these lines:
-    #     `{ <> ifIs { <> PREDICATE_CODE } { <> null } }`
+    #     `{ <> logicFromBoolean(PREDICATE) }`
     # Having done that, this calls `convertPexCode` (immediately above)
     # to perform the rest of the conversion.
 
     def predicate = tokenValue(node);
-    def predicateThunk = @[closure: [statements: [], yield: predicate]];
-    def nullThunk = @[closure: [
-        statements: [],
-        yield: callNameWithLiterals("makeToken", "null")
-    ]];
-    def yield = callNameWithExpressions("ifIs", predicateThunk, nullThunk);
+    def yield = callNameWithExpressions("logicFromBoolean", predicate);
     def codeNode = @["{}": [statements: [], yield: yield]];
 
     <> convertPexCode(codeNode, formals)

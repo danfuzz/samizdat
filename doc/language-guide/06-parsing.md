@@ -320,15 +320,17 @@ As a variant of running code, it is possible to run a boolean predicate,
 which fails the rule should the predicate be false. To do this,
 place the predicate expression in parentheses preceded by a double
 ampersand (`&&(...)`). The value of the predicate if bound as a variable
-is always `null`.
+is always `true`.
 
 Any bound parsing result variables (see above) that are in scope of the
 predicate are available to be used in the expression.
 
 For example:
 
-* The parser `{/ &&(true) /}` will always succeed, yielding `null` and
+* The parser `{/ &&(true) /}` will always succeed, yielding `true` and
   consuming no input.
+
+* The parser `{/ &&(false) /}` will always fail.
 
 * The parser `{/ x=. &&(isToken(x)) { <> x } /}` will match and yield
   a single terminal, as long as that terminal is a token.
