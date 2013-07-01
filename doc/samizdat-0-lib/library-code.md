@@ -176,6 +176,17 @@ whatever the target function returned (including void).
 This function is meant to make it a little easier to deal with the fact
 that *Samizdat Layer 0* prohibits use-before-def.
 
+#### `generator(value) <> generator`
+
+Generator constructor. This takes an arbitrary collection value &mdash;
+a list, a map, or a string &mdash; and returns a generator which successively
+yields elements of that collection, per the specification for generators.
+
+If passed a function, `generator` returns the function directly, on the
+assumption that it is already a generator, and to make it easy to write
+functions that can take either values or generators, coercing the former
+to generators and transparently not-transforming generators passed directly.
+
 #### `partialApply(function, value*) <> function`
 
 Partial function application. This takes a function and a number of arguments

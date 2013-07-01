@@ -8,6 +8,67 @@
 
 
 #
+# Helper definitions
+#
+
+# Standard "voided" generator. This is a generator, not a generator
+# constructor.
+fn voidedGenerator() {
+    <> { box ::
+        boxSet(box)
+    }
+};
+
+# Make a generator from a list and an index.
+fn makeListGenerator(list, index) {
+    ifIs { eq(index, lowSize(list)) }
+        { return voidedGenerator };
+
+    <> { box ::
+        boxSet(box, listNth(list, index));
+        <> makeListGenerator(list, iadd(index, 1))
+    }
+};
+
+# Make a generator from a map and an index
+fn makeMapGenerator(map, index) {
+    ifIs { eq(map, [:]) }
+        { return voidedGenerator };
+
+    <> { box ::
+        boxSet(box, mapNth(map, index));
+        <> makeMapGenerator(map, iadd(index, 1))
+    }
+};
+
+# Make a generator from a string and an index.
+fn makeStringGenerator(string, index) {
+    ifIs { eq(index, lowSize(string)) }
+        { return voidedGenerator };
+
+    <> { box ::
+        boxSet(box, stringNth(string, 0));
+        <> makeStringGenerator(string, iadd(index, 1))
+    }
+};
+
+# Degenerate generator maker for uniqlets, which are tacitly assumed to
+# already be generators.
+fn makeUniqletGenerator(uniqlet, index) {
+    <> uniqlet
+};
+
+# Map from low-layer value types to corresponding appropriate generator
+# maker functions.
+def GENERATOR_MAKERS = [
+    list:    makeListGenerator,
+    map:     makeMapGenerator,
+    string:  makeStringGenerator,
+    uniqlet: makeUniqletGenerator
+];
+
+
+#
 # Exported functions
 #
 
@@ -40,11 +101,19 @@ fn forwardFunction() {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn generator(value) {
+    <> ifValue { <> mapGet(GENERATOR_MAKERS, lowType(value)) }
+        { maker :: <> maker(value, 0) }
+        { io0Die(format("Invalid generator source: %q", value)) }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn partialApply(function, args*) {
     <> { more* :: <> function(args*, more*) }
 };
 
 <> [
     forwardFunction: forwardFunction,
-    partialApply: partialApply
+    generator:       generator,
+    partialApply:    partialApply
 ]
