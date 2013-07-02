@@ -160,6 +160,17 @@ expect to yield values by calling a function.
 <br><br>
 ### In-Language Definitions
 
+#### `cogenerator(values*) <> generator`
+
+Generator combinator. This takes an arbitrary number of values or generators,
+and returns a generator that yields lists. Non-generator arguments are
+"coerced" into generators as if by calling `generator` on them.
+
+Each yielded list consists of values yielded from the individual generators,
+in passed order. The generator becomes voided when *any* of the individual
+generators is voided.
+
+
 #### `forwardFunction() <> function`
 
 Simple function forward declaration utility. The result of a call to this
