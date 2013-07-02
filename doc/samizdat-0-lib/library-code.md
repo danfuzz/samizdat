@@ -198,6 +198,20 @@ assumption that it is already a generator, and to make it easy to write
 functions that can take either values or generators, coercing the former
 to generators and transparently not-transforming generators passed directly.
 
+#### `listFromGenerator(value) <> list`
+
+Takes an arbitrary generator or value (which is coerced to a generator
+as if by calling `generator` on it), and collects all of its generated
+results, in generated order, into a list, returning that list.
+
+This function could be defined as something like:
+
+```
+fn listFromGenerator(value) {
+    <> collect for(v in value) { <> v }
+}
+```
+
 #### `optGenerator(value) <> generator`
 
 "Optional" generator constructor. This takes an arbitrary generator or

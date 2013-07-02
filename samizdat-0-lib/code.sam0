@@ -136,6 +136,18 @@ fn generator(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn listFromGenerator(value) {
+    loopReduce([generator(value), []]) { result ::
+        def gen = listFirst(result);
+        def list = listLast(result);
+        def box = yieldBox();
+        ifValue { <> gen(box) }
+            { nextGenerator :: <> [nextGenerator, [list*, boxGet(box)]] }
+            { return list }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn optGenerator(value) {
     def innerGen = generator(value);
 
@@ -159,9 +171,10 @@ fn partialApply(function, args*) {
 };
 
 <> [
-    cogenerator:     cogenerator,
-    forwardFunction: forwardFunction,
-    generator:       generator,
-    optGenerator:    optGenerator,
-    partialApply:    partialApply
+    cogenerator:       cogenerator,
+    forwardFunction:   forwardFunction,
+    generator:         generator,
+    listFromGenerator: listFromGenerator,
+    optGenerator:      optGenerator,
+    partialApply:      partialApply
 ]
