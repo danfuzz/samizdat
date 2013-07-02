@@ -162,14 +162,14 @@ expect to yield values by calling a function.
 
 #### `cogenerator(values*) <> generator`
 
-Generator combinator. This takes an arbitrary number of values or generators,
-and returns a generator that yields lists. Non-generator arguments are
-"coerced" into generators as if by calling `generator` on them.
+Generator combination constructor. This takes an arbitrary number of
+values or generators, and returns a generator that yields lists.
+Non-generator arguments are "coerced" into generators as if by calling
+`generator` on them.
 
 Each yielded list consists of values yielded from the individual generators,
 in passed order. The generator becomes voided when *any* of the individual
 generators is voided.
-
 
 #### `forwardFunction() <> function`
 
@@ -189,7 +189,7 @@ that *Samizdat Layer 0* prohibits use-before-def.
 
 #### `generator(value) <> generator`
 
-Generator constructor. This takes an arbitrary collection value &mdash;
+Basic generator constructor. This takes an arbitrary collection value &mdash;
 a list, a map, or a string &mdash; and returns a generator which successively
 yields elements of that collection, per the specification for generators.
 
@@ -197,6 +197,16 @@ If passed a function, `generator` returns the function directly, on the
 assumption that it is already a generator, and to make it easy to write
 functions that can take either values or generators, coercing the former
 to generators and transparently not-transforming generators passed directly.
+
+#### `optGenerator(value) <> generator`
+
+"Optional" generator constructor. This takes an arbitrary generator or
+value (which is coerced to a generator as if by calling `generator` on it),
+returning a new generator that always yields lists and never becomes voided.
+As long as the underlying generator yields a value, the returned generator
+yields a single-element list of that value. Once the underlying generator
+is voided, the returned generator yields the empty list, and will continue
+doing so ad infinitum.
 
 #### `partialApply(function, value*) <> function`
 

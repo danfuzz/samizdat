@@ -136,6 +136,24 @@ fn generator(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn optGenerator(value) {
+    def innerGen = generator(value);
+
+    <> { box ::
+        def innerBox = yieldBox();
+        <> ifValue { <> innerGen(innerBox) }
+            { nextGenerator ::
+                boxSet(box, [boxGet(innerBox)]);
+                <> optGenerator(nextGenerator)
+            }
+            {
+                boxSet(box, []);
+                <> optGenerator(voidedGenerator)
+            }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn partialApply(function, args*) {
     <> { more* :: <> function(args*, more*) }
 };
@@ -144,5 +162,6 @@ fn partialApply(function, args*) {
     cogenerator:     cogenerator,
     forwardFunction: forwardFunction,
     generator:       generator,
+    optGenerator:    optGenerator,
     partialApply:    partialApply
 ]
