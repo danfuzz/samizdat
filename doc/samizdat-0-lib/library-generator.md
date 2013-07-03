@@ -25,16 +25,20 @@ Each yielded list consists of values yielded from the individual generators,
 in passed order. The generator becomes voided when *any* of the individual
 generators is voided.
 
-#### `generator(value) <> generator`
+#### `generatorFromValue(value) <> generator`
 
-Basic generator constructor. This takes an arbitrary collection value &mdash;
-a list, a map, or a string &mdash; and returns a generator which successively
-yields elements of that collection, per the specification for generators.
+Collection iteration generator constructor. This takes an arbitrary
+collection value &mdash; a list, a map, or a string &mdash; and returns a
+generator which successively yields elements of that collection, per the
+specification for generators.
 
-If passed a function, `generator` returns the function directly, on the
-assumption that it is already a generator, and to make it easy to write
-functions that can take either values or generators, coercing the former
-to generators and transparently not-transforming generators passed directly.
+If passed a function, `generatorFromValue` returns the function directly,
+on the assumption that it is already a generator, in order to make it easy
+to write functions that can take either values or generators, coercing the
+former to generators and transparently not-transforming generators passed
+directly. That is, a function that wants to take values-or-generators can
+safely call `generatorFromValue(valueOrGenerator)` without any up-front
+type checking.
 
 #### `listFromGenerator(value) <> list`
 
