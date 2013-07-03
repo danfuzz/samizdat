@@ -331,8 +331,8 @@ fn pegMakeTokenSetComplement(tokens*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegApply(rule, input) {
-    def generator = ifIs { <> isString(input) }
-        {
+    def generator = ifValue { <> isString(input) }
+        { . ::
             # Generate single-character tokens instead of single-character
             # strings.
             <> tokenGeneratorFromValue(input)
@@ -341,7 +341,7 @@ fn pegApply(rule, input) {
 
     def box = yieldBox();
     <> ifValue { <> rule(box, generator) }
-        { <> boxGet(box) }
+        { . :: <> boxGet(box) }
 };
 
 
