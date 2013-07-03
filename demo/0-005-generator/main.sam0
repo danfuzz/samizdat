@@ -65,4 +65,13 @@ outAll("Cogenerator with opt element",
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
+outAll("Filter generator (square even numbers)",
+    filterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        { value ::
+            <> ifIs { <> eq(irem(value, 2), 0) }
+                { <> imul(value, value) }
+        });
+
+outAll("Token generator", tokenGeneratorFromValue("Tokens!"));
+
 <> 0
