@@ -144,7 +144,7 @@ fn forwardFunction() {
 fn generator(value) {
     <> ifValue { <> mapGet(GENERATOR_MAKERS, lowType(value)) }
         { maker :: <> maker(value, 0) }
-        { io0Die(format("Invalid generator source: %q", value)) }
+        { io0Die("Invalid generator source.") }
 };
 
 # Documented in Samizdat Layer 0 spec.
