@@ -72,4 +72,6 @@ outAll("Filter generator (square even numbers)",
                 { <> imul(value, value) }
         });
 
+outAll("Token generator", tokenGeneratorFromValue("Tokens!"));
+
 <> 0
