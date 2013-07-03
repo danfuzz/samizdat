@@ -82,13 +82,14 @@ def GENERATOR_MAKERS = [
 fn makeRangeGenerator(first, increment, testFunction, filterFunction) {
     # Main generator maker.
     fn makeRangeGenerator1(value) {
-        <> { box ::
-            boxSet(box, filterFunction(value));
-            def nextValue = iadd(value, increment);
-            <> ifIs { <> testFunction(nextValue) }
-                { <> makeRangeGenerator1(nextValue) }
-                { <> voidedGenerator }
-        }
+        <> ifIs { <> testFunction(value) }
+            {
+                <> { box ::
+                    boxSet(box, filterFunction(value));
+                    <> makeRangeGenerator1(iadd(value, increment));
+                }
+            }
+            { <> voidedGenerator }
     };
 
     <> makeRangeGenerator1(first)
