@@ -1,0 +1,167 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Generator functions
+#
+
+
+#
+# Helper definitions
+#
+
+# Standard "voided" generator. This is a generator, not a generator
+# constructor.
+fn voidedGenerator(box) {
+    boxSet(box)
+};
+
+# Empty list generator. It always yields the empty list and returns
+# itself. This is a generator, not a generator constructor.
+fn emptyListGenerator(box) {
+    boxSet(box, []);
+    <> emptyListGenerator
+};
+
+# General range generator. Takes an int starting value, an int increment,
+# a "filter" function (function from int to the proper actual value, returns
+# void for out-of-range int).
+#
+# TODO: Use this for ranges per se.
+fn makeRangeGenerator(first, increment, filterFunction) {
+    # Main generator maker.
+    fn makeRangeGenerator1(value) {
+        <> ifValue { <> filterFunction(value) }
+            { result ::
+                <> { box ::
+                    boxSet(box, result);
+                    <> makeRangeGenerator1(iadd(value, increment));
+                }
+            }
+            { <> voidedGenerator }
+    };
+
+    <> makeRangeGenerator1(first)
+};
+
+# Makes a generator for a list.
+fn makeListGenerator(list) {
+    <> makeRangeGenerator(0, 1)
+        { index :: <> listNth(list, index) }
+};
+
+# Makes a generator for a map.
+fn makeMapGenerator(map) {
+    <> makeRangeGenerator(0, 1)
+        { index :: <> mapNth(map, index) }
+};
+
+# Makes a generator for a string.
+fn makeStringGenerator(string) {
+    <> makeRangeGenerator(0, 1)
+        { index :: <> stringNth(string, index) }
+};
+
+# Degenerate generator maker for uniqlets, which are tacitly assumed to
+# already be generators.
+fn makeUniqletGenerator(uniqlet) {
+    <> uniqlet
+};
+
+# Map from low-layer value types to corresponding appropriate generator
+# maker functions.
+def GENERATOR_MAKERS = [
+    list:    makeListGenerator,
+    map:     makeMapGenerator,
+    string:  makeStringGenerator,
+    uniqlet: makeUniqletGenerator
+];
+
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn cogenerator(values*) {
+    # Main generator maker, which takes a list (per se) of generators
+    # as a single argument.
+    fn cogenerator1(generators) {
+        <> { <out> box ::
+            def generatorCalls = listMap(generators)
+                { ., generator ::
+                    def innerBox = yieldBox();
+                    <> ifValue { <> generator(innerBox) }
+                        { nextGenerator ::
+                            <> [boxGet(innerBox), nextGenerator]
+                        }
+                        {
+                            boxSet(box); # Void result.
+                            <out>
+                        }
+                };
+            def yields = listMap(generatorCalls)
+                { ., one :: <> listNth(one, 0) };
+            def nexts = listMap(generatorCalls)
+                { ., one :: <> listNth(one, 1) };
+
+            boxSet(box, yields);
+            <> cogenerator1(nexts);
+        }
+    };
+
+    # Handle the degenerate case of no arguments.
+    ifValue { <> eq(values, []) }
+        { . :: return voidedGenerator };
+
+    # Coerce all the original arguments to generators.
+    def generators = listMap(values) { ., value :: <> generator(value) };
+
+    # Make the initial inner call (to the function defined above).
+    <> cogenerator1(generators)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn generator(value) {
+    <> ifValue { <> mapGet(GENERATOR_MAKERS, lowType(value)) }
+        { maker :: <> maker(value) }
+        { io0Die("Invalid generator source.") }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn listFromGenerator(value) {
+    loopReduce([generator(value), []]) { result ::
+        def gen = listFirst(result);
+        def list = listLast(result);
+        def box = yieldBox();
+        <> ifValue { <> gen(box) }
+            { nextGenerator :: <> [nextGenerator, [list*, boxGet(box)]] }
+            { return list }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn optGenerator(value) {
+    # Main generator maker, which takes a generator (per se) as its argument.
+    fn optGenerator1(gen) {
+        <> { box ::
+            def innerBox = yieldBox();
+            <> ifValue { <> gen(innerBox) }
+                { nextGenerator ::
+                    boxSet(box, [boxGet(innerBox)]);
+                    <> optGenerator1(nextGenerator)
+                }
+                { <> emptyListGenerator(box) }
+        }
+    };
+
+    <> optGenerator1(generator(value));
+};
+
+<> [
+    cogenerator:       cogenerator,
+    generator:         generator,
+    listFromGenerator: listFromGenerator,
+    optGenerator:      optGenerator
+]
