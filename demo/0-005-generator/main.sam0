@@ -1,0 +1,67 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Generator function demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper function
+#
+
+# Outputs all generated values, with an initial header, followed by
+# the listification of the generator, all followed by an extra newline
+# at the end.
+fn outAll(header, gen) {
+    io0Note(header);
+
+    { <done> ::
+        loopReduce(gen) { gen ::
+            def box = yieldBox();
+            <> ifValue { <> gen(box) }
+                { nextGen ::
+                    io0Note(format("  %q", boxGet(box)));
+                    <> nextGen
+                }
+                { <done> }
+        }
+    }();
+
+    io0Note("  [fin]");
+    io0Note(format("  all: %q", listFromGenerator(gen)));
+    io0Note("")
+};
+
+
+
+#
+# Main tests
+#
+
+outAll("Empty list", generator([]));
+outAll("Empty map", generator([:]));
+outAll("Empty string", generator(""));
+
+outAll("List", generator([101, 33, 5555, "blort"]));
+outAll("Map", generator([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
+outAll("String", generator("Happy string!"));
+
+outAll("All-finite cogenerator",
+    cogenerator(
+        [1, 2, 3],
+        "abcdefg",
+        [a: "a!", b: "b!", c: "c!", d: "d!"]));
+
+outAll("Cogenerator with opt element",
+    cogenerator(
+        optGenerator([1, 2, 3]),
+        "abcdefg",
+        [a: "a!", b: "b!", c: "c!", d: "d!"]));
+
+<> 0
