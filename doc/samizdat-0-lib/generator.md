@@ -81,3 +81,10 @@ returned generator yields a single-element list of that value. Once the
 underlying generator is voided, the returned generator yields the empty
 list, and will continue doing so ad infinitum.
 
+#### `tokenGeneratorFromValue(value) <> generator`
+
+Filter generator that produces a sequence of valueless (type-only)
+tokens from whatever the underlying generator produces. This is,
+in particular, the generator used by default to produce single-character
+tokens when using the library function `pegApply` to perform
+string tokenization.
