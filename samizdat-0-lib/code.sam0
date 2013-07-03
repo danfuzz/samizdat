@@ -24,45 +24,43 @@ fn emptyListGenerator(box) {
     <> emptyListGenerator
 };
 
-# Make a generator from a list and an index.
-fn makeListGenerator(list, index) {
-    <> ifIs { <> eq(index, lowSize(list)) }
-        { <> voidedGenerator }
-        {
-            <> { box ::
-                boxSet(box, listNth(list, index));
-                <> makeListGenerator(list, iadd(index, 1))
+# Makes a generator from a value and an `nth` function.
+fn makeCollectionGenerator(value, nthFunction) {
+    def size = lowSize(value);
+
+    # Main generator maker.
+    fn makeCollectionGenerator1(index) {
+        <> ifIs { <> eq(index, size) }
+            { <> voidedGenerator }
+            {
+                <> { box ::
+                    boxSet(box, nthFunction(value, index));
+                    <> makeCollectionGenerator1(iadd(index, 1))
+                }
             }
-        }
+    };
+
+    <> makeCollectionGenerator1(0)
 };
 
-# Make a generator from a map and an index
-fn makeMapGenerator(map, index) {
-    <> ifIs { <> eq(index, lowSize(map)) }
-        { <> voidedGenerator }
-        {
-            <> { box ::
-                boxSet(box, mapNth(map, index));
-                <> makeMapGenerator(map, iadd(index, 1))
-            }
-        }
+# Makes a generator for a list.
+fn makeListGenerator(list) {
+    <> makeCollectionGenerator(list, listNth)
 };
 
-# Make a generator from a string and an index.
-fn makeStringGenerator(string, index) {
-    <> ifIs { <> eq(index, lowSize(string)) }
-        { <> voidedGenerator }
-        {
-            <> { box ::
-                boxSet(box, stringNth(string, index));
-                <> makeStringGenerator(string, iadd(index, 1))
-            }
-        }
+# Makes a generator for a map.
+fn makeMapGenerator(map) {
+    <> makeCollectionGenerator(map, mapNth)
+};
+
+# Makes a generator for a string.
+fn makeStringGenerator(string) {
+    <> makeCollectionGenerator(string, stringNth)
 };
 
 # Degenerate generator maker for uniqlets, which are tacitly assumed to
 # already be generators.
-fn makeUniqletGenerator(uniqlet, index) {
+fn makeUniqletGenerator(uniqlet) {
     <> uniqlet
 };
 
@@ -170,7 +168,7 @@ fn forwardFunction() {
 # Documented in Samizdat Layer 0 spec.
 fn generator(value) {
     <> ifValue { <> mapGet(GENERATOR_MAKERS, lowType(value)) }
-        { maker :: <> maker(value, 0) }
+        { maker :: <> maker(value) }
         { io0Die("Invalid generator source.") }
 };
 
