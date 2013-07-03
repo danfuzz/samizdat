@@ -17,6 +17,13 @@ fn voidedGenerator(box) {
     boxSet(box)
 };
 
+# Empty list generator. It always yields the empty list and returns
+# itself. This is a generator, not a generator constructor.
+fn emptyListGenerator(box) {
+    boxSet(box, []);
+    <> emptyListGenerator
+};
+
 # Make a generator from a list and an index.
 fn makeListGenerator(list, index) {
     <> ifIs { <> eq(index, lowSize(list)) }
@@ -75,7 +82,7 @@ def GENERATOR_MAKERS = [
 
 # Documented in Samizdat Layer 0 spec.
 fn cogenerator(values*) {
-    # Main cogenerator function, which takes a list (per se) of generators
+    # Main generator maker, which takes a list (per se) of generators
     # as a single argument.
     fn cogenerator1(generators) {
         <> { <out> box ::
@@ -161,20 +168,20 @@ fn listFromGenerator(value) {
 
 # Documented in Samizdat Layer 0 spec.
 fn optGenerator(value) {
-    def innerGen = generator(value);
+    # Main generator maker, which takes a generator (per se) as its argument.
+    fn optGenerator1(gen) {
+        <> { box ::
+            def innerBox = yieldBox();
+            <> ifValue { <> gen(innerBox) }
+                { nextGenerator ::
+                    boxSet(box, [boxGet(innerBox)]);
+                    <> optGenerator1(nextGenerator)
+                }
+                { <> emptyListGenerator(box) }
+        }
+    };
 
-    <> { box ::
-        def innerBox = yieldBox();
-        <> ifValue { <> innerGen(innerBox) }
-            { nextGenerator ::
-                boxSet(box, [boxGet(innerBox)]);
-                <> optGenerator(nextGenerator)
-            }
-            {
-                boxSet(box, []);
-                <> optGenerator(voidedGenerator)
-            }
-    }
+    <> optGenerator1(generator(value));
 };
 
 # Documented in Samizdat Layer 0 spec.
