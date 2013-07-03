@@ -75,6 +75,26 @@ def GENERATOR_MAKERS = [
     uniqlet: makeUniqletGenerator
 ];
 
+# General range generator. Takes an int starting value, an int increment,
+# a "limit" function (test of a value to see if it is in range), and
+# a "filter" function (turn an int into the proper actual value).
+#
+# TODO: Use this.
+fn makeRangeGenerator(first, increment, limitFunction, filterFunction) {
+    # Main generator maker.
+    fn makeRangeGenerator1(value) {
+        <> { box ::
+            boxSet(box, filterFunction(value));
+            def nextValue = iadd(value, increment);
+            <> ifIs { <> limitFunction(nextValue) }
+                { <> makeRangeGenerator1(nextValue) }
+                { <> voidedGenerator }
+        }
+    };
+
+    <> makeRangeGenerator1(first)
+};
+
 
 #
 # Exported functions
