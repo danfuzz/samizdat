@@ -28,8 +28,7 @@ fn emptyListGenerator(box) {
 # a "filter" function (function from int to the proper actual value, returns
 # void for out-of-range int).
 #
-# TODO: Use this for ranges per se and in service of the collection
-# generators.
+# TODO: Use this for ranges per se.
 fn makeRangeGenerator(first, increment, filterFunction) {
     # Main generator maker.
     fn makeRangeGenerator1(value) {
@@ -48,21 +47,8 @@ fn makeRangeGenerator(first, increment, filterFunction) {
 
 # Makes a generator from a value and an `nth` function.
 fn makeCollectionGenerator(value, nthFunction) {
-    def size = lowSize(value);
-
-    # Main generator maker.
-    fn makeCollectionGenerator1(index) {
-        <> ifIs { <> eq(index, size) }
-            { <> voidedGenerator }
-            {
-                <> { box ::
-                    boxSet(box, nthFunction(value, index));
-                    <> makeCollectionGenerator1(iadd(index, 1))
-                }
-            }
-    };
-
-    <> makeCollectionGenerator1(0)
+    <> makeRangeGenerator(0, 1)
+        { index :: <> nthFunction(value, index) }
 };
 
 # Makes a generator for a list.
