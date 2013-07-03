@@ -161,8 +161,8 @@ fn optGenerator(value) {
 };
 
 <> [
-    generatorFromValues:        generatorFromValues,
-    generatorFromValue: generatorFromValue,
-    listFromGenerator:  listFromGenerator,
-    optGenerator:       optGenerator
+    generatorFromValue:  generatorFromValue,
+    generatorFromValues: generatorFromValues,
+    listFromGenerator:   listFromGenerator,
+    optGenerator:        optGenerator
 ]
