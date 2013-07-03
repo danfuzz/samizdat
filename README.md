@@ -35,20 +35,16 @@ exist (if incompletely), followed by pieces that are merely planned.
 
   This is an implementation of the non-primitive portion of the
   *Samizdat Layer 0* core library. See [the spec](doc/samizdat-0/README.md)
-  and [the implementation's README](samizdat-0-lib/README.md) for more details.
+  and [the implementation's README](samizdat-0-lib/README.md) for more
+  details.
 
-* `samizdat-1` &mdash; *Samizdat Layer 1* interpreter.
-
-  This is an interpreter for the *Samizdat Layer 1* language. See
-  [the spec](doc/samizdat-1/README.md) and
-  [the implementation's README](samizdat-1/README.md) for more details.
-
-  *Samizdat Layer 1* is a strict superset of *Samizdat Layer 0*, adding
-  new syntax in support of parser definition.
+  This also includes the implementation of the parsers for *Samizdat Layer 1*
+  and *Samizdat Layer 2*, as well as library functionality introduced at
+  those layers.
 
 ### Planned pieces
 
-* `samizdat-2` &hellip; `samizdat-N` &mdash; *Samizdat Layers 2
+* `samizdat-3` &hellip; `samizdat-N` &mdash; *Samizdat Layers 3
   through N* interpreters.
 
   For `M` and `N` where `N == M + 1`, `samizdat-N` is written in the

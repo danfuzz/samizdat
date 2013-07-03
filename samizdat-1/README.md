@@ -1,33 +1,14 @@
 Samizdat Layer 1
 ================
 
-This is an implementation of the *Samizdat Layer 1* language in
-*Samizdat Layer 0*.
+DEPRECATED.
 
-The goals of this implementation, in priority order, are:
+The code here started out life as the *Samzidat Layer 1*
+interpreter, including code to validate that translations to parse
+trees done by this layer on *Samizdat Layer 0* code is identical to
+the same trees as parsed directly by *samizdat-0*.
 
-* Correctness.
-* Debugability.
-* Readability.
-* Smallness.
-* Efficiency.
+At this point, all of the parsing code has moved into the core library,
+and the only thing that is left here is the validation piece.
 
-Part of the point of this program is to validate and cross-verify
-the consistency of implementations of the languages, and as such,
-any *Samizdat Layer 0* program parsed by this code is automatically parsed
-by the `samizdat-0` (C implementation) parser as well, with the two results
-compared. If they differ, this program will note that fact to the console,
-perform a structural diff between the two trees, and exit.
-
-This program is itself written in *Samizdat Layer 0*, in a style
-which mostly "absorbs" the core data library and entirely "reifies"
-the token and tree parsers. In particular, this program translates
-input program text into the identical executable tree form as specified
-in the *Samizdat Layer 0* specification.
-
-
-Structure
----------
-
-The code consists mostly of a tokenizer and a tree parser, with the result
-of tokenization feeding into the tree parser, as one might expect.
+TODO: Move validation into the library, or just kill this code entirely.
