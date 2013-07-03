@@ -56,12 +56,12 @@ outAll("All-finite cogenerator",
     cogenerator(
         [1, 2, 3],
         "abcdefg",
-        [a: "a!", b: "b!", c: "c!", d: "d!"]));
+        [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
 outAll("Cogenerator with opt element",
     cogenerator(
         optGenerator([1, 2, 3]),
         "abcdefg",
-        [a: "a!", b: "b!", c: "c!", d: "d!"]));
+        [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
 <> 0
