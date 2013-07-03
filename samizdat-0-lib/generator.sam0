@@ -193,10 +193,17 @@ fn optGenerator(value) {
     <> optGenerator1(generatorFromValue(value));
 };
 
+# Documented in Samizdat Layer 0 spec.
+fn tokenGeneratorFromValue(value) {
+    <> filterGenerator(value)
+        { elem :: <> @[(elem)] }
+};
+
 <> [
-    filterGenerator:     filterGenerator,
-    generatorFromValue:  generatorFromValue,
-    generatorFromValues: generatorFromValues,
-    listFromGenerator:   listFromGenerator,
-    optGenerator:        optGenerator
+    filterGenerator:         filterGenerator,
+    generatorFromValue:      generatorFromValue,
+    generatorFromValues:     generatorFromValues,
+    listFromGenerator:       listFromGenerator,
+    optGenerator:            optGenerator,
+    tokenGeneratorFromValue: tokenGeneratorFromValue
 ]
