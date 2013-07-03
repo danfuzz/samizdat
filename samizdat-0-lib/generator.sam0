@@ -106,7 +106,7 @@ fn filterGenerator(value, filterFunction) {
                             }
                     }
                     {
-                        boxSet(box, value); # The inner generator was voided.
+                        boxSet(box); # The inner generator was voided.
                         <out>
                     }
             }
