@@ -8,16 +8,6 @@
 
 
 #
-# Helper functions
-#
-
-# Makes a setter function for a box.
-fn setterFromBox(box) {
-    <> partialApply(boxSet, box);
-};
-
-
-#
 # Exported functions
 #
 
@@ -26,47 +16,39 @@ fn setterFromBox(box) {
 #
 
 # Peg rule that matches, consumes, and yields an arbitrary terminal item.
-fn pegRuleAny(yield, state, .*) {
-    <> ifValue { <> listFirst(state) }
-        { item ::
-            yield(item);
-            <> listButFirst(state);
-        }
-        { yield() }
+fn pegRuleAny(box, input, .*) {
+    <> input(box)
 };
 
 # Peg rule that always succeeds, yielding `null` and consuming no input.
-fn pegRuleEmpty(yield, state, .*) {
-    yield(null);
-    <> state
+fn pegRuleEmpty(box, input, .*) {
+    boxSet(box, null);
+    <> input
 };
 
-# Peg rule that always fails.
-fn pegRuleFail(yield, state, .*) {
-    yield()
+# Peg rule that always fails, consuming no input.
+fn pegRuleFail(box, input, .*) {
+    boxSet(box)
 };
 
 # Peg rule that matches at eof, yielding `null`. This is the equivalent
 # of `!.` in usual peg syntax.
-fn pegRuleEof(yield, state, .*) {
-    <> ifIs { <> eq(state, []) }
+fn pegRuleEof(box, input, .*) {
+    def ignoredBox = yieldBox();
+    <> ifValue { <> input(ignoredBox) }
+        { . :: boxSet(box) }
         {
-            yield(null);
-            <> state;
+            boxSet(box, null);
+            <> input
         }
-        { yield() }
 };
 
 # Peg rule that matches anywhere but eof, yielding the next terminal but
 # not consuming it. This is the equivalent of `&.` in usual peg syntax,
 # hence the name.
-fn pegRuleLookaheadAny(yield, state, .*) {
-    <> ifValue { <> listFirst(state) }
-        { item ::
-            yield(item);
-            <> state
-        }
-        { yield() }
+fn pegRuleLookaheadAny(box, input, .*) {
+    <> ifValue { <> input(box) }
+        { . :: <> input }
 };
 
 
@@ -79,13 +61,13 @@ fn pegRuleLookaheadAny(yield, state, .*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeCode(function) {
-    <> { yield, state, items* ::
+    <> { box, input, items* ::
         <> ifValue { <> function(items*) }
             { result ::
-                yield(result);
-                <> state
+                boxSet(box, result);
+                <> input
             }
-            { yield() };
+            { boxSet(box) };
     }
 };
 
@@ -101,29 +83,29 @@ fn pegMakeSequence(rules*) {
 
     # The general case. Each rule after the first gets passed as additional
     # arguments the matched results of all the previous rules, in order.
-    <> { <out> yield, state, items* ::
-        def reduction = listReduce([state, items], rules)
+    <> { <out> box, input, items* ::
+        def reduction = listReduce([input, items], rules)
             { results, ., rule ::
-                def state = listNth(results, 0);
+                def input = listNth(results, 0);
                 def values = listNth(results, 1);
-                def ybox = yieldBox();
+                def innerBox = yieldBox();
                 <> ifValue
-                    { <> rule(setterFromBox(ybox), state, values*) }
-                    { newState ::
-                        def newValues = [values*, boxGet(ybox)];
-                        <> [newState, newValues]
+                    { <> rule(innerBox, input, values*) }
+                    { newInput ::
+                        def newValues = [values*, boxGet(innerBox)];
+                        <> [newInput, newValues]
                     }
                     {
                         # Propagate the failure.
-                        yield();
+                        boxSet(box);
                         <out>
                     }
             };
 
-        def newState = listNth(reduction, 0);
+        def newInput = listNth(reduction, 0);
         def results = listNth(reduction, 1);
-        yield(listLast(results));
-        <> newState
+        boxSet(box, listLast(results));
+        <> newInput
     }
 };
 
@@ -131,27 +113,27 @@ fn pegMakeSequence(rules*) {
 fn pegMakeMainSequence(rules*) {
     def subRule = pegMakeSequence(rules*);
 
-    <> { yield, state, .* ::
-        <> subRule(yield, state)
+    <> { box, input, .* ::
+        <> subRule(box, input)
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeStar(rule) {
-    <> { <out> yield, state, items* ::
-        loopReduce([state, []])
+    <> { <out> box, input, items* ::
+        loopReduce([input, []])
             { results ::
-                def state = listNth(results, 0);
+                def input = listNth(results, 0);
                 def values = listNth(results, 1);
-                def ybox = yieldBox();
-                <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
-                    { newState ::
-                        def newValues = [values*, boxGet(ybox)];
-                        <> [newState, newValues]
+                def innerBox = yieldBox();
+                <> ifValue { <> rule(innerBox, input, items*) }
+                    { newInput ::
+                        def newValues = [values*, boxGet(innerBox)];
+                        <> [newInput, newValues]
                     }
                     {
-                        yield(values);
-                        <out> state
+                        boxSet(box, values);
+                        <out> input
                     }
             }
     }
@@ -232,27 +214,27 @@ fn pegMakeChoice(rules*) {
         { return rules* };
 
     # The general case.
-    <> { <out> yield, state, items* ::
+    <> { <out> box, input, items* ::
         listForEach(rules)
             { ., rule ::
-                def ybox = yieldBox();
-                <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
-                    { newState ::
-                        yield(boxGet(ybox));
-                        <out> newState
+                def innerBox = yieldBox();
+                <> ifValue { <> rule(innerBox, input, items*) }
+                    { newInput ::
+                        boxSet(box, boxGet(innerBox));
+                        <out> newInput
                     }
             };
 
         # No rule succeeded.
-        yield()
+        boxSet(box)
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeLookaheadSuccess(rule) {
-    <> { yield, state, items* ::
-        <> ifValue { <> rule(yield, state, items*) }
-            { <> state }
+    <> { box, input, items* ::
+        <> ifValue { <> rule(box, input, items*) }
+            { <> input }
     }
 };
 
@@ -267,29 +249,29 @@ fn pegMakeLookaheadFailure(rule) {
         { return pegRuleFail };
 
     # The general case.
-    <> { yield, state, items* ::
-        def ybox = yieldBox();
-        <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
-            { yield() }
+    <> { box, input, items* ::
+        def ignoredBox = yieldBox();
+        <> ifValue { <> rule(ignoredBox, input, items*) }
+            { boxSet(box) }
             {
-                yield(null);
-                <> state
+                boxSet(box, null);
+                <> input
             }
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeOpt(rule) {
-    <> { yield, state, items* ::
-        def ybox = yieldBox();
-        <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
-            { newState ::
-                yield([boxGet(ybox)]);
-                <> newState
+    <> { box, input, items* ::
+        def innerBox = yieldBox();
+        <> ifValue { <> rule(innerBox, input, items*) }
+            { newInput ::
+                boxSet(box, [boxGet(innerBox)]);
+                <> newInput
             }
             {
-                yield([]);
-                <> state
+                boxSet(box, []);
+                <> input
             }
     }
 };
@@ -349,20 +331,17 @@ fn pegMakeTokenSetComplement(tokens*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegApply(rule, input) {
-    def inputList = ifIs { <> isString(input) }
+    def generator = ifIs { <> isString(input) }
         {
-            # Make a list of each character as a separate token.
-            <> stringReduce([], input)
-                { result, ., ch :: <> [result*, @[(ch)]] }
+            # Generate single-character tokens instead of single-character
+            # strings.
+            <> tokenGeneratorFromValue(input)
         }
-        { <> input };
+        { <> generatorFromValue(input) };
 
-    ifNot { <> isList(inputList) }
-        { io0Die("Attempt to parse non-list.") };
-
-    def ybox = yieldBox();
-    <> ifValue { <> rule(setterFromBox(ybox), inputList) }
-        { <> boxGet(ybox) }
+    def box = yieldBox();
+    <> ifValue { <> rule(box, generator) }
+        { <> boxGet(box) }
 };
 
 
