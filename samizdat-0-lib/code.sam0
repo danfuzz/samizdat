@@ -45,6 +45,6 @@ fn partialApply(function, args*) {
 };
 
 <> [
-    forwardFunction:   forwardFunction,
-    partialApply:      partialApply
+    forwardFunction: forwardFunction,
+    partialApply:    partialApply
 ]
