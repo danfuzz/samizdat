@@ -22,6 +22,7 @@ LIB_FILE(const, sam0);
 LIB_FILE(entityMap, sam0);
 LIB_FILE(eval1, sam0);
 LIB_FILE(format, sam0);
+LIB_FILE(generator, sam0);
 LIB_FILE(int, sam0);
 LIB_FILE(io0, sam0);
 LIB_FILE(main, sam0);

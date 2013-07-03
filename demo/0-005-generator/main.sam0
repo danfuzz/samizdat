@@ -44,22 +44,23 @@ fn outAll(header, gen) {
 # Main tests
 #
 
-outAll("Empty list", generator([]));
-outAll("Empty map", generator([:]));
-outAll("Empty string", generator(""));
+outAll("Empty list", generatorFromValue([]));
+outAll("Empty map", generatorFromValue([:]));
+outAll("Empty string", generatorFromValue(""));
 
-outAll("List", generator([101, 33, 5555, "blort"]));
-outAll("Map", generator([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
-outAll("String", generator("Happy string!"));
+outAll("List", generatorFromValue([101, 33, 5555, "blort"]));
+outAll("Map",
+    generatorFromValue([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
+outAll("String", generatorFromValue("Happy string!"));
 
-outAll("All-finite cogenerator",
-    cogenerator(
+outAll("All-finite generatorFromValues",
+    generatorFromValues(
         [1, 2, 3],
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
 outAll("Cogenerator with opt element",
-    cogenerator(
+    generatorFromValues(
         optGenerator([1, 2, 3]),
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));

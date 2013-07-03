@@ -62,6 +62,7 @@ will be returned, or one of `.` `!.` `. | !.` as described in
 * [Lists](library-list.md)
 * [Maps](library-map.md)
 * [Tokens](library-token.md)
+* [Generators](library-generator.md)
 * [Functions And Code](library-code.md)
 * [I/O](library-io.md)
 * [String Formatting And Argument Parsing](library-format.md)
