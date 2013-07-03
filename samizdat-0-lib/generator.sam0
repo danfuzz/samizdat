@@ -91,7 +91,7 @@ fn filterGenerator(value, filterFunction) {
             # This loop handles the fact that the filter function is
             # allowed to yield void to indicate a generated value is to
             # be discarded.
-            loopReduce(gen) { <next> ::
+            loopReduce(gen) { <next> gen ::
                 def innerBox = yieldBox();
                 ifValue { <> gen(innerBox) }
                     { nextGenerator ::
@@ -104,11 +104,11 @@ fn filterGenerator(value, filterFunction) {
                                 # The filter discarded the value. Iterate!
                                 <next> nextGenerator
                             }
-                    }
-                    {
-                        boxSet(box); # The inner generator was voided.
-                        <out>
-                    }
+                    };
+
+                # The inner generator was voided.
+                boxSet(box);
+                <out>
             }
         }
     };
