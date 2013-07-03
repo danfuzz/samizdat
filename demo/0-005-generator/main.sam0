@@ -53,14 +53,14 @@ outAll("Map",
     generatorFromValue([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
 outAll("String", generatorFromValue("Happy string!"));
 
-outAll("All-finite cogenerator",
-    cogenerator(
+outAll("All-finite generatorFromValues",
+    generatorFromValues(
         [1, 2, 3],
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
 outAll("Cogenerator with opt element",
-    cogenerator(
+    generatorFromValues(
         optGenerator([1, 2, 3]),
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));

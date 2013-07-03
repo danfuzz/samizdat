@@ -84,10 +84,10 @@ def GENERATOR_MAKERS = [
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn cogenerator(values*) {
+fn generatorFromValues(values*) {
     # Main generator maker, which takes a list (per se) of generators
     # as a single argument.
-    fn cogenerator1(generators) {
+    fn generatorFromValues1(generators) {
         <> { <out> box ::
             def generatorCalls = listMap(generators)
                 { ., gen ::
@@ -107,7 +107,7 @@ fn cogenerator(values*) {
                 { ., one :: <> listNth(one, 1) };
 
             boxSet(box, yields);
-            <> cogenerator1(nexts);
+            <> generatorFromValues1(nexts);
         }
     };
 
@@ -120,7 +120,7 @@ fn cogenerator(values*) {
         { ., value :: <> generatorFromValue(value) };
 
     # Make the initial inner call (to the function defined above).
-    <> cogenerator1(generators)
+    <> generatorFromValues1(generators)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -161,7 +161,7 @@ fn optGenerator(value) {
 };
 
 <> [
-    cogenerator:        cogenerator,
+    generatorFromValues:        generatorFromValues,
     generatorFromValue: generatorFromValue,
     listFromGenerator:  listFromGenerator,
     optGenerator:       optGenerator

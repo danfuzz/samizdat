@@ -14,7 +14,7 @@ Generators
 <br><br>
 ### In-Language Definitions
 
-#### `cogenerator(values*) <> generator`
+#### `generatorFromValues(values*) <> generator`
 
 Generator combination constructor. This takes an arbitrary number of
 values or generators, and returns a generator that yields lists.
