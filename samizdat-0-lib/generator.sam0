@@ -84,6 +84,39 @@ def GENERATOR_MAKERS = [
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn filterGenerator(value, filterFunction) {
+    # Main generator maker, which takes a generator (per se) as its argument.
+    fn filterGenerator1(gen) {
+        <> { <out> box ::
+            # This loop handles the fact that the filter function is
+            # allowed to yield void to indicate a generated value is to
+            # be discarded.
+            loopReduce(gen) { <next> ::
+                def innerBox = yieldBox();
+                ifValue { <> gen(innerBox) }
+                    { nextGenerator ::
+                        ifValue { <> filterFunction(boxGet(innerBox)) }
+                            { value ::
+                                boxSet(box, value);
+                                <out> filterGenerator1(nextGenerator)
+                            }
+                            {
+                                # The filter discarded the value. Iterate!
+                                <next> nextGenerator
+                            }
+                    }
+                    {
+                        boxSet(box, value); # The inner generator was voided.
+                        <out>
+                    }
+            }
+        }
+    };
+
+    <> filterGenerator1(generatorFromValue(value));
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn generatorFromValues(values*) {
     # Main generator maker, which takes a list (per se) of generators
     # as a single argument.
@@ -161,6 +194,7 @@ fn optGenerator(value) {
 };
 
 <> [
+    filterGenerator:     filterGenerator,
     generatorFromValue:  generatorFromValue,
     generatorFromValues: generatorFromValues,
     listFromGenerator:   listFromGenerator,
