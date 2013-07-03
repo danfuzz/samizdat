@@ -8,16 +8,6 @@
 
 
 #
-# Helper functions
-#
-
-# Makes a setter function for a box.
-fn setterFromBox(box) {
-    <> partialApply(boxSet, box);
-};
-
-
-#
 # Exported functions
 #
 
@@ -29,21 +19,21 @@ fn setterFromBox(box) {
 fn pegRuleAny(yield, state, .*) {
     <> ifValue { <> listFirst(state) }
         { item ::
-            yield(item);
+            boxSet(yield, item);
             <> listButFirst(state);
         }
-        { yield() }
+        { boxSet(yield) }
 };
 
 # Peg rule that always succeeds, yielding `null` and consuming no input.
 fn pegRuleEmpty(yield, state, .*) {
-    yield(null);
+    boxSet(yield, null);
     <> state
 };
 
 # Peg rule that always fails.
 fn pegRuleFail(yield, state, .*) {
-    yield()
+    boxSet(yield)
 };
 
 # Peg rule that matches at eof, yielding `null`. This is the equivalent
@@ -51,10 +41,10 @@ fn pegRuleFail(yield, state, .*) {
 fn pegRuleEof(yield, state, .*) {
     <> ifIs { <> eq(state, []) }
         {
-            yield(null);
+            boxSet(yield, null);
             <> state;
         }
-        { yield() }
+        { boxSet(yield) }
 };
 
 # Peg rule that matches anywhere but eof, yielding the next terminal but
@@ -63,10 +53,10 @@ fn pegRuleEof(yield, state, .*) {
 fn pegRuleLookaheadAny(yield, state, .*) {
     <> ifValue { <> listFirst(state) }
         { item ::
-            yield(item);
+            boxSet(yield, item);
             <> state
         }
-        { yield() }
+        { boxSet(yield) }
 };
 
 
@@ -82,10 +72,10 @@ fn pegMakeCode(function) {
     <> { yield, state, items* ::
         <> ifValue { <> function(items*) }
             { result ::
-                yield(result);
+                boxSet(yield, result);
                 <> state
             }
-            { yield() };
+            { boxSet(yield) };
     }
 };
 
@@ -108,21 +98,21 @@ fn pegMakeSequence(rules*) {
                 def values = listNth(results, 1);
                 def ybox = yieldBox();
                 <> ifValue
-                    { <> rule(setterFromBox(ybox), state, values*) }
+                    { <> rule(ybox, state, values*) }
                     { newState ::
                         def newValues = [values*, boxGet(ybox)];
                         <> [newState, newValues]
                     }
                     {
                         # Propagate the failure.
-                        yield();
+                        boxSet(yield);
                         <out>
                     }
             };
 
         def newState = listNth(reduction, 0);
         def results = listNth(reduction, 1);
-        yield(listLast(results));
+        boxSet(yield, listLast(results));
         <> newState
     }
 };
@@ -144,13 +134,13 @@ fn pegMakeStar(rule) {
                 def state = listNth(results, 0);
                 def values = listNth(results, 1);
                 def ybox = yieldBox();
-                <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
+                <> ifValue { <> rule(ybox, state, items*) }
                     { newState ::
                         def newValues = [values*, boxGet(ybox)];
                         <> [newState, newValues]
                     }
                     {
-                        yield(values);
+                        boxSet(yield, values);
                         <out> state
                     }
             }
@@ -236,15 +226,15 @@ fn pegMakeChoice(rules*) {
         listForEach(rules)
             { ., rule ::
                 def ybox = yieldBox();
-                <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
+                <> ifValue { <> rule(ybox, state, items*) }
                     { newState ::
-                        yield(boxGet(ybox));
+                        boxSet(yield, boxGet(ybox));
                         <out> newState
                     }
             };
 
         # No rule succeeded.
-        yield()
+        boxSet(yield)
     }
 };
 
@@ -269,10 +259,10 @@ fn pegMakeLookaheadFailure(rule) {
     # The general case.
     <> { yield, state, items* ::
         def ybox = yieldBox();
-        <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
-            { yield() }
+        <> ifValue { <> rule(ybox, state, items*) }
+            { boxSet(yield) }
             {
-                yield(null);
+                boxSet(yield, null);
                 <> state
             }
     }
@@ -282,13 +272,13 @@ fn pegMakeLookaheadFailure(rule) {
 fn pegMakeOpt(rule) {
     <> { yield, state, items* ::
         def ybox = yieldBox();
-        <> ifValue { <> rule(setterFromBox(ybox), state, items*) }
+        <> ifValue { <> rule(ybox, state, items*) }
             { newState ::
-                yield([boxGet(ybox)]);
+                boxSet(yield, [boxGet(ybox)]);
                 <> newState
             }
             {
-                yield([]);
+                boxSet(yield, []);
                 <> state
             }
     }
@@ -361,7 +351,7 @@ fn pegApply(rule, input) {
         { io0Die("Attempt to parse non-list.") };
 
     def ybox = yieldBox();
-    <> ifValue { <> rule(setterFromBox(ybox), inputList) }
+    <> ifValue { <> rule(ybox, inputList) }
         { <> boxGet(ybox) }
 };
 
