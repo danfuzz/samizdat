@@ -47,7 +47,7 @@ fn makeStringGenerator(string, index) {
         { <> voidedGenerator }
         {
             <> { box ::
-                boxSet(box, stringNth(string, 0));
+                boxSet(box, stringNth(string, index));
                 <> makeStringGenerator(string, iadd(index, 1))
             }
         }
@@ -75,30 +75,41 @@ def GENERATOR_MAKERS = [
 
 # Documented in Samizdat Layer 0 spec.
 fn cogenerator(values*) {
+    # Main cogenerator function, which takes a list (per se) of generators
+    # as a single argument.
+    fn cogenerator1(generators) {
+        <> { <out> box ::
+            def generatorCalls = listMap(generators)
+                { ., generator ::
+                    def innerBox = yieldBox();
+                    <> ifValue { <> generator(innerBox) }
+                        { nextGenerator ::
+                            <> [boxGet(innerBox), nextGenerator]
+                        }
+                        {
+                            boxSet(box); # Void result.
+                            <out> voidedGenerator
+                        }
+                };
+            def yields = listMap(generatorCalls)
+                { ., one :: <> listFirst(one) };
+            def nexts = listMap(generatorCalls)
+                { ., one :: <> listLast(one) };
+
+            boxSet(box, yields);
+            <> cogenerator1(nexts);
+        }
+    };
+
     # Handle the degenerate case of no arguments.
     ifIs { <> eq(values, []) }
         { return voidedGenerator };
 
-    def size = lowSize(values);
+    # Coerce all the original arguments to generators.
     def generators = listMap(values) { ., value :: <> generator(value) };
 
-    <> { box ::
-        def generatorCalls = listMap(generators)
-            { ., generator ::
-                def innerBox = yieldBox();
-                <> ifValue { <> generator(innerBox) }
-                    { nextGenerator :: <> [boxGet(innerBox), nextGenerator] }
-                    {
-                        boxSet(box); # Void result.
-                        return voidedGenerator
-                    }
-            };
-        def yields = listMap(generatorCalls) { ., one :: <> listFirst(one) };
-        def nexts = listMap(generatorCalls) { ., one :: <> listLast(one) };
-
-        boxSet(box, yields);
-        <> cogenerator(nexts*);
-    }
+    # Make the initial inner call (to the function defined above).
+    <> cogenerator1(generators)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -142,7 +153,7 @@ fn listFromGenerator(value) {
         def gen = listFirst(result);
         def list = listLast(result);
         def box = yieldBox();
-        ifValue { <> gen(box) }
+        <> ifValue { <> gen(box) }
             { nextGenerator :: <> [nextGenerator, [list*, boxGet(box)]] }
             { return list }
     }
