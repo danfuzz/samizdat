@@ -28,6 +28,7 @@ def MANIFEST = [
     "conditional.sam0",
     "int.sam0",
     "collections.sam0",
+    "generator.sam0",
     "code.sam0",
     "format.sam0",
     "peg.sam0",
