@@ -230,3 +230,66 @@ def frotz = { <leave> :: ... <leave> ... }
 # This is one with everything.
 def ignatz = { <out> x, y?, z* :: ... <out> ... }
 ```
+
+### Special function shapes
+
+There are a few different "shapes" of function &mdash; what kinds and
+how many arguments they take, and what sort of things they return
+&mdash; that have particular uses in the language.
+
+#### Logic functions
+
+A logic function is one which is meant to be used, at least some of the
+time, as a logical predicate of some sort. In *Samizdat*, logical true
+is represented by a return value of any value at all, and logical false
+is represented by a void return. Logic functions, in general, may take
+any number of arguments (including none).
+
+See the introductory section "Logic operations" for more details.
+
+#### Generator functions
+
+Generators in *Samizdat* are the closest analog to what are sometimes
+called "iterators" in other languages (and are sometimes called generators,
+to be clear). When called in an appropriate manner, a series of generators
+yields a sequence of values that are related in some way, with the
+relationship depending on the nature of the generators. Put another way,
+generators can be used to "spread" a computation across a series of values.
+
+Most basically, a generator is just a function &mdash; possibly and
+preferably, but not necessarily, a pure function &mdash; with a particular
+contract.
+
+The contract is as follows:
+
+* A generator as a function always accepts exactly one argument. That
+  argument is (or is the equivalent of) a "yield box". (Boxes are described
+  more completely in a different section.)
+
+* When a generator is not "voided" (out of values to yield), calling it
+  causes two things to be done:
+
+  * It calls `boxSet(box, value)` on its argument in order to yield
+    one value out of itself.
+  * It returns a new generator as a result which, when called, yields
+    the *next* value, and so on.
+
+* When a generator has yielded its final element, it returns a voided
+  generator.
+
+* When a voided generator is called, it does these two things:
+
+  * It calls `boxSet(box)` (with no payload argument) on its argument
+    in order to yield void.
+  * It returns void.
+
+#### Parser functions
+
+Parser functions are used (unsurprisingly) to perform parsing operations.
+*Samizdat* provides both syntactic and library support for parsing.
+
+Briefly, parser functions work very similar to generator functions. The
+one major difference is that parser functions consistently take two
+arguments, the first a yield box, and the second the "text" to parse.
+
+See the "Parsing" section for more details.
