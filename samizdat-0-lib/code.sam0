@@ -19,35 +19,38 @@ fn voidedGenerator(box) {
 
 # Make a generator from a list and an index.
 fn makeListGenerator(list, index) {
-    ifIs { <> eq(index, lowSize(list)) }
-        { return voidedGenerator };
-
-    <> { box ::
-        boxSet(box, listNth(list, index));
-        <> makeListGenerator(list, iadd(index, 1))
-    }
+    <> ifIs { <> eq(index, lowSize(list)) }
+        { <> voidedGenerator }
+        {
+            <> { box ::
+                boxSet(box, listNth(list, index));
+                <> makeListGenerator(list, iadd(index, 1))
+            }
+        }
 };
 
 # Make a generator from a map and an index
 fn makeMapGenerator(map, index) {
-    ifIs { <> eq(index, lowSize(map)) }
-        { return voidedGenerator };
-
-    <> { box ::
-        boxSet(box, mapNth(map, index));
-        <> makeMapGenerator(map, iadd(index, 1))
-    }
+    <> ifIs { <> eq(index, lowSize(map)) }
+        { <> voidedGenerator }
+        {
+            <> { box ::
+                boxSet(box, mapNth(map, index));
+                <> makeMapGenerator(map, iadd(index, 1))
+            }
+        }
 };
 
 # Make a generator from a string and an index.
 fn makeStringGenerator(string, index) {
-    ifIs { <> eq(index, lowSize(string)) }
-        { return voidedGenerator };
-
-    <> { box ::
-        boxSet(box, stringNth(string, 0));
-        <> makeStringGenerator(string, iadd(index, 1))
-    }
+    <> ifIs { <> eq(index, lowSize(string)) }
+        { <> voidedGenerator }
+        {
+            <> { box ::
+                boxSet(box, stringNth(string, 0));
+                <> makeStringGenerator(string, iadd(index, 1))
+            }
+        }
 };
 
 # Degenerate generator maker for uniqlets, which are tacitly assumed to
