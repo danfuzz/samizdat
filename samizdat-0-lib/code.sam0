@@ -24,6 +24,28 @@ fn emptyListGenerator(box) {
     <> emptyListGenerator
 };
 
+# General range generator. Takes an int starting value, an int increment,
+# a "filter" function (function from int to the proper actual value, returns
+# void for out-of-range int).
+#
+# TODO: Use this for ranges per se and in service of the collection
+# generators.
+fn makeRangeGenerator(first, increment, filterFunction) {
+    # Main generator maker.
+    fn makeRangeGenerator1(value) {
+        <> ifValue { <> filterFunction(value) }
+            { result ::
+                <> { box ::
+                    boxSet(box, result);
+                    <> makeRangeGenerator1(iadd(value, increment));
+                }
+            }
+            { <> voidedGenerator }
+    };
+
+    <> makeRangeGenerator1(first)
+};
+
 # Makes a generator from a value and an `nth` function.
 fn makeCollectionGenerator(value, nthFunction) {
     def size = lowSize(value);
@@ -72,28 +94,6 @@ def GENERATOR_MAKERS = [
     string:  makeStringGenerator,
     uniqlet: makeUniqletGenerator
 ];
-
-# General range generator. Takes an int starting value, an int increment,
-# a "filter" function (function from int to the proper actual value, returns
-# void for out-of-range int).
-#
-# TODO: Use this for ranges per se and in service of the collection
-# generators.
-fn makeRangeGenerator(first, increment, filterFunction) {
-    # Main generator maker.
-    fn makeRangeGenerator1(value) {
-        <> ifValue { <> filterFunction(value) }
-            { result ::
-                <> { box ::
-                    boxSet(box, result);
-                    <> makeRangeGenerator1(iadd(value, increment));
-                }
-            }
-            { <> voidedGenerator }
-    };
-
-    <> makeRangeGenerator1(first)
-};
 
 
 #
