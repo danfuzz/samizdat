@@ -154,5 +154,6 @@ fi
 # Run it in the demo dir, passing it the main script name and any other
 # arguments passed to this script.
 
+echo "Running demo: $(basename "${name}")"
 cd "${name}"
 "${cmd[@]}" "${mainFile}" "$@"
