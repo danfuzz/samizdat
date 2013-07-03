@@ -13,15 +13,13 @@
 
 # Standard "voided" generator. This is a generator, not a generator
 # constructor.
-fn voidedGenerator() {
-    <> { box ::
-        boxSet(box)
-    }
+fn voidedGenerator(box) {
+    boxSet(box)
 };
 
 # Make a generator from a list and an index.
 fn makeListGenerator(list, index) {
-    ifIs { eq(index, lowSize(list)) }
+    ifIs { <> eq(index, lowSize(list)) }
         { return voidedGenerator };
 
     <> { box ::
@@ -32,7 +30,7 @@ fn makeListGenerator(list, index) {
 
 # Make a generator from a map and an index
 fn makeMapGenerator(map, index) {
-    ifIs { eq(map, [:]) }
+    ifIs { <> eq(index, lowSize(map)) }
         { return voidedGenerator };
 
     <> { box ::
@@ -43,7 +41,7 @@ fn makeMapGenerator(map, index) {
 
 # Make a generator from a string and an index.
 fn makeStringGenerator(string, index) {
-    ifIs { eq(index, lowSize(string)) }
+    ifIs { <> eq(index, lowSize(string)) }
         { return voidedGenerator };
 
     <> { box ::
