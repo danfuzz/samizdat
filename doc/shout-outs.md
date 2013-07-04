@@ -27,14 +27,21 @@ Samizdat's syntax can be traced in part to
 other syntactic influences include
 [Smalltalk](http://en.wikipedia.org/wiki/Smalltalk) and traditional
 [Backus-Naur Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)
-(BNF), with an honorable mention to [Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29) for early inspiration.
-
-Samizdat's execution model probably owes its biggest debt to Smalltalk.
+(BNF), with an honorable mention to
+[Logo](http://en.wikipedia.org/wiki/Logo_%28programming_language%29) for
+early inspiration.
 
 The Samizdat core data model was influenced by
 [Lisp](http://en.wikipedia.org/wiki/LISP),
 [Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
 [Clojure](http://en.wikipedia.org/wiki/Clojure), and JavaScript.
+
+Samizdat's execution model probably owes its biggest debts to Smalltalk and
+[Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29).
+[Icon](http://en.wikipedia.org/wiki/Icon_%28programming_language%29),
+[Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
+and [Erlang](http://en.wikipedia.org/wiki/Erlang_%28programming_language%29)
+all also provided a fair amount of grist for the mill.
 
 Samizdat's parsing semantics were influenced by the recent work on
 [Parsing Expression
@@ -50,9 +57,8 @@ and [Yacc](http://en.wikipedia.org/wiki/Yacc) /
 the trail for general-purpose languages that make parsing a first-class
 operation.
 
-The Samizdat core library was influenced by
-[Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29),
-Logo, and Awk.
+In terms of "flavor" and "feel", the Samizdat core library was influenced
+by Scheme, Logo, Awk, and [Underscore.js](http://underscorejs.org/).
 
 The implementation tactics used to build Samizdat were informed by
 [Scheme-48](http://en.wikipedia.org/wiki/Scheme_48),
