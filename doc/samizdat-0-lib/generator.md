@@ -31,6 +31,45 @@ then that value in turn becomes the yielded result of the outer generator.
 If the filter function yields void, then the value-in-progress is discarded,
 and the inner generator is retried, with the same void-or-value behavior.
 
+#### `generatorForExclusiveRange(first, increment, limit) <> generator`
+
+End-exclusive range generator for int or single-character strings.
+Takes an initial value, which must either be an int or a single-character
+string, and an int (always an int) increment. The first call to the
+resulting generator yields the `first` value, and each subsequent call
+yields the previous value plus the given increment (converted to a
+single-character string if `first` is a string). If the value yielded
+would be the same as or beyond the given `limit`, the generator becomes
+voided.
+
+As a special case, if `increment` is `0`, the resulting generator just
+yields `first` and then becomes voided.
+
+#### `generatorForInclusiveRange(first, increment, limit) <> generator`
+
+End-inclusive range generator for int or single-character strings.
+Takes an initial value, which must either be an int or a single-character
+string, and an int (always an int) increment. The first call to the
+resulting generator yields the `first` value, and each subsequent call
+yields the previous value plus the given increment (converted to a
+single-character string if `first` is a string). If the value yielded
+would be beyond the given `limit`, the generator becomes voided.
+
+As a special case, if `increment` is `0`, the resulting generator just
+yields `first` and then becomes voided.
+
+#### `generatorForOpenRange(first, increment) <> generator`
+
+Open (never voided) range generator for int or single-character strings.
+Takes an initial value, which must either be an int or a single-character
+string, and an int (always an int) increment. The first call to the
+resulting generator yields the `first` value, and each subsequent call
+yields the previous value plus the given increment (converted to a
+single-character string if `first` is a string).
+
+As a special case, if `increment` is `0`, the resulting generator just
+yields `first` and then becomes voided.
+
 #### `generatorFromValues(values*) <> generator`
 
 Generator combination constructor. This takes an arbitrary number of
