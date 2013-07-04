@@ -12,8 +12,8 @@
 
 # Performs a type check, for the given type name.
 fn isType(value, typeName) {
-    <> ifIs { <> eq(lowType(value), typeName) }
-        { <> value }
+    <> ifValue { <> eq(lowType(value), typeName) }
+        { . :: <> value }
 };
 
 
