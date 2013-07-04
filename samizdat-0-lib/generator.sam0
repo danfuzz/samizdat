@@ -117,7 +117,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
         { <> { x :: <> testFunction(limit, x) } }
         { <> { x :: <> stringFromInt(testFunction(limit, x)) } };
 
-    <> makeSeqGenerator(first, increment, testFunction)
+    <> makeSeqGenerator(first, increment, filterFunction)
 };
 
 
