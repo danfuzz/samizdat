@@ -24,42 +24,40 @@ fn emptyListGenerator(box) {
     <> emptyListGenerator
 };
 
-# General range generator. Takes an int starting value, an int increment,
-# a "filter" function (function from int to the proper actual value, returns
-# void for out-of-range int).
-#
-# TODO: Use this for ranges per se.
-fn makeRangeGenerator(first, increment, filterFunction) {
+# General sequential-value generator. Takes an int starting value, an int
+# increment, a "filter" function (function from int to the proper actual
+# value, returns void for out-of-range int).
+fn makeSeqGenerator(first, increment, filterFunction) {
     # Main generator maker.
-    fn makeRangeGenerator1(value) {
+    fn makeSeqGenerator1(value) {
         <> ifValue { <> filterFunction(value) }
             { result ::
                 <> { box ::
                     boxSet(box, result);
-                    <> makeRangeGenerator1(iadd(value, increment));
+                    <> makeSeqGenerator1(iadd(value, increment));
                 }
             }
             { <> voidedGenerator }
     };
 
-    <> makeRangeGenerator1(first)
+    <> makeSeqGenerator1(first)
 };
 
 # Makes a generator for a list.
 fn makeListGenerator(list) {
-    <> makeRangeGenerator(0, 1)
+    <> makeSeqGenerator(0, 1)
         { index :: <> listNth(list, index) }
 };
 
 # Makes a generator for a map.
 fn makeMapGenerator(map) {
-    <> makeRangeGenerator(0, 1)
+    <> makeSeqGenerator(0, 1)
         { index :: <> mapNth(map, index) }
 };
 
 # Makes a generator for a string.
 fn makeStringGenerator(string) {
-    <> makeRangeGenerator(0, 1)
+    <> makeSeqGenerator(0, 1)
         { index :: <> stringNth(string, index) }
 };
 
@@ -77,6 +75,50 @@ def GENERATOR_MAKERS = [
     string:  makeStringGenerator,
     uniqlet: makeUniqletGenerator
 ];
+
+# Map from `[direction, inclusive]` pairs to appropriate test functions.
+# Note that in order to have the right pass-through test result, the test
+# is called as `test(limit, value)` and not with the arguments the other
+# way around.
+def INT_RANGE_TESTS = [
+    [-1, false]: lt,
+    [-1, true]:  le,
+    [1,  false]: gt,
+    [1,  true]:  ge
+];
+
+# Generic generator maker for int and single-character string ranges. If
+# `optLimit` is passed, then `optInclusive` needs to be as well.
+fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
+    # This test also ends up guaranteeing that `first` is either an int
+    # or a single-character string, which is why it goes before the
+    # zero-increment special case.
+    def firstInt = ifIs { <> isInt(first) }
+        { <> first }
+        { <> intFromString(first) };
+
+    ifIs { <> eq(increment, 0) }
+        {
+            # Special case: A range with increment of zero always just
+            # yields the `first` value and then becomes voided.
+            return makeSeqGenerator(first, 1) { x :: <> eq(x, first) }
+        };
+
+    ifIs { <> eq(optLimit, []) }
+        {
+            # Open range.
+            return makeSeqGenerator(first, increment) { x :: <> x }
+        };
+
+    def limit = optLimit*;
+    def testFunction =
+        mapGet(INT_RANGE_TESTS, [isignIncrement, (optInclusive*)]);
+    def filterFunction = ifIs { <> isInt(first) }
+        { <> { x :: <> testFunction(limit, x) } }
+        { <> { x :: <> stringFromInt(testFunction(limit, x)) } };
+
+    <> makeSeqGenerator(first, increment, testFunction)
+};
 
 
 #
@@ -157,6 +199,21 @@ fn generatorFromValues(values*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn generatorForExclusiveRange(first, increment, limit) {
+    <> makeRangeGenerator(first, increment, limit, false)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn generatorForInclusiveRange(first, increment, limit) {
+    <> makeRangeGenerator(first, increment, limit, true)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn generatorForOpenRange(first, increment) {
+    <> makeRangeGenerator(first, increment)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn generatorFromValue(value) {
     <> ifValue { <> mapGet(GENERATOR_MAKERS, lowType(value)) }
         { maker :: <> maker(value) }
@@ -166,8 +223,8 @@ fn generatorFromValue(value) {
 # Documented in Samizdat Layer 0 spec.
 fn listFromGenerator(value) {
     loopReduce([generatorFromValue(value), []]) { result ::
-        def gen = listFirst(result);
-        def list = listLast(result);
+        def gen = listNth(result, 0);
+        def list = listNth(result, 1);
         def box = yieldBox();
         <> ifValue { <> gen(box) }
             { nextGenerator :: <> [nextGenerator, [list*, boxGet(box)]] }
@@ -200,10 +257,13 @@ fn tokenGeneratorFromValue(value) {
 };
 
 <> [
-    filterGenerator:         filterGenerator,
-    generatorFromValue:      generatorFromValue,
-    generatorFromValues:     generatorFromValues,
-    listFromGenerator:       listFromGenerator,
-    optGenerator:            optGenerator,
-    tokenGeneratorFromValue: tokenGeneratorFromValue
+    filterGenerator:            filterGenerator,
+    generatorForExclusiveRange: generatorForExclusiveRange,
+    generatorForInclusiveRange: generatorForInclusiveRange,
+    generatorForOpenRange:      generatorForOpenRange,
+    generatorFromValue:         generatorFromValue,
+    generatorFromValues:        generatorFromValues,
+    listFromGenerator:          listFromGenerator,
+    optGenerator:               optGenerator,
+    tokenGeneratorFromValue:    tokenGeneratorFromValue
 ]
