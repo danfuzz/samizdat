@@ -1,0 +1,34 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Ordering Comparisons
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn eq(v1, v2) { <> lowOrderIs(v1, v2, 0) };
+
+# Documented in Samizdat Layer 0 spec.
+fn ge(v1, v2) { <> lowOrderIs(v1, v2, 1, 0) };
+
+# Documented in Samizdat Layer 0 spec.
+fn gt(v1, v2) { <> lowOrderIs(v1, v2, 1) };
+
+# Documented in Samizdat Layer 0 spec.
+fn lt(v1, v2) { <> lowOrderIs(v1, v2, -1) };
+
+# Documented in Samizdat Layer 0 spec.
+fn le(v1, v2) { <> lowOrderIs(v1, v2, -1, 0) };
+
+# Documented in Samizdat Layer 0 spec.
+fn ne(v1, v2) { <> lowOrderIs(v1, v2, -1, 1) };
+
+<> [
+    eq:  eq,
+    ge:  ge,
+    gt:  gt,
+    le:  le,
+    lt:  lt,
+    ne:  ne
+]
