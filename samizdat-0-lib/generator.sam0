@@ -112,7 +112,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
 
     def limit = optLimit*;
     def testFunction =
-        mapGet(INT_RANGE_TESTS, [isignIncrement, (optInclusive*)]);
+        mapGet(INT_RANGE_TESTS, [isign(increment), (optInclusive*)]);
     def filterFunction = ifIs { <> isInt(first) }
         { <> { x :: <> testFunction(limit, x) } }
         { <> { x :: <> stringFromInt(testFunction(limit, x)) } };
