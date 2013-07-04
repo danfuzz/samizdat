@@ -624,7 +624,7 @@ def parserSetString = {/
                 { <> and
                     { <> eq(lowSize(startChar), 1) }
                     { <> eq(lowSize(endChar), 1) } }
-                { <> @[string: stringAdd([startChar..endChar]*)] }
+                { <> @[string: stringAdd(startChar..endChar)] }
         }
     |
         { <> s }
