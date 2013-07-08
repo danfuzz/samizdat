@@ -38,8 +38,8 @@ out([["f", "u", "z"]*: "muffins"]);
 
 io0Note("\nLayer 2...");
 
-out(["0".."9": "woo"]);
-out([:, [0..6: "blort"]*, [5..9: "fizmo"]*]);
+out([("0".."9")*: "woo"]);
+out([:, [(0..6)*: "blort"]*, [(5..9)*: "fizmo"]*]);
 out([("a", "b"): 10]);
 out([(a, b): 20]);
 out([(true, (true)): 30]);
