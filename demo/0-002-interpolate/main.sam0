@@ -41,6 +41,8 @@ fn nonlocalTest(x) {
 
 out(["a", "b", "c"]*, ["d", "e", "f", ["g"]*]*);
 out([[1, 2, 3]*: 6]);
+out("blort"*);
+out([a: 10, b: "20"]*);
 
 ifValue { <> yieldTest([]) }
     { value :: <> out(value) }
