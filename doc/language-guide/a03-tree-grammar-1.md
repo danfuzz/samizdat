@@ -21,7 +21,9 @@ can be used.
 
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
-def LOWER_ALPHA = ["a".."z": true];
+def LOWER_ALPHA = [
+    listFromGenerator(generatorForInclusiveRange("a", 1, "z"))*: true
+];
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
@@ -624,7 +626,11 @@ def parserSetString = {/
                 { <> and
                     { <> eq(lowSize(startChar), 1) }
                     { <> eq(lowSize(endChar), 1) } }
-                { <> @[string: stringAdd(startChar..endChar)] }
+                {
+                    def charGen =
+                        generatorForInclusiveRange(startChar, 1, endChar);
+                    <> @[string: stringAdd(listFromGenerator(charGen)*)]
+                }
         }
     |
         { <> s }

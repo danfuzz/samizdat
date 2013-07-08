@@ -111,10 +111,18 @@ fn stringChar(ch) {
 };
 
 # These are all the characters which are allowed to start an identifier.
-def IDENTIFIER_STARTS = ["a".."z": true, "A".."Z": true, "_": true ];
+def IDENTIFIER_STARTS = [
+    listFromGenerator(seqGeneratorFromValues(
+        generatorForInclusiveRange("a", 1, "z"),
+        generatorForInclusiveRange("A", 1, "Z"),
+        "_"))*: true
+];
 
 # These are all the characters which are allowed to be in an identifier.
-def IDENTIFIER_CHARS = [IDENTIFIER_STARTS*, "0".."9": true];
+def IDENTIFIER_CHARS = [
+    IDENTIFIER_STARTS*,
+    listFromGenerator(generatorForInclusiveRange("0", 1, "9"))*: true
+];
 
 # Tokens with special conversions.
 def TOKEN_SPECIALS = [
