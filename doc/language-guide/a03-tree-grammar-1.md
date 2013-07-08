@@ -482,24 +482,10 @@ def unaryExpression = {/
     }
 /};
 
-# Note: *Layer 2* introduces additional range variants. This rule is
-# totally rewritten at that layer.
-def rangeExpression = {/
-    base = unaryExpression
-
-    (
-        @".."
-        limit = unaryExpression
-        { <> @[interpolate: makeCallName("makeRangeInclusive", base, limit)] }
-    |
-        { <> base }
-    )
-/};
-
 # Note: There are additional expression rules in *Layer 2* and beyond.
 # This rule is totally rewritten at that layer.
 def expression = {/
-    rangeExpression | fnExpression
+    unaryExpression | fnExpression
 /};
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
