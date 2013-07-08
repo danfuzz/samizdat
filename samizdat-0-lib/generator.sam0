@@ -101,23 +101,32 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
         {
             # Special case: A range with increment of zero always just
             # yields the `first` value and then becomes voided.
-            return makeSeqGenerator(first, 1) { x :: <> eq(x, first) }
+            return makeListGenerator([first])
         };
 
-    ifIs { <> eq(optLimit, []) }
+    def limitFunction = ifValue { <> optLimit* }
+        { limit ::
+            def limitInt = ifIs { <> isInt(limit) }
+                {
+                    <> ifIs { <> isInt(first) }
+                        { <> limit }
+                        { io0Die("Type mismatch between first and limit.") };
+                }
+                { <> intFromString(limit) };
+            def testFunction =
+                mapGet(INT_RANGE_TESTS, [isign(increment), (optInclusive*)]);
+            <> { x :: <> testFunction(limitInt, x) }
+        }
         {
-            # Open range.
-            return makeSeqGenerator(first, increment) { x :: <> x }
+            # Open range; no limit test.
+            <> { x :: <> x }
         };
 
-    def limit = optLimit*;
-    def testFunction =
-        mapGet(INT_RANGE_TESTS, [isign(increment), (optInclusive*)]);
     def filterFunction = ifIs { <> isInt(first) }
-        { <> { x :: <> testFunction(limit, x) } }
-        { <> { x :: <> stringFromInt(testFunction(limit, x)) } };
+        { <> limitFunction }
+        { <> { x :: <> stringFromInt(limitFunction(x)) } };
 
-    <> makeSeqGenerator(first, increment, filterFunction)
+    <> makeSeqGenerator(firstInt, increment, filterFunction)
 };
 
 
