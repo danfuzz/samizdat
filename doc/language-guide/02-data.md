@@ -121,20 +121,17 @@ Lists are written as an initial `[`, followed by zero or
 more value representations, followed by a final `]`. Values
 are separated with commas (`,`).
 
-A range of either ints or single-character strings can be included
-in a list using the syntax `start..end`, where `start` and `end` are
-either both ints or both single-character strings.
-
-The contents of other lists can be "interpolated" into a list (that is,
-have their elements become elements of the result) by placing a `*`
-after the inner list.
+The contents of generators and collections (lists, maps, strings) can be
+"interpolated" into a list (that is, have their elements become elements
+of the result) by placing a `*` after the value or expression to
+interpolate.
 
 ```
 []                            # the empty list
 [1]
 ["blort", "fizmo", "igram"]
 [[1], 242, -23]
-[[1, 2]*, 3..5, "a".."c"]     # the same as [1, 2, 3, 4, 5, "a", "b", "c"]
+[[1, 2]*, (3..5)*, [f: 6]*]   # the same as [1, 2, 3, 4, 5, [f: 6]]
 ```
 
 
@@ -154,11 +151,10 @@ As a short-hand, a string key with the same form as an identifier can
 be written without the quotes.
 
 A group of mappings with multiple keys that map to the same value
-can be written in a short-hand using the same range and
-interpolation syntax as with lists. In addition, a comma-separated
-list of keys enclosed in parentheses can be used in the key position;
-in this form, naked identifiers have the same string-literal interpretation
-as with individual identifiers.
+can be written in a short-hand using the same interpolation syntax as with
+lists. In addition, a comma-separated list of keys enclosed in parentheses
+can be used in the key position; in this form, naked identifiers have the
+same string-literal interpretation as with individual identifiers.
 
 An entire other map can be interpolated into a new map by listing the
 map to interpolate followed by a `*`. To avoid ambiguity between a

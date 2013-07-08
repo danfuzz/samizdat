@@ -15,9 +15,10 @@ SELF_PATH, ARGS* ::
 # Helper functions
 #
 
-# Prints out the given value, which is expected to be a list.
-fn out(list) {
-    io0Note(format("Got: %q", list))
+# Prints out the values yielded by the given generator.
+fn out(generator) {
+    def values = listFromGenerator(generator);
+    io0Note(format("Got: %q", values))
 };
 
 #
@@ -25,33 +26,33 @@ fn out(list) {
 #
 
 io0Note("Inclusive, default increment...");
-out([100..110]);
-out(["U".."Z"]);
-out([9..9]);
-out([9..0]);
-out(["f".."f"]);
-out(["f".."a"]);
+out(100..110);
+out("U".."Z");
+out(9..9);
+out(9..0);
+out("f".."f");
+out("f".."a");
 
 io0Note("\nInclusive, explicit increment...");
-out([0..200..1000]);
-out(["a"..5.."z"]);
-out([10..-1..1]);
-out(["F"..-2.."A"]);
-out([9..0..9]);
+out(0..200..1000);
+out("a"..5.."z");
+out(10..-1..1);
+out("F"..-2.."A");
+out(9..0..9);
 
 io0Note("\nExclusive, default increment...");
-out([100..!110]);
-out(["U"..!"Z"]);
-out([9..!9]);
-out([9..!0]);
-out(["f"..!"f"]);
-out(["f"..!"a"]);
+out(100..!110);
+out("U"..!"Z");
+out(9..!9);
+out(9..!0);
+out("f"..!"f");
+out("f"..!"a");
 
 io0Note("\nExclusive, explicit increment...");
-out([0..200..!1000]);
-out(["a"..5..!"z"]);
-out([10..-1..!1]);
-out(["F"..-2..!"A"]);
-out([9..0..!9]);
+out(0..200..!1000);
+out("a"..5..!"z");
+out(10..-1..!1);
+out("F"..-2..!"A");
+out(9..0..!9);
 
 <> 0

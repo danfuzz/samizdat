@@ -17,15 +17,13 @@ SELF_PATH, ARGS* ::
 
 fn powerName(value) {
     <> switch <out> (value) {
-        1:    { <> "one" }
-        2:    { <out> "two" }
-        4:    { return "four" }
-        8:    { <> "eight" }
-        1..4: { <> "um..." }
-        (5, 6, blort): {
-            <> "wha?"
-        }
-        default: { <> "uh..." }
+        1:             { <> "one" }
+        2:             { <out> "two" }
+        4:             { return "four" }
+        8:             { <> "eight" }
+        (1..4)*:       { <> "um..." }
+        (5, 6, blort): { <> "wha?" }
+        default:       { <> "uh..." }
     }
 };
 
@@ -74,9 +72,9 @@ io0Note(powerName("blort"));
 io0Note("\nInterpolate...");
 
 io0Note(interpolator(1, [1, 2, 3]));
-io0Note(interpolator(2, [4..6]));
-io0Note(interpolator(10, [8..18]));
-io0Note(interpolator(11, [8..18]));
+io0Note(interpolator(2, [(4..6)*]));
+io0Note(interpolator(10, [(8..18)*]));
+io0Note(interpolator(11, [(8..18)*]));
 io0Note(interpolator(0, [0, 5]));
 
 io0Note("\nElse...");

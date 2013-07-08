@@ -117,8 +117,8 @@ def BINARY_OPERATORS = mapMap([
     "\\>":  "gt",
     "\\<=": "le",
     "\\>=": "ge",
-    "..":   "listForInclusiveRange",
-    "..!":  "listForExclusiveRange"
+    "..":   "generatorForInclusiveRange",
+    "..!":  "generatorForExclusiveRange"
     ])
     { key, value :: <> makeVarRef(value) };
 
@@ -973,10 +973,7 @@ def parseRangeExpression = {/
             }
             { <> makeLiteral(1) };
 
-        <> @[
-            interpolate:
-            makeCall(mapGet(BINARY_OPERATORS, lastOp), base, increment, lastEx)
-        ]
+        <> makeCall(mapGet(BINARY_OPERATORS, lastOp), base, increment, lastEx)
     }
 /};
 

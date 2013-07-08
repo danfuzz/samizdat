@@ -352,9 +352,8 @@ static zvalue execCall(Frame *frame, zvalue call) {
             zvalue eval = execExpressionVoidOk(frame, datTokenValue(one));
             if (eval == NULL) {
                 return NULL;
-            } else if (!datTypeIs(eval, DAT_LIST)) {
-                die("Attempt to interpolate non-list.");
             }
+            eval = listFromGenerator(eval);
             args[i] = eval;
             fullCount += datSize(eval);
             interpolate = true;
@@ -411,21 +410,17 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 
     if (result == NULL) {
         die("Attempt to interpolate void.");
-    } else if (!datTypeIs(result, DAT_LIST)) {
-        die("Attempt to interpolate non-list.");
     }
 
-    zint size = datSize(result);
-    switch (size) {
-        case 0: {
-            return NULL;
-        }
-        case 1: {
-            return datListNth(result, 0);
+    result = listFromGenerator(result);
+
+    switch (datSize(result)) {
+        case 0: return NULL;
+        case 1: return datListNth(result, 0);
+        default: {
+            die("Attempt to interpolate multiple values.");
         }
     }
-
-    die("Attempt to interpolate multiple values.");
 }
 
 /**
