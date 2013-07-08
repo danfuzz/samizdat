@@ -187,9 +187,9 @@ the `increment` defaults to `1`. Even if the `first` and `limit` are
 strings, the `increment` if specified must always be an int.
 
 Ranges all bottom out in their evaluation to calls to one of the
-functions `generatorForExclusiveRange` or `generatorForInclusiveRange`.
-Refer to the documentation on those functions for how to interpret
-the various combinations.
+functions `generatorForExclusiveRange`, `generatorForInclusiveRange`,
+or `generatorForOpenRange`. Refer to the documentation on those functions
+for how to interpret the various combinations.
 
 **Note:** Unlike most binary operators, the range operators have no
 operator associativity, in that `x..y..z..huhwhat` is a syntax error.
@@ -209,6 +209,14 @@ This is equivalent to `generatorForExclusiveRange(first, 1, limit)`.
 #### Exclusive range with arbitrary increment &mdash; `first..increment..!limit`
 
 This is equivalent to `generatorForExclusiveRange(first, increment, limit)`.
+
+#### Open range with increment 1 &mdash; `first...`
+
+This is equivalent to `generatorForOpenRange(first, 1)`.
+
+#### Open range with arbitraru increment &mdash; `first..increment...`
+
+This is equivalent to `generatorForOpenRange(first, increment)`.
 
 
 ### Multiplicative Infix Operators (Precedence 7)
