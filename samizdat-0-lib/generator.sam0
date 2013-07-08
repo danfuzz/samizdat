@@ -168,46 +168,6 @@ fn filterGenerator(value, filterFunction) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn paraGeneratorFromValues(values*) {
-    # Main generator maker, which takes a list (per se) of generators
-    # as a single argument.
-    fn paraGeneratorFromValues1(generators) {
-        <> { <out> box ::
-            def generatorCalls = listMap(generators)
-                { ., gen ::
-                    def innerBox = yieldBox();
-                    <> ifValue { <> gen(innerBox) }
-                        { nextGenerator ::
-                            <> [boxGet(innerBox), nextGenerator]
-                        }
-                        {
-                            boxSet(box); # Void result.
-                            <out>
-                        }
-                };
-            def yields = listMap(generatorCalls)
-                { ., one :: <> listNth(one, 0) };
-            def nexts = listMap(generatorCalls)
-                { ., one :: <> listNth(one, 1) };
-
-            boxSet(box, yields);
-            <> paraGeneratorFromValues1(nexts);
-        }
-    };
-
-    # Handle the degenerate case of no arguments.
-    ifValue { <> eq(values, []) }
-        { . :: return voidedGenerator };
-
-    # Coerce all the original arguments to generators.
-    def generators = listMap(values)
-        { ., value :: <> generatorFromValue(value) };
-
-    # Make the initial inner call (to the function defined above).
-    <> paraGeneratorFromValues1(generators)
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn generatorForExclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, false)
 };
@@ -264,6 +224,76 @@ fn optGenerator(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn paraGeneratorFromValues(values*) {
+    # Main generator maker, which takes a list (per se) of generators
+    # as a single argument.
+    fn paraGeneratorFromValues1(generators) {
+        <> { <out> box ::
+            def generatorCalls = listMap(generators)
+                { ., gen ::
+                    def innerBox = yieldBox();
+                    <> ifValue { <> gen(innerBox) }
+                        { nextGenerator ::
+                            <> [boxGet(innerBox), nextGenerator]
+                        }
+                        {
+                            boxSet(box); # Void result.
+                            <out>
+                        }
+                };
+            def yields = listMap(generatorCalls)
+                { ., one :: <> listNth(one, 0) };
+            def nexts = listMap(generatorCalls)
+                { ., one :: <> listNth(one, 1) };
+
+            boxSet(box, yields);
+            <> paraGeneratorFromValues1(nexts);
+        }
+    };
+
+    # Handle the degenerate case of no arguments.
+    ifValue { <> eq(values, []) }
+        { . :: return voidedGenerator };
+
+    # Coerce all the original arguments to generators.
+    def generators = listMap(values)
+        { ., value :: <> generatorFromValue(value) };
+
+    # Make the initial inner call (to the function defined above).
+    <> paraGeneratorFromValues1(generators)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn seqGeneratorFromValues(values*) {
+    # Return a voided generator if we weren't passed any arguments.
+    ifIs { <> eq(values, []) }
+        { return voidedGenerator };
+
+    # Return an unmodified generator if we were only passed one argument.
+    # (This saves some gratuitous wrapping / double yields.)
+    ifIs { <> eq(lowSize(values), 1) }
+        { return generatorFromValue(values*) };
+
+    fn seqGenerator1(gen) {
+        <> { box ::
+            def innerBox = yieldBox();
+            <> ifValue { <> gen(innerBox) }
+                { nextGenerator ::
+                    boxSet(box, boxGet(innerBox));
+                    <> seqGenerator1(nextGenerator)
+                }
+                {
+                    def nextGenerator =
+                        seqGeneratorFromValues(listDelNth(values, 0)*);
+                    <> nextGenerator(box)
+                }
+        }
+    };
+
+    <> seqGenerator1(generatorFromValue(listNth(values, 0)));
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn tokenGeneratorFromValue(value) {
     <> filterGenerator(value)
         { elem :: <> @[(elem)] }
@@ -278,5 +308,6 @@ fn tokenGeneratorFromValue(value) {
     listFromGenerator:          listFromGenerator,
     optGenerator:               optGenerator,
     paraGeneratorFromValues:    paraGeneratorFromValues,
+    seqGeneratorFromValues:     seqGeneratorFromValues,
     tokenGeneratorFromValue:    tokenGeneratorFromValue
 ]
