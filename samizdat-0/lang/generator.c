@@ -50,6 +50,9 @@ static zvalue listFromString(zvalue string) {
  */
 static zvalue listFromGeneratorPerSe(zvalue generator) {
     die("TODO");
+    // zstackPointer save = datFrameStart();
+    // langCall(function, 0, NULL);
+    // datFrameReturn(save, NULL);
 }
 
 
