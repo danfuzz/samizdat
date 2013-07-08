@@ -894,30 +894,10 @@ DEF_PARSE(unaryExpression) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(rangeExpression) {
-    MARK();
-
-    // We differ from the spec here in not recognizing three-argument
-    // range expressions (`x..y..z`).
-
-    zvalue base = PARSE_OR_REJECT(unaryExpression);
-
-    if (MATCH(CH_DOTDOT) == NULL) {
-        return base;
-    }
-
-    zvalue ex = PARSE_OR_REJECT(unaryExpression);
-    zvalue call = makeCall(
-        makeVarRef(STR_MAKE_RANGE_INCLUSIVE),
-        listFrom2(base, ex));
-    return datTokenFrom(STR_INTERPOLATE, call);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(rangeExpression); }
+    if (result == NULL) { result = PARSE(unaryExpression); }
     if (result == NULL) { result = PARSE(fnExpression); }
 
     return result;

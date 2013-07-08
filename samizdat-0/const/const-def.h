@@ -59,7 +59,6 @@ STR(LIST,                 "list");
 STR(LITERAL,              "literal");
 STR(MAKE_LIST,            "makeList");
 STR(MAKE_MAP,             "makeMap");
-STR(MAKE_RANGE_INCLUSIVE, "makeRangeInclusive");
 STR(MAKE_TOKEN,           "makeToken");
 STR(MAKE_UNIQLET,         "makeUniqlet");
 STR(MAIN_SAM0,            "main.sam0");
