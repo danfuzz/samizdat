@@ -269,8 +269,8 @@ fn seqGeneratorFromValues(values*) {
     ifIs { <> eq(values, []) }
         { return voidedGenerator };
 
-    # Return an unmodified generator if we were only passed one argument.
-    # (This saves some gratuitous wrapping / double yields.)
+    # Return a plain (unwrapped) generator if we were only passed one
+    # argument. (This saves some gratuitous call wrapping / double yields.)
     ifIs { <> eq(lowSize(values), 1) }
         { return generatorFromValue(values*) };
 
