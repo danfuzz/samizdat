@@ -11,6 +11,10 @@
 #include "const.h"
 #include "impl.h"
 #include "util.h"
+#include "zlimits.h"
+
+#include <stddef.h>
+
 
 /*
  * Helper functions
@@ -49,10 +53,29 @@ static zvalue listFromString(zvalue string) {
  * Does generator iteration to get a list.
  */
 static zvalue listFromGeneratorPerSe(zvalue generator) {
-    die("TODO");
-    // zstackPointer save = datFrameStart();
-    // langCall(function, 0, NULL);
-    // datFrameReturn(save, NULL);
+    zvalue arr[LANG_MAX_GENERATOR_ITEMS];
+    zint at;
+
+    zstackPointer save = datFrameStart();
+    zvalue box = boxMutable();
+
+    for (at = 0; /*at*/; at++) {
+        zvalue nextGen = langCall(generator, 1, &box);
+
+        if (nextGen == NULL) {
+            break;
+        } else if (at == LANG_MAX_GENERATOR_ITEMS) {
+            die("Generator produced too many interpolated items.");
+        }
+
+        arr[at] = boxGet(box);
+        generator = nextGen;
+        boxReset(box);
+    }
+
+    zvalue result = datListFromArray(at, arr);
+    datFrameReturn(save, result);
+    return result;
 }
 
 

@@ -98,6 +98,11 @@ zvalue boxGet(zvalue boxUniqlet);
 bool boxIsSet(zvalue boxUniqlet);
 
 /**
+ * Resets the given box to an un-set state. The box must be a mutable box.
+ */
+void boxReset(zvalue boxUniqlet);
+
+/**
  * Sets the value of the given box as indicated. Passing `value` as
  * `NULL` indicates that the box is to be set to void.
  */

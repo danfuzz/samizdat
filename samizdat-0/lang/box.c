@@ -72,6 +72,18 @@ bool boxIsSet(zvalue boxUniqlet) {
 }
 
 /* Documented in header. */
+void boxReset(zvalue boxUniqlet) {
+    Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
+
+    if (box->setOnce) {
+        die("Attempt to reset yield box.");
+    }
+
+    box->value = NULL;
+    box->isSet = false;
+}
+
+/* Documented in header. */
 void boxSet(zvalue boxUniqlet, zvalue value) {
     Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
 
