@@ -82,4 +82,35 @@ zvalue langTokenize0(zvalue programText);
 zvalue langTree0(zvalue program);
 
 
+/*
+ * Boxes
+ */
+
+/**
+ * Gets the value out of the given box. Returns `NULL` if the box is
+ * void or as yet unset.
+ */
+zvalue boxGet(zvalue boxUniqlet);
+
+/**
+ * Returns an indication of whether or not the given box has been set.
+ */
+bool boxIsSet(zvalue boxUniqlet);
+
+/**
+ * Sets the value of the given box as indicated. Passing `value` as
+ * `NULL` indicates that the box is to be set to void.
+ */
+void boxSet(zvalue boxUniqlet, zvalue value);
+
+/**
+ * Constructs a mutable (re-settable) box.
+ */
+zvalue boxMutable(void);
+
+/**
+ * Constructs a yield (set-once) box.
+ */
+zvalue boxYield(void);
+
 #endif
