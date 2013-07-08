@@ -34,12 +34,12 @@ out([fizmo: "omzif", igram: "margi", blort: "trolb"]);
 out(["#stuff": "muff", ["x", "y"]: "zee"]);
 out([def: "defined", do: "done"]); # Keywords should be "stringified".
 out([true: 10, (true): 20]); # First key is a string, second is a boolean.
-out(["0".."9": "woo"]);
 out([["f", "u", "z"]*: "muffins"]);
-out([:, [0..6: "blort"]*, [5..9: "fizmo"]*]);
 
 io0Note("\nLayer 2...");
 
+out([("0".."9")*: "woo"]);
+out([:, [(0..6)*: "blort"]*, [(5..9)*: "fizmo"]*]);
 out([("a", "b"): 10]);
 out([(a, b): 20]);
 out([(true, (true)): 30]);

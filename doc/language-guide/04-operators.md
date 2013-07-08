@@ -38,14 +38,16 @@ required to unambiguously indicate that function application is to be
 performed. That is, `foo()` and `foo { block }` are both function calls,
 but plain `foo` is just a variable reference.
 
-As with list literal syntax, an argument whose type is a list can have
-its contents "interpolated" into a function call argument list by following
-the argument with a star. For example, `foo(bar, [1, 2]*)` means the
-same thing as `foo(bar, 1, 2)`. This works for all argument expressions
-(not just literals), so long as the expression evaluates to a list.
+As with list literal syntax, an argument whose type is a generator or
+a collection (list, map, or string) can have its contents "interpolated"
+into a function call argument list by following the argument with a star.
+For example, `foo(bar, [1, 2]*)` means the same thing as `foo(bar, 1, 2)`.
+This works for all argument expressions (not just literals), so long as the
+expression evaluates to an appropriate value.
 
-The expression to apply must be non-void. Per the above, it is valid for
-an argument to be void, but that stops the evaluation of the expression.
+The expression to apply (before the open parenthesis) must be non-void.
+Per the above, it is valid for an argument to be void, but that stops the
+evaluation of the expression.
 
 #### Access collection &mdash; `expression[index, index, ...]`
 
@@ -93,17 +95,17 @@ it. If the inner expression results in a value, the outer expression results
 in a single-element list of the result. If the inner expression results in
 void, the outer expression results in the empty list.
 
-#### Interpolate list value &mdash; `expression*`
+#### Interpolate generator or value &mdash; `expression*`
 
-The star postfix operator is the converse of the question mark postfix
-operator (above). It takes an expression whose value must be a list of
-either zero or one element, and results in the lists's sole value or
-void (the latter given the empty list).
+The star postfix operator is, in a way, the converse of the question mark
+postfix operator (above). It takes an expression whose value must be a
+generator or collection (list, map, or string) value of either zero or one
+element, and results in the sole value or void (the latter given a voided
+generator or an empty collection).
 
 It is valid to use this operator to possibly-yield a value (that is, yield
-either a value or void) from a function. Inside expressions, it is only
-valid to use it to extract the sole value from a single-element list
-(since void expressions aren't valid other than at yield points).
+either a value or void) from a function. Inside expressions, a void
+interpolation causes the entire expression to evaluate to void.
 
 **Note:** A postfix star expression as an element of a function call
 argument list, as a collection index, as a list literal element, or as
@@ -175,8 +177,8 @@ the inner expression's result.
 
 ### Range Operators (Precedence 8)
 
-The range operators are used to build up ranges of values of ints or
-characters (the latter in the form of single-element strings).
+The range operators are used to build generators of ranges of values
+of ints or characters (the latter in the form of single-element strings).
 
 Ranges all consist of at least two sub-expressions, namely a `first`
 (initial) value and a `limit` value. Ranges can also optionally
@@ -185,28 +187,28 @@ the `increment` defaults to `1`. Even if the `first` and `limit` are
 strings, the `increment` if specified must always be an int.
 
 Ranges all bottom out in their evaluation to calls to one of the
-functions `makeRangeExclusive` or `makeRangeInclusive`. Refer to the
-documentation on those functions for how to interpret the various
-combinations.
+functions `generatorForExclusiveRange` or `generatorForInclusiveRange`.
+Refer to the documentation on those functions for how to interpret
+the various combinations.
 
 **Note:** Unlike most binary operators, the range operators have no
 operator associativity, in that `x..y..z..huhwhat` is a syntax error.
 
 #### Inclusive range with increment 1 &mdash; `first..limit`
 
-This is equivalent to `makeRangeInclusive(first, limit)`.
+This is equivalent to `generatorForInclusiveRange(first, 1, limit)`.
 
 #### Inclusive range with arbitrary increment &mdash; `first..increment..limit`
 
-This is equivalent to `makeRangeInclusive(first, limit, increment)`.
+This is equivalent to `generatorForInclusiveRange(first, increment, limit)`.
 
 #### Exclusive range with increment 1 &mdash; `first..!limit`
 
-This is equivalent to `makeRangeExclusive(first, limit)`.
+This is equivalent to `generatorForExclusiveRange(first, 1, limit)`.
 
 #### Exclusive range with arbitrary increment &mdash; `first..increment..!limit`
 
-This is equivalent to `makeRangeExclusive(first, limit, increment)`.
+This is equivalent to `generatorForExclusiveRange(first, increment, limit)`.
 
 
 ### Multiplicative Infix Operators (Precedence 7)

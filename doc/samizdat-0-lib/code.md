@@ -26,11 +26,11 @@ Gets the value inside a box. If the box does not (yet) have a value, this
 returns the `ifNotSet` value if suppplied or void if not. `box` must be
 a box as returned by either `mutableBox` or `yieldBox`.
 
-#### `boxIsSet(box) <> boolean`
+#### `boxIsSet(box) <> logic`
 
-Returns `true` if the `box` was either initialized with a value or has
-had `boxSet` called on it (whether with a value or void). `box` must be a
-box as returned by either `mutableBox` or `yieldBox`.
+Returns `box` if the `box` was either initialized with a value or has
+had `boxSet` called on it (whether with a value or void). Otherwise returns
+void. `box` must be a box as returned by either `mutableBox` or `yieldBox`.
 
 #### `boxSet(box, value?) <> .`
 

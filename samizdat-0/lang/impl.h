@@ -59,6 +59,13 @@ zvalue frameGet(Frame *frame, zvalue name);
 void frameSnap(Frame *target, Frame *source);
 
 /**
+ * Returns a collected list of items from the given value, which must either
+ * be a generator or a collection value. This is a C equivalent to calling
+ * `listFromGenerator(value)`, hence the name.
+ */
+zvalue listFromGenerator(zvalue value);
+
+/**
  * Sets up a nonlocal exit, and calls the given function with the
  * given state and a nonlocal exit function.
  */
