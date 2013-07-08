@@ -8,6 +8,7 @@
  * Generator glue
  */
 
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -18,16 +19,30 @@
 /**
  * Does listification of a map. This returns a list of individual mappings.
  */
-static zvalue listFromMap(zvalue value) {
-    die("TODO");
+static zvalue listFromMap(zvalue map) {
+    zint size = datSize(map);
+    zvalue arr[size];
+
+    for (zint i = 0; i < size; i++) {
+        arr[i] = datMapNth(map, i);
+    }
+
+    return datListFromArray(size, arr);
 }
 
 /**
  * Does listification of a string. This returns a list of individual
  * characters.
  */
-static zvalue listFromString(zvalue value) {
-    die("TODO");
+static zvalue listFromString(zvalue string) {
+    zint size = datSize(string);
+    zvalue arr[size];
+
+    for (zint i = 0; i < size; i++) {
+        arr[i] = constStringFromZchar(datStringNth(string, i));
+    }
+
+    return datListFromArray(size, arr);
 }
 
 /**
