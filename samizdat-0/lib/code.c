@@ -129,47 +129,6 @@ static zvalue callYield(zvalue state, zint argCount, const zvalue *args) {
 
 
 /*
- * Box helper definitions
- */
-
-/**
- * Box state. Instances of this structure are bound as the closure state
- * as part of function registration in the implementation of the box
- * constructor primitives.
- */
-typedef struct {
-    /** Content value. */
-    zvalue value;
-
-    /** True iff this is a set-once (yield) box. */
-    bool setOnce;
-
-    /** True iff the box is considered to be set (see spec for details). */
-    bool isSet;
-} Box;
-
-/**
- * Marks a box state for garbage collection.
- */
-static void boxMark(void *state) {
-    datMark(((Box *) state)->value);
-}
-
-/**
- * Frees an object state.
- */
-static void boxFree(void *state) {
-    utilFree(state);
-}
-
-/** Uniqlet dispatch table for boxes. */
-static DatUniqletDispatch BOX_DISPATCH = {
-    boxMark,
-    boxFree
-};
-
-
-/*
  * Exported primitives
  */
 
@@ -177,8 +136,7 @@ static DatUniqletDispatch BOX_DISPATCH = {
 PRIM_IMPL(boxGet) {
     requireRange(argCount, 1, 2);
 
-    Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
-    zvalue result = box->value;
+    zvalue result = boxGet(args[0]);
 
     if ((result == NULL) && (argCount == 2)) {
         return args[1];
@@ -191,42 +149,32 @@ PRIM_IMPL(boxGet) {
 PRIM_IMPL(boxIsSet) {
     requireExactly(argCount, 1);
 
-    Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
-    return constBooleanFromBool(box->isSet);
+    zvalue box = args[0];
+
+    return boxIsSet(box) ? box : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(boxSet) {
     requireRange(argCount, 1, 2);
 
-    Box *box = datUniqletGetState(args[0], &BOX_DISPATCH);
-
-    if (box->isSet && box->setOnce) {
-        die("Attempt to re-set yield box.");
-    }
-
     zvalue result = (argCount == 2) ? args[1] : NULL;
-    box->value = result;
-    box->isSet = true;
 
+    boxSet(args[0], result);
     return result;
 }
 
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mutableBox) {
     requireRange(argCount, 0, 1);
 
-    Box *box = utilAlloc(sizeof(Box));
+    zvalue result = boxMutable();
 
     if (argCount == 1) {
-        box->value = args[0];
-        box->isSet = true;
-    } else {
-        box->value = NULL;
-        box->isSet = false;
+        boxSet(result, args[0]);
     }
 
-    box->setOnce = false;
-    return datUniqletWith(&BOX_DISPATCH, box);
+    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -292,13 +240,5 @@ PRIM_IMPL(sam0Eval) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(yieldBox) {
-    requireExactly(argCount, 0);
-
-    Box *box = utilAlloc(sizeof(Box));
-
-    box->value = NULL;
-    box->isSet = false;
-    box->setOnce = true;
-
-    return datUniqletWith(&BOX_DISPATCH, box);
+    return boxYield();
 }
