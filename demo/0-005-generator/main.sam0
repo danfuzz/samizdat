@@ -92,9 +92,17 @@ outAll("Exclusive range 10..-2..1",
 outAll("Exclusive range \"a\"..5..\"z\"",
     generatorForExclusiveRange("a", 5, "z"));
 
-outAll("Cogenerator with open range",
+outAll("Cogenerator with open ranges",
     generatorFromValues(
         generatorForOpenRange("a", 1),
+        generatorForOpenRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
+
+outAll("Zero-increment int range",
+    generatorForInclusiveRange(10, 0, 20));
+
+outAll("Zero-increment character range",
+    generatorForInclusiveRange("x", 0, "a"));
+
 
 <> 0
