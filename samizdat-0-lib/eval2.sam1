@@ -23,8 +23,8 @@ fn convertExpression(node) {
 # Documented in Samizdat Layer 1 spec.
 fn sam2Eval(context, expressionNode) {
     <> sam1Eval(context, expressionNode)
-    #def convertedNode = convertExpression expressionNode;
-    #<> sam0Eval context convertedNode
+    #def convertedNode = convertExpression(expressionNode);
+    #<> sam0Eval(context, convertedNode)
 };
 
 <> [
