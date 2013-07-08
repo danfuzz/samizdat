@@ -177,8 +177,8 @@ the inner expression's result.
 
 ### Range Operators (Precedence 8)
 
-The range operators are used to build up ranges of values of ints or
-characters (the latter in the form of single-element strings).
+The range operators are used to build generators of ranges of values
+of ints or characters (the latter in the form of single-element strings).
 
 Ranges all consist of at least two sub-expressions, namely a `first`
 (initial) value and a `limit` value. Ranges can also optionally
@@ -187,28 +187,28 @@ the `increment` defaults to `1`. Even if the `first` and `limit` are
 strings, the `increment` if specified must always be an int.
 
 Ranges all bottom out in their evaluation to calls to one of the
-functions `makeRangeExclusive` or `makeRangeInclusive`. Refer to the
-documentation on those functions for how to interpret the various
-combinations.
+functions `generatorForExclusiveRange` or `generatorForInclusiveRange`.
+Refer to the documentation on those functions for how to interpret
+the various combinations.
 
 **Note:** Unlike most binary operators, the range operators have no
 operator associativity, in that `x..y..z..huhwhat` is a syntax error.
 
 #### Inclusive range with increment 1 &mdash; `first..limit`
 
-This is equivalent to `makeRangeInclusive(first, limit)`.
+This is equivalent to `generatorForInclusiveRange(first, 1, limit)`.
 
 #### Inclusive range with arbitrary increment &mdash; `first..increment..limit`
 
-This is equivalent to `makeRangeInclusive(first, limit, increment)`.
+This is equivalent to `generatorForInclusiveRange(first, increment, limit)`.
 
 #### Exclusive range with increment 1 &mdash; `first..!limit`
 
-This is equivalent to `makeRangeExclusive(first, limit)`.
+This is equivalent to `generatorForExclusiveRange(first, 1, limit)`.
 
 #### Exclusive range with arbitrary increment &mdash; `first..increment..!limit`
 
-This is equivalent to `makeRangeExclusive(first, limit, increment)`.
+This is equivalent to `generatorForExclusiveRange(first, increment, limit)`.
 
 
 ### Multiplicative Infix Operators (Precedence 7)
