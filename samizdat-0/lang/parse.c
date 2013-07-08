@@ -580,37 +580,6 @@ DEF_PARSE(identifierString) {
     return makeLiteral(value);
 }
 
-/**
- * Helper for `listElement`: Parses `(@".." expression)`.
- */
-DEF_PARSE(listElement1) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_DOTDOT);
-    return PARSE_OR_REJECT(expression);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(listElement) {
-    MARK();
-
-    zvalue ex = PARSE_OR_REJECT(expression);
-
-    if (MATCH(CH_STAR)) {
-        return datTokenFrom(STR_INTERPOLATE, ex);
-    } else {
-        zvalue end = PARSE(listElement1);
-        if (end != NULL) {
-            ex = makeCall(
-                makeVarRef(STR_MAKE_RANGE_INCLUSIVE),
-                listFrom2(ex, end));
-            return datTokenFrom(STR_INTERPOLATE, ex);
-        }
-    }
-
-    return ex;
-}
-
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(unadornedList) {
     return PARSE_COMMA_SEQ(expression);
@@ -925,30 +894,10 @@ DEF_PARSE(unaryExpression) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(rangeExpression) {
-    MARK();
-
-    // We differ from the spec here in not recognizing three-argument
-    // range expressions (`x..y..z`).
-
-    zvalue base = PARSE_OR_REJECT(unaryExpression);
-
-    if (MATCH(CH_DOTDOT) == NULL) {
-        return base;
-    }
-
-    zvalue ex = PARSE_OR_REJECT(unaryExpression);
-    zvalue call = makeCall(
-        makeVarRef(STR_MAKE_RANGE_INCLUSIVE),
-        listFrom2(base, ex));
-    return datTokenFrom(STR_INTERPOLATE, call);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = PARSE(rangeExpression); }
+    if (result == NULL) { result = PARSE(unaryExpression); }
     if (result == NULL) { result = PARSE(fnExpression); }
 
     return result;

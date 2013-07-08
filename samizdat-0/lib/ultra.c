@@ -83,72 +83,6 @@ static zvalue makeMap1(zint argCount, const zvalue *args, bool reversed) {
     return datMapAddArray(EMPTY_MAP, size, mappings);
 }
 
-/**
- * Helper for `makeRange*`, which does most of the work.
- */
-static zvalue makeRange1(zint argCount, const zvalue *args, bool inclusive) {
-    requireRange(argCount, 2, 3);
-
-    zvalue first = args[0];
-    zvalue limit = args[1];
-    ztype type = datType(first);
-    bool ints;
-    zint firstInt;
-    zint limitInt;
-    zint increment;
-
-    if (type != datType(limit)) {
-        die("Type mismatch on range.");
-    } else if (type == DAT_INT) {
-        ints = true;
-    } else if (type == DAT_STRING) {
-        ints = false;
-    } else {
-        die("Bad type for range.");
-    }
-
-    if (ints) {
-        firstInt = datZintFromInt(first);
-        limitInt = datZintFromInt(limit);
-    } else {
-        datAssertStringSize1(first);
-        datAssertStringSize1(limit);
-        firstInt = datStringNth(first, 0);
-        limitInt = datStringNth(limit, 0);
-    }
-
-    if (argCount == 3) {
-        increment = datZintFromInt(args[2]);
-        if (increment == 0) {
-            // Arrange for this special case to work out below.
-            limitInt = firstInt;
-            increment = 1;
-            inclusive = true;
-        }
-    } else {
-        increment = 1;
-    }
-
-    if (!inclusive) {
-        limitInt += (increment > 0) ? -1 : 1;
-    }
-
-    zint size = (limitInt + increment - firstInt) / increment;
-
-    if (size <= 0) {
-        return EMPTY_LIST;
-    }
-
-    zvalue values[size];
-
-    for (zint i = 0, v = firstInt; i < size; i++, v += increment) {
-        values[i] =
-            ints ? constIntFromZint(v) : constStringFromZchar((zchar) v);
-    }
-
-    return datListFromArray(size, values);
-}
-
 
 /*
  * Exported functions
@@ -171,16 +105,6 @@ PRIM_IMPL(makeMap) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeMapReversed) {
     return makeMap1(argCount, args, true);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeRangeInclusive) {
-    return makeRange1(argCount, args, true);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeRangeExclusive) {
-    return makeRange1(argCount, args, false);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
