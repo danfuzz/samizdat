@@ -70,17 +70,6 @@ single-character string if `first` is a string).
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
 
-#### `paraGeneratorFromValues(values*) <> generator`
-
-Parallel generator combination constructor. This takes an arbitrary number of
-values or generators, and returns a generator that yields lists.
-Non-generator arguments are "coerced" into generators as if by calling
-`generatorFromValue` on them.
-
-Each yielded list consists of values yielded from the individual generators,
-in passed order. The generator becomes voided when *any* of the individual
-generators is voided.
-
 #### `generatorFromValue(value) <> generator`
 
 Collection iteration generator constructor. This takes an arbitrary
@@ -119,6 +108,28 @@ becomes voided. As long as the underlying generator yields a value, the
 returned generator yields a single-element list of that value. Once the
 underlying generator is voided, the returned generator yields the empty
 list, and will continue doing so ad infinitum.
+
+#### `paraGeneratorFromValues(values*) <> generator`
+
+Parallel generator combination constructor. This takes an arbitrary number of
+values or generators, and returns a generator that yields lists.
+Non-generator arguments are "coerced" into generators as if by calling
+`generatorFromValue` on them.
+
+Each yielded list consists of values yielded from the individual generators,
+in passed order. The generator becomes voided when *any* of the individual
+generators is voided.
+
+#### `seqGeneratorFromValues(values*) <> generator`
+
+Sequential generator combination constructor. This takes an arbitrary number
+of values or generators, and returns a generator that yields from each of
+the generators in argument order. Non-generator arguments are "coerced"
+into generators as if by calling `generatorFromValue` on them.
+
+As each generator becomes voided, the next one (in argument order) is called
+upon to generate further elements. The generator becomes voided after the
+final argument is voided.
 
 #### `tokenGeneratorFromValue(value) <> generator`
 
