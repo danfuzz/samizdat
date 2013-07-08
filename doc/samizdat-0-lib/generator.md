@@ -70,9 +70,9 @@ single-character string if `first` is a string).
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
 
-#### `generatorFromValues(values*) <> generator`
+#### `paraGeneratorFromValues(values*) <> generator`
 
-Generator combination constructor. This takes an arbitrary number of
+Parallel generator combination constructor. This takes an arbitrary number of
 values or generators, and returns a generator that yields lists.
 Non-generator arguments are "coerced" into generators as if by calling
 `generatorFromValue` on them.

@@ -168,10 +168,10 @@ fn filterGenerator(value, filterFunction) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn generatorFromValues(values*) {
+fn paraGeneratorFromValues(values*) {
     # Main generator maker, which takes a list (per se) of generators
     # as a single argument.
-    fn generatorFromValues1(generators) {
+    fn paraGeneratorFromValues1(generators) {
         <> { <out> box ::
             def generatorCalls = listMap(generators)
                 { ., gen ::
@@ -191,7 +191,7 @@ fn generatorFromValues(values*) {
                 { ., one :: <> listNth(one, 1) };
 
             boxSet(box, yields);
-            <> generatorFromValues1(nexts);
+            <> paraGeneratorFromValues1(nexts);
         }
     };
 
@@ -204,7 +204,7 @@ fn generatorFromValues(values*) {
         { ., value :: <> generatorFromValue(value) };
 
     # Make the initial inner call (to the function defined above).
-    <> generatorFromValues1(generators)
+    <> paraGeneratorFromValues1(generators)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -231,6 +231,10 @@ fn generatorFromValue(value) {
 
 # Documented in Samizdat Layer 0 spec.
 fn listFromGenerator(value) {
+    # Avoid pointless list->generator->list conversion.
+    ifIs { <> isList(value) }
+        { return value };
+
     loopReduce([generatorFromValue(value), []]) { result ::
         def gen = listNth(result, 0);
         def list = listNth(result, 1);
@@ -271,8 +275,8 @@ fn tokenGeneratorFromValue(value) {
     generatorForInclusiveRange: generatorForInclusiveRange,
     generatorForOpenRange:      generatorForOpenRange,
     generatorFromValue:         generatorFromValue,
-    generatorFromValues:        generatorFromValues,
     listFromGenerator:          listFromGenerator,
     optGenerator:               optGenerator,
+    paraGeneratorFromValues:    paraGeneratorFromValues,
     tokenGeneratorFromValue:    tokenGeneratorFromValue
 ]

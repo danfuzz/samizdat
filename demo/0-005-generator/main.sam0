@@ -53,14 +53,14 @@ outAll("Map",
     generatorFromValue([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
 outAll("String", generatorFromValue("Happy string!"));
 
-outAll("All-finite generatorFromValues",
-    generatorFromValues(
+outAll("All-finite paraGeneratorFromValues",
+    paraGeneratorFromValues(
         [1, 2, 3],
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
-outAll("Cogenerator with opt element",
-    generatorFromValues(
+outAll("Paragenerator with opt element",
+    paraGeneratorFromValues(
         optGenerator([1, 2, 3]),
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
@@ -92,8 +92,8 @@ outAll("Exclusive range 10..-2..1",
 outAll("Exclusive range \"a\"..5..\"z\"",
     generatorForExclusiveRange("a", 5, "z"));
 
-outAll("Cogenerator with open ranges",
-    generatorFromValues(
+outAll("Paragenerator with open ranges",
+    paraGeneratorFromValues(
         generatorForOpenRange("a", 1),
         generatorForOpenRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
