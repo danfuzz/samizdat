@@ -92,7 +92,7 @@ outAll("Exclusive range 10..-2..1",
 outAll("Exclusive range \"a\"..5..\"z\"",
     generatorForExclusiveRange("a", 5, "z"));
 
-outAll("Paragenerator with open ranges",
+outAll("ParaGenerator with open ranges",
     paraGeneratorFromValues(
         generatorForOpenRange("a", 1),
         generatorForOpenRange(100, 10),
@@ -104,5 +104,18 @@ outAll("Zero-increment int range",
 outAll("Zero-increment character range",
     generatorForInclusiveRange("x", 0, "a"));
 
+outAll("Empty SeqGenerator",
+    seqGeneratorFromValues());
+
+outAll("Size one SeqGenerator",
+    seqGeneratorFromValues([a: 10, b: 20, c: 30]));
+
+outAll("Size two SeqGenerator",
+    seqGeneratorFromValues(
+        [a: 10, b: 20, c: 30],
+        "defg"));
+
+outAll("Size five SeqGenerator (with a couple pre-voided generators)",
+    seqGeneratorFromValues("abc", [], [], ["def", "ghi"], []));
 
 <> 0
