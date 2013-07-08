@@ -24,7 +24,7 @@ fn out(list) {
 # Main tests
 #
 
-io0Note("Inclusive, default increment (layer 0 syntax)...");
+io0Note("Inclusive, default increment...");
 out([100..110]);
 out(["U".."Z"]);
 out([9..9]);

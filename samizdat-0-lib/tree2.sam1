@@ -13,7 +13,9 @@
 
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
-def LOWER_ALPHA = ["a".."z": true];
+def LOWER_ALPHA = [
+    listFromGenerator(generatorForInclusiveRange("a", 1, "z"))*: true
+];
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
@@ -115,8 +117,8 @@ def BINARY_OPERATORS = mapMap([
     "\\>":  "gt",
     "\\<=": "le",
     "\\>=": "ge",
-    "..":   "makeRangeInclusive",
-    "..!":  "makeRangeExclusive"
+    "..":   "listForInclusiveRange",
+    "..!":  "listForExclusiveRange"
     ])
     { key, value :: <> makeVarRef(value) };
 
@@ -577,53 +579,6 @@ def parseUnaryExpression = {/
     }
 /};
 
-# Parses a range expression.
-def parseRangeExpression = {/
-    # To provide for more sensible error messages, this rule first accepts
-    # arbitrarily chained range expressions, and then explicitly rejects
-    # all but the four valid range variants and the fall-through of not
-    # actually being a range.
-
-    base = parseUnaryExpression
-    opExes = (
-        op = [@".." @"..!"]
-        ex = parseUnaryExpression
-        { <> [tokenType(op), ex] }
-    )*
-
-    { <out> ::
-        ifIs { <> eq(opExes,[]) }
-            { <out> base };
-
-        def restSize = lowSize(opExes);
-
-        ifIs { <> gt(restSize, 2) }
-            { io0Die("Invalid chained range expression.") };
-
-        def last = listLast(opExes);
-        def lastOp = listNth(last, 0);
-        def lastEx = listNth(last, 1);
-
-        def increment = ifIs { <> eq(restSize, 2) }
-            {
-                def first = listFirst(opExes);
-                def firstOp = listNth(first, 0);
-                def firstEx = listNth(first, 1);
-
-                ifIs { <> eq(firstOp, "..!") }
-                    { io0Die("Invalid use of exclusive range operator.") };
-
-                <> [firstEx]
-            }
-            { <> [] };
-
-        <> @[
-            interpolate:
-            makeCall(mapGet(BINARY_OPERATORS, lastOp), base, lastEx, increment*)
-        ]
-    }
-/};
-
 # `expression` from layer 0 is omitted here (it's forwarded earlier), and
 # `statement` and `nonlocalExit` are replaced with forwarded functions here.
 # These are all subsumed by more featureful layer 2 definitions, below.
@@ -738,7 +693,11 @@ def parseParserSetString = {/
                 { <> and
                     { <> eq(lowSize(startChar), 1) }
                     { <> eq(lowSize(endChar), 1) } }
-                { <> @[string: stringAdd(startChar..endChar)] }
+                {
+                    def charGen =
+                        generatorForInclusiveRange(startChar, 1, endChar);
+                    <> @[string: stringAdd(listFromGenerator(charGen)*)]
+                }
         }
     |
         { <> s }
@@ -973,6 +932,53 @@ def implPostfixOperator = {/
     }
 /};
 parsePostfixOperator(implPostfixOperator);
+
+# Parses a range expression.
+def parseRangeExpression = {/
+    # To provide for more sensible error messages, this rule first accepts
+    # arbitrarily chained range expressions, and then explicitly rejects
+    # all but the four valid range variants and the fall-through of not
+    # actually being a range.
+
+    base = parseUnaryExpression
+    opExes = (
+        op = [@".." @"..!"]
+        ex = parseUnaryExpression
+        { <> [tokenType(op), ex] }
+    )*
+
+    { <out> ::
+        ifIs { <> eq(opExes,[]) }
+            { <out> base };
+
+        def restSize = lowSize(opExes);
+
+        ifIs { <> gt(restSize, 2) }
+            { io0Die("Invalid chained range expression.") };
+
+        def last = listLast(opExes);
+        def lastOp = listNth(last, 0);
+        def lastEx = listNth(last, 1);
+
+        def increment = ifIs { <> eq(restSize, 2) }
+            {
+                def first = listFirst(opExes);
+                def firstOp = listNth(first, 0);
+                def firstEx = listNth(first, 1);
+
+                ifIs { <> eq(firstOp, "..!") }
+                    { io0Die("Invalid use of exclusive range operator.") };
+
+                <> firstEx
+            }
+            { <> makeLiteral(1) };
+
+        <> @[
+            interpolate:
+            makeCall(mapGet(BINARY_OPERATORS, lastOp), base, increment, lastEx)
+        ]
+    }
+/};
 
 # Parses a multiplicative expression.
 def parseMulExpression = {/

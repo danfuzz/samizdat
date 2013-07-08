@@ -21,7 +21,9 @@ can be used.
 
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
-def LOWER_ALPHA = ["a".."z": true];
+def LOWER_ALPHA = [
+    listFromGenerator(generatorForInclusiveRange("a", 1, "z"))*: true
+];
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
@@ -480,24 +482,10 @@ def unaryExpression = {/
     }
 /};
 
-# Note: *Layer 2* introduces additional range variants. This rule is
-# totally rewritten at that layer.
-def rangeExpression = {/
-    base = unaryExpression
-
-    (
-        @".."
-        limit = unaryExpression
-        { <> @[interpolate: makeCallName("makeRangeInclusive", base, limit)] }
-    |
-        { <> base }
-    )
-/};
-
 # Note: There are additional expression rules in *Layer 2* and beyond.
 # This rule is totally rewritten at that layer.
 def expression = {/
-    rangeExpression | fnExpression
+    unaryExpression | fnExpression
 /};
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
@@ -624,7 +612,11 @@ def parserSetString = {/
                 { <> and
                     { <> eq(lowSize(startChar), 1) }
                     { <> eq(lowSize(endChar), 1) } }
-                { <> @[string: stringAdd(startChar..endChar)] }
+                {
+                    def charGen =
+                        generatorForInclusiveRange(startChar, 1, endChar);
+                    <> @[string: stringAdd(listFromGenerator(charGen)*)]
+                }
         }
     |
         { <> s }

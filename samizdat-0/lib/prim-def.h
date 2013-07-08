@@ -56,8 +56,6 @@ PRIM_FUNC(makeToken);
 PRIM_FUNC(makeList);
 PRIM_FUNC(makeMap);
 PRIM_FUNC(makeMapReversed);
-PRIM_FUNC(makeRangeExclusive);
-PRIM_FUNC(makeRangeInclusive);
 PRIM_FUNC(makeUniqlet);
 PRIM_FUNC(mapAdd);
 PRIM_FUNC(mapDel);
