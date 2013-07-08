@@ -38,14 +38,16 @@ required to unambiguously indicate that function application is to be
 performed. That is, `foo()` and `foo { block }` are both function calls,
 but plain `foo` is just a variable reference.
 
-As with list literal syntax, an argument whose type is a list can have
-its contents "interpolated" into a function call argument list by following
-the argument with a star. For example, `foo(bar, [1, 2]*)` means the
-same thing as `foo(bar, 1, 2)`. This works for all argument expressions
-(not just literals), so long as the expression evaluates to a list.
+As with list literal syntax, an argument whose type is a generator or
+a collection (list, map, or string) can have its contents "interpolated"
+into a function call argument list by following the argument with a star.
+For example, `foo(bar, [1, 2]*)` means the same thing as `foo(bar, 1, 2)`.
+This works for all argument expressions (not just literals), so long as the
+expression evaluates to an appropriate value.
 
-The expression to apply must be non-void. Per the above, it is valid for
-an argument to be void, but that stops the evaluation of the expression.
+The expression to apply (before the open parenthesis) must be non-void.
+Per the above, it is valid for an argument to be void, but that stops the
+evaluation of the expression.
 
 #### Access collection &mdash; `expression[index, index, ...]`
 
@@ -93,17 +95,17 @@ it. If the inner expression results in a value, the outer expression results
 in a single-element list of the result. If the inner expression results in
 void, the outer expression results in the empty list.
 
-#### Interpolate list value &mdash; `expression*`
+#### Interpolate generator or value &mdash; `expression*`
 
-The star postfix operator is the converse of the question mark postfix
-operator (above). It takes an expression whose value must be a list of
-either zero or one element, and results in the lists's sole value or
-void (the latter given the empty list).
+The star postfix operator is, in a way, the converse of the question mark
+postfix operator (above). It takes an expression whose value must be a
+generator or collection (list, map, or string) value of either zero or one
+element, and results in the sole value or void (the latter given a voided
+generator or an empty collection).
 
 It is valid to use this operator to possibly-yield a value (that is, yield
-either a value or void) from a function. Inside expressions, it is only
-valid to use it to extract the sole value from a single-element list
-(since void expressions aren't valid other than at yield points).
+either a value or void) from a function. Inside expressions, a void
+interpolation causes the entire expression to evaluate to void.
 
 **Note:** A postfix star expression as an element of a function call
 argument list, as a collection index, as a list literal element, or as
