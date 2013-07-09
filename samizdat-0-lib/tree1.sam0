@@ -573,14 +573,14 @@ def parParserPredicate = pegMakeMainSequence(
 
 def parParserAtom = pegMakeMainSequence(
     pegMakeChoice(
+        pegMakeToken("."),
+        pegMakeToken("()"),
         parVarRef,
         parParserString,
         parParserToken,
         parParserSet,
         parParserCode,
         parParserPredicate,
-        pegMakeToken("."),
-        pegMakeToken("()"),
         parParenPex));
 
 def parRepeatPex = pegMakeMainSequence(
