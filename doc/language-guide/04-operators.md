@@ -100,7 +100,7 @@ void, the outer expression results in the empty list.
 
 The star postfix operator is, in a way, the converse of the question mark
 postfix operator (above). It takes an expression whose value must be a
-generator or collection (list, map, or string) value of either zero or one
+generator or collection value (list, map, or string) of either zero or one
 element, and results in the sole value or void (the latter given a voided
 generator or an empty collection).
 
