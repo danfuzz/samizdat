@@ -206,16 +206,6 @@ fn listFromGenerator(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listForExclusiveRange(first, increment, limit) {
-    <> listFromGenerator(generatorForExclusiveRange(first, increment, limit))
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn listForInclusiveRange(first, increment, limit) {
-    <> listFromGenerator(generatorForInclusiveRange(first, increment, limit))
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn optGenerator(value) {
     # Main generator maker, which takes a generator (per se) as its argument.
     fn optGenerator1(gen) {
@@ -315,8 +305,6 @@ fn tokenGeneratorFromValue(value) {
     generatorForInclusiveRange: generatorForInclusiveRange,
     generatorForOpenRange:      generatorForOpenRange,
     generatorFromValue:         generatorFromValue,
-    listForExclusiveRange:      listForExclusiveRange,
-    listForInclusiveRange:      listForInclusiveRange,
     listFromGenerator:          listFromGenerator,
     optGenerator:               optGenerator,
     paraGeneratorFromValues:    paraGeneratorFromValues,

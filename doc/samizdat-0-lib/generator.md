@@ -99,18 +99,6 @@ fn listFromGenerator(value) {
 }
 ```
 
-#### `listForExclusiveRange(first, increment, limit) <> list`
-
-This is a convenient equivalent to calling
-`listFromGenerator(generatorForExclusiveRange(first, increment, limit))`.
-See that function for more details.
-
-#### `listForInclusiveRange(first, increment, limit) <> list`
-
-This is a convenient equivalent to calling
-`listFromGenerator(generatorForInclusiveRange(first, increment, limit))`.
-See that function for more details.
-
 #### `optGenerator(value) <> generator`
 
 "Optional" generator constructor. This takes an arbitrary generator or
