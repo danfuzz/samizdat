@@ -42,6 +42,90 @@
 				</dict>
 			</array>
 		</dict>
+		<key>recursive-string</key>
+		<dict>
+			<key>begin</key>
+			<string>"</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.string.begin string.quoted.double</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>"</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.string.end string.quoted.double</string>
+				</dict>
+			</dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>name</key>
+					<string>constant.character.escape</string>
+					<key>match</key>
+					<string>\\ *$</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>constant.character.escape</string>
+					<key>match</key>
+					<string>(?x)
+						\\
+						(
+						  [0nrt\\"/]
+						|
+						  x[0-9a-fA-F_,]*;?
+						|
+						  &amp;[0-9a-zA-Z.,]*;?
+						)
+					</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>string.interpolated</string>
+					<key>begin</key>
+					<string>\\\(</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.string.begin string.quoted.double</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>\)</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.string.end string.quoted.double</string>
+						</dict>
+					</dict>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>string.quoted.double</string>
+					<key>match</key>
+					<string>.</string>
+				</dict>
+			</array>
+		</dict>
 		<key>block-body</key>
 		<dict>
 			<key>patterns</key>
@@ -49,6 +133,10 @@
 				<dict>
 					<key>include</key>
 					<string>#recursive-comment</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#recursive-string</string>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -84,29 +172,6 @@
 					<string>constant.numeric</string>
 					<key>match</key>
 					<string>\b0b-?[01_]+\b</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>string.quoted.double</string>
-					<key>begin</key>
-					<string>"</string>
-					<key>end</key>
-					<string>"</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>name</key>
-							<string>constant.character.escape</string>
-							<key>match</key>
-							<string>\\ *$</string>
-						</dict>
-						<dict>
-							<key>name</key>
-							<string>constant.character.escape</string>
-							<key>match</key>
-							<string>\\([0nrt\\"/]|x[0-9a-fA-F_,]*;?|&amp;[0-9a-zA-Z.,]*;?)</string>
-						</dict>
-					</array>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -164,7 +229,12 @@
 					<key>name</key>
 					<string>keyword.control</string>
 					<key>match</key>
-					<string>\b(break|collect|continue|def|default|do|else|export|fn|for|if|import|module|reduce|return|switch|var|while)\b</string>
+					<string>(?x)
+						\b(
+						break|collect|continue|def|default|do|else|export|fn|
+						for|if|import|module|reduce|return|switch|var|while
+						)\b
+					</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -182,7 +252,12 @@
 					<key>name</key>
 					<string>keyword.operator</string>
 					<key>match</key>
-					<string>&amp;&amp;?&amp;?|\|\|?\|?|\^\^?\^?|\\?&lt;&lt;?&lt;?|\\?&gt;&gt;?&gt;?|!!?!?|\\?==?|\\?!=|\\?&lt;=|\\?&gt;=|&lt;&gt;|\.\.[!+]?|\+|-|\*|/|%|\?</string>
+					<string>(?x)
+						&amp;&amp;?&amp;? | \|\|?\|? | \^\^?\^? |
+						\\?&lt;&lt;?&lt;? | \\?&gt;&gt;?&gt;? |
+						!!?!? | \\?==? | \\?!= | \\?&lt;= | \\?&gt;= |
+						&lt;&gt; | \.\.[!+]? | \+ | - | \* | / | % | \?
+					</string>
 				</dict>
 				<dict>
 					<key>name</key>
