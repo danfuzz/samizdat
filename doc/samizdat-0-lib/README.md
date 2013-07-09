@@ -68,3 +68,11 @@ will be returned, or one of `.` `!.` `. | !.` as described in
 * [String Formatting And Argument Parsing](format.md)
 * [Parsing](peg.md)
 * [Meta-Library](meta.md)
+
+- - - - -
+
+```
+Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+```
