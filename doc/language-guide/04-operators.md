@@ -243,7 +243,7 @@ first one shifted left by the number of bits indicated by the second one.
 If the second expression results in a negative number, this instead becomes
 a right shift.
 
-#### Bitwise shift right &mdash; `expression <<< expression`
+#### Bitwise shift right &mdash; `expression >>> expression`
 
 This asserts that both expressions result in ints, and results in the
 first one shifted right by the number of bits indicated by the second one.
