@@ -307,6 +307,33 @@
 					<string>&lt;[_a-zA-Z][_a-zA-Z0-9]*&gt;</string>
 				</dict>
 				<dict>
+					<key>captures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>meta.function</string>
+						</dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.control</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>entity.name.function</string>
+						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>variable.parameter</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>(fn)(  *[_a-zA-Z][_a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
+				</dict>
+				<dict>
 					<key>name</key>
 					<string>keyword.control</string>
 					<key>match</key>
