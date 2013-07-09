@@ -123,7 +123,7 @@ def tokError = pegMakeMainSequence(
     pegRuleAny,
     pegMakeStar(pegMakeCharSetComplement("\n")),
     pegMakeCode { badCh, . ::
-        def msg = format("Unrecognized character: %q", tokenType(badCh));
+        def msg = stringAdd("Unrecognized character: ", tokenType(badCh));
         <> @[error: msg]
     });
 
