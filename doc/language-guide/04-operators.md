@@ -210,11 +210,11 @@ This is equivalent to `generatorForExclusiveRange(first, 1, limit)`.
 
 This is equivalent to `generatorForExclusiveRange(first, increment, limit)`.
 
-#### Open range with increment 1 &mdash; `first...`
+#### Open range with increment 1 &mdash; `first..+`
 
 This is equivalent to `generatorForOpenRange(first, 1)`.
 
-#### Open range with arbitraru increment &mdash; `first..increment...`
+#### Open range with arbitrary increment &mdash; `first..increment..+`
 
 This is equivalent to `generatorForOpenRange(first, increment)`.
 
