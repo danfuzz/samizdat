@@ -181,11 +181,13 @@ the inner expression's result.
 The range operators are used to build generators of ranges of values
 of ints or characters (the latter in the form of single-element strings).
 
-Ranges all consist of at least two sub-expressions, namely a `first`
-(initial) value and a `limit` value. Ranges can also optionally
-be specified with an `increment` expression. If not specified,
-the `increment` defaults to `1`. Even if the `first` and `limit` are
-strings, the `increment` if specified must always be an int.
+Closed ranges all consist of at least two sub-expressions, namely a `first`
+(initial) value and a `limit` value. Open-ended ranges need only have a
+`first` value.
+
+Ranges can also optionally be specified with an `increment` expression.
+If not specified, the `increment` defaults to `1`. Even if the `first` and
+`limit` are strings, the `increment` if specified must always be an int.
 
 Ranges all bottom out in their evaluation to calls to one of the
 functions `generatorForExclusiveRange`, `generatorForInclusiveRange`,
