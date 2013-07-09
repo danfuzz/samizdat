@@ -59,12 +59,6 @@ fn doInt(int, adorn) {
     <> stringFromIntBase(int, 10)
 };
 
-# Helper for stringifying strings: Returns the hex form for the given
-# character. Assumes it's not passed `"\0"`.
-fn stringHexEscape(ch) {
-    <> stringAdd("\\x", stringFromIntBase(intFromChar(ch), 16), ";")
-};
-
 # Map of special-case characters to their stringified forms.
 def SPECIAL_CHARS = [
     "\0": "\\0",
@@ -84,7 +78,12 @@ fn stringChar(ch) {
             # This checks for the ranges of nonprinting control characters.
             <> ifIs { <> or { <> lt(ch, " ") }
                             { <> le(le(CHAR_127, ch), CHAR_159) } }
-                { <> stringHexEscape(ch) }
+                {
+                    <> stringAdd(
+                        "\\x",
+                        stringFromIntBase(intFromChar(ch), 16),
+                        ";")
+                }
                 { <> ch }
         }
 };
