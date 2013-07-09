@@ -11,16 +11,16 @@
 #
 
 # Formats a hex int argument.
-fn doHex(arg) {
+fn convertHex(arg) {
     <> stringFromInt(arg, 16)
 };
 
 # Mapping from format escape characters to their respective handler functions.
 def FORMATTERS = [
-    q:   sourceString,
-    Q:   sourceStringUnadorned,
-    s:   stringAdd, # `stringAdd` effectively asserts that `arg` is a string.
-    x:   doHex
+    q: sourceString,
+    Q: sourceStringUnadorned,
+    s: stringAdd, # `stringAdd` effectively asserts that `arg` is a string.
+    x: convertHex
 ];
 
 # Parses a format string, producing a list of strings-or-functions, where
