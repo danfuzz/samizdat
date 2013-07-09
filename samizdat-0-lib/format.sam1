@@ -34,6 +34,7 @@ def FORMATTERS = [
 # Exported functions
 #
 
+# Documented in Samizdat Layer 0 spec.
 fn format(formatString, rest*) {
     def args = mutableBox(rest);
 
