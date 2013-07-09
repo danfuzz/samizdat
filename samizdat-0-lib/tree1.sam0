@@ -70,27 +70,27 @@ fn makeCallNonlocalExit(name, expression?) {
 #
 
 # Forward declarations.
-def parseProgramBody = forwardFunction();
-def parseExpression = forwardFunction();
-def parseParser = forwardFunction();
+def parProgramBody = forwardFunction();
+def parExpression = forwardFunction();
+def parParser = forwardFunction();
 
 # Documented in Samizdat Layer 0 spec.
-def parseYieldDef = pegMakeMainSequence(
+def parYieldDef = pegMakeMainSequence(
     pegMakeToken("<"),
     pegMakeToken("identifier"),
     pegMakeToken(">"),
     pegMakeCode { ., name, . :: <> tokenValue(name) });
 
 # Documented in Samizdat Layer 0 spec.
-def parseOptYieldDef = pegMakeMainSequence(
+def parOptYieldDef = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            parseYieldDef,
+            parYieldDef,
             pegMakeCode { y :: <> [yieldDef: y] }),
         pegMakeCode { <> [:] }));
 
 # Documented in Samizdat Layer 0 spec.
-def parseFormal = pegMakeMainSequence(
+def parFormal = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakeToken("identifier"),
@@ -107,41 +107,41 @@ def parseFormal = pegMakeMainSequence(
     pegMakeCode { name, repeat :: <> [:, name*, repeat*] });
 
 # Documented in Samizdat Layer 0 spec.
-def parseFormalsList = pegMakeMainSequence(
+def parFormalsList = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            parseFormal,
-            pegMakeStar(pegMakeSequence(pegMakeToken(","), parseFormal)),
+            parFormal,
+            pegMakeStar(pegMakeSequence(pegMakeToken(","), parFormal)),
             pegMakeCode { first, rest ::
                 <> [formals: [first, rest*]]
             }),
         pegMakeCode { <> [:] }));
 
 # Documented in Samizdat Layer 0 spec.
-def parseProgramDeclarations = pegMakeMainSequence(
-    parseOptYieldDef,
-    parseFormalsList,
+def parProgramDeclarations = pegMakeMainSequence(
+    parOptYieldDef,
+    parFormalsList,
     pegMakeToken("::"),
     pegMakeCode { yieldDef, formals, . :: <> [:, formals*, yieldDef*] });
 
 # Documented in Samizdat Layer 0 spec.
-def parseProgram = pegMakeMainSequence(
+def parProgram = pegMakeMainSequence(
     pegMakeChoice(
-        parseProgramDeclarations,
+        parProgramDeclarations,
         pegMakeCode { <> [:] }),
-    parseProgramBody,
+    parProgramBody,
     pegMakeCode { decls, body :: <> @[closure: [:, decls*, body*]] });
 
 # Documented in Samizdat Layer 0 spec.
-def parseClosure = pegMakeMainSequence(
+def parClosure = pegMakeMainSequence(
     pegMakeToken("{"),
-    parseProgram,
+    parProgram,
     pegMakeToken("}"),
     pegMakeCode { ., prog, . :: <> prog });
 
 # Documented in Samizdat Layer 0 spec.
-def parseNullaryClosure = pegMakeMainSequence(
-    parseClosure,
+def parNullaryClosure = pegMakeMainSequence(
+    parClosure,
     pegMakeCode { c ::
         ifIs { <> mapGet(tokenValue(c), "formals") }
             { io0Die("Invalid formal argument in code block.") };
@@ -149,8 +149,8 @@ def parseNullaryClosure = pegMakeMainSequence(
     });
 
 # Documented in Samizdat Layer 0 spec.
-def parseCodeOnlyClosure = pegMakeMainSequence(
-    parseNullaryClosure,
+def parCodeOnlyClosure = pegMakeMainSequence(
+    parNullaryClosure,
     pegMakeCode { c ::
         ifIs { <> mapGet(tokenValue(c), "yieldDef") }
             { io0Die("Invalid yield definition in code block.") };
@@ -158,11 +158,11 @@ def parseCodeOnlyClosure = pegMakeMainSequence(
     });
 
 # Documented in Samizdat Layer 0 spec.
-def parseFnCommon = pegMakeMainSequence(
+def parFnCommon = pegMakeMainSequence(
     pegMakeToken("fn"),
     pegMakeOpt(
         pegMakeMainSequence(
-            parseYieldDef,
+            parYieldDef,
             pegMakeCode { y :: <> makeVarDef(y, makeVarRef("return")) })),
     pegMakeChoice(
         pegMakeMainSequence(
@@ -175,10 +175,10 @@ def parseFnCommon = pegMakeMainSequence(
             pegMakeCode { . :: <> [:] }),
         pegMakeMainSequence(
             pegMakeToken("("),
-            parseFormalsList,
+            parFormalsList,
             pegMakeToken(")"),
             pegMakeCode { ., f, . :: <> f })),
-    parseCodeOnlyClosure,
+    parCodeOnlyClosure,
     pegMakeCode { ., returnDef, name, formals, code ::
         def codeMap = tokenValue(code);
         def statements = [returnDef*, mapGet(codeMap, "statements")*];
@@ -190,16 +190,16 @@ def parseFnCommon = pegMakeMainSequence(
     });
 
 # Documented in Samizdat Layer 0 spec.
-def parseFnDef = pegMakeMainSequence(
-    parseFnCommon,
+def parFnDef = pegMakeMainSequence(
+    parFnCommon,
     pegMakeCode { funcMap ::
         <> ifIs { <> mapGet(funcMap, "name") }
             { <> @[fnDef: funcMap] }
     });
 
 # Documented in Samizdat Layer 0 spec.
-def parseFnExpression = pegMakeMainSequence(
-    parseFnCommon,
+def parFnExpression = pegMakeMainSequence(
+    parFnCommon,
     pegMakeCode { funcMap :: <> @[closure: funcMap] },
     pegMakeChoice(
         pegMakeSequence(
@@ -215,17 +215,17 @@ def parseFnExpression = pegMakeMainSequence(
         pegMakeCode { ., closure :: <> closure }));
 
 # Documented in Samizdat Layer 0 spec.
-def parseInt = pegMakeMainSequence(
+def parInt = pegMakeMainSequence(
     pegMakeToken("int"),
     pegMakeCode { int :: <> makeLiteral(tokenValue(int)) });
 
 # Documented in Samizdat Layer 0 spec.
-def parseString = pegMakeMainSequence(
+def parString = pegMakeMainSequence(
     pegMakeToken("string"),
     pegMakeCode { string :: <> makeLiteral(tokenValue(string)) });
 
 # Documented in Samizdat Layer 0 spec.
-def parseIdentifierString = pegMakeMainSequence(
+def parIdentifierString = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeTokenSet("identifier", "string"),
@@ -243,18 +243,18 @@ def parseIdentifierString = pegMakeMainSequence(
                 })));
 
 # Documented in Samizdat Layer 0 spec.
-def parseUnadornedList = pegMakeMainSequence(
+def parUnadornedList = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            parseExpression,
-            pegMakeStar(pegMakeSequence(pegMakeToken(","), parseExpression)),
+            parExpression,
+            pegMakeStar(pegMakeSequence(pegMakeToken(","), parExpression)),
             pegMakeCode { first, rest :: <> [first, rest*] }),
         pegMakeCode { <> [] }));
 
 # Documented in Samizdat Layer 0 spec.
-def parseList = pegMakeMainSequence(
+def parList = pegMakeMainSequence(
     pegMakeToken("["),
-    parseUnadornedList,
+    parUnadornedList,
     pegMakeToken("]"),
     pegMakeCode { ., expressions, . ::
         <> ifIs { <> eq(expressions, []) }
@@ -263,139 +263,139 @@ def parseList = pegMakeMainSequence(
     });
 
 # Documented in Samizdat Layer 0 spec.
-def parseEmptyMap = pegMakeMainSequence(
+def parEmptyMap = pegMakeMainSequence(
     pegMakeToken("["),
     pegMakeToken(":"),
     pegMakeToken("]"),
     pegMakeCode { ., ., . :: <> makeLiteral([:]) });
 
 # Documented in Samizdat Layer 0 spec.
-def parseMapKeyAtom = pegMakeMainSequence(
+def parMapKeyAtom = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            parseIdentifierString,
+            parIdentifierString,
             pegMakeLookaheadSuccess(pegMakeToken(":")),
             pegMakeCode { k, . :: <> k }),
-        parseExpression));
+        parExpression));
 
 # Documented in Samizdat Layer 0 spec.
-def parseMapKey = parseMapKeyAtom;
+def parMapKey = parMapKeyAtom;
 
 # Documented in Samizdat Layer 0 spec.
-def parseMapping = pegMakeMainSequence(
+def parMapping = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            parseMapKey,
+            parMapKey,
             pegMakeToken(":"),
-            parseExpression,
+            parExpression,
             pegMakeCode { key, ., value ::
                 <> makeCallName("makeList", value, key)
             }),
         pegMakeSequence(
-            parseExpression,
+            parExpression,
             pegMakeCode { map ::
                 <> ifIs { <> eq(tokenType(map), "interpolate") }
                     { <> tokenValue(map) }
             })));
 
 # Documented in Samizdat Layer 0 spec.
-def parseMap = pegMakeMainSequence(
+def parMap = pegMakeMainSequence(
     pegMakeToken("["),
     pegMakeOpt(pegMakeSequence(pegMakeToken(":"), pegMakeToken(","))),
-    parseMapping,
-    pegMakeStar(pegMakeSequence(pegMakeToken(","), parseMapping)),
+    parMapping,
+    pegMakeStar(pegMakeSequence(pegMakeToken(","), parMapping)),
     pegMakeToken("]"),
     pegMakeCode { ., ., first, rest, . ::
         <> makeCallName("makeMap", first, rest*)
     });
 
 # Documented in Samizdat Layer 0 spec.
-def parseToken = pegMakeMainSequence(
+def parToken = pegMakeMainSequence(
     pegMakeToken("@"),
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakeToken("["),
-            parseIdentifierString,
-            pegMakeOpt(pegMakeSequence(pegMakeToken(":"), parseExpression)),
+            parIdentifierString,
+            pegMakeOpt(pegMakeSequence(pegMakeToken(":"), parExpression)),
             pegMakeToken("]"),
             pegMakeCode { ., type, value, . :: <> [type, value*] }),
         pegMakeMainSequence(
             pegMakeToken("["),
-            parseExpression,
-            pegMakeOpt(pegMakeSequence(pegMakeToken(":"), parseExpression)),
+            parExpression,
+            pegMakeOpt(pegMakeSequence(pegMakeToken(":"), parExpression)),
             pegMakeToken("]"),
             pegMakeCode { ., type, value, . :: <> [type, value*] }),
         pegMakeMainSequence(
-            parseIdentifierString,
+            parIdentifierString,
             pegMakeCode { type :: <> [type] })),
     pegMakeCode { ., tokenArgs :: <> makeCallName("makeToken", tokenArgs*) });
 
 # Documented in Samizdat Layer 0 spec.
-def parseUniqlet = pegMakeMainSequence(
+def parUniqlet = pegMakeMainSequence(
     pegMakeToken("@@"),
     pegMakeCode { . :: <> makeCallName("makeUniqlet") });
 
 # Documented in Samizdat Layer 0 spec.
-def parseVarRef = pegMakeMainSequence(
+def parVarRef = pegMakeMainSequence(
     pegMakeToken("identifier"),
     pegMakeCode { name :: <> makeVarRef(tokenValue(name)) });
 
 # Documented in Samizdat Layer 0 spec.
-def parseVarDef = pegMakeMainSequence(
+def parVarDef = pegMakeMainSequence(
     pegMakeToken("def"),
     pegMakeToken("identifier"),
     pegMakeToken("="),
-    parseExpression,
+    parExpression,
     pegMakeCode { ., name, ., ex ::
         <> makeVarDef(tokenValue(name), ex)
     });
 
 # Documented in Samizdat Layer 0 spec.
-def parseParenExpression = pegMakeMainSequence(
+def parParenExpression = pegMakeMainSequence(
     pegMakeToken("("),
-    parseExpression,
+    parExpression,
     pegMakeToken(")"),
     pegMakeCode { ., ex, . :: <> @[expression: ex] });
 
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
-def parseAtom = pegMakeMainSequence(
+def parAtom = pegMakeMainSequence(
     pegMakeChoice(
-        parseVarRef, parseInt, parseString,
-        parseList, parseEmptyMap, parseMap,
-        parseUniqlet, parseToken, parseClosure,
-        parseParenExpression,
+        parVarRef, parInt, parString,
+        parList, parEmptyMap, parMap,
+        parToken, parUniqlet, parClosure,
+        parParenExpression,
         # Defined by Samizdat Layer 1. The lookahead is just to make
         # it clear what is required to "jump into" Layer 1 parsing.
         pegMakeSequence(
             pegMakeLookaheadSuccess(pegMakeToken("{/")),
-            parseParser)));
+            parParser)));
 
 # Documented in Samizdat Layer 0 spec.
-def parseActualsList = pegMakeMainSequence(
+def parActualsList = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeToken("()"),
-            pegMakeStar(parseClosure)),
+            pegMakeStar(parClosure)),
         pegMakeSequence(
             pegMakeToken("("),
-            parseUnadornedList,
+            parUnadornedList,
             pegMakeToken(")"),
-            pegMakeStar(parseClosure),
+            pegMakeStar(parClosure),
             pegMakeCode { ., normalActuals, ., closureActuals ::
                 <> [normalActuals*, closureActuals*]
             }),
-        pegMakePlus(parseClosure)));
+        pegMakePlus(parClosure)));
 
 # Documented in Samizdat Layer 0 spec.
-def parsePrefixOperator = pegMakeMainSequence(
+def parPrefixOperator = pegMakeMainSequence(
     pegMakeToken("-"),
     pegMakeCode { . :: <> { node :: <> makeCallName("ineg", node) } });
 
 # Documented in Samizdat Layer 0 spec.
-def parsePostfixOperator = pegMakeMainSequence(
+def parPostfixOperator = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            parseActualsList,
+            parActualsList,
             pegMakeCode { actuals ::
                 <> { node :: <> makeCall(node, actuals*) }
             }),
@@ -406,10 +406,10 @@ def parsePostfixOperator = pegMakeMainSequence(
             })));
 
 # Documented in Samizdat Layer 0 spec.
-def parseUnaryExpression = pegMakeMainSequence(
-    pegMakeStar(parsePrefixOperator),
-    parseAtom,
-    pegMakeStar(parsePostfixOperator),
+def parUnaryExpression = pegMakeMainSequence(
+    pegMakeStar(parPrefixOperator),
+    parAtom,
+    pegMakeStar(parPostfixOperator),
     pegMakeCode { prefixes, base, postfixes ::
         def withPosts = listReduce(base, postfixes)
             { result, ., op :: <> op(result) };
@@ -419,38 +419,38 @@ def parseUnaryExpression = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 def implExpression = pegMakeChoice(
-    parseUnaryExpression,
-    parseFnExpression);
-parseExpression(implExpression);
+    parUnaryExpression,
+    parFnExpression);
+parExpression(implExpression);
 
 # Documented in Samizdat Layer 0 spec.
-def parseStatement = pegMakeChoice(
-    parseVarDef,
-    parseFnDef,
-    parseExpression);
+def parStatement = pegMakeChoice(
+    parVarDef,
+    parFnDef,
+    parExpression);
 
 # Documented in Samizdat Layer 0 spec.
-def parseNonlocalExit = pegMakeMainSequence(
+def parNonlocalExit = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeToken("<"),
-            parseVarRef,
+            parVarRef,
             pegMakeToken(">"),
             pegMakeCode { ., n, . :: <> n }),
         pegMakeSequence(
             pegMakeToken("return"),
             pegMakeCode { . :: <> makeVarRef("return") })),
-    pegMakeOpt(parseExpression),
+    pegMakeOpt(parExpression),
     pegMakeCode { name, value ::
         <> makeCallNonlocalExit(name, value*)
     });
 
 # Documented in Samizdat Layer 0 spec.
-def parseYield = pegMakeMainSequence(
+def parYield = pegMakeMainSequence(
     pegMakeToken("<>"),
     pegMakeChoice(
         pegMakeMainSequence(
-            parseExpression,
+            parExpression,
             pegMakeCode { ex :: <> [yield: ex] }),
         pegMakeMainSequence(
             pegMakeCode { <> [:] })));
@@ -460,15 +460,15 @@ def implProgramBody = pegMakeMainSequence(
     pegMakeStar(pegMakeToken(";")),
     pegMakeStar(
         pegMakeMainSequence(
-            parseStatement,
+            parStatement,
             pegMakePlus(pegMakeToken(";")),
             pegMakeCode { s, . :: <> s })),
     pegMakeChoice(
         pegMakeMainSequence(
-            pegMakeChoice(parseStatement, parseNonlocalExit),
+            pegMakeChoice(parStatement, parNonlocalExit),
             pegMakeCode { s :: <> [statements: [s]] }),
         pegMakeMainSequence(
-            parseYield,
+            parYield,
             pegMakeCode { y :: <> [statements: [], y*] }),
         pegMakeMainSequence(
             pegMakeCode { <> [statements: []] })),
@@ -477,7 +477,7 @@ def implProgramBody = pegMakeMainSequence(
         def allStatements = [most*, mapGet(last, "statements")*];
         <> [last*, statements: allStatements]
     });
-parseProgramBody(implProgramBody);
+parProgramBody(implProgramBody);
 
 
 #
@@ -485,22 +485,22 @@ parseProgramBody(implProgramBody);
 #
 
 # `choicePex` is the top-level parsing expression node type.
-def parseChoicePex = forwardFunction();
+def parChoicePex = forwardFunction();
 
 def implParser = pegMakeMainSequence(
     pegMakeToken("{/"),
-    parseChoicePex,
+    parChoicePex,
     pegMakeToken("/}"),
     pegMakeCode { ., pex, . :: <> @[parser: pex] });
-parseParser(implParser);
+parParser(implParser);
 
-def parseParenPex = pegMakeMainSequence(
+def parParenPex = pegMakeMainSequence(
     pegMakeToken("("),
-    parseChoicePex,
+    parChoicePex,
     pegMakeToken(")"),
     pegMakeCode { ., pex, . :: <> pex });
 
-def parseParserString = pegMakeMainSequence(
+def parParserString = pegMakeMainSequence(
     pegMakeToken("string"),
     pegMakeCode { s ::
         def value = tokenValue(s);
@@ -509,12 +509,12 @@ def parseParserString = pegMakeMainSequence(
             { <> s }
     });
 
-def parseParserToken = pegMakeMainSequence(
+def parParserToken = pegMakeMainSequence(
     pegMakeToken("@"),
-    parseIdentifierString,
+    parIdentifierString,
     pegMakeCode { ., type :: <> @[token: tokenValue(type)] });
 
-def parseParserSetString = pegMakeMainSequence(
+def parParserSetString = pegMakeMainSequence(
     pegMakeToken("string"),
     pegMakeChoice(
         pegMakeSequence(
@@ -535,7 +535,7 @@ def parseParserSetString = pegMakeMainSequence(
             }),
         pegMakeCode { s :: <> s }));
 
-def parseParserSet = pegMakeMainSequence(
+def parParserSet = pegMakeMainSequence(
     pegMakeToken("["),
     pegMakeChoice(
         pegMakeMainSequence(
@@ -545,7 +545,7 @@ def parseParserSet = pegMakeMainSequence(
             pegMakeCode { <> "[]" })),
     pegMakeChoice(
         pegMakeMainSequence(
-            pegMakePlus(parseParserSetString),
+            pegMakePlus(parParserSetString),
             pegMakeCode { strings ::
                 def oneString = listReduce("", strings)
                     { result, ., s :: <> stringAdd(result, tokenValue(s)) };
@@ -553,7 +553,7 @@ def parseParserSet = pegMakeMainSequence(
                     { result, ., ch :: <> [result*, ch] }
             }),
         pegMakeMainSequence(
-            pegMakePlus(parseParserToken),
+            pegMakePlus(parParserToken),
             pegMakeCode { tokens ::
                 <> listMap(tokens) { ., t :: <> tokenValue(t) }
             }),
@@ -562,66 +562,66 @@ def parseParserSet = pegMakeMainSequence(
     pegMakeToken("]"),
     pegMakeCode { ., type, terminals, . :: <> @[(type): terminals] });
 
-def parseParserCode = pegMakeMainSequence(
-    parseNullaryClosure,
+def parParserCode = pegMakeMainSequence(
+    parNullaryClosure,
     pegMakeCode { closure :: <> @["{}": tokenValue(closure)] });
 
-def parseParserPredicate = pegMakeMainSequence(
+def parParserPredicate = pegMakeMainSequence(
     pegMakeToken("&&"),
-    parseParenExpression,
+    parParenExpression,
     pegMakeCode { ., predicate :: <> @["&&": predicate] });
 
-def parseParserAtom = pegMakeMainSequence(
+def parParserAtom = pegMakeMainSequence(
     pegMakeChoice(
-        parseVarRef,
-        parseParserString,
-        parseParserToken,
-        parseParserSet,
-        parseParserCode,
-        parseParserPredicate,
+        parVarRef,
+        parParserString,
+        parParserToken,
+        parParserSet,
+        parParserCode,
+        parParserPredicate,
         pegMakeToken("."),
         pegMakeToken("()"),
-        parseParenPex));
+        parParenPex));
 
-def parseRepeatPex = pegMakeMainSequence(
-    parseParserAtom,
+def parRepeatPex = pegMakeMainSequence(
+    parParserAtom,
     pegMakeChoice(
         pegMakeSequence(
             pegMakeTokenSet("?", "*", "+"),
             pegMakeCode { atom, repeat :: <> @[tokenType(repeat): atom] }),
         pegMakeCode { atom :: <> atom }));
 
-def parseLookaheadPex = pegMakeMainSequence(
+def parLookaheadPex = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeTokenSet("&", "!"),
-            parseRepeatPex,
+            parRepeatPex,
             pegMakeCode { lookahead, pex :: <> @[tokenType(lookahead): pex] }),
-        parseRepeatPex));
+        parRepeatPex));
 
-def parseNamePex = pegMakeMainSequence(
+def parNamePex = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeToken("identifier"),
             pegMakeToken("="),
-            parseLookaheadPex,
+            parLookaheadPex,
             pegMakeCode { name, ., pex ::
                 <> @[varDef: [name: tokenValue(name), value: pex]]
             }),
-        parseLookaheadPex));
+        parLookaheadPex));
 
-def parseSequencePex = pegMakeMainSequence(
-    pegMakePlus(parseNamePex),
+def parSequencePex = pegMakeMainSequence(
+    pegMakePlus(parNamePex),
     pegMakeCode { items :: <> @[sequence: items] });
 
 def implChoicePex = pegMakeMainSequence(
-    parseSequencePex,
+    parSequencePex,
     pegMakeStar(
         pegMakeMainSequence(
             pegMakeToken("|"),
-            parseSequencePex)),
+            parSequencePex)),
     pegMakeCode { first, rest :: <> @[choice: [first, rest*]] });
-parseChoicePex(implChoicePex);
+parChoicePex(implChoicePex);
 
 
 #
@@ -639,8 +639,8 @@ fn reportError(pending) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-def parseProgramOrError = pegMakeMainSequence(
-    parseProgram,
+def parProgramOrError = pegMakeMainSequence(
+    parProgram,
     pegMakeOpt(
         pegMakeMainSequence(
             pegMakePlus(pegRuleAny),
@@ -653,7 +653,7 @@ fn sam1Tree(program) {
         { <> sam1Tokenize(program) }
         { <> program };
 
-    <> pegApply(parseProgramOrError, tokens)
+    <> pegApply(parProgramOrError, tokens)
 };
 
 <> [
