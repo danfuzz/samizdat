@@ -42,6 +42,9 @@ def MANIFEST = [
     "tree1.sam0",
     "eval1.sam0",
 
+    # Layer 1 additional library.
+    "commandLine.sam1",
+
     # Layer 2 language implementation.
     "tokenize2.sam1",
     "tree2.sam1",

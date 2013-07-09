@@ -1,0 +1,43 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Command line interpreter
+#
+
+#
+# Helper definitions
+#
+
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn samCommandLine(context, rawArgs*) {
+    def parsedArgs = parseArgs0(rawArgs);
+    def options = mapGet(parsedArgs, "options");
+    def argWords = mapGet(parsedArgs, "args");
+
+    def fileName = listFirst(argWords, "/dev/stdin");
+    def filePath = io0PathFromFlat(fileName);
+    def args = listButFirst(argWords, []);
+
+    def nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
+        { suffix :: <> stringAdd("x.", suffix) }
+        { <> listLast(filePath) };
+
+    def metas = metaFunctions(context, nameForLookup);
+
+    def programText = io0ReadFileUtf8(filePath);
+    def parsedProgram = mapGet(metas, "tree")(programText);
+    def evalledProgram = mapGet(metas, "eval")(context, parsedProgram);
+
+    <> evalledProgram(filePath, args*)
+};
+
+<> [
+    samCommandLine: samCommandLine
+]
