@@ -23,7 +23,7 @@ To apply an expression as a function, follow it with a list of comma-separated
 arguments to apply it to, between parentheses. The arguments are evaluated
 in order, and then the function is called with these arguments. The result
 of the apply expression is the same as the result of the function call.
-If the function call returns void, then the expression's result is also a void.
+If the function call returns void, then the expression's result is also void.
 
 If any of the arguments evaluates to void, then subsequent arguments are
 not evaluated, the function isn't called, and the expression yields void.
@@ -47,7 +47,8 @@ expression evaluates to an appropriate value.
 
 The expression to apply (before the open parenthesis) must be non-void.
 Per the above, it is valid for an argument to be void, but that stops the
-evaluation of the expression.
+evaluation of the expression, causing the overall call expression to
+yield void.
 
 #### Access collection &mdash; `expression[index, index, ...]`
 
