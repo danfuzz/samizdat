@@ -14,7 +14,7 @@
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    listFromGenerator(generatorForInclusiveRange("a", 1, "z"))*: true
+    generatorForInclusiveRange("a", 1, "z")*: true
 ];
 
 # Returns a `call` node.
@@ -530,7 +530,7 @@ def parseParserSetString = pegMakeMainSequence(
                     {
                         def charGen =
                             generatorForInclusiveRange(startChar, 1, endChar);
-                        <> @[string: stringAdd(listFromGenerator(charGen)*)]
+                        <> @[string: stringAdd(charGen*)]
                     }
             }),
         pegMakeCode { s :: <> s }));

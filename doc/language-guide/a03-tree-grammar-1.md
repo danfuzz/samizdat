@@ -22,7 +22,7 @@ can be used.
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    listFromGenerator(generatorForInclusiveRange("a", 1, "z"))*: true
+    generatorForInclusiveRange("a", 1, "z")*: true
 ];
 
 # Returns a `call` node.
