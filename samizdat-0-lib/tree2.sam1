@@ -153,14 +153,14 @@ fn reportError(pending) {
 #
 
 # Forward declarations.
-def parseProgramBody = forwardFunction();
-def parseExpression = forwardFunction();
+def parProgramBody = forwardFunction();
+def parExpression = forwardFunction();
 
 # Forward declaration required for integrating layer 1 definitions.
-def parseParser = forwardFunction();
+def parParser = forwardFunction();
 
 # Parses a yield / non-local exit definition, yielding the def name.
-def parseYieldDef = {/
+def parYieldDef = {/
     @"<"
     name = @identifier
     @">"
@@ -169,15 +169,15 @@ def parseYieldDef = {/
 
 # Parses an optional yield / non-local exit definition, always yielding
 # a map (an empty map if no yield def was present).
-def parseOptYieldDef = {/
-    y = parseYieldDef
+def parOptYieldDef = {/
+    y = parYieldDef
     { <> [yieldDef: y] }
 |
     { <> [:] }
 /};
 
 # Parses a formal argument decalaration.
-def parseFormal = {/
+def parFormal = {/
     name = (
         n = @identifier
         { <> [name: tokenValue(n)] }
@@ -196,18 +196,18 @@ def parseFormal = {/
 /};
 
 # Parses a list of formal arguments, with no surrounding parentheses.
-def parseFormalsList = {/
-    first = parseFormal
-    rest = (@"," parseFormal)*
+def parFormalsList = {/
+    first = parFormal
+    rest = (@"," parFormal)*
     { <> [formals: [first, rest*]] }
 |
     { <> [:] }
 /};
 
 # Parses program / function declarations.
-def parseProgramDeclarations = {/
-    yieldDef = parseOptYieldDef
-    formals = parseFormalsList
+def parProgramDeclarations = {/
+    yieldDef = parOptYieldDef
+    formals = parFormalsList
 
     @"::"
 
@@ -215,23 +215,23 @@ def parseProgramDeclarations = {/
 /};
 
 # Parses a program (top-level program or contents inside function braces).
-def parseProgram = {/
-    decls = (parseProgramDeclarations | { <> [:] })
-    body = parseProgramBody
+def parProgram = {/
+    decls = (parProgramDeclarations | { <> [:] })
+    body = parProgramBody
     { <> @[closure: [:, decls*, body*]] }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
-def parseClosure = {/
+def parClosure = {/
     @"{"
-    prog = parseProgram
+    prog = parProgram
     @"}"
     { <> prog }
 /};
 
 # Parses a closure which must not define any formal arguments.
-def parseNullaryClosure = {/
-    c = parseClosure
+def parNullaryClosure = {/
+    c = parClosure
 
     {
         ifIs { <> mapGet(tokenValue(c), "formals") }
@@ -242,8 +242,8 @@ def parseNullaryClosure = {/
 
 # Parses a closure which must have neither formal arguments nor a yield
 # definition.
-def parseCodeOnlyClosure = {/
-    c = parseNullaryClosure
+def parCodeOnlyClosure = {/
+    c = parNullaryClosure
 
     {
         ifIs { <> mapGet(tokenValue(c), "yieldDef") }
@@ -282,13 +282,13 @@ def parseCodeOnlyClosure = {/
 #
 # * the key `name` bound to the function name, if a name was defined. (This
 #   is not representable in lower-layer surface syntax.)
-def parseFnCommon = {/
+def parFnCommon = {/
     @fn
 
     # This is a variable definition statement which binds the yield def
     # name to the `return` function, if there is in fact a yield def present.
     returnDef = (
-        y = parseYieldDef
+        y = parYieldDef
         { <> makeVarDef(y, makeVarRef("return")) }
     )?
 
@@ -304,12 +304,12 @@ def parseFnCommon = {/
         { <> [:] }
     |
         @"("
-        f = parseFormalsList
+        f = parFormalsList
         @")"
         { <> f }
     )
 
-    code = parseCodeOnlyClosure
+    code = parCodeOnlyClosure
 
     {
         def codeMap = tokenValue(code);
@@ -323,12 +323,12 @@ def parseFnCommon = {/
 /};
 
 # Parses a `fn` definition statement. The syntax here is the same as
-# what's recognized by `parseFnCommon`, except that the name is required.
+# what's recognized by `parFnCommon`, except that the name is required.
 # We don't error out (terminate the runtime) on a missing name, though, as
 # that just means that we're looking at a legit `fn` expression, which will
 # get successfully parsed by the `expression` alternative of `statement`.
-def parseFnDef = {/
-    funcMap = parseFnCommon
+def parFnDef = {/
+    funcMap = parFnCommon
 
     {
         <> ifIs { <> mapGet(funcMap, "name") }
@@ -337,7 +337,7 @@ def parseFnDef = {/
 /};
 
 # Parses a `fn` (function with `return` binding) expression. The translation
-# is as described in `parseFnCommon` (above) if the function is not given a
+# is as described in `parFnCommon` (above) if the function is not given a
 # name. If the function *is* given a name, the translation is along the
 # following lines (so as to enable self-recursion):
 #
@@ -351,8 +351,8 @@ def parseFnDef = {/
 #     <> name
 # }()
 # ```
-def parseFnExpression = {/
-    funcMap = parseFnCommon
+def parFnExpression = {/
+    funcMap = parFnCommon
     closure = { <> @[closure: funcMap] }
 
     (
@@ -371,20 +371,20 @@ def parseFnExpression = {/
 /};
 
 # Parses an integer literal.
-def parseInt = {/
+def parInt = {/
     i = @int
     { <> makeLiteral(tokenValue(i)) }
 /};
 
 # Parses a string literal.
-def parseString = {/
+def parString = {/
     s = @string
     { <> makeLiteral(tokenValue(s)) }
 /};
 
 # Parses an identifier, identifier-like keyword, or string literal,
 # returning a string literal in all cases.
-def parseIdentifierString = {/
+def parIdentifierString = {/
     s = [@identifier @string]
     { <> makeLiteral(tokenValue(s)) }
 |
@@ -402,18 +402,18 @@ def parseIdentifierString = {/
 
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
-def parseUnadornedList = {/
-    first = parseExpression
-    rest = (@"," parseExpression)*
+def parUnadornedList = {/
+    first = parExpression
+    rest = (@"," parExpression)*
     { <> [first, rest*] }
 |
     { <> [] }
 /};
 
 # Parses a list literal.
-def parseList = {/
+def parList = {/
     @"["
-    expressions = parseUnadornedList
+    expressions = parUnadornedList
     @"]"
     {
         <> ifIs { <> eq(expressions, []) }
@@ -423,44 +423,44 @@ def parseList = {/
 /};
 
 # Parses an empty map literal.
-def parseEmptyMap = {/
+def parEmptyMap = {/
     @"[" @":" @"]"
     { <> makeLiteral([:]) }
 /};
 
 # Parses an "atomic" map key (as opposed to the parens-and-commas form).
-def parseMapKeyAtom = {/
+def parMapKeyAtom = {/
     # The lookahead at the end of the rule is to ensure we are not looking
     # at a more complicated expression. `@","` and `@")"` are matched here,
     # so that this rule can stay the same in *Layer 2*.
-    k = parseIdentifierString
+    k = parIdentifierString
     &[@":" @"," @")"]
     { <> k }
 |
-    parseExpression
+    parExpression
 /};
 
 # Parses an arbitrary map key. Note: This rule is nontrivial in *Layer 2*.
-def parseMapKey = {/
+def parMapKey = {/
     # Note: This clause is only active for a list of two or more items.
     # A single parenthesized item is properly covered by the second alternate.
     @"("
-    firstKey = parseMapKeyAtom
-    moreKeys = (@"," parseMapKeyAtom)+
+    firstKey = parMapKeyAtom
+    moreKeys = (@"," parMapKeyAtom)+
     @")"
     { <> @[interpolate: makeCallName("makeList", firstKey, moreKeys*)] }
 |
-    parseMapKeyAtom
+    parMapKeyAtom
 /};
 
 # Parses a mapping (element of a map).
-def parseMapping = {/
-    key = parseMapKey
+def parMapping = {/
+    key = parMapKey
     @":"
-    value = parseExpression
+    value = parExpression
     { <> makeCallName("makeList", value, key) }
 |
-    map = parseExpression
+    map = parExpression
     {
         # We do a check to make sure the given expression is an interpolate
         # (which is the only way it can be valid). Note that
@@ -472,33 +472,33 @@ def parseMapping = {/
 /};
 
 # Parses a map literal.
-def parseMap = {/
+def parMap = {/
     @"["
     (@":" @",")?
-    first = parseMapping
-    rest = (@"," parseMapping)*
+    first = parMapping
+    rest = (@"," parMapping)*
     @"]"
     { <> makeCallName("makeMap", first, rest*) }
 /};
 
 # Parses a token literal.
-def parseToken = {/
+def parToken = {/
     @"@"
 
     tokenArgs = (
         @"["
-        type = parseIdentifierString
-        value = (@":" parseExpression)?
+        type = parIdentifierString
+        value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }
     |
         @"["
-        type = parseExpression
-        value = (@":" parseExpression)?
+        type = parExpression
+        value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }
     |
-        type = parseIdentifierString
+        type = parIdentifierString
         { <> [type] }
     )
 
@@ -506,71 +506,70 @@ def parseToken = {/
 /};
 
 # Parses a uniqlet literal.
-def parseUniqlet = {/
+def parUniqlet = {/
     @"@@"
     { <> makeCallName("makeUniqlet") }
 /};
 
 # Parses a variable reference.
-def parseVarRef = {/
+def parVarRef = {/
     name = @identifier
     { <> makeVarRef(tokenValue(name)) }
 /};
 
 # Parses a variable definition.
-def parseVarDef = {/
+def parVarDef = {/
     @def
     name = @identifier
     @"="
-    ex = parseExpression
+    ex = parExpression
     { <> makeVarDef(tokenValue(name), ex) }
 /};
 
 # Parses a parenthesized expression.
-def parseParenExpression = {/
+def parParenExpression = {/
     @"("
-    ex = parseExpression
+    ex = parExpression
     @")"
     { <> @[expression: ex] }
 /};
 
 # Parses an atomic expression.
-def parseAtom = {/
-    parseVarRef | parseInt | parseString |
-    parseList | parseEmptyMap | parseMap |
-    parseUniqlet | parseToken | parseClosure | parseParenExpression |
+def parAtom = {/
+    parVarRef | parInt | parString | parList | parEmptyMap | parMap |
+    parToken | parUniqlet | parClosure | parParenExpression |
     # Defined by Samizdat Layer 1.
-    &@"{/" parseParser
+    &@"{/" parParser
 /};
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
-def parseActualsList = {/
+def parActualsList = {/
     @"()"
-    parseClosure*
+    parClosure*
 |
     @"("
-    normalActuals = parseUnadornedList
+    normalActuals = parUnadornedList
     @")"
-    closureActuals = parseClosure*
+    closureActuals = parClosure*
     { <> [normalActuals*, closureActuals*] }
 |
-    parseClosure+
+    parClosure+
 /};
 
 # `prefixOperator` and `postfixOperator` from layer 0 are replaced with
 # forwarded functions here. These are subsumed by more featureful layer 2
 # definitions, below.
-def parsePrefixOperator = forwardFunction();
-def parsePostfixOperator = forwardFunction();
+def parPrefixOperator = forwardFunction();
+def parPostfixOperator = forwardFunction();
 
 # Parses a unary expression. This is an atom, optionally surrounded on
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
-def parseUnaryExpression = {/
-    prefixes = parsePrefixOperator*
-    base = parseAtom
-    postfixes = parsePostfixOperator*
+def parUnaryExpression = {/
+    prefixes = parPrefixOperator*
+    base = parAtom
+    postfixes = parPostfixOperator*
 
     {
         def withPosts = listReduce(base, postfixes)
@@ -583,14 +582,14 @@ def parseUnaryExpression = {/
 # `expression` from layer 0 is omitted here (it's forwarded earlier), and
 # `statement` and `nonlocalExit` are replaced with forwarded functions here.
 # These are all subsumed by more featureful layer 2 definitions, below.
-def parseStatement = forwardFunction();
-def parseNonlocalExit = forwardFunction();
+def parStatement = forwardFunction();
+def parNonlocalExit = forwardFunction();
 
 # Parses a local yield / return.
-def parseYield = {/
+def parYield = {/
     @"<>"
     (
-        ex = parseExpression
+        ex = parExpression
         { <> [yield: ex] }
     |
         { <> [:] }
@@ -602,16 +601,16 @@ def implProgramBody = {/
     @";"*
 
     most = (
-        s = parseStatement
+        s = parStatement
         @";"+
         { <> s }
     )*
 
     last = (
-        s = (parseStatement | parseNonlocalExit)
+        s = (parStatement | parNonlocalExit)
         { <> [statements: [s]] }
     |
-        y = parseYield
+        y = parYield
         { <> [statements: [], y*] }
     |
         { <> [statements: []] }
@@ -624,12 +623,12 @@ def implProgramBody = {/
         <> [last*, statements: allStatements]
     }
 /};
-parseProgramBody(implProgramBody);
+parProgramBody(implProgramBody);
 
 # Top-level rule to parse a program with possible error afterwards.
 # Note that an empty string is a valid program.
-def parseProgramOrError = {/
-    prog = parseProgram
+def parProgramOrError = {/
+    prog = parProgram
     (
         pending = .+
         { reportError(pending) }
@@ -643,27 +642,27 @@ def parseProgramOrError = {/
 #
 
 # Forward declaration.
-def parseChoicePex = forwardFunction();
+def parChoicePex = forwardFunction();
 
 # Parses a parser function.
 def implParser = {/
     @"{/"
-    pex = parseChoicePex
+    pex = parChoicePex
     @"/}"
     { <> @[parser: pex] }
 /};
-parseParser(implParser);
+parParser(implParser);
 
 # Parses a parenthesized parsing expression.
-def parseParenPex = {/
+def parParenPex = {/
     @"("
-    pex = parseChoicePex
+    pex = parChoicePex
     @")"
     { <> pex }
 /};
 
 # Parses a string literal parsing expression.
-def parseParserString = {/
+def parParserString = {/
     s = @string
     {
         def value = tokenValue(s);
@@ -674,15 +673,15 @@ def parseParserString = {/
 /};
 
 # Parses a token literal parsing expression.
-def parseParserToken = {/
+def parParserToken = {/
     @"@"
-    type = parseIdentifierString
+    type = parIdentifierString
     { <> @[token: tokenValue(type)] }
 /};
 
 # Parses a string or character range parsing expression, used when defining
 # sets.
-def parseParserSetString = {/
+def parParserSetString = {/
     s = @string
     (
         @".."
@@ -706,7 +705,7 @@ def parseParserSetString = {/
 /};
 
 # Parses a set (or set complement) parsing expression.
-def parseParserSet = {/
+def parParserSet = {/
     @"["
 
     type = (
@@ -716,7 +715,7 @@ def parseParserSet = {/
     )
 
     terminals = (
-        strings = parseParserSetString+
+        strings = parParserSetString+
         {
             def oneString = listReduce("", strings)
                 { result, ., s :: <> stringAdd(result, tokenValue(s)) };
@@ -724,7 +723,7 @@ def parseParserSet = {/
                 { result, ., ch :: <> [result*, ch] }
         }
     |
-        tokens = parseParserToken+
+        tokens = parParserToken+
         { <> listMap(tokens) { ., t :: <> tokenValue(t) } }
     |
         { <> [] }
@@ -736,42 +735,28 @@ def parseParserSet = {/
 /};
 
 # Parses a code block parsing expression.
-def parseParserCode = {/
-    closure = parseNullaryClosure
+def parParserCode = {/
+    closure = parNullaryClosure
     { <> @["{}": tokenValue(closure) ] }
 /};
 
 # Parses a predicate parsing expression.
-def parseParserPredicate = {/
+def parParserPredicate = {/
     @"&&"
-    predicate = parseParenExpression
+    predicate = parParenExpression
     { <> @["&&": predicate] }
 /};
 
 # Parses an atomic parsing expression.
-def parseParserAtom = {/
-    parseVarRef
-|
-    parseParserString
-|
-    parseParserToken
-|
-    parseParserSet
-|
-    parseParserCode
-|
-    parseParserPredicate
-|
-    @"."
-|
-    @"()"
-|
-    parseParenPex
+def parParserAtom = {/
+    @"." | @"()" |
+    parVarRef | parParserString | parParserToken | parParserSet |
+    parParserCode | parParserPredicate | parParenPex
 /};
 
 # Parses a repeat (or not) parsing expression.
-def parseRepeatPex = {/
-    atom = parseParserAtom
+def parRepeatPex = {/
+    atom = parParserAtom
     (
         repeat = [@"?" @"*" @"+"]
         { <> @[tokenType(repeat): atom] }
@@ -782,42 +767,42 @@ def parseRepeatPex = {/
 
 # Parses a lookahead (or not) parsing expression. This covers both lookahead
 # success and lookahead failure.
-def parseLookaheadPex = {/
+def parLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
-        pex = parseRepeatPex
+        pex = parRepeatPex
         { <> @[tokenType(lookahead): pex] }
     )
 |
-    parseRepeatPex
+    parRepeatPex
 /};
 
 # Parses a name (or not) parsing expression.
-def parseNamePex = {/
+def parNamePex = {/
     (
         name = @identifier
         @"="
-        pex = parseLookaheadPex
+        pex = parLookaheadPex
         { <> @[varDef: [name: tokenValue(name), value: pex]] }
     )
 |
-    parseLookaheadPex
+    parLookaheadPex
 /};
 
 # Parses a sequence parsing expression. This includes sequences of length
 # one, but it does *not* parse empty (zero-length) sequences.
-def parseSequencePex = {/
-    items = parseNamePex+
+def parSequencePex = {/
+    items = parNamePex+
     { <> @[sequence: items] }
 /};
 
 # Parses a choice parsing expression. This includes a single choice.
 def implChoicePex = {/
-    first = parseSequencePex
-    rest = (@"|" parseSequencePex)*
+    first = parSequencePex
+    rest = (@"|" parSequencePex)*
     { <> @[choice: [first, rest*]] }
 /};
-parseChoicePex(implChoicePex);
+parChoicePex(implChoicePex);
 
 
 #
@@ -831,7 +816,7 @@ parseChoicePex(implChoicePex);
 def implNonlocalExit = {/
     name = (
         @"<"
-        n = parseVarRef
+        n = parVarRef
         @">"
         { <> n }
     |
@@ -840,7 +825,7 @@ def implNonlocalExit = {/
     )
 
     value = (
-        ex = parseExpression
+        ex = parExpression
         {
             # The test for a valued `continue` is done explicitly here
             # (rather than just letting the rule fail) in order to make the
@@ -853,7 +838,7 @@ def implNonlocalExit = {/
 
     { <> makeCallNonlocalExit(name, value*) }
 /};
-parseNonlocalExit(implNonlocalExit);
+parNonlocalExit(implNonlocalExit);
 
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
@@ -882,22 +867,22 @@ def implPrefixOperator = {/
         }
     }
 /};
-parsePrefixOperator(implPrefixOperator);
+parPrefixOperator(implPrefixOperator);
 
 # Parses a unary postfix operator. This yields a function (per se) to call
 # in order to construct a node that represents the appropriate ultimate
 # function call.
 def implPostfixOperator = {/
-    actuals = parseActualsList
+    actuals = parActualsList
     { <> { node :: <> makeCall(node, actuals*) } }
 |
     # The lookahead failure here is to make the grammar prefer `*` to be
     # treated as a binary op.
-    @"*" !parseExpression
+    @"*" !parExpression
     { <> { node :: <> @[interpolate: node] } }
 |
     @"["
-    exprs = parseUnadornedList
+    exprs = parUnadornedList
     @"]"
 
     (
@@ -910,7 +895,7 @@ def implPostfixOperator = {/
         <> { node :: <> makeCall(function, node, exprs*) }
     }
 |
-    names = (@"." parseIdentifierString)+
+    names = (@"." parIdentifierString)+
 
     {
         def function = mapGet(UNARY_OPERATORS, "[]");
@@ -932,15 +917,15 @@ def implPostfixOperator = {/
         }
     }
 /};
-parsePostfixOperator(implPostfixOperator);
+parPostfixOperator(implPostfixOperator);
 
 # Parses a range expression.
-def parseRangeExpression = {/
-    base = parseUnaryExpression
+def parRangeExpression = {/
+    base = parUnaryExpression
 
     increment = (
         @".."
-        inc = parseUnaryExpression
+        inc = parUnaryExpression
         &[@".." @"..!" @"..+"] # So increment won't match a limit expression.
         { <> inc }
     |
@@ -951,7 +936,7 @@ def parseRangeExpression = {/
 
     result = (
         op = [@".." @"..!"]
-        limit = parseUnaryExpression
+        limit = parUnaryExpression
         {
             <> makeCall(mapGet(BINARY_OPERATORS, tokenType(op)),
                 base, increment, limit)
@@ -973,11 +958,11 @@ def parseRangeExpression = {/
 /};
 
 # Parses a multiplicative expression.
-def parseMulExpression = {/
-    firstEx = parseRangeExpression
+def parMulExpression = {/
+    firstEx = parRangeExpression
     opExes = (
         op = [@"*" @"/" @"%" @"<<<" @">>>"]
-        ex = parseRangeExpression
+        ex = parRangeExpression
         { <> [op, ex] }
     )*
 
@@ -985,11 +970,11 @@ def parseMulExpression = {/
 /};
 
 # Parses an additive expression.
-def parseAddExpression = {/
-    firstEx = parseMulExpression
+def parAddExpression = {/
+    firstEx = parMulExpression
     opExes = (
         op = [@"+" @"-" @"&&&" @"|||" @"^^^"]
-        ex = parseMulExpression
+        ex = parMulExpression
         { <> [op, ex] }
     )*
 
@@ -1000,14 +985,14 @@ def parseAddExpression = {/
 # style of `x < y < z` meaning `x < y && y < z`. This semantics
 # falls naturally out of the left-associativity of the expression
 # along with the value-or-void logic model, as defined by the language.
-def parseCompareExpression = {/
-    firstEx = parseAddExpression
+def parCompareExpression = {/
+    firstEx = parAddExpression
     opExes = (
         op = [
             @"=="   @"!="   @"<"   @">"   @"<="   @">="
             @"\\==" @"\\!=" @"\\<" @"\\>" @"\\<=" @"\\>="
         ]
-        ex = parseAddExpression
+        ex = parAddExpression
         { <> [op, ex] }
     )*
 
@@ -1015,9 +1000,9 @@ def parseCompareExpression = {/
 /};
 
 # Parses a short-circuit boolean-and expression.
-def parseBooleanAndExpression = {/
-    first = parseCompareExpression
-    rest = (@"&&" parseCompareExpression)*
+def parBooleanAndExpression = {/
+    first = parCompareExpression
+    rest = (@"&&" parCompareExpression)*
 
     (
         # Not actually a boolean-and expression.
@@ -1029,9 +1014,9 @@ def parseBooleanAndExpression = {/
 /};
 
 # Parses a short-circuit boolean-or expression.
-def parseBooleanOrExpression = {/
-    first = parseBooleanAndExpression
-    rest = (@"||" parseBooleanAndExpression)*
+def parBooleanOrExpression = {/
+    first = parBooleanAndExpression
+    rest = (@"||" parBooleanAndExpression)*
 
     (
         # Not actually a boolean-or expression.
@@ -1043,9 +1028,9 @@ def parseBooleanOrExpression = {/
 /};
 
 # Parses a short-circuit logical-and expression.
-def parseLogicAndExpression = {/
-    first = parseBooleanOrExpression
-    rest = (@"&" parseBooleanOrExpression)*
+def parLogicAndExpression = {/
+    first = parBooleanOrExpression
+    rest = (@"&" parBooleanOrExpression)*
 
     (
         # Not actually a logical-and expression.
@@ -1057,9 +1042,9 @@ def parseLogicAndExpression = {/
 /};
 
 # Parses a short-circuit logical-or expression.
-def parseLogicOrExpression = {/
-    first = parseLogicAndExpression
-    rest = (@"|" parseLogicAndExpression)*
+def parLogicOrExpression = {/
+    first = parLogicAndExpression
+    rest = (@"|" parLogicAndExpression)*
 
     (
         # Not actually a logical-or expression.
@@ -1074,7 +1059,7 @@ def parseLogicOrExpression = {/
 # @[formal: ..., test: ...], with `formal` bound to a formal argument
 # declaration and `test` bound to the test expression. If no formal was
 # parsed, `formal` is bound to `[:]`.
-def parseTestClause = {/
+def parTestClause = {/
     @"("
 
     formal = (
@@ -1085,7 +1070,7 @@ def parseTestClause = {/
         { <> [:] }
     )
 
-    test = parseExpression
+    test = parExpression
     @")"
 
     { <> [formal: formal, test: test] }
@@ -1122,23 +1107,23 @@ def parseTestClause = {/
 # * the then-clause argument declarations changed to `.` for any
 #   clause where no name binding was present.
 # * arbitrary nesting of additional clauses.
-def parseIfExpression = {/
+def parIfExpression = {/
     @if
-    yieldDef = parseOptYieldDef
-    firstCondition = parseTestClause
-    firstThen = parseCodeOnlyClosure
+    yieldDef = parOptYieldDef
+    firstCondition = parTestClause
+    firstThen = parCodeOnlyClosure
 
     elseIfThens = (
         @else
         @if
-        condition = parseTestClause
-        then = parseCodeOnlyClosure
+        condition = parTestClause
+        then = parCodeOnlyClosure
         { <> [condition*, then: then] }
     )*
 
     finalElse = (
         @else
-        parseCodeOnlyClosure
+        parCodeOnlyClosure
     |
         { <> YIELD_VOID_THUNK }
     )
@@ -1184,9 +1169,9 @@ def parseIfExpression = {/
 # exit of a loop. This always results in a list, which is empty if there
 # is no yield definition present, or is a single-element list of an
 # appropriate variable definition and assignment.
-def parseOptBreakDef = {/
+def parOptBreakDef = {/
     (
-        y = parseYieldDef
+        y = parYieldDef
         { <> makeVarDef(y, makeVarRef("break")) }
     )?
 /};
@@ -1194,16 +1179,16 @@ def parseOptBreakDef = {/
 # Helper for switch expressions: Parse a single case, including
 # `default` and `else` cases. Returns a map that binds `keys` and
 # `code`.
-def parseSwitchCase = {/
+def parSwitchCase = {/
     keys = (
         [@default @else]
     |
-        k = parseMapKey
+        k = parMapKey
         { <> @[expression: k] }
     )
 
     @":"
-    code = parseCodeOnlyClosure
+    code = parCodeOnlyClosure
 
     { <> [code: code, keys: keys] }
 /};
@@ -1267,14 +1252,14 @@ def SWITCH_DISPATCH_CLOSURE = sam0Tree("
 # Note that the translation here is arranged so that the expressions to
 # evaluate and all the case bodies only see the expected variable bindings,
 # and not any "implementation detail" local variables.
-def parseSwitchExpression = {/
+def parSwitchExpression = {/
     @switch
-    breakDef = parseOptBreakDef
-    testClause = parseTestClause
+    breakDef = parOptBreakDef
+    testClause = parTestClause
 
     @"{"
 
-    cases = parseSwitchCase*
+    cases = parSwitchCase*
 
     @"}"
 
@@ -1356,11 +1341,11 @@ def parseSwitchExpression = {/
 # * the initial break assignment omitted if there is no yield def.
 # * the body argument declaration changed to `.` if there is no
 #   test expression name binding.
-def parseWhileExpression = {/
+def parWhileExpression = {/
     @while
-    breakDef = parseOptBreakDef
-    testClause = parseTestClause
-    code = parseNullaryClosure
+    breakDef = parOptBreakDef
+    testClause = parTestClause
+    code = parNullaryClosure
 
     {
         def formal = mapGet(testClause, "formal");
@@ -1406,13 +1391,13 @@ def parseWhileExpression = {/
 # with the initial break assignment omitted if there is no yield def, and
 # with the `ifNot` statement omitted if there is no `while` at the end
 # of the `do`.
-def parseDoExpression = {/
+def parDoExpression = {/
     @do
-    breakDef = parseOptBreakDef
-    code = parseNullaryClosure
+    breakDef = parOptBreakDef
+    code = parNullaryClosure
     condition = (
         @while
-        ex = parseParenExpression
+        ex = parParenExpression
         {
             <> makeCallName("ifValue",
                 makeThunk(ex),
@@ -1440,29 +1425,29 @@ def parseDoExpression = {/
 def implExpression = {/
     # This one's the top level "regular-looking" expression (in that it
     # covers the territory of C-style expressions).
-    parseLogicOrExpression
+    parLogicOrExpression
 |
     # This one is only nominally "regular-looking" (in that not many C
     # family languages have function expressions).
-    parseFnExpression
+    parFnExpression
 |
     # This one and the rest are "statement-like" expressions (in that they
     # look like corresponding statements from C-derived languages).
-    parseIfExpression
+    parIfExpression
 |
-    parseDoExpression
+    parDoExpression
 |
-    parseSwitchExpression
+    parSwitchExpression
 |
-    parseWhileExpression
+    parWhileExpression
 /};
-parseExpression(implExpression);
+parExpression(implExpression);
 
 # Parses a statement.
 def implStatement = {/
-    parseVarDef | parseFnDef | parseExpression
+    parVarDef | parFnDef | parExpression
 /};
-parseStatement(implStatement);
+parStatement(implStatement);
 
 
 #
@@ -1475,7 +1460,7 @@ fn sam2Tree(program) {
         { <> sam2Tokenize(program) }
         { <> program };
 
-    <> pegApply(parseProgramOrError, tokens)
+    <> pegApply(parProgramOrError, tokens)
 };
 
 <> [
