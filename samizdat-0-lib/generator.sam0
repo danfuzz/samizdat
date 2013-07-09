@@ -95,7 +95,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
     # zero-increment special case.
     def firstInt = ifIs { <> isInt(first) }
         { <> first }
-        { <> intFromString(first) };
+        { <> intFromChar(first) };
 
     ifIs { <> eq(increment, 0) }
         {
@@ -112,7 +112,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
                         { <> limit }
                         { io0Die("Type mismatch between first and limit.") };
                 }
-                { <> intFromString(limit) };
+                { <> intFromChar(limit) };
             def testFunction =
                 mapGet(INT_RANGE_TESTS, [isign(increment), (optInclusive*)]);
             <> { x :: <> testFunction(limitInt, x) }

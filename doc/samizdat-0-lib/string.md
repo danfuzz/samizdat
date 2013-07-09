@@ -13,7 +13,7 @@ Returns a single-character string that consists of the character
 code indicated by the given int argument, which must be in the
 range for representation as an unsigned 32-bit quantity.
 
-#### `intFromString(string) <> int`
+#### `intFromChar(string) <> int`
 
 Given a single-character string, returns the character code
 of its sole character, as an int. It is an error (terminating

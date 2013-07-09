@@ -60,7 +60,7 @@ fn doInt(int, adorn) {
 };
 
 # Helper for stringifying strings: Returns the hex form for the given
-# character. Assumes it's not passed `0`.
+# character. Assumes it's not passed `"\0"`.
 fn stringHexEscape(ch) {
     fn intHex(value) {
         <> ifIs { <> eq(value, 0) }
@@ -72,7 +72,7 @@ fn stringHexEscape(ch) {
             }
     };
 
-    <> stringAdd("\\x", intHex(intFromString(ch)), ";")
+    <> stringAdd("\\x", intHex(intFromChar(ch)), ";")
 };
 
 # Map of special-case characters to their stringified forms.

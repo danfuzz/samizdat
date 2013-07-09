@@ -24,7 +24,7 @@ PRIM_FUNC(imod);
 PRIM_FUNC(imul);
 PRIM_FUNC(ineg);
 PRIM_FUNC(inot);
-PRIM_FUNC(intFromString);
+PRIM_FUNC(intFromChar);
 PRIM_FUNC(io0FlatCwd);
 PRIM_FUNC(io0FlatReadLink);
 PRIM_FUNC(io0FlatReadFileUtf8);

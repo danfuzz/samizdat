@@ -36,7 +36,7 @@ PRIM_IMPL(charFromInt) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(intFromString) {
+PRIM_IMPL(intFromChar) {
     requireExactly(argCount, 1);
 
     zvalue string = args[0];

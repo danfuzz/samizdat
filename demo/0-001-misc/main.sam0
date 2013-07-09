@@ -141,6 +141,7 @@ fn main(selfPath, name, rest*) {
     process(stringFromInt(71, 10));
     process(stringFromInt(71, 16));
     process(stringFromInt(71, 36));
+    process(charFromInt(127));
 
     sibling();
 

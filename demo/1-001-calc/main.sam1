@@ -28,7 +28,7 @@ def addExpression = forwardFunction();
 # Parses a single digit, yielding its value as an int.
 def digit = {/
     ch = ["0".."9"]
-    { <> isub(intFromString(tokenType(ch)), intFromString("0")) }
+    { <> isub(intFromChar(tokenType(ch)), intFromChar("0")) }
 /};
 
 # Parses a whole number (non-negative integer), yielding its value as an int.
