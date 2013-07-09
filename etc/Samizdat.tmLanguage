@@ -149,21 +149,51 @@
 					<string>#recursive-string</string>
 				</dict>
 				<dict>
+					<key>name</key>
+					<string>constant.other</string>
+					<key>begin</key>
+					<string>@"</string>
+					<key>end</key>
+					<string>"</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#recursive-string-content</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>variable.other</string>
+					<key>begin</key>
+					<string>\\"</string>
+					<key>end</key>
+					<string>"</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#recursive-string-content</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
 					<key>captures</key>
 					<dict>
-						<key>1</key>
+						<key>0</key>
 						<dict>
 							<key>name</key>
 							<string>comment.line.number-sign</string>
 						</dict>
-						<key>2</key>
+						<key>1</key>
 						<dict>
 							<key>name</key>
 							<string>punctuation.definition.comment</string>
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>((#+).*)$</string>
+					<string>(#+).*$</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -182,23 +212,6 @@
 					<string>constant.numeric</string>
 					<key>match</key>
 					<string>\b0b-?[01_]+\b</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>constant.other</string>
-					<key>begin</key>
-					<string>@"</string>
-					<key>end</key>
-					<string>"</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>name</key>
-							<string>constant.character.escape</string>
-							<key>match</key>
-							<string>\\([0nrt\\"]|x.*;)</string>
-						</dict>
-					</array>
 				</dict>
 				<dict>
 					<key>captures</key>
@@ -268,23 +281,6 @@
 						!!?!? | \\?==? | \\?!= | \\?&lt;= | \\?&gt;= |
 						&lt;&gt; | \.\.[!+]? | \+ | - | \* | / | % | \?
 					</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>variable.other</string>
-					<key>begin</key>
-					<string>\\"</string>
-					<key>end</key>
-					<string>"</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>name</key>
-							<string>constant.character.escape</string>
-							<key>match</key>
-							<string>\\([0nrt\\"]|x.*;)</string>
-						</dict>
-					</array>
 				</dict>
 				<dict>
 					<key>captures</key>
