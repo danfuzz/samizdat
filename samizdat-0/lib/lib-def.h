@@ -28,6 +28,7 @@ LIB_FILE(manifest, sam0);
 LIB_FILE(meta, sam0);
 LIB_FILE(order, sam0);
 LIB_FILE(peg, sam0);
+LIB_FILE(sourceString, sam0);
 LIB_FILE(tokenize1, sam0);
 LIB_FILE(tree1, sam0);
 LIB_FILE(type, sam0);

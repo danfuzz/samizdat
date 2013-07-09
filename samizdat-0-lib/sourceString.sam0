@@ -1,0 +1,265 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Value stringification
+#
+
+#
+# Helper definitions
+#
+
+# This is int digits for bases up to 36, in order.
+def INT_CHARS = "01234567890abcdefghijklmnopqrstuvwxyz";
+
+# Helper for stringifying ints, which does most of the conversion,
+# as well as prepending the given prefix.
+fn intBody(start, value, base) {
+    loopReduce(["", value]) { result ::
+        def text = listNth(result, 0);
+        def value = listNth(result, 1);
+        <> ifIs { <> ne(value, 0) }
+            {
+                def digit = stringNth(INT_CHARS, imod(value, base));
+                <> [stringAdd(digit, text), idiv(value, base)];
+            }
+            { return stringAdd(start, text) }
+    }
+};
+
+# Map from int sign values to the appropriate stringifier for each.
+def INT_SIGNS = [
+    -1: { int, base :: <> intBody("-", ineg(int), base) },
+    0:  { int, base :: <> "0" },
+    1:  { int, base :: <> intBody("", int, base) }
+];
+
+# Stringifies an int using the given base.
+fn stringFromIntBase(int, base) {
+    <> mapGet(INT_SIGNS, isign(int))(int, base)
+};
+
+# Forward declaration of `sourceString`
+def callSourceString = forwardFunction();
+
+# Single-character strings `"\x7f;"` and `"\x9f;"`.
+def CHAR_127 = stringFromInt(127);
+def CHAR_159 = stringFromInt(159);
+
+# Helper for optionally adorning results.
+fn adornIf(adorn, before, value, after) {
+    <> ifIs { <> logicFromBoolean(adorn) }
+        { <> stringAdd(before, value, after) }
+        { <> value }
+};
+
+# Stringifies an int.
+fn doInt(int, adorn) {
+    <> stringFromIntBase(int, 10)
+};
+
+# Helper for stringifying strings: Returns the hex form for the given
+# character. Assumes it's not passed `0`.
+fn stringHexEscape(ch) {
+    fn intHex(value) {
+        <> ifIs { <> eq(value, 0) }
+            { <> "" }
+            {
+                def digit = stringNth("0123456789abcdef", imod(value, 16));
+                def more = idiv(value, 16);
+                <> stringAdd(intHex(more), digit)
+            }
+    };
+
+    <> stringAdd("\\x", intHex(intFromString(ch)), ";")
+};
+
+# Map of special-case characters to their stringified forms.
+def SPECIAL_CHARS = [
+    "\0": "\\0",
+    "\n": "\\n",
+    "\r": "\\r",
+    "\t": "\\t",
+    "\"": "\\\"",
+    "\\": "\\\\"
+];
+
+# Helper for stringifying strings: Returns the converted form of the
+# given character.
+fn stringChar(ch) {
+    <> ifValue { <> mapGet(SPECIAL_CHARS, ch) }
+        { special :: <> special }
+        {
+            # This checks for the ranges of nonprinting control characters.
+            <> ifIs { <> or { <> lt(ch, " ") }
+                              { <> and { <> ge(ch, CHAR_127) }
+                                       { <> le(ch, CHAR_159) } } }
+                { <> stringHexEscape(ch) }
+                { <> ch }
+        }
+};
+
+# These are all the characters which are allowed to start an identifier.
+def IDENTIFIER_STARTS = [
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"*: true
+];
+
+# These are all the characters which are allowed to be in an identifier.
+def IDENTIFIER_CHARS = [
+    IDENTIFIER_STARTS*,
+    "0123456789"*: true
+];
+
+# Tokens with special conversions.
+def TOKEN_SPECIALS = [
+    (false): "false",
+    (null):  "null",
+    (true):  "true"
+];
+
+# Checks to see if the given value is a string with the form of an
+# in-language identifier.
+fn isIdentifier(string) {
+    <> and
+        { <> isString(string) }
+        { <> gt(lowSize(string), 0) }
+        { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0)) }
+        {
+            stringForEach(string)
+                { ., ch ::
+                    ifNot { <> mapGet(IDENTIFIER_CHARS, ch) }
+                        { return }
+                };
+            <> true
+        }
+};
+
+# Stringifies a key (or token type).
+fn keyString(key) {
+    ifIs { <> isIdentifier(key) }
+        { return key };
+
+    ifValue { <> mapGet(TOKEN_SPECIALS, key) }
+        { string :: return stringAdd("(", string, ")") };
+
+    <> callSourceString(key)
+};
+
+# Stringifies a string.
+fn doString(string, adorn) {
+    def body = stringReduce("", string)
+        { result, ., ch :: <> stringAdd(result, stringChar(ch)) };
+    <> adornIf(adorn, "\"", body, "\"")
+};
+
+# Stringifies a list.
+fn doList(list, adorn) {
+    def body = listReduce("", list)
+        { reduction, ., elem ::
+            <> stringAdd(
+                reduction,
+                ifIs { <> eq(reduction, "") } { <> "" } { <> ", " },
+                callSourceString(elem))
+        };
+
+    <> adornIf(adorn, "[", body, "]")
+};
+
+# Stringifies a map.
+fn doMap(map, adorn) {
+    def body = mapReduce("", map)
+        { reduction, key, value ::
+            <> stringAdd(
+                reduction,
+                ifIs { <> eq(reduction, "") } { <> "" } { <> ", " },
+                keyString(key),
+                ": ",
+                callSourceString(value))
+        };
+
+    <> adornIf(adorn,
+        "[",
+        ifIs { <> eq(body, "") } { <> ":" } { <> body },
+        "]")
+};
+
+# Stringifies a token.
+fn doToken(token, adorn) {
+    ifValue { <> mapGet(TOKEN_SPECIALS, token) }
+        { string :: return string };
+
+    def type = tokenType(token);
+    def typeString = keyString(type);
+    def valueString = ifValue { <> tokenValue(token) }
+        { value :: <> stringAdd(": ", callSourceString(value)) }
+        { <> "" };
+
+    ifIs { <> and { <> isString(type) } { <> eq(valueString, "") } }
+        { return adornIf(adorn, "@", typeString, "") };
+
+    def result = stringAdd(typeString, valueString);
+    <> adornIf(adorn, "@[", result, "]")
+};
+
+# Stringifies a uniqlet.
+fn doUniqlet(uniqlet, .) {
+    <> "@@"
+};
+
+# Stringifies an unknown value type.
+fn doUnknown(unknown, .) {
+    <> stringAdd(
+        "[(unknown) ",
+        callSourceString(lowType(value)),
+        " ",
+        callSourceString(lowSize(value)),
+        "]")
+};
+
+# Mapping from low-layer type names to stringifiers.
+def STRINGIFIERS = [
+    token:   doToken,
+    int:     doInt,
+    list:    doList,
+    map:     doMap,
+    string:  doString,
+    uniqlet: doUniqlet
+];
+
+# Common handler for the two exported functions.
+fn sourceStringGeneral(value, adorn) {
+    def stringifier = mapGet(STRINGIFIERS, lowType(value), doUnknown);
+    <> stringifier(value, adorn)
+};
+
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn sourceString(value) {
+    <> sourceStringGeneral(value, true)
+};
+callSourceString(sourceString);
+
+# Documented in Samizdat Layer 0 spec.
+fn sourceStringUnadorned(value) {
+    <> sourceStringGeneral(value, false)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn stringFromInt(value, optBase?) {
+    def base = ifValue { <> optBase* } { b :: <> b } { <> 10 };
+
+    <> ifIs { <> le(le(2, base), 36) }
+        { <> stringFromIntBase(value, base) }
+        { io0Die("Invalid base for stringFromInt.") }
+};
+
+<> [
+    sourceString: sourceString,
+    sourceStringUnadorned: sourceStringUnadorned,
+    stringFromInt: stringFromInt
+]

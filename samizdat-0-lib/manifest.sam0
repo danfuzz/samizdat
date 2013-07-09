@@ -21,16 +21,17 @@ def BOOTSTRAP_FILES = [
 def MANIFEST = [
     # Layer 0 in-language core library.
     "entityMap.sam0",
+    "const.sam0",
+    "combinator.sam0",
     "order.sam0",
     "type.sam0",
     "int.sam0",
     "generator.sam0",
-    "combinator.sam0",
-    "const.sam0",
     "boolean.sam0",
     "conditional.sam0",
-    "collections.sam0",
     "code.sam0",
+    "collections.sam0",
+    "sourceString.sam0",
     "peg.sam0",
     "meta.sam0",
 
