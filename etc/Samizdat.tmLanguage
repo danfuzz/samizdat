@@ -167,20 +167,7 @@
 					<key>name</key>
 					<string>meta.block.samizdat</string>
 					<key>begin</key>
-					<string>\{(([^:{}@]*)(::))?</string>
-					<key>beginCaptures</key>
-					<dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>variable.parameter</string>
-						</dict>
-						<key>3</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.definition</string>
-						</dict>
-					</dict>
+					<string>\{</string>
 					<key>end</key>
 					<string>\}</string>
 					<key>patterns</key>
@@ -252,6 +239,23 @@
 					</dict>
 					<key>match</key>
 					<string>(#+).*$</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>variable.parameter</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>([a-zA-Z_.][^:{}@]*) *(::)</string>
 				</dict>
 				<dict>
 					<key>name</key>
