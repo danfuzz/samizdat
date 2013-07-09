@@ -165,6 +165,21 @@
 				</dict>
 				<dict>
 					<key>name</key>
+					<string>meta.block.parser.samizdat</string>
+					<key>begin</key>
+					<string>\{/</string>
+					<key>end</key>
+					<string>/\}</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>meta.block.samizdat</string>
 					<key>begin</key>
 					<string>\{</string>
@@ -255,7 +270,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([a-zA-Z_.][^:{}@]*) *(::)</string>
+					<string>([a-zA-Z_.][^:{}@"]*) *(::)</string>
 				</dict>
 				<dict>
 					<key>name</key>
