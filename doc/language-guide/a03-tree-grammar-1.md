@@ -667,23 +667,9 @@ def parParserPredicate = {/
 /};
 
 def parParserAtom = {/
-    parVarRef
-|
-    parParserString
-|
-    parParserToken
-|
-    parParserSet
-|
-    parParserCode
-|
-    parParserPredicate
-|
-    @"."
-|
-    @"()"
-|
-    parParenPex
+    @"." | @"()" |
+    parVarRef | parParserString | parParserToken | parParserSet |
+    parParserCode | parParserPredicate | parParenPex
 /};
 
 def parRepeatPex = {/
