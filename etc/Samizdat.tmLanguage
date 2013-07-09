@@ -137,7 +137,7 @@
 			<key>name</key>
 			<string>keyword.control</string>
 			<key>match</key>
-			<string>\b(break|continue|def|default|do|else|export|fn|if|import|module|return|switch|var|while)\b</string>
+			<string>\b(break|collect|continue|def|default|do|else|export|fn|for|if|import|module|reduce|return|switch|var|while)\b</string>
 		</dict>
 		<dict>
 			<key>name</key>
@@ -155,7 +155,7 @@
 			<key>name</key>
 			<string>keyword.operator</string>
 			<key>match</key>
-			<string>&amp;&amp;?&amp;?|\|\|?\|?|\^\^?\^?|\\?&lt;&lt;?&lt;?|\\?&gt;&gt;?&gt;?|!!?!?|\\?==?|\\?!=|\\?&lt;=|\\?&gt;=|&lt;&gt;|\.\.|\+|-|\*|/|%|\?</string>
+			<string>&amp;&amp;?&amp;?|\|\|?\|?|\^\^?\^?|\\?&lt;&lt;?&lt;?|\\?&gt;&gt;?&gt;?|!!?!?|\\?==?|\\?!=|\\?&lt;=|\\?&gt;=|&lt;&gt;|\.\.[!+]?|\+|-|\*|/|%|\?</string>
 		</dict>
 		<dict>
 			<key>name</key>
