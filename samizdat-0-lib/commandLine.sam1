@@ -12,22 +12,22 @@
 
 
 # def wordBreak = {/ "\0" /}
-def parseWordBreak = pegMakeToken("\0");
+def parWordBreak = pegMakeToken("\0");
 
 # def word = {/
 #     chars=[! "\0"]* wordBreak
 #     { <> stringFromTokenList(chars) }
 # /}
-def parseWord = pegMakeMainSequence(
+def parWord = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSetComplement("\0")),
-    parseWordBreak,
+    parWordBreak,
     pegMakeCode { chars, . :: <> stringFromTokenList(chars) });
 
 # def key = {/
 #     chars=[! "=\0"]*
 #     { <> stringFromTokenList(chars) }
 # /}
-def parseKey = pegMakeMainSequence(
+def parKey = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSetComplement("=\0")),
     pegMakeCode { chars :: <> stringFromTokenList(chars) });
 
@@ -35,30 +35,30 @@ def parseKey = pegMakeMainSequence(
 #     "--" k=key "=" v=word
 #     { <> [(k): v] }
 # /}
-def parseKeyValue = pegMakeMainSequence(
+def parKeyValue = pegMakeMainSequence(
     pegMakeString("--"),
-    parseKey,
+    parKey,
     pegMakeToken("="),
-    parseWord,
+    parWord,
     pegMakeCode { ., k, ., v :: <> [(k): v] });
 
 # def flag = {/
 #     "--" w=word
 #     { <> [(w): true] }
 # /}
-def parseFlag = pegMakeMainSequence(
+def parFlag = pegMakeMainSequence(
     pegMakeString("--"),
-    parseWord,
+    parWord,
     pegMakeCode { ., w :: <> [(w): true] });
 
 # def error = {/
 #     "-" [! "-\0"] word
 #     { ... <> [error: true] }
 # /}
-def parseError = pegMakeMainSequence(
+def parError = pegMakeMainSequence(
     pegMakeToken("-"),
     pegMakeCharSetComplement("-\0"),
-    parseWord,
+    parWord,
     pegMakeCode { ch1, ch2, word ::
         def value = stringAdd(stringFromTokens(ch1, ch2), word);
         io0Note(format("Unknown option: %Q", value));
@@ -68,16 +68,16 @@ def parseError = pegMakeMainSequence(
 # def option = {/
 #     keyValue | flag | error
 # /}
-def parseOption = pegMakeChoice(parseKeyValue, parseFlag, parseError);
+def parOption = pegMakeChoice(parKeyValue, parFlag, parError);
 
 # def arguments = {/
 #     optList=option* ("--" wordBreak)? words=word*
 #     { ... <> [options: options, args: args] }
 # /}
-def parseArguments = pegMakeMainSequence(
-    pegMakeStar(parseOption),
-    pegMakeOpt(pegMakeSequence(pegMakeString("--"), parseWordBreak)),
-    pegMakeStar(parseWord),
+def parArguments = pegMakeMainSequence(
+    pegMakeStar(parOption),
+    pegMakeOpt(pegMakeSequence(pegMakeString("--"), parWordBreak)),
+    pegMakeStar(parWord),
     pegMakeCode { optList, ., args ::
         def options = mapAdd(optList*);
         ifIs { <> mapGet(options, "error") }
@@ -86,7 +86,7 @@ def parseArguments = pegMakeMainSequence(
     });
 
 # Simple command-line argument parser.
-fn parseArgs(args) {
+fn parArgs(args) {
     # Make a unified string with each argument "\0"-terminated.
     def argString = listReduce("", args)
         { result, ., arg ::
@@ -94,7 +94,7 @@ fn parseArgs(args) {
         };
 
     # Use the peg grammar above to split the arguments back apart.
-    <> pegApply(parseArguments, argString)
+    <> pegApply(parArguments, argString)
 };
 
 
@@ -104,7 +104,7 @@ fn parseArgs(args) {
 
 # Documented in Samizdat Layer 0 spec.
 fn samCommandLine(context, rawArgs*) {
-    def parsedArgs = parseArgs(rawArgs);
+    def parsedArgs = parArgs(rawArgs);
     def options = mapGet(parsedArgs, "options");
     def argWords = mapGet(parsedArgs, "args");
 
