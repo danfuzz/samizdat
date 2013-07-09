@@ -142,6 +142,9 @@ fn main(selfPath, name, rest*) {
     process(stringFromInt(71, 16));
     process(stringFromInt(71, 36));
     process(stringAdd(charFromInt(1), charFromInt(31), charFromInt(127)));
+    io0Note(
+        format("Not %x %s: %q %Q",
+            31, "things", ["blort", "fizmo"], ["igram", "frotz"]));
 
     sibling();
 
