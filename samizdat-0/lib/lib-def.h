@@ -21,7 +21,6 @@ LIB_FILE(code, sam0);
 LIB_FILE(const, sam0);
 LIB_FILE(entityMap, sam0);
 LIB_FILE(eval1, sam0);
-LIB_FILE(format, sam0);
 LIB_FILE(generator, sam0);
 LIB_FILE(int, sam0);
 LIB_FILE(main, sam0);
@@ -35,6 +34,7 @@ LIB_FILE(type, sam0);
 
 LIB_FILE(commandLine, sam1);
 LIB_FILE(eval2, sam1);
+LIB_FILE(format, sam1);
 LIB_FILE(io0, sam1);
 LIB_FILE(tokenize2, sam1);
 LIB_FILE(tree2, sam1);

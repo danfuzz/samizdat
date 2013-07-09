@@ -31,7 +31,6 @@ def MANIFEST = [
     "conditional.sam0",
     "collections.sam0",
     "code.sam0",
-    "format.sam0",
     "peg.sam0",
     "meta.sam0",
 
@@ -41,6 +40,7 @@ def MANIFEST = [
     "eval1.sam0",
 
     # Layer 1 additional library.
+    "format.sam1",
     "io0.sam1",
     "commandLine.sam1",
 
