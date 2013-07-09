@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-String Formatting And Argument Parsing
---------------------------------------
+String Formatting
+-----------------
 
 <br><br>
 ### Primitive Definitions
@@ -35,27 +35,6 @@ The following are the format codes and their meanings:
 
 * `%Q` &mdash; "Quotes" the argument without top-level adornment through
   `sourceStringUnadorned` (see which).
-
-#### `parseArgs0(argList) <> map`
-
-Very simple command-line option / argument parser. This accepts a list of
-string arguments, and returns a parsed interpretation of them, as a map
-with the following mappings:
-
-* `"options": [("opt": value)*]` &mdash; Map of `--`-named options. If
-  the option had a specified value by being in the form `--name=value`, then
-  the option's value is a string. If the option had no value, by being in
-  the form `--name` (with no equal sign), then the option's value is `true`.
-
-* `"args" = ["arg"*] &mdash; List of non-option arguments.
-
-The argument list is parsed using the usual modern scheme of taking arguments
-that begin with `--` to be options, stopping at either an explicit argument
-of *just* `--` or at an argument that does not appear to be an option. The
-latter includes arguments that do not begin with `-` as well as an argument
-of exactly `-` (which often means "standard input" or "standard output").
-Finally, this implementation explicitly rejects (terminating the runtime)
-any argument in "option context" that begins with just a single `-`.
 
 #### `sourceString(value) <> string`
 

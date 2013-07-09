@@ -34,13 +34,15 @@ def MANIFEST = [
     "format.sam0",
     "peg.sam0",
     "io0.sam0",
-    "parseArgs0.sam0",
     "meta.sam0",
 
     # Layer 1 language implementation.
     "tokenize1.sam0",
     "tree1.sam0",
     "eval1.sam0",
+
+    # Layer 1 additional library.
+    "commandLine.sam1",
 
     # Layer 2 language implementation.
     "tokenize2.sam1",

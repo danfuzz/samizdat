@@ -1,0 +1,119 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Command line interpreter
+#
+
+#
+# Helper definitions
+#
+
+# Parses a single `\0`-terminated word. Yields a simple string.
+def parWord = {/
+    chars = [! "\0"]*
+    "\0"
+    { <> stringFromTokenList(chars) }
+/};
+
+# Parses a key prefix of a word, not including the ending `=`.
+def parKey = {/
+    chars = [! "=\0"]+
+    { <> stringFromTokenList(chars) }
+/};
+
+# Parses a key-value option word. Yields a single-mapping map of
+# `[(key): value]`.
+def parKeyValue = {/
+    "--"
+    key = parKey
+    "="
+    value = parWord
+    { <> [(key): value] }
+/};
+
+# Parses a non-value flag option word. Yields a single-mapping map of
+# `[(flag): true]`.
+def parFlag = {/
+    "--"
+    flag = parWord
+    { <> [(flag): true] }
+/};
+
+# Parses a syntactically invalid option. This includes words that start with
+# just a single dash and are not *just* `-` (which is a valid non-option
+# argument); as well as options with empty keys (`--=...`).
+def parError = {/
+    ch1 = "-"
+    ch2 = [! "-\0"]
+    word = parWord
+    {
+        def value = stringAdd(stringFromTokens(ch1, ch2), word);
+        io0Note(format("Unknown option: %Q", value));
+        <> [error: true]
+    }
+/};
+
+# Parses and yields an arbitrary option (including errors).
+def parOption = {/
+    parKeyValue | parFlag | parError
+/};
+
+# Parses the entire list of argument words. Yields a map of
+# `[options: [k: v, ...], args: [arg, ...]]`.
+def parArguments = {/
+    optionList = parOption*
+    "--\0"?
+    args = parWord*
+    {
+        def options = mapAdd(optionList*);
+        ifIs { <> mapGet(options, "error") }
+            { io0Die("Invalid option(s).") };
+        <> [options: options, args: args]
+    }
+/};
+
+# Simple command-line argument parser.
+fn parArgs(args) {
+    # Make a unified string with each argument "\0"-terminated.
+    def argString = listReduce("", args)
+        { result, ., arg ::
+            <> stringAdd(result, arg, "\0");
+        };
+
+    # Use the peg grammar above to split the arguments back apart.
+    <> pegApply(parArguments, argString)
+};
+
+
+#
+# Exported functions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn samCommandLine(context, rawArgs*) {
+    def parsedArgs = parArgs(rawArgs);
+    def options = mapGet(parsedArgs, "options");
+    def argWords = mapGet(parsedArgs, "args");
+
+    def fileName = listFirst(argWords, "/dev/stdin");
+    def filePath = io0PathFromFlat(fileName);
+    def args = listButFirst(argWords, []);
+
+    def nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
+        { suffix :: <> stringAdd("x.", suffix) }
+        { <> listLast(filePath) };
+
+    def metas = metaFunctions(context, nameForLookup);
+
+    def programText = io0ReadFileUtf8(filePath);
+    def parsedProgram = mapGet(metas, "tree")(programText);
+    def evalledProgram = mapGet(metas, "eval")(context, parsedProgram);
+
+    <> evalledProgram(filePath, args*)
+};
+
+<> [
+    samCommandLine: samCommandLine
+]

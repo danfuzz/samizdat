@@ -53,31 +53,7 @@ fn metaFunctions(context, fileName) {
     }
 };
 
-# Documented in Samizdat Layer 0 spec.
-fn samCommandLine(context, rawArgs*) {
-    def parsedArgs = parseArgs0(rawArgs);
-    def options = mapGet(parsedArgs, "options");
-    def argWords = mapGet(parsedArgs, "args");
-
-    def fileName = listFirst(argWords, "/dev/stdin");
-    def filePath = io0PathFromFlat(fileName);
-    def args = listButFirst(argWords, []);
-
-    def nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
-        { suffix :: <> stringAdd("x.", suffix) }
-        { <> listLast(filePath) };
-
-    def metas = metaFunctions(context, nameForLookup);
-
-    def programText = io0ReadFileUtf8(filePath);
-    def parsedProgram = mapGet(metas, "tree")(programText);
-    def evalledProgram = mapGet(metas, "eval")(context, parsedProgram);
-
-    <> evalledProgram(filePath, args*)
-};
-
 <> [
     makeLibrary: makeLibrary,
-    metaFunctions: metaFunctions,
-    samCommandLine: samCommandLine
+    metaFunctions: metaFunctions
 ]
