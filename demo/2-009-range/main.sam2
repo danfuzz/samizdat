@@ -21,6 +21,15 @@ fn out(generator) {
     io0Note(format("Got: %q", values))
 };
 
+# Prints out 10 values yielded by the given generator (and no more).
+fn outTen(generator) {
+    def values = listFromGenerator(
+        paraGeneratorFromValues(generator, [(1..10)*]));
+    def extract = listMap(values) { ., value :: <> listFirst(value) };
+    io0Note(format("Got: %q", extract))
+};
+
+
 #
 # Main tests
 #
@@ -54,5 +63,13 @@ out("a"..5..!"z");
 out(10..-1..!1);
 out("F"..-2..!"A");
 out(9..0..!9);
+
+io0Note("\nOpen, default increment...");
+outTen(-10..+);
+outTen("M"..+);
+
+io0Note("\nOpen, explicit increment...");
+outTen(99..-1..+);
+outTen("z"..-2..+);
 
 <> 0
