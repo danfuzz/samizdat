@@ -25,8 +25,9 @@ Appendix:
 * [*Layer 1* Tree Grammar](a03-tree-grammar-1.md)
 
 - - - - -
-<pre style="color: #ddd">
+
+```
 Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
 Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
-</pre>
+```
