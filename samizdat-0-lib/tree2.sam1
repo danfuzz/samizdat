@@ -149,7 +149,10 @@ fn reportError(pending) {
 #
 
 #
-# Samizdat Layer 0 definitions
+# *Layer 0* rules.
+#
+# This section consists of the definitions required to implement *Layer 0*,
+# with comments indicating the "hooks" for higher layers.
 #
 
 # Forward declarations.
@@ -229,7 +232,14 @@ def parClosure = {/
     { <> prog }
 /};
 
-# Parses a closure which must not define any formal arguments.
+# Parses a closure which must not define any formal arguments. This is done
+# by parsing an arbitrary closure and then verifying that it does not
+# declare formals. This is preferable to not-including formal argument
+# syntax, because (a) no rule wants to differentiate these cases (rules either
+# want an arbitrary closure or a specifically-constrained kind); (b) it
+# reduces redundancy in the syntax, and (c) the error case on the former
+# would be more obscure (as in just something like "unexpected token" on
+# the would-be formal argument).
 def parNullaryClosure = {/
     c = parClosure
 
@@ -241,7 +251,7 @@ def parNullaryClosure = {/
 /};
 
 # Parses a closure which must have neither formal arguments nor a yield
-# definition.
+# definition. See `parseNullaryClosure` above for discussion.
 def parCodeOnlyClosure = {/
     c = parNullaryClosure
 
@@ -537,8 +547,10 @@ def parParenExpression = {/
 # Parses an atomic expression.
 def parAtom = {/
     parVarRef | parInt | parString | parList | parEmptyMap | parMap |
-    parToken | parUniqlet | parClosure | parParenExpression |
-    # Defined by Samizdat Layer 1.
+    parToken | parUniqlet | parClosure | parParenExpression
+|
+    # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
+    # that *Layer 1* can only be "activated" with that one specific token.
     &@"{/" parParser
 /};
 
@@ -638,7 +650,13 @@ def parProgramOrError = {/
 
 
 #
-# Samizdat Layer 1 definitions
+# *Layer 1* rules.
+#
+# This section consists of the definitions required to implement *Layer 1*,
+# above and beyond the preceding section.
+#
+# **Note:** The grammar uses the label "pex" to denote various
+# "Parser EXpression" types.
 #
 
 # Forward declaration.
