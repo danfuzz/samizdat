@@ -65,7 +65,7 @@ will be returned, or one of `.` `!.` `. | !.` as described in
 * [Generators](generator.md)
 * [Functions And Code](code.md)
 * [I/O](io.md)
-* [String Formatting And Argument Parsing](format.md)
+* [String Formatting](format.md)
 * [Parsing](peg.md)
 * [Meta-Library](meta.md)
 
