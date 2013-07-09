@@ -150,6 +150,64 @@
 				</dict>
 				<dict>
 					<key>name</key>
+					<string>meta.parens.samizdat</string>
+					<key>begin</key>
+					<string>\(</string>
+					<key>end</key>
+					<string>\)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>meta.block.samizdat</string>
+					<key>begin</key>
+					<string>\{(([^:{}@]*)(::))?</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>variable.parameter</string>
+						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>\}</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>meta.collection.samizdat</string>
+					<key>begin</key>
+					<string>\[</string>
+					<key>end</key>
+					<string>\]</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>constant.other</string>
 					<key>begin</key>
 					<string>@"</string>
@@ -281,23 +339,6 @@
 						!!?!? | \\?==? | \\?!= | \\?&lt;= | \\?&gt;= |
 						&lt;&gt; | \.\.[!+]? | \+ | - | \* | / | % | \?
 					</string>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>variable.parameter</string>
-						</dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.definition</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>{([^:{}@]*)(::)</string>
 				</dict>
 				<dict>
 					<key>captures</key>
