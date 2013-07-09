@@ -7,6 +7,12 @@ Strings
 <br><br>
 ### Primitive Definitions
 
+#### `charFromInt(int) <> string`
+
+Returns a single-character string that consists of the character
+code indicated by the given int argument, which must be in the
+range for representation as an unsigned 32-bit quantity.
+
 #### `intFromString(string) <> int`
 
 Given a single-character string, returns the character code
@@ -17,12 +23,6 @@ the runtime) if `string` is not a string of size 1.
 
 Returns a string consisting of the concatenation of the contents
 of all the argument strings, in argument order.
-
-#### `stringFromInt(int) <> string`
-
-Returns a single-character string that consists of the character
-code indicated by the given int argument, which must be in the
-range for representation as an unsigned 32-bit quantity.
 
 #### `stringNth(string, n, notFound?) <> . | !.`
 

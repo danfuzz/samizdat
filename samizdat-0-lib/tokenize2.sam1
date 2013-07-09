@@ -153,7 +153,7 @@ def tokInt = {/
 # parsing.
 def tokHexChar = {/
     digits = tokHexDigit+
-    { <> stringFromInt(intFromDigitList(16, digits)) }
+    { <> charFromInt(intFromDigitList(16, digits)) }
 /};
 
 # Parses a single entity-named character. This is called during `\&...;`

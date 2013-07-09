@@ -14,6 +14,7 @@
 PRIM_FUNC(boxGet);
 PRIM_FUNC(boxIsSet);
 PRIM_FUNC(boxSet);
+PRIM_FUNC(charFromInt);
 PRIM_FUNC(iadd);
 PRIM_FUNC(iand);
 PRIM_FUNC(idiv);
@@ -72,7 +73,6 @@ PRIM_FUNC(sam0Eval);
 PRIM_FUNC(sam0Tokenize);
 PRIM_FUNC(sam0Tree);
 PRIM_FUNC(stringAdd);
-PRIM_FUNC(stringFromInt);
 PRIM_FUNC(stringNth);
 PRIM_FUNC(stringSlice);
 PRIM_FUNC(tokenType);

@@ -46,7 +46,7 @@ def parCodePoint = {/
     {
         def value = listReduce(0, digits)
             { result, ., digit :: <> result * 16 + digit };
-        <> stringFromInt(value);
+        <> charFromInt(value);
     }
 /};
 

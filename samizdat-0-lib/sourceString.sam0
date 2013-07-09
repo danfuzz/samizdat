@@ -44,8 +44,8 @@ fn stringFromIntBase(int, base) {
 def callSourceString = forwardFunction();
 
 # Single-character strings `"\x7f;"` and `"\x9f;"`.
-def CHAR_127 = stringFromInt(127);
-def CHAR_159 = stringFromInt(159);
+def CHAR_127 = charFromInt(127);
+def CHAR_159 = charFromInt(159);
 
 # Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
