@@ -118,7 +118,8 @@ def BINARY_OPERATORS = mapMap([
     "\\<=": "le",
     "\\>=": "ge",
     "..":   "generatorForInclusiveRange",
-    "..!":  "generatorForExclusiveRange"
+    "..!":  "generatorForExclusiveRange",
+    "..+":  "generatorForOpenRange"
     ])
     { key, value :: <> makeVarRef(value) };
 
@@ -935,46 +936,40 @@ parsePostfixOperator(implPostfixOperator);
 
 # Parses a range expression.
 def parseRangeExpression = {/
-    # To provide for more sensible error messages, this rule first accepts
-    # arbitrarily chained range expressions, and then explicitly rejects
-    # all but the four valid range variants and the fall-through of not
-    # actually being a range.
-
     base = parseUnaryExpression
-    opExes = (
+
+    increment = (
+        @".."
+        inc = parseUnaryExpression
+        &[@".." @"..!" @"..+"] # So increment won't match a limit expression.
+        { <> inc }
+    |
+        # Note: This (arguably pointlessly) gets evaluated and yielded
+        # even when not parsing a range expression.
+        { <> makeLiteral(1) }
+    )
+
+    result = (
         op = [@".." @"..!"]
-        ex = parseUnaryExpression
-        { <> [tokenType(op), ex] }
-    )*
+        limit = parseUnaryExpression
+        {
+            <> makeCall(mapGet(BINARY_OPERATORS, tokenType(op)),
+                base, increment, limit)
+        }
+    |
+        @"..+"
+        { <> makeCall(mapGet(BINARY_OPERATORS, "..+"), base, increment) }
+    |
+        { <> base }
+    )
 
-    { <out> ::
-        ifIs { <> eq(opExes,[]) }
-            { <out> base };
+    (
+        # Any additional range-ish operators cause an explicit error.
+        [@".." @"..!" @"..+"]
+        { io0Die("Invalid form for range expression.") }
+    )?
 
-        def restSize = lowSize(opExes);
-
-        ifIs { <> gt(restSize, 2) }
-            { io0Die("Invalid chained range expression.") };
-
-        def last = listLast(opExes);
-        def lastOp = listNth(last, 0);
-        def lastEx = listNth(last, 1);
-
-        def increment = ifIs { <> eq(restSize, 2) }
-            {
-                def first = listFirst(opExes);
-                def firstOp = listNth(first, 0);
-                def firstEx = listNth(first, 1);
-
-                ifIs { <> eq(firstOp, "..!") }
-                    { io0Die("Invalid use of exclusive range operator.") };
-
-                <> firstEx
-            }
-            { <> makeLiteral(1) };
-
-        <> makeCall(mapGet(BINARY_OPERATORS, lastOp), base, increment, lastEx)
-    }
+    { <> result }
 /};
 
 # Parses a multiplicative expression.
