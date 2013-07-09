@@ -12,38 +12,21 @@
 #
 
 # Helper for `io0PathFromFlat` which parses absolute path strings
-# into components. The grammar is basically
-#
-# ```
-# {/
-#    (
-#       ("/"+ "." &"/")*
-#       "/"+
-#       !("." !.)
-#       component = [! "/"]*
-#    )+
-# /}
-# ```
-#
-# with code to convert each `component` into a string (per se). Notably,
-# this takes care of ignoring double slashes (or triple, etc.) and `.`
-# components, but it leaves the handling of `..` components to a higher
-# layer.
-def parsePathString = pegMakePlus(
-    pegMakeSequence(
-        pegMakeStar(
-            pegMakeSequence(
-                pegMakePlus(pegMakeToken("/")),
-                pegMakeToken("."),
-                pegMakeLookaheadSuccess(pegMakeToken("/")))),
-        pegMakePlus(pegMakeToken("/")),
-        pegMakeLookaheadFailure(
-            pegMakeSequence(
-                pegMakeToken("."),
-                pegRuleEof)),
-        pegMakeMainSequence(
-            pegMakeStar(pegMakeCharSetComplement("/")),
-            pegMakeCode { chars :: <> stringFromTokenList(chars) })));
+# into components. Notably, this takes care of ignoring double slashes
+# (or triple, etc.) and `.` components, but it leaves the handling of
+# `..` components to a higher layer.
+def parPathString = {/
+    (
+        ("/"+ "." &"/")*
+        "/"+
+        !("." !.)
+
+        # This is a `*` and not a `+` rule, in order to successfully
+        # match a string-final empty component (that is, a trailing slash).
+        component = [! "/"]*
+        { <> stringFromTokenList(component) }
+    )+
+/};
 
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
@@ -97,7 +80,7 @@ fn io0PathFromFlat(string) {
         { <> stringAdd(io0FlatCwd(), "/", string) };
 
     # Do the first layer of parsing.
-    def components = pegApply(parsePathString, absoluteString);
+    def components = pegApply(parPathString, absoluteString);
 
     # Handle `..` components, to produce the final result.
     <> listReduce([], components) { result, ., one ::
