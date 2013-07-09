@@ -77,7 +77,7 @@ fn format(formatString, rest*) {
     # leaving only the actual argument conversion and concatenation to do
     # when used.
     def formatFunction = functionFromFormatString(formatString);
-    <> formatFunction(rest*);
+    <> formatFunction(rest*)
 };
 
 <> [
