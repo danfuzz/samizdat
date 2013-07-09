@@ -29,6 +29,48 @@ def FORMATTERS = [
     x:   doHex
 ];
 
+# Parses a format string, producing a list of strings-or-functions, where
+# the strings are literal, and the functions are to be called on the
+# `rest` arguments of a `format` call, in order.
+def parFormat = {/
+    (
+        "%"
+        (
+            "%" { <> "%" }
+        |
+            ch = ["qQsx"]
+            { <> mapGet(FORMATTERS, tokenType(ch)) }
+        |
+            # Undefined `%` escape, or string-final `%`.
+            { <> "%" }
+        )
+    |
+        chars = [! "%"]+
+        { <> stringFromTokenList(chars) }
+    )*
+/};
+
+# Converts a format string into a function that accepts arguments to
+# format, and formats them as specified.
+fn functionFromFormatString(formatString) {
+    def formatList = pegApply(parFormat, formatString);
+
+    <> { rest* ::
+        def args = mutableBox(rest);
+        def strings = listMap(formatList) { ., item ::
+            <> ifIs { <> isString(item) }
+                { <> item }
+                {
+                    def curArgs = boxGet(args);
+                    def arg = listFirst(curArgs);
+                    boxSet(args, listButFirst(curArgs));
+                    <> item(arg)
+                }
+        };
+        <> stringAdd(strings*)
+    }
+};
+
 
 #
 # Exported functions
@@ -36,36 +78,13 @@ def FORMATTERS = [
 
 # Documented in Samizdat Layer 0 spec.
 fn format(formatString, rest*) {
-    def args = mutableBox(rest);
-
-    def parFormat = {/
-        (
-            "%"
-            (
-                "%" { <> "%" }
-            |
-                ch = ["qQsx"]
-                {
-                    def formatter = mapGet(FORMATTERS, tokenType(ch));
-                    def curArgs = boxGet(args);
-                    def arg = listFirst(curArgs);
-                    boxSet(args, listButFirst(curArgs));
-                    <> formatter(arg)
-                }
-            )
-        |
-            ch = .
-            { <> tokenType(ch) }
-        )*
-    /};
-
-    <> stringAdd(pegApply(parFormat, formatString)*)
+    # This code is structured so that the call to `functionFromFormatString`
+    # is pure and hence can be evaluated at call site compile/eval time,
+    # leaving only the actual argument conversion and concatenation to do
+    # when used.
+    def formatFunction = functionFromFormatString(formatString);
+    <> formatFunction(rest*);
 };
-
-
-#
-# Export mechanics
-#
 
 <> [
     format: format
