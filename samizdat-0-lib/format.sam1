@@ -10,12 +10,6 @@
 # Helper definitions
 #
 
-# Formats a string argument.
-fn doPlainString(arg) {
-    # The `stringAdd` call effectively asserts that the argument is a string.
-    <> stringAdd(arg)
-};
-
 # Formats a hex int argument.
 fn doHex(arg) {
     <> stringFromInt(arg, 16)
@@ -25,7 +19,7 @@ fn doHex(arg) {
 def FORMATTERS = [
     q:   sourceString,
     Q:   sourceStringUnadorned,
-    s:   doPlainString,
+    s:   stringAdd, # `stringAdd` effectively asserts that `arg` is a string.
     x:   doHex
 ];
 
