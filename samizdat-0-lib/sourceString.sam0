@@ -11,7 +11,7 @@
 #
 
 # This is int digits for bases up to 36, in order.
-def INT_CHARS = "01234567890abcdefghijklmnopqrstuvwxyz";
+def INT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
