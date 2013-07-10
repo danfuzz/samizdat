@@ -633,7 +633,7 @@ fn reportError(pending) {
     io0Note("Pending tokens:");
 
     listForEach(pending)
-        { ., token :: io0Note(stringAdd("    ", token)) };
+        { ., token :: io0Note(stringAdd("    ", sourceString(token))) };
 
     io0Die("\nExtra tokens at end of program.")
 };
