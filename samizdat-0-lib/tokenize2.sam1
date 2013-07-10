@@ -54,6 +54,10 @@ fn intFromDigitList(baseSign, digits) {
 # Grammar rules
 #
 
+# Forward declaration of `tokToken`, for use in the interpolated string
+# rule.
+def tokToken = forwardFunction();
+
 # Parses a `/* ... */` comment, with nesting.
 def tokMultilineComment = forwardFunction();
 def implMultilineComment = {/
@@ -166,6 +170,33 @@ def tokNamedChar = {/
     }
 /};
 
+# Parses the inner portion of a string interpolation expression.
+# This captures a list of inner tokens, ending when parentheses are
+# balanced out (and ignoring other could-be-matched delimiter tokens).
+def tokStringInterpolation = forwardFunction();
+def implStringInterpolation = {/
+    firstTokens = (!["()"] tokToken)*
+
+    parenTokens = (
+        open = "("
+        inner = tokStringInterpolation
+        close = ")"
+        { <> [open, inner*, close] }
+    |
+        { <> [] }
+    )
+
+    tokens = { <> [firstTokens*, parenTokens*] }
+    more = (
+        # Predicate on non-empty matched tokens to avoid infinite recursion.
+        { <> ne(tokens, []) }
+        tokStringInterpolation
+    )?
+
+    { <> [tokens*, more*] }
+/};
+tokStringInterpolation(implStringInterpolation);
+
 # Parses a single character, inside a quoted string.
 def tokStringChar = {/
     (
@@ -214,6 +245,15 @@ def tokStringChar = {/
                 { <> @[error: "Invalid named character literal."] }
             )
         |
+            "("
+            tokens = tokStringInterpolation
+            (
+                ")"
+                { <> tokens }
+            |
+                { <> @[error: "Unbalanced string interpolation."] }
+            )
+        |
             { <> @[error: "Invalid character literal escape sequence."] }
         )
     )
@@ -227,10 +267,43 @@ def tokString = {/
     (
         "\""
         { <out> ::
-            # Propagate any character parsing error outward.
-            listForEach(chars)
-                { ., ch :: ifIs { <> isToken(ch) } { <out> ch } };
-            <> @[string: stringAdd(chars*)]
+            # Handle the empty string as a special case, to make the
+            # reduce below be more straightforward.
+            ifIs { <> eq(chars, []) }
+                { <out> @[string: ""] };
+
+            # Coalesce adjacent characters in `chars`. The result is an
+            # `elems` list consisting of multi-character strings,
+            # interpolations, and errors.
+            def elems = listReduce([listFirst(chars)], listButFirst(chars))
+                { result, ., ch ::
+                    def last = listLast(result);
+                    <> ifIs { <> and { <> isString(last) } { <> isString(ch) } }
+                        { <> [listButLast(result)*, stringAdd(last, ch)] }
+                        { <> [result, ch] }
+                };
+
+            # Check for a simple result.
+            ifIs { <> eq(lowSize(elems), 1) }
+                {
+                    def first = listFirst(elems);
+                    ifIs { <> isString(first) }
+                        {
+                            # There's only one element, and it's a string. So,
+                            # we have a simple non-interpolated string, and no
+                            # error. Return it.
+                            <out> @[string: first]
+                        }
+                };
+
+            # At this point, we have an interpolation or an error. Check
+            # for, and bail if we discover, the latter. The `isToken` test
+            # works, because errors are the only tokens (per se) yielded
+            # out of `tokStringChar`.
+            listForEach(elems)
+                { ., elem :: ifIs { <> isToken(elem) } { <out> elem } };
+
+            <> @[interpolatedString: elems]
         }
     |
         { <> @[error: "Unterminated string literal."] }
@@ -268,7 +341,7 @@ def tokError = {/
 /};
 
 # Parses an arbitrary token or error.
-def tokToken = {/
+def implToken = {/
     tokString | tokIdentifier | tokQuotedIdentifier
 |
     # This needs to be listed after the quoted identifier rule, to
@@ -282,6 +355,7 @@ def tokToken = {/
 |
     tokError
 /};
+tokToken(implToken);
 
 # Parses a file of tokens, yielding a list of them.
 def tokFile = {/
