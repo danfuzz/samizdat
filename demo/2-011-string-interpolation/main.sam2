@@ -1,0 +1,46 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# String interpolation demo.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper functions
+#
+
+fn print(string) {
+    io0Note(string)
+};
+
+#
+# Main tests
+#
+
+print("\("Hello.")");
+print("\{ <> "Greetings." }");
+print("One \("1") two \("2") three \("3").");
+print("Handy: \(sourceString(["blort", "fizmo", "igram"]))");
+
+print("\
+    I like \{
+        # A small sampling of foods.
+        def foods = [icky: "sardines", yummy: "muffins"];
+        <> mapGet(foods, "yummy")
+    }!");
+
+print("\
+    I also like \{ <out> ::
+        /* A couple more foods here. */
+        def foods = [icky: "natto", yummy: "biscuits"];
+        ifValue { <> mapGet(foods, "yummy") }
+            { food :: <out> food }
+    }!");
+
+<> 0
