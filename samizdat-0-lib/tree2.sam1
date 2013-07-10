@@ -1526,8 +1526,8 @@ def parForExpression = {/
     code = parNullaryClosure
 
     {
-        def genInit = mapGet("genClause", "init");
-        def genFormals = mapGet("genClause", "formals");
+        def genInit = mapGet(genClause, "init");
+        def genFormals = mapGet(genClause, "formals");
 
         def loopClosure = @[closure: [
             yieldDef: "continue",
