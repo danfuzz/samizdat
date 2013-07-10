@@ -1500,8 +1500,9 @@ def FOR_BODY_CLOSURE = sam0Tree("
 # ```
 # { <\"break"> ::
 #     def out = \"break";
-#     def body = { <\"continue"> ::
-#         { <next> name1, name2 :: stat1; stat2 }()
+#     def body = { <\"continue"> name1, name2 ::
+#         def next = \"continue";
+#         stat1; stat2
 #     };
 #     loopReduce(paraGeneratorFromValues(expr1, expr2))
 #         { generator ::
@@ -1516,7 +1517,9 @@ def FOR_BODY_CLOSURE = sam0Tree("
 # }()
 # ```
 #
-# with the break assignment omitted if there is no outer yield def.
+# with:
+# * the break assignment omitted if there is no outer yield def.
+# * the continue assignment omitted if there is no inner yield def
 def parForExpression = {/
     @for
     breakDef = parOptBreakDef
@@ -1527,9 +1530,15 @@ def parForExpression = {/
         def genInit = mapGet(genClause, "init");
         def genFormals = mapGet(genClause, "formals");
 
+        def codePayload = tokenValue(code);
+        def continueDef = ifValue { <> mapGet(codePayload, "yieldDef") }
+            { name :: <> [makeVarDef(name, makeVarRef("continue"))] }
+            { <> [] };
+
         def loopClosure = @[closure: [
+            formals: genFormals,
             yieldDef: "continue",
-            statements: [makeCall(closureWithFormals(code, genFormals*))]
+            statements: [continueDef*, mapGet(codePayload, "statements")*]
         ]];
 
         def mainClosure = @[closure: [
