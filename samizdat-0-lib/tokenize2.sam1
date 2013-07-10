@@ -170,30 +170,28 @@ def tokNamedChar = {/
     }
 /};
 
-# Parses the inner portion of a string interpolation expression.
-# This captures a list of inner tokens, ending when parentheses are
+# Parses the inner portion of a string interpolation expression. This
+# captures a list of inner tokens, ending when parentheses and braces are
 # balanced out (and ignoring other could-be-matched delimiter tokens).
 def tokStringInterpolation = forwardFunction();
 def implStringInterpolation = {/
-    firstTokens = (!["()"] tokToken)*
+    open = ["({"]
 
-    parenTokens = (
-        open = "("
-        inner = tokStringInterpolation
-        close = ")"
-        { <> [open, inner*, close] }
+    tokens = (
+        !["(){}"]
+        t = tokToken
+        { <> [t] }
     |
-        { <> [] }
-    )
-
-    tokens = { <> [firstTokens*, parenTokens*] }
-    more = (
-        # Predicate on non-empty matched tokens to avoid infinite recursion.
-        { <> ne(tokens, []) }
         tokStringInterpolation
-    )?
+    )*
 
-    { <> [tokens*, more*] }
+    close = [")}"]
+
+    {
+        def expectClose = mapGet(["(": ")", "{": "}"], tokenType(open));
+        <> ifIs { <> eq(tokenType(close), expectClose) }
+            { <> [open, listAdd(tokens*), close] }
+    }
 /};
 tokStringInterpolation(implStringInterpolation);
 
@@ -245,11 +243,9 @@ def tokStringChar = {/
                 { <> @[error: "Invalid named character literal."] }
             )
         |
-            "("
-            tokens = tokStringInterpolation
+            &["({"]
             (
-                ")"
-                { <> tokens }
+                tokStringInterpolation
             |
                 { <> @[error: "Unbalanced string interpolation."] }
             )
@@ -259,7 +255,8 @@ def tokStringChar = {/
     )
 /};
 
-# Parses a quoted string.
+# Parses a quoted string. This can yield either a `@string` token or
+# an `@interpolatedString` token (or an `@error` token).
 def tokString = {/
     "\""
     chars = tokStringChar*
