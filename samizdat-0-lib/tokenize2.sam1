@@ -188,16 +188,20 @@ def implStringInterpolation = {/
     expectClose = { <> mapGet(OPEN_CLOSE_MAP, tokenType(open)) }
 
     tokens = (
-        !["(){}"]
-        !"/}"
-        t = tokToken
-        { <> [t] }
-    |
-        "()" # So as not to turn it into two separate tokens.
-    |
-        tokStringInterpolation
+        tokWhitespace*
+        (
+            !["(){}"]
+            !"/}"
+            t = tokToken
+            { <> [t] }
+        |
+            "()" # So as not to turn it into two separate tokens.
+        |
+            tokStringInterpolation
+        )
     )*
 
+    tokWhitespace*
     close = tokToken
 
     {
