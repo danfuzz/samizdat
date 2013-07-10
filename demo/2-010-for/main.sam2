@@ -46,7 +46,7 @@ for (. in [a:1, b:2, c:3, d:4, e:5]) {
 };
 
 io0Note("\nList and string in parallel.");
-for (x in [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55], y in ["fibonacci"]) {
+for (x in [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55], y in "fibonacci") {
     print(x, y)
 };
 
