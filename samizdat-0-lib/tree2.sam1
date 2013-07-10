@@ -65,10 +65,10 @@ fn makeCallNameThunks(name, actuals*) {
 };
 
 # Returns a `closure` node like the one given, except with the `formals`
-# binding replaced with a list of the single given argument. The `formal`
+# binding replaced with the given arguments. Each of the `formals`
 # must be a formal argument map as described in the execution tree spec.
-fn closureWithFormal(closure, formal) {
-    <> @[closure: [tokenValue(closure)*, formals: [formal]]]
+fn closureWithFormals(closure, formals*) {
+    <> @[closure: [tokenValue(closure)*, formals: formals]]
 };
 
 fn closureWithYieldDef(closure, name) {
@@ -79,7 +79,7 @@ fn closureWithYieldDef(closure, name) {
 def YIELD_VOID_THUNK = @[closure: [statements: []]];
 
 # A single-argument yield-void function.
-def YIELD_VOID_FN_1 = closureWithFormal(YIELD_VOID_THUNK, [:]);
+def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 
 # Map of token types to corresponding unary operator function name variable
 # references.
@@ -1164,7 +1164,7 @@ def parIfExpression = {/
             <> makeThunk(
                 makeCallName("ifValue",
                     makeThunk(test),
-                    closureWithFormal(then, formal),
+                    closureWithFormals(then, formal),
                     result))
         }
     }
@@ -1287,7 +1287,7 @@ def parSwitchExpression = {/
 
         def optDefault = listMap(cases) { ., case ::
             <> ifIs { <> eq(mapGet(case, "keys"), @default) }
-                { <> closureWithFormal(mapGet(case, "code"), formal) }
+                { <> closureWithFormals(mapGet(case, "code"), formal) }
         };
 
         def optElse = listMap(cases) { ., case ::
@@ -1300,7 +1300,7 @@ def parSwitchExpression = {/
             <> ifIs { <> eq(tokenType(keys), "expression") }
                 {
                     <> makeCallName("makeList",
-                        closureWithFormal(mapGet(case, "code"), formal),
+                        closureWithFormals(mapGet(case, "code"), formal),
                         tokenValue(keys))
                 }
         };
@@ -1318,7 +1318,7 @@ def parSwitchExpression = {/
                 makeCallName("makeList",
                     makeCallName("makeMapReversed", regularCases*),
                     ifValue { <> optDefault* }
-                        { value :: <> closureWithFormal(value, formal) }
+                        { value :: <> closureWithFormals(value, formal) }
                         { <> YIELD_VOID_FN_1 },
                     @[expression: test]));
 
@@ -1374,7 +1374,7 @@ def parWhileExpression = {/
             statements: [
                 makeCallName("ifValue",
                     makeThunk(test),
-                    closureWithFormal(code, formal),
+                    closureWithFormals(code, formal),
                     makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
             ]
         ]];
@@ -1439,6 +1439,121 @@ def parDoExpression = {/
     }
 /};
 
+# Parses a single generator definition, yielding a map of the form
+# @[init: ..., formal: ...], with `init` bound to an initializer
+# expression and `formal` bound to a formal argument declaration.
+def parGeneratorDef = {/
+    formal = (
+        name = @identifier
+        { <> [name: tokenValue(name)] }
+    |
+        "."
+        { <> [:] }
+    )
+
+    @in
+    init = parExpression
+
+    { <> [formal: formal, init: init] }
+/};
+
+# Parses a parenthesized generator clause, yielding a map of the form
+# @[formals: ..., init: ...], with `formals` bound to a formal
+# argument declaration corresponding to the names given to each of the
+# generators, and `init` bound to an initializer expression that yields a
+# para-generator.
+def parGeneratorClause = {/
+    @"("
+    firstGen = parGeneratorDef
+    moreGens = ("," parGeneratorDef)*
+    @")"
+
+    {
+        def gens = [firstGen, moreGens*];
+        def formals = listMap(gens) { ., gen :: <> mapGet(gen, "formal") };
+        def inits = listMap(gens) { ., gen :: <> mapGet(gen, "init") };
+        def init = makeCallName("paraGeneratorFromValues", inits*);
+
+        <> [formals: formals, init: init]
+    }
+/};
+
+# Tree for the second argument to the `loopReduce` inside a `for` translation.
+# This expression is constant across all `for` loops, and it's most easily
+# constructed by using the built-in parser.
+def FOR_BODY_CLOSURE = sam0Tree("
+    generator ::
+    def box = yieldBox();
+    <> ifValue { <> generator(box) }
+        { nextGenerator ::
+            body(boxGet(box)*);
+            <> nextGenerator
+        }
+        { <\\\"break\"> }");
+
+# Parses a for expression. The translation is along these lines:
+#
+# ```
+# for <out> (name1 in expr1, name2 in expr2) { <next> :: stat1; stat2 }
+# ```
+# =>
+# ```
+# { <\"break"> ::
+#     def out = \"break";
+#     def body = { <\"continue"> name1, name2 ::
+#         def next = \"continue";
+#         stat1; stat2
+#     };
+#     loopReduce(paraGeneratorFromValues(expr1, expr2))
+#         { generator ::
+#             def box = yieldBox();
+#             <> ifValue { <> generator(box) }
+#                 { nextGenerator ::
+#                     body(boxGet(box)*);
+#                     <> nextGenerator
+#                 }
+#                 { <\"break"> }
+#         }
+# }()
+# ```
+#
+# with:
+# * the break assignment omitted if there is no outer yield def.
+# * the continue assignment omitted if there is no inner yield def
+def parForExpression = {/
+    @for
+    breakDef = parOptBreakDef
+    genClause = parGeneratorClause
+    code = parNullaryClosure
+
+    {
+        def genInit = mapGet(genClause, "init");
+        def genFormals = mapGet(genClause, "formals");
+
+        def codePayload = tokenValue(code);
+        def continueDef = ifValue { <> mapGet(codePayload, "yieldDef") }
+            { name :: <> [makeVarDef(name, makeVarRef("continue"))] }
+            { <> [] };
+
+        def loopClosure = @[closure: [
+            formals: genFormals,
+            yieldDef: "continue",
+            statements: [continueDef*, mapGet(codePayload, "statements")*]
+        ]];
+
+        def mainClosure = @[closure: [
+            yieldDef: "break",
+            statements: [
+                breakDef*,
+                makeVarDef("body", loopClosure),
+                makeCallName("loopReduce", genInit, FOR_BODY_CLOSURE)
+            ]
+        ]];
+
+        <> makeCall(mainClosure)
+    }
+/};
+
 # Parses a general expression.
 def implExpression = {/
     # This one's the top level "regular-looking" expression (in that it
@@ -1449,15 +1564,10 @@ def implExpression = {/
     # family languages have function expressions).
     parFnExpression
 |
-    # This one and the rest are "statement-like" expressions (in that they
-    # look like corresponding statements from C-derived languages).
-    parIfExpression
-|
-    parDoExpression
-|
-    parSwitchExpression
-|
-    parWhileExpression
+    # These are "statement-like" expressions, in that they look like
+    # corresponding statements in many (most?) C-derived languages.
+    parDoExpression | parForExpression | parIfExpression |
+    parSwitchExpression | parWhileExpression
 /};
 parExpression(implExpression);
 
