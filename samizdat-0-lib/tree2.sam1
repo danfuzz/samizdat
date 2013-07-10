@@ -1445,7 +1445,7 @@ def parDoExpression = {/
 def parGeneratorDef = {/
     formal = (
         name = @identifier
-        { <> [name: n] }
+        { <> [name: name] }
     |
         "."
         { <> [:] }
