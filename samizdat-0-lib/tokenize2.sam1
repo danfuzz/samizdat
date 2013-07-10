@@ -170,25 +170,37 @@ def tokNamedChar = {/
     }
 /};
 
+# Map from opening tokens to corresponding closers. Only includes mappings
+# necessary to parse string interpolations.
+def OPEN_CLOSE_MAP = [
+    "(":  ")",
+    "{":  "}",
+    "{/": "/}"
+];
+
 # Parses the inner portion of a string interpolation expression. This
 # captures a list of inner tokens, ending when parentheses and braces are
 # balanced out (and ignoring other could-be-matched delimiter tokens).
 def tokStringInterpolation = forwardFunction();
 def implStringInterpolation = {/
-    open = ["({"]
+    &["({"]
+    open = tokToken
+    expectClose = { <> mapGet(OPEN_CLOSE_MAP, tokenType(open)) }
 
     tokens = (
         !["(){}"]
+        !"/}"
         t = tokToken
         { <> [t] }
+    |
+        "()" # So as not to turn it into two separate tokens.
     |
         tokStringInterpolation
     )*
 
-    close = [")}"]
+    close = tokToken
 
     {
-        def expectClose = mapGet(["(": ")", "{": "}"], tokenType(open));
         <> ifIs { <> eq(tokenType(close), expectClose) }
             { <> [open, listAdd(tokens*)*, close] }
     }
