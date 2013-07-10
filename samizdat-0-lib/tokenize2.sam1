@@ -190,7 +190,7 @@ def implStringInterpolation = {/
     {
         def expectClose = mapGet(["(": ")", "{": "}"], tokenType(open));
         <> ifIs { <> eq(tokenType(close), expectClose) }
-            { <> [open, listAdd(tokens*), close] }
+            { <> [open, listAdd(tokens*)*, close] }
     }
 /};
 tokStringInterpolation(implStringInterpolation);
@@ -277,7 +277,7 @@ def tokString = {/
                     def last = listLast(result);
                     <> ifIs { <> and { <> isString(last) } { <> isString(ch) } }
                         { <> [listButLast(result)*, stringAdd(last, ch)] }
-                        { <> [result, ch] }
+                        { <> [result*, ch] }
                 };
 
             # Check for a simple result.
