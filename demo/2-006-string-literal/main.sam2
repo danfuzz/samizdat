@@ -16,7 +16,7 @@ SELF_PATH, ARGS* ::
 #
 
 fn out(string) {
-    io0Note(format("Got: %q", string))
+    io0Note("Got: \%q(string)")
 };
 
 #

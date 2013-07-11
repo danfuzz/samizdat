@@ -17,12 +17,12 @@ SELF_PATH, ARGS* ::
 
 # Prints out the given value.
 fn out(value) {
-    io0Note(format("%q", value))
+    io0Note(sourceString(value))
 };
 
 # Prints out the given value in hex.
 fn outHex(value) {
-    io0Note(format("%x", value))
+    io0Note("\%x(value)")
 };
 
 # Returns void.

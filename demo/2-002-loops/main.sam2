@@ -19,7 +19,7 @@ def box = mutableBox(0);
 
 while (boxGet(box) < 10) {
     boxSet(box, boxGet(box) + 1);
-    io0Note(format("Value is %q.", boxGet(box)))
+    io0Note("Value is \%q(boxGet(box)).")
 };
 
 while (boxGet(box) < 20) {
@@ -27,7 +27,7 @@ while (boxGet(box) < 20) {
     if (boxGet(box) < 15) {
         continue
     };
-    io0Note(format("Value is %q.", boxGet(box)))
+    io0Note("Value is \%q(boxGet(box)).")
 };
 
 while (boxGet(box) < 30) { <next> ::
@@ -35,7 +35,7 @@ while (boxGet(box) < 30) { <next> ::
     if (boxGet(box) < 25) {
         <next>
     };
-    io0Note(format("Value is %q.", boxGet(box)))
+    io0Note("Value is \%q(boxGet(box)).")
 };
 
 def result1 = while (boxGet(box) < 40) {
@@ -43,27 +43,27 @@ def result1 = while (boxGet(box) < 40) {
     if (boxGet(box) == 35) {
         break "blort"
     };
-    io0Note(format("Value is %q.", boxGet(box)))
+    io0Note("Value is \%q(boxGet(box)).")
 };
 
-io0Note(format("Result 1 is %q.", result1));
+io0Note("Result 1 is \%q(result1).");
 
 def result2 = while <out> (boxGet(box) < 50) {
     boxSet(box, boxGet(box) + 1);
     if (boxGet(box) == 45) {
         <out> "fizmo"
     };
-    io0Note(format("Value is %q.", boxGet(box)))
+    io0Note("Value is \%q(boxGet(box)).")
 };
 
-io0Note(format("Result 2 is %q.", result2));
+io0Note("Result 2 is \%q(result2).");
 
 do {
     boxSet(box, boxGet(box) + 1);
     if (boxGet(box) == 55) {
         break
     };
-    io0Note(format("Value is %q.", boxGet(box)))
+    io0Note("Value is \%q(boxGet(box)).")
 };
 
 def result3 = do <out> {
@@ -71,23 +71,23 @@ def result3 = do <out> {
     if (boxGet(box) == 60) {
         <out> "igram"
     };
-    io0Note(format("Value is %q.", boxGet(box)))
+    io0Note("Value is \%q(boxGet(box)).")
 };
 
-io0Note(format("Result 3 is %q.", result3));
+io0Note("Result 3 is \%q(result3).");
 
 do {
     boxSet(box, boxGet(box) + 1);
     if (boxGet(box) < 65) {
         continue
     };
-    io0Note(format("Value is %q.", boxGet(box)))
+    io0Note("Value is \%q(boxGet(box)).")
 } while (boxGet(box) < 70);
 
 while (value = (75 > boxGet(box))) {
     def nextValue = value + 1;
     boxSet(box, nextValue);
-    io0Note(format("Value is %q.", nextValue));
+    io0Note("Value is \%q(nextValue).")
 };
 
 <> 0

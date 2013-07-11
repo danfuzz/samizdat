@@ -17,7 +17,7 @@ SELF_PATH, ARGS* ::
 
 # Output the given values.
 fn print(values*) {
-    io0Note(format("    %Q", values))
+    io0Note("    \%Q(values)")
 };
 
 

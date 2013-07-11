@@ -81,15 +81,15 @@ io0Note("\nElse...");
 io0Note(elser("blort"));
 io0Note(elser("fizmo"));
 io0Note(elser());
-io0Note(format("%q", elser("igram")?)); # `?` because we expect void.
+io0Note(sourceString(elser("igram")?)); # `?` because we expect void.
 
 io0Note("\nNames...");
-io0Note(format("%q", namer(1)));
-io0Note(format("%q", namer(2)));
-io0Note(format("%q", namer(3)));
-io0Note(format("%q", namer(4)));
-io0Note(format("%q", namer(5)));
-io0Note(format("%q", namer(6)));
-io0Note(format("%q", namer(7)));
+io0Note(sourceString(namer(1)));
+io0Note(sourceString(namer(2)));
+io0Note(sourceString(namer(3)));
+io0Note(sourceString(namer(4)));
+io0Note(sourceString(namer(5)));
+io0Note(sourceString(namer(6)));
+io0Note(sourceString(namer(7)));
 
 <> 0

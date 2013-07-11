@@ -18,7 +18,7 @@ SELF_PATH, ARGS* ::
 # Prints out the values yielded by the given generator.
 fn out(generator) {
     def values = listFromGenerator(generator);
-    io0Note(format("Got: %q", values))
+    io0Note("Got: \%q(values)")
 };
 
 # Prints out 10 values yielded by the given generator (and no more).
@@ -26,7 +26,7 @@ fn outTen(generator) {
     def values = listFromGenerator(
         paraGeneratorFromValues(generator, [(1..10)*]));
     def extract = listMap(values) { ., value :: <> listFirst(value) };
-    io0Note(format("Got: %q", extract))
+    io0Note("Got: \%q(extract)")
 };
 
 
