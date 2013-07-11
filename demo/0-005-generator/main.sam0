@@ -109,6 +109,11 @@ msgAll("Zero-increment int range",
 msgAll("Zero-increment character range",
     generatorForInclusiveRange("x", 0, "a"));
 
+msgAll("ParaGenerator with reduceGenerator",
+    paraGeneratorFromValues(
+        generatorForInclusiveRange(1, 1, 5),
+        reduceGenerator("") { x :: <> stringAdd(x, "x") }));
+
 msgAll("Empty SeqGenerator",
     seqGeneratorFromValues());
 
