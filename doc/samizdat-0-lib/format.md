@@ -33,8 +33,8 @@ The following are the format codes and their meanings:
 * `%Q` &mdash; "Quotes" the argument without top-level adornment through
   `sourceStringUnadorned` (see which).
 
-* `%s` &mdash; Assumes the argument is a string, and includes it in
-  the output without additional formatting.
+* `%s` &mdash; "Quotes" a non-string argument, by calling `stringFromValue`
+  on it (see which).
 
 * `%x` &mdash; Converts the argument, which must be an int, into a hexadecimal
   string.
@@ -52,8 +52,8 @@ following, with the indicated meaning:
 * `Q` &mdash; "Quotes" the argument without top-level adornment, by
   calling `sourceStringUnadorned` on it (see which).
 
-* `s` &mdash; If the argument is a string, yields it unmodified. Otherwise
-  acts the same as `q`.
+* `s` &mdash; "Quotes" a non-string argument, by calling `stringFromValue`
+  on it (see which).
 
 * `x` &mdash; Converts the argument, which must be an int, into a hexadecimal
   string.
@@ -84,3 +84,8 @@ This is just like `sourceString`, except that top-level adornment
 
 Converts an int into a string form, in the given base which defaults to
 10. If specified, base may be any int in the range `2..36`.
+
+#### `stringFromValue(value) <> string`
+
+This is just like `sourceString`, except that if `value` is a string,
+it is returned as-is.
