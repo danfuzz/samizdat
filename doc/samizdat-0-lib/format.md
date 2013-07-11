@@ -27,19 +27,42 @@ The following are the format codes and their meanings:
 
 * `%%` &mdash; Outputs a literal percent. This does not consume an argument.
 
-* `%s` &mdash; Assumes the argument is a string, and includes it in
-  the output without additional formatting.
-
 * `%q` &mdash; "Quotes" the argument by passing it through `sourceString`
   (see which).
 
 * `%Q` &mdash; "Quotes" the argument without top-level adornment through
   `sourceStringUnadorned` (see which).
 
-#### `sourceString(value) <> string`
+* `%s` &mdash; "Quotes" a non-string argument, by calling `stringFromValue`
+  on it (see which).
+
+* `%x` &mdash; Converts the argument, which must be an int, into a hexadecimal
+  string.
+
+#### `formatterFromString(formatSpec) <> function`
+
+This takes a formatting specification string and returns a formatter
+function which takes a single argument and applies the so specified
+formatting to it, yielding a string. The string must be one of the
+following, with the indicated meaning:
+
+* `q` &mdash; "Quotes" the argument by calling `sourceString` on it
+  (see which).
+
+* `Q` &mdash; "Quotes" the argument without top-level adornment, by
+  calling `sourceStringUnadorned` on it (see which).
+
+* `s` &mdash; "Quotes" a non-string argument, by calling `stringFromValue`
+  on it (see which).
+
+* `x` &mdash; Converts the argument, which must be an int, into a hexadecimal
+  string.
+
+#### `sourceString(value?) <> string`
 
 Converts an arbitrary value into a string representation form
-that is meant to mimic the Samizdat source syntax.
+that is meant to mimic the Samizdat source syntax. If `value` is not passed,
+this returns the string `"void"`.
 
 **Note:** The output differs from *Samizdat Layer 0* syntax in that
 string forms can include two escape forms not defined in the
@@ -53,7 +76,7 @@ language:
   non-printing characters other than newline that are in the Latin-1
   code point range.
 
-#### `sourceStringUnadorned(value) <> string`
+#### `sourceStringUnadorned(value?) <> string`
 
 This is just like `sourceString`, except that top-level adornment
 (quotes, etc.) are not produced.
@@ -62,3 +85,9 @@ This is just like `sourceString`, except that top-level adornment
 
 Converts an int into a string form, in the given base which defaults to
 10. If specified, base may be any int in the range `2..36`.
+
+#### `stringFromValue(value?) <> string`
+
+This is just like `sourceString`, except that if `value` is a string,
+it is returned as-is, and if `value` is not passed, this returns the
+empty string.

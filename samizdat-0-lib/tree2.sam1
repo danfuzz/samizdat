@@ -155,6 +155,9 @@ fn reportError(pending) {
 # with comments indicating the "hooks" for higher layers.
 #
 
+# Forward declaration required for layer 2.
+def parInterpolatedString = forwardFunction();
+
 # Forward declarations.
 def parProgramBody = forwardFunction();
 def parExpression = forwardFunction();
@@ -552,6 +555,9 @@ def parAtom = {/
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
     # that *Layer 1* can only be "activated" with that one specific token.
     &@"{/" parParser
+|
+    # Defined by *Samizdat Layer 2*.
+    &@interpolatedString parInterpolatedString
 /};
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
@@ -827,6 +833,94 @@ parChoicePex(implChoicePex);
 # Samizdat Layer 2 definitions
 #
 
+# Helper for `?` postfix and string interpolation: Construct an optional-value
+# expression. This is approximately:
+#
+# ```
+# ifValue { <> node }
+#     { value :: <> [value] }
+#     { <> [] }
+# ```
+fn makeOptValueExpression(node) {
+    def thenClosure = @[closure: [
+        formals: [[name: "value"]],
+        statements: [],
+        yield: makeCallName("makeList", makeVarRef("value"))
+    ]];
+    def elseClosure = makeThunk(makeLiteral([]));
+
+    <> makeCallName("ifValue", makeThunk(node), thenClosure, elseClosure)
+};
+
+# Helper for string interpolation: Parses the two kinds of interpolation,
+# yielding an appropriate expression node if syntactically valid, including
+# verification that all input was consumed.
+def parStringInterpolation = {/
+    &@"("
+    ex = parAtom
+    !.
+    { <> ex }
+|
+    &@"{"
+    block = parNullaryClosure
+    !.
+    { <> makeCall(block) }
+/};
+
+# Parses an interpolated string. The payload of an interpolated string
+# token is a list with elements being either simple strings or lists of
+# tokens. The token lists are delimited either with parentheses or braces.
+# Parenthesized lists are taken to be expressions to be evaluated. Braced
+# lists are taken to be thunks to be evaluated-and-called. The translation
+# is along these lines:
+#
+# ```
+# @[interpolatedString: [
+#     "string",
+#     [format: "formatStr", tokens: [@"(", exprToken, ..., @")"]],
+#     [format: "formatStr", tokens: [@"{", blockToken, ..., @"}"]]
+# ]]
+# ```
+# =>
+# ```
+# stringAdd("string", fmt1((expr...)?*), fmt2({ block... }()?*))
+# ```
+#
+def implInterpolatedString = {/
+    token = @interpolatedString
+
+    {
+        # Convert each of the payload items into the proper form.
+        # This includes recursive parser calls to convert list forms
+        # into appropriate node types.
+        def elems = listMap(tokenValue(token)) { ., elem ::
+            <> ifIs { <> isString(elem) }
+                { <> makeLiteral(elem) }
+                {
+                    def tokens = mapGet(elem, "tokens");
+
+                    def formatter = ifValue { <> mapGet(elem, "format") }
+                        { format ::
+                            <> makeCallName("formatterFromString",
+                                makeLiteral(format))
+                        }
+                        { <> makeVarRef("stringFromValue") };
+
+                    def call = ifValue
+                        { <> pegApply(parStringInterpolation, tokens) }
+                        { ex :: <> ex }
+                        { io0Die("Invalid syntax in string interpolation.") };
+
+                    <> makeCall(formatter,
+                        @[interpolate: makeOptValueExpression(call)])
+                }
+        };
+
+        <> makeCallName("stringAdd", elems*)
+    }
+/};
+parInterpolatedString(implInterpolatedString);
+
 # Parses a non-local exit / return. All of the form matched by this rule
 # have the dual properties of (a) necessarily being at the end of a code
 # block, and (b) being represented as a function call in the underlying
@@ -921,19 +1015,7 @@ def implPostfixOperator = {/
     }
 |
     @"?"
-    {
-        def thenClosure = @[closure: [
-            formals: [[name: "value"]],
-            statements: [],
-            yield: makeCallName("makeList", makeVarRef("value"))
-        ]];
-        def elseClosure = makeThunk(makeLiteral([]));
-
-        <> { node ::
-            def nodeThunk = makeThunk(node);
-            <> makeCallName("ifValue", nodeThunk, thenClosure, elseClosure)
-        }
-    }
+    { <> { node :: <> makeOptValueExpression(node) } }
 /};
 parPostfixOperator(implPostfixOperator);
 

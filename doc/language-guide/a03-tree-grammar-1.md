@@ -464,6 +464,8 @@ def parAtom = {/
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
     # that *Layer 1* can only be "activated" with that one specific token.
     &@"{/" parParser
+#|
+    # Note: There are additional atom rules in *Samizdat Layer 2*.
 /};
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
