@@ -238,8 +238,6 @@ not allow consequent blocks to fall through. So, a block-final
 between cases, the thing to do is factor it out into a separate
 function.
 
-TODO: Name binding of the dispatch expression is not yet handled.
-
 ### Unconditional loop &mdash; `do`
 
 To loop unconditionally, simply place a block after the `do` keyword:
@@ -305,5 +303,3 @@ and define both break and continue contexts.
 since the first iteration can't possibly have a binding for the
 test expression, and the language doesn't allow variables to be bound
 to void.
-
-TODO: Name binding is not yet implemented for the `while` form.
