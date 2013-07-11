@@ -878,9 +878,19 @@ def implInterpolatedString = {/
             <> ifIs { <> isString(elem) }
                 { <> makeLiteral(elem) }
                 {
-                    <> ifValue { <> pegApply(parStringInterpolation, elem) }
+                    def tokens = mapGet(elem, "tokens");
+                    def call = ifValue
+                        { <> pegApply(parStringInterpolation, tokens) }
                         { ex :: <> ex }
-                        { io0Die("Invalid syntax in string interpolation.") }
+                        { io0Die("Invalid syntax in string interpolation.") };
+                    <> ifValue { <> mapGet(elem, "format") }
+                        { format ::
+                            <> makeCall(
+                                makeCallName("formatterFromString",
+                                    makeLiteral(format)),
+                                call)
+                        }
+                        { <> call }
                 }
         };
 

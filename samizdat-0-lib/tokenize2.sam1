@@ -259,9 +259,19 @@ def tokStringChar = {/
                 { <> @[error: "Invalid named character literal."] }
             )
         |
+            format = (
+                "%"
+                chars = ["0".."9" "a".."z" "A".."Z" "+-."]*
+                { <> [format: stringFromTokenList(chars)] }
+            |
+                { <> [:] }
+            )
+
             &["({"]
+
             (
-                tokStringInterpolation
+                tokens = tokStringInterpolation
+                { <> [format*, tokens: tokens] }
             |
                 { <> @[error: "Unbalanced string interpolation."] }
             )
@@ -287,7 +297,7 @@ def tokString = {/
 
             # Coalesce adjacent characters in `chars`. The result is an
             # `elems` list consisting of multi-character strings,
-            # interpolations, and errors.
+            # interpolation maps, and errors.
             def elems = listReduce([listFirst(chars)], listButFirst(chars))
                 { result, ., ch ::
                     def last = listLast(result);
