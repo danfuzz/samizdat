@@ -858,13 +858,13 @@ def parStringInterpolation = {/
 # ```
 # @[interpolatedString: [
 #     "string",
-#     [@"(", exprToken, ..., @")"],
-#     [@"{", blockToken, ..., @"}"]
+#     [format: "fstr", tokens: [@"(", exprToken, ..., @")"]],
+#     [format: "fstr", tokens: [@"{", blockToken, ..., @"}"]]
 # ]]
 # ```
 # =>
 # ```
-# stringAdd("string", (expr...), { block... }())
+# stringAdd("string", fmt1(expr...), fmt2({ block... }())
 # ```
 #
 def implInterpolatedString = {/
@@ -879,18 +879,20 @@ def implInterpolatedString = {/
                 { <> makeLiteral(elem) }
                 {
                     def tokens = mapGet(elem, "tokens");
+
+                    def formatter = ifValue { <> mapGet(elem, "format") }
+                        { format ::
+                            <> makeCallName("formatterFromString",
+                                makeLiteral(format))
+                        }
+                        { <> makeVarRef("stringFromValue") };
+
                     def call = ifValue
                         { <> pegApply(parStringInterpolation, tokens) }
                         { ex :: <> ex }
                         { io0Die("Invalid syntax in string interpolation.") };
-                    <> ifValue { <> mapGet(elem, "format") }
-                        { format ::
-                            <> makeCall(
-                                makeCallName("formatterFromString",
-                                    makeLiteral(format)),
-                                call)
-                        }
-                        { <> call }
+
+                    <> makeCall(formatter, call)
                 }
         };
 
