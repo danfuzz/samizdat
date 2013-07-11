@@ -833,6 +833,25 @@ parChoicePex(implChoicePex);
 # Samizdat Layer 2 definitions
 #
 
+# Helper for `?` postfix and string interpolation: Construct an optional-value
+# expression. This is approximately:
+#
+# ```
+# ifValue { <> node }
+#     { value :: <> [value] }
+#     { <> [] }
+# ```
+fn makeOptValueExpression(node) {
+    def thenClosure = @[closure: [
+        formals: [[name: "value"]],
+        statements: [],
+        yield: makeCallName("makeList", makeVarRef("value"))
+    ]];
+    def elseClosure = makeThunk(makeLiteral([]));
+
+    <> makeCallName("ifValue", makeThunk(node), thenClosure, elseClosure)
+};
+
 # Helper for string interpolation: Parses the two kinds of interpolation,
 # yielding an appropriate expression node if syntactically valid, including
 # verification that all input was consumed.
@@ -858,13 +877,13 @@ def parStringInterpolation = {/
 # ```
 # @[interpolatedString: [
 #     "string",
-#     [format: "fstr", tokens: [@"(", exprToken, ..., @")"]],
-#     [format: "fstr", tokens: [@"{", blockToken, ..., @"}"]]
+#     [format: "formatStr", tokens: [@"(", exprToken, ..., @")"]],
+#     [format: "formatStr", tokens: [@"{", blockToken, ..., @"}"]]
 # ]]
 # ```
 # =>
 # ```
-# stringAdd("string", fmt1(expr...), fmt2({ block... }())
+# stringAdd("string", fmt1((expr...)?*), fmt2({ block... }()?*))
 # ```
 #
 def implInterpolatedString = {/
@@ -892,7 +911,8 @@ def implInterpolatedString = {/
                         { ex :: <> ex }
                         { io0Die("Invalid syntax in string interpolation.") };
 
-                    <> makeCall(formatter, call)
+                    <> makeCall(formatter,
+                        @[interpolate: makeOptValueExpression(call)])
                 }
         };
 
@@ -995,19 +1015,7 @@ def implPostfixOperator = {/
     }
 |
     @"?"
-    {
-        def thenClosure = @[closure: [
-            formals: [[name: "value"]],
-            statements: [],
-            yield: makeCallName("makeList", makeVarRef("value"))
-        ]];
-        def elseClosure = makeThunk(makeLiteral([]));
-
-        <> { node ::
-            def nodeThunk = makeThunk(node);
-            <> makeCallName("ifValue", nodeThunk, thenClosure, elseClosure)
-        }
-    }
+    { <> { node :: <> makeOptValueExpression(node) } }
 /};
 parPostfixOperator(implPostfixOperator);
 
