@@ -250,7 +250,7 @@ fn stringFromInt(value, optBase?) {
 fn stringFromValue(arg) {
     <> ifIs { <> isString(arg) }
         { <> arg }
-        { <> sourceStriong(arg) }
+        { <> sourceString(arg) }
 };
 
 <> [
