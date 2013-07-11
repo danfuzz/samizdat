@@ -58,10 +58,11 @@ following, with the indicated meaning:
 * `x` &mdash; Converts the argument, which must be an int, into a hexadecimal
   string.
 
-#### `sourceString(value) <> string`
+#### `sourceString(value?) <> string`
 
 Converts an arbitrary value into a string representation form
-that is meant to mimic the Samizdat source syntax.
+that is meant to mimic the Samizdat source syntax. If `value` is not passed,
+this returns the string `"void"`.
 
 **Note:** The output differs from *Samizdat Layer 0* syntax in that
 string forms can include two escape forms not defined in the
@@ -75,7 +76,7 @@ language:
   non-printing characters other than newline that are in the Latin-1
   code point range.
 
-#### `sourceStringUnadorned(value) <> string`
+#### `sourceStringUnadorned(value?) <> string`
 
 This is just like `sourceString`, except that top-level adornment
 (quotes, etc.) are not produced.
@@ -85,7 +86,8 @@ This is just like `sourceString`, except that top-level adornment
 Converts an int into a string form, in the given base which defaults to
 10. If specified, base may be any int in the range `2..36`.
 
-#### `stringFromValue(value) <> string`
+#### `stringFromValue(value?) <> string`
 
 This is just like `sourceString`, except that if `value` is a string,
-it is returned as-is.
+it is returned as-is, and if `value` is not passed, this returns the
+empty string.
