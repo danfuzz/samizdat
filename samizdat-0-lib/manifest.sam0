@@ -31,7 +31,7 @@ def MANIFEST = [
     "conditional.sam0",
     "code.sam0",
     "collections.sam0",
-    "sourceString.sam0",
+    "format.sam0",
     "peg.sam0",
     "meta.sam0",
 
