@@ -77,7 +77,7 @@ language. Void is converted to the string `"void"`.
 For example:
 
 ```
-"I like \%q("biscuits")." => "I like biscuits."
+"I like \%q("biscuits")." => "I like \"biscuits\"."
 "I like \%q([@muffins, @scones"])." => "I like [@muffins, @scones]."
 ```
 
