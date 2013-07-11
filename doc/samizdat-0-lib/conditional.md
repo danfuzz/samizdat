@@ -49,7 +49,7 @@ function with no arguments.
 
 In order for the loop to terminate, the function must use a nonlocal exit.
 
-#### `loopReduce(base, function) <> !.`
+#### `loopReduce(function, base) <> !.`
 
 Primitive unconditional loop construct, with reduce semantics. This repeatedly
 calls the given function with a single argument. The argument is the
