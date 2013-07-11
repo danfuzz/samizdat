@@ -478,7 +478,7 @@ def parActualsList = {/
     normalActuals = parUnadornedList
     @")"
     closureActuals = parClosure*
-    { <> [normalActuals*, closureActuals*] }
+    { <> [closureActuals*, normalActuals*] }
 |
     parClosure+
 /};
