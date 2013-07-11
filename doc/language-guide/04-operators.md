@@ -30,8 +30,12 @@ not evaluated, the function isn't called, and the expression yields void.
 
 In order to make it convenient to define control-structure-like functions,
 any number of block closure literals may follow the closing parenthesis. All
-such closures are taken to be additional arguments to the function.
-For example, `foo(bar) { baz }` means the same thing as `foo(bar, { baz })`.
+such closures are taken to be additional *initial* arguments to the function.
+For example, `foo(bar) { baz }` means the same thing as `foo({ baz }, bar)`.
+This ordering is done based on the principal that for functions which take
+a mix of function and non-function arguments, the function arguments are
+more likely to be fixed in quantity (e.g., always just one) and fixed in
+meaning.
 
 If there are no arguments (including no closure arguments), parentheses are
 required to unambiguously indicate that function application is to be

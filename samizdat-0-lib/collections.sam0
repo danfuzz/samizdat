@@ -16,7 +16,7 @@
 
 # Generic for-each function. Instead of the value-to-iterate argument, this
 # takes an `nthFunc` of one argument.
-fn genericForEach(nthFunc, function) {
+fn genericForEach(function, nthFunc) {
     loopReduce(0) { index ::
         <> ifValue { <> nthFunc(index) }
             { item ::
@@ -29,7 +29,7 @@ fn genericForEach(nthFunc, function) {
 
 # Generic reduce function. Instead of the value-to-reduce argument, this
 # takes an `nthFunc` of one argument.
-fn genericReduce(base, nthFunc, function) {
+fn genericReduce(function, nthFunc, base) {
     loopReduce([base, 0]) { state ::
         def result = listNth(state, 0);
         def index = listNth(state, 1);
@@ -46,7 +46,7 @@ fn genericReduce(base, nthFunc, function) {
 
 # Generic map function. Instead of the value-to-map argument, this
 # takes an `nthFunc` of one argument.
-fn genericMap(nthFunc, function) {
+fn genericMap(function, nthFunc) {
     <> genericReduce([], nthFunc)
         { result, index, item ::
             <> ifValue { <> function(index, item) }
@@ -94,21 +94,23 @@ fn listLast(list, notFound?) {
 # **Note:** This one is out-of (alphabetical) order, because it's used
 # by other functions in this section, and *Samizdat Layer 0* does not allow
 # use-before-def.
-fn mapReduce(base, map, function) {
-    <> genericReduce(base) { n :: <> mapNth(map, n) }
+fn mapReduce(function, base, map) {
+    <> genericReduce(base)
         { reduction, ., mapping ::
             <> function(reduction, mapKey(mapping), mapValue(mapping))
         }
+        { n :: <> mapNth(map, n) }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn mapForEach(map, function) {
-    genericForEach { n :: <> mapNth(map, n) }
+fn mapForEach(function, map) {
+    genericForEach
         { ., mapping :: function(mapKey(mapping), mapValue(mapping)) }
+        { n :: <> mapNth(map, n) }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn mapMap(map, function) {
+fn mapMap(function, map) {
     <> mapReduce([:], map)
         { reduction, key, value ::
             <> ifValue { <> function(key, value) }
@@ -123,8 +125,8 @@ fn mapMap(map, function) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn stringForEach(string, function) {
-    <> genericForEach({ n :: <> stringNth(string, n) }, function)
+fn stringForEach(function, string) {
+    <> genericForEach(function, { n :: <> stringNth(string, n) })
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -135,12 +137,12 @@ fn stringFromTokenList(tokens) {
 
 # Documented in Samizdat Layer 0 spec.
 fn stringMap(string, function) {
-    <> genericMap({ n :: <> stringNth(string, n) }, function)
+    <> genericMap(function, { n :: <> stringNth(string, n) })
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn stringReduce(base, string, function) {
-    <> genericReduce(base, { n :: <> stringNth(string, n) }, function)
+fn stringReduce(function, base, string) {
+    <> genericReduce(function, { n :: <> stringNth(string, n) }, base)
 };
 
 

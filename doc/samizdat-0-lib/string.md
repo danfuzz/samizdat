@@ -45,7 +45,7 @@ specified, it defaults to the end of the string.
 <br><br>
 ### In-Language Definitions
 
-#### `stringForEach(string, function) <> !.`
+#### `stringForEach(function, string) <> !.`
 
 Calls the given function on each element (character) of the given string.
 The given function is called with two arguments, namely the element's
@@ -62,7 +62,7 @@ of concatenating all the characters together in order.
 
 This function is intended to aid in the building of tokenizers.
 
-#### `stringMap(string, function) <> list`
+#### `stringMap(function, string) <> list`
 
 Maps each element of a string using a mapping function, collecting
 the results into a list (note, not into a string). The given
@@ -74,12 +74,13 @@ Similar to `listMap`, if the function returns void, then no item is
 added for the corresponding element. This means the size of the
 result may be smaller than the size of the argument.
 
-**Note:** Unlike many other languages with similar functions, the
-function argument is the *last* one and not the *first* one. This is
-specifically done to make it natural to write a multi-line function
-without losing track of the other two arguments.
+**Note:** Like many other languages with similar functions, the
+function argument is the first one. However, when commonly writing
+calls, the block function argument syntax makes it easy and natural
+to place a function definition in-line with the call, after the rest
+of the arguments.
 
-#### `stringReduce(base, string, function) <> . | !.`
+#### `stringReduce(function, base, string) <> . | !.`
 
 Reduces a string to a single value, given a base value and a
 reducer function, operating in low-to-high index order (that is, this
