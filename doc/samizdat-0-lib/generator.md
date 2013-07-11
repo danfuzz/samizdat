@@ -120,6 +120,22 @@ Each yielded list consists of values yielded from the individual generators,
 in passed order. The generator becomes voided when *any* of the individual
 generators is voided.
 
+#### `reduceGenerator(reduceFunction, base) <> generator`
+
+Reducing generator constructor. This takes a reducer function and
+an arbitrary `base` (initial) value, and returns a generator which
+acts on its own previously-yielded values.
+
+Each time the outer (result) generator is called, it calls the
+`reduceFunction`, passing it a single argument. The first time it is
+called, the argument is `base`. After that, it is the most-recently
+yielded non-void value from the call to `reduceFunction`. The generator
+yields whatever non-void value is yielded from the latest call to
+`reduceFunction`. If `reduceFunction` should yield void, then the
+generator yields the previous value (possibly the `base`).
+
+The outer generator never becomes voided.
+
 #### `seqGeneratorFromValues(values*) <> generator`
 
 Sequential generator combination constructor. This takes an arbitrary number
