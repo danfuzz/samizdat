@@ -91,7 +91,7 @@ def parFile = {/
         extras = [! "\n"]+
         {
             def string = stringFromTokenList(extras);
-            io0Die(format("Unexpected line: %q", string))
+            io0Die("Unexpected line: \%q(string)")
         }
     )?
 
@@ -100,18 +100,18 @@ def parFile = {/
 
 def inPath = [listButLast(SELF_PATH)*, "entity-map.txt"];
 def outPath = [listButLast(SELF_PATH)*, "entityMap.sam"];
-io0Note(format("Processing file: %q", inPath));
+io0Note("Processing file: \%q(inPath)");
 
 def text = io0ReadFileUtf8(inPath);
 def result = pegApply(parFile, text);
 
 def resultText = mapReduce("", result) { result, key, value ::
-    <> stringAdd(result, format("    %q: %q,\n", key, value));
+    <> "\(result)    \%q(key): \%q(value),\n"
 };
 
 # Note: The `[:]*` at the end of the map is a hacky way to avoid having to
 # omit the comma from the last "real" mapping line.
-def outText = format("\
+def outText = "\
     # Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
     # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
     # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
@@ -126,13 +126,12 @@ def outText = format("\
 
     # Documented in the specification.
     def ENTITY_MAP = [
-  \/%s\
+  \/\(resultText)\
   \/    [:]*
   \/];
 
     <> [ ENTITY_MAP: ENTITY_MAP ]
-    ",
-    resultText);
+    ";
 
 io0WriteFileUtf8(outPath, outText);
 
