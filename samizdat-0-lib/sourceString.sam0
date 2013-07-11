@@ -246,8 +246,16 @@ fn stringFromInt(value, optBase?) {
         { io0Die("Invalid base for stringFromInt.") }
 };
 
+# Documented in Samizdat Layer 0 spec.
+fn stringFromValue(arg) {
+    <> ifIs { <> isString(arg) }
+        { <> arg }
+        { <> sourceStriong(arg) }
+};
+
 <> [
-    sourceString: sourceString,
+    sourceString:          sourceString,
     sourceStringUnadorned: sourceStringUnadorned,
-    stringFromInt: stringFromInt
+    stringFromInt:         stringFromInt,
+    stringFromValue:       stringFromValue
 ]
