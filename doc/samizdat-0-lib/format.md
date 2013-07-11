@@ -13,32 +13,6 @@ String Formatting
 <br><br>
 ### In-Language Definitions
 
-#### `format(formatString, rest*) <> string`
-
-Using the given `formatString`, format the remaining arguments, returning
-a string. Formatting syntax is in the style of C's `printf()`. Specifically,
-all characters from the `formatString` are passed through to the result
-as-is, except that percent (`%`) is used to introduce format conversions
-of each of the `rest` arguments. Each time a percent is encountered
-(with one exception noted below), another one of the `rest` arguments is
-"consumed" and formatted.
-
-The following are the format codes and their meanings:
-
-* `%%` &mdash; Outputs a literal percent. This does not consume an argument.
-
-* `%q` &mdash; "Quotes" the argument by passing it through `sourceString`
-  (see which).
-
-* `%Q` &mdash; "Quotes" the argument without top-level adornment through
-  `sourceStringUnadorned` (see which).
-
-* `%s` &mdash; "Quotes" a non-string argument, by calling `stringFromValue`
-  on it (see which).
-
-* `%x` &mdash; Converts the argument, which must be an int, into a hexadecimal
-  string.
-
 #### `formatterFromString(formatSpec) <> function`
 
 This takes a formatting specification string and returns a formatter
