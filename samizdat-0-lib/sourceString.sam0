@@ -227,14 +227,18 @@ fn sourceStringGeneral(value, adorn) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn sourceString(value) {
-    <> sourceStringGeneral(value, true)
+fn sourceString(value?) {
+    <> ifValue { <> value* }
+        { value :: <> sourceStringGeneral(value, true) }
+        { <> "void" }
 };
 callSourceString(sourceString);
 
 # Documented in Samizdat Layer 0 spec.
-fn sourceStringUnadorned(value) {
-    <> sourceStringGeneral(value, false)
+fn sourceStringUnadorned(value?) {
+    <> ifValue { <> value* }
+        { value :: <> sourceStringGeneral(value, false) }
+        { <> "void" }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -247,10 +251,14 @@ fn stringFromInt(value, optBase?) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn stringFromValue(arg) {
-    <> ifIs { <> isString(arg) }
-        { <> arg }
-        { <> sourceString(arg) }
+fn stringFromValue(value?) {
+    <> ifValue { <> value* }
+        { value ::
+            <> ifIs { <> isString(value) }
+                { <> value }
+                { <> sourceString(value) }
+        }
+        { <> "" }
 };
 
 <> [
