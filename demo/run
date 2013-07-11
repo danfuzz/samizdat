@@ -43,6 +43,9 @@ unset newProg
 # Which Samizdat layer to use.
 layer=''
 
+# Whether to build the binary.
+build='yes'
+
 # Whether to super-validate. (Slow but useful.)
 validate='no'
 
@@ -67,6 +70,8 @@ while [[ $1 != '' ]]; do
         layer='1'
     elif [[ ${opt} == '--sam2' ]]; then
         layer='2'
+    elif [[ ${opt} == '--no-build' ]]; then
+        build='no'
     elif [[ ${opt} == '--iprofiler' ]]; then
         iprofiler='yes'
     elif [[ ${opt} == '--optimize' ]]; then
@@ -131,7 +136,10 @@ if [[ ${optimize} == 'yes' ]]; then
     buildOpts=(--optimize)
 fi
 
-"${baseDir}/samizdat-0/build" "${buildOpts[@]}" > /dev/null || exit 1
+if [[ ${build} == 'yes' ]]; then
+    "${baseDir}/samizdat-0/build" "${buildOpts[@]}" > /dev/null || exit 1
+fi
+
 PATH="${PATH}:${baseDir}/out/samizdat-0"
 cmd=("samizdat-0")
 
