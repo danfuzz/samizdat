@@ -60,14 +60,14 @@ def result1 = for (x in [1, 2, 3, 4, 5]) {
     if (x == 3) { break 23 };
     print(x)
 };
-io0Note(format("Result: %q", result1));
+io0Note("Result: \%q(result1)");
 
 io0Note("\nNamed break.");
 def result2 = for <out> (x in [1, 2, 3, 4, 5]) {
     if (x == 3) { <out> 187 };
     print(x)
 };
-io0Note(format("Result: %q", result2));
+io0Note("Result: \%q(result2)");
 
 io0Note("\nUnnamed continue.");
 for (x in [1, 2, 3, 4, 5]) {
