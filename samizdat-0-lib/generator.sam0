@@ -27,7 +27,7 @@ fn emptyListGenerator(box) {
 # General sequential-value generator. Takes an int starting value, an int
 # increment, a "filter" function (function from int to the proper actual
 # value, returns void for out-of-range int).
-fn makeSeqGenerator(first, increment, filterFunction) {
+fn makeSeqGenerator(filterFunction, first, increment) {
     # Main generator maker.
     fn makeSeqGenerator1(value) {
         <> ifValue { <> filterFunction(value) }
@@ -126,7 +126,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
         { <> limitFunction }
         { <> { x :: <> charFromInt(limitFunction(x)) } };
 
-    <> makeSeqGenerator(firstInt, increment, filterFunction)
+    <> makeSeqGenerator(filterFunction, firstInt, increment)
 };
 
 
