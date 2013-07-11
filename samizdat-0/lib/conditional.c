@@ -56,13 +56,13 @@ PRIM_IMPL(loopReduce) {
 
     zstackPointer save = datFrameStart();
     zvalue function = args[0];
-    zvalue args = datListFromArray(argCount - 1, &args[1]);
+    zvalue innerArgs = datListFromArray(argCount - 1, &args[1]);
 
     for (;;) {
-        zvalue nextArgs = langApply(function, args);
+        zvalue nextArgs = langApply(function, innerArgs);
         if (nextArgs != NULL) {
-            args = nextArgs;
-            datFrameReset(save, args);
+            innerArgs = nextArgs;
+            datFrameReset(save, innerArgs);
         }
     }
 }
