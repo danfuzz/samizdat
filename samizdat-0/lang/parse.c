@@ -835,7 +835,7 @@ DEF_PARSE(actualsList) {
         zvalue normalActuals = PARSE(unadornedList); // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
         zvalue closureActuals = PARSE_STAR(closure); // This never fails.
-        return datListAdd(normalActuals, closureActuals);
+        return datListAdd(closureActuals, normalActuals);
     }
 
     return PARSE_PLUS(closure);
