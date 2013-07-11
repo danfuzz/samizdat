@@ -1628,7 +1628,7 @@ def parForExpression = {/
             statements: [
                 breakDef*,
                 makeVarDef("body", loopClosure),
-                makeCallName("loopReduce", genInit, FOR_BODY_CLOSURE)
+                makeCallName("loopReduce", FOR_BODY_CLOSURE, genInit)
             ]
         ]];
 
