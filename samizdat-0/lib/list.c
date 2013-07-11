@@ -38,8 +38,8 @@ PRIM_IMPL(listForEach) {
 
     zstackPointer save = datFrameStart();
 
-    zvalue list = args[0];
-    zvalue function = args[1];
+    zvalue function = args[0];
+    zvalue list = args[1];
     zint size = datSize(list);
     zvalue subArgs[2];
 
@@ -67,8 +67,8 @@ PRIM_IMPL(listInsNth) {
 PRIM_IMPL(listMap) {
     requireExactly(argCount, 2);
 
-    zvalue list = args[0];
-    zvalue function = args[1];
+    zvalue function = args[0];
+    zvalue list = args[1];
     zint size = datSize(list);
     zvalue result[size];
     zvalue subArgs[2];
@@ -108,13 +108,13 @@ PRIM_IMPL(listReduce) {
 
     zstackPointer save = datFrameStart();
 
-    zvalue list = args[1];
-    zvalue function = args[2];
+    zvalue function = args[0];
+    zvalue list = args[2];
     zint size = datSize(list);
     zvalue subArgs[3];
 
     datAssertList(list);
-    subArgs[0] = args[0];
+    subArgs[0] = args[1];
 
     for (zint i = 0; i < size; i++) {
         subArgs[1] = datIntFromZint(i);
