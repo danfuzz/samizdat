@@ -21,7 +21,7 @@ fn genericForEach(function, nthFunc) {
         <> ifValue { <> nthFunc(index) }
             { item ::
                 function(index, item);
-                <> iadd(index, 1)
+                <> [iadd(index, 1)]
             }
             { return }
     }
@@ -30,9 +30,7 @@ fn genericForEach(function, nthFunc) {
 # Generic reduce function. Instead of the value-to-reduce argument, this
 # takes an `nthFunc` of one argument.
 fn genericReduce(function, nthFunc, base) {
-    loopReduce([base, 0]) { state ::
-        def result = listNth(state, 0);
-        def index = listNth(state, 1);
+    loopReduce(base, 0) { result, index ::
         <> ifValue { <> nthFunc(index) }
             { item ::
                 def nextResult = ifValue { <> function(result, index, item) }

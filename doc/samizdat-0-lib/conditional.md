@@ -49,15 +49,19 @@ function with no arguments.
 
 In order for the loop to terminate, the function must use a nonlocal exit.
 
-#### `loopReduce(function, base) <> !.`
+#### `loopReduce(function, args*) <> !.`
 
 Primitive unconditional loop construct, with reduce semantics. This repeatedly
-calls the given function with a single argument. The argument is the
-most recent non-void result of calling the function, or the `base` value
-if the function has yet to return non-void (including notably to the first
-call to the function).
+calls the given function with a list of arguments. The arguments are the
+most recent non-void result of calling the function (which must be a list), or
+the original `args` list if the function has yet to return non-void (including
+notably to the first call to the function).
 
 In order for the loop to terminate, the function must use a nonlocal exit.
+
+**Note:** Unlike most function-taking library functions, the `function`
+argument here is the first, not the last, so that variable-count argument
+passing can work more naturally.
 
 
 <br><br>

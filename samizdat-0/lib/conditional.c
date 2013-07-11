@@ -52,17 +52,17 @@ PRIM_IMPL(loop) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(loopReduce) {
-    requireExactly(argCount, 2);
+    requireAtLeast(argCount, 1);
 
     zstackPointer save = datFrameStart();
     zvalue function = args[0];
-    zvalue result = args[1];
+    zvalue innerArgs = datListFromArray(argCount - 1, &args[1]);
 
     for (;;) {
-        zvalue next = langCall(function, 1, &result);
-        if (next != NULL) {
-            result = next;
-            datFrameReset(save, result);
+        zvalue nextArgs = langApply(function, innerArgs);
+        if (nextArgs != NULL) {
+            innerArgs = nextArgs;
+            datFrameReset(save, innerArgs);
         }
     }
 }
