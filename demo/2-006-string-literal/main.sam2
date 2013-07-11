@@ -15,7 +15,7 @@ SELF_PATH, ARGS* ::
 # Helper functions
 #
 
-fn out(string) {
+fn msg(string) {
     io0Note("Got: \%q(string)")
 };
 
@@ -23,21 +23,21 @@ fn out(string) {
 # Main tests
 #
 
-out("");
-out("a");
-out("fizmo");
-out("\0");
-out("\n");
-out("\r");
-out("\t");
-out("\"");
-out("\\");
-out("\x0;");
-out("Hello \x46,75,7a,7a;");
-out("\x1_F60F;");
-out("\&zigrarr;");
-out("\&mu,nu;");
-out("\
+msg("");
+msg("a");
+msg("fizmo");
+msg("\0");
+msg("\n");
+msg("\r");
+msg("\t");
+msg("\"");
+msg("\\");
+msg("\x0;");
+msg("Hello \x46,75,7a,7a;");
+msg("\x1_F60F;");
+msg("\&zigrarr;");
+msg("\&mu,nu;");
+msg("\
     * A couple
   \/  of lines.
     ");

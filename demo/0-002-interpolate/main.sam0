@@ -15,7 +15,7 @@ SELF_PATH, ARGS* ::
 # Helper function
 #
 
-fn out(args*) {
+fn msg(args*) {
     io0Note(stringAdd("Got: ", sourceString(args)))
 };
 
@@ -39,39 +39,39 @@ fn nonlocalTest(x) {
 # Main tests
 #
 
-out(["a", "b", "c"]*, ["d", "e", "f", ["g"]*]*);
-out([[1, 2, 3]*: 6]);
-out("blort"*);
-out([a: 10, b: "20"]*);
-out(generatorForInclusiveRange("a", 2, "m")*);
+msg(["a", "b", "c"]*, ["d", "e", "f", ["g"]*]*);
+msg([[1, 2, 3]*: 6]);
+msg("blort"*);
+msg([a: 10, b: "20"]*);
+msg(generatorForInclusiveRange("a", 2, "m")*);
 
 ifValue { <> yieldTest([]) }
-    { value :: <> out(value) }
-    { out("void") };
+    { value :: <> msg(value) }
+    { msg("void") };
 
 ifValue { <> nonlocalTest([]) }
-    { value :: <> out(value) }
-    { out("void") };
+    { value :: <> msg(value) }
+    { msg("void") };
 
 ifValue { <> yieldTest(["blort"]) }
-    { value :: <> out(value) }
-    { out("void") };
+    { value :: <> msg(value) }
+    { msg("void") };
 
 ifValue { <> nonlocalTest(["fizmo"]) }
-    { value :: <> out(value) }
-    { out("void") };
+    { value :: <> msg(value) }
+    { msg("void") };
 
 # The extra parens here force the interpolated expression not to be considered
 # at function argument level.
-out((list5()*));
+msg((list5()*));
 
 # Likewise the minus sign here (because it binds looser than the
 # interpolation star).
-out(-list5()*);
+msg(-list5()*);
 
 def five = list5()*;
-out(five);
+msg(five);
 
-out([blort: list5()*]);
+msg([blort: list5()*]);
 
 <> 0

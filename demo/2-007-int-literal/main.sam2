@@ -15,7 +15,7 @@ SELF_PATH, ARGS* ::
 # Helper functions
 #
 
-fn out(v) {
+fn msg(v) {
     io0Note("Got: \%q(v)")
 };
 
@@ -23,16 +23,16 @@ fn out(v) {
 # Main tests
 #
 
-out(0);
-out(-9);
-out(20);
-out(1_234_452);
-out(0x1234abcd);            # Decimal 305441741.
-out(0x-_ABCDEF);            # Decimal -11259375.
-out(0b0);
-out(0b1);
-out(0b-1);
-out(0b-11);                 # Decimal -3.
-out(0b1011_0111_1110_1111); # Decimal 47087.
+msg(0);
+msg(-9);
+msg(20);
+msg(1_234_452);
+msg(0x1234abcd);            # Decimal 305441741.
+msg(0x-_ABCDEF);            # Decimal -11259375.
+msg(0b0);
+msg(0b1);
+msg(0b-1);
+msg(0b-11);                 # Decimal -3.
+msg(0b1011_0111_1110_1111); # Decimal 47087.
 
 <> 0
