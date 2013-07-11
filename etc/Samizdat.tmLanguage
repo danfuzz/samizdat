@@ -71,7 +71,7 @@
 					<key>name</key>
 					<string>string.interpolated</string>
 					<key>begin</key>
-					<string>\\[({]</string>
+					<string>\\(%[0-9a-zA-Z+-.]*)?[({]</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>0</key>
