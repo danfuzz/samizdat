@@ -303,3 +303,34 @@ and define both break and continue contexts.
 since the first iteration can't possibly have a binding for the
 test expression, and the language doesn't allow variables to be bound
 to void.
+
+
+### Generator iteration loop &mdash; `for`
+
+The `for` construct is used to iterate over the contents of collections
+or the values yielded from generators. It has the following form:
+
+```
+for (name1 in generatorExpression1, name2 in generatorExpression2) {
+    ... name1 ...
+    ... name2 ...
+}
+```
+
+`for` accepts one or more comma-separated generator binding expressions in
+parentheses. Each one is of the form `name in expression`, where `name`
+is an arbitrary variable name, and `expression` is an arbitrary expression,
+except that it must yield either a collection or a generator. For the
+purposes of iteration, collections are treated as if they are converted to
+generators via `generatorFromValue`.
+
+Within the block body of a `for`, each of the named variables is bound
+to one element from its corresponding generator. The block is called
+once per set of elements. The loop terminates when *any* of the generators
+becomes voided.
+
+`for` expressions support explicit yield definition, and they define both
+break and continue contexts.
+
+`for` expressions do *not* support test expression name binding (since
+there are no tests to bind).
