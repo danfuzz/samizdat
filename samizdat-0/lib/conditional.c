@@ -55,8 +55,8 @@ PRIM_IMPL(loopReduce) {
     requireExactly(argCount, 2);
 
     zstackPointer save = datFrameStart();
-    zvalue result = args[0];
-    zvalue function = args[1];
+    zvalue function = args[0];
+    zvalue result = args[1];
 
     for (;;) {
         zvalue next = langCall(function, 1, &result);
