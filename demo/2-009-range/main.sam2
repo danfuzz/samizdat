@@ -22,7 +22,7 @@ fn msg(generator) {
 };
 
 # Prints out 10 values yielded by the given generator (and no more).
-fn outTen(generator) {
+fn msgTen(generator) {
     def values = listFromGenerator(
         paraGeneratorFromValues(generator, [(1..10)*]));
     def extract = listMap(values) { ., value :: <> listFirst(value) };
@@ -65,11 +65,11 @@ msg("F"..-2..!"A");
 msg(9..0..!9);
 
 io0Note("\nOpen, default increment...");
-outTen(-10..+);
-outTen("M"..+);
+msgTen(-10..+);
+msgTen("M"..+);
 
 io0Note("\nOpen, explicit increment...");
-outTen(99..-1..+);
-outTen("z"..-2..+);
+msgTen(99..-1..+);
+msgTen("z"..-2..+);
 
 <> 0

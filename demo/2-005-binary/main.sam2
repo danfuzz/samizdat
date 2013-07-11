@@ -21,7 +21,7 @@ fn msg(value) {
 };
 
 # Prints out the given value in hex.
-fn outHex(value) {
+fn msgHex(value) {
     io0Note("\%x(value)")
 };
 
@@ -51,11 +51,11 @@ msg(1 + 2 * 3);
 msg((1 + 2) * 3);
 msg(2 * 3 * 4 + 5);
 
-outHex(0xfff0 &&& 0x0fff);
-outHex(0xfff0 ||| 0x0fff);
-outHex(0xfff0 ^^^ 0x0fff);
-outHex(0x00ff <<< 0x8);
-outHex(0xff00 >>> 0x8);
+msgHex(0xfff0 &&& 0x0fff);
+msgHex(0xfff0 ||| 0x0fff);
+msgHex(0xfff0 ^^^ 0x0fff);
+msgHex(0x00ff <<< 0x8);
+msgHex(0xff00 >>> 0x8);
 
 # Ordering. The ones expected to be "falsey" are surrounded by `&&` to
 # make them easily printable.

@@ -16,14 +16,14 @@ SELF_PATH, ARGS* ::
 #
 
 # Prints the given value, indented slightly.
-fn print(value) {
+fn msg(value) {
     io0Note(stringAdd("  ", sourceString(value)))
 };
 
 # Outputs all generated values, with an initial header, followed by
 # the listification of the generator, all followed by an extra newline
 # at the end.
-fn outAll(header, gen) {
+fn msgAll(header, gen) {
     io0Note(header);
 
     { <done> ::
@@ -31,7 +31,7 @@ fn outAll(header, gen) {
             def box = yieldBox();
             <> ifValue { <> gen(box) }
                 { nextGen ::
-                    print(boxGet(box));
+                    msg(boxGet(box));
                     <> nextGen
                 }
                 { <done> }
@@ -39,7 +39,7 @@ fn outAll(header, gen) {
     }();
 
     io0Note("  [all]");
-    print(listFromGenerator(gen));
+    msg(listFromGenerator(gen));
     io0Note("")
 };
 
@@ -49,78 +49,78 @@ fn outAll(header, gen) {
 # Main tests
 #
 
-outAll("Empty list", generatorFromValue([]));
-outAll("Empty map", generatorFromValue([:]));
-outAll("Empty string", generatorFromValue(""));
+msgAll("Empty list", generatorFromValue([]));
+msgAll("Empty map", generatorFromValue([:]));
+msgAll("Empty string", generatorFromValue(""));
 
-outAll("List", generatorFromValue([101, 33, 5555, "blort"]));
-outAll("Map",
+msgAll("List", generatorFromValue([101, 33, 5555, "blort"]));
+msgAll("Map",
     generatorFromValue([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
-outAll("String", generatorFromValue("Happy string!"));
+msgAll("String", generatorFromValue("Happy string!"));
 
-outAll("All-finite paraGeneratorFromValues",
+msgAll("All-finite paraGeneratorFromValues",
     paraGeneratorFromValues(
         [1, 2, 3],
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
-outAll("Paragenerator with opt element",
+msgAll("Paragenerator with opt element",
     paraGeneratorFromValues(
         optGenerator([1, 2, 3]),
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
-outAll("Filter generator (square even numbers)",
+msgAll("Filter generator (square even numbers)",
     filterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ::
             <> ifIs { <> eq(irem(value, 2), 0) }
                 { <> imul(value, value) }
         });
 
-outAll("Token generator", tokenGeneratorFromValue("Tokens!"));
+msgAll("Token generator", tokenGeneratorFromValue("Tokens!"));
 
-outAll("Inclusive range 5..10",
+msgAll("Inclusive range 5..10",
     generatorForInclusiveRange(5, 1, 10));
 
-outAll("Inclusive range 10..-2..1",
+msgAll("Inclusive range 10..-2..1",
     generatorForInclusiveRange(10, -2, 1));
 
-outAll("Inclusive range \"a\"..5..\"z\"",
+msgAll("Inclusive range \"a\"..5..\"z\"",
     generatorForInclusiveRange("a", 5, "z"));
 
-outAll("Exclusive range 5..10",
+msgAll("Exclusive range 5..10",
     generatorForExclusiveRange(5, 1, 10));
 
-outAll("Exclusive range 10..-2..1",
+msgAll("Exclusive range 10..-2..1",
     generatorForExclusiveRange(10, -2, 1));
 
-outAll("Exclusive range \"a\"..5..\"z\"",
+msgAll("Exclusive range \"a\"..5..\"z\"",
     generatorForExclusiveRange("a", 5, "z"));
 
-outAll("ParaGenerator with open ranges",
+msgAll("ParaGenerator with open ranges",
     paraGeneratorFromValues(
         generatorForOpenRange("a", 1),
         generatorForOpenRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
 
-outAll("Zero-increment int range",
+msgAll("Zero-increment int range",
     generatorForInclusiveRange(10, 0, 20));
 
-outAll("Zero-increment character range",
+msgAll("Zero-increment character range",
     generatorForInclusiveRange("x", 0, "a"));
 
-outAll("Empty SeqGenerator",
+msgAll("Empty SeqGenerator",
     seqGeneratorFromValues());
 
-outAll("Size one SeqGenerator",
+msgAll("Size one SeqGenerator",
     seqGeneratorFromValues([a: 10, b: 20, c: 30]));
 
-outAll("Size two SeqGenerator",
+msgAll("Size two SeqGenerator",
     seqGeneratorFromValues(
         [a: 10, b: 20, c: 30],
         "defg"));
 
-outAll("Size five SeqGenerator (with a couple pre-voided generators)",
+msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
     seqGeneratorFromValues("abc", [], [], ["def", "ghi"], []));
 
 <> 0
