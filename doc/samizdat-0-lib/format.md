@@ -27,14 +27,36 @@ The following are the format codes and their meanings:
 
 * `%%` &mdash; Outputs a literal percent. This does not consume an argument.
 
-* `%s` &mdash; Assumes the argument is a string, and includes it in
-  the output without additional formatting.
-
 * `%q` &mdash; "Quotes" the argument by passing it through `sourceString`
   (see which).
 
 * `%Q` &mdash; "Quotes" the argument without top-level adornment through
   `sourceStringUnadorned` (see which).
+
+* `%s` &mdash; Assumes the argument is a string, and includes it in
+  the output without additional formatting.
+
+* `%x` &mdash; Converts the argument, which must be an int, into a hexadecimal
+  string.
+
+#### `formatterFromString(formatSpec) <> function`
+
+This takes a formatting specification string and returns a formatter
+function which takes a single argument and applies the so specified
+formatting to it, yielding a string. The string must be one of the
+following, with the indicated meaning:
+
+* `q` &mdash; "Quotes" the argument by calling `sourceString` on it
+  (see which).
+
+* `Q` &mdash; "Quotes" the argument without top-level adornment, by
+  calling `sourceStringUnadorned` on it (see which).
+
+* `s` &mdash; If the argument is a string, yields it unmodified. Otherwise
+  acts the same as `q`.
+
+* `x` &mdash; Converts the argument, which must be an int, into a hexadecimal
+  string.
 
 #### `sourceString(value) <> string`
 
