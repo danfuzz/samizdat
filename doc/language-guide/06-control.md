@@ -177,6 +177,7 @@ switch (dispatchExpression) {
         elseBlock
     }
 }
+```
 
 There can be any number of test expressions (including none), and
 both the `default` and `else` blocks are optional. The `default`
