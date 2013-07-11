@@ -203,16 +203,15 @@ is void.
 If multiple different expressions should match a single consequent
 block, the same syntax is used to represent this as is used for
 multiple binding of keys to a single value in map literals. This
-includes list interpolation, ranges, and parenthesized lists of
-expressions. In addition, the same identifier-as-string shorthands
-apply:
+includes both interpolation and parenthesized lists of expressions.
+In addition, the same identifier-as-string shorthands apply:
 
 ```
 switch (expression) {
     (testExpression1(), testExpression2(), testExpression3()): {
         block123
     }
-    4..6: {
+    (4..6)*: {
         block456
     }
     ["fizmo", "igram", secretSpellName()]*: {
