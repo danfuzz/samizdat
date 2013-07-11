@@ -63,8 +63,8 @@ empty string.
 For example:
 
 ```
-"I like \%s("biscuits")." => "I like biscuits."
-"I like \("biscuits")." => "I like biscuits."
+"I like \%s("biscuits")."         => "I like biscuits."
+"I like \("biscuits")."           => "I like biscuits."
 "I like \([@muffins, @scones"])." => "I like [@muffins, @scones]."
 ```
 
@@ -77,7 +77,7 @@ language. Void is converted to the string `"void"`.
 For example:
 
 ```
-"I like \%q("biscuits")." => "I like \"biscuits\"."
+"I like \%q("biscuits")."           => "I like \"biscuits\"."
 "I like \%q([@muffins, @scones"])." => "I like [@muffins, @scones]."
 ```
 
@@ -89,8 +89,9 @@ layer of adornment is omitted.
 For example:
 
 ```
-"I like \%Q("biscuits")." => "I like biscuits."
-"I like \%Q([@muffins, @scones"])." => "I like @muffins, @scones."
+"I like \%Q("biscuits")."            => "I like biscuits."
+"I like \%Q([@muffins, @scones"])."  => "I like @muffins, @scones."
+"I like \%Q([[@berries], "fruit"])." => "I like [@berries], \"fruit\"."
 ```
 
 ### `%x` &mdash; Hexadecimal conversion
