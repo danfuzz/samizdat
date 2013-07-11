@@ -16,7 +16,7 @@ SELF_PATH, ARGS* ::
 #
 
 fn out(args*) {
-    io0Note(format("Got: %q", args))
+    io0Note(stringAdd("Got: ", sourceString(args)))
 };
 
 fn ten() {

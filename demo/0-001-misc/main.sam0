@@ -46,14 +46,14 @@ def countDowns = yStarCombinator
     };
 def countDown2 = listNth(countDowns, 0);
 
-# Demo of formal argument repeat modifiers. Also of quoted identifiers.
-fn blort(foo, bar?, \"weird name"?, more*) {
-    io0Note(format("%q %q %q %q", foo, bar, \"weird name", more))
-};
-
 # Demo of `+` argument repeat modifier.
 fn stuff(items+) {
-    io0Note(format("stuff: %q", items))
+    io0Note(stringAdd("stuff: ", sourceString(items)))
+};
+
+# Demo of formal argument repeat modifiers. Also of quoted identifiers.
+fn blort(foo, bar?, \"weird name"?, more*) {
+    stuff(foo, bar, \"weird name", more)
 };
 
 # Demo of reading a sibling file through a sandboxed reader.
@@ -142,9 +142,6 @@ fn main(selfPath, name, rest*) {
     process(stringFromInt(71, 16));
     process(stringFromInt(71, 36));
     process(stringAdd(charFromInt(1), charFromInt(31), charFromInt(127)));
-    io0Note(
-        format("Not %x %s: %q %Q",
-            31, "things", ["blort", "fizmo"], ["igram", "frotz"]));
 
     sibling();
 
@@ -159,7 +156,7 @@ fn main(selfPath, name, rest*) {
 
     process(exiter(1));
     ifValue { <> exiter(0) }
-        { value :: io0Note(format("Unexpected! %q", value)) }
+        { value :: io0Note("Unexpected!") }
         { io0Note("The void.") };
 };
 

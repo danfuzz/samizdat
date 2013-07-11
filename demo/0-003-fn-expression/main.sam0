@@ -12,18 +12,27 @@ SELF_PATH, ARGS* ::
 
 
 #
+# Helper functions
+#
+
+fn print(args*) {
+    io0Note(sourceStringUnadorned(args))
+};
+
+
+#
 # Main tests
 #
 
 def func1 = fn (x) {
-    io0Note(format("func1 %q", x));
+    print("func1", x);
     return "func1"
 };
 
 io0Note(func1(10));
 
 def func2 = fn <out> (x*) {
-    io0Note(format("func2 %q", x));
+    print("func2", x);
     <out> "func2"
 };
 
@@ -31,7 +40,7 @@ io0Note(func2(20, "twenty"));
 
 # Recursive call.
 def func3 = fn whee(x) {
-    io0Note(format("func3 %q", x));
+    print("func3", x);
     ifIs { <> lt(x, 5) }
         {
             whee(iadd(x, 1));

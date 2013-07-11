@@ -15,6 +15,11 @@ SELF_PATH, ARGS* ::
 # Helper function
 #
 
+# Prints the given value, indented slightly.
+fn print(value) {
+    io0Note(stringAdd("  ", sourceString(value)))
+};
+
 # Outputs all generated values, with an initial header, followed by
 # the listification of the generator, all followed by an extra newline
 # at the end.
@@ -26,15 +31,15 @@ fn outAll(header, gen) {
             def box = yieldBox();
             <> ifValue { <> gen(box) }
                 { nextGen ::
-                    io0Note(format("  %q", boxGet(box)));
+                    print(boxGet(box));
                     <> nextGen
                 }
                 { <done> }
         }
     }();
 
-    io0Note("  [fin]");
-    io0Note(format("  all: %q", listFromGenerator(gen)));
+    io0Note("  [all]");
+    print(listFromGenerator(gen));
     io0Note("")
 };
 

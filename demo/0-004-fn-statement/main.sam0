@@ -12,18 +12,27 @@ SELF_PATH, ARGS* ::
 
 
 #
+# Helper functions
+#
+
+fn print(args*) {
+    io0Note(sourceStringUnadorned(args))
+};
+
+
+#
 # Main tests
 #
 
 fn func1(x) {
-    io0Note(format("func1 %q", x));
+    print("func1", x);
     return "func1"
 };
 
 io0Note(func1(10));
 
 fn <out> func2(x*) {
-    io0Note(format("func2 %q", x));
+    print("func2", x);
     <out> "func2"
 };
 
@@ -31,7 +40,7 @@ io0Note(func2(20, "twenty"));
 
 # Self-recursion.
 fn func3(x) {
-    io0Note(format("func3 %q", x));
+    print("func3", x);
     ifIs { <> lt(x, 5) }
         {
             func3(iadd(x, 1));
@@ -43,7 +52,7 @@ io0Note(func3(1));
 
 # Mutual recursion.
 fn recFunc1(x) {
-    io0Note(format("recFunc1 %q", x));
+    print("recFunc1", x);
     ifIs { <> lt(x, 5) }
         { recFunc2(iadd(x, 1)) };
 
@@ -51,7 +60,7 @@ fn recFunc1(x) {
 };
 
 fn recFunc2(x) {
-    io0Note(format("recFunc2 %q", x));
+    print("recFunc2", x);
     ifIs { <> lt(x, 5) }
         { recFunc1(iadd(x, 1)) };
 };
