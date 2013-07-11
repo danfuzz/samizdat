@@ -382,7 +382,7 @@ def parActualsList = pegMakeMainSequence(
             pegMakeToken(")"),
             pegMakeStar(parClosure),
             pegMakeCode { ., normalActuals, ., closureActuals ::
-                <> [normalActuals*, closureActuals*]
+                <> [closureActuals*, normalActuals*]
             }),
         pegMakePlus(parClosure)));
 
