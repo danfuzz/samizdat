@@ -16,9 +16,7 @@ def INT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
 fn intBody(start, value, base) {
-    loopReduce(["", value]) { result ::
-        def text = listNth(result, 0);
-        def value = listNth(result, 1);
+    loopReduce("", value) { text, value ::
         <> ifIs { <> ne(value, 0) }
             {
                 def digit = stringNth(INT_CHARS, imod(value, base));

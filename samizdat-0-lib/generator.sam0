@@ -153,7 +153,7 @@ fn filterGenerator(filterFunction, value) {
                             }
                             {
                                 # The filter discarded the value. Iterate!
-                                <next> nextGenerator
+                                <next> [nextGenerator]
                             }
                     };
 
@@ -195,9 +195,7 @@ fn listFromGenerator(value) {
     ifIs { <> isList(value) }
         { return value };
 
-    loopReduce([generatorFromValue(value), []]) { result ::
-        def gen = listNth(result, 0);
-        def list = listNth(result, 1);
+    loopReduce(generatorFromValue(value), []) { gen, list ::
         def box = yieldBox();
         <> ifValue { <> gen(box) }
             { nextGenerator :: <> [nextGenerator, [list*, boxGet(box)]] }

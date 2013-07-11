@@ -121,10 +121,8 @@ fn pegMakeMainSequence(rules*) {
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeStar(rule) {
     <> { <out> box, input, items* ::
-        loopReduce([input, []])
-            { results ::
-                def input = listNth(results, 0);
-                def values = listNth(results, 1);
+        loopReduce(input, [])
+            { input, values ::
                 def innerBox = yieldBox();
                 <> ifValue { <> rule(innerBox, input, items*) }
                     { newInput ::

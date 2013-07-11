@@ -116,10 +116,7 @@ fn io0ReadLink(path) {
 # This is located in the "exported" section, as it makes use of
 # the exported function `io0ReadLink`, defined above.
 fn resolveLinks(sandboxDirectory, path) {
-    loopReduce([path, 50]) { result ::
-        def path = listNth(result, 0);
-        def limit = listNth(result, 1);
-
+    loopReduce(path, 50) { path, limit ::
         ifIs { <> le(limit, 0) }
             { io0Die("Too many links in symbolic link chain.") };
         ifNot { <> isPrefix(sandboxDirectory, path) }
