@@ -65,7 +65,7 @@ Returns the sole value of the given map, which must be a single-mapping map.
 <br><br>
 ### In-Language Definitions
 
-#### `mapForEach(map, function) <> !.`
+#### `mapForEach(function, map) <> !.`
 
 Calls the given function for each mapping in the given map. The
 function is called with two arguments, a key from the map and
@@ -73,7 +73,7 @@ its corresponding value (in that order). Always returns void.
 
 **Note:** See `stringMap` for discussion about choice of argument order.
 
-#### `mapMap(map, function) <> map`
+#### `mapMap(function, map) <> map`
 
 Maps the values of a map using the given mapping function,
 resulting in a map whose keys are the same as the given map but
@@ -88,7 +88,7 @@ result may be smaller than the size of the argument.
 
 **Note:** See `stringMap` for discussion about choice of argument order.
 
-#### `mapReduce(base, map, function) <> . | !.`
+#### `mapReduce(function, base, map) <> . | !.`
 
 Reduces a map to a single value, given a base value and a reducer
 function, operating in key order. The given function is called on each
