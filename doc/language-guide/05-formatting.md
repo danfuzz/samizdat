@@ -9,7 +9,7 @@ in order to make dynamic string construction reasonably straightforward.
 
 Interpolation is placed in a string by surrounding code to interpolate
 either in `\(...)` or `\{...}`. The two forms differ in terms of what
-they expect within the delimeters.
+they expect within the delimiters.
 
 In addition, after the backslash and before the opening parenthesis or
 brace, a format specifier can be included, introduced with the tried
