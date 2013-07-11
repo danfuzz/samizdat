@@ -10,7 +10,7 @@
 fn and(predicates*) {
     <> listReduce(true, predicates)
         { ., ., predicate ::
-            <> ifValue(predicate) { value :: <> value } { return }
+            <> ifValue(predicate, { value :: <> value }, { return })
         }
 };
 
@@ -54,7 +54,7 @@ fn ifVoid(predicate, voidFunction, valueFunction?) {
 fn or(predicates*) {
     listForEach(predicates)
         { ., predicate ::
-            ifValue(predicate) { value :: return value }
+            ifValue(predicate, { value :: return value })
         }
 };
 

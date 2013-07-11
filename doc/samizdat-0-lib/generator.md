@@ -14,7 +14,7 @@ Generators
 <br><br>
 ### In-Language Definitions
 
-#### `filterGenerator(value, filterFunction) <> generator`
+#### `filterGenerator(filterFunction, value) <> generator`
 
 Filtering generator constructor. This takes an arbitrary generator or
 value (which is coerced to a generator as if by calling `generatorFromValue`

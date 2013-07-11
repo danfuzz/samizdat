@@ -20,7 +20,7 @@ the given list. If `n` is not a valid index (not an int, or with
 a value out of range), then this returns the original list as the
 result.
 
-#### `listForEach(list, function) <> !.`
+#### `listForEach(function, list) <> !.`
 
 Calls the given function on each element of the given list.
 The given function is called with two arguments, namely the element's
@@ -38,7 +38,7 @@ are shifted up by one index.
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
 
-#### `listMap(list, function) <> list`
+#### `listMap(function, list) <> list`
 
 Maps each element of a list using a mapping function, collecting
 the results into a new list. The given function is called on each
@@ -70,7 +70,7 @@ exactly like `listAppend`.
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
 
-#### `listReduce(base, list, function) <> . | !.`
+#### `listReduce(function, base, list) <> . | !.`
 
 Reduces a list to a single value, given a base value and a reducer
 function, operating in low-to-high index order (that is, this is a
