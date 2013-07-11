@@ -50,7 +50,7 @@ def parError = {/
     word = parWord
     {
         def value = stringAdd(stringFromTokens(ch1, ch2), word);
-        io0Note(format("Unknown option: %Q", value));
+        io0Note(stringAdd("Unknown option: ", sourceString(value)));
         <> [error: true]
     }
 /};

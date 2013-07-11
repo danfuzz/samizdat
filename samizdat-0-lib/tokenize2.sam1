@@ -358,7 +358,7 @@ def tokError = {/
     badCh = .
     [! "\n"]*
     {
-        def msg = format("Unrecognized character: %q", tokenType(badCh));
+        def msg = stringAdd("Unrecognized character: ", tokenType(badCh));
         <> @[error: msg]
     }
 /};

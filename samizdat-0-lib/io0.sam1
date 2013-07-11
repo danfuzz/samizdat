@@ -43,6 +43,11 @@ fn isPrefix(prefix, path) {
     <> eq(prefix, listSlice(path, 0, prefixSize))
 };
 
+# Dies with the given message including the given path.
+fn dieWith(msg, path) {
+    io0Die(stringAdd(msg, ": ", sourceString(path)))
+};
+
 
 #
 # Exported functions
@@ -52,17 +57,17 @@ fn isPrefix(prefix, path) {
 fn io0FlatFromPath(path) {
     <> listReduce("", path) { result, n, one ::
         ifIs { <> eq(one, ".") }
-            { io0Die(format("Invalid `.` component in path: %q", path)) };
+            { dieWith("Invalid `.` component in path", path) };
         ifIs { <> eq(one, "..") }
-            { io0Die(format("Invalid `..` component in path: %q", path)) };
+            { dieWith("Invalid `..` component in path", path) };
         ifIs
             { <> and { <> eq(one, "") } { <> ne(n, isub(lowSize(path), 1)) } }
-            { io0Die(format("Invalid empty component in path: %q", path)) };
+            { dieWith("Invalid empty component in path", path) };
         stringForEach(one) { ., ch ::
             ifIs { <> eq(ch, "/") }
-                { io0Die(format("Invalid `/` in path: %q", path)) };
+                { dieWith("Invalid `/` in path", path) };
             ifIs { <> eq(ch, "\0") }
-                { io0Die(format("Invalid `\\0` in path: %q", path)) };
+                { dieWith("Invalid `\\0` in path", path) };
         };
         <> stringAdd(result, "/", one)
     }
@@ -87,10 +92,7 @@ fn io0PathFromFlat(string) {
         <> ifIs { <> eq(one, "..") }
             {
                 ifIs { <> eq(result, []) }
-                    {
-                        io0Die(format(
-                            "Invalid `..` component in path: %q", string))
-                    };
+                    { dieWith("Invalid `..` component in path", string) };
                 <> listButLast(result)
             }
             { <> [result*, one] }
