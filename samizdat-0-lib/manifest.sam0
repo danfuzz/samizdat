@@ -41,7 +41,6 @@ def MANIFEST = [
     "eval1.sam0",
 
     # Layer 1 additional library.
-    "format.sam1",
     "io0.sam1",
     "commandLine.sam1",
 

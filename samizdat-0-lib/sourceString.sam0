@@ -221,6 +221,10 @@ fn sourceStringGeneral(value, adorn) {
     <> stringifier(value, adorn)
 };
 
+# Formats a hex int argument.
+fn convertHex(arg) {
+    <> stringFromIntBase(arg, 16)
+};
 
 #
 # Exported functions
@@ -261,7 +265,31 @@ fn stringFromValue(value?) {
         { <> "" }
 };
 
+# Mapping from format escape characters to their respective handler functions.
+def FORMATTERS = [
+    q: sourceString,
+    Q: sourceStringUnadorned,
+    s: stringFromValue,
+    x: convertHex
+];
+
+# Documented in Samizdat Layer 0 spec.
+#
+# This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
+# is defined in terms of other exported functions.
+fn formatterFromString(formatSpec) {
+    <> ifValue { <> mapGet(FORMATTERS, formatSpec) }
+        { formatter :: <> formatter }
+        {
+            io0Die(stringAdd(
+                "Unrecognized format spec: ",
+                sourceString(formatSpec)))
+        }
+};
+
+
 <> [
+    formatterFromString:   formatterFromString,
     sourceString:          sourceString,
     sourceStringUnadorned: sourceStringUnadorned,
     stringFromInt:         stringFromInt,
