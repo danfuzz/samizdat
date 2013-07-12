@@ -38,7 +38,7 @@ enum {
     LANG_MAX_IDENTIFIER_CHARS = 40,
 
     /** Maximum number of items that can be interpolated out of a generator. */
-    LANG_MAX_GENERATOR_ITEMS = 1000,
+    LANG_MAX_GENERATOR_ITEMS = 10000,
 
     /** Maximum number of characters in a tokenized string constant. */
     LANG_MAX_STRING_CHARS = 200,
