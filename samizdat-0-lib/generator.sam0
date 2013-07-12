@@ -232,10 +232,10 @@ fn optGenerator(generator) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn paraGeneratorFromValues(generators*) {
+fn paraGenerator(generators*) {
     # Main generator maker, which takes a list (per se) of generators
     # as a single argument.
-    fn paraGeneratorFromValues1(generators) {
+    fn paraGenerator1(generators) {
         <> { <out> box ::
             def generatorCalls = listMap(generators)
                 { ., gen ::
@@ -255,7 +255,7 @@ fn paraGeneratorFromValues(generators*) {
                 { ., one :: <> listNth(one, 1) };
 
             boxSet(box, yields);
-            <> paraGeneratorFromValues1(nexts);
+            <> paraGenerator1(nexts);
         }
     };
 
@@ -268,7 +268,7 @@ fn paraGeneratorFromValues(generators*) {
         { ., gen :: <> generatorFromValue(gen) };
 
     # Make the initial inner call (to the function defined above).
-    <> paraGeneratorFromValues1(generatorsPerSe)
+    <> paraGenerator1(generatorsPerSe)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -289,7 +289,7 @@ fn reduceGenerator(reduceFunction, base) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn seqGeneratorFromValues(generators*) {
+fn seqGenerator(generators*) {
     # Return a voided generator if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
         { return voidedGenerator };
@@ -309,7 +309,7 @@ fn seqGeneratorFromValues(generators*) {
                 }
                 {
                     def nextGenerator =
-                        seqGeneratorFromValues(listDelNth(generators, 0)*);
+                        seqGenerator(listDelNth(generators, 0)*);
                     <> nextGenerator(box)
                 }
         }
@@ -319,7 +319,7 @@ fn seqGeneratorFromValues(generators*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn tokenGeneratorFromValue(generator) {
+fn tokenGenerator(generator) {
     <> filterGenerator(generator)
         { elem :: <> @[(elem)] }
 };
@@ -333,8 +333,8 @@ fn tokenGeneratorFromValue(generator) {
     generatorFromValue:         generatorFromValue,
     listFromGenerator:          listFromGenerator,
     optGenerator:               optGenerator,
-    paraGeneratorFromValues:    paraGeneratorFromValues,
+    paraGenerator:    paraGenerator,
     reduceGenerator:            reduceGenerator,
-    seqGeneratorFromValues:     seqGeneratorFromValues,
-    tokenGeneratorFromValue:    tokenGeneratorFromValue
+    seqGenerator:     seqGenerator,
+    tokenGenerator:    tokenGenerator
 ]

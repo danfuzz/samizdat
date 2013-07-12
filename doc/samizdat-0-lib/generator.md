@@ -119,7 +119,7 @@ returned generator yields a single-element list of that value. Once the
 underlying generator is voided, the returned generator yields the empty
 list, and will continue doing so ad infinitum.
 
-#### `paraGeneratorFromValues(generators*) <> generator`
+#### `paraGenerator(generators*) <> generator`
 
 Parallel generator combination constructor. This takes an arbitrary number of
 generators, and returns a generator that yields lists.
@@ -144,7 +144,7 @@ generator yields the previous value (possibly the `base`).
 
 The outer generator never becomes voided.
 
-#### `seqGeneratorFromValues(generators*) <> generator`
+#### `seqGenerator(generators*) <> generator`
 
 Sequential generator combination constructor. This takes an arbitrary number
 of generators, and returns a generator that yields from each of
@@ -154,7 +154,7 @@ As each generator becomes voided, the next one (in argument order) is called
 upon to generate further elements. The generator becomes voided after the
 final argument is voided.
 
-#### `tokenGeneratorFromValue(generator) <> generator`
+#### `tokenGenerator(generator) <> generator`
 
 Filter generator that produces a sequence of valueless (type-only)
 tokens from whatever the underlying generator produces. This is,

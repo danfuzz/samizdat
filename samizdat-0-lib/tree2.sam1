@@ -1554,7 +1554,7 @@ def parGeneratorClause = {/
         def gens = [firstGen, moreGens*];
         def formals = listMap(gens) { ., gen :: <> mapGet(gen, "formal") };
         def inits = listMap(gens) { ., gen :: <> mapGet(gen, "init") };
-        def init = makeCallName("paraGeneratorFromValues", inits*);
+        def init = makeCallName("paraGenerator", inits*);
 
         <> [formals: formals, init: init]
     }
@@ -1586,7 +1586,7 @@ def FOR_BODY_CLOSURE = sam0Tree("
 #         def next = \"continue";
 #         stat1; stat2
 #     };
-#     loopReduce(paraGeneratorFromValues(expr1, expr2))
+#     loopReduce(paraGenerator(expr1, expr2))
 #         { generator ::
 #             def box = yieldBox();
 #             <> ifValue { <> generator(box) }
