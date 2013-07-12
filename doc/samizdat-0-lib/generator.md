@@ -4,6 +4,11 @@ Samizdat Layer 0: Core Library
 Generators
 ----------
 
+In general, the generator-oriented functions accept either generators
+or collections as "generator" arguments. Collections are implicitly
+converted to generators, as if by a call to `generatorFromValue` (defined
+below).
+
 
 <br><br>
 ### Primitive Definitions
@@ -30,6 +35,14 @@ Otherwise, the value yielded from the inner generator is passed to the
 then that value in turn becomes the yielded result of the outer generator.
 If the filter function yields void, then the value-in-progress is discarded,
 and the inner generator is retried, with the same void-or-value behavior.
+
+#### `generatorForEach(generator) <> !.`
+
+Generator iterator, ignoring results. This takes a generator, calling
+it repeatedly until it becomes voided. All results yielded by the
+generator are ignored.
+
+This function always returns void.
 
 #### `generatorForExclusiveRange(first, increment, limit) <> generator`
 
