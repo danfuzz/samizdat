@@ -24,7 +24,7 @@ fn msg(generator) {
 # Prints out 10 values yielded by the given generator (and no more).
 fn msgTen(generator) {
     def values = listFromGenerator(
-        paraGeneratorFromValues(generator, [(1..10)*]));
+        paraGenerator(generator, [(1..10)*]));
     def extract = listMap(values) { ., value :: <> listFirst(value) };
     io0Note("Got: \%q(extract)")
 };

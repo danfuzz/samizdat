@@ -4,6 +4,11 @@ Samizdat Layer 0: Core Library
 Generators
 ----------
 
+In general, the generator-oriented functions accept either generators
+or collections as "generator" arguments. Collections are implicitly
+converted to generators, as if by a call to `generatorFromValue` (defined
+below).
+
 
 <br><br>
 ### Primitive Definitions
@@ -14,24 +19,7 @@ Generators
 <br><br>
 ### In-Language Definitions
 
-#### `filterGenerator(filterFunction, value) <> generator`
-
-Filtering generator constructor. This takes an arbitrary generator or
-value (which is coerced to a generator as if by calling `generatorFromValue`
-on it), and returns a generator which filters the generated results
-with the given filter function. This works as follows:
-
-Each time the outer (result) generator is called, it calls the argument
-generator. If the argument generator has been voided, then the outer
-generator also becomes voided.
-
-Otherwise, the value yielded from the inner generator is passed to the
-`filterFunction` as its sole argument. If that function returns a value,
-then that value in turn becomes the yielded result of the outer generator.
-If the filter function yields void, then the value-in-progress is discarded,
-and the inner generator is retried, with the same void-or-value behavior.
-
-#### `generatorForExclusiveRange(first, increment, limit) <> generator`
+#### `exclusiveRange(first, increment, limit) <> generator`
 
 End-exclusive range generator for int or single-character strings.
 Takes an initial value, which must either be an int or a single-character
@@ -45,30 +33,29 @@ voided.
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
 
-#### `generatorForInclusiveRange(first, increment, limit) <> generator`
+#### `filterGenerator(filterFunction, generator) <> generator`
 
-End-inclusive range generator for int or single-character strings.
-Takes an initial value, which must either be an int or a single-character
-string, and an int (always an int) increment. The first call to the
-resulting generator yields the `first` value, and each subsequent call
-yields the previous value plus the given increment (converted to a
-single-character string if `first` is a string). If the value yielded
-would be beyond the given `limit`, the generator becomes voided.
+Filtering generator constructor. This takes an arbitrary generator,
+and returns a generator which filters the generated results
+with the given filter function. This works as follows:
 
-As a special case, if `increment` is `0`, the resulting generator just
-yields `first` and then becomes voided.
+Each time the outer (result) generator is called, it calls the argument
+generator. If the argument generator has been voided, then the outer
+generator also becomes voided.
 
-#### `generatorForOpenRange(first, increment) <> generator`
+Otherwise, the value yielded from the inner generator is passed to the
+`filterFunction` as its sole argument. If that function returns a value,
+then that value in turn becomes the yielded result of the outer generator.
+If the filter function yields void, then the value-in-progress is discarded,
+and the inner generator is retried, with the same void-or-value behavior.
 
-Open (never voided) range generator for int or single-character strings.
-Takes an initial value, which must either be an int or a single-character
-string, and an int (always an int) increment. The first call to the
-resulting generator yields the `first` value, and each subsequent call
-yields the previous value plus the given increment (converted to a
-single-character string if `first` is a string).
+#### `generatorForEach(generator) <> !.`
 
-As a special case, if `increment` is `0`, the resulting generator just
-yields `first` and then becomes voided.
+Generator iterator, ignoring results. This takes a generator, calling
+it repeatedly until it becomes voided. All results yielded by the
+generator are ignored.
+
+This function always returns void.
 
 #### `generatorFromValue(value) <> generator`
 
@@ -85,36 +72,66 @@ directly. That is, a function that wants to take values-or-generators can
 safely call `generatorFromValue(valueOrGenerator)` without any up-front
 type checking.
 
-#### `listFromGenerator(value) <> list`
+#### `inclusiveRange(first, increment, limit) <> generator`
 
-Takes an arbitrary generator or value (which is coerced to a generator
-as if by calling `generatorFromValue` on it), and collects all of its
-generated results, in generated order, into a list, returning that list.
+End-inclusive range generator for int or single-character strings.
+Takes an initial value, which must either be an int or a single-character
+string, and an int (always an int) increment. The first call to the
+resulting generator yields the `first` value, and each subsequent call
+yields the previous value plus the given increment (converted to a
+single-character string if `first` is a string). If the value yielded
+would be beyond the given `limit`, the generator becomes voided.
+
+As a special case, if `increment` is `0`, the resulting generator just
+yields `first` and then becomes voided.
+
+#### `listFromGenerator(generator) <> list`
+
+Takes an arbitrary generator, and collects all of its generated results,
+in generated order, into a list, returning that list.
 
 This function could be defined as something like:
 
 ```
-fn listFromGenerator(value) {
-    <> collect for(v in value) { <> v }
+fn listFromGenerator(generator) {
+    <> collect for(value in generator) { <> value }
 }
 ```
 
-#### `optGenerator(value) <> generator`
+#### `mapFromGenerator(generator) <> map`
 
-"Optional" generator constructor. This takes an arbitrary generator or
-value (which is coerced to a generator as if by calling `generatorFromValue`
-on it), returning a new generator that always yields lists and never
+Takes a generator which must yield map values, and collects all of its
+generated results, in generated order, by building up an overall map,
+as if by successive calls to `mapAdd`.
+
+If there are mappings in the yielded results with equal keys, then the
+*last* such mapping is the one that "wins" in the final result.
+
+#### `openRange(first, increment) <> generator`
+
+Open (never voided) range generator for int or single-character strings.
+Takes an initial value, which must either be an int or a single-character
+string, and an int (always an int) increment. The first call to the
+resulting generator yields the `first` value, and each subsequent call
+yields the previous value plus the given increment (converted to a
+single-character string if `first` is a string).
+
+As a special case, if `increment` is `0`, the resulting generator just
+yields `first` and then becomes voided.
+
+#### `optGenerator(generator) <> generator`
+
+"Optional" generator constructor. This takes an arbitrary generator,
+returning a new generator that always yields lists and never
 becomes voided. As long as the underlying generator yields a value, the
 returned generator yields a single-element list of that value. Once the
 underlying generator is voided, the returned generator yields the empty
 list, and will continue doing so ad infinitum.
 
-#### `paraGeneratorFromValues(values*) <> generator`
+#### `paraGenerator(generators*) <> generator`
 
 Parallel generator combination constructor. This takes an arbitrary number of
-values or generators, and returns a generator that yields lists.
-Non-generator arguments are "coerced" into generators as if by calling
-`generatorFromValue` on them.
+generators, and returns a generator that yields lists.
 
 Each yielded list consists of values yielded from the individual generators,
 in passed order. The generator becomes voided when *any* of the individual
@@ -136,18 +153,17 @@ generator yields the previous value (possibly the `base`).
 
 The outer generator never becomes voided.
 
-#### `seqGeneratorFromValues(values*) <> generator`
+#### `seqGenerator(generators*) <> generator`
 
 Sequential generator combination constructor. This takes an arbitrary number
-of values or generators, and returns a generator that yields from each of
-the generators in argument order. Non-generator arguments are "coerced"
-into generators as if by calling `generatorFromValue` on them.
+of generators, and returns a generator that yields from each of
+the generators in argument order.
 
 As each generator becomes voided, the next one (in argument order) is called
 upon to generate further elements. The generator becomes voided after the
 final argument is voided.
 
-#### `tokenGeneratorFromValue(value) <> generator`
+#### `tokenGenerator(generator) <> generator`
 
 Filter generator that produces a sequence of valueless (type-only)
 tokens from whatever the underlying generator produces. This is,

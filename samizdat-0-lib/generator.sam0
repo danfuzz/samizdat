@@ -135,7 +135,12 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn filterGenerator(filterFunction, value) {
+fn exclusiveRange(first, increment, limit) {
+    <> makeRangeGenerator(first, increment, limit, false)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn filterGenerator(filterFunction, generator) {
     # Main generator maker, which takes a generator (per se) as its argument.
     fn filterGenerator1(gen) {
         <> { <out> box ::
@@ -164,22 +169,17 @@ fn filterGenerator(filterFunction, value) {
         }
     };
 
-    <> filterGenerator1(generatorFromValue(value));
+    <> filterGenerator1(generatorFromValue(generator));
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn generatorForExclusiveRange(first, increment, limit) {
-    <> makeRangeGenerator(first, increment, limit, false)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn generatorForInclusiveRange(first, increment, limit) {
-    <> makeRangeGenerator(first, increment, limit, true)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn generatorForOpenRange(first, increment) {
-    <> makeRangeGenerator(first, increment)
+fn generatorForEach(generator) {
+    loopReduce(generatorFromValue(generator)) { gen ::
+        def box = yieldBox();
+        <> ifValue { <> gen(box) }
+            { nextGen :: <> [nextGen] }
+            { return }
+    }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -190,12 +190,12 @@ fn generatorFromValue(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listFromGenerator(value) {
+fn listFromGenerator(generator) {
     # Avoid pointless list->generator->list conversion.
-    ifIs { <> isList(value) }
-        { return value };
+    ifIs { <> isList(generator) }
+        { return generator };
 
-    loopReduce(generatorFromValue(value), []) { gen, list ::
+    loopReduce(generatorFromValue(generator), []) { gen, list ::
         def box = yieldBox();
         <> ifValue { <> gen(box) }
             { nextGenerator :: <> [nextGenerator, [list*, boxGet(box)]] }
@@ -204,7 +204,31 @@ fn listFromGenerator(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn optGenerator(value) {
+fn mapFromGenerator(generator) {
+    # Avoid pointless map->generator->map conversion.
+    ifIs { <> isMap(generator) }
+        { return generator };
+
+    loopReduce(generatorFromValue(generator), [:]) { gen, map ::
+        def box = yieldBox();
+        <> ifValue { <> gen(box) }
+            { nextGenerator :: <> [nextGenerator, mapAdd(map, boxGet(box))] }
+            { return map }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn inclusiveRange(first, increment, limit) {
+    <> makeRangeGenerator(first, increment, limit, true)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn openRange(first, increment) {
+    <> makeRangeGenerator(first, increment)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn optGenerator(generator) {
     # Main generator maker, which takes a generator (per se) as its argument.
     fn optGenerator1(gen) {
         <> { box ::
@@ -218,14 +242,14 @@ fn optGenerator(value) {
         }
     };
 
-    <> optGenerator1(generatorFromValue(value));
+    <> optGenerator1(generatorFromValue(generator));
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn paraGeneratorFromValues(values*) {
+fn paraGenerator(generators*) {
     # Main generator maker, which takes a list (per se) of generators
     # as a single argument.
-    fn paraGeneratorFromValues1(generators) {
+    fn paraGenerator1(generators) {
         <> { <out> box ::
             def generatorCalls = listMap(generators)
                 { ., gen ::
@@ -245,20 +269,20 @@ fn paraGeneratorFromValues(values*) {
                 { ., one :: <> listNth(one, 1) };
 
             boxSet(box, yields);
-            <> paraGeneratorFromValues1(nexts);
+            <> paraGenerator1(nexts);
         }
     };
 
     # Handle the degenerate case of no arguments.
-    ifValue { <> eq(values, []) }
+    ifValue { <> eq(generators, []) }
         { . :: return voidedGenerator };
 
     # Coerce all the original arguments to generators.
-    def generators = listMap(values)
-        { ., value :: <> generatorFromValue(value) };
+    def generatorsPerSe = listMap(generators)
+        { ., gen :: <> generatorFromValue(gen) };
 
     # Make the initial inner call (to the function defined above).
-    <> paraGeneratorFromValues1(generators)
+    <> paraGenerator1(generatorsPerSe)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -279,15 +303,15 @@ fn reduceGenerator(reduceFunction, base) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn seqGeneratorFromValues(values*) {
+fn seqGenerator(generators*) {
     # Return a voided generator if we weren't passed any arguments.
-    ifIs { <> eq(values, []) }
+    ifIs { <> eq(generators, []) }
         { return voidedGenerator };
 
     # Return a plain (unwrapped) generator if we were only passed one
     # argument. (This saves some gratuitous call wrapping / double yields.)
-    ifIs { <> eq(lowSize(values), 1) }
-        { return generatorFromValue(values*) };
+    ifIs { <> eq(lowSize(generators), 1) }
+        { return generatorFromValue(generators*) };
 
     fn seqGenerator1(gen) {
         <> { box ::
@@ -299,31 +323,33 @@ fn seqGeneratorFromValues(values*) {
                 }
                 {
                     def nextGenerator =
-                        seqGeneratorFromValues(listDelNth(values, 0)*);
+                        seqGenerator(listDelNth(generators, 0)*);
                     <> nextGenerator(box)
                 }
         }
     };
 
-    <> seqGenerator1(generatorFromValue(listNth(values, 0)));
+    <> seqGenerator1(generatorFromValue(listNth(generators, 0)));
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn tokenGeneratorFromValue(value) {
-    <> filterGenerator(value)
+fn tokenGenerator(generator) {
+    <> filterGenerator(generator)
         { elem :: <> @[(elem)] }
 };
 
 <> [
-    filterGenerator:            filterGenerator,
-    generatorForExclusiveRange: generatorForExclusiveRange,
-    generatorForInclusiveRange: generatorForInclusiveRange,
-    generatorForOpenRange:      generatorForOpenRange,
-    generatorFromValue:         generatorFromValue,
-    listFromGenerator:          listFromGenerator,
-    optGenerator:               optGenerator,
-    paraGeneratorFromValues:    paraGeneratorFromValues,
-    reduceGenerator:            reduceGenerator,
-    seqGeneratorFromValues:     seqGeneratorFromValues,
-    tokenGeneratorFromValue:    tokenGeneratorFromValue
+    exclusiveRange:     exclusiveRange,
+    filterGenerator:    filterGenerator,
+    generatorForEach:   generatorForEach,
+    generatorFromValue: generatorFromValue,
+    inclusiveRange:     inclusiveRange,
+    listFromGenerator:  listFromGenerator,
+    mapFromGenerator:   mapFromGenerator,
+    openRange:          openRange,
+    optGenerator:       optGenerator,
+    paraGenerator:      paraGenerator,
+    reduceGenerator:    reduceGenerator,
+    seqGenerator:       seqGenerator,
+    tokenGenerator:     tokenGenerator
 ]

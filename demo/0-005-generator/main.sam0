@@ -58,14 +58,14 @@ msgAll("Map",
     generatorFromValue([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
 msgAll("String", generatorFromValue("Happy string!"));
 
-msgAll("All-finite paraGeneratorFromValues",
-    paraGeneratorFromValues(
+msgAll("All-finite paraGenerator",
+    paraGenerator(
         [1, 2, 3],
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
 msgAll("Paragenerator with opt element",
-    paraGeneratorFromValues(
+    paraGenerator(
         optGenerator([1, 2, 3]),
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
@@ -77,55 +77,70 @@ msgAll("Filter generator (square even numbers)",
                 { <> imul(value, value) }
         });
 
-msgAll("Token generator", tokenGeneratorFromValue("Tokens!"));
+io0Note("generatorForEach on filter");
+generatorForEach(
+    filterGenerator([1, 2, 3, 4])
+        { value :: io0Note(stringAdd("    Yay ", sourceString(value))) });
+io0Note("");
+
+msgAll("Token generator", tokenGenerator("Tokens!"));
 
 msgAll("Inclusive range 5..10",
-    generatorForInclusiveRange(5, 1, 10));
+    inclusiveRange(5, 1, 10));
 
 msgAll("Inclusive range 10..-2..1",
-    generatorForInclusiveRange(10, -2, 1));
+    inclusiveRange(10, -2, 1));
 
 msgAll("Inclusive range \"a\"..5..\"z\"",
-    generatorForInclusiveRange("a", 5, "z"));
+    inclusiveRange("a", 5, "z"));
 
 msgAll("Exclusive range 5..10",
-    generatorForExclusiveRange(5, 1, 10));
+    exclusiveRange(5, 1, 10));
 
 msgAll("Exclusive range 10..-2..1",
-    generatorForExclusiveRange(10, -2, 1));
+    exclusiveRange(10, -2, 1));
 
 msgAll("Exclusive range \"a\"..5..\"z\"",
-    generatorForExclusiveRange("a", 5, "z"));
+    exclusiveRange("a", 5, "z"));
 
 msgAll("ParaGenerator with open ranges",
-    paraGeneratorFromValues(
-        generatorForOpenRange("a", 1),
-        generatorForOpenRange(100, 10),
+    paraGenerator(
+        openRange("a", 1),
+        openRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Zero-increment int range",
-    generatorForInclusiveRange(10, 0, 20));
+    inclusiveRange(10, 0, 20));
 
 msgAll("Zero-increment character range",
-    generatorForInclusiveRange("x", 0, "a"));
+    inclusiveRange("x", 0, "a"));
 
 msgAll("ParaGenerator with reduceGenerator",
-    paraGeneratorFromValues(
-        generatorForInclusiveRange(1, 1, 5),
+    paraGenerator(
+        inclusiveRange(1, 1, 5),
         reduceGenerator("") { x :: <> stringAdd(x, "x") }));
 
 msgAll("Empty SeqGenerator",
-    seqGeneratorFromValues());
+    seqGenerator());
 
 msgAll("Size one SeqGenerator",
-    seqGeneratorFromValues([a: 10, b: 20, c: 30]));
+    seqGenerator([a: 10, b: 20, c: 30]));
 
 msgAll("Size two SeqGenerator",
-    seqGeneratorFromValues(
+    seqGenerator(
         [a: 10, b: 20, c: 30],
         "defg"));
 
 msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
-    seqGeneratorFromValues("abc", [], [], ["def", "ghi"], []));
+    seqGenerator("abc", [], [], ["def", "ghi"], []));
+
+io0Note("mapFromGenerator on filter");
+def outMap = mapFromGenerator(
+    filterGenerator(inclusiveRange(0, 2, 4))
+        { value ::
+            <> [(value): value, iadd(value, 1): value, blort: value]
+        });
+io0Note(stringAdd("    ", sourceString(outMap)));
+io0Note("");
 
 <> 0
