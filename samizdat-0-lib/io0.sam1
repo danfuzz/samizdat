@@ -28,6 +28,25 @@ def parPathString = {/
     )+
 /};
 
+# Helper for `io0FlatFromPath` which validates a single path component.
+# Yields an error string on invalid. Parsing fails for valid components.
+def parErrorFromPathComponent = {/
+    ".." !.
+    { <> "Invalid `..` component in path" }
+|
+    "." !.
+    { <> "Invalid `.` component in path" }
+|
+    [! "/\0"]+
+    (
+        "/"
+        { <> "Invalid `/` in path" }
+    |
+        "\0"
+        { <> "Invalid `\\0` in path" }
+    )
+/};
+
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
 fn isPrefix(prefix, path) {
@@ -56,19 +75,11 @@ fn dieWith(msg, path) {
 # Documented in Samizdat Layer 0 spec.
 fn io0FlatFromPath(path) {
     <> listReduce("", path) { result, n, one ::
-        ifIs { <> eq(one, ".") }
-            { dieWith("Invalid `.` component in path", path) };
-        ifIs { <> eq(one, "..") }
-            { dieWith("Invalid `..` component in path", path) };
+        ifValue { <> pegApply(parErrorFromPathComponent, one) }
+            { error :: dieWith(error, path) };
         ifIs
             { <> and { <> eq(one, "") } { <> ne(n, isub(lowSize(path), 1)) } }
             { dieWith("Invalid empty component in path", path) };
-        stringForEach(one) { ., ch ::
-            ifIs { <> eq(ch, "/") }
-                { dieWith("Invalid `/` in path", path) };
-            ifIs { <> eq(ch, "\0") }
-                { dieWith("Invalid `\\0` in path", path) };
-        };
         <> stringAdd(result, "/", one)
     }
 };
