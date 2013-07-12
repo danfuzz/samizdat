@@ -495,6 +495,13 @@ zorder datOrder(zvalue v1, zvalue v2);
  */
 
 /**
+ * Adds an item to the current frame. This is only necessary to call when
+ * a reference gets "detached" from a live structure (via mutation), which
+ * is to say, rarely.
+ */
+void datFrameAdd(zvalue value);
+
+/**
  * Indicates the start of a new frame of references on the stack.
  * The return value can subsequently be passed to `datFrameEnd` to
  * indicate that this frame is no longer active.

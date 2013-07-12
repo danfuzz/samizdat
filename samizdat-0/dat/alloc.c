@@ -233,18 +233,6 @@ static void doGc(void) {
     sanityCheck(true);
 }
 
-/**
- * Pushes a value onto the stack.
- */
-static void stackPush(zvalue value) {
-    if (stackSize >= DAT_MAX_STACK) {
-        die("Value stack overflow.");
-    }
-
-    stack[stackSize] = value;
-    stackSize++;
-}
-
 
 /*
  * Module functions
@@ -268,7 +256,7 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     result->size = size;
 
     enlist(&liveHead, result);
-    stackPush(result);
+    datFrameAdd(result);
 
     allocationCount++;
 
@@ -334,6 +322,16 @@ zstackPointer datFrameStart(void) {
 }
 
 /* Documented in header. */
+void datFrameAdd(zvalue value) {
+    if (stackSize >= DAT_MAX_STACK) {
+        die("Value stack overflow.");
+    }
+
+    stack[stackSize] = value;
+    stackSize++;
+}
+
+/* Documented in header. */
 void datFrameReset(zstackPointer savedStack, zvalue stackedValue) {
     // The difference between this function and `datFrameReturn` is
     // one of intent, even though the implementation is (blatantly)
@@ -352,7 +350,7 @@ void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
     stackSize = returnSize;
 
     if (returnValue != NULL) {
-        stackPush(returnValue);
+        datFrameAdd(returnValue);
     }
 }
 

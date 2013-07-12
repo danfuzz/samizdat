@@ -62,7 +62,18 @@ static DatUniqletDispatch BOX_DISPATCH = {
 /* Documented in header. */
 zvalue boxGet(zvalue boxUniqlet) {
     Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
-    return box->value;
+    zvalue result = box->value;
+
+    if ((result != NULL) && !box->setOnce) {
+        // The box is mutable, and we are about to return a non-empty result.
+        // The returned value could conceivably be "detached" from the box
+        // (if the box is reset or re-set), so we have to explicitly add the
+        // result value to the frame at this point. This ensures that GC will
+        // be able to find it.
+        datFrameAdd(result);
+    }
+
+    return result;
 }
 
 /* Documented in header. */
