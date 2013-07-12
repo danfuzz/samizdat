@@ -71,8 +71,18 @@ fn closureWithFormals(closure, formals*) {
     <> @[closure: [tokenValue(closure)*, formals: formals]]
 };
 
+# Returns a `closure` node like the one given, except with `yieldDef`
+# bound to the indicated name.
 fn closureWithYieldDef(closure, name) {
     <> @[closure: [tokenValue(closure)*, yieldDef: name]]
+};
+
+# Filters a map of [operator: name] mappings, converting the names into
+# `varRef` nodes.
+fn varRefMap(map) {
+    <> mapFromGenerator(
+        filterGenerator(map)
+            { m :: <> [mapKey(m): makeVarRef(mapValue(m)) ] });
 };
 
 # A no-argument yield-void thunk.
@@ -83,18 +93,17 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 
 # Map of token types to corresponding unary operator function name variable
 # references.
-def UNARY_OPERATORS = mapMap([
-    "+":    "unary+",
-    "-":    "unary-",
-    "&":    "unary&",
-    "[]":   "unary[]",
-    "!!!":  "inot"
-    ])
-    { key, value :: <> makeVarRef(value) };
+def UNARY_OPERATORS = varRefMap([
+    "+":   "unary+",
+    "-":   "unary-",
+    "&":   "unary&",
+    "[]":  "unary[]",
+    "!!!": "inot"
+    ]);
 
 # Map of token types to corresponding binary operator function name variable
 # references.
-def BINARY_OPERATORS = mapMap([
+def BINARY_OPERATORS = varRefMap([
     "+":    "binary+",
     "-":    "binary-",
     "*":    "binary*",
@@ -120,8 +129,7 @@ def BINARY_OPERATORS = mapMap([
     "..":   "inclusiveRange",
     "..!":  "exclusiveRange",
     "..+":  "openRange"
-    ])
-    { key, value :: <> makeVarRef(value) };
+    ]);
 
 # Helper for parsing binary operator expressions, which puts together
 # a sequence of function calls.
