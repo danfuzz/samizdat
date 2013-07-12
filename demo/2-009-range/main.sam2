@@ -17,16 +17,13 @@ SELF_PATH, ARGS* ::
 
 # Prints out the values yielded by the given generator.
 fn msg(generator) {
-    def values = listFromGenerator(generator);
-    io0Note("Got: \%q(values)")
+    io0Note("Got: \%q([generator*])")
 };
 
 # Prints out 10 values yielded by the given generator (and no more).
 fn msgTen(generator) {
-    def values = listFromGenerator(
-        paraGenerator(generator, [(1..10)*]));
-    def extract = listMap(values) { ., value :: <> listFirst(value) };
-    io0Note("Got: \%q(extract)")
+    def values = filterGenerator(generator, 1..10) { v, . :: <> v };
+    io0Note("Got: \%q([values*])")
 };
 
 
