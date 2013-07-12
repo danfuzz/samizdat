@@ -50,16 +50,16 @@ fn metaFunctions(context, fileName) {
     # Note: As the layers get added, the default here should change.
     def nameMap = ifValue { <> mapGet(META_NAME_MAP, suffix) }
         { map :: <> map }
-        { <> mapGet(META_NAME_MAP, "sam1") };
+        { <> mapGet(META_NAME_MAP, "sam2") };
 
-    <> mapMap(nameMap) { ., v ::
-        <> ifValue { <> mapGet(context, v) }
-            { newValue :: <> newValue }
-            {
-                io0Die(
-                    stringAdd("Missing implementation for meta-function: ", v))
-            }
-    }
+    <> mapFromGenerator(
+        filterGenerator(nameMap)
+            { mapping ::
+                def name = mapValue(mapping);
+                <> ifValue { <> mapGet(context, name) }
+                    { func :: <> [mapKey(mapping): func] }
+                    { io0Die(stringAdd("Missing meta-function: ", name)) }
+            })
 };
 
 <> [
