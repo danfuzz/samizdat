@@ -135,7 +135,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn filterGenerator(filterFunction, value) {
+fn filterGenerator(filterFunction, generator) {
     # Main generator maker, which takes a generator (per se) as its argument.
     fn filterGenerator1(gen) {
         <> { <out> box ::
@@ -164,7 +164,7 @@ fn filterGenerator(filterFunction, value) {
         }
     };
 
-    <> filterGenerator1(generatorFromValue(value));
+    <> filterGenerator1(generatorFromValue(generator));
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -200,12 +200,12 @@ fn generatorFromValue(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listFromGenerator(value) {
+fn listFromGenerator(generator) {
     # Avoid pointless list->generator->list conversion.
-    ifIs { <> isList(value) }
-        { return value };
+    ifIs { <> isList(generator) }
+        { return generator };
 
-    loopReduce(generatorFromValue(value), []) { gen, list ::
+    loopReduce(generatorFromValue(generator), []) { gen, list ::
         def box = yieldBox();
         <> ifValue { <> gen(box) }
             { nextGenerator :: <> [nextGenerator, [list*, boxGet(box)]] }
@@ -214,7 +214,7 @@ fn listFromGenerator(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn optGenerator(value) {
+fn optGenerator(generator) {
     # Main generator maker, which takes a generator (per se) as its argument.
     fn optGenerator1(gen) {
         <> { box ::
@@ -228,11 +228,11 @@ fn optGenerator(value) {
         }
     };
 
-    <> optGenerator1(generatorFromValue(value));
+    <> optGenerator1(generatorFromValue(generator));
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn paraGeneratorFromValues(values*) {
+fn paraGeneratorFromValues(generators*) {
     # Main generator maker, which takes a list (per se) of generators
     # as a single argument.
     fn paraGeneratorFromValues1(generators) {
@@ -260,15 +260,15 @@ fn paraGeneratorFromValues(values*) {
     };
 
     # Handle the degenerate case of no arguments.
-    ifValue { <> eq(values, []) }
+    ifValue { <> eq(generators, []) }
         { . :: return voidedGenerator };
 
     # Coerce all the original arguments to generators.
-    def generators = listMap(values)
-        { ., value :: <> generatorFromValue(value) };
+    def generatorsPerSe = listMap(generators)
+        { ., gen :: <> generatorFromValue(gen) };
 
     # Make the initial inner call (to the function defined above).
-    <> paraGeneratorFromValues1(generators)
+    <> paraGeneratorFromValues1(generatorsPerSe)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -289,15 +289,15 @@ fn reduceGenerator(reduceFunction, base) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn seqGeneratorFromValues(values*) {
+fn seqGeneratorFromValues(generators*) {
     # Return a voided generator if we weren't passed any arguments.
-    ifIs { <> eq(values, []) }
+    ifIs { <> eq(generators, []) }
         { return voidedGenerator };
 
     # Return a plain (unwrapped) generator if we were only passed one
     # argument. (This saves some gratuitous call wrapping / double yields.)
-    ifIs { <> eq(lowSize(values), 1) }
-        { return generatorFromValue(values*) };
+    ifIs { <> eq(lowSize(generators), 1) }
+        { return generatorFromValue(generators*) };
 
     fn seqGenerator1(gen) {
         <> { box ::
@@ -309,18 +309,18 @@ fn seqGeneratorFromValues(values*) {
                 }
                 {
                     def nextGenerator =
-                        seqGeneratorFromValues(listDelNth(values, 0)*);
+                        seqGeneratorFromValues(listDelNth(generators, 0)*);
                     <> nextGenerator(box)
                 }
         }
     };
 
-    <> seqGenerator1(generatorFromValue(listNth(values, 0)));
+    <> seqGenerator1(generatorFromValue(listNth(generators, 0)));
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn tokenGeneratorFromValue(value) {
-    <> filterGenerator(value)
+fn tokenGeneratorFromValue(generator) {
+    <> filterGenerator(generator)
         { elem :: <> @[(elem)] }
 };
 
