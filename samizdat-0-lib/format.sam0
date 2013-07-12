@@ -163,8 +163,8 @@ fn doList(list, adorn) {
 fn doMap(map, adorn) {
     def mapElems = filterGenerator(map)
         { mapping ::
-            def key = keyString(mapKey(mapping));
-            def value = callSourceString(mapValue(mapping));
+            def key = keyString(mappingKey(mapping));
+            def value = callSourceString(mappingValue(mapping));
             <> stringAdd(", ", key, ": ", value)
         };
 

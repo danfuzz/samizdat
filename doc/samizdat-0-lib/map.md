@@ -31,7 +31,7 @@ or returns void if `notFound` was not supplied.
 
 Returns `true` iff the given map has a mapping for the given key.
 
-#### `mapKey(map) <> .`
+#### `mappingKey(map) <> .`
 
 Returns the sole key of the given map, which must be a single-mapping map.
 
@@ -43,7 +43,7 @@ a valid int index into the map. If `n` is not a valid index
 returns the `notFound` value (an arbitrary value) if supplied, or
 returns void if `notFound` was not supplied. When given a valid index,
 the return value is a single-mapping map, which is suitable as the
-argument to `mapKey` and `mapValue`.
+argument to `mappingKey` and `mappingValue`.
 
 The ordering of the mappings is by sort order of the keys.
 
@@ -57,7 +57,7 @@ These two scenarios can be easily differentiated by either noting a
 change in size (or not) between original and result, or by explicitly
 checking for the existence of `key` in the original.
 
-#### `mapValue(map) <> .`
+#### `mappingValue(map) <> .`
 
 Returns the sole value of the given map, which must be a single-mapping map.
 

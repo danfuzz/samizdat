@@ -110,7 +110,7 @@ def result = pegApply(parFile, text);
 # separated list of mappings.
 def resultLines = filterGenerator(result)
     { mapping ::
-        <> ",\n    \%q(mapKey(mapping)): \%q(mapValue(mapping))"
+        <> ",\n    \%q(mappingKey(mapping)): \%q(mappingValue(mapping))"
     };
 
 def resultText = stringSlice(stringAdd(resultLines*), 2);

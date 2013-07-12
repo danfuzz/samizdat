@@ -52,7 +52,7 @@ PRIM_IMPL(mapHasKey) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapKey) {
+PRIM_IMPL(mappingKey) {
     requireExactly(argCount, 1);
     return datMapKey(args[0]);
 }
@@ -69,7 +69,7 @@ PRIM_IMPL(mapPut) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapValue) {
+PRIM_IMPL(mappingValue) {
     requireExactly(argCount, 1);
     return datMapValue(args[0]);
 }

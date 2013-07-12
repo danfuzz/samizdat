@@ -82,7 +82,7 @@ fn closureWithYieldDef(closure, name) {
 fn varRefMap(map) {
     <> mapFromGenerator(
         filterGenerator(map)
-            { m :: <> [mapKey(m): makeVarRef(mapValue(m)) ] });
+            { m :: <> [mappingKey(m): makeVarRef(mappingValue(m)) ] });
 };
 
 # A no-argument yield-void thunk.
@@ -1264,7 +1264,7 @@ def parIfExpression = {/
         { <> ne(yieldDef, [:]) }
         {
             def mainClosure =
-                closureWithYieldDef(mainThunk, mapValue(yieldDef));
+                closureWithYieldDef(mainThunk, mappingValue(yieldDef));
             <> makeCall(mainClosure)
         }
     |

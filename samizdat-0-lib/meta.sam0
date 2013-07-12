@@ -55,9 +55,9 @@ fn metaFunctions(context, fileName) {
     <> mapFromGenerator(
         filterGenerator(nameMap)
             { mapping ::
-                def name = mapValue(mapping);
+                def name = mappingValue(mapping);
                 <> ifValue { <> mapGet(context, name) }
-                    { func :: <> [mapKey(mapping): func] }
+                    { func :: <> [mappingKey(mapping): func] }
                     { io0Die(stringAdd("Missing meta-function: ", name)) }
             })
 };
