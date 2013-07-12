@@ -33,21 +33,22 @@ voided.
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
 
-#### `filterGenerator(filterFunction, generator) <> generator`
+#### `filterGenerator(filterFunction, generator*) <> generator`
 
-Filtering generator constructor. This takes an arbitrary generator,
+Filtering generator constructor. This takes any number of arbitrary generator,
 and returns a generator which filters the generated results
 with the given filter function. This works as follows:
 
 Each time the outer (result) generator is called, it calls the argument
-generator. If the argument generator has been voided, then the outer
+generators. If any of the argument generators has been voided, then the outer
 generator also becomes voided.
 
-Otherwise, the value yielded from the inner generator is passed to the
-`filterFunction` as its sole argument. If that function returns a value,
-then that value in turn becomes the yielded result of the outer generator.
-If the filter function yields void, then the value-in-progress is discarded,
-and the inner generator is retried, with the same void-or-value behavior.
+Otherwise, the values yielded from the inner generators are passed to the
+`filterFunction` as its arguments (in generator order). If that function
+returns a value, then that value in turn becomes the yielded result of
+the outer generator. If the filter function yields void, then the
+value-in-progress is discarded, and the inner generator is retried, with
+the same void-or-value behavior.
 
 #### `generatorForEach(generator) <> !.`
 

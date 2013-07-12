@@ -140,7 +140,7 @@ fn exclusiveRange(first, increment, limit) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn filterGenerator(filterFunction, generator) {
+fn filterGenerator(filterFunction, generators*) {
     # Main generator maker, which takes a generator (per se) as its argument.
     fn filterGenerator1(gen) {
         <> { <out> box ::
@@ -151,7 +151,7 @@ fn filterGenerator(filterFunction, generator) {
                 def innerBox = yieldBox();
                 ifValue { <> gen(innerBox) }
                     { nextGenerator ::
-                        ifValue { <> filterFunction(boxGet(innerBox)) }
+                        ifValue { <> filterFunction(boxGet(innerBox)*) }
                             { value ::
                                 boxSet(box, value);
                                 <out> filterGenerator1(nextGenerator)
@@ -169,7 +169,7 @@ fn filterGenerator(filterFunction, generator) {
         }
     };
 
-    <> filterGenerator1(generatorFromValue(generator));
+    <> filterGenerator1(paraGenerator(generators*));
 };
 
 # Documented in Samizdat Layer 0 spec.
