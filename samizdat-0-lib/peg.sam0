@@ -181,24 +181,17 @@ fn genericMakeTokenSet(sense, types) {
 # The following are built partially in terms of the preceding
 # rule constructors.
 
-# Helper for `pegMakeCharSet` and `pegMakeCharSetComplement`, which
-# takes a `sense` argument and produces the desired rule.
-fn genericMakeCharSet(sense, strings*) {
-    # Make a list of all the strings' characters as tokens.
-    def types = stringReduce([], stringAdd(strings*))
-        { result, ., ch :: <> [result*, ch] };
-
-    <> genericMakeTokenSet(sense, types)
-};
-
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeCharSet(strings*) {
-    <> genericMakeCharSet(true, strings*)
+    # Make a list of all the strings' characters, passing it to the
+    # general token set constructor.
+    <> genericMakeTokenSet(true, [stringAdd(strings*)*])
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeCharSetComplement(strings*) {
-    <> genericMakeCharSet(false, strings*)
+    # See comment in `pegMakeCharSet`.
+    <> genericMakeTokenSet(false, [stringAdd(strings*)*])
 };
 
 # Documented in Samizdat Layer 0 spec.
