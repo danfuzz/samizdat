@@ -137,7 +137,9 @@ msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
 io0Note("mapFromGenerator on filter");
 def outMap = mapFromGenerator(
     filterGenerator(inclusiveRange(0, 2, 4))
-        { value :: <> [(value): value, blort: value] });
+        { value ::
+            <> [(value): value, iadd(value, 1): value, blort: value]
+        });
 io0Note(stringAdd("    ", sourceString(outMap)));
 io0Note("");
 
