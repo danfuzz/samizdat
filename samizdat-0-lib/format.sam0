@@ -52,6 +52,18 @@ fn adornIf(adorn, before, value, after) {
         { <> value }
 };
 
+# Helper which concatenates a list of list or map element stringifications.
+# It assumes that every element is a string that starts with `", "`, and it
+# removes that prefix from the first element. As a special case, returns
+# the given `ifEmpty` if `elems` is empty.
+fn collectionBody(elems, ifEmpty) {
+    ifIs { <> eq(elems, []) }
+        { return ifEmpty };
+
+    def first = stringSlice(listNth(elems, 0), 2);
+    <> stringAdd(first, listDelNth(elems, 0)*)
+};
+
 # Stringifies an int.
 fn doInt(int, adorn) {
     <> stringFromIntBase(int, 10)
@@ -136,39 +148,27 @@ fn keyString(key) {
 # Stringifies a string.
 fn doString(string, adorn) {
     def bodyChars = filterGenerator(string) { ch :: <> stringChar(ch) };
-    def body = stringAdd(bodyChars*);
-    <> adornIf(adorn, "\"", body, "\"")
+    <> adornIf(adorn, "\"", stringAdd(bodyChars*), "\"")
 };
 
 # Stringifies a list.
 fn doList(list, adorn) {
-    def body = listReduce("", list)
-        { reduction, ., elem ::
-            <> stringAdd(
-                reduction,
-                ifIs { <> eq(reduction, "") } { <> "" } { <> ", " },
-                callSourceString(elem))
-        };
+    def listElems = filterGenerator(list)
+        { elem :: <> stringAdd(", ", callSourceString(elem)) };
 
-    <> adornIf(adorn, "[", body, "]")
+    <> adornIf(adorn, "[", collectionBody([listElems*], ""), "]")
 };
 
 # Stringifies a map.
 fn doMap(map, adorn) {
-    def body = mapReduce("", map)
-        { reduction, key, value ::
-            <> stringAdd(
-                reduction,
-                ifIs { <> eq(reduction, "") } { <> "" } { <> ", " },
-                keyString(key),
-                ": ",
-                callSourceString(value))
+    def mapElems = filterGenerator(map)
+        { mapping ::
+            def key = keyString(mapKey(mapping));
+            def value = callSourceString(mapValue(mapping));
+            <> stringAdd(", ", key, ": ", value)
         };
 
-    <> adornIf(adorn,
-        "[",
-        ifIs { <> eq(body, "") } { <> ":" } { <> body },
-        "]")
+    <> adornIf(adorn, "[", collectionBody([mapElems*], ":"), "]");
 };
 
 # Stringifies a token.
@@ -185,8 +185,7 @@ fn doToken(token, adorn) {
     ifIs { <> and { <> isString(type) } { <> eq(valueString, "") } }
         { return adornIf(adorn, "@", typeString, "") };
 
-    def result = stringAdd(typeString, valueString);
-    <> adornIf(adorn, "@[", result, "]")
+    <> adornIf(adorn, "@[", stringAdd(typeString, valueString), "]")
 };
 
 # Stringifies a uniqlet.
