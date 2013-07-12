@@ -129,6 +129,20 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
     <> makeSeqGenerator(filterFunction, firstInt, increment)
 };
 
+# Helper for `paraGenerator`, which implements the degenerate case of
+# a single inner generator. This can end up being usefully used in a few
+# cases, e.g. by virtue of `filterGenerator` always calling `paraGenerator`.
+fn oneItemParaGenerator(generator) {
+    <> { <out> box ::
+        def innerBox = yieldBox();
+        <> ifValue { <> generator(innerBox) }
+            { nextGenerator ::
+                boxSet(box, [boxGet(innerBox)]);
+                <> oneItemParaGenerator(nextGenerator)
+            }
+    }
+};
+
 
 #
 # Exported functions
@@ -276,6 +290,10 @@ fn paraGenerator(generators*) {
     # Handle the degenerate case of no arguments.
     ifValue { <> eq(generators, []) }
         { . :: return voidedGenerator };
+
+    # Handle the degenerate case of a signle argument.
+    ifIs { <> eq(lowSize(generators), 1) }
+        { return oneItemParaGenerator(generatorFromValue(generators*)) };
 
     # Coerce all the original arguments to generators.
     def generatorsPerSe = listMap(generators)
