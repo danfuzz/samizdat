@@ -19,11 +19,10 @@ below).
 <br><br>
 ### In-Language Definitions
 
-#### `filterGenerator(filterFunction, value) <> generator`
+#### `filterGenerator(filterFunction, generator) <> generator`
 
-Filtering generator constructor. This takes an arbitrary generator or
-value (which is coerced to a generator as if by calling `generatorFromValue`
-on it), and returns a generator which filters the generated results
+Filtering generator constructor. This takes an arbitrary generator,
+and returns a generator which filters the generated results
 with the given filter function. This works as follows:
 
 Each time the outer (result) generator is called, it calls the argument
@@ -98,36 +97,32 @@ directly. That is, a function that wants to take values-or-generators can
 safely call `generatorFromValue(valueOrGenerator)` without any up-front
 type checking.
 
-#### `listFromGenerator(value) <> list`
+#### `listFromGenerator(generator) <> list`
 
-Takes an arbitrary generator or value (which is coerced to a generator
-as if by calling `generatorFromValue` on it), and collects all of its
-generated results, in generated order, into a list, returning that list.
+Takes an arbitrary generator, and collects all of its generated results,
+in generated order, into a list, returning that list.
 
 This function could be defined as something like:
 
 ```
-fn listFromGenerator(value) {
-    <> collect for(v in value) { <> v }
+fn listFromGenerator(generator) {
+    <> collect for(value in generator) { <> value }
 }
 ```
 
-#### `optGenerator(value) <> generator`
+#### `optGenerator(generator) <> generator`
 
-"Optional" generator constructor. This takes an arbitrary generator or
-value (which is coerced to a generator as if by calling `generatorFromValue`
-on it), returning a new generator that always yields lists and never
+"Optional" generator constructor. This takes an arbitrary generator,
+returning a new generator that always yields lists and never
 becomes voided. As long as the underlying generator yields a value, the
 returned generator yields a single-element list of that value. Once the
 underlying generator is voided, the returned generator yields the empty
 list, and will continue doing so ad infinitum.
 
-#### `paraGeneratorFromValues(values*) <> generator`
+#### `paraGeneratorFromValues(generators*) <> generator`
 
 Parallel generator combination constructor. This takes an arbitrary number of
-values or generators, and returns a generator that yields lists.
-Non-generator arguments are "coerced" into generators as if by calling
-`generatorFromValue` on them.
+generators, and returns a generator that yields lists.
 
 Each yielded list consists of values yielded from the individual generators,
 in passed order. The generator becomes voided when *any* of the individual
@@ -149,18 +144,17 @@ generator yields the previous value (possibly the `base`).
 
 The outer generator never becomes voided.
 
-#### `seqGeneratorFromValues(values*) <> generator`
+#### `seqGeneratorFromValues(generators*) <> generator`
 
 Sequential generator combination constructor. This takes an arbitrary number
-of values or generators, and returns a generator that yields from each of
-the generators in argument order. Non-generator arguments are "coerced"
-into generators as if by calling `generatorFromValue` on them.
+of generators, and returns a generator that yields from each of
+the generators in argument order.
 
 As each generator becomes voided, the next one (in argument order) is called
 upon to generate further elements. The generator becomes voided after the
 final argument is voided.
 
-#### `tokenGeneratorFromValue(value) <> generator`
+#### `tokenGeneratorFromValue(generator) <> generator`
 
 Filter generator that produces a sequence of valueless (type-only)
 tokens from whatever the underlying generator produces. This is,
