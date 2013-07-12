@@ -42,17 +42,6 @@ fn genericReduce(function, nthFunc, base) {
     }
 };
 
-# Generic map function. Instead of the value-to-map argument, this
-# takes an `nthFunc` of one argument.
-fn genericMap(function, nthFunc) {
-    <> genericReduce([], nthFunc)
-        { result, index, item ::
-            <> ifValue { <> function(index, item) }
-                { value :: <> listInsNth(result, lowSize(result), value) }
-                { <> result }
-        }
-};
-
 
 #
 # List
@@ -123,24 +112,9 @@ fn mapMap(function, map) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn stringForEach(function, string) {
-    <> genericForEach(function, { n :: <> stringNth(string, n) })
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn stringFromTokenList(tokens) {
     <> listReduce("", tokens)
         { result, ., token :: <> stringAdd(result, tokenType(token)) };
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn stringMap(string, function) {
-    <> genericMap(function, { n :: <> stringNth(string, n) })
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn stringReduce(function, base, string) {
-    <> genericReduce(function, { n :: <> stringNth(string, n) }, base)
 };
 
 
@@ -156,8 +130,5 @@ fn stringReduce(function, base, string) {
     mapForEach: mapForEach,
     mapMap: mapMap,
     mapReduce: mapReduce,
-    stringForEach: stringForEach,
-    stringFromTokenList: stringFromTokenList,
-    stringMap: stringMap,
-    stringReduce: stringReduce
+    stringFromTokenList: stringFromTokenList
 ]
