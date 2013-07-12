@@ -65,36 +65,4 @@ Returns the sole value of the given map, which must be a single-mapping map.
 <br><br>
 ### In-Language Definitions
 
-#### `mapForEach(function, map) <> !.`
-
-Calls the given function for each mapping in the given map. The
-function is called with two arguments, a key from the map and
-its corresponding value (in that order). Always returns void.
-
-#### `mapMap(function, map) <> map`
-
-Maps the values of a map using the given mapping function,
-resulting in a map whose keys are the same as the given map but
-whose values may differ. In key order, the function is called with
-two arguments representing the mapping, a key and a value (in that
-order). The return value of the function becomes the bound value for
-the given key in the final result.
-
-Similar to `listMap`, if the function returns void, then no item is
-added for the corresponding element. This means the size of the
-result may be smaller than the size of the argument.
-
-#### `mapReduce(function, base, map) <> . | !.`
-
-Reduces a map to a single value, given a base value and a reducer
-function, operating in key order. The given function is called on each
-mapping, with three arguments: the last (or base) reduction
-result, a key from the map, and its associated value. The
-function result becomes the reduction result, which is passed to the
-next call of `function` or becomes the return value of the call to
-this function if it was the call for the final mapping.
-
-Similar to `listReduce`, if the function returns void, then the
-previously-returned non-void value (or `base` value if there has
-yet to be a non-void function return) is what is passed to the
-subsequent iteration and returned at the end of the call.
+(none)
