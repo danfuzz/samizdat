@@ -168,6 +168,16 @@ fn filterGenerator(filterFunction, value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn generatorForEach(generator) {
+    loopReduce(generatorFromValue(generator)) { gen ::
+        def box = yieldBox();
+        <> ifValue { <> gen(box) }
+            { nextGen :: <> [nextGen] }
+            { return }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn generatorForExclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, false)
 };
@@ -316,6 +326,7 @@ fn tokenGeneratorFromValue(value) {
 
 <> [
     filterGenerator:            filterGenerator,
+    generatorForEach:           generatorForEach,
     generatorForExclusiveRange: generatorForExclusiveRange,
     generatorForInclusiveRange: generatorForInclusiveRange,
     generatorForOpenRange:      generatorForOpenRange,
