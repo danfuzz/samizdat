@@ -17,6 +17,19 @@ def META_NAME_MAP = [
     sam2: [eval: "sam2Eval", tokenize: "sam2Tokenize", tree: "sam2Tree"]
 ];
 
+# Gets the index of the first occurrence of the given character in the
+# given string.
+fn charIndex(string, ch) {
+    def search = filterGenerator(openRange(0, 1), string)
+        { index, one ::
+            <> ifIs { <> eq(ch, one) }
+                { return index }
+        };
+
+    generatorForEach(search);
+    <> -1
+};
+
 
 #
 # Exported functions
@@ -29,11 +42,7 @@ fn makeLibrary(context) {
 
 # Documented in Samizdat Layer 0 spec.
 fn metaFunctions(context, fileName) {
-    def dotAt = stringReduce(-1, fileName) { result, n, ch ::
-        <> ifIs { <> eq(ch, ".") }
-            { <> n }
-    };
-
+    def dotAt = charIndex(fileName, ".");
     def suffix = ifIs { <> eq(dotAt, -1) }
         { <> "" }
         { <> stringSlice(fileName, iadd(dotAt, 1)) };
