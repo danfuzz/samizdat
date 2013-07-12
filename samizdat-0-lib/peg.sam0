@@ -333,7 +333,7 @@ fn pegApply(rule, input) {
         { . ::
             # Generate single-character tokens instead of single-character
             # strings.
-            <> tokenGeneratorFromValue(input)
+            <> tokenGenerator(input)
         }
         { <> generatorFromValue(input) };
 
