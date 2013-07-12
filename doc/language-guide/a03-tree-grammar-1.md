@@ -689,10 +689,9 @@ def parParserSet = {/
     terminals = (
         strings = parParserSetString+
         {
-            def oneString = listReduce("", strings)
-                { result, ., s :: <> stringAdd(result, tokenValue(s)) };
-            <> stringReduce([], oneString)
-                { result, ., ch :: <> [result*, ch] }
+            def charsGen =
+                filterGenerator(strings) { tok :: <> [tokenValue(tok)*] };
+            <> listAdd(charsGen*)
         }
     |
         tokens = parParserToken+
