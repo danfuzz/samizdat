@@ -11,39 +11,6 @@
 
 
 #
-# Helper functions
-#
-
-# Generic for-each function. Instead of the value-to-iterate argument, this
-# takes an `nthFunc` of one argument.
-fn genericForEach(function, nthFunc) {
-    loopReduce(0) { index ::
-        <> ifValue { <> nthFunc(index) }
-            { item ::
-                function(index, item);
-                <> [iadd(index, 1)]
-            }
-            { return }
-    }
-};
-
-# Generic reduce function. Instead of the value-to-reduce argument, this
-# takes an `nthFunc` of one argument.
-fn genericReduce(function, nthFunc, base) {
-    loopReduce(base, 0) { result, index ::
-        <> ifValue { <> nthFunc(index) }
-            { item ::
-                def nextResult = ifValue { <> function(result, index, item) }
-                    { value :: <> value }
-                    { <> result };
-                <> [nextResult, iadd(index, 1)]
-            }
-            { return result }
-    }
-};
-
-
-#
 # List
 #
 
@@ -73,41 +40,6 @@ fn listLast(list, notFound?) {
 
 
 #
-# Map
-#
-
-# Documented in Samizdat Layer 0 spec.
-#
-# **Note:** This one is out-of (alphabetical) order, because it's used
-# by other functions in this section, and *Samizdat Layer 0* does not allow
-# use-before-def.
-fn mapReduce(function, base, map) {
-    <> genericReduce(base)
-        { reduction, ., mapping ::
-            <> function(reduction, mapKey(mapping), mapValue(mapping))
-        }
-        { n :: <> mapNth(map, n) }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn mapForEach(function, map) {
-    genericForEach
-        { ., mapping :: function(mapKey(mapping), mapValue(mapping)) }
-        { n :: <> mapNth(map, n) }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn mapMap(function, map) {
-    <> mapReduce([:], map)
-        { reduction, key, value ::
-            <> ifValue { <> function(key, value) }
-                { newValue :: <> [reduction*, (key): newValue] }
-                { <> reduction }
-        }
-};
-
-
-#
 # String
 #
 
@@ -127,8 +59,5 @@ fn stringFromTokenList(tokens) {
     listButLast: listButLast,
     listFirst: listFirst,
     listLast: listLast,
-    mapForEach: mapForEach,
-    mapMap: mapMap,
-    mapReduce: mapReduce,
     stringFromTokenList: stringFromTokenList
 ]
