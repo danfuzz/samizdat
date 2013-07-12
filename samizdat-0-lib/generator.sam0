@@ -204,6 +204,20 @@ fn listFromGenerator(generator) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn mapFromGenerator(generator) {
+    # Avoid pointless map->generator->map conversion.
+    ifIs { <> isMap(generator) }
+        { return generator };
+
+    loopReduce(generatorFromValue(generator), [:]) { gen, map ::
+        def box = yieldBox();
+        <> ifValue { <> gen(box) }
+            { nextGenerator :: <> [nextGenerator, mapAdd(map, boxGet(box))] }
+            { return map }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn inclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, true)
 };
@@ -331,6 +345,7 @@ fn tokenGenerator(generator) {
     generatorFromValue: generatorFromValue,
     inclusiveRange:     inclusiveRange,
     listFromGenerator:  listFromGenerator,
+    mapFromGenerator:   mapFromGenerator,
     openRange:          openRange,
     optGenerator:       optGenerator,
     paraGenerator:      paraGenerator,

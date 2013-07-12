@@ -98,6 +98,15 @@ fn listFromGenerator(generator) {
 }
 ```
 
+#### `mapFromGenerator(generator) <> map`
+
+Takes a generator which must yield map values, and collects all of its
+generated results, in generated order, by building up an overall map,
+as if by successive calls to `mapAdd`.
+
+If there are mappings in the yielded results with equal keys, then the
+*last* such mapping is the one that "wins" in the final result.
+
 #### `openRange(first, increment) <> generator`
 
 Open (never voided) range generator for int or single-character strings.
