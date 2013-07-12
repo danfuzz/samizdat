@@ -135,6 +135,11 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn exclusiveRange(first, increment, limit) {
+    <> makeRangeGenerator(first, increment, limit, false)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn filterGenerator(filterFunction, generator) {
     # Main generator maker, which takes a generator (per se) as its argument.
     fn filterGenerator1(gen) {
@@ -178,21 +183,6 @@ fn generatorForEach(generator) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn exclusiveRange(first, increment, limit) {
-    <> makeRangeGenerator(first, increment, limit, false)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn inclusiveRange(first, increment, limit) {
-    <> makeRangeGenerator(first, increment, limit, true)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn openRange(first, increment) {
-    <> makeRangeGenerator(first, increment)
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn generatorFromValue(value) {
     <> ifValue { <> mapGet(GENERATOR_MAKERS, lowType(value)) }
         { maker :: <> maker(value) }
@@ -211,6 +201,16 @@ fn listFromGenerator(generator) {
             { nextGenerator :: <> [nextGenerator, [list*, boxGet(box)]] }
             { return list }
     }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn inclusiveRange(first, increment, limit) {
+    <> makeRangeGenerator(first, increment, limit, true)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn openRange(first, increment) {
+    <> makeRangeGenerator(first, increment)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -325,16 +325,16 @@ fn tokenGenerator(generator) {
 };
 
 <> [
-    filterGenerator:            filterGenerator,
-    generatorForEach:           generatorForEach,
-    exclusiveRange: exclusiveRange,
-    inclusiveRange: inclusiveRange,
-    openRange:      openRange,
-    generatorFromValue:         generatorFromValue,
-    listFromGenerator:          listFromGenerator,
-    optGenerator:               optGenerator,
-    paraGenerator:    paraGenerator,
-    reduceGenerator:            reduceGenerator,
-    seqGenerator:     seqGenerator,
-    tokenGenerator:    tokenGenerator
+    exclusiveRange:     exclusiveRange,
+    filterGenerator:    filterGenerator,
+    generatorForEach:   generatorForEach,
+    generatorFromValue: generatorFromValue,
+    inclusiveRange:     inclusiveRange,
+    listFromGenerator:  listFromGenerator,
+    openRange:          openRange,
+    optGenerator:       optGenerator,
+    paraGenerator:      paraGenerator,
+    reduceGenerator:    reduceGenerator,
+    seqGenerator:       seqGenerator,
+    tokenGenerator:     tokenGenerator
 ]
