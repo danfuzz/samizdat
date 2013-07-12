@@ -134,8 +134,8 @@ fn keyString(key) {
 
 # Stringifies a string.
 fn doString(string, adorn) {
-    def body = stringReduce("", string)
-        { result, ., ch :: <> stringAdd(result, stringChar(ch)) };
+    def bodyChars = filterGenerator(string) { ch :: <> stringChar(ch) };
+    def body = stringAdd(bodyChars*);
     <> adornIf(adorn, "\"", body, "\"")
 };
 
