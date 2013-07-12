@@ -52,11 +52,16 @@ fn msgAll(header, gen) {
 msgAll("Empty list", generatorFromValue([]));
 msgAll("Empty map", generatorFromValue([:]));
 msgAll("Empty string", generatorFromValue(""));
+msgAll("Empty paraGenerator", paraGenerator());
+msgAll("Empty seqGenerator", seqGenerator());
 
 msgAll("List", generatorFromValue([101, 33, 5555, "blort"]));
 msgAll("Map",
     generatorFromValue([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
 msgAll("String", generatorFromValue("Happy string!"));
+
+msgAll("Single-item paraGenerator",
+    paraGenerator(["blort", "igram", "fizmo"]));
 
 msgAll("All-finite paraGenerator",
     paraGenerator(
@@ -119,9 +124,6 @@ msgAll("ParaGenerator with reduceGenerator",
     paraGenerator(
         inclusiveRange(1, 1, 5),
         reduceGenerator("") { x :: <> stringAdd(x, "x") }));
-
-msgAll("Empty SeqGenerator",
-    seqGenerator());
 
 msgAll("Size one SeqGenerator",
     seqGenerator([a: 10, b: 20, c: 30]));
