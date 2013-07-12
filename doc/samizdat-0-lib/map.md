@@ -71,8 +71,6 @@ Calls the given function for each mapping in the given map. The
 function is called with two arguments, a key from the map and
 its corresponding value (in that order). Always returns void.
 
-**Note:** See `stringMap` for discussion about choice of argument order.
-
 #### `mapMap(function, map) <> map`
 
 Maps the values of a map using the given mapping function,
@@ -85,8 +83,6 @@ the given key in the final result.
 Similar to `listMap`, if the function returns void, then no item is
 added for the corresponding element. This means the size of the
 result may be smaller than the size of the argument.
-
-**Note:** See `stringMap` for discussion about choice of argument order.
 
 #### `mapReduce(function, base, map) <> . | !.`
 
@@ -102,5 +98,3 @@ Similar to `listReduce`, if the function returns void, then the
 previously-returned non-void value (or `base` value if there has
 yet to be a non-void function return) is what is passed to the
 subsequent iteration and returned at the end of the call.
-
-**Note:** See `stringMap` for discussion about choice of argument order.

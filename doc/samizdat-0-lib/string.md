@@ -45,15 +45,6 @@ specified, it defaults to the end of the string.
 <br><br>
 ### In-Language Definitions
 
-#### `stringForEach(function, string) <> !.`
-
-Calls the given function on each element (character) of the given string.
-The given function is called with two arguments, namely the element's
-index (zero-based) and the element's value (as a single-character string).
-Always returns void.
-
-**Note:** See `stringMap` for discussion about choice of argument order.
-
 #### `stringFromTokenList(tokens) <> string`
 
 Takes a list of tokenizer-style character tokens (that is, tokens whose
@@ -61,40 +52,3 @@ type tags are each a single-character string), returning the result
 of concatenating all the characters together in order.
 
 This function is intended to aid in the building of tokenizers.
-
-#### `stringMap(function, string) <> list`
-
-Maps each element of a string using a mapping function, collecting
-the results into a list (note, not into a string). The given
-function is called on each element (character), with two arguments,
-namely the element's index (zero-based) and the element's value
-(as a single-character string).
-
-Similar to `listMap`, if the function returns void, then no item is
-added for the corresponding element. This means the size of the
-result may be smaller than the size of the argument.
-
-**Note:** Like many other languages with similar functions, the
-function argument is the first one. However, when commonly writing
-calls, the block function argument syntax makes it easy and natural
-to place a function definition in-line with the call, after the rest
-of the arguments.
-
-#### `stringReduce(function, base, string) <> . | !.`
-
-Reduces a string to a single value, given a base value and a
-reducer function, operating in low-to-high index order (that is, this
-is a left-reduce operation). The given function is called once per
-string element (character), with three arguments: the last (or base)
-reduction result, the element's index (zero-based), and the element's
-value (as a single-character string). The function result becomes the
-reduction result, which is passed to the next call of `function` or becomes
-the return value of the call to this function if it was the call for the
-final element.
-
-Similar to `listReduce`, if the function returns void, then the
-previously-returned non-void value (or `base` value if there has
-yet to be a non-void function return) is what is passed to the
-subsequent iteration and returned at the end of the call.
-
-**Note:** See `stringMap` for discussion about choice of argument order.

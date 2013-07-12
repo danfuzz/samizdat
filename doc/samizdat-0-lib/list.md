@@ -26,8 +26,6 @@ Calls the given function on each element of the given list.
 The given function is called with two arguments, namely the element's
 index (zero-based) and value. Always returns void.
 
-**Note:** See `stringMap` for discussion about choice of argument order.
-
 #### `listInsNth(list, n, value) <> list`
 
 Returns a list just like the given one, except that the `n`th
@@ -48,8 +46,6 @@ index (zero-based) and value.
 If the function returns void for any given call, then no item is added for
 the corresponding element. This means the size of the result may be
 smaller than the size of the argument.
-
-**Note:** See `stringMap` for discussion about choice of argument order.
 
 #### `listNth(list, n, notFound?) <> . | !.`
 
@@ -85,8 +81,6 @@ If the function returns void for any given call, then the previously-returned
 non-void value (or `base` value if there has yet to be a non-void function
 return) is what is passed to the subsequent iteration and returned at the
 end of the call.
-
-**Note:** See `stringMap` for discussion about choice of argument order.
 
 #### `listReverse(list) <> list`
 
