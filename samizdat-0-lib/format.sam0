@@ -112,11 +112,12 @@ fn isIdentifier(string) {
         { <> gt(lowSize(string), 0) }
         { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0)) }
         {
-            stringForEach(string)
-                { ., ch ::
-                    ifNot { <> mapGet(IDENTIFIER_CHARS, ch) }
-                        { return }
-                };
+            generatorForEach(
+                filterGenerator(string)
+                    { ch ::
+                        ifNot { <> mapGet(IDENTIFIER_CHARS, ch) }
+                            { return }
+                    });
             <> true
         }
 };
