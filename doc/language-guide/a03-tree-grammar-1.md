@@ -22,7 +22,7 @@ can be used.
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    generatorForInclusiveRange("a", 1, "z")*: true
+    inclusiveRange("a", 1, "z")*: true
 ];
 
 # Returns a `call` node.
@@ -667,7 +667,7 @@ def parParserSetString = {/
                     { <> eq(lowSize(endChar), 1) } }
                 {
                     def charGen =
-                        generatorForInclusiveRange(startChar, 1, endChar);
+                        inclusiveRange(startChar, 1, endChar);
                     <> @[string: stringAdd(charGen*)]
                 }
         }

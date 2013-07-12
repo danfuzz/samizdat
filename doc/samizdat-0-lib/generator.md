@@ -43,7 +43,7 @@ generator are ignored.
 
 This function always returns void.
 
-#### `generatorForExclusiveRange(first, increment, limit) <> generator`
+#### `exclusiveRange(first, increment, limit) <> generator`
 
 End-exclusive range generator for int or single-character strings.
 Takes an initial value, which must either be an int or a single-character
@@ -57,7 +57,7 @@ voided.
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
 
-#### `generatorForInclusiveRange(first, increment, limit) <> generator`
+#### `inclusiveRange(first, increment, limit) <> generator`
 
 End-inclusive range generator for int or single-character strings.
 Takes an initial value, which must either be an int or a single-character
@@ -70,7 +70,7 @@ would be beyond the given `limit`, the generator becomes voided.
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
 
-#### `generatorForOpenRange(first, increment) <> generator`
+#### `openRange(first, increment) <> generator`
 
 Open (never voided) range generator for int or single-character strings.
 Takes an initial value, which must either be an int or a single-character

@@ -178,17 +178,17 @@ fn generatorForEach(generator) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn generatorForExclusiveRange(first, increment, limit) {
+fn exclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, false)
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn generatorForInclusiveRange(first, increment, limit) {
+fn inclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, true)
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn generatorForOpenRange(first, increment) {
+fn openRange(first, increment) {
     <> makeRangeGenerator(first, increment)
 };
 
@@ -327,9 +327,9 @@ fn tokenGeneratorFromValue(generator) {
 <> [
     filterGenerator:            filterGenerator,
     generatorForEach:           generatorForEach,
-    generatorForExclusiveRange: generatorForExclusiveRange,
-    generatorForInclusiveRange: generatorForInclusiveRange,
-    generatorForOpenRange:      generatorForOpenRange,
+    exclusiveRange: exclusiveRange,
+    inclusiveRange: inclusiveRange,
+    openRange:      openRange,
     generatorFromValue:         generatorFromValue,
     listFromGenerator:          listFromGenerator,
     optGenerator:               optGenerator,

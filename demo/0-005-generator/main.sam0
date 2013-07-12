@@ -80,38 +80,38 @@ msgAll("Filter generator (square even numbers)",
 msgAll("Token generator", tokenGeneratorFromValue("Tokens!"));
 
 msgAll("Inclusive range 5..10",
-    generatorForInclusiveRange(5, 1, 10));
+    inclusiveRange(5, 1, 10));
 
 msgAll("Inclusive range 10..-2..1",
-    generatorForInclusiveRange(10, -2, 1));
+    inclusiveRange(10, -2, 1));
 
 msgAll("Inclusive range \"a\"..5..\"z\"",
-    generatorForInclusiveRange("a", 5, "z"));
+    inclusiveRange("a", 5, "z"));
 
 msgAll("Exclusive range 5..10",
-    generatorForExclusiveRange(5, 1, 10));
+    exclusiveRange(5, 1, 10));
 
 msgAll("Exclusive range 10..-2..1",
-    generatorForExclusiveRange(10, -2, 1));
+    exclusiveRange(10, -2, 1));
 
 msgAll("Exclusive range \"a\"..5..\"z\"",
-    generatorForExclusiveRange("a", 5, "z"));
+    exclusiveRange("a", 5, "z"));
 
 msgAll("ParaGenerator with open ranges",
     paraGeneratorFromValues(
-        generatorForOpenRange("a", 1),
-        generatorForOpenRange(100, 10),
+        openRange("a", 1),
+        openRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Zero-increment int range",
-    generatorForInclusiveRange(10, 0, 20));
+    inclusiveRange(10, 0, 20));
 
 msgAll("Zero-increment character range",
-    generatorForInclusiveRange("x", 0, "a"));
+    inclusiveRange("x", 0, "a"));
 
 msgAll("ParaGenerator with reduceGenerator",
     paraGeneratorFromValues(
-        generatorForInclusiveRange(1, 1, 5),
+        inclusiveRange(1, 1, 5),
         reduceGenerator("") { x :: <> stringAdd(x, "x") }));
 
 msgAll("Empty SeqGenerator",
