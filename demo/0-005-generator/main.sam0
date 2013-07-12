@@ -77,6 +77,12 @@ msgAll("Filter generator (square even numbers)",
                 { <> imul(value, value) }
         });
 
+io0Note("generatorForEach on filter");
+generatorForEach(
+    filterGenerator([1, 2, 3, 4])
+        { value :: io0Note(stringAdd("    Yay ", sourceString(value))) });
+io0Note("");
+
 msgAll("Token generator", tokenGenerator("Tokens!"));
 
 msgAll("Inclusive range 5..10",
@@ -127,5 +133,12 @@ msgAll("Size two SeqGenerator",
 
 msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
     seqGenerator("abc", [], [], ["def", "ghi"], []));
+
+io0Note("mapFromGenerator on filter");
+def outMap = mapFromGenerator(
+    filterGenerator(inclusiveRange(0, 2, 4))
+        { value :: <> [(value): value, blort: value] });
+io0Note(stringAdd("    ", sourceString(outMap)));
+io0Note("");
 
 <> 0
