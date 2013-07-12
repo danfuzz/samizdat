@@ -19,6 +19,20 @@ below).
 <br><br>
 ### In-Language Definitions
 
+#### `exclusiveRange(first, increment, limit) <> generator`
+
+End-exclusive range generator for int or single-character strings.
+Takes an initial value, which must either be an int or a single-character
+string, and an int (always an int) increment. The first call to the
+resulting generator yields the `first` value, and each subsequent call
+yields the previous value plus the given increment (converted to a
+single-character string if `first` is a string). If the value yielded
+would be the same as or beyond the given `limit`, the generator becomes
+voided.
+
+As a special case, if `increment` is `0`, the resulting generator just
+yields `first` and then becomes voided.
+
 #### `filterGenerator(filterFunction, generator) <> generator`
 
 Filtering generator constructor. This takes an arbitrary generator,
@@ -43,45 +57,6 @@ generator are ignored.
 
 This function always returns void.
 
-#### `exclusiveRange(first, increment, limit) <> generator`
-
-End-exclusive range generator for int or single-character strings.
-Takes an initial value, which must either be an int or a single-character
-string, and an int (always an int) increment. The first call to the
-resulting generator yields the `first` value, and each subsequent call
-yields the previous value plus the given increment (converted to a
-single-character string if `first` is a string). If the value yielded
-would be the same as or beyond the given `limit`, the generator becomes
-voided.
-
-As a special case, if `increment` is `0`, the resulting generator just
-yields `first` and then becomes voided.
-
-#### `inclusiveRange(first, increment, limit) <> generator`
-
-End-inclusive range generator for int or single-character strings.
-Takes an initial value, which must either be an int or a single-character
-string, and an int (always an int) increment. The first call to the
-resulting generator yields the `first` value, and each subsequent call
-yields the previous value plus the given increment (converted to a
-single-character string if `first` is a string). If the value yielded
-would be beyond the given `limit`, the generator becomes voided.
-
-As a special case, if `increment` is `0`, the resulting generator just
-yields `first` and then becomes voided.
-
-#### `openRange(first, increment) <> generator`
-
-Open (never voided) range generator for int or single-character strings.
-Takes an initial value, which must either be an int or a single-character
-string, and an int (always an int) increment. The first call to the
-resulting generator yields the `first` value, and each subsequent call
-yields the previous value plus the given increment (converted to a
-single-character string if `first` is a string).
-
-As a special case, if `increment` is `0`, the resulting generator just
-yields `first` and then becomes voided.
-
 #### `generatorFromValue(value) <> generator`
 
 Collection iteration generator constructor. This takes an arbitrary
@@ -97,6 +72,19 @@ directly. That is, a function that wants to take values-or-generators can
 safely call `generatorFromValue(valueOrGenerator)` without any up-front
 type checking.
 
+#### `inclusiveRange(first, increment, limit) <> generator`
+
+End-inclusive range generator for int or single-character strings.
+Takes an initial value, which must either be an int or a single-character
+string, and an int (always an int) increment. The first call to the
+resulting generator yields the `first` value, and each subsequent call
+yields the previous value plus the given increment (converted to a
+single-character string if `first` is a string). If the value yielded
+would be beyond the given `limit`, the generator becomes voided.
+
+As a special case, if `increment` is `0`, the resulting generator just
+yields `first` and then becomes voided.
+
 #### `listFromGenerator(generator) <> list`
 
 Takes an arbitrary generator, and collects all of its generated results,
@@ -109,6 +97,18 @@ fn listFromGenerator(generator) {
     <> collect for(value in generator) { <> value }
 }
 ```
+
+#### `openRange(first, increment) <> generator`
+
+Open (never voided) range generator for int or single-character strings.
+Takes an initial value, which must either be an int or a single-character
+string, and an int (always an int) increment. The first call to the
+resulting generator yields the `first` value, and each subsequent call
+yields the previous value plus the given increment (converted to a
+single-character string if `first` is a string).
+
+As a special case, if `increment` is `0`, the resulting generator just
+yields `first` and then becomes voided.
 
 #### `optGenerator(generator) <> generator`
 
