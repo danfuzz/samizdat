@@ -2248,8 +2248,7 @@ def ENTITY_MAP = [
     "zopf": "𝕫",
     "zscr": "𝓏",
     "zwj": "‍",
-    "zwnj": "‌",
-    [:]*
+    "zwnj": "‌"
 ];
 
 <> [ ENTITY_MAP: ENTITY_MAP ]
