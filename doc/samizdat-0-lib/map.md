@@ -31,10 +31,6 @@ or returns void if `notFound` was not supplied.
 
 Returns `true` iff the given map has a mapping for the given key.
 
-#### `mappingKey(map) <> .`
-
-Returns the sole key of the given map, which must be a single-mapping map.
-
 #### `mapNth(map, n, notFound?) <> . | !.`
 
 Returns the `n`th (zero-based) mapping of the given map, if `n` is
@@ -56,6 +52,10 @@ additional mapping in cases where `map` didn't already bind `key`.
 These two scenarios can be easily differentiated by either noting a
 change in size (or not) between original and result, or by explicitly
 checking for the existence of `key` in the original.
+
+#### `mappingKey(map) <> .`
+
+Returns the sole key of the given map, which must be a single-mapping map.
 
 #### `mappingValue(map) <> .`
 
