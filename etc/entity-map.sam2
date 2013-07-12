@@ -105,12 +105,16 @@ io0Note("Processing file: \%q(inPath)");
 def text = io0ReadFileUtf8(inPath);
 def result = pegApply(parFile, text);
 
-def resultText = mapReduce("", result) { result, key, value ::
-    <> "\(result)    \%q(key): \%q(value),\n"
-};
+# This makes each result line *start* with `,\n`, to make it easy to just
+# trim the first two characters off the beginning, yielding a valid comma-
+# separated list of mappings.
+def resultLines = filterGenerator(result)
+    { mapping ::
+        <> ",\n    \%q(mapKey(mapping)): \%q(mapValue(mapping))"
+    };
 
-# Note: The `[:]*` at the end of the map is a hacky way to avoid having to
-# omit the comma from the last "real" mapping line.
+def resultText = stringSlice(stringAdd(resultLines*), 2);
+
 def outText = "\
     # Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
     # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
@@ -126,9 +130,8 @@ def outText = "\
 
     # Documented in the specification.
     def ENTITY_MAP = [
-  \/\(resultText)\
-  \/    [:]*
-  \/];
+    \(resultText)
+    ];
 
     <> [ ENTITY_MAP: ENTITY_MAP ]
     ";
