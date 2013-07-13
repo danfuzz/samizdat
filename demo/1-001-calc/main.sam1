@@ -131,8 +131,8 @@ def evalExpressions = {/
 #
 
 fn main(args*) {
-    def exprString = listReduce("", args)
-        { result, ., one :: <> stringAdd(result, one, "\n") };
+    def argFilter = filterGenerator(args) { arg :: <> stringAdd(arg, "\n") };
+    def exprString = stringAdd(argFilter*);
     pegApply(evalExpressions, exprString);
 };
 
