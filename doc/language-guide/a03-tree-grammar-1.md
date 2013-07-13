@@ -695,7 +695,7 @@ def parParserSet = {/
         }
     |
         tokens = parParserToken+
-        { <> listMap(tokens) { ., t :: <> tokenValue(t) } }
+        { <> listFilter(tokens) { ., t :: <> tokenValue(t) } }
     |
         { <> [] }
     )

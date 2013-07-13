@@ -20,6 +20,17 @@ the given list. If `n` is not a valid index (not an int, or with
 a value out of range), then this returns the original list as the
 result.
 
+#### `listFilter(function, list) <> list`
+
+Processes each element of a list using a filter function, collecting
+the results into a new list. The given function is called on each
+list element, with two arguments, namely the element's index (zero-based)
+and value.
+
+If the function returns void for any given call, then no item is added for
+the corresponding element. This means the size of the result may be
+smaller than the size of the argument.
+
 #### `listForEach(function, list) <> !.`
 
 Calls the given function on each element of the given list.
@@ -35,17 +46,6 @@ are shifted up by one index.
 
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
-
-#### `listMap(function, list) <> list`
-
-Maps each element of a list using a mapping function, collecting
-the results into a new list. The given function is called on each
-list element, with two arguments, namely the element's
-index (zero-based) and value.
-
-If the function returns void for any given call, then no item is added for
-the corresponding element. This means the size of the result may be
-smaller than the size of the argument.
 
 #### `listNth(list, n, notFound?) <> . | !.`
 

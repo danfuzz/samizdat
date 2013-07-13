@@ -265,7 +265,7 @@ fn paraGenerator(generators*) {
     # as a single argument.
     fn paraGenerator1(generators) {
         <> { <out> box ::
-            def generatorCalls = listMap(generators)
+            def generatorCalls = listFilter(generators)
                 { ., gen ::
                     def innerBox = yieldBox();
                     <> ifValue { <> gen(innerBox) }
@@ -277,9 +277,9 @@ fn paraGenerator(generators*) {
                             <out>
                         }
                 };
-            def yields = listMap(generatorCalls)
+            def yields = listFilter(generatorCalls)
                 { ., one :: <> listNth(one, 0) };
-            def nexts = listMap(generatorCalls)
+            def nexts = listFilter(generatorCalls)
                 { ., one :: <> listNth(one, 1) };
 
             boxSet(box, yields);
@@ -296,7 +296,7 @@ fn paraGenerator(generators*) {
         { return oneItemParaGenerator(generatorFromValue(generators*)) };
 
     # Coerce all the original arguments to generators.
-    def generatorsPerSe = listMap(generators)
+    def generatorsPerSe = listFilter(generators)
         { ., gen :: <> generatorFromValue(gen) };
 
     # Make the initial inner call (to the function defined above).

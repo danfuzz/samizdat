@@ -17,7 +17,7 @@ def convertPex = forwardFunction();
 
 # Does parser conversion of an expression or statement list.
 fn convertList(nodes) {
-    <> listMap(nodes) { ., node :: <> convertExpression(node) }
+    <> listFilter(nodes) { ., node :: <> convertExpression(node) }
 };
 
 # Constructs a function call.
@@ -39,14 +39,15 @@ fn callNameWithPex(node, formals, functionName) {
 
 # Constructs a named function call of the given literal arguments.
 fn callNameWithLiterals(functionName, args*) {
-    def literalArgs = listMap(args) { ., arg :: <> @[literal: arg] };
+    def literalArgs = listFilter(args) { ., arg :: <> @[literal: arg] };
     <> callNameWithExpressions(functionName, literalArgs*)
 };
 
 # Converts a `choice` pex node.
 fn convertPexChoice(node, formals) {
     def pexes = tokenValue(node);
-    def convertedPexes = listMap(pexes) { ., pex  :: <> convertPex(pex, formals) };
+    def convertedPexes = listFilter(pexes)
+        { ., pex  :: <> convertPex(pex, formals) };
     <> callNameWithExpressions("pegMakeChoice", convertedPexes*)
 };
 
@@ -55,7 +56,7 @@ fn convertPexSequence(node, formals) {
     def pexes = tokenValue(node);
 
     # Extract the formals out of any `varDef` nodes.
-    def newFormals = listMap(pexes) { ., pex ::
+    def newFormals = listFilter(pexes) { ., pex ::
         <> ifIs { <> eq(tokenType(pex), "varDef") }
             { <> [name: mapGet(tokenValue(pex), "name")] }
             { <> [:] }
@@ -63,7 +64,7 @@ fn convertPexSequence(node, formals) {
 
     # Convert all the pexes, passing in appropriately-extended formals
     # lists to each conversion.
-    def convertedPexes = listMap(pexes) { n, pex  ::
+    def convertedPexes = listFilter(pexes) { n, pex  ::
         def subPex = ifIs { <> eq(tokenType(pex), "varDef") }
             { <> mapGet(tokenValue(pex), "value") }
             { <> pex };

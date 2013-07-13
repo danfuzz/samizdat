@@ -33,6 +33,34 @@ PRIM_IMPL(listDelNth) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listFilter) {
+    requireExactly(argCount, 2);
+
+    zvalue function = args[0];
+    zvalue list = args[1];
+    zint size = datSize(list);
+    zvalue result[size];
+    zvalue subArgs[2];
+    zint at = 0;
+
+    datAssertList(list);
+
+    for (zint i = 0; i < size; i++) {
+        subArgs[0] = datIntFromZint(i);
+        subArgs[1] = datListNth(list, i);
+
+        zvalue one = langCall(function, 2, subArgs);
+
+        if (one != NULL) {
+            result[at] = one;
+            at++;
+        }
+    }
+
+    return datListFromArray(at, result);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listForEach) {
     requireExactly(argCount, 2);
 
@@ -61,34 +89,6 @@ PRIM_IMPL(listForEach) {
 PRIM_IMPL(listInsNth) {
     requireExactly(argCount, 3);
     return datListInsNth(args[0], datZintFromInt(args[1]), args[2]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listMap) {
-    requireExactly(argCount, 2);
-
-    zvalue function = args[0];
-    zvalue list = args[1];
-    zint size = datSize(list);
-    zvalue result[size];
-    zvalue subArgs[2];
-    zint at = 0;
-
-    datAssertList(list);
-
-    for (zint i = 0; i < size; i++) {
-        subArgs[0] = datIntFromZint(i);
-        subArgs[1] = datListNth(list, i);
-
-        zvalue one = langCall(function, 2, subArgs);
-
-        if (one != NULL) {
-            result[at] = one;
-            at++;
-        }
-    }
-
-    return datListFromArray(at, result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
