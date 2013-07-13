@@ -61,6 +61,8 @@ This is the reverse of the operation specified in `io0PathFromFlat`.
 It is an error (terminating the runtime) if any of the following
 constraints are violated.
 
+* `path` must not be an empty list.
+
 * No path component may be `"."` or `".."`.
 
 * No path component may contain a character of value `"/"` or `"\0"`.
