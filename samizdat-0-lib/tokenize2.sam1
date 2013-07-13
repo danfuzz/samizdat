@@ -28,13 +28,12 @@ fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
-def KEYWORDS = listReduce([:],
-    [
+def KEYWORDS = mapFromGenerator(
+    filterGenerator([
         "break", "collect", "continue", "def", "default", "do", "else",
         "export", "fn", "for", "if", "import", "in", "module", "reduce",
-        "return", "switch", "var", "while"
-    ])
-    { result, ., name :: <> [result*, (name): @[(name)]] };
+        "return", "switch", "var", "while"])
+        { name :: <> [(name): @[(name)]] });
 
 # Converts a list of digit values into an int, given the base. If `baseSign`
 # is negative, this indicates that the result should be negative.
