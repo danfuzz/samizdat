@@ -30,14 +30,17 @@ fn emptyListGenerator(box) {
 fn makeIncrementGenerator(filterFunction, first, increment) {
     # Main generator maker.
     fn makeIncrementGenerator1(value) {
-        <> ifValue { <> filterFunction(value) }
-            { result ::
-                <> { box ::
+        <> { box ::
+            <> ifValue { <> filterFunction(value) }
+                { result ::
                     boxSet(box, result);
                     <> makeIncrementGenerator1(iadd(value, increment));
                 }
-            }
-            { <> voidedGenerator }
+                {
+                    # The filter indicated that the generator is voided.
+                    boxSet(box);
+                }
+        }
     };
 
     <> makeIncrementGenerator1(first)
