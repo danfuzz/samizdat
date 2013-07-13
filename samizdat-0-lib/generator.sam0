@@ -24,40 +24,40 @@ fn emptyListGenerator(box) {
     <> emptyListGenerator
 };
 
-# General sequential-value generator. Takes an int starting value, an int
-# increment, a "filter" function (function from int to the proper actual
-# value, returns void for out-of-range int).
-fn makeSeqGenerator(filterFunction, first, increment) {
+# General sequential-incrementing-value generator. Takes a "filter" function
+# (function from int to the proper actual value, returns void for
+# out-of-range int), an int starting value, and an int increment.
+fn makeIncrementGenerator(filterFunction, first, increment) {
     # Main generator maker.
-    fn makeSeqGenerator1(value) {
+    fn makeIncrementGenerator1(value) {
         <> ifValue { <> filterFunction(value) }
             { result ::
                 <> { box ::
                     boxSet(box, result);
-                    <> makeSeqGenerator1(iadd(value, increment));
+                    <> makeIncrementGenerator1(iadd(value, increment));
                 }
             }
             { <> voidedGenerator }
     };
 
-    <> makeSeqGenerator1(first)
+    <> makeIncrementGenerator1(first)
 };
 
 # Makes a generator for a list.
 fn makeListGenerator(list) {
-    <> makeSeqGenerator(0, 1)
+    <> makeIncrementGenerator(0, 1)
         { index :: <> listNth(list, index) }
 };
 
 # Makes a generator for a map.
 fn makeMapGenerator(map) {
-    <> makeSeqGenerator(0, 1)
+    <> makeIncrementGenerator(0, 1)
         { index :: <> mapNth(map, index) }
 };
 
 # Makes a generator for a string.
 fn makeStringGenerator(string) {
-    <> makeSeqGenerator(0, 1)
+    <> makeIncrementGenerator(0, 1)
         { index :: <> stringNth(string, index) }
 };
 
@@ -126,7 +126,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
         { <> limitFunction }
         { <> { x :: <> charFromInt(limitFunction(x)) } };
 
-    <> makeSeqGenerator(filterFunction, firstInt, increment)
+    <> makeIncrementGenerator(filterFunction, firstInt, increment)
 };
 
 # Helper for `paraGenerator`, which implements the degenerate case of
