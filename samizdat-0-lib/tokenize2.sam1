@@ -299,6 +299,12 @@ def tokString = {/
             # interpolation maps, and errors.
             def elems = listReduce([listFirst(chars)], listButFirst(chars))
                 { result, ., ch ::
+                    ifIs { <> isToken(ch) }
+                        {
+                            # Errors come in the form of tokens. (Nothing else
+                            # will be a token.)
+                            <out> elem
+                        };
                     def last = listLast(result);
                     <> ifIs { <> and { <> isString(last) } { <> isString(ch) } }
                         { <> [listButLast(result)*, stringAdd(last, ch)] }
@@ -318,13 +324,7 @@ def tokString = {/
                         }
                 };
 
-            # At this point, we have an interpolation or an error. Check
-            # for, and bail if we discover, the latter. The `isToken` test
-            # works, because errors are the only tokens (per se) yielded
-            # out of `tokStringChar`.
-            listForEach(elems)
-                { ., elem :: ifIs { <> isToken(elem) } { <out> elem } };
-
+            # At this point, we have a interpolation.
             <> @[interpolatedString: elems]
         }
     |
