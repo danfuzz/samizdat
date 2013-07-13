@@ -28,15 +28,44 @@ def parPathComponent = {/
     # successfully match a string-final empty component (that is, a trailing
     # slash on the overall path string).
     component = [! "/"]*
-    { <> stringFromTokenList(component) }
+    { <> @[stringFromTokenList(component)] }
 /};
+
+# Parses a regular (non-up-directory) component.
+def parRegularComponent = {/
+    component = parPathComponent
+    { <> ne(component, @"..") }
+    { <> [tokenType(component)] }
+/};
+
+# Parses the component `..`.
+def parDotDotComponent = {/
+    component = parPathComponent
+    { <> eq(component, @"..") }
+/};
+
+# Parses a matched set of components that are collectively ignored, e.g.
+# "x/y/../..".
+def parIgnoredComponent = forwardFunction();
+def implIgnoredComponent = {/
+    parRegularComponent parIgnoredComponent? parDotDotComponent
+    { <> [] }
+/};
+parIgnoredComponent(implIgnoredComponent);
 
 # Helper for `io0PathFromFlat` which parses absolute path strings
 # into components. Notably, this takes care of ignoring double slashes
 # (or triple, etc.) and `.` components, but it leaves the handling of
 # `..` components to a higher layer.
 def parPathString = {/
-    parPathComponent+
+    components = (parIgnoredComponent | parRegularComponent)*
+
+    (
+        .
+        { <> "Invalid `..` component in path" }
+    |
+        { <> listAdd(components*) }
+    )
 /};
 
 # Helper for `io0FlatFromPath` which validates a single path component.
@@ -119,19 +148,13 @@ fn io0PathFromFlat(string) {
         { <> string }
         { <> stringAdd(io0FlatCwd(), "/", string) };
 
-    # Do the first layer of parsing.
+    # Parse the string into components (or an error string).
     def components = pegApply(parPathString, absoluteString);
 
-    # Handle `..` components, to produce the final result.
-    <> listReduce([], components) { result, ., one ::
-        <> ifIs { <> eq(one, "..") }
-            {
-                ifIs { <> eq(result, []) }
-                    { dieWith("Invalid `..` component in path", string) };
-                <> listButLast(result)
-            }
-            { <> [result*, one] }
-    }
+    ifIs { <> isString(components) }
+        { dieWith(components, string) };
+
+    <> components
 };
 
 # Documented in Samizdat Layer 0 spec.
