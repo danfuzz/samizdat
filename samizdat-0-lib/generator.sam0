@@ -204,17 +204,17 @@ fn generatorFromValue(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn inclusiveRange(first, increment, limit) {
+    <> makeRangeGenerator(first, increment, limit, true)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn listFromGenerator(generator) {
     # Avoid pointless list->generator->list conversion.
     ifIs { <> isList(generator) }
         { return generator };
 
-    loopReduce(generatorFromValue(generator), []) { gen, list ::
-        def box = yieldBox();
-        <> ifValue { <> gen(box) }
-            { nextGenerator :: <> [nextGenerator, [list*, boxGet(box)]] }
-            { return list }
-    }
+    <> [generatorFromValue(generator)*]
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -223,17 +223,7 @@ fn mapFromGenerator(generator) {
     ifIs { <> isMap(generator) }
         { return generator };
 
-    loopReduce(generatorFromValue(generator), [:]) { gen, map ::
-        def box = yieldBox();
-        <> ifValue { <> gen(box) }
-            { nextGenerator :: <> [nextGenerator, mapAdd(map, boxGet(box))] }
-            { return map }
-    }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn inclusiveRange(first, increment, limit) {
-    <> makeRangeGenerator(first, increment, limit, true)
+    <> mapAdd(generatorFromValue(generator)*)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -351,23 +341,33 @@ fn seqGenerator(generators*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn stringFromGenerator(generator) {
+    # Avoid pointless string->generator->string conversion.
+    ifIs { <> isString(generator) }
+        { return generator };
+
+    <> stringAdd(generatorFromValue(generator)*)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn tokenGenerator(generator) {
     <> filterGenerator(generator)
         { elem :: <> @[(elem)] }
 };
 
 <> [
-    exclusiveRange:     exclusiveRange,
-    filterGenerator:    filterGenerator,
-    generatorForEach:   generatorForEach,
-    generatorFromValue: generatorFromValue,
-    inclusiveRange:     inclusiveRange,
-    listFromGenerator:  listFromGenerator,
-    mapFromGenerator:   mapFromGenerator,
-    openRange:          openRange,
-    optGenerator:       optGenerator,
-    paraGenerator:      paraGenerator,
-    reduceGenerator:    reduceGenerator,
-    seqGenerator:       seqGenerator,
-    tokenGenerator:     tokenGenerator
+    exclusiveRange:      exclusiveRange,
+    filterGenerator:     filterGenerator,
+    generatorForEach:    generatorForEach,
+    generatorFromValue:  generatorFromValue,
+    inclusiveRange:      inclusiveRange,
+    listFromGenerator:   listFromGenerator,
+    mapFromGenerator:    mapFromGenerator,
+    openRange:           openRange,
+    optGenerator:        optGenerator,
+    paraGenerator:       paraGenerator,
+    reduceGenerator:     reduceGenerator,
+    seqGenerator:        seqGenerator,
+    stringFromGenerator: stringFromGenerator,
+    tokenGenerator:      tokenGenerator
 ]

@@ -91,14 +91,6 @@ yields `first` and then becomes voided.
 Takes an arbitrary generator, and collects all of its generated results,
 in generated order, into a list, returning that list.
 
-This function could be defined as something like:
-
-```
-fn listFromGenerator(generator) {
-    <> collect for(value in generator) { <> value }
-}
-```
-
 #### `mapFromGenerator(generator) <> map`
 
 Takes a generator which must yield map values, and collects all of its
@@ -163,6 +155,11 @@ the generators in argument order.
 As each generator becomes voided, the next one (in argument order) is called
 upon to generate further elements. The generator becomes voided after the
 final argument is voided.
+
+#### `stringFromGenerator(generator) <> list`
+
+Takes a generator which must yield only strings, and collects all of its
+generated results, in generated order, into a single concatenated string.
 
 #### `tokenGenerator(generator) <> generator`
 
