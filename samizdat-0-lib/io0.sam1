@@ -11,21 +11,32 @@
 # Helper functions
 #
 
+# Parses a single path component.
+def parPathComponent = {/
+    # Ignore initial `.` components.
+    ("/"+ "." &"/")*
+
+    # Ignore duplicate slashes, but require at least one. Note: The parser
+    # is only ever called on a string that begins with a slash.
+    "/"+
+
+    # Treat a final `.` component (with no further slash) as if it weren't
+    # there.
+    !("." !.)
+
+    # Match the component text. This is a `*` and not a `+` rule, in order to
+    # successfully match a string-final empty component (that is, a trailing
+    # slash on the overall path string).
+    component = [! "/"]*
+    { <> stringFromTokenList(component) }
+/};
+
 # Helper for `io0PathFromFlat` which parses absolute path strings
 # into components. Notably, this takes care of ignoring double slashes
 # (or triple, etc.) and `.` components, but it leaves the handling of
 # `..` components to a higher layer.
 def parPathString = {/
-    (
-        ("/"+ "." &"/")*
-        "/"+
-        !("." !.)
-
-        # This is a `*` and not a `+` rule, in order to successfully
-        # match a string-final empty component (that is, a trailing slash).
-        component = [! "/"]*
-        { <> stringFromTokenList(component) }
-    )+
+    parPathComponent+
 /};
 
 # Helper for `io0FlatFromPath` which validates a single path component.
@@ -81,12 +92,12 @@ fn io0FlatFromPath(path) {
         { dieWith("Invalid empty path", path) };
 
     def gen = filterGenerator(path, openRange(lowSize(path), -1))
-        { one, n ::
+        { <out> one, n ::
             # This test skips the check on the last path component, if it
             # happens to be empty (which is the only valid case of an empty
             # path component).
             ifIs { <> and { <> eq(one, "") } { <> eq(n, 1) } }
-                { return "/" }
+                { <out> "/" }
                 {
                     ifValue { <> pegApply(parErrorFromPathComponent, one) }
                         { error :: dieWith(error, path) }
