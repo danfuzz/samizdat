@@ -167,6 +167,14 @@ def tokNamedChar = {/
         def name = stringFromTokenList(chars);
         <> mapGet(ENTITY_MAP, name)
     }
+|
+    "#x"
+    digits = tokHexDigit+
+    { <> charFromInt(intFromDigitList(16, digits)) }
+|
+    "#"
+    digits = tokDecDigit+
+    { <> charFromInt(intFromDigitList(10, digits)) }
 /};
 
 # Map from opening tokens to corresponding closers. Only includes mappings
