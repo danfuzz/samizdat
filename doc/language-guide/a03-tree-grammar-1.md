@@ -227,15 +227,9 @@ def parFnCommon = {/
         { <> [:] }
     )
 
-    formals = (
-        @"()"
-        { <> [:] }
-    |
-        @"("
-        f = parFormalsList
-        @")"
-        { <> f }
-    )
+    @"("
+    formals = parFormalsList
+    @")"
 
     code = parCodeOnlyClosure
 
@@ -471,9 +465,6 @@ def parAtom = {/
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
 def parActualsList = {/
-    @"()"
-    parClosure*
-|
     @"("
     normalActuals = parUnadornedList
     @")"
@@ -720,7 +711,12 @@ def parParserPredicate = {/
 
 # Parses an atomic parsing expression.
 def parParserAtom = {/
-    @"." | @"()" |
+    @"."
+|
+    @"("
+    @")"
+    { <> @"()" }
+|
     parVarRef | parParserString | parParserToken | parParserSet |
     parParserCode | parParserPredicate | parParenPex
 /};

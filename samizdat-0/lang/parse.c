@@ -468,15 +468,11 @@ DEF_PARSE(fnCommon2) {
 }
 
 /**
- * Helper for `fnCommon`: Parses `@"()" | @"(" formalsList @")"` with
+ * Helper for `fnCommon`: Parses `@"(" formalsList @")"` with
  * appropriate accoutrements.
  */
 DEF_PARSE(fnCommon3) {
     MARK();
-
-    if (MATCH(CH_PARENPAREN)) {
-        return EMPTY_MAP;
-    }
 
     MATCH_OR_REJECT(CH_OPAREN);
     zvalue f = PARSE(formalsList); // This never fails.
@@ -493,7 +489,9 @@ DEF_PARSE(fnCommon) {
 
     zvalue returnDef = PARSE(fnCommon1); // This never fails.
     zvalue name = PARSE(fnCommon2); // This never fails.
-    zvalue formals = PARSE_OR_REJECT(fnCommon3);
+    MATCH_OR_REJECT(CH_OPAREN);
+    zvalue formals = PARSE(formalsList); // This never fails.
+    MATCH_OR_REJECT(CH_CPAREN);
     zvalue code = PARSE_OR_REJECT(codeOnlyClosure);
 
     zvalue codeMap = datTokenValue(code);
@@ -826,10 +824,6 @@ DEF_PARSE(atom) {
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(actualsList) {
     MARK();
-
-    if (MATCH(CH_PARENPAREN)) {
-        return PARSE_STAR(closure);
-    }
 
     if (MATCH(CH_OPAREN)) {
         zvalue normalActuals = PARSE(unadornedList); // This never fails.
