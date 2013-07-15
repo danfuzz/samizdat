@@ -105,10 +105,11 @@ characters to be included in the result:
 "\&mu,nu;"                    # same as "μν"
 "\"blort\" \&mdash; potion that enables one to see in the dark.\n"
 
-# same as "* A couple\n  of lines.\n"
+# same as "* A handful\n  of separate\n  lines.\n"
 "\
-    * A couple
-  \/  of lines.
+    * A handful
+  \/  of separate
+  \/  lines.
 "
 ```
 
