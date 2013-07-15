@@ -556,11 +556,6 @@ def parParserCode = pegMakeMainSequence(
     parNullaryClosure,
     pegMakeCode { closure :: <> @["{}": tokenValue(closure)] });
 
-def parParserPredicate = pegMakeMainSequence(
-    pegMakeToken("&&"),
-    parParenExpression,
-    pegMakeCode { ., predicate :: <> @["&&": predicate] });
-
 def parParserAtom = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeToken("."),
@@ -573,7 +568,6 @@ def parParserAtom = pegMakeMainSequence(
         parParserToken,
         parParserSet,
         parParserCode,
-        parParserPredicate,
         parParenPex));
 
 def parRepeatPex = pegMakeMainSequence(

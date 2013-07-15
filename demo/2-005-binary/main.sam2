@@ -92,29 +92,6 @@ msg(&&(2 > 3 == 3));
 msg(&&(4 < 5 == 6));
 msg(&&(9 < 10 < 11 < 12 != 12));
 
-# Booleans.
-msg("Boolean 1");
-msg(true && true);
-msg(true && true && true);
-msg(&&(1 == 1) && &&(2 == 2));
-msg(&&(1 == 1) && &&(2 == 2) && &&(3 == 3));
-msg(&&(1 == 1) && &&(2 == 2) && &&(3 == 3) && &&(4 == 4));
-
-msg(false && true);
-msg(false && false);
-msg(&&(1 == 1) && &&(1 == 2));
-msg(&&(1 == 1) && &&(1 == 2) && &&(3 == 3));
-msg(&&(1 == 2) && &&(2 == 2) && &&(3 == 3));
-
-msg("Boolean 2");
-msg(true || true);
-msg(true || false);
-msg(false || true || false);
-
-msg(false || false);
-msg(false || false || false);
-msg(false || false || false || false);
-
 # Logical ops. The ones expected to be "falsey" are surrounded by `&&` to
 # make them easily printable.
 msg("Logic 1");

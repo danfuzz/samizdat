@@ -32,7 +32,6 @@ def tokPunctuation = pegMakeMainSequence(
         pegMakeString("::"),
         pegMakeString(".."),
         pegMakeString("<>"),
-        pegMakeString("&&"), # Defined by Samizdat Layer 1.
         pegMakeString("{/"), # Defined by Samizdat Layer 1.
         pegMakeString("/}"), # Defined by Samizdat Layer 1.
         # The latter three characters are defined by Samizdat Layer 1.
