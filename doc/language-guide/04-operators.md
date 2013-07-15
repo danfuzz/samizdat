@@ -12,7 +12,7 @@ The following list is ordered from highest (tightest binding) to lowest
 (loosest binding) precedence.
 
 
-### Postfix Operators (Precedence 10, highest / tightest)
+### Postfix Operators (Precedence 8, highest / tightest)
 
 Postfix operators have the highest precedence in the language, binding
 more tightly than any other operators, including prefix operators.
@@ -118,7 +118,7 @@ a map literal key has a slightly different (but related) meaning. See
 the documentation on those constructs for more details.
 
 
-### Prefix Operators (Precedence 9)
+### Prefix Operators (Precedence 7)
 
 Prefix operators are higher in precedence than infix operators, but lower
 in precedence than postfix operators.
@@ -165,13 +165,12 @@ in the boolean equivalent. That is, if the inner `expression` yields a value
 (not void), the outer expression yields `true`. And if the inner
 `expression` yields void, the outer expression yields `false`.
 
-This operator is useful in a couple of cases: It allows a logic expression
-to consistently bottom out in a bona fide value, for storage in a variable
-or as part of a data structure. It also allows a logic expression to
-be a component of a larger enclosing boolean expression.
+This operator is useful in that it allows a logic expression to consistently
+bottom out in a bona fide value, for storage in a variable or as part of a
+data structure.
 
-This is the opposite conversion of unary single-and. The naming (which
-may seem confusing) is meant to mimic the "look-n-feel" of its use site.
+This is the opposite conversion of unary single-and. TODO: It probably
+needs a better operator.
 
 #### Bitwise complement &mdash; `!!!expression`
 
@@ -180,7 +179,7 @@ expression results in an int, and results in the bitwise complement of
 the inner expression's result.
 
 
-### Range Operators (Precedence 8)
+### Range Operators (Precedence 6)
 
 The range operators are used to build generators of ranges of values
 of ints or characters (the latter in the form of single-element strings).
@@ -226,7 +225,7 @@ This is equivalent to `openRange(first, 1)`.
 This is equivalent to `openRange(first, increment)`.
 
 
-### Multiplicative Infix Operators (Precedence 7)
+### Multiplicative Infix Operators (Precedence 5)
 
 #### Multiplication &mdash; `expression * expression`
 
@@ -258,7 +257,7 @@ If the second expression results in a negative number, this instead becomes
 a left shift.
 
 
-### Additive Infix Operators (Precedence 6)
+### Additive Infix Operators (Precedence 4)
 
 #### Addition &mdash; `expression + expression`
 
@@ -286,7 +285,7 @@ This asserts that both expressions result in ints, and results in the
 bitwise xor of the two numbers.
 
 
-### Comparison Infix Operators (Precedence 5)
+### Comparison Infix Operators (Precedence 3)
 
 Comparisons in Samizdat are chainable: `x < y <= z` is the same as saying
 `(x < y) && (y <= z)` with the additional guarantee that `y` is only
@@ -319,29 +318,6 @@ to function). See the definition of those functions for more details.
 **Note:** This can sometimes have surprising results, e.g. when comparing
 ints and floating point numbers.
 
-### Boolean-And Operator (Precedence 4) &mdash; `expression && expression`
-
-This is a short-circuit boolean-and (conjunction). When evaluating this
-operator, the first (left-hand) expression is evaluated. If that results
-in `false`, then the entire expression results in `false`. Otherwise,
-the second (right-hand) expression is evaluated, and its result becomes
-the result of the outer expression.
-
-Both expressions must yield booleans. It is a fatal error if an
-evaluated expression does not yield a boolean. However, the right-hand
-expression is not necessarily evaluated.
-
-### Boolean-Or Operator (Precedence 3) &mdash; `expression || expression`
-
-This is a short-circuit boolean-or (disjunction). When evaluating this
-operator, the first (left-hand) expression is evaluated. If that results in
-anything `true`, then the entire expression results in `true`.
-Otherwise, the second (right-hand) expression is evaluated, and its
-result becomes the result of the outer expression.
-
-Both expressions must yield booleans. It is a fatal error if an
-evaluated expression does not yield a boolean. However, the right-hand
-expression is not necessarily evaluated.
 
 ### Value/Void Logical-And Operator (Precedence 2) &mdash; `expression & expression`
 
@@ -350,6 +326,7 @@ operator, the first (left-hand) expression is evaluated. If that results
 in void, then the entire expression results in void. Otherwise, the second
 (right-hand) expression is evaluated, and its result (whether a value or
 void) becomes the result of the outer expression.
+
 
 ### Value/Void Logical-Or Operator (Precedence 1) &mdash; `expression & expression`
 
