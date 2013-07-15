@@ -33,7 +33,7 @@ msg("\t");
 msg("\"");
 msg("\\");
 msg("\x0;");
-msg("Hello \x46,75,7a,7a;");
+msg("Hello \x46,75,7a,7a; and \&#70,#117,#x7a,#x7a;");
 msg("\x1_F60F;");
 msg("\&zigrarr;");
 msg("\&mu,nu;");
