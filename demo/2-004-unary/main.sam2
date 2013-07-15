@@ -71,12 +71,12 @@ msg((& true)?);
 msg((& false)?);
 
 # Logical ops.
-msg(&& (!returnVoid()));
-msg(&& (!returnString()));
-msg(&& !true);
-msg(&& !false);  # This one is the documented surprising result.
-msg(&& ! !10);
-msg(&& ! !"fuzzy bunnies");
-msg(&& ! ! !@fizmo);
+msg((!returnVoid())?);
+msg((!returnString())?);
+msg((!true)?);
+msg((!false)?);  # This one is the documented surprising result.
+msg((! !10)?);
+msg((! !"fuzzy bunnies")?);
+msg((! ! !@fizmo)?);
 
 <> 0
