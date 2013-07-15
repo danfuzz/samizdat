@@ -69,8 +69,7 @@ the entire expression has a void result. It is *not* okay for a found element
 to not be indexable (resulting in termination of the runtime).
 
 As with function calls, a star after an index expression indicates
-interpolation. If used, the so-interpolated expression must evaluate to
-a list.
+interpolation.
 
 The expression to index into and all of the indices must be non-void.
 
