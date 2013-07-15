@@ -93,8 +93,8 @@ def tokPunctuation = {/
     |
         "&&&" | "|||" | "^^^" | "!!!" | "<<<" | ">>>" | "..!" | "..+"
     |
-        "@@" | "::" | "<>" | "&&" | "||" | ".." | "{/" | "/}" |
-        "==" | "!=" | "<=" | ">="
+        "@@" | "::" | "<>" | ".." | "{/" | "/}" |
+        "==" | "!=" | "<=" | ">=" | "&&"
     |
         # Note: We check this error condition here instead of in the
         # comment parsing code, because comments get parsed as whitespace,

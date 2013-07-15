@@ -702,13 +702,6 @@ def parParserCode = {/
     { <> @["{}": tokenValue(closure) ] }
 /};
 
-# Parses a predicate parsing expression.
-def parParserPredicate = {/
-    @"&&"
-    predicate = parParenExpression
-    { <> @["&&": predicate] }
-/};
-
 # Parses an atomic parsing expression.
 def parParserAtom = {/
     @"."
@@ -718,7 +711,7 @@ def parParserAtom = {/
     { <> @"()" }
 |
     parVarRef | parParserString | parParserToken | parParserSet |
-    parParserCode | parParserPredicate | parParenPex
+    parParserCode | parParenPex
 /};
 
 # Parses a repeat (or not) parsing expression.

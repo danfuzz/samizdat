@@ -122,20 +122,6 @@ fn convertPexCode(node, formals) {
     <> callNameWithExpressions("pegMakeCode", convertedClosure)
 };
 
-# Converts a `&&` pex node.
-fn convertPexPredicate(node, formals) {
-    # This wraps the predicate in code, along these lines:
-    #     `{ <> logicFromBoolean(PREDICATE) }`
-    # Having done that, this calls `convertPexCode` (immediately above)
-    # to perform the rest of the conversion.
-
-    def predicate = tokenValue(node);
-    def yield = callNameWithExpressions("logicFromBoolean", predicate);
-    def codeNode = @["{}": [statements: [], yield: yield]];
-
-    <> convertPexCode(codeNode, formals)
-};
-
 # Converts a `&` pex node.
 fn convertPexLookaheadSuccess(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeLookaheadSuccess")
@@ -173,7 +159,6 @@ def CONVERT_PEX_MAP = [
     "[]":     convertPexSet,
     "[!]":    convertPexSetComplement,
     "{}":     convertPexCode,
-    "&&":     convertPexPredicate,
     "&":      convertPexLookaheadSuccess,
     "!":      convertPexLookaheadFailure,
     "?":      convertPexOpt,

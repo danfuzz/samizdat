@@ -762,13 +762,6 @@ def parParserCode = {/
     { <> @["{}": tokenValue(closure) ] }
 /};
 
-# Parses a predicate parsing expression.
-def parParserPredicate = {/
-    @"&&"
-    predicate = parParenExpression
-    { <> @["&&": predicate] }
-/};
-
 # Parses an atomic parsing expression.
 def parParserAtom = {/
     @"."
@@ -778,7 +771,7 @@ def parParserAtom = {/
     { <> @"()" }
 |
     parVarRef | parParserString | parParserToken | parParserSet |
-    parParserCode | parParserPredicate | parParenPex
+    parParserCode | parParenPex
 /};
 
 # Parses a repeat (or not) parsing expression.
@@ -1085,7 +1078,7 @@ def parAddExpression = {/
 /};
 
 # Parses a comparison expression. The syntax here is the mathematical
-# style of `x < y < z` meaning `x < y && y < z`. This semantics
+# style of `x < y < z` meaning `(x < y) & (y < z)`. This semantics
 # falls naturally out of the left-associativity of the expression
 # along with the value-or-void logic model, as defined by the language.
 def parCompareExpression = {/
@@ -1102,38 +1095,10 @@ def parCompareExpression = {/
     { <> makeBinaryCalls(firstEx, opExes) }
 /};
 
-# Parses a short-circuit boolean-and expression.
-def parBooleanAndExpression = {/
-    first = parCompareExpression
-    rest = (@"&&" parCompareExpression)*
-
-    (
-        # Not actually a boolean-and expression.
-        { <> eq(lowSize(rest), 0) }
-        { <> first }
-    |
-        { <> makeCallNameThunks("booleanAnd", first, rest*) }
-    )
-/};
-
-# Parses a short-circuit boolean-or expression.
-def parBooleanOrExpression = {/
-    first = parBooleanAndExpression
-    rest = (@"||" parBooleanAndExpression)*
-
-    (
-        # Not actually a boolean-or expression.
-        { <> eq(lowSize(rest), 0) }
-        { <> first }
-    |
-        { <> makeCallNameThunks("booleanOr", first, rest*) }
-    )
-/};
-
 # Parses a short-circuit logical-and expression.
 def parLogicAndExpression = {/
-    first = parBooleanOrExpression
-    rest = (@"&" parBooleanOrExpression)*
+    first = parCompareExpression
+    rest = (@"&" parCompareExpression)*
 
     (
         # Not actually a logical-and expression.
