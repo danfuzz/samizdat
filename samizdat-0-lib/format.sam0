@@ -10,8 +10,16 @@
 # Helper definitions
 #
 
+# Forward declarations.
+def callSourceString = forwardFunction();
+def callStringFromValue = forwardFunction();
+
 # This is int digits for bases up to 36, in order.
 def INT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+# Single-character strings `"\x7f;"` and `"\x9f;"`.
+def CHAR_127 = charFromInt(127);
+def CHAR_159 = charFromInt(159);
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
@@ -37,13 +45,6 @@ def INT_SIGNS = [
 fn stringFromIntBase(int, base) {
     <> mapGet(INT_SIGNS, isign(int))(int, base)
 };
-
-# Forward declaration of `sourceString`
-def callSourceString = forwardFunction();
-
-# Single-character strings `"\x7f;"` and `"\x9f;"`.
-def CHAR_127 = charFromInt(127);
-def CHAR_159 = charFromInt(159);
 
 # Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
@@ -203,8 +204,23 @@ fn doUnknown(unknown, .) {
         "]")
 };
 
-# Mapping from low-layer type names to stringifiers.
-def STRINGIFIERS = [
+# Stringifies a string as-is. That is, it just returns the argument. The
+# extra argument is the general `adorn` argument, which is degenerate and
+# ignored in this case.
+fn doStringAsIs(string, .) {
+    <> string
+};
+
+# Stringifies a list by recursive flattening. The extra argument is the
+# general `adorn` argument, which is degenerate and ignored in this case.
+fn doListFlatten(list, .) {
+    def elems = filterGenerator(list) { e :: <> callStringFromValue(e) };
+    <> stringAdd(elems*)
+};
+
+# Mapping from low-layer type names to stringifiers to use for `%q`-style
+# source-stringification.
+def SOURCE_STRINGIFIERS = [
     token:   doToken,
     int:     doInt,
     list:    doList,
@@ -213,9 +229,20 @@ def STRINGIFIERS = [
     uniqlet: doUniqlet
 ];
 
+# Mapping from low-layer type names to stringifiers to use for `%s`-style
+# human-stringification.
+def HUMAN_STRINGIFIERS = [
+    token:   doToken,
+    int:     doInt,
+    list:    doListFlatten,
+    map:     doMap,
+    string:  doStringAsIs,
+    uniqlet: doUniqlet
+];
+
 # Common handler for the two exported functions.
 fn sourceStringGeneral(value, adorn) {
-    def stringifier = mapGet(STRINGIFIERS, lowType(value), doUnknown);
+    def stringifier = mapGet(SOURCE_STRINGIFIERS, lowType(value), doUnknown);
     <> stringifier(value, adorn)
 };
 
@@ -223,6 +250,7 @@ fn sourceStringGeneral(value, adorn) {
 fn convertHex(arg) {
     <> stringFromIntBase(arg, 16)
 };
+
 
 #
 # Exported functions
@@ -256,12 +284,13 @@ fn stringFromInt(value, optBase?) {
 fn stringFromValue(value?) {
     <> ifValue { <> value* }
         { value ::
-            <> ifIs { <> isString(value) }
-                { <> value }
-                { <> sourceString(value) }
+            def stringifier =
+                mapGet(HUMAN_STRINGIFIERS, lowType(value), doUnknown);
+            <> stringifier(value, true)
         }
         { <> "" }
 };
+callStringFromValue(stringFromValue);
 
 # Mapping from format escape characters to their respective handler functions.
 def FORMATTERS = [
