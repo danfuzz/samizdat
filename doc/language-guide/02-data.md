@@ -87,11 +87,10 @@ characters to be included in the result:
   be ignored. That is, this allows one to continue a string constant
   across lines without introducing newlines.
 
-* The sequence `\/` is ignored entirely, and causes no other effect. Its
-  point is to mark the end of ignored spaces at the beginning of a line.
-  It is valid to use `\/` in front of every line's main content, or *just*
-  in front of lines that need it, depending on visual appeal and personal
-  taste.
+* The sequence `\/` is converted into nothingness. Its point is to mark the
+  end of ignored spaces at the beginning of a line. It is valid to use `\/`
+  in front of every line's main content, or *just* in front of lines that
+  need it, depending on visual appeal and personal taste.
 
 ```
 ""                            # the empty string
