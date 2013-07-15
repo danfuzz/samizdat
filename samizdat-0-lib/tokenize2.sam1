@@ -202,8 +202,6 @@ def implStringInterpolation = {/
             t = tokToken
             { <> [t] }
         |
-            "()" # So as not to turn it into two separate tokens.
-        |
             tokStringInterpolation
         )
     )*
