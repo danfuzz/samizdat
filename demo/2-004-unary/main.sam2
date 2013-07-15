@@ -63,12 +63,12 @@ msg(returnVoid()?);
 msg(returnString()?);
 
 # Boolean/logic conversion.
-msg(&& (returnVoid()));
-msg(&& (returnString()));
-msg(&& true);
-msg(&& false);   # This one is the documented surprising result.
-msg((& true)?);
-msg((& false)?);
+msg(returnVoid()??);
+msg(returnString()??);
+msg(true??);
+msg(false??);   # This one is the documented surprising result.
+msg((true**)?);
+msg((false**)?);
 
 # Logical ops.
 msg((!returnVoid())?);
