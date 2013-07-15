@@ -92,6 +92,10 @@ characters to be included in the result:
   in front of every line's main content, or *just* in front of lines that
   need it, depending on visual appeal and personal taste.
 
+In addition, the escape sequences `\(...)` and `\{...}` can be used to
+include string interpolations in otherwise-literal strings. This syntax
+is covered in the section on string formatting.
+
 ```
 ""                            # the empty string
 "a"
