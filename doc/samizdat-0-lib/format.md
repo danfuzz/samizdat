@@ -62,6 +62,15 @@ Converts an int into a string form, in the given base which defaults to
 
 #### `stringFromValue(value?) <> string`
 
-This is just like `sourceString`, except that if `value` is a string,
-it is returned as-is, and if `value` is not passed, this returns the
-empty string.
+Converts an arbitrary value into a string representation form, meant
+to be useful for producing "human-oriented" output.
+
+* If `value` is a string, it is returned as-is.
+
+* If `value` is a list, its elements are converted as if by calling this
+  function on them, and then concatenated together without any separator
+  characters.
+
+* If `value` is void (that is, not passed), this returns the empty string.
+
+* Otherwise, this behaves just like `sourceString(value)`.

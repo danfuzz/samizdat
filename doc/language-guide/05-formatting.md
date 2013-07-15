@@ -56,16 +56,18 @@ formatter gets called without an argument.
 
 ### `%s` &mdash; Default string conversion
 
-A format specifier of `%s`, or an omitted format specifier, passes
-strings through to the result without change, and converts void to the
+A format specifier of `%s`, or an omitted format specifier, passes strings
+through to the result without change, concatenates list elements which
+themselves get converted to strings as if by `%s`, and converts void to the
 empty string.
 
 For example:
 
 ```
-"I like \%s("biscuits")."         => "I like biscuits."
-"I like \("biscuits")."           => "I like biscuits."
-"I like \([@muffins, @scones"])." => "I like [@muffins, @scones]."
+"I like \%s("biscuits")."                     => "I like biscuits."
+"I like \("biscuits")."                       => "I like biscuits."
+"I like \([@muffins, @scones"])."             => "I like @muffins@scones."
+"I like \(["muffins", [" and "], "scones"])." => "I like muffins and scones."
 ```
 
 ### `%q` &mdash; Data quoting
