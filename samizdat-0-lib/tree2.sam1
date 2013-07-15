@@ -96,7 +96,7 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 def UNARY_OPERATORS = varRefMap([
     "+":   "unary+",
     "-":   "unary-",
-    "&":   "unary&",
+    "**":  "unary**",
     "[]":  "unary[]",
     "!!!": "inot"
     ]);
@@ -951,7 +951,7 @@ parNonlocalExit(implNonlocalExit);
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
 def implPrefixOperator = {/
-    operator = [@"+" @"-" @"&" @"!!!"]
+    operator = [@"+" @"-" @"!!!"]
     {
         def name = mapGet(UNARY_OPERATORS, tokenType(operator));
         <> { node :: <> makeCall(name, node) }
@@ -964,14 +964,6 @@ def implPrefixOperator = {/
     {
         <> { node ::
             <> makeCallNameThunks("ifNot", node, makeLiteral(true))
-        }
-    }
-|
-    @"&&"
-    {
-        <> { node ::
-            <> makeCallNameThunks("ifIs",
-                node, makeLiteral(true), makeLiteral(false))
         }
     }
 /};
@@ -988,6 +980,20 @@ def implPostfixOperator = {/
     # treated as a binary op.
     @"*" !parExpression
     { <> { node :: <> @[interpolate: node] } }
+|
+    @"?"
+    { <> { node :: <> makeOptValueExpression(node) } }
+|
+    @"**"
+    { <> { node :: <> makeCall(mapGet(UNARY_OPERATORS, "**"), node) } }
+|
+    @"??"
+    {
+        <> { node ::
+            <> makeCallNameThunks("ifIs",
+                node, makeLiteral(true), makeLiteral(false))
+        }
+    }
 |
     @"["
     exprs = parUnadornedList
@@ -1009,9 +1015,6 @@ def implPostfixOperator = {/
         def function = mapGet(UNARY_OPERATORS, "[]");
         <> { node :: <> makeCall(function, node, names*) }
     }
-|
-    @"?"
-    { <> { node :: <> makeOptValueExpression(node) } }
 /};
 parPostfixOperator(implPostfixOperator);
 
