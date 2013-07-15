@@ -116,6 +116,34 @@ argument list, as a collection index, as a list literal element, or as
 a map literal key has a slightly different (but related) meaning. See
 the documentation on those constructs for more details.
 
+#### Convert logical truth value to boolean &mdash; `expression??`
+
+The unary double-question postfix operator takes a logical truth value
+&mdash; where any value represents true, and void represents false &mdash;
+resulting in the boolean equivalent. That is, if the inner `expression`
+yields a value (not void), the outer expression yields `true`. And if the
+inner `expression` yields void, the outer expression yields `false`.
+
+This operator is useful in that it allows a logic expression to consistently
+bottom out in a bona fide value, for storage in a variable or as part of a
+data structure.
+
+#### Convert boolean to logical truth value &mdash; `expression**`
+
+The unary double-star postfix operator takes a boolean truth value
+&mdash; `true` or `false` &mdash; yielding an equivalent logical truth
+value. That is, if the inner `expression` is `true`, the outer expression
+also yields `true`. If the inner `expression` yields `false`, the outer
+expression yields void. Any other inner expression is an error (terminating
+the runtime).
+
+It is valid to use this operator to possibly-yield a value (that is, yield
+either a value or void) from a function.
+
+This operator, which is essentially the converse of the double-question
+postfix operator, is useful in order to perform conditional operations
+on a boolean variable or data structure element.
+
 
 ### Prefix Operators (Precedence 7)
 
@@ -144,32 +172,6 @@ result is the value `true`.
 
 **Note:** Samizdat logic expressions are based on the idea of void as
 false and any value as true.
-
-#### Convert boolean to logical truth value &mdash; `& expression`
-
-A unary and takes a boolean truth value &mdash; `true` or `false` &mdash;
-yielding an equivalent logical truth value. That is, if the inner
-`expression` is `true`, the outer expression also yields `true`.
-If the inner `expression` yields `false`, the outer expression yields void.
-Any other inner expression is an error (terminating the runtime).
-
-This operator is useful in order to perform conditional operations
-on a boolean variable or data structure element.
-
-#### Convert logical truth value to boolean &mdash; `&& expression`
-
-A unary double-and takes a logical truth value &mdash; where
-any value represents true, and void represents false &mdash; resulting
-in the boolean equivalent. That is, if the inner `expression` yields a value
-(not void), the outer expression yields `true`. And if the inner
-`expression` yields void, the outer expression yields `false`.
-
-This operator is useful in that it allows a logic expression to consistently
-bottom out in a bona fide value, for storage in a variable or as part of a
-data structure.
-
-This is the opposite conversion of unary single-and. TODO: It probably
-needs a better operator.
 
 #### Bitwise complement &mdash; `!!!expression`
 

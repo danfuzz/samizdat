@@ -124,7 +124,7 @@ fn \"unary-"(value) {
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-fn \"unary&"(value) {
+fn \"unary**"(value) {
     <> logicFromBoolean(value)
 };
 
@@ -142,19 +142,19 @@ fn \"unary[]"(value, indices*) {
 };
 
 <> [
-    "binary+":      \"binary+",
-    "binary-":      \"binary-",
-    "binary*":      \"binary*",
-    "binary/":      \"binary/",
-    "binary%":      \"binary%",
-    "binary==":     \"binary==",
-    "binary!=":     \"binary!=",
-    "binary<":      \"binary<",
-    "binary>":      \"binary>",
-    "binary<=":     \"binary<=",
-    "binary>=":     \"binary>=",
-    "unary+":       \"unary+",
-    "unary-":       \"unary-",
-    "unary&":       \"unary&",
-    "unary[]":      \"unary[]"
+    "binary+":  \"binary+",
+    "binary-":  \"binary-",
+    "binary*":  \"binary*",
+    "binary/":  \"binary/",
+    "binary%":  \"binary%",
+    "binary==": \"binary==",
+    "binary!=": \"binary!=",
+    "binary<":  \"binary<",
+    "binary>":  \"binary>",
+    "binary<=": \"binary<=",
+    "binary>=": \"binary>=",
+    "unary+":   \"unary+",
+    "unary-":   \"unary-",
+    "unary**":  \"unary**",
+    "unary[]":  \"unary[]"
 ]
