@@ -75,9 +75,10 @@ The following are the character substitution escape sequences:
   literals, underscores are ignored and may be used for readability.
 * `\&name;` &mdash; XML entity name. `name` represents any of the standard
   XML entity names. As with hexadecimal escapes, multiple entity names
-  can be included by separating them with commas. See [the XML spec for entity
-  names](http://www.w3.org/TR/xml-entity-names/bycodes.html) for a full
-  list of names.
+  can be included by separating them with commas. This form also accepts
+  the `&#...` and `&#x...` forms for numeric character references See [the XML
+  spec for entity names](http://www.w3.org/TR/xml-entity-names/bycodes.html)
+  for a full list of names.
 
 There are two additional backslash escapes, neither of which cause any
 characters to be included in the result:
@@ -103,6 +104,7 @@ is covered in the section on string formatting.
 "Hello, Самиздат!"
 "\x0;"                        # same as "\0"
 "\x46,75,7a,7a;"              # same as "Fuzz"
+"\&#70,#117,#x7a,#x7a;"       # same as "Fuzz"
 "\x1_F60F;"                   # same as "😏"
 "\&zigrarr;"                  # same as "\x21dd;" or "⇝"
 "\&mu,nu;"                    # same as "μν"
