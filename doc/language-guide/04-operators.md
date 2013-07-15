@@ -54,13 +54,24 @@ Per the above, it is valid for an argument to be void, but that stops the
 evaluation of the expression, causing the overall call expression to
 yield void.
 
+#### Message binding lookup &mdash; `expression.(nameExpr)` and `expression.name`
+
+The dot infix syntax is used to find the function used to respond to a named
+message. `nameExpr` typically, but not necessarily, evaluates to a string.
+As a convenient shorthand, the parentheses and quotes can be omitted if
+if `nameExpr` is a string literal matching the identifier token syntax.
+
+The result of a dot infix expression is a function which, when called,
+sends the named message to the evaluated (left-hand) expression result.
+A typical usage looks like `x.foo(y, z)`.
+
 #### Access collection &mdash; `expression[index, index, ...]`
 
-To index into a collection (list, map, or string) by integer index (lists or
-strings) or key (maps), place the index value inside square brackets. The
-result of the expression is the value located at the indicated index within
-the collection, or void if the indicated element does not exist (e.g., index
-out of range or key not in map).
+To index into a collection (e.g., list, map, or string) by integer index
+(e.g., lists or strings) or arbitrary key values (e.g., maps), place the
+index value inside square brackets. The result of the expression is the
+value located at the indicated index within the collection, or void if the
+indicated element does not exist (e.g., index out of range or key not in map).
 
 If the value to be indexed has a deeper structure to be accessed, additional
 indices may be placed within the square brackets, separated by commas. With
@@ -76,20 +87,6 @@ The expression to index into and all of the indices must be non-void.
 **Note:** The difference between `x[y, z]` and `x[y][z]` is that it is not
 an error in the former for `x[y]` to be void, whereas in the latter `x[y]`
 being void would be a fatal error.
-
-#### Access collection by string literal &mdash; `expression.name`
-
-Similar to defining map keys literally, as a shorthand one can index into
-maps by literal string key by placing the literal key after the map,
-separated by a dot. If the key has the token syntax for an identifier, then
-double quotes are optional.
-
-If the value to be indexed has a deeper structure to be accessed, additional
-literal keys may be appended to the expression, again separated by dots.
-
-The meanings of `expression.name` and `expression["name"]` are identical.
-Similarly, the meanings of `expression.name1.name2` and
-`expression["name1", "name2"]` are identical.
 
 #### Convert Value-or-void to list &mdash; `expression?`
 
