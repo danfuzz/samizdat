@@ -169,17 +169,11 @@ def parFnCommon = pegMakeMainSequence(
             pegMakeToken("identifier"),
             pegMakeCode { n :: <> [name: tokenValue(n)] }),
         pegMakeMainSequence(pegMakeCode { <> [:] })),
-    pegMakeChoice(
-        pegMakeMainSequence(
-            pegMakeToken("()"),
-            pegMakeCode { . :: <> [:] }),
-        pegMakeMainSequence(
-            pegMakeToken("("),
-            parFormalsList,
-            pegMakeToken(")"),
-            pegMakeCode { ., f, . :: <> f })),
+    pegMakeToken("("),
+    parFormalsList,
+    pegMakeToken(")"),
     parCodeOnlyClosure,
-    pegMakeCode { ., returnDef, name, formals, code ::
+    pegMakeCode { ., returnDef, name, ., formals, ., code ::
         def codeMap = tokenValue(code);
         def statements = [returnDef*, mapGet(codeMap, "statements")*];
         <> [
@@ -373,9 +367,6 @@ def parAtom = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 def parActualsList = pegMakeMainSequence(
     pegMakeChoice(
-        pegMakeSequence(
-            pegMakeToken("()"),
-            pegMakeStar(parClosure)),
         pegMakeSequence(
             pegMakeToken("("),
             parUnadornedList,
@@ -573,7 +564,10 @@ def parParserPredicate = pegMakeMainSequence(
 def parParserAtom = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeToken("."),
-        pegMakeToken("()"),
+        pegMakeSequence(
+            pegMakeToken("("),
+            pegMakeToken(")"),
+            pegMakeCode { ., . :: <> @"()" }),
         parVarRef,
         parParserString,
         parParserToken,
