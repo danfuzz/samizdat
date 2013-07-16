@@ -40,13 +40,6 @@ def MESSAGE_DISPATCH = [
     ]
 ];
 
-# Map from low-layer types to corresponding "get" functions.
-def GET_MAP = [
-    list:   listNth,
-    string: stringNth,
-    map:    mapGet
-];
-
 # Verifies that it should be possible to compare the two given values,
 # terminating the runtime if not.
 fn assertComparable(v1, v2) {
