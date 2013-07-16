@@ -125,12 +125,11 @@ fn isIdentifier(string) {
         { <> gt(lowSize(string), 0) }
         { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0)) }
         {
-            generatorForEach(
-                filterGenerator(string)
-                    { ch ::
-                        ifNot { <> mapGet(IDENTIFIER_CHARS, ch) }
-                            { return }
-                    });
+            doFilter(string)
+                { ch ::
+                    ifNot { <> mapGet(IDENTIFIER_CHARS, ch) }
+                        { return }
+                };
             <> true
         }
 };
@@ -154,22 +153,22 @@ fn doString(string, adorn) {
 
 # Stringifies a list.
 fn doList(list, adorn) {
-    def listElems = filterGenerator(list)
+    def listElems = collectFilter(list)
         { elem :: <> stringAdd(", ", callSourceString(elem)) };
 
-    <> adornIf(adorn, "[", collectionBody([listElems*], ""), "]")
+    <> adornIf(adorn, "[", collectionBody(listElems, ""), "]")
 };
 
 # Stringifies a map.
 fn doMap(map, adorn) {
-    def mapElems = filterGenerator(map)
+    def mapElems = collectFilter(map)
         { mapping ::
             def key = keyString(mappingKey(mapping));
             def value = callSourceString(mappingValue(mapping));
             <> stringAdd(", ", key, ": ", value)
         };
 
-    <> adornIf(adorn, "[", collectionBody([mapElems*], ":"), "]");
+    <> adornIf(adorn, "[", collectionBody(mapElems, ":"), "]");
 };
 
 # Stringifies a token.

@@ -16,6 +16,12 @@ the box value has yet to be set), `boxSet` to set the contents of
 a box, and `boxIsSet` to indicate whether `boxSet` has been called
 (which is not the same as `boxGet` returning non-void).
 
+As a special case, it is valid to pass the library constant `nullBox`
+as the `box` argument to box-related functions, in which case the function
+acts as if the box is permanently un-set. Notably, `boxSet(nullBox, value)`
+is effectively a no-op. This arrangement is done in order to make it easy
+to pass around a "box" whose value is to be ignored.
+
 
 <br><br>
 ### Primitive Definitions
@@ -42,7 +48,7 @@ not supplied). `box` must be a box as returned by either `mutableBox` or
 It is an error (terminating the runtime) for `box` to be a yield box on
 which `boxSet` has already been called.
 
-#### `mutableBox(value?) <> function`
+#### `mutableBox(value?) <> box`
 
 Creates a mutable box, with optional pre-set value. The result of a call to
 this function is a box which can be set any number of times using
@@ -115,7 +121,7 @@ function to call its own interface function, either directly or
 indirectly. To implement a recursive operation, it is necessary to do
 so without going through the interface.
 
-#### `yieldBox() <> function`
+#### `yieldBox() <> box`
 
 Creates a set-once "yield box". The result of a call to this function is a
 box which can be set at most once, using `boxSet`. Subsequent attempts to

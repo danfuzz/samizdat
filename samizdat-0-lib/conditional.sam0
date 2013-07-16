@@ -30,15 +30,14 @@ fn ifVoid(predicate, voidFunction, valueFunction?) {
 
 # Documented in Samizdat Layer 0 spec.
 fn or(predicates*) {
-    listForEach(predicates)
-        { ., predicate ::
-            ifValue(predicate, { value :: return value })
-        }
+    doFilter(predicates) { predicate ::
+        ifValue(predicate, { value :: return value })
+    }
 };
 
 <> [
-    and:        and,
-    ifNot:      ifNot,
-    ifVoid:     ifVoid,
-    or:         or
+    and:    and,
+    ifNot:  ifNot,
+    ifVoid: ifVoid,
+    or:     or
 ]

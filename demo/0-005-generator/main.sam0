@@ -82,8 +82,8 @@ msgAll("Filter generator (square even numbers)",
                 { <> imul(value, value) }
         });
 
-io0Note("generatorForEach on filter");
-generatorForEach(
+io0Note("doGenerator on filter");
+doGenerator(
     filterGenerator([1, 2, 3, 4])
         { value :: io0Note(stringAdd("    Yay ", sourceString(value))) });
 io0Note("");

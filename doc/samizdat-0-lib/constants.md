@@ -38,6 +38,12 @@ A value used when no other value is suitable, but when a value is
 nonetheless required. It is defined as `@null`, that is, a valueless
 token with type tag `"null"`.
 
+#### `nullBox`
+
+A value used in place of a box, when the would-be set value of the box
+is never needed. It is defined as `@nullBox`, that is, a valueless
+token with type tag `"nullBox"`.
+
 #### `ENTITY_MAP`
 
 Map of entity names to their string values. This is a map from strings to

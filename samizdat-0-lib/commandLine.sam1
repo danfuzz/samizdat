@@ -75,7 +75,7 @@ def parArguments = {/
 /};
 
 # Simple command-line argument parser.
-fn parArgs(args) {
+fn parseArgs(args) {
     # Make a unified string with each argument "\0"-terminated.
     def argFilter = filterGenerator(args) { arg :: <> stringAdd(arg, "\0") };
     def argString = stringAdd(argFilter*);
@@ -91,7 +91,7 @@ fn parArgs(args) {
 
 # Documented in Samizdat Layer 0 spec.
 fn samCommandLine(context, rawArgs*) {
-    def parsedArgs = parArgs(rawArgs);
+    def parsedArgs = parseArgs(rawArgs);
     def options = mapGet(parsedArgs, "options");
     def argWords = mapGet(parsedArgs, "args");
 
