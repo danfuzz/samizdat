@@ -158,7 +158,7 @@ fn collectFilter(filterFunction, generators*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn doFilter(filterFunction, generators*) {
-    generatorForEach(filterGenerator(filterFunction, generators))
+    generatorForEach(filterGenerator(filterFunction, generators*))
 };
 
 # Documented in Samizdat Layer 0 spec.
