@@ -60,7 +60,7 @@ fn makeCallNonlocalExit(name, expression?) {
 # Returns a `call` node that names a function as a `varRef` and passes
 # "thunked" versions of each of the given actual arguments.
 fn makeCallNameThunks(name, actuals*) {
-    def thunks = listFilter(actuals) { ., one :: <> makeThunk(one) };
+    def thunks = collectFilter(actuals) { one :: <> makeThunk(one) };
     <> makeCallName(name, thunks*)
 };
 
@@ -882,7 +882,7 @@ def implInterpolatedString = {/
         # Convert each of the payload items into the proper form.
         # This includes recursive parser calls to convert list forms
         # into appropriate node types.
-        def elems = listFilter(tokenValue(token)) { ., elem ::
+        def elems = collectFilter(tokenValue(token)) { elem ::
             <> ifIs { <> isString(elem) }
                 { <> makeLiteral(elem) }
                 {
@@ -1340,17 +1340,17 @@ def parSwitchExpression = {/
         def formal = mapGet(testClause, "formal");
         def test = mapGet(testClause, "test");
 
-        def optDefault = listFilter(cases) { ., case ::
+        def optDefault = collectFilter(cases) { case ::
             <> ifIs { <> eq(mapGet(case, "keys"), @default) }
                 { <> closureWithFormals(mapGet(case, "code"), formal) }
         };
 
-        def optElse = listFilter(cases) { ., case ::
+        def optElse = collectFilter(cases) { case ::
             <> ifIs { <> eq(mapGet(case, "keys"), @else) }
                 { <> mapGet(case, "code") }
         };
 
-        def regularCases = listFilter(cases) { ., case ::
+        def regularCases = collectFilter(cases) { case ::
             def keys = mapGet(case, "keys");
             <> ifIs { <> eq(tokenType(keys), "expression") }
                 {
@@ -1525,8 +1525,8 @@ def parGeneratorClause = {/
 
     {
         def gens = [firstGen, moreGens*];
-        def formals = listFilter(gens) { ., gen :: <> mapGet(gen, "formal") };
-        def inits = listFilter(gens) { ., gen :: <> mapGet(gen, "init") };
+        def formals = collectFilter(gens) { gen :: <> mapGet(gen, "formal") };
+        def inits = collectFilter(gens) { gen :: <> mapGet(gen, "init") };
         def init = makeCallName("paraGenerator", inits*);
 
         <> [formals: formals, init: init]
