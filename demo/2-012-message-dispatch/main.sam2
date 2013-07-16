@@ -45,7 +45,8 @@ msg("blort".size());
 msg("fizmo".get(3));
 msg("igram".nth(4));
 
-io0Note("\nNon-literal name");
+io0Note("\nExpression syntax for name");
+msg("biscuits"."size"());
 msg("muffins".(stringAdd("s", "ize"))());
 
 <> 0
