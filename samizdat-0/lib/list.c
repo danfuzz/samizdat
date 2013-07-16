@@ -40,16 +40,13 @@ PRIM_IMPL(listFilter) {
     zvalue list = args[1];
     zint size = datSize(list);
     zvalue result[size];
-    zvalue subArgs[2];
     zint at = 0;
 
     datAssertList(list);
 
     for (zint i = 0; i < size; i++) {
-        subArgs[0] = datIntFromZint(i);
-        subArgs[1] = datListNth(list, i);
-
-        zvalue one = langCall(function, 2, subArgs);
+        zvalue elem = datListNth(list, i);
+        zvalue one = langCall(function, 1, &elem);
 
         if (one != NULL) {
             result[at] = one;

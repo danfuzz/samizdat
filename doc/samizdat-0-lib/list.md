@@ -23,13 +23,16 @@ result.
 #### `listFilter(function, list) <> list`
 
 Processes each element of a list using a filter function, collecting
-the results into a new list. The given function is called on each
-list element, with two arguments, namely the element's index (zero-based)
-and value.
+the results into a new list, and returning that list. The filter function
+is called once for each list element (in order), passing the function a
+single argument of the element in question.
 
 If the function returns void for any given call, then no item is added for
 the corresponding element. This means the size of the result may be
 smaller than the size of the argument.
+
+**Note:** This is a special-case version of the more general function
+`collectFilter` (see which).
 
 #### `listInsNth(list, n, value) <> list`
 
