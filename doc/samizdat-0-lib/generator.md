@@ -19,6 +19,17 @@ below).
 <br><br>
 ### In-Language Definitions
 
+#### `collectFilter(filterFunction, generators*) <> list`
+
+Creates a filter generator over the indicated generators, and collects
+the results of running it into a list.
+
+This is a convenient and idiomatic shorthand for saying something like:
+
+```
+[(filterGenerator(generator, ...) { ... code ... })*]
+```
+
 #### `exclusiveRange(first, increment, limit) <> generator`
 
 End-exclusive range generator for int or single-character strings.
