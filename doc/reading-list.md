@@ -10,11 +10,11 @@ design and implementation of *Samizdat*.
 
 * Chicken Scheme internals &mdash; <http://wiki.call-cc.org/Internals>
 
-* Clojure's Agents &mdash; <http://clojure.org/agents>
+* Clojure
+  * Agents &mdash; <http://clojure.org/agents>
+  * Refs and Transactions &mdash; <http://clojure.org/Refs>
 
-* Clojure's Refs and Transactions &mdash; <http://clojure.org/Refs>
-
-* Coffescript (interesting syntactic choices) &mdash;
+* Coffeescript (interesting syntactic choices) &mdash;
   <http://coffeescript.org/>
 
 * The Common Lisp Object System: An Overview &mdash;
@@ -60,3 +60,6 @@ design and implementation of *Samizdat*.
 
 * Packrat parsing: Simple, Powerful, Lazy, Linear Time &mdash;
   <http://pdos.csail.mit.edu/~baford/packrat/icfp02/>
+
+* Shunting-yard algorithm (operator-precedence parsing) &mdash;
+  <http://en.wikipedia.org/wiki/Shunting-yard_algorithm>
