@@ -7,10 +7,38 @@
 #
 
 
-
 #
 # Helper definitions
 #
+
+# Message dispatch table, mapping from types to maps from names to functions.
+# TODO: This is "scaffolding" meant to be replaced later with a more
+# general mechanism.
+def MESSAGE_DISPATCH = [
+    int: [
+        get:  ibit,
+        nth:  ibit,
+        size: lowSize
+    ],
+
+    list: [
+        get:  listNth,
+        nth:  listNth,
+        size: lowSize
+    ],
+
+    map: [
+        get:  mapGet,
+        nth:  mapNth,
+        size: lowSize
+    ],
+
+    string: [
+        get:  stringNth,
+        nth:  stringNth,
+        size: lowSize
+    ]
+];
 
 # Map from low-layer types to corresponding "get" functions.
 def GET_MAP = [
@@ -114,6 +142,14 @@ fn \"binary>="(v1, v2) {
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
+fn \"unary."(name) {
+    <> { value ::
+        def function = mapGet(mapGet(MESSAGE_DISPATCH, lowType(value)), name);
+        <> { args* :: <> function(value, args*) }
+    }
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary+"(value) {
     <> iadd(0, value)
 };
@@ -130,13 +166,11 @@ fn \"unary**"(value) {
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary[]"(value, indices*) {
+    def getGet = \"unary."("get");
     <> listReduce(value, indices)
         { result, ., index ::
-            <> ifValue { <> mapGet(GET_MAP, lowType(result)) }
-                { getter ::
-                    <> ifValue { <> getter(result, index) }
-                        { got :: <> got }
-                }
+            <> ifValue { <> getGet(result) }
+                { getter :: <> getter(index) }
                 { return }
         }
 };
@@ -153,6 +187,7 @@ fn \"unary[]"(value, indices*) {
     "binary>":  \"binary>",
     "binary<=": \"binary<=",
     "binary>=": \"binary>=",
+    "unary.":   \"unary.",
     "unary+":   \"unary+",
     "unary-":   \"unary-",
     "unary**":  \"unary**",

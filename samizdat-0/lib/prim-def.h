@@ -17,6 +17,7 @@ PRIM_FUNC(boxSet);
 PRIM_FUNC(charFromInt);
 PRIM_FUNC(iadd);
 PRIM_FUNC(iand);
+PRIM_FUNC(ibit);
 PRIM_FUNC(idiv);
 PRIM_FUNC(ifIs);
 PRIM_FUNC(ifValue);
