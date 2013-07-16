@@ -157,7 +157,8 @@ fn collectFilter(filterFunction, generators*) {
         {
             def generator = generators*;
             ifIs { <> isList(generator) } {
-                # Can use the special-case (and more efficient) `listFilter`.
+                # We are filtering a single list, so just use the
+                # special-case (and more efficient) `listFilter`.
                 return listFilter(filterFunction, generator)
             }
         };
@@ -299,8 +300,8 @@ fn paraGenerator(generators*) {
     };
 
     # Handle the degenerate case of no arguments.
-    ifValue { <> eq(generators, []) }
-        { . :: return voidedGenerator };
+    ifIs { <> eq(generators, []) }
+        { return voidedGenerator };
 
     # Handle the degenerate case of a signle argument.
     ifIs { <> eq(lowSize(generators), 1) }
