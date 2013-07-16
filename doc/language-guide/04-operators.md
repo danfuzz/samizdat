@@ -54,7 +54,7 @@ Per the above, it is valid for an argument to be void, but that stops the
 evaluation of the expression, causing the overall call expression to
 yield void.
 
-#### Message binding lookup &mdash; `expression.(nameExpr)` and `expression.name`
+#### Message binding lookup &mdash; `expression.nameExpr`
 
 The dot infix syntax is used to find the function used to respond to a named
 message. `nameExpr` typically, but not necessarily, evaluates to a string.
