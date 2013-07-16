@@ -207,13 +207,13 @@ PRIM_IMPL(object) {
     zvalue objectUniqlet = datUniqletWith(&OBJECT_DISPATCH, object);
 
     object->serviceFunction = args[0];
-    object->yieldFunction = langDefineFunction(callYield, objectUniqlet);
+    object->yieldFunction = langDefineFunction(callYield, objectUniqlet, NULL);
     object->state = args[1];
     object->busy = false;
     object->yieldValue = NULL;
     object->yielded = false;
 
-    return langDefineFunction(callObject, objectUniqlet);
+    return langDefineFunction(callObject, objectUniqlet, NULL);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
