@@ -30,6 +30,11 @@ This is a convenient and idiomatic shorthand for saying something like:
 [(filterGenerator(generator, ...) { ... code ... })*]
 ```
 
+#### `collectGenerator(generator) <> list`
+
+Takes an arbitrary generator, and collects all of its generated results,
+in generated order, into a list, returning that list.
+
 #### `doFilter(filterFunction, generators*) <> !.`
 
 Creates a filter generator over the indicated generators, and repeatedly
@@ -107,11 +112,6 @@ would be beyond the given `limit`, the generator becomes voided.
 
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
-
-#### `listFromGenerator(generator) <> list`
-
-Takes an arbitrary generator, and collects all of its generated results,
-in generated order, into a list, returning that list.
 
 #### `mapFromGenerator(generator) <> map`
 

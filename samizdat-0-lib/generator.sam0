@@ -157,6 +157,15 @@ fn collectFilter(filterFunction, generators*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn collectGenerator(generator) {
+    # Avoid pointless list->generator->list conversion.
+    ifIs { <> isList(generator) }
+        { return generator };
+
+    <> [generatorFromValue(generator)*]
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn doFilter(filterFunction, generators*) {
     doGenerator(filterGenerator(filterFunction, generators*))
 };
@@ -218,15 +227,6 @@ fn generatorFromValue(value) {
 # Documented in Samizdat Layer 0 spec.
 fn inclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, true)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn listFromGenerator(generator) {
-    # Avoid pointless list->generator->list conversion.
-    ifIs { <> isList(generator) }
-        { return generator };
-
-    <> [generatorFromValue(generator)*]
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -369,13 +369,13 @@ fn tokenGenerator(generator) {
 
 <> [
     collectFilter:       collectFilter,
+    collectGenerator:    collectGenerator,
     doFilter:            doFilter,
     doGenerator:         doGenerator,
     exclusiveRange:      exclusiveRange,
     filterGenerator:     filterGenerator,
     generatorFromValue:  generatorFromValue,
     inclusiveRange:      inclusiveRange,
-    listFromGenerator:   listFromGenerator,
     mapFromGenerator:    mapFromGenerator,
     openRange:           openRange,
     optGenerator:        optGenerator,

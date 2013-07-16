@@ -39,7 +39,7 @@ fn msgAll(header, gen) {
     }();
 
     io0Note("  [all]");
-    msg(listFromGenerator(gen));
+    msg(collectGenerator(gen));
     io0Note("")
 };
 

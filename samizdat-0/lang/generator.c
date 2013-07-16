@@ -52,7 +52,7 @@ static zvalue listFromString(zvalue string) {
 /**
  * Does generator iteration to get a list.
  */
-static zvalue listFromGeneratorPerSe(zvalue generator) {
+static zvalue collectGeneratorPerSe(zvalue generator) {
     zvalue arr[LANG_MAX_GENERATOR_ITEMS];
     zint at;
 
@@ -84,7 +84,7 @@ static zvalue listFromGeneratorPerSe(zvalue generator) {
  */
 
 /* Documented in header. */
-zvalue listFromGenerator(zvalue value) {
+zvalue collectGenerator(zvalue value) {
     switch (datType(value)) {
         case DAT_LIST: {
             // Trivial pass-through.
@@ -97,10 +97,10 @@ zvalue listFromGenerator(zvalue value) {
             return listFromString(value);
         }
         case DAT_UNIQLET: {
-            return listFromGeneratorPerSe(value);
+            return collectGeneratorPerSe(value);
         }
         default: {
-            die("Invalid type for listFromGenerator.");
+            die("Invalid type for collectGenerator.");
         }
     }
 }

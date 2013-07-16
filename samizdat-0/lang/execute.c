@@ -334,7 +334,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             if (eval == NULL) {
                 return NULL;
             }
-            eval = listFromGenerator(eval);
+            eval = collectGenerator(eval);
             args[i] = eval;
             fullCount += datSize(eval);
             interpolate = true;
@@ -393,7 +393,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
         die("Attempt to interpolate void.");
     }
 
-    result = listFromGenerator(result);
+    result = collectGenerator(result);
 
     switch (datSize(result)) {
         case 0: return NULL;
