@@ -35,8 +35,7 @@ fn uCombinator(function) { <> function(function) };
 # "Y*". That is, the Y combinator uses the U combinator in the same way
 # that the Y* combinator uses this function.
 fn uStarCombinator(functions) {
-    <> listFilter(functions)
-        { ., function :: <> function(functions*) }
+    <> listFilter(functions) { ., function :: <> function(functions*) }
 };
 
 
@@ -51,9 +50,7 @@ fn yCombinator(function) {
     # of `applicator` doesn't directly refer to the variable `applicator`.
 
     fn applicator(selfRef) {
-        <> { args* ::
-            <> function(uCombinator(selfRef))(args*)
-        }
+        <> { args* :: <> function(uCombinator(selfRef))(args*) }
     };
 
     <> uCombinator(applicator);
@@ -69,9 +66,7 @@ fn yStarCombinator(functions*) {
     def applicators = listFilter(functions)
         { ., function ::
             <> { selfRefs* ::
-                <> { args* ::
-                    <> function(uStarCombinator(selfRefs)*)(args*)
-                }
+                <> { args* :: <> function(uStarCombinator(selfRefs)*)(args*) }
             }
         };
 
