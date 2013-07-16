@@ -15,6 +15,21 @@ SELF_PATH, ARGS* ::
 # Helper definitions
 #
 
+# Map from binary operation names to precedece/function maps.
+def BINARY_OPS = [
+    "+": [function: iadd, precedence: 1],
+    "-": [function: isub, precedence: 1],
+    "*": [function: imul, precedence: 2],
+    "/": [function: idiv, precedence: 2],
+    "%": [function: irem, precedence: 2]
+];
+
+# Map from unary operation names to functions.
+def UNARY_OPS = [
+    "+": { x :: <> x },
+    "-": ineg
+];
+
 # Takes an initial value and a list of one-argument functions, and
 # does a reduction by applying each of the functions in order.
 fn applyAll(initialValue, functions) {
@@ -22,8 +37,60 @@ fn applyAll(initialValue, functions) {
         { result, ., function :: <> function(result) }
 };
 
-# Forward declaration of `addExpression`.
-def addExpression = forwardFunction();
+# Takes an initial value and a list of maps of `[op, value]`,
+# and evaluates the result using the "shunting yard" algorithm.
+fn applyShuntingYard(initialValue, opValues) {
+    # Reduces the top of the given pending stack. That is, it takes the
+    # top two values, and combines them by applying the top op, and places
+    # the result back at the top of the value stack.
+    fn applyTop(ops, values) {
+        def valuesSizeM2 = isub(lowSize(values), 2);
+        def function = mapGet(listLast(ops), "function");
+        def newValue = function(listSlice(values, valuesSizeM2)*);
+        <> [
+            listButLast(ops),
+            [listSlice(values, 0, valuesSizeM2)*, newValue]
+        ]
+    };
+
+    # Reduces the given pending stack with knowledge that the next operator
+    # to apply is of the given precedence.
+    fn reducePending(ops, values, precedence) {
+        loopReduce(ops, values)
+            { <next> ops, values ::
+                ifValue { <> listLast(ops) }
+                    { lastOp ::
+                        ifIs { <> ge(mapGet(lastOp, "precedence"), precedence) }
+                            { <next> applyTop(ops, values) }
+                    };
+                return [ops, values]
+            }
+    };
+
+    loopReduce([], [initialValue], opValues) { ops, values, opValues ::
+        ifIs { <> eq(opValues, []) }
+            {
+                # Use precedence `-1` to drain the op stack, leaving a single
+                # value.
+                def finalResult = reducePending(ops, values, -1);
+                return listLast(listLast(finalResult))
+            };
+
+        def nextOpValue = listFirst(opValues);
+        def nextOp = mapGet(nextOpValue, "op");
+        def nextValue = mapGet(nextOpValue, "value");
+        def newPending =
+            reducePending(ops, values, mapGet(nextOp, "precedence"));
+        <> [
+            [listFirst(newPending)*, nextOp],
+            [listLast(newPending)*, nextValue],
+            listButFirst(opValues)
+        ]
+    }
+};
+
+# Forward declaration of `expression`.
+def expression = forwardFunction();
 
 # Parses a single digit, yielding its value as an int.
 def digit = {/
@@ -47,7 +114,7 @@ def atom = {/
     number
 |
     "("
-    ex = addExpression
+    ex = expression
     ")"
     { <> ex }
 /};
@@ -55,9 +122,8 @@ def atom = {/
 # Parses a unary (in this case, prefix) operation, yielding its corresponding
 # function.
 def unaryOp = {/
-    "-" { <> ineg }
-|
-    "+" { <> { x :: <> x } }
+    op = ["+-"]
+    { <> mapGet(UNARY_OPS, tokenType(op)) }
 /};
 
 # Parses a unary expression, that is, a series of unary operators followed
@@ -68,54 +134,30 @@ def unaryExpression = {/
     { <> applyAll(ex, listReverse(ops)) }
 /};
 
-# Parses an infix binary multiplicative operation, yielding its corresponding
-# function.
-def mulOp = {/
-    "*" { <> imul }
-|
-    "/" { <> idiv }
-|
-    "%" { <> irem }
+# Parses a binary operation, yielding a map of precedence and function.
+def binaryOp = {/
+    op = ["+-*/%"]
+    { <> mapGet(BINARY_OPS, tokenType(op)) }
 /};
 
-# Parses a multiplicative expression, that is, a series of unary expressions
-# separated by multiplicative operators, yielding the evaluated result.
-def mulExpression = {/
-    firstEx = unaryExpression
-    opExes = (
-        op = mulOp
-        ex = unaryExpression
-        { <> { n :: <> op(n, ex) } }
+# Parses a chained sequence of unary expressions separated by binary
+# operators.
+def expressionImpl = {/
+    firstValue = unaryExpression
+    opValues = (
+        op = binaryOp
+        value = unaryExpression
+        { <> [op: op, value: value] }
     )*
-    { <> applyAll(firstEx, opExes) }
+    { <> applyShuntingYard(firstValue, opValues) }
 /};
-
-# Parses an infix binary additive operation, yielding its corresponding
-# function.
-def addOp = {/
-    "+" { <> iadd }
-|
-    "-" { <> isub }
-/};
-
-# Parses an additive expression, that is, a series of multiplicative
-# expressions separated by additive operators, yielding the evaluated result.
-def addExpressionImpl = {/
-    firstEx = mulExpression
-    opExes = (
-        op = addOp
-        ex = mulExpression
-        { <> { n :: <> op(n, ex) } }
-    )*
-    { <> applyAll(firstEx, opExes) }
-/};
-addExpression(addExpressionImpl);
+expression(expressionImpl);
 
 # Evaluates all the expressions passed to it, printing the evaluated results
 # in order. Each expression is expected to be terminated with a newline.
 def evalExpressions = {/
     (
-        ex = addExpression
+        ex = expression
         "\n"
         {
             io0Note(sourceString(ex));
