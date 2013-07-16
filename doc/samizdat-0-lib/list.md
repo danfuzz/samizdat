@@ -31,12 +31,6 @@ If the function returns void for any given call, then no item is added for
 the corresponding element. This means the size of the result may be
 smaller than the size of the argument.
 
-#### `listForEach(function, list) <> !.`
-
-Calls the given function on each element of the given list.
-The given function is called with two arguments, namely the element's
-index (zero-based) and value. Always returns void.
-
 #### `listInsNth(list, n, value) <> list`
 
 Returns a list just like the given one, except that the `n`th

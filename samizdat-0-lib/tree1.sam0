@@ -518,13 +518,9 @@ def parParserSetString = pegMakeMainSequence(
                     { <> and
                         { <> eq(lowSize(startChar), 1) }
                         { <> eq(lowSize(endChar), 1) } }
-                    {
-                        def charGen =
-                            inclusiveRange(startChar, 1, endChar);
-                        <> @[string: stringAdd(charGen*)]
-                    }
+                    { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
             }),
-        pegMakeCode { s :: <> s }));
+        pegMakeCode { s :: <> tokenValue(s) }));
 
 def parParserSet = pegMakeMainSequence(
     pegMakeToken("["),
@@ -537,15 +533,11 @@ def parParserSet = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakePlus(parParserSetString),
-            pegMakeCode { strings ::
-                def charsGen =
-                    filterGenerator(strings) { tok :: <> [tokenValue(tok)*] };
-                <> listAdd(charsGen*)
-            }),
+            pegMakeCode { strings :: <> [stringAdd(strings*)*] }),
         pegMakeMainSequence(
             pegMakePlus(parParserToken),
             pegMakeCode { tokens ::
-                <> listFilter(tokens) { ., t :: <> tokenValue(t) }
+                <> collectFilter(tokens) { tok :: <> tokenValue(tok) }
             }),
         pegMakeMainSequence(
             pegMakeCode { <> [] })),
@@ -619,8 +611,8 @@ parChoicePex(implChoicePex);
 fn reportError(pending) {
     io0Note("Pending tokens:");
 
-    listForEach(pending)
-        { ., token :: io0Note(stringAdd("    ", sourceString(token))) };
+    doFilter(pending)
+        { token :: io0Note(stringAdd("    ", sourceString(token))) };
 
     io0Die("\nExtra tokens at end of program.")
 };

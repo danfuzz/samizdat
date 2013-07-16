@@ -20,13 +20,11 @@ def META_NAME_MAP = [
 # Gets the index of the first occurrence of the given character in the
 # given string.
 fn charIndex(string, ch) {
-    def search = filterGenerator(openRange(0, 1), string)
-        { index, one ::
-            <> ifIs { <> eq(ch, one) }
-                { return index }
-        };
+    doFilter(openRange(0, 1), string) { index, one ::
+        <> ifIs { <> eq(ch, one) }
+            { return index }
+    };
 
-    generatorForEach(search);
     <> -1
 };
 

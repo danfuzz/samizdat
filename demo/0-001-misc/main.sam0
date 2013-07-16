@@ -74,7 +74,7 @@ fn <out> exiter(foo) {
 fn boxer() {
     def box = mutableBox(10);
 
-    listForEach([1, 2, 3]) { ., n :: boxSet(box, iadd(boxGet(box), n)) };
+    doFilter([1, 2, 3]) { n :: boxSet(box, iadd(boxGet(box), n)) };
     <> boxGet(box)
 };
 

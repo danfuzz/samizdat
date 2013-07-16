@@ -19,6 +19,36 @@ below).
 <br><br>
 ### In-Language Definitions
 
+#### `collectFilter(filterFunction, generators*) <> list`
+
+Creates a filter generator over the indicated generators, and collects
+the results of running it into a list.
+
+This is a convenient and idiomatic shorthand for saying something like:
+
+```
+[(filterGenerator(generator, ...) { ... code ... })*]
+```
+
+#### `doFilter(filterFunction, generators*) <> !.`
+
+Creates a filter generator over the indicated generators, and repeatedly
+calls it until it is voided. This function always returns void.
+
+This is a convenient and idiomatic shorthand for saying something like:
+
+```
+doGenerator(filterGenerator(generator, ...) { ... code ... })
+```
+
+#### `doGenerator(generator) <> !.`
+
+Generator iterator, ignoring results. This takes a generator, calling
+it repeatedly until it becomes voided. All results yielded by the
+generator are ignored.
+
+This function always returns void.
+
 #### `exclusiveRange(first, increment, limit) <> generator`
 
 End-exclusive range generator for int or single-character strings.
@@ -49,14 +79,6 @@ returns a value, then that value in turn becomes the yielded result of
 the outer generator. If the filter function yields void, then the
 value-in-progress is discarded, and the inner generator is retried, with
 the same void-or-value behavior.
-
-#### `generatorForEach(generator) <> !.`
-
-Generator iterator, ignoring results. This takes a generator, calling
-it repeatedly until it becomes voided. All results yielded by the
-generator are ignored.
-
-This function always returns void.
 
 #### `generatorFromValue(value) <> generator`
 

@@ -41,7 +41,6 @@ PRIM_FUNC(ixor);
 PRIM_FUNC(listAdd);
 PRIM_FUNC(listDelNth);
 PRIM_FUNC(listFilter);
-PRIM_FUNC(listForEach);
 PRIM_FUNC(listInsNth);
 PRIM_FUNC(listReduce);
 PRIM_FUNC(listNth);

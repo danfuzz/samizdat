@@ -152,6 +152,25 @@ fn oneItemParaGenerator(generator) {
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn collectFilter(filterFunction, generators*) {
+    <> [filterGenerator(filterFunction, generators*)*]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn doFilter(filterFunction, generators*) {
+    doGenerator(filterGenerator(filterFunction, generators*))
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn doGenerator(generator) {
+    loopReduce(generatorFromValue(generator)) { gen ::
+        <> ifValue { <> gen(nullBox) }
+            { nextGen :: <> [nextGen] }
+            { return }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn exclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, false)
 };
@@ -187,16 +206,6 @@ fn filterGenerator(filterFunction, generators*) {
     };
 
     <> filterGenerator1(paraGenerator(generators*));
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn generatorForEach(generator) {
-    loopReduce(generatorFromValue(generator)) { gen ::
-        def box = yieldBox();
-        <> ifValue { <> gen(box) }
-            { nextGen :: <> [nextGen] }
-            { return }
-    }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -359,9 +368,11 @@ fn tokenGenerator(generator) {
 };
 
 <> [
+    collectFilter:       collectFilter,
+    doFilter:            doFilter,
+    doGenerator:         doGenerator,
     exclusiveRange:      exclusiveRange,
     filterGenerator:     filterGenerator,
-    generatorForEach:    generatorForEach,
     generatorFromValue:  generatorFromValue,
     inclusiveRange:      inclusiveRange,
     listFromGenerator:   listFromGenerator,

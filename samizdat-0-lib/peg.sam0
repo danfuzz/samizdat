@@ -34,8 +34,7 @@ fn pegRuleFail(box, input, .*) {
 # Peg rule that matches at eof, yielding `null`. This is the equivalent
 # of `!.` in usual peg syntax.
 fn pegRuleEof(box, input, .*) {
-    def ignoredBox = yieldBox();
-    <> ifValue { <> input(ignoredBox) }
+    <> ifValue { <> input(nullBox) }
         { . :: boxSet(box) }
         {
             boxSet(box, null);
@@ -206,15 +205,14 @@ fn pegMakeChoice(rules*) {
 
     # The general case.
     <> { <out> box, input, items* ::
-        listForEach(rules)
-            { ., rule ::
-                def innerBox = yieldBox();
-                <> ifValue { <> rule(innerBox, input, items*) }
-                    { newInput ::
-                        boxSet(box, boxGet(innerBox));
-                        <out> newInput
-                    }
-            };
+        doFilter(rules) { rule ::
+            def innerBox = yieldBox();
+            <> ifValue { <> rule(innerBox, input, items*) }
+                { newInput ::
+                    boxSet(box, boxGet(innerBox));
+                    <out> newInput
+                }
+        };
 
         # No rule succeeded.
         boxSet(box)
@@ -241,8 +239,7 @@ fn pegMakeLookaheadFailure(rule) {
 
     # The general case.
     <> { box, input, items* ::
-        def ignoredBox = yieldBox();
-        <> ifValue { <> rule(ignoredBox, input, items*) }
+        <> ifValue { <> rule(nullBox, input, items*) }
             { boxSet(box) }
             {
                 boxSet(box, null);
@@ -299,7 +296,7 @@ fn pegMakeString(string) {
     # which allows us to minimize code duplication.
 
     # Make a list of rules per character.
-    def chars = [(filterGenerator(string) { ch :: <> pegMakeToken(ch) })*];
+    def chars = collectFilter(string) { ch :: <> pegMakeToken(ch) };
 
     <> pegMakeMainSequence(chars*, pegMakeCode { .* :: <> @[(string)] })
 };
