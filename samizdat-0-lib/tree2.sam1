@@ -1013,9 +1013,9 @@ def implPostfixOperator = {/
     @"."
     name = (
         n = parIdentifierString
-        { <> makeLiteral(tokenType(n)) }
+        { <> makeLiteral(tokenValue(n)) }
     |
-        parParenExpression
+        parAtom
     )
 
     {
