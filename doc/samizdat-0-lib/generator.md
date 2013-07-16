@@ -38,8 +38,16 @@ calls it until it is voided. This function always returns void.
 This is a convenient and idiomatic shorthand for saying something like:
 
 ```
-generatorForEach(filterGenerator(generator, ...) { ... code ... })
+doGenerator(filterGenerator(generator, ...) { ... code ... })
 ```
+
+#### `doGenerator(generator) <> !.`
+
+Generator iterator, ignoring results. This takes a generator, calling
+it repeatedly until it becomes voided. All results yielded by the
+generator are ignored.
+
+This function always returns void.
 
 #### `exclusiveRange(first, increment, limit) <> generator`
 
@@ -71,14 +79,6 @@ returns a value, then that value in turn becomes the yielded result of
 the outer generator. If the filter function yields void, then the
 value-in-progress is discarded, and the inner generator is retried, with
 the same void-or-value behavior.
-
-#### `generatorForEach(generator) <> !.`
-
-Generator iterator, ignoring results. This takes a generator, calling
-it repeatedly until it becomes voided. All results yielded by the
-generator are ignored.
-
-This function always returns void.
 
 #### `generatorFromValue(value) <> generator`
 

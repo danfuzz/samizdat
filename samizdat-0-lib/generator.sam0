@@ -158,7 +158,16 @@ fn collectFilter(filterFunction, generators*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn doFilter(filterFunction, generators*) {
-    generatorForEach(filterGenerator(filterFunction, generators*))
+    doGenerator(filterGenerator(filterFunction, generators*))
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn doGenerator(generator) {
+    loopReduce(generatorFromValue(generator)) { gen ::
+        <> ifValue { <> gen(nullBox) }
+            { nextGen :: <> [nextGen] }
+            { return }
+    }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -197,15 +206,6 @@ fn filterGenerator(filterFunction, generators*) {
     };
 
     <> filterGenerator1(paraGenerator(generators*));
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn generatorForEach(generator) {
-    loopReduce(generatorFromValue(generator)) { gen ::
-        <> ifValue { <> gen(nullBox) }
-            { nextGen :: <> [nextGen] }
-            { return }
-    }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -370,9 +370,9 @@ fn tokenGenerator(generator) {
 <> [
     collectFilter:       collectFilter,
     doFilter:            doFilter,
+    doGenerator:         doGenerator,
     exclusiveRange:      exclusiveRange,
     filterGenerator:     filterGenerator,
-    generatorForEach:    generatorForEach,
     generatorFromValue:  generatorFromValue,
     inclusiveRange:      inclusiveRange,
     listFromGenerator:   listFromGenerator,
