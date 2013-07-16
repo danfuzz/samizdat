@@ -30,6 +30,17 @@ This is a convenient and idiomatic shorthand for saying something like:
 [(filterGenerator(generator, ...) { ... code ... })*]
 ```
 
+#### `doFilter(filterFunction, generators*) <> !.`
+
+Creates a filter generator over the indicated generators, and repeatedly
+calls it until it is voided. This function always returns void.
+
+This is a convenient and idiomatic shorthand for saying something like:
+
+```
+generatorForEach(filterGenerator(generator, ...) { ... code ... })
+```
+
 #### `exclusiveRange(first, increment, limit) <> generator`
 
 End-exclusive range generator for int or single-character strings.
