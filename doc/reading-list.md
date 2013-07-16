@@ -61,5 +61,8 @@ design and implementation of *Samizdat*.
 * Packrat parsing: Simple, Powerful, Lazy, Linear Time &mdash;
   <http://pdos.csail.mit.edu/~baford/packrat/icfp02/>
 
+* PyPy STM design (blog post) &mdash;
+  <http://morepypy.blogspot.com/2013/06/stm-on-drawing-board.html>
+
 * Shunting-yard algorithm (operator-precedence parsing) &mdash;
   <http://en.wikipedia.org/wiki/Shunting-yard_algorithm>
