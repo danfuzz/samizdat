@@ -206,15 +206,14 @@ fn pegMakeChoice(rules*) {
 
     # The general case.
     <> { <out> box, input, items* ::
-        listForEach(rules)
-            { ., rule ::
-                def innerBox = yieldBox();
-                <> ifValue { <> rule(innerBox, input, items*) }
-                    { newInput ::
-                        boxSet(box, boxGet(innerBox));
-                        <out> newInput
-                    }
-            };
+        doFilter(rules) { rule ::
+            def innerBox = yieldBox();
+            <> ifValue { <> rule(innerBox, input, items*) }
+                { newInput ::
+                    boxSet(box, boxGet(innerBox));
+                    <out> newInput
+                }
+        };
 
         # No rule succeeded.
         boxSet(box)
