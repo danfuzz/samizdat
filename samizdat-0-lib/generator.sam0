@@ -152,6 +152,11 @@ fn oneItemParaGenerator(generator) {
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn collectFilter(filterFunction, generators*) {
+    <> [filterGenerator(filterFunction, generators*)*]
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn exclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, false)
 };
@@ -359,6 +364,7 @@ fn tokenGenerator(generator) {
 };
 
 <> [
+    collectFilter:       collectFilter,
     exclusiveRange:      exclusiveRange,
     filterGenerator:     filterGenerator,
     generatorForEach:    generatorForEach,
