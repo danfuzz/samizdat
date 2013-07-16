@@ -202,8 +202,7 @@ fn filterGenerator(filterFunction, generators*) {
 # Documented in Samizdat Layer 0 spec.
 fn generatorForEach(generator) {
     loopReduce(generatorFromValue(generator)) { gen ::
-        def box = yieldBox();
-        <> ifValue { <> gen(box) }
+        <> ifValue { <> gen(nullBox) }
             { nextGen :: <> [nextGen] }
             { return }
     }

@@ -34,8 +34,7 @@ fn pegRuleFail(box, input, .*) {
 # Peg rule that matches at eof, yielding `null`. This is the equivalent
 # of `!.` in usual peg syntax.
 fn pegRuleEof(box, input, .*) {
-    def ignoredBox = yieldBox();
-    <> ifValue { <> input(ignoredBox) }
+    <> ifValue { <> input(nullBox) }
         { . :: boxSet(box) }
         {
             boxSet(box, null);
@@ -240,8 +239,7 @@ fn pegMakeLookaheadFailure(rule) {
 
     # The general case.
     <> { box, input, items* ::
-        def ignoredBox = yieldBox();
-        <> ifValue { <> rule(ignoredBox, input, items*) }
+        <> ifValue { <> rule(nullBox, input, items*) }
             { boxSet(box) }
             {
                 boxSet(box, null);
