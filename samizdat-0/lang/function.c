@@ -8,6 +8,7 @@
 #include "util.h"
 
 #include <stddef.h>
+#include <string.h>
 
 
 /*
@@ -23,6 +24,9 @@ typedef struct {
 
     /** Arbitrary closure state. */
     zvalue state;
+
+    /** The function's name, if any, used when producing stack traces. */
+    zvalue name;
 } Function;
 
 /**
@@ -46,17 +50,36 @@ static DatUniqletDispatch FUNCTION_DISPATCH = {
     functionFree
 };
 
+/**
+ * This is the function that handles emitting a context string for a call,
+ * when dumping the stack.
+ */
+static char *callReporter(void *state) {
+    Function *entry = state;
+    zvalue name = entry->name;
+
+    if (name != NULL) {
+        zint nameSize = datUtf8SizeFromString(name);
+        char nameStr[nameSize + 1];
+        datUtf8FromString(nameSize + 1, nameStr, name);
+        return strdup(nameStr);
+    } else {
+        return "(unknown)";
+    }
+}
+
 
 /*
  * Exported functions
  */
 
 /* Documented in header. */
-zvalue langDefineFunction(zfunction function, zvalue state) {
+zvalue langDefineFunction(zfunction function, zvalue state, zvalue name) {
     Function *entry = utilAlloc(sizeof(Function));
 
     entry->function = function;
     entry->state = state;
+    entry->name = name;
 
     return datUniqletWith(&FUNCTION_DISPATCH, entry);
 }
@@ -70,10 +93,14 @@ zvalue langCall(zvalue functionId, zint argCount, const zvalue *args) {
     }
 
     Function *entry = datUniqletGetState(functionId, &FUNCTION_DISPATCH);
+    debugPush(callReporter, entry);
 
     zstackPointer save = datFrameStart();
     zvalue result = entry->function(entry->state, argCount, args);
     datFrameReturn(save, result);
+
+    debugPop();
+
     return result;
 }
 

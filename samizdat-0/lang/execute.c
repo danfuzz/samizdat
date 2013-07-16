@@ -9,7 +9,6 @@
 #include "util.h"
 
 #include <stddef.h>
-#include <string.h>
 
 
 /*
@@ -218,31 +217,11 @@ static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
 }
 
 /**
- * Helper for `callClosure`. This is the function that handles emitting
- * a context string for a call, when dumping the stack.
- */
-static char *callReporter(void *state) {
-    zvalue defMap = state;
-    zvalue name = datMapGet(defMap, STR_NAME);
-
-    if (name != NULL) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        return strdup(nameStr);
-    } else {
-        return "(unknown)";
-    }
-}
-
-/**
  * The C function that is bound to in order to execute interpreted code.
  */
 static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
     Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
     CallState callState = { state, closure, argCount, args };
-
-    debugPush(callReporter, closure->defMap);
 
     zvalue result;
 
@@ -252,7 +231,6 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
         result = callClosureMain(&callState, NULL);
     }
 
-    debugPop();
     return result;
 }
 
@@ -263,16 +241,19 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
  */
 static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
     Closure *closure = utilAlloc(sizeof(Closure));
+    zvalue defMap = datTokenValue(node);
 
     frameSnap(&closure->frame, frame);
-    closure->defMap = datTokenValue(node);
+    closure->defMap = defMap;
 
     if (resultClosure != NULL) {
         *resultClosure = closure;
     }
 
-    return langDefineFunction(callClosure,
-                              datUniqletWith(&CLOSURE_DISPATCH, closure));
+    return langDefineFunction(
+        callClosure,
+        datUniqletWith(&CLOSURE_DISPATCH, closure),
+        datMapGet(defMap, STR_NAME));
 }
 
 

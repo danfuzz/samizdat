@@ -54,9 +54,11 @@ static zvalue primitiveContext(void) {
 
     // Bind all the primitive functions.
     #define PRIM_FUNC(name) \
-        ctx = datMapPut(ctx, \
-                        datStringFromUtf8(-1, #name), \
-                        langDefineFunction(prim_##name, NULL))
+        do { \
+            zvalue name = datStringFromUtf8(-1, #name); \
+            ctx = datMapPut(ctx, \
+                name, langDefineFunction(prim_##name, NULL, name)); \
+        } while(0)
     #include "prim-def.h"
 
     // Include a mapping for a map of all the primitive bindings

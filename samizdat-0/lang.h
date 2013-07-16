@@ -43,10 +43,11 @@ zvalue langApply(zvalue functionId, zvalue args);
 zvalue langCall(zvalue functionId, zint argCount, const zvalue *args);
 
 /**
- * Defines a function with associated (and arbitrary) closure
- * state. Returns the identifying uniqlet that binds to it.
+ * Defines a function with associated (and arbitrary) closure state and
+ * optional name (used when producing stack traces). Returns the identifying
+ * uniqlet that binds to it.
  */
-zvalue langDefineFunction(zfunction function, zvalue state);
+zvalue langDefineFunction(zfunction function, zvalue state, zvalue name);
 
 
 /*
