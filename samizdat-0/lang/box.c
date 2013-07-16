@@ -8,6 +8,7 @@
  * Box manipulation
  */
 
+#include "const.h"
 #include "impl.h"
 #include "util.h"
 
@@ -54,6 +55,13 @@ static DatUniqletDispatch BOX_DISPATCH = {
     boxFree
 };
 
+/**
+ * Returns `true` iff this is the special "null box" value.
+ */
+static bool isNullBox(zvalue value) {
+    return datEq(value, TOK_NULL_BOX);
+}
+
 
 /*
  * Exported functions
@@ -61,6 +69,10 @@ static DatUniqletDispatch BOX_DISPATCH = {
 
 /* Documented in header. */
 zvalue boxGet(zvalue boxUniqlet) {
+    if (isNullBox(boxUniqlet)) {
+        return NULL;
+    }
+
     Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
     zvalue result = box->value;
 
@@ -78,12 +90,20 @@ zvalue boxGet(zvalue boxUniqlet) {
 
 /* Documented in header. */
 bool boxIsSet(zvalue boxUniqlet) {
+    if (isNullBox(boxUniqlet)) {
+        return false;
+    }
+
     Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
     return box->isSet;
 }
 
 /* Documented in header. */
 void boxReset(zvalue boxUniqlet) {
+    if (isNullBox(boxUniqlet)) {
+        return;
+    }
+
     Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
 
     if (box->setOnce) {
@@ -96,6 +116,10 @@ void boxReset(zvalue boxUniqlet) {
 
 /* Documented in header. */
 void boxSet(zvalue boxUniqlet, zvalue value) {
+    if (isNullBox(boxUniqlet)) {
+        return;
+    }
+
     Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
 
     if (box->isSet && box->setOnce) {

@@ -99,6 +99,11 @@ zvalue boxGet(zvalue boxUniqlet);
 bool boxIsSet(zvalue boxUniqlet);
 
 /**
+ * Constructs a mutable (re-settable) box.
+ */
+zvalue boxMutable(void);
+
+/**
  * Resets the given box to an un-set state. The box must be a mutable box.
  */
 void boxReset(zvalue boxUniqlet);
@@ -108,11 +113,6 @@ void boxReset(zvalue boxUniqlet);
  * `NULL` indicates that the box is to be set to void.
  */
 void boxSet(zvalue boxUniqlet, zvalue value);
-
-/**
- * Constructs a mutable (re-settable) box.
- */
-zvalue boxMutable(void);
 
 /**
  * Constructs a yield (set-once) box.
