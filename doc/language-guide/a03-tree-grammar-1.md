@@ -643,7 +643,7 @@ def parParserToken = {/
 /};
 
 # Parses a string or character range parsing expression, used when defining
-# sets.
+# sets. Yields a string per se (not a token).
 def parParserSetString = {/
     s = @string
     (
@@ -656,14 +656,10 @@ def parParserSetString = {/
                 { <> and
                     { <> eq(lowSize(startChar), 1) }
                     { <> eq(lowSize(endChar), 1) } }
-                {
-                    def charGen =
-                        inclusiveRange(startChar, 1, endChar);
-                    <> @[string: stringAdd(charGen*)]
-                }
+                { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
-        { <> s }
+        { <> tokenValue(s) }
     )
 /};
 
@@ -679,14 +675,10 @@ def parParserSet = {/
 
     terminals = (
         strings = parParserSetString+
-        {
-            def charsGen =
-                filterGenerator(strings) { tok :: <> [tokenValue(tok)*] };
-            <> listAdd(charsGen*)
-        }
+        { <> [stringAdd(strings*)*] }
     |
         tokens = parParserToken+
-        { <> listFilter(tokens) { ., t :: <> tokenValue(t) } }
+        { <> collectFilter(tokens) { tok :: <> tokenValue(tok) } }
     |
         { <> [] }
     )

@@ -299,7 +299,7 @@ fn pegMakeString(string) {
     # which allows us to minimize code duplication.
 
     # Make a list of rules per character.
-    def chars = [(filterGenerator(string) { ch :: <> pegMakeToken(ch) })*];
+    def chars = collectFilter(string) { ch :: <> pegMakeToken(ch) };
 
     <> pegMakeMainSequence(chars*, pegMakeCode { .* :: <> @[(string)] })
 };
