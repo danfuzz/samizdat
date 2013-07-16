@@ -35,11 +35,6 @@ fn returnList() {
     <> [0, 1, 2, 3, [blort: "fizmo"]];
 };
 
-# Something to call.
-fn returnMap() {
-    <> [a: "aardvark", b: "bear", cats: [c: "cougar", o: "ocelot"]];
-};
-
 
 #
 # Main tests
@@ -57,8 +52,6 @@ msg([[0, 1, 2], [10, 11, 12], [20, 21, 22]][2, 2]);
 msg(-[[0, 1, 2], [10, 11, 12] [20, 21, 22]][1, 0]);
 msg(returnList()[1]);
 msg(returnList()[4, "blort"]);
-msg(returnMap().a);
-msg(returnMap().cats.o);
 msg(returnVoid()?);
 msg(returnString()?);
 
