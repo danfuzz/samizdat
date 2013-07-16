@@ -157,6 +157,11 @@ fn collectFilter(filterFunction, generators*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn doFilter(filterFunction, generators*) {
+    generatorForEach(filterGenerator(filterFunction, generators))
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn exclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, false)
 };
@@ -365,6 +370,7 @@ fn tokenGenerator(generator) {
 
 <> [
     collectFilter:       collectFilter,
+    doFilter:            doFilter,
     exclusiveRange:      exclusiveRange,
     filterGenerator:     filterGenerator,
     generatorForEach:    generatorForEach,
