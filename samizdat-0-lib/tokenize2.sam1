@@ -216,11 +216,12 @@ def implStringInterpolation = {/
 /};
 tokStringInterpolation(implStringInterpolation);
 
-# Parses a single character, inside a quoted string.
-def tokStringChar = {/
+# Parses a run of regular characters or an escape / special sequence,
+# inside a quoted string.
+def tokStringPart = {/
     (
-        ch = [! "\\" "\"" "\n"]
-        { <> tokenType(ch) }
+        chars = [! "\\" "\"" "\n"]+
+        { <> stringFromTokenList(chars) }
     )
 |
     # This is the rule that ignores spaces after newlines.
@@ -290,31 +291,39 @@ def tokStringChar = {/
 # an `@interpolatedString` token (or an `@error` token).
 def tokString = {/
     "\""
-    chars = tokStringChar*
+    parts = tokStringPart*
 
     (
         "\""
         { <out> ::
             # Handle the empty string as a special case, to make the
             # reduce below be more straightforward.
-            ifIs { <> eq(chars, []) }
+            ifIs { <> eq(parts, []) }
                 { <out> @[string: ""] };
 
-            # Coalesce adjacent characters in `chars`. The result is an
-            # `elems` list consisting of multi-character strings,
-            # interpolation maps, and errors.
-            def elems = listReduce([listFirst(chars)], listButFirst(chars))
-                { result, ., ch ::
-                    ifIs { <> isToken(ch) }
+            # Coalesce adjacent literal strings in `parts`. The result is an
+            # `elems` list consisting of multi-character strings and
+            # interpolation maps. This loop also takes care of propagating
+            # any found error as the overall result of this rule.
+            def elems = listReduce([listFirst(parts)], listButFirst(parts))
+                { <next> result, ., part ::
+                    ifIs { <> isToken(part) }
                         {
                             # Errors come in the form of tokens. (Nothing else
                             # will be a token.)
-                            <out> elem
+                            <out> part
                         };
-                    def last = listLast(result);
-                    <> ifIs { <> and { <> isString(last) } { <> isString(ch) } }
-                        { <> [listButLast(result)*, stringAdd(last, ch)] }
-                        { <> [result*, ch] }
+                    ifIs { <> isString(part) }
+                        {
+                            def last = listLast(result);
+                            ifIs { <> isString(last) }
+                                {
+                                    # Coalesce adjacent literal string parts.
+                                    def newLast = stringAdd(last, part);
+                                    <next> [listButLast(result)*, newLast]
+                                }
+                        };
+                    <> [result*, part]
                 };
 
             # Check for a simple result.
