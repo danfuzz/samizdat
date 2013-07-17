@@ -1094,7 +1094,17 @@ def parCompareExpression = {/
     { <> makeBinaryCalls(firstEx, opExes) }
 /};
 
-# Parses a short-circuit logical-and expression.
+# Parses a short-circuit logical-and expression. The translation is along
+# the lines of:
+#
+# ```
+# expr1 & expr2 & expr3
+# ```
+# =>
+# ```
+# ifIs { <> expr1 }
+#     { ifIs { <> expr2 } { <> expr3 } }
+# ```
 def parLogicAndExpression = {/
     first = parCompareExpression
     rest = (@"&" parCompareExpression)*
@@ -1104,7 +1114,14 @@ def parLogicAndExpression = {/
         { <> eq(lowSize(rest), 0) }
         { <> first }
     |
-        { <> makeCallNameThunks("and", first, rest*) }
+        {
+            def allExprs = listReverse([first, rest*]);
+            <> listReduce(listFirst(allExprs), listButFirst(allExprs))
+                { result, ex ::
+                    <> makeCallName("ifIs",
+                        makeThunk(ex), makeThunk(result))
+                }
+        }
     )
 /};
 
