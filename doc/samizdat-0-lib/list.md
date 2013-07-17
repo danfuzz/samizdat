@@ -103,7 +103,7 @@ Returns a list consisting of all the elements of the given list
 except for the first element (that is, all but the first element). If
 the given list is empty, this returns the given `notFound` value.
 Returns void if the list is empty and `notFound` is not supplied.
-This is similar to `listSlice list 1` or `listDelNth list 0`, except
+This is similar to `listSlice(list, 1)` or `listDelNth(list, 0)`, except
 that this function behaves differently than either of those when the
 list is empty.
 
@@ -113,8 +113,8 @@ Returns a list consisting of all the elements of the given list
 except for the last element (that is, all but the last element). If
 the given list is empty, this returns the given `notFound` value.
 Returns void if the list is empty and `notFound` is not supplied.
-This is similar to `listSlice list 0 (isub (lowSize list) 1)` or
-`listDelNth list (isub (lowSize list) 1)`, except that this function
+This is similar to `listSlice(list, 0, isub(lowSize(list), 1))` or
+`listDelNth(list, isub(lowSize(list), 1))`, except that this function
 behaves differently than either of those when the list is empty.
 
 #### `listFirst(list, notFound?) <> . | !.`
@@ -122,11 +122,11 @@ behaves differently than either of those when the list is empty.
 Returns the first element of the given list or the given `notFound` value
 if the list is empty. Returns void if the list is empty and `notFound`
 is not supplied. This is just a convenient shorthand for
-`listNth list 0 notFound?`.
+`listNth(list, 0, notFound*)`.
 
 #### `listLast(list, notFound?) <> . | !.`
 
 Returns the last element of the given list or the given `notFound` value
 if the list is empty. Returns void if the list is empty and `notFound`
 is not supplied. This is just a convenient shorthand for
-`listNth list (isub (lowSize list) 1) notFound?`.
+`listNth(list, isub(lowSize(list), 1), notFound*)`.
