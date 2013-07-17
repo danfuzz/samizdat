@@ -1093,35 +1093,78 @@ def parCompareExpression = {/
     { <> makeBinaryCalls(firstEx, opExes) }
 /};
 
+# Parses a parenthesized test clause, yielding a map of the form
+# @[formal: ..., test: ...], with `formal` bound to a formal argument
+# declaration and `test` bound to the test expression. If no formal was
+# parsed, `formal` is bound to `[:]`.
+def parTestClause = {/
+    @"("
+
+    formal = (
+        name = @identifier
+        @"="
+        { <> [name: tokenValue(name)] }
+    |
+        { <> [:] }
+    )
+
+    test = parExpression
+    @")"
+
+    { <> [formal: formal, test: test] }
+/};
+
+# Parses a clause in a logical-and expression. This is just like
+# `parTestClause` above, except that it also allows for unparenthesized
+# `compareExpression`s.
+def parLogicAndClause = {/
+    parTestClause
+|
+    test = parCompareExpression
+    { <> [formal: [:], test: test] }
+/};
+
 # Parses a short-circuit logical-and expression. The translation is along
 # the lines of:
 #
 # ```
-# expr1 & expr2 & expr3
+# (var1 = expr1) & expr2 & expr3
 # ```
 # =>
 # ```
-# ifIs { <> expr1 }
-#     { ifIs { <> expr2 } { <> expr3 } }
+# ifValue { <> expr1 }
+#     { var1 :: ifIs { <> expr2 } { <> expr3 } }
 # ```
+#
+# That is, with a name binding, `ifValue` is used, and without a name
+# binding, `ifIs` is used.
 def parLogicAndExpression = {/
-    first = parCompareExpression
-    rest = (@"&" parCompareExpression)*
+    # This is done with the `*` on the list head (that is, most-then-last
+    # instead of the more usual arrangement of first-then-rest), since the
+    # last clause is special in that it can't be an assignment. The last
+    # clause is also the base case for the `listReduce`.
+    most = (
+        clause = parLogicAndClause
+        @"&"
+        { <> clause }
+    )*
+    last = parCompareExpression
 
-    (
-        # Not actually a logical-and expression.
-        { <> eq(lowSize(rest), 0) }
-        { <> first }
-    |
-        {
-            def allExprs = listReverse([first, rest*]);
-            <> listReduce(listFirst(allExprs), listButFirst(allExprs))
-                { result, ex ::
-                    <> makeCallName("ifIs",
-                        makeThunk(ex), makeThunk(result))
-                }
-        }
-    )
+    {
+        <> listReduce(last, listReverse(most))
+            { result, clause ::
+                def formal = mapGet(clause, "formal");
+                def test = makeThunk(mapGet(clause, "test"));
+                def resultThunk = makeThunk(result);
+                <> ifIs { <> eq(formal, [:]) }
+                    { <> makeCallName("ifIs", test, resultThunk) }
+                    {
+                        <> makeCallName("ifValue",
+                            test,
+                            closureWithFormals(resultThunk, formal))
+                    }
+            }
+    }
 /};
 
 # Parses a short-circuit logical-or expression. The translation is along
@@ -1153,27 +1196,6 @@ def parLogicOrExpression = {/
                 }
         }
     )
-/};
-
-# Parses a parenthesized test clause, yielding a map of the form
-# @[formal: ..., test: ...], with `formal` bound to a formal argument
-# declaration and `test` bound to the test expression. If no formal was
-# parsed, `formal` is bound to `[:]`.
-def parTestClause = {/
-    @"("
-
-    formal = (
-        name = @identifier
-        @"="
-        { <> [name: tokenValue(name)] }
-    |
-        { <> [:] }
-    )
-
-    test = parExpression
-    @")"
-
-    { <> [formal: formal, test: test] }
 /};
 
 # Parses an if expression. The translation is along the lines of:
