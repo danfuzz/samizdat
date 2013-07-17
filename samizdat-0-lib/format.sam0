@@ -201,14 +201,16 @@ fn doToken(token, adorn) {
 
     def type = tokenType(token);
     def typeString = keyString(type);
-    def valueString = ifValue { <> tokenValue(token) }
-        { value :: <> stringAdd(": ", callSourceString(value)) }
-        { <> "" };
 
-    ifIs { <> and { <> isString(type) } { <> eq(valueString, "") } }
-        { return adornIf(adorn, "@", typeString, "") };
+    def body = ifValue { <> tokenValue(token) }
+        { value :: <> stringAdd(typeString, ": ", callSourceString(value)) }
+        {
+            ifIs { <> isString(type) }
+                { return adornIf(adorn, "@", typeString, "") };
+            <> typeString
+        };
 
-    <> adornIf(adorn, "@[", stringAdd(typeString, valueString), "]")
+    <> adornIf(adorn, "@[", body, "]");
 };
 
 # Stringifies a uniqlet.
