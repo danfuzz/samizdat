@@ -90,11 +90,3 @@ void. If no predicate returns void, this function returns whatever
 value was returned by the last predicate.
 
 If no predicates were supplied, this returns `true`.
-
-#### `or(predicates*) <> logic`
-
-Short-circuit logic disjunction. Takes an arbitrary number of predicates,
-each a no-argument function. Calls each of them in turn until one of
-them returns a value (not void), in which case this function also returns
-that value. If no predicate returns a value (including if no
-predicates were supplied), this function returns void.
