@@ -69,6 +69,12 @@ this returns `true`. If called with any argument, this returns `false`.
 This is useful for taking a logic result from a function call and turning
 it into flag value, such as might be stored within a data structure.
 
+#### `booleanNot(value) <> boolean`
+
+Returns the opposite boolean value to the one given. If given `true`,
+this returns `false`. If given `false`, this returns `true`. It is
+an error (terminating the runtime) to pass any other value.
+
 #### `eq(value1, value2) <> logic`
 
 Checks for equality. Returns `value2` if the two given values are
@@ -108,9 +114,3 @@ orders after the second. Otherwise returns void.
 
 Checks for inequality. Returns `value2` if the two given values are not
 identical. Otherwise returns void.
-
-#### `not(value) <> boolean`
-
-Returns the opposite boolean value to the one given. If given `true`,
-this returns `false`. If given `false`, this returns `true`. It is
-an error (terminating the runtime) to pass any other value.
