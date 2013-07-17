@@ -59,10 +59,6 @@ notably to the first call to the function).
 
 In order for the loop to terminate, the function must use a nonlocal exit.
 
-**Note:** Unlike most function-taking library functions, the `function`
-argument here is the first, not the last, so that variable-count argument
-passing can work more naturally.
-
 
 <br><br>
 ### In-Language Definitions
@@ -76,28 +72,6 @@ void. If no predicate returns void, this function returns whatever
 value was returned by the last predicate.
 
 If no predicates were supplied, this returns `true`.
-
-#### `booleanAnd(predicates*) <> boolean`
-
-Short-circuit boolean conjunction. Takes an arbitrary number of predicates,
-each a no-argument function. Calls each of them in turn until one of
-them returns `false`, in which case this function also returns
-`false`. If no predicate returns `false`, this function returns `true`.
-
-If no predicates were supplied, this returns `true`. It is an error
-(terminating the runtime) if any predicate returns anything other than
-a boolean value.
-
-#### `booleanOr(predicates*) <> boolean`
-
-Short-circuit boolean disjunction. Takes an arbitrary number of predicates,
-each a no-argument function. Calls each of them in turn until one of
-them returns `true`, in which case this function also returns
-`true`. If no predicate returns `true`, this function returns `false`.
-
-If no predicates were supplied, this returns `false`. It is an error
-(terminating the runtime) if any predicate returns anything other than
-a boolean value.
 
 #### `ifNot(predicate, notFunction, isFunction?) <> . | !.`
 
