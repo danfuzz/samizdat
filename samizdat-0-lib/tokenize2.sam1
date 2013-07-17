@@ -295,56 +295,57 @@ def tokString = {/
 
     (
         "\""
-        { <out> ::
-            # Handle the empty string as a special case, to make the
-            # reduce below be more straightforward.
-            ifIs { <> eq(parts, []) }
-                { <out> @[string: ""] };
-
-            # Coalesce adjacent literal strings in `parts`. The result is an
-            # `elems` list consisting of multi-character strings and
-            # interpolation maps. This loop also takes care of propagating
-            # any found error as the overall result of this rule.
-            def elems = listReduce([listFirst(parts)], listButFirst(parts))
-                { <next> result, ., part ::
-                    ifIs { <> isToken(part) }
-                        {
-                            # Errors come in the form of tokens. (Nothing else
-                            # will be a token.)
-                            <out> part
-                        };
-                    ifIs { <> isString(part) }
-                        {
-                            def last = listLast(result);
-                            ifIs { <> isString(last) }
-                                {
-                                    # Coalesce adjacent literal string parts.
-                                    def newLast = stringAdd(last, part);
-                                    <next> [listButLast(result)*, newLast]
-                                }
-                        };
-                    <> [result*, part]
-                };
-
-            # Check for a simple result.
-            ifIs { <> eq(lowSize(elems), 1) }
-                {
-                    def first = listFirst(elems);
-                    ifIs { <> isString(first) }
-                        {
-                            # There's only one element, and it's a string. So,
-                            # we have a simple non-interpolated string, and no
-                            # error. Return it.
-                            <out> @[string: first]
-                        }
-                };
-
-            # At this point, we have a interpolation.
-            <> @[interpolatedString: elems]
-        }
     |
         { <> @[error: "Unterminated string literal."] }
     )
+
+    { <out> ::
+        # Handle the empty string as a special case, to make the
+        # reduce below be more straightforward.
+        ifIs { <> eq(parts, []) }
+            { <out> @[string: ""] };
+
+        # Coalesce adjacent literal strings in `parts`. The result is an
+        # `elems` list consisting of multi-character strings and
+        # interpolation maps. This loop also takes care of propagating
+        # any found error as the overall result of this rule.
+        def elems = listReduce([listFirst(parts)], listButFirst(parts))
+            { <next> result, ., part ::
+                ifIs { <> isToken(part) }
+                    {
+                        # Errors come in the form of tokens. (Nothing else
+                        # will be a token.)
+                        <out> part
+                    };
+                ifIs { <> isString(part) }
+                    {
+                        def last = listLast(result);
+                        ifIs { <> isString(last) }
+                            {
+                                # Coalesce adjacent literal string parts.
+                                def newLast = stringAdd(last, part);
+                                <next> [listButLast(result)*, newLast]
+                            }
+                    };
+                <> [result*, part]
+            };
+
+        # Check for a simple result.
+        ifIs { <> eq(lowSize(elems), 1) }
+            {
+                def first = listFirst(elems);
+                ifIs { <> isString(first) }
+                    {
+                        # There's only one element, and it's a string. So,
+                        # we have a simple non-interpolated string, and no
+                        # error. Return it.
+                        <out> @[string: first]
+                    }
+            };
+
+        # At this point, we have a interpolation.
+        <> @[interpolatedString: elems]
+    }
 /};
 
 # Parses an identifier (in the usual form). This also parses keywords.
