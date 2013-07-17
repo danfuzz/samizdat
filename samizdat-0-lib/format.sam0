@@ -140,18 +140,21 @@ def TOKEN_SPECIALS = [
 # Checks to see if the given value is a string with the form of an
 # in-language identifier.
 fn isIdentifier(string) {
-    <> and
-        { <> isString(string) }
-        { <> gt(lowSize(string), 0) }
-        { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0)) }
-        {
-            doFilter(string)
-                { ch ::
-                    ifNot { <> mapGet(IDENTIFIER_CHARS, ch) }
-                        { return }
-                };
-            <> true
-        }
+    ifNot { <> isString(string) }
+        { return };
+
+    ifIs { <> eq(lowSize(string), 0) }
+        { return };
+
+    ifNot { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0)) }
+        { return };
+
+    doFilter(string) { ch ::
+        ifNot { <> mapGet(IDENTIFIER_CHARS, ch) }
+            { return }
+    };
+
+    <> true
 };
 
 # Stringifies a key (or token type).
