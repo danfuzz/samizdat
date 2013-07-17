@@ -1482,8 +1482,7 @@ def parWhileExpression = {/
 #     def out = \"break";
 #     loop { <\"continue"> ::
 #         { <next> :: stat1; stat2 }();
-#         ifValue { <> expr }
-#             { . :: }
+#         ifNot { <> expr }
 #             { <\"break"> }
 #     }
 # }()
@@ -1500,9 +1499,8 @@ def parDoExpression = {/
         @while
         ex = parParenExpression
         {
-            <> makeCallName("ifValue",
+            <> makeCallName("ifNot",
                 makeThunk(ex),
-                YIELD_VOID_FN_1,
                 makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
         }
     )?
