@@ -356,7 +356,7 @@ def parMapKeyAtom = {/
     # at a more complicated expression. `@","` and `@")"` are matched here,
     # so that this rule can stay the same in *Layer 2*.
     k = parIdentifierString
-    &[@":" @"," @")"]
+    &[@":" @"," @")" @"]"]
     { <> k }
 |
     parExpression
@@ -403,13 +403,7 @@ def parToken = {/
 
     tokenArgs = (
         @"["
-        type = parIdentifierString
-        value = (@":" parExpression)?
-        @"]"
-        { <> [type, value*] }
-    |
-        @"["
-        type = parExpression
+        type = parMapKeyAtom
         value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }

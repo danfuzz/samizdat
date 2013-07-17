@@ -602,7 +602,7 @@ DEF_PARSE(mapKeyAtom) {
     zvalue k = PARSE(identifierString);
 
     if (k != NULL) {
-        if (PEEK(CH_COLON) != NULL) {
+        if ((PEEK(CH_COLON) != NULL) || (PEEK(CH_CSQUARE) != NULL)) {
             return k;
         }
         RESET();
@@ -670,14 +670,14 @@ DEF_PARSE(map) {
 }
 
 /**
- * Helper for `token`: Parses `@"[" identifierString (@":" expression)? @"]"`.
+ * Helper for `token`: Parses `@"[" mapKeyAtom (@":" expression)? @"]"`.
  */
 DEF_PARSE(token1) {
     MARK();
 
     MATCH_OR_REJECT(CH_OSQUARE);
 
-    zvalue type = PARSE_OR_REJECT(identifierString);
+    zvalue type = PARSE_OR_REJECT(mapKeyAtom);
     zvalue result;
 
     if (MATCH(CH_COLON)) {
@@ -697,34 +697,10 @@ DEF_PARSE(token1) {
 }
 
 /**
- * Helper for `token`: Parses `@"[" expression (@":" expression)? @"]"`.
- */
-DEF_PARSE(token2) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-
-    zvalue type = PARSE_OR_REJECT(expression);
-    zvalue result;
-
-    if (MATCH(CH_COLON)) {
-        // See note above for discussion.
-        zvalue value = PARSE_OR_REJECT(expression);
-        result = listFrom2(type, value);
-    } else {
-        result = listFrom1(type);
-    }
-
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return result;
-}
-
-/**
  * Helper for `token`: Parses `identifierString` returning a list of the
  * parsed value if successful.
  */
-DEF_PARSE(token3) {
+DEF_PARSE(token2) {
     MARK();
 
     zvalue result = PARSE_OR_REJECT(identifierString);
@@ -741,7 +717,6 @@ DEF_PARSE(token) {
     zvalue args = NULL;
     if (args == NULL) { args = PARSE(token1); }
     if (args == NULL) { args = PARSE(token2); }
-    if (args == NULL) { args = PARSE(token3); }
     REJECT_IF(args == NULL);
 
     return makeCall(makeVarRef(STR_MAKE_TOKEN), args);

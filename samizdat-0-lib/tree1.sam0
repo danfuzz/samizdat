@@ -268,7 +268,7 @@ def parMapKeyAtom = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             parIdentifierString,
-            pegMakeLookaheadSuccess(pegMakeToken(":")),
+            pegMakeLookaheadSuccess(pegMakeTokenSet(":", "]")),
             pegMakeCode { k, . :: <> k }),
         parExpression));
 
@@ -309,13 +309,7 @@ def parToken = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakeToken("["),
-            parIdentifierString,
-            pegMakeOpt(pegMakeSequence(pegMakeToken(":"), parExpression)),
-            pegMakeToken("]"),
-            pegMakeCode { ., type, value, . :: <> [type, value*] }),
-        pegMakeMainSequence(
-            pegMakeToken("["),
-            parExpression,
+            parMapKeyAtom,
             pegMakeOpt(pegMakeSequence(pegMakeToken(":"), parExpression)),
             pegMakeToken("]"),
             pegMakeCode { ., type, value, . :: <> [type, value*] }),
