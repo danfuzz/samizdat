@@ -1183,9 +1183,11 @@ def parLogicOrExpression = {/
     rest = (@"|" parLogicAndExpression)*
 
     (
-        # Not actually a logical-or expression.
-        { <> eq(lowSize(rest), 0) }
-        { <> first }
+        # This handles the case of not actually being a logical-or expression.
+        {
+            <> ifIs { <> eq(rest, []) }
+                { <> first }
+        }
     |
         {
             def allExprs = listReverse([first, rest*]);
