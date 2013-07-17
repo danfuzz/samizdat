@@ -73,10 +73,9 @@ value was returned by the last predicate.
 
 If no predicates were supplied, this returns `true`.
 
-#### `ifNot(predicate, notFunction, isFunction?) <> . | !.`
+#### `ifNot(predicate, notFunction) <> . | !.`
 
-This is identical to `ifIs` except that the order of the second
-and third arguments is reversed.
+This is identical to `ifIs` except that the `isFunction` argument is omitted.
 
 #### `or(predicates*) <> logic`
 
