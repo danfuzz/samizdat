@@ -467,20 +467,6 @@ DEF_PARSE(fnCommon2) {
     return mapFrom1(STR_NAME, datTokenValue(n));
 }
 
-/**
- * Helper for `fnCommon`: Parses `@"(" formalsList @")"` with
- * appropriate accoutrements.
- */
-DEF_PARSE(fnCommon3) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OPAREN);
-    zvalue f = PARSE(formalsList); // This never fails.
-    MATCH_OR_REJECT(CH_CPAREN);
-
-    return f;
-}
-
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(fnCommon) {
     MARK();
