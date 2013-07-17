@@ -26,7 +26,7 @@ this function calls the consequent function with no arguments, whereas
 
 #### `ifNot(predicate, notFunction) <> . | !.`
 
-This is identical to `ifIs` except that the `isFunction` argument is omitted.
+This is identical to `ifIs`, except that the `isFunction` argument is omitted.
 
 #### `ifValue(function, valueFunction, voidFunction?) <> . | !.`
 
@@ -45,6 +45,20 @@ was called, this returns void.
 This function is identical to `ifIs`, except that in the value case,
 this function calls the consequent function with an argument, whereas
 `ifIs` calls it with no arguments.
+
+#### `ifValueOr(function, voidFunction) <> . | !.`
+
+This is identical to `ifValue`, except that the `valueFunction` is
+omitted and taken to be the identity function, and the `voidFunction`
+is required (not an optional argument). That is, `ifValueOr(x, y)` is the
+same as `ifValue(x, { value :: <> value }, y)`.
+
+The reason `voidFunction` is required is because it is pointless to omit it,
+in that `ifValueOr(x)` would mean the same thing as `x()`, and
+`ifValueOr({ <> x })` would mean the same thing as just `x`.
+
+This function is meant as the primitive that higher-layer logical-or
+expressions bottom out into, hence the name.
 
 #### `loop(function) <> !.`
 
@@ -76,11 +90,3 @@ void. If no predicate returns void, this function returns whatever
 value was returned by the last predicate.
 
 If no predicates were supplied, this returns `true`.
-
-#### `or(predicates*) <> logic`
-
-Short-circuit logic disjunction. Takes an arbitrary number of predicates,
-each a no-argument function. Calls each of them in turn until one of
-them returns a value (not void), in which case this function also returns
-that value. If no predicate returns a value (including if no
-predicates were supplied), this function returns void.

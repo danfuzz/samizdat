@@ -1108,7 +1108,17 @@ def parLogicAndExpression = {/
     )
 /};
 
-# Parses a short-circuit logical-or expression.
+# Parses a short-circuit logical-or expression. The translation is along
+# the lines of:
+#
+# ```
+# expr1 | expr2 | expr3
+# ```
+# =>
+# ```
+# ifValueOr { <> expr1 }
+#     { ifValueOr { <> expr2 } { <> expr3 } }
+# ```
 def parLogicOrExpression = {/
     first = parLogicAndExpression
     rest = (@"|" parLogicAndExpression)*
@@ -1118,7 +1128,14 @@ def parLogicOrExpression = {/
         { <> eq(lowSize(rest), 0) }
         { <> first }
     |
-        { <> makeCallNameThunks("or", first, rest*) }
+        {
+            def allExprs = listReverse([first, rest*]);
+            <> listReduce(listFirst(allExprs), listButFirst(allExprs))
+                { result, ., ex ::
+                    <> makeCallName("ifValueOr",
+                        makeThunk(ex), makeThunk(result))
+                }
+        }
     )
 /};
 
