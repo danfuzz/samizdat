@@ -350,7 +350,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>(fn)(  *[_a-zA-Z][_a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
+					<string>(fn)  *([_a-zA-Z][_a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -367,7 +367,10 @@
 					<key>name</key>
 					<string>constant.language</string>
 					<key>match</key>
-					<string>\btrue\b|\bfalse\b|\bnull\b|\[\]|\[:\]|@@</string>
+					<string>(?x)
+						\b(true|false|null|nullBox)\b |
+						\[\] | \[:\] | @@
+					</string>
 				</dict>
 				<dict>
 					<key>name</key>
