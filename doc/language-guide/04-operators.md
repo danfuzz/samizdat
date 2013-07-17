@@ -325,6 +325,10 @@ in void, then the entire expression results in void. Otherwise, the second
 (right-hand) expression is evaluated, and its result (whether a value or
 void) becomes the result of the outer expression.
 
+The value of the left-hand side can be referred to on the right-hand side
+by adding a name binding on the left. Do this by enclosing the left-hand
+expression in parentheses, and prefixing it with an assignment, e.g.
+`(name = expression) & somethingWith(name)`.
 
 ### Value/Void Logical-Or Operator (Precedence 1) &mdash; `expression & expression`
 
@@ -338,5 +342,5 @@ result (whether a value or void) becomes the result of the outer expression.
 is obviated in Samizdat by this and the logical-and operator.
 `x ? y : z` in C can generally be turned into `x & y | z` in Samizdat,
 as long as `y` is never void. If `y` can legitimately be void, then the
-slightly longer form `x & y || !x & z` is equivalent (though will evaluate
+slightly longer form `x & y | !x & z` is equivalent (though will evaluate
 `x` twice).
