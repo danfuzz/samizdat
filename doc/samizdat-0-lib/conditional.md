@@ -81,12 +81,4 @@ In order for the loop to terminate, the function must use a nonlocal exit.
 <br><br>
 ### In-Language Definitions
 
-#### `and(predicates*) <> logic`
-
-Short-circuit logic conjunction. Takes an arbitrary number of predicates,
-each a no-argument function. Calls each of them in turn until one of
-them returns void, in which case this function also returns
-void. If no predicate returns void, this function returns whatever
-value was returned by the last predicate.
-
-If no predicates were supplied, this returns `true`.
+(none)

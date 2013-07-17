@@ -29,7 +29,6 @@ def MANIFEST = [
     "list.sam0",
     "generator.sam0",
     "boolean.sam0",
-    "conditional.sam0",
     "code.sam0",
     "string.sam0",
     "format.sam0",
