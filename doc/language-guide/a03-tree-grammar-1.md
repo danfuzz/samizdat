@@ -350,8 +350,10 @@ def parEmptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-# Parses an "atomic" map key (as opposed to the parens-and-commas form).
-def parMapKeyAtom = {/
+# Parses an "atomic" key (as opposed to, e.g., the parens-and-commas form
+# of map keys). This rule is used for the left-hand side of both mappings
+# and tokens.
+def parKeyAtom = {/
     # The lookahead at the end of the rule is to ensure we are not looking
     # at a more complicated expression. `@","` and `@")"` are matched here,
     # so that this rule can stay the same in *Layer 2*.
@@ -366,7 +368,7 @@ def parMapKeyAtom = {/
 def parMapKey = {/
     # *Layer 2* adds alternates here.
 #|
-    parMapKeyAtom
+    parKeyAtom
 /};
 
 # Parses a mapping (element of a map).
@@ -403,7 +405,7 @@ def parToken = {/
 
     tokenArgs = (
         @"["
-        type = parMapKeyAtom
+        type = parKeyAtom
         value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }

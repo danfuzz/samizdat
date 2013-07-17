@@ -596,7 +596,7 @@ DEF_PARSE(emptyMap) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(mapKeyAtom) {
+DEF_PARSE(keyAtom) {
     MARK();
 
     zvalue k = PARSE(identifierString);
@@ -613,7 +613,7 @@ DEF_PARSE(mapKeyAtom) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(mapKey) {
-    return PARSE(mapKeyAtom);
+    return PARSE(keyAtom);
 }
 
 /**
@@ -670,14 +670,14 @@ DEF_PARSE(map) {
 }
 
 /**
- * Helper for `token`: Parses `@"[" mapKeyAtom (@":" expression)? @"]"`.
+ * Helper for `token`: Parses `@"[" keyAtom (@":" expression)? @"]"`.
  */
 DEF_PARSE(token1) {
     MARK();
 
     MATCH_OR_REJECT(CH_OSQUARE);
 
-    zvalue type = PARSE_OR_REJECT(mapKeyAtom);
+    zvalue type = PARSE_OR_REJECT(keyAtom);
     zvalue result;
 
     if (MATCH(CH_COLON)) {

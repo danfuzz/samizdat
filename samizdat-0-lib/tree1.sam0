@@ -264,7 +264,7 @@ def parEmptyMap = pegMakeMainSequence(
     pegMakeCode { ., ., . :: <> makeLiteral([:]) });
 
 # Documented in Samizdat Layer 0 spec.
-def parMapKeyAtom = pegMakeMainSequence(
+def parKeyAtom = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             parIdentifierString,
@@ -273,7 +273,7 @@ def parMapKeyAtom = pegMakeMainSequence(
         parExpression));
 
 # Documented in Samizdat Layer 0 spec.
-def parMapKey = parMapKeyAtom;
+def parMapKey = parKeyAtom;
 
 # Documented in Samizdat Layer 0 spec.
 def parMapping = pegMakeMainSequence(
@@ -309,7 +309,7 @@ def parToken = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakeToken("["),
-            parMapKeyAtom,
+            parKeyAtom,
             pegMakeOpt(pegMakeSequence(pegMakeToken(":"), parExpression)),
             pegMakeToken("]"),
             pegMakeCode { ., type, value, . :: <> [type, value*] }),
