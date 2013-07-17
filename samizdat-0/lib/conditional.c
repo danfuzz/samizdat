@@ -24,6 +24,17 @@ PRIM_IMPL(ifIs) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(ifNot) {
+    requireExactly(argCount, 2);
+
+    if (langCall(args[0], 0, NULL) == NULL) {
+        return langCall(args[1], 0, NULL);
+    } else {
+        return NULL;
+    }
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifValue) {
     requireRange(argCount, 2, 3);
 

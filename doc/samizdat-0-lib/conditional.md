@@ -24,6 +24,10 @@ This function is identical to `ifValue`, except that in the value case,
 this function calls the consequent function with no arguments, whereas
 `ifIs` calls it with an argument.
 
+#### `ifNot(predicate, notFunction) <> . | !.`
+
+This is identical to `ifIs` except that the `isFunction` argument is omitted.
+
 #### `ifValue(function, valueFunction, voidFunction?) <> . | !.`
 
 Primitive logic conditional. This calls the given function with no
@@ -72,10 +76,6 @@ void. If no predicate returns void, this function returns whatever
 value was returned by the last predicate.
 
 If no predicates were supplied, this returns `true`.
-
-#### `ifNot(predicate, notFunction) <> . | !.`
-
-This is identical to `ifIs` except that the `isFunction` argument is omitted.
 
 #### `or(predicates*) <> logic`
 

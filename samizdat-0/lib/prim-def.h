@@ -20,6 +20,7 @@ PRIM_FUNC(iand);
 PRIM_FUNC(ibit);
 PRIM_FUNC(idiv);
 PRIM_FUNC(ifIs);
+PRIM_FUNC(ifNot);
 PRIM_FUNC(ifValue);
 PRIM_FUNC(imod);
 PRIM_FUNC(imul);
