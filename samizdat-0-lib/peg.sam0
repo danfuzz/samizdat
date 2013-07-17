@@ -34,8 +34,8 @@ fn pegRuleFail(box, input, .*) {
 # Peg rule that matches at eof, yielding `null`. This is the equivalent
 # of `!.` in usual peg syntax.
 fn pegRuleEof(box, input, .*) {
-    <> ifValue { <> input(nullBox) }
-        { . :: boxSet(box) }
+    <> ifIs { <> input(nullBox) }
+        { boxSet(box) }
         {
             boxSet(box, null);
             <> input
@@ -46,8 +46,8 @@ fn pegRuleEof(box, input, .*) {
 # not consuming it. This is the equivalent of `&.` in usual peg syntax,
 # hence the name.
 fn pegRuleLookaheadAny(box, input, .*) {
-    <> ifValue { <> input(box) }
-        { . :: <> input }
+    <> ifIs { <> input(box) }
+        { <> input }
 };
 
 
@@ -220,7 +220,7 @@ fn pegMakeChoice(rules*) {
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeLookaheadSuccess(rule) {
     <> { box, input, items* ::
-        <> ifValue { <> rule(box, input, items*) }
+        <> ifIs { <> rule(box, input, items*) }
             { <> input }
     }
 };
@@ -237,7 +237,7 @@ fn pegMakeLookaheadFailure(rule) {
 
     # The general case.
     <> { box, input, items* ::
-        <> ifValue { <> rule(nullBox, input, items*) }
+        <> ifIs { <> rule(nullBox, input, items*) }
             { boxSet(box) }
             {
                 boxSet(box, null);
@@ -316,8 +316,8 @@ fn pegMakeTokenSetComplement(tokens*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegApply(rule, input) {
-    def generator = ifValue { <> isString(input) }
-        { . ::
+    def generator = ifIs { <> isString(input) }
+        {
             # Generate single-character tokens instead of single-character
             # strings.
             <> tokenGenerator(input)
@@ -325,8 +325,8 @@ fn pegApply(rule, input) {
         { <> generatorFromValue(input) };
 
     def box = yieldBox();
-    <> ifValue { <> rule(box, generator) }
-        { . :: <> boxGet(box) }
+    <> ifIs { <> rule(box, generator) }
+        { <> boxGet(box) }
 };
 
 
