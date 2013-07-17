@@ -397,9 +397,9 @@ def parUnaryExpression = pegMakeMainSequence(
     pegMakeStar(parPostfixOperator),
     pegMakeCode { prefixes, base, postfixes ::
         def withPosts = listReduce(base, postfixes)
-            { result, ., op :: <> op(result) };
+            { result, op :: <> op(result) };
         <> listReduce(withPosts, listReverse(prefixes))
-            { result, ., op :: <> op(result) }
+            { result, op :: <> op(result) }
     });
 
 # Documented in Samizdat Layer 0 spec.

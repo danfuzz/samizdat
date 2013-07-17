@@ -112,7 +112,7 @@ def tokInt = pegMakeMainSequence(
             pegMakeCode(intFromDigitChar))),
     pegMakeCode { digits ::
         def value = listReduce(0, digits)
-            { result, ., digit :: <> iadd(digit, imul(result, 10)) };
+            { result, digit :: <> iadd(digit, imul(result, 10)) };
         <> @[int: value]
     });
 

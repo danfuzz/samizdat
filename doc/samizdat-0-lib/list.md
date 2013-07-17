@@ -68,11 +68,11 @@ list. If not, it is an error (terminating the runtime).
 Reduces a list to a single value, given a base value and a reducer
 function, operating in low-to-high index order (that is, this is a
 left-reduce operation). The given function is called on each list
-element, with three arguments: the last (or base) reduction result,
-the element's index (zero-based), and its value. The function result
-becomes the reduction result, which is passed to the next call of
-`function` or becomes the return value of the call to this function if
-it was the call for the final element.
+element, with two arguments: the last (or base) reduction result,
+and an element from the list. The function result becomes the reduction
+result, which is passed to the next call of `function` or becomes the
+return value of the call to this function if it was the call for the
+final element.
 
 If the function returns void for any given call, then the previously-returned
 non-void value (or `base` value if there has yet to be a non-void function

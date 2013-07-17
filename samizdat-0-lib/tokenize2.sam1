@@ -39,7 +39,7 @@ def KEYWORDS = mapFromGenerator(
 # is negative, this indicates that the result should be negative.
 fn intFromDigitList(baseSign, digits) {
     def base = iabs(baseSign);
-    def value = listReduce(0, digits) { result, ., digit ::
+    def value = listReduce(0, digits) { result, digit ::
         <> ifIs { <> eq(digit, -1) }
             { <> result }
             { <> iadd(imul(result, base), digit) }
@@ -310,7 +310,7 @@ def tokString = {/
         # interpolation maps. This loop also takes care of propagating
         # any found error as the overall result of this rule.
         def elems = listReduce([listFirst(parts)], listButFirst(parts))
-            { <next> result, ., part ::
+            { <next> result, part ::
                 ifIs { <> isToken(part) }
                     {
                         # Errors come in the form of tokens. (Nothing else

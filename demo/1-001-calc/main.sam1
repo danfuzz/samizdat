@@ -34,7 +34,7 @@ def UNARY_OPS = [
 # does a reduction by applying each of the functions in order.
 fn applyAll(initialValue, functions) {
     <> listReduce(initialValue, functions)
-        { result, ., function :: <> function(result) }
+        { result, function :: <> function(result) }
 };
 
 # Takes an initial value and a list of maps of `[op, value]`,
@@ -103,7 +103,7 @@ def number = {/
     digits = digit+
     {
         <> listReduce(0, digits)
-            { result, ., digit :: <> iadd(digit, imul(result, 10)) }
+            { result, digit :: <> iadd(digit, imul(result, 10)) }
     }
 /};
 
