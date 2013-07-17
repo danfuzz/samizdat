@@ -27,8 +27,7 @@ LIBRARY_FILES ::
 # here in the form of a map binding file names to text contents, this
 # is really just a map lookup.
 fn readLibraryFile(name) {
-    <> ifValue { <> mapGet(LIBRARY_FILES, name) }
-        { result :: <> result }
+    <> ifValueOr { <> mapGet(LIBRARY_FILES, name) }
         { io0Die(stringAdd("No such core library file: ", name)) }
 };
 

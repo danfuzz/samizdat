@@ -297,7 +297,7 @@ fn sourceStringUnadorned(value?) {
 
 # Documented in Samizdat Layer 0 spec.
 fn stringFromInt(value, optBase?) {
-    def base = ifValue { <> optBase* } { b :: <> b } { <> 10 };
+    def base = ifValueOr { <> optBase* } { <> 10 };
 
     <> ifIs { <> le(le(2, base), 36) }
         { <> stringFromIntBase(value, base) }
@@ -329,8 +329,7 @@ def FORMATTERS = [
 # This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 # is defined in terms of other exported functions.
 fn formatterFromString(formatSpec) {
-    <> ifValue { <> mapGet(FORMATTERS, formatSpec) }
-        { formatter :: <> formatter }
+    <> ifValueOr { <> mapGet(FORMATTERS, formatSpec) }
         {
             io0Die(stringAdd(
                 "Unrecognized format spec: ",

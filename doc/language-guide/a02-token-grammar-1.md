@@ -65,8 +65,7 @@ def identifier = {/
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
     {
         def string = stringFromTokenList([first, rest*]);
-        <> ifValue { <> mapGet(KEYWORDS, string) }
-            { keyword :: <> keyword }
+        <> ifValueOr { <> mapGet(KEYWORDS, string) }
             { <> @[identifier: string] }
     }
 /};

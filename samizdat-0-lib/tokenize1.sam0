@@ -81,8 +81,7 @@ def tokIdentifier = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSet(IDENTIFIER_CHARS)),
     pegMakeCode { first, rest ::
         def string = stringFromTokenList([first, rest*]);
-        <> ifValue { <> mapGet(KEYWORDS, string) }
-            { keyword :: <> keyword }
+        <> ifValueOr { <> mapGet(KEYWORDS, string) }
             { <> @[identifier: string] }
     });
 

@@ -42,8 +42,7 @@ fn logicFromBoolean(value) {
 
 # Documented in Samizdat Layer 0 spec.
 fn booleanNot(value) {
-    <> ifValue { <> mapGet(NOT_MAP, value) }
-        { result :: <> result }
+    <> ifValueOr { <> mapGet(NOT_MAP, value) }
         { io0Die("Non-boolean argument to `booleanNot`.") }
 };
 

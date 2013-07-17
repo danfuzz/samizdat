@@ -889,9 +889,8 @@ def implInterpolatedString = {/
                         }
                         { <> makeVarRef("stringFromValue") };
 
-                    def call = ifValue
+                    def call = ifValueOr
                         { <> pegApply(parStringInterpolation, tokens) }
-                        { ex :: <> ex }
                         { io0Die("Invalid syntax in string interpolation.") };
 
                     <> makeCall(formatter,
