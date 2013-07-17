@@ -66,7 +66,7 @@ fn loadLibrary(ctx, name) {
 # given context.
 fn loadAllLibraries(ctx, names*) {
     <> listReduce(ctx, names)
-        { result, ., name :: <> loadLibrary(result, name) }
+        { result, name :: <> loadLibrary(result, name) }
 };
 
 
