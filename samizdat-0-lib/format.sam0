@@ -143,7 +143,7 @@ fn isIdentifier(string) {
     ifNot { <> isString(string) }
         { return };
 
-    ifIs { <> eq(lowSize(string), 0) }
+    ifIs { <> eq(string, "") }
         { return };
 
     ifNot { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0)) }
