@@ -50,6 +50,19 @@ PRIM_IMPL(ifValue) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(ifValueOr) {
+    requireExactly(argCount, 2);
+
+    zvalue result = langCall(args[0], 0, NULL);
+
+    if (result != NULL) {
+        return result;
+    } else {
+        return langCall(args[1], 0, NULL);
+    }
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(loop) {
     requireExactly(argCount, 1);
 

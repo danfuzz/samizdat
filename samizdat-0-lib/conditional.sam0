@@ -14,14 +14,6 @@ fn and(predicates*) {
         }
 };
 
-# Documented in Samizdat Layer 0 spec.
-fn or(predicates*) {
-    doFilter(predicates) { predicate ::
-        ifValue(predicate, { value :: return value })
-    }
-};
-
 <> [
-    and: and,
-    or:  or
+    and: and
 ]
