@@ -125,7 +125,7 @@ fn io0FlatFromPath(path) {
             # This test skips the check on the last path component, if it
             # happens to be empty (which is the only valid case of an empty
             # path component).
-            ifIs { <> and { <> eq(one, "") } { <> eq(n, 1) } }
+            ifIs { <> eq([one, n], ["", 1]) }
                 { <out> "/" }
                 {
                     ifValue { <> pegApply(parErrorFromPathComponent, one) }
