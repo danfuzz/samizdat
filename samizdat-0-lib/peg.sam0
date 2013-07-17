@@ -84,7 +84,7 @@ fn pegMakeSequence(rules*) {
     # arguments the matched results of all the previous rules, in order.
     <> { <out> box, input, items* ::
         def reduction = listReduce([input, items], rules)
-            { results, ., rule ::
+            { results, rule ::
                 def input = listNth(results, 0);
                 def values = listNth(results, 1);
                 def innerBox = yieldBox();

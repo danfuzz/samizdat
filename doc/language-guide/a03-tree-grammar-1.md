@@ -503,9 +503,9 @@ def parUnaryExpression = {/
 
     {
         def withPosts = listReduce(base, postfixes)
-            { result, ., op :: <> op(result) };
+            { result, op :: <> op(result) };
         <> listReduce(withPosts, listReverse(prefixes))
-            { result, ., op :: <> op(result) }
+            { result, op :: <> op(result) }
     }
 /};
 

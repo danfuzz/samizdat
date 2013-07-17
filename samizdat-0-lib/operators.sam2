@@ -161,7 +161,7 @@ fn \"unary**"(value) {
 fn \"unary[]"(value, indices*) {
     def getGet = \"unary."("get");
     <> listReduce(value, indices)
-        { result, ., index ::
+        { result, index ::
             <> ifValue { <> getGet(result) }
                 { getter :: <> getter(index) }
                 { return }

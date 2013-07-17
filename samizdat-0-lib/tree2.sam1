@@ -135,7 +135,7 @@ def BINARY_OPERATORS = varRefMap([
 # Helper for parsing binary operator expressions, which puts together
 # a sequence of function calls.
 fn makeBinaryCalls(firstEx, opExList) {
-    <> listReduce(firstEx, opExList) { result, ., opEx ::
+    <> listReduce(firstEx, opExList) { result, opEx ::
         def op = listFirst(opEx);
         def ex = listLast(opEx);
         <> makeCall(mapGet(BINARY_OPERATORS, tokenType(op)), result, ex)
@@ -587,9 +587,9 @@ def parUnaryExpression = {/
 
     {
         def withPosts = listReduce(base, postfixes)
-            { result, ., op :: <> op(result) };
+            { result, op :: <> op(result) };
         <> listReduce(withPosts, listReverse(prefixes))
-            { result, ., op :: <> op(result) }
+            { result, op :: <> op(result) }
     }
 /};
 
@@ -1131,7 +1131,7 @@ def parLogicOrExpression = {/
         {
             def allExprs = listReverse([first, rest*]);
             <> listReduce(listFirst(allExprs), listButFirst(allExprs))
-                { result, ., ex ::
+                { result, ex ::
                     <> makeCallName("ifValueOr",
                         makeThunk(ex), makeThunk(result))
                 }
@@ -1223,7 +1223,7 @@ def parIfExpression = {/
         # we either add a yield def to the thunk and make wrap it in a call,
         # or unwrap it into a straight call, depending on if the original
         # `if` has a yield def or not.
-        <> listReduce(finalElse, clauses) { result, ., clause ::
+        <> listReduce(finalElse, clauses) { result, clause ::
             def formal = mapGet(clause, "formal");
             def test = mapGet(clause, "test");
             def then = mapGet(clause, "then");

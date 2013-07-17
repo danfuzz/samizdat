@@ -83,16 +83,15 @@ PRIM_IMPL(listReduce) {
     zvalue function = args[0];
     zvalue list = args[2];
     zint size = datSize(list);
-    zvalue subArgs[3];
+    zvalue subArgs[2];
 
     datAssertList(list);
     subArgs[0] = args[1];
 
     for (zint i = 0; i < size; i++) {
-        subArgs[1] = datIntFromZint(i);
-        subArgs[2] = datListNth(list, i);
+        subArgs[1] = datListNth(list, i);
 
-        zvalue one = langCall(function, 3, subArgs);
+        zvalue one = langCall(function, 2, subArgs);
 
         if (one != NULL) {
             subArgs[0] = one;

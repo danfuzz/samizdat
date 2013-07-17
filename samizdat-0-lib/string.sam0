@@ -9,7 +9,7 @@
 # Documented in Samizdat Layer 0 spec.
 fn stringFromTokenList(tokens) {
     <> listReduce("", tokens)
-        { result, ., token :: <> stringAdd(result, tokenType(token)) };
+        { result, token :: <> stringAdd(result, tokenType(token)) };
 };
 
 <> [

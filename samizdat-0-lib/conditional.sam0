@@ -9,7 +9,7 @@
 # Documented in Samizdat Layer 0 spec.
 fn and(predicates*) {
     <> listReduce(true, predicates)
-        { ., ., predicate ::
+        { ., predicate ::
             <> ifValue(predicate, { value :: <> value }, { return })
         }
 };
