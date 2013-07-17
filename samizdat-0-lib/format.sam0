@@ -17,9 +17,14 @@ def callStringFromValue = forwardFunction();
 # This is int digits for bases up to 36, in order.
 def INT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-# Single-character strings `"\x7f;"` and `"\x9f;"`.
-def CHAR_127 = charFromInt(127);
-def CHAR_159 = charFromInt(159);
+# The first Unicode surrogate code point.
+def CHAR_SURROGATE_START = charFromInt(55296); # U+D800
+
+# The last Unicode surrogate code point.
+def CHAR_SURROGATE_END = charFromInt(57343); # U+DFFF
+
+# The last Unicode code point.
+def CHAR_UNICODE_END = charFromInt(1114111); # U+10FFFF
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
@@ -70,8 +75,13 @@ fn doInt(int, adorn) {
     <> stringFromIntBase(int, 10)
 };
 
-# Map of special-case characters to their stringified forms.
+# Map of special-case characters to either their stringified forms or
+# to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = [
+    inclusiveRange(charFromInt(1), 1, charFromInt(31))*: "x",
+    inclusiveRange(charFromInt(127), 1, charFromInt(159))*: "x",
+    charFromInt(65534): "x",
+    charFromInt(65535): "x",
     "\0": "\\0",
     "\n": "\\n",
     "\r": "\\r",
@@ -80,23 +90,33 @@ def SPECIAL_CHARS = [
     "\\": "\\\\"
 ];
 
+# Does hex character conversion.
+fn hexStringChar(ch) {
+    <> stringAdd(
+        "\\x",
+        stringFromIntBase(intFromChar(ch), 16),
+        ";")
+};
+
 # Helper for stringifying strings: Returns the converted form of the
 # given character.
 fn stringChar(ch) {
-    <> ifValue { <> mapGet(SPECIAL_CHARS, ch) }
-        { special :: <> special }
-        {
-            # This checks for the ranges of nonprinting control characters.
-            <> ifIs { <> or { <> lt(ch, " ") }
-                            { <> le(le(CHAR_127, ch), CHAR_159) } }
-                {
-                    <> stringAdd(
-                        "\\x",
-                        stringFromIntBase(intFromChar(ch), 16),
-                        ";")
-                }
-                { <> ch }
-        }
+    ifValue { <> mapGet(SPECIAL_CHARS, ch) }
+        { special ::
+            ifIs { <> eq(special, "x") }
+                { return hexStringChar(ch) }
+                { return special }
+        };
+
+    ifIs { <> lt(ch, CHAR_SURROGATE_START) }
+        { return ch };
+
+    ifIs { <> le(ch, CHAR_SURROGATE_END) }
+        { return hexStringChar(ch) };
+
+    <> ifIs { <> le(ch, CHAR_UNICODE_END) }
+        { <> ch }
+        { <> hexStringChar(ch) }
 };
 
 # These are all the characters which are allowed to start an identifier.
