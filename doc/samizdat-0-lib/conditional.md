@@ -104,11 +104,6 @@ a boolean value.
 This is identical to `ifIs` except that the order of the second
 and third arguments is reversed.
 
-#### `ifVoid(function, voidFunction, valueFunction?) <> . | !.`
-
-This is identical to `ifValue` except that the order of the second
-and third arguments is reversed.
-
 #### `or(predicates*) <> logic`
 
 Short-circuit logic disjunction. Takes an arbitrary number of predicates,

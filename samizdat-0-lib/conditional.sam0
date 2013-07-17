@@ -22,13 +22,6 @@ fn ifNot(predicate, notFunction, isFunction?) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn ifVoid(predicate, voidFunction, valueFunction?) {
-    <> ifValue { <> valueFunction* }
-        { valueFunction :: <> ifValue(predicate, valueFunction, voidFunction) }
-        { <> ifValue(predicate, {}, voidFunction) }
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn or(predicates*) {
     doFilter(predicates) { predicate ::
         ifValue(predicate, { value :: return value })
@@ -36,8 +29,7 @@ fn or(predicates*) {
 };
 
 <> [
-    and:    and,
-    ifNot:  ifNot,
-    ifVoid: ifVoid,
-    or:     or
+    and:   and,
+    ifNot: ifNot,
+    or:    or
 ]
