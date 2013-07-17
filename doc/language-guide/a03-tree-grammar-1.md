@@ -312,7 +312,7 @@ def parIdentifierString = {/
 |
     token = .
     {
-        <> ifVoid { <> tokenValue(token) }
+        <> ifNot { <> tokenValue(token) }
             {
                 def type = tokenType(token);
                 def firstCh = stringNth(type, 0);

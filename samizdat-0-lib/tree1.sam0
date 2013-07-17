@@ -227,7 +227,7 @@ def parIdentifierString = pegMakeMainSequence(
         pegMakeSequence(
             pegRuleAny,
             pegMakeCode { token ::
-                <> ifVoid { <> tokenValue(token) }
+                <> ifNot { <> tokenValue(token) }
                     {
                         def type = tokenType(token);
                         def firstCh = stringNth(type, 0);
