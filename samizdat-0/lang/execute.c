@@ -321,43 +321,47 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zint argCount = datSize(actuals);
     zvalue args[argCount];
 
-    // If there are any interpolated arguments, then `interpolate` is
+    // If there are any interpolated arguments, then `interpolateAny` is
     // set to `true`, and `fullCount` indicates the count of arguments
     // after interpolation.
     zint fullCount = 0;
-    bool interpolate = false;
+    bool interpolateAny = false;
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = datListNth(actuals, i);
+        bool voidable;
+        bool interpolate;
+
+        if (datTokenTypeIs(one, STR_VOIDABLE)) {
+            one = datTokenValue(one);
+            voidable = true;
+        } else {
+            voidable = false;
+        }
+
         if (datTokenTypeIs(one, STR_INTERPOLATE)) {
             one = datTokenValue(one);
-            zvalue eval = execExpressionVoidOk(frame, one);
-            if (eval == NULL) {
-                if (datTokenTypeIs(one, STR_VOIDABLE)) {
-                    return NULL;
-                } else {
-                    die("Invalid void interpolation result.");
-                }
-            }
+            interpolate = true;
+        } else {
+            interpolate = false;
+        }
+
+        zvalue eval = voidable ?
+            execExpressionVoidOk(frame, one) :
+            execExpression(frame, one);
+
+        if (interpolate) {
             eval = collectGenerator(eval);
             args[i] = eval;
             fullCount += datSize(eval);
-            interpolate = true;
+            interpolateAny = true;
         } else {
-            zvalue eval = execExpressionVoidOk(frame, one);
-            if (eval == NULL) {
-                if (datTokenTypeIs(one, STR_VOIDABLE)) {
-                    return NULL;
-                } else {
-                    die("Invalid void call argument.");
-                }
-            }
             args[i] = eval;
             fullCount++;
         }
     }
 
-    if (interpolate) {
+    if (interpolateAny) {
         zvalue fullArgs[fullCount];
         zint at = 0;
 
@@ -427,8 +431,6 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     else if (datTokenTypeIs(e, STR_CLOSURE))
         return execClosure(frame, e);
     else if (datTokenTypeIs(e, STR_EXPRESSION))
-        return execExpressionVoidOk(frame, datTokenValue(e));
-    else if (datTokenTypeIs(e, STR_VOIDABLE))
         return execExpressionVoidOk(frame, datTokenValue(e));
     else if (datTokenTypeIs(e, STR_INTERPOLATE))
         return execInterpolate(frame, e);
