@@ -75,35 +75,6 @@ PRIM_IMPL(listPutNth) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listReduce) {
-    requireExactly(argCount, 3);
-
-    zstackPointer save = datFrameStart();
-
-    zvalue function = args[0];
-    zvalue list = args[2];
-    zint size = datSize(list);
-    zvalue subArgs[2];
-
-    datAssertList(list);
-    subArgs[0] = args[1];
-
-    for (zint i = 0; i < size; i++) {
-        subArgs[1] = datListNth(list, i);
-
-        zvalue one = langCall(function, 2, subArgs);
-
-        if (one != NULL) {
-            subArgs[0] = one;
-            datFrameReset(save, one);
-        }
-    }
-
-    datFrameReturn(save, subArgs[0]);
-    return subArgs[0];
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listReverse) {
     requireExactly(argCount, 1);
 
