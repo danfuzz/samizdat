@@ -58,7 +58,7 @@ generator are ignored.
 
 This function always returns void.
 
-#### `doReduce(reduceFunction, [generators*], baseValues*) <> list`
+#### `doReduce(reduceFunction, [generators*], [baseValues*]) <> list`
 
 Generator iterator with reduce semantics. This is similar to &mdash; but
 not quite exactly &mdash; creating a `reduceGenerator`, iterating it, and
@@ -173,7 +173,7 @@ Each yielded list consists of values yielded from the individual generators,
 in passed order. The generator becomes voided when *any* of the individual
 generators is voided.
 
-#### `reduceGenerator(reduceFunction, [generators*], baseValues*) <> generator`
+#### `reduceGenerator(reduceFunction, [generators*], [baseValues*]) <> generator`
 
 Reducing filter generator constructor. This takes a reducer function, a
 list (per se) of other generators, and arbitrary further `baseValues`
