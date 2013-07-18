@@ -127,7 +127,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
 
     def filterFunction = ifIs { <> isInt(first) }
         { <> limitFunction }
-        { <> { x :: <> charFromInt(limitFunction(x)) } };
+        { <> { x :: <> charFromInt(&limitFunction(x)) } };
 
     <> makeIncrementGenerator(filterFunction, firstInt, increment)
 };
