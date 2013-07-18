@@ -160,8 +160,8 @@ fn \"unary**"(value) {
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary[]"(value, indices*) {
     def getGet = \"unary."("get");
-    <> listReduce(value, indices)
-        { result, index ::
+    <> doReduce1(indices, value)
+        { index, result ::
             <> ifValue { <> getGet(result) }
                 { getter :: <> getter(index) }
                 { return }
