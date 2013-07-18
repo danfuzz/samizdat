@@ -289,9 +289,9 @@ fn pegMakePlus(rule) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeString(string) {
-    # Trivial case: Empty string. Return the empty rule.
+    # Trivial case: Empty string. Return an always-successful yield of `""`.
     ifIs { <> eq(string, "") }
-        { return pegRuleEmpty };
+        { return pegMakeCode { <> "" } };
 
     # Trivial case: One-char string. Return a simple one-char rule.
     ifIs { <> eq(lowSize(string), 1) }
