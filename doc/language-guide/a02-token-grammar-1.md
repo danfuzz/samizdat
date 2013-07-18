@@ -30,7 +30,7 @@ def whitespace = {/
 def punctuation = {/
     "@@" | "::" | ".." | "<>" |
     "{/" | "/}" | "&&" |          # These are only needed in *Layer 1*.
-    ["@:.,=-+?;*<>{}()[]" "&|!"]  # The latter string is just for *Layer 1*.
+    ["&@:.,=-+?;*<>{}()[]" "|!"]  # The latter string is just for *Layer 1*.
 /};
 
 # Note: Additional rules for string character parsing are defined in *Layer 2*.

@@ -565,8 +565,22 @@ DEF_PARSE(identifierString) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(voidableExpression) {
+    MARK();
+
+    bool voidable = (MATCH(CH_AND) != NULL);
+    zvalue ex = PARSE_OR_REJECT(expression);
+
+    if (voidable) {
+        return datTokenFrom(STR_VOIDABLE, ex);
+    } else {
+        return ex;
+    }
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(unadornedList) {
-    return PARSE_COMMA_SEQ(expression);
+    return PARSE_COMMA_SEQ(voidableExpression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

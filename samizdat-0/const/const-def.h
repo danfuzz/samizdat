@@ -12,6 +12,7 @@
  * `TOK(name, "string")` defines both a string *and* a token constant.
  */
 
+TOK(CH_AND,        "&");
 TOK(CH_AT,         "@");
 TOK(CH_ATAT,       "@@");
 TOK(CH_CCURLY,     "}");
@@ -78,5 +79,6 @@ STR(UNIQLET,          "uniqlet");
 STR(VALUE,            "value");
 STR(VAR_DEF,          "varDef");
 STR(VAR_REF,          "varRef");
+STR(VOIDABLE,         "voidable");
 STR(YIELD,            "yield");
 STR(YIELD_DEF,        "yieldDef");

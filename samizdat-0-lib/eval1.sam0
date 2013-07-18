@@ -232,7 +232,8 @@ def CONVERT_EXPRESSION_MAP = [
     literal:     convertNop,
     parser:      convertParser,
     varDef:      convertVarDef,
-    varRef:      convertNop
+    varRef:      convertNop,
+    voidable:    convertExpressionPayload
 ];
 
 # Iterates / visits the given expression or statement node, transforming

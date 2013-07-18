@@ -416,11 +416,20 @@ def parIdentifierString = {/
     }
 /};
 
+# Parses a possibly-voidable expression.
+def parVoidableExpression = {/
+    @"&"
+    ex = parExpression
+    { <> @[voidable: ex] }
+|
+    parExpression
+/};
+
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
 def parUnadornedList = {/
-    first = parExpression
-    rest = (@"," parExpression)*
+    first = parVoidableExpression
+    rest = (@"," parVoidableExpression)*
     { <> [first, rest*] }
 |
     { <> [] }
@@ -710,7 +719,7 @@ def parParserSetString = {/
             def startChar = tokenValue(s);
             def endChar = tokenValue(end);
             <> ifIs
-                { <> eq(1, eq(lowSize(startChar), lowSize(endChar))) }
+                { <> eq(1, &eq(lowSize(startChar), lowSize(endChar))) }
                 { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
@@ -943,15 +952,10 @@ def implPrefixOperator = {/
         <> { node :: <> makeCall(name, node) }
     }
 |
-    # The remainder of the prefix operators are all specially converted,
-    # because they are control constructs and not simple function
-    # applications.
+    # This one is specially converted, since it's a control construct,
+    # not just a simple function application.
     @"!"
-    {
-        <> { node ::
-            <> makeCallNameThunks("ifNot", node, makeLiteral(true))
-        }
-    }
+    { <> { node :: <> makeCallNameThunks("ifNot", node, makeLiteral(true)) } }
 /};
 parPrefixOperator(implPrefixOperator);
 
@@ -1090,7 +1094,16 @@ def parCompareExpression = {/
         { <> [op, ex] }
     )*
 
-    { <> makeBinaryCalls(firstEx, opExes) }
+    # This isn't just a call to `makeBinaryCalls`, since the left-hand sides
+    # of nested operator calls need to be wrapped into `voidable` nodes.
+    { <out> ::
+        ifIs { <> eq(opExes, []) }
+            { <out> firstEx };
+
+        def innerEx = makeBinaryCalls(firstEx, [listFirst(opExes)]);
+        <> listReduce(innerEx, listButFirst(opExes))
+            { result, opEx :: <> makeBinaryCalls(@[voidable: result], [opEx]) }
+    }
 /};
 
 # Parses a parenthesized test clause, yielding a map of the form
@@ -1353,7 +1366,7 @@ def SWITCH_DISPATCH_CLOSURE = sam0Tree("
 #                     (ex2): { name :: stat2a; stat2b }
 #                 ],
 #                 { name :: statDefault },
-#                 test
+#                 &test
 #             ]
 #         }
 #         { args ::
@@ -1420,16 +1433,19 @@ def parSwitchExpression = {/
         ifIs { <> gt(lowSize(optElse), 1) }
             { io0Die("Multiple else cases in switch.") };
 
-        # Note: The `test` is wrapped in an expression node to prevent
-        # interpolation expressions from being misinterpreted as argument
-        # interpolation into the `makeList` function call being constructed.
+        # Note: The `test` is wrapped in a `voidable` node to make the
+        # "logic nature" of the expression operate as expected (that is,
+        # not cause a runtime error if the test is logical-false, instead
+        # running the `else` block if any). The test is furthermore wrapped
+        # in an `expression` node in case it happens to be an interpolation,
+        # which will have to have expression and not argument semantics.
         def testBody = makeThunk(
                 makeCallName("makeList",
                     makeCallName("makeMapReversed", regularCases*),
                     ifValue { <> optDefault* }
                         { value :: <> closureWithFormals(value, formal) }
                         { <> YIELD_VOID_FN_1 },
-                    @[expression: test]));
+                    @[voidable: @[expression: test]]));
 
         def ifCall = makeCallName("ifValue",
             testBody,
@@ -1594,7 +1610,7 @@ def FOR_BODY_CLOSURE = sam0Tree("
     <> ifValue { <> generator(box) }
         { nextGenerator ::
             body(boxGet(box)*);
-            <> nextGenerator
+            <> [nextGenerator]
         }
         { <\\\"break\"> }");
 
@@ -1617,7 +1633,7 @@ def FOR_BODY_CLOSURE = sam0Tree("
 #             <> ifValue { <> generator(box) }
 #                 { nextGenerator ::
 #                     body(boxGet(box)*);
-#                     <> nextGenerator
+#                     <> [nextGenerator]
 #                 }
 #                 { <\"break"> }
 #         }
