@@ -83,16 +83,13 @@ fn pegMakeSequence(rules*) {
     # The general case. Each rule after the first gets passed as additional
     # arguments the matched results of all the previous rules, in order.
     <> { <out> box, input, items* ::
-        def reduction = listReduce([input, items], rules)
-            { results, rule ::
-                def input = listNth(results, 0);
-                def values = listNth(results, 1);
+        def reduction = doReduce([rules], [input, items])
+            { rule, input, items ::
                 def innerBox = yieldBox();
-                <> ifValue
-                    { <> rule(innerBox, input, values*) }
+                <> ifValue { <> rule(innerBox, input, items*) }
                     { newInput ::
-                        def newValues = [values*, boxGet(innerBox)];
-                        <> [newInput, newValues]
+                        def newItems = [items*, boxGet(innerBox)];
+                        <> [newInput, newItems]
                     }
                     {
                         # Propagate the failure.
@@ -101,8 +98,8 @@ fn pegMakeSequence(rules*) {
                     }
             };
 
-        def newInput = listNth(reduction, 0);
-        def results = listNth(reduction, 1);
+        def newInput = listFirst(reduction);
+        def results = listLast(reduction);
         boxSet(box, listLast(results));
         <> newInput
     }
