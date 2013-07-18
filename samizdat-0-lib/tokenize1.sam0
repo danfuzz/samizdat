@@ -110,8 +110,8 @@ def tokInt = pegMakeMainSequence(
             pegMakeCharSet("0123456789"),
             pegMakeCode(intFromDigitChar))),
     pegMakeCode { digits ::
-        def value = listReduce(0, digits)
-            { result, digit :: <> iadd(digit, imul(result, 10)) };
+        def value = doReduce1(digits, 0)
+            { digit, result :: <> iadd(digit, imul(result, 10)) };
         <> @[int: value]
     });
 

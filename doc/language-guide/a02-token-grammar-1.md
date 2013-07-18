@@ -82,7 +82,11 @@ def int = {/
         { <> intFromDigitChar(ch) }
     )+
 
-    { <> ... @[int: ...] }
+    {
+        def value = doReduce1(digits, 0)
+            { digit, result :: <> iadd(digit, imul(result, 10)) };
+        <> @[int: value]
+    }
 /};
 
 def error = {/
