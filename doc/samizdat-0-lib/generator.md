@@ -5,9 +5,13 @@ Generators
 ----------
 
 In general, the generator-oriented functions accept either generators
-or collections as "generator" arguments. Collections are implicitly
+or collections as "generator" arguments. Collections and ints are implicitly
 converted to generators, as if by a call to `generatorFromValue` (defined
 below).
+
+Collections generate each of their elements in order. Ints generate each
+of their bits as an int, from low- to high-order, ending with the sign
+bit.
 
 
 <br><br>
@@ -88,9 +92,8 @@ the same void-or-value behavior.
 #### `generatorFromValue(value) <> generator`
 
 Collection iteration generator constructor. This takes an arbitrary
-collection value &mdash; a list, a map, or a string &mdash; and returns a
-generator which successively yields elements of that collection, per the
-specification for generators.
+"generator-amenable" value and returns a generator which successively yields
+elements of that collection, per the specification for generators.
 
 If passed a function, `generatorFromValue` returns the function directly,
 on the assumption that it is already a generator, in order to make it easy
