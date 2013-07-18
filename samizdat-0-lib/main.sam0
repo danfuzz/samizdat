@@ -64,8 +64,12 @@ fn loadLibrary(ctx, name) {
 # depend on earlier ones. The first listed library can depend only on the
 # given context.
 fn loadAllLibraries(ctx, names*) {
-    <> listReduce(ctx, names)
-        { result, name :: <> loadLibrary(result, name) }
+    <> loopReduce(names, ctx)
+        { names, ctx ::
+            <> ifValue { <> listNth(names, 0) }
+                { name :: <> [listDelNth(names, 0), loadLibrary(ctx, name)] }
+                { return ctx }
+        }
 };
 
 
