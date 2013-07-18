@@ -658,7 +658,7 @@ def parParserSetString = {/
             def startChar = tokenValue(s);
             def endChar = tokenValue(end);
             <> ifIs
-                { <> eq(1, eq(lowSize(startChar), lowSize(endChar))) }
+                { <> eq(1, &eq(lowSize(startChar), lowSize(endChar))) }
                 { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
