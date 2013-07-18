@@ -199,6 +199,29 @@ fn doGenerator(generator) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn doReduce(reduceFunction, generators, baseValues*) {
+    def gen = paraGenerator(generators*);
+
+    loopReduce(gen, baseValues)
+        { gen, values ::
+            def box = yieldBox();
+            <> ifValue { <> gen(box) }
+                { nextGenerator ::
+                    <> ifValue { <> reduceFunction(boxGet(box)*, values*) }
+                        { nextValues :: <> [nextGenerator, nextValues] }
+                        {
+                            # The reducer discarded the values.
+                            <> [nextGenerator, values]
+                        }
+                }
+                {
+                    # The reduce generator was voided.
+                    return values
+                }
+        }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn exclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, false)
 };
@@ -233,7 +256,7 @@ fn filterGenerator(filterFunction, generators*) {
         }
     };
 
-    <> filterGenerator1(paraGenerator(generators*));
+    <> filterGenerator1(paraGenerator(generators*))
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -277,7 +300,7 @@ fn optGenerator(generator) {
         }
     };
 
-    <> optGenerator1(generatorFromValue(generator));
+    <> optGenerator1(generatorFromValue(generator))
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -325,20 +348,39 @@ fn paraGenerator(generators*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn reduceGenerator(reduceFunction, base) {
-    # Main generator maker, which takes the previous reduction result as
-    # its argument.
-    fn reduceGenerator1(lastValue) {
-        <> { box ::
-            def result = ifValue { <> reduceFunction(lastValue) }
-                { nextValue :: <> nextValue }
-                { <> lastValue };
-            boxSet(box, result);
-            <> reduceGenerator1(result)
+fn reduceGenerator(reduceFunction, generators, baseValues*) {
+    # Main generator maker, which takes a generator (per se) and the
+    # current reduction result (list) as its arguments.
+    fn reduceGenerator1(gen, values) {
+        <> { <out> box ::
+            # This loop handles the fact that the reduce function is
+            # allowed to yield void to indicate a generated value is to
+            # be discarded.
+            loopReduce(gen) { <next> gen ::
+                def innerBox = yieldBox();
+                ifValue { <> gen(innerBox) }
+                    { nextGenerator ::
+                        ifValue
+                            { <> reduceFunction(boxGet(innerBox)*, values*) }
+                            { nextValues ::
+                                boxSet(box, nextValues);
+                                <out> reduceGenerator1(
+                                    nextGenerator, nextValues)
+                            }
+                            {
+                                # The reducer discarded the values. Iterate!
+                                <next> [nextGenerator]
+                            }
+                    };
+
+                # The inner generator was voided.
+                boxSet(box);
+                <out>
+            }
         }
     };
 
-    <> reduceGenerator1(base)
+    <> reduceGenerator1(paraGenerator(generators*), baseValues)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -391,6 +433,7 @@ fn tokenGenerator(generator) {
     collectGenerator:    collectGenerator,
     doFilter:            doFilter,
     doGenerator:         doGenerator,
+    doReduce:            doReduce,
     exclusiveRange:      exclusiveRange,
     filterGenerator:     filterGenerator,
     generatorFromValue:  generatorFromValue,
