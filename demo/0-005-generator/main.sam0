@@ -136,9 +136,12 @@ msgAll("Single element reduceGenerator",
     reduceGenerator([[1, 2, 3, 4]], [0])
         { elem, result :: <> [iadd(elem, result)] });
 
-def doRed1 = doReduce([[1, 2, 3, 4]], [0])
+def doRedA = doReduce([[1, 2, 3, 4]], [0])
     { elem, result :: <> [iadd(elem, result)] };
-io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRed1)));
+io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRedA)));
+def doRedA1 = doReduce1([[1, 2, 3, 4]], 0)
+    { elem, result :: <> iadd(elem, result) };
+io0Note(stringAdd("  corresponding doReduce1: ", sourceString(doRedA1)));
 io0Note("");
 
 msgAll("Two element reduceGenerator",
@@ -147,11 +150,25 @@ msgAll("Two element reduceGenerator",
             <> [stringAdd(result, "I ", verb, " ", noun, ". ")]
         });
 
-def doRed2 = doReduce([["like", "hate"], ["biscuits", "fish sticks"]], [""])
+def doRedB = doReduce([["like", "hate"], ["biscuits", "fish sticks"]], [""])
     { verb, noun, result ::
         <> [stringAdd(result, "I ", verb, " ", noun, ". ")]
     };
-io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRed2)));
+io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRedB)));
+def doRedB1 = doReduce1([["like", "hate"], ["biscuits", "fish sticks"]], "")
+    { verb, noun, result ::
+        <> stringAdd(result, "I ", verb, " ", noun, ". ")
+    };
+io0Note(stringAdd("  corresponding doReduce1: ", sourceString(doRedB1)));
+io0Note("");
+
+msgAll("Two-reduction reduceGenerator",
+    reduceGenerator([[1, 2, 3, 4]], [0, 1])
+        { num, sum, product :: <> [iadd(sum, num), imul(product, num)] });
+
+def doRedC = doReduce([[1, 2, 3, 4]], [0, 1])
+    { num, sum, product :: <> [iadd(sum, num), imul(product, num)] };
+io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRedC)));
 io0Note("");
 
 io0Note("mapFromGenerator on filter");
