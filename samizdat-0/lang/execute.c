@@ -331,6 +331,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         zvalue one = datListNth(actuals, i);
         bool voidable;
         bool interpolate;
+        zvalue eval;
 
         if (datTokenTypeIs(one, STR_VOIDABLE)) {
             one = datTokenValue(one);
@@ -346,9 +347,14 @@ static zvalue execCall(Frame *frame, zvalue call) {
             interpolate = false;
         }
 
-        zvalue eval = voidable ?
-            execExpressionVoidOk(frame, one) :
-            execExpression(frame, one);
+        if (voidable) {
+            eval = execExpressionVoidOk(frame, one);
+            if (eval == NULL) {
+                return NULL;
+            }
+        } else {
+            eval = execExpression(frame, one);
+        }
 
         if (interpolate) {
             eval = collectGenerator(eval);
