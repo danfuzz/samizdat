@@ -76,10 +76,11 @@ this function returns the `baseValues` list.
 
 The `reduceFunction` must only ever return a list or void.
 
-#### `doReduce1(reduceFunction, [generators*], baseValue) <> .`
+#### `doReduce1(reduceFunction, generator, baseValue) <> .`
 
 Generator iterator with reduce semantics. This is a special case of
-`doReduce`, where a single reduction value is used instead of a list.
+`doReduce`, where a single generator and single reduction value are used
+instead of lists of each.
 
 The `reduceFunction` is no longer restricted to returning only list
 values, and similarly the overall result of calling this function can
