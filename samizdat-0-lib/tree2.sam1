@@ -947,11 +947,10 @@ def implPrefixOperator = {/
     # because they are control constructs and not simple function
     # applications.
     @"!"
-    {
-        <> { node ::
-            <> makeCallNameThunks("ifNot", node, makeLiteral(true))
-        }
-    }
+    { <> { node :: <> makeCallNameThunks("ifNot", node, makeLiteral(true)) } }
+|
+    @"&"
+    { <> { node :: <> @[voidable: node] } }
 /};
 parPrefixOperator(implPrefixOperator);
 
