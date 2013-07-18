@@ -1436,14 +1436,16 @@ def parSwitchExpression = {/
         # Note: The `test` is wrapped in a `voidable` node to make the
         # "logic nature" of the expression operate as expected (that is,
         # not cause a runtime error if the test is logical-false, instead
-        # running the `else` block if any).
+        # running the `else` block if any). The test is furthermore wrapped
+        # in an `expression` node in case it happens to be an interpolation,
+        # which will have to have expression and not argument semantics.
         def testBody = makeThunk(
                 makeCallName("makeList",
                     makeCallName("makeMapReversed", regularCases*),
                     ifValue { <> optDefault* }
                         { value :: <> closureWithFormals(value, formal) }
                         { <> YIELD_VOID_FN_1 },
-                    @[voidable: test]));
+                    @[voidable: @[expression: test]]));
 
         def ifCall = makeCallName("ifValue",
             testBody,
