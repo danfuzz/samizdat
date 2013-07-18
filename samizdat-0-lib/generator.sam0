@@ -222,6 +222,29 @@ fn doReduce(reduceFunction, generators, baseValues) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn doReduce1(reduceFunction, generators, baseValue) {
+    def gen = paraGenerator(generators*);
+
+    loopReduce(gen, baseValue)
+        { gen, value ::
+            def box = yieldBox();
+            <> ifValue { <> gen(box) }
+                { nextGenerator ::
+                    <> ifValue { <> reduceFunction(boxGet(box)*, value) }
+                        { nextValue :: <> [nextGenerator, nextValue] }
+                        {
+                            # The reducer discarded the values.
+                            <> [nextGenerator, value]
+                        }
+                }
+                {
+                    # The reduce generator was voided.
+                    return value
+                }
+        }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn exclusiveRange(first, increment, limit) {
     <> makeRangeGenerator(first, increment, limit, false)
 };
@@ -434,6 +457,7 @@ fn tokenGenerator(generator) {
     doFilter:            doFilter,
     doGenerator:         doGenerator,
     doReduce:            doReduce,
+    doReduce1:           doReduce1,
     exclusiveRange:      exclusiveRange,
     filterGenerator:     filterGenerator,
     generatorFromValue:  generatorFromValue,
