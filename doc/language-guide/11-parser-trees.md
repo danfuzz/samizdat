@@ -99,13 +99,6 @@ Representation of a code expression.
 This corresponds to the syntax `{ <yieldDef> :: statement1; statement2;
 etc; <> yield }`.
 
-#### `@["&&": expression]`
-
-Representation of a predicate. `expression` must be a regular (non-parsing)
-expression node, which is taken to be the predicate to test.
-
-This corresponds to the syntax `&&(expression)`.
-
 ### Non-terminal parsing expression nodes
 
 #### `@[choice: [pex*]]`

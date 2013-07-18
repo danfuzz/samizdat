@@ -29,7 +29,7 @@ def whitespace = {/
 
 def punctuation = {/
     "@@" | "::" | ".." | "<>" |
-    "{/" | "/}" | "&&" |          # These are only needed in *Layer 1*.
+    "{/" | "/}" |                 # These are only needed in *Layer 1*.
     ["&@:.,=-+?;*<>{}()[]" "|!"]  # The latter string is just for *Layer 1*.
 /};
 

@@ -297,7 +297,7 @@ bitwise xor of the two numbers.
 ### Comparison Infix Operators (Precedence 3)
 
 Comparisons in Samizdat are chainable: `x < y <= z` is the same as saying
-`(x < y) && (y <= z)` with the additional guarantee that `y` is only
+`(x < y) & (y <= z)` with the additional guarantee that `y` is only
 evaluated once. This falls naturally out of the value-or-void logic
 model of the language.
 
