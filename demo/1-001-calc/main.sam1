@@ -33,8 +33,8 @@ def UNARY_OPS = [
 # Takes an initial value and a list of one-argument functions, and
 # does a reduction by applying each of the functions in order.
 fn applyAll(initialValue, functions) {
-    <> listReduce(initialValue, functions)
-        { result, function :: <> function(result) }
+    <> doReduce1(functions, initialValue)
+        { function, result :: <> function(result) }
 };
 
 # Takes an initial value and a list of maps of `[op, value]`,
@@ -102,8 +102,8 @@ def digit = {/
 def number = {/
     digits = digit+
     {
-        <> listReduce(0, digits)
-            { result, digit :: <> iadd(digit, imul(result, 10)) }
+        <> doReduce1(digits, 0)
+            { digit, result :: <> iadd(digit, imul(result, 10)) }
     }
 /};
 
