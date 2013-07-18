@@ -66,8 +66,8 @@ returning its last yielded value.
 
 This repeatedly iterates on the given generators, calling the given
 `reduceFunction` with the generated results as well as additional
-arguments. The additional arguments start as the given `baseValues`
-and are updated each time the `reduceFunction` returns non-void.
+arguments, in that order. The additional arguments start as the given
+`baseValues` and are updated each time the `reduceFunction` returns non-void.
 
 The iteration stops when any of the generators becomes voided, at which
 point this function returns the most recently returned value from the
@@ -75,6 +75,15 @@ point this function returns the most recently returned value from the
 this function returns the `baseValues` list.
 
 The `reduceFunction` must only ever return a list or void.
+
+#### `doReduce1(reduceFunction, [generators*], baseValue) <> .`
+
+Generator iterator with reduce semantics. This is a special case of
+`doReduce`, where a single reduction value is used instead of a list.
+
+The `reduceFunction` is no longer restricted to returning only list
+values, and similarly the overall result of calling this function can
+be an arbitrary value.
 
 #### `exclusiveRange(first, increment, limit) <> generator`
 
