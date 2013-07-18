@@ -595,10 +595,10 @@ def parUnaryExpression = {/
     postfixes = parPostfixOperator*
 
     {
-        def withPosts = listReduce(base, postfixes)
-            { result, op :: <> op(result) };
-        <> listReduce(withPosts, listReverse(prefixes))
-            { result, op :: <> op(result) }
+        def withPosts = doReduce1(postfixes, base)
+            { op, result :: <> op(result) };
+        <> doReduce1(listReverse(prefixes), withPosts)
+            { op, result :: <> op(result) }
     }
 /};
 
