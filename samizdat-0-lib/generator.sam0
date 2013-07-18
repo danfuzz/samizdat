@@ -46,6 +46,14 @@ fn makeIncrementGenerator(filterFunction, first, increment) {
     <> makeIncrementGenerator1(first)
 };
 
+# Makes a generator for an int.
+fn makeIntGenerator(int) {
+    def size = lowSize(int);
+
+    <> makeIncrementGenerator(0, 1)
+        { index :: <> ibit(int, &gt(size, index)) }
+};
+
 # Makes a generator for a list.
 fn makeListGenerator(list) {
     <> makeIncrementGenerator(0, 1)
@@ -73,6 +81,7 @@ fn makeUniqletGenerator(uniqlet) {
 # Map from low-layer value types to corresponding appropriate generator
 # maker functions.
 def GENERATOR_MAKERS = [
+    int:     makeIntGenerator,
     list:    makeListGenerator,
     map:     makeMapGenerator,
     string:  makeStringGenerator,
