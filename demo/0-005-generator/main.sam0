@@ -55,6 +55,7 @@ msgAll("Empty string", generatorFromValue(""));
 msgAll("Empty paraGenerator", paraGenerator());
 msgAll("Empty seqGenerator", seqGenerator());
 
+msgAll("Int", generatorFromValue(256));
 msgAll("List", generatorFromValue([101, 33, 5555, "blort"]));
 msgAll("Map",
     generatorFromValue([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
