@@ -25,8 +25,10 @@ in order, and then the function is called with these arguments. The result
 of the apply expression is the same as the result of the function call.
 If the function call returns void, then the expression's result is also void.
 
-If any of the arguments evaluates to void, then subsequent arguments are
-not evaluated, the function isn't called, and the expression yields void.
+If an argument evaluates to void, then this causes an immmediate error
+(terminating the runtime), *unless* that argument is prefixed with the
+`&` operator (see `Void contagion`, below). In the latter case, the function
+isn't called, and the expression yields void.
 
 In order to make it convenient to define control-structure-like functions,
 any number of block closure literals may follow the closing parenthesis. All
@@ -50,9 +52,6 @@ This works for all argument expressions (not just literals), so long as the
 expression evaluates to an appropriate value.
 
 The expression to apply (before the open parenthesis) must be non-void.
-Per the above, it is valid for an argument to be void, but that stops the
-evaluation of the expression, causing the overall call expression to
-yield void.
 
 #### Message binding lookup &mdash; `expression.nameExpr`
 
@@ -146,6 +145,18 @@ on a boolean variable or data structure element.
 
 Prefix operators are higher in precedence than infix operators, but lower
 in precedence than postfix operators.
+
+#### Void contagion &mdash; `&expression`
+
+Placing an ampersand in front of an expression indicates that the
+expression *may* yield void, and if so, causes the void to "spread"
+outward to the immediately-surrounding function call, making that function
+call itself yield void, instead of actually performing the call.
+
+This operator is *only* valid when placed directly before an argument
+to a function call, element of a list construction, or index argument
+to a `[]` expression (and not, e.g., embedded any deeper in any
+sort of expression).
 
 #### Numeric positive &mdash; `+expression`
 
