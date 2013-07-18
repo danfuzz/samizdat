@@ -12,6 +12,7 @@
  * `TOK(name, "string")` defines both a string *and* a token constant.
  */
 
+TOK(CH_AND,        "&");
 TOK(CH_AT,         "@");
 TOK(CH_ATAT,       "@@");
 TOK(CH_CCURLY,     "}");
