@@ -330,9 +330,14 @@ static zvalue execCall(Frame *frame, zvalue call) {
     for (zint i = 0; i < argCount; i++) {
         zvalue one = datListNth(actuals, i);
         if (datTokenTypeIs(one, STR_INTERPOLATE)) {
-            zvalue eval = execExpressionVoidOk(frame, datTokenValue(one));
+            one = datTokenValue(one);
+            zvalue eval = execExpressionVoidOk(frame, one);
             if (eval == NULL) {
-                return NULL;
+                if (datTokenTypeIs(one, STR_VOIDABLE)) {
+                    return NULL;
+                } else {
+                    die("Invalid void interpolation result.");
+                }
             }
             eval = collectGenerator(eval);
             args[i] = eval;
@@ -341,7 +346,11 @@ static zvalue execCall(Frame *frame, zvalue call) {
         } else {
             zvalue eval = execExpressionVoidOk(frame, one);
             if (eval == NULL) {
-                return NULL;
+                if (datTokenTypeIs(one, STR_VOIDABLE)) {
+                    return NULL;
+                } else {
+                    die("Invalid void call argument.");
+                }
             }
             args[i] = eval;
             fullCount++;
@@ -418,6 +427,8 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     else if (datTokenTypeIs(e, STR_CLOSURE))
         return execClosure(frame, e);
     else if (datTokenTypeIs(e, STR_EXPRESSION))
+        return execExpressionVoidOk(frame, datTokenValue(e));
+    else if (datTokenTypeIs(e, STR_VOIDABLE))
         return execExpressionVoidOk(frame, datTokenValue(e));
     else if (datTokenTypeIs(e, STR_INTERPOLATE))
         return execInterpolate(frame, e);

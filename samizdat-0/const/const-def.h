@@ -78,5 +78,6 @@ STR(UNIQLET,          "uniqlet");
 STR(VALUE,            "value");
 STR(VAR_DEF,          "varDef");
 STR(VAR_REF,          "varRef");
+STR(VOIDABLE,         "voidable");
 STR(YIELD,            "yield");
 STR(YIELD_DEF,        "yieldDef");
