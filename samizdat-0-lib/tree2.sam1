@@ -1228,8 +1228,8 @@ def parLogicOrExpression = {/
 # * the outer thunk-call omitted if there was no yield definition.
 # * the `elseStat` block as `{}` (that is yield-void) if there was no
 #   `else` clause.
-# * the then-clause argument declarations changed to `.` for any
-#   clause where no name binding was present.
+# * `ifIs` instead of `ifValue` and no then-clause argument declaration for
+#   any clause where no name binding was present.
 # * arbitrary nesting of additional clauses.
 def parIfExpression = {/
     @if
@@ -1259,34 +1259,37 @@ def parIfExpression = {/
 
         # To keep things simple, partial results are always thunks, so that
         # they can be slotted directly into place as the third argument to
-        # an enclosing `ifValue`. At the end -- in the choice clause below --
-        # we either add a yield def to the thunk and make wrap it in a call,
-        # or unwrap it into a straight call, depending on if the original
-        # `if` has a yield def or not.
+        # an enclosing `ifValue` or `ifIs`. At the end -- in the last parser
+        # clause of the rule, below -- we either add a yield def to the
+        # thunk and wrap it in a call, or unwrap it into a straight call,
+        # depending on if the original `if` has a yield def or not.
         <> listReduce(finalElse, clauses) { result, clause ::
             def formal = mapGet(clause, "formal");
-            def test = mapGet(clause, "test");
+            def test = makeThunk(mapGet(clause, "test"));
             def then = mapGet(clause, "then");
-            <> makeThunk(
-                makeCallName("ifValue",
-                    makeThunk(test),
-                    closureWithFormals(then, formal),
-                    result))
+            def ifCall = ifIs { <> eq(formal, [:]) }
+                { <> makeCallName("ifIs", test, then, result) }
+                {
+                    <> makeCallName("ifValue",
+                        test,
+                        closureWithFormals(then, formal),
+                        result)
+                };
+            <> makeThunk(ifCall)
         }
     }
 
-    (
-        # There was a yield def. Add the yield def to the thunk, and wrap
-        # that in a call.
-        { <> ne(yieldDef, [:]) }
-        {
-            def mainClosure =
-                closureWithYieldDef(mainThunk, mappingValue(yieldDef));
-            <> makeCall(mainClosure)
-        }
-    |
-        { <> mapGet(tokenValue(mainThunk), "yield") }
-    )
+    {
+        <> ifIs { <> eq(yieldDef, [:]) }
+            { <> mapGet(tokenValue(mainThunk), "yield") }
+            {
+                # There was a yield def. Add the yield def to the thunk,
+                # and wrap that in a call.
+                def mainClosure =
+                    closureWithYieldDef(mainThunk, mappingValue(yieldDef));
+                <> makeCall(mainClosure)
+            }
+    }
 /};
 
 # Parses the optional yield definition that's associated with the `break`
