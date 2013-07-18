@@ -35,6 +35,16 @@ for (x in [1]) {
     print(x)
 };
 
+io0Note("\nTwo element list.");
+for (x in [@blort, @fizmo]) {
+    print(x)
+};
+
+io0Note("\nThree element list.");
+for (x in ["muffin", "biscuit", "scone"]) {
+    print(x)
+};
+
 io0Note("\nString.");
 for (x in "Blort!") {
     print(x)
