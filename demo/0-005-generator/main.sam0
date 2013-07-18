@@ -132,19 +132,19 @@ msgAll("Size two SeqGenerator",
 msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
     seqGenerator("abc", [], [], ["def", "ghi"], []));
 
-msgAll("Single element reduceGenerator",
+msgAll("Single-generator reduceGenerator",
     reduceGenerator([[1, 2, 3, 4]], [0])
         { elem, result :: <> [iadd(elem, result)] });
 
 def doRedA = doReduce([[1, 2, 3, 4]], [0])
     { elem, result :: <> [iadd(elem, result)] };
 io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRedA)));
-def doRedA1 = doReduce1([[1, 2, 3, 4]], 0)
+def doRedA1 = doReduce1([1, 2, 3, 4], 0)
     { elem, result :: <> iadd(elem, result) };
 io0Note(stringAdd("  corresponding doReduce1: ", sourceString(doRedA1)));
 io0Note("");
 
-msgAll("Two element reduceGenerator",
+msgAll("Two-generator reduceGenerator",
     reduceGenerator([["like", "hate"], ["biscuits", "fish sticks"]], [""])
         { verb, noun, result ::
             <> [stringAdd(result, "I ", verb, " ", noun, ". ")]
@@ -155,11 +155,6 @@ def doRedB = doReduce([["like", "hate"], ["biscuits", "fish sticks"]], [""])
         <> [stringAdd(result, "I ", verb, " ", noun, ". ")]
     };
 io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRedB)));
-def doRedB1 = doReduce1([["like", "hate"], ["biscuits", "fish sticks"]], "")
-    { verb, noun, result ::
-        <> stringAdd(result, "I ", verb, " ", noun, ". ")
-    };
-io0Note(stringAdd("  corresponding doReduce1: ", sourceString(doRedB1)));
 io0Note("");
 
 msgAll("Two-reduction reduceGenerator",
