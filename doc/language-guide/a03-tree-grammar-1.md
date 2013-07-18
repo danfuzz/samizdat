@@ -322,11 +322,20 @@ def parIdentifierString = {/
     }
 /};
 
+# Parses a possibly-voidable expression.
+def parVoidableExpression = {/
+    @"&"
+    ex = parExpression
+    { <> @[voidable: ex] }
+|
+    parExpression
+/};
+
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
 def parUnadornedList = {/
-    first = parExpression
-    rest = (@"," parExpression)*
+    first = parVoidableExpression
+    rest = (@"," parVoidableExpression)*
     { <> [first, rest*] }
 |
     { <> [] }
@@ -649,7 +658,7 @@ def parParserSetString = {/
             def startChar = tokenValue(s);
             def endChar = tokenValue(end);
             <> ifIs
-                { <> eq(1, eq(lowSize(startChar), lowSize(endChar))) }
+                { <> eq(1, &eq(lowSize(startChar), lowSize(endChar))) }
                 { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
         }
     |

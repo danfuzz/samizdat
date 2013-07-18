@@ -58,7 +58,6 @@ fn namer(value) {
 #
 
 io0Note("Power...");
-
 io0Note(powerName(0));
 io0Note(powerName(1));
 io0Note(powerName(2));
@@ -70,7 +69,6 @@ io0Note(powerName(7));
 io0Note(powerName("blort"));
 
 io0Note("\nInterpolate...");
-
 io0Note(interpolator(1, [1, 2, 3]));
 io0Note(interpolator(2, [(4..6)*]));
 io0Note(interpolator(10, [(8..18)*]));
@@ -82,6 +80,15 @@ io0Note(elser("blort"));
 io0Note(elser("fizmo"));
 io0Note(elser());
 io0Note(sourceString(elser("igram")?)); # `?` because we expect void.
+
+io0Note("\nVoid yield...");
+ifNot
+    {
+        <> switch (lt(2, 1)) {
+            default: { io0Note("Huh?") }
+        }
+    }
+    { io0Note("Yes, void.") };
 
 io0Note("\nNames...");
 io0Note(sourceString(namer(1)));

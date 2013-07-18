@@ -321,34 +321,53 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zint argCount = datSize(actuals);
     zvalue args[argCount];
 
-    // If there are any interpolated arguments, then `interpolate` is
+    // If there are any interpolated arguments, then `interpolateAny` is
     // set to `true`, and `fullCount` indicates the count of arguments
     // after interpolation.
     zint fullCount = 0;
-    bool interpolate = false;
+    bool interpolateAny = false;
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = datListNth(actuals, i);
+        bool voidable;
+        bool interpolate;
+        zvalue eval;
+
+        if (datTokenTypeIs(one, STR_VOIDABLE)) {
+            one = datTokenValue(one);
+            voidable = true;
+        } else {
+            voidable = false;
+        }
+
         if (datTokenTypeIs(one, STR_INTERPOLATE)) {
-            zvalue eval = execExpressionVoidOk(frame, datTokenValue(one));
+            one = datTokenValue(one);
+            interpolate = true;
+        } else {
+            interpolate = false;
+        }
+
+        if (voidable) {
+            eval = execExpressionVoidOk(frame, one);
             if (eval == NULL) {
                 return NULL;
             }
+        } else {
+            eval = execExpression(frame, one);
+        }
+
+        if (interpolate) {
             eval = collectGenerator(eval);
             args[i] = eval;
             fullCount += datSize(eval);
-            interpolate = true;
+            interpolateAny = true;
         } else {
-            zvalue eval = execExpressionVoidOk(frame, one);
-            if (eval == NULL) {
-                return NULL;
-            }
             args[i] = eval;
             fullCount++;
         }
     }
 
-    if (interpolate) {
+    if (interpolateAny) {
         zvalue fullArgs[fullCount];
         zint at = 0;
 

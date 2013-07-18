@@ -299,7 +299,7 @@ fn sourceStringUnadorned(value?) {
 fn stringFromInt(value, optBase?) {
     def base = ifValueOr { <> optBase* } { <> 10 };
 
-    <> ifIs { <> le(le(2, base), 36) }
+    <> ifIs { <> le(&le(2, base), 36) }
         { <> stringFromIntBase(value, base) }
         { io0Die("Invalid base for stringFromInt.") }
 };

@@ -37,7 +37,7 @@ msg(["zero", "one", "two"].nth(2));
 
 io0Note("\nMap");
 msg([a: "aardvark", b: "bear"].size());
-msg([a: "aardvark", b: "bear"].get(0));
+msg([a: "aardvark", b: "bear"].get("a"));
 msg([a: "aardvark", b: "bear"].nth(1));
 
 io0Note("\nString");
