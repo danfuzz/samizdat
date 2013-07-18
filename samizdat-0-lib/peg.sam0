@@ -155,24 +155,31 @@ fn genericMakeTokenSet(sense, types) {
     ifIs { <> eq(types, []) }
         {
             # Trivial case: Empty set. Return an appropriate absolute rule.
-            return ifIs { <> logicFromBoolean(sense) }
+            return ifIs { <> eq(sense, true) }
                 { <> pegRuleFail }
                 { <> pegRuleAny }
         };
 
 
-    def set = [types*: sense]; # A set-like map of all the token types.
-    def oppositeSense = booleanNot(sense);
-
-    # This is implemented as, in effect, `(&. &set .)`, which
+    # This is implemented as, in effect, `(token=. { check(token) })`, which
     # allows us to keep the main matcher function here much simpler.
 
-    fn match(item) {
-        <> ifIs { <> logicFromBoolean(mapGet(set, tokenType(item), oppositeSense)) }
-            { <> item }
-    };
+    def set = [types*: true]; # A set-like map of all the token types.
+    def matcher = ifIs { <> eq(sense, true) }
+        {
+            <> { item ::
+                <> ifIs { <> mapGet(set, tokenType(item)) }
+                    { <> item }
+            }
+        }
+        {
+            <> { item ::
+                <> ifNot { <> mapGet(set, tokenType(item)) }
+                    { <> item }
+            }
+        };
 
-    <> pegMakeMainSequence(pegRuleLookaheadAny, pegMakeCode(match), pegRuleAny)
+    <> pegMakeMainSequence(pegRuleAny, pegMakeCode(matcher))
 };
 
 # The following are built partially in terms of the preceding
