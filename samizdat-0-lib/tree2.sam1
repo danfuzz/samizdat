@@ -135,7 +135,7 @@ def BINARY_OPERATORS = varRefMap([
 # Helper for parsing binary operator expressions, which puts together
 # a sequence of function calls.
 fn makeBinaryCalls(firstEx, opExList) {
-    <> listReduce(firstEx, opExList) { result, opEx ::
+    <> doReduce1(opExList, firstEx) { opEx, result ::
         def op = listFirst(opEx);
         def ex = listLast(opEx);
         <> makeCall(mapGet(BINARY_OPERATORS, tokenType(op)), result, ex)
@@ -1101,8 +1101,8 @@ def parCompareExpression = {/
             { <out> firstEx };
 
         def innerEx = makeBinaryCalls(firstEx, [listFirst(opExes)]);
-        <> listReduce(innerEx, listButFirst(opExes))
-            { result, opEx :: <> makeBinaryCalls(@[voidable: result], [opEx]) }
+        <> doReduce1(listButFirst(opExes), innerEx)
+            { opEx, result :: <> makeBinaryCalls(@[voidable: result], [opEx]) }
     }
 /};
 
@@ -1155,7 +1155,7 @@ def parLogicAndExpression = {/
     # This is done with the `*` on the list head (that is, most-then-last
     # instead of the more usual arrangement of first-then-rest), since the
     # last clause is special in that it can't be an assignment. The last
-    # clause is also the base case for the `listReduce`.
+    # clause is also the base case for the `doReduce1` call.
     most = (
         clause = parLogicAndClause
         @"&"
@@ -1164,8 +1164,8 @@ def parLogicAndExpression = {/
     last = parCompareExpression
 
     {
-        <> listReduce(last, listReverse(most))
-            { result, clause ::
+        <> doReduce1(listReverse(most), last)
+            { clause, result ::
                 def formal = mapGet(clause, "formal");
                 def test = makeThunk(mapGet(clause, "test"));
                 def resultThunk = makeThunk(result);
@@ -1204,8 +1204,8 @@ def parLogicOrExpression = {/
     |
         {
             def allExprs = listReverse([first, rest*]);
-            <> listReduce(listFirst(allExprs), listButFirst(allExprs))
-                { result, ex ::
+            <> doReduce1(listButFirst(allExprs), listFirst(allExprs))
+                { ex, result ::
                     <> makeCallName("ifValueOr",
                         makeThunk(ex), makeThunk(result))
                 }
@@ -1276,7 +1276,7 @@ def parIfExpression = {/
         # clause of the rule, below -- we either add a yield def to the
         # thunk and wrap it in a call, or unwrap it into a straight call,
         # depending on if the original `if` has a yield def or not.
-        <> listReduce(finalElse, clauses) { result, clause ::
+        <> doReduce1(clauses, finalElse) { clause, result ::
             def formal = mapGet(clause, "formal");
             def test = makeThunk(mapGet(clause, "test"));
             def then = mapGet(clause, "then");
