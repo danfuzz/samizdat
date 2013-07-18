@@ -210,12 +210,12 @@ fn doReduce(reduceFunction, generators, baseValues) {
                     <> ifValue { <> reduceFunction(boxGet(box)*, values*) }
                         { nextValues :: <> [nextGenerator, nextValues] }
                         {
-                            # The reducer discarded the values.
+                            # The reduce function discarded the values.
                             <> [nextGenerator, values]
                         }
                 }
                 {
-                    # The reduce generator was voided.
+                    # The inner generator was voided.
                     return values
                 }
         }
@@ -231,12 +231,12 @@ fn doReduce1(reduceFunction, generator, baseValue) {
                     <> ifValue { <> reduceFunction(boxGet(box), value) }
                         { nextValue :: <> [nextGenerator, nextValue] }
                         {
-                            # The reducer discarded the values.
+                            # The reduce function discarded the value.
                             <> [nextGenerator, value]
                         }
                 }
                 {
-                    # The reduce generator was voided.
+                    # The inner generator was voided.
                     return value
                 }
         }
