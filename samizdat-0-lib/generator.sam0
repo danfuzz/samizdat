@@ -222,15 +222,13 @@ fn doReduce(reduceFunction, generators, baseValues) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn doReduce1(reduceFunction, generators, baseValue) {
-    def gen = paraGenerator(generators*);
-
-    loopReduce(gen, baseValue)
+fn doReduce1(reduceFunction, generator, baseValue) {
+    loopReduce(generatorFromValue(generator), baseValue)
         { gen, value ::
             def box = yieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
-                    <> ifValue { <> reduceFunction(boxGet(box)*, value) }
+                    <> ifValue { <> reduceFunction(boxGet(box), value) }
                         { nextValue :: <> [nextGenerator, nextValue] }
                         {
                             # The reducer discarded the values.
