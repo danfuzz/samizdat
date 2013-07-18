@@ -21,6 +21,25 @@
  */
 
 /**
+ * Does listification of an int. This returns a list of individual
+ * bits (as ints).
+ */
+static zvalue listFromInt(zvalue intValue) {
+    zvalue bit0 = constIntFromZint(0);
+    zvalue bit1 = constIntFromZint(1);
+    zint size = datSize(intValue);
+    zint raw = datZintFromInt(intValue);
+    zvalue arr[size];
+
+    for (zint i = 0; i < size; i++) {
+        zint bit = datZintGetBit(raw, i);
+        arr[i] = (bit == 0) ? bit0 : bit1;
+    }
+
+    return datListFromArray(size, arr);
+}
+
+/**
  * Does listification of a map. This returns a list of individual mappings.
  */
 static zvalue listFromMap(zvalue map) {
@@ -86,6 +105,9 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
 /* Documented in header. */
 zvalue collectGenerator(zvalue value) {
     switch (datType(value)) {
+        case DAT_INT: {
+            return listFromInt(value);
+        }
         case DAT_LIST: {
             // Trivial pass-through.
             return value;
