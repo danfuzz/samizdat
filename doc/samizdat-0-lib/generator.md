@@ -58,6 +58,24 @@ generator are ignored.
 
 This function always returns void.
 
+#### `doReduce(reduceFunction, [generators*], baseValues*) <> list`
+
+Generator iterator with reduce semantics. This is similar to &mdash; but
+not quite exactly &mdash; creating a `reduceGenerator`, iterating it, and
+returning its last yielded value.
+
+This repeatedly iterates on the given generators, calling the given
+`reduceFunction` with the generated results as well as additional
+arguments. The additional arguments start as the given `baseValues`
+and are updated each time the `reduceFunction` returns non-void.
+
+The iteration stops when any of the generators becomes voided, at which
+point this function returns the most recently returned value from the
+`reduceFunction`. If `reduceFunction` never returned a (non-void) value,
+this function returns the `baseValues` list.
+
+The `reduceFunction` must only ever return a list or void.
+
 #### `exclusiveRange(first, increment, limit) <> generator`
 
 End-exclusive range generator for int or single-character strings.
@@ -174,6 +192,8 @@ The generator yields whatever non-void value is yielded from the latest
 call to `reduceFunction`. If the `reduceFunction` call yields void, then the
 value-in-progress is discarded, and the inner generator is retried, with
 the same void-or-value behavior.
+
+When called, the `reduceFunction` must either return a list or return void.
 
 The result generator becomes voided when any of the inner generators
 become voided, in which case the `reduceFunction` is not called for that
