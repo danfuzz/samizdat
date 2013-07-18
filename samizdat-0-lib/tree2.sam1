@@ -719,7 +719,7 @@ def parParserSetString = {/
             def startChar = tokenValue(s);
             def endChar = tokenValue(end);
             <> ifIs
-                { <> eq(1, eq(lowSize(startChar), lowSize(endChar))) }
+                { <> eq(1, &eq(lowSize(startChar), lowSize(endChar))) }
                 { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
@@ -1094,7 +1094,16 @@ def parCompareExpression = {/
         { <> [op, ex] }
     )*
 
-    { <> makeBinaryCalls(firstEx, opExes) }
+    # This isn't just a call to `makeBinaryCalls`, since the left-hand sides
+    # of nested operator calls need to be wrapped into `voidable` nodes.
+    { <out> ::
+        ifIs { <> eq(opExes, []) }
+            { <out> firstEx };
+
+        def innerEx = makeBinaryCalls(firstEx, [listFirst(opExes)]);
+        <> listReduce(innerEx, listButFirst(opExes))
+            { result, opEx :: <> makeBinaryCalls(@[voidable: result], [opEx]) }
+    }
 /};
 
 # Parses a parenthesized test clause, yielding a map of the form
