@@ -136,11 +136,23 @@ msgAll("Single element reduceGenerator",
     reduceGenerator([[1, 2, 3, 4]], 0)
         { elem, result :: <> [iadd(elem, result)] });
 
+def doRed1 = doReduce([[1, 2, 3, 4]], 0)
+    { elem, result :: <> [iadd(elem, result)] };
+io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRed1)));
+io0Note("");
+
 msgAll("Two element reduceGenerator",
     reduceGenerator([["like", "hate"], ["biscuits", "fish sticks"]], "")
         { verb, noun, result ::
             <> [stringAdd(result, "I ", verb, " ", noun, ". ")]
         });
+
+def doRed2 = doReduce([["like", "hate"], ["biscuits", "fish sticks"]], "")
+    { verb, noun, result ::
+        <> [stringAdd(result, "I ", verb, " ", noun, ". ")]
+    };
+io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRed2)));
+io0Note("");
 
 io0Note("mapFromGenerator on filter");
 def outMap = mapFromGenerator(
