@@ -76,6 +76,7 @@ fn makeCallNonlocalExit(name, expression?) {
 # Forward declarations.
 def parProgramBody = forwardFunction();
 def parExpression = forwardFunction();
+def parVoidableExpression = forwardFunction();
 
 # Forward declaration required for integrating layer 1 definitions.
 def parParser = forwardFunction();
@@ -517,6 +518,18 @@ def parUnaryExpression = {/
             { op, result :: <> op(result) }
     }
 /};
+
+# Parses a possibly-voidable expression. This is done rather than including
+# `&` as a prefix operator, since it is valid in more limited contexts than
+# general expressions.
+def implVoidableExpression = {/
+    @"&"
+    ex = parUnaryExpression
+    { <> @[voidable: ex] }
+|
+    parExpression
+/};
+parVoidableExpression(implVoidableExpression);
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
 # This rule is totally rewritten at that layer.
