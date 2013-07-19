@@ -15,24 +15,23 @@
 # Simple rules
 #
 
-# Peg rule that matches, consumes, and yields an arbitrary terminal item.
+# Documented in Samizdat Layer 0 spec.
 fn pegRuleAny(box, input, .*) {
     <> input(box)
 };
 
-# Peg rule that always succeeds, yielding `null` and consuming no input.
+# Documented in Samizdat Layer 0 spec.
 fn pegRuleEmpty(box, input, .*) {
     boxSet(box, null);
     <> input
 };
 
-# Peg rule that always fails, consuming no input.
+# Documented in Samizdat Layer 0 spec.
 fn pegRuleFail(box, input, .*) {
     boxSet(box)
 };
 
-# Peg rule that matches at eof, yielding `null`. This is the equivalent
-# of `!.` in usual peg syntax.
+# Documented in Samizdat Layer 0 spec.
 fn pegRuleEof(box, input, .*) {
     <> ifIs { <> input(nullBox) }
         { boxSet(box) }
@@ -42,9 +41,7 @@ fn pegRuleEof(box, input, .*) {
         }
 };
 
-# Peg rule that matches anywhere but eof, yielding the next terminal but
-# not consuming it. This is the equivalent of `&.` in usual peg syntax,
-# hence the name.
+# Documented in Samizdat Layer 0 spec.
 fn pegRuleLookaheadAny(box, input, .*) {
     <> ifIs { <> input(box) }
         { <> input }
