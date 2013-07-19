@@ -53,11 +53,11 @@ digit spacers in int literals. Layer 2 introduces this syntax.
 In Layer 0, the only backslash escapes that are recognized are the
 trivial one-character ones. *Not* included are hexadecimal escapes,
 entity escapes, `\/`, the ignoring of newlines, or string interpolation.
-
-In addition, space-after-newline collapsing in string literals
-is *not* performed in Layer 0.
-
 Handling of all of these is implemented in Layer 2.
+
+In addition, literal newlines are not valid inside string literals in
+Layer 0. Handling of newlines is implemented in Layer 1.
+
 
 #### Maps
 
