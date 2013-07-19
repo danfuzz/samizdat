@@ -76,12 +76,13 @@ all in Layer 0. This is implemented in Layer 1.
 
 The only operators regognized in Layer 0 are:
 
+* `expr(expr, ...) { block } ...` &mdash; Function calls.
 * `-expr` &mdash; Unary negation, strictly limited to operating on ints.
 * `expr*` &mdash; Interpolation.
-* `expr(expr, ...) { block } ...` &mdash; Function calls.
 * `<> expr` &mdash; Local yield.
 * `<out> exr` &mdash; Named nonlocal return.
 * `return expr` &mdash; Function return.
+* `&expr` &mdash; Void contagion.
 
 Parsing expression operator syntax is implemented in Layer 1.
 Full expression operator syntax is implemented in Layer 2.
