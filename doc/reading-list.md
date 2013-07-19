@@ -8,6 +8,9 @@ design and implementation of *Samizdat*.
 * Back to the future: the story of Squeak, a practical Smalltalk written in
   itself &mdash; <http://ftp.squeak.org/docs/OOPSLA.Squeak.html>
 
+* Bootstrapping a simple compiler from nothing (a real tour de force!)
+  &mdash; <http://www.rano.org/bcompiler.html>
+
 * Chicken Scheme internals &mdash; <http://wiki.call-cc.org/Internals>
 
 * Clojure
