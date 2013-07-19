@@ -52,16 +52,26 @@ fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 # `interpolatedString` or an `error`.
 def processStringParts = forwardFunction();
 
-# Parses whitespace and comments. **Note:** The yielded result is always
-# ignored.
-def tokWhitespace = {/
-    [" " "\n"]
-|
-    "#" [! "\n"]* "\n"
-|
-    # Introduced in *Layer 2*.
-    &"/*" # Avoid calling the rule unless we know it will match.
-    tokMultilineComment
+# Parses any amount of whitespace and comments (including nothing at all).
+# **Note:** The yielded result is always ignored.
+def tokOptWhitespace = {/
+    (
+        # The lookahead here is to avoid the bulk of this rule if there's
+        # no chance we're actually looking at whitespace. The final
+        # lookahead character is only useful as of *Layer 2*.
+        &["# \n" "/"]
+
+        (
+            [" " "\n"]+
+        |
+            # The `?` at the end is to handle end-of-file comments.
+            "#" [! "\n"]* "\n"?
+        |
+            # Introduced in *Layer 2*.
+            &"/*" # Avoid calling the rule unless we know it will match.
+            tokMultilineComment
+        )*
+    )?
 /};
 
 # Parses punctuation and operators.
@@ -202,8 +212,8 @@ def tokToken = {/
 
 # Parses a file of tokens, yielding a list of them.
 def tokFile = {/
-    tokens = (tokWhitespace* tokToken)*
-    tokWhitespace*
+    tokens = (tokOptWhitespace tokToken)*
+    tokOptWhitespace
 
     { <> tokens }
 /};
@@ -378,7 +388,7 @@ def implStringInterpolation = {/
     expectClose = { <> mapGet(OPEN_CLOSE_MAP, tokenType(open)) }
 
     tokens = (
-        tokWhitespace*
+        tokOptWhitespace
         (
             !["(){}"]
             !"/}"
@@ -389,7 +399,7 @@ def implStringInterpolation = {/
         )
     )*
 
-    tokWhitespace*
+    tokOptWhitespace
     close = tokToken
 
     {

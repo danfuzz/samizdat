@@ -40,13 +40,17 @@ fn processStringParts(parts) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-def tokWhitespace = pegMakeMainSequence(
-    pegMakeChoice(
-        pegMakeCharSet(" \n"),
+def tokOptWhitespace = pegMakeMainSequence(
+    pegMakeOpt(
         pegMakeSequence(
-            pegMakeToken("#"),
-            pegMakeStar(pegMakeCharSetComplement("\n")),
-            pegMakeToken("\n"))));
+            pegMakeLookaheadSuccess(pegMakeCharSet("# \n", "/")),
+            pegMakeStar(
+                pegMakeChoice(
+                    pegMakePlus(pegMakeCharSet(" \n")),
+                    pegMakeSequence(
+                        pegMakeString("#"),
+                        pegMakeStar(pegMakeCharSetComplement("\n")),
+                        pegMakeOpt(pegMakeString("\n"))))))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokPunctuation = pegMakeMainSequence(
@@ -156,9 +160,9 @@ def tokToken = pegMakeMainSequence(
 def tokFile = pegMakeMainSequence(
     pegMakeStar(
         pegMakeSequence(
-            pegMakeStar(tokWhitespace),
+            tokOptWhitespace,
             tokToken)),
-    pegMakeStar(tokWhitespace),
+    tokOptWhitespace,
     pegMakeCode { tokens, . ::
         <> tokens
     });

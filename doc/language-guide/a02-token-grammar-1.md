@@ -52,14 +52,24 @@ fn processStringParts(parts) {
 # rule. (This is only significant as of *Layer 2*.)
 def tokToken = forwardFunction();
 
-# Parses whitespace and comments. **Note:** The yielded result is always
-# ignored.
-def tokWhitespace = {/
-    [" " "\n"]
-|
-    "#" [! "\n"]* "\n"
-#|
-    # Note: Layer 2 introduces additional definitions here.
+# Parses any amount of whitespace and comments (including nothing at all).
+# **Note:** The yielded result is always ignored.
+def tokOptWhitespace = {/
+    (
+        # The lookahead here is to avoid the bulk of this rule if there's
+        # no chance we're actually looking at whitespace. The final
+        # lookahead character is only useful as of *Layer 2*.
+        &["# \n" "/"]
+
+        (
+            [" " "\n"]+
+        |
+            # The `?` at the end is to handle end-of-file comments.
+            "#" [! "\n"]* "\n"?
+        #|
+            # Note: Layer 2 introduces additional definitions here.
+        )*
+    )?
 /};
 
 # Parses punctuation and operators.
@@ -196,8 +206,8 @@ def tokToken = {/
 
 # Parses a file of tokens, yielding a list of them.
 def tokFile = {/
-    tokens = (tokWhitespace* tokToken)*
-    tokWhitespace*
+    tokens = (tokOptWhitespace tokToken)*
+    tokOptWhitespace
 
     { <> tokens }
 /};
