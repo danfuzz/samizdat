@@ -34,11 +34,16 @@ def punctuation = {/
 /};
 
 # Note: Additional rules for string character parsing are defined in *Layer 2*.
-def stringChar = {/
+def stringPart = {/
     (
-        ch = [! "\\" "\""]
-        { <> tokenType(ch) }
+        chars = [! "\\" "\"" "\n"]+
+        { <> stringFromTokenList(chars) }
     )
+|
+    # This is the rule that ignores spaces after newlines.
+    "\n"
+    " "*
+    { <> "\n" }
 |
     (
         "\\"
@@ -55,7 +60,7 @@ def stringChar = {/
 
 def string = {/
     "\""
-    chars = stringChar*
+    chars = stringPart*
     "\""
     { <> @[string: stringAdd(chars*)] }
 /};
