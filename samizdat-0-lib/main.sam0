@@ -67,7 +67,7 @@ fn loadAllLibraries(ctx, names*) {
     <> loopReduce(names, ctx)
         { names, ctx ::
             <> ifValue { <> listNth(names, 0) }
-                { name :: <> [listDelNth(names, 0), loadLibrary(ctx, name)] }
+                { name :: <> [listSlice(names, 1), loadLibrary(ctx, name)] }
                 { return ctx }
         }
 };
