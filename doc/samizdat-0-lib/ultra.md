@@ -64,6 +64,21 @@ This is the same as `makeMap`, except in how duplicate keys are resolved.
 In this function, the *first* value mapping for any given key is the one
 that ends up in the result.
 
+#### `makeMapping(keys*, value) <> map`
+
+This makes a map which maps any number of keys (including none)
+to the same value. If no keys are specified, then this function returns
+the empty map. For example:
+
+```
+v = [(k1): v];      is equivalent to  v = makeMapping(k1, v);
+v = [[k1, k2]*: v;  is equivalent to  v = makeMapping(k1, k2, v);
+[etc.]
+```
+
+Note that the argument list is "stretchy" in front, which isn't really
+representable in Samizdat syntax as presented.
+
 #### `makeToken(type, value?) <> token`
 
 Returns a token with the given type tag (an arbitrary value)
