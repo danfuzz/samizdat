@@ -38,11 +38,15 @@ def tokPunctuation = pegMakeMainSequence(
         pegMakeCharSet("&@:.,=-+?;*<>{}()[]", "|!")));
 
 # Documented in Samizdat Layer 0 spec.
-def tokStringChar = pegMakeMainSequence(
+def tokStringPart = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
-            pegMakeCharSetComplement("\\\""),
-            pegMakeCode { ch :: <> tokenType(ch) }),
+            pegMakePlus(pegMakeCharSetComplement("\\\"\n")),
+            pegMakeCode { chars :: <> stringFromTokenList(chars) }),
+        pegMakeSequence(
+            pegMakeString("\n"),
+            pegMakeStar(pegMakeString(" ")),
+            pegMakeCode { ., . :: <> "\n" }),
         pegMakeSequence(
             pegMakeToken("\\"),
             pegMakeChoice(
@@ -62,7 +66,7 @@ def tokStringChar = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 def tokString = pegMakeMainSequence(
     pegMakeToken("\""),
-    pegMakeStar(tokStringChar),
+    pegMakeStar(tokStringPart),
     pegMakeToken("\""),
     pegMakeCode { ., chars, . ::
         <> @[string: stringAdd(chars*)]
