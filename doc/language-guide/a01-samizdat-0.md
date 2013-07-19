@@ -74,7 +74,7 @@ all in Layer 0. This is implemented in Layer 1.
 
 #### Operators
 
-The only operators regognized in Layer 0 are:
+The only operators recognized in Layer 0 are:
 
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
 * `-expr` &mdash; Unary negation, strictly limited to operating on ints.
