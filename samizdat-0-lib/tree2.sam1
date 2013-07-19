@@ -170,6 +170,7 @@ def parInterpolatedString = forwardFunction();
 # Forward declarations.
 def parProgramBody = forwardFunction();
 def parExpression = forwardFunction();
+def parVoidableExpression = forwardFunction();
 
 # Forward declaration required for integrating layer 1 definitions.
 def parParser = forwardFunction();
@@ -416,15 +417,6 @@ def parIdentifierString = {/
     }
 /};
 
-# Parses a possibly-voidable expression.
-def parVoidableExpression = {/
-    @"&"
-    ex = parExpression
-    { <> @[voidable: ex] }
-|
-    parExpression
-/};
-
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
 def parUnadornedList = {/
@@ -601,6 +593,18 @@ def parUnaryExpression = {/
             { op, result :: <> op(result) }
     }
 /};
+
+# Parses a possibly-voidable expression. This is done rather than including
+# `&` as a prefix operator, since it is valid in more limited contexts than
+# general expressions.
+def implVoidableExpression = {/
+    @"&"
+    ex = parUnaryExpression
+    { <> @[voidable: ex] }
+|
+    parExpression
+/};
+parVoidableExpression(implVoidableExpression);
 
 # `expression` from layer 0 is omitted here (it's forwarded earlier), and
 # `statement` and `nonlocalExit` are replaced with forwarded functions here.
