@@ -87,28 +87,28 @@ def tokStringPart = pegMakeMainSequence(
             pegMakeStar(pegMakeString(" ")),
             pegMakeCode { ., . :: <> "\n" }),
         pegMakeSequence(
-            pegMakeToken("\\"),
+            pegMakeString("\\"),
             pegMakeChoice(
                 pegMakeMainSequence(
-                    pegMakeToken("\\"), pegMakeCode { . :: <> "\\" }),
+                    pegMakeString("\\"), pegMakeCode { . :: <> "\\" }),
                 pegMakeMainSequence(
-                    pegMakeToken("\""), pegMakeCode { . :: <> "\"" }),
+                    pegMakeString("\""), pegMakeCode { . :: <> "\"" }),
                 pegMakeMainSequence(
-                    pegMakeToken("n"), pegMakeCode { . :: <> "\n" }),
+                    pegMakeString("n"), pegMakeCode { . :: <> "\n" }),
                 pegMakeMainSequence(
-                    pegMakeToken("r"), pegMakeCode { . :: <> "\r" }),
+                    pegMakeString("r"), pegMakeCode { . :: <> "\r" }),
                 pegMakeMainSequence(
-                    pegMakeToken("t"), pegMakeCode { . :: <> "\t" }),
+                    pegMakeString("t"), pegMakeCode { . :: <> "\t" }),
                 pegMakeMainSequence(
-                    pegMakeToken("0"), pegMakeCode { . :: <> "\0" })))));
+                    pegMakeString("0"), pegMakeCode { . :: <> "\0" })))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokString = pegMakeMainSequence(
-    pegMakeToken("\""),
+    pegMakeString("\""),
     pegMakeStar(tokStringPart),
     pegMakeChoice(
         pegMakeSequence(
-            pegMakeToken("\""),
+            pegMakeString("\""),
             pegMakeCode { ., parts, . :: <> processStringParts(parts) }),
         pegMakeCode { ., . :: <> @[error: "Unterminated string literal."] }));
 
@@ -131,7 +131,7 @@ def tokIdentifier = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 def tokQuotedIdentifier = pegMakeMainSequence(
-    pegMakeToken("\\"),
+    pegMakeString("\\"),
     tokString,
     pegMakeCode { ., s ::
         <> @[identifier: (tokenValue(s))]
