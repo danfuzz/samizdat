@@ -908,6 +908,44 @@ def parInterpolatedString = {/
     }
 /};
 
+# Parses a single generator definition, for use in comprehensions and
+# `for` loops. This yields a map of the form `@[init: ..., formal: ...]`,
+# with `init` bound to an initializer expression and `formal` bound to
+# a formal argument declaration.
+def parGeneratorDef = {/
+    formal = (
+        name = @identifier
+        { <> [name: tokenValue(name)] }
+    |
+        "."
+        { <> [:] }
+    )
+
+    @in
+    init = parExpression
+
+    { <> [formal: formal, init: init] }
+/};
+
+# Parses a comma-separated list of generator definitions, for use in
+# comprehensions and `for` loops. This yields a map of the form
+# `@[formals: ..., inits: ...]`, with `formals` bound to a formal
+# argument declaration corresponding to the names given to each of the
+# generators, and `inits` bound to a list of generator initializer
+# expressions.
+def parGeneratorList = {/
+    firstGen = parGeneratorDef
+    moreGens = ("," parGeneratorDef)*
+
+    {
+        def gens = [firstGen, moreGens*];
+        def formals = collectFilter(gens) { gen :: <> mapGet(gen, "formal") };
+        def inits = collectFilter(gens) { gen :: <> mapGet(gen, "init") };
+
+        <> [formals: formals, inits: inits]
+    }
+/};
+
 # Helper for `parComprehension`, which parses the body of a comprehension.
 def parComprehensionBody = {/
     ()
@@ -920,7 +958,7 @@ def parComprehensionBody = {/
 # The translation is along the lines of:
 #
 # ```
-# (name1 in expr1, name2 in expr2 :: filterExpr)
+# (name1 in expr1, name2 in expr2 <> filterExpr)
 # ```
 # =>
 # ```
@@ -929,7 +967,7 @@ def parComprehensionBody = {/
 # ```
 #
 # ```
-# [name1 in expr1, name2 in expr2 :: filterExpr]
+# [name1 in expr1, name2 in expr2 <> filterExpr]
 # ```
 # =>
 # ```
@@ -1616,44 +1654,6 @@ def parDoExpression = {/
         ]];
 
         <> makeCall(mainClosure)
-    }
-/};
-
-# Parses a single generator definition, for use in comprehensions and
-# `for` loops. This yields a map of the form `@[init: ..., formal: ...]`,
-# with `init` bound to an initializer expression and `formal` bound to
-# a formal argument declaration.
-def parGeneratorDef = {/
-    formal = (
-        name = @identifier
-        { <> [name: tokenValue(name)] }
-    |
-        "."
-        { <> [:] }
-    )
-
-    @in
-    init = parExpression
-
-    { <> [formal: formal, init: init] }
-/};
-
-# Parses a comma-separated list of generator definitions, for use in
-# comprehensions and `for` loops. This yields a map of the form
-# `@[formals: ..., inits: ...]`, with `formals` bound to a formal
-# argument declaration corresponding to the names given to each of the
-# generators, and `inits` bound to a list of generator initializer
-# expressions.
-def parGeneratorList = {/
-    firstGen = parGeneratorDef
-    moreGens = ("," parGeneratorDef)*
-
-    {
-        def gens = [firstGen, moreGens*];
-        def formals = collectFilter(gens) { gen :: <> mapGet(gen, "formal") };
-        def inits = collectFilter(gens) { gen :: <> mapGet(gen, "init") };
-
-        <> [formals: formals, inits: inits]
     }
 /};
 
