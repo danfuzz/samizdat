@@ -15,7 +15,12 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-def KEYWORDS = [def: @def, fn: @fn, return: @return];
+def KEYWORDS = mapFromGenerator(
+    filterGenerator([
+        "def", "fn", "return",
+        # *Layer 2* defines additional keywords here.
+        []*])
+        { name :: <> [(name): @[(name)]] });
 
 # Documented in Samizdat Layer 0 spec.
 def INT_CHARS = [

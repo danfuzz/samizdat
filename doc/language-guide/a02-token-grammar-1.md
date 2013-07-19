@@ -17,9 +17,12 @@ result as tokens of type `error`.
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
-#
-# **Note:** Additional keywords are defined in *Layer 2*.
-def KEYWORDS = [def: @def, fn: @fn, return: @return];
+def KEYWORDS = mapFromGenerator(
+    filterGenerator([
+        "def", "fn", "return",
+        # *Layer 2* defines additional keywords here.
+        []*])
+        { name :: <> [(name): @[(name)]] });
 
 # These are all the int digits, as a map from strings to digit values. This
 # includes hex digits as well, in both lower and upper case. Finally, this
@@ -79,7 +82,7 @@ def tokPunctuation = {/
 
 # Parses an integer literal.
 #
-# **Note:** This rule is expanded significantly in *Layer 2*.
+# **Note:** This rule is rewritten in *Layer 2*.
 def tokInt = {/
     digits = (
         ch = ["0".."9"]
@@ -128,15 +131,17 @@ def tokStringPart = {/
 # token or an `@interpolatedString` token (or an `@error` token).
 def tokString = {/
     "\""
-    chars = tokStringPart*
+    parts = tokStringPart*
     "\""
-    { <> @[string: stringAdd(chars*)] }
+
+    { <> @[string: stringAdd(parts*)] }
 /};
 
 # Parses an identifier (in the usual form). This also parses keywords.
 def tokIdentifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
+
     {
         def string = stringFromTokenList([first, rest*]);
         <> ifValueOr { <> mapGet(KEYWORDS, string) }
@@ -148,6 +153,7 @@ def tokIdentifier = {/
 def tokQuotedIdentifier = {/
     "\\"
     s = tokString
+
     { <> @[identifier: tokenValue(s)] }
 /};
 
@@ -156,6 +162,7 @@ def tokQuotedIdentifier = {/
 def error = {/
     badCh = .
     [! "\n"]*
+
     {
         def msg = stringAdd("Unrecognized character: ", tokenType(badCh));
         <> @[error: msg]
@@ -163,7 +170,7 @@ def error = {/
 /};
 
 # Parses an arbitrary token or error.
-def implToken = {/
+def tokToken = {/
     tokString | tokIdentifier | tokQuotedIdentifier
 |
     # This needs to be listed after the quoted identifier rule, to
@@ -178,12 +185,12 @@ def implToken = {/
 |
     tokError
 /};
-tokToken(implToken);
 
 # Parses a file of tokens, yielding a list of them.
 def tokFile = {/
     tokens = (whitespace* token)*
     whitespace*
+
     { <> tokens }
 /};
 ```

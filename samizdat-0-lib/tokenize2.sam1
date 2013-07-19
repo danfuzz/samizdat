@@ -7,41 +7,29 @@
 #
 
 
-#
-# Helper definitions
-#
-
-# Converts a list of digit values into an int, given the base. If `baseSign`
-# is negative, this indicates that the result should be negative.
-fn intFromDigitList(baseSign, digits) {
-    def base = iabs(baseSign);
-    def value = doReduce1(digits, 0) { digit, result ::
-        <> ifIs { <> eq(digit, -1) }
-            { <> result }
-            { <> iadd(imul(result, base), digit) }
-    };
-
-    <> imul(value, isign(baseSign))
-};
+# Forward declarations for Layer 2 definitions.
+def tokMultilineComment = forwardFunction();
+def tokStringInterpolation = forwardFunction();
+def tokHexChar = forwardFunction();
+def tokNamedChar = forwardFunction();
 
 
 #
-# The remainder of this code is meant to mirror the code in the spec for
-# tokenization as closely as possible, comments and all. The spec is a
-# self-description of *Layer 1* parsing, and the comments should be taken
-# in light of that.
+# This section is meant to mirror the code in the spec for tokenization as
+# closely as possible, comments and all. The spec is a self-description of
+# *Layer 1* parsing, and the comments should be taken in light of that.
 #
 
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
-#
-# **Note:** Additional keywords are defined in *Layer 2*.
 def KEYWORDS = mapFromGenerator(
     filterGenerator([
-        "break", "collect", "continue", "def", "default", "do", "else",
-        "export", "fn", "for", "if", "import", "in", "module", "reduce",
-        "return", "switch", "var", "while"])
+        "def", "fn", "return",
+        # *Layer 2* defines additional keywords here.
+        "break", "collect", "continue", "default", "do", "else",
+        "export", "for", "if", "import", "in", "module", "reduce",
+        "switch", "var", "while"])
         { name :: <> [(name): @[(name)]] });
 
 # These are all the int digits, as a map from strings to digit values. This
@@ -61,27 +49,6 @@ def INT_CHARS = [
 # Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 
-# Forward declaration of `tokToken`, for use in the interpolated string
-# rule. (This is only significant as of *Layer 2*.)
-def tokToken = forwardFunction();
-
-# Parses a `/* ... */` comment, with nesting.
-def tokMultilineComment = forwardFunction();
-def implMultilineComment = {/
-    "/*"
-
-    (
-        tokMultilineComment
-    |
-        [! "*"]
-    |
-        "*" !"/"
-    )*
-
-    "*/"
-/};
-tokMultilineComment(implMultilineComment);
-
 # Parses whitespace and comments. **Note:** The yielded result is always
 # ignored.
 def tokWhitespace = {/
@@ -89,6 +56,7 @@ def tokWhitespace = {/
 |
     "#" [! "\n"]* "\n"
 |
+    # Introduced in *Layer 2*.
     tokMultilineComment
 /};
 
@@ -132,113 +100,10 @@ def tokPunctuation = {/
     )
 /};
 
-# Parses a single binary digit (or spacer), returning its value.
-def tokBinDigit = {/
-    ch = ["_01"]
-    { <> intFromDigitChar(ch) }
-/};
-
-# Parses a single decimal digit (or spacer), returning its value.
-def tokDecDigit = {/
-    ch = ["_" "0".."9"]
-    { <> intFromDigitChar(ch) }
-/};
-
-# Parses a single hexadecimal digit (or spacer), returning its value.
-def tokHexDigit = {/
-    ch = ["_" "0".."9" "a".."f" "A".."F"]
-    { <> intFromDigitChar(ch) }
-/};
-
 # Parses an integer literal.
 #
-# **Note:** This rule is expanded significantly in *Layer 2*.
-def tokInt = {/
-    baseSign = (
-        "0x" ("-" { <> -16 } | { <> 16 })
-    |
-        "0b" ("-" { <> -2 } | { <> 2 })
-    |
-        { <> 10 }
-    )
-
-    digits = (
-        { <> eq(baseSign, 10) }
-        tokDecDigit+
-    |
-        { <> eq(iabs(baseSign), 16) }
-        tokHexDigit+
-    |
-        { <> eq(iabs(baseSign), 2) }
-        tokBinDigit+
-    )
-
-    { <> @[int: intFromDigitList(baseSign, digits)] }
-/};
-
-# Parses a single hexadecimal character. This is called during `\x...;`
-# parsing.
-def tokHexChar = {/
-    digits = tokHexDigit+
-    { <> charFromInt(intFromDigitList(16, digits)) }
-/};
-
-# Parses a single entity-named character. This is called during `\&...;`
-# parsing.
-def tokNamedChar = {/
-    chars = ["a".."z" "A".."Z" "0".."9" "."]+
-    {
-        def name = stringFromTokenList(chars);
-        <> mapGet(ENTITY_MAP, name)
-    }
-|
-    "#x"
-    digits = tokHexDigit+
-    { <> charFromInt(intFromDigitList(16, digits)) }
-|
-    "#"
-    digits = tokDecDigit+
-    { <> charFromInt(intFromDigitList(10, digits)) }
-/};
-
-# Map from opening tokens to corresponding closers. Only includes mappings
-# necessary to parse string interpolations.
-def OPEN_CLOSE_MAP = [
-    "(":  ")",
-    "{":  "}",
-    "{/": "/}"
-];
-
-# Parses the inner portion of a string interpolation expression. This
-# captures a list of inner tokens, ending when parentheses and braces are
-# balanced out (and ignoring other could-be-matched delimiter tokens).
-def tokStringInterpolation = forwardFunction();
-def implStringInterpolation = {/
-    &["({"]
-    open = tokToken
-    expectClose = { <> mapGet(OPEN_CLOSE_MAP, tokenType(open)) }
-
-    tokens = (
-        tokWhitespace*
-        (
-            !["(){}"]
-            !"/}"
-            t = tokToken
-            { <> [t] }
-        |
-            tokStringInterpolation
-        )
-    )*
-
-    tokWhitespace*
-    close = tokToken
-
-    {
-        <> ifIs { <> eq(tokenType(close), expectClose) }
-            { <> [open, listAdd(tokens*)*, close] }
-    }
-/};
-tokStringInterpolation(implStringInterpolation);
+# **Note:** This rule is rewritten in *Layer 2*.
+def tokInt = forwardFunction();
 
 # Parses a run of regular characters or an escape / special sequence,
 # inside a quoted string.
@@ -381,6 +246,7 @@ def tokString = {/
 def tokIdentifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
+
     {
         def string = stringFromTokenList([first, rest*]);
         <> ifValueOr { <> mapGet(KEYWORDS, string) }
@@ -392,6 +258,7 @@ def tokIdentifier = {/
 def tokQuotedIdentifier = {/
     "\\"
     s = tokString
+
     { <> @[identifier: tokenValue(s)] }
 /};
 
@@ -400,6 +267,7 @@ def tokQuotedIdentifier = {/
 def tokError = {/
     badCh = .
     [! "\n"]*
+
     {
         def msg = stringAdd("Unrecognized character: ", tokenType(badCh));
         <> @[error: msg]
@@ -407,7 +275,7 @@ def tokError = {/
 /};
 
 # Parses an arbitrary token or error.
-def implToken = {/
+def tokToken = {/
     tokString | tokIdentifier | tokQuotedIdentifier
 |
     # This needs to be listed after the quoted identifier rule, to
@@ -422,13 +290,158 @@ def implToken = {/
 |
     tokError
 /};
-tokToken(implToken);
 
 # Parses a file of tokens, yielding a list of them.
 def tokFile = {/
-    tokens=(tokWhitespace* tokToken)* tokWhitespace*
+    tokens = (tokWhitespace* tokToken)*
+    tokWhitespace*
+
     { <> tokens }
 /};
+
+
+#
+# *Layer 2* definitions
+#
+# These are all specific to parsing *Layer 2* (and higher).
+#
+
+# Map from opening tokens to corresponding closers. Only includes mappings
+# necessary to parse string interpolations.
+def OPEN_CLOSE_MAP = [
+    "(":  ")",
+    "{":  "}",
+    "{/": "/}"
+];
+
+# Converts a list of digit values into an int, given the base. If `baseSign`
+# is negative, this indicates that the result should be negative.
+fn intFromDigitList(baseSign, digits) {
+    def base = iabs(baseSign);
+    def value = doReduce1(digits, 0) { digit, result ::
+        <> ifIs { <> eq(digit, -1) }
+            { <> result }
+            { <> iadd(imul(result, base), digit) }
+    };
+
+    <> imul(value, isign(baseSign))
+};
+
+# Parses a `/* ... */` comment, with nesting.
+def implMultilineComment = {/
+    "/*"
+
+    (
+        tokMultilineComment
+    |
+        [! "*"]
+    |
+        "*" !"/"
+    )*
+
+    "*/"
+/};
+tokMultilineComment(implMultilineComment);
+
+# Parses a single binary digit (or spacer), returning its value.
+def tokBinDigit = {/
+    ch = ["_01"]
+    { <> intFromDigitChar(ch) }
+/};
+
+# Parses a single decimal digit (or spacer), returning its value.
+def tokDecDigit = {/
+    ch = ["_" "0".."9"]
+    { <> intFromDigitChar(ch) }
+/};
+
+# Parses a single hexadecimal digit (or spacer), returning its value.
+def tokHexDigit = {/
+    ch = ["_" "0".."9" "a".."f" "A".."F"]
+    { <> intFromDigitChar(ch) }
+/};
+
+# Parses an integer literal.
+def implInt = {/
+    baseSign = (
+        "0x" ("-" { <> -16 } | { <> 16 })
+    |
+        "0b" ("-" { <> -2 } | { <> 2 })
+    |
+        { <> 10 }
+    )
+
+    digits = (
+        { <> eq(baseSign, 10) }
+        tokDecDigit+
+    |
+        { <> eq(iabs(baseSign), 16) }
+        tokHexDigit+
+    |
+        { <> eq(iabs(baseSign), 2) }
+        tokBinDigit+
+    )
+
+    { <> @[int: intFromDigitList(baseSign, digits)] }
+/};
+tokInt(implInt);
+
+# Parses a single hexadecimal character. This is called during `\x...;`
+# parsing.
+def implHexChar = {/
+    digits = tokHexDigit+
+    { <> charFromInt(intFromDigitList(16, digits)) }
+/};
+tokHexChar(implHexChar);
+
+# Parses a single entity-named character. This is called during `\&...;`
+# parsing.
+def implNamedChar = {/
+    chars = ["a".."z" "A".."Z" "0".."9" "."]+
+    {
+        def name = stringFromTokenList(chars);
+        <> mapGet(ENTITY_MAP, name)
+    }
+|
+    "#x"
+    digits = tokHexDigit+
+    { <> charFromInt(intFromDigitList(16, digits)) }
+|
+    "#"
+    digits = tokDecDigit+
+    { <> charFromInt(intFromDigitList(10, digits)) }
+/};
+tokNamedChar(implNamedChar);
+
+# Parses the inner portion of a string interpolation expression. This
+# captures a list of inner tokens, ending when parentheses and braces are
+# balanced out (and ignoring other could-be-matched delimiter tokens).
+def implStringInterpolation = {/
+    &["({"]
+    open = tokToken
+    expectClose = { <> mapGet(OPEN_CLOSE_MAP, tokenType(open)) }
+
+    tokens = (
+        tokWhitespace*
+        (
+            !["(){}"]
+            !"/}"
+            t = tokToken
+            { <> [t] }
+        |
+            tokStringInterpolation
+        )
+    )*
+
+    tokWhitespace*
+    close = tokToken
+
+    {
+        <> ifIs { <> eq(tokenType(close), expectClose) }
+            { <> [open, listAdd(tokens*)*, close] }
+    }
+/};
+tokStringInterpolation(implStringInterpolation);
 
 
 #
