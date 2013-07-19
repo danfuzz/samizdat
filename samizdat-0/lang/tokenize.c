@@ -159,6 +159,8 @@ static zvalue tokenizeString(ParseState *state) {
 
         if (ch == -1) {
             die("Unterminated string.");
+        } else if (ch == '\n') {
+            die("Invalid character in string: `\n`");
         } else if (ch == '\"') {
             read(state);
             break;
