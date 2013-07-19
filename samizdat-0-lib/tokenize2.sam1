@@ -52,9 +52,13 @@ fn intFromDigitList(baseSign, digits) {
 #
 # Grammar rules
 #
+# This code is meant to mirror the code in the spec for tokenization as
+# closely as possible, comments and all. The spec is a self-description of
+# *Layer 1* parsing, and the comments should be taken in light of that.
+#
 
 # Forward declaration of `tokToken`, for use in the interpolated string
-# rule.
+# rule. (This is only significant as of *Layer 2*.)
 def tokToken = forwardFunction();
 
 # Parses a `/* ... */` comment, with nesting.
@@ -86,15 +90,29 @@ def tokWhitespace = {/
 
 # Parses punctuation and operators. The lookahead is done to avoid bothering
 # with the choice expression unless we have a definite match.
+#
+# **Note:** This rule is expanded significantly in *Layer 2*.
 def tokPunctuation = {/
-    &["\\-/%&|^!@:,.=+?;*<>{}()[]"]
+    # The lookahead here is done to avoid bothering with the choice
+    # expression, except when we have a definite match. The second
+    # string in the lookahead calls out the characters that are only
+    # needed in *Layer 1*. Yet more characters are included in *Layer 2*.
+    &["&@:.,=-+?;*<>{}()[]" "/|!" "\\%^"]
+
     (
+        # Introduced in *Layer 2*.
         "\\==" | "\\!=" | "\\<=" | "\\>=" | "\\<" | "\\>"
     |
+        # Introduced in *Layer 2*.
         "&&&" | "|||" | "^^^" | "!!!" | "<<<" | ">>>" | "..!" | "..+"
     |
-        "@@" | "::" | "<>" | ".." | "{/" | "/}" |
+        # Introduced in *Layer 2*.
         "==" | "!=" | "<=" | ">=" | "??" | "**"
+    |
+        "@@" | "::" | ".." | "<>"
+    |
+        # These are only needed in *Layer 1*.
+        "{/" | "/}"
     |
         # Note: We check this error condition here instead of in the
         # comment parsing code, because comments get parsed as whitespace,
@@ -129,6 +147,8 @@ def tokHexDigit = {/
 /};
 
 # Parses an integer literal.
+#
+# **Note:** This rule is expanded significantly in *Layer 2*.
 def tokInt = {/
     baseSign = (
         "0x" ("-" { <> -16 } | { <> 16 })
@@ -218,6 +238,9 @@ tokStringInterpolation(implStringInterpolation);
 
 # Parses a run of regular characters or an escape / special sequence,
 # inside a quoted string.
+#
+# **Note:** Additional rules for string character parsing are defined
+# in *Layer 2*.
 def tokStringPart = {/
     (
         chars = [! "\\" "\"" "\n"]+
@@ -287,8 +310,10 @@ def tokStringPart = {/
     )
 /};
 
-# Parses a quoted string. This can yield either a `@string` token or
-# an `@interpolatedString` token (or an `@error` token).
+# Parses a quoted string.
+#
+# **Note:** In Layer 2, this rule is expanded to yield either a `@string`
+# token or an `@interpolatedString` token (or an `@error` token).
 def tokString = {/
     "\""
     parts = tokStringPart*
@@ -387,7 +412,8 @@ def implToken = {/
     tokPunctuation
 |
     # This needs to be listed after the identifier rule, to prevent
-    # an identifier-initial `_` from triggering this rule.
+    # an identifier-initial `_` from triggering this rule. (This is
+    # only significant in *Layer 2* and higher.)
     tokInt
 |
     tokError

@@ -17,6 +17,15 @@
 def KEYWORDS = [def: @def, fn: @fn, return: @return];
 
 # Documented in Samizdat Layer 0 spec.
+def INT_CHARS = [
+    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
+    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9
+];
+
+# Documented in Samizdat Layer 0 spec.
+fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
+
+# Documented in Samizdat Layer 0 spec.
 def tokWhitespace = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeCharSet(" \n"),
@@ -25,17 +34,29 @@ def tokWhitespace = pegMakeMainSequence(
             pegMakeStar(pegMakeCharSetComplement("\n")),
             pegMakeToken("\n"))));
 
-# Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
+# Documented in Samizdat Layer 0 spec.
 def tokPunctuation = pegMakeMainSequence(
+    pegMakeLookaheadSuccess(pegMakeCharSet("&@:.,=-+?;*<>{}()[]", "/|!")),
     pegMakeChoice(
         pegMakeString("@@"),
         pegMakeString("::"),
         pegMakeString(".."),
         pegMakeString("<>"),
-        pegMakeString("{/"), # Defined by Samizdat Layer 1.
-        pegMakeString("/}"), # Defined by Samizdat Layer 1.
-        # The latter two characters are defined by Samizdat Layer 1.
-        pegMakeCharSet("&@:.,=-+?;*<>{}()[]", "|!")));
+        pegMakeString("{/"),
+        pegMakeString("/}"),
+        pegRuleAny));
+
+# Documented in Samizdat Layer 0 spec.
+def tokInt = pegMakeMainSequence(
+    pegMakePlus(
+        pegMakeMainSequence(
+            pegMakeCharSet("0123456789"),
+            pegMakeCode(intFromDigitChar))),
+    pegMakeCode { digits ::
+        def value = doReduce1(digits, 0)
+            { digit, result :: <> iadd(digit, imul(result, 10)) };
+        <> @[int: value]
+    });
 
 # Documented in Samizdat Layer 0 spec.
 def tokStringPart = pegMakeMainSequence(
@@ -97,28 +118,6 @@ def tokQuotedIdentifier = pegMakeMainSequence(
         <> @[identifier: (tokenValue(s))]
     });
 
-# These are all the int digits, as a map from strings to
-# digit values.
-def INT_CHARS = [
-    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
-    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9
-];
-
-# Given a decimal digit, returns the digit value.
-fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
-
-# Documented in Samizdat Layer 0 spec.
-def tokInt = pegMakeMainSequence(
-    pegMakePlus(
-        pegMakeMainSequence(
-            pegMakeCharSet("0123456789"),
-            pegMakeCode(intFromDigitChar))),
-    pegMakeCode { digits ::
-        def value = doReduce1(digits, 0)
-            { digit, result :: <> iadd(digit, imul(result, 10)) };
-        <> @[int: value]
-    });
-
 # Documented in Samizdat Layer 0 spec.
 def tokError = pegMakeMainSequence(
     pegRuleAny,
@@ -131,11 +130,11 @@ def tokError = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 def tokToken = pegMakeMainSequence(
     pegMakeChoice(
-        tokInt,
-        tokPunctuation,
         tokString,
         tokIdentifier,
         tokQuotedIdentifier,
+        tokPunctuation,
+        tokInt,
         tokError));
 
 # Documented in Samizdat Layer 0 spec.

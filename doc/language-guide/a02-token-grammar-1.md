@@ -17,23 +17,77 @@ result as tokens of type `error`.
 # A map from strings to their corresponding keywords, one mapping for each
 # identifier-like keyword.
 #
-# Note: Additional keywords are defined in *Layer 2*.
+# **Note:** Additional keywords are defined in *Layer 2*.
 def KEYWORDS = [def: @def, fn: @fn, return: @return];
 
-# Note: The yielded result is always ignored.
+# These are all the int digits, as a map from strings to
+# digit values.
+def INT_CHARS = [
+    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
+    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9
+];
+
+# Given a decimal digit, returns the digit value.
+fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
+
+# Forward declaration of `tokToken`, for use in the interpolated string
+# rule. (This is only significant as of *Layer 2*.)
+def tokToken = forwardFunction();
+
+# Parses whitespace and comments. **Note:** The yielded result is always
+# ignored.
 def tokWhitespace = {/
     [" " "\n"]
 |
     "#" [! "\n"]* "\n"
+#|
+    # Note: Layer 2 defines additional rules here.
 /};
 
+# Parses punctuation and operators.
+#
+# **Note:** This rule is expanded significantly in *Layer 2*.
 def tokPunctuation = {/
-    "@@" | "::" | ".." | "<>" |
-    "{/" | "/}" |                 # These are only needed in *Layer 1*.
-    ["&@:.,=-+?;*<>{}()[]" "|!"]  # The latter string is just for *Layer 1*.
+    # The lookahead here is done to avoid bothering with the choice
+    # expression, except when we have a definite match. The second
+    # string in the lookahead calls out the characters that are only
+    # needed in *Layer 1*. Yet more characters are included in *Layer 2*.
+    &["&@:.,=-+?;*<>{}()[]" "/|!"]
+
+    (
+        # *Layer 2* introduces additional definitions here.
+    #|
+        "@@" | "::" | ".." | "<>"
+    |
+        # These are only needed in *Layer 1*.
+        "{/" | "/}"
+    |
+        # Single-character punctuation / operator.
+        .
+    )
 /};
 
-# Note: Additional rules for string character parsing are defined in *Layer 2*.
+# Parses an integer literal.
+#
+# **Note:** This rule is expanded significantly in *Layer 2*.
+def tokInt = {/
+    digits = (
+        ch = ["0".."9"]
+        { <> intFromDigitChar(ch) }
+    )+
+
+    {
+        def value = doReduce1(digits, 0)
+            { digit, result :: <> iadd(digit, imul(result, 10)) };
+        <> @[int: value]
+    }
+/};
+
+# Parses a run of regular characters or an escape / special sequence,
+# inside a quoted string.
+#
+# **Note:** Additional rules for string character parsing are defined
+# in *Layer 2*.
 def tokStringPart = {/
     (
         chars = [! "\\" "\"" "\n"]+
@@ -58,6 +112,10 @@ def tokStringPart = {/
     )
 /};
 
+# Parses a quoted string.
+#
+# **Note:** In Layer 2, this rule is expanded to yield either a `@string`
+# token or an `@interpolatedString` token (or an `@error` token).
 def tokString = {/
     "\""
     chars = tokStringPart*
@@ -65,6 +123,7 @@ def tokString = {/
     { <> @[string: stringAdd(chars*)] }
 /};
 
+# Parses an identifier (in the usual form). This also parses keywords.
 def tokIdentifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
@@ -75,37 +134,43 @@ def tokIdentifier = {/
     }
 /};
 
+# Parses the quoted-string identifier form.
 def tokQuotedIdentifier = {/
     "\\"
     s = tokString
     { <> @[identifier: tokenValue(s)] }
 /};
 
-def tokInt = {/
-    digits = (
-        ch = ["0".."9"]
-        { <> intFromDigitChar(ch) }
-    )+
-
-    {
-        def value = doReduce1(digits, 0)
-            { digit, result :: <> iadd(digit, imul(result, 10)) };
-        <> @[int: value]
-    }
-/};
-
+# "Parses" an unrecognized character. This also consumes any further characters
+# on the same line, in an attempt to resynch the input.
 def error = {/
     badCh = .
     [! "\n"]*
-    { <> @[error: ... tokenType(badCh) ...] }
+    {
+        def msg = stringAdd("Unrecognized character: ", tokenType(badCh));
+        <> @[error: msg]
+    }
 /};
 
-def tokToken = {/
-    tokInt | tokPunctuation | tokString |
-    tokIdentifier | tokQuotedIdentifier |
+# Parses an arbitrary token or error.
+def implToken = {/
+    tokString | tokIdentifier | tokQuotedIdentifier
+|
+    # This needs to be listed after the quoted identifier rule, to
+    # prevent `\"...` from being treated as a `\` token followed by
+    # a string.
+    tokPunctuation
+|
+    # This needs to be listed after the identifier rule, to prevent
+    # an identifier-initial `_` from triggering this rule. (This is
+    # only significant in *Layer 2* and higher.)
+    tokInt
+|
     tokError
 /};
+tokToken(implToken);
 
+# Parses a file of tokens, yielding a list of them.
 def tokFile = {/
     tokens = (whitespace* token)*
     whitespace*
