@@ -386,7 +386,10 @@ def parMapping = {/
     key = parMapKey
     @":"
     value = parExpression
-    { <> makeCallName("makeList", value, key) }
+
+    # The `value` is wrapped in an `expression` node here to prevent
+    # interpolation from being applied to `makeMapping`.
+    { <> makeCallName("makeMapping", key, @[expression: value]) }
 |
     map = parExpression
     {
@@ -406,7 +409,7 @@ def parMap = {/
     first = parMapping
     rest = (@"," parMapping)*
     @"]"
-    { <> makeCallName("makeMap", first, rest*) }
+    { <> makeCallName("mapAdd", first, rest*) }
 /};
 
 # Parses a token literal.

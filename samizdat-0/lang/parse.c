@@ -629,7 +629,8 @@ DEF_PARSE(mapping1) {
     MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return makeCall(makeVarRef(STR_MAKE_LIST), listFrom2(value, key));
+    return makeCall(makeVarRef(STR_MAKE_MAPPING),
+        listFrom2(key, datTokenFrom(STR_EXPRESSION, value)));
 }
 
 /**
@@ -669,7 +670,7 @@ DEF_PARSE(map) {
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAKE_MAP), mappings);
+    return makeCall(makeVarRef(STR_MAP_ADD), mappings);
 }
 
 /**

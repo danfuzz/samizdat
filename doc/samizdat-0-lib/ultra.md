@@ -35,34 +35,20 @@ keep this defined as an "ultraprimitive":
 makeList = { rest* :: <> rest };
 ```
 
-#### `makeMap(rest*) <> map`
+#### `makeMapping(keys*, value) <> map`
 
-Returns a map with the given key-value mappings, built up in argument
-order. Each argument must be either a map or a list of at least two elements.
-In the case of a map, the contents of the map are to be included in the
-result. In the case of a list, the first element is the value to bind into
-the result map, and the rest of the elements are keys to which the first
-element is to be bound.
-
-It is valid to repeat keys in the arguments to this function, in
-which case the *final* value mapping for any given key in the argument
-list (in argument order) is the one that ends up in the result. These
-equivalences hold for *Samizdat Layer 0* source code:
+This makes a map which maps any number of keys (including none)
+to the same value. If no keys are specified, then this function returns
+the empty map. For example:
 
 ```
-v = [(k1): v1];          is equivalent to  v = makeMap([v1, k1]);
-v = [(k1): v1, k2: v2];  is equivalent to  v = makeMap([v1, k1], [v2, k2]);
+v = [(k1): v];      is equivalent to  v = makeMapping(k1, v);
+v = [[k1, k2]*: v;  is equivalent to  v = makeMapping(k1, k2, v);
 [etc.]
-
-v = [k1..k2: v];         is equivalent to  v = makeMap([v, k1..k2]);
-v = [:, m1*, m2*];       is equivalent to  v = makeMap(m1, m2);
 ```
 
-#### `makeMapReversed(rest*) <> map`
-
-This is the same as `makeMap`, except in how duplicate keys are resolved.
-In this function, the *first* value mapping for any given key is the one
-that ends up in the result.
+Note that the argument list is "stretchy" in front, which isn't really
+representable in Samizdat syntax as presented.
 
 #### `makeToken(type, value?) <> token`
 
@@ -71,8 +57,8 @@ and optional data payload value (also an arbitrary value). These
 equivalences hold for *Samizdat Layer 0* source code:
 
 ```
-v = @[(key)];         is equivalent to  v = makeToken(key);
-v = @[(key): value];  is equivalent to  v = makeToken(key, value);
+v = @[(type)];         is equivalent to  v = makeToken(type);
+v = @[(type): value];  is equivalent to  v = makeToken(type, value);
 ```
 
 #### `makeUniqlet() <> uniqlet`
