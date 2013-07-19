@@ -63,8 +63,7 @@ def tokWhitespace = {/
     tokMultilineComment
 /};
 
-# Parses punctuation and operators. The lookahead is done to avoid bothering
-# with the choice expression unless we have a definite match.
+# Parses punctuation and operators.
 #
 # **Note:** This rule is expanded significantly in *Layer 2*.
 def tokPunctuation = {/

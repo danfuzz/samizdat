@@ -167,7 +167,7 @@ def tokQuotedIdentifier = {/
 
 # "Parses" an unrecognized character. This also consumes any further characters
 # on the same line, in an attempt to resynch the input.
-def error = {/
+def tokError = {/
     badCh = .
     [! "\n"]*
 
