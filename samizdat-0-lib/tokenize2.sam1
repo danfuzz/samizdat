@@ -9,9 +9,7 @@
 
 # Forward declarations for Layer 2 definitions.
 def tokMultilineComment = forwardFunction();
-def tokStringInterpolation = forwardFunction();
-def tokHexChar = forwardFunction();
-def tokNamedChar = forwardFunction();
+def tokStringPart2 = forwardFunction();
 
 
 #
@@ -121,62 +119,18 @@ def tokStringPart = {/
     " "*
     { <> "\n" }
 |
+    "\\"
     (
-        "\\"
-        (
-            "\\" { <> "\\" } |
-            "\"" { <> "\"" } |
-            "n"  { <> "\n" } |
-            "r"  { <> "\r" } |
-            "t"  { <> "\t" } |
-            "0"  { <> "\0" }
-        |
-            "/"  { <> "" }
-        |
-            # This is the rule that ignores the newline after end-of-line `\`.
-            " "* "\n" " "*
-            { <> "" }
-        |
-            "x"
-            (
-                first = tokHexChar
-                more = ("," tokHexChar)*
-                ";"
-                { <> stringAdd(first, more*) }
-            |
-                { <> @[error: "Invalid hexadecimal character literal."] }
-            )
-        |
-            "&"
-            (
-                first = tokNamedChar
-                more = ("," tokNamedChar)*
-                ";"
-                { <> stringAdd(first, more*) }
-            |
-                { <> @[error: "Invalid named character literal."] }
-            )
-        |
-            format = (
-                "%"
-                chars = ["0".."9" "a".."z" "A".."Z" "+-."]*
-                { <> [format: stringFromTokenList(chars)] }
-            |
-                { <> [:] }
-            )
-
-            &["({"]
-
-            (
-                tokens = tokStringInterpolation
-                { <> [format*, tokens: tokens] }
-            |
-                { <> @[error: "Unbalanced string interpolation."] }
-            )
-        |
-            { <> @[error: "Invalid character literal escape sequence."] }
-        )
+        "\\" { <> "\\" } |
+        "\"" { <> "\"" } |
+        "n"  { <> "\n" } |
+        "r"  { <> "\r" } |
+        "t"  { <> "\t" } |
+        "0"  { <> "\0" }
     )
+|
+    # Introduced in *Layer 2*.
+    tokStringPart2
 /};
 
 # Parses a quoted string.
@@ -388,15 +342,14 @@ tokInt(implInt);
 
 # Parses a single hexadecimal character. This is called during `\x...;`
 # parsing.
-def implHexChar = {/
+def tokHexChar = {/
     digits = tokHexDigit+
     { <> charFromInt(intFromDigitList(16, digits)) }
 /};
-tokHexChar(implHexChar);
 
 # Parses a single entity-named character. This is called during `\&...;`
 # parsing.
-def implNamedChar = {/
+def tokNamedChar = {/
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     {
         def name = stringFromTokenList(chars);
@@ -411,11 +364,11 @@ def implNamedChar = {/
     digits = tokDecDigit+
     { <> charFromInt(intFromDigitList(10, digits)) }
 /};
-tokNamedChar(implNamedChar);
 
 # Parses the inner portion of a string interpolation expression. This
 # captures a list of inner tokens, ending when parentheses and braces are
 # balanced out (and ignoring other could-be-matched delimiter tokens).
+def tokStringInterpolation = forwardFunction();
 def implStringInterpolation = {/
     &["({"]
     open = tokToken
@@ -442,6 +395,58 @@ def implStringInterpolation = {/
     }
 /};
 tokStringInterpolation(implStringInterpolation);
+
+# Additional `stringPart` definitions for *Layer 2*.
+def implStringPart2 = {/
+    "\\"
+    (
+        "/"  { <> "" }
+    |
+        # This is the rule that ignores the newline after end-of-line `\`.
+        " "* "\n" " "*
+        { <> "" }
+    |
+        "x"
+        (
+            first = tokHexChar
+            more = ("," tokHexChar)*
+            ";"
+            { <> stringAdd(first, more*) }
+        |
+            { <> @[error: "Invalid hexadecimal character literal."] }
+        )
+    |
+        "&"
+        (
+            first = tokNamedChar
+            more = ("," tokNamedChar)*
+            ";"
+            { <> stringAdd(first, more*) }
+        |
+            { <> @[error: "Invalid named character literal."] }
+        )
+    |
+        format = (
+            "%"
+            chars = ["0".."9" "a".."z" "A".."Z" "+-."]*
+            { <> [format: stringFromTokenList(chars)] }
+        |
+            { <> [:] }
+        )
+
+        &["({"]
+
+        (
+            tokens = tokStringInterpolation
+            { <> [format*, tokens: tokens] }
+        |
+            { <> @[error: "Unbalanced string interpolation."] }
+        )
+    |
+        { <> @[error: "Invalid character literal escape sequence."] }
+    )
+/};
+tokStringPart2(implStringPart2);
 
 
 #

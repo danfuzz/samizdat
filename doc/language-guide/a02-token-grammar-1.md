@@ -112,17 +112,17 @@ def tokStringPart = {/
     " "*
     { <> "\n" }
 |
+    "\\"
     (
-        "\\"
-        (
-            "\\" { <> "\\" } |
-            "\"" { <> "\"" } |
-            "n"  { <> "\n" } |
-            "r"  { <> "\r" } |
-            "t"  { <> "\t" } |
-            "0"  { <> "\0" }
-        )
+        "\\" { <> "\\" } |
+        "\"" { <> "\"" } |
+        "n"  { <> "\n" } |
+        "r"  { <> "\r" } |
+        "t"  { <> "\t" } |
+        "0"  { <> "\0" }
     )
+#|
+    # *Layer 2* introduces additional definitions here.
 /};
 
 # Parses a quoted string.
@@ -188,8 +188,8 @@ def tokToken = {/
 
 # Parses a file of tokens, yielding a list of them.
 def tokFile = {/
-    tokens = (whitespace* token)*
-    whitespace*
+    tokens = (tokWhitespace* tokToken)*
+    tokWhitespace*
 
     { <> tokens }
 /};
