@@ -14,17 +14,25 @@ list of all the tokens. Tokenization errors are represented in the
 result as tokens of type `error`.
 
 ```
-# A map from strings to their corresponding keywords, one mapping for each
-# identifier-like keyword.
+# Map of all the keywords, from their string name to valueless tokens. These
+# are (to a first approximation) operators whose spellings match the
+# tokenization syntax of identifiers.
 #
 # **Note:** Additional keywords are defined in *Layer 2*.
 def KEYWORDS = [def: @def, fn: @fn, return: @return];
 
-# These are all the int digits, as a map from strings to
-# digit values.
+# These are all the int digits, as a map from strings to digit values. This
+# includes hex digits as well, in both lower and upper case. Finally, this
+# includes a mapping of `"_"` to `-1` for the implementation of the
+# "digit space" syntax.
+#
+# **Note:** Only the decimal digits matter in *Layer 0* and *Layer 1*.
 def INT_CHARS = [
     "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
-    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9
+    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
+    "a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15,
+    "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15,
+    "_": -1
 ];
 
 # Given a decimal digit, returns the digit value.
@@ -61,6 +69,8 @@ def tokPunctuation = {/
     |
         # These are only needed in *Layer 1*.
         "{/" | "/}"
+    #|
+        # *Layer 2* introduces additional definitions here.
     |
         # Single-character punctuation / operator.
         .

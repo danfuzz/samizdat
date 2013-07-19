@@ -6,34 +6,10 @@
 # Samizdat Layer 2 Tokenizer
 #
 
+
 #
 # Helper definitions
 #
-
-# These are all the int digits, as a map from strings to digit values. This
-# includes hex digits as well, in both lower and upper case. Finally, this
-# includes a mapping of `"_"` to `-1` for the implementation of the
-# "digit space" syntax.
-def INT_CHARS = [
-    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
-    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
-    "a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15,
-    "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15,
-    "_": -1
-];
-
-# Helper to convert digit characters to digit values.
-fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
-
-# Map of all the keywords, from their string name to valueless tokens. These
-# are (to a first approximation) operators whose spellings match the
-# tokenization syntax of identifiers.
-def KEYWORDS = mapFromGenerator(
-    filterGenerator([
-        "break", "collect", "continue", "def", "default", "do", "else",
-        "export", "fn", "for", "if", "import", "in", "module", "reduce",
-        "return", "switch", "var", "while"])
-        { name :: <> [(name): @[(name)]] });
 
 # Converts a list of digit values into an int, given the base. If `baseSign`
 # is negative, this indicates that the result should be negative.
@@ -50,12 +26,40 @@ fn intFromDigitList(baseSign, digits) {
 
 
 #
-# Grammar rules
+# The remainder of this code is meant to mirror the code in the spec for
+# tokenization as closely as possible, comments and all. The spec is a
+# self-description of *Layer 1* parsing, and the comments should be taken
+# in light of that.
 #
-# This code is meant to mirror the code in the spec for tokenization as
-# closely as possible, comments and all. The spec is a self-description of
-# *Layer 1* parsing, and the comments should be taken in light of that.
+
+# Map of all the keywords, from their string name to valueless tokens. These
+# are (to a first approximation) operators whose spellings match the
+# tokenization syntax of identifiers.
 #
+# **Note:** Additional keywords are defined in *Layer 2*.
+def KEYWORDS = mapFromGenerator(
+    filterGenerator([
+        "break", "collect", "continue", "def", "default", "do", "else",
+        "export", "fn", "for", "if", "import", "in", "module", "reduce",
+        "return", "switch", "var", "while"])
+        { name :: <> [(name): @[(name)]] });
+
+# These are all the int digits, as a map from strings to digit values. This
+# includes hex digits as well, in both lower and upper case. Finally, this
+# includes a mapping of `"_"` to `-1` for the implementation of the
+# "digit space" syntax.
+#
+# **Note:** Only the decimal digits matter in *Layer 0* and *Layer 1*.
+def INT_CHARS = [
+    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
+    "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
+    "a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15,
+    "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15,
+    "_": -1
+];
+
+# Given a decimal digit, returns the digit value.
+fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 
 # Forward declaration of `tokToken`, for use in the interpolated string
 # rule. (This is only significant as of *Layer 2*.)
