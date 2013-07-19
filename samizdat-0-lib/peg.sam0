@@ -135,7 +135,7 @@ fn pegMakeStar(rule) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeToken(type) {
-    # This is implemented as, in effect, `(&. &@token .)`, which
+    # This is implemented as, in effect, `(token=. { check(token) })`, which
     # allows us to keep the main matcher function here much simpler.
 
     fn match(item) {
@@ -143,7 +143,7 @@ fn pegMakeToken(type) {
             { <> item }
     };
 
-    <> pegMakeMainSequence(pegRuleLookaheadAny, pegMakeCode(match), pegRuleAny)
+    <> pegMakeMainSequence(pegRuleAny, pegMakeCode(match))
 };
 
 # Helper for `pegMake*Set*`, which takes a `sense` argument and produces the
