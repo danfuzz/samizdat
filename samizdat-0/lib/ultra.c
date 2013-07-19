@@ -108,6 +108,28 @@ PRIM_IMPL(makeMapReversed) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeMapping) {
+    requireAtLeast(argCount, 1);
+
+    zint size = argCount - 1;
+    zvalue keys = args[0];
+    zvalue value = args[size];
+
+    if (size == 0) {
+        return EMPTY_MAP;
+    }
+
+    zmapping mappings[size];
+
+    for (zint i = 0; i < size; i++) {
+        mappings[i].key = args[i];
+        mappings[i].value = value;
+    }
+
+    return datMapAddArray(EMPTY_MAP, size, mappings);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeToken) {
     requireRange(argCount, 1, 2);
 
