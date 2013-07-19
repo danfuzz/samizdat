@@ -615,8 +615,8 @@ parChoicePex(implChoicePex);
 fn reportError(pending) {
     io0Note("Pending tokens:");
 
-    doFilter(pending)
-        { token :: io0Note(stringAdd("    ", sourceString(token))) };
+    doFilter(pending, inclusiveRange(1, 1, 50))
+        { token, . :: io0Note(stringAdd("    ", sourceString(token))) };
 
     io0Die("\nExtra tokens at end of program.")
 };
