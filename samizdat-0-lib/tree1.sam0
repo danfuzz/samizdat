@@ -73,6 +73,7 @@ fn makeCallNonlocalExit(name, expression?) {
 def parProgramBody = forwardFunction();
 def parExpression = forwardFunction();
 def parParser = forwardFunction();
+def parVoidableExpression = forwardFunction();
 
 # Documented in Samizdat Layer 0 spec.
 def parYieldDef = pegMakeMainSequence(
@@ -235,15 +236,6 @@ def parIdentifierString = pegMakeMainSequence(
                             { <> makeLiteral(type) }
                     }
                 })));
-
-# Documented in Samizdat Layer 0 spec.
-def parVoidableExpression = pegMakeMainSequence(
-    pegMakeChoice(
-        pegMakeSequence(
-            pegMakeToken("&"),
-            parExpression,
-            pegMakeCode { ., ex :: <> @[voidable: ex] }),
-        parExpression));
 
 # Documented in Samizdat Layer 0 spec.
 def parUnadornedList = pegMakeMainSequence(
@@ -411,6 +403,16 @@ def parUnaryExpression = pegMakeMainSequence(
         <> doReduce1(listReverse(prefixes), withPosts)
             { op, result :: <> op(result) }
     });
+
+# Documented in Samizdat Layer 0 spec.
+def implVoidableExpression = pegMakeMainSequence(
+    pegMakeChoice(
+        pegMakeSequence(
+            pegMakeToken("&"),
+            parUnaryExpression,
+            pegMakeCode { ., ex :: <> @[voidable: ex] }),
+        parExpression));
+parVoidableExpression(implVoidableExpression);
 
 # Documented in Samizdat Layer 0 spec.
 def implExpression = pegMakeChoice(

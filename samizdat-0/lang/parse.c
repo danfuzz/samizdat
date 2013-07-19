@@ -305,6 +305,9 @@ DEF_PARSE(programBody);
 DEF_PARSE(expression);
 
 /* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(voidableExpression);
+
+/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(yieldDef) {
     MARK();
 
@@ -562,20 +565,6 @@ DEF_PARSE(identifierString) {
     }
 
     return makeLiteral(value);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(voidableExpression) {
-    MARK();
-
-    bool voidable = (MATCH(CH_AND) != NULL);
-    zvalue ex = PARSE_OR_REJECT(expression);
-
-    if (voidable) {
-        return datTokenFrom(STR_VOIDABLE, ex);
-    } else {
-        return ex;
-    }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -860,6 +849,20 @@ DEF_PARSE(unaryExpression) {
     }
 
     return result;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(voidableExpression) {
+    MARK();
+
+    bool voidable = (MATCH(CH_AND) != NULL);
+    zvalue ex = PARSE_OR_REJECT(unaryExpression);
+
+    if (voidable) {
+        return datTokenFrom(STR_VOIDABLE, ex);
+    } else {
+        return ex;
+    }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
