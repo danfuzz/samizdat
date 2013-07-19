@@ -142,16 +142,6 @@ fn makeBinaryCalls(firstEx, opExList) {
     }
 };
 
-# Reports the given list of pending tokens as part of error processing.
-fn reportError(pending) {
-    io0Note("Pending tokens:");
-
-    doFilter(pending)
-        { token :: io0Note(stringAdd("    ", sourceString(token))) };
-
-    io0Die("\nExtra tokens at end of program.")
-};
-
 
 #
 # Grammar rules
@@ -165,7 +155,7 @@ fn reportError(pending) {
 #
 
 # Forward declaration required for layer 2.
-def parInterpolatedString = forwardFunction();
+def parAtom2 = forwardFunction();
 
 # Forward declarations.
 def parProgramBody = forwardFunction();
@@ -560,7 +550,7 @@ def parAtom = {/
     &@"{/" parParser
 |
     # Defined by *Samizdat Layer 2*.
-    &@interpolatedString parInterpolatedString
+    &[@interpolatedString @"(" @"["] parAtom2
 /};
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
@@ -885,7 +875,7 @@ def parStringInterpolation = {/
 # stringAdd("string", fmt1((expr...)?*), fmt2({ block... }()?*))
 # ```
 #
-def implInterpolatedString = {/
+def parInterpolatedString = {/
     token = @interpolatedString
 
     {
@@ -917,7 +907,56 @@ def implInterpolatedString = {/
         <> makeCallName("stringAdd", elems*)
     }
 /};
-parInterpolatedString(implInterpolatedString);
+
+# Helper for `parComprehension`, which parses the body of a comprehension.
+def parComprehensionBody = {/
+    ()
+    # TODO
+/};
+
+# Parses a comprehension expression, which can result in either a
+# list or a generator, depending on choice of delimiter.
+#
+# The translation is along the lines of:
+#
+# ```
+# (name1 in expr1, name2 in expr2 :: filterExpr)
+# ```
+# =>
+# ```
+# filterGenerator(expr1, expr2)
+#     { name1, name2 :: <> filterExpr }
+# ```
+#
+# ```
+# [name1 in expr1, name2 in expr2 :: filterExpr]
+# ```
+# =>
+# ```
+# collectFilter(expr1, expr2)
+#     { name1, name2 :: <> filterExpr }
+# ```
+def parComprehension = {/
+    @"("
+    body = parComprehensionBody
+    @")"
+
+    { <> makeCallName("filterGenerator", body*) }
+|
+    @"["
+    body = parComprehensionBody
+    @"]"
+
+    { <> makeCallName("collectFilter", body*) }
+/};
+
+# Parses the `atom` variants introduced in *Layer 2*.
+def implAtom2 = {/
+    parInterpolatedString
+|
+    parComprehension
+/};
+parAtom2(implAtom2);
 
 # Parses a non-local exit / return. All of the form matched by this rule
 # have the dual properties of (a) necessarily being at the end of a code
@@ -1720,8 +1759,18 @@ parStatement(implStatement);
 
 
 #
-# Exported functions
+# Exported function, and support thereof
 #
+
+# Reports the given list of pending tokens as part of error processing.
+fn reportError(pending) {
+    io0Note("Pending tokens:");
+
+    doFilter(pending, inclusiveRange(1, 1, 50))
+        { token, . :: io0Note(stringAdd("    ", sourceString(token))) };
+
+    io0Die("\nExtra tokens at end of program.")
+};
 
 # Documented in Samizdat Layer 1 spec.
 fn sam2Tree(program) {
