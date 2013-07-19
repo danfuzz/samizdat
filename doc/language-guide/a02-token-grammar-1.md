@@ -21,20 +21,20 @@ result as tokens of type `error`.
 def KEYWORDS = [def: @def, fn: @fn, return: @return];
 
 # Note: The yielded result is always ignored.
-def whitespace = {/
+def tokWhitespace = {/
     [" " "\n"]
 |
     "#" [! "\n"]* "\n"
 /};
 
-def punctuation = {/
+def tokPunctuation = {/
     "@@" | "::" | ".." | "<>" |
     "{/" | "/}" |                 # These are only needed in *Layer 1*.
     ["&@:.,=-+?;*<>{}()[]" "|!"]  # The latter string is just for *Layer 1*.
 /};
 
 # Note: Additional rules for string character parsing are defined in *Layer 2*.
-def stringPart = {/
+def tokStringPart = {/
     (
         chars = [! "\\" "\"" "\n"]+
         { <> stringFromTokenList(chars) }
@@ -58,14 +58,14 @@ def stringPart = {/
     )
 /};
 
-def string = {/
+def tokString = {/
     "\""
-    chars = stringPart*
+    chars = tokStringPart*
     "\""
     { <> @[string: stringAdd(chars*)] }
 /};
 
-def identifier = {/
+def tokIdentifier = {/
     first = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
     {
@@ -75,13 +75,13 @@ def identifier = {/
     }
 /};
 
-def quotedIdentifier = {/
+def tokQuotedIdentifier = {/
     "\\"
-    s = string
+    s = tokString
     { <> @[identifier: tokenValue(s)] }
 /};
 
-def int = {/
+def tokInt = {/
     digits = (
         ch = ["0".."9"]
         { <> intFromDigitChar(ch) }
@@ -100,12 +100,15 @@ def error = {/
     { <> @[error: ... tokenType(badCh) ...] }
 /};
 
-def token = {/
-    int | punctuation | string | identifier | quotedIdentifier | error
+def tokToken = {/
+    tokInt | tokPunctuation | tokString |
+    tokIdentifier | tokQuotedIdentifier |
+    tokError
 /};
 
-def file = {/
-    tokens=(whitespace* token)* whitespace*
+def tokFile = {/
+    tokens = (whitespace* token)*
+    whitespace*
     { <> tokens }
 /};
 ```
