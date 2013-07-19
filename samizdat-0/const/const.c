@@ -64,6 +64,8 @@ void constInit(void) {
         return;
     }
 
+    zstackPointer save = datFrameStart();
+
     #define STR(name, str) \
         STR_##name = datStringFromUtf8(-1, str); \
         datImmortalize(STR_##name)
@@ -96,6 +98,8 @@ void constInit(void) {
     datImmortalize(CONST_TRUE);
     datImmortalize(EMPTY_LIST);
     datImmortalize(EMPTY_MAP);
+
+    datFrameReturn(save, NULL);
 
     // Force a garbage collection here, mainly to get a reasonably early
     // failure if gc is broken.
