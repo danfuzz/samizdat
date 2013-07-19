@@ -47,6 +47,11 @@ def INT_CHARS = [
 # Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 
+# Processes a list of `stringPart` elements, yielding a literal `string`
+# value. In *Layer 2* (and higher) this can also yield an
+# `interpolatedString` or an `error`.
+def processStringParts = forwardFunction();
+
 # Parses whitespace and comments. **Note:** The yielded result is always
 # ignored.
 def tokWhitespace = {/
@@ -134,66 +139,16 @@ def tokStringPart = {/
 /};
 
 # Parses a quoted string.
-#
-# **Note:** In Layer 2, this rule is expanded to yield either a `@string`
-# token or an `@interpolatedString` token (or an `@error` token).
 def tokString = {/
     "\""
     parts = tokStringPart*
 
     (
         "\""
+        { <> processStringParts(parts) }
     |
         { <> @[error: "Unterminated string literal."] }
     )
-
-    { <out> ::
-        # Handle the empty string as a special case, to make the
-        # reduce below be more straightforward.
-        ifIs { <> eq(parts, []) }
-            { <out> @[string: ""] };
-
-        # Coalesce adjacent literal strings in `parts`. The result is an
-        # `elems` list consisting of multi-character strings and
-        # interpolation maps. This loop also takes care of propagating
-        # any found error as the overall result of this rule.
-        def elems = doReduce1(listButFirst(parts), [listFirst(parts)])
-            { <next> part, result ::
-                ifIs { <> isToken(part) }
-                    {
-                        # Errors come in the form of tokens. (Nothing else
-                        # will be a token.)
-                        <out> part
-                    };
-                ifIs { <> isString(part) }
-                    {
-                        def last = listLast(result);
-                        ifIs { <> isString(last) }
-                            {
-                                # Coalesce adjacent literal string parts.
-                                def newLast = stringAdd(last, part);
-                                <next> [listButLast(result)*, newLast]
-                            }
-                    };
-                <> [result*, part]
-            };
-
-        # Check for a simple result.
-        ifIs { <> eq(lowSize(elems), 1) }
-            {
-                def first = listFirst(elems);
-                ifIs { <> isString(first) }
-                    {
-                        # There's only one element, and it's a string. So,
-                        # we have a simple non-interpolated string, and no
-                        # error. Return it.
-                        <out> @[string: first]
-                    }
-            };
-
-        # At this point, we have a interpolation.
-        <> @[interpolatedString: elems]
-    }
 /};
 
 # Parses an identifier (in the usual form). This also parses keywords.
@@ -280,6 +235,54 @@ fn intFromDigitList(baseSign, digits) {
 
     <> imul(value, isign(baseSign))
 };
+
+fn implProcessStringParts(parts) {
+    # Handle the empty string as a special case, to make the
+    # reduce below be more straightforward.
+    ifIs { <> eq(parts, []) }
+        { <out> @[string: ""] };
+
+    # Coalesce adjacent literal strings in `parts`. The result is an
+    # `elems` list consisting of multi-character strings and
+    # interpolation maps. This loop also takes care of propagating
+    # any found error as the overall result of this rule.
+    def elems = doReduce1(listButFirst(parts), [listFirst(parts)])
+        { <next> part, result ::
+            ifIs { <> isToken(part) }
+                {
+                    # Errors come in the form of tokens. (Nothing else
+                    # will be a token.)
+                    return part
+                };
+            ifIs { <> isString(part) }
+                {
+                    def last = listLast(result);
+                    ifIs { <> isString(last) }
+                        {
+                            # Coalesce adjacent literal string parts.
+                            def newLast = stringAdd(last, part);
+                            <next> [listButLast(result)*, newLast]
+                        }
+                };
+            <> [result*, part]
+        };
+
+    # Check for a simple result.
+    ifIs { <> eq(lowSize(elems), 1) }
+        {
+            def first = listFirst(elems);
+            ifIs { <> isString(first) }
+                {
+                    # There's only one element, and it's a string. So,
+                    # we have a simple non-interpolated string. Return it.
+                    return @[string: first]
+                }
+        };
+
+    # At this point, we have a valid interpolation.
+    <> @[interpolatedString: elems]
+};
+processStringParts(implProcessStringParts);
 
 # Parses a `/* ... */` comment, with nesting.
 def implMultilineComment = {/

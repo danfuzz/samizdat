@@ -41,6 +41,13 @@ def INT_CHARS = [
 # Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 
+# Processes a list of `stringPart` elements, yielding a literal `string`
+# value. In *Layer 2* (and higher) this can also yield an
+# `interpolatedString` or an `error`.
+fn processStringParts(parts) {
+    <> @[string: stringAdd(parts*)]
+};
+
 # Forward declaration of `tokToken`, for use in the interpolated string
 # rule. (This is only significant as of *Layer 2*.)
 def tokToken = forwardFunction();
@@ -52,7 +59,7 @@ def tokWhitespace = {/
 |
     "#" [! "\n"]* "\n"
 #|
-    # Note: Layer 2 defines additional rules here.
+    # Note: Layer 2 introduces additional definitions here.
 /};
 
 # Parses punctuation and operators.
@@ -126,15 +133,16 @@ def tokStringPart = {/
 /};
 
 # Parses a quoted string.
-#
-# **Note:** In Layer 2, this rule is expanded to yield either a `@string`
-# token or an `@interpolatedString` token (or an `@error` token).
 def tokString = {/
     "\""
     parts = tokStringPart*
-    "\""
 
-    { <> @[string: stringAdd(parts*)] }
+    (
+        "\""
+        { <> processStringParts(parts) }
+    |
+        { <> @[error: "Unterminated string literal."] }
+    )
 /};
 
 # Parses an identifier (in the usual form). This also parses keywords.

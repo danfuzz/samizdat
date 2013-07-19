@@ -35,6 +35,11 @@ def INT_CHARS = [
 fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
 
 # Documented in Samizdat Layer 0 spec.
+fn processStringParts(parts) {
+    <> @[string: stringAdd(parts*)]
+};
+
+# Documented in Samizdat Layer 0 spec.
 def tokWhitespace = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeCharSet(" \n"),
@@ -97,10 +102,11 @@ def tokStringPart = pegMakeMainSequence(
 def tokString = pegMakeMainSequence(
     pegMakeToken("\""),
     pegMakeStar(tokStringPart),
-    pegMakeToken("\""),
-    pegMakeCode { ., chars, . ::
-        <> @[string: stringAdd(chars*)]
-    });
+    pegMakeChoice(
+        pegMakeSequence(
+            pegMakeToken("\""),
+            pegMakeCode { ., parts, . :: <> processStringParts(parts) }),
+        pegMakeCode { ., . :: <> @[error: "Unterminated string literal."] }));
 
 # These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
