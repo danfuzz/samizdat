@@ -14,8 +14,8 @@ generator, and one that is surrounded by `[...]` produces an immediate
 list result.
 
 Inside the delimiters, a comprehension consists of one or more
-generator expressions, followed by a yield diamond (`<>`), and finally
-followed by a filtering expression.
+comma-separated generator expressions, followed by a yield diamond (`<>`),
+and finally followed by a filtering expression.
 
 The generator expressions are similar to those used in `for` expressions,
 consisting of an optional name (either an identifier, or `.` to indicate
