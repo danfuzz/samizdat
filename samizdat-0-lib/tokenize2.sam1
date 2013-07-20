@@ -415,10 +415,6 @@ def implStringPart2 = {/
     (
         "/"  { <> "" }
     |
-        # This is the rule that ignores the newline after end-of-line `\`.
-        " "* "\n" " "*
-        { <> "" }
-    |
         "x"
         (
             first = tokHexChar
