@@ -250,7 +250,7 @@ fn implProcessStringParts(parts) {
     # Handle the empty string as a special case, to make the
     # reduce below be more straightforward.
     ifIs { <> eq(parts, []) }
-        { <out> @[string: ""] };
+        { return @[string: ""] };
 
     # Coalesce adjacent literal strings in `parts`. The result is an
     # `elems` list consisting of multi-character strings and
