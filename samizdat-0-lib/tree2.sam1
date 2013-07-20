@@ -968,7 +968,7 @@ def parComprehensionBody = {/
         def genFormals = mapGet(genList, "formals");
         def genInits = mapGet(genList, "inits");
 
-        <> [closureWithFormals(filter, genFormals), genInits*]
+        <> [closureWithFormals(makeThunk(filter), genFormals*), genInits*]
     }
 /};
 
