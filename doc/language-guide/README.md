@@ -13,11 +13,12 @@ Contents:
 * [Expression Operators](04-operators.md)
 * [String Formatting](05-formatting.md)
 * [Control Constructs](06-control.md)
-* [Parsing](07-parsing.md)
-* [Modules](08-modules.md)
-* [Actors](09-actors.md)
-* [Execution Parse Trees](10-execution-trees.md)
-* [Parser Parse Trees](11-parser-trees.md)
+* [Comprehensions and Filtering](07-comprehension.md)
+* [Parsing](08-parsing.md)
+* [Modules](09-modules.md)
+* [Actors](10-actors.md)
+* [Execution Parse Trees](11-execution-trees.md)
+* [Parser Parse Trees](12-parser-trees.md)
 
 Appendix:
 

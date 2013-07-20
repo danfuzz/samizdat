@@ -11,6 +11,16 @@
 # Helper functions
 #
 
+# Reports the given list of pending tokens as part of error processing.
+fn reportError(pending) {
+    io0Note("Pending tokens:");
+
+    doFilter(pending, inclusiveRange(1, 1, 50))
+        { token, . :: io0Note(stringAdd("    ", sourceString(token))) };
+
+    io0Die("\nExtra tokens at end of program.")
+};
+
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
@@ -476,6 +486,15 @@ def implProgramBody = pegMakeMainSequence(
     });
 parProgramBody(implProgramBody);
 
+# Documented in Samizdat Layer 0 spec.
+def parProgramOrError = pegMakeMainSequence(
+    parProgram,
+    pegMakeOpt(
+        pegMakeMainSequence(
+            pegMakePlus(pegRuleAny),
+            pegMakeCode { pending :: reportError(pending) })),
+    pegMakeCode { prog, . :: <> prog });
+
 
 #
 # Samizdat Layer 1 definitions
@@ -610,25 +629,6 @@ parChoicePex(implChoicePex);
 #
 # Exported function, and support thereof
 #
-
-# Reports the given list of pending tokens as part of error processing.
-fn reportError(pending) {
-    io0Note("Pending tokens:");
-
-    doFilter(pending)
-        { token :: io0Note(stringAdd("    ", sourceString(token))) };
-
-    io0Die("\nExtra tokens at end of program.")
-};
-
-# Documented in Samizdat Layer 0 spec.
-def parProgramOrError = pegMakeMainSequence(
-    parProgram,
-    pegMakeOpt(
-        pegMakeMainSequence(
-            pegMakePlus(pegRuleAny),
-            pegMakeCode { pending :: reportError(pending) })),
-    pegMakeCode { prog, . :: <> prog });
 
 # Documented in Samizdat Layer 0 spec.
 fn sam1Tree(program) {
