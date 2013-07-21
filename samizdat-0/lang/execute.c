@@ -96,14 +96,17 @@ static void bindArguments(Frame *frame, zvalue node,
     }
 
     zint formalsSize = datSize(formals);
+    zvalue formalsArr[formalsSize];
     zint argAt = 0;
 
+    datArrayFromList(formalsArr, formals);
+
     for (zint i = 0; i < formalsSize; i++) {
-        zvalue formal = datListNth(formals, i);
+        zvalue formal = formalsArr[i];
         zvalue name = datMapGet(formal, STR_NAME);
         zvalue repeat = datMapGet(formal, STR_REPEAT);
         bool ignore = (name == NULL);
-        zvalue value = NULL;
+        zvalue value;
 
         if (repeat != NULL) {
             zint count;
@@ -138,9 +141,7 @@ static void bindArguments(Frame *frame, zvalue node,
             if (count == 0) {
                 value = EMPTY_LIST;
             } else {
-                if (!ignore) {
-                    value = datListFromArray(count, &args[argAt]);
-                }
+                value = ignore ? NULL : datListFromArray(count, &args[argAt]);
                 argAt += count;
             }
         } else if (argAt >= argCount) {
