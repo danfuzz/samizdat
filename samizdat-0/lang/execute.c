@@ -327,18 +327,20 @@ static zvalue execCall(Frame *frame, zvalue call) {
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = datListNth(actuals, i);
+        zvalue oneType = datTokenType(one);
         bool voidable;
         bool interpolate;
         zvalue eval;
 
-        if (datTokenTypeIs(one, STR_VOIDABLE)) {
+        if (datEq(oneType, STR_VOIDABLE)) {
             one = datTokenValue(one);
+            oneType = datTokenType(one);
             voidable = true;
         } else {
             voidable = false;
         }
 
-        if (datTokenTypeIs(one, STR_INTERPOLATE)) {
+        if (datEq(oneType, STR_INTERPOLATE)) {
             one = datTokenValue(one);
             interpolate = true;
         } else {
