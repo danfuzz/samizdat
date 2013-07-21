@@ -108,19 +108,31 @@ static void bindArguments(Frame *frame, zvalue node,
         if (repeat != NULL) {
             zint count;
 
-            if (datEq(repeat, STR_CH_STAR)) {
-                count = argCount - argAt;
-            } else if (datEq(repeat, STR_CH_PLUS)) {
-                if (argAt >= argCount) {
-                    die("Function called with too few arguments "
-                        "(plus argument): %lld",
-                        argCount);
-                }
-                count = argCount - argAt;
-            } else if (datEq(repeat, STR_CH_QMARK)) {
-                count = (argAt >= argCount) ? 0 : 1;
-            } else {
+            if ((datSize(repeat) != 1) || !datTypeIs(repeat, DAT_STRING)) {
                 die("Unknown repeat modifier.");
+            }
+
+            switch (datStringNth(repeat, 0)) {
+                case '*': {
+                    count = argCount - argAt;
+                    break;
+                }
+                case '+': {
+                    if (argAt >= argCount) {
+                        die("Function called with too few arguments "
+                            "(plus argument): %lld",
+                            argCount);
+                    }
+                    count = argCount - argAt;
+                    break;
+                }
+                case '?': {
+                    count = (argAt >= argCount) ? 0 : 1;
+                    break;
+                }
+                default: {
+                    die("Unknown repeat modifier.");
+                }
             }
 
             if (count == 0) {
