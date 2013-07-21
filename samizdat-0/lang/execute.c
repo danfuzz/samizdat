@@ -109,7 +109,7 @@ static void bindArguments(Frame *frame, zvalue node,
             zint count;
 
             if ((datSize(repeat) != 1) || !datTypeIs(repeat, DAT_STRING)) {
-                die("Unknown repeat modifier.");
+                die("Invalid repeat modifier (non-string).");
             }
 
             switch (datStringNth(repeat, 0)) {
@@ -131,7 +131,7 @@ static void bindArguments(Frame *frame, zvalue node,
                     break;
                 }
                 default: {
-                    die("Unknown repeat modifier.");
+                    die("Invalid repeat modifier.");
                 }
             }
 
@@ -441,21 +441,44 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     zvalue type = datTokenType(e);
 
-    if (datEq(type, STR_LITERAL))
-        return datTokenValue(e);
-    else if (datEq(type, STR_VAR_REF))
-        return execVarRef(frame, e);
-    else if (datEq(type, STR_CALL))
-        return execCall(frame, e);
-    else if (datEq(type, STR_CLOSURE))
-        return execClosure(frame, e);
-    else if (datEq(type, STR_EXPRESSION))
-        return execExpressionVoidOk(frame, datTokenValue(e));
-    else if (datEq(type, STR_INTERPOLATE))
-        return execInterpolate(frame, e);
-    else {
-        die("Invalid expression type.");
+    if (!datTypeIs(type, DAT_STRING)) {
+        die("Invalid expression type (non-string).");
     }
+
+    // Switching on the size of the type is a bit of a hack. It lets us
+    // avoid having to have a single big cascading `if` with a lot of
+    // `datEq` calls.
+    switch (datSize(type)) {
+        case 4: {
+            if (datEq(type, STR_CALL))
+                return execCall(frame, e);
+            break;
+        }
+        case 6: {
+            if (datEq(type, STR_VAR_REF))
+                return execVarRef(frame, e);
+            break;
+        }
+        case 7: {
+            if (datEq(type, STR_LITERAL))
+                return datTokenValue(e);
+            else if (datEq(type, STR_CLOSURE))
+                return execClosure(frame, e);
+            break;
+        }
+        case 10: {
+            if (datEq(type, STR_EXPRESSION))
+                return execExpressionVoidOk(frame, datTokenValue(e));
+            break;
+        }
+        case 11: {
+            if (datEq(type, STR_INTERPOLATE))
+                return execInterpolate(frame, e);
+            break;
+        }
+    }
+
+    die("Invalid expression type.");
 }
 
 /**
