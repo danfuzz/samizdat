@@ -117,6 +117,15 @@ fn pegMakeSequence(rules*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn pegMakeMainChoice(rules*) {
+    def subRule = pegMakeChoice(rules*);
+
+    <> { box, input, .* ::
+        <> subRule(box, input)
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn pegMakeMainSequence(rules*) {
     def subRule = pegMakeSequence(rules*);
 
@@ -364,6 +373,7 @@ fn pegGenerator(rule, input) {
     pegMakeCode: pegMakeCode,
     pegMakeLookaheadFailure: pegMakeLookaheadFailure,
     pegMakeLookaheadSuccess: pegMakeLookaheadSuccess,
+    pegMakeMainChoice: pegMakeMainChoice,
     pegMakeMainSequence: pegMakeMainSequence,
     pegMakeOpt: pegMakeOpt,
     pegMakePlus: pegMakePlus,

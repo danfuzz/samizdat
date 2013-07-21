@@ -148,6 +148,14 @@ rule also succeeds, yielding the same value but *not* consuming any input.
 
 This is equivalent to the syntactic form `{/ &rule /}`.
 
+#### `pegMakeMainChoice(rules*) <> rule`
+
+Makes and returns a parser rule which tries the given rules in order until
+one succeeds. This is identical to `pegMakeChoice` (see which), except that
+it provides a fresh (empty) parsed item scope.
+
+This is equivalent to the syntactic form `{/ rule1 | rule2 | etc /}`.
+
 #### `pegMakeMainSequence(rules*) <> rule`
 
 Makes and returns a parser rule which runs a sequence of given other rules
