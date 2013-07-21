@@ -19,7 +19,7 @@
 static zvalue execExpression(Frame *frame, zvalue expression);
 static zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
 static void execVarDef(Frame *frame, zvalue varDef);
-static void execFnDefs(Frame *frame, zvalue statements, zint start, zint end);
+static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
 
 /**
  * Closure, that is, a function and its associated immutable bindings.
@@ -191,8 +191,11 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // Evaluate the statements, updating the frame as needed.
 
     zint statementsSize = datSize(statements);
+    zvalue statementsArr[statementsSize];
+    datArrayFromList(statementsArr, statements);
+
     for (zint i = 0; i < statementsSize; i++) {
-        zvalue one = datListNth(statements, i);
+        zvalue one = statementsArr[i];
         zvalue oneType = datTokenType(one);
 
         // Switch on size of type string to avoid gratuitous `datEq` tests.
@@ -203,12 +206,12 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                     // process them all together.
                     zint end = i + 1;
                     for (/*end*/; end < statementsSize; end++) {
-                        zvalue one = datListNth(statements, end);
+                        zvalue one = statementsArr[end];
                         if (!datTokenTypeIs(one, STR_FN_DEF)) {
                             break;
                         }
                     }
-                    execFnDefs(&frame, statements, i, end);
+                    execFnDefs(&frame, end - i, &statementsArr[i]);
                     i = end - 1;
                 } else {
                     execExpressionVoidOk(&frame, one);
@@ -305,12 +308,11 @@ static void execVarDef(Frame *frame, zvalue varDef) {
  * from the `start` index (inclusive) to the `end` index (exclusive) in the
  * given `statements` list.
  */
-static void execFnDefs(Frame *frame, zvalue statements, zint start, zint end) {
-    zint size = end - start;
+static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
     Closure *closures[size];
 
     for (zint i = 0; i < size; i++) {
-        zvalue one = datListNth(statements, start + i);
+        zvalue one = statements[i];
         zvalue fnMap = datTokenValue(one);
         zvalue name = datMapGet(fnMap, STR_NAME);
         frameAdd(frame, name, buildClosure(&closures[i], frame, one));
