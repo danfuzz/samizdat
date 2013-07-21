@@ -441,10 +441,6 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     zvalue type = datTokenType(e);
 
-    if (!datTypeIs(type, DAT_STRING)) {
-        die("Invalid expression type (non-string).");
-    }
-
     // Switching on the size of the type is a bit of a hack. It lets us
     // avoid having to have a single big cascading `if` with a lot of
     // `datEq` calls.
