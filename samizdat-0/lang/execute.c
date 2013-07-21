@@ -317,7 +317,10 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zvalue functionId = execExpression(frame, function);
 
     zint argCount = datSize(actuals);
+    zvalue actualsArr[argCount];
     zvalue args[argCount];
+
+    datArrayFromList(actualsArr, actuals);
 
     // If there are any interpolated arguments, then `interpolateAny` is
     // set to `true`, and `fullCount` indicates the count of arguments
@@ -326,14 +329,17 @@ static zvalue execCall(Frame *frame, zvalue call) {
     bool interpolateAny = false;
 
     for (zint i = 0; i < argCount; i++) {
-        zvalue one = datListNth(actuals, i);
+        zvalue one = actualsArr[i];
         zvalue oneType = datTokenType(one);
         bool voidable;
         bool interpolate;
         zvalue eval;
 
         if (datEq(oneType, STR_VOIDABLE)) {
-            one = datTokenValue(one);
+            // We replace the value in `actualsArr` with the voidable
+            // payload in order to keep the follow-up interpolation loop
+            // simpler.
+            one = actualsArr[i] = datTokenValue(one);
             oneType = datTokenType(one);
             voidable = true;
         } else {
@@ -373,7 +379,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
 
         // Build the flattened argument list.
         for (zint i = 0; i < argCount; i++) {
-            zvalue oneNode = datListNth(actuals, i);
+            zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
             if (datTokenTypeIs(oneNode, STR_INTERPOLATE)) {
                 datArrayFromList(&fullArgs[at], oneArg);
