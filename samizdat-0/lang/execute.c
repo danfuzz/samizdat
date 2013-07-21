@@ -193,23 +193,39 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     zint statementsSize = datSize(statements);
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = datListNth(statements, i);
+        zvalue oneType = datTokenType(one);
 
-        if (datTokenTypeIs(one, STR_FN_DEF)) {
-            // Look for immediately adjacent `fnDef` nodes, and process
-            // them all together.
-            zint end = i + 1;
-            for (/*end*/; end < statementsSize; end++) {
-                zvalue one = datListNth(statements, end);
-                if (!datTokenTypeIs(one, STR_FN_DEF)) {
-                    break;
+        // Switch on size of type string to avoid gratuitous `datEq` tests.
+        switch (datSize(oneType)) {
+            case 5: {
+                if (datEq(oneType, STR_FN_DEF)) {
+                    // Look for immediately adjacent `fnDef` nodes, and
+                    // process them all together.
+                    zint end = i + 1;
+                    for (/*end*/; end < statementsSize; end++) {
+                        zvalue one = datListNth(statements, end);
+                        if (!datTokenTypeIs(one, STR_FN_DEF)) {
+                            break;
+                        }
+                    }
+                    execFnDefs(&frame, statements, i, end);
+                    i = end - 1;
+                } else {
+                    execExpressionVoidOk(&frame, one);
                 }
+                break;
             }
-            execFnDefs(&frame, statements, i, end);
-            i = end - 1;
-        } else if (datTokenTypeIs(one, STR_VAR_DEF)) {
-            execVarDef(&frame, one);
-        } else {
-            execExpressionVoidOk(&frame, one);
+            case 6: {
+                if (datEq(oneType, STR_VAR_DEF)) {
+                    execVarDef(&frame, one);
+                } else {
+                    execExpressionVoidOk(&frame, one);
+                }
+                break;
+            }
+            default: {
+                execExpressionVoidOk(&frame, one);
+            }
         }
     }
 
