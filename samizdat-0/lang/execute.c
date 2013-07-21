@@ -303,7 +303,6 @@ static void execFnDefs(Frame *frame, zvalue statements, zint start, zint end) {
  * Executes a `closure` form.
  */
 static zvalue execClosure(Frame *frame, zvalue closureNode) {
-    datTokenAssertType(closureNode, STR_CLOSURE);
     return buildClosure(NULL, frame, closureNode);
 }
 
@@ -311,7 +310,6 @@ static zvalue execClosure(Frame *frame, zvalue closureNode) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    datTokenAssertType(call, STR_CALL);
     call = datTokenValue(call);
 
     zvalue function = datMapGet(call, STR_FUNCTION);
@@ -394,8 +392,6 @@ static zvalue execCall(Frame *frame, zvalue call) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    datTokenAssertType(varRef, STR_VAR_REF);
-
     zvalue name = datTokenValue(varRef);
     return frameGet(frame, name);
 }
@@ -404,8 +400,6 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
  * Executes an `interpolate` form.
  */
 static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
-    datTokenAssertType(interpolate, STR_INTERPOLATE);
-
     zvalue result = execExpressionVoidOk(frame, datTokenValue(interpolate));
 
     if (result == NULL) {
@@ -428,17 +422,19 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    if (datTokenTypeIs(e, STR_LITERAL))
+    zvalue type = datTokenType(e);
+
+    if (datEq(type, STR_LITERAL))
         return datTokenValue(e);
-    else if (datTokenTypeIs(e, STR_VAR_REF))
+    else if (datEq(type, STR_VAR_REF))
         return execVarRef(frame, e);
-    else if (datTokenTypeIs(e, STR_CALL))
+    else if (datEq(type, STR_CALL))
         return execCall(frame, e);
-    else if (datTokenTypeIs(e, STR_CLOSURE))
+    else if (datEq(type, STR_CLOSURE))
         return execClosure(frame, e);
-    else if (datTokenTypeIs(e, STR_EXPRESSION))
+    else if (datEq(type, STR_EXPRESSION))
         return execExpressionVoidOk(frame, datTokenValue(e));
-    else if (datTokenTypeIs(e, STR_INTERPOLATE))
+    else if (datEq(type, STR_INTERPOLATE))
         return execInterpolate(frame, e);
     else {
         die("Invalid expression type.");
