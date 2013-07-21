@@ -41,10 +41,14 @@ in generated order, into a list, returning that list.
 
 #### `doFilter(filterFunction, generators*) <> !.`
 
-Creates a filter generator over the indicated generators, and repeatedly
-calls it until it is voided. This function always returns void.
+Iterates over the given generators, calling the given `filterFunction`
+on generated items, iterating until at least one of the generators
+is voided. The results from calling the `filterFunction` (if any) are
+discarded. This function always returns void.
 
-This is a convenient and idiomatic shorthand for saying something like:
+This is equivalent to calling `doGenerator` on a filter generator
+constructed with the same arguments as a call to this function,
+that is, something like:
 
 ```
 doGenerator(filterGenerator(generator, ...) { ... code ... })
