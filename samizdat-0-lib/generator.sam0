@@ -186,7 +186,19 @@ fn collectGenerator(generator) {
 
 # Documented in Samizdat Layer 0 spec.
 fn doFilter(filterFunction, generators*) {
-    doGenerator(filterGenerator(filterFunction, generators*))
+    loopReduce(paraGenerator(generators*))
+        { gen ::
+            def box = yieldBox();
+            <> ifValue { <> gen(box) }
+                { nextGenerator ::
+                    filterFunction(boxGet(box)*);
+                    <> [nextGenerator]
+                }
+                {
+                    # The inner generator was voided.
+                    return
+                }
+        }
 };
 
 # Documented in Samizdat Layer 0 spec.
