@@ -20,16 +20,22 @@ def BOOTSTRAP_FILES = [
 # the second can depend on primitives and the first, etc.
 def MANIFEST = [
     # Layer 0 in-language core library.
+
+    # Layer 0: Constant value definitions.
     "entityMap.sam0",
     "const.sam0",
+
+    # Layer 0: Simple functions. These only rely on primitive functions.
     "combinator.sam0",
     "order.sam0",
     "type.sam0",
     "int.sam0",
     "list.sam0",
-    "generator.sam0",
     "boolean.sam0",
     "code.sam0",
+
+    # Layer 0: Complicated functions
+    "generator.sam0",
     "string.sam0",
     "format.sam0",
     "peg.sam0",
