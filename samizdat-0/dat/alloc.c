@@ -283,11 +283,11 @@ void datAssertValid(zvalue value) {
 
     switch (value->type) {
         case DAT_INT:
-        case DAT_STRING:
         case DAT_LIST:
         case DAT_MAP:
-        case DAT_UNIQLET:
-        case DAT_TOKEN: {
+        case DAT_STRING:
+        case DAT_TOKEN:
+        case DAT_UNIQLET: {
             break;
         }
         default: {
@@ -371,8 +371,8 @@ void datMark(zvalue value) {
     switch (value->type) {
         case DAT_LIST:    { datListMark(value);    break; }
         case DAT_MAP:     { datMapMark(value);     break; }
-        case DAT_UNIQLET: { datUniqletMark(value); break; }
         case DAT_TOKEN:   { datTokenMark(value);   break; }
+        case DAT_UNIQLET: { datUniqletMark(value); break; }
         default: {
             // Nothing to do here. The other types don't need sub-marking.
         }
