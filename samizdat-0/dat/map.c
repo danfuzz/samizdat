@@ -244,12 +244,6 @@ zvalue datMapGet(zvalue map, zvalue key) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMapKey(zvalue map) {
-    datAssertMapSize1(map);
-    return mapElems(map)[0].key;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 zvalue datMapNth(zvalue map, zint n) {
     datAssertMap(map);
 
@@ -306,7 +300,13 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMapValue(zvalue map) {
+zvalue datMappingKey(zvalue map) {
+    datAssertMapSize1(map);
+    return mapElems(map)[0].key;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue datMappingValue(zvalue map) {
     datAssertMapSize1(map);
     return mapElems(map)[0].value;
 }
