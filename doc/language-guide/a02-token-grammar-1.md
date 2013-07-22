@@ -39,7 +39,9 @@ def INT_CHARS = [
 ];
 
 # Given a decimal digit, returns the digit value.
-fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
+fn intFromDigitChar(ch) {
+    <> mapGet(INT_CHARS, tokenType(ch))
+};
 
 # Processes a list of `stringPart` elements, yielding a literal `string`
 # value. In *Layer 2* (and higher) this can also yield an

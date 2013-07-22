@@ -32,7 +32,9 @@ def INT_CHARS = [
 ];
 
 # Documented in Samizdat Layer 0 spec.
-fn intFromDigitChar(ch) { <> mapGet(INT_CHARS, tokenType(ch)) };
+fn intFromDigitChar(ch) {
+    <> mapGet(INT_CHARS, tokenType(ch))
+};
 
 # Documented in Samizdat Layer 0 spec.
 fn processStringParts(parts) {
@@ -132,9 +134,7 @@ def tokIdentifier = pegMakeMainSequence(
 def tokQuotedIdentifier = pegMakeMainSequence(
     pegMakeString("\\"),
     tokString,
-    pegMakeCode { ., s ::
-        <> @[identifier: (tokenValue(s))]
-    });
+    pegMakeCode { ., s :: <> @[identifier: (tokenValue(s))] });
 
 # Documented in Samizdat Layer 0 spec.
 def tokError = pegMakeMainSequence(
@@ -161,9 +161,7 @@ def tokFile = pegMakeMainSequence(
             tokOptWhitespace,
             tokToken)),
     tokOptWhitespace,
-    pegMakeCode { tokens, . ::
-        <> tokens
-    });
+    pegMakeCode { tokens, . :: <> tokens });
 
 
 #
