@@ -172,12 +172,6 @@ void datAssertNthOrSize(zvalue value, zint n);
 void datAssertSliceRange(zvalue value, zint start, zint end);
 
 /**
- * If the given pointer is reasonably believed to be a zvalue, returns it;
- * otherwise returns `NULL`. This is used for conservative stack scanning.
- */
-zvalue datConservativeValueCast(void *maybeValue);
-
-/**
  * Returns whether the given value (which must be valid) has an
  * `n`th element, according to its defined size. This is only
  * useful with some types.

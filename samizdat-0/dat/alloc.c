@@ -57,27 +57,32 @@ static bool isAligned(void *maybeValue) {
 }
 
 /**
- * Check the gc links on a value.
+ * Asserts that the value is valid, with thorough (and slow) checking.
  */
-static void checkLinks(zvalue value) {
-    GcLinks *links = &value->links;
-
-    if ((links->next->prev != links) || (links->prev->next != links)) {
-        die("Link corruption.");
-    }
-}
-
-/**
- * Asserts that the value is valid, with thorough (and slow)
- * checking.
- */
-static void thoroughlyValidate(zvalue value) {
-    if (value == NULL) {
-        die("NULL value.");
+static void thoroughlyValidate(zvalue maybeValue) {
+    if (maybeValue == NULL) {
+        die("Invalid value pointer: NULL");
     }
 
-    if (datConservativeValueCast(value) == NULL) {
-        die("Invalid value pointer: %p", value);
+    if (!isAligned(maybeValue)) {
+        die("Invalid value pointer (mis-aligned): %p", maybeValue);
+    }
+
+    if (!utilIsHeapAllocated(maybeValue)) {
+        die("Invalid value pointer (not in heap): %p", maybeValue);
+    }
+
+    if (maybeValue->magic != DAT_VALUE_MAGIC) {
+        die("Invalid value pointer (incorrect magic): %p", maybeValue);
+    }
+
+    GcLinks *links = &maybeValue->links;
+
+    if (!(isAligned(links->next) &&
+          isAligned(links->prev) &&
+          (links == links->next->prev) &&
+          (links == links->prev->next))) {
+        die("Invalid value pointer (invalid links): %p", maybeValue);
     }
 }
 
@@ -263,30 +268,6 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     sanityCheck(false);
 
     return result;
-}
-
-/* Documented in header. */
-zvalue datConservativeValueCast(void *maybeValue) {
-    if (maybeValue == NULL) {
-        return NULL;
-    }
-
-    if (!(isAligned(maybeValue) && utilIsHeapAllocated(maybeValue))) {
-        return NULL;
-    }
-
-    zvalue value = maybeValue;
-    GcLinks *links = &value->links;
-
-    if (!((value->magic == DAT_VALUE_MAGIC) &&
-          isAligned(links->next) &&
-          isAligned(links->prev) &&
-          (links == links->next->prev) &&
-          (links == links->prev->next))) {
-        return NULL;
-    }
-
-    return value;
 }
 
 
