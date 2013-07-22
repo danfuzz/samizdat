@@ -48,7 +48,13 @@ bool datTokenEq(zvalue v1, zvalue v2) {
         return false;
     }
 
-    return (info1->value == NULL) || datEq(info1->value, info2->value);
+    if (info1->value == NULL) {
+        return (info2->value == NULL);
+    } else if (info2->value == NULL) {
+        return false;
+    } else {
+        return datEq(info1->value, info2->value);
+    }
 }
 
 /* Documented in header. */
@@ -110,7 +116,7 @@ zvalue datTokenType(zvalue token) {
 
 /* Documented in header. */
 bool datTokenTypeIs(zvalue token, zvalue type) {
-    return (datEq(datTokenType(token), type));
+    return datEq(datTokenType(token), type);
 }
 
 /* Documented in header. */
