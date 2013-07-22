@@ -19,11 +19,11 @@
 static const char *typeName(ztype type) {
     switch (type) {
         case DAT_INT:     return "int";
-        case DAT_STRING:  return "string";
         case DAT_LIST:    return "list";
         case DAT_MAP:     return "map";
-        case DAT_UNIQLET: return "uniqlet";
+        case DAT_STRING:  return "string";
         case DAT_TOKEN:   return "token";
+        case DAT_UNIQLET: return "uniqlet";
     }
 
     return "<unknown-type>";
