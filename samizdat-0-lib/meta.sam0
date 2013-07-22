@@ -60,6 +60,6 @@ fn metaFunctions(context, fileName) {
 };
 
 <> [
-    makeLibrary: makeLibrary,
+    makeLibrary:   makeLibrary,
     metaFunctions: metaFunctions
 ]

@@ -74,6 +74,6 @@ fn yStarCombinator(functions*) {
 };
 
 <> [
-    yCombinator: yCombinator,
+    yCombinator:     yCombinator,
     yStarCombinator: yStarCombinator
 ]

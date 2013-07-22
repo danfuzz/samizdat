@@ -34,7 +34,7 @@ fn listLast(list, notFound?) {
 
 <> [
     listButFirst: listButFirst,
-    listButLast: listButLast,
-    listFirst: listFirst,
-    listLast: listLast
+    listButLast:  listButLast,
+    listFirst:    listFirst,
+    listLast:     listLast
 ]

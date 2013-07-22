@@ -23,6 +23,6 @@ fn isign(int) {
 };
 
 <> [
-    iabs: iabs,
+    iabs:  iabs,
     isign: isign
 ]
