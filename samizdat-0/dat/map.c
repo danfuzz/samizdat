@@ -41,9 +41,9 @@ static zvalue mapFrom1(zvalue key, zvalue value) {
 }
 
 /**
- * Given a map, find the index of the given key. `map` must be a
- * map. Returns the index of the key or `~insertionIndex` (a
- * negative number) if not found.
+ * Given a map, find the index of the given key. `map` must be a map.
+ * Returns the index of the key if found. If not found, then this returns
+ * `~insertionIndex` (a negative number).
  */
 static zint mapFind(zvalue map, zvalue key) {
     datAssertMap(map);
@@ -55,15 +55,15 @@ static zint mapFind(zvalue map, zvalue key) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        switch (datOrder(key, elems[guess].key)) {;
+        switch (datOrder(key, elems[guess].key)) {
             case ZLESS: max = guess - 1; break;
             case ZMORE: min = guess + 1; break;
             default:    return guess;
         }
     }
 
-    // Not found. The insert point is at `min`. Per the API,
-    // this is represented as `~min` (and not, in particular, as `-max`)
+    // Not found. The insert point is at `min`. Per the API, this is
+    // represented as `~index` (and not, in particular, as `-index`)
     // so that an insertion point of `0` can be unambiguously
     // represented.
 
@@ -269,34 +269,39 @@ zvalue datMapNth(zvalue map, zint n) {
 zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
     datAssertValid(value);
 
-    zint index = mapFind(map, key);
     zint size = datSize(map);
 
     if (size == 0) {
+        datAssertMap(map);
+        datAssertValid(key);
         return mapFrom1(key, value);
     }
 
+    zint index = mapFind(map, key);
     zvalue result;
 
     if (index >= 0) {
         // The key exists in the given map, so we need to perform
         // a replacement.
         result = allocMap(size);
-        memcpy(mapElems(result), mapElems(map),
-               size * sizeof(zmapping));
+        memcpy(mapElems(result), mapElems(map), size * sizeof(zmapping));
     } else {
         // The key wasn't found, so we need to insert a new one.
         index = ~index;
         result = allocMap(size + 1);
-        memcpy(mapElems(result), mapElems(map),
-               index * sizeof(zmapping));
-        memcpy(mapElems(result) + index + 1,
-               mapElems(map) + index,
+
+        zmapping *origElems = mapElems(map);
+        zmapping *resultElems = mapElems(result);
+
+        memcpy(resultElems, origElems, index * sizeof(zmapping));
+        memcpy(&resultElems[index + 1],
+               &origElems[index],
                (size - index) * sizeof(zmapping));
     }
 
-    mapElems(result)[index].key = key;
-    mapElems(result)[index].value = value;
+    zmapping *elem = &mapElems(result)[index];
+    elem->key = key;
+    elem->value = value;
     return result;
 }
 
