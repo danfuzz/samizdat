@@ -1256,19 +1256,12 @@ def parCompareExpression = {/
 # parsed, `formal` is bound to `[:]`.
 def parTestClause = {/
     @"("
-
-    formal = (
-        name = @identifier
-        @"="
-        { <> [name: tokenValue(name)] }
-    |
-        { <> [:] }
-    )
-
+    name = @identifier
+    @"="
     test = parExpression
     @")"
 
-    { <> [formal: formal, test: test] }
+    { <> [formal: [name: tokenValue(name)], test: test] }
 /};
 
 # Parses a clause in a logical-and expression. This is just like
