@@ -41,6 +41,42 @@ static zvalue mapFrom1(zvalue key, zvalue value) {
 }
 
 /**
+ * Allocates and returns a map with up to two mappings. This will
+ * return a single-mapping map if the two keys are the same, in which case
+ * the *second* value is used.
+ */
+static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
+    switch (datOrder(k1, k2)) {
+        case ZLESS: {
+            // Leave the two mappings as-is.
+            break;
+        }
+        case ZMORE: {
+            // Swap the two mappings, so they're in the right order.
+            zvalue tmp = k1;
+            k1 = k2;
+            k2 = tmp;
+            tmp = v1;
+            v1 = v2;
+            v2 = tmp;
+            break;
+        }
+        case ZSAME: {
+            return mapFrom1(k2, v2);
+        }
+    }
+
+    zvalue result = allocMap(2);
+    zmapping *elems = mapElems(result);
+
+    elems[0].key = k1;
+    elems[0].value = v1;
+    elems[1].key = k2;
+    elems[1].value = v2;
+    return result;
+}
+
+/**
  * Given a map, find the index of the given key. `map` must be a map.
  * Returns the index of the key if found. If not found, then this returns
  * `~insertionIndex` (a negative number).
@@ -187,7 +223,7 @@ zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
 
     // Add all the mappings to the result, and sort it using mergesort.
     // Mergesort is stable and operates best on sorted data, and as it
-    // happens the starting map is sorted.
+    // happens the starting map is guaranteed to be sorted.
 
     memcpy(elems, mapElems(map), mapSize * sizeof(zmapping));
     memcpy(&elems[mapSize], mappings, size * sizeof(zmapping));
@@ -267,10 +303,18 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
 
     zint size = datSize(map);
 
-    if (size == 0) {
-        datAssertMap(map);
-        datAssertValid(key);
-        return mapFrom1(key, value);
+    switch (size) {
+        case 0: {
+            datAssertMap(map);
+            datAssertValid(key);
+            return mapFrom1(key, value);
+        }
+        case 1: {
+            datAssertMap(map);
+            datAssertValid(key);
+            zmapping *mapping = mapElems(map);
+            return mapFrom2(mapping->key, mapping->value, key, value);
+        }
     }
 
     zint index = mapFind(map, key);
