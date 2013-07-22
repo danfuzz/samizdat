@@ -441,11 +441,6 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
  */
 
 /**
- * Asserts that the given value is a token whose type is as given.
- */
-void datTokenAssertType(zvalue token, zvalue type);
-
-/**
  * Returns a possibly-valued token. The given value must either
  * be a valid value or `NULL`.
  */

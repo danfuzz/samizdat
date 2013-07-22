@@ -91,13 +91,6 @@ void datTokenMark(zvalue value) {
  */
 
 /* Documented in header. */
-void datTokenAssertType(zvalue token, zvalue type) {
-    if (!datTokenTypeIs(token, type)) {
-        die("Type mismatch.");
-    }
-}
-
-/* Documented in header. */
 zvalue datTokenFrom(zvalue type, zvalue value) {
     datAssertValid(type);
 
