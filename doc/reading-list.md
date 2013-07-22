@@ -75,3 +75,6 @@ design and implementation of *Samizdat*.
 
 * Tradeoffs in Metaprogramming &mdash;
   <http://arxiv.org/abs/cs/0512065>
+
+* Why Programming Languages? &mdash;
+  <http://soft.vub.ac.be/~tvcutsem/invokedynamic/node/11>
