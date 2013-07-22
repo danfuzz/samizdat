@@ -359,7 +359,8 @@
 					<string>(?x)
 						\b(
 						break|collect|continue|def|default|do|else|export|fn|
-						for|if|import|in|module|reduce|return|switch|var|while
+						for|generate|if|import|in|module|reduce|return|
+						switch|var|while
 						)\b
 					</string>
 				</dict>
