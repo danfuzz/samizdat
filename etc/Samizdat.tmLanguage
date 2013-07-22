@@ -358,9 +358,18 @@
 					<key>match</key>
 					<string>(?x)
 						\b(
-						break|collect|continue|def|default|do|else|export|fn|
-						for|generate|if|import|in|module|reduce|return|
-						switch|var|while
+						break|collect|continue|default|do|else|
+						for|generate|if|reduce|return|switch|while
+						)\b
+					</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>keyword.definition</string>
+					<key>match</key>
+					<string>(?x)
+						\b(
+						def|export|fn|import|in|module|var
 						)\b
 					</string>
 				</dict>
