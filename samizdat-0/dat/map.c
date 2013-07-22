@@ -85,12 +85,14 @@ static int mappingOrder(const void *m1, const void *m2) {
 
 /* Documented in header. */
 bool datMapEq(zvalue v1, zvalue v2) {
-    zmapping *e1 = mapElems(v1);
-    zmapping *e2 = mapElems(v2);
+    zmapping *elems1 = mapElems(v1);
+    zmapping *elems2 = mapElems(v2);
     zint size = datSize(v1);
 
     for (zint i = 0; i < size; i++) {
-        if (!(datEq(e1[i].key, e2[i].key) && datEq(e1[i].value, e2[i].value))) {
+        zmapping *e1 = &elems1[i];
+        zmapping *e2 = &elems2[i];
+        if (!(datEq(e1->key, e2->key) && datEq(e1->value, e2->value))) {
             return false;
         }
     }
