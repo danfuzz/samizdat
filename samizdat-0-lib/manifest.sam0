@@ -29,7 +29,6 @@ def MANIFEST = [
     "combinator.sam0",
     "order.sam0",
     "type.sam0",
-    "int.sam0",
     "list.sam0",
     "boolean.sam0",
     "code.sam0",

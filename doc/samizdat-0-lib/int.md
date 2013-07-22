@@ -7,6 +7,11 @@ Ints
 <br><br>
 ### Primitive Definitions
 
+#### `iabs(int) <> int`
+
+Returns the absolute value of the given value. This is `value` itself if
+it is non-negative, or `-value` if it is negative values.
+
 #### `iadd(int1, int2) <> int`
 
 Returns the sum of the given values.
@@ -95,6 +100,11 @@ in bit width, and so there is no way to define such an operation. If
 you need "unsigned" operations, just operate consistently on
 non-negative ints.
 
+#### `isign(int) <> int`
+
+Returns the sign of the given value: `-1` for negative values,
+`1` for positive values, or `0` for `0`.
+
 #### `isub(int1, int2) <> int`
 
 Returns the difference of the given values (first minus second).
@@ -107,12 +117,4 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 <br><br>
 ### In-Language Definitions
 
-#### `iabs(int) <> int`
-
-Returns the absolute value of the given value. This is `value` itself if
-it is non-negative, or `-value` if it is negative values.
-
-#### `isign(int) <> int`
-
-Returns the sign of the given value: `-1` for negative values,
-`1` for positive values, or `0` for `0`.
+(none)

@@ -21,7 +21,6 @@ LIB_FILE(entityMap, sam0);
 LIB_FILE(eval1, sam0);
 LIB_FILE(format, sam0);
 LIB_FILE(generator, sam0);
-LIB_FILE(int, sam0);
 LIB_FILE(list, sam0);
 LIB_FILE(main, sam0);
 LIB_FILE(manifest, sam0);

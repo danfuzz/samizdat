@@ -108,8 +108,10 @@ static zint shl(zint value, zint shift) {
  * spec.
  */
 
-UNARY_PRIM(ineg, -x);
-UNARY_PRIM(inot, ~x);
+UNARY_PRIM(iabs,  (x >= 0) ? x : -x);
+UNARY_PRIM(ineg,  -x);
+UNARY_PRIM(inot,  ~x);
+UNARY_PRIM(isign, (x == 0) ? 0 : ((x > 0) ? 1 : -1));
 
 BINARY_PRIM(iadd, x + y);
 BINARY_PRIM(iand, x & y);
