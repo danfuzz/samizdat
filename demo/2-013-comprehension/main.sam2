@@ -27,16 +27,49 @@ fn msg(header, gen) {
 # Main tests
 #
 
+io0Note("Concise Forms\n");
+
 msg("One-item generator",
     (x in ["a", "b", "c"] <> "~~\(x)~~"));
 
 msg("Two-item generator",
     (foo in 1..10, bar in 100..100..+ <> foo + bar));
 
-msg("One-item list",
+msg("One-item collect",
     [x in ["a", "b", "c"] <> "~~\(x)~~"]);
 
-msg("Two-item list",
+msg("Two-item collect",
     [foo in 1..10, bar in 100..100..+ <> foo + bar]);
+
+io0Note("Extended forms\n");
+
+msg("One-item generator",
+    generate (x in ["a", "b", "c"])
+        { <> "~~\(x)~~" }
+    );
+
+msg("Two-item generator",
+    generate (foo in 1..10, bar in 100..100..+)
+        { <> foo + bar }
+    );
+
+msg("One-item collect",
+    collect (x in ["a", "b", "c"])
+        { <> "~~\(x)~~" }
+    );
+
+msg("Two-item collect",
+    collect (foo in 1..10, bar in 100..100..+)
+        { <> foo + bar }
+    );
+
+msg("Three-item multi-line collect",
+    collect (a in 0..4, b in 50..10..90, c in 300..100..700)
+        {
+            def sum = a + b + c;
+            def evenOdd = ((sum % 2) == 0) & "Even" | "Odd";
+            <> "\(evenOdd)\(sum)"
+        }
+    );
 
 <> 0
