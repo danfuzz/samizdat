@@ -12,9 +12,26 @@
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listAdd) {
-    zvalue result = EMPTY_LIST;
+    // Special case code for the common and easy cases.
+    switch (argCount) {
+        case 0: {
+            return EMPTY_LIST;
+        }
+        case 1: {
+            datAssertList(args[0]);
+            return args[0];
+        }
+        case 2: {
+            return datListAdd(args[0], args[1]);
+        }
+    }
 
-    for (zint i = 0; i < argCount; i++) {
+    // The general case. This isn't particularly fancy, because in practice
+    // (as of this writing) it barely ever gets used.
+
+    zvalue result = args[0];
+
+    for (zint i = 1; i < argCount; i++) {
         result = datListAdd(result, args[i]);
     }
 
