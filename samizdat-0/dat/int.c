@@ -109,11 +109,6 @@ bool datIntGetBit(zvalue intval, zint n) {
 }
 
 /* Documented in header. */
-bool datIntSign(zvalue intval) {
-    return datIntGetBit(intval, MAX_BITS - 1);
-}
-
-/* Documented in header. */
 zint datZintFromInt(zvalue intval) {
     datAssertInt(intval);
     return intValue(intval);

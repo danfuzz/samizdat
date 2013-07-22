@@ -187,12 +187,6 @@ zvalue datIntFromZint(zint value);
 bool datIntGetBit(zvalue intval, zint n);
 
 /**
- * Gets the sign of the given int. `intval` must be an
- * int. Returns `false` for non-negative, and `true` for negative.
- */
-bool datIntSign(zvalue intval);
-
-/**
  * Gets a `zint` equal to the given int value. `intval` must be an
  * int. It is an error if the value is out of range.
  */
