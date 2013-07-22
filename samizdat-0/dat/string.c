@@ -172,3 +172,10 @@ zint datUtf8SizeFromString(zvalue string) {
 
     return result;
 }
+
+/* Documented in header. */
+void datZcharsFromString(zchar *result, zvalue string) {
+    datAssertString(string);
+
+    memcpy(result, stringElems(string), datSize(string) * sizeof(zchar));
+}

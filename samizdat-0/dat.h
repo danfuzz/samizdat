@@ -256,6 +256,12 @@ void datUtf8FromString(zint resultSize, char *result, zvalue string);
  */
 zint datUtf8SizeFromString(zvalue string);
 
+/**
+ * Copies all the characters of the given string into the given result
+ * array, which must be sized large enough to hold all of them.
+ */
+void datZcharsFromString(zchar *result, zvalue string);
+
 
 /*
  * List Functions
