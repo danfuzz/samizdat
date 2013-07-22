@@ -419,6 +419,12 @@ def implStringPart2 = {/
     (
         "/"  { <> "" }
     |
+        # This is the rule that ignores an escaped newline, followed by
+        # any number of spaces.
+        "\n"
+        " "*
+        { <> "" }
+    |
         "x"
         (
             first = tokHexChar
