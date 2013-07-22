@@ -23,11 +23,6 @@ typedef zvalue (*znth)(zvalue value, zint n);
 zvalue doNth(znth function, zint argCount, const zvalue *args);
 
 /**
- * Check that the given argument count is even, complaining if not.
- */
-void requireEven(zint argCount);
-
-/**
  * Check the given argument count for an exact required amount,
  * complaining if it doesn't match.
  */

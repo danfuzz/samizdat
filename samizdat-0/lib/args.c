@@ -42,13 +42,6 @@ void requireAtLeast(zint argCount, zint minimum) {
 }
 
 /** Documented in header. */
-void requireEven(zint argCount) {
-    if ((argCount & 0x01) != 0) {
-        die("Invalid non-even argument count for primitive: %lld", argCount);
-    }
-}
-
-/** Documented in header. */
 zvalue doNth(znth function, zint argCount, const zvalue *args) {
     requireRange(argCount, 2, 3);
 
