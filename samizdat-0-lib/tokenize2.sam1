@@ -25,8 +25,8 @@ def KEYWORDS = mapFromGenerator(
     filterGenerator([
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
-        "break", "collect", "continue", "default", "do", "else",
-        "export", "for", "if", "import", "in", "module", "reduce",
+        "break", "collect", "continue", "default", "do", "else", "export",
+        "for", "generate", "if", "import", "in", "module", "reduce",
         "switch", "var", "while"])
         { name :: <> [(name): @[(name)]] });
 
