@@ -77,30 +77,29 @@ def tokInt = pegMakeMainSequence(
     });
 
 # Documented in Samizdat Layer 0 spec.
-def tokStringPart = pegMakeMainSequence(
-    pegMakeChoice(
-        pegMakeSequence(
-            pegMakePlus(pegMakeCharSetComplement("\\\"\n")),
-            pegMakeCode { chars :: <> stringFromTokenList(chars) }),
-        pegMakeSequence(
-            pegMakeString("\n"),
-            pegMakeStar(pegMakeString(" ")),
-            pegMakeCode { ., . :: <> "\n" }),
-        pegMakeSequence(
-            pegMakeString("\\"),
-            pegMakeChoice(
-                pegMakeMainSequence(
-                    pegMakeString("\\"), pegMakeCode { . :: <> "\\" }),
-                pegMakeMainSequence(
-                    pegMakeString("\""), pegMakeCode { . :: <> "\"" }),
-                pegMakeMainSequence(
-                    pegMakeString("n"), pegMakeCode { . :: <> "\n" }),
-                pegMakeMainSequence(
-                    pegMakeString("r"), pegMakeCode { . :: <> "\r" }),
-                pegMakeMainSequence(
-                    pegMakeString("t"), pegMakeCode { . :: <> "\t" }),
-                pegMakeMainSequence(
-                    pegMakeString("0"), pegMakeCode { . :: <> "\0" })))));
+def tokStringPart = pegMakeMainChoice(
+    pegMakeSequence(
+        pegMakePlus(pegMakeCharSetComplement("\\\"\n")),
+        pegMakeCode { chars :: <> stringFromTokenList(chars) }),
+    pegMakeSequence(
+        pegMakeString("\n"),
+        pegMakeStar(pegMakeString(" ")),
+        pegMakeCode { ., . :: <> "\n" }),
+    pegMakeSequence(
+        pegMakeString("\\"),
+        pegMakeChoice(
+            pegMakeSequence(
+                pegMakeString("\\"), pegMakeCode { ., . :: <> "\\" }),
+            pegMakeSequence(
+                pegMakeString("\""), pegMakeCode { ., . :: <> "\"" }),
+            pegMakeSequence(
+                pegMakeString("n"),  pegMakeCode { ., . :: <> "\n" }),
+            pegMakeSequence(
+                pegMakeString("r"),  pegMakeCode { ., . :: <> "\r" }),
+            pegMakeSequence(
+                pegMakeString("t"),  pegMakeCode { ., . :: <> "\t" }),
+            pegMakeSequence(
+                pegMakeString("0"),  pegMakeCode { ., . :: <> "\0" }))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokString = pegMakeMainSequence(
@@ -147,14 +146,13 @@ def tokError = pegMakeMainSequence(
     });
 
 # Documented in Samizdat Layer 0 spec.
-def tokToken = pegMakeMainSequence(
-    pegMakeChoice(
-        tokString,
-        tokIdentifier,
-        tokQuotedIdentifier,
-        tokPunctuation,
-        tokInt,
-        tokError));
+def tokToken = pegMakeMainChoice(
+    tokString,
+    tokIdentifier,
+    tokQuotedIdentifier,
+    tokPunctuation,
+    tokInt,
+    tokError);
 
 # Documented in Samizdat Layer 0 spec.
 def tokFile = pegMakeMainSequence(
