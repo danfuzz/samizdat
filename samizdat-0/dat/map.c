@@ -46,33 +46,28 @@ static zvalue mapFrom1(zvalue key, zvalue value) {
  * the *second* value is used.
  */
 static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    switch (datOrder(k1, k2)) {
-        case ZLESS: {
-            // Leave the two mappings as-is.
-            break;
-        }
-        case ZMORE: {
-            // Swap the two mappings, so they're in the right order.
-            zvalue tmp = k1;
-            k1 = k2;
-            k2 = tmp;
-            tmp = v1;
-            v1 = v2;
-            v2 = tmp;
-            break;
-        }
-        case ZSAME: {
-            return mapFrom1(k2, v2);
-        }
+    zorder comp = datOrder(k1, k2);
+
+    if (comp == ZSAME) {
+        return mapFrom1(k2, v2);
     }
 
     zvalue result = allocMap(2);
-    zmapping *elems = mapElems(result);
+    zmapping *elem0 = mapElems(result);
+    zmapping *elem1 = &elem0[1];
 
-    elems[0].key = k1;
-    elems[0].value = v1;
-    elems[1].key = k2;
-    elems[1].value = v2;
+    if (comp == ZLESS) {
+        elem0->key = k1;
+        elem0->value = v1;
+        elem1->key = k2;
+        elem1->value = v2;
+    } else {
+        elem0->key = k2;
+        elem0->value = v2;
+        elem1->key = k1;
+        elem1->value = v1;
+    }
+
     return result;
 }
 
