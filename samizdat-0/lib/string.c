@@ -47,13 +47,33 @@ PRIM_IMPL(intFromChar) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringAdd) {
-    zvalue result = STR_EMPTY;
-
-    for (zint i = 0; i < argCount; i++) {
-        result = datStringAdd(result, args[i]);
+    switch (argCount) {
+        case 0: {
+            return STR_EMPTY;
+        }
+        case 1: {
+            datAssertString(args[0]);
+            return args[0];
+        }
+        case 2: {
+            return datStringAdd(args[0], args[1]);
+        }
     }
 
-    return result;
+    zint size = 0;
+
+    for (zint i = 0; i < argCount; i++) {
+        size += datSize(args[i]);
+    }
+
+    zchar chars[size];
+
+    for (zint i = 0, at = 0; i < argCount; i++) {
+        datZcharsFromString(&chars[at], args[i]);
+        at += datSize(args[i]);
+    }
+
+    return datStringFromZchars(size, chars);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
