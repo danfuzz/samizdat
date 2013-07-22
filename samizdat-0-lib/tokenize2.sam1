@@ -254,29 +254,31 @@ fn implProcessStringParts(parts) {
     ifIs { <> eq(parts, []) }
         { return @[string: ""] };
 
+    # If there is an error part (represented as an `@error` token), return
+    # it. Note that nothing other than errors will be in the form of a token,
+    # making the check a bit simpler.
+    doFilter(parts)
+        { part ::
+            <> ifIs { <> isToken(part) }
+                { return part }
+        };
+
     # Coalesce adjacent literal strings in `parts`. The result is an
     # `elems` list consisting of multi-character strings and
-    # interpolation maps. This loop also takes care of propagating
-    # any found error as the overall result of this rule.
+    # interpolation maps.
     def elems = doReduce1(listButFirst(parts), [listFirst(parts)])
-        { <next> part, result ::
-            ifIs { <> isToken(part) }
-                {
-                    # Errors come in the form of tokens. (Nothing else
-                    # will be a token.)
-                    return part
-                };
-            ifIs { <> isString(part) }
+        { part, result ::
+            <> ifIs { <> isString(part) }
                 {
                     def last = listLast(result);
-                    ifIs { <> isString(last) }
+                    <> ifIs { <> isString(last) }
                         {
                             # Coalesce adjacent literal string parts.
                             def newLast = stringAdd(last, part);
-                            <next> [listButLast(result)*, newLast]
+                            <> [listButLast(result)*, newLast]
                         }
-                };
-            <> [result*, part]
+                }
+                { <> [result*, part] }
         };
 
     # Check for a simple result.
