@@ -68,6 +68,7 @@ will be returned, or one of `.` `!.` `. | !.` as described in
 * [I/O](io.md)
 * [String Formatting](format.md)
 * [Parsing](peg.md)
+* [Modules](module.md)
 * [Meta-Library](meta.md)
 
 - - - - -
