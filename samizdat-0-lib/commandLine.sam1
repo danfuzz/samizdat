@@ -77,7 +77,7 @@ def parArguments = {/
 # Simple command-line argument parser.
 fn parseArgs(args) {
     # Make a unified string with each argument "\0"-terminated.
-    def argFilter = filterGenerator(args) { arg :: <> stringAdd(arg, "\0") };
+    def argFilter = filterGenerator(args) { arg <> stringAdd(arg, "\0") };
     def argString = stringAdd(argFilter*);
 
     # Use the peg grammar above to split the arguments back apart.
@@ -100,7 +100,7 @@ fn samCommandLine(context, rawArgs*) {
     def args = listButFirst(argWords, []);
 
     def nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
-        { suffix :: <> stringAdd("x.", suffix) }
+        { suffix <> stringAdd("x.", suffix) }
         { <> listLast(filePath) };
 
     def metas = metaFunctions(context, nameForLookup);

@@ -42,7 +42,7 @@ def countDowns = yStarCombinator
         }
     }
     { f1, f2 ::
-        <> { n :: <> ["and", f1(n)*] }
+        <> { n <> ["and", f1(n)*] }
     };
 def countDown2 = listNth(countDowns, 0);
 

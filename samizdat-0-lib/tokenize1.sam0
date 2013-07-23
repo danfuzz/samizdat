@@ -20,7 +20,7 @@ def KEYWORDS = mapFromGenerator(
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
         []*])
-        { name :: <> [(name): @[(name)]] });
+        { name <> [(name): @[(name)]] });
 
 # Documented in Samizdat Layer 0 spec.
 def INT_CHARS = [
@@ -74,7 +74,7 @@ def tokInt = pegMakeMainSequence(
             pegMakeCode(intFromDigitChar))),
     pegMakeCode { digits ::
         def value = doReduce1(digits, 0)
-            { digit, result :: <> iadd(digit, imul(result, 10)) };
+            { digit, result <> iadd(digit, imul(result, 10)) };
         <> @[int: value]
     });
 
@@ -82,26 +82,26 @@ def tokInt = pegMakeMainSequence(
 def tokStringPart = pegMakeMainChoice(
     pegMakeSequence(
         pegMakePlus(pegMakeCharSetComplement("\\\"\n")),
-        pegMakeCode { chars :: <> stringFromTokenList(chars) }),
+        pegMakeCode { chars <> stringFromTokenList(chars) }),
     pegMakeSequence(
         pegMakeString("\n"),
         pegMakeStar(pegMakeString(" ")),
-        pegMakeCode { ., . :: <> "\n" }),
+        pegMakeCode { ., . <> "\n" }),
     pegMakeSequence(
         pegMakeString("\\"),
         pegMakeChoice(
             pegMakeSequence(
-                pegMakeString("\\"), pegMakeCode { ., . :: <> "\\" }),
+                pegMakeString("\\"), pegMakeCode { ., . <> "\\" }),
             pegMakeSequence(
-                pegMakeString("\""), pegMakeCode { ., . :: <> "\"" }),
+                pegMakeString("\""), pegMakeCode { ., . <> "\"" }),
             pegMakeSequence(
-                pegMakeString("n"),  pegMakeCode { ., . :: <> "\n" }),
+                pegMakeString("n"),  pegMakeCode { ., . <> "\n" }),
             pegMakeSequence(
-                pegMakeString("r"),  pegMakeCode { ., . :: <> "\r" }),
+                pegMakeString("r"),  pegMakeCode { ., . <> "\r" }),
             pegMakeSequence(
-                pegMakeString("t"),  pegMakeCode { ., . :: <> "\t" }),
+                pegMakeString("t"),  pegMakeCode { ., . <> "\t" }),
             pegMakeSequence(
-                pegMakeString("0"),  pegMakeCode { ., . :: <> "\0" }))));
+                pegMakeString("0"),  pegMakeCode { ., . <> "\0" }))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokString = pegMakeMainSequence(
@@ -110,8 +110,8 @@ def tokString = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeString("\""),
-            pegMakeCode { ., parts, . :: <> processStringParts(parts) }),
-        pegMakeCode { ., . :: <> @[error: "Unterminated string literal."] }));
+            pegMakeCode { ., parts, . <> processStringParts(parts) }),
+        pegMakeCode { ., . <> @[error: "Unterminated string literal."] }));
 
 # These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
@@ -134,7 +134,7 @@ def tokIdentifier = pegMakeMainSequence(
 def tokQuotedIdentifier = pegMakeMainSequence(
     pegMakeString("\\"),
     tokString,
-    pegMakeCode { ., s :: <> @[identifier: (tokenValue(s))] });
+    pegMakeCode { ., s <> @[identifier: (tokenValue(s))] });
 
 # Documented in Samizdat Layer 0 spec.
 def tokError = pegMakeMainSequence(
@@ -161,7 +161,7 @@ def tokFile = pegMakeMainSequence(
             tokOptWhitespace,
             tokToken)),
     tokOptWhitespace,
-    pegMakeCode { tokens, . :: <> tokens });
+    pegMakeCode { tokens, . <> tokens });
 
 
 #

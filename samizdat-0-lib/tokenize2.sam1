@@ -28,7 +28,7 @@ def KEYWORDS = mapFromGenerator(
         "break", "collect", "continue", "default", "do", "else", "export",
         "for", "generate", "if", "import", "in", "module", "reduce",
         "switch", "var", "while"])
-        { name :: <> [(name): @[(name)]] });
+        { name <> [(name): @[(name)]] });
 
 # These are all the int digits, as a map from strings to digit values. This
 # includes hex digits as well, in both lower and upper case. Finally, this

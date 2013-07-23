@@ -18,7 +18,7 @@ SELF_PATH, ARGS* ::
 # Prints generator or collection output.
 fn msg(header, gen) {
     io0Note(header);
-    doFilter(gen) { item :: <> io0Note("  \%q(item)") };
+    doFilter(gen) { item <> io0Note("  \%q(item)") };
     io0Note("")
 };
 

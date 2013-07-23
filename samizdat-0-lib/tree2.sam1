@@ -63,14 +63,14 @@ fn makeThunk(expression) {
 # "thunked".
 fn makeCallNonlocalExit(name, expression?) {
     <> ifValue { <> expression* }
-        { ex :: <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+        { ex <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
         { <> makeCall(makeVarRef("nonlocalExit"), name) }
 };
 
 # Returns a `call` node that names a function as a `varRef` and passes
 # "thunked" versions of each of the given actual arguments.
 fn makeCallNameThunks(name, actuals*) {
-    def thunks = collectFilter(actuals) { one :: <> makeThunk(one) };
+    def thunks = collectFilter(actuals) { one <> makeThunk(one) };
     <> makeCallName(name, thunks*)
 };
 
@@ -92,7 +92,7 @@ fn closureWithYieldDef(closure, name) {
 fn varRefMap(map) {
     <> mapFromGenerator(
         filterGenerator(map)
-            { m :: <> [mappingKey(m): makeVarRef(mappingValue(m))] });
+            { m <> [mappingKey(m): makeVarRef(mappingValue(m))] });
 };
 
 # A no-argument yield-void thunk.
@@ -225,7 +225,7 @@ def parProgramDeclarations = {/
     yieldDef = parOptYieldDef
     formals = parFormalsList
 
-    @"::"
+    (@"::" | &@"<>")
 
     { <> [:, formals*, yieldDef*] }
 /};
@@ -591,9 +591,9 @@ def parUnaryExpression = {/
 
     {
         def withPosts = doReduce1(postfixes, base)
-            { op, result :: <> op(result) };
+            { op, result <> op(result) };
         <> doReduce1(listReverse(prefixes), withPosts)
-            { op, result :: <> op(result) }
+            { op, result <> op(result) }
     }
 /};
 
@@ -749,7 +749,7 @@ def parParserSet = {/
         { <> [stringAdd(strings*)*] }
     |
         tokens = parParserToken+
-        { <> collectFilter(tokens) { tok :: <> tokenValue(tok) } }
+        { <> collectFilter(tokens) { tok <> tokenValue(tok) } }
     |
         { <> [] }
     )
@@ -837,7 +837,7 @@ parChoicePex(implChoicePex);
 #
 # ```
 # ifValue { <> node }
-#     { value :: <> [value] }
+#     { value <> [value] }
 #     { <> [] }
 # ```
 fn makeOptValueExpression(node) {
@@ -949,8 +949,8 @@ def parGeneratorList = {/
 
     {
         def gens = [firstGen, moreGens*];
-        def formals = collectFilter(gens) { gen :: <> mapGet(gen, "formal") };
-        def inits = collectFilter(gens) { gen :: <> mapGet(gen, "init") };
+        def formals = collectFilter(gens) { gen <> mapGet(gen, "formal") };
+        def inits = collectFilter(gens) { gen <> mapGet(gen, "init") };
 
         <> [formals: formals, inits: inits]
     }
@@ -983,7 +983,7 @@ def parComprehensionBody = {/
 # =>
 # ```
 # filterGenerator(expr1, expr2)
-#     { name1, name2 :: <> filterExpr }
+#     { name1, name2 <> filterExpr }
 # ```
 #
 # ```
@@ -992,7 +992,7 @@ def parComprehensionBody = {/
 # =>
 # ```
 # collectFilter(expr1, expr2)
-#     { name1, name2 :: <> filterExpr }
+#     { name1, name2 <> filterExpr }
 # ```
 def parComprehensionAtom = {/
     @"("
@@ -1093,13 +1093,13 @@ def implPrefixOperator = {/
     operator = [@"+" @"-" @"!!!"]
     {
         def name = mapGet(UNARY_OPERATORS, tokenType(operator));
-        <> { node :: <> makeCall(name, node) }
+        <> { node <> makeCall(name, node) }
     }
 |
     # This one is specially converted, since it's a control construct,
     # not just a simple function application.
     @"!"
-    { <> { node :: <> makeCallNameThunks("ifNot", node, makeLiteral(true)) } }
+    { <> { node <> makeCallNameThunks("ifNot", node, makeLiteral(true)) } }
 /};
 parPrefixOperator(implPrefixOperator);
 
@@ -1108,18 +1108,18 @@ parPrefixOperator(implPrefixOperator);
 # function call.
 def implPostfixOperator = {/
     actuals = parActualsList
-    { <> { node :: <> makeCall(node, actuals*) } }
+    { <> { node <> makeCall(node, actuals*) } }
 |
     # The lookahead failure here is to make the grammar prefer `*` to be
     # treated as a binary op.
     @"*" !parExpression
-    { <> { node :: <> @[interpolate: node] } }
+    { <> { node <> @[interpolate: node] } }
 |
     @"?"
-    { <> { node :: <> makeOptValueExpression(node) } }
+    { <> { node <> makeOptValueExpression(node) } }
 |
     @"**"
-    { <> { node :: <> makeCall(mapGet(UNARY_OPERATORS, "**"), node) } }
+    { <> { node <> makeCall(mapGet(UNARY_OPERATORS, "**"), node) } }
 |
     @"??"
     {
@@ -1140,7 +1140,7 @@ def implPostfixOperator = {/
 
     {
         def function = mapGet(UNARY_OPERATORS, "[]");
-        <> { node :: <> makeCall(function, node, exprs*) }
+        <> { node <> makeCall(function, node, exprs*) }
     }
 |
     @"."
@@ -1246,7 +1246,7 @@ def parCompareExpression = {/
 
         def innerEx = makeBinaryCalls(firstEx, [listFirst(opExes)]);
         <> doReduce1(listButFirst(opExes), innerEx)
-            { opEx, result :: <> makeBinaryCalls(@[voidable: result], [opEx]) }
+            { opEx, result <> makeBinaryCalls(@[voidable: result], [opEx]) }
     }
 /};
 
@@ -1484,7 +1484,7 @@ def SWITCH_DISPATCH_CLOSURE = sam0Tree("
     args ::
     <> { cases, defaultFunction, value ::
         <> ifValue { <> mapGet(cases, value) }
-            { function :: <> function(value) }
+            { function <> function(value) }
             { <> defaultFunction(value) }
     }(args*)");
 
@@ -1516,7 +1516,7 @@ def SWITCH_DISPATCH_CLOSURE = sam0Tree("
 #         { args ::
 #             <> { cases, defaultFunction, value ::
 #                 <> ifValue { <> mapGet(cases, value) }
-#                     { function :: <> function(value) }
+#                     { function <> function(value) }
 #                     { <> defaultFunction(value) }
 #             }(args*)
 #         }
@@ -1598,7 +1598,7 @@ def parSwitchExpression = {/
                                 makeCallName("makeList", regularCases*))
                         ]),
                     ifValue { <> optDefault* }
-                        { value :: <> closureWithFormals(value, formal) }
+                        { value <> closureWithFormals(value, formal) }
                         { <> YIELD_VOID_FN_1 },
                     @[voidable: @[expression: test]]));
 
@@ -1772,7 +1772,7 @@ def parForExpression = {/
 
         def codePayload = tokenValue(code);
         def continueDef = ifValue { <> mapGet(codePayload, "yieldDef") }
-            { name :: <> [makeVarDef(name, makeVarRef("continue"))] }
+            { name <> [makeVarDef(name, makeVarRef("continue"))] }
             { <> [] };
 
         def loopClosure = @[closure: [

@@ -51,7 +51,7 @@ this function calls the consequent function with an argument, whereas
 This is identical to `ifValue`, except that the `valueFunction` is
 omitted and taken to be the identity function, and the `voidFunction`
 is required (not an optional argument). That is, `ifValueOr(x, y)` is the
-same as `ifValue(x, { value :: <> value }, y)`.
+same as `ifValue(x, { value <> value }, y)`.
 
 The reason `voidFunction` is required is because it is pointless to omit it,
 in that `ifValueOr(x)` would mean the same thing as `x()`, and

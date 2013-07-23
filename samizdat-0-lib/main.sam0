@@ -41,7 +41,7 @@ fn loadLibrary(ctx, name) {
     # If `metaFunctions` is available, use it to get the proper parser and
     # evaluator. Otherwise, default to the layer 0 functions.
     def metas = ifValue { <> mapGet(ctx, "metaFunctions") }
-        { metaFunctions :: <> metaFunctions(ctx, name) }
+        { metaFunctions <> metaFunctions(ctx, name) }
         { <> [eval: sam0Eval, tree: sam0Tree] };
     def treeFunction = mapGet(metas, "tree");
     def evalFunction = mapGet(metas, "eval");
@@ -67,7 +67,7 @@ fn loadAllLibraries(ctx, names*) {
     <> loopReduce(names, ctx)
         { names, ctx ::
             <> ifValue { <> listNth(names, 0) }
-                { name :: <> [listSlice(names, 1), loadLibrary(ctx, name)] }
+                { name <> [listSlice(names, 1), loadLibrary(ctx, name)] }
                 { return ctx }
         }
 };

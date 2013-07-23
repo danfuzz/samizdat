@@ -138,7 +138,7 @@ fn \"binary>="(v1, v2) {
 fn \"unary."(name) {
     <> { value ::
         def function = mapGet(mapGet(MESSAGE_DISPATCH, lowType(value)), name);
-        <> { args* :: <> function(value, args*) }
+        <> { args* <> function(value, args*) }
     }
 };
 
@@ -163,7 +163,7 @@ fn \"unary[]"(value, indices*) {
     <> doReduce1(indices, value)
         { index, result ::
             <> ifValue { <> getGet(result) }
-                { getter :: <> getter(index) }
+                { getter <> getter(index) }
                 { return }
         }
 };

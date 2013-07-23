@@ -134,13 +134,13 @@ msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
 
 msgAll("Single-generator reduceGenerator",
     reduceGenerator([[1, 2, 3, 4]], [0])
-        { elem, result :: <> [iadd(elem, result)] });
+        { elem, result <> [iadd(elem, result)] });
 
 def doRedA = doReduce([[1, 2, 3, 4]], [0])
-    { elem, result :: <> [iadd(elem, result)] };
+    { elem, result <> [iadd(elem, result)] };
 io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRedA)));
 def doRedA1 = doReduce1([1, 2, 3, 4], 0)
-    { elem, result :: <> iadd(elem, result) };
+    { elem, result <> iadd(elem, result) };
 io0Note(stringAdd("  corresponding doReduce1: ", sourceString(doRedA1)));
 io0Note("");
 
@@ -159,10 +159,10 @@ io0Note("");
 
 msgAll("Two-reduction reduceGenerator",
     reduceGenerator([[1, 2, 3, 4]], [0, 1])
-        { num, sum, product :: <> [iadd(sum, num), imul(product, num)] });
+        { num, sum, product <> [iadd(sum, num), imul(product, num)] });
 
 def doRedC = doReduce([[1, 2, 3, 4]], [0, 1])
-    { num, sum, product :: <> [iadd(sum, num), imul(product, num)] };
+    { num, sum, product <> [iadd(sum, num), imul(product, num)] };
 io0Note(stringAdd("  corresponding doReduce: ", sourceString(doRedC)));
 io0Note("");
 
@@ -178,7 +178,7 @@ io0Note("");
 io0Note("stringFromGenerator on filter");
 def outString = stringFromGenerator(
     filterGenerator(inclusiveRange(65, 1, 75))
-        { value :: <> charFromInt(value) });
+        { value <> charFromInt(value) });
 io0Note(stringAdd("    ", sourceString(outString)));
 io0Note("");
 

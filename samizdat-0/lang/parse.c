@@ -376,23 +376,16 @@ DEF_PARSE(programDeclarations) {
     zvalue yieldDef = PARSE(optYieldDef);
     zvalue formals = PARSE(formalsList);
 
+    if (PEEK(CH_DIAMOND) == NULL) {
+        MATCH_OR_REJECT(CH_COLONCOLON);
+    }
+
     return datMapAdd(formals, yieldDef);
-}
-
-/**
- * Helper for `program`: Parses `(programDeclarations @"::")`.
- */
-DEF_PARSE(program1) {
-    MARK();
-
-    zvalue result = PARSE(programDeclarations); // This never fails.
-    MATCH_OR_REJECT(CH_COLONCOLON);
-    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(program) {
-    zvalue declarations = PARSE(program1); // `NULL` is ok, as it's optional.
+    zvalue declarations = PARSE(programDeclarations); // `NULL` is ok here.
     zvalue value = PARSE(programBody); // This never fails.
 
     if (declarations != NULL) {
