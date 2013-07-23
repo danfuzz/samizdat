@@ -270,7 +270,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([a-zA-Z_.][^:{}@"]*) *(::)</string>
+					<string>([a-zA-Z_.][^:{}@"]*) *(::|(?=&lt;&gt;))</string>
 				</dict>
 				<dict>
 					<key>name</key>
