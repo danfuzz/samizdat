@@ -130,7 +130,9 @@ def parFormalsList = pegMakeMainChoice(
 def parProgramDeclarations = pegMakeMainSequence(
     parOptYieldDef,
     parFormalsList,
-    pegMakeToken("::"),
+    pegMakeChoice(
+        pegMakeToken("::"),
+        pegMakeLookaheadSuccess(pegMakeToken("<>"))),
     pegMakeCode { yieldDef, formals, . :: <> [:, formals*, yieldDef*] });
 
 # Documented in Samizdat Layer 0 spec.
