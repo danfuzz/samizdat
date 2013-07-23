@@ -63,7 +63,6 @@ PRIM_FUNC(makeUniqlet);
 PRIM_FUNC(mapAdd);
 PRIM_FUNC(mapDel);
 PRIM_FUNC(mapGet);
-PRIM_FUNC(mapHasKey);
 PRIM_FUNC(mapKeys);
 PRIM_FUNC(mapNth);
 PRIM_FUNC(mapPut);

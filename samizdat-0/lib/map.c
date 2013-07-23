@@ -58,12 +58,6 @@ PRIM_IMPL(mapGet) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapHasKey) {
-    requireExactly(argCount, 2);
-    return constBooleanFromBool(datMapGet(args[0], args[1]) != NULL);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapKeys) {
     requireExactly(argCount, 1);
 

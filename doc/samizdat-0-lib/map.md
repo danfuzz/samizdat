@@ -27,10 +27,6 @@ the given map. If there is no such mapping, then this
 returns the `notFound` value (an arbitrary value) if supplied,
 or returns void if `notFound` was not supplied.
 
-#### `mapHasKey(map, key) <> boolean`
-
-Returns `true` iff the given map has a mapping for the given key.
-
 #### `mapKeys(map) <> list`
 
 Returns the list of keys contained in the given map, in sorted order.
