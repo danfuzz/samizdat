@@ -37,6 +37,7 @@ def MANIFEST = [
     "generator.sam0",
     "string.sam0",
     "format.sam0",
+    "module.sam0",
     "peg.sam0",
     "meta.sam0",
 

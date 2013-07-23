@@ -1,0 +1,177 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Module functions
+#
+
+#
+# Helper definitions
+#
+
+# Variable name prefix for all module definitions.
+def MODULE_PREFIX = "module:";
+
+# Size of `MODULE_PREFIX`.
+def MODULE_PREFIX_SIZE = lowSize(MODULE_PREFIX);
+
+# Given a name, returns the module name portion of it if it in fact starts
+# with `MODULE_PREFIX`. Returns void if not.
+fn moduleNameFromString(orig) {
+    ifIs { <> le(lowSize(orig), MODULE_PREFIX_SIZE) }
+        { return };
+
+    <> ifIs { <> eq(stringSlice(orig, 0, MODULE_PREFIX), MODULE_PREFIX) }
+        { <> stringSlice(orig, iadd(MODULE_PREFIX_SIZE, 1)) }
+};
+
+# Returns `mod` iff it is an uninitialized module.
+fn isUninitializedModule(mod) {
+    ifNot { <> isToken(mod) }
+        { return };
+
+    ifNot { <> eq(tokenType(mod), "module") }
+        { return };
+
+    ifValue { <> tokenValue(mod) }
+        { value ::
+            ifNot { <> isMap(value) }
+                { return };
+            ifNot { <> eq(lowSize(value), 3) }
+                { return };
+            ifNot { <> isString(&mapGet(value, "version")) }
+                { return };
+            ifNot { <> isMap(&mapGet(value, "imports")) }
+                { return };
+            ifNot { <> isUniqlet(&mapGet(value, "init")) }
+                { return };
+            return mod
+        }
+};
+
+# Asserts that the given value is an uninitialized module.
+fn assertUninitializedModule(mod) {
+    <> ifIs { <> isUninitializedModule(mod) }
+        { <> mod }
+        { io0Die(stringAdd("Not a module: ", sourceString(mod))) }
+};
+
+# Gets the imports of the given module.
+fn moduleGetImports(mod) {
+    <> mapGet(tokenValue(mod), "imports")
+};
+
+# Gets the init of the given module.
+fn moduleGetInit(mod) {
+    <> mapGet(tokenValue(mod), "init")
+};
+
+# Gets the name of the given module.
+fn moduleGetName(mod) {
+    <> mapGet(tokenValue(mod), "name")
+};
+
+# Gets the version of the given module.
+fn moduleGetVersion(mod) {
+    <> mapGet(tokenValue(mod), "version")
+};
+
+# Returns `mod` if the given module has any dependencies, or void if not.
+fn hasDependencies(mod) {
+    <> ifIs { <> ne([], mapGet(tokenValue(mod), "imports")) }
+        { <> mod }
+};
+
+# Performs topological sort on a list of modules, returning the names
+# of the modules in a valid dependency order (not guaranteed to be unique).
+#
+# This uses the traditional "edge removal" algorithm. See
+# <http://en.wikipedia.org/wiki/Topological_sorting> for details.
+fn sortModules(modules) {
+    # Easy out if there are no modules.
+    ifIs { <> eq(modules, []) }
+        { return [] };
+
+    # Split the list of modules into those that do and don't have
+    # dependencies. Remove from the dependent modules any dependencies from
+    # the independent list.
+
+    def independentNames = collectFilter(modules)
+        { mod <> ifNot { <> hasDependencies(mod) } { <> moduleGetName(mod) } };
+
+    def dependentModules = collectFilter(modules)
+        { mod ::
+            <> ifIs { <> hasDependencies(mod) }
+                {
+                    def importMap =
+                        mapDel([moduleGetImports(mod)*: true],
+                            independentNames*);
+                    def imports = mapKeys(importMap);
+                    <> @[mod: [tokenValue(mod)*, imports: imports]]
+                }
+        };
+
+    # If there are no independent modules, there's a cycle.
+    ifIs { <> eq(independentModules, []) }
+        {
+            def allNames = collectFilter(moduleGetName, modules);
+            io0Die(stringAdd("Module cycle among: ",
+                sourceStringUnadorned(allNames)));
+        };
+
+    # Recursively sort the dependent modules.
+    def dependentNames = sortModules(dependentModules);
+
+    # Combine for the final result.
+    <> [independentNames*, dependentNames*]
+};
+
+
+#
+# Exported functions
+#
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn moduleInit(context) {
+    # Get a list of just the uninitialized modules, each with its name added
+    # to the payload.
+    def unsortedModules = collectFilter(context)
+        { mapping ::
+            def name = mappingKey(mapping);
+            def mod = mappingValue(mapping);
+            <> ifValue { <> moduleNameFromString(name) }
+                { modName ::
+                    assertUninitializedModule(mod);
+                    <> @[module: [tokenValue(mod)*, name: modName]]
+                }
+        };
+
+    # Make a map from names to modules.
+    def moduleMap = mapFromGenerator(
+        filterGenerator(unsortedModules)
+            { mod :: <> [moduleGetName(mod): mod] });
+
+    # Do a topological sort of the modules, to get them in dependency
+    # order (dependencies before dependents).
+    def sortedModuleNames = sortModules(unsortedModules);
+
+    # Iterate over the modules in sorted order, calling the initializer on
+    # each, passing it the set of already-initialized modules.
+    <> doReduce1(sortedModuleNames, [:])
+        { name, initted ::
+            def mod = mapGet(moduleMap, name);
+            def exports = moduleGetInit(mod)(initted);
+            def newMod = @[module: [
+                exports: exports,
+                imports: moduleGetImports(mod),
+                name:    moduleGetName(mod),
+                version: moduleGetVersion(mod)
+            ]];
+            <> [initted*, (name): newMod]
+        }
+};
+
+<> [
+    moduleInit: moduleInit
+]

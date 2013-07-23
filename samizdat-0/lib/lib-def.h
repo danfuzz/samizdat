@@ -25,6 +25,7 @@ LIB_FILE(list, sam0);
 LIB_FILE(main, sam0);
 LIB_FILE(manifest, sam0);
 LIB_FILE(meta, sam0);
+LIB_FILE(module, sam0);
 LIB_FILE(order, sam0);
 LIB_FILE(peg, sam0);
 LIB_FILE(string, sam0);
