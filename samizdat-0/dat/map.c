@@ -337,7 +337,7 @@ zvalue datMapDel(zvalue map, zvalue key) {
     zmapping *oldElems = mapElems(map);
 
     memcpy(elems, oldElems, index * sizeof(zmapping));
-    memcpy(elems + index, oldElems + index + 1,
+    memcpy(&elems[index], &oldElems[index + 1],
            (size - index) * sizeof(zmapping));
     return result;
 }
@@ -385,8 +385,8 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
         case 1: {
             datAssertMap(map);
             datAssertValid(key);
-            zmapping *mapping = mapElems(map);
-            return mapFrom2(mapping->key, mapping->value, key, value);
+            zmapping *elems = mapElems(map);
+            return mapFrom2(elems[0].key, elems[0].value, key, value);
         }
     }
 
@@ -407,8 +407,7 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
         zmapping *resultElems = mapElems(result);
 
         memcpy(resultElems, origElems, index * sizeof(zmapping));
-        memcpy(&resultElems[index + 1],
-               &origElems[index],
+        memcpy(&resultElems[index + 1], &origElems[index],
                (size - index) * sizeof(zmapping));
     }
 
