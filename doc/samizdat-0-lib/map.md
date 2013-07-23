@@ -13,12 +13,12 @@ Returns a map consisting of the combination of the mappings of the
 argument maps. For any keys in common between the maps,
 the lastmost argument's value is the one that ends up in the result.
 
-#### `mapDel(map, key) <> map`
+#### `mapDel(map, keys*) <> map`
 
 Returns a map just like the one given as an argument, except that
-the result does not have a mapping for the key `key`. If the given
-map does not have `key` as a key, then this returns the given
-map as the result.
+the result does not have mappings for the given keys. If the given
+map does not have a particular given key, then that key has no
+affect on the result.
 
 #### `mapGet(map, key, notFound?) <> . | !.`
 
@@ -30,6 +30,10 @@ or returns void if `notFound` was not supplied.
 #### `mapHasKey(map, key) <> boolean`
 
 Returns `true` iff the given map has a mapping for the given key.
+
+#### `mapKeys(map) <> list`
+
+Returns the list of keys contained in the given map, in sorted order.
 
 #### `mapNth(map, n, notFound?) <> . | !.`
 

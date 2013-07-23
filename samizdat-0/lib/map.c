@@ -28,8 +28,20 @@ PRIM_IMPL(mapAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapDel) {
-    requireExactly(argCount, 2);
-    return datMapDel(args[0], args[1]);
+    requireAtLeast(argCount, 1);
+
+    zvalue result = args[0];
+
+    if (argCount == 0) {
+        // Need the assert, since we won't end up making any other map calls.
+        datAssertMap(result);
+    } else {
+        for (zint i = 1; i < argCount; i++) {
+            result = datMapDel(result, args[i]);
+        }
+    }
+
+    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -52,9 +64,21 @@ PRIM_IMPL(mapHasKey) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mappingKey) {
+PRIM_IMPL(mapKeys) {
     requireExactly(argCount, 1);
-    return datMappingKey(args[0]);
+
+    zvalue map = args[0];
+    zint size = datSize(map);
+    zmapping mappings[size];
+    zvalue arr[size];
+
+    datArrayFromMap(mappings, map);
+
+    for (zint i = 0; i < size; i++) {
+        arr[i] = mappings[i].key;
+    }
+
+    return datListFromArray(size, arr);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -66,6 +90,12 @@ PRIM_IMPL(mapNth) {
 PRIM_IMPL(mapPut) {
     requireExactly(argCount, 3);
     return datMapPut(args[0], args[1], args[2]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(mappingKey) {
+    requireExactly(argCount, 1);
+    return datMappingKey(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
