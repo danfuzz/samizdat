@@ -161,6 +161,17 @@ static void doGc(void) {
     liveHead.next = &liveHead;
     liveHead.prev = &liveHead;
 
+    // Clear the map cache, so that it doesn't contain garbage pointers.
+    // Note: In practice there is no significant measurable difference
+    // between clearing the cache and marking everything in it, so
+    // simplicity wins here.
+
+    datMapClearCache();
+
+    if (CHATTY_GC) {
+        note("GC: Cleared map cache.");
+    }
+
     // The root set consists of immortals and the stack. Recursively mark
     // those, which causes anything found to be alive to be linked into
     // the live list.

@@ -209,6 +209,11 @@ bool datListEq(zvalue v1, zvalue v2);
 zorder datListOrder(zvalue v1, zvalue v2);
 
 /**
+ * Clears the contents of the map lookup cache.
+ */
+void datMapClearCache(void);
+
+/**
  * Compares maps for equality. Only called when the sizes are the same.
  */
 bool datMapEq(zvalue v1, zvalue v2);
