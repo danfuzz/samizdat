@@ -51,25 +51,25 @@ fn makeIntGenerator(int) {
     def size = lowSize(int);
 
     <> makeIncrementGenerator(0, 1)
-        { index :: <> ibit(int, &gt(size, index)) }
+        { index <> ibit(int, &gt(size, index)) }
 };
 
 # Makes a generator for a list.
 fn makeListGenerator(list) {
     <> makeIncrementGenerator(0, 1)
-        { index :: <> listNth(list, index) }
+        { index <> listNth(list, index) }
 };
 
 # Makes a generator for a map.
 fn makeMapGenerator(map) {
     <> makeIncrementGenerator(0, 1)
-        { index :: <> mapNth(map, index) }
+        { index <> mapNth(map, index) }
 };
 
 # Makes a generator for a string.
 fn makeStringGenerator(string) {
     <> makeIncrementGenerator(0, 1)
-        { index :: <> stringNth(string, index) }
+        { index <> stringNth(string, index) }
 };
 
 # Degenerate generator maker for uniqlets, which are tacitly assumed to
@@ -127,16 +127,16 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
                 { <> intFromChar(limit) };
             def testFunction =
                 mapGet(INT_RANGE_TESTS, [isign(increment), (optInclusive*)]);
-            <> { x :: <> testFunction(limitInt, x) }
+            <> { x <> testFunction(limitInt, x) }
         }
         {
             # Open range; no limit test.
-            <> { x :: <> x }
+            <> { x <> x }
         };
 
     def filterFunction = ifIs { <> isInt(first) }
         { <> limitFunction }
-        { <> { x :: <> charFromInt(&limitFunction(x)) } };
+        { <> { x <> charFromInt(&limitFunction(x)) } };
 
     <> makeIncrementGenerator(filterFunction, firstInt, increment)
 };
@@ -205,7 +205,7 @@ fn doFilter(filterFunction, generators*) {
 fn doGenerator(generator) {
     loopReduce(generatorFromValue(generator)) { gen ::
         <> ifValue { <> gen(nullBox) }
-            { nextGen :: <> [nextGen] }
+            { nextGen <> [nextGen] }
             { return }
     }
 };
@@ -220,7 +220,7 @@ fn doReduce(reduceFunction, generators, baseValues) {
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
                     <> ifValue { <> reduceFunction(boxGet(box)*, values*) }
-                        { nextValues :: <> [nextGenerator, nextValues] }
+                        { nextValues <> [nextGenerator, nextValues] }
                         {
                             # The reduce function discarded the values.
                             <> [nextGenerator, values]
@@ -241,7 +241,7 @@ fn doReduce1(reduceFunction, generator, baseValue) {
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
                     <> ifValue { <> reduceFunction(boxGet(box), value) }
-                        { nextValue :: <> [nextGenerator, nextValue] }
+                        { nextValue <> [nextGenerator, nextValue] }
                         {
                             # The reduce function discarded the value.
                             <> [nextGenerator, value]
@@ -295,7 +295,7 @@ fn filterGenerator(filterFunction, generators*) {
 # Documented in Samizdat Layer 0 spec.
 fn generatorFromValue(value) {
     <> ifValue { <> mapGet(GENERATOR_MAKERS, lowType(value)) }
-        { maker :: <> maker(value) }
+        { maker <> maker(value) }
         { io0Die("Invalid generator source.") }
 };
 
@@ -355,9 +355,9 @@ fn paraGenerator(generators*) {
                         }
                 };
             def yields = listFilter(generatorCalls)
-                { one :: <> listNth(one, 0) };
+                { one <> listNth(one, 0) };
             def nexts = listFilter(generatorCalls)
-                { one :: <> listNth(one, 1) };
+                { one <> listNth(one, 1) };
 
             boxSet(box, yields);
             <> paraGenerator1(nexts);
@@ -374,7 +374,7 @@ fn paraGenerator(generators*) {
 
     # Coerce all the original arguments to generators.
     def generatorsPerSe = listFilter(generators)
-        { gen :: <> generatorFromValue(gen) };
+        { gen <> generatorFromValue(gen) };
 
     # Make the initial inner call (to the function defined above).
     <> paraGenerator1(generatorsPerSe)
@@ -458,7 +458,7 @@ fn stringFromGenerator(generator) {
 # Documented in Samizdat Layer 0 spec.
 fn tokenGenerator(generator) {
     <> filterGenerator(generator)
-        { elem :: <> @[(elem)] }
+        { elem <> @[(elem)] }
 };
 
 <> [
