@@ -341,6 +341,7 @@ by adding a name binding on the left. Do this by enclosing the left-hand
 expression in parentheses, and prefixing it with an assignment, e.g.
 `(name = expression) & somethingWith(name)`.
 
+
 ### Value/Void Logical-Or Operator (Precedence 1) &mdash; `expression & expression`
 
 This is a short-circuit logical-or (disjunction). When evaluating this
@@ -353,5 +354,5 @@ result (whether a value or void) becomes the result of the outer expression.
 is obviated in Samizdat by this and the logical-and operator.
 `x ? y : z` in C can generally be turned into `x & y | z` in Samizdat,
 as long as `y` is never void. If `y` can legitimately be void, then the
-slightly longer form `x & y | !x & z` is equivalent (though will evaluate
-`x` twice).
+slightly longer form `(x & y? | z?)*` is an equivalent that ensures that
+a void `y` won't improperly cause `z` to be evaluated.
