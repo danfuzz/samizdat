@@ -47,19 +47,19 @@ msg(inclusiveRange("a", 2, "m")*);
 msg(11*);
 
 ifValue { <> yieldTest([]) }
-    { value :: <> msg(value) }
+    { value <> msg(value) }
     { msg("void") };
 
 ifValue { <> nonlocalTest([]) }
-    { value :: <> msg(value) }
+    { value <> msg(value) }
     { msg("void") };
 
 ifValue { <> yieldTest(["blort"]) }
-    { value :: <> msg(value) }
+    { value <> msg(value) }
     { msg("void") };
 
 ifValue { <> nonlocalTest(["fizmo"]) }
-    { value :: <> msg(value) }
+    { value <> msg(value) }
     { msg("void") };
 
 # The extra parens here force the interpolated expression not to be considered
