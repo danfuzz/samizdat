@@ -32,7 +32,7 @@ implementation (without sacrificing clarity) &mdash; it makes sense to
 keep this defined as an "ultraprimitive":
 
 ```
-makeList = { rest* :: <> rest };
+fn makeList(rest*) { <> rest };
 ```
 
 #### `makeMapping(keys*, value) <> map`
