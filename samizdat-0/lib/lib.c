@@ -46,12 +46,6 @@ static zvalue getLibraryFiles(void) {
 static zvalue primitiveContext(void) {
     zvalue ctx = EMPTY_MAP;
 
-    // These both could have been defined in-language, but we already
-    // have to make them be defined and accessible to C code, so we just
-    // go ahead and bind them here.
-    ctx = datMapPut(ctx, STR_FALSE, CONST_FALSE);
-    ctx = datMapPut(ctx, STR_TRUE, CONST_TRUE);
-
     // Bind all the primitive functions.
     #define PRIM_FUNC(name) \
         do { \

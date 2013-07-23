@@ -9,6 +9,8 @@
 # These are all documented in Samizdat Layer 0 spec.
 
 <> [
+    false:   @[boolean: 0],
+    true:    @[boolean: 1],
     null:    @null,
     nullBox: @nullBox
 ]

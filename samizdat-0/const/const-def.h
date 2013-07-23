@@ -43,7 +43,6 @@ TOK(RETURN,        "return");
 STR(UP_LIBRARY,       "LIBRARY");
 
 STR(ACTUALS,          "actuals");
-STR(BOOLEAN,          "boolean");
 STR(CALL,             "call");
 STR(CLOSURE,          "closure");
 STR(EMPTY,            ""); // The canonical empty string (`""`) value.

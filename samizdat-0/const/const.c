@@ -26,12 +26,6 @@
 #undef TOK
 
 /* Documented in header. */
-zvalue CONST_FALSE = NULL;
-
-/* Documented in header. */
-zvalue CONST_TRUE = NULL;
-
-/* Documented in header. */
 zvalue EMPTY_LIST = NULL;
 
 /* Documented in header. */
@@ -60,7 +54,7 @@ enum {
 
 /* Documented in header. */
 void constInit(void) {
-    if (CONST_FALSE != NULL) {
+    if (EMPTY_LIST != NULL) {
         return;
     }
 
@@ -89,13 +83,9 @@ void constInit(void) {
         datImmortalize(SMALL_INTS[i]);
     }
 
-    CONST_FALSE = datTokenFrom(STR_BOOLEAN, constIntFromZint(0));
-    CONST_TRUE  = datTokenFrom(STR_BOOLEAN, constIntFromZint(1));
     EMPTY_LIST = datListFromArray(0, NULL);
     EMPTY_MAP = datMapEmpty();
 
-    datImmortalize(CONST_FALSE);
-    datImmortalize(CONST_TRUE);
     datImmortalize(EMPTY_LIST);
     datImmortalize(EMPTY_MAP);
 
