@@ -49,16 +49,6 @@ extern zvalue EMPTY_MAP;
 void constInit(void);
 
 /**
- * Converts an in-model boolean value to a C `bool`.
- */
-bool constBoolFromBoolean(zvalue value);
-
-/**
- * Converts a C `bool` to an in-model boolean value.
- */
-zvalue constBooleanFromBool(bool value);
-
-/**
  * Converts a C `zint` to an in-model int value.
  */
 zvalue constIntFromZint(zint value);
