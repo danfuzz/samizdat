@@ -22,7 +22,7 @@ fn msg(generator) {
 
 # Prints out 10 values yielded by the given generator (and no more).
 fn msgTen(generator) {
-    def values = filterGenerator(generator, 1..10) { v, . :: <> v };
+    def values = filterGenerator(generator, 1..10) { v, . <> v };
     io0Note("Got: \%q([values*])")
 };
 

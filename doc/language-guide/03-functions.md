@@ -213,7 +213,8 @@ The declaration section consists of the following, in order:
   See "Argument Declarations" above.
 
 * The special token double-colon (`::`), to indicate the end of
-  the declarations.
+  the declarations. If the entire body of the block is just a direct
+  yield (`<> ...`), then the double-colon may be omitted.
 
 Examples:
 
@@ -229,6 +230,9 @@ def frotz = { <leave> :: ... <leave> ... }
 
 # This is one with everything.
 def ignatz = { <out> x, y?, z* :: ... <out> ... }
+
+# Since the main body is just a yield, no double-colon is required.
+def krazy = { x, y <> x + y }
 ```
 
 ### Special function shapes

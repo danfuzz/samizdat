@@ -298,9 +298,9 @@ fn pegMakeString(string) {
     # which allows us to minimize code duplication.
 
     # Make a list of rules per character.
-    def chars = collectFilter(string) { ch :: <> pegMakeToken(ch) };
+    def chars = collectFilter(string) { ch <> pegMakeToken(ch) };
 
-    <> pegMakeSequence(chars*, pegMakeCode { .* :: <> @[(string)] })
+    <> pegMakeSequence(chars*, pegMakeCode { .* <> @[(string)] })
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -345,7 +345,7 @@ fn pegGenerator(rule, input) {
     fn pegGenerator1(gen) {
         <> { box ::
             <> ifValue { <> rule(box, gen) }
-                { nextGen :: <> pegGenerator1(nextGen) }
+                { nextGen <> pegGenerator1(nextGen) }
         }
     };
 

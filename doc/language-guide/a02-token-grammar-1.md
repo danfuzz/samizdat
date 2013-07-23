@@ -22,7 +22,7 @@ def KEYWORDS = mapFromGenerator(
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
         []*])
-        { name :: <> [(name): @[(name)]] });
+        { name <> [(name): @[(name)]] });
 
 # These are all the int digits, as a map from strings to digit values. This
 # includes hex digits as well, in both lower and upper case. Finally, this
@@ -110,7 +110,7 @@ def tokInt = {/
 
     {
         def value = doReduce1(digits, 0)
-            { digit, result :: <> iadd(digit, imul(result, 10)) };
+            { digit, result <> iadd(digit, imul(result, 10)) };
         <> @[int: value]
     }
 /};

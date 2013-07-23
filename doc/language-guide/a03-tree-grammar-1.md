@@ -61,7 +61,7 @@ fn makeThunk(expression) {
 # "thunked".
 fn makeCallNonlocalExit(name, expression?) {
     <> ifValue { <> listFirst(expression) }
-        { ex :: <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
+        { ex <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
         { <> makeCall(makeVarRef("nonlocalExit"), name) }
 };
 
@@ -131,7 +131,7 @@ def parProgramDeclarations = {/
     yieldDef = parOptYieldDef
     formals = parFormalsList
 
-    @"::"
+    (@"::" | &@"<>")
 
     { <> [:, formals*, yieldDef*] }
 /};
@@ -487,7 +487,7 @@ def parActualsList = {/
 # This rule still exists in *Layer 2* but is totally rewritten.
 def parPrefixOperator = {/
     @"-"
-    { <> { node :: <> makeCallName("ineg", node) } }
+    { <> { node <> makeCallName("ineg", node) } }
 /};
 
 # Parses a unary postfix operator. This yields a function (per se) to call
@@ -495,13 +495,13 @@ def parPrefixOperator = {/
 # function call.
 def parPostfixOperator = {/
     actuals = parActualsList
-    { <> { node :: <> makeCall(node, actuals*) } }
+    { <> { node <> makeCall(node, actuals*) } }
 |
     # The lookahead failure here is to make the grammar prefer `*` to be
     # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
     # but higher layers augment its meaning.)
     @"*" !parExpression
-    { <> { node :: <> @[interpolate: node] } }
+    { <> { node <> @[interpolate: node] } }
 #|
     # Note: *Layer 2* adds additional rules here.
 /};
@@ -516,9 +516,9 @@ def parUnaryExpression = {/
 
     {
         def withPosts = doReduce1(postfixes, base)
-            { op, result :: <> op(result) };
+            { op, result <> op(result) };
         <> doReduce1(listReverse(prefixes), withPosts)
-            { op, result :: <> op(result) }
+            { op, result <> op(result) }
     }
 /};
 
@@ -697,7 +697,7 @@ def parParserSet = {/
         { <> [stringAdd(strings*)*] }
     |
         tokens = parParserToken+
-        { <> collectFilter(tokens) { tok :: <> tokenValue(tok) } }
+        { <> collectFilter(tokens) { tok <> tokenValue(tok) } }
     |
         { <> [] }
     )

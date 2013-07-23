@@ -17,7 +17,7 @@ def convertPex = forwardFunction();
 
 # Does parser conversion of an expression or statement list.
 fn convertList(nodes) {
-    <> collectFilter(nodes) { node :: <> convertExpression(node) }
+    <> collectFilter(nodes) { node <> convertExpression(node) }
 };
 
 # Constructs a function call.
@@ -39,7 +39,7 @@ fn callNameWithPex(node, formals, functionName) {
 
 # Constructs a named function call of the given literal arguments.
 fn callNameWithLiterals(functionName, args*) {
-    def literalArgs = collectFilter(args) { arg :: <> @[literal: arg] };
+    def literalArgs = collectFilter(args) { arg <> @[literal: arg] };
     <> callNameWithExpressions(functionName, literalArgs*)
 };
 
@@ -47,7 +47,7 @@ fn callNameWithLiterals(functionName, args*) {
 fn convertPexChoice(node, formals) {
     def pexes = tokenValue(node);
     def convertedPexes = collectFilter(pexes)
-        { pex  :: <> convertPex(pex, formals) };
+        { pex <> convertPex(pex, formals) };
     <> callNameWithExpressions("pegMakeChoice", convertedPexes*)
 };
 
@@ -195,7 +195,7 @@ fn convertClosureLike(node) {
     def nodeValue = tokenValue(node);
     def statements = convertList(mapGet(nodeValue, "statements"));
     def yield = ifValue { <> mapGet(nodeValue, "yield") }
-        { yield :: <> [yield: convertExpression(yield)] }
+        { yield <> [yield: convertExpression(yield)] }
         { <> [:] };
 
     <> @[(nodeType): [nodeValue*, yield*, statements: statements]]

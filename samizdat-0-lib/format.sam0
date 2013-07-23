@@ -41,9 +41,9 @@ fn intBody(start, value, base) {
 
 # Map from int sign values to the appropriate stringifier for each.
 def INT_SIGNS = [
-    -1: { int, base :: <> intBody("-", ineg(int), base) },
-    0:  { int, base :: <> "0" },
-    1:  { int, base :: <> intBody("", int, base) }
+    -1: { int, base <> intBody("-", ineg(int), base) },
+    0:  { int, base <> "0" },
+    1:  { int, base <> intBody("", int, base) }
 ];
 
 # Stringifies an int using the given base.
@@ -170,14 +170,14 @@ fn keyString(key) {
 
 # Stringifies a string.
 fn doString(string, adorn) {
-    def bodyChars = filterGenerator(string) { ch :: <> stringChar(ch) };
+    def bodyChars = filterGenerator(string) { ch <> stringChar(ch) };
     <> adornIf(adorn, "\"", stringAdd(bodyChars*), "\"")
 };
 
 # Stringifies a list.
 fn doList(list, adorn) {
     def listElems = collectFilter(list)
-        { elem :: <> stringAdd(", ", callSourceString(elem)) };
+        { elem <> stringAdd(", ", callSourceString(elem)) };
 
     <> adornIf(adorn, "[", collectionBody(listElems, ""), "]")
 };
@@ -203,7 +203,7 @@ fn doToken(token, adorn) {
     def typeString = keyString(type);
 
     def body = ifValue { <> tokenValue(token) }
-        { value :: <> stringAdd(typeString, ": ", callSourceString(value)) }
+        { value <> stringAdd(typeString, ": ", callSourceString(value)) }
         {
             ifIs { <> isString(type) }
                 { return adornIf(adorn, "@", typeString, "") };
@@ -238,7 +238,7 @@ fn doStringAsIs(string, .) {
 # Stringifies a list by recursive flattening. The extra argument is the
 # general `adorn` argument, which is degenerate and ignored in this case.
 fn doListFlatten(list, .) {
-    def elems = filterGenerator(list) { e :: <> callStringFromValue(e) };
+    def elems = filterGenerator(list) { e <> callStringFromValue(e) };
     <> stringAdd(elems*)
 };
 
@@ -283,7 +283,7 @@ fn convertHex(arg) {
 # Documented in Samizdat Layer 0 spec.
 fn sourceString(value?) {
     <> ifValue { <> value* }
-        { value :: <> sourceStringGeneral(value, true) }
+        { value <> sourceStringGeneral(value, true) }
         { <> "void" }
 };
 callSourceString(sourceString);
@@ -291,7 +291,7 @@ callSourceString(sourceString);
 # Documented in Samizdat Layer 0 spec.
 fn sourceStringUnadorned(value?) {
     <> ifValue { <> value* }
-        { value :: <> sourceStringGeneral(value, false) }
+        { value <> sourceStringGeneral(value, false) }
         { <> "void" }
 };
 

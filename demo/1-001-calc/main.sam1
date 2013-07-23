@@ -26,7 +26,7 @@ def BINARY_OPS = [
 
 # Map from unary operation names to functions.
 def UNARY_OPS = [
-    "+": { x :: <> x },
+    "+": { x <> x },
     "-": ineg
 ];
 
@@ -34,7 +34,7 @@ def UNARY_OPS = [
 # does a reduction by applying each of the functions in order.
 fn applyAll(initialValue, functions) {
     <> doReduce1(functions, initialValue)
-        { function, result :: <> function(result) }
+        { function, result <> function(result) }
 };
 
 # Takes an initial value and a list of maps of `[op, value]`,
@@ -103,7 +103,7 @@ def number = {/
     digits = digit+
     {
         <> doReduce1(digits, 0)
-            { digit, result :: <> iadd(digit, imul(result, 10)) }
+            { digit, result <> iadd(digit, imul(result, 10)) }
     }
 /};
 
@@ -173,7 +173,7 @@ def evalExpressions = {/
 #
 
 fn main(args*) {
-    def argFilter = filterGenerator(args) { arg :: <> stringAdd(arg, "\n") };
+    def argFilter = filterGenerator(args) { arg <> stringAdd(arg, "\n") };
     def exprString = stringAdd(argFilter*);
     pegApply(evalExpressions, exprString);
 };
