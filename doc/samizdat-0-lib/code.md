@@ -26,11 +26,11 @@ to pass around a "box" whose value is to be ignored.
 <br><br>
 ### Primitive Definitions
 
-#### `boxGet(box, ifNotSet?) <> . | !.`
+#### `boxGet(box) <> . | !.`
 
-Gets the value inside a box. If the box does not (yet) have a value, this
-returns the `ifNotSet` value if suppplied or void if not. `box` must be
-a box as returned by either `mutableBox` or `yieldBox`.
+Gets the value inside a box, if any. If the box either is unset or has
+been set to void, this returns void. `box` must be a box as returned by
+either `mutableBox` or `yieldBox`.
 
 #### `boxIsSet(box) <> logic`
 

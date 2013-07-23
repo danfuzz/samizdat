@@ -134,15 +134,9 @@ static zvalue callYield(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(boxGet) {
-    requireRange(argCount, 1, 2);
+    requireExactly(argCount, 1);
 
-    zvalue result = boxGet(args[0]);
-
-    if ((result == NULL) && (argCount == 2)) {
-        return args[1];
-    } else {
-        return result;
-    }
+    return boxGet(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
