@@ -342,7 +342,7 @@ expression in parentheses, and prefixing it with an assignment, e.g.
 `(name = expression) & somethingWith(name)`.
 
 
-### Value/Void Logical-Or Operator (Precedence 1) &mdash; `expression & expression`
+### Value/Void Logical-Or Operator (Precedence 1) &mdash; `expression | expression`
 
 This is a short-circuit logical-or (disjunction). When evaluating this
 operator, the first (left-hand) expression is evaluated. If that results
