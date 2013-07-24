@@ -20,33 +20,88 @@ fn msg(value) {
     io0Note("\%q(value)");
 };
 
+fn payloadSize(token) {
+    <> lowSize(tokenValue(token))
+};
+
+fn listishNth(listish, n) {
+    <> listNth(tokenValue(listish), n)
+};
+
+fn mappishNth(mappish, n) {
+    <> mapNth(tokenValue(mappish), n)
+};
+
+fn mappishGet(mappish, key) {
+    <> mapGet(tokenValue(mappish), key)
+};
+
+fn weirdSize(value) {
+    def payload = tokenValue(value);
+    <> listFirst(payload)
+};
+
+fn weirdNth(value, n) {
+    ifIs { <> lt(n, 0) }
+        { return };
+
+    def payload = tokenValue(value);
+    def size = weirdSize(value);
+
+    ifIs { <> ge(n, size) }
+        { return };
+
+    <> listNth(payload, iadd(n, 1))
+};
+
+def DISPATCH = [
+    listish: [
+        get:  listishNth,
+        nth:  listishNth,
+        size: payloadSize
+    ],
+    mappish: [
+        get:  mappishGet,
+        nth:  mappishNth,
+        size: payloadSize
+    ],
+    weird: [
+        get:  weirdNth,
+        nth:  weirdNth,
+        size: weirdSize
+    ]
+];
+
 
 #
 # Main tests
 #
 
-io0Note("Int");
-msg((0b10001000).size());
-msg((0b10001000).get(0));
-msg((0b10001000).nth(3));
+io0Note("\nListish");
+msg(@[listish: [1, 2]].size());
+msg(@[listish: ["zero", "one", "two"]].get(1));
+msg(@[listish: ["zero", "one", "two"]].nth(2));
 
-io0Note("\nList");
-msg([1, 2].size());
-msg(["zero", "one", "two"].get(1));
-msg(["zero", "one", "two"].nth(2));
+io0Note("\nMappish");
+msg(@[mappish: [a: "aardvark", b: "bear"]].size());
+msg(@[mappish: [a: "aardvark", b: "bear"]].get("a"));
+msg(@[mappish: [a: "aardvark", b: "bear"]].nth(1));
 
-io0Note("\nMap");
-msg([a: "aardvark", b: "bear"].size());
-msg([a: "aardvark", b: "bear"].get("a"));
-msg([a: "aardvark", b: "bear"].nth(1));
-
-io0Note("\nString");
-msg("blort".size());
-msg("fizmo".get(3));
-msg("igram".nth(4));
+io0Note("\nWeird");
+def weirdValue = @[weird: [3, @x, @y, @z, @p, @d, @q]];
+msg(weirdValue.size());
+msg(weirdValue.get(2));
+msg(weirdValue.nth(4)?);
 
 io0Note("\nExpression syntax for name");
-msg("biscuits"."size"());
-msg("muffins".(stringAdd("s", "ize"))());
+msg(weirdValue."size"());
+msg(weirdValue.(stringAdd("s", "ize"))());
+
+io0Note("\nGetting raw methods");
+def method1 = @[listish: [1, 2, 3]].size;
+msg(method1());
+
+def method2 = @[listish: [4, 5, 6]].(stringAdd("n", "th"));
+msg(method2(1));
 
 <> 0
