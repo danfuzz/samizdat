@@ -1179,38 +1179,40 @@ parPostfixOperator(implPostfixOperator);
 def parRangeExpression = {/
     base = parUnaryExpression
 
-    increment = (
-        @".."
-        inc = parUnaryExpression
-        &[@".." @"..!" @"..+"] # So increment won't match a limit expression.
-        { <> inc }
-    |
-        # Note: This (arguably pointlessly) gets evaluated and yielded
-        # even when not parsing a range expression.
-        { <> makeLiteral(1) }
-    )
-
-    result = (
-        op = [@".." @"..!"]
-        limit = parUnaryExpression
-        {
-            <> makeCall(mapGet(BINARY_OPERATORS, tokenType(op)),
-                base, increment, limit)
-        }
-    |
-        @"..+"
-        { <> makeCall(mapGet(BINARY_OPERATORS, "..+"), base, increment) }
-    |
-        { <> base }
-    )
-
     (
-        # Any additional range-ish operators cause an explicit error.
-        [@".." @"..!" @"..+"]
-        { io0Die("Invalid form for range expression.") }
-    )?
+        # Not actually a range expression.
+        ![@".." @"..!" @"..+"]
+        { <> base }
+    |
+        increment = (
+            @".."
+            inc = parUnaryExpression
+            &[@".." @"..!" @"..+"] # So this won't match a limit expression.
+            { <> inc }
+        |
+            { <> makeLiteral(1) }
+        )
 
-    { <> result }
+        result = (
+            op = [@".." @"..!"]
+            limit = parUnaryExpression
+            {
+                <> makeCall(mapGet(BINARY_OPERATORS, tokenType(op)),
+                    base, increment, limit)
+            }
+        |
+            @"..+"
+            { <> makeCall(mapGet(BINARY_OPERATORS, "..+"), base, increment) }
+        )
+
+        (
+            # Any additional range-ish operators cause an explicit error.
+            [@".." @"..!" @"..+"]
+            { io0Die("Invalid form for range expression.") }
+        )?
+
+        { <> result }
+    )
 /};
 
 # Parses a multiplicative expression.
