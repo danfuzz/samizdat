@@ -62,7 +62,16 @@ if `nameExpr` is a string literal matching the identifier token syntax.
 
 The result of a dot infix expression is a function which, when called,
 sends the named message to the evaluated (left-hand) expression result.
-A typical usage looks like `x.foo(y, z)`.
+A typical usage looks like `def method = x.foo; ... method(y, z)`. More
+typically, a message is applied more directly using the related application
+syntax (immediately below).
+
+#### Message binding lookup and application &mdash; `expression.nameExpr(arg, arg, ...)`
+
+This combines message binding lookup with function application and is
+semantically equivalent to calling the result of a message binding lookup
+with the indicated arguments. That is, `x.foo(bar, baz)` is equivalent
+to `(x.foo)(bar, baz)`.
 
 #### Access collection &mdash; `expression[index, index, ...]`
 

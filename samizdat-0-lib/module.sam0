@@ -132,7 +132,18 @@ fn sortModules(modules) {
 # Exported functions
 #
 
-# TODO: Documented in Samizdat Layer 0 spec.
+# Documented in Samizdat Layer 0 spec.
+fn methodGet(dispatch, value, name) {
+    def function = mapGet(mapGet(dispatch, tokenType(value)), name);
+    <> { args* <> function(value, args*) }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn methodCall(dispatch, value, name, args*) {
+    <> mapGet(mapGet(dispatch, tokenType(value)), name)(value, args*)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn moduleInit(context) {
     # Get a list of just the uninitialized modules, each with its name added
     # to the payload.
@@ -172,6 +183,9 @@ fn moduleInit(context) {
         }
 };
 
+
 <> [
+    methodCall: methodCall,
+    methodGet:  methodGet,
     moduleInit: moduleInit
 ]
