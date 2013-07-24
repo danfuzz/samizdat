@@ -50,6 +50,17 @@ v = [[k1, k2]*: v;  is equivalent to  v = makeMapping(k1, k2, v);
 Note that the argument list is "stretchy" in front, which isn't really
 representable in Samizdat syntax as presented.
 
+#### `makeUniqlet() <> uniqlet`
+
+Returns a uniqlet that has never before been returned from this
+function (nor from any other uniqlet-producing source, should such a
+source exist). This equivalence holds for *Samizdat Layer 0* source
+code:
+
+```
+v = @@;  is equivalent to  v = makeUniqlet();
+```
+
 #### `makeValue(type, value?) <> token`
 
 Returns a general value with the given type tag (an arbitrary value)
@@ -63,17 +74,6 @@ v = @[(type): value];  is equivalent to  v = makeValue(type, value);
 
 If `type` names an atomic type, and the given `value` is an atomic value
 of that type, then this function returns `value` directly.
-
-#### `makeUniqlet() <> uniqlet`
-
-Returns a uniqlet that has never before been returned from this
-function (nor from any other uniqlet-producing source, should such a
-source exist). This equivalence holds for *Samizdat Layer 0* source
-code:
-
-```
-v = @@;  is equivalent to  v = makeUniqlet();
-```
 
 
 <br><br>
