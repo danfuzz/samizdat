@@ -427,7 +427,7 @@ def parToken = {/
         { <> [type] }
     )
 
-    { <> makeCallName("makeToken", tokenArgs*) }
+    { <> makeCallName("makeValue", tokenArgs*) }
 /};
 
 # Parses a uniqlet literal.
