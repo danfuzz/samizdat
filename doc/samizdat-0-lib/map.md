@@ -20,12 +20,11 @@ the result does not have mappings for the given keys. If the given
 map does not have a particular given key, then that key has no
 affect on the result.
 
-#### `mapGet(map, key, notFound?) <> . | !.`
+#### `mapGet(map, key) <> . | !.`
 
 Returns the value mapped to the given key (an arbitrary value) in
 the given map. If there is no such mapping, then this
-returns the `notFound` value (an arbitrary value) if supplied,
-or returns void if `notFound` was not supplied.
+returns void.
 
 #### `mapKeys(map) <> list`
 
