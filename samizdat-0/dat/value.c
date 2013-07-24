@@ -16,7 +16,7 @@
 /**
  * Gets a pointer to the token's info.
  */
-static TokenInfo *tokenInfo(zvalue token) {
+static ValueInfo *tokenInfo(zvalue token) {
     return &((DatToken *) token)->info;
 }
 
@@ -25,8 +25,8 @@ static TokenInfo *tokenInfo(zvalue token) {
  * on the arguments.
  */
 static zvalue newToken(zvalue type, zvalue value) {
-    zvalue result = datAllocValue(DAT_VALUE, 0, sizeof(TokenInfo));
-    TokenInfo *info = tokenInfo(result);
+    zvalue result = datAllocValue(DAT_VALUE, 0, sizeof(ValueInfo));
+    ValueInfo *info = tokenInfo(result);
 
     result->size = (value == NULL) ? 0 : 1;
     info->type = type;
@@ -41,8 +41,8 @@ static zvalue newToken(zvalue type, zvalue value) {
 
 /* Documented in header. */
 bool datTokenEq(zvalue v1, zvalue v2) {
-    TokenInfo *info1 = tokenInfo(v1);
-    TokenInfo *info2 = tokenInfo(v2);
+    ValueInfo *info1 = tokenInfo(v1);
+    ValueInfo *info2 = tokenInfo(v2);
 
     if (!datEq(info1->type, info2->type)) {
         return false;
@@ -59,8 +59,8 @@ bool datTokenEq(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zorder datTokenOrder(zvalue v1, zvalue v2) {
-    TokenInfo *info1 = tokenInfo(v1);
-    TokenInfo *info2 = tokenInfo(v2);
+    ValueInfo *info1 = tokenInfo(v1);
+    ValueInfo *info2 = tokenInfo(v2);
 
     zorder result = datOrder(info1->type, info2->type);
 
@@ -77,7 +77,7 @@ zorder datTokenOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 void datTokenMark(zvalue value) {
-    TokenInfo *info = tokenInfo(value);
+    ValueInfo *info = tokenInfo(value);
 
     datMark(info->type);
     if (info->value != NULL) {

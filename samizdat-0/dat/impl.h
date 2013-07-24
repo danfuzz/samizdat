@@ -130,7 +130,7 @@ typedef struct {
 
     /** Associated value. Possibly `NULL`. */
     zvalue value;
-} TokenInfo;
+} ValueInfo;
 
 /**
  * Token structure.
@@ -140,7 +140,7 @@ typedef struct {
     DatValue header;
 
     /** Token info. */
-    TokenInfo info;
+    ValueInfo info;
 } DatToken;
 
 /**
