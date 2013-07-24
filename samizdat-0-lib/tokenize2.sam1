@@ -268,28 +268,19 @@ fn implProcessStringParts(parts) {
     # interpolation maps.
     def elems = doReduce1(listButFirst(parts), [listFirst(parts)])
         { part, result ::
-            <> ifIs { <> isString(part) }
-                {
-                    def last = listLast(result);
-                    <> ifIs { <> isString(last) }
-                        {
-                            # Coalesce adjacent literal string parts.
-                            def newLast = stringAdd(last, part);
-                            <> [listButLast(result)*, newLast]
-                        }
-                }
-                { <> [result*, part] }
+            <> ifValue { <> [&isString(part), &isString(listLast(result))] }
+                { newLast <> [listButLast(result)*, stringAdd(newLast*)] }
+                { <> [result*, part] };
         };
 
     # Check for a simple result.
     ifIs { <> eq(lowSize(elems), 1) }
         {
-            def first = listFirst(elems);
-            ifIs { <> isString(first) }
-                {
+            ifValue { <> isString(elems*) }
+                { elem ::
                     # There's only one element, and it's a string. So,
                     # we have a simple non-interpolated string. Return it.
-                    return @[string: first]
+                    return @[string: elem]
                 }
         };
 
