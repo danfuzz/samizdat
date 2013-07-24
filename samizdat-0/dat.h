@@ -39,7 +39,7 @@ typedef enum {
  * accessible through instances of this type via the API. You
  * have to use the various accessor functions.
  */
-typedef struct DatValue *zvalue;
+typedef struct DatHeader *zvalue;
 
 /**
  * Arbitrary (key, value) mapping.

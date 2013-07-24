@@ -266,7 +266,7 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
         sanityCheck(false);
     }
 
-    zvalue result = utilAlloc(sizeof(DatValue) + extraBytes);
+    zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
     result->magic = DAT_VALUE_MAGIC;
     result->type = type;
     result->size = size;

@@ -38,7 +38,7 @@ typedef struct GcLinks {
 /**
  * Common fields across all values. Used as a header for other types.
  */
-typedef struct DatValue {
+typedef struct DatHeader {
     /** Gc links (see above). */
     GcLinks links;
 
@@ -50,14 +50,14 @@ typedef struct DatValue {
 
     /** Size. Meaning varies depending on `type`. */
     zint size;
-} DatValue;
+} DatHeader;
 
 /**
  * Int structure.
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** Int value. See `datIntFromZint()` about range restriction. */
     int32_t value;
@@ -68,7 +68,7 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** Characters of the string, in index order. */
     zchar elems[0];
@@ -79,7 +79,7 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** List elements, in index order. */
     zvalue elems[0];
@@ -90,7 +90,7 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** List of mappings, in key-sorted order. */
     zmapping elems[0];
@@ -115,7 +115,7 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** Uniqlet info. */
     UniqletInfo info;
@@ -137,15 +137,15 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** Token info. */
     ValueInfo info;
 } DatToken;
 
 /**
- * Allocates memory, sized to include a `DatValue` header plus the
- * indicated number of extra bytes. The `DatValue` header is
+ * Allocates memory, sized to include a `DatHeader` header plus the
+ * indicated number of extra bytes. The `DatHeader` header is
  * initialized with the indicated type and size. The resulting value
  * is added to the stack.
  */
