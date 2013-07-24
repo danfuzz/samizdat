@@ -1209,9 +1209,9 @@ def parRangeExpression = {/
             # Any additional range-ish operators cause an explicit error.
             [@".." @"..!" @"..+"]
             { io0Die("Invalid form for range expression.") }
-        )?
-
-        { <> result }
+        |
+            { <> result }
+        )
     )
 /};
 
