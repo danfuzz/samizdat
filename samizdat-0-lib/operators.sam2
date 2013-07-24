@@ -11,35 +11,6 @@
 # Helper definitions
 #
 
-# Message dispatch table, mapping from types to maps from names to functions.
-# TODO: This is "scaffolding" meant to be replaced later with a more
-# general mechanism.
-def MESSAGE_DISPATCH = [
-    int: [
-        get:  ibit,
-        nth:  ibit,
-        size: lowSize
-    ],
-
-    list: [
-        get:  listNth,
-        nth:  listNth,
-        size: lowSize
-    ],
-
-    map: [
-        get:  mapGet,
-        nth:  mapNth,
-        size: lowSize
-    ],
-
-    string: [
-        get:  stringNth,
-        nth:  stringNth,
-        size: lowSize
-    ]
-];
-
 # Verifies that it should be possible to compare the two given values,
 # terminating the runtime if not.
 fn assertComparable(v1, v2) {
@@ -135,14 +106,6 @@ fn \"binary>="(v1, v2) {
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-fn \"unary."(name) {
-    <> { value ::
-        def function = mapGet(mapGet(MESSAGE_DISPATCH, lowType(value)), name);
-        <> { args* <> function(value, args*) }
-    }
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary+"(value) {
     <> iadd(0, value)
 };
@@ -180,7 +143,6 @@ fn \"unary[]"(value, indices*) {
     "binary>":  \"binary>",
     "binary<=": \"binary<=",
     "binary>=": \"binary>=",
-    "unary.":   \"unary.",
     "unary+":   \"unary+",
     "unary-":   \"unary-",
     "unary**":  \"unary**",
