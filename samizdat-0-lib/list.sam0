@@ -8,27 +8,25 @@
 
 
 # Documented in Samizdat Layer 0 spec.
-fn listButFirst(list, notFound?) {
-    <> ifIs { <> eq(list, []) }
-        { <> notFound* }
+fn listButFirst(list) {
+    <> ifNot { <> eq(list, []) }
         { <> listSlice(list, 1) }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listButLast(list, notFound?) {
-    <> ifIs { <> eq(list, []) }
-        { <> notFound* }
+fn listButLast(list) {
+    <> ifNot { <> eq(list, []) }
         { <> listSlice(list, 0, isub(lowSize(list), 1)) }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listFirst(list, notFound?) {
-    <> listNth(list, 0, notFound*)
+fn listFirst(list) {
+    <> listNth(list, 0)
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listLast(list, notFound?) {
-    <> listNth(list, isub(lowSize(list), 1), notFound*)
+fn listLast(list) {
+    <> listNth(list, isub(lowSize(list), 1))
 };
 
 

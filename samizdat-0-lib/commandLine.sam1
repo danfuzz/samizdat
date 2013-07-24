@@ -95,9 +95,9 @@ fn samCommandLine(context, rawArgs*) {
     def options = mapGet(parsedArgs, "options");
     def argWords = mapGet(parsedArgs, "args");
 
-    def fileName = listFirst(argWords, "/dev/stdin");
+    def fileName = ifValueOr { <> listFirst(argWords) } { <> "/dev/stdin" };
     def filePath = io0PathFromFlat(fileName);
-    def args = listButFirst(argWords, []);
+    def args = ifValueOr { <> listButFirst(argWords) } { <> [] };
 
     def nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
         { suffix <> stringAdd("x.", suffix) }

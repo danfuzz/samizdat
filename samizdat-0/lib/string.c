@@ -78,7 +78,8 @@ PRIM_IMPL(stringAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringNth) {
-    return doNth(valueFromStringNth, argCount, args);
+    requireExactly(argCount, 2);
+    return doNth(valueFromStringNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

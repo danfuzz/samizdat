@@ -11,11 +11,10 @@ Tokens
 
 Returns the type tag value (an arbitrary value) of the given token.
 
-#### `tokenValue(token, notFound?) <> . | !.`
+#### `tokenValue(token) <> . | !.`
 
 Returns the payload data value (an arbitrary value) of the given
-token, if any. If the token is valueless, returns the `notFound`
-value if supplied, or returns void if not.
+token, if any. If the token is valueless, returns void.
 
 
 <br><br>

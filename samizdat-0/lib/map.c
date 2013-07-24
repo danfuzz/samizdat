@@ -46,15 +46,8 @@ PRIM_IMPL(mapDel) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapGet) {
-    requireRange(argCount, 2, 3);
-
-    zvalue result = datMapGet(args[0], args[1]);
-
-    if (result == NULL) {
-        return (argCount == 3) ? args[2] : NULL;
-    } else {
-        return result;
-    }
+    requireExactly(argCount, 2);
+    return datMapGet(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -77,7 +70,8 @@ PRIM_IMPL(mapKeys) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapNth) {
-    return doNth(datMapNth, argCount, args);
+    requireExactly(argCount, 2);
+    return doNth(datMapNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
