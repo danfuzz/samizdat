@@ -716,7 +716,7 @@ DEF_PARSE(token) {
     if (args == NULL) { args = PARSE(token2); }
     REJECT_IF(args == NULL);
 
-    return makeCall(makeVarRef(STR_MAKE_TOKEN), args);
+    return makeCall(makeVarRef(STR_MAKE_VALUE), args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

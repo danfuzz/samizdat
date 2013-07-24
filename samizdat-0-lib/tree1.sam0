@@ -324,7 +324,7 @@ def parToken = pegMakeMainSequence(
         pegMakeMainSequence(
             parIdentifierString,
             pegMakeCode { type <> [type] })),
-    pegMakeCode { ., tokenArgs <> makeCallName("makeToken", tokenArgs*) });
+    pegMakeCode { ., tokenArgs <> makeCallName("makeValue", tokenArgs*) });
 
 # Documented in Samizdat Layer 0 spec.
 def parUniqlet = pegMakeMainSequence(
