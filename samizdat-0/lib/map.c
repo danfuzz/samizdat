@@ -77,7 +77,8 @@ PRIM_IMPL(mapKeys) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapNth) {
-    return doNth(datMapNth, argCount, args);
+    requireExactly(argCount, 2);
+    return doNth(datMapNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

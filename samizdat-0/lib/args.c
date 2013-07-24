@@ -42,17 +42,10 @@ void requireAtLeast(zint argCount, zint minimum) {
 }
 
 /** Documented in header. */
-zvalue doNth(znth function, zint argCount, const zvalue *args) {
-    requireRange(argCount, 2, 3);
-
-    zvalue result = NULL;
-    if (datTypeIs(args[1], DAT_INT)) {
-        result = function(args[0], datZintFromInt(args[1]));
-    }
-
-    if (result == NULL) {
-        return (argCount == 3) ? args[2] : NULL;
+zvalue doNth(znth function, zvalue value, zvalue n) {
+    if (datTypeIs(n, DAT_INT)) {
+        return function(value, datZintFromInt(n));
     } else {
-        return result;
+        return NULL;
     }
 }

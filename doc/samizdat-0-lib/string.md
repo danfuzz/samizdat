@@ -24,13 +24,12 @@ the runtime) if `string` is not a string of size 1.
 Returns a string consisting of the concatenation of the contents
 of all the argument strings, in argument order.
 
-#### `stringNth(string, n, notFound?) <> . | !.`
+#### `stringNth(string, n) <> . | !.`
 
 Returns the `n`th (zero-based) element of the given string, as a
 single-element string, if `n` is a valid int index into the given
 string. If `n` is not valid (not an int, or out of range),
-then this returns the `notFound` value (an arbitrary value) if supplied,
-or returns void if `notFound` was not supplied.
+then this returns void.
 
 #### `stringSlice(list, start, end?) <> list`
 
