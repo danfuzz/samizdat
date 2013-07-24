@@ -44,13 +44,12 @@ are shifted up by one index.
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
 
-#### `listNth(list, n, notFound?) <> . | !.`
+#### `listNth(list, n) <> . | !.`
 
 Returns the `n`th (zero-based) element of the given list, if `n` is
 a valid int index into the list. If `n` is not a valid index
 (either an out-of-range int, or some other value), then this
-returns the `notFound` value (an arbitrary value) if supplied, or
-returns void if `notFound` was not supplied.
+returns void.
 
 #### `listPutNth(list, n, value) <> list`
 
@@ -81,36 +80,30 @@ specified, it defaults to the end of the list.
 <br><br>
 ### In-Language Definitions
 
-#### `listButFirst(list, notFound?) <> . | !.`
+#### `listButFirst(list) <> . | !.`
 
 Returns a list consisting of all the elements of the given list
 except for the first element (that is, all but the first element). If
-the given list is empty, this returns the given `notFound` value.
-Returns void if the list is empty and `notFound` is not supplied.
-This is similar to `listSlice(list, 1)` or `listDelNth(list, 0)`, except
-that this function behaves differently than either of those when the
-list is empty.
+the given list is empty, this returns void. This is similar to
+`listSlice(list, 1)` or `listDelNth(list, 0)`, except that this function
+behaves differently than either of those when the list is empty.
 
-#### `listButLast(list, notFound?) <> . | !.`
+#### `listButLast(list) <> . | !.`
 
 Returns a list consisting of all the elements of the given list
 except for the last element (that is, all but the last element). If
-the given list is empty, this returns the given `notFound` value.
-Returns void if the list is empty and `notFound` is not supplied.
-This is similar to `listSlice(list, 0, isub(lowSize(list), 1))` or
+the given list is empty, this returns void. This is similar to
+`listSlice(list, 0, isub(lowSize(list), 1))` or
 `listDelNth(list, isub(lowSize(list), 1))`, except that this function
 behaves differently than either of those when the list is empty.
 
-#### `listFirst(list, notFound?) <> . | !.`
+#### `listFirst(list) <> . | !.`
 
-Returns the first element of the given list or the given `notFound` value
-if the list is empty. Returns void if the list is empty and `notFound`
-is not supplied. This is just a convenient shorthand for
-`listNth(list, 0, notFound*)`.
+Returns the first element of the given list or void if the list is empty.
+This is just a convenient shorthand for `listNth(list, 0)`.
 
-#### `listLast(list, notFound?) <> . | !.`
+#### `listLast(list) <> . | !.`
 
-Returns the last element of the given list or the given `notFound` value
-if the list is empty. Returns void if the list is empty and `notFound`
-is not supplied. This is just a convenient shorthand for
-`listNth(list, isub(lowSize(list), 1), notFound*)`.
+Returns the last element of the given list or void if the list is empty.
+This is just a convenient shorthand for
+`listNth(list, isub(lowSize(list), 1))`.

@@ -18,13 +18,6 @@ PRIM_IMPL(tokenType) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(tokenValue) {
-    requireRange(argCount, 1, 2);
-
-    zvalue result = datTokenValue(args[0]);
-
-    if ((result == NULL) && (argCount == 2)) {
-        return args[1];
-    }
-
-    return result;
+    requireExactly(argCount, 1);
+    return datTokenValue(args[0]);
 }

@@ -18,9 +18,9 @@
 typedef zvalue (*znth)(zvalue value, zint n);
 
 /**
- * Calls an `nth` style function, handling not-found cases.
+ * Calls an `nth` style function.
  */
-zvalue doNth(znth function, zint argCount, const zvalue *args);
+zvalue doNth(znth function, zvalue value, zvalue n);
 
 /**
  * Check the given argument count for an exact required amount,

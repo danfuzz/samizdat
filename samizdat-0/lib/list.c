@@ -82,7 +82,8 @@ PRIM_IMPL(listInsNth) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listNth) {
-    return doNth(datListNth, argCount, args);
+    requireExactly(argCount, 2);
+    return doNth(datListNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
