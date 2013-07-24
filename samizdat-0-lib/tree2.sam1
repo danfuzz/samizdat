@@ -104,7 +104,6 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 # Map of token types to corresponding unary operator function name variable
 # references.
 def UNARY_OPERATORS = varRefMap([
-    ".":   "unary.",
     "+":   "unary+",
     "-":   "unary-",
     "**":  "unary**",
@@ -1143,6 +1142,10 @@ def implPostfixOperator = {/
         <> { node <> makeCall(function, node, exprs*) }
     }
 |
+    # This translates as something like:
+    # * `expr.name` => `methodGet(DISPATCH, expr, "name")`
+    # * `expr.(nameExpr)` => `methodGet(DISPATCH, expr, nameExpr)`
+    # * `expr.name(arg, ...)` => `methodCall(DISPATCH, expr, "name", arg, ...)`
     @"."
     name = (
         n = parIdentifierString
@@ -1151,13 +1154,24 @@ def implPostfixOperator = {/
         parAtom
     )
 
-    {
-        <> { node ::
-            <> makeCall(
-                makeCall(mapGet(UNARY_OPERATORS, "."), name),
-                node)
+    (
+        actuals = parActualsList
+        {
+            <> { node ::
+                <> makeCallName("methodCall",
+                    makeVarRef("DISPATCH"),
+                    node,
+                    name,
+                    actuals*)
+            }
         }
-    }
+    |
+        {
+            <> { node ::
+                <> makeCallName("methodGet", makeVarRef("DISPATCH"), node, name)
+            }
+        }
+    )
 /};
 parPostfixOperator(implPostfixOperator);
 
