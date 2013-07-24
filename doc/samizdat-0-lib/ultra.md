@@ -72,7 +72,7 @@ v = @[(type)];         is equivalent to  v = makeValue(type);
 v = @[(type): value];  is equivalent to  v = makeValue(type, value);
 ```
 
-If `type` names an atomic type, and the given `value` is an atomic value
+If `type` names a core type, and the given `value` is a value
 of that type, then this function returns `value` directly.
 
 
