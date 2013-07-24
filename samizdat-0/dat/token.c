@@ -25,7 +25,7 @@ static TokenInfo *tokenInfo(zvalue token) {
  * on the arguments.
  */
 static zvalue newToken(zvalue type, zvalue value) {
-    zvalue result = datAllocValue(DAT_TOKEN, 0, sizeof(TokenInfo));
+    zvalue result = datAllocValue(DAT_VALUE, 0, sizeof(TokenInfo));
     TokenInfo *info = tokenInfo(result);
 
     result->size = (value == NULL) ? 0 : 1;

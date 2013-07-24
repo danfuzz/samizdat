@@ -30,7 +30,7 @@ typedef enum {
     DAT_STRING,
     DAT_LIST,
     DAT_MAP,
-    DAT_TOKEN,
+    DAT_VALUE,
     DAT_UNIQLET
 } ztype;
 
