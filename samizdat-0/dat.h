@@ -437,31 +437,31 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
 
 
 /*
- * Token Functions
+ * Derived Value Functions
  */
 
 /**
- * Returns a possibly-valued token. The given value must either
- * be a valid value or `NULL`.
+ * Returns a derived value with optional data payload. The given `data`
+ * value must either be a valid value or `NULL`.
  */
-zvalue datValueFrom(zvalue type, zvalue value);
+zvalue datValueFrom(zvalue type, zvalue data);
 
 /**
- * Gets the type tag of a token.
+ * Gets the type tag of a derived value.
  */
-zvalue datValueType(zvalue token);
+zvalue datValueType(zvalue value);
 
 /**
- * Returns whether or not the type of the given token equals the
+ * Returns whether or not the type of the given derived value equals the
  * given value.
  */
-bool datValueTypeIs(zvalue token, zvalue type);
+bool datValueTypeIs(zvalue value, zvalue type);
 
 /**
- * Gets the value associated with a token. This is `NULL` for
- * valueless tokens (unsurprisingly).
+ * Gets the data payload associated with a derived value. This is `NULL` for
+ * type-only values (unsurprisingly).
  */
-zvalue datValueData(zvalue token);
+zvalue datValueData(zvalue value);
 
 
 /*

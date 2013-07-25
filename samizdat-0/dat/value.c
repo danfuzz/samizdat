@@ -91,29 +91,29 @@ void datValueMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datValueFrom(zvalue type, zvalue value) {
+zvalue datValueFrom(zvalue type, zvalue data) {
     datAssertValid(type);
 
-    if (value != NULL) {
-        datAssertValid(value);
+    if (data != NULL) {
+        datAssertValid(data);
     }
 
-    return newValue(type, value);
+    return newValue(type, data);
 }
 
 /* Documented in header. */
-zvalue datValueType(zvalue token) {
-    datAssertToken(token);
-    return valueInfo(token)->type;
+zvalue datValueType(zvalue value) {
+    datAssertToken(value);
+    return valueInfo(value)->type;
 }
 
 /* Documented in header. */
-bool datValueTypeIs(zvalue token, zvalue type) {
-    return datEq(datValueType(token), type);
+bool datValueTypeIs(zvalue value, zvalue type) {
+    return datEq(datValueType(value), type);
 }
 
 /* Documented in header. */
-zvalue datValueData(zvalue token) {
-    datAssertToken(token);
-    return valueInfo(token)->data;
+zvalue datValueData(zvalue value) {
+    datAssertToken(value);
+    return valueInfo(value)->data;
 }
