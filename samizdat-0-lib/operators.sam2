@@ -20,7 +20,7 @@ fn assertComparable(v1, v2) {
     ifIs { <> ne(type1, type2) }
         { io0Die("Incomparable values: \%q(v1), \%q(v2)") };
 
-    ifIs { <> eq(type1, "deriv") }
+    ifIs { <> eq(type1, "Deriv") }
         {
             ifIs { <> ne(tokenType(v1), tokenType(v2)) }
                 { io0Die("Incomparable values: \%q(v1), \%q(v2)") };

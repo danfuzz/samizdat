@@ -81,11 +81,11 @@ fn makeUniqletGenerator(uniqlet) {
 # Map from low-layer value types to corresponding appropriate generator
 # maker functions.
 def GENERATOR_MAKERS = [
-    int:     makeIntGenerator,
-    list:    makeListGenerator,
-    map:     makeMapGenerator,
-    string:  makeStringGenerator,
-    uniqlet: makeUniqletGenerator
+    Int:     makeIntGenerator,
+    List:    makeListGenerator,
+    Map:     makeMapGenerator,
+    String:  makeStringGenerator,
+    Uniqlet: makeUniqletGenerator
 ];
 
 # Map from `[direction, inclusive]` pairs to appropriate test functions.

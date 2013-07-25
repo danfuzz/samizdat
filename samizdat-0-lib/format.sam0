@@ -246,23 +246,23 @@ fn doListFlatten(list, .) {
 # Mapping from low-layer type names to stringifiers to use for `%q`-style
 # source-stringification.
 def SOURCE_STRINGIFIERS = [
-    deriv:   doDeriv,
-    int:     doInt,
-    list:    doList,
-    map:     doMap,
-    string:  doString,
-    uniqlet: doUniqlet
+    Deriv:   doDeriv,
+    Int:     doInt,
+    List:    doList,
+    Map:     doMap,
+    String:  doString,
+    Uniqlet: doUniqlet
 ];
 
 # Mapping from low-layer type names to stringifiers to use for `%s`-style
 # human-stringification.
 def HUMAN_STRINGIFIERS = [
-    deriv:   doDeriv,
-    int:     doInt,
-    list:    doListFlatten,
-    map:     doMap,
-    string:  doStringAsIs,
-    uniqlet: doUniqlet
+    Deriv:   doDeriv,
+    Int:     doInt,
+    List:    doListFlatten,
+    Map:     doMap,
+    String:  doStringAsIs,
+    Uniqlet: doUniqlet
 ];
 
 # Common handler for the two exported functions.

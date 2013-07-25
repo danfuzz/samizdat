@@ -31,8 +31,8 @@ a size, defined as follows:
 #### `lowType(value) <> string`
 
 Returns the type name of the low-layer type of the given value. The
-result will be one of: `"int"` `"string"` `"list"` `"map"`
-`"uniqlet"` `"deriv"`
+result will be one of: `"Deriv"` `"Int"` `"List"` `"Map"` `"String"`
+`"Uniqlet"`
 
 
 <br><br>
@@ -40,7 +40,7 @@ result will be one of: `"int"` `"string"` `"list"` `"map"`
 
 #### `isToken(value) <> logic`
 
-Returns the given `value` if it is a token. Returns void if not.
+Returns the given `value` if it is a derived value. Returns void if not.
 
 #### `isInt(value) <> logic`
 

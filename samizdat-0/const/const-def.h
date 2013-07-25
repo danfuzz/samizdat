@@ -48,10 +48,16 @@ STR(EMPTY,            ""); // The canonical empty string (`""`) value.
 
 STR(UP_LIBRARY,       "LIBRARY");
 
+STR(CAP_INT,          "Int");
+STR(CAP_DERIV,        "Deriv");
+STR(CAP_STRING,       "String");
+STR(CAP_LIST,         "List");
+STR(CAP_MAP,          "Map");
+STR(CAP_UNIQLET,      "Uniqlet");
+
 STR(ACTUALS,          "actuals");
 STR(CALL,             "call");
 STR(CLOSURE,          "closure");
-STR(DERIV,            "deriv");
 STR(EXPRESSION,       "expression");
 STR(FALSE,            "false");
 STR(FN_DEF,           "fnDef");
@@ -61,14 +67,12 @@ STR(IDENTIFIER,       "identifier");
 STR(INEG,             "ineg");
 STR(INT,              "int");
 STR(INTERPOLATE,      "interpolate");
-STR(LIST,             "list");
 STR(LITERAL,          "literal");
 STR(MAKE_LIST,        "makeList");
 STR(MAKE_MAPPING,     "makeMapping");
 STR(MAKE_UNIQLET,     "makeUniqlet");
 STR(MAKE_VALUE,       "makeValue");
 STR(MAIN_SAM0,        "main.sam0");
-STR(MAP,              "map");
 STR(MAP_ADD,          "mapAdd");
 STR(NAME,             "name");
 STR(NONLOCAL_EXIT,    "nonlocalExit");
@@ -80,7 +84,6 @@ STR(STATEMENTS,       "statements");
 STR(STRING,           "string");
 STR(TRUE,             "true");
 STR(TYPE,             "type");
-STR(UNIQLET,          "uniqlet");
 STR(VALUE,            "value");
 STR(VAR_DEF,          "varDef");
 STR(VAR_REF,          "varRef");
