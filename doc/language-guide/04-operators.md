@@ -75,26 +75,26 @@ to `(x.foo)(bar, baz)`.
 
 #### Access collection &mdash; `expression[index, index, ...]`
 
-To index into a collection (e.g., list, map, or string) by integer index
-(e.g., lists or strings) or arbitrary key values (e.g., maps), place the
-index value inside square brackets. The result of the expression is the
-value located at the indicated index within the collection, or void if the
-indicated element does not exist (e.g., index out of range or key not in map).
+To index into a collection (e.g., a list, map, or string) or collection-like
+value, by integer index (e.g., for a list or string) or arbitrary key value
+(e.g., for a map), place the index value inside square brackets after an
+expression evaluating to a collection to index into. The result of the
+expression is the value "located" at the indicated index within the
+collection, or void if the indicated element does not exist (e.g., index out
+of range or key not in map).
 
-If the value to be indexed has a deeper structure to be accessed, additional
-indices may be placed within the square brackets, separated by commas. With
-such a form, it is okay for the indexed elements to not exist, in which case
-the entire expression has a void result. It is *not* okay for a found element
-to not be indexable (resulting in termination of the runtime).
+Within the brackets, one can list as many indices as there are dimensions
+in the collection. Note that the core collection types are all
+single-dimensioned. As with function calls, a star after an index expression
+indicates interpolation.
 
-As with function calls, a star after an index expression indicates
-interpolation.
+The expression to index into and all of the indices must be non-void, except
+that index expressions can be marked with a `&` prefix to indicate void
+contagion (see which for details).
 
-The expression to index into and all of the indices must be non-void.
-
-**Note:** The difference between `x[y, z]` and `x[y][z]` is that it is not
-an error in the former for `x[y]` to be void, whereas in the latter `x[y]`
-being void would be a fatal error.
+A collection access expression is identical to a message application of
+the message `"get"` to the value to be accessed. That is, `x[y]` means
+the same thing as `x.get(y)`.
 
 #### Convert Value-or-void to list &mdash; `expression?`
 
