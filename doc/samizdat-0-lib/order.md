@@ -23,7 +23,7 @@ standard meaning of those values:
 Ordering is calculated as follows:
 
 The major order is by type &mdash; `int < string < list <
-map < deriv < uniqlet` &mdash; and minor order is type-dependant.
+map < uniqlet < deriv` &mdash; and minor order is type-dependant.
 
 * Ints order by integer value, low to high.
 
@@ -36,13 +36,13 @@ map < deriv < uniqlet` &mdash; and minor order is type-dependant.
   lists are identical, then the result is the comparison of
   corresponding lists of values, in key order.
 
-* Derived values compare by type as primary, and data payload as secondary.
-  With types equal, derived values without a payload order earlier than
-  ones with a payload.
-
 * Any given uniqlet never compares as identical to anything but
   itself. There is a total ordering of uniqlets, which is consistent,
   transitive, and symmetric &mdash; but otherwise arbitrary.
+
+* Derived values compare by type as primary, and data payload as secondary.
+  With types equal, derived values without a payload order earlier than
+  ones with a payload.
 
 #### `coreOrderIs(value1, value2, check1, check2?) <> logic`
 

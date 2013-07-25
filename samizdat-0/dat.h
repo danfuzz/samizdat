@@ -23,15 +23,15 @@
  * Possible low-level data types.
  *
  * **Note:** The enum ordering is the same as the type-based ordering for
- * comparing values. See `datOrder()`.
+ * comparing values. See `datOrder()` below or spec for `coreOrder`.
  */
 typedef enum {
     DAT_INT = 1,
     DAT_STRING,
     DAT_LIST,
     DAT_MAP,
-    DAT_DERIV,
-    DAT_UNIQLET
+    DAT_UNIQLET,
+    DAT_DERIV
 } ztype;
 
 /**
