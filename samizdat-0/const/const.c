@@ -107,7 +107,7 @@ zvalue constStringFromZchar(zchar value) {
 }
 
 /* Documented in header. */
-zvalue constValueFrom(zvalue type, zvalue value) {
+zvalue constDerivFrom(zvalue type, zvalue value) {
     if ((value == NULL) &&
         datTypeIs(type, DAT_STRING) &&
         (datSize(type) == 1)) {

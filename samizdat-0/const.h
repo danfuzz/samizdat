@@ -56,7 +56,7 @@ zvalue constStringFromZchar(zchar value);
  * This is the same as `datDerivFrom`, except that in some cases, this
  * will reuse a pre-existing value.
  */
-zvalue constValueFrom(zvalue type, zvalue value);
+zvalue constDerivFrom(zvalue type, zvalue value);
 
 /**
  * Gets the string representing the low-layer type of the given value.
