@@ -20,22 +20,6 @@ fn msg(value) {
     io0Note("\%q(value)");
 };
 
-fn payloadSize(token) {
-    <> coreSizeOf(dataOf(token))
-};
-
-fn listishNth(listish, n) {
-    <> listNth(dataOf(listish), n)
-};
-
-fn mappishNth(mappish, n) {
-    <> mapNth(dataOf(mappish), n)
-};
-
-fn mappishGet(mappish, key) {
-    <> mapGet(dataOf(mappish), key)
-};
-
 fn weirdSize(value) {
     def payload = dataOf(value);
     <> listFirst(payload)
@@ -55,17 +39,17 @@ fn weirdNth(value, n) {
 };
 
 def DISPATCH = [
-    listish: [
-        get:  listishNth,
-        nth:  listishNth,
-        size: payloadSize
+    List: [
+        get:  listNth,
+        nth:  listNth,
+        size: coreSizeOf
     ],
-    mappish: [
-        get:  mappishGet,
-        nth:  mappishNth,
-        size: payloadSize
+    Map: [
+        get:  mapGet,
+        nth:  mapNth,
+        size: coreSizeOf
     ],
-    weird: [
+    Weird: [
         get:  weirdNth,
         nth:  weirdNth,
         size: weirdSize
@@ -77,18 +61,18 @@ def DISPATCH = [
 # Main tests
 #
 
-io0Note("\nListish");
-msg(@[listish: [1, 2]].size());
-msg(@[listish: ["zero", "one", "two"]].get(1));
-msg(@[listish: ["zero", "one", "two"]].nth(2));
+io0Note("\nList");
+msg([1, 2].size());
+msg(["zero", "one", "two"].get(1));
+msg(["zero", "one", "two"].nth(2));
 
-io0Note("\nMappish");
-msg(@[mappish: [a: "aardvark", b: "bear"]].size());
-msg(@[mappish: [a: "aardvark", b: "bear"]].get("a"));
-msg(@[mappish: [a: "aardvark", b: "bear"]].nth(1));
+io0Note("\nMap");
+msg([a: "aardvark", b: "bear"].size());
+msg([a: "aardvark", b: "bear"].get("a"));
+msg([a: "aardvark", b: "bear"].nth(1));
 
 io0Note("\nWeird");
-def weirdValue = @[weird: [3, @x, @y, @z, @p, @d, @q]];
+def weirdValue = @[Weird: [3, @x, @y, @z, @p, @d, @q]];
 msg(weirdValue.size());
 msg(weirdValue.get(2));
 msg(weirdValue.nth(4)?);
@@ -98,10 +82,10 @@ msg(weirdValue."size"());
 msg(weirdValue.(stringAdd("s", "ize"))());
 
 io0Note("\nGetting raw methods");
-def method1 = @[listish: [1, 2, 3]].size;
+def method1 = [1, 2, 3].size;
 msg(method1());
 
-def method2 = @[listish: [4, 5, 6]].(stringAdd("n", "th"));
+def method2 = [4, 5, 6].(stringAdd("n", "th"));
 msg(method2(1));
 
 <> 0
