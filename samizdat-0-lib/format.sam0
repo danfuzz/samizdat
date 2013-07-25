@@ -15,7 +15,7 @@ def callSourceString = forwardFunction();
 def callStringFromValue = forwardFunction();
 
 # This is int digits for bases up to 36, in order.
-def INT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
+def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
 
 # The first Unicode surrogate code point.
 def CHAR_SURROGATE_START = charFromInt(55296); # U+D800
@@ -32,7 +32,7 @@ fn intBody(start, value, base) {
     loopReduce("", value) { text, value ::
         <> ifIs { <> ne(value, 0) }
             {
-                def digit = stringNth(INT_CHARS, imod(value, base));
+                def digit = stringNth(DIGIT_CHARS, imod(value, base));
                 <> [stringAdd(digit, text), idiv(value, base)];
             }
             { return stringAdd(start, text) }
