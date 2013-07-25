@@ -16,7 +16,7 @@
 /**
  * Gets a pointer to the token's info.
  */
-static ValueInfo *tokenInfo(zvalue token) {
+static ValueInfo *valueInfo(zvalue token) {
     return &((DatValue *) token)->info;
 }
 
@@ -24,9 +24,9 @@ static ValueInfo *tokenInfo(zvalue token) {
  * Allocates and initializes a token, without doing error-checking
  * on the arguments.
  */
-static zvalue newToken(zvalue type, zvalue value) {
+static zvalue newValue(zvalue type, zvalue value) {
     zvalue result = datAllocValue(DAT_VALUE, 0, sizeof(ValueInfo));
-    ValueInfo *info = tokenInfo(result);
+    ValueInfo *info = valueInfo(result);
 
     result->size = (value == NULL) ? 0 : 1;
     info->type = type;
@@ -41,8 +41,8 @@ static zvalue newToken(zvalue type, zvalue value) {
 
 /* Documented in header. */
 bool datTokenEq(zvalue v1, zvalue v2) {
-    ValueInfo *info1 = tokenInfo(v1);
-    ValueInfo *info2 = tokenInfo(v2);
+    ValueInfo *info1 = valueInfo(v1);
+    ValueInfo *info2 = valueInfo(v2);
 
     if (!datEq(info1->type, info2->type)) {
         return false;
@@ -59,8 +59,8 @@ bool datTokenEq(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zorder datTokenOrder(zvalue v1, zvalue v2) {
-    ValueInfo *info1 = tokenInfo(v1);
-    ValueInfo *info2 = tokenInfo(v2);
+    ValueInfo *info1 = valueInfo(v1);
+    ValueInfo *info2 = valueInfo(v2);
 
     zorder result = datOrder(info1->type, info2->type);
 
@@ -77,7 +77,7 @@ zorder datTokenOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 void datTokenMark(zvalue value) {
-    ValueInfo *info = tokenInfo(value);
+    ValueInfo *info = valueInfo(value);
 
     datMark(info->type);
     if (info->value != NULL) {
@@ -98,13 +98,13 @@ zvalue datTokenFrom(zvalue type, zvalue value) {
         datAssertValid(value);
     }
 
-    return newToken(type, value);
+    return newValue(type, value);
 }
 
 /* Documented in header. */
 zvalue datTokenType(zvalue token) {
     datAssertToken(token);
-    return tokenInfo(token)->type;
+    return valueInfo(token)->type;
 }
 
 /* Documented in header. */
@@ -115,5 +115,5 @@ bool datTokenTypeIs(zvalue token, zvalue type) {
 /* Documented in header. */
 zvalue datTokenValue(zvalue token) {
     datAssertToken(token);
-    return tokenInfo(token)->value;
+    return valueInfo(token)->value;
 }
