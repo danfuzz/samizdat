@@ -17,10 +17,10 @@
 
 enum {
     /** "Magic number" for value validation. */
-    DAT_DERIV_MAGIC = 0x600f1e57,
+    DAT_VALUE_MAGIC = 0x600f1e57,
 
     /** Required byte alignment for values. */
-    DAT_DERIV_ALIGNMENT = 8
+    DAT_VALUE_ALIGNMENT = 8
 };
 
 /**
