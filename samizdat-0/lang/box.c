@@ -59,7 +59,7 @@ static DatUniqletDispatch BOX_DISPATCH = {
  * Returns `true` iff this is the special "null box" value.
  */
 static bool isNullBox(zvalue value) {
-    return datEq(value, TOK_NULL_BOX);
+    return datEq(value, TOK_CAP_NULL_BOX);
 }
 
 
