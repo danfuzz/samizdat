@@ -1,0 +1,224 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Demo of value construction.
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper function
+#
+
+# Expects the two values to be `eq`.
+fn expectSame(v1, v2) {
+    ifIs { <> eq(v1, v2) }
+        { io0Note("Yes.") }
+        {
+            io0Note(stringAdd("Different: ",
+                sourceString(v1), sourceString(v2)))
+        }
+};
+
+# Expects the two values to be `ne`.
+fn expectDifferent(v1, v2) {
+    ifIs { <> ne(v1, v2) }
+        { io0Note("Yes.") }
+        { io0Note(stringAdd("Same: ", sourceString(v1))) }
+};
+
+# Expects the value to be a core value.
+fn expectCore(v) {
+    ifIs { <> isCoreValue(v) }
+        {
+            ifIs { <> eq(v, dataOf(v)) }
+                { io0Note("Yes.") }
+                { io0Note(stringAdd("Bad data: ", sourceString(v))) }
+        }
+        { io0Note(stringAdd("Derived: ", sourceString(v))) }
+};
+
+# Expects the value to be a derived value.
+fn expectDerived(v) {
+    ifIs { <> isCoreValue(v) }
+        { io0Note(stringAdd("Core: ", sourceString(v))) }
+        { io0Note("Yes.") }
+};
+
+
+
+#
+# Main tests. Expect everything to be a "yes".
+#
+
+# Int
+
+io0Note("Int");
+
+expectSame(0, 0);
+expectSame(100, 100);
+expectSame(-1000, -1000);
+expectSame(12345678, 12345678);
+expectSame(0, -0);
+expectSame(iadd(1, 10), 11);
+expectSame(iadd(99998880, 8), 99998888);
+
+expectDifferent(0, 1);
+expectDifferent(99998888, -99998888);
+
+expectCore(0);
+expectCore(-1);
+expectCore(987654321);
+
+
+# List
+
+io0Note("\nList");
+
+expectSame([], []);
+expectSame([0], [0]);
+expectSame([[]], [[]]);
+expectSame([0, 0, 0], [0, 0, 0]);
+expectSame([[]*, 1], [1]);
+expectSame([1, 2, [3, 4]*], [1, [2, 3]*, 4]);
+expectSame(listAdd([9, 8, 7], [6, 5, 4]), [9, 8, 7, 6, 5, 4]);
+expectSame(listButFirst([1]), []);
+
+expectDifferent([], [[]]);
+expectDifferent([1], [2]);
+
+expectCore([]);
+expectCore([1]);
+expectCore([1, 2, [3, 4, 5]]);
+
+
+# Map
+
+io0Note("\nMap");
+
+expectSame([:], [:]);
+expectSame([a: 10], [a: 10]);
+expectSame([a: 10], ["a": 10]);
+expectSame([[:]: [:]], [[:]: [:]]);
+expectSame([x: 5, y: 7], [y: 7, x: 5]);
+expectSame([["x", "y", "z"]*: "blort"], [x: "blort", y: "blort", z: "blort"]);
+expectSame([[a: 1]*, b: 2], [a: 1, b: 2]);
+expectSame(mapAdd([10: 1], [30: 3], [20: 2]), [10: 1, 20: 2, 30: 3]);
+expectSame(mapNth([a: 10, b: 20], 0), [a: 10]);
+
+expectDifferent([["x"]: "blort"], ["x": "blort"]);
+
+# The first map's keys are strings in the following.
+expectDifferent([null: 1], [(null): 1]);
+expectDifferent([true: 1], [(true): 1]);
+expectDifferent([false: 1], [(false): 1]);
+
+expectCore([:]);
+expectCore([0: 0]);
+expectCore([blort: "fizmo"]);
+
+
+# String
+
+io0Note("\nString");
+
+expectSame("", "");
+expectSame("x", "x");
+expectSame("blort", "blort");
+expectSame(stringAdd("blort", "-fizmo", "-igram"), "blort-fizmo-igram");
+expectSame(stringNth("frotz", 4), "z");
+
+expectDifferent("blort", "Blort");
+expectDifferent("blort", "blort ");
+expectDifferent("blort", "blort\0");
+
+expectCore("");
+expectCore("x");
+expectCore("muffins");
+
+
+# Uniqlet
+
+io0Note("\nUniqlet");
+
+def uniq1 = @@;
+def uniq2 = @@;
+
+expectSame(uniq1, uniq1);
+expectSame(uniq2, uniq2);
+expectDifferent(uniq1, uniq2);
+expectDifferent(uniq2, uniq1);
+expectCore(uniq1);
+expectCore(uniq2);
+
+
+# Derived values
+
+io0Note("\nDerived values");
+
+expectSame(@boo, @boo);
+expectSame(@boo, @"boo");
+expectSame(@boo, @[boo]);
+expectSame(@boo, @["boo"]);
+expectSame(null, @Null);
+expectSame(null, @"Null");
+expectSame(null, @[Null]);
+expectSame(nullBox, @NullBox);
+expectSame(false, @[Boolean: 0]);
+expectSame(true, @[Boolean: 1]);
+expectSame(@[eek: 10], @["eek": 10]);
+expectSame(@[eek: 10], @["eek": iadd(5, 5)]);
+expectSame(@[eek: 10], @[stringAdd("ee", "k"): 10]);
+
+expectDifferent(@x, @[x: 1]);
+expectDifferent(@[x: 1], @[x: 2]);
+expectDifferent(@[x: 1], @[y: 1]);
+
+# The value's types are strings in the following.
+expectDifferent(@[null: 1], @[(null): 1]);
+expectDifferent(@[true: 1], @[(true): 1]);
+expectDifferent(@[false: 1], @[(false): 1]);
+
+expectDerived(@blort);
+expectDerived(@[fizmo: "igram"]);
+expectDerived(null);
+expectDerived(nullBox);
+expectDerived(false);
+expectDerived(true);
+
+
+# "Reconstructed" core values
+
+io0Note("\nReconstructed core values");
+
+def uniqRecon = @@;
+
+expectSame(@[Int: 10], 10);
+expectSame(@[List: [1, 2, 3]], [1, 2, 3]);
+expectSame(@[Map: [biscuit: "muffin"]], [biscuit: "muffin"]);
+expectSame(@[String: "stuff"], "stuff");
+expectSame(@[Uniqlet: uniqRecon], uniqRecon);
+
+expectCore(@[Int: 10]);
+expectCore(@[List: [1, 2, 3]]);
+expectCore(@[Map: [biscuit: "muffin"]]);
+expectCore(@[String: "stuff"]);
+expectCore(@[Uniqlet: @@]);
+
+
+# Core types with mismatched payloads
+
+io0Note("\nCore types with mismatched payloads");
+
+expectDerived(@[Int: "x"]);
+expectDerived(@[List: "x"]);
+expectDerived(@[Map: "x"]);
+expectDerived(@[String: []]);
+expectDerived(@[Uniqlet: "x"]);
+
+<> 0
