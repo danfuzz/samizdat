@@ -25,8 +25,8 @@ a size, defined as follows:
 
 * `uniqlet` &mdash; always `0`.
 
-* `token` &mdash; `0` for a valueless token, or `1` for a
-  valued token.
+* `deriv` &mdash; `0` for a type-only derived value, or `1` for one
+  with a data payload.
 
 #### `lowType(value) <> string`
 
@@ -38,7 +38,7 @@ result will be one of: `"Deriv"` `"Int"` `"List"` `"Map"` `"String"`
 <br><br>
 ### In-Language Definitions
 
-#### `isToken(value) <> logic`
+#### `isDeriv(value) <> logic`
 
 Returns the given `value` if it is a derived value. Returns void if not.
 

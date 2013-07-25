@@ -259,7 +259,7 @@ fn implProcessStringParts(parts) {
     # making the check a bit simpler.
     doFilter(parts)
         { part ::
-            <> ifIs { <> isToken(part) }
+            <> ifIs { <> isDeriv(part) }
                 { return part }
         };
 

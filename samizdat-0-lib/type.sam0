@@ -42,7 +42,7 @@ fn isString(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn isToken(value) {
+fn isDeriv(value) {
     <> isType(value, "Deriv")
 };
 
@@ -56,6 +56,6 @@ fn isUniqlet(value) {
     isList:    isList,
     isMap:     isMap,
     isString:  isString,
-    isToken:   isToken,
+    isDeriv:   isDeriv,
     isUniqlet: isUniqlet
 ]
