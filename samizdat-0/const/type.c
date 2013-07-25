@@ -22,7 +22,7 @@ zvalue constDataOf(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue constLowTypeName(zvalue value) {
+zvalue constCoreTypeName(zvalue value) {
     switch (datType(value)) {
         case DAT_DERIV:   return STR_CAP_DERIV;
         case DAT_INT:     return STR_CAP_INT;
@@ -46,6 +46,6 @@ zvalue constTypeOf(zvalue value) {
     if (datType(value) == DAT_DERIV) {
         return datDerivType(value);
     } else {
-        return constLowTypeName(value);
+        return constCoreTypeName(value);
     }
 }

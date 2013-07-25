@@ -118,7 +118,7 @@ zvalue constValueFrom(zvalue type, zvalue data) {
                     return SINGLE_CHAR_TOKENS[typeCh];
                 }
             }
-        } else if (datEq(type, constLowTypeName(data))) {
+        } else if (datEq(type, constCoreTypeName(data))) {
             // `data` is non-NULL, and its low-layer type matches the given
             // `type`. This means that we are in fact looking at a
             // "reconstructed" core value and should just return it directly.

@@ -56,7 +56,7 @@ zvalue constIntFromZint(zint value);
 /**
  * Gets the string representing the low-layer type of the given value.
  */
-zvalue constLowTypeName(zvalue value);
+zvalue constCoreTypeName(zvalue value);
 
 /**
  * Converts a C `zchar` to an in-model single-character string.
