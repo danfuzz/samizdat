@@ -56,7 +56,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
     }
 
     zvalue result = datListNth(state->tokens, state->at);
-    zvalue resultType = datTokenType(result);
+    zvalue resultType = datValueType(result);
 
     if (!datEq(type, resultType)) {
         return NULL;
@@ -153,7 +153,7 @@ static zvalue listFrom2(zvalue e1, zvalue e2) {
  * Constructs a `literal` node.
  */
 static zvalue makeLiteral(zvalue value) {
-    return datTokenFrom(STR_LITERAL, value);
+    return datValueFrom(STR_LITERAL, value);
 }
 
 /**
@@ -161,14 +161,14 @@ static zvalue makeLiteral(zvalue value) {
  */
 static zvalue makeVarDef(zvalue name, zvalue value) {
     zvalue payload = mapFrom2(STR_NAME, name, STR_VALUE, value);
-    return datTokenFrom(STR_VAR_DEF, payload);
+    return datValueFrom(STR_VAR_DEF, payload);
 }
 
 /**
  * Constructs a `varRef` node.
  */
 static zvalue makeVarRef(zvalue name) {
-    return datTokenFrom(STR_VAR_REF, name);
+    return datValueFrom(STR_VAR_REF, name);
 }
 
 /**
@@ -180,7 +180,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
-    return datTokenFrom(STR_CALL, value);
+    return datValueFrom(STR_CALL, value);
 }
 
 /**
@@ -188,7 +188,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
  */
 static zvalue makeThunk(zvalue expression) {
     zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
-    return datTokenFrom(STR_CLOSURE, value);
+    return datValueFrom(STR_CLOSURE, value);
 }
 
 
@@ -315,7 +315,7 @@ DEF_PARSE(yieldDef) {
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     MATCH_OR_REJECT(CH_GT);
 
-    return datTokenValue(identifier);
+    return datValueData(identifier);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -339,7 +339,7 @@ DEF_PARSE(formal1) {
 
     REJECT_IF(result == NULL);
 
-    return datTokenType(result);
+    return datValueType(result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -349,7 +349,7 @@ DEF_PARSE(formal) {
     zvalue name = MATCH(IDENTIFIER);
 
     if (name != NULL) {
-        name = datTokenValue(name);
+        name = datValueData(name);
     } else {
         // If there was no identifier, then the only valid form for a formal
         // is if this is an unnamed / unused argument.
@@ -392,7 +392,7 @@ DEF_PARSE(program) {
         value = datMapAdd(value, declarations);
     }
 
-    return datTokenFrom(STR_CLOSURE, value);
+    return datValueFrom(STR_CLOSURE, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -415,7 +415,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(closure);
 
-    if (datMapGet(datTokenValue(c), STR_FORMALS) != NULL) {
+    if (datMapGet(datValueData(c), STR_FORMALS) != NULL) {
         die("Invalid formal argument in code block.");
     }
 
@@ -428,7 +428,7 @@ DEF_PARSE(codeOnlyClosure) {
 
     zvalue c = PARSE_OR_REJECT(nullaryClosure);
 
-    if (datMapGet(datTokenValue(c), STR_YIELD_DEF) != NULL) {
+    if (datMapGet(datValueData(c), STR_YIELD_DEF) != NULL) {
         die("Invalid yield definition in code block.");
     }
 
@@ -460,7 +460,7 @@ DEF_PARSE(fnCommon2) {
         return EMPTY_MAP;
     }
 
-    return mapFrom1(STR_NAME, datTokenValue(n));
+    return mapFrom1(STR_NAME, datValueData(n));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -476,7 +476,7 @@ DEF_PARSE(fnCommon) {
     MATCH_OR_REJECT(CH_CPAREN);
     zvalue code = PARSE_OR_REJECT(codeOnlyClosure);
 
-    zvalue codeMap = datTokenValue(code);
+    zvalue codeMap = datValueData(code);
     zvalue statements =
         datListAdd(returnDef, datMapGet(codeMap, STR_STATEMENTS));
 
@@ -497,7 +497,7 @@ DEF_PARSE(fnDef) {
         return NULL;
     }
 
-    return datTokenFrom(STR_FN_DEF, funcMap);
+    return datValueFrom(STR_FN_DEF, funcMap);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -505,18 +505,18 @@ DEF_PARSE(fnExpression) {
     MARK();
 
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
-    zvalue closure = datTokenFrom(STR_CLOSURE, funcMap);
+    zvalue closure = datValueFrom(STR_CLOSURE, funcMap);
 
     zvalue name = datMapGet(funcMap, STR_NAME);
     if (name == NULL) {
         return closure;
     }
 
-    zvalue mainClosure = datTokenFrom(
+    zvalue mainClosure = datValueFrom(
         STR_CLOSURE,
         mapFrom2(
             STR_STATEMENTS,
-            listFrom1(datTokenFrom(STR_FN_DEF, funcMap)),
+            listFrom1(datValueFrom(STR_FN_DEF, funcMap)),
             STR_YIELD,
             makeVarRef(name)));
 
@@ -529,7 +529,7 @@ DEF_PARSE(int) {
 
     zvalue intval = MATCH_OR_REJECT(INT);
 
-    return makeLiteral(datTokenValue(intval));
+    return makeLiteral(datValueData(intval));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -538,7 +538,7 @@ DEF_PARSE(string) {
 
     zvalue string = MATCH_OR_REJECT(STRING);
 
-    return makeLiteral(datTokenValue(string));
+    return makeLiteral(datValueData(string));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -552,9 +552,9 @@ DEF_PARSE(identifierString) {
     if (result == NULL) { result = MATCH(RETURN); }
     if (result == NULL) { return NULL; }
 
-    zvalue value = datTokenValue(result);
+    zvalue value = datValueData(result);
     if (value == NULL) {
-        value = datTokenType(result);
+        value = datValueType(result);
     }
 
     return makeLiteral(value);
@@ -623,7 +623,7 @@ DEF_PARSE(mapping1) {
     zvalue value = PARSE_OR_REJECT(expression);
 
     return makeCall(makeVarRef(STR_MAKE_MAPPING),
-        listFrom2(key, datTokenFrom(STR_EXPRESSION, value)));
+        listFrom2(key, datValueFrom(STR_EXPRESSION, value)));
 }
 
 /**
@@ -633,9 +633,9 @@ DEF_PARSE(mapping2) {
     MARK();
 
     zvalue map = PARSE_OR_REJECT(expression);
-    REJECT_IF(!datTokenTypeIs(map, STR_INTERPOLATE));
+    REJECT_IF(!datValueTypeIs(map, STR_INTERPOLATE));
 
-    return datTokenValue(map);
+    return datValueData(map);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -734,7 +734,7 @@ DEF_PARSE(varRef) {
 
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
 
-    return makeVarRef(datTokenValue(identifier));
+    return makeVarRef(datValueData(identifier));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -746,7 +746,7 @@ DEF_PARSE(varDef) {
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue expression = PARSE_OR_REJECT(expression);
 
-    zvalue name = datTokenValue(identifier);
+    zvalue name = datValueData(identifier);
     return makeVarDef(name, expression);
 }
 
@@ -758,7 +758,7 @@ DEF_PARSE(parenExpression) {
     zvalue expression = PARSE_OR_REJECT(expression);
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return datTokenFrom(STR_EXPRESSION, expression);
+    return datValueFrom(STR_EXPRESSION, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -827,7 +827,7 @@ DEF_PARSE(unaryExpression) {
         if (datTypeIs(one, DAT_LIST)) {
             result = makeCall(result, one);
         } else if (datEq(one, TOK_CH_STAR)) {
-            result = datTokenFrom(STR_INTERPOLATE, result);
+            result = datValueFrom(STR_INTERPOLATE, result);
         } else {
             die("Unexpected postfix.");
         }
@@ -853,7 +853,7 @@ DEF_PARSE(voidableExpression) {
     zvalue ex = PARSE_OR_REJECT(unaryExpression);
 
     if (voidable) {
-        return datTokenFrom(STR_VOIDABLE, ex);
+        return datValueFrom(STR_VOIDABLE, ex);
     } else {
         return ex;
     }

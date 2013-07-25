@@ -382,7 +382,7 @@ void datMark(zvalue value) {
     switch (value->type) {
         case DAT_LIST:    { datListMark(value);    break; }
         case DAT_MAP:     { datMapMark(value);     break; }
-        case DAT_VALUE:   { datTokenMark(value);   break; }
+        case DAT_VALUE:   { datValueMark(value);   break; }
         case DAT_UNIQLET: { datUniqletMark(value); break; }
         default: {
             // Nothing to do here. The other types don't need sub-marking.

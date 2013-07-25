@@ -40,7 +40,7 @@ static zvalue newValue(zvalue type, zvalue value) {
  */
 
 /* Documented in header. */
-bool datTokenEq(zvalue v1, zvalue v2) {
+bool datValueEq(zvalue v1, zvalue v2) {
     ValueInfo *info1 = valueInfo(v1);
     ValueInfo *info2 = valueInfo(v2);
 
@@ -58,7 +58,7 @@ bool datTokenEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder datTokenOrder(zvalue v1, zvalue v2) {
+zorder datValueOrder(zvalue v1, zvalue v2) {
     ValueInfo *info1 = valueInfo(v1);
     ValueInfo *info2 = valueInfo(v2);
 
@@ -76,7 +76,7 @@ zorder datTokenOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-void datTokenMark(zvalue value) {
+void datValueMark(zvalue value) {
     ValueInfo *info = valueInfo(value);
 
     datMark(info->type);
@@ -91,7 +91,7 @@ void datTokenMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datTokenFrom(zvalue type, zvalue value) {
+zvalue datValueFrom(zvalue type, zvalue value) {
     datAssertValid(type);
 
     if (value != NULL) {
@@ -102,18 +102,18 @@ zvalue datTokenFrom(zvalue type, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue datTokenType(zvalue token) {
+zvalue datValueType(zvalue token) {
     datAssertToken(token);
     return valueInfo(token)->type;
 }
 
 /* Documented in header. */
-bool datTokenTypeIs(zvalue token, zvalue type) {
-    return datEq(datTokenType(token), type);
+bool datValueTypeIs(zvalue token, zvalue type) {
+    return datEq(datValueType(token), type);
 }
 
 /* Documented in header. */
-zvalue datTokenValue(zvalue token) {
+zvalue datValueData(zvalue token) {
     datAssertToken(token);
     return valueInfo(token)->value;
 }

@@ -231,12 +231,12 @@ zorder datUniqletOrder(zvalue v1, zvalue v2);
 /**
  * Compares tokens for equality. Only called when the sizes are the same.
  */
-bool datTokenEq(zvalue v1, zvalue v2);
+bool datValueEq(zvalue v1, zvalue v2);
 
 /**
  * Compares tokens for order.
  */
-zorder datTokenOrder(zvalue v1, zvalue v2);
+zorder datValueOrder(zvalue v1, zvalue v2);
 
 /**
  * Marks list contents for garbage collection.
@@ -251,7 +251,7 @@ void datMapMark(zvalue value);
 /**
  * Marks token contents for garbage collection.
  */
-void datTokenMark(zvalue value);
+void datValueMark(zvalue value);
 
 /**
  * Marks uniqlet contents for garbage collection.

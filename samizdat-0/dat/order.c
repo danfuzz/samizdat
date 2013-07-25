@@ -40,7 +40,7 @@ bool datEq(zvalue v1, zvalue v2) {
         case DAT_LIST:    return datListEq(v1, v2);
         case DAT_MAP:     return datMapEq(v1, v2);
         case DAT_UNIQLET: return false;
-        case DAT_VALUE:   return datTokenEq(v1, v2);
+        case DAT_VALUE:   return datValueEq(v1, v2);
     }
 
     die("Invalid type (shouldn't happen).");
@@ -70,7 +70,7 @@ zorder datOrder(zvalue v1, zvalue v2) {
         case DAT_LIST:    return datListOrder(v1, v2);
         case DAT_MAP:     return datMapOrder(v1, v2);
         case DAT_UNIQLET: return datUniqletOrder(v1, v2);
-        case DAT_VALUE:   return datTokenOrder(v1, v2);
+        case DAT_VALUE:   return datValueOrder(v1, v2);
     }
 
     die("Invalid type (shouldn't happen).");

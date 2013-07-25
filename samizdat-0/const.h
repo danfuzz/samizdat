@@ -53,10 +53,10 @@ zvalue constIntFromZint(zint value);
 zvalue constStringFromZchar(zchar value);
 
 /**
- * This is the same as `datTokenFrom`, except that in some cases, this
+ * This is the same as `datValueFrom`, except that in some cases, this
  * will reuse a pre-existing value.
  */
-zvalue constTokenFrom(zvalue type, zvalue value);
+zvalue constValueFrom(zvalue type, zvalue value);
 
 /**
  * Gets the string representing the low-layer type of the given value.

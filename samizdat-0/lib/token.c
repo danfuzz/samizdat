@@ -13,11 +13,11 @@
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(tokenType) {
     requireExactly(argCount, 1);
-    return datTokenType(args[0]);
+    return datValueType(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(tokenValue) {
     requireExactly(argCount, 1);
-    return datTokenValue(args[0]);
+    return datValueData(args[0]);
 }

@@ -444,24 +444,24 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
  * Returns a possibly-valued token. The given value must either
  * be a valid value or `NULL`.
  */
-zvalue datTokenFrom(zvalue type, zvalue value);
+zvalue datValueFrom(zvalue type, zvalue value);
 
 /**
  * Gets the type tag of a token.
  */
-zvalue datTokenType(zvalue token);
+zvalue datValueType(zvalue token);
 
 /**
  * Returns whether or not the type of the given token equals the
  * given value.
  */
-bool datTokenTypeIs(zvalue token, zvalue type);
+bool datValueTypeIs(zvalue token, zvalue type);
 
 /**
  * Gets the value associated with a token. This is `NULL` for
  * valueless tokens (unsurprisingly).
  */
-zvalue datTokenValue(zvalue token);
+zvalue datValueData(zvalue token);
 
 
 /*

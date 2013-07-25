@@ -66,14 +66,14 @@ void constInit(void) {
 
     #define TOK(name, str) \
         STR(name, str); \
-        TOK_##name = datTokenFrom(STR_##name, NULL); \
+        TOK_##name = datValueFrom(STR_##name, NULL); \
         datImmortalize(TOK_##name)
 
     #include "const-def.h"
 
     for (zchar ch = 0; ch < 128; ch++) {
         SINGLE_CHAR_STRINGS[ch] = datStringFromZchars(1, &ch);
-        SINGLE_CHAR_TOKENS[ch] = datTokenFrom(SINGLE_CHAR_STRINGS[ch], NULL);
+        SINGLE_CHAR_TOKENS[ch] = datValueFrom(SINGLE_CHAR_STRINGS[ch], NULL);
         datImmortalize(SINGLE_CHAR_STRINGS[ch]);
         datImmortalize(SINGLE_CHAR_TOKENS[ch]);
     }
@@ -106,7 +106,7 @@ zvalue constStringFromZchar(zchar value) {
 }
 
 /* Documented in header. */
-zvalue constTokenFrom(zvalue type, zvalue value) {
+zvalue constValueFrom(zvalue type, zvalue value) {
     if ((value == NULL) &&
         datTypeIs(type, DAT_STRING) &&
         (datSize(type) == 1)) {
@@ -116,7 +116,7 @@ zvalue constTokenFrom(zvalue type, zvalue value) {
         }
     }
 
-    return datTokenFrom(type, value);
+    return datValueFrom(type, value);
 }
 
 /* Documented in header. */
