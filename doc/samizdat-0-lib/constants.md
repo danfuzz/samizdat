@@ -18,23 +18,23 @@ functions.
 
 #### `false`
 
-The boolean value false. It is defined as `@["boolean": 0]`.
+The boolean value false. It is defined as `@[Boolean: 0]`.
 
 #### `true`
 
-The boolean value true. It is defined as `@["boolean": 1]`.
+The boolean value true. It is defined as `@[Boolean: 1]`.
 
 #### `null`
 
 A value used when no other value is suitable, but when a value is
-nonetheless required. It is defined as `@null`, that is, a valueless
-token with type tag `"null"`.
+nonetheless required. It is defined as `@Null`, that is, a type-only
+value with type tag `"Null"`.
 
 #### `nullBox`
 
 A value used in place of a box, when the would-be set value of the box
-is never needed. It is defined as `@nullBox`, that is, a valueless
-token with type tag `"nullBox"`.
+is never needed. It is defined as `@NullBox`, that is, a type-only
+value with type tag `"NullBox"`.
 
 #### `ENTITY_MAP`
 

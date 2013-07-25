@@ -50,17 +50,6 @@ v = [[k1, k2]*: v;  is equivalent to  v = makeMapping(k1, k2, v);
 Note that the argument list is "stretchy" in front, which isn't really
 representable in Samizdat syntax as presented.
 
-#### `makeToken(type, value?) <> token`
-
-Returns a token with the given type tag (an arbitrary value)
-and optional data payload value (also an arbitrary value). These
-equivalences hold for *Samizdat Layer 0* source code:
-
-```
-v = @[(type)];         is equivalent to  v = makeToken(type);
-v = @[(type): value];  is equivalent to  v = makeToken(type, value);
-```
-
 #### `makeUniqlet() <> uniqlet`
 
 Returns a uniqlet that has never before been returned from this
@@ -71,6 +60,20 @@ code:
 ```
 v = @@;  is equivalent to  v = makeUniqlet();
 ```
+
+#### `makeValue(type, value?) <> .`
+
+Returns a general value with the given type tag (an arbitrary value)
+and optional data payload value (also an arbitrary value). These
+equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = @[(type)];         is equivalent to  v = makeValue(type);
+v = @[(type): value];  is equivalent to  v = makeValue(type, value);
+```
+
+If `type` names a core type, and the given `value` is a value
+of that type, then this function returns `value` directly.
 
 
 <br><br>

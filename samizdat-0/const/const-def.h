@@ -10,6 +10,8 @@
  *
  * `STR(name, "string")` defines a string constant.
  * `TOK(name, "string")` defines both a string *and* a token constant.
+ *
+ * Token constants are type-only values whose types are the indicated strings.
  */
 
 TOK(CH_AND,        "&");
@@ -35,17 +37,27 @@ TOK(CH_PLUS,       "+");
 TOK(CH_QMARK,      "?");
 TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
+
+TOK(CAP_NULL_BOX,  "NullBox");
+
 TOK(DEF,           "def");
 TOK(FN,            "fn");
-TOK(NULL_BOX,      "nullBox");
 TOK(RETURN,        "return");
 
+STR(EMPTY,            ""); // The canonical empty string (`""`) value.
+
 STR(UP_LIBRARY,       "LIBRARY");
+
+STR(CAP_INT,          "Int");
+STR(CAP_DERIV,        "Deriv");
+STR(CAP_STRING,       "String");
+STR(CAP_LIST,         "List");
+STR(CAP_MAP,          "Map");
+STR(CAP_UNIQLET,      "Uniqlet");
 
 STR(ACTUALS,          "actuals");
 STR(CALL,             "call");
 STR(CLOSURE,          "closure");
-STR(EMPTY,            ""); // The canonical empty string (`""`) value.
 STR(EXPRESSION,       "expression");
 STR(FALSE,            "false");
 STR(FN_DEF,           "fnDef");
@@ -55,14 +67,12 @@ STR(IDENTIFIER,       "identifier");
 STR(INEG,             "ineg");
 STR(INT,              "int");
 STR(INTERPOLATE,      "interpolate");
-STR(LIST,             "list");
 STR(LITERAL,          "literal");
 STR(MAKE_LIST,        "makeList");
 STR(MAKE_MAPPING,     "makeMapping");
-STR(MAKE_TOKEN,       "makeToken");
 STR(MAKE_UNIQLET,     "makeUniqlet");
+STR(MAKE_VALUE,       "makeValue");
 STR(MAIN_SAM0,        "main.sam0");
-STR(MAP,              "map");
 STR(MAP_ADD,          "mapAdd");
 STR(NAME,             "name");
 STR(NONLOCAL_EXIT,    "nonlocalExit");
@@ -72,10 +82,8 @@ STR(SAM_COMMAND_LINE, "samCommandLine");
 STR(STATE,            "state");
 STR(STATEMENTS,       "statements");
 STR(STRING,           "string");
-STR(TOKEN,            "token");
 STR(TRUE,             "true");
 STR(TYPE,             "type");
-STR(UNIQLET,          "uniqlet");
 STR(VALUE,            "value");
 STR(VAR_DEF,          "varDef");
 STR(VAR_REF,          "varRef");

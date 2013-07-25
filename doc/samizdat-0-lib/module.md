@@ -8,7 +8,7 @@ The *Layer 0* support for modules consists of library functions that
 allow manipulation of module values, but does not include anything
 that affects global system state.
 
-An uninitialized module value is a token of the form:
+An uninitialized module value is a derived value of the form:
 
 ```
 @[module: [
@@ -24,7 +24,7 @@ and `init` is a function that should take a `modules` parameter.
 The `modules` parameter should be expected to itself be a map from names to
 *initialized* modules.
 
-An initialized module value is a token of the form:
+An initialized module value is a derived value of the form:
 
 ```
 @[module: [
@@ -60,7 +60,7 @@ function to the given value.
 
 This assumes `dispatch` is a map of type names to method maps, where a
 method map is a map from method names to functions. The type name is
-determined as if by `tokenType(value)`. When applied, the function
+determined as if by `typeOf(value)`. When applied, the function
 is passed `value` as its first argument, along with any other arguments
 that were supplied.
 

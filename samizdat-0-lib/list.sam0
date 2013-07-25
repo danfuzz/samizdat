@@ -16,7 +16,7 @@ fn listButFirst(list) {
 # Documented in Samizdat Layer 0 spec.
 fn listButLast(list) {
     <> ifNot { <> eq(list, []) }
-        { <> listSlice(list, 0, isub(lowSize(list), 1)) }
+        { <> listSlice(list, 0, isub(coreSizeOf(list), 1)) }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -26,7 +26,7 @@ fn listFirst(list) {
 
 # Documented in Samizdat Layer 0 spec.
 fn listLast(list) {
-    <> listNth(list, isub(lowSize(list), 1))
+    <> listNth(list, isub(coreSizeOf(list), 1))
 };
 
 

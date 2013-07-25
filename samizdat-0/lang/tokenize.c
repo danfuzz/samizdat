@@ -102,7 +102,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = constIntFromZint(value);
-    return datTokenFrom(STR_INT, intval);
+    return datDerivFrom(STR_INT, intval);
 }
 
 /**
@@ -141,7 +141,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'r': { if (datEq(string, STR_RETURN)) return TOK_RETURN; break; }
     }
 
-    return datTokenFrom(STR_IDENTIFIER, string);
+    return datDerivFrom(STR_IDENTIFIER, string);
 }
 
 /**
@@ -191,7 +191,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = datStringFromZchars(size, chars);
-    return datTokenFrom(STR_STRING, string);
+    return datDerivFrom(STR_STRING, string);
 }
 
 /**
@@ -206,8 +206,8 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue string = datTokenValue(result);
-    return datTokenFrom(STR_IDENTIFIER, string);
+    zvalue string = datDerivData(result);
+    return datDerivFrom(STR_IDENTIFIER, string);
 }
 
 /**

@@ -7,7 +7,7 @@ Ordering / Comparison
 <br><br>
 ### Primitive Definitions
 
-#### `lowOrder(value1, value2) <> int`
+#### `coreOrder(value1, value2) <> int`
 
 Returns the order of the two given values in the total order of
 Samizdat low-layer values. This returns one of `-1 0 1` indicating
@@ -23,7 +23,7 @@ standard meaning of those values:
 Ordering is calculated as follows:
 
 The major order is by type &mdash; `int < string < list <
-map < token < uniqlet` &mdash; and minor order is type-dependant.
+map < uniqlet < deriv` &mdash; and minor order is type-dependant.
 
 * Ints order by integer value, low to high.
 
@@ -36,17 +36,17 @@ map < token < uniqlet` &mdash; and minor order is type-dependant.
   lists are identical, then the result is the comparison of
   corresponding lists of values, in key order.
 
-* Tokens compare by type as primary, and value as secondary.
-  With types equal, tokens without a value order earlier than
-  ones with a value.
-
 * Any given uniqlet never compares as identical to anything but
   itself. There is a total ordering of uniqlets, which is consistent,
   transitive, and symmetric &mdash; but otherwise arbitrary.
 
-#### `lowOrderIs(value1, value2, check1, check2?) <> logic`
+* Derived values compare by type as primary, and data payload as secondary.
+  With types equal, derived values without a payload order earlier than
+  ones with a payload.
 
-The two values are compared as with `lowOrder`. The int
+#### `coreOrderIs(value1, value2, check1, check2?) <> logic`
+
+The two values are compared as with `coreOrder`. The int
 result of that comparison are checked for equality with
 the one or two check values. If the comparison result is equal
 to either check value, this function returns `value2`. Otherwise

@@ -33,7 +33,7 @@ fn callNameWithExpressions(functionName, args*) {
 
 # Converts a pex to a named function call of the converted inner pex.
 fn callNameWithPex(node, formals, functionName) {
-    def convertedNode = convertPex(tokenValue(node), formals);
+    def convertedNode = convertPex(dataOf(node), formals);
     <> callNameWithExpressions(functionName, convertedNode)
 };
 
@@ -45,7 +45,7 @@ fn callNameWithLiterals(functionName, args*) {
 
 # Converts a `choice` pex node.
 fn convertPexChoice(node, formals) {
-    def pexes = tokenValue(node);
+    def pexes = dataOf(node);
     def convertedPexes = collectFilter(pexes)
         { pex <> convertPex(pex, formals) };
     <> callNameWithExpressions("pegMakeChoice", convertedPexes*)
@@ -53,20 +53,20 @@ fn convertPexChoice(node, formals) {
 
 # Converts a `sequence` pex node.
 fn convertPexSequence(node, formals) {
-    def pexes = tokenValue(node);
+    def pexes = dataOf(node);
 
     # Extract the formals out of any `varDef` nodes.
     def newFormals = collectFilter(pexes) { pex ::
-        <> ifIs { <> eq(tokenType(pex), "varDef") }
-            { <> [name: mapGet(tokenValue(pex), "name")] }
+        <> ifIs { <> eq(typeOf(pex), "varDef") }
+            { <> [name: mapGet(dataOf(pex), "name")] }
             { <> [:] }
     };
 
     # Convert all the pexes, passing in appropriately-extended formals
     # lists to each conversion.
     def convertedPexes = collectFilter(openRange(0, 1), pexes) { n, pex  ::
-        def subPex = ifIs { <> eq(tokenType(pex), "varDef") }
-            { <> mapGet(tokenValue(pex), "value") }
+        def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
+            { <> mapGet(dataOf(pex), "value") }
             { <> pex };
         <> convertPex(subPex, [formals*, listSlice(newFormals, 0, n)*])
     };
@@ -76,12 +76,12 @@ fn convertPexSequence(node, formals) {
 
 # Converts a `string` pex node.
 fn convertPexString(node, formals) {
-    <> callNameWithLiterals("pegMakeString", tokenValue(node))
+    <> callNameWithLiterals("pegMakeString", dataOf(node))
 };
 
 # Converts a `token` pex node.
 fn convertPexToken(node, formals) {
-    <> callNameWithLiterals("pegMakeToken", tokenValue(node))
+    <> callNameWithLiterals("pegMakeToken", dataOf(node))
 };
 
 # Converts a `varRef` pex node.
@@ -103,12 +103,12 @@ fn convertPexEmpty(node, formals) {
 
 # Converts a `[]` pex node.
 fn convertPexSet(node, formals) {
-    <> callNameWithLiterals("pegMakeTokenSet", tokenValue(node)*)
+    <> callNameWithLiterals("pegMakeTokenSet", dataOf(node)*)
 };
 
 # Converts a `[!]` pex node.
 fn convertPexSetComplement(node, formals) {
-    <> callNameWithLiterals("pegMakeTokenSetComplement", tokenValue(node)*);
+    <> callNameWithLiterals("pegMakeTokenSetComplement", dataOf(node)*);
 };
 
 # Converts a `{}` pex node.
@@ -116,7 +116,7 @@ fn convertPexCode(node, formals) {
     # Use the lexical `formals` context to make a regular closure node,
     # and just convert that.
 
-    def closurePayload = [tokenValue(node)*, formals: formals];
+    def closurePayload = [dataOf(node)*, formals: formals];
     def convertedClosure = convertExpression(@[closure: closurePayload]);
 
     <> callNameWithExpressions("pegMakeCode", convertedClosure)
@@ -170,7 +170,7 @@ def CONVERT_PEX_MAP = [
 # list of lexically bound result names, in order, in the form of `formals`
 # values as defined by the Samizdat Layer 0 tree semanics spec.
 fn convertPexImpl(node, formals) {
-    <> mapGet(CONVERT_PEX_MAP, tokenType(node))(node, formals)
+    <> mapGet(CONVERT_PEX_MAP, typeOf(node))(node, formals)
 };
 convertPex(convertPexImpl);
 
@@ -182,7 +182,7 @@ fn convertParser(node) {
 
 # Does parser conversion of a `call` node.
 fn convertCall(node) {
-    def nodeValue = tokenValue(node);
+    def nodeValue = dataOf(node);
     def function = convertExpression(mapGet(nodeValue, "function"));
     def actuals = convertList(mapGet(nodeValue, "actuals"));
 
@@ -191,8 +191,8 @@ fn convertCall(node) {
 
 # Does parser conversion of a `closure` or `fnDef` node.
 fn convertClosureLike(node) {
-    def nodeType = tokenType(node);
-    def nodeValue = tokenValue(node);
+    def nodeType = typeOf(node);
+    def nodeValue = dataOf(node);
     def statements = convertList(mapGet(nodeValue, "statements"));
     def yield = ifValue { <> mapGet(nodeValue, "yield") }
         { yield <> [yield: convertExpression(yield)] }
@@ -205,15 +205,15 @@ fn convertClosureLike(node) {
 # arbitrary expression. This includes `expression` (per se) and
 # `interpolate` nodes.
 fn convertExpressionPayload(node) {
-    def nodeType = tokenType(node);
-    def nodeValue = convertExpression(tokenValue(node));
+    def nodeType = typeOf(node);
+    def nodeValue = convertExpression(dataOf(node));
 
     <> @[(nodeType): nodeValue]
 };
 
 # Does parser conversion of a `varDef` node.
 fn convertVarDef(node) {
-    def nodeValue = tokenValue(node);
+    def nodeValue = dataOf(node);
     def value = convertExpression(mapGet(nodeValue, "value"));
 
     <> @[varDef: [nodeValue*, value: value]]
@@ -239,7 +239,7 @@ def CONVERT_EXPRESSION_MAP = [
 # Iterates / visits the given expression or statement node, transforming
 # parser subtrees into layer 0 function nodes.
 fn convertExpressionImpl(node) {
-    <> mapGet(CONVERT_EXPRESSION_MAP, tokenType(node))(node)
+    <> mapGet(CONVERT_EXPRESSION_MAP, typeOf(node))(node)
 };
 convertExpression(convertExpressionImpl);
 
