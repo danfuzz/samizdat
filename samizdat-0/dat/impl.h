@@ -172,6 +172,22 @@ void datAssertNthOrSize(zvalue value, zint n);
 void datAssertSliceRange(zvalue value, zint start, zint end);
 
 /**
+ * Compares derived values for equality. Only called when the sizes are
+ * the same.
+ */
+bool datDerivEq(zvalue v1, zvalue v2);
+
+/**
+ * Marks derived value contents for garbage collection.
+ */
+void datDerivMark(zvalue value);
+
+/**
+ * Compares derived values for order.
+ */
+zorder datDerivOrder(zvalue v1, zvalue v2);
+
+/**
  * Returns whether the given value (which must be valid) has an
  * `n`th element, according to its defined size. This is only
  * useful with some types.
@@ -247,21 +263,5 @@ void datUniqletMark(zvalue value);
  * Compares uniqlets for order.
  */
 zorder datUniqletOrder(zvalue v1, zvalue v2);
-
-/**
- * Compares derived values for equality. Only called when the sizes are
- * the same.
- */
-bool datDerivEq(zvalue v1, zvalue v2);
-
-/**
- * Marks derived value contents for garbage collection.
- */
-void datDerivMark(zvalue value);
-
-/**
- * Compares derived values for order.
- */
-zorder datDerivOrder(zvalue v1, zvalue v2);
 
 #endif
