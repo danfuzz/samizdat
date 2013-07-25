@@ -28,11 +28,11 @@ a size, defined as follows:
 * `token` &mdash; `0` for a valueless token, or `1` for a
   valued token.
 
-#### `lowType(value)<> string`
+#### `lowType(value) <> string`
 
 Returns the type name of the low-layer type of the given value. The
 result will be one of: `"int"` `"string"` `"list"` `"map"`
-`"uniqlet"` `"token"`
+`"uniqlet"` `"deriv"`
 
 
 <br><br>

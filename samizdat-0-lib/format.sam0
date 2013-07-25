@@ -130,11 +130,12 @@ def IDENTIFIER_CHARS = [
     "0123456789"*: true
 ];
 
-# Tokens with special conversions.
-def TOKEN_SPECIALS = [
-    (false): "false",
-    (null):  "null",
-    (true):  "true"
+# Derived values with special conversions.
+def SPECIAL_VALUES = [
+    (false):   "false",
+    (null):    "null",
+    (nullBox): "nullBox",
+    (true):    "true"
 ];
 
 # Checks to see if the given value is a string with the form of an
@@ -157,12 +158,12 @@ fn isIdentifier(string) {
     <> true
 };
 
-# Stringifies a key (or token type).
+# Stringifies a key (or derived value type).
 fn keyString(key) {
     ifIs { <> isIdentifier(key) }
         { return key };
 
-    ifValue { <> mapGet(TOKEN_SPECIALS, key) }
+    ifValue { <> mapGet(SPECIAL_VALUES, key) }
         { string :: return stringAdd("(", string, ")") };
 
     <> callSourceString(key)
@@ -194,15 +195,15 @@ fn doMap(map, adorn) {
     <> adornIf(adorn, "[", collectionBody(mapElems, ":"), "]");
 };
 
-# Stringifies a token.
-fn doToken(token, adorn) {
-    ifValue { <> mapGet(TOKEN_SPECIALS, token) }
+# Stringifies a derived value.
+fn doDeriv(deriv, adorn) {
+    ifValue { <> mapGet(SPECIAL_VALUES, deriv) }
         { string :: return string };
 
-    def type = tokenType(token);
+    def type = tokenType(deriv);
     def typeString = keyString(type);
 
-    def body = ifValue { <> tokenValue(token) }
+    def body = ifValue { <> tokenValue(deriv) }
         { value <> stringAdd(typeString, ": ", callSourceString(value)) }
         {
             ifIs { <> isString(type) }
@@ -222,9 +223,9 @@ fn doUniqlet(uniqlet, .) {
 fn doUnknown(unknown, .) {
     <> stringAdd(
         "[(unknown) ",
-        callSourceString(lowType(value)),
+        callSourceString(lowType(unknown)),
         " ",
-        callSourceString(lowSize(value)),
+        callSourceString(lowSize(unknown)),
         "]")
 };
 
@@ -245,7 +246,7 @@ fn doListFlatten(list, .) {
 # Mapping from low-layer type names to stringifiers to use for `%q`-style
 # source-stringification.
 def SOURCE_STRINGIFIERS = [
-    token:   doToken,
+    deriv:   doDeriv,
     int:     doInt,
     list:    doList,
     map:     doMap,
@@ -256,7 +257,7 @@ def SOURCE_STRINGIFIERS = [
 # Mapping from low-layer type names to stringifiers to use for `%s`-style
 # human-stringification.
 def HUMAN_STRINGIFIERS = [
-    token:   doToken,
+    deriv:   doDeriv,
     int:     doInt,
     list:    doListFlatten,
     map:     doMap,
