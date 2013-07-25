@@ -111,17 +111,6 @@ fn \"unary**"(value) {
     <> logicFromBoolean(value)
 };
 
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"unary[]"(value, indices*) {
-    def getGet = \"unary."("get");
-    <> doReduce1(indices, value)
-        { index, result ::
-            <> ifValue { <> getGet(result) }
-                { getter <> getter(index) }
-                { return }
-        }
-};
-
 <> [
     "binary+":  \"binary+",
     "binary-":  \"binary-",
@@ -136,6 +125,5 @@ fn \"unary[]"(value, indices*) {
     "binary>=": \"binary>=",
     "unary+":   \"unary+",
     "unary-":   \"unary-",
-    "unary**":  \"unary**",
-    "unary[]":  \"unary[]"
+    "unary**":  \"unary**"
 ]
