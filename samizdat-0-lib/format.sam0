@@ -200,10 +200,10 @@ fn doDeriv(deriv, adorn) {
     ifValue { <> mapGet(SPECIAL_VALUES, deriv) }
         { string :: return string };
 
-    def type = tokenType(deriv);
+    def type = typeOf(deriv);
     def typeString = keyString(type);
 
-    def body = ifValue { <> tokenValue(deriv) }
+    def body = ifValue { <> dataOf(deriv) }
         { value <> stringAdd(typeString, ": ", callSourceString(value)) }
         {
             ifIs { <> isString(type) }

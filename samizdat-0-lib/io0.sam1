@@ -35,7 +35,7 @@ def parPathComponent = {/
 def parRegularComponent = {/
     component = parPathComponent
     { <> ne(component, @"..") }
-    { <> [tokenType(component)] }
+    { <> [typeOf(component)] }
 /};
 
 # Parses the component `..`.

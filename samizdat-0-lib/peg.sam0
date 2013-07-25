@@ -38,13 +38,13 @@ fn genericMakeTokenSet(sense, types) {
     def matcher = ifIs { <> eq(sense, true) }
         {
             <> { item ::
-                <> ifIs { <> mapGet(set, tokenType(item)) }
+                <> ifIs { <> mapGet(set, typeOf(item)) }
                     { <> item }
             }
         }
         {
             <> { item ::
-                <> ifNot { <> mapGet(set, tokenType(item)) }
+                <> ifNot { <> mapGet(set, typeOf(item)) }
                     { <> item }
             }
         };
@@ -309,7 +309,7 @@ fn pegMakeToken(type) {
     # allows us to keep the main matcher function here much simpler.
 
     fn match(item) {
-        <> ifIs { <> eq(tokenType(item), type) }
+        <> ifIs { <> eq(typeOf(item), type) }
             { <> item }
     };
 

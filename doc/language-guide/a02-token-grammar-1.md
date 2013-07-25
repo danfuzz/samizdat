@@ -40,7 +40,7 @@ def INT_CHARS = [
 
 # Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
-    <> mapGet(INT_CHARS, tokenType(ch))
+    <> mapGet(INT_CHARS, typeOf(ch))
 };
 
 # Processes a list of `stringPart` elements, yielding a literal `string`
@@ -174,7 +174,7 @@ def tokQuotedIdentifier = {/
     "\\"
     s = tokString
 
-    { <> @[identifier: tokenValue(s)] }
+    { <> @[identifier: dataOf(s)] }
 /};
 
 # "Parses" an unrecognized character. This also consumes any further characters
@@ -184,7 +184,7 @@ def tokError = {/
     [! "\n"]*
 
     {
-        def msg = stringAdd("Unrecognized character: ", tokenType(badCh));
+        def msg = stringAdd("Unrecognized character: ", typeOf(badCh));
         <> @[error: msg]
     }
 /};

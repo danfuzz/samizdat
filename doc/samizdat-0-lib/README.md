@@ -62,7 +62,6 @@ will be returned, or one of `.` `!.` `. | !.` as described in
 * [Strings](string.md)
 * [Lists](list.md)
 * [Maps](map.md)
-* [Tokens](token.md)
 * [Generators](generator.md)
 * [Functions And Code](code.md)
 * [I/O](io.md)

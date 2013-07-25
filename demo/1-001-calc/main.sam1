@@ -95,7 +95,7 @@ def expression = forwardFunction();
 # Parses a single digit, yielding its value as an int.
 def digit = {/
     ch = ["0".."9"]
-    { <> isub(intFromChar(tokenType(ch)), intFromChar("0")) }
+    { <> isub(intFromChar(typeOf(ch)), intFromChar("0")) }
 /};
 
 # Parses a whole number (non-negative integer), yielding its value as an int.
@@ -123,7 +123,7 @@ def atom = {/
 # function.
 def unaryOp = {/
     op = ["+-"]
-    { <> mapGet(UNARY_OPS, tokenType(op)) }
+    { <> mapGet(UNARY_OPS, typeOf(op)) }
 /};
 
 # Parses a unary expression, that is, a series of unary operators followed
@@ -137,7 +137,7 @@ def unaryExpression = {/
 # Parses a binary operation, yielding a map of precedence and function.
 def binaryOp = {/
     op = ["+-*/%"]
-    { <> mapGet(BINARY_OPS, tokenType(op)) }
+    { <> mapGet(BINARY_OPS, typeOf(op)) }
 /};
 
 # Parses a chained sequence of unary expressions separated by binary

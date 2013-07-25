@@ -78,7 +78,5 @@ PRIM_FUNC(sam0Tree);
 PRIM_FUNC(stringAdd);
 PRIM_FUNC(stringNth);
 PRIM_FUNC(stringSlice);
-PRIM_FUNC(tokenType);
-PRIM_FUNC(tokenValue);
 PRIM_FUNC(typeOf);
 PRIM_FUNC(yieldBox);

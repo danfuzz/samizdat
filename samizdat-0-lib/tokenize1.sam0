@@ -33,7 +33,7 @@ def INT_CHARS = [
 
 # Documented in Samizdat Layer 0 spec.
 fn intFromDigitChar(ch) {
-    <> mapGet(INT_CHARS, tokenType(ch))
+    <> mapGet(INT_CHARS, typeOf(ch))
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -134,14 +134,14 @@ def tokIdentifier = pegMakeMainSequence(
 def tokQuotedIdentifier = pegMakeMainSequence(
     pegMakeString("\\"),
     tokString,
-    pegMakeCode { ., s <> @[identifier: (tokenValue(s))] });
+    pegMakeCode { ., s <> @[identifier: (dataOf(s))] });
 
 # Documented in Samizdat Layer 0 spec.
 def tokError = pegMakeMainSequence(
     pegRuleAny,
     pegMakeStar(pegMakeCharSetComplement("\n")),
     pegMakeCode { badCh, . ::
-        def msg = stringAdd("Unrecognized character: ", tokenType(badCh));
+        def msg = stringAdd("Unrecognized character: ", typeOf(badCh));
         <> @[error: msg]
     });
 

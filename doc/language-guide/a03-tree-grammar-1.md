@@ -86,7 +86,7 @@ def parYieldDef = {/
     @"<"
     name = @identifier
     @">"
-    { <> tokenValue(name) }
+    { <> dataOf(name) }
 /};
 
 # Parses an optional yield / non-local exit definition, always yielding
@@ -102,14 +102,14 @@ def parOptYieldDef = {/
 def parFormal = {/
     name = (
         n = @identifier
-        { <> [name: tokenValue(n)] }
+        { <> [name: dataOf(n)] }
     |
         @"." { <> [:] }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> [repeat: tokenType(r)] }
+        { <> [repeat: typeOf(r)] }
     |
         { <> [:] }
     )
@@ -163,7 +163,7 @@ def parNullaryClosure = {/
     c = parClosure
 
     {
-        ifIs { <> mapGet(tokenValue(c), "formals") }
+        ifIs { <> mapGet(dataOf(c), "formals") }
             { io0Die("Invalid formal argument in code block.") };
         <> c
     }
@@ -175,7 +175,7 @@ def parCodeOnlyClosure = {/
     c = parNullaryClosure
 
     {
-        ifIs { <> mapGet(tokenValue(c), "yieldDef") }
+        ifIs { <> mapGet(dataOf(c), "yieldDef") }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     }
@@ -223,7 +223,7 @@ def parFnCommon = {/
 
     name = (
         n = @identifier
-        { <> [name: tokenValue(n)] }
+        { <> [name: dataOf(n)] }
     |
         { <> [:] }
     )
@@ -235,7 +235,7 @@ def parFnCommon = {/
     code = parCodeOnlyClosure
 
     {
-        def codeMap = tokenValue(code);
+        def codeMap = dataOf(code);
         def statements = [returnDef*, mapGet(codeMap, "statements")*];
         <> [
             codeMap*, name*, formals*,
@@ -296,26 +296,26 @@ def parFnExpression = {/
 # Parses an integer literal.
 def parInt = {/
     i = @int
-    { <> makeLiteral(tokenValue(i)) }
+    { <> makeLiteral(dataOf(i)) }
 /};
 
 # Parses a string literal.
 def parString = {/
     s = @string
-    { <> makeLiteral(tokenValue(s)) }
+    { <> makeLiteral(dataOf(s)) }
 /};
 
 # Parses an identifier, identifier-like keyword, or string literal,
 # returning a string literal in all cases.
 def parIdentifierString = {/
     s = [@identifier @string]
-    { <> makeLiteral(tokenValue(s)) }
+    { <> makeLiteral(dataOf(s)) }
 |
     token = .
     {
-        <> ifNot { <> tokenValue(token) }
+        <> ifNot { <> dataOf(token) }
             {
-                def type = tokenType(token);
+                def type = typeOf(token);
                 def firstCh = stringNth(type, 0);
                 <> ifIs { <> mapGet(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
@@ -397,8 +397,8 @@ def parMapping = {/
         # (which is the only way it can be valid). Note that
         # `expression @"*"` won't do the trick, since by the time we're here,
         # if there was a `*` it would have become part of the expression.
-        <> ifIs { <> eq(tokenType(map), "interpolate") }
-            { <> tokenValue(map) }
+        <> ifIs { <> eq(typeOf(map), "interpolate") }
+            { <> dataOf(map) }
     }
 /};
 
@@ -439,7 +439,7 @@ def parUniqlet = {/
 # Parses a variable reference.
 def parVarRef = {/
     name = @identifier
-    { <> makeVarRef(tokenValue(name)) }
+    { <> makeVarRef(dataOf(name)) }
 /};
 
 # Parses a variable definition.
@@ -448,7 +448,7 @@ def parVarDef = {/
     name = @identifier
     @"="
     ex = parExpression
-    { <> makeVarDef(tokenValue(name), ex) }
+    { <> makeVarDef(dataOf(name), ex) }
 /};
 
 # Parses a parenthesized expression.
@@ -649,7 +649,7 @@ def parParenPex = {/
 def parParserString = {/
     s = @string
     {
-        def value = tokenValue(s);
+        def value = dataOf(s);
         <> ifIs { <> eq(lowSize(value), 1) }
             { <> @[token: value] }
             { <> s }
@@ -660,7 +660,7 @@ def parParserString = {/
 def parParserToken = {/
     @"@"
     type = parIdentifierString
-    { <> @[token: tokenValue(type)] }
+    { <> @[token: dataOf(type)] }
 /};
 
 # Parses a string or character range parsing expression, used when defining
@@ -671,14 +671,14 @@ def parParserSetString = {/
         @".."
         end = @string
         {
-            def startChar = tokenValue(s);
-            def endChar = tokenValue(end);
+            def startChar = dataOf(s);
+            def endChar = dataOf(end);
             <> ifIs
                 { <> eq(1, &eq(lowSize(startChar), lowSize(endChar))) }
                 { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
-        { <> tokenValue(s) }
+        { <> dataOf(s) }
     )
 /};
 
@@ -697,7 +697,7 @@ def parParserSet = {/
         { <> [stringAdd(strings*)*] }
     |
         tokens = parParserToken+
-        { <> collectFilter(tokens) { tok <> tokenValue(tok) } }
+        { <> collectFilter(tokens) { tok <> dataOf(tok) } }
     |
         { <> [] }
     )
@@ -710,7 +710,7 @@ def parParserSet = {/
 # Parses a code block parsing expression.
 def parParserCode = {/
     closure = parNullaryClosure
-    { <> @["{}": tokenValue(closure) ] }
+    { <> @["{}": dataOf(closure) ] }
 /};
 
 # Parses an atomic parsing expression.
@@ -730,7 +730,7 @@ def parRepeatPex = {/
     atom = parParserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[tokenType(repeat): atom] }
+        { <> @[typeOf(repeat): atom] }
     |
         { <> atom }
     )
@@ -742,7 +742,7 @@ def parLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @[tokenType(lookahead): pex] }
+        { <> @[typeOf(lookahead): pex] }
     )
 |
     parRepeatPex
@@ -754,7 +754,7 @@ def parNamePex = {/
         name = @identifier
         @"="
         pex = parLookaheadPex
-        { <> @[varDef: [name: tokenValue(name), value: pex]] }
+        { <> @[varDef: [name: dataOf(name), value: pex]] }
     )
 |
     parLookaheadPex

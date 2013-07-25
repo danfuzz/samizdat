@@ -60,7 +60,7 @@ function to the given value.
 
 This assumes `dispatch` is a map of type names to method maps, where a
 method map is a map from method names to functions. The type name is
-determined as if by `tokenType(value)`. When applied, the function
+determined as if by `typeOf(value)`. When applied, the function
 is passed `value` as its first argument, along with any other arguments
 that were supplied.
 
