@@ -141,7 +141,7 @@ typedef struct {
 
     /** Token info. */
     ValueInfo info;
-} DatToken;
+} DatValue;
 
 /**
  * Allocates memory, sized to include a `DatHeader` header plus the

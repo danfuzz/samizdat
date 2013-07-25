@@ -17,7 +17,7 @@
  * Gets a pointer to the token's info.
  */
 static ValueInfo *tokenInfo(zvalue token) {
-    return &((DatToken *) token)->info;
+    return &((DatValue *) token)->info;
 }
 
 /**
