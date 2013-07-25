@@ -122,7 +122,7 @@ typedef struct {
 } DatUniqlet;
 
 /**
- * Token info.
+ * Derived value info.
  */
 typedef struct {
     /** Type tag. Never `NULL`. */
@@ -133,13 +133,13 @@ typedef struct {
 } ValueInfo;
 
 /**
- * Token structure.
+ * Derived value structure.
  */
 typedef struct {
     /** Value header. */
     DatHeader header;
 
-    /** Token info. */
+    /** Derived value info. */
     ValueInfo info;
 } DatValue;
 
@@ -229,12 +229,13 @@ zorder datMapOrder(zvalue v1, zvalue v2);
 zorder datUniqletOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares tokens for equality. Only called when the sizes are the same.
+ * Compares derived values for equality. Only called when the sizes are
+ * the same.
  */
 bool datValueEq(zvalue v1, zvalue v2);
 
 /**
- * Compares tokens for order.
+ * Compares derived values for order.
  */
 zorder datValueOrder(zvalue v1, zvalue v2);
 
@@ -249,7 +250,7 @@ void datListMark(zvalue value);
 void datMapMark(zvalue value);
 
 /**
- * Marks token contents for garbage collection.
+ * Marks derived value contents for garbage collection.
  */
 void datValueMark(zvalue value);
 
