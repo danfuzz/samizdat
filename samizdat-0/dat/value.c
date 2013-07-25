@@ -103,7 +103,7 @@ zvalue datValueFrom(zvalue type, zvalue data) {
 
 /* Documented in header. */
 zvalue datValueType(zvalue value) {
-    datAssertToken(value);
+    datAssertDeriv(value);
     return valueInfo(value)->type;
 }
 
@@ -114,6 +114,6 @@ bool datValueTypeIs(zvalue value, zvalue type) {
 
 /* Documented in header. */
 zvalue datValueData(zvalue value) {
-    datAssertToken(value);
+    datAssertDeriv(value);
     return valueInfo(value)->data;
 }

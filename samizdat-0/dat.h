@@ -122,7 +122,7 @@ void datAssertStringSize1(zvalue value);
  * that it is a token (a high-layer value). If not, this aborts the
  * process with a diagnostic message.
  */
-void datAssertToken(zvalue value);
+void datAssertDeriv(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and

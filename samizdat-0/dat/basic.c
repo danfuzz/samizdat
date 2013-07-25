@@ -125,7 +125,7 @@ void datAssertUniqlet(zvalue value) {
 }
 
 /* Documented in header. */
-void datAssertToken(zvalue value) {
+void datAssertDeriv(zvalue value) {
     assertType(value, DAT_VALUE);
 }
 
