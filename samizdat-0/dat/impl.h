@@ -128,8 +128,8 @@ typedef struct {
     /** Type tag. Never `NULL`. */
     zvalue type;
 
-    /** Associated value. Possibly `NULL`. */
-    zvalue value;
+    /** Associated payload data. Possibly `NULL`. */
+    zvalue data;
 } ValueInfo;
 
 /**

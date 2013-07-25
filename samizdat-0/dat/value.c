@@ -14,23 +14,23 @@
  */
 
 /**
- * Gets a pointer to the token's info.
+ * Gets a pointer to the value's info.
  */
-static ValueInfo *valueInfo(zvalue token) {
-    return &((DatValue *) token)->info;
+static ValueInfo *valueInfo(zvalue value) {
+    return &((DatValue *) value)->info;
 }
 
 /**
- * Allocates and initializes a token, without doing error-checking
+ * Allocates and initializes a derived value, without doing error-checking
  * on the arguments.
  */
-static zvalue newValue(zvalue type, zvalue value) {
+static zvalue newValue(zvalue type, zvalue data) {
     zvalue result = datAllocValue(DAT_VALUE, 0, sizeof(ValueInfo));
     ValueInfo *info = valueInfo(result);
 
-    result->size = (value == NULL) ? 0 : 1;
+    result->size = (data == NULL) ? 0 : 1;
     info->type = type;
-    info->value = value;
+    info->data = data;
     return result;
 }
 
@@ -48,12 +48,12 @@ bool datValueEq(zvalue v1, zvalue v2) {
         return false;
     }
 
-    if (info1->value == NULL) {
-        return (info2->value == NULL);
-    } else if (info2->value == NULL) {
+    if (info1->data == NULL) {
+        return (info2->data == NULL);
+    } else if (info2->data == NULL) {
         return false;
     } else {
-        return datEq(info1->value, info2->value);
+        return datEq(info1->data, info2->data);
     }
 }
 
@@ -66,12 +66,12 @@ zorder datValueOrder(zvalue v1, zvalue v2) {
 
     if (result != ZSAME) {
         return result;
-    } else if (info1->value == NULL) {
-        return (info2->value == NULL) ? ZSAME : ZLESS;
-    } else if (info2->value == NULL) {
+    } else if (info1->data == NULL) {
+        return (info2->data == NULL) ? ZSAME : ZLESS;
+    } else if (info2->data == NULL) {
         return ZMORE;
     } else {
-        return datOrder(info1->value, info2->value);
+        return datOrder(info1->data, info2->data);
     }
 }
 
@@ -80,8 +80,8 @@ void datValueMark(zvalue value) {
     ValueInfo *info = valueInfo(value);
 
     datMark(info->type);
-    if (info->value != NULL) {
-        datMark(info->value);
+    if (info->data != NULL) {
+        datMark(info->data);
     }
 }
 
@@ -115,5 +115,5 @@ bool datValueTypeIs(zvalue token, zvalue type) {
 /* Documented in header. */
 zvalue datValueData(zvalue token) {
     datAssertToken(token);
-    return valueInfo(token)->value;
+    return valueInfo(token)->data;
 }
