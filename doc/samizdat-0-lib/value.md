@@ -46,14 +46,6 @@ a size, defined as follows:
 * `Deriv` &mdash; `0` for a type-only derived value, or `1` for one
   with a data payload.
 
-#### `lowType(value) <> string`
-
-Returns the type name of the low-layer type of the given value. The
-result will be one of: `"Deriv"` `"Int"` `"List"` `"Map"` `"String"`
-`"Uniqlet"`
-
-Of these, all but `"Deriv"` refer to a core type.
-
 #### `typeOf(value) <> .`
 
 Returns the type tag of the given arbitrary value. For a core value,

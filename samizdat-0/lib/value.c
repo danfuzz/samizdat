@@ -69,12 +69,6 @@ PRIM_IMPL(lowSize) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowType) {
-    requireExactly(argCount, 1);
-    return constLowTypeName(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(typeOf) {
     requireExactly(argCount, 1);
     return constTypeOf(args[0]);

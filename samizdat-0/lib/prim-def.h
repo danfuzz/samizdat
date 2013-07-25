@@ -57,7 +57,6 @@ PRIM_FUNC(loopReduce);
 PRIM_FUNC(lowOrder);
 PRIM_FUNC(lowOrderIs);
 PRIM_FUNC(lowSize);
-PRIM_FUNC(lowType);
 PRIM_FUNC(makeList);
 PRIM_FUNC(makeMapping);
 PRIM_FUNC(makeUniqlet);
