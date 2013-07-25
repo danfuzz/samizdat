@@ -107,17 +107,26 @@ zvalue constStringFromZchar(zchar value) {
 }
 
 /* Documented in header. */
-zvalue constDerivFrom(zvalue type, zvalue value) {
-    if ((value == NULL) &&
-        datTypeIs(type, DAT_STRING) &&
-        (datSize(type) == 1)) {
-        zchar typeCh = datStringNth(type, 0);
-        if (typeCh < 128) {
-            return SINGLE_CHAR_TOKENS[typeCh];
+zvalue constValueFrom(zvalue type, zvalue data) {
+    if (datTypeIs(type, DAT_STRING)) {
+        zint typeSize = datSize(type);
+
+        if (data == NULL) {
+            if (typeSize == 1) {
+                zchar typeCh = datStringNth(type, 0);
+                if (typeCh < 128) {
+                    return SINGLE_CHAR_TOKENS[typeCh];
+                }
+            }
+        } else if (datEq(type, constLowTypeName(data))) {
+            // `data` is non-NULL, and its low-layer type matches the given
+            // `type`. This means that we are in fact looking at a
+            // "reconstructed" core value and should just return it directly.
+            return data;
         }
     }
 
-    return datDerivFrom(type, value);
+    return datDerivFrom(type, data);
 }
 
 /* Documented in header. */

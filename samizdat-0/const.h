@@ -53,14 +53,17 @@ zvalue constIntFromZint(zint value);
 zvalue constStringFromZchar(zchar value);
 
 /**
- * This is the same as `datDerivFrom`, except that in some cases, this
- * will reuse a pre-existing value.
- */
-zvalue constDerivFrom(zvalue type, zvalue value);
-
-/**
  * Gets the string representing the low-layer type of the given value.
  */
 zvalue constLowTypeName(zvalue value);
+
+/**
+ * Produces an arbitrary value given a type and optional data payload. If
+ * `type` corresponds to a core type, and `data` is a value of that type,
+ * then this returns `data`. If not, then this produces a derived value
+ * by calling `datDerivFrom` on the two arguments, or returns a cached
+ * pre-existing value if a suitable one exists.
+ */
+zvalue constValueFrom(zvalue type, zvalue data);
 
 #endif
