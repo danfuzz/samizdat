@@ -53,7 +53,7 @@ zvalue constIntFromZint(zint value);
 zvalue constStringFromZchar(zchar value);
 
 /**
- * This is the same as `datValueFrom`, except that in some cases, this
+ * This is the same as `datDerivFrom`, except that in some cases, this
  * will reuse a pre-existing value.
  */
 zvalue constValueFrom(zvalue type, zvalue value);

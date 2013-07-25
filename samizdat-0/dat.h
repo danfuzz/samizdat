@@ -30,7 +30,7 @@ typedef enum {
     DAT_STRING,
     DAT_LIST,
     DAT_MAP,
-    DAT_VALUE,
+    DAT_DERIV,
     DAT_UNIQLET
 } ztype;
 
@@ -119,8 +119,8 @@ void datAssertStringSize1(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and furthermore
- * that it is a token (a high-layer value). If not, this aborts the
- * process with a diagnostic message.
+ * that it is a derived value. If not, this aborts the process with a
+ * diagnostic message.
  */
 void datAssertDeriv(zvalue value);
 
@@ -444,24 +444,24 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
  * Returns a derived value with optional data payload. The given `data`
  * value must either be a valid value or `NULL`.
  */
-zvalue datValueFrom(zvalue type, zvalue data);
+zvalue datDerivFrom(zvalue type, zvalue data);
 
 /**
  * Gets the type tag of a derived value.
  */
-zvalue datValueType(zvalue value);
+zvalue datDerivType(zvalue value);
 
 /**
  * Returns whether or not the type of the given derived value equals the
  * given value.
  */
-bool datValueTypeIs(zvalue value, zvalue type);
+bool datDerivTypeIs(zvalue value, zvalue type);
 
 /**
  * Gets the data payload associated with a derived value. This is `NULL` for
  * type-only values (unsurprisingly).
  */
-zvalue datValueData(zvalue value);
+zvalue datDerivData(zvalue value);
 
 
 /*

@@ -17,10 +17,10 @@
 
 enum {
     /** "Magic number" for value validation. */
-    DAT_VALUE_MAGIC = 0x600f1e57,
+    DAT_DERIV_MAGIC = 0x600f1e57,
 
     /** Required byte alignment for values. */
-    DAT_VALUE_ALIGNMENT = 8
+    DAT_DERIV_ALIGNMENT = 8
 };
 
 /**
@@ -252,16 +252,16 @@ zorder datUniqletOrder(zvalue v1, zvalue v2);
  * Compares derived values for equality. Only called when the sizes are
  * the same.
  */
-bool datValueEq(zvalue v1, zvalue v2);
+bool datDerivEq(zvalue v1, zvalue v2);
 
 /**
  * Marks derived value contents for garbage collection.
  */
-void datValueMark(zvalue value);
+void datDerivMark(zvalue value);
 
 /**
  * Compares derived values for order.
  */
-zorder datValueOrder(zvalue v1, zvalue v2);
+zorder datDerivOrder(zvalue v1, zvalue v2);
 
 #endif

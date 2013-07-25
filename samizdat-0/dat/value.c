@@ -25,7 +25,7 @@ static ValueInfo *valueInfo(zvalue value) {
  * on the arguments.
  */
 static zvalue newValue(zvalue type, zvalue data) {
-    zvalue result = datAllocValue(DAT_VALUE, 0, sizeof(ValueInfo));
+    zvalue result = datAllocValue(DAT_DERIV, 0, sizeof(ValueInfo));
     ValueInfo *info = valueInfo(result);
 
     result->size = (data == NULL) ? 0 : 1;
@@ -40,7 +40,7 @@ static zvalue newValue(zvalue type, zvalue data) {
  */
 
 /* Documented in header. */
-bool datValueEq(zvalue v1, zvalue v2) {
+bool datDerivEq(zvalue v1, zvalue v2) {
     ValueInfo *info1 = valueInfo(v1);
     ValueInfo *info2 = valueInfo(v2);
 
@@ -58,7 +58,7 @@ bool datValueEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder datValueOrder(zvalue v1, zvalue v2) {
+zorder datDerivOrder(zvalue v1, zvalue v2) {
     ValueInfo *info1 = valueInfo(v1);
     ValueInfo *info2 = valueInfo(v2);
 
@@ -76,7 +76,7 @@ zorder datValueOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-void datValueMark(zvalue value) {
+void datDerivMark(zvalue value) {
     ValueInfo *info = valueInfo(value);
 
     datMark(info->type);
@@ -91,7 +91,7 @@ void datValueMark(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datValueFrom(zvalue type, zvalue data) {
+zvalue datDerivFrom(zvalue type, zvalue data) {
     datAssertValid(type);
 
     if (data != NULL) {
@@ -102,18 +102,18 @@ zvalue datValueFrom(zvalue type, zvalue data) {
 }
 
 /* Documented in header. */
-zvalue datValueType(zvalue value) {
+zvalue datDerivType(zvalue value) {
     datAssertDeriv(value);
     return valueInfo(value)->type;
 }
 
 /* Documented in header. */
-bool datValueTypeIs(zvalue value, zvalue type) {
-    return datEq(datValueType(value), type);
+bool datDerivTypeIs(zvalue value, zvalue type) {
+    return datEq(datDerivType(value), type);
 }
 
 /* Documented in header. */
-zvalue datValueData(zvalue value) {
+zvalue datDerivData(zvalue value) {
     datAssertDeriv(value);
     return valueInfo(value)->data;
 }

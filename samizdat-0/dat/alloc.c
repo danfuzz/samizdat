@@ -53,7 +53,7 @@ static zint allocationCount = 0;
  */
 static bool isAligned(void *maybeValue) {
     intptr_t bits = (intptr_t) (void *) maybeValue;
-    return ((bits & (DAT_VALUE_ALIGNMENT - 1)) == 0);
+    return ((bits & (DAT_DERIV_ALIGNMENT - 1)) == 0);
 }
 
 /**
@@ -72,7 +72,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
         die("Invalid value pointer (not in heap): %p", maybeValue);
     }
 
-    if (maybeValue->magic != DAT_VALUE_MAGIC) {
+    if (maybeValue->magic != DAT_DERIV_MAGIC) {
         die("Invalid value pointer (incorrect magic): %p", maybeValue);
     }
 
@@ -267,7 +267,7 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     }
 
     zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
-    result->magic = DAT_VALUE_MAGIC;
+    result->magic = DAT_DERIV_MAGIC;
     result->type = type;
     result->size = size;
 
@@ -297,7 +297,7 @@ void datAssertValid(zvalue value) {
         case DAT_LIST:
         case DAT_MAP:
         case DAT_STRING:
-        case DAT_VALUE:
+        case DAT_DERIV:
         case DAT_UNIQLET: {
             break;
         }
@@ -382,7 +382,7 @@ void datMark(zvalue value) {
     switch (value->type) {
         case DAT_LIST:    { datListMark(value);    break; }
         case DAT_MAP:     { datMapMark(value);     break; }
-        case DAT_VALUE:   { datValueMark(value);   break; }
+        case DAT_DERIV:   { datDerivMark(value);   break; }
         case DAT_UNIQLET: { datUniqletMark(value); break; }
         default: {
             // Nothing to do here. The other types don't need sub-marking.
