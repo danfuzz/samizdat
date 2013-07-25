@@ -7,25 +7,32 @@ General Low-Layer Values
 <br><br>
 ### Primitive Definitions
 
+#### `dataOf(value) <> .`
+
+Returns the data payload of the given arbitrary value, if any.
+For a core value, this returns `value` itself. For a derived value, this
+returns the data payload it was constructed with, if any. For a
+type-only value, this returns void.
+
 #### `lowSize(value) <> int`
 
 Returns the "size" of the given value. Every low-layer value has
 a size, defined as follows:
 
-* `int` &mdash; the number of significant bits (not bytes) in
+* `Int` &mdash; the number of significant bits (not bytes) in
   the value when represented in twos-complement form, including a
   high-order sign bit. The minimum size of an int is 1, which
   is the size of both `0` and `-1`.
 
-* `string` &mdash; the number of characters.
+* `String` &mdash; the number of characters.
 
-* `list` &mdash; the number of elements.
+* `List` &mdash; the number of elements.
 
-* `map` &mdash; the number of mappings (bindings).
+* `Map` &mdash; the number of mappings (bindings).
 
-* `uniqlet` &mdash; always `0`.
+* `Uniqlet` &mdash; always `0`.
 
-* `deriv` &mdash; `0` for a type-only derived value, or `1` for one
+* `Deriv` &mdash; `0` for a type-only derived value, or `1` for one
   with a data payload.
 
 #### `lowType(value) <> string`
@@ -34,13 +41,23 @@ Returns the type name of the low-layer type of the given value. The
 result will be one of: `"Deriv"` `"Int"` `"List"` `"Map"` `"String"`
 `"Uniqlet"`
 
+Of these, all but `"Deriv"` refer to a core type.
+
+#### `typeOf(value) <> .`
+
+Returns the type tag of the given arbitrary value. For a core value,
+this returns its standard type name, particularly one of
+`"Int"` `"List"` `"Map"` `"String"` or `"Uniqlet"`. For a derived
+value, this returns the type tag that it was constructed with.
+
 
 <br><br>
 ### In-Language Definitions
 
 #### `isDeriv(value) <> logic`
 
-Returns the given `value` if it is a derived value. Returns void if not.
+Returns the given `value` if it is a derived (non-core) value.
+Returns void if not.
 
 #### `isInt(value) <> logic`
 

@@ -38,6 +38,12 @@ extern zvalue EMPTY_LIST;
 extern zvalue EMPTY_MAP;
 
 /**
+ * Gets the payload data of the given arbitrary value. This handles both
+ * core and derived values.
+ */
+zvalue constDataOf(zvalue value);
+
+/**
  * Initializes the constants, if necessary.
  */
 void constInit(void);
@@ -48,14 +54,20 @@ void constInit(void);
 zvalue constIntFromZint(zint value);
 
 /**
+ * Gets the string representing the low-layer type of the given value.
+ */
+zvalue constLowTypeName(zvalue value);
+
+/**
  * Converts a C `zchar` to an in-model single-character string.
  */
 zvalue constStringFromZchar(zchar value);
 
 /**
- * Gets the string representing the low-layer type of the given value.
+ * Gets the type of the given arbitrary value. This handles both core and
+ * derived values.
  */
-zvalue constLowTypeName(zvalue value);
+zvalue constTypeOf(zvalue value);
 
 /**
  * Produces an arbitrary value given a type and optional data payload. If

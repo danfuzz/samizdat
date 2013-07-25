@@ -13,6 +13,15 @@
  */
 
 /* Documented in header. */
+zvalue constDataOf(zvalue value) {
+    if (datType(value) == DAT_DERIV) {
+        return datDerivData(value);
+    } else {
+        return value;
+    }
+}
+
+/* Documented in header. */
 zvalue constLowTypeName(zvalue value) {
     switch (datType(value)) {
         case DAT_DERIV:   return STR_CAP_DERIV;
@@ -24,5 +33,14 @@ zvalue constLowTypeName(zvalue value) {
         default: {
             die("Invalid core type (shouldn't happen): %d", datType(value));
         }
+    }
+}
+
+/* Documented in header. */
+zvalue constTypeOf(zvalue value) {
+    if (datType(value) == DAT_DERIV) {
+        return datDerivType(value);
+    } else {
+        return constLowTypeName(value);
     }
 }
