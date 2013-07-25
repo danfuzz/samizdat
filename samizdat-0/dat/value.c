@@ -16,17 +16,17 @@
 /**
  * Gets a pointer to the value's info.
  */
-static ValueInfo *valueInfo(zvalue value) {
-    return &((DatValue *) value)->info;
+static DerivInfo *derivInfo(zvalue value) {
+    return &((DatDeriv *) value)->info;
 }
 
 /**
  * Allocates and initializes a derived value, without doing error-checking
  * on the arguments.
  */
-static zvalue newValue(zvalue type, zvalue data) {
-    zvalue result = datAllocValue(DAT_DERIV, 0, sizeof(ValueInfo));
-    ValueInfo *info = valueInfo(result);
+static zvalue newDeriv(zvalue type, zvalue data) {
+    zvalue result = datAllocValue(DAT_DERIV, 0, sizeof(DerivInfo));
+    DerivInfo *info = derivInfo(result);
 
     result->size = (data == NULL) ? 0 : 1;
     info->type = type;
@@ -41,8 +41,8 @@ static zvalue newValue(zvalue type, zvalue data) {
 
 /* Documented in header. */
 bool datDerivEq(zvalue v1, zvalue v2) {
-    ValueInfo *info1 = valueInfo(v1);
-    ValueInfo *info2 = valueInfo(v2);
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
 
     if (!datEq(info1->type, info2->type)) {
         return false;
@@ -59,8 +59,8 @@ bool datDerivEq(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zorder datDerivOrder(zvalue v1, zvalue v2) {
-    ValueInfo *info1 = valueInfo(v1);
-    ValueInfo *info2 = valueInfo(v2);
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
 
     zorder result = datOrder(info1->type, info2->type);
 
@@ -77,7 +77,7 @@ zorder datDerivOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 void datDerivMark(zvalue value) {
-    ValueInfo *info = valueInfo(value);
+    DerivInfo *info = derivInfo(value);
 
     datMark(info->type);
     if (info->data != NULL) {
@@ -98,22 +98,22 @@ zvalue datDerivFrom(zvalue type, zvalue data) {
         datAssertValid(data);
     }
 
-    return newValue(type, data);
+    return newDeriv(type, data);
 }
 
 /* Documented in header. */
-zvalue datDerivType(zvalue value) {
-    datAssertDeriv(value);
-    return valueInfo(value)->type;
+zvalue datDerivType(zvalue deriv) {
+    datAssertDeriv(deriv);
+    return derivInfo(deriv)->type;
 }
 
 /* Documented in header. */
-bool datDerivTypeIs(zvalue value, zvalue type) {
-    return datEq(datDerivType(value), type);
+bool datDerivTypeIs(zvalue deriv, zvalue type) {
+    return datEq(datDerivType(deriv), type);
 }
 
 /* Documented in header. */
-zvalue datDerivData(zvalue value) {
-    datAssertDeriv(value);
-    return valueInfo(value)->data;
+zvalue datDerivData(zvalue deriv) {
+    datAssertDeriv(deriv);
+    return derivInfo(deriv)->data;
 }

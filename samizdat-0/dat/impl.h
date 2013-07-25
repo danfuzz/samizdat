@@ -130,7 +130,7 @@ typedef struct {
 
     /** Associated payload data. Possibly `NULL`. */
     zvalue data;
-} ValueInfo;
+} DerivInfo;
 
 /**
  * Derived value structure.
@@ -140,8 +140,8 @@ typedef struct {
     DatHeader header;
 
     /** Derived value info. */
-    ValueInfo info;
-} DatValue;
+    DerivInfo info;
+} DatDeriv;
 
 /**
  * Allocates memory, sized to include a `DatHeader` header plus the

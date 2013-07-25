@@ -449,19 +449,19 @@ zvalue datDerivFrom(zvalue type, zvalue data);
 /**
  * Gets the type tag of a derived value.
  */
-zvalue datDerivType(zvalue value);
+zvalue datDerivType(zvalue deriv);
 
 /**
  * Returns whether or not the type of the given derived value equals the
  * given value.
  */
-bool datDerivTypeIs(zvalue value, zvalue type);
+bool datDerivTypeIs(zvalue deriv, zvalue type);
 
 /**
  * Gets the data payload associated with a derived value. This is `NULL` for
  * type-only values (unsurprisingly).
  */
-zvalue datDerivData(zvalue value);
+zvalue datDerivData(zvalue deriv);
 
 
 /*
