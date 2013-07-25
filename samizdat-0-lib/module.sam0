@@ -26,57 +26,54 @@ fn moduleNameFromString(orig) {
         { <> stringSlice(orig, iadd(MODULE_PREFIX_SIZE, 1)) }
 };
 
-# Returns `mod` iff it is an uninitialized module.
-fn isUninitializedModule(mod) {
-    ifNot { <> eq(typeOf(mod), "module") }
-        { return };
-
-    ifValue { <> dataOf(mod) }
-        { value ::
-            ifNot { <> isMap(value) }
-                { return };
-            ifNot { <> eq(coreSizeOf(value), 3) }
-                { return };
-            ifNot { <> isString(&mapGet(value, "version")) }
-                { return };
-            ifNot { <> isMap(&mapGet(value, "imports")) }
-                { return };
-            ifNot { <> isUniqlet(&mapGet(value, "init")) }
-                { return };
-            return mod
-        }
+# Does a `mapGet` on the payload data of the given value.
+fn dataGet(value, key) {
+    <> mapGet(dataOf(value), key)
 };
 
-# Asserts that the given value is an uninitialized module.
-fn assertUninitializedModule(mod) {
-    <> ifIs { <> isUninitializedModule(mod) }
+# Does a `coreSizeOf` on the payload data of the given value.
+fn dataSize(value) {
+    <> coreSizeOf(dataOf(value))
+};
+
+# Returns `mod` iff it is a module (either uninitialized or initialized).
+fn isModule(mod) {
+    ifNot { <> eq(typeOf(mod), "Module") }
+        { return };
+
+    ifNot { <> isMap(&dataOf(mod)) }
+        { return };
+
+    ifNot { <> isString(&dataGet(mod, "version")) }
+        { return };
+
+    ifIs { <> isMap(&dataGet(mod, "exports")) }
+        {
+            ifNot { <> eq(dataSize(mod), 2) }
+                { return }
+        }
+        {
+            ifNot { <> isMap(&dataGet(mod, "imports")) }
+                { return };
+            ifNot { <> isUniqlet(&dataGet(mod, "init")) }
+                { return };
+            ifNot { <> eq(dataSize(mod), 3) }
+                { return }
+        };
+
+    return mod
+};
+
+# Asserts that the given value is a module.
+fn assertModule(mod) {
+    <> ifIs { <> isModule(mod) }
         { <> mod }
         { io0Die(stringAdd("Not a module: ", sourceString(mod))) }
 };
 
-# Gets the imports of the given module.
-fn moduleGetImports(mod) {
-    <> mapGet(dataOf(mod), "imports")
-};
-
-# Gets the init of the given module.
-fn moduleGetInit(mod) {
-    <> mapGet(dataOf(mod), "init")
-};
-
-# Gets the name of the given module.
-fn moduleGetName(mod) {
-    <> mapGet(dataOf(mod), "name")
-};
-
-# Gets the version of the given module.
-fn moduleGetVersion(mod) {
-    <> mapGet(dataOf(mod), "version")
-};
-
 # Returns `mod` if the given module has any dependencies, or void if not.
 fn hasDependencies(mod) {
-    <> ifIs { <> ne([], mapGet(dataOf(mod), "imports")) }
+    <> ifIs { <> ne([], &dataGet(mod, "imports")) }
         { <> mod }
 };
 
@@ -95,24 +92,26 @@ fn sortModules(modules) {
     # the independent list.
 
     def independentNames = collectFilter(modules)
-        { mod <> ifNot { <> hasDependencies(mod) } { <> moduleGetName(mod) } };
+        { mod ::
+            <> ifNot { <> hasDependencies(mod) } { <> dataGet(mod, "name") }
+        };
 
     def dependentModules = collectFilter(modules)
         { mod ::
             <> ifIs { <> hasDependencies(mod) }
                 {
                     def importMap =
-                        mapDel([moduleGetImports(mod)*: true],
+                        mapDel([dataGet(mod, "imports")*: true],
                             independentNames*);
-                    def imports = mapKeys(importMap);
-                    <> @[mod: [dataOf(mod)*, imports: imports]]
+                    <> @[mod: [dataOf(mod)*, imports: mapKeys(importMap)]]
                 }
         };
 
     # If there are no independent modules, there's a cycle.
     ifIs { <> eq(independentModules, []) }
         {
-            def allNames = collectFilter(moduleGetName, modules);
+            def allNames = collectFilter(modules)
+                { mod <> dataGet(mod, "name") };
             io0Die(stringAdd("Module cycle among: ",
                 sourceStringUnadorned(allNames)));
         };
@@ -150,7 +149,7 @@ fn moduleInit(context) {
             def mod = mappingValue(mapping);
             <> ifValue { <> moduleNameFromString(name) }
                 { modName ::
-                    assertUninitializedModule(mod);
+                    assertModule(mod);
                     <> @[module: [dataOf(mod)*, name: modName]]
                 }
         };
@@ -158,24 +157,29 @@ fn moduleInit(context) {
     # Make a map from names to modules.
     def moduleMap = mapFromGenerator(
         filterGenerator(unsortedModules)
-            { mod :: <> [moduleGetName(mod): mod] });
+            { mod :: <> [dataGet(mod, "name"): mod] });
 
     # Do a topological sort of the modules, to get them in dependency
     # order (dependencies before dependents).
     def sortedModuleNames = sortModules(unsortedModules);
 
     # Iterate over the modules in sorted order, calling the initializer on
-    # each, passing it the set of already-initialized modules.
+    # each (if any), passing it the set of already-initialized modules.
     <> doReduce1(sortedModuleNames, [:])
         { name, initted ::
             def mod = mapGet(moduleMap, name);
-            def exports = moduleGetInit(mod)(initted);
-            def newMod = @[module: [
-                exports: exports,
-                imports: moduleGetImports(mod),
-                name:    moduleGetName(mod),
-                version: moduleGetVersion(mod)
-            ]];
+            def newMod = ifValue { <> dataGet(mod, "init") }
+                { init ::
+                    <> @[module: [
+                        exports: init(initted),
+                        name: dataGet(mod, "name"),
+                        version: dataGet(mod, "version")
+                    ]]
+                }
+                {
+                    # It's a pre-initialized module.
+                    <> mod
+                };
             <> [initted*, (name): newMod]
         }
 };
