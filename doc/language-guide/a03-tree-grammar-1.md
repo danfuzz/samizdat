@@ -362,7 +362,7 @@ def parEmptyMap = {/
 
 # Parses an "atomic" key (as opposed to, e.g., the parens-and-commas form
 # of map keys). This rule is used for the left-hand side of both mappings
-# and tokens.
+# and derived values.
 def parKeyAtom = {/
     # The lookahead at the end of the rule is to ensure we are not looking
     # at a more complicated expression. `@","` and `@")"` are matched here,
@@ -412,11 +412,11 @@ def parMap = {/
     { <> makeCallName("mapAdd", first, rest*) }
 /};
 
-# Parses a token literal.
-def parToken = {/
+# Parses a literal in derived value form.
+def parDeriv = {/
     @"@"
 
-    tokenArgs = (
+    derivArgs = (
         @"["
         type = parKeyAtom
         value = (@":" parExpression)?
@@ -427,7 +427,7 @@ def parToken = {/
         { <> [type] }
     )
 
-    { <> makeCallName("makeValue", tokenArgs*) }
+    { <> makeCallName("makeValue", derivArgs*) }
 /};
 
 # Parses a uniqlet literal.
@@ -462,7 +462,7 @@ def parParenExpression = {/
 # Parses an atomic expression.
 def parAtom = {/
     parVarRef | parInt | parString | parList | parEmptyMap | parMap |
-    parToken | parUniqlet | parClosure | parParenExpression
+    parDeriv | parUniqlet | parClosure | parParenExpression
 |
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
     # that *Layer 1* can only be "activated" with that one specific token.

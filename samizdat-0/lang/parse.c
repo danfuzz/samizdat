@@ -667,9 +667,9 @@ DEF_PARSE(map) {
 }
 
 /**
- * Helper for `token`: Parses `@"[" keyAtom (@":" expression)? @"]"`.
+ * Helper for `deriv`: Parses `@"[" keyAtom (@":" expression)? @"]"`.
  */
-DEF_PARSE(token1) {
+DEF_PARSE(deriv1) {
     MARK();
 
     MATCH_OR_REJECT(CH_OSQUARE);
@@ -694,10 +694,10 @@ DEF_PARSE(token1) {
 }
 
 /**
- * Helper for `token`: Parses `identifierString` returning a list of the
+ * Helper for `deriv`: Parses `identifierString` returning a list of the
  * parsed value if successful.
  */
-DEF_PARSE(token2) {
+DEF_PARSE(deriv2) {
     MARK();
 
     zvalue result = PARSE_OR_REJECT(identifierString);
@@ -706,14 +706,14 @@ DEF_PARSE(token2) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(token) {
+DEF_PARSE(deriv) {
     MARK();
 
     MATCH_OR_REJECT(CH_AT);
 
     zvalue args = NULL;
-    if (args == NULL) { args = PARSE(token1); }
-    if (args == NULL) { args = PARSE(token2); }
+    if (args == NULL) { args = PARSE(deriv1); }
+    if (args == NULL) { args = PARSE(deriv2); }
     REJECT_IF(args == NULL);
 
     return makeCall(makeVarRef(STR_MAKE_VALUE), args);
@@ -772,7 +772,7 @@ DEF_PARSE(atom) {
     if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(uniqlet); }
-    if (result == NULL) { result = PARSE(token); }
+    if (result == NULL) { result = PARSE(deriv); }
     if (result == NULL) { result = PARSE(closure); }
     if (result == NULL) { result = PARSE(parenExpression); }
 
