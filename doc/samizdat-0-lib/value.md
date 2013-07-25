@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-General Low-Layer Values
-------------------------
+General Value Handling
+----------------------
 
 <br><br>
 ### Primitive Definitions
