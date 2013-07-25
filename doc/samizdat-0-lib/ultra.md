@@ -61,7 +61,7 @@ code:
 v = @@;  is equivalent to  v = makeUniqlet();
 ```
 
-#### `makeValue(type, value?) <> token`
+#### `makeValue(type, value?) <> .`
 
 Returns a general value with the given type tag (an arbitrary value)
 and optional data payload value (also an arbitrary value). These

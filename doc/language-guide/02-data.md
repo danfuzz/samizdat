@@ -262,7 +262,7 @@ core type.
 
 @["Null"]                     # the value usually just written as `null`
 @[Null]                       # same as above
-@[(null)]                     # a valueless token with type `null`
+@[(null)]                     # a type-only value with type `null`
 
 @[Boolean: 0]                 # the value usually just written as `false`
 @[Boolean: 1]                 # the value usually just written as `true`

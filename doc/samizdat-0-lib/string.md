@@ -46,8 +46,8 @@ specified, it defaults to the end of the string.
 
 #### `stringFromTokenList(tokens) <> string`
 
-Takes a list of tokenizer-style character tokens (that is, tokens whose
-type tags are each a single-character string), returning the result
+Takes a list of tokenizer-style character tokens (that is, derived values
+whose type tags are each a single-character string), returning the result
 of concatenating all the characters together in order.
 
 This function is intended to aid in the building of tokenizers.
