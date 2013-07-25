@@ -18,7 +18,7 @@
 /**
  * Does most of the work of `coreOrderIs`.
  */
-static bool doLowOrderIs(zint argCount, const zvalue *args) {
+static bool doCoreOrderIs(zint argCount, const zvalue *args) {
     zorder want = datZintFromInt(args[2]);
 
     if ((argCount == 3) && (want == ZSAME)) {
@@ -45,7 +45,7 @@ PRIM_IMPL(coreOrder) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(coreOrderIs) {
     requireRange(argCount, 3, 4);
-    return doLowOrderIs(argCount, args) ? args[1] : NULL;
+    return doCoreOrderIs(argCount, args) ? args[1] : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
