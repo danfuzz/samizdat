@@ -14,6 +14,17 @@ For a core value, this returns `value` itself. For a derived value, this
 returns the data payload it was constructed with, if any. For a
 type-only value, this returns void.
 
+#### `isCoreValue(value) <> logic`
+
+Returns `value` if it is a core (non-derived) value, or void if not.
+This function could be defined as:
+
+```
+fn isCoreValue(value) {
+    <> eq(value, &dataOf(value))
+}
+```
+
 #### `lowSize(value) <> int`
 
 Returns the "size" of the given value. Every low-layer value has
@@ -54,9 +65,9 @@ value, this returns the type tag that it was constructed with.
 <br><br>
 ### In-Language Definitions
 
-#### `isDeriv(value) <> logic`
+#### `isCoreValue(value) <> logic`
 
-Returns the given `value` if it is a derived (non-core) value.
+Returns the given `value` if it is a core (not derived) value.
 Returns void if not.
 
 #### `isInt(value) <> logic`

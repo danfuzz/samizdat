@@ -28,9 +28,6 @@ fn moduleNameFromString(orig) {
 
 # Returns `mod` iff it is an uninitialized module.
 fn isUninitializedModule(mod) {
-    ifNot { <> isDeriv(mod) }
-        { return };
-
     ifNot { <> eq(typeOf(mod), "module") }
         { return };
 

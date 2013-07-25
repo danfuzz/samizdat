@@ -38,6 +38,7 @@ PRIM_FUNC(io0Die);
 PRIM_FUNC(io0Note);
 PRIM_FUNC(ior);
 PRIM_FUNC(irem);
+PRIM_FUNC(isCoreValue);
 PRIM_FUNC(isign);
 PRIM_FUNC(ishl);
 PRIM_FUNC(ishr);

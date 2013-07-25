@@ -11,8 +11,8 @@
 #
 
 # Performs a type check, for the given type name.
-fn isType(value, typeName) {
-    <> ifIs { <> eq(lowType(value), typeName) }
+fn hasCoreType(value, typeName) {
+    <> ifIs { <> eq(&typeOf(&isCoreValue(value)), typeName) }
         { <> value }
 };
 
@@ -23,36 +23,30 @@ fn isType(value, typeName) {
 
 # Documented in Samizdat Layer 0 spec.
 fn isInt(value) {
-    <> isType(value, "Int")
+    <> hasCoreType(value, "Int")
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn isList(value) {
-    <> isType(value, "List")
+    <> hasCoreType(value, "List")
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn isMap(value) {
-    <> isType(value, "Map")
+    <> hasCoreType(value, "Map")
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn isString(value) {
-    <> isType(value, "String")
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn isDeriv(value) {
-    <> isType(value, "Deriv")
+    <> hasCoreType(value, "String")
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn isUniqlet(value) {
-    <> isType(value, "Uniqlet")
+    <> hasCoreType(value, "Uniqlet")
 };
 
 <> [
-    isDeriv:   isDeriv,
     isInt:     isInt,
     isList:    isList,
     isMap:     isMap,

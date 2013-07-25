@@ -255,11 +255,10 @@ fn implProcessStringParts(parts) {
         { return @[string: ""] };
 
     # If there is an error part (represented as an `@error` token), return
-    # it. Note that nothing other than errors will be in the form of a token,
-    # making the check a bit simpler.
+    # it.
     doFilter(parts)
         { part ::
-            <> ifIs { <> isDeriv(part) }
+            <> ifIs { <> eq(typeOf(part), "error") }
                 { return part }
         };
 

@@ -43,6 +43,14 @@ PRIM_IMPL(dataOf) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(isCoreValue) {
+    requireExactly(argCount, 1);
+
+    zvalue value = args[0];
+    return (datType(value) != DAT_DERIV) ? value : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(lowOrder) {
     requireExactly(argCount, 2);
     return constIntFromZint(datOrder(args[0], args[1]));
