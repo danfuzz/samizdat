@@ -260,17 +260,17 @@ core type.
 @"lozenge"                    # shorthand for same
 @lozenge                      # shorthand for same
 
-@["null"]                     # the value usually just written as `null`
-@[null]                       # same as above
+@["Null"]                     # the value usually just written as `null`
+@[Null]                       # same as above
 @[(null)]                     # a valueless token with type `null`
 
-@[boolean: 0]                 # the value usually just written as `false`
-@[boolean: 1]                 # the value usually just written as `true`
+@[Boolean: 0]                 # the value usually just written as `false`
+@[Boolean: 1]                 # the value usually just written as `true`
 
-@[int: 100]                   # the value usually just written `100`
-@[string: "blort"]            # the value usually just written `"blort"`
-@[list: []]                   # the value usually just written `[]`
-@[map: [:]]                   # the value usually just written `[:]`
+@[Int: 100]                   # the value usually just written `100`
+@[String: "blort"]            # the value usually just written `"blort"`
+@[List: []]                   # the value usually just written `[]`
+@[Map: [:]]                   # the value usually just written `[:]`
 ```
 
 #### Boolean
@@ -279,8 +279,8 @@ The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = @[boolean: 0]
-true = @[boolean: 1]
+false = @[Boolean: 0]
+true = @[Boolean: 1]
 ```
 
 These values are most useful when placed into variables and passed
@@ -296,7 +296,7 @@ a named constant `null` to refer to this value. This constant can be
 defined as:
 
 ```
-null = @null
+null = @Null
 ```
 
 #### Null Box
@@ -307,5 +307,5 @@ a named constant `nullBox` to refer to this value. This constant can be
 defined as:
 
 ```
-nullBox = @nullBox
+nullBox = @NullBox
 ```
