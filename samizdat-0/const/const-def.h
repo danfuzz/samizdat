@@ -37,17 +37,20 @@ TOK(CH_PLUS,       "+");
 TOK(CH_QMARK,      "?");
 TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
+
 TOK(CAP_NULL_BOX,  "NullBox");
+
 TOK(DEF,           "def");
 TOK(FN,            "fn");
 TOK(RETURN,        "return");
+
+STR(EMPTY,            ""); // The canonical empty string (`""`) value.
 
 STR(UP_LIBRARY,       "LIBRARY");
 
 STR(ACTUALS,          "actuals");
 STR(CALL,             "call");
 STR(CLOSURE,          "closure");
-STR(EMPTY,            ""); // The canonical empty string (`""`) value.
 STR(EXPRESSION,       "expression");
 STR(FALSE,            "false");
 STR(FN_DEF,           "fnDef");
