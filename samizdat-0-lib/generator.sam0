@@ -48,7 +48,7 @@ fn makeIncrementGenerator(filterFunction, first, increment) {
 
 # Makes a generator for an int.
 fn makeIntGenerator(int) {
-    def size = lowSize(int);
+    def size = coreSizeOf(int);
 
     <> makeIncrementGenerator(0, 1)
         { index <> ibit(int, &gt(size, index)) }
@@ -162,7 +162,7 @@ fn oneItemParaGenerator(generator) {
 
 # Documented in Samizdat Layer 0 spec.
 fn collectFilter(filterFunction, generators*) {
-    ifIs { <> eq(lowSize(generators), 1) }
+    ifIs { <> eq(coreSizeOf(generators), 1) }
         {
             def generator = generators*;
             ifIs { <> isList(generator) } {
@@ -369,7 +369,7 @@ fn paraGenerator(generators*) {
         { return voidedGenerator };
 
     # Handle the degenerate case of a signle argument.
-    ifIs { <> eq(lowSize(generators), 1) }
+    ifIs { <> eq(coreSizeOf(generators), 1) }
         { return oneItemParaGenerator(generatorFromValue(generators*)) };
 
     # Coerce all the original arguments to generators.
@@ -424,7 +424,7 @@ fn seqGenerator(generators*) {
 
     # Return a plain (unwrapped) generator if we were only passed one
     # argument. (This saves some gratuitous call wrapping / double yields.)
-    ifIs { <> eq(lowSize(generators), 1) }
+    ifIs { <> eq(coreSizeOf(generators), 1) }
         { return generatorFromValue(generators*) };
 
     fn seqGenerator1(gen) {

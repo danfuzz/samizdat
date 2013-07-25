@@ -7,6 +7,27 @@ General Value Handling
 <br><br>
 ### Primitive Definitions
 
+#### `coreSizeOf(value) <> int`
+
+Returns the core (low level) "size" of the given value. Every value has
+a size, defined as follows:
+
+* `Int` &mdash; the number of significant bits (not bytes) in
+  the value when represented in twos-complement form, including a
+  high-order sign bit. The minimum size of an int is 1, which
+  is the size of both `0` and `-1`.
+
+* `String` &mdash; the number of characters.
+
+* `List` &mdash; the number of elements.
+
+* `Map` &mdash; the number of mappings (bindings).
+
+* `Uniqlet` &mdash; always `0`.
+
+* derived values &mdash; `0` for a type-only derived value, or `1` for one
+  with a data payload.
+
 #### `dataOf(value) <> .`
 
 Returns the data payload of the given arbitrary value, if any.
@@ -24,27 +45,6 @@ fn isCoreValue(value) {
     <> eq(value, &dataOf(value))
 }
 ```
-
-#### `lowSize(value) <> int`
-
-Returns the "size" of the given value. Every low-layer value has
-a size, defined as follows:
-
-* `Int` &mdash; the number of significant bits (not bytes) in
-  the value when represented in twos-complement form, including a
-  high-order sign bit. The minimum size of an int is 1, which
-  is the size of both `0` and `-1`.
-
-* `String` &mdash; the number of characters.
-
-* `List` &mdash; the number of elements.
-
-* `Map` &mdash; the number of mappings (bindings).
-
-* `Uniqlet` &mdash; always `0`.
-
-* `Deriv` &mdash; `0` for a type-only derived value, or `1` for one
-  with a data payload.
 
 #### `typeOf(value) <> .`
 

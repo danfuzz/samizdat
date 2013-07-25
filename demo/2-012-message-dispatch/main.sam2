@@ -21,7 +21,7 @@ fn msg(value) {
 };
 
 fn payloadSize(token) {
-    <> lowSize(dataOf(token))
+    <> coreSizeOf(dataOf(token))
 };
 
 fn listishNth(listish, n) {

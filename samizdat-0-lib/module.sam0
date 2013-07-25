@@ -14,12 +14,12 @@
 def MODULE_PREFIX = "module:";
 
 # Size of `MODULE_PREFIX`.
-def MODULE_PREFIX_SIZE = lowSize(MODULE_PREFIX);
+def MODULE_PREFIX_SIZE = coreSizeOf(MODULE_PREFIX);
 
 # Given a name, returns the module name portion of it if it in fact starts
 # with `MODULE_PREFIX`. Returns void if not.
 fn moduleNameFromString(orig) {
-    ifIs { <> le(lowSize(orig), MODULE_PREFIX_SIZE) }
+    ifIs { <> le(coreSizeOf(orig), MODULE_PREFIX_SIZE) }
         { return };
 
     <> ifIs { <> eq(stringSlice(orig, 0, MODULE_PREFIX), MODULE_PREFIX) }
@@ -35,7 +35,7 @@ fn isUninitializedModule(mod) {
         { value ::
             ifNot { <> isMap(value) }
                 { return };
-            ifNot { <> eq(lowSize(value), 3) }
+            ifNot { <> eq(coreSizeOf(value), 3) }
                 { return };
             ifNot { <> isString(&mapGet(value, "version")) }
                 { return };

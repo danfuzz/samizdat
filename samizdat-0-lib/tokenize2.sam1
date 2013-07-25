@@ -273,7 +273,7 @@ fn implProcessStringParts(parts) {
         };
 
     # Check for a simple result.
-    ifIs { <> eq(lowSize(elems), 1) }
+    ifIs { <> eq(coreSizeOf(elems), 1) }
         {
             ifValue { <> isString(elems*) }
                 { elem ::

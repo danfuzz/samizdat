@@ -49,6 +49,12 @@ PRIM_IMPL(coreOrderIs) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(coreSizeOf) {
+    requireExactly(argCount, 1);
+    return constIntFromZint(datSize(args[0]));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(dataOf) {
     requireExactly(argCount, 1);
     return constDataOf(args[0]);
@@ -60,12 +66,6 @@ PRIM_IMPL(isCoreValue) {
 
     zvalue value = args[0];
     return (datType(value) != DAT_DERIV) ? value : NULL;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowSize) {
-    requireExactly(argCount, 1);
-    return constIntFromZint(datSize(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

@@ -650,7 +650,7 @@ def parParserString = {/
     s = @string
     {
         def value = dataOf(s);
-        <> ifIs { <> eq(lowSize(value), 1) }
+        <> ifIs { <> eq(coreSizeOf(value), 1) }
             { <> @[token: value] }
             { <> s }
     }
@@ -674,7 +674,7 @@ def parParserSetString = {/
             def startChar = dataOf(s);
             def endChar = dataOf(end);
             <> ifIs
-                { <> eq(1, &eq(lowSize(startChar), lowSize(endChar))) }
+                { <> eq(1, &eq(coreSizeOf(startChar), coreSizeOf(endChar))) }
                 { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
