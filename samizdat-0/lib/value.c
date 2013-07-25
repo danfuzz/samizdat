@@ -16,7 +16,7 @@
  */
 
 /**
- * Does most of the work of `lowOrderIs`.
+ * Does most of the work of `coreOrderIs`.
  */
 static bool doLowOrderIs(zint argCount, const zvalue *args) {
     zorder want = datZintFromInt(args[2]);
@@ -37,6 +37,18 @@ static bool doLowOrderIs(zint argCount, const zvalue *args) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(coreOrder) {
+    requireExactly(argCount, 2);
+    return constIntFromZint(datOrder(args[0], args[1]));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(coreOrderIs) {
+    requireRange(argCount, 3, 4);
+    return doLowOrderIs(argCount, args) ? args[1] : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(dataOf) {
     requireExactly(argCount, 1);
     return constDataOf(args[0]);
@@ -48,18 +60,6 @@ PRIM_IMPL(isCoreValue) {
 
     zvalue value = args[0];
     return (datType(value) != DAT_DERIV) ? value : NULL;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowOrder) {
-    requireExactly(argCount, 2);
-    return constIntFromZint(datOrder(args[0], args[1]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowOrderIs) {
-    requireRange(argCount, 3, 4);
-    return doLowOrderIs(argCount, args) ? args[1] : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

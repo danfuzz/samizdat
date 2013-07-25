@@ -485,7 +485,7 @@ bool datEq(zvalue v1, zvalue v2);
  * Compares two values, providing a full ordering. Returns one of the
  * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
- * See `lowOrder` in the Samizdat Layer 0 spec for more details about
+ * See `coreOrder` in the Samizdat Layer 0 spec for more details about
  * value sorting.
  */
 zorder datOrder(zvalue v1, zvalue v2);

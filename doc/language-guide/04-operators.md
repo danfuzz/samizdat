@@ -318,7 +318,7 @@ type, then the comparison result depends on the type, yielding the
 right-hand value to represent logical-true.
 
 If the two expressions are of the same type, the result of the
-operator corresponds to the behavior of the library function `lowOrder`
+operator corresponds to the behavior of the library function `coreOrder`
 (see which).
 
 TODO: Expand on what's up with non-primitive types.
