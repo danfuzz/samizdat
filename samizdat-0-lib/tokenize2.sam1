@@ -267,7 +267,7 @@ fn implProcessStringParts(parts) {
     # interpolation maps.
     def elems = doReduce1(listButFirst(parts), [listFirst(parts)])
         { part, result ::
-            <> ifValue { <> [&isString(part), &isString(listLast(result))] }
+            <> ifValue { <> [&isString(listLast(result)), &isString(part)] }
                 { newLast <> [listButLast(result)*, stringAdd(newLast*)] }
                 { <> [result*, part] };
         };
