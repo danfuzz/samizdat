@@ -37,6 +37,11 @@ zvalue constLowTypeName(zvalue value) {
 }
 
 /* Documented in header. */
+bool constTypeIs(zvalue value, zvalue type) {
+    return datEq(constTypeOf(value), type);
+}
+
+/* Documented in header. */
 zvalue constTypeOf(zvalue value) {
     if (datType(value) == DAT_DERIV) {
         return datDerivType(value);

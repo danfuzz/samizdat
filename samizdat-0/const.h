@@ -64,6 +64,12 @@ zvalue constLowTypeName(zvalue value);
 zvalue constStringFromZchar(zchar value);
 
 /**
+ * Returns true iff the type of the given arbitrary value is as given. This
+ * handles both core and derived values.
+ */
+bool constTypeIs(zvalue value, zvalue type);
+
+/**
  * Gets the type of the given arbitrary value. This handles both core and
  * derived values.
  */

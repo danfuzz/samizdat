@@ -108,11 +108,6 @@ zvalue datDerivType(zvalue deriv) {
 }
 
 /* Documented in header. */
-bool datDerivTypeIs(zvalue deriv, zvalue type) {
-    return datEq(datDerivType(deriv), type);
-}
-
-/* Documented in header. */
 zvalue datDerivData(zvalue deriv) {
     datAssertDeriv(deriv);
     return derivInfo(deriv)->data;

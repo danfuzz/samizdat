@@ -458,12 +458,6 @@ zvalue datDerivFrom(zvalue type, zvalue data);
 zvalue datDerivType(zvalue deriv);
 
 /**
- * Returns whether or not the type of the given derived value equals the
- * given value.
- */
-bool datDerivTypeIs(zvalue deriv, zvalue type);
-
-/**
  * Gets the data payload associated with a derived value. This is `NULL` for
  * type-only values (unsurprisingly).
  */
