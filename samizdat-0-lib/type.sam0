@@ -52,10 +52,10 @@ fn isUniqlet(value) {
 };
 
 <> [
+    isDeriv:   isDeriv,
     isInt:     isInt,
     isList:    isList,
     isMap:     isMap,
     isString:  isString,
-    isDeriv:   isDeriv,
     isUniqlet: isUniqlet
 ]
