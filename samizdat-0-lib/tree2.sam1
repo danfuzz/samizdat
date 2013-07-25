@@ -107,7 +107,6 @@ def UNARY_OPERATORS = varRefMap([
     "+":   "unary+",
     "-":   "unary-",
     "**":  "unary**",
-    "[]":  "unary[]",
     "!!!": "inot"
     ]);
 
@@ -831,6 +830,12 @@ parChoicePex(implChoicePex);
 # Samizdat Layer 2 definitions
 #
 
+# Makes and returns a node representing a named method call.
+fn makeMethodCall(target, name, actuals*) {
+    <> makeCallName("methodCall",
+        makeVarRef("DISPATCH"), target, name, actuals*)
+};
+
 # Helper for `?` postfix and string interpolation: Construct an optional-value
 # expression. This is approximately:
 #
@@ -918,7 +923,7 @@ def parInterpolatedString = {/
 /};
 
 # Parses a single generator definition, for use in comprehensions and
-# `for` loops. This yields a map of the form `@[init: ..., formal: ...]`,
+# `for` loops. This yields a map of the form `[init: ..., formal: ...]`,
 # with `init` bound to an initializer expression and `formal` bound to
 # a formal argument declaration.
 def parGeneratorDef = {/
@@ -938,7 +943,7 @@ def parGeneratorDef = {/
 
 # Parses a comma-separated list of generator definitions, for use in
 # comprehensions and `for` loops. This yields a map of the form
-# `@[formals: ..., inits: ...]`, with `formals` bound to a formal
+# `[formals: ..., inits: ...]`, with `formals` bound to a formal
 # argument declaration corresponding to the names given to each of the
 # generators, and `inits` bound to a list of generator initializer
 # expressions.
@@ -1135,12 +1140,9 @@ def implPostfixOperator = {/
     (
         { <> eq(exprs, []) }
         { io0Die("Missing index value(s) from index expression.") }
-    )?
-
-    {
-        def function = mapGet(UNARY_OPERATORS, "[]");
-        <> { node <> makeCall(function, node, exprs*) }
-    }
+    |
+        { <> { node <> makeMethodCall(node, makeLiteral("get"), exprs*) } }
+    )
 |
     # This translates as something like:
     # * `expr.name` => `methodGet(DISPATCH, expr, "name")`
@@ -1156,15 +1158,7 @@ def implPostfixOperator = {/
 
     (
         actuals = parActualsList
-        {
-            <> { node ::
-                <> makeCallName("methodCall",
-                    makeVarRef("DISPATCH"),
-                    node,
-                    name,
-                    actuals*)
-            }
-        }
+        { <> { node <> makeMethodCall(node, name, actuals*) } }
     |
         {
             <> { node ::
