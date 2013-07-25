@@ -35,8 +35,9 @@ zvalue EMPTY_MAP = NULL;
 static zvalue SINGLE_CHAR_STRINGS[128];
 
 /**
- * Array of valueless tokens whose types are all single-character strings,
- * for character codes `0..127`.
+ * Array of type-only values whose types are all single-character strings,
+ * for character codes `0..127`. Used as the token input to tokenizers,
+ * hence the name.
  */
 static zvalue SINGLE_CHAR_TOKENS[128];
 

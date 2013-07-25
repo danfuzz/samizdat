@@ -10,6 +10,8 @@
  *
  * `STR(name, "string")` defines a string constant.
  * `TOK(name, "string")` defines both a string *and* a token constant.
+ *
+ * Token constants are type-only values whose types are the indicated strings.
  */
 
 TOK(CH_AND,        "&");
