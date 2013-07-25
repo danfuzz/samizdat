@@ -16,9 +16,9 @@
  */
 
 /**
- * Does most of the work of `lowOrderIs`.
+ * Does most of the work of `coreOrderIs`.
  */
-static bool doLowOrderIs(zint argCount, const zvalue *args) {
+static bool doCoreOrderIs(zint argCount, const zvalue *args) {
     zorder want = datZintFromInt(args[2]);
 
     if ((argCount == 3) && (want == ZSAME)) {
@@ -37,25 +37,39 @@ static bool doLowOrderIs(zint argCount, const zvalue *args) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowOrder) {
+PRIM_IMPL(coreOrder) {
     requireExactly(argCount, 2);
     return constIntFromZint(datOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowOrderIs) {
+PRIM_IMPL(coreOrderIs) {
     requireRange(argCount, 3, 4);
-    return doLowOrderIs(argCount, args) ? args[1] : NULL;
+    return doCoreOrderIs(argCount, args) ? args[1] : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowSize) {
+PRIM_IMPL(coreSizeOf) {
     requireExactly(argCount, 1);
     return constIntFromZint(datSize(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(lowType) {
+PRIM_IMPL(dataOf) {
     requireExactly(argCount, 1);
-    return constLowTypeName(args[0]);
+    return constDataOf(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(isCoreValue) {
+    requireExactly(argCount, 1);
+
+    zvalue value = args[0];
+    return (datType(value) != DAT_DERIV) ? value : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(typeOf) {
+    requireExactly(argCount, 1);
+    return constTypeOf(args[0]);
 }

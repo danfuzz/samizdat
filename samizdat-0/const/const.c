@@ -35,8 +35,9 @@ zvalue EMPTY_MAP = NULL;
 static zvalue SINGLE_CHAR_STRINGS[128];
 
 /**
- * Array of valueless tokens whose types are all single-character strings,
- * for character codes `0..127`.
+ * Array of type-only values whose types are all single-character strings,
+ * for character codes `0..127`. Used as the token input to tokenizers,
+ * hence the name.
  */
 static zvalue SINGLE_CHAR_TOKENS[128];
 
@@ -66,14 +67,14 @@ void constInit(void) {
 
     #define TOK(name, str) \
         STR(name, str); \
-        TOK_##name = datTokenFrom(STR_##name, NULL); \
+        TOK_##name = datDerivFrom(STR_##name, NULL); \
         datImmortalize(TOK_##name)
 
     #include "const-def.h"
 
     for (zchar ch = 0; ch < 128; ch++) {
         SINGLE_CHAR_STRINGS[ch] = datStringFromZchars(1, &ch);
-        SINGLE_CHAR_TOKENS[ch] = datTokenFrom(SINGLE_CHAR_STRINGS[ch], NULL);
+        SINGLE_CHAR_TOKENS[ch] = datDerivFrom(SINGLE_CHAR_STRINGS[ch], NULL);
         datImmortalize(SINGLE_CHAR_STRINGS[ch]);
         datImmortalize(SINGLE_CHAR_TOKENS[ch]);
     }
@@ -106,17 +107,26 @@ zvalue constStringFromZchar(zchar value) {
 }
 
 /* Documented in header. */
-zvalue constTokenFrom(zvalue type, zvalue value) {
-    if ((value == NULL) &&
-        datTypeIs(type, DAT_STRING) &&
-        (datSize(type) == 1)) {
-        zchar typeCh = datStringNth(type, 0);
-        if (typeCh < 128) {
-            return SINGLE_CHAR_TOKENS[typeCh];
+zvalue constValueFrom(zvalue type, zvalue data) {
+    if (datTypeIs(type, DAT_STRING)) {
+        zint typeSize = datSize(type);
+
+        if (data == NULL) {
+            if (typeSize == 1) {
+                zchar typeCh = datStringNth(type, 0);
+                if (typeCh < 128) {
+                    return SINGLE_CHAR_TOKENS[typeCh];
+                }
+            }
+        } else if (datEq(type, constCoreTypeName(data))) {
+            // `data` is non-NULL, and its low-layer type matches the given
+            // `type`. This means that we are in fact looking at a
+            // "reconstructed" core value and should just return it directly.
+            return data;
         }
     }
 
-    return datTokenFrom(type, value);
+    return datDerivFrom(type, data);
 }
 
 /* Documented in header. */

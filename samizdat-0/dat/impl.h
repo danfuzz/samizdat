@@ -38,7 +38,7 @@ typedef struct GcLinks {
 /**
  * Common fields across all values. Used as a header for other types.
  */
-typedef struct DatValue {
+typedef struct DatHeader {
     /** Gc links (see above). */
     GcLinks links;
 
@@ -50,14 +50,14 @@ typedef struct DatValue {
 
     /** Size. Meaning varies depending on `type`. */
     zint size;
-} DatValue;
+} DatHeader;
 
 /**
  * Int structure.
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** Int value. See `datIntFromZint()` about range restriction. */
     int32_t value;
@@ -68,7 +68,7 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** Characters of the string, in index order. */
     zchar elems[0];
@@ -79,7 +79,7 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** List elements, in index order. */
     zvalue elems[0];
@@ -90,7 +90,7 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** List of mappings, in key-sorted order. */
     zmapping elems[0];
@@ -115,37 +115,37 @@ typedef struct {
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
     /** Uniqlet info. */
     UniqletInfo info;
 } DatUniqlet;
 
 /**
- * Token info.
+ * Derived value info.
  */
 typedef struct {
     /** Type tag. Never `NULL`. */
     zvalue type;
 
-    /** Associated value. Possibly `NULL`. */
-    zvalue value;
-} TokenInfo;
+    /** Associated payload data. Possibly `NULL`. */
+    zvalue data;
+} DerivInfo;
 
 /**
- * Token structure.
+ * Derived value structure.
  */
 typedef struct {
     /** Value header. */
-    DatValue header;
+    DatHeader header;
 
-    /** Token info. */
-    TokenInfo info;
-} DatToken;
+    /** Derived value info. */
+    DerivInfo info;
+} DatDeriv;
 
 /**
- * Allocates memory, sized to include a `DatValue` header plus the
- * indicated number of extra bytes. The `DatValue` header is
+ * Allocates memory, sized to include a `DatHeader` header plus the
+ * indicated number of extra bytes. The `DatHeader` header is
  * initialized with the indicated type and size. The resulting value
  * is added to the stack.
  */
@@ -172,6 +172,22 @@ void datAssertNthOrSize(zvalue value, zint n);
 void datAssertSliceRange(zvalue value, zint start, zint end);
 
 /**
+ * Compares derived values for equality. Only called when the sizes are
+ * the same.
+ */
+bool datDerivEq(zvalue v1, zvalue v2);
+
+/**
+ * Marks derived value contents for garbage collection.
+ */
+void datDerivMark(zvalue value);
+
+/**
+ * Compares derived values for order.
+ */
+zorder datDerivOrder(zvalue v1, zvalue v2);
+
+/**
  * Returns whether the given value (which must be valid) has an
  * `n`th element, according to its defined size. This is only
  * useful with some types.
@@ -189,19 +205,14 @@ bool datIntEq(zvalue v1, zvalue v2);
 zorder datIntOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares strings for equality. Only called when the sizes are the same.
- */
-bool datStringEq(zvalue v1, zvalue v2);
-
-/**
- * Compares strings for order.
- */
-zorder datStringOrder(zvalue v1, zvalue v2);
-
-/**
  * Compares lists for equality. Only called when the sizes are the same.
  */
 bool datListEq(zvalue v1, zvalue v2);
+
+/**
+ * Marks list contents for garbage collection.
+ */
+void datListMark(zvalue value);
 
 /**
  * Compares lists for order.
@@ -219,39 +230,29 @@ void datMapClearCache(void);
 bool datMapEq(zvalue v1, zvalue v2);
 
 /**
- * Compares maps for order.
- */
-zorder datMapOrder(zvalue v1, zvalue v2);
-
-/**
- * Compares uniqlets for order.
- */
-zorder datUniqletOrder(zvalue v1, zvalue v2);
-
-/**
- * Compares tokens for equality. Only called when the sizes are the same.
- */
-bool datTokenEq(zvalue v1, zvalue v2);
-
-/**
- * Compares tokens for order.
- */
-zorder datTokenOrder(zvalue v1, zvalue v2);
-
-/**
- * Marks list contents for garbage collection.
- */
-void datListMark(zvalue value);
-
-/**
  * Marks map contents for garbage collection.
  */
 void datMapMark(zvalue value);
 
 /**
- * Marks token contents for garbage collection.
+ * Compares maps for order.
  */
-void datTokenMark(zvalue value);
+zorder datMapOrder(zvalue v1, zvalue v2);
+
+/**
+ * Compares strings for equality. Only called when the sizes are the same.
+ */
+bool datStringEq(zvalue v1, zvalue v2);
+
+/**
+ * Compares strings for order.
+ */
+zorder datStringOrder(zvalue v1, zvalue v2);
+
+/**
+ * Frees uniqlet contents during garbage collection.
+ */
+void datUniqletFree(zvalue value);
 
 /**
  * Marks uniqlet contents for garbage collection.
@@ -259,8 +260,8 @@ void datTokenMark(zvalue value);
 void datUniqletMark(zvalue value);
 
 /**
- * Frees uniqlet contents during garbage collection.
+ * Compares uniqlets for order.
  */
-void datUniqletFree(zvalue value);
+zorder datUniqletOrder(zvalue v1, zvalue v2);
 
 #endif

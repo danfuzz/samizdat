@@ -54,7 +54,7 @@ will be returned, or one of `.` `!.` `. | !.` as described in
 
 * [Constants](constants.md)
 * [Ultraprimitives](ultra.md)
-* [General Low-Layer Values](low.md)
+* [General Value Handling](value.md)
 * [Conditionals And Iteration](conditional.md)
 * [Ordering / Comparison](order.md)
 * [Booleans](boolean.md)
@@ -62,7 +62,6 @@ will be returned, or one of `.` `!.` `. | !.` as described in
 * [Strings](string.md)
 * [Lists](list.md)
 * [Maps](map.md)
-* [Tokens](token.md)
 * [Generators](generator.md)
 * [Functions And Code](code.md)
 * [I/O](io.md)

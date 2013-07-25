@@ -230,8 +230,9 @@ generated results, in generated order, into a single concatenated string.
 
 #### `tokenGenerator(generator) <> generator`
 
-Filter generator that produces a sequence of valueless (type-only)
-tokens from whatever the underlying generator produces. This is,
-in particular, the generator used by default to produce single-character
+Filter generator that produces a sequence of type-only derived values
+from whatever the underlying generator produces. This is, in particular,
+the generator used by default to produce single-character
 tokens when using the library function `pegApply` to perform
-string tokenization.
+string tokenization. The function name is meant to be suggestive of the
+expected use case.

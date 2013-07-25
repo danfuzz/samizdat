@@ -23,15 +23,15 @@
  * Possible low-level data types.
  *
  * **Note:** The enum ordering is the same as the type-based ordering for
- * comparing values. See `datOrder()`.
+ * comparing values. See `datOrder()` below or spec for `coreOrder`.
  */
 typedef enum {
     DAT_INT = 1,
     DAT_STRING,
     DAT_LIST,
     DAT_MAP,
-    DAT_TOKEN,
-    DAT_UNIQLET
+    DAT_UNIQLET,
+    DAT_DERIV
 } ztype;
 
 /**
@@ -39,7 +39,7 @@ typedef enum {
  * accessible through instances of this type via the API. You
  * have to use the various accessor functions.
  */
-typedef struct DatValue *zvalue;
+typedef struct DatHeader *zvalue;
 
 /**
  * Arbitrary (key, value) mapping.
@@ -119,10 +119,10 @@ void datAssertStringSize1(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and furthermore
- * that it is a token (a high-layer value). If not, this aborts the
- * process with a diagnostic message.
+ * that it is a derived value. If not, this aborts the process with a
+ * diagnostic message.
  */
-void datAssertToken(zvalue value);
+void datAssertDeriv(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -437,31 +437,31 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
 
 
 /*
- * Token Functions
+ * Derived Value Functions
  */
 
 /**
- * Returns a possibly-valued token. The given value must either
- * be a valid value or `NULL`.
+ * Returns a derived value with optional data payload. The given `data`
+ * value must either be a valid value or `NULL`.
+ *
+ * **Note:** If `type` and `data` are of the right form to be represented
+ * as a core value, this function will *not* notice that. So only call it
+ * if you know that the value to be produced is *necessarily* derived. If
+ * it's possible that the arguments correspond to a core value, use
+ * `constValueFrom` (in the `const` module) instead.
  */
-zvalue datTokenFrom(zvalue type, zvalue value);
+zvalue datDerivFrom(zvalue type, zvalue data);
 
 /**
- * Gets the type tag of a token.
+ * Gets the type tag of a derived value.
  */
-zvalue datTokenType(zvalue token);
+zvalue datDerivType(zvalue deriv);
 
 /**
- * Returns whether or not the type of the given token equals the
- * given value.
+ * Gets the data payload associated with a derived value. This is `NULL` for
+ * type-only values (unsurprisingly).
  */
-bool datTokenTypeIs(zvalue token, zvalue type);
-
-/**
- * Gets the value associated with a token. This is `NULL` for
- * valueless tokens (unsurprisingly).
- */
-zvalue datTokenValue(zvalue token);
+zvalue datDerivData(zvalue deriv);
 
 
 /*
@@ -479,7 +479,7 @@ bool datEq(zvalue v1, zvalue v2);
  * Compares two values, providing a full ordering. Returns one of the
  * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
- * See `lowOrder` in the Samizdat Layer 0 spec for more details about
+ * See `coreOrder` in the Samizdat Layer 0 spec for more details about
  * value sorting.
  */
 zorder datOrder(zvalue v1, zvalue v2);

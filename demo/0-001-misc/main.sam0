@@ -114,9 +114,9 @@ fn main(selfPath, name, rest*) {
     process([1: 2, 888: 1]);
     process([fizmo: "omzif", igram: "margi", blort: "trolb"]);
     process(["#stuff": "muff", ["x", "y"]: "zee"]);
-    process(@["null"]);
-    process(@"null");
-    process(@null);
+    process(@["Null"]);
+    process(@"Null");
+    process(@Null);
     process(null);
     process(false);
     process(true);

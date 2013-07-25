@@ -4,15 +4,18 @@ Samizdat Language Guide
 Data Types
 ----------
 
-Samizdat has a small handful of atomic data types and a few compound data
-types. There are also a few special named constant values.
+Samizdat has a small handful of core data types, including a few atomic
+types and a few compound data types. Samizdat also predefines a few
+derived types, and it allows for any number of user-specified types.
+Finally, Samizdat defines a number of special named constant values.
 
-The examples in this section all use literal value for all parts of
+The examples in this section all use literal value syntax for all parts of
 values, but it is worth noting that the language syntax allows arbitrary
 expressions anywhere where a literal value occurs in these examples.
 
+### Core types
 
-### Int
+#### Int
 
 An `int` is a signed arbitrary-precision integer value, sometimes
 called a "bigint" or "BigInteger" (even though they aren't always actually
@@ -44,8 +47,7 @@ the constant.
 0b1011_0111_1110_1111
 ```
 
-
-### String
+#### String
 
 A `string` is a sequence of zero or more Unicode code points.
 
@@ -118,8 +120,7 @@ is covered in the section on string formatting.
 "
 ```
 
-
-### List
+#### List
 
 A `list` is a sequence of zero or more other values.
 
@@ -140,8 +141,7 @@ interpolate.
 [[1, 2]*, (3..5)*, [f: 6]*]   # the same as [1, 2, 3, 4, 5, [f: 6]]
 ```
 
-
-### Map
+#### Map
 
 A `map` is a sequence of zero or more mappings (also called bindings)
 from arbitrary keys to arbitrary values. Keys and values are both
@@ -202,44 +202,7 @@ written as `[:]`.
 [:, [first: 1]*, [second: 2, third: 3]*]
 ```
 
-
-### Token
-
-A `token` is a combination of a type tag value and an optional
-payload value. Tokens are the bridge between low-layer data and
-high-layer data. Tokens are also used as the low-layer type
-returned by parsing functions (including tokenizers), which is
-the direct origin of the name.
-
-Tokens are written as an initial `@[`, followed by a type tag
-representation (an arbitrary value), optionally followed by an
-`:` and a payload value representation (another arbitrary value),
-followed by a final `]`.
-
-Valueless tokens whose type tag is a string constant can be abbreviated
-as `@"type"`. If that string constant has the form of a valid
-identifier, then the token can be further abbreviated as just `@type`.
-
-Similarly, in the bracketed form, a string type tag which is of identifier
-form can be represented without the quotes.
-
-```
-@["null"]                     # the value usually just written as `null`
-@[null]                       # same as above
-@"null"                       # same as above
-@null                         # same as above
-@[(null)]                     # a valueless token with type `null`
-@["boolean": 0]               # the value usually just written as `false`
-@[boolean: 0]                 # same as above
-@["boolean": 1]               # the value usually just written as `true`
-@[
-  "spell":
-  [name: "frotz", purpose: "cause item to glow"]
-]
-```
-
-
-### Uniqlet
+#### Uniqlet
 
 A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
 no uniqlet is equal to any other uniqlet. In practice, uniqlets are
@@ -259,27 +222,65 @@ the result.
 @@
 ```
 
+### Derived types
 
-### Null (non-primitive)
+Values in general have a type tag and an optional subordinate data payload.
+This is true of both core and derived types.
 
-The value `null` is used when a value is needed for some reason or other
-but no particular value is otherwise suitable. The language defines
-a named constant `null` to refer to this value. This constant can be
-defined as:
+Samizdat allows one to name a value with an explicit type tag
+by placing the type and value within `@[...]` delimiters. Inside
+the delimiters, a single binding of the form `type: value` indicates
+the type tag and payload data, or if the there is no payload, just a
+`type` need be mentioned.
+
+If the type tag is a string that abides by the syntax for identifiers
+in the language, then the double quotes may be omitted.
+
+If the type tag is a string and the value has no payload, then the
+square brackets may be omitted. If, furthermore, the type tag
+abides by the syntax for identifiers in the language, then the double quotes
+may be omitted in this already-shortened form.
+
+If a value written in one of these forms has a type tag that corresponds
+to one of the core types and a data payload of that type, then it is
+equivalent to the same value written out in the "native" way for that
+core type.
 
 ```
-null = @null
+@["heartState": @pure]        # a "heart state" value
+@[heartState: @pure]          # shorthand for same
+
+@[
+  "spell":
+  [name: "frotz", purpose: "cause item to glow"]
+]
+
+@["lozenge"]                  # a payload-free value of type "lozenge"
+@[lozenge]                    # shorthand for same
+@"lozenge"                    # shorthand for same
+@lozenge                      # shorthand for same
+
+@["Null"]                     # the value usually just written as `null`
+@[Null]                       # same as above
+@[(null)]                     # a type-only value with type `null`
+
+@[Boolean: 0]                 # the value usually just written as `false`
+@[Boolean: 1]                 # the value usually just written as `true`
+
+@[Int: 100]                   # the value usually just written `100`
+@[String: "blort"]            # the value usually just written `"blort"`
+@[List: []]                   # the value usually just written `[]`
+@[Map: [:]]                   # the value usually just written `[:]`
 ```
 
-
-### Boolean (non-primitive)
+#### Boolean
 
 The two boolean values `true` and `false` represent truth values.
 The language defines these as named constants, which can be defined as:
 
 ```
-false = @[boolean: 0]
-true = @[boolean: 1]
+false = @[Boolean: 0]
+true = @[Boolean: 1]
 ```
 
 These values are most useful when placed into variables and passed
@@ -287,3 +288,24 @@ as parameters to indicate flags. They are not particularly useful
 for combination into logical expressions. See the section on "Logic" below
 for details.
 
+#### Null
+
+The value `null` is used when a value is needed for some reason or other
+but no particular value is otherwise suitable. The language defines
+a named constant `null` to refer to this value. This constant can be
+defined as:
+
+```
+null = @Null
+```
+
+#### Null Box
+
+The value `nullBox` is used when a "box" is needed as an argument but
+where its contents are never used. The language defines
+a named constant `nullBox` to refer to this value. This constant can be
+defined as:
+
+```
+nullBox = @NullBox
+```

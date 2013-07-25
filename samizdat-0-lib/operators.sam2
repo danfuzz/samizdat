@@ -14,17 +14,8 @@
 # Verifies that it should be possible to compare the two given values,
 # terminating the runtime if not.
 fn assertComparable(v1, v2) {
-    def type1 = lowType(v1);
-    def type2 = lowType(v2);
-
-    ifIs { <> ne(type1, type2) }
+    ifIs { <> ne(typeOf(v1), typeOf(v2)) }
         { io0Die("Incomparable values: \%q(v1), \%q(v2)") };
-
-    ifIs { <> eq(type1, "token") }
-        {
-            ifIs { <> ne(tokenType(v1), tokenType(v2)) }
-                { io0Die("Incomparable values: \%q(v1), \%q(v2)") };
-        }
 };
 
 

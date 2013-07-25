@@ -196,7 +196,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
 
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = statementsArr[i];
-        zvalue oneType = datTokenType(one);
+        zvalue oneType = datDerivType(one);
 
         // Switch on size of type string to avoid gratuitous `datEq` tests.
         switch (datSize(oneType)) {
@@ -207,7 +207,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                     zint end = i + 1;
                     for (/*end*/; end < statementsSize; end++) {
                         zvalue one = statementsArr[end];
-                        if (!datTokenTypeIs(one, STR_FN_DEF)) {
+                        if (!constTypeIs(one, STR_FN_DEF)) {
                             break;
                         }
                     }
@@ -270,7 +270,7 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
  */
 static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
     Closure *closure = utilAlloc(sizeof(Closure));
-    zvalue defMap = datTokenValue(node);
+    zvalue defMap = datDerivData(node);
 
     frameSnap(&closure->frame, frame);
     closure->defMap = defMap;
@@ -295,7 +295,7 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue nameValue = datTokenValue(varDef);
+    zvalue nameValue = datDerivData(varDef);
     zvalue name = datMapGet(nameValue, STR_NAME);
     zvalue valueExpression = datMapGet(nameValue, STR_VALUE);
     zvalue value = execExpression(frame, valueExpression);
@@ -313,7 +313,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
 
     for (zint i = 0; i < size; i++) {
         zvalue one = statements[i];
-        zvalue fnMap = datTokenValue(one);
+        zvalue fnMap = datDerivData(one);
         zvalue name = datMapGet(fnMap, STR_NAME);
         frameAdd(frame, name, buildClosure(&closures[i], frame, one));
     }
@@ -338,7 +338,7 @@ static zvalue execClosure(Frame *frame, zvalue closureNode) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    call = datTokenValue(call);
+    call = datDerivData(call);
 
     zvalue function = datMapGet(call, STR_FUNCTION);
     zvalue actuals = datMapGet(call, STR_ACTUALS);
@@ -358,7 +358,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = actualsArr[i];
-        zvalue oneType = datTokenType(one);
+        zvalue oneType = datDerivType(one);
         bool voidable;
         bool interpolate;
         zvalue eval;
@@ -367,15 +367,15 @@ static zvalue execCall(Frame *frame, zvalue call) {
             // We replace the value in `actualsArr` with the voidable
             // payload in order to keep the follow-up interpolation loop
             // simpler.
-            one = actualsArr[i] = datTokenValue(one);
-            oneType = datTokenType(one);
+            one = actualsArr[i] = datDerivData(one);
+            oneType = datDerivType(one);
             voidable = true;
         } else {
             voidable = false;
         }
 
         if (datEq(oneType, STR_INTERPOLATE)) {
-            one = datTokenValue(one);
+            one = datDerivData(one);
             interpolate = true;
         } else {
             interpolate = false;
@@ -409,7 +409,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (datTokenTypeIs(oneNode, STR_INTERPOLATE)) {
+            if (constTypeIs(oneNode, STR_INTERPOLATE)) {
                 datArrayFromList(&fullArgs[at], oneArg);
                 at += datSize(oneArg);
             } else {
@@ -428,7 +428,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    zvalue name = datTokenValue(varRef);
+    zvalue name = datDerivData(varRef);
     return frameGet(frame, name);
 }
 
@@ -436,7 +436,7 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
  * Executes an `interpolate` form.
  */
 static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
-    zvalue result = execExpressionVoidOk(frame, datTokenValue(interpolate));
+    zvalue result = execExpressionVoidOk(frame, datDerivData(interpolate));
 
     if (result == NULL) {
         die("Attempt to interpolate void.");
@@ -458,7 +458,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    zvalue type = datTokenType(e);
+    zvalue type = datDerivType(e);
 
     // Switching on the size of the type is a bit of a hack. It lets us
     // avoid having to have a single big cascading `if` with a lot of
@@ -476,14 +476,14 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         }
         case 7: {
             if (datEq(type, STR_LITERAL))
-                return datTokenValue(e);
+                return datDerivData(e);
             else if (datEq(type, STR_CLOSURE))
                 return execClosure(frame, e);
             break;
         }
         case 10: {
             if (datEq(type, STR_EXPRESSION))
-                return execExpressionVoidOk(frame, datTokenValue(e));
+                return execExpressionVoidOk(frame, datDerivData(e));
             break;
         }
         case 11: {

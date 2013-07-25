@@ -38,6 +38,12 @@ extern zvalue EMPTY_LIST;
 extern zvalue EMPTY_MAP;
 
 /**
+ * Gets the payload data of the given arbitrary value. This handles both
+ * core and derived values.
+ */
+zvalue constDataOf(zvalue value);
+
+/**
  * Initializes the constants, if necessary.
  */
 void constInit(void);
@@ -48,19 +54,34 @@ void constInit(void);
 zvalue constIntFromZint(zint value);
 
 /**
+ * Gets the string representing the low-layer type of the given value.
+ */
+zvalue constCoreTypeName(zvalue value);
+
+/**
  * Converts a C `zchar` to an in-model single-character string.
  */
 zvalue constStringFromZchar(zchar value);
 
 /**
- * This is the same as `datTokenFrom`, except that in some cases, this
- * will reuse a pre-existing value.
+ * Returns true iff the type of the given arbitrary value is as given. This
+ * handles both core and derived values.
  */
-zvalue constTokenFrom(zvalue type, zvalue value);
+bool constTypeIs(zvalue value, zvalue type);
 
 /**
- * Gets the string representing the low-layer type of the given value.
+ * Gets the type of the given arbitrary value. This handles both core and
+ * derived values.
  */
-zvalue constLowTypeName(zvalue value);
+zvalue constTypeOf(zvalue value);
+
+/**
+ * Produces an arbitrary value given a type and optional data payload. If
+ * `type` corresponds to a core type, and `data` is a value of that type,
+ * then this returns `data`. If not, then this produces a derived value
+ * by calling `datDerivFrom` on the two arguments, or returns a cached
+ * pre-existing value if a suitable one exists.
+ */
+zvalue constValueFrom(zvalue type, zvalue data);
 
 #endif

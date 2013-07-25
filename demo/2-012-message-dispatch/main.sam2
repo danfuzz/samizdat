@@ -21,23 +21,23 @@ fn msg(value) {
 };
 
 fn payloadSize(token) {
-    <> lowSize(tokenValue(token))
+    <> coreSizeOf(dataOf(token))
 };
 
 fn listishNth(listish, n) {
-    <> listNth(tokenValue(listish), n)
+    <> listNth(dataOf(listish), n)
 };
 
 fn mappishNth(mappish, n) {
-    <> mapNth(tokenValue(mappish), n)
+    <> mapNth(dataOf(mappish), n)
 };
 
 fn mappishGet(mappish, key) {
-    <> mapGet(tokenValue(mappish), key)
+    <> mapGet(dataOf(mappish), key)
 };
 
 fn weirdSize(value) {
-    def payload = tokenValue(value);
+    def payload = dataOf(value);
     <> listFirst(payload)
 };
 
@@ -45,7 +45,7 @@ fn weirdNth(value, n) {
     ifIs { <> lt(n, 0) }
         { return };
 
-    def payload = tokenValue(value);
+    def payload = dataOf(value);
     def size = weirdSize(value);
 
     ifIs { <> ge(n, size) }
