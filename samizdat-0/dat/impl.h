@@ -189,19 +189,14 @@ bool datIntEq(zvalue v1, zvalue v2);
 zorder datIntOrder(zvalue v1, zvalue v2);
 
 /**
- * Compares strings for equality. Only called when the sizes are the same.
- */
-bool datStringEq(zvalue v1, zvalue v2);
-
-/**
- * Compares strings for order.
- */
-zorder datStringOrder(zvalue v1, zvalue v2);
-
-/**
  * Compares lists for equality. Only called when the sizes are the same.
  */
 bool datListEq(zvalue v1, zvalue v2);
+
+/**
+ * Marks list contents for garbage collection.
+ */
+void datListMark(zvalue value);
 
 /**
  * Compares lists for order.
@@ -219,9 +214,34 @@ void datMapClearCache(void);
 bool datMapEq(zvalue v1, zvalue v2);
 
 /**
+ * Marks map contents for garbage collection.
+ */
+void datMapMark(zvalue value);
+
+/**
  * Compares maps for order.
  */
 zorder datMapOrder(zvalue v1, zvalue v2);
+
+/**
+ * Compares strings for equality. Only called when the sizes are the same.
+ */
+bool datStringEq(zvalue v1, zvalue v2);
+
+/**
+ * Compares strings for order.
+ */
+zorder datStringOrder(zvalue v1, zvalue v2);
+
+/**
+ * Frees uniqlet contents during garbage collection.
+ */
+void datUniqletFree(zvalue value);
+
+/**
+ * Marks uniqlet contents for garbage collection.
+ */
+void datUniqletMark(zvalue value);
 
 /**
  * Compares uniqlets for order.
@@ -235,33 +255,13 @@ zorder datUniqletOrder(zvalue v1, zvalue v2);
 bool datValueEq(zvalue v1, zvalue v2);
 
 /**
- * Compares derived values for order.
- */
-zorder datValueOrder(zvalue v1, zvalue v2);
-
-/**
- * Marks list contents for garbage collection.
- */
-void datListMark(zvalue value);
-
-/**
- * Marks map contents for garbage collection.
- */
-void datMapMark(zvalue value);
-
-/**
  * Marks derived value contents for garbage collection.
  */
 void datValueMark(zvalue value);
 
 /**
- * Marks uniqlet contents for garbage collection.
+ * Compares derived values for order.
  */
-void datUniqletMark(zvalue value);
-
-/**
- * Frees uniqlet contents during garbage collection.
- */
-void datUniqletFree(zvalue value);
+zorder datValueOrder(zvalue v1, zvalue v2);
 
 #endif
