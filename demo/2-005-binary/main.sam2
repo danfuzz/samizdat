@@ -62,56 +62,56 @@ msgHex(0xff00 >>> 0x8);
 # Ordering. The ones expected to be "falsey" are surrounded by `??` to
 # make them easily printable.
 io0Note("\nOrder 1");
-msg(1 == 1);
-msg(1 != 2);
-msg(1 < 3);
-msg(5 > 4);
-msg(1 <= 5);
-msg(6 >= 6);
+msg(1 \== 1);
+msg(1 \!= 2);
+msg(1 \< 3);
+msg(5 \> 4);
+msg(1 \<= 5);
+msg(6 \>= 6);
 msg("a" \== "a");
 msg("a" \!= "b");
 msg("a" \< "c");
 
 io0Note("\nOrder 2");
-msg((1 != 1)??);
-msg((1 == 2)??);
-msg((1 >= 2)??);
-msg((2 <= 1)??);
-msg((1 > 2)??);
-msg((2 < 2)??);
+msg((1 \!= 1)??);
+msg((1 \== 2)??);
+msg((1 \>= 2)??);
+msg((2 \<= 1)??);
+msg((1 \> 2)??);
+msg((2 \< 2)??);
 msg(([1] \> [1])??);
 msg(([1] \<= [0])??);
 msg(([1] \>= [2])??);
 
 io0Note("\nOrder 3");
-msg(1 < 2 < 20);
-msg(100 == 100 > 21);
-msg(10 >= 5 < 22);
-msg(2 != 3 != 23);
+msg(1 \< 2 \< 20);
+msg(100 \== 100 \> 21);
+msg(10 \>= 5 \< 22);
+msg(2 \!= 3 \!= 23);
 
-msg((1 != 1 < 2)??);
-msg((2 > 3 == 3)??);
-msg((4 < 5 == 6)??);
-msg((9 < 10 < 11 < 12 != 12)??);
+msg((1 \!= 1 \< 2)??);
+msg((2 \> 3 \== 3)??);
+msg((4 \< 5 \== 6)??);
+msg((9 \< 10 \< 11 \< 12 \!= 12)??);
 
 # Logical ops. The ones expected to be "falsey" are surrounded by `??` to
 # make them easily printable.
 io0Note("\nLogic 1");
 msg(1 & 2);
 msg(1 & 2 & "three");
-msg((1 == 1) & (4 == 4));
-msg((1 == 1) & (2 == 2) & (5 == 5));
-msg((1 == 1) & (2 == 2) & (3 == 3) & (6 == 6));
+msg((1 \== 1) & (4 \== 4));
+msg((1 \== 1) & (2 \== 2) & (5 \== 5));
+msg((1 \== 1) & (2 \== 2) & (3 \== 3) & (6 \== 6));
 
 msg((returnVoid() & "a")??);
 msg((returnVoid() & returnVoid())??);
-msg(((1 == 1) & (1 == 2))??);
-msg(((1 == 1) & (1 == 2) & (3 == 3))??);
-msg(((1 == 2) & (2 == 2) & (3 == 3))??);
+msg(((1 \== 1) & (1 \== 2))??);
+msg(((1 \== 1) & (1 \== 2) & (3 \== 3))??);
+msg(((1 \== 2) & (2 \== 2) & (3 \== 3))??);
 
 msg((x = 1) & ineg(x));
 msg((foo = 1) & (bar = ineg(foo)) & iadd(-foo, bar));
-msg((blort = "th") & (1 == 1) & (fizmo = "ree") & stringAdd(blort, fizmo));
+msg((blort = "th") & (1 \== 1) & (fizmo = "ree") & stringAdd(blort, fizmo));
 
 io0Note("\nLogic 2");
 msg(10 | true);
