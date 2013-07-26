@@ -39,6 +39,7 @@ def MANIFEST = [
     "format.sam0",
     "module.sam0",
     "peg.sam0",
+    "coreDispatch.sam0",
     "meta.sam0",
 
     # Layer 1 language implementation.
