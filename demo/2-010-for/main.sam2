@@ -67,27 +67,27 @@ for (value in filterGenerator({ x <> x * x }, [1, 2, 3, 4])) {
 
 io0Note("\nUnnamed break.");
 def result1 = for (x in [1, 2, 3, 4, 5]) {
-    if (x == 3) { break 23 };
+    if (x \== 3) { break 23 };
     print(x)
 };
 io0Note("Result: \%q(result1)");
 
 io0Note("\nNamed break.");
 def result2 = for <out> (x in [1, 2, 3, 4, 5]) {
-    if (x == 3) { <out> 187 };
+    if (x \== 3) { <out> 187 };
     print(x)
 };
 io0Note("Result: \%q(result2)");
 
 io0Note("\nUnnamed continue.");
 for (x in [1, 2, 3, 4, 5]) {
-    if (x == 3) { continue };
+    if (x \== 3) { continue };
     print(x)
 };
 
 io0Note("\nNamed continue.");
 for (x in [1, 2, 3, 4, 5]) { <next> ::
-    if (x == 3) { <next> };
+    if (x \== 3) { <next> };
     print(x)
 };
 
