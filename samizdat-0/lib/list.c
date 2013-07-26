@@ -75,6 +75,12 @@ PRIM_IMPL(listFilter) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(listGet) {
+    requireExactly(argCount, 2);
+    return doNthLenient(datListNth, args[0], args[1]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listInsNth) {
     requireExactly(argCount, 3);
     return datListInsNth(args[0], datZintFromInt(args[1]), args[2]);
@@ -83,7 +89,7 @@ PRIM_IMPL(listInsNth) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listNth) {
     requireExactly(argCount, 2);
-    return doNth(datListNth, args[0], args[1]);
+    return doNthStrict(datListNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

@@ -18,9 +18,16 @@
 typedef zvalue (*znth)(zvalue value, zint n);
 
 /**
- * Calls an `nth` style function.
+ * Calls a `get` style function for an indexed value. This is lenient in that
+ * blatantly-invalid `value`s simply cause a return of `NULL`.
  */
-zvalue doNth(znth function, zvalue value, zvalue n);
+zvalue doNthLenient(znth function, zvalue value, zvalue n);
+
+/**
+ * Calls an `nth` style function. This is strict in that blatantly-invalid
+ * `value`s (non-int or negative int) cause runtime termination.
+ */
+zvalue doNthStrict(znth function, zvalue value, zvalue n);
 
 /**
  * Check the given argument count for an exact required amount,

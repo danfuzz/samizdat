@@ -61,6 +61,19 @@ value.
 
 Returns the binary complement (all bits opposite) of the given value.
 
+#### `intGet(int, key)` <> int | !.
+
+Map-style element access. This returns the same as `ibit(int, key)` if
+`key` is an int in the range `0..!coreSizeOf(int)`. Otherwise this
+returns void.
+
+#### `intNth(int, n)` <> int | !.
+
+List-style element access. This returns the same as `ibit(int, n)` if
+`n` is an int in the range `0..!coreSizeOf(int)`. Otherwise, if
+`n` is a non-negative int, this returns void. Otherwise, this
+terminates the runtime with an error.
+
 #### `ior(int1, int2) <> int`
 
 Returns the binary-or (union of all one-bits) of the given values.

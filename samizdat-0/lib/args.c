@@ -42,10 +42,24 @@ void requireAtLeast(zint argCount, zint minimum) {
 }
 
 /** Documented in header. */
-zvalue doNth(znth function, zvalue value, zvalue n) {
+zvalue doNthLenient(znth function, zvalue value, zvalue n) {
     if (datTypeIs(n, DAT_INT)) {
-        return function(value, datZintFromInt(n));
+        zint index = datZintFromInt(n);
+        return (index < 0) ? NULL : function(value, index);
     } else {
         return NULL;
+    }
+}
+
+/** Documented in header. */
+zvalue doNthStrict(znth function, zvalue value, zvalue n) {
+    if (datTypeIs(n, DAT_INT)) {
+        zint index = datZintFromInt(n);
+        if (index < 0) {
+            die("Invalid index for nth (negative).");
+        }
+        return function(value, index);
+    } else {
+        die("Invalid type for nth (non-int).");
     }
 }
