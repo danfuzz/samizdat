@@ -15,6 +15,7 @@ PRIM_FUNC(boxGet);
 PRIM_FUNC(boxIsSet);
 PRIM_FUNC(boxSet);
 PRIM_FUNC(charFromInt);
+PRIM_FUNC(coreOrder);
 PRIM_FUNC(coreOrderIs);
 PRIM_FUNC(coreSizeOf);
 PRIM_FUNC(dataOf);
