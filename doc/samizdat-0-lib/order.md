@@ -7,6 +7,17 @@ Ordering / Comparison
 <br><br>
 ### Primitive Definitions
 
+#### `coreOrderIs(value1, value2, check1, check2?) <> logic`
+
+Returns the type-specific core order ofthe two given values.
+This is like `totalOrderIs` except that this function will
+terminate the runtime with an error if the two values are of
+different types. (That is, if `typeOf` on the two values differ.)
+
+This function is intended only to be used in the implementation of
+`coreEq` and related in-language library functions.
+
+
 #### `totalOrder(value1, value2) <> int`
 
 Returns the order of the two given values in the total order of
@@ -60,6 +71,42 @@ comparators in-language.
 
 <br><br>
 ### In-Language Definitions
+
+#### `coreEq(value1, value2) <> logic`
+
+Comparison, requiring identical types. This is just like `eq`
+(see which), except that if the two arguments are of different type, this
+function terminates the runtime with an error.
+
+#### `coreLe(value1, value2) <> logic`
+
+Comparison, requiring identical types. This is just like `le`
+(see which), except that if the two arguments are of different type, this
+function terminates the runtime with an error.
+
+#### `coreLt(value1, value2) <> logic`
+
+Comparison, requiring identical types. This is just like `lt`
+(see which), except that if the two arguments are of different type, this
+function terminates the runtime with an error.
+
+#### `coreGe(value1, value2) <> logic`
+
+Comparison, requiring identical types. This is just like `ge`
+(see which), except that if the two arguments are of different type, this
+function terminates the runtime with an error.
+
+#### `coreGt(value1, value2) <> logic`
+
+Comparison, requiring identical types. This is just like `gt`
+(see which), except that if the two arguments are of different type, this
+function terminates the runtime with an error.
+
+#### `coreNe(value1, value2) <> logic`
+
+Comparison, requiring identical types. This is just like `ne`
+(see which), except that if the two arguments are of different type, this
+function terminates the runtime with an error.
 
 #### `eq(value1, value2) <> logic`
 
