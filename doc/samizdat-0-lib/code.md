@@ -152,16 +152,6 @@ whatever the target function returned (including void).
 This function is meant to make it a little easier to deal with the fact
 that *Samizdat Layer 0* prohibits use-before-def.
 
-#### `partialApply(function, value*) <> function`
-
-Partial function application. This takes a function and a number of arguments
-to call it with, returning a new function. The new function, when called,
-in turn calls the original function with the arguments specified here as
-the first arguments, followed by any arguments passed to the new function.
-
-For example, `partialApply(iadd, 2)` is a function which when called returns
-the sum of 2 and whatever value it was passed.
-
 #### `yCombinator(function) <> function`
 
 The Y combinator, in a form suitable for use in Samizdat Layer 0 when

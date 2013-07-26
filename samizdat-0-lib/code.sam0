@@ -39,12 +39,6 @@ fn forwardFunction() {
     <> forwarder
 };
 
-# Documented in Samizdat Layer 0 spec.
-fn partialApply(function, args*) {
-    <> { more* <> function(args*, more*) }
-};
-
 <> [
-    forwardFunction: forwardFunction,
-    partialApply:    partialApply
+    forwardFunction: forwardFunction
 ]
