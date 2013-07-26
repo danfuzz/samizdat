@@ -270,7 +270,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([a-zA-Z_.][^:{}@"]*) *(::|(?=&lt;&gt;))</string>
+					<string>([a-zA-Z_.][^:@"{}()\[\]]*) *(::|(?=&lt;&gt;))</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -336,7 +336,7 @@
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.control</string>
+							<string>keyword.definition</string>
 						</dict>
 						<key>2</key>
 						<dict>
@@ -358,8 +358,8 @@
 					<key>match</key>
 					<string>(?x)
 						\b(
-						break|collect|continue|default|do|else|
-						for|generate|if|reduce|return|switch|while
+						break|continue|default|do|else|
+						for|if|reduce|return|switch|while
 						)\b
 					</string>
 				</dict>
@@ -386,7 +386,7 @@
 					<key>name</key>
 					<string>punctuation.definition</string>
 					<key>match</key>
-					<string>\{/?|/?\}|\[|\]|\:</string>
+					<string>\{/?|/?\}|\[|\]|:</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -395,7 +395,7 @@
 					<string>(?x)
 						&amp;&amp;?&amp;? | \|\|?\|? | \^\^?\^? |
 						\\?&lt;&lt;?&lt;? | \\?&gt;&gt;?&gt;? |
-						!!?!? | \\?==? | \\?!= | \\?&lt;= | \\?&gt;= |
+						!!?!? | := | \\?==? | \\?!= | \\?&lt;= | \\?&gt;= |
 						&lt;&gt; | \.\.[!+]? | \+ | - | \* | / | % | \?
 					</string>
 				</dict>
@@ -426,7 +426,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(=)(?!=)</string>
+					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(:?=)(?!=)</string>
 				</dict>
 			</array>
 		</dict>
