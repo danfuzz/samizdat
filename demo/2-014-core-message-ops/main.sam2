@@ -27,6 +27,7 @@ fn msg(value) {
 
 # Ordering. The ones expected to be "falsey" are surrounded by `??` to
 # make them easily printable.
+
 io0Note("\nOrder 1");
 msg(1 == 1);
 msg(1 != 2);
