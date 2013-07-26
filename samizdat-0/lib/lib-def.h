@@ -14,7 +14,6 @@
  */
 
 LIB_FILE(boolean, sam0);
-LIB_FILE(combinator, sam0);
 LIB_FILE(code, sam0);
 LIB_FILE(const, sam0);
 LIB_FILE(coreDispatch, sam0);
