@@ -359,8 +359,8 @@ void) becomes the result of the outer expression.
 
 The value of the left-hand side can be referred to on the right-hand side
 by adding a name binding on the left. Do this by enclosing the left-hand
-expression in parentheses, and prefixing it with an assignment, e.g.
-`(name = expression) & somethingWith(name)`.
+expression in parentheses, and prefixing it with a def-assignment, e.g.
+`(name := expression) & somethingWith(name)`.
 
 
 ### Value/Void Logical-Or Operator (Precedence 1) &mdash; `expression | expression`
