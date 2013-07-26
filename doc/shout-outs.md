@@ -40,7 +40,8 @@ Samizdat's execution model probably owes its biggest debts to Smalltalk and
 [Scheme](http://en.wikipedia.org/wiki/Scheme_%28programming_language%29).
 [Icon](http://en.wikipedia.org/wiki/Icon_%28programming_language%29),
 [Haskell](http://en.wikipedia.org/wiki/Haskell_%28programming_language%29),
-and [Erlang](http://en.wikipedia.org/wiki/Erlang_%28programming_language%29)
+[Erlang](http://en.wikipedia.org/wiki/Erlang_%28programming_language%29),
+and [Python](http://en.wikipedia.org/wiki/Python_%28programming_language%29)
 all also provided a fair amount of grist for the mill.
 
 Samizdat's parsing semantics were influenced by the recent work on
@@ -58,7 +59,7 @@ the trail for general-purpose languages that make parsing a first-class
 operation.
 
 In terms of "flavor" and "feel", the Samizdat core library was influenced
-by Scheme, Logo, Awk, and [Underscore.js](http://underscorejs.org/).
+by Scheme, Logo, and [Underscore.js](http://underscorejs.org/).
 
 The implementation tactics used to build Samizdat were informed by
 [Scheme-48](http://en.wikipedia.org/wiki/Scheme_48),
