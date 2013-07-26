@@ -15,37 +15,6 @@ SELF_PATH, ARGS* ::
 # Helper definitions
 #
 
-# Example of self-recursion using `yCombinator`. This is how a simple
-# self-recursive Samizdat function might end up looking when coverted
-# into Samizdat Layer 0 form.
-#
-# Returns a list with int contents that count down from `n`,
-# generated recursively. The "main" function literal here is wrapped
-# in an outer function layer, whose argument is used to achieve
-# recursion.
-def countDown = yCombinator { countDown ::
-    <> { n ::
-        <> ifIs { <> ge(n, 0) }
-            { <> [n, countDown(isub(n, 1))*] }
-            { <> [] }
-    }
-};
-
-# Example of mutual recursion using `yStarCombinator`. See discussion
-# above.
-def countDowns = yStarCombinator
-    { f1, f2 ::
-        <> { n ::
-            <> ifIs { <> gt(n, 0) }
-                { <> [n, f2(isub(n, 1))*] }
-                { <> [0] }
-        }
-    }
-    { f1, f2 ::
-        <> { n <> ["and", f1(n)*] }
-    };
-def countDown2 = listNth(countDowns, 0);
-
 # Demo of `+` argument repeat modifier.
 fn stuff(items+) {
     io0Note(stringAdd("stuff: ", sourceString(items)))
@@ -129,8 +98,6 @@ fn main(selfPath, name, rest*) {
     process([def: "defined", do: "done"]); # Likewise, for map keys.
     process(@[(null)]);
     process(@@);
-    process(countDown(10));
-    process(countDown2(5));
     process(boxer());
     process(metaFunctions(LIBRARY, "blort.sam0"));
     process(io0PathFromFlat("///foo//////./bar/../baz"));
