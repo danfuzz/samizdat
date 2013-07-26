@@ -1280,7 +1280,7 @@ def parTestClause = {/
 
     formal = (
         name = @identifier
-        @"="
+        @":="
         { <> [name: dataOf(name)] }
     |
         { <> [:] }
