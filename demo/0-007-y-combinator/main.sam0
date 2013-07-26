@@ -3,16 +3,23 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Function combinators
+# The venerable Y Combinator and friends.
 #
-# This module is meant to be able to be defined in fairly incomplete
-# implementations of *Samizdat Layer 0*. In particular, this module
-# does not make any calls to non-primitive library functions, and
-# it limits its explicit primitive library function calls to just
-# `listFilter`.
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
 
 #
-# Helper functions
+# Combinator definitions
+#
+# These functions are meant to be able to be defined in fairly incomplete
+# implementations of *Samizdat Layer 0*, to help with bootstrapping of
+# implementations that truly disallow function self-reference and/or mutual
+# function reference. In particular, these functions do not make any calls
+# to non-primitive library functions, and they limit their explicit primitive
+# library function calls to just `listFilter`.
 #
 
 # The U combinator, which is a function that takes a function argument and
@@ -38,12 +45,7 @@ fn uStarCombinator(functions) {
     <> listFilter(functions) { function <> function(functions*) }
 };
 
-
-#
-# Exported functions
-#
-
-# Documented in Samizdat Layer 0 spec.
+# Documented in associated README file.
 fn yCombinator(function) {
     # Although it is coded here using a named function, it's just for
     # readability and not a strict necessity. That is, the definition of
@@ -56,7 +58,7 @@ fn yCombinator(function) {
     <> uCombinator(applicator);
 };
 
-# Documented in Samizdat Layer 0 spec.
+# Documented in associated README file.
 fn yStarCombinator(functions*) {
     # The code here is meant to be exactly parallel to that of `yCombinator`,
     # except with additional list mapping (including via the
@@ -73,7 +75,54 @@ fn yStarCombinator(functions*) {
     <> uStarCombinator(applicators);
 };
 
-<> [
-    yCombinator:     yCombinator,
-    yStarCombinator: yStarCombinator
-]
+
+#
+# Test code
+#
+
+# Example of self-recursion using `yCombinator`. This is how a simple
+# self-recursive Samizdat function might end up looking when coverted
+# into Samizdat Layer 0 form.
+#
+# Returns a list with int contents that count down from `n`,
+# generated recursively. The "main" function literal here is wrapped
+# in an outer function layer, whose argument is used to achieve
+# recursion.
+def countDown = yCombinator { countDown ::
+    <> { n ::
+        <> ifIs { <> ge(n, 0) }
+            { <> [n, countDown(isub(n, 1))*] }
+            { <> [] }
+    }
+};
+
+# Example of mutual recursion using `yStarCombinator`. See discussion
+# above.
+def countDowns = yStarCombinator
+    { f1, f2 ::
+        <> { n ::
+            <> ifIs { <> gt(n, 0) }
+                { <> [n, f2(isub(n, 1))*] }
+                { <> [0] }
+        }
+    }
+    { f1, f2 ::
+        <> { n <> ["and", f1(n)*] }
+    };
+def countDown2 = listNth(countDowns, 0);
+
+# Emits the stringified version of the given value to the console.
+fn msg(value) {
+    io0Note(sourceString(value));
+};
+
+
+#
+# Main calls
+#
+
+msg(countDown(10));
+io0Note("");
+msg(countDown2(5));
+
+<> 0
