@@ -23,7 +23,7 @@
  * Possible low-level data types.
  *
  * **Note:** The enum ordering is the same as the type-based ordering for
- * comparing values. See `datOrder()` below or spec for `coreOrder`.
+ * comparing values. See `datOrder()` below or spec for `totalOrder`.
  */
 typedef enum {
     DAT_INT = 1,
@@ -479,7 +479,7 @@ bool datEq(zvalue v1, zvalue v2);
  * Compares two values, providing a full ordering. Returns one of the
  * values `{ ZLESS, ZSAME, ZMORE }`, less symbolically equal to `{
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
- * See `coreOrder` in the Samizdat Layer 0 spec for more details about
+ * See `totalOrder` in the Samizdat Layer 0 spec for more details about
  * value sorting.
  */
 zorder datOrder(zvalue v1, zvalue v2);

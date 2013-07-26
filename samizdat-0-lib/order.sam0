@@ -7,28 +7,52 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn eq(v1, v2) { <> coreOrderIs(v1, v2, 0) };
+fn coreEq(v1, v2) { <> coreOrderIs(v1, v2, 0) };
 
 # Documented in Samizdat Layer 0 spec.
-fn ge(v1, v2) { <> coreOrderIs(v1, v2, 1, 0) };
+fn coreGe(v1, v2) { <> coreOrderIs(v1, v2, 1, 0) };
 
 # Documented in Samizdat Layer 0 spec.
-fn gt(v1, v2) { <> coreOrderIs(v1, v2, 1) };
+fn coreGt(v1, v2) { <> coreOrderIs(v1, v2, 1) };
 
 # Documented in Samizdat Layer 0 spec.
-fn lt(v1, v2) { <> coreOrderIs(v1, v2, -1) };
+fn coreLe(v1, v2) { <> coreOrderIs(v1, v2, -1, 0) };
 
 # Documented in Samizdat Layer 0 spec.
-fn le(v1, v2) { <> coreOrderIs(v1, v2, -1, 0) };
+fn coreLt(v1, v2) { <> coreOrderIs(v1, v2, -1) };
 
 # Documented in Samizdat Layer 0 spec.
-fn ne(v1, v2) { <> coreOrderIs(v1, v2, -1, 1) };
+fn coreNe(v1, v2) { <> coreOrderIs(v1, v2, -1, 1) };
+
+# Documented in Samizdat Layer 0 spec.
+fn eq(v1, v2) { <> totalOrderIs(v1, v2, 0) };
+
+# Documented in Samizdat Layer 0 spec.
+fn ge(v1, v2) { <> totalOrderIs(v1, v2, 1, 0) };
+
+# Documented in Samizdat Layer 0 spec.
+fn gt(v1, v2) { <> totalOrderIs(v1, v2, 1) };
+
+# Documented in Samizdat Layer 0 spec.
+fn le(v1, v2) { <> totalOrderIs(v1, v2, -1, 0) };
+
+# Documented in Samizdat Layer 0 spec.
+fn lt(v1, v2) { <> totalOrderIs(v1, v2, -1) };
+
+# Documented in Samizdat Layer 0 spec.
+fn ne(v1, v2) { <> totalOrderIs(v1, v2, -1, 1) };
 
 <> [
-    eq: eq,
-    ge: ge,
-    gt: gt,
-    le: le,
-    lt: lt,
-    ne: ne
+    coreEq: coreEq,
+    coreGe: coreGe,
+    coreGt: coreGt,
+    coreLe: coreLe,
+    coreLt: coreLt,
+    coreNe: coreNe,
+    eq:     eq,
+    ge:     ge,
+    gt:     gt,
+    le:     le,
+    lt:     lt,
+    ne:     ne
 ]

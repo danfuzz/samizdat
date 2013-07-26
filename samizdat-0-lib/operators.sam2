@@ -8,18 +8,6 @@
 
 
 #
-# Helper definitions
-#
-
-# Verifies that it should be possible to compare the two given values,
-# terminating the runtime if not.
-fn assertComparable(v1, v2) {
-    ifIs { <> ne(typeOf(v1), typeOf(v2)) }
-        { io0Die("Incomparable values: \%q(v1), \%q(v2)") };
-};
-
-
-#
 # Exported functions
 #
 
@@ -49,54 +37,6 @@ fn \"binary%"(v1, v2) {
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary=="(v1, v2) {
-    assertComparable(v1, v2);
-
-    # TODO: Needs to do special things for some token types (e.g. floats).
-    <> eq(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary!="(v1, v2) {
-    assertComparable(v1, v2);
-
-    # TODO: Needs to do special things for some token types (e.g. floats).
-    <> ne(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary<"(v1, v2) {
-    assertComparable(v1, v2);
-
-    # TODO: Needs to do special things for some token types (e.g. floats).
-    <> lt(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary>"(v1, v2) {
-    assertComparable(v1, v2);
-
-    # TODO: Needs to do special things for some token types (e.g. floats).
-    <> gt(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary<="(v1, v2) {
-    assertComparable(v1, v2);
-
-    # TODO: Needs to do special things for some token types (e.g. floats).
-    <> le(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"binary>="(v1, v2) {
-    assertComparable(v1, v2);
-
-    # TODO: Needs to do special things for some token types (e.g. floats).
-    <> ge(v1, v2)
-};
-
-# TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary+"(value) {
     <> iadd(0, value)
 };
@@ -117,12 +57,6 @@ fn \"unary**"(value) {
     "binary*":  \"binary*",
     "binary/":  \"binary/",
     "binary%":  \"binary%",
-    "binary==": \"binary==",
-    "binary!=": \"binary!=",
-    "binary<":  \"binary<",
-    "binary>":  \"binary>",
-    "binary<=": \"binary<=",
-    "binary>=": \"binary>=",
     "unary+":   \"unary+",
     "unary-":   \"unary-",
     "unary**":  \"unary**"

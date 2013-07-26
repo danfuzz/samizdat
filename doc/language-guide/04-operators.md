@@ -312,16 +312,28 @@ model of the language.
 
 #### Same-type comparison &mdash; `== != < > <= >=`
 
-These are the same-type comparison operators. These result in `void` if
-the two expressions are not of the same type. If they *are* of the same
-type, then the comparison result depends on the type, yielding the
-right-hand value to represent logical-true.
+These are the type-aware comparison operators. Every type can &mdash;
+and all the core types do &mdash; define an order, and these operators
+are how to use those type-specific orders. The general contract is that
+evaluating these operators results in the right-hand value if the ordering
+is satisfied (true), or void if not. If the left-hand and right-hand sides
+are not comparable, then the contract is to cause a terminal error (rather
+than returning void).
 
-If the two expressions are of the same type, the result of the
-operator corresponds to the behavior of the library function `coreOrder`
-(see which).
+These expressions correspond to making message calls of the left-hand
+side, using one of the message names `eq` `ne` `lt` `gt` `le` or `ge`,
+with the usual correspondence between the operators and those names.
+The message is called on the left-hand value, passing it the right-hand
+value as its sole argument.
 
-TODO: Expand on what's up with non-primitive types.
+For core values in particular: The result of comparison is the same as
+a call to the similarly-named core library functions, assuming the two
+arguments are of the same core type. It is a terminal error if the two
+expressions are not of the same core type. It is also a terminal error if
+the left-hand expression is a core value, and the right-hand value is a
+derived value (for example, trying to compare `10` and
+`@[Int: "not-really-an-int"]`).
+
 
 #### Total-order comparison &mdash; `\== \!= \< \> \<= \>=`
 
