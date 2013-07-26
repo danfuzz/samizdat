@@ -8,6 +8,7 @@
 #include "impl.h"
 #include "util.h"
 
+#include <stddef.h>
 
 /*
  * Helper definitions
@@ -102,17 +103,30 @@ static zint shl(zint value, zint shift) {
     }
 }
 
+/**
+ * Helper for `intGet` and `intNth`, which acts like `ibit` except that
+ * out-of-range indices result in void, not the sign bit.
+ */
+static zvalue doIntNth(zvalue value, zint n) {
+    if (n < datSize(value)) {
+        return constIntFromZint(datIntGetBit(value, n));
+    } else {
+        return NULL;
+    }
+}
+
 
 /*
- * Exported primitives. These are all documented in Samizdat Layer 0
- * spec.
+ * Exported primitives.
  */
 
+/* These are all documented in Samizdat Layer 0 spec. */
 UNARY_PRIM(iabs,  (x >= 0) ? x : -x);
 UNARY_PRIM(ineg,  -x);
 UNARY_PRIM(inot,  ~x);
 UNARY_PRIM(isign, (x == 0) ? 0 : ((x > 0) ? 1 : -1));
 
+/* These are all documented in Samizdat Layer 0 spec. */
 BINARY_PRIM(iadd, x + y);
 BINARY_PRIM(iand, x & y);
 BINARY_PRIM(ibit, datZintGetBit(x, y));
@@ -125,3 +139,15 @@ BINARY_PRIM(isub, x - y);
 BINARY_PRIM(ishl, shl(x, y));
 BINARY_PRIM(ishr, shl(x, -y));
 BINARY_PRIM(ixor, x ^ y);
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(intGet) {
+    requireExactly(argCount, 2);
+    return doNthLenient(doIntNth, args[0], args[1]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(intNth) {
+    requireExactly(argCount, 2);
+    return doNthStrict(doIntNth, args[0], args[1]);
+}
