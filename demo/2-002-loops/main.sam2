@@ -84,7 +84,7 @@ do {
     io0Note("Value is \%q(boxGet(box)).")
 } while (boxGet(box) \< 70);
 
-while (value = (75 \> boxGet(box))) {
+while (value := (75 \> boxGet(box))) {
     def nextValue = value + 1;
     boxSet(box, nextValue);
     io0Note("Value is \%q(nextValue).")

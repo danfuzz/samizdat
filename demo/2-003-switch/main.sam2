@@ -45,7 +45,7 @@ fn elser(item?) {
 };
 
 fn namer(value) {
-    <> switch (x = value) {
+    <> switch (x := value) {
         (1, 2, 3): { <> imul(x, 10)   }
         (4, 5, 6): { <> imul(x, 100)  }
         default:   { <> imul(x, 1000) }
