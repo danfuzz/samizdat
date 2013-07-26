@@ -27,6 +27,7 @@ fn msg(value) {
 
 # Ordering. The ones expected to be "falsey" are surrounded by `??` to
 # make them easily printable.
+
 io0Note("\nOrder 1");
 msg(1 == 1);
 msg(1 != 2);
@@ -67,5 +68,28 @@ msg((2 > 3 == 3)??);
 msg((4 < 5 == 6)??);
 msg((9 < 10 < 11 < 12 != 12)??);
 
+io0Note("\nIndex");
+
+msg(1[0]);
+msg(1[1]);
+msg(1[2]?);   # Expect `[]` because size of `1` is `2` (one value bit + sign).
+msg(1[-1]?);
+msg(1["x"]?);
+
+msg(["blort", "fizmo", "igram"][0]);
+msg(["blort", "fizmo", "igram"][1]);
+msg(["blort", "fizmo", "igram"][3]?);
+msg(["blort", "fizmo", "igram"][-10]?);
+msg(["blort", "fizmo", "igram"]["x"]?);
+
+msg([c: "cuttlefish", n: "nutria"]["c"]);
+msg([c: "cuttlefish", n: "nutria"]["n"]);
+msg([c: "cuttlefish", n: "nutria"][0]?);
+
+msg("frotz"[0]);
+msg("frotz"[4]);
+msg("frotz"[5]?);
+msg("frotz"[-1]?);
+msg("frotz"["ztrof"]?);
 
 <> 0

@@ -34,6 +34,11 @@ smaller than the size of the argument.
 **Note:** This is a special-case version of the more general function
 `collectFilter` (see which).
 
+#### `listGet(list, key) <> . | !.`
+
+Collection-style element access. Returns the same thing as `listNth(list, key)`
+if `key` is a valid int index into the list. If not, this returns void.
+
 #### `listInsNth(list, n, value) <> list`
 
 Returns a list just like the given one, except that the `n`th
@@ -47,9 +52,8 @@ list. If not, it is an error (terminating the runtime).
 #### `listNth(list, n) <> . | !.`
 
 Returns the `n`th (zero-based) element of the given list, if `n` is
-a valid int index into the list. If `n` is not a valid index
-(either an out-of-range int, or some other value), then this
-returns void.
+a valid int index into the list. Otherwise, if `n` is a non-negative int,
+this returns void. Otherwise, this terminates the runtime with an error.
 
 #### `listPutNth(list, n, value) <> list`
 

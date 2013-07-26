@@ -12,43 +12,67 @@
 
 def DISPATCH = [
     Int: [
+        # Ordering / comparison
         eq:    coreEq,
         ge:    coreGe,
         gt:    coreGt,
         le:    coreLe,
         lt:    coreLt,
         ne:    coreNe,
-        order: coreOrder
+        order: coreOrder,
+
+        # Collection access
+        get:   intGet,
+        nth:   intNth,
+        size:  coreSizeOf
     ],
 
     List: [
+        # Ordering / comparison
         eq:    coreEq,
         ge:    coreGe,
         gt:    coreGt,
         le:    coreLe,
         lt:    coreLt,
         ne:    coreNe,
-        order: coreOrder
+        order: coreOrder,
+
+        # Collection access
+        get:   listGet,
+        nth:   listNth,
+        size:  coreSizeOf
     ],
 
     Map: [
+        # Ordering / comparison
         eq:    coreEq,
         ge:    coreGe,
         gt:    coreGt,
         le:    coreLe,
         lt:    coreLt,
         ne:    coreNe,
-        order: coreOrder
+        order: coreOrder,
+
+        # Collection access
+        get:   mapGet,
+        nth:   mapNth,
+        size:  coreSizeOf
     ],
 
     String: [
+        # Ordering / comparison
         eq:    coreEq,
         ge:    coreGe,
         gt:    coreGt,
         le:    coreLe,
         lt:    coreLt,
         ne:    coreNe,
-        order: coreOrder
+        order: coreOrder,
+
+        # Collection access
+        get:   stringGet,
+        nth:   stringNth,
+        size:  coreSizeOf
     ]
 ];
 
