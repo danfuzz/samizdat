@@ -67,7 +67,7 @@ msg("Three-item multi-line collect",
     collect (a in 0..4, b in 50..10..90, c in 300..100..700)
         {
             def sum = a + b + c;
-            def evenOdd = ((sum % 2) == 0) & "Even" | "Odd";
+            def evenOdd = ((sum % 2) \== 0) & "Even" | "Odd";
             <> "\(evenOdd)\(sum)"
         }
     );

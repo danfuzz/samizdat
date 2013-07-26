@@ -74,6 +74,12 @@ fn makeCallNameThunks(name, actuals*) {
     <> makeCallName(name, thunks*)
 };
 
+# Makes and returns a node representing a named method call.
+fn makeMethodCall(target, name, actuals*) {
+    <> makeCallName("methodCall",
+        makeVarRef("DISPATCH"), target, name, actuals*)
+};
+
 # Returns a `closure` node like the one given, except with the `formals`
 # binding replaced with the given arguments. Each of the `formals`
 # must be a formal argument map as described in the execution tree spec.
@@ -87,14 +93,6 @@ fn closureWithYieldDef(closure, name) {
     <> @[closure: [dataOf(closure)*, yieldDef: name]]
 };
 
-# Filters a map of [operator: name] mappings, converting the names into
-# `varRef` nodes.
-fn varRefMap(map) {
-    <> mapFromGenerator(
-        filterGenerator(map)
-            { m <> [mappingKey(m): makeVarRef(mappingValue(m))] });
-};
-
 # A no-argument yield-void thunk.
 def YIELD_VOID_THUNK = @[closure: [statements: []]];
 
@@ -103,51 +101,77 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 
 # Map of token types to corresponding unary operator function name variable
 # references.
-def UNARY_OPERATORS = varRefMap([
-    "+":   "unary+",
-    "-":   "unary-",
-    "**":  "unary**",
-    "!!!": "inot"
-    ]);
+def UNARY_OPERATORS = [
+    "+":   makeVarRef("unary+"),
+    "-":   makeVarRef("unary-"),
+    "**":  makeVarRef("unary**"),
+    "!!!": makeVarRef("inot")
+];
 
-# Map of token types to corresponding binary operator function name variable
-# references.
-def BINARY_OPERATORS = varRefMap([
-    "+":    "binary+",
-    "-":    "binary-",
-    "*":    "binary*",
-    "/":    "binary/",
-    "%":    "binary%",
-    "==":   "binary==",
-    "!=":   "binary!=",
-    "<":    "binary<",
-    ">":    "binary>",
-    "<=":   "binary<=",
-    ">=":   "binary>=",
-    "&&&":  "iand",
-    "|||":  "ior",
-    "^^^":  "ixor",
-    "<<<":  "ishl",
-    ">>>":  "ishr",
-    "\\==": "eq",
-    "\\!=": "ne",
-    "\\<":  "lt",
-    "\\>":  "gt",
-    "\\<=": "le",
-    "\\>=": "ge",
-    "..":   "inclusiveRange",
-    "..!":  "exclusiveRange",
-    "..+":  "openRange"
-    ]);
+# For binary operators, map of token types to one of:
+#
+# * a `varRef` node for the corresponding function name
+# * a `literal` node for the corresponding method name
+def BINARY_OPERATORS = [
+    "+":    makeVarRef("binary+"),
+    "-":    makeVarRef("binary-"),
+    "*":    makeVarRef("binary*"),
+    "/":    makeVarRef("binary/"),
+    "%":    makeVarRef("binary%"),
+    "==":   makeLiteral("eq"),
+    "!=":   makeLiteral("ne"),
+    "<":    makeLiteral("lt"),
+    ">":    makeLiteral("gt"),
+    "<=":   makeLiteral("le"),
+    ">=":   makeLiteral("ge"),
+    "&&&":  makeVarRef("iand"),
+    "|||":  makeVarRef("ior"),
+    "^^^":  makeVarRef("ixor"),
+    "<<<":  makeVarRef("ishl"),
+    ">>>":  makeVarRef("ishr"),
+    "\\==": makeVarRef("eq"),
+    "\\!=": makeVarRef("ne"),
+    "\\<":  makeVarRef("lt"),
+    "\\>":  makeVarRef("gt"),
+    "\\<=": makeVarRef("le"),
+    "\\>=": makeVarRef("ge"),
+    "..":   makeVarRef("inclusiveRange"),
+    "..!":  makeVarRef("exclusiveRange"),
+    "..+":  makeVarRef("openRange")
+];
 
 # Helper for parsing binary operator expressions, which puts together
-# a sequence of function calls.
-fn makeBinaryCalls(firstEx, opExList) {
-    <> doReduce1(opExList, firstEx) { opEx, result ::
+# a sequence of function calls. `voidable`, if passed as `true`, indicates
+# that the inner calls should be made voidable.
+fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
+    ifIs { <> eq(opExList, []) }
+        {
+            # Don't bother with the rest if there are no ops to apply.
+            # This avoids having to special-case the voidable stuff.
+            return firstEx
+        };
+
+    def voidable = ifValueOr { <> optVoidable* } { <> false };
+
+    def result = doReduce1(opExList, firstEx) { opEx, result ::
         def op = listFirst(opEx);
         def ex = listLast(opEx);
-        <> makeCall(mapGet(BINARY_OPERATORS, typeOf(op)), result, ex)
-    }
+        def resolvedOp = mapGet(BINARY_OPERATORS, typeOf(op));
+
+        def call = ifIs { <> eq(typeOf(resolvedOp), "varRef") }
+            { <> makeCall(resolvedOp, result, ex) }
+            { <> makeMethodCall(result, resolvedOp, ex) };
+
+        <> ifIs { <> eq(voidable, true) }
+            { <> @[voidable: call] }
+            { <> call }
+    };
+
+    # For an inner-voidable expression, unwrap the outermost layer of
+    # voidability.
+    <> ifIs { <> eq(voidable, true) }
+        { <> dataOf(result) }
+        { <> result }
 };
 
 
@@ -830,12 +854,6 @@ parChoicePex(implChoicePex);
 # Samizdat Layer 2 definitions
 #
 
-# Makes and returns a node representing a named method call.
-fn makeMethodCall(target, name, actuals*) {
-    <> makeCallName("methodCall",
-        makeVarRef("DISPATCH"), target, name, actuals*)
-};
-
 # Helper for `?` postfix and string interpolation: Construct an optional-value
 # expression. This is approximately:
 #
@@ -1248,16 +1266,9 @@ def parCompareExpression = {/
         { <> [op, ex] }
     )*
 
-    # This isn't just a call to `makeBinaryCalls`, since the left-hand sides
-    # of nested operator calls need to be wrapped into `voidable` nodes.
-    { <out> ::
-        ifIs { <> eq(opExes, []) }
-            { <out> firstEx };
-
-        def innerEx = makeBinaryCalls(firstEx, [listFirst(opExes)]);
-        <> doReduce1(listButFirst(opExes), innerEx)
-            { opEx, result <> makeBinaryCalls(@[voidable: result], [opEx]) }
-    }
+    # Third argument here indicates that the inner calls need to be made
+    # voidable.
+    { <> makeBinaryCalls(firstEx, opExes, true) }
 /};
 
 # Parses a parenthesized test clause, yielding a map of the form

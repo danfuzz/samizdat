@@ -1,0 +1,53 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Core message dispatch table
+#
+
+# TODO: This should probably be split out into separate modules, for use
+# by the module system, once there's a module system that can make use of
+# something like that.
+
+def DISPATCH = [
+    Int: [
+        eq: coreEq,
+        ge: coreGe,
+        gt: coreGt,
+        le: coreLe,
+        lt: coreLt,
+        ne: coreNe
+    ],
+
+    List: [
+        eq: coreEq,
+        ge: coreGe,
+        gt: coreGt,
+        le: coreLe,
+        lt: coreLt,
+        ne: coreNe
+    ],
+
+    Map: [
+        eq: coreEq,
+        ge: coreGe,
+        gt: coreGt,
+        le: coreLe,
+        lt: coreLt,
+        ne: coreNe
+    ],
+
+    String: [
+        eq: coreEq,
+        ge: coreGe,
+        gt: coreGt,
+        le: coreLe,
+        lt: coreLt,
+        ne: coreNe
+    ]
+];
+
+<> [
+    DISPATCH: DISPATCH
+]

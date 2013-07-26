@@ -16,9 +16,9 @@
  */
 
 /**
- * Does most of the work of `coreOrderIs`.
+ * Does most of the work of `coreOrderIs` and `totalOrderIs`.
  */
-static bool doCoreOrderIs(zint argCount, const zvalue *args) {
+static bool doOrderIs(zint argCount, const zvalue *args) {
     zorder want = datZintFromInt(args[2]);
 
     if ((argCount == 3) && (want == ZSAME)) {
@@ -37,15 +37,28 @@ static bool doCoreOrderIs(zint argCount, const zvalue *args) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(coreOrder) {
-    requireExactly(argCount, 2);
-    return constIntFromZint(datOrder(args[0], args[1]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(coreOrderIs) {
     requireRange(argCount, 3, 4);
-    return doCoreOrderIs(argCount, args) ? args[1] : NULL;
+
+    zvalue arg0 = args[0];
+    zvalue arg1 = args[1];
+    ztype ztype0 = datType(arg0);
+    ztype ztype1 = datType(arg1);
+
+    if (ztype0 != ztype1) {
+        die("Mismatched core types.");
+    }
+
+    if (ztype0 == DAT_DERIV) {
+        zvalue type0 = constTypeOf(arg0);
+        if (!datEq(type0, constTypeOf(arg1))) {
+            die("Mismatched derived types.");
+        } else if (constIsCoreTypeName(type0)) {
+            die("Oddball derived value.");
+        }
+    }
+
+    return doOrderIs(argCount, args) ? arg1 : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -66,6 +79,18 @@ PRIM_IMPL(isCoreValue) {
 
     zvalue value = args[0];
     return (datType(value) != DAT_DERIV) ? value : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(totalOrder) {
+    requireExactly(argCount, 2);
+    return constIntFromZint(datOrder(args[0], args[1]));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(totalOrderIs) {
+    requireRange(argCount, 3, 4);
+    return doOrderIs(argCount, args) ? args[1] : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
