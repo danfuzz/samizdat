@@ -108,10 +108,9 @@ def result = pegApply(parFile, text);
 # This makes each result line *start* with `,\n`, to make it easy to just
 # trim the first two characters off the beginning, yielding a valid comma-
 # separated list of mappings.
-def resultLines = filterGenerator(result)
-    { mapping ::
-        <> ",\n    \%q(mappingKey(mapping)): \%q(mappingValue(mapping))"
-    };
+def resultLines = (mapping in result ::
+    <> ",\n    \%q(mappingKey(mapping)): \%q(mappingValue(mapping))"
+);
 
 def resultText = stringSlice(stringAdd(resultLines*), 2);
 
