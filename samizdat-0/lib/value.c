@@ -16,7 +16,7 @@
  */
 
 /**
- * Does most of the work of `coreOrderIs`.
+ * Does most of the work of `totalOrderIs`.
  */
 static bool doCoreOrderIs(zint argCount, const zvalue *args) {
     zorder want = datZintFromInt(args[2]);
@@ -37,13 +37,13 @@ static bool doCoreOrderIs(zint argCount, const zvalue *args) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(coreOrder) {
+PRIM_IMPL(totalOrder) {
     requireExactly(argCount, 2);
     return constIntFromZint(datOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(coreOrderIs) {
+PRIM_IMPL(totalOrderIs) {
     requireRange(argCount, 3, 4);
     return doCoreOrderIs(argCount, args) ? args[1] : NULL;
 }
