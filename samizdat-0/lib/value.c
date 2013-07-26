@@ -16,6 +16,29 @@
  */
 
 /**
+ * Does the type assertions that are part of `coreOrder` and `coreOrderIs`.
+ */
+static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
+    ztype ztype1 = datType(v1);
+    ztype ztype2 = datType(v2);
+
+    if (ztype1 != ztype2) {
+        die("Mismatched core types.");
+    }
+
+    if (ztype1 == DAT_DERIV) {
+        zvalue type1 = constTypeOf(v1);
+        zvalue type2 = constTypeOf(v2);
+
+        if (!datEq(type1, type2)) {
+            die("Mismatched derived types.");
+        } else if (constIsCoreTypeName(type1)) {
+            die("Oddball derived value.");
+        }
+    }
+}
+
+/**
  * Does most of the work of `coreOrderIs` and `totalOrderIs`.
  */
 static bool doOrderIs(zint argCount, const zvalue *args) {
@@ -37,27 +60,24 @@ static bool doOrderIs(zint argCount, const zvalue *args) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(coreOrder) {
+    requireExactly(argCount, 2);
+
+    zvalue arg0 = args[0];
+    zvalue arg1 = args[1];
+
+    coreOrderTypeCheck(arg0, arg1);
+    return constIntFromZint(datOrder(arg0, arg1));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(coreOrderIs) {
     requireRange(argCount, 3, 4);
 
     zvalue arg0 = args[0];
     zvalue arg1 = args[1];
-    ztype ztype0 = datType(arg0);
-    ztype ztype1 = datType(arg1);
 
-    if (ztype0 != ztype1) {
-        die("Mismatched core types.");
-    }
-
-    if (ztype0 == DAT_DERIV) {
-        zvalue type0 = constTypeOf(arg0);
-        if (!datEq(type0, constTypeOf(arg1))) {
-            die("Mismatched derived types.");
-        } else if (constIsCoreTypeName(type0)) {
-            die("Oddball derived value.");
-        }
-    }
-
+    coreOrderTypeCheck(arg0, arg1);
     return doOrderIs(argCount, args) ? arg1 : NULL;
 }
 

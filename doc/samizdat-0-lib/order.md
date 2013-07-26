@@ -7,17 +7,29 @@ Ordering / Comparison
 <br><br>
 ### Primitive Definitions
 
-#### `coreOrderIs(value1, value2, check1, check2?) <> logic`
+#### `coreOrder(value1, value2) <> int`
 
-Returns the type-specific core order ofthe two given values.
-This is like `totalOrderIs` except that this function will
+Returns the type-specific order of the two given values.
+This is like `totalOrder` except that this function will
 terminate the runtime with an error if the two values are of
 different types. (That is, if `typeOf` on the two values differ.)
 This also terminates in case of a derived value whose type matches
 one of the core types.
 
+This function is intended only to be used as part of the core
+library's message bindings.
+
+#### `coreOrderIs(value1, value2, check1, check2?) <> logic`
+
+Type-specific order check. This is like `totalOrderIs` except that
+this function will terminate the runtime with an error if the two values
+are of different types. (That is, if `typeOf` on the two values differ.)
+This also terminates in case of a derived value whose type matches
+one of the core types.
+
 This function is intended only to be used in the implementation of
-`coreEq` and related in-language library functions.
+`coreEq` and related in-language library functions, as part of
+the core library's message bindings.
 
 #### `totalOrder(value1, value2) <> int`
 
