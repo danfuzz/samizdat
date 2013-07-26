@@ -983,40 +983,40 @@ def parGeneratorList = {/
 # or `collectFilter`.
 def parComprehensionBody = {/
     genList = parGeneratorList
-    @"<>"
-    filter = parExpression
+    (@"::" | &@"<>")
+    filter = parProgramBody
 
     {
         def genFormals = mapGet(genList, "formals");
         def genInits = mapGet(genList, "inits");
 
-        <> [closureWithFormals(makeThunk(filter), genFormals*), genInits*]
+        <> [@[closure: [filter*, formals: genFormals]], genInits*]
     }
 /};
 
-# Parses a comprehension expression, which can result in either a
+# Parses a comprehension atom, which can result in either a
 # list or a generator, depending on choice of delimiter.
 #
 # The translation is along the lines of:
 #
 # ```
-# (name1 in expr1, name2 in expr2 <> filterExpr)
+# (name1 in expr1, name2 in expr2 :: filterBody)
 # ```
 # =>
 # ```
 # filterGenerator(expr1, expr2)
-#     { name1, name2 <> filterExpr }
+#     { name1, name2 :: filterBody }
 # ```
 #
 # ```
-# [name1 in expr1, name2 in expr2 <> filterExpr]
+# [name1 in expr1, name2 in expr2 :: filterBody]
 # ```
 # =>
 # ```
 # collectFilter(expr1, expr2)
-#     { name1, name2 <> filterExpr }
+#     { name1, name2 :: filterBody }
 # ```
-def parComprehensionAtom = {/
+def parComprehension = {/
     @"("
     body = parComprehensionBody
     @")"
@@ -1030,51 +1030,11 @@ def parComprehensionAtom = {/
     { <> makeCallName("collectFilter", body*) }
 /};
 
-# Parses a `generate` or `collect` expression. The translation is along these
-# lines:
-#
-# ```
-# generate (name1 in expr1, name2 in expr2) { filterBlock }
-# ```
-# =>
-# ```
-# filterGenerator(expr1, expr2)
-#     { name1, name2 :: filterBlock }
-# ```
-#
-# ```
-# collect (name1 in expr1, name2 in expr2) { filterBlock }
-# ```
-# =>
-# ```
-# collectFilter(expr1, expr2)
-#     { name1, name2 :: filterBlock }
-# ```
-def parComprehensionExpression = {/
-    op = (
-        @generate { <> "filterGenerator" }
-    |
-        @collect { <> "collectFilter" }
-    )
-
-    @"("
-    genList = parGeneratorList
-    @")"
-    body = parNullaryClosure
-
-    {
-        def genFormals = mapGet(genList, "formals");
-        def genInits = mapGet(genList, "inits");
-
-        <> makeCallName(op, closureWithFormals(body, genFormals*), genInits*)
-    }
-/};
-
 # Parses the `atom` variants introduced in *Layer 2*.
 def implAtom2 = {/
     parInterpolatedString
 |
-    parComprehensionAtom
+    parComprehension
 /};
 parAtom2(implAtom2);
 
@@ -1827,7 +1787,7 @@ def implExpression = {/
 |
     # These are "statement-like" expressions, in that they look like
     # similar statements in many (most?) C-derived languages.
-    parComprehensionExpression | parDoExpression | parForExpression |
+    parDoExpression | parForExpression |
     parIfExpression | parSwitchExpression | parWhileExpression
 /};
 parExpression(implExpression);
