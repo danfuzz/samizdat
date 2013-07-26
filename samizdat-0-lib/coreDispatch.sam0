@@ -12,39 +12,43 @@
 
 def DISPATCH = [
     Int: [
-        eq: coreEq,
-        ge: coreGe,
-        gt: coreGt,
-        le: coreLe,
-        lt: coreLt,
-        ne: coreNe
+        eq:    coreEq,
+        ge:    coreGe,
+        gt:    coreGt,
+        le:    coreLe,
+        lt:    coreLt,
+        ne:    coreNe,
+        order: coreOrder
     ],
 
     List: [
-        eq: coreEq,
-        ge: coreGe,
-        gt: coreGt,
-        le: coreLe,
-        lt: coreLt,
-        ne: coreNe
+        eq:    coreEq,
+        ge:    coreGe,
+        gt:    coreGt,
+        le:    coreLe,
+        lt:    coreLt,
+        ne:    coreNe,
+        order: coreOrder
     ],
 
     Map: [
-        eq: coreEq,
-        ge: coreGe,
-        gt: coreGt,
-        le: coreLe,
-        lt: coreLt,
-        ne: coreNe
+        eq:    coreEq,
+        ge:    coreGe,
+        gt:    coreGt,
+        le:    coreLe,
+        lt:    coreLt,
+        ne:    coreNe,
+        order: coreOrder
     ],
 
     String: [
-        eq: coreEq,
-        ge: coreGe,
-        gt: coreGt,
-        le: coreLe,
-        lt: coreLt,
-        ne: coreNe
+        eq:    coreEq,
+        ge:    coreGe,
+        gt:    coreGt,
+        le:    coreLe,
+        lt:    coreLt,
+        ne:    coreNe,
+        order: coreOrder
     ]
 ];
 
