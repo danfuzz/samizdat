@@ -20,7 +20,7 @@ the in-language core library is first being loaded. When non-library code
 is loaded, its `LIBRARY` binding is the full core library, including both
 primitives and in-language definitions.
 
-#### `sam0Eval(context, expressionNode) <> . | !.`
+#### `sam0Eval(context, expressionNode) <> . | void`
 
 Returns the evaluation result of executing the given expression node,
 which is a parse tree as specified in this document. It is valid for
@@ -88,7 +88,7 @@ the top language layer. It is an error (terminating the runtime)
 if the file's suffix corresponds to a language layer not represented
 in `context`.
 
-#### `sam1Eval(context, expressionNode) <> . | !.`
+#### `sam1Eval(context, expressionNode) <> . | void`
 
 Returns the evaluation result of executing the given *Samizdat Layer 1*
 expression node. This is just like `sam0Eval`, except for the specification
@@ -116,7 +116,7 @@ tokens.
 
 This function is part of the bridge between layers 0 and 1.
 
-#### `samCommandLine(context, args*) <> . | !.`
+#### `samCommandLine(context, args*) <> . | void`
 
 Command-line evaluator. This implements standardized top-level command-line
 parsing and evaluation. `context` is expected to be a library context, such

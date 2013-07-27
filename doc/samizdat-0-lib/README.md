@@ -47,8 +47,15 @@ functionName(argument, argument?, argument*) <> returnValue
 In an actual function specification, `argument`s are replaced with names
 that indicate the type of value expected. Similarly, `returnValue`
 is replaced with either the type returned, a more specific value that
-will be returned, or one of `.` `!.` `. | !.` as described in
-[the section about data types](data-syntax-semantics.md).
+will be returned, or one of:
+
+* `.` &mdash; Returns an arbitrary value.
+
+* `void` &mdash; Returns void.
+
+* `type | void` &mdash; Might or might not return a value. If a value, it
+  will be of the indicated type (including `.` to indicate an arbitrarily
+  typed value).
 
 ### Contents
 

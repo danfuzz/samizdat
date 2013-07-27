@@ -7,7 +7,7 @@ Conditionals And Iteration
 <br><br>
 ### Primitive Definitions
 
-#### `ifIs(predicate, isFunction, notFunction?) <> . | !.`
+#### `ifIs(predicate, isFunction, notFunction?) <> . | void`
 
 Primitive logic conditional. This calls the given predicate with no
 arguments, taking note of its return value or lack thereof.
@@ -24,11 +24,11 @@ This function is identical to `ifValue`, except that in the value case,
 this function calls the consequent function with no arguments, whereas
 `ifIs` calls it with an argument.
 
-#### `ifNot(predicate, notFunction) <> . | !.`
+#### `ifNot(predicate, notFunction) <> . | void`
 
 This is identical to `ifIs`, except that the `isFunction` argument is omitted.
 
-#### `ifValue(function, valueFunction, voidFunction?) <> . | !.`
+#### `ifValue(function, valueFunction, voidFunction?) <> . | void`
 
 Primitive logic conditional. This calls the given function with no
 arguments, taking note of its return value or lack thereof.
@@ -46,7 +46,7 @@ This function is identical to `ifIs`, except that in the value case,
 this function calls the consequent function with an argument, whereas
 `ifIs` calls it with no arguments.
 
-#### `ifValueOr(function, voidFunction) <> . | !.`
+#### `ifValueOr(function, voidFunction) <> . | void`
 
 This is identical to `ifValue`, except that the `valueFunction` is
 omitted and taken to be the identity function, and the `voidFunction`
@@ -60,14 +60,14 @@ in that `ifValueOr(x)` would mean the same thing as `x()`, and
 This function is meant as the primitive that higher-layer logical-or
 expressions bottom out into, hence the name.
 
-#### `loop(function) <> !.`
+#### `loop(function) <> void`
 
 Primitive unconditional loop construct. This repeatedly calls the given
 function with no arguments.
 
 In order for the loop to terminate, the function must use a nonlocal exit.
 
-#### `loopReduce(function, baseValues*) <> !.`
+#### `loopReduce(function, baseValues*) <> void`
 
 Primitive unconditional loop construct, with reduce semantics. This repeatedly
 calls the given function with a list of arguments. The arguments are the

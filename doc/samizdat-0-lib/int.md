@@ -61,13 +61,13 @@ value.
 
 Returns the binary complement (all bits opposite) of the given value.
 
-#### `intGet(int, key)` <> int | !.
+#### `intGet(int, key) <> int | void`
 
 Map-style element access. This returns the same as `ibit(int, key)` if
 `key` is an int in the range `0..!coreSizeOf(int)`. Otherwise this
 returns void.
 
-#### `intNth(int, n)` <> int | !.
+#### `intNth(int, n) <> int | void`
 
 List-style element access. This returns the same as `ibit(int, n)` if
 `n` is an int in the range `0..!coreSizeOf(int)`. Otherwise, if

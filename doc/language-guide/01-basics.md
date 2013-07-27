@@ -106,7 +106,7 @@ statement forms in Samizdat. That is, these are not combining expressions.
 See the [Functions](03-functions.md) section for information about
 formal arguments.
 
-### Void, `.`, and `!.`
+### Void and Any (`.`)
 
 *Samizdat* has the concept of "void" meaning the lack of a value.
 This is in contrast to many other languages which define one or
@@ -137,13 +137,14 @@ include `if` expressions and the question mark (`?`) and star (`*`)
 postfix operators.
 
 **Note:** When describing functions in this (and related) documents,
-a void result is written `!.`, which can be read as "not anything"
-(or with more technical accuracy, "the failure to match any value").
+a void result is written `void`, though that is not part of the language
+syntax per se.
+
 Relatedly, a result that is a value but without any further specifics is
 written as `.`. If a function can possibly return a value *or* return void,
-that is written as `. | !.`. While not proper syntax in the language per
-se, these are meant to be suggestive of the syntax used in function
-argument declaration and in defining parsers.
+that is written as `type | void` or `. | void`. Again, While not proper
+syntax in the language per se, these are meant to be suggestive of the
+syntax used in function argument declaration and in defining parsers.
 
 ### Logic operations
 

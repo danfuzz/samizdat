@@ -60,7 +60,7 @@ syntax that is built into *Samizdat Layer 0*.
 <br><br>
 ### In-Language Definitions
 
-#### `pegApply(rule, input) <> . | !.`
+#### `pegApply(rule, input) <> . | void`
 
 Applies a parser rule to the given input, yielding whatever result the
 rule yields on the input.

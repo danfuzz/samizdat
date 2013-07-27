@@ -24,13 +24,13 @@ the runtime) if `string` is not a string of size 1.
 Returns a string consisting of the concatenation of the contents
 of all the argument strings, in argument order.
 
-#### `stringGet(string, key) <> string | !.`
+#### `stringGet(string, key) <> string | void`
 
 Collection-style element access. Returns the same thing as
 `stringNth(list, key)` if `key` is a valid int index into the string.
 If not, this returns void.
 
-#### `stringNth(string, n) <> string | !.`
+#### `stringNth(string, n) <> string | void`
 
 Returns the `n`th (zero-based) element of the given string, as a
 single-element string, if `n` is a valid int index into the given

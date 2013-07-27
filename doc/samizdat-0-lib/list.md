@@ -34,7 +34,7 @@ smaller than the size of the argument.
 **Note:** This is a special-case version of the more general function
 `collectFilter` (see which).
 
-#### `listGet(list, key) <> . | !.`
+#### `listGet(list, key) <> . | void`
 
 Collection-style element access. Returns the same thing as `listNth(list, key)`
 if `key` is a valid int index into the list. If not, this returns void.
@@ -49,7 +49,7 @@ are shifted up by one index.
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
 
-#### `listNth(list, n) <> . | !.`
+#### `listNth(list, n) <> . | void`
 
 Returns the `n`th (zero-based) element of the given list, if `n` is
 a valid int index into the list. Otherwise, if `n` is a non-negative int,
@@ -84,7 +84,7 @@ specified, it defaults to the end of the list.
 <br><br>
 ### In-Language Definitions
 
-#### `listButFirst(list) <> . | !.`
+#### `listButFirst(list) <> . | void`
 
 Returns a list consisting of all the elements of the given list
 except for the first element (that is, all but the first element). If
@@ -92,7 +92,7 @@ the given list is empty, this returns void. This is similar to
 `listSlice(list, 1)` or `listDelNth(list, 0)`, except that this function
 behaves differently than either of those when the list is empty.
 
-#### `listButLast(list) <> . | !.`
+#### `listButLast(list) <> . | void`
 
 Returns a list consisting of all the elements of the given list
 except for the last element (that is, all but the last element). If
@@ -101,12 +101,12 @@ the given list is empty, this returns void. This is similar to
 `listDelNth(list, isub(coreSizeOf(list), 1))`, except that this function
 behaves differently than either of those when the list is empty.
 
-#### `listFirst(list) <> . | !.`
+#### `listFirst(list) <> . | void`
 
 Returns the first element of the given list or void if the list is empty.
 This is just a convenient shorthand for `listNth(list, 0)`.
 
-#### `listLast(list) <> . | !.`
+#### `listLast(list) <> . | void`
 
 Returns the last element of the given list or void if the list is empty.
 This is just a convenient shorthand for

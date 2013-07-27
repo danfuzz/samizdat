@@ -20,7 +20,7 @@ the result does not have mappings for the given keys. If the given
 map does not have a particular given key, then that key has no
 affect on the result.
 
-#### `mapGet(map, key) <> . | !.`
+#### `mapGet(map, key) <> . | void`
 
 Returns the value mapped to the given key (an arbitrary value) in
 the given map. If there is no such mapping, then this returns void.
@@ -29,7 +29,7 @@ the given map. If there is no such mapping, then this returns void.
 
 Returns the list of keys contained in the given map, in sorted order.
 
-#### `mapNth(map, n) <> . | !.`
+#### `mapNth(map, n) <> . | void`
 
 Returns the `n`th (zero-based) mapping of the given map, if `n` is
 a valid int index into the map. Otherwise, if `n` is a non-negative int,

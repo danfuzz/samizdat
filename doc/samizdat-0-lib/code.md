@@ -26,7 +26,7 @@ to pass around a "box" whose value is to be ignored.
 <br><br>
 ### Primitive Definitions
 
-#### `boxGet(box) <> . | !.`
+#### `boxGet(box) <> . | void`
 
 Gets the value inside a box, if any. If the box either is unset or has
 been set to void, this returns void. `box` must be a box as returned by
@@ -64,7 +64,7 @@ variables. It is hoped that this facility will be used as minimally as
 possible, so as to not preclude the system from performing functional-style
 optimizations.
 
-#### `nonlocalExit(yieldFunction, thunk?) <> !. # Returns elsewhere.`
+#### `nonlocalExit(yieldFunction, thunk?) <> void # Returns elsewhere.`
 
 Helper for calling nonlocal exit functions. This takes a function of
 zero-or-one argument &mdash; such as in particular the "yield" functions

@@ -39,7 +39,7 @@ This is a convenient and idiomatic shorthand for saying something like:
 Takes an arbitrary generator, and collects all of its generated results,
 in generated order, into a list, returning that list.
 
-#### `doFilter(filterFunction, generators*) <> !.`
+#### `doFilter(filterFunction, generators*) <> void`
 
 Iterates over the given generators, calling the given `filterFunction`
 on generated items, iterating until at least one of the generators
@@ -54,7 +54,7 @@ that is, something like:
 doGenerator(filterGenerator(generator, ...) { ... code ... })
 ```
 
-#### `doGenerator(generator) <> !.`
+#### `doGenerator(generator) <> void`
 
 Generator iterator, ignoring results. This takes a generator, calling
 it repeatedly until it becomes voided. All results yielded by the
