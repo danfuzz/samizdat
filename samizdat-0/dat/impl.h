@@ -71,7 +71,7 @@ typedef struct {
     DatHeader header;
 
     /** Characters of the string, in index order. */
-    zchar elems[0];
+    zchar elems[/*flexible*/];
 } DatString;
 
 /**
@@ -82,7 +82,7 @@ typedef struct {
     DatHeader header;
 
     /** List elements, in index order. */
-    zvalue elems[0];
+    zvalue elems[/*flexible*/];
 } DatList;
 
 /**
@@ -93,7 +93,7 @@ typedef struct {
     DatHeader header;
 
     /** List of mappings, in key-sorted order. */
-    zmapping elems[0];
+    zmapping elems[/*flexible*/];
 } DatMap;
 
 /**
