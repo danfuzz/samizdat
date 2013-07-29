@@ -29,8 +29,13 @@ enum {
  * fate / classification.
  */
 typedef struct GcLinks {
+    /** Circular link. */
     struct GcLinks *next;
+
+    /** Circular link. */
     struct GcLinks *prev;
+
+    /** Mark bit (used during GC). */
     bool marked;
 } GcLinks;
 
