@@ -36,7 +36,7 @@ bound to a variable which is then available in the associated consequent
 clause. To do that, add a `name := ` define-assignment prefix to the test
 expression. The define-assignment token is `:=` and not just `=` in order
 to make it stand out more when intermixed in an expression with other
-tokens that also use equal signs. (such as `==`)
+tokens that also use equal signs (such as `==`).
 
 For example:
 
