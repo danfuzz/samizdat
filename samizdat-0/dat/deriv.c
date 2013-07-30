@@ -14,6 +14,28 @@
  */
 
 /**
+ * Derived value info.
+ */
+typedef struct {
+    /** Type tag. Never `NULL`. */
+    zvalue type;
+
+    /** Associated payload data. Possibly `NULL`. */
+    zvalue data;
+} DerivInfo;
+
+/**
+ * Derived value structure.
+ */
+typedef struct {
+    /** Value header. */
+    DatHeader header;
+
+    /** Derived value info. */
+    DerivInfo info;
+} DatDeriv;
+
+/**
  * Gets a pointer to the value's info.
  */
 static DerivInfo *derivInfo(zvalue deriv) {

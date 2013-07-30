@@ -21,6 +21,20 @@ enum {
 };
 
 /**
+ * Map structure.
+ */
+typedef struct {
+    /** Value header. */
+    DatHeader header;
+
+    /** Number of mappings. */
+    zint size;
+
+    /** List of mappings, in key-sorted order. */
+    zmapping elems[/*size*/];
+} DatMap;
+
+/**
  * Entry in the map cache. The cache is used to speed up calls to `mapFind`.
  * In practice it looks like the theoretical best case is probably about
  * 74% (that is, nearly 3 of 4 lookups are for a map/key pair that have

@@ -13,6 +13,31 @@
  * Helper definitions
  */
 
+/**
+ * Uniqlet info.
+ */
+typedef struct {
+    /** Uniqlet unique id. */
+    zint id;
+
+    /** Dispatch table. */
+    DatUniqletDispatch *dispatch;
+
+    /** Sealed box payload value. */
+    void *state;
+} UniqletInfo;
+
+/**
+ * Uniqlet structure.
+ */
+typedef struct {
+    /** Value header. */
+    DatHeader header;
+
+    /** Uniqlet info. */
+    UniqletInfo info;
+} DatUniqlet;
+
 /** The next uniqlet id to issue. */
 static zint theNextId = 0;
 
@@ -21,7 +46,6 @@ static zint theNextId = 0;
  */
 static UniqletInfo *uniqletInfo(zvalue uniqlet) {
     datAssertUniqlet(uniqlet);
-
     return &((DatUniqlet *) uniqlet)->info;
 }
 

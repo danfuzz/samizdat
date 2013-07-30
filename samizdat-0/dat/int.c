@@ -19,6 +19,17 @@ enum {
 };
 
 /**
+ * Int structure.
+ */
+typedef struct {
+    /** Value header. */
+    DatHeader header;
+
+    /** Int value. See `datIntFromZint()` about range restriction. */
+    int32_t value;
+} DatInt;
+
+/**
  * Gets the bit size (highest-order significant bit number, plus one)
  * of the given `zint`.
  */

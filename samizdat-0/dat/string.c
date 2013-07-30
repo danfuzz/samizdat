@@ -14,6 +14,20 @@
  */
 
 /**
+ * String structure.
+ */
+typedef struct {
+    /** Value header. */
+    DatHeader header;
+
+    /** Number of characters. */
+    zint size;
+
+    /** Characters of the string, in index order. */
+    zchar elems[/*size*/];
+} DatString;
+
+/**
  * Allocates a string of the given size.
  */
 static zvalue allocString(zint size) {

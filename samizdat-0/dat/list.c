@@ -14,6 +14,20 @@
  */
 
 /**
+ * List structure.
+ */
+typedef struct {
+    /** Value header. */
+    DatHeader header;
+
+    /** Number of elements. */
+    zint size;
+
+    /** List elements, in index order. */
+    zvalue elems[/*size*/];
+} DatList;
+
+/**
  * Gets the array of `zvalue` elements from a list.
  */
 static zvalue *listElems(zvalue list) {
