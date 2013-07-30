@@ -9,12 +9,11 @@ Ordering / Comparison
 
 #### `coreOrder(value1, value2) <> int`
 
-Returns the type-specific order of the two given values.
-This is like `totalOrder` except that this function will
-terminate the runtime with an error if the two values are of
-different types. (That is, if `typeOf` on the two values differ.)
-This also terminates in case of a derived value whose type matches
-one of the core types.
+Returns the type-specific order of the two given values. This is like
+`totalOrder` except that this function will terminate the runtime with an
+error if the two values are of different types. Values are different types
+if either (a) one is a core value and the other is a derived value, or
+(b) `typeOf` on the two values differ.
 
 This function is intended only to be used as part of the core
 library's message bindings.
@@ -23,9 +22,7 @@ library's message bindings.
 
 Type-specific order check. This is like `totalOrderIs` except that
 this function will terminate the runtime with an error if the two values
-are of different types. (That is, if `typeOf` on the two values differ.)
-This also terminates in case of a derived value whose type matches
-one of the core types.
+are of different types, with the same rules as for `coreOrder`.
 
 This function is intended only to be used in the implementation of
 `coreEq` and related in-language library functions, as part of

@@ -27,8 +27,6 @@ static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
 
         if (!datEq(type1, type2)) {
             die("Mismatched derived types.");
-        } else if (constIsCoreTypeName(type1)) {
-            die("Oddball derived value.");
         }
     }
 }

@@ -54,11 +54,6 @@ void constInit(void);
 zvalue constIntFromZint(zint value);
 
 /**
- * Returns true iff `value` is the name of one of the core types.
- */
-bool constIsCoreTypeName(zvalue value);
-
-/**
  * Gets the string representing the low-layer type of the given value.
  */
 zvalue constCoreTypeName(zvalue value);

@@ -37,31 +37,6 @@ zvalue constCoreTypeName(zvalue value) {
 }
 
 /* Documented in header. */
-bool constIsCoreTypeName(zvalue value) {
-    // Switch on the size to avoid too many comparisons.
-    switch (datSize(value)) {
-        case 3: {
-            return datEq(value, STR_CAP_INT) || datEq(value, STR_CAP_MAP);
-        }
-        case 4: {
-            return datEq(value, STR_CAP_LIST);
-        }
-        case 5: {
-            return datEq(value, STR_CAP_DERIV);
-        }
-        case 6: {
-            return datEq(value, STR_CAP_STRING);
-        }
-        case 7: {
-            return datEq(value, STR_CAP_UNIQLET);
-        }
-        default: {
-            return false;
-        }
-    }
-}
-
-/* Documented in header. */
 bool constTypeIs(zvalue value, zvalue type) {
     return datEq(constTypeOf(value), type);
 }
