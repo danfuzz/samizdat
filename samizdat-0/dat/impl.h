@@ -35,10 +35,12 @@ typedef struct GcLinks {
     /** Circular link. */
     struct GcLinks *prev;
 
+    /** Magic number. */
+    uint32_t magic;
+
     /** Mark bit (used during GC). */
     bool marked;
 } GcLinks;
-
 
 /**
  * Common fields across all values. Used as a header for other types.
@@ -46,9 +48,6 @@ typedef struct GcLinks {
 typedef struct DatHeader {
     /** Gc links (see above). */
     GcLinks links;
-
-    /** Magic number. */
-    uint32_t magic;
 
     /** Data type. */
     ztype type;

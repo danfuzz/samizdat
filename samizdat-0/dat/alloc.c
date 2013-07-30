@@ -72,11 +72,11 @@ static void thoroughlyValidate(zvalue maybeValue) {
         die("Invalid value pointer (not in heap): %p", maybeValue);
     }
 
-    if (maybeValue->magic != DAT_VALUE_MAGIC) {
+    GcLinks *links = &maybeValue->links;
+
+    if (links->magic != DAT_VALUE_MAGIC) {
         die("Invalid value pointer (incorrect magic): %p", maybeValue);
     }
-
-    GcLinks *links = &maybeValue->links;
 
     if (!(isAligned(links->next) &&
           isAligned(links->prev) &&
@@ -216,7 +216,7 @@ static void doGc(void) {
         // Prevent this from being mistaken for a live value.
         item->next = item->prev = NULL;
         item->marked = 999;
-        one->magic = 999;
+        item->magic = 999;
         one->type = 999;
 
         utilFree(item);
@@ -267,7 +267,7 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     }
 
     zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
-    result->magic = DAT_VALUE_MAGIC;
+    result->links.magic = DAT_VALUE_MAGIC;
     result->type = type;
     result->size = size;
 
