@@ -21,9 +21,6 @@
 
 /**
  * Possible low-level data types.
- *
- * **Note:** The enum ordering is the same as the type-based ordering for
- * comparing values. See `datOrder()` below or spec for `totalOrder`.
  */
 typedef enum {
     DAT_INT = 1,

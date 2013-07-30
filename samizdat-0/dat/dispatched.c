@@ -6,6 +6,8 @@
 
 #include "impl.h"
 
+#include <string.h>
+
 
 /*
  * Exported functions
@@ -34,8 +36,11 @@ zorder datOrder(zvalue v1, zvalue v2) {
         return ZSAME;
     } else if (v1->type == v2->type) {
         return v1->type->order(v1, v2);
+    } else if (datTypeIs(v1, DAT_Deriv)) {
+        // Per spec, derived values always sort after primitives.
+        return ZMORE;
     } else {
-        return (v1->type->id < v2->type->id) ? ZLESS : ZMORE;
+        return (strcmp(v1->type->name, v2->type->name) < 0) ? ZLESS : ZMORE;
     }
 }
 

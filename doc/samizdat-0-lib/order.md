@@ -46,8 +46,10 @@ standard meaning of those values:
 
 Ordering is calculated as follows:
 
-The major order is by type &mdash; `int < string < list <
-map < uniqlet < deriv` &mdash; and minor order is type-dependant.
+The "majorest" order is that core (primitive) values order before
+derived values. Within each major category, major order is by
+type name order (e.g. `"Int"` before `"String"`). Minor order is
+type-dependant.
 
 * Ints order by integer value, low to high.
 
@@ -64,9 +66,9 @@ map < uniqlet < deriv` &mdash; and minor order is type-dependant.
   itself. There is a total ordering of uniqlets, which is consistent,
   transitive, and symmetric &mdash; but otherwise arbitrary.
 
-* Derived values compare by type as primary, and data payload as secondary.
-  With types equal, derived values without a payload order earlier than
-  ones with a payload.
+* Derived values compare by type as primary (per above), and data payload
+  as secondary. With types equal, derived values without a payload order
+  earlier than ones with a payload.
 
 #### `totalOrderIs(value1, value2, check1, check2?) <> logic`
 
