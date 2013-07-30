@@ -123,6 +123,6 @@ static DatType INFO_Deriv = {
     .gcMark = derivGcMark,
     .gcFree = NULL,
     .eq = derivEq,
-    .order = derivOrder,
+    .order = derivOrder
 };
 ztype DAT_Deriv = &INFO_Deriv;
