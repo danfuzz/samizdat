@@ -74,7 +74,6 @@ PRIM_FUNC(mappingKey);
 PRIM_FUNC(mappingValue);
 PRIM_FUNC(mutableBox);
 PRIM_FUNC(nonlocalExit);
-PRIM_FUNC(object);
 PRIM_FUNC(sam0Eval);
 PRIM_FUNC(sam0Tokenize);
 PRIM_FUNC(sam0Tree);
