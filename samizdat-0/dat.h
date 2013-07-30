@@ -100,7 +100,7 @@ extern ztype DAT_Uniqlet;
 
 
 /*
- * Basic Functions
+ * Assertion Functions
  */
 
 /**
@@ -166,26 +166,6 @@ void datAssertUniqlet(zvalue value);
  * with a diagnostic message.
  */
 void datAssertValid(zvalue value);
-
-/**
- * Gets the size of the given value. `value` must be a valid value.
- * See the *Samizdat Layer 0* specification for details on
- * what low-layer "size" means.
- */
-zint datSize(zvalue value);
-
-/**
- * Returns whether the given value has the given low-layer type.
- * `value` must be a valid value (in particular, non-`NULL`).
- */
-bool datTypeIs(zvalue value, ztype type);
-
-/**
- * Gets the low-level data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`).
- */
-ztypeId datType(zvalue value);
-
 
 
 /*
@@ -493,7 +473,7 @@ zvalue datDerivData(zvalue deriv);
 
 
 /*
- * Higher Level Functions
+ * Dispatched (type-based) Functions
  */
 
 /**
@@ -511,6 +491,25 @@ bool datEq(zvalue v1, zvalue v2);
  * value sorting.
  */
 zorder datOrder(zvalue v1, zvalue v2);
+
+/**
+ * Gets the size of the given value. `value` must be a valid value.
+ * See the *Samizdat Layer 0* specification for details on
+ * what low-layer "size" means.
+ */
+zint datSize(zvalue value);
+
+/**
+ * Returns whether the given value has the given low-layer type.
+ * `value` must be a valid value (in particular, non-`NULL`).
+ */
+bool datTypeIs(zvalue value, ztype type);
+
+/**
+ * Gets the low-level data type of the given value. `value` must be a
+ * valid value (in particular, non-`NULL`).
+ */
+ztypeId datType(zvalue value);
 
 
 /*

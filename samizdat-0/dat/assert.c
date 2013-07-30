@@ -107,18 +107,3 @@ void datAssertUniqlet(zvalue value) {
 void datAssertDeriv(zvalue value) {
     assertType(value, DAT_Deriv);
 }
-
-/* Documented in header. */
-zint datSize(zvalue value) {
-    return value->type->sizeOf(value);
-}
-
-/* Documented in header. */
-ztypeId datType(zvalue value) {
-    return value->type->id;
-}
-
-/* Documented in header. */
-bool datTypeIs(zvalue value, ztype type) {
-    return value->type == type;
-}

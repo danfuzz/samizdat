@@ -38,3 +38,18 @@ zorder datOrder(zvalue v1, zvalue v2) {
         return (v1->type->id < v2->type->id) ? ZLESS : ZMORE;
     }
 }
+
+/* Documented in header. */
+zint datSize(zvalue value) {
+    return value->type->sizeOf(value);
+}
+
+/* Documented in header. */
+ztypeId datType(zvalue value) {
+    return value->type->id;
+}
+
+/* Documented in header. */
+bool datTypeIs(zvalue value, ztype type) {
+    return value->type == type;
+}
