@@ -220,6 +220,14 @@ void datAssertNthOrSize(zint size, zint n);
 void datAssertSliceRange(zint size, zint start, zint end);
 
 /**
+ * Asserts that the given value is a valid `zvalue` (non-`NULL` and
+ * seems to actually have the right form). This performs reasonable,
+ * but not exhaustive, tests. If not valid, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertValid(zvalue value);
+
+/**
  * Clears the contents of the map lookup cache.
  */
 void datMapClearCache(void);

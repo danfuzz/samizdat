@@ -159,14 +159,6 @@ void datAssertDeriv(zvalue value);
  */
 void datAssertUniqlet(zvalue value);
 
-/**
- * Asserts that the given value is a valid `zvalue` (non-`NULL` and
- * seems to actually have the right form). This performs reasonable,
- * but not exhaustive, tests. If not valid, this aborts the process
- * with a diagnostic message.
- */
-void datAssertValid(zvalue value);
-
 
 /*
  * Int Functions

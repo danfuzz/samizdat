@@ -57,6 +57,21 @@ void datAssertSliceRange(zint size, zint start, zint end) {
     datAssertNthOrSize(size, end);
 }
 
+/* Documented in header. */
+void datAssertValid(zvalue value) {
+    if (value == NULL) {
+        die("Null value.");
+    }
+
+    if (value->links.magic != DAT_VALUE_MAGIC) {
+        die("Invalid value (incorrect magic): %p", value);
+    }
+
+    if (value->type == NULL) {
+        die("Invalid value (null type): %p", value);
+    }
+}
+
 
 /*
  * Exported functions
@@ -106,19 +121,4 @@ void datAssertMapSize1(zvalue value) {
 /* Documented in header. */
 void datAssertUniqlet(zvalue value) {
     assertType(value, DAT_Uniqlet);
-}
-
-/* Documented in header. */
-void datAssertValid(zvalue value) {
-    if (value == NULL) {
-        die("Null value.");
-    }
-
-    if (value->links.magic != DAT_VALUE_MAGIC) {
-        die("Invalid value (incorrect magic): %p", value);
-    }
-
-    if (value->type == NULL) {
-        die("Invalid value (null type): %p", value);
-    }
 }
