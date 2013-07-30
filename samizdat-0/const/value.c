@@ -14,7 +14,7 @@
 
 /* Documented in header. */
 zvalue constDataOf(zvalue value) {
-    if (datType(value) == DAT_DERIV) {
+    if (datTypeIs(value, DAT_Deriv)) {
         return datDerivData(value);
     } else {
         return value;
@@ -68,7 +68,7 @@ bool constTypeIs(zvalue value, zvalue type) {
 
 /* Documented in header. */
 zvalue constTypeOf(zvalue value) {
-    if (datType(value) == DAT_DERIV) {
+    if (datTypeIs(value, DAT_Deriv)) {
         return datDerivType(value);
     } else {
         return constCoreTypeName(value);

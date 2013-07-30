@@ -18,13 +18,11 @@ bool datEq(zvalue v1, zvalue v2) {
 
     if (v1 == v2) {
         return true;
-    }
-
-    if (v1->type != v2->type) {
+    } else if (v1->type != v2->type) {
         return false;
+    } else {
+        return v1->type->eq(v1, v2);
     }
-
-    return v1->type->eq(v1, v2);
 }
 
 /* Documented in header. */
@@ -34,16 +32,9 @@ zorder datOrder(zvalue v1, zvalue v2) {
 
     if (v1 == v2) {
         return ZSAME;
+    } else if (v1->type == v2->type) {
+        return v1->type->order(v1, v2);
+    } else {
+        return (v1->type->id < v2->type->id) ? ZLESS : ZMORE;
     }
-
-    ztypeId t1 = datType(v1);
-    ztypeId t2 = datType(v2);
-
-    if (t1 < t2) {
-        return ZLESS;
-    } else if (t1 > t2) {
-        return ZMORE;
-    }
-
-    return v1->type->order(v1, v2);
 }
