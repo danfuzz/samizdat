@@ -35,47 +35,6 @@ static zvalue newDeriv(zvalue type, zvalue data) {
 
 
 /*
- * Module functions
- */
-
-/* Documented in header. */
-bool datDerivEq(zvalue v1, zvalue v2) {
-    DerivInfo *info1 = derivInfo(v1);
-    DerivInfo *info2 = derivInfo(v2);
-
-    if (!datEq(info1->type, info2->type)) {
-        return false;
-    }
-
-    if (info1->data == NULL) {
-        return (info2->data == NULL);
-    } else if (info2->data == NULL) {
-        return false;
-    } else {
-        return datEq(info1->data, info2->data);
-    }
-}
-
-/* Documented in header. */
-zorder datDerivOrder(zvalue v1, zvalue v2) {
-    DerivInfo *info1 = derivInfo(v1);
-    DerivInfo *info2 = derivInfo(v2);
-
-    zorder result = datOrder(info1->type, info2->type);
-
-    if (result != ZSAME) {
-        return result;
-    } else if (info1->data == NULL) {
-        return (info2->data == NULL) ? ZSAME : ZLESS;
-    } else if (info2->data == NULL) {
-        return ZMORE;
-    } else {
-        return datOrder(info1->data, info2->data);
-    }
-}
-
-
-/*
  * Exported functions
  */
 
@@ -121,11 +80,49 @@ static void derivGcMark(zvalue deriv) {
 }
 
 /* Documented in header. */
+static bool derivEq(zvalue v1, zvalue v2) {
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
+
+    if (info1->data == NULL) {
+        if (info2->data != NULL) {
+            return false;
+        }
+    } else if (info2->data == NULL) {
+        return false;
+    } else if (!datEq(info1->data, info2->data)) {
+        return false;
+    }
+
+    return datEq(info1->type, info2->type);
+}
+
+/* Documented in header. */
+static zorder derivOrder(zvalue v1, zvalue v2) {
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
+
+    zorder result = datOrder(info1->type, info2->type);
+
+    if (result != ZSAME) {
+        return result;
+    } else if (info1->data == NULL) {
+        return (info2->data == NULL) ? ZSAME : ZLESS;
+    } else if (info2->data == NULL) {
+        return ZMORE;
+    } else {
+        return datOrder(info1->data, info2->data);
+    }
+}
+
+/* Documented in header. */
 static DatType INFO_Deriv = {
     .id = DAT_DERIV,
     .name = "Deriv",
     .sizeOf = derivSizeOf,
     .gcMark = derivGcMark,
-    .gcFree = NULL
+    .gcFree = NULL,
+    .eq = derivEq,
+    .order = derivOrder,
 };
 ztype DAT_Deriv = &INFO_Deriv;

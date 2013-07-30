@@ -20,30 +20,11 @@ bool datEq(zvalue v1, zvalue v2) {
         return true;
     }
 
-    ztypeId t1 = datType(v1);
-    ztypeId t2 = datType(v2);
-
-    if (t1 != t2) {
+    if (v1->type != v2->type) {
         return false;
     }
 
-    zint size1 = datSize(v1);
-    zint size2 = datSize(v2);
-
-    if (size1 != size2) {
-        return false;
-    }
-
-    switch (t1) {
-        case DAT_INT:     return datIntEq(v1, v2);
-        case DAT_STRING:  return datStringEq(v1, v2);
-        case DAT_LIST:    return datListEq(v1, v2);
-        case DAT_MAP:     return datMapEq(v1, v2);
-        case DAT_UNIQLET: return false;
-        case DAT_DERIV:   return datDerivEq(v1, v2);
-    }
-
-    die("Invalid type (shouldn't happen).");
+    return v1->type->eq(v1, v2);
 }
 
 /* Documented in header. */
@@ -64,14 +45,5 @@ zorder datOrder(zvalue v1, zvalue v2) {
         return ZMORE;
     }
 
-    switch (t1) {
-        case DAT_INT:     return datIntOrder(v1, v2);
-        case DAT_STRING:  return datStringOrder(v1, v2);
-        case DAT_LIST:    return datListOrder(v1, v2);
-        case DAT_MAP:     return datMapOrder(v1, v2);
-        case DAT_UNIQLET: return datUniqletOrder(v1, v2);
-        case DAT_DERIV:   return datDerivOrder(v1, v2);
-    }
-
-    die("Invalid type (shouldn't happen).");
+    return v1->type->order(v1, v2);
 }

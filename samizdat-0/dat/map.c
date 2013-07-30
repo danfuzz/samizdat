@@ -203,54 +203,6 @@ void datMapClearCache(void) {
     memset(mapCache, 0, sizeof(mapCache));
 }
 
-/* Documented in header. */
-bool datMapEq(zvalue v1, zvalue v2) {
-    zmapping *elems1 = mapElems(v1);
-    zmapping *elems2 = mapElems(v2);
-    zint size = mapSizeOf(v1);
-
-    for (zint i = 0; i < size; i++) {
-        zmapping *e1 = &elems1[i];
-        zmapping *e2 = &elems2[i];
-        if (!(datEq(e1->key, e2->key) && datEq(e1->value, e2->value))) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-zorder datMapOrder(zvalue v1, zvalue v2) {
-    zmapping *e1 = mapElems(v1);
-    zmapping *e2 = mapElems(v2);
-    zint sz1 = mapSizeOf(v1);
-    zint sz2 = mapSizeOf(v2);
-    zint sz = (sz1 < sz2) ? sz1 : sz2;
-
-    for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i].key, e2[i].key);
-        if (result != ZSAME) {
-            return result;
-        }
-    }
-
-    if (sz1 < sz2) {
-        return ZLESS;
-    } else if (sz1 > sz2) {
-        return ZMORE;
-    }
-
-    for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i].value, e2[i].value);
-        if (result != ZSAME) {
-            return result;
-        }
-    }
-
-    return ZSAME;
-}
-
 
 /*
  * Exported functions
@@ -445,11 +397,66 @@ static void mapGcMark(zvalue map) {
 }
 
 /* Documented in header. */
+static bool mapEq(zvalue v1, zvalue v2) {
+    zmapping *elems1 = mapElems(v1);
+    zmapping *elems2 = mapElems(v2);
+    zint sz1 = mapSizeOf(v1);
+    zint sz2 = mapSizeOf(v2);
+
+    if (sz1 != sz2) {
+        return false;
+    }
+
+    for (zint i = 0; i < sz1; i++) {
+        zmapping *e1 = &elems1[i];
+        zmapping *e2 = &elems2[i];
+        if (!(datEq(e1->key, e2->key) && datEq(e1->value, e2->value))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* Documented in header. */
+static zorder mapOrder(zvalue v1, zvalue v2) {
+    zmapping *e1 = mapElems(v1);
+    zmapping *e2 = mapElems(v2);
+    zint sz1 = mapSizeOf(v1);
+    zint sz2 = mapSizeOf(v2);
+    zint sz = (sz1 < sz2) ? sz1 : sz2;
+
+    for (zint i = 0; i < sz; i++) {
+        zorder result = datOrder(e1[i].key, e2[i].key);
+        if (result != ZSAME) {
+            return result;
+        }
+    }
+
+    if (sz1 < sz2) {
+        return ZLESS;
+    } else if (sz1 > sz2) {
+        return ZMORE;
+    }
+
+    for (zint i = 0; i < sz; i++) {
+        zorder result = datOrder(e1[i].value, e2[i].value);
+        if (result != ZSAME) {
+            return result;
+        }
+    }
+
+    return ZSAME;
+}
+
+/* Documented in header. */
 static DatType INFO_Map = {
     .id = DAT_MAP,
     .name = "Map",
     .sizeOf = mapSizeOf,
     .gcMark = mapGcMark,
-    .gcFree = NULL
+    .gcFree = NULL,
+    .eq = mapEq,
+    .order = mapOrder
 };
 ztype DAT_Map = &INFO_Map;

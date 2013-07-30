@@ -55,25 +55,6 @@ static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
 
 
 /*
- * Module functions
- */
-
-/* Documented in header. */
-zorder datUniqletOrder(zvalue v1, zvalue v2) {
-    zint id1 = uniqletId(v1);
-    zint id2 = uniqletId(v2);
-
-    if (id1 < id2) {
-        return ZLESS;
-    } else if (id1 > id2) {
-        return ZMORE;
-    } else {
-        return ZSAME;
-    }
-}
-
-
-/*
  * Exported functions
  */
 
@@ -130,11 +111,32 @@ static void uniqletGcFree(zvalue uniqlet) {
 }
 
 /* Documented in header. */
+static bool uniqletEq(zvalue v1, zvalue v2) {
+    return false;
+}
+
+/* Documented in header. */
+static zorder uniqletOrder(zvalue v1, zvalue v2) {
+    zint id1 = uniqletId(v1);
+    zint id2 = uniqletId(v2);
+
+    if (id1 < id2) {
+        return ZLESS;
+    } else if (id1 > id2) {
+        return ZMORE;
+    } else {
+        return ZSAME;
+    }
+}
+
+/* Documented in header. */
 static DatType INFO_Uniqlet = {
     .id = DAT_UNIQLET,
     .name = "Uniqlet",
     .sizeOf = uniqletSizeOf,
     .gcMark = uniqletGcMark,
-    .gcFree = uniqletGcFree
+    .gcFree = uniqletGcFree,
+    .eq = uniqletEq,
+    .order = uniqletOrder
 };
 ztype DAT_Uniqlet = &INFO_Uniqlet;

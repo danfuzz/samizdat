@@ -40,52 +40,6 @@ static zchar *stringElems(zvalue string) {
 
 
 /*
- * Module functions
- */
-
-/* Documented in header. */
-bool datStringEq(zvalue v1, zvalue v2) {
-    zchar *e1 = stringElems(v1);
-    zchar *e2 = stringElems(v2);
-    zint size = stringSizeOf(v1);
-
-    for (zint i = 0; i < size; i++) {
-        if (e1[i] != e2[i]) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-zorder datStringOrder(zvalue v1, zvalue v2) {
-    zchar *e1 = stringElems(v1);
-    zchar *e2 = stringElems(v2);
-    zint sz1 = stringSizeOf(v1);
-    zint sz2 = stringSizeOf(v2);
-    zint sz = (sz1 < sz2) ? sz1 : sz2;
-
-    for (zint i = 0; i < sz; i++) {
-        zchar c1 = e1[i];
-        zchar c2 = e2[i];
-
-        if (c1 < c2) {
-            return ZLESS;
-        } else if (c1 > c2) {
-            return ZMORE;
-        }
-    }
-
-    if (sz1 == sz2) {
-        return ZSAME;
-    }
-
-    return (sz1 < sz2) ? ZLESS : ZMORE;
-}
-
-
-/*
  * Exported functions
  */
 
@@ -202,11 +156,59 @@ static void stringGcMark(zvalue string) {
 }
 
 /* Documented in header. */
+static bool stringEq(zvalue v1, zvalue v2) {
+    zchar *e1 = stringElems(v1);
+    zchar *e2 = stringElems(v2);
+    zint sz1 = stringSizeOf(v1);
+    zint sz2 = stringSizeOf(v2);
+
+    if (sz1 != sz2) {
+        return false;
+    }
+
+    for (zint i = 0; i < sz1; i++) {
+        if (e1[i] != e2[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* Documented in header. */
+static zorder stringOrder(zvalue v1, zvalue v2) {
+    zchar *e1 = stringElems(v1);
+    zchar *e2 = stringElems(v2);
+    zint sz1 = stringSizeOf(v1);
+    zint sz2 = stringSizeOf(v2);
+    zint sz = (sz1 < sz2) ? sz1 : sz2;
+
+    for (zint i = 0; i < sz; i++) {
+        zchar c1 = e1[i];
+        zchar c2 = e2[i];
+
+        if (c1 < c2) {
+            return ZLESS;
+        } else if (c1 > c2) {
+            return ZMORE;
+        }
+    }
+
+    if (sz1 == sz2) {
+        return ZSAME;
+    }
+
+    return (sz1 < sz2) ? ZLESS : ZMORE;
+}
+
+/* Documented in header. */
 static DatType INFO_String = {
     .id = DAT_STRING,
     .name = "String",
     .sizeOf = stringSizeOf,
     .gcMark = stringGcMark,
-    .gcFree = NULL
+    .gcFree = NULL,
+    .eq = stringEq,
+    .order = stringOrder
 };
 ztype DAT_String = &INFO_String;

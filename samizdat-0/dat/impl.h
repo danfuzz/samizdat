@@ -48,6 +48,18 @@ typedef struct DatType {
      * Frees a garbage value. Optional (may be `NULL`).
      */
     void (*gcFree)(zvalue);
+
+    /**
+     * Compares for equality with another value of the same type. Only
+     * ever called when the two values are not `==`.
+     */
+    bool (*eq)(zvalue, zvalue);
+
+    /**
+     * Compares for order with another value of the same type. Only ever
+     * called when the two values are not `==`.
+     */
+    zorder (*order)(zvalue, zvalue);
 } DatType;
 
 /**
@@ -209,17 +221,6 @@ void datAssertNthOrSize(zvalue value, zint n);
 void datAssertSliceRange(zvalue value, zint start, zint end);
 
 /**
- * Compares derived values for equality. Only called when the sizes are
- * the same.
- */
-bool datDerivEq(zvalue v1, zvalue v2);
-
-/**
- * Compares derived values for order.
- */
-zorder datDerivOrder(zvalue v1, zvalue v2);
-
-/**
  * Returns whether the given value (which must be valid) has an
  * `n`th element, according to its defined size. This is only
  * useful with some types.
@@ -227,53 +228,8 @@ zorder datDerivOrder(zvalue v1, zvalue v2);
 bool datHasNth(zvalue value, zint n);
 
 /**
- * Compares ints for equality. Only called when the sizes are the same.
- */
-bool datIntEq(zvalue v1, zvalue v2);
-
-/**
- * Compares ints for order.
- */
-zorder datIntOrder(zvalue v1, zvalue v2);
-
-/**
- * Compares lists for equality. Only called when the sizes are the same.
- */
-bool datListEq(zvalue v1, zvalue v2);
-
-/**
- * Compares lists for order.
- */
-zorder datListOrder(zvalue v1, zvalue v2);
-
-/**
  * Clears the contents of the map lookup cache.
  */
 void datMapClearCache(void);
-
-/**
- * Compares maps for equality. Only called when the sizes are the same.
- */
-bool datMapEq(zvalue v1, zvalue v2);
-
-/**
- * Compares maps for order.
- */
-zorder datMapOrder(zvalue v1, zvalue v2);
-
-/**
- * Compares strings for equality. Only called when the sizes are the same.
- */
-bool datStringEq(zvalue v1, zvalue v2);
-
-/**
- * Compares strings for order.
- */
-zorder datStringOrder(zvalue v1, zvalue v2);
-
-/**
- * Compares uniqlets for order.
- */
-zorder datUniqletOrder(zvalue v1, zvalue v2);
 
 #endif

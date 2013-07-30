@@ -68,48 +68,6 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
 
 
 /*
- * Module functions
- */
-
-/* Documented in header. */
-bool datListEq(zvalue v1, zvalue v2) {
-    zvalue *e1 = listElems(v1);
-    zvalue *e2 = listElems(v2);
-    zint size = datSize(v1);
-
-    for (zint i = 0; i < size; i++) {
-        if (!datEq(e1[i], e2[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-zorder datListOrder(zvalue v1, zvalue v2) {
-    zvalue *e1 = listElems(v1);
-    zvalue *e2 = listElems(v2);
-    zint sz1 = datSize(v1);
-    zint sz2 = datSize(v2);
-    zint sz = (sz1 < sz2) ? sz1 : sz2;
-
-    for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i], e2[i]);
-        if (result != ZSAME) {
-            return result;
-        }
-    }
-
-    if (sz1 == sz2) {
-        return ZSAME;
-    }
-
-    return (sz1 < sz2) ? ZLESS : ZMORE;
-}
-
-
-/*
  * Exported functions
  */
 
@@ -223,11 +181,55 @@ static void listGcMark(zvalue list) {
 }
 
 /* Documented in header. */
+static bool listEq(zvalue v1, zvalue v2) {
+    zvalue *e1 = listElems(v1);
+    zvalue *e2 = listElems(v2);
+    zint sz1 = listSizeOf(v1);
+    zint sz2 = listSizeOf(v2);
+
+    if (sz1 != sz2) {
+        return false;
+    }
+
+    for (zint i = 0; i < sz1; i++) {
+        if (!datEq(e1[i], e2[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* Documented in header. */
+static zorder listOrder(zvalue v1, zvalue v2) {
+    zvalue *e1 = listElems(v1);
+    zvalue *e2 = listElems(v2);
+    zint sz1 = listSizeOf(v1);
+    zint sz2 = listSizeOf(v2);
+    zint sz = (sz1 < sz2) ? sz1 : sz2;
+
+    for (zint i = 0; i < sz; i++) {
+        zorder result = datOrder(e1[i], e2[i]);
+        if (result != ZSAME) {
+            return result;
+        }
+    }
+
+    if (sz1 == sz2) {
+        return ZSAME;
+    }
+
+    return (sz1 < sz2) ? ZLESS : ZMORE;
+}
+
+/* Documented in header. */
 static DatType INFO_List = {
     .id = DAT_LIST,
     .name = "List",
     .sizeOf = listSizeOf,
     .gcMark = listGcMark,
-    .gcFree = NULL
+    .gcFree = NULL,
+    .eq = listEq,
+    .order = listOrder
 };
 ztype DAT_List = &INFO_List;

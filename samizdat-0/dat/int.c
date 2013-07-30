@@ -53,30 +53,6 @@ static zint zintValue(zvalue intval) {
 
 
 /*
- * Module functions
- */
-
-/* Documented in header. */
-bool datIntEq(zvalue v1, zvalue v2) {
-    return zintValue(v1) == zintValue(v2);
-}
-
-/* Documented in header. */
-zorder datIntOrder(zvalue v1, zvalue v2) {
-    zint int1 = zintValue(v1);
-    zint int2 = zintValue(v2);
-
-    if (int1 < int2) {
-        return ZLESS;
-    } else if (int1 > int2) {
-        return ZMORE;
-    } else {
-        return ZSAME;
-    }
-}
-
-
-/*
  * Exported functions
  */
 
@@ -143,11 +119,32 @@ static void intGcMark(zvalue intval) {
 }
 
 /* Documented in header. */
+static bool intEq(zvalue v1, zvalue v2) {
+    return zintValue(v1) == zintValue(v2);
+}
+
+/* Documented in header. */
+static zorder intOrder(zvalue v1, zvalue v2) {
+    zint int1 = zintValue(v1);
+    zint int2 = zintValue(v2);
+
+    if (int1 < int2) {
+        return ZLESS;
+    } else if (int1 > int2) {
+        return ZMORE;
+    } else {
+        return ZSAME;
+    }
+}
+
+/* Documented in header. */
 static DatType INFO_Int = {
     .id = DAT_INT,
     .name = "Int",
     .sizeOf = intSizeOf,
     .gcMark = intGcMark,
-    .gcFree = NULL
+    .gcFree = NULL,
+    .eq = intEq,
+    .order = intOrder
 };
 ztype DAT_Int = &INFO_Int;
