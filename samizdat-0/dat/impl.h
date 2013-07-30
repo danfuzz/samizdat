@@ -24,6 +24,21 @@ enum {
 };
 
 /**
+ * Core type info.
+ */
+typedef struct
+{
+    /** Low-layer data type. */
+    ztype type;
+
+    /** Name of the type. */
+    zvalue typeName;
+
+    /** `sizeOf(value) <> int` */
+    zint (*sizeOf)(zvalue);
+} DatTypeInfo;
+
+/**
  * Links and flags used for allocation lifecycle management. Every value is
  * linked into a circularly linked list, which identifies its current
  * fate / classification.
