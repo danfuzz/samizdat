@@ -37,7 +37,7 @@ static zint uniqletId(zvalue uniqlet) {
  * on the arguments.
  */
 static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
-    zvalue result = datAllocValue(DAT_UNIQLET, 0, sizeof(UniqletInfo));
+    zvalue result = datAllocValue(DAT_Uniqlet, sizeof(UniqletInfo));
 
     if (theNextId < 0) {
         // Shouldn't be possible, but just in case...
@@ -53,40 +53,6 @@ static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
     return result;
 }
 
-
-/*
- * Module functions
- */
-
-/* Documented in header. */
-zorder datUniqletOrder(zvalue v1, zvalue v2) {
-    zint id1 = uniqletId(v1);
-    zint id2 = uniqletId(v2);
-
-    if (id1 < id2) {
-        return ZLESS;
-    } else if (id1 > id2) {
-        return ZMORE;
-    } else {
-        return ZSAME;
-    }
-}
-
-void datUniqletMark(zvalue value) {
-    UniqletInfo *info = uniqletInfo(value);
-
-    if (info->dispatch != NULL) {
-        info->dispatch->mark(info->state);
-    }
-}
-
-void datUniqletFree(zvalue value) {
-    UniqletInfo *info = uniqletInfo(value);
-
-    if (info->dispatch != NULL) {
-        info->dispatch->free(info->state);
-    }
-}
 
 /*
  * Exported functions
@@ -115,3 +81,62 @@ bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch) {
 zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
     return newUniqlet(dispatch, state);
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+static zint uniqletSizeOf(zvalue uniqlet) {
+    return 0;
+}
+
+/* Documented in header. */
+static void uniqletGcMark(zvalue uniqlet) {
+    UniqletInfo *info = uniqletInfo(uniqlet);
+
+    if (info->dispatch != NULL) {
+        info->dispatch->mark(info->state);
+    }
+}
+
+/* Documented in header. */
+static void uniqletGcFree(zvalue uniqlet) {
+    UniqletInfo *info = uniqletInfo(uniqlet);
+
+    if (info->dispatch != NULL) {
+        info->dispatch->free(info->state);
+    }
+}
+
+/* Documented in header. */
+static bool uniqletEq(zvalue v1, zvalue v2) {
+    return false;
+}
+
+/* Documented in header. */
+static zorder uniqletOrder(zvalue v1, zvalue v2) {
+    zint id1 = uniqletId(v1);
+    zint id2 = uniqletId(v2);
+
+    if (id1 < id2) {
+        return ZLESS;
+    } else if (id1 > id2) {
+        return ZMORE;
+    } else {
+        return ZSAME;
+    }
+}
+
+/* Documented in header. */
+static DatType INFO_Uniqlet = {
+    .id = DAT_UNIQLET,
+    .name = "Uniqlet",
+    .sizeOf = uniqletSizeOf,
+    .gcMark = uniqletGcMark,
+    .gcFree = uniqletGcFree,
+    .eq = uniqletEq,
+    .order = uniqletOrder
+};
+ztype DAT_Uniqlet = &INFO_Uniqlet;

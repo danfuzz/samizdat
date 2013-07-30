@@ -61,28 +61,28 @@ static bool isAligned(void *maybeValue) {
  */
 static void thoroughlyValidate(zvalue maybeValue) {
     if (maybeValue == NULL) {
-        die("Invalid value pointer: NULL");
+        die("Invalid value: NULL");
     }
 
     if (!isAligned(maybeValue)) {
-        die("Invalid value pointer (mis-aligned): %p", maybeValue);
+        die("Invalid value (mis-aligned): %p", maybeValue);
     }
 
     if (!utilIsHeapAllocated(maybeValue)) {
-        die("Invalid value pointer (not in heap): %p", maybeValue);
-    }
-
-    if (maybeValue->magic != DAT_VALUE_MAGIC) {
-        die("Invalid value pointer (incorrect magic): %p", maybeValue);
+        die("Invalid value (not in heap): %p", maybeValue);
     }
 
     GcLinks *links = &maybeValue->links;
+
+    if (links->magic != DAT_VALUE_MAGIC) {
+        die("Invalid value (incorrect magic): %p", maybeValue);
+    }
 
     if (!(isAligned(links->next) &&
           isAligned(links->prev) &&
           (links == links->next->prev) &&
           (links == links->prev->next))) {
-        die("Invalid value pointer (invalid links): %p", maybeValue);
+        die("Invalid value (invalid links): %p", maybeValue);
     }
 }
 
@@ -91,8 +91,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
  */
 static void sanityCheckList(GcLinks *head) {
     for (GcLinks *item = head->next; item != head; item = item->next) {
-        zvalue one = (zvalue) item;
-        thoroughlyValidate(one);
+        thoroughlyValidate((zvalue) item);
     }
 }
 
@@ -206,18 +205,18 @@ static void doGc(void) {
         GcLinks *next = item->next;
         zvalue one = (zvalue) item;
 
-        if (datTypeIs(one, DAT_UNIQLET)) {
+        if (one->type->gcFree != NULL) {
             // Link the item to itself, so that its sanity check will
             // still pass.
             item->next = item->prev = item;
-            datUniqletFree(one);
+            one->type->gcFree(one);
         }
 
         // Prevent this from being mistaken for a live value.
         item->next = item->prev = NULL;
         item->marked = 999;
-        one->magic = 999;
-        one->type = 999;
+        item->magic = 999;
+        one->type = NULL;
 
         utilFree(item);
         item = next;
@@ -255,11 +254,7 @@ static void doGc(void) {
  */
 
 /* Documented in header. */
-zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
-    if (size < 0) {
-        die("Invalid value size: %lld", size);
-    }
-
+zvalue datAllocValue(ztype type, zint extraBytes) {
     if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
         datGc();
     } else {
@@ -267,9 +262,8 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     }
 
     zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
-    result->magic = DAT_VALUE_MAGIC;
+    result->links.magic = DAT_VALUE_MAGIC;
     result->type = type;
-    result->size = size;
 
     enlist(&liveHead, result);
     datFrameAdd(result);
@@ -285,28 +279,6 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
 /*
  * Exported functions
  */
-
-/* Documented in header. */
-void datAssertValid(zvalue value) {
-    if (value == NULL) {
-        die("Null value.");
-    }
-
-    switch (value->type) {
-        case DAT_INT:
-        case DAT_LIST:
-        case DAT_MAP:
-        case DAT_STRING:
-        case DAT_DERIV:
-        case DAT_UNIQLET: {
-            break;
-        }
-        default: {
-            die("Invalid type for value: (%p)->type == %#04x",
-                value, value->type);
-        }
-    }
-}
 
 /* Documented in header. */
 zstackPointer datFrameStart(void) {
@@ -378,14 +350,5 @@ void datMark(zvalue value) {
 
     value->links.marked = true;
     enlist(&liveHead, value);
-
-    switch (value->type) {
-        case DAT_LIST:    { datListMark(value);    break; }
-        case DAT_MAP:     { datMapMark(value);     break; }
-        case DAT_DERIV:   { datDerivMark(value);   break; }
-        case DAT_UNIQLET: { datUniqletMark(value); break; }
-        default: {
-            // Nothing to do here. The other types don't need sub-marking.
-        }
-    }
+    value->type->gcMark(value);
 }

@@ -42,7 +42,7 @@ PRIM_IMPL(listAdd) {
 PRIM_IMPL(listDelNth) {
     requireExactly(argCount, 2);
 
-    if (!datTypeIs(args[1], DAT_INT)) {
+    if (!datTypeIs(args[1], DAT_Int)) {
         return args[0];
     }
 
@@ -108,7 +108,7 @@ PRIM_IMPL(listReverse) {
 
     datArrayFromList(elems, list);
 
-    for (int low = 0, high = size - 1; low < high; low++, high--) {
+    for (zint low = 0, high = size - 1; low < high; low++, high--) {
         zvalue temp = elems[low];
         elems[low] = elems[high];
         elems[high] = temp;

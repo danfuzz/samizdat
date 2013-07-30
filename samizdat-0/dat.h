@@ -32,7 +32,7 @@ typedef enum {
     DAT_MAP,
     DAT_UNIQLET,
     DAT_DERIV
-} ztype;
+} ztypeId;
 
 /**
  * Arbitrary value. The contents of a value are *not* directly
@@ -40,6 +40,11 @@ typedef enum {
  * have to use the various accessor functions.
  */
 typedef struct DatHeader *zvalue;
+
+/**
+ * Low-layer data type.
+ */
+typedef const struct DatType *ztype;
 
 /**
  * Arbitrary (key, value) mapping.
@@ -72,7 +77,30 @@ typedef const zvalue *zstackPointer;
 
 
 /*
- * Basic Functions
+ * Type references
+ */
+
+/** Type value for in-model type `Deriv`. */
+extern ztype DAT_Deriv;
+
+/** Type value for in-model type `Int`. */
+extern ztype DAT_Int;
+
+/** Type value for in-model type `List`. */
+extern ztype DAT_List;
+
+/** Type value for in-model type `Map`. */
+extern ztype DAT_Map;
+
+/** Type value for in-model type `String`. */
+extern ztype DAT_String;
+
+/** Type value for in-model type `Uniqlet`. */
+extern ztype DAT_Uniqlet;
+
+
+/*
+ * Assertion Functions
  */
 
 /**
@@ -130,34 +158,6 @@ void datAssertDeriv(zvalue value);
  * with a diagnostic message.
  */
 void datAssertUniqlet(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue` (non-`NULL` and
- * seems to actually have the right form). This performs reasonable,
- * but not exhaustive, tests. If not valid, this aborts the process
- * with a diagnostic message.
- */
-void datAssertValid(zvalue value);
-
-/**
- * Gets the size of the given value. `value` must be a valid value.
- * See the *Samizdat Layer 0* specification for details on
- * what low-layer "size" means.
- */
-zint datSize(zvalue value);
-
-/**
- * Returns whether the given value has the given low-layer type.
- * `value` must be a valid value (in particular, non-`NULL`).
- */
-bool datTypeIs(zvalue value, ztype type);
-
-/**
- * Gets the low-level data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`).
- */
-ztype datType(zvalue value);
-
 
 
 /*
@@ -465,7 +465,7 @@ zvalue datDerivData(zvalue deriv);
 
 
 /*
- * Higher Level Functions
+ * Dispatched (type-based) Functions
  */
 
 /**
@@ -483,6 +483,25 @@ bool datEq(zvalue v1, zvalue v2);
  * value sorting.
  */
 zorder datOrder(zvalue v1, zvalue v2);
+
+/**
+ * Gets the size of the given value. `value` must be a valid value.
+ * See the *Samizdat Layer 0* specification for details on
+ * what low-layer "size" means.
+ */
+zint datSize(zvalue value);
+
+/**
+ * Returns whether the given value has the given low-layer type.
+ * `value` must be a valid value (in particular, non-`NULL`).
+ */
+bool datTypeIs(zvalue value, ztype type);
+
+/**
+ * Gets the low-level data type of the given value. `value` must be a
+ * valid value (in particular, non-`NULL`).
+ */
+ztypeId datType(zvalue value);
 
 
 /*

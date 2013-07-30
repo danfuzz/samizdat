@@ -24,6 +24,45 @@ enum {
 };
 
 /**
+ * Core type info.
+ */
+typedef struct DatType {
+    /** Low-layer data type identifier. */
+    ztypeId id;
+
+    /** Simple string name for the type. */
+    const char *name;
+
+    /**
+     * Gets the "size" of a value of the given type, for the appropriate
+     * per-type meaning of size.
+     */
+    zint (*sizeOf)(zvalue);
+
+    /**
+     * Does GC marking of a value of the given type.
+     */
+    void (*gcMark)(zvalue);
+
+    /**
+     * Frees a garbage value. Optional (may be `NULL`).
+     */
+    void (*gcFree)(zvalue);
+
+    /**
+     * Compares for equality with another value of the same type. Only
+     * ever called when the two values are not `==`.
+     */
+    bool (*eq)(zvalue, zvalue);
+
+    /**
+     * Compares for order with another value of the same type. Only ever
+     * called when the two values are not `==`.
+     */
+    zorder (*order)(zvalue, zvalue);
+} DatType;
+
+/**
  * Links and flags used for allocation lifecycle management. Every value is
  * linked into a circularly linked list, which identifies its current
  * fate / classification.
@@ -35,10 +74,12 @@ typedef struct GcLinks {
     /** Circular link. */
     struct GcLinks *prev;
 
+    /** Magic number. */
+    uint32_t magic;
+
     /** Mark bit (used during GC). */
     bool marked;
 } GcLinks;
-
 
 /**
  * Common fields across all values. Used as a header for other types.
@@ -47,14 +88,8 @@ typedef struct DatHeader {
     /** Gc links (see above). */
     GcLinks links;
 
-    /** Magic number. */
-    uint32_t magic;
-
     /** Data type. */
     ztype type;
-
-    /** Size. Meaning varies depending on `type`. */
-    zint size;
 } DatHeader;
 
 /**
@@ -75,8 +110,11 @@ typedef struct {
     /** Value header. */
     DatHeader header;
 
+    /** Number of characters. */
+    zint size;
+
     /** Characters of the string, in index order. */
-    zchar elems[/*flexible*/];
+    zchar elems[/*size*/];
 } DatString;
 
 /**
@@ -86,8 +124,11 @@ typedef struct {
     /** Value header. */
     DatHeader header;
 
+    /** Number of elements. */
+    zint size;
+
     /** List elements, in index order. */
-    zvalue elems[/*flexible*/];
+    zvalue elems[/*size*/];
 } DatList;
 
 /**
@@ -97,8 +138,11 @@ typedef struct {
     /** Value header. */
     DatHeader header;
 
+    /** Number of mappings. */
+    zint size;
+
     /** List of mappings, in key-sorted order. */
-    zmapping elems[/*flexible*/];
+    zmapping elems[/*size*/];
 } DatMap;
 
 /**
@@ -152,121 +196,40 @@ typedef struct {
  * Allocates memory, sized to include a `DatHeader` header plus the
  * indicated number of extra bytes. The `DatHeader` header is
  * initialized with the indicated type and size. The resulting value
- * is added to the stack.
+ * is added to the live reference stack.
  */
-zvalue datAllocValue(ztype type, zint size, zint extraBytes);
+zvalue datAllocValue(ztype type, zint extraBytes);
 
 /**
- * Asserts that the given value is a valid `zvalue`, and that its size
- * accommodates accessing the `n`th element. This includes asserting that
- * `n >= 0`. Note that all non-negative `n` are valid for accessing
- * ints (their size notwithstanding).
+ * Asserts that the given size accommodates accessing the `n`th element.
+ * This includes asserting that `n >= 0`. Note that all non-negative `n`
+ * are valid for accessing ints (their size notwithstanding).
  */
-void datAssertNth(zvalue value, zint n);
+void datAssertNth(zint size, zint n);
 
 /**
  * Like `datAssertNth` but also accepts the case where `n` is the size
  * of the value.
  */
-void datAssertNthOrSize(zvalue value, zint n);
+void datAssertNthOrSize(zint size, zint n);
 
 /**
  * Asserts that the given range is valid for a `slice`-like operation
- * on the given value.
+ * for a value of the given size.
  */
-void datAssertSliceRange(zvalue value, zint start, zint end);
+void datAssertSliceRange(zint size, zint start, zint end);
 
 /**
- * Compares derived values for equality. Only called when the sizes are
- * the same.
+ * Asserts that the given value is a valid `zvalue` (non-`NULL` and
+ * seems to actually have the right form). This performs reasonable,
+ * but not exhaustive, tests. If not valid, this aborts the process
+ * with a diagnostic message.
  */
-bool datDerivEq(zvalue v1, zvalue v2);
-
-/**
- * Marks derived value contents for garbage collection.
- */
-void datDerivMark(zvalue value);
-
-/**
- * Compares derived values for order.
- */
-zorder datDerivOrder(zvalue v1, zvalue v2);
-
-/**
- * Returns whether the given value (which must be valid) has an
- * `n`th element, according to its defined size. This is only
- * useful with some types.
- */
-bool datHasNth(zvalue value, zint n);
-
-/**
- * Compares ints for equality. Only called when the sizes are the same.
- */
-bool datIntEq(zvalue v1, zvalue v2);
-
-/**
- * Compares ints for order.
- */
-zorder datIntOrder(zvalue v1, zvalue v2);
-
-/**
- * Compares lists for equality. Only called when the sizes are the same.
- */
-bool datListEq(zvalue v1, zvalue v2);
-
-/**
- * Marks list contents for garbage collection.
- */
-void datListMark(zvalue value);
-
-/**
- * Compares lists for order.
- */
-zorder datListOrder(zvalue v1, zvalue v2);
+void datAssertValid(zvalue value);
 
 /**
  * Clears the contents of the map lookup cache.
  */
 void datMapClearCache(void);
-
-/**
- * Compares maps for equality. Only called when the sizes are the same.
- */
-bool datMapEq(zvalue v1, zvalue v2);
-
-/**
- * Marks map contents for garbage collection.
- */
-void datMapMark(zvalue value);
-
-/**
- * Compares maps for order.
- */
-zorder datMapOrder(zvalue v1, zvalue v2);
-
-/**
- * Compares strings for equality. Only called when the sizes are the same.
- */
-bool datStringEq(zvalue v1, zvalue v2);
-
-/**
- * Compares strings for order.
- */
-zorder datStringOrder(zvalue v1, zvalue v2);
-
-/**
- * Frees uniqlet contents during garbage collection.
- */
-void datUniqletFree(zvalue value);
-
-/**
- * Marks uniqlet contents for garbage collection.
- */
-void datUniqletMark(zvalue value);
-
-/**
- * Compares uniqlets for order.
- */
-zorder datUniqletOrder(zvalue v1, zvalue v2);
 
 #endif

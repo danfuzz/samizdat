@@ -43,7 +43,7 @@ void requireAtLeast(zint argCount, zint minimum) {
 
 /** Documented in header. */
 zvalue doNthLenient(znth function, zvalue value, zvalue n) {
-    if (datTypeIs(n, DAT_INT)) {
+    if (datTypeIs(n, DAT_Int)) {
         zint index = datZintFromInt(n);
         return (index < 0) ? NULL : function(value, index);
     } else {
@@ -53,7 +53,7 @@ zvalue doNthLenient(znth function, zvalue value, zvalue n) {
 
 /** Documented in header. */
 zvalue doNthStrict(znth function, zvalue value, zvalue n) {
-    if (datTypeIs(n, DAT_INT)) {
+    if (datTypeIs(n, DAT_Int)) {
         zint index = datZintFromInt(n);
         if (index < 0) {
             die("Invalid index for nth (negative).");
