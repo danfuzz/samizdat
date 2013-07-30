@@ -108,7 +108,7 @@ PRIM_IMPL(listReverse) {
 
     datArrayFromList(elems, list);
 
-    for (int low = 0, high = size - 1; low < high; low++, high--) {
+    for (zint low = 0, high = size - 1; low < high; low++, high--) {
         zvalue temp = elems[low];
         elems[low] = elems[high];
         elems[high] = temp;
