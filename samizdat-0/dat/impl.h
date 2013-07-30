@@ -63,30 +63,23 @@ typedef struct DatType {
 } DatType;
 
 /**
- * Links and flags used for allocation lifecycle management. Every value is
- * linked into a circularly linked list, which identifies its current
- * fate / classification.
+ * Common fields across all values. Used as a header for other types.
  */
-typedef struct GcLinks {
-    /** Circular link. */
-    struct GcLinks *next;
+typedef struct DatHeader {
+    /**
+     * Forward circular link. Every value is linked into a circularly
+     * linked list, which identifies its current fate / classification.
+     */
+    zvalue next;
 
-    /** Circular link. */
-    struct GcLinks *prev;
+    /** Backward circular link. */
+    zvalue prev;
 
-    /** Magic number. */
+    /** Magic number (for sanity / validation checks). */
     uint32_t magic;
 
     /** Mark bit (used during GC). */
     bool marked;
-} GcLinks;
-
-/**
- * Common fields across all values. Used as a header for other types.
- */
-typedef struct DatHeader {
-    /** Gc links (see above). */
-    GcLinks links;
 
     /** Data type. */
     ztype type;

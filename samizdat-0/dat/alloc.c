@@ -39,10 +39,22 @@ static zvalue stack[DAT_MAX_STACK];
 static zint stackSize = 0;
 
 /** List head for the list of all live values. */
-static GcLinks liveHead = { &liveHead, &liveHead, false };
+static DatHeader liveHead = {
+    .next = &liveHead,
+    .prev = &liveHead,
+    .magic = 0,
+    .marked = false,
+    .type = NULL
+};
 
 /** List head for the list of all doomed values. */
-static GcLinks doomedHead = { &doomedHead, &doomedHead, false };
+static DatHeader doomedHead = {
+    .next = &doomedHead,
+    .prev = &doomedHead,
+    .magic = 0,
+    .marked = false,
+    .type = NULL
+};
 
 /** Number of allocations since the last garbage collection. */
 static zint allocationCount = 0;
@@ -72,16 +84,14 @@ static void thoroughlyValidate(zvalue maybeValue) {
         die("Invalid value (not in heap): %p", maybeValue);
     }
 
-    GcLinks *links = &maybeValue->links;
-
-    if (links->magic != DAT_VALUE_MAGIC) {
+    if (maybeValue->magic != DAT_VALUE_MAGIC) {
         die("Invalid value (incorrect magic): %p", maybeValue);
     }
 
-    if (!(isAligned(links->next) &&
-          isAligned(links->prev) &&
-          (links == links->next->prev) &&
-          (links == links->prev->next))) {
+    if (!(isAligned(maybeValue->next) &&
+          isAligned(maybeValue->prev) &&
+          (maybeValue == maybeValue->next->prev) &&
+          (maybeValue == maybeValue->prev->next))) {
         die("Invalid value (invalid links): %p", maybeValue);
     }
 }
@@ -89,9 +99,9 @@ static void thoroughlyValidate(zvalue maybeValue) {
 /**
  * Sanity check the circular list with the given head.
  */
-static void sanityCheckList(GcLinks *head) {
-    for (GcLinks *item = head->next; item != head; item = item->next) {
-        thoroughlyValidate((zvalue) item);
+static void sanityCheckList(DatHeader *head) {
+    for (zvalue item = head->next; item != head; item = item->next) {
+        thoroughlyValidate(item);
     }
 }
 
@@ -119,22 +129,20 @@ static void sanityCheck(bool force) {
  * Links the given value into the given list, removing it from its
  * previous list (if any).
  */
-static void enlist(GcLinks *head, zvalue value) {
-    GcLinks *vLinks = &value->links;
-
-    if (vLinks->next != NULL) {
-        GcLinks *next = vLinks->next;
-        GcLinks *prev = vLinks->prev;
+static void enlist(DatHeader *head, zvalue value) {
+    if (value->next != NULL) {
+        zvalue next = value->next;
+        zvalue prev = value->prev;
         next->prev = prev;
         prev->next = next;
     }
 
-    GcLinks *headNext = head->next;
+    zvalue headNext = head->next;
 
-    vLinks->prev = head;
-    vLinks->next = headNext;
-    headNext->prev = vLinks;
-    head->next = vLinks;
+    value->prev = head;
+    value->next = headNext;
+    headNext->prev = value;
+    head->next = value;
 }
 
 /**
@@ -196,27 +204,26 @@ static void doGc(void) {
     sanityCheck(false);
 
     counter = 0;
-    for (GcLinks *item = doomedHead.next; item != &doomedHead; /*next*/) {
+    for (zvalue item = doomedHead.next; item != &doomedHead; /*next*/) {
         if (item->marked) {
             die("Marked item on doomed list!");
         }
 
         // Need to grab `item->next` before freeing the item.
-        GcLinks *next = item->next;
-        zvalue one = (zvalue) item;
+        zvalue next = item->next;
 
-        if (one->type->gcFree != NULL) {
+        if (item->type->gcFree != NULL) {
             // Link the item to itself, so that its sanity check will
             // still pass.
             item->next = item->prev = item;
-            one->type->gcFree(one);
+            item->type->gcFree(item);
         }
 
         // Prevent this from being mistaken for a live value.
         item->next = item->prev = NULL;
         item->marked = 999;
         item->magic = 999;
-        one->type = NULL;
+        item->type = NULL;
 
         utilFree(item);
         item = next;
@@ -235,7 +242,7 @@ static void doGc(void) {
     sanityCheck(false);
 
     counter = 0;
-    for (GcLinks *item = liveHead.next; item != &liveHead; /*next*/) {
+    for (zvalue item = liveHead.next; item != &liveHead; /*next*/) {
         item->marked = false;
         item = item->next;
         counter++;
@@ -262,7 +269,7 @@ zvalue datAllocValue(ztype type, zint extraBytes) {
     }
 
     zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
-    result->links.magic = DAT_VALUE_MAGIC;
+    result->magic = DAT_VALUE_MAGIC;
     result->type = type;
 
     enlist(&liveHead, result);
@@ -344,11 +351,11 @@ void datMark(zvalue value) {
 
     datAssertValid(value);
 
-    if (value->links.marked) {
+    if (value->marked) {
         return;
     }
 
-    value->links.marked = true;
+    value->marked = true;
     enlist(&liveHead, value);
     value->type->gcMark(value);
 }
