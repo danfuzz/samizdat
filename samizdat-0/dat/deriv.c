@@ -25,7 +25,7 @@ static DerivInfo *derivInfo(zvalue value) {
  * on the arguments.
  */
 static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = datAllocValue(DAT_DERIV, 0, sizeof(DerivInfo));
+    zvalue result = datAllocValue(DAT_Deriv, 0, sizeof(DerivInfo));
     DerivInfo *info = derivInfo(result);
 
     result->size = (data == NULL) ? 0 : 1;
@@ -112,3 +112,21 @@ zvalue datDerivData(zvalue deriv) {
     datAssertDeriv(deriv);
     return derivInfo(deriv)->data;
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+static zint derivSizeOf(zvalue deriv) {
+    return (derivInfo(deriv)->data == NULL) ? 0 : 1;
+}
+
+/* Documented in header. */
+static DatType INFO_Deriv = {
+    .id = DAT_DERIV,
+    .name = "Deriv",
+    .sizeOf = derivSizeOf
+};
+ztype DAT_Deriv = &INFO_Deriv;

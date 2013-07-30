@@ -61,28 +61,28 @@ static bool isAligned(void *maybeValue) {
  */
 static void thoroughlyValidate(zvalue maybeValue) {
     if (maybeValue == NULL) {
-        die("Invalid value pointer: NULL");
+        die("Invalid value: NULL");
     }
 
     if (!isAligned(maybeValue)) {
-        die("Invalid value pointer (mis-aligned): %p", maybeValue);
+        die("Invalid value (mis-aligned): %p", maybeValue);
     }
 
     if (!utilIsHeapAllocated(maybeValue)) {
-        die("Invalid value pointer (not in heap): %p", maybeValue);
+        die("Invalid value (not in heap): %p", maybeValue);
     }
 
     GcLinks *links = &maybeValue->links;
 
     if (links->magic != DAT_VALUE_MAGIC) {
-        die("Invalid value pointer (incorrect magic): %p", maybeValue);
+        die("Invalid value (incorrect magic): %p", maybeValue);
     }
 
     if (!(isAligned(links->next) &&
           isAligned(links->prev) &&
           (links == links->next->prev) &&
           (links == links->prev->next))) {
-        die("Invalid value pointer (invalid links): %p", maybeValue);
+        die("Invalid value (invalid links): %p", maybeValue);
     }
 }
 
@@ -206,7 +206,7 @@ static void doGc(void) {
         GcLinks *next = item->next;
         zvalue one = (zvalue) item;
 
-        if (datTypeIs(one, DAT_UNIQLET)) {
+        if (datTypeIs(one, DAT_Uniqlet)) {
             // Link the item to itself, so that its sanity check will
             // still pass.
             item->next = item->prev = item;
@@ -217,7 +217,7 @@ static void doGc(void) {
         item->next = item->prev = NULL;
         item->marked = 999;
         item->magic = 999;
-        one->type = 999;
+        one->type = NULL;
 
         utilFree(item);
         item = next;
@@ -292,19 +292,12 @@ void datAssertValid(zvalue value) {
         die("Null value.");
     }
 
-    switch (value->type) {
-        case DAT_INT:
-        case DAT_LIST:
-        case DAT_MAP:
-        case DAT_STRING:
-        case DAT_DERIV:
-        case DAT_UNIQLET: {
-            break;
-        }
-        default: {
-            die("Invalid type for value: (%p)->type == %#04x",
-                value, value->type);
-        }
+    if (value->links.magic != DAT_VALUE_MAGIC) {
+        die("Invalid value (incorrect magic): %p", value);
+    }
+
+    if (value->type == NULL) {
+        die("Invalid value (null type): %p", value);
     }
 }
 
@@ -379,7 +372,7 @@ void datMark(zvalue value) {
     value->links.marked = true;
     enlist(&liveHead, value);
 
-    switch (value->type) {
+    switch (value->type->id) {
         case DAT_LIST:    { datListMark(value);    break; }
         case DAT_MAP:     { datMapMark(value);     break; }
         case DAT_DERIV:   { datDerivMark(value);   break; }

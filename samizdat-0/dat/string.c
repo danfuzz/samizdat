@@ -17,7 +17,7 @@
  * Allocates a string of the given size.
  */
 static zvalue allocString(zint size) {
-    return datAllocValue(DAT_STRING, size, size * sizeof(zchar));
+    return datAllocValue(DAT_String, size, size * sizeof(zchar));
 }
 
 /**
@@ -179,3 +179,21 @@ void datZcharsFromString(zchar *result, zvalue string) {
 
     memcpy(result, stringElems(string), datSize(string) * sizeof(zchar));
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+static zint stringSizeOf(zvalue string) {
+    return ((DatString *) string)->header.size;
+}
+
+/* Documented in header. */
+static DatType INFO_String = {
+    .id = DAT_STRING,
+    .name = "String",
+    .sizeOf = stringSizeOf
+};
+ztype DAT_String = &INFO_String;

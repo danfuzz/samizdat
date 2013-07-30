@@ -19,8 +19,8 @@
  * Does the type assertions that are part of `coreOrder` and `coreOrderIs`.
  */
 static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
-    ztype ztype1 = datType(v1);
-    ztype ztype2 = datType(v2);
+    ztypeId ztype1 = datType(v1);
+    ztypeId ztype2 = datType(v2);
 
     if (ztype1 != ztype2) {
         die("Mismatched core types.");

@@ -42,7 +42,7 @@ PRIM_IMPL(listAdd) {
 PRIM_IMPL(listDelNth) {
     requireExactly(argCount, 2);
 
-    if (!datTypeIs(args[1], DAT_INT)) {
+    if (!datTypeIs(args[1], DAT_Int)) {
         return args[0];
     }
 

@@ -20,8 +20,8 @@ bool datEq(zvalue v1, zvalue v2) {
         return true;
     }
 
-    ztype t1 = datType(v1);
-    ztype t2 = datType(v2);
+    ztypeId t1 = datType(v1);
+    ztypeId t2 = datType(v2);
 
     if (t1 != t2) {
         return false;
@@ -55,8 +55,8 @@ zorder datOrder(zvalue v1, zvalue v2) {
         return ZSAME;
     }
 
-    ztype t1 = datType(v1);
-    ztype t2 = datType(v2);
+    ztypeId t1 = datType(v1);
+    ztypeId t2 = datType(v2);
 
     if (t1 < t2) {
         return ZLESS;

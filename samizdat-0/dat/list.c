@@ -17,7 +17,7 @@
  * Allocates a list of the given size.
  */
 static zvalue allocList(zint size) {
-    return datAllocValue(DAT_LIST, size, size * sizeof(zvalue));
+    return datAllocValue(DAT_List, size, size * sizeof(zvalue));
 }
 
 /**
@@ -204,3 +204,21 @@ zvalue datListSlice(zvalue list, zint start, zint end) {
 
     return listFrom(end - start, &listElems(list)[start], NULL, 0, NULL);
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+static zint listSizeOf(zvalue list) {
+    return ((DatList *) list)->header.size;
+}
+
+/* Documented in header. */
+static DatType INFO_List = {
+    .id = DAT_LIST,
+    .name = "List",
+    .sizeOf = listSizeOf
+};
+ztype DAT_List = &INFO_List;

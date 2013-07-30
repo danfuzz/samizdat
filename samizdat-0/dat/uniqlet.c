@@ -37,7 +37,7 @@ static zint uniqletId(zvalue uniqlet) {
  * on the arguments.
  */
 static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
-    zvalue result = datAllocValue(DAT_UNIQLET, 0, sizeof(UniqletInfo));
+    zvalue result = datAllocValue(DAT_Uniqlet, 0, sizeof(UniqletInfo));
 
     if (theNextId < 0) {
         // Shouldn't be possible, but just in case...
@@ -115,3 +115,21 @@ bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch) {
 zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
     return newUniqlet(dispatch, state);
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+static zint uniqletSizeOf(zvalue string) {
+    return 0;
+}
+
+/* Documented in header. */
+static DatType INFO_Uniqlet = {
+    .id = DAT_UNIQLET,
+    .name = "Uniqlet",
+    .sizeOf = uniqletSizeOf
+};
+ztype DAT_Uniqlet = &INFO_Uniqlet;

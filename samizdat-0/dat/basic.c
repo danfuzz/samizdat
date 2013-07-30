@@ -14,33 +14,15 @@
  */
 
 /**
- * Gets the name of a given type.
- */
-static const char *typeName(ztype type) {
-    switch (type) {
-        case DAT_DERIV:   return "Deriv";
-        case DAT_INT:     return "Int";
-        case DAT_LIST:    return "List";
-        case DAT_MAP:     return "Map";
-        case DAT_STRING:  return "String";
-        case DAT_UNIQLET: return "Uniqlet";
-    }
-
-    return "<unknown-type>";
-}
-
-/**
  * Asserts a particular type.
  */
 static void assertType(zvalue value, ztype type) {
     datAssertValid(value);
 
-    if (value->type == type) {
-        return;
+    if (value->type != type) {
+        die("Expected type %s: (%p)->type == %s",
+            type->name, value, value->type->name);
     }
-
-    die("Expected type %s: (%p)->type == %s",
-        typeName(type), value, typeName(value->type));
 }
 
 
@@ -85,12 +67,12 @@ bool datHasNth(zvalue value, zint n) {
 
 /* Documented in header. */
 void datAssertInt(zvalue value) {
-    assertType(value, DAT_INT);
+    assertType(value, DAT_Int);
 }
 
 /* Documented in header. */
 void datAssertString(zvalue value) {
-    assertType(value, DAT_STRING);
+    assertType(value, DAT_String);
 }
 
 /* Documented in header. */
@@ -103,12 +85,12 @@ void datAssertStringSize1(zvalue value) {
 
 /* Documented in header. */
 void datAssertList(zvalue value) {
-    assertType(value, DAT_LIST);
+    assertType(value, DAT_List);
 }
 
 /* Documented in header. */
 void datAssertMap(zvalue value) {
-    assertType(value, DAT_MAP);
+    assertType(value, DAT_Map);
 }
 
 /* Documented in header. */
@@ -121,12 +103,12 @@ void datAssertMapSize1(zvalue value) {
 
 /* Documented in header. */
 void datAssertUniqlet(zvalue value) {
-    assertType(value, DAT_UNIQLET);
+    assertType(value, DAT_Uniqlet);
 }
 
 /* Documented in header. */
 void datAssertDeriv(zvalue value) {
-    assertType(value, DAT_DERIV);
+    assertType(value, DAT_Deriv);
 }
 
 /* Documented in header. */
@@ -135,8 +117,8 @@ zint datSize(zvalue value) {
 }
 
 /* Documented in header. */
-ztype datType(zvalue value) {
-    return value->type;
+ztypeId datType(zvalue value) {
+    return value->type->id;
 }
 
 /* Documented in header. */

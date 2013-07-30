@@ -32,7 +32,7 @@ typedef enum {
     DAT_MAP,
     DAT_UNIQLET,
     DAT_DERIV
-} ztype;
+} ztypeId;
 
 /**
  * Arbitrary value. The contents of a value are *not* directly
@@ -40,6 +40,11 @@ typedef enum {
  * have to use the various accessor functions.
  */
 typedef struct DatHeader *zvalue;
+
+/**
+ * Low-layer data type.
+ */
+typedef const struct DatType *ztype;
 
 /**
  * Arbitrary (key, value) mapping.
@@ -69,6 +74,29 @@ typedef struct {
 
 /** Type for local value stack pointers. */
 typedef const zvalue *zstackPointer;
+
+
+/*
+ * Type references
+ */
+
+/** Type value for in-model type `Deriv`. */
+extern ztype DAT_Deriv;
+
+/** Type value for in-model type `Int`. */
+extern ztype DAT_Int;
+
+/** Type value for in-model type `List`. */
+extern ztype DAT_List;
+
+/** Type value for in-model type `Map`. */
+extern ztype DAT_Map;
+
+/** Type value for in-model type `String`. */
+extern ztype DAT_String;
+
+/** Type value for in-model type `Uniqlet`. */
+extern ztype DAT_Uniqlet;
 
 
 /*
@@ -156,7 +184,7 @@ bool datTypeIs(zvalue value, ztype type);
  * Gets the low-level data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */
-ztype datType(zvalue value);
+ztypeId datType(zvalue value);
 
 
 

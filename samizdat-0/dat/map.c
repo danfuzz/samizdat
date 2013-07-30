@@ -74,7 +74,7 @@ static CacheEntry *getCacheEntry(zvalue map, zvalue key) {
  * Allocates a map of the given size.
  */
 static zvalue allocMap(zint size) {
-    return datAllocValue(DAT_MAP, size, size * sizeof(zmapping));
+    return datAllocValue(DAT_Map, size, size * sizeof(zmapping));
 }
 
 /**
@@ -428,3 +428,21 @@ zvalue datMappingValue(zvalue map) {
     datAssertMapSize1(map);
     return mapElems(map)[0].value;
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+static zint mapSizeOf(zvalue map) {
+    return ((DatMap *) map)->header.size;
+}
+
+/* Documented in header. */
+static DatType INFO_Map = {
+    .id = DAT_MAP,
+    .name = "Map",
+    .sizeOf = mapSizeOf
+};
+ztype DAT_Map = &INFO_Map;

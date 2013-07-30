@@ -26,17 +26,24 @@ enum {
 /**
  * Core type info.
  */
-typedef struct
-{
-    /** Low-layer data type. */
-    ztype type;
+typedef struct DatType {
+    /** Low-layer data type identifier. */
+    ztypeId id;
 
-    /** Name of the type. */
-    zvalue typeName;
+    /** Simple string name for the type. */
+    const char *name;
 
-    /** `sizeOf(value) <> int` */
+    /**
+     * Gets the "size" of a value of the given type, for the appropriate
+     * per-type meaning of size.
+     */
     zint (*sizeOf)(zvalue);
-} DatTypeInfo;
+
+    /**
+     * TODO: Does GC marking of a value of the given type.
+     */
+    // void (*gcMark)(zvalue);
+} DatType;
 
 /**
  * Links and flags used for allocation lifecycle management. Every value is
@@ -166,7 +173,7 @@ typedef struct {
  * Allocates memory, sized to include a `DatHeader` header plus the
  * indicated number of extra bytes. The `DatHeader` header is
  * initialized with the indicated type and size. The resulting value
- * is added to the stack.
+ * is added to the live reference stack.
  */
 zvalue datAllocValue(ztype type, zint size, zint extraBytes);
 

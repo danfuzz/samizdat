@@ -108,7 +108,7 @@ zvalue constStringFromZchar(zchar value) {
 
 /* Documented in header. */
 zvalue constValueFrom(zvalue type, zvalue data) {
-    if (datTypeIs(type, DAT_STRING)) {
+    if (datTypeIs(type, DAT_String)) {
         zint typeSize = datSize(type);
 
         if (data == NULL) {
