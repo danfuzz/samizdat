@@ -176,14 +176,15 @@ static void stringGcMark(zvalue string) {
 
 /* Documented in header. */
 static bool stringEq(zvalue v1, zvalue v2) {
-    zchar *e1 = stringElems(v1);
-    zchar *e2 = stringElems(v2);
     zint sz1 = stringSizeOf(v1);
     zint sz2 = stringSizeOf(v2);
 
     if (sz1 != sz2) {
         return false;
     }
+
+    zchar *e1 = stringElems(v1);
+    zchar *e2 = stringElems(v2);
 
     for (zint i = 0; i < sz1; i++) {
         if (e1[i] != e2[i]) {

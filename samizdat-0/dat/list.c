@@ -203,14 +203,15 @@ static void listGcMark(zvalue list) {
 
 /* Documented in header. */
 static bool listEq(zvalue v1, zvalue v2) {
-    zvalue *e1 = listElems(v1);
-    zvalue *e2 = listElems(v2);
     zint sz1 = listSizeOf(v1);
     zint sz2 = listSizeOf(v2);
 
     if (sz1 != sz2) {
         return false;
     }
+
+    zvalue *e1 = listElems(v1);
+    zvalue *e2 = listElems(v2);
 
     for (zint i = 0; i < sz1; i++) {
         if (!datEq(e1[i], e2[i])) {

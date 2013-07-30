@@ -412,14 +412,15 @@ static void mapGcMark(zvalue map) {
 
 /* Documented in header. */
 static bool mapEq(zvalue v1, zvalue v2) {
-    zmapping *elems1 = mapElems(v1);
-    zmapping *elems2 = mapElems(v2);
     zint sz1 = mapSizeOf(v1);
     zint sz2 = mapSizeOf(v2);
 
     if (sz1 != sz2) {
         return false;
     }
+
+    zmapping *elems1 = mapElems(v1);
+    zmapping *elems2 = mapElems(v2);
 
     for (zint i = 0; i < sz1; i++) {
         zmapping *e1 = &elems1[i];
