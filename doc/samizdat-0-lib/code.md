@@ -82,45 +82,6 @@ arguments.
 It is an error (terminating the runtime) if the call to `yieldFunction`
 returns to this function.
 
-#### `object(implementation, state) <> function`
-
-Constructs and returns an "object". In *Samizdat Layer 0* an object is
-merely the combination of a mutable `state` value (an arbitarary
-value) with an `implementation` function (an arbitrary function).
-The return value from the call to `object` is another function,
-referred to as the "object interface function".
-
-When the object interface function is called, it in turn calls the
-`implementation` function, passing it the same arguments as it was
-called with, along with two additional arguments at the head of the
-argument list:
-
-* The first argument is a `yield` function. This function must be
-  called exactly once during the course of a call to `implementation`.
-  This is used to indicate the return value from the object interface
-  function. If `yield` is called with no argument, then the object
-  interface function returns void. If `yield` is called with one argument,
-  then the object interface function returns that value.
-
-  When the `yield` function is called, it does *not* cause the
-  implementation function to return; it merely causes the eventual
-  result value (or void) to be cached until the function does finally
-  return.
-
-* The second argument is a `state` value. This is the latest state
-  for the object, as defined immediately below.
-
-The implementation function can return either a value or void. If
-it returns a value, then the value becomes the new `state` for
-the object, replacing either the `state` originally passed to
-`object`, or whatever other state had been returned in the mean time.
-
-To avoid confusion as well as hew closely to the actor model,
-it is invalid (terminating the runtime) for an object implementation
-function to call its own interface function, either directly or
-indirectly. To implement a recursive operation, it is necessary to do
-so without going through the interface.
-
 #### `yieldBox() <> box`
 
 Creates a set-once "yield box". The result of a call to this function is a
