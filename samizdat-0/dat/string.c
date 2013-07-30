@@ -17,7 +17,18 @@
  * Allocates a string of the given size.
  */
 static zvalue allocString(zint size) {
-    return datAllocValue(DAT_STRING, size, size * sizeof(zchar));
+    zvalue result =
+        datAllocValue(DAT_String, sizeof(DatString) + size * sizeof(zchar));
+
+    ((DatString *) result)->size = size;
+    return result;
+}
+
+/**
+ * Gets the size of a string.
+ */
+static zint stringSizeOf(zvalue string) {
+    return ((DatString *) string)->size;
 }
 
 /**
@@ -25,52 +36,6 @@ static zvalue allocString(zint size) {
  */
 static zchar *stringElems(zvalue string) {
     return ((DatString *) string)->elems;
-}
-
-
-/*
- * Module functions
- */
-
-/* Documented in header. */
-bool datStringEq(zvalue v1, zvalue v2) {
-    zchar *e1 = stringElems(v1);
-    zchar *e2 = stringElems(v2);
-    zint size = datSize(v1);
-
-    for (zint i = 0; i < size; i++) {
-        if (e1[i] != e2[i]) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-zorder datStringOrder(zvalue v1, zvalue v2) {
-    zchar *e1 = stringElems(v1);
-    zchar *e2 = stringElems(v2);
-    zint sz1 = datSize(v1);
-    zint sz2 = datSize(v2);
-    zint sz = (sz1 < sz2) ? sz1 : sz2;
-
-    for (zint i = 0; i < sz; i++) {
-        zchar c1 = e1[i];
-        zchar c2 = e2[i];
-
-        if (c1 < c2) {
-            return ZLESS;
-        } else if (c1 > c2) {
-            return ZMORE;
-        }
-    }
-
-    if (sz1 == sz2) {
-        return ZSAME;
-    }
-
-    return (sz1 < sz2) ? ZLESS : ZMORE;
 }
 
 
@@ -83,8 +48,8 @@ zvalue datStringAdd(zvalue str1, zvalue str2) {
     datAssertString(str1);
     datAssertString(str2);
 
-    zint size1 = datSize(str1);
-    zint size2 = datSize(str2);
+    zint size1 = stringSizeOf(str1);
+    zint size2 = stringSizeOf(str2);
 
     if (size1 == 0) {
         return str2;
@@ -127,13 +92,18 @@ zvalue datStringFromUtf8(zint stringBytes, const char *string) {
 /* Documented in header. */
 zint datStringNth(zvalue string, zint n) {
     datAssertString(string);
-    return datHasNth(string, n) ? stringElems(string)[n] : (zint) -1;
+
+    if ((n < 0) || (n >= stringSizeOf(string))) {
+        return -1;
+    }
+
+    return stringElems(string)[n];
 }
 
 /* Documented in header. */
 zvalue datStringSlice(zvalue string, zint start, zint end) {
     datAssertString(string);
-    datAssertSliceRange(string, start, end);
+    datAssertSliceRange(stringSizeOf(string), start, end);
 
     return datStringFromZchars(end - start, &stringElems(string)[start]);
 }
@@ -142,7 +112,7 @@ zvalue datStringSlice(zvalue string, zint start, zint end) {
 void datUtf8FromString(zint resultSize, char *result, zvalue string) {
     datAssertString(string);
 
-    zint size = datSize(string);
+    zint size = stringSizeOf(string);
     zchar *elems = stringElems(string);
     char *out = result;
 
@@ -162,7 +132,7 @@ void datUtf8FromString(zint resultSize, char *result, zvalue string) {
 zint datUtf8SizeFromString(zvalue string) {
     datAssertString(string);
 
-    zint size = datSize(string);
+    zint size = stringSizeOf(string);
     zchar *elems = stringElems(string);
     zint result = 0;
 
@@ -177,5 +147,73 @@ zint datUtf8SizeFromString(zvalue string) {
 void datZcharsFromString(zchar *result, zvalue string) {
     datAssertString(string);
 
-    memcpy(result, stringElems(string), datSize(string) * sizeof(zchar));
+    memcpy(result, stringElems(string), stringSizeOf(string) * sizeof(zchar));
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+static void stringGcMark(zvalue string) {
+    // Nothing to do here.
+}
+
+/* Documented in header. */
+static bool stringEq(zvalue v1, zvalue v2) {
+    zchar *e1 = stringElems(v1);
+    zchar *e2 = stringElems(v2);
+    zint sz1 = stringSizeOf(v1);
+    zint sz2 = stringSizeOf(v2);
+
+    if (sz1 != sz2) {
+        return false;
+    }
+
+    for (zint i = 0; i < sz1; i++) {
+        if (e1[i] != e2[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* Documented in header. */
+static zorder stringOrder(zvalue v1, zvalue v2) {
+    zchar *e1 = stringElems(v1);
+    zchar *e2 = stringElems(v2);
+    zint sz1 = stringSizeOf(v1);
+    zint sz2 = stringSizeOf(v2);
+    zint sz = (sz1 < sz2) ? sz1 : sz2;
+
+    for (zint i = 0; i < sz; i++) {
+        zchar c1 = e1[i];
+        zchar c2 = e2[i];
+
+        if (c1 < c2) {
+            return ZLESS;
+        } else if (c1 > c2) {
+            return ZMORE;
+        }
+    }
+
+    if (sz1 == sz2) {
+        return ZSAME;
+    }
+
+    return (sz1 < sz2) ? ZLESS : ZMORE;
+}
+
+/* Documented in header. */
+static DatType INFO_String = {
+    .id = DAT_STRING,
+    .name = "String",
+    .sizeOf = stringSizeOf,
+    .gcMark = stringGcMark,
+    .gcFree = NULL,
+    .eq = stringEq,
+    .order = stringOrder
+};
+ztype DAT_String = &INFO_String;

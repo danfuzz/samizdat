@@ -16,8 +16,8 @@
 /**
  * Gets a pointer to the value's info.
  */
-static DerivInfo *derivInfo(zvalue value) {
-    return &((DatDeriv *) value)->info;
+static DerivInfo *derivInfo(zvalue deriv) {
+    return &((DatDeriv *) deriv)->info;
 }
 
 /**
@@ -25,64 +25,12 @@ static DerivInfo *derivInfo(zvalue value) {
  * on the arguments.
  */
 static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = datAllocValue(DAT_DERIV, 0, sizeof(DerivInfo));
+    zvalue result = datAllocValue(DAT_Deriv, sizeof(DerivInfo));
     DerivInfo *info = derivInfo(result);
 
-    result->size = (data == NULL) ? 0 : 1;
     info->type = type;
     info->data = data;
     return result;
-}
-
-
-/*
- * Module functions
- */
-
-/* Documented in header. */
-bool datDerivEq(zvalue v1, zvalue v2) {
-    DerivInfo *info1 = derivInfo(v1);
-    DerivInfo *info2 = derivInfo(v2);
-
-    if (!datEq(info1->type, info2->type)) {
-        return false;
-    }
-
-    if (info1->data == NULL) {
-        return (info2->data == NULL);
-    } else if (info2->data == NULL) {
-        return false;
-    } else {
-        return datEq(info1->data, info2->data);
-    }
-}
-
-/* Documented in header. */
-zorder datDerivOrder(zvalue v1, zvalue v2) {
-    DerivInfo *info1 = derivInfo(v1);
-    DerivInfo *info2 = derivInfo(v2);
-
-    zorder result = datOrder(info1->type, info2->type);
-
-    if (result != ZSAME) {
-        return result;
-    } else if (info1->data == NULL) {
-        return (info2->data == NULL) ? ZSAME : ZLESS;
-    } else if (info2->data == NULL) {
-        return ZMORE;
-    } else {
-        return datOrder(info1->data, info2->data);
-    }
-}
-
-/* Documented in header. */
-void datDerivMark(zvalue value) {
-    DerivInfo *info = derivInfo(value);
-
-    datMark(info->type);
-    if (info->data != NULL) {
-        datMark(info->data);
-    }
 }
 
 
@@ -112,3 +60,69 @@ zvalue datDerivData(zvalue deriv) {
     datAssertDeriv(deriv);
     return derivInfo(deriv)->data;
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+static zint derivSizeOf(zvalue deriv) {
+    return (derivInfo(deriv)->data == NULL) ? 0 : 1;
+}
+
+/* Documented in header. */
+static void derivGcMark(zvalue deriv) {
+    DerivInfo *info = derivInfo(deriv);
+
+    datMark(info->type);
+    datMark(info->data);
+}
+
+/* Documented in header. */
+static bool derivEq(zvalue v1, zvalue v2) {
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
+
+    if (info1->data == NULL) {
+        if (info2->data != NULL) {
+            return false;
+        }
+    } else if (info2->data == NULL) {
+        return false;
+    } else if (!datEq(info1->data, info2->data)) {
+        return false;
+    }
+
+    return datEq(info1->type, info2->type);
+}
+
+/* Documented in header. */
+static zorder derivOrder(zvalue v1, zvalue v2) {
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
+
+    zorder result = datOrder(info1->type, info2->type);
+
+    if (result != ZSAME) {
+        return result;
+    } else if (info1->data == NULL) {
+        return (info2->data == NULL) ? ZSAME : ZLESS;
+    } else if (info2->data == NULL) {
+        return ZMORE;
+    } else {
+        return datOrder(info1->data, info2->data);
+    }
+}
+
+/* Documented in header. */
+static DatType INFO_Deriv = {
+    .id = DAT_DERIV,
+    .name = "Deriv",
+    .sizeOf = derivSizeOf,
+    .gcMark = derivGcMark,
+    .gcFree = NULL,
+    .eq = derivEq,
+    .order = derivOrder
+};
+ztype DAT_Deriv = &INFO_Deriv;

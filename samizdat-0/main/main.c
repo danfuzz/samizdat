@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     zvalue samCommandLine = datMapGet(context, STR_SAM_COMMAND_LINE);
     zvalue result = langApply(samCommandLine, argsList);
 
-    if ((result != NULL) && (datType(result) == DAT_INT)) {
+    if ((result != NULL) && (datTypeIs(result, DAT_Int))) {
         exit((int) datZintFromInt(result));
     }
 
