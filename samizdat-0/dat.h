@@ -129,6 +129,13 @@ void datAssertMap(zvalue value);
 void datAssertMapSize1(zvalue value);
 
 /**
+ * Asserts that the given two values are valid `zvalue`s, and furthermore
+ * that they have the same core type. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertSameType(zvalue v1, zvalue v2);
+
+/**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a string. If not, this aborts the process
  * with a diagnostic message.

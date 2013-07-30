@@ -58,6 +58,16 @@ void datAssertSliceRange(zint size, zint start, zint end) {
 }
 
 /* Documented in header. */
+void datAssertSameType(zvalue v1, zvalue v2) {
+    datAssertValid(v1);
+    datAssertValid(v2);
+
+    if (v1->type != v2->type) {
+        die("Mismatched core types: %s, %s", v1->type->name, v2->type->name);
+    }
+}
+
+/* Documented in header. */
 void datAssertValid(zvalue value) {
     if (value == NULL) {
         die("Null value.");

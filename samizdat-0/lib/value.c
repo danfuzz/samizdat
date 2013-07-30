@@ -19,14 +19,9 @@
  * Does the type assertions that are part of `coreOrder` and `coreOrderIs`.
  */
 static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
-    ztypeId ztype1 = datType(v1);
-    ztypeId ztype2 = datType(v2);
+    datAssertSameType(v1, v2);
 
-    if (ztype1 != ztype2) {
-        die("Mismatched core types.");
-    }
-
-    if (ztype1 == DAT_DERIV) {
+    if (datTypeIs(v1, DAT_Deriv)) {
         zvalue type1 = constTypeOf(v1);
         zvalue type2 = constTypeOf(v2);
 
@@ -98,7 +93,7 @@ PRIM_IMPL(isCoreValue) {
     requireExactly(argCount, 1);
 
     zvalue value = args[0];
-    return (datType(value) != DAT_DERIV) ? value : NULL;
+    return datTypeIs(value, DAT_Deriv) ? NULL : value;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
