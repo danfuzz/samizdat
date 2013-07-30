@@ -75,16 +75,6 @@ zorder datDerivOrder(zvalue v1, zvalue v2) {
     }
 }
 
-/* Documented in header. */
-void datDerivMark(zvalue value) {
-    DerivInfo *info = derivInfo(value);
-
-    datMark(info->type);
-    if (info->data != NULL) {
-        datMark(info->data);
-    }
-}
-
 
 /*
  * Exported functions
@@ -124,9 +114,19 @@ static zint derivSizeOf(zvalue deriv) {
 }
 
 /* Documented in header. */
+static void derivGcMark(zvalue deriv) {
+    DerivInfo *info = derivInfo(deriv);
+
+    datMark(info->type);
+    datMark(info->data);
+}
+
+/* Documented in header. */
 static DatType INFO_Deriv = {
     .id = DAT_DERIV,
     .name = "Deriv",
-    .sizeOf = derivSizeOf
+    .sizeOf = derivSizeOf,
+    .gcMark = derivGcMark,
+    .gcFree = NULL
 };
 ztype DAT_Deriv = &INFO_Deriv;

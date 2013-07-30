@@ -97,16 +97,6 @@ zorder datListOrder(zvalue v1, zvalue v2) {
     return (sz1 < sz2) ? ZLESS : ZMORE;
 }
 
-/* Documented in header. */
-void datListMark(zvalue value) {
-    zint size = datSize(value);
-    zvalue *elems = listElems(value);
-
-    for (zint i = 0; i < size; i++) {
-        datMark(elems[i]);
-    }
-}
-
 
 /*
  * Exported functions
@@ -216,9 +206,21 @@ static zint listSizeOf(zvalue list) {
 }
 
 /* Documented in header. */
+static void listGcMark(zvalue list) {
+    zint size = listSizeOf(list);
+    zvalue *elems = listElems(list);
+
+    for (zint i = 0; i < size; i++) {
+        datMark(elems[i]);
+    }
+}
+
+/* Documented in header. */
 static DatType INFO_List = {
     .id = DAT_LIST,
     .name = "List",
-    .sizeOf = listSizeOf
+    .sizeOf = listSizeOf,
+    .gcMark = listGcMark,
+    .gcFree = NULL
 };
 ztype DAT_List = &INFO_List;

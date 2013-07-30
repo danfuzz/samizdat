@@ -6,6 +6,8 @@
 
 #include "impl.h"
 
+#include <stddef.h>
+
 
 /*
  * Helper definitions
@@ -136,9 +138,16 @@ static zint intSizeOf(zvalue intval) {
 }
 
 /* Documented in header. */
+static void intGcMark(zvalue intval) {
+    // Nothing to do here.
+}
+
+/* Documented in header. */
 static DatType INFO_Int = {
     .id = DAT_INT,
     .name = "Int",
-    .sizeOf = intSizeOf
+    .sizeOf = intSizeOf,
+    .gcMark = intGcMark,
+    .gcFree = NULL
 };
 ztype DAT_Int = &INFO_Int;

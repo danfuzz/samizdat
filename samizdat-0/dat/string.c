@@ -191,9 +191,16 @@ static zint stringSizeOf(zvalue string) {
 }
 
 /* Documented in header. */
+static void stringGcMark(zvalue string) {
+    // Nothing to do here.
+}
+
+/* Documented in header. */
 static DatType INFO_String = {
     .id = DAT_STRING,
     .name = "String",
-    .sizeOf = stringSizeOf
+    .sizeOf = stringSizeOf,
+    .gcMark = stringGcMark,
+    .gcFree = NULL
 };
 ztype DAT_String = &INFO_String;

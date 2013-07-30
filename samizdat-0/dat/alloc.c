@@ -206,11 +206,11 @@ static void doGc(void) {
         GcLinks *next = item->next;
         zvalue one = (zvalue) item;
 
-        if (datTypeIs(one, DAT_Uniqlet)) {
+        if (one->type->gcFree != NULL) {
             // Link the item to itself, so that its sanity check will
             // still pass.
             item->next = item->prev = item;
-            datUniqletFree(one);
+            one->type->gcFree(one);
         }
 
         // Prevent this from being mistaken for a live value.
@@ -371,14 +371,5 @@ void datMark(zvalue value) {
 
     value->links.marked = true;
     enlist(&liveHead, value);
-
-    switch (value->type->id) {
-        case DAT_LIST:    { datListMark(value);    break; }
-        case DAT_MAP:     { datMapMark(value);     break; }
-        case DAT_DERIV:   { datDerivMark(value);   break; }
-        case DAT_UNIQLET: { datUniqletMark(value); break; }
-        default: {
-            // Nothing to do here. The other types don't need sub-marking.
-        }
-    }
+    value->type->gcMark(value);
 }

@@ -240,17 +240,6 @@ zorder datMapOrder(zvalue v1, zvalue v2) {
     return ZSAME;
 }
 
-/* Documented in header. */
-void datMapMark(zvalue value) {
-    zint size = datSize(value);
-    zmapping *elems = mapElems(value);
-
-    for (zint i = 0; i < size; i++) {
-        datMark(elems[i].key);
-        datMark(elems[i].value);
-    }
-}
-
 
 /*
  * Exported functions
@@ -440,9 +429,22 @@ static zint mapSizeOf(zvalue map) {
 }
 
 /* Documented in header. */
+static void mapGcMark(zvalue map) {
+    zint size = mapSizeOf(map);
+    zmapping *elems = mapElems(map);
+
+    for (zint i = 0; i < size; i++) {
+        datMark(elems[i].key);
+        datMark(elems[i].value);
+    }
+}
+
+/* Documented in header. */
 static DatType INFO_Map = {
     .id = DAT_MAP,
     .name = "Map",
-    .sizeOf = mapSizeOf
+    .sizeOf = mapSizeOf,
+    .gcMark = mapGcMark,
+    .gcFree = NULL
 };
 ztype DAT_Map = &INFO_Map;

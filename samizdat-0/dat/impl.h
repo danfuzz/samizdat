@@ -40,9 +40,14 @@ typedef struct DatType {
     zint (*sizeOf)(zvalue);
 
     /**
-     * TODO: Does GC marking of a value of the given type.
+     * Does GC marking of a value of the given type.
      */
-    // void (*gcMark)(zvalue);
+    void (*gcMark)(zvalue);
+
+    /**
+     * Frees a garbage value. Optional (may be `NULL`).
+     */
+    void (*gcFree)(zvalue);
 } DatType;
 
 /**
@@ -204,11 +209,6 @@ void datAssertSliceRange(zvalue value, zint start, zint end);
 bool datDerivEq(zvalue v1, zvalue v2);
 
 /**
- * Marks derived value contents for garbage collection.
- */
-void datDerivMark(zvalue value);
-
-/**
  * Compares derived values for order.
  */
 zorder datDerivOrder(zvalue v1, zvalue v2);
@@ -236,11 +236,6 @@ zorder datIntOrder(zvalue v1, zvalue v2);
 bool datListEq(zvalue v1, zvalue v2);
 
 /**
- * Marks list contents for garbage collection.
- */
-void datListMark(zvalue value);
-
-/**
  * Compares lists for order.
  */
 zorder datListOrder(zvalue v1, zvalue v2);
@@ -256,11 +251,6 @@ void datMapClearCache(void);
 bool datMapEq(zvalue v1, zvalue v2);
 
 /**
- * Marks map contents for garbage collection.
- */
-void datMapMark(zvalue value);
-
-/**
  * Compares maps for order.
  */
 zorder datMapOrder(zvalue v1, zvalue v2);
@@ -274,16 +264,6 @@ bool datStringEq(zvalue v1, zvalue v2);
  * Compares strings for order.
  */
 zorder datStringOrder(zvalue v1, zvalue v2);
-
-/**
- * Frees uniqlet contents during garbage collection.
- */
-void datUniqletFree(zvalue value);
-
-/**
- * Marks uniqlet contents for garbage collection.
- */
-void datUniqletMark(zvalue value);
 
 /**
  * Compares uniqlets for order.

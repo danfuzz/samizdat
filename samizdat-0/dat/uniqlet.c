@@ -72,21 +72,6 @@ zorder datUniqletOrder(zvalue v1, zvalue v2) {
     }
 }
 
-void datUniqletMark(zvalue value) {
-    UniqletInfo *info = uniqletInfo(value);
-
-    if (info->dispatch != NULL) {
-        info->dispatch->mark(info->state);
-    }
-}
-
-void datUniqletFree(zvalue value) {
-    UniqletInfo *info = uniqletInfo(value);
-
-    if (info->dispatch != NULL) {
-        info->dispatch->free(info->state);
-    }
-}
 
 /*
  * Exported functions
@@ -122,14 +107,34 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
  */
 
 /* Documented in header. */
-static zint uniqletSizeOf(zvalue string) {
+static zint uniqletSizeOf(zvalue uniqlet) {
     return 0;
+}
+
+/* Documented in header. */
+static void uniqletGcMark(zvalue uniqlet) {
+    UniqletInfo *info = uniqletInfo(uniqlet);
+
+    if (info->dispatch != NULL) {
+        info->dispatch->mark(info->state);
+    }
+}
+
+/* Documented in header. */
+static void uniqletGcFree(zvalue uniqlet) {
+    UniqletInfo *info = uniqletInfo(uniqlet);
+
+    if (info->dispatch != NULL) {
+        info->dispatch->free(info->state);
+    }
 }
 
 /* Documented in header. */
 static DatType INFO_Uniqlet = {
     .id = DAT_UNIQLET,
     .name = "Uniqlet",
-    .sizeOf = uniqletSizeOf
+    .sizeOf = uniqletSizeOf,
+    .gcMark = uniqletGcMark,
+    .gcFree = uniqletGcFree
 };
 ztype DAT_Uniqlet = &INFO_Uniqlet;
