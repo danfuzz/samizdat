@@ -78,9 +78,6 @@ typedef struct DatHeader {
 
     /** Data type. */
     ztype type;
-
-    /** Size. Meaning varies depending on `type`. */
-    zint size;
 } DatHeader;
 
 /**
@@ -101,8 +98,11 @@ typedef struct {
     /** Value header. */
     DatHeader header;
 
+    /** Number of characters. */
+    zint size;
+
     /** Characters of the string, in index order. */
-    zchar elems[/*flexible*/];
+    zchar elems[/*size*/];
 } DatString;
 
 /**
@@ -112,8 +112,11 @@ typedef struct {
     /** Value header. */
     DatHeader header;
 
+    /** Number of elements. */
+    zint size;
+
     /** List elements, in index order. */
-    zvalue elems[/*flexible*/];
+    zvalue elems[/*size*/];
 } DatList;
 
 /**
@@ -123,8 +126,11 @@ typedef struct {
     /** Value header. */
     DatHeader header;
 
+    /** Number of mappings. */
+    zint size;
+
     /** List of mappings, in key-sorted order. */
-    zmapping elems[/*flexible*/];
+    zmapping elems[/*size*/];
 } DatMap;
 
 /**
@@ -180,7 +186,7 @@ typedef struct {
  * initialized with the indicated type and size. The resulting value
  * is added to the live reference stack.
  */
-zvalue datAllocValue(ztype type, zint size, zint extraBytes);
+zvalue datAllocValue(ztype type, zint extraBytes);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and that its size

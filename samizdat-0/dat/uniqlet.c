@@ -37,7 +37,7 @@ static zint uniqletId(zvalue uniqlet) {
  * on the arguments.
  */
 static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
-    zvalue result = datAllocValue(DAT_Uniqlet, 0, sizeof(UniqletInfo));
+    zvalue result = datAllocValue(DAT_Uniqlet, sizeof(UniqletInfo));
 
     if (theNextId < 0) {
         // Shouldn't be possible, but just in case...

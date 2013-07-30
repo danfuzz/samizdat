@@ -14,17 +14,28 @@
  */
 
 /**
- * Allocates a list of the given size.
- */
-static zvalue allocList(zint size) {
-    return datAllocValue(DAT_List, size, size * sizeof(zvalue));
-}
-
-/**
  * Gets the array of `zvalue` elements from a list.
  */
 static zvalue *listElems(zvalue list) {
     return ((DatList *) list)->elems;
+}
+
+/**
+ * Gets the size of a list.
+ */
+static zint listSizeOf(zvalue list) {
+    return ((DatList *) list)->size;
+}
+
+/**
+ * Allocates a list of the given size.
+ */
+static zvalue allocList(zint size) {
+    zvalue result =
+        datAllocValue(DAT_List, sizeof(DatList) + size * sizeof(zvalue));
+
+    ((DatList *) result)->size = size;
+    return result;
 }
 
 /**
@@ -105,7 +116,7 @@ zorder datListOrder(zvalue v1, zvalue v2) {
 /* Documented in header. */
 void datArrayFromList(zvalue *result, zvalue list) {
     datAssertList(list);
-    memcpy(result, listElems(list), list->size * sizeof(zvalue));
+    memcpy(result, listElems(list), listSizeOf(list) * sizeof(zvalue));
 }
 
 /* Documented in header. */
@@ -113,8 +124,8 @@ zvalue datListAdd(zvalue list1, zvalue list2) {
     datAssertList(list1);
     datAssertList(list2);
 
-    zint size1 = datSize(list1);
-    zint size2 = datSize(list2);
+    zint size1 = listSizeOf(list1);
+    zint size2 = listSizeOf(list2);
 
     if (size1 == 0) {
         return list2;
@@ -127,7 +138,8 @@ zvalue datListAdd(zvalue list1, zvalue list2) {
 
 /* Documented in header. */
 zvalue datListAppend(zvalue list, zvalue value) {
-    return datListInsNth(list, datSize(list), value);
+    datAssertList(list);
+    return datListInsNth(list, listSizeOf(list), value);
 }
 
 /* Documented in header. */
@@ -136,7 +148,7 @@ zvalue datListDelNth(zvalue list, zint n) {
     datAssertNth(list, n);
 
     zvalue *elems = listElems(list);
-    zint size = datSize(list);
+    zint size = listSizeOf(list);
 
     return listFrom(n, elems, NULL, size - n - 1, elems + n + 1);
 }
@@ -156,7 +168,7 @@ zvalue datListInsNth(zvalue list, zint n, zvalue value) {
     datAssertValid(value);
     datAssertNthOrSize(list, n);
 
-    zint size = datSize(list);
+    zint size = listSizeOf(list);
     zvalue *elems = listElems(list);
 
     return listFrom(n, elems, value, size - n, elems + n);
@@ -173,7 +185,7 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
     datAssertValid(value);
 
-    zint size = datSize(list);
+    zint size = listSizeOf(list);
 
     if (n == size) {
         return datListInsNth(list, n, value);
@@ -199,11 +211,6 @@ zvalue datListSlice(zvalue list, zint start, zint end) {
 /*
  * Type binding
  */
-
-/* Documented in header. */
-static zint listSizeOf(zvalue list) {
-    return ((DatList *) list)->header.size;
-}
 
 /* Documented in header. */
 static void listGcMark(zvalue list) {

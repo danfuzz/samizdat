@@ -255,11 +255,7 @@ static void doGc(void) {
  */
 
 /* Documented in header. */
-zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
-    if (size < 0) {
-        die("Invalid value size: %lld", size);
-    }
-
+zvalue datAllocValue(ztype type, zint extraBytes) {
     if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
         datGc();
     } else {
@@ -269,7 +265,6 @@ zvalue datAllocValue(ztype type, zint size, zint extraBytes) {
     zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
     result->links.magic = DAT_VALUE_MAGIC;
     result->type = type;
-    result->size = size;
 
     enlist(&liveHead, result);
     datFrameAdd(result);

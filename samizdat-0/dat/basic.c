@@ -113,7 +113,7 @@ void datAssertDeriv(zvalue value) {
 
 /* Documented in header. */
 zint datSize(zvalue value) {
-    return value->size;
+    return value->type->sizeOf(value);
 }
 
 /* Documented in header. */

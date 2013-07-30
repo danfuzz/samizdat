@@ -94,7 +94,7 @@ zchar datZcharFromInt(zvalue intval) {
 /* Documented in header. */
 zvalue datIntFromZint(zint value) {
     zint size = bitSize(value);
-    zvalue result = datAllocValue(DAT_Int, size, sizeof(int32_t));
+    zvalue result = datAllocValue(DAT_Int, sizeof(int32_t));
 
     if (size > MAX_BITS) {
         die("Value too large to fit into int: %lld", value);

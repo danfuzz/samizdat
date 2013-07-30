@@ -16,8 +16,8 @@
 /**
  * Gets a pointer to the value's info.
  */
-static DerivInfo *derivInfo(zvalue value) {
-    return &((DatDeriv *) value)->info;
+static DerivInfo *derivInfo(zvalue deriv) {
+    return &((DatDeriv *) deriv)->info;
 }
 
 /**
@@ -25,10 +25,9 @@ static DerivInfo *derivInfo(zvalue value) {
  * on the arguments.
  */
 static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = datAllocValue(DAT_Deriv, 0, sizeof(DerivInfo));
+    zvalue result = datAllocValue(DAT_Deriv, sizeof(DerivInfo));
     DerivInfo *info = derivInfo(result);
 
-    result->size = (data == NULL) ? 0 : 1;
     info->type = type;
     info->data = data;
     return result;
