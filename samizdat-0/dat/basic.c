@@ -31,33 +31,30 @@ static void assertType(zvalue value, ztype type) {
  */
 
 /* Documented in header. */
-void datAssertNth(zvalue value, zint n) {
-    datAssertValid(value);
+void datAssertNth(zint size, zint n) {
+    if (n < 0) {
+        die("Invalid index (negative): %lld", n);
+    }
 
-    if (!datHasNth(value, n)) {
-        die("Invalid index: %lld; size %lld", n, datSize(value));
+    if (n >= size) {
+        die("Invalid index: %lld; size %lld", n, size);
     }
 }
 
 /* Documented in header. */
-void datAssertNthOrSize(zvalue value, zint n) {
-    if ((n != datSize(value)) && !datHasNth(value, n)) {
-        die("Invalid index: %lld; size %lld", n, datSize(value));
+void datAssertNthOrSize(zint size, zint n) {
+    if (n != size) {
+        datAssertNth(size, n);
     }
 }
 
 /* Documented in header. */
-void datAssertSliceRange(zvalue value, zint start, zint end) {
+void datAssertSliceRange(zint size, zint start, zint end) {
     if ((start < 0) || (end < 0) || (end < start)) {
         die("Invalid slice range: (%lld..!%lld)", start, end);
     }
 
-    datAssertNthOrSize(value, end);
-}
-
-/* Documented in header. */
-bool datHasNth(zvalue value, zint n) {
-    return (n >= 0) && (n < datSize(value));
+    datAssertNthOrSize(size, end);
 }
 
 

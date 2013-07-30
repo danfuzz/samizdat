@@ -103,10 +103,11 @@ zvalue datListAppend(zvalue list, zvalue value) {
 /* Documented in header. */
 zvalue datListDelNth(zvalue list, zint n) {
     datAssertList(list);
-    datAssertNth(list, n);
 
     zvalue *elems = listElems(list);
     zint size = listSizeOf(list);
+
+    datAssertNth(size, n);
 
     return listFrom(n, elems, NULL, size - n - 1, elems + n + 1);
 }
@@ -124,10 +125,11 @@ zvalue datListFromArray(zint size, const zvalue *values) {
 zvalue datListInsNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
     datAssertValid(value);
-    datAssertNthOrSize(list, n);
 
     zint size = listSizeOf(list);
     zvalue *elems = listElems(list);
+
+    datAssertNthOrSize(size, n);
 
     return listFrom(n, elems, value, size - n, elems + n);
 }
@@ -135,7 +137,12 @@ zvalue datListInsNth(zvalue list, zint n, zvalue value) {
 /* Documented in header. */
 zvalue datListNth(zvalue list, zint n) {
     datAssertList(list);
-    return datHasNth(list, n) ? listElems(list)[n] : NULL;
+
+    if ((n < 0) || (n >= listSizeOf(list))) {
+        return NULL;
+    }
+
+    return listElems(list)[n];
 }
 
 /* Documented in header. */
@@ -145,11 +152,11 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value) {
 
     zint size = listSizeOf(list);
 
+    datAssertNthOrSize(size, n);
+
     if (n == size) {
         return datListInsNth(list, n, value);
     }
-
-    datAssertNth(list, n);
 
     zvalue result = listFrom(size, listElems(list), NULL, 0, NULL);
 
@@ -160,7 +167,7 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value) {
 /* Documented in header. */
 zvalue datListSlice(zvalue list, zint start, zint end) {
     datAssertList(list);
-    datAssertSliceRange(list, start, end);
+    datAssertSliceRange(listSizeOf(list), start, end);
 
     return listFrom(end - start, &listElems(list)[start], NULL, 0, NULL);
 }

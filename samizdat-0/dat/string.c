@@ -92,13 +92,18 @@ zvalue datStringFromUtf8(zint stringBytes, const char *string) {
 /* Documented in header. */
 zint datStringNth(zvalue string, zint n) {
     datAssertString(string);
-    return datHasNth(string, n) ? stringElems(string)[n] : (zint) -1;
+
+    if ((n < 0) || (n >= stringSizeOf(string))) {
+        return -1;
+    }
+
+    return stringElems(string)[n];
 }
 
 /* Documented in header. */
 zvalue datStringSlice(zvalue string, zint start, zint end) {
     datAssertString(string);
-    datAssertSliceRange(string, start, end);
+    datAssertSliceRange(stringSizeOf(string), start, end);
 
     return datStringFromZchars(end - start, &stringElems(string)[start]);
 }

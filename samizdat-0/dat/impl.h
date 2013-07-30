@@ -201,31 +201,23 @@ typedef struct {
 zvalue datAllocValue(ztype type, zint extraBytes);
 
 /**
- * Asserts that the given value is a valid `zvalue`, and that its size
- * accommodates accessing the `n`th element. This includes asserting that
- * `n >= 0`. Note that all non-negative `n` are valid for accessing
- * ints (their size notwithstanding).
+ * Asserts that the given size accommodates accessing the `n`th element.
+ * This includes asserting that `n >= 0`. Note that all non-negative `n`
+ * are valid for accessing ints (their size notwithstanding).
  */
-void datAssertNth(zvalue value, zint n);
+void datAssertNth(zint size, zint n);
 
 /**
  * Like `datAssertNth` but also accepts the case where `n` is the size
  * of the value.
  */
-void datAssertNthOrSize(zvalue value, zint n);
+void datAssertNthOrSize(zint size, zint n);
 
 /**
  * Asserts that the given range is valid for a `slice`-like operation
- * on the given value.
+ * for a value of the given size.
  */
-void datAssertSliceRange(zvalue value, zint start, zint end);
-
-/**
- * Returns whether the given value (which must be valid) has an
- * `n`th element, according to its defined size. This is only
- * useful with some types.
- */
-bool datHasNth(zvalue value, zint n);
+void datAssertSliceRange(zint size, zint start, zint end);
 
 /**
  * Clears the contents of the map lookup cache.

@@ -310,7 +310,7 @@ zvalue datMapGet(zvalue map, zvalue key) {
 zvalue datMapNth(zvalue map, zint n) {
     datAssertMap(map);
 
-    if (!datHasNth(map, n)) {
+    if ((n < 0) || (n >= mapSizeOf(map))) {
         return NULL;
     }
 
