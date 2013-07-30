@@ -91,8 +91,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
  */
 static void sanityCheckList(GcLinks *head) {
     for (GcLinks *item = head->next; item != head; item = item->next) {
-        zvalue one = (zvalue) item;
-        thoroughlyValidate(one);
+        thoroughlyValidate((zvalue) item);
     }
 }
 
@@ -280,21 +279,6 @@ zvalue datAllocValue(ztype type, zint extraBytes) {
 /*
  * Exported functions
  */
-
-/* Documented in header. */
-void datAssertValid(zvalue value) {
-    if (value == NULL) {
-        die("Null value.");
-    }
-
-    if (value->links.magic != DAT_VALUE_MAGIC) {
-        die("Invalid value (incorrect magic): %p", value);
-    }
-
-    if (value->type == NULL) {
-        die("Invalid value (null type): %p", value);
-    }
-}
 
 /* Documented in header. */
 zstackPointer datFrameStart(void) {

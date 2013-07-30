@@ -63,6 +63,11 @@ void datAssertSliceRange(zint size, zint start, zint end) {
  */
 
 /* Documented in header. */
+void datAssertDeriv(zvalue value) {
+    assertType(value, DAT_Deriv);
+}
+
+/* Documented in header. */
 void datAssertInt(zvalue value) {
     assertType(value, DAT_Int);
 }
@@ -104,6 +109,16 @@ void datAssertUniqlet(zvalue value) {
 }
 
 /* Documented in header. */
-void datAssertDeriv(zvalue value) {
-    assertType(value, DAT_Deriv);
+void datAssertValid(zvalue value) {
+    if (value == NULL) {
+        die("Null value.");
+    }
+
+    if (value->links.magic != DAT_VALUE_MAGIC) {
+        die("Invalid value (incorrect magic): %p", value);
+    }
+
+    if (value->type == NULL) {
+        die("Invalid value (null type): %p", value);
+    }
 }
