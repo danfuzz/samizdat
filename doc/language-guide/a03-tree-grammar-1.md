@@ -430,12 +430,6 @@ def parDeriv = {/
     { <> makeCallName("makeValue", derivArgs*) }
 /};
 
-# Parses a uniqlet literal.
-def parUniqlet = {/
-    @"@@"
-    { <> makeCallName("makeUniqlet") }
-/};
-
 # Parses a variable reference.
 def parVarRef = {/
     name = @identifier
@@ -462,7 +456,7 @@ def parParenExpression = {/
 # Parses an atomic expression.
 def parAtom = {/
     parVarRef | parInt | parString | parList | parEmptyMap | parMap |
-    parDeriv | parUniqlet | parClosure | parParenExpression
+    parDeriv | parClosure | parParenExpression
 |
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
     # that *Layer 1* can only be "activated" with that one specific token.

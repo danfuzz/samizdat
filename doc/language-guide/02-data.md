@@ -217,18 +217,19 @@ A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
 no uniqlet is equal to any other uniqlet. In practice, uniqlets are
 used to help bridge the divide between data and not-data.
 
-Uniqlets are written as simply `@@`. Each mention of `@@` refers
-to a different value.
+There is no special syntax for uniqlets. They can be constructed by
+using the function `makeUniqlet`.
 
 One way of thinking about uniqlets is that they are an "atomic
 unit of identity" which can be represented as pure data. Another
-way is that, in Lisp terms, saying `@@` is like calling `gensym`
-or `make-symbol`, but without any string-like name associated with
+way is that, in Lisp terms, `makeUniqlet` is similar to the function
+`gensym` or `make-symbol`, but without any string-like name associated with
 the result.
 
 ```
-@@
+makeUniqlet()
 ```
+
 
 ### Derived types
 

@@ -16,7 +16,6 @@
 
 TOK(CH_AND,        "&");
 TOK(CH_AT,         "@");
-TOK(CH_ATAT,       "@@");
 TOK(CH_CCURLY,     "}");
 TOK(CH_CPAREN,     ")");
 TOK(CH_CSQUARE,    "]");

@@ -327,11 +327,6 @@ def parDeriv = pegMakeMainSequence(
     pegMakeCode { ., tokenArgs <> makeCallName("makeValue", tokenArgs*) });
 
 # Documented in Samizdat Layer 0 spec.
-def parUniqlet = pegMakeMainSequence(
-    pegMakeToken("@@"),
-    pegMakeCode { . <> makeCallName("makeUniqlet") });
-
-# Documented in Samizdat Layer 0 spec.
 def parVarRef = pegMakeMainSequence(
     pegMakeToken("identifier"),
     pegMakeCode { name <> makeVarRef(dataOf(name)) });
@@ -357,7 +352,7 @@ def parParenExpression = pegMakeMainSequence(
 def parAtom = pegMakeMainChoice(
     parVarRef, parInt, parString,
     parList, parEmptyMap, parMap,
-    parDeriv, parUniqlet, parClosure,
+    parDeriv, parClosure,
     parParenExpression,
     # Defined by Samizdat Layer 1. The lookahead is just to make
     # it clear what is required to "jump into" Layer 1 parsing.
