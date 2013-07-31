@@ -79,7 +79,7 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
     zvalue box = boxMutable();
 
     for (at = 0; /*at*/; at++) {
-        zvalue nextGen = langCall(generator, 1, &box);
+        zvalue nextGen = datFnCall(generator, 1, &box);
 
         if (nextGen == NULL) {
             break;
@@ -118,7 +118,7 @@ zvalue collectGenerator(zvalue value) {
         case DAT_STRING: {
             return listFromString(value);
         }
-        case DAT_UNIQLET: {
+        case DAT_FUNCTION: {
             return collectGeneratorPerSe(value);
         }
         default: {

@@ -72,20 +72,20 @@ fn makeStringGenerator(string) {
         { index <> stringNth(string, index) }
 };
 
-# Degenerate generator maker for uniqlets, which are tacitly assumed to
+# Degenerate generator maker for functions, which are tacitly assumed to
 # already be generators.
-fn makeUniqletGenerator(uniqlet) {
-    <> uniqlet
+fn makeFunctionGenerator(function) {
+    <> function
 };
 
 # Map from low-layer value types to corresponding appropriate generator
 # maker functions.
 def GENERATOR_MAKERS = [
-    Int:     makeIntGenerator,
-    List:    makeListGenerator,
-    Map:     makeMapGenerator,
-    String:  makeStringGenerator,
-    Uniqlet: makeUniqletGenerator
+    Function: makeFunctionGenerator,
+    Int:      makeIntGenerator,
+    List:     makeListGenerator,
+    Map:      makeMapGenerator,
+    String:   makeStringGenerator
 ];
 
 # Map from `[direction, inclusive]` pairs to appropriate test functions.

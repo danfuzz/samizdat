@@ -14,10 +14,10 @@
 PRIM_IMPL(ifIs) {
     requireRange(argCount, 2, 3);
 
-    if (langCall(args[0], 0, NULL) != NULL) {
-        return langCall(args[1], 0, NULL);
+    if (datFnCall(args[0], 0, NULL) != NULL) {
+        return datFnCall(args[1], 0, NULL);
     } else if (argCount == 3) {
-        return langCall(args[2], 0, NULL);
+        return datFnCall(args[2], 0, NULL);
     } else {
         return NULL;
     }
@@ -27,8 +27,8 @@ PRIM_IMPL(ifIs) {
 PRIM_IMPL(ifNot) {
     requireExactly(argCount, 2);
 
-    if (langCall(args[0], 0, NULL) == NULL) {
-        return langCall(args[1], 0, NULL);
+    if (datFnCall(args[0], 0, NULL) == NULL) {
+        return datFnCall(args[1], 0, NULL);
     } else {
         return NULL;
     }
@@ -38,12 +38,12 @@ PRIM_IMPL(ifNot) {
 PRIM_IMPL(ifValue) {
     requireRange(argCount, 2, 3);
 
-    zvalue result = langCall(args[0], 0, NULL);
+    zvalue result = datFnCall(args[0], 0, NULL);
 
     if (result != NULL) {
-        return langCall(args[1], 1, &result);
+        return datFnCall(args[1], 1, &result);
     } else if (argCount == 3) {
-        return langCall(args[2], 0, NULL);
+        return datFnCall(args[2], 0, NULL);
     } else {
         return NULL;
     }
@@ -53,12 +53,12 @@ PRIM_IMPL(ifValue) {
 PRIM_IMPL(ifValueOr) {
     requireExactly(argCount, 2);
 
-    zvalue result = langCall(args[0], 0, NULL);
+    zvalue result = datFnCall(args[0], 0, NULL);
 
     if (result != NULL) {
         return result;
     } else {
-        return langCall(args[1], 0, NULL);
+        return datFnCall(args[1], 0, NULL);
     }
 }
 
@@ -69,7 +69,7 @@ PRIM_IMPL(loop) {
     zvalue function = args[0];
     for (;;) {
         zstackPointer save = datFrameStart();
-        langCall(function, 0, NULL);
+        datFnCall(function, 0, NULL);
         datFrameReturn(save, NULL);
     }
 }
@@ -83,7 +83,7 @@ PRIM_IMPL(loopReduce) {
     zvalue innerArgs = datListFromArray(argCount - 1, &args[1]);
 
     for (;;) {
-        zvalue nextArgs = langApply(function, innerArgs);
+        zvalue nextArgs = datFnApply(function, innerArgs);
         if (nextArgs != NULL) {
             innerArgs = nextArgs;
             datFrameReset(save, innerArgs);
