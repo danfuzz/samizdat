@@ -20,9 +20,6 @@
  * Generic function structure.
  */
 typedef struct {
-    /** Value header. */
-    DatHeader header;
-
     // TODO
 } DatGeneric;
 
