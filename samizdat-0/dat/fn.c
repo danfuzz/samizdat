@@ -18,7 +18,7 @@
  */
 
 /**
- * Regular function structure.
+ * Regular (non-generic) function structure.
  */
 typedef struct {
     /** C function to call. */
