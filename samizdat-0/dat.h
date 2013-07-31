@@ -28,7 +28,8 @@ typedef enum {
     DAT_LIST,
     DAT_MAP,
     DAT_UNIQLET,
-    DAT_DERIV
+    DAT_DERIV,
+    DAT_FUNCTION
 } ztypeId;
 
 /**
@@ -86,6 +87,9 @@ typedef const zvalue *zstackPointer;
 /** Type value for in-model type `Deriv`. */
 extern ztype DAT_Deriv;
 
+/** Type value for in-model type `Function`. */
+extern ztype DAT_Function;
+
 /** Type value for in-model type `Int`. */
 extern ztype DAT_Int;
 
@@ -115,6 +119,13 @@ void datInit(void);
 /*
  * Assertion Functions
  */
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a function. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertFunction(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -454,6 +465,31 @@ bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch);
  * box. In this case, the key is in fact the associated state dispatch table.
  */
 zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
+
+
+/*
+ * Function definition and application
+ */
+
+/**
+ * Calls a function with the given list of arguments. `function` must be
+ * a function, and `args` must be a list or `NULL`. A `NULL` value for `args`
+ * is taken to mean the same thing as the empty list.
+ */
+zvalue datFnApply(zvalue function, zvalue args);
+
+/**
+ * Calls a function with the given array of arguments. `function` must be
+ * a function, and `argCount` must be non-negative. If `argCount` is
+ * positive, then `args` must not be `NULL`.
+ */
+zvalue datFnCall(zvalue function, zint argCount, const zvalue *args);
+
+/**
+ * Constructs and returns a function with associated (and arbitrary) closure
+ * state and optional name (used when producing stack traces).
+ */
+zvalue datFnWith(zfunction function, zvalue state, zvalue name);
 
 
 /*
