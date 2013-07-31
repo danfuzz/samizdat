@@ -238,6 +238,7 @@ static zvalue tokenizeOne(ParseState *state) {
 
     switch (ch) {
         case '&':  read(state); return TOK_CH_AND;
+        case '@':  read(state); return TOK_CH_AT;
         case '}':  read(state); return TOK_CH_CCURLY;
         case ')':  read(state); return TOK_CH_CPAREN;
         case ']':  read(state); return TOK_CH_CSQUARE;
@@ -256,9 +257,6 @@ static zvalue tokenizeOne(ParseState *state) {
             return tokenizeString(state);
         case '\\':
             return tokenizeQuotedIdentifier(state);
-        case '@':
-            return tokenizeOneOrTwoChars(state, '@',
-                                         TOK_CH_AT, TOK_CH_ATAT);
         case ':':
             return tokenizeOneOrTwoChars(state, ':',
                                          TOK_CH_COLON, TOK_CH_COLONCOLON);

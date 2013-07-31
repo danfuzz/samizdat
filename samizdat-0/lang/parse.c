@@ -720,15 +720,6 @@ DEF_PARSE(deriv) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(uniqlet) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_ATAT);
-
-    return makeCall(makeVarRef(STR_MAKE_UNIQLET), EMPTY_LIST);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(varRef) {
     MARK();
 
@@ -771,7 +762,6 @@ DEF_PARSE(atom) {
     if (result == NULL) { result = PARSE(list); }
     if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
-    if (result == NULL) { result = PARSE(uniqlet); }
     if (result == NULL) { result = PARSE(deriv); }
     if (result == NULL) { result = PARSE(closure); }
     if (result == NULL) { result = PARSE(parenExpression); }

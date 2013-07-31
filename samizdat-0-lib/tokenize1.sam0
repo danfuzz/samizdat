@@ -58,7 +58,6 @@ def tokOptWhitespace = pegMakeMainSequence(
 def tokPunctuation = pegMakeMainSequence(
     pegMakeLookaheadSuccess(pegMakeCharSet("&@:.,=-+?;*<>{}()[]", "/|!")),
     pegMakeChoice(
-        pegMakeString("@@"),
         pegMakeString("::"),
         pegMakeString(".."),
         pegMakeString("<>"),

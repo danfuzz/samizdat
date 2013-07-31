@@ -195,11 +195,6 @@ fn doMap(map, adorn) {
     <> adornIf(adorn, "[", collectionBody(mapElems, ":"), "]");
 };
 
-# Stringifies a uniqlet.
-fn doUniqlet(uniqlet, .) {
-    <> "@@"
-};
-
 # Stringifies a derived value or an opaque core value.
 fn doDerivOrOpaque(value, adorn) {
     ifValue { <> mapGet(SPECIAL_VALUES, value) }
@@ -213,7 +208,7 @@ fn doDerivOrOpaque(value, adorn) {
             def dataString = ifIs { <> eq(value, data) }
                 {
                     # It's an opaque core value.
-                    <> "(opaque)"
+                    <> "/*opaque*/"
                 }
                 {
                     # It's a derived value.
@@ -247,21 +242,19 @@ fn doListFlatten(list, .) {
 # Mapping from low-layer type names to stringifiers to use for `%q`-style
 # source-stringification.
 def SOURCE_STRINGIFIERS = [
-    Int:     doInt,
-    List:    doList,
-    Map:     doMap,
-    String:  doString,
-    Uniqlet: doUniqlet
+    Int:    doInt,
+    List:   doList,
+    Map:    doMap,
+    String: doString
 ];
 
 # Mapping from low-layer type names to stringifiers to use for `%s`-style
 # human-stringification.
 def HUMAN_STRINGIFIERS = [
-    Int:     doInt,
-    List:    doListFlatten,
-    Map:     doMap,
-    String:  doStringAsIs,
-    Uniqlet: doUniqlet
+    Int:    doInt,
+    List:   doListFlatten,
+    Map:    doMap,
+    String: doStringAsIs
 ];
 
 # Common handler for the two exported functions.
