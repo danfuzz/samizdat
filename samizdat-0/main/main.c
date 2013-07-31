@@ -6,7 +6,6 @@
 
 #include "const.h"
 #include "io.h"
-#include "lang.h"
 #include "lib.h"
 #include "util.h"
 

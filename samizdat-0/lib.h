@@ -11,7 +11,7 @@
 #ifndef _LIB_H_
 #define _LIB_H_
 
-#include "lang.h"
+#include "dat.h"
 
 /**
  * Constructs and returns a fresh execution context, containing
