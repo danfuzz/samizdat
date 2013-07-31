@@ -133,6 +133,7 @@ static DatType INFO_Function = {
     .id = DAT_FUNCTION,
     .name = "Function",
     .sizeOf = NULL,
+    .typeOf = NULL,
     .gcMark = fnGcMark,
     .gcFree = NULL,
     .eq = NULL,

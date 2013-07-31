@@ -131,6 +131,7 @@ static DatType INFO_Deriv = {
     .id = DAT_DERIV,
     .name = "Deriv",
     .sizeOf = derivSizeOf,
+    .typeOf = datDerivType,
     .gcMark = derivGcMark,
     .gcFree = NULL,
     .eq = derivEq,

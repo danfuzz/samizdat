@@ -22,8 +22,8 @@ static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
     datAssertSameType(v1, v2);
 
     if (datTypeIs(v1, DAT_Deriv)) {
-        zvalue type1 = constTypeOf(v1);
-        zvalue type2 = constTypeOf(v2);
+        zvalue type1 = datTypeOf(v1);
+        zvalue type2 = datTypeOf(v2);
 
         if (!datEq(type1, type2)) {
             die("Mismatched derived types.");
@@ -109,5 +109,5 @@ PRIM_IMPL(totalOrderIs) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(typeOf) {
     requireExactly(argCount, 1);
-    return constTypeOf(args[0]);
+    return datTypeOf(args[0]);
 }

@@ -246,6 +246,7 @@ static DatType INFO_List = {
     .id = DAT_LIST,
     .name = "List",
     .sizeOf = listSizeOf,
+    .typeOf = NULL,
     .gcMark = listGcMark,
     .gcFree = NULL,
     .eq = listEq,

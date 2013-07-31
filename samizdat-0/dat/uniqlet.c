@@ -132,6 +132,7 @@ static DatType INFO_Uniqlet = {
     .id = DAT_UNIQLET,
     .name = "Uniqlet",
     .sizeOf = NULL,
+    .typeOf = NULL,
     .gcMark = uniqletGcMark,
     .gcFree = uniqletGcFree,
     .eq = NULL,

@@ -64,3 +64,20 @@ ztypeId datTypeId(zvalue value) {
 bool datTypeIs(zvalue value, ztype type) {
     return value->type == type;
 }
+
+/* Documented in header. */
+zvalue datTypeOf(zvalue value) {
+    ztype type = value->type; // Cast to discard `const`.
+
+    if (type->typeOf != NULL) {
+        return type->typeOf(value);
+    } else {
+        zvalue result = type->nameValue;
+        if (result == NULL) {
+            result = datStringFromUtf8(-1, type->name);
+            ((DatType *) type)->nameValue = result; // Cast to discard `const`.
+            datImmortalize(result);
+        }
+        return result;
+    }
+}

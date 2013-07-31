@@ -223,6 +223,7 @@ static DatType INFO_String = {
     .id = DAT_STRING,
     .name = "String",
     .sizeOf = stringSizeOf,
+    .typeOf = NULL,
     .gcMark = stringGcMark,
     .gcFree = NULL,
     .eq = stringEq,

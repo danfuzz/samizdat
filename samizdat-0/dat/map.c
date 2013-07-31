@@ -466,6 +466,7 @@ static DatType INFO_Map = {
     .id = DAT_MAP,
     .name = "Map",
     .sizeOf = mapSizeOf,
+    .typeOf = NULL,
     .gcMark = mapGcMark,
     .gcFree = NULL,
     .eq = mapEq,

@@ -559,6 +559,12 @@ bool datTypeIs(zvalue value, ztype type);
  */
 ztypeId datTypeId(zvalue value);
 
+/**
+ * Gets the overt data type of the given value. `value` must be a
+ * valid value (in particular, non-`NULL`).
+ */
+zvalue datTypeOf(zvalue value);
+
 
 /*
  * Memory management functions

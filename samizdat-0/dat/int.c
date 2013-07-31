@@ -150,6 +150,7 @@ static DatType INFO_Int = {
     .id = DAT_INT,
     .name = "Int",
     .sizeOf = intSizeOf,
+    .typeOf = NULL,
     .gcMark = intGcMark,
     .gcFree = NULL,
     .eq = intEq,
