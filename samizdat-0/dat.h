@@ -525,6 +525,13 @@ zvalue datDerivData(zvalue deriv);
  */
 
 /**
+ * Gets the data payload of the given value. `value` must be a
+ * valid value (in particular, non-`NULL`). For everything but derived
+ * values, the data payload is the same as the value itself.
+ */
+zvalue datDataOf(zvalue value);
+
+/**
  * Compares two values for equality. This exists in addition to
  * `datOrder`, because it is possible for this function run much
  * quicker in the not-equal case.

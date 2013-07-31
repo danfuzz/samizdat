@@ -130,6 +130,7 @@ static zorder derivOrder(zvalue v1, zvalue v2) {
 static DatType INFO_Deriv = {
     .id = DAT_DERIV,
     .name = "Deriv",
+    .dataOf = datDerivData,
     .sizeOf = derivSizeOf,
     .typeOf = datDerivType,
     .gcMark = derivGcMark,

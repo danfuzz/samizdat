@@ -132,6 +132,7 @@ static zorder fnOrder(zvalue v1, zvalue v2) {
 static DatType INFO_Function = {
     .id = DAT_FUNCTION,
     .name = "Function",
+    .dataOf = NULL,
     .sizeOf = NULL,
     .typeOf = NULL,
     .gcMark = fnGcMark,

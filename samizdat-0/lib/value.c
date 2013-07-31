@@ -83,7 +83,7 @@ PRIM_IMPL(coreSizeOf) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(dataOf) {
     requireExactly(argCount, 1);
-    return constDataOf(args[0]);
+    return datDataOf(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

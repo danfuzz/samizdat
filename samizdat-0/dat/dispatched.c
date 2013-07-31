@@ -14,6 +14,17 @@
  */
 
 /* Documented in header. */
+zvalue datDataOf(zvalue value) {
+    ztype type = value->type;
+
+    if (type->dataOf != NULL) {
+        return type->dataOf(value);
+    } else {
+        return value;
+    }
+}
+
+/* Documented in header. */
 bool datEq(zvalue v1, zvalue v2) {
     datAssertValid(v1);
     datAssertValid(v2);
@@ -67,7 +78,7 @@ bool datTypeIs(zvalue value, ztype type) {
 
 /* Documented in header. */
 zvalue datTypeOf(zvalue value) {
-    ztype type = value->type; // Cast to discard `const`.
+    ztype type = value->type;
 
     if (type->typeOf != NULL) {
         return type->typeOf(value);

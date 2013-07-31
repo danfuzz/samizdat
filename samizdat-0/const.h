@@ -38,12 +38,6 @@ extern zvalue EMPTY_LIST;
 extern zvalue EMPTY_MAP;
 
 /**
- * Gets the payload data of the given arbitrary value. This handles both
- * core and derived values.
- */
-zvalue constDataOf(zvalue value);
-
-/**
  * Initializes the constants, if necessary.
  */
 void constInit(void);
