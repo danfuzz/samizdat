@@ -585,7 +585,7 @@ bool datTypeIs(zvalue value, ztype type);
  * Gets the low-level data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */
-ztypeId datType(zvalue value);
+ztypeId datTypeId(zvalue value);
 
 
 /*

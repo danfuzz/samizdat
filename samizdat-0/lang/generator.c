@@ -104,7 +104,7 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
 
 /* Documented in header. */
 zvalue collectGenerator(zvalue value) {
-    switch (datType(value)) {
+    switch (datTypeId(value)) {
         case DAT_INT: {
             return listFromInt(value);
         }
