@@ -96,11 +96,6 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
  */
 
 /* Documented in header. */
-static zint uniqletSizeOf(zvalue uniqlet) {
-    return 0;
-}
-
-/* Documented in header. */
 static void uniqletGcMark(zvalue uniqlet) {
     DatUniqlet *info = uniqletInfo(uniqlet);
 
@@ -142,7 +137,7 @@ static zorder uniqletOrder(zvalue v1, zvalue v2) {
 static DatType INFO_Uniqlet = {
     .id = DAT_UNIQLET,
     .name = "Uniqlet",
-    .sizeOf = uniqletSizeOf,
+    .sizeOf = NULL,
     .gcMark = uniqletGcMark,
     .gcFree = uniqletGcFree,
     .eq = uniqletEq,

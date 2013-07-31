@@ -115,11 +115,6 @@ zvalue datFnWith(zfunction function, zvalue state, zvalue name) {
  */
 
 /* Documented in header. */
-static zint fnSizeOf(zvalue function) {
-    return 0;
-}
-
-/* Documented in header. */
 static void fnGcMark(zvalue function) {
     DatFunction *info = fnInfo(function);
 
@@ -143,7 +138,7 @@ static zorder fnOrder(zvalue v1, zvalue v2) {
 static DatType INFO_Function = {
     .id = DAT_FUNCTION,
     .name = "Function",
-    .sizeOf = fnSizeOf,
+    .sizeOf = NULL,
     .gcMark = fnGcMark,
     .gcFree = NULL,
     .eq = fnEq,

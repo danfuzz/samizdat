@@ -35,7 +35,8 @@ typedef struct DatType {
 
     /**
      * Gets the "size" of a value of the given type, for the appropriate
-     * per-type meaning of size.
+     * per-type meaning of size. Optional (may be `NULL`), and if omitted
+     * means that the size is always `0`.
      */
     zint (*sizeOf)(zvalue);
 

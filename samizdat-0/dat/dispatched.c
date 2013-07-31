@@ -46,7 +46,11 @@ zorder datOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zint datSize(zvalue value) {
-    return value->type->sizeOf(value);
+    if (value->type->sizeOf != NULL) {
+        return value->type->sizeOf(value);
+    } else {
+        return 0;
+    }
 }
 
 /* Documented in header. */
