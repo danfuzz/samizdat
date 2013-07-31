@@ -157,6 +157,21 @@ expectCore(uniq1);
 expectCore(uniq2);
 
 
+# Function
+
+io0Note("\nFunction");
+
+def fn1 = { x <> x };
+def fn2 = { x <> x };
+
+expectSame(fn1, fn1);
+expectSame(fn2, fn2);
+expectDifferent(fn1, fn2);
+expectDifferent(fn2, fn1);
+expectCore(fn1);
+expectCore(fn2);
+
+
 # Derived values
 
 io0Note("\nDerived values");
@@ -196,14 +211,17 @@ expectDerived(true);
 
 io0Note("\nReconstructed core values");
 
+def fnRecon = { x <> x };
 def uniqRecon = makeUniqlet();
 
+expectSame(@[Function: fnRecon], fnRecon);
 expectSame(@[Int: 10], 10);
 expectSame(@[List: [1, 2, 3]], [1, 2, 3]);
 expectSame(@[Map: [biscuit: "muffin"]], [biscuit: "muffin"]);
 expectSame(@[String: "stuff"], "stuff");
 expectSame(@[Uniqlet: uniqRecon], uniqRecon);
 
+expectCore(@[Function: { x <> x }]);
 expectCore(@[Int: 10]);
 expectCore(@[List: [1, 2, 3]]);
 expectCore(@[Map: [biscuit: "muffin"]]);
@@ -215,6 +233,7 @@ expectCore(@[Uniqlet: makeUniqlet()]);
 
 io0Note("\nCore types with mismatched payloads");
 
+expectDerived(@[Function: "x"]);
 expectDerived(@[Int: "x"]);
 expectDerived(@[List: "x"]);
 expectDerived(@[Map: "x"]);
