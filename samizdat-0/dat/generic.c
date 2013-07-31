@@ -116,12 +116,6 @@ static void genGcMark(zvalue function) {
 }
 
 /* Documented in header. */
-static bool genEq(zvalue v1, zvalue v2) {
-    // Because this function is only called when `v1 != v2`.
-    return false;
-}
-
-/* Documented in header. */
 static zorder genOrder(zvalue v1, zvalue v2) {
     return datOrder(genInfo(v1)->orderToken, genInfo(v2)->orderToken);
 }
@@ -133,7 +127,7 @@ static DatType INFO_Generic = {
     .sizeOf = NULL,
     .gcMark = genGcMark,
     .gcFree = NULL,
-    .eq = genEq,
+    .eq = NULL,
     .order = genOrder
 };
 ztype DAT_Generic = &INFO_Generic;
