@@ -14,7 +14,7 @@
  */
 
 /**
- * Uniqlet info.
+ * Uniqlet structure.
  */
 typedef struct {
     /** Uniqlet unique id. */
@@ -25,17 +25,6 @@ typedef struct {
 
     /** Sealed box payload value. */
     void *state;
-} UniqletInfo;
-
-/**
- * Uniqlet structure.
- */
-typedef struct {
-    /** Value header. */
-    DatHeader header;
-
-    /** Uniqlet info. */
-    UniqletInfo info;
 } DatUniqlet;
 
 /** The next uniqlet id to issue. */
@@ -44,16 +33,8 @@ static zint theNextId = 0;
 /**
  * Gets a pointer to the info of a uniqlet.
  */
-static UniqletInfo *uniqletInfo(zvalue uniqlet) {
-    datAssertUniqlet(uniqlet);
-    return &((DatUniqlet *) uniqlet)->info;
-}
-
-/**
- * Gets the id of a uniqlet.
- */
-static zint uniqletId(zvalue uniqlet) {
-    return uniqletInfo(uniqlet)->id;
+static DatUniqlet *uniqletInfo(zvalue uniqlet) {
+    return datPayload(uniqlet);
 }
 
 /**
@@ -61,14 +42,14 @@ static zint uniqletId(zvalue uniqlet) {
  * on the arguments.
  */
 static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
-    zvalue result = datAllocValue(DAT_Uniqlet, sizeof(UniqletInfo));
+    zvalue result = datAllocValue(DAT_Uniqlet, sizeof(DatUniqlet));
 
     if (theNextId < 0) {
         // Shouldn't be possible, but just in case...
         die("Shouldn't happen: Way too many uniqlets!");
     }
 
-    UniqletInfo *info = &((DatUniqlet *) result)->info;
+    DatUniqlet *info = uniqletInfo(result);
     info->id = theNextId;
     info->dispatch = dispatch;
     info->state = state;
@@ -89,6 +70,8 @@ zvalue datUniqlet(void) {
 
 /* Documented in header. */
 void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+    datAssertUniqlet(uniqlet);
+
     if (!datUniqletHasDispatch(uniqlet, dispatch)) {
         die("Wrong uniqlet dispatch table for get.");
     }
@@ -98,6 +81,7 @@ void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch) {
 
 /* Documented in header. */
 bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+    datAssertUniqlet(uniqlet);
     return (dispatch == uniqletInfo(uniqlet)->dispatch);
 }
 
@@ -118,7 +102,7 @@ static zint uniqletSizeOf(zvalue uniqlet) {
 
 /* Documented in header. */
 static void uniqletGcMark(zvalue uniqlet) {
-    UniqletInfo *info = uniqletInfo(uniqlet);
+    DatUniqlet *info = uniqletInfo(uniqlet);
 
     if (info->dispatch != NULL) {
         info->dispatch->mark(info->state);
@@ -127,7 +111,7 @@ static void uniqletGcMark(zvalue uniqlet) {
 
 /* Documented in header. */
 static void uniqletGcFree(zvalue uniqlet) {
-    UniqletInfo *info = uniqletInfo(uniqlet);
+    DatUniqlet *info = uniqletInfo(uniqlet);
 
     if (info->dispatch != NULL) {
         info->dispatch->free(info->state);
@@ -141,8 +125,8 @@ static bool uniqletEq(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 static zorder uniqletOrder(zvalue v1, zvalue v2) {
-    zint id1 = uniqletId(v1);
-    zint id2 = uniqletId(v2);
+    zint id1 = uniqletInfo(v1)->id;
+    zint id2 = uniqletInfo(v2)->id;
 
     if (id1 < id2) {
         return ZLESS;

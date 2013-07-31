@@ -22,9 +22,6 @@ enum {
  * Int structure.
  */
 typedef struct {
-    /** Value header. */
-    DatHeader header;
-
     /** Int value. See `datIntFromZint()` about range restriction. */
     int32_t value;
 } DatInt;
@@ -59,7 +56,7 @@ static zint bitSize(zint value) {
  * type checking.
  */
 static zint zintValue(zvalue intval) {
-    return ((DatInt *) intval)->value;
+    return ((DatInt *) datPayload(intval))->value;
 }
 
 
@@ -87,7 +84,7 @@ zvalue datIntFromZint(zint value) {
         die("Value too large to fit into int: %lld", value);
     }
 
-    ((DatInt *) result)->value = (int32_t) value;
+    ((DatInt *) datPayload(result))->value = (int32_t) value;
     return result;
 }
 

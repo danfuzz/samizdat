@@ -17,9 +17,6 @@
  * List structure.
  */
 typedef struct {
-    /** Value header. */
-    DatHeader header;
-
     /** Number of elements. */
     zint size;
 
@@ -31,14 +28,14 @@ typedef struct {
  * Gets the array of `zvalue` elements from a list.
  */
 static zvalue *listElems(zvalue list) {
-    return ((DatList *) list)->elems;
+    return ((DatList *) datPayload(list))->elems;
 }
 
 /**
  * Gets the size of a list.
  */
 static zint listSizeOf(zvalue list) {
-    return ((DatList *) list)->size;
+    return ((DatList *) datPayload(list))->size;
 }
 
 /**
@@ -48,7 +45,7 @@ static zvalue allocList(zint size) {
     zvalue result =
         datAllocValue(DAT_List, sizeof(DatList) + size * sizeof(zvalue));
 
-    ((DatList *) result)->size = size;
+    ((DatList *) datPayload(result))->size = size;
     return result;
 }
 

@@ -14,7 +14,7 @@
  */
 
 /**
- * Derived value info.
+ * Derived value structure.
  */
 typedef struct {
     /** Type tag. Never `NULL`. */
@@ -22,24 +22,13 @@ typedef struct {
 
     /** Associated payload data. Possibly `NULL`. */
     zvalue data;
-} DerivInfo;
-
-/**
- * Derived value structure.
- */
-typedef struct {
-    /** Value header. */
-    DatHeader header;
-
-    /** Derived value info. */
-    DerivInfo info;
 } DatDeriv;
 
 /**
  * Gets a pointer to the value's info.
  */
-static DerivInfo *derivInfo(zvalue deriv) {
-    return &((DatDeriv *) deriv)->info;
+static DatDeriv *derivInfo(zvalue deriv) {
+    return datPayload(deriv);
 }
 
 /**
@@ -47,8 +36,8 @@ static DerivInfo *derivInfo(zvalue deriv) {
  * on the arguments.
  */
 static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = datAllocValue(DAT_Deriv, sizeof(DerivInfo));
-    DerivInfo *info = derivInfo(result);
+    zvalue result = datAllocValue(DAT_Deriv, sizeof(DatDeriv));
+    DatDeriv *info = derivInfo(result);
 
     info->type = type;
     info->data = data;
@@ -95,7 +84,7 @@ static zint derivSizeOf(zvalue deriv) {
 
 /* Documented in header. */
 static void derivGcMark(zvalue deriv) {
-    DerivInfo *info = derivInfo(deriv);
+    DatDeriv *info = derivInfo(deriv);
 
     datMark(info->type);
     datMark(info->data);
@@ -103,8 +92,8 @@ static void derivGcMark(zvalue deriv) {
 
 /* Documented in header. */
 static bool derivEq(zvalue v1, zvalue v2) {
-    DerivInfo *info1 = derivInfo(v1);
-    DerivInfo *info2 = derivInfo(v2);
+    DatDeriv *info1 = derivInfo(v1);
+    DatDeriv *info2 = derivInfo(v2);
 
     if (info1->data == NULL) {
         if (info2->data != NULL) {
@@ -121,8 +110,8 @@ static bool derivEq(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 static zorder derivOrder(zvalue v1, zvalue v2) {
-    DerivInfo *info1 = derivInfo(v1);
-    DerivInfo *info2 = derivInfo(v2);
+    DatDeriv *info1 = derivInfo(v1);
+    DatDeriv *info2 = derivInfo(v2);
 
     zorder result = datOrder(info1->type, info2->type);
 

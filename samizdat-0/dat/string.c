@@ -17,9 +17,6 @@
  * String structure.
  */
 typedef struct {
-    /** Value header. */
-    DatHeader header;
-
     /** Number of characters. */
     zint size;
 
@@ -34,7 +31,7 @@ static zvalue allocString(zint size) {
     zvalue result =
         datAllocValue(DAT_String, sizeof(DatString) + size * sizeof(zchar));
 
-    ((DatString *) result)->size = size;
+    ((DatString *) datPayload(result))->size = size;
     return result;
 }
 
@@ -42,14 +39,14 @@ static zvalue allocString(zint size) {
  * Gets the size of a string.
  */
 static zint stringSizeOf(zvalue string) {
-    return ((DatString *) string)->size;
+    return ((DatString *) datPayload(string))->size;
 }
 
 /**
  * Gets the array of `zvalue` elements from a list.
  */
 static zchar *stringElems(zvalue string) {
-    return ((DatString *) string)->elems;
+    return ((DatString *) datPayload(string))->elems;
 }
 
 
