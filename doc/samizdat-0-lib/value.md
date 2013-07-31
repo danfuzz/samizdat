@@ -62,6 +62,10 @@ value, this returns the type tag that it was constructed with.
 Returns the given `value` if it is a core (not derived) value.
 Returns void if not.
 
+#### `isFunction(value) <> logic`
+
+Returns the given `value` if it is a function. Returns void if not.
+
 #### `isInt(value) <> logic`
 
 Returns the given `value` if it is an int. Returns void if not.
