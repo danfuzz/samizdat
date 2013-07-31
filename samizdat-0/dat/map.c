@@ -24,9 +24,6 @@ enum {
  * Map structure.
  */
 typedef struct {
-    /** Value header. */
-    DatHeader header;
-
     /** Number of mappings. */
     zint size;
 
@@ -91,7 +88,7 @@ static zvalue allocMap(zint size) {
     zvalue result =
         datAllocValue(DAT_Map, sizeof(DatMap) + size * sizeof(zmapping));
 
-    ((DatMap *) result)->size = size;
+    ((DatMap *) datPayload(result))->size = size;
     return result;
 }
 
@@ -99,14 +96,14 @@ static zvalue allocMap(zint size) {
  * Gets the size of a map.
  */
 static zint mapSizeOf(zvalue map) {
-    return ((DatMap *) map)->size;
+    return ((DatMap *) datPayload(map))->size;
 }
 
 /**
  * Gets the elements array from a map.
  */
 static zmapping *mapElems(zvalue map) {
-    return ((DatMap *) map)->elems;
+    return ((DatMap *) datPayload(map))->elems;
 }
 
 /**
@@ -285,7 +282,7 @@ zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
         at++;
     }
 
-    ((DatMap *) result)->size = at;
+    ((DatMap *) datPayload(result))->size = at;
     return result;
 }
 

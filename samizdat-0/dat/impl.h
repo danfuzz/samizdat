@@ -83,6 +83,9 @@ typedef struct DatHeader {
 
     /** Data type. */
     ztype type;
+
+    /** Type-specific data goes here. */
+    uint8_t payload[/*flexible*/];
 } DatHeader;
 
 /**
@@ -124,5 +127,10 @@ void datAssertValid(zvalue value);
  * Clears the contents of the map lookup cache.
  */
 void datMapClearCache(void);
+
+/**
+ * Gets a pointer to the data payload of a `zvalue`.
+ */
+void *datPayload(zvalue value);
 
 #endif

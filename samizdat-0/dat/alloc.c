@@ -282,6 +282,11 @@ zvalue datAllocValue(ztype type, zint extraBytes) {
     return result;
 }
 
+/* Documented in header. */
+void *datPayload(zvalue value) {
+    return value->payload;
+}
+
 
 /*
  * Exported functions
