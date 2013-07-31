@@ -22,6 +22,11 @@ fn hasCoreType(value, typeName) {
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn isFunction(value) {
+    <> hasCoreType(value, "Function")
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn isInt(value) {
     <> hasCoreType(value, "Int")
 };
@@ -47,9 +52,10 @@ fn isUniqlet(value) {
 };
 
 <> [
-    isInt:     isInt,
-    isList:    isList,
-    isMap:     isMap,
-    isString:  isString,
-    isUniqlet: isUniqlet
+    isFunction: isFunction,
+    isInt:      isInt,
+    isList:     isList,
+    isMap:      isMap,
+    isString:   isString,
+    isUniqlet:  isUniqlet
 ]
