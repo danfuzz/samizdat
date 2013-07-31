@@ -202,12 +202,20 @@ written as `[:]`.
 [:, [first: 1]*, [second: 2, third: 3]*]
 ```
 
+#### Function
+
+A `function` is an encapsulated potential computation. As with many
+other languages, functions are generally defined in terms of source code
+and an execution context.
+
+See the language guide section on functions for more details.
+
+
 #### Uniqlet
 
 A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
 no uniqlet is equal to any other uniqlet. In practice, uniqlets are
-used to help bridge the divide between data and not-data, with some of
-the main not-data sorts of things in the system being functions.
+used to help bridge the divide between data and not-data.
 
 Uniqlets are written as simply `@@`. Each mention of `@@` refers
 to a different value.

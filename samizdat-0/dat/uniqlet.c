@@ -120,6 +120,7 @@ static void uniqletGcFree(zvalue uniqlet) {
 
 /* Documented in header. */
 static bool uniqletEq(zvalue v1, zvalue v2) {
+    // Because this function is only called when `v1 != v2`.
     return false;
 }
 

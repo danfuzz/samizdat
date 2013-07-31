@@ -59,13 +59,14 @@ type-dependant.
   lists are identical, then the result is the comparison of
   corresponding lists of values, in key order.
 
-* Any given uniqlet never compares as identical to anything but
-  itself. There is a total ordering of uniqlets, which is consistent,
-  transitive, and symmetric &mdash; but otherwise arbitrary.
-
 * Derived values compare by type as primary (per above), and data payload
   as secondary. With types equal, derived values without a payload order
   earlier than ones with a payload.
+
+* All other core values (uniqlets and functions) never compare as identical to
+  anything but themselves. Within each type, there is a total ordering of
+  values. The ordering is consistent, transitive, and symmetric;
+  but otherwise arbitrary.
 
 #### `totalOrderIs(value1, value2, check1, check2?) <> logic`
 
