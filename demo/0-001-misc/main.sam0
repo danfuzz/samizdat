@@ -97,7 +97,7 @@ fn main(selfPath, name, rest*) {
     process(@[while]); # Ditto.
     process([def: "defined", do: "done"]); # Likewise, for map keys.
     process(@[(null)]);
-    process(@@);
+    process(makeUniqlet());
     process(boxer());
     process(metaFunctions(LIBRARY, "blort.sam0"));
     process(io0PathFromFlat("///foo//////./bar/../baz"));

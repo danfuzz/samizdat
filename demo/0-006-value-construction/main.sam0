@@ -146,8 +146,8 @@ expectCore("muffins");
 
 io0Note("\nUniqlet");
 
-def uniq1 = @@;
-def uniq2 = @@;
+def uniq1 = makeUniqlet();
+def uniq2 = makeUniqlet();
 
 expectSame(uniq1, uniq1);
 expectSame(uniq2, uniq2);
@@ -196,7 +196,7 @@ expectDerived(true);
 
 io0Note("\nReconstructed core values");
 
-def uniqRecon = @@;
+def uniqRecon = makeUniqlet();
 
 expectSame(@[Int: 10], 10);
 expectSame(@[List: [1, 2, 3]], [1, 2, 3]);
@@ -208,7 +208,7 @@ expectCore(@[Int: 10]);
 expectCore(@[List: [1, 2, 3]]);
 expectCore(@[Map: [biscuit: "muffin"]]);
 expectCore(@[String: "stuff"]);
-expectCore(@[Uniqlet: @@]);
+expectCore(@[Uniqlet: makeUniqlet()]);
 
 
 # Core types with mismatched payloads
