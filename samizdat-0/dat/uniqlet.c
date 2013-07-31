@@ -114,12 +114,6 @@ static void uniqletGcFree(zvalue uniqlet) {
 }
 
 /* Documented in header. */
-static bool uniqletEq(zvalue v1, zvalue v2) {
-    // Because this function is only called when `v1 != v2`.
-    return false;
-}
-
-/* Documented in header. */
 static zorder uniqletOrder(zvalue v1, zvalue v2) {
     zint id1 = uniqletInfo(v1)->id;
     zint id2 = uniqletInfo(v2)->id;
@@ -140,7 +134,7 @@ static DatType INFO_Uniqlet = {
     .sizeOf = NULL,
     .gcMark = uniqletGcMark,
     .gcFree = uniqletGcFree,
-    .eq = uniqletEq,
+    .eq = NULL,
     .order = uniqletOrder
 };
 ztype DAT_Uniqlet = &INFO_Uniqlet;

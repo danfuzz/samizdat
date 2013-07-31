@@ -22,8 +22,10 @@ bool datEq(zvalue v1, zvalue v2) {
         return true;
     } else if (v1->type != v2->type) {
         return false;
-    } else {
+    } else if (v1->type->eq) {
         return v1->type->eq(v1, v2);
+    } else {
+        return false;
     }
 }
 
