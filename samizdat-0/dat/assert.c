@@ -93,6 +93,11 @@ void datAssertDeriv(zvalue value) {
 }
 
 /* Documented in header. */
+void datAssertFunction(zvalue value) {
+    assertType(value, DAT_Function);
+}
+
+/* Documented in header. */
 void datAssertInt(zvalue value) {
     assertType(value, DAT_Int);
 }

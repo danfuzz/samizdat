@@ -15,42 +15,6 @@
 
 
 /*
- * Data types
- */
-
-/**
- * Prototype for all functions bound into execution contexts. The
- * `state` is arbitrary closure state (passed in when the function
- * was bound).
- */
-typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
-
-
-/*
- * Function definition and application
- */
-
-/**
- * Calls a value which is presumed to be bound as a function, passing
- * it the given list of arguments.
- */
-zvalue langApply(zvalue functionId, zvalue args);
-
-/**
- * Calls a value which is presumed to be bound as a function, passing
- * it the given number of arguments in the indicated array.
- */
-zvalue langCall(zvalue functionId, zint argCount, const zvalue *args);
-
-/**
- * Defines a function with associated (and arbitrary) closure state and
- * optional name (used when producing stack traces). Returns the identifying
- * uniqlet that binds to it.
- */
-zvalue langDefineFunction(zfunction function, zvalue state, zvalue name);
-
-
-/*
  * Compilation
  */
 

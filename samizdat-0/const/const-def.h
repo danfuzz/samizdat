@@ -50,6 +50,7 @@ STR(UP_LIBRARY,       "LIBRARY");
 
 STR(CAP_INT,          "Int");
 STR(CAP_DERIV,        "Deriv");
+STR(CAP_FUNCTION,     "Function");
 STR(CAP_STRING,       "String");
 STR(CAP_LIST,         "List");
 STR(CAP_MAP,          "Map");

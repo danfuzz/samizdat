@@ -89,6 +89,11 @@ typedef struct DatHeader {
 } DatHeader;
 
 /**
+ * Flag indicating whether module has been initialized.
+ */
+extern bool datInitialized;
+
+/**
  * Allocates memory, sized to include a `DatHeader` header plus the
  * indicated number of extra bytes. The `DatHeader` header is
  * initialized with the indicated type and size. The resulting value

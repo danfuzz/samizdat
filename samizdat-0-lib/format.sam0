@@ -195,16 +195,32 @@ fn doMap(map, adorn) {
     <> adornIf(adorn, "[", collectionBody(mapElems, ":"), "]");
 };
 
-# Stringifies a derived value.
-fn doDeriv(deriv, adorn) {
-    ifValue { <> mapGet(SPECIAL_VALUES, deriv) }
+# Stringifies a uniqlet.
+fn doUniqlet(uniqlet, .) {
+    <> "@@"
+};
+
+# Stringifies a derived value or an opaque core value.
+fn doDerivOrOpaque(value, adorn) {
+    ifValue { <> mapGet(SPECIAL_VALUES, value) }
         { string :: return string };
 
-    def type = typeOf(deriv);
+    def type = typeOf(value);
     def typeString = keyString(type);
 
-    def body = ifValue { <> dataOf(deriv) }
-        { value <> stringAdd(typeString, ": ", callSourceString(value)) }
+    def body = ifValue { <> dataOf(value) }
+        { data ::
+            def dataString = ifIs { <> eq(value, data) }
+                {
+                    # It's an opaque core value.
+                    <> "(opaque)"
+                }
+                {
+                    # It's a derived value.
+                    <> callSourceString(data)
+                };
+            <> stringAdd(typeString, ": ", dataString)
+        }
         {
             ifIs { <> isString(type) }
                 { return adornIf(adorn, "@", typeString, "") };
@@ -212,11 +228,6 @@ fn doDeriv(deriv, adorn) {
         };
 
     <> adornIf(adorn, "@[", body, "]");
-};
-
-# Stringifies a uniqlet.
-fn doUniqlet(uniqlet, .) {
-    <> "@@"
 };
 
 # Stringifies a string as-is. That is, it just returns the argument. The
@@ -257,7 +268,7 @@ def HUMAN_STRINGIFIERS = [
 fn sourceStringGeneral(value, adorn) {
     def stringifier = ifValueOr
         { <> mapGet(SOURCE_STRINGIFIERS, &typeOf(&isCoreValue(value))) }
-        { <> doDeriv };
+        { <> doDerivOrOpaque };
 
     <> stringifier(value, adorn)
 };
@@ -302,7 +313,7 @@ fn stringFromValue(value?) {
         { value ::
             def stringifier = ifValueOr
                 { <> mapGet(HUMAN_STRINGIFIERS, &typeOf(&isCoreValue(value))) }
-                { <> doDeriv };
+                { <> doDerivOrOpaque };
             <> stringifier(value, true)
         }
         { <> "" }

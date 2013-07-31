@@ -59,6 +59,8 @@ void constInit(void) {
         return;
     }
 
+    datInit();
+
     zstackPointer save = datFrameStart();
 
     #define STR(name, str) \

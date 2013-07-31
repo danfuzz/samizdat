@@ -279,7 +279,7 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
         *resultClosure = closure;
     }
 
-    return langDefineFunction(
+    return datFnWith(
         callClosure,
         datUniqletWith(&CLOSURE_DISPATCH, closure),
         datMapGet(defMap, STR_NAME));
@@ -418,9 +418,9 @@ static zvalue execCall(Frame *frame, zvalue call) {
             }
         }
 
-        return langCall(functionId, fullCount, fullArgs);
+        return datFnCall(functionId, fullCount, fullArgs);
     } else {
-        return langCall(functionId, argCount, args);
+        return datFnCall(functionId, argCount, args);
     }
 }
 

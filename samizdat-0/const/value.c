@@ -24,12 +24,13 @@ zvalue constDataOf(zvalue value) {
 /* Documented in header. */
 zvalue constCoreTypeName(zvalue value) {
     switch (datType(value)) {
-        case DAT_DERIV:   return STR_CAP_DERIV;
-        case DAT_INT:     return STR_CAP_INT;
-        case DAT_STRING:  return STR_CAP_STRING;
-        case DAT_LIST:    return STR_CAP_LIST;
-        case DAT_MAP:     return STR_CAP_MAP;
-        case DAT_UNIQLET: return STR_CAP_UNIQLET;
+        case DAT_DERIV:    return STR_CAP_DERIV;
+        case DAT_FUNCTION: return STR_CAP_FUNCTION;
+        case DAT_INT:      return STR_CAP_INT;
+        case DAT_STRING:   return STR_CAP_STRING;
+        case DAT_LIST:     return STR_CAP_LIST;
+        case DAT_MAP:      return STR_CAP_MAP;
+        case DAT_UNIQLET:  return STR_CAP_UNIQLET;
         default: {
             die("Invalid core type (shouldn't happen): %d", datType(value));
         }
