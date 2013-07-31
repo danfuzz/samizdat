@@ -151,6 +151,10 @@ static void enlist(DatHeader *head, zvalue value) {
 static void doGc(void) {
     zint counter; // Used throughout.
 
+    if (!datInitialized) {
+        die("`dat` module not yet initialized.");
+    }
+
     sanityCheck(false);
 
     // Quick check: If there have been no allocations, then there's nothing

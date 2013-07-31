@@ -97,6 +97,16 @@ extern ztype DAT_Uniqlet;
 
 
 /*
+ * Initialization Function
+ */
+
+/**
+ * Initializes the `dat` module.
+ */
+void datInit(void);
+
+
+/*
  * Assertion Functions
  */
 
