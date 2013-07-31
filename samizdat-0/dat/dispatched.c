@@ -56,7 +56,7 @@ zint datSize(zvalue value) {
 }
 
 /* Documented in header. */
-ztypeId datType(zvalue value) {
+ztypeId datTypeId(zvalue value) {
     return value->type->id;
 }
 
