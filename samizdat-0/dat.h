@@ -29,7 +29,8 @@ typedef enum {
     DAT_MAP,
     DAT_UNIQLET,
     DAT_DERIV,
-    DAT_FUNCTION
+    DAT_FUNCTION,
+    DAT_GENERIC
 } ztypeId;
 
 /**
@@ -90,6 +91,9 @@ extern ztype DAT_Deriv;
 /** Type value for in-model type `Function`. */
 extern ztype DAT_Function;
 
+/** Type value for in-model type `Generic`. */
+extern ztype DAT_Generic;
+
 /** Type value for in-model type `Int`. */
 extern ztype DAT_Int;
 
@@ -126,6 +130,13 @@ void datInit(void);
  * with a diagnostic message.
  */
 void datAssertFunction(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a generic function. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertGeneric(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -473,8 +484,7 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
 
 /**
  * Calls a function with the given list of arguments. `function` must be
- * a function, and `args` must be a list or `NULL`. A `NULL` value for `args`
- * is taken to mean the same thing as the empty list.
+ * a function, and `args` must be a list.
  */
 zvalue datFnApply(zvalue function, zvalue args);
 
@@ -490,6 +500,24 @@ zvalue datFnCall(zvalue function, zint argCount, const zvalue *args);
  * state and optional name (used when producing stack traces).
  */
 zvalue datFnWith(zfunction function, zvalue state, zvalue name);
+
+
+/*
+ * Generic function definition and application
+ */
+
+/**
+ * Calls a generic with the given list of arguments. `generic` must be
+ * a generic function, and `args` must be a list.
+ */
+zvalue datGenApply(zvalue generic, zvalue args);
+
+/**
+ * Calls a generic with the given array of arguments. `generic` must be
+ * a generic function, `argCount` must be positive, and `args` must not
+ * be `NULL`.
+ */
+zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args);
 
 
 /*

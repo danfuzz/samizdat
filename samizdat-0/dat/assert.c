@@ -98,6 +98,11 @@ void datAssertFunction(zvalue value) {
 }
 
 /* Documented in header. */
+void datAssertGeneric(zvalue value) {
+    assertType(value, DAT_Generic);
+}
+
+/* Documented in header. */
 void datAssertInt(zvalue value) {
     assertType(value, DAT_Int);
 }
