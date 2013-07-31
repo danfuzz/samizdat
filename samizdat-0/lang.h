@@ -15,18 +15,6 @@
 
 
 /*
- * Data types
- */
-
-/**
- * Prototype for all functions bound into execution contexts. The
- * `state` is arbitrary closure state (passed in when the function
- * was bound).
- */
-typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
-
-
-/*
  * Function definition and application
  */
 

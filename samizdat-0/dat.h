@@ -52,6 +52,12 @@ typedef struct {
 } zmapping;
 
 /**
+ * Prototype for all in-model functions. The `state` is arbitrary closure
+ * state (passed in when the function was bound).
+ */
+typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
+
+/**
  * Prototype for state access/manipulation functions. These are called on
  * uniqlet state pointers, and on other non-value pointers that those may in
  * turn point to.
