@@ -124,12 +124,6 @@ static void fnGcMark(zvalue function) {
 }
 
 /* Documented in header. */
-static bool fnEq(zvalue v1, zvalue v2) {
-    // Because this function is only called when `v1 != v2`.
-    return false;
-}
-
-/* Documented in header. */
 static zorder fnOrder(zvalue v1, zvalue v2) {
     return datOrder(fnInfo(v1)->orderToken, fnInfo(v2)->orderToken);
 }
@@ -141,7 +135,7 @@ static DatType INFO_Function = {
     .sizeOf = NULL,
     .gcMark = fnGcMark,
     .gcFree = NULL,
-    .eq = fnEq,
+    .eq = NULL,
     .order = fnOrder
 };
 ztype DAT_Function = &INFO_Function;
