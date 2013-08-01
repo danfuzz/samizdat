@@ -429,6 +429,11 @@ zvalue datMapNth(zvalue map, zint n);
 zvalue datMapPut(zvalue map, zvalue key, zvalue value);
 
 /**
+ * Constructs and returns a single-mapping map.
+ */
+zvalue datMapping(zvalue key, zvalue value);
+
+/**
  * Given a single-mapping map, returns its sole key. `map` must be a
  * map.
  */
@@ -507,6 +512,22 @@ zvalue datFnWith(zfunction function, zvalue state, zvalue name);
  */
 
 /**
+ * Adds a type-to-function binding to the given generic. `generic` must
+ * be a generic function, `type` is an arbitrary value, and `function`
+ * must be a function. The type must not have already been bound in the
+ * given generic, and the generic must not be sealed.
+ */
+void datGenBind(zvalue generic, zvalue type, zvalue function);
+
+/**
+ * Adds a default binding to the given generic. `generic` must be a generic
+ * function, and `function` must be a function. A default must not have
+ * already been bound in the given generic, and the generic must not be
+ * sealed.
+ */
+void datGenBindDefault(zvalue generic, zvalue function);
+
+/**
  * Calls a generic with the given list of arguments. `generic` must be
  * a generic function, and `args` must be a list.
  */
@@ -518,6 +539,19 @@ zvalue datGenApply(zvalue generic, zvalue args);
  * be `NULL`.
  */
 zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args);
+
+/**
+ * Seal the given generic. This prevents it from gaining any new bindings.
+ * `generic` must be a generic function.
+ */
+void datGenSeal(zvalue generic);
+
+/**
+ * Constructs and returns a generic function with the given optional name
+ * (used when producing stack traces). It is initially unsealed and without
+ * any bindings.
+ */
+zvalue datGenWith(zvalue name);
 
 
 /*
