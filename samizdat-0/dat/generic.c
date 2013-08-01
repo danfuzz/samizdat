@@ -98,7 +98,7 @@ void datGenBindCore(zvalue generic, ztype type,
     datAssertGeneric(generic);
 
     DatGeneric *info = genInfo(generic);
-    zvalue functionValue = datFnWith(function, state, info->name);
+    zvalue functionValue = datFnFrom(function, state, info->name);
 
     datGenBind(generic, datTypeFromZtype(type), functionValue);
 }
