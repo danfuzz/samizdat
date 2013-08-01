@@ -40,13 +40,6 @@ typedef struct DatType {
     zint seqNumCompl;
 
     /**
-     * Gets the (overt) type of a value of the given type. Optional (may
-     * be `NULL`), and if omitted means that the low-layer type name
-     * is used.
-     */
-    zvalue (*typeOf)(zvalue);
-
-    /**
      * Does GC marking of a value of the given type.
      */
     void (*gcMark)(zvalue);
@@ -112,6 +105,12 @@ extern zvalue genDataOf;
  * appropriate per-type meaning of size. Defaults to always returning `0`.
  */
 extern zvalue genSizeOf;
+
+/**
+ * Gets the (overt) type of a value of the given type. Defaults to
+ * returning the low-layer type name.
+ */
+extern zvalue genTypeOf;
 
 /**
  * Allocates memory, sized to include a `DatHeader` header plus the

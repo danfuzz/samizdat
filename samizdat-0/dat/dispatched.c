@@ -21,6 +21,9 @@ zvalue genDataOf = NULL;
 zvalue genSizeOf = NULL;
 
 /* Documented in header. */
+zvalue genTypeOf = NULL;
+
+/* Documented in header. */
 static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
     return args[0];
 }
@@ -28,6 +31,12 @@ static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue Default_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     return datIntFromZint(0);
+}
+
+/* Documented in header. */
+static zvalue Default_typeOf(zvalue state, zint argCount, const zvalue *args) {
+    zvalue value = args[0];
+    return datTypeFromZtype(value->type);
 }
 
 /* Documented in header. */
@@ -39,6 +48,10 @@ void datInitCoreGenerics(void) {
     genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
     datGenBindCoreDefault(genSizeOf, Default_sizeOf, NULL);
     datImmortalize(genSizeOf);
+
+    genTypeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
+    datGenBindCoreDefault(genTypeOf, Default_typeOf, NULL);
+    datImmortalize(genTypeOf);
 }
 
 
@@ -96,11 +109,5 @@ bool datTypeIs(zvalue value, zvalue type) {
 
 /* Documented in header. */
 zvalue datTypeOf(zvalue value) {
-    ztype type = value->type;
-
-    if (type->typeOf != NULL) {
-        return type->typeOf(value);
-    } else {
-        return datTypeFromZtype(type);
-    }
+    return datGenCall(genTypeOf, 1, &value);
 }

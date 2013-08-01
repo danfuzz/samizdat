@@ -66,11 +66,6 @@ zvalue datDerivFrom(zvalue type, zvalue data) {
  */
 
 /* Documented in header. */
-zvalue derivTypeOf(zvalue deriv) {
-    return derivInfo(deriv)->type;
-}
-
-/* Documented in header. */
 static void derivGcMark(zvalue deriv) {
     DatDeriv *info = derivInfo(deriv);
 
@@ -127,15 +122,21 @@ static zvalue Deriv_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue Deriv_typeOf(zvalue state, zint argCount, const zvalue *args) {
+    zvalue deriv = args[0];
+    return derivInfo(deriv)->type;
+}
+
+/* Documented in header. */
 void datBindDeriv(void) {
     datGenBindCore(genDataOf, DAT_Deriv, Deriv_dataOf, NULL);
     datGenBindCore(genSizeOf, DAT_Deriv, Deriv_sizeOf, NULL);
+    datGenBindCore(genTypeOf, DAT_Deriv, Deriv_typeOf, NULL);
 }
 
 /* Documented in header. */
 static DatType INFO_Deriv = {
     .name = "Deriv",
-    .typeOf = derivTypeOf,
     .gcMark = derivGcMark,
     .gcFree = NULL,
     .eq = derivEq,

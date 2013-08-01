@@ -473,7 +473,6 @@ void datBindMap(void) {
 /* Documented in header. */
 static DatType INFO_Map = {
     .name = "Map",
-    .typeOf = NULL,
     .gcMark = mapGcMark,
     .gcFree = NULL,
     .eq = mapEq,

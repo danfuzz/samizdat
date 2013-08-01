@@ -192,7 +192,6 @@ void datBindGeneric(void) {
 /* Documented in header. */
 static DatType INFO_Generic = {
     .name = "Generic",
-    .typeOf = NULL,
     .gcMark = genGcMark,
     .gcFree = NULL,
     .eq = NULL,
