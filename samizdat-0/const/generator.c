@@ -130,6 +130,7 @@ void generatorInit(void) {
     datGenBindCore(genCollect, DAT_String,   collectString,    NULL);
     datGenBindCore(genCollect, DAT_Function, collectGenerator, NULL);
     datGenSeal(genCollect);
+    datImmortalize(genCollect);
 }
 
 
