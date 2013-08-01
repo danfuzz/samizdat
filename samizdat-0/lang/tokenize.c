@@ -101,7 +101,7 @@ static zvalue tokenizeInt(ParseState *state) {
         die("Invalid int token (no digits).");
     }
 
-    zvalue intval = constIntFromZint(value);
+    zvalue intval = datIntFromZint(value);
     return datDerivFrom(STR_INT, intval);
 }
 

@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "zlimits.h"
 
 #include <stddef.h>
 
@@ -15,8 +16,14 @@
 
 enum {
     /** Ints are restricted to being in the range of `int32_t`. */
-    MAX_BITS = 32
+    MAX_BITS = 32,
+
+    /** Max (exclusive) small int value. */
+    DAT_SMALL_INT_MAX = DAT_SMALL_INT_MIN + DAT_SMALL_INT_COUNT
 };
+
+/** Array of small integer values. */
+static zvalue SMALL_INTS[DAT_SMALL_INT_COUNT];
 
 /**
  * Int structure.
@@ -59,6 +66,21 @@ static zint zintValue(zvalue intval) {
     return ((DatInt *) datPayload(intval))->value;
 }
 
+/**
+ * Constructs and returns an int.
+ */
+zvalue intFrom(zint value) {
+    zint size = bitSize(value);
+    zvalue result = datAllocValue(DAT_Int, sizeof(int32_t));
+
+    if (size > MAX_BITS) {
+        die("Value too large to fit into int: %lld", value);
+    }
+
+    ((DatInt *) datPayload(result))->value = (int32_t) value;
+    return result;
+}
+
 
 /*
  * Exported functions
@@ -77,15 +99,11 @@ zchar datZcharFromInt(zvalue intval) {
 
 /* Documented in header. */
 zvalue datIntFromZint(zint value) {
-    zint size = bitSize(value);
-    zvalue result = datAllocValue(DAT_Int, sizeof(int32_t));
-
-    if (size > MAX_BITS) {
-        die("Value too large to fit into int: %lld", value);
+    if ((value >= DAT_SMALL_INT_MIN) && (value < DAT_SMALL_INT_MAX)) {
+        return SMALL_INTS[value - DAT_SMALL_INT_MIN];
+    } else {
+        return intFrom(value);
     }
-
-    ((DatInt *) datPayload(result))->value = (int32_t) value;
-    return result;
 }
 
 /* Documented in header. */
@@ -150,6 +168,11 @@ static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void datBindInt(void) {
     datGenBindCore(genSizeOf, DAT_Int, Int_sizeOf, NULL);
+
+    for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
+        SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);
+        datImmortalize(SMALL_INTS[i]);
+    }
 }
 
 /* Documented in header. */

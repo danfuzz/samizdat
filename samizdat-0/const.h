@@ -50,11 +50,6 @@ zvalue constCollectGenerator(zvalue value);
 void constInit(void);
 
 /**
- * Converts a C `zint` to an in-model int value.
- */
-zvalue constIntFromZint(zint value);
-
-/**
  * Converts a C `zchar` to an in-model single-character string.
  */
 zvalue constStringFromZchar(zchar value);

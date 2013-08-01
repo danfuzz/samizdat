@@ -16,12 +16,6 @@ enum {
     /** Maximum number of items that can be interpolated out of a generator. */
     CONST_MAX_GENERATOR_ITEMS = 10000,
 
-    /** Number of small int constants to keep as preallocated values. */
-    CONST_SMALL_INT_COUNT = 1000,
-
-    /** Minumum (lowest value) small int constant to keep. */
-    CONST_SMALL_INT_MIN = -300,
-
     /** Number of allocations between each forced gc. */
     DAT_ALLOCATIONS_PER_GC = 500000,
 
@@ -36,6 +30,12 @@ enum {
 
     /** Maximum number of references on the stack. */
     DAT_MAX_STACK = 50000,
+
+    /** Number of small int constants to keep as preallocated values. */
+    DAT_SMALL_INT_COUNT = 1000,
+
+    /** Minumum (lowest value) small int constant to keep. */
+    DAT_SMALL_INT_MIN = -300,
 
     /** Maximum readable file size, in bytes. */
     IO_MAX_FILE_SIZE = 100000,
