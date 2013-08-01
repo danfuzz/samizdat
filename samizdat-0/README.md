@@ -40,13 +40,13 @@ later-named modules depending only on earlier-named ones):
   messaging, Unicode conversion, and about the simplest memory
   allocation facility.
 
-* dat &mdash; "Low-layer" data model. This implements the six
+* dat &mdash; "Low-layer" data model. This implements the various
   Samizdat low-layer data types, providing constructors, accessors,
   and a handful of assertions. Depends on util.
 
-* const &mdash; Commonly-used in-model constants. This includes things
-  like strings used during parsing, and the like. Depends on util
-  and dat.
+* const &mdash; Commonly-used in-model constants and related utilities.
+  This includes things like strings used during parsing, and the like.
+  Depends on util and dat.
 
 * io &mdash; I/O functions. This implements a minimal set of I/O
   operations. Depends on util, dat, and const.

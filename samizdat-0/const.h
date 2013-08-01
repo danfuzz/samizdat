@@ -38,6 +38,13 @@ extern zvalue EMPTY_LIST;
 extern zvalue EMPTY_MAP;
 
 /**
+ * Returns a collected list of items from the given value, which must either
+ * be a generator or a collection value. This is a C equivalent to calling
+ * `collectGenerator(value)`, hence the name.
+ */
+zvalue constCollectGenerator(zvalue value);
+
+/**
  * Initializes the constants, if necessary.
  */
 void constInit(void);
@@ -60,5 +67,42 @@ zvalue constStringFromZchar(zchar value);
  * pre-existing value if a suitable one exists.
  */
 zvalue constValueFrom(zvalue type, zvalue data);
+
+
+/*
+ * Boxes
+ */
+
+/**
+ * Gets the value out of the given box. Returns `NULL` if the box is
+ * void or as yet unset.
+ */
+zvalue boxGet(zvalue boxUniqlet);
+
+/**
+ * Returns an indication of whether or not the given box has been set.
+ */
+bool boxIsSet(zvalue boxUniqlet);
+
+/**
+ * Constructs a mutable (re-settable) box.
+ */
+zvalue boxMutable(void);
+
+/**
+ * Resets the given box to an un-set state. The box must be a mutable box.
+ */
+void boxReset(zvalue boxUniqlet);
+
+/**
+ * Sets the value of the given box as indicated. Passing `value` as
+ * `NULL` indicates that the box is to be set to void.
+ */
+void boxSet(zvalue boxUniqlet, zvalue value);
+
+/**
+ * Constructs a yield (set-once) box.
+ */
+zvalue boxYield(void);
 
 #endif
