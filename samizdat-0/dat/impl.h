@@ -34,11 +34,31 @@ typedef struct DatType {
     const char *name;
 
     /**
+     * In-model string value corresponding to `name` (above). Lazily
+     * initialized.
+     */
+    zvalue nameValue;
+
+    /**
+     * Gets the data payload of a value of the given type, if any. Optional
+     * (may be `NULL`), and if omitted means that the payload is the value
+     * itself.
+     */
+    zvalue (*dataOf)(zvalue);
+
+    /**
      * Gets the "size" of a value of the given type, for the appropriate
      * per-type meaning of size. Optional (may be `NULL`), and if omitted
      * means that the size is always `0`.
      */
     zint (*sizeOf)(zvalue);
+
+    /**
+     * Gets the (overt) type of a value of the given type. Optional (may
+     * be `NULL`), and if omitted means that the low-layer type name
+     * is used.
+     */
+    zvalue (*typeOf)(zvalue);
 
     /**
      * Does GC marking of a value of the given type.

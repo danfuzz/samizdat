@@ -131,7 +131,9 @@ static zorder uniqletOrder(zvalue v1, zvalue v2) {
 static DatType INFO_Uniqlet = {
     .id = DAT_UNIQLET,
     .name = "Uniqlet",
+    .dataOf = NULL,
     .sizeOf = NULL,
+    .typeOf = NULL,
     .gcMark = uniqletGcMark,
     .gcFree = uniqletGcFree,
     .eq = NULL,
