@@ -38,6 +38,13 @@ extern zvalue EMPTY_LIST;
 extern zvalue EMPTY_MAP;
 
 /**
+ * Returns a collected list of items from the given value, which must either
+ * be a generator or a collection value. This is a C equivalent to calling
+ * `collectGenerator(value)`, hence the name.
+ */
+zvalue constCollectGenerator(zvalue value);
+
+/**
  * Initializes the constants, if necessary.
  */
 void constInit(void);

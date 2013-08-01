@@ -9,7 +9,6 @@
  */
 
 #include "const.h"
-#include "impl.h"
 #include "util.h"
 #include "zlimits.h"
 
@@ -72,7 +71,7 @@ static zvalue listFromString(zvalue string) {
  * Does generator iteration to get a list.
  */
 static zvalue collectGeneratorPerSe(zvalue generator) {
-    zvalue arr[LANG_MAX_GENERATOR_ITEMS];
+    zvalue arr[CONST_MAX_GENERATOR_ITEMS];
     zint at;
 
     zstackPointer save = datFrameStart();
@@ -83,7 +82,7 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
 
         if (nextGen == NULL) {
             break;
-        } else if (at == LANG_MAX_GENERATOR_ITEMS) {
+        } else if (at == CONST_MAX_GENERATOR_ITEMS) {
             die("Generator produced too many interpolated items.");
         }
 
@@ -99,11 +98,11 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
 
 
 /*
- * Module functions
+ * Exported functions
  */
 
 /* Documented in header. */
-zvalue collectGenerator(zvalue value) {
+zvalue constCollectGenerator(zvalue value) {
     switch (datTypeId(value)) {
         case DAT_INT: {
             return listFromInt(value);
@@ -122,7 +121,7 @@ zvalue collectGenerator(zvalue value) {
             return collectGeneratorPerSe(value);
         }
         default: {
-            die("Invalid type for collectGenerator.");
+            die("Invalid type for constCollectGenerator.");
         }
     }
 }
