@@ -123,7 +123,7 @@ static zvalue collectGenerator(zvalue state, zint argc,
 
 /* Documented in header. */
 void generatorInit(void) {
-    genCollect = datGenFrom(STR_COLLECT);
+    genCollect = datGenFrom(1, 1, STR_COLLECT);
     datGenBindCore(genCollect, DAT_Int,      collectInt,       NULL);
     datGenBindCore(genCollect, DAT_List,     collectList,      NULL);
     datGenBindCore(genCollect, DAT_Map,      collectMap,       NULL);

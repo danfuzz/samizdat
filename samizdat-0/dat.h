@@ -551,11 +551,13 @@ void datGenBindDefault(zvalue generic, zvalue function);
 zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args);
 
 /**
- * Constructs and returns a generic function with the given optional name
- * (used when producing stack traces). It is initially unsealed and without
- * any bindings.
+ * Constructs and returns a generic function with the given argument
+ * restrictions and optional name (used when producing stack traces). It is
+ * initially unsealed and without any bindings. `minArgs` must be at least
+ * `1`, and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
+ * that there is no limit.
  */
-zvalue datGenFrom(zvalue name);
+zvalue datGenFrom(zint minArgs, zint maxArgs, zvalue name);
 
 /**
  * Seal the given generic. This prevents it from gaining any new bindings.

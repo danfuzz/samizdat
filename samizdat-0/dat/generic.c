@@ -10,6 +10,7 @@
 
 #include "impl.h"
 
+#include <stdint.h>
 #include <string.h>
 
 
@@ -21,6 +22,14 @@
  * Generic function structure.
  */
 typedef struct {
+    /** Minimum argument count. Always `>= 1`. */
+    zint minArgs;
+
+    /**
+     * Maximum argument count. Always `>= minArgs`.
+     */
+    zint maxArgs;
+
     /** Default function, if any. May be `NULL`. */
     zvalue defaultFunction;
 
@@ -121,13 +130,18 @@ void datGenBindDefault(zvalue generic, zvalue function) {
 zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
     datAssertGeneric(generic);
 
-    if (argCount < 1) {
-        die("Invalid argument count for generic call: %lld", argCount);
+    DatGeneric *info = genInfo(generic);
+
+    if (argCount < info->minArgs) {
+        die("Too few arguments for generic call: %lld, min %lld",
+            argCount, info->minArgs);
+    } else if (argCount > info->maxArgs) {
+        die("Too few arguments for generic call: %lld, min %lld",
+            argCount, info->minArgs);
     } else if (args == NULL) {
-        die("Generic call argument inconsistency.");
+        die("Invalid argument pointer (NULL).");
     }
 
-    DatGeneric *info = genInfo(generic);
     zvalue function = datMapGet(info->map, datTypeOf(args[0]));
 
     debugPush(callReporter, generic);
@@ -146,10 +160,17 @@ zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-zvalue datGenFrom(zvalue name) {
+zvalue datGenFrom(zint minArgs, zint maxArgs, zvalue name) {
+    if ((minArgs < 1) ||
+        ((maxArgs != -1) && (maxArgs < minArgs))) {
+        die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
+    }
+
     zvalue result = datAllocValue(DAT_Generic, sizeof(DatGeneric));
     DatGeneric *info = genInfo(result);
 
+    info->minArgs = minArgs;
+    info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->defaultFunction = NULL;
     info->map = NULL;
     info->sealed = false;
