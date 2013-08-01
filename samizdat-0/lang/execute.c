@@ -442,7 +442,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
         die("Attempt to interpolate void.");
     }
 
-    result = collectGenerator(result);
+    result = constCollectGenerator(result);
 
     switch (datSize(result)) {
         case 0: return NULL;
