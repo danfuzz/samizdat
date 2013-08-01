@@ -26,7 +26,7 @@ static zvalue genCollect = NULL;
  * Does listification of an int. This returns a list of individual
  * bits (as ints).
  */
-static zvalue listFromInt(zvalue state, zint argc, const zvalue *args) {
+static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
     zvalue intValue = args[0];
 
     zvalue bit0 = constIntFromZint(0);
@@ -47,14 +47,14 @@ static zvalue listFromInt(zvalue state, zint argc, const zvalue *args) {
  * Does (trivial) "listification" of a list. This returns the argument
  * unchanged.
  */
-static zvalue listFromList(zvalue state, zint argc, const zvalue *args) {
+static zvalue collectList(zvalue state, zint argc, const zvalue *args) {
     return args[0];
 }
 
 /**
  * Does listification of a map. This returns a list of individual mappings.
  */
-static zvalue listFromMap(zvalue state, zint argc, const zvalue *args) {
+static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
     zvalue map = args[0];
 
     zint size = datSize(map);
@@ -71,7 +71,7 @@ static zvalue listFromMap(zvalue state, zint argc, const zvalue *args) {
  * Does listification of a string. This returns a list of individual
  * characters.
  */
-static zvalue listFromString(zvalue state, zint argc, const zvalue *args) {
+static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
     zvalue string = args[0];
 
     zint size = datSize(string);
@@ -87,7 +87,7 @@ static zvalue listFromString(zvalue state, zint argc, const zvalue *args) {
 /**
  * Does generator iteration to get a list.
  */
-static zvalue collectGeneratorPerSe(zvalue state, zint argc,
+static zvalue collectGenerator(zvalue state, zint argc,
         const zvalue *args) {
     zvalue generator = args[0];
 
@@ -124,11 +124,11 @@ static zvalue collectGeneratorPerSe(zvalue state, zint argc,
 /* Documented in header. */
 void generatorInit(void) {
     genCollect = datGenFrom(STR_COLLECT);
-    datGenBindCore(genCollect, DAT_Int,      listFromInt, NULL);
-    datGenBindCore(genCollect, DAT_List,     listFromList, NULL);
-    datGenBindCore(genCollect, DAT_Map,      listFromMap, NULL);
-    datGenBindCore(genCollect, DAT_String,   listFromString, NULL);
-    datGenBindCore(genCollect, DAT_Function, collectGeneratorPerSe, NULL);
+    datGenBindCore(genCollect, DAT_Int,      collectInt,       NULL);
+    datGenBindCore(genCollect, DAT_List,     collectList,      NULL);
+    datGenBindCore(genCollect, DAT_Map,      collectMap,       NULL);
+    datGenBindCore(genCollect, DAT_String,   collectString,    NULL);
+    datGenBindCore(genCollect, DAT_Function, collectGenerator, NULL);
     datGenSeal(genCollect);
 }
 
