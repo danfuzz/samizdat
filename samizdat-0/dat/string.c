@@ -232,7 +232,6 @@ void datBindString(void) {
 /* Documented in header. */
 static DatType INFO_String = {
     .name = "String",
-    .dataOf = NULL,
     .typeOf = NULL,
     .gcMark = stringGcMark,
     .gcFree = NULL,

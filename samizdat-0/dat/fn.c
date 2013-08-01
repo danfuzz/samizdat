@@ -136,7 +136,6 @@ void datBindFunction(void) {
 /* Documented in header. */
 static DatType INFO_Function = {
     .name = "Function",
-    .dataOf = NULL,
     .typeOf = NULL,
     .gcMark = fnGcMark,
     .gcFree = NULL,

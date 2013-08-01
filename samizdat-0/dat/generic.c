@@ -135,7 +135,13 @@ zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
         die("Invalid argument pointer (NULL).");
     }
 
-    zvalue function = datMapGet(info->map, datTypeOf(args[0]));
+    // TODO: Dispatch is currently on the core type. It should be able
+    // to handle derived types too. It's not as simple as just calling
+    // `datTypeOf` on the value, though: (1) That function itself should
+    // be generic at some point, and (2) the default implementations of
+    // many generics will have to be adjusted.
+    zvalue type = datTypeFromZtype(args[0]->type);
+    zvalue function = datMapGet(info->map, type);
 
     if (function == NULL) {
         function = info->defaultFunction;
@@ -202,7 +208,6 @@ void datBindGeneric(void) {
 /* Documented in header. */
 static DatType INFO_Generic = {
     .name = "Generic",
-    .dataOf = NULL,
     .typeOf = NULL,
     .gcMark = genGcMark,
     .gcFree = NULL,

@@ -37,13 +37,6 @@ typedef struct DatType {
     zvalue nameValue;
 
     /**
-     * Gets the data payload of a value of the given type, if any. Optional
-     * (may be `NULL`), and if omitted means that the payload is the value
-     * itself.
-     */
-    zvalue (*dataOf)(zvalue);
-
-    /**
      * Gets the (overt) type of a value of the given type. Optional (may
      * be `NULL`), and if omitted means that the low-layer type name
      * is used.
@@ -104,6 +97,12 @@ typedef struct DatHeader {
  * Flag indicating whether module has been initialized.
  */
 extern bool datInitialized;
+
+/**
+ * `dataOf(value)`: Gets the data payload of a value of the given type,
+ * if any. Defaults to returning the value itself as its own payload.
+ */
+extern zvalue genDataOf;
 
 /**
  * `sizeOf(value)`: Gets the "size" of a value of the given type, for the

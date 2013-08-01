@@ -255,7 +255,6 @@ void datBindList(void) {
 /* Documented in header. */
 static DatType INFO_List = {
     .name = "List",
-    .dataOf = NULL,
     .typeOf = NULL,
     .gcMark = listGcMark,
     .gcFree = NULL,

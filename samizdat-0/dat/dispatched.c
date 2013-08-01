@@ -14,7 +14,15 @@
  */
 
 /* Documented in header. */
+zvalue genDataOf = NULL;
+
+/* Documented in header. */
 zvalue genSizeOf = NULL;
+
+/* Documented in header. */
+static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
+    return args[0];
+}
 
 /* Documented in header. */
 static zvalue Default_sizeOf(zvalue state, zint argCount, const zvalue *args) {
@@ -23,6 +31,10 @@ static zvalue Default_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datInitCoreGenerics(void) {
+    genDataOf = datGenFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
+    datGenBindCoreDefault(genDataOf, Default_dataOf, NULL);
+    datImmortalize(genDataOf);
+
     genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
     datGenBindCoreDefault(genSizeOf, Default_sizeOf, NULL);
     datImmortalize(genSizeOf);
@@ -40,13 +52,7 @@ bool datCoreTypeIs(zvalue value, ztype type) {
 
 /* Documented in header. */
 zvalue datDataOf(zvalue value) {
-    ztype type = value->type;
-
-    if (type->dataOf != NULL) {
-        return type->dataOf(value);
-    } else {
-        return value;
-    }
+    return datGenCall(genDataOf, 1, &value);
 }
 
 /* Documented in header. */

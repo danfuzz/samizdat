@@ -66,11 +66,6 @@ zvalue datDerivFrom(zvalue type, zvalue data) {
  */
 
 /* Documented in header. */
-zvalue derivDataOf(zvalue deriv) {
-    return derivInfo(deriv)->data;
-}
-
-/* Documented in header. */
 zvalue derivTypeOf(zvalue deriv) {
     return derivInfo(deriv)->type;
 }
@@ -120,21 +115,26 @@ static zorder derivOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args) {
+    zvalue deriv = args[0];
+    return derivInfo(deriv)->data;
+}
+
+/* Documented in header. */
 static zvalue Deriv_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue deriv = args[0];
-
     return datIntFromZint((derivInfo(deriv)->data == NULL) ? 0 : 1);
 }
 
 /* Documented in header. */
 void datBindDeriv(void) {
+    datGenBindCore(genDataOf, DAT_Deriv, Deriv_dataOf, NULL);
     datGenBindCore(genSizeOf, DAT_Deriv, Deriv_sizeOf, NULL);
 }
 
 /* Documented in header. */
 static DatType INFO_Deriv = {
     .name = "Deriv",
-    .dataOf = derivDataOf,
     .typeOf = derivTypeOf,
     .gcMark = derivGcMark,
     .gcFree = NULL,

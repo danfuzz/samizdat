@@ -178,7 +178,6 @@ void datBindInt(void) {
 /* Documented in header. */
 static DatType INFO_Int = {
     .name = "Int",
-    .dataOf = NULL,
     .typeOf = NULL,
     .gcMark = intGcMark,
     .gcFree = NULL,
