@@ -60,26 +60,24 @@ zvalue datDerivFrom(zvalue type, zvalue data) {
     return newDeriv(type, data);
 }
 
-/* Documented in header. */
-zvalue datDerivType(zvalue deriv) {
-    datAssertDeriv(deriv);
-    return derivInfo(deriv)->type;
-}
-
-/* Documented in header. */
-zvalue datDerivData(zvalue deriv) {
-    datAssertDeriv(deriv);
-    return derivInfo(deriv)->data;
-}
-
 
 /*
  * Type binding
  */
 
 /* Documented in header. */
+zvalue derivDataOf(zvalue deriv) {
+    return derivInfo(deriv)->data;
+}
+
+/* Documented in header. */
 static zint derivSizeOf(zvalue deriv) {
     return (derivInfo(deriv)->data == NULL) ? 0 : 1;
+}
+
+/* Documented in header. */
+zvalue derivTypeOf(zvalue deriv) {
+    return derivInfo(deriv)->type;
 }
 
 /* Documented in header. */
@@ -130,9 +128,9 @@ static zorder derivOrder(zvalue v1, zvalue v2) {
 static DatType INFO_Deriv = {
     .id = DAT_DERIV,
     .name = "Deriv",
-    .dataOf = datDerivData,
+    .dataOf = derivDataOf,
     .sizeOf = derivSizeOf,
-    .typeOf = datDerivType,
+    .typeOf = derivTypeOf,
     .gcMark = derivGcMark,
     .gcFree = NULL,
     .eq = derivEq,

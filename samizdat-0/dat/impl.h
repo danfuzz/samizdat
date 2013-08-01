@@ -40,8 +40,9 @@ typedef struct DatType {
     zvalue nameValue;
 
     /**
-     * Gets the data payload of a value of the given type. Optional (may
-     * be `NULL`), and if omitted means that the payload is the value itself.
+     * Gets the data payload of a value of the given type, if any. Optional
+     * (may be `NULL`), and if omitted means that the payload is the value
+     * itself.
      */
     zvalue (*dataOf)(zvalue);
 

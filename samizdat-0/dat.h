@@ -508,17 +508,6 @@ zvalue datFnWith(zfunction function, zvalue state, zvalue name);
  */
 zvalue datDerivFrom(zvalue type, zvalue data);
 
-/**
- * Gets the type tag of a derived value.
- */
-zvalue datDerivType(zvalue deriv);
-
-/**
- * Gets the data payload associated with a derived value. This is `NULL` for
- * type-only values (unsurprisingly).
- */
-zvalue datDerivData(zvalue deriv);
-
 
 /*
  * Dispatched (type-based) Functions
@@ -527,7 +516,9 @@ zvalue datDerivData(zvalue deriv);
 /**
  * Gets the data payload of the given value. `value` must be a
  * valid value (in particular, non-`NULL`). For everything but derived
- * values, the data payload is the same as the value itself.
+ * values, the data payload is the same as the value itself. For derived
+ * values, the data payload is (unsurprisingly) `NULL` for type-only
+ * values.
  */
 zvalue datDataOf(zvalue value);
 
