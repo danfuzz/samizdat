@@ -67,12 +67,42 @@ static char *callReporter(void *state) {
  */
 
 /* Documented in header. */
+void datGenBind(zvalue generic, zvalue type, zvalue function) {
+    datAssertGeneric(generic);
+    datAssertFunction(function);
+
+    DatGeneric *info = genInfo(generic);
+    zvalue map = info->map;
+
+    if (map == NULL) {
+        info->map = datMapping(type, function);
+    } else if (datMapGet(map, type) != NULL) {
+        die("Duplicate binding in generic.");
+    } else {
+        info->map = datMapPut(map, type, function);
+    }
+}
+
+/* Documented in header. */
+void datGenBindDefault(zvalue generic, zvalue function) {
+    datAssertGeneric(generic);
+    datAssertFunction(function);
+
+    DatGeneric *info = genInfo(generic);
+
+    if (info->defaultFunction != NULL) {
+        die("Default already bound in generic.");
+    }
+
+    info->defaultFunction = function;
+}
+
+/* Documented in header. */
 zvalue datGenApply(zvalue generic, zvalue args) {
     zint argCount = datSize(args);
     zvalue argsArray[argCount];
 
     datArrayFromList(argsArray, args);
-
     return datGenCall(generic, argCount, argsArray);
 }
 
@@ -101,6 +131,26 @@ zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
     zvalue result = datFnCall(function, argCount, args);
 
     debugPop();
+    return result;
+}
+
+/* Documented in header. */
+void datGenSeal(zvalue generic) {
+    datAssertGeneric(generic);
+    genInfo(generic)->sealed = true;
+}
+
+/* Documented in header. */
+zvalue datGenWith(zvalue name) {
+    zvalue result = datAllocValue(DAT_Generic, sizeof(DatGeneric));
+    DatGeneric *info = genInfo(result);
+
+    info->defaultFunction = NULL;
+    info->map = NULL;
+    info->sealed = false;
+    info->name = name;
+    info->orderToken = datUniqlet();
+
     return result;
 }
 
