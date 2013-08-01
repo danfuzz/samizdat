@@ -20,20 +20,6 @@
  */
 
 /**
- * Possible low-level data types.
- */
-typedef enum {
-    DAT_INT = 1,
-    DAT_STRING,
-    DAT_LIST,
-    DAT_MAP,
-    DAT_UNIQLET,
-    DAT_DERIV,
-    DAT_FUNCTION,
-    DAT_GENERIC
-} ztypeId;
-
-/**
  * Arbitrary value. The contents of a value are *not* directly
  * accessible through instances of this type via the API. You
  * have to use the various accessor functions.
@@ -624,12 +610,6 @@ zorder datOrder(zvalue v1, zvalue v2);
  * what low-layer "size" means.
  */
 zint datSize(zvalue value);
-
-/**
- * Gets the low-level data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`).
- */
-ztypeId datTypeId(zvalue value);
 
 /**
  * Returns true iff the type of the given value (that is, `datTypeOf(value)`)

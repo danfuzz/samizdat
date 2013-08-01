@@ -147,7 +147,6 @@ static zorder intOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 static DatType INFO_Int = {
-    .id = DAT_INT,
     .name = "Int",
     .dataOf = NULL,
     .sizeOf = intSizeOf,

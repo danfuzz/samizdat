@@ -208,7 +208,6 @@ static zorder genOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 static DatType INFO_Generic = {
-    .id = DAT_GENERIC,
     .name = "Generic",
     .dataOf = NULL,
     .sizeOf = NULL,

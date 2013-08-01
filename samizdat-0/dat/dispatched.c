@@ -72,11 +72,6 @@ zint datSize(zvalue value) {
 }
 
 /* Documented in header. */
-ztypeId datTypeId(zvalue value) {
-    return value->type->id;
-}
-
-/* Documented in header. */
 bool datTypeIs(zvalue value, zvalue type) {
     return datEq(datTypeOf(value), type);
 }

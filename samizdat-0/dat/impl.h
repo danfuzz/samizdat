@@ -27,9 +27,6 @@ enum {
  * Core type info.
  */
 typedef struct DatType {
-    /** Low-layer data type identifier. */
-    ztypeId id;
-
     /** Simple string name for the type. */
     const char *name;
 

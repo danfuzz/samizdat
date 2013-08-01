@@ -461,7 +461,6 @@ static zorder mapOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 static DatType INFO_Map = {
-    .id = DAT_MAP,
     .name = "Map",
     .dataOf = NULL,
     .sizeOf = mapSizeOf,
