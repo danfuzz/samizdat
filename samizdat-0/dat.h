@@ -501,7 +501,7 @@ zvalue datFnApply(zvalue function, zvalue args);
 zvalue datFnCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
- * Constructs and returns a function with associated (and arbitrary) closure
+ * Constructs and returns a function with optional associated closure
  * state and optional name (used when producing stack traces).
  */
 zvalue datFnFrom(zfunction function, zvalue state, zvalue name);
@@ -533,7 +533,7 @@ void datGenBind(zvalue generic, zvalue type, zvalue function);
  * been bound in the given generic, and the generic must not be sealed.
  */
 void datGenBindCore(zvalue generic, ztype type,
-        zfunction function, void *state);
+        zfunction function, zvalue state);
 
 /**
  * Adds a default binding to the given generic. `generic` must be a generic

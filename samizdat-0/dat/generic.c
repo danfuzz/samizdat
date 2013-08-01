@@ -94,7 +94,7 @@ void datGenBind(zvalue generic, zvalue type, zvalue function) {
 
 /* Documented in header. */
 void datGenBindCore(zvalue generic, ztype type,
-        zfunction function, void *state) {
+        zfunction function, zvalue state) {
     datAssertGeneric(generic);
 
     DatGeneric *info = genInfo(generic);
