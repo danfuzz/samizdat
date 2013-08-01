@@ -36,6 +36,9 @@ typedef struct DatType {
      */
     zvalue nameValue;
 
+    /** Type sequence number, complemented to disambiguate `0`. */
+    zint seqNumCompl;
+
     /**
      * Gets the (overt) type of a value of the given type. Optional (may
      * be `NULL`), and if omitted means that the low-layer type name
@@ -159,6 +162,11 @@ void *datPayload(zvalue value);
  * Gets a type value from a `ztype`.
  */
 zvalue datTypeFromZtype(ztype type);
+
+/**
+ * Gets the sequence number for a `ztype`, initializing it if necessary.
+ */
+zint datTypeSeqNum(ztype type);
 
 
 /*

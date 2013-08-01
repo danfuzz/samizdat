@@ -6,6 +6,7 @@
 
 #include "impl.h"
 
+#include <stddef.h>
 #include <string.h>
 
 
@@ -44,11 +45,6 @@ void datInitCoreGenerics(void) {
 /*
  * Exported functions
  */
-
-/* Documented in header. */
-bool datCoreTypeIs(zvalue value, ztype type) {
-    return value->type == type;
-}
 
 /* Documented in header. */
 zvalue datDataOf(zvalue value) {
@@ -107,17 +103,4 @@ zvalue datTypeOf(zvalue value) {
     } else {
         return datTypeFromZtype(type);
     }
-}
-
-/* Documented in header. */
-zvalue datTypeFromZtype(ztype type) {
-    zvalue result = type->nameValue;
-
-    if (result == NULL) {
-        result = datStringFromUtf8(-1, type->name);
-        ((DatType *) type)->nameValue = result;  // Cast to discard `const`.
-        datImmortalize(result);
-    }
-
-    return result;
 }

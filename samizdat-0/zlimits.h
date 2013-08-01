@@ -25,6 +25,9 @@ enum {
      */
     DAT_MAP_CACHE_SIZE = 70001,
 
+    /** Maximum number of types allowed. */
+    DAT_MAX_TYPES = 25,
+
     /** Maximum number of immortal values allowed. */
     DAT_MAX_IMMORTALS = 1500,
 
