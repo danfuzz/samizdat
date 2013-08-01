@@ -289,6 +289,8 @@ static zvalue tokenizeOne(ParseState *state) {
 zvalue langTokenize0(zvalue string) {
     constInit();
 
+    zstackPointer save = datFrameStart();
+
     zvalue result[LANG_MAX_TOKENS];
     ParseState state = { string, datSize(string), 0 };
     zint out = 0;
@@ -306,5 +308,7 @@ zvalue langTokenize0(zvalue string) {
         out++;
     }
 
-    return datListFromArray(out, result);
+    zvalue resultList = datListFromArray(out, result);
+    datFrameReturn(save, resultList);
+    return resultList;
 }
