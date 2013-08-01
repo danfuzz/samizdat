@@ -146,13 +146,7 @@ zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void datGenSeal(zvalue generic) {
-    datAssertGeneric(generic);
-    genInfo(generic)->sealed = true;
-}
-
-/* Documented in header. */
-zvalue datGenWith(zvalue name) {
+zvalue datGenFrom(zvalue name) {
     zvalue result = datAllocValue(DAT_Generic, sizeof(DatGeneric));
     DatGeneric *info = genInfo(result);
 
@@ -163,6 +157,12 @@ zvalue datGenWith(zvalue name) {
     info->orderToken = datUniqlet();
 
     return result;
+}
+
+/* Documented in header. */
+void datGenSeal(zvalue generic) {
+    datAssertGeneric(generic);
+    genInfo(generic)->sealed = true;
 }
 
 

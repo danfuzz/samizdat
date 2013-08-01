@@ -114,7 +114,7 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
 
 /* Documented in header. */
 void generatorInit(void) {
-    genCollect = datGenWith(STR_COLLECT);
+    genCollect = datGenFrom(STR_COLLECT);
     datGenBindCore(genCollect, DAT_Int,      listFromInt, NULL);
     datGenBindCore(genCollect, DAT_List,     listFromList, NULL);
     datGenBindCore(genCollect, DAT_Map,      listFromMap, NULL);

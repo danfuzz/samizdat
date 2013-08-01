@@ -551,17 +551,17 @@ void datGenBindDefault(zvalue generic, zvalue function);
 zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args);
 
 /**
- * Seal the given generic. This prevents it from gaining any new bindings.
- * `generic` must be a generic function.
- */
-void datGenSeal(zvalue generic);
-
-/**
  * Constructs and returns a generic function with the given optional name
  * (used when producing stack traces). It is initially unsealed and without
  * any bindings.
  */
-zvalue datGenWith(zvalue name);
+zvalue datGenFrom(zvalue name);
+
+/**
+ * Seal the given generic. This prevents it from gaining any new bindings.
+ * `generic` must be a generic function.
+ */
+void datGenSeal(zvalue generic);
 
 
 /*
