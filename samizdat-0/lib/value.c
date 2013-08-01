@@ -21,7 +21,7 @@
 static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
     datAssertSameType(v1, v2);
 
-    if (datTypeIs(v1, DAT_Deriv)) {
+    if (datCoreTypeIs(v1, DAT_Deriv)) {
         zvalue type1 = datTypeOf(v1);
         zvalue type2 = datTypeOf(v2);
 
@@ -91,7 +91,7 @@ PRIM_IMPL(isCoreValue) {
     requireExactly(argCount, 1);
 
     zvalue value = args[0];
-    return datTypeIs(value, DAT_Deriv) ? NULL : value;
+    return datCoreTypeIs(value, DAT_Deriv) ? NULL : value;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

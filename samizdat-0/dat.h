@@ -514,6 +514,12 @@ zvalue datDerivFrom(zvalue type, zvalue data);
  */
 
 /**
+ * Returns whether the given value has the given core (low-layer) type.
+ * `value` must be a valid value (in particular, non-`NULL`).
+ */
+bool datCoreTypeIs(zvalue value, ztype type);
+
+/**
  * Gets the data payload of the given value. `value` must be a
  * valid value (in particular, non-`NULL`). For everything but derived
  * values, the data payload is the same as the value itself. For derived
@@ -544,12 +550,6 @@ zorder datOrder(zvalue v1, zvalue v2);
  * what low-layer "size" means.
  */
 zint datSize(zvalue value);
-
-/**
- * Returns whether the given value has the given low-layer type.
- * `value` must be a valid value (in particular, non-`NULL`).
- */
-bool datTypeIs(zvalue value, ztype type);
 
 /**
  * Gets the low-level data type of the given value. `value` must be a
