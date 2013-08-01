@@ -5,7 +5,7 @@
  */
 
 /*
- * Library implementation details
+ * Private implementation details
  */
 
 #ifndef _IMPL_H_
