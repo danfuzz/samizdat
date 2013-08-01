@@ -536,21 +536,25 @@ zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args);
  */
 zvalue datDerivFrom(zvalue type, zvalue data);
 
-/**
- * Gets the type tag of a derived value.
- */
-zvalue datDerivType(zvalue deriv);
-
-/**
- * Gets the data payload associated with a derived value. This is `NULL` for
- * type-only values (unsurprisingly).
- */
-zvalue datDerivData(zvalue deriv);
-
 
 /*
  * Dispatched (type-based) Functions
  */
+
+/**
+ * Returns whether the given value has the given core (low-layer) type.
+ * `value` must be a valid value (in particular, non-`NULL`).
+ */
+bool datCoreTypeIs(zvalue value, ztype type);
+
+/**
+ * Gets the data payload of the given value. `value` must be a
+ * valid value (in particular, non-`NULL`). For everything but derived
+ * values, the data payload is the same as the value itself. For derived
+ * values, the data payload is (unsurprisingly) `NULL` for type-only
+ * values.
+ */
+zvalue datDataOf(zvalue value);
 
 /**
  * Compares two values for equality. This exists in addition to
@@ -576,16 +580,22 @@ zorder datOrder(zvalue v1, zvalue v2);
 zint datSize(zvalue value);
 
 /**
- * Returns whether the given value has the given low-layer type.
- * `value` must be a valid value (in particular, non-`NULL`).
- */
-bool datTypeIs(zvalue value, ztype type);
-
-/**
  * Gets the low-level data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */
 ztypeId datTypeId(zvalue value);
+
+/**
+ * Returns true iff the type of the given value (that is, `datTypeOf(value)`)
+ * is as given.
+ */
+bool datTypeIs(zvalue value, zvalue type);
+
+/**
+ * Gets the overt data type of the given value. `value` must be a
+ * valid value (in particular, non-`NULL`).
+ */
+zvalue datTypeOf(zvalue value);
 
 
 /*
