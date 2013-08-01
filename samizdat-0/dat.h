@@ -558,6 +558,12 @@ zint datSize(zvalue value);
 ztypeId datTypeId(zvalue value);
 
 /**
+ * Returns true iff the type of the given value (that is, `datTypeOf(value)`)
+ * is as given.
+ */
+bool datTypeIs(zvalue value, zvalue type);
+
+/**
  * Gets the overt data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */

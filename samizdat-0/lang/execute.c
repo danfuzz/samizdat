@@ -207,7 +207,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                     zint end = i + 1;
                     for (/*end*/; end < statementsSize; end++) {
                         zvalue one = statementsArr[end];
-                        if (!constTypeIs(one, STR_FN_DEF)) {
+                        if (!datTypeIs(one, STR_FN_DEF)) {
                             break;
                         }
                     }
@@ -409,7 +409,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (constTypeIs(oneNode, STR_INTERPOLATE)) {
+            if (datTypeIs(oneNode, STR_INTERPOLATE)) {
                 datArrayFromList(&fullArgs[at], oneArg);
                 at += datSize(oneArg);
             } else {

@@ -14,6 +14,11 @@
  */
 
 /* Documented in header. */
+bool datCoreTypeIs(zvalue value, ztype type) {
+    return value->type == type;
+}
+
+/* Documented in header. */
 zvalue datDataOf(zvalue value) {
     ztype type = value->type;
 
@@ -72,8 +77,8 @@ ztypeId datTypeId(zvalue value) {
 }
 
 /* Documented in header. */
-bool datCoreTypeIs(zvalue value, ztype type) {
-    return value->type == type;
+bool datTypeIs(zvalue value, zvalue type) {
+    return datEq(datTypeOf(value), type);
 }
 
 /* Documented in header. */

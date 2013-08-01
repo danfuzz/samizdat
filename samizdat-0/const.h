@@ -53,12 +53,6 @@ zvalue constIntFromZint(zint value);
 zvalue constStringFromZchar(zchar value);
 
 /**
- * Returns true iff the type of the given arbitrary value is as given. This
- * handles both core and derived values.
- */
-bool constTypeIs(zvalue value, zvalue type);
-
-/**
  * Produces an arbitrary value given a type and optional data payload. If
  * `type` corresponds to a core type, and `data` is a value of that type,
  * then this returns `data`. If not, then this produces a derived value

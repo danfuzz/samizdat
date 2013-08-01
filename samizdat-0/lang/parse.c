@@ -633,7 +633,7 @@ DEF_PARSE(mapping2) {
     MARK();
 
     zvalue map = PARSE_OR_REJECT(expression);
-    REJECT_IF(!constTypeIs(map, STR_INTERPOLATE));
+    REJECT_IF(!datTypeIs(map, STR_INTERPOLATE));
 
     return datDataOf(map);
 }
