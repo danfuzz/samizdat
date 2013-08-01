@@ -26,7 +26,9 @@ static zvalue genCollect = NULL;
  * Does listification of an int. This returns a list of individual
  * bits (as ints).
  */
-static zvalue listFromInt(zvalue intValue) {
+static zvalue listFromInt(zvalue state, zint argc, const zvalue *args) {
+    zvalue intValue = args[0];
+
     zvalue bit0 = constIntFromZint(0);
     zvalue bit1 = constIntFromZint(1);
     zint size = datSize(intValue);
@@ -45,14 +47,16 @@ static zvalue listFromInt(zvalue intValue) {
  * Does (trivial) "listification" of a list. This returns the argument
  * unchanged.
  */
-static zvalue listFromList(zvalue list) {
-    return list;
+static zvalue listFromList(zvalue state, zint argc, const zvalue *args) {
+    return args[0];
 }
 
 /**
  * Does listification of a map. This returns a list of individual mappings.
  */
-static zvalue listFromMap(zvalue map) {
+static zvalue listFromMap(zvalue state, zint argc, const zvalue *args) {
+    zvalue map = args[0];
+
     zint size = datSize(map);
     zvalue arr[size];
 
@@ -67,7 +71,9 @@ static zvalue listFromMap(zvalue map) {
  * Does listification of a string. This returns a list of individual
  * characters.
  */
-static zvalue listFromString(zvalue string) {
+static zvalue listFromString(zvalue state, zint argc, const zvalue *args) {
+    zvalue string = args[0];
+
     zint size = datSize(string);
     zvalue arr[size];
 
@@ -81,7 +87,10 @@ static zvalue listFromString(zvalue string) {
 /**
  * Does generator iteration to get a list.
  */
-static zvalue collectGeneratorPerSe(zvalue generator) {
+static zvalue collectGeneratorPerSe(zvalue state, zint argc,
+        const zvalue *args) {
+    zvalue generator = args[0];
+
     zvalue arr[CONST_MAX_GENERATOR_ITEMS];
     zint at;
 
@@ -130,25 +139,5 @@ void generatorInit(void) {
 
 /* Documented in header. */
 zvalue constCollectGenerator(zvalue value) {
-    switch (datTypeId(value)) {
-        case DAT_INT: {
-            return listFromInt(value);
-        }
-        case DAT_LIST: {
-            // Trivial pass-through.
-            return value;
-        }
-        case DAT_MAP: {
-            return listFromMap(value);
-        }
-        case DAT_STRING: {
-            return listFromString(value);
-        }
-        case DAT_FUNCTION: {
-            return collectGeneratorPerSe(value);
-        }
-        default: {
-            die("Invalid type for constCollectGenerator.");
-        }
-    }
+    return datGenCall(genCollect, 1, &value);
 }
