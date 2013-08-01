@@ -53,23 +53,6 @@ static DatGeneric *genInfo(zvalue generic) {
     return datPayload(generic);
 }
 
-/**
- * This is the function that handles emitting a context string for a call,
- * when dumping the stack.
- */
-static char *callReporter(void *state) {
-    zvalue name = genInfo((zvalue) state)->name;
-
-    if (name != NULL) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        return strdup(nameStr);
-    } else {
-        return "(unknown)";
-    }
-}
-
 
 /*
  * Exported functions
@@ -154,8 +137,6 @@ zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
 
     zvalue function = datMapGet(info->map, datTypeOf(args[0]));
 
-    debugPush(callReporter, generic);
-
     if (function == NULL) {
         function = info->defaultFunction;
         if (function == NULL) {
@@ -163,10 +144,7 @@ zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
         }
     }
 
-    zvalue result = datFnCall(function, argCount, args);
-
-    debugPop();
-    return result;
+    return datFnCall(function, argCount, args);
 }
 
 /* Documented in header. */
