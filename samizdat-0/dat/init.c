@@ -20,7 +20,16 @@ bool datInitialized = false;
 
 /* Documented in header. */
 void datInit(void) {
-    // Nothing to do...yet.
+    datInitCoreGenerics();
+    datBindDeriv();
+    datBindFunction();
+    datBindGeneric();
+    datBindInt();
+    datBindList();
+    datBindMap();
+    datBindString();
+    datBindUniqlet();
+
     datInitialized = true;
 }
 

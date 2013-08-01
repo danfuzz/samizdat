@@ -117,11 +117,6 @@ bool datZintGetBit(zint value, zint n) {
  */
 
 /* Documented in header. */
-static zint intSizeOf(zvalue intval) {
-    return bitSize(zintValue(intval));
-}
-
-/* Documented in header. */
 static void intGcMark(zvalue intval) {
     // Nothing to do here.
 }
@@ -146,10 +141,21 @@ static zorder intOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+    zvalue intval = args[0];
+
+    return datIntFromZint(bitSize(zintValue(intval)));
+}
+
+/* Documented in header. */
+void datBindInt(void) {
+    datGenBindCore(genSizeOf, DAT_Int, Int_sizeOf, NULL);
+}
+
+/* Documented in header. */
 static DatType INFO_Int = {
     .name = "Int",
     .dataOf = NULL,
-    .sizeOf = intSizeOf,
     .typeOf = NULL,
     .gcMark = intGcMark,
     .gcFree = NULL,

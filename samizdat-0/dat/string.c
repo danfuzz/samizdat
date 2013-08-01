@@ -219,10 +219,20 @@ static zorder stringOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+    zvalue string = args[0];
+    return datIntFromZint(stringSizeOf(string));
+}
+
+/* Documented in header. */
+void datBindString(void) {
+    datGenBindCore(genSizeOf, DAT_String, String_sizeOf, NULL);
+}
+
+/* Documented in header. */
 static DatType INFO_String = {
     .name = "String",
     .dataOf = NULL,
-    .sizeOf = stringSizeOf,
     .typeOf = NULL,
     .gcMark = stringGcMark,
     .gcFree = NULL,

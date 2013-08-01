@@ -460,10 +460,20 @@ static zorder mapOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+    zvalue map = args[0];
+    return datIntFromZint(mapSizeOf(map));
+}
+
+/* Documented in header. */
+void datBindMap(void) {
+    datGenBindCore(genSizeOf, DAT_Map, Map_sizeOf, NULL);
+}
+
+/* Documented in header. */
 static DatType INFO_Map = {
     .name = "Map",
     .dataOf = NULL,
-    .sizeOf = mapSizeOf,
     .typeOf = NULL,
     .gcMark = mapGcMark,
     .gcFree = NULL,

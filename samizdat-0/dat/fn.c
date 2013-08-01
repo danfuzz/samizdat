@@ -129,10 +129,14 @@ static zorder fnOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+void datBindFunction(void) {
+    // Nothing to do here...yet.
+}
+
+/* Documented in header. */
 static DatType INFO_Function = {
     .name = "Function",
     .dataOf = NULL,
-    .sizeOf = NULL,
     .typeOf = NULL,
     .gcMark = fnGcMark,
     .gcFree = NULL,

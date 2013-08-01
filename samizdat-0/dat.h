@@ -523,6 +523,15 @@ void datGenBindCore(zvalue generic, ztype type,
 
 /**
  * Adds a default binding to the given generic. `generic` must be a generic
+ * function, `function` must be a valid `zfunction`, and `state` is arbitrary
+ * state to be passed to `function` when called. A default must not have
+ * already been bound in the given generic, and the generic must not be
+ * sealed.
+ */
+void datGenBindCoreDefault(zvalue generic, zfunction function, zvalue state);
+
+/**
+ * Adds a default binding to the given generic. `generic` must be a generic
  * function, and `function` must be a function. A default must not have
  * already been bound in the given generic, and the generic must not be
  * sealed.

@@ -113,6 +113,16 @@ void datGenBindCore(zvalue generic, ztype type,
 }
 
 /* Documented in header. */
+void datGenBindCoreDefault(zvalue generic, zfunction function, zvalue state) {
+    datAssertGeneric(generic);
+
+    DatGeneric *info = genInfo(generic);
+    zvalue functionValue = datFnFrom(function, state, info->name);
+
+    datGenBindDefault(generic, functionValue);
+}
+
+/* Documented in header. */
 void datGenBindDefault(zvalue generic, zvalue function) {
     datAssertGeneric(generic);
     datAssertFunction(function);
@@ -207,10 +217,14 @@ static zorder genOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+void datBindGeneric(void) {
+    // Nothing to do here...yet.
+}
+
+/* Documented in header. */
 static DatType INFO_Generic = {
     .name = "Generic",
     .dataOf = NULL,
-    .sizeOf = NULL,
     .typeOf = NULL,
     .gcMark = genGcMark,
     .gcFree = NULL,

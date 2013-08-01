@@ -44,13 +44,6 @@ typedef struct DatType {
     zvalue (*dataOf)(zvalue);
 
     /**
-     * Gets the "size" of a value of the given type, for the appropriate
-     * per-type meaning of size. Optional (may be `NULL`), and if omitted
-     * means that the size is always `0`.
-     */
-    zint (*sizeOf)(zvalue);
-
-    /**
      * Gets the (overt) type of a value of the given type. Optional (may
      * be `NULL`), and if omitted means that the low-layer type name
      * is used.
@@ -113,6 +106,12 @@ typedef struct DatHeader {
 extern bool datInitialized;
 
 /**
+ * `sizeOf(value)`: Gets the "size" of a value of the given type, for the
+ * appropriate per-type meaning of size. Defaults to always returning `0`.
+ */
+extern zvalue genSizeOf;
+
+/**
  * Allocates memory, sized to include a `DatHeader` header plus the
  * indicated number of extra bytes. The `DatHeader` header is
  * initialized with the indicated type and size. The resulting value
@@ -161,5 +160,25 @@ void *datPayload(zvalue value);
  * Gets a type value from a `ztype`.
  */
 zvalue datTypeFromZtype(ztype type);
+
+
+/*
+ * Initialization functions
+ */
+
+/**
+ * Initializes the core generic functions.
+ */
+void datInitCoreGenerics(void);
+
+// Per-type generic binding.
+void datBindDeriv(void);
+void datBindFunction(void);
+void datBindGeneric(void);
+void datBindInt(void);
+void datBindList(void);
+void datBindMap(void);
+void datBindString(void);
+void datBindUniqlet(void);
 
 #endif

@@ -242,10 +242,20 @@ static zorder listOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+    zvalue list = args[0];
+    return datIntFromZint(listSizeOf(list));
+}
+
+/* Documented in header. */
+void datBindList(void) {
+    datGenBindCore(genSizeOf, DAT_List, List_sizeOf, NULL);
+}
+
+/* Documented in header. */
 static DatType INFO_List = {
     .name = "List",
     .dataOf = NULL,
-    .sizeOf = listSizeOf,
     .typeOf = NULL,
     .gcMark = listGcMark,
     .gcFree = NULL,

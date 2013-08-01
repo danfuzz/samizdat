@@ -10,6 +10,26 @@
 
 
 /*
+ * Module definitions
+ */
+
+/* Documented in header. */
+zvalue genSizeOf = NULL;
+
+/* Documented in header. */
+static zvalue Default_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+    return datIntFromZint(0);
+}
+
+/* Documented in header. */
+void datInitCoreGenerics(void) {
+    genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
+    datGenBindCoreDefault(genSizeOf, Default_sizeOf, NULL);
+    datImmortalize(genSizeOf);
+}
+
+
+/*
  * Exported functions
  */
 
@@ -64,11 +84,7 @@ zorder datOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zint datSize(zvalue value) {
-    if (value->type->sizeOf != NULL) {
-        return value->type->sizeOf(value);
-    } else {
-        return 0;
-    }
+    return datZintFromInt(datGenCall(genSizeOf, 1, &value));
 }
 
 /* Documented in header. */
