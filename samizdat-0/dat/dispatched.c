@@ -6,7 +6,53 @@
 
 #include "impl.h"
 
+#include <stddef.h>
 #include <string.h>
+
+
+/*
+ * Module definitions
+ */
+
+/* Documented in header. */
+zvalue genDataOf = NULL;
+
+/* Documented in header. */
+zvalue genSizeOf = NULL;
+
+/* Documented in header. */
+zvalue genTypeOf = NULL;
+
+/* Documented in header. */
+static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
+    return args[0];
+}
+
+/* Documented in header. */
+static zvalue Default_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+    return datIntFromZint(0);
+}
+
+/* Documented in header. */
+static zvalue Default_typeOf(zvalue state, zint argCount, const zvalue *args) {
+    zvalue value = args[0];
+    return datTypeFromZtype(value->type);
+}
+
+/* Documented in header. */
+void datInitCoreGenerics(void) {
+    genDataOf = datGenFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
+    datGenBindCoreDefault(genDataOf, Default_dataOf, NULL);
+    datImmortalize(genDataOf);
+
+    genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
+    datGenBindCoreDefault(genSizeOf, Default_sizeOf, NULL);
+    datImmortalize(genSizeOf);
+
+    genTypeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
+    datGenBindCoreDefault(genTypeOf, Default_typeOf, NULL);
+    datImmortalize(genTypeOf);
+}
 
 
 /*
@@ -14,19 +60,8 @@
  */
 
 /* Documented in header. */
-bool datCoreTypeIs(zvalue value, ztype type) {
-    return value->type == type;
-}
-
-/* Documented in header. */
 zvalue datDataOf(zvalue value) {
-    ztype type = value->type;
-
-    if (type->dataOf != NULL) {
-        return type->dataOf(value);
-    } else {
-        return value;
-    }
+    return datGenCall(genDataOf, 1, &value);
 }
 
 /* Documented in header. */
@@ -64,11 +99,7 @@ zorder datOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zint datSize(zvalue value) {
-    if (value->type->sizeOf != NULL) {
-        return value->type->sizeOf(value);
-    } else {
-        return 0;
-    }
+    return datZintFromInt(datGenCall(genSizeOf, 1, &value));
 }
 
 /* Documented in header. */
@@ -78,24 +109,5 @@ bool datTypeIs(zvalue value, zvalue type) {
 
 /* Documented in header. */
 zvalue datTypeOf(zvalue value) {
-    ztype type = value->type;
-
-    if (type->typeOf != NULL) {
-        return type->typeOf(value);
-    } else {
-        return datTypeFromZtype(type);
-    }
-}
-
-/* Documented in header. */
-zvalue datTypeFromZtype(ztype type) {
-    zvalue result = type->nameValue;
-
-    if (result == NULL) {
-        result = datStringFromUtf8(-1, type->name);
-        ((DatType *) type)->nameValue = result;  // Cast to discard `const`.
-        datImmortalize(result);
-    }
-
-    return result;
+    return datGenCall(genTypeOf, 1, &value);
 }

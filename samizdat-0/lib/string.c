@@ -42,7 +42,7 @@ PRIM_IMPL(intFromChar) {
     zvalue string = args[0];
     datAssertStringSize1(string);
 
-    return constIntFromZint(datStringNth(string, 0));
+    return datIntFromZint(datStringNth(string, 0));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

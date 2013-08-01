@@ -10,6 +10,13 @@
 
 #include "impl.h"
 
+#include <stddef.h>
+
+
+/*
+ * Helper definitions
+ */
+
 /* Documented in header. */
 bool datInitialized = false;
 
@@ -20,7 +27,20 @@ bool datInitialized = false;
 
 /* Documented in header. */
 void datInit(void) {
-    // Nothing to do...yet.
+    zstackPointer save = datFrameStart();
+
+    datInitCoreGenerics();
+    datBindDeriv();
+    datBindFunction();
+    datBindGeneric();
+    datBindInt();
+    datBindList();
+    datBindMap();
+    datBindString();
+    datBindUniqlet();
+
+    datFrameReturn(save, NULL);
+
     datInitialized = true;
 }
 

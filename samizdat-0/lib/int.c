@@ -18,7 +18,7 @@
     PRIM_IMPL(name) { \
         requireExactly(argCount, 1); \
         zint x = datZintFromInt(args[0]); \
-        return constIntFromZint((op)); \
+        return datIntFromZint((op)); \
     } \
     extern int semicolonRequiredHere
 
@@ -27,7 +27,7 @@
         requireExactly(argCount, 2); \
         zint x = datZintFromInt(args[0]); \
         zint y = datZintFromInt(args[1]); \
-        return constIntFromZint((op)); \
+        return datIntFromZint((op)); \
     } \
     extern int semicolonRequiredHere
 
@@ -109,7 +109,7 @@ static zint shl(zint value, zint shift) {
  */
 static zvalue doIntNth(zvalue value, zint n) {
     if (n < datSize(value)) {
-        return constIntFromZint(datIntGetBit(value, n));
+        return datIntFromZint(datIntGetBit(value, n));
     } else {
         return NULL;
     }
