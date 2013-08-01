@@ -20,19 +20,6 @@
  */
 
 /**
- * Possible low-level data types.
- */
-typedef enum {
-    DAT_INT = 1,
-    DAT_STRING,
-    DAT_LIST,
-    DAT_MAP,
-    DAT_UNIQLET,
-    DAT_DERIV,
-    DAT_FUNCTION
-} ztypeId;
-
-/**
  * Arbitrary value. The contents of a value are *not* directly
  * accessible through instances of this type via the API. You
  * have to use the various accessor functions.
@@ -90,6 +77,9 @@ extern ztype DAT_Deriv;
 /** Type value for in-model type `Function`. */
 extern ztype DAT_Function;
 
+/** Type value for in-model type `Generic`. */
+extern ztype DAT_Generic;
+
 /** Type value for in-model type `Int`. */
 extern ztype DAT_Int;
 
@@ -126,6 +116,13 @@ void datInit(void);
  * with a diagnostic message.
  */
 void datAssertFunction(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a generic function. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertGeneric(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -418,6 +415,11 @@ zvalue datMapNth(zvalue map, zint n);
 zvalue datMapPut(zvalue map, zvalue key, zvalue value);
 
 /**
+ * Constructs and returns a single-mapping map.
+ */
+zvalue datMapping(zvalue key, zvalue value);
+
+/**
  * Given a single-mapping map, returns its sole key. `map` must be a
  * map.
  */
@@ -473,8 +475,7 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
 
 /**
  * Calls a function with the given list of arguments. `function` must be
- * a function, and `args` must be a list or `NULL`. A `NULL` value for `args`
- * is taken to mean the same thing as the empty list.
+ * a function, and `args` must be a list.
  */
 zvalue datFnApply(zvalue function, zvalue args);
 
@@ -486,10 +487,69 @@ zvalue datFnApply(zvalue function, zvalue args);
 zvalue datFnCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
- * Constructs and returns a function with associated (and arbitrary) closure
+ * Constructs and returns a function with optional associated closure
  * state and optional name (used when producing stack traces).
  */
 zvalue datFnFrom(zfunction function, zvalue state, zvalue name);
+
+
+/*
+ * Generic function definition and application
+ */
+
+/**
+ * Calls a generic with the given list of arguments. `generic` must be
+ * a generic function, and `args` must be a list.
+ */
+zvalue datGenApply(zvalue generic, zvalue args);
+
+/**
+ * Adds a type-to-function binding to the given generic. `generic` must
+ * be a generic function, `type` is an arbitrary value, and `function`
+ * must be a function. The type must not have already been bound in the
+ * given generic, and the generic must not be sealed.
+ */
+void datGenBind(zvalue generic, zvalue type, zvalue function);
+
+/**
+ * Adds a type-to-function binding to the given generic, for a core type.
+ * `generic` must be a generic function, `type` must be a valid core `ztype`,
+ * `function` must be a valid `zfunction`, and `state` is arbitrary state
+ * to be passed to `function` when called. The type must not have already
+ * been bound in the given generic, and the generic must not be sealed.
+ */
+void datGenBindCore(zvalue generic, ztype type,
+        zfunction function, zvalue state);
+
+/**
+ * Adds a default binding to the given generic. `generic` must be a generic
+ * function, and `function` must be a function. A default must not have
+ * already been bound in the given generic, and the generic must not be
+ * sealed.
+ */
+void datGenBindDefault(zvalue generic, zvalue function);
+
+/**
+ * Calls a generic with the given array of arguments. `generic` must be
+ * a generic function, `argCount` must be positive, and `args` must not
+ * be `NULL`.
+ */
+zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args);
+
+/**
+ * Constructs and returns a generic function with the given argument
+ * restrictions and optional name (used when producing stack traces). It is
+ * initially unsealed and without any bindings. `minArgs` must be at least
+ * `1`, and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
+ * that there is no limit.
+ */
+zvalue datGenFrom(zint minArgs, zint maxArgs, zvalue name);
+
+/**
+ * Seal the given generic. This prevents it from gaining any new bindings.
+ * `generic` must be a generic function.
+ */
+void datGenSeal(zvalue generic);
 
 
 /*
@@ -550,12 +610,6 @@ zorder datOrder(zvalue v1, zvalue v2);
  * what low-layer "size" means.
  */
 zint datSize(zvalue value);
-
-/**
- * Gets the low-level data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`).
- */
-ztypeId datTypeId(zvalue value);
 
 /**
  * Returns true iff the type of the given value (that is, `datTypeOf(value)`)

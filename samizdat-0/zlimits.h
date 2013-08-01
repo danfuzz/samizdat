@@ -37,9 +37,6 @@ enum {
     /** Maximum number of references on the stack. */
     DAT_MAX_STACK = 50000,
 
-    /** Maximum number of core types. */
-    DAT_MAX_TYPES = 10,
-
     /** Maximum readable file size, in bytes. */
     IO_MAX_FILE_SIZE = 100000,
 

@@ -243,7 +243,6 @@ static zorder listOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 static DatType INFO_List = {
-    .id = DAT_LIST,
     .name = "List",
     .dataOf = NULL,
     .sizeOf = listSizeOf,

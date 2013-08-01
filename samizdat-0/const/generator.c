@@ -8,7 +8,7 @@
  * Generator glue
  */
 
-#include "const.h"
+#include "impl.h"
 #include "util.h"
 #include "zlimits.h"
 
@@ -16,14 +16,19 @@
 
 
 /*
- * Helper functions
+ * Helper definitions
  */
+
+/** Generic function for `collect` (convert to list) dispatch. */
+static zvalue genCollect = NULL;
 
 /**
  * Does listification of an int. This returns a list of individual
  * bits (as ints).
  */
-static zvalue listFromInt(zvalue intValue) {
+static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
+    zvalue intValue = args[0];
+
     zvalue bit0 = constIntFromZint(0);
     zvalue bit1 = constIntFromZint(1);
     zint size = datSize(intValue);
@@ -39,9 +44,19 @@ static zvalue listFromInt(zvalue intValue) {
 }
 
 /**
+ * Does (trivial) "listification" of a list. This returns the argument
+ * unchanged.
+ */
+static zvalue collectList(zvalue state, zint argc, const zvalue *args) {
+    return args[0];
+}
+
+/**
  * Does listification of a map. This returns a list of individual mappings.
  */
-static zvalue listFromMap(zvalue map) {
+static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
+    zvalue map = args[0];
+
     zint size = datSize(map);
     zvalue arr[size];
 
@@ -56,7 +71,9 @@ static zvalue listFromMap(zvalue map) {
  * Does listification of a string. This returns a list of individual
  * characters.
  */
-static zvalue listFromString(zvalue string) {
+static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
+    zvalue string = args[0];
+
     zint size = datSize(string);
     zvalue arr[size];
 
@@ -70,7 +87,10 @@ static zvalue listFromString(zvalue string) {
 /**
  * Does generator iteration to get a list.
  */
-static zvalue collectGeneratorPerSe(zvalue generator) {
+static zvalue collectGenerator(zvalue state, zint argc,
+        const zvalue *args) {
+    zvalue generator = args[0];
+
     zvalue arr[CONST_MAX_GENERATOR_ITEMS];
     zint at;
 
@@ -98,30 +118,27 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
 
 
 /*
+ * Module functions
+ */
+
+/* Documented in header. */
+void generatorInit(void) {
+    genCollect = datGenFrom(1, 1, STR_COLLECT);
+    datGenBindCore(genCollect, DAT_Int,      collectInt,       NULL);
+    datGenBindCore(genCollect, DAT_List,     collectList,      NULL);
+    datGenBindCore(genCollect, DAT_Map,      collectMap,       NULL);
+    datGenBindCore(genCollect, DAT_String,   collectString,    NULL);
+    datGenBindCore(genCollect, DAT_Function, collectGenerator, NULL);
+    datGenSeal(genCollect);
+    datImmortalize(genCollect);
+}
+
+
+/*
  * Exported functions
  */
 
 /* Documented in header. */
 zvalue constCollectGenerator(zvalue value) {
-    switch (datTypeId(value)) {
-        case DAT_INT: {
-            return listFromInt(value);
-        }
-        case DAT_LIST: {
-            // Trivial pass-through.
-            return value;
-        }
-        case DAT_MAP: {
-            return listFromMap(value);
-        }
-        case DAT_STRING: {
-            return listFromString(value);
-        }
-        case DAT_FUNCTION: {
-            return collectGeneratorPerSe(value);
-        }
-        default: {
-            die("Invalid type for constCollectGenerator.");
-        }
-    }
+    return datGenCall(genCollect, 1, &value);
 }
