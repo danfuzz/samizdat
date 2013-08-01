@@ -504,7 +504,7 @@ zvalue datFnCall(zvalue function, zint argCount, const zvalue *args);
  * Constructs and returns a function with associated (and arbitrary) closure
  * state and optional name (used when producing stack traces).
  */
-zvalue datFnWith(zfunction function, zvalue state, zvalue name);
+zvalue datFnFrom(zfunction function, zvalue state, zvalue name);
 
 
 /*

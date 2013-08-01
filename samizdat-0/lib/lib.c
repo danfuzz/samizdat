@@ -52,7 +52,7 @@ static zvalue primitiveContext(void) {
         do { \
             zvalue name = datStringFromUtf8(-1, #name); \
             ctx = datMapPut(ctx, \
-                name, datFnWith(prim_##name, NULL, name)); \
+                name, datFnFrom(prim_##name, NULL, name)); \
         } while(0)
     #include "prim-def.h"
 

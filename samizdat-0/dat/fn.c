@@ -97,7 +97,7 @@ zvalue datFnCall(zvalue function, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-zvalue datFnWith(zfunction function, zvalue state, zvalue name) {
+zvalue datFnFrom(zfunction function, zvalue state, zvalue name) {
     zvalue result = datAllocValue(DAT_Function, sizeof(DatFunction));
     DatFunction *info = fnInfo(result);
 
