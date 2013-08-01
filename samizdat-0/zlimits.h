@@ -13,6 +13,9 @@
 #define _ZLIMITS_H_
 
 enum {
+    /** Maximum number of items that can be interpolated out of a generator. */
+    CONST_MAX_GENERATOR_ITEMS = 10000,
+
     /** Number of small int constants to keep as preallocated values. */
     CONST_SMALL_INT_COUNT = 1000,
 
@@ -45,9 +48,6 @@ enum {
 
     /** Maximum number of characters in an identifier. */
     LANG_MAX_IDENTIFIER_CHARS = 40,
-
-    /** Maximum number of items that can be interpolated out of a generator. */
-    LANG_MAX_GENERATOR_ITEMS = 10000,
 
     /** Maximum number of characters in a tokenized string constant. */
     LANG_MAX_STRING_CHARS = 200,

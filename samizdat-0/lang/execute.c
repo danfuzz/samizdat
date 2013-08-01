@@ -391,7 +391,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         }
 
         if (interpolate) {
-            eval = collectGenerator(eval);
+            eval = constCollectGenerator(eval);
             args[i] = eval;
             fullCount += datSize(eval);
             interpolateAny = true;
