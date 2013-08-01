@@ -149,6 +149,11 @@ void datAssertSliceRange(zint size, zint start, zint end);
 void datAssertValid(zvalue value);
 
 /**
+ * Gets the sequence number index for a `ztype`, initializing it if necessary.
+ */
+zint datIndexFromType(ztype type);
+
+/**
  * Clears the contents of the map lookup cache.
  */
 void datMapClearCache(void);
@@ -162,11 +167,6 @@ void *datPayload(zvalue value);
  * Gets a type value from a `ztype`.
  */
 zvalue datTypeFromZtype(ztype type);
-
-/**
- * Gets the sequence number for a `ztype`, initializing it if necessary.
- */
-zint datTypeSeqNum(ztype type);
 
 
 /*

@@ -9,6 +9,7 @@
  */
 
 #include "impl.h"
+#include "zlimits.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -33,9 +34,6 @@ typedef struct {
     /** Default function, if any. May be `NULL`. */
     zvalue defaultFunction;
 
-    /** Map from first-argument types to corresponding functions. */
-    zvalue map;
-
     /** Whether the generic is sealed (unwilling to add bindings). */
     bool sealed;
 
@@ -44,6 +42,9 @@ typedef struct {
 
     /** Uniqlet to use for ordering comparisons. */
     zvalue orderToken;
+
+    /** Bindings from type to function, keyed off of type sequence number. */
+    zvalue functions[DAT_MAX_TYPES];
 } DatGeneric;
 
 /**
@@ -68,31 +69,21 @@ zvalue datGenApply(zvalue generic, zvalue args) {
 }
 
 /* Documented in header. */
-void datGenBind(zvalue generic, zvalue type, zvalue function) {
-    datAssertGeneric(generic);
-    datAssertFunction(function);
-
-    DatGeneric *info = genInfo(generic);
-    zvalue map = info->map;
-
-    if (map == NULL) {
-        info->map = datMapping(type, function);
-    } else if (datMapGet(map, type) != NULL) {
-        die("Duplicate binding in generic.");
-    } else {
-        info->map = datMapPut(map, type, function);
-    }
-}
-
-/* Documented in header. */
 void datGenBindCore(zvalue generic, ztype type,
         zfunction function, zvalue state) {
     datAssertGeneric(generic);
 
     DatGeneric *info = genInfo(generic);
     zvalue functionValue = datFnFrom(function, state, info->name);
+    zint index = datIndexFromType(type);
 
-    datGenBind(generic, datTypeFromZtype(type), functionValue);
+    if (info->sealed) {
+        die("Sealed generic.");
+    } else if (info->functions[index] != NULL) {
+        die("Duplicate binding in generic.");
+    }
+
+    info->functions[index] = functionValue;
 }
 
 /* Documented in header. */
@@ -102,21 +93,13 @@ void datGenBindCoreDefault(zvalue generic, zfunction function, zvalue state) {
     DatGeneric *info = genInfo(generic);
     zvalue functionValue = datFnFrom(function, state, info->name);
 
-    datGenBindDefault(generic, functionValue);
-}
-
-/* Documented in header. */
-void datGenBindDefault(zvalue generic, zvalue function) {
-    datAssertGeneric(generic);
-    datAssertFunction(function);
-
-    DatGeneric *info = genInfo(generic);
-
-    if (info->defaultFunction != NULL) {
+    if (info->sealed) {
+        die("Sealed generic.");
+    } else if (info->defaultFunction != NULL) {
         die("Default already bound in generic.");
     }
 
-    info->defaultFunction = function;
+    info->defaultFunction = functionValue;
 }
 
 /* Documented in header. */
@@ -140,8 +123,7 @@ zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
     // `datTypeOf` on the value, though: (1) That function itself should
     // be generic at some point, and (2) the default implementations of
     // many generics will have to be adjusted.
-    zvalue type = datTypeFromZtype(args[0]->type);
-    zvalue function = datMapGet(info->map, type);
+    zvalue function = info->functions[datIndexFromType(args[0]->type)];
 
     if (function == NULL) {
         function = info->defaultFunction;
@@ -166,7 +148,6 @@ zvalue datGenFrom(zint minArgs, zint maxArgs, zvalue name) {
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->defaultFunction = NULL;
-    info->map = NULL;
     info->sealed = false;
     info->name = name;
     info->orderToken = datUniqlet();
@@ -190,9 +171,12 @@ static void genGcMark(zvalue function) {
     DatGeneric *info = genInfo(function);
 
     datMark(info->defaultFunction);
-    datMark(info->map);
     datMark(info->name);
     datMark(info->orderToken);
+
+    for (zint i = 0; i < DAT_MAX_TYPES; i++) {
+        datMark(info->functions[i]);
+    }
 }
 
 /* Documented in header. */

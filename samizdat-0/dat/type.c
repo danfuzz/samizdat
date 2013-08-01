@@ -23,20 +23,7 @@ static zint theNextSeqNum = 0;
  */
 
 /* Documented in header. */
-zvalue datTypeFromZtype(ztype type) {
-    zvalue result = type->nameValue;
-
-    if (result == NULL) {
-        result = datStringFromUtf8(-1, type->name);
-        ((DatType *) type)->nameValue = result;  // Cast to discard `const`.
-        datImmortalize(result);
-    }
-
-    return result;
-}
-
-/* Documented in header. */
-zint datTypeSeqNum(ztype type) {
+zint datIndexFromType(ztype type) {
     zint compl = type->seqNumCompl;
 
     if (compl == 0) {
@@ -50,6 +37,19 @@ zint datTypeSeqNum(ztype type) {
     }
 
     return ~compl;
+}
+
+/* Documented in header. */
+zvalue datTypeFromZtype(ztype type) {
+    zvalue result = type->nameValue;
+
+    if (result == NULL) {
+        result = datStringFromUtf8(-1, type->name);
+        ((DatType *) type)->nameValue = result;  // Cast to discard `const`.
+        datImmortalize(result);
+    }
+
+    return result;
 }
 
 
