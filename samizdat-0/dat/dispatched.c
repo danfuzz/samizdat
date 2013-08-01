@@ -72,11 +72,6 @@ zint datSize(zvalue value) {
 }
 
 /* Documented in header. */
-ztypeId datTypeId(zvalue value) {
-    return value->type->id;
-}
-
-/* Documented in header. */
 bool datTypeIs(zvalue value, zvalue type) {
     return datEq(datTypeOf(value), type);
 }
@@ -88,12 +83,19 @@ zvalue datTypeOf(zvalue value) {
     if (type->typeOf != NULL) {
         return type->typeOf(value);
     } else {
-        zvalue result = type->nameValue;
-        if (result == NULL) {
-            result = datStringFromUtf8(-1, type->name);
-            ((DatType *) type)->nameValue = result; // Cast to discard `const`.
-            datImmortalize(result);
-        }
-        return result;
+        return datTypeFromZtype(type);
     }
+}
+
+/* Documented in header. */
+zvalue datTypeFromZtype(ztype type) {
+    zvalue result = type->nameValue;
+
+    if (result == NULL) {
+        result = datStringFromUtf8(-1, type->name);
+        ((DatType *) type)->nameValue = result;  // Cast to discard `const`.
+        datImmortalize(result);
+    }
+
+    return result;
 }

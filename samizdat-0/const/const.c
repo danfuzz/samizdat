@@ -4,7 +4,7 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "const.h"
+#include "impl.h"
 #include "zlimits.h"
 
 #include <stddef.h>
@@ -91,6 +91,8 @@ void constInit(void) {
 
     datImmortalize(EMPTY_LIST);
     datImmortalize(EMPTY_MAP);
+
+    generatorInit();
 
     datFrameReturn(save, NULL);
 

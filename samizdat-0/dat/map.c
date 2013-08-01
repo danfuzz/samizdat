@@ -107,18 +107,6 @@ static zmapping *mapElems(zvalue map) {
 }
 
 /**
- * Allocates and returns a map with the single given mapping.
- */
-static zvalue mapFrom1(zvalue key, zvalue value) {
-    zvalue result = allocMap(1);
-    zmapping *elems = mapElems(result);
-
-    elems->key = key;
-    elems->value = value;
-    return result;
-}
-
-/**
  * Allocates and returns a map with up to two mappings. This will
  * return a single-mapping map if the two keys are the same, in which case
  * the *second* value is used.
@@ -127,7 +115,7 @@ static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
     zorder comp = datOrder(k1, k2);
 
     if (comp == ZSAME) {
-        return mapFrom1(k2, v2);
+        return datMapping(k2, v2);
     }
 
     zvalue result = allocMap(2);
@@ -330,7 +318,7 @@ zvalue datMapNth(zvalue map, zint n) {
     }
 
     zmapping *mapping = &mapElems(map)[n];
-    return mapFrom1(mapping->key, mapping->value);
+    return datMapping(mapping->key, mapping->value);
 }
 
 /* Documented in header. */
@@ -343,7 +331,7 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
     switch (size) {
         case 0: {
             datAssertValid(key);
-            return mapFrom1(key, value);
+            return datMapping(key, value);
         }
         case 1: {
             datAssertValid(key);
@@ -376,6 +364,16 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
     zmapping *elem = &mapElems(result)[index];
     elem->key = key;
     elem->value = value;
+    return result;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue datMapping(zvalue key, zvalue value) {
+    zvalue result = allocMap(1);
+    zmapping *elems = mapElems(result);
+
+    elems->key = key;
+    elems->value = value;
     return result;
 }
 
@@ -463,7 +461,6 @@ static zorder mapOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 static DatType INFO_Map = {
-    .id = DAT_MAP,
     .name = "Map",
     .dataOf = NULL,
     .sizeOf = mapSizeOf,

@@ -8,7 +8,7 @@
  * Box manipulation
  */
 
-#include "const.h"
+#include "impl.h"
 #include "util.h"
 
 #include <stddef.h>

@@ -18,7 +18,7 @@
  */
 
 /**
- * Regular function structure.
+ * Regular (non-generic) function structure.
  */
 typedef struct {
     /** C function to call. */
@@ -130,7 +130,6 @@ static zorder fnOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 static DatType INFO_Function = {
-    .id = DAT_FUNCTION,
     .name = "Function",
     .dataOf = NULL,
     .sizeOf = NULL,

@@ -220,7 +220,6 @@ static zorder stringOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 static DatType INFO_String = {
-    .id = DAT_STRING,
     .name = "String",
     .dataOf = NULL,
     .sizeOf = stringSizeOf,

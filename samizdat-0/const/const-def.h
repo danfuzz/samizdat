@@ -50,6 +50,7 @@ STR(UP_LIBRARY,       "LIBRARY");
 STR(ACTUALS,          "actuals");
 STR(CALL,             "call");
 STR(CLOSURE,          "closure");
+STR(COLLECT,          "collect");
 STR(EXPRESSION,       "expression");
 STR(FALSE,            "false");
 STR(FN_DEF,           "fnDef");
