@@ -128,11 +128,13 @@ static zorder uniqletOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+void datBindUniqlet(void) {
+    // Nothing to do here...yet.
+}
+
+/* Documented in header. */
 static DatType INFO_Uniqlet = {
     .name = "Uniqlet",
-    .dataOf = NULL,
-    .sizeOf = NULL,
-    .typeOf = NULL,
     .gcMark = uniqletGcMark,
     .gcFree = uniqletGcFree,
     .eq = NULL,

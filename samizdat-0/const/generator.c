@@ -29,8 +29,8 @@ static zvalue genCollect = NULL;
 static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
     zvalue intValue = args[0];
 
-    zvalue bit0 = constIntFromZint(0);
-    zvalue bit1 = constIntFromZint(1);
+    zvalue bit0 = datIntFromZint(0);
+    zvalue bit1 = datIntFromZint(1);
     zint size = datSize(intValue);
     zint raw = datZintFromInt(intValue);
     zvalue arr[size];

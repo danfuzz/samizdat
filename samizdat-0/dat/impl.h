@@ -36,26 +36,8 @@ typedef struct DatType {
      */
     zvalue nameValue;
 
-    /**
-     * Gets the data payload of a value of the given type, if any. Optional
-     * (may be `NULL`), and if omitted means that the payload is the value
-     * itself.
-     */
-    zvalue (*dataOf)(zvalue);
-
-    /**
-     * Gets the "size" of a value of the given type, for the appropriate
-     * per-type meaning of size. Optional (may be `NULL`), and if omitted
-     * means that the size is always `0`.
-     */
-    zint (*sizeOf)(zvalue);
-
-    /**
-     * Gets the (overt) type of a value of the given type. Optional (may
-     * be `NULL`), and if omitted means that the low-layer type name
-     * is used.
-     */
-    zvalue (*typeOf)(zvalue);
+    /** Type sequence number, complemented to disambiguate `0`. */
+    zint seqNumCompl;
 
     /**
      * Does GC marking of a value of the given type.
@@ -113,6 +95,24 @@ typedef struct DatHeader {
 extern bool datInitialized;
 
 /**
+ * `dataOf(value)`: Gets the data payload of a value of the given type,
+ * if any. Defaults to returning the value itself as its own payload.
+ */
+extern zvalue genDataOf;
+
+/**
+ * `sizeOf(value)`: Gets the "size" of a value of the given type, for the
+ * appropriate per-type meaning of size. Defaults to always returning `0`.
+ */
+extern zvalue genSizeOf;
+
+/**
+ * Gets the (overt) type of a value of the given type. Defaults to
+ * returning the low-layer type name.
+ */
+extern zvalue genTypeOf;
+
+/**
  * Allocates memory, sized to include a `DatHeader` header plus the
  * indicated number of extra bytes. The `DatHeader` header is
  * initialized with the indicated type and size. The resulting value
@@ -148,6 +148,11 @@ void datAssertSliceRange(zint size, zint start, zint end);
 void datAssertValid(zvalue value);
 
 /**
+ * Gets the sequence number index for a `ztype`, initializing it if necessary.
+ */
+zint datIndexFromType(ztype type);
+
+/**
  * Clears the contents of the map lookup cache.
  */
 void datMapClearCache(void);
@@ -161,5 +166,25 @@ void *datPayload(zvalue value);
  * Gets a type value from a `ztype`.
  */
 zvalue datTypeFromZtype(ztype type);
+
+
+/*
+ * Initialization functions
+ */
+
+/**
+ * Initializes the core generic functions.
+ */
+void datInitCoreGenerics(void);
+
+// Per-type generic binding.
+void datBindDeriv(void);
+void datBindFunction(void);
+void datBindGeneric(void);
+void datBindInt(void);
+void datBindList(void);
+void datBindMap(void);
+void datBindString(void);
+void datBindUniqlet(void);
 
 #endif

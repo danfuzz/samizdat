@@ -60,7 +60,7 @@ PRIM_IMPL(coreOrder) {
     zvalue arg1 = args[1];
 
     coreOrderTypeCheck(arg0, arg1);
-    return constIntFromZint(datOrder(arg0, arg1));
+    return datIntFromZint(datOrder(arg0, arg1));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -77,7 +77,7 @@ PRIM_IMPL(coreOrderIs) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(coreSizeOf) {
     requireExactly(argCount, 1);
-    return constIntFromZint(datSize(args[0]));
+    return datIntFromZint(datSize(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -97,7 +97,7 @@ PRIM_IMPL(isCoreValue) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(totalOrder) {
     requireExactly(argCount, 2);
-    return constIntFromZint(datOrder(args[0], args[1]));
+    return datIntFromZint(datOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

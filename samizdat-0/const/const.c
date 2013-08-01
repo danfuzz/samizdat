@@ -41,13 +41,6 @@ static zvalue SINGLE_CHAR_STRINGS[128];
  */
 static zvalue SINGLE_CHAR_TOKENS[128];
 
-/** Array of small integer values. */
-static zvalue SMALL_INTS[CONST_SMALL_INT_COUNT];
-
-enum {
-    /** Max (exclusive) small int value. */
-    CONST_SMALL_INT_MAX = CONST_SMALL_INT_MIN + CONST_SMALL_INT_COUNT
-};
 
 /*
  * Module functions
@@ -79,11 +72,6 @@ void constInit(void) {
         SINGLE_CHAR_TOKENS[ch] = datDerivFrom(SINGLE_CHAR_STRINGS[ch], NULL);
         datImmortalize(SINGLE_CHAR_STRINGS[ch]);
         datImmortalize(SINGLE_CHAR_TOKENS[ch]);
-    }
-
-    for (zint i = 0; i < CONST_SMALL_INT_COUNT; i++) {
-        SMALL_INTS[i] = datIntFromZint(i + CONST_SMALL_INT_MIN);
-        datImmortalize(SMALL_INTS[i]);
     }
 
     EMPTY_LIST = datListFromArray(0, NULL);
@@ -131,13 +119,4 @@ zvalue constValueFrom(zvalue type, zvalue data) {
     }
 
     return datDerivFrom(type, data);
-}
-
-/* Documented in header. */
-zvalue constIntFromZint(zint value) {
-    if ((value >= CONST_SMALL_INT_MIN) && (value < CONST_SMALL_INT_MAX)) {
-        return SMALL_INTS[value - CONST_SMALL_INT_MIN];
-    } else {
-        return datIntFromZint(value);
-    }
 }
