@@ -102,7 +102,7 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
  */
 
 /* Documented in header. */
-void genInit(void) {
+void generatorInit(void) {
     // TODO
 }
 

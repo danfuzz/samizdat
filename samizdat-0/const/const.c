@@ -92,7 +92,7 @@ void constInit(void) {
     datImmortalize(EMPTY_LIST);
     datImmortalize(EMPTY_MAP);
 
-    genInit();
+    generatorInit();
 
     datFrameReturn(save, NULL);
 
