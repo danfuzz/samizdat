@@ -528,10 +528,12 @@ void datGenBind(zvalue generic, zvalue type, zvalue function);
 /**
  * Adds a type-to-function binding to the given generic, for a core type.
  * `generic` must be a generic function, `type` must be a valid core `ztype`,
- * and `function` must be a function. The type must not have already been
- * bound in the given generic, and the generic must not be sealed.
+ * `function` must be a valid `zfunction`, and `state` is arbitrary state
+ * to be passed to `function` when called. The type must not have already
+ * been bound in the given generic, and the generic must not be sealed.
  */
-void datGenBindCore(zvalue generic, ztype type, zvalue function);
+void datGenBindCore(zvalue generic, ztype type,
+        zfunction function, void *state);
 
 /**
  * Adds a default binding to the given generic. `generic` must be a generic

@@ -93,8 +93,14 @@ void datGenBind(zvalue generic, zvalue type, zvalue function) {
 }
 
 /* Documented in header. */
-void datGenBindCore(zvalue generic, ztype type, zvalue function) {
-    datGenBind(generic, datTypeFromZtype(type), function);
+void datGenBindCore(zvalue generic, ztype type,
+        zfunction function, void *state) {
+    datAssertGeneric(generic);
+
+    DatGeneric *info = genInfo(generic);
+    zvalue functionValue = datFnWith(function, state, info->name);
+
+    datGenBind(generic, datTypeFromZtype(type), functionValue);
 }
 
 /* Documented in header. */

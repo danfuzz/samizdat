@@ -16,8 +16,11 @@
 
 
 /*
- * Helper functions
+ * Helper definitions
  */
+
+/** Generic function for `collect` (convert to list) dispatch. */
+static zvalue genCollect = NULL;
 
 /**
  * Does listification of an int. This returns a list of individual
@@ -36,6 +39,14 @@ static zvalue listFromInt(zvalue intValue) {
     }
 
     return datListFromArray(size, arr);
+}
+
+/**
+ * Does (trivial) "listification" of a list. This returns the argument
+ * unchanged.
+ */
+static zvalue listFromList(zvalue list) {
+    return list;
 }
 
 /**
@@ -98,12 +109,18 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
 
 
 /*
- * Helper functions
+ * Module functions
  */
 
 /* Documented in header. */
 void generatorInit(void) {
-    // TODO
+    genCollect = datGenWith(STR_COLLECT);
+    datGenBindCore(genCollect, DAT_Int,      listFromInt, NULL);
+    datGenBindCore(genCollect, DAT_List,     listFromList, NULL);
+    datGenBindCore(genCollect, DAT_Map,      listFromMap, NULL);
+    datGenBindCore(genCollect, DAT_String,   listFromString, NULL);
+    datGenBindCore(genCollect, DAT_Function, collectGeneratorPerSe, NULL);
+    datGenSeal(genCollect);
 }
 
 
