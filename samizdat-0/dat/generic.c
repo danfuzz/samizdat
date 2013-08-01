@@ -27,6 +27,9 @@ typedef struct {
     /** Map from first-argument types to corresponding functions. */
     zvalue map;
 
+    /** Whether the generic is sealed (unwilling to add bindings). */
+    bool sealed;
+
     /** The generic's name, if any. Used when producing stack traces. */
     zvalue name;
 
@@ -84,20 +87,21 @@ zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
     }
 
     DatGeneric *info = genInfo(generic);
+    zvalue function = datMapGet(info->map, datTypeOf(args[0]));
 
     debugPush(callReporter, generic);
 
-    // TODO:
-    // zvalue function = datMapGet(info->map, ... something ...);
+    if (function == NULL) {
+        function = info->defaultFunction;
+        if (function == NULL) {
+            die("No type binding found for generic.");
+        }
+    }
 
-    // zstackPointer save = datFrameStart();
-    // zvalue result = info->function(info->state, argCount, args);
-    // datFrameReturn(save, result);
+    zvalue result = datFnCall(function, argCount, args);
 
     debugPop();
-
-    // return result;
-    die("TODO");
+    return result;
 }
 
 
