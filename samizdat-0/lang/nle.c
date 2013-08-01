@@ -110,7 +110,7 @@ zvalue nleCall(znleFunction function, void *state) {
         return result;
     }
 
-    zvalue exitFunction = datFnWith(
+    zvalue exitFunction = datFnFrom(
         nonlocalExit,
         datUniqletWith(&NLE_DISPATCH, nleState),
         NULL);
