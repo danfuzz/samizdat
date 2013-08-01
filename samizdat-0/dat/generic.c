@@ -67,6 +67,15 @@ static char *callReporter(void *state) {
  */
 
 /* Documented in header. */
+zvalue datGenApply(zvalue generic, zvalue args) {
+    zint argCount = datSize(args);
+    zvalue argsArray[argCount];
+
+    datArrayFromList(argsArray, args);
+    return datGenCall(generic, argCount, argsArray);
+}
+
+/* Documented in header. */
 void datGenBind(zvalue generic, zvalue type, zvalue function) {
     datAssertGeneric(generic);
     datAssertFunction(function);
@@ -84,6 +93,11 @@ void datGenBind(zvalue generic, zvalue type, zvalue function) {
 }
 
 /* Documented in header. */
+void datGenBindCore(zvalue generic, ztype type, zvalue function) {
+    datGenBind(generic, datTypeFromZtype(type), function);
+}
+
+/* Documented in header. */
 void datGenBindDefault(zvalue generic, zvalue function) {
     datAssertGeneric(generic);
     datAssertFunction(function);
@@ -95,15 +109,6 @@ void datGenBindDefault(zvalue generic, zvalue function) {
     }
 
     info->defaultFunction = function;
-}
-
-/* Documented in header. */
-zvalue datGenApply(zvalue generic, zvalue args) {
-    zint argCount = datSize(args);
-    zvalue argsArray[argCount];
-
-    datArrayFromList(argsArray, args);
-    return datGenCall(generic, argCount, argsArray);
 }
 
 /* Documented in header. */

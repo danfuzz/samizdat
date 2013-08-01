@@ -88,12 +88,19 @@ zvalue datTypeOf(zvalue value) {
     if (type->typeOf != NULL) {
         return type->typeOf(value);
     } else {
-        zvalue result = type->nameValue;
-        if (result == NULL) {
-            result = datStringFromUtf8(-1, type->name);
-            ((DatType *) type)->nameValue = result; // Cast to discard `const`.
-            datImmortalize(result);
-        }
-        return result;
+        return datTypeFromZtype(type);
     }
+}
+
+/* Documented in header. */
+zvalue datTypeFromZtype(ztype type) {
+    zvalue result = type->nameValue;
+
+    if (result == NULL) {
+        result = datStringFromUtf8(-1, type->name);
+        ((DatType *) type)->nameValue = result;  // Cast to discard `const`.
+        datImmortalize(result);
+    }
+
+    return result;
 }

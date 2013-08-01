@@ -160,4 +160,9 @@ void datMapClearCache(void);
  */
 void *datPayload(zvalue value);
 
+/**
+ * Gets a type value from a `ztype`.
+ */
+zvalue datTypeFromZtype(ztype type);
+
 #endif
