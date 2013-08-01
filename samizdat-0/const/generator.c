@@ -8,7 +8,7 @@
  * Generator glue
  */
 
-#include "const.h"
+#include "impl.h"
 #include "util.h"
 #include "zlimits.h"
 
@@ -94,6 +94,16 @@ static zvalue collectGeneratorPerSe(zvalue generator) {
     zvalue result = datListFromArray(at, arr);
     datFrameReturn(save, result);
     return result;
+}
+
+
+/*
+ * Helper functions
+ */
+
+/* Documented in header. */
+void genInit(void) {
+    // TODO
 }
 
 
