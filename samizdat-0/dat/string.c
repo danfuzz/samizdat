@@ -167,11 +167,6 @@ void datZcharsFromString(zchar *result, zvalue string) {
  */
 
 /* Documented in header. */
-static void stringGcMark(zvalue string) {
-    // Nothing to do here.
-}
-
-/* Documented in header. */
 static bool stringEq(zvalue v1, zvalue v2) {
     zint sz1 = stringSizeOf(v1);
     zint sz2 = stringSizeOf(v2);
@@ -233,8 +228,6 @@ void datBindString(void) {
 static DatType INFO_String = {
     .name = "String",
     .call = NULL,
-    .gcMark = stringGcMark,
-    .gcFree = NULL,
     .eq = stringEq,
     .order = stringOrder
 };

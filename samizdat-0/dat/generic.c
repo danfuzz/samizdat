@@ -56,6 +56,25 @@ static DatGeneric *genInfo(zvalue generic) {
 
 
 /*
+ * Module functions
+ */
+
+/* Documented in header. */
+zvalue datGenGet(zvalue generic, zvalue value) {
+    // TODO: Dispatch is currently on the core type. It should be able
+    // to handle derived types too. It's not as simple as just calling
+    // `datTypeOf` on the value, though: (1) That function itself should
+    // be generic at some point, and (2) the default implementations of
+    // many generics will have to be adjusted.
+
+    DatGeneric *info = genInfo(generic);
+    zvalue function = info->functions[datIndexFromType(value->type)];
+
+    return (function != NULL) ? function : info->defaultFunction;
+}
+
+
+/*
  * Exported functions
  */
 
@@ -136,34 +155,13 @@ static zvalue genCall(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->minArgs);
     }
 
-    // TODO: Dispatch is currently on the core type. It should be able
-    // to handle derived types too. It's not as simple as just calling
-    // `datTypeOf` on the value, though: (1) That function itself should
-    // be generic at some point, and (2) the default implementations of
-    // many generics will have to be adjusted.
-    zvalue function = info->functions[datIndexFromType(args[0]->type)];
+    zvalue function = datGenGet(generic, args[0]);
 
     if (function == NULL) {
-        function = info->defaultFunction;
-        if (function == NULL) {
-            die("No type binding found for generic.");
-        }
+        die("No type binding found for generic.");
     }
 
     return datCall(function, argCount, args);
-}
-
-/* Documented in header. */
-static void genGcMark(zvalue function) {
-    DatGeneric *info = genInfo(function);
-
-    datMark(info->defaultFunction);
-    datMark(info->name);
-    datMark(info->orderToken);
-
-    for (zint i = 0; i < DAT_MAX_TYPES; i++) {
-        datMark(info->functions[i]);
-    }
 }
 
 /* Documented in header. */
@@ -172,16 +170,30 @@ static zorder genOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
+    zvalue generic = args[0];
+    DatGeneric *info = genInfo(generic);
+
+    datMark(info->defaultFunction);
+    datMark(info->name);
+    datMark(info->orderToken);
+
+    for (zint i = 0; i < DAT_MAX_TYPES; i++) {
+        datMark(info->functions[i]);
+    }
+
+    return NULL;
+}
+
+/* Documented in header. */
 void datBindGeneric(void) {
-    // Nothing to do here...yet.
+    datGenBindCore(genGcMark, DAT_Generic, Generic_gcMark, NULL);
 }
 
 /* Documented in header. */
 static DatType INFO_Generic = {
     .name = "Generic",
     .call = genCall,
-    .gcMark = genGcMark,
-    .gcFree = NULL,
     .eq = NULL,
     .order = genOrder
 };
