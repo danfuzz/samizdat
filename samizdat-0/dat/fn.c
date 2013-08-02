@@ -40,7 +40,7 @@ typedef struct {
     zvalue name;
 
     /** Uniqlet to use for ordering comparisons. */
-    zvalue orderToken;
+    zvalue orderId;
 } DatFunction;
 
 /**
@@ -48,6 +48,20 @@ typedef struct {
  */
 static DatFunction *fnInfo(zvalue function) {
     return datPayload(function);
+}
+
+/**
+ * Gets the order id, initializing it if necessary.
+ */
+static zvalue fnOrderId(zvalue function) {
+    DatFunction *info = fnInfo(function);
+    zvalue orderId = info->orderId;
+
+    if (orderId == NULL) {
+        orderId = info->orderId = datUniqlet();
+    }
+
+    return orderId;
 }
 
 /**
@@ -114,7 +128,7 @@ zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
     info->function = function;
     info->state = state;
     info->name = name;
-    info->orderToken = datUniqlet();
+    info->orderId = NULL;
 
     return result;
 }
@@ -148,7 +162,7 @@ static zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 static zorder fnOrder(zvalue v1, zvalue v2) {
-    return datOrder(fnInfo(v1)->orderToken, fnInfo(v2)->orderToken);
+    return datOrder(fnOrderId(v1), fnOrderId(v2));
 }
 
 /* Documented in header. */
@@ -158,7 +172,7 @@ static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
 
     datMark(info->state);
     datMark(info->name);
-    datMark(info->orderToken);
+    datMark(info->orderId);
 
     return NULL;
 }
