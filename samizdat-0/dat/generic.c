@@ -41,7 +41,7 @@ typedef struct {
     zvalue name;
 
     /** Uniqlet to use for ordering comparisons. */
-    zvalue orderToken;
+    zvalue orderId;
 
     /** Bindings from type to function, keyed off of type sequence number. */
     zvalue functions[DAT_MAX_TYPES];
@@ -52,6 +52,20 @@ typedef struct {
  */
 static DatGeneric *genInfo(zvalue generic) {
     return datPayload(generic);
+}
+
+/**
+ * Gets the order id, initializing it if necessary.
+ */
+static zvalue genOrderId(zvalue function) {
+    DatGeneric *info = genInfo(function);
+    zvalue orderId = info->orderId;
+
+    if (orderId == NULL) {
+        orderId = info->orderId = datUniqlet();
+    }
+
+    return orderId;
 }
 
 
@@ -129,7 +143,7 @@ zvalue datGenFrom(zint minArgs, zint maxArgs, zvalue name) {
     info->defaultFunction = NULL;
     info->sealed = false;
     info->name = name;
-    info->orderToken = datUniqlet();
+    info->orderId = NULL;
 
     return result;
 }
@@ -164,11 +178,8 @@ static zvalue genCall(zvalue generic, zint argCount, const zvalue *args) {
     }
 
     return datCall(function, argCount, args);
-}
-
-/* Documented in header. */
-static zorder genOrder(zvalue v1, zvalue v2) {
-    return datOrder(genInfo(v1)->orderToken, genInfo(v2)->orderToken);
+    // TODO: Maybe replace with this:
+    // * `return function->type->call(function, argCount, args);`
 }
 
 /* Documented in header. */
@@ -178,7 +189,7 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
 
     datMark(info->defaultFunction);
     datMark(info->name);
-    datMark(info->orderToken);
+    datMark(info->orderId);
 
     for (zint i = 0; i < DAT_MAX_TYPES; i++) {
         datMark(info->functions[i]);
@@ -188,15 +199,21 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    return datIntFromZint(datOrder(genOrderId(v1), genOrderId(v2)));
+}
+
+/* Documented in header. */
 void datBindGeneric(void) {
     datGenBindCore(genGcMark, DAT_Generic, Generic_gcMark, NULL);
+    datGenBindCore(genOrder,  DAT_Generic, Generic_order,  NULL);
 }
 
 /* Documented in header. */
 static DatType INFO_Generic = {
     .name = "Generic",
-    .call = genCall,
-    .eq = NULL,
-    .order = genOrder
+    .call = genCall
 };
 ztype DAT_Generic = &INFO_Generic;

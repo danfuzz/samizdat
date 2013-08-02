@@ -18,10 +18,16 @@
 zvalue genDataOf = NULL;
 
 /* Documented in header. */
+zvalue genEq = NULL;
+
+/* Documented in header. */
 zvalue genGcFree = NULL;
 
 /* Documented in header. */
 zvalue genGcMark = NULL;
+
+/* Documented in header. */
+zvalue genOrder = NULL;
 
 /* Documented in header. */
 zvalue genSizeOf = NULL;
@@ -32,6 +38,11 @@ zvalue genTypeOf = NULL;
 /* Documented in header. */
 static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
     return args[0];
+}
+
+/* Documented in header. */
+static zvalue Default_eq(zvalue state, zint argCount, const zvalue *args) {
+    return NULL;
 }
 
 /* Documented in header. */
@@ -51,11 +62,18 @@ void datInitCoreGenerics(void) {
     datGenBindCoreDefault(genDataOf, Default_dataOf, NULL);
     datImmortalize(genDataOf);
 
+    genEq = datGenFrom(2, 2, datStringFromUtf8(-1, "eq"));
+    datGenBindCoreDefault(genEq, Default_eq, NULL);
+    datImmortalize(genEq);
+
     genGcFree = datGenFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
     datImmortalize(genGcFree);
 
     genGcMark = datGenFrom(1, 1, datStringFromUtf8(-1, "gcMark"));
     datImmortalize(genGcMark);
+
+    genOrder = datGenFrom(2, 2, datStringFromUtf8(-1, "order"));
+    datImmortalize(genOrder);
 
     genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
     datGenBindCoreDefault(genSizeOf, Default_sizeOf, NULL);
@@ -85,10 +103,9 @@ bool datEq(zvalue v1, zvalue v2) {
         return true;
     } else if (v1->type != v2->type) {
         return false;
-    } else if (v1->type->eq) {
-        return v1->type->eq(v1, v2);
     } else {
-        return false;
+        zvalue args[2] = { v1, v2 };
+        return datCall(genEq, 2, args) != NULL;
     }
 }
 
@@ -100,7 +117,11 @@ zorder datOrder(zvalue v1, zvalue v2) {
     if (v1 == v2) {
         return ZSAME;
     } else if (v1->type == v2->type) {
-        return v1->type->order(v1, v2);
+        zvalue args[2] = { v1, v2 };
+        zstackPointer save = datFrameStart();
+        zorder result = datZintFromInt(datCall(genOrder, 2, args));
+        datFrameReturn(save, NULL);
+        return result;
     } else if (datCoreTypeIs(v1, DAT_Deriv)) {
         // Per spec, derived values always sort after primitives.
         return ZMORE;

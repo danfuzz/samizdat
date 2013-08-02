@@ -178,12 +178,14 @@ void datZcharsFromString(zchar *result, zvalue string) {
 zvalue EMPTY_STRING = NULL;
 
 /* Documented in header. */
-static bool stringEq(zvalue v1, zvalue v2) {
+static zvalue String_eq(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
     zint sz1 = stringSizeOf(v1);
     zint sz2 = stringSizeOf(v2);
 
     if (sz1 != sz2) {
-        return false;
+        return NULL;
     }
 
     zchar *e1 = stringElems(v1);
@@ -191,15 +193,17 @@ static bool stringEq(zvalue v1, zvalue v2) {
 
     for (zint i = 0; i < sz1; i++) {
         if (e1[i] != e2[i]) {
-            return false;
+            return NULL;
         }
     }
 
-    return true;
+    return v2;
 }
 
 /* Documented in header. */
-static zorder stringOrder(zvalue v1, zvalue v2) {
+static zvalue String_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
     zchar *e1 = stringElems(v1);
     zchar *e2 = stringElems(v2);
     zint sz1 = stringSizeOf(v1);
@@ -211,17 +215,17 @@ static zorder stringOrder(zvalue v1, zvalue v2) {
         zchar c2 = e2[i];
 
         if (c1 < c2) {
-            return ZLESS;
+            return DAT_NEG1;
         } else if (c1 > c2) {
-            return ZMORE;
+            return DAT_1;
         }
     }
 
     if (sz1 == sz2) {
-        return ZSAME;
+        return DAT_0;
     }
 
-    return (sz1 < sz2) ? ZLESS : ZMORE;
+    return (sz1 < sz2) ? DAT_NEG1 : DAT_1;
 }
 
 /* Documented in header. */
@@ -232,6 +236,8 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindString(void) {
+    datGenBindCore(genEq,     DAT_String, String_eq,     NULL);
+    datGenBindCore(genOrder,  DAT_String, String_order,  NULL);
     datGenBindCore(genSizeOf, DAT_String, String_sizeOf, NULL);
 
     EMPTY_STRING = allocString(0);
@@ -241,8 +247,6 @@ void datBindString(void) {
 /* Documented in header. */
 static DatType INFO_String = {
     .name = "String",
-    .call = NULL,
-    .eq = stringEq,
-    .order = stringOrder
+    .call = NULL
 };
 ztype DAT_String = &INFO_String;

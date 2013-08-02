@@ -71,14 +71,23 @@ typedef const zvalue *zstackPointer;
  * Constants, type references and generic functions
  */
 
-/** The standard value `[]` */
+/** The standard value `[]`. */
 extern zvalue EMPTY_LIST;
 
-/** The standard value `[:]` */
+/** The standard value `[:]`. */
 extern zvalue EMPTY_MAP;
 
-/** The standard value `""` */
+/** The standard value `""`. */
 extern zvalue EMPTY_STRING;
+
+/** The standard value `0`. */
+extern zvalue DAT_0;
+
+/** The standard value `1`. */
+extern zvalue DAT_1;
+
+/** The standard value `-1`. */
+extern zvalue DAT_NEG1;
 
 /** Type value for in-model type `Deriv`. */
 extern ztype DAT_Deriv;
@@ -109,6 +118,21 @@ extern ztype DAT_Uniqlet;
  * type, if any. Defaults to returning the value itself as its own payload.
  */
 extern zvalue genDataOf;
+
+/**
+ * Generic `eq(value, value)`: Compares two values for equality / sameness.
+ * Returns the second value to indicate logical-true. Only ever called when
+ * the two values are not `==`, and only ever called when the two values are
+ * of the same type. Defaults to always returning logical-false.
+ */
+extern zvalue genEq;
+
+/**
+ * Generic `order(value, value)`: Compares two values with respect to the
+ * total order of values. Returns one of `-1` `0` `1` corresponding to
+ * the usual meanings for comparison. Must be implemented by every type.
+ */
+extern zvalue genOrder;
 
 /**
  * Generic `sizeOf(value)`: Gets the "size" of a value of the given type,
