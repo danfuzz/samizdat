@@ -46,7 +46,7 @@ PRIM_IMPL(intFromChar) {
 PRIM_IMPL(stringAdd) {
     switch (argCount) {
         case 0: {
-            return STR_EMPTY;
+            return EMPTY_STRING;
         }
         case 1: {
             datAssertString(args[0]);
