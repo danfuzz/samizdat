@@ -40,8 +40,6 @@ PRIM_IMPL(listAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listDelNth) {
-    requireExactly(argCount, 2);
-
     if (!datCoreTypeIs(args[1], DAT_Int)) {
         return args[0];
     }
@@ -51,8 +49,6 @@ PRIM_IMPL(listDelNth) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listFilter) {
-    requireExactly(argCount, 2);
-
     zvalue function = args[0];
     zvalue list = args[1];
     zint size = datSize(list);
@@ -76,32 +72,26 @@ PRIM_IMPL(listFilter) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listGet) {
-    requireExactly(argCount, 2);
-    return doNthLenient(datListNth, args[0], args[1]);
+   return doNthLenient(datListNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listInsNth) {
-    requireExactly(argCount, 3);
     return datListInsNth(args[0], datZintFromInt(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listNth) {
-    requireExactly(argCount, 2);
     return doNthStrict(datListNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listPutNth) {
-    requireExactly(argCount, 3);
     return datListPutNth(args[0], datZintFromInt(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listReverse) {
-    requireExactly(argCount, 1);
-
     zvalue list = args[0];
     zint size = datSize(list);
     zvalue elems[size];
@@ -119,8 +109,6 @@ PRIM_IMPL(listReverse) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listSlice) {
-    requireAtLeast(argCount, 2);
-
     zvalue list = args[0];
     zint startIndex = datZintFromInt(args[1]);
     zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : datSize(list);

@@ -30,24 +30,6 @@ zvalue doNthLenient(znth function, zvalue value, zvalue n);
 zvalue doNthStrict(znth function, zvalue value, zvalue n);
 
 /**
- * Check the given argument count for an exact required amount,
- * complaining if it doesn't match.
- */
-void requireExactly(zint argCount, zint required);
-
-/**
- * Check the given argument count for a minimum amount, complaining if the
- * given count is too small.
- */
-void requireAtLeast(zint argCount, zint minimum);
-
-/**
- * Check the given argument count for a range of acceptable values,
- * complaining if it doesn't match.
- */
-void requireRange(zint argCount, zint min, zint max);
-
-/**
  * Used at the top of primitive functions, to supply the standard
  * function prototype.
  */
@@ -56,7 +38,8 @@ void requireRange(zint argCount, zint min, zint max);
 
 /* Declarations for all the primitive functions */
 #define PRIM_DEF(name, value) /*empty*/
-#define PRIM_FUNC(name) zvalue prim_##name(zvalue, zint, const zvalue *)
+#define PRIM_FUNC(name, minArgs, maxArgs) \
+    zvalue prim_##name(zvalue, zint, const zvalue *)
 #include "prim-def.h"
 #undef PRIM_DEF
 #undef PRIM_FUNC
