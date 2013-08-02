@@ -87,32 +87,6 @@ static char *callReporter(void *state) {
  */
 
 /* Documented in header. */
-zvalue datApply(zvalue function, zvalue args) {
-    zint argCount = datSize(args);
-    zvalue argsArray[argCount];
-
-    datArrayFromList(argsArray, args);
-
-    return datCall(function, argCount, argsArray);
-}
-
-/* Documented in header. */
-zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
-    if (argCount < 0) {
-        die("Invalid argument count for function call: %lld", argCount);
-    } else if ((argCount != 0) && (args == NULL)) {
-        die("Function call argument inconsistency.");
-    }
-
-    zfunction caller = function->type->call;
-    if (caller == NULL) {
-        die("Attempt to call non-function.");
-    }
-
-    return caller(function, argCount, args);
-}
-
-/* Documented in header. */
 zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         zvalue name) {
     if ((minArgs < 0) ||
@@ -139,7 +113,8 @@ zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
  */
 
 /* Documented in header. */
-static zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
+static zvalue Function_call(zvalue function,
+        zint argCount, const zvalue *args) {
     DatFunction *info = fnInfo(function);
 
     debugPush(callReporter, function);
@@ -181,13 +156,13 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindFunction(void) {
+    datGenBindCore(genCall,   DAT_Function, Function_call,   NULL);
     datGenBindCore(genGcMark, DAT_Function, Function_gcMark, NULL);
     datGenBindCore(genOrder,  DAT_Function, Function_order,  NULL);
 }
 
 /* Documented in header. */
 static DatType INFO_Function = {
-    .name = "Function",
-    .call = fnCall
+    .name = "Function"
 };
 ztype DAT_Function = &INFO_Function;

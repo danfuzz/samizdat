@@ -77,9 +77,9 @@ static zvalue genOrderId(zvalue function) {
 zvalue datGenGet(zvalue generic, zvalue value) {
     // TODO: Dispatch is currently on the core type. It should be able
     // to handle derived types too. It's not as simple as just calling
-    // `datTypeOf` on the value, though: (1) That function itself should
-    // be generic at some point, and (2) the default implementations of
-    // many generics will have to be adjusted.
+    // `datTypeOf` on the value, though: (1) That function itself is
+    // generic, and (2) the default implementations of many generics
+    // will have to be adjusted.
 
     DatGeneric *info = genInfo(generic);
     zvalue function = info->functions[datIndexFromType(value->type)];
@@ -91,6 +91,33 @@ zvalue datGenGet(zvalue generic, zvalue value) {
 /*
  * Exported functions
  */
+
+/* Documented in header. */
+zvalue datApply(zvalue function, zvalue args) {
+    zint argCount = datSize(args);
+    zvalue argsArray[argCount];
+
+    datArrayFromList(argsArray, args);
+
+    return datCall(function, argCount, argsArray);
+}
+
+/* Documented in header. */
+zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
+    if (argCount < 0) {
+        die("Invalid argument count for function call: %lld", argCount);
+    } else if ((argCount != 0) && (args == NULL)) {
+        die("Function call argument inconsistency.");
+    }
+
+    zvalue caller = genInfo(genCall)->functions[~function->type->seqNumCompl];
+    if (caller == NULL) {
+        die("Attempt to call non-function.");
+    }
+
+    // TODO:
+    // return caller(function, argCount, args);
+}
 
 /* Documented in header. */
 void datGenBindCore(zvalue generic, ztype type,
@@ -160,7 +187,7 @@ void datGenSeal(zvalue generic) {
  */
 
 /* Documented in header. */
-static zvalue genCall(zvalue generic, zint argCount, const zvalue *args) {
+static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
     DatGeneric *info = genInfo(generic);
 
     if (argCount < info->minArgs) {
@@ -207,13 +234,13 @@ static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindGeneric(void) {
+    datGenBindCore(genCall,   DAT_Generic, Generic_call,   NULL);
     datGenBindCore(genGcMark, DAT_Generic, Generic_gcMark, NULL);
     datGenBindCore(genOrder,  DAT_Generic, Generic_order,  NULL);
 }
 
 /* Documented in header. */
 static DatType INFO_Generic = {
-    .name = "Generic",
-    .call = genCall
+    .name = "Generic"
 };
 ztype DAT_Generic = &INFO_Generic;

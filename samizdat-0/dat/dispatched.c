@@ -15,6 +15,9 @@
  */
 
 /* Documented in header. */
+zvalue genCall = NULL;
+
+/* Documented in header. */
 zvalue genDataOf = NULL;
 
 /* Documented in header. */
@@ -58,6 +61,9 @@ static zvalue Default_typeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datInitCoreGenerics(void) {
+    genCall = datGenFrom(1, 1, datStringFromUtf8(-1, "call"));
+    datImmortalize(genCall);
+
     genDataOf = datGenFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
     datGenBindCoreDefault(genDataOf, Default_dataOf, NULL);
     datImmortalize(genDataOf);
