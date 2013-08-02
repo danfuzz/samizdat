@@ -25,12 +25,6 @@
 #undef STR
 #undef TOK
 
-/* Documented in header. */
-zvalue EMPTY_LIST = NULL;
-
-/* Documented in header. */
-zvalue EMPTY_MAP = NULL;
-
 /** Array of single-character strings, for character codes `0..127`. */
 static zvalue SINGLE_CHAR_STRINGS[128];
 
@@ -48,7 +42,7 @@ static zvalue SINGLE_CHAR_TOKENS[128];
 
 /* Documented in header. */
 void constInit(void) {
-    if (EMPTY_LIST != NULL) {
+    if (STR_DEF != NULL) {
         return;
     }
 
@@ -73,12 +67,6 @@ void constInit(void) {
         datImmortalize(SINGLE_CHAR_STRINGS[ch]);
         datImmortalize(SINGLE_CHAR_TOKENS[ch]);
     }
-
-    EMPTY_LIST = datListFromArray(0, NULL);
-    EMPTY_MAP = datMapEmpty();
-
-    datImmortalize(EMPTY_LIST);
-    datImmortalize(EMPTY_MAP);
 
     generatorInit();
 

@@ -79,6 +79,10 @@ zvalue datStringAdd(zvalue str1, zvalue str2) {
 
 /* Documented in header. */
 zvalue datStringFromZchars(zint size, const zchar *chars) {
+    if (size == 0) {
+        return EMPTY_STRING;
+    }
+
     zvalue result = allocString(size);
 
     memcpy(stringElems(result), chars, size * sizeof(zchar));
@@ -91,6 +95,10 @@ zvalue datStringFromUtf8(zint stringBytes, const char *string) {
         stringBytes = strlen(string);
     } else if (stringBytes < 0) {
         die("Invalid string size: %lld", stringBytes);
+    }
+
+    if (stringBytes == 0) {
+        return EMPTY_STRING;
     }
 
     zint decodedSize = utf8DecodeStringSize(stringBytes, string);
@@ -167,6 +175,9 @@ void datZcharsFromString(zchar *result, zvalue string) {
  */
 
 /* Documented in header. */
+zvalue EMPTY_STRING = NULL;
+
+/* Documented in header. */
 static zorder stringOrder(zvalue v1, zvalue v2) {
     zchar *e1 = stringElems(v1);
     zchar *e2 = stringElems(v2);
@@ -225,6 +236,9 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 void datBindString(void) {
     datGenBindCore(genEq,     DAT_String, String_eq,    NULL);
     datGenBindCore(genSizeOf, DAT_String, String_sizeOf, NULL);
+
+    EMPTY_STRING = allocString(0);
+    datImmortalize(EMPTY_STRING);
 }
 
 /* Documented in header. */
