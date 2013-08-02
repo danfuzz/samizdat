@@ -71,18 +71,8 @@ static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
         die("Attempt to use out-of-scope nonlocal exit.");
     }
 
-    switch (argCount) {
-        case 0: {
-            // Nothing to do.
-            break;
-        }
-        case 1: {
-            nleState->result = args[0];
-            break;
-        }
-        default: {
-            die("Too many arguments for nonlocal exit: %lld", argCount);
-        }
+    if (argCount != 0) {
+        nleState->result = args[0];
     }
 
     longjmp(nleState->jumpBuf, 1);
@@ -111,6 +101,7 @@ zvalue nleCall(znleFunction function, void *state) {
     }
 
     zvalue exitFunction = datFnFrom(
+        0, 1,
         nonlocalExit,
         datUniqletWith(&NLE_DISPATCH, nleState),
         NULL);

@@ -506,10 +506,14 @@ zvalue datApply(zvalue function, zvalue args);
 zvalue datCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
- * Constructs and returns a function with optional associated closure
- * state and optional name (used when producing stack traces).
+ * Constructs and returns a function with the given argument
+ * restrictions, optional associated closure state, and optional name
+ * (used when producing stack traces). `minArgs` must be non-negative,
+ * and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
+ * that there is no limit.
  */
-zvalue datFnFrom(zfunction function, zvalue state, zvalue name);
+zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
+        zvalue name);
 
 
 /*

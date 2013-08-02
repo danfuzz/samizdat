@@ -16,7 +16,6 @@
 
 #define UNARY_PRIM(name, op) \
     PRIM_IMPL(name) { \
-        requireExactly(argCount, 1); \
         zint x = datZintFromInt(args[0]); \
         return datIntFromZint((op)); \
     } \
@@ -24,7 +23,6 @@
 
 #define BINARY_PRIM(name, op) \
     PRIM_IMPL(name) { \
-        requireExactly(argCount, 2); \
         zint x = datZintFromInt(args[0]); \
         zint y = datZintFromInt(args[1]); \
         return datIntFromZint((op)); \
@@ -142,12 +140,10 @@ BINARY_PRIM(ixor, x ^ y);
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intGet) {
-    requireExactly(argCount, 2);
     return doNthLenient(doIntNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intNth) {
-    requireExactly(argCount, 2);
     return doNthStrict(doIntNth, args[0], args[1]);
 }

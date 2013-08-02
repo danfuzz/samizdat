@@ -15,33 +15,6 @@
  */
 
 /** Documented in header. */
-void requireExactly(zint argCount, zint required) {
-    if (argCount != required) {
-        die("Invalid argument count for primitive: %lld != %lld",
-            argCount, required);
-    }
-}
-
-/** Documented in header. */
-void requireRange(zint argCount, zint min, zint max) {
-    if (argCount < min) {
-        die("Invalid argument count for primitive: %lld < %lld",
-            argCount, min);
-    } else if (argCount > max) {
-        die("Invalid argument count for primitive: %lld > %lld",
-            argCount, max);
-    }
-}
-
-/** Documented in header. */
-void requireAtLeast(zint argCount, zint minimum) {
-    if (argCount < minimum) {
-        die("Invalid argument count for primitive: %lld < %lld",
-            argCount, minimum);
-    }
-}
-
-/** Documented in header. */
 zvalue doNthLenient(znth function, zvalue value, zvalue n) {
     if (datCoreTypeIs(n, DAT_Int)) {
         zint index = datZintFromInt(n);

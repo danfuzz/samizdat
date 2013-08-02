@@ -28,8 +28,6 @@ PRIM_IMPL(mapAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapDel) {
-    requireAtLeast(argCount, 1);
-
     zvalue result = args[0];
 
     if (argCount == 0) {
@@ -46,14 +44,11 @@ PRIM_IMPL(mapDel) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapGet) {
-    requireExactly(argCount, 2);
     return datMapGet(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapKeys) {
-    requireExactly(argCount, 1);
-
     zvalue map = args[0];
     zint size = datSize(map);
     zmapping mappings[size];
@@ -70,24 +65,20 @@ PRIM_IMPL(mapKeys) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapNth) {
-    requireExactly(argCount, 2);
     return doNthStrict(datMapNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapPut) {
-    requireExactly(argCount, 3);
     return datMapPut(args[0], args[1], args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mappingKey) {
-    requireExactly(argCount, 1);
     return datMappingKey(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mappingValue) {
-    requireExactly(argCount, 1);
     return datMappingValue(args[0]);
 }

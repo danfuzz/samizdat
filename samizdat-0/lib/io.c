@@ -33,15 +33,7 @@ static void emitNote(zvalue message) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0FlatCwd) {
-    requireExactly(argCount, 0);
-    return ioFlatCwd();
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0Die) {
-    requireRange(argCount, 0, 1);
-
     zvalue message =
         (argCount == 1) ? args[0] : datStringFromUtf8(-1, "Alas");
     emitNote(message);
@@ -50,26 +42,27 @@ PRIM_IMPL(io0Die) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0Note) {
-    requireExactly(argCount, 1);
     emitNote(args[0]);
     return NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(io0FlatCwd) {
+    return ioFlatCwd();
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0FlatReadFileUtf8) {
-    requireExactly(argCount, 1);
     return ioFlatReadFileUtf8(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0FlatReadLink) {
-    requireExactly(argCount, 1);
     return ioFlatReadLink(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0FlatWriteFileUtf8) {
-    requireExactly(argCount, 2);
     ioFlatWriteFileUtf8(args[0], args[1]);
     return NULL;
 }
