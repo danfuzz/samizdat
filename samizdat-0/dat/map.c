@@ -283,6 +283,11 @@ zvalue datMapDel(zvalue map, zvalue key) {
     }
 
     zint size = mapSizeOf(map) - 1;
+
+    if (size == 0) {
+        return EMPTY_MAP;
+    }
+
     zvalue result = allocMap(size);
     zmapping *elems = mapElems(result);
     zmapping *oldElems = mapElems(map);
@@ -291,11 +296,6 @@ zvalue datMapDel(zvalue map, zvalue key) {
     memcpy(&elems[index], &oldElems[index + 1],
            (size - index) * sizeof(zmapping));
     return result;
-}
-
-/* Documented in header. */
-zvalue datMapEmpty(void) {
-    return allocMap(0);
 }
 
 /* Documented in header. */

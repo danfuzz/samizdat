@@ -416,12 +416,6 @@ zvalue datMapAdd(zvalue map1, zvalue map2);
 zvalue datMapDel(zvalue map, zvalue key);
 
 /**
- * Gets an empty map value, i.e. `[:]`. Note that this can return
- * a different allocated value every time.
- */
-zvalue datMapEmpty(void);
-
-/**
  * Given a map, find the mapping of the given key and return the
  * corresponding value, or `NULL` if there is no such key. `map`
  * must be a map, and `key` must be a valid value.

@@ -79,6 +79,10 @@ zvalue datStringAdd(zvalue str1, zvalue str2) {
 
 /* Documented in header. */
 zvalue datStringFromZchars(zint size, const zchar *chars) {
+    if (size == 0) {
+        return EMPTY_STRING;
+    }
+
     zvalue result = allocString(size);
 
     memcpy(stringElems(result), chars, size * sizeof(zchar));
@@ -91,6 +95,10 @@ zvalue datStringFromUtf8(zint stringBytes, const char *string) {
         stringBytes = strlen(string);
     } else if (stringBytes < 0) {
         die("Invalid string size: %lld", stringBytes);
+    }
+
+    if (stringBytes == 0) {
+        return EMPTY_STRING;
     }
 
     zint decodedSize = utf8DecodeStringSize(stringBytes, string);

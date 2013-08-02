@@ -58,7 +58,13 @@ static zvalue allocList(zint size) {
 static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
                        zint size2, const zvalue *elems2) {
     zint insertCount = (insert == NULL) ? 0 : 1;
-    zvalue result = allocList(size1 + size2 + insertCount);
+    zint size = size1 + size2 + insertCount;
+
+    if (size == 0) {
+        return EMPTY_LIST;
+    }
+
+    zvalue result = allocList(size);
     zvalue *resultElems = listElems(result);
 
     if (size1 != 0) {
