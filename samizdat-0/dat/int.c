@@ -135,11 +135,6 @@ bool datZintGetBit(zint value, zint n) {
  */
 
 /* Documented in header. */
-static void intGcMark(zvalue intval) {
-    // Nothing to do here.
-}
-
-/* Documented in header. */
 static bool intEq(zvalue v1, zvalue v2) {
     return zintValue(v1) == zintValue(v2);
 }
@@ -179,8 +174,6 @@ void datBindInt(void) {
 static DatType INFO_Int = {
     .name = "Int",
     .call = NULL,
-    .gcMark = intGcMark,
-    .gcFree = NULL,
     .eq = intEq,
     .order = intOrder
 };

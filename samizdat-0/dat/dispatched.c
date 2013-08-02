@@ -18,6 +18,12 @@
 zvalue genDataOf = NULL;
 
 /* Documented in header. */
+zvalue genGcFree = NULL;
+
+/* Documented in header. */
+zvalue genGcMark = NULL;
+
+/* Documented in header. */
 zvalue genSizeOf = NULL;
 
 /* Documented in header. */
@@ -44,6 +50,12 @@ void datInitCoreGenerics(void) {
     genDataOf = datGenFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
     datGenBindCoreDefault(genDataOf, Default_dataOf, NULL);
     datImmortalize(genDataOf);
+
+    genGcFree = datGenFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
+    datImmortalize(genGcFree);
+
+    genGcMark = datGenFrom(1, 1, datStringFromUtf8(-1, "gcMark"));
+    datImmortalize(genGcMark);
 
     genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
     datGenBindCoreDefault(genSizeOf, Default_sizeOf, NULL);

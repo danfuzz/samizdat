@@ -47,16 +47,6 @@ typedef struct DatType {
     zfunction call;
 
     /**
-     * Does GC marking of a value of the given type.
-     */
-    void (*gcMark)(zvalue);
-
-    /**
-     * Frees a garbage value. Optional (may be `NULL`).
-     */
-    void (*gcFree)(zvalue);
-
-    /**
      * Compares for equality with another value of the same type. Only
      * ever called when the two values are not `==`. Optional (may be `NULL`),
      * and if omitted means that comparisons when not `==` are always false.
@@ -100,6 +90,17 @@ typedef struct DatHeader {
  * Flag indicating whether module has been initialized.
  */
 extern bool datInitialized;
+
+/**
+ * Generic `gcMark(value)`: Does GC marking for the given value.
+ */
+extern zvalue genGcMark;
+
+/**
+ * Generic `gcFree(value)`: Does GC freeing for the given value. This is
+ * to do immediate pre-mortem freeing of value contents.
+ */
+extern zvalue genGcFree;
 
 /**
  * Allocates memory, sized to include a `DatHeader` header plus the

@@ -395,17 +395,6 @@ zvalue datMappingValue(zvalue map) {
  */
 
 /* Documented in header. */
-static void mapGcMark(zvalue map) {
-    zint size = mapSizeOf(map);
-    zmapping *elems = mapElems(map);
-
-    for (zint i = 0; i < size; i++) {
-        datMark(elems[i].key);
-        datMark(elems[i].value);
-    }
-}
-
-/* Documented in header. */
 static bool mapEq(zvalue v1, zvalue v2) {
     zint sz1 = mapSizeOf(v1);
     zint sz2 = mapSizeOf(v2);
@@ -460,6 +449,20 @@ static zorder mapOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue Map_gcMark(zvalue state, zint argCount, const zvalue *args) {
+    zvalue map = args[0];
+    zint size = mapSizeOf(map);
+    zmapping *elems = mapElems(map);
+
+    for (zint i = 0; i < size; i++) {
+        datMark(elems[i].key);
+        datMark(elems[i].value);
+    }
+
+    return NULL;
+}
+
+/* Documented in header. */
 static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue map = args[0];
     return datIntFromZint(mapSizeOf(map));
@@ -467,6 +470,7 @@ static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindMap(void) {
+    datGenBindCore(genGcMark, DAT_Map, Map_gcMark, NULL);
     datGenBindCore(genSizeOf, DAT_Map, Map_sizeOf, NULL);
 }
 
@@ -474,8 +478,6 @@ void datBindMap(void) {
 static DatType INFO_Map = {
     .name = "Map",
     .call = NULL,
-    .gcMark = mapGcMark,
-    .gcFree = NULL,
     .eq = mapEq,
     .order = mapOrder
 };

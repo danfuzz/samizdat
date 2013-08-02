@@ -165,8 +165,14 @@ static zvalue genCall(zvalue generic, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static void genGcMark(zvalue function) {
-    DatGeneric *info = genInfo(function);
+static zorder genOrder(zvalue v1, zvalue v2) {
+    return datOrder(genInfo(v1)->orderToken, genInfo(v2)->orderToken);
+}
+
+/* Documented in header. */
+static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
+    zvalue generic = args[0];
+    DatGeneric *info = genInfo(generic);
 
     datMark(info->defaultFunction);
     datMark(info->name);
@@ -175,24 +181,19 @@ static void genGcMark(zvalue function) {
     for (zint i = 0; i < DAT_MAX_TYPES; i++) {
         datMark(info->functions[i]);
     }
-}
 
-/* Documented in header. */
-static zorder genOrder(zvalue v1, zvalue v2) {
-    return datOrder(genInfo(v1)->orderToken, genInfo(v2)->orderToken);
+    return NULL;
 }
 
 /* Documented in header. */
 void datBindGeneric(void) {
-    // Nothing to do here...yet.
+    datGenBindCore(genGcMark, DAT_Generic, Generic_gcMark, NULL);
 }
 
 /* Documented in header. */
 static DatType INFO_Generic = {
     .name = "Generic",
     .call = genCall,
-    .gcMark = genGcMark,
-    .gcFree = NULL,
     .eq = NULL,
     .order = genOrder
 };

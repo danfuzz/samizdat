@@ -122,30 +122,31 @@ static zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static void fnGcMark(zvalue function) {
-    DatFunction *info = fnInfo(function);
-
-    datMark(info->state);
-    datMark(info->name);
-    datMark(info->orderToken);
-}
-
-/* Documented in header. */
 static zorder fnOrder(zvalue v1, zvalue v2) {
     return datOrder(fnInfo(v1)->orderToken, fnInfo(v2)->orderToken);
 }
 
 /* Documented in header. */
+static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
+    zvalue function = args[0];
+    DatFunction *info = fnInfo(function);
+
+    datMark(info->state);
+    datMark(info->name);
+    datMark(info->orderToken);
+
+    return NULL;
+}
+
+/* Documented in header. */
 void datBindFunction(void) {
-    // Nothing to do here...yet.
+    datGenBindCore(genGcMark, DAT_Function, Function_gcMark, NULL);
 }
 
 /* Documented in header. */
 static DatType INFO_Function = {
     .name = "Function",
     .call = fnCall,
-    .gcMark = fnGcMark,
-    .gcFree = NULL,
     .eq = NULL,
     .order = fnOrder
 };
