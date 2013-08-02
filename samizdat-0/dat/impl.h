@@ -47,16 +47,6 @@ typedef struct DatType {
     zfunction call;
 
     /**
-     * Does GC marking of a value of the given type.
-     */
-    void (*gcMark)(zvalue);
-
-    /**
-     * Frees a garbage value. Optional (may be `NULL`).
-     */
-    void (*gcFree)(zvalue);
-
-    /**
      * Compares for equality with another value of the same type. Only
      * ever called when the two values are not `==`. Optional (may be `NULL`),
      * and if omitted means that comparisons when not `==` are always false.
@@ -102,6 +92,17 @@ typedef struct DatHeader {
 extern bool datInitialized;
 
 /**
+ * Generic `gcMark(value)`: Does GC marking for the given value.
+ */
+extern zvalue genGcMark;
+
+/**
+ * Generic `gcFree(value)`: Does GC freeing for the given value. This is
+ * to do immediate pre-mortem freeing of value contents.
+ */
+extern zvalue genGcFree;
+
+/**
  * Allocates memory, sized to include a `DatHeader` header plus the
  * indicated number of extra bytes. The `DatHeader` header is
  * initialized with the indicated type and size. The resulting value
@@ -135,6 +136,12 @@ void datAssertSliceRange(zint size, zint start, zint end);
  * with a diagnostic message.
  */
 void datAssertValid(zvalue value);
+
+/**
+ * Gets the function bound to the given generic for the given value, if any.
+ * Returns `NULL` if there is no binding.
+ */
+zvalue datGenGet(zvalue generic, zvalue value);
 
 /**
  * Gets the sequence number index for a `ztype`, initializing it if necessary.

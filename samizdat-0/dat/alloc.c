@@ -216,11 +216,12 @@ static void doGc(void) {
         // Need to grab `item->next` before freeing the item.
         zvalue next = item->next;
 
-        if (item->type->gcFree != NULL) {
+        zvalue freer = datGenGet(genGcFree, item);
+        if (freer != NULL) {
             // Link the item to itself, so that its sanity check will
             // still pass.
             item->next = item->prev = item;
-            item->type->gcFree(item);
+            datCall(freer, 1, &item);
         }
 
         // Prevent this from being mistaken for a live value.
@@ -366,5 +367,9 @@ void datMark(zvalue value) {
 
     value->marked = true;
     enlist(&liveHead, value);
-    value->type->gcMark(value);
+
+    zvalue marker = datGenGet(genGcMark, value);
+    if (marker != NULL) {
+        datCall(marker, 1, &value);
+    }
 }
