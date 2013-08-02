@@ -84,7 +84,8 @@ void datGenBindCore(zvalue generic, ztype type,
     datAssertGeneric(generic);
 
     DatGeneric *info = genInfo(generic);
-    zvalue functionValue = datFnFrom(function, state, info->name);
+    zvalue functionValue = datFnFrom(info->minArgs, info->maxArgs,
+        function, state, info->name);
     zint index = datIndexFromType(type);
 
     if (info->sealed) {
@@ -101,7 +102,8 @@ void datGenBindCoreDefault(zvalue generic, zfunction function, zvalue state) {
     datAssertGeneric(generic);
 
     DatGeneric *info = genInfo(generic);
-    zvalue functionValue = datFnFrom(function, state, info->name);
+    zvalue functionValue = datFnFrom(info->minArgs, info->maxArgs,
+        function, state, info->name);
 
     if (info->sealed) {
         die("Sealed generic.");
@@ -151,8 +153,8 @@ static zvalue genCall(zvalue generic, zint argCount, const zvalue *args) {
         die("Too few arguments for generic call: %lld, min %lld",
             argCount, info->minArgs);
     } else if (argCount > info->maxArgs) {
-        die("Too few arguments for generic call: %lld, min %lld",
-            argCount, info->minArgs);
+        die("Too many arguments for generic call: %lld, max %lld",
+            argCount, info->maxArgs);
     }
 
     zvalue function = datGenGet(generic, args[0]);

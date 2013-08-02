@@ -10,6 +10,7 @@
 
 #include "impl.h"
 
+#include <stdint.h>
 #include <string.h>
 
 
@@ -21,6 +22,14 @@
  * Regular (non-generic) function structure.
  */
 typedef struct {
+    /** Minimum argument count. Always `>= 0`. */
+    zint minArgs;
+
+    /**
+     * Maximum argument count. Always `>= minArgs`.
+     */
+    zint maxArgs;
+
     /** C function to call. */
     zfunction function;
 
@@ -90,10 +99,18 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-zvalue datFnFrom(zfunction function, zvalue state, zvalue name) {
+zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
+        zvalue name) {
+    if ((minArgs < 0) ||
+        ((maxArgs != -1) && (maxArgs < minArgs))) {
+        die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
+    }
+
     zvalue result = datAllocValue(DAT_Function, sizeof(DatFunction));
     DatFunction *info = fnInfo(result);
 
+    info->minArgs = minArgs;
+    info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->function = function;
     info->state = state;
     info->name = name;
@@ -112,6 +129,14 @@ static zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     DatFunction *info = fnInfo(function);
 
     debugPush(callReporter, function);
+
+    if (argCount < info->minArgs) {
+        die("Too few arguments for function call: %lld, min %lld",
+            argCount, info->minArgs);
+    } else if (argCount > info->maxArgs) {
+        die("Too many arguments for function call: %lld, max %lld",
+            argCount, info->maxArgs);
+    }
 
     zstackPointer save = datFrameStart();
     zvalue result = info->function(info->state, argCount, args);

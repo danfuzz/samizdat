@@ -280,6 +280,7 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
     }
 
     return datFnFrom(
+        0, -1,
         callClosure,
         datUniqletWith(&CLOSURE_DISPATCH, closure),
         datMapGet(defMap, STR_NAME));

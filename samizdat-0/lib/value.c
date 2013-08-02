@@ -54,8 +54,6 @@ static bool doOrderIs(zint argCount, const zvalue *args) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(coreOrder) {
-    requireExactly(argCount, 2);
-
     zvalue arg0 = args[0];
     zvalue arg1 = args[1];
 
@@ -65,8 +63,6 @@ PRIM_IMPL(coreOrder) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(coreOrderIs) {
-    requireRange(argCount, 3, 4);
-
     zvalue arg0 = args[0];
     zvalue arg1 = args[1];
 
@@ -76,20 +72,16 @@ PRIM_IMPL(coreOrderIs) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(isCoreValue) {
-    requireExactly(argCount, 1);
-
     zvalue value = args[0];
     return datCoreTypeIs(value, DAT_Deriv) ? NULL : value;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(totalOrder) {
-    requireExactly(argCount, 2);
     return datIntFromZint(datOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(totalOrderIs) {
-    requireRange(argCount, 3, 4);
     return doOrderIs(argCount, args) ? args[1] : NULL;
 }

@@ -12,8 +12,6 @@
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifIs) {
-    requireRange(argCount, 2, 3);
-
     if (datCall(args[0], 0, NULL) != NULL) {
         return datCall(args[1], 0, NULL);
     } else if (argCount == 3) {
@@ -25,8 +23,6 @@ PRIM_IMPL(ifIs) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifNot) {
-    requireExactly(argCount, 2);
-
     if (datCall(args[0], 0, NULL) == NULL) {
         return datCall(args[1], 0, NULL);
     } else {
@@ -36,8 +32,6 @@ PRIM_IMPL(ifNot) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifValue) {
-    requireRange(argCount, 2, 3);
-
     zvalue result = datCall(args[0], 0, NULL);
 
     if (result != NULL) {
@@ -51,8 +45,6 @@ PRIM_IMPL(ifValue) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifValueOr) {
-    requireExactly(argCount, 2);
-
     zvalue result = datCall(args[0], 0, NULL);
 
     if (result != NULL) {
@@ -64,8 +56,6 @@ PRIM_IMPL(ifValueOr) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(loop) {
-    requireExactly(argCount, 1);
-
     zvalue function = args[0];
     for (;;) {
         zstackPointer save = datFrameStart();
@@ -76,8 +66,6 @@ PRIM_IMPL(loop) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(loopReduce) {
-    requireAtLeast(argCount, 1);
-
     zstackPointer save = datFrameStart();
     zvalue function = args[0];
     zvalue innerArgs = datListFromArray(argCount - 1, &args[1]);

@@ -49,11 +49,11 @@ static zvalue primitiveContext(void) {
 
     // Bind all the primitive functions.
 
-    #define PRIM_FUNC(name) \
+    #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue name = datStringFromUtf8(-1, #name); \
             ctx = datMapPut(ctx, \
-                name, datFnFrom(prim_##name, NULL, name)); \
+                name, datFnFrom(minArgs, maxArgs, prim_##name, NULL, name)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \

@@ -31,14 +31,11 @@ static zvalue valueFromStringNth(zvalue string, zint n) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(charFromInt) {
-    requireExactly(argCount, 1);
     return constStringFromZchar(datZcharFromInt(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intFromChar) {
-    requireExactly(argCount, 1);
-
     zvalue string = args[0];
     datAssertStringSize1(string);
 
@@ -78,20 +75,16 @@ PRIM_IMPL(stringAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringGet) {
-    requireExactly(argCount, 2);
     return doNthLenient(valueFromStringNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringNth) {
-    requireExactly(argCount, 2);
     return doNthStrict(valueFromStringNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringSlice) {
-    requireAtLeast(argCount, 2);
-
     zvalue string = args[0];
     zint startIndex = datZintFromInt(args[1]);
     zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : datSize(string);
