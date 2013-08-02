@@ -5,11 +5,16 @@
  */
 
 /*
+ * `PRIM_DEF(name, value)` binds a name to a pre-existing value.
  * `PRIM_FUNC(name)` defines a primitive function with the given name.
  *
  * **Note:** This file gets `#include`d multiple times, and so does not
  * have the usual guard macros.
  */
+
+PRIM_DEF(coreSizeOf, genSizeOf);
+PRIM_DEF(dataOf,     genDataOf);
+PRIM_DEF(typeOf,     genTypeOf);
 
 PRIM_FUNC(boxGet);
 PRIM_FUNC(boxIsSet);
@@ -17,8 +22,6 @@ PRIM_FUNC(boxSet);
 PRIM_FUNC(charFromInt);
 PRIM_FUNC(coreOrder);
 PRIM_FUNC(coreOrderIs);
-PRIM_FUNC(coreSizeOf);
-PRIM_FUNC(dataOf);
 PRIM_FUNC(iabs);
 PRIM_FUNC(iadd);
 PRIM_FUNC(iand);
@@ -83,5 +86,4 @@ PRIM_FUNC(stringNth);
 PRIM_FUNC(stringSlice);
 PRIM_FUNC(totalOrder);
 PRIM_FUNC(totalOrderIs);
-PRIM_FUNC(typeOf);
 PRIM_FUNC(yieldBox);

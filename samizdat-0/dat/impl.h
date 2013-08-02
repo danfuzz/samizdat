@@ -40,6 +40,13 @@ typedef struct DatType {
     zint seqNumCompl;
 
     /**
+     * Calls this value as a function (how meta). When called, argument count
+     * and pointer will have been checked, but the argument count may not
+     * match what's expected by the target function.
+     */
+    zfunction call;
+
+    /**
      * Does GC marking of a value of the given type.
      */
     void (*gcMark)(zvalue);
@@ -93,24 +100,6 @@ typedef struct DatHeader {
  * Flag indicating whether module has been initialized.
  */
 extern bool datInitialized;
-
-/**
- * `dataOf(value)`: Gets the data payload of a value of the given type,
- * if any. Defaults to returning the value itself as its own payload.
- */
-extern zvalue genDataOf;
-
-/**
- * `sizeOf(value)`: Gets the "size" of a value of the given type, for the
- * appropriate per-type meaning of size. Defaults to always returning `0`.
- */
-extern zvalue genSizeOf;
-
-/**
- * Gets the (overt) type of a value of the given type. Defaults to
- * returning the low-layer type name.
- */
-extern zvalue genTypeOf;
 
 /**
  * Allocates memory, sized to include a `DatHeader` header plus the

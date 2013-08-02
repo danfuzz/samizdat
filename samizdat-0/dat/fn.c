@@ -64,36 +64,29 @@ static char *callReporter(void *state) {
  */
 
 /* Documented in header. */
-zvalue datFnApply(zvalue function, zvalue args) {
+zvalue datApply(zvalue function, zvalue args) {
     zint argCount = datSize(args);
     zvalue argsArray[argCount];
 
     datArrayFromList(argsArray, args);
 
-    return datFnCall(function, argCount, argsArray);
+    return datCall(function, argCount, argsArray);
 }
 
 /* Documented in header. */
-zvalue datFnCall(zvalue function, zint argCount, const zvalue *args) {
-    datAssertFunction(function);
-
+zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);
     } else if ((argCount != 0) && (args == NULL)) {
         die("Function call argument inconsistency.");
     }
 
-    DatFunction *info = fnInfo(function);
+    zfunction caller = function->type->call;
+    if (caller == NULL) {
+        die("Attempt to call non-function.");
+    }
 
-    debugPush(callReporter, function);
-
-    zstackPointer save = datFrameStart();
-    zvalue result = info->function(info->state, argCount, args);
-    datFrameReturn(save, result);
-
-    debugPop();
-
-    return result;
+    return caller(function, argCount, args);
 }
 
 /* Documented in header. */
@@ -113,6 +106,20 @@ zvalue datFnFrom(zfunction function, zvalue state, zvalue name) {
 /*
  * Type binding
  */
+
+/* Documented in header. */
+static zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
+    DatFunction *info = fnInfo(function);
+
+    debugPush(callReporter, function);
+
+    zstackPointer save = datFrameStart();
+    zvalue result = info->function(info->state, argCount, args);
+    datFrameReturn(save, result);
+
+    debugPop();
+    return result;
+}
 
 /* Documented in header. */
 static void fnGcMark(zvalue function) {
@@ -136,6 +143,7 @@ void datBindFunction(void) {
 /* Documented in header. */
 static DatType INFO_Function = {
     .name = "Function",
+    .call = fnCall,
     .gcMark = fnGcMark,
     .gcFree = NULL,
     .eq = NULL,
