@@ -196,7 +196,6 @@ void datBindGeneric(void) {
 static DatType INFO_Generic = {
     .name = "Generic",
     .call = genCall,
-    .eq = NULL,
     .order = genOrder
 };
 ztype DAT_Generic = &INFO_Generic;

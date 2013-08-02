@@ -189,27 +189,6 @@ zvalue datListSlice(zvalue list, zint start, zint end) {
  */
 
 /* Documented in header. */
-static bool listEq(zvalue v1, zvalue v2) {
-    zint sz1 = listSizeOf(v1);
-    zint sz2 = listSizeOf(v2);
-
-    if (sz1 != sz2) {
-        return false;
-    }
-
-    zvalue *e1 = listElems(v1);
-    zvalue *e2 = listElems(v2);
-
-    for (zint i = 0; i < sz1; i++) {
-        if (!datEq(e1[i], e2[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/* Documented in header. */
 static zorder listOrder(zvalue v1, zvalue v2) {
     zvalue *e1 = listElems(v1);
     zvalue *e2 = listElems(v2);
@@ -229,6 +208,29 @@ static zorder listOrder(zvalue v1, zvalue v2) {
     }
 
     return (sz1 < sz2) ? ZLESS : ZMORE;
+}
+
+/* Documented in header. */
+static zvalue List_eq(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zint sz1 = listSizeOf(v1);
+    zint sz2 = listSizeOf(v2);
+
+    if (sz1 != sz2) {
+        return NULL;
+    }
+
+    zvalue *e1 = listElems(v1);
+    zvalue *e2 = listElems(v2);
+
+    for (zint i = 0; i < sz1; i++) {
+        if (!datEq(e1[i], e2[i])) {
+            return NULL;
+        }
+    }
+
+    return v2;
 }
 
 /* Documented in header. */
@@ -252,6 +254,7 @@ static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindList(void) {
+    datGenBindCore(genEq,     DAT_List, List_eq,     NULL);
     datGenBindCore(genGcMark, DAT_List, List_gcMark, NULL);
     datGenBindCore(genSizeOf, DAT_List, List_sizeOf, NULL);
 }
@@ -260,7 +263,6 @@ void datBindList(void) {
 static DatType INFO_List = {
     .name = "List",
     .call = NULL,
-    .eq = listEq,
     .order = listOrder
 };
 ztype DAT_List = &INFO_List;

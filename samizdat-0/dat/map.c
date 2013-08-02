@@ -395,29 +395,6 @@ zvalue datMappingValue(zvalue map) {
  */
 
 /* Documented in header. */
-static bool mapEq(zvalue v1, zvalue v2) {
-    zint sz1 = mapSizeOf(v1);
-    zint sz2 = mapSizeOf(v2);
-
-    if (sz1 != sz2) {
-        return false;
-    }
-
-    zmapping *elems1 = mapElems(v1);
-    zmapping *elems2 = mapElems(v2);
-
-    for (zint i = 0; i < sz1; i++) {
-        zmapping *e1 = &elems1[i];
-        zmapping *e2 = &elems2[i];
-        if (!(datEq(e1->key, e2->key) && datEq(e1->value, e2->value))) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/* Documented in header. */
 static zorder mapOrder(zvalue v1, zvalue v2) {
     zmapping *e1 = mapElems(v1);
     zmapping *e2 = mapElems(v2);
@@ -449,6 +426,31 @@ static zorder mapOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue Map_eq(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zint sz1 = mapSizeOf(v1);
+    zint sz2 = mapSizeOf(v2);
+
+    if (sz1 != sz2) {
+        return NULL;
+    }
+
+    zmapping *elems1 = mapElems(v1);
+    zmapping *elems2 = mapElems(v2);
+
+    for (zint i = 0; i < sz1; i++) {
+        zmapping *e1 = &elems1[i];
+        zmapping *e2 = &elems2[i];
+        if (!(datEq(e1->key, e2->key) && datEq(e1->value, e2->value))) {
+            return NULL;
+        }
+    }
+
+    return v2;
+}
+
+/* Documented in header. */
 static zvalue Map_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue map = args[0];
     zint size = mapSizeOf(map);
@@ -470,6 +472,7 @@ static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindMap(void) {
+    datGenBindCore(genEq,     DAT_Map, Map_eq,     NULL);
     datGenBindCore(genGcMark, DAT_Map, Map_gcMark, NULL);
     datGenBindCore(genSizeOf, DAT_Map, Map_sizeOf, NULL);
 }
@@ -478,7 +481,6 @@ void datBindMap(void) {
 static DatType INFO_Map = {
     .name = "Map",
     .call = NULL,
-    .eq = mapEq,
     .order = mapOrder
 };
 ztype DAT_Map = &INFO_Map;

@@ -18,6 +18,9 @@
 zvalue genDataOf = NULL;
 
 /* Documented in header. */
+zvalue genEq = NULL;
+
+/* Documented in header. */
 zvalue genGcFree = NULL;
 
 /* Documented in header. */
@@ -32,6 +35,11 @@ zvalue genTypeOf = NULL;
 /* Documented in header. */
 static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
     return args[0];
+}
+
+/* Documented in header. */
+static zvalue Default_eq(zvalue state, zint argCount, const zvalue *args) {
+    return NULL;
 }
 
 /* Documented in header. */
@@ -50,6 +58,10 @@ void datInitCoreGenerics(void) {
     genDataOf = datGenFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
     datGenBindCoreDefault(genDataOf, Default_dataOf, NULL);
     datImmortalize(genDataOf);
+
+    genEq = datGenFrom(2, 2, datStringFromUtf8(-1, "eq"));
+    datGenBindCoreDefault(genEq, Default_eq, NULL);
+    datImmortalize(genEq);
 
     genGcFree = datGenFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
     datImmortalize(genGcFree);
@@ -85,10 +97,9 @@ bool datEq(zvalue v1, zvalue v2) {
         return true;
     } else if (v1->type != v2->type) {
         return false;
-    } else if (v1->type->eq) {
-        return v1->type->eq(v1, v2);
     } else {
-        return false;
+        zvalue args[2] = { v1, v2 };
+        return datCall(genEq, 2, args) != NULL;
     }
 }
 

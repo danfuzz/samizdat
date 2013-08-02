@@ -167,27 +167,6 @@ void datZcharsFromString(zchar *result, zvalue string) {
  */
 
 /* Documented in header. */
-static bool stringEq(zvalue v1, zvalue v2) {
-    zint sz1 = stringSizeOf(v1);
-    zint sz2 = stringSizeOf(v2);
-
-    if (sz1 != sz2) {
-        return false;
-    }
-
-    zchar *e1 = stringElems(v1);
-    zchar *e2 = stringElems(v2);
-
-    for (zint i = 0; i < sz1; i++) {
-        if (e1[i] != e2[i]) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/* Documented in header. */
 static zorder stringOrder(zvalue v1, zvalue v2) {
     zchar *e1 = stringElems(v1);
     zchar *e2 = stringElems(v2);
@@ -214,6 +193,29 @@ static zorder stringOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue String_eq(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zint sz1 = stringSizeOf(v1);
+    zint sz2 = stringSizeOf(v2);
+
+    if (sz1 != sz2) {
+        return NULL;
+    }
+
+    zchar *e1 = stringElems(v1);
+    zchar *e2 = stringElems(v2);
+
+    for (zint i = 0; i < sz1; i++) {
+        if (e1[i] != e2[i]) {
+            return NULL;
+        }
+    }
+
+    return v2;
+}
+
+/* Documented in header. */
 static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue string = args[0];
     return datIntFromZint(stringSizeOf(string));
@@ -221,6 +223,7 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindString(void) {
+    datGenBindCore(genEq,     DAT_String, String_eq,    NULL);
     datGenBindCore(genSizeOf, DAT_String, String_sizeOf, NULL);
 }
 
@@ -228,7 +231,6 @@ void datBindString(void) {
 static DatType INFO_String = {
     .name = "String",
     .call = NULL,
-    .eq = stringEq,
     .order = stringOrder
 };
 ztype DAT_String = &INFO_String;

@@ -47,13 +47,6 @@ typedef struct DatType {
     zfunction call;
 
     /**
-     * Compares for equality with another value of the same type. Only
-     * ever called when the two values are not `==`. Optional (may be `NULL`),
-     * and if omitted means that comparisons when not `==` are always false.
-     */
-    bool (*eq)(zvalue, zvalue);
-
-    /**
      * Compares for order with another value of the same type. Only ever
      * called when the two values are not `==`.
      */

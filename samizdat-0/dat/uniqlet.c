@@ -143,7 +143,6 @@ void datBindUniqlet(void) {
 static DatType INFO_Uniqlet = {
     .name = "Uniqlet",
     .call = NULL,
-    .eq = NULL,
     .order = uniqletOrder
 };
 ztype DAT_Uniqlet = &INFO_Uniqlet;

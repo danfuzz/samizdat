@@ -172,7 +172,6 @@ void datBindFunction(void) {
 static DatType INFO_Function = {
     .name = "Function",
     .call = fnCall,
-    .eq = NULL,
     .order = fnOrder
 };
 ztype DAT_Function = &INFO_Function;

@@ -102,6 +102,14 @@ extern ztype DAT_Uniqlet;
 extern zvalue genDataOf;
 
 /**
+ * Generic `eq(value, value)`: Compares two values for equality / sameness.
+ * Returns the second value to indicate logical-true. Only ever called when
+ * the two values are not `==`, and only ever called when the two values are
+ * of the same type. Defaults to always returning logical-false.
+ */
+extern zvalue genEq;
+
+/**
  * Generic `sizeOf(value)`: Gets the "size" of a value of the given type,
  * for the appropriate per-type meaning of size. Defaults to always returning
  * `0`.

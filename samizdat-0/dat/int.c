@@ -135,11 +135,6 @@ bool datZintGetBit(zint value, zint n) {
  */
 
 /* Documented in header. */
-static bool intEq(zvalue v1, zvalue v2) {
-    return zintValue(v1) == zintValue(v2);
-}
-
-/* Documented in header. */
 static zorder intOrder(zvalue v1, zvalue v2) {
     zint int1 = zintValue(v1);
     zint int2 = zintValue(v2);
@@ -154,6 +149,13 @@ static zorder intOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+static zvalue Int_eq(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    return (zintValue(v1) == zintValue(v2)) ? v2 : NULL;
+}
+
+/* Documented in header. */
 static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue intval = args[0];
 
@@ -162,6 +164,7 @@ static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindInt(void) {
+    datGenBindCore(genEq,     DAT_Int, Int_eq,     NULL);
     datGenBindCore(genSizeOf, DAT_Int, Int_sizeOf, NULL);
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
@@ -174,7 +177,6 @@ void datBindInt(void) {
 static DatType INFO_Int = {
     .name = "Int",
     .call = NULL,
-    .eq = intEq,
     .order = intOrder
 };
 ztype DAT_Int = &INFO_Int;
