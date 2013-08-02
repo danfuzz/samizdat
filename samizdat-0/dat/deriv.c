@@ -123,7 +123,7 @@ static zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue Deriv_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue deriv = args[0];
-    return datIntFromZint((derivInfo(deriv)->data == NULL) ? 0 : 1);
+    return (derivInfo(deriv)->data == NULL) ? DAT_0 : DAT_1;
 }
 
 /* Documented in header. */

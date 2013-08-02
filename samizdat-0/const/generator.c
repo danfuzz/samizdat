@@ -29,15 +29,13 @@ static zvalue genCollect = NULL;
 static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
     zvalue intValue = args[0];
 
-    zvalue bit0 = datIntFromZint(0);
-    zvalue bit1 = datIntFromZint(1);
     zint size = datSize(intValue);
     zint raw = datZintFromInt(intValue);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
         zint bit = datZintGetBit(raw, i);
-        arr[i] = (bit == 0) ? bit0 : bit1;
+        arr[i] = (bit == 0) ? DAT_0 : DAT_1;
     }
 
     return datListFromArray(size, arr);
