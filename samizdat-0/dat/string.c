@@ -178,6 +178,18 @@ void datZcharsFromString(zchar *result, zvalue string) {
 zvalue EMPTY_STRING = NULL;
 
 /* Documented in header. */
+static zvalue String_debugString(zvalue state,
+        zint argCount, const zvalue *args) {
+    zvalue string = args[0];
+    zvalue quote = datStringFromUtf8(1, "\"");
+
+    zvalue result = datStringAdd(quote, string);
+    result = datStringAdd(result, quote);
+
+    return result;
+}
+
+/* Documented in header. */
 static zvalue String_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -236,9 +248,10 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindString(void) {
-    datGenBindCore(genEq,     DAT_String, String_eq);
-    datGenBindCore(genOrder,  DAT_String, String_order);
-    datGenBindCore(genSizeOf, DAT_String, String_sizeOf);
+    datGenBindCore(genDebugString, DAT_String, String_debugString);
+    datGenBindCore(genEq,          DAT_String, String_eq);
+    datGenBindCore(genOrder,       DAT_String, String_order);
+    datGenBindCore(genSizeOf,      DAT_String, String_sizeOf);
 
     EMPTY_STRING = allocString(0);
     datImmortalize(EMPTY_STRING);

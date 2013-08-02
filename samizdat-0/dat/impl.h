@@ -85,6 +85,14 @@ extern bool datInitialized;
 extern zvalue genCall;
 
 /**
+ * Generic `debugString(value)`: Returns a minimal string form of the
+ * given value. Notably, functions and generics include their names.
+ * The default implementation returns strings of the form
+ * `#(TypeName @ address)`.
+ */
+extern zvalue genDebugString;
+
+/**
  * Generic `gcMark(value)`: Does GC marking for the given value.
  */
 extern zvalue genGcMark;
@@ -129,6 +137,13 @@ void datAssertSliceRange(zint size, zint start, zint end);
  * with a diagnostic message.
  */
 void datAssertValid(zvalue value);
+
+/**
+ * Gets the "debug string" of the given value, as a `char *`. The caller
+ * is responsible for `free()`ing the result. As a convenience, this
+ * converts `NULL` into `"(null)"`.
+ */
+char *datDebugString(zvalue value);
 
 /**
  * Gets the function bound to the given generic for the given value, if any.

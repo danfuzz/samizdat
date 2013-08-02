@@ -112,6 +112,24 @@ static zvalue Function_call(zvalue function,
 }
 
 /* Documented in header. */
+static zvalue Function_debugString(zvalue state,
+        zint argCount, const zvalue *args) {
+    zvalue function = args[0];
+    DatFunction *info = fnInfo(function);
+
+    zvalue result = datStringFromUtf8(-1, "@(Function ");
+
+    if (info->name != NULL) {
+        result = datStringAdd(result, datCall(genDebugString, 1, &info->name));
+    } else {
+        result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
+    }
+
+    result = datStringAdd(result, datStringFromUtf8(-1, ")"));
+    return result;
+}
+
+/* Documented in header. */
 static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue function = args[0];
     DatFunction *info = fnInfo(function);
@@ -132,9 +150,10 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindFunction(void) {
-    datGenBindCore(genCall,   DAT_Function, Function_call);
-    datGenBindCore(genGcMark, DAT_Function, Function_gcMark);
-    datGenBindCore(genOrder,  DAT_Function, Function_order);
+    datGenBindCore(genCall,        DAT_Function, Function_call);
+    datGenBindCore(genDebugString, DAT_Function, Function_debugString);
+    datGenBindCore(genGcMark,      DAT_Function, Function_gcMark);
+    datGenBindCore(genOrder,       DAT_Function, Function_order);
 }
 
 /* Documented in header. */

@@ -73,17 +73,7 @@ static zvalue genOrderId(zvalue function) {
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
-    // TODO: This needs to handle `state` referring to a `Function`.
-    zvalue name = genInfo((zvalue) state)->name;
-
-    if (name != NULL) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        return strdup(nameStr);
-    } else {
-        return "(unknown)";
-    }
+    return datDebugString((zvalue) state);
 }
 
 
@@ -230,6 +220,24 @@ static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue Generic_debugString(zvalue state,
+        zint argCount, const zvalue *args) {
+    zvalue generic = args[0];
+    DatGeneric *info = genInfo(generic);
+
+    zvalue result = datStringFromUtf8(-1, "@(Generic ");
+
+    if (info->name != NULL) {
+        result = datStringAdd(result, datCall(genDebugString, 1, &info->name));
+    } else {
+        result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
+    }
+
+    result = datStringAdd(result, datStringFromUtf8(-1, ")"));
+    return result;
+}
+
+/* Documented in header. */
 static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue generic = args[0];
     DatGeneric *info = genInfo(generic);
@@ -249,9 +257,10 @@ static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindGeneric(void) {
-    datGenBindCore(genCall,   DAT_Generic, Generic_call);
-    datGenBindCore(genGcMark, DAT_Generic, Generic_gcMark);
-    datGenBindCore(genOrder,  DAT_Generic, Generic_order);
+    datGenBindCore(genCall,        DAT_Generic, Generic_call);
+    datGenBindCore(genDebugString, DAT_Generic, Generic_debugString);
+    datGenBindCore(genGcMark,      DAT_Generic, Generic_gcMark);
+    datGenBindCore(genOrder,       DAT_Generic, Generic_order);
 }
 
 /* Documented in header. */
