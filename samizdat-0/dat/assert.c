@@ -20,7 +20,7 @@ static void assertType(zvalue value, ztype type) {
     datAssertValid(value);
 
     if (value->type != type) {
-        die("Expected type %s; got %s", type->name, datDebugString(value));
+        die("Expected type %s; got %s.", type->name, datDebugString(value));
     }
 }
 
