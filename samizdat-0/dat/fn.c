@@ -64,53 +64,10 @@ static zvalue fnOrderId(zvalue function) {
     return orderId;
 }
 
-/**
- * This is the function that handles emitting a context string for a call,
- * when dumping the stack.
- */
-static char *callReporter(void *state) {
-    zvalue name = fnInfo((zvalue) state)->name;
-
-    if (name != NULL) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        return strdup(nameStr);
-    } else {
-        return "(unknown)";
-    }
-}
-
 
 /*
  * Exported functions
  */
-
-/* Documented in header. */
-zvalue datApply(zvalue function, zvalue args) {
-    zint argCount = datSize(args);
-    zvalue argsArray[argCount];
-
-    datArrayFromList(argsArray, args);
-
-    return datCall(function, argCount, argsArray);
-}
-
-/* Documented in header. */
-zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
-    if (argCount < 0) {
-        die("Invalid argument count for function call: %lld", argCount);
-    } else if ((argCount != 0) && (args == NULL)) {
-        die("Function call argument inconsistency.");
-    }
-
-    zfunction caller = function->type->call;
-    if (caller == NULL) {
-        die("Attempt to call non-function.");
-    }
-
-    return caller(function, argCount, args);
-}
 
 /* Documented in header. */
 zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
@@ -139,10 +96,9 @@ zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
  */
 
 /* Documented in header. */
-static zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
+static zvalue Function_call(zvalue function,
+        zint argCount, const zvalue *args) {
     DatFunction *info = fnInfo(function);
-
-    debugPush(callReporter, function);
 
     if (argCount < info->minArgs) {
         die("Too few arguments for function call: %lld, min %lld",
@@ -152,11 +108,24 @@ static zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    zstackPointer save = datFrameStart();
-    zvalue result = info->function(info->state, argCount, args);
-    datFrameReturn(save, result);
+    return info->function(info->state, argCount, args);
+}
 
-    debugPop();
+/* Documented in header. */
+static zvalue Function_debugString(zvalue state,
+        zint argCount, const zvalue *args) {
+    zvalue function = args[0];
+    DatFunction *info = fnInfo(function);
+
+    zvalue result = datStringFromUtf8(-1, "@(Function ");
+
+    if (info->name != NULL) {
+        result = datStringAdd(result, datCall(genDebugString, 1, &info->name));
+    } else {
+        result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
+    }
+
+    result = datStringAdd(result, datStringFromUtf8(-1, ")"));
     return result;
 }
 
@@ -181,13 +150,14 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindFunction(void) {
-    datGenBindCore(genGcMark, DAT_Function, Function_gcMark, NULL);
-    datGenBindCore(genOrder,  DAT_Function, Function_order,  NULL);
+    datGenBindCore(genCall,        DAT_Function, Function_call);
+    datGenBindCore(genDebugString, DAT_Function, Function_debugString);
+    datGenBindCore(genGcMark,      DAT_Function, Function_gcMark);
+    datGenBindCore(genOrder,       DAT_Function, Function_order);
 }
 
 /* Documented in header. */
 static DatType INFO_Function = {
-    .name = "Function",
-    .call = fnCall
+    .name = "Function"
 };
 ztype DAT_Function = &INFO_Function;

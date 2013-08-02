@@ -6,6 +6,7 @@
 
 #include "io.h"
 #include "impl.h"
+#include "util.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,10 +35,11 @@ static void emitNote(zvalue message) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0Die) {
-    zvalue message =
-        (argCount == 1) ? args[0] : datStringFromUtf8(-1, "Alas");
-    emitNote(message);
-    exit(1);
+    if (argCount == 1) {
+        emitNote(args[0]);
+    }
+
+    die("Alas.");
 }
 
 /* Documented in Samizdat Layer 0 spec. */
