@@ -178,6 +178,8 @@ static zvalue genCall(zvalue generic, zint argCount, const zvalue *args) {
     }
 
     return datCall(function, argCount, args);
+    // TODO: Maybe replace with this:
+    // * `return function->type->call(function, argCount, args);`
 }
 
 /* Documented in header. */
