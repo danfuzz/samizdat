@@ -48,12 +48,20 @@ static zvalue primitiveContext(void) {
     zvalue ctx = EMPTY_MAP;
 
     // Bind all the primitive functions.
+
     #define PRIM_FUNC(name) \
         do { \
             zvalue name = datStringFromUtf8(-1, #name); \
             ctx = datMapPut(ctx, \
                 name, datFnFrom(prim_##name, NULL, name)); \
         } while(0)
+
+    #define PRIM_DEF(name, value) \
+        do { \
+            zvalue name = datStringFromUtf8(-1, #name); \
+            ctx = datMapPut(ctx, name, value); \
+        } while(0)
+
     #include "prim-def.h"
 
     // Include a mapping for a map of all the primitive bindings
@@ -81,7 +89,7 @@ static zvalue getLibrary(void) {
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    return datFnCall(mainFunction, 1, &libraryFiles);
+    return datCall(mainFunction, 1, &libraryFiles);
 }
 
 

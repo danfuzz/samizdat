@@ -98,7 +98,7 @@ static zvalue collectGenerator(zvalue state, zint argc,
     zvalue box = boxMutable();
 
     for (at = 0; /*at*/; at++) {
-        zvalue nextGen = datFnCall(generator, 1, &box);
+        zvalue nextGen = datCall(generator, 1, &box);
 
         if (nextGen == NULL) {
             break;
@@ -140,5 +140,5 @@ void generatorInit(void) {
 
 /* Documented in header. */
 zvalue constCollectGenerator(zvalue value) {
-    return datGenCall(genCollect, 1, &value);
+    return datCall(genCollect, 1, &value);
 }

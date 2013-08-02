@@ -61,7 +61,7 @@ void datInitCoreGenerics(void) {
 
 /* Documented in header. */
 zvalue datDataOf(zvalue value) {
-    return datGenCall(genDataOf, 1, &value);
+    return datCall(genDataOf, 1, &value);
 }
 
 /* Documented in header. */
@@ -99,7 +99,7 @@ zorder datOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zint datSize(zvalue value) {
-    return datZintFromInt(datGenCall(genSizeOf, 1, &value));
+    return datZintFromInt(datCall(genSizeOf, 1, &value));
 }
 
 /* Documented in header. */
@@ -109,5 +109,5 @@ bool datTypeIs(zvalue value, zvalue type) {
 
 /* Documented in header. */
 zvalue datTypeOf(zvalue value) {
-    return datGenCall(genTypeOf, 1, &value);
+    return datCall(genTypeOf, 1, &value);
 }
