@@ -32,7 +32,7 @@ typedef struct {
     zint maxArgs;
 
     /** Default function, if any. May be `NULL`. */
-    zvalue defaultFunction;
+    zfunction defaultFunction;
 
     /** Whether the generic is sealed (unwilling to add bindings). */
     bool sealed;
@@ -44,7 +44,7 @@ typedef struct {
     zvalue orderId;
 
     /** Bindings from type to function, keyed off of type sequence number. */
-    zvalue functions[DAT_MAX_TYPES];
+    zfunction functions[DAT_MAX_TYPES];
 } DatGeneric;
 
 /**
@@ -68,13 +68,31 @@ static zvalue genOrderId(zvalue function) {
     return orderId;
 }
 
+/**
+ * This is the function that handles emitting a context string for a call,
+ * when dumping the stack.
+ */
+static char *callReporter(void *state) {
+    // TODO: This needs to handle `state` referring to a `Function`.
+    zvalue name = genInfo((zvalue) state)->name;
+
+    if (name != NULL) {
+        zint nameSize = datUtf8SizeFromString(name);
+        char nameStr[nameSize + 1];
+        datUtf8FromString(nameSize + 1, nameStr, name);
+        return strdup(nameStr);
+    } else {
+        return "(unknown)";
+    }
+}
+
 
 /*
  * Module functions
  */
 
 /* Documented in header. */
-zvalue datGenGet(zvalue generic, zvalue value) {
+zfunction datGenGet(zvalue generic, zvalue value) {
     // TODO: Dispatch is currently on the core type. It should be able
     // to handle derived types too. It's not as simple as just calling
     // `datTypeOf` on the value, though: (1) That function itself is
@@ -82,9 +100,9 @@ zvalue datGenGet(zvalue generic, zvalue value) {
     // will have to be adjusted.
 
     DatGeneric *info = genInfo(generic);
-    zvalue function = info->functions[datIndexFromType(value->type)];
+    zfunction result = info->functions[datIndexFromType(value->type)];
 
-    return (function != NULL) ? function : info->defaultFunction;
+    return (result != NULL) ? result : info->defaultFunction;
 }
 
 
@@ -110,23 +128,29 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
         die("Function call argument inconsistency.");
     }
 
-    zvalue caller = genInfo(genCall)->functions[~function->type->seqNumCompl];
+    debugPush(callReporter, function);
+    zstackPointer save = datFrameStart();
+
+    zfunction caller =
+        genInfo(genCall)->functions[~function->type->seqNumCompl];
+
     if (caller == NULL) {
         die("Attempt to call non-function.");
     }
 
-    // TODO:
-    // return caller(function, argCount, args);
+    zvalue result = caller(function, argCount, args);
+
+    datFrameReturn(save, result);
+    debugPop();
+
+    return result;
 }
 
 /* Documented in header. */
-void datGenBindCore(zvalue generic, ztype type,
-        zfunction function, zvalue state) {
+void datGenBindCore(zvalue generic, ztype type, zfunction function) {
     datAssertGeneric(generic);
 
     DatGeneric *info = genInfo(generic);
-    zvalue functionValue = datFnFrom(info->minArgs, info->maxArgs,
-        function, state, info->name);
     zint index = datIndexFromType(type);
 
     if (info->sealed) {
@@ -135,16 +159,14 @@ void datGenBindCore(zvalue generic, ztype type,
         die("Duplicate binding in generic.");
     }
 
-    info->functions[index] = functionValue;
+    info->functions[index] = function;
 }
 
 /* Documented in header. */
-void datGenBindCoreDefault(zvalue generic, zfunction function, zvalue state) {
+void datGenBindCoreDefault(zvalue generic, zfunction function) {
     datAssertGeneric(generic);
 
     DatGeneric *info = genInfo(generic);
-    zvalue functionValue = datFnFrom(info->minArgs, info->maxArgs,
-        function, state, info->name);
 
     if (info->sealed) {
         die("Sealed generic.");
@@ -152,7 +174,7 @@ void datGenBindCoreDefault(zvalue generic, zfunction function, zvalue state) {
         die("Default already bound in generic.");
     }
 
-    info->defaultFunction = functionValue;
+    info->defaultFunction = function;
 }
 
 /* Documented in header. */
@@ -198,15 +220,13 @@ static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    zvalue function = datGenGet(generic, args[0]);
+    zfunction function = datGenGet(generic, args[0]);
 
     if (function == NULL) {
         die("No type binding found for generic.");
     }
 
-    return datCall(function, argCount, args);
-    // TODO: Maybe replace with this:
-    // * `return function->type->call(function, argCount, args);`
+    return function(NULL, argCount, args);
 }
 
 /* Documented in header. */
@@ -214,13 +234,8 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue generic = args[0];
     DatGeneric *info = genInfo(generic);
 
-    datMark(info->defaultFunction);
     datMark(info->name);
     datMark(info->orderId);
-
-    for (zint i = 0; i < DAT_MAX_TYPES; i++) {
-        datMark(info->functions[i]);
-    }
 
     return NULL;
 }
@@ -234,9 +249,9 @@ static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindGeneric(void) {
-    datGenBindCore(genCall,   DAT_Generic, Generic_call,   NULL);
-    datGenBindCore(genGcMark, DAT_Generic, Generic_gcMark, NULL);
-    datGenBindCore(genOrder,  DAT_Generic, Generic_order,  NULL);
+    datGenBindCore(genCall,   DAT_Generic, Generic_call);
+    datGenBindCore(genGcMark, DAT_Generic, Generic_gcMark);
+    datGenBindCore(genOrder,  DAT_Generic, Generic_order);
 }
 
 /* Documented in header. */

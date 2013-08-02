@@ -236,9 +236,9 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindString(void) {
-    datGenBindCore(genEq,     DAT_String, String_eq,     NULL);
-    datGenBindCore(genOrder,  DAT_String, String_order,  NULL);
-    datGenBindCore(genSizeOf, DAT_String, String_sizeOf, NULL);
+    datGenBindCore(genEq,     DAT_String, String_eq);
+    datGenBindCore(genOrder,  DAT_String, String_order);
+    datGenBindCore(genSizeOf, DAT_String, String_sizeOf);
 
     EMPTY_STRING = allocString(0);
     datImmortalize(EMPTY_STRING);
@@ -246,7 +246,6 @@ void datBindString(void) {
 
 /* Documented in header. */
 static DatType INFO_String = {
-    .name = "String",
-    .call = NULL
+    .name = "String"
 };
 ztype DAT_String = &INFO_String;

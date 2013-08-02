@@ -64,23 +64,6 @@ static zvalue fnOrderId(zvalue function) {
     return orderId;
 }
 
-/**
- * This is the function that handles emitting a context string for a call,
- * when dumping the stack.
- */
-static char *callReporter(void *state) {
-    zvalue name = fnInfo((zvalue) state)->name;
-
-    if (name != NULL) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        return strdup(nameStr);
-    } else {
-        return "(unknown)";
-    }
-}
-
 
 /*
  * Exported functions
@@ -117,8 +100,6 @@ static zvalue Function_call(zvalue function,
         zint argCount, const zvalue *args) {
     DatFunction *info = fnInfo(function);
 
-    debugPush(callReporter, function);
-
     if (argCount < info->minArgs) {
         die("Too few arguments for function call: %lld, min %lld",
             argCount, info->minArgs);
@@ -127,12 +108,7 @@ static zvalue Function_call(zvalue function,
             argCount, info->maxArgs);
     }
 
-    zstackPointer save = datFrameStart();
-    zvalue result = info->function(info->state, argCount, args);
-    datFrameReturn(save, result);
-
-    debugPop();
-    return result;
+    return info->function(info->state, argCount, args);
 }
 
 /* Documented in header. */
@@ -156,9 +132,9 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindFunction(void) {
-    datGenBindCore(genCall,   DAT_Function, Function_call,   NULL);
-    datGenBindCore(genGcMark, DAT_Function, Function_gcMark, NULL);
-    datGenBindCore(genOrder,  DAT_Function, Function_order,  NULL);
+    datGenBindCore(genCall,   DAT_Function, Function_call);
+    datGenBindCore(genGcMark, DAT_Function, Function_gcMark);
+    datGenBindCore(genOrder,  DAT_Function, Function_order);
 }
 
 /* Documented in header. */

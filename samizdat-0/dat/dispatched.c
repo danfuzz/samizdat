@@ -65,11 +65,11 @@ void datInitCoreGenerics(void) {
     datImmortalize(genCall);
 
     genDataOf = datGenFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
-    datGenBindCoreDefault(genDataOf, Default_dataOf, NULL);
+    datGenBindCoreDefault(genDataOf, Default_dataOf);
     datImmortalize(genDataOf);
 
     genEq = datGenFrom(2, 2, datStringFromUtf8(-1, "eq"));
-    datGenBindCoreDefault(genEq, Default_eq, NULL);
+    datGenBindCoreDefault(genEq, Default_eq);
     datImmortalize(genEq);
 
     genGcFree = datGenFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
@@ -82,11 +82,11 @@ void datInitCoreGenerics(void) {
     datImmortalize(genOrder);
 
     genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
-    datGenBindCoreDefault(genSizeOf, Default_sizeOf, NULL);
+    datGenBindCoreDefault(genSizeOf, Default_sizeOf);
     datImmortalize(genSizeOf);
 
     genTypeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
-    datGenBindCoreDefault(genTypeOf, Default_typeOf, NULL);
+    datGenBindCoreDefault(genTypeOf, Default_typeOf);
     datImmortalize(genTypeOf);
 }
 

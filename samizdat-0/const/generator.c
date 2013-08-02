@@ -122,11 +122,11 @@ static zvalue collectGenerator(zvalue state, zint argc,
 /* Documented in header. */
 void generatorInit(void) {
     genCollect = datGenFrom(1, 1, STR_COLLECT);
-    datGenBindCore(genCollect, DAT_Int,      collectInt,       NULL);
-    datGenBindCore(genCollect, DAT_List,     collectList,      NULL);
-    datGenBindCore(genCollect, DAT_Map,      collectMap,       NULL);
-    datGenBindCore(genCollect, DAT_String,   collectString,    NULL);
-    datGenBindCore(genCollect, DAT_Function, collectGenerator, NULL);
+    datGenBindCore(genCollect, DAT_Int,      collectInt);
+    datGenBindCore(genCollect, DAT_List,     collectList);
+    datGenBindCore(genCollect, DAT_Map,      collectMap);
+    datGenBindCore(genCollect, DAT_String,   collectString);
+    datGenBindCore(genCollect, DAT_Function, collectGenerator);
     datGenSeal(genCollect);
     datImmortalize(genCollect);
 }
