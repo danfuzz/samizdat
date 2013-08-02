@@ -68,8 +68,17 @@ typedef const zvalue *zstackPointer;
 
 
 /*
- * Type references and generic functions
+ * Constants, type references and generic functions
  */
+
+/** The standard value `[]` */
+extern zvalue EMPTY_LIST;
+
+/** The standard value `[:]` */
+extern zvalue EMPTY_MAP;
+
+/** The standard value `""` */
+extern zvalue EMPTY_STRING;
 
 /** Type value for in-model type `Deriv`. */
 extern ztype DAT_Deriv;
@@ -405,12 +414,6 @@ zvalue datMapAdd(zvalue map1, zvalue map2);
  * given map.
  */
 zvalue datMapDel(zvalue map, zvalue key);
-
-/**
- * Gets an empty map value, i.e. `[:]`. Note that this can return
- * a different allocated value every time.
- */
-zvalue datMapEmpty(void);
 
 /**
  * Given a map, find the mapping of the given key and return the

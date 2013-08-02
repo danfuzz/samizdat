@@ -4,7 +4,6 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "const.h"
 #include "impl.h"
 
 #include <stddef.h>

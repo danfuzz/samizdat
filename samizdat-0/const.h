@@ -28,15 +28,6 @@
 #undef STR
 #undef TOK
 
-/** The canonical empty string value (`""`). */
-extern zvalue STR_EMPTY;
-
-/** The canonical empty list value (`[]`). */
-extern zvalue EMPTY_LIST;
-
-/** The canonical empty map value (`[:]`). */
-extern zvalue EMPTY_MAP;
-
 /**
  * Returns a collected list of items from the given value, which must either
  * be a generator or a collection value. This is a C equivalent to calling

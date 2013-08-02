@@ -283,6 +283,11 @@ zvalue datMapDel(zvalue map, zvalue key) {
     }
 
     zint size = mapSizeOf(map) - 1;
+
+    if (size == 0) {
+        return EMPTY_MAP;
+    }
+
     zvalue result = allocMap(size);
     zmapping *elems = mapElems(result);
     zmapping *oldElems = mapElems(map);
@@ -291,11 +296,6 @@ zvalue datMapDel(zvalue map, zvalue key) {
     memcpy(&elems[index], &oldElems[index + 1],
            (size - index) * sizeof(zmapping));
     return result;
-}
-
-/* Documented in header. */
-zvalue datMapEmpty(void) {
-    return allocMap(0);
 }
 
 /* Documented in header. */
@@ -395,6 +395,9 @@ zvalue datMappingValue(zvalue map) {
  */
 
 /* Documented in header. */
+zvalue EMPTY_MAP = NULL;
+
+/* Documented in header. */
 static bool mapEq(zvalue v1, zvalue v2) {
     zint sz1 = mapSizeOf(v1);
     zint sz2 = mapSizeOf(v2);
@@ -472,6 +475,9 @@ static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 void datBindMap(void) {
     datGenBindCore(genGcMark, DAT_Map, Map_gcMark, NULL);
     datGenBindCore(genSizeOf, DAT_Map, Map_sizeOf, NULL);
+
+    EMPTY_MAP = allocMap(0);
+    datImmortalize(EMPTY_MAP);
 }
 
 /* Documented in header. */

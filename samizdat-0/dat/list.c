@@ -58,7 +58,13 @@ static zvalue allocList(zint size) {
 static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
                        zint size2, const zvalue *elems2) {
     zint insertCount = (insert == NULL) ? 0 : 1;
-    zvalue result = allocList(size1 + size2 + insertCount);
+    zint size = size1 + size2 + insertCount;
+
+    if (size == 0) {
+        return EMPTY_LIST;
+    }
+
+    zvalue result = allocList(size);
     zvalue *resultElems = listElems(result);
 
     if (size1 != 0) {
@@ -189,6 +195,9 @@ zvalue datListSlice(zvalue list, zint start, zint end) {
  */
 
 /* Documented in header. */
+zvalue EMPTY_LIST = NULL;
+
+/* Documented in header. */
 static bool listEq(zvalue v1, zvalue v2) {
     zint sz1 = listSizeOf(v1);
     zint sz2 = listSizeOf(v2);
@@ -254,6 +263,9 @@ static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 void datBindList(void) {
     datGenBindCore(genGcMark, DAT_List, List_gcMark, NULL);
     datGenBindCore(genSizeOf, DAT_List, List_sizeOf, NULL);
+
+    EMPTY_LIST = allocList(0);
+    datImmortalize(EMPTY_LIST);
 }
 
 /* Documented in header. */
