@@ -137,6 +137,12 @@ void datAssertSliceRange(zint size, zint start, zint end);
 void datAssertValid(zvalue value);
 
 /**
+ * Gets the function bound to the given generic for the given value, if any.
+ * Returns `NULL` if there is no binding.
+ */
+zvalue datGenGet(zvalue generic, zvalue value);
+
+/**
  * Gets the sequence number index for a `ztype`, initializing it if necessary.
  */
 zint datIndexFromType(ztype type);
