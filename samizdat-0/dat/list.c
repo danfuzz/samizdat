@@ -189,6 +189,9 @@ zvalue datListSlice(zvalue list, zint start, zint end) {
  */
 
 /* Documented in header. */
+zvalue EMPTY_LIST = NULL;
+
+/* Documented in header. */
 static bool listEq(zvalue v1, zvalue v2) {
     zint sz1 = listSizeOf(v1);
     zint sz2 = listSizeOf(v2);
@@ -254,6 +257,9 @@ static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 void datBindList(void) {
     datGenBindCore(genGcMark, DAT_List, List_gcMark, NULL);
     datGenBindCore(genSizeOf, DAT_List, List_sizeOf, NULL);
+
+    EMPTY_LIST = allocList(0);
+    datImmortalize(EMPTY_LIST);
 }
 
 /* Documented in header. */

@@ -395,6 +395,9 @@ zvalue datMappingValue(zvalue map) {
  */
 
 /* Documented in header. */
+zvalue EMPTY_MAP = NULL;
+
+/* Documented in header. */
 static bool mapEq(zvalue v1, zvalue v2) {
     zint sz1 = mapSizeOf(v1);
     zint sz2 = mapSizeOf(v2);
@@ -472,6 +475,9 @@ static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 void datBindMap(void) {
     datGenBindCore(genGcMark, DAT_Map, Map_gcMark, NULL);
     datGenBindCore(genSizeOf, DAT_Map, Map_sizeOf, NULL);
+
+    EMPTY_MAP = allocMap(0);
+    datImmortalize(EMPTY_MAP);
 }
 
 /* Documented in header. */

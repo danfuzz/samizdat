@@ -68,8 +68,17 @@ typedef const zvalue *zstackPointer;
 
 
 /*
- * Type references and generic functions
+ * Constants, type references and generic functions
  */
+
+/** The standard value `[]` */
+extern zvalue EMPTY_LIST;
+
+/** The standard value `[:]` */
+extern zvalue EMPTY_MAP;
+
+/** The standard value `""` */
+extern zvalue EMPTY_STRING;
 
 /** Type value for in-model type `Deriv`. */
 extern ztype DAT_Deriv;

@@ -167,6 +167,9 @@ void datZcharsFromString(zchar *result, zvalue string) {
  */
 
 /* Documented in header. */
+zvalue EMPTY_STRING = NULL;
+
+/* Documented in header. */
 static bool stringEq(zvalue v1, zvalue v2) {
     zint sz1 = stringSizeOf(v1);
     zint sz2 = stringSizeOf(v2);
@@ -222,6 +225,9 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void datBindString(void) {
     datGenBindCore(genSizeOf, DAT_String, String_sizeOf, NULL);
+
+    EMPTY_STRING = allocString(0);
+    datImmortalize(EMPTY_STRING);
 }
 
 /* Documented in header. */
