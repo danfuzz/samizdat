@@ -137,6 +137,7 @@ void datBindDeriv(void) {
 /* Documented in header. */
 static DatType INFO_Deriv = {
     .name = "Deriv",
+    .call = NULL,
     .gcMark = derivGcMark,
     .gcFree = NULL,
     .eq = derivEq,

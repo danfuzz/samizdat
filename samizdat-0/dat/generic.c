@@ -60,15 +60,6 @@ static DatGeneric *genInfo(zvalue generic) {
  */
 
 /* Documented in header. */
-zvalue datGenApply(zvalue generic, zvalue args) {
-    zint argCount = datSize(args);
-    zvalue argsArray[argCount];
-
-    datArrayFromList(argsArray, args);
-    return datGenCall(generic, argCount, argsArray);
-}
-
-/* Documented in header. */
 void datGenBindCore(zvalue generic, ztype type,
         zfunction function, zvalue state) {
     datAssertGeneric(generic);
@@ -103,39 +94,6 @@ void datGenBindCoreDefault(zvalue generic, zfunction function, zvalue state) {
 }
 
 /* Documented in header. */
-zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args) {
-    datAssertGeneric(generic);
-
-    DatGeneric *info = genInfo(generic);
-
-    if (argCount < info->minArgs) {
-        die("Too few arguments for generic call: %lld, min %lld",
-            argCount, info->minArgs);
-    } else if (argCount > info->maxArgs) {
-        die("Too few arguments for generic call: %lld, min %lld",
-            argCount, info->minArgs);
-    } else if (args == NULL) {
-        die("Invalid argument pointer (NULL).");
-    }
-
-    // TODO: Dispatch is currently on the core type. It should be able
-    // to handle derived types too. It's not as simple as just calling
-    // `datTypeOf` on the value, though: (1) That function itself should
-    // be generic at some point, and (2) the default implementations of
-    // many generics will have to be adjusted.
-    zvalue function = info->functions[datIndexFromType(args[0]->type)];
-
-    if (function == NULL) {
-        function = info->defaultFunction;
-        if (function == NULL) {
-            die("No type binding found for generic.");
-        }
-    }
-
-    return datFnCall(function, argCount, args);
-}
-
-/* Documented in header. */
 zvalue datGenFrom(zint minArgs, zint maxArgs, zvalue name) {
     if ((minArgs < 1) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
@@ -167,6 +125,35 @@ void datGenSeal(zvalue generic) {
  */
 
 /* Documented in header. */
+static zvalue genCall(zvalue generic, zint argCount, const zvalue *args) {
+    DatGeneric *info = genInfo(generic);
+
+    if (argCount < info->minArgs) {
+        die("Too few arguments for generic call: %lld, min %lld",
+            argCount, info->minArgs);
+    } else if (argCount > info->maxArgs) {
+        die("Too few arguments for generic call: %lld, min %lld",
+            argCount, info->minArgs);
+    }
+
+    // TODO: Dispatch is currently on the core type. It should be able
+    // to handle derived types too. It's not as simple as just calling
+    // `datTypeOf` on the value, though: (1) That function itself should
+    // be generic at some point, and (2) the default implementations of
+    // many generics will have to be adjusted.
+    zvalue function = info->functions[datIndexFromType(args[0]->type)];
+
+    if (function == NULL) {
+        function = info->defaultFunction;
+        if (function == NULL) {
+            die("No type binding found for generic.");
+        }
+    }
+
+    return datCall(function, argCount, args);
+}
+
+/* Documented in header. */
 static void genGcMark(zvalue function) {
     DatGeneric *info = genInfo(function);
 
@@ -192,6 +179,7 @@ void datBindGeneric(void) {
 /* Documented in header. */
 static DatType INFO_Generic = {
     .name = "Generic",
+    .call = genCall,
     .gcMark = genGcMark,
     .gcFree = NULL,
     .eq = NULL,

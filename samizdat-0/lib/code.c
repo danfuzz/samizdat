@@ -66,13 +66,13 @@ PRIM_IMPL(nonlocalExit) {
     if (argCount == 1) {
         value = NULL;
     } else {
-        value = datFnCall(args[1], 0, NULL);
+        value = datCall(args[1], 0, NULL);
     }
 
     if (value == NULL) {
-        datFnCall(yieldFunction, 0, NULL);
+        datCall(yieldFunction, 0, NULL);
     } else {
-        datFnCall(yieldFunction, 1, &value);
+        datCall(yieldFunction, 1, &value);
     }
 
     die("Nonlocal exit function did not perform nonlocal exit.");

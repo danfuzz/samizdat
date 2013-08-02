@@ -68,7 +68,7 @@ typedef const zvalue *zstackPointer;
 
 
 /*
- * Type references
+ * Type references and generic functions
  */
 
 /** Type value for in-model type `Deriv`. */
@@ -94,6 +94,25 @@ extern ztype DAT_String;
 
 /** Type value for in-model type `Uniqlet`. */
 extern ztype DAT_Uniqlet;
+
+/**
+ * Generic `dataOf(value)`: Gets the data payload of a value of the given
+ * type, if any. Defaults to returning the value itself as its own payload.
+ */
+extern zvalue genDataOf;
+
+/**
+ * Generic `sizeOf(value)`: Gets the "size" of a value of the given type,
+ * for the appropriate per-type meaning of size. Defaults to always returning
+ * `0`.
+ */
+extern zvalue genSizeOf;
+
+/**
+ * Generic `typeOf(value)`: Gets the (overt) type of a value of the given
+ * type. Defaults to returning the low-layer type name.
+ */
+extern zvalue genTypeOf;
 
 
 /*
@@ -475,16 +494,16 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
 
 /**
  * Calls a function with the given list of arguments. `function` must be
- * a function, and `args` must be a list.
+ * a function (regular or generic), and `args` must be a list.
  */
-zvalue datFnApply(zvalue function, zvalue args);
+zvalue datApply(zvalue function, zvalue args);
 
 /**
- * Calls a function with the given array of arguments. `function` must be
- * a function, and `argCount` must be non-negative. If `argCount` is
- * positive, then `args` must not be `NULL`.
+ * Calls a function with the given list of arguments. `function` must be
+ * a function (regular or generic), and `argCount` must be non-negative.
+ * If `argCount` is positive, then `args` must not be `NULL`.
  */
-zvalue datFnCall(zvalue function, zint argCount, const zvalue *args);
+zvalue datCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
  * Constructs and returns a function with optional associated closure
@@ -494,14 +513,8 @@ zvalue datFnFrom(zfunction function, zvalue state, zvalue name);
 
 
 /*
- * Generic function definition and application
+ * Generic function definition
  */
-
-/**
- * Calls a generic with the given list of arguments. `generic` must be
- * a generic function, and `args` must be a list.
- */
-zvalue datGenApply(zvalue generic, zvalue args);
 
 /**
  * Adds a type-to-function binding to the given generic, for a core type.
@@ -521,13 +534,6 @@ void datGenBindCore(zvalue generic, ztype type,
  * sealed.
  */
 void datGenBindCoreDefault(zvalue generic, zfunction function, zvalue state);
-
-/**
- * Calls a generic with the given array of arguments. `generic` must be
- * a generic function, `argCount` must be positive, and `args` must not
- * be `NULL`.
- */
-zvalue datGenCall(zvalue generic, zint argCount, const zvalue *args);
 
 /**
  * Constructs and returns a generic function with the given argument

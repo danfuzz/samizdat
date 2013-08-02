@@ -418,9 +418,9 @@ static zvalue execCall(Frame *frame, zvalue call) {
             }
         }
 
-        return datFnCall(functionId, fullCount, fullArgs);
+        return datCall(functionId, fullCount, fullArgs);
     } else {
-        return datFnCall(functionId, argCount, args);
+        return datCall(functionId, argCount, args);
     }
 }
 

@@ -135,6 +135,7 @@ void datBindUniqlet(void) {
 /* Documented in header. */
 static DatType INFO_Uniqlet = {
     .name = "Uniqlet",
+    .call = NULL,
     .gcMark = uniqletGcMark,
     .gcFree = uniqletGcFree,
     .eq = NULL,

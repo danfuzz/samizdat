@@ -75,18 +75,6 @@ PRIM_IMPL(coreOrderIs) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(coreSizeOf) {
-    requireExactly(argCount, 1);
-    return datIntFromZint(datSize(args[0]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(dataOf) {
-    requireExactly(argCount, 1);
-    return datDataOf(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(isCoreValue) {
     requireExactly(argCount, 1);
 
@@ -104,10 +92,4 @@ PRIM_IMPL(totalOrder) {
 PRIM_IMPL(totalOrderIs) {
     requireRange(argCount, 3, 4);
     return doOrderIs(argCount, args) ? args[1] : NULL;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(typeOf) {
-    requireExactly(argCount, 1);
-    return datTypeOf(args[0]);
 }

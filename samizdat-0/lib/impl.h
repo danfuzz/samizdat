@@ -55,8 +55,10 @@ void requireRange(zint argCount, zint min, zint max);
     zvalue prim_##name(zvalue stateIgnored, zint argCount, const zvalue *args)
 
 /* Declarations for all the primitive functions */
+#define PRIM_DEF(name, value) /*empty*/
 #define PRIM_FUNC(name) zvalue prim_##name(zvalue, zint, const zvalue *)
 #include "prim-def.h"
+#undef PRIM_DEF
 #undef PRIM_FUNC
 
 
