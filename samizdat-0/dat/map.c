@@ -398,12 +398,14 @@ zvalue datMappingValue(zvalue map) {
 zvalue EMPTY_MAP = NULL;
 
 /* Documented in header. */
-static bool mapEq(zvalue v1, zvalue v2) {
+static zvalue Map_eq(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
     zint sz1 = mapSizeOf(v1);
     zint sz2 = mapSizeOf(v2);
 
     if (sz1 != sz2) {
-        return false;
+        return NULL;
     }
 
     zmapping *elems1 = mapElems(v1);
@@ -413,42 +415,11 @@ static bool mapEq(zvalue v1, zvalue v2) {
         zmapping *e1 = &elems1[i];
         zmapping *e2 = &elems2[i];
         if (!(datEq(e1->key, e2->key) && datEq(e1->value, e2->value))) {
-            return false;
+            return NULL;
         }
     }
 
-    return true;
-}
-
-/* Documented in header. */
-static zorder mapOrder(zvalue v1, zvalue v2) {
-    zmapping *e1 = mapElems(v1);
-    zmapping *e2 = mapElems(v2);
-    zint sz1 = mapSizeOf(v1);
-    zint sz2 = mapSizeOf(v2);
-    zint sz = (sz1 < sz2) ? sz1 : sz2;
-
-    for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i].key, e2[i].key);
-        if (result != ZSAME) {
-            return result;
-        }
-    }
-
-    if (sz1 < sz2) {
-        return ZLESS;
-    } else if (sz1 > sz2) {
-        return ZMORE;
-    }
-
-    for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i].value, e2[i].value);
-        if (result != ZSAME) {
-            return result;
-        }
-    }
-
-    return ZSAME;
+    return v2;
 }
 
 /* Documented in header. */
@@ -466,6 +437,39 @@ static zvalue Map_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zmapping *e1 = mapElems(v1);
+    zmapping *e2 = mapElems(v2);
+    zint sz1 = mapSizeOf(v1);
+    zint sz2 = mapSizeOf(v2);
+    zint sz = (sz1 < sz2) ? sz1 : sz2;
+
+    for (zint i = 0; i < sz; i++) {
+        zorder result = datOrder(e1[i].key, e2[i].key);
+        if (result != ZSAME) {
+            return datIntFromZint(result);
+        }
+    }
+
+    if (sz1 < sz2) {
+        return DAT_NEG1;
+    } else if (sz1 > sz2) {
+        return DAT_1;
+    }
+
+    for (zint i = 0; i < sz; i++) {
+        zorder result = datOrder(e1[i].value, e2[i].value);
+        if (result != ZSAME) {
+            return datIntFromZint(result);
+        }
+    }
+
+    return DAT_0;
+}
+
+/* Documented in header. */
 static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue map = args[0];
     return datIntFromZint(mapSizeOf(map));
@@ -473,7 +477,9 @@ static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindMap(void) {
+    datGenBindCore(genEq,     DAT_Map, Map_eq,     NULL);
     datGenBindCore(genGcMark, DAT_Map, Map_gcMark, NULL);
+    datGenBindCore(genOrder,  DAT_Map, Map_order,  NULL);
     datGenBindCore(genSizeOf, DAT_Map, Map_sizeOf, NULL);
 
     EMPTY_MAP = allocMap(0);
@@ -483,8 +489,6 @@ void datBindMap(void) {
 /* Documented in header. */
 static DatType INFO_Map = {
     .name = "Map",
-    .call = NULL,
-    .eq = mapEq,
-    .order = mapOrder
+    .call = NULL
 };
 ztype DAT_Map = &INFO_Map;
