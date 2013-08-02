@@ -28,9 +28,6 @@
 #undef STR
 #undef TOK
 
-/** The canonical empty string value (`""`). */
-extern zvalue STR_EMPTY;
-
 /**
  * Returns a collected list of items from the given value, which must either
  * be a generator or a collection value. This is a C equivalent to calling

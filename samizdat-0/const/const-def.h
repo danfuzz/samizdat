@@ -43,8 +43,6 @@ TOK(DEF,           "def");
 TOK(FN,            "fn");
 TOK(RETURN,        "return");
 
-STR(EMPTY,            ""); // The canonical empty string (`""`) value.
-
 STR(UP_LIBRARY,       "LIBRARY");
 
 STR(ACTUALS,          "actuals");
