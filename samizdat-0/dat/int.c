@@ -135,6 +135,15 @@ bool datZintGetBit(zint value, zint n) {
  */
 
 /* Documented in header. */
+zvalue DAT_0 = NULL;
+
+/* Documented in header. */
+zvalue DAT_1 = NULL;
+
+/* Documented in header. */
+zvalue DAT_NEG1 = NULL;
+
+/* Documented in header. */
 static zorder intOrder(zvalue v1, zvalue v2) {
     zint int1 = zintValue(v1);
     zint int2 = zintValue(v2);
@@ -171,6 +180,10 @@ void datBindInt(void) {
         SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);
         datImmortalize(SMALL_INTS[i]);
     }
+
+    DAT_0    = datIntFromZint(0);
+    DAT_1    = datIntFromZint(1);
+    DAT_NEG1 = datIntFromZint(-1);
 }
 
 /* Documented in header. */
