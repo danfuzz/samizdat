@@ -128,6 +128,13 @@ extern zvalue genDataOf;
 extern zvalue genEq;
 
 /**
+ * Generic `order(value, value)`: Compares two values with respect to the
+ * total order of values. Returns one of `-1` `0` `1` corresponding to
+ * the usual meanings for comparison. Must be implemented by every type.
+ */
+extern zvalue genOrder;
+
+/**
  * Generic `sizeOf(value)`: Gets the "size" of a value of the given type,
  * for the appropriate per-type meaning of size. Defaults to always returning
  * `0`.

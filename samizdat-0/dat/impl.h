@@ -45,12 +45,6 @@ typedef struct DatType {
      * match what's expected by the target function.
      */
     zfunction call;
-
-    /**
-     * Compares for order with another value of the same type. Only ever
-     * called when the two values are not `==`.
-     */
-    zorder (*order)(zvalue, zvalue);
 } DatType;
 
 /**

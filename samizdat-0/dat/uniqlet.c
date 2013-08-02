@@ -96,20 +96,6 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
  */
 
 /* Documented in header. */
-static zorder uniqletOrder(zvalue v1, zvalue v2) {
-    zint id1 = uniqletInfo(v1)->id;
-    zint id2 = uniqletInfo(v2)->id;
-
-    if (id1 < id2) {
-        return ZLESS;
-    } else if (id1 > id2) {
-        return ZMORE;
-    } else {
-        return ZSAME;
-    }
-}
-
-/* Documented in header. */
 static zvalue Uniqlet_gcFree(zvalue state, zint argCount, const zvalue *args) {
     zvalue uniqlet = args[0];
     DatUniqlet *info = uniqletInfo(uniqlet);
@@ -134,15 +120,31 @@ static zvalue Uniqlet_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue Uniqlet_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zint id1 = uniqletInfo(v1)->id;
+    zint id2 = uniqletInfo(v2)->id;
+
+    if (id1 < id2) {
+        return DAT_NEG1;
+    } else if (id1 > id2) {
+        return DAT_1;
+    } else {
+        return DAT_0;
+    }
+}
+
+/* Documented in header. */
 void datBindUniqlet(void) {
     datGenBindCore(genGcFree, DAT_Uniqlet, Uniqlet_gcFree, NULL);
     datGenBindCore(genGcMark, DAT_Uniqlet, Uniqlet_gcMark, NULL);
+    datGenBindCore(genOrder,  DAT_Uniqlet, Uniqlet_order,  NULL);
 }
 
 /* Documented in header. */
 static DatType INFO_Uniqlet = {
     .name = "Uniqlet",
-    .call = NULL,
-    .order = uniqletOrder
+    .call = NULL
 };
 ztype DAT_Uniqlet = &INFO_Uniqlet;

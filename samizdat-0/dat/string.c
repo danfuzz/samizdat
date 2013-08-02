@@ -178,32 +178,6 @@ void datZcharsFromString(zchar *result, zvalue string) {
 zvalue EMPTY_STRING = NULL;
 
 /* Documented in header. */
-static zorder stringOrder(zvalue v1, zvalue v2) {
-    zchar *e1 = stringElems(v1);
-    zchar *e2 = stringElems(v2);
-    zint sz1 = stringSizeOf(v1);
-    zint sz2 = stringSizeOf(v2);
-    zint sz = (sz1 < sz2) ? sz1 : sz2;
-
-    for (zint i = 0; i < sz; i++) {
-        zchar c1 = e1[i];
-        zchar c2 = e2[i];
-
-        if (c1 < c2) {
-            return ZLESS;
-        } else if (c1 > c2) {
-            return ZMORE;
-        }
-    }
-
-    if (sz1 == sz2) {
-        return ZSAME;
-    }
-
-    return (sz1 < sz2) ? ZLESS : ZMORE;
-}
-
-/* Documented in header. */
 static zvalue String_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -227,6 +201,34 @@ static zvalue String_eq(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue String_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zchar *e1 = stringElems(v1);
+    zchar *e2 = stringElems(v2);
+    zint sz1 = stringSizeOf(v1);
+    zint sz2 = stringSizeOf(v2);
+    zint sz = (sz1 < sz2) ? sz1 : sz2;
+
+    for (zint i = 0; i < sz; i++) {
+        zchar c1 = e1[i];
+        zchar c2 = e2[i];
+
+        if (c1 < c2) {
+            return DAT_NEG1;
+        } else if (c1 > c2) {
+            return DAT_1;
+        }
+    }
+
+    if (sz1 == sz2) {
+        return DAT_0;
+    }
+
+    return (sz1 < sz2) ? DAT_NEG1 : DAT_1;
+}
+
+/* Documented in header. */
 static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue string = args[0];
     return datIntFromZint(stringSizeOf(string));
@@ -234,7 +236,8 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindString(void) {
-    datGenBindCore(genEq,     DAT_String, String_eq,    NULL);
+    datGenBindCore(genEq,     DAT_String, String_eq,     NULL);
+    datGenBindCore(genOrder,  DAT_String, String_order,  NULL);
     datGenBindCore(genSizeOf, DAT_String, String_sizeOf, NULL);
 
     EMPTY_STRING = allocString(0);
@@ -244,7 +247,6 @@ void datBindString(void) {
 /* Documented in header. */
 static DatType INFO_String = {
     .name = "String",
-    .call = NULL,
-    .order = stringOrder
+    .call = NULL
 };
 ztype DAT_String = &INFO_String;

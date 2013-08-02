@@ -144,24 +144,26 @@ zvalue DAT_1 = NULL;
 zvalue DAT_NEG1 = NULL;
 
 /* Documented in header. */
-static zorder intOrder(zvalue v1, zvalue v2) {
-    zint int1 = zintValue(v1);
-    zint int2 = zintValue(v2);
-
-    if (int1 < int2) {
-        return ZLESS;
-    } else if (int1 > int2) {
-        return ZMORE;
-    } else {
-        return ZSAME;
-    }
-}
-
-/* Documented in header. */
 static zvalue Int_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return (zintValue(v1) == zintValue(v2)) ? v2 : NULL;
+}
+
+/* Documented in header. */
+static zvalue Int_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zint int1 = zintValue(v1);
+    zint int2 = zintValue(v2);
+
+    if (int1 < int2) {
+        return DAT_NEG1;
+    } else if (int1 > int2) {
+        return DAT_1;
+    } else {
+        return DAT_0;
+    }
 }
 
 /* Documented in header. */
@@ -175,6 +177,7 @@ static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 void datBindInt(void) {
     datGenBindCore(genEq,     DAT_Int, Int_eq,     NULL);
     datGenBindCore(genSizeOf, DAT_Int, Int_sizeOf, NULL);
+    datGenBindCore(genOrder,  DAT_Int, Int_order,  NULL);
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);
@@ -189,7 +192,6 @@ void datBindInt(void) {
 /* Documented in header. */
 static DatType INFO_Int = {
     .name = "Int",
-    .call = NULL,
-    .order = intOrder
+    .call = NULL
 };
 ztype DAT_Int = &INFO_Int;

@@ -27,6 +27,9 @@ zvalue genGcFree = NULL;
 zvalue genGcMark = NULL;
 
 /* Documented in header. */
+zvalue genOrder = NULL;
+
+/* Documented in header. */
 zvalue genSizeOf = NULL;
 
 /* Documented in header. */
@@ -68,6 +71,9 @@ void datInitCoreGenerics(void) {
 
     genGcMark = datGenFrom(1, 1, datStringFromUtf8(-1, "gcMark"));
     datImmortalize(genGcMark);
+
+    genOrder = datGenFrom(2, 2, datStringFromUtf8(-1, "order"));
+    datImmortalize(genOrder);
 
     genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
     datGenBindCoreDefault(genSizeOf, Default_sizeOf, NULL);
@@ -111,7 +117,11 @@ zorder datOrder(zvalue v1, zvalue v2) {
     if (v1 == v2) {
         return ZSAME;
     } else if (v1->type == v2->type) {
-        return v1->type->order(v1, v2);
+        zvalue args[2] = { v1, v2 };
+        zstackPointer save = datFrameStart();
+        zorder result = datZintFromInt(datCall(genOrder, 2, args));
+        datFrameReturn(save, NULL);
+        return result;
     } else if (datCoreTypeIs(v1, DAT_Deriv)) {
         // Per spec, derived values always sort after primitives.
         return ZMORE;

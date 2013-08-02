@@ -198,28 +198,6 @@ zvalue datListSlice(zvalue list, zint start, zint end) {
 zvalue EMPTY_LIST = NULL;
 
 /* Documented in header. */
-static zorder listOrder(zvalue v1, zvalue v2) {
-    zvalue *e1 = listElems(v1);
-    zvalue *e2 = listElems(v2);
-    zint sz1 = listSizeOf(v1);
-    zint sz2 = listSizeOf(v2);
-    zint sz = (sz1 < sz2) ? sz1 : sz2;
-
-    for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i], e2[i]);
-        if (result != ZSAME) {
-            return result;
-        }
-    }
-
-    if (sz1 == sz2) {
-        return ZSAME;
-    }
-
-    return (sz1 < sz2) ? ZLESS : ZMORE;
-}
-
-/* Documented in header. */
 static zvalue List_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -256,6 +234,30 @@ static zvalue List_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zvalue *e1 = listElems(v1);
+    zvalue *e2 = listElems(v2);
+    zint sz1 = listSizeOf(v1);
+    zint sz2 = listSizeOf(v2);
+    zint sz = (sz1 < sz2) ? sz1 : sz2;
+
+    for (zint i = 0; i < sz; i++) {
+        zorder result = datOrder(e1[i], e2[i]);
+        if (result != ZSAME) {
+            return datIntFromZint(result);
+        }
+    }
+
+    if (sz1 == sz2) {
+        return DAT_0;
+    }
+
+    return (sz1 < sz2) ? DAT_NEG1 : DAT_1;
+}
+
+/* Documented in header. */
 static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue list = args[0];
     return datIntFromZint(listSizeOf(list));
@@ -265,6 +267,7 @@ static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 void datBindList(void) {
     datGenBindCore(genEq,     DAT_List, List_eq,     NULL);
     datGenBindCore(genGcMark, DAT_List, List_gcMark, NULL);
+    datGenBindCore(genOrder,  DAT_List, List_order,  NULL);
     datGenBindCore(genSizeOf, DAT_List, List_sizeOf, NULL);
 
     EMPTY_LIST = allocList(0);
@@ -274,7 +277,6 @@ void datBindList(void) {
 /* Documented in header. */
 static DatType INFO_List = {
     .name = "List",
-    .call = NULL,
-    .order = listOrder
+    .call = NULL
 };
 ztype DAT_List = &INFO_List;
