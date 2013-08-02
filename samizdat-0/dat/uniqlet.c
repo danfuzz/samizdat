@@ -137,14 +137,13 @@ static zvalue Uniqlet_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindUniqlet(void) {
-    datGenBindCore(genGcFree, DAT_Uniqlet, Uniqlet_gcFree, NULL);
-    datGenBindCore(genGcMark, DAT_Uniqlet, Uniqlet_gcMark, NULL);
-    datGenBindCore(genOrder,  DAT_Uniqlet, Uniqlet_order,  NULL);
+    datGenBindCore(genGcFree, DAT_Uniqlet, Uniqlet_gcFree);
+    datGenBindCore(genGcMark, DAT_Uniqlet, Uniqlet_gcMark);
+    datGenBindCore(genOrder,  DAT_Uniqlet, Uniqlet_order);
 }
 
 /* Documented in header. */
 static DatType INFO_Uniqlet = {
-    .name = "Uniqlet",
-    .call = NULL
+    .name = "Uniqlet"
 };
 ztype DAT_Uniqlet = &INFO_Uniqlet;

@@ -7,6 +7,7 @@
 #include "impl.h"
 
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 
 
@@ -15,7 +16,13 @@
  */
 
 /* Documented in header. */
+zvalue genCall = NULL;
+
+/* Documented in header. */
 zvalue genDataOf = NULL;
+
+/* Documented in header. */
+zvalue genDebugString = NULL;
 
 /* Documented in header. */
 zvalue genEq = NULL;
@@ -41,6 +48,19 @@ static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue Default_debugString(zvalue state,
+        zint argCount, const zvalue *args) {
+    char *result = NULL;
+
+    asprintf(&result, "@(%s @ %p)", args[0]->type->name, args[0]);
+    if (result == NULL) {
+        die("Trouble with `asprintf` (shouldn't happen).");
+    }
+
+    return datStringFromUtf8(-1, result);
+}
+
+/* Documented in header. */
 static zvalue Default_eq(zvalue state, zint argCount, const zvalue *args) {
     return NULL;
 }
@@ -58,12 +78,19 @@ static zvalue Default_typeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datInitCoreGenerics(void) {
+    genCall = datGenFrom(1, 1, datStringFromUtf8(-1, "call"));
+    datImmortalize(genCall);
+
     genDataOf = datGenFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
-    datGenBindCoreDefault(genDataOf, Default_dataOf, NULL);
+    datGenBindCoreDefault(genDataOf, Default_dataOf);
     datImmortalize(genDataOf);
 
+    genDebugString = datGenFrom(1, 1, datStringFromUtf8(-1, "debugString"));
+    datGenBindCoreDefault(genDebugString, Default_debugString);
+    datImmortalize(genDebugString);
+
     genEq = datGenFrom(2, 2, datStringFromUtf8(-1, "eq"));
-    datGenBindCoreDefault(genEq, Default_eq, NULL);
+    datGenBindCoreDefault(genEq, Default_eq);
     datImmortalize(genEq);
 
     genGcFree = datGenFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
@@ -76,11 +103,11 @@ void datInitCoreGenerics(void) {
     datImmortalize(genOrder);
 
     genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
-    datGenBindCoreDefault(genSizeOf, Default_sizeOf, NULL);
+    datGenBindCoreDefault(genSizeOf, Default_sizeOf);
     datImmortalize(genSizeOf);
 
     genTypeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
-    datGenBindCoreDefault(genTypeOf, Default_typeOf, NULL);
+    datGenBindCoreDefault(genTypeOf, Default_typeOf);
     datImmortalize(genTypeOf);
 }
 
@@ -92,6 +119,20 @@ void datInitCoreGenerics(void) {
 /* Documented in header. */
 zvalue datDataOf(zvalue value) {
     return datCall(genDataOf, 1, &value);
+}
+
+/* Documented in header. */
+char *datDebugString(zvalue value) {
+    if (value == NULL) {
+        return strdup("(null)");
+    }
+
+    zvalue result = datCall(genDebugString, 1, &value);
+    zint size = datUtf8SizeFromString(result);
+    char str[size + 1];
+
+    datUtf8FromString(size + 1, str, result);
+    return strdup(str);
 }
 
 /* Documented in header. */

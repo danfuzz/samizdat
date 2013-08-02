@@ -36,15 +36,11 @@ typedef struct DatType {
      */
     zvalue nameValue;
 
-    /** Type sequence number, complemented to disambiguate `0`. */
-    zint seqNumCompl;
-
     /**
-     * Calls this value as a function (how meta). When called, argument count
-     * and pointer will have been checked, but the argument count may not
-     * match what's expected by the target function.
+     * Type sequence number, complemented to allow `0` to mean
+     * "uninitialized".
      */
-    zfunction call;
+    zint seqNumCompl;
 } DatType;
 
 /**
@@ -77,6 +73,24 @@ typedef struct DatHeader {
  * Flag indicating whether module has been initialized.
  */
 extern bool datInitialized;
+
+/**
+ * Generic `call(value)`: Somewhat-degenerate generic for dispatching to
+ * a function call mechanism (how meta). Only defined for types `Function`
+ * and `Generic`. When called, argument count and pointer will have been
+ * checked, but the argument count may not match what's expected by the
+ * target function. The `state` argument is always passed as the function
+ * or generic value itself.
+ */
+extern zvalue genCall;
+
+/**
+ * Generic `debugString(value)`: Returns a minimal string form of the
+ * given value. Notably, functions and generics include their names.
+ * The default implementation returns strings of the form
+ * `#(TypeName @ address)`.
+ */
+extern zvalue genDebugString;
 
 /**
  * Generic `gcMark(value)`: Does GC marking for the given value.
@@ -125,10 +139,17 @@ void datAssertSliceRange(zint size, zint start, zint end);
 void datAssertValid(zvalue value);
 
 /**
+ * Gets the "debug string" of the given value, as a `char *`. The caller
+ * is responsible for `free()`ing the result. As a convenience, this
+ * converts `NULL` into `"(null)"`.
+ */
+char *datDebugString(zvalue value);
+
+/**
  * Gets the function bound to the given generic for the given value, if any.
  * Returns `NULL` if there is no binding.
  */
-zvalue datGenGet(zvalue generic, zvalue value);
+zfunction datGenGet(zvalue generic, zvalue value);
 
 /**
  * Gets the sequence number index for a `ztype`, initializing it if necessary.

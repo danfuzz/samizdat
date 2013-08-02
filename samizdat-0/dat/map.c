@@ -477,10 +477,10 @@ static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindMap(void) {
-    datGenBindCore(genEq,     DAT_Map, Map_eq,     NULL);
-    datGenBindCore(genGcMark, DAT_Map, Map_gcMark, NULL);
-    datGenBindCore(genOrder,  DAT_Map, Map_order,  NULL);
-    datGenBindCore(genSizeOf, DAT_Map, Map_sizeOf, NULL);
+    datGenBindCore(genEq,     DAT_Map, Map_eq);
+    datGenBindCore(genGcMark, DAT_Map, Map_gcMark);
+    datGenBindCore(genOrder,  DAT_Map, Map_order);
+    datGenBindCore(genSizeOf, DAT_Map, Map_sizeOf);
 
     EMPTY_MAP = allocMap(0);
     datImmortalize(EMPTY_MAP);
@@ -488,7 +488,6 @@ void datBindMap(void) {
 
 /* Documented in header. */
 static DatType INFO_Map = {
-    .name = "Map",
-    .call = NULL
+    .name = "Map"
 };
 ztype DAT_Map = &INFO_Map;
