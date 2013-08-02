@@ -20,8 +20,7 @@ static void assertType(zvalue value, ztype type) {
     datAssertValid(value);
 
     if (value->type != type) {
-        die("Expected type %s: (%p)->type == %s",
-            type->name, value, value->type->name);
+        die("Expected type %s; got %s", type->name, datDebugString(value));
     }
 }
 
@@ -63,7 +62,8 @@ void datAssertSameType(zvalue v1, zvalue v2) {
     datAssertValid(v2);
 
     if (v1->type != v2->type) {
-        die("Mismatched core types: %s, %s", v1->type->name, v2->type->name);
+        die("Mismatched core types: %s, %s",
+            datDebugString(v1), datDebugString(v2));
     }
 }
 
