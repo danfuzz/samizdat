@@ -65,9 +65,7 @@ static DatUniqletDispatch NLE_DISPATCH = {
 static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
     NleState *nleState = datUniqletGetState(state, &NLE_DISPATCH);
 
-    if (nleState->active) {
-        nleState->active = false;
-    } else {
+    if (!nleState->active) {
         die("Attempt to use out-of-scope nonlocal exit.");
     }
 
@@ -91,21 +89,21 @@ zvalue nleCall(znleFunction function, void *state) {
 
     zint mark = debugMark();
     zstackPointer save = datFrameStart();
+    zvalue result;
 
-    if (setjmp(nleState->jumpBuf) != 0) {
+    if (setjmp(nleState->jumpBuf) == 0) {
+        // Here is where end up the first time `setjmp` returns.
+        zvalue exitFunction = datFnFrom(
+            0, 1,
+            nonlocalExit,
+            datUniqletWith(&NLE_DISPATCH, nleState),
+            NULL);
+        result = function(state, exitFunction);
+    } else {
         // Here is where we land if and when `longjmp` is called.
-        zvalue result = nleState->result;
+        result = nleState->result;
         debugReset(mark);
-        datFrameReturn(save, result);
-        return result;
     }
-
-    zvalue exitFunction = datFnFrom(
-        0, 1,
-        nonlocalExit,
-        datUniqletWith(&NLE_DISPATCH, nleState),
-        NULL);
-    zvalue result = function(state, exitFunction);
 
     nleState->active = false;
     datFrameReturn(save, result);
