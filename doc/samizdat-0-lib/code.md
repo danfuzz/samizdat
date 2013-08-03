@@ -4,25 +4,6 @@ Samizdat Layer 0: Core Library
 Functions And Code
 ------------------
 
-### Boxes
-
-A few of the functions in this module are concerned with "boxes".
-A box is a holder for some other value. Boxes are sometimes also known
-as "cells".
-
-In addition to the box constructor functions, the three functions that
-deal with boxes are `boxGet` to get the contents of a box (or void if
-the box value has yet to be set), `boxSet` to set the contents of
-a box, and `boxIsSet` to indicate whether `boxSet` has been called
-(which is not the same as `boxGet` returning non-void).
-
-As a special case, it is valid to pass the library constant `nullBox`
-as the `box` argument to box-related functions, in which case the function
-acts as if the box is permanently un-set. Notably, `boxSet(nullBox, value)`
-is effectively a no-op. This arrangement is done in order to make it easy
-to pass around a "box" whose value is to be ignored.
-
-
 <br><br>
 ### Primitive Definitions
 
