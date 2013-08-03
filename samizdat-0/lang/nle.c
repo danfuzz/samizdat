@@ -73,7 +73,7 @@ static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
         nleState->result = args[0];
     }
 
-    longjmp(nleState->jumpBuf, 1);
+    siglongjmp(nleState->jumpBuf, 1);
 }
 
 
@@ -91,7 +91,7 @@ zvalue nleCall(znleFunction function, void *state) {
     zstackPointer save = datFrameStart();
     zvalue result;
 
-    if (setjmp(nleState->jumpBuf) == 0) {
+    if (sigsetjmp(nleState->jumpBuf, 0) == 0) {
         // Here is where end up the first time `setjmp` returns.
         zvalue exitFunction = datFnFrom(
             0, 1,
