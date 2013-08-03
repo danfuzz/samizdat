@@ -37,8 +37,6 @@ TOK(CH_QMARK,      "?");
 TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
 
-TOK(CAP_NULL_BOX,  "NullBox");
-
 TOK(DEF,           "def");
 TOK(FN,            "fn");
 TOK(RETURN,        "return");
@@ -67,6 +65,7 @@ STR(MAIN_SAM0,        "main.sam0");
 STR(MAP_ADD,          "mapAdd");
 STR(NAME,             "name");
 STR(NONLOCAL_EXIT,    "nonlocalExit");
+STR(NULL_BOX,         "nullBox");
 STR(REPEAT,           "repeat");
 STR(RESULT,           "result");
 STR(SAM_COMMAND_LINE, "samCommandLine");

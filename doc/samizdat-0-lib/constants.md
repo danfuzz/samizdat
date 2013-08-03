@@ -10,7 +10,9 @@ functions.
 <br><br>
 ### Primitive Definitions
 
-(none)
+#### `nullBox`
+
+A special constant box, which ignores any attempts to set it.
 
 
 <br><br>
@@ -29,12 +31,6 @@ The boolean value true. It is defined as `@[Boolean: 1]`.
 A value used when no other value is suitable, but when a value is
 nonetheless required. It is defined as `@Null`, that is, a type-only
 value with type tag `"Null"`.
-
-#### `nullBox`
-
-A value used in place of a box, when the would-be set value of the box
-is never needed. It is defined as `@NullBox`, that is, a type-only
-value with type tag `"NullBox"`.
 
 #### `ENTITY_MAP`
 

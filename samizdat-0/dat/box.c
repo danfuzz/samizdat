@@ -19,9 +19,7 @@
  */
 
 /**
- * Box state. Instances of this structure are bound as the closure state
- * as part of function registration in the implementation of the box
- * constructor primitives.
+ * Box state.
  */
 typedef struct {
     /** Content value. */
@@ -32,33 +30,30 @@ typedef struct {
 
     /** True iff the box is considered to be set (see spec for details). */
     bool isSet;
-} Box;
+
+    /** Uniqlet to use for ordering comparisons. */
+    zvalue orderId;
+} DatBox;
 
 /**
- * Marks a box state for garbage collection.
+ * Gets a pointer to the value's info.
  */
-static void boxMark(void *state) {
-    datMark(((Box *) state)->value);
+static DatBox *boxInfo(zvalue box) {
+    return datPayload(box);
 }
 
 /**
- * Frees an object state.
+ * Gets the order id, initializing it if necessary.
  */
-static void boxFree(void *state) {
-    utilFree(state);
-}
+static zvalue boxOrderId(zvalue box) {
+    DatBox *info = boxInfo(box);
+    zvalue orderId = info->orderId;
 
-/** Uniqlet dispatch table for boxes. */
-static DatUniqletDispatch BOX_DISPATCH = {
-    boxMark,
-    boxFree
-};
+    if (orderId == NULL) {
+        orderId = info->orderId = datUniqlet();
+    }
 
-/**
- * Returns `true` iff this is the special "null box" value.
- */
-static bool isNullBox(zvalue value) {
-    return datEq(value, TOK_CAP_NULL_BOX);
+    return orderId;
 }
 
 
@@ -67,20 +62,16 @@ static bool isNullBox(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue boxGet(zvalue boxUniqlet) {
-    if (isNullBox(boxUniqlet)) {
-        return NULL;
-    }
+zvalue boxGet(zvalue box) {
+    datAssertBox(box);
 
-    Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
-    zvalue result = box->value;
+    zvalue result = boxInfo(box)->value;
 
-    if ((result != NULL) && !box->setOnce) {
-        // The box is mutable, and we are about to return a non-empty result.
-        // The returned value could conceivably be "detached" from the box
-        // (if the box is reset or re-set), so we have to explicitly add the
-        // result value to the frame at this point. This ensures that GC will
-        // be able to find it.
+    if (result != NULL) {
+        // The box has a value that we are about to return. Since the box
+        // could become garbage after this, we have to treat the value as
+        // "escaped" and so explicitly add the result value to the frame at
+        // this point. This ensures that GC will be able to find it.
         datFrameAdd(result);
     }
 
@@ -88,65 +79,104 @@ zvalue boxGet(zvalue boxUniqlet) {
 }
 
 /* Documented in header. */
-bool boxIsSet(zvalue boxUniqlet) {
-    if (isNullBox(boxUniqlet)) {
-        return false;
-    }
-
-    Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
-    return box->isSet;
+bool boxIsSet(zvalue box) {
+    datAssertBox(box);
+    return boxInfo(box)->isSet;
 }
 
 /* Documented in header. */
-void boxReset(zvalue boxUniqlet) {
-    if (isNullBox(boxUniqlet)) {
-        return;
-    }
+void boxReset(zvalue box) {
+    datAssertBox(box);
 
-    Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
+    DatBox *info = boxInfo(box);
 
-    if (box->setOnce) {
+    if (info->setOnce) {
         die("Attempt to reset yield box.");
     }
 
-    box->value = NULL;
-    box->isSet = false;
+    info->value = NULL;
+    info->isSet = false;
 }
 
 /* Documented in header. */
-void boxSet(zvalue boxUniqlet, zvalue value) {
-    if (isNullBox(boxUniqlet)) {
+void boxSet(zvalue box, zvalue value) {
+    datAssertBox(box);
+
+    if (box == DAT_NULL_BOX) {
         return;
     }
 
-    Box *box = datUniqletGetState(boxUniqlet, &BOX_DISPATCH);
+    DatBox *info = boxInfo(box);
 
-    if (box->isSet && box->setOnce) {
+    if (info->isSet && info->setOnce) {
         die("Attempt to re-set yield box.");
     }
 
-    box->value = value;
-    box->isSet = true;
+    info->value = value;
+    info->isSet = true;
 }
 
 /* Documented in header. */
 zvalue boxMutable(void) {
-    Box *box = utilAlloc(sizeof(Box));
+    zvalue result = datAllocValue(DAT_Box, sizeof(DatBox));
+    DatBox *info = boxInfo(result);
 
-    box->value = NULL;
-    box->isSet = false;
-    box->setOnce = false;
+    info->value = NULL;
+    info->isSet = false;
+    info->setOnce = false;
 
-    return datUniqletWith(&BOX_DISPATCH, box);
+    return result;
 }
 
 /* Documented in header. */
 zvalue boxYield(void) {
-    Box *box = utilAlloc(sizeof(Box));
+    zvalue result = datAllocValue(DAT_Box, sizeof(DatBox));
+    DatBox *info = boxInfo(result);
 
-    box->value = NULL;
-    box->isSet = false;
-    box->setOnce = true;
+    info->value = NULL;
+    info->isSet = false;
+    info->setOnce = true;
 
-    return datUniqletWith(&BOX_DISPATCH, box);
+    return result;
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+zvalue DAT_NULL_BOX = NULL;
+
+/* Documented in header. */
+static zvalue Box_gcMark(zvalue state, zint argCount, const zvalue *args) {
+    zvalue box = args[0];
+    DatBox *info = boxInfo(box);
+
+    datMark(info->value);
+    datMark(info->orderId);
+
+    return NULL;
+}
+
+/* Documented in header. */
+static zvalue Box_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    return datIntFromZint(datOrder(boxOrderId(v1), boxOrderId(v2)));
+}
+
+/* Documented in header. */
+void datBindBox(void) {
+    datGenBindCore(genGcMark, DAT_Box, Box_gcMark);
+    datGenBindCore(genOrder,  DAT_Box, Box_order);
+
+    DAT_NULL_BOX = boxMutable(); // Note: Explicit `==` check in `boxSet`.
+    datImmortalize(DAT_NULL_BOX);
+}
+
+/* Documented in header. */
+static DatType INFO_Box = {
+    .name = "Box"
+};
+ztype DAT_Box = &INFO_Box;

@@ -89,6 +89,12 @@ extern zvalue DAT_1;
 /** The standard value `-1`. */
 extern zvalue DAT_NEG1;
 
+/** The standard value `nullBox`. */
+extern zvalue DAT_NULL_BOX;
+
+/** Type value for in-model type `Box`. */
+extern ztype DAT_Box;
+
 /** Type value for in-model type `Deriv`. */
 extern ztype DAT_Deriv;
 
@@ -161,6 +167,13 @@ void datInit(void);
 /*
  * Assertion Functions
  */
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a box. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertBox(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and

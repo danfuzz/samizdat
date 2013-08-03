@@ -30,6 +30,7 @@ void datInit(void) {
     zstackPointer save = datFrameStart();
 
     datInitCoreGenerics();
+    datBindBox();
     datBindDeriv();
     datBindFunction();
     datBindGeneric();
