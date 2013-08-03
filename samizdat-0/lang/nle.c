@@ -35,7 +35,7 @@ typedef struct {
     zvalue result;
 
     /** Jump buffer, used for nonlocal exit. */
-    jmp_buf jumpBuf;
+    sigjmp_buf jumpBuf;
 } NleState;
 
 /**
