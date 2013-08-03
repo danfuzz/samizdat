@@ -24,14 +24,7 @@
 static void dieForVariable(const char *message, zvalue name)
     __attribute__((noreturn));
 static void dieForVariable(const char *message, zvalue name) {
-    if (datCoreTypeIs(name, DAT_String)) {
-        zint nameSize = datUtf8SizeFromString(name);
-        char nameStr[nameSize + 1];
-        datUtf8FromString(nameSize + 1, nameStr, name);
-        die("%s: %s", message, nameStr);
-    }
-
-    die("%s: (strange name)", message);
+    die("%s: %s", message, datDebugString(name));
 }
 
 

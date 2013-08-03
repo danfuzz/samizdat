@@ -616,6 +616,13 @@ bool datCoreTypeIs(zvalue value, ztype type);
 zvalue datDataOf(zvalue value);
 
 /**
+ * Gets the "debug string" of the given value, as a `char *`. The caller
+ * is responsible for `free()`ing the result. As a convenience, this
+ * converts `NULL` into `"(null)"`.
+ */
+char *datDebugString(zvalue value);
+
+/**
  * Compares two values for equality. This exists in addition to
  * `datOrder`, because it is possible for this function run much
  * quicker in the not-equal case.

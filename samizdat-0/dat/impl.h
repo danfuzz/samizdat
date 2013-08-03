@@ -139,13 +139,6 @@ void datAssertSliceRange(zint size, zint start, zint end);
 void datAssertValid(zvalue value);
 
 /**
- * Gets the "debug string" of the given value, as a `char *`. The caller
- * is responsible for `free()`ing the result. As a convenience, this
- * converts `NULL` into `"(null)"`.
- */
-char *datDebugString(zvalue value);
-
-/**
  * Gets the function bound to the given generic for the given value, if any.
  * Returns `NULL` if there is no binding.
  */
