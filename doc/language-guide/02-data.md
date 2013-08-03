@@ -211,6 +211,23 @@ and an execution context.
 See the language guide section on functions for more details.
 
 
+#### Box
+
+A box is a holder for some other value. Boxes are sometimes also known
+as "cells".
+
+In addition to the box constructor functions, the three functions that
+deal with boxes are `boxGet` to get the contents of a box (or void if
+the box value has yet to be set), `boxSet` to set the contents of
+a box, and `boxIsSet` to indicate whether `boxSet` has been called
+(which is not the same as `boxGet` returning non-void).
+
+As a special case, the special value `nullBox` is a box that is permanently
+un-set. Notably, `boxSet(nullBox, value)` is effectively a no-op. This
+arrangement is done in order to make it easy to pass a box into functions
+that require one, but where the box value is never needed.
+
+
 #### Uniqlet
 
 A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
