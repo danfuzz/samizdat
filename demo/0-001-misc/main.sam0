@@ -89,6 +89,7 @@ fn main(selfPath, name, rest*) {
     process(null);
     process(false);
     process(true);
+    process(nullBox);
     process(@blort);
     process(@"%fizmo%");
     process(@[potion: "blort"]);
