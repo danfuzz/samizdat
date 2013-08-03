@@ -218,9 +218,6 @@ static void doGc(void) {
 
         zfunction freer = datGenGet(genGcFree, item);
         if (freer != NULL) {
-            // Link the item to itself, so that its sanity check will
-            // still pass.
-            item->next = item->prev = item;
             freer(NULL, 1, &item);
         }
 
