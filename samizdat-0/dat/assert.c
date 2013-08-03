@@ -88,6 +88,11 @@ void datAssertValid(zvalue value) {
  */
 
 /* Documented in header. */
+void datAssertBox(zvalue value) {
+    assertType(value, DAT_Box);
+}
+
+/* Documented in header. */
 void datAssertDeriv(zvalue value) {
     assertType(value, DAT_Deriv);
 }

@@ -89,6 +89,12 @@ extern zvalue DAT_1;
 /** The standard value `-1`. */
 extern zvalue DAT_NEG1;
 
+/** The standard value `nullBox`. */
+extern zvalue DAT_NULL_BOX;
+
+/** Type value for in-model type `Box`. */
+extern ztype DAT_Box;
+
 /** Type value for in-model type `Deriv`. */
 extern ztype DAT_Deriv;
 
@@ -161,6 +167,13 @@ void datInit(void);
 /*
  * Assertion Functions
  */
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a box. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertBox(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -513,6 +526,43 @@ bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch);
  * box. In this case, the key is in fact the associated state dispatch table.
  */
 zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
+
+
+/*
+ * Boxes
+ */
+
+/**
+ * Gets the value out of the given box. Returns `NULL` if the box is
+ * void or as yet unset.
+ */
+zvalue boxGet(zvalue box);
+
+/**
+ * Returns an indication of whether or not the given box has been set.
+ */
+bool boxIsSet(zvalue box);
+
+/**
+ * Constructs a mutable (re-settable) box.
+ */
+zvalue boxMutable(void);
+
+/**
+ * Resets the given box to an un-set state. The box must be a mutable box.
+ */
+void boxReset(zvalue box);
+
+/**
+ * Sets the value of the given box as indicated. Passing `value` as
+ * `NULL` indicates that the box is to be set to void.
+ */
+void boxSet(zvalue box, zvalue value);
+
+/**
+ * Constructs a yield (set-once) box.
+ */
+zvalue boxYield(void);
 
 
 /*

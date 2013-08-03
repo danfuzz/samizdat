@@ -11,6 +11,5 @@
 <> [
     false:   @[Boolean: 0],
     true:    @[Boolean: 1],
-    null:    @Null,
-    nullBox: @NullBox
+    null:    @Null
 ]

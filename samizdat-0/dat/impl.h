@@ -175,6 +175,7 @@ zvalue datTypeFromZtype(ztype type);
 void datInitCoreGenerics(void);
 
 // Per-type generic binding.
+void datBindBox(void);
 void datBindDeriv(void);
 void datBindFunction(void);
 void datBindGeneric(void);

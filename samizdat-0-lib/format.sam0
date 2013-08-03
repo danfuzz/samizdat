@@ -130,7 +130,7 @@ def IDENTIFIER_CHARS = [
     "0123456789"*: true
 ];
 
-# Derived values with special conversions.
+# Values with special conversions.
 def SPECIAL_VALUES = [
     (false):   "false",
     (null):    "null",
