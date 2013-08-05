@@ -31,7 +31,7 @@ static zvalue SMALL_INTS[PB_SMALL_INT_COUNT];
 typedef struct {
     /** Int value. See `intFromZint()` about range restriction. */
     int32_t value;
-} DatInt;
+} IntInfo;
 
 /**
  * Gets the bit size (highest-order significant bit number, plus one)
@@ -63,7 +63,7 @@ static zint bitSize(zint value) {
  * type checking.
  */
 static zint zintValue(zvalue intval) {
-    return ((DatInt *) pbPayload(intval))->value;
+    return ((IntInfo *) pbPayload(intval))->value;
 }
 
 /**
@@ -77,7 +77,7 @@ zvalue intFrom(zint value) {
         die("Value too large to fit into int: %lld", value);
     }
 
-    ((DatInt *) pbPayload(result))->value = (int32_t) value;
+    ((IntInfo *) pbPayload(result))->value = (int32_t) value;
     return result;
 }
 

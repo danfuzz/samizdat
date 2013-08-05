@@ -22,16 +22,16 @@ typedef struct {
 
     /** Characters of the string, in index order. */
     zchar elems[/*size*/];
-} DatString;
+} StringInfo;
 
 /**
  * Allocates a string of the given size.
  */
 static zvalue allocString(zint size) {
     zvalue result =
-        pbAllocValue(PB_String, sizeof(DatString) + size * sizeof(zchar));
+        pbAllocValue(PB_String, sizeof(StringInfo) + size * sizeof(zchar));
 
-    ((DatString *) pbPayload(result))->size = size;
+    ((StringInfo *) pbPayload(result))->size = size;
     return result;
 }
 
@@ -39,14 +39,14 @@ static zvalue allocString(zint size) {
  * Gets the size of a string.
  */
 static zint stringSizeOf(zvalue string) {
-    return ((DatString *) pbPayload(string))->size;
+    return ((StringInfo *) pbPayload(string))->size;
 }
 
 /**
  * Gets the array of `zvalue` elements from a list.
  */
 static zchar *stringElems(zvalue string) {
-    return ((DatString *) pbPayload(string))->elems;
+    return ((StringInfo *) pbPayload(string))->elems;
 }
 
 

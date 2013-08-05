@@ -41,12 +41,12 @@ typedef struct {
 
     /** Id to use for ordering comparisons. */
     zint orderId;
-} DatFunction;
+} FunctionInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static DatFunction *fnInfo(zvalue function) {
+static FunctionInfo *fnInfo(zvalue function) {
     return pbPayload(function);
 }
 
@@ -63,8 +63,8 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = pbAllocValue(PB_Function, sizeof(DatFunction));
-    DatFunction *info = fnInfo(result);
+    zvalue result = pbAllocValue(PB_Function, sizeof(FunctionInfo));
+    FunctionInfo *info = fnInfo(result);
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
@@ -84,7 +84,7 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
 /* Documented in header. */
 static zvalue Function_call(zvalue function,
         zint argCount, const zvalue *args) {
-    DatFunction *info = fnInfo(function);
+    FunctionInfo *info = fnInfo(function);
 
     if (argCount < info->minArgs) {
         die("Too few arguments for function call: %lld, min %lld",
@@ -101,7 +101,7 @@ static zvalue Function_call(zvalue function,
 static zvalue Function_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue function = args[0];
-    DatFunction *info = fnInfo(function);
+    FunctionInfo *info = fnInfo(function);
 
     zvalue result = stringFromUtf8(-1, "@(Function ");
 
@@ -118,7 +118,7 @@ static zvalue Function_debugString(zvalue state,
 /* Documented in header. */
 static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue function = args[0];
-    DatFunction *info = fnInfo(function);
+    FunctionInfo *info = fnInfo(function);
 
     pbMark(info->state);
     pbMark(info->name);

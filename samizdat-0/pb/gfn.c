@@ -45,12 +45,12 @@ typedef struct {
 
     /** Bindings from type to function, keyed off of type sequence number. */
     zfunction functions[PB_MAX_TYPES];
-} DatGeneric;
+} GenericInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static DatGeneric *gfnInfo(zvalue generic) {
+static GenericInfo *gfnInfo(zvalue generic) {
     return pbPayload(generic);
 }
 
@@ -75,7 +75,7 @@ zfunction gfnFind(zvalue generic, zvalue value) {
     // generic, and (2) the default implementations of many generics
     // will have to be adjusted.
 
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
     zfunction result = info->functions[indexFromZtype(value->type)];
 
     return (result != NULL) ? result : info->defaultFunction;
@@ -116,7 +116,7 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
 void gfnBindCore(zvalue generic, ztype type, zfunction function) {
     pbAssertGeneric(generic);
 
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
     zint index = indexFromZtype(type);
 
     if (info->sealed) {
@@ -132,7 +132,7 @@ void gfnBindCore(zvalue generic, ztype type, zfunction function) {
 void gfnBindCoreDefault(zvalue generic, zfunction function) {
     pbAssertGeneric(generic);
 
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
 
     if (info->sealed) {
         die("Sealed generic.");
@@ -150,8 +150,8 @@ zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = pbAllocValue(PB_Generic, sizeof(DatGeneric));
-    DatGeneric *info = gfnInfo(result);
+    zvalue result = pbAllocValue(PB_Generic, sizeof(GenericInfo));
+    GenericInfo *info = gfnInfo(result);
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
@@ -176,7 +176,7 @@ void gfnSeal(zvalue generic) {
 
 /* Documented in header. */
 static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
 
     if (argCount < info->minArgs) {
         die("Too few arguments for generic call: %lld, min %lld",
@@ -199,7 +199,7 @@ static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
 static zvalue Generic_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue generic = args[0];
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
 
     zvalue result = stringFromUtf8(-1, "@(Generic ");
 
@@ -216,7 +216,7 @@ static zvalue Generic_debugString(zvalue state,
 /* Documented in header. */
 static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue generic = args[0];
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
 
     pbMark(info->name);
 

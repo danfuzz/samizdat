@@ -22,12 +22,12 @@ typedef struct {
 
     /** Associated payload data. Possibly `NULL`. */
     zvalue data;
-} DatDeriv;
+} DerivInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static DatDeriv *derivInfo(zvalue deriv) {
+static DerivInfo *derivInfo(zvalue deriv) {
     return pbPayload(deriv);
 }
 
@@ -36,8 +36,8 @@ static DatDeriv *derivInfo(zvalue deriv) {
  * on the arguments.
  */
 static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = pbAllocValue(PB_Deriv, sizeof(DatDeriv));
-    DatDeriv *info = derivInfo(result);
+    zvalue result = pbAllocValue(PB_Deriv, sizeof(DerivInfo));
+    DerivInfo *info = derivInfo(result);
 
     info->type = type;
     info->data = data;
@@ -75,8 +75,8 @@ static zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    DatDeriv *info1 = derivInfo(v1);
-    DatDeriv *info2 = derivInfo(v2);
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
 
     if (info1->data == NULL) {
         if (info2->data != NULL) {
@@ -94,7 +94,7 @@ static zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue deriv = args[0];
-    DatDeriv *info = derivInfo(deriv);
+    DerivInfo *info = derivInfo(deriv);
 
     pbMark(info->type);
     pbMark(info->data);
@@ -106,8 +106,8 @@ static zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    DatDeriv *info1 = derivInfo(v1);
-    DatDeriv *info2 = derivInfo(v2);
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
 
     zorder result = pbOrder(info1->type, info2->type);
 
