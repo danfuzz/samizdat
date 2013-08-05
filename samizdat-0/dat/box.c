@@ -50,7 +50,7 @@ static zvalue boxOrderId(zvalue box) {
     zvalue orderId = info->orderId;
 
     if (orderId == NULL) {
-        orderId = info->orderId = datUniqlet();
+        orderId = info->orderId = uniqlet();
     }
 
     return orderId;

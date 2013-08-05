@@ -249,7 +249,7 @@ static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
  * The C function that is bound to in order to execute interpreted code.
  */
 static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
-    Closure *closure = datUniqletGetState(state, &CLOSURE_DISPATCH);
+    Closure *closure = uniqletGetState(state, &CLOSURE_DISPATCH);
     CallState callState = { state, closure, argCount, args };
 
     zvalue result;
@@ -282,7 +282,7 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
     return fnFrom(
         0, -1,
         callClosure,
-        datUniqletWith(&CLOSURE_DISPATCH, closure),
+        uniqletFrom(&CLOSURE_DISPATCH, closure),
         datMapGet(defMap, STR_NAME));
 }
 

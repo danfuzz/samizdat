@@ -56,15 +56,15 @@ static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
  */
 
 /* Documented in header. */
-zvalue datUniqlet(void) {
+zvalue uniqlet(void) {
     return newUniqlet(NULL, NULL);
 }
 
 /* Documented in header. */
-void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+void *uniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch) {
     datAssertUniqlet(uniqlet);
 
-    if (!datUniqletHasDispatch(uniqlet, dispatch)) {
+    if (!uniqletHasDispatch(uniqlet, dispatch)) {
         die("Wrong uniqlet dispatch table for get.");
     }
 
@@ -72,13 +72,13 @@ void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch) {
 }
 
 /* Documented in header. */
-bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+bool uniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch) {
     datAssertUniqlet(uniqlet);
     return (dispatch == uniInfo(uniqlet)->dispatch);
 }
 
 /* Documented in header. */
-zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
+zvalue uniqletFrom(DatUniqletDispatch *dispatch, void *state) {
     return newUniqlet(dispatch, state);
 }
 

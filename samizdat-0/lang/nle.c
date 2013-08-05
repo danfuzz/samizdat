@@ -63,7 +63,7 @@ static DatUniqletDispatch NLE_DISPATCH = {
  * The C function that is bound to in order to perform nonlocal exit.
  */
 static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
-    NleState *nleState = datUniqletGetState(state, &NLE_DISPATCH);
+    NleState *nleState = uniqletGetState(state, &NLE_DISPATCH);
 
     if (!nleState->active) {
         die("Attempt to use out-of-scope nonlocal exit.");
@@ -96,7 +96,7 @@ zvalue nleCall(znleFunction function, void *state) {
         zvalue exitFunction = fnFrom(
             0, 1,
             nonlocalExit,
-            datUniqletWith(&NLE_DISPATCH, nleState),
+            uniqletFrom(&NLE_DISPATCH, nleState),
             NULL);
         result = function(state, exitFunction);
     } else {

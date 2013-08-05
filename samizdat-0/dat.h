@@ -255,22 +255,11 @@ zvalue datMappingValue(zvalue map);
  * Gets a new uniqlet. Each call to this function is guaranteed to
  * produce a value unequal to any other uniqlet (in any given process).
  */
-zvalue datUniqlet(void);
-
-/**
- * Gets the state value associated with the given uniqlet, asserting that
- * the uniqlet's dispatch table is as given.
- */
-void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch);
-
-/**
- * Gets whether or not the given uniqlet has the given dispatch table.
- */
-bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch);
+zvalue uniqlet(void);
 
 /**
  * Gets a new uniqlet, associated with the given dispatcher and contents.
- * The uniqueness guarantee is the same as with `datUniqlet()`.
+ * The uniqueness guarantee is the same as with `uniqlet()`.
  *
  * In addition, this provides a convenient way to effectively build an
  * identity mapping between uniqlets (as the keys) and arbitrary
@@ -281,7 +270,18 @@ bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch);
  * sealer/unsealer, and the uniqlet serves secondary duty as a sealed
  * box. In this case, the key is in fact the associated state dispatch table.
  */
-zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state);
+zvalue uniqletFrom(DatUniqletDispatch *dispatch, void *state);
+
+/**
+ * Gets the state value associated with the given uniqlet, asserting that
+ * the uniqlet's dispatch table is as given.
+ */
+void *uniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch);
+
+/**
+ * Gets whether or not the given uniqlet has the given dispatch table.
+ */
+bool uniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch);
 
 
 /*
