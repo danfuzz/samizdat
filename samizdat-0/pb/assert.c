@@ -94,7 +94,7 @@ void pbAssertValid(zvalue value) {
         die("Null value.");
     }
 
-    if (value->magic != DAT_VALUE_MAGIC) {
+    if (value->magic != PB_VALUE_MAGIC) {
         die("Invalid value (incorrect magic): %p", value);
     }
 

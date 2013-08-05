@@ -65,7 +65,7 @@ static zint allocationCount = 0;
  */
 static bool isAligned(void *maybeValue) {
     intptr_t bits = (intptr_t) (void *) maybeValue;
-    return ((bits & (DAT_VALUE_ALIGNMENT - 1)) == 0);
+    return ((bits & (PB_VALUE_ALIGNMENT - 1)) == 0);
 }
 
 /**
@@ -84,7 +84,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
         die("Invalid value (not in heap): %p", maybeValue);
     }
 
-    if (maybeValue->magic != DAT_VALUE_MAGIC) {
+    if (maybeValue->magic != PB_VALUE_MAGIC) {
         die("Invalid value (incorrect magic): %p", maybeValue);
     }
 
@@ -260,7 +260,7 @@ zvalue pbAllocValue(ztype type, zint extraBytes) {
     }
 
     zvalue result = utilAlloc(sizeof(PbHeader) + extraBytes);
-    result->magic = DAT_VALUE_MAGIC;
+    result->magic = PB_VALUE_MAGIC;
     result->type = type;
 
     enlist(&liveHead, result);
