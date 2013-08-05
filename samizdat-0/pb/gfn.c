@@ -44,7 +44,7 @@ typedef struct {
     zint orderId;
 
     /** Bindings from type to function, keyed off of type sequence number. */
-    zfunction functions[DAT_MAX_TYPES];
+    zfunction functions[PB_MAX_TYPES];
 } DatGeneric;
 
 /**
@@ -150,7 +150,7 @@ zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = pbAllocValue(DAT_Generic, sizeof(DatGeneric));
+    zvalue result = pbAllocValue(PB_Generic, sizeof(DatGeneric));
     DatGeneric *info = gfnInfo(result);
 
     info->minArgs = minArgs;
@@ -227,19 +227,19 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return (gfnInfo(v1)->orderId < gfnInfo(v2)->orderId) ? DAT_NEG1 : DAT_1;
+    return (gfnInfo(v1)->orderId < gfnInfo(v2)->orderId) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
 void pbBindGeneric(void) {
-    gfnBindCore(GFN_call,        DAT_Generic, Generic_call);
-    gfnBindCore(GFN_debugString, DAT_Generic, Generic_debugString);
-    gfnBindCore(GFN_gcMark,      DAT_Generic, Generic_gcMark);
-    gfnBindCore(GFN_order,       DAT_Generic, Generic_order);
+    gfnBindCore(GFN_call,        PB_Generic, Generic_call);
+    gfnBindCore(GFN_debugString, PB_Generic, Generic_debugString);
+    gfnBindCore(GFN_gcMark,      PB_Generic, Generic_gcMark);
+    gfnBindCore(GFN_order,       PB_Generic, Generic_order);
 }
 
 /* Documented in header. */
 static PbType INFO_Generic = {
     .name = "Generic"
 };
-ztype DAT_Generic = &INFO_Generic;
+ztype PB_Generic = &INFO_Generic;

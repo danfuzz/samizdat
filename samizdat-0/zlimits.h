@@ -25,9 +25,6 @@ enum {
      */
     DAT_MAP_CACHE_SIZE = 70001,
 
-    /** Maximum number of types allowed. */
-    DAT_MAX_TYPES = 25,
-
     /** Maximum number of immortal values allowed. */
     DAT_MAX_IMMORTALS = 1500,
 
@@ -51,6 +48,9 @@ enum {
 
     /** Maximum number of characters in a tokenized string constant. */
     LANG_MAX_STRING_CHARS = 200,
+
+    /** Maximum number of types allowed. */
+    PB_MAX_TYPES = 25,
 
     /** Maximum number of active stack frames. */
     UTIL_MAX_CALL_STACK_DEPTH = 4000,

@@ -15,17 +15,17 @@
 
 /* Documented in header. */
 void pbAssertFunction(zvalue value) {
-    pbAssertType(value, DAT_Function);
+    pbAssertType(value, PB_Function);
 }
 
 /* Documented in header. */
 void pbAssertGeneric(zvalue value) {
-    pbAssertType(value, DAT_Generic);
+    pbAssertType(value, PB_Generic);
 }
 
 /* Documented in header. */
 void pbAssertInt(zvalue value) {
-    pbAssertType(value, DAT_Int);
+    pbAssertType(value, PB_Int);
 }
 
 /* Documented in header. */
@@ -68,7 +68,7 @@ void pbAssertSliceRange(zint size, zint start, zint end) {
 
 /* Documented in header. */
 void pbAssertString(zvalue value) {
-    pbAssertType(value, DAT_String);
+    pbAssertType(value, PB_String);
 }
 
 /* Documented in header. */

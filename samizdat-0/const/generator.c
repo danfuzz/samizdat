@@ -35,7 +35,7 @@ static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
 
     for (zint i = 0; i < size; i++) {
         zint bit = zintGetBit(raw, i);
-        arr[i] = (bit == 0) ? DAT_0 : DAT_1;
+        arr[i] = (bit == 0) ? PB_0 : PB_1;
     }
 
     return listFromArray(size, arr);
@@ -122,11 +122,11 @@ static zvalue collectGenerator(zvalue state, zint argc,
 /* Documented in header. */
 void generatorInit(void) {
     GFN_collect = gfnFrom(1, 1, STR_COLLECT);
-    gfnBindCore(GFN_collect, DAT_Int,      collectInt);
+    gfnBindCore(GFN_collect, PB_Int,      collectInt);
     gfnBindCore(GFN_collect, DAT_List,     collectList);
     gfnBindCore(GFN_collect, DAT_Map,      collectMap);
-    gfnBindCore(GFN_collect, DAT_String,   collectString);
-    gfnBindCore(GFN_collect, DAT_Function, collectGenerator);
+    gfnBindCore(GFN_collect, PB_String,   collectString);
+    gfnBindCore(GFN_collect, PB_Function, collectGenerator);
     gfnSeal(GFN_collect);
     pbImmortalize(GFN_collect);
 }

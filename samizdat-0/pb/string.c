@@ -29,7 +29,7 @@ typedef struct {
  */
 static zvalue allocString(zint size) {
     zvalue result =
-        pbAllocValue(DAT_String, sizeof(DatString) + size * sizeof(zchar));
+        pbAllocValue(PB_String, sizeof(DatString) + size * sizeof(zchar));
 
     ((DatString *) pbPayload(result))->size = size;
     return result;
@@ -227,17 +227,17 @@ static zvalue String_order(zvalue state, zint argCount, const zvalue *args) {
         zchar c2 = e2[i];
 
         if (c1 < c2) {
-            return DAT_NEG1;
+            return PB_NEG1;
         } else if (c1 > c2) {
-            return DAT_1;
+            return PB_1;
         }
     }
 
     if (sz1 == sz2) {
-        return DAT_0;
+        return PB_0;
     }
 
-    return (sz1 < sz2) ? DAT_NEG1 : DAT_1;
+    return (sz1 < sz2) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
@@ -248,10 +248,10 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindString(void) {
-    gfnBindCore(GFN_debugString, DAT_String, String_debugString);
-    gfnBindCore(GFN_eq,          DAT_String, String_eq);
-    gfnBindCore(GFN_order,       DAT_String, String_order);
-    gfnBindCore(GFN_sizeOf,      DAT_String, String_sizeOf);
+    gfnBindCore(GFN_debugString, PB_String, String_debugString);
+    gfnBindCore(GFN_eq,          PB_String, String_eq);
+    gfnBindCore(GFN_order,       PB_String, String_order);
+    gfnBindCore(GFN_sizeOf,      PB_String, String_sizeOf);
 
     EMPTY_STRING = allocString(0);
     pbImmortalize(EMPTY_STRING);
@@ -261,4 +261,4 @@ void pbBindString(void) {
 static PbType INFO_String = {
     .name = "String"
 };
-ztype DAT_String = &INFO_String;
+ztype PB_String = &INFO_String;

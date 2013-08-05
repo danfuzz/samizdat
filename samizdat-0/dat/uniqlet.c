@@ -115,7 +115,7 @@ static zvalue Uniqlet_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Uniqlet_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return (uniInfo(v1)->id < uniInfo(v2)->id) ? DAT_NEG1 : DAT_1;
+    return (uniInfo(v1)->id < uniInfo(v2)->id) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */

@@ -977,7 +977,7 @@ zvalue langTree0(zvalue program) {
 
     zvalue tokens;
 
-    if (pbCoreTypeIs(program, DAT_String)) {
+    if (pbCoreTypeIs(program, PB_String)) {
         tokens = langTokenize0(program);
     } else {
         tokens = program;

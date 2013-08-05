@@ -388,9 +388,9 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
     }
 
     if (sz1 < sz2) {
-        return DAT_NEG1;
+        return PB_NEG1;
     } else if (sz1 > sz2) {
-        return DAT_1;
+        return PB_1;
     }
 
     for (zint i = 0; i < sz; i++) {
@@ -400,7 +400,7 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
         }
     }
 
-    return DAT_0;
+    return PB_0;
 }
 
 /* Documented in header. */

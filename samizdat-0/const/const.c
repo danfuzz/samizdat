@@ -89,7 +89,7 @@ zvalue constStringFromZchar(zchar value) {
 /* Documented in header. */
 zvalue constValueFrom(zvalue type, zvalue data) {
     if (data == NULL) {
-        if (pbCoreTypeIs(type, DAT_String) && (pbSize(type) == 1)) {
+        if (pbCoreTypeIs(type, PB_String) && (pbSize(type) == 1)) {
             // This is a type-only value with a one-character string for
             // the type. We have many of these cached.
             zchar typeCh = stringNth(type, 0);
@@ -97,7 +97,7 @@ zvalue constValueFrom(zvalue type, zvalue data) {
                 return SINGLE_CHAR_TOKENS[typeCh];
             }
         }
-    } else if (!pbCoreTypeIs(data, DAT_Deriv)) {
+    } else if (!pbCoreTypeIs(data, PB_Deriv)) {
         if (pbEq(type, pbTypeOf(data))) {
             // `data` is a core value, and its low-layer type matches the
             // given `type`. This means that we are in fact looking at a

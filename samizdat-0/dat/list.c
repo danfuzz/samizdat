@@ -251,10 +251,10 @@ static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
     }
 
     if (sz1 == sz2) {
-        return DAT_0;
+        return PB_0;
     }
 
-    return (sz1 < sz2) ? DAT_NEG1 : DAT_1;
+    return (sz1 < sz2) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */

@@ -163,7 +163,7 @@ zorder pbOrder(zvalue v1, zvalue v2) {
         zorder result = zintFromInt(fnCall(GFN_order, 2, args));
         pbFrameReturn(save, NULL);
         return result;
-    } else if (pbCoreTypeIs(v1, DAT_Deriv)) {
+    } else if (pbCoreTypeIs(v1, PB_Deriv)) {
         // Per spec, derived values always sort after primitives.
         return ZMORE;
     } else {

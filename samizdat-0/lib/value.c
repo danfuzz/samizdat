@@ -21,7 +21,7 @@
 static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
     pbAssertSameType(v1, v2);
 
-    if (pbCoreTypeIs(v1, DAT_Deriv)) {
+    if (pbCoreTypeIs(v1, PB_Deriv)) {
         zvalue type1 = pbTypeOf(v1);
         zvalue type2 = pbTypeOf(v2);
 
@@ -73,7 +73,7 @@ PRIM_IMPL(coreOrderIs) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(isCoreValue) {
     zvalue value = args[0];
-    return pbCoreTypeIs(value, DAT_Deriv) ? NULL : value;
+    return pbCoreTypeIs(value, PB_Deriv) ? NULL : value;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

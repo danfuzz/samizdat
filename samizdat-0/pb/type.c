@@ -27,7 +27,7 @@ zint indexFromZtype(ztype type) {
     zint compl = type->seqNumCompl;
 
     if (compl == 0) {
-        if (theNextSeqNum == DAT_MAX_TYPES) {
+        if (theNextSeqNum == PB_MAX_TYPES) {
             die("Too many types!");
         }
 

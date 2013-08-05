@@ -36,7 +36,7 @@ static DatDeriv *derivInfo(zvalue deriv) {
  * on the arguments.
  */
 static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = pbAllocValue(DAT_Deriv, sizeof(DatDeriv));
+    zvalue result = pbAllocValue(PB_Deriv, sizeof(DatDeriv));
     DatDeriv *info = derivInfo(result);
 
     info->type = type;
@@ -114,9 +114,9 @@ static zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
     if (result != ZSAME) {
         return intFromZint(result);
     } else if (info1->data == NULL) {
-        return (info2->data == NULL) ? DAT_0 : DAT_NEG1;
+        return (info2->data == NULL) ? PB_0 : PB_NEG1;
     } else if (info2->data == NULL) {
-        return DAT_1;
+        return PB_1;
     } else {
         return intFromZint(pbOrder(info1->data, info2->data));
     }
@@ -125,7 +125,7 @@ static zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue Deriv_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue deriv = args[0];
-    return (derivInfo(deriv)->data == NULL) ? DAT_0 : DAT_1;
+    return (derivInfo(deriv)->data == NULL) ? PB_0 : PB_1;
 }
 
 /* Documented in header. */
@@ -136,16 +136,16 @@ static zvalue Deriv_typeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindDeriv(void) {
-    gfnBindCore(GFN_dataOf, DAT_Deriv, Deriv_dataOf);
-    gfnBindCore(GFN_eq,     DAT_Deriv, Deriv_eq);
-    gfnBindCore(GFN_gcMark, DAT_Deriv, Deriv_gcMark);
-    gfnBindCore(GFN_order,  DAT_Deriv, Deriv_order);
-    gfnBindCore(GFN_sizeOf, DAT_Deriv, Deriv_sizeOf);
-    gfnBindCore(GFN_typeOf, DAT_Deriv, Deriv_typeOf);
+    gfnBindCore(GFN_dataOf, PB_Deriv, Deriv_dataOf);
+    gfnBindCore(GFN_eq,     PB_Deriv, Deriv_eq);
+    gfnBindCore(GFN_gcMark, PB_Deriv, Deriv_gcMark);
+    gfnBindCore(GFN_order,  PB_Deriv, Deriv_order);
+    gfnBindCore(GFN_sizeOf, PB_Deriv, Deriv_sizeOf);
+    gfnBindCore(GFN_typeOf, PB_Deriv, Deriv_typeOf);
 }
 
 /* Documented in header. */
 static PbType INFO_Deriv = {
     .name = "Deriv"
 };
-ztype DAT_Deriv = &INFO_Deriv;
+ztype PB_Deriv = &INFO_Deriv;

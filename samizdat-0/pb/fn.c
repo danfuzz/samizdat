@@ -63,7 +63,7 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = pbAllocValue(DAT_Function, sizeof(DatFunction));
+    zvalue result = pbAllocValue(PB_Function, sizeof(DatFunction));
     DatFunction *info = fnInfo(result);
 
     info->minArgs = minArgs;
@@ -130,19 +130,19 @@ static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return (fnInfo(v1)->orderId < fnInfo(v2)->orderId) ? DAT_NEG1 : DAT_1;
+    return (fnInfo(v1)->orderId < fnInfo(v2)->orderId) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
 void pbBindFunction(void) {
-    gfnBindCore(GFN_call,        DAT_Function, Function_call);
-    gfnBindCore(GFN_debugString, DAT_Function, Function_debugString);
-    gfnBindCore(GFN_gcMark,      DAT_Function, Function_gcMark);
-    gfnBindCore(GFN_order,       DAT_Function, Function_order);
+    gfnBindCore(GFN_call,        PB_Function, Function_call);
+    gfnBindCore(GFN_debugString, PB_Function, Function_debugString);
+    gfnBindCore(GFN_gcMark,      PB_Function, Function_gcMark);
+    gfnBindCore(GFN_order,       PB_Function, Function_order);
 }
 
 /* Documented in header. */
 static PbType INFO_Function = {
     .name = "Function"
 };
-ztype DAT_Function = &INFO_Function;
+ztype PB_Function = &INFO_Function;

@@ -77,28 +77,28 @@ typedef struct PbType {
 extern zvalue EMPTY_STRING;
 
 /** The standard value `0`. */
-extern zvalue DAT_0;
+extern zvalue PB_0;
 
 /** The standard value `1`. */
-extern zvalue DAT_1;
+extern zvalue PB_1;
 
 /** The standard value `-1`. */
-extern zvalue DAT_NEG1;
+extern zvalue PB_NEG1;
 
 /** Type value for in-model type `Deriv`. */
-extern ztype DAT_Deriv;
+extern ztype PB_Deriv;
 
 /** Type value for in-model type `Function`. */
-extern ztype DAT_Function;
+extern ztype PB_Function;
 
 /** Type value for in-model type `Generic`. */
-extern ztype DAT_Generic;
+extern ztype PB_Generic;
 
 /** Type value for in-model type `Int`. */
-extern ztype DAT_Int;
+extern ztype PB_Int;
 
 /** Type value for in-model type `String`. */
-extern ztype DAT_String;
+extern ztype PB_String;
 
 /**
  * Generic `call(value)`: Somewhat-degenerate generic for dispatching to

@@ -18,7 +18,7 @@ void datAssertBox(zvalue value) {
 
 /* Documented in header. */
 void pbAssertDeriv(zvalue value) {
-    pbAssertType(value, DAT_Deriv);
+    pbAssertType(value, PB_Deriv);
 }
 
 /* Documented in header. */
