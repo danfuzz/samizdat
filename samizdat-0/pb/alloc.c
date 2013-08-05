@@ -24,7 +24,7 @@ enum {
 };
 
 /** Array of all immortal values. */
-static zvalue immortals[DAT_MAX_IMMORTALS];
+static zvalue immortals[PB_MAX_IMMORTALS];
 
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
@@ -33,13 +33,13 @@ static zint immortalsSize = 0;
  * Stack of references. This is what is scanned in lieu of scanning
  * the "real" stack during gc.
  */
-static zvalue stack[DAT_MAX_STACK];
+static zvalue stack[PB_MAX_STACK];
 
 /** Current stack size. */
 static zint stackSize = 0;
 
 /** List head for the list of all live values. */
-static DatHeader liveHead = {
+static PbHeader liveHead = {
     .next = &liveHead,
     .prev = &liveHead,
     .magic = 0,
@@ -48,7 +48,7 @@ static DatHeader liveHead = {
 };
 
 /** List head for the list of all doomed values. */
-static DatHeader doomedHead = {
+static PbHeader doomedHead = {
     .next = &doomedHead,
     .prev = &doomedHead,
     .magic = 0,
@@ -65,7 +65,7 @@ static zint allocationCount = 0;
  */
 static bool isAligned(void *maybeValue) {
     intptr_t bits = (intptr_t) (void *) maybeValue;
-    return ((bits & (DAT_VALUE_ALIGNMENT - 1)) == 0);
+    return ((bits & (PB_VALUE_ALIGNMENT - 1)) == 0);
 }
 
 /**
@@ -84,7 +84,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
         die("Invalid value (not in heap): %p", maybeValue);
     }
 
-    if (maybeValue->magic != DAT_VALUE_MAGIC) {
+    if (maybeValue->magic != PB_VALUE_MAGIC) {
         die("Invalid value (incorrect magic): %p", maybeValue);
     }
 
@@ -99,7 +99,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
 /**
  * Sanity check the circular list with the given head.
  */
-static void sanityCheckList(DatHeader *head) {
+static void sanityCheckList(PbHeader *head) {
     for (zvalue item = head->next; item != head; item = item->next) {
         thoroughlyValidate(item);
     }
@@ -129,7 +129,7 @@ static void sanityCheck(bool force) {
  * Links the given value into the given list, removing it from its
  * previous list (if any).
  */
-static void enlist(DatHeader *head, zvalue value) {
+static void enlist(PbHeader *head, zvalue value) {
     if (value->next != NULL) {
         zvalue next = value->next;
         zvalue prev = value->prev;
@@ -151,8 +151,8 @@ static void enlist(DatHeader *head, zvalue value) {
 static void doGc(void) {
     zint counter; // Used throughout.
 
-    if (!datInitialized) {
-        die("`dat` module not yet initialized.");
+    if (GFN_eq == NULL) {
+        die("`pb` module not yet initialized.");
     }
 
     sanityCheck(false);
@@ -172,23 +172,12 @@ static void doGc(void) {
     liveHead.next = &liveHead;
     liveHead.prev = &liveHead;
 
-    // Clear the map cache, so that it doesn't contain garbage pointers.
-    // Note: In practice there is no significant measurable difference
-    // between clearing the cache and marking everything in it, so
-    // simplicity wins here.
-
-    datMapClearCache();
-
-    if (CHATTY_GC) {
-        note("GC: Cleared map cache.");
-    }
-
     // The root set consists of immortals and the stack. Recursively mark
     // those, which causes anything found to be alive to be linked into
     // the live list.
 
     for (zint i = 0; i < immortalsSize; i++) {
-        datMark(immortals[i]);
+        pbMark(immortals[i]);
     }
 
     if (CHATTY_GC) {
@@ -196,7 +185,7 @@ static void doGc(void) {
     }
 
     for (zint i = 0; i < stackSize; i++) {
-        datMark(stack[i]);
+        pbMark(stack[i]);
     }
 
     if (CHATTY_GC) {
@@ -216,7 +205,7 @@ static void doGc(void) {
         // Need to grab `item->next` before freeing the item.
         zvalue next = item->next;
 
-        zfunction freer = datGfnFind(GFN_gcFree, item);
+        zfunction freer = gfnFind(GFN_gcFree, item);
         if (freer != NULL) {
             freer(NULL, 1, &item);
         }
@@ -259,23 +248,23 @@ static void doGc(void) {
 
 
 /*
- * Module functions
+ * Exported functions
  */
 
 /* Documented in header. */
-zvalue datAllocValue(ztype type, zint extraBytes) {
-    if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
-        datGc();
+zvalue pbAllocValue(ztype type, zint extraBytes) {
+    if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
+        pbGc();
     } else {
         sanityCheck(false);
     }
 
-    zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
-    result->magic = DAT_VALUE_MAGIC;
+    zvalue result = utilAlloc(sizeof(PbHeader) + extraBytes);
+    result->magic = PB_VALUE_MAGIC;
     result->type = type;
 
     enlist(&liveHead, result);
-    datFrameAdd(result);
+    pbFrameAdd(result);
 
     allocationCount++;
 
@@ -285,23 +274,28 @@ zvalue datAllocValue(ztype type, zint extraBytes) {
 }
 
 /* Documented in header. */
-void *datPayload(zvalue value) {
-    return value->payload;
+void pbAssertValid(zvalue value) {
+    if (value == NULL) {
+        die("Null value.");
+    }
+
+    if (value->magic != PB_VALUE_MAGIC) {
+        die("Invalid value (incorrect magic): %p", value);
+    }
+
+    if (value->type == NULL) {
+        die("Invalid value (null type): %p", value);
+    }
 }
 
-
-/*
- * Exported functions
- */
-
 /* Documented in header. */
-zstackPointer datFrameStart(void) {
+zstackPointer pbFrameStart(void) {
     return &stack[stackSize];
 }
 
 /* Documented in header. */
-void datFrameAdd(zvalue value) {
-    if (stackSize >= DAT_MAX_STACK) {
+void pbFrameAdd(zvalue value) {
+    if (stackSize >= PB_MAX_STACK) {
         die("Value stack overflow.");
     }
 
@@ -310,15 +304,15 @@ void datFrameAdd(zvalue value) {
 }
 
 /* Documented in header. */
-void datFrameReset(zstackPointer savedStack, zvalue stackedValue) {
-    // The difference between this function and `datFrameReturn` is
+void pbFrameReset(zstackPointer savedStack, zvalue stackedValue) {
+    // The difference between this function and `pbFrameReturn` is
     // one of intent, even though the implementation is (blatantly)
     // identical.
-    datFrameReturn(savedStack, stackedValue);
+    pbFrameReturn(savedStack, stackedValue);
 }
 
 /* Documented in header. */
-void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
+void pbFrameReturn(zstackPointer savedStack, zvalue returnValue) {
     zint returnSize = savedStack - stack;
 
     if (returnSize > stackSize) {
@@ -328,35 +322,35 @@ void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
     stackSize = returnSize;
 
     if (returnValue != NULL) {
-        datFrameAdd(returnValue);
+        pbFrameAdd(returnValue);
     }
 }
 
 /* Documented in header. */
-void datGc(void) {
+void pbGc(void) {
     allocationCount = 0;
     doGc();
 }
 
 /* Documented in header. */
-void datImmortalize(zvalue value) {
-    if (immortalsSize == DAT_MAX_IMMORTALS) {
+void pbImmortalize(zvalue value) {
+    if (immortalsSize == PB_MAX_IMMORTALS) {
         die("Too many immortal values!");
     }
 
-    datAssertValid(value);
+    pbAssertValid(value);
 
     immortals[immortalsSize] = value;
     immortalsSize++;
 }
 
 /* Documented in header. */
-void datMark(zvalue value) {
+void pbMark(zvalue value) {
     if (value == NULL) {
         return;
     }
 
-    datAssertValid(value);
+    pbAssertValid(value);
 
     if (value->marked) {
         return;
@@ -365,8 +359,14 @@ void datMark(zvalue value) {
     value->marked = true;
     enlist(&liveHead, value);
 
-    zfunction marker = datGfnFind(GFN_gcMark, value);
+    zfunction marker = gfnFind(GFN_gcMark, value);
     if (marker != NULL) {
         marker(NULL, 1, &value);
     }
 }
+
+/* Documented in header. */
+void *pbPayload(zvalue value) {
+    return value->payload;
+}
+

@@ -22,13 +22,13 @@ typedef struct {
 
     /** Associated payload data. Possibly `NULL`. */
     zvalue data;
-} DatDeriv;
+} DerivInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static DatDeriv *derivInfo(zvalue deriv) {
-    return datPayload(deriv);
+static DerivInfo *derivInfo(zvalue deriv) {
+    return pbPayload(deriv);
 }
 
 /**
@@ -36,8 +36,8 @@ static DatDeriv *derivInfo(zvalue deriv) {
  * on the arguments.
  */
 static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = datAllocValue(DAT_Deriv, sizeof(DatDeriv));
-    DatDeriv *info = derivInfo(result);
+    zvalue result = pbAllocValue(PB_Deriv, sizeof(DerivInfo));
+    DerivInfo *info = derivInfo(result);
 
     info->type = type;
     info->data = data;
@@ -50,11 +50,16 @@ static zvalue newDeriv(zvalue type, zvalue data) {
  */
 
 /* Documented in header. */
-zvalue datDerivFrom(zvalue type, zvalue data) {
-    datAssertValid(type);
+void pbAssertDeriv(zvalue value) {
+    pbAssertType(value, PB_Deriv);
+}
+
+/* Documented in header. */
+zvalue derivFrom(zvalue type, zvalue data) {
+    pbAssertValid(type);
 
     if (data != NULL) {
-        datAssertValid(data);
+        pbAssertValid(data);
     }
 
     return newDeriv(type, data);
@@ -75,8 +80,8 @@ static zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    DatDeriv *info1 = derivInfo(v1);
-    DatDeriv *info2 = derivInfo(v2);
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
 
     if (info1->data == NULL) {
         if (info2->data != NULL) {
@@ -84,20 +89,20 @@ static zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
         }
     } else if (info2->data == NULL) {
         return NULL;
-    } else if (!datEq(info1->data, info2->data)) {
+    } else if (!pbEq(info1->data, info2->data)) {
         return NULL;
     }
 
-    return datEq(info1->type, info2->type) ? v2 : NULL;
+    return pbEq(info1->type, info2->type) ? v2 : NULL;
 }
 
 /* Documented in header. */
 static zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue deriv = args[0];
-    DatDeriv *info = derivInfo(deriv);
+    DerivInfo *info = derivInfo(deriv);
 
-    datMark(info->type);
-    datMark(info->data);
+    pbMark(info->type);
+    pbMark(info->data);
 
     return NULL;
 }
@@ -106,26 +111,26 @@ static zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    DatDeriv *info1 = derivInfo(v1);
-    DatDeriv *info2 = derivInfo(v2);
+    DerivInfo *info1 = derivInfo(v1);
+    DerivInfo *info2 = derivInfo(v2);
 
-    zorder result = datOrder(info1->type, info2->type);
+    zorder result = pbOrder(info1->type, info2->type);
 
     if (result != ZSAME) {
-        return datIntFromZint(result);
+        return intFromZint(result);
     } else if (info1->data == NULL) {
-        return (info2->data == NULL) ? DAT_0 : DAT_NEG1;
+        return (info2->data == NULL) ? PB_0 : PB_NEG1;
     } else if (info2->data == NULL) {
-        return DAT_1;
+        return PB_1;
     } else {
-        return datIntFromZint(datOrder(info1->data, info2->data));
+        return intFromZint(pbOrder(info1->data, info2->data));
     }
 }
 
 /* Documented in header. */
 static zvalue Deriv_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue deriv = args[0];
-    return (derivInfo(deriv)->data == NULL) ? DAT_0 : DAT_1;
+    return (derivInfo(deriv)->data == NULL) ? PB_0 : PB_1;
 }
 
 /* Documented in header. */
@@ -135,17 +140,17 @@ static zvalue Deriv_typeOf(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void datBindDeriv(void) {
-    datGfnBindCore(GFN_dataOf, DAT_Deriv, Deriv_dataOf);
-    datGfnBindCore(GFN_eq,     DAT_Deriv, Deriv_eq);
-    datGfnBindCore(GFN_gcMark, DAT_Deriv, Deriv_gcMark);
-    datGfnBindCore(GFN_order,  DAT_Deriv, Deriv_order);
-    datGfnBindCore(GFN_sizeOf, DAT_Deriv, Deriv_sizeOf);
-    datGfnBindCore(GFN_typeOf, DAT_Deriv, Deriv_typeOf);
+void pbBindDeriv(void) {
+    gfnBindCore(GFN_dataOf, PB_Deriv, Deriv_dataOf);
+    gfnBindCore(GFN_eq,     PB_Deriv, Deriv_eq);
+    gfnBindCore(GFN_gcMark, PB_Deriv, Deriv_gcMark);
+    gfnBindCore(GFN_order,  PB_Deriv, Deriv_order);
+    gfnBindCore(GFN_sizeOf, PB_Deriv, Deriv_sizeOf);
+    gfnBindCore(GFN_typeOf, PB_Deriv, Deriv_typeOf);
 }
 
 /* Documented in header. */
-static DatType INFO_Deriv = {
+static PbType INFO_Deriv = {
     .name = "Deriv"
 };
-ztype DAT_Deriv = &INFO_Deriv;
+ztype PB_Deriv = &INFO_Deriv;

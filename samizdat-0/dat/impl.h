@@ -15,174 +15,39 @@
 #include "util.h"
 
 
-enum {
-    /** "Magic number" for value validation. */
-    DAT_VALUE_MAGIC = 0x600f1e57,
+/**
+ * Entry in the map cache. The cache is used to speed up calls to `mapFind`.
+ * In practice it looks like the theoretical best case is probably about
+ * 74% (that is, nearly 3 of 4 lookups are for a map/key pair that have
+ * been observed before). The size of the map cache is chosen to hit the
+ * point of diminishing returns.
+ */
+typedef struct {
+    /** Map to look up a key in. */
+    zvalue map;
 
-    /** Required byte alignment for values. */
-    DAT_VALUE_ALIGNMENT = 8
-};
+    /** Key to look up. */
+    zvalue key;
+
+    /** Result from `mapFind` (see which for details). */
+    zint index;
+} MapCacheEntry;
 
 /**
- * Core type info.
+ * Gets the `CacheEntry` for the given map/key pair.
  */
-typedef struct DatType {
-    /** Simple string name for the type. */
-    const char *name;
-
-    /**
-     * In-model string value corresponding to `name` (above). Lazily
-     * initialized.
-     */
-    zvalue nameValue;
-
-    /**
-     * Type sequence number, complemented to allow `0` to mean
-     * "uninitialized".
-     */
-    zint seqNumCompl;
-} DatType;
-
-/**
- * Common fields across all values. Used as a header for other types.
- */
-typedef struct DatHeader {
-    /**
-     * Forward circular link. Every value is linked into a circularly
-     * linked list, which identifies its current fate / classification.
-     */
-    zvalue next;
-
-    /** Backward circular link. */
-    zvalue prev;
-
-    /** Magic number (for sanity / validation checks). */
-    uint32_t magic;
-
-    /** Mark bit (used during GC). */
-    bool marked;
-
-    /** Data type. */
-    ztype type;
-
-    /** Type-specific data goes here. */
-    uint8_t payload[/*flexible*/];
-} DatHeader;
-
-/**
- * Flag indicating whether module has been initialized.
- */
-extern bool datInitialized;
-
-/**
- * Generic `call(value)`: Somewhat-degenerate generic for dispatching to
- * a function call mechanism (how meta). Only defined for types `Function`
- * and `Generic`. When called, argument count and pointer will have been
- * checked, but the argument count may not match what's expected by the
- * target function. The `state` argument is always passed as the function
- * or generic value itself.
- */
-extern zvalue GFN_call;
-
-/**
- * Generic `debugString(value)`: Returns a minimal string form of the
- * given value. Notably, functions and generics include their names.
- * The default implementation returns strings of the form
- * `#(TypeName @ address)`.
- */
-extern zvalue GFN_debugString;
-
-/**
- * Generic `gcMark(value)`: Does GC marking for the given value.
- */
-extern zvalue GFN_gcMark;
-
-/**
- * Generic `gcFree(value)`: Does GC freeing for the given value. This is
- * to do immediate pre-mortem freeing of value contents.
- */
-extern zvalue GFN_gcFree;
-
-/**
- * Allocates memory, sized to include a `DatHeader` header plus the
- * indicated number of extra bytes. The `DatHeader` header is
- * initialized with the indicated type and size. The resulting value
- * is added to the live reference stack.
- */
-zvalue datAllocValue(ztype type, zint extraBytes);
-
-/**
- * Asserts that the given size accommodates accessing the `n`th element.
- * This includes asserting that `n >= 0`. Note that all non-negative `n`
- * are valid for accessing ints (their size notwithstanding).
- */
-void datAssertNth(zint size, zint n);
-
-/**
- * Like `datAssertNth` but also accepts the case where `n` is the size
- * of the value.
- */
-void datAssertNthOrSize(zint size, zint n);
-
-/**
- * Asserts that the given range is valid for a `slice`-like operation
- * for a value of the given size.
- */
-void datAssertSliceRange(zint size, zint start, zint end);
-
-/**
- * Asserts that the given value is a valid `zvalue` (non-`NULL` and
- * seems to actually have the right form). This performs reasonable,
- * but not exhaustive, tests. If not valid, this aborts the process
- * with a diagnostic message.
- */
-void datAssertValid(zvalue value);
-
-/**
- * Gets the function bound to the given generic for the given value, if any.
- * Returns `NULL` if there is no binding.
- */
-zfunction datGfnFind(zvalue generic, zvalue value);
-
-/**
- * Gets the sequence number index for a `ztype`, initializing it if necessary.
- */
-zint datIndexFromType(ztype type);
-
-/**
- * Clears the contents of the map lookup cache.
- */
-void datMapClearCache(void);
-
-/**
- * Gets a pointer to the data payload of a `zvalue`.
- */
-void *datPayload(zvalue value);
-
-/**
- * Gets a type value from a `ztype`.
- */
-zvalue datTypeFromZtype(ztype type);
+MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 
 
 /*
  * Initialization functions
  */
 
-/**
- * Initializes the core generic functions.
- */
-void datInitCoreGenerics(void);
-
 // Per-type generic binding.
 void datBindBox(void);
-void datBindDeriv(void);
-void datBindFunction(void);
-void datBindGeneric(void);
-void datBindInt(void);
 void datBindList(void);
 void datBindMap(void);
-void datBindString(void);
+void datBindMapCache(void);
 void datBindUniqlet(void);
 
 #endif

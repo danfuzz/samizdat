@@ -48,33 +48,33 @@ void constInit(void) {
 
     datInit();
 
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
 
     #define STR(name, str) \
-        STR_##name = datStringFromUtf8(-1, str); \
-        datImmortalize(STR_##name)
+        STR_##name = stringFromUtf8(-1, str); \
+        pbImmortalize(STR_##name)
 
     #define TOK(name, str) \
         STR(name, str); \
-        TOK_##name = datDerivFrom(STR_##name, NULL); \
-        datImmortalize(TOK_##name)
+        TOK_##name = derivFrom(STR_##name, NULL); \
+        pbImmortalize(TOK_##name)
 
     #include "const-def.h"
 
     for (zchar ch = 0; ch < 128; ch++) {
-        SINGLE_CHAR_STRINGS[ch] = datStringFromZchars(1, &ch);
-        SINGLE_CHAR_TOKENS[ch] = datDerivFrom(SINGLE_CHAR_STRINGS[ch], NULL);
-        datImmortalize(SINGLE_CHAR_STRINGS[ch]);
-        datImmortalize(SINGLE_CHAR_TOKENS[ch]);
+        SINGLE_CHAR_STRINGS[ch] = stringFromZchars(1, &ch);
+        SINGLE_CHAR_TOKENS[ch] = derivFrom(SINGLE_CHAR_STRINGS[ch], NULL);
+        pbImmortalize(SINGLE_CHAR_STRINGS[ch]);
+        pbImmortalize(SINGLE_CHAR_TOKENS[ch]);
     }
 
     generatorInit();
 
-    datFrameReturn(save, NULL);
+    pbFrameReturn(save, NULL);
 
     // Force a garbage collection here, mainly to get a reasonably early
     // failure if gc is broken.
-    datGc();
+    pbGc();
 }
 
 /* Documented in header. */
@@ -82,23 +82,23 @@ zvalue constStringFromZchar(zchar value) {
     if (value < 128) {
         return SINGLE_CHAR_STRINGS[value];
     } else {
-        return datStringFromZchars(1, &value);
+        return stringFromZchars(1, &value);
     }
 }
 
 /* Documented in header. */
 zvalue constValueFrom(zvalue type, zvalue data) {
     if (data == NULL) {
-        if (datCoreTypeIs(type, DAT_String) && (datSize(type) == 1)) {
+        if (pbCoreTypeIs(type, PB_String) && (pbSize(type) == 1)) {
             // This is a type-only value with a one-character string for
             // the type. We have many of these cached.
-            zchar typeCh = datStringNth(type, 0);
+            zchar typeCh = stringNth(type, 0);
             if (typeCh < 128) {
                 return SINGLE_CHAR_TOKENS[typeCh];
             }
         }
-    } else if (!datCoreTypeIs(data, DAT_Deriv)) {
-        if (datEq(type, datTypeOf(data))) {
+    } else if (!pbCoreTypeIs(data, PB_Deriv)) {
+        if (pbEq(type, pbTypeOf(data))) {
             // `data` is a core value, and its low-layer type matches the
             // given `type`. This means that we are in fact looking at a
             // "reconstructed" core value and should just return it directly.
@@ -106,5 +106,5 @@ zvalue constValueFrom(zvalue type, zvalue data) {
         }
     }
 
-    return datDerivFrom(type, data);
+    return derivFrom(type, data);
 }

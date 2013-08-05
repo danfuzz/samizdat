@@ -21,39 +21,31 @@ typedef struct {
     zint id;
 
     /** Dispatch table. */
-    DatUniqletDispatch *dispatch;
+    UniqletInfoDispatch *dispatch;
 
     /** Sealed box payload value. */
     void *state;
-} DatUniqlet;
+} UniqletInfo;
 
-/** The next uniqlet id to issue. */
-static zint theNextId = 0;
 
 /**
  * Gets a pointer to the info of a uniqlet.
  */
-static DatUniqlet *uniqletInfo(zvalue uniqlet) {
-    return datPayload(uniqlet);
+static UniqletInfo *uniInfo(zvalue uniqlet) {
+    return pbPayload(uniqlet);
 }
 
 /**
  * Allocates and initializes a uniqlet, without doing error-checking
  * on the arguments.
  */
-static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
-    zvalue result = datAllocValue(DAT_Uniqlet, sizeof(DatUniqlet));
+static zvalue newUniqlet(UniqletInfoDispatch *dispatch, void *state) {
+    zvalue result = pbAllocValue(DAT_Uniqlet, sizeof(UniqletInfo));
 
-    if (theNextId < 0) {
-        // Shouldn't be possible, but just in case...
-        die("Shouldn't happen: Way too many uniqlets!");
-    }
-
-    DatUniqlet *info = uniqletInfo(result);
-    info->id = theNextId;
+    UniqletInfo *info = uniInfo(result);
+    info->id = pbOrderId();
     info->dispatch = dispatch;
     info->state = state;
-    theNextId++;
 
     return result;
 }
@@ -64,29 +56,34 @@ static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
  */
 
 /* Documented in header. */
-zvalue datUniqlet(void) {
+void datAssertUniqlet(zvalue value) {
+    pbAssertType(value, DAT_Uniqlet);
+}
+
+/* Documented in header. */
+zvalue uniqlet(void) {
     return newUniqlet(NULL, NULL);
 }
 
 /* Documented in header. */
-void *datUniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+void *uniqletGetState(zvalue uniqlet, UniqletInfoDispatch *dispatch) {
     datAssertUniqlet(uniqlet);
 
-    if (!datUniqletHasDispatch(uniqlet, dispatch)) {
+    if (!uniqletHasDispatch(uniqlet, dispatch)) {
         die("Wrong uniqlet dispatch table for get.");
     }
 
-    return uniqletInfo(uniqlet)->state;
+    return uniInfo(uniqlet)->state;
 }
 
 /* Documented in header. */
-bool datUniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+bool uniqletHasDispatch(zvalue uniqlet, UniqletInfoDispatch *dispatch) {
     datAssertUniqlet(uniqlet);
-    return (dispatch == uniqletInfo(uniqlet)->dispatch);
+    return (dispatch == uniInfo(uniqlet)->dispatch);
 }
 
 /* Documented in header. */
-zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
+zvalue uniqletFrom(UniqletInfoDispatch *dispatch, void *state) {
     return newUniqlet(dispatch, state);
 }
 
@@ -98,7 +95,7 @@ zvalue datUniqletWith(DatUniqletDispatch *dispatch, void *state) {
 /* Documented in header. */
 static zvalue Uniqlet_gcFree(zvalue state, zint argCount, const zvalue *args) {
     zvalue uniqlet = args[0];
-    DatUniqlet *info = uniqletInfo(uniqlet);
+    UniqletInfo *info = uniInfo(uniqlet);
 
     if (info->dispatch != NULL) {
         info->dispatch->free(info->state);
@@ -110,7 +107,7 @@ static zvalue Uniqlet_gcFree(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue Uniqlet_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue uniqlet = args[0];
-    DatUniqlet *info = uniqletInfo(uniqlet);
+    UniqletInfo *info = uniInfo(uniqlet);
 
     if (info->dispatch != NULL) {
         info->dispatch->mark(info->state);
@@ -123,27 +120,18 @@ static zvalue Uniqlet_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Uniqlet_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    zint id1 = uniqletInfo(v1)->id;
-    zint id2 = uniqletInfo(v2)->id;
-
-    if (id1 < id2) {
-        return DAT_NEG1;
-    } else if (id1 > id2) {
-        return DAT_1;
-    } else {
-        return DAT_0;
-    }
+    return (uniInfo(v1)->id < uniInfo(v2)->id) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
 void datBindUniqlet(void) {
-    datGfnBindCore(GFN_gcFree, DAT_Uniqlet, Uniqlet_gcFree);
-    datGfnBindCore(GFN_gcMark, DAT_Uniqlet, Uniqlet_gcMark);
-    datGfnBindCore(GFN_order,  DAT_Uniqlet, Uniqlet_order);
+    gfnBindCore(GFN_gcFree, DAT_Uniqlet, Uniqlet_gcFree);
+    gfnBindCore(GFN_gcMark, DAT_Uniqlet, Uniqlet_gcMark);
+    gfnBindCore(GFN_order,  DAT_Uniqlet, Uniqlet_order);
 }
 
 /* Documented in header. */
-static DatType INFO_Uniqlet = {
+static PbType INFO_Uniqlet = {
     .name = "Uniqlet"
 };
 ztype DAT_Uniqlet = &INFO_Uniqlet;

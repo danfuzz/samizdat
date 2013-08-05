@@ -24,9 +24,9 @@
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
 static FILE *openFile(zvalue flatPath, const char *mode) {
-    zint pathSize = datUtf8SizeFromString(flatPath);
+    zint pathSize = utf8SizeFromString(flatPath);
     char path[pathSize + 1];
-    datUtf8FromString(pathSize + 1, path, flatPath);
+    utf8FromString(pathSize + 1, path, flatPath);
 
     FILE *file = fopen(path, mode);
     if (file == NULL) {
@@ -53,14 +53,14 @@ zvalue ioFlatCwd(void) {
         die("Trouble with getcwd(): %s", strerror(errno));
     }
 
-    return datStringFromUtf8(-1, buf);
+    return stringFromUtf8(-1, buf);
 }
 
 /* Documented in header. */
 zvalue ioFlatReadLink(zvalue flatPath) {
-    zint pathSize = datUtf8SizeFromString(flatPath);
+    zint pathSize = utf8SizeFromString(flatPath);
     char path[pathSize + 1];
-    datUtf8FromString(pathSize + 1, path, flatPath);
+    utf8FromString(pathSize + 1, path, flatPath);
 
     struct stat statBuf;
     if (lstat(path, &statBuf) != 0) {
@@ -89,7 +89,7 @@ zvalue ioFlatReadLink(zvalue flatPath) {
         die("Strange readlink() result: %ld", (long) linkResult);
     }
 
-    return datStringFromUtf8(linkSize, linkPath);
+    return stringFromUtf8(linkSize, linkPath);
 }
 
 /* Documented in header. */
@@ -108,14 +108,14 @@ zvalue ioFlatReadFileUtf8(zvalue flatPath) {
 
     fclose(in);
 
-    return datStringFromUtf8(amt, buf);
+    return stringFromUtf8(amt, buf);
 }
 
 /* Documented in header. */
 void ioFlatWriteFileUtf8(zvalue flatPath, zvalue text) {
-    zint utfSize = datUtf8SizeFromString(text);
+    zint utfSize = utf8SizeFromString(text);
     char utf[utfSize + 1];
-    datUtf8FromString(utfSize + 1, utf, text);
+    utf8FromString(utfSize + 1, utf, text);
 
     FILE *out = openFile(flatPath, "w");
     zint amt = fwrite(utf, 1, utfSize, out);

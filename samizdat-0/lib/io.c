@@ -20,9 +20,9 @@
  * Emits a note.
  */
 static void emitNote(zvalue message) {
-    zint size = datUtf8SizeFromString(message);
+    zint size = utf8SizeFromString(message);
     char str[size + 1];
-    datUtf8FromString(size + 1, str, message);
+    utf8FromString(size + 1, str, message);
 
     fwrite(str, 1, size, stderr);
     fputc('\n', stderr);

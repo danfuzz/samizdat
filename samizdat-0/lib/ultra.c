@@ -21,7 +21,7 @@ PRIM_IMPL(makeList) {
         return EMPTY_LIST;
     }
 
-    return datListFromArray(argCount, args);
+    return listFromArray(argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -41,12 +41,12 @@ PRIM_IMPL(makeMapping) {
         mappings[i].value = value;
     }
 
-    return datMapAddArray(EMPTY_MAP, size, mappings);
+    return mapAddArray(EMPTY_MAP, size, mappings);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeUniqlet) {
-    return datUniqlet();
+    return uniqlet();
 }
 
 /* Documented in Samizdat Layer 0 spec. */

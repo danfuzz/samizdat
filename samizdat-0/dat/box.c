@@ -33,24 +33,24 @@ typedef struct {
 
     /** Uniqlet to use for ordering comparisons. */
     zvalue orderId;
-} DatBox;
+} BoxInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static DatBox *boxInfo(zvalue box) {
-    return datPayload(box);
+static BoxInfo *boxInfo(zvalue box) {
+    return pbPayload(box);
 }
 
 /**
  * Gets the order id, initializing it if necessary.
  */
 static zvalue boxOrderId(zvalue box) {
-    DatBox *info = boxInfo(box);
+    BoxInfo *info = boxInfo(box);
     zvalue orderId = info->orderId;
 
     if (orderId == NULL) {
-        orderId = info->orderId = datUniqlet();
+        orderId = info->orderId = uniqlet();
     }
 
     return orderId;
@@ -60,6 +60,11 @@ static zvalue boxOrderId(zvalue box) {
 /*
  * Exported functions
  */
+
+/* Documented in header. */
+void datAssertBox(zvalue value) {
+    pbAssertType(value, DAT_Box);
+}
 
 /* Documented in header. */
 zvalue boxGet(zvalue box) {
@@ -72,7 +77,7 @@ zvalue boxGet(zvalue box) {
         // could become garbage after this, we have to treat the value as
         // "escaped" and so explicitly add the result value to the frame at
         // this point. This ensures that GC will be able to find it.
-        datFrameAdd(result);
+        pbFrameAdd(result);
     }
 
     return result;
@@ -88,7 +93,7 @@ bool boxIsSet(zvalue box) {
 void boxReset(zvalue box) {
     datAssertBox(box);
 
-    DatBox *info = boxInfo(box);
+    BoxInfo *info = boxInfo(box);
 
     if (info->setOnce) {
         die("Attempt to reset yield box.");
@@ -106,7 +111,7 @@ void boxSet(zvalue box, zvalue value) {
         return;
     }
 
-    DatBox *info = boxInfo(box);
+    BoxInfo *info = boxInfo(box);
 
     if (info->isSet && info->setOnce) {
         die("Attempt to re-set yield box.");
@@ -118,8 +123,8 @@ void boxSet(zvalue box, zvalue value) {
 
 /* Documented in header. */
 zvalue boxMutable(void) {
-    zvalue result = datAllocValue(DAT_Box, sizeof(DatBox));
-    DatBox *info = boxInfo(result);
+    zvalue result = pbAllocValue(DAT_Box, sizeof(BoxInfo));
+    BoxInfo *info = boxInfo(result);
 
     info->value = NULL;
     info->isSet = false;
@@ -130,8 +135,8 @@ zvalue boxMutable(void) {
 
 /* Documented in header. */
 zvalue boxYield(void) {
-    zvalue result = datAllocValue(DAT_Box, sizeof(DatBox));
-    DatBox *info = boxInfo(result);
+    zvalue result = pbAllocValue(DAT_Box, sizeof(BoxInfo));
+    BoxInfo *info = boxInfo(result);
 
     info->value = NULL;
     info->isSet = false;
@@ -151,10 +156,10 @@ zvalue DAT_NULL_BOX = NULL;
 /* Documented in header. */
 static zvalue Box_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue box = args[0];
-    DatBox *info = boxInfo(box);
+    BoxInfo *info = boxInfo(box);
 
-    datMark(info->value);
-    datMark(info->orderId);
+    pbMark(info->value);
+    pbMark(info->orderId);
 
     return NULL;
 }
@@ -163,20 +168,20 @@ static zvalue Box_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Box_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return datIntFromZint(datOrder(boxOrderId(v1), boxOrderId(v2)));
+    return intFromZint(pbOrder(boxOrderId(v1), boxOrderId(v2)));
 }
 
 /* Documented in header. */
 void datBindBox(void) {
-    datGfnBindCore(GFN_gcMark, DAT_Box, Box_gcMark);
-    datGfnBindCore(GFN_order,  DAT_Box, Box_order);
+    gfnBindCore(GFN_gcMark, DAT_Box, Box_gcMark);
+    gfnBindCore(GFN_order,  DAT_Box, Box_order);
 
     DAT_NULL_BOX = boxMutable(); // Note: Explicit `==` check in `boxSet`.
-    datImmortalize(DAT_NULL_BOX);
+    pbImmortalize(DAT_NULL_BOX);
 }
 
 /* Documented in header. */
-static DatType INFO_Box = {
+static PbType INFO_Box = {
     .name = "Box"
 };
 ztype DAT_Box = &INFO_Box;

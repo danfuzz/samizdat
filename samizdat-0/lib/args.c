@@ -16,8 +16,8 @@
 
 /** Documented in header. */
 zvalue doNthLenient(znth function, zvalue value, zvalue n) {
-    if (datCoreTypeIs(n, DAT_Int)) {
-        zint index = datZintFromInt(n);
+    if (pbCoreTypeIs(n, PB_Int)) {
+        zint index = zintFromInt(n);
         return (index < 0) ? NULL : function(value, index);
     } else {
         return NULL;
@@ -26,8 +26,8 @@ zvalue doNthLenient(znth function, zvalue value, zvalue n) {
 
 /** Documented in header. */
 zvalue doNthStrict(znth function, zvalue value, zvalue n) {
-    if (datCoreTypeIs(n, DAT_Int)) {
-        zint index = datZintFromInt(n);
+    if (pbCoreTypeIs(n, PB_Int)) {
+        zint index = zintFromInt(n);
         if (index < 0) {
             die("Invalid index for nth (negative).");
         }

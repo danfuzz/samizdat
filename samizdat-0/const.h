@@ -49,7 +49,7 @@ zvalue constStringFromZchar(zchar value);
  * Produces an arbitrary value given a type and optional data payload. If
  * `type` corresponds to a core type, and `data` is a value of that type,
  * then this returns `data`. If not, then this produces a derived value
- * by calling `datDerivFrom` on the two arguments, or returns a cached
+ * by calling `derivFrom` on the two arguments, or returns a cached
  * pre-existing value if a suitable one exists.
  */
 zvalue constValueFrom(zvalue type, zvalue data);
