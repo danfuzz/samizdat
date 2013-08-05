@@ -74,9 +74,13 @@ void pbAssertType(zvalue value, ztype type) {
 
 /* Documented in header. */
 void pbInit(void) {
-    if (GFN_eq != NULL) {
+    if (TYPE_Type != NULL) {
         return;
     }
+
+    // The initialization of the type system has to come first, because all
+    // the other initializers create types (that is, values of type `Type`).
+    pbInitTypeSystem();
 
     pbInitCoreGenerics();
     pbBindDeriv();
@@ -84,6 +88,7 @@ void pbInit(void) {
     pbBindGeneric();
     pbBindInt();
     pbBindString();
+    pbBindType();
 }
 
 /* Documented in header. */

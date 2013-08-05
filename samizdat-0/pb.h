@@ -99,6 +99,7 @@ extern ztype PB_Int;
 
 /** Type value for in-model type `String`. */
 extern ztype PB_String;
+extern zvalue TYPE_String;
 
 /** Type value for in-model type `Type`. */
 extern ztype PB_Type;

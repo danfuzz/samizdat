@@ -61,6 +61,23 @@ static zvalue typeFromName(zvalue name) {
     return NULL;
 }
 
+/**
+ * Initializes a type value.
+ */
+static void typeInit(zvalue type, zvalue name, zvalue secret) {
+    if (theNextId == PB_MAX_TYPES) {
+        die("Too many types!");
+    }
+
+    TypeInfo *info = typeInfo(type);
+
+    info->name = name;
+    info->secret = secret;
+    info->id = theNextId;
+    theNextId++;
+    pbImmortalize(type);
+}
+
 
 /*
  * Module functions
@@ -117,18 +134,8 @@ zvalue typeFrom(zvalue name, zvalue secret) {
 
     if (result == NULL) {
         // Need to make a new type.
-        if (theNextId == PB_MAX_TYPES) {
-            die("Too many types!");
-        }
-
         result = pbAllocValue(PB_Type, sizeof(TypeInfo));
-        TypeInfo *info = typeInfo(result);
-
-        info->name = name;
-        info->secret = secret;
-        info->id = theNextId;
-        theNextId++;
-        pbImmortalize(result);
+        typeInit(result, name, secret);
     } else {
         // Need to verify that the secret matches.
         zvalue alreadySecret = typeInfo(result)->secret;
@@ -176,8 +183,15 @@ static zvalue Type_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void pbBindType(void) {
+void pbInitTypeSystem(void) {
     TYPE_Type = pbAllocTypeType(sizeof(TypeInfo));
+    TYPE_String = pbAllocValue(TYPE_Type, sizeof(TypeInfo));
+    typeInit(TYPE_Type, stringFromUtf8(-1, "Type"), NULL);
+    typeInit(TYPE_String, stringFromUtf8(-1, "String"), NULL);
+}
+
+/* Documented in header. */
+void pbBindType(void) {
     gfnBindCore(GFN_gcMark, PB_Type, Type_gcMark);
     gfnBindCore(GFN_order,  PB_Type, Type_order);
 }

@@ -77,6 +77,13 @@ zvalue typeFromZtype(ztype type);
  */
 
 /**
+ * Initializes the type system, including in particular the type value
+ * `Type`. This also creates the type `String` but doesn't bind it; it's just
+ * enough so that types can be given string names.
+ */
+void pbInitTypeSystem(void);
+
+/**
  * Initializes the core generic functions.
  */
 void pbInitCoreGenerics(void);
