@@ -53,17 +53,17 @@ typedef struct PbHeader {
  * Gets the function bound to the given generic for the given value, if any.
  * Returns `NULL` if there is no binding.
  */
-zfunction datGfnFind(zvalue generic, zvalue value);
+zfunction gfnFind(zvalue generic, zvalue value);
 
 /**
  * Gets the sequence number index for a `ztype`, initializing it if necessary.
  */
-zint datIndexFromType(ztype type);
+zint indexFromZtype(ztype type);
 
 /**
  * Gets a type value from a `ztype`.
  */
-zvalue datTypeFromZtype(ztype type);
+zvalue typeFromZtype(ztype type);
 
 
 /*

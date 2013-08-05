@@ -73,7 +73,7 @@ static zvalue Default_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue Default_typeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue value = args[0];
-    return datTypeFromZtype(value->type);
+    return typeFromZtype(value->type);
 }
 
 /* Documented in header. */

@@ -68,7 +68,7 @@ static char *callReporter(void *state) {
  */
 
 /* Documented in header. */
-zfunction datGfnFind(zvalue generic, zvalue value) {
+zfunction gfnFind(zvalue generic, zvalue value) {
     // TODO: Dispatch is currently on the core type. It should be able
     // to handle derived types too. It's not as simple as just calling
     // `pbTypeOf` on the value, though: (1) That function itself is
@@ -76,7 +76,7 @@ zfunction datGfnFind(zvalue generic, zvalue value) {
     // will have to be adjusted.
 
     DatGeneric *info = gfnInfo(generic);
-    zfunction result = info->functions[datIndexFromType(value->type)];
+    zfunction result = info->functions[indexFromZtype(value->type)];
 
     return (result != NULL) ? result : info->defaultFunction;
 }
@@ -117,7 +117,7 @@ void gfnBindCore(zvalue generic, ztype type, zfunction function) {
     pbAssertGeneric(generic);
 
     DatGeneric *info = gfnInfo(generic);
-    zint index = datIndexFromType(type);
+    zint index = indexFromZtype(type);
 
     if (info->sealed) {
         die("Sealed generic.");
@@ -186,7 +186,7 @@ static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    zfunction function = datGfnFind(generic, args[0]);
+    zfunction function = gfnFind(generic, args[0]);
 
     if (function == NULL) {
         die("No type binding found for generic.");

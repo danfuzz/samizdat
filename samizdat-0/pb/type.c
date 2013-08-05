@@ -23,7 +23,7 @@ static zint theNextSeqNum = 0;
  */
 
 /* Documented in header. */
-zint datIndexFromType(ztype type) {
+zint indexFromZtype(ztype type) {
     zint compl = type->seqNumCompl;
 
     if (compl == 0) {
@@ -40,7 +40,7 @@ zint datIndexFromType(ztype type) {
 }
 
 /* Documented in header. */
-zvalue datTypeFromZtype(ztype type) {
+zvalue typeFromZtype(ztype type) {
     zvalue result = type->nameValue;
 
     if (result == NULL) {
