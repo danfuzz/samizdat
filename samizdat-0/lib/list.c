@@ -21,7 +21,7 @@ PRIM_IMPL(listAdd) {
             return args[0];
         }
         case 2: {
-            return datListAdd(args[0], args[1]);
+            return listAdd(args[0], args[1]);
         }
     }
 
@@ -31,7 +31,7 @@ PRIM_IMPL(listAdd) {
     zvalue result = args[0];
 
     for (zint i = 1; i < argCount; i++) {
-        result = datListAdd(result, args[i]);
+        result = listAdd(result, args[i]);
     }
 
     return result;
@@ -43,7 +43,7 @@ PRIM_IMPL(listDelNth) {
         return args[0];
     }
 
-    return datListDelNth(args[0], zintFromInt(args[1]));
+    return listDelNth(args[0], zintFromInt(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -57,7 +57,7 @@ PRIM_IMPL(listFilter) {
     datAssertList(list);
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = datListNth(list, i);
+        zvalue elem = listNth(list, i);
         zvalue one = fnCall(function, 1, &elem);
 
         if (one != NULL) {
@@ -66,27 +66,27 @@ PRIM_IMPL(listFilter) {
         }
     }
 
-    return datListFromArray(at, result);
+    return listFromArray(at, result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listGet) {
-   return doNthLenient(datListNth, args[0], args[1]);
+   return doNthLenient(listNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listInsNth) {
-    return datListInsNth(args[0], zintFromInt(args[1]), args[2]);
+    return listInsNth(args[0], zintFromInt(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listNth) {
-    return doNthStrict(datListNth, args[0], args[1]);
+    return doNthStrict(listNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listPutNth) {
-    return datListPutNth(args[0], zintFromInt(args[1]), args[2]);
+    return listPutNth(args[0], zintFromInt(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -103,7 +103,7 @@ PRIM_IMPL(listReverse) {
         elems[high] = temp;
     }
 
-    return datListFromArray(size, elems);
+    return listFromArray(size, elems);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -112,5 +112,5 @@ PRIM_IMPL(listSlice) {
     zint startIndex = zintFromInt(args[1]);
     zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : pbSize(list);
 
-    return datListSlice(list, startIndex, endIndex);
+    return listSlice(list, startIndex, endIndex);
 }

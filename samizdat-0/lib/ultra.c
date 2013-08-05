@@ -21,7 +21,7 @@ PRIM_IMPL(makeList) {
         return EMPTY_LIST;
     }
 
-    return datListFromArray(argCount, args);
+    return listFromArray(argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

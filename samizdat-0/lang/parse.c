@@ -41,7 +41,7 @@ static zvalue read(ParseState *state) {
         return NULL;
     }
 
-    zvalue result = datListNth(state->tokens, state->at);
+    zvalue result = listNth(state->tokens, state->at);
     state->at++;
 
     return result;
@@ -55,7 +55,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
         return NULL;
     }
 
-    zvalue result = datListNth(state->tokens, state->at);
+    zvalue result = listNth(state->tokens, state->at);
     zvalue resultType = pbTypeOf(result);
 
     if (!pbEq(type, resultType)) {
@@ -138,7 +138,7 @@ static zvalue mapFrom1(zvalue k1, zvalue v1) {
  * Makes a 1 element list.
  */
 static zvalue listFrom1(zvalue e1) {
-    return datListFromArray(1, &e1);
+    return listFromArray(1, &e1);
 }
 
 /**
@@ -146,7 +146,7 @@ static zvalue listFrom1(zvalue e1) {
  */
 static zvalue listFrom2(zvalue e1, zvalue e2) {
     zvalue elems[2] = { e1, e2 };
-    return datListFromArray(2, elems);
+    return listFromArray(2, elems);
 }
 
 /**
@@ -232,7 +232,7 @@ zvalue parseStar(parserFunction rule, ParseState *state) {
             break;
         }
 
-        result = datListAppend(result, one);
+        result = listAppend(result, one);
     }
 
     return result;
@@ -276,7 +276,7 @@ zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
             break;
         }
 
-        result = datListAppend(result, item);
+        result = listAppend(result, item);
     }
 
     return result;
@@ -478,7 +478,7 @@ DEF_PARSE(fnCommon) {
 
     zvalue codeMap = pbDataOf(code);
     zvalue statements =
-        datListAdd(returnDef, mapGet(codeMap, STR_STATEMENTS));
+        listAdd(returnDef, mapGet(codeMap, STR_STATEMENTS));
 
     zvalue result = mapAdd(codeMap, name);
     result = mapAdd(result, formals);
@@ -777,7 +777,7 @@ DEF_PARSE(actualsList) {
         zvalue normalActuals = PARSE(unadornedList); // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
         zvalue closureActuals = PARSE_STAR(closure); // This never fails.
-        return datListAdd(closureActuals, normalActuals);
+        return listAdd(closureActuals, normalActuals);
     }
 
     return PARSE_PLUS(closure);
@@ -813,7 +813,7 @@ DEF_PARSE(unaryExpression) {
 
     zint size = pbSize(postfixes);
     for (zint i = 0; i < size; i++) {
-        zvalue one = datListNth(postfixes, i);
+        zvalue one = listNth(postfixes, i);
         if (pbCoreTypeIs(one, DAT_List)) {
             result = makeCall(result, one);
         } else if (pbEq(one, TOK_CH_STAR)) {
@@ -824,7 +824,7 @@ DEF_PARSE(unaryExpression) {
     }
 
     for (zint i = pbSize(prefixes) - 1; i >= 0; i--) {
-        zvalue one = datListNth(prefixes, i);
+        zvalue one = listNth(prefixes, i);
         if (pbEq(one, TOK_CH_MINUS)) {
             result = makeCall(makeVarRef(STR_INEG), listFrom1(result));
         } else {
@@ -946,7 +946,7 @@ DEF_PARSE(programBody) {
         }
 
         PARSE(optSemicolons);
-        statements = datListAppend(statements, statement);
+        statements = listAppend(statements, statement);
     }
 
     zvalue statement = PARSE(statement);
@@ -956,7 +956,7 @@ DEF_PARSE(programBody) {
     }
 
     if (statement != NULL) {
-        statements = datListAppend(statements, statement);
+        statements = listAppend(statements, statement);
     } else {
         yield = PARSE(yield);
     }

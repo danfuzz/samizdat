@@ -95,7 +95,7 @@ void datArrayFromList(zvalue *result, zvalue list) {
 }
 
 /* Documented in header. */
-zvalue datListAdd(zvalue list1, zvalue list2) {
+zvalue listAdd(zvalue list1, zvalue list2) {
     datAssertList(list1);
     datAssertList(list2);
 
@@ -112,13 +112,13 @@ zvalue datListAdd(zvalue list1, zvalue list2) {
 }
 
 /* Documented in header. */
-zvalue datListAppend(zvalue list, zvalue value) {
+zvalue listAppend(zvalue list, zvalue value) {
     datAssertList(list);
-    return datListInsNth(list, listSizeOf(list), value);
+    return listInsNth(list, listSizeOf(list), value);
 }
 
 /* Documented in header. */
-zvalue datListDelNth(zvalue list, zint n) {
+zvalue listDelNth(zvalue list, zint n) {
     datAssertList(list);
 
     zvalue *elems = listElems(list);
@@ -130,7 +130,7 @@ zvalue datListDelNth(zvalue list, zint n) {
 }
 
 /* Documented in header. */
-zvalue datListFromArray(zint size, const zvalue *values) {
+zvalue listFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
         pbAssertValid(values[i]);
     }
@@ -139,7 +139,7 @@ zvalue datListFromArray(zint size, const zvalue *values) {
 }
 
 /* Documented in header. */
-zvalue datListInsNth(zvalue list, zint n, zvalue value) {
+zvalue listInsNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
     pbAssertValid(value);
 
@@ -152,7 +152,7 @@ zvalue datListInsNth(zvalue list, zint n, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue datListNth(zvalue list, zint n) {
+zvalue listNth(zvalue list, zint n) {
     datAssertList(list);
 
     if ((n < 0) || (n >= listSizeOf(list))) {
@@ -163,7 +163,7 @@ zvalue datListNth(zvalue list, zint n) {
 }
 
 /* Documented in header. */
-zvalue datListPutNth(zvalue list, zint n, zvalue value) {
+zvalue listPutNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
     pbAssertValid(value);
 
@@ -172,7 +172,7 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value) {
     pbAssertNthOrSize(size, n);
 
     if (n == size) {
-        return datListInsNth(list, n, value);
+        return listInsNth(list, n, value);
     }
 
     zvalue result = listFrom(size, listElems(list), NULL, 0, NULL);
@@ -182,7 +182,7 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue datListSlice(zvalue list, zint start, zint end) {
+zvalue listSlice(zvalue list, zint start, zint end) {
     datAssertList(list);
     pbAssertSliceRange(listSizeOf(list), start, end);
 

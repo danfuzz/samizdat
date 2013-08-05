@@ -60,7 +60,7 @@ PRIM_IMPL(mapKeys) {
         arr[i] = mappings[i].key;
     }
 
-    return datListFromArray(size, arr);
+    return listFromArray(size, arr);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

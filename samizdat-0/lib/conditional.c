@@ -68,7 +68,7 @@ PRIM_IMPL(loop) {
 PRIM_IMPL(loopReduce) {
     zstackPointer save = pbFrameStart();
     zvalue function = args[0];
-    zvalue innerArgs = datListFromArray(argCount - 1, &args[1]);
+    zvalue innerArgs = listFromArray(argCount - 1, &args[1]);
 
     for (;;) {
         zvalue nextArgs = fnApply(function, innerArgs);

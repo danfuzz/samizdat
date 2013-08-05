@@ -127,54 +127,54 @@ void datArrayFromList(zvalue *result, zvalue list);
  * Combines the elements of two lists, in order, into a new
  * list.
  *
- * Contrasting this with `datListAppend()`, that function operates
+ * Contrasting this with `listAppend()`, that function operates
  * heterogeneously on a list and an element, whereas this one
  * operates on two peer lists.
  */
-zvalue datListAdd(zvalue list1, zvalue list2);
+zvalue listAdd(zvalue list1, zvalue list2);
 
 /**
  * Gets the list resulting from appending the given value to the
  * given list.
  */
-zvalue datListAppend(zvalue list, zvalue value);
+zvalue listAppend(zvalue list, zvalue value);
 
 /**
  * Gets the list resulting from deleting the nth element of the
  * given list.
  */
-zvalue datListDelNth(zvalue list, zint n);
+zvalue listDelNth(zvalue list, zint n);
 
 /**
  * Constructs a list from an array of `zvalue`s of the given size.
  */
-zvalue datListFromArray(zint size, const zvalue *values);
+zvalue listFromArray(zint size, const zvalue *values);
 
 /**
  * Gets the list resulting from inserting the given value at the
  * given index in the given list. `n` must be non-negative and no
  * greater than the size of the given list.
  */
-zvalue datListInsNth(zvalue list, zint n, zvalue value);
+zvalue listInsNth(zvalue list, zint n, zvalue value);
 
 /**
  * Given a list, returns the `n`th element. `list` must be a
  * list, and `n` must be `< pbSize(value)`.
  */
-zvalue datListNth(zvalue list, zint n);
+zvalue listNth(zvalue list, zint n);
 
 /**
  * Gets the list resulting from setting the value at the
  * given index to the given value. `n` must be non-negative
  * and no greater than the size of the given list.
  */
-zvalue datListPutNth(zvalue list, zint n, zvalue value);
+zvalue listPutNth(zvalue list, zint n, zvalue value);
 
 /**
  * Gets the list consisting of the given "slice" of elements
  * (start inclusive, end exclusive) of the given list.
  */
-zvalue datListSlice(zvalue list, zint start, zint end);
+zvalue listSlice(zvalue list, zint start, zint end);
 
 
 /*

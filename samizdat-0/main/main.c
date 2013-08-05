@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         args[i] = stringFromUtf8(-1, argv[i]);
     }
-    zvalue argsList = datListFromArray(argc, args);
+    zvalue argsList = listFromArray(argc, args);
 
     // `argsList` refers to `context`, so it's safe to keep referring to
     // the latter, immediately below.

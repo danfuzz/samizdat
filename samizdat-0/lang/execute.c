@@ -141,7 +141,7 @@ static void bindArguments(Frame *frame, zvalue node,
             if (count == 0) {
                 value = EMPTY_LIST;
             } else {
-                value = ignore ? NULL : datListFromArray(count, &args[argAt]);
+                value = ignore ? NULL : listFromArray(count, &args[argAt]);
                 argAt += count;
             }
         } else if (argAt >= argCount) {
@@ -447,7 +447,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 
     switch (pbSize(result)) {
         case 0: return NULL;
-        case 1: return datListNth(result, 0);
+        case 1: return listNth(result, 0);
         default: {
             die("Attempt to interpolate multiple values.");
         }

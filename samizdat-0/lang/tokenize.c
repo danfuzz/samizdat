@@ -308,7 +308,7 @@ zvalue langTokenize0(zvalue string) {
         out++;
     }
 
-    zvalue resultList = datListFromArray(out, result);
+    zvalue resultList = listFromArray(out, result);
     pbFrameReturn(save, resultList);
     return resultList;
 }

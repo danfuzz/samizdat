@@ -38,7 +38,7 @@ static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
         arr[i] = (bit == 0) ? DAT_0 : DAT_1;
     }
 
-    return datListFromArray(size, arr);
+    return listFromArray(size, arr);
 }
 
 /**
@@ -62,7 +62,7 @@ static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
         arr[i] = mapNth(map, i);
     }
 
-    return datListFromArray(size, arr);
+    return listFromArray(size, arr);
 }
 
 /**
@@ -79,7 +79,7 @@ static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
         arr[i] = constStringFromZchar(stringNth(string, i));
     }
 
-    return datListFromArray(size, arr);
+    return listFromArray(size, arr);
 }
 
 /**
@@ -109,7 +109,7 @@ static zvalue collectGenerator(zvalue state, zint argc,
         boxReset(box);
     }
 
-    zvalue result = datListFromArray(at, arr);
+    zvalue result = listFromArray(at, arr);
     pbFrameReturn(save, result);
     return result;
 }
