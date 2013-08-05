@@ -76,6 +76,7 @@ zvalue datTypeFromZtype(ztype type);
 void pbInitCoreGenerics(void);
 
 // Per-type generic binding.
+void pbBindDeriv(void);
 void pbBindFunction(void);
 void pbBindGeneric(void);
 

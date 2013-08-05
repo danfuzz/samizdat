@@ -16,9 +16,33 @@
 
 
 /**
+ * Entry in the map cache. The cache is used to speed up calls to `mapFind`.
+ * In practice it looks like the theoretical best case is probably about
+ * 74% (that is, nearly 3 of 4 lookups are for a map/key pair that have
+ * been observed before). The size of the map cache is chosen to hit the
+ * point of diminishing returns.
+ */
+typedef struct {
+    /** Map to look up a key in. */
+    zvalue map;
+
+    /** Key to look up. */
+    zvalue key;
+
+    /** Result from `mapFind` (see which for details). */
+    zint index;
+} MapCacheEntry;
+
+
+/**
  * Clears the contents of the map lookup cache.
  */
 void datMapClearCache(void);
+
+/**
+ * Gets the `CacheEntry` for the given map/key pair.
+ */
+MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 
 
 /*
@@ -27,7 +51,6 @@ void datMapClearCache(void);
 
 // Per-type generic binding.
 void datBindBox(void);
-void datBindDeriv(void);
 void datBindList(void);
 void datBindMap(void);
 void datBindUniqlet(void);

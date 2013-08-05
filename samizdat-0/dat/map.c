@@ -15,11 +15,6 @@
  * Helper definitions
  */
 
-enum {
-    /** Whether to spew to the console about map cache hits. */
-    CHATTY_CACHEY = false
-};
-
 /**
  * Map structure.
  */
@@ -30,56 +25,6 @@ typedef struct {
     /** List of mappings, in key-sorted order. */
     zmapping elems[/*size*/];
 } DatMap;
-
-/**
- * Entry in the map cache. The cache is used to speed up calls to `mapFind`.
- * In practice it looks like the theoretical best case is probably about
- * 74% (that is, nearly 3 of 4 lookups are for a map/key pair that have
- * been observed before). The size of the map cache is chosen to hit the
- * point of diminishing returns.
- */
-typedef struct {
-    /** Map to look up a key in. */
-    zvalue map;
-
-    /** Key to look up. */
-    zvalue key;
-
-    /** Result from `mapFind` (see which for details). */
-    zint index;
-} CacheEntry;
-
-/** The cache of `mapFind` lookups. */
-static CacheEntry mapCache[DAT_MAP_CACHE_SIZE];
-
-/**
- * Gets the `CacheEntry` for the given map/key pair.
- */
-static CacheEntry *getCacheEntry(zvalue map, zvalue key) {
-    uintptr_t hash = ((uintptr_t) map >> 4) + (((uintptr_t) key) >> 4) * 31;
-    hash ^= (hash >> 16) ^ (hash >> 32) ^ (hash >> 48);
-
-    // Note: In practice there doesn't seem to be an observable difference
-    // between using `&` and `%` to calculate the cache index, so we go
-    // for `%` and a prime number cache size to get probably-better cache
-    // behavior.
-    CacheEntry *entry = &mapCache[hash % DAT_MAP_CACHE_SIZE];
-
-    if (CHATTY_CACHEY) {
-        static int hits = 0;
-        static int total = 0;
-        if ((entry->map == map) && (entry->key == key)) {
-            hits++;
-        }
-        total++;
-        if ((total % 10000000) == 0) {
-            note("Map Cache: Hit rate %d/%d == %5.2f%%", hits, total,
-                (100.0 * hits) / total);
-        }
-    }
-
-    return entry;
-}
 
 /**
  * Allocates a map of the given size.
@@ -137,14 +82,13 @@ static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
     return result;
 }
 
-
 /**
  * Given a map, find the index of the given key. `map` must be a map.
  * Returns the index of the key if found. If not found, then this returns
  * `~insertionIndex` (a negative number).
  */
 static zint mapFind(zvalue map, zvalue key) {
-    CacheEntry *entry = getCacheEntry(map, key);
+    MapCacheEntry *entry = mapGetCacheEntry(map, key);
 
     if ((entry->map == map) && (entry->key == key)) {
         return entry->index;
@@ -190,16 +134,6 @@ static zint mapFind(zvalue map, zvalue key) {
  */
 static int mappingOrder(const void *m1, const void *m2) {
     return datOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
-}
-
-
-/*
- * Module functions
- */
-
-/* Documented in header. */
-void datMapClearCache(void) {
-    memset(mapCache, 0, sizeof(mapCache));
 }
 
 
