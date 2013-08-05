@@ -92,7 +92,7 @@ static zvalue collectGenerator(zvalue state, zint argc,
     zvalue arr[CONST_MAX_GENERATOR_ITEMS];
     zint at;
 
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
     zvalue box = boxMutable();
 
     for (at = 0; /*at*/; at++) {
@@ -110,7 +110,7 @@ static zvalue collectGenerator(zvalue state, zint argc,
     }
 
     zvalue result = datListFromArray(at, arr);
-    datFrameReturn(save, result);
+    pbFrameReturn(save, result);
     return result;
 }
 
@@ -128,7 +128,7 @@ void generatorInit(void) {
     datGfnBindCore(GFN_collect, DAT_String,   collectString);
     datGfnBindCore(GFN_collect, DAT_Function, collectGenerator);
     datGfnSeal(GFN_collect);
-    datImmortalize(GFN_collect);
+    pbImmortalize(GFN_collect);
 }
 
 

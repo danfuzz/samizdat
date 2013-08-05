@@ -39,7 +39,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static DatBox *boxInfo(zvalue box) {
-    return datPayload(box);
+    return pbPayload(box);
 }
 
 /**
@@ -72,7 +72,7 @@ zvalue boxGet(zvalue box) {
         // could become garbage after this, we have to treat the value as
         // "escaped" and so explicitly add the result value to the frame at
         // this point. This ensures that GC will be able to find it.
-        datFrameAdd(result);
+        pbFrameAdd(result);
     }
 
     return result;
@@ -118,7 +118,7 @@ void boxSet(zvalue box, zvalue value) {
 
 /* Documented in header. */
 zvalue boxMutable(void) {
-    zvalue result = datAllocValue(DAT_Box, sizeof(DatBox));
+    zvalue result = pbAllocValue(DAT_Box, sizeof(DatBox));
     DatBox *info = boxInfo(result);
 
     info->value = NULL;
@@ -130,7 +130,7 @@ zvalue boxMutable(void) {
 
 /* Documented in header. */
 zvalue boxYield(void) {
-    zvalue result = datAllocValue(DAT_Box, sizeof(DatBox));
+    zvalue result = pbAllocValue(DAT_Box, sizeof(DatBox));
     DatBox *info = boxInfo(result);
 
     info->value = NULL;
@@ -153,8 +153,8 @@ static zvalue Box_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue box = args[0];
     DatBox *info = boxInfo(box);
 
-    datMark(info->value);
-    datMark(info->orderId);
+    pbMark(info->value);
+    pbMark(info->orderId);
 
     return NULL;
 }
@@ -172,7 +172,7 @@ void datBindBox(void) {
     datGfnBindCore(GFN_order,  DAT_Box, Box_order);
 
     DAT_NULL_BOX = boxMutable(); // Note: Explicit `==` check in `boxSet`.
-    datImmortalize(DAT_NULL_BOX);
+    pbImmortalize(DAT_NULL_BOX);
 }
 
 /* Documented in header. */

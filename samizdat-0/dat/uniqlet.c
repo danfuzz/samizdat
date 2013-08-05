@@ -32,7 +32,7 @@ typedef struct {
  * Gets a pointer to the info of a uniqlet.
  */
 static DatUniqlet *uniInfo(zvalue uniqlet) {
-    return datPayload(uniqlet);
+    return pbPayload(uniqlet);
 }
 
 /**
@@ -40,7 +40,7 @@ static DatUniqlet *uniInfo(zvalue uniqlet) {
  * on the arguments.
  */
 static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
-    zvalue result = datAllocValue(DAT_Uniqlet, sizeof(DatUniqlet));
+    zvalue result = pbAllocValue(DAT_Uniqlet, sizeof(DatUniqlet));
 
     DatUniqlet *info = uniInfo(result);
     info->id = pbOrderId();

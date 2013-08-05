@@ -188,7 +188,7 @@ static void doGc(void) {
     // the live list.
 
     for (zint i = 0; i < immortalsSize; i++) {
-        datMark(immortals[i]);
+        pbMark(immortals[i]);
     }
 
     if (CHATTY_GC) {
@@ -196,7 +196,7 @@ static void doGc(void) {
     }
 
     for (zint i = 0; i < stackSize; i++) {
-        datMark(stack[i]);
+        pbMark(stack[i]);
     }
 
     if (CHATTY_GC) {
@@ -263,9 +263,9 @@ static void doGc(void) {
  */
 
 /* Documented in header. */
-zvalue datAllocValue(ztype type, zint extraBytes) {
+zvalue pbAllocValue(ztype type, zint extraBytes) {
     if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
-        datGc();
+        pbGc();
     } else {
         sanityCheck(false);
     }
@@ -275,7 +275,7 @@ zvalue datAllocValue(ztype type, zint extraBytes) {
     result->type = type;
 
     enlist(&liveHead, result);
-    datFrameAdd(result);
+    pbFrameAdd(result);
 
     allocationCount++;
 
@@ -285,12 +285,12 @@ zvalue datAllocValue(ztype type, zint extraBytes) {
 }
 
 /* Documented in header. */
-zstackPointer datFrameStart(void) {
+zstackPointer pbFrameStart(void) {
     return &stack[stackSize];
 }
 
 /* Documented in header. */
-void datFrameAdd(zvalue value) {
+void pbFrameAdd(zvalue value) {
     if (stackSize >= DAT_MAX_STACK) {
         die("Value stack overflow.");
     }
@@ -300,15 +300,15 @@ void datFrameAdd(zvalue value) {
 }
 
 /* Documented in header. */
-void datFrameReset(zstackPointer savedStack, zvalue stackedValue) {
-    // The difference between this function and `datFrameReturn` is
+void pbFrameReset(zstackPointer savedStack, zvalue stackedValue) {
+    // The difference between this function and `pbFrameReturn` is
     // one of intent, even though the implementation is (blatantly)
     // identical.
-    datFrameReturn(savedStack, stackedValue);
+    pbFrameReturn(savedStack, stackedValue);
 }
 
 /* Documented in header. */
-void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
+void pbFrameReturn(zstackPointer savedStack, zvalue returnValue) {
     zint returnSize = savedStack - stack;
 
     if (returnSize > stackSize) {
@@ -318,18 +318,18 @@ void datFrameReturn(zstackPointer savedStack, zvalue returnValue) {
     stackSize = returnSize;
 
     if (returnValue != NULL) {
-        datFrameAdd(returnValue);
+        pbFrameAdd(returnValue);
     }
 }
 
 /* Documented in header. */
-void datGc(void) {
+void pbGc(void) {
     allocationCount = 0;
     doGc();
 }
 
 /* Documented in header. */
-void datImmortalize(zvalue value) {
+void pbImmortalize(zvalue value) {
     if (immortalsSize == DAT_MAX_IMMORTALS) {
         die("Too many immortal values!");
     }
@@ -341,7 +341,7 @@ void datImmortalize(zvalue value) {
 }
 
 /* Documented in header. */
-void datMark(zvalue value) {
+void pbMark(zvalue value) {
     if (value == NULL) {
         return;
     }
@@ -362,7 +362,7 @@ void datMark(zvalue value) {
 }
 
 /* Documented in header. */
-void *datPayload(zvalue value) {
+void *pbPayload(zvalue value) {
     return value->payload;
 }
 

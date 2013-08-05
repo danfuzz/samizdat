@@ -31,9 +31,9 @@ typedef struct {
  */
 static zvalue allocMap(zint size) {
     zvalue result =
-        datAllocValue(DAT_Map, sizeof(DatMap) + size * sizeof(zmapping));
+        pbAllocValue(DAT_Map, sizeof(DatMap) + size * sizeof(zmapping));
 
-    ((DatMap *) datPayload(result))->size = size;
+    ((DatMap *) pbPayload(result))->size = size;
     return result;
 }
 
@@ -41,14 +41,14 @@ static zvalue allocMap(zint size) {
  * Gets the size of a map.
  */
 static zint mapSizeOf(zvalue map) {
-    return ((DatMap *) datPayload(map))->size;
+    return ((DatMap *) pbPayload(map))->size;
 }
 
 /**
  * Gets the elements array from a map.
  */
 static zmapping *mapElems(zvalue map) {
-    return ((DatMap *) datPayload(map))->elems;
+    return ((DatMap *) pbPayload(map))->elems;
 }
 
 /**
@@ -204,7 +204,7 @@ zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
         at++;
     }
 
-    ((DatMap *) datPayload(result))->size = at;
+    ((DatMap *) pbPayload(result))->size = at;
     return result;
 }
 
@@ -363,8 +363,8 @@ static zvalue Map_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zmapping *elems = mapElems(map);
 
     for (zint i = 0; i < size; i++) {
-        datMark(elems[i].key);
-        datMark(elems[i].value);
+        pbMark(elems[i].key);
+        pbMark(elems[i].value);
     }
 
     return NULL;
@@ -417,7 +417,7 @@ void datBindMap(void) {
     datGfnBindCore(GFN_sizeOf, DAT_Map, Map_sizeOf);
 
     EMPTY_MAP = allocMap(0);
-    datImmortalize(EMPTY_MAP);
+    pbImmortalize(EMPTY_MAP);
 }
 
 /* Documented in header. */

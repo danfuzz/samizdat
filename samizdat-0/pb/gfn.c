@@ -51,7 +51,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static DatGeneric *gfnInfo(zvalue generic) {
-    return datPayload(generic);
+    return pbPayload(generic);
 }
 
 /**
@@ -95,7 +95,7 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
     }
 
     debugPush(callReporter, function);
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
 
     zfunction caller =
         gfnInfo(GFN_call)->functions[~function->type->seqNumCompl];
@@ -106,7 +106,7 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
 
     zvalue result = caller(function, argCount, args);
 
-    datFrameReturn(save, result);
+    pbFrameReturn(save, result);
     debugPop();
 
     return result;
@@ -150,7 +150,7 @@ zvalue datGfnFrom(zint minArgs, zint maxArgs, zvalue name) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = datAllocValue(DAT_Generic, sizeof(DatGeneric));
+    zvalue result = pbAllocValue(DAT_Generic, sizeof(DatGeneric));
     DatGeneric *info = gfnInfo(result);
 
     info->minArgs = minArgs;
@@ -218,7 +218,7 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue generic = args[0];
     DatGeneric *info = gfnInfo(generic);
 
-    datMark(info->name);
+    pbMark(info->name);
 
     return NULL;
 }

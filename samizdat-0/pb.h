@@ -492,28 +492,28 @@ zvalue datTypeOf(zvalue value);
  * initialized with the indicated type and size. The resulting value
  * is added to the live reference stack.
  */
-zvalue datAllocValue(ztype type, zint extraBytes);
+zvalue pbAllocValue(ztype type, zint extraBytes);
 
 /**
  * Adds an item to the current frame. This is only necessary to call when
  * a reference gets "detached" from a live structure (via mutation), which
  * is to say, rarely.
  */
-void datFrameAdd(zvalue value);
+void pbFrameAdd(zvalue value);
 
 /**
  * Indicates the start of a new frame of references on the stack.
- * The return value can subsequently be passed to `datFrameEnd` to
+ * The return value can subsequently be passed to `pbFrameEnd` to
  * indicate that this frame is no longer active.
  */
-zstackPointer datFrameStart(void);
+zstackPointer pbFrameStart(void);
 
 /**
  * Indicates that the frame whose start returned the given stack pointer
  * should be reset to a state that *only* includes the given value
  * (or is totally reset if `stackedValue` is `NULL`).
  */
-void datFrameReset(zstackPointer savedStack, zvalue stackedValue);
+void pbFrameReset(zstackPointer savedStack, zvalue stackedValue);
 
 /**
  * Indicates that the frame whose start returned the given stack pointer
@@ -522,25 +522,25 @@ void datFrameReset(zstackPointer savedStack, zvalue stackedValue);
  * frame above the current one, not just the immediately-previous frame;
  * non-immediate return can happen during a nonlocal exit.
  */
-void datFrameReturn(zstackPointer savedStack, zvalue returnValue);
+void pbFrameReturn(zstackPointer savedStack, zvalue returnValue);
 
 /**
  * Forces a gc.
  */
-void datGc(void);
+void pbGc(void);
 
 /**
  * Marks the given value as "immortal." It is considered a root and
  * will never get freed.
  */
-void datImmortalize(zvalue value);
+void pbImmortalize(zvalue value);
 
 /**
  * Marks a value during garbage collection. This in turn calls a type-specific
  * mark function when appropriate and may recurse arbitrarily. It is valid
  * to pass `NULL` to this, but no other non-values are acceptable.
  */
-void datMark(zvalue value);
+void pbMark(zvalue value);
 
 /**
  * Gets a unique "order id" to use when comparing otherwise-incomparable
@@ -551,6 +551,6 @@ zint pbOrderId(void);
 /**
  * Gets a pointer to the data payload of a `zvalue`.
  */
-void *datPayload(zvalue value);
+void *pbPayload(zvalue value);
 
 #endif

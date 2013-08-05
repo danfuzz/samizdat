@@ -23,7 +23,7 @@ void datInit(void) {
         return;
     }
 
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
 
     pbInit();
     datBindBox();
@@ -31,6 +31,6 @@ void datInit(void) {
     datBindMap();
     datBindUniqlet();
 
-    datFrameReturn(save, NULL);
+    pbFrameReturn(save, NULL);
 }
 

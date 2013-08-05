@@ -47,7 +47,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static DatFunction *fnInfo(zvalue function) {
-    return datPayload(function);
+    return pbPayload(function);
 }
 
 
@@ -63,7 +63,7 @@ zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = datAllocValue(DAT_Function, sizeof(DatFunction));
+    zvalue result = pbAllocValue(DAT_Function, sizeof(DatFunction));
     DatFunction *info = fnInfo(result);
 
     info->minArgs = minArgs;
@@ -120,8 +120,8 @@ static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue function = args[0];
     DatFunction *info = fnInfo(function);
 
-    datMark(info->state);
-    datMark(info->name);
+    pbMark(info->state);
+    pbMark(info->name);
 
     return NULL;
 }

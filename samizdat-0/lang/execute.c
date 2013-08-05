@@ -48,7 +48,7 @@ static void closureMark(void *state) {
     Closure *closure = state;
 
     frameMark(&closure->frame);
-    datMark(closure->defMap);
+    pbMark(closure->defMap);
 }
 
 /**

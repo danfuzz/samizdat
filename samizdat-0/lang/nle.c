@@ -43,7 +43,7 @@ typedef struct {
  */
 static void nleMark(void *state) {
     NleState *nleState = state;
-    datMark(nleState->result);
+    pbMark(nleState->result);
 }
 
 /**
@@ -88,7 +88,7 @@ zvalue nleCall(znleFunction function, void *state) {
     nleState->result = NULL;
 
     zint mark = debugMark();
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
     zvalue result;
 
     if (sigsetjmp(nleState->jumpBuf, 0) == 0) {
@@ -106,6 +106,6 @@ zvalue nleCall(znleFunction function, void *state) {
     }
 
     nleState->active = false;
-    datFrameReturn(save, result);
+    pbFrameReturn(save, result);
     return result;
 }

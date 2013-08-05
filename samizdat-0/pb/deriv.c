@@ -28,7 +28,7 @@ typedef struct {
  * Gets a pointer to the value's info.
  */
 static DatDeriv *derivInfo(zvalue deriv) {
-    return datPayload(deriv);
+    return pbPayload(deriv);
 }
 
 /**
@@ -36,7 +36,7 @@ static DatDeriv *derivInfo(zvalue deriv) {
  * on the arguments.
  */
 static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = datAllocValue(DAT_Deriv, sizeof(DatDeriv));
+    zvalue result = pbAllocValue(DAT_Deriv, sizeof(DatDeriv));
     DatDeriv *info = derivInfo(result);
 
     info->type = type;
@@ -96,8 +96,8 @@ static zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue deriv = args[0];
     DatDeriv *info = derivInfo(deriv);
 
-    datMark(info->type);
-    datMark(info->data);
+    pbMark(info->type);
+    pbMark(info->data);
 
     return NULL;
 }

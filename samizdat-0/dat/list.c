@@ -28,14 +28,14 @@ typedef struct {
  * Gets the array of `zvalue` elements from a list.
  */
 static zvalue *listElems(zvalue list) {
-    return ((DatList *) datPayload(list))->elems;
+    return ((DatList *) pbPayload(list))->elems;
 }
 
 /**
  * Gets the size of a list.
  */
 static zint listSizeOf(zvalue list) {
-    return ((DatList *) datPayload(list))->size;
+    return ((DatList *) pbPayload(list))->size;
 }
 
 /**
@@ -43,9 +43,9 @@ static zint listSizeOf(zvalue list) {
  */
 static zvalue allocList(zint size) {
     zvalue result =
-        datAllocValue(DAT_List, sizeof(DatList) + size * sizeof(zvalue));
+        pbAllocValue(DAT_List, sizeof(DatList) + size * sizeof(zvalue));
 
-    ((DatList *) datPayload(result))->size = size;
+    ((DatList *) pbPayload(result))->size = size;
     return result;
 }
 
@@ -227,7 +227,7 @@ static zvalue List_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue *elems = listElems(list);
 
     for (zint i = 0; i < size; i++) {
-        datMark(elems[i]);
+        pbMark(elems[i]);
     }
 
     return NULL;
@@ -271,7 +271,7 @@ void datBindList(void) {
     datGfnBindCore(GFN_sizeOf, DAT_List, List_sizeOf);
 
     EMPTY_LIST = allocList(0);
-    datImmortalize(EMPTY_LIST);
+    pbImmortalize(EMPTY_LIST);
 }
 
 /* Documented in header. */

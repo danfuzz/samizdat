@@ -63,7 +63,7 @@ static zint bitSize(zint value) {
  * type checking.
  */
 static zint zintValue(zvalue intval) {
-    return ((DatInt *) datPayload(intval))->value;
+    return ((DatInt *) pbPayload(intval))->value;
 }
 
 /**
@@ -71,13 +71,13 @@ static zint zintValue(zvalue intval) {
  */
 zvalue intFrom(zint value) {
     zint size = bitSize(value);
-    zvalue result = datAllocValue(DAT_Int, sizeof(int32_t));
+    zvalue result = pbAllocValue(DAT_Int, sizeof(int32_t));
 
     if (size > MAX_BITS) {
         die("Value too large to fit into int: %lld", value);
     }
 
-    ((DatInt *) datPayload(result))->value = (int32_t) value;
+    ((DatInt *) pbPayload(result))->value = (int32_t) value;
     return result;
 }
 
@@ -181,7 +181,7 @@ void pbBindInt(void) {
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);
-        datImmortalize(SMALL_INTS[i]);
+        pbImmortalize(SMALL_INTS[i]);
     }
 
     DAT_0    = datIntFromZint(0);

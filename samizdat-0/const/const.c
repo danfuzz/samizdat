@@ -48,33 +48,33 @@ void constInit(void) {
 
     datInit();
 
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
 
     #define STR(name, str) \
         STR_##name = datStringFromUtf8(-1, str); \
-        datImmortalize(STR_##name)
+        pbImmortalize(STR_##name)
 
     #define TOK(name, str) \
         STR(name, str); \
         TOK_##name = datDerivFrom(STR_##name, NULL); \
-        datImmortalize(TOK_##name)
+        pbImmortalize(TOK_##name)
 
     #include "const-def.h"
 
     for (zchar ch = 0; ch < 128; ch++) {
         SINGLE_CHAR_STRINGS[ch] = datStringFromZchars(1, &ch);
         SINGLE_CHAR_TOKENS[ch] = datDerivFrom(SINGLE_CHAR_STRINGS[ch], NULL);
-        datImmortalize(SINGLE_CHAR_STRINGS[ch]);
-        datImmortalize(SINGLE_CHAR_TOKENS[ch]);
+        pbImmortalize(SINGLE_CHAR_STRINGS[ch]);
+        pbImmortalize(SINGLE_CHAR_TOKENS[ch]);
     }
 
     generatorInit();
 
-    datFrameReturn(save, NULL);
+    pbFrameReturn(save, NULL);
 
     // Force a garbage collection here, mainly to get a reasonably early
     // failure if gc is broken.
-    datGc();
+    pbGc();
 }
 
 /* Documented in header. */

@@ -79,36 +79,36 @@ static zvalue Default_typeOf(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void pbInitCoreGenerics(void) {
     GFN_call = datGfnFrom(1, 1, datStringFromUtf8(-1, "call"));
-    datImmortalize(GFN_call);
+    pbImmortalize(GFN_call);
 
     GFN_dataOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
     datGfnBindCoreDefault(GFN_dataOf, Default_dataOf);
-    datImmortalize(GFN_dataOf);
+    pbImmortalize(GFN_dataOf);
 
     GFN_debugString = datGfnFrom(1, 1, datStringFromUtf8(-1, "debugString"));
     datGfnBindCoreDefault(GFN_debugString, Default_debugString);
-    datImmortalize(GFN_debugString);
+    pbImmortalize(GFN_debugString);
 
     GFN_eq = datGfnFrom(2, 2, datStringFromUtf8(-1, "eq"));
     datGfnBindCoreDefault(GFN_eq, Default_eq);
-    datImmortalize(GFN_eq);
+    pbImmortalize(GFN_eq);
 
     GFN_gcFree = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
-    datImmortalize(GFN_gcFree);
+    pbImmortalize(GFN_gcFree);
 
     GFN_gcMark = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcMark"));
-    datImmortalize(GFN_gcMark);
+    pbImmortalize(GFN_gcMark);
 
     GFN_order = datGfnFrom(2, 2, datStringFromUtf8(-1, "order"));
-    datImmortalize(GFN_order);
+    pbImmortalize(GFN_order);
 
     GFN_sizeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
     datGfnBindCoreDefault(GFN_sizeOf, Default_sizeOf);
-    datImmortalize(GFN_sizeOf);
+    pbImmortalize(GFN_sizeOf);
 
     GFN_typeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
     datGfnBindCoreDefault(GFN_typeOf, Default_typeOf);
-    datImmortalize(GFN_typeOf);
+    pbImmortalize(GFN_typeOf);
 }
 
 
@@ -159,9 +159,9 @@ zorder datOrder(zvalue v1, zvalue v2) {
         return ZSAME;
     } else if (v1->type == v2->type) {
         zvalue args[2] = { v1, v2 };
-        zstackPointer save = datFrameStart();
+        zstackPointer save = pbFrameStart();
         zorder result = datZintFromInt(datCall(GFN_order, 2, args));
-        datFrameReturn(save, NULL);
+        pbFrameReturn(save, NULL);
         return result;
     } else if (datCoreTypeIs(v1, DAT_Deriv)) {
         // Per spec, derived values always sort after primitives.

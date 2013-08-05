@@ -58,15 +58,15 @@ PRIM_IMPL(ifValueOr) {
 PRIM_IMPL(loop) {
     zvalue function = args[0];
     for (;;) {
-        zstackPointer save = datFrameStart();
+        zstackPointer save = pbFrameStart();
         datCall(function, 0, NULL);
-        datFrameReturn(save, NULL);
+        pbFrameReturn(save, NULL);
     }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(loopReduce) {
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
     zvalue function = args[0];
     zvalue innerArgs = datListFromArray(argCount - 1, &args[1]);
 
@@ -74,7 +74,7 @@ PRIM_IMPL(loopReduce) {
         zvalue nextArgs = datApply(function, innerArgs);
         if (nextArgs != NULL) {
             innerArgs = nextArgs;
-            datFrameReset(save, innerArgs);
+            pbFrameReset(save, innerArgs);
         }
     }
 }

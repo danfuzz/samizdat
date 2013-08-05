@@ -851,26 +851,26 @@ DEF_PARSE(voidableExpression) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression) {
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(unaryExpression); }
     if (result == NULL) { result = PARSE(fnExpression); }
 
-    datFrameReturn(save, result);
+    pbFrameReturn(save, result);
     return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(statement) {
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varDef); }
     if (result == NULL) { result = PARSE(fnDef); }
     if (result == NULL) { result = PARSE(expression); }
 
-    datFrameReturn(save, result);
+    pbFrameReturn(save, result);
     return result;
 }
 

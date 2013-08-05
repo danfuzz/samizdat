@@ -29,9 +29,9 @@ typedef struct {
  */
 static zvalue allocString(zint size) {
     zvalue result =
-        datAllocValue(DAT_String, sizeof(DatString) + size * sizeof(zchar));
+        pbAllocValue(DAT_String, sizeof(DatString) + size * sizeof(zchar));
 
-    ((DatString *) datPayload(result))->size = size;
+    ((DatString *) pbPayload(result))->size = size;
     return result;
 }
 
@@ -39,14 +39,14 @@ static zvalue allocString(zint size) {
  * Gets the size of a string.
  */
 static zint stringSizeOf(zvalue string) {
-    return ((DatString *) datPayload(string))->size;
+    return ((DatString *) pbPayload(string))->size;
 }
 
 /**
  * Gets the array of `zvalue` elements from a list.
  */
 static zchar *stringElems(zvalue string) {
-    return ((DatString *) datPayload(string))->elems;
+    return ((DatString *) pbPayload(string))->elems;
 }
 
 
@@ -254,7 +254,7 @@ void pbBindString(void) {
     datGfnBindCore(GFN_sizeOf,      DAT_String, String_sizeOf);
 
     EMPTY_STRING = allocString(0);
-    datImmortalize(EMPTY_STRING);
+    pbImmortalize(EMPTY_STRING);
 }
 
 /* Documented in header. */

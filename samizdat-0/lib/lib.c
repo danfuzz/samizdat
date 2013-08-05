@@ -79,7 +79,7 @@ static zvalue primitiveContext(void) {
  * return value from running the in-language library `main`.
  */
 static zvalue getLibrary(void) {
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
 
     zvalue libraryFiles = getLibraryFiles();
     zvalue mainText = datMapGet(libraryFiles, STR_MAIN_SAM0);
@@ -88,7 +88,7 @@ static zvalue getLibrary(void) {
     zvalue ctx = primitiveContext();
     zvalue mainFunction = langEval0(ctx, mainProgram);
 
-    datFrameReturn(save, mainFunction);
+    pbFrameReturn(save, mainFunction);
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
