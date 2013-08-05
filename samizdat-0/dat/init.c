@@ -14,19 +14,15 @@
 
 
 /*
- * Helper definitions
- */
-
-/* Documented in header. */
-bool datInitialized = false;
-
-
-/*
  * Exported functions
  */
 
 /* Documented in header. */
 void datInit(void) {
+    if (DAT_Box != NULL) {
+        return;
+    }
+
     zstackPointer save = datFrameStart();
 
     pbInit();
@@ -36,7 +32,5 @@ void datInit(void) {
     datBindUniqlet();
 
     datFrameReturn(save, NULL);
-
-    datInitialized = true;
 }
 

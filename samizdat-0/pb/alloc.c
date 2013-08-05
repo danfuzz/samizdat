@@ -151,8 +151,8 @@ static void enlist(DatHeader *head, zvalue value) {
 static void doGc(void) {
     zint counter; // Used throughout.
 
-    if (!datInitialized) {
-        die("`dat` module not yet initialized.");
+    if (GFN_eq == NULL) {
+        die("`pb` module not yet initialized.");
     }
 
     sanityCheck(false);
