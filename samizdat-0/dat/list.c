@@ -265,10 +265,10 @@ static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindList(void) {
-    datGenBindCore(genEq,     DAT_List, List_eq);
-    datGenBindCore(genGcMark, DAT_List, List_gcMark);
-    datGenBindCore(genOrder,  DAT_List, List_order);
-    datGenBindCore(genSizeOf, DAT_List, List_sizeOf);
+    datGfnBindCore(genEq,     DAT_List, List_eq);
+    datGfnBindCore(genGcMark, DAT_List, List_gcMark);
+    datGfnBindCore(genOrder,  DAT_List, List_order);
+    datGfnBindCore(genSizeOf, DAT_List, List_sizeOf);
 
     EMPTY_LIST = allocList(0);
     datImmortalize(EMPTY_LIST);

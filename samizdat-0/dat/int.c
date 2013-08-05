@@ -175,9 +175,9 @@ static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindInt(void) {
-    datGenBindCore(genEq,     DAT_Int, Int_eq);
-    datGenBindCore(genSizeOf, DAT_Int, Int_sizeOf);
-    datGenBindCore(genOrder,  DAT_Int, Int_order);
+    datGfnBindCore(genEq,     DAT_Int, Int_eq);
+    datGfnBindCore(genSizeOf, DAT_Int, Int_sizeOf);
+    datGfnBindCore(genOrder,  DAT_Int, Int_order);
 
     for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);

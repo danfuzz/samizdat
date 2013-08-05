@@ -216,7 +216,7 @@ static void doGc(void) {
         // Need to grab `item->next` before freeing the item.
         zvalue next = item->next;
 
-        zfunction freer = datGenGet(genGcFree, item);
+        zfunction freer = datGfnFind(genGcFree, item);
         if (freer != NULL) {
             freer(NULL, 1, &item);
         }
@@ -365,7 +365,7 @@ void datMark(zvalue value) {
     value->marked = true;
     enlist(&liveHead, value);
 
-    zfunction marker = datGenGet(genGcMark, value);
+    zfunction marker = datGfnFind(genGcMark, value);
     if (marker != NULL) {
         marker(NULL, 1, &value);
     }

@@ -603,7 +603,7 @@ zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
  * and `function` must be a valid `zfunction`. The type must not have already
  * been bound in the given generic, and the generic must not be sealed.
  */
-void datGenBindCore(zvalue generic, ztype type, zfunction function);
+void datGfnBindCore(zvalue generic, ztype type, zfunction function);
 
 /**
  * Adds a default binding to the given generic. `generic` must be a generic
@@ -611,7 +611,7 @@ void datGenBindCore(zvalue generic, ztype type, zfunction function);
  * have already been bound in the given generic, and the generic must not be
  * sealed.
  */
-void datGenBindCoreDefault(zvalue generic, zfunction function);
+void datGfnBindCoreDefault(zvalue generic, zfunction function);
 
 /**
  * Constructs and returns a generic function with the given argument
@@ -620,13 +620,13 @@ void datGenBindCoreDefault(zvalue generic, zfunction function);
  * `1`, and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue datGenFrom(zint minArgs, zint maxArgs, zvalue name);
+zvalue datGfnFrom(zint minArgs, zint maxArgs, zvalue name);
 
 /**
  * Seal the given generic. This prevents it from gaining any new bindings.
  * `generic` must be a generic function.
  */
-void datGenSeal(zvalue generic);
+void datGfnSeal(zvalue generic);
 
 
 /*

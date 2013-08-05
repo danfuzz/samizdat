@@ -78,36 +78,36 @@ static zvalue Default_typeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datInitCoreGenerics(void) {
-    genCall = datGenFrom(1, 1, datStringFromUtf8(-1, "call"));
+    genCall = datGfnFrom(1, 1, datStringFromUtf8(-1, "call"));
     datImmortalize(genCall);
 
-    genDataOf = datGenFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
-    datGenBindCoreDefault(genDataOf, Default_dataOf);
+    genDataOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
+    datGfnBindCoreDefault(genDataOf, Default_dataOf);
     datImmortalize(genDataOf);
 
-    genDebugString = datGenFrom(1, 1, datStringFromUtf8(-1, "debugString"));
-    datGenBindCoreDefault(genDebugString, Default_debugString);
+    genDebugString = datGfnFrom(1, 1, datStringFromUtf8(-1, "debugString"));
+    datGfnBindCoreDefault(genDebugString, Default_debugString);
     datImmortalize(genDebugString);
 
-    genEq = datGenFrom(2, 2, datStringFromUtf8(-1, "eq"));
-    datGenBindCoreDefault(genEq, Default_eq);
+    genEq = datGfnFrom(2, 2, datStringFromUtf8(-1, "eq"));
+    datGfnBindCoreDefault(genEq, Default_eq);
     datImmortalize(genEq);
 
-    genGcFree = datGenFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
+    genGcFree = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
     datImmortalize(genGcFree);
 
-    genGcMark = datGenFrom(1, 1, datStringFromUtf8(-1, "gcMark"));
+    genGcMark = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcMark"));
     datImmortalize(genGcMark);
 
-    genOrder = datGenFrom(2, 2, datStringFromUtf8(-1, "order"));
+    genOrder = datGfnFrom(2, 2, datStringFromUtf8(-1, "order"));
     datImmortalize(genOrder);
 
-    genSizeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
-    datGenBindCoreDefault(genSizeOf, Default_sizeOf);
+    genSizeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
+    datGfnBindCoreDefault(genSizeOf, Default_sizeOf);
     datImmortalize(genSizeOf);
 
-    genTypeOf = datGenFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
-    datGenBindCoreDefault(genTypeOf, Default_typeOf);
+    genTypeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
+    datGfnBindCoreDefault(genTypeOf, Default_typeOf);
     datImmortalize(genTypeOf);
 }
 

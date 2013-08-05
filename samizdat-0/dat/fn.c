@@ -150,10 +150,10 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindFunction(void) {
-    datGenBindCore(genCall,        DAT_Function, Function_call);
-    datGenBindCore(genDebugString, DAT_Function, Function_debugString);
-    datGenBindCore(genGcMark,      DAT_Function, Function_gcMark);
-    datGenBindCore(genOrder,       DAT_Function, Function_order);
+    datGfnBindCore(genCall,        DAT_Function, Function_call);
+    datGfnBindCore(genDebugString, DAT_Function, Function_debugString);
+    datGfnBindCore(genGcMark,      DAT_Function, Function_gcMark);
+    datGfnBindCore(genOrder,       DAT_Function, Function_order);
 }
 
 /* Documented in header. */
