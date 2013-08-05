@@ -199,3 +199,4 @@ static PbType INFO_Int = {
     .name = "Int"
 };
 ztype PB_Int = &INFO_Int;
+zvalue TYPE_Int = NULL;

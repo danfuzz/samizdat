@@ -52,15 +52,19 @@ extern zvalue DAT_NULL_BOX;
 
 /** Type value for in-model type `Box`. */
 extern ztype DAT_Box;
+extern zvalue TYPE_Box;
 
 /** Type value for in-model type `List`. */
 extern ztype DAT_List;
+extern zvalue TYPE_List;
 
 /** Type value for in-model type `Map`. */
 extern ztype DAT_Map;
+extern zvalue TYPE_Map;
 
 /** Type value for in-model type `Uniqlet`. */
 extern ztype DAT_Uniqlet;
+extern zvalue TYPE_Uniqlet;
 
 
 /*

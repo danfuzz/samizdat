@@ -185,3 +185,4 @@ static PbType INFO_Box = {
     .name = "Box"
 };
 ztype DAT_Box = &INFO_Box;
+zvalue TYPE_Box = NULL;

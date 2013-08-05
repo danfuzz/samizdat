@@ -151,3 +151,4 @@ static PbType INFO_Function = {
     .name = "Function"
 };
 ztype PB_Function = &INFO_Function;
+zvalue TYPE_Function = NULL;

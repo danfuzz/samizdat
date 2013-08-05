@@ -87,15 +87,19 @@ extern zvalue PB_NEG1;
 
 /** Type value for in-model type `Deriv`. */
 extern ztype PB_Deriv;
+extern zvalue TYPE_Deriv;
 
 /** Type value for in-model type `Function`. */
 extern ztype PB_Function;
+extern zvalue TYPE_Function;
 
 /** Type value for in-model type `Generic`. */
 extern ztype PB_Generic;
+extern zvalue TYPE_Generic;
 
 /** Type value for in-model type `Int`. */
 extern ztype PB_Int;
+extern zvalue TYPE_Int;
 
 /** Type value for in-model type `String`. */
 extern ztype PB_String;

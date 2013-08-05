@@ -146,3 +146,4 @@ static PbType INFO_Deriv = {
     .name = "Deriv"
 };
 ztype PB_Deriv = &INFO_Deriv;
+zvalue TYPE_Deriv = NULL;
