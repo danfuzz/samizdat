@@ -16,10 +16,10 @@
  */
 
 /**
- * Calls `datStringNth()`, converting the result into a proper zvalue.
+ * Calls `stringNth()`, converting the result into a proper zvalue.
  */
 static zvalue valueFromStringNth(zvalue string, zint n) {
-    zint ch = datStringNth(string, n);
+    zint ch = stringNth(string, n);
 
     return (ch < 0) ? NULL : constStringFromZchar(ch);
 }
@@ -31,7 +31,7 @@ static zvalue valueFromStringNth(zvalue string, zint n) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(charFromInt) {
-    return constStringFromZchar(datZcharFromInt(args[0]));
+    return constStringFromZchar(zcharFromInt(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -39,7 +39,7 @@ PRIM_IMPL(intFromChar) {
     zvalue string = args[0];
     pbAssertStringSize1(string);
 
-    return datIntFromZint(datStringNth(string, 0));
+    return intFromZint(stringNth(string, 0));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -53,7 +53,7 @@ PRIM_IMPL(stringAdd) {
             return args[0];
         }
         case 2: {
-            return datStringAdd(args[0], args[1]);
+            return stringAdd(args[0], args[1]);
         }
     }
 
@@ -70,7 +70,7 @@ PRIM_IMPL(stringAdd) {
         at += pbSize(args[i]);
     }
 
-    return datStringFromZchars(size, chars);
+    return stringFromZchars(size, chars);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -86,8 +86,8 @@ PRIM_IMPL(stringNth) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringSlice) {
     zvalue string = args[0];
-    zint startIndex = datZintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : pbSize(string);
+    zint startIndex = zintFromInt(args[1]);
+    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : pbSize(string);
 
-    return datStringSlice(string, startIndex, endIndex);
+    return stringSlice(string, startIndex, endIndex);
 }

@@ -262,14 +262,14 @@ void pbAssertValid(zvalue value);
  * Gets the `zchar` of the given int, asserting that the value
  * is in fact an int and in range for same.
  */
-zchar datZcharFromInt(zvalue intval);
+zchar zcharFromInt(zvalue intval);
 
 /**
  * Gets an int value equal to the given `zint`. In this
  * implementation, ints are restricted to only taking on the range
  * of 32-bit signed quantities, when represented as twos-complement.
  */
-zvalue datIntFromZint(zint value);
+zvalue intFromZint(zint value);
 
 /**
  * Given an int, returns the `n`th bit, counting from the least
@@ -278,20 +278,20 @@ zvalue datIntFromZint(zint value);
  * the value's size, then the return value is the sign bit of the
  * value. It is an error if `n < 0`.
  */
-bool datIntGetBit(zvalue intval, zint n);
+bool intGetBit(zvalue intval, zint n);
 
 /**
  * Gets a `zint` equal to the given int value. `intval` must be an
  * int. It is an error if the value is out of range.
  */
-zint datZintFromInt(zvalue intval);
+zint zintFromInt(zvalue intval);
 
 /**
  * Given a 32-bit int value, returns the `n`th bit. This is just like
- * `datIntGetBit()` except using a `zint` value. This function is
+ * `intGetBit()` except using a `zint` value. This function is
  * exported for the convenience of other modules.
  */
-bool datZintGetBit(zint value, zint n);
+bool zintGetBit(zint value, zint n);
 
 
 /*
@@ -302,33 +302,33 @@ bool datZintGetBit(zint value, zint n);
  * Combines the characters of two strings, in order, into a new
  * string.
  */
-zvalue datStringAdd(zvalue str1, zvalue str2);
+zvalue stringAdd(zvalue str1, zvalue str2);
 
 /**
  * Gets the string built from the given array of `zchar`s, of
  * the given size.
  */
-zvalue datStringFromZchars(zint size, const zchar *chars);
+zvalue stringFromZchars(zint size, const zchar *chars);
 
 /**
  * Gets the string resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.
  */
-zvalue datStringFromUtf8(zint stringBytes, const char *string);
+zvalue stringFromUtf8(zint stringBytes, const char *string);
 
 /**
  * Given a string, returns the `n`th element, which is in the
  * range of a 32-bit unsigned int. If `n` is out of range, this
  * returns `-1`.
  */
-zint datStringNth(zvalue string, zint n);
+zint stringNth(zvalue string, zint n);
 
 /**
  * Gets the string consisting of the given "slice" of elements
  * (start inclusive, end exclusive) of the given string.
  */
-zvalue datStringSlice(zvalue string, zint start, zint end);
+zvalue stringSlice(zvalue string, zint start, zint end);
 
 /**
  * Encodes the given string as UTF-8 into the given buffer of the

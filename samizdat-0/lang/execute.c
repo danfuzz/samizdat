@@ -115,7 +115,7 @@ static void bindArguments(Frame *frame, zvalue node,
                 die("Invalid repeat modifier (non-string).");
             }
 
-            switch (datStringNth(repeat, 0)) {
+            switch (stringNth(repeat, 0)) {
                 case '*': {
                     count = argCount - argAt;
                     break;

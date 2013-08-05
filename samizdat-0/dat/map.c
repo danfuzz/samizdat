@@ -383,7 +383,7 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < sz; i++) {
         zorder result = pbOrder(e1[i].key, e2[i].key);
         if (result != ZSAME) {
-            return datIntFromZint(result);
+            return intFromZint(result);
         }
     }
 
@@ -396,7 +396,7 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < sz; i++) {
         zorder result = pbOrder(e1[i].value, e2[i].value);
         if (result != ZSAME) {
-            return datIntFromZint(result);
+            return intFromZint(result);
         }
     }
 
@@ -406,7 +406,7 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue map = args[0];
-    return datIntFromZint(mapSizeOf(map));
+    return intFromZint(mapSizeOf(map));
 }
 
 /* Documented in header. */

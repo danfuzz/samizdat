@@ -103,15 +103,15 @@ static zvalue Function_debugString(zvalue state,
     zvalue function = args[0];
     DatFunction *info = fnInfo(function);
 
-    zvalue result = datStringFromUtf8(-1, "@(Function ");
+    zvalue result = stringFromUtf8(-1, "@(Function ");
 
     if (info->name != NULL) {
-        result = datStringAdd(result, fnCall(GFN_debugString, 1, &info->name));
+        result = stringAdd(result, fnCall(GFN_debugString, 1, &info->name));
     } else {
-        result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
+        result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
     }
 
-    result = datStringAdd(result, datStringFromUtf8(-1, ")"));
+    result = stringAdd(result, stringFromUtf8(-1, ")"));
     return result;
 }
 

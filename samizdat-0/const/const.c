@@ -51,7 +51,7 @@ void constInit(void) {
     zstackPointer save = pbFrameStart();
 
     #define STR(name, str) \
-        STR_##name = datStringFromUtf8(-1, str); \
+        STR_##name = stringFromUtf8(-1, str); \
         pbImmortalize(STR_##name)
 
     #define TOK(name, str) \
@@ -62,7 +62,7 @@ void constInit(void) {
     #include "const-def.h"
 
     for (zchar ch = 0; ch < 128; ch++) {
-        SINGLE_CHAR_STRINGS[ch] = datStringFromZchars(1, &ch);
+        SINGLE_CHAR_STRINGS[ch] = stringFromZchars(1, &ch);
         SINGLE_CHAR_TOKENS[ch] = datDerivFrom(SINGLE_CHAR_STRINGS[ch], NULL);
         pbImmortalize(SINGLE_CHAR_STRINGS[ch]);
         pbImmortalize(SINGLE_CHAR_TOKENS[ch]);
@@ -82,7 +82,7 @@ zvalue constStringFromZchar(zchar value) {
     if (value < 128) {
         return SINGLE_CHAR_STRINGS[value];
     } else {
-        return datStringFromZchars(1, &value);
+        return stringFromZchars(1, &value);
     }
 }
 
@@ -92,7 +92,7 @@ zvalue constValueFrom(zvalue type, zvalue data) {
         if (pbCoreTypeIs(type, DAT_String) && (pbSize(type) == 1)) {
             // This is a type-only value with a one-character string for
             // the type. We have many of these cached.
-            zchar typeCh = datStringNth(type, 0);
+            zchar typeCh = stringNth(type, 0);
             if (typeCh < 128) {
                 return SINGLE_CHAR_TOKENS[typeCh];
             }

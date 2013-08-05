@@ -201,15 +201,15 @@ static zvalue Generic_debugString(zvalue state,
     zvalue generic = args[0];
     DatGeneric *info = gfnInfo(generic);
 
-    zvalue result = datStringFromUtf8(-1, "@(Generic ");
+    zvalue result = stringFromUtf8(-1, "@(Generic ");
 
     if (info->name != NULL) {
-        result = datStringAdd(result, fnCall(GFN_debugString, 1, &info->name));
+        result = stringAdd(result, fnCall(GFN_debugString, 1, &info->name));
     } else {
-        result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
+        result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
     }
 
-    result = datStringAdd(result, datStringFromUtf8(-1, ")"));
+    result = stringAdd(result, stringFromUtf8(-1, ")"));
     return result;
 }
 

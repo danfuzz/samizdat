@@ -39,7 +39,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : datStringNth(state->str, state->at);
+    return isEof(state) ? -1 : stringNth(state->str, state->at);
 }
 
 /**
@@ -101,7 +101,7 @@ static zvalue tokenizeInt(ParseState *state) {
         die("Invalid int token (no digits).");
     }
 
-    zvalue intval = datIntFromZint(value);
+    zvalue intval = intFromZint(value);
     return datDerivFrom(STR_INT, intval);
 }
 
@@ -133,7 +133,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         return NULL;
     }
 
-    zvalue string = datStringFromZchars(size, chars);
+    zvalue string = stringFromZchars(size, chars);
 
     switch (chars[0]) {
         case 'd': { if (pbEq(string, STR_DEF))    return TOK_DEF;    break; }
@@ -190,7 +190,7 @@ static zvalue tokenizeString(ParseState *state) {
         read(state);
     }
 
-    zvalue string = datStringFromZchars(size, chars);
+    zvalue string = stringFromZchars(size, chars);
     return datDerivFrom(STR_STRING, string);
 }
 

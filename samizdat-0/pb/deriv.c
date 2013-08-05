@@ -112,13 +112,13 @@ static zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
     zorder result = pbOrder(info1->type, info2->type);
 
     if (result != ZSAME) {
-        return datIntFromZint(result);
+        return intFromZint(result);
     } else if (info1->data == NULL) {
         return (info2->data == NULL) ? DAT_0 : DAT_NEG1;
     } else if (info2->data == NULL) {
         return DAT_1;
     } else {
-        return datIntFromZint(pbOrder(info1->data, info2->data));
+        return intFromZint(pbOrder(info1->data, info2->data));
     }
 }
 

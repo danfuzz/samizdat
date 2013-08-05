@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 
     args[0] = context;
     for (int i = 1; i < argc; i++) {
-        args[i] = datStringFromUtf8(-1, argv[i]);
+        args[i] = stringFromUtf8(-1, argv[i]);
     }
     zvalue argsList = datListFromArray(argc, args);
 
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     zvalue result = fnApply(samCommandLine, argsList);
 
     if ((result != NULL) && (pbCoreTypeIs(result, DAT_Int))) {
-        exit((int) datZintFromInt(result));
+        exit((int) zintFromInt(result));
     }
 
     return 0;

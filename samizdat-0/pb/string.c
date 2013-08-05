@@ -55,7 +55,7 @@ static zchar *stringElems(zvalue string) {
  */
 
 /* Documented in header. */
-zvalue datStringAdd(zvalue str1, zvalue str2) {
+zvalue stringAdd(zvalue str1, zvalue str2) {
     pbAssertString(str1);
     pbAssertString(str2);
 
@@ -78,7 +78,7 @@ zvalue datStringAdd(zvalue str1, zvalue str2) {
 }
 
 /* Documented in header. */
-zvalue datStringFromZchars(zint size, const zchar *chars) {
+zvalue stringFromZchars(zint size, const zchar *chars) {
     if (size == 0) {
         return EMPTY_STRING;
     }
@@ -90,7 +90,7 @@ zvalue datStringFromZchars(zint size, const zchar *chars) {
 }
 
 /* Documented in header. */
-zvalue datStringFromUtf8(zint stringBytes, const char *string) {
+zvalue stringFromUtf8(zint stringBytes, const char *string) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
     } else if (stringBytes < 0) {
@@ -109,7 +109,7 @@ zvalue datStringFromUtf8(zint stringBytes, const char *string) {
 }
 
 /* Documented in header. */
-zint datStringNth(zvalue string, zint n) {
+zint stringNth(zvalue string, zint n) {
     pbAssertString(string);
 
     if ((n < 0) || (n >= stringSizeOf(string))) {
@@ -120,11 +120,11 @@ zint datStringNth(zvalue string, zint n) {
 }
 
 /* Documented in header. */
-zvalue datStringSlice(zvalue string, zint start, zint end) {
+zvalue stringSlice(zvalue string, zint start, zint end) {
     pbAssertString(string);
     pbAssertSliceRange(stringSizeOf(string), start, end);
 
-    return datStringFromZchars(end - start, &stringElems(string)[start]);
+    return stringFromZchars(end - start, &stringElems(string)[start]);
 }
 
 /* Documented in header. */
@@ -181,10 +181,10 @@ zvalue EMPTY_STRING = NULL;
 static zvalue String_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue string = args[0];
-    zvalue quote = datStringFromUtf8(1, "\"");
+    zvalue quote = stringFromUtf8(1, "\"");
 
-    zvalue result = datStringAdd(quote, string);
-    result = datStringAdd(result, quote);
+    zvalue result = stringAdd(quote, string);
+    result = stringAdd(result, quote);
 
     return result;
 }
@@ -243,7 +243,7 @@ static zvalue String_order(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue string = args[0];
-    return datIntFromZint(stringSizeOf(string));
+    return intFromZint(stringSizeOf(string));
 }
 
 /* Documented in header. */

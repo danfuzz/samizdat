@@ -30,11 +30,11 @@ static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
     zvalue intValue = args[0];
 
     zint size = pbSize(intValue);
-    zint raw = datZintFromInt(intValue);
+    zint raw = zintFromInt(intValue);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        zint bit = datZintGetBit(raw, i);
+        zint bit = zintGetBit(raw, i);
         arr[i] = (bit == 0) ? DAT_0 : DAT_1;
     }
 
@@ -76,7 +76,7 @@ static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        arr[i] = constStringFromZchar(datStringNth(string, i));
+        arr[i] = constStringFromZchar(stringNth(string, i));
     }
 
     return datListFromArray(size, arr);

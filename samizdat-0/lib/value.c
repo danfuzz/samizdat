@@ -35,7 +35,7 @@ static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
  * Does most of the work of `coreOrderIs` and `totalOrderIs`.
  */
 static bool doOrderIs(zint argCount, const zvalue *args) {
-    zorder want = datZintFromInt(args[2]);
+    zorder want = zintFromInt(args[2]);
 
     if ((argCount == 3) && (want == ZSAME)) {
         return pbEq(args[0], args[1]);
@@ -44,7 +44,7 @@ static bool doOrderIs(zint argCount, const zvalue *args) {
     zorder comp = pbOrder(args[0], args[1]);
 
     return (comp == want) ||
-        ((argCount == 4) && (comp == datZintFromInt(args[3])));
+        ((argCount == 4) && (comp == zintFromInt(args[3])));
 }
 
 
@@ -58,7 +58,7 @@ PRIM_IMPL(coreOrder) {
     zvalue arg1 = args[1];
 
     coreOrderTypeCheck(arg0, arg1);
-    return datIntFromZint(pbOrder(arg0, arg1));
+    return intFromZint(pbOrder(arg0, arg1));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -78,7 +78,7 @@ PRIM_IMPL(isCoreValue) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(totalOrder) {
-    return datIntFromZint(pbOrder(args[0], args[1]));
+    return intFromZint(pbOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

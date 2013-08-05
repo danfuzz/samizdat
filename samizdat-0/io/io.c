@@ -53,7 +53,7 @@ zvalue ioFlatCwd(void) {
         die("Trouble with getcwd(): %s", strerror(errno));
     }
 
-    return datStringFromUtf8(-1, buf);
+    return stringFromUtf8(-1, buf);
 }
 
 /* Documented in header. */
@@ -89,7 +89,7 @@ zvalue ioFlatReadLink(zvalue flatPath) {
         die("Strange readlink() result: %ld", (long) linkResult);
     }
 
-    return datStringFromUtf8(linkSize, linkPath);
+    return stringFromUtf8(linkSize, linkPath);
 }
 
 /* Documented in header. */
@@ -108,7 +108,7 @@ zvalue ioFlatReadFileUtf8(zvalue flatPath) {
 
     fclose(in);
 
-    return datStringFromUtf8(amt, buf);
+    return stringFromUtf8(amt, buf);
 }
 
 /* Documented in header. */

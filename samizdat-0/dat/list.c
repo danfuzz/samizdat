@@ -246,7 +246,7 @@ static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < sz; i++) {
         zorder result = pbOrder(e1[i], e2[i]);
         if (result != ZSAME) {
-            return datIntFromZint(result);
+            return intFromZint(result);
         }
     }
 
@@ -260,7 +260,7 @@ static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue list = args[0];
-    return datIntFromZint(listSizeOf(list));
+    return intFromZint(listSizeOf(list));
 }
 
 /* Documented in header. */

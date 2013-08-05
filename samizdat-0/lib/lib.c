@@ -30,8 +30,8 @@ static zvalue getLibraryFiles(void) {
         extern char name##_##ext[]; \
         unsigned int len = name##_##ext##_len; \
         char *text = name##_##ext; \
-        zvalue datName = datStringFromUtf8(-1, #name "." #ext); \
-        zvalue datText = datStringFromUtf8(len, text); \
+        zvalue datName = stringFromUtf8(-1, #name "." #ext); \
+        zvalue datText = stringFromUtf8(len, text); \
         result = datMapPut(result, datName, datText); \
     } while(0)
 
@@ -51,14 +51,14 @@ static zvalue primitiveContext(void) {
 
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
-            zvalue name = datStringFromUtf8(-1, #name); \
+            zvalue name = stringFromUtf8(-1, #name); \
             ctx = datMapPut(ctx, \
                 name, fnFrom(minArgs, maxArgs, prim_##name, NULL, name)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
         do { \
-            zvalue name = datStringFromUtf8(-1, #name); \
+            zvalue name = stringFromUtf8(-1, #name); \
             ctx = datMapPut(ctx, name, value); \
         } while(0)
 

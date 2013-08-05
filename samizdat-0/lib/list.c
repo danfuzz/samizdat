@@ -43,7 +43,7 @@ PRIM_IMPL(listDelNth) {
         return args[0];
     }
 
-    return datListDelNth(args[0], datZintFromInt(args[1]));
+    return datListDelNth(args[0], zintFromInt(args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -76,7 +76,7 @@ PRIM_IMPL(listGet) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listInsNth) {
-    return datListInsNth(args[0], datZintFromInt(args[1]), args[2]);
+    return datListInsNth(args[0], zintFromInt(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -86,7 +86,7 @@ PRIM_IMPL(listNth) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listPutNth) {
-    return datListPutNth(args[0], datZintFromInt(args[1]), args[2]);
+    return datListPutNth(args[0], zintFromInt(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -109,8 +109,8 @@ PRIM_IMPL(listReverse) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listSlice) {
     zvalue list = args[0];
-    zint startIndex = datZintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : pbSize(list);
+    zint startIndex = zintFromInt(args[1]);
+    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : pbSize(list);
 
     return datListSlice(list, startIndex, endIndex);
 }

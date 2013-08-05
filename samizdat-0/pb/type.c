@@ -44,7 +44,7 @@ zvalue datTypeFromZtype(ztype type) {
     zvalue result = type->nameValue;
 
     if (result == NULL) {
-        result = datStringFromUtf8(-1, type->name);
+        result = stringFromUtf8(-1, type->name);
         ((PbType *) type)->nameValue = result;  // Cast to discard `const`.
         pbImmortalize(result);
     }

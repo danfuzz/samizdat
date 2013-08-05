@@ -29,7 +29,7 @@ static zvalue SMALL_INTS[DAT_SMALL_INT_COUNT];
  * Int structure.
  */
 typedef struct {
-    /** Int value. See `datIntFromZint()` about range restriction. */
+    /** Int value. See `intFromZint()` about range restriction. */
     int32_t value;
 } DatInt;
 
@@ -87,8 +87,8 @@ zvalue intFrom(zint value) {
  */
 
 /* Documented in header. */
-zchar datZcharFromInt(zvalue intval) {
-    zint value = datZintFromInt(intval);
+zchar zcharFromInt(zvalue intval) {
+    zint value = zintFromInt(intval);
 
     if ((value < 0) || (value >= 0x100000000)) {
         die("Invalid int value for character: %lld", value);
@@ -98,7 +98,7 @@ zchar datZcharFromInt(zvalue intval) {
 }
 
 /* Documented in header. */
-zvalue datIntFromZint(zint value) {
+zvalue intFromZint(zint value) {
     if ((value >= DAT_SMALL_INT_MIN) && (value < DAT_SMALL_INT_MAX)) {
         return SMALL_INTS[value - DAT_SMALL_INT_MIN];
     } else {
@@ -107,19 +107,19 @@ zvalue datIntFromZint(zint value) {
 }
 
 /* Documented in header. */
-bool datIntGetBit(zvalue intval, zint n) {
+bool intGetBit(zvalue intval, zint n) {
     pbAssertInt(intval);
-    return datZintGetBit(zintValue(intval), n);
+    return zintGetBit(zintValue(intval), n);
 }
 
 /* Documented in header. */
-zint datZintFromInt(zvalue intval) {
+zint zintFromInt(zvalue intval) {
     pbAssertInt(intval);
     return zintValue(intval);
 }
 
 /* Documented in header. */
-bool datZintGetBit(zint value, zint n) {
+bool zintGetBit(zint value, zint n) {
     if (n < 0) {
         die("Attempt to access negative bit index: %lld", n);
     } else if (n >= MAX_BITS) {
@@ -170,7 +170,7 @@ static zvalue Int_order(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue intval = args[0];
 
-    return datIntFromZint(bitSize(zintValue(intval)));
+    return intFromZint(bitSize(zintValue(intval)));
 }
 
 /* Documented in header. */
@@ -184,9 +184,9 @@ void pbBindInt(void) {
         pbImmortalize(SMALL_INTS[i]);
     }
 
-    DAT_0    = datIntFromZint(0);
-    DAT_1    = datIntFromZint(1);
-    DAT_NEG1 = datIntFromZint(-1);
+    DAT_0    = intFromZint(0);
+    DAT_1    = intFromZint(1);
+    DAT_NEG1 = intFromZint(-1);
 }
 
 /* Documented in header. */
