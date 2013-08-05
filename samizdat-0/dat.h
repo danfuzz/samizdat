@@ -336,7 +336,7 @@ zvalue boxYield(void);
  * Calls a function with the given list of arguments. `function` must be
  * a function (regular or generic), and `args` must be a list.
  */
-zvalue datApply(zvalue function, zvalue args);
+zvalue fnApply(zvalue function, zvalue args);
 
 
 /*

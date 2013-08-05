@@ -96,7 +96,7 @@ static zvalue collectGenerator(zvalue state, zint argc,
     zvalue box = boxMutable();
 
     for (at = 0; /*at*/; at++) {
-        zvalue nextGen = datCall(generator, 1, &box);
+        zvalue nextGen = fnCall(generator, 1, &box);
 
         if (nextGen == NULL) {
             break;
@@ -121,13 +121,13 @@ static zvalue collectGenerator(zvalue state, zint argc,
 
 /* Documented in header. */
 void generatorInit(void) {
-    GFN_collect = datGfnFrom(1, 1, STR_COLLECT);
-    datGfnBindCore(GFN_collect, DAT_Int,      collectInt);
-    datGfnBindCore(GFN_collect, DAT_List,     collectList);
-    datGfnBindCore(GFN_collect, DAT_Map,      collectMap);
-    datGfnBindCore(GFN_collect, DAT_String,   collectString);
-    datGfnBindCore(GFN_collect, DAT_Function, collectGenerator);
-    datGfnSeal(GFN_collect);
+    GFN_collect = gfnFrom(1, 1, STR_COLLECT);
+    gfnBindCore(GFN_collect, DAT_Int,      collectInt);
+    gfnBindCore(GFN_collect, DAT_List,     collectList);
+    gfnBindCore(GFN_collect, DAT_Map,      collectMap);
+    gfnBindCore(GFN_collect, DAT_String,   collectString);
+    gfnBindCore(GFN_collect, DAT_Function, collectGenerator);
+    gfnSeal(GFN_collect);
     pbImmortalize(GFN_collect);
 }
 
@@ -138,5 +138,5 @@ void generatorInit(void) {
 
 /* Documented in header. */
 zvalue constCollectGenerator(zvalue value) {
-    return datCall(GFN_collect, 1, &value);
+    return fnCall(GFN_collect, 1, &value);
 }

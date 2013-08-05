@@ -93,7 +93,7 @@ zvalue nleCall(znleFunction function, void *state) {
 
     if (sigsetjmp(nleState->jumpBuf, 0) == 0) {
         // Here is where end up the first time `setjmp` returns.
-        zvalue exitFunction = datFnFrom(
+        zvalue exitFunction = fnFrom(
             0, 1,
             nonlocalExit,
             datUniqletWith(&NLE_DISPATCH, nleState),

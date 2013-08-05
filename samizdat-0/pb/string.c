@@ -248,10 +248,10 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindString(void) {
-    datGfnBindCore(GFN_debugString, DAT_String, String_debugString);
-    datGfnBindCore(GFN_eq,          DAT_String, String_eq);
-    datGfnBindCore(GFN_order,       DAT_String, String_order);
-    datGfnBindCore(GFN_sizeOf,      DAT_String, String_sizeOf);
+    gfnBindCore(GFN_debugString, DAT_String, String_debugString);
+    gfnBindCore(GFN_eq,          DAT_String, String_eq);
+    gfnBindCore(GFN_order,       DAT_String, String_order);
+    gfnBindCore(GFN_sizeOf,      DAT_String, String_sizeOf);
 
     EMPTY_STRING = allocString(0);
     pbImmortalize(EMPTY_STRING);

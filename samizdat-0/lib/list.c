@@ -58,7 +58,7 @@ PRIM_IMPL(listFilter) {
 
     for (zint i = 0; i < size; i++) {
         zvalue elem = datListNth(list, i);
-        zvalue one = datCall(function, 1, &elem);
+        zvalue one = fnCall(function, 1, &elem);
 
         if (one != NULL) {
             result[at] = one;

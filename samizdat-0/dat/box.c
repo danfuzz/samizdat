@@ -168,8 +168,8 @@ static zvalue Box_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindBox(void) {
-    datGfnBindCore(GFN_gcMark, DAT_Box, Box_gcMark);
-    datGfnBindCore(GFN_order,  DAT_Box, Box_order);
+    gfnBindCore(GFN_gcMark, DAT_Box, Box_gcMark);
+    gfnBindCore(GFN_order,  DAT_Box, Box_order);
 
     DAT_NULL_BOX = boxMutable(); // Note: Explicit `==` check in `boxSet`.
     pbImmortalize(DAT_NULL_BOX);

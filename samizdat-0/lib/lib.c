@@ -53,7 +53,7 @@ static zvalue primitiveContext(void) {
         do { \
             zvalue name = datStringFromUtf8(-1, #name); \
             ctx = datMapPut(ctx, \
-                name, datFnFrom(minArgs, maxArgs, prim_##name, NULL, name)); \
+                name, fnFrom(minArgs, maxArgs, prim_##name, NULL, name)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
@@ -92,7 +92,7 @@ static zvalue getLibrary(void) {
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    return datCall(mainFunction, 1, &libraryFiles);
+    return fnCall(mainFunction, 1, &libraryFiles);
 }
 
 

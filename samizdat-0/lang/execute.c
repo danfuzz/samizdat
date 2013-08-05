@@ -279,7 +279,7 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
         *resultClosure = closure;
     }
 
-    return datFnFrom(
+    return fnFrom(
         0, -1,
         callClosure,
         datUniqletWith(&CLOSURE_DISPATCH, closure),
@@ -419,9 +419,9 @@ static zvalue execCall(Frame *frame, zvalue call) {
             }
         }
 
-        return datCall(functionId, fullCount, fullArgs);
+        return fnCall(functionId, fullCount, fullArgs);
     } else {
-        return datCall(functionId, argCount, args);
+        return fnCall(functionId, argCount, args);
     }
 }
 

@@ -365,7 +365,7 @@ void datZcharsFromString(zchar *result, zvalue string);
  * a function (regular or generic), and `argCount` must be non-negative.
  * If `argCount` is positive, then `args` must not be `NULL`.
  */
-zvalue datCall(zvalue function, zint argCount, const zvalue *args);
+zvalue fnCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
  * Constructs and returns a function with the given argument
@@ -374,7 +374,7 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args);
  * and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
+zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         zvalue name);
 
 
@@ -388,7 +388,7 @@ zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
  * and `function` must be a valid `zfunction`. The type must not have already
  * been bound in the given generic, and the generic must not be sealed.
  */
-void datGfnBindCore(zvalue generic, ztype type, zfunction function);
+void gfnBindCore(zvalue generic, ztype type, zfunction function);
 
 /**
  * Adds a default binding to the given generic. `generic` must be a generic
@@ -396,7 +396,7 @@ void datGfnBindCore(zvalue generic, ztype type, zfunction function);
  * have already been bound in the given generic, and the generic must not be
  * sealed.
  */
-void datGfnBindCoreDefault(zvalue generic, zfunction function);
+void gfnBindCoreDefault(zvalue generic, zfunction function);
 
 /**
  * Constructs and returns a generic function with the given argument
@@ -405,13 +405,13 @@ void datGfnBindCoreDefault(zvalue generic, zfunction function);
  * `1`, and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue datGfnFrom(zint minArgs, zint maxArgs, zvalue name);
+zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name);
 
 /**
  * Seal the given generic. This prevents it from gaining any new bindings.
  * `generic` must be a generic function.
  */
-void datGfnSeal(zvalue generic);
+void gfnSeal(zvalue generic);
 
 
 /*

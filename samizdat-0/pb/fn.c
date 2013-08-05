@@ -56,7 +56,7 @@ static DatFunction *fnInfo(zvalue function) {
  */
 
 /* Documented in header. */
-zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
+zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         zvalue name) {
     if ((minArgs < 0) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
@@ -106,7 +106,7 @@ static zvalue Function_debugString(zvalue state,
     zvalue result = datStringFromUtf8(-1, "@(Function ");
 
     if (info->name != NULL) {
-        result = datStringAdd(result, datCall(GFN_debugString, 1, &info->name));
+        result = datStringAdd(result, fnCall(GFN_debugString, 1, &info->name));
     } else {
         result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
     }
@@ -135,10 +135,10 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindFunction(void) {
-    datGfnBindCore(GFN_call,        DAT_Function, Function_call);
-    datGfnBindCore(GFN_debugString, DAT_Function, Function_debugString);
-    datGfnBindCore(GFN_gcMark,      DAT_Function, Function_gcMark);
-    datGfnBindCore(GFN_order,       DAT_Function, Function_order);
+    gfnBindCore(GFN_call,        DAT_Function, Function_call);
+    gfnBindCore(GFN_debugString, DAT_Function, Function_debugString);
+    gfnBindCore(GFN_gcMark,      DAT_Function, Function_gcMark);
+    gfnBindCore(GFN_order,       DAT_Function, Function_order);
 }
 
 /* Documented in header. */

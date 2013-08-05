@@ -87,7 +87,7 @@ zfunction datGfnFind(zvalue generic, zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
+zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);
     } else if ((argCount != 0) && (args == NULL)) {
@@ -113,7 +113,7 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void datGfnBindCore(zvalue generic, ztype type, zfunction function) {
+void gfnBindCore(zvalue generic, ztype type, zfunction function) {
     pbAssertGeneric(generic);
 
     DatGeneric *info = gfnInfo(generic);
@@ -129,7 +129,7 @@ void datGfnBindCore(zvalue generic, ztype type, zfunction function) {
 }
 
 /* Documented in header. */
-void datGfnBindCoreDefault(zvalue generic, zfunction function) {
+void gfnBindCoreDefault(zvalue generic, zfunction function) {
     pbAssertGeneric(generic);
 
     DatGeneric *info = gfnInfo(generic);
@@ -144,7 +144,7 @@ void datGfnBindCoreDefault(zvalue generic, zfunction function) {
 }
 
 /* Documented in header. */
-zvalue datGfnFrom(zint minArgs, zint maxArgs, zvalue name) {
+zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
     if ((minArgs < 1) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
@@ -164,7 +164,7 @@ zvalue datGfnFrom(zint minArgs, zint maxArgs, zvalue name) {
 }
 
 /* Documented in header. */
-void datGfnSeal(zvalue generic) {
+void gfnSeal(zvalue generic) {
     pbAssertGeneric(generic);
     gfnInfo(generic)->sealed = true;
 }
@@ -204,7 +204,7 @@ static zvalue Generic_debugString(zvalue state,
     zvalue result = datStringFromUtf8(-1, "@(Generic ");
 
     if (info->name != NULL) {
-        result = datStringAdd(result, datCall(GFN_debugString, 1, &info->name));
+        result = datStringAdd(result, fnCall(GFN_debugString, 1, &info->name));
     } else {
         result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
     }
@@ -232,10 +232,10 @@ static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindGeneric(void) {
-    datGfnBindCore(GFN_call,        DAT_Generic, Generic_call);
-    datGfnBindCore(GFN_debugString, DAT_Generic, Generic_debugString);
-    datGfnBindCore(GFN_gcMark,      DAT_Generic, Generic_gcMark);
-    datGfnBindCore(GFN_order,       DAT_Generic, Generic_order);
+    gfnBindCore(GFN_call,        DAT_Generic, Generic_call);
+    gfnBindCore(GFN_debugString, DAT_Generic, Generic_debugString);
+    gfnBindCore(GFN_gcMark,      DAT_Generic, Generic_gcMark);
+    gfnBindCore(GFN_order,       DAT_Generic, Generic_order);
 }
 
 /* Documented in header. */

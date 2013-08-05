@@ -411,10 +411,10 @@ static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindMap(void) {
-    datGfnBindCore(GFN_eq,     DAT_Map, Map_eq);
-    datGfnBindCore(GFN_gcMark, DAT_Map, Map_gcMark);
-    datGfnBindCore(GFN_order,  DAT_Map, Map_order);
-    datGfnBindCore(GFN_sizeOf, DAT_Map, Map_sizeOf);
+    gfnBindCore(GFN_eq,     DAT_Map, Map_eq);
+    gfnBindCore(GFN_gcMark, DAT_Map, Map_gcMark);
+    gfnBindCore(GFN_order,  DAT_Map, Map_order);
+    gfnBindCore(GFN_sizeOf, DAT_Map, Map_sizeOf);
 
     EMPTY_MAP = allocMap(0);
     pbImmortalize(EMPTY_MAP);

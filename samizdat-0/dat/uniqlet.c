@@ -120,9 +120,9 @@ static zvalue Uniqlet_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindUniqlet(void) {
-    datGfnBindCore(GFN_gcFree, DAT_Uniqlet, Uniqlet_gcFree);
-    datGfnBindCore(GFN_gcMark, DAT_Uniqlet, Uniqlet_gcMark);
-    datGfnBindCore(GFN_order,  DAT_Uniqlet, Uniqlet_order);
+    gfnBindCore(GFN_gcFree, DAT_Uniqlet, Uniqlet_gcFree);
+    gfnBindCore(GFN_gcMark, DAT_Uniqlet, Uniqlet_gcMark);
+    gfnBindCore(GFN_order,  DAT_Uniqlet, Uniqlet_order);
 }
 
 /* Documented in header. */
