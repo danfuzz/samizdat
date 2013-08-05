@@ -24,7 +24,7 @@ enum {
 };
 
 /** Array of all immortal values. */
-static zvalue immortals[DAT_MAX_IMMORTALS];
+static zvalue immortals[PB_MAX_IMMORTALS];
 
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
@@ -33,7 +33,7 @@ static zint immortalsSize = 0;
  * Stack of references. This is what is scanned in lieu of scanning
  * the "real" stack during gc.
  */
-static zvalue stack[DAT_MAX_STACK];
+static zvalue stack[PB_MAX_STACK];
 
 /** Current stack size. */
 static zint stackSize = 0;
@@ -253,7 +253,7 @@ static void doGc(void) {
 
 /* Documented in header. */
 zvalue pbAllocValue(ztype type, zint extraBytes) {
-    if (allocationCount >= DAT_ALLOCATIONS_PER_GC) {
+    if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
         pbGc();
     } else {
         sanityCheck(false);
@@ -280,7 +280,7 @@ zstackPointer pbFrameStart(void) {
 
 /* Documented in header. */
 void pbFrameAdd(zvalue value) {
-    if (stackSize >= DAT_MAX_STACK) {
+    if (stackSize >= PB_MAX_STACK) {
         die("Value stack overflow.");
     }
 
@@ -319,7 +319,7 @@ void pbGc(void) {
 
 /* Documented in header. */
 void pbImmortalize(zvalue value) {
-    if (immortalsSize == DAT_MAX_IMMORTALS) {
+    if (immortalsSize == PB_MAX_IMMORTALS) {
         die("Too many immortal values!");
     }
 

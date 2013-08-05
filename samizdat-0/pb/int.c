@@ -19,11 +19,11 @@ enum {
     MAX_BITS = 32,
 
     /** Max (exclusive) small int value. */
-    DAT_SMALL_INT_MAX = DAT_SMALL_INT_MIN + DAT_SMALL_INT_COUNT
+    PB_SMALL_INT_MAX = PB_SMALL_INT_MIN + PB_SMALL_INT_COUNT
 };
 
 /** Array of small integer values. */
-static zvalue SMALL_INTS[DAT_SMALL_INT_COUNT];
+static zvalue SMALL_INTS[PB_SMALL_INT_COUNT];
 
 /**
  * Int structure.
@@ -99,8 +99,8 @@ zchar zcharFromInt(zvalue intval) {
 
 /* Documented in header. */
 zvalue intFromZint(zint value) {
-    if ((value >= DAT_SMALL_INT_MIN) && (value < DAT_SMALL_INT_MAX)) {
-        return SMALL_INTS[value - DAT_SMALL_INT_MIN];
+    if ((value >= PB_SMALL_INT_MIN) && (value < PB_SMALL_INT_MAX)) {
+        return SMALL_INTS[value - PB_SMALL_INT_MIN];
     } else {
         return intFrom(value);
     }
@@ -179,8 +179,8 @@ void pbBindInt(void) {
     gfnBindCore(GFN_sizeOf, PB_Int, Int_sizeOf);
     gfnBindCore(GFN_order,  PB_Int, Int_order);
 
-    for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
-        SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);
+    for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
+        SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);
         pbImmortalize(SMALL_INTS[i]);
     }
 
