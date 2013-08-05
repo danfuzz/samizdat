@@ -59,7 +59,7 @@ static void closureFree(void *state) {
 }
 
 /** Uniqlet dispatch table for closures. */
-static DatUniqletDispatch CLOSURE_DISPATCH = {
+static UniqletInfoDispatch CLOSURE_DISPATCH = {
     closureMark,
     closureFree
 };

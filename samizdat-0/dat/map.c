@@ -24,16 +24,16 @@ typedef struct {
 
     /** List of mappings, in key-sorted order. */
     zmapping elems[/*size*/];
-} DatMap;
+} MapInfo;
 
 /**
  * Allocates a map of the given size.
  */
 static zvalue allocMap(zint size) {
     zvalue result =
-        pbAllocValue(DAT_Map, sizeof(DatMap) + size * sizeof(zmapping));
+        pbAllocValue(DAT_Map, sizeof(MapInfo) + size * sizeof(zmapping));
 
-    ((DatMap *) pbPayload(result))->size = size;
+    ((MapInfo *) pbPayload(result))->size = size;
     return result;
 }
 
@@ -41,14 +41,14 @@ static zvalue allocMap(zint size) {
  * Gets the size of a map.
  */
 static zint mapSizeOf(zvalue map) {
-    return ((DatMap *) pbPayload(map))->size;
+    return ((MapInfo *) pbPayload(map))->size;
 }
 
 /**
  * Gets the elements array from a map.
  */
 static zmapping *mapElems(zvalue map) {
-    return ((DatMap *) pbPayload(map))->elems;
+    return ((MapInfo *) pbPayload(map))->elems;
 }
 
 /**
@@ -204,7 +204,7 @@ zvalue mapAddArray(zvalue map, zint size, const zmapping *mappings) {
         at++;
     }
 
-    ((DatMap *) pbPayload(result))->size = at;
+    ((MapInfo *) pbPayload(result))->size = at;
     return result;
 }
 

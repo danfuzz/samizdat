@@ -21,17 +21,17 @@ typedef struct {
     zint id;
 
     /** Dispatch table. */
-    DatUniqletDispatch *dispatch;
+    UniqletInfoDispatch *dispatch;
 
     /** Sealed box payload value. */
     void *state;
-} DatUniqlet;
+} UniqletInfo;
 
 
 /**
  * Gets a pointer to the info of a uniqlet.
  */
-static DatUniqlet *uniInfo(zvalue uniqlet) {
+static UniqletInfo *uniInfo(zvalue uniqlet) {
     return pbPayload(uniqlet);
 }
 
@@ -39,10 +39,10 @@ static DatUniqlet *uniInfo(zvalue uniqlet) {
  * Allocates and initializes a uniqlet, without doing error-checking
  * on the arguments.
  */
-static zvalue newUniqlet(DatUniqletDispatch *dispatch, void *state) {
-    zvalue result = pbAllocValue(DAT_Uniqlet, sizeof(DatUniqlet));
+static zvalue newUniqlet(UniqletInfoDispatch *dispatch, void *state) {
+    zvalue result = pbAllocValue(DAT_Uniqlet, sizeof(UniqletInfo));
 
-    DatUniqlet *info = uniInfo(result);
+    UniqletInfo *info = uniInfo(result);
     info->id = pbOrderId();
     info->dispatch = dispatch;
     info->state = state;
@@ -61,7 +61,7 @@ zvalue uniqlet(void) {
 }
 
 /* Documented in header. */
-void *uniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+void *uniqletGetState(zvalue uniqlet, UniqletInfoDispatch *dispatch) {
     datAssertUniqlet(uniqlet);
 
     if (!uniqletHasDispatch(uniqlet, dispatch)) {
@@ -72,13 +72,13 @@ void *uniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch) {
 }
 
 /* Documented in header. */
-bool uniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch) {
+bool uniqletHasDispatch(zvalue uniqlet, UniqletInfoDispatch *dispatch) {
     datAssertUniqlet(uniqlet);
     return (dispatch == uniInfo(uniqlet)->dispatch);
 }
 
 /* Documented in header. */
-zvalue uniqletFrom(DatUniqletDispatch *dispatch, void *state) {
+zvalue uniqletFrom(UniqletInfoDispatch *dispatch, void *state) {
     return newUniqlet(dispatch, state);
 }
 
@@ -90,7 +90,7 @@ zvalue uniqletFrom(DatUniqletDispatch *dispatch, void *state) {
 /* Documented in header. */
 static zvalue Uniqlet_gcFree(zvalue state, zint argCount, const zvalue *args) {
     zvalue uniqlet = args[0];
-    DatUniqlet *info = uniInfo(uniqlet);
+    UniqletInfo *info = uniInfo(uniqlet);
 
     if (info->dispatch != NULL) {
         info->dispatch->free(info->state);
@@ -102,7 +102,7 @@ static zvalue Uniqlet_gcFree(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 static zvalue Uniqlet_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue uniqlet = args[0];
-    DatUniqlet *info = uniInfo(uniqlet);
+    UniqletInfo *info = uniInfo(uniqlet);
 
     if (info->dispatch != NULL) {
         info->dispatch->mark(info->state);

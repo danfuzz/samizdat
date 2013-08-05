@@ -54,7 +54,7 @@ static void nleFree(void *state) {
 }
 
 /** Uniqlet dispatch table for nonlocal exit states. */
-static DatUniqletDispatch NLE_DISPATCH = {
+static UniqletInfoDispatch NLE_DISPATCH = {
     nleMark,
     nleFree
 };

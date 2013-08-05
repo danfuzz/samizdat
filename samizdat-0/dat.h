@@ -34,7 +34,7 @@ typedef struct {
 
     /** Function to call in order to free the uniqlet state's resources. */
     zstateFunction free;
-} DatUniqletDispatch;
+} UniqletInfoDispatch;
 
 
 /*
@@ -270,18 +270,18 @@ zvalue uniqlet(void);
  * sealer/unsealer, and the uniqlet serves secondary duty as a sealed
  * box. In this case, the key is in fact the associated state dispatch table.
  */
-zvalue uniqletFrom(DatUniqletDispatch *dispatch, void *state);
+zvalue uniqletFrom(UniqletInfoDispatch *dispatch, void *state);
 
 /**
  * Gets the state value associated with the given uniqlet, asserting that
  * the uniqlet's dispatch table is as given.
  */
-void *uniqletGetState(zvalue uniqlet, DatUniqletDispatch *dispatch);
+void *uniqletGetState(zvalue uniqlet, UniqletInfoDispatch *dispatch);
 
 /**
  * Gets whether or not the given uniqlet has the given dispatch table.
  */
-bool uniqletHasDispatch(zvalue uniqlet, DatUniqletDispatch *dispatch);
+bool uniqletHasDispatch(zvalue uniqlet, UniqletInfoDispatch *dispatch);
 
 
 /*

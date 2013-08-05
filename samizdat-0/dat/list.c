@@ -22,20 +22,20 @@ typedef struct {
 
     /** List elements, in index order. */
     zvalue elems[/*size*/];
-} DatList;
+} ListInfo;
 
 /**
  * Gets the array of `zvalue` elements from a list.
  */
 static zvalue *listElems(zvalue list) {
-    return ((DatList *) pbPayload(list))->elems;
+    return ((ListInfo *) pbPayload(list))->elems;
 }
 
 /**
  * Gets the size of a list.
  */
 static zint listSizeOf(zvalue list) {
-    return ((DatList *) pbPayload(list))->size;
+    return ((ListInfo *) pbPayload(list))->size;
 }
 
 /**
@@ -43,9 +43,9 @@ static zint listSizeOf(zvalue list) {
  */
 static zvalue allocList(zint size) {
     zvalue result =
-        pbAllocValue(DAT_List, sizeof(DatList) + size * sizeof(zvalue));
+        pbAllocValue(DAT_List, sizeof(ListInfo) + size * sizeof(zvalue));
 
-    ((DatList *) pbPayload(result))->size = size;
+    ((ListInfo *) pbPayload(result))->size = size;
     return result;
 }
 

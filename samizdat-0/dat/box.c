@@ -33,12 +33,12 @@ typedef struct {
 
     /** Uniqlet to use for ordering comparisons. */
     zvalue orderId;
-} DatBox;
+} BoxInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static DatBox *boxInfo(zvalue box) {
+static BoxInfo *boxInfo(zvalue box) {
     return pbPayload(box);
 }
 
@@ -46,7 +46,7 @@ static DatBox *boxInfo(zvalue box) {
  * Gets the order id, initializing it if necessary.
  */
 static zvalue boxOrderId(zvalue box) {
-    DatBox *info = boxInfo(box);
+    BoxInfo *info = boxInfo(box);
     zvalue orderId = info->orderId;
 
     if (orderId == NULL) {
@@ -88,7 +88,7 @@ bool boxIsSet(zvalue box) {
 void boxReset(zvalue box) {
     datAssertBox(box);
 
-    DatBox *info = boxInfo(box);
+    BoxInfo *info = boxInfo(box);
 
     if (info->setOnce) {
         die("Attempt to reset yield box.");
@@ -106,7 +106,7 @@ void boxSet(zvalue box, zvalue value) {
         return;
     }
 
-    DatBox *info = boxInfo(box);
+    BoxInfo *info = boxInfo(box);
 
     if (info->isSet && info->setOnce) {
         die("Attempt to re-set yield box.");
@@ -118,8 +118,8 @@ void boxSet(zvalue box, zvalue value) {
 
 /* Documented in header. */
 zvalue boxMutable(void) {
-    zvalue result = pbAllocValue(DAT_Box, sizeof(DatBox));
-    DatBox *info = boxInfo(result);
+    zvalue result = pbAllocValue(DAT_Box, sizeof(BoxInfo));
+    BoxInfo *info = boxInfo(result);
 
     info->value = NULL;
     info->isSet = false;
@@ -130,8 +130,8 @@ zvalue boxMutable(void) {
 
 /* Documented in header. */
 zvalue boxYield(void) {
-    zvalue result = pbAllocValue(DAT_Box, sizeof(DatBox));
-    DatBox *info = boxInfo(result);
+    zvalue result = pbAllocValue(DAT_Box, sizeof(BoxInfo));
+    BoxInfo *info = boxInfo(result);
 
     info->value = NULL;
     info->isSet = false;
@@ -151,7 +151,7 @@ zvalue DAT_NULL_BOX = NULL;
 /* Documented in header. */
 static zvalue Box_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue box = args[0];
-    DatBox *info = boxInfo(box);
+    BoxInfo *info = boxInfo(box);
 
     pbMark(info->value);
     pbMark(info->orderId);
