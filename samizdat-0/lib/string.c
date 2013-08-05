@@ -66,7 +66,7 @@ PRIM_IMPL(stringAdd) {
     zchar chars[size];
 
     for (zint i = 0, at = 0; i < argCount; i++) {
-        datZcharsFromString(&chars[at], args[i]);
+        zcharsFromString(&chars[at], args[i]);
         at += pbSize(args[i]);
     }
 

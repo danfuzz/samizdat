@@ -106,13 +106,6 @@ void datAssertMap(zvalue value);
 void datAssertMapSize1(zvalue value);
 
 /**
- * Asserts that the given value is a valid `zvalue`, and furthermore
- * that it is a derived value. If not, this aborts the process with a
- * diagnostic message.
- */
-void datAssertDeriv(zvalue value);
-
-/**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a uniqlet. If not, this aborts the process
  * with a diagnostic message.
@@ -337,22 +330,5 @@ zvalue boxYield(void);
  * a function (regular or generic), and `args` must be a list.
  */
 zvalue fnApply(zvalue function, zvalue args);
-
-
-/*
- * Derived Value Functions
- */
-
-/**
- * Returns a derived value with optional data payload. The given `data`
- * value must either be a valid value or `NULL`.
- *
- * **Note:** If `type` and `data` are of the right form to be represented
- * as a core value, this function will *not* notice that. So only call it
- * if you know that the value to be produced is *necessarily* derived. If
- * it's possible that the arguments correspond to a core value, use
- * `constValueFrom` (in the `const` module) instead.
- */
-zvalue datDerivFrom(zvalue type, zvalue data);
 
 #endif

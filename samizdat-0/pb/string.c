@@ -128,7 +128,7 @@ zvalue stringSlice(zvalue string, zint start, zint end) {
 }
 
 /* Documented in header. */
-void datUtf8FromString(zint resultSize, char *result, zvalue string) {
+void utf8FromString(zint resultSize, char *result, zvalue string) {
     pbAssertString(string);
 
     zint size = stringSizeOf(string);
@@ -148,7 +148,7 @@ void datUtf8FromString(zint resultSize, char *result, zvalue string) {
 }
 
 /* Documented in header. */
-zint datUtf8SizeFromString(zvalue string) {
+zint utf8SizeFromString(zvalue string) {
     pbAssertString(string);
 
     zint size = stringSizeOf(string);
@@ -163,7 +163,7 @@ zint datUtf8SizeFromString(zvalue string) {
 }
 
 /* Documented in header. */
-void datZcharsFromString(zchar *result, zvalue string) {
+void zcharsFromString(zchar *result, zvalue string) {
     pbAssertString(string);
 
     memcpy(result, stringElems(string), stringSizeOf(string) * sizeof(zchar));

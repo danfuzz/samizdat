@@ -24,9 +24,9 @@
  * given `fopen()` mode. Returns the `FILE *` handle.
  */
 static FILE *openFile(zvalue flatPath, const char *mode) {
-    zint pathSize = datUtf8SizeFromString(flatPath);
+    zint pathSize = utf8SizeFromString(flatPath);
     char path[pathSize + 1];
-    datUtf8FromString(pathSize + 1, path, flatPath);
+    utf8FromString(pathSize + 1, path, flatPath);
 
     FILE *file = fopen(path, mode);
     if (file == NULL) {
@@ -58,9 +58,9 @@ zvalue ioFlatCwd(void) {
 
 /* Documented in header. */
 zvalue ioFlatReadLink(zvalue flatPath) {
-    zint pathSize = datUtf8SizeFromString(flatPath);
+    zint pathSize = utf8SizeFromString(flatPath);
     char path[pathSize + 1];
-    datUtf8FromString(pathSize + 1, path, flatPath);
+    utf8FromString(pathSize + 1, path, flatPath);
 
     struct stat statBuf;
     if (lstat(path, &statBuf) != 0) {
@@ -113,9 +113,9 @@ zvalue ioFlatReadFileUtf8(zvalue flatPath) {
 
 /* Documented in header. */
 void ioFlatWriteFileUtf8(zvalue flatPath, zvalue text) {
-    zint utfSize = datUtf8SizeFromString(text);
+    zint utfSize = utf8SizeFromString(text);
     char utf[utfSize + 1];
-    datUtf8FromString(utfSize + 1, utf, text);
+    utf8FromString(utfSize + 1, utf, text);
 
     FILE *out = openFile(flatPath, "w");
     zint amt = fwrite(utf, 1, utfSize, out);

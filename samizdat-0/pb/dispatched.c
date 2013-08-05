@@ -128,10 +128,10 @@ char *pbDebugString(zvalue value) {
     }
 
     zvalue result = fnCall(GFN_debugString, 1, &value);
-    zint size = datUtf8SizeFromString(result);
+    zint size = utf8SizeFromString(result);
     char str[size + 1];
 
-    datUtf8FromString(size + 1, str, result);
+    utf8FromString(size + 1, str, result);
     return strdup(str);
 }
 

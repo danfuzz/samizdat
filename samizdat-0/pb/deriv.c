@@ -50,7 +50,7 @@ static zvalue newDeriv(zvalue type, zvalue data) {
  */
 
 /* Documented in header. */
-zvalue datDerivFrom(zvalue type, zvalue data) {
+zvalue derivFrom(zvalue type, zvalue data) {
     pbAssertValid(type);
 
     if (data != NULL) {

@@ -179,6 +179,13 @@ void pbInit(void);
  */
 
 /**
+ * Asserts that the given value is a valid `zvalue`, and furthermore
+ * that it is a derived value. If not, this aborts the process with a
+ * diagnostic message.
+ */
+void pbAssertDeriv(zvalue value);
+
+/**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a function. If not, this aborts the process
  * with a diagnostic message.
@@ -341,19 +348,19 @@ zvalue stringSlice(zvalue string, zint start, zint end);
  * then the only "safe" way to use the result is as an explicitly-sized
  * buffer. (For example, `strlen()` might "lie".)
  */
-void datUtf8FromString(zint resultSize, char *result, zvalue string);
+void utf8FromString(zint resultSize, char *result, zvalue string);
 
 /**
  * Gets the number of bytes required to encode the given string
  * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
  */
-zint datUtf8SizeFromString(zvalue string);
+zint utf8SizeFromString(zvalue string);
 
 /**
  * Copies all the characters of the given string into the given result
  * array, which must be sized large enough to hold all of them.
  */
-void datZcharsFromString(zchar *result, zvalue string);
+void zcharsFromString(zchar *result, zvalue string);
 
 
 /*
@@ -412,6 +419,23 @@ zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name);
  * `generic` must be a generic function.
  */
 void gfnSeal(zvalue generic);
+
+
+/*
+ * Derived Value Functions
+ */
+
+/**
+ * Returns a derived value with optional data payload. The given `data`
+ * value must either be a valid value or `NULL`.
+ *
+ * **Note:** If `type` and `data` are of the right form to be represented
+ * as a core value, this function will *not* notice that. So only call it
+ * if you know that the value to be produced is *necessarily* derived. If
+ * it's possible that the arguments correspond to a core value, use
+ * `constValueFrom` (in the `const` module) instead.
+ */
+zvalue derivFrom(zvalue type, zvalue data);
 
 
 /*
