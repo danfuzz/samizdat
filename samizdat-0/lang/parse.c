@@ -56,9 +56,9 @@ static zvalue readMatch(ParseState *state, zvalue type) {
     }
 
     zvalue result = datListNth(state->tokens, state->at);
-    zvalue resultType = datTypeOf(result);
+    zvalue resultType = pbTypeOf(result);
 
-    if (!datEq(type, resultType)) {
+    if (!pbEq(type, resultType)) {
         return NULL;
     }
 
@@ -245,7 +245,7 @@ zvalue parsePlus(parserFunction rule, ParseState *state) {
     MARK();
 
     zvalue result = parseStar(rule, state);
-    REJECT_IF(datSize(result) == 0);
+    REJECT_IF(pbSize(result) == 0);
 
     return result;
 }
@@ -315,7 +315,7 @@ DEF_PARSE(yieldDef) {
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     MATCH_OR_REJECT(CH_GT);
 
-    return datDataOf(identifier);
+    return pbDataOf(identifier);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -339,7 +339,7 @@ DEF_PARSE(formal1) {
 
     REJECT_IF(result == NULL);
 
-    return datTypeOf(result);
+    return pbTypeOf(result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -349,7 +349,7 @@ DEF_PARSE(formal) {
     zvalue name = MATCH(IDENTIFIER);
 
     if (name != NULL) {
-        name = datDataOf(name);
+        name = pbDataOf(name);
     } else {
         // If there was no identifier, then the only valid form for a formal
         // is if this is an unnamed / unused argument.
@@ -365,7 +365,7 @@ DEF_PARSE(formal) {
 DEF_PARSE(formalsList) {
     zvalue result = PARSE_COMMA_SEQ(formal);
 
-    return (datSize(result) == 0) ? EMPTY_MAP : mapFrom1(STR_FORMALS, result);
+    return (pbSize(result) == 0) ? EMPTY_MAP : mapFrom1(STR_FORMALS, result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -415,7 +415,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(closure);
 
-    if (datMapGet(datDataOf(c), STR_FORMALS) != NULL) {
+    if (datMapGet(pbDataOf(c), STR_FORMALS) != NULL) {
         die("Invalid formal argument in code block.");
     }
 
@@ -428,7 +428,7 @@ DEF_PARSE(codeOnlyClosure) {
 
     zvalue c = PARSE_OR_REJECT(nullaryClosure);
 
-    if (datMapGet(datDataOf(c), STR_YIELD_DEF) != NULL) {
+    if (datMapGet(pbDataOf(c), STR_YIELD_DEF) != NULL) {
         die("Invalid yield definition in code block.");
     }
 
@@ -460,7 +460,7 @@ DEF_PARSE(fnCommon2) {
         return EMPTY_MAP;
     }
 
-    return mapFrom1(STR_NAME, datDataOf(n));
+    return mapFrom1(STR_NAME, pbDataOf(n));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -476,7 +476,7 @@ DEF_PARSE(fnCommon) {
     MATCH_OR_REJECT(CH_CPAREN);
     zvalue code = PARSE_OR_REJECT(codeOnlyClosure);
 
-    zvalue codeMap = datDataOf(code);
+    zvalue codeMap = pbDataOf(code);
     zvalue statements =
         datListAdd(returnDef, datMapGet(codeMap, STR_STATEMENTS));
 
@@ -529,7 +529,7 @@ DEF_PARSE(int) {
 
     zvalue intval = MATCH_OR_REJECT(INT);
 
-    return makeLiteral(datDataOf(intval));
+    return makeLiteral(pbDataOf(intval));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -538,7 +538,7 @@ DEF_PARSE(string) {
 
     zvalue string = MATCH_OR_REJECT(STRING);
 
-    return makeLiteral(datDataOf(string));
+    return makeLiteral(pbDataOf(string));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -552,9 +552,9 @@ DEF_PARSE(identifierString) {
     if (result == NULL) { result = MATCH(RETURN); }
     if (result == NULL) { return NULL; }
 
-    zvalue value = datDataOf(result);
+    zvalue value = pbDataOf(result);
     if (value == NULL) {
-        value = datTypeOf(result);
+        value = pbTypeOf(result);
     }
 
     return makeLiteral(value);
@@ -573,7 +573,7 @@ DEF_PARSE(list) {
     zvalue expressions = PARSE(unadornedList);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    if (datSize(expressions) == 0) {
+    if (pbSize(expressions) == 0) {
         return makeLiteral(EMPTY_LIST);
     } else {
         return makeCall(makeVarRef(STR_MAKE_LIST), expressions);
@@ -633,9 +633,9 @@ DEF_PARSE(mapping2) {
     MARK();
 
     zvalue map = PARSE_OR_REJECT(expression);
-    REJECT_IF(!datTypeIs(map, STR_INTERPOLATE));
+    REJECT_IF(!pbTypeIs(map, STR_INTERPOLATE));
 
-    return datDataOf(map);
+    return pbDataOf(map);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -659,7 +659,7 @@ DEF_PARSE(map) {
     }
 
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
-    zint size = datSize(mappings);
+    zint size = pbSize(mappings);
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
@@ -725,7 +725,7 @@ DEF_PARSE(varRef) {
 
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
 
-    return makeVarRef(datDataOf(identifier));
+    return makeVarRef(pbDataOf(identifier));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -737,7 +737,7 @@ DEF_PARSE(varDef) {
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue expression = PARSE_OR_REJECT(expression);
 
-    zvalue name = datDataOf(identifier);
+    zvalue name = pbDataOf(identifier);
     return makeVarDef(name, expression);
 }
 
@@ -811,21 +811,21 @@ DEF_PARSE(unaryExpression) {
     zvalue result = PARSE_OR_REJECT(atom);
     zvalue postfixes = PARSE_STAR(postfixOperator);
 
-    zint size = datSize(postfixes);
+    zint size = pbSize(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = datListNth(postfixes, i);
-        if (datCoreTypeIs(one, DAT_List)) {
+        if (pbCoreTypeIs(one, DAT_List)) {
             result = makeCall(result, one);
-        } else if (datEq(one, TOK_CH_STAR)) {
+        } else if (pbEq(one, TOK_CH_STAR)) {
             result = datDerivFrom(STR_INTERPOLATE, result);
         } else {
             die("Unexpected postfix.");
         }
     }
 
-    for (zint i = datSize(prefixes) - 1; i >= 0; i--) {
+    for (zint i = pbSize(prefixes) - 1; i >= 0; i--) {
         zvalue one = datListNth(prefixes, i);
-        if (datEq(one, TOK_CH_MINUS)) {
+        if (pbEq(one, TOK_CH_MINUS)) {
             result = makeCall(makeVarRef(STR_INEG), listFrom1(result));
         } else {
             die("Unexpected prefix.");
@@ -977,13 +977,13 @@ zvalue langTree0(zvalue program) {
 
     zvalue tokens;
 
-    if (datCoreTypeIs(program, DAT_String)) {
+    if (pbCoreTypeIs(program, DAT_String)) {
         tokens = langTokenize0(program);
     } else {
         tokens = program;
     }
 
-    ParseState state = { tokens, datSize(tokens), 0 };
+    ParseState state = { tokens, pbSize(tokens), 0 };
     zvalue result = parse_program(&state);
 
     if (!isEof(&state)) {

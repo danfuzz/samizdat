@@ -19,13 +19,13 @@
  * Does the type assertions that are part of `coreOrder` and `coreOrderIs`.
  */
 static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
-    datAssertSameType(v1, v2);
+    pbAssertSameType(v1, v2);
 
-    if (datCoreTypeIs(v1, DAT_Deriv)) {
-        zvalue type1 = datTypeOf(v1);
-        zvalue type2 = datTypeOf(v2);
+    if (pbCoreTypeIs(v1, DAT_Deriv)) {
+        zvalue type1 = pbTypeOf(v1);
+        zvalue type2 = pbTypeOf(v2);
 
-        if (!datEq(type1, type2)) {
+        if (!pbEq(type1, type2)) {
             die("Mismatched derived types.");
         }
     }
@@ -38,10 +38,10 @@ static bool doOrderIs(zint argCount, const zvalue *args) {
     zorder want = datZintFromInt(args[2]);
 
     if ((argCount == 3) && (want == ZSAME)) {
-        return datEq(args[0], args[1]);
+        return pbEq(args[0], args[1]);
     }
 
-    zorder comp = datOrder(args[0], args[1]);
+    zorder comp = pbOrder(args[0], args[1]);
 
     return (comp == want) ||
         ((argCount == 4) && (comp == datZintFromInt(args[3])));
@@ -58,7 +58,7 @@ PRIM_IMPL(coreOrder) {
     zvalue arg1 = args[1];
 
     coreOrderTypeCheck(arg0, arg1);
-    return datIntFromZint(datOrder(arg0, arg1));
+    return datIntFromZint(pbOrder(arg0, arg1));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -73,12 +73,12 @@ PRIM_IMPL(coreOrderIs) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(isCoreValue) {
     zvalue value = args[0];
-    return datCoreTypeIs(value, DAT_Deriv) ? NULL : value;
+    return pbCoreTypeIs(value, DAT_Deriv) ? NULL : value;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(totalOrder) {
-    return datIntFromZint(datOrder(args[0], args[1]));
+    return datIntFromZint(pbOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

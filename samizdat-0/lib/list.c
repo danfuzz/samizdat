@@ -39,7 +39,7 @@ PRIM_IMPL(listAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listDelNth) {
-    if (!datCoreTypeIs(args[1], DAT_Int)) {
+    if (!pbCoreTypeIs(args[1], DAT_Int)) {
         return args[0];
     }
 
@@ -50,7 +50,7 @@ PRIM_IMPL(listDelNth) {
 PRIM_IMPL(listFilter) {
     zvalue function = args[0];
     zvalue list = args[1];
-    zint size = datSize(list);
+    zint size = pbSize(list);
     zvalue result[size];
     zint at = 0;
 
@@ -92,7 +92,7 @@ PRIM_IMPL(listPutNth) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listReverse) {
     zvalue list = args[0];
-    zint size = datSize(list);
+    zint size = pbSize(list);
     zvalue elems[size];
 
     datArrayFromList(elems, list);
@@ -110,7 +110,7 @@ PRIM_IMPL(listReverse) {
 PRIM_IMPL(listSlice) {
     zvalue list = args[0];
     zint startIndex = datZintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : datSize(list);
+    zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : pbSize(list);
 
     return datListSlice(list, startIndex, endIndex);
 }

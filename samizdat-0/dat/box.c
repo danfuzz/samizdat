@@ -163,7 +163,7 @@ static zvalue Box_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Box_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return datIntFromZint(datOrder(boxOrderId(v1), boxOrderId(v2)));
+    return datIntFromZint(pbOrder(boxOrderId(v1), boxOrderId(v2)));
 }
 
 /* Documented in header. */
@@ -176,7 +176,7 @@ void datBindBox(void) {
 }
 
 /* Documented in header. */
-static DatType INFO_Box = {
+static PbType INFO_Box = {
     .name = "Box"
 };
 ztype DAT_Box = &INFO_Box;

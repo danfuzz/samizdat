@@ -166,7 +166,7 @@ zvalue datListInsNth(zvalue list, zint n, zvalue value);
 
 /**
  * Given a list, returns the `n`th element. `list` must be a
- * list, and `n` must be `< datSize(value)`.
+ * list, and `n` must be `< pbSize(value)`.
  */
 zvalue datListNth(zvalue list, zint n);
 
@@ -224,7 +224,7 @@ zvalue datMapGet(zvalue map, zvalue key);
 
 /**
  * Given a map, returns the `n`th mapping. `map` must be a
- * map, and `n` must be `< datSize(value)`. Mappings are returned
+ * map, and `n` must be `< pbSize(value)`. Mappings are returned
  * as single-element maps. Map ordering is by key.
  */
 zvalue datMapNth(zvalue map, zint n);

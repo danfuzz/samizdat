@@ -126,7 +126,7 @@ void datBindUniqlet(void) {
 }
 
 /* Documented in header. */
-static DatType INFO_Uniqlet = {
+static PbType INFO_Uniqlet = {
     .name = "Uniqlet"
 };
 ztype DAT_Uniqlet = &INFO_Uniqlet;

@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     zvalue samCommandLine = datMapGet(context, STR_SAM_COMMAND_LINE);
     zvalue result = datApply(samCommandLine, argsList);
 
-    if ((result != NULL) && (datCoreTypeIs(result, DAT_Int))) {
+    if ((result != NULL) && (pbCoreTypeIs(result, DAT_Int))) {
         exit((int) datZintFromInt(result));
     }
 

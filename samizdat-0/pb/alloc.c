@@ -39,7 +39,7 @@ static zvalue stack[DAT_MAX_STACK];
 static zint stackSize = 0;
 
 /** List head for the list of all live values. */
-static DatHeader liveHead = {
+static PbHeader liveHead = {
     .next = &liveHead,
     .prev = &liveHead,
     .magic = 0,
@@ -48,7 +48,7 @@ static DatHeader liveHead = {
 };
 
 /** List head for the list of all doomed values. */
-static DatHeader doomedHead = {
+static PbHeader doomedHead = {
     .next = &doomedHead,
     .prev = &doomedHead,
     .magic = 0,
@@ -99,7 +99,7 @@ static void thoroughlyValidate(zvalue maybeValue) {
 /**
  * Sanity check the circular list with the given head.
  */
-static void sanityCheckList(DatHeader *head) {
+static void sanityCheckList(PbHeader *head) {
     for (zvalue item = head->next; item != head; item = item->next) {
         thoroughlyValidate(item);
     }
@@ -129,7 +129,7 @@ static void sanityCheck(bool force) {
  * Links the given value into the given list, removing it from its
  * previous list (if any).
  */
-static void enlist(DatHeader *head, zvalue value) {
+static void enlist(PbHeader *head, zvalue value) {
     if (value->next != NULL) {
         zvalue next = value->next;
         zvalue prev = value->prev;
@@ -270,7 +270,7 @@ zvalue pbAllocValue(ztype type, zint extraBytes) {
         sanityCheck(false);
     }
 
-    zvalue result = utilAlloc(sizeof(DatHeader) + extraBytes);
+    zvalue result = utilAlloc(sizeof(PbHeader) + extraBytes);
     result->magic = DAT_VALUE_MAGIC;
     result->type = type;
 
@@ -334,7 +334,7 @@ void pbImmortalize(zvalue value) {
         die("Too many immortal values!");
     }
 
-    datAssertValid(value);
+    pbAssertValid(value);
 
     immortals[immortalsSize] = value;
     immortalsSize++;
@@ -346,7 +346,7 @@ void pbMark(zvalue value) {
         return;
     }
 
-    datAssertValid(value);
+    pbAssertValid(value);
 
     if (value->marked) {
         return;

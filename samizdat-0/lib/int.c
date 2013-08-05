@@ -106,7 +106,7 @@ static zint shl(zint value, zint shift) {
  * out-of-range indices result in void, not the sign bit.
  */
 static zvalue doIntNth(zvalue value, zint n) {
-    if (n < datSize(value)) {
+    if (n < pbSize(value)) {
         return datIntFromZint(datIntGetBit(value, n));
     } else {
         return NULL;

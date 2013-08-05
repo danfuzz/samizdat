@@ -56,8 +56,8 @@ static zchar *stringElems(zvalue string) {
 
 /* Documented in header. */
 zvalue datStringAdd(zvalue str1, zvalue str2) {
-    datAssertString(str1);
-    datAssertString(str2);
+    pbAssertString(str1);
+    pbAssertString(str2);
 
     zint size1 = stringSizeOf(str1);
     zint size2 = stringSizeOf(str2);
@@ -110,7 +110,7 @@ zvalue datStringFromUtf8(zint stringBytes, const char *string) {
 
 /* Documented in header. */
 zint datStringNth(zvalue string, zint n) {
-    datAssertString(string);
+    pbAssertString(string);
 
     if ((n < 0) || (n >= stringSizeOf(string))) {
         return -1;
@@ -121,15 +121,15 @@ zint datStringNth(zvalue string, zint n) {
 
 /* Documented in header. */
 zvalue datStringSlice(zvalue string, zint start, zint end) {
-    datAssertString(string);
-    datAssertSliceRange(stringSizeOf(string), start, end);
+    pbAssertString(string);
+    pbAssertSliceRange(stringSizeOf(string), start, end);
 
     return datStringFromZchars(end - start, &stringElems(string)[start]);
 }
 
 /* Documented in header. */
 void datUtf8FromString(zint resultSize, char *result, zvalue string) {
-    datAssertString(string);
+    pbAssertString(string);
 
     zint size = stringSizeOf(string);
     zchar *elems = stringElems(string);
@@ -149,7 +149,7 @@ void datUtf8FromString(zint resultSize, char *result, zvalue string) {
 
 /* Documented in header. */
 zint datUtf8SizeFromString(zvalue string) {
-    datAssertString(string);
+    pbAssertString(string);
 
     zint size = stringSizeOf(string);
     zchar *elems = stringElems(string);
@@ -164,7 +164,7 @@ zint datUtf8SizeFromString(zvalue string) {
 
 /* Documented in header. */
 void datZcharsFromString(zchar *result, zvalue string) {
-    datAssertString(string);
+    pbAssertString(string);
 
     memcpy(result, stringElems(string), stringSizeOf(string) * sizeof(zchar));
 }
@@ -258,7 +258,7 @@ void pbBindString(void) {
 }
 
 /* Documented in header. */
-static DatType INFO_String = {
+static PbType INFO_String = {
     .name = "String"
 };
 ztype DAT_String = &INFO_String;

@@ -51,10 +51,10 @@ static zvalue newDeriv(zvalue type, zvalue data) {
 
 /* Documented in header. */
 zvalue datDerivFrom(zvalue type, zvalue data) {
-    datAssertValid(type);
+    pbAssertValid(type);
 
     if (data != NULL) {
-        datAssertValid(data);
+        pbAssertValid(data);
     }
 
     return newDeriv(type, data);
@@ -84,11 +84,11 @@ static zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
         }
     } else if (info2->data == NULL) {
         return NULL;
-    } else if (!datEq(info1->data, info2->data)) {
+    } else if (!pbEq(info1->data, info2->data)) {
         return NULL;
     }
 
-    return datEq(info1->type, info2->type) ? v2 : NULL;
+    return pbEq(info1->type, info2->type) ? v2 : NULL;
 }
 
 /* Documented in header. */
@@ -109,7 +109,7 @@ static zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
     DatDeriv *info1 = derivInfo(v1);
     DatDeriv *info2 = derivInfo(v2);
 
-    zorder result = datOrder(info1->type, info2->type);
+    zorder result = pbOrder(info1->type, info2->type);
 
     if (result != ZSAME) {
         return datIntFromZint(result);
@@ -118,7 +118,7 @@ static zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
     } else if (info2->data == NULL) {
         return DAT_1;
     } else {
-        return datIntFromZint(datOrder(info1->data, info2->data));
+        return datIntFromZint(pbOrder(info1->data, info2->data));
     }
 }
 
@@ -145,7 +145,7 @@ void pbBindDeriv(void) {
 }
 
 /* Documented in header. */
-static DatType INFO_Deriv = {
+static PbType INFO_Deriv = {
     .name = "Deriv"
 };
 ztype DAT_Deriv = &INFO_Deriv;

@@ -95,7 +95,7 @@ static void bindArguments(Frame *frame, zvalue node,
         return;
     }
 
-    zint formalsSize = datSize(formals);
+    zint formalsSize = pbSize(formals);
     zvalue formalsArr[formalsSize];
     zint argAt = 0;
 
@@ -111,7 +111,7 @@ static void bindArguments(Frame *frame, zvalue node,
         if (repeat != NULL) {
             zint count;
 
-            if ((datSize(repeat) != 1) || !datCoreTypeIs(repeat, DAT_String)) {
+            if ((pbSize(repeat) != 1) || !pbCoreTypeIs(repeat, DAT_String)) {
                 die("Invalid repeat modifier (non-string).");
             }
 
@@ -190,24 +190,24 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
 
     // Evaluate the statements, updating the frame as needed.
 
-    zint statementsSize = datSize(statements);
+    zint statementsSize = pbSize(statements);
     zvalue statementsArr[statementsSize];
     datArrayFromList(statementsArr, statements);
 
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = statementsArr[i];
-        zvalue oneType = datTypeOf(one);
+        zvalue oneType = pbTypeOf(one);
 
-        // Switch on size of type string to avoid gratuitous `datEq` tests.
-        switch (datSize(oneType)) {
+        // Switch on size of type string to avoid gratuitous `pbEq` tests.
+        switch (pbSize(oneType)) {
             case 5: {
-                if (datEq(oneType, STR_FN_DEF)) {
+                if (pbEq(oneType, STR_FN_DEF)) {
                     // Look for immediately adjacent `fnDef` nodes, and
                     // process them all together.
                     zint end = i + 1;
                     for (/*end*/; end < statementsSize; end++) {
                         zvalue one = statementsArr[end];
-                        if (!datTypeIs(one, STR_FN_DEF)) {
+                        if (!pbTypeIs(one, STR_FN_DEF)) {
                             break;
                         }
                     }
@@ -219,7 +219,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                 break;
             }
             case 6: {
-                if (datEq(oneType, STR_VAR_DEF)) {
+                if (pbEq(oneType, STR_VAR_DEF)) {
                     execVarDef(&frame, one);
                 } else {
                     execExpressionVoidOk(&frame, one);
@@ -270,7 +270,7 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
  */
 static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
     Closure *closure = utilAlloc(sizeof(Closure));
-    zvalue defMap = datDataOf(node);
+    zvalue defMap = pbDataOf(node);
 
     frameSnap(&closure->frame, frame);
     closure->defMap = defMap;
@@ -296,7 +296,7 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue nameValue = datDataOf(varDef);
+    zvalue nameValue = pbDataOf(varDef);
     zvalue name = datMapGet(nameValue, STR_NAME);
     zvalue valueExpression = datMapGet(nameValue, STR_VALUE);
     zvalue value = execExpression(frame, valueExpression);
@@ -314,7 +314,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
 
     for (zint i = 0; i < size; i++) {
         zvalue one = statements[i];
-        zvalue fnMap = datDataOf(one);
+        zvalue fnMap = pbDataOf(one);
         zvalue name = datMapGet(fnMap, STR_NAME);
         frameAdd(frame, name, buildClosure(&closures[i], frame, one));
     }
@@ -339,13 +339,13 @@ static zvalue execClosure(Frame *frame, zvalue closureNode) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    call = datDataOf(call);
+    call = pbDataOf(call);
 
     zvalue function = datMapGet(call, STR_FUNCTION);
     zvalue actuals = datMapGet(call, STR_ACTUALS);
     zvalue functionId = execExpression(frame, function);
 
-    zint argCount = datSize(actuals);
+    zint argCount = pbSize(actuals);
     zvalue actualsArr[argCount];
     zvalue args[argCount];
 
@@ -359,24 +359,24 @@ static zvalue execCall(Frame *frame, zvalue call) {
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = actualsArr[i];
-        zvalue oneType = datTypeOf(one);
+        zvalue oneType = pbTypeOf(one);
         bool voidable;
         bool interpolate;
         zvalue eval;
 
-        if (datEq(oneType, STR_VOIDABLE)) {
+        if (pbEq(oneType, STR_VOIDABLE)) {
             // We replace the value in `actualsArr` with the voidable
             // payload in order to keep the follow-up interpolation loop
             // simpler.
-            one = actualsArr[i] = datDataOf(one);
-            oneType = datTypeOf(one);
+            one = actualsArr[i] = pbDataOf(one);
+            oneType = pbTypeOf(one);
             voidable = true;
         } else {
             voidable = false;
         }
 
-        if (datEq(oneType, STR_INTERPOLATE)) {
-            one = datDataOf(one);
+        if (pbEq(oneType, STR_INTERPOLATE)) {
+            one = pbDataOf(one);
             interpolate = true;
         } else {
             interpolate = false;
@@ -394,7 +394,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         if (interpolate) {
             eval = constCollectGenerator(eval);
             args[i] = eval;
-            fullCount += datSize(eval);
+            fullCount += pbSize(eval);
             interpolateAny = true;
         } else {
             args[i] = eval;
@@ -410,9 +410,9 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (datTypeIs(oneNode, STR_INTERPOLATE)) {
+            if (pbTypeIs(oneNode, STR_INTERPOLATE)) {
                 datArrayFromList(&fullArgs[at], oneArg);
-                at += datSize(oneArg);
+                at += pbSize(oneArg);
             } else {
                 fullArgs[at] = oneArg;
                 at++;
@@ -429,7 +429,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    zvalue name = datDataOf(varRef);
+    zvalue name = pbDataOf(varRef);
     return frameGet(frame, name);
 }
 
@@ -437,7 +437,7 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
  * Executes an `interpolate` form.
  */
 static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
-    zvalue result = execExpressionVoidOk(frame, datDataOf(interpolate));
+    zvalue result = execExpressionVoidOk(frame, pbDataOf(interpolate));
 
     if (result == NULL) {
         die("Attempt to interpolate void.");
@@ -445,7 +445,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 
     result = constCollectGenerator(result);
 
-    switch (datSize(result)) {
+    switch (pbSize(result)) {
         case 0: return NULL;
         case 1: return datListNth(result, 0);
         default: {
@@ -459,36 +459,36 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    zvalue type = datTypeOf(e);
+    zvalue type = pbTypeOf(e);
 
     // Switching on the size of the type is a bit of a hack. It lets us
     // avoid having to have a single big cascading `if` with a lot of
-    // `datEq` calls.
-    switch (datSize(type)) {
+    // `pbEq` calls.
+    switch (pbSize(type)) {
         case 4: {
-            if (datEq(type, STR_CALL))
+            if (pbEq(type, STR_CALL))
                 return execCall(frame, e);
             break;
         }
         case 6: {
-            if (datEq(type, STR_VAR_REF))
+            if (pbEq(type, STR_VAR_REF))
                 return execVarRef(frame, e);
             break;
         }
         case 7: {
-            if (datEq(type, STR_LITERAL))
-                return datDataOf(e);
-            else if (datEq(type, STR_CLOSURE))
+            if (pbEq(type, STR_LITERAL))
+                return pbDataOf(e);
+            else if (pbEq(type, STR_CLOSURE))
                 return execClosure(frame, e);
             break;
         }
         case 10: {
-            if (datEq(type, STR_EXPRESSION))
-                return execExpressionVoidOk(frame, datDataOf(e));
+            if (pbEq(type, STR_EXPRESSION))
+                return execExpressionVoidOk(frame, pbDataOf(e));
             break;
         }
         case 11: {
-            if (datEq(type, STR_INTERPOLATE))
+            if (pbEq(type, STR_INTERPOLATE))
                 return execInterpolate(frame, e);
             break;
         }

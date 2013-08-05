@@ -124,7 +124,7 @@ zvalue datListDelNth(zvalue list, zint n) {
     zvalue *elems = listElems(list);
     zint size = listSizeOf(list);
 
-    datAssertNth(size, n);
+    pbAssertNth(size, n);
 
     return listFrom(n, elems, NULL, size - n - 1, elems + n + 1);
 }
@@ -132,7 +132,7 @@ zvalue datListDelNth(zvalue list, zint n) {
 /* Documented in header. */
 zvalue datListFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
-        datAssertValid(values[i]);
+        pbAssertValid(values[i]);
     }
 
     return listFrom(size, values, NULL, 0, NULL);
@@ -141,12 +141,12 @@ zvalue datListFromArray(zint size, const zvalue *values) {
 /* Documented in header. */
 zvalue datListInsNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
-    datAssertValid(value);
+    pbAssertValid(value);
 
     zint size = listSizeOf(list);
     zvalue *elems = listElems(list);
 
-    datAssertNthOrSize(size, n);
+    pbAssertNthOrSize(size, n);
 
     return listFrom(n, elems, value, size - n, elems + n);
 }
@@ -165,11 +165,11 @@ zvalue datListNth(zvalue list, zint n) {
 /* Documented in header. */
 zvalue datListPutNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
-    datAssertValid(value);
+    pbAssertValid(value);
 
     zint size = listSizeOf(list);
 
-    datAssertNthOrSize(size, n);
+    pbAssertNthOrSize(size, n);
 
     if (n == size) {
         return datListInsNth(list, n, value);
@@ -184,7 +184,7 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value) {
 /* Documented in header. */
 zvalue datListSlice(zvalue list, zint start, zint end) {
     datAssertList(list);
-    datAssertSliceRange(listSizeOf(list), start, end);
+    pbAssertSliceRange(listSizeOf(list), start, end);
 
     return listFrom(end - start, &listElems(list)[start], NULL, 0, NULL);
 }
@@ -212,7 +212,7 @@ static zvalue List_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue *e2 = listElems(v2);
 
     for (zint i = 0; i < sz1; i++) {
-        if (!datEq(e1[i], e2[i])) {
+        if (!pbEq(e1[i], e2[i])) {
             return NULL;
         }
     }
@@ -244,7 +244,7 @@ static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i], e2[i]);
+        zorder result = pbOrder(e1[i], e2[i]);
         if (result != ZSAME) {
             return datIntFromZint(result);
         }
@@ -275,7 +275,7 @@ void datBindList(void) {
 }
 
 /* Documented in header. */
-static DatType INFO_List = {
+static PbType INFO_List = {
     .name = "List"
 };
 ztype DAT_List = &INFO_List;

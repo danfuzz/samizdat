@@ -108,13 +108,13 @@ zvalue datIntFromZint(zint value) {
 
 /* Documented in header. */
 bool datIntGetBit(zvalue intval, zint n) {
-    datAssertInt(intval);
+    pbAssertInt(intval);
     return datZintGetBit(zintValue(intval), n);
 }
 
 /* Documented in header. */
 zint datZintFromInt(zvalue intval) {
-    datAssertInt(intval);
+    pbAssertInt(intval);
     return zintValue(intval);
 }
 
@@ -190,7 +190,7 @@ void pbBindInt(void) {
 }
 
 /* Documented in header. */
-static DatType INFO_Int = {
+static PbType INFO_Int = {
     .name = "Int"
 };
 ztype DAT_Int = &INFO_Int;

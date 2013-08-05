@@ -24,7 +24,7 @@
 static void dieForVariable(const char *message, zvalue name)
     __attribute__((noreturn));
 static void dieForVariable(const char *message, zvalue name) {
-    die("%s: %s", message, datDebugString(name));
+    die("%s: %s", message, pbDebugString(name));
 }
 
 
@@ -51,7 +51,7 @@ void frameAdd(Frame *frame, zvalue name, zvalue value) {
     zvalue vars = frame->vars;
     zvalue newVars = datMapPut(vars, name, value);
 
-    if (datSize(vars) == datSize(newVars)) {
+    if (pbSize(vars) == pbSize(newVars)) {
         dieForVariable("Variable already defined", name);
     }
 

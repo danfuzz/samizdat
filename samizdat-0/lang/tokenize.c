@@ -136,9 +136,9 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     zvalue string = datStringFromZchars(size, chars);
 
     switch (chars[0]) {
-        case 'd': { if (datEq(string, STR_DEF))    return TOK_DEF;    break; }
-        case 'f': { if (datEq(string, STR_FN))     return TOK_FN;     break; }
-        case 'r': { if (datEq(string, STR_RETURN)) return TOK_RETURN; break; }
+        case 'd': { if (pbEq(string, STR_DEF))    return TOK_DEF;    break; }
+        case 'f': { if (pbEq(string, STR_FN))     return TOK_FN;     break; }
+        case 'r': { if (pbEq(string, STR_RETURN)) return TOK_RETURN; break; }
     }
 
     return datDerivFrom(STR_IDENTIFIER, string);
@@ -206,7 +206,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue string = datDataOf(result);
+    zvalue string = pbDataOf(result);
     return datDerivFrom(STR_IDENTIFIER, string);
 }
 
@@ -292,7 +292,7 @@ zvalue langTokenize0(zvalue string) {
     zstackPointer save = pbFrameStart();
 
     zvalue result[LANG_MAX_TOKENS];
-    ParseState state = { string, datSize(string), 0 };
+    ParseState state = { string, pbSize(string), 0 };
     zint out = 0;
 
     for (;;) {

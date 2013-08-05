@@ -142,7 +142,7 @@ void pbBindFunction(void) {
 }
 
 /* Documented in header. */
-static DatType INFO_Function = {
+static PbType INFO_Function = {
     .name = "Function"
 };
 ztype DAT_Function = &INFO_Function;

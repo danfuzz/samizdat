@@ -37,7 +37,7 @@ PRIM_IMPL(charFromInt) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intFromChar) {
     zvalue string = args[0];
-    datAssertStringSize1(string);
+    pbAssertStringSize1(string);
 
     return datIntFromZint(datStringNth(string, 0));
 }
@@ -49,7 +49,7 @@ PRIM_IMPL(stringAdd) {
             return EMPTY_STRING;
         }
         case 1: {
-            datAssertString(args[0]);
+            pbAssertString(args[0]);
             return args[0];
         }
         case 2: {
@@ -60,14 +60,14 @@ PRIM_IMPL(stringAdd) {
     zint size = 0;
 
     for (zint i = 0; i < argCount; i++) {
-        size += datSize(args[i]);
+        size += pbSize(args[i]);
     }
 
     zchar chars[size];
 
     for (zint i = 0, at = 0; i < argCount; i++) {
         datZcharsFromString(&chars[at], args[i]);
-        at += datSize(args[i]);
+        at += pbSize(args[i]);
     }
 
     return datStringFromZchars(size, chars);
@@ -87,7 +87,7 @@ PRIM_IMPL(stringNth) {
 PRIM_IMPL(stringSlice) {
     zvalue string = args[0];
     zint startIndex = datZintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : datSize(string);
+    zint endIndex = (argCount == 3) ? datZintFromInt(args[2]) : pbSize(string);
 
     return datStringSlice(string, startIndex, endIndex);
 }

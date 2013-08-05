@@ -14,22 +14,22 @@
  */
 
 /* Documented in header. */
-void datAssertFunction(zvalue value) {
-    datAssertType(value, DAT_Function);
+void pbAssertFunction(zvalue value) {
+    pbAssertType(value, DAT_Function);
 }
 
 /* Documented in header. */
-void datAssertGeneric(zvalue value) {
-    datAssertType(value, DAT_Generic);
+void pbAssertGeneric(zvalue value) {
+    pbAssertType(value, DAT_Generic);
 }
 
 /* Documented in header. */
-void datAssertInt(zvalue value) {
-    datAssertType(value, DAT_Int);
+void pbAssertInt(zvalue value) {
+    pbAssertType(value, DAT_Int);
 }
 
 /* Documented in header. */
-void datAssertNth(zint size, zint n) {
+void pbAssertNth(zint size, zint n) {
     if (n < 0) {
         die("Invalid index (negative): %lld", n);
     }
@@ -40,56 +40,56 @@ void datAssertNth(zint size, zint n) {
 }
 
 /* Documented in header. */
-void datAssertNthOrSize(zint size, zint n) {
+void pbAssertNthOrSize(zint size, zint n) {
     if (n != size) {
-        datAssertNth(size, n);
+        pbAssertNth(size, n);
     }
 }
 
 /* Documented in header. */
-void datAssertSameType(zvalue v1, zvalue v2) {
-    datAssertValid(v1);
-    datAssertValid(v2);
+void pbAssertSameType(zvalue v1, zvalue v2) {
+    pbAssertValid(v1);
+    pbAssertValid(v2);
 
     if (v1->type != v2->type) {
         die("Mismatched core types: %s, %s",
-            datDebugString(v1), datDebugString(v2));
+            pbDebugString(v1), pbDebugString(v2));
     }
 }
 
 /* Documented in header. */
-void datAssertSliceRange(zint size, zint start, zint end) {
+void pbAssertSliceRange(zint size, zint start, zint end) {
     if ((start < 0) || (end < 0) || (end < start)) {
         die("Invalid slice range: (%lld..!%lld)", start, end);
     }
 
-    datAssertNthOrSize(size, end);
+    pbAssertNthOrSize(size, end);
 }
 
 /* Documented in header. */
-void datAssertString(zvalue value) {
-    datAssertType(value, DAT_String);
+void pbAssertString(zvalue value) {
+    pbAssertType(value, DAT_String);
 }
 
 /* Documented in header. */
-void datAssertStringSize1(zvalue value) {
-    datAssertString(value);
-    if (datSize(value) != 1) {
+void pbAssertStringSize1(zvalue value) {
+    pbAssertString(value);
+    if (pbSize(value) != 1) {
         die("Not a size 1 string.");
     }
 }
 
 /* Documented in header. */
-void datAssertType(zvalue value, ztype type) {
-    datAssertValid(value);
+void pbAssertType(zvalue value, ztype type) {
+    pbAssertValid(value);
 
     if (value->type != type) {
-        die("Expected type %s; got %s.", type->name, datDebugString(value));
+        die("Expected type %s; got %s.", type->name, pbDebugString(value));
     }
 }
 
 /* Documented in header. */
-void datAssertValid(zvalue value) {
+void pbAssertValid(zvalue value) {
     if (value == NULL) {
         die("Null value.");
     }

@@ -13,33 +13,33 @@
 
 /* Documented in header. */
 void datAssertBox(zvalue value) {
-    datAssertType(value, DAT_Box);
+    pbAssertType(value, DAT_Box);
 }
 
 /* Documented in header. */
 void datAssertDeriv(zvalue value) {
-    datAssertType(value, DAT_Deriv);
+    pbAssertType(value, DAT_Deriv);
 }
 
 /* Documented in header. */
 void datAssertList(zvalue value) {
-    datAssertType(value, DAT_List);
+    pbAssertType(value, DAT_List);
 }
 
 /* Documented in header. */
 void datAssertMap(zvalue value) {
-    datAssertType(value, DAT_Map);
+    pbAssertType(value, DAT_Map);
 }
 
 /* Documented in header. */
 void datAssertMapSize1(zvalue value) {
     datAssertMap(value);
-    if (datSize(value) != 1) {
+    if (pbSize(value) != 1) {
         die("Not a size 1 map.");
     }
 }
 
 /* Documented in header. */
 void datAssertUniqlet(zvalue value) {
-    datAssertType(value, DAT_Uniqlet);
+    pbAssertType(value, DAT_Uniqlet);
 }

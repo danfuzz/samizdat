@@ -59,7 +59,7 @@ static DatGeneric *gfnInfo(zvalue generic) {
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
-    return datDebugString((zvalue) state);
+    return pbDebugString((zvalue) state);
 }
 
 
@@ -71,7 +71,7 @@ static char *callReporter(void *state) {
 zfunction datGfnFind(zvalue generic, zvalue value) {
     // TODO: Dispatch is currently on the core type. It should be able
     // to handle derived types too. It's not as simple as just calling
-    // `datTypeOf` on the value, though: (1) That function itself is
+    // `pbTypeOf` on the value, though: (1) That function itself is
     // generic, and (2) the default implementations of many generics
     // will have to be adjusted.
 
@@ -114,7 +114,7 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datGfnBindCore(zvalue generic, ztype type, zfunction function) {
-    datAssertGeneric(generic);
+    pbAssertGeneric(generic);
 
     DatGeneric *info = gfnInfo(generic);
     zint index = datIndexFromType(type);
@@ -130,7 +130,7 @@ void datGfnBindCore(zvalue generic, ztype type, zfunction function) {
 
 /* Documented in header. */
 void datGfnBindCoreDefault(zvalue generic, zfunction function) {
-    datAssertGeneric(generic);
+    pbAssertGeneric(generic);
 
     DatGeneric *info = gfnInfo(generic);
 
@@ -165,7 +165,7 @@ zvalue datGfnFrom(zint minArgs, zint maxArgs, zvalue name) {
 
 /* Documented in header. */
 void datGfnSeal(zvalue generic) {
-    datAssertGeneric(generic);
+    pbAssertGeneric(generic);
     gfnInfo(generic)->sealed = true;
 }
 
@@ -239,7 +239,7 @@ void pbBindGeneric(void) {
 }
 
 /* Documented in header. */
-static DatType INFO_Generic = {
+static PbType INFO_Generic = {
     .name = "Generic"
 };
 ztype DAT_Generic = &INFO_Generic;

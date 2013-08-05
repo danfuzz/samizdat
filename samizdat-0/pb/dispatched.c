@@ -117,12 +117,12 @@ void pbInitCoreGenerics(void) {
  */
 
 /* Documented in header. */
-zvalue datDataOf(zvalue value) {
+zvalue pbDataOf(zvalue value) {
     return datCall(GFN_dataOf, 1, &value);
 }
 
 /* Documented in header. */
-char *datDebugString(zvalue value) {
+char *pbDebugString(zvalue value) {
     if (value == NULL) {
         return strdup("(null)");
     }
@@ -136,9 +136,9 @@ char *datDebugString(zvalue value) {
 }
 
 /* Documented in header. */
-bool datEq(zvalue v1, zvalue v2) {
-    datAssertValid(v1);
-    datAssertValid(v2);
+bool pbEq(zvalue v1, zvalue v2) {
+    pbAssertValid(v1);
+    pbAssertValid(v2);
 
     if (v1 == v2) {
         return true;
@@ -151,9 +151,9 @@ bool datEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder datOrder(zvalue v1, zvalue v2) {
-    datAssertValid(v1);
-    datAssertValid(v2);
+zorder pbOrder(zvalue v1, zvalue v2) {
+    pbAssertValid(v1);
+    pbAssertValid(v2);
 
     if (v1 == v2) {
         return ZSAME;
@@ -163,7 +163,7 @@ zorder datOrder(zvalue v1, zvalue v2) {
         zorder result = datZintFromInt(datCall(GFN_order, 2, args));
         pbFrameReturn(save, NULL);
         return result;
-    } else if (datCoreTypeIs(v1, DAT_Deriv)) {
+    } else if (pbCoreTypeIs(v1, DAT_Deriv)) {
         // Per spec, derived values always sort after primitives.
         return ZMORE;
     } else {
@@ -172,16 +172,16 @@ zorder datOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zint datSize(zvalue value) {
+zint pbSize(zvalue value) {
     return datZintFromInt(datCall(GFN_sizeOf, 1, &value));
 }
 
 /* Documented in header. */
-bool datTypeIs(zvalue value, zvalue type) {
-    return datEq(datTypeOf(value), type);
+bool pbTypeIs(zvalue value, zvalue type) {
+    return pbEq(pbTypeOf(value), type);
 }
 
 /* Documented in header. */
-zvalue datTypeOf(zvalue value) {
+zvalue pbTypeOf(zvalue value) {
     return datCall(GFN_typeOf, 1, &value);
 }

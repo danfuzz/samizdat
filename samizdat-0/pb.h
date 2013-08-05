@@ -24,12 +24,12 @@
  * accessible through instances of this type via the API. You
  * have to use the various accessor functions.
  */
-typedef struct DatHeader *zvalue;
+typedef struct PbHeader *zvalue;
 
 /**
  * Low-layer data type.
  */
-typedef const struct DatType *ztype;
+typedef const struct PbType *ztype;
 
 /**
  * Arbitrary (key, value) mapping.
@@ -51,7 +51,7 @@ typedef const zvalue *zstackPointer;
 /**
  * Core type info.
  */
-typedef struct DatType {
+typedef struct PbType {
     /** Simple string name for the type. */
     const char *name;
 
@@ -66,7 +66,7 @@ typedef struct DatType {
      * "uninitialized".
      */
     zint seqNumCompl;
-} DatType;
+} PbType;
 
 
 /*
@@ -183,67 +183,67 @@ void pbInit(void);
  * furthermore that it is a function. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertFunction(zvalue value);
+void pbAssertFunction(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a generic function. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertGeneric(zvalue value);
+void pbAssertGeneric(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is an int. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertInt(zvalue value);
+void pbAssertInt(zvalue value);
 
 /**
  * Asserts that the given size accommodates accessing the `n`th element.
  * This includes asserting that `n >= 0`. Note that all non-negative `n`
  * are valid for accessing ints (their size notwithstanding).
  */
-void datAssertNth(zint size, zint n);
+void pbAssertNth(zint size, zint n);
 
 /**
- * Like `datAssertNth` but also accepts the case where `n` is the size
+ * Like `pbAssertNth` but also accepts the case where `n` is the size
  * of the value.
  */
-void datAssertNthOrSize(zint size, zint n);
+void pbAssertNthOrSize(zint size, zint n);
 
 /**
  * Asserts that the given two values are valid `zvalue`s, and furthermore
  * that they have the same core type. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertSameType(zvalue v1, zvalue v2);
+void pbAssertSameType(zvalue v1, zvalue v2);
 
 /**
  * Asserts that the given range is valid for a `slice`-like operation
  * for a value of the given size.
  */
-void datAssertSliceRange(zint size, zint start, zint end);
+void pbAssertSliceRange(zint size, zint start, zint end);
 
 /**
  * Asserts that the given value is a valid `zvalue`, furthermore has the
  * given core type. If not, this aborts the process with a diagnostic message.
  */
-void datAssertType(zvalue v1, ztype type);
+void pbAssertType(zvalue v1, ztype type);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a string. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertString(zvalue value);
+void pbAssertString(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a string, and even furthermore that its size
  * is `1`. If not, this aborts the process with a diagnostic message.
  */
-void datAssertStringSize1(zvalue value);
+void pbAssertStringSize1(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue` (non-`NULL` and
@@ -251,7 +251,7 @@ void datAssertStringSize1(zvalue value);
  * but not exhaustive, tests. If not valid, this aborts the process
  * with a diagnostic message.
  */
-void datAssertValid(zvalue value);
+void pbAssertValid(zvalue value);
 
 
 /*
@@ -362,12 +362,6 @@ void datZcharsFromString(zchar *result, zvalue string);
 
 /**
  * Calls a function with the given list of arguments. `function` must be
- * a function (regular or generic), and `args` must be a list.
- */
-zvalue datApply(zvalue function, zvalue args);
-
-/**
- * Calls a function with the given list of arguments. `function` must be
  * a function (regular or generic), and `argCount` must be non-negative.
  * If `argCount` is positive, then `args` must not be `NULL`.
  */
@@ -428,7 +422,7 @@ void datGfnSeal(zvalue generic);
  * Returns whether the given value has the given core (low-layer) type.
  * `value` must be a valid value (in particular, non-`NULL`).
  */
-bool datCoreTypeIs(zvalue value, ztype type);
+bool pbCoreTypeIs(zvalue value, ztype type);
 
 /**
  * Gets the data payload of the given value. `value` must be a
@@ -437,21 +431,21 @@ bool datCoreTypeIs(zvalue value, ztype type);
  * values, the data payload is (unsurprisingly) `NULL` for type-only
  * values.
  */
-zvalue datDataOf(zvalue value);
+zvalue pbDataOf(zvalue value);
 
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller
  * is responsible for `free()`ing the result. As a convenience, this
  * converts `NULL` into `"(null)"`.
  */
-char *datDebugString(zvalue value);
+char *pbDebugString(zvalue value);
 
 /**
  * Compares two values for equality. This exists in addition to
- * `datOrder`, because it is possible for this function run much
+ * `pbOrder`, because it is possible for this function run much
  * quicker in the not-equal case.
  */
-bool datEq(zvalue v1, zvalue v2);
+bool pbEq(zvalue v1, zvalue v2);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
@@ -460,26 +454,26 @@ bool datEq(zvalue v1, zvalue v2);
  * See `totalOrder` in the Samizdat Layer 0 spec for more details about
  * value sorting.
  */
-zorder datOrder(zvalue v1, zvalue v2);
+zorder pbOrder(zvalue v1, zvalue v2);
 
 /**
  * Gets the size of the given value. `value` must be a valid value.
  * See the *Samizdat Layer 0* specification for details on
  * what low-layer "size" means.
  */
-zint datSize(zvalue value);
+zint pbSize(zvalue value);
 
 /**
- * Returns true iff the type of the given value (that is, `datTypeOf(value)`)
+ * Returns true iff the type of the given value (that is, `pbTypeOf(value)`)
  * is as given.
  */
-bool datTypeIs(zvalue value, zvalue type);
+bool pbTypeIs(zvalue value, zvalue type);
 
 /**
  * Gets the overt data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */
-zvalue datTypeOf(zvalue value);
+zvalue pbTypeOf(zvalue value);
 
 
 /*
@@ -487,8 +481,8 @@ zvalue datTypeOf(zvalue value);
  */
 
 /**
- * Allocates memory, sized to include a `DatHeader` header plus the
- * indicated number of extra bytes. The `DatHeader` header is
+ * Allocates memory, sized to include a `PbHeader` header plus the
+ * indicated number of extra bytes. The `PbHeader` header is
  * initialized with the indicated type and size. The resulting value
  * is added to the live reference stack.
  */

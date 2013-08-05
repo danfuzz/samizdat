@@ -17,7 +17,7 @@
 
 /* Documented in header. */
 zvalue datApply(zvalue function, zvalue args) {
-    zint argCount = datSize(args);
+    zint argCount = pbSize(args);
     zvalue argsArray[argCount];
 
     datArrayFromList(argsArray, args);

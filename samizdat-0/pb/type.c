@@ -32,7 +32,7 @@ zint datIndexFromType(ztype type) {
         }
 
         compl = ~theNextSeqNum;
-        ((DatType *) type)->seqNumCompl = compl;  // Cast to discard `const`.
+        ((PbType *) type)->seqNumCompl = compl;  // Cast to discard `const`.
         theNextSeqNum++;
     }
 
@@ -45,7 +45,7 @@ zvalue datTypeFromZtype(ztype type) {
 
     if (result == NULL) {
         result = datStringFromUtf8(-1, type->name);
-        ((DatType *) type)->nameValue = result;  // Cast to discard `const`.
+        ((PbType *) type)->nameValue = result;  // Cast to discard `const`.
         pbImmortalize(result);
     }
 
@@ -58,6 +58,6 @@ zvalue datTypeFromZtype(ztype type) {
  */
 
 /* Documented in header. */
-bool datCoreTypeIs(zvalue value, ztype type) {
+bool pbCoreTypeIs(zvalue value, ztype type) {
     return value->type == type;
 }

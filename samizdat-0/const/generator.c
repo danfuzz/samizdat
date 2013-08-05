@@ -29,7 +29,7 @@ static zvalue GFN_collect = NULL;
 static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
     zvalue intValue = args[0];
 
-    zint size = datSize(intValue);
+    zint size = pbSize(intValue);
     zint raw = datZintFromInt(intValue);
     zvalue arr[size];
 
@@ -55,7 +55,7 @@ static zvalue collectList(zvalue state, zint argc, const zvalue *args) {
 static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
     zvalue map = args[0];
 
-    zint size = datSize(map);
+    zint size = pbSize(map);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
@@ -72,7 +72,7 @@ static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
 static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
     zvalue string = args[0];
 
-    zint size = datSize(string);
+    zint size = pbSize(string);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {

@@ -57,7 +57,7 @@ static zmapping *mapElems(zvalue map) {
  * the *second* value is used.
  */
 static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    zorder comp = datOrder(k1, k2);
+    zorder comp = pbOrder(k1, k2);
 
     if (comp == ZSAME) {
         return datMapping(k2, v2);
@@ -98,7 +98,7 @@ static zint mapFind(zvalue map, zvalue key) {
     // we wouldn't have found an invalid entry.
 
     datAssertMap(map);
-    datAssertValid(key);
+    pbAssertValid(key);
 
     entry->map = map;
     entry->key = key;
@@ -109,7 +109,7 @@ static zint mapFind(zvalue map, zvalue key) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        switch (datOrder(key, elems[guess].key)) {
+        switch (pbOrder(key, elems[guess].key)) {
             case ZLESS: max = guess - 1; break;
             case ZMORE: min = guess + 1; break;
             default: {
@@ -133,7 +133,7 @@ static zint mapFind(zvalue map, zvalue key) {
  * functions.
  */
 static int mappingOrder(const void *m1, const void *m2) {
-    return datOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
+    return pbOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
 
@@ -193,7 +193,7 @@ zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
 
     zint at = 1;
     for (zint i = 1; i < resultSize; i++) {
-        if (datEq(elems[i].key, elems[at-1].key)) {
+        if (pbEq(elems[i].key, elems[at-1].key)) {
             at--;
         }
 
@@ -258,17 +258,17 @@ zvalue datMapNth(zvalue map, zint n) {
 /* Documented in header. */
 zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
     datAssertMap(map);
-    datAssertValid(value);
+    pbAssertValid(value);
 
     zint size = mapSizeOf(map);
 
     switch (size) {
         case 0: {
-            datAssertValid(key);
+            pbAssertValid(key);
             return datMapping(key, value);
         }
         case 1: {
-            datAssertValid(key);
+            pbAssertValid(key);
             zmapping *elems = mapElems(map);
             return mapFrom2(elems[0].key, elems[0].value, key, value);
         }
@@ -348,7 +348,7 @@ static zvalue Map_eq(zvalue state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < sz1; i++) {
         zmapping *e1 = &elems1[i];
         zmapping *e2 = &elems2[i];
-        if (!(datEq(e1->key, e2->key) && datEq(e1->value, e2->value))) {
+        if (!(pbEq(e1->key, e2->key) && pbEq(e1->value, e2->value))) {
             return NULL;
         }
     }
@@ -381,7 +381,7 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i].key, e2[i].key);
+        zorder result = pbOrder(e1[i].key, e2[i].key);
         if (result != ZSAME) {
             return datIntFromZint(result);
         }
@@ -394,7 +394,7 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
     }
 
     for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i].value, e2[i].value);
+        zorder result = pbOrder(e1[i].value, e2[i].value);
         if (result != ZSAME) {
             return datIntFromZint(result);
         }
@@ -421,7 +421,7 @@ void datBindMap(void) {
 }
 
 /* Documented in header. */
-static DatType INFO_Map = {
+static PbType INFO_Map = {
     .name = "Map"
 };
 ztype DAT_Map = &INFO_Map;
