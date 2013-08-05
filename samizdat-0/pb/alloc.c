@@ -259,7 +259,7 @@ static void doGc(void) {
 
 
 /*
- * Module functions
+ * Exported functions
  */
 
 /* Documented in header. */
@@ -283,16 +283,6 @@ zvalue datAllocValue(ztype type, zint extraBytes) {
 
     return result;
 }
-
-/* Documented in header. */
-void *datPayload(zvalue value) {
-    return value->payload;
-}
-
-
-/*
- * Exported functions
- */
 
 /* Documented in header. */
 zstackPointer datFrameStart(void) {
@@ -370,3 +360,9 @@ void datMark(zvalue value) {
         marker(NULL, 1, &value);
     }
 }
+
+/* Documented in header. */
+void *datPayload(zvalue value) {
+    return value->payload;
+}
+

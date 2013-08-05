@@ -104,85 +104,20 @@ extern zvalue GFN_gcMark;
 extern zvalue GFN_gcFree;
 
 /**
- * Allocates memory, sized to include a `DatHeader` header plus the
- * indicated number of extra bytes. The `DatHeader` header is
- * initialized with the indicated type and size. The resulting value
- * is added to the live reference stack.
- */
-zvalue datAllocValue(ztype type, zint extraBytes);
-
-/**
- * Asserts that the given size accommodates accessing the `n`th element.
- * This includes asserting that `n >= 0`. Note that all non-negative `n`
- * are valid for accessing ints (their size notwithstanding).
- */
-void datAssertNth(zint size, zint n);
-
-/**
- * Like `datAssertNth` but also accepts the case where `n` is the size
- * of the value.
- */
-void datAssertNthOrSize(zint size, zint n);
-
-/**
- * Asserts that the given range is valid for a `slice`-like operation
- * for a value of the given size.
- */
-void datAssertSliceRange(zint size, zint start, zint end);
-
-/**
- * Asserts that the given value is a valid `zvalue` (non-`NULL` and
- * seems to actually have the right form). This performs reasonable,
- * but not exhaustive, tests. If not valid, this aborts the process
- * with a diagnostic message.
- */
-void datAssertValid(zvalue value);
-
-/**
- * Gets the function bound to the given generic for the given value, if any.
- * Returns `NULL` if there is no binding.
- */
-zfunction datGfnFind(zvalue generic, zvalue value);
-
-/**
- * Gets the sequence number index for a `ztype`, initializing it if necessary.
- */
-zint datIndexFromType(ztype type);
-
-/**
  * Clears the contents of the map lookup cache.
  */
 void datMapClearCache(void);
-
-/**
- * Gets a pointer to the data payload of a `zvalue`.
- */
-void *datPayload(zvalue value);
-
-/**
- * Gets a type value from a `ztype`.
- */
-zvalue datTypeFromZtype(ztype type);
 
 
 /*
  * Initialization functions
  */
 
-/**
- * Initializes the core generic functions.
- */
-void datInitCoreGenerics(void);
-
 // Per-type generic binding.
 void datBindBox(void);
 void datBindDeriv(void);
-void datBindFunction(void);
-void datBindGeneric(void);
-void datBindInt(void);
 void datBindList(void);
 void datBindMap(void);
-void datBindString(void);
 void datBindUniqlet(void);
 
 #endif

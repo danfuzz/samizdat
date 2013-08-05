@@ -29,15 +29,11 @@ bool datInitialized = false;
 void datInit(void) {
     zstackPointer save = datFrameStart();
 
-    datInitCoreGenerics();
+    pbInit();
     datBindBox();
     datBindDeriv();
-    datBindFunction();
-    datBindGeneric();
-    datBindInt();
     datBindList();
     datBindMap();
-    datBindString();
     datBindUniqlet();
 
     datFrameReturn(save, NULL);

@@ -149,7 +149,7 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void datBindFunction(void) {
+void pbBindFunction(void) {
     datGfnBindCore(GFN_call,        DAT_Function, Function_call);
     datGfnBindCore(GFN_debugString, DAT_Function, Function_debugString);
     datGfnBindCore(GFN_gcMark,      DAT_Function, Function_gcMark);

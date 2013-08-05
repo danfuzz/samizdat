@@ -256,7 +256,7 @@ static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void datBindGeneric(void) {
+void pbBindGeneric(void) {
     datGfnBindCore(GFN_call,        DAT_Generic, Generic_call);
     datGfnBindCore(GFN_debugString, DAT_Generic, Generic_debugString);
     datGfnBindCore(GFN_gcMark,      DAT_Generic, Generic_gcMark);
