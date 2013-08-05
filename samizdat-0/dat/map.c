@@ -15,11 +15,6 @@
  * Helper definitions
  */
 
-enum {
-    /** Whether to spew to the console about map cache hits. */
-    CHATTY_CACHEY = false
-};
-
 /**
  * Map structure.
  */
@@ -29,66 +24,16 @@ typedef struct {
 
     /** List of mappings, in key-sorted order. */
     zmapping elems[/*size*/];
-} DatMap;
-
-/**
- * Entry in the map cache. The cache is used to speed up calls to `mapFind`.
- * In practice it looks like the theoretical best case is probably about
- * 74% (that is, nearly 3 of 4 lookups are for a map/key pair that have
- * been observed before). The size of the map cache is chosen to hit the
- * point of diminishing returns.
- */
-typedef struct {
-    /** Map to look up a key in. */
-    zvalue map;
-
-    /** Key to look up. */
-    zvalue key;
-
-    /** Result from `mapFind` (see which for details). */
-    zint index;
-} CacheEntry;
-
-/** The cache of `mapFind` lookups. */
-static CacheEntry mapCache[DAT_MAP_CACHE_SIZE];
-
-/**
- * Gets the `CacheEntry` for the given map/key pair.
- */
-static CacheEntry *getCacheEntry(zvalue map, zvalue key) {
-    uintptr_t hash = ((uintptr_t) map >> 4) + (((uintptr_t) key) >> 4) * 31;
-    hash ^= (hash >> 16) ^ (hash >> 32) ^ (hash >> 48);
-
-    // Note: In practice there doesn't seem to be an observable difference
-    // between using `&` and `%` to calculate the cache index, so we go
-    // for `%` and a prime number cache size to get probably-better cache
-    // behavior.
-    CacheEntry *entry = &mapCache[hash % DAT_MAP_CACHE_SIZE];
-
-    if (CHATTY_CACHEY) {
-        static int hits = 0;
-        static int total = 0;
-        if ((entry->map == map) && (entry->key == key)) {
-            hits++;
-        }
-        total++;
-        if ((total % 10000000) == 0) {
-            note("Map Cache: Hit rate %d/%d == %5.2f%%", hits, total,
-                (100.0 * hits) / total);
-        }
-    }
-
-    return entry;
-}
+} MapInfo;
 
 /**
  * Allocates a map of the given size.
  */
 static zvalue allocMap(zint size) {
     zvalue result =
-        datAllocValue(DAT_Map, sizeof(DatMap) + size * sizeof(zmapping));
+        pbAllocValue(DAT_Map, sizeof(MapInfo) + size * sizeof(zmapping));
 
-    ((DatMap *) datPayload(result))->size = size;
+    ((MapInfo *) pbPayload(result))->size = size;
     return result;
 }
 
@@ -96,14 +41,14 @@ static zvalue allocMap(zint size) {
  * Gets the size of a map.
  */
 static zint mapSizeOf(zvalue map) {
-    return ((DatMap *) datPayload(map))->size;
+    return ((MapInfo *) pbPayload(map))->size;
 }
 
 /**
  * Gets the elements array from a map.
  */
 static zmapping *mapElems(zvalue map) {
-    return ((DatMap *) datPayload(map))->elems;
+    return ((MapInfo *) pbPayload(map))->elems;
 }
 
 /**
@@ -112,10 +57,10 @@ static zmapping *mapElems(zvalue map) {
  * the *second* value is used.
  */
 static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    zorder comp = datOrder(k1, k2);
+    zorder comp = pbOrder(k1, k2);
 
     if (comp == ZSAME) {
-        return datMapping(k2, v2);
+        return mapping(k2, v2);
     }
 
     zvalue result = allocMap(2);
@@ -137,14 +82,13 @@ static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
     return result;
 }
 
-
 /**
  * Given a map, find the index of the given key. `map` must be a map.
  * Returns the index of the key if found. If not found, then this returns
  * `~insertionIndex` (a negative number).
  */
 static zint mapFind(zvalue map, zvalue key) {
-    CacheEntry *entry = getCacheEntry(map, key);
+    MapCacheEntry *entry = mapGetCacheEntry(map, key);
 
     if ((entry->map == map) && (entry->key == key)) {
         return entry->index;
@@ -154,7 +98,7 @@ static zint mapFind(zvalue map, zvalue key) {
     // we wouldn't have found an invalid entry.
 
     datAssertMap(map);
-    datAssertValid(key);
+    pbAssertValid(key);
 
     entry->map = map;
     entry->key = key;
@@ -165,7 +109,7 @@ static zint mapFind(zvalue map, zvalue key) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        switch (datOrder(key, elems[guess].key)) {
+        switch (pbOrder(key, elems[guess].key)) {
             case ZLESS: max = guess - 1; break;
             case ZMORE: min = guess + 1; break;
             default: {
@@ -189,17 +133,7 @@ static zint mapFind(zvalue map, zvalue key) {
  * functions.
  */
 static int mappingOrder(const void *m1, const void *m2) {
-    return datOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
-}
-
-
-/*
- * Module functions
- */
-
-/* Documented in header. */
-void datMapClearCache(void) {
-    memset(mapCache, 0, sizeof(mapCache));
+    return pbOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
 
@@ -208,13 +142,26 @@ void datMapClearCache(void) {
  */
 
 /* Documented in header. */
-void datArrayFromMap(zmapping *result, zvalue map) {
+void datAssertMap(zvalue value) {
+    pbAssertType(value, DAT_Map);
+}
+
+/* Documented in header. */
+void datAssertMapSize1(zvalue value) {
+    datAssertMap(value);
+    if (pbSize(value) != 1) {
+        die("Not a size 1 map.");
+    }
+}
+
+/* Documented in header. */
+void arrayFromMap(zmapping *result, zvalue map) {
     datAssertMap(map);
     memcpy(result, mapElems(map), mapSizeOf(map) * sizeof(zmapping));
 }
 
 /* Documented in header. */
-zvalue datMapAdd(zvalue map1, zvalue map2) {
+zvalue mapAdd(zvalue map1, zvalue map2) {
     datAssertMap(map1);
     datAssertMap(map2);
 
@@ -227,17 +174,17 @@ zvalue datMapAdd(zvalue map1, zvalue map2) {
         return map1;
     }
 
-    return datMapAddArray(map1, size2, mapElems(map2));
+    return mapAddArray(map1, size2, mapElems(map2));
 }
 
 /* Documented in header. */
-zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
+zvalue mapAddArray(zvalue map, zint size, const zmapping *mappings) {
     datAssertMap(map);
 
     if (size == 0) {
         return map;
     } else if (size == 1) {
-        return datMapPut(map, mappings[0].key, mappings[0].value);
+        return mapPut(map, mappings[0].key, mappings[0].value);
     }
 
     zint mapSize = mapSizeOf(map);
@@ -259,7 +206,7 @@ zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
 
     zint at = 1;
     for (zint i = 1; i < resultSize; i++) {
-        if (datEq(elems[i].key, elems[at-1].key)) {
+        if (pbEq(elems[i].key, elems[at-1].key)) {
             at--;
         }
 
@@ -270,12 +217,12 @@ zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
         at++;
     }
 
-    ((DatMap *) datPayload(result))->size = at;
+    ((MapInfo *) pbPayload(result))->size = at;
     return result;
 }
 
 /* Documented in header. */
-zvalue datMapDel(zvalue map, zvalue key) {
+zvalue mapDel(zvalue map, zvalue key) {
     zint index = mapFind(map, key);
 
     if (index < 0) {
@@ -299,14 +246,14 @@ zvalue datMapDel(zvalue map, zvalue key) {
 }
 
 /* Documented in header. */
-zvalue datMapGet(zvalue map, zvalue key) {
+zvalue mapGet(zvalue map, zvalue key) {
     zint index = mapFind(map, key);
 
     return (index < 0) ? NULL : mapElems(map)[index].value;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMapNth(zvalue map, zint n) {
+zvalue mapNth(zvalue map, zint n) {
     datAssertMap(map);
 
     if ((n < 0) || (n >= mapSizeOf(map))) {
@@ -317,24 +264,24 @@ zvalue datMapNth(zvalue map, zint n) {
         return map;
     }
 
-    zmapping *mapping = &mapElems(map)[n];
-    return datMapping(mapping->key, mapping->value);
+    zmapping *m = &mapElems(map)[n];
+    return mapping(m->key, m->value);
 }
 
 /* Documented in header. */
-zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
+zvalue mapPut(zvalue map, zvalue key, zvalue value) {
     datAssertMap(map);
-    datAssertValid(value);
+    pbAssertValid(value);
 
     zint size = mapSizeOf(map);
 
     switch (size) {
         case 0: {
-            datAssertValid(key);
-            return datMapping(key, value);
+            pbAssertValid(key);
+            return mapping(key, value);
         }
         case 1: {
-            datAssertValid(key);
+            pbAssertValid(key);
             zmapping *elems = mapElems(map);
             return mapFrom2(elems[0].key, elems[0].value, key, value);
         }
@@ -368,7 +315,7 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMapping(zvalue key, zvalue value) {
+zvalue mapping(zvalue key, zvalue value) {
     zvalue result = allocMap(1);
     zmapping *elems = mapElems(result);
 
@@ -378,13 +325,13 @@ zvalue datMapping(zvalue key, zvalue value) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMappingKey(zvalue map) {
+zvalue mappingKey(zvalue map) {
     datAssertMapSize1(map);
     return mapElems(map)[0].key;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMappingValue(zvalue map) {
+zvalue mappingValue(zvalue map) {
     datAssertMapSize1(map);
     return mapElems(map)[0].value;
 }
@@ -414,7 +361,7 @@ static zvalue Map_eq(zvalue state, zint argCount, const zvalue *args) {
     for (zint i = 0; i < sz1; i++) {
         zmapping *e1 = &elems1[i];
         zmapping *e2 = &elems2[i];
-        if (!(datEq(e1->key, e2->key) && datEq(e1->value, e2->value))) {
+        if (!(pbEq(e1->key, e2->key) && pbEq(e1->value, e2->value))) {
             return NULL;
         }
     }
@@ -429,8 +376,8 @@ static zvalue Map_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zmapping *elems = mapElems(map);
 
     for (zint i = 0; i < size; i++) {
-        datMark(elems[i].key);
-        datMark(elems[i].value);
+        pbMark(elems[i].key);
+        pbMark(elems[i].value);
     }
 
     return NULL;
@@ -447,47 +394,47 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i].key, e2[i].key);
+        zorder result = pbOrder(e1[i].key, e2[i].key);
         if (result != ZSAME) {
-            return datIntFromZint(result);
+            return intFromZint(result);
         }
     }
 
     if (sz1 < sz2) {
-        return DAT_NEG1;
+        return PB_NEG1;
     } else if (sz1 > sz2) {
-        return DAT_1;
+        return PB_1;
     }
 
     for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i].value, e2[i].value);
+        zorder result = pbOrder(e1[i].value, e2[i].value);
         if (result != ZSAME) {
-            return datIntFromZint(result);
+            return intFromZint(result);
         }
     }
 
-    return DAT_0;
+    return PB_0;
 }
 
 /* Documented in header. */
 static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue map = args[0];
-    return datIntFromZint(mapSizeOf(map));
+    return intFromZint(mapSizeOf(map));
 }
 
 /* Documented in header. */
 void datBindMap(void) {
-    datGfnBindCore(GFN_eq,     DAT_Map, Map_eq);
-    datGfnBindCore(GFN_gcMark, DAT_Map, Map_gcMark);
-    datGfnBindCore(GFN_order,  DAT_Map, Map_order);
-    datGfnBindCore(GFN_sizeOf, DAT_Map, Map_sizeOf);
+    gfnBindCore(GFN_eq,     DAT_Map, Map_eq);
+    gfnBindCore(GFN_gcMark, DAT_Map, Map_gcMark);
+    gfnBindCore(GFN_order,  DAT_Map, Map_order);
+    gfnBindCore(GFN_sizeOf, DAT_Map, Map_sizeOf);
 
     EMPTY_MAP = allocMap(0);
-    datImmortalize(EMPTY_MAP);
+    pbImmortalize(EMPTY_MAP);
 }
 
 /* Documented in header. */
-static DatType INFO_Map = {
+static PbType INFO_Map = {
     .name = "Map"
 };
 ztype DAT_Map = &INFO_Map;

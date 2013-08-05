@@ -19,19 +19,19 @@ enum {
     MAX_BITS = 32,
 
     /** Max (exclusive) small int value. */
-    DAT_SMALL_INT_MAX = DAT_SMALL_INT_MIN + DAT_SMALL_INT_COUNT
+    PB_SMALL_INT_MAX = PB_SMALL_INT_MIN + PB_SMALL_INT_COUNT
 };
 
 /** Array of small integer values. */
-static zvalue SMALL_INTS[DAT_SMALL_INT_COUNT];
+static zvalue SMALL_INTS[PB_SMALL_INT_COUNT];
 
 /**
  * Int structure.
  */
 typedef struct {
-    /** Int value. See `datIntFromZint()` about range restriction. */
+    /** Int value. See `intFromZint()` about range restriction. */
     int32_t value;
-} DatInt;
+} IntInfo;
 
 /**
  * Gets the bit size (highest-order significant bit number, plus one)
@@ -63,7 +63,7 @@ static zint bitSize(zint value) {
  * type checking.
  */
 static zint zintValue(zvalue intval) {
-    return ((DatInt *) datPayload(intval))->value;
+    return ((IntInfo *) pbPayload(intval))->value;
 }
 
 /**
@@ -71,13 +71,13 @@ static zint zintValue(zvalue intval) {
  */
 zvalue intFrom(zint value) {
     zint size = bitSize(value);
-    zvalue result = datAllocValue(DAT_Int, sizeof(int32_t));
+    zvalue result = pbAllocValue(PB_Int, sizeof(int32_t));
 
     if (size > MAX_BITS) {
         die("Value too large to fit into int: %lld", value);
     }
 
-    ((DatInt *) datPayload(result))->value = (int32_t) value;
+    ((IntInfo *) pbPayload(result))->value = (int32_t) value;
     return result;
 }
 
@@ -87,8 +87,13 @@ zvalue intFrom(zint value) {
  */
 
 /* Documented in header. */
-zchar datZcharFromInt(zvalue intval) {
-    zint value = datZintFromInt(intval);
+void pbAssertInt(zvalue value) {
+    pbAssertType(value, PB_Int);
+}
+
+/* Documented in header. */
+zchar zcharFromInt(zvalue intval) {
+    zint value = zintFromInt(intval);
 
     if ((value < 0) || (value >= 0x100000000)) {
         die("Invalid int value for character: %lld", value);
@@ -98,28 +103,28 @@ zchar datZcharFromInt(zvalue intval) {
 }
 
 /* Documented in header. */
-zvalue datIntFromZint(zint value) {
-    if ((value >= DAT_SMALL_INT_MIN) && (value < DAT_SMALL_INT_MAX)) {
-        return SMALL_INTS[value - DAT_SMALL_INT_MIN];
+zvalue intFromZint(zint value) {
+    if ((value >= PB_SMALL_INT_MIN) && (value < PB_SMALL_INT_MAX)) {
+        return SMALL_INTS[value - PB_SMALL_INT_MIN];
     } else {
         return intFrom(value);
     }
 }
 
 /* Documented in header. */
-bool datIntGetBit(zvalue intval, zint n) {
-    datAssertInt(intval);
-    return datZintGetBit(zintValue(intval), n);
+bool intGetBit(zvalue intval, zint n) {
+    pbAssertInt(intval);
+    return zintGetBit(zintValue(intval), n);
 }
 
 /* Documented in header. */
-zint datZintFromInt(zvalue intval) {
-    datAssertInt(intval);
+zint zintFromInt(zvalue intval) {
+    pbAssertInt(intval);
     return zintValue(intval);
 }
 
 /* Documented in header. */
-bool datZintGetBit(zint value, zint n) {
+bool zintGetBit(zint value, zint n) {
     if (n < 0) {
         die("Attempt to access negative bit index: %lld", n);
     } else if (n >= MAX_BITS) {
@@ -135,13 +140,13 @@ bool datZintGetBit(zint value, zint n) {
  */
 
 /* Documented in header. */
-zvalue DAT_0 = NULL;
+zvalue PB_0 = NULL;
 
 /* Documented in header. */
-zvalue DAT_1 = NULL;
+zvalue PB_1 = NULL;
 
 /* Documented in header. */
-zvalue DAT_NEG1 = NULL;
+zvalue PB_NEG1 = NULL;
 
 /* Documented in header. */
 static zvalue Int_eq(zvalue state, zint argCount, const zvalue *args) {
@@ -158,11 +163,11 @@ static zvalue Int_order(zvalue state, zint argCount, const zvalue *args) {
     zint int2 = zintValue(v2);
 
     if (int1 < int2) {
-        return DAT_NEG1;
+        return PB_NEG1;
     } else if (int1 > int2) {
-        return DAT_1;
+        return PB_1;
     } else {
-        return DAT_0;
+        return PB_0;
     }
 }
 
@@ -170,27 +175,27 @@ static zvalue Int_order(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue intval = args[0];
 
-    return datIntFromZint(bitSize(zintValue(intval)));
+    return intFromZint(bitSize(zintValue(intval)));
 }
 
 /* Documented in header. */
-void datBindInt(void) {
-    datGfnBindCore(GFN_eq,     DAT_Int, Int_eq);
-    datGfnBindCore(GFN_sizeOf, DAT_Int, Int_sizeOf);
-    datGfnBindCore(GFN_order,  DAT_Int, Int_order);
+void pbBindInt(void) {
+    gfnBindCore(GFN_eq,     PB_Int, Int_eq);
+    gfnBindCore(GFN_sizeOf, PB_Int, Int_sizeOf);
+    gfnBindCore(GFN_order,  PB_Int, Int_order);
 
-    for (zint i = 0; i < DAT_SMALL_INT_COUNT; i++) {
-        SMALL_INTS[i] = intFrom(i + DAT_SMALL_INT_MIN);
-        datImmortalize(SMALL_INTS[i]);
+    for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
+        SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);
+        pbImmortalize(SMALL_INTS[i]);
     }
 
-    DAT_0    = datIntFromZint(0);
-    DAT_1    = datIntFromZint(1);
-    DAT_NEG1 = datIntFromZint(-1);
+    PB_0    = intFromZint(0);
+    PB_1    = intFromZint(1);
+    PB_NEG1 = intFromZint(-1);
 }
 
 /* Documented in header. */
-static DatType INFO_Int = {
+static PbType INFO_Int = {
     .name = "Int"
 };
-ztype DAT_Int = &INFO_Int;
+ztype PB_Int = &INFO_Int;

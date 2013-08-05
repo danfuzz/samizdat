@@ -24,7 +24,7 @@
 static void dieForVariable(const char *message, zvalue name)
     __attribute__((noreturn));
 static void dieForVariable(const char *message, zvalue name) {
-    die("%s: %s", message, datDebugString(name));
+    die("%s: %s", message, pbDebugString(name));
 }
 
 
@@ -42,16 +42,16 @@ void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
 
 /* Documented in header. */
 void frameMark(Frame *frame) {
-    datMark(frame->vars);
-    datMark(frame->parentClosure);
+    pbMark(frame->vars);
+    pbMark(frame->parentClosure);
 }
 
 /* Documented in header. */
 void frameAdd(Frame *frame, zvalue name, zvalue value) {
     zvalue vars = frame->vars;
-    zvalue newVars = datMapPut(vars, name, value);
+    zvalue newVars = mapPut(vars, name, value);
 
-    if (datSize(vars) == datSize(newVars)) {
+    if (pbSize(vars) == pbSize(newVars)) {
         dieForVariable("Variable already defined", name);
     }
 
@@ -61,7 +61,7 @@ void frameAdd(Frame *frame, zvalue name, zvalue value) {
 /* Documented in header. */
 zvalue frameGet(Frame *frame, zvalue name) {
     while (frame != NULL) {
-        zvalue result = datMapGet(frame->vars, name);
+        zvalue result = mapGet(frame->vars, name);
 
         if (result != NULL) {
             return result;

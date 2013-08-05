@@ -57,7 +57,7 @@ static zvalue Default_debugString(zvalue state,
         die("Trouble with `asprintf` (shouldn't happen).");
     }
 
-    return datStringFromUtf8(-1, result);
+    return stringFromUtf8(-1, result);
 }
 
 /* Documented in header. */
@@ -67,48 +67,48 @@ static zvalue Default_eq(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 static zvalue Default_sizeOf(zvalue state, zint argCount, const zvalue *args) {
-    return datIntFromZint(0);
+    return intFromZint(0);
 }
 
 /* Documented in header. */
 static zvalue Default_typeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue value = args[0];
-    return datTypeFromZtype(value->type);
+    return typeFromZtype(value->type);
 }
 
 /* Documented in header. */
-void datInitCoreGenerics(void) {
-    GFN_call = datGfnFrom(1, 1, datStringFromUtf8(-1, "call"));
-    datImmortalize(GFN_call);
+void pbInitCoreGenerics(void) {
+    GFN_call = gfnFrom(1, 1, stringFromUtf8(-1, "call"));
+    pbImmortalize(GFN_call);
 
-    GFN_dataOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
-    datGfnBindCoreDefault(GFN_dataOf, Default_dataOf);
-    datImmortalize(GFN_dataOf);
+    GFN_dataOf = gfnFrom(1, 1, stringFromUtf8(-1, "dataOf"));
+    gfnBindCoreDefault(GFN_dataOf, Default_dataOf);
+    pbImmortalize(GFN_dataOf);
 
-    GFN_debugString = datGfnFrom(1, 1, datStringFromUtf8(-1, "debugString"));
-    datGfnBindCoreDefault(GFN_debugString, Default_debugString);
-    datImmortalize(GFN_debugString);
+    GFN_debugString = gfnFrom(1, 1, stringFromUtf8(-1, "debugString"));
+    gfnBindCoreDefault(GFN_debugString, Default_debugString);
+    pbImmortalize(GFN_debugString);
 
-    GFN_eq = datGfnFrom(2, 2, datStringFromUtf8(-1, "eq"));
-    datGfnBindCoreDefault(GFN_eq, Default_eq);
-    datImmortalize(GFN_eq);
+    GFN_eq = gfnFrom(2, 2, stringFromUtf8(-1, "eq"));
+    gfnBindCoreDefault(GFN_eq, Default_eq);
+    pbImmortalize(GFN_eq);
 
-    GFN_gcFree = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
-    datImmortalize(GFN_gcFree);
+    GFN_gcFree = gfnFrom(1, 1, stringFromUtf8(-1, "gcFree"));
+    pbImmortalize(GFN_gcFree);
 
-    GFN_gcMark = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcMark"));
-    datImmortalize(GFN_gcMark);
+    GFN_gcMark = gfnFrom(1, 1, stringFromUtf8(-1, "gcMark"));
+    pbImmortalize(GFN_gcMark);
 
-    GFN_order = datGfnFrom(2, 2, datStringFromUtf8(-1, "order"));
-    datImmortalize(GFN_order);
+    GFN_order = gfnFrom(2, 2, stringFromUtf8(-1, "order"));
+    pbImmortalize(GFN_order);
 
-    GFN_sizeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
-    datGfnBindCoreDefault(GFN_sizeOf, Default_sizeOf);
-    datImmortalize(GFN_sizeOf);
+    GFN_sizeOf = gfnFrom(1, 1, stringFromUtf8(-1, "sizeOf"));
+    gfnBindCoreDefault(GFN_sizeOf, Default_sizeOf);
+    pbImmortalize(GFN_sizeOf);
 
-    GFN_typeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
-    datGfnBindCoreDefault(GFN_typeOf, Default_typeOf);
-    datImmortalize(GFN_typeOf);
+    GFN_typeOf = gfnFrom(1, 1, stringFromUtf8(-1, "typeOf"));
+    gfnBindCoreDefault(GFN_typeOf, Default_typeOf);
+    pbImmortalize(GFN_typeOf);
 }
 
 
@@ -117,28 +117,28 @@ void datInitCoreGenerics(void) {
  */
 
 /* Documented in header. */
-zvalue datDataOf(zvalue value) {
-    return datCall(GFN_dataOf, 1, &value);
+zvalue pbDataOf(zvalue value) {
+    return fnCall(GFN_dataOf, 1, &value);
 }
 
 /* Documented in header. */
-char *datDebugString(zvalue value) {
+char *pbDebugString(zvalue value) {
     if (value == NULL) {
         return strdup("(null)");
     }
 
-    zvalue result = datCall(GFN_debugString, 1, &value);
-    zint size = datUtf8SizeFromString(result);
+    zvalue result = fnCall(GFN_debugString, 1, &value);
+    zint size = utf8SizeFromString(result);
     char str[size + 1];
 
-    datUtf8FromString(size + 1, str, result);
+    utf8FromString(size + 1, str, result);
     return strdup(str);
 }
 
 /* Documented in header. */
-bool datEq(zvalue v1, zvalue v2) {
-    datAssertValid(v1);
-    datAssertValid(v2);
+bool pbEq(zvalue v1, zvalue v2) {
+    pbAssertValid(v1);
+    pbAssertValid(v2);
 
     if (v1 == v2) {
         return true;
@@ -146,24 +146,24 @@ bool datEq(zvalue v1, zvalue v2) {
         return false;
     } else {
         zvalue args[2] = { v1, v2 };
-        return datCall(GFN_eq, 2, args) != NULL;
+        return fnCall(GFN_eq, 2, args) != NULL;
     }
 }
 
 /* Documented in header. */
-zorder datOrder(zvalue v1, zvalue v2) {
-    datAssertValid(v1);
-    datAssertValid(v2);
+zorder pbOrder(zvalue v1, zvalue v2) {
+    pbAssertValid(v1);
+    pbAssertValid(v2);
 
     if (v1 == v2) {
         return ZSAME;
     } else if (v1->type == v2->type) {
         zvalue args[2] = { v1, v2 };
-        zstackPointer save = datFrameStart();
-        zorder result = datZintFromInt(datCall(GFN_order, 2, args));
-        datFrameReturn(save, NULL);
+        zstackPointer save = pbFrameStart();
+        zorder result = zintFromInt(fnCall(GFN_order, 2, args));
+        pbFrameReturn(save, NULL);
         return result;
-    } else if (datCoreTypeIs(v1, DAT_Deriv)) {
+    } else if (pbCoreTypeIs(v1, PB_Deriv)) {
         // Per spec, derived values always sort after primitives.
         return ZMORE;
     } else {
@@ -172,16 +172,16 @@ zorder datOrder(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zint datSize(zvalue value) {
-    return datZintFromInt(datCall(GFN_sizeOf, 1, &value));
+zint pbSize(zvalue value) {
+    return zintFromInt(fnCall(GFN_sizeOf, 1, &value));
 }
 
 /* Documented in header. */
-bool datTypeIs(zvalue value, zvalue type) {
-    return datEq(datTypeOf(value), type);
+bool pbTypeIs(zvalue value, zvalue type) {
+    return pbEq(pbTypeOf(value), type);
 }
 
 /* Documented in header. */
-zvalue datTypeOf(zvalue value) {
-    return datCall(GFN_typeOf, 1, &value);
+zvalue pbTypeOf(zvalue value) {
+    return fnCall(GFN_typeOf, 1, &value);
 }

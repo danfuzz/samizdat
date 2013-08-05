@@ -22,16 +22,16 @@ typedef struct {
 
     /** Characters of the string, in index order. */
     zchar elems[/*size*/];
-} DatString;
+} StringInfo;
 
 /**
  * Allocates a string of the given size.
  */
 static zvalue allocString(zint size) {
     zvalue result =
-        datAllocValue(DAT_String, sizeof(DatString) + size * sizeof(zchar));
+        pbAllocValue(PB_String, sizeof(StringInfo) + size * sizeof(zchar));
 
-    ((DatString *) datPayload(result))->size = size;
+    ((StringInfo *) pbPayload(result))->size = size;
     return result;
 }
 
@@ -39,14 +39,14 @@ static zvalue allocString(zint size) {
  * Gets the size of a string.
  */
 static zint stringSizeOf(zvalue string) {
-    return ((DatString *) datPayload(string))->size;
+    return ((StringInfo *) pbPayload(string))->size;
 }
 
 /**
  * Gets the array of `zvalue` elements from a list.
  */
 static zchar *stringElems(zvalue string) {
-    return ((DatString *) datPayload(string))->elems;
+    return ((StringInfo *) pbPayload(string))->elems;
 }
 
 
@@ -55,9 +55,22 @@ static zchar *stringElems(zvalue string) {
  */
 
 /* Documented in header. */
-zvalue datStringAdd(zvalue str1, zvalue str2) {
-    datAssertString(str1);
-    datAssertString(str2);
+void pbAssertString(zvalue value) {
+    pbAssertType(value, PB_String);
+}
+
+/* Documented in header. */
+void pbAssertStringSize1(zvalue value) {
+    pbAssertString(value);
+    if (pbSize(value) != 1) {
+        die("Not a size 1 string.");
+    }
+}
+
+/* Documented in header. */
+zvalue stringAdd(zvalue str1, zvalue str2) {
+    pbAssertString(str1);
+    pbAssertString(str2);
 
     zint size1 = stringSizeOf(str1);
     zint size2 = stringSizeOf(str2);
@@ -78,7 +91,7 @@ zvalue datStringAdd(zvalue str1, zvalue str2) {
 }
 
 /* Documented in header. */
-zvalue datStringFromZchars(zint size, const zchar *chars) {
+zvalue stringFromZchars(zint size, const zchar *chars) {
     if (size == 0) {
         return EMPTY_STRING;
     }
@@ -90,7 +103,7 @@ zvalue datStringFromZchars(zint size, const zchar *chars) {
 }
 
 /* Documented in header. */
-zvalue datStringFromUtf8(zint stringBytes, const char *string) {
+zvalue stringFromUtf8(zint stringBytes, const char *string) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
     } else if (stringBytes < 0) {
@@ -109,8 +122,8 @@ zvalue datStringFromUtf8(zint stringBytes, const char *string) {
 }
 
 /* Documented in header. */
-zint datStringNth(zvalue string, zint n) {
-    datAssertString(string);
+zint stringNth(zvalue string, zint n) {
+    pbAssertString(string);
 
     if ((n < 0) || (n >= stringSizeOf(string))) {
         return -1;
@@ -120,16 +133,16 @@ zint datStringNth(zvalue string, zint n) {
 }
 
 /* Documented in header. */
-zvalue datStringSlice(zvalue string, zint start, zint end) {
-    datAssertString(string);
-    datAssertSliceRange(stringSizeOf(string), start, end);
+zvalue stringSlice(zvalue string, zint start, zint end) {
+    pbAssertString(string);
+    pbAssertSliceRange(stringSizeOf(string), start, end);
 
-    return datStringFromZchars(end - start, &stringElems(string)[start]);
+    return stringFromZchars(end - start, &stringElems(string)[start]);
 }
 
 /* Documented in header. */
-void datUtf8FromString(zint resultSize, char *result, zvalue string) {
-    datAssertString(string);
+void utf8FromString(zint resultSize, char *result, zvalue string) {
+    pbAssertString(string);
 
     zint size = stringSizeOf(string);
     zchar *elems = stringElems(string);
@@ -148,8 +161,8 @@ void datUtf8FromString(zint resultSize, char *result, zvalue string) {
 }
 
 /* Documented in header. */
-zint datUtf8SizeFromString(zvalue string) {
-    datAssertString(string);
+zint utf8SizeFromString(zvalue string) {
+    pbAssertString(string);
 
     zint size = stringSizeOf(string);
     zchar *elems = stringElems(string);
@@ -163,8 +176,8 @@ zint datUtf8SizeFromString(zvalue string) {
 }
 
 /* Documented in header. */
-void datZcharsFromString(zchar *result, zvalue string) {
-    datAssertString(string);
+void zcharsFromString(zchar *result, zvalue string) {
+    pbAssertString(string);
 
     memcpy(result, stringElems(string), stringSizeOf(string) * sizeof(zchar));
 }
@@ -181,10 +194,10 @@ zvalue EMPTY_STRING = NULL;
 static zvalue String_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue string = args[0];
-    zvalue quote = datStringFromUtf8(1, "\"");
+    zvalue quote = stringFromUtf8(1, "\"");
 
-    zvalue result = datStringAdd(quote, string);
-    result = datStringAdd(result, quote);
+    zvalue result = stringAdd(quote, string);
+    result = stringAdd(result, quote);
 
     return result;
 }
@@ -227,38 +240,38 @@ static zvalue String_order(zvalue state, zint argCount, const zvalue *args) {
         zchar c2 = e2[i];
 
         if (c1 < c2) {
-            return DAT_NEG1;
+            return PB_NEG1;
         } else if (c1 > c2) {
-            return DAT_1;
+            return PB_1;
         }
     }
 
     if (sz1 == sz2) {
-        return DAT_0;
+        return PB_0;
     }
 
-    return (sz1 < sz2) ? DAT_NEG1 : DAT_1;
+    return (sz1 < sz2) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
 static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue string = args[0];
-    return datIntFromZint(stringSizeOf(string));
+    return intFromZint(stringSizeOf(string));
 }
 
 /* Documented in header. */
-void datBindString(void) {
-    datGfnBindCore(GFN_debugString, DAT_String, String_debugString);
-    datGfnBindCore(GFN_eq,          DAT_String, String_eq);
-    datGfnBindCore(GFN_order,       DAT_String, String_order);
-    datGfnBindCore(GFN_sizeOf,      DAT_String, String_sizeOf);
+void pbBindString(void) {
+    gfnBindCore(GFN_debugString, PB_String, String_debugString);
+    gfnBindCore(GFN_eq,          PB_String, String_eq);
+    gfnBindCore(GFN_order,       PB_String, String_order);
+    gfnBindCore(GFN_sizeOf,      PB_String, String_sizeOf);
 
     EMPTY_STRING = allocString(0);
-    datImmortalize(EMPTY_STRING);
+    pbImmortalize(EMPTY_STRING);
 }
 
 /* Documented in header. */
-static DatType INFO_String = {
+static PbType INFO_String = {
     .name = "String"
 };
-ztype DAT_String = &INFO_String;
+ztype PB_String = &INFO_String;

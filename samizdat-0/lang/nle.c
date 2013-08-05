@@ -43,7 +43,7 @@ typedef struct {
  */
 static void nleMark(void *state) {
     NleState *nleState = state;
-    datMark(nleState->result);
+    pbMark(nleState->result);
 }
 
 /**
@@ -54,7 +54,7 @@ static void nleFree(void *state) {
 }
 
 /** Uniqlet dispatch table for nonlocal exit states. */
-static DatUniqletDispatch NLE_DISPATCH = {
+static UniqletInfoDispatch NLE_DISPATCH = {
     nleMark,
     nleFree
 };
@@ -63,7 +63,7 @@ static DatUniqletDispatch NLE_DISPATCH = {
  * The C function that is bound to in order to perform nonlocal exit.
  */
 static zvalue nonlocalExit(zvalue state, zint argCount, const zvalue *args) {
-    NleState *nleState = datUniqletGetState(state, &NLE_DISPATCH);
+    NleState *nleState = uniqletGetState(state, &NLE_DISPATCH);
 
     if (!nleState->active) {
         die("Attempt to use out-of-scope nonlocal exit.");
@@ -88,15 +88,15 @@ zvalue nleCall(znleFunction function, void *state) {
     nleState->result = NULL;
 
     zint mark = debugMark();
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
     zvalue result;
 
     if (sigsetjmp(nleState->jumpBuf, 0) == 0) {
         // Here is where end up the first time `setjmp` returns.
-        zvalue exitFunction = datFnFrom(
+        zvalue exitFunction = fnFrom(
             0, 1,
             nonlocalExit,
-            datUniqletWith(&NLE_DISPATCH, nleState),
+            uniqletFrom(&NLE_DISPATCH, nleState),
             NULL);
         result = function(state, exitFunction);
     } else {
@@ -106,6 +106,6 @@ zvalue nleCall(znleFunction function, void *state) {
     }
 
     nleState->active = false;
-    datFrameReturn(save, result);
+    pbFrameReturn(save, result);
     return result;
 }

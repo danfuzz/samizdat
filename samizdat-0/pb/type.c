@@ -23,16 +23,16 @@ static zint theNextSeqNum = 0;
  */
 
 /* Documented in header. */
-zint datIndexFromType(ztype type) {
+zint indexFromZtype(ztype type) {
     zint compl = type->seqNumCompl;
 
     if (compl == 0) {
-        if (theNextSeqNum == DAT_MAX_TYPES) {
+        if (theNextSeqNum == PB_MAX_TYPES) {
             die("Too many types!");
         }
 
         compl = ~theNextSeqNum;
-        ((DatType *) type)->seqNumCompl = compl;  // Cast to discard `const`.
+        ((PbType *) type)->seqNumCompl = compl;  // Cast to discard `const`.
         theNextSeqNum++;
     }
 
@@ -40,13 +40,13 @@ zint datIndexFromType(ztype type) {
 }
 
 /* Documented in header. */
-zvalue datTypeFromZtype(ztype type) {
+zvalue typeFromZtype(ztype type) {
     zvalue result = type->nameValue;
 
     if (result == NULL) {
-        result = datStringFromUtf8(-1, type->name);
-        ((DatType *) type)->nameValue = result;  // Cast to discard `const`.
-        datImmortalize(result);
+        result = stringFromUtf8(-1, type->name);
+        ((PbType *) type)->nameValue = result;  // Cast to discard `const`.
+        pbImmortalize(result);
     }
 
     return result;
@@ -58,6 +58,6 @@ zvalue datTypeFromZtype(ztype type) {
  */
 
 /* Documented in header. */
-bool datCoreTypeIs(zvalue value, ztype type) {
+bool pbCoreTypeIs(zvalue value, ztype type) {
     return value->type == type;
 }

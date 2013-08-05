@@ -20,7 +20,7 @@ PRIM_IMPL(mapAdd) {
     zvalue result = EMPTY_MAP;
 
     for (zint i = 0; i < argCount; i++) {
-        result = datMapAdd(result, args[i]);
+        result = mapAdd(result, args[i]);
     }
 
     return result;
@@ -35,7 +35,7 @@ PRIM_IMPL(mapDel) {
         datAssertMap(result);
     } else {
         for (zint i = 1; i < argCount; i++) {
-            result = datMapDel(result, args[i]);
+            result = mapDel(result, args[i]);
         }
     }
 
@@ -44,41 +44,41 @@ PRIM_IMPL(mapDel) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapGet) {
-    return datMapGet(args[0], args[1]);
+    return mapGet(args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapKeys) {
     zvalue map = args[0];
-    zint size = datSize(map);
+    zint size = pbSize(map);
     zmapping mappings[size];
     zvalue arr[size];
 
-    datArrayFromMap(mappings, map);
+    arrayFromMap(mappings, map);
 
     for (zint i = 0; i < size; i++) {
         arr[i] = mappings[i].key;
     }
 
-    return datListFromArray(size, arr);
+    return listFromArray(size, arr);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapNth) {
-    return doNthStrict(datMapNth, args[0], args[1]);
+    return doNthStrict(mapNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapPut) {
-    return datMapPut(args[0], args[1], args[2]);
+    return mapPut(args[0], args[1], args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mappingKey) {
-    return datMappingKey(args[0]);
+    return mappingKey(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mappingValue) {
-    return datMappingValue(args[0]);
+    return mappingValue(args[0]);
 }

@@ -29,16 +29,16 @@ static zvalue GFN_collect = NULL;
 static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
     zvalue intValue = args[0];
 
-    zint size = datSize(intValue);
-    zint raw = datZintFromInt(intValue);
+    zint size = pbSize(intValue);
+    zint raw = zintFromInt(intValue);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        zint bit = datZintGetBit(raw, i);
-        arr[i] = (bit == 0) ? DAT_0 : DAT_1;
+        zint bit = zintGetBit(raw, i);
+        arr[i] = (bit == 0) ? PB_0 : PB_1;
     }
 
-    return datListFromArray(size, arr);
+    return listFromArray(size, arr);
 }
 
 /**
@@ -55,14 +55,14 @@ static zvalue collectList(zvalue state, zint argc, const zvalue *args) {
 static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
     zvalue map = args[0];
 
-    zint size = datSize(map);
+    zint size = pbSize(map);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        arr[i] = datMapNth(map, i);
+        arr[i] = mapNth(map, i);
     }
 
-    return datListFromArray(size, arr);
+    return listFromArray(size, arr);
 }
 
 /**
@@ -72,14 +72,14 @@ static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
 static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
     zvalue string = args[0];
 
-    zint size = datSize(string);
+    zint size = pbSize(string);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        arr[i] = constStringFromZchar(datStringNth(string, i));
+        arr[i] = constStringFromZchar(stringNth(string, i));
     }
 
-    return datListFromArray(size, arr);
+    return listFromArray(size, arr);
 }
 
 /**
@@ -92,11 +92,11 @@ static zvalue collectGenerator(zvalue state, zint argc,
     zvalue arr[CONST_MAX_GENERATOR_ITEMS];
     zint at;
 
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
     zvalue box = boxMutable();
 
     for (at = 0; /*at*/; at++) {
-        zvalue nextGen = datCall(generator, 1, &box);
+        zvalue nextGen = fnCall(generator, 1, &box);
 
         if (nextGen == NULL) {
             break;
@@ -109,8 +109,8 @@ static zvalue collectGenerator(zvalue state, zint argc,
         boxReset(box);
     }
 
-    zvalue result = datListFromArray(at, arr);
-    datFrameReturn(save, result);
+    zvalue result = listFromArray(at, arr);
+    pbFrameReturn(save, result);
     return result;
 }
 
@@ -121,14 +121,14 @@ static zvalue collectGenerator(zvalue state, zint argc,
 
 /* Documented in header. */
 void generatorInit(void) {
-    GFN_collect = datGfnFrom(1, 1, STR_COLLECT);
-    datGfnBindCore(GFN_collect, DAT_Int,      collectInt);
-    datGfnBindCore(GFN_collect, DAT_List,     collectList);
-    datGfnBindCore(GFN_collect, DAT_Map,      collectMap);
-    datGfnBindCore(GFN_collect, DAT_String,   collectString);
-    datGfnBindCore(GFN_collect, DAT_Function, collectGenerator);
-    datGfnSeal(GFN_collect);
-    datImmortalize(GFN_collect);
+    GFN_collect = gfnFrom(1, 1, STR_COLLECT);
+    gfnBindCore(GFN_collect, PB_Int,      collectInt);
+    gfnBindCore(GFN_collect, DAT_List,     collectList);
+    gfnBindCore(GFN_collect, DAT_Map,      collectMap);
+    gfnBindCore(GFN_collect, PB_String,   collectString);
+    gfnBindCore(GFN_collect, PB_Function, collectGenerator);
+    gfnSeal(GFN_collect);
+    pbImmortalize(GFN_collect);
 }
 
 
@@ -138,5 +138,5 @@ void generatorInit(void) {
 
 /* Documented in header. */
 zvalue constCollectGenerator(zvalue value) {
-    return datCall(GFN_collect, 1, &value);
+    return fnCall(GFN_collect, 1, &value);
 }

@@ -16,16 +16,16 @@
 
 #define UNARY_PRIM(name, op) \
     PRIM_IMPL(name) { \
-        zint x = datZintFromInt(args[0]); \
-        return datIntFromZint((op)); \
+        zint x = zintFromInt(args[0]); \
+        return intFromZint((op)); \
     } \
     extern int semicolonRequiredHere
 
 #define BINARY_PRIM(name, op) \
     PRIM_IMPL(name) { \
-        zint x = datZintFromInt(args[0]); \
-        zint y = datZintFromInt(args[1]); \
-        return datIntFromZint((op)); \
+        zint x = zintFromInt(args[0]); \
+        zint y = zintFromInt(args[1]); \
+        return intFromZint((op)); \
     } \
     extern int semicolonRequiredHere
 
@@ -106,8 +106,8 @@ static zint shl(zint value, zint shift) {
  * out-of-range indices result in void, not the sign bit.
  */
 static zvalue doIntNth(zvalue value, zint n) {
-    if (n < datSize(value)) {
-        return datIntFromZint(datIntGetBit(value, n));
+    if (n < pbSize(value)) {
+        return intFromZint(intGetBit(value, n));
     } else {
         return NULL;
     }
@@ -127,7 +127,7 @@ UNARY_PRIM(isign, (x == 0) ? 0 : ((x > 0) ? 1 : -1));
 /* These are all documented in Samizdat Layer 0 spec. */
 BINARY_PRIM(iadd, x + y);
 BINARY_PRIM(iand, x & y);
-BINARY_PRIM(ibit, datZintGetBit(x, y));
+BINARY_PRIM(ibit, zintGetBit(x, y));
 BINARY_PRIM(idiv, div(x, y));
 BINARY_PRIM(imod, mod(x, y));
 BINARY_PRIM(imul, x * y);

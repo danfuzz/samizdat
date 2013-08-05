@@ -39,29 +39,15 @@ typedef struct {
     /** The function's name, if any. Used when producing stack traces. */
     zvalue name;
 
-    /** Uniqlet to use for ordering comparisons. */
-    zvalue orderId;
-} DatFunction;
+    /** Id to use for ordering comparisons. */
+    zint orderId;
+} FunctionInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static DatFunction *fnInfo(zvalue function) {
-    return datPayload(function);
-}
-
-/**
- * Gets the order id, initializing it if necessary.
- */
-static zvalue fnOrderId(zvalue function) {
-    DatFunction *info = fnInfo(function);
-    zvalue orderId = info->orderId;
-
-    if (orderId == NULL) {
-        orderId = info->orderId = datUniqlet();
-    }
-
-    return orderId;
+static FunctionInfo *fnInfo(zvalue function) {
+    return pbPayload(function);
 }
 
 
@@ -70,22 +56,27 @@ static zvalue fnOrderId(zvalue function) {
  */
 
 /* Documented in header. */
-zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
+void pbAssertFunction(zvalue value) {
+    pbAssertType(value, PB_Function);
+}
+
+/* Documented in header. */
+zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         zvalue name) {
     if ((minArgs < 0) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = datAllocValue(DAT_Function, sizeof(DatFunction));
-    DatFunction *info = fnInfo(result);
+    zvalue result = pbAllocValue(PB_Function, sizeof(FunctionInfo));
+    FunctionInfo *info = fnInfo(result);
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->function = function;
     info->state = state;
     info->name = name;
-    info->orderId = NULL;
+    info->orderId = pbOrderId();
 
     return result;
 }
@@ -98,7 +89,7 @@ zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
 /* Documented in header. */
 static zvalue Function_call(zvalue function,
         zint argCount, const zvalue *args) {
-    DatFunction *info = fnInfo(function);
+    FunctionInfo *info = fnInfo(function);
 
     if (argCount < info->minArgs) {
         die("Too few arguments for function call: %lld, min %lld",
@@ -115,28 +106,27 @@ static zvalue Function_call(zvalue function,
 static zvalue Function_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue function = args[0];
-    DatFunction *info = fnInfo(function);
+    FunctionInfo *info = fnInfo(function);
 
-    zvalue result = datStringFromUtf8(-1, "@(Function ");
+    zvalue result = stringFromUtf8(-1, "@(Function ");
 
     if (info->name != NULL) {
-        result = datStringAdd(result, datCall(GFN_debugString, 1, &info->name));
+        result = stringAdd(result, fnCall(GFN_debugString, 1, &info->name));
     } else {
-        result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
+        result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
     }
 
-    result = datStringAdd(result, datStringFromUtf8(-1, ")"));
+    result = stringAdd(result, stringFromUtf8(-1, ")"));
     return result;
 }
 
 /* Documented in header. */
 static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue function = args[0];
-    DatFunction *info = fnInfo(function);
+    FunctionInfo *info = fnInfo(function);
 
-    datMark(info->state);
-    datMark(info->name);
-    datMark(info->orderId);
+    pbMark(info->state);
+    pbMark(info->name);
 
     return NULL;
 }
@@ -145,19 +135,19 @@ static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return datIntFromZint(datOrder(fnOrderId(v1), fnOrderId(v2)));
+    return (fnInfo(v1)->orderId < fnInfo(v2)->orderId) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
-void datBindFunction(void) {
-    datGfnBindCore(GFN_call,        DAT_Function, Function_call);
-    datGfnBindCore(GFN_debugString, DAT_Function, Function_debugString);
-    datGfnBindCore(GFN_gcMark,      DAT_Function, Function_gcMark);
-    datGfnBindCore(GFN_order,       DAT_Function, Function_order);
+void pbBindFunction(void) {
+    gfnBindCore(GFN_call,        PB_Function, Function_call);
+    gfnBindCore(GFN_debugString, PB_Function, Function_debugString);
+    gfnBindCore(GFN_gcMark,      PB_Function, Function_gcMark);
+    gfnBindCore(GFN_order,       PB_Function, Function_order);
 }
 
 /* Documented in header. */
-static DatType INFO_Function = {
+static PbType INFO_Function = {
     .name = "Function"
 };
-ztype DAT_Function = &INFO_Function;
+ztype PB_Function = &INFO_Function;

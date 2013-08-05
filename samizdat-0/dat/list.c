@@ -22,20 +22,20 @@ typedef struct {
 
     /** List elements, in index order. */
     zvalue elems[/*size*/];
-} DatList;
+} ListInfo;
 
 /**
  * Gets the array of `zvalue` elements from a list.
  */
 static zvalue *listElems(zvalue list) {
-    return ((DatList *) datPayload(list))->elems;
+    return ((ListInfo *) pbPayload(list))->elems;
 }
 
 /**
  * Gets the size of a list.
  */
 static zint listSizeOf(zvalue list) {
-    return ((DatList *) datPayload(list))->size;
+    return ((ListInfo *) pbPayload(list))->size;
 }
 
 /**
@@ -43,9 +43,9 @@ static zint listSizeOf(zvalue list) {
  */
 static zvalue allocList(zint size) {
     zvalue result =
-        datAllocValue(DAT_List, sizeof(DatList) + size * sizeof(zvalue));
+        pbAllocValue(DAT_List, sizeof(ListInfo) + size * sizeof(zvalue));
 
-    ((DatList *) datPayload(result))->size = size;
+    ((ListInfo *) pbPayload(result))->size = size;
     return result;
 }
 
@@ -89,13 +89,18 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
  */
 
 /* Documented in header. */
-void datArrayFromList(zvalue *result, zvalue list) {
+void datAssertList(zvalue value) {
+    pbAssertType(value, DAT_List);
+}
+
+/* Documented in header. */
+void arrayFromList(zvalue *result, zvalue list) {
     datAssertList(list);
     memcpy(result, listElems(list), listSizeOf(list) * sizeof(zvalue));
 }
 
 /* Documented in header. */
-zvalue datListAdd(zvalue list1, zvalue list2) {
+zvalue listAdd(zvalue list1, zvalue list2) {
     datAssertList(list1);
     datAssertList(list2);
 
@@ -112,47 +117,47 @@ zvalue datListAdd(zvalue list1, zvalue list2) {
 }
 
 /* Documented in header. */
-zvalue datListAppend(zvalue list, zvalue value) {
+zvalue listAppend(zvalue list, zvalue value) {
     datAssertList(list);
-    return datListInsNth(list, listSizeOf(list), value);
+    return listInsNth(list, listSizeOf(list), value);
 }
 
 /* Documented in header. */
-zvalue datListDelNth(zvalue list, zint n) {
+zvalue listDelNth(zvalue list, zint n) {
     datAssertList(list);
 
     zvalue *elems = listElems(list);
     zint size = listSizeOf(list);
 
-    datAssertNth(size, n);
+    pbAssertNth(size, n);
 
     return listFrom(n, elems, NULL, size - n - 1, elems + n + 1);
 }
 
 /* Documented in header. */
-zvalue datListFromArray(zint size, const zvalue *values) {
+zvalue listFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
-        datAssertValid(values[i]);
+        pbAssertValid(values[i]);
     }
 
     return listFrom(size, values, NULL, 0, NULL);
 }
 
 /* Documented in header. */
-zvalue datListInsNth(zvalue list, zint n, zvalue value) {
+zvalue listInsNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
-    datAssertValid(value);
+    pbAssertValid(value);
 
     zint size = listSizeOf(list);
     zvalue *elems = listElems(list);
 
-    datAssertNthOrSize(size, n);
+    pbAssertNthOrSize(size, n);
 
     return listFrom(n, elems, value, size - n, elems + n);
 }
 
 /* Documented in header. */
-zvalue datListNth(zvalue list, zint n) {
+zvalue listNth(zvalue list, zint n) {
     datAssertList(list);
 
     if ((n < 0) || (n >= listSizeOf(list))) {
@@ -163,16 +168,16 @@ zvalue datListNth(zvalue list, zint n) {
 }
 
 /* Documented in header. */
-zvalue datListPutNth(zvalue list, zint n, zvalue value) {
+zvalue listPutNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
-    datAssertValid(value);
+    pbAssertValid(value);
 
     zint size = listSizeOf(list);
 
-    datAssertNthOrSize(size, n);
+    pbAssertNthOrSize(size, n);
 
     if (n == size) {
-        return datListInsNth(list, n, value);
+        return listInsNth(list, n, value);
     }
 
     zvalue result = listFrom(size, listElems(list), NULL, 0, NULL);
@@ -182,9 +187,9 @@ zvalue datListPutNth(zvalue list, zint n, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue datListSlice(zvalue list, zint start, zint end) {
+zvalue listSlice(zvalue list, zint start, zint end) {
     datAssertList(list);
-    datAssertSliceRange(listSizeOf(list), start, end);
+    pbAssertSliceRange(listSizeOf(list), start, end);
 
     return listFrom(end - start, &listElems(list)[start], NULL, 0, NULL);
 }
@@ -212,7 +217,7 @@ static zvalue List_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue *e2 = listElems(v2);
 
     for (zint i = 0; i < sz1; i++) {
-        if (!datEq(e1[i], e2[i])) {
+        if (!pbEq(e1[i], e2[i])) {
             return NULL;
         }
     }
@@ -227,7 +232,7 @@ static zvalue List_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue *elems = listElems(list);
 
     for (zint i = 0; i < size; i++) {
-        datMark(elems[i]);
+        pbMark(elems[i]);
     }
 
     return NULL;
@@ -244,38 +249,38 @@ static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
     zint sz = (sz1 < sz2) ? sz1 : sz2;
 
     for (zint i = 0; i < sz; i++) {
-        zorder result = datOrder(e1[i], e2[i]);
+        zorder result = pbOrder(e1[i], e2[i]);
         if (result != ZSAME) {
-            return datIntFromZint(result);
+            return intFromZint(result);
         }
     }
 
     if (sz1 == sz2) {
-        return DAT_0;
+        return PB_0;
     }
 
-    return (sz1 < sz2) ? DAT_NEG1 : DAT_1;
+    return (sz1 < sz2) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
 static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue list = args[0];
-    return datIntFromZint(listSizeOf(list));
+    return intFromZint(listSizeOf(list));
 }
 
 /* Documented in header. */
 void datBindList(void) {
-    datGfnBindCore(GFN_eq,     DAT_List, List_eq);
-    datGfnBindCore(GFN_gcMark, DAT_List, List_gcMark);
-    datGfnBindCore(GFN_order,  DAT_List, List_order);
-    datGfnBindCore(GFN_sizeOf, DAT_List, List_sizeOf);
+    gfnBindCore(GFN_eq,     DAT_List, List_eq);
+    gfnBindCore(GFN_gcMark, DAT_List, List_gcMark);
+    gfnBindCore(GFN_order,  DAT_List, List_order);
+    gfnBindCore(GFN_sizeOf, DAT_List, List_sizeOf);
 
     EMPTY_LIST = allocList(0);
-    datImmortalize(EMPTY_LIST);
+    pbImmortalize(EMPTY_LIST);
 }
 
 /* Documented in header. */
-static DatType INFO_List = {
+static PbType INFO_List = {
     .name = "List"
 };
 ztype DAT_List = &INFO_List;

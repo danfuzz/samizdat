@@ -12,10 +12,10 @@
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifIs) {
-    if (datCall(args[0], 0, NULL) != NULL) {
-        return datCall(args[1], 0, NULL);
+    if (fnCall(args[0], 0, NULL) != NULL) {
+        return fnCall(args[1], 0, NULL);
     } else if (argCount == 3) {
-        return datCall(args[2], 0, NULL);
+        return fnCall(args[2], 0, NULL);
     } else {
         return NULL;
     }
@@ -23,8 +23,8 @@ PRIM_IMPL(ifIs) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifNot) {
-    if (datCall(args[0], 0, NULL) == NULL) {
-        return datCall(args[1], 0, NULL);
+    if (fnCall(args[0], 0, NULL) == NULL) {
+        return fnCall(args[1], 0, NULL);
     } else {
         return NULL;
     }
@@ -32,12 +32,12 @@ PRIM_IMPL(ifNot) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifValue) {
-    zvalue result = datCall(args[0], 0, NULL);
+    zvalue result = fnCall(args[0], 0, NULL);
 
     if (result != NULL) {
-        return datCall(args[1], 1, &result);
+        return fnCall(args[1], 1, &result);
     } else if (argCount == 3) {
-        return datCall(args[2], 0, NULL);
+        return fnCall(args[2], 0, NULL);
     } else {
         return NULL;
     }
@@ -45,12 +45,12 @@ PRIM_IMPL(ifValue) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifValueOr) {
-    zvalue result = datCall(args[0], 0, NULL);
+    zvalue result = fnCall(args[0], 0, NULL);
 
     if (result != NULL) {
         return result;
     } else {
-        return datCall(args[1], 0, NULL);
+        return fnCall(args[1], 0, NULL);
     }
 }
 
@@ -58,23 +58,23 @@ PRIM_IMPL(ifValueOr) {
 PRIM_IMPL(loop) {
     zvalue function = args[0];
     for (;;) {
-        zstackPointer save = datFrameStart();
-        datCall(function, 0, NULL);
-        datFrameReturn(save, NULL);
+        zstackPointer save = pbFrameStart();
+        fnCall(function, 0, NULL);
+        pbFrameReturn(save, NULL);
     }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(loopReduce) {
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
     zvalue function = args[0];
-    zvalue innerArgs = datListFromArray(argCount - 1, &args[1]);
+    zvalue innerArgs = listFromArray(argCount - 1, &args[1]);
 
     for (;;) {
-        zvalue nextArgs = datApply(function, innerArgs);
+        zvalue nextArgs = fnApply(function, innerArgs);
         if (nextArgs != NULL) {
             innerArgs = nextArgs;
-            datFrameReset(save, innerArgs);
+            pbFrameReset(save, innerArgs);
         }
     }
 }

@@ -40,29 +40,45 @@ later-named modules depending only on earlier-named ones):
   messaging, Unicode conversion, and about the simplest memory
   allocation facility.
 
+* pb &mdash; "Lowest-layer" data and plumbing model. This implements just
+  enough of the model to be able to do function definition and calling.
+  Also provides related utilities, such as assertions. Depends on util.
+
 * dat &mdash; "Low-layer" data model. This implements the various
   Samizdat low-layer data types, providing constructors, accessors,
-  and a handful of assertions. Depends on util.
+  and a handful of assertions. Depends on pb and util.
 
 * const &mdash; Commonly-used in-model constants and related utilities.
   This includes things like strings used during parsing, and the like.
-  Depends on util and dat.
+  Depends on util, pb, and dat.
 
 * io &mdash; I/O functions. This implements a minimal set of I/O
-  operations. Depends on util, dat, and const.
+  operations. Depends on util, pb, dat, and const.
 
 * lang &mdash; Language parsing and execution engine. This implements
   translation from source text to executable code trees, as well as
   the execution of same. This is also what implements the binding of
   primitive functions into execution contexts. This module does
-  not implement any of the library itself. Depends on util, const, and dat.
+  not implement any of the library itself. Depends on util, pb, dat,
+  and const.
 
 * lib &mdash; Library bindings. This implements both primitive and
   in-language bindings. The former are the parts of the core library
   that need to be (or are most conveniently) implemented in C. The
   latter are what can be implemented in Samizdat Layer 0. Depends on
-  util, dat, const, io, and lang. It also bundles in code from the
-  parallel directory `samizdat-0-lib`.
+  everything above it. It also bundles in code from the parallel directory
+  `samizdat-0-lib`.
 
 * main &mdash; Where it all comes together. This implements the
   C `main()` function. Depends on everything else.
+
+
+Naming Conventions
+------------------
+
+Most names incorporate a prefix that *either* identifies the module that
+the item is defined in, or names a type that the item is identified with.
+
+In the case of functions that convert from one type to another, the
+name is generally `targetFromSource`, where `target` names the result
+type and `Source` names the source type.

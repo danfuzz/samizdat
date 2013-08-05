@@ -14,34 +14,24 @@
 
 
 /*
- * Helper definitions
- */
-
-/* Documented in header. */
-bool datInitialized = false;
-
-
-/*
  * Exported functions
  */
 
 /* Documented in header. */
 void datInit(void) {
-    zstackPointer save = datFrameStart();
+    if (DAT_NULL_BOX != NULL) {
+        return;
+    }
 
-    datInitCoreGenerics();
+    zstackPointer save = pbFrameStart();
+
+    pbInit();
     datBindBox();
-    datBindDeriv();
-    datBindFunction();
-    datBindGeneric();
-    datBindInt();
     datBindList();
     datBindMap();
-    datBindString();
+    datBindMapCache();
     datBindUniqlet();
 
-    datFrameReturn(save, NULL);
-
-    datInitialized = true;
+    pbFrameReturn(save, NULL);
 }
 

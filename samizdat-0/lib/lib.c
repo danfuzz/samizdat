@@ -30,9 +30,9 @@ static zvalue getLibraryFiles(void) {
         extern char name##_##ext[]; \
         unsigned int len = name##_##ext##_len; \
         char *text = name##_##ext; \
-        zvalue datName = datStringFromUtf8(-1, #name "." #ext); \
-        zvalue datText = datStringFromUtf8(len, text); \
-        result = datMapPut(result, datName, datText); \
+        zvalue datName = stringFromUtf8(-1, #name "." #ext); \
+        zvalue datText = stringFromUtf8(len, text); \
+        result = mapPut(result, datName, datText); \
     } while(0)
 
     #include "lib-def.h"
@@ -51,25 +51,25 @@ static zvalue primitiveContext(void) {
 
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
-            zvalue name = datStringFromUtf8(-1, #name); \
-            ctx = datMapPut(ctx, \
-                name, datFnFrom(minArgs, maxArgs, prim_##name, NULL, name)); \
+            zvalue nameStr = stringFromUtf8(-1, #name); \
+            ctx = mapPut(ctx, nameStr, \
+                fnFrom(minArgs, maxArgs, prim_##name, NULL, nameStr)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
         do { \
-            zvalue name = datStringFromUtf8(-1, #name); \
-            ctx = datMapPut(ctx, name, value); \
+            zvalue nameStr = stringFromUtf8(-1, #name); \
+            ctx = mapPut(ctx, nameStr, value); \
         } while(0)
 
     #include "prim-def.h"
 
     // Add the special `nullBox` constant.
-    ctx = datMapPut(ctx, STR_NULL_BOX, DAT_NULL_BOX);
+    ctx = mapPut(ctx, STR_NULL_BOX, DAT_NULL_BOX);
 
     // Include a mapping for a map of all the primitive bindings
     // (other than this one, since values can't self-reference).
-    ctx = datMapPut(ctx, STR_UP_LIBRARY, ctx);
+    ctx = mapPut(ctx, STR_UP_LIBRARY, ctx);
 
     return ctx;
 }
@@ -79,20 +79,20 @@ static zvalue primitiveContext(void) {
  * return value from running the in-language library `main`.
  */
 static zvalue getLibrary(void) {
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
 
     zvalue libraryFiles = getLibraryFiles();
-    zvalue mainText = datMapGet(libraryFiles, STR_MAIN_SAM0);
+    zvalue mainText = mapGet(libraryFiles, STR_MAIN_SAM0);
     zvalue mainProgram = langTree0(mainText);
 
     zvalue ctx = primitiveContext();
     zvalue mainFunction = langEval0(ctx, mainProgram);
 
-    datFrameReturn(save, mainFunction);
+    pbFrameReturn(save, mainFunction);
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    return datCall(mainFunction, 1, &libraryFiles);
+    return fnCall(mainFunction, 1, &libraryFiles);
 }
 
 

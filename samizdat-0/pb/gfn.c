@@ -40,32 +40,18 @@ typedef struct {
     /** The generic's name, if any. Used when producing stack traces. */
     zvalue name;
 
-    /** Uniqlet to use for ordering comparisons. */
-    zvalue orderId;
+    /** Id to use for ordering comparisons. */
+    zint orderId;
 
     /** Bindings from type to function, keyed off of type sequence number. */
-    zfunction functions[DAT_MAX_TYPES];
-} DatGeneric;
+    zfunction functions[PB_MAX_TYPES];
+} GenericInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static DatGeneric *gfnInfo(zvalue generic) {
-    return datPayload(generic);
-}
-
-/**
- * Gets the order id, initializing it if necessary.
- */
-static zvalue gfnOrderId(zvalue function) {
-    DatGeneric *info = gfnInfo(function);
-    zvalue orderId = info->orderId;
-
-    if (orderId == NULL) {
-        orderId = info->orderId = datUniqlet();
-    }
-
-    return orderId;
+static GenericInfo *gfnInfo(zvalue generic) {
+    return pbPayload(generic);
 }
 
 /**
@@ -73,7 +59,7 @@ static zvalue gfnOrderId(zvalue function) {
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
-    return datDebugString((zvalue) state);
+    return pbDebugString((zvalue) state);
 }
 
 
@@ -82,15 +68,15 @@ static char *callReporter(void *state) {
  */
 
 /* Documented in header. */
-zfunction datGfnFind(zvalue generic, zvalue value) {
+zfunction gfnFind(zvalue generic, zvalue value) {
     // TODO: Dispatch is currently on the core type. It should be able
     // to handle derived types too. It's not as simple as just calling
-    // `datTypeOf` on the value, though: (1) That function itself is
+    // `pbTypeOf` on the value, though: (1) That function itself is
     // generic, and (2) the default implementations of many generics
     // will have to be adjusted.
 
-    DatGeneric *info = gfnInfo(generic);
-    zfunction result = info->functions[datIndexFromType(value->type)];
+    GenericInfo *info = gfnInfo(generic);
+    zfunction result = info->functions[indexFromZtype(value->type)];
 
     return (result != NULL) ? result : info->defaultFunction;
 }
@@ -101,17 +87,12 @@ zfunction datGfnFind(zvalue generic, zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datApply(zvalue function, zvalue args) {
-    zint argCount = datSize(args);
-    zvalue argsArray[argCount];
-
-    datArrayFromList(argsArray, args);
-
-    return datCall(function, argCount, argsArray);
+void pbAssertGeneric(zvalue value) {
+    pbAssertType(value, PB_Generic);
 }
 
 /* Documented in header. */
-zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
+zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);
     } else if ((argCount != 0) && (args == NULL)) {
@@ -119,7 +100,7 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
     }
 
     debugPush(callReporter, function);
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
 
     zfunction caller =
         gfnInfo(GFN_call)->functions[~function->type->seqNumCompl];
@@ -130,18 +111,18 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
 
     zvalue result = caller(function, argCount, args);
 
-    datFrameReturn(save, result);
+    pbFrameReturn(save, result);
     debugPop();
 
     return result;
 }
 
 /* Documented in header. */
-void datGfnBindCore(zvalue generic, ztype type, zfunction function) {
-    datAssertGeneric(generic);
+void gfnBindCore(zvalue generic, ztype type, zfunction function) {
+    pbAssertGeneric(generic);
 
-    DatGeneric *info = gfnInfo(generic);
-    zint index = datIndexFromType(type);
+    GenericInfo *info = gfnInfo(generic);
+    zint index = indexFromZtype(type);
 
     if (info->sealed) {
         die("Sealed generic.");
@@ -153,10 +134,10 @@ void datGfnBindCore(zvalue generic, ztype type, zfunction function) {
 }
 
 /* Documented in header. */
-void datGfnBindCoreDefault(zvalue generic, zfunction function) {
-    datAssertGeneric(generic);
+void gfnBindCoreDefault(zvalue generic, zfunction function) {
+    pbAssertGeneric(generic);
 
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
 
     if (info->sealed) {
         die("Sealed generic.");
@@ -168,28 +149,28 @@ void datGfnBindCoreDefault(zvalue generic, zfunction function) {
 }
 
 /* Documented in header. */
-zvalue datGfnFrom(zint minArgs, zint maxArgs, zvalue name) {
+zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
     if ((minArgs < 1) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = datAllocValue(DAT_Generic, sizeof(DatGeneric));
-    DatGeneric *info = gfnInfo(result);
+    zvalue result = pbAllocValue(PB_Generic, sizeof(GenericInfo));
+    GenericInfo *info = gfnInfo(result);
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->defaultFunction = NULL;
     info->sealed = false;
     info->name = name;
-    info->orderId = NULL;
+    info->orderId = pbOrderId();
 
     return result;
 }
 
 /* Documented in header. */
-void datGfnSeal(zvalue generic) {
-    datAssertGeneric(generic);
+void gfnSeal(zvalue generic) {
+    pbAssertGeneric(generic);
     gfnInfo(generic)->sealed = true;
 }
 
@@ -200,7 +181,7 @@ void datGfnSeal(zvalue generic) {
 
 /* Documented in header. */
 static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
 
     if (argCount < info->minArgs) {
         die("Too few arguments for generic call: %lld, min %lld",
@@ -210,7 +191,7 @@ static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    zfunction function = datGfnFind(generic, args[0]);
+    zfunction function = gfnFind(generic, args[0]);
 
     if (function == NULL) {
         die("No type binding found for generic.");
@@ -223,27 +204,26 @@ static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
 static zvalue Generic_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue generic = args[0];
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
 
-    zvalue result = datStringFromUtf8(-1, "@(Generic ");
+    zvalue result = stringFromUtf8(-1, "@(Generic ");
 
     if (info->name != NULL) {
-        result = datStringAdd(result, datCall(GFN_debugString, 1, &info->name));
+        result = stringAdd(result, fnCall(GFN_debugString, 1, &info->name));
     } else {
-        result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
+        result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
     }
 
-    result = datStringAdd(result, datStringFromUtf8(-1, ")"));
+    result = stringAdd(result, stringFromUtf8(-1, ")"));
     return result;
 }
 
 /* Documented in header. */
 static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue generic = args[0];
-    DatGeneric *info = gfnInfo(generic);
+    GenericInfo *info = gfnInfo(generic);
 
-    datMark(info->name);
-    datMark(info->orderId);
+    pbMark(info->name);
 
     return NULL;
 }
@@ -252,19 +232,19 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return datIntFromZint(datOrder(gfnOrderId(v1), gfnOrderId(v2)));
+    return (gfnInfo(v1)->orderId < gfnInfo(v2)->orderId) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
-void datBindGeneric(void) {
-    datGfnBindCore(GFN_call,        DAT_Generic, Generic_call);
-    datGfnBindCore(GFN_debugString, DAT_Generic, Generic_debugString);
-    datGfnBindCore(GFN_gcMark,      DAT_Generic, Generic_gcMark);
-    datGfnBindCore(GFN_order,       DAT_Generic, Generic_order);
+void pbBindGeneric(void) {
+    gfnBindCore(GFN_call,        PB_Generic, Generic_call);
+    gfnBindCore(GFN_debugString, PB_Generic, Generic_debugString);
+    gfnBindCore(GFN_gcMark,      PB_Generic, Generic_gcMark);
+    gfnBindCore(GFN_order,       PB_Generic, Generic_order);
 }
 
 /* Documented in header. */
-static DatType INFO_Generic = {
+static PbType INFO_Generic = {
     .name = "Generic"
 };
-ztype DAT_Generic = &INFO_Generic;
+ztype PB_Generic = &INFO_Generic;

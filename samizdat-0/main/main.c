@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
         die("Too few arguments.");
     }
 
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
     zvalue context = libNewContext();
 
     // The first argumengt to `samCommandLine` is the context. The
@@ -37,23 +37,23 @@ int main(int argc, char **argv) {
 
     args[0] = context;
     for (int i = 1; i < argc; i++) {
-        args[i] = datStringFromUtf8(-1, argv[i]);
+        args[i] = stringFromUtf8(-1, argv[i]);
     }
-    zvalue argsList = datListFromArray(argc, args);
+    zvalue argsList = listFromArray(argc, args);
 
     // `argsList` refers to `context`, so it's safe to keep referring to
     // the latter, immediately below.
-    datFrameReturn(save, argsList);
+    pbFrameReturn(save, argsList);
 
     // Force a garbage collection here, to have a maximally clean slate when
     // moving into main program execution.
-    datGc();
+    pbGc();
 
-    zvalue samCommandLine = datMapGet(context, STR_SAM_COMMAND_LINE);
-    zvalue result = datApply(samCommandLine, argsList);
+    zvalue samCommandLine = mapGet(context, STR_SAM_COMMAND_LINE);
+    zvalue result = fnApply(samCommandLine, argsList);
 
-    if ((result != NULL) && (datCoreTypeIs(result, DAT_Int))) {
-        exit((int) datZintFromInt(result));
+    if ((result != NULL) && (pbCoreTypeIs(result, PB_Int))) {
+        exit((int) zintFromInt(result));
     }
 
     return 0;

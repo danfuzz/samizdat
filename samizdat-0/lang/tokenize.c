@@ -39,7 +39,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : datStringNth(state->str, state->at);
+    return isEof(state) ? -1 : stringNth(state->str, state->at);
 }
 
 /**
@@ -101,8 +101,8 @@ static zvalue tokenizeInt(ParseState *state) {
         die("Invalid int token (no digits).");
     }
 
-    zvalue intval = datIntFromZint(value);
-    return datDerivFrom(STR_INT, intval);
+    zvalue intval = intFromZint(value);
+    return derivFrom(STR_INT, intval);
 }
 
 /**
@@ -133,15 +133,15 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         return NULL;
     }
 
-    zvalue string = datStringFromZchars(size, chars);
+    zvalue string = stringFromZchars(size, chars);
 
     switch (chars[0]) {
-        case 'd': { if (datEq(string, STR_DEF))    return TOK_DEF;    break; }
-        case 'f': { if (datEq(string, STR_FN))     return TOK_FN;     break; }
-        case 'r': { if (datEq(string, STR_RETURN)) return TOK_RETURN; break; }
+        case 'd': { if (pbEq(string, STR_DEF))    return TOK_DEF;    break; }
+        case 'f': { if (pbEq(string, STR_FN))     return TOK_FN;     break; }
+        case 'r': { if (pbEq(string, STR_RETURN)) return TOK_RETURN; break; }
     }
 
-    return datDerivFrom(STR_IDENTIFIER, string);
+    return derivFrom(STR_IDENTIFIER, string);
 }
 
 /**
@@ -190,8 +190,8 @@ static zvalue tokenizeString(ParseState *state) {
         read(state);
     }
 
-    zvalue string = datStringFromZchars(size, chars);
-    return datDerivFrom(STR_STRING, string);
+    zvalue string = stringFromZchars(size, chars);
+    return derivFrom(STR_STRING, string);
 }
 
 /**
@@ -206,8 +206,8 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue string = datDataOf(result);
-    return datDerivFrom(STR_IDENTIFIER, string);
+    zvalue string = pbDataOf(result);
+    return derivFrom(STR_IDENTIFIER, string);
 }
 
 /**
@@ -289,10 +289,10 @@ static zvalue tokenizeOne(ParseState *state) {
 zvalue langTokenize0(zvalue string) {
     constInit();
 
-    zstackPointer save = datFrameStart();
+    zstackPointer save = pbFrameStart();
 
     zvalue result[LANG_MAX_TOKENS];
-    ParseState state = { string, datSize(string), 0 };
+    ParseState state = { string, pbSize(string), 0 };
     zint out = 0;
 
     for (;;) {
@@ -308,7 +308,7 @@ zvalue langTokenize0(zvalue string) {
         out++;
     }
 
-    zvalue resultList = datListFromArray(out, result);
-    datFrameReturn(save, resultList);
+    zvalue resultList = listFromArray(out, result);
+    pbFrameReturn(save, resultList);
     return resultList;
 }
