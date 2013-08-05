@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
     // moving into main program execution.
     pbGc();
 
-    zvalue samCommandLine = datMapGet(context, STR_SAM_COMMAND_LINE);
+    zvalue samCommandLine = mapGet(context, STR_SAM_COMMAND_LINE);
     zvalue result = fnApply(samCommandLine, argsList);
 
     if ((result != NULL) && (pbCoreTypeIs(result, DAT_Int))) {

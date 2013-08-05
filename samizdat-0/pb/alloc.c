@@ -177,7 +177,7 @@ static void doGc(void) {
     // between clearing the cache and marking everything in it, so
     // simplicity wins here.
 
-    datMapClearCache();
+    mapClearCache();
 
     if (CHATTY_GC) {
         note("GC: Cleared map cache.");

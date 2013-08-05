@@ -41,7 +41,7 @@ PRIM_IMPL(makeMapping) {
         mappings[i].value = value;
     }
 
-    return datMapAddArray(EMPTY_MAP, size, mappings);
+    return mapAddArray(EMPTY_MAP, size, mappings);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

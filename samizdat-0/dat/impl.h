@@ -37,7 +37,7 @@ typedef struct {
 /**
  * Clears the contents of the map lookup cache.
  */
-void datMapClearCache(void);
+void mapClearCache(void);
 
 /**
  * Gets the `CacheEntry` for the given map/key pair.

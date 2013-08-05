@@ -113,9 +113,9 @@ static zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
                        zvalue k3, zvalue v3) {
     zvalue result = EMPTY_MAP;
 
-    if (v1 != NULL) { result = datMapPut(result, k1, v1); }
-    if (v2 != NULL) { result = datMapPut(result, k2, v2); }
-    if (v3 != NULL) { result = datMapPut(result, k3, v3); }
+    if (v1 != NULL) { result = mapPut(result, k1, v1); }
+    if (v2 != NULL) { result = mapPut(result, k2, v2); }
+    if (v3 != NULL) { result = mapPut(result, k3, v3); }
 
     return result;
 }
@@ -380,7 +380,7 @@ DEF_PARSE(programDeclarations) {
         MATCH_OR_REJECT(CH_COLONCOLON);
     }
 
-    return datMapAdd(formals, yieldDef);
+    return mapAdd(formals, yieldDef);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -389,7 +389,7 @@ DEF_PARSE(program) {
     zvalue value = PARSE(programBody); // This never fails.
 
     if (declarations != NULL) {
-        value = datMapAdd(value, declarations);
+        value = mapAdd(value, declarations);
     }
 
     return derivFrom(STR_CLOSURE, value);
@@ -415,7 +415,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(closure);
 
-    if (datMapGet(pbDataOf(c), STR_FORMALS) != NULL) {
+    if (mapGet(pbDataOf(c), STR_FORMALS) != NULL) {
         die("Invalid formal argument in code block.");
     }
 
@@ -428,7 +428,7 @@ DEF_PARSE(codeOnlyClosure) {
 
     zvalue c = PARSE_OR_REJECT(nullaryClosure);
 
-    if (datMapGet(pbDataOf(c), STR_YIELD_DEF) != NULL) {
+    if (mapGet(pbDataOf(c), STR_YIELD_DEF) != NULL) {
         die("Invalid yield definition in code block.");
     }
 
@@ -478,11 +478,11 @@ DEF_PARSE(fnCommon) {
 
     zvalue codeMap = pbDataOf(code);
     zvalue statements =
-        datListAdd(returnDef, datMapGet(codeMap, STR_STATEMENTS));
+        datListAdd(returnDef, mapGet(codeMap, STR_STATEMENTS));
 
-    zvalue result = datMapAdd(codeMap, name);
-    result = datMapAdd(result, formals);
-    result = datMapAdd(result,
+    zvalue result = mapAdd(codeMap, name);
+    result = mapAdd(result, formals);
+    result = mapAdd(result,
         mapFrom2(STR_YIELD_DEF, STR_RETURN, STR_STATEMENTS, statements));
     return result;
 }
@@ -493,7 +493,7 @@ DEF_PARSE(fnDef) {
 
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
 
-    if (datMapGet(funcMap, STR_NAME) == NULL) {
+    if (mapGet(funcMap, STR_NAME) == NULL) {
         return NULL;
     }
 
@@ -507,7 +507,7 @@ DEF_PARSE(fnExpression) {
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
     zvalue closure = derivFrom(STR_CLOSURE, funcMap);
 
-    zvalue name = datMapGet(funcMap, STR_NAME);
+    zvalue name = mapGet(funcMap, STR_NAME);
     if (name == NULL) {
         return closure;
     }

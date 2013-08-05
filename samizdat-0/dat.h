@@ -191,60 +191,60 @@ void datArrayFromMap(zmapping *result, zvalue map);
  * Gets the map resulting from putting the all the given mappings
  * into the given map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
- * The effect is identical to calling a chain of `datMapPut()`s on each
+ * The effect is identical to calling a chain of `mapPut()`s on each
  * of the mappings in order.
  */
-zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings);
+zvalue mapAddArray(zvalue map, zint size, const zmapping *mappings);
 
 /**
  * Combines the mappings of the two given maps into a new map.
  * For overlapping keys between the two, the second argument "wins".
  */
-zvalue datMapAdd(zvalue map1, zvalue map2);
+zvalue mapAdd(zvalue map1, zvalue map2);
 
 /**
  * Gets a map resulting from the removal of the given key from the
  * given map.
  */
-zvalue datMapDel(zvalue map, zvalue key);
+zvalue mapDel(zvalue map, zvalue key);
 
 /**
  * Given a map, find the mapping of the given key and return the
  * corresponding value, or `NULL` if there is no such key. `map`
  * must be a map, and `key` must be a valid value.
  */
-zvalue datMapGet(zvalue map, zvalue key);
+zvalue mapGet(zvalue map, zvalue key);
 
 /**
  * Given a map, returns the `n`th mapping. `map` must be a
  * map, and `n` must be `< pbSize(value)`. Mappings are returned
  * as single-element maps. Map ordering is by key.
  */
-zvalue datMapNth(zvalue map, zint n);
+zvalue mapNth(zvalue map, zint n);
 
 /**
  * Gets the map resulting from putting the given mapping into the
  * given map. This can either add a new mapping or replace an
  * existing mapping.
  */
-zvalue datMapPut(zvalue map, zvalue key, zvalue value);
+zvalue mapPut(zvalue map, zvalue key, zvalue value);
 
 /**
  * Constructs and returns a single-mapping map.
  */
-zvalue datMapping(zvalue key, zvalue value);
+zvalue mapping(zvalue key, zvalue value);
 
 /**
  * Given a single-mapping map, returns its sole key. `map` must be a
  * map.
  */
-zvalue datMappingKey(zvalue map);
+zvalue mappingKey(zvalue map);
 
 /**
  * Given a single-mapping map, returns its sole value. `map` must be a
  * map.
  */
-zvalue datMappingValue(zvalue map);
+zvalue mappingValue(zvalue map);
 
 
 /*

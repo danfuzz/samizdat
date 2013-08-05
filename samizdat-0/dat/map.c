@@ -60,7 +60,7 @@ static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
     zorder comp = pbOrder(k1, k2);
 
     if (comp == ZSAME) {
-        return datMapping(k2, v2);
+        return mapping(k2, v2);
     }
 
     zvalue result = allocMap(2);
@@ -148,7 +148,7 @@ void datArrayFromMap(zmapping *result, zvalue map) {
 }
 
 /* Documented in header. */
-zvalue datMapAdd(zvalue map1, zvalue map2) {
+zvalue mapAdd(zvalue map1, zvalue map2) {
     datAssertMap(map1);
     datAssertMap(map2);
 
@@ -161,17 +161,17 @@ zvalue datMapAdd(zvalue map1, zvalue map2) {
         return map1;
     }
 
-    return datMapAddArray(map1, size2, mapElems(map2));
+    return mapAddArray(map1, size2, mapElems(map2));
 }
 
 /* Documented in header. */
-zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
+zvalue mapAddArray(zvalue map, zint size, const zmapping *mappings) {
     datAssertMap(map);
 
     if (size == 0) {
         return map;
     } else if (size == 1) {
-        return datMapPut(map, mappings[0].key, mappings[0].value);
+        return mapPut(map, mappings[0].key, mappings[0].value);
     }
 
     zint mapSize = mapSizeOf(map);
@@ -209,7 +209,7 @@ zvalue datMapAddArray(zvalue map, zint size, const zmapping *mappings) {
 }
 
 /* Documented in header. */
-zvalue datMapDel(zvalue map, zvalue key) {
+zvalue mapDel(zvalue map, zvalue key) {
     zint index = mapFind(map, key);
 
     if (index < 0) {
@@ -233,14 +233,14 @@ zvalue datMapDel(zvalue map, zvalue key) {
 }
 
 /* Documented in header. */
-zvalue datMapGet(zvalue map, zvalue key) {
+zvalue mapGet(zvalue map, zvalue key) {
     zint index = mapFind(map, key);
 
     return (index < 0) ? NULL : mapElems(map)[index].value;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMapNth(zvalue map, zint n) {
+zvalue mapNth(zvalue map, zint n) {
     datAssertMap(map);
 
     if ((n < 0) || (n >= mapSizeOf(map))) {
@@ -251,12 +251,12 @@ zvalue datMapNth(zvalue map, zint n) {
         return map;
     }
 
-    zmapping *mapping = &mapElems(map)[n];
-    return datMapping(mapping->key, mapping->value);
+    zmapping *m = &mapElems(map)[n];
+    return mapping(m->key, m->value);
 }
 
 /* Documented in header. */
-zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
+zvalue mapPut(zvalue map, zvalue key, zvalue value) {
     datAssertMap(map);
     pbAssertValid(value);
 
@@ -265,7 +265,7 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
     switch (size) {
         case 0: {
             pbAssertValid(key);
-            return datMapping(key, value);
+            return mapping(key, value);
         }
         case 1: {
             pbAssertValid(key);
@@ -302,7 +302,7 @@ zvalue datMapPut(zvalue map, zvalue key, zvalue value) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMapping(zvalue key, zvalue value) {
+zvalue mapping(zvalue key, zvalue value) {
     zvalue result = allocMap(1);
     zmapping *elems = mapElems(result);
 
@@ -312,13 +312,13 @@ zvalue datMapping(zvalue key, zvalue value) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMappingKey(zvalue map) {
+zvalue mappingKey(zvalue map) {
     datAssertMapSize1(map);
     return mapElems(map)[0].key;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-zvalue datMappingValue(zvalue map) {
+zvalue mappingValue(zvalue map) {
     datAssertMapSize1(map);
     return mapElems(map)[0].value;
 }

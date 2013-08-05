@@ -59,7 +59,7 @@ static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        arr[i] = datMapNth(map, i);
+        arr[i] = mapNth(map, i);
     }
 
     return datListFromArray(size, arr);

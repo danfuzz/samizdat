@@ -32,7 +32,7 @@ static zvalue getLibraryFiles(void) {
         char *text = name##_##ext; \
         zvalue datName = stringFromUtf8(-1, #name "." #ext); \
         zvalue datText = stringFromUtf8(len, text); \
-        result = datMapPut(result, datName, datText); \
+        result = mapPut(result, datName, datText); \
     } while(0)
 
     #include "lib-def.h"
@@ -51,25 +51,25 @@ static zvalue primitiveContext(void) {
 
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
-            zvalue name = stringFromUtf8(-1, #name); \
-            ctx = datMapPut(ctx, \
-                name, fnFrom(minArgs, maxArgs, prim_##name, NULL, name)); \
+            zvalue nameStr = stringFromUtf8(-1, #name); \
+            ctx = mapPut(ctx, nameStr, \
+                fnFrom(minArgs, maxArgs, prim_##name, NULL, nameStr)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
         do { \
-            zvalue name = stringFromUtf8(-1, #name); \
-            ctx = datMapPut(ctx, name, value); \
+            zvalue nameStr = stringFromUtf8(-1, #name); \
+            ctx = mapPut(ctx, nameStr, value); \
         } while(0)
 
     #include "prim-def.h"
 
     // Add the special `nullBox` constant.
-    ctx = datMapPut(ctx, STR_NULL_BOX, DAT_NULL_BOX);
+    ctx = mapPut(ctx, STR_NULL_BOX, DAT_NULL_BOX);
 
     // Include a mapping for a map of all the primitive bindings
     // (other than this one, since values can't self-reference).
-    ctx = datMapPut(ctx, STR_UP_LIBRARY, ctx);
+    ctx = mapPut(ctx, STR_UP_LIBRARY, ctx);
 
     return ctx;
 }
@@ -82,7 +82,7 @@ static zvalue getLibrary(void) {
     zstackPointer save = pbFrameStart();
 
     zvalue libraryFiles = getLibraryFiles();
-    zvalue mainText = datMapGet(libraryFiles, STR_MAIN_SAM0);
+    zvalue mainText = mapGet(libraryFiles, STR_MAIN_SAM0);
     zvalue mainProgram = langTree0(mainText);
 
     zvalue ctx = primitiveContext();

@@ -89,7 +89,7 @@ typedef struct {
  */
 static void bindArguments(Frame *frame, zvalue node,
                           zint argCount, const zvalue *args) {
-    zvalue formals = datMapGet(node, STR_FORMALS);
+    zvalue formals = mapGet(node, STR_FORMALS);
 
     if (formals == NULL) {
         return;
@@ -103,8 +103,8 @@ static void bindArguments(Frame *frame, zvalue node,
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
-        zvalue name = datMapGet(formal, STR_NAME);
-        zvalue repeat = datMapGet(formal, STR_REPEAT);
+        zvalue name = mapGet(formal, STR_NAME);
+        zvalue repeat = mapGet(formal, STR_REPEAT);
         bool ignore = (name == NULL);
         zvalue value;
 
@@ -173,8 +173,8 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     zint argCount = callState->argCount;
     const zvalue *args = callState->args;
 
-    zvalue statements = datMapGet(defMap, STR_STATEMENTS);
-    zvalue yield = datMapGet(defMap, STR_YIELD);
+    zvalue statements = mapGet(defMap, STR_STATEMENTS);
+    zvalue yield = mapGet(defMap, STR_YIELD);
 
     // With the closure's frame as the parent, bind the formals and
     // nonlocal exit (if present), creating a new execution frame.
@@ -184,7 +184,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     bindArguments(&frame, defMap, argCount, args);
 
     if (exitFunction != NULL) {
-        zvalue name = datMapGet(defMap, STR_YIELD_DEF);
+        zvalue name = mapGet(defMap, STR_YIELD_DEF);
         frameAdd(&frame, name, exitFunction);
     }
 
@@ -254,7 +254,7 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
 
     zvalue result;
 
-    if (datMapGet(closure->defMap, STR_YIELD_DEF) != NULL) {
+    if (mapGet(closure->defMap, STR_YIELD_DEF) != NULL) {
         result = nleCall(callClosureWithNle, &callState);
     } else {
         result = callClosureMain(&callState, NULL);
@@ -283,7 +283,7 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
         0, -1,
         callClosure,
         uniqletFrom(&CLOSURE_DISPATCH, closure),
-        datMapGet(defMap, STR_NAME));
+        mapGet(defMap, STR_NAME));
 }
 
 
@@ -297,8 +297,8 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = pbDataOf(varDef);
-    zvalue name = datMapGet(nameValue, STR_NAME);
-    zvalue valueExpression = datMapGet(nameValue, STR_VALUE);
+    zvalue name = mapGet(nameValue, STR_NAME);
+    zvalue valueExpression = mapGet(nameValue, STR_VALUE);
     zvalue value = execExpression(frame, valueExpression);
 
     frameAdd(frame, name, value);
@@ -315,7 +315,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
     for (zint i = 0; i < size; i++) {
         zvalue one = statements[i];
         zvalue fnMap = pbDataOf(one);
-        zvalue name = datMapGet(fnMap, STR_NAME);
+        zvalue name = mapGet(fnMap, STR_NAME);
         frameAdd(frame, name, buildClosure(&closures[i], frame, one));
     }
 
@@ -341,8 +341,8 @@ static zvalue execClosure(Frame *frame, zvalue closureNode) {
 static zvalue execCall(Frame *frame, zvalue call) {
     call = pbDataOf(call);
 
-    zvalue function = datMapGet(call, STR_FUNCTION);
-    zvalue actuals = datMapGet(call, STR_ACTUALS);
+    zvalue function = mapGet(call, STR_FUNCTION);
+    zvalue actuals = mapGet(call, STR_ACTUALS);
     zvalue functionId = execExpression(frame, function);
 
     zint argCount = pbSize(actuals);

@@ -49,7 +49,7 @@ void frameMark(Frame *frame) {
 /* Documented in header. */
 void frameAdd(Frame *frame, zvalue name, zvalue value) {
     zvalue vars = frame->vars;
-    zvalue newVars = datMapPut(vars, name, value);
+    zvalue newVars = mapPut(vars, name, value);
 
     if (pbSize(vars) == pbSize(newVars)) {
         dieForVariable("Variable already defined", name);
@@ -61,7 +61,7 @@ void frameAdd(Frame *frame, zvalue name, zvalue value) {
 /* Documented in header. */
 zvalue frameGet(Frame *frame, zvalue name) {
     while (frame != NULL) {
-        zvalue result = datMapGet(frame->vars, name);
+        zvalue result = mapGet(frame->vars, name);
 
         if (result != NULL) {
             return result;

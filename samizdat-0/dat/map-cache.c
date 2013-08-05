@@ -29,7 +29,7 @@ static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
  */
 
 /* Documented in header. */
-void datMapClearCache(void) {
+void mapClearCache(void) {
     memset(mapCache, 0, sizeof(mapCache));
 }
 
