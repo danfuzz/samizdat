@@ -151,6 +151,23 @@ bool pbEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
+bool pbNullSafeEq(zvalue v1, zvalue v2) {
+    pbAssertValidOrNull(v1);
+    pbAssertValidOrNull(v2);
+
+    if (v1 == v2) {
+        return true;
+    } else if ((v1 == NULL) || (v2 == NULL)) {
+        return false;
+    } else if (v1->type != v2->type) {
+        return false;
+    } else {
+        zvalue args[2] = { v1, v2 };
+        return fnCall(GFN_eq, 2, args) != NULL;
+    }
+}
+
+/* Documented in header. */
 zorder pbOrder(zvalue v1, zvalue v2) {
     pbAssertValid(v1);
     pbAssertValid(v2);

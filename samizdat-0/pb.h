@@ -100,6 +100,10 @@ extern ztype PB_Int;
 /** Type value for in-model type `String`. */
 extern ztype PB_String;
 
+/** Type value for in-model type `Type`. */
+extern ztype PB_Type;
+extern zvalue TYPE_Type;
+
 /**
  * Generic `call(value)`: Somewhat-degenerate generic for dispatching to
  * a function call mechanism (how meta). Only defined for types `Function`
@@ -253,12 +257,23 @@ void pbAssertString(zvalue value);
 void pbAssertStringSize1(zvalue value);
 
 /**
+ * Asserts that the given value is of type `Type`. If not, this aborts the
+ * process with a diagnostic message.
+ */
+void typeAssert(zvalue value);
+
+/**
  * Asserts that the given value is a valid `zvalue` (non-`NULL` and
  * seems to actually have the right form). This performs reasonable,
  * but not exhaustive, tests. If not valid, this aborts the process
  * with a diagnostic message.
  */
 void pbAssertValid(zvalue value);
+
+/**
+ * Like `pbAssertValid` except that `NULL` is accepted too.
+ */
+void pbAssertValidOrNull(zvalue value);
 
 
 /*
@@ -422,6 +437,34 @@ void gfnSeal(zvalue generic);
 
 
 /*
+ * Type Functions
+ */
+
+/**
+ * Gets a type value whose name and optional secret are as given. The name
+ * is an arbitrary value, used for ordering types and for displaying them
+ * (e.g. for debugging purposes).
+ *
+ * If the secret is `NULL`, then the type is considered "transparent", meaning
+ * that there are no restrictions on creation of values of the type, and the
+ * data payload (if any) of a value of the type can be retrieved by arbitrary
+ * code. Otherwise, the type is "opaque", and instances can only be created
+ * by code possessing the secret, and payload data (or lack thereof) may only
+ * be retrieved by code that possesses the secret.
+ *
+ * When called multiple times with identical arguments, this function returns
+ * the same result. It is invalid (terminating the runtime) to attempt to
+ * get a same-named type that differs only in the choice of secret.
+ */
+zvalue typeFrom(zvalue name, zvalue secret);
+
+/**
+ * Gets the name of the given type.
+ */
+zvalue typeName(zvalue type);
+
+
+/*
  * Derived Value Functions
  */
 
@@ -470,6 +513,11 @@ char *pbDebugString(zvalue value);
  * quicker in the not-equal case.
  */
 bool pbEq(zvalue v1, zvalue v2);
+
+/**
+ * Like `pbEq`, but accepts `NULL` as a valid value.
+ */
+bool pbNullSafeEq(zvalue v1, zvalue v2);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the

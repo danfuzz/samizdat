@@ -61,6 +61,12 @@ zfunction gfnFind(zvalue generic, zvalue value);
 zint indexFromZtype(ztype type);
 
 /**
+ * Like `pbAllocValue`, except that the `type` of the result is set to itself.
+ * This is only used during initial bootstrap, to allocate the type `Type`.
+ */
+zvalue pbAllocTypeType(zint extraBytes);
+
+/**
  * Gets a type value from a `ztype`.
  */
 zvalue typeFromZtype(ztype type);
@@ -75,11 +81,12 @@ zvalue typeFromZtype(ztype type);
  */
 void pbInitCoreGenerics(void);
 
-// Per-type generic binding.
+// Per-type binding and initialization.
 void pbBindDeriv(void);
 void pbBindFunction(void);
 void pbBindGeneric(void);
 void pbBindInt(void);
 void pbBindString(void);
+void pbBindType(void);
 
 #endif

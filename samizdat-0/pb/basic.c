@@ -18,7 +18,7 @@
  */
 
 /** The next "order id" to return. */
-static zint nextOrderId = 0;
+static zint theNextOrderId = 0;
 
 
 /*
@@ -88,11 +88,11 @@ void pbInit(void) {
 
 /* Documented in header. */
 zint pbOrderId(void) {
-    if (nextOrderId < 0) {
+    if (theNextOrderId < 0) {
         die("Too many order ids!");
     }
 
-    zint result = nextOrderId;
-    nextOrderId++;
+    zint result = theNextOrderId;
+    theNextOrderId++;
     return result;
 }

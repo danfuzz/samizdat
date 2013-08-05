@@ -246,13 +246,10 @@ static void doGc(void) {
     sanityCheck(true);
 }
 
-
-/*
- * Exported functions
+/**
+ * Common code for allocation.
  */
-
-/* Documented in header. */
-zvalue pbAllocValue(ztype type, zint extraBytes) {
+static zvalue allocValue(ztype type, zint extraBytes) {
     if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
         pbGc();
     } else {
@@ -263,14 +260,39 @@ zvalue pbAllocValue(ztype type, zint extraBytes) {
     result->magic = PB_VALUE_MAGIC;
     result->type = type;
 
+    allocationCount++;
     enlist(&liveHead, result);
     pbFrameAdd(result);
-
-    allocationCount++;
-
     sanityCheck(false);
 
     return result;
+}
+
+
+/*
+ * Module functions
+ */
+
+/* Documented in header. */
+zvalue pbAllocTypeType(zint extraBytes) {
+    zvalue result = allocValue(NULL, extraBytes);
+
+    // TODO:
+    // result->type = result;
+    return result;
+}
+
+
+/*
+ * Exported functions
+ */
+
+/* Documented in header. */
+zvalue pbAllocValue(ztype type, zint extraBytes) {
+    // TODO:
+    // typeAssert(type)
+
+    return allocValue(type, extraBytes);
 }
 
 /* Documented in header. */
@@ -285,6 +307,13 @@ void pbAssertValid(zvalue value) {
 
     if (value->type == NULL) {
         die("Invalid value (null type): %p", value);
+    }
+}
+
+/* Documented in header. */
+void pbAssertValidOrNull(zvalue value) {
+    if (value != NULL) {
+        pbAssertValid(value);
     }
 }
 

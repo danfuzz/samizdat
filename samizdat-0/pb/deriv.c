@@ -83,17 +83,9 @@ static zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
     DerivInfo *info1 = derivInfo(v1);
     DerivInfo *info2 = derivInfo(v2);
 
-    if (info1->data == NULL) {
-        if (info2->data != NULL) {
-            return NULL;
-        }
-    } else if (info2->data == NULL) {
-        return NULL;
-    } else if (!pbEq(info1->data, info2->data)) {
-        return NULL;
-    }
-
-    return pbEq(info1->type, info2->type) ? v2 : NULL;
+    return (pbNullSafeEq(info1->data, info2->data) &&
+        pbEq(info1->type, info2->type))
+        ? v2 : NULL;
 }
 
 /* Documented in header. */
