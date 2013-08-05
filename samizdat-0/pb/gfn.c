@@ -101,16 +101,6 @@ zfunction datGfnFind(zvalue generic, zvalue value) {
  */
 
 /* Documented in header. */
-zvalue datApply(zvalue function, zvalue args) {
-    zint argCount = datSize(args);
-    zvalue argsArray[argCount];
-
-    datArrayFromList(argsArray, args);
-
-    return datCall(function, argCount, argsArray);
-}
-
-/* Documented in header. */
 zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);

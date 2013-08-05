@@ -53,9 +53,6 @@ extern zvalue DAT_NULL_BOX;
 /** Type value for in-model type `Box`. */
 extern ztype DAT_Box;
 
-/** Type value for in-model type `Deriv`. */
-extern ztype DAT_Deriv;
-
 /** Type value for in-model type `List`. */
 extern ztype DAT_List;
 

@@ -135,7 +135,7 @@ static zvalue Deriv_typeOf(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void datBindDeriv(void) {
+void pbBindDeriv(void) {
     datGfnBindCore(GFN_dataOf, DAT_Deriv, Deriv_dataOf);
     datGfnBindCore(GFN_eq,     DAT_Deriv, Deriv_eq);
     datGfnBindCore(GFN_gcMark, DAT_Deriv, Deriv_gcMark);
