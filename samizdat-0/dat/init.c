@@ -19,7 +19,7 @@
 
 /* Documented in header. */
 void datInit(void) {
-    if (DAT_Box != NULL) {
+    if (DAT_NULL_BOX != NULL) {
         return;
     }
 
