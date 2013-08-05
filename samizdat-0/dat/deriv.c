@@ -136,12 +136,12 @@ static zvalue Deriv_typeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindDeriv(void) {
-    datGfnBindCore(genDataOf, DAT_Deriv, Deriv_dataOf);
-    datGfnBindCore(genEq,     DAT_Deriv, Deriv_eq);
-    datGfnBindCore(genGcMark, DAT_Deriv, Deriv_gcMark);
-    datGfnBindCore(genOrder,  DAT_Deriv, Deriv_order);
-    datGfnBindCore(genSizeOf, DAT_Deriv, Deriv_sizeOf);
-    datGfnBindCore(genTypeOf, DAT_Deriv, Deriv_typeOf);
+    datGfnBindCore(GFN_dataOf, DAT_Deriv, Deriv_dataOf);
+    datGfnBindCore(GFN_eq,     DAT_Deriv, Deriv_eq);
+    datGfnBindCore(GFN_gcMark, DAT_Deriv, Deriv_gcMark);
+    datGfnBindCore(GFN_order,  DAT_Deriv, Deriv_order);
+    datGfnBindCore(GFN_sizeOf, DAT_Deriv, Deriv_sizeOf);
+    datGfnBindCore(GFN_typeOf, DAT_Deriv, Deriv_typeOf);
 }
 
 /* Documented in header. */

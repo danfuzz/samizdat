@@ -122,7 +122,7 @@ zvalue datCall(zvalue function, zint argCount, const zvalue *args) {
     zstackPointer save = datFrameStart();
 
     zfunction caller =
-        gfnInfo(genCall)->functions[~function->type->seqNumCompl];
+        gfnInfo(GFN_call)->functions[~function->type->seqNumCompl];
 
     if (caller == NULL) {
         die("Attempt to call non-function.");
@@ -228,7 +228,7 @@ static zvalue Generic_debugString(zvalue state,
     zvalue result = datStringFromUtf8(-1, "@(Generic ");
 
     if (info->name != NULL) {
-        result = datStringAdd(result, datCall(genDebugString, 1, &info->name));
+        result = datStringAdd(result, datCall(GFN_debugString, 1, &info->name));
     } else {
         result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
     }
@@ -257,10 +257,10 @@ static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindGeneric(void) {
-    datGfnBindCore(genCall,        DAT_Generic, Generic_call);
-    datGfnBindCore(genDebugString, DAT_Generic, Generic_debugString);
-    datGfnBindCore(genGcMark,      DAT_Generic, Generic_gcMark);
-    datGfnBindCore(genOrder,       DAT_Generic, Generic_order);
+    datGfnBindCore(GFN_call,        DAT_Generic, Generic_call);
+    datGfnBindCore(GFN_debugString, DAT_Generic, Generic_debugString);
+    datGfnBindCore(GFN_gcMark,      DAT_Generic, Generic_gcMark);
+    datGfnBindCore(GFN_order,       DAT_Generic, Generic_order);
 }
 
 /* Documented in header. */

@@ -123,7 +123,7 @@ extern ztype DAT_Uniqlet;
  * Generic `dataOf(value)`: Gets the data payload of a value of the given
  * type, if any. Defaults to returning the value itself as its own payload.
  */
-extern zvalue genDataOf;
+extern zvalue GFN_dataOf;
 
 /**
  * Generic `eq(value, value)`: Compares two values for equality / sameness.
@@ -131,27 +131,27 @@ extern zvalue genDataOf;
  * the two values are not `==`, and only ever called when the two values are
  * of the same type. Defaults to always returning logical-false.
  */
-extern zvalue genEq;
+extern zvalue GFN_eq;
 
 /**
  * Generic `order(value, value)`: Compares two values with respect to the
  * total order of values. Returns one of `-1` `0` `1` corresponding to
  * the usual meanings for comparison. Must be implemented by every type.
  */
-extern zvalue genOrder;
+extern zvalue GFN_order;
 
 /**
  * Generic `sizeOf(value)`: Gets the "size" of a value of the given type,
  * for the appropriate per-type meaning of size. Defaults to always returning
  * `0`.
  */
-extern zvalue genSizeOf;
+extern zvalue GFN_sizeOf;
 
 /**
  * Generic `typeOf(value)`: Gets the (overt) type of a value of the given
  * type. Defaults to returning the low-layer type name.
  */
-extern zvalue genTypeOf;
+extern zvalue GFN_typeOf;
 
 
 /*

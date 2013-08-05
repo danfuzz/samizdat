@@ -14,9 +14,9 @@
  * have the usual guard macros.
  */
 
-PRIM_DEF(coreSizeOf, genSizeOf);
-PRIM_DEF(dataOf,     genDataOf);
-PRIM_DEF(typeOf,     genTypeOf);
+PRIM_DEF(coreSizeOf, GFN_sizeOf);
+PRIM_DEF(dataOf,     GFN_dataOf);
+PRIM_DEF(typeOf,     GFN_typeOf);
 
 PRIM_FUNC(boxGet,       1, 1);
 PRIM_FUNC(boxIsSet,     1, 1);

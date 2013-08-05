@@ -20,7 +20,7 @@
  */
 
 /** Generic function for `collect` (convert to list) dispatch. */
-static zvalue genCollect = NULL;
+static zvalue GFN_collect = NULL;
 
 /**
  * Does listification of an int. This returns a list of individual
@@ -121,14 +121,14 @@ static zvalue collectGenerator(zvalue state, zint argc,
 
 /* Documented in header. */
 void generatorInit(void) {
-    genCollect = datGfnFrom(1, 1, STR_COLLECT);
-    datGfnBindCore(genCollect, DAT_Int,      collectInt);
-    datGfnBindCore(genCollect, DAT_List,     collectList);
-    datGfnBindCore(genCollect, DAT_Map,      collectMap);
-    datGfnBindCore(genCollect, DAT_String,   collectString);
-    datGfnBindCore(genCollect, DAT_Function, collectGenerator);
-    datGfnSeal(genCollect);
-    datImmortalize(genCollect);
+    GFN_collect = datGfnFrom(1, 1, STR_COLLECT);
+    datGfnBindCore(GFN_collect, DAT_Int,      collectInt);
+    datGfnBindCore(GFN_collect, DAT_List,     collectList);
+    datGfnBindCore(GFN_collect, DAT_Map,      collectMap);
+    datGfnBindCore(GFN_collect, DAT_String,   collectString);
+    datGfnBindCore(GFN_collect, DAT_Function, collectGenerator);
+    datGfnSeal(GFN_collect);
+    datImmortalize(GFN_collect);
 }
 
 
@@ -138,5 +138,5 @@ void generatorInit(void) {
 
 /* Documented in header. */
 zvalue constCollectGenerator(zvalue value) {
-    return datCall(genCollect, 1, &value);
+    return datCall(GFN_collect, 1, &value);
 }

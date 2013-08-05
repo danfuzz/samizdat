@@ -120,7 +120,7 @@ static zvalue Function_debugString(zvalue state,
     zvalue result = datStringFromUtf8(-1, "@(Function ");
 
     if (info->name != NULL) {
-        result = datStringAdd(result, datCall(genDebugString, 1, &info->name));
+        result = datStringAdd(result, datCall(GFN_debugString, 1, &info->name));
     } else {
         result = datStringAdd(result, datStringFromUtf8(-1, "(unknown)"));
     }
@@ -150,10 +150,10 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindFunction(void) {
-    datGfnBindCore(genCall,        DAT_Function, Function_call);
-    datGfnBindCore(genDebugString, DAT_Function, Function_debugString);
-    datGfnBindCore(genGcMark,      DAT_Function, Function_gcMark);
-    datGfnBindCore(genOrder,       DAT_Function, Function_order);
+    datGfnBindCore(GFN_call,        DAT_Function, Function_call);
+    datGfnBindCore(GFN_debugString, DAT_Function, Function_debugString);
+    datGfnBindCore(GFN_gcMark,      DAT_Function, Function_gcMark);
+    datGfnBindCore(GFN_order,       DAT_Function, Function_order);
 }
 
 /* Documented in header. */

@@ -16,31 +16,31 @@
  */
 
 /* Documented in header. */
-zvalue genCall = NULL;
+zvalue GFN_call = NULL;
 
 /* Documented in header. */
-zvalue genDataOf = NULL;
+zvalue GFN_dataOf = NULL;
 
 /* Documented in header. */
-zvalue genDebugString = NULL;
+zvalue GFN_debugString = NULL;
 
 /* Documented in header. */
-zvalue genEq = NULL;
+zvalue GFN_eq = NULL;
 
 /* Documented in header. */
-zvalue genGcFree = NULL;
+zvalue GFN_gcFree = NULL;
 
 /* Documented in header. */
-zvalue genGcMark = NULL;
+zvalue GFN_gcMark = NULL;
 
 /* Documented in header. */
-zvalue genOrder = NULL;
+zvalue GFN_order = NULL;
 
 /* Documented in header. */
-zvalue genSizeOf = NULL;
+zvalue GFN_sizeOf = NULL;
 
 /* Documented in header. */
-zvalue genTypeOf = NULL;
+zvalue GFN_typeOf = NULL;
 
 /* Documented in header. */
 static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
@@ -78,37 +78,37 @@ static zvalue Default_typeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datInitCoreGenerics(void) {
-    genCall = datGfnFrom(1, 1, datStringFromUtf8(-1, "call"));
-    datImmortalize(genCall);
+    GFN_call = datGfnFrom(1, 1, datStringFromUtf8(-1, "call"));
+    datImmortalize(GFN_call);
 
-    genDataOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
-    datGfnBindCoreDefault(genDataOf, Default_dataOf);
-    datImmortalize(genDataOf);
+    GFN_dataOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "dataOf"));
+    datGfnBindCoreDefault(GFN_dataOf, Default_dataOf);
+    datImmortalize(GFN_dataOf);
 
-    genDebugString = datGfnFrom(1, 1, datStringFromUtf8(-1, "debugString"));
-    datGfnBindCoreDefault(genDebugString, Default_debugString);
-    datImmortalize(genDebugString);
+    GFN_debugString = datGfnFrom(1, 1, datStringFromUtf8(-1, "debugString"));
+    datGfnBindCoreDefault(GFN_debugString, Default_debugString);
+    datImmortalize(GFN_debugString);
 
-    genEq = datGfnFrom(2, 2, datStringFromUtf8(-1, "eq"));
-    datGfnBindCoreDefault(genEq, Default_eq);
-    datImmortalize(genEq);
+    GFN_eq = datGfnFrom(2, 2, datStringFromUtf8(-1, "eq"));
+    datGfnBindCoreDefault(GFN_eq, Default_eq);
+    datImmortalize(GFN_eq);
 
-    genGcFree = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
-    datImmortalize(genGcFree);
+    GFN_gcFree = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcFree"));
+    datImmortalize(GFN_gcFree);
 
-    genGcMark = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcMark"));
-    datImmortalize(genGcMark);
+    GFN_gcMark = datGfnFrom(1, 1, datStringFromUtf8(-1, "gcMark"));
+    datImmortalize(GFN_gcMark);
 
-    genOrder = datGfnFrom(2, 2, datStringFromUtf8(-1, "order"));
-    datImmortalize(genOrder);
+    GFN_order = datGfnFrom(2, 2, datStringFromUtf8(-1, "order"));
+    datImmortalize(GFN_order);
 
-    genSizeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
-    datGfnBindCoreDefault(genSizeOf, Default_sizeOf);
-    datImmortalize(genSizeOf);
+    GFN_sizeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "sizeOf"));
+    datGfnBindCoreDefault(GFN_sizeOf, Default_sizeOf);
+    datImmortalize(GFN_sizeOf);
 
-    genTypeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
-    datGfnBindCoreDefault(genTypeOf, Default_typeOf);
-    datImmortalize(genTypeOf);
+    GFN_typeOf = datGfnFrom(1, 1, datStringFromUtf8(-1, "typeOf"));
+    datGfnBindCoreDefault(GFN_typeOf, Default_typeOf);
+    datImmortalize(GFN_typeOf);
 }
 
 
@@ -118,7 +118,7 @@ void datInitCoreGenerics(void) {
 
 /* Documented in header. */
 zvalue datDataOf(zvalue value) {
-    return datCall(genDataOf, 1, &value);
+    return datCall(GFN_dataOf, 1, &value);
 }
 
 /* Documented in header. */
@@ -127,7 +127,7 @@ char *datDebugString(zvalue value) {
         return strdup("(null)");
     }
 
-    zvalue result = datCall(genDebugString, 1, &value);
+    zvalue result = datCall(GFN_debugString, 1, &value);
     zint size = datUtf8SizeFromString(result);
     char str[size + 1];
 
@@ -146,7 +146,7 @@ bool datEq(zvalue v1, zvalue v2) {
         return false;
     } else {
         zvalue args[2] = { v1, v2 };
-        return datCall(genEq, 2, args) != NULL;
+        return datCall(GFN_eq, 2, args) != NULL;
     }
 }
 
@@ -160,7 +160,7 @@ zorder datOrder(zvalue v1, zvalue v2) {
     } else if (v1->type == v2->type) {
         zvalue args[2] = { v1, v2 };
         zstackPointer save = datFrameStart();
-        zorder result = datZintFromInt(datCall(genOrder, 2, args));
+        zorder result = datZintFromInt(datCall(GFN_order, 2, args));
         datFrameReturn(save, NULL);
         return result;
     } else if (datCoreTypeIs(v1, DAT_Deriv)) {
@@ -173,7 +173,7 @@ zorder datOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zint datSize(zvalue value) {
-    return datZintFromInt(datCall(genSizeOf, 1, &value));
+    return datZintFromInt(datCall(GFN_sizeOf, 1, &value));
 }
 
 /* Documented in header. */
@@ -183,5 +183,5 @@ bool datTypeIs(zvalue value, zvalue type) {
 
 /* Documented in header. */
 zvalue datTypeOf(zvalue value) {
-    return datCall(genTypeOf, 1, &value);
+    return datCall(GFN_typeOf, 1, &value);
 }

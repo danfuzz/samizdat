@@ -82,7 +82,7 @@ extern bool datInitialized;
  * target function. The `state` argument is always passed as the function
  * or generic value itself.
  */
-extern zvalue genCall;
+extern zvalue GFN_call;
 
 /**
  * Generic `debugString(value)`: Returns a minimal string form of the
@@ -90,18 +90,18 @@ extern zvalue genCall;
  * The default implementation returns strings of the form
  * `#(TypeName @ address)`.
  */
-extern zvalue genDebugString;
+extern zvalue GFN_debugString;
 
 /**
  * Generic `gcMark(value)`: Does GC marking for the given value.
  */
-extern zvalue genGcMark;
+extern zvalue GFN_gcMark;
 
 /**
  * Generic `gcFree(value)`: Does GC freeing for the given value. This is
  * to do immediate pre-mortem freeing of value contents.
  */
-extern zvalue genGcFree;
+extern zvalue GFN_gcFree;
 
 /**
  * Allocates memory, sized to include a `DatHeader` header plus the
