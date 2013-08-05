@@ -87,6 +87,11 @@ zfunction gfnFind(zvalue generic, zvalue value) {
  */
 
 /* Documented in header. */
+void pbAssertGeneric(zvalue value) {
+    pbAssertType(value, PB_Generic);
+}
+
+/* Documented in header. */
 zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);

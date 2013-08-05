@@ -56,6 +56,11 @@ static zvalue newUniqlet(UniqletInfoDispatch *dispatch, void *state) {
  */
 
 /* Documented in header. */
+void datAssertUniqlet(zvalue value) {
+    pbAssertType(value, DAT_Uniqlet);
+}
+
+/* Documented in header. */
 zvalue uniqlet(void) {
     return newUniqlet(NULL, NULL);
 }

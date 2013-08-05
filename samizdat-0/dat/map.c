@@ -142,6 +142,19 @@ static int mappingOrder(const void *m1, const void *m2) {
  */
 
 /* Documented in header. */
+void datAssertMap(zvalue value) {
+    pbAssertType(value, DAT_Map);
+}
+
+/* Documented in header. */
+void datAssertMapSize1(zvalue value) {
+    datAssertMap(value);
+    if (pbSize(value) != 1) {
+        die("Not a size 1 map.");
+    }
+}
+
+/* Documented in header. */
 void arrayFromMap(zmapping *result, zvalue map) {
     datAssertMap(map);
     memcpy(result, mapElems(map), mapSizeOf(map) * sizeof(zmapping));

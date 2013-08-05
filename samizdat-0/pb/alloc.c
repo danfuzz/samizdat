@@ -274,6 +274,21 @@ zvalue pbAllocValue(ztype type, zint extraBytes) {
 }
 
 /* Documented in header. */
+void pbAssertValid(zvalue value) {
+    if (value == NULL) {
+        die("Null value.");
+    }
+
+    if (value->magic != PB_VALUE_MAGIC) {
+        die("Invalid value (incorrect magic): %p", value);
+    }
+
+    if (value->type == NULL) {
+        die("Invalid value (null type): %p", value);
+    }
+}
+
+/* Documented in header. */
 zstackPointer pbFrameStart(void) {
     return &stack[stackSize];
 }

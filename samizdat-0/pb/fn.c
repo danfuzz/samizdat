@@ -56,6 +56,11 @@ static FunctionInfo *fnInfo(zvalue function) {
  */
 
 /* Documented in header. */
+void pbAssertFunction(zvalue value) {
+    pbAssertType(value, PB_Function);
+}
+
+/* Documented in header. */
 zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         zvalue name) {
     if ((minArgs < 0) ||

@@ -62,6 +62,11 @@ static zvalue boxOrderId(zvalue box) {
  */
 
 /* Documented in header. */
+void datAssertBox(zvalue value) {
+    pbAssertType(value, DAT_Box);
+}
+
+/* Documented in header. */
 zvalue boxGet(zvalue box) {
     datAssertBox(box);
 

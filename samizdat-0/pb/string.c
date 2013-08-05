@@ -55,6 +55,19 @@ static zchar *stringElems(zvalue string) {
  */
 
 /* Documented in header. */
+void pbAssertString(zvalue value) {
+    pbAssertType(value, PB_String);
+}
+
+/* Documented in header. */
+void pbAssertStringSize1(zvalue value) {
+    pbAssertString(value);
+    if (pbSize(value) != 1) {
+        die("Not a size 1 string.");
+    }
+}
+
+/* Documented in header. */
 zvalue stringAdd(zvalue str1, zvalue str2) {
     pbAssertString(str1);
     pbAssertString(str2);

@@ -89,6 +89,11 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
  */
 
 /* Documented in header. */
+void datAssertList(zvalue value) {
+    pbAssertType(value, DAT_List);
+}
+
+/* Documented in header. */
 void arrayFromList(zvalue *result, zvalue list) {
     datAssertList(list);
     memcpy(result, listElems(list), listSizeOf(list) * sizeof(zvalue));

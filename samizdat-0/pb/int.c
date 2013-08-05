@@ -87,6 +87,11 @@ zvalue intFrom(zint value) {
  */
 
 /* Documented in header. */
+void pbAssertInt(zvalue value) {
+    pbAssertType(value, PB_Int);
+}
+
+/* Documented in header. */
 zchar zcharFromInt(zvalue intval) {
     zint value = zintFromInt(intval);
 
