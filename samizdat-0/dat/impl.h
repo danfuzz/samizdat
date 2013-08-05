@@ -33,12 +33,6 @@ typedef struct {
     zint index;
 } MapCacheEntry;
 
-
-/**
- * Clears the contents of the map lookup cache.
- */
-void mapClearCache(void);
-
 /**
  * Gets the `CacheEntry` for the given map/key pair.
  */
@@ -53,6 +47,7 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 void datBindBox(void);
 void datBindList(void);
 void datBindMap(void);
+void datBindMapCache(void);
 void datBindUniqlet(void);
 
 #endif

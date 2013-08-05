@@ -29,11 +29,6 @@ static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
  */
 
 /* Documented in header. */
-void mapClearCache(void) {
-    memset(mapCache, 0, sizeof(mapCache));
-}
-
-/* Documented in header. */
 MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
     uintptr_t hash = ((uintptr_t) map >> 4) + (((uintptr_t) key) >> 4) * 31;
     hash ^= (hash >> 16) ^ (hash >> 32) ^ (hash >> 48);
@@ -58,4 +53,30 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
     }
 
     return entry;
+}
+
+
+/*
+ * Type binding
+ */
+
+/* Type struct. */
+static PbType INFO_MapCache = {
+    .name = "MapCache"
+};
+ztype DAT_MapCache = &INFO_MapCache;
+
+/* Documented in header. */
+static zvalue MapCache_gcMark(zvalue state, zint argCount, const zvalue *args) {
+    memset(mapCache, 0, sizeof(mapCache));
+    return NULL;
+}
+
+/* Documented in header. */
+void datBindMapCache(void) {
+    // What we're doing here is setting up a singleton instance, which
+    // gets marked immortal. Its `mark` gets called during gc, which we
+    // use as a trigger to clear the map cache.
+    gfnBindCore(GFN_gcMark, DAT_MapCache, MapCache_gcMark);
+    pbImmortalize(pbAllocValue(DAT_MapCache, 0));
 }
