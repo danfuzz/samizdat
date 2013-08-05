@@ -247,7 +247,7 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void datBindString(void) {
+void pbBindString(void) {
     datGfnBindCore(GFN_debugString, DAT_String, String_debugString);
     datGfnBindCore(GFN_eq,          DAT_String, String_eq);
     datGfnBindCore(GFN_order,       DAT_String, String_order);

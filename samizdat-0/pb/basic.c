@@ -35,6 +35,8 @@ void pbInit(void) {
     pbBindDeriv();
     pbBindFunction();
     pbBindGeneric();
+    pbBindInt();
+    pbBindString();
 }
 
 /* Documented in header. */

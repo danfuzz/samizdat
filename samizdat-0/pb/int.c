@@ -174,7 +174,7 @@ static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void datBindInt(void) {
+void pbBindInt(void) {
     datGfnBindCore(GFN_eq,     DAT_Int, Int_eq);
     datGfnBindCore(GFN_sizeOf, DAT_Int, Int_sizeOf);
     datGfnBindCore(GFN_order,  DAT_Int, Int_order);

@@ -79,5 +79,7 @@ void pbInitCoreGenerics(void);
 void pbBindDeriv(void);
 void pbBindFunction(void);
 void pbBindGeneric(void);
+void pbBindInt(void);
+void pbBindString(void);
 
 #endif
