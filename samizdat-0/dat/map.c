@@ -142,7 +142,7 @@ static int mappingOrder(const void *m1, const void *m2) {
  */
 
 /* Documented in header. */
-void datArrayFromMap(zmapping *result, zvalue map) {
+void arrayFromMap(zmapping *result, zvalue map) {
     datAssertMap(map);
     memcpy(result, mapElems(map), mapSizeOf(map) * sizeof(zmapping));
 }

@@ -54,7 +54,7 @@ PRIM_IMPL(mapKeys) {
     zmapping mappings[size];
     zvalue arr[size];
 
-    datArrayFromMap(mappings, map);
+    arrayFromMap(mappings, map);
 
     for (zint i = 0; i < size; i++) {
         arr[i] = mappings[i].key;

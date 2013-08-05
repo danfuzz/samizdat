@@ -121,7 +121,7 @@ void datAssertUniqlet(zvalue value);
  * Copies all the values of the given list into the given result
  * array, which must be sized large enough to hold all of them.
  */
-void datArrayFromList(zvalue *result, zvalue list);
+void arrayFromList(zvalue *result, zvalue list);
 
 /**
  * Combines the elements of two lists, in order, into a new
@@ -185,7 +185,7 @@ zvalue listSlice(zvalue list, zint start, zint end);
  * Copies all the mappings of the given map into the given result
  * array, which must be sized large enough to hold all of them.
  */
-void datArrayFromMap(zmapping *result, zvalue map);
+void arrayFromMap(zmapping *result, zvalue map);
 
 /**
  * Gets the map resulting from putting the all the given mappings

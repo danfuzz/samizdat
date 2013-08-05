@@ -20,7 +20,7 @@ zvalue fnApply(zvalue function, zvalue args) {
     zint argCount = pbSize(args);
     zvalue argsArray[argCount];
 
-    datArrayFromList(argsArray, args);
+    arrayFromList(argsArray, args);
 
     return fnCall(function, argCount, argsArray);
 }

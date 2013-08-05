@@ -95,7 +95,7 @@ PRIM_IMPL(listReverse) {
     zint size = pbSize(list);
     zvalue elems[size];
 
-    datArrayFromList(elems, list);
+    arrayFromList(elems, list);
 
     for (zint low = 0, high = size - 1; low < high; low++, high--) {
         zvalue temp = elems[low];

@@ -99,7 +99,7 @@ static void bindArguments(Frame *frame, zvalue node,
     zvalue formalsArr[formalsSize];
     zint argAt = 0;
 
-    datArrayFromList(formalsArr, formals);
+    arrayFromList(formalsArr, formals);
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
@@ -192,7 +192,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
 
     zint statementsSize = pbSize(statements);
     zvalue statementsArr[statementsSize];
-    datArrayFromList(statementsArr, statements);
+    arrayFromList(statementsArr, statements);
 
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = statementsArr[i];
@@ -349,7 +349,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zvalue actualsArr[argCount];
     zvalue args[argCount];
 
-    datArrayFromList(actualsArr, actuals);
+    arrayFromList(actualsArr, actuals);
 
     // If there are any interpolated arguments, then `interpolateAny` is
     // set to `true`, and `fullCount` indicates the count of arguments
@@ -411,7 +411,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
             if (pbTypeIs(oneNode, STR_INTERPOLATE)) {
-                datArrayFromList(&fullArgs[at], oneArg);
+                arrayFromList(&fullArgs[at], oneArg);
                 at += pbSize(oneArg);
             } else {
                 fullArgs[at] = oneArg;
