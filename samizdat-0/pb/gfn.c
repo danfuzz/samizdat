@@ -40,8 +40,8 @@ typedef struct {
     /** The generic's name, if any. Used when producing stack traces. */
     zvalue name;
 
-    /** Uniqlet to use for ordering comparisons. */
-    zvalue orderId;
+    /** Id to use for ordering comparisons. */
+    zint orderId;
 
     /** Bindings from type to function, keyed off of type sequence number. */
     zfunction functions[DAT_MAX_TYPES];
@@ -52,20 +52,6 @@ typedef struct {
  */
 static DatGeneric *gfnInfo(zvalue generic) {
     return datPayload(generic);
-}
-
-/**
- * Gets the order id, initializing it if necessary.
- */
-static zvalue gfnOrderId(zvalue function) {
-    DatGeneric *info = gfnInfo(function);
-    zvalue orderId = info->orderId;
-
-    if (orderId == NULL) {
-        orderId = info->orderId = datUniqlet();
-    }
-
-    return orderId;
 }
 
 /**
@@ -172,7 +158,7 @@ zvalue datGfnFrom(zint minArgs, zint maxArgs, zvalue name) {
     info->defaultFunction = NULL;
     info->sealed = false;
     info->name = name;
-    info->orderId = NULL;
+    info->orderId = pbOrderId();
 
     return result;
 }
@@ -233,7 +219,6 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
     DatGeneric *info = gfnInfo(generic);
 
     datMark(info->name);
-    datMark(info->orderId);
 
     return NULL;
 }
@@ -242,7 +227,7 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return datIntFromZint(datOrder(gfnOrderId(v1), gfnOrderId(v2)));
+    return (gfnInfo(v1)->orderId < gfnInfo(v2)->orderId) ? DAT_NEG1 : DAT_1;
 }
 
 /* Documented in header. */

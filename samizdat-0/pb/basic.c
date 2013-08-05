@@ -14,6 +14,14 @@
 
 
 /*
+ * Helper definitions
+ */
+
+/** The next "order id" to return. */
+static zint nextOrderId = 0;
+
+
+/*
  * Exported functions
  */
 
@@ -29,3 +37,13 @@ void pbInit(void) {
     pbBindGeneric();
 }
 
+/* Documented in header. */
+zint pbOrderId(void) {
+    if (nextOrderId < 0) {
+        die("Too many order ids!");
+    }
+
+    zint result = nextOrderId;
+    nextOrderId++;
+    return result;
+}

@@ -39,8 +39,8 @@ typedef struct {
     /** The function's name, if any. Used when producing stack traces. */
     zvalue name;
 
-    /** Uniqlet to use for ordering comparisons. */
-    zvalue orderId;
+    /** Id to use for ordering comparisons. */
+    zint orderId;
 } DatFunction;
 
 /**
@@ -48,20 +48,6 @@ typedef struct {
  */
 static DatFunction *fnInfo(zvalue function) {
     return datPayload(function);
-}
-
-/**
- * Gets the order id, initializing it if necessary.
- */
-static zvalue fnOrderId(zvalue function) {
-    DatFunction *info = fnInfo(function);
-    zvalue orderId = info->orderId;
-
-    if (orderId == NULL) {
-        orderId = info->orderId = datUniqlet();
-    }
-
-    return orderId;
 }
 
 
@@ -85,7 +71,7 @@ zvalue datFnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
     info->function = function;
     info->state = state;
     info->name = name;
-    info->orderId = NULL;
+    info->orderId = pbOrderId();
 
     return result;
 }
@@ -136,7 +122,6 @@ static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
 
     datMark(info->state);
     datMark(info->name);
-    datMark(info->orderId);
 
     return NULL;
 }
@@ -145,7 +130,7 @@ static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return datIntFromZint(datOrder(fnOrderId(v1), fnOrderId(v2)));
+    return (fnInfo(v1)->orderId < fnInfo(v2)->orderId) ? DAT_NEG1 : DAT_1;
 }
 
 /* Documented in header. */
