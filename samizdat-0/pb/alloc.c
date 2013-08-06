@@ -8,6 +8,7 @@
 #include "zlimits.h"
 
 #include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 
@@ -317,7 +318,10 @@ zstackPointer pbFrameStart(void) {
 /* Documented in header. */
 void pbFrameAdd(zvalue value) {
     if (stackSize >= PB_MAX_STACK) {
-        die("Value stack overflow.");
+        // No `die()` here, since the attempt to print out the stack will
+        // land us right back here.
+        note("Value stack overflow.");
+        exit(1);
     }
 
     stack[stackSize] = value;
