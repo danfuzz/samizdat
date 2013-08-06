@@ -191,8 +191,9 @@ static zvalue Type_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbInitTypeSystem(void) {
-    TYPE_Type = pbAllocTypeType(sizeof(TypeInfo));
-    TYPE_String = pbAllocValue(TYPE_Type, sizeof(TypeInfo));
+    TYPE_Type = pbAllocValueUnchecked(NULL, sizeof(TypeInfo));
+    TYPE_Type->type = TYPE_Type;
+    TYPE_String = pbAllocValueUnchecked(TYPE_Type, sizeof(TypeInfo));
     typeInit(TYPE_Type, stringFromUtf8(-1, "Type"), NULL);
     typeInit(TYPE_String, stringFromUtf8(-1, "String"), NULL);
 }

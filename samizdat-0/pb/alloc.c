@@ -246,10 +246,13 @@ static void doGc(void) {
     sanityCheck(true);
 }
 
-/**
- * Common code for allocation.
+
+/*
+ * Module functions
  */
-static zvalue allocValue(zvalue type, zint extraBytes) {
+
+/* Documented in header. */
+zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes) {
     if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
         pbGc();
     } else {
@@ -258,7 +261,7 @@ static zvalue allocValue(zvalue type, zint extraBytes) {
 
     zvalue result = utilAlloc(sizeof(PbHeader) + extraBytes);
     result->magic = PB_VALUE_MAGIC;
-    result->type = type;
+    result->type = NULL;
 
     allocationCount++;
     enlist(&liveHead, result);
@@ -270,26 +273,13 @@ static zvalue allocValue(zvalue type, zint extraBytes) {
 
 
 /*
- * Module functions
- */
-
-/* Documented in header. */
-zvalue pbAllocTypeType(zint extraBytes) {
-    zvalue result = allocValue(NULL, extraBytes);
-
-    result->type = result;
-    return result;
-}
-
-
-/*
  * Exported functions
  */
 
 /* Documented in header. */
 zvalue pbAllocValue(zvalue type, zint extraBytes) {
     typeAssert(type);
-    return allocValue(type, extraBytes);
+    return pbAllocValueUnchecked(type, extraBytes);
 }
 
 /* Documented in header. */
