@@ -58,14 +58,18 @@ of type `Type`.
 <br><br>
 ### In-Language Definitions
 
-#### `isOpaqueValue(value) <> logic`
+#### `isBox(value) <> logic`
 
-Returns the given `value` if it is a core (not derived) value.
-Returns void if not.
+Returns the given `value` if it is a box. Returns void if not.
 
 #### `isFunction(value) <> logic`
 
-Returns the given `value` if it is a function. Returns void if not.
+Returns the given `value` if it is a (non-generic) function. Returns void
+if not.
+
+#### `isGeneric(value) <> logic`
+
+Returns the given `value` if it is a generic function. Returns void if not.
 
 #### `isInt(value) <> logic`
 
