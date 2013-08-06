@@ -40,7 +40,13 @@ typedef struct PbHeader {
     uint32_t magic;
 
     /** Mark bit (used during GC). */
-    bool marked;
+    bool marked : 1;
+
+    /**
+     * Derived bit; if true indicates that this is a derived value, whose
+     * data payload is a `DerivInfo`.
+     */
+    bool derived : 1;
 
     /** Data type. */
     zvalue type;
@@ -87,6 +93,7 @@ bool typeSecretIs(zvalue type, zvalue secret);
  */
 
 zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args);
+zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args);
 zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args);
 zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args);
 
