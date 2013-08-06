@@ -12,7 +12,7 @@
 
 # Performs a type check, for the given type name.
 fn hasCoreType(value, typeName) {
-    <> ifIs { <> eq(&typeOf(&isCoreValue(value)), typeName) }
+    <> ifIs { <> eq(&typeOf(&isOpaqueValue(value)), typeName) }
         { <> value }
 };
 

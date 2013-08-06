@@ -97,13 +97,6 @@ zvalue constValueFrom(zvalue type, zvalue data) {
                 return SINGLE_CHAR_TOKENS[typeCh];
             }
         }
-    } else if (!pbTypeIs(data, TYPE_Deriv)) {
-        if (pbEq(type, pbTypeOf(data))) {
-            // `data` is a core value, and its low-layer type matches the
-            // given `type`. This means that we are in fact looking at a
-            // "reconstructed" core value and should just return it directly.
-            return data;
-        }
     }
 
     return derivFrom(type, data);

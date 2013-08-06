@@ -63,9 +63,6 @@ extern zvalue PB_NEG1;
 /** The `secret` value to use when defining core types. */
 extern zvalue PB_SECRET;
 
-/** Type value for in-model type `Deriv`. */
-extern zvalue TYPE_Deriv;
-
 /** Type value for in-model type `Function`. */
 extern zvalue TYPE_Function;
 

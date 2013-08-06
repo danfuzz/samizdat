@@ -66,9 +66,9 @@ PRIM_IMPL(coreOrderIs) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(isCoreValue) {
+PRIM_IMPL(isOpaqueValue) {
     zvalue value = args[0];
-    return pbTypeIs(value, TYPE_Deriv) ? NULL : value;
+    return pbTypeIs(pbTypeOf(value), TYPE_Type) ? value : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

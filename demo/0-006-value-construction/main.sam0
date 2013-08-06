@@ -34,7 +34,7 @@ fn expectDifferent(v1, v2) {
 
 # Expects the value to be a core value.
 fn expectCore(v) {
-    ifIs { <> isCoreValue(v) }
+    ifIs { <> isOpaqueValue(v) }
         {
             ifIs { <> eq(v, dataOf(v)) }
                 { io0Note("Yes.") }
@@ -45,7 +45,7 @@ fn expectCore(v) {
 
 # Expects the value to be a derived value.
 fn expectDerived(v) {
-    ifIs { <> isCoreValue(v) }
+    ifIs { <> isOpaqueValue(v) }
         { io0Note(stringAdd("Core: ", sourceString(v))) }
         { io0Note("Yes.") }
 };

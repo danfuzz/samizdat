@@ -35,13 +35,13 @@ For a core value, this returns `value` itself. For a derived value, this
 returns the data payload it was constructed with, if any. For a
 type-only value, this returns void.
 
-#### `isCoreValue(value) <> logic`
+#### `isOpaqueValue(value) <> logic`
 
 Returns `value` if it is a core (non-derived) value, or void if not.
 This function could be defined as:
 
 ```
-fn isCoreValue(value) {
+fn isOpaqueValue(value) {
     <> eq(value, &dataOf(value))
 }
 ```
@@ -57,7 +57,7 @@ value, this returns the type tag that it was constructed with.
 <br><br>
 ### In-Language Definitions
 
-#### `isCoreValue(value) <> logic`
+#### `isOpaqueValue(value) <> logic`
 
 Returns the given `value` if it is a core (not derived) value.
 Returns void if not.

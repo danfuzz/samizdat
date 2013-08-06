@@ -80,7 +80,6 @@ void pbInit(void) {
     pbBindString();
     pbBindType();
 
-    pbBindDeriv();
     pbBindFunction();
     pbBindInt();
 }
