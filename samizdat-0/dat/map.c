@@ -424,7 +424,7 @@ static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindMap(void) {
-    TYPE_Map = typeFrom(stringFromUtf8(-1, "Map"), PB_SECRET);
+    TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"));
     gfnBindCore(GFN_eq,     TYPE_Map, Map_eq);
     gfnBindCore(GFN_gcMark, TYPE_Map, Map_gcMark);
     gfnBindCore(GFN_order,  TYPE_Map, Map_order);

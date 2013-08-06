@@ -82,6 +82,12 @@ zint indexFromType(zvalue type);
 zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
 
 /**
+ * Gets a transparent derived type, given its name. This creates the type
+ * if necessary.
+ */
+zvalue transparentTypeFromName(zvalue name);
+
+/**
  * Checks whether the given value matches the secret of the given type.
  * `secret` may be passed as `NULL`.
  */

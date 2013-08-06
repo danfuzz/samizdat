@@ -397,28 +397,15 @@ void gfnSeal(zvalue generic);
  */
 
 /**
+ * Creates a new core type, given its name. This always creates a new type.
+ */
+zvalue coreTypeFromName(zvalue name);
+
+/**
  * Asserts that the given value is a valid `zvalue`, furthermore has the
  * given type. If not, this aborts the process with a diagnostic message.
  */
 void pbAssertType(zvalue v1, zvalue type);
-
-/**
- * Gets a type value whose name and optional secret are as given. The name
- * is an arbitrary value, used for ordering types and for displaying them
- * (e.g. for debugging purposes).
- *
- * If the secret is `NULL`, then the type is considered "transparent", meaning
- * that there are no restrictions on creation of values of the type, and the
- * data payload (if any) of a value of the type can be retrieved by arbitrary
- * code. Otherwise, the type is "opaque", and instances can only be created
- * by code possessing the secret, and payload data (or lack thereof) may only
- * be retrieved by code that possesses the secret.
- *
- * When called multiple times with identical arguments, this function returns
- * the same result. It is invalid (terminating the runtime) to attempt to
- * get a same-named type that differs only in the choice of secret.
- */
-zvalue typeFrom(zvalue name, zvalue secret);
 
 /**
  * Gets the name of the given type.
@@ -443,16 +430,27 @@ zvalue pbTypeOf(zvalue value);
  */
 
 /**
- * Returns a derived value with optional data payload. The given `data`
- * value must either be a valid value or `NULL`.
+ * Returns a derived value with the given type tag, and with the given
+ * optional data payload (`NULL` indicating a type-only value). `type` and
+ * `secret` must be as follows:
  *
- * **Note:** If `type` and `data` are of the right form to be represented
- * as a core value, this function will *not* notice that. So only call it
- * if you know that the value to be produced is *necessarily* derived. If
- * it's possible that the arguments correspond to a core value, use
- * `constValueFrom` (in the `const` module) instead.
+ * * If `type` is a value of type `Type`, then the resulting value is of
+ *   that type. If `type` is an opaque type, then `secret` must match the
+ *   secret known by `type`. If `type` is a transparent type, then `secret`
+ *   must be `NULL`.
+ *
+ * * If `type` is any other value (that is, other than a `Type`), then it
+ *   is taken to indicate a transparent type whose name is `type`. As such
+ *   `secret` must be `NULL`.
  */
-zvalue derivFrom(zvalue type, zvalue data);
+zvalue derivFrom(zvalue type, zvalue data, zvalue secret);
+
+/**
+ * Returns a transparent derived value with the given type tag, and with the
+ * given optional data payload. This is a convenient shorthand for calling
+ * `derivFrom(type, data, NULL)`.
+ */
+zvalue valueFrom(zvalue type, zvalue data);
 
 
 /*

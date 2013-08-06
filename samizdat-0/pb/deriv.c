@@ -66,24 +66,28 @@ zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-// TODO: This probably shouldn't be exported. It's also misnamed in that
-// it always produces transparent values.
-zvalue derivFrom(zvalue type, zvalue data) {
+zvalue derivFrom(zvalue type, zvalue data, zvalue secret) {
     pbAssertValid(type);
+    pbAssertValidOrNull(data);
+    pbAssertValidOrNull(secret);
 
-    if (pbTypeOf(type) == TYPE_Type) {
-        // This should probably be fixed.
-        die("Can't create derived value given type value.");
+    if (pbTypeOf(type) != TYPE_Type) {
+        type = transparentTypeFromName(type);
     }
 
-    if (data != NULL) {
-        pbAssertValid(data);
+    // Make sure the secrets match. In the case of a transparent type,
+    // this checks that `secret` is `NULL`.
+    if (!typeSecretIs(type, secret)) {
+        die("Attempt to create derived value with incorrect secret.");
     }
 
-    // Get a `Type` per se. `NULL` indicates it is to be transparent.
-    type = typeFrom(type, NULL);
     zvalue result = pbAllocValue(type, sizeof(DerivInfo));
     ((DerivInfo *) pbPayload(result))->data = data;
 
     return result;
+}
+
+/* Documented in header. */
+zvalue valueFrom(zvalue type, zvalue data) {
+    return derivFrom(type, data, NULL);
 }

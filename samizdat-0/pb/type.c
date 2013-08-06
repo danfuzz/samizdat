@@ -33,6 +33,9 @@ typedef struct {
     /** Access secret of the type. Optional, and arbitrary if present. */
     zvalue secret;
 
+    /** Whether the type is derived. `false` indicates a core type. */
+    bool derived;
+
     /**
      * Type identifier / index. Assigned upon initialization, in sequential
      * order.
@@ -48,23 +51,9 @@ static TypeInfo *typeInfo(zvalue type) {
 }
 
 /**
- * Finds a pre-existing type, given the name.
- */
-static zvalue typeFromName(zvalue name) {
-    for (zint i = 0; i < theNextId; i++) {
-        zvalue one = theTypes[i];
-        if (pbEq(name, typeInfo(one)->name)) {
-            return one;
-        }
-    }
-
-    return NULL;
-}
-
-/**
  * Initializes a type value.
  */
-static void typeInit(zvalue type, zvalue name, zvalue secret) {
+static void typeInit(zvalue type, zvalue name, zvalue secret, bool derived) {
     if (theNextId == PB_MAX_TYPES) {
         die("Too many types!");
     }
@@ -74,10 +63,32 @@ static void typeInit(zvalue type, zvalue name, zvalue secret) {
     info->name = name;
     info->secret = secret;
     info->id = theNextId;
+    info->derived = derived;
     theTypes[theNextId] = type;
 
     theNextId++;
     pbImmortalize(type);
+}
+
+/**
+ * Allocates a type value.
+ */
+static zvalue allocType(void) {
+    if (PB_SECRET == NULL) {
+        // We end up here during bootstrap.
+        return pbAllocValueUnchecked(TYPE_Type, sizeof(TypeInfo));
+    } else {
+        return pbAllocValue(TYPE_Type, sizeof(TypeInfo));
+    }
+}
+
+/**
+ * Creates an returns a new type.
+ */
+static zvalue newType(zvalue name, zvalue secret, bool derived) {
+    zvalue result = allocType();
+    typeInit(result, name, secret, derived);
+    return result;
 }
 
 
@@ -92,6 +103,27 @@ zint indexFromType(zvalue type) {
 }
 
 /* Documented in header. */
+zvalue transparentTypeFromName(zvalue name) {
+    for (zint i = 0; i < theNextId; i++) {
+        zvalue one = theTypes[i];
+        TypeInfo *info = typeInfo(one);
+        if (info->derived && (info->secret == NULL) && pbEq(info->name, name)) {
+            return one;
+        }
+    }
+
+    zvalue result = newType(name, NULL, true);
+
+    // Bind the default derived value methods.
+    gfnBindCore(GFN_dataOf, result, Deriv_dataOf);
+    gfnBindCore(GFN_eq,     result, Deriv_eq);
+    gfnBindCore(GFN_gcMark, result, Deriv_gcMark);
+    gfnBindCore(GFN_order,  result, Deriv_order);
+
+    return result;
+}
+
+/* Documented in header. */
 bool typeSecretIs(zvalue type, zvalue secret) {
     typeAssert(type);
     return pbNullSafeEq(typeInfo(type)->secret, secret);
@@ -101,6 +133,11 @@ bool typeSecretIs(zvalue type, zvalue secret) {
 /*
  * Exported functions
  */
+
+/* Documented in header. */
+zvalue coreTypeFromName(zvalue name) {
+    return newType(name, PB_SECRET, false);
+}
 
 /* Documented in header. */
 void pbAssertType(zvalue value, zvalue type) {
@@ -115,32 +152,6 @@ void pbAssertType(zvalue value, zvalue type) {
 /* Documented in header. */
 void typeAssert(zvalue value) {
     pbAssertType(value, TYPE_Type);
-}
-
-/* Documented in header. */
-zvalue typeFrom(zvalue name, zvalue secret) {
-    zvalue result = typeFromName(name);
-
-    if (result == NULL) {
-        // Need to make a new type.
-        result = pbAllocValue(TYPE_Type, sizeof(TypeInfo));
-        typeInit(result, name, secret);
-        if (secret == NULL) {
-            // Bind the default derived value methods.
-            gfnBindCore(GFN_dataOf, result, Deriv_dataOf);
-            gfnBindCore(GFN_eq,     result, Deriv_eq);
-            gfnBindCore(GFN_gcMark, result, Deriv_gcMark);
-            gfnBindCore(GFN_order,  result, Deriv_order);
-        }
-    } else {
-        // Need to verify that the secret matches.
-        zvalue alreadySecret = typeInfo(result)->secret;
-        if (!pbNullSafeEq(secret, alreadySecret)) {
-            die("Mismatched type secrets.");
-        }
-    }
-
-    return result;
 }
 
 /* Documented in header. */
@@ -181,7 +192,9 @@ static zvalue Type_debugString(zvalue state,
     zvalue result = stringFromUtf8(-1, "@(Type ");
     result = stringAdd(result, fnCall(GFN_debugString, 1, &info->name));
 
-    if (info->secret != NULL) {
+    if (!info->derived) {
+        result = stringAdd(result, stringFromUtf8(-1, " /*core*/"));
+    } else if (info->secret != NULL) {
         result = stringAdd(result, stringFromUtf8(-1, " /*opaque*/"));
     }
 
@@ -209,19 +222,19 @@ static zvalue Type_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbInitTypeSystem(void) {
-    TYPE_Type = pbAllocValueUnchecked(NULL, sizeof(TypeInfo));
+    TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
-    TYPE_Generic = pbAllocValueUnchecked(TYPE_Type, sizeof(TypeInfo));
-    TYPE_String = pbAllocValueUnchecked(TYPE_Type, sizeof(TypeInfo));
+    TYPE_Generic = allocType();
+    TYPE_String = allocType();
 
     // PB_SECRET is defined as a type value with no instances. This is
     // a hackish convenience. It should probably be a Uniqlet.
-    PB_SECRET = pbAllocValueUnchecked(TYPE_Type, sizeof(TypeInfo));
+    PB_SECRET = allocType();
 
-    typeInit(TYPE_Type,    stringFromUtf8(-1, "Type"),    PB_SECRET);
-    typeInit(TYPE_Generic, stringFromUtf8(-1, "Generic"), PB_SECRET);
-    typeInit(TYPE_String,  stringFromUtf8(-1, "String"),  PB_SECRET);
-    typeInit(PB_SECRET,    stringFromUtf8(-1, "SECRET"),  PB_SECRET);
+    typeInit(TYPE_Type,    stringFromUtf8(-1, "Type"),    PB_SECRET, false);
+    typeInit(TYPE_Generic, stringFromUtf8(-1, "Generic"), PB_SECRET, false);
+    typeInit(TYPE_String,  stringFromUtf8(-1, "String"),  PB_SECRET, false);
+    typeInit(PB_SECRET,    stringFromUtf8(-1, "SECRET"),  PB_SECRET, false);
 }
 
 /* Documented in header. */

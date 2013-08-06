@@ -173,7 +173,7 @@ static zvalue Box_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindBox(void) {
-    TYPE_Box = typeFrom(stringFromUtf8(-1, "Box"), PB_SECRET);
+    TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"));
     gfnBindCore(GFN_gcMark, TYPE_Box, Box_gcMark);
     gfnBindCore(GFN_order,  TYPE_Box, Box_order);
 
