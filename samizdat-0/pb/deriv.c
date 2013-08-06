@@ -30,7 +30,7 @@ zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return pbEq(derivInfo(v1)->data, derivInfo(v2)->data) ? v2 : NULL;
+    return pbNullSafeEq(derivInfo(v1)->data, derivInfo(v2)->data) ? v2 : NULL;
 }
 
 /* Documented in header. */
@@ -44,8 +44,16 @@ zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
 zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
+    zvalue data1 = derivInfo(v1)->data;
+    zvalue data2 = derivInfo(v2)->data;
 
-    return intFromZint(pbOrder(derivInfo(v1)->data, derivInfo(v2)->data));
+    if (data1 == NULL) {
+        return (data2 == NULL) ? PB_0 : PB_NEG1;
+    } else if (data2 == NULL) {
+        return PB_1;
+    } else {
+        return intFromZint(pbOrder(data1, data2));
+    }
 }
 
 
