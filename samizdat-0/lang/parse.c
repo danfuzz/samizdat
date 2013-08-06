@@ -56,7 +56,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
     }
 
     zvalue result = listNth(state->tokens, state->at);
-    zvalue resultType = pbTypeOf(result);
+    zvalue resultType = typeOf(result);
 
     if (!pbEq(type, resultType)) {
         return NULL;
@@ -339,7 +339,7 @@ DEF_PARSE(formal1) {
 
     REJECT_IF(result == NULL);
 
-    return pbTypeOf(result);
+    return typeOf(result);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -554,7 +554,7 @@ DEF_PARSE(identifierString) {
 
     zvalue value = dataOf(result);
     if (value == NULL) {
-        value = pbTypeOf(result);
+        value = typeOf(result);
     }
 
     return makeLiteral(value);
@@ -633,7 +633,7 @@ DEF_PARSE(mapping2) {
     MARK();
 
     zvalue map = PARSE_OR_REJECT(expression);
-    REJECT_IF(!pbTypeIs(map, STR_INTERPOLATE));
+    REJECT_IF(!typeIs(map, STR_INTERPOLATE));
 
     return dataOf(map);
 }
@@ -814,7 +814,7 @@ DEF_PARSE(unaryExpression) {
     zint size = pbSize(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = listNth(postfixes, i);
-        if (pbTypeIs(one, TYPE_List)) {
+        if (typeIs(one, TYPE_List)) {
             result = makeCall(result, one);
         } else if (pbEq(one, TOK_CH_STAR)) {
             result = valueFrom(STR_INTERPOLATE, result);
@@ -977,7 +977,7 @@ zvalue langTree0(zvalue program) {
 
     zvalue tokens;
 
-    if (pbTypeIs(program, TYPE_String)) {
+    if (typeIs(program, TYPE_String)) {
         tokens = langTokenize0(program);
     } else {
         tokens = program;

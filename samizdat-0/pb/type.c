@@ -91,6 +91,13 @@ static zvalue newType(zvalue name, zvalue secret, bool derived) {
     return result;
 }
 
+/**
+ * Asserts that the value is a `Type`.
+ */
+void assertTypeIsType(zvalue value) {
+    assertTypeIs(value, TYPE_Type);
+}
+
 
 /*
  * Module functions
@@ -98,7 +105,7 @@ static zvalue newType(zvalue name, zvalue secret, bool derived) {
 
 /* Documented in header. */
 zint indexFromType(zvalue type) {
-    typeAssert(type);
+    assertTypeIsType(type);
     return typeInfo(type)->id;
 }
 
@@ -124,7 +131,7 @@ zvalue transparentTypeFromName(zvalue name) {
 
 /* Documented in header. */
 bool typeSecretIs(zvalue type, zvalue secret) {
-    typeAssert(type);
+    assertTypeIsType(type);
     return pbNullSafeEq(typeInfo(type)->secret, secret);
 }
 
@@ -134,39 +141,34 @@ bool typeSecretIs(zvalue type, zvalue secret) {
  */
 
 /* Documented in header. */
-zvalue coreTypeFromName(zvalue name) {
-    return newType(name, PB_SECRET, false);
-}
-
-/* Documented in header. */
-void pbAssertType(zvalue value, zvalue type) {
+void assertTypeIs(zvalue value, zvalue type) {
     pbAssertValid(value);
 
-    if (!pbTypeIs(value, type)) {
+    if (!typeIs(value, type)) {
         die("Expected type %s; got %s.",
             pbDebugString(type), pbDebugString(value));
     }
 }
 
 /* Documented in header. */
-void typeAssert(zvalue value) {
-    pbAssertType(value, TYPE_Type);
+zvalue coreTypeFromName(zvalue name) {
+    return newType(name, PB_SECRET, false);
 }
 
 /* Documented in header. */
-bool pbTypeIs(zvalue value, zvalue type) {
-    return pbEq(pbTypeOf(value), type);
+bool typeIs(zvalue value, zvalue type) {
+    return pbEq(typeOf(value), type);
 }
 
 /* Documented in header. */
 bool typeIsDerived(zvalue type) {
-    typeAssert(type);
+    assertTypeIsType(type);
     TypeInfo *info = typeInfo(type);
     return info->derived;
 }
 
 /* Documented in header. */
-zvalue pbTypeOf(zvalue value) {
+zvalue typeOf(zvalue value) {
     zvalue type = value->type;
     TypeInfo *info = typeInfo(type);
 
@@ -176,7 +178,7 @@ zvalue pbTypeOf(zvalue value) {
 
 /* Documented in header. */
 zvalue typeName(zvalue type) {
-    typeAssert(type);
+    assertTypeIsType(type);
     TypeInfo *info = typeInfo(type);
     return info->name;
 }

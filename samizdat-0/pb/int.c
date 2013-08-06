@@ -88,7 +88,7 @@ zvalue intFrom(zint value) {
 
 /* Documented in header. */
 void pbAssertInt(zvalue value) {
-    pbAssertType(value, TYPE_Int);
+    assertTypeIs(value, TYPE_Int);
 }
 
 /* Documented in header. */

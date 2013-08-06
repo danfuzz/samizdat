@@ -111,7 +111,7 @@ static void bindArguments(Frame *frame, zvalue node,
         if (repeat != NULL) {
             zint count;
 
-            if ((pbSize(repeat) != 1) || !pbTypeIs(repeat, TYPE_String)) {
+            if ((pbSize(repeat) != 1) || !typeIs(repeat, TYPE_String)) {
                 die("Invalid repeat modifier (non-string).");
             }
 
@@ -196,7 +196,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
 
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = statementsArr[i];
-        zvalue oneType = pbTypeOf(one);
+        zvalue oneType = typeOf(one);
 
         // Switch on size of type string to avoid gratuitous `pbEq` tests.
         switch (pbSize(oneType)) {
@@ -207,7 +207,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                     zint end = i + 1;
                     for (/*end*/; end < statementsSize; end++) {
                         zvalue one = statementsArr[end];
-                        if (!pbTypeIs(one, STR_FN_DEF)) {
+                        if (!typeIs(one, STR_FN_DEF)) {
                             break;
                         }
                     }
@@ -359,7 +359,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = actualsArr[i];
-        zvalue oneType = pbTypeOf(one);
+        zvalue oneType = typeOf(one);
         bool voidable;
         bool interpolate;
         zvalue eval;
@@ -369,7 +369,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             // payload in order to keep the follow-up interpolation loop
             // simpler.
             one = actualsArr[i] = dataOf(one);
-            oneType = pbTypeOf(one);
+            oneType = typeOf(one);
             voidable = true;
         } else {
             voidable = false;
@@ -410,7 +410,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (pbTypeIs(oneNode, STR_INTERPOLATE)) {
+            if (typeIs(oneNode, STR_INTERPOLATE)) {
                 arrayFromList(&fullArgs[at], oneArg);
                 at += pbSize(oneArg);
             } else {
@@ -459,7 +459,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
  * `void` (represented as `NULL`).
  */
 static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    zvalue type = pbTypeOf(e);
+    zvalue type = typeOf(e);
 
     // Switching on the size of the type is a bit of a hack. It lets us
     // avoid having to have a single big cascading `if` with a lot of

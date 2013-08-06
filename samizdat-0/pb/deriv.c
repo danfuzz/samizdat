@@ -75,7 +75,7 @@ zvalue derivFrom(zvalue type, zvalue data, zvalue secret) {
     pbAssertValidOrNull(data);
     pbAssertValidOrNull(secret);
 
-    if (pbTypeOf(type) != TYPE_Type) {
+    if (typeOf(type) != TYPE_Type) {
         type = transparentTypeFromName(type);
     }
 

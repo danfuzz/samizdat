@@ -56,7 +56,7 @@ static zchar *stringElems(zvalue string) {
 
 /* Documented in header. */
 void pbAssertString(zvalue value) {
-    pbAssertType(value, TYPE_String);
+    assertTypeIs(value, TYPE_String);
 }
 
 /* Documented in header. */

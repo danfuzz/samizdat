@@ -89,7 +89,7 @@ zvalue constStringFromZchar(zchar value) {
 /* Documented in header. */
 zvalue constValueFrom(zvalue type, zvalue data) {
     if (data == NULL) {
-        if (pbTypeIs(type, TYPE_String) && (pbSize(type) == 1)) {
+        if (typeIs(type, TYPE_String) && (pbSize(type) == 1)) {
             // This is a type-only value with a one-character string for
             // the type. We have many of these cached.
             zchar typeCh = stringNth(type, 0);

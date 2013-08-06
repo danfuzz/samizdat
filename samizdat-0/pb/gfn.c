@@ -71,7 +71,7 @@ static char *callReporter(void *state) {
 zfunction gfnFind(zvalue generic, zvalue value) {
     // TODO: Dispatch is currently on the core type. It should be able
     // to handle derived types too. It's not as simple as just calling
-    // `pbTypeOf` on the value, though: (1) That function itself is
+    // `typeOf` on the value, though: (1) That function itself is
     // generic, and (2) the default implementations of many generics
     // will have to be adjusted.
 
@@ -88,7 +88,7 @@ zfunction gfnFind(zvalue generic, zvalue value) {
 
 /* Documented in header. */
 void pbAssertGeneric(zvalue value) {
-    pbAssertType(value, TYPE_Generic);
+    assertTypeIs(value, TYPE_Generic);
 }
 
 /* Documented in header. */

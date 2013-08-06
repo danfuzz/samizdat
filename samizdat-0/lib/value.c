@@ -21,7 +21,7 @@
 static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
     pbAssertSameType(v1, v2);
 
-    if (!pbEq(pbTypeOf(v1), pbTypeOf(v2))) {
+    if (!pbEq(typeOf(v1), typeOf(v2))) {
         die("Mismatched derived types.");
     }
 }
@@ -76,7 +76,7 @@ PRIM_IMPL(dataOf) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(isOpaqueValue) {
     zvalue value = args[0];
-    return pbTypeIs(pbTypeOf(value), TYPE_Type) ? value : NULL;
+    return typeIs(typeOf(value), TYPE_Type) ? value : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -91,5 +91,5 @@ PRIM_IMPL(totalOrderIs) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(typeOf) {
-    return pbTypeOf(args[0]);
+    return typeOf(args[0]);
 }

@@ -206,12 +206,6 @@ void pbAssertString(zvalue value);
 void pbAssertStringSize1(zvalue value);
 
 /**
- * Asserts that the given value is of type `Type`. If not, this aborts the
- * process with a diagnostic message.
- */
-void typeAssert(zvalue value);
-
-/**
  * Asserts that the given value is a valid `zvalue` (non-`NULL` and
  * seems to actually have the right form). This performs reasonable,
  * but not exhaustive, tests. If not valid, this aborts the process
@@ -391,15 +385,15 @@ void gfnSeal(zvalue generic);
  */
 
 /**
- * Creates a new core type, given its name. This always creates a new type.
- */
-zvalue coreTypeFromName(zvalue name);
-
-/**
  * Asserts that the given value is a valid `zvalue`, furthermore has the
  * given type. If not, this aborts the process with a diagnostic message.
  */
-void pbAssertType(zvalue v1, zvalue type);
+void assertTypeIs(zvalue v1, zvalue type);
+
+/**
+ * Creates a new core type, given its name. This always creates a new type.
+ */
+zvalue coreTypeFromName(zvalue name);
 
 /**
  * Gets the name of the given type.
@@ -407,16 +401,16 @@ void pbAssertType(zvalue v1, zvalue type);
 zvalue typeName(zvalue type);
 
 /**
- * Returns true iff the type of the given value (that is, `pbTypeOf(value)`)
+ * Returns true iff the type of the given value (that is, `typeOf(value)`)
  * is as given.
  */
-bool pbTypeIs(zvalue value, zvalue type);
+bool typeIs(zvalue value, zvalue type);
 
 /**
  * Gets the overt data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`).
  */
-zvalue pbTypeOf(zvalue value);
+zvalue typeOf(zvalue value);
 
 
 /*

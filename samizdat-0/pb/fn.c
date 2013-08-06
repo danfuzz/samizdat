@@ -57,7 +57,7 @@ static FunctionInfo *fnInfo(zvalue function) {
 
 /* Documented in header. */
 void pbAssertFunction(zvalue value) {
-    pbAssertType(value, TYPE_Function);
+    assertTypeIs(value, TYPE_Function);
 }
 
 /* Documented in header. */
