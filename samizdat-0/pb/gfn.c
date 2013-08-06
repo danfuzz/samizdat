@@ -245,8 +245,4 @@ void pbBindGeneric(void) {
 }
 
 /* Documented in header. */
-static PbType INFO_Generic = {
-    .name = "Generic"
-};
-ztype PB_Generic = &INFO_Generic;
 zvalue TYPE_Generic = NULL;

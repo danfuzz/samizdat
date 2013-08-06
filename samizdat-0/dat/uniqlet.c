@@ -132,8 +132,4 @@ void datBindUniqlet(void) {
 }
 
 /* Documented in header. */
-static PbType INFO_Uniqlet = {
-    .name = "Uniqlet"
-};
-ztype DAT_Uniqlet = &INFO_Uniqlet;
 zvalue TYPE_Uniqlet = NULL;

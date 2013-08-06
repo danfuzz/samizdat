@@ -273,8 +273,4 @@ void pbBindString(void) {
 }
 
 /* Documented in header. */
-static PbType INFO_String = {
-    .name = "String"
-};
-ztype PB_String = &INFO_String;
 zvalue TYPE_String = NULL;

@@ -27,11 +27,6 @@
 typedef struct PbHeader *zvalue;
 
 /**
- * Low-layer data type.
- */
-typedef const struct PbType *ztype;
-
-/**
  * Arbitrary (key, value) mapping.
  */
 typedef struct {
@@ -47,26 +42,6 @@ typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
 
 /** Type for local value stack pointers. */
 typedef const zvalue *zstackPointer;
-
-/**
- * Core type info.
- */
-typedef struct PbType {
-    /** Simple string name for the type. */
-    const char *name;
-
-    /**
-     * In-model string value corresponding to `name` (above). Lazily
-     * initialized.
-     */
-    zvalue nameValue;
-
-    /**
-     * Type sequence number, complemented to allow `0` to mean
-     * "uninitialized".
-     */
-    zint seqNumCompl;
-} PbType;
 
 
 /*
@@ -86,27 +61,21 @@ extern zvalue PB_1;
 extern zvalue PB_NEG1;
 
 /** Type value for in-model type `Deriv`. */
-extern ztype PB_Deriv;
 extern zvalue TYPE_Deriv;
 
 /** Type value for in-model type `Function`. */
-extern ztype PB_Function;
 extern zvalue TYPE_Function;
 
 /** Type value for in-model type `Generic`. */
-extern ztype PB_Generic;
 extern zvalue TYPE_Generic;
 
 /** Type value for in-model type `Int`. */
-extern ztype PB_Int;
 extern zvalue TYPE_Int;
 
 /** Type value for in-model type `String`. */
-extern ztype PB_String;
 extern zvalue TYPE_String;
 
 /** Type value for in-model type `Type`. */
-extern ztype PB_Type;
 extern zvalue TYPE_Type;
 
 /**

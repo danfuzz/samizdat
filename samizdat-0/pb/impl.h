@@ -66,11 +66,6 @@ zint indexFromType(zvalue type);
  */
 zvalue pbAllocTypeType(zint extraBytes);
 
-/**
- * Gets a type value from a `ztype`.
- */
-zvalue typeFromZtype(ztype type);
-
 
 /*
  * Initialization functions

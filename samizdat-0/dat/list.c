@@ -281,8 +281,4 @@ void datBindList(void) {
 }
 
 /* Documented in header. */
-static PbType INFO_List = {
-    .name = "List"
-};
-ztype DAT_List = &INFO_List;
 zvalue TYPE_List = NULL;

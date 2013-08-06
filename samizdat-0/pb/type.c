@@ -89,24 +89,6 @@ zint indexFromType(zvalue type) {
     return typeInfo(type)->id;
 }
 
-// ---------------------
-// BEGIN DEPRECATED CODE
-
-/* Documented in header. */
-zvalue typeFromZtype(ztype type) {
-    zvalue result = type->nameValue;
-
-    if (result == NULL) {
-        result = stringFromUtf8(-1, type->name);
-        ((PbType *) type)->nameValue = result;  // Cast to discard `const`.
-        pbImmortalize(result);
-    }
-
-    return result;
-}
-
-// END DEPRECATED CODE
-// -------------------
 
 /*
  * Exported functions
@@ -223,8 +205,4 @@ void pbBindType(void) {
 }
 
 /* Documented in header. */
-static PbType INFO_Type = {
-    .name = "Type"
-};
-ztype PB_Type = &INFO_Type;
 zvalue TYPE_Type = NULL;

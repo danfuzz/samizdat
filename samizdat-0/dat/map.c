@@ -435,8 +435,4 @@ void datBindMap(void) {
 }
 
 /* Documented in header. */
-static PbType INFO_Map = {
-    .name = "Map"
-};
-ztype DAT_Map = &INFO_Map;
 zvalue TYPE_Map = NULL;
