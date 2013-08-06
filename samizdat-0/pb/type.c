@@ -201,11 +201,10 @@ void pbInitTypeSystem(void) {
     // PB_SECRET is defined as a type value with no instances. This is
     // a hackish convenience. It should probably be a Uniqlet.
     PB_SECRET = pbAllocValueUnchecked(TYPE_Type, sizeof(TypeInfo));
-    typeInit(PB_SECRET, stringFromUtf8(-1, "SECRET"), NULL);
-    typeInfo(PB_SECRET)->secret = PB_SECRET;
 
     typeInit(TYPE_Type, stringFromUtf8(-1, "Type"), PB_SECRET);
     typeInit(TYPE_String, stringFromUtf8(-1, "String"), PB_SECRET);
+    typeInit(PB_SECRET, stringFromUtf8(-1, "SECRET"), PB_SECRET);
 }
 
 /* Documented in header. */
