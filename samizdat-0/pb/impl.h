@@ -82,6 +82,7 @@ zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
 
 zvalue Transparent_dataOf(zvalue state, zint argCount, const zvalue *args);
 zvalue Transparent_gcMark(zvalue state, zint argCount, const zvalue *args);
+zvalue Transparent_order(zvalue state, zint argCount, const zvalue *args);
 
 
 /*

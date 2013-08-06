@@ -90,7 +90,7 @@ extern zvalue GFN_call;
 
 /**
  * Generic `dataOf(value)`: Gets the data payload of a value of the given
- * type, if any. Defaults to returning the value itself as its own payload.
+ * type, if any. Defaults to returning `NULL` (void).
  */
 extern zvalue GFN_dataOf;
 

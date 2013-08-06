@@ -123,6 +123,7 @@ zvalue typeFrom(zvalue name, zvalue secret) {
             // Bind the default transparent value methods.
             gfnBindCore(GFN_dataOf, result, Transparent_dataOf);
             gfnBindCore(GFN_gcMark, result, Transparent_gcMark);
+            gfnBindCore(GFN_order, result, Transparent_order);
         }
     } else {
         // Need to verify that the secret matches.

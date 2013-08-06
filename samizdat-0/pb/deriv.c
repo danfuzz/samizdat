@@ -10,20 +10,40 @@
 
 
 /*
+ * Helper functions
+ */
+
+/**
+ * Gets the info of a derived value.
+ */
+static TransparentInfo *derivInfo(zvalue value) {
+    return (TransparentInfo *) pbPayload(value);
+}
+
+
+/*
  * Module functions
  */
 
 /* Documented in header. */
 zvalue Transparent_dataOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue value = args[0];
-    return ((TransparentInfo *) pbPayload(value))->data;
+    return derivInfo(value)->data;
 }
 
 /* Documented in header. */
 zvalue Transparent_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue value = args[0];
-    pbMark(((TransparentInfo *) pbPayload(value))->data);
+    pbMark(derivInfo(value)->data);
     return NULL;
+}
+
+/* Documented in header. */
+zvalue Transparent_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return intFromZint(pbOrder(derivInfo(v1)->data, derivInfo(v2)->data));
 }
 
 
