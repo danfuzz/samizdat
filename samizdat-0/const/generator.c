@@ -127,6 +127,7 @@ void generatorInit(void) {
     gfnBindCore(GFN_collect, TYPE_Map,      collectMap);
     gfnBindCore(GFN_collect, TYPE_String,   collectString);
     gfnBindCore(GFN_collect, TYPE_Function, collectGenerator);
+    gfnBindCore(GFN_collect, TYPE_Generic,  collectGenerator);
     gfnSeal(GFN_collect);
     pbImmortalize(GFN_collect);
 }

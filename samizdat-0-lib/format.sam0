@@ -242,25 +242,25 @@ fn doListFlatten(list, .) {
 # Mapping from low-layer type names to stringifiers to use for `%q`-style
 # source-stringification.
 def SOURCE_STRINGIFIERS = [
-    Int:    doInt,
-    List:   doList,
-    Map:    doMap,
-    String: doString
+    (Int):    doInt,
+    (List):   doList,
+    (Map):    doMap,
+    (String): doString
 ];
 
 # Mapping from low-layer type names to stringifiers to use for `%s`-style
 # human-stringification.
 def HUMAN_STRINGIFIERS = [
-    Int:    doInt,
-    List:   doListFlatten,
-    Map:    doMap,
-    String: doStringAsIs
+    (Int):    doInt,
+    (List):   doListFlatten,
+    (Map):    doMap,
+    (String): doStringAsIs
 ];
 
 # Common handler for the two exported functions.
 fn sourceStringGeneral(value, adorn) {
     def stringifier = ifValueOr
-        { <> mapGet(SOURCE_STRINGIFIERS, &typeOf(&isOpaqueValue(value))) }
+        { <> mapGet(SOURCE_STRINGIFIERS, typeOf(value)) }
         { <> doDerivOrOpaque };
 
     <> stringifier(value, adorn)
@@ -305,7 +305,7 @@ fn stringFromValue(value?) {
     <> ifValue { <> value* }
         { value ::
             def stringifier = ifValueOr
-                { <> mapGet(HUMAN_STRINGIFIERS, &typeOf(&isOpaqueValue(value))) }
+                { <> mapGet(HUMAN_STRINGIFIERS, typeOf(value)) }
                 { <> doDerivOrOpaque };
             <> stringifier(value, true)
         }
