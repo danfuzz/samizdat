@@ -73,13 +73,16 @@ void pbInit(void) {
     // the other initializers create types (that is, values of type `Type`).
     pbInitTypeSystem();
 
+    // Next the generics have to be defined, and the early types' methods
+    // need to be bound, so that the rest of the binding can operate properly.
     pbInitCoreGenerics();
-    pbBindDeriv();
-    pbBindFunction();
     pbBindGeneric();
-    pbBindInt();
     pbBindString();
     pbBindType();
+
+    pbBindDeriv();
+    pbBindFunction();
+    pbBindInt();
 }
 
 /* Documented in header. */
