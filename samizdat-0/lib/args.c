@@ -16,7 +16,7 @@
 
 /** Documented in header. */
 zvalue doNthLenient(znth function, zvalue value, zvalue n) {
-    if (typeIs(n, TYPE_Int)) {
+    if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
         return (index < 0) ? NULL : function(value, index);
     } else {
@@ -26,7 +26,7 @@ zvalue doNthLenient(znth function, zvalue value, zvalue n) {
 
 /** Documented in header. */
 zvalue doNthStrict(znth function, zvalue value, zvalue n) {
-    if (typeIs(n, TYPE_Int)) {
+    if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
         if (index < 0) {
             die("Invalid index for nth (negative).");

@@ -396,15 +396,15 @@ void assertTypeIs(zvalue v1, zvalue type);
 zvalue coreTypeFromName(zvalue name);
 
 /**
- * Gets the name of the given type.
- */
-zvalue typeName(zvalue type);
-
-/**
  * Returns true iff the type of the given value (that is, `typeOf(value)`)
  * is as given.
  */
-bool typeIs(zvalue value, zvalue type);
+bool hasType(zvalue value, zvalue type);
+
+/**
+ * Gets the name of the given type.
+ */
+zvalue typeName(zvalue type);
 
 /**
  * Gets the overt data type of the given value. `value` must be a

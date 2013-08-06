@@ -633,7 +633,7 @@ DEF_PARSE(mapping2) {
     MARK();
 
     zvalue map = PARSE_OR_REJECT(expression);
-    REJECT_IF(!typeIs(map, STR_INTERPOLATE));
+    REJECT_IF(!hasType(map, STR_INTERPOLATE));
 
     return dataOf(map);
 }
@@ -814,7 +814,7 @@ DEF_PARSE(unaryExpression) {
     zint size = pbSize(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = listNth(postfixes, i);
-        if (typeIs(one, TYPE_List)) {
+        if (hasType(one, TYPE_List)) {
             result = makeCall(result, one);
         } else if (pbEq(one, TOK_CH_STAR)) {
             result = valueFrom(STR_INTERPOLATE, result);
@@ -977,7 +977,7 @@ zvalue langTree0(zvalue program) {
 
     zvalue tokens;
 
-    if (typeIs(program, TYPE_String)) {
+    if (hasType(program, TYPE_String)) {
         tokens = langTokenize0(program);
     } else {
         tokens = program;

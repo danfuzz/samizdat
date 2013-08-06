@@ -76,7 +76,7 @@ PRIM_IMPL(dataOf) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(isOpaqueValue) {
     zvalue value = args[0];
-    return typeIs(typeOf(value), TYPE_Type) ? value : NULL;
+    return hasType(typeOf(value), TYPE_Type) ? value : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

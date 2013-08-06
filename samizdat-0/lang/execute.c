@@ -111,7 +111,7 @@ static void bindArguments(Frame *frame, zvalue node,
         if (repeat != NULL) {
             zint count;
 
-            if ((pbSize(repeat) != 1) || !typeIs(repeat, TYPE_String)) {
+            if ((pbSize(repeat) != 1) || !hasType(repeat, TYPE_String)) {
                 die("Invalid repeat modifier (non-string).");
             }
 
@@ -207,7 +207,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                     zint end = i + 1;
                     for (/*end*/; end < statementsSize; end++) {
                         zvalue one = statementsArr[end];
-                        if (!typeIs(one, STR_FN_DEF)) {
+                        if (!hasType(one, STR_FN_DEF)) {
                             break;
                         }
                     }
@@ -410,7 +410,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (typeIs(oneNode, STR_INTERPOLATE)) {
+            if (hasType(oneNode, STR_INTERPOLATE)) {
                 arrayFromList(&fullArgs[at], oneArg);
                 at += pbSize(oneArg);
             } else {

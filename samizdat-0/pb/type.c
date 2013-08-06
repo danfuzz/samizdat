@@ -144,7 +144,7 @@ bool typeSecretIs(zvalue type, zvalue secret) {
 void assertTypeIs(zvalue value, zvalue type) {
     pbAssertValid(value);
 
-    if (!typeIs(value, type)) {
+    if (!hasType(value, type)) {
         die("Expected type %s; got %s.",
             pbDebugString(type), pbDebugString(value));
     }
@@ -156,7 +156,7 @@ zvalue coreTypeFromName(zvalue name) {
 }
 
 /* Documented in header. */
-bool typeIs(zvalue value, zvalue type) {
+bool hasType(zvalue value, zvalue type) {
     return pbEq(typeOf(value), type);
 }
 
