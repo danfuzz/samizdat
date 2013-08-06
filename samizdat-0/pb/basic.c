@@ -49,7 +49,7 @@ void pbAssertSameType(zvalue v1, zvalue v2) {
     pbAssertValid(v2);
 
     if (v1->type != v2->type) {
-        die("Mismatched core types: %s, %s",
+        die("Mismatched types: %s, %s",
             pbDebugString(v1), pbDebugString(v2));
     }
 }
