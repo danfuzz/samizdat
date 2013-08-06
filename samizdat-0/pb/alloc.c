@@ -318,10 +318,12 @@ zstackPointer pbFrameStart(void) {
 /* Documented in header. */
 void pbFrameAdd(zvalue value) {
     if (stackSize >= PB_MAX_STACK) {
-        // No `die()` here, since the attempt to print out the stack will
-        // land us right back here.
-        note("Value stack overflow.");
-        exit(1);
+        // As a hail-mary, do a forced gc and then clear the value stack, in
+        // the hope that a gc won't end up being done while producing the
+        // dying stack trace.
+        pbGc();
+        stackSize = 0;
+        die("Value stack overflow.");
     }
 
     stack[stackSize] = value;
