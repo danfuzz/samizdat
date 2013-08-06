@@ -115,7 +115,6 @@ zvalue transparentTypeFromName(zvalue name) {
     zvalue result = newType(name, NULL, true);
 
     // Bind the default derived value methods.
-    gfnBindCore(GFN_dataOf, result, Deriv_dataOf);
     gfnBindCore(GFN_eq,     result, Deriv_eq);
     gfnBindCore(GFN_gcMark, result, Deriv_gcMark);
     gfnBindCore(GFN_order,  result, Deriv_order);
@@ -157,6 +156,13 @@ void typeAssert(zvalue value) {
 /* Documented in header. */
 bool pbTypeIs(zvalue value, zvalue type) {
     return pbEq(pbTypeOf(value), type);
+}
+
+/* Documented in header. */
+bool typeIsDerived(zvalue type) {
+    typeAssert(type);
+    TypeInfo *info = typeInfo(type);
+    return info->derived;
 }
 
 /* Documented in header. */

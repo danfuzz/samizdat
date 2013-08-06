@@ -42,12 +42,6 @@ typedef struct PbHeader {
     /** Mark bit (used during GC). */
     bool marked : 1;
 
-    /**
-     * Derived bit; if true indicates that this is a derived value, whose
-     * data payload is a `DerivInfo`.
-     */
-    bool derived : 1;
-
     /** Data type. */
     zvalue type;
 
@@ -86,6 +80,12 @@ zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
  * if necessary.
  */
 zvalue transparentTypeFromName(zvalue name);
+
+/**
+ * Returns true iff the given type is a derived type (whether opaque or
+ * transparent).
+ */
+bool typeIsDerived(zvalue type);
 
 /**
  * Checks whether the given value matches the secret of the given type.

@@ -26,18 +26,6 @@ static DerivInfo *derivInfo(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args) {
-    zvalue value = args[0];
-    zvalue secret = (argCount == 2) ? args[1] : NULL;
-
-    if (typeSecretIs(value->type, secret)) {
-        return derivInfo(value)->data;
-    } else {
-        return NULL;
-    }
-}
-
-/* Documented in header. */
 zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -64,6 +52,22 @@ zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
 /*
  * Exported functions
  */
+
+/* Documented in header. */
+zvalue dataFromValue(zvalue value, zvalue secret) {
+    zvalue type = value->type;
+
+    if (typeIsDerived(type) && typeSecretIs(type, secret)) {
+        return derivInfo(value)->data;
+    } else {
+        return NULL;
+    }
+}
+
+/* Documented in header. */
+zvalue pbDataOf(zvalue value) {
+    return dataFromValue(value, NULL);
+}
 
 /* Documented in header. */
 zvalue derivFrom(zvalue type, zvalue data, zvalue secret) {

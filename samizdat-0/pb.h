@@ -89,12 +89,6 @@ extern zvalue TYPE_Type;
 extern zvalue GFN_call;
 
 /**
- * Generic `dataOf(value)`: Gets the data payload of a value of the given
- * type, if any. Defaults to returning `NULL` (void).
- */
-extern zvalue GFN_dataOf;
-
-/**
  * Generic `debugString(value)`: Returns a minimal string form of the
  * given value. Notably, functions and generics include their names.
  * The default implementation returns strings of the form
@@ -430,6 +424,33 @@ zvalue pbTypeOf(zvalue value);
  */
 
 /**
+ * Gets the data payload of the given value, if possible. `value` must be a
+ * valid value (in particular, non-`NULL`). This is a convenient shorthand
+ * for calling `dataFromValue(value, NULL)`.
+ For everything but derived
+ * values, the data payload is the same as the value itself. For derived
+ * values, the data payload is (unsurprisingly) `NULL` for type-only
+ * values.
+ */
+zvalue pbDataOf(zvalue value);
+
+/**
+ * Gets the data payload of the given value, if possible. This behaves
+ * as follows:
+ *
+ * * If `value` is a core value, this returns `NULL`.
+ *
+ * * If `value`'s type secret does not match the given secret, this returns
+ *   `NULL`. Notably, if `value` is of a transparent derived type and `secret`
+ *   is *not* passed as `NULL`, this returns `NULL`.
+ *
+ * * If `value` does not have any payload data, this returns `NULL`.
+ *
+ * * Otherwise, this returns the payload data of `value`.
+ */
+zvalue dataFromValue(zvalue value, zvalue secret);
+
+/**
  * Returns a derived value with the given type tag, and with the given
  * optional data payload (`NULL` indicating a type-only value). `type` and
  * `secret` must be as follows:
@@ -456,15 +477,6 @@ zvalue valueFrom(zvalue type, zvalue data);
 /*
  * Dispatched (type-based) Functions
  */
-
-/**
- * Gets the data payload of the given value. `value` must be a
- * valid value (in particular, non-`NULL`). For everything but derived
- * values, the data payload is the same as the value itself. For derived
- * values, the data payload is (unsurprisingly) `NULL` for type-only
- * values.
- */
-zvalue pbDataOf(zvalue value);
 
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller

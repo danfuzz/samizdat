@@ -19,9 +19,6 @@
 zvalue GFN_call = NULL;
 
 /* Documented in header. */
-zvalue GFN_dataOf = NULL;
-
-/* Documented in header. */
 zvalue GFN_debugString = NULL;
 
 /* Documented in header. */
@@ -38,11 +35,6 @@ zvalue GFN_order = NULL;
 
 /* Documented in header. */
 zvalue GFN_sizeOf = NULL;
-
-/* Documented in header. */
-static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
-    return NULL;
-}
 
 /* Documented in header. */
 static zvalue Default_debugString(zvalue state,
@@ -74,10 +66,6 @@ void pbInitCoreGenerics(void) {
     GFN_call = gfnFrom(1, 1, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 
-    GFN_dataOf = gfnFrom(1, 2, stringFromUtf8(-1, "dataOf"));
-    gfnBindCoreDefault(GFN_dataOf, Default_dataOf);
-    pbImmortalize(GFN_dataOf);
-
     GFN_debugString = gfnFrom(1, 1, stringFromUtf8(-1, "debugString"));
     gfnBindCoreDefault(GFN_debugString, Default_debugString);
     pbImmortalize(GFN_debugString);
@@ -104,11 +92,6 @@ void pbInitCoreGenerics(void) {
 /*
  * Exported functions
  */
-
-/* Documented in header. */
-zvalue pbDataOf(zvalue value) {
-    return fnCall(GFN_dataOf, 1, &value);
-}
 
 /* Documented in header. */
 char *pbDebugString(zvalue value) {
