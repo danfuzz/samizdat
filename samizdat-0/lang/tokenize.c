@@ -206,7 +206,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
     }
 
     zvalue result = tokenizeString(state);
-    zvalue string = pbDataOf(result);
+    zvalue string = dataOf(result);
     return valueFrom(STR_IDENTIFIER, string);
 }
 

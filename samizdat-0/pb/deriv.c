@@ -65,7 +65,7 @@ zvalue dataFromValue(zvalue value, zvalue secret) {
 }
 
 /* Documented in header. */
-zvalue pbDataOf(zvalue value) {
+zvalue dataOf(zvalue value) {
     return dataFromValue(value, NULL);
 }
 

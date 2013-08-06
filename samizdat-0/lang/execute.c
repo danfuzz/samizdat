@@ -270,7 +270,7 @@ static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
  */
 static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
     Closure *closure = utilAlloc(sizeof(Closure));
-    zvalue defMap = pbDataOf(node);
+    zvalue defMap = dataOf(node);
 
     frameSnap(&closure->frame, frame);
     closure->defMap = defMap;
@@ -296,7 +296,7 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
  * as appropriate.
  */
 static void execVarDef(Frame *frame, zvalue varDef) {
-    zvalue nameValue = pbDataOf(varDef);
+    zvalue nameValue = dataOf(varDef);
     zvalue name = mapGet(nameValue, STR_NAME);
     zvalue valueExpression = mapGet(nameValue, STR_VALUE);
     zvalue value = execExpression(frame, valueExpression);
@@ -314,7 +314,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
 
     for (zint i = 0; i < size; i++) {
         zvalue one = statements[i];
-        zvalue fnMap = pbDataOf(one);
+        zvalue fnMap = dataOf(one);
         zvalue name = mapGet(fnMap, STR_NAME);
         frameAdd(frame, name, buildClosure(&closures[i], frame, one));
     }
@@ -339,7 +339,7 @@ static zvalue execClosure(Frame *frame, zvalue closureNode) {
  * Executes a `call` form.
  */
 static zvalue execCall(Frame *frame, zvalue call) {
-    call = pbDataOf(call);
+    call = dataOf(call);
 
     zvalue function = mapGet(call, STR_FUNCTION);
     zvalue actuals = mapGet(call, STR_ACTUALS);
@@ -368,7 +368,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             // We replace the value in `actualsArr` with the voidable
             // payload in order to keep the follow-up interpolation loop
             // simpler.
-            one = actualsArr[i] = pbDataOf(one);
+            one = actualsArr[i] = dataOf(one);
             oneType = pbTypeOf(one);
             voidable = true;
         } else {
@@ -376,7 +376,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         }
 
         if (pbEq(oneType, STR_INTERPOLATE)) {
-            one = pbDataOf(one);
+            one = dataOf(one);
             interpolate = true;
         } else {
             interpolate = false;
@@ -429,7 +429,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
  * Executes a `varRef` form.
  */
 static zvalue execVarRef(Frame *frame, zvalue varRef) {
-    zvalue name = pbDataOf(varRef);
+    zvalue name = dataOf(varRef);
     return frameGet(frame, name);
 }
 
@@ -437,7 +437,7 @@ static zvalue execVarRef(Frame *frame, zvalue varRef) {
  * Executes an `interpolate` form.
  */
 static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
-    zvalue result = execExpressionVoidOk(frame, pbDataOf(interpolate));
+    zvalue result = execExpressionVoidOk(frame, dataOf(interpolate));
 
     if (result == NULL) {
         die("Attempt to interpolate void.");
@@ -477,14 +477,14 @@ static zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         }
         case 7: {
             if (pbEq(type, STR_LITERAL))
-                return pbDataOf(e);
+                return dataOf(e);
             else if (pbEq(type, STR_CLOSURE))
                 return execClosure(frame, e);
             break;
         }
         case 10: {
             if (pbEq(type, STR_EXPRESSION))
-                return execExpressionVoidOk(frame, pbDataOf(e));
+                return execExpressionVoidOk(frame, dataOf(e));
             break;
         }
         case 11: {

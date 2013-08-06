@@ -315,7 +315,7 @@ DEF_PARSE(yieldDef) {
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
     MATCH_OR_REJECT(CH_GT);
 
-    return pbDataOf(identifier);
+    return dataOf(identifier);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -349,7 +349,7 @@ DEF_PARSE(formal) {
     zvalue name = MATCH(IDENTIFIER);
 
     if (name != NULL) {
-        name = pbDataOf(name);
+        name = dataOf(name);
     } else {
         // If there was no identifier, then the only valid form for a formal
         // is if this is an unnamed / unused argument.
@@ -415,7 +415,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(closure);
 
-    if (mapGet(pbDataOf(c), STR_FORMALS) != NULL) {
+    if (mapGet(dataOf(c), STR_FORMALS) != NULL) {
         die("Invalid formal argument in code block.");
     }
 
@@ -428,7 +428,7 @@ DEF_PARSE(codeOnlyClosure) {
 
     zvalue c = PARSE_OR_REJECT(nullaryClosure);
 
-    if (mapGet(pbDataOf(c), STR_YIELD_DEF) != NULL) {
+    if (mapGet(dataOf(c), STR_YIELD_DEF) != NULL) {
         die("Invalid yield definition in code block.");
     }
 
@@ -460,7 +460,7 @@ DEF_PARSE(fnCommon2) {
         return EMPTY_MAP;
     }
 
-    return mapFrom1(STR_NAME, pbDataOf(n));
+    return mapFrom1(STR_NAME, dataOf(n));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -476,7 +476,7 @@ DEF_PARSE(fnCommon) {
     MATCH_OR_REJECT(CH_CPAREN);
     zvalue code = PARSE_OR_REJECT(codeOnlyClosure);
 
-    zvalue codeMap = pbDataOf(code);
+    zvalue codeMap = dataOf(code);
     zvalue statements =
         listAdd(returnDef, mapGet(codeMap, STR_STATEMENTS));
 
@@ -529,7 +529,7 @@ DEF_PARSE(int) {
 
     zvalue intval = MATCH_OR_REJECT(INT);
 
-    return makeLiteral(pbDataOf(intval));
+    return makeLiteral(dataOf(intval));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -538,7 +538,7 @@ DEF_PARSE(string) {
 
     zvalue string = MATCH_OR_REJECT(STRING);
 
-    return makeLiteral(pbDataOf(string));
+    return makeLiteral(dataOf(string));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -552,7 +552,7 @@ DEF_PARSE(identifierString) {
     if (result == NULL) { result = MATCH(RETURN); }
     if (result == NULL) { return NULL; }
 
-    zvalue value = pbDataOf(result);
+    zvalue value = dataOf(result);
     if (value == NULL) {
         value = pbTypeOf(result);
     }
@@ -635,7 +635,7 @@ DEF_PARSE(mapping2) {
     zvalue map = PARSE_OR_REJECT(expression);
     REJECT_IF(!pbTypeIs(map, STR_INTERPOLATE));
 
-    return pbDataOf(map);
+    return dataOf(map);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -725,7 +725,7 @@ DEF_PARSE(varRef) {
 
     zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
 
-    return makeVarRef(pbDataOf(identifier));
+    return makeVarRef(dataOf(identifier));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -737,7 +737,7 @@ DEF_PARSE(varDef) {
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue expression = PARSE_OR_REJECT(expression);
 
-    zvalue name = pbDataOf(identifier);
+    zvalue name = dataOf(identifier);
     return makeVarDef(name, expression);
 }
 

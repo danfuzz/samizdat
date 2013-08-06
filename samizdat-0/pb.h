@@ -432,7 +432,7 @@ zvalue pbTypeOf(zvalue value);
  * values, the data payload is (unsurprisingly) `NULL` for type-only
  * values.
  */
-zvalue pbDataOf(zvalue value);
+zvalue dataOf(zvalue value);
 
 /**
  * Gets the data payload of the given value, if possible. This behaves
