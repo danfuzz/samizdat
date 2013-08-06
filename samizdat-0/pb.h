@@ -154,13 +154,6 @@ void pbInit(void);
  */
 
 /**
- * Asserts that the given value is a valid `zvalue`, and furthermore
- * that it is a derived value. If not, this aborts the process with a
- * diagnostic message.
- */
-void pbAssertDeriv(zvalue value);
-
-/**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a function. If not, this aborts the process
  * with a diagnostic message.

@@ -41,7 +41,7 @@ zvalue GFN_sizeOf = NULL;
 
 /* Documented in header. */
 static zvalue Default_dataOf(zvalue state, zint argCount, const zvalue *args) {
-    return args[0];
+    return NULL;
 }
 
 /* Documented in header. */

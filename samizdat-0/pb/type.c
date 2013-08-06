@@ -21,7 +21,7 @@ static zint theNextId = 0;
 static zvalue theTypes[PB_MAX_TYPES];
 
 /**
- * Payload struct.
+ * Payload struct for type `Type`.
  */
 typedef struct {
     /**
@@ -119,6 +119,11 @@ zvalue typeFrom(zvalue name, zvalue secret) {
         // Need to make a new type.
         result = pbAllocValue(TYPE_Type, sizeof(TypeInfo));
         typeInit(result, name, secret);
+        if (secret == NULL) {
+            // Bind the default transparent value methods.
+            gfnBindCore(GFN_dataOf, result, Transparent_dataOf);
+            gfnBindCore(GFN_gcMark, result, Transparent_gcMark);
+        }
     } else {
         // Need to verify that the secret matches.
         zvalue alreadySecret = typeInfo(result)->secret;

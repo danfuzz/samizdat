@@ -46,23 +46,46 @@ static zvalue newDeriv(zvalue type, zvalue data) {
 
 
 /*
- * Exported functions
+ * Module functions
  */
 
 /* Documented in header. */
-void pbAssertDeriv(zvalue value) {
-    pbAssertType(value, TYPE_Deriv);
+zvalue Transparent_dataOf(zvalue state, zint argCount, const zvalue *args) {
+    zvalue value = args[0];
+    return ((TransparentInfo *) pbPayload(value))->data;
 }
 
 /* Documented in header. */
+zvalue Transparent_gcMark(zvalue state, zint argCount, const zvalue *args) {
+    zvalue value = args[0];
+    pbMark(((TransparentInfo *) pbPayload(value))->data);
+    return NULL;
+}
+
+
+/*
+ * Exported functions
+ */
+
+// TODO: This is now misnamed. It makes general transparent values.
 zvalue derivFrom(zvalue type, zvalue data) {
     pbAssertValid(type);
+
+    if (pbTypeOf(type) == TYPE_Type) {
+        // This should probably be fixed.
+        die("Can't create transparent value given type value.");
+    }
 
     if (data != NULL) {
         pbAssertValid(data);
     }
 
-    return newDeriv(type, data);
+    // Get a `Type` per se. `NULL` indicates it is to be transparent.
+    type = typeFrom(type, NULL);
+    zvalue result = pbAllocValue(type, sizeof(TransparentInfo));
+    ((TransparentInfo *) pbPayload(result))->data = data;
+
+    return result;
 }
 
 

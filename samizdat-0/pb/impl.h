@@ -50,6 +50,14 @@ typedef struct PbHeader {
 } PbHeader;
 
 /**
+ * Payload data for all transparent values.
+ */
+typedef struct {
+    /** Data payload. */
+    zvalue data;
+} TransparentInfo;
+
+/**
  * Gets the function bound to the given generic for the given value, if any.
  * Returns `NULL` if there is no binding.
  */
@@ -66,6 +74,14 @@ zint indexFromType(zvalue type);
  * types `Type` and `String` (which have reference cycles).
  */
 zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
+
+
+/*
+ * Method bindings for transparent types.
+ */
+
+zvalue Transparent_dataOf(zvalue state, zint argCount, const zvalue *args);
+zvalue Transparent_gcMark(zvalue state, zint argCount, const zvalue *args);
 
 
 /*
