@@ -49,7 +49,10 @@ an associated secret &mdash; or void if not.
 
 Returns the type tag of the given arbitrary value. For transparent values,
 this returns the type tag the value was constructed with, as a regular value.
-For opaque values, this returnsa value of type `Type`.
+For opaque values, this returns a value of type `Type`.
+
+**Note:** It is invalid to construct a transparent value with a type tag
+of type `Type`.
 
 
 <br><br>
