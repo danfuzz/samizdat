@@ -111,6 +111,7 @@ zint indexFromType(zvalue type) {
 
 /* Documented in header. */
 zvalue transparentTypeFromName(zvalue name) {
+    // TODO: Linear search is probably a bad idea here.
     for (zint i = 0; i < theNextId; i++) {
         zvalue one = theTypes[i];
         TypeInfo *info = typeInfo(one);
@@ -225,7 +226,29 @@ static zvalue Type_gcMark(zvalue state, zint argCount, const zvalue *args) {
 static zvalue Type_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return intFromZint(pbOrder(typeInfo(v1)->name, typeInfo(v2)->name));
+    TypeInfo *info1 = typeInfo(v1);
+    TypeInfo *info2 = typeInfo(v2);
+
+    if (info1->derived != info2->derived) {
+        return info2->derived ? PB_NEG1 : PB_1;
+    }
+
+    bool secret1 = info1->secret != NULL;
+    bool secret2 = info2->secret != NULL;
+
+    if (secret1 != secret2) {
+        return secret2 ? PB_NEG1 : PB_1;
+    }
+
+    zorder nameOrder = pbOrder(typeInfo(v1)->name, typeInfo(v2)->name);
+
+    if (nameOrder != ZSAME) {
+        return intFromZint(nameOrder);
+    }
+
+    // This is the case of two different opaque derived types with the
+    // same name.
+    return (info1->id < info2->id) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
