@@ -261,6 +261,8 @@ static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindString(void) {
+    // Note: The type `Type` is responsible for initializing `TYPE_String`.
+
     gfnBindCore(GFN_debugString, PB_String, String_debugString);
     gfnBindCore(GFN_eq,          PB_String, String_eq);
     gfnBindCore(GFN_order,       PB_String, String_order);

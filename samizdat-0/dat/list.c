@@ -270,6 +270,7 @@ static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindList(void) {
+    TYPE_List = typeFrom(stringFromUtf8(-1, "List"), NULL);
     gfnBindCore(GFN_eq,     DAT_List, List_eq);
     gfnBindCore(GFN_gcMark, DAT_List, List_gcMark);
     gfnBindCore(GFN_order,  DAT_List, List_order);

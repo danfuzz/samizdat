@@ -133,6 +133,7 @@ static zvalue Deriv_typeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindDeriv(void) {
+    TYPE_Deriv = typeFrom(stringFromUtf8(-1, "Deriv"), NULL);
     gfnBindCore(GFN_dataOf, PB_Deriv, Deriv_dataOf);
     gfnBindCore(GFN_eq,     PB_Deriv, Deriv_eq);
     gfnBindCore(GFN_gcMark, PB_Deriv, Deriv_gcMark);
