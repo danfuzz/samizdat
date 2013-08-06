@@ -91,6 +91,12 @@ zint indexFromType(zvalue type) {
     return typeInfo(type)->id;
 }
 
+/* Documented in header. */
+bool typeSecretIs(zvalue type, zvalue secret) {
+    typeAssert(type);
+    return pbNullSafeEq(typeInfo(type)->secret, secret);
+}
+
 
 /*
  * Exported functions

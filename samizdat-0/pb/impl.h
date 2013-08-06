@@ -75,6 +75,12 @@ zint indexFromType(zvalue type);
  */
 zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
 
+/**
+ * Checks whether the given value matches the secret of the given type.
+ * `secret` may be passed as `NULL`.
+ */
+bool typeSecretIs(zvalue type, zvalue secret);
+
 
 /*
  * Method bindings for transparent types.

@@ -28,7 +28,13 @@ static TransparentInfo *derivInfo(zvalue value) {
 /* Documented in header. */
 zvalue Transparent_dataOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue value = args[0];
-    return derivInfo(value)->data;
+    zvalue secret = (argCount == 2) ? args[1] : NULL;
+
+    if (typeSecretIs(value->type, secret)) {
+        return derivInfo(value)->data;
+    } else {
+        return NULL;
+    }
 }
 
 /* Documented in header. */

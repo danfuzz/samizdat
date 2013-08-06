@@ -74,7 +74,7 @@ void pbInitCoreGenerics(void) {
     GFN_call = gfnFrom(1, 1, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 
-    GFN_dataOf = gfnFrom(1, 1, stringFromUtf8(-1, "dataOf"));
+    GFN_dataOf = gfnFrom(1, 2, stringFromUtf8(-1, "dataOf"));
     gfnBindCoreDefault(GFN_dataOf, Default_dataOf);
     pbImmortalize(GFN_dataOf);
 
