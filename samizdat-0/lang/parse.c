@@ -814,7 +814,7 @@ DEF_PARSE(unaryExpression) {
     zint size = pbSize(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = listNth(postfixes, i);
-        if (pbCoreTypeIs(one, DAT_List)) {
+        if (pbTypeIs(one, TYPE_List)) {
             result = makeCall(result, one);
         } else if (pbEq(one, TOK_CH_STAR)) {
             result = derivFrom(STR_INTERPOLATE, result);
@@ -977,7 +977,7 @@ zvalue langTree0(zvalue program) {
 
     zvalue tokens;
 
-    if (pbCoreTypeIs(program, PB_String)) {
+    if (pbTypeIs(program, TYPE_String)) {
         tokens = langTokenize0(program);
     } else {
         tokens = program;

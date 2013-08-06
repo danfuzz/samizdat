@@ -71,7 +71,7 @@ static zint zintValue(zvalue intval) {
  */
 zvalue intFrom(zint value) {
     zint size = bitSize(value);
-    zvalue result = pbAllocValue(PB_Int, sizeof(int32_t));
+    zvalue result = pbAllocValue(TYPE_Int, sizeof(int32_t));
 
     if (size > MAX_BITS) {
         die("Value too large to fit into int: %lld", value);
@@ -88,7 +88,7 @@ zvalue intFrom(zint value) {
 
 /* Documented in header. */
 void pbAssertInt(zvalue value) {
-    pbAssertType(value, PB_Int);
+    pbAssertType(value, TYPE_Int);
 }
 
 /* Documented in header. */
@@ -181,9 +181,9 @@ static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void pbBindInt(void) {
     TYPE_Int = typeFrom(stringFromUtf8(-1, "Int"), NULL);
-    gfnBindCore(GFN_eq,     PB_Int, Int_eq);
-    gfnBindCore(GFN_sizeOf, PB_Int, Int_sizeOf);
-    gfnBindCore(GFN_order,  PB_Int, Int_order);
+    gfnBindCore(GFN_eq,     TYPE_Int, Int_eq);
+    gfnBindCore(GFN_sizeOf, TYPE_Int, Int_sizeOf);
+    gfnBindCore(GFN_order,  TYPE_Int, Int_order);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);

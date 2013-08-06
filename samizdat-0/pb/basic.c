@@ -64,15 +64,6 @@ void pbAssertSliceRange(zint size, zint start, zint end) {
 }
 
 /* Documented in header. */
-void pbAssertType(zvalue value, ztype type) {
-    pbAssertValid(value);
-
-    if (value->type != type) {
-        die("Expected type %s; got %s.", type->name, pbDebugString(value));
-    }
-}
-
-/* Documented in header. */
 void pbInit(void) {
     if (TYPE_Type != NULL) {
         return;

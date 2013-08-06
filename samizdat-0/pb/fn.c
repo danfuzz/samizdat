@@ -57,7 +57,7 @@ static FunctionInfo *fnInfo(zvalue function) {
 
 /* Documented in header. */
 void pbAssertFunction(zvalue value) {
-    pbAssertType(value, PB_Function);
+    pbAssertType(value, TYPE_Function);
 }
 
 /* Documented in header. */
@@ -68,7 +68,7 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = pbAllocValue(PB_Function, sizeof(FunctionInfo));
+    zvalue result = pbAllocValue(TYPE_Function, sizeof(FunctionInfo));
     FunctionInfo *info = fnInfo(result);
 
     info->minArgs = minArgs;
@@ -141,10 +141,10 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void pbBindFunction(void) {
     TYPE_Function = typeFrom(stringFromUtf8(-1, "Function"), NULL);
-    gfnBindCore(GFN_call,        PB_Function, Function_call);
-    gfnBindCore(GFN_debugString, PB_Function, Function_debugString);
-    gfnBindCore(GFN_gcMark,      PB_Function, Function_gcMark);
-    gfnBindCore(GFN_order,       PB_Function, Function_order);
+    gfnBindCore(GFN_call,        TYPE_Function, Function_call);
+    gfnBindCore(GFN_debugString, TYPE_Function, Function_debugString);
+    gfnBindCore(GFN_gcMark,      TYPE_Function, Function_gcMark);
+    gfnBindCore(GFN_order,       TYPE_Function, Function_order);
 }
 
 /* Documented in header. */

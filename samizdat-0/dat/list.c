@@ -43,7 +43,7 @@ static zint listSizeOf(zvalue list) {
  */
 static zvalue allocList(zint size) {
     zvalue result =
-        pbAllocValue(DAT_List, sizeof(ListInfo) + size * sizeof(zvalue));
+        pbAllocValue(TYPE_List, sizeof(ListInfo) + size * sizeof(zvalue));
 
     ((ListInfo *) pbPayload(result))->size = size;
     return result;
@@ -90,7 +90,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
 
 /* Documented in header. */
 void datAssertList(zvalue value) {
-    pbAssertType(value, DAT_List);
+    pbAssertType(value, TYPE_List);
 }
 
 /* Documented in header. */
@@ -271,10 +271,10 @@ static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void datBindList(void) {
     TYPE_List = typeFrom(stringFromUtf8(-1, "List"), NULL);
-    gfnBindCore(GFN_eq,     DAT_List, List_eq);
-    gfnBindCore(GFN_gcMark, DAT_List, List_gcMark);
-    gfnBindCore(GFN_order,  DAT_List, List_order);
-    gfnBindCore(GFN_sizeOf, DAT_List, List_sizeOf);
+    gfnBindCore(GFN_eq,     TYPE_List, List_eq);
+    gfnBindCore(GFN_gcMark, TYPE_List, List_gcMark);
+    gfnBindCore(GFN_order,  TYPE_List, List_order);
+    gfnBindCore(GFN_sizeOf, TYPE_List, List_sizeOf);
 
     EMPTY_LIST = allocList(0);
     pbImmortalize(EMPTY_LIST);

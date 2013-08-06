@@ -249,7 +249,7 @@ static void doGc(void) {
 /**
  * Common code for allocation.
  */
-static zvalue allocValue(ztype type, zint extraBytes) {
+static zvalue allocValue(zvalue type, zint extraBytes) {
     if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
         pbGc();
     } else {
@@ -277,8 +277,7 @@ static zvalue allocValue(ztype type, zint extraBytes) {
 zvalue pbAllocTypeType(zint extraBytes) {
     zvalue result = allocValue(NULL, extraBytes);
 
-    // TODO:
-    // result->type = result;
+    result->type = result;
     return result;
 }
 
@@ -288,10 +287,8 @@ zvalue pbAllocTypeType(zint extraBytes) {
  */
 
 /* Documented in header. */
-zvalue pbAllocValue(ztype type, zint extraBytes) {
-    // TODO:
-    // typeAssert(type)
-
+zvalue pbAllocValue(zvalue type, zint extraBytes) {
+    typeAssert(type);
     return allocValue(type, extraBytes);
 }
 

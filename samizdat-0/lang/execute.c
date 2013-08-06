@@ -111,7 +111,7 @@ static void bindArguments(Frame *frame, zvalue node,
         if (repeat != NULL) {
             zint count;
 
-            if ((pbSize(repeat) != 1) || !pbCoreTypeIs(repeat, PB_String)) {
+            if ((pbSize(repeat) != 1) || !pbTypeIs(repeat, TYPE_String)) {
                 die("Invalid repeat modifier (non-string).");
             }
 

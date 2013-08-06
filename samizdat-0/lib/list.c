@@ -39,7 +39,7 @@ PRIM_IMPL(listAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listDelNth) {
-    if (!pbCoreTypeIs(args[1], PB_Int)) {
+    if (!pbTypeIs(args[1], TYPE_Int)) {
         return args[0];
     }
 

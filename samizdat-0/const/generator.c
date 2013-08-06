@@ -122,11 +122,11 @@ static zvalue collectGenerator(zvalue state, zint argc,
 /* Documented in header. */
 void generatorInit(void) {
     GFN_collect = gfnFrom(1, 1, STR_COLLECT);
-    gfnBindCore(GFN_collect, PB_Int,      collectInt);
-    gfnBindCore(GFN_collect, DAT_List,     collectList);
-    gfnBindCore(GFN_collect, DAT_Map,      collectMap);
-    gfnBindCore(GFN_collect, PB_String,   collectString);
-    gfnBindCore(GFN_collect, PB_Function, collectGenerator);
+    gfnBindCore(GFN_collect, TYPE_Int,      collectInt);
+    gfnBindCore(GFN_collect, TYPE_List,     collectList);
+    gfnBindCore(GFN_collect, TYPE_Map,      collectMap);
+    gfnBindCore(GFN_collect, TYPE_String,   collectString);
+    gfnBindCore(GFN_collect, TYPE_Function, collectGenerator);
     gfnSeal(GFN_collect);
     pbImmortalize(GFN_collect);
 }

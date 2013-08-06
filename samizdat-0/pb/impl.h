@@ -43,7 +43,7 @@ typedef struct PbHeader {
     bool marked;
 
     /** Data type. */
-    ztype type;
+    zvalue type;
 
     /** Type-specific data goes here. */
     uint8_t payload[/*flexible*/];
@@ -56,9 +56,9 @@ typedef struct PbHeader {
 zfunction gfnFind(zvalue generic, zvalue value);
 
 /**
- * Gets the sequence number index for a `ztype`, initializing it if necessary.
+ * Gets the index for a given type value.
  */
-zint indexFromZtype(ztype type);
+zint indexFromType(zvalue type);
 
 /**
  * Like `pbAllocValue`, except that the `type` of the result is set to itself.

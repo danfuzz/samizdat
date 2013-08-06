@@ -166,12 +166,6 @@ extern zvalue GFN_order;
  */
 extern zvalue GFN_sizeOf;
 
-/**
- * Generic `typeOf(value)`: Gets the (overt) type of a value of the given
- * type. Defaults to returning the low-layer type name.
- */
-extern zvalue GFN_typeOf;
-
 
 /*
  * Initialization Function
@@ -240,12 +234,6 @@ void pbAssertSameType(zvalue v1, zvalue v2);
  * for a value of the given size.
  */
 void pbAssertSliceRange(zint size, zint start, zint end);
-
-/**
- * Asserts that the given value is a valid `zvalue`, furthermore has the
- * given core type. If not, this aborts the process with a diagnostic message.
- */
-void pbAssertType(zvalue v1, ztype type);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -411,11 +399,12 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
 
 /**
  * Adds a type-to-function binding to the given generic, for a core type.
- * `generic` must be a generic function, `type` must be a valid core `ztype`,
- * and `function` must be a valid `zfunction`. The type must not have already
- * been bound in the given generic, and the generic must not be sealed.
+ * `generic` must be a generic function, `type` must be a valid value of
+ * type `Type`, and `function` must be a valid `zfunction`. The type must
+ * not have already been bound in the given generic, and the generic must
+ * not be sealed.
  */
-void gfnBindCore(zvalue generic, ztype type, zfunction function);
+void gfnBindCore(zvalue generic, zvalue type, zfunction function);
 
 /**
  * Adds a default binding to the given generic. `generic` must be a generic
@@ -446,6 +435,12 @@ void gfnSeal(zvalue generic);
  */
 
 /**
+ * Asserts that the given value is a valid `zvalue`, furthermore has the
+ * given type. If not, this aborts the process with a diagnostic message.
+ */
+void pbAssertType(zvalue v1, zvalue type);
+
+/**
  * Gets a type value whose name and optional secret are as given. The name
  * is an arbitrary value, used for ordering types and for displaying them
  * (e.g. for debugging purposes).
@@ -468,6 +463,18 @@ zvalue typeFrom(zvalue name, zvalue secret);
  */
 zvalue typeName(zvalue type);
 
+/**
+ * Returns true iff the type of the given value (that is, `pbTypeOf(value)`)
+ * is as given.
+ */
+bool pbTypeIs(zvalue value, zvalue type);
+
+/**
+ * Gets the overt data type of the given value. `value` must be a
+ * valid value (in particular, non-`NULL`).
+ */
+zvalue pbTypeOf(zvalue value);
+
 
 /*
  * Derived Value Functions
@@ -489,12 +496,6 @@ zvalue derivFrom(zvalue type, zvalue data);
 /*
  * Dispatched (type-based) Functions
  */
-
-/**
- * Returns whether the given value has the given core (low-layer) type.
- * `value` must be a valid value (in particular, non-`NULL`).
- */
-bool pbCoreTypeIs(zvalue value, ztype type);
 
 /**
  * Gets the data payload of the given value. `value` must be a
@@ -540,30 +541,17 @@ zorder pbOrder(zvalue v1, zvalue v2);
  */
 zint pbSize(zvalue value);
 
-/**
- * Returns true iff the type of the given value (that is, `pbTypeOf(value)`)
- * is as given.
- */
-bool pbTypeIs(zvalue value, zvalue type);
-
-/**
- * Gets the overt data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`).
- */
-zvalue pbTypeOf(zvalue value);
-
 
 /*
  * Memory management functions
  */
 
 /**
- * Allocates memory, sized to include a `PbHeader` header plus the
- * indicated number of extra bytes. The `PbHeader` header is
- * initialized with the indicated type and size. The resulting value
- * is added to the live reference stack.
+ * Allocates a value, assigning it the given type, and sizing the memory
+ * to include the given amount of extra bytes as raw payload data.
+ * The resulting value is added to the live reference stack.
  */
-zvalue pbAllocValue(ztype type, zint extraBytes);
+zvalue pbAllocValue(zvalue type, zint extraBytes);
 
 /**
  * Adds an item to the current frame. This is only necessary to call when

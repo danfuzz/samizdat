@@ -83,25 +83,14 @@ static void typeInit(zvalue type, zvalue name, zvalue secret) {
  * Module functions
  */
 
+/* Documented in header. */
+zint indexFromType(zvalue type) {
+    typeAssert(type);
+    return typeInfo(type)->id;
+}
+
 // ---------------------
 // BEGIN DEPRECATED CODE
-
-/* Documented in header. */
-zint indexFromZtype(ztype type) {
-    zint compl = type->seqNumCompl;
-
-    if (compl == 0) {
-        if (theNextId == PB_MAX_TYPES) {
-            die("Too many types!");
-        }
-
-        compl = ~theNextId;
-        ((PbType *) type)->seqNumCompl = compl;  // Cast to discard `const`.
-        theNextId++;
-    }
-
-    return ~compl;
-}
 
 /* Documented in header. */
 zvalue typeFromZtype(ztype type) {
@@ -124,8 +113,18 @@ zvalue typeFromZtype(ztype type) {
  */
 
 /* Documented in header. */
+void pbAssertType(zvalue value, zvalue type) {
+    pbAssertValid(value);
+
+    if (!pbTypeIs(value, type)) {
+        die("Expected type %s; got %s.",
+            pbDebugString(type), pbDebugString(value));
+    }
+}
+
+/* Documented in header. */
 void typeAssert(zvalue value) {
-    pbAssertType(value, PB_Type);
+    pbAssertType(value, TYPE_Type);
 }
 
 /* Documented in header. */
@@ -134,7 +133,7 @@ zvalue typeFrom(zvalue name, zvalue secret) {
 
     if (result == NULL) {
         // Need to make a new type.
-        result = pbAllocValue(PB_Type, sizeof(TypeInfo));
+        result = pbAllocValue(TYPE_Type, sizeof(TypeInfo));
         typeInit(result, name, secret);
     } else {
         // Need to verify that the secret matches.
@@ -148,21 +147,47 @@ zvalue typeFrom(zvalue name, zvalue secret) {
 }
 
 /* Documented in header. */
+bool pbTypeIs(zvalue value, zvalue type) {
+    return pbEq(pbTypeOf(value), type);
+}
+
+/* Documented in header. */
+zvalue pbTypeOf(zvalue value) {
+    zvalue type = value->type;
+    TypeInfo *info = typeInfo(type);
+
+    // `typeOf` on a transparent type returns its name.
+    return (info->secret == NULL) ? info->name : type;
+}
+
+/* Documented in header. */
 zvalue typeName(zvalue type) {
     typeAssert(type);
     TypeInfo *info = typeInfo(type);
     return info->name;
 }
 
-/* Documented in header. */
-bool pbCoreTypeIs(zvalue value, ztype type) {
-    return value->type == type;
-}
-
 
 /*
  * Type binding
  */
+
+/* Documented in header. */
+static zvalue Type_debugString(zvalue state,
+        zint argCount, const zvalue *args) {
+    zvalue type = args[0];
+    TypeInfo *info = typeInfo(type);
+
+    zvalue result = stringFromUtf8(-1, "@(Type ");
+    result = stringAdd(result, fnCall(GFN_debugString, 1, &info->name));
+
+    if (info->secret != NULL) {
+        result = stringAdd(result, stringFromUtf8(-1, " /*opaque*/"));
+    }
+
+    result = stringAdd(result, stringFromUtf8(-1, ")"));
+    return result;
+}
 
 /* Documented in header. */
 static zvalue Type_gcMark(zvalue state, zint argCount, const zvalue *args) {
@@ -192,8 +217,9 @@ void pbInitTypeSystem(void) {
 
 /* Documented in header. */
 void pbBindType(void) {
-    gfnBindCore(GFN_gcMark, PB_Type, Type_gcMark);
-    gfnBindCore(GFN_order,  PB_Type, Type_order);
+    gfnBindCore(GFN_debugString, TYPE_Type, Type_debugString);
+    gfnBindCore(GFN_gcMark,      TYPE_Type, Type_gcMark);
+    gfnBindCore(GFN_order,       TYPE_Type, Type_order);
 }
 
 /* Documented in header. */

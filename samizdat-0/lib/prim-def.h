@@ -16,7 +16,6 @@
 
 PRIM_DEF(coreSizeOf, GFN_sizeOf);
 PRIM_DEF(dataOf,     GFN_dataOf);
-PRIM_DEF(typeOf,     GFN_typeOf);
 
 PRIM_FUNC(boxGet,       1, 1);
 PRIM_FUNC(boxIsSet,     1, 1);
@@ -88,4 +87,5 @@ PRIM_FUNC(stringNth,    2, 2);
 PRIM_FUNC(stringSlice,  2, 3);
 PRIM_FUNC(totalOrder,   2, 2);
 PRIM_FUNC(totalOrderIs, 3, 4);
+PRIM_FUNC(typeOf,       1, 1);
 PRIM_FUNC(yieldBox,     0, 0);

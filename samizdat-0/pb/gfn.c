@@ -5,7 +5,7 @@
  */
 
 /*
- * In-model Functions
+ * In-model Generic Functions
  */
 
 #include "impl.h"
@@ -76,7 +76,7 @@ zfunction gfnFind(zvalue generic, zvalue value) {
     // will have to be adjusted.
 
     GenericInfo *info = gfnInfo(generic);
-    zfunction result = info->functions[indexFromZtype(value->type)];
+    zfunction result = info->functions[indexFromType(value->type)];
 
     return (result != NULL) ? result : info->defaultFunction;
 }
@@ -88,7 +88,7 @@ zfunction gfnFind(zvalue generic, zvalue value) {
 
 /* Documented in header. */
 void pbAssertGeneric(zvalue value) {
-    pbAssertType(value, PB_Generic);
+    pbAssertType(value, TYPE_Generic);
 }
 
 /* Documented in header. */
@@ -102,8 +102,8 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     debugPush(callReporter, function);
     zstackPointer save = pbFrameStart();
 
-    zfunction caller =
-        gfnInfo(GFN_call)->functions[~function->type->seqNumCompl];
+    zint index = indexFromType(function->type);
+    zfunction caller = gfnInfo(GFN_call)->functions[index];
 
     if (caller == NULL) {
         die("Attempt to call non-function.");
@@ -118,11 +118,11 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void gfnBindCore(zvalue generic, ztype type, zfunction function) {
+void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
     pbAssertGeneric(generic);
 
     GenericInfo *info = gfnInfo(generic);
-    zint index = indexFromZtype(type);
+    zint index = indexFromType(type);
 
     if (info->sealed) {
         die("Sealed generic.");
@@ -155,7 +155,7 @@ zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = pbAllocValue(PB_Generic, sizeof(GenericInfo));
+    zvalue result = pbAllocValue(TYPE_Generic, sizeof(GenericInfo));
     GenericInfo *info = gfnInfo(result);
 
     info->minArgs = minArgs;
@@ -238,10 +238,10 @@ static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void pbBindGeneric(void) {
     TYPE_Generic = typeFrom(stringFromUtf8(-1, "Generic"), NULL);
-    gfnBindCore(GFN_call,        PB_Generic, Generic_call);
-    gfnBindCore(GFN_debugString, PB_Generic, Generic_debugString);
-    gfnBindCore(GFN_gcMark,      PB_Generic, Generic_gcMark);
-    gfnBindCore(GFN_order,       PB_Generic, Generic_order);
+    gfnBindCore(GFN_call,        TYPE_Generic, Generic_call);
+    gfnBindCore(GFN_debugString, TYPE_Generic, Generic_debugString);
+    gfnBindCore(GFN_gcMark,      TYPE_Generic, Generic_gcMark);
+    gfnBindCore(GFN_order,       TYPE_Generic, Generic_order);
 }
 
 /* Documented in header. */

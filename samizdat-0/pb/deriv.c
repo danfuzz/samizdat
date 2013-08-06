@@ -36,7 +36,7 @@ static DerivInfo *derivInfo(zvalue deriv) {
  * on the arguments.
  */
 static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = pbAllocValue(PB_Deriv, sizeof(DerivInfo));
+    zvalue result = pbAllocValue(TYPE_Deriv, sizeof(DerivInfo));
     DerivInfo *info = derivInfo(result);
 
     info->type = type;
@@ -51,7 +51,7 @@ static zvalue newDeriv(zvalue type, zvalue data) {
 
 /* Documented in header. */
 void pbAssertDeriv(zvalue value) {
-    pbAssertType(value, PB_Deriv);
+    pbAssertType(value, TYPE_Deriv);
 }
 
 /* Documented in header. */
@@ -126,20 +126,13 @@ static zvalue Deriv_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Deriv_typeOf(zvalue state, zint argCount, const zvalue *args) {
-    zvalue deriv = args[0];
-    return derivInfo(deriv)->type;
-}
-
-/* Documented in header. */
 void pbBindDeriv(void) {
     TYPE_Deriv = typeFrom(stringFromUtf8(-1, "Deriv"), NULL);
-    gfnBindCore(GFN_dataOf, PB_Deriv, Deriv_dataOf);
-    gfnBindCore(GFN_eq,     PB_Deriv, Deriv_eq);
-    gfnBindCore(GFN_gcMark, PB_Deriv, Deriv_gcMark);
-    gfnBindCore(GFN_order,  PB_Deriv, Deriv_order);
-    gfnBindCore(GFN_sizeOf, PB_Deriv, Deriv_sizeOf);
-    gfnBindCore(GFN_typeOf, PB_Deriv, Deriv_typeOf);
+    gfnBindCore(GFN_dataOf, TYPE_Deriv, Deriv_dataOf);
+    gfnBindCore(GFN_eq,     TYPE_Deriv, Deriv_eq);
+    gfnBindCore(GFN_gcMark, TYPE_Deriv, Deriv_gcMark);
+    gfnBindCore(GFN_order,  TYPE_Deriv, Deriv_order);
+    gfnBindCore(GFN_sizeOf, TYPE_Deriv, Deriv_sizeOf);
 }
 
 /* Documented in header. */
