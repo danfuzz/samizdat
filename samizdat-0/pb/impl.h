@@ -50,12 +50,12 @@ typedef struct PbHeader {
 } PbHeader;
 
 /**
- * Payload data for all transparent values.
+ * Payload data for all Deriv values.
  */
 typedef struct {
     /** Data payload. */
     zvalue data;
-} TransparentInfo;
+} DerivInfo;
 
 /**
  * Gets the function bound to the given generic for the given value, if any.
@@ -83,12 +83,12 @@ bool typeSecretIs(zvalue type, zvalue secret);
 
 
 /*
- * Method bindings for transparent types.
+ * Method bindings for derived types.
  */
 
-zvalue Transparent_dataOf(zvalue state, zint argCount, const zvalue *args);
-zvalue Transparent_gcMark(zvalue state, zint argCount, const zvalue *args);
-zvalue Transparent_order(zvalue state, zint argCount, const zvalue *args);
+zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args);
+zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args);
+zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args);
 
 
 /*

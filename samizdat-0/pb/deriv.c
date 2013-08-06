@@ -16,8 +16,8 @@
 /**
  * Gets the info of a derived value.
  */
-static TransparentInfo *derivInfo(zvalue value) {
-    return (TransparentInfo *) pbPayload(value);
+static DerivInfo *derivInfo(zvalue value) {
+    return (DerivInfo *) pbPayload(value);
 }
 
 
@@ -26,7 +26,7 @@ static TransparentInfo *derivInfo(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue Transparent_dataOf(zvalue state, zint argCount, const zvalue *args) {
+zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args) {
     zvalue value = args[0];
     zvalue secret = (argCount == 2) ? args[1] : NULL;
 
@@ -38,14 +38,14 @@ zvalue Transparent_dataOf(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-zvalue Transparent_gcMark(zvalue state, zint argCount, const zvalue *args) {
+zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue value = args[0];
     pbMark(derivInfo(value)->data);
     return NULL;
 }
 
 /* Documented in header. */
-zvalue Transparent_order(zvalue state, zint argCount, const zvalue *args) {
+zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -57,13 +57,15 @@ zvalue Transparent_order(zvalue state, zint argCount, const zvalue *args) {
  * Exported functions
  */
 
-// TODO: This is now misnamed. It makes general transparent values.
+/* Documented in header. */
+// TODO: This probably shouldn't be exported. It's also misnamed in that
+// it always produces transparent values.
 zvalue derivFrom(zvalue type, zvalue data) {
     pbAssertValid(type);
 
     if (pbTypeOf(type) == TYPE_Type) {
         // This should probably be fixed.
-        die("Can't create transparent value given type value.");
+        die("Can't create derived value given type value.");
     }
 
     if (data != NULL) {
@@ -72,8 +74,8 @@ zvalue derivFrom(zvalue type, zvalue data) {
 
     // Get a `Type` per se. `NULL` indicates it is to be transparent.
     type = typeFrom(type, NULL);
-    zvalue result = pbAllocValue(type, sizeof(TransparentInfo));
-    ((TransparentInfo *) pbPayload(result))->data = data;
+    zvalue result = pbAllocValue(type, sizeof(DerivInfo));
+    ((DerivInfo *) pbPayload(result))->data = data;
 
     return result;
 }

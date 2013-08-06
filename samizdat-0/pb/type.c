@@ -126,10 +126,10 @@ zvalue typeFrom(zvalue name, zvalue secret) {
         result = pbAllocValue(TYPE_Type, sizeof(TypeInfo));
         typeInit(result, name, secret);
         if (secret == NULL) {
-            // Bind the default transparent value methods.
-            gfnBindCore(GFN_dataOf, result, Transparent_dataOf);
-            gfnBindCore(GFN_gcMark, result, Transparent_gcMark);
-            gfnBindCore(GFN_order, result, Transparent_order);
+            // Bind the default derived value methods.
+            gfnBindCore(GFN_dataOf, result, Deriv_dataOf);
+            gfnBindCore(GFN_gcMark, result, Deriv_gcMark);
+            gfnBindCore(GFN_order, result, Deriv_order);
         }
     } else {
         // Need to verify that the secret matches.
