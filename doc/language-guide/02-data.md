@@ -248,10 +248,34 @@ makeUniqlet()
 ```
 
 
+#### Type
+
+A `type` represents the type of a value. There are three major categories
+of type: "core", "transparent derived", and "opaque derived". All types
+have a name. For transparent types *only*, there is a one-to-one correspondence
+between type names and transparent types.
+
+The type of core values (those described above as well as the type `type`
+itself) is a core type. The name of each core type is a string of the
+"human" name of the type. By convention, core type names are capitalized.
+
+The type of a data value created using the syntax `@[type: value]`
+is a transparent derived type, where the type's name is the `type` specified
+in the syntax. For example, the type of `@["stuff": [1, 2, 3]]` is a
+transparent type with name `"stuff"`. This is described more fully below
+under "Derived types".
+
+TODO: The type of a data value explicitly created using a type is that type.
+In the language, the only way to do this is with an opaque derived type.
+Such types are created with both a name and a secret. The same secret must
+be used both the create values of the type as well as access the data
+payload of values of the type.
+
+
 ### Derived types
 
-Values in general have a type tag and an optional subordinate data payload.
-This is true of both core and derived types.
+A derived value is one that was constructed with an explicit type tag and
+optional data payload.
 
 Samizdat allows one to name a value with an explicit type tag
 by placing the type and value within `@[...]` delimiters. Inside
@@ -323,15 +347,4 @@ defined as:
 
 ```
 null = @Null
-```
-
-#### Null Box
-
-The value `nullBox` is used when a "box" is needed as an argument but
-where its contents are never used. The language defines
-a named constant `nullBox` to refer to this value. This constant can be
-defined as:
-
-```
-nullBox = @NullBox
 ```
