@@ -14,7 +14,17 @@
  * have the usual guard macros.
  */
 
+PRIM_DEF(Box,        TYPE_Box);
+PRIM_DEF(Function,   TYPE_Function);
+PRIM_DEF(Generic,    TYPE_Generic);
+PRIM_DEF(Int,        TYPE_Int);
+PRIM_DEF(List,       TYPE_List);
+PRIM_DEF(Map,        TYPE_Map);
+PRIM_DEF(String,     TYPE_String);
+PRIM_DEF(Type,       TYPE_Type);
+PRIM_DEF(Uniqlet,    TYPE_Uniqlet);
 PRIM_DEF(coreSizeOf, GFN_sizeOf);
+PRIM_DEF(nullBox,    DAT_NULL_BOX);
 
 PRIM_FUNC(boxGet,       1, 1);
 PRIM_FUNC(boxIsSet,     1, 1);
