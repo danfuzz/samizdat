@@ -180,7 +180,7 @@ static zvalue Int_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindInt(void) {
-    TYPE_Int = typeFrom(stringFromUtf8(-1, "Int"), NULL);
+    TYPE_Int = typeFrom(stringFromUtf8(-1, "Int"), PB_SECRET);
     gfnBindCore(GFN_eq,     TYPE_Int, Int_eq);
     gfnBindCore(GFN_sizeOf, TYPE_Int, Int_sizeOf);
     gfnBindCore(GFN_order,  TYPE_Int, Int_order);

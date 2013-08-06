@@ -125,7 +125,7 @@ static zvalue Uniqlet_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindUniqlet(void) {
-    TYPE_Uniqlet = typeFrom(stringFromUtf8(-1, "Uniqlet"), NULL);
+    TYPE_Uniqlet = typeFrom(stringFromUtf8(-1, "Uniqlet"), PB_SECRET);
     gfnBindCore(GFN_gcFree, TYPE_Uniqlet, Uniqlet_gcFree);
     gfnBindCore(GFN_gcMark, TYPE_Uniqlet, Uniqlet_gcMark);
     gfnBindCore(GFN_order,  TYPE_Uniqlet, Uniqlet_order);

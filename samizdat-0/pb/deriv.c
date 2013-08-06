@@ -127,7 +127,7 @@ static zvalue Deriv_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindDeriv(void) {
-    TYPE_Deriv = typeFrom(stringFromUtf8(-1, "Deriv"), NULL);
+    TYPE_Deriv = typeFrom(stringFromUtf8(-1, "Deriv"), PB_SECRET);
     gfnBindCore(GFN_dataOf, TYPE_Deriv, Deriv_dataOf);
     gfnBindCore(GFN_eq,     TYPE_Deriv, Deriv_eq);
     gfnBindCore(GFN_gcMark, TYPE_Deriv, Deriv_gcMark);
