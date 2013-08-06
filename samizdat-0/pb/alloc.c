@@ -261,7 +261,7 @@ zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes) {
 
     zvalue result = utilAlloc(sizeof(PbHeader) + extraBytes);
     result->magic = PB_VALUE_MAGIC;
-    result->type = NULL;
+    result->type = type;
 
     allocationCount++;
     enlist(&liveHead, result);
