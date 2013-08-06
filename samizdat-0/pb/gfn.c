@@ -237,7 +237,8 @@ static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindGeneric(void) {
-    TYPE_Generic = typeFrom(stringFromUtf8(-1, "Generic"), PB_SECRET);
+    // Note: The type `Type` is responsible for initializing `TYPE_Generic`.
+
     gfnBindCore(GFN_call,        TYPE_Generic, Generic_call);
     gfnBindCore(GFN_debugString, TYPE_Generic, Generic_debugString);
     gfnBindCore(GFN_gcMark,      TYPE_Generic, Generic_gcMark);

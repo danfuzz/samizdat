@@ -74,8 +74,9 @@ zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
 
 /**
  * Initializes the type system, including in particular the type value
- * `Type`. This also creates the type `String` but doesn't bind it; it's just
- * enough so that types can be given string names.
+ * `Type`. This also creates the types `String` and `Generic` but doesn't
+ * bind methods to them; it's just enough so that types can be given names
+ * and generics can be defined.
  */
 void pbInitTypeSystem(void);
 
