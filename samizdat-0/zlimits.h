@@ -45,7 +45,7 @@ enum {
     PB_MAX_STACK = 50000,
 
     /** Maximum number of types allowed. */
-    PB_MAX_TYPES = 200,
+    PB_MAX_TYPES = 300,
 
     /** Number of small int constants to keep as preallocated values. */
     PB_SMALL_INT_COUNT = 1000,
