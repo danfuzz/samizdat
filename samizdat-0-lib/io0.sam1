@@ -28,20 +28,22 @@ def parPathComponent = {/
     # successfully match a string-final empty component (that is, a trailing
     # slash on the overall path string).
     component = [! "/"]*
-    { <> @[stringFromTokenList(component)] }
+    { <> stringFromTokenList(component) }
 /};
 
 # Parses a regular (non-up-directory) component.
 def parRegularComponent = {/
     component = parPathComponent
-    { <> ne(component, @"..") }
-    { <> [typeOf(component)] }
+    {
+        <> ifIs { <> ne(component, "..") }
+            { <> [component] }
+    }
 /};
 
 # Parses the component `..`.
 def parDotDotComponent = {/
     component = parPathComponent
-    { <> eq(component, @"..") }
+    { <> eq(component, "..") }
 /};
 
 # Parses a matched set of components that are collectively ignored, e.g.
