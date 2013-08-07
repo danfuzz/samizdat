@@ -60,10 +60,10 @@ fn process(value) {
 # Main function
 #
 
-fn main(selfPath, name, rest*) {
+fn main(selfPath, name?, rest*) {
     # Be welcoming.
 
-    ifIs { <> eq(name, "danfuzz") }
+    ifIs { <> eq(&(name*), "danfuzz") }
         { io0Note("Hello, Danfuzz!\n") }
         { io0Note("Hello, Самиздат!\n") };
 
