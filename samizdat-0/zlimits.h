@@ -39,13 +39,13 @@ enum {
     PB_ALLOCATIONS_PER_GC = 500000,
 
     /** Maximum number of immortal values allowed. */
-    PB_MAX_IMMORTALS = 1500,
+    PB_MAX_IMMORTALS = 2000,
 
     /** Maximum number of references on the stack. */
     PB_MAX_STACK = 50000,
 
     /** Maximum number of types allowed. */
-    PB_MAX_TYPES = 25,
+    PB_MAX_TYPES = 300,
 
     /** Number of small int constants to keep as preallocated values. */
     PB_SMALL_INT_COUNT = 1000,

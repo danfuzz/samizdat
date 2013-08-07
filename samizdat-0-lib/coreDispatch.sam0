@@ -11,7 +11,7 @@
 # something like that.
 
 def DISPATCH = [
-    Int: [
+    (Int): [
         # Ordering / comparison
         eq:    coreEq,
         ge:    coreGe,
@@ -27,7 +27,7 @@ def DISPATCH = [
         size:  coreSizeOf
     ],
 
-    List: [
+    (List): [
         # Ordering / comparison
         eq:    coreEq,
         ge:    coreGe,
@@ -43,7 +43,7 @@ def DISPATCH = [
         size:  coreSizeOf
     ],
 
-    Map: [
+    (Map): [
         # Ordering / comparison
         eq:    coreEq,
         ge:    coreGe,
@@ -59,7 +59,7 @@ def DISPATCH = [
         size:  coreSizeOf
     ],
 
-    String: [
+    (String): [
         # Ordering / comparison
         eq:    coreEq,
         ge:    coreGe,

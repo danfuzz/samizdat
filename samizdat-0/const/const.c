@@ -56,15 +56,15 @@ void constInit(void) {
 
     #define TOK(name, str) \
         STR(name, str); \
-        TOK_##name = derivFrom(STR_##name, NULL); \
+        TOK_##name = valueFrom(STR_##name, NULL); \
         pbImmortalize(TOK_##name)
 
     #include "const-def.h"
 
     for (zchar ch = 0; ch < 128; ch++) {
         SINGLE_CHAR_STRINGS[ch] = stringFromZchars(1, &ch);
-        SINGLE_CHAR_TOKENS[ch] = derivFrom(SINGLE_CHAR_STRINGS[ch], NULL);
         pbImmortalize(SINGLE_CHAR_STRINGS[ch]);
+        SINGLE_CHAR_TOKENS[ch] = valueFrom(SINGLE_CHAR_STRINGS[ch], NULL);
         pbImmortalize(SINGLE_CHAR_TOKENS[ch]);
     }
 
@@ -89,7 +89,7 @@ zvalue constStringFromZchar(zchar value) {
 /* Documented in header. */
 zvalue constValueFrom(zvalue type, zvalue data) {
     if (data == NULL) {
-        if (pbCoreTypeIs(type, PB_String) && (pbSize(type) == 1)) {
+        if (hasType(type, TYPE_String) && (pbSize(type) == 1)) {
             // This is a type-only value with a one-character string for
             // the type. We have many of these cached.
             zchar typeCh = stringNth(type, 0);
@@ -97,14 +97,7 @@ zvalue constValueFrom(zvalue type, zvalue data) {
                 return SINGLE_CHAR_TOKENS[typeCh];
             }
         }
-    } else if (!pbCoreTypeIs(data, PB_Deriv)) {
-        if (pbEq(type, pbTypeOf(data))) {
-            // `data` is a core value, and its low-layer type matches the
-            // given `type`. This means that we are in fact looking at a
-            // "reconstructed" core value and should just return it directly.
-            return data;
-        }
     }
 
-    return derivFrom(type, data);
+    return valueFrom(type, data);
 }

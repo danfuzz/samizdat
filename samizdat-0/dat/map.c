@@ -31,7 +31,7 @@ typedef struct {
  */
 static zvalue allocMap(zint size) {
     zvalue result =
-        pbAllocValue(DAT_Map, sizeof(MapInfo) + size * sizeof(zmapping));
+        pbAllocValue(TYPE_Map, sizeof(MapInfo) + size * sizeof(zmapping));
 
     ((MapInfo *) pbPayload(result))->size = size;
     return result;
@@ -143,7 +143,7 @@ static int mappingOrder(const void *m1, const void *m2) {
 
 /* Documented in header. */
 void datAssertMap(zvalue value) {
-    pbAssertType(value, DAT_Map);
+    assertTypeIs(value, TYPE_Map);
 }
 
 /* Documented in header. */
@@ -424,17 +424,15 @@ static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindMap(void) {
-    gfnBindCore(GFN_eq,     DAT_Map, Map_eq);
-    gfnBindCore(GFN_gcMark, DAT_Map, Map_gcMark);
-    gfnBindCore(GFN_order,  DAT_Map, Map_order);
-    gfnBindCore(GFN_sizeOf, DAT_Map, Map_sizeOf);
+    TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"));
+    gfnBindCore(GFN_eq,     TYPE_Map, Map_eq);
+    gfnBindCore(GFN_gcMark, TYPE_Map, Map_gcMark);
+    gfnBindCore(GFN_order,  TYPE_Map, Map_order);
+    gfnBindCore(GFN_sizeOf, TYPE_Map, Map_sizeOf);
 
     EMPTY_MAP = allocMap(0);
     pbImmortalize(EMPTY_MAP);
 }
 
 /* Documented in header. */
-static PbType INFO_Map = {
-    .name = "Map"
-};
-ztype DAT_Map = &INFO_Map;
+zvalue TYPE_Map = NULL;

@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+#
+# Directory and program name detection
+#
+
+# Preserve the original working dir as origDir.
+origDir="${PWD}"
+
+# Set progName to the program name, progDir to its directory, and baseDir
+# to progDir's directory. Follows symlinks.
+prog="$0"
+while [[ -h ${prog} ]]; do
+    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
+    newProg="${BASH_REMATCH[1]}"
+    if [[ ${newProg} =~ ^/ ]]; then
+        prog="${newProg}"
+    else
+        prog="$(dirname "${prog}")/${newProg}"
+    fi
+done
+progName="$(basename "${prog}")"
+progDir="$(dirname "${prog}")"
+cd "${progDir}"
+progDir="${PWD}"
+cd ..
+baseDir="${PWD}"
+cd "${origDir}"
+unset prog
+unset newProg
+
+
+
+#
+# Argument parsing
+#
+
+while [[ $1 != '' ]]; do
+    opt="$1"
+    if [[ ${opt} == '--' ]]; then
+        shift
+        break
+    elif [[ ${opt} == '--help' ]]; then
+        echo "${progName}"
+        exit
+    elif [[ ${opt} =~ ^- ]]; then
+        echo "Unknown option: ${opt}" 1>&2
+        exit 1
+    else
+        break
+    fi
+    shift
+done
+unset opt
+
+
+#
+# Main script
+#
+
+# Find all the demo directories.
+
+allNames=($(cd "${progDir}"; find . -depth 1 -type d -exec basename '{}' ';'))
+
+# Run each demo. For the first, pass it the `--optimize` flag, to force
+# a build.
+
+optimizeOpt=(--optimize)
+errorNames=()
+
+for name in "${allNames[@]}"; do
+    echo ''
+    "${progDir}/run" "${optimizeOpt[@]}" "${name}"
+    error="$?"
+    if [[ ${error} != 0 ]]; then
+        echo "Exited with error code: ${error}"
+        errorNames+=("${name}")
+    fi
+    optimizeOpt=()
+done
+
+echo ''
+
+if [[ ${#errorNames[@]} == 0 ]]; then
+    echo 'All good!'
+else
+    echo 'Errors reported from:'
+    for name in "${errorNames[@]}"; do
+        echo "    ${name}"
+    done
+fi

@@ -18,7 +18,7 @@
  */
 
 /** The next "order id" to return. */
-static zint nextOrderId = 0;
+static zint theNextOrderId = 0;
 
 
 /*
@@ -49,7 +49,7 @@ void pbAssertSameType(zvalue v1, zvalue v2) {
     pbAssertValid(v2);
 
     if (v1->type != v2->type) {
-        die("Mismatched core types: %s, %s",
+        die("Mismatched types: %s, %s",
             pbDebugString(v1), pbDebugString(v2));
     }
 }
@@ -64,35 +64,33 @@ void pbAssertSliceRange(zint size, zint start, zint end) {
 }
 
 /* Documented in header. */
-void pbAssertType(zvalue value, ztype type) {
-    pbAssertValid(value);
-
-    if (value->type != type) {
-        die("Expected type %s; got %s.", type->name, pbDebugString(value));
-    }
-}
-
-/* Documented in header. */
 void pbInit(void) {
-    if (GFN_eq != NULL) {
+    if (TYPE_Type != NULL) {
         return;
     }
 
+    // The initialization of the type system has to come first, because all
+    // the other initializers create types (that is, values of type `Type`).
+    pbInitTypeSystem();
+
+    // Next the generics have to be defined, and the early types' methods
+    // need to be bound, so that the rest of the binding can operate properly.
     pbInitCoreGenerics();
-    pbBindDeriv();
-    pbBindFunction();
     pbBindGeneric();
-    pbBindInt();
     pbBindString();
+    pbBindType();
+
+    pbBindFunction();
+    pbBindInt();
 }
 
 /* Documented in header. */
 zint pbOrderId(void) {
-    if (nextOrderId < 0) {
+    if (theNextOrderId < 0) {
         die("Too many order ids!");
     }
 
-    zint result = nextOrderId;
-    nextOrderId++;
+    zint result = theNextOrderId;
+    theNextOrderId++;
     return result;
 }

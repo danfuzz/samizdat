@@ -60,12 +60,6 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
  * Type binding
  */
 
-/* Type struct. */
-static PbType INFO_MapCache = {
-    .name = "MapCache"
-};
-ztype DAT_MapCache = &INFO_MapCache;
-
 /* Documented in header. */
 static zvalue MapCache_gcMark(zvalue state, zint argCount, const zvalue *args) {
     memset(mapCache, 0, sizeof(mapCache));
@@ -77,6 +71,7 @@ void datBindMapCache(void) {
     // What we're doing here is setting up a singleton instance, which
     // gets marked immortal. Its `mark` gets called during gc, which we
     // use as a trigger to clear the map cache.
-    gfnBindCore(GFN_gcMark, DAT_MapCache, MapCache_gcMark);
-    pbImmortalize(pbAllocValue(DAT_MapCache, 0));
+    zvalue TYPE_MapCache = coreTypeFromName(stringFromUtf8(-1, "MapCache"));
+    gfnBindCore(GFN_gcMark, TYPE_MapCache, MapCache_gcMark);
+    pbImmortalize(pbAllocValue(TYPE_MapCache, 0));
 }

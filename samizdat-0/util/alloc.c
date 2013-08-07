@@ -16,6 +16,14 @@
  * Helper definitions
  */
 
+enum {
+    /**
+     * Whether to be paranoid about corruption checks. If false,
+     * `utilIsHeapAllocated` turns into a `NULL` check.
+     */
+    THEYRE_OUT_TO_GET_ME = false
+};
+
 /**
  * Page address range. Each range indicates a section of memory that
  * has been known to have heap allocations in it. The bounds are always page
@@ -137,7 +145,10 @@ void *utilAlloc(zint size) {
     }
 
     memset(result, 0, size);
-    addPages(result, ((char *) result) + size);
+
+    if (THEYRE_OUT_TO_GET_ME) {
+        addPages(result, ((char *) result) + size);
+    }
 
     return result;
 }
@@ -149,6 +160,10 @@ void utilFree(void *memory) {
 
 /* Documented in header. */
 bool utilIsHeapAllocated(void *memory) {
+    if (!THEYRE_OUT_TO_GET_ME) {
+        return memory != NULL;
+    }
+
     intptr_t address = (intptr_t) memory;
 
     zint min = 0;

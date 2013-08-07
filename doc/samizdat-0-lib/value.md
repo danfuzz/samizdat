@@ -28,43 +28,53 @@ a size, defined as follows:
 * derived values &mdash; `0` for a type-only derived value, or `1` for one
   with a data payload.
 
-#### `dataOf(value) <> .`
+#### `dataOf(value, secret?) <> .`
 
 Returns the data payload of the given arbitrary value, if any.
-For a core value, this returns `value` itself. For a derived value, this
-returns the data payload it was constructed with, if any. For a
-type-only value, this returns void.
+For a type-only value, this returns void.
 
-#### `isCoreValue(value) <> logic`
+For transparent, if `secret` is passed, then this function returns void.
 
-Returns `value` if it is a core (non-derived) value, or void if not.
-This function could be defined as:
+For opaque values (including most core values), the given `secret` must match
+the value's associated secret (associated with the type). If the secret
+does not match (including if it was not passed at all), then this function
+returns void.
 
-```
-fn isCoreValue(value) {
-    <> eq(value, &dataOf(value))
-}
-```
+#### `isOpaqueValue(value) <> logic`
+
+Returns `value` if it is an opaque value &mdash; that is, if its type has
+an associated secret &mdash; or void if not.
+
+#### `typeName(type) <> .`
+
+Returns the name of the type. This is an arbitrary value associated with
+a type, which is typically (but not necessarily) a string.
 
 #### `typeOf(value) <> .`
 
-Returns the type tag of the given arbitrary value. For a core value,
-this returns its standard type name, particularly one of
-`"Int"` `"List"` `"Map"` `"String"` or `"Uniqlet"`. For a derived
-value, this returns the type tag that it was constructed with.
+Returns the type tag of the given arbitrary value. For transparent values,
+this returns the type tag the value was constructed with, as a regular value.
+For opaque values, this returns a value of type `Type`.
+
+**Note:** It is invalid to construct a transparent value with a type tag
+of type `Type`.
 
 
 <br><br>
 ### In-Language Definitions
 
-#### `isCoreValue(value) <> logic`
+#### `isBox(value) <> logic`
 
-Returns the given `value` if it is a core (not derived) value.
-Returns void if not.
+Returns the given `value` if it is a box. Returns void if not.
 
 #### `isFunction(value) <> logic`
 
-Returns the given `value` if it is a function. Returns void if not.
+Returns the given `value` if it is a (non-generic) function. Returns void
+if not.
+
+#### `isGeneric(value) <> logic`
+
+Returns the given `value` if it is a generic function. Returns void if not.
 
 #### `isInt(value) <> logic`
 

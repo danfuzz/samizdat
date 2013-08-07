@@ -27,11 +27,6 @@
 typedef struct PbHeader *zvalue;
 
 /**
- * Low-layer data type.
- */
-typedef const struct PbType *ztype;
-
-/**
  * Arbitrary (key, value) mapping.
  */
 typedef struct {
@@ -47,26 +42,6 @@ typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
 
 /** Type for local value stack pointers. */
 typedef const zvalue *zstackPointer;
-
-/**
- * Core type info.
- */
-typedef struct PbType {
-    /** Simple string name for the type. */
-    const char *name;
-
-    /**
-     * In-model string value corresponding to `name` (above). Lazily
-     * initialized.
-     */
-    zvalue nameValue;
-
-    /**
-     * Type sequence number, complemented to allow `0` to mean
-     * "uninitialized".
-     */
-    zint seqNumCompl;
-} PbType;
 
 
 /*
@@ -85,20 +60,23 @@ extern zvalue PB_1;
 /** The standard value `-1`. */
 extern zvalue PB_NEG1;
 
-/** Type value for in-model type `Deriv`. */
-extern ztype PB_Deriv;
+/** The `secret` value to use when defining core types. */
+extern zvalue PB_SECRET;
 
 /** Type value for in-model type `Function`. */
-extern ztype PB_Function;
+extern zvalue TYPE_Function;
 
 /** Type value for in-model type `Generic`. */
-extern ztype PB_Generic;
+extern zvalue TYPE_Generic;
 
 /** Type value for in-model type `Int`. */
-extern ztype PB_Int;
+extern zvalue TYPE_Int;
 
 /** Type value for in-model type `String`. */
-extern ztype PB_String;
+extern zvalue TYPE_String;
+
+/** Type value for in-model type `Type`. */
+extern zvalue TYPE_Type;
 
 /**
  * Generic `call(value)`: Somewhat-degenerate generic for dispatching to
@@ -109,12 +87,6 @@ extern ztype PB_String;
  * or generic value itself.
  */
 extern zvalue GFN_call;
-
-/**
- * Generic `dataOf(value)`: Gets the data payload of a value of the given
- * type, if any. Defaults to returning the value itself as its own payload.
- */
-extern zvalue GFN_dataOf;
 
 /**
  * Generic `debugString(value)`: Returns a minimal string form of the
@@ -157,12 +129,6 @@ extern zvalue GFN_order;
  */
 extern zvalue GFN_sizeOf;
 
-/**
- * Generic `typeOf(value)`: Gets the (overt) type of a value of the given
- * type. Defaults to returning the low-layer type name.
- */
-extern zvalue GFN_typeOf;
-
 
 /*
  * Initialization Function
@@ -177,13 +143,6 @@ void pbInit(void);
 /*
  * Assertion Functions
  */
-
-/**
- * Asserts that the given value is a valid `zvalue`, and furthermore
- * that it is a derived value. If not, this aborts the process with a
- * diagnostic message.
- */
-void pbAssertDeriv(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -233,12 +192,6 @@ void pbAssertSameType(zvalue v1, zvalue v2);
 void pbAssertSliceRange(zint size, zint start, zint end);
 
 /**
- * Asserts that the given value is a valid `zvalue`, furthermore has the
- * given core type. If not, this aborts the process with a diagnostic message.
- */
-void pbAssertType(zvalue v1, ztype type);
-
-/**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a string. If not, this aborts the process
  * with a diagnostic message.
@@ -259,6 +212,11 @@ void pbAssertStringSize1(zvalue value);
  * with a diagnostic message.
  */
 void pbAssertValid(zvalue value);
+
+/**
+ * Like `pbAssertValid` except that `NULL` is accepted too.
+ */
+void pbAssertValidOrNull(zvalue value);
 
 
 /*
@@ -391,11 +349,12 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
 
 /**
  * Adds a type-to-function binding to the given generic, for a core type.
- * `generic` must be a generic function, `type` must be a valid core `ztype`,
- * and `function` must be a valid `zfunction`. The type must not have already
- * been bound in the given generic, and the generic must not be sealed.
+ * `generic` must be a generic function, `type` must be a valid value of
+ * type `Type`, and `function` must be a valid `zfunction`. The type must
+ * not have already been bound in the given generic, and the generic must
+ * not be sealed.
  */
-void gfnBindCore(zvalue generic, ztype type, zfunction function);
+void gfnBindCore(zvalue generic, zvalue type, zfunction function);
 
 /**
  * Adds a default binding to the given generic. `generic` must be a generic
@@ -422,40 +381,98 @@ void gfnSeal(zvalue generic);
 
 
 /*
+ * Type Functions
+ */
+
+/**
+ * Asserts that the given value is a valid `zvalue`, furthermore has the
+ * given type. If not, this aborts the process with a diagnostic message.
+ * The given `type` must be a `Type` value per se. That is, this function
+ * doesn't work on transparent derived values.
+ */
+void assertTypeIs(zvalue v1, zvalue type);
+
+/**
+ * Creates a new core type, given its name. This always creates a new type.
+ */
+zvalue coreTypeFromName(zvalue name);
+
+/**
+ * Returns true iff the type of the given value (that is, `typeOf(value)`)
+ * is as given.
+ */
+bool hasType(zvalue value, zvalue type);
+
+/**
+ * Gets the name of the given type.
+ */
+zvalue typeName(zvalue type);
+
+/**
+ * Gets the overt data type of the given value. `value` must be a
+ * valid value (in particular, non-`NULL`).
+ */
+zvalue typeOf(zvalue value);
+
+
+/*
  * Derived Value Functions
  */
 
 /**
- * Returns a derived value with optional data payload. The given `data`
- * value must either be a valid value or `NULL`.
- *
- * **Note:** If `type` and `data` are of the right form to be represented
- * as a core value, this function will *not* notice that. So only call it
- * if you know that the value to be produced is *necessarily* derived. If
- * it's possible that the arguments correspond to a core value, use
- * `constValueFrom` (in the `const` module) instead.
+ * Gets the data payload of the given value, if possible. `value` must be a
+ * valid value (in particular, non-`NULL`). This is a convenient shorthand
+ * for calling `dataFromValue(value, NULL)`.
+ For everything but derived
+ * values, the data payload is the same as the value itself. For derived
+ * values, the data payload is (unsurprisingly) `NULL` for type-only
+ * values.
  */
-zvalue derivFrom(zvalue type, zvalue data);
+zvalue dataOf(zvalue value);
+
+/**
+ * Gets the data payload of the given value, if possible. This behaves
+ * as follows:
+ *
+ * * If `value` is a core value, this returns `NULL`.
+ *
+ * * If `value`'s type secret does not match the given secret, this returns
+ *   `NULL`. Notably, if `value` is of a transparent derived type and `secret`
+ *   is *not* passed as `NULL`, this returns `NULL`.
+ *
+ * * If `value` does not have any payload data, this returns `NULL`.
+ *
+ * * Otherwise, this returns the payload data of `value`.
+ */
+zvalue dataFromValue(zvalue value, zvalue secret);
+
+/**
+ * Returns a derived value with the given type tag, and with the given
+ * optional data payload (`NULL` indicating a type-only value). `type` and
+ * `secret` must be as follows:
+ *
+ * * If `type` is a value of type `Type`, then the resulting value is of
+ *   that type. If `type` is an opaque type, then `secret` must match the
+ *   secret known by `type`. If `type` is a transparent type, then `secret`
+ *   must be `NULL`.
+ *
+ * * If `type` is any other value (that is, other than a `Type`), then it
+ *   is taken to indicate a transparent type whose name is `type`. As such
+ *   `secret` must be `NULL`.
+ */
+zvalue derivFrom(zvalue type, zvalue data, zvalue secret);
+
+/**
+ * Returns a transparent derived value with the given type tag, and with the
+ * given optional data payload. This is a convenient shorthand for calling
+ * `derivFrom(type, data, NULL)`.
+ */
+zvalue valueFrom(zvalue type, zvalue data);
 
 
 /*
  * Dispatched (type-based) Functions
  */
-
-/**
- * Returns whether the given value has the given core (low-layer) type.
- * `value` must be a valid value (in particular, non-`NULL`).
- */
-bool pbCoreTypeIs(zvalue value, ztype type);
-
-/**
- * Gets the data payload of the given value. `value` must be a
- * valid value (in particular, non-`NULL`). For everything but derived
- * values, the data payload is the same as the value itself. For derived
- * values, the data payload is (unsurprisingly) `NULL` for type-only
- * values.
- */
-zvalue pbDataOf(zvalue value);
 
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller
@@ -470,6 +487,11 @@ char *pbDebugString(zvalue value);
  * quicker in the not-equal case.
  */
 bool pbEq(zvalue v1, zvalue v2);
+
+/**
+ * Like `pbEq`, but accepts `NULL` as a valid value.
+ */
+bool pbNullSafeEq(zvalue v1, zvalue v2);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
@@ -487,30 +509,17 @@ zorder pbOrder(zvalue v1, zvalue v2);
  */
 zint pbSize(zvalue value);
 
-/**
- * Returns true iff the type of the given value (that is, `pbTypeOf(value)`)
- * is as given.
- */
-bool pbTypeIs(zvalue value, zvalue type);
-
-/**
- * Gets the overt data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`).
- */
-zvalue pbTypeOf(zvalue value);
-
 
 /*
  * Memory management functions
  */
 
 /**
- * Allocates memory, sized to include a `PbHeader` header plus the
- * indicated number of extra bytes. The `PbHeader` header is
- * initialized with the indicated type and size. The resulting value
- * is added to the live reference stack.
+ * Allocates a value, assigning it the given type, and sizing the memory
+ * to include the given amount of extra bytes as raw payload data.
+ * The resulting value is added to the live reference stack.
  */
-zvalue pbAllocValue(ztype type, zint extraBytes);
+zvalue pbAllocValue(zvalue type, zint extraBytes);
 
 /**
  * Adds an item to the current frame. This is only necessary to call when

@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     zvalue samCommandLine = mapGet(context, STR_SAM_COMMAND_LINE);
     zvalue result = fnApply(samCommandLine, argsList);
 
-    if ((result != NULL) && (pbCoreTypeIs(result, PB_Int))) {
+    if ((result != NULL) && (hasType(result, TYPE_Int))) {
         exit((int) zintFromInt(result));
     }
 

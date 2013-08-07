@@ -55,9 +55,10 @@ void die(const char *format, ...) {
     va_end(rest);
     fputs("\n", stderr);
 
-    while (stackDepth > 0) {
-        stackDepth--;
-        Context *ctx = &contextStack[stackDepth];
+    // Use a local variable for the stack pointer, since the stringifiers
+    // will also manipulate the stack (and may have bugs in same!).
+    for (zint i = stackDepth - 1; i >= 0; i--) {
+        Context *ctx = &contextStack[i];
         char *message = ctx->function(ctx->state);
         fprintf(stderr, "    at %s\n", message);
     }
@@ -68,6 +69,9 @@ void die(const char *format, ...) {
 /* Documented in header. */
 void debugPush(zcontextFunction function, void *state) {
     if (stackDepth == UTIL_MAX_CALL_STACK_DEPTH) {
+        // Remove 5% of the stack to have a chance of being able to produce
+        // a stack trace (as doing so will want to use the stack).
+        stackDepth = (stackDepth * 95) / 100;
         die("Maximum stack depth exceeded.");
     }
 

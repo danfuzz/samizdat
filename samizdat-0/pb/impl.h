@@ -40,14 +40,22 @@ typedef struct PbHeader {
     uint32_t magic;
 
     /** Mark bit (used during GC). */
-    bool marked;
+    bool marked : 1;
 
     /** Data type. */
-    ztype type;
+    zvalue type;
 
     /** Type-specific data goes here. */
     uint8_t payload[/*flexible*/];
 } PbHeader;
+
+/**
+ * Payload data for all Deriv values.
+ */
+typedef struct {
+    /** Data payload. */
+    zvalue data;
+} DerivInfo;
 
 /**
  * Gets the function bound to the given generic for the given value, if any.
@@ -56,14 +64,44 @@ typedef struct PbHeader {
 zfunction gfnFind(zvalue generic, zvalue value);
 
 /**
- * Gets the sequence number index for a `ztype`, initializing it if necessary.
+ * Gets the index for a given type value.
  */
-zint indexFromZtype(ztype type);
+zint indexFromType(zvalue type);
 
 /**
- * Gets a type value from a `ztype`.
+ * Like `pbAllocValue`, except that no checking of `type` is done.
+ * This is only used during initial bootstrap, to allocate the
+ * types `Type` and `String` (which have reference cycles).
  */
-zvalue typeFromZtype(ztype type);
+zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
+
+/**
+ * Gets a transparent derived type, given its name. This creates the type
+ * if necessary.
+ */
+zvalue transparentTypeFromName(zvalue name);
+
+/**
+ * Returns true iff the given type is a derived type (whether opaque or
+ * transparent).
+ */
+bool typeIsDerived(zvalue type);
+
+/**
+ * Checks whether the given value matches the secret of the given type.
+ * `secret` may be passed as `NULL`.
+ */
+bool typeSecretIs(zvalue type, zvalue secret);
+
+
+/*
+ * Method bindings for derived types.
+ */
+
+zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args);
+zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args);
+zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args);
+zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args);
 
 
 /*
@@ -71,15 +109,23 @@ zvalue typeFromZtype(ztype type);
  */
 
 /**
+ * Initializes the type system, including in particular the type value
+ * `Type`. This also creates the types `String` and `Generic` but doesn't
+ * bind methods to them; it's just enough so that types can be given names
+ * and generics can be defined.
+ */
+void pbInitTypeSystem(void);
+
+/**
  * Initializes the core generic functions.
  */
 void pbInitCoreGenerics(void);
 
-// Per-type generic binding.
-void pbBindDeriv(void);
+// Per-type binding and initialization.
 void pbBindFunction(void);
 void pbBindGeneric(void);
 void pbBindInt(void);
 void pbBindString(void);
+void pbBindType(void);
 
 #endif

@@ -178,4 +178,5 @@ fn main(args*) {
     pegApply(evalExpressions, exprString);
 };
 
-<> main(ARGS*)
+def args = ifIs { <> ne(ARGS, []) } { <> ARGS} { <> ["100+7*2"] };
+<> main(args*)
