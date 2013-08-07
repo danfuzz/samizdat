@@ -17,7 +17,7 @@ expressions anywhere where a literal value occurs in these examples.
 
 #### Int
 
-An `int` is a signed arbitrary-precision integer value, sometimes
+An `Int` is a signed arbitrary-precision integer value, sometimes
 called a "bigint" or "BigInteger" (even though they aren't always actually
 that big).
 
@@ -49,7 +49,7 @@ the constant.
 
 #### String
 
-A `string` is a sequence of zero or more Unicode code points.
+A `String` is a sequence of zero or more Unicode code points.
 
 Strings are written as an initial `"`, followed by zero or
 more character representations, followed by a final `"`. Characters are
@@ -122,7 +122,7 @@ is covered in the section on string formatting.
 
 #### List
 
-A `list` is a sequence of zero or more other values.
+A `List` is a sequence of zero or more other values.
 
 Lists are written as an initial `[`, followed by zero or
 more value representations, followed by a final `]`. Values
@@ -143,7 +143,7 @@ interpolate.
 
 #### Map
 
-A `map` is a sequence of zero or more mappings (also called bindings)
+A `Map` is a sequence of zero or more mappings (also called bindings)
 from arbitrary keys to arbitrary values. Keys and values are both
 allowed to be any type of value. Notably, keys are *not* restricted to
 only being strings (or string-like things).
@@ -204,16 +204,25 @@ written as `[:]`.
 
 #### Function
 
-A `function` is an encapsulated potential computation. As with many
+A `Function` is an encapsulated potential computation. As with many
 other languages, functions are generally defined in terms of source code
 and an execution context.
 
 See the language guide section on functions for more details.
 
 
+#### Generic
+
+A `Generic` is a generic function. That is, it is an encapsulated mapping
+from types to functions, in this case based on the type of the first
+argument passed to the generic function when called.
+
+TODO: See the language guide section on functions for more details.
+
+
 #### Box
 
-A box is a holder for some other value. Boxes are sometimes also known
+A `Box` is a holder for some other value. Boxes are sometimes also known
 as "cells".
 
 In addition to the box constructor functions, the three functions that
@@ -230,7 +239,7 @@ that require one, but where the box value is never needed.
 
 #### Uniqlet
 
-A `uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
+A `Uniqlet` is a bit of an odd duck. Uniqlets are opaque, except that
 no uniqlet is equal to any other uniqlet. In practice, uniqlets are
 used to help bridge the divide between data and not-data.
 
@@ -250,7 +259,7 @@ makeUniqlet()
 
 #### Type
 
-A `type` value represents the type of a value. Every type has a name which
+A `Type` value represents the type of a value. Every type has a name which
 is typically, but not necessarily, a string. There are three major categories
 of type:
 
@@ -268,7 +277,8 @@ of type:
   There is a one-to-one correspondence between a value and a
   transparent derived type with that value as its name. As such, Samizdat
   does not expose transparent derived types directly. These are represented
-  as the name of the type.
+  as the name of the type. That is, `typeOf(value)` is not actually a
+  `Type` in these cases.
 
 * TODO: The type of a data value explicitly created using a type is that type.
   In the language, the only way to do this is with an opaque derived type.
