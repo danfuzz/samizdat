@@ -63,8 +63,8 @@ void constInit(void) {
 
     for (zchar ch = 0; ch < 128; ch++) {
         SINGLE_CHAR_STRINGS[ch] = stringFromZchars(1, &ch);
-        SINGLE_CHAR_TOKENS[ch] = valueFrom(SINGLE_CHAR_STRINGS[ch], NULL);
         pbImmortalize(SINGLE_CHAR_STRINGS[ch]);
+        SINGLE_CHAR_TOKENS[ch] = valueFrom(SINGLE_CHAR_STRINGS[ch], NULL);
         pbImmortalize(SINGLE_CHAR_TOKENS[ch]);
     }
 
