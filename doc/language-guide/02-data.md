@@ -250,26 +250,31 @@ makeUniqlet()
 
 #### Type
 
-A `type` represents the type of a value. There are three major categories
-of type: "core", "transparent derived", and "opaque derived". All types
-have a name. For transparent types *only*, there is a one-to-one correspondence
-between type names and transparent types.
+A `type` value represents the type of a value. Every type has a name which
+is typically, but not necessarily, a string. There are three major categories
+of type:
 
-The type of core values (those described above as well as the type `type`
-itself) is a core type. The name of each core type is a string of the
-"human" name of the type. By convention, core type names are capitalized.
+* All core values (described above, and values of type `type` as described
+  here) have a "core type" as their type. The name of each core type is a
+  string of the "human" name of the type. By convention, core type names
+  are capitalized.
 
-The type of a data value created using the syntax `@[type: value]`
-is a transparent derived type, where the type's name is the `type` specified
-in the syntax. For example, the type of `@["stuff": [1, 2, 3]]` is a
-transparent type with name `"stuff"`. This is described more fully below
-under "Derived types".
+* The type of a data value created using the syntax `@[type: value]`
+  is a transparent derived type, where the type's name is the `type` specified
+  in the syntax. For example, the type of `@["stuff": [1, 2, 3]]` is a
+  transparent type with name `"stuff"`. This is described more fully below
+  under "Derived types".
 
-TODO: The type of a data value explicitly created using a type is that type.
-In the language, the only way to do this is with an opaque derived type.
-Such types are created with both a name and a secret. The same secret must
-be used both the create values of the type as well as access the data
-payload of values of the type.
+  There is a one-to-one correspondence between a value and a
+  transparent derived type with that value as its name. As such, Samizdat
+  does not expose transparent derived types directly. These are represented
+  as the name of the type.
+
+* TODO: The type of a data value explicitly created using a type is that type.
+  In the language, the only way to do this is with an opaque derived type.
+  Such types are created with both a name and a secret. The same secret must
+  be used both the create values of the type as well as access the data
+  payload of values of the type.
 
 
 ### Derived types
