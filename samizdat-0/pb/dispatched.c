@@ -39,7 +39,7 @@ zvalue GFN_sizeOf = NULL;
 /* Documented in header. */
 static zvalue Default_debugString(zvalue state,
         zint argCount, const zvalue *args) {
-    char addrBuf[11]; // Includes room for "0x" and "\0".
+    char addrBuf[19]; // Includes room for "0x" and "\0".
 
     sprintf(addrBuf, "%p", args[0]);
 
