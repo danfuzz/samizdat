@@ -41,12 +41,12 @@ fn weirdNth(value, n) {
 # Method dispatch table. This is implicitly referenced (by name) by the
 # `.` and `[]` ops.
 def DISPATCH = [
-    List: [
+    (List): [
         get:  listNth,
         nth:  listNth,
         size: coreSizeOf
     ],
-    Map: [
+    (Map): [
         get:  mapGet,
         nth:  mapNth,
         size: coreSizeOf
