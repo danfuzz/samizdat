@@ -86,26 +86,8 @@ bool utilIsHeapAllocated(void *memory);
 
 
 /*
- * String functions
- */
-
-/**
- * Gets a pointer just past the end of the given string, asserting
- * validity of same. This just validates this as an address range,
- * not as valid string contents.
- */
-const char *utilStringEnd(zint stringBytes, const char *string);
-
-
-/*
  * Unicode functions
  */
-
-/**
- * Asserts that the given `zint` value is valid as a Unicode
- * code point.
- */
-void uniAssertValid(zint value);
 
 /**
  * Gets the decoded size (the number of encoded Unicode code points)

@@ -14,6 +14,43 @@
  */
 
 /**
+ * Asserts that the given `zint` value is valid as a Unicode
+ * code point.
+ */
+static void assertValidCodePoint(zint value) {
+    if ((value >= 0xd800) && (value <= 0xdfff)) {
+        die("Invalid occurrence of surrogate code point: %#04x",
+               (int) value);
+    } else if (value == 0xfffe) {
+        die("Invalid occurrence of reversed-BOM.");
+    } else if (value == 0xffff) {
+        die("Invalid occurrence of not-a-character.");
+    } else if (value >= 0x110000) {
+        die("Invalid occurrence of high code point: %#llx", value);
+    }
+}
+
+/**
+ * Gets a pointer just past the end of the given string, asserting
+ * validity of same. This just validates this as an address range,
+ * not as valid string contents.
+ */
+static const char *getStringEnd(zint stringBytes, const char *string) {
+    if (stringBytes < 0) {
+        die("Invalid string size: %lld", stringBytes);
+    }
+
+    const char *result = string + stringBytes;
+
+    if (result < string) {
+        die("Invalid string size (pointer wraparound): %p + %lld",
+            string, stringBytes);
+    }
+
+    return result;
+}
+
+/**
  * Does the basic decoding step, with syntactic but not semantic validation.
  */
 static const char *justDecode(zchar *result,
@@ -143,7 +180,7 @@ static const char *justDecode(zchar *result,
 static const char *decodeValid(zchar *result,
                                zint stringBytes, const char *string) {
     string = justDecode(result, stringBytes, string);
-    uniAssertValid(*result);
+    assertValidCodePoint(*result);
     return string;
 }
 
@@ -153,22 +190,8 @@ static const char *decodeValid(zchar *result,
  */
 
 /* Documented in header. */
-void uniAssertValid(zint value) {
-    if ((value >= 0xd800) && (value <= 0xdfff)) {
-        die("Invalid occurrence of surrogate code point: %#04x",
-               (int) value);
-    } else if (value == 0xfffe) {
-        die("Invalid occurrence of reversed-BOM.");
-    } else if (value == 0xffff) {
-        die("Invalid occurrence of not-a-character.");
-    } else if (value >= 0x110000) {
-        die("Invalid occurrence of high code point: %#llx", value);
-    }
-}
-
-/* Documented in header. */
 zint utf8DecodeStringSize(zint stringBytes, const char *string) {
-    const char *stringEnd = utilStringEnd(stringBytes, string);
+    const char *stringEnd = getStringEnd(stringBytes, string);
     zint result = 0;
 
     while (string < stringEnd) {
@@ -182,7 +205,7 @@ zint utf8DecodeStringSize(zint stringBytes, const char *string) {
 /* Documented in header. */
 void utf8DecodeCharsFromString(zchar *result,
                                zint stringBytes, const char *string) {
-    const char *stringEnd = utilStringEnd(stringBytes, string);
+    const char *stringEnd = getStringEnd(stringBytes, string);
 
     while (string < stringEnd) {
         string = decodeValid(result, stringEnd - string, string);
