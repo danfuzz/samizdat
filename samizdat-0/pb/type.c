@@ -94,8 +94,14 @@ static zvalue newType(zvalue name, zvalue secret, bool derived) {
 /**
  * Asserts that the value is a `Type`.
  */
-void assertTypeIsType(zvalue value) {
-    assertTypeIs(value, TYPE_Type);
+static void assertTypeIsType(zvalue value) {
+    // This is a light-weight implementation, since (a) otherwise it consumes
+    // a significant amount of runtime, with no real benefit, and (b) it
+    // avoids infinite recursion.
+    if (value->type != TYPE_Type) {
+        // Upon failure, use the regular implementation to produce the error.
+        assertTypeIs(value, TYPE_Type);
+    }
 }
 
 
@@ -143,9 +149,12 @@ bool typeSecretIs(zvalue type, zvalue secret) {
 
 /* Documented in header. */
 void assertTypeIs(zvalue value, zvalue type) {
-    pbAssertValid(value);
-
-    if (!hasType(value, type)) {
+    // This tries doing `==` on `Type` values as a first test, to keep the
+    // usual case speedy.
+    zvalue t = value->type;
+    if ((value != NULL) && (value->type != type)) {
+        pbAssertValid(value);
+        assertTypeIsType(type);
         die("Expected type %s; got %s.",
             pbDebugString(type), pbDebugString(value));
     }
@@ -170,6 +179,8 @@ bool typeIsDerived(zvalue type) {
 
 /* Documented in header. */
 zvalue typeOf(zvalue value) {
+    pbAssertValid(value);
+
     zvalue type = value->type;
     TypeInfo *info = typeInfo(type);
 

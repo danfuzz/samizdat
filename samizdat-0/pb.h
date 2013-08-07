@@ -387,6 +387,8 @@ void gfnSeal(zvalue generic);
 /**
  * Asserts that the given value is a valid `zvalue`, furthermore has the
  * given type. If not, this aborts the process with a diagnostic message.
+ * The given `type` must be a `Type` value per se. That is, this function
+ * doesn't work on transparent derived values.
  */
 void assertTypeIs(zvalue v1, zvalue type);
 
