@@ -21,7 +21,7 @@ fn expectSame(v1, v2) {
         { io0Note("Yes.") }
         {
             io0Note(stringAdd("Different: ",
-                sourceString(v1), sourceString(v2)))
+                sourceString(v1), ", ", sourceString(v2)))
         }
 };
 
@@ -36,9 +36,9 @@ fn expectDifferent(v1, v2) {
 fn expectCore(v) {
     ifIs { <> isOpaqueValue(v) }
         {
-            ifIs { <> eq(v, dataOf(v)) }
+            ifValue { <> dataOf(v) }
+                { data :: io0Note(stringAdd("Bad data: ", sourceString(data))) }
                 { io0Note("Yes.") }
-                { io0Note(stringAdd("Bad data: ", sourceString(v))) }
         }
         { io0Note(stringAdd("Derived: ", sourceString(v))) }
 };
@@ -46,10 +46,9 @@ fn expectCore(v) {
 # Expects the value to be a derived value.
 fn expectDerived(v) {
     ifIs { <> isOpaqueValue(v) }
-        { io0Note(stringAdd("Core: ", sourceString(v))) }
+        { io0Note(stringAdd("Opaque: ", sourceString(v))) }
         { io0Note("Yes.") }
 };
-
 
 
 #
@@ -183,7 +182,6 @@ expectSame(@boo, @["boo"]);
 expectSame(null, @Null);
 expectSame(null, @"Null");
 expectSame(null, @[Null]);
-expectSame(nullBox, @NullBox);
 expectSame(false, @[Boolean: 0]);
 expectSame(true, @[Boolean: 1]);
 expectSame(@[eek: 10], @["eek": 10]);
@@ -202,42 +200,8 @@ expectDifferent(@[false: 1], @[(false): 1]);
 expectDerived(@blort);
 expectDerived(@[fizmo: "igram"]);
 expectDerived(null);
-expectDerived(nullBox);
 expectDerived(false);
 expectDerived(true);
 
-
-# "Reconstructed" core values
-
-io0Note("\nReconstructed core values");
-
-def fnRecon = { x <> x };
-def uniqRecon = makeUniqlet();
-
-expectSame(@[Function: fnRecon], fnRecon);
-expectSame(@[Int: 10], 10);
-expectSame(@[List: [1, 2, 3]], [1, 2, 3]);
-expectSame(@[Map: [biscuit: "muffin"]], [biscuit: "muffin"]);
-expectSame(@[String: "stuff"], "stuff");
-expectSame(@[Uniqlet: uniqRecon], uniqRecon);
-
-expectCore(@[Function: { x <> x }]);
-expectCore(@[Int: 10]);
-expectCore(@[List: [1, 2, 3]]);
-expectCore(@[Map: [biscuit: "muffin"]]);
-expectCore(@[String: "stuff"]);
-expectCore(@[Uniqlet: makeUniqlet()]);
-
-
-# Core types with mismatched payloads
-
-io0Note("\nCore types with mismatched payloads");
-
-expectDerived(@[Function: "x"]);
-expectDerived(@[Int: "x"]);
-expectDerived(@[List: "x"]);
-expectDerived(@[Map: "x"]);
-expectDerived(@[String: []]);
-expectDerived(@[Uniqlet: "x"]);
 
 <> 0
