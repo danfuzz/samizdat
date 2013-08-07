@@ -195,6 +195,13 @@ fn doMap(map, adorn) {
     <> adornIf(adorn, "[", collectionBody(mapElems, ":"), "]");
 };
 
+# Stringifies a type.
+fn doType(type, adorn) {
+    def name = callSourceString(typeName(type));
+
+    <> adornIf(adorn, "@[(Type): ", name, "]");
+};
+
 # Stringifies a derived value or an opaque core value.
 fn doDerivOrOpaque(value, adorn) {
     ifValue { <> mapGet(SPECIAL_VALUES, value) }
@@ -203,24 +210,23 @@ fn doDerivOrOpaque(value, adorn) {
     def type = typeOf(value);
     def typeString = keyString(type);
 
-    def body = ifValue { <> dataOf(value) }
-        { data ::
-            def dataString = ifIs { <> eq(value, data) }
-                {
-                    # It's an opaque core value.
-                    <> "/*opaque*/"
+    def dataString = ifIs { <> isOpaqueValue(value) }
+        { <> ": /*opaque*/" }
+        {
+            <> ifValue { <> dataOf(value) }
+                { data ::
+                    # Transparent derived value with payload.
+                    <> stringAdd(": ", callSourceString(data))
                 }
                 {
-                    # It's a derived value.
-                    <> callSourceString(data)
-                };
-            <> stringAdd(typeString, ": ", dataString)
-        }
-        {
-            ifIs { <> isString(type) }
-                { return adornIf(adorn, "@", typeString, "") };
-            <> typeString
+                    # Type-only transparent derived value.
+                    ifIs { <> isString(type) }
+                        { return adornIf(adorn, "@", typeString, "") };
+                    <> ""
+                }
         };
+
+    def body = stringAdd(typeString, dataString);
 
     <> adornIf(adorn, "@[", body, "]");
 };
@@ -245,7 +251,8 @@ def SOURCE_STRINGIFIERS = [
     (Int):    doInt,
     (List):   doList,
     (Map):    doMap,
-    (String): doString
+    (String): doString,
+    (Type):   doType
 ];
 
 # Mapping from low-layer type names to stringifiers to use for `%s`-style
@@ -254,7 +261,8 @@ def HUMAN_STRINGIFIERS = [
     (Int):    doInt,
     (List):   doListFlatten,
     (Map):    doMap,
-    (String): doStringAsIs
+    (String): doStringAsIs,
+    (Type):   doType
 ];
 
 # Common handler for the two exported functions.
