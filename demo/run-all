@@ -65,15 +65,32 @@ unset opt
 
 # Find all the demo directories.
 
-allDirs=($(cd "${progDir}"; find . -depth 1 -type d -exec basename '{}' ';'))
+allNames=($(cd "${progDir}"; find . -depth 1 -type d -exec basename '{}' ';'))
 
 # Run each demo. For the first, pass it the `--optimize` flag, to force
 # a build.
 
 optimizeOpt=(--optimize)
+errorNames=()
 
-for dir in "${allDirs[@]}"; do
+for name in "${allNames[@]}"; do
     echo ''
-    "${progDir}/run" "${optimizeOpt[@]}" "${dir}"
+    "${progDir}/run" "${optimizeOpt[@]}" "${name}"
+    error="$?"
+    if [[ ${error} != 0 ]]; then
+        echo "Exited with error code: ${error}"
+        errorNames+=("${name}")
+    fi
     optimizeOpt=()
 done
+
+echo ''
+
+if [[ ${#errorNames[@]} == 0 ]]; then
+    echo 'All good!'
+else
+    echo 'Errors reported from:'
+    for name in "${errorNames[@]}"; do
+        echo "    ${name}"
+    done
+fi
