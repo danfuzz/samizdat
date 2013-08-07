@@ -13,16 +13,9 @@
 
 # Parses a single path component.
 def parPathComponent = {/
-    # Ignore initial `.` components.
-    ("/"+ "." &"/")*
-
     # Ignore duplicate slashes, but require at least one. Note: The parser
     # is only ever called on a string that begins with a slash.
     "/"+
-
-    # Treat a final `.` component (with no further slash) as if it weren't
-    # there.
-    !("." !.)
 
     # Match the component text. This is a `*` and not a `+` rule, in order to
     # successfully match a string-final empty component (that is, a trailing
@@ -31,7 +24,8 @@ def parPathComponent = {/
     { <> stringFromTokenList(component) }
 /};
 
-# Parses a regular (non-up-directory) component.
+# Parses a regular (non-up-directory) component. The `..` check ensures that
+# `..` only gets parsed as part of a balanced `name/..` pair.
 def parRegularComponent = {/
     component = parPathComponent
     {
@@ -40,27 +34,29 @@ def parRegularComponent = {/
     }
 /};
 
-# Parses the component `..`.
-def parDotDotComponent = {/
-    component = parPathComponent
-    { <> eq(component, "..") }
-/};
-
 # Parses a matched set of components that are collectively ignored, e.g.
-# "x/y/../..".
+# `"/x/y/../.."` or `"/."`.
 def parIgnoredComponent = forwardFunction();
 def implIgnoredComponent = {/
-    parRegularComponent parIgnoredComponent? parDotDotComponent
+    component = parPathComponent
+
+    (
+        { <> eq(component, ".") }
+    |
+        parIgnoredComponent?
+        dotdot = parPathComponent
+        { <> eq(dotdot, "..") }
+    )
+
     { <> [] }
 /};
 parIgnoredComponent(implIgnoredComponent);
 
 # Helper for `io0PathFromFlat` which parses absolute path strings
-# into components. Notably, this takes care of ignoring double slashes
-# (or triple, etc.) and `.` components, but it leaves the handling of
-# `..` components to a higher layer.
+# into components. This canonicalizes the path by ignoring duplicate
+# slashes, `.` components, and matched `name/..` pairs.
 def parPathString = {/
-    components = (parIgnoredComponent | parRegularComponent)*
+    components = (parIgnoredComponent | parRegularComponent)+
 
     (
         .
