@@ -132,10 +132,19 @@ def IDENTIFIER_CHARS = [
 
 # Values with special conversions.
 def SPECIAL_VALUES = [
-    (false):   "false",
-    (null):    "null",
-    (nullBox): "nullBox",
-    (true):    "true"
+    (Box):      "Box",
+    (Function): "Function",
+    (Generic):  "Generic",
+    (Int):      "Int",
+    (List):     "List",
+    (Map):      "Map",
+    (String):   "String",
+    (Type):     "Type",
+    (Uniqlet):  "Uniqlet",
+    (false):    "false",
+    (null):     "null",
+    (nullBox):  "nullBox",
+    (true):     "true"
 ];
 
 # Checks to see if the given value is a string with the form of an
