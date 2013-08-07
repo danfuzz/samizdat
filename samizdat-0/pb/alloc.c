@@ -8,6 +8,7 @@
 #include "zlimits.h"
 
 #include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 
@@ -248,11 +249,11 @@ static void doGc(void) {
 
 
 /*
- * Exported functions
+ * Module functions
  */
 
 /* Documented in header. */
-zvalue pbAllocValue(ztype type, zint extraBytes) {
+zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes) {
     if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
         pbGc();
     } else {
@@ -263,14 +264,28 @@ zvalue pbAllocValue(ztype type, zint extraBytes) {
     result->magic = PB_VALUE_MAGIC;
     result->type = type;
 
+    allocationCount++;
     enlist(&liveHead, result);
     pbFrameAdd(result);
-
-    allocationCount++;
-
     sanityCheck(false);
 
     return result;
+}
+
+
+/*
+ * Exported functions
+ */
+
+/* Documented in header. */
+zvalue pbAllocValue(zvalue type, zint extraBytes) {
+    // This does a "quickie" check that works even before the type `Type`
+    // is fully initialized.
+    if (type->type != TYPE_Type) {
+        die("Attempt to allocate with non-type type.");
+    }
+
+    return pbAllocValueUnchecked(type, extraBytes);
 }
 
 /* Documented in header. */
@@ -289,6 +304,13 @@ void pbAssertValid(zvalue value) {
 }
 
 /* Documented in header. */
+void pbAssertValidOrNull(zvalue value) {
+    if (value != NULL) {
+        pbAssertValid(value);
+    }
+}
+
+/* Documented in header. */
 zstackPointer pbFrameStart(void) {
     return &stack[stackSize];
 }
@@ -296,6 +318,11 @@ zstackPointer pbFrameStart(void) {
 /* Documented in header. */
 void pbFrameAdd(zvalue value) {
     if (stackSize >= PB_MAX_STACK) {
+        // As a hail-mary, do a forced gc and then clear the value stack, in
+        // the hope that a gc won't end up being done while producing the
+        // dying stack trace.
+        pbGc();
+        stackSize = 0;
         die("Value stack overflow.");
     }
 

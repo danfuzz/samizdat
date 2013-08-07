@@ -60,10 +60,10 @@ fn process(value) {
 # Main function
 #
 
-fn main(selfPath, name, rest*) {
+fn main(selfPath, name?, rest*) {
     # Be welcoming.
 
-    ifIs { <> eq(name, "danfuzz") }
+    ifIs { <> eq(&(name*), "danfuzz") }
         { io0Note("Hello, Danfuzz!\n") }
         { io0Note("Hello, Самиздат!\n") };
 
@@ -101,7 +101,7 @@ fn main(selfPath, name, rest*) {
     process(makeUniqlet());
     process(boxer());
     process(metaFunctions(LIBRARY, "blort.sam0"));
-    process(io0PathFromFlat("///foo//////./bar/../baz"));
+    process(io0PathFromFlat("///foo//////./bar/./../baz"));
     process(io0PathFromFlat("/a/b/x/y/z/../../../c/"));
     process(io0FlatFromPath(["fizmo", "igram", "blort", ""]));
     process(stringFromInt(71, 2));

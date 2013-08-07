@@ -14,9 +14,17 @@
  * have the usual guard macros.
  */
 
+PRIM_DEF(Box,        TYPE_Box);
+PRIM_DEF(Function,   TYPE_Function);
+PRIM_DEF(Generic,    TYPE_Generic);
+PRIM_DEF(Int,        TYPE_Int);
+PRIM_DEF(List,       TYPE_List);
+PRIM_DEF(Map,        TYPE_Map);
+PRIM_DEF(String,     TYPE_String);
+PRIM_DEF(Type,       TYPE_Type);
+PRIM_DEF(Uniqlet,    TYPE_Uniqlet);
 PRIM_DEF(coreSizeOf, GFN_sizeOf);
-PRIM_DEF(dataOf,     GFN_dataOf);
-PRIM_DEF(typeOf,     GFN_typeOf);
+PRIM_DEF(nullBox,    DAT_NULL_BOX);
 
 PRIM_FUNC(boxGet,       1, 1);
 PRIM_FUNC(boxIsSet,     1, 1);
@@ -24,6 +32,7 @@ PRIM_FUNC(boxSet,       1, 2);
 PRIM_FUNC(charFromInt,  1, 1);
 PRIM_FUNC(coreOrder,    2, 2);
 PRIM_FUNC(coreOrderIs,  3, 4);
+PRIM_FUNC(dataOf,       1, 2);
 PRIM_FUNC(iabs,         1, 1);
 PRIM_FUNC(iadd,         2, 2);
 PRIM_FUNC(iand,         2, 2);
@@ -48,7 +57,7 @@ PRIM_FUNC(io0Die,       0, 1);
 PRIM_FUNC(io0Note,      1, 1);
 PRIM_FUNC(ior,          2, 2);
 PRIM_FUNC(irem,         2, 2);
-PRIM_FUNC(isCoreValue,  1, 1);
+PRIM_FUNC(isOpaqueValue,  1, 1);
 PRIM_FUNC(isign,        1, 1);
 PRIM_FUNC(ishl,         2, 2);
 PRIM_FUNC(ishr,         2, 2);
@@ -88,4 +97,6 @@ PRIM_FUNC(stringNth,    2, 2);
 PRIM_FUNC(stringSlice,  2, 3);
 PRIM_FUNC(totalOrder,   2, 2);
 PRIM_FUNC(totalOrderIs, 3, 4);
+PRIM_FUNC(typeName,     1, 1);
+PRIM_FUNC(typeOf,       1, 1);
 PRIM_FUNC(yieldBox,     0, 0);

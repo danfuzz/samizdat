@@ -10,38 +10,50 @@
 
 
 /*
- * Helper definitions
+ * Helper functions
  */
 
 /**
- * Derived value structure.
+ * Gets the info of a derived value.
  */
-typedef struct {
-    /** Type tag. Never `NULL`. */
-    zvalue type;
-
-    /** Associated payload data. Possibly `NULL`. */
-    zvalue data;
-} DerivInfo;
-
-/**
- * Gets a pointer to the value's info.
- */
-static DerivInfo *derivInfo(zvalue deriv) {
-    return pbPayload(deriv);
+static DerivInfo *derivInfo(zvalue value) {
+    return (DerivInfo *) pbPayload(value);
 }
 
-/**
- * Allocates and initializes a derived value, without doing error-checking
- * on the arguments.
- */
-static zvalue newDeriv(zvalue type, zvalue data) {
-    zvalue result = pbAllocValue(PB_Deriv, sizeof(DerivInfo));
-    DerivInfo *info = derivInfo(result);
 
-    info->type = type;
-    info->data = data;
-    return result;
+/*
+ * Module functions
+ */
+
+/* Documented in header. */
+zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return pbNullSafeEq(derivInfo(v1)->data, derivInfo(v2)->data) ? v2 : NULL;
+}
+
+/* Documented in header. */
+zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
+    zvalue value = args[0];
+    pbMark(derivInfo(value)->data);
+    return NULL;
+}
+
+/* Documented in header. */
+zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zvalue data1 = derivInfo(v1)->data;
+    zvalue data2 = derivInfo(v2)->data;
+
+    if (data1 == NULL) {
+        return (data2 == NULL) ? PB_0 : PB_NEG1;
+    } else if (data2 == NULL) {
+        return PB_1;
+    } else {
+        return intFromZint(pbOrder(data1, data2));
+    }
 }
 
 
@@ -50,107 +62,44 @@ static zvalue newDeriv(zvalue type, zvalue data) {
  */
 
 /* Documented in header. */
-void pbAssertDeriv(zvalue value) {
-    pbAssertType(value, PB_Deriv);
-}
+zvalue dataFromValue(zvalue value, zvalue secret) {
+    zvalue type = value->type;
 
-/* Documented in header. */
-zvalue derivFrom(zvalue type, zvalue data) {
-    pbAssertValid(type);
-
-    if (data != NULL) {
-        pbAssertValid(data);
-    }
-
-    return newDeriv(type, data);
-}
-
-
-/*
- * Type binding
- */
-
-/* Documented in header. */
-static zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args) {
-    zvalue deriv = args[0];
-    return derivInfo(deriv)->data;
-}
-
-/* Documented in header. */
-static zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    DerivInfo *info1 = derivInfo(v1);
-    DerivInfo *info2 = derivInfo(v2);
-
-    if (info1->data == NULL) {
-        if (info2->data != NULL) {
-            return NULL;
-        }
-    } else if (info2->data == NULL) {
-        return NULL;
-    } else if (!pbEq(info1->data, info2->data)) {
-        return NULL;
-    }
-
-    return pbEq(info1->type, info2->type) ? v2 : NULL;
-}
-
-/* Documented in header. */
-static zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
-    zvalue deriv = args[0];
-    DerivInfo *info = derivInfo(deriv);
-
-    pbMark(info->type);
-    pbMark(info->data);
-
-    return NULL;
-}
-
-/* Documented in header. */
-static zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    DerivInfo *info1 = derivInfo(v1);
-    DerivInfo *info2 = derivInfo(v2);
-
-    zorder result = pbOrder(info1->type, info2->type);
-
-    if (result != ZSAME) {
-        return intFromZint(result);
-    } else if (info1->data == NULL) {
-        return (info2->data == NULL) ? PB_0 : PB_NEG1;
-    } else if (info2->data == NULL) {
-        return PB_1;
+    if (typeIsDerived(type) && typeSecretIs(type, secret)) {
+        return derivInfo(value)->data;
     } else {
-        return intFromZint(pbOrder(info1->data, info2->data));
+        return NULL;
     }
 }
 
 /* Documented in header. */
-static zvalue Deriv_sizeOf(zvalue state, zint argCount, const zvalue *args) {
-    zvalue deriv = args[0];
-    return (derivInfo(deriv)->data == NULL) ? PB_0 : PB_1;
+zvalue dataOf(zvalue value) {
+    return dataFromValue(value, NULL);
 }
 
 /* Documented in header. */
-static zvalue Deriv_typeOf(zvalue state, zint argCount, const zvalue *args) {
-    zvalue deriv = args[0];
-    return derivInfo(deriv)->type;
+zvalue derivFrom(zvalue type, zvalue data, zvalue secret) {
+    pbAssertValid(type);
+    pbAssertValidOrNull(data);
+    pbAssertValidOrNull(secret);
+
+    if (typeOf(type) != TYPE_Type) {
+        type = transparentTypeFromName(type);
+    }
+
+    // Make sure the secrets match. In the case of a transparent type,
+    // this checks that `secret` is `NULL`.
+    if (!typeSecretIs(type, secret)) {
+        die("Attempt to create derived value with incorrect secret.");
+    }
+
+    zvalue result = pbAllocValue(type, sizeof(DerivInfo));
+    ((DerivInfo *) pbPayload(result))->data = data;
+
+    return result;
 }
 
 /* Documented in header. */
-void pbBindDeriv(void) {
-    gfnBindCore(GFN_dataOf, PB_Deriv, Deriv_dataOf);
-    gfnBindCore(GFN_eq,     PB_Deriv, Deriv_eq);
-    gfnBindCore(GFN_gcMark, PB_Deriv, Deriv_gcMark);
-    gfnBindCore(GFN_order,  PB_Deriv, Deriv_order);
-    gfnBindCore(GFN_sizeOf, PB_Deriv, Deriv_sizeOf);
-    gfnBindCore(GFN_typeOf, PB_Deriv, Deriv_typeOf);
+zvalue valueFrom(zvalue type, zvalue data) {
+    return derivFrom(type, data, NULL);
 }
-
-/* Documented in header. */
-static PbType INFO_Deriv = {
-    .name = "Deriv"
-};
-ztype PB_Deriv = &INFO_Deriv;

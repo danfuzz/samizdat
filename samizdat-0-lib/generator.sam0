@@ -81,11 +81,12 @@ fn makeFunctionGenerator(function) {
 # Map from low-layer value types to corresponding appropriate generator
 # maker functions.
 def GENERATOR_MAKERS = [
-    Function: makeFunctionGenerator,
-    Int:      makeIntGenerator,
-    List:     makeListGenerator,
-    Map:      makeMapGenerator,
-    String:   makeStringGenerator
+    (Function): makeFunctionGenerator,
+    (Generic):  makeFunctionGenerator,
+    (Int):      makeIntGenerator,
+    (List):     makeListGenerator,
+    (Map):      makeMapGenerator,
+    (String):   makeStringGenerator
 ];
 
 # Map from `[direction, inclusive]` pairs to appropriate test functions.

@@ -44,9 +44,12 @@ standard meaning of those values:
 Ordering is calculated as follows:
 
 The "majorest" order is that core (primitive) values order before
-derived values. Within each major category, major order is by
-type name order (e.g. `"Int"` before `"String"`). Minor order is
-type-dependant.
+transparent derived values, and transparent derived values order before
+opaque derived values. Within each major category, major order is by
+type name order (e.g. `"Int"` before `"String"`). For two different types
+with the same category and name (only possible for opaque derived types),
+the major order is arbitrary but consistent. The minor order within a type
+is type-dependant.
 
 * Ints order by integer value, low to high.
 
@@ -63,10 +66,9 @@ type-dependant.
   as secondary. With types equal, derived values without a payload order
   earlier than ones with a payload.
 
-* All other core values (uniqlets and functions) never compare as identical to
-  anything but themselves. Within each type, there is a total ordering of
-  values. The ordering is consistent, transitive, and symmetric;
-  but otherwise arbitrary.
+* All other core values never compare as identical to anything but themselves.
+  Within each type, there is a total ordering of values. The ordering is
+  consistent, transitive, and symmetric; but otherwise arbitrary.
 
 #### `totalOrderIs(value1, value2, check1, check2?) <> logic`
 

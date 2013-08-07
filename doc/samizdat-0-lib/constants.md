@@ -10,9 +10,45 @@ functions.
 <br><br>
 ### Primitive Definitions
 
+#### `Box`
+
+The type of box values.
+
+#### `Function`
+
+The type of (non-generic) function values.
+
+#### `Generic`
+
+The type of generic function values.
+
+#### `Int`
+
+The type of int values.
+
+#### `List`
+
+The type of list values.
+
+#### `Map`
+
+The type of map values.
+
 #### `nullBox`
 
 A special constant box, which ignores any attempts to set it.
+
+#### `String`
+
+The type of string values.
+
+#### `Type`
+
+The type of type values.
+
+#### `Uniqlet`
+
+The type of uniqlet values.
 
 
 <br><br>

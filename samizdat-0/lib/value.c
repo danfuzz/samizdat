@@ -21,13 +21,8 @@
 static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
     pbAssertSameType(v1, v2);
 
-    if (pbCoreTypeIs(v1, PB_Deriv)) {
-        zvalue type1 = pbTypeOf(v1);
-        zvalue type2 = pbTypeOf(v2);
-
-        if (!pbEq(type1, type2)) {
-            die("Mismatched derived types.");
-        }
+    if (!pbEq(typeOf(v1), typeOf(v2))) {
+        die("Mismatched derived types.");
     }
 }
 
@@ -71,9 +66,17 @@ PRIM_IMPL(coreOrderIs) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(isCoreValue) {
+PRIM_IMPL(dataOf) {
     zvalue value = args[0];
-    return pbCoreTypeIs(value, PB_Deriv) ? NULL : value;
+    zvalue secret = (argCount == 2) ? args[1] : NULL;
+
+    return dataFromValue(value, secret);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(isOpaqueValue) {
+    zvalue value = args[0];
+    return hasType(typeOf(value), TYPE_Type) ? value : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -84,4 +87,14 @@ PRIM_IMPL(totalOrder) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(totalOrderIs) {
     return doOrderIs(argCount, args) ? args[1] : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(typeName) {
+    return typeName(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(typeOf) {
+    return typeOf(args[0]);
 }

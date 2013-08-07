@@ -11,8 +11,8 @@
 #
 
 # Performs a type check, for the given type name.
-fn hasCoreType(value, typeName) {
-    <> ifIs { <> eq(&typeOf(&isCoreValue(value)), typeName) }
+fn hasCoreType(value, type) {
+    <> ifIs { <> eq(typeOf(value), type) }
         { <> value }
 };
 
@@ -22,37 +22,49 @@ fn hasCoreType(value, typeName) {
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn isBox(value) {
+    <> hasCoreType(value, Box)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn isFunction(value) {
-    <> hasCoreType(value, "Function")
+    <> hasCoreType(value, Function)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn isGeneric(value) {
+    <> hasCoreType(value, Generic)
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn isInt(value) {
-    <> hasCoreType(value, "Int")
+    <> hasCoreType(value, Int)
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn isList(value) {
-    <> hasCoreType(value, "List")
+    <> hasCoreType(value, List)
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn isMap(value) {
-    <> hasCoreType(value, "Map")
+    <> hasCoreType(value, Map)
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn isString(value) {
-    <> hasCoreType(value, "String")
+    <> hasCoreType(value, String)
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn isUniqlet(value) {
-    <> hasCoreType(value, "Uniqlet")
+    <> hasCoreType(value, Uniqlet)
 };
 
 <> [
+    isBox:      isBox,
     isFunction: isFunction,
+    isGeneric:  isGeneric,
     isInt:      isInt,
     isList:     isList,
     isMap:      isMap,

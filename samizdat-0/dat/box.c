@@ -63,7 +63,7 @@ static zvalue boxOrderId(zvalue box) {
 
 /* Documented in header. */
 void datAssertBox(zvalue value) {
-    pbAssertType(value, DAT_Box);
+    assertTypeIs(value, TYPE_Box);
 }
 
 /* Documented in header. */
@@ -123,7 +123,7 @@ void boxSet(zvalue box, zvalue value) {
 
 /* Documented in header. */
 zvalue boxMutable(void) {
-    zvalue result = pbAllocValue(DAT_Box, sizeof(BoxInfo));
+    zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = boxInfo(result);
 
     info->value = NULL;
@@ -135,7 +135,7 @@ zvalue boxMutable(void) {
 
 /* Documented in header. */
 zvalue boxYield(void) {
-    zvalue result = pbAllocValue(DAT_Box, sizeof(BoxInfo));
+    zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = boxInfo(result);
 
     info->value = NULL;
@@ -173,15 +173,13 @@ static zvalue Box_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void datBindBox(void) {
-    gfnBindCore(GFN_gcMark, DAT_Box, Box_gcMark);
-    gfnBindCore(GFN_order,  DAT_Box, Box_order);
+    TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"));
+    gfnBindCore(GFN_gcMark, TYPE_Box, Box_gcMark);
+    gfnBindCore(GFN_order,  TYPE_Box, Box_order);
 
     DAT_NULL_BOX = boxMutable(); // Note: Explicit `==` check in `boxSet`.
     pbImmortalize(DAT_NULL_BOX);
 }
 
 /* Documented in header. */
-static PbType INFO_Box = {
-    .name = "Box"
-};
-ztype DAT_Box = &INFO_Box;
+zvalue TYPE_Box = NULL;

@@ -38,12 +38,7 @@ typedef struct {
  */
 MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 
-
-/*
- * Initialization functions
- */
-
-// Per-type generic binding.
+// Per-type binding and initialization.
 void datBindBox(void);
 void datBindList(void);
 void datBindMap(void);

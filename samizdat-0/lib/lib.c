@@ -64,9 +64,6 @@ static zvalue primitiveContext(void) {
 
     #include "prim-def.h"
 
-    // Add the special `nullBox` constant.
-    ctx = mapPut(ctx, STR_NULL_BOX, DAT_NULL_BOX);
-
     // Include a mapping for a map of all the primitive bindings
     // (other than this one, since values can't self-reference).
     ctx = mapPut(ctx, STR_UP_LIBRARY, ctx);
