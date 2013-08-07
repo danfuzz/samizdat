@@ -45,6 +45,11 @@ returns void.
 Returns `value` if it is an opaque value &mdash; that is, if its type has
 an associated secret &mdash; or void if not.
 
+#### `typeName(type) <> .`
+
+Returns the name of the type. This is an arbitrary value associated with
+a type, which is typically (but not necessarily) a string.
+
 #### `typeOf(value) <> .`
 
 Returns the type tag of the given arbitrary value. For transparent values,

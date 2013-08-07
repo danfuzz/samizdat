@@ -90,6 +90,11 @@ PRIM_IMPL(totalOrderIs) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(typeName) {
+    return typeName(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(typeOf) {
     return typeOf(args[0]);
 }
