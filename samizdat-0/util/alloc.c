@@ -138,13 +138,11 @@ void *utilAlloc(zint size) {
         die("Invalid allocation size: %lld", size);
     }
 
-    void *result = malloc(size);
+    void *result = calloc(1, size);
 
     if (result == NULL) {
-        die("Failed: malloc(%#llx).", size);
+        die("Failed to allocate: size %#llx", size);
     }
-
-    memset(result, 0, size);
 
     if (THEYRE_OUT_TO_GET_ME) {
         addPages(result, ((char *) result) + size);
