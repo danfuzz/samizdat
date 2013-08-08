@@ -31,9 +31,6 @@ typedef struct {
      */
     zint maxArgs;
 
-    /** Default function, if any. May be `NULL`. */
-    zfunction defaultFunction;
-
     /** Whether the generic is sealed (unwilling to add bindings). */
     bool sealed;
 
@@ -70,9 +67,15 @@ static char *callReporter(void *state) {
 /* Documented in header. */
 zfunction gfnFind(zvalue generic, zvalue value) {
     GenericInfo *info = gfnInfo(generic);
-    zfunction result = info->functions[indexFromType(value->type)];
 
-    return (result != NULL) ? result : info->defaultFunction;
+    for (zvalue type = value->type; type != NULL; type = typeParent(type)) {
+        zfunction result = info->functions[indexFromType(type)];
+        if (result != NULL) {
+            return result;
+        }
+    }
+
+    return NULL;
 }
 
 
@@ -129,17 +132,7 @@ void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
 
 /* Documented in header. */
 void gfnBindCoreDefault(zvalue generic, zfunction function) {
-    pbAssertGeneric(generic);
-
-    GenericInfo *info = gfnInfo(generic);
-
-    if (info->sealed) {
-        die("Sealed generic.");
-    } else if (info->defaultFunction != NULL) {
-        die("Default already bound in generic.");
-    }
-
-    info->defaultFunction = function;
+    gfnBindCore(generic, TYPE_Value, function);
 }
 
 /* Documented in header. */
@@ -154,7 +147,6 @@ zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
-    info->defaultFunction = NULL;
     info->sealed = false;
     info->name = name;
     info->orderId = pbOrderId();
