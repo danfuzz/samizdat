@@ -94,10 +94,10 @@ zvalue derivFrom(zvalue type, zvalue data, zvalue secret) {
     zchar cacheChar = ~0;
 
     if (type->type != TYPE_Type) {
-        if ((data == NULL) &&
-            (secret == NULL) &&
-            (type->type == TYPE_String) &&
-            (pbSize(type) == 1)) {
+        if (   (data == NULL)
+            && (secret == NULL)
+            && (type->type == TYPE_String)
+            && (pbSize(type) == 1)) {
             cacheChar = stringNth(type, 0);
             if (cacheChar <= PB_MAX_CACHED_CHAR) {
                 zvalue result = CACHED_CHAR_TOKENS[cacheChar];
