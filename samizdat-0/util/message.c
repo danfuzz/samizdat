@@ -25,11 +25,8 @@ typedef struct Context {
     void *state;
 } Context;
 
-/** Context stack. */
-static Context contextStack[UTIL_MAX_CALL_STACK_DEPTH];
-
-/** Current stack depth. */
-static zint stackDepth = 0;
+/* Documented in header. */
+UtilStackGiblet *utilStackTop = NULL;
 
 
 /*
@@ -57,48 +54,14 @@ void die(const char *format, ...) {
 
     // Use a local variable for the stack pointer, since the stringifiers
     // will also manipulate the stack (and may have bugs in same!).
-    for (zint i = stackDepth - 1; i >= 0; i--) {
-        Context *ctx = &contextStack[i];
-        char *message = ctx->function(ctx->state);
-        fprintf(stderr, "    at %s\n", message);
+    UtilStackGiblet *stackPtr = utilStackTop;
+    while ((stackPtr != NULL) && (stackPtr->magic == UTIL_GIBLET_MAGIC)) {
+        if (stackPtr->function != NULL) {
+            char *message = stackPtr->function(stackPtr->state);
+            fprintf(stderr, "    at %s\n", message);
+        }
+        stackPtr = stackPtr->pop;
     }
 
     exit(1);
-}
-
-/* Documented in header. */
-void debugPush(zcontextFunction function, void *state) {
-    if (stackDepth == UTIL_MAX_CALL_STACK_DEPTH) {
-        // Remove 5% of the stack to have a chance of being able to produce
-        // a stack trace (as doing so will want to use the stack).
-        stackDepth = (stackDepth * 95) / 100;
-        die("Maximum stack depth exceeded.");
-    }
-
-    contextStack[stackDepth].function = function;
-    contextStack[stackDepth].state = state;
-    stackDepth++;
-}
-
-/* Documented in header. */
-void debugPop(void) {
-    if (stackDepth <= 0) {
-        die("Stack underflow.");
-    }
-
-    stackDepth--;
-}
-
-/* Documented in header. */
-zint debugMark(void) {
-    return stackDepth;
-}
-
-/* Documented in header. */
-void debugReset(zint mark) {
-    if (mark > stackDepth) {
-        die("Stack can't get deeper on reset.");
-    }
-
-    stackDepth = mark;
 }

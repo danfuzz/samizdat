@@ -20,11 +20,64 @@
  * Message functions
  */
 
+enum {
+    /** Magic value used to identify stack giblets. */
+    UTIL_GIBLET_MAGIC = 0x57ac61b1
+};
+
 /**
  * Function added to the "death context", which is expected to return
  * some sort of interesting string.
  */
 typedef char *(*zcontextFunction)(void *state);
+
+/**
+ * Stack "giblet". This is a struct placed on the (C) stack, for use
+ * when producing a stack trace upon process death.
+ */
+typedef struct UtilStackGiblet {
+    /** Identifying magic value. */
+    zint magic;
+
+    /** Giblet one layer up on the stack. */
+    struct UtilStackGiblet *pop;
+
+    /** Function to call to produce a line of context. */
+    zcontextFunction function;
+
+    /** State to pass to `function`. */
+    void *state;
+} UtilStackGiblet;
+
+/** The current top-of-stack of giblets. */
+extern UtilStackGiblet *utilStackTop;
+
+/**
+ * Reinstates the current trace. Useful for handling nonlocal exit.
+ */
+#define UTIL_TRACE_RESTART() \
+    do { \
+        utilStackTop = &stackGiblet; \
+    } while(0)
+
+/**
+ * Defines a giblet for the current function. Use this at the point a
+ * stack trace for the call would be valid.
+ */
+#define UTIL_TRACE_START(function, state) \
+    UtilStackGiblet stackGiblet = { \
+        UTIL_GIBLET_MAGIC, utilStackTop, (function), (state) \
+    }; \
+    UTIL_TRACE_RESTART()
+
+/**
+ * Ends the scope for a giblet. Use this as close to function return as
+ * possible.
+ */
+#define UTIL_TRACE_END() \
+    do { \
+        utilStackTop = stackGiblet.pop; \
+    } while(0)
 
 /**
  * Emits a debugging message. Arguments are as with `printf()`.
@@ -41,27 +94,6 @@ void note(const char *format, ...)
 void die(const char *format, ...)
     __attribute__((noreturn))
     __attribute__((format (printf, 1, 2)));
-
-/**
- * Adds a stack layer to the current context, for emission in case
- * of death.
- */
-void debugPush(zcontextFunction function, void *state);
-
-/**
- * Pops the top layer of death / debug context.
- */
-void debugPop(void);
-
-/**
- * Gets a "mark" representing the current debug stack depth.
- */
-zint debugMark(void);
-
-/**
- * Resets the debug stack to what it was at the given mark.
- */
-void debugReset(zint mark);
 
 
 /*

@@ -87,7 +87,8 @@ zvalue nleCall(znleFunction function, void *state) {
     nleState->active = true;
     nleState->result = NULL;
 
-    zint mark = debugMark();
+    UTIL_TRACE_START(NULL, NULL);
+
     zstackPointer save = pbFrameStart();
     zvalue result;
 
@@ -102,10 +103,12 @@ zvalue nleCall(znleFunction function, void *state) {
     } else {
         // Here is where we land if and when `longjmp` is called.
         result = nleState->result;
-        debugReset(mark);
+        UTIL_TRACE_RESTART();
     }
 
     nleState->active = false;
     pbFrameReturn(save, result);
+    UTIL_TRACE_END();
+
     return result;
 }

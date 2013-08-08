@@ -99,7 +99,7 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
         die("Function call argument inconsistency.");
     }
 
-    debugPush(callReporter, function);
+    UTIL_TRACE_START(callReporter, function);
     zstackPointer save = pbFrameStart();
 
     zint index = indexFromType(function->type);
@@ -112,7 +112,7 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     zvalue result = caller(function, argCount, args);
 
     pbFrameReturn(save, result);
-    debugPop();
+    UTIL_TRACE_END();
 
     return result;
 }
