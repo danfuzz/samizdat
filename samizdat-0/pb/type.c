@@ -266,16 +266,18 @@ static zvalue Type_order(zvalue state, zint argCount, const zvalue *args) {
 void pbInitTypeSystem(void) {
     TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
-    TYPE_Generic = allocType();
+    TYPE_Value = allocType();
     TYPE_String = allocType();
+    TYPE_Generic = allocType();
 
     // PB_SECRET is defined as a type value with no instances. This is
     // a hackish convenience. It should probably be a Uniqlet.
     PB_SECRET = allocType();
 
     typeInit(TYPE_Type,    stringFromUtf8(-1, "Type"),    PB_SECRET, false);
-    typeInit(TYPE_Generic, stringFromUtf8(-1, "Generic"), PB_SECRET, false);
+    typeInit(TYPE_Value,   stringFromUtf8(-1, "Value"),   PB_SECRET, false);
     typeInit(TYPE_String,  stringFromUtf8(-1, "String"),  PB_SECRET, false);
+    typeInit(TYPE_Generic, stringFromUtf8(-1, "Generic"), PB_SECRET, false);
     typeInit(PB_SECRET,    stringFromUtf8(-1, "SECRET"),  PB_SECRET, false);
 }
 
@@ -288,4 +290,7 @@ void pbBindType(void) {
 
 /* Documented in header. */
 zvalue TYPE_Type = NULL;
+
+/* Documented in header. */
+zvalue TYPE_Value = NULL;
 

@@ -78,6 +78,9 @@ extern zvalue TYPE_String;
 /** Type value for in-model type `Type`. */
 extern zvalue TYPE_Type;
 
+/** Type value for in-model type `Value`. */
+extern zvalue TYPE_Value;
+
 /**
  * Generic `call(value)`: Somewhat-degenerate generic for dispatching to
  * a function call mechanism (how meta). Only defined for types `Function`
