@@ -40,19 +40,5 @@ zvalue constCollectGenerator(zvalue value);
  */
 void constInit(void);
 
-/**
- * Converts a C `zchar` to an in-model single-character string.
- */
-zvalue constStringFromZchar(zchar value);
-
-/**
- * Produces an arbitrary value given a type and optional data payload. If
- * `type` corresponds to a core type, and `data` is a value of that type,
- * then this returns `data`. If not, then this produces a derived value
- * by calling `derivFrom` on the two arguments, or returns a cached
- * pre-existing value if a suitable one exists.
- */
-zvalue constValueFrom(zvalue type, zvalue data);
-
 
 #endif

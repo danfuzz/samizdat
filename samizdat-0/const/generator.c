@@ -76,7 +76,7 @@ static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        arr[i] = constStringFromZchar(stringNth(string, i));
+        arr[i] = stringFromZchar(stringNth(string, i));
     }
 
     return listFromArray(size, arr);
