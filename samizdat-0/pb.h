@@ -92,7 +92,7 @@ extern zvalue GFN_call;
  * Generic `debugString(value)`: Returns a minimal string form of the
  * given value. Notably, functions and generics include their names.
  * The default implementation returns strings of the form
- * `#(TypeName @ address)`.
+ * `@(TypeName @ address)`.
  */
 extern zvalue GFN_debugString;
 
