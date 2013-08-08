@@ -25,9 +25,6 @@
 #undef STR
 #undef TOK
 
-/** Array of single-character strings, for character codes `0..127`. */
-static zvalue SINGLE_CHAR_STRINGS[128];
-
 /**
  * Array of type-only values whose types are all single-character strings,
  * for character codes `0..127`. Used as the token input to tokenizers,
@@ -62,9 +59,7 @@ void constInit(void) {
     #include "const-def.h"
 
     for (zchar ch = 0; ch < 128; ch++) {
-        SINGLE_CHAR_STRINGS[ch] = stringFromZchars(1, &ch);
-        pbImmortalize(SINGLE_CHAR_STRINGS[ch]);
-        SINGLE_CHAR_TOKENS[ch] = valueFrom(SINGLE_CHAR_STRINGS[ch], NULL);
+        SINGLE_CHAR_TOKENS[ch] = valueFrom(stringFromZchar(ch), NULL);
         pbImmortalize(SINGLE_CHAR_TOKENS[ch]);
     }
 
@@ -75,15 +70,6 @@ void constInit(void) {
     // Force a garbage collection here, mainly to get a reasonably early
     // failure if gc is broken.
     pbGc();
-}
-
-/* Documented in header. */
-zvalue constStringFromZchar(zchar value) {
-    if (value < 128) {
-        return SINGLE_CHAR_STRINGS[value];
-    } else {
-        return stringFromZchars(1, &value);
-    }
 }
 
 /* Documented in header. */
