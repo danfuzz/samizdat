@@ -25,13 +25,6 @@
 #undef STR
 #undef TOK
 
-/**
- * Array of type-only values whose types are all single-character strings,
- * for character codes `0..127`. Used as the token input to tokenizers,
- * hence the name.
- */
-static zvalue SINGLE_CHAR_TOKENS[128];
-
 
 /*
  * Module functions
@@ -58,11 +51,6 @@ void constInit(void) {
 
     #include "const-def.h"
 
-    for (zchar ch = 0; ch < 128; ch++) {
-        SINGLE_CHAR_TOKENS[ch] = valueFrom(stringFromZchar(ch), NULL);
-        pbImmortalize(SINGLE_CHAR_TOKENS[ch]);
-    }
-
     generatorInit();
 
     pbFrameReturn(save, NULL);
@@ -70,20 +58,4 @@ void constInit(void) {
     // Force a garbage collection here, mainly to get a reasonably early
     // failure if gc is broken.
     pbGc();
-}
-
-/* Documented in header. */
-zvalue constValueFrom(zvalue type, zvalue data) {
-    if (data == NULL) {
-        if (hasType(type, TYPE_String) && (pbSize(type) == 1)) {
-            // This is a type-only value with a one-character string for
-            // the type. We have many of these cached.
-            zchar typeCh = stringNth(type, 0);
-            if (typeCh < 128) {
-                return SINGLE_CHAR_TOKENS[typeCh];
-            }
-        }
-    }
-
-    return valueFrom(type, data);
 }

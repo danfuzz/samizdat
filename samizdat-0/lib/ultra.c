@@ -52,5 +52,5 @@ PRIM_IMPL(makeUniqlet) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeValue) {
     zvalue value = (argCount == 2) ? args[1] : NULL;
-    return constValueFrom(args[0], value);
+    return valueFrom(args[0], value);
 }
