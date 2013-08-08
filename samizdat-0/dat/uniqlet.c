@@ -57,7 +57,7 @@ static zvalue newUniqlet(UniqletInfoDispatch *dispatch, void *state) {
 
 /* Documented in header. */
 void datAssertUniqlet(zvalue value) {
-    assertTypeIs(value, TYPE_Uniqlet);
+    assertHasType(value, TYPE_Uniqlet);
 }
 
 /* Documented in header. */

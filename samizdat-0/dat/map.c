@@ -143,7 +143,7 @@ static int mappingOrder(const void *m1, const void *m2) {
 
 /* Documented in header. */
 void datAssertMap(zvalue value) {
-    assertTypeIs(value, TYPE_Map);
+    assertHasType(value, TYPE_Map);
 }
 
 /* Documented in header. */

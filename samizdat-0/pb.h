@@ -390,7 +390,7 @@ void gfnSeal(zvalue generic);
  * If given a non-`Type` value for `type`, this takes it to name a
  * transparent derived type.
  */
-void assertTypeIs(zvalue value, zvalue type);
+void assertHasType(zvalue value, zvalue type);
 
 /**
  * Creates a new core type, given its name. This always creates a new type.

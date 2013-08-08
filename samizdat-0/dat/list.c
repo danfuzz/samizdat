@@ -90,7 +90,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
 
 /* Documented in header. */
 void datAssertList(zvalue value) {
-    assertTypeIs(value, TYPE_List);
+    assertHasType(value, TYPE_List);
 }
 
 /* Documented in header. */

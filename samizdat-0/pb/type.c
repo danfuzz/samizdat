@@ -110,10 +110,10 @@ static bool isType(zvalue value) {
 /**
  * Asserts that the value is a `Type`.
  */
-static void assertTypeIsType(zvalue value) {
+static void assertHasTypeType(zvalue value) {
     if (!isType(value)) {
         // Upon failure, use the regular implementation to produce the error.
-        assertTypeIs(value, TYPE_Type);
+        assertHasType(value, TYPE_Type);
     }
 }
 
@@ -124,7 +124,7 @@ static void assertTypeIsType(zvalue value) {
 
 /* Documented in header. */
 zint indexFromType(zvalue type) {
-    assertTypeIsType(type);
+    assertHasTypeType(type);
     return typeInfo(type)->id;
 }
 
@@ -166,7 +166,7 @@ bool typeSecretIs(zvalue type, zvalue secret) {
  */
 
 /* Documented in header. */
-void assertTypeIs(zvalue value, zvalue type) {
+void assertHasType(zvalue value, zvalue type) {
     // This tries doing `!=` a first test, to keep the usual case speedy.
     if (   (value != NULL)
         && (value->type != type)

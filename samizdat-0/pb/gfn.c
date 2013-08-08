@@ -85,7 +85,7 @@ zfunction gfnFind(zvalue generic, zvalue value) {
 
 /* Documented in header. */
 void pbAssertGeneric(zvalue value) {
-    assertTypeIs(value, TYPE_Generic);
+    assertHasType(value, TYPE_Generic);
 }
 
 /* Documented in header. */
