@@ -34,7 +34,7 @@ zvalue GFN_gcMark = NULL;
 zvalue GFN_order = NULL;
 
 /* Documented in header. */
-zvalue GFN_sizeOf = NULL;
+zvalue GFN_size = NULL;
 
 /* Documented in header. */
 static zvalue Default_debugString(zvalue state,
@@ -57,7 +57,7 @@ static zvalue Default_eq(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Default_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Default_size(zvalue state, zint argCount, const zvalue *args) {
     return intFromZint(0);
 }
 
@@ -83,9 +83,9 @@ void pbInitCoreGenerics(void) {
     GFN_order = gfnFrom(2, 2, stringFromUtf8(-1, "order"));
     pbImmortalize(GFN_order);
 
-    GFN_sizeOf = gfnFrom(1, 1, stringFromUtf8(-1, "sizeOf"));
-    gfnBindCoreDefault(GFN_sizeOf, Default_sizeOf);
-    pbImmortalize(GFN_sizeOf);
+    GFN_size = gfnFrom(1, 1, stringFromUtf8(-1, "size"));
+    gfnBindCoreDefault(GFN_size, Default_size);
+    pbImmortalize(GFN_size);
 }
 
 
@@ -159,5 +159,5 @@ zorder pbOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zint pbSize(zvalue value) {
-    return zintFromInt(fnCall(GFN_sizeOf, 1, &value));
+    return zintFromInt(fnCall(GFN_size, 1, &value));
 }

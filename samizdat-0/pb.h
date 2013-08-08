@@ -123,11 +123,11 @@ extern zvalue GFN_eq;
 extern zvalue GFN_order;
 
 /**
- * Generic `sizeOf(value)`: Gets the "size" of a value of the given type,
+ * Generic `size(value)`: Gets the "size" of a value of the given type,
  * for the appropriate per-type meaning of size. Defaults to always returning
  * `0`.
  */
-extern zvalue GFN_sizeOf;
+extern zvalue GFN_size;
 
 
 /*

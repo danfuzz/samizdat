@@ -263,7 +263,7 @@ static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue List_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+static zvalue List_size(zvalue state, zint argCount, const zvalue *args) {
     zvalue list = args[0];
     return intFromZint(listSizeOf(list));
 }
@@ -274,7 +274,7 @@ void datBindList(void) {
     gfnBindCore(GFN_eq,     TYPE_List, List_eq);
     gfnBindCore(GFN_gcMark, TYPE_List, List_gcMark);
     gfnBindCore(GFN_order,  TYPE_List, List_order);
-    gfnBindCore(GFN_sizeOf, TYPE_List, List_sizeOf);
+    gfnBindCore(GFN_size,   TYPE_List, List_size);
 
     EMPTY_LIST = allocList(0);
     pbImmortalize(EMPTY_LIST);

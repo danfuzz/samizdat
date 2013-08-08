@@ -417,7 +417,7 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Map_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Map_size(zvalue state, zint argCount, const zvalue *args) {
     zvalue map = args[0];
     return intFromZint(mapSizeOf(map));
 }
@@ -428,7 +428,7 @@ void datBindMap(void) {
     gfnBindCore(GFN_eq,     TYPE_Map, Map_eq);
     gfnBindCore(GFN_gcMark, TYPE_Map, Map_gcMark);
     gfnBindCore(GFN_order,  TYPE_Map, Map_order);
-    gfnBindCore(GFN_sizeOf, TYPE_Map, Map_sizeOf);
+    gfnBindCore(GFN_size,   TYPE_Map, Map_size);
 
     EMPTY_MAP = allocMap(0);
     pbImmortalize(EMPTY_MAP);

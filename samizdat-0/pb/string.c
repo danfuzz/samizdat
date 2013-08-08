@@ -289,7 +289,7 @@ static zvalue String_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue String_sizeOf(zvalue state, zint argCount, const zvalue *args) {
+static zvalue String_size(zvalue state, zint argCount, const zvalue *args) {
     zvalue string = args[0];
     return intFromZint(stringSizeOf(string));
 }
@@ -301,7 +301,7 @@ void pbBindString(void) {
     gfnBindCore(GFN_debugString, TYPE_String, String_debugString);
     gfnBindCore(GFN_eq,          TYPE_String, String_eq);
     gfnBindCore(GFN_order,       TYPE_String, String_order);
-    gfnBindCore(GFN_sizeOf,      TYPE_String, String_sizeOf);
+    gfnBindCore(GFN_size,        TYPE_String, String_size);
 
     EMPTY_STRING = allocString(0);
     pbImmortalize(EMPTY_STRING);
