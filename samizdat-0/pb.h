@@ -78,6 +78,9 @@ extern zvalue TYPE_String;
 /** Type value for in-model type `Type`. */
 extern zvalue TYPE_Type;
 
+/** Type value for in-model type `Value`. */
+extern zvalue TYPE_Value;
+
 /**
  * Generic `call(value)`: Somewhat-degenerate generic for dispatching to
  * a function call mechanism (how meta). Only defined for types `Function`
@@ -362,14 +365,6 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
 void gfnBindCore(zvalue generic, zvalue type, zfunction function);
 
 /**
- * Adds a default binding to the given generic. `generic` must be a generic
- * function, and `function` must be a valid `zfunction`. A default must not
- * have already been bound in the given generic, and the generic must not be
- * sealed.
- */
-void gfnBindCoreDefault(zvalue generic, zfunction function);
-
-/**
  * Constructs and returns a generic function with the given argument
  * restrictions and optional name (used when producing stack traces). It is
  * initially unsealed and without any bindings. `minArgs` must be at least
@@ -418,6 +413,11 @@ zvalue typeName(zvalue type);
  * valid value (in particular, non-`NULL`).
  */
 zvalue typeOf(zvalue value);
+
+/**
+ * Gets the parent type of the given type.
+ */
+zvalue typeParent(zvalue type);
 
 
 /*

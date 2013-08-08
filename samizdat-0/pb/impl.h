@@ -109,10 +109,10 @@ zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args);
  */
 
 /**
- * Initializes the type system, including in particular the type value
- * `Type`. This also creates the types `String` and `Generic` but doesn't
- * bind methods to them; it's just enough so that types can be given names
- * and generics can be defined.
+ * Initializes the type system, including in particular the type values
+ * `Type` and `Value`. This also creates the types `String` and `Generic` but
+ * doesn't bind methods for them; it's just enough so that types can be given
+ * names and generics can be defined.
  */
 void pbInitTypeSystem(void);
 
@@ -127,5 +127,6 @@ void pbBindGeneric(void);
 void pbBindInt(void);
 void pbBindString(void);
 void pbBindType(void);
+void pbBindValue(void);
 
 #endif
