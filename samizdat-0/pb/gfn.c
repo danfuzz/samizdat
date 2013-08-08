@@ -69,12 +69,6 @@ static char *callReporter(void *state) {
 
 /* Documented in header. */
 zfunction gfnFind(zvalue generic, zvalue value) {
-    // TODO: Dispatch is currently on the core type. It should be able
-    // to handle derived types too. It's not as simple as just calling
-    // `typeOf` on the value, though: (1) That function itself is
-    // generic, and (2) the default implementations of many generics
-    // will have to be adjusted.
-
     GenericInfo *info = gfnInfo(generic);
     zfunction result = info->functions[indexFromType(value->type)];
 
