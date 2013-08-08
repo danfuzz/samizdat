@@ -24,6 +24,9 @@ static zvalue theTypes[PB_MAX_TYPES];
  * Payload struct for type `Type`.
  */
 typedef struct {
+    /** Parent type. Only allowed to be `NULL` for `Value`. */
+    zvalue parent;
+
     /**
      * Name of the type. Arbitrary other than that it must be unique
      * among all types.
@@ -53,13 +56,19 @@ static TypeInfo *typeInfo(zvalue type) {
 /**
  * Initializes a type value.
  */
-static void typeInit(zvalue type, zvalue name, zvalue secret, bool derived) {
+static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
+        bool derived) {
     if (theNextId == PB_MAX_TYPES) {
         die("Too many types!");
     }
 
+    if ((parent == NULL) && (type != TYPE_Value)) {
+        die("Every type but `Value` needs a parent.");
+    }
+
     TypeInfo *info = typeInfo(type);
 
+    info->parent = parent;
     info->name = name;
     info->secret = secret;
     info->id = theNextId;
@@ -87,7 +96,7 @@ static zvalue allocType(void) {
  */
 static zvalue newType(zvalue name, zvalue secret, bool derived) {
     zvalue result = allocType();
-    typeInit(result, name, secret, derived);
+    typeInit(result, TYPE_Value, name, secret, derived);
     return result;
 }
 
@@ -178,6 +187,12 @@ bool typeIsDerived(zvalue type) {
 }
 
 /* Documented in header. */
+zvalue typeName(zvalue type) {
+    assertTypeIsType(type);
+    return typeInfo(type)->name;
+}
+
+/* Documented in header. */
 zvalue typeOf(zvalue value) {
     pbAssertValid(value);
 
@@ -189,10 +204,9 @@ zvalue typeOf(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue typeName(zvalue type) {
+zvalue typeParent(zvalue type) {
     assertTypeIsType(type);
-    TypeInfo *info = typeInfo(type);
-    return info->name;
+    return typeInfo(type)->parent;
 }
 
 
@@ -266,17 +280,19 @@ static zvalue Type_order(zvalue state, zint argCount, const zvalue *args) {
 void pbInitTypeSystem(void) {
     TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
-    TYPE_Generic = allocType();
+    TYPE_Value = allocType();
     TYPE_String = allocType();
+    TYPE_Generic = allocType();
 
     // PB_SECRET is defined as a type value with no instances. This is
     // a hackish convenience. It should probably be a Uniqlet.
     PB_SECRET = allocType();
 
-    typeInit(TYPE_Type,    stringFromUtf8(-1, "Type"),    PB_SECRET, false);
-    typeInit(TYPE_Generic, stringFromUtf8(-1, "Generic"), PB_SECRET, false);
-    typeInit(TYPE_String,  stringFromUtf8(-1, "String"),  PB_SECRET, false);
-    typeInit(PB_SECRET,    stringFromUtf8(-1, "SECRET"),  PB_SECRET, false);
+    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    PB_SECRET, false);
+    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   PB_SECRET, false);
+    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  PB_SECRET, false);
+    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), PB_SECRET, false);
+    typeInit(PB_SECRET,    TYPE_Value, stringFromUtf8(-1, "SECRET"),  PB_SECRET, false);
 }
 
 /* Documented in header. */
@@ -288,4 +304,3 @@ void pbBindType(void) {
 
 /* Documented in header. */
 zvalue TYPE_Type = NULL;
-

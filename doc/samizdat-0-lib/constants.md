@@ -53,6 +53,10 @@ value.
 
 The type of uniqlet values.
 
+#### `Value`
+
+The common type of all values.
+
 
 <br><br>
 ### In-Language Definitions

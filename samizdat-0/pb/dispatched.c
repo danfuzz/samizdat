@@ -37,41 +37,14 @@ zvalue GFN_order = NULL;
 zvalue GFN_size = NULL;
 
 /* Documented in header. */
-static zvalue Default_debugString(zvalue state,
-        zint argCount, const zvalue *args) {
-    char addrBuf[19]; // Includes room for "0x" and "\0".
-
-    sprintf(addrBuf, "%p", args[0]);
-
-    zvalue result = stringFromUtf8(-1, "@(");
-    result = stringAdd(result, fnCall(GFN_debugString, 1, &args[0]->type));
-    result = stringAdd(result, stringFromUtf8(-1, " @ "));
-    result = stringAdd(result, stringFromUtf8(-1, addrBuf));
-    result = stringAdd(result, stringFromUtf8(-1, ")"));
-    return result;
-}
-
-/* Documented in header. */
-static zvalue Default_eq(zvalue state, zint argCount, const zvalue *args) {
-    return NULL;
-}
-
-/* Documented in header. */
-static zvalue Default_size(zvalue state, zint argCount, const zvalue *args) {
-    return intFromZint(0);
-}
-
-/* Documented in header. */
 void pbInitCoreGenerics(void) {
     GFN_call = gfnFrom(1, 1, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 
     GFN_debugString = gfnFrom(1, 1, stringFromUtf8(-1, "debugString"));
-    gfnBindCoreDefault(GFN_debugString, Default_debugString);
     pbImmortalize(GFN_debugString);
 
     GFN_eq = gfnFrom(2, 2, stringFromUtf8(-1, "eq"));
-    gfnBindCoreDefault(GFN_eq, Default_eq);
     pbImmortalize(GFN_eq);
 
     GFN_gcFree = gfnFrom(1, 1, stringFromUtf8(-1, "gcFree"));
@@ -84,7 +57,6 @@ void pbInitCoreGenerics(void) {
     pbImmortalize(GFN_order);
 
     GFN_size = gfnFrom(1, 1, stringFromUtf8(-1, "size"));
-    gfnBindCoreDefault(GFN_size, Default_size);
     pbImmortalize(GFN_size);
 }
 
