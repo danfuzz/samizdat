@@ -187,6 +187,12 @@ bool typeIsDerived(zvalue type) {
 }
 
 /* Documented in header. */
+zvalue typeName(zvalue type) {
+    assertTypeIsType(type);
+    return typeInfo(type)->name;
+}
+
+/* Documented in header. */
 zvalue typeOf(zvalue value) {
     pbAssertValid(value);
 
@@ -198,10 +204,9 @@ zvalue typeOf(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue typeName(zvalue type) {
+zvalue typeParent(zvalue type) {
     assertTypeIsType(type);
-    TypeInfo *info = typeInfo(type);
-    return info->name;
+    return typeInfo(type)->parent;
 }
 
 

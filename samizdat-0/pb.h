@@ -422,6 +422,11 @@ zvalue typeName(zvalue type);
  */
 zvalue typeOf(zvalue value);
 
+/**
+ * Gets the parent type of the given type.
+ */
+zvalue typeParent(zvalue type);
+
 
 /*
  * Derived Value Functions
