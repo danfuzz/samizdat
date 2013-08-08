@@ -38,6 +38,9 @@ enum {
     /** Number of allocations between each forced gc. */
     PB_ALLOCATIONS_PER_GC = 500000,
 
+    /** Largest code point to keep a cached single-character string for. */
+    PB_MAX_CACHED_CHAR = 127,
+
     /** Maximum number of immortal values allowed. */
     PB_MAX_IMMORTALS = 2000,
 

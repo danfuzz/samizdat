@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "zlimits.h"
 
 #include <string.h>
 
@@ -13,13 +14,8 @@
  * Helper definitions
  */
 
-enum {
-    /** Largest code point to keep a cached single-character string for. */
-    MAX_CACHED_CHAR = 127
-};
-
 /** Array of single-character strings, for low character codes. */
-static zvalue CACHED_CHARS[MAX_CACHED_CHAR + 1];
+static zvalue CACHED_CHARS[PB_MAX_CACHED_CHAR + 1];
 
 /**
  * String structure.
@@ -127,7 +123,7 @@ zvalue stringFromUtf8(zint stringBytes, const char *string) {
 
 /* Documented in header. */
 zvalue stringFromZchar(zchar value) {
-    if (value <= MAX_CACHED_CHAR) {
+    if (value <= PB_MAX_CACHED_CHAR) {
         zvalue result = CACHED_CHARS[value];
         if (result != NULL) {
             return result;
@@ -137,7 +133,7 @@ zvalue stringFromZchar(zchar value) {
     zvalue result = allocString(1);
     stringElems(result)[0] = value;
 
-    if (value <= MAX_CACHED_CHAR) {
+    if (value <= PB_MAX_CACHED_CHAR) {
         CACHED_CHARS[value] = result;
         pbImmortalize(result);
     }
