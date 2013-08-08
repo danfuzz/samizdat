@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "zlimits.h"
 
 #include <string.h>
 
@@ -12,6 +13,9 @@
 /*
  * Helper definitions
  */
+
+/** Array of single-character strings, for low character codes. */
+static zvalue CACHED_CHARS[PB_MAX_CACHED_CHAR + 1];
 
 /**
  * String structure.
@@ -91,18 +95,6 @@ zvalue stringAdd(zvalue str1, zvalue str2) {
 }
 
 /* Documented in header. */
-zvalue stringFromZchars(zint size, const zchar *chars) {
-    if (size == 0) {
-        return EMPTY_STRING;
-    }
-
-    zvalue result = allocString(size);
-
-    memcpy(stringElems(result), chars, size * sizeof(zchar));
-    return result;
-}
-
-/* Documented in header. */
 zvalue stringFromUtf8(zint stringBytes, const char *string) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
@@ -110,14 +102,57 @@ zvalue stringFromUtf8(zint stringBytes, const char *string) {
         die("Invalid string size: %lld", stringBytes);
     }
 
-    if (stringBytes == 0) {
-        return EMPTY_STRING;
+    zint decodedSize = utf8DecodeStringSize(stringBytes, string);
+
+    switch (decodedSize) {
+        case 0: return EMPTY_STRING;
+        case 1: {
+            // Call into `stringFromChar` since that's what handles caching
+            // of single-character strings.
+            zchar ch;
+            utf8DecodeCharsFromString(&ch, stringBytes, string);
+            return stringFromZchar(ch);
+        }
     }
 
-    zint decodedSize = utf8DecodeStringSize(stringBytes, string);
     zvalue result = allocString(decodedSize);
 
     utf8DecodeCharsFromString(stringElems(result), stringBytes, string);
+    return result;
+}
+
+/* Documented in header. */
+zvalue stringFromZchar(zchar value) {
+    if (value <= PB_MAX_CACHED_CHAR) {
+        zvalue result = CACHED_CHARS[value];
+        if (result != NULL) {
+            return result;
+        }
+    }
+
+    zvalue result = allocString(1);
+    stringElems(result)[0] = value;
+
+    if (value <= PB_MAX_CACHED_CHAR) {
+        CACHED_CHARS[value] = result;
+        pbImmortalize(result);
+    }
+
+    return result;
+}
+
+/* Documented in header. */
+zvalue stringFromZchars(zint size, const zchar *chars) {
+    // Deal with special cases. This calls into `stringFromChar` since that's
+    // what handles caching of single-character strings.
+    switch (size) {
+        case 0: return EMPTY_STRING;
+        case 1: return stringFromZchar(chars[0]);
+    }
+
+    zvalue result = allocString(size);
+
+    memcpy(stringElems(result), chars, size * sizeof(zchar));
     return result;
 }
 

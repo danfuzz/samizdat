@@ -21,7 +21,7 @@
 static zvalue valueFromStringNth(zvalue string, zint n) {
     zint ch = stringNth(string, n);
 
-    return (ch < 0) ? NULL : constStringFromZchar(ch);
+    return (ch < 0) ? NULL : stringFromZchar(ch);
 }
 
 
@@ -31,7 +31,7 @@ static zvalue valueFromStringNth(zvalue string, zint n) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(charFromInt) {
-    return constStringFromZchar(zcharFromInt(args[0]));
+    return stringFromZchar(zcharFromInt(args[0]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

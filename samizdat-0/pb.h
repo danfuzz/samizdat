@@ -270,17 +270,22 @@ bool zintGetBit(zint value, zint n);
 zvalue stringAdd(zvalue str1, zvalue str2);
 
 /**
- * Gets the string built from the given array of `zchar`s, of
- * the given size.
- */
-zvalue stringFromZchars(zint size, const zchar *chars);
-
-/**
  * Gets the string resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.
  */
 zvalue stringFromUtf8(zint stringBytes, const char *string);
+
+/**
+ * Converts a C `zchar` to an in-model single-character string.
+ */
+zvalue stringFromZchar(zchar value);
+
+/**
+ * Gets the string built from the given array of `zchar`s, of
+ * the given size.
+ */
+zvalue stringFromZchars(zint size, const zchar *chars);
 
 /**
  * Given a string, returns the `n`th element, which is in the
