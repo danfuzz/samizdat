@@ -67,11 +67,11 @@ void pbInitCoreGenerics(void) {
     pbImmortalize(GFN_call);
 
     GFN_debugString = gfnFrom(1, 1, stringFromUtf8(-1, "debugString"));
-    gfnBindCoreDefault(GFN_debugString, Default_debugString);
+    gfnBindCore(GFN_debugString, TYPE_Value, Default_debugString);
     pbImmortalize(GFN_debugString);
 
     GFN_eq = gfnFrom(2, 2, stringFromUtf8(-1, "eq"));
-    gfnBindCoreDefault(GFN_eq, Default_eq);
+    gfnBindCore(GFN_eq, TYPE_Value, Default_eq);
     pbImmortalize(GFN_eq);
 
     GFN_gcFree = gfnFrom(1, 1, stringFromUtf8(-1, "gcFree"));
@@ -84,7 +84,7 @@ void pbInitCoreGenerics(void) {
     pbImmortalize(GFN_order);
 
     GFN_size = gfnFrom(1, 1, stringFromUtf8(-1, "size"));
-    gfnBindCoreDefault(GFN_size, Default_size);
+    gfnBindCore(GFN_size, TYPE_Value, Default_size);
     pbImmortalize(GFN_size);
 }
 

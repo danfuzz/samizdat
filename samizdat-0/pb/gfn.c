@@ -131,11 +131,6 @@ void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
 }
 
 /* Documented in header. */
-void gfnBindCoreDefault(zvalue generic, zfunction function) {
-    gfnBindCore(generic, TYPE_Value, function);
-}
-
-/* Documented in header. */
 zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
     if ((minArgs < 1) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
