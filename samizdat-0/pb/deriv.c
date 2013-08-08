@@ -15,13 +15,6 @@
  */
 
 /**
- * Array of cached type-only values, with single-character strings for
- * types, for low character codes. These are used as charecter "tokens"
- * when doing tokenization, hence the name.
- */
-static zvalue CACHED_CHAR_TOKENS[PB_MAX_CACHED_CHAR + 1];
-
-/**
  * Gets the info of a derived value.
  */
 static DerivInfo *derivInfo(zvalue value) {
@@ -91,24 +84,6 @@ zvalue derivFrom(zvalue type, zvalue data, zvalue secret) {
     pbAssertValidOrNull(data);
     pbAssertValidOrNull(secret);
 
-    zchar cacheChar = ~0;
-
-    if (type->type != TYPE_Type) {
-        if (   (data == NULL)
-            && (secret == NULL)
-            && (type->type == TYPE_String)
-            && (pbSize(type) == 1)) {
-            cacheChar = stringNth(type, 0);
-            if (cacheChar <= PB_MAX_CACHED_CHAR) {
-                zvalue result = CACHED_CHAR_TOKENS[cacheChar];
-                if (result != NULL) {
-                    return result;
-                }
-            }
-        }
-        type = transparentTypeFromName(type);
-    }
-
     // Make sure the secrets match. In the case of a transparent type,
     // this checks that `secret` is `NULL`.
     if (!typeSecretIs(type, secret)) {
@@ -117,11 +92,6 @@ zvalue derivFrom(zvalue type, zvalue data, zvalue secret) {
 
     zvalue result = pbAllocValue(type, sizeof(DerivInfo));
     ((DerivInfo *) pbPayload(result))->data = data;
-
-    if (cacheChar != ~0) {
-        CACHED_CHAR_TOKENS[cacheChar] = result;
-        pbImmortalize(result);
-    }
 
     return result;
 }

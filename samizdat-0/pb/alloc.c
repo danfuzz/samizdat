@@ -279,12 +279,6 @@ zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes) {
 
 /* Documented in header. */
 zvalue pbAllocValue(zvalue type, zint extraBytes) {
-    // This does a "quickie" check that works even before the type `Type`
-    // is fully initialized.
-    if (type->type != TYPE_Type) {
-        die("Attempt to allocate with non-type type.");
-    }
-
     return pbAllocValueUnchecked(type, extraBytes);
 }
 
