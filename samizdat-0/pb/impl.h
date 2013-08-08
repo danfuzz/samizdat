@@ -68,7 +68,8 @@ typedef struct {
 zfunction gfnFind(zvalue generic, zvalue value);
 
 /**
- * Gets the index for a given type value.
+ * Gets the index for a given type value. The given value *must* be a
+ * `Type` per se.
  */
 zint indexFromType(zvalue type);
 
@@ -84,6 +85,12 @@ zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
  * if necessary.
  */
 zvalue transparentTypeFromName(zvalue name);
+
+/**
+ * Gets the `Type` per se for the given value. This creates a lightweight
+ * transparent type, updating the value, if necessary.
+ */
+zvalue trueTypeOf(zvalue value);
 
 /**
  * Returns true iff the given type is a derived type (whether opaque or

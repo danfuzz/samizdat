@@ -150,6 +150,18 @@ zvalue transparentTypeFromName(zvalue name) {
 }
 
 /* Documented in header. */
+zvalue trueTypeOf(zvalue value) {
+    zvalue type = value->type;
+
+    if (!isType(type)) {
+        type = transparentTypeFromName(type);
+        value->type = type;
+    }
+
+    return type;
+}
+
+/* Documented in header. */
 bool typeIsDerived(zvalue type) {
     return isType(type) ? typeInfo(type)->derived : true;
 }
