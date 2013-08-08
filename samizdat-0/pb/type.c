@@ -304,7 +304,3 @@ void pbBindType(void) {
 
 /* Documented in header. */
 zvalue TYPE_Type = NULL;
-
-/* Documented in header. */
-zvalue TYPE_Value = NULL;
-

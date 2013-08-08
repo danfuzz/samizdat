@@ -76,9 +76,10 @@ void pbInit(void) {
     // Next the generics have to be defined, and the early types' methods
     // need to be bound, so that the rest of the binding can operate properly.
     pbInitCoreGenerics();
-    pbBindGeneric();
-    pbBindString();
+    pbBindValue();
     pbBindType();
+    pbBindString();
+    pbBindGeneric();
 
     pbBindFunction();
     pbBindInt();
