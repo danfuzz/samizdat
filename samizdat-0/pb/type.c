@@ -27,10 +27,7 @@ typedef struct {
     /** Parent type. Only allowed to be `NULL` for `Value`. */
     zvalue parent;
 
-    /**
-     * Name of the type. Arbitrary other than that it must be unique
-     * among all types.
-     */
+    /** Name of the type. Arbitrary value. */
     zvalue name;
 
     /** Access secret of the type. Optional, and arbitrary if present. */
@@ -101,13 +98,20 @@ static zvalue newType(zvalue name, zvalue secret, bool derived) {
 }
 
 /**
- * Asserts that the value is a `Type`.
+ * Returns `true` iff the value is a `Type`.
  */
-static void assertTypeIsType(zvalue value) {
+static bool isType(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
     // a significant amount of runtime, with no real benefit, and (b) it
     // avoids infinite recursion.
-    if (value->type != TYPE_Type) {
+    return (value->type == TYPE_Type);
+}
+
+/**
+ * Asserts that the value is a `Type`.
+ */
+static void assertTypeIsType(zvalue value) {
+    if (!isType(value)) {
         // Upon failure, use the regular implementation to produce the error.
         assertTypeIs(value, TYPE_Type);
     }
@@ -146,9 +150,14 @@ zvalue transparentTypeFromName(zvalue name) {
 }
 
 /* Documented in header. */
+bool typeIsDerived(zvalue type) {
+    return isType(type) ? typeInfo(type)->derived : true;
+}
+
+/* Documented in header. */
 bool typeSecretIs(zvalue type, zvalue secret) {
-    assertTypeIsType(type);
-    return pbNullSafeEq(typeInfo(type)->secret, secret);
+    zvalue typeSecret = isType(type) ? typeInfo(type)->secret : NULL;
+    return pbNullSafeEq(typeSecret, secret);
 }
 
 
@@ -158,12 +167,10 @@ bool typeSecretIs(zvalue type, zvalue secret) {
 
 /* Documented in header. */
 void assertTypeIs(zvalue value, zvalue type) {
-    // This tries doing `==` on `Type` values as a first test, to keep the
-    // usual case speedy.
-    zvalue t = value->type;
-    if ((value != NULL) && (value->type != type)) {
-        pbAssertValid(value);
-        assertTypeIsType(type);
+    // This tries doing `!=` a first test, to keep the usual case speedy.
+    if (   (value != NULL)
+        && (value->type != type)
+        && !hasType(value, type)) {
         die("Expected type %s; got %s.",
             pbDebugString(type), pbDebugString(value));
     }
@@ -180,16 +187,8 @@ bool hasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
-bool typeIsDerived(zvalue type) {
-    assertTypeIsType(type);
-    TypeInfo *info = typeInfo(type);
-    return info->derived;
-}
-
-/* Documented in header. */
 zvalue typeName(zvalue type) {
-    assertTypeIsType(type);
-    return typeInfo(type)->name;
+    return isType(type) ? typeInfo(type)->name : type;
 }
 
 /* Documented in header. */
@@ -197,16 +196,19 @@ zvalue typeOf(zvalue value) {
     pbAssertValid(value);
 
     zvalue type = value->type;
-    TypeInfo *info = typeInfo(type);
-
-    // `typeOf` on a transparent type returns its name.
-    return (info->secret == NULL) ? info->name : type;
+    if (isType(type)) {
+        TypeInfo *info = typeInfo(type);
+        // `typeOf` on a transparent type returns its name.
+        return (info->secret == NULL) ? info->name : type;
+    } else {
+        // It is a transparent type.
+        return type;
+    }
 }
 
 /* Documented in header. */
 zvalue typeParent(zvalue type) {
-    assertTypeIsType(type);
-    return typeInfo(type)->parent;
+    return isType(type) ? typeInfo(type)->parent : TYPE_Value;
 }
 
 

@@ -387,10 +387,10 @@ void gfnSeal(zvalue generic);
 /**
  * Asserts that the given value is a valid `zvalue`, furthermore has the
  * given type. If not, this aborts the process with a diagnostic message.
- * The given `type` must be a `Type` value per se. That is, this function
- * doesn't work on transparent derived values.
+ * If given a non-`Type` value for `type`, this takes it to name a
+ * transparent derived type.
  */
-void assertTypeIs(zvalue v1, zvalue type);
+void assertTypeIs(zvalue value, zvalue type);
 
 /**
  * Creates a new core type, given its name. This always creates a new type.
@@ -404,18 +404,23 @@ zvalue coreTypeFromName(zvalue name);
 bool hasType(zvalue value, zvalue type);
 
 /**
- * Gets the name of the given type.
+ * Gets the name of the given type. If given a non-`Type` value for `type`,
+ * this takes it to name a transparent derived type; as such it will return
+ * `type` itself in these cases.
  */
 zvalue typeName(zvalue type);
 
 /**
  * Gets the overt data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`).
+ * valid value (in particular, non-`NULL`). For transparent derived types,
+ * this returns the name of the type, and not a `Type` value per se.
  */
 zvalue typeOf(zvalue value);
 
 /**
- * Gets the parent type of the given type.
+ * Gets the parent type of the given type. If given a non-`Type` value for
+ * `type`, this takes it to name a transparent derived type; as such it
+ * will return `TYPE_Value` in these cases.
  */
 zvalue typeParent(zvalue type);
 
