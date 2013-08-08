@@ -287,6 +287,13 @@ of type:
   payload of values of the type.
 
 
+#### Value
+
+This is the supertype of all other types in the language. It is mostly
+useful as the type to use in order to bind a default method to a generic
+function.
+
+
 ### Derived types
 
 A derived value is one that was constructed with an explicit type tag and
