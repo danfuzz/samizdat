@@ -44,7 +44,10 @@ The type of string values.
 
 #### `Type`
 
-The type of type values.
+The type of opaque type values.
+
+**Note:** The type of a transparent derived type is a simple non-type
+value.
 
 #### `Uniqlet`
 
