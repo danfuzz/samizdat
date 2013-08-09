@@ -206,9 +206,9 @@ static void doGc(void) {
         // Need to grab `item->next` before freeing the item.
         zvalue next = item->next;
 
-        zfunction freer = gfnFind(GFN_gcFree, item);
+        zvalue freer = gfnFind(GFN_gcFree, item);
         if (freer != NULL) {
-            freer(NULL, 1, &item);
+            fnCall(freer, 1, &item);
         }
 
         // Prevent this from being mistaken for a live value.
@@ -370,9 +370,9 @@ void pbMark(zvalue value) {
     value->marked = true;
     enlist(&liveHead, value);
 
-    zfunction marker = gfnFind(GFN_gcMark, value);
+    zvalue marker = gfnFind(GFN_gcMark, value);
     if (marker != NULL) {
-        marker(NULL, 1, &value);
+        fnCall(marker, 1, &value);
     }
 
     // Opaque types are all immortalized, but transparent types need to

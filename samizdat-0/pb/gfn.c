@@ -41,8 +41,9 @@ typedef struct {
     zint orderId;
 
     /** Bindings from type to function, keyed off of type sequence number. */
-    zfunction functions[PB_MAX_TYPES];
+    zvalue functions[PB_MAX_TYPES];
 } GenericInfo;
+
 
 /**
  * Gets a pointer to the value's info.
@@ -54,11 +55,11 @@ static GenericInfo *gfnInfo(zvalue generic) {
 /**
  * Find the binding for a given type.
  */
-static zfunction findByTrueType(zvalue generic, zvalue type) {
+static zvalue findByTrueType(zvalue generic, zvalue type) {
     GenericInfo *info = gfnInfo(generic);
 
     for (/*type*/; type != NULL; type = typeParent(type)) {
-        zfunction result = info->functions[indexFromType(type)];
+        zvalue result = info->functions[indexFromType(type)];
         if (result != NULL) {
             return result;
         }
@@ -81,7 +82,7 @@ static char *callReporter(void *state) {
  */
 
 /* Documented in header. */
-zfunction gfnFind(zvalue generic, zvalue value) {
+zvalue gfnFind(zvalue generic, zvalue value) {
     return findByTrueType(generic, trueTypeOf(value));
 }
 
@@ -107,13 +108,14 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     zstackPointer save = pbFrameStart();
 
     zint index = indexFromType(function->type);
-    zfunction caller = gfnInfo(GFN_call)->functions[index];
+    zvalue caller = gfnInfo(GFN_call)->functions[index];
 
     if (caller == NULL) {
         die("Attempt to call non-function.");
     }
 
-    zvalue result = caller(function, argCount, args);
+    zfunction zfunc = zfunctionFromFunction(caller);
+    zvalue result = zfunc(function, argCount, args);
 
     pbFrameReturn(save, result);
     UTIL_TRACE_END();
@@ -134,7 +136,8 @@ void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
         die("Duplicate binding in generic.");
     }
 
-    info->functions[index] = function;
+    info->functions[index] =
+        fnFrom(info->minArgs, info->maxArgs, function, NULL, info->name);
 }
 
 /* Documented in header. */
@@ -179,13 +182,14 @@ static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    zfunction function = gfnFind(generic, args[0]);
+    zvalue function = gfnFind(generic, args[0]);
 
     if (function == NULL) {
         die("No type binding found for generic.");
     }
 
-    return function(NULL, argCount, args);
+    zfunction zfunc = zfunctionFromFunction(function);
+    return zfunc(NULL, argCount, args);
 }
 
 /* Documented in header. */
@@ -212,6 +216,9 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
     GenericInfo *info = gfnInfo(generic);
 
     pbMark(info->name);
+    for (zint i = 0; i < PB_MAX_TYPES; i++) {
+        pbMark(info->functions[i]);
+    }
 
     return NULL;
 }
