@@ -249,11 +249,11 @@ static void doGc(void) {
 
 
 /*
- * Module functions
+ * Exported functions
  */
 
 /* Documented in header. */
-zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes) {
+zvalue pbAllocValue(zvalue type, zint extraBytes) {
     if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
         pbGc();
     } else {
@@ -270,16 +270,6 @@ zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes) {
     sanityCheck(false);
 
     return result;
-}
-
-
-/*
- * Exported functions
- */
-
-/* Documented in header. */
-zvalue pbAllocValue(zvalue type, zint extraBytes) {
-    return pbAllocValueUnchecked(type, extraBytes);
 }
 
 /* Documented in header. */

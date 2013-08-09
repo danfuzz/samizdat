@@ -74,13 +74,6 @@ zfunction gfnFind(zvalue generic, zvalue value);
 zint indexFromType(zvalue type);
 
 /**
- * Like `pbAllocValue`, except that no checking of `type` is done.
- * This is only used during initial bootstrap, to allocate the
- * types `Type` and `String` (which have reference cycles).
- */
-zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
-
-/**
  * Gets a transparent derived type, given its name. This creates the type
  * if necessary.
  */

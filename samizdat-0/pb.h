@@ -393,7 +393,8 @@ void gfnSeal(zvalue generic);
 void assertHasType(zvalue value, zvalue type);
 
 /**
- * Creates a new core type, given its name. This always creates a new type.
+ * Gets a new core type, given its name. When given the same name twice, this
+ * returns identical results.
  */
 zvalue coreTypeFromName(zvalue name);
 
