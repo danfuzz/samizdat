@@ -44,17 +44,6 @@ void pbAssertNthOrSize(zint size, zint n) {
 }
 
 /* Documented in header. */
-void pbAssertSameType(zvalue v1, zvalue v2) {
-    pbAssertValid(v1);
-    pbAssertValid(v2);
-
-    if (v1->type != v2->type) {
-        die("Mismatched types: %s, %s",
-            pbDebugString(v1), pbDebugString(v2));
-    }
-}
-
-/* Documented in header. */
 void pbAssertSliceRange(zint size, zint start, zint end) {
     if ((start < 0) || (end < 0) || (end < start)) {
         die("Invalid slice range: (%lld..!%lld)", start, end);

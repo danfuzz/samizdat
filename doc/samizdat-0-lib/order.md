@@ -43,13 +43,8 @@ standard meaning of those values:
 
 Ordering is calculated as follows:
 
-The "majorest" order is that core (primitive) values order before
-transparent derived values, and transparent derived values order before
-opaque derived values. Within each major category, major order is by
-type name order (e.g. `"Int"` before `"String"`). For two different types
-with the same category and name (only possible for opaque derived types),
-the major order is arbitrary but consistent. The minor order within a type
-is type-dependant.
+The "majorest" order is by type (see below for details). The minor order
+within a type is type-dependant, as follows:
 
 * Ints order by integer value, low to high.
 
@@ -65,6 +60,16 @@ is type-dependant.
 * Derived values compare by type as primary (per above), and data payload
   as secondary. With types equal, derived values without a payload order
   earlier than ones with a payload.
+
+* Types compare as follows:
+
+  * Core (primitive) types order earlier than all other type.
+  * Transparent derived types order earlier than everything but core types.
+  * Opaque derived types order after all other types.
+
+  Within each category, types are ordered by name. For two different types
+  with the same category and name (which can happen only with opaque derived
+  types), the order is arbitrary but consistent.
 
 * All other core values never compare as identical to anything but themselves.
   Within each type, there is a total ordering of values. The ordering is

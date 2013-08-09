@@ -186,7 +186,7 @@ void pbAssertNthOrSize(zint size, zint n);
  * that they have the same core type. If not, this aborts the process
  * with a diagnostic message.
  */
-void pbAssertSameType(zvalue v1, zvalue v2);
+void assertHaveSameType(zvalue v1, zvalue v2);
 
 /**
  * Asserts that the given range is valid for a `slice`-like operation
@@ -387,13 +387,14 @@ void gfnSeal(zvalue generic);
 /**
  * Asserts that the given value is a valid `zvalue`, furthermore has the
  * given type. If not, this aborts the process with a diagnostic message.
- * The given `type` must be a `Type` value per se. That is, this function
- * doesn't work on transparent derived values.
+ * If given a non-`Type` value for `type`, this takes it to name a
+ * transparent derived type.
  */
-void assertTypeIs(zvalue v1, zvalue type);
+void assertHasType(zvalue value, zvalue type);
 
 /**
- * Creates a new core type, given its name. This always creates a new type.
+ * Gets a new core type, given its name. When given the same name twice, this
+ * returns identical results.
  */
 zvalue coreTypeFromName(zvalue name);
 
@@ -404,18 +405,29 @@ zvalue coreTypeFromName(zvalue name);
 bool hasType(zvalue value, zvalue type);
 
 /**
- * Gets the name of the given type.
+ * Returns true iff the types of the given values (that is, `typeOf()` on
+ * each) are the same.
+ */
+bool haveSameType(zvalue v1, zvalue v2);
+
+/**
+ * Gets the name of the given type. If given a non-`Type` value for `type`,
+ * this takes it to name a transparent derived type; as such it will return
+ * `type` itself in these cases.
  */
 zvalue typeName(zvalue type);
 
 /**
  * Gets the overt data type of the given value. `value` must be a
- * valid value (in particular, non-`NULL`).
+ * valid value (in particular, non-`NULL`). For transparent derived types,
+ * this returns the name of the type, and not a `Type` value per se.
  */
 zvalue typeOf(zvalue value);
 
 /**
- * Gets the parent type of the given type.
+ * Gets the parent type of the given type. If given a non-`Type` value for
+ * `type`, this takes it to name a transparent derived type; as such it
+ * will return `TYPE_Value` in these cases.
  */
 zvalue typeParent(zvalue type);
 
@@ -489,14 +501,10 @@ char *pbDebugString(zvalue value);
 /**
  * Compares two values for equality. This exists in addition to
  * `pbOrder`, because it is possible for this function run much
- * quicker in the not-equal case.
+ * quicker in the not-equal case. As with `pbOrder`, this accepts
+ * `NULL` as a value, treating it as not the same as any other value.
  */
 bool pbEq(zvalue v1, zvalue v2);
-
-/**
- * Like `pbEq`, but accepts `NULL` as a valid value.
- */
-bool pbNullSafeEq(zvalue v1, zvalue v2);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
@@ -504,6 +512,9 @@ bool pbNullSafeEq(zvalue v1, zvalue v2);
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
  * See `totalOrder` in the Samizdat Layer 0 spec for more details about
  * value sorting.
+ *
+ * If `NULL` is passed as an argument, it is accepted and treated as
+ * being ordered earlier than any other value.
  */
 zorder pbOrder(zvalue v1, zvalue v2);
 

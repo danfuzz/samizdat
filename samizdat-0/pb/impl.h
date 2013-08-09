@@ -42,7 +42,11 @@ typedef struct PbHeader {
     /** Mark bit (used during GC). */
     bool marked : 1;
 
-    /** Data type. */
+    /**
+     * Data type. This can be either a `Type` per se, or it can be an
+     * arbitrary value to represent a transparent derived type. In the
+     * latter case, it can later be replaced (as needed) with a real `Type`.
+     */
     zvalue type;
 
     /** Type-specific data goes here. */
@@ -64,16 +68,10 @@ typedef struct {
 zfunction gfnFind(zvalue generic, zvalue value);
 
 /**
- * Gets the index for a given type value.
+ * Gets the index for a given type value. The given value *must* be a
+ * `Type` per se.
  */
 zint indexFromType(zvalue type);
-
-/**
- * Like `pbAllocValue`, except that no checking of `type` is done.
- * This is only used during initial bootstrap, to allocate the
- * types `Type` and `String` (which have reference cycles).
- */
-zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
 
 /**
  * Gets a transparent derived type, given its name. This creates the type
@@ -82,14 +80,21 @@ zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes);
 zvalue transparentTypeFromName(zvalue name);
 
 /**
+ * Gets the `Type` per se for the given value. This creates a lightweight
+ * transparent type, updating the value, if necessary.
+ */
+zvalue trueTypeOf(zvalue value);
+
+/**
  * Returns true iff the given type is a derived type (whether opaque or
- * transparent).
+ * transparent). This works (returns `true`) if given a non-`Type` value.
  */
 bool typeIsDerived(zvalue type);
 
 /**
  * Checks whether the given value matches the secret of the given type.
- * `secret` may be passed as `NULL`.
+ * `secret` may be passed as `NULL`. This works (treating it as a transparent
+ * type) if given a non-`Type` value for `type`.
  */
 bool typeSecretIs(zvalue type, zvalue secret);
 

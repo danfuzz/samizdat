@@ -67,8 +67,9 @@ static char *callReporter(void *state) {
 /* Documented in header. */
 zfunction gfnFind(zvalue generic, zvalue value) {
     GenericInfo *info = gfnInfo(generic);
+    zvalue type = trueTypeOf(value);
 
-    for (zvalue type = value->type; type != NULL; type = typeParent(type)) {
+    for (/*type*/; type != NULL; type = typeParent(type)) {
         zfunction result = info->functions[indexFromType(type)];
         if (result != NULL) {
             return result;
@@ -85,7 +86,7 @@ zfunction gfnFind(zvalue generic, zvalue value) {
 
 /* Documented in header. */
 void pbAssertGeneric(zvalue value) {
-    assertTypeIs(value, TYPE_Generic);
+    assertHasType(value, TYPE_Generic);
 }
 
 /* Documented in header. */
