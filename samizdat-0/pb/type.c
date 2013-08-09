@@ -379,18 +379,20 @@ void pbInitTypeSystem(void) {
     TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
     TYPE_Value = allocType();
-    TYPE_String = allocType();
+    TYPE_Function = allocType();
     TYPE_Generic = allocType();
+    TYPE_String = allocType();
 
     // `coreSecret` is defined as a type value with no instances. This is
     // a hackish convenience. It should probably be a Uniqlet.
     coreSecret = allocType();
 
-    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    coreSecret);
-    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret);
-    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  coreSecret);
-    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), coreSecret);
-    typeInit(coreSecret,   TYPE_Value, stringFromUtf8(-1, "SECRET"),  coreSecret);
+    typeInit(TYPE_Type,     TYPE_Value, stringFromUtf8(-1, "Type"),     coreSecret);
+    typeInit(TYPE_Value,    NULL,       stringFromUtf8(-1, "Value"),    coreSecret);
+    typeInit(TYPE_Function, TYPE_Value, stringFromUtf8(-1, "Function"), coreSecret);
+    typeInit(TYPE_Generic,  TYPE_Value, stringFromUtf8(-1, "Generic"),  coreSecret);
+    typeInit(TYPE_String,   TYPE_Value, stringFromUtf8(-1, "String"),   coreSecret);
+    typeInit(coreSecret,    TYPE_Value, stringFromUtf8(-1, "SECRET"),   coreSecret);
 }
 
 /* Documented in header. */

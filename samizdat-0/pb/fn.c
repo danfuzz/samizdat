@@ -141,7 +141,7 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void pbBindFunction(void) {
-    TYPE_Function = coreTypeFromName(stringFromUtf8(-1, "Function"));
+    // Note: The type `Type` is responsible for initializing `TYPE_Function`.
     gfnBindCore(GFN_call,        TYPE_Function, Function_call);
     gfnBindCore(GFN_debugString, TYPE_Function, Function_debugString);
     gfnBindCore(GFN_gcMark,      TYPE_Function, Function_gcMark);
