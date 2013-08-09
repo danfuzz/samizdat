@@ -46,6 +46,10 @@ static zvalue theTypes[PB_MAX_TYPES];
 /** Whether `theTypes` needs a sort. */
 static bool theNeedSort = true;
 
+/** The `secret` value used for all core types. */
+static zvalue coreSecret = NULL;
+
+
 /**
  * Gets a pointer to the value's info.
  */
@@ -71,7 +75,7 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret) {
     info->name = name;
     info->secret = secret;
     info->id = theNextId;
-    info->derived = (secret != PB_SECRET);
+    info->derived = (secret != coreSecret);
 
     theTypes[theNextId] = type;
     theNeedSort = true;
@@ -88,7 +92,7 @@ static zvalue allocType(void) {
 
 /**
  * Creates and returns a new type with the given name and secret. The type
- * is marked derived *unless* the given secret is `PB_SECRET`.
+ * is marked derived *unless* the given secret is `coreSecret`.
  */
 static zvalue newType(zvalue name, zvalue secret) {
     zvalue result = allocType();
@@ -104,8 +108,8 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
     TypeInfo *info2 = typeInfo(v2);
     zvalue name2 = info2->name;
     zvalue secret2 = info2->secret;
-    bool derived1 = (secret1 != PB_SECRET);
-    bool derived2 = (secret2 != PB_SECRET);
+    bool derived1 = (secret1 != coreSecret);
+    bool derived2 = (secret2 != coreSecret);
 
     if (derived1 != derived2) {
         return derived2 ? ZLESS : ZMORE;
@@ -277,10 +281,10 @@ void assertHaveSameType(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zvalue coreTypeFromName(zvalue name) {
-    zvalue result = findType(name, PB_SECRET);
+    zvalue result = findType(name, coreSecret);
 
     if (result == NULL) {
-        result = newType(name, PB_SECRET);
+        result = newType(name, coreSecret);
     }
 
     return result;
@@ -332,9 +336,6 @@ zvalue typeParent(zvalue type) {
  */
 
 /* Documented in header. */
-zvalue PB_SECRET = NULL;
-
-/* Documented in header. */
 static zvalue Type_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue type = args[0];
@@ -381,15 +382,15 @@ void pbInitTypeSystem(void) {
     TYPE_String = allocType();
     TYPE_Generic = allocType();
 
-    // PB_SECRET is defined as a type value with no instances. This is
+    // `coreSecret` is defined as a type value with no instances. This is
     // a hackish convenience. It should probably be a Uniqlet.
-    PB_SECRET = allocType();
+    coreSecret = allocType();
 
-    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    PB_SECRET);
-    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   PB_SECRET);
-    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  PB_SECRET);
-    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), PB_SECRET);
-    typeInit(PB_SECRET,    TYPE_Value, stringFromUtf8(-1, "SECRET"),  PB_SECRET);
+    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    coreSecret);
+    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret);
+    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  coreSecret);
+    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), coreSecret);
+    typeInit(coreSecret,   TYPE_Value, stringFromUtf8(-1, "SECRET"),  coreSecret);
 }
 
 /* Documented in header. */
