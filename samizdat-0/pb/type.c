@@ -403,6 +403,11 @@ void pbInitTypeSystem(void) {
         die("Mismatched index for `Generic`: should be %lld",
             indexFromType(TYPE_Generic));
     }
+
+    // Make sure that the "fake" header is sized the same as the real one.
+    if (sizeof(PbFakeHeader) != sizeof(PbHeader)) {
+        die("Mismatched header size: should be %lu", sizeof(PbHeader));
+    }
 }
 
 /* Documented in header. */

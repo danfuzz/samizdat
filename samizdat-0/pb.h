@@ -581,9 +581,19 @@ void pbMark(zvalue value);
  */
 zint pbOrderId(void);
 
+// TODO: This is ugly.
+typedef struct {
+    void *ptr1;
+    void *ptr2;
+    uint32_t data1;
+    uint32_t data2;
+    void *ptr3;
+    char payload[0];
+} PbFakeHeader;
+
 /**
  * Gets a pointer to the data payload of a `zvalue`.
  */
-void *pbPayload(zvalue value);
+#define pbPayload(value) ((void *) (((PbFakeHeader *) (value))->payload))
 
 #endif

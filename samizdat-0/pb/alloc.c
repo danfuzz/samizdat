@@ -379,9 +379,3 @@ void pbMark(zvalue value) {
     // be marked.
     pbMark(value->type);
 }
-
-/* Documented in header. */
-void *pbPayload(zvalue value) {
-    return value->payload;
-}
-
