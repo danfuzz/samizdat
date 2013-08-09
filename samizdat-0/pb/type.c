@@ -265,7 +265,7 @@ void assertHasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
-void pbAssertSameType(zvalue v1, zvalue v2) {
+void assertHaveSameType(zvalue v1, zvalue v2) {
     pbAssertValid(v1);
     pbAssertValid(v2);
 

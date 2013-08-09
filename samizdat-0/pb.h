@@ -186,7 +186,7 @@ void pbAssertNthOrSize(zint size, zint n);
  * that they have the same core type. If not, this aborts the process
  * with a diagnostic message.
  */
-void pbAssertSameType(zvalue v1, zvalue v2);
+void assertHaveSameType(zvalue v1, zvalue v2);
 
 /**
  * Asserts that the given range is valid for a `slice`-like operation

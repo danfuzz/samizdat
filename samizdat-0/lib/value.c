@@ -19,7 +19,7 @@
  * Does the type assertions that are part of `coreOrder` and `coreOrderIs`.
  */
 static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
-    pbAssertSameType(v1, v2);
+    assertHaveSameType(v1, v2);
 
     if (!pbEq(typeOf(v1), typeOf(v2))) {
         die("Mismatched derived types.");
