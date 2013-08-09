@@ -52,6 +52,22 @@ static GenericInfo *gfnInfo(zvalue generic) {
 }
 
 /**
+ * Find the binding for a given type.
+ */
+static zfunction findByTrueType(zvalue generic, zvalue type) {
+    GenericInfo *info = gfnInfo(generic);
+
+    for (/*type*/; type != NULL; type = typeParent(type)) {
+        zfunction result = info->functions[indexFromType(type)];
+        if (result != NULL) {
+            return result;
+        }
+    }
+
+    return NULL;
+}
+
+/**
  * This is the function that handles emitting a context string for a call,
  * when dumping the stack.
  */
@@ -66,17 +82,7 @@ static char *callReporter(void *state) {
 
 /* Documented in header. */
 zfunction gfnFind(zvalue generic, zvalue value) {
-    GenericInfo *info = gfnInfo(generic);
-    zvalue type = trueTypeOf(value);
-
-    for (/*type*/; type != NULL; type = typeParent(type)) {
-        zfunction result = info->functions[indexFromType(type)];
-        if (result != NULL) {
-            return result;
-        }
-    }
-
-    return NULL;
+    return findByTrueType(generic, trueTypeOf(value));
 }
 
 
