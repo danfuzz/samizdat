@@ -249,11 +249,11 @@ static void doGc(void) {
 
 
 /*
- * Module functions
+ * Exported functions
  */
 
 /* Documented in header. */
-zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes) {
+zvalue pbAllocValue(zvalue type, zint extraBytes) {
     if (allocationCount >= PB_ALLOCATIONS_PER_GC) {
         pbGc();
     } else {
@@ -270,22 +270,6 @@ zvalue pbAllocValueUnchecked(zvalue type, zint extraBytes) {
     sanityCheck(false);
 
     return result;
-}
-
-
-/*
- * Exported functions
- */
-
-/* Documented in header. */
-zvalue pbAllocValue(zvalue type, zint extraBytes) {
-    // This does a "quickie" check that works even before the type `Type`
-    // is fully initialized.
-    if (type->type != TYPE_Type) {
-        die("Attempt to allocate with non-type type.");
-    }
-
-    return pbAllocValueUnchecked(type, extraBytes);
 }
 
 /* Documented in header. */

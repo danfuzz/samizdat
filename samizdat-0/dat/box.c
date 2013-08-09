@@ -63,7 +63,7 @@ static zvalue boxOrderId(zvalue box) {
 
 /* Documented in header. */
 void datAssertBox(zvalue value) {
-    assertTypeIs(value, TYPE_Box);
+    assertHasType(value, TYPE_Box);
 }
 
 /* Documented in header. */

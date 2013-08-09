@@ -7,18 +7,12 @@
 #include "impl.h"
 #include "zlimits.h"
 
-#include <stddef.h>
+#include <stdlib.h>
 
 
 /*
  * Helper definitions
  */
-
-/** Next type sequence number to assign. */
-static zint theNextId = 0;
-
-/** Array of all existing types. Sorted by index (not name). */
-static zvalue theTypes[PB_MAX_TYPES];
 
 /**
  * Payload struct for type `Type`.
@@ -27,10 +21,7 @@ typedef struct {
     /** Parent type. Only allowed to be `NULL` for `Value`. */
     zvalue parent;
 
-    /**
-     * Name of the type. Arbitrary other than that it must be unique
-     * among all types.
-     */
+    /** Name of the type. Arbitrary value. */
     zvalue name;
 
     /** Access secret of the type. Optional, and arbitrary if present. */
@@ -46,6 +37,15 @@ typedef struct {
     zint id;
 } TypeInfo;
 
+/** Next type sequence number to assign. */
+static zint theNextId = 0;
+
+/** Array of all existing types, in sort order (possibly stale). */
+static zvalue theTypes[PB_MAX_TYPES];
+
+/** Whether `theTypes` needs a sort. */
+static bool theNeedSort = true;
+
 /**
  * Gets a pointer to the value's info.
  */
@@ -56,8 +56,7 @@ static TypeInfo *typeInfo(zvalue type) {
 /**
  * Initializes a type value.
  */
-static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
-        bool derived) {
+static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret) {
     if (theNextId == PB_MAX_TYPES) {
         die("Too many types!");
     }
@@ -72,9 +71,10 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
     info->name = name;
     info->secret = secret;
     info->id = theNextId;
-    info->derived = derived;
-    theTypes[theNextId] = type;
+    info->derived = (secret != PB_SECRET);
 
+    theTypes[theNextId] = type;
+    theNeedSort = true;
     theNextId++;
     pbImmortalize(type);
 }
@@ -83,33 +83,118 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
  * Allocates a type value.
  */
 static zvalue allocType(void) {
-    if (PB_SECRET == NULL) {
-        // We end up here during bootstrap.
-        return pbAllocValueUnchecked(TYPE_Type, sizeof(TypeInfo));
+    return pbAllocValue(TYPE_Type, sizeof(TypeInfo));
+}
+
+/**
+ * Creates and returns a new type with the given name and secret. The type
+ * is marked derived *unless* the given secret is `PB_SECRET`.
+ */
+static zvalue newType(zvalue name, zvalue secret) {
+    zvalue result = allocType();
+    typeInit(result, TYPE_Value, name, secret);
+    return result;
+}
+
+/**
+ * Compares an explicit name and secret with a type. Common function used
+ * for searching, sorting, and ordering.
+ */
+static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
+    TypeInfo *info2 = typeInfo(v2);
+    zvalue name2 = info2->name;
+    zvalue secret2 = info2->secret;
+    bool derived1 = (secret1 != PB_SECRET);
+    bool derived2 = (secret2 != PB_SECRET);
+
+    if (derived1 != derived2) {
+        return derived2 ? ZLESS : ZMORE;
+    }
+
+    bool hasSecret1 = (secret1 != NULL);
+    bool hasSecret2 = (secret2 != NULL);
+
+    if (hasSecret1 != hasSecret2) {
+        return hasSecret2 ? ZLESS : ZMORE;
+    }
+
+    zorder nameOrder = pbOrder(name1, name2);
+
+    if (nameOrder != ZSAME) {
+        return nameOrder;
+    }
+
+    // This is the case of two different opaque derived types with the
+    // same name.
+    if (secret1 == secret2) {
+        // Handles the case of both `NULL`.
+        return ZSAME;
     } else {
-        return pbAllocValue(TYPE_Type, sizeof(TypeInfo));
+        return pbOrder(secret1, secret2);
     }
 }
 
 /**
- * Creates an returns a new type.
+ * Compares two types. Used for sorting.
  */
-static zvalue newType(zvalue name, zvalue secret, bool derived) {
-    zvalue result = allocType();
-    typeInit(result, TYPE_Value, name, secret, derived);
-    return result;
+static int sortOrder(const void *vptr1, const void *vptr2) {
+    zvalue v1 = *(zvalue *) vptr1;
+    zvalue v2 = *(zvalue *) vptr2;
+    TypeInfo *info1 = typeInfo(v1);
+
+    return typeCompare(info1->name, info1->secret, v2);
+}
+
+/**
+ * Compares a name/secret pair with a type. Used for searching.
+ */
+static int searchOrder(const void *key, const void *vptr) {
+    zvalue *searchFor = (zvalue *) key;
+    zvalue name = searchFor[0];
+    zvalue secret = searchFor[1];
+
+    return typeCompare(name, secret, *(zvalue *) vptr);
+}
+
+/**
+ * Finds an existing type with the given name and secret, if any.
+ */
+static zvalue findType(zvalue name, zvalue secret) {
+    if (theNeedSort) {
+        if (PB_1 == NULL) {
+            // The system isn't yet booted enough to have ints. Therefore,
+            // sorting and searching won't work, but more to the point, we
+            // know we'll only be getting new types anyway.
+            return NULL;
+        }
+        mergesort(theTypes, theNextId, sizeof(zvalue), sortOrder);
+        theNeedSort = false;
+    }
+
+    zvalue searchFor[2] = { name, secret };
+    zvalue *found = (zvalue *)
+        bsearch(searchFor, theTypes, theNextId, sizeof(zvalue), searchOrder);
+
+    return (found == NULL) ? NULL : *found;
+}
+
+/**
+ * Returns `true` iff the value is a `Type`.
+ */
+static bool isType(zvalue value) {
+    // This is a light-weight implementation, since (a) otherwise it consumes
+    // a significant amount of runtime with no real benefit, and (b) it
+    // avoids infinite recursion.
+    return (value->type == TYPE_Type);
 }
 
 /**
  * Asserts that the value is a `Type`.
  */
-static void assertTypeIsType(zvalue value) {
-    // This is a light-weight implementation, since (a) otherwise it consumes
-    // a significant amount of runtime, with no real benefit, and (b) it
-    // avoids infinite recursion.
-    if (value->type != TYPE_Type) {
+static void assertHasTypeType(zvalue value) {
+    if (!isType(value)) {
         // Upon failure, use the regular implementation to produce the error.
-        assertTypeIs(value, TYPE_Type);
+        assertHasType(value, TYPE_Type);
     }
 }
 
@@ -120,35 +205,47 @@ static void assertTypeIsType(zvalue value) {
 
 /* Documented in header. */
 zint indexFromType(zvalue type) {
-    assertTypeIsType(type);
+    assertHasTypeType(type);
     return typeInfo(type)->id;
 }
 
 /* Documented in header. */
 zvalue transparentTypeFromName(zvalue name) {
-    // TODO: Linear search is probably a bad idea here.
-    for (zint i = 0; i < theNextId; i++) {
-        zvalue one = theTypes[i];
-        TypeInfo *info = typeInfo(one);
-        if (info->derived && (info->secret == NULL) && pbEq(info->name, name)) {
-            return one;
-        }
+    zvalue result = findType(name, NULL);
+
+    if (result == NULL) {
+        result = newType(name, NULL);
+
+        // Bind the default derived value methods.
+        gfnBindCore(GFN_eq,     result, Deriv_eq);
+        gfnBindCore(GFN_gcMark, result, Deriv_gcMark);
+        gfnBindCore(GFN_order,  result, Deriv_order);
     }
-
-    zvalue result = newType(name, NULL, true);
-
-    // Bind the default derived value methods.
-    gfnBindCore(GFN_eq,     result, Deriv_eq);
-    gfnBindCore(GFN_gcMark, result, Deriv_gcMark);
-    gfnBindCore(GFN_order,  result, Deriv_order);
 
     return result;
 }
 
 /* Documented in header. */
+zvalue trueTypeOf(zvalue value) {
+    zvalue type = value->type;
+
+    if (!isType(type)) {
+        type = transparentTypeFromName(type);
+        value->type = type;
+    }
+
+    return type;
+}
+
+/* Documented in header. */
+bool typeIsDerived(zvalue type) {
+    return isType(type) ? typeInfo(type)->derived : true;
+}
+
+/* Documented in header. */
 bool typeSecretIs(zvalue type, zvalue secret) {
-    assertTypeIsType(type);
-    return pbNullSafeEq(typeInfo(type)->secret, secret);
+    zvalue typeSecret = isType(type) ? typeInfo(type)->secret : NULL;
+    return pbEq(typeSecret, secret);
 }
 
 
@@ -157,21 +254,36 @@ bool typeSecretIs(zvalue type, zvalue secret) {
  */
 
 /* Documented in header. */
-void assertTypeIs(zvalue value, zvalue type) {
-    // This tries doing `==` on `Type` values as a first test, to keep the
-    // usual case speedy.
-    zvalue t = value->type;
-    if ((value != NULL) && (value->type != type)) {
-        pbAssertValid(value);
-        assertTypeIsType(type);
+void assertHasType(zvalue value, zvalue type) {
+    // This tries doing `!=` a first test, to keep the usual case speedy.
+    if (   (value != NULL)
+        && (value->type != type)
+        && !hasType(value, type)) {
         die("Expected type %s; got %s.",
             pbDebugString(type), pbDebugString(value));
     }
 }
 
 /* Documented in header. */
+void assertHaveSameType(zvalue v1, zvalue v2) {
+    pbAssertValid(v1);
+    pbAssertValid(v2);
+
+    if (!haveSameType(v1, v2)) {
+        die("Mismatched types: %s, %s",
+            pbDebugString(v1), pbDebugString(v2));
+    }
+}
+
+/* Documented in header. */
 zvalue coreTypeFromName(zvalue name) {
-    return newType(name, PB_SECRET, false);
+    zvalue result = findType(name, PB_SECRET);
+
+    if (result == NULL) {
+        result = newType(name, PB_SECRET);
+    }
+
+    return result;
 }
 
 /* Documented in header. */
@@ -180,16 +292,18 @@ bool hasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
-bool typeIsDerived(zvalue type) {
-    assertTypeIsType(type);
-    TypeInfo *info = typeInfo(type);
-    return info->derived;
+bool haveSameType(zvalue v1, zvalue v2) {
+    // Use `==` to handle the common cases quickly.
+    if (v1->type == v2->type) {
+        return true;
+    } else {
+        return pbEq(typeOf(v1), typeOf(v2));
+    }
 }
 
 /* Documented in header. */
 zvalue typeName(zvalue type) {
-    assertTypeIsType(type);
-    return typeInfo(type)->name;
+    return isType(type) ? typeInfo(type)->name : type;
 }
 
 /* Documented in header. */
@@ -197,16 +311,19 @@ zvalue typeOf(zvalue value) {
     pbAssertValid(value);
 
     zvalue type = value->type;
-    TypeInfo *info = typeInfo(type);
-
-    // `typeOf` on a transparent type returns its name.
-    return (info->secret == NULL) ? info->name : type;
+    if (isType(type)) {
+        TypeInfo *info = typeInfo(type);
+        // `typeOf` on a transparent type returns its name.
+        return (info->secret == NULL) ? info->name : type;
+    } else {
+        // It is a transparent type.
+        return type;
+    }
 }
 
 /* Documented in header. */
 zvalue typeParent(zvalue type) {
-    assertTypeIsType(type);
-    return typeInfo(type)->parent;
+    return isType(type) ? typeInfo(type)->parent : TYPE_Value;
 }
 
 
@@ -252,28 +369,8 @@ static zvalue Type_order(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     TypeInfo *info1 = typeInfo(v1);
-    TypeInfo *info2 = typeInfo(v2);
 
-    if (info1->derived != info2->derived) {
-        return info2->derived ? PB_NEG1 : PB_1;
-    }
-
-    bool secret1 = info1->secret != NULL;
-    bool secret2 = info2->secret != NULL;
-
-    if (secret1 != secret2) {
-        return secret2 ? PB_NEG1 : PB_1;
-    }
-
-    zorder nameOrder = pbOrder(typeInfo(v1)->name, typeInfo(v2)->name);
-
-    if (nameOrder != ZSAME) {
-        return intFromZint(nameOrder);
-    }
-
-    // This is the case of two different opaque derived types with the
-    // same name.
-    return (info1->id < info2->id) ? PB_NEG1 : PB_1;
+    return intFromZint(typeCompare(info1->name, info1->secret, v2));
 }
 
 /* Documented in header. */
@@ -288,11 +385,11 @@ void pbInitTypeSystem(void) {
     // a hackish convenience. It should probably be a Uniqlet.
     PB_SECRET = allocType();
 
-    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    PB_SECRET, false);
-    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   PB_SECRET, false);
-    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  PB_SECRET, false);
-    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), PB_SECRET, false);
-    typeInit(PB_SECRET,    TYPE_Value, stringFromUtf8(-1, "SECRET"),  PB_SECRET, false);
+    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    PB_SECRET);
+    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   PB_SECRET);
+    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  PB_SECRET);
+    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), PB_SECRET);
+    typeInit(PB_SECRET,    TYPE_Value, stringFromUtf8(-1, "SECRET"),  PB_SECRET);
 }
 
 /* Documented in header. */

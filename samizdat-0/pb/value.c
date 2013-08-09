@@ -16,12 +16,14 @@
 /* Documented in header. */
 static zvalue Value_debugString(zvalue state,
         zint argCount, const zvalue *args) {
+    zvalue value = args[0];
+    zvalue type = typeOf(value);
     char addrBuf[19]; // Includes room for "0x" and "\0".
 
-    sprintf(addrBuf, "%p", args[0]);
+    sprintf(addrBuf, "%p", value);
 
     zvalue result = stringFromUtf8(-1, "@(");
-    result = stringAdd(result, fnCall(GFN_debugString, 1, &args[0]->type));
+    result = stringAdd(result, fnCall(GFN_debugString, 1, &type));
     result = stringAdd(result, stringFromUtf8(-1, " @ "));
     result = stringAdd(result, stringFromUtf8(-1, addrBuf));
     result = stringAdd(result, stringFromUtf8(-1, ")"));
