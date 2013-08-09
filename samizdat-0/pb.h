@@ -405,6 +405,12 @@ zvalue coreTypeFromName(zvalue name);
 bool hasType(zvalue value, zvalue type);
 
 /**
+ * Returns true iff the types of the given values (that is, `typeOf()` on
+ * each) are the same.
+ */
+bool haveSameType(zvalue v1, zvalue v2);
+
+/**
  * Gets the name of the given type. If given a non-`Type` value for `type`,
  * this takes it to name a transparent derived type; as such it will return
  * `type` itself in these cases.

@@ -86,11 +86,11 @@ bool pbEq(zvalue v1, zvalue v2) {
 
     if (v1 == v2) {
         return true;
-    } else if (v1->type != v2->type) {
-        return false;
-    } else {
+    } else if (haveSameType(v1, v2)) {
         zvalue args[2] = { v1, v2 };
-        return fnCall(GFN_eq, 2, args) != NULL;
+        return (fnCall(GFN_eq, 2, args) != NULL);
+    } else {
+        return false;
     }
 }
 
@@ -103,11 +103,11 @@ bool pbNullSafeEq(zvalue v1, zvalue v2) {
         return true;
     } else if ((v1 == NULL) || (v2 == NULL)) {
         return false;
-    } else if (v1->type != v2->type) {
-        return false;
-    } else {
+    } else if (haveSameType(v1, v2)) {
         zvalue args[2] = { v1, v2 };
-        return fnCall(GFN_eq, 2, args) != NULL;
+        return (fnCall(GFN_eq, 2, args) != NULL);
+    } else {
+        return false;
     }
 }
 
@@ -118,7 +118,7 @@ zorder pbOrder(zvalue v1, zvalue v2) {
 
     if (v1 == v2) {
         return ZSAME;
-    } else if (v1->type == v2->type) {
+    } else if (haveSameType(v1, v2)) {
         zvalue args[2] = { v1, v2 };
         zstackPointer save = pbFrameStart();
         zorder result = zintFromInt(fnCall(GFN_order, 2, args));

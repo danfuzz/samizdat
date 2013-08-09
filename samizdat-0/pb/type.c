@@ -265,6 +265,17 @@ void assertHasType(zvalue value, zvalue type) {
 }
 
 /* Documented in header. */
+void pbAssertSameType(zvalue v1, zvalue v2) {
+    pbAssertValid(v1);
+    pbAssertValid(v2);
+
+    if (!haveSameType(v1, v2)) {
+        die("Mismatched types: %s, %s",
+            pbDebugString(v1), pbDebugString(v2));
+    }
+}
+
+/* Documented in header. */
 zvalue coreTypeFromName(zvalue name) {
     zvalue result = findType(name, PB_SECRET);
 
@@ -278,6 +289,16 @@ zvalue coreTypeFromName(zvalue name) {
 /* Documented in header. */
 bool hasType(zvalue value, zvalue type) {
     return pbEq(typeOf(value), type);
+}
+
+/* Documented in header. */
+bool haveSameType(zvalue v1, zvalue v2) {
+    // Use `==` to handle the common cases quickly.
+    if (v1->type == v2->type) {
+        return true;
+    } else {
+        return pbEq(typeOf(v1), typeOf(v2));
+    }
 }
 
 /* Documented in header. */
