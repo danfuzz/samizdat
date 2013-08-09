@@ -374,6 +374,10 @@ void pbMark(zvalue value) {
     if (marker != NULL) {
         marker(NULL, 1, &value);
     }
+
+    // Opaque types are all immortalized, but transparent types need to
+    // be marked.
+    pbMark(value->type);
 }
 
 /* Documented in header. */
