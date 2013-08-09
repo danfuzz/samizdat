@@ -118,7 +118,7 @@ zorder pbOrder(zvalue v1, zvalue v2) {
         pbFrameReturn(save, NULL);
         return result;
     } else {
-        return pbOrder(v1->type, v2->type);
+        return pbOrder(typeOf(v1), typeOf(v2));
     }
 }
 
