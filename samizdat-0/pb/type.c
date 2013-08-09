@@ -393,6 +393,16 @@ void pbInitTypeSystem(void) {
     typeInit(TYPE_Generic,  TYPE_Value, stringFromUtf8(-1, "Generic"),  coreSecret);
     typeInit(TYPE_String,   TYPE_Value, stringFromUtf8(-1, "String"),   coreSecret);
     typeInit(coreSecret,    TYPE_Value, stringFromUtf8(-1, "SECRET"),   coreSecret);
+
+    // Make sure that the enum constants match up with what got assigned here.
+    // If not, `fnCall` will break.
+    if (indexFromType(TYPE_Function) != PB_INDEX_FUNCTION) {
+        die("Mismatched index for `Function`: should be %lld",
+            indexFromType(TYPE_Function));
+    } else if (indexFromType(TYPE_Generic) != PB_INDEX_GENERIC) {
+        die("Mismatched index for `Generic`: should be %lld",
+            indexFromType(TYPE_Generic));
+    }
 }
 
 /* Documented in header. */

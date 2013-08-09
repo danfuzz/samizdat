@@ -20,7 +20,13 @@ enum {
     PB_VALUE_MAGIC = 0x600f1e57,
 
     /** Required byte alignment for values. */
-    PB_VALUE_ALIGNMENT = 8
+    PB_VALUE_ALIGNMENT = 8,
+
+    /** The type index for type `Function`. */
+    PB_INDEX_FUNCTION = 2,
+
+    /** The type index for type `Generic`. */
+    PB_INDEX_GENERIC = 3
 };
 
 /**

@@ -44,12 +44,6 @@ typedef struct {
     zvalue functions[PB_MAX_TYPES];
 } GenericInfo;
 
-/** The function value bound to `call` for type `Function`. */
-static zvalue theFunctionCallValue = NULL;
-
-/** The function value bound to `call` for type `Generic`. */
-static zvalue theGenericCallValue = NULL;
-
 
 /**
  * Gets a pointer to the value's info.
@@ -138,25 +132,34 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     zstackPointer save = pbFrameStart();
 
     zint index = indexFromType(function->type);
-    zvalue caller = gfnInfo(GFN_call)->functions[index];
     zvalue result;
 
-    // Handle the common special cases first.
-    if (caller == theFunctionCallValue) {
-        result = doFnCall(function, argCount, args);
-    } else if (caller == theGenericCallValue) {
-        result = doGfnCall(function, argCount, args);
-    } else if (caller == NULL) {
-        die("Attempt to call non-function.");
-    } else {
-        // The original `function` is some kind of higher layer function, and
-        // `caller` is the function that was bound as its `call` method. So,
-        // we have to prepend `function` as a new first argument, and recurse
-        // on a call to `caller`.
-        zvalue newArgs[argCount + 1];
-        newArgs[0] = function;
-        memcpy(&newArgs[1], args, argCount * sizeof(zvalue));
-        result = fnCall(caller, argCount + 1, newArgs);
+    // The first two cases are how we bottom out the recursion, instead
+    // of calling `fnCall` on the `call` methods for `Function` or `Generic`.
+    switch (index) {
+        case PB_INDEX_FUNCTION: {
+            result = doFnCall(function, argCount, args);
+            break;
+        }
+        case PB_INDEX_GENERIC: {
+            result = doGfnCall(function, argCount, args);
+            break;
+        }
+        default: {
+            // The original `function` is some kind of higher layer
+            // function, and `callImpl` will be the function that was bound
+            // as its `call` method. We prepend `function` as a new first
+            // argument, and recurse on a call to `caller`.
+            zvalue callImpl = gfnInfo(GFN_call)->functions[index];
+            if (callImpl == NULL) {
+                die("Attempt to call non-function.");
+            } else {
+                zvalue newArgs[argCount + 1];
+                newArgs[0] = function;
+                memcpy(&newArgs[1], args, argCount * sizeof(zvalue));
+                result = fnCall(callImpl, argCount + 1, newArgs);
+            }
+        }
     }
 
     pbFrameReturn(save, result);
@@ -265,10 +268,6 @@ void pbBindGeneric(void) {
     gfnBindCore(GFN_debugString, TYPE_Generic, Generic_debugString);
     gfnBindCore(GFN_gcMark,      TYPE_Generic, Generic_gcMark);
     gfnBindCore(GFN_order,       TYPE_Generic, Generic_order);
-
-    // These are used to break the recursion when executing `fnCall`.
-    theFunctionCallValue = findByTrueType(GFN_call, TYPE_Function);
-    theGenericCallValue = findByTrueType(GFN_call, TYPE_Generic);
 }
 
 /* Documented in header. */
