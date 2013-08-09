@@ -501,14 +501,10 @@ char *pbDebugString(zvalue value);
 /**
  * Compares two values for equality. This exists in addition to
  * `pbOrder`, because it is possible for this function run much
- * quicker in the not-equal case.
+ * quicker in the not-equal case. As with `pbOrder`, this accepts
+ * `NULL` as a value, treating it as not the same as any other value.
  */
 bool pbEq(zvalue v1, zvalue v2);
-
-/**
- * Like `pbEq`, but accepts `NULL` as a valid value.
- */
-bool pbNullSafeEq(zvalue v1, zvalue v2);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
@@ -516,6 +512,9 @@ bool pbNullSafeEq(zvalue v1, zvalue v2);
  * -1, 0, 1 }` respectively, with the usual comparison result meaning.
  * See `totalOrder` in the Samizdat Layer 0 spec for more details about
  * value sorting.
+ *
+ * If `NULL` is passed as an argument, it is accepted and treated as
+ * being ordered earlier than any other value.
  */
 zorder pbOrder(zvalue v1, zvalue v2);
 

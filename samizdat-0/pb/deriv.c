@@ -31,7 +31,7 @@ zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return pbNullSafeEq(derivInfo(v1)->data, derivInfo(v2)->data) ? v2 : NULL;
+    return pbEq(derivInfo(v1)->data, derivInfo(v2)->data) ? v2 : NULL;
 }
 
 /* Documented in header. */

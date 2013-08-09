@@ -81,29 +81,16 @@ char *pbDebugString(zvalue value) {
 
 /* Documented in header. */
 bool pbEq(zvalue v1, zvalue v2) {
-    pbAssertValid(v1);
-    pbAssertValid(v2);
-
-    if (v1 == v2) {
-        return true;
-    } else if (haveSameType(v1, v2)) {
-        zvalue args[2] = { v1, v2 };
-        return (fnCall(GFN_eq, 2, args) != NULL);
-    } else {
-        return false;
-    }
-}
-
-/* Documented in header. */
-bool pbNullSafeEq(zvalue v1, zvalue v2) {
-    pbAssertValidOrNull(v1);
-    pbAssertValidOrNull(v2);
-
     if (v1 == v2) {
         return true;
     } else if ((v1 == NULL) || (v2 == NULL)) {
         return false;
-    } else if (haveSameType(v1, v2)) {
+    }
+
+    pbAssertValid(v1);
+    pbAssertValid(v2);
+
+    if (haveSameType(v1, v2)) {
         zvalue args[2] = { v1, v2 };
         return (fnCall(GFN_eq, 2, args) != NULL);
     } else {
@@ -113,12 +100,18 @@ bool pbNullSafeEq(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zorder pbOrder(zvalue v1, zvalue v2) {
+    if (v1 == v2) {
+        return ZSAME;
+    } else if (v1 == NULL) {
+        return ZLESS;
+    } else if (v2 == NULL) {
+        return ZMORE;
+    }
+
     pbAssertValid(v1);
     pbAssertValid(v2);
 
-    if (v1 == v2) {
-        return ZSAME;
-    } else if (haveSameType(v1, v2)) {
+    if (haveSameType(v1, v2)) {
         zvalue args[2] = { v1, v2 };
         zstackPointer save = pbFrameStart();
         zorder result = zintFromInt(fnCall(GFN_order, 2, args));
