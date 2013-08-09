@@ -146,13 +146,6 @@ void pbInit(void);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a function. If not, this aborts the process
- * with a diagnostic message.
- */
-void pbAssertFunction(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a generic function. If not, this aborts the process
  * with a diagnostic message.
  */

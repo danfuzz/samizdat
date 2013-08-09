@@ -56,11 +56,6 @@ static FunctionInfo *fnInfo(zvalue function) {
  */
 
 /* Documented in header. */
-void pbAssertFunction(zvalue value) {
-    assertHasType(value, TYPE_Function);
-}
-
-/* Documented in header. */
 zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
         zvalue name) {
     if ((minArgs < 0) ||
@@ -79,6 +74,12 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
     info->orderId = pbOrderId();
 
     return result;
+}
+
+/* Documented in header. */
+zfunction zfunctionFromFunction(zvalue function) {
+    assertHasType(function, TYPE_Function);
+    return fnInfo(function)->function;
 }
 
 
