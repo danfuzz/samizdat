@@ -62,6 +62,13 @@ typedef struct {
 } DerivInfo;
 
 /**
+ * Actual implementation of normal function calling. This is where
+ * short-circuited generic function dispatch of `call` on type `Function`
+ * lands.
+ */
+zvalue doFnCall(zvalue function, zint argCount, const zvalue *args);
+
+/**
  * Gets the function bound to the given generic for the given value, if any.
  * Returns `NULL` if there is no binding.
  */

@@ -52,6 +52,26 @@ static FunctionInfo *fnInfo(zvalue function) {
 
 
 /*
+ * Module functions
+ */
+
+/* Documented in header. */
+zvalue doFnCall(zvalue function, zint argCount, const zvalue *args) {
+    FunctionInfo *info = fnInfo(function);
+
+    if (argCount < info->minArgs) {
+        die("Too few arguments for function call: %lld, min %lld",
+            argCount, info->minArgs);
+    } else if (argCount > info->maxArgs) {
+        die("Too many arguments for function call: %lld, max %lld",
+            argCount, info->maxArgs);
+    }
+
+    return info->function(info->state, argCount, args);
+}
+
+
+/*
  * Exported functions
  */
 
@@ -88,19 +108,10 @@ zfunction zfunctionFromFunction(zvalue function) {
  */
 
 /* Documented in header. */
-static zvalue Function_call(zvalue function,
-        zint argCount, const zvalue *args) {
-    FunctionInfo *info = fnInfo(function);
-
-    if (argCount < info->minArgs) {
-        die("Too few arguments for function call: %lld, min %lld",
-            argCount, info->minArgs);
-    } else if (argCount > info->maxArgs) {
-        die("Too many arguments for function call: %lld, max %lld",
-            argCount, info->maxArgs);
-    }
-
-    return info->function(info->state, argCount, args);
+static zvalue Function_call(zvalue state, zint argCount, const zvalue *args) {
+    // The first argument is the function per se, and the rest are the
+    // arguments to call it with.
+    return doFnCall(args[0], argCount - 1, &args[1]);
 }
 
 /* Documented in header. */

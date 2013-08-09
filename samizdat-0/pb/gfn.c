@@ -44,6 +44,12 @@ typedef struct {
     zvalue functions[PB_MAX_TYPES];
 } GenericInfo;
 
+/** The function value bound to `call` for type `Function`. */
+static zvalue theFunctionCallValue = NULL;
+
+/** The function value bound to `call` for type `Generic`. */
+static zvalue theGenericCallValue = NULL;
+
 
 /**
  * Gets a pointer to the value's info.
@@ -74,6 +80,30 @@ static zvalue findByTrueType(zvalue generic, zvalue type) {
  */
 static char *callReporter(void *state) {
     return pbDebugString((zvalue) state);
+}
+
+/**
+ * Actual implementation of generic function dispatch.
+ */
+static zvalue doGfnCall(zvalue generic, zint argCount, const zvalue *args) {
+    GenericInfo *info = gfnInfo(generic);
+
+    if (argCount < info->minArgs) {
+        die("Too few arguments for generic call: %lld, min %lld",
+            argCount, info->minArgs);
+    } else if (argCount > info->maxArgs) {
+        die("Too many arguments for generic call: %lld, max %lld",
+            argCount, info->maxArgs);
+    }
+
+    zvalue function = gfnFind(generic, args[0]);
+
+    if (function == NULL) {
+        die("No type binding found for generic.");
+    }
+
+    // TODO: We know the argCount is okay here.
+    return fnCall(function, argCount, args);
 }
 
 
@@ -109,13 +139,25 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
 
     zint index = indexFromType(function->type);
     zvalue caller = gfnInfo(GFN_call)->functions[index];
+    zvalue result;
 
-    if (caller == NULL) {
+    // Handle the common special cases first.
+    if (caller == theFunctionCallValue) {
+        result = doFnCall(function, argCount, args);
+    } else if (caller == theGenericCallValue) {
+        result = doGfnCall(function, argCount, args);
+    } else if (caller == NULL) {
         die("Attempt to call non-function.");
+    } else {
+        // The original `function` is some kind of higher layer function, and
+        // `caller` is the function that was bound as its `call` method. So,
+        // we have to prepend `function` as a new first argument, and recurse
+        // on a call to `caller`.
+        zvalue newArgs[argCount + 1];
+        newArgs[0] = function;
+        memcpy(&newArgs[1], args, argCount * sizeof(zvalue));
+        result = fnCall(caller, argCount + 1, newArgs);
     }
-
-    zfunction zfunc = zfunctionFromFunction(caller);
-    zvalue result = zfunc(function, argCount, args);
 
     pbFrameReturn(save, result);
     UTIL_TRACE_END();
@@ -171,25 +213,10 @@ void gfnSeal(zvalue generic) {
  */
 
 /* Documented in header. */
-static zvalue Generic_call(zvalue generic, zint argCount, const zvalue *args) {
-    GenericInfo *info = gfnInfo(generic);
-
-    if (argCount < info->minArgs) {
-        die("Too few arguments for generic call: %lld, min %lld",
-            argCount, info->minArgs);
-    } else if (argCount > info->maxArgs) {
-        die("Too many arguments for generic call: %lld, max %lld",
-            argCount, info->maxArgs);
-    }
-
-    zvalue function = gfnFind(generic, args[0]);
-
-    if (function == NULL) {
-        die("No type binding found for generic.");
-    }
-
-    zfunction zfunc = zfunctionFromFunction(function);
-    return zfunc(NULL, argCount, args);
+static zvalue Generic_call(zvalue state, zint argCount, const zvalue *args) {
+    // The first argument is the generic per se, and the rest are the
+    // arguments to call it with.
+    return doGfnCall(args[0], argCount - 1, &args[1]);
 }
 
 /* Documented in header. */
@@ -238,6 +265,10 @@ void pbBindGeneric(void) {
     gfnBindCore(GFN_debugString, TYPE_Generic, Generic_debugString);
     gfnBindCore(GFN_gcMark,      TYPE_Generic, Generic_gcMark);
     gfnBindCore(GFN_order,       TYPE_Generic, Generic_order);
+
+    // These are used to break the recursion when executing `fnCall`.
+    theFunctionCallValue = findByTrueType(GFN_call, TYPE_Function);
+    theGenericCallValue = findByTrueType(GFN_call, TYPE_Generic);
 }
 
 /* Documented in header. */
