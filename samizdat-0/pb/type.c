@@ -305,6 +305,12 @@ bool haveSameType(zvalue v1, zvalue v2) {
     }
 }
 
+/*
+ * Documented in header. **Note:** This is the C99 way to get one "real"
+ * version of an `inline` function.
+ */
+extern void *pbPayload(zvalue value);
+
 /* Documented in header. */
 zvalue typeName(zvalue type) {
     return isType(type) ? typeInfo(type)->name : type;
@@ -405,8 +411,8 @@ void pbInitTypeSystem(void) {
     }
 
     // Make sure that the "fake" header is sized the same as the real one.
-    if (sizeof(PbFakeHeader) != sizeof(PbHeader)) {
-        die("Mismatched header size: should be %lu", sizeof(PbHeader));
+    if (PB_HEADER_SIZE != sizeof(PbHeader)) {
+        die("Mismatched value header size: should be %lu", sizeof(PbHeader));
     }
 }
 
