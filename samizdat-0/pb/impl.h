@@ -20,7 +20,13 @@ enum {
     PB_VALUE_MAGIC = 0x600f1e57,
 
     /** Required byte alignment for values. */
-    PB_VALUE_ALIGNMENT = 8
+    PB_VALUE_ALIGNMENT = 8,
+
+    /** The type index for type `Function`. */
+    PB_INDEX_FUNCTION = 2,
+
+    /** The type index for type `Generic`. */
+    PB_INDEX_GENERIC = 3
 };
 
 /**
@@ -62,10 +68,17 @@ typedef struct {
 } DerivInfo;
 
 /**
+ * Actual implementation of normal function calling. This is where
+ * short-circuited generic function dispatch of `call` on type `Function`
+ * lands.
+ */
+zvalue doFnCall(zvalue function, zint argCount, const zvalue *args);
+
+/**
  * Gets the function bound to the given generic for the given value, if any.
  * Returns `NULL` if there is no binding.
  */
-zfunction gfnFind(zvalue generic, zvalue value);
+zvalue gfnFind(zvalue generic, zvalue value);
 
 /**
  * Gets the index for a given type value. The given value *must* be a
@@ -98,12 +111,16 @@ bool typeIsDerived(zvalue type);
  */
 bool typeSecretIs(zvalue type, zvalue secret);
 
+/**
+ * Gets the `zfunction` associated with a `Function` value.
+ */
+zfunction zfunctionFromFunction(zvalue function);
+
 
 /*
  * Method bindings for derived types.
  */
 
-zvalue Deriv_dataOf(zvalue state, zint argCount, const zvalue *args);
 zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args);
 zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args);
 zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args);

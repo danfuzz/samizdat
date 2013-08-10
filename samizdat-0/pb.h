@@ -43,6 +43,14 @@ typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
 /** Type for local value stack pointers. */
 typedef const zvalue *zstackPointer;
 
+enum {
+    /**
+     * (Private) Size of the `PbHeader` struct; used so that `pbOffset`
+     * can be an inline function.
+     */
+    PB_HEADER_SIZE = (sizeof(zvalue) * 3) + (sizeof(int32_t) * 2)
+};
+
 
 /*
  * Constants, type references and generic functions
@@ -143,13 +151,6 @@ void pbInit(void);
 /*
  * Assertion Functions
  */
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a function. If not, this aborts the process
- * with a diagnostic message.
- */
-void pbAssertFunction(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
@@ -591,6 +592,8 @@ zint pbOrderId(void);
 /**
  * Gets a pointer to the data payload of a `zvalue`.
  */
-void *pbPayload(zvalue value);
+inline void *pbPayload(zvalue value) {
+    return (void *) (((char *) value) + PB_HEADER_SIZE);
+}
 
 #endif
