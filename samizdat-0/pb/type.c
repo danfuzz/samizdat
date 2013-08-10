@@ -305,6 +305,12 @@ bool haveSameType(zvalue v1, zvalue v2) {
     }
 }
 
+/*
+ * Documented in header. **Note:** This is the C99 way to get one "real"
+ * version of an `inline` function.
+ */
+extern void *pbPayload(zvalue value);
+
 /* Documented in header. */
 zvalue typeName(zvalue type) {
     return isType(type) ? typeInfo(type)->name : type;
@@ -379,18 +385,35 @@ void pbInitTypeSystem(void) {
     TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
     TYPE_Value = allocType();
-    TYPE_String = allocType();
+    TYPE_Function = allocType();
     TYPE_Generic = allocType();
+    TYPE_String = allocType();
 
     // `coreSecret` is defined as a type value with no instances. This is
     // a hackish convenience. It should probably be a Uniqlet.
     coreSecret = allocType();
 
-    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    coreSecret);
-    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret);
-    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  coreSecret);
-    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), coreSecret);
-    typeInit(coreSecret,   TYPE_Value, stringFromUtf8(-1, "SECRET"),  coreSecret);
+    typeInit(TYPE_Type,     TYPE_Value, stringFromUtf8(-1, "Type"),     coreSecret);
+    typeInit(TYPE_Value,    NULL,       stringFromUtf8(-1, "Value"),    coreSecret);
+    typeInit(TYPE_Function, TYPE_Value, stringFromUtf8(-1, "Function"), coreSecret);
+    typeInit(TYPE_Generic,  TYPE_Value, stringFromUtf8(-1, "Generic"),  coreSecret);
+    typeInit(TYPE_String,   TYPE_Value, stringFromUtf8(-1, "String"),   coreSecret);
+    typeInit(coreSecret,    TYPE_Value, stringFromUtf8(-1, "SECRET"),   coreSecret);
+
+    // Make sure that the enum constants match up with what got assigned here.
+    // If not, `fnCall` will break.
+    if (indexFromType(TYPE_Function) != PB_INDEX_FUNCTION) {
+        die("Mismatched index for `Function`: should be %lld",
+            indexFromType(TYPE_Function));
+    } else if (indexFromType(TYPE_Generic) != PB_INDEX_GENERIC) {
+        die("Mismatched index for `Generic`: should be %lld",
+            indexFromType(TYPE_Generic));
+    }
+
+    // Make sure that the "fake" header is sized the same as the real one.
+    if (PB_HEADER_SIZE != sizeof(PbHeader)) {
+        die("Mismatched value header size: should be %lu", sizeof(PbHeader));
+    }
 }
 
 /* Documented in header. */
