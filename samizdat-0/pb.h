@@ -180,13 +180,6 @@ void pbAssertNth(zint size, zint n);
 void pbAssertNthOrSize(zint size, zint n);
 
 /**
- * Asserts that the given two values are valid `zvalue`s, and furthermore
- * that they have the same core type. If not, this aborts the process
- * with a diagnostic message.
- */
-void assertHaveSameType(zvalue v1, zvalue v2);
-
-/**
  * Asserts that the given range is valid for a `slice`-like operation
  * for a value of the given size.
  */
@@ -389,6 +382,13 @@ void gfnSeal(zvalue generic);
  * transparent derived type.
  */
 void assertHasType(zvalue value, zvalue type);
+
+/**
+ * Asserts that the given two values are valid `zvalue`s, and furthermore
+ * that they have the same type. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void assertHaveSameType(zvalue v1, zvalue v2);
 
 /**
  * Gets a new core type, given its name. When given the same name twice, this
