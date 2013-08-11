@@ -87,11 +87,6 @@ zvalue intFrom(zint value) {
  */
 
 /* Documented in header. */
-void pbAssertInt(zvalue value) {
-    assertHasType(value, TYPE_Int);
-}
-
-/* Documented in header. */
 zchar zcharFromInt(zvalue intval) {
     zint value = zintFromInt(intval);
 
@@ -113,13 +108,13 @@ zvalue intFromZint(zint value) {
 
 /* Documented in header. */
 bool intGetBit(zvalue intval, zint n) {
-    pbAssertInt(intval);
+    assertHasType(intval, TYPE_Int);
     return zintGetBit(zintValue(intval), n);
 }
 
 /* Documented in header. */
 zint zintFromInt(zvalue intval) {
-    pbAssertInt(intval);
+    assertHasType(intval, TYPE_Int);
     return zintValue(intval);
 }
 

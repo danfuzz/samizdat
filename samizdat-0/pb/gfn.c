@@ -44,7 +44,6 @@ typedef struct {
     zvalue functions[PB_MAX_TYPES];
 } GenericInfo;
 
-
 /**
  * Gets a pointer to the value's info.
  */
@@ -116,11 +115,6 @@ zvalue gfnFind(zvalue generic, zvalue value) {
  */
 
 /* Documented in header. */
-void pbAssertGeneric(zvalue value) {
-    assertHasType(value, TYPE_Generic);
-}
-
-/* Documented in header. */
 zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);
@@ -170,7 +164,7 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
-    pbAssertGeneric(generic);
+    assertHasType(generic, TYPE_Generic);
 
     GenericInfo *info = gfnInfo(generic);
     zint index = indexFromType(type);
@@ -206,7 +200,7 @@ zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
 
 /* Documented in header. */
 void gfnSeal(zvalue generic) {
-    pbAssertGeneric(generic);
+    assertHasType(generic, TYPE_Generic);
     gfnInfo(generic)->sealed = true;
 }
 

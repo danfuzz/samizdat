@@ -153,20 +153,6 @@ void pbInit(void);
  */
 
 /**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a generic function. If not, this aborts the process
- * with a diagnostic message.
- */
-void pbAssertGeneric(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is an int. If not, this aborts the process
- * with a diagnostic message.
- */
-void pbAssertInt(zvalue value);
-
-/**
  * Asserts that the given size accommodates accessing the `n`th element.
  * This includes asserting that `n >= 0`. Note that all non-negative `n`
  * are valid for accessing ints (their size notwithstanding).
