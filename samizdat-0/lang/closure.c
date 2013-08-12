@@ -108,17 +108,13 @@ static void bindArguments(Frame *frame, zvalue closure,
         zint argCount, const zvalue *args) {
     ClosureInfo *info = closureInfo(closure);
     zvalue formals = info->formals;
-
-    if (formals == NULL) {
-        // TODO: Should die if called with any arguments at all.
-        return;
-    }
-
-    zint formalsSize = pbSize(formals);
+    zint formalsSize = (formals == NULL) ? 0 : pbSize(formals);
     zvalue formalsArr[formalsSize];
     zint argAt = 0;
 
-    arrayFromList(formalsArr, formals);
+    if (formalsSize != 0) {
+        arrayFromList(formalsArr, formals);
+    }
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
