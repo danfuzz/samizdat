@@ -19,6 +19,9 @@
 zvalue GFN_call = NULL;
 
 /* Documented in header. */
+zvalue GFN_canCall = NULL;
+
+/* Documented in header. */
 zvalue GFN_debugString = NULL;
 
 /* Documented in header. */
@@ -40,6 +43,9 @@ zvalue GFN_size = NULL;
 void pbInitCoreGenerics(void) {
     GFN_call = gfnFrom(1, -1, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
+
+    GFN_canCall = gfnFrom(1, -1, stringFromUtf8(-1, "canCall"));
+    pbImmortalize(GFN_canCall);
 
     GFN_debugString = gfnFrom(1, 1, stringFromUtf8(-1, "debugString"));
     pbImmortalize(GFN_debugString);

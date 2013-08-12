@@ -97,6 +97,11 @@ extern zvalue TYPE_Value;
 extern zvalue GFN_call;
 
 /**
+ * Generic `canCall(function, value)`: See spec for details.
+ */
+extern zvalue GFN_canCall;
+
+/**
  * Generic `debugString(value)`: Returns a minimal string form of the
  * given value. Notably, functions and generics include their names.
  * The default implementation returns strings of the form
