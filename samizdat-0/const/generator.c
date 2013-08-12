@@ -83,7 +83,9 @@ static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
 }
 
 /**
- * Does generator iteration to get a list.
+ * Does generator iteration to get a list. This is what's bound to type
+ * `Value`, on the assumption that the value in question has a binding
+ * for the generic `call`, which this function uses.
  */
 static zvalue collectGenerator(zvalue state, zint argc,
         const zvalue *args) {
@@ -122,12 +124,11 @@ static zvalue collectGenerator(zvalue state, zint argc,
 /* Documented in header. */
 void generatorInit(void) {
     GFN_collect = gfnFrom(1, 1, STR_COLLECT);
-    gfnBindCore(GFN_collect, TYPE_Int,      collectInt);
-    gfnBindCore(GFN_collect, TYPE_List,     collectList);
-    gfnBindCore(GFN_collect, TYPE_Map,      collectMap);
-    gfnBindCore(GFN_collect, TYPE_String,   collectString);
-    gfnBindCore(GFN_collect, TYPE_Function, collectGenerator);
-    gfnBindCore(GFN_collect, TYPE_Generic,  collectGenerator);
+    gfnBindCore(GFN_collect, TYPE_Int,    collectInt);
+    gfnBindCore(GFN_collect, TYPE_List,   collectList);
+    gfnBindCore(GFN_collect, TYPE_Map,    collectMap);
+    gfnBindCore(GFN_collect, TYPE_String, collectString);
+    gfnBindCore(GFN_collect, TYPE_Value,  collectGenerator);
     gfnSeal(GFN_collect);
     pbImmortalize(GFN_collect);
 }
