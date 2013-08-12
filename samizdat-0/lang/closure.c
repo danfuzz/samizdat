@@ -54,9 +54,6 @@ typedef struct {
     /** Closure being called. */
     zvalue closureValue;
 
-    /** Closure being called (struct pointer). */
-    ClosureInfo *closure;
-
     /** Argument count. */
     zint argCount;
 
@@ -172,8 +169,8 @@ static void bindArguments(Frame *frame, zvalue node,
  */
 static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     zvalue closureValue = callState->closureValue;
-    ClosureInfo *closure = callState->closure;
-    zvalue defMap = closure->defMap;
+    ClosureInfo *info = closureInfo(closureValue);
+    zvalue defMap = info->defMap;
     zint argCount = callState->argCount;
     const zvalue *args = callState->args;
 
@@ -184,7 +181,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    frameInit(&frame, &closure->frame, closureValue, EMPTY_MAP);
+    frameInit(&frame, &info->frame, closureValue, EMPTY_MAP);
     bindArguments(&frame, defMap, argCount, args);
 
     if (exitFunction != NULL) {
@@ -298,7 +295,7 @@ static zvalue Closure_call(zvalue state, zint argCount, const zvalue *args) {
     // it is being called with, hence `argCount - 1, &args[1]` below.
     zvalue closure = args[0];
     ClosureInfo *info = closureInfo(closure);
-    CallState callState = { state, info, argCount - 1, &args[1] };
+    CallState callState = { closure, argCount - 1, &args[1] };
     zvalue result;
 
     if (mapGet(info->defMap, STR_YIELD_DEF) != NULL) {
