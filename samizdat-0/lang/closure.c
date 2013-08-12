@@ -236,13 +236,13 @@ static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
 }
 
 /**
- * Helper for evaluating `closure` and `fnDef` nodes.
+ * Helper for evaluating `closure` and `fnDef` nodes. This sets up everything
+ * but the `frame`.
  */
-static zvalue buildClosure(Frame *frame, zvalue node) {
+static zvalue buildClosure(zvalue node) {
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = closureInfo(result);
 
-    frameSnap(&info->frame, frame);
     info->defMap = dataOf(node);
     info->orderId = pbOrderId();
 
@@ -261,7 +261,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
         zvalue fnMap = dataOf(one);
         zvalue name = mapGet(fnMap, STR_NAME);
 
-        closures[i] = buildClosure(frame, one);
+        closures[i] = buildClosure(one);
         frameAdd(frame, name, closures[i]);
     }
 
@@ -281,7 +281,10 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
 
 /* Documented in header. */
 zvalue execClosure(Frame *frame, zvalue closureNode) {
-    return buildClosure(frame, closureNode);
+    zvalue result = buildClosure(closureNode);
+
+    frameSnap(&closureInfo(result)->frame, frame);
+    return result;
 }
 
 
