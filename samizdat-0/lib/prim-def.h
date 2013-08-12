@@ -24,6 +24,7 @@ PRIM_DEF(String,     TYPE_String);
 PRIM_DEF(Type,       TYPE_Type);
 PRIM_DEF(Uniqlet,    TYPE_Uniqlet);
 PRIM_DEF(Value,      TYPE_Value);
+PRIM_DEF(call,       GFN_call);
 PRIM_DEF(coreSizeOf, GFN_size);
 PRIM_DEF(nullBox,    DAT_NULL_BOX);
 
