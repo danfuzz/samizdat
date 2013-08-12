@@ -46,13 +46,6 @@ typedef struct {
 } ClosureInfo;
 
 /**
- * Gets a pointer to the info of a closure value.
- */
-static ClosureInfo *closureInfo(zvalue closure) {
-    return pbPayload(closure);
-}
-
-/**
  * Function call state. This is used during function call setup. Pointers
  * to these are passed directly within this file as well as passed
  * indirectly via the nonlocal exit handling code.
@@ -71,6 +64,27 @@ typedef struct {
     const zvalue *args;
 } CallState;
 
+
+/**
+ * Gets a pointer to the info of a closure value.
+ */
+static ClosureInfo *closureInfo(zvalue closure) {
+    return pbPayload(closure);
+}
+
+/**
+ * Helper for evaluating `closure` and `fnDef` nodes. This allocates a
+ * new `Closure` and sets up everything but the `frame`.
+ */
+static zvalue buildClosure(zvalue node) {
+    zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
+    ClosureInfo *info = closureInfo(result);
+
+    info->defMap = dataOf(node);
+    info->orderId = pbOrderId();
+
+    return result;
+}
 
 /**
  * Binds variables for all the formal arguments of the given
@@ -233,20 +247,6 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
  */
 static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
     return callClosureMain((CallState *) state, exitFunction);
-}
-
-/**
- * Helper for evaluating `closure` and `fnDef` nodes. This sets up everything
- * but the `frame`.
- */
-static zvalue buildClosure(zvalue node) {
-    zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
-    ClosureInfo *info = closureInfo(result);
-
-    info->defMap = dataOf(node);
-    info->orderId = pbOrderId();
-
-    return result;
 }
 
 /**
