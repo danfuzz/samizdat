@@ -36,6 +36,29 @@ typedef struct Frame {
 extern zvalue TYPE_NonlocalExit;
 
 /**
+ * Executes a `closure` form.
+ */
+zvalue execClosure(Frame *frame, zvalue closureNode);
+
+/**
+ * Executes an `expression` form, with the result never allowed to be
+ * `void`.
+ */
+zvalue execExpression(Frame *frame, zvalue expression);
+
+/**
+ * Executes an `expression` form, with the result possibly being
+ * `void` (represented as `NULL`).
+ */
+zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
+
+/**
+ * Executes a variable definition, by updating the given execution frame,
+ * as appropriate.
+ */
+void execVarDef(Frame *frame, zvalue varDef);
+
+/**
  * Initializes the given frame.
  */
 void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
