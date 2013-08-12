@@ -23,7 +23,7 @@ fn forwardFunction() {
 
         def function = optFunction*;
 
-        ifNot { <> isFunction(function) }
+        ifNot { <> canCall(call, function) }
             { io0Die("Attempt to forward to non-function.") };
 
         boxSet(box, function);
