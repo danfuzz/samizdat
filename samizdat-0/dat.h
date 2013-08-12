@@ -25,17 +25,6 @@
  */
 typedef void (*zstateFunction)(void *state);
 
-/**
- * Dispatch table for uniqlets with state.
- */
-typedef struct {
-    /** Function to call in order to do a gc mark on the uniqlet state. */
-    zstateFunction mark;
-
-    /** Function to call in order to free the uniqlet state's resources. */
-    zstateFunction free;
-} UniqletInfoDispatch;
-
 
 /*
  * Constants, type references and generic functions
@@ -256,17 +245,6 @@ zvalue mappingValue(zvalue map);
  * produce a value unequal to any other uniqlet (in any given process).
  */
 zvalue uniqlet(void);
-
-/**
- * Gets the state value associated with the given uniqlet, asserting that
- * the uniqlet's dispatch table is as given.
- */
-void *uniqletGetState(zvalue uniqlet, UniqletInfoDispatch *dispatch);
-
-/**
- * Gets whether or not the given uniqlet has the given dispatch table.
- */
-bool uniqletHasDispatch(zvalue uniqlet, UniqletInfoDispatch *dispatch);
 
 
 /*
