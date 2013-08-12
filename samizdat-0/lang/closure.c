@@ -51,7 +51,7 @@ typedef struct {
  * indirectly via the nonlocal exit handling code.
  */
 typedef struct {
-    /** Closure being called (in uniqlet wrapper). */
+    /** Closure being called. */
     zvalue closureValue;
 
     /** Closure being called (struct pointer). */
