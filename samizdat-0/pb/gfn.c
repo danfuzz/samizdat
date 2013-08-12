@@ -176,7 +176,7 @@ void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
     }
 
     info->functions[index] =
-        fnFrom(info->minArgs, info->maxArgs, function, NULL, info->name);
+        fnFrom(info->minArgs, info->maxArgs, function, info->name);
 }
 
 /* Documented in header. */

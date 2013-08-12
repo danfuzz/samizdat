@@ -33,9 +33,6 @@ typedef struct {
     /** C function to call. */
     zfunction function;
 
-    /** Closure state. */
-    zvalue state;
-
     /** The function's name, if any. Used when producing stack traces. */
     zvalue name;
 
@@ -67,7 +64,7 @@ zvalue doFnCall(zvalue function, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    return info->function(info->state, argCount, args);
+    return info->function(NULL, argCount, args);
 }
 
 
@@ -76,8 +73,7 @@ zvalue doFnCall(zvalue function, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
-        zvalue name) {
+zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue name) {
     if ((minArgs < 0) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
@@ -89,7 +85,6 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->function = function;
-    info->state = state;
     info->name = name;
     info->orderId = pbOrderId();
 
@@ -147,9 +142,7 @@ static zvalue Function_gcMark(zvalue state, zint argCount, const zvalue *args) {
     zvalue function = args[0];
     FunctionInfo *info = fnInfo(function);
 
-    pbMark(info->state);
     pbMark(info->name);
-
     return NULL;
 }
 
