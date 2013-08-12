@@ -35,11 +35,6 @@ static UniqletInfo *uniInfo(zvalue uniqlet) {
  */
 
 /* Documented in header. */
-void datAssertUniqlet(zvalue value) {
-    assertHasType(value, TYPE_Uniqlet);
-}
-
-/* Documented in header. */
 zvalue uniqlet(void) {
     zvalue result = pbAllocValue(TYPE_Uniqlet, sizeof(UniqletInfo));
 

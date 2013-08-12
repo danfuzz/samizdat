@@ -94,13 +94,6 @@ void datAssertMap(zvalue value);
  */
 void datAssertMapSize1(zvalue value);
 
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a uniqlet. If not, this aborts the process
- * with a diagnostic message.
- */
-void datAssertUniqlet(zvalue value);
-
 
 /*
  * List Functions
