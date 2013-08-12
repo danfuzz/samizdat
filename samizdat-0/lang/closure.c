@@ -81,6 +81,7 @@ static void bindArguments(Frame *frame, zvalue node,
     zvalue formals = mapGet(node, STR_FORMALS);
 
     if (formals == NULL) {
+        // TODO: Should die if called with any arguments at all.
         return;
     }
 
