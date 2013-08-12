@@ -244,6 +244,7 @@ static zvalue buildClosure(Frame *frame, zvalue node) {
 
     frameSnap(&info->frame, frame);
     info->defMap = dataOf(node);
+    info->orderId = pbOrderId();
 
     return result;
 }
