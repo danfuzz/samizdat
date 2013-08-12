@@ -30,10 +30,14 @@ typedef struct Frame {
 
     /** Variables defined in this frame, as a map from names to values. */
     zvalue vars;
+
+    /** Is this frame on the heap? Used for validation/asserts. */
+    bool onHeap;
 } Frame;
 
 /**
- * Initializes the given frame.
+ * Initializes the given frame. The `frame` is assumed to live on the
+ * C stack. The `parentFrame` if non-`NULL` must live on the heap.
  */
 void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
     zvalue vars);
@@ -54,7 +58,8 @@ void frameAdd(Frame *frame, zvalue name, zvalue value);
 zvalue frameGet(Frame *frame, zvalue name);
 
 /**
- * Snapshots the given frame into the given target.
+ * Snapshots the given frame into the given target. The `target` is assumed
+ * to be part of a heap-allocated structure.
  */
 void frameSnap(Frame *target, Frame *source);
 

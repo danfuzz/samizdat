@@ -37,9 +37,15 @@ void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
         zvalue vars) {
     pbAssertValidOrNull(parentClosure);
     pbAssertValid(vars);
+
+    if ((parentFrame != NULL) && !parentFrame->onHeap) {
+        die("Stack-allocated `parentFrame`.");
+    }
+
     frame->parentFrame = parentFrame;
     frame->parentClosure = parentClosure;
     frame->vars = vars;
+    frame->onHeap = false;
 }
 
 /* Documented in header. */
@@ -81,4 +87,5 @@ void frameSnap(Frame *target, Frame *source) {
     pbAssertValid(source->vars);
 
     *target = *source;
+    target->onHeap = true;
 }
