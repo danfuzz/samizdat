@@ -38,7 +38,7 @@ zvalue GFN_size = NULL;
 
 /* Documented in header. */
 void pbInitCoreGenerics(void) {
-    GFN_call = gfnFrom(1, 1, stringFromUtf8(-1, "call"));
+    GFN_call = gfnFrom(1, -1, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 
     GFN_debugString = gfnFrom(1, 1, stringFromUtf8(-1, "debugString"));
