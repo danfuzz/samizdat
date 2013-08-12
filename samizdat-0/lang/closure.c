@@ -43,6 +43,18 @@ typedef struct {
 
     /** Ordering id. */
     zint orderId;
+
+    /** The `"formals"` mapping inside `defMap`. */
+    zvalue formals;
+
+    /** The `"statements"` mapping inside `defMap`. */
+    zvalue statements;
+
+    /** The `"yield"` mapping inside `defMap`. */
+    zvalue yield;
+
+    /** The `"yieldDef"` mapping inside `defMap`. */
+    zvalue yieldDef;
 } ClosureInfo;
 
 /**
@@ -76,8 +88,13 @@ static ClosureInfo *closureInfo(zvalue closure) {
 static zvalue buildClosure(zvalue node) {
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = closureInfo(result);
+    zvalue defMap = dataOf(node);
 
-    info->defMap = dataOf(node);
+    info->defMap = defMap;
+    info->formals = mapGet(defMap, STR_FORMALS);
+    info->statements = mapGet(defMap, STR_STATEMENTS);
+    info->yield = mapGet(defMap, STR_YIELD);
+    info->yieldDef = mapGet(defMap, STR_YIELD_DEF);
     info->orderId = pbOrderId();
 
     return result;
@@ -87,9 +104,10 @@ static zvalue buildClosure(zvalue node) {
  * Binds variables for all the formal arguments of the given
  * function (if any), into the given execution frame.
  */
-static void bindArguments(Frame *frame, zvalue node,
+static void bindArguments(Frame *frame, zvalue closure,
         zint argCount, const zvalue *args) {
-    zvalue formals = mapGet(node, STR_FORMALS);
+    ClosureInfo *info = closureInfo(closure);
+    zvalue formals = info->formals;
 
     if (formals == NULL) {
         // TODO: Should die if called with any arguments at all.
@@ -170,27 +188,21 @@ static void bindArguments(Frame *frame, zvalue node,
 static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     zvalue closure = callState->closure;
     ClosureInfo *info = closureInfo(closure);
-    zvalue defMap = info->defMap;
-    zint argCount = callState->argCount;
-    const zvalue *args = callState->args;
-
-    zvalue statements = mapGet(defMap, STR_STATEMENTS);
-    zvalue yield = mapGet(defMap, STR_YIELD);
 
     // With the closure's frame as the parent, bind the formals and
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
     frameInit(&frame, &info->frame, closure, EMPTY_MAP);
-    bindArguments(&frame, defMap, argCount, args);
+    bindArguments(&frame, closure, callState->argCount, callState->args);
 
     if (exitFunction != NULL) {
-        zvalue name = mapGet(defMap, STR_YIELD_DEF);
-        frameAdd(&frame, name, exitFunction);
+        frameAdd(&frame, info->yieldDef, exitFunction);
     }
 
     // Evaluate the statements, updating the frame as needed.
 
+    zvalue statements = info->statements;
     zint statementsSize = pbSize(statements);
     zvalue statementsArr[statementsSize];
     arrayFromList(statementsArr, statements);
@@ -236,6 +248,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // Evaluate the yield expression if present, and return the final
     // result.
 
+    zvalue yield = info->yield;
     return (yield == NULL) ? NULL : execExpressionVoidOk(&frame, yield);
 }
 
@@ -298,7 +311,7 @@ static zvalue Closure_call(zvalue state, zint argCount, const zvalue *args) {
     CallState callState = { closure, argCount - 1, &args[1] };
     zvalue result;
 
-    if (mapGet(info->defMap, STR_YIELD_DEF) != NULL) {
+    if (info->yieldDef != NULL) {
         result = nleCall(callClosureWithNle, &callState);
     } else {
         result = callClosureMain(&callState, NULL);
@@ -316,8 +329,7 @@ static zvalue Closure_canCall(zvalue state, zint argCount, const zvalue *args) {
     // This closure can be called with an argument as long as it defines
     // at least one formal. `formals` is either `NULL` or non-empty, hence
     // the test.
-    zvalue formals = mapGet(info->defMap, STR_FORMALS);
-    return (formals == NULL) ? NULL : value;
+    return (info->formals == NULL) ? NULL : value;
 }
 
 /* Documented in header. */
