@@ -317,6 +317,9 @@ static zvalue Closure_canCall(zvalue state, zint argCount, const zvalue *args) {
     zvalue value = args[1];
     ClosureInfo *info = closureInfo(closure);
 
+    // This closure can be called with an argument as long as it defines
+    // at least one formal. `formals` is either `NULL` or non-empty, hence
+    // the test.
     zvalue formals = mapGet(info->defMap, STR_FORMALS);
     return (formals == NULL) ? NULL : value;
 }
