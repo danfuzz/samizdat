@@ -44,7 +44,7 @@ void pbInitCoreGenerics(void) {
     GFN_call = gfnFrom(1, -1, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 
-    GFN_canCall = gfnFrom(1, -1, stringFromUtf8(-1, "canCall"));
+    GFN_canCall = gfnFrom(2, 2, stringFromUtf8(-1, "canCall"));
     pbImmortalize(GFN_canCall);
 
     GFN_debugString = gfnFrom(1, 1, stringFromUtf8(-1, "debugString"));
