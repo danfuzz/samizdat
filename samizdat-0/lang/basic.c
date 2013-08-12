@@ -25,5 +25,6 @@ void langInit(void) {
     }
 
     constInit();
+    langBindClosure();
     langBindNonlocalExit();
 }

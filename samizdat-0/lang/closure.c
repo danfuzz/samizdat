@@ -15,6 +15,13 @@
 #include <stddef.h>
 
 
+/*
+ * Helper definitions
+ */
+
+// Defined below.
+static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
+
 /**
  * Closure, that is, a function and its associated immutable bindings.
  * Instances of this structure are bound as the closure state as part of
@@ -33,30 +40,17 @@ typedef struct {
      * `fnDef` node.
      */
     zvalue defMap;
-} Closure;
+
+    /** Ordering id. */
+    zint orderId;
+} ClosureInfo;
 
 /**
- * Marks a closure state for garbage collection.
+ * Gets a pointer to the info of a closure value.
  */
-static void closureMark(void *state) {
-    Closure *closure = state;
-
-    frameMark(&closure->frame);
-    pbMark(closure->defMap);
+static ClosureInfo *closureInfo(zvalue closure) {
+    return pbPayload(closure);
 }
-
-/**
- * Frees a closure state.
- */
-static void closureFree(void *state) {
-    utilFree(state);
-}
-
-/** Uniqlet dispatch table for closures. */
-static UniqletInfoDispatch CLOSURE_DISPATCH = {
-    closureMark,
-    closureFree
-};
 
 /**
  * Function call state. This is used during function call setup. Pointers
@@ -68,7 +62,7 @@ typedef struct {
     zvalue closureValue;
 
     /** Closure being called (struct pointer). */
-    Closure *closure;
+    ClosureInfo *closure;
 
     /** Argument count. */
     zint argCount;
@@ -77,15 +71,13 @@ typedef struct {
     const zvalue *args;
 } CallState;
 
-// Defined below.
-static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
 
 /**
  * Binds variables for all the formal arguments of the given
  * function (if any), into the given execution frame.
  */
 static void bindArguments(Frame *frame, zvalue node,
-                          zint argCount, const zvalue *args) {
+        zint argCount, const zvalue *args) {
     zvalue formals = mapGet(node, STR_FORMALS);
 
     if (formals == NULL) {
@@ -165,7 +157,7 @@ static void bindArguments(Frame *frame, zvalue node,
  */
 static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     zvalue closureValue = callState->closureValue;
-    Closure *closure = callState->closure;
+    ClosureInfo *closure = callState->closure;
     zvalue defMap = closure->defMap;
     zint argCount = callState->argCount;
     const zvalue *args = callState->args;
@@ -243,44 +235,23 @@ static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
 }
 
 /**
- * The C function that is bound to in order to execute interpreted code.
- */
-static zvalue callClosure(zvalue state, zint argCount, const zvalue *args) {
-    Closure *closure = uniqletGetState(state, &CLOSURE_DISPATCH);
-    CallState callState = { state, closure, argCount, args };
-
-    zvalue result;
-
-    if (mapGet(closure->defMap, STR_YIELD_DEF) != NULL) {
-        result = nleCall(callClosureWithNle, &callState);
-    } else {
-        result = callClosureMain(&callState, NULL);
-    }
-
-    return result;
-}
-
-/**
  * Helper for evaluating `closure` and `fnDef` nodes. This does the
  * evaluation, and allows a pointer to the `Closure` struct to be
  * returned (via an out argument).
  */
-static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
-    Closure *closure = utilAlloc(sizeof(Closure));
+static zvalue buildClosure(ClosureInfo **resultInfo, Frame *frame, zvalue node) {
+    zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
+    ClosureInfo *info = closureInfo(result);
     zvalue defMap = dataOf(node);
 
-    frameSnap(&closure->frame, frame);
-    closure->defMap = defMap;
+    frameSnap(&info->frame, frame);
+    info->defMap = defMap;
 
-    if (resultClosure != NULL) {
-        *resultClosure = closure;
+    if (resultInfo != NULL) {
+        *resultInfo = info;
     }
 
-    return fnFrom(
-        0, -1,
-        callClosure,
-        uniqletFrom(&CLOSURE_DISPATCH, closure),
-        mapGet(defMap, STR_NAME));
+    return result;
 }
 
 /**
@@ -289,13 +260,13 @@ static zvalue buildClosure(Closure **resultClosure, Frame *frame, zvalue node) {
  * given `statements` array.
  */
 static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
-    Closure *closures[size];
+    ClosureInfo *infos[size];
 
     for (zint i = 0; i < size; i++) {
         zvalue one = statements[i];
         zvalue fnMap = dataOf(one);
         zvalue name = mapGet(fnMap, STR_NAME);
-        frameAdd(frame, name, buildClosure(&closures[i], frame, one));
+        frameAdd(frame, name, buildClosure(&infos[i], frame, one));
     }
 
     // Rewrite the local variable context of all the constructed closures
@@ -303,7 +274,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
     // `size == 1` and mutual recursion when `size > 1`.
 
     for (zint i = 0; i < size; i++) {
-        frameSnap(&closures[i]->frame, frame);
+        frameSnap(&infos[i]->frame, frame);
     }
 }
 
@@ -316,3 +287,76 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
 zvalue execClosure(Frame *frame, zvalue closureNode) {
     return buildClosure(NULL, frame, closureNode);
 }
+
+
+/*
+ * Type binding
+ */
+
+/* Documented in header. */
+static zvalue Closure_call(zvalue state, zint argCount, const zvalue *args) {
+    // The first argument is the closure itself. The rest are the arguments
+    // it is being called with, hence `argCount - 1, &args[1]` below.
+    zvalue closure = args[0];
+    ClosureInfo *info = closureInfo(closure);
+    CallState callState = { state, info, argCount - 1, &args[1] };
+    zvalue result;
+
+    if (mapGet(info->defMap, STR_YIELD_DEF) != NULL) {
+        result = nleCall(callClosureWithNle, &callState);
+    } else {
+        result = callClosureMain(&callState, NULL);
+    }
+
+    return result;
+}
+
+/* Documented in header. */
+static zvalue Closure_debugString(zvalue state,
+        zint argCount, const zvalue *args) {
+    zvalue closure = args[0];
+    ClosureInfo *info = closureInfo(closure);
+    zvalue name = mapGet(info->defMap, STR_NAME);
+
+    zvalue result = stringFromUtf8(-1, "@(Closure ");
+
+    if (name != NULL) {
+        result = stringAdd(result, fnCall(GFN_debugString, 1, &name));
+    } else {
+        result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
+    }
+
+    result = stringAdd(result, stringFromUtf8(-1, ")"));
+    return result;
+}
+
+/* Documented in header. */
+static zvalue Closure_gcMark(zvalue state, zint argCount, const zvalue *args) {
+    zvalue closure = args[0];
+    ClosureInfo *info = closureInfo(closure);
+
+    frameMark(&info->frame);
+    pbMark(info->defMap);
+    return NULL;
+}
+
+/* Documented in header. */
+static zvalue Closure_order(zvalue state, zint argCount, const zvalue *args) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return (closureInfo(v1)->orderId < closureInfo(v2)->orderId)
+        ? PB_NEG1 : PB_1;
+}
+
+/* Documented in header. */
+void langBindClosure(void) {
+    TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"));
+    gfnBindCore(GFN_call,        TYPE_Closure, Closure_call);
+    gfnBindCore(GFN_debugString, TYPE_Closure, Closure_debugString);
+    gfnBindCore(GFN_gcMark,      TYPE_Closure, Closure_gcMark);
+    gfnBindCore(GFN_order,       TYPE_Closure, Closure_order);
+}
+
+/* Documented in header. */
+zvalue TYPE_Closure = NULL;
