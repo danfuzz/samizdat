@@ -35,10 +35,10 @@ typedef struct {
 } zmapping;
 
 /**
- * Prototype for all in-model functions. The `state` is arbitrary closure
- * state (passed in when the function was bound).
+ * Prototype for an underlying C function corresponding to an in-model
+ * function (value of type `Function`).
  */
-typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
+typedef zvalue (*zfunction)(zint argCount, const zvalue *args);
 
 /** Type for local value stack pointers. */
 typedef const zvalue *zstackPointer;

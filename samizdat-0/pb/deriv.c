@@ -27,7 +27,7 @@ static DerivInfo *derivInfo(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
+zvalue Deriv_eq(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -35,14 +35,14 @@ zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args) {
+zvalue Deriv_gcMark(zint argCount, const zvalue *args) {
     zvalue value = args[0];
     pbMark(derivInfo(value)->data);
     return NULL;
 }
 
 /* Documented in header. */
-zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args) {
+zvalue Deriv_order(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zvalue data1 = derivInfo(v1)->data;

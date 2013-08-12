@@ -99,8 +99,7 @@ zvalue nleCall(znleFunction function, void *state) {
  */
 
 /* Documented in header. */
-static zvalue NonlocalExit_call(zvalue state, zint argCount,
-        const zvalue *args) {
+static zvalue NonlocalExit_call(zint argCount, const zvalue *args) {
     zvalue nle = args[0];
     NonlocalExitInfo *info = nleInfo(nle);
 
@@ -128,8 +127,7 @@ static zvalue NonlocalExit_call(zvalue state, zint argCount,
 }
 
 /* Documented in header. */
-static zvalue NonlocalExit_canCall(zvalue state, zint argCount,
-        const zvalue *args) {
+static zvalue NonlocalExit_canCall(zint argCount, const zvalue *args) {
     zvalue nle = args[0];
     zvalue value = args[1];
 
@@ -138,8 +136,7 @@ static zvalue NonlocalExit_canCall(zvalue state, zint argCount,
 }
 
 /* Documented in header. */
-static zvalue NonlocalExit_gcMark(zvalue state, zint argCount,
-        const zvalue *args) {
+static zvalue NonlocalExit_gcMark(zint argCount, const zvalue *args) {
     zvalue nle = args[0];
 
     pbMark(nleInfo(nle)->result);
@@ -147,8 +144,7 @@ static zvalue NonlocalExit_gcMark(zvalue state, zint argCount,
 }
 
 /* Documented in header. */
-static zvalue NonlocalExit_order(zvalue state, zint argCount,
-        const zvalue *args) {
+static zvalue NonlocalExit_order(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 

@@ -121,9 +121,9 @@ zfunction zfunctionFromFunction(zvalue function);
  * Method bindings for derived types.
  */
 
-zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args);
-zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args);
-zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args);
+zvalue Deriv_eq(zint argCount, const zvalue *args);
+zvalue Deriv_gcMark(zint argCount, const zvalue *args);
+zvalue Deriv_order(zint argCount, const zvalue *args);
 
 
 /*

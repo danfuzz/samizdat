@@ -26,7 +26,7 @@ static zvalue GFN_collect = NULL;
  * Does listification of an int. This returns a list of individual
  * bits (as ints).
  */
-static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
+static zvalue collectInt(zint argc, const zvalue *args) {
     zvalue intValue = args[0];
 
     zint size = pbSize(intValue);
@@ -45,14 +45,14 @@ static zvalue collectInt(zvalue state, zint argc, const zvalue *args) {
  * Does (trivial) "listification" of a list. This returns the argument
  * unchanged.
  */
-static zvalue collectList(zvalue state, zint argc, const zvalue *args) {
+static zvalue collectList(zint argc, const zvalue *args) {
     return args[0];
 }
 
 /**
  * Does listification of a map. This returns a list of individual mappings.
  */
-static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
+static zvalue collectMap(zint argc, const zvalue *args) {
     zvalue map = args[0];
 
     zint size = pbSize(map);
@@ -69,7 +69,7 @@ static zvalue collectMap(zvalue state, zint argc, const zvalue *args) {
  * Does listification of a string. This returns a list of individual
  * characters.
  */
-static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
+static zvalue collectString(zint argc, const zvalue *args) {
     zvalue string = args[0];
 
     zint size = pbSize(string);
@@ -87,8 +87,7 @@ static zvalue collectString(zvalue state, zint argc, const zvalue *args) {
  * `Value`, on the assumption that the value in question has a binding
  * for the generic `call`, which this function uses.
  */
-static zvalue collectGenerator(zvalue state, zint argc,
-        const zvalue *args) {
+static zvalue collectGenerator(zint argc, const zvalue *args) {
     zvalue generator = args[0];
 
     zvalue arr[CONST_MAX_GENERATOR_ITEMS];

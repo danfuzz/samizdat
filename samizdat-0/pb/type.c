@@ -342,8 +342,7 @@ zvalue typeParent(zvalue type) {
  */
 
 /* Documented in header. */
-static zvalue Type_debugString(zvalue state,
-        zint argCount, const zvalue *args) {
+static zvalue Type_debugString(zint argCount, const zvalue *args) {
     zvalue type = args[0];
     TypeInfo *info = typeInfo(type);
 
@@ -361,7 +360,7 @@ static zvalue Type_debugString(zvalue state,
 }
 
 /* Documented in header. */
-static zvalue Type_gcMark(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Type_gcMark(zint argCount, const zvalue *args) {
     zvalue box = args[0];
     TypeInfo *info = typeInfo(box);
 
@@ -372,7 +371,7 @@ static zvalue Type_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Type_order(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Type_order(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     TypeInfo *info1 = typeInfo(v1);

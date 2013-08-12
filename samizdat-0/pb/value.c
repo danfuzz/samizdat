@@ -14,8 +14,7 @@
  */
 
 /* Documented in header. */
-static zvalue Value_debugString(zvalue state,
-        zint argCount, const zvalue *args) {
+static zvalue Value_debugString(zint argCount, const zvalue *args) {
     zvalue value = args[0];
     zvalue type = typeOf(value);
     char addrBuf[19]; // Includes room for "0x" and "\0".
@@ -31,12 +30,12 @@ static zvalue Value_debugString(zvalue state,
 }
 
 /* Documented in header. */
-static zvalue Value_eq(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Value_eq(zint argCount, const zvalue *args) {
     return NULL;
 }
 
 /* Documented in header. */
-static zvalue Value_size(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Value_size(zint argCount, const zvalue *args) {
     return intFromZint(0);
 }
 

@@ -93,7 +93,7 @@ zvalue uniqletFrom(UniqletInfoDispatch *dispatch, void *state) {
  */
 
 /* Documented in header. */
-static zvalue Uniqlet_gcFree(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Uniqlet_gcFree(zint argCount, const zvalue *args) {
     zvalue uniqlet = args[0];
     UniqletInfo *info = uniInfo(uniqlet);
 
@@ -105,7 +105,7 @@ static zvalue Uniqlet_gcFree(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Uniqlet_gcMark(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Uniqlet_gcMark(zint argCount, const zvalue *args) {
     zvalue uniqlet = args[0];
     UniqletInfo *info = uniInfo(uniqlet);
 
@@ -117,7 +117,7 @@ static zvalue Uniqlet_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Uniqlet_order(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Uniqlet_order(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return (uniInfo(v1)->id < uniInfo(v2)->id) ? PB_NEG1 : PB_1;

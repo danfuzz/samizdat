@@ -299,7 +299,7 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
  */
 
 /* Documented in header. */
-static zvalue Closure_call(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Closure_call(zint argCount, const zvalue *args) {
     // The first argument is the closure itself. The rest are the arguments
     // it is being called with, hence `argCount - 1, &args[1]` below.
     zvalue closure = args[0];
@@ -317,7 +317,7 @@ static zvalue Closure_call(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Closure_canCall(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Closure_canCall(zint argCount, const zvalue *args) {
     zvalue closure = args[0];
     zvalue value = args[1];
     ClosureInfo *info = closureInfo(closure);
@@ -329,8 +329,7 @@ static zvalue Closure_canCall(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Closure_debugString(zvalue state,
-        zint argCount, const zvalue *args) {
+static zvalue Closure_debugString(zint argCount, const zvalue *args) {
     zvalue closure = args[0];
     ClosureInfo *info = closureInfo(closure);
     zvalue name = mapGet(info->defMap, STR_NAME);
@@ -348,7 +347,7 @@ static zvalue Closure_debugString(zvalue state,
 }
 
 /* Documented in header. */
-static zvalue Closure_gcMark(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Closure_gcMark(zint argCount, const zvalue *args) {
     zvalue closure = args[0];
     ClosureInfo *info = closureInfo(closure);
 
@@ -358,7 +357,7 @@ static zvalue Closure_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Closure_order(zvalue state, zint argCount, const zvalue *args) {
+static zvalue Closure_order(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 

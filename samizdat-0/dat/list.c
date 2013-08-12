@@ -203,7 +203,7 @@ zvalue listSlice(zvalue list, zint start, zint end) {
 zvalue EMPTY_LIST = NULL;
 
 /* Documented in header. */
-static zvalue List_eq(zvalue state, zint argCount, const zvalue *args) {
+static zvalue List_eq(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zint sz1 = listSizeOf(v1);
@@ -226,7 +226,7 @@ static zvalue List_eq(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue List_gcMark(zvalue state, zint argCount, const zvalue *args) {
+static zvalue List_gcMark(zint argCount, const zvalue *args) {
     zvalue list = args[0];
     zint size = listSizeOf(list);
     zvalue *elems = listElems(list);
@@ -239,7 +239,7 @@ static zvalue List_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
+static zvalue List_order(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zvalue *e1 = listElems(v1);
@@ -263,7 +263,7 @@ static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue List_size(zvalue state, zint argCount, const zvalue *args) {
+static zvalue List_size(zint argCount, const zvalue *args) {
     zvalue list = args[0];
     return intFromZint(listSizeOf(list));
 }
