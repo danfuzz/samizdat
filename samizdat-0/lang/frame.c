@@ -34,16 +34,24 @@ static void dieForVariable(const char *message, zvalue name) {
 
 /* Documented in header. */
 void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
-    zvalue vars) {
+        zvalue vars) {
+    pbAssertValidOrNull(parentClosure);
+    pbAssertValid(vars);
+
+    if ((parentFrame != NULL) && !parentFrame->onHeap) {
+        die("Stack-allocated `parentFrame`.");
+    }
+
     frame->parentFrame = parentFrame;
     frame->parentClosure = parentClosure;
     frame->vars = vars;
+    frame->onHeap = false;
 }
 
 /* Documented in header. */
 void frameMark(Frame *frame) {
     pbMark(frame->vars);
-    pbMark(frame->parentClosure);
+    pbMark(frame->parentClosure); // This will mark `parentFrame`.
 }
 
 /* Documented in header. */
@@ -60,14 +68,12 @@ void frameAdd(Frame *frame, zvalue name, zvalue value) {
 
 /* Documented in header. */
 zvalue frameGet(Frame *frame, zvalue name) {
-    while (frame != NULL) {
+    for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
         zvalue result = mapGet(frame->vars, name);
 
         if (result != NULL) {
             return result;
         }
-
-        frame = frame->parentFrame;
     }
 
     dieForVariable("Variable not defined", name);
@@ -75,5 +81,9 @@ zvalue frameGet(Frame *frame, zvalue name) {
 
 /* Documented in header. */
 void frameSnap(Frame *target, Frame *source) {
+    pbAssertValidOrNull(source->parentClosure);
+    pbAssertValid(source->vars);
+
     *target = *source;
+    target->onHeap = true;
 }
