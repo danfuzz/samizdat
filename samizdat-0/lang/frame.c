@@ -34,7 +34,9 @@ static void dieForVariable(const char *message, zvalue name) {
 
 /* Documented in header. */
 void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
-    zvalue vars) {
+        zvalue vars) {
+    pbAssertValidOrNull(parentClosure);
+    pbAssertValid(vars);
     frame->parentFrame = parentFrame;
     frame->parentClosure = parentClosure;
     frame->vars = vars;
@@ -42,8 +44,10 @@ void frameInit(Frame *frame, Frame *parentFrame, zvalue parentClosure,
 
 /* Documented in header. */
 void frameMark(Frame *frame) {
-    pbMark(frame->vars);
-    pbMark(frame->parentClosure);
+    for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
+        pbMark(frame->vars);
+        pbMark(frame->parentClosure);
+    }
 }
 
 /* Documented in header. */
@@ -60,14 +64,12 @@ void frameAdd(Frame *frame, zvalue name, zvalue value) {
 
 /* Documented in header. */
 zvalue frameGet(Frame *frame, zvalue name) {
-    while (frame != NULL) {
+    for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
         zvalue result = mapGet(frame->vars, name);
 
         if (result != NULL) {
             return result;
         }
-
-        frame = frame->parentFrame;
     }
 
     dieForVariable("Variable not defined", name);
@@ -75,5 +77,8 @@ zvalue frameGet(Frame *frame, zvalue name) {
 
 /* Documented in header. */
 void frameSnap(Frame *target, Frame *source) {
+    pbAssertValidOrNull(source->parentClosure);
+    pbAssertValid(source->vars);
+
     *target = *source;
 }
