@@ -5,7 +5,7 @@
  */
 
 #include "const.h"
-#include "lang.h"
+#include "impl.h"
 #include "util.h"
 
 #include <stddef.h>
@@ -973,7 +973,7 @@ DEF_PARSE(programBody) {
 
 /* Documented in header. */
 zvalue langTree0(zvalue program) {
-    constInit();
+    langInit();
 
     zvalue tokens;
 

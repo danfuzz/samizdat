@@ -32,6 +32,9 @@ typedef struct Frame {
     zvalue vars;
 } Frame;
 
+/** Type for nonlocal exit functions. */
+extern zvalue TYPE_NonlocalExit;
+
 /**
  * Initializes the given frame.
  */
@@ -63,5 +66,9 @@ void frameSnap(Frame *target, Frame *source);
  * given state and a nonlocal exit function.
  */
 zvalue nleCall(znleFunction function, void *state);
+
+// Type init and binding.
+void langInit(void);
+void langBindNonlocalExit(void);
 
 #endif
