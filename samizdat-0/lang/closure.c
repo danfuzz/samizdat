@@ -240,7 +240,8 @@ static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
  * evaluation, and allows a pointer to the `Closure` struct to be
  * returned (via an out argument).
  */
-static zvalue buildClosure(ClosureInfo **resultInfo, Frame *frame, zvalue node) {
+static zvalue buildClosure(ClosureInfo **resultInfo, Frame *frame,
+        zvalue node) {
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = closureInfo(result);
     zvalue defMap = dataOf(node);
@@ -256,9 +257,8 @@ static zvalue buildClosure(ClosureInfo **resultInfo, Frame *frame, zvalue node) 
 }
 
 /**
- * Executes a sequence of one or more statement-level function definitions,
- * from the `start` index (inclusive) to the `end` index (exclusive) in the
- * given `statements` array.
+ * Executes a sequence of one or more statement-level function definitions.
+ * Each of the elements of `statements` must be a `fnDef` node.
  */
 static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
     ClosureInfo *infos[size];
