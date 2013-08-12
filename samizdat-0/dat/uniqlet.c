@@ -82,11 +82,6 @@ bool uniqletHasDispatch(zvalue uniqlet, UniqletInfoDispatch *dispatch) {
     return (dispatch == uniInfo(uniqlet)->dispatch);
 }
 
-/* Documented in header. */
-zvalue uniqletFrom(UniqletInfoDispatch *dispatch, void *state) {
-    return newUniqlet(dispatch, state);
-}
-
 
 /*
  * Type binding

@@ -258,21 +258,6 @@ zvalue mappingValue(zvalue map);
 zvalue uniqlet(void);
 
 /**
- * Gets a new uniqlet, associated with the given dispatcher and contents.
- * The uniqueness guarantee is the same as with `uniqlet()`.
- *
- * In addition, this provides a convenient way to effectively build an
- * identity mapping between uniqlets (as the keys) and arbitrary
- * non-dat-module data (as the state values). Rather than store uniqlets
- * as keys in an external structure, this inverts the relationship,
- * storing the key (that represents the map) and associated `state`
- * inside the uniqlet. In object-capability terms, the key is a
- * sealer/unsealer, and the uniqlet serves secondary duty as a sealed
- * box. In this case, the key is in fact the associated state dispatch table.
- */
-zvalue uniqletFrom(UniqletInfoDispatch *dispatch, void *state);
-
-/**
  * Gets the state value associated with the given uniqlet, asserting that
  * the uniqlet's dispatch table is as given.
  */
