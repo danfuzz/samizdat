@@ -236,22 +236,14 @@ static zvalue callClosureWithNle(void *state, zvalue exitFunction) {
 }
 
 /**
- * Helper for evaluating `closure` and `fnDef` nodes. This does the
- * evaluation, and allows a pointer to the `Closure` struct to be
- * returned (via an out argument).
+ * Helper for evaluating `closure` and `fnDef` nodes.
  */
-static zvalue buildClosure(ClosureInfo **resultInfo, Frame *frame,
-        zvalue node) {
+static zvalue buildClosure(Frame *frame, zvalue node) {
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = closureInfo(result);
-    zvalue defMap = dataOf(node);
 
     frameSnap(&info->frame, frame);
-    info->defMap = defMap;
-
-    if (resultInfo != NULL) {
-        *resultInfo = info;
-    }
+    info->defMap = dataOf(node);
 
     return result;
 }
@@ -261,13 +253,15 @@ static zvalue buildClosure(ClosureInfo **resultInfo, Frame *frame,
  * Each of the elements of `statements` must be a `fnDef` node.
  */
 static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
-    ClosureInfo *infos[size];
+    zvalue closures[size];
 
     for (zint i = 0; i < size; i++) {
         zvalue one = statements[i];
         zvalue fnMap = dataOf(one);
         zvalue name = mapGet(fnMap, STR_NAME);
-        frameAdd(frame, name, buildClosure(&infos[i], frame, one));
+
+        closures[i] = buildClosure(frame, one);
+        frameAdd(frame, name, closures[i]);
     }
 
     // Rewrite the local variable context of all the constructed closures
@@ -275,7 +269,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
     // `size == 1` and mutual recursion when `size > 1`.
 
     for (zint i = 0; i < size; i++) {
-        frameSnap(&infos[i]->frame, frame);
+        frameSnap(&closureInfo(closures[i])->frame, frame);
     }
 }
 
@@ -286,7 +280,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
 
 /* Documented in header. */
 zvalue execClosure(Frame *frame, zvalue closureNode) {
-    return buildClosure(NULL, frame, closureNode);
+    return buildClosure(frame, closureNode);
 }
 
 
