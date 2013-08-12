@@ -128,6 +128,16 @@ static zvalue NonlocalExit_call(zvalue state, zint argCount,
 }
 
 /* Documented in header. */
+static zvalue NonlocalExit_canCall(zvalue state, zint argCount,
+        const zvalue *args) {
+    zvalue nle = args[0];
+    zvalue value = args[1];
+
+    // Okay to call this with any first argument.
+    return value;
+}
+
+/* Documented in header. */
 static zvalue NonlocalExit_gcMark(zvalue state, zint argCount,
         const zvalue *args) {
     zvalue nle = args[0];
@@ -148,9 +158,10 @@ static zvalue NonlocalExit_order(zvalue state, zint argCount,
 /* Documented in header. */
 void langBindNonlocalExit(void) {
     TYPE_NonlocalExit = coreTypeFromName(stringFromUtf8(-1, "NonlocalExit"));
-    gfnBindCore(GFN_call,   TYPE_NonlocalExit, NonlocalExit_call);
-    gfnBindCore(GFN_gcMark, TYPE_NonlocalExit, NonlocalExit_gcMark);
-    gfnBindCore(GFN_order,  TYPE_NonlocalExit, NonlocalExit_order);
+    gfnBindCore(GFN_call,    TYPE_NonlocalExit, NonlocalExit_call);
+    gfnBindCore(GFN_canCall, TYPE_NonlocalExit, NonlocalExit_canCall);
+    gfnBindCore(GFN_gcMark,  TYPE_NonlocalExit, NonlocalExit_gcMark);
+    gfnBindCore(GFN_order,   TYPE_NonlocalExit, NonlocalExit_order);
 }
 
 /* Documented in header. */

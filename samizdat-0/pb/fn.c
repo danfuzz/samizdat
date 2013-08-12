@@ -115,6 +115,16 @@ static zvalue Function_call(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue Function_canCall(zvalue state, zint argCount,
+        const zvalue *args) {
+    zvalue function = args[0];
+    zvalue value = args[1];
+    FunctionInfo *info = fnInfo(function);
+
+    return (info->maxArgs >= 1) ? value : NULL;
+}
+
+/* Documented in header. */
 static zvalue Function_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue function = args[0];
@@ -154,6 +164,7 @@ static zvalue Function_order(zvalue state, zint argCount, const zvalue *args) {
 void pbBindFunction(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Function`.
     gfnBindCore(GFN_call,        TYPE_Function, Function_call);
+    gfnBindCore(GFN_canCall,     TYPE_Function, Function_canCall);
     gfnBindCore(GFN_debugString, TYPE_Function, Function_debugString);
     gfnBindCore(GFN_gcMark,      TYPE_Function, Function_gcMark);
     gfnBindCore(GFN_order,       TYPE_Function, Function_order);

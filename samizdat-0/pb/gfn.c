@@ -217,6 +217,16 @@ static zvalue Generic_call(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue Generic_canCall(zvalue state, zint argCount,
+        const zvalue *args) {
+    zvalue generic = args[0];
+    zvalue value = args[1];
+    GenericInfo *info = gfnInfo(generic);
+
+    return (gfnFind(generic, value) != NULL) ? value : NULL;
+}
+
+/* Documented in header. */
 static zvalue Generic_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue generic = args[0];
@@ -259,6 +269,7 @@ void pbBindGeneric(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Generic`.
 
     gfnBindCore(GFN_call,        TYPE_Generic, Generic_call);
+    gfnBindCore(GFN_canCall,     TYPE_Generic, Generic_canCall);
     gfnBindCore(GFN_debugString, TYPE_Generic, Generic_debugString);
     gfnBindCore(GFN_gcMark,      TYPE_Generic, Generic_gcMark);
     gfnBindCore(GFN_order,       TYPE_Generic, Generic_order);

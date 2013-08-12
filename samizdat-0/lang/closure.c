@@ -312,6 +312,16 @@ static zvalue Closure_call(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+static zvalue Closure_canCall(zvalue state, zint argCount, const zvalue *args) {
+    zvalue closure = args[0];
+    zvalue value = args[1];
+    ClosureInfo *info = closureInfo(closure);
+
+    zvalue formals = mapGet(info->defMap, STR_FORMALS);
+    return (formals == NULL) ? NULL : value;
+}
+
+/* Documented in header. */
 static zvalue Closure_debugString(zvalue state,
         zint argCount, const zvalue *args) {
     zvalue closure = args[0];
@@ -353,6 +363,7 @@ static zvalue Closure_order(zvalue state, zint argCount, const zvalue *args) {
 void langBindClosure(void) {
     TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"));
     gfnBindCore(GFN_call,        TYPE_Closure, Closure_call);
+    gfnBindCore(GFN_canCall,     TYPE_Closure, Closure_canCall);
     gfnBindCore(GFN_debugString, TYPE_Closure, Closure_debugString);
     gfnBindCore(GFN_gcMark,      TYPE_Closure, Closure_gcMark);
     gfnBindCore(GFN_order,       TYPE_Closure, Closure_order);
