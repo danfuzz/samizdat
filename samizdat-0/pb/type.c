@@ -403,17 +403,17 @@ void pbInitTypeSystem(void) {
     TYPE_Function = allocType();
     TYPE_Generic = allocType();
     TYPE_String = allocType();
+    TYPE_Uniqlet = allocType();
 
-    // `coreSecret` is defined as a type value with no instances. This is
-    // a hackish convenience. It should probably be a Uniqlet.
-    coreSecret = allocType();
+    coreSecret = uniqlet();
+    pbImmortalize(coreSecret);
 
     typeInit(TYPE_Type,     TYPE_Value, stringFromUtf8(-1, "Type"),     coreSecret, false);
     typeInit(TYPE_Value,    NULL,       stringFromUtf8(-1, "Value"),    coreSecret, false);
     typeInit(TYPE_Function, TYPE_Value, stringFromUtf8(-1, "Function"), coreSecret, true);
     typeInit(TYPE_Generic,  TYPE_Value, stringFromUtf8(-1, "Generic"),  coreSecret, true);
     typeInit(TYPE_String,   TYPE_Value, stringFromUtf8(-1, "String"),   coreSecret, false);
-    typeInit(coreSecret,    TYPE_Value, stringFromUtf8(-1, "SECRET"),   coreSecret, true);
+    typeInit(TYPE_Uniqlet,  TYPE_Value, stringFromUtf8(-1, "Uniqlet"),  coreSecret, true);
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
