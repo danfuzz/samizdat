@@ -53,7 +53,7 @@ static FunctionInfo *fnInfo(zvalue function) {
  */
 
 /* Documented in header. */
-zvalue doFnCall(zvalue function, zint argCount, const zvalue *args) {
+zvalue functionCall(zvalue function, zint argCount, const zvalue *args) {
     FunctionInfo *info = fnInfo(function);
 
     if (argCount < info->minArgs) {
@@ -73,7 +73,8 @@ zvalue doFnCall(zvalue function, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue name) {
+zvalue functionFrom(zint minArgs, zint maxArgs, zfunction function,
+        zvalue name) {
     if ((minArgs < 0) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
@@ -100,7 +101,7 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue name) {
 METH_IMPL(Function, call) {
     // The first argument is the function per se, and the rest are the
     // arguments to call it with.
-    return doFnCall(args[0], argCount - 1, &args[1]);
+    return functionCall(args[0], argCount - 1, &args[1]);
 }
 
 /* Documented in header. */

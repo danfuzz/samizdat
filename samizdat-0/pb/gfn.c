@@ -109,7 +109,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
     // of calling `funCall` on the `call` methods for `Function` or `Generic`.
     switch (index) {
         case PB_INDEX_FUNCTION: {
-            return doFnCall(function, argCount, args);
+            return functionCall(function, argCount, args);
             break;
         }
         case PB_INDEX_GENERIC: {
@@ -182,7 +182,7 @@ void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
     }
 
     info->functions[index] =
-        fnFrom(info->minArgs, info->maxArgs, function, info->name);
+        functionFrom(info->minArgs, info->maxArgs, function, info->name);
 }
 
 /* Documented in header. */

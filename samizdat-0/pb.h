@@ -335,7 +335,8 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args);
  * and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue name);
+zvalue functionFrom(zint minArgs, zint maxArgs, zfunction function,
+    zvalue name);
 
 
 /*

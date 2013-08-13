@@ -69,7 +69,7 @@ void derivBind(zvalue type);
  * short-circuited generic function dispatch of `call` on type `Function`
  * lands.
  */
-zvalue doFnCall(zvalue function, zint argCount, const zvalue *args);
+zvalue functionCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
  * Gets the function bound to the given generic for the given value, if any.
