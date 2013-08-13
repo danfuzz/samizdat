@@ -36,9 +36,6 @@ typedef struct {
 
     /** Jump buffer, used for nonlocal exit. */
     sigjmp_buf jumpBuf;
-
-    /** Ordering id. */
-    zint orderId;
 } NonlocalExitInfo;
 
 /**
@@ -57,7 +54,6 @@ static zvalue newNonlocalExit(void) {
     NonlocalExitInfo *info = getInfo(result);
     info->active = true;
     info->result = NULL;
-    info->orderId = pbOrderId();
 
     return result;
 }
@@ -143,21 +139,12 @@ METH_IMPL(NonlocalExit, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(NonlocalExit, order) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (getInfo(v1)->orderId < getInfo(v2)->orderId) ? PB_NEG1 : PB_1;
-}
-
-/* Documented in header. */
 void langBindNonlocalExit(void) {
     TYPE_NonlocalExit =
         coreTypeFromName(stringFromUtf8(-1, "NonlocalExit"), true);
     METH_BIND(NonlocalExit, call);
     METH_BIND(NonlocalExit, canCall);
     METH_BIND(NonlocalExit, gcMark);
-    METH_BIND(NonlocalExit, order);
 }
 
 /* Documented in header. */
