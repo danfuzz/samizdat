@@ -76,10 +76,17 @@ later-named modules depending only on earlier-named ones):
 Coding Conventions
 ------------------
 
+### Spacing and Indentation
+
 C code is formatted in a close approximation of the "One True" brace and
-spacing style, with four spaces per indentation level. Variable and function
-names use `lowercaseInitialCamelCase`. Structural types use
-`UppercaseInitialCamelCase`. Numeric constants use `ALL_CAPS_WITH_UNDERSCORES`.
+spacing style, with four spaces per indentation level.
+
+### Naming
+
+Variable and function names use `lowercaseInitialCamelCase`. Structural
+types use `UppercaseInitialCamelCase`. Other types use `zlowercaseInitial`
+(that is, prefixed with `z` per se). Numeric constants use
+`ALL_CAPS_WITH_UNDERSCORES`.
 
 A "Hungarianesque" prefix is used to identify aspects of some globals:
 
@@ -106,6 +113,8 @@ A "Hungarianesque" prefix is used to identify aspects of some globals:
   generally as its first argument. As an exception, the name pattern
   `targetFromSource` generally indicates a function that takes a value of
   type `Source` yielding a value of type `target`.
+
+### Intra-file Arrangement
 
 Source files are generally split into sections. Within each section,
 types and variables are typically listed before functions. The following is
@@ -134,3 +143,17 @@ the usual order for sections:
   in which case its `TYPE_Name` is declared as `static`. Method implementation
   functions in this section are most typically listed in alphabetical order,
   with an overall binding / initialization function toward the bottom.
+
+### Comments
+
+Every file starts with a standard boilerplate copyright header. After that,
+most files have a brief comment about their contents.
+
+Comment text is written using Markdown syntax.
+
+Comments on definitions and declarations take a "DRY" attitude, with
+header files being the "source of truth". Comments of the form
+`"/* Documented in header"` are used liberally in source (non-header) files
+as an explicit indication that the so-marked item does in fact have
+documentation elsewhere. (That is, it is an unintentional oversight for an
+item to *not* have such a comment.)
