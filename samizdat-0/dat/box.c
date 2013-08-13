@@ -174,8 +174,8 @@ METH_IMPL(Box, order) {
 /* Documented in header. */
 void datBindBox(void) {
     TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"));
-    gfnBindCore(GFN_gcMark, TYPE_Box, Box_gcMark);
-    gfnBindCore(GFN_order,  TYPE_Box, Box_order);
+    METH_BIND(Box, gcMark);
+    METH_BIND(Box, order);
 
     DAT_NULL_BOX = boxMutable(); // Note: Explicit `==` check in `boxSet`.
     pbImmortalize(DAT_NULL_BOX);

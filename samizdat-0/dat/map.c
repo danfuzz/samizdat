@@ -425,10 +425,10 @@ METH_IMPL(Map, size) {
 /* Documented in header. */
 void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"));
-    gfnBindCore(GFN_eq,     TYPE_Map, Map_eq);
-    gfnBindCore(GFN_gcMark, TYPE_Map, Map_gcMark);
-    gfnBindCore(GFN_order,  TYPE_Map, Map_order);
-    gfnBindCore(GFN_size,   TYPE_Map, Map_size);
+    METH_BIND(Map, eq);
+    METH_BIND(Map, gcMark);
+    METH_BIND(Map, order);
+    METH_BIND(Map, size);
 
     EMPTY_MAP = allocMap(0);
     pbImmortalize(EMPTY_MAP);

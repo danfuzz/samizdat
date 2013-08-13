@@ -266,11 +266,11 @@ METH_IMPL(Generic, order) {
 void pbBindGeneric(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Generic`.
 
-    gfnBindCore(GFN_call,        TYPE_Generic, Generic_call);
-    gfnBindCore(GFN_canCall,     TYPE_Generic, Generic_canCall);
-    gfnBindCore(GFN_debugString, TYPE_Generic, Generic_debugString);
-    gfnBindCore(GFN_gcMark,      TYPE_Generic, Generic_gcMark);
-    gfnBindCore(GFN_order,       TYPE_Generic, Generic_order);
+    METH_BIND(Generic, call);
+    METH_BIND(Generic, canCall);
+    METH_BIND(Generic, debugString);
+    METH_BIND(Generic, gcMark);
+    METH_BIND(Generic, order);
 }
 
 /* Documented in header. */

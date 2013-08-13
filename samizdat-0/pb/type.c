@@ -413,9 +413,9 @@ void pbInitTypeSystem(void) {
 
 /* Documented in header. */
 void pbBindType(void) {
-    gfnBindCore(GFN_debugString, TYPE_Type, Type_debugString);
-    gfnBindCore(GFN_gcMark,      TYPE_Type, Type_gcMark);
-    gfnBindCore(GFN_order,       TYPE_Type, Type_order);
+    METH_BIND(Type, debugString);
+    METH_BIND(Type, gcMark);
+    METH_BIND(Type, order);
 }
 
 /* Documented in header. */

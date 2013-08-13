@@ -154,10 +154,10 @@ METH_IMPL(NonlocalExit, order) {
 /* Documented in header. */
 void langBindNonlocalExit(void) {
     TYPE_NonlocalExit = coreTypeFromName(stringFromUtf8(-1, "NonlocalExit"));
-    gfnBindCore(GFN_call,    TYPE_NonlocalExit, NonlocalExit_call);
-    gfnBindCore(GFN_canCall, TYPE_NonlocalExit, NonlocalExit_canCall);
-    gfnBindCore(GFN_gcMark,  TYPE_NonlocalExit, NonlocalExit_gcMark);
-    gfnBindCore(GFN_order,   TYPE_NonlocalExit, NonlocalExit_order);
+    METH_BIND(NonlocalExit, call);
+    METH_BIND(NonlocalExit, canCall);
+    METH_BIND(NonlocalExit, gcMark);
+    METH_BIND(NonlocalExit, order);
 }
 
 /* Documented in header. */

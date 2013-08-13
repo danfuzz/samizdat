@@ -176,9 +176,9 @@ METH_IMPL(Int, size) {
 /* Documented in header. */
 void pbBindInt(void) {
     TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"));
-    gfnBindCore(GFN_eq,    TYPE_Int, Int_eq);
-    gfnBindCore(GFN_size,  TYPE_Int, Int_size);
-    gfnBindCore(GFN_order, TYPE_Int, Int_order);
+    METH_BIND(Int, eq);
+    METH_BIND(Int, size);
+    METH_BIND(Int, order);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);

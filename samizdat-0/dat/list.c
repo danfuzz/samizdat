@@ -271,10 +271,10 @@ METH_IMPL(List, size) {
 /* Documented in header. */
 void datBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"));
-    gfnBindCore(GFN_eq,     TYPE_List, List_eq);
-    gfnBindCore(GFN_gcMark, TYPE_List, List_gcMark);
-    gfnBindCore(GFN_order,  TYPE_List, List_order);
-    gfnBindCore(GFN_size,   TYPE_List, List_size);
+    METH_BIND(List, eq);
+    METH_BIND(List, gcMark);
+    METH_BIND(List, order);
+    METH_BIND(List, size);
 
     EMPTY_LIST = allocList(0);
     pbImmortalize(EMPTY_LIST);

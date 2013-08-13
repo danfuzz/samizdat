@@ -297,10 +297,10 @@ METH_IMPL(String, size) {
 void pbBindString(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_String`.
 
-    gfnBindCore(GFN_debugString, TYPE_String, String_debugString);
-    gfnBindCore(GFN_eq,          TYPE_String, String_eq);
-    gfnBindCore(GFN_order,       TYPE_String, String_order);
-    gfnBindCore(GFN_size,        TYPE_String, String_size);
+    METH_BIND(String, debugString);
+    METH_BIND(String, eq);
+    METH_BIND(String, order);
+    METH_BIND(String, size);
 
     EMPTY_STRING = allocString(0);
     pbImmortalize(EMPTY_STRING);

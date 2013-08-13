@@ -154,11 +154,11 @@ METH_IMPL(Function, order) {
 /* Documented in header. */
 void pbBindFunction(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Function`.
-    gfnBindCore(GFN_call,        TYPE_Function, Function_call);
-    gfnBindCore(GFN_canCall,     TYPE_Function, Function_canCall);
-    gfnBindCore(GFN_debugString, TYPE_Function, Function_debugString);
-    gfnBindCore(GFN_gcMark,      TYPE_Function, Function_gcMark);
-    gfnBindCore(GFN_order,       TYPE_Function, Function_order);
+    METH_BIND(Function, call);
+    METH_BIND(Function, canCall);
+    METH_BIND(Function, debugString);
+    METH_BIND(Function, gcMark);
+    METH_BIND(Function, order);
 }
 
 /* Documented in header. */

@@ -43,9 +43,9 @@ METH_IMPL(Value, size) {
 void pbBindValue(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Value`.
 
-    gfnBindCore(GFN_debugString, TYPE_Value, Value_debugString);
-    gfnBindCore(GFN_eq,          TYPE_Value, Value_eq);
-    gfnBindCore(GFN_size,        TYPE_Value, Value_size);
+    METH_BIND(Value, debugString);
+    METH_BIND(Value, eq);
+    METH_BIND(Value, size);
 }
 
 /* Documented in header. */

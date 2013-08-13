@@ -57,7 +57,7 @@ enum {
 
 /** Performs binding of the indicated method. */
 #define METH_BIND(type, name) \
-    do { gfnBindCore(GFN_##name, Type_##type, type##_##name); } while(0)
+    do { gfnBindCore(GFN_##name, TYPE_##type, type##_##name); } while(0)
 
 
 /*

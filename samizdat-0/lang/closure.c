@@ -368,11 +368,11 @@ METH_IMPL(Closure, order) {
 /* Documented in header. */
 void langBindClosure(void) {
     TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"));
-    gfnBindCore(GFN_call,        TYPE_Closure, Closure_call);
-    gfnBindCore(GFN_canCall,     TYPE_Closure, Closure_canCall);
-    gfnBindCore(GFN_debugString, TYPE_Closure, Closure_debugString);
-    gfnBindCore(GFN_gcMark,      TYPE_Closure, Closure_gcMark);
-    gfnBindCore(GFN_order,       TYPE_Closure, Closure_order);
+    METH_BIND(Closure, call);
+    METH_BIND(Closure, canCall);
+    METH_BIND(Closure, debugString);
+    METH_BIND(Closure, gcMark);
+    METH_BIND(Closure, order);
 }
 
 /* Documented in header. */
