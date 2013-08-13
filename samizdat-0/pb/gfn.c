@@ -78,7 +78,7 @@ static char *callReporter(void *state) {
 /**
  * Actual implementation of generic function dispatch.
  */
-static zvalue doGfnCall(zvalue generic, zint argCount, const zvalue *args) {
+static zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     GenericInfo *info = getInfo(generic);
 
     if (argCount < info->minArgs) {
@@ -113,7 +113,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             break;
         }
         case PB_INDEX_GENERIC: {
-            return doGfnCall(function, argCount, args);
+            return genericCall(function, argCount, args);
             break;
         }
         default: {
@@ -219,7 +219,7 @@ void genericSeal(zvalue generic) {
 METH_IMPL(Generic, call) {
     // The first argument is the generic per se, and the rest are the
     // arguments to call it with.
-    return doGfnCall(args[0], argCount - 1, &args[1]);
+    return genericCall(args[0], argCount - 1, &args[1]);
 }
 
 /* Documented in header. */
