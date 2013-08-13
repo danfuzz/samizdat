@@ -11,8 +11,16 @@
 
 
 /*
- * Helper functions
+ * Helper definitions
  */
+
+/**
+ * Payload data for all Deriv values.
+ */
+typedef struct {
+    /** Data payload. */
+    zvalue data;
+} DerivInfo;
 
 /**
  * Gets the info of a derived value.

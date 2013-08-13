@@ -60,14 +60,6 @@ typedef struct PbHeader {
 } PbHeader;
 
 /**
- * Payload data for all Deriv values.
- */
-typedef struct {
-    /** Data payload. */
-    zvalue data;
-} DerivInfo;
-
-/**
  * Binds the standard methods for a derived type.
  */
 void derivBind(zvalue type);
