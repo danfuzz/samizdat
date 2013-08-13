@@ -115,12 +115,6 @@ extern zvalue GFN_debugString;
 extern zvalue GFN_gcMark;
 
 /**
- * Generic `gcFree(value)`: Does GC freeing for the given value. This is
- * to do immediate pre-mortem freeing of value contents.
- */
-extern zvalue GFN_gcFree;
-
-/**
  * Generic `eq(value, value)`: Compares two values for equality / sameness.
  * Returns the second value to indicate logical-true. Only ever called when
  * the two values are not `==`, and only ever called when the two values are

@@ -28,9 +28,6 @@ zvalue GFN_debugString = NULL;
 zvalue GFN_eq = NULL;
 
 /* Documented in header. */
-zvalue GFN_gcFree = NULL;
-
-/* Documented in header. */
 zvalue GFN_gcMark = NULL;
 
 /* Documented in header. */
@@ -52,9 +49,6 @@ void pbInitCoreGenerics(void) {
 
     GFN_eq = gfnFrom(2, 2, stringFromUtf8(-1, "eq"));
     pbImmortalize(GFN_eq);
-
-    GFN_gcFree = gfnFrom(1, 1, stringFromUtf8(-1, "gcFree"));
-    pbImmortalize(GFN_gcFree);
 
     GFN_gcMark = gfnFrom(1, 1, stringFromUtf8(-1, "gcMark"));
     pbImmortalize(GFN_gcMark);
