@@ -8,7 +8,7 @@
 
 
 #
-# Helper definitions
+# Helper Definitions
 #
 
 # Standard "voided" generator. This is a generator, not a generator
@@ -158,7 +158,7 @@ fn oneItemParaGenerator(generator) {
 
 
 #
-# Exported functions
+# Exported Definitions
 #
 
 # Documented in Samizdat Layer 0 spec.

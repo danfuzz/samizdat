@@ -8,7 +8,7 @@
 
 
 #
-# Helper functions
+# Helper Definitions
 #
 
 # Parses a single path component.
@@ -110,7 +110,7 @@ fn dieWith(msg, path) {
 
 
 #
-# Exported functions
+# Exported Definitions
 #
 
 # Documented in Samizdat Layer 0 spec.

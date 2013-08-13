@@ -16,7 +16,7 @@ can be used.
 
 ```
 #
-# Helper functions
+# Helper Definitions
 #
 
 # Set-like map of all lowercase identifier characters. Used to figure
@@ -67,7 +67,7 @@ fn makeCallNonlocalExit(name, expression?) {
 
 
 #
-# *Layer 0* rules.
+# *Layer 0* Rules
 #
 # This section consists of the definitions required to implement *Layer 0*,
 # with comments indicating the "hooks" for higher layers.
@@ -610,7 +610,7 @@ def parProgramOrError = {/
 
 
 #
-# *Layer 1* rules.
+# *Layer 1* Rules
 #
 # This section consists of the definitions required to implement *Layer 1*,
 # above and beyond the preceding section.

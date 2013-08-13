@@ -7,6 +7,10 @@
 #
 
 
+#
+# Exported Definitions
+#
+
 # Documented in Samizdat Layer 0 spec.
 fn listButFirst(list) {
     <> listSlice(&ne([], list), 1)

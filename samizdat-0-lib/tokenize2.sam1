@@ -459,7 +459,7 @@ tokStringPart2(implStringPart2);
 
 
 #
-# Exported functions
+# Exported Definitions
 #
 
 # Documented in Samizdat Layer 1 spec.

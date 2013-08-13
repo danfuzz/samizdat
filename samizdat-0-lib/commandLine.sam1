@@ -7,7 +7,7 @@
 #
 
 #
-# Helper definitions
+# Helper Definitions
 #
 
 # Parses a single `\0`-terminated word. Yields a simple string.
@@ -86,7 +86,7 @@ fn parseArgs(args) {
 
 
 #
-# Exported functions
+# Exported Definitions
 #
 
 # Documented in Samizdat Layer 0 spec.

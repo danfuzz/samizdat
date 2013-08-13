@@ -7,7 +7,7 @@
 #
 
 #
-# Helper functions
+# Helper Definitions
 #
 
 # TODO
@@ -17,7 +17,7 @@ fn convertExpression(node) {
 
 
 #
-# Exported functions
+# Exported Definitions
 #
 
 # Documented in Samizdat Layer 1 spec.

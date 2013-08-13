@@ -7,7 +7,7 @@
 #
 
 #
-# Helper functions
+# Helper Definitions
 #
 
 # Performs a type check, for the given type name.
@@ -18,7 +18,7 @@ fn hasCoreType(value, type) {
 
 
 #
-# Exported functions
+# Exported Definitions
 #
 
 # Documented in Samizdat Layer 0 spec.

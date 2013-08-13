@@ -20,7 +20,7 @@ LIBRARY_FILES ::
 
 
 #
-# Helper functions
+# Helper Definitions
 #
 
 # "Reads" the named library file. Since the files are passed into
@@ -74,7 +74,7 @@ fn loadAllLibraries(ctx, names*) {
 
 
 #
-# Main export mechanics
+# Main Definition
 #
 
 io0Note("Loading core library...");

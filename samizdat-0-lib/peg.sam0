@@ -8,7 +8,7 @@
 
 
 #
-# Helper functions
+# Helper Definitions
 #
 
 # Constructs a generator for the given input. This special-cases
@@ -54,7 +54,7 @@ fn genericMakeTokenSet(sense, types) {
 
 
 #
-# Exported functions
+# Exported Definitions
 #
 
 #

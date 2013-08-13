@@ -6,6 +6,11 @@
 # Ordering Comparisons
 #
 
+
+#
+# Exported Definitions
+#
+
 # Documented in Samizdat Layer 0 spec.
 fn coreEq(v1, v2) { <> coreOrderIs(v1, v2, 0) };
 

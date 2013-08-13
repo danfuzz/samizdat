@@ -8,7 +8,7 @@
 
 
 #
-# Helper definitions
+# Helper Definitions
 #
 
 # Reports the given list of pending tokens as part of error processing.
@@ -176,11 +176,7 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 
 
 #
-# Grammar rules
-#
-
-#
-# *Layer 0* rules.
+# *Layer 0* Rules
 #
 # This section consists of the definitions required to implement *Layer 0*,
 # with comments indicating the "hooks" for higher layers.
@@ -684,7 +680,7 @@ def parProgramOrError = {/
 
 
 #
-# *Layer 1* rules.
+# *Layer 1* Rules
 #
 # This section consists of the definitions required to implement *Layer 1*,
 # above and beyond the preceding section.
@@ -845,7 +841,7 @@ parChoicePex(implChoicePex);
 
 
 #
-# Samizdat Layer 2 definitions
+# Layer 2 Definitions and Rules
 #
 
 # Helper for `?` postfix and string interpolation: Construct an optional-value
@@ -1794,7 +1790,7 @@ parStatement(implStatement);
 
 
 #
-# Exported function, and support thereof
+# Exported Definitions
 #
 
 # Documented in Samizdat Layer 1 spec.
