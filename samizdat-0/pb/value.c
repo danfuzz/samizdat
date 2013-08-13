@@ -55,6 +55,22 @@ METH_IMPL(Value, eq) {
 }
 
 /* Documented in header. */
+METH_IMPL(Value, order) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zint id1 = identityOf(v1);
+    zint id2 = identityOf(v2);
+
+    if (id1 < id2) {
+        return PB_NEG1;
+    } else if (id1 > id2) {
+        return PB_1;
+    } else {
+        return PB_0;
+    }
+}
+
+/* Documented in header. */
 METH_IMPL(Value, size) {
     return intFromZint(0);
 }
@@ -65,6 +81,7 @@ void pbBindValue(void) {
 
     METH_BIND(Value, debugString);
     METH_BIND(Value, eq);
+    METH_BIND(Value, order);
     METH_BIND(Value, size);
 }
 
