@@ -14,10 +14,7 @@ The goals of this implementation, in priority order, are:
 
 This program is written in C in a style which is meant to be
 verifiably correct by inspection. That is, the implementation
-prefers clarity and obviousness over trickiness and efficiency. In
-addition, it uses a minimum of C library functionality and eschews
-the use of macros *except* as guards on header files and to
-reduce noisy boilerplate.
+prefers clarity and obviousness over trickiness and efficiency.
 
 The language parser and runtime do the bare minimum of error
 checking, attempting to fail fast in the face of any errors but not to
@@ -157,3 +154,35 @@ header files being the "source of truth". Comments of the form
 as an explicit indication that the so-marked item does in fact have
 documentation elsewhere. (That is, it is an unintentional oversight for an
 item to *not* have such a comment.)
+
+### Macros
+
+Macros are generally avoided, except for a couple narrow purposes:
+
+* As standard-form guards around header files to prevent multiple inclusion.
+
+* To help avoid particularly noisy boilerplate code. For this purpose,
+  they can be defined either in source or header files.
+
+### Inline functions
+
+Inline functions are generally avoided, except when they have a blatant
+and measurable performance benefit, which can be achieved without making
+the code significantly less clear.
+
+Inlines are defined using the C99 standard idiom, namely:
+
+* The primary definition of the inline function is located in a header
+  file, marked just `inline` (and not `static`).
+
+* One source (non-header) file contains a declaration of the same function
+  with just `extern`.
+
+### External library usage
+
+The code is meant to rely only on functionality which is either
+defined by Posix or is nigh-ubiquitously available in Posix-providing
+environments, without having to install additional packages.
+
+The "gold standard" is that any given function be available in
+both OS X and typical Linux userlands.
