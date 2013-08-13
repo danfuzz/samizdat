@@ -146,9 +146,13 @@ the usual order for sections:
 Every file starts with a standard boilerplate copyright header. After that,
 most files have a brief comment about their contents.
 
-Comment text is written using Markdown syntax.
+Variables, functions, types, and elements of structures all have
+documentation comments that start with `/**` as the usual indication
+that they are intended to be "published" documentation.
 
-Comments on definitions and declarations take a "DRY" attitude, with
+Comment text is written using Markdown syntax, even when not marked `/**`.
+
+A general aim of commenting is to take a "DRY" attitude, with
 header files being the "source of truth". Comments of the form
 `"/* Documented in header"` are used liberally in source (non-header) files
 as an explicit indication that the so-marked item does in fact have
