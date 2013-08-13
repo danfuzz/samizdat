@@ -95,8 +95,43 @@ static zvalue doGfnCall(zvalue generic, zint argCount, const zvalue *args) {
         die("No type binding found for generic.");
     }
 
-    // TODO: We know the argCount is okay here.
     return fnCall(function, argCount, args);
+}
+
+/**
+ * Inner implementation of `fnCall`, which does *not* do argument validation,
+ * nor debug and local frame setup/teardown.
+ */
+static zvalue fnCall0(zvalue function, zint argCount, const zvalue *args) {
+    zint index = indexFromType(function->type);
+
+    // The first two cases are how we bottom out the recursion, instead
+    // of calling `fnCall` on the `call` methods for `Function` or `Generic`.
+    switch (index) {
+        case PB_INDEX_FUNCTION: {
+            return doFnCall(function, argCount, args);
+            break;
+        }
+        case PB_INDEX_GENERIC: {
+            return doGfnCall(function, argCount, args);
+            break;
+        }
+        default: {
+            // The original `function` is some kind of higher layer
+            // function, and `callImpl` will be the function that was bound
+            // as its `call` method. We prepend `function` as a new first
+            // argument, and recurse on a call to `caller`.
+            zvalue callImpl = gfnInfo(GFN_call)->functions[index];
+            if (callImpl == NULL) {
+                die("Attempt to call non-function.");
+            } else {
+                zvalue newArgs[argCount + 1];
+                newArgs[0] = function;
+                memcpy(&newArgs[1], args, argCount * sizeof(zvalue));
+                return fnCall0(callImpl, argCount + 1, newArgs);
+            }
+        }
+    }
 }
 
 
@@ -125,36 +160,7 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     UTIL_TRACE_START(callReporter, function);
     zstackPointer save = pbFrameStart();
 
-    zint index = indexFromType(function->type);
-    zvalue result;
-
-    // The first two cases are how we bottom out the recursion, instead
-    // of calling `fnCall` on the `call` methods for `Function` or `Generic`.
-    switch (index) {
-        case PB_INDEX_FUNCTION: {
-            result = doFnCall(function, argCount, args);
-            break;
-        }
-        case PB_INDEX_GENERIC: {
-            result = doGfnCall(function, argCount, args);
-            break;
-        }
-        default: {
-            // The original `function` is some kind of higher layer
-            // function, and `callImpl` will be the function that was bound
-            // as its `call` method. We prepend `function` as a new first
-            // argument, and recurse on a call to `caller`.
-            zvalue callImpl = gfnInfo(GFN_call)->functions[index];
-            if (callImpl == NULL) {
-                die("Attempt to call non-function.");
-            } else {
-                zvalue newArgs[argCount + 1];
-                newArgs[0] = function;
-                memcpy(&newArgs[1], args, argCount * sizeof(zvalue));
-                result = fnCall(callImpl, argCount + 1, newArgs);
-            }
-        }
-    }
+    zvalue result = fnCall0(function, argCount, args);
 
     pbFrameReturn(save, result);
     UTIL_TRACE_END();
