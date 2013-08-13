@@ -18,7 +18,7 @@
 /**
  * Entry in the map cache. The cache is used to speed up calls to `mapFind`.
  * In practice it looks like the theoretical best case is probably about
- * 74% (that is, nearly 3 of 4 lookups are for a map/key pair that have
+ * 71.75% (that is, nearly 3 of 4 lookups are for a map/key pair that have
  * been observed before). The size of the map cache is chosen to hit the
  * point of diminishing returns.
  */
