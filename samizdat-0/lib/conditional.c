@@ -16,10 +16,10 @@
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifIs) {
-    if (fnCall(args[0], 0, NULL) != NULL) {
-        return fnCall(args[1], 0, NULL);
+    if (funCall(args[0], 0, NULL) != NULL) {
+        return funCall(args[1], 0, NULL);
     } else if (argCount == 3) {
-        return fnCall(args[2], 0, NULL);
+        return funCall(args[2], 0, NULL);
     } else {
         return NULL;
     }
@@ -27,8 +27,8 @@ PRIM_IMPL(ifIs) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifNot) {
-    if (fnCall(args[0], 0, NULL) == NULL) {
-        return fnCall(args[1], 0, NULL);
+    if (funCall(args[0], 0, NULL) == NULL) {
+        return funCall(args[1], 0, NULL);
     } else {
         return NULL;
     }
@@ -36,12 +36,12 @@ PRIM_IMPL(ifNot) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifValue) {
-    zvalue result = fnCall(args[0], 0, NULL);
+    zvalue result = funCall(args[0], 0, NULL);
 
     if (result != NULL) {
-        return fnCall(args[1], 1, &result);
+        return funCall(args[1], 1, &result);
     } else if (argCount == 3) {
-        return fnCall(args[2], 0, NULL);
+        return funCall(args[2], 0, NULL);
     } else {
         return NULL;
     }
@@ -49,12 +49,12 @@ PRIM_IMPL(ifValue) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifValueOr) {
-    zvalue result = fnCall(args[0], 0, NULL);
+    zvalue result = funCall(args[0], 0, NULL);
 
     if (result != NULL) {
         return result;
     } else {
-        return fnCall(args[1], 0, NULL);
+        return funCall(args[1], 0, NULL);
     }
 }
 
@@ -63,7 +63,7 @@ PRIM_IMPL(loop) {
     zvalue function = args[0];
     for (;;) {
         zstackPointer save = pbFrameStart();
-        fnCall(function, 0, NULL);
+        funCall(function, 0, NULL);
         pbFrameReturn(save, NULL);
     }
 }
@@ -75,7 +75,7 @@ PRIM_IMPL(loopReduce) {
     zvalue innerArgs = listFromArray(argCount - 1, &args[1]);
 
     for (;;) {
-        zvalue nextArgs = fnApply(function, innerArgs);
+        zvalue nextArgs = funApply(function, innerArgs);
         if (nextArgs != NULL) {
             innerArgs = nextArgs;
             pbFrameReset(save, innerArgs);

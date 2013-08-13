@@ -16,11 +16,11 @@
  */
 
 /* Documented in header. */
-zvalue fnApply(zvalue function, zvalue args) {
+zvalue funApply(zvalue function, zvalue args) {
     zint argCount = pbSize(args);
     zvalue argsArray[argCount];
 
     arrayFromList(argsArray, args);
 
-    return fnCall(function, argCount, argsArray);
+    return funCall(function, argCount, argsArray);
 }

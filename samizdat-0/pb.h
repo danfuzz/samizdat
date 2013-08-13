@@ -319,10 +319,14 @@ void zcharsFromString(zchar *result, zvalue string);
 
 /**
  * Calls a function with the given list of arguments. `function` must be
- * a function (regular or generic), and `argCount` must be non-negative.
+ * a callable value (regular or generic function, or other type which binds
+ * the `call` generic function), and `argCount` must be non-negative.
  * If `argCount` is positive, then `args` must not be `NULL`.
+ *
+ * **Note:** The `fun` prefix is used to denote functions which operate
+ * on all sorts of callable function-like things.
  */
-zvalue fnCall(zvalue function, zint argCount, const zvalue *args);
+zvalue funCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
  * Constructs and returns a function with the given argument

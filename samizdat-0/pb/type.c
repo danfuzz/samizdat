@@ -343,7 +343,7 @@ METH_IMPL(Type, debugString) {
     TypeInfo *info = typeInfo(type);
 
     zvalue result = stringFromUtf8(-1, "@(Type ");
-    result = stringAdd(result, fnCall(GFN_debugString, 1, &info->name));
+    result = stringAdd(result, funCall(GFN_debugString, 1, &info->name));
 
     if (!info->derived) {
         result = stringAdd(result, stringFromUtf8(-1, " /*core*/"));
@@ -396,7 +396,7 @@ void pbInitTypeSystem(void) {
     typeInit(coreSecret,    TYPE_Value, stringFromUtf8(-1, "SECRET"),   coreSecret);
 
     // Make sure that the enum constants match up with what got assigned here.
-    // If not, `fnCall` will break.
+    // If not, `funCall` will break.
     if (indexFromType(TYPE_Function) != PB_INDEX_FUNCTION) {
         die("Mismatched index for `Function`: should be %lld",
             indexFromType(TYPE_Function));

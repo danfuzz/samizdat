@@ -89,7 +89,7 @@ static zvalue getLibrary(void) {
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    return fnCall(mainFunction, 1, &libraryFiles);
+    return funCall(mainFunction, 1, &libraryFiles);
 }
 
 

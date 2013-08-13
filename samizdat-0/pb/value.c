@@ -22,7 +22,7 @@ METH_IMPL(Value, debugString) {
     sprintf(addrBuf, "%p", value);
 
     zvalue result = stringFromUtf8(-1, "@(");
-    result = stringAdd(result, fnCall(GFN_debugString, 1, &type));
+    result = stringAdd(result, funCall(GFN_debugString, 1, &type));
     result = stringAdd(result, stringFromUtf8(-1, " @ "));
     result = stringAdd(result, stringFromUtf8(-1, addrBuf));
     result = stringAdd(result, stringFromUtf8(-1, ")"));

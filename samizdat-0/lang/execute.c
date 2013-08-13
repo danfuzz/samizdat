@@ -103,9 +103,9 @@ static zvalue execCall(Frame *frame, zvalue call) {
             }
         }
 
-        return fnCall(functionId, fullCount, fullArgs);
+        return funCall(functionId, fullCount, fullArgs);
     } else {
-        return fnCall(functionId, argCount, args);
+        return funCall(functionId, argCount, args);
     }
 }
 

@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
     pbGc();
 
     zvalue samCommandLine = mapGet(context, STR_SAM_COMMAND_LINE);
-    zvalue result = fnApply(samCommandLine, argsList);
+    zvalue result = funApply(samCommandLine, argsList);
 
     if ((result != NULL) && (hasType(result, TYPE_Int))) {
         exit((int) zintFromInt(result));

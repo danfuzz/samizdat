@@ -126,7 +126,7 @@ METH_IMPL(Function, debugString) {
     zvalue result = stringFromUtf8(-1, "@(Function ");
 
     if (info->name != NULL) {
-        result = stringAdd(result, fnCall(GFN_debugString, 1, &info->name));
+        result = stringAdd(result, funCall(GFN_debugString, 1, &info->name));
     } else {
         result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
     }

@@ -71,7 +71,7 @@ char *pbDebugString(zvalue value) {
         return strdup("(null)");
     }
 
-    zvalue result = fnCall(GFN_debugString, 1, &value);
+    zvalue result = funCall(GFN_debugString, 1, &value);
     zint size = utf8SizeFromString(result);
     char str[size + 1];
 
@@ -92,7 +92,7 @@ bool pbEq(zvalue v1, zvalue v2) {
 
     if (haveSameType(v1, v2)) {
         zvalue args[2] = { v1, v2 };
-        return (fnCall(GFN_eq, 2, args) != NULL);
+        return (funCall(GFN_eq, 2, args) != NULL);
     } else {
         return false;
     }
@@ -114,7 +114,7 @@ zorder pbOrder(zvalue v1, zvalue v2) {
     if (haveSameType(v1, v2)) {
         zvalue args[2] = { v1, v2 };
         zstackPointer save = pbFrameStart();
-        zorder result = zintFromInt(fnCall(GFN_order, 2, args));
+        zorder result = zintFromInt(funCall(GFN_order, 2, args));
         pbFrameReturn(save, NULL);
         return result;
     } else {
@@ -124,5 +124,5 @@ zorder pbOrder(zvalue v1, zvalue v2) {
 
 /* Documented in header. */
 zint pbSize(zvalue value) {
-    return zintFromInt(fnCall(GFN_size, 1, &value));
+    return zintFromInt(funCall(GFN_size, 1, &value));
 }

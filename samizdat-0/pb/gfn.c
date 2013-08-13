@@ -95,18 +95,18 @@ static zvalue doGfnCall(zvalue generic, zint argCount, const zvalue *args) {
         die("No type binding found for generic.");
     }
 
-    return fnCall(function, argCount, args);
+    return funCall(function, argCount, args);
 }
 
 /**
- * Inner implementation of `fnCall`, which does *not* do argument validation,
+ * Inner implementation of `funCall`, which does *not* do argument validation,
  * nor debug and local frame setup/teardown.
  */
-static zvalue fnCall0(zvalue function, zint argCount, const zvalue *args) {
+static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
     zint index = indexFromType(function->type);
 
     // The first two cases are how we bottom out the recursion, instead
-    // of calling `fnCall` on the `call` methods for `Function` or `Generic`.
+    // of calling `funCall` on the `call` methods for `Function` or `Generic`.
     switch (index) {
         case PB_INDEX_FUNCTION: {
             return doFnCall(function, argCount, args);
@@ -128,7 +128,7 @@ static zvalue fnCall0(zvalue function, zint argCount, const zvalue *args) {
                 zvalue newArgs[argCount + 1];
                 newArgs[0] = function;
                 memcpy(&newArgs[1], args, argCount * sizeof(zvalue));
-                return fnCall0(callImpl, argCount + 1, newArgs);
+                return funCall0(callImpl, argCount + 1, newArgs);
             }
         }
     }
@@ -150,7 +150,7 @@ zvalue gfnFind(zvalue generic, zvalue value) {
  */
 
 /* Documented in header. */
-zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
+zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     if (argCount < 0) {
         die("Invalid argument count for function call: %lld", argCount);
     } else if ((argCount != 0) && (args == NULL)) {
@@ -160,7 +160,7 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args) {
     UTIL_TRACE_START(callReporter, function);
     zstackPointer save = pbFrameStart();
 
-    zvalue result = fnCall0(function, argCount, args);
+    zvalue result = funCall0(function, argCount, args);
 
     pbFrameReturn(save, result);
     UTIL_TRACE_END();
@@ -239,7 +239,7 @@ METH_IMPL(Generic, debugString) {
     zvalue result = stringFromUtf8(-1, "@(Generic ");
 
     if (info->name != NULL) {
-        result = stringAdd(result, fnCall(GFN_debugString, 1, &info->name));
+        result = stringAdd(result, funCall(GFN_debugString, 1, &info->name));
     } else {
         result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
     }
