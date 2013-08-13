@@ -345,7 +345,7 @@ zvalue mappingValue(zvalue map) {
 zvalue EMPTY_MAP = NULL;
 
 /* Documented in header. */
-static zvalue Map_eq(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Map, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zint sz1 = mapSizeOf(v1);
@@ -370,7 +370,7 @@ static zvalue Map_eq(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Map_gcMark(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Map, gcMark) {
     zvalue map = args[0];
     zint size = mapSizeOf(map);
     zmapping *elems = mapElems(map);
@@ -384,7 +384,7 @@ static zvalue Map_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Map, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zmapping *e1 = mapElems(v1);
@@ -417,7 +417,7 @@ static zvalue Map_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Map_size(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Map, size) {
     zvalue map = args[0];
     return intFromZint(mapSizeOf(map));
 }
@@ -425,10 +425,10 @@ static zvalue Map_size(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"));
-    gfnBindCore(GFN_eq,     TYPE_Map, Map_eq);
-    gfnBindCore(GFN_gcMark, TYPE_Map, Map_gcMark);
-    gfnBindCore(GFN_order,  TYPE_Map, Map_order);
-    gfnBindCore(GFN_size,   TYPE_Map, Map_size);
+    METH_BIND(Map, eq);
+    METH_BIND(Map, gcMark);
+    METH_BIND(Map, order);
+    METH_BIND(Map, size);
 
     EMPTY_MAP = allocMap(0);
     pbImmortalize(EMPTY_MAP);

@@ -5,7 +5,7 @@
  */
 
 #include "const.h"
-#include "lang.h"
+#include "impl.h"
 #include "util.h"
 #include "zlimits.h"
 
@@ -287,7 +287,7 @@ static zvalue tokenizeOne(ParseState *state) {
 
 /* Documented in header. */
 zvalue langTokenize0(zvalue string) {
-    constInit();
+    langInit();
 
     zstackPointer save = pbFrameStart();
 

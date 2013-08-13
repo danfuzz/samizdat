@@ -73,12 +73,36 @@ later-named modules depending only on earlier-named ones):
   C `main()` function. Depends on everything else.
 
 
-Naming Conventions
+Coding Conventions
 ------------------
 
-Most names incorporate a prefix that *either* identifies the module that
-the item is defined in, or names a type that the item is identified with.
+C code is formatted in a close approximation of the "One True" brace and
+spacing style, with four spaces per indentation level. Variable and function
+names use `lowercaseInitialCamelCase`. Structural types use
+`UppercaseInitialCamelCase`. Numeric constants use `ALL_CAPS_WITH_UNDERSCORES`.
 
-In the case of functions that convert from one type to another, the
-name is generally `targetFromSource`, where `target` names the result
-type and `Source` names the source type.
+A "Hungarianesque" prefix is used to identify aspects of some globals:
+
+* `TYPE_TypeName` &mdash; Identifies a value of type `Type`.
+
+* `GFN_methodName` &mdash; Identifies a generic function (value of type
+  `Generic`).
+
+* `STR_NAME` &mdash; Identifies a value of type `String`.
+
+* `TOK_NAME` &mdash; Identifies a transparent derived value whose type is
+  `STR_NAME`.
+
+* `theName` (that is `the` as prefix) &mdash; Identifies a variable as
+  static (file scope).
+
+* `MODULE_CONSTANT` &mdash; Identifies the module to which a constant
+  applies.
+
+* `moduleFunctionName` &mdash; Identifies the module to which a function
+  belongs.
+
+* `typeFunctionName` &mdash; Identifies the type to which a function applies,
+  generally as its first argument. As an exception, the name pattern
+  `targetFromSource` generally indicates a function that takes a value of
+  type `Source` yielding a value of type `target`.

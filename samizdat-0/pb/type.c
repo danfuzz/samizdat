@@ -219,11 +219,7 @@ zvalue transparentTypeFromName(zvalue name) {
 
     if (result == NULL) {
         result = newType(name, NULL);
-
-        // Bind the default derived value methods.
-        gfnBindCore(GFN_eq,     result, Deriv_eq);
-        gfnBindCore(GFN_gcMark, result, Deriv_gcMark);
-        gfnBindCore(GFN_order,  result, Deriv_order);
+        derivBind(result);
     }
 
     return result;
@@ -342,8 +338,7 @@ zvalue typeParent(zvalue type) {
  */
 
 /* Documented in header. */
-static zvalue Type_debugString(zvalue state,
-        zint argCount, const zvalue *args) {
+METH_IMPL(Type, debugString) {
     zvalue type = args[0];
     TypeInfo *info = typeInfo(type);
 
@@ -361,7 +356,7 @@ static zvalue Type_debugString(zvalue state,
 }
 
 /* Documented in header. */
-static zvalue Type_gcMark(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Type, gcMark) {
     zvalue box = args[0];
     TypeInfo *info = typeInfo(box);
 
@@ -372,7 +367,7 @@ static zvalue Type_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Type_order(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Type, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     TypeInfo *info1 = typeInfo(v1);
@@ -418,9 +413,9 @@ void pbInitTypeSystem(void) {
 
 /* Documented in header. */
 void pbBindType(void) {
-    gfnBindCore(GFN_debugString, TYPE_Type, Type_debugString);
-    gfnBindCore(GFN_gcMark,      TYPE_Type, Type_gcMark);
-    gfnBindCore(GFN_order,       TYPE_Type, Type_order);
+    METH_BIND(Type, debugString);
+    METH_BIND(Type, gcMark);
+    METH_BIND(Type, order);
 }
 
 /* Documented in header. */

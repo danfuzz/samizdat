@@ -60,12 +60,9 @@ typedef struct PbHeader {
 } PbHeader;
 
 /**
- * Payload data for all Deriv values.
+ * Binds the standard methods for a derived type.
  */
-typedef struct {
-    /** Data payload. */
-    zvalue data;
-} DerivInfo;
+void derivBind(zvalue type);
 
 /**
  * Actual implementation of normal function calling. This is where
@@ -115,15 +112,6 @@ bool typeSecretIs(zvalue type, zvalue secret);
  * Gets the `zfunction` associated with a `Function` value.
  */
 zfunction zfunctionFromFunction(zvalue function);
-
-
-/*
- * Method bindings for derived types.
- */
-
-zvalue Deriv_eq(zvalue state, zint argCount, const zvalue *args);
-zvalue Deriv_gcMark(zvalue state, zint argCount, const zvalue *args);
-zvalue Deriv_order(zvalue state, zint argCount, const zvalue *args);
 
 
 /*

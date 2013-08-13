@@ -206,11 +206,6 @@ static void doGc(void) {
         // Need to grab `item->next` before freeing the item.
         zvalue next = item->next;
 
-        zvalue freer = gfnFind(GFN_gcFree, item);
-        if (freer != NULL) {
-            fnCall(freer, 1, &item);
-        }
-
         // Prevent this from being mistaken for a live value.
         item->next = item->prev = NULL;
         item->marked = 999;

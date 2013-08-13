@@ -5,7 +5,7 @@
  */
 
 /*
- * Initialization
+ * Asserts, initialization, and other basic stuff
  */
 
 #include "impl.h"

@@ -34,12 +34,12 @@ zvalue doNthStrict(znth function, zvalue value, zvalue n);
  * function prototype.
  */
 #define PRIM_IMPL(name) \
-    zvalue prim_##name(zvalue stateIgnored, zint argCount, const zvalue *args)
+    zvalue prim_##name(zint argCount, const zvalue *args)
 
 /* Declarations for all the primitive functions */
 #define PRIM_DEF(name, value) /*empty*/
 #define PRIM_FUNC(name, minArgs, maxArgs) \
-    zvalue prim_##name(zvalue, zint, const zvalue *)
+    zvalue prim_##name(zint, const zvalue *)
 #include "prim-def.h"
 #undef PRIM_DEF
 #undef PRIM_FUNC
