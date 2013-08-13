@@ -12,7 +12,7 @@
 
 
 /*
- * Helper functions
+ * Helper Definitions
  */
 
 /**
@@ -26,7 +26,7 @@ static zvalue valueFromStringNth(zvalue string, zint n) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in Samizdat Layer 0 spec. */

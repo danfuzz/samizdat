@@ -15,6 +15,10 @@
 #include <stddef.h>
 
 
+/*
+ * Helper Definitions
+ */
+
 /**
  * Executes a `call` form.
  */
@@ -136,7 +140,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -199,6 +203,11 @@ void execVarDef(Frame *frame, zvalue varDef) {
 
     frameAdd(frame, name, value);
 }
+
+
+/*
+ * Exported Definitions
+ */
 
 /* Documented in header. */
 zvalue langEval0(zvalue context, zvalue node) {

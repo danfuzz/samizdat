@@ -15,6 +15,7 @@
  * ParseState definition and functions
  */
 
+/** State of parsing in-progress. */
 typedef struct {
     /** token list being parsed. */
     zvalue tokens;
@@ -968,7 +969,7 @@ DEF_PARSE(programBody) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

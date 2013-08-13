@@ -12,7 +12,7 @@
 
 
 /*
- * Module definitions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -62,7 +62,7 @@ void pbInitCoreGenerics(void) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

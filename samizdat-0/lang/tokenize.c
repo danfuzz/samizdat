@@ -12,6 +12,11 @@
 #include <stddef.h>
 
 
+/*
+ * Helper Definitions
+ */
+
+/** State of tokenization in-progress. */
 typedef struct {
     /** String being parsed. */
     zvalue str;
@@ -22,11 +27,6 @@ typedef struct {
     /** Current read position. */
     zint at;
 } ParseState;
-
-
-/*
- * Helper functions
- */
 
 /**
  * Is the parse state at EOF?

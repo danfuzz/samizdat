@@ -16,7 +16,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -38,7 +38,7 @@ static FILE *openFile(zvalue flatPath, const char *mode) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

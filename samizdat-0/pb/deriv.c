@@ -11,7 +11,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -62,7 +62,7 @@ METH_IMPL(Deriv, order) {
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -74,7 +74,7 @@ void derivBind(zvalue type) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

@@ -13,7 +13,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /** Death context stack element. */
@@ -30,7 +30,7 @@ UtilStackGiblet *utilStackTop = NULL;
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

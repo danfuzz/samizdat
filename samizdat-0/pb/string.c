@@ -11,7 +11,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /** Array of single-character strings, for low character codes. */
@@ -55,7 +55,7 @@ static zchar *stringElems(zvalue string) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
@@ -219,7 +219,7 @@ void zcharsFromString(zchar *result, zvalue string) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

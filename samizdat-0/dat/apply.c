@@ -12,7 +12,7 @@
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

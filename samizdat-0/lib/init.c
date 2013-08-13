@@ -12,7 +12,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -94,7 +94,7 @@ static zvalue getLibrary(void) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

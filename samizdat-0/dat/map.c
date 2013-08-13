@@ -12,7 +12,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -138,7 +138,7 @@ static int mappingOrder(const void *m1, const void *m2) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
@@ -338,7 +338,7 @@ zvalue mappingValue(zvalue map) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

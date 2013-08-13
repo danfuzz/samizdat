@@ -13,7 +13,7 @@
 
 
 /*
- * Helper functions
+ * Helper Definitions
  */
 
 /**
@@ -30,7 +30,7 @@ static void emitNote(zvalue message) {
 
 
 /*
- * Primitive implementations (exported via the context)
+ * Exported Definitions
  */
 
 /* Documented in Samizdat Layer 0 spec. */

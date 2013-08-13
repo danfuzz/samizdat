@@ -16,7 +16,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /** Generic function for `collect` (convert to list) dispatch. */
@@ -117,7 +117,7 @@ METH_IMPL(Value, collect) {
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -134,7 +134,7 @@ void generatorInit(void) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

@@ -12,7 +12,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 enum {
@@ -25,7 +25,7 @@ static MapCacheEntry mapCache[DAT_MAP_CACHE_SIZE];
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -57,7 +57,7 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

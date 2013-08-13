@@ -15,7 +15,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -58,7 +58,7 @@ static zvalue boxOrderId(zvalue box) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
@@ -142,7 +142,7 @@ zvalue boxYield(void) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

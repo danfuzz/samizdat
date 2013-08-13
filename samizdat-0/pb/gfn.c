@@ -16,7 +16,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -101,7 +101,7 @@ static zvalue doGfnCall(zvalue generic, zint argCount, const zvalue *args) {
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -111,7 +111,7 @@ zvalue gfnFind(zvalue generic, zvalue value) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
@@ -206,7 +206,7 @@ void gfnSeal(zvalue generic) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

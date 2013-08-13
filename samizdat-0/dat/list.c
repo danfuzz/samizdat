@@ -10,7 +10,7 @@
 
 
 /*
- * Helper definitions / functions
+ * Helper Definitions
  */
 
 /**
@@ -85,7 +85,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
@@ -196,7 +196,7 @@ zvalue listSlice(zvalue list, zint start, zint end) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

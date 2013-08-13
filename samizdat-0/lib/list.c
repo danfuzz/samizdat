@@ -9,6 +9,10 @@
 #include <stddef.h>
 
 
+/*
+ * Exported Definitions
+ */
+
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listAdd) {
     // Special case code for the common and easy cases.

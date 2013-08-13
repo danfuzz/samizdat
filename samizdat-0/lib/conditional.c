@@ -10,6 +10,10 @@
 #include <stddef.h>
 
 
+/*
+ * Exported Definitions
+ */
+
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(ifIs) {
     if (fnCall(args[0], 0, NULL) != NULL) {

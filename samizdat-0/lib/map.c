@@ -12,7 +12,7 @@
 
 
 /*
- * Primitive implementations (exported via the context)
+ * Exported Definitions
  */
 
 /* Documented in Samizdat Layer 0 spec. */

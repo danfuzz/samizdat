@@ -11,7 +11,7 @@
 #include <stddef.h>
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 #define UNARY_PRIM(name, op) \
@@ -115,7 +115,7 @@ static zvalue doIntNth(zvalue value, zint n) {
 
 
 /*
- * Exported primitives.
+ * Exported Definitions
  */
 
 /* These are all documented in Samizdat Layer 0 spec. */

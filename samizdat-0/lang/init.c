@@ -15,7 +15,7 @@
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */

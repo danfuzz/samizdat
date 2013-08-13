@@ -15,7 +15,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -49,7 +49,7 @@ static FunctionInfo *fnInfo(zvalue function) {
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -99,7 +99,7 @@ zfunction zfunctionFromFunction(zvalue function) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

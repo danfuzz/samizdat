@@ -11,7 +11,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -204,7 +204,7 @@ static void assertHasTypeType(zvalue value) {
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -250,7 +250,7 @@ bool typeSecretIs(zvalue type, zvalue secret) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
@@ -334,7 +334,7 @@ zvalue typeParent(zvalue type) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

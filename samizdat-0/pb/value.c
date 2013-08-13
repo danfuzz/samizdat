@@ -10,7 +10,7 @@
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

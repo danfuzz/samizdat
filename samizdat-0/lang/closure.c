@@ -16,7 +16,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 // Defined below.
@@ -282,7 +282,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -295,7 +295,7 @@ zvalue execClosure(Frame *frame, zvalue closureNode) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

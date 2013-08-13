@@ -10,7 +10,7 @@
 
 
 /*
- * Helper functions
+ * Helper Definitions
  */
 
 /**
@@ -186,7 +186,7 @@ static const char *decodeValid(zchar *result,
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

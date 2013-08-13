@@ -12,7 +12,7 @@
 
 
 /*
- * Helper functions
+ * Helper Definitions
  */
 
 /**
@@ -44,7 +44,7 @@ static bool doOrderIs(zint argCount, const zvalue *args) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in Samizdat Layer 0 spec. */

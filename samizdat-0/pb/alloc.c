@@ -13,7 +13,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 enum {
@@ -244,7 +244,7 @@ static void doGc(void) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

@@ -10,7 +10,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -31,7 +31,7 @@ static UniqletInfo *uniInfo(zvalue uniqlet) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
@@ -44,7 +44,7 @@ zvalue uniqlet(void) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

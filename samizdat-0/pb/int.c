@@ -11,7 +11,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 enum {
@@ -83,7 +83,7 @@ zvalue intFrom(zint value) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
@@ -131,7 +131,7 @@ bool zintGetBit(zint value, zint n) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

@@ -14,7 +14,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /** The next "order id" to return. */
@@ -22,7 +22,7 @@ static zint theNextOrderId = 0;
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

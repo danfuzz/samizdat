@@ -16,7 +16,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 /**
@@ -64,7 +64,7 @@ static zvalue newNonlocalExit(void) {
 
 
 /*
- * Module functions
+ * Module Definitions
  */
 
 /* Documented in header. */
@@ -95,7 +95,7 @@ zvalue nleCall(znleFunction function, void *state) {
 
 
 /*
- * Type binding
+ * Type Definition
  */
 
 /* Documented in header. */

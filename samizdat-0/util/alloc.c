@@ -13,7 +13,7 @@
 
 
 /*
- * Helper definitions
+ * Helper Definitions
  */
 
 enum {
@@ -129,7 +129,7 @@ static void addPages(void *start, void *end) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
