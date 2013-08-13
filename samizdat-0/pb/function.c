@@ -35,9 +35,6 @@ typedef struct {
 
     /** The function's name, if any. Used when producing stack traces. */
     zvalue name;
-
-    /** Id to use for ordering comparisons. */
-    zint orderId;
 } FunctionInfo;
 
 /**
@@ -87,7 +84,6 @@ zvalue functionFrom(zint minArgs, zint maxArgs, zfunction function,
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->function = function;
     info->name = name;
-    info->orderId = pbOrderId();
 
     return result;
 }
@@ -140,20 +136,12 @@ METH_IMPL(Function, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Function, order) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    return (getInfo(v1)->orderId < getInfo(v2)->orderId) ? PB_NEG1 : PB_1;
-}
-
-/* Documented in header. */
 void pbBindFunction(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Function`.
     METH_BIND(Function, call);
     METH_BIND(Function, canCall);
     METH_BIND(Function, debugString);
     METH_BIND(Function, gcMark);
-    METH_BIND(Function, order);
 }
 
 /* Documented in header. */
