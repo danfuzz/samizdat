@@ -24,7 +24,7 @@ zvalue uniqlet(void) {
  */
 
 /* Documented in header. */
-void datBindUniqlet(void) {
+void pbBindUniqlet(void) {
     TYPE_Uniqlet = coreTypeFromName(stringFromUtf8(-1, "Uniqlet"), true);
 }
 

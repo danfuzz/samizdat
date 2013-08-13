@@ -48,9 +48,6 @@ extern zvalue TYPE_List;
 /** Type value for in-model type `Map`. */
 extern zvalue TYPE_Map;
 
-/** Type value for in-model type `Uniqlet`. */
-extern zvalue TYPE_Uniqlet;
-
 
 /*
  * Initialization Function

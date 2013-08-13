@@ -92,6 +92,9 @@ extern zvalue TYPE_String;
 /** Type value for in-model type `Type`. */
 extern zvalue TYPE_Type;
 
+/** Type value for in-model type `Uniqlet`. */
+extern zvalue TYPE_Uniqlet;
+
 /** Type value for in-model type `Value`. */
 extern zvalue TYPE_Value;
 

@@ -138,6 +138,7 @@ void pbBindGeneric(void);
 void pbBindInt(void);
 void pbBindString(void);
 void pbBindType(void);
+void pbBindUniqlet(void);
 void pbBindValue(void);
 
 #endif
