@@ -83,7 +83,6 @@ zvalue nleCall(znleFunction function, void *state) {
     } else {
         // Here is where we land if and when `longjmp` is called.
         result = info->result;
-        UTIL_TRACE_RESTART();
     }
 
     info->active = false;

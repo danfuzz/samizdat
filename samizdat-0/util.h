@@ -53,14 +53,6 @@ typedef struct UtilStackGiblet {
 extern UtilStackGiblet *utilStackTop;
 
 /**
- * Reinstates the current trace. Useful for handling nonlocal exit.
- */
-#define UTIL_TRACE_RESTART() \
-    do { \
-        utilStackTop = &stackGiblet; \
-    } while(0)
-
-/**
  * Defines a giblet for the current function. Use this at the point a
  * stack trace for the call would be valid.
  */
@@ -68,7 +60,9 @@ extern UtilStackGiblet *utilStackTop;
     UtilStackGiblet stackGiblet = { \
         UTIL_GIBLET_MAGIC, utilStackTop, (function), (state) \
     }; \
-    UTIL_TRACE_RESTART()
+    do { \
+        utilStackTop = &stackGiblet; \
+    } while(0)
 
 /**
  * Ends the scope for a giblet. Use this as close to function return as
