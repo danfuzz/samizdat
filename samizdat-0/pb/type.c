@@ -28,7 +28,13 @@ typedef struct {
     zvalue secret;
 
     /** Whether the type is derived. `false` indicates a core type. */
-    bool derived;
+    bool derived : 1;
+
+    /**
+     * Whether the type is "identified". `true` indicates that
+     * `identityOf` will work on values of the type.
+     */
+    bool identified : 1;
 
     /**
      * Type identifier / index. Assigned upon initialization, in sequential
@@ -60,7 +66,8 @@ static TypeInfo *getInfo(zvalue type) {
 /**
  * Initializes a type value.
  */
-static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret) {
+static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret,
+        bool identified) {
     if (theNextId == PB_MAX_TYPES) {
         die("Too many types!");
     }
@@ -76,6 +83,7 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret) {
     info->secret = secret;
     info->id = theNextId;
     info->derived = (secret != coreSecret);
+    info->identified = identified;
 
     theTypes[theNextId] = type;
     theNeedSort = true;
@@ -94,9 +102,9 @@ static zvalue allocType(void) {
  * Creates and returns a new type with the given name and secret. The type
  * is marked derived *unless* the given secret is `coreSecret`.
  */
-static zvalue newType(zvalue name, zvalue secret) {
+static zvalue newType(zvalue name, zvalue secret, bool identified) {
     zvalue result = allocType();
-    typeInit(result, TYPE_Value, name, secret);
+    typeInit(result, TYPE_Value, name, secret, identified);
     return result;
 }
 
@@ -218,7 +226,7 @@ zvalue transparentTypeFromName(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {
-        result = newType(name, NULL);
+        result = newType(name, NULL, false);
         derivBind(result);
     }
 
@@ -276,11 +284,13 @@ void assertHaveSameType(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zvalue coreTypeFromName(zvalue name) {
+zvalue coreTypeFromName(zvalue name, bool identified) {
     zvalue result = findType(name, coreSecret);
 
     if (result == NULL) {
-        result = newType(name, coreSecret);
+        result = newType(name, coreSecret, identified);
+    } else if (identified != getInfo(result)->identified) {
+        die("Mismatch on `identified`.");
     }
 
     return result;
@@ -306,6 +316,16 @@ bool haveSameType(zvalue v1, zvalue v2) {
  * version of an `inline` function.
  */
 extern void *pbPayload(zvalue value);
+
+/* Documented in header. */
+bool typeIsIdentified(zvalue type) {
+    if (!isType(type)) {
+        // Transparent types are not identified.
+        return false;
+    }
+
+    return getInfo(type)->identified;
+}
 
 /* Documented in header. */
 zvalue typeName(zvalue type) {
@@ -388,12 +408,12 @@ void pbInitTypeSystem(void) {
     // a hackish convenience. It should probably be a Uniqlet.
     coreSecret = allocType();
 
-    typeInit(TYPE_Type,     TYPE_Value, stringFromUtf8(-1, "Type"),     coreSecret);
-    typeInit(TYPE_Value,    NULL,       stringFromUtf8(-1, "Value"),    coreSecret);
-    typeInit(TYPE_Function, TYPE_Value, stringFromUtf8(-1, "Function"), coreSecret);
-    typeInit(TYPE_Generic,  TYPE_Value, stringFromUtf8(-1, "Generic"),  coreSecret);
-    typeInit(TYPE_String,   TYPE_Value, stringFromUtf8(-1, "String"),   coreSecret);
-    typeInit(coreSecret,    TYPE_Value, stringFromUtf8(-1, "SECRET"),   coreSecret);
+    typeInit(TYPE_Type,     TYPE_Value, stringFromUtf8(-1, "Type"),     coreSecret, false);
+    typeInit(TYPE_Value,    NULL,       stringFromUtf8(-1, "Value"),    coreSecret, false);
+    typeInit(TYPE_Function, TYPE_Value, stringFromUtf8(-1, "Function"), coreSecret, true);
+    typeInit(TYPE_Generic,  TYPE_Value, stringFromUtf8(-1, "Generic"),  coreSecret, true);
+    typeInit(TYPE_String,   TYPE_Value, stringFromUtf8(-1, "String"),   coreSecret, false);
+    typeInit(coreSecret,    TYPE_Value, stringFromUtf8(-1, "SECRET"),   coreSecret, true);
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.

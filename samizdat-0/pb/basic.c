@@ -5,20 +5,12 @@
  */
 
 /*
- * Asserts, initialization, and other basic stuff
+ * Asserts and Initialization
  */
 
 #include "impl.h"
 
 #include <stddef.h>
-
-
-/*
- * Private Definitions
- */
-
-/** The next "order id" to return. */
-static zint theNextOrderId = 0;
 
 
 /*
@@ -73,15 +65,4 @@ void pbInit(void) {
     pbBindGeneric(); // Has to come after `Function`.
 
     pbBindInt();
-}
-
-/* Documented in header. */
-zint pbOrderId(void) {
-    if (theNextOrderId < 0) {
-        die("Too many order ids!");
-    }
-
-    zint result = theNextOrderId;
-    theNextOrderId++;
-    return result;
 }

@@ -270,7 +270,7 @@ METH_IMPL(List, size) {
 
 /* Documented in header. */
 void datBindList(void) {
-    TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"));
+    TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
     METH_BIND(List, eq);
     METH_BIND(List, gcMark);
     METH_BIND(List, order);

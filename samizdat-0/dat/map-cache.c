@@ -71,7 +71,8 @@ void datBindMapCache(void) {
     // What we're doing here is setting up a singleton instance, which
     // gets marked immortal. Its `mark` gets called during gc, which we
     // use as a trigger to clear the map cache.
-    zvalue TYPE_MapCache = coreTypeFromName(stringFromUtf8(-1, "MapCache"));
+    zvalue TYPE_MapCache =
+        coreTypeFromName(stringFromUtf8(-1, "MapCache"), true);
     METH_BIND(MapCache, gcMark);
     pbImmortalize(pbAllocValue(TYPE_MapCache, 0));
 }

@@ -10,36 +10,12 @@
 
 
 /*
- * Private Definitions
- */
-
-/**
- * Uniqlet structure.
- */
-typedef struct {
-    /** Uniqlet unique id. */
-    zint id;
-} UniqletInfo;
-
-
-/**
- * Gets a pointer to the info of a uniqlet.
- */
-static UniqletInfo *getInfo(zvalue uniqlet) {
-    return pbPayload(uniqlet);
-}
-
-
-/*
  * Exported Definitions
  */
 
 /* Documented in header. */
 zvalue uniqlet(void) {
-    zvalue result = pbAllocValue(TYPE_Uniqlet, sizeof(UniqletInfo));
-
-    getInfo(result)->id = pbOrderId();
-    return result;
+    return pbAllocValue(TYPE_Uniqlet, 0);
 }
 
 
@@ -48,16 +24,8 @@ zvalue uniqlet(void) {
  */
 
 /* Documented in header. */
-METH_IMPL(Uniqlet, order) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    return (getInfo(v1)->id < getInfo(v2)->id) ? PB_NEG1 : PB_1;
-}
-
-/* Documented in header. */
 void datBindUniqlet(void) {
-    TYPE_Uniqlet = coreTypeFromName(stringFromUtf8(-1, "Uniqlet"));
-    METH_BIND(Uniqlet, order);
+    TYPE_Uniqlet = coreTypeFromName(stringFromUtf8(-1, "Uniqlet"), true);
 }
 
 /* Documented in header. */

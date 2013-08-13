@@ -41,9 +41,6 @@ typedef struct {
      */
     zvalue defMap;
 
-    /** Ordering id. */
-    zint orderId;
-
     /** The `"formals"` mapping inside `defMap`. */
     zvalue formals;
 
@@ -95,7 +92,6 @@ static zvalue buildClosure(zvalue node) {
     info->statements = mapGet(defMap, STR_STATEMENTS);
     info->yield = mapGet(defMap, STR_YIELD);
     info->yieldDef = mapGet(defMap, STR_YIELD_DEF);
-    info->orderId = pbOrderId();
 
     return result;
 }
@@ -357,21 +353,12 @@ METH_IMPL(Closure, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Closure, order) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return (getInfo(v1)->orderId < getInfo(v2)->orderId) ? PB_NEG1 : PB_1;
-}
-
-/* Documented in header. */
 void langBindClosure(void) {
-    TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"));
+    TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"), true);
     METH_BIND(Closure, call);
     METH_BIND(Closure, canCall);
     METH_BIND(Closure, debugString);
     METH_BIND(Closure, gcMark);
-    METH_BIND(Closure, order);
 }
 
 /* Documented in header. */

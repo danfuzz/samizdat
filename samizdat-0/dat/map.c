@@ -424,7 +424,7 @@ METH_IMPL(Map, size) {
 
 /* Documented in header. */
 void datBindMap(void) {
-    TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"));
+    TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
     METH_BIND(Map, eq);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, order);
