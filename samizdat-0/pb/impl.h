@@ -75,7 +75,7 @@ zvalue functionCall(zvalue function, zint argCount, const zvalue *args);
  * Gets the function bound to the given generic for the given value, if any.
  * Returns `NULL` if there is no binding.
  */
-zvalue gfnFind(zvalue generic, zvalue value);
+zvalue genericFind(zvalue generic, zvalue value);
 
 /**
  * Gets the index for a given type value. The given value *must* be a

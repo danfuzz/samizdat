@@ -365,7 +365,7 @@ void pbMark(zvalue value) {
     value->marked = true;
     enlist(&liveHead, value);
 
-    zvalue marker = gfnFind(GFN_gcMark, value);
+    zvalue marker = genericFind(GFN_gcMark, value);
     if (marker != NULL) {
         funCall(marker, 1, &value);
     }

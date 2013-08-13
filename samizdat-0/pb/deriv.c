@@ -114,7 +114,7 @@ METH_IMPL(Deriv, order) {
 
 /* Documented in header. */
 void derivBind(zvalue type) {
-    gfnBindCore(GFN_eq,     type, Deriv_eq);
-    gfnBindCore(GFN_gcMark, type, Deriv_gcMark);
-    gfnBindCore(GFN_order,  type, Deriv_order);
+    genericBindCore(GFN_eq,     type, Deriv_eq);
+    genericBindCore(GFN_gcMark, type, Deriv_gcMark);
+    genericBindCore(GFN_order,  type, Deriv_order);
 }

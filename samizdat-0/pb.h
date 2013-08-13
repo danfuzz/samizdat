@@ -57,7 +57,7 @@ enum {
 
 /** Performs binding of the indicated method. */
 #define METH_BIND(type, name) \
-    do { gfnBindCore(GFN_##name, TYPE_##type, type##_##name); } while(0)
+    do { genericBindCore(GFN_##name, TYPE_##type, type##_##name); } while(0)
 
 
 /*
@@ -350,7 +350,7 @@ zvalue functionFrom(zint minArgs, zint maxArgs, zfunction function,
  * not have already been bound in the given generic, and the generic must
  * not be sealed.
  */
-void gfnBindCore(zvalue generic, zvalue type, zfunction function);
+void genericBindCore(zvalue generic, zvalue type, zfunction function);
 
 /**
  * Constructs and returns a generic function with the given argument
@@ -359,13 +359,13 @@ void gfnBindCore(zvalue generic, zvalue type, zfunction function);
  * `1`, and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name);
+zvalue genericFrom(zint minArgs, zint maxArgs, zvalue name);
 
 /**
  * Seal the given generic. This prevents it from gaining any new bindings.
  * `generic` must be a generic function.
  */
-void gfnSeal(zvalue generic);
+void genericSeal(zvalue generic);
 
 
 /*

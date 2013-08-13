@@ -38,25 +38,25 @@ zvalue GFN_size = NULL;
 
 /* Documented in header. */
 void pbInitCoreGenerics(void) {
-    GFN_call = gfnFrom(1, -1, stringFromUtf8(-1, "call"));
+    GFN_call = genericFrom(1, -1, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 
-    GFN_canCall = gfnFrom(2, 2, stringFromUtf8(-1, "canCall"));
+    GFN_canCall = genericFrom(2, 2, stringFromUtf8(-1, "canCall"));
     pbImmortalize(GFN_canCall);
 
-    GFN_debugString = gfnFrom(1, 1, stringFromUtf8(-1, "debugString"));
+    GFN_debugString = genericFrom(1, 1, stringFromUtf8(-1, "debugString"));
     pbImmortalize(GFN_debugString);
 
-    GFN_eq = gfnFrom(2, 2, stringFromUtf8(-1, "eq"));
+    GFN_eq = genericFrom(2, 2, stringFromUtf8(-1, "eq"));
     pbImmortalize(GFN_eq);
 
-    GFN_gcMark = gfnFrom(1, 1, stringFromUtf8(-1, "gcMark"));
+    GFN_gcMark = genericFrom(1, 1, stringFromUtf8(-1, "gcMark"));
     pbImmortalize(GFN_gcMark);
 
-    GFN_order = gfnFrom(2, 2, stringFromUtf8(-1, "order"));
+    GFN_order = genericFrom(2, 2, stringFromUtf8(-1, "order"));
     pbImmortalize(GFN_order);
 
-    GFN_size = gfnFrom(1, 1, stringFromUtf8(-1, "size"));
+    GFN_size = genericFrom(1, 1, stringFromUtf8(-1, "size"));
     pbImmortalize(GFN_size);
 }
 

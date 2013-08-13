@@ -122,13 +122,13 @@ METH_IMPL(Value, collect) {
 
 /* Documented in header. */
 void generatorInit(void) {
-    GFN_collect = gfnFrom(1, 1, STR_COLLECT);
+    GFN_collect = genericFrom(1, 1, STR_COLLECT);
     METH_BIND(Int, collect);
     METH_BIND(List, collect);
     METH_BIND(Map, collect);
     METH_BIND(String, collect);
     METH_BIND(Value, collect);
-    gfnSeal(GFN_collect);
+    genericSeal(GFN_collect);
     pbImmortalize(GFN_collect);
 }
 

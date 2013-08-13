@@ -47,7 +47,7 @@ typedef struct {
 /**
  * Gets a pointer to the value's info.
  */
-static GenericInfo *gfnInfo(zvalue generic) {
+static GenericInfo *getInfo(zvalue generic) {
     return pbPayload(generic);
 }
 
@@ -55,7 +55,7 @@ static GenericInfo *gfnInfo(zvalue generic) {
  * Find the binding for a given type.
  */
 static zvalue findByTrueType(zvalue generic, zvalue type) {
-    GenericInfo *info = gfnInfo(generic);
+    GenericInfo *info = getInfo(generic);
 
     for (/*type*/; type != NULL; type = typeParent(type)) {
         zvalue result = info->functions[indexFromType(type)];
@@ -79,7 +79,7 @@ static char *callReporter(void *state) {
  * Actual implementation of generic function dispatch.
  */
 static zvalue doGfnCall(zvalue generic, zint argCount, const zvalue *args) {
-    GenericInfo *info = gfnInfo(generic);
+    GenericInfo *info = getInfo(generic);
 
     if (argCount < info->minArgs) {
         die("Too few arguments for generic call: %lld, min %lld",
@@ -89,7 +89,7 @@ static zvalue doGfnCall(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
-    zvalue function = gfnFind(generic, args[0]);
+    zvalue function = genericFind(generic, args[0]);
 
     if (function == NULL) {
         die("No type binding found for generic.");
@@ -121,7 +121,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             // function, and `callImpl` will be the function that was bound
             // as its `call` method. We prepend `function` as a new first
             // argument, and recurse on a call to `caller`.
-            zvalue callImpl = gfnInfo(GFN_call)->functions[index];
+            zvalue callImpl = getInfo(GFN_call)->functions[index];
             if (callImpl == NULL) {
                 die("Attempt to call non-function.");
             } else {
@@ -140,7 +140,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-zvalue gfnFind(zvalue generic, zvalue value) {
+zvalue genericFind(zvalue generic, zvalue value) {
     return findByTrueType(generic, trueTypeOf(value));
 }
 
@@ -169,10 +169,10 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
+void genericBindCore(zvalue generic, zvalue type, zfunction function) {
     assertHasType(generic, TYPE_Generic);
 
-    GenericInfo *info = gfnInfo(generic);
+    GenericInfo *info = getInfo(generic);
     zint index = indexFromType(type);
 
     if (info->sealed) {
@@ -186,14 +186,14 @@ void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
 }
 
 /* Documented in header. */
-zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
+zvalue genericFrom(zint minArgs, zint maxArgs, zvalue name) {
     if ((minArgs < 1) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
     zvalue result = pbAllocValue(TYPE_Generic, sizeof(GenericInfo));
-    GenericInfo *info = gfnInfo(result);
+    GenericInfo *info = getInfo(result);
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
@@ -205,9 +205,9 @@ zvalue gfnFrom(zint minArgs, zint maxArgs, zvalue name) {
 }
 
 /* Documented in header. */
-void gfnSeal(zvalue generic) {
+void genericSeal(zvalue generic) {
     assertHasType(generic, TYPE_Generic);
-    gfnInfo(generic)->sealed = true;
+    getInfo(generic)->sealed = true;
 }
 
 
@@ -226,15 +226,15 @@ METH_IMPL(Generic, call) {
 METH_IMPL(Generic, canCall) {
     zvalue generic = args[0];
     zvalue value = args[1];
-    GenericInfo *info = gfnInfo(generic);
+    GenericInfo *info = getInfo(generic);
 
-    return (gfnFind(generic, value) != NULL) ? value : NULL;
+    return (genericFind(generic, value) != NULL) ? value : NULL;
 }
 
 /* Documented in header. */
 METH_IMPL(Generic, debugString) {
     zvalue generic = args[0];
-    GenericInfo *info = gfnInfo(generic);
+    GenericInfo *info = getInfo(generic);
 
     zvalue result = stringFromUtf8(-1, "@(Generic ");
 
@@ -251,7 +251,7 @@ METH_IMPL(Generic, debugString) {
 /* Documented in header. */
 METH_IMPL(Generic, gcMark) {
     zvalue generic = args[0];
-    GenericInfo *info = gfnInfo(generic);
+    GenericInfo *info = getInfo(generic);
 
     pbMark(info->name);
     for (zint i = 0; i < PB_MAX_TYPES; i++) {
@@ -265,7 +265,8 @@ METH_IMPL(Generic, gcMark) {
 METH_IMPL(Generic, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return (gfnInfo(v1)->orderId < gfnInfo(v2)->orderId) ? PB_NEG1 : PB_1;
+    return (getInfo(v1)->orderId < getInfo(v2)->orderId)
+        ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
