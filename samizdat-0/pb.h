@@ -16,7 +16,7 @@
 
 
 /*
- * C Types
+ * C Types and macros
  */
 
 /**
@@ -50,6 +50,14 @@ enum {
      */
     PB_HEADER_SIZE = (sizeof(zvalue) * 3) + (sizeof(int32_t) * 2)
 };
+
+/** Declaration for a method on the given type with the given name */
+#define METH_IMPL(type, name) \
+    static zvalue type##_##name(zint argCount, const zvalue *args)
+
+/** Performs binding of the indicated method. */
+#define METH_BIND(type, name) \
+    do { gfnBindCore(GFN_##name, Type_##type, type##_##name); } while(0)
 
 
 /*

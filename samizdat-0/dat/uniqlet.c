@@ -48,7 +48,7 @@ zvalue uniqlet(void) {
  */
 
 /* Documented in header. */
-static zvalue Uniqlet_order(zint argCount, const zvalue *args) {
+METH_IMPL(Uniqlet, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return (uniInfo(v1)->id < uniInfo(v2)->id) ? PB_NEG1 : PB_1;

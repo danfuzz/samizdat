@@ -226,7 +226,7 @@ void zcharsFromString(zchar *result, zvalue string) {
 zvalue EMPTY_STRING = NULL;
 
 /* Documented in header. */
-static zvalue String_debugString(zint argCount, const zvalue *args) {
+METH_IMPL(String, debugString) {
     zvalue string = args[0];
     zvalue quote = stringFromUtf8(1, "\"");
 
@@ -237,7 +237,7 @@ static zvalue String_debugString(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue String_eq(zint argCount, const zvalue *args) {
+METH_IMPL(String, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zint sz1 = stringSizeOf(v1);
@@ -260,7 +260,7 @@ static zvalue String_eq(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue String_order(zint argCount, const zvalue *args) {
+METH_IMPL(String, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zchar *e1 = stringElems(v1);
@@ -288,7 +288,7 @@ static zvalue String_order(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue String_size(zint argCount, const zvalue *args) {
+METH_IMPL(String, size) {
     zvalue string = args[0];
     return intFromZint(stringSizeOf(string));
 }

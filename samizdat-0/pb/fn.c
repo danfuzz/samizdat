@@ -103,15 +103,14 @@ zfunction zfunctionFromFunction(zvalue function) {
  */
 
 /* Documented in header. */
-static zvalue Function_call(zint argCount, const zvalue *args) {
+METH_IMPL(Function, call) {
     // The first argument is the function per se, and the rest are the
     // arguments to call it with.
     return doFnCall(args[0], argCount - 1, &args[1]);
 }
 
 /* Documented in header. */
-static zvalue Function_canCall(zint argCount,
-        const zvalue *args) {
+METH_IMPL(Function, canCall) {
     zvalue function = args[0];
     zvalue value = args[1];
     FunctionInfo *info = fnInfo(function);
@@ -120,7 +119,7 @@ static zvalue Function_canCall(zint argCount,
 }
 
 /* Documented in header. */
-static zvalue Function_debugString(zint argCount, const zvalue *args) {
+METH_IMPL(Function, debugString) {
     zvalue function = args[0];
     FunctionInfo *info = fnInfo(function);
 
@@ -137,7 +136,7 @@ static zvalue Function_debugString(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Function_gcMark(zint argCount, const zvalue *args) {
+METH_IMPL(Function, gcMark) {
     zvalue function = args[0];
     FunctionInfo *info = fnInfo(function);
 
@@ -146,7 +145,7 @@ static zvalue Function_gcMark(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Function_order(zint argCount, const zvalue *args) {
+METH_IMPL(Function, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return (fnInfo(v1)->orderId < fnInfo(v2)->orderId) ? PB_NEG1 : PB_1;

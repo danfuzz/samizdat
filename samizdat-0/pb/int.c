@@ -144,14 +144,14 @@ zvalue PB_1 = NULL;
 zvalue PB_NEG1 = NULL;
 
 /* Documented in header. */
-static zvalue Int_eq(zint argCount, const zvalue *args) {
+METH_IMPL(Int, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return (zintValue(v1) == zintValue(v2)) ? v2 : NULL;
 }
 
 /* Documented in header. */
-static zvalue Int_order(zint argCount, const zvalue *args) {
+METH_IMPL(Int, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zint int1 = zintValue(v1);
@@ -167,7 +167,7 @@ static zvalue Int_order(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Int_size(zint argCount, const zvalue *args) {
+METH_IMPL(Int, size) {
     zvalue intval = args[0];
 
     return intFromZint(bitSize(zintValue(intval)));

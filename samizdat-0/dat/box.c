@@ -154,7 +154,7 @@ zvalue boxYield(void) {
 zvalue DAT_NULL_BOX = NULL;
 
 /* Documented in header. */
-static zvalue Box_gcMark(zint argCount, const zvalue *args) {
+METH_IMPL(Box, gcMark) {
     zvalue box = args[0];
     BoxInfo *info = boxInfo(box);
 
@@ -165,7 +165,7 @@ static zvalue Box_gcMark(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Box_order(zint argCount, const zvalue *args) {
+METH_IMPL(Box, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return intFromZint(pbOrder(boxOrderId(v1), boxOrderId(v2)));

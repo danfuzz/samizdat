@@ -61,7 +61,7 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
  */
 
 /* Documented in header. */
-static zvalue MapCache_gcMark(zint argCount, const zvalue *args) {
+METH_IMPL(MapCache, gcMark) {
     memset(mapCache, 0, sizeof(mapCache));
     return NULL;
 }

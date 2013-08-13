@@ -14,7 +14,7 @@
  */
 
 /* Documented in header. */
-static zvalue Value_debugString(zint argCount, const zvalue *args) {
+METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = typeOf(value);
     char addrBuf[19]; // Includes room for "0x" and "\0".
@@ -30,12 +30,12 @@ static zvalue Value_debugString(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Value_eq(zint argCount, const zvalue *args) {
+METH_IMPL(Value, eq) {
     return NULL;
 }
 
 /* Documented in header. */
-static zvalue Value_size(zint argCount, const zvalue *args) {
+METH_IMPL(Value, size) {
     return intFromZint(0);
 }
 

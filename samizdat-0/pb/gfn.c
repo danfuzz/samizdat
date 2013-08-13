@@ -210,14 +210,14 @@ void gfnSeal(zvalue generic) {
  */
 
 /* Documented in header. */
-static zvalue Generic_call(zint argCount, const zvalue *args) {
+METH_IMPL(Generic, call) {
     // The first argument is the generic per se, and the rest are the
     // arguments to call it with.
     return doGfnCall(args[0], argCount - 1, &args[1]);
 }
 
 /* Documented in header. */
-static zvalue Generic_canCall(zint argCount, const zvalue *args) {
+METH_IMPL(Generic, canCall) {
     zvalue generic = args[0];
     zvalue value = args[1];
     GenericInfo *info = gfnInfo(generic);
@@ -226,7 +226,7 @@ static zvalue Generic_canCall(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Generic_debugString(zint argCount, const zvalue *args) {
+METH_IMPL(Generic, debugString) {
     zvalue generic = args[0];
     GenericInfo *info = gfnInfo(generic);
 
@@ -243,7 +243,7 @@ static zvalue Generic_debugString(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Generic_gcMark(zint argCount, const zvalue *args) {
+METH_IMPL(Generic, gcMark) {
     zvalue generic = args[0];
     GenericInfo *info = gfnInfo(generic);
 
@@ -256,7 +256,7 @@ static zvalue Generic_gcMark(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Generic_order(zint argCount, const zvalue *args) {
+METH_IMPL(Generic, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return (gfnInfo(v1)->orderId < gfnInfo(v2)->orderId) ? PB_NEG1 : PB_1;

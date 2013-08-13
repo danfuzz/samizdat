@@ -26,7 +26,7 @@ static zvalue GFN_collect = NULL;
  * Does listification of an int. This returns a list of individual
  * bits (as ints).
  */
-static zvalue collectInt(zint argc, const zvalue *args) {
+METH_IMPL(Int, collect) {
     zvalue intValue = args[0];
 
     zint size = pbSize(intValue);
@@ -45,14 +45,14 @@ static zvalue collectInt(zint argc, const zvalue *args) {
  * Does (trivial) "listification" of a list. This returns the argument
  * unchanged.
  */
-static zvalue collectList(zint argc, const zvalue *args) {
+METH_IMPL(List, collect) {
     return args[0];
 }
 
 /**
  * Does listification of a map. This returns a list of individual mappings.
  */
-static zvalue collectMap(zint argc, const zvalue *args) {
+METH_IMPL(Map, collect) {
     zvalue map = args[0];
 
     zint size = pbSize(map);
@@ -69,7 +69,7 @@ static zvalue collectMap(zint argc, const zvalue *args) {
  * Does listification of a string. This returns a list of individual
  * characters.
  */
-static zvalue collectString(zint argc, const zvalue *args) {
+METH_IMPL(String, collect) {
     zvalue string = args[0];
 
     zint size = pbSize(string);
@@ -87,7 +87,7 @@ static zvalue collectString(zint argc, const zvalue *args) {
  * `Value`, on the assumption that the value in question has a binding
  * for the generic `call`, which this function uses.
  */
-static zvalue collectGenerator(zint argc, const zvalue *args) {
+METH_IMPL(Value, collect) {
     zvalue generator = args[0];
 
     zvalue arr[CONST_MAX_GENERATOR_ITEMS];
@@ -123,11 +123,11 @@ static zvalue collectGenerator(zint argc, const zvalue *args) {
 /* Documented in header. */
 void generatorInit(void) {
     GFN_collect = gfnFrom(1, 1, STR_COLLECT);
-    gfnBindCore(GFN_collect, TYPE_Int,    collectInt);
-    gfnBindCore(GFN_collect, TYPE_List,   collectList);
-    gfnBindCore(GFN_collect, TYPE_Map,    collectMap);
-    gfnBindCore(GFN_collect, TYPE_String, collectString);
-    gfnBindCore(GFN_collect, TYPE_Value,  collectGenerator);
+    gfnBindCore(GFN_collect, TYPE_Int,    Int_collect);
+    gfnBindCore(GFN_collect, TYPE_List,   List_collect);
+    gfnBindCore(GFN_collect, TYPE_Map,    Map_collect);
+    gfnBindCore(GFN_collect, TYPE_String, String_collect);
+    gfnBindCore(GFN_collect, TYPE_Value,  Value_collect);
     gfnSeal(GFN_collect);
     pbImmortalize(GFN_collect);
 }
