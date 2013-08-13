@@ -8,7 +8,7 @@
 
 
 #
-# Helper Definitions
+# Private Definitions
 #
 
 # Constructs a generator for the given input. This special-cases

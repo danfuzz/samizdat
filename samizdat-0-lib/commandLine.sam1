@@ -7,7 +7,7 @@
 #
 
 #
-# Helper Definitions
+# Private Definitions
 #
 
 # Parses a single `\0`-terminated word. Yields a simple string.

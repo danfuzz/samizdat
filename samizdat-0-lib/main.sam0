@@ -20,7 +20,7 @@ LIBRARY_FILES ::
 
 
 #
-# Helper Definitions
+# Private Definitions
 #
 
 # "Reads" the named library file. Since the files are passed into

@@ -7,7 +7,7 @@
 #
 
 #
-# Helper Definitions
+# Private Definitions
 #
 
 # Map from file name suffixes to names of parsing and evaluation functions.

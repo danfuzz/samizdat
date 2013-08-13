@@ -8,7 +8,7 @@
 
 
 #
-# Helper Definitions
+# Private Definitions
 #
 
 # Standard "voided" generator. This is a generator, not a generator

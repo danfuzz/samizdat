@@ -8,7 +8,7 @@
 
 
 #
-# Helper Definitions
+# Private Definitions
 #
 
 # Reports the given list of pending tokens as part of error processing.

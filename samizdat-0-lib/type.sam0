@@ -7,7 +7,7 @@
 #
 
 #
-# Helper Definitions
+# Private Definitions
 #
 
 # Performs a type check, for the given type name.
