@@ -9,6 +9,33 @@
 #include <stdio.h>
 
 
+
+/*
+ * Private Definitions
+ */
+
+/**
+ * The next identity value to return. This starts at `1`, because `0` is
+ * taken to mean "uninitialized".
+ */
+static zint theNextIdentity = 1;
+
+/**
+ * Gets a unique "order id" to use when comparing otherwise-incomparable
+ * values of the same type, for use in defining the total order of values.
+ */
+static zint nextIdentity(void) {
+    if (theNextIdentity < 0) {
+        // At one new identity per nanosecond: (1<<63) nsec ~== 292 years.
+        die("Too many identified values!");
+    }
+
+    zint result = theNextIdentity;
+    theNextIdentity++;
+    return result;
+}
+
+
 /*
  * Exported Definitions
  */
@@ -22,7 +49,7 @@ zint identityOf(zvalue value) {
     zint result = value->identity;
 
     if (result == 0) {
-        result = value->identity = pbOrderId();
+        result = value->identity = nextIdentity();
     }
 
     return result;

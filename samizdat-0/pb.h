@@ -599,12 +599,6 @@ void pbImmortalize(zvalue value);
 void pbMark(zvalue value);
 
 /**
- * Gets a unique "order id" to use when comparing otherwise-incomparable
- * values of the same type, for use in defining the total order of values.
- */
-zint pbOrderId(void);
-
-/**
  * Gets a pointer to the data payload of a `zvalue`.
  */
 inline void *pbPayload(zvalue value) {
