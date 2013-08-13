@@ -106,3 +106,31 @@ A "Hungarianesque" prefix is used to identify aspects of some globals:
   generally as its first argument. As an exception, the name pattern
   `targetFromSource` generally indicates a function that takes a value of
   type `Source` yielding a value of type `target`.
+
+Source files are generally split into sections. Within each section,
+types and variables are typically listed before functions. The following is
+the usual order for sections:
+
+* Private code, labeled something "Helper Definitions" &mdash; This is all
+  meant to be scoped totally to the file in which it occurs. Functions in
+  this section are most typically listed in bottom-up (def before use) order.
+
+* Intra-module exports, labeled "Module Definitions" &mdash; Definitions
+  in this section should also have a corresponding declaration in a file
+  called `impl.h` in the same directory. Functions in this section are most
+  typically listed in alphabetical order.
+
+* Public exports, labeled "Exported Definitions" &mdash; This is any
+  code which is expected to be accessed directly by other modules. Definitions
+  in this section should also have a corresponding declaration in a top-level
+  (one directory up) file named `module.h`, where `module` is the name of
+  the module. Functions in this section are most typically listed in
+  alphabetical order.
+
+* Type definition code, labled "Type Definition" &mdash; This is code
+  which defines an in-model type. There will usually be a corresponding
+  declaration of `TYPE_Name` in *some* header (which one, depending on how
+  far the type is exported); rarely, a type is totally private to the file,
+  in which case its `TYPE_Name` is declared as `static`. Method implementation
+  functions in this section are most typically listed in alphabetical order,
+  with an overall binding / initialization function toward the bottom.
