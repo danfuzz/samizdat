@@ -68,6 +68,11 @@ typedef struct {
 } DerivInfo;
 
 /**
+ * Binds the standard methods for a derived type.
+ */
+void derivBind(zvalue type);
+
+/**
  * Actual implementation of normal function calling. This is where
  * short-circuited generic function dispatch of `call` on type `Function`
  * lands.
@@ -115,15 +120,6 @@ bool typeSecretIs(zvalue type, zvalue secret);
  * Gets the `zfunction` associated with a `Function` value.
  */
 zfunction zfunctionFromFunction(zvalue function);
-
-
-/*
- * Method bindings for derived types.
- */
-
-zvalue Deriv_eq(zint argCount, const zvalue *args);
-zvalue Deriv_gcMark(zint argCount, const zvalue *args);
-zvalue Deriv_order(zint argCount, const zvalue *args);
 
 
 /*

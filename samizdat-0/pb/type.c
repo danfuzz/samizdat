@@ -219,11 +219,7 @@ zvalue transparentTypeFromName(zvalue name) {
 
     if (result == NULL) {
         result = newType(name, NULL);
-
-        // Bind the default derived value methods.
-        gfnBindCore(GFN_eq,     result, Deriv_eq);
-        gfnBindCore(GFN_gcMark, result, Deriv_gcMark);
-        gfnBindCore(GFN_order,  result, Deriv_order);
+        derivBind(result);
     }
 
     return result;

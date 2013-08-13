@@ -21,13 +21,8 @@ static DerivInfo *derivInfo(zvalue value) {
     return (DerivInfo *) pbPayload(value);
 }
 
-
-/*
- * Module functions
- */
-
 /* Documented in header. */
-zvalue Deriv_eq(zint argCount, const zvalue *args) {
+static zvalue Deriv_eq(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -35,14 +30,14 @@ zvalue Deriv_eq(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-zvalue Deriv_gcMark(zint argCount, const zvalue *args) {
+static zvalue Deriv_gcMark(zint argCount, const zvalue *args) {
     zvalue value = args[0];
     pbMark(derivInfo(value)->data);
     return NULL;
 }
 
 /* Documented in header. */
-zvalue Deriv_order(zint argCount, const zvalue *args) {
+static zvalue Deriv_order(zint argCount, const zvalue *args) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zvalue data1 = derivInfo(v1)->data;
@@ -55,6 +50,18 @@ zvalue Deriv_order(zint argCount, const zvalue *args) {
     } else {
         return intFromZint(pbOrder(data1, data2));
     }
+}
+
+
+/*
+ * Module functions
+ */
+
+/* Documented in header. */
+void derivBind(zvalue type) {
+    gfnBindCore(GFN_eq,     type, Deriv_eq);
+    gfnBindCore(GFN_gcMark, type, Deriv_gcMark);
+    gfnBindCore(GFN_order,  type, Deriv_order);
 }
 
 
