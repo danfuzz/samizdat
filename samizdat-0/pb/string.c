@@ -11,7 +11,7 @@
 
 
 /*
- * Helper Definitions
+ * Private Definitions
  */
 
 /** Array of single-character strings, for low character codes. */

@@ -16,7 +16,7 @@
 
 
 /*
- * Helper Definitions
+ * Private Definitions
  */
 
 /** Generic function for `collect` (convert to list) dispatch. */

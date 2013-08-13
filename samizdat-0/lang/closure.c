@@ -16,7 +16,7 @@
 
 
 /*
- * Helper Definitions
+ * Private Definitions
  */
 
 // Defined below.

@@ -15,7 +15,7 @@
 
 
 /*
- * Helper Definitions
+ * Private Definitions
  */
 
 /**

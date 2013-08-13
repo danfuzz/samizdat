@@ -11,7 +11,7 @@
 #include <stddef.h>
 
 /*
- * Helper Definitions
+ * Private Definitions
  */
 
 #define UNARY_PRIM(name, op) \

@@ -14,7 +14,7 @@
 
 
 /*
- * Helper Definitions
+ * Private Definitions
  */
 
 /** The next "order id" to return. */

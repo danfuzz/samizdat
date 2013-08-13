@@ -13,7 +13,7 @@
 
 
 /*
- * Helper Definitions
+ * Private Definitions
  */
 
 /** State of tokenization in-progress. */

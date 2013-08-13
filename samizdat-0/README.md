@@ -111,7 +111,7 @@ Source files are generally split into sections. Within each section,
 types and variables are typically listed before functions. The following is
 the usual order for sections:
 
-* Private code, labeled something "Helper Definitions" &mdash; This is all
+* Private code, labeled "Private Definitions" &mdash; This is all
   meant to be scoped totally to the file in which it occurs. Functions in
   this section are most typically listed in bottom-up (def before use) order.
 

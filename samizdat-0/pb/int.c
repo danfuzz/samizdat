@@ -11,7 +11,7 @@
 
 
 /*
- * Helper Definitions
+ * Private Definitions
  */
 
 enum {

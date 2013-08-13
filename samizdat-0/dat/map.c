@@ -12,7 +12,7 @@
 
 
 /*
- * Helper Definitions
+ * Private Definitions
  */
 
 /**
