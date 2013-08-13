@@ -15,20 +15,6 @@
 
 
 /*
- * Helper functions
- */
-
-/**
- * Dies with a message, citing a variable name.
- */
-static void dieForVariable(const char *message, zvalue name)
-    __attribute__((noreturn));
-static void dieForVariable(const char *message, zvalue name) {
-    die("%s: %s", message, pbDebugString(name));
-}
-
-
-/*
  * Module functions
  */
 
@@ -60,7 +46,7 @@ void frameAdd(Frame *frame, zvalue name, zvalue value) {
     zvalue newVars = mapPut(vars, name, value);
 
     if (pbSize(vars) == pbSize(newVars)) {
-        dieForVariable("Variable already defined", name);
+        die("Variable already defined: %s", pbDebugString(name));
     }
 
     frame->vars = newVars;
@@ -76,7 +62,7 @@ zvalue frameGet(Frame *frame, zvalue name) {
         }
     }
 
-    dieForVariable("Variable not defined", name);
+    die("Variable not defined: %s", pbDebugString(name));
 }
 
 /* Documented in header. */
