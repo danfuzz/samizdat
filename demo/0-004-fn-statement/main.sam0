@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Function statement demo.
+# Function statement demo
 #
 
 
@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Helper functions
+# Helper Definitions
 #
 
 fn print(args*) {
@@ -21,7 +21,7 @@ fn print(args*) {
 
 
 #
-# Main tests
+# Main Tests
 #
 
 fn func1(x) {

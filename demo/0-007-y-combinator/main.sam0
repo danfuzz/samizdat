@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# The venerable Y Combinator and friends.
+# The venerable Y Combinator and friends
 #
 
 
@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Combinator definitions
+# Combinator Definitions
 #
 # These functions are meant to be able to be defined in fairly incomplete
 # implementations of *Samizdat Layer 0*, to help with bootstrapping of
@@ -77,7 +77,7 @@ fn yStarCombinator(functions*) {
 
 
 #
-# Test code
+# Main Tests
 #
 
 # Example of self-recursion using `yCombinator`. This is how a simple
@@ -115,11 +115,6 @@ def countDown2 = listNth(countDowns, 0);
 fn msg(value) {
     io0Note(sourceString(value));
 };
-
-
-#
-# Main calls
-#
 
 msg(countDown(10));
 io0Note("");

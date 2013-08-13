@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Loop expression demo.
+# Loop expression demo
 #
 
 
@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Main tests
+# Main Tests
 #
 
 def box = mutableBox(0);

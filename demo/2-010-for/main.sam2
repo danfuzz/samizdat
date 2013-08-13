@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# For loop expression demo.
+# For loop expression demo
 #
 
 
@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Helper functions
+# Helper Definitions
 #
 
 # Output the given values.
@@ -22,7 +22,7 @@ fn print(values*) {
 
 
 #
-# Main tests
+# Main Tests
 #
 
 io0Note("Empty content.");

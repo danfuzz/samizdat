@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Binary operator demo, for the core message-based operators.
+# Binary operator demo, for the core message-based operators
 #
 
 
@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Helper definitions
+# Helper Definitions
 #
 
 # Prints out the given value.
@@ -22,7 +22,7 @@ fn msg(value) {
 
 
 #
-# Main tests
+# Main Tests
 #
 
 # Ordering. The ones expected to be "falsey" are surrounded by `??` to

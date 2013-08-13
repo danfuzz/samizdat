@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Range demo, with layer 2 syntax.
+# Range demo, with layer 2 syntax
 #
 
 
@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Helper functions
+# Helper Definitions
 #
 
 # Prints out the values yielded by the given generator.
@@ -28,7 +28,7 @@ fn msgTen(generator) {
 
 
 #
-# Main tests
+# Main Tests
 #
 
 io0Note("Inclusive, default increment...");

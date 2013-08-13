@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Helper definitions
+# Helper Definitions
 #
 
 # Map from binary operation names to precedece/function maps.
@@ -169,7 +169,7 @@ def evalExpressions = {/
 
 
 #
-# Main function
+# Main Definition
 #
 
 fn main(args*) {

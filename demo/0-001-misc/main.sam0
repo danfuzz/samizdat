@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Helper definitions
+# Helper Definitions
 #
 
 # Demo of `+` argument repeat modifier.
@@ -57,7 +57,7 @@ fn process(value) {
 
 
 #
-# Main function
+# Main Tests
 #
 
 fn main(selfPath, name?, rest*) {

@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# If clause demo.
+# If clause demo
 #
 
 
@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Helper functions
+# Helper Definitions
 #
 
 fn returnBlort() {
@@ -33,7 +33,7 @@ fn returnVoid() {
 
 
 #
-# Main tests
+# Main Tests
 #
 
 if (1 \== 1) {

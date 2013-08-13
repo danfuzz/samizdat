@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Helper definitions
+# Helper Definitions
 #
 
 # Prints out the given value.
@@ -32,7 +32,7 @@ fn returnVoid() {
 
 
 #
-# Main tests
+# Main Tests
 #
 
 # Different bases, and digit spaces.

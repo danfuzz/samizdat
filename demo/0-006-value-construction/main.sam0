@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Demo of value construction.
+# Demo of value construction
 #
 
 
@@ -12,7 +12,7 @@ SELF_PATH, ARGS* ::
 
 
 #
-# Helper function
+# Helper Definitions
 #
 
 # Expects the two values to be `eq`.
@@ -52,7 +52,9 @@ fn expectDerived(v) {
 
 
 #
-# Main tests. Expect everything to be a "yes".
+# Main Tests
+#
+# Expect everything to be a "yes".
 #
 
 # Int
