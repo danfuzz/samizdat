@@ -91,12 +91,6 @@ zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue name) {
     return result;
 }
 
-/* Documented in header. */
-zfunction zfunctionFromFunction(zvalue function) {
-    assertHasType(function, TYPE_Function);
-    return fnInfo(function)->function;
-}
-
 
 /*
  * Type Definition

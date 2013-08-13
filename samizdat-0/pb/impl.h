@@ -108,11 +108,6 @@ bool typeIsDerived(zvalue type);
  */
 bool typeSecretIs(zvalue type, zvalue secret);
 
-/**
- * Gets the `zfunction` associated with a `Function` value.
- */
-zfunction zfunctionFromFunction(zvalue function);
-
 
 /*
  * Initialization functions
