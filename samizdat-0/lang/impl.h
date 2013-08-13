@@ -35,6 +35,35 @@ typedef struct Frame {
     bool onHeap;
 } Frame;
 
+/** Type for closure functions. */
+extern zvalue TYPE_Closure;
+
+/** Type for nonlocal exit functions. */
+extern zvalue TYPE_NonlocalExit;
+
+/**
+ * Executes a `closure` form.
+ */
+zvalue execClosure(Frame *frame, zvalue closureNode);
+
+/**
+ * Executes an `expression` form, with the result never allowed to be
+ * `void`.
+ */
+zvalue execExpression(Frame *frame, zvalue expression);
+
+/**
+ * Executes an `expression` form, with the result possibly being
+ * `void` (represented as `NULL`).
+ */
+zvalue execExpressionVoidOk(Frame *frame, zvalue expression);
+
+/**
+ * Executes a variable definition, by updating the given execution frame,
+ * as appropriate.
+ */
+void execVarDef(Frame *frame, zvalue varDef);
+
 /**
  * Initializes the given frame. The `frame` is assumed to live on the
  * C stack. The `parentFrame` if non-`NULL` must live on the heap.
@@ -68,5 +97,10 @@ void frameSnap(Frame *target, Frame *source);
  * given state and a nonlocal exit function.
  */
 zvalue nleCall(znleFunction function, void *state);
+
+// Type init and binding.
+void langInit(void);
+void langBindClosure(void);
+void langBindNonlocalExit(void);
 
 #endif

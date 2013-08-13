@@ -25,17 +25,6 @@
  */
 typedef void (*zstateFunction)(void *state);
 
-/**
- * Dispatch table for uniqlets with state.
- */
-typedef struct {
-    /** Function to call in order to do a gc mark on the uniqlet state. */
-    zstateFunction mark;
-
-    /** Function to call in order to free the uniqlet state's resources. */
-    zstateFunction free;
-} UniqletInfoDispatch;
-
 
 /*
  * Constants, type references and generic functions
@@ -104,13 +93,6 @@ void datAssertMap(zvalue value);
  * is `1`. If not, this aborts the process with a diagnostic message.
  */
 void datAssertMapSize1(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a uniqlet. If not, this aborts the process
- * with a diagnostic message.
- */
-void datAssertUniqlet(zvalue value);
 
 
 /*
@@ -256,32 +238,6 @@ zvalue mappingValue(zvalue map);
  * produce a value unequal to any other uniqlet (in any given process).
  */
 zvalue uniqlet(void);
-
-/**
- * Gets a new uniqlet, associated with the given dispatcher and contents.
- * The uniqueness guarantee is the same as with `uniqlet()`.
- *
- * In addition, this provides a convenient way to effectively build an
- * identity mapping between uniqlets (as the keys) and arbitrary
- * non-dat-module data (as the state values). Rather than store uniqlets
- * as keys in an external structure, this inverts the relationship,
- * storing the key (that represents the map) and associated `state`
- * inside the uniqlet. In object-capability terms, the key is a
- * sealer/unsealer, and the uniqlet serves secondary duty as a sealed
- * box. In this case, the key is in fact the associated state dispatch table.
- */
-zvalue uniqletFrom(UniqletInfoDispatch *dispatch, void *state);
-
-/**
- * Gets the state value associated with the given uniqlet, asserting that
- * the uniqlet's dispatch table is as given.
- */
-void *uniqletGetState(zvalue uniqlet, UniqletInfoDispatch *dispatch);
-
-/**
- * Gets whether or not the given uniqlet has the given dispatch table.
- */
-bool uniqletHasDispatch(zvalue uniqlet, UniqletInfoDispatch *dispatch);
 
 
 /*

@@ -203,7 +203,7 @@ zvalue listSlice(zvalue list, zint start, zint end) {
 zvalue EMPTY_LIST = NULL;
 
 /* Documented in header. */
-static zvalue List_eq(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(List, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zint sz1 = listSizeOf(v1);
@@ -226,7 +226,7 @@ static zvalue List_eq(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue List_gcMark(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(List, gcMark) {
     zvalue list = args[0];
     zint size = listSizeOf(list);
     zvalue *elems = listElems(list);
@@ -239,7 +239,7 @@ static zvalue List_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(List, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zvalue *e1 = listElems(v1);
@@ -263,7 +263,7 @@ static zvalue List_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue List_size(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(List, size) {
     zvalue list = args[0];
     return intFromZint(listSizeOf(list));
 }
@@ -271,10 +271,10 @@ static zvalue List_size(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void datBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"));
-    gfnBindCore(GFN_eq,     TYPE_List, List_eq);
-    gfnBindCore(GFN_gcMark, TYPE_List, List_gcMark);
-    gfnBindCore(GFN_order,  TYPE_List, List_order);
-    gfnBindCore(GFN_size,   TYPE_List, List_size);
+    METH_BIND(List, eq);
+    METH_BIND(List, gcMark);
+    METH_BIND(List, order);
+    METH_BIND(List, size);
 
     EMPTY_LIST = allocList(0);
     pbImmortalize(EMPTY_LIST);

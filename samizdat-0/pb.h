@@ -16,7 +16,7 @@
 
 
 /*
- * C Types
+ * C Types and macros
  */
 
 /**
@@ -35,10 +35,10 @@ typedef struct {
 } zmapping;
 
 /**
- * Prototype for all in-model functions. The `state` is arbitrary closure
- * state (passed in when the function was bound).
+ * Prototype for an underlying C function corresponding to an in-model
+ * function (value of type `Function`).
  */
-typedef zvalue (*zfunction)(zvalue state, zint argCount, const zvalue *args);
+typedef zvalue (*zfunction)(zint argCount, const zvalue *args);
 
 /** Type for local value stack pointers. */
 typedef const zvalue *zstackPointer;
@@ -50,6 +50,14 @@ enum {
      */
     PB_HEADER_SIZE = (sizeof(zvalue) * 3) + (sizeof(int32_t) * 2)
 };
+
+/** Declaration for a method on the given type with the given name */
+#define METH_IMPL(type, name) \
+    static zvalue type##_##name(zint argCount, const zvalue *args)
+
+/** Performs binding of the indicated method. */
+#define METH_BIND(type, name) \
+    do { gfnBindCore(GFN_##name, TYPE_##type, type##_##name); } while(0)
 
 
 /*
@@ -97,6 +105,11 @@ extern zvalue TYPE_Value;
 extern zvalue GFN_call;
 
 /**
+ * Generic `canCall(function, value)`: See spec for details.
+ */
+extern zvalue GFN_canCall;
+
+/**
  * Generic `debugString(value)`: Returns a minimal string form of the
  * given value. Notably, functions and generics include their names.
  * The default implementation returns strings of the form
@@ -108,12 +121,6 @@ extern zvalue GFN_debugString;
  * Generic `gcMark(value)`: Does GC marking for the given value.
  */
 extern zvalue GFN_gcMark;
-
-/**
- * Generic `gcFree(value)`: Does GC freeing for the given value. This is
- * to do immediate pre-mortem freeing of value contents.
- */
-extern zvalue GFN_gcFree;
 
 /**
  * Generic `eq(value, value)`: Compares two values for equality / sameness.
@@ -324,8 +331,7 @@ zvalue fnCall(zvalue function, zint argCount, const zvalue *args);
  * and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue state,
-        zvalue name);
+zvalue fnFrom(zint minArgs, zint maxArgs, zfunction function, zvalue name);
 
 
 /*

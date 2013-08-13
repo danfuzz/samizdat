@@ -176,7 +176,7 @@ void gfnBindCore(zvalue generic, zvalue type, zfunction function) {
     }
 
     info->functions[index] =
-        fnFrom(info->minArgs, info->maxArgs, function, NULL, info->name);
+        fnFrom(info->minArgs, info->maxArgs, function, info->name);
 }
 
 /* Documented in header. */
@@ -210,15 +210,23 @@ void gfnSeal(zvalue generic) {
  */
 
 /* Documented in header. */
-static zvalue Generic_call(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Generic, call) {
     // The first argument is the generic per se, and the rest are the
     // arguments to call it with.
     return doGfnCall(args[0], argCount - 1, &args[1]);
 }
 
 /* Documented in header. */
-static zvalue Generic_debugString(zvalue state,
-        zint argCount, const zvalue *args) {
+METH_IMPL(Generic, canCall) {
+    zvalue generic = args[0];
+    zvalue value = args[1];
+    GenericInfo *info = gfnInfo(generic);
+
+    return (gfnFind(generic, value) != NULL) ? value : NULL;
+}
+
+/* Documented in header. */
+METH_IMPL(Generic, debugString) {
     zvalue generic = args[0];
     GenericInfo *info = gfnInfo(generic);
 
@@ -235,7 +243,7 @@ static zvalue Generic_debugString(zvalue state,
 }
 
 /* Documented in header. */
-static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Generic, gcMark) {
     zvalue generic = args[0];
     GenericInfo *info = gfnInfo(generic);
 
@@ -248,7 +256,7 @@ static zvalue Generic_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Generic, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return (gfnInfo(v1)->orderId < gfnInfo(v2)->orderId) ? PB_NEG1 : PB_1;
@@ -258,10 +266,11 @@ static zvalue Generic_order(zvalue state, zint argCount, const zvalue *args) {
 void pbBindGeneric(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Generic`.
 
-    gfnBindCore(GFN_call,        TYPE_Generic, Generic_call);
-    gfnBindCore(GFN_debugString, TYPE_Generic, Generic_debugString);
-    gfnBindCore(GFN_gcMark,      TYPE_Generic, Generic_gcMark);
-    gfnBindCore(GFN_order,       TYPE_Generic, Generic_order);
+    METH_BIND(Generic, call);
+    METH_BIND(Generic, canCall);
+    METH_BIND(Generic, debugString);
+    METH_BIND(Generic, gcMark);
+    METH_BIND(Generic, order);
 }
 
 /* Documented in header. */

@@ -154,7 +154,7 @@ zvalue boxYield(void) {
 zvalue DAT_NULL_BOX = NULL;
 
 /* Documented in header. */
-static zvalue Box_gcMark(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Box, gcMark) {
     zvalue box = args[0];
     BoxInfo *info = boxInfo(box);
 
@@ -165,7 +165,7 @@ static zvalue Box_gcMark(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Box_order(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Box, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return intFromZint(pbOrder(boxOrderId(v1), boxOrderId(v2)));
@@ -174,8 +174,8 @@ static zvalue Box_order(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void datBindBox(void) {
     TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"));
-    gfnBindCore(GFN_gcMark, TYPE_Box, Box_gcMark);
-    gfnBindCore(GFN_order,  TYPE_Box, Box_order);
+    METH_BIND(Box, gcMark);
+    METH_BIND(Box, order);
 
     DAT_NULL_BOX = boxMutable(); // Note: Explicit `==` check in `boxSet`.
     pbImmortalize(DAT_NULL_BOX);

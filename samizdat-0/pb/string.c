@@ -226,8 +226,7 @@ void zcharsFromString(zchar *result, zvalue string) {
 zvalue EMPTY_STRING = NULL;
 
 /* Documented in header. */
-static zvalue String_debugString(zvalue state,
-        zint argCount, const zvalue *args) {
+METH_IMPL(String, debugString) {
     zvalue string = args[0];
     zvalue quote = stringFromUtf8(1, "\"");
 
@@ -238,7 +237,7 @@ static zvalue String_debugString(zvalue state,
 }
 
 /* Documented in header. */
-static zvalue String_eq(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(String, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zint sz1 = stringSizeOf(v1);
@@ -261,7 +260,7 @@ static zvalue String_eq(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue String_order(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(String, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zchar *e1 = stringElems(v1);
@@ -289,7 +288,7 @@ static zvalue String_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue String_size(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(String, size) {
     zvalue string = args[0];
     return intFromZint(stringSizeOf(string));
 }
@@ -298,10 +297,10 @@ static zvalue String_size(zvalue state, zint argCount, const zvalue *args) {
 void pbBindString(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_String`.
 
-    gfnBindCore(GFN_debugString, TYPE_String, String_debugString);
-    gfnBindCore(GFN_eq,          TYPE_String, String_eq);
-    gfnBindCore(GFN_order,       TYPE_String, String_order);
-    gfnBindCore(GFN_size,        TYPE_String, String_size);
+    METH_BIND(String, debugString);
+    METH_BIND(String, eq);
+    METH_BIND(String, order);
+    METH_BIND(String, size);
 
     EMPTY_STRING = allocString(0);
     pbImmortalize(EMPTY_STRING);

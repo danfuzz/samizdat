@@ -61,7 +61,7 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
  */
 
 /* Documented in header. */
-static zvalue MapCache_gcMark(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(MapCache, gcMark) {
     memset(mapCache, 0, sizeof(mapCache));
     return NULL;
 }
@@ -72,6 +72,6 @@ void datBindMapCache(void) {
     // gets marked immortal. Its `mark` gets called during gc, which we
     // use as a trigger to clear the map cache.
     zvalue TYPE_MapCache = coreTypeFromName(stringFromUtf8(-1, "MapCache"));
-    gfnBindCore(GFN_gcMark, TYPE_MapCache, MapCache_gcMark);
+    METH_BIND(MapCache, gcMark);
     pbImmortalize(pbAllocValue(TYPE_MapCache, 0));
 }

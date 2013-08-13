@@ -144,14 +144,14 @@ zvalue PB_1 = NULL;
 zvalue PB_NEG1 = NULL;
 
 /* Documented in header. */
-static zvalue Int_eq(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Int, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return (zintValue(v1) == zintValue(v2)) ? v2 : NULL;
 }
 
 /* Documented in header. */
-static zvalue Int_order(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Int, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zint int1 = zintValue(v1);
@@ -167,7 +167,7 @@ static zvalue Int_order(zvalue state, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-static zvalue Int_size(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Int, size) {
     zvalue intval = args[0];
 
     return intFromZint(bitSize(zintValue(intval)));
@@ -176,9 +176,9 @@ static zvalue Int_size(zvalue state, zint argCount, const zvalue *args) {
 /* Documented in header. */
 void pbBindInt(void) {
     TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"));
-    gfnBindCore(GFN_eq,    TYPE_Int, Int_eq);
-    gfnBindCore(GFN_size,  TYPE_Int, Int_size);
-    gfnBindCore(GFN_order, TYPE_Int, Int_order);
+    METH_BIND(Int, eq);
+    METH_BIND(Int, size);
+    METH_BIND(Int, order);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);

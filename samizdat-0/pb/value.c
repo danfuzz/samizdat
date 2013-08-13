@@ -14,8 +14,7 @@
  */
 
 /* Documented in header. */
-static zvalue Value_debugString(zvalue state,
-        zint argCount, const zvalue *args) {
+METH_IMPL(Value, debugString) {
     zvalue value = args[0];
     zvalue type = typeOf(value);
     char addrBuf[19]; // Includes room for "0x" and "\0".
@@ -31,12 +30,12 @@ static zvalue Value_debugString(zvalue state,
 }
 
 /* Documented in header. */
-static zvalue Value_eq(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Value, eq) {
     return NULL;
 }
 
 /* Documented in header. */
-static zvalue Value_size(zvalue state, zint argCount, const zvalue *args) {
+METH_IMPL(Value, size) {
     return intFromZint(0);
 }
 
@@ -44,9 +43,9 @@ static zvalue Value_size(zvalue state, zint argCount, const zvalue *args) {
 void pbBindValue(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Value`.
 
-    gfnBindCore(GFN_debugString, TYPE_Value, Value_debugString);
-    gfnBindCore(GFN_eq,          TYPE_Value, Value_eq);
-    gfnBindCore(GFN_size,        TYPE_Value, Value_size);
+    METH_BIND(Value, debugString);
+    METH_BIND(Value, eq);
+    METH_BIND(Value, size);
 }
 
 /* Documented in header. */
