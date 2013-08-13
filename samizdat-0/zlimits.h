@@ -50,8 +50,8 @@ enum {
     /** Maximum number of types allowed. */
     PB_MAX_TYPES = 300,
 
-    /** Number of small int constants to keep as preallocated values. */
-    PB_SMALL_INT_COUNT = 1000,
+    /** Maximum (highest value) small int constant to keep. */
+    PB_SMALL_INT_MAX = 700,
 
     /** Minumum (lowest value) small int constant to keep. */
     PB_SMALL_INT_MIN = -300,

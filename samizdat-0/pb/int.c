@@ -18,8 +18,8 @@ enum {
     /** Ints are restricted to being in the range of `int32_t`. */
     MAX_BITS = 32,
 
-    /** Max (exclusive) small int value. */
-    PB_SMALL_INT_MAX = PB_SMALL_INT_MIN + PB_SMALL_INT_COUNT
+    /** Count of cached small int value. */
+    PB_SMALL_INT_COUNT = PB_SMALL_INT_MAX - PB_SMALL_INT_MIN + 1
 };
 
 /** Array of small integer values. */
