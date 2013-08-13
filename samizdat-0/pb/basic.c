@@ -18,7 +18,7 @@
  */
 
 /** The next "order id" to return. */
-static zint theNextOrderId = 0;
+static zint theNextOrderId = 1;
 
 
 /*

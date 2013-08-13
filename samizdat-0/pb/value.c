@@ -10,6 +10,26 @@
 
 
 /*
+ * Exported Definitions
+ */
+
+/* Documented in header. */
+zint identityOf(zvalue value) {
+    if (!typeIsIdentified(typeOf(value))) {
+        die("Attempt to use `identityOf` on non-identified value.");
+    }
+
+    zint result = value->identity;
+
+    if (result == 0) {
+        result = value->identity = pbOrderId();
+    }
+
+    return result;
+}
+
+
+/*
  * Type Definition
  */
 

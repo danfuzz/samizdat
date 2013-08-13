@@ -366,7 +366,7 @@ METH_IMPL(Closure, order) {
 
 /* Documented in header. */
 void langBindClosure(void) {
-    TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"));
+    TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"), true);
     METH_BIND(Closure, call);
     METH_BIND(Closure, canCall);
     METH_BIND(Closure, debugString);

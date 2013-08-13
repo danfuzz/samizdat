@@ -168,7 +168,7 @@ METH_IMPL(Box, order) {
 
 /* Documented in header. */
 void datBindBox(void) {
-    TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"));
+    TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);
     METH_BIND(Box, gcMark);
     METH_BIND(Box, order);
 

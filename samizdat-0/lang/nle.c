@@ -152,7 +152,8 @@ METH_IMPL(NonlocalExit, order) {
 
 /* Documented in header. */
 void langBindNonlocalExit(void) {
-    TYPE_NonlocalExit = coreTypeFromName(stringFromUtf8(-1, "NonlocalExit"));
+    TYPE_NonlocalExit =
+        coreTypeFromName(stringFromUtf8(-1, "NonlocalExit"), true);
     METH_BIND(NonlocalExit, call);
     METH_BIND(NonlocalExit, canCall);
     METH_BIND(NonlocalExit, gcMark);

@@ -56,7 +56,7 @@ METH_IMPL(Uniqlet, order) {
 
 /* Documented in header. */
 void datBindUniqlet(void) {
-    TYPE_Uniqlet = coreTypeFromName(stringFromUtf8(-1, "Uniqlet"));
+    TYPE_Uniqlet = coreTypeFromName(stringFromUtf8(-1, "Uniqlet"), true);
     METH_BIND(Uniqlet, order);
 }
 
