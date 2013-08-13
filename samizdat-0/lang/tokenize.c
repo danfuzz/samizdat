@@ -282,7 +282,7 @@ static zvalue tokenizeOne(ParseState *state) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */

@@ -69,7 +69,7 @@ zvalue doFnCall(zvalue function, zint argCount, const zvalue *args) {
 
 
 /*
- * Exported functions
+ * Exported Definitions
  */
 
 /* Documented in header. */
