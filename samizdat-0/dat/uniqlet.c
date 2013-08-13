@@ -25,7 +25,7 @@ typedef struct {
 /**
  * Gets a pointer to the info of a uniqlet.
  */
-static UniqletInfo *uniInfo(zvalue uniqlet) {
+static UniqletInfo *getInfo(zvalue uniqlet) {
     return pbPayload(uniqlet);
 }
 
@@ -38,7 +38,7 @@ static UniqletInfo *uniInfo(zvalue uniqlet) {
 zvalue uniqlet(void) {
     zvalue result = pbAllocValue(TYPE_Uniqlet, sizeof(UniqletInfo));
 
-    uniInfo(result)->id = pbOrderId();
+    getInfo(result)->id = pbOrderId();
     return result;
 }
 
@@ -51,7 +51,7 @@ zvalue uniqlet(void) {
 METH_IMPL(Uniqlet, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return (uniInfo(v1)->id < uniInfo(v2)->id) ? PB_NEG1 : PB_1;
+    return (getInfo(v1)->id < getInfo(v2)->id) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */

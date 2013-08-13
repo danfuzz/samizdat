@@ -38,7 +38,7 @@ typedef struct {
 /**
  * Gets a pointer to the value's info.
  */
-static BoxInfo *boxInfo(zvalue box) {
+static BoxInfo *getInfo(zvalue box) {
     return pbPayload(box);
 }
 
@@ -46,7 +46,7 @@ static BoxInfo *boxInfo(zvalue box) {
  * Gets the order id, initializing it if necessary.
  */
 static zvalue boxOrderId(zvalue box) {
-    BoxInfo *info = boxInfo(box);
+    BoxInfo *info = getInfo(box);
     zvalue orderId = info->orderId;
 
     if (orderId == NULL) {
@@ -65,7 +65,7 @@ static zvalue boxOrderId(zvalue box) {
 zvalue boxGet(zvalue box) {
     assertHasType(box, TYPE_Box);
 
-    zvalue result = boxInfo(box)->value;
+    zvalue result = getInfo(box)->value;
 
     if (result != NULL) {
         // The box has a value that we are about to return. Since the box
@@ -81,14 +81,14 @@ zvalue boxGet(zvalue box) {
 /* Documented in header. */
 bool boxIsSet(zvalue box) {
     assertHasType(box, TYPE_Box);
-    return boxInfo(box)->isSet;
+    return getInfo(box)->isSet;
 }
 
 /* Documented in header. */
 void boxReset(zvalue box) {
     assertHasType(box, TYPE_Box);
 
-    BoxInfo *info = boxInfo(box);
+    BoxInfo *info = getInfo(box);
 
     if (info->setOnce) {
         die("Attempt to reset yield box.");
@@ -106,7 +106,7 @@ void boxSet(zvalue box, zvalue value) {
         return;
     }
 
-    BoxInfo *info = boxInfo(box);
+    BoxInfo *info = getInfo(box);
 
     if (info->isSet && info->setOnce) {
         die("Attempt to re-set yield box.");
@@ -119,7 +119,7 @@ void boxSet(zvalue box, zvalue value) {
 /* Documented in header. */
 zvalue boxMutable(void) {
     zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
-    BoxInfo *info = boxInfo(result);
+    BoxInfo *info = getInfo(result);
 
     info->value = NULL;
     info->isSet = false;
@@ -131,7 +131,7 @@ zvalue boxMutable(void) {
 /* Documented in header. */
 zvalue boxYield(void) {
     zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
-    BoxInfo *info = boxInfo(result);
+    BoxInfo *info = getInfo(result);
 
     info->value = NULL;
     info->isSet = false;
@@ -151,7 +151,7 @@ zvalue DAT_NULL_BOX = NULL;
 /* Documented in header. */
 METH_IMPL(Box, gcMark) {
     zvalue box = args[0];
-    BoxInfo *info = boxInfo(box);
+    BoxInfo *info = getInfo(box);
 
     pbMark(info->value);
     pbMark(info->orderId);

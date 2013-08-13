@@ -53,7 +53,7 @@ static zvalue coreSecret = NULL;
 /**
  * Gets a pointer to the value's info.
  */
-static TypeInfo *typeInfo(zvalue type) {
+static TypeInfo *getInfo(zvalue type) {
     return pbPayload(type);
 }
 
@@ -69,7 +69,7 @@ static void typeInit(zvalue type, zvalue parent, zvalue name, zvalue secret) {
         die("Every type but `Value` needs a parent.");
     }
 
-    TypeInfo *info = typeInfo(type);
+    TypeInfo *info = getInfo(type);
 
     info->parent = parent;
     info->name = name;
@@ -105,7 +105,7 @@ static zvalue newType(zvalue name, zvalue secret) {
  * for searching, sorting, and ordering.
  */
 static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
-    TypeInfo *info2 = typeInfo(v2);
+    TypeInfo *info2 = getInfo(v2);
     zvalue name2 = info2->name;
     zvalue secret2 = info2->secret;
     bool derived1 = (secret1 != coreSecret);
@@ -144,7 +144,7 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
 static int sortOrder(const void *vptr1, const void *vptr2) {
     zvalue v1 = *(zvalue *) vptr1;
     zvalue v2 = *(zvalue *) vptr2;
-    TypeInfo *info1 = typeInfo(v1);
+    TypeInfo *info1 = getInfo(v1);
 
     return typeCompare(info1->name, info1->secret, v2);
 }
@@ -210,7 +210,7 @@ static void assertHasTypeType(zvalue value) {
 /* Documented in header. */
 zint indexFromType(zvalue type) {
     assertHasTypeType(type);
-    return typeInfo(type)->id;
+    return getInfo(type)->id;
 }
 
 /* Documented in header. */
@@ -239,12 +239,12 @@ zvalue trueTypeOf(zvalue value) {
 
 /* Documented in header. */
 bool typeIsDerived(zvalue type) {
-    return isType(type) ? typeInfo(type)->derived : true;
+    return isType(type) ? getInfo(type)->derived : true;
 }
 
 /* Documented in header. */
 bool typeSecretIs(zvalue type, zvalue secret) {
-    zvalue typeSecret = isType(type) ? typeInfo(type)->secret : NULL;
+    zvalue typeSecret = isType(type) ? getInfo(type)->secret : NULL;
     return pbEq(typeSecret, secret);
 }
 
@@ -309,7 +309,7 @@ extern void *pbPayload(zvalue value);
 
 /* Documented in header. */
 zvalue typeName(zvalue type) {
-    return isType(type) ? typeInfo(type)->name : type;
+    return isType(type) ? getInfo(type)->name : type;
 }
 
 /* Documented in header. */
@@ -318,7 +318,7 @@ zvalue typeOf(zvalue value) {
 
     zvalue type = value->type;
     if (isType(type)) {
-        TypeInfo *info = typeInfo(type);
+        TypeInfo *info = getInfo(type);
         // `typeOf` on a transparent type returns its name.
         return (info->secret == NULL) ? info->name : type;
     } else {
@@ -329,7 +329,7 @@ zvalue typeOf(zvalue value) {
 
 /* Documented in header. */
 zvalue typeParent(zvalue type) {
-    return isType(type) ? typeInfo(type)->parent : TYPE_Value;
+    return isType(type) ? getInfo(type)->parent : TYPE_Value;
 }
 
 
@@ -340,7 +340,7 @@ zvalue typeParent(zvalue type) {
 /* Documented in header. */
 METH_IMPL(Type, debugString) {
     zvalue type = args[0];
-    TypeInfo *info = typeInfo(type);
+    TypeInfo *info = getInfo(type);
 
     zvalue result = stringFromUtf8(-1, "@(Type ");
     result = stringAdd(result, funCall(GFN_debugString, 1, &info->name));
@@ -357,8 +357,8 @@ METH_IMPL(Type, debugString) {
 
 /* Documented in header. */
 METH_IMPL(Type, gcMark) {
-    zvalue box = args[0];
-    TypeInfo *info = typeInfo(box);
+    zvalue type = args[0];
+    TypeInfo *info = getInfo(type);
 
     pbMark(info->name);
     pbMark(info->secret);
@@ -370,7 +370,7 @@ METH_IMPL(Type, gcMark) {
 METH_IMPL(Type, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    TypeInfo *info1 = typeInfo(v1);
+    TypeInfo *info1 = getInfo(v1);
 
     return intFromZint(typeCompare(info1->name, info1->secret, v2));
 }

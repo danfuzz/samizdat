@@ -43,7 +43,7 @@ typedef struct {
 /**
  * Gets a pointer to the value's info.
  */
-static FunctionInfo *fnInfo(zvalue function) {
+static FunctionInfo *getInfo(zvalue function) {
     return pbPayload(function);
 }
 
@@ -54,7 +54,7 @@ static FunctionInfo *fnInfo(zvalue function) {
 
 /* Documented in header. */
 zvalue functionCall(zvalue function, zint argCount, const zvalue *args) {
-    FunctionInfo *info = fnInfo(function);
+    FunctionInfo *info = getInfo(function);
 
     if (argCount < info->minArgs) {
         die("Too few arguments for function call: %lld, min %lld",
@@ -81,7 +81,7 @@ zvalue functionFrom(zint minArgs, zint maxArgs, zfunction function,
     }
 
     zvalue result = pbAllocValue(TYPE_Function, sizeof(FunctionInfo));
-    FunctionInfo *info = fnInfo(result);
+    FunctionInfo *info = getInfo(result);
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
@@ -108,7 +108,7 @@ METH_IMPL(Function, call) {
 METH_IMPL(Function, canCall) {
     zvalue function = args[0];
     zvalue value = args[1];
-    FunctionInfo *info = fnInfo(function);
+    FunctionInfo *info = getInfo(function);
 
     return (info->maxArgs >= 1) ? value : NULL;
 }
@@ -116,7 +116,7 @@ METH_IMPL(Function, canCall) {
 /* Documented in header. */
 METH_IMPL(Function, debugString) {
     zvalue function = args[0];
-    FunctionInfo *info = fnInfo(function);
+    FunctionInfo *info = getInfo(function);
 
     zvalue result = stringFromUtf8(-1, "@(Function ");
 
@@ -133,7 +133,7 @@ METH_IMPL(Function, debugString) {
 /* Documented in header. */
 METH_IMPL(Function, gcMark) {
     zvalue function = args[0];
-    FunctionInfo *info = fnInfo(function);
+    FunctionInfo *info = getInfo(function);
 
     pbMark(info->name);
     return NULL;
@@ -143,7 +143,7 @@ METH_IMPL(Function, gcMark) {
 METH_IMPL(Function, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return (fnInfo(v1)->orderId < fnInfo(v2)->orderId) ? PB_NEG1 : PB_1;
+    return (getInfo(v1)->orderId < getInfo(v2)->orderId) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */

@@ -44,7 +44,7 @@ typedef struct {
 /**
  * Gets a pointer to the info of a nonlocal exit.
  */
-static NonlocalExitInfo *nleInfo(zvalue nle) {
+static NonlocalExitInfo *getInfo(zvalue nle) {
     return pbPayload(nle);
 }
 
@@ -54,7 +54,7 @@ static NonlocalExitInfo *nleInfo(zvalue nle) {
 static zvalue newNonlocalExit(void) {
     zvalue result = pbAllocValue(TYPE_NonlocalExit, sizeof(NonlocalExitInfo));
 
-    NonlocalExitInfo *info = nleInfo(result);
+    NonlocalExitInfo *info = getInfo(result);
     info->active = true;
     info->result = NULL;
     info->orderId = pbOrderId();
@@ -75,7 +75,7 @@ zvalue nleCall(znleFunction function, void *state) {
     zvalue result;
 
     zvalue exitFunction = newNonlocalExit();
-    NonlocalExitInfo *info = nleInfo(exitFunction);
+    NonlocalExitInfo *info = getInfo(exitFunction);
 
     if (sigsetjmp(info->jumpBuf, 0) == 0) {
         // Here is where end up the first time `setjmp` returns.
@@ -101,7 +101,7 @@ zvalue nleCall(znleFunction function, void *state) {
 /* Documented in header. */
 METH_IMPL(NonlocalExit, call) {
     zvalue nle = args[0];
-    NonlocalExitInfo *info = nleInfo(nle);
+    NonlocalExitInfo *info = getInfo(nle);
 
     if (!info->active) {
         die("Attempt to use out-of-scope nonlocal exit.");
@@ -139,7 +139,7 @@ METH_IMPL(NonlocalExit, canCall) {
 METH_IMPL(NonlocalExit, gcMark) {
     zvalue nle = args[0];
 
-    pbMark(nleInfo(nle)->result);
+    pbMark(getInfo(nle)->result);
     return NULL;
 }
 
@@ -148,7 +148,7 @@ METH_IMPL(NonlocalExit, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return (nleInfo(v1)->orderId < nleInfo(v2)->orderId) ? PB_NEG1 : PB_1;
+    return (getInfo(v1)->orderId < getInfo(v2)->orderId) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */

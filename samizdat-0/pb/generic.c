@@ -265,8 +265,7 @@ METH_IMPL(Generic, gcMark) {
 METH_IMPL(Generic, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    return (getInfo(v1)->orderId < getInfo(v2)->orderId)
-        ? PB_NEG1 : PB_1;
+    return (getInfo(v1)->orderId < getInfo(v2)->orderId) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */

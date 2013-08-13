@@ -77,7 +77,7 @@ typedef struct {
 /**
  * Gets a pointer to the info of a closure value.
  */
-static ClosureInfo *closureInfo(zvalue closure) {
+static ClosureInfo *getInfo(zvalue closure) {
     return pbPayload(closure);
 }
 
@@ -87,7 +87,7 @@ static ClosureInfo *closureInfo(zvalue closure) {
  */
 static zvalue buildClosure(zvalue node) {
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
-    ClosureInfo *info = closureInfo(result);
+    ClosureInfo *info = getInfo(result);
     zvalue defMap = dataOf(node);
 
     info->defMap = defMap;
@@ -106,7 +106,7 @@ static zvalue buildClosure(zvalue node) {
  */
 static void bindArguments(Frame *frame, zvalue closure,
         zint argCount, const zvalue *args) {
-    ClosureInfo *info = closureInfo(closure);
+    ClosureInfo *info = getInfo(closure);
     zvalue formals = info->formals;
     zint formalsSize = (formals == NULL) ? 0 : pbSize(formals);
     zvalue formalsArr[formalsSize];
@@ -183,7 +183,7 @@ static void bindArguments(Frame *frame, zvalue closure,
  */
 static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     zvalue closure = callState->closure;
-    ClosureInfo *info = closureInfo(closure);
+    ClosureInfo *info = getInfo(closure);
 
     // With the closure's frame as the parent, bind the formals and
     // nonlocal exit (if present), creating a new execution frame.
@@ -276,7 +276,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
     // `size == 1` and mutual recursion when `size > 1`.
 
     for (zint i = 0; i < size; i++) {
-        frameSnap(&closureInfo(closures[i])->frame, frame);
+        frameSnap(&getInfo(closures[i])->frame, frame);
     }
 }
 
@@ -289,7 +289,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
 zvalue execClosure(Frame *frame, zvalue closureNode) {
     zvalue result = buildClosure(closureNode);
 
-    frameSnap(&closureInfo(result)->frame, frame);
+    frameSnap(&getInfo(result)->frame, frame);
     return result;
 }
 
@@ -303,7 +303,7 @@ METH_IMPL(Closure, call) {
     // The first argument is the closure itself. The rest are the arguments
     // it is being called with, hence `argCount - 1, &args[1]` below.
     zvalue closure = args[0];
-    ClosureInfo *info = closureInfo(closure);
+    ClosureInfo *info = getInfo(closure);
     CallState callState = { closure, argCount - 1, &args[1] };
     zvalue result;
 
@@ -320,7 +320,7 @@ METH_IMPL(Closure, call) {
 METH_IMPL(Closure, canCall) {
     zvalue closure = args[0];
     zvalue value = args[1];
-    ClosureInfo *info = closureInfo(closure);
+    ClosureInfo *info = getInfo(closure);
 
     // This closure can be called with an argument as long as it defines
     // at least one formal. `formals` is either `NULL` or non-empty, hence
@@ -331,7 +331,7 @@ METH_IMPL(Closure, canCall) {
 /* Documented in header. */
 METH_IMPL(Closure, debugString) {
     zvalue closure = args[0];
-    ClosureInfo *info = closureInfo(closure);
+    ClosureInfo *info = getInfo(closure);
     zvalue name = mapGet(info->defMap, STR_NAME);
 
     zvalue result = stringFromUtf8(-1, "@(Closure ");
@@ -349,7 +349,7 @@ METH_IMPL(Closure, debugString) {
 /* Documented in header. */
 METH_IMPL(Closure, gcMark) {
     zvalue closure = args[0];
-    ClosureInfo *info = closureInfo(closure);
+    ClosureInfo *info = getInfo(closure);
 
     frameMark(&info->frame);
     pbMark(info->defMap);
@@ -361,8 +361,7 @@ METH_IMPL(Closure, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return (closureInfo(v1)->orderId < closureInfo(v2)->orderId)
-        ? PB_NEG1 : PB_1;
+    return (getInfo(v1)->orderId < getInfo(v2)->orderId) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
