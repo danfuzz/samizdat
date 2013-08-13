@@ -33,10 +33,10 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key) {
     uintptr_t hash = ((uintptr_t) map >> 4) + (((uintptr_t) key) >> 4) * 31;
     hash ^= (hash >> 16) ^ (hash >> 32) ^ (hash >> 48);
 
-    // Note: In practice there doesn't seem to be an observable difference
-    // between using `&` and `%` to calculate the cache index, so we go
-    // for `%` and a prime number cache size to get probably-better cache
-    // behavior.
+    // Note: In practice there doesn't seem to be an observable performance
+    // difference between using `&` and `%` to calculate the cache index, so
+    // we go for `%` and a prime number cache size to get probably-better
+    // cache behavior.
     MapCacheEntry *entry = &mapCache[hash % DAT_MAP_CACHE_SIZE];
 
     if (CHATTY_CACHEY) {

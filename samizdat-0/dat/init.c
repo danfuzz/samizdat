@@ -30,7 +30,6 @@ void datInit(void) {
     datBindList();
     datBindMap();
     datBindMapCache();
-    datBindUniqlet();
 
     pbFrameReturn(save, NULL);
 }

@@ -48,9 +48,6 @@ extern zvalue TYPE_List;
 /** Type value for in-model type `Map`. */
 extern zvalue TYPE_Map;
 
-/** Type value for in-model type `Uniqlet`. */
-extern zvalue TYPE_Uniqlet;
-
 
 /*
  * Initialization Function
@@ -220,17 +217,6 @@ zvalue mappingKey(zvalue map);
  * map.
  */
 zvalue mappingValue(zvalue map);
-
-
-/*
- * Uniqlet Functions
- */
-
-/**
- * Gets a new uniqlet. Each call to this function is guaranteed to
- * produce a value unequal to any other uniqlet (in any given process).
- */
-zvalue uniqlet(void);
 
 
 /*

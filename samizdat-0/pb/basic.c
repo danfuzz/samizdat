@@ -65,4 +65,5 @@ void pbInit(void) {
     pbBindGeneric(); // Has to come after `Function`.
 
     pbBindInt();
+    pbBindUniqlet();
 }

@@ -24,8 +24,11 @@ zvalue uniqlet(void) {
  */
 
 /* Documented in header. */
-void datBindUniqlet(void) {
-    TYPE_Uniqlet = coreTypeFromName(stringFromUtf8(-1, "Uniqlet"), true);
+void pbBindUniqlet(void) {
+    // Note: The type `Type` is responsible for initializing `TYPE_Uniqlet`.
+
+    // This function is just left here as a positive indication that there
+    // is nothing to do.
 }
 
 /* Documented in header. */
