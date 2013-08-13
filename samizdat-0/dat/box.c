@@ -62,13 +62,8 @@ static zvalue boxOrderId(zvalue box) {
  */
 
 /* Documented in header. */
-void datAssertBox(zvalue value) {
-    assertHasType(value, TYPE_Box);
-}
-
-/* Documented in header. */
 zvalue boxGet(zvalue box) {
-    datAssertBox(box);
+    assertHasType(box, TYPE_Box);
 
     zvalue result = boxInfo(box)->value;
 
@@ -85,13 +80,13 @@ zvalue boxGet(zvalue box) {
 
 /* Documented in header. */
 bool boxIsSet(zvalue box) {
-    datAssertBox(box);
+    assertHasType(box, TYPE_Box);
     return boxInfo(box)->isSet;
 }
 
 /* Documented in header. */
 void boxReset(zvalue box) {
-    datAssertBox(box);
+    assertHasType(box, TYPE_Box);
 
     BoxInfo *info = boxInfo(box);
 
@@ -105,7 +100,7 @@ void boxReset(zvalue box) {
 
 /* Documented in header. */
 void boxSet(zvalue box, zvalue value) {
-    datAssertBox(box);
+    assertHasType(box, TYPE_Box);
 
     if (box == DAT_NULL_BOX) {
         return;

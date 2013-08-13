@@ -68,13 +68,6 @@ void datInit(void);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a box. If not, this aborts the process
- * with a diagnostic message.
- */
-void datAssertBox(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a list. If not, this aborts the process
  * with a diagnostic message.
  */
