@@ -220,17 +220,6 @@ zvalue mappingValue(zvalue map);
 
 
 /*
- * Uniqlet Functions
- */
-
-/**
- * Gets a new uniqlet. Each call to this function is guaranteed to
- * produce a value unequal to any other uniqlet (in any given process).
- */
-zvalue uniqlet(void);
-
-
-/*
  * Boxes
  */
 

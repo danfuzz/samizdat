@@ -442,6 +442,17 @@ zvalue typeParent(zvalue type);
 
 
 /*
+ * Uniqlet Functions
+ */
+
+/**
+ * Gets a new uniqlet. Each call to this function is guaranteed to
+ * produce a value unequal to any other uniqlet (in any given process).
+ */
+zvalue uniqlet(void);
+
+
+/*
  * General Value Functions
  */
 
