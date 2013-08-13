@@ -175,7 +175,7 @@ METH_IMPL(Int, size) {
 
 /* Documented in header. */
 void pbBindInt(void) {
-    TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"));
+    TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"), false);
     METH_BIND(Int, eq);
     METH_BIND(Int, size);
     METH_BIND(Int, order);

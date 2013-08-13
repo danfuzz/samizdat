@@ -55,6 +55,12 @@ typedef struct PbHeader {
      */
     zvalue type;
 
+    /**
+     * Unique identity number. Only set if requested, and only usable by
+     * opaque types that are marked as `identified`.
+     */
+    zint identity;
+
     /** Type-specific data goes here. */
     uint8_t payload[/*flexible*/];
 } PbHeader;

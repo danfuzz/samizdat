@@ -9,6 +9,53 @@
 #include <stdio.h>
 
 
+
+/*
+ * Private Definitions
+ */
+
+/**
+ * The next identity value to return. This starts at `1`, because `0` is
+ * taken to mean "uninitialized".
+ */
+static zint theNextIdentity = 1;
+
+/**
+ * Gets a unique "order id" to use when comparing otherwise-incomparable
+ * values of the same type, for use in defining the total order of values.
+ */
+static zint nextIdentity(void) {
+    if (theNextIdentity < 0) {
+        // At one new identity per nanosecond: (1<<63) nsec ~== 292 years.
+        die("Too many identified values!");
+    }
+
+    zint result = theNextIdentity;
+    theNextIdentity++;
+    return result;
+}
+
+
+/*
+ * Exported Definitions
+ */
+
+/* Documented in header. */
+zint identityOf(zvalue value) {
+    if (!typeIsIdentified(typeOf(value))) {
+        die("Attempt to use `identityOf` on non-identified value.");
+    }
+
+    zint result = value->identity;
+
+    if (result == 0) {
+        result = value->identity = nextIdentity();
+    }
+
+    return result;
+}
+
+
 /*
  * Type Definition
  */
@@ -35,6 +82,22 @@ METH_IMPL(Value, eq) {
 }
 
 /* Documented in header. */
+METH_IMPL(Value, order) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    zint id1 = identityOf(v1);
+    zint id2 = identityOf(v2);
+
+    if (id1 < id2) {
+        return PB_NEG1;
+    } else if (id1 > id2) {
+        return PB_1;
+    } else {
+        return PB_0;
+    }
+}
+
+/* Documented in header. */
 METH_IMPL(Value, size) {
     return intFromZint(0);
 }
@@ -45,6 +108,7 @@ void pbBindValue(void) {
 
     METH_BIND(Value, debugString);
     METH_BIND(Value, eq);
+    METH_BIND(Value, order);
     METH_BIND(Value, size);
 }
 

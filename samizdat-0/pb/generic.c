@@ -37,9 +37,6 @@ typedef struct {
     /** The generic's name, if any. Used when producing stack traces. */
     zvalue name;
 
-    /** Id to use for ordering comparisons. */
-    zint orderId;
-
     /** Bindings from type to function, keyed off of type sequence number. */
     zvalue functions[PB_MAX_TYPES];
 } GenericInfo;
@@ -199,7 +196,6 @@ zvalue genericFrom(zint minArgs, zint maxArgs, zvalue name) {
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
     info->sealed = false;
     info->name = name;
-    info->orderId = pbOrderId();
 
     return result;
 }
@@ -262,13 +258,6 @@ METH_IMPL(Generic, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Generic, order) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    return (getInfo(v1)->orderId < getInfo(v2)->orderId) ? PB_NEG1 : PB_1;
-}
-
-/* Documented in header. */
 void pbBindGeneric(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Generic`.
 
@@ -276,7 +265,6 @@ void pbBindGeneric(void) {
     METH_BIND(Generic, canCall);
     METH_BIND(Generic, debugString);
     METH_BIND(Generic, gcMark);
-    METH_BIND(Generic, order);
 }
 
 /* Documented in header. */

@@ -30,9 +30,6 @@ typedef struct {
 
     /** True iff the box is considered to be set (see spec for details). */
     bool isSet;
-
-    /** Uniqlet to use for ordering comparisons. */
-    zvalue orderId;
 } BoxInfo;
 
 /**
@@ -40,20 +37,6 @@ typedef struct {
  */
 static BoxInfo *getInfo(zvalue box) {
     return pbPayload(box);
-}
-
-/**
- * Gets the order id, initializing it if necessary.
- */
-static zvalue boxOrderId(zvalue box) {
-    BoxInfo *info = getInfo(box);
-    zvalue orderId = info->orderId;
-
-    if (orderId == NULL) {
-        orderId = info->orderId = uniqlet();
-    }
-
-    return orderId;
 }
 
 
@@ -154,23 +137,14 @@ METH_IMPL(Box, gcMark) {
     BoxInfo *info = getInfo(box);
 
     pbMark(info->value);
-    pbMark(info->orderId);
 
     return NULL;
 }
 
 /* Documented in header. */
-METH_IMPL(Box, order) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    return intFromZint(pbOrder(boxOrderId(v1), boxOrderId(v2)));
-}
-
-/* Documented in header. */
 void datBindBox(void) {
-    TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"));
+    TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);
     METH_BIND(Box, gcMark);
-    METH_BIND(Box, order);
 
     DAT_NULL_BOX = boxMutable(); // Note: Explicit `==` check in `boxSet`.
     pbImmortalize(DAT_NULL_BOX);

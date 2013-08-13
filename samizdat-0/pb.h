@@ -48,7 +48,8 @@ enum {
      * (Private) Size of the `PbHeader` struct; used so that `pbOffset`
      * can be an inline function.
      */
-    PB_HEADER_SIZE = (sizeof(zvalue) * 3) + (sizeof(int32_t) * 2)
+    PB_HEADER_SIZE =
+        (sizeof(zvalue) * 3) + (sizeof(int32_t) * 2) + sizeof(zint)
 };
 
 /** Declaration for a method on the given type with the given name */
@@ -389,9 +390,12 @@ void assertHaveSameType(zvalue v1, zvalue v2);
 
 /**
  * Gets a new core type, given its name. When given the same name twice, this
- * returns identical results.
+ * returns identical results. `identified` indicates whether the type should
+ * be considered "identified". Values of an "identified" type have unique
+ * identity values which can be retrieved using `identityOf`. These values
+ * are automatically used when comparing values of the same type.
  */
-zvalue coreTypeFromName(zvalue name);
+zvalue coreTypeFromName(zvalue name, bool identified);
 
 /**
  * Returns true iff the type of the given value (that is, `typeOf(value)`)
@@ -404,6 +408,13 @@ bool hasType(zvalue value, zvalue type);
  * each) are the same.
  */
 bool haveSameType(zvalue v1, zvalue v2);
+
+/**
+ * Returns true iff the given type is "identified". That is, this returns
+ * true if values of the type can be fruitfully used as the argument
+ * to `identityOf`.
+ */
+bool typeIsIdentified(zvalue type);
 
 /**
  * Gets the name of the given type. If given a non-`Type` value for `type`,
@@ -428,7 +439,7 @@ zvalue typeParent(zvalue type);
 
 
 /*
- * Derived Value Functions
+ * General Value Functions
  */
 
 /**
@@ -441,6 +452,13 @@ zvalue typeParent(zvalue type);
  * values.
  */
 zvalue dataOf(zvalue value);
+
+/**
+ * Gets a unique identity number associated with this value. Only works
+ * on values of an opaque type, and only if the type is marked as
+ * `identified`.
+ */
+zint identityOf(zvalue value);
 
 /**
  * Gets the data payload of the given value, if possible. This behaves
@@ -579,12 +597,6 @@ void pbImmortalize(zvalue value);
  * to pass `NULL` to this, but no other non-values are acceptable.
  */
 void pbMark(zvalue value);
-
-/**
- * Gets a unique "order id" to use when comparing otherwise-incomparable
- * values of the same type, for use in defining the total order of values.
- */
-zint pbOrderId(void);
 
 /**
  * Gets a pointer to the data payload of a `zvalue`.
