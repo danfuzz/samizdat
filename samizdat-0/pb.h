@@ -92,6 +92,9 @@ extern zvalue TYPE_String;
 /** Type value for in-model type `Type`. */
 extern zvalue TYPE_Type;
 
+/** Type value for in-model type `Uniqlet`. */
+extern zvalue TYPE_Uniqlet;
+
 /** Type value for in-model type `Value`. */
 extern zvalue TYPE_Value;
 
@@ -436,6 +439,17 @@ zvalue typeOf(zvalue value);
  * will return `TYPE_Value` in these cases.
  */
 zvalue typeParent(zvalue type);
+
+
+/*
+ * Uniqlet Functions
+ */
+
+/**
+ * Gets a new uniqlet. Each call to this function is guaranteed to
+ * produce a value unequal to any other uniqlet (in any given process).
+ */
+zvalue uniqlet(void);
 
 
 /*
