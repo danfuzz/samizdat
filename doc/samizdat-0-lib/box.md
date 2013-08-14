@@ -7,18 +7,18 @@ Boxes
 <br><br>
 ### Primitive Definitions
 
-#### `boxCanStore(box) <> logic`
+#### `canStore(box) <> logic`
 
 Returns `box` if the `box` can be stored to. Otherwise returns void.
 `box` must be a box as returned by either `makeMutableBox` or `makeYieldBox`.
 
-#### `boxFetch(box) <> . | void`
+#### `fetch(box) <> . | void`
 
 Gets the value inside a box, if any. If the box either is unset or has
 been set to void, this returns void. `box` must be a box as returned by
 either `makeMutableBox` or `makeYieldBox`.
 
-#### `boxStore(box, value?) <> .`
+#### `store(box, value?) <> .`
 
 Sets the value of a box to the given value, or to void if `value` is
 not supplied. This function always returns `value` (or void if `value` is
@@ -26,17 +26,17 @@ not supplied). `box` must be a box as returned by either `makeMutableBox` or
 `makeYieldBox`.
 
 It is an error (terminating the runtime) for `box` to be a yield box on
-which `boxStore` has already been called.
+which `store` has already been called.
 
 #### `makeMutableBox(value?) <> box`
 
 Creates a mutable box, with optional pre-set value. The result of a call to
 this function is a box which can be set any number of times using
-`boxStore`. The contents of the box are accessible by calling `boxFetch`.
+`store`. The contents of the box are accessible by calling `fetch`.
 
 The initial box content value is the `value` given to this function. This
-is what is returned from `boxFetch` until `boxStore` is called to replace it.
-If `value` is not supplied, `boxFetch` returns void until `boxStore` is called.
+is what is returned from `fetch` until `store` is called to replace it.
+If `value` is not supplied, `fetch` returns void until `store` is called.
 
 This function is meant to be the primary way to define (what amount to)
 mutable variables, in that *Samizdat Layer 0* only provides immutably-bound
@@ -47,10 +47,10 @@ optimizations.
 #### `makeYieldBox() <> box`
 
 Creates a set-once "yield box". The result of a call to this function is a
-box which can be stored to at most once, using `boxStore`. Subsequent
+box which can be stored to at most once, using `store`. Subsequent
 attempts to store to the box will fail (terminating the runtime). The
-contents of the box are accessible by calling `boxFetch`. `boxFetch` returns
-void until and unless `boxStore` is called with a second argument.
+contents of the box are accessible by calling `fetch`. `fetch` returns
+void until and unless `store` is called with a second argument.
 
 This function is meant to be the primary way to capture the yielded values
 from functions (such as object service functions and parser functions) which

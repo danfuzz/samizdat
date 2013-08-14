@@ -168,6 +168,6 @@ void datBindBox(void) {
     METH_BIND(Box, gcMark);
     METH_BIND(Box, store);
 
-    DAT_NULL_BOX = makeMutableBox(); // Note: Explicit `==` check in `boxStore`.
+    DAT_NULL_BOX = makeMutableBox(); // Note: Explicit `==` check in `store`.
     pbImmortalize(DAT_NULL_BOX);
 }

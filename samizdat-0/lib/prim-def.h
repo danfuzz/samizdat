@@ -14,6 +14,7 @@
  * have the usual guard macros.
  */
 
+// Types
 PRIM_DEF(Box,        TYPE_Box);
 PRIM_DEF(Function,   TYPE_Function);
 PRIM_DEF(Generic,    TYPE_Generic);
@@ -25,15 +26,18 @@ PRIM_DEF(Type,       TYPE_Type);
 PRIM_DEF(Uniqlet,    TYPE_Uniqlet);
 PRIM_DEF(Value,      TYPE_Value);
 
-PRIM_DEF(boxCanStore, GFN_canStore);
-PRIM_DEF(boxFetch,    GFN_fetch);
-PRIM_DEF(boxStore,    GFN_store);
-
+// Generic functions
 PRIM_DEF(call,       GFN_call);
 PRIM_DEF(canCall,    GFN_canCall);
+PRIM_DEF(canStore,   GFN_canStore);
 PRIM_DEF(coreSizeOf, GFN_size);
+PRIM_DEF(fetch,      GFN_fetch);
+PRIM_DEF(store,      GFN_store);
+
+// Special values
 PRIM_DEF(nullBox,    DAT_NULL_BOX);
 
+// Primitive functions
 PRIM_FUNC(charFromInt,    1, 1);
 PRIM_FUNC(coreOrder,      2, 2);
 PRIM_FUNC(coreOrderIs,    3, 4);

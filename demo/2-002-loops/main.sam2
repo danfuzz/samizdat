@@ -17,76 +17,76 @@ SELF_PATH, ARGS* ::
 
 def box = makeMutableBox(0);
 
-while (boxFetch(box) \< 10) {
-    boxStore(box, boxFetch(box) + 1);
-    io0Note("Value is \%q(boxFetch(box)).")
+while (fetch(box) \< 10) {
+    store(box, fetch(box) + 1);
+    io0Note("Value is \%q(fetch(box)).")
 };
 
-while (boxFetch(box) \< 20) {
-    boxStore(box, boxFetch(box) + 1);
-    if (boxFetch(box) \< 15) {
+while (fetch(box) \< 20) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) \< 15) {
         continue
     };
-    io0Note("Value is \%q(boxFetch(box)).")
+    io0Note("Value is \%q(fetch(box)).")
 };
 
-while (boxFetch(box) \< 30) { <next> ::
-    boxStore(box, boxFetch(box) + 1);
-    if (boxFetch(box) \< 25) {
+while (fetch(box) \< 30) { <next> ::
+    store(box, fetch(box) + 1);
+    if (fetch(box) \< 25) {
         <next>
     };
-    io0Note("Value is \%q(boxFetch(box)).")
+    io0Note("Value is \%q(fetch(box)).")
 };
 
-def result1 = while (boxFetch(box) \< 40) {
-    boxStore(box, boxFetch(box) + 1);
-    if (boxFetch(box) \== 35) {
+def result1 = while (fetch(box) \< 40) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) \== 35) {
         break "blort"
     };
-    io0Note("Value is \%q(boxFetch(box)).")
+    io0Note("Value is \%q(fetch(box)).")
 };
 
 io0Note("Result 1 is \%q(result1).");
 
-def result2 = while <out> (boxFetch(box) \< 50) {
-    boxStore(box, boxFetch(box) + 1);
-    if (boxFetch(box) \== 45) {
+def result2 = while <out> (fetch(box) \< 50) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) \== 45) {
         <out> "fizmo"
     };
-    io0Note("Value is \%q(boxFetch(box)).")
+    io0Note("Value is \%q(fetch(box)).")
 };
 
 io0Note("Result 2 is \%q(result2).");
 
 do {
-    boxStore(box, boxFetch(box) + 1);
-    if (boxFetch(box) \== 55) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) \== 55) {
         break
     };
-    io0Note("Value is \%q(boxFetch(box)).")
+    io0Note("Value is \%q(fetch(box)).")
 };
 
 def result3 = do <out> {
-    boxStore(box, boxFetch(box) + 1);
-    if (boxFetch(box) \== 60) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) \== 60) {
         <out> "igram"
     };
-    io0Note("Value is \%q(boxFetch(box)).")
+    io0Note("Value is \%q(fetch(box)).")
 };
 
 io0Note("Result 3 is \%q(result3).");
 
 do {
-    boxStore(box, boxFetch(box) + 1);
-    if (boxFetch(box) \< 65) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) \< 65) {
         continue
     };
-    io0Note("Value is \%q(boxFetch(box)).")
-} while (boxFetch(box) \< 70);
+    io0Note("Value is \%q(fetch(box)).")
+} while (fetch(box) \< 70);
 
-while (value := (75 \> boxFetch(box))) {
+while (value := (75 \> fetch(box))) {
     def nextValue = value + 1;
-    boxStore(box, nextValue);
+    store(box, nextValue);
     io0Note("Value is \%q(nextValue).")
 };
 

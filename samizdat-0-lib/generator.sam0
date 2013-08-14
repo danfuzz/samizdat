@@ -14,13 +14,13 @@
 # Standard "voided" generator. This is a generator, not a generator
 # constructor.
 fn voidedGenerator(box) {
-    boxStore(box)
+    store(box)
 };
 
 # Empty list generator. It always yields the empty list and returns
 # itself. This is a generator, not a generator constructor.
 fn emptyListGenerator(box) {
-    boxStore(box, []);
+    store(box, []);
     <> emptyListGenerator
 };
 
@@ -33,12 +33,12 @@ fn makeIncrementGenerator(filterFunction, first, increment) {
         <> { box ::
             <> ifValue { <> filterFunction(value) }
                 { result ::
-                    boxStore(box, result);
+                    store(box, result);
                     <> makeIncrementGenerator1(iadd(value, increment));
                 }
                 {
                     # The filter indicated that the generator is voided.
-                    boxStore(box);
+                    store(box);
                 }
         }
     };
@@ -150,7 +150,7 @@ fn oneItemParaGenerator(generator) {
         def innerBox = makeYieldBox();
         <> ifValue { <> generator(innerBox) }
             { nextGenerator ::
-                boxStore(box, [boxFetch(innerBox)]);
+                store(box, [fetch(innerBox)]);
                 <> oneItemParaGenerator(nextGenerator)
             }
     }
@@ -192,7 +192,7 @@ fn doFilter(filterFunction, generators*) {
             def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
-                    filterFunction(boxFetch(box)*);
+                    filterFunction(fetch(box)*);
                     <> [nextGenerator]
                 }
                 {
@@ -220,7 +220,7 @@ fn doReduce(reduceFunction, generators, baseValues) {
             def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
-                    <> ifValue { <> reduceFunction(boxFetch(box)*, values*) }
+                    <> ifValue { <> reduceFunction(fetch(box)*, values*) }
                         { nextValues <> [nextGenerator, nextValues] }
                         {
                             # The reduce function discarded the values.
@@ -241,7 +241,7 @@ fn doReduce1(reduceFunction, generator, baseValue) {
             def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
-                    <> ifValue { <> reduceFunction(boxFetch(box), value) }
+                    <> ifValue { <> reduceFunction(fetch(box), value) }
                         { nextValue <> [nextGenerator, nextValue] }
                         {
                             # The reduce function discarded the value.
@@ -272,9 +272,9 @@ fn filterGenerator(filterFunction, generators*) {
                 def innerBox = makeYieldBox();
                 ifValue { <> gen(innerBox) }
                     { nextGenerator ::
-                        ifValue { <> filterFunction(boxFetch(innerBox)*) }
+                        ifValue { <> filterFunction(fetch(innerBox)*) }
                             { value ::
-                                boxStore(box, value);
+                                store(box, value);
                                 <out> filterGenerator1(nextGenerator)
                             }
                             {
@@ -284,7 +284,7 @@ fn filterGenerator(filterFunction, generators*) {
                     };
 
                 # The inner generator was voided.
-                boxStore(box);
+                store(box);
                 <out>
             }
         }
@@ -333,7 +333,7 @@ fn optGenerator(generator) {
             def innerBox = makeYieldBox();
             <> ifValue { <> gen(innerBox) }
                 { nextGenerator ::
-                    boxStore(box, [boxFetch(innerBox)]);
+                    store(box, [fetch(innerBox)]);
                     <> optGenerator1(nextGenerator)
                 }
                 { <> emptyListGenerator(box) }
@@ -354,10 +354,10 @@ fn paraGenerator(generators*) {
                     def innerBox = makeYieldBox();
                     <> ifValue { <> gen(innerBox) }
                         { nextGenerator ::
-                            <> [boxFetch(innerBox), nextGenerator]
+                            <> [fetch(innerBox), nextGenerator]
                         }
                         {
-                            boxStore(box); # Void result.
+                            store(box); # Void result.
                             <out>
                         }
                 };
@@ -366,7 +366,7 @@ fn paraGenerator(generators*) {
             def nexts = listFilter(generatorCalls)
                 { one <> listNth(one, 1) };
 
-            boxStore(box, yields);
+            store(box, yields);
             <> paraGenerator1(nexts);
         }
     };
@@ -401,9 +401,9 @@ fn reduceGenerator(reduceFunction, generators, baseValues) {
                 ifValue { <> gen(innerBox) }
                     { nextGenerator ::
                         ifValue
-                            { <> reduceFunction(boxFetch(innerBox)*, values*) }
+                            { <> reduceFunction(fetch(innerBox)*, values*) }
                             { nextValues ::
-                                boxStore(box, nextValues);
+                                store(box, nextValues);
                                 <out> reduceGenerator1(
                                     nextGenerator, nextValues)
                             }
@@ -414,7 +414,7 @@ fn reduceGenerator(reduceFunction, generators, baseValues) {
                     };
 
                 # The inner generator was voided.
-                boxStore(box);
+                store(box);
                 <out>
             }
         }
@@ -439,7 +439,7 @@ fn seqGenerator(generators*) {
             def innerBox = makeYieldBox();
             <> ifValue { <> gen(innerBox) }
                 { nextGenerator ::
-                    boxStore(box, boxFetch(innerBox));
+                    store(box, fetch(innerBox));
                     <> seqGenerator1(nextGenerator)
                 }
                 {
