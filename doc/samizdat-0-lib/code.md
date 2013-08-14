@@ -12,13 +12,13 @@ Functions And Code
 Returns `box` if the `box` can be stored to. Otherwise returns void.
 `box` must be a box as returned by either `mutableBox` or `yieldBox`.
 
-#### `boxGet(box) <> . | void`
+#### `boxFetch(box) <> . | void`
 
 Gets the value inside a box, if any. If the box either is unset or has
 been set to void, this returns void. `box` must be a box as returned by
 either `mutableBox` or `yieldBox`.
 
-#### `boxSet(box, value?) <> .`
+#### `boxStore(box, value?) <> .`
 
 Sets the value of a box to the given value, or to void if `value` is
 not supplied. This function always returns `value` (or void if `value` is
@@ -26,17 +26,17 @@ not supplied). `box` must be a box as returned by either `mutableBox` or
 `yieldBox`.
 
 It is an error (terminating the runtime) for `box` to be a yield box on
-which `boxSet` has already been called.
+which `boxStore` has already been called.
 
 #### `mutableBox(value?) <> box`
 
 Creates a mutable box, with optional pre-set value. The result of a call to
 this function is a box which can be set any number of times using
-`boxSet`. The contents of the box are accessible by calling `boxGet`.
+`boxStore`. The contents of the box are accessible by calling `boxFetch`.
 
 The initial box content value is the `value` given to this function. This
-is what is returned from `boxGet` until `boxSet` is called to replace it.
-If `value` is not supplied, `boxGet` returns void until `boxSet` is called.
+is what is returned from `boxFetch` until `boxStore` is called to replace it.
+If `value` is not supplied, `boxFetch` returns void until `boxStore` is called.
 
 This function is meant to be the primary way to define (what amount to)
 mutable variables, in that *Samizdat Layer 0* only provides immutably-bound
@@ -65,10 +65,10 @@ returns to this function.
 #### `yieldBox() <> box`
 
 Creates a set-once "yield box". The result of a call to this function is a
-box which can be set at most once, using `boxSet`. Subsequent attempts to
-set the box value will fail (terminating the runtime). The contents of the
-box are accessible by calling `boxGet`. `boxGet` returns void until
-`boxSet` is called.
+box which can be stored to at most once, using `boxStore`. Subsequent
+attempts to store to the box will fail (terminating the runtime). The
+contents of the box are accessible by calling `boxFetch`. `boxFetch` returns
+void until and unless `boxStore` is called with a second argument.
 
 This function is meant to be the primary way to capture the yielded values
 from functions (such as object service functions and parser functions) which

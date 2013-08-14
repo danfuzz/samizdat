@@ -43,8 +43,8 @@ fn <out> exiter(foo) {
 fn boxer() {
     def box = mutableBox(10);
 
-    doFilter([1, 2, 3]) { n :: boxSet(box, iadd(boxGet(box), n)) };
-    <> boxGet(box)
+    doFilter([1, 2, 3]) { n :: boxStore(box, iadd(boxFetch(box), n)) };
+    <> boxFetch(box)
 };
 
 # Emits the stringified version of the given value to the console.

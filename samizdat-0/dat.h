@@ -232,13 +232,13 @@ bool boxCanStore(zvalue box);
  * Gets the value out of the given box. Returns `NULL` if the box is
  * void or as yet unset.
  */
-zvalue boxGet(zvalue box);
+zvalue boxFetch(zvalue box);
 
 /**
  * Sets the value of the given box as indicated. Passing `value` as
  * `NULL` indicates that the box is to be set to void.
  */
-void boxSet(zvalue box, zvalue value);
+void boxStore(zvalue box, zvalue value);
 
 /**
  * Constructs a mutable (re-settable) box.

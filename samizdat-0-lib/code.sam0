@@ -26,12 +26,12 @@ fn forwardFunction() {
         ifNot { <> canCall(call, function) }
             { io0Die("Attempt to forward to non-function.") };
 
-        boxSet(box, function);
+        boxStore(box, function);
         <> function
     };
 
     fn forwarder(args*) {
-        <> ifValue { <> boxGet(box) }
+        <> ifValue { <> boxFetch(box) }
             { function <> function(args*) }
             { <> doForward(args*) }
     };

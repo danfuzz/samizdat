@@ -226,13 +226,13 @@ A `Box` is a holder for some other value. Boxes are sometimes also known
 as "cells".
 
 In addition to the box constructor functions, the three functions that
-deal with boxes are `boxGet` to get the contents of a box (or void if
-the box value has yet to be set), `boxSet` to set the contents of
-a box, and `boxCanStore` to indicate whether `boxSet` has been called
-(which is not the same as `boxGet` returning non-void).
+deal with boxes are `boxFetch` to get the contents of a box (or void if
+the box value has yet to be set), `boxStore` to set the contents of
+a box, and `boxCanStore` to indicate whether it is okay to call
+`boxStore` (which is not the same as `boxFetch` returning non-void).
 
 As a special case, the special value `nullBox` is a box that is permanently
-un-set. Notably, `boxSet(nullBox, value)` is effectively a no-op. This
+un-stored. Notably, `boxStore(nullBox, value)` is effectively a no-op. This
 arrangement is done in order to make it easy to pass a box into functions
 that require one, but where the box value is never needed.
 

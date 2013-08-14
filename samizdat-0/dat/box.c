@@ -51,7 +51,7 @@ bool boxCanStore(zvalue box) {
 }
 
 /* Documented in header. */
-zvalue boxGet(zvalue box) {
+zvalue boxFetch(zvalue box) {
     assertHasType(box, TYPE_Box);
 
     zvalue result = getInfo(box)->value;
@@ -68,7 +68,7 @@ zvalue boxGet(zvalue box) {
 }
 
 /* Documented in header. */
-void boxSet(zvalue box, zvalue value) {
+void boxStore(zvalue box, zvalue value) {
     assertHasType(box, TYPE_Box);
 
     if (box == DAT_NULL_BOX) {
@@ -135,7 +135,7 @@ void datBindBox(void) {
     TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);
     METH_BIND(Box, gcMark);
 
-    DAT_NULL_BOX = makeMutableBox(); // Note: Explicit `==` check in `boxSet`.
+    DAT_NULL_BOX = makeMutableBox(); // Note: Explicit `==` check in `boxStore`.
     pbImmortalize(DAT_NULL_BOX);
 }
 

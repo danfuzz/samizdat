@@ -31,7 +31,7 @@ fn msgAll(header, gen) {
             def box = yieldBox();
             <> ifValue { <> gen(box) }
                 { nextGen ::
-                    msg(boxGet(box));
+                    msg(boxFetch(box));
                     <> [nextGen]
                 }
                 { <done> }

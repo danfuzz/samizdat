@@ -17,8 +17,8 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(boxGet) {
-    return boxGet(args[0]);
+PRIM_IMPL(boxFetch) {
+    return boxFetch(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -29,10 +29,10 @@ PRIM_IMPL(boxCanStore) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(boxSet) {
+PRIM_IMPL(boxStore) {
     zvalue result = (argCount == 2) ? args[1] : NULL;
 
-    boxSet(args[0], result);
+    boxStore(args[0], result);
     return result;
 }
 
@@ -41,7 +41,7 @@ PRIM_IMPL(mutableBox) {
     zvalue result = makeMutableBox();
 
     if (argCount == 1) {
-        boxSet(result, args[0]);
+        boxStore(result, args[0]);
     }
 
     return result;

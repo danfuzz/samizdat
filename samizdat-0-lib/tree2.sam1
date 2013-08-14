@@ -1695,7 +1695,7 @@ def FOR_BODY_CLOSURE = sam0Tree("
     def box = yieldBox();
     <> ifValue { <> generator(box) }
         { nextGenerator ::
-            body(boxGet(box)*);
+            body(boxFetch(box)*);
             <> [nextGenerator]
         }
         { <\\\"break\"> }");
@@ -1718,7 +1718,7 @@ def FOR_BODY_CLOSURE = sam0Tree("
 #             def box = yieldBox();
 #             <> ifValue { <> generator(box) }
 #                 { nextGenerator ::
-#                     body(boxGet(box)*);
+#                     body(boxFetch(box)*);
 #                     <> [nextGenerator]
 #                 }
 #                 { <\"break"> }

@@ -105,13 +105,13 @@ METH_IMPL(Value, collect) {
             die("Generator produced too many interpolated items.");
         }
 
-        arr[at] = boxGet(box);
+        arr[at] = boxFetch(box);
         generator = nextGen;
 
         // Ideally, we wouldn't reuse the box (we'd just use N yield boxes),
         // but for the sake of efficiency, we use the same box but reset it
         // for each iteration.
-        boxSet(box, NULL);
+        boxStore(box, NULL);
     }
 
     zvalue result = listFromArray(at, arr);

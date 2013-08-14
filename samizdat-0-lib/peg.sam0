@@ -68,21 +68,21 @@ fn pegRuleAny(box, input, .*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegRuleEmpty(box, input, .*) {
-    boxSet(box, null);
+    boxStore(box, null);
     <> input
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn pegRuleFail(box, input, .*) {
-    boxSet(box)
+    boxStore(box)
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn pegRuleEof(box, input, .*) {
     <> ifIs { <> input(nullBox) }
-        { boxSet(box) }
+        { boxStore(box) }
         {
-            boxSet(box, null);
+            boxStore(box, null);
             <> input
         }
 };
@@ -127,13 +127,13 @@ fn pegMakeChoice(rules*) {
             def innerBox = yieldBox();
             <> ifValue { <> rule(innerBox, input, items*) }
                 { newInput ::
-                    boxSet(box, boxGet(innerBox));
+                    boxStore(box, boxFetch(innerBox));
                     <out> newInput
                 }
         };
 
         # No rule succeeded.
-        boxSet(box)
+        boxStore(box)
     }
 };
 
@@ -142,10 +142,10 @@ fn pegMakeCode(function) {
     <> { box, input, items* ::
         <> ifValue { <> function(items*) }
             { result ::
-                boxSet(box, result);
+                boxStore(box, result);
                 <> input
             }
-            { boxSet(box) };
+            { boxStore(box) };
     }
 };
 
@@ -162,9 +162,9 @@ fn pegMakeLookaheadFailure(rule) {
     # The general case.
     <> { box, input, items* ::
         <> ifIs { <> rule(nullBox, input, items*) }
-            { boxSet(box) }
+            { boxStore(box) }
             {
-                boxSet(box, null);
+                boxStore(box, null);
                 <> input
             }
     }
@@ -202,11 +202,11 @@ fn pegMakeOpt(rule) {
         def innerBox = yieldBox();
         <> ifValue { <> rule(innerBox, input, items*) }
             { newInput ::
-                boxSet(box, [boxGet(innerBox)]);
+                boxStore(box, [boxFetch(innerBox)]);
                 <> newInput
             }
             {
-                boxSet(box, []);
+                boxStore(box, []);
                 <> input
             }
     }
@@ -248,19 +248,19 @@ fn pegMakeSequence(rules*) {
                 def innerBox = yieldBox();
                 <> ifValue { <> rule(innerBox, input, items*) }
                     { newInput ::
-                        def newItems = [items*, boxGet(innerBox)];
+                        def newItems = [items*, boxFetch(innerBox)];
                         <> [newInput, newItems]
                     }
                     {
                         # Propagate the failure.
-                        boxSet(box);
+                        boxStore(box);
                         <out>
                     }
             };
 
         def newInput = listFirst(reduction);
         def results = listLast(reduction);
-        boxSet(box, listLast(results));
+        boxStore(box, listLast(results));
         <> newInput
     }
 };
@@ -273,11 +273,11 @@ fn pegMakeStar(rule) {
                 def innerBox = yieldBox();
                 <> ifValue { <> rule(innerBox, input, items*) }
                     { newInput ::
-                        def newValues = [values*, boxGet(innerBox)];
+                        def newValues = [values*, boxFetch(innerBox)];
                         <> [newInput, newValues]
                     }
                     {
-                        boxSet(box, values);
+                        boxStore(box, values);
                         <out> input
                     }
             }
@@ -337,7 +337,7 @@ fn pegApply(rule, input) {
     def box = yieldBox();
 
     <> ifIs { <> rule(box, generator) }
-        { <> boxGet(box) }
+        { <> boxFetch(box) }
 };
 
 # Documented in Samizdat Layer 0 spec.
