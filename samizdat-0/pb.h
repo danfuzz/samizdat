@@ -12,6 +12,7 @@
 #define _PB_H_
 
 #include "ztype.h"
+#include <stdarg.h>
 #include <stdbool.h>
 
 
@@ -52,15 +53,13 @@ enum {
         (sizeof(zvalue) * 3) + (sizeof(int32_t) * 2) + sizeof(zint)
 };
 
-/** Declaration for a method on the given type with the given name */
+/** Declaration for a method on the given type with the given name. */
 #define METH_IMPL(type, name) \
     static zvalue type##_##name(zint argCount, const zvalue *args)
 
 /** Performs binding of the indicated method. */
 #define METH_BIND(type, name) \
     do { genericBindCore(GFN_##name, TYPE_##type, type##_##name); } while(0)
-
-
 
 
 /*
@@ -278,6 +277,31 @@ extern zvalue GFN_canCall;
  * on all sorts of callable function-like things.
  */
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
+
+/**
+ * Calls a function, with arguments passed in the usual C style. This
+ * uses some crazy preprocessor stuff to make it all work out. See
+ * <http://stackoverflow.com/questions/2632300>.
+ */
+#define PB_ARG_COUNT(...) \
+    PB_ARG_COUNT0(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+#define PB_ARG_COUNT0(...) PB_ARG_COUNT1(__VA_ARGS__)
+#define PB_ARG_COUNT1(x1, x2, x3, x4, x5, x6, x7, x8, x9, n, ...) n
+#define FUN_CALL(name, ...) \
+    vFunCall(name, PB_ARG_COUNT(__VA_ARGS__), __VA_ARGS__)
+
+static inline zvalue vFunCall(zvalue function, zint argCount, ...) {
+    zvalue args[argCount];
+    va_list argp;
+
+    va_start(argp, argCount);
+    for (zint i = 0; i < argCount; i++) {
+        args[i] = va_arg(argp, zvalue);
+    }
+    va_end(argp);
+
+    return funCall(function, argCount, args);
+}
 
 
 /*

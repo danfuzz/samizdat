@@ -199,9 +199,10 @@ zvalue boxFetch(zvalue box);
 zvalue boxStore(zvalue box, zvalue value);
 
 /**
- * Constructs a mutable (re-settable) box.
+ * Constructs a mutable (re-settable) box, with the given initial value.
+ * Pass `NULL` to leave it initially unset.
  */
-zvalue makeMutableBox(void);
+zvalue makeMutableBox(zvalue value);
 
 /**
  * Constructs a yield (set-once) box.

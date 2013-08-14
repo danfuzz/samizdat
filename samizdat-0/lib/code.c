@@ -18,13 +18,8 @@
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeMutableBox) {
-    zvalue result = makeMutableBox();
-
-    if (argCount == 1) {
-        boxStore(result, args[0]);
-    }
-
-    return result;
+    zvalue value = (argCount == 1) ? args[0] : NULL;
+    return makeMutableBox(value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

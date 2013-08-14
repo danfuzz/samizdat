@@ -56,11 +56,11 @@ zvalue boxStore(zvalue box, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue makeMutableBox(void) {
+zvalue makeMutableBox(zvalue value) {
     zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
-    info->value = NULL;
+    info->value = value;
     info->canStore = true;
     info->setOnce = false;
 
@@ -168,6 +168,6 @@ void datBindBox(void) {
     METH_BIND(Box, gcMark);
     METH_BIND(Box, store);
 
-    DAT_NULL_BOX = makeMutableBox(); // Note: Explicit `==` check in `store`.
+    DAT_NULL_BOX = makeMutableBox(NULL); // Note: Explicit `==` test in `store`.
     pbImmortalize(DAT_NULL_BOX);
 }

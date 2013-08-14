@@ -94,7 +94,7 @@ METH_IMPL(Value, collect) {
     zint at;
 
     zstackPointer save = pbFrameStart();
-    zvalue box = makeMutableBox();
+    zvalue box = makeMutableBox(NULL);
 
     for (at = 0; /*at*/; at++) {
         zvalue nextGen = funCall(generator, 1, &box);
@@ -105,13 +105,13 @@ METH_IMPL(Value, collect) {
             die("Generator produced too many interpolated items.");
         }
 
-        arr[at] = boxFetch(box);
+        arr[at] = FUN_CALL(GFN_fetch, box);
         generator = nextGen;
 
         // Ideally, we wouldn't reuse the box (we'd just use N yield boxes),
         // but for the sake of efficiency, we use the same box but reset it
         // for each iteration.
-        boxStore(box, NULL);
+        FUN_CALL(GFN_store, box);
     }
 
     zvalue result = listFromArray(at, arr);
