@@ -252,7 +252,7 @@ METH_IMPL(Generic, debugString) {
     zvalue result = stringFromUtf8(-1, "@(Generic ");
 
     if (info->name != NULL) {
-        result = stringAdd(result, funCall(GFN_debugString, 1, &info->name));
+        result = stringAdd(result, GFN_CALL(debugString, info->name));
     } else {
         result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
     }
