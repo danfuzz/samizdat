@@ -22,10 +22,10 @@ PRIM_IMPL(boxGet) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(boxIsSet) {
+PRIM_IMPL(boxCanStore) {
     zvalue box = args[0];
 
-    return boxIsSet(box) ? box : NULL;
+    return boxCanStore(box) ? box : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

@@ -232,7 +232,7 @@ zvalue boxGet(zvalue box);
 /**
  * Returns an indication of whether or not the given box has been set.
  */
-bool boxIsSet(zvalue box);
+bool boxCanStore(zvalue box);
 
 /**
  * Resets the given box to an un-set state. The box must be a mutable box.

@@ -228,7 +228,7 @@ as "cells".
 In addition to the box constructor functions, the three functions that
 deal with boxes are `boxGet` to get the contents of a box (or void if
 the box value has yet to be set), `boxSet` to set the contents of
-a box, and `boxIsSet` to indicate whether `boxSet` has been called
+a box, and `boxCanStore` to indicate whether `boxSet` has been called
 (which is not the same as `boxGet` returning non-void).
 
 As a special case, the special value `nullBox` is a box that is permanently

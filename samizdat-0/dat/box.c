@@ -28,8 +28,8 @@ typedef struct {
     /** True iff this is a set-once (yield) box. */
     bool setOnce;
 
-    /** True iff the box is considered to be set (see spec for details). */
-    bool isSet;
+    /** True iff the box can be stored to (see spec for details). */
+    bool canStore;
 } BoxInfo;
 
 /**
@@ -43,6 +43,12 @@ static BoxInfo *getInfo(zvalue box) {
 /*
  * Exported Definitions
  */
+
+/* Documented in header. */
+bool boxCanStore(zvalue box) {
+    assertHasType(box, TYPE_Box);
+    return getInfo(box)->canStore;
+}
 
 /* Documented in header. */
 zvalue boxGet(zvalue box) {
@@ -62,12 +68,6 @@ zvalue boxGet(zvalue box) {
 }
 
 /* Documented in header. */
-bool boxIsSet(zvalue box) {
-    assertHasType(box, TYPE_Box);
-    return getInfo(box)->isSet;
-}
-
-/* Documented in header. */
 void boxReset(zvalue box) {
     assertHasType(box, TYPE_Box);
 
@@ -78,7 +78,7 @@ void boxReset(zvalue box) {
     }
 
     info->value = NULL;
-    info->isSet = false;
+    info->canStore = true;
 }
 
 /* Documented in header. */
@@ -91,12 +91,15 @@ void boxSet(zvalue box, zvalue value) {
 
     BoxInfo *info = getInfo(box);
 
-    if (info->isSet && info->setOnce) {
-        die("Attempt to re-set yield box.");
+    if (!info->canStore) {
+        die("Attempt to re-store yield box.");
     }
 
     info->value = value;
-    info->isSet = true;
+
+    if (info->setOnce) {
+        info->canStore = false;
+    }
 }
 
 /* Documented in header. */
@@ -105,7 +108,7 @@ zvalue makeMutableBox(void) {
     BoxInfo *info = getInfo(result);
 
     info->value = NULL;
-    info->isSet = false;
+    info->canStore = true;
     info->setOnce = false;
 
     return result;
@@ -117,7 +120,7 @@ zvalue makeYieldBox(void) {
     BoxInfo *info = getInfo(result);
 
     info->value = NULL;
-    info->isSet = false;
+    info->canStore = true;
     info->setOnce = true;
 
     return result;

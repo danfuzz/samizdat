@@ -30,7 +30,7 @@ PRIM_DEF(coreSizeOf, GFN_size);
 PRIM_DEF(nullBox,    DAT_NULL_BOX);
 
 PRIM_FUNC(boxGet,       1, 1);
-PRIM_FUNC(boxIsSet,     1, 1);
+PRIM_FUNC(boxCanStore,     1, 1);
 PRIM_FUNC(boxSet,       1, 2);
 PRIM_FUNC(charFromInt,  1, 1);
 PRIM_FUNC(coreOrder,    2, 2);

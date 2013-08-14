@@ -7,17 +7,16 @@ Functions And Code
 <br><br>
 ### Primitive Definitions
 
+#### `boxCanStore(box) <> logic`
+
+Returns `box` if the `box` can be stored to. Otherwise returns void.
+`box` must be a box as returned by either `mutableBox` or `yieldBox`.
+
 #### `boxGet(box) <> . | void`
 
 Gets the value inside a box, if any. If the box either is unset or has
 been set to void, this returns void. `box` must be a box as returned by
 either `mutableBox` or `yieldBox`.
-
-#### `boxIsSet(box) <> logic`
-
-Returns `box` if the `box` was either initialized with a value or has
-had `boxSet` called on it (whether with a value or void). Otherwise returns
-void. `box` must be a box as returned by either `mutableBox` or `yieldBox`.
 
 #### `boxSet(box, value?) <> .`
 
