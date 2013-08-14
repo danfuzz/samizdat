@@ -504,14 +504,14 @@ zvalue dataFromValue(zvalue value, zvalue secret);
  *   is taken to indicate a transparent type whose name is `type`. As such
  *   `secret` must be `NULL`.
  */
-zvalue derivFrom(zvalue type, zvalue data, zvalue secret);
+zvalue makeDeriv(zvalue type, zvalue data, zvalue secret);
 
 /**
  * Returns a transparent derived value with the given type tag, and with the
  * given optional data payload. This is a convenient shorthand for calling
- * `derivFrom(type, data, NULL)`.
+ * `makeDeriv(type, data, NULL)`.
  */
-zvalue valueFrom(zvalue type, zvalue data);
+zvalue makeValue(zvalue type, zvalue data);
 
 
 /*
