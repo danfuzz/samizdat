@@ -98,6 +98,7 @@ PRIM_FUNC(mapPut,         3, 3);
 PRIM_FUNC(mappingKey,     1, 1);
 PRIM_FUNC(mappingValue,   1, 1);
 PRIM_FUNC(nonlocalExit,   1, 2);
+PRIM_FUNC(optValue,       1, 1);
 PRIM_FUNC(sam0Eval,       2, 2);
 PRIM_FUNC(sam0Tokenize,   1, 1);
 PRIM_FUNC(sam0Tree,       1, 1);

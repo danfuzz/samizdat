@@ -77,6 +77,30 @@ or the original `baseValues` list if the function has yet to return non-void
 
 In order for the loop to terminate, the function must use a nonlocal exit.
 
+#### `optValue(function) <> list`
+
+Function call helper, to deal with value-or-void situations. This calls
+`function` with no arguments, wrapping its return value in a list and in
+turn returning that list. That is, if `function` returns `value`, then this
+function returns `[value]`, and if `function` returns void, then this
+function returns `[]`.
+
+This function could be implemented as:
+
+```
+fn optValue(function) {
+    <> [&function()] | []
+}
+```
+
+or more primitively as:
+
+```
+fn optValue(function) {
+    <> ifValue(function, { v <> [v] }, { <> [] })
+}
+```
+
 
 <br><br>
 ### In-Language Definitions
