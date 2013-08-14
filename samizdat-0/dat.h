@@ -5,7 +5,7 @@
  */
 
 /*
- * Low-layer data structures
+ * Mid-layer data types
  */
 
 #ifndef _DAT_H_
@@ -15,79 +15,14 @@
 
 
 /*
- * C Types
+ * `List` Type Declarations
  */
-
-/**
- * Prototype for state access/manipulation functions. These are called on
- * uniqlet state pointers, and on other non-value pointers that those may in
- * turn point to.
- */
-typedef void (*zstateFunction)(void *state);
-
-
-/*
- * Constants, type references and generic functions
- */
-
-/** The standard value `[]`. */
-extern zvalue EMPTY_LIST;
-
-/** The standard value `[:]`. */
-extern zvalue EMPTY_MAP;
-
-/** The standard value `nullBox`. */
-extern zvalue DAT_NULL_BOX;
-
-/** Type value for in-model type `Box`. */
-extern zvalue TYPE_Box;
 
 /** Type value for in-model type `List`. */
 extern zvalue TYPE_List;
 
-/** Type value for in-model type `Map`. */
-extern zvalue TYPE_Map;
-
-
-/*
- * Initialization Function
- */
-
-/**
- * Initializes the `dat` module.
- */
-void datInit(void);
-
-
-/*
- * Assertion Functions
- */
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a list. If not, this aborts the process
- * with a diagnostic message.
- */
-void datAssertList(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a map. If not, this aborts the process
- * with a diagnostic message.
- */
-void datAssertMap(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a map, and even furthermore that its size
- * is `1`. If not, this aborts the process with a diagnostic message.
- */
-void datAssertMapSize1(zvalue value);
-
-
-/*
- * List Functions
- */
+/** The standard value `[]`. */
+extern zvalue EMPTY_LIST;
 
 /**
  * Copies all the values of the given list into the given result
@@ -150,8 +85,14 @@ zvalue listSlice(zvalue list, zint start, zint end);
 
 
 /*
- * Map Functions
+ * `Map` Type Declarations
  */
+
+/** Type value for in-model type `Map`. */
+extern zvalue TYPE_Map;
+
+/** The standard value `[:]`. */
+extern zvalue EMPTY_MAP;
 
 /**
  * Copies all the mappings of the given map into the given result
@@ -220,8 +161,14 @@ zvalue mappingValue(zvalue map);
 
 
 /*
- * Boxes
+ * `Box` Type Declarations
  */
+
+/** Type value for in-model type `Box`. */
+extern zvalue TYPE_Box;
+
+/** The standard value `nullBox`. */
+extern zvalue DAT_NULL_BOX;
 
 /**
  * Returns an indication of whether or not the given box has been set.
@@ -252,8 +199,34 @@ zvalue makeYieldBox(void);
 
 
 /*
- * Function application
+ * Miscellaneous Declarations
  */
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a list. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertList(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a map. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void datAssertMap(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a map, and even furthermore that its size
+ * is `1`. If not, this aborts the process with a diagnostic message.
+ */
+void datAssertMapSize1(zvalue value);
+
+/**
+ * Initializes the `dat` module.
+ */
+void datInit(void);
 
 /**
  * Calls a function with the given list of arguments. `function` must be

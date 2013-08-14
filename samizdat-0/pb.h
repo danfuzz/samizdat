@@ -61,96 +61,10 @@ enum {
     do { genericBindCore(GFN_##name, TYPE_##type, type##_##name); } while(0)
 
 
-/*
- * Constants, type references and generic functions
- */
-
-/** The standard value `""`. */
-extern zvalue EMPTY_STRING;
-
-/** The standard value `0`. */
-extern zvalue PB_0;
-
-/** The standard value `1`. */
-extern zvalue PB_1;
-
-/** The standard value `-1`. */
-extern zvalue PB_NEG1;
-
-/** Type value for in-model type `Function`. */
-extern zvalue TYPE_Function;
-
-/** Type value for in-model type `Generic`. */
-extern zvalue TYPE_Generic;
-
-/** Type value for in-model type `Int`. */
-extern zvalue TYPE_Int;
-
-/** Type value for in-model type `String`. */
-extern zvalue TYPE_String;
-
-/** Type value for in-model type `Type`. */
-extern zvalue TYPE_Type;
-
-/** Type value for in-model type `Uniqlet`. */
-extern zvalue TYPE_Uniqlet;
-
-/** Type value for in-model type `Value`. */
-extern zvalue TYPE_Value;
-
-/**
- * Generic `call(value)`: Somewhat-degenerate generic for dispatching to
- * a function call mechanism (how meta). Only defined for types `Function`
- * and `Generic`. When called, argument count and pointer will have been
- * checked, but the argument count may not match what's expected by the
- * target function. The `state` argument is always passed as the function
- * or generic value itself.
- */
-extern zvalue GFN_call;
-
-/**
- * Generic `canCall(function, value)`: See spec for details.
- */
-extern zvalue GFN_canCall;
-
-/**
- * Generic `debugString(value)`: Returns a minimal string form of the
- * given value. Notably, functions and generics include their names.
- * The default implementation returns strings of the form
- * `@(TypeName @ address)`.
- */
-extern zvalue GFN_debugString;
-
-/**
- * Generic `gcMark(value)`: Does GC marking for the given value.
- */
-extern zvalue GFN_gcMark;
-
-/**
- * Generic `eq(value, value)`: Compares two values for equality / sameness.
- * Returns the second value to indicate logical-true. Only ever called when
- * the two values are not `==`, and only ever called when the two values are
- * of the same type. Defaults to always returning logical-false.
- */
-extern zvalue GFN_eq;
-
-/**
- * Generic `order(value, value)`: Compares two values with respect to the
- * total order of values. Returns one of `-1` `0` `1` corresponding to
- * the usual meanings for comparison. Must be implemented by every type.
- */
-extern zvalue GFN_order;
-
-/**
- * Generic `size(value)`: Gets the "size" of a value of the given type,
- * for the appropriate per-type meaning of size. Defaults to always returning
- * `0`.
- */
-extern zvalue GFN_size;
 
 
 /*
- * Initialization Function
+ * Initialization Declarations
  */
 
 /**
@@ -160,7 +74,7 @@ void pbInit(void);
 
 
 /*
- * Assertion Functions
+ * Assertion Declarations
  */
 
 /**
@@ -211,8 +125,20 @@ void pbAssertValidOrNull(zvalue value);
 
 
 /*
- * Int Functions
+ * `Int` Type Declarations
  */
+
+/** Type value for in-model type `Int`. */
+extern zvalue TYPE_Int;
+
+/** The standard value `0`. */
+extern zvalue PB_0;
+
+/** The standard value `1`. */
+extern zvalue PB_1;
+
+/** The standard value `-1`. */
+extern zvalue PB_NEG1;
 
 /**
  * Gets the `zchar` of the given int, asserting that the value
@@ -251,8 +177,14 @@ bool zintGetBit(zint value, zint n);
 
 
 /*
- * String functions.
+ * `String` Type Declarations
  */
+
+/** Type value for in-model type `String`. */
+extern zvalue TYPE_String;
+
+/** The standard value `""`. */
+extern zvalue EMPTY_STRING;
 
 /**
  * Combines the characters of two strings, in order, into a new
@@ -318,8 +250,23 @@ void zcharsFromString(zchar *result, zvalue string);
 
 
 /*
- * Function definition and application
+ * General Function Declarations
  */
+
+/**
+ * Generic `call(value)`: Somewhat-degenerate generic for dispatching to
+ * a function call mechanism (how meta). Only defined for types `Function`
+ * and `Generic`. When called, argument count and pointer will have been
+ * checked, but the argument count may not match what's expected by the
+ * target function. The `state` argument is always passed as the function
+ * or generic value itself.
+ */
+extern zvalue GFN_call;
+
+/**
+ * Generic `canCall(function, value)`: See spec for details.
+ */
+extern zvalue GFN_canCall;
 
 /**
  * Calls a function with the given list of arguments. `function` must be
@@ -331,6 +278,14 @@ void zcharsFromString(zchar *result, zvalue string);
  * on all sorts of callable function-like things.
  */
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
+
+
+/*
+ * `Function` Type Declarations
+ */
+
+/** Type value for in-model type `Function`. */
+extern zvalue TYPE_Function;
 
 /**
  * Constructs and returns a function with the given argument
@@ -344,8 +299,11 @@ zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
 
 
 /*
- * Generic function definition
+ * `Generic` Type Declarations
  */
+
+/** Type value for in-model type `Generic`. */
+extern zvalue TYPE_Generic;
 
 /**
  * Adds a type-to-function binding to the given generic, for a core type.
@@ -373,8 +331,11 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name);
 
 
 /*
- * Type Functions
+ * `Type` Type Declarations
  */
+
+/** Type value for in-model type `Type`. */
+extern zvalue TYPE_Type;
 
 /**
  * Asserts that the given value is a valid `zvalue`, furthermore has the
@@ -442,8 +403,11 @@ zvalue typeParent(zvalue type);
 
 
 /*
- * Uniqlet Functions
+ * `Uniqlet` Type Declarations
  */
+
+/** Type value for in-model type `Uniqlet`. */
+extern zvalue TYPE_Uniqlet;
 
 /**
  * Makes and returns a new uniqlet. Each call to this function is guaranteed
@@ -453,8 +417,46 @@ zvalue makeUniqlet(void);
 
 
 /*
- * General Value Functions
+ * `Value` Type Declarations
  */
+
+/** Type value for in-model type `Value`. */
+extern zvalue TYPE_Value;
+
+/**
+ * Generic `debugString(value)`: Returns a minimal string form of the
+ * given value. Notably, functions and generics include their names.
+ * The default implementation returns strings of the form
+ * `@(TypeName @ address)`.
+ */
+extern zvalue GFN_debugString;
+
+/**
+ * Generic `gcMark(value)`: Does GC marking for the given value.
+ */
+extern zvalue GFN_gcMark;
+
+/**
+ * Generic `eq(value, value)`: Compares two values for equality / sameness.
+ * Returns the second value to indicate logical-true. Only ever called when
+ * the two values are not `==`, and only ever called when the two values are
+ * of the same type. Defaults to always returning logical-false.
+ */
+extern zvalue GFN_eq;
+
+/**
+ * Generic `order(value, value)`: Compares two values with respect to the
+ * total order of values. Returns one of `-1` `0` `1` corresponding to
+ * the usual meanings for comparison. Must be implemented by every type.
+ */
+extern zvalue GFN_order;
+
+/**
+ * Generic `size(value)`: Gets the "size" of a value of the given type,
+ * for the appropriate per-type meaning of size. Defaults to always returning
+ * `0`.
+ */
+extern zvalue GFN_size;
 
 /**
  * Gets the data payload of the given value, if possible. `value` must be a
@@ -516,11 +518,6 @@ zvalue makeDeriv(zvalue type, zvalue data, zvalue secret);
  */
 zvalue makeValue(zvalue type, zvalue data);
 
-
-/*
- * Dispatched (type-based) Functions
- */
-
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller
  * is responsible for `free()`ing the result. As a convenience, this
@@ -557,7 +554,7 @@ zint pbSize(zvalue value);
 
 
 /*
- * Memory management functions
+ * Memory Management Declarations
  */
 
 /**
