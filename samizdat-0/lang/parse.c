@@ -192,6 +192,13 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 }
 
 /**
+ * Constructs a `call` node given a function name.
+ */
+static zvalue makeCallName(zvalue name, zvalue actuals) {
+    return makeCall(makeVarRef(name), actuals);
+}
+
+/**
  * Constructs a thunk node (function of no arguments), from an expression node.
  */
 static zvalue makeThunk(zvalue expression) {
@@ -584,7 +591,7 @@ DEF_PARSE(list) {
     if (pbSize(expressions) == 0) {
         return makeLiteral(EMPTY_LIST);
     } else {
-        return makeCall(makeVarRef(STR_MAKE_LIST), expressions);
+        return makeCallName(STR_MAKE_LIST, expressions);
     }
 }
 
@@ -630,7 +637,7 @@ DEF_PARSE(mapping1) {
     MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return makeCall(makeVarRef(STR_MAKE_MAPPING),
+    return makeCallName(STR_MAKE_MAPPING,
         listFrom2(key, makeValue(STR_EXPRESSION, value)));
 }
 
@@ -671,7 +678,7 @@ DEF_PARSE(map) {
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAP_ADD), mappings);
+    return makeCallName(STR_MAP_ADD, mappings);
 }
 
 /**
@@ -724,7 +731,7 @@ DEF_PARSE(deriv) {
     if (args == NULL) { args = PARSE(deriv2); }
     REJECT_IF(args == NULL);
 
-    return makeCall(makeVarRef(STR_MAKE_VALUE), args);
+    return makeCallName(STR_MAKE_VALUE, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -834,7 +841,7 @@ DEF_PARSE(unaryExpression) {
     for (zint i = pbSize(prefixes) - 1; i >= 0; i--) {
         zvalue one = listNth(prefixes, i);
         if (pbEq(one, TOK_CH_MINUS)) {
-            result = makeCall(makeVarRef(STR_INEG), listFrom1(result));
+            result = makeCallName(STR_INEG, listFrom1(result));
         } else {
             die("Unexpected prefix.");
         }
@@ -930,7 +937,7 @@ DEF_PARSE(nonlocalExit) {
     zvalue actuals = (value == NULL)
         ? listFrom1(name) : listFrom2(name, makeThunk(value));
 
-    return makeCall(makeVarRef(STR_NONLOCAL_EXIT), actuals);
+    return makeCallName(STR_NONLOCAL_EXIT, actuals);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
