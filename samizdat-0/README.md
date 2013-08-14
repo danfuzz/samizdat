@@ -113,7 +113,8 @@ Other naming conventions (which sometimes override the above):
 
 * `targetFromSource` &mdash; Indicates a function that takes a value of
   type `Source` yielding a value of type `target`. These are most often
-  for value conversion functions, and sometimes for member-like accessors.
+  for value conversion functions, and sometimes (rarely) for member-like
+  accessors.
 
 * `makeTypeName` &mdash; Indicates a function that creates a value of
   type `TypeName`. These are almost all for the creation of "identified"
