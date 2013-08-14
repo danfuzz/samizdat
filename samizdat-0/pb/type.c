@@ -405,7 +405,7 @@ void pbInitTypeSystem(void) {
     TYPE_String = allocType();
     TYPE_Uniqlet = allocType();
 
-    coreSecret = uniqlet();
+    coreSecret = makeUniqlet();
     pbImmortalize(coreSecret);
 
     typeInit(TYPE_Type,     TYPE_Value, stringFromUtf8(-1, "Type"),     coreSecret, false);

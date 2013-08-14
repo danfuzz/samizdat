@@ -46,7 +46,7 @@ PRIM_IMPL(makeMapping) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeUniqlet) {
-    return uniqlet();
+    return makeUniqlet();
 }
 
 /* Documented in Samizdat Layer 0 spec. */
