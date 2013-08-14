@@ -45,17 +45,6 @@ static BoxInfo *getInfo(zvalue box) {
  */
 
 /* Documented in header. */
-zvalue boxFetch(zvalue box) {
-    return funCall(GFN_fetch, 1, &box);
-}
-
-/* Documented in header. */
-zvalue boxStore(zvalue box, zvalue value) {
-    zvalue args[2] = { box, value };
-    return funCall(GFN_store, (value == NULL) ? 1 : 2, args);
-}
-
-/* Documented in header. */
 zvalue makeMutableBox(zvalue value) {
     zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);

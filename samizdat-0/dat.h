@@ -188,17 +188,6 @@ extern zvalue GFN_store;
 extern zvalue DAT_NULL_BOX;
 
 /**
- * Calls the generic `fetch(box)`. Documented in spec.
- */
-zvalue boxFetch(zvalue box);
-
-/**
- * Calls the generic `store(box, value?)`. Pass `NULL` for `value` to
- * indicate a missing second argument. Documented in spec.
- */
-zvalue boxStore(zvalue box, zvalue value);
-
-/**
  * Constructs a mutable (re-settable) box, with the given initial value.
  * Pass `NULL` to leave it initially unset.
  */
