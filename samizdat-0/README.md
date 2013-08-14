@@ -112,9 +112,9 @@ A "Hungarianesque" name prefix is used to identify aspects of some globals:
 Other naming conventions (which sometimes override the above):
 
 * `targetFromSource` &mdash; Indicates a function that takes a value of
-  type `Source` yielding a value of type `target`. These are most often
-  for value conversion functions, and sometimes (rarely) for member-like
-  accessors.
+  type `Source` yielding a value of type `target`. These names are most
+  often used for value conversion functions (that is, converting from one
+  type to another, with no loss of data).
 
 * `makeTypeName` &mdash; Indicates a function that creates a value of
   type `TypeName`. These are almost all for the creation of "identified"

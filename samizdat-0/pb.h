@@ -459,20 +459,12 @@ zvalue makeUniqlet(void);
 /**
  * Gets the data payload of the given value, if possible. `value` must be a
  * valid value (in particular, non-`NULL`). This is a convenient shorthand
- * for calling `dataFromValue(value, NULL)`.
- For everything but derived
+ * for calling `derivDataOf(value, NULL)`. For everything but derived
  * values, the data payload is the same as the value itself. For derived
  * values, the data payload is (unsurprisingly) `NULL` for type-only
  * values.
  */
 zvalue dataOf(zvalue value);
-
-/**
- * Gets a unique identity number associated with this value. Only works
- * on values of an opaque type, and only if the type is marked as
- * `identified`.
- */
-zint identityOf(zvalue value);
 
 /**
  * Gets the data payload of the given value, if possible. This behaves
@@ -487,8 +479,19 @@ zint identityOf(zvalue value);
  * * If `value` does not have any payload data, this returns `NULL`.
  *
  * * Otherwise, this returns the payload data of `value`.
+ *
+ * **Note:** The function name reflects the fact that it will only possibly
+ * return non-`NULL` for a derived value.
+ *
  */
-zvalue dataFromValue(zvalue value, zvalue secret);
+zvalue derivDataOf(zvalue value, zvalue secret);
+
+/**
+ * Gets a unique identity number associated with this value. Only works
+ * on values of an opaque type, and only if the type is marked as
+ * `identified`.
+ */
+zint identityOf(zvalue value);
 
 /**
  * Returns a derived value with the given type tag, and with the given

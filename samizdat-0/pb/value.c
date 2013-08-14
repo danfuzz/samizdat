@@ -41,6 +41,11 @@ static zint nextIdentity(void) {
  */
 
 /* Documented in header. */
+zvalue dataOf(zvalue value) {
+    return derivDataOf(value, NULL);
+}
+
+/* Documented in header. */
 zint identityOf(zvalue value) {
     if (!typeIsIdentified(typeOf(value))) {
         die("Attempt to use `identityOf` on non-identified value.");
