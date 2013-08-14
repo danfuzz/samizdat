@@ -69,6 +69,7 @@ will be returned, or one of:
 * [Strings](string.md)
 * [Lists](list.md)
 * [Maps](map.md)
+* [Boxes](box.md)
 * [Generators](generator.md)
 * [Functions And Code](code.md)
 * [I/O](io.md)
