@@ -97,7 +97,7 @@ METH_IMPL(Value, collect) {
     zvalue box = makeMutableBox(NULL);
 
     for (at = 0; /*at*/; at++) {
-        zvalue nextGen = funCall(generator, 1, &box);
+        zvalue nextGen = FUN_CALL(generator, box);
 
         if (nextGen == NULL) {
             break;
@@ -144,5 +144,5 @@ void generatorInit(void) {
 
 /* Documented in header. */
 zvalue constCollectGenerator(zvalue value) {
-    return funCall(GFN_collect, 1, &value);
+    return GFN_CALL(collect, value);
 }
