@@ -844,23 +844,11 @@ parChoicePex(implChoicePex);
 # Layer 2 Definitions and Rules
 #
 
-# Helper for `?` postfix and string interpolation: Construct an optional-value
-# expression. This is approximately:
-#
-# ```
-# ifValue { <> node }
-#     { value <> [value] }
-#     { <> [] }
-# ```
+# Helper for nonlocal exit, `?` expression postfix, and string interpolation:
+# Construct an optional-value expression. This wraps `node` as
+# `optValue { <> node }`.
 fn makeOptValueExpression(node) {
-    def thenClosure = @[closure: [
-        formals: [[name: "value"]],
-        statements: [],
-        yield: makeCallName("makeList", makeVarRef("value"))
-    ]];
-    def elseClosure = makeThunk(makeLiteral([]));
-
-    <> makeCallName("ifValue", makeThunk(node), thenClosure, elseClosure)
+    <> makeCallName("optValue", makeThunk(node))
 };
 
 # Helper for string interpolation: Parses the two kinds of interpolation,
