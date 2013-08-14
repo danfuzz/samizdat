@@ -333,7 +333,7 @@ METH_IMPL(Closure, debugString) {
     zvalue result = stringFromUtf8(-1, "@(Closure ");
 
     if (name != NULL) {
-        result = stringAdd(result, funCall(GFN_debugString, 1, &name));
+        result = stringAdd(result, GFN_CALL(debugString, name));
     } else {
         result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
     }

@@ -30,13 +30,13 @@ PRIM_IMPL(nonlocalExit) {
     if (argCount == 1) {
         value = NULL;
     } else {
-        value = funCall(args[1], 0, NULL);
+        value = FUN_CALL(args[1]);
     }
 
     if (value == NULL) {
-        funCall(yieldFunction, 0, NULL);
+        FUN_CALL(yieldFunction);
     } else {
-        funCall(yieldFunction, 1, &value);
+        FUN_CALL(yieldFunction, value);
     }
 
     die("Nonlocal exit function did not perform nonlocal exit.");
