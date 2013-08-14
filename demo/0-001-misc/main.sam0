@@ -39,9 +39,9 @@ fn <out> exiter(foo) {
         { <out> }
 };
 
-# Demo of `mutableBox`.
+# Demo of `makeMutableBox`.
 fn boxer() {
-    def box = mutableBox(10);
+    def box = makeMutableBox(10);
 
     doFilter([1, 2, 3]) { n :: boxStore(box, iadd(boxFetch(box), n)) };
     <> boxFetch(box)

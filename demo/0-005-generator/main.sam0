@@ -28,7 +28,7 @@ fn msgAll(header, gen) {
 
     { <done> ::
         loopReduce(gen) { gen ::
-            def box = yieldBox();
+            def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGen ::
                     msg(boxFetch(box));

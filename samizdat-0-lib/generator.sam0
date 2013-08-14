@@ -147,7 +147,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
 # cases, e.g. by virtue of `filterGenerator` always calling `paraGenerator`.
 fn oneItemParaGenerator(generator) {
     <> { <out> box ::
-        def innerBox = yieldBox();
+        def innerBox = makeYieldBox();
         <> ifValue { <> generator(innerBox) }
             { nextGenerator ::
                 boxStore(box, [boxFetch(innerBox)]);
@@ -189,7 +189,7 @@ fn collectGenerator(generator) {
 fn doFilter(filterFunction, generators*) {
     loopReduce(paraGenerator(generators*))
         { gen ::
-            def box = yieldBox();
+            def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
                     filterFunction(boxFetch(box)*);
@@ -217,7 +217,7 @@ fn doReduce(reduceFunction, generators, baseValues) {
 
     loopReduce(gen, baseValues)
         { gen, values ::
-            def box = yieldBox();
+            def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
                     <> ifValue { <> reduceFunction(boxFetch(box)*, values*) }
@@ -238,7 +238,7 @@ fn doReduce(reduceFunction, generators, baseValues) {
 fn doReduce1(reduceFunction, generator, baseValue) {
     loopReduce(generatorFromValue(generator), baseValue)
         { gen, value ::
-            def box = yieldBox();
+            def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
                     <> ifValue { <> reduceFunction(boxFetch(box), value) }
@@ -269,7 +269,7 @@ fn filterGenerator(filterFunction, generators*) {
             # allowed to yield void to indicate a generated value is to
             # be discarded.
             loopReduce(gen) { <next> gen ::
-                def innerBox = yieldBox();
+                def innerBox = makeYieldBox();
                 ifValue { <> gen(innerBox) }
                     { nextGenerator ::
                         ifValue { <> filterFunction(boxFetch(innerBox)*) }
@@ -330,7 +330,7 @@ fn optGenerator(generator) {
     # Main generator maker, which takes a generator (per se) as its argument.
     fn optGenerator1(gen) {
         <> { box ::
-            def innerBox = yieldBox();
+            def innerBox = makeYieldBox();
             <> ifValue { <> gen(innerBox) }
                 { nextGenerator ::
                     boxStore(box, [boxFetch(innerBox)]);
@@ -351,7 +351,7 @@ fn paraGenerator(generators*) {
         <> { <out> box ::
             def generatorCalls = listFilter(generators)
                 { gen ::
-                    def innerBox = yieldBox();
+                    def innerBox = makeYieldBox();
                     <> ifValue { <> gen(innerBox) }
                         { nextGenerator ::
                             <> [boxFetch(innerBox), nextGenerator]
@@ -397,7 +397,7 @@ fn reduceGenerator(reduceFunction, generators, baseValues) {
             # allowed to yield void to indicate a generated value is to
             # be discarded.
             loopReduce(gen) { <next> gen ::
-                def innerBox = yieldBox();
+                def innerBox = makeYieldBox();
                 ifValue { <> gen(innerBox) }
                     { nextGenerator ::
                         ifValue
@@ -436,7 +436,7 @@ fn seqGenerator(generators*) {
 
     fn seqGenerator1(gen) {
         <> { box ::
-            def innerBox = yieldBox();
+            def innerBox = makeYieldBox();
             <> ifValue { <> gen(innerBox) }
                 { nextGenerator ::
                     boxStore(box, boxFetch(innerBox));

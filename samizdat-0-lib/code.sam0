@@ -13,7 +13,7 @@
 
 # Documented in Samizdat Layer 0 spec.
 fn forwardFunction() {
-    def box = yieldBox();
+    def box = makeYieldBox();
 
     fn doForward(optFunction?, args*) {
         ifIs { <> eq(optFunction, []) }

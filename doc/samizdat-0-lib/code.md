@@ -10,25 +10,25 @@ Functions And Code
 #### `boxCanStore(box) <> logic`
 
 Returns `box` if the `box` can be stored to. Otherwise returns void.
-`box` must be a box as returned by either `mutableBox` or `yieldBox`.
+`box` must be a box as returned by either `makeMutableBox` or `makeYieldBox`.
 
 #### `boxFetch(box) <> . | void`
 
 Gets the value inside a box, if any. If the box either is unset or has
 been set to void, this returns void. `box` must be a box as returned by
-either `mutableBox` or `yieldBox`.
+either `makeMutableBox` or `makeYieldBox`.
 
 #### `boxStore(box, value?) <> .`
 
 Sets the value of a box to the given value, or to void if `value` is
 not supplied. This function always returns `value` (or void if `value` is
-not supplied). `box` must be a box as returned by either `mutableBox` or
-`yieldBox`.
+not supplied). `box` must be a box as returned by either `makeMutableBox` or
+`makeYieldBox`.
 
 It is an error (terminating the runtime) for `box` to be a yield box on
 which `boxStore` has already been called.
 
-#### `mutableBox(value?) <> box`
+#### `makeMutableBox(value?) <> box`
 
 Creates a mutable box, with optional pre-set value. The result of a call to
 this function is a box which can be set any number of times using
@@ -44,7 +44,19 @@ variables. It is hoped that this facility will be used as minimally as
 possible, so as to not preclude the system from performing functional-style
 optimizations.
 
-#### `nonlocalExit(yieldFunction, thunk?) <> void # Returns elsewhere.`
+#### `makeYieldBox() <> box`
+
+Creates a set-once "yield box". The result of a call to this function is a
+box which can be stored to at most once, using `boxStore`. Subsequent
+attempts to store to the box will fail (terminating the runtime). The
+contents of the box are accessible by calling `boxFetch`. `boxFetch` returns
+void until and unless `boxStore` is called with a second argument.
+
+This function is meant to be the primary way to capture the yielded values
+from functions (such as object service functions and parser functions) which
+expect to yield values by calling a function.
+
+#### `nonlocalExit(yieldFunction, thunk?) <> n/a # Returns elsewhere.`
 
 Helper for calling nonlocal exit functions. This takes a function of
 zero-or-one argument &mdash; such as in particular the "yield" functions
@@ -61,18 +73,6 @@ arguments.
 
 It is an error (terminating the runtime) if the call to `yieldFunction`
 returns to this function.
-
-#### `yieldBox() <> box`
-
-Creates a set-once "yield box". The result of a call to this function is a
-box which can be stored to at most once, using `boxStore`. Subsequent
-attempts to store to the box will fail (terminating the runtime). The
-contents of the box are accessible by calling `boxFetch`. `boxFetch` returns
-void until and unless `boxStore` is called with a second argument.
-
-This function is meant to be the primary way to capture the yielded values
-from functions (such as object service functions and parser functions) which
-expect to yield values by calling a function.
 
 <br><br>
 ### In-Language Definitions

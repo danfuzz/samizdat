@@ -15,7 +15,7 @@ SELF_PATH, ARGS* ::
 # Main Tests
 #
 
-def box = mutableBox(0);
+def box = makeMutableBox(0);
 
 while (boxFetch(box) \< 10) {
     boxStore(box, boxFetch(box) + 1);
