@@ -287,6 +287,10 @@ The contract is as follows:
     in order to yield void.
   * It returns void.
 
+**Note:** Clients of generators should rely primarily on the return value
+to determine whether the generator has been voided, rather than on what
+gets done to the box passed in as the first argument.
+
 #### Parser functions
 
 Parser functions are used (unsurprisingly) to perform parsing operations.
