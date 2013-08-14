@@ -166,6 +166,23 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
+extern zvalue funCallWith0(zvalue function);
+
+/* Documented in header. */
+extern zvalue funCallWith1(zvalue function, zvalue arg0);
+
+/* Documented in header. */
+extern zvalue funCallWith2(zvalue function, zvalue arg0, zvalue arg1);
+
+/* Documented in header. */
+extern zvalue funCallWith3(zvalue function, zvalue arg0, zvalue arg1,
+    zvalue arg2);
+
+/* Documented in header. */
+extern zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
+    zvalue arg2, zvalue arg3);
+
+/* Documented in header. */
 void genericBindCore(zvalue generic, zvalue type, zfunction function) {
     assertHasType(generic, TYPE_Generic);
 

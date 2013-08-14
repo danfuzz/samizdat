@@ -311,10 +311,7 @@ bool haveSameType(zvalue v1, zvalue v2) {
     }
 }
 
-/*
- * Documented in header. **Note:** This is the C99 way to get one "real"
- * version of an `inline` function.
- */
+/* Documented in header. */
 extern void *pbPayload(zvalue value);
 
 /* Documented in header. */
