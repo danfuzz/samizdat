@@ -102,7 +102,7 @@ static zvalue allocType(void) {
  * Creates and returns a new type with the given name and secret. The type
  * is marked derived *unless* the given secret is `coreSecret`.
  */
-static zvalue newType(zvalue name, zvalue secret, bool identified) {
+static zvalue makeType(zvalue name, zvalue secret, bool identified) {
     zvalue result = allocType();
     typeInit(result, TYPE_Value, name, secret, identified);
     return result;
@@ -226,7 +226,7 @@ zvalue transparentTypeFromName(zvalue name) {
     zvalue result = findType(name, NULL);
 
     if (result == NULL) {
-        result = newType(name, NULL, false);
+        result = makeType(name, NULL, false);
         derivBind(result);
     }
 
@@ -288,7 +288,7 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
     zvalue result = findType(name, coreSecret);
 
     if (result == NULL) {
-        result = newType(name, coreSecret, identified);
+        result = makeType(name, coreSecret, identified);
     } else if (identified != getInfo(result)->identified) {
         die("Mismatch on `identified`.");
     }

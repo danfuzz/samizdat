@@ -48,7 +48,7 @@ static NonlocalExitInfo *getInfo(zvalue nle) {
 /**
  * Constructs and returns a nonlocal exit function.
  */
-static zvalue newNonlocalExit(void) {
+static zvalue makeNonlocalExit(void) {
     zvalue result = pbAllocValue(TYPE_NonlocalExit, sizeof(NonlocalExitInfo));
 
     NonlocalExitInfo *info = getInfo(result);
@@ -70,7 +70,7 @@ zvalue nleCall(znleFunction function, void *state) {
     zstackPointer save = pbFrameStart();
     zvalue result;
 
-    zvalue exitFunction = newNonlocalExit();
+    zvalue exitFunction = makeNonlocalExit();
     NonlocalExitInfo *info = getInfo(exitFunction);
 
     if (sigsetjmp(info->jumpBuf, 0) == 0) {
