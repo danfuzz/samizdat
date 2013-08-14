@@ -154,7 +154,7 @@ static zvalue listFrom2(zvalue e1, zvalue e2) {
  * Constructs a `literal` node.
  */
 static zvalue makeLiteral(zvalue value) {
-    return valueFrom(STR_LITERAL, value);
+    return makeValue(STR_LITERAL, value);
 }
 
 /**
@@ -162,14 +162,14 @@ static zvalue makeLiteral(zvalue value) {
  */
 static zvalue makeVarDef(zvalue name, zvalue value) {
     zvalue payload = mapFrom2(STR_NAME, name, STR_VALUE, value);
-    return valueFrom(STR_VAR_DEF, payload);
+    return makeValue(STR_VAR_DEF, payload);
 }
 
 /**
  * Constructs a `varRef` node.
  */
 static zvalue makeVarRef(zvalue name) {
-    return valueFrom(STR_VAR_REF, name);
+    return makeValue(STR_VAR_REF, name);
 }
 
 /**
@@ -181,7 +181,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_FUNCTION, function, STR_ACTUALS, actuals);
-    return valueFrom(STR_CALL, value);
+    return makeValue(STR_CALL, value);
 }
 
 /**
@@ -189,7 +189,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
  */
 static zvalue makeThunk(zvalue expression) {
     zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
-    return valueFrom(STR_CLOSURE, value);
+    return makeValue(STR_CLOSURE, value);
 }
 
 
@@ -393,7 +393,7 @@ DEF_PARSE(program) {
         value = mapAdd(value, declarations);
     }
 
-    return valueFrom(STR_CLOSURE, value);
+    return makeValue(STR_CLOSURE, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -498,7 +498,7 @@ DEF_PARSE(fnDef) {
         return NULL;
     }
 
-    return valueFrom(STR_FN_DEF, funcMap);
+    return makeValue(STR_FN_DEF, funcMap);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -506,18 +506,18 @@ DEF_PARSE(fnExpression) {
     MARK();
 
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
-    zvalue closure = valueFrom(STR_CLOSURE, funcMap);
+    zvalue closure = makeValue(STR_CLOSURE, funcMap);
 
     zvalue name = mapGet(funcMap, STR_NAME);
     if (name == NULL) {
         return closure;
     }
 
-    zvalue mainClosure = valueFrom(
+    zvalue mainClosure = makeValue(
         STR_CLOSURE,
         mapFrom2(
             STR_STATEMENTS,
-            listFrom1(valueFrom(STR_FN_DEF, funcMap)),
+            listFrom1(makeValue(STR_FN_DEF, funcMap)),
             STR_YIELD,
             makeVarRef(name)));
 
@@ -624,7 +624,7 @@ DEF_PARSE(mapping1) {
     zvalue value = PARSE_OR_REJECT(expression);
 
     return makeCall(makeVarRef(STR_MAKE_MAPPING),
-        listFrom2(key, valueFrom(STR_EXPRESSION, value)));
+        listFrom2(key, makeValue(STR_EXPRESSION, value)));
 }
 
 /**
@@ -750,7 +750,7 @@ DEF_PARSE(parenExpression) {
     zvalue expression = PARSE_OR_REJECT(expression);
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return valueFrom(STR_EXPRESSION, expression);
+    return makeValue(STR_EXPRESSION, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -818,7 +818,7 @@ DEF_PARSE(unaryExpression) {
         if (hasType(one, TYPE_List)) {
             result = makeCall(result, one);
         } else if (pbEq(one, TOK_CH_STAR)) {
-            result = valueFrom(STR_INTERPOLATE, result);
+            result = makeValue(STR_INTERPOLATE, result);
         } else {
             die("Unexpected postfix.");
         }
@@ -844,7 +844,7 @@ DEF_PARSE(voidableExpression) {
     zvalue ex = PARSE_OR_REJECT(unaryExpression);
 
     if (voidable) {
-        return valueFrom(STR_VOIDABLE, ex);
+        return makeValue(STR_VOIDABLE, ex);
     } else {
         return ex;
     }

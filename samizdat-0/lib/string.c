@@ -18,7 +18,7 @@
 /**
  * Calls `stringNth()`, converting the result into a proper zvalue.
  */
-static zvalue valueFromStringNth(zvalue string, zint n) {
+static zvalue makeValueStringNth(zvalue string, zint n) {
     zint ch = stringNth(string, n);
 
     return (ch < 0) ? NULL : stringFromZchar(ch);
@@ -75,12 +75,12 @@ PRIM_IMPL(stringAdd) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringGet) {
-    return doNthLenient(valueFromStringNth, args[0], args[1]);
+    return doNthLenient(makeValueStringNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringNth) {
-    return doNthStrict(valueFromStringNth, args[0], args[1]);
+    return doNthStrict(makeValueStringNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

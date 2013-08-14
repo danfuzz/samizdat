@@ -179,11 +179,17 @@ void genericBindCore(zvalue generic, zvalue type, zfunction function) {
     }
 
     info->functions[index] =
-        functionFrom(info->minArgs, info->maxArgs, function, info->name);
+        makeFunction(info->minArgs, info->maxArgs, function, info->name);
 }
 
 /* Documented in header. */
-zvalue genericFrom(zint minArgs, zint maxArgs, zvalue name) {
+void genericSeal(zvalue generic) {
+    assertHasType(generic, TYPE_Generic);
+    getInfo(generic)->sealed = true;
+}
+
+/* Documented in header. */
+zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name) {
     if ((minArgs < 1) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
@@ -198,12 +204,6 @@ zvalue genericFrom(zint minArgs, zint maxArgs, zvalue name) {
     info->name = name;
 
     return result;
-}
-
-/* Documented in header. */
-void genericSeal(zvalue generic) {
-    assertHasType(generic, TYPE_Generic);
-    getInfo(generic)->sealed = true;
 }
 
 

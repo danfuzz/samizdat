@@ -46,11 +46,11 @@ PRIM_IMPL(makeMapping) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeUniqlet) {
-    return uniqlet();
+    return makeUniqlet();
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeValue) {
     zvalue value = (argCount == 2) ? args[1] : NULL;
-    return valueFrom(args[0], value);
+    return makeValue(args[0], value);
 }

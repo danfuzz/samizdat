@@ -235,11 +235,6 @@ zvalue boxGet(zvalue box);
 bool boxIsSet(zvalue box);
 
 /**
- * Constructs a mutable (re-settable) box.
- */
-zvalue boxMutable(void);
-
-/**
  * Resets the given box to an un-set state. The box must be a mutable box.
  */
 void boxReset(zvalue box);
@@ -251,9 +246,14 @@ void boxReset(zvalue box);
 void boxSet(zvalue box, zvalue value);
 
 /**
+ * Constructs a mutable (re-settable) box.
+ */
+zvalue makeMutableBox(void);
+
+/**
  * Constructs a yield (set-once) box.
  */
-zvalue boxYield(void);
+zvalue makeYieldBox(void);
 
 
 /*

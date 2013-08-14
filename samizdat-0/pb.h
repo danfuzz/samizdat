@@ -339,7 +339,7 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args);
  * and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue functionFrom(zint minArgs, zint maxArgs, zfunction function,
+zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
     zvalue name);
 
 
@@ -357,19 +357,19 @@ zvalue functionFrom(zint minArgs, zint maxArgs, zfunction function,
 void genericBindCore(zvalue generic, zvalue type, zfunction function);
 
 /**
+ * Seal the given generic. This prevents it from gaining any new bindings.
+ * `generic` must be a generic function.
+ */
+void genericSeal(zvalue generic);
+
+/**
  * Constructs and returns a generic function with the given argument
  * restrictions and optional name (used when producing stack traces). It is
  * initially unsealed and without any bindings. `minArgs` must be at least
  * `1`, and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue genericFrom(zint minArgs, zint maxArgs, zvalue name);
-
-/**
- * Seal the given generic. This prevents it from gaining any new bindings.
- * `generic` must be a generic function.
- */
-void genericSeal(zvalue generic);
+zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name);
 
 
 /*
@@ -446,10 +446,10 @@ zvalue typeParent(zvalue type);
  */
 
 /**
- * Gets a new uniqlet. Each call to this function is guaranteed to
- * produce a value unequal to any other uniqlet (in any given process).
+ * Makes and returns a new uniqlet. Each call to this function is guaranteed
+ * to produce a value unequal to any other uniqlet (in any given process).
  */
-zvalue uniqlet(void);
+zvalue makeUniqlet(void);
 
 
 /*
@@ -504,14 +504,14 @@ zvalue dataFromValue(zvalue value, zvalue secret);
  *   is taken to indicate a transparent type whose name is `type`. As such
  *   `secret` must be `NULL`.
  */
-zvalue derivFrom(zvalue type, zvalue data, zvalue secret);
+zvalue makeDeriv(zvalue type, zvalue data, zvalue secret);
 
 /**
  * Returns a transparent derived value with the given type tag, and with the
  * given optional data payload. This is a convenient shorthand for calling
- * `derivFrom(type, data, NULL)`.
+ * `makeDeriv(type, data, NULL)`.
  */
-zvalue valueFrom(zvalue type, zvalue data);
+zvalue makeValue(zvalue type, zvalue data);
 
 
 /*
