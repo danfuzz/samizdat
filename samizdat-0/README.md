@@ -85,7 +85,7 @@ types use `UppercaseInitialCamelCase`. Other types use `zlowercaseInitial`
 (that is, prefixed with `z` per se). Numeric constants use
 `ALL_CAPS_WITH_UNDERSCORES`.
 
-A "Hungarianesque" prefix is used to identify aspects of some globals:
+A "Hungarianesque" name prefix is used to identify aspects of some globals:
 
 * `TYPE_TypeName` &mdash; Identifies a value of type `Type`.
 
@@ -107,9 +107,18 @@ A "Hungarianesque" prefix is used to identify aspects of some globals:
   belongs.
 
 * `typeFunctionName` &mdash; Identifies the type to which a function applies,
-  generally as its first argument. As an exception, the name pattern
-  `targetFromSource` generally indicates a function that takes a value of
-  type `Source` yielding a value of type `target`.
+  generally as its first argument.
+
+Other naming conventions (which sometimes override the above):
+
+* `targetFromSource` &mdash; Indicates a function that takes a value of
+  type `Source` yielding a value of type `target`. These are most often
+  for value conversion functions, and sometimes for member-like accessors.
+
+* `makeTypeName` &mdash; Indicates a function that creates a value of
+  type `TypeName`. These are almost all for the creation of "identified"
+  values (that is, values that have an identity beyond their underlying
+  data).
 
 ### Intra-file Arrangement
 
