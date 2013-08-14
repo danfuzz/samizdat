@@ -357,19 +357,19 @@ zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
 void genericBindCore(zvalue generic, zvalue type, zfunction function);
 
 /**
+ * Seal the given generic. This prevents it from gaining any new bindings.
+ * `generic` must be a generic function.
+ */
+void genericSeal(zvalue generic);
+
+/**
  * Constructs and returns a generic function with the given argument
  * restrictions and optional name (used when producing stack traces). It is
  * initially unsealed and without any bindings. `minArgs` must be at least
  * `1`, and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue genericFrom(zint minArgs, zint maxArgs, zvalue name);
-
-/**
- * Seal the given generic. This prevents it from gaining any new bindings.
- * `generic` must be a generic function.
- */
-void genericSeal(zvalue generic);
+zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name);
 
 
 /*
