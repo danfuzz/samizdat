@@ -51,7 +51,7 @@ zvalue dataOf(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue derivFrom(zvalue type, zvalue data, zvalue secret) {
+zvalue makeDeriv(zvalue type, zvalue data, zvalue secret) {
     pbAssertValid(type);
     pbAssertValidOrNull(data);
     pbAssertValidOrNull(secret);
@@ -69,8 +69,8 @@ zvalue derivFrom(zvalue type, zvalue data, zvalue secret) {
 }
 
 /* Documented in header. */
-zvalue valueFrom(zvalue type, zvalue data) {
-    return derivFrom(type, data, NULL);
+zvalue makeValue(zvalue type, zvalue data) {
+    return makeDeriv(type, data, NULL);
 }
 
 

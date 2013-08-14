@@ -14,7 +14,7 @@
  */
 
 /* Documented in header. */
-zvalue uniqlet(void) {
+zvalue makeUniqlet(void) {
     return pbAllocValue(TYPE_Uniqlet, 0);
 }
 
