@@ -7,7 +7,7 @@ I/O
 <br><br>
 ### Primitive Definitions
 
-#### `io0Die(string?) <> void # Terminates the runtime.`
+#### `io0Die(string?) <> n/a # Terminates the runtime.`
 
 Prints the given string to the system console (as if with `io0Note`)
 if supplied, and terminates the runtime with a failure status code (`1`).

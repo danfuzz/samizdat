@@ -17,34 +17,9 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(boxGet) {
-    return boxGet(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(boxIsSet) {
-    zvalue box = args[0];
-
-    return boxIsSet(box) ? box : NULL;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(boxSet) {
-    zvalue result = (argCount == 2) ? args[1] : NULL;
-
-    boxSet(args[0], result);
-    return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mutableBox) {
-    zvalue result = makeMutableBox();
-
-    if (argCount == 1) {
-        boxSet(result, args[0]);
-    }
-
-    return result;
+PRIM_IMPL(makeMutableBox) {
+    zvalue value = (argCount == 1) ? args[0] : NULL;
+    return makeMutableBox(value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -55,13 +30,13 @@ PRIM_IMPL(nonlocalExit) {
     if (argCount == 1) {
         value = NULL;
     } else {
-        value = funCall(args[1], 0, NULL);
+        value = FUN_CALL(args[1]);
     }
 
     if (value == NULL) {
-        funCall(yieldFunction, 0, NULL);
+        FUN_CALL(yieldFunction);
     } else {
-        funCall(yieldFunction, 1, &value);
+        FUN_CALL(yieldFunction, value);
     }
 
     die("Nonlocal exit function did not perform nonlocal exit.");
@@ -86,6 +61,6 @@ PRIM_IMPL(sam0Eval) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(yieldBox) {
+PRIM_IMPL(makeYieldBox) {
     return makeYieldBox();
 }

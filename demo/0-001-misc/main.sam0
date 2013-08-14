@@ -39,12 +39,12 @@ fn <out> exiter(foo) {
         { <out> }
 };
 
-# Demo of `mutableBox`.
+# Demo of `makeMutableBox`.
 fn boxer() {
-    def box = mutableBox(10);
+    def box = makeMutableBox(10);
 
-    doFilter([1, 2, 3]) { n :: boxSet(box, iadd(boxGet(box), n)) };
-    <> boxGet(box)
+    doFilter([1, 2, 3]) { n :: store(box, iadd(fetch(box), n)) };
+    <> fetch(box)
 };
 
 # Emits the stringified version of the given value to the console.
