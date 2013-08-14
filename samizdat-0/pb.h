@@ -322,10 +322,11 @@ inline zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
  * of arguments passed in the usual C style.
  *
  * This uses some crazy preprocessor stuff to make it all work out. See
- * <http://stackoverflow.com/questions/2632300>. Note that the definitions
- * here are slightly different than the answer at the link, to account for
- * the fact that the first argument to the call is the function, and not a
- * numbered argument.
+ * <http://stackoverflow.com/questions/2632300> and
+ * <http://stackoverflow.com/questions/1872220>. Note that the definitions
+ * here are slightly different than the answer at those links, to account for
+ * the fact that the first argument to the call here is the function, and not
+ * a numbered argument.
  */
 #define PB_CONCAT(x, y) x##y
 #define PB_ARG_COUNT(...) \
