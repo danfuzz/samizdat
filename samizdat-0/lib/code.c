@@ -17,26 +17,6 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(boxFetch) {
-    return boxFetch(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(boxCanStore) {
-    zvalue box = args[0];
-
-    return boxCanStore(box) ? box : NULL;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(boxStore) {
-    zvalue result = (argCount == 2) ? args[1] : NULL;
-
-    boxStore(args[0], result);
-    return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeMutableBox) {
     zvalue result = makeMutableBox();
 

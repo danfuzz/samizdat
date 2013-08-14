@@ -167,25 +167,36 @@ zvalue mappingValue(zvalue map);
 /** Type value for in-model type `Box`. */
 extern zvalue TYPE_Box;
 
+/**
+ * Generic `canStore(box)`: Returns `box` if it can be stored to. Documented
+ * in spec.
+ */
+extern zvalue GFN_canStore;
+
+/**
+ * Generic `fetch(box)`: Fetches the value from a box. Documented in spec.
+ */
+extern zvalue GFN_fetch;
+
+/**
+ * Generic `store(box, value?)`: Stores a value (or void) into a box.
+ * Documented in spec.
+ */
+extern zvalue GFN_store;
+
 /** The standard value `nullBox`. */
 extern zvalue DAT_NULL_BOX;
 
 /**
- * Returns an indication of whether or not the given box has been set.
- */
-bool boxCanStore(zvalue box);
-
-/**
- * Gets the value out of the given box. Returns `NULL` if the box is
- * void or as yet unset.
+ * Calls the generic `fetch(box)`. Documented in spec.
  */
 zvalue boxFetch(zvalue box);
 
 /**
- * Sets the value of the given box as indicated. Passing `value` as
- * `NULL` indicates that the box is to be set to void.
+ * Calls the generic `store(box, value?)`. Pass `NULL` for `value` to
+ * indicate a missing second argument. Documented in spec.
  */
-void boxStore(zvalue box, zvalue value);
+zvalue boxStore(zvalue box, zvalue value);
 
 /**
  * Constructs a mutable (re-settable) box.

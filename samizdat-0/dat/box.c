@@ -45,47 +45,14 @@ static BoxInfo *getInfo(zvalue box) {
  */
 
 /* Documented in header. */
-bool boxCanStore(zvalue box) {
-    assertHasType(box, TYPE_Box);
-    return getInfo(box)->canStore;
-}
-
-/* Documented in header. */
 zvalue boxFetch(zvalue box) {
-    assertHasType(box, TYPE_Box);
-
-    zvalue result = getInfo(box)->value;
-
-    if (result != NULL) {
-        // The box has a value that we are about to return. Since the box
-        // could become garbage after this, we have to treat the value as
-        // "escaped" and so explicitly add the result value to the frame at
-        // this point. This ensures that GC will be able to find it.
-        pbFrameAdd(result);
-    }
-
-    return result;
+    return funCall(GFN_fetch, 1, &box);
 }
 
 /* Documented in header. */
-void boxStore(zvalue box, zvalue value) {
-    assertHasType(box, TYPE_Box);
-
-    if (box == DAT_NULL_BOX) {
-        return;
-    }
-
-    BoxInfo *info = getInfo(box);
-
-    if (!info->canStore) {
-        die("Attempt to re-store yield box.");
-    }
-
-    info->value = value;
-
-    if (info->setOnce) {
-        info->canStore = false;
-    }
+zvalue boxStore(zvalue box, zvalue value) {
+    zvalue args[2] = { box, value };
+    return funCall(GFN_store, (value == NULL) ? 1 : 2, args);
 }
 
 /* Documented in header. */
@@ -118,7 +85,41 @@ zvalue makeYieldBox(void) {
  */
 
 /* Documented in header. */
+zvalue TYPE_Box = NULL;
+
+/* Documented in header. */
+zvalue GFN_canStore;
+
+/* Documented in header. */
+zvalue GFN_fetch;
+
+/* Documented in header. */
+zvalue GFN_store;
+
+/* Documented in header. */
 zvalue DAT_NULL_BOX = NULL;
+
+/* Documented in header. */
+METH_IMPL(Box, canStore) {
+    zvalue box = args[0];
+    return getInfo(box)->canStore ? box : NULL;
+}
+
+/* Documented in header. */
+METH_IMPL(Box, fetch) {
+    zvalue box = args[0];
+    zvalue result = getInfo(box)->value;
+
+    if (result != NULL) {
+        // The box has a value that we are about to return. Since the box
+        // could become garbage after this, we have to treat the value as
+        // "escaped" and so explicitly add the result value to the frame at
+        // this point. This ensures that GC will be able to find it.
+        pbFrameAdd(result);
+    }
+
+    return result;
+}
 
 /* Documented in header. */
 METH_IMPL(Box, gcMark) {
@@ -131,13 +132,42 @@ METH_IMPL(Box, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(Box, store) {
+    zvalue box = args[0];
+    zvalue value = (argCount == 2) ? args[1] : NULL;
+
+    BoxInfo *info = getInfo(box);
+
+    if (!info->canStore) {
+        die("Attempt to re-store yield box.");
+    }
+
+    if (box != DAT_NULL_BOX) {
+        info->value = value;
+    }
+
+    if (info->setOnce) {
+        info->canStore = false;
+    }
+
+    return value;
+}
+
+/* Documented in header. */
 void datBindBox(void) {
+    GFN_canStore = makeGeneric(1, 1, stringFromUtf8(-1, "canStore"));
+    GFN_fetch = makeGeneric(1, 1, stringFromUtf8(-1, "fetch"));
+    GFN_store = makeGeneric(1, 2, stringFromUtf8(-1, "store"));
+    pbImmortalize(GFN_canStore);
+    pbImmortalize(GFN_fetch);
+    pbImmortalize(GFN_store);
+
     TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);
+    METH_BIND(Box, canStore);
+    METH_BIND(Box, fetch);
     METH_BIND(Box, gcMark);
+    METH_BIND(Box, store);
 
     DAT_NULL_BOX = makeMutableBox(); // Note: Explicit `==` check in `boxStore`.
     pbImmortalize(DAT_NULL_BOX);
 }
-
-/* Documented in header. */
-zvalue TYPE_Box = NULL;
