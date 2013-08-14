@@ -206,6 +206,13 @@ static zvalue makeThunk(zvalue expression) {
     return makeValue(STR_CLOSURE, value);
 }
 
+/**
+ * Constructs an optional-value expression.
+ */
+static zvalue makeOptValueExpression(zvalue expression) {
+    return makeCallName(STR_OPT_VALUE, makeThunk(expression));
+}
+
 
 /*
  * Parsing helper functions
