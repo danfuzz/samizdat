@@ -68,20 +68,6 @@ zvalue boxGet(zvalue box) {
 }
 
 /* Documented in header. */
-void boxReset(zvalue box) {
-    assertHasType(box, TYPE_Box);
-
-    BoxInfo *info = getInfo(box);
-
-    if (info->setOnce) {
-        die("Attempt to reset yield box.");
-    }
-
-    info->value = NULL;
-    info->canStore = true;
-}
-
-/* Documented in header. */
 void boxSet(zvalue box, zvalue value) {
     assertHasType(box, TYPE_Box);
 

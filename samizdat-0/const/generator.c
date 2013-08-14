@@ -107,7 +107,11 @@ METH_IMPL(Value, collect) {
 
         arr[at] = boxGet(box);
         generator = nextGen;
-        boxReset(box);
+
+        // Ideally, we wouldn't reuse the box (we'd just use N yield boxes),
+        // but for the sake of efficiency, we use the same box but reset it
+        // for each iteration.
+        boxSet(box, NULL);
     }
 
     zvalue result = listFromArray(at, arr);

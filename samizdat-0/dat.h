@@ -224,20 +224,15 @@ zvalue mappingValue(zvalue map);
  */
 
 /**
- * Gets the value out of the given box. Returns `NULL` if the box is
- * void or as yet unset.
- */
-zvalue boxGet(zvalue box);
-
-/**
  * Returns an indication of whether or not the given box has been set.
  */
 bool boxCanStore(zvalue box);
 
 /**
- * Resets the given box to an un-set state. The box must be a mutable box.
+ * Gets the value out of the given box. Returns `NULL` if the box is
+ * void or as yet unset.
  */
-void boxReset(zvalue box);
+zvalue boxGet(zvalue box);
 
 /**
  * Sets the value of the given box as indicated. Passing `value` as
