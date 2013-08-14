@@ -28,8 +28,8 @@ typedef struct {
     /** True iff this is a set-once (yield) box. */
     bool setOnce;
 
-    /** True iff the box is considered to be set (see spec for details). */
-    bool isSet;
+    /** True iff the box can be stored to (see spec for details). */
+    bool canStore;
 } BoxInfo;
 
 /**
@@ -45,9 +45,58 @@ static BoxInfo *getInfo(zvalue box) {
  */
 
 /* Documented in header. */
-zvalue boxGet(zvalue box) {
-    assertHasType(box, TYPE_Box);
+zvalue makeMutableBox(zvalue value) {
+    zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
+    BoxInfo *info = getInfo(result);
 
+    info->value = value;
+    info->canStore = true;
+    info->setOnce = false;
+
+    return result;
+}
+
+/* Documented in header. */
+zvalue makeYieldBox(void) {
+    zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
+    BoxInfo *info = getInfo(result);
+
+    info->value = NULL;
+    info->canStore = true;
+    info->setOnce = true;
+
+    return result;
+}
+
+
+/*
+ * Type Definition
+ */
+
+/* Documented in header. */
+zvalue TYPE_Box = NULL;
+
+/* Documented in header. */
+zvalue GFN_canStore;
+
+/* Documented in header. */
+zvalue GFN_fetch;
+
+/* Documented in header. */
+zvalue GFN_store;
+
+/* Documented in header. */
+zvalue DAT_NULL_BOX = NULL;
+
+/* Documented in header. */
+METH_IMPL(Box, canStore) {
+    zvalue box = args[0];
+    return getInfo(box)->canStore ? box : NULL;
+}
+
+/* Documented in header. */
+METH_IMPL(Box, fetch) {
+    zvalue box = args[0];
     zvalue result = getInfo(box)->value;
 
     if (result != NULL) {
@@ -62,76 +111,6 @@ zvalue boxGet(zvalue box) {
 }
 
 /* Documented in header. */
-bool boxIsSet(zvalue box) {
-    assertHasType(box, TYPE_Box);
-    return getInfo(box)->isSet;
-}
-
-/* Documented in header. */
-void boxReset(zvalue box) {
-    assertHasType(box, TYPE_Box);
-
-    BoxInfo *info = getInfo(box);
-
-    if (info->setOnce) {
-        die("Attempt to reset yield box.");
-    }
-
-    info->value = NULL;
-    info->isSet = false;
-}
-
-/* Documented in header. */
-void boxSet(zvalue box, zvalue value) {
-    assertHasType(box, TYPE_Box);
-
-    if (box == DAT_NULL_BOX) {
-        return;
-    }
-
-    BoxInfo *info = getInfo(box);
-
-    if (info->isSet && info->setOnce) {
-        die("Attempt to re-set yield box.");
-    }
-
-    info->value = value;
-    info->isSet = true;
-}
-
-/* Documented in header. */
-zvalue makeMutableBox(void) {
-    zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
-    BoxInfo *info = getInfo(result);
-
-    info->value = NULL;
-    info->isSet = false;
-    info->setOnce = false;
-
-    return result;
-}
-
-/* Documented in header. */
-zvalue makeYieldBox(void) {
-    zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
-    BoxInfo *info = getInfo(result);
-
-    info->value = NULL;
-    info->isSet = false;
-    info->setOnce = true;
-
-    return result;
-}
-
-
-/*
- * Type Definition
- */
-
-/* Documented in header. */
-zvalue DAT_NULL_BOX = NULL;
-
-/* Documented in header. */
 METH_IMPL(Box, gcMark) {
     zvalue box = args[0];
     BoxInfo *info = getInfo(box);
@@ -142,13 +121,42 @@ METH_IMPL(Box, gcMark) {
 }
 
 /* Documented in header. */
-void datBindBox(void) {
-    TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);
-    METH_BIND(Box, gcMark);
+METH_IMPL(Box, store) {
+    zvalue box = args[0];
+    zvalue value = (argCount == 2) ? args[1] : NULL;
 
-    DAT_NULL_BOX = makeMutableBox(); // Note: Explicit `==` check in `boxSet`.
-    pbImmortalize(DAT_NULL_BOX);
+    BoxInfo *info = getInfo(box);
+
+    if (!info->canStore) {
+        die("Attempt to re-store yield box.");
+    }
+
+    if (box != DAT_NULL_BOX) {
+        info->value = value;
+    }
+
+    if (info->setOnce) {
+        info->canStore = false;
+    }
+
+    return value;
 }
 
 /* Documented in header. */
-zvalue TYPE_Box = NULL;
+void datBindBox(void) {
+    GFN_canStore = makeGeneric(1, 1, stringFromUtf8(-1, "canStore"));
+    GFN_fetch = makeGeneric(1, 1, stringFromUtf8(-1, "fetch"));
+    GFN_store = makeGeneric(1, 2, stringFromUtf8(-1, "store"));
+    pbImmortalize(GFN_canStore);
+    pbImmortalize(GFN_fetch);
+    pbImmortalize(GFN_store);
+
+    TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);
+    METH_BIND(Box, canStore);
+    METH_BIND(Box, fetch);
+    METH_BIND(Box, gcMark);
+    METH_BIND(Box, store);
+
+    DAT_NULL_BOX = makeMutableBox(NULL); // Note: Explicit `==` test in `store`.
+    pbImmortalize(DAT_NULL_BOX);
+}

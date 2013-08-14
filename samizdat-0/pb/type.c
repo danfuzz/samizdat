@@ -311,10 +311,7 @@ bool haveSameType(zvalue v1, zvalue v2) {
     }
 }
 
-/*
- * Documented in header. **Note:** This is the C99 way to get one "real"
- * version of an `inline` function.
- */
+/* Documented in header. */
 extern void *pbPayload(zvalue value);
 
 /* Documented in header. */
@@ -363,7 +360,7 @@ METH_IMPL(Type, debugString) {
     TypeInfo *info = getInfo(type);
 
     zvalue result = stringFromUtf8(-1, "@(Type ");
-    result = stringAdd(result, funCall(GFN_debugString, 1, &info->name));
+    result = stringAdd(result, GFN_CALL(debugString, info->name));
 
     if (!info->derived) {
         result = stringAdd(result, stringFromUtf8(-1, " /*core*/"));

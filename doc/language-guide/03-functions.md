@@ -273,7 +273,7 @@ The contract is as follows:
 * When a generator is not "voided" (out of values to yield), calling it
   causes two things to be done:
 
-  * It calls `boxSet(box, value)` on its argument in order to yield
+  * It calls `store(box, value)` on its argument in order to yield
     one value out of itself.
   * It returns a new generator as a result which, when called, yields
     the *next* value, and so on.
@@ -283,9 +283,13 @@ The contract is as follows:
 
 * When a voided generator is called, it does these two things:
 
-  * It calls `boxSet(box)` (with no payload argument) on its argument
+  * It calls `store(box)` (with no payload argument) on its argument
     in order to yield void.
   * It returns void.
+
+**Note:** Clients of generators should rely primarily on the return value
+to determine whether the generator has been voided, rather than on what
+gets done to the box passed in as the first argument.
 
 #### Parser functions
 

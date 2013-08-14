@@ -14,13 +14,13 @@
 # Standard "voided" generator. This is a generator, not a generator
 # constructor.
 fn voidedGenerator(box) {
-    boxSet(box)
+    store(box)
 };
 
 # Empty list generator. It always yields the empty list and returns
 # itself. This is a generator, not a generator constructor.
 fn emptyListGenerator(box) {
-    boxSet(box, []);
+    store(box, []);
     <> emptyListGenerator
 };
 
@@ -33,12 +33,12 @@ fn makeIncrementGenerator(filterFunction, first, increment) {
         <> { box ::
             <> ifValue { <> filterFunction(value) }
                 { result ::
-                    boxSet(box, result);
+                    store(box, result);
                     <> makeIncrementGenerator1(iadd(value, increment));
                 }
                 {
                     # The filter indicated that the generator is voided.
-                    boxSet(box);
+                    store(box);
                 }
         }
     };
@@ -147,10 +147,10 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
 # cases, e.g. by virtue of `filterGenerator` always calling `paraGenerator`.
 fn oneItemParaGenerator(generator) {
     <> { <out> box ::
-        def innerBox = yieldBox();
+        def innerBox = makeYieldBox();
         <> ifValue { <> generator(innerBox) }
             { nextGenerator ::
-                boxSet(box, [boxGet(innerBox)]);
+                store(box, [fetch(innerBox)]);
                 <> oneItemParaGenerator(nextGenerator)
             }
     }
@@ -189,10 +189,10 @@ fn collectGenerator(generator) {
 fn doFilter(filterFunction, generators*) {
     loopReduce(paraGenerator(generators*))
         { gen ::
-            def box = yieldBox();
+            def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
-                    filterFunction(boxGet(box)*);
+                    filterFunction(fetch(box)*);
                     <> [nextGenerator]
                 }
                 {
@@ -217,10 +217,10 @@ fn doReduce(reduceFunction, generators, baseValues) {
 
     loopReduce(gen, baseValues)
         { gen, values ::
-            def box = yieldBox();
+            def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
-                    <> ifValue { <> reduceFunction(boxGet(box)*, values*) }
+                    <> ifValue { <> reduceFunction(fetch(box)*, values*) }
                         { nextValues <> [nextGenerator, nextValues] }
                         {
                             # The reduce function discarded the values.
@@ -238,10 +238,10 @@ fn doReduce(reduceFunction, generators, baseValues) {
 fn doReduce1(reduceFunction, generator, baseValue) {
     loopReduce(generatorFromValue(generator), baseValue)
         { gen, value ::
-            def box = yieldBox();
+            def box = makeYieldBox();
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
-                    <> ifValue { <> reduceFunction(boxGet(box), value) }
+                    <> ifValue { <> reduceFunction(fetch(box), value) }
                         { nextValue <> [nextGenerator, nextValue] }
                         {
                             # The reduce function discarded the value.
@@ -269,12 +269,12 @@ fn filterGenerator(filterFunction, generators*) {
             # allowed to yield void to indicate a generated value is to
             # be discarded.
             loopReduce(gen) { <next> gen ::
-                def innerBox = yieldBox();
+                def innerBox = makeYieldBox();
                 ifValue { <> gen(innerBox) }
                     { nextGenerator ::
-                        ifValue { <> filterFunction(boxGet(innerBox)*) }
+                        ifValue { <> filterFunction(fetch(innerBox)*) }
                             { value ::
-                                boxSet(box, value);
+                                store(box, value);
                                 <out> filterGenerator1(nextGenerator)
                             }
                             {
@@ -284,7 +284,7 @@ fn filterGenerator(filterFunction, generators*) {
                     };
 
                 # The inner generator was voided.
-                boxSet(box);
+                store(box);
                 <out>
             }
         }
@@ -330,10 +330,10 @@ fn optGenerator(generator) {
     # Main generator maker, which takes a generator (per se) as its argument.
     fn optGenerator1(gen) {
         <> { box ::
-            def innerBox = yieldBox();
+            def innerBox = makeYieldBox();
             <> ifValue { <> gen(innerBox) }
                 { nextGenerator ::
-                    boxSet(box, [boxGet(innerBox)]);
+                    store(box, [fetch(innerBox)]);
                     <> optGenerator1(nextGenerator)
                 }
                 { <> emptyListGenerator(box) }
@@ -351,13 +351,13 @@ fn paraGenerator(generators*) {
         <> { <out> box ::
             def generatorCalls = listFilter(generators)
                 { gen ::
-                    def innerBox = yieldBox();
+                    def innerBox = makeYieldBox();
                     <> ifValue { <> gen(innerBox) }
                         { nextGenerator ::
-                            <> [boxGet(innerBox), nextGenerator]
+                            <> [fetch(innerBox), nextGenerator]
                         }
                         {
-                            boxSet(box); # Void result.
+                            store(box); # Void result.
                             <out>
                         }
                 };
@@ -366,7 +366,7 @@ fn paraGenerator(generators*) {
             def nexts = listFilter(generatorCalls)
                 { one <> listNth(one, 1) };
 
-            boxSet(box, yields);
+            store(box, yields);
             <> paraGenerator1(nexts);
         }
     };
@@ -397,13 +397,13 @@ fn reduceGenerator(reduceFunction, generators, baseValues) {
             # allowed to yield void to indicate a generated value is to
             # be discarded.
             loopReduce(gen) { <next> gen ::
-                def innerBox = yieldBox();
+                def innerBox = makeYieldBox();
                 ifValue { <> gen(innerBox) }
                     { nextGenerator ::
                         ifValue
-                            { <> reduceFunction(boxGet(innerBox)*, values*) }
+                            { <> reduceFunction(fetch(innerBox)*, values*) }
                             { nextValues ::
-                                boxSet(box, nextValues);
+                                store(box, nextValues);
                                 <out> reduceGenerator1(
                                     nextGenerator, nextValues)
                             }
@@ -414,7 +414,7 @@ fn reduceGenerator(reduceFunction, generators, baseValues) {
                     };
 
                 # The inner generator was voided.
-                boxSet(box);
+                store(box);
                 <out>
             }
         }
@@ -436,10 +436,10 @@ fn seqGenerator(generators*) {
 
     fn seqGenerator1(gen) {
         <> { box ::
-            def innerBox = yieldBox();
+            def innerBox = makeYieldBox();
             <> ifValue { <> gen(innerBox) }
                 { nextGenerator ::
-                    boxSet(box, boxGet(innerBox));
+                    store(box, fetch(innerBox));
                     <> seqGenerator1(nextGenerator)
                 }
                 {

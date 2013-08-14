@@ -13,7 +13,7 @@
 
 # Documented in Samizdat Layer 0 spec.
 fn forwardFunction() {
-    def box = yieldBox();
+    def box = makeYieldBox();
 
     fn doForward(optFunction?, args*) {
         ifIs { <> eq(optFunction, []) }
@@ -26,12 +26,12 @@ fn forwardFunction() {
         ifNot { <> canCall(call, function) }
             { io0Die("Attempt to forward to non-function.") };
 
-        boxSet(box, function);
+        store(box, function);
         <> function
     };
 
     fn forwarder(args*) {
-        <> ifValue { <> boxGet(box) }
+        <> ifValue { <> fetch(box) }
             { function <> function(args*) }
             { <> doForward(args*) }
     };

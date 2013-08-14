@@ -1692,10 +1692,10 @@ def parDoExpression = {/
 # constructed by using the built-in parser.
 def FOR_BODY_CLOSURE = sam0Tree("
     generator ::
-    def box = yieldBox();
+    def box = makeYieldBox();
     <> ifValue { <> generator(box) }
         { nextGenerator ::
-            body(boxGet(box)*);
+            body(fetch(box)*);
             <> [nextGenerator]
         }
         { <\\\"break\"> }");
@@ -1715,10 +1715,10 @@ def FOR_BODY_CLOSURE = sam0Tree("
 #     };
 #     loopReduce(paraGenerator(expr1, expr2))
 #         { generator ::
-#             def box = yieldBox();
+#             def box = makeYieldBox();
 #             <> ifValue { <> generator(box) }
 #                 { nextGenerator ::
-#                     body(boxGet(box)*);
+#                     body(fetch(box)*);
 #                     <> [nextGenerator]
 #                 }
 #                 { <\"break"> }

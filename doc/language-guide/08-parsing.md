@@ -20,7 +20,7 @@ or void to indicate parsing failure. The second argument is the `input`.
 The input is a generator for terminal elements to be parsed.
 
 A parsing function, upon success when called, must do two things: It must
-call `boxSet` on its yield `box` to indicate the non-void result of parsing.
+call `store` on its yield `box` to indicate the non-void result of parsing.
 Then, it must return a replacement `input` for use as the input to subsequent
 parsers, that reflects the removal of whatever elements were consumed
 by the parsing (including none). If the parsing function consumed all of

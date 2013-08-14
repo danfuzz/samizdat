@@ -367,7 +367,7 @@ void pbMark(zvalue value) {
 
     zvalue marker = genericFind(GFN_gcMark, value);
     if (marker != NULL) {
-        funCall(marker, 1, &value);
+        FUN_CALL(marker, value);
     }
 
     // Opaque types are all immortalized, but transparent types need to

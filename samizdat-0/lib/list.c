@@ -62,7 +62,7 @@ PRIM_IMPL(listFilter) {
 
     for (zint i = 0; i < size; i++) {
         zvalue elem = listNth(list, i);
-        zvalue one = funCall(function, 1, &elem);
+        zvalue one = FUN_CALL(function, elem);
 
         if (one != NULL) {
             result[at] = one;
