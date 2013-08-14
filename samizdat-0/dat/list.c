@@ -117,12 +117,6 @@ zvalue listAdd(zvalue list1, zvalue list2) {
 }
 
 /* Documented in header. */
-zvalue listAppend(zvalue list, zvalue value) {
-    datAssertList(list);
-    return listInsNth(list, listSizeOf(list), value);
-}
-
-/* Documented in header. */
 zvalue listDelNth(zvalue list, zint n) {
     datAssertList(list);
 

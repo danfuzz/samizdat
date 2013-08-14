@@ -151,6 +151,13 @@ static zvalue listFrom2(zvalue e1, zvalue e2) {
 }
 
 /**
+ * Appends an element to a list.
+ */
+static zvalue listAppend(zvalue list, zvalue elem) {
+    return listAdd(list, listFrom1(elem));
+}
+
+/**
  * Constructs a `literal` node.
  */
 static zvalue makeLiteral(zvalue value) {

@@ -33,18 +33,8 @@ void arrayFromList(zvalue *result, zvalue list);
 /**
  * Combines the elements of two lists, in order, into a new
  * list.
- *
- * Contrasting this with `listAppend()`, that function operates
- * heterogeneously on a list and an element, whereas this one
- * operates on two peer lists.
  */
 zvalue listAdd(zvalue list1, zvalue list2);
-
-/**
- * Gets the list resulting from appending the given value to the
- * given list.
- */
-zvalue listAppend(zvalue list, zvalue value);
 
 /**
  * Gets the list resulting from deleting the nth element of the
