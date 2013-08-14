@@ -70,7 +70,7 @@ zvalue functionCall(zvalue function, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-zvalue functionFrom(zint minArgs, zint maxArgs, zfunction function,
+zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
         zvalue name) {
     if ((minArgs < 0) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {

@@ -53,7 +53,7 @@ static zvalue primitiveContext(void) {
         do { \
             zvalue nameStr = stringFromUtf8(-1, #name); \
             ctx = mapPut(ctx, nameStr, \
-                functionFrom(minArgs, maxArgs, prim_##name, nameStr)); \
+                makeFunction(minArgs, maxArgs, prim_##name, nameStr)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \

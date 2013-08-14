@@ -179,7 +179,7 @@ void genericBindCore(zvalue generic, zvalue type, zfunction function) {
     }
 
     info->functions[index] =
-        functionFrom(info->minArgs, info->maxArgs, function, info->name);
+        makeFunction(info->minArgs, info->maxArgs, function, info->name);
 }
 
 /* Documented in header. */
