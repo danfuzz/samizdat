@@ -38,7 +38,7 @@ PRIM_IMPL(boxSet) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mutableBox) {
-    zvalue result = boxMutable();
+    zvalue result = makeMutableBox();
 
     if (argCount == 1) {
         boxSet(result, args[0]);
@@ -87,5 +87,5 @@ PRIM_IMPL(sam0Eval) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(yieldBox) {
-    return boxYield();
+    return makeYieldBox();
 }

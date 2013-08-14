@@ -100,7 +100,7 @@ void boxSet(zvalue box, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue boxMutable(void) {
+zvalue makeMutableBox(void) {
     zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
@@ -112,7 +112,7 @@ zvalue boxMutable(void) {
 }
 
 /* Documented in header. */
-zvalue boxYield(void) {
+zvalue makeYieldBox(void) {
     zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
@@ -146,7 +146,7 @@ void datBindBox(void) {
     TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);
     METH_BIND(Box, gcMark);
 
-    DAT_NULL_BOX = boxMutable(); // Note: Explicit `==` check in `boxSet`.
+    DAT_NULL_BOX = makeMutableBox(); // Note: Explicit `==` check in `boxSet`.
     pbImmortalize(DAT_NULL_BOX);
 }
 

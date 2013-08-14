@@ -94,7 +94,7 @@ METH_IMPL(Value, collect) {
     zint at;
 
     zstackPointer save = pbFrameStart();
-    zvalue box = boxMutable();
+    zvalue box = makeMutableBox();
 
     for (at = 0; /*at*/; at++) {
         zvalue nextGen = funCall(generator, 1, &box);
