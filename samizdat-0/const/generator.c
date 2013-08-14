@@ -105,13 +105,13 @@ METH_IMPL(Value, collect) {
             die("Generator produced too many interpolated items.");
         }
 
-        arr[at] = FUN_CALL(GFN_fetch, box);
+        arr[at] = GFN_CALL(fetch, box);
         generator = nextGen;
 
         // Ideally, we wouldn't reuse the box (we'd just use N yield boxes),
         // but for the sake of efficiency, we use the same box but reset it
         // for each iteration.
-        FUN_CALL(GFN_store, box);
+        GFN_CALL(store, box);
     }
 
     zvalue result = listFromArray(at, arr);
