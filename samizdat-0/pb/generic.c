@@ -11,8 +11,7 @@
 #include "impl.h"
 #include "zlimits.h"
 
-#include <stdint.h>
-#include <string.h>
+#include <stddef.h>
 
 
 /*

@@ -7,7 +7,6 @@
 #include "impl.h"
 #include "zlimits.h"
 
-#include <stdlib.h>
 #include <string.h>
 
 
