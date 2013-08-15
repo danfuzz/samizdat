@@ -167,7 +167,10 @@ static zvalue makeLiteral(zvalue value) {
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeThunk(zvalue expression) {
-    zvalue value = mapFrom2(STR_statements, EMPTY_LIST, STR_yield, expression);
+    zvalue value = mapFrom3(
+        STR_formals, EMPTY_LIST,
+        STR_statements, EMPTY_LIST,
+        STR_yield, expression);
     return makeValue(STR_closure, value);
 }
 
@@ -388,13 +391,13 @@ DEF_PARSE(formal) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(formalsList) {
-    zvalue result = PARSE_COMMA_SEQ(formal);
-
-    return (pbSize(result) == 0) ? EMPTY_MAP : mapFrom1(STR_formals, result);
+    return PARSE_COMMA_SEQ(formal);
 }
 
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(programDeclarations) {
+/**
+ * Helper for `programDeclarations`: Parses the main part of the syntax.
+ */
+DEF_PARSE(programDeclarations1) {
     MARK();
 
     // Both of these are always maps (possibly empty).
@@ -405,19 +408,25 @@ DEF_PARSE(programDeclarations) {
         MATCH_OR_REJECT(CH_COLONCOLON);
     }
 
-    return mapAdd(formals, yieldDef);
+    return mapAdd(mapFrom1(STR_formals, formals), yieldDef);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(programDeclarations) {
+    zvalue result = NULL;
+
+    if (result == NULL) { result = PARSE(programDeclarations1); }
+    if (result == NULL) { result = mapFrom1(STR_formals, EMPTY_LIST); }
+
+    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(program) {
-    zvalue declarations = PARSE(programDeclarations); // `NULL` is ok here.
-    zvalue value = PARSE(programBody); // This never fails.
+    zvalue declarations = PARSE(programDeclarations); // This never fails.
+    zvalue body = PARSE(programBody); // This never fails.
 
-    if (declarations != NULL) {
-        value = mapAdd(value, declarations);
-    }
-
-    return makeValue(STR_closure, value);
+    return makeValue(STR_closure, mapAdd(declarations, body));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -440,7 +449,8 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(closure);
 
-    if (mapGet(dataOf(c), STR_formals) != NULL) {
+    zvalue formals = mapGet(dataOf(c), STR_formals);
+    if (!pbEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
 
@@ -506,9 +516,11 @@ DEF_PARSE(fnCommon) {
         listAdd(returnDef, mapGet(codeMap, STR_statements));
 
     zvalue result = mapAdd(codeMap, name);
-    result = mapAdd(result, formals);
     result = mapAdd(result,
-        mapFrom2(STR_yieldDef, STR_return, STR_statements, statements));
+        mapFrom3(
+            STR_formals,    formals,
+            STR_yieldDef,   STR_return,
+            STR_statements, statements));
     return result;
 }
 
@@ -539,11 +551,10 @@ DEF_PARSE(fnExpression) {
 
     zvalue mainClosure = makeValue(
         STR_closure,
-        mapFrom2(
-            STR_statements,
-            listFrom1(makeValue(STR_fnDef, funcMap)),
-            STR_yield,
-            makeVarRef(name)));
+        mapFrom3(
+            STR_formals,    EMPTY_LIST,
+            STR_statements, listFrom1(makeValue(STR_fnDef, funcMap)),
+            STR_yield,      makeVarRef(name)));
 
     return makeCall(mainClosure, NULL);
 }

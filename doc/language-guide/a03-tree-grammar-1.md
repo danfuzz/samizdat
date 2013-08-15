@@ -38,7 +38,7 @@ fn makeLiteral(value) {
 # Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
-    <> @[closure: [statements: [], yield: expression]]
+    <> @[closure: [formals: [], statements: [], yield: expression]]
 };
 
 # Returns a `varDef` node.
@@ -137,9 +137,9 @@ def parFormal = {/
 def parFormalsList = {/
     first = parFormal
     rest = (@"," parFormal)*
-    { <> [formals: [first, rest*]] }
+    { <> [first, rest*] }
 |
-    { <> [:] }
+    { <> [] }
 /};
 
 # Parses program / function declarations.
@@ -149,12 +149,14 @@ def parProgramDeclarations = {/
 
     (@"::" | &@"<>")
 
-    { <> [:, formals*, yieldDef*] }
+    { <> [formals: formals, yieldDef*] }
+|
+    { <> [formals: []] }
 /};
 
 # Parses a program (top-level program or contents inside function braces).
 def parProgram = {/
-    decls = (parProgramDeclarations | { <> [:] })
+    decls = parProgramDeclarations
     body = parProgramBody
     { <> @[closure: [:, decls*, body*]] }
 /};
@@ -179,7 +181,8 @@ def parNullaryClosure = {/
     c = parClosure
 
     {
-        ifIs { <> mapGet(dataOf(c), "formals") }
+        def formals = mapGet(dataOf(c), "formals");
+        ifIs { <> ne(formals, []) }
             { io0Die("Invalid formal argument in code block.") };
         <> c
     }
@@ -254,7 +257,8 @@ def parFnCommon = {/
         def codeMap = dataOf(code);
         def statements = [returnDef*, mapGet(codeMap, "statements")*];
         <> [
-            codeMap*, name*, formals*,
+            codeMap*, name*,
+            formals: formals,
             yieldDef: "return",
             statements: statements
         ]
@@ -298,6 +302,7 @@ def parFnExpression = {/
         name = { <> mapGet(funcMap, "name") }
         {
             def mainClosure = @[closure: [
+                formals: [],
                 statements: [@[fnDef: funcMap]],
                 yield: makeVarRef(name)
             ]];
