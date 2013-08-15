@@ -64,7 +64,7 @@ static zvalue primitiveContext(void) {
 
     // Include a mapping for a map of all the primitive bindings
     // (other than this one, since values can't self-reference).
-    ctx = mapPut(ctx, STR_UP_LIBRARY, ctx);
+    ctx = mapPut(ctx, STR_LIBRARY, ctx);
 
     return ctx;
 }

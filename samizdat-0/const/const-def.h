@@ -41,7 +41,7 @@ TOK(DEF,           "def");
 TOK(FN,            "fn");
 TOK(RETURN,        "return");
 
-STR(UP_LIBRARY,       "LIBRARY");
+STR(LIBRARY,       "LIBRARY");
 
 STR(actuals,          "actuals");
 STR(CALL,             "call");
