@@ -38,7 +38,7 @@ static zvalue allocList(zint size) {
     zvalue result =
         pbAllocValue(TYPE_List, sizeof(ListInfo) + size * sizeof(zvalue));
 
-    ((ListInfo *) pbPayload(result))->size = size;
+    getInfo(result)->size = size;
     return result;
 }
 
