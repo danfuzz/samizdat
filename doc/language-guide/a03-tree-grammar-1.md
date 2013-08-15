@@ -690,7 +690,7 @@ def parParserSetString = {/
             def endChar = dataOf(end);
             <> ifIs
                 { <> eq(1, &eq(coreSizeOf(startChar), coreSizeOf(endChar))) }
-                { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
+                { <> stringCat(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
         { <> dataOf(s) }
@@ -709,7 +709,7 @@ def parParserSet = {/
 
     terminals = (
         strings = parParserSetString+
-        { <> [stringAdd(strings*)*] }
+        { <> [stringCat(strings*)*] }
     |
         tokens = parParserToken+
         { <> collectFilter(tokens) { tok <> dataOf(tok) } }

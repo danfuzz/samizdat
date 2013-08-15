@@ -49,8 +49,8 @@ def parError = {/
     ch2 = [! "-\0"]
     word = parWord
     {
-        def value = stringAdd(stringFromTokens(ch1, ch2), word);
-        io0Note(stringAdd("Unknown option: ", sourceString(value)));
+        def value = stringCat(stringFromTokens(ch1, ch2), word);
+        io0Note(stringCat("Unknown option: ", sourceString(value)));
         <> [error: true]
     }
 /};
@@ -77,8 +77,8 @@ def parArguments = {/
 # Simple command-line argument parser.
 fn parseArgs(args) {
     # Make a unified string with each argument "\0"-terminated.
-    def argFilter = filterGenerator(args) { arg <> stringAdd(arg, "\0") };
-    def argString = stringAdd(argFilter*);
+    def argFilter = filterGenerator(args) { arg <> stringCat(arg, "\0") };
+    def argString = stringCat(argFilter*);
 
     # Use the peg grammar above to split the arguments back apart.
     <> pegApply(parArguments, argString)
@@ -100,7 +100,7 @@ fn samCommandLine(context, rawArgs*) {
     def args = ifValueOr { <> listButFirst(argWords) } { <> [] };
 
     def nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
-        { suffix <> stringAdd("x.", suffix) }
+        { suffix <> stringCat("x.", suffix) }
         { <> listLast(filePath) };
 
     def metas = metaFunctions(context, nameForLookup);

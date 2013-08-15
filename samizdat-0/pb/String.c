@@ -72,7 +72,7 @@ void pbAssertStringSize1(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue stringAdd(zvalue str1, zvalue str2) {
+zvalue stringCat(zvalue str1, zvalue str2) {
     pbAssertString(str1);
     pbAssertString(str2);
 
@@ -230,8 +230,8 @@ METH_IMPL(String, debugString) {
     zvalue string = args[0];
     zvalue quote = stringFromUtf8(1, "\"");
 
-    zvalue result = stringAdd(quote, string);
-    result = stringAdd(result, quote);
+    zvalue result = stringCat(quote, string);
+    result = stringCat(result, quote);
 
     return result;
 }

@@ -13,7 +13,7 @@
 
 # Documented in Samizdat Layer 0 spec.
 fn stringFromTokenList(tokens) {
-    <> stringAdd(collectFilter(typeOf, tokens)*)
+    <> stringCat(collectFilter(typeOf, tokens)*)
 };
 
 <> [

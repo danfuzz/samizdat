@@ -7,7 +7,7 @@ Lists
 <br><br>
 ### Primitive Definitions
 
-#### `listAdd(lists*) <> list`
+#### `listCat(lists*) <> list`
 
 Returns a list consisting of the concatenation of the elements
 of all the argument lists, in argument order.

@@ -16,7 +16,7 @@ fn reportError(pending) {
     io0Note("Pending tokens:");
 
     doFilter(pending, inclusiveRange(1, 1, 50))
-        { token, . :: io0Note(stringAdd("    ", sourceString(token))) };
+        { token, . :: io0Note(stringCat("    ", sourceString(token))) };
 
     io0Die("\nExtra tokens at end of program.")
 };
@@ -760,7 +760,7 @@ def parParserSetString = {/
             def endChar = dataOf(end);
             <> ifIs
                 { <> eq(1, &eq(coreSizeOf(startChar), coreSizeOf(endChar))) }
-                { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
+                { <> stringCat(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
         { <> dataOf(s) }
@@ -779,7 +779,7 @@ def parParserSet = {/
 
     terminals = (
         strings = parParserSetString+
-        { <> [stringAdd(strings*)*] }
+        { <> [stringCat(strings*)*] }
     |
         tokens = parParserToken+
         { <> collectFilter(tokens) { tok <> dataOf(tok) } }
@@ -896,7 +896,7 @@ def parStringInterpolation = {/
 # ```
 # =>
 # ```
-# stringAdd("string", fmt1((expr...)?*), fmt2({ block... }()?*))
+# stringCat("string", fmt1((expr...)?*), fmt2({ block... }()?*))
 # ```
 #
 def parInterpolatedString = {/
@@ -928,7 +928,7 @@ def parInterpolatedString = {/
                 }
         };
 
-        <> makeCallName("stringAdd", elems*)
+        <> makeCallName("stringCat", elems*)
     }
 /};
 

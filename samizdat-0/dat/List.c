@@ -100,7 +100,7 @@ void arrayFromList(zvalue *result, zvalue list) {
 }
 
 /* Documented in header. */
-zvalue listAdd(zvalue list1, zvalue list2) {
+zvalue listCat(zvalue list1, zvalue list2) {
     datAssertList(list1);
     datAssertList(list2);
 

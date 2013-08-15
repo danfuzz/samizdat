@@ -333,12 +333,12 @@ METH_IMPL(Closure, debugString) {
     zvalue result = stringFromUtf8(-1, "@(Closure ");
 
     if (name != NULL) {
-        result = stringAdd(result, GFN_CALL(debugString, name));
+        result = stringCat(result, GFN_CALL(debugString, name));
     } else {
-        result = stringAdd(result, stringFromUtf8(-1, "(unknown)"));
+        result = stringCat(result, stringFromUtf8(-1, "(unknown)"));
     }
 
-    result = stringAdd(result, stringFromUtf8(-1, ")"));
+    result = stringCat(result, stringFromUtf8(-1, ")"));
     return result;
 }
 

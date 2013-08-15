@@ -34,7 +34,7 @@ void arrayFromList(zvalue *result, zvalue list);
  * Combines the elements of two lists, in order, into a new
  * list.
  */
-zvalue listAdd(zvalue list1, zvalue list2);
+zvalue listCat(zvalue list1, zvalue list2);
 
 /**
  * Gets the list resulting from deleting the nth element of the
