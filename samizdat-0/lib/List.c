@@ -116,3 +116,8 @@ PRIM_IMPL(listSlice) {
 
     return listSlice(list, startIndex, endIndex);
 }
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(makeList) {
+    return listFromArray(argCount, args);
+}
