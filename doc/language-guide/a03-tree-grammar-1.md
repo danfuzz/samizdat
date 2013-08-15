@@ -97,7 +97,7 @@ def parVoidableExpression = forwardFunction();
 # Forward declaration required for integrating layer 1 definitions.
 def parParser = forwardFunction();
 
-# Parses a yield / non-local exit definition, yielding the def name.
+# Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
     @"<"
     name = @identifier
@@ -105,7 +105,7 @@ def parYieldDef = {/
     { <> dataOf(name) }
 /};
 
-# Parses an optional yield / non-local exit definition, always yielding
+# Parses an optional yield / nonlocal exit definition, always yielding
 # a map (an empty map if no yield def was present).
 def parOptYieldDef = {/
     y = parYieldDef
