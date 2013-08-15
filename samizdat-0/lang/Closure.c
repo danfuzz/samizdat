@@ -86,10 +86,10 @@ static zvalue buildClosure(zvalue node) {
     zvalue defMap = dataOf(node);
 
     info->defMap = defMap;
-    info->formals = mapGet(defMap, STR_FORMALS);
-    info->statements = mapGet(defMap, STR_STATEMENTS);
-    info->yield = mapGet(defMap, STR_YIELD);
-    info->yieldDef = mapGet(defMap, STR_YIELD_DEF);
+    info->formals = mapGet(defMap, STR_formals);
+    info->statements = mapGet(defMap, STR_statements);
+    info->yield = mapGet(defMap, STR_yield);
+    info->yieldDef = mapGet(defMap, STR_yieldDef);
 
     return result;
 }
@@ -112,8 +112,8 @@ static void bindArguments(Frame *frame, zvalue closure,
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
-        zvalue name = mapGet(formal, STR_NAME);
-        zvalue repeat = mapGet(formal, STR_REPEAT);
+        zvalue name = mapGet(formal, STR_name);
+        zvalue repeat = mapGet(formal, STR_repeat);
         bool ignore = (name == NULL);
         zvalue value;
 
@@ -204,13 +204,13 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
         // Switch on size of type string to avoid gratuitous `pbEq` tests.
         switch (pbSize(oneType)) {
             case 5: {
-                if (pbEq(oneType, STR_FN_DEF)) {
+                if (pbEq(oneType, STR_fnDef)) {
                     // Look for immediately adjacent `fnDef` nodes, and
                     // process them all together.
                     zint end = i + 1;
                     for (/*end*/; end < statementsSize; end++) {
                         zvalue one = statementsArr[end];
-                        if (!hasType(one, STR_FN_DEF)) {
+                        if (!hasType(one, STR_fnDef)) {
                             break;
                         }
                     }
@@ -222,7 +222,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                 break;
             }
             case 6: {
-                if (pbEq(oneType, STR_VAR_DEF)) {
+                if (pbEq(oneType, STR_varDef)) {
                     execVarDef(&frame, one);
                 } else {
                     execExpressionVoidOk(&frame, one);
@@ -259,7 +259,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
     for (zint i = 0; i < size; i++) {
         zvalue one = statements[i];
         zvalue fnMap = dataOf(one);
-        zvalue name = mapGet(fnMap, STR_NAME);
+        zvalue name = mapGet(fnMap, STR_name);
 
         closures[i] = buildClosure(one);
         frameAdd(frame, name, closures[i]);
@@ -326,7 +326,7 @@ METH_IMPL(Closure, canCall) {
 METH_IMPL(Closure, debugString) {
     zvalue closure = args[0];
     ClosureInfo *info = getInfo(closure);
-    zvalue name = mapGet(info->defMap, STR_NAME);
+    zvalue name = mapGet(info->defMap, STR_name);
 
     zvalue result = stringFromUtf8(-1, "@(Closure ");
 
