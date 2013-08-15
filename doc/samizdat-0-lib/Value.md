@@ -1,7 +1,7 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-General Value Handling
+Values (the base type)
 ----------------------
 
 <br><br>
@@ -39,6 +39,23 @@ For opaque values (including most core values), the given `secret` must match
 the value's associated secret (associated with the type). If the secret
 does not match (including if it was not passed at all), then this function
 returns void.
+
+#### `makeValue(type, value?) <> .`
+
+Returns a general value with the given type tag (an arbitrary value)
+and optional data payload value (also an arbitrary value). These
+equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = @[(type)];         is equivalent to  v = makeValue(type);
+v = @[(type): value];  is equivalent to  v = makeValue(type, value);
+```
+
+If `type` names a core type, and the given `value` is a value
+of that type, then this function returns `value` directly.
+
+**Syntax Note:** Used in the translation of `@type` and `@[type: value]`
+forms.
 
 #### `isOpaqueValue(value) <> logic`
 

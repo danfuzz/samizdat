@@ -46,11 +46,6 @@ fn \"unary-"(value) {
     <> ineg(value)
 };
 
-# TODO: Documented in Samizdat Layer 2 spec.
-fn \"unary**"(value) {
-    <> logicFromBoolean(value)
-};
-
 <> [
     "binary+":  \"binary+",
     "binary-":  \"binary-",
@@ -58,6 +53,5 @@ fn \"unary**"(value) {
     "binary/":  \"binary/",
     "binary%":  \"binary%",
     "unary+":   \"unary+",
-    "unary-":   \"unary-",
-    "unary**":  \"unary**"
+    "unary-":   \"unary-"
 ]

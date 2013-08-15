@@ -29,3 +29,4 @@ This is equivalent to applying the `**` operator to the argument.
 This is useful for taking a flag value and using it in a logical
 expression (such as might be the expression checked in an `if` statement).
 
+**Syntax Note:** Used in the translation of `expression**` forms.

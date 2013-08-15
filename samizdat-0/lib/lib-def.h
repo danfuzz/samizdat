@@ -13,30 +13,31 @@
  * usual guard macros.
  */
 
-LIB_FILE(boolean, sam0);
-LIB_FILE(code, sam0);
-LIB_FILE(const, sam0);
+LIB_FILE(Boolean,      sam0);
+LIB_FILE(List,         sam0);
+LIB_FILE(String,       sam0);
+LIB_FILE(Type,         sam0);
+
+LIB_FILE(callable,     sam0);
+LIB_FILE(const,        sam0);
 LIB_FILE(coreDispatch, sam0);
-LIB_FILE(entityMap, sam0);
-LIB_FILE(eval1, sam0);
-LIB_FILE(format, sam0);
-LIB_FILE(generator, sam0);
-LIB_FILE(list, sam0);
-LIB_FILE(main, sam0);
-LIB_FILE(manifest, sam0);
-LIB_FILE(meta, sam0);
-LIB_FILE(module, sam0);
-LIB_FILE(order, sam0);
-LIB_FILE(peg, sam0);
-LIB_FILE(string, sam0);
-LIB_FILE(tokenize1, sam0);
-LIB_FILE(tree1, sam0);
-LIB_FILE(type, sam0);
+LIB_FILE(entityMap,    sam0);
+LIB_FILE(eval1,        sam0);
+LIB_FILE(format,       sam0);
+LIB_FILE(generator,    sam0);
+LIB_FILE(main,         sam0);
+LIB_FILE(manifest,     sam0);
+LIB_FILE(meta,         sam0);
+LIB_FILE(module,       sam0);
+LIB_FILE(order,        sam0);
+LIB_FILE(peg,          sam0);
+LIB_FILE(tokenize1,    sam0);
+LIB_FILE(tree1,        sam0);
 
-LIB_FILE(commandLine, sam1);
-LIB_FILE(eval2, sam1);
-LIB_FILE(io0, sam1);
-LIB_FILE(tokenize2, sam1);
-LIB_FILE(tree2, sam1);
+LIB_FILE(commandLine,  sam1);
+LIB_FILE(eval2,        sam1);
+LIB_FILE(io0,          sam1);
+LIB_FILE(tokenize2,    sam1);
+LIB_FILE(tree2,        sam1);
 
-LIB_FILE(operators, sam2);
+LIB_FILE(operators,    sam2);

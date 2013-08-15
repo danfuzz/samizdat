@@ -120,7 +120,7 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 def UNARY_OPERATORS = [
     "+":   makeVarRef("unary+"),
     "-":   makeVarRef("unary-"),
-    "**":  makeVarRef("unary**"),
+    "**":  makeVarRef("logicFromBoolean"),
     "!!!": makeVarRef("inot")
 ];
 
