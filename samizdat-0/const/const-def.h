@@ -42,7 +42,6 @@ TOK(fn,             "fn");
 TOK(return,         "return");
 
 STR(LIBRARY,        "LIBRARY");
-
 STR(actuals,        "actuals");
 STR(call,           "call");
 STR(closure,        "closure");
