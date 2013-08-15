@@ -146,8 +146,8 @@ DEF(ignatz, POTION, "unknown effect");
 
 Variable and function names use `lowercaseInitialCamelCase`. Structural
 types use `UppercaseInitialCamelCase`. Other types use `zlowercaseInitial`
-(that is, prefixed with `z` per se). Numeric constants use
-`ALL_CAPS_WITH_UNDERSCORES`.
+(that is, prefixed with `z` per se). Numeric constants and some special
+valius use `ALL_CAPS_WITH_UNDERSCORES`.
 
 A "Hungarianesque" name prefix is used to identify aspects of some globals:
 
@@ -161,17 +161,17 @@ A "Hungarianesque" name prefix is used to identify aspects of some globals:
 * `TOK_NAME` &mdash; Identifies a transparent derived value whose type is
   `STR_NAME`.
 
-* `theName` (that is `the` as prefix) &mdash; Identifies a variable as
+* `theName` (that is, `the` as a prefix) &mdash; Identifies a variable as
   static (file scope).
 
-* `MODULE_CONSTANT` &mdash; Identifies the module to which a constant
-  applies.
+* `MODULE_CONSTANT` (that is, `MODULE_` as a prefix) &mdash; Identifies the
+  module to which a constant belongs.
 
-* `moduleFunctionName` &mdash; Identifies the module to which a function
-  belongs.
+* `moduleFunctionName` (that is, `module` as a prefix) &mdash; Identifies
+  the module to which a function belongs.
 
-* `typeFunctionName` &mdash; Identifies the type to which a function applies,
-  generally as its first argument.
+* `typeFunctionName` (that is, `type` as a prefix) &mdash; Identifies the
+  type to which a function applies, generally as its first argument.
 
 Other naming conventions (which sometimes override the above):
 
