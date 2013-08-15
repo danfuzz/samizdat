@@ -14,12 +14,6 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeMutableBox) {
-    zvalue value = (argCount == 1) ? args[0] : NULL;
-    return makeMutableBox(value);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(optValue) {
     zvalue function = args[0];
     zvalue value = FUN_CALL(function);
@@ -57,9 +51,4 @@ PRIM_IMPL(sam0Eval) {
     zvalue expressionNode = args[1];
 
     return langEval0(ctx, expressionNode);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeYieldBox) {
-    return makeYieldBox();
 }
