@@ -250,7 +250,7 @@ void zcharsFromString(zchar *result, zvalue string);
 
 
 /*
- * General Function Declarations
+ * General "Callable" Declarations (for function-like things)
  */
 
 /**

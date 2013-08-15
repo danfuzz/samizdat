@@ -5,7 +5,7 @@
  */
 
 /*
- * Function application
+ * "Callable" Values (function-like things)
  */
 
 #include "impl.h"
