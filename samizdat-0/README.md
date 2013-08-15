@@ -24,8 +24,6 @@ provide much in the way of meaningful messages.
 Directory and File Structure
 ----------------------------
 
-### Modules
-
 The code is structured into "modules", with each module's code in a
 directory with the module's name, and with "exports" from that module
 in a top-level header file bearing the module's name. For example,
