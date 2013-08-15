@@ -97,6 +97,44 @@ Coding Conventions
 C code is formatted in a close approximation of the "One True" brace and
 spacing style, with four spaces per indentation level.
 
+Here are a couple snippets to indicate areas of potential ambiguity:
+
+Function prototype continuation lines are double-indented to keep the
+prototype and code visually separate:
+
+```
+void lotsOfParametersHere(zvalue arg1, zvalue arg2, zvalue arg3, zvalue arg4,
+        zvalue arg5, zvalue arg6) {
+    body();
+    indented();
+    here();
+}
+```
+
+`switch` cases are indented a full level:
+
+```
+switch (something) {
+    case THING1: {
+        stuff();
+        break;
+    }
+    case THING2: {
+        stuff();
+        break;
+    }
+}
+```
+
+Table-like code and other runs of similar lines are horizontally-aligned:
+
+```
+DEF(blort,  POTION, "see in the dark");
+DEF(borch,  SPELL,  "insect soporific");
+DEF(fizmo,  SPELL,  "unclogs pipes");
+DEF(ignatz, POTION, "unknown effect");
+```
+
 ### Variable and Function Naming
 
 Variable and function names use `lowercaseInitialCamelCase`. Structural
@@ -145,6 +183,12 @@ Other naming conventions (which sometimes override the above):
 Source files are generally split into sections. Within each section,
 types and variables are typically listed before functions. The following is
 the usual order for sections:
+
+* Header &mdash; This starts with the standard copyright boilerplate and
+  is followed by a comment that describes the general purpose of the
+  file (usually a one-liner). After that are `#includes`, with `"local"`
+  includes before `<system>` includes (separated by a blank line), and
+  alphabetized in each subsection.
 
 * Private code, labeled "Private Definitions" &mdash; This is all
   meant to be scoped totally to the file in which it occurs. Functions in
