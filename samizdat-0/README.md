@@ -21,8 +21,10 @@ checking, attempting to fail fast in the face of any errors but not to
 provide much in the way of meaningful messages.
 
 
-Structure
----------
+Directory and File Structure
+----------------------------
+
+### Modules
 
 The code is structured into "modules", with each module's code in a
 directory with the module's name, and with "exports" from that module
@@ -69,6 +71,23 @@ later-named modules depending only on earlier-named ones):
 * main &mdash; Where it all comes together. This implements the
   C `main()` function. Depends on everything else.
 
+### File Naming
+
+Files that are primarily about a particular in-model type are given
+the file name `TypeName.c`.
+
+Other source files are given names that are meant to be indicative of their
+purpose.
+
+Within a module, a file named `impl.h` (if it exists) is an intra-module
+"implementation detail" header file, which includes declarations for functions
+and variables that are private to the module.
+
+Header files named `something-def.h` (that is, `-def` suffix) consist
+of "definitions" of some sort. Wherever these files are included, the
+`#include` is preceded by per-file `#define`s to properly expand the
+definitions contained in the file in question.
+
 
 Coding Conventions
 ------------------
@@ -78,7 +97,7 @@ Coding Conventions
 C code is formatted in a close approximation of the "One True" brace and
 spacing style, with four spaces per indentation level.
 
-### Naming
+### Variable and Function Naming
 
 Variable and function names use `lowercaseInitialCamelCase`. Structural
 types use `UppercaseInitialCamelCase`. Other types use `zlowercaseInitial`
