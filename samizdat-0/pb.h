@@ -12,6 +12,8 @@
 #define _PB_H_
 
 #include "ztype.h"
+
+#include <stddef.h>
 #include <stdbool.h>
 
 
@@ -277,7 +279,7 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args);
  * Helper for `FUN_CALL`: Calls a function with no arguments.
  */
 inline zvalue funCallWith0(zvalue function) {
-    return funCall(function, 0, (const zvalue *) 0);
+    return funCall(function, 0, NULL);
 }
 
 /**
