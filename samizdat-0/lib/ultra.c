@@ -15,17 +15,12 @@
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeList) {
-    if (argCount == 0) {
-        return EMPTY_LIST;
-    }
-
     return listFromArray(argCount, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeMapping) {
     zint size = argCount - 1;
-    zvalue keys = args[0];
     zvalue value = args[size];
 
     if (size == 0) {
