@@ -30,7 +30,7 @@ def MANIFEST = [
     "type.sam0",
     "list.sam0",
     "boolean.sam0",
-    "code.sam0",
+    "callable.sam0",
 
     # Layer 0: Complicated functions
     "generator.sam0",
