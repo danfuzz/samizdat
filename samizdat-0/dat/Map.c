@@ -52,6 +52,18 @@ static zmapping *mapElems(zvalue map) {
 }
 
 /**
+ * Constructs and returns a single-mapping map.
+ */
+static zvalue makeMapping(zvalue key, zvalue value) {
+    zvalue result = allocMap(1);
+    zmapping *elems = mapElems(result);
+
+    elems->key = key;
+    elems->value = value;
+    return result;
+}
+
+/**
  * Allocates and returns a map with up to two mappings. This will
  * return a single-mapping map if the two keys are the same, in which case
  * the *second* value is used.
@@ -158,16 +170,6 @@ void datAssertMapSize1(zvalue value) {
 void arrayFromMap(zmapping *result, zvalue map) {
     datAssertMap(map);
     memcpy(result, mapElems(map), mapSizeOf(map) * sizeof(zmapping));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-zvalue makeMapping(zvalue key, zvalue value) {
-    zvalue result = allocMap(1);
-    zmapping *elems = mapElems(result);
-
-    elems->key = key;
-    elems->value = value;
-    return result;
 }
 
 /* Documented in header. */
