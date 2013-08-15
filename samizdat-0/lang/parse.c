@@ -167,13 +167,13 @@ static zvalue makeLiteral(zvalue value) {
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeThunk(zvalue expression) {
-    zvalue value = mapFrom2(STR_statements, EMPTY_LIST, STR_YIELD, expression);
+    zvalue value = mapFrom2(STR_statements, EMPTY_LIST, STR_yield, expression);
     return makeValue(STR_closure, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
-    zvalue payload = mapFrom2(STR_NAME, name, STR_VALUE, value);
+    zvalue payload = mapFrom2(STR_name, name, STR_VALUE, value);
     return makeValue(STR_varDef, payload);
 }
 
@@ -383,7 +383,7 @@ DEF_PARSE(formal) {
 
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
 
-    return mapFrom2(STR_NAME, name, STR_repeat, repeat);
+    return mapFrom2(STR_name, name, STR_repeat, repeat);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -485,7 +485,7 @@ DEF_PARSE(fnCommon2) {
         return EMPTY_MAP;
     }
 
-    return mapFrom1(STR_NAME, dataOf(n));
+    return mapFrom1(STR_name, dataOf(n));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -518,7 +518,7 @@ DEF_PARSE(fnDef) {
 
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
 
-    if (mapGet(funcMap, STR_NAME) == NULL) {
+    if (mapGet(funcMap, STR_name) == NULL) {
         return NULL;
     }
 
@@ -532,7 +532,7 @@ DEF_PARSE(fnExpression) {
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
     zvalue closure = makeValue(STR_closure, funcMap);
 
-    zvalue name = mapGet(funcMap, STR_NAME);
+    zvalue name = mapGet(funcMap, STR_name);
     if (name == NULL) {
         return closure;
     }
@@ -542,7 +542,7 @@ DEF_PARSE(fnExpression) {
         mapFrom2(
             STR_statements,
             listFrom1(makeValue(STR_fnDef, funcMap)),
-            STR_YIELD,
+            STR_yield,
             makeVarRef(name)));
 
     return makeCall(mainClosure, NULL);
@@ -985,7 +985,7 @@ DEF_PARSE(programBody) {
 
     PARSE(optSemicolons);
 
-    return mapFrom2(STR_statements, statements, STR_YIELD, yield);
+    return mapFrom2(STR_statements, statements, STR_yield, yield);
 }
 
 

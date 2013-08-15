@@ -195,7 +195,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 /* Documented in header. */
 void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = dataOf(varDef);
-    zvalue name = mapGet(nameValue, STR_NAME);
+    zvalue name = mapGet(nameValue, STR_name);
     zvalue valueExpression = mapGet(nameValue, STR_VALUE);
     zvalue value = execExpression(frame, valueExpression);
 
