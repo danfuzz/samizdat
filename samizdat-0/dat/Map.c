@@ -154,7 +154,7 @@ void datAssertMap(zvalue value) {
 /* Documented in header. */
 void datAssertMapSize1(zvalue value) {
     datAssertMap(value);
-    if (pbSize(value) != 1) {
+    if (getInfo(value)->size != 1) {
         die("Not a size 1 map.");
     }
 }
