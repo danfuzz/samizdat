@@ -21,8 +21,8 @@ checking, attempting to fail fast in the face of any errors but not to
 provide much in the way of meaningful messages.
 
 
-Directory and File Structure
-----------------------------
+Directory and File Organization
+-------------------------------
 
 The code is structured into "modules", with each module's code in a
 directory with the module's name, and with "exports" from that module
