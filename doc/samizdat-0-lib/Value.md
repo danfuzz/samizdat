@@ -1,7 +1,7 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-General Value Handling
+Values (the base type)
 ----------------------
 
 <br><br>

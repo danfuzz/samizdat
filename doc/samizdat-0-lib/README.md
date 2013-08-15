@@ -63,24 +63,27 @@ will be returned, or one of:
 
 ### Contents
 
-* [Constants](constants.md)
-* [General Value Handling](value.md)
-* [Conditionals And Iteration](conditional.md)
-* [Ordering / Comparison](order.md)
-* [Booleans](boolean.md)
-* [Ints](int.md)
-* [Strings](string.md)
-* [Lists](list.md)
-* [Maps](map.md)
-* [Boxes](box.md)
-* [Uniqlets](Uniqlet.md)
-* [Generators](generator.md)
-* [Functions And Code](code.md)
-* [I/O](io.md)
-* [String Formatting](format.md)
-* [Parsing](peg.md)
-* [Modules](module.md)
-* [Meta-Library](meta.md)
+* Types
+  * [Booleans](Boolean.md)
+  * [Boxes](Box.md)
+  * [Ints](Int.md)
+  * [Lists](List.md)
+  * [Maps](Map.md)
+  * [Strings](String.md)
+  * [Uniqlets](Uniqlet.md)
+  * [Values (the base type)](Value.md)
+
+* Other
+  * [Constants](constants.md)
+  * [Conditionals And Iteration](conditional.md)
+  * [Ordering / Comparison](order.md)
+  * [Generators](generator.md)
+  * [Functions And Code](code.md)
+  * [I/O](io.md)
+  * [String Formatting](format.md)
+  * [Parsing](peg.md)
+  * [Modules](module.md)
+  * [Meta-Library](meta.md)
 
 - - - - -
 
