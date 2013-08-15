@@ -134,9 +134,9 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     zvalue string = stringFromZchars(size, chars);
 
     switch (chars[0]) {
-        case 'd': { if (pbEq(string, STR_DEF))    return TOK_DEF;    break; }
-        case 'f': { if (pbEq(string, STR_FN))     return TOK_FN;     break; }
-        case 'r': { if (pbEq(string, STR_RETURN)) return TOK_RETURN; break; }
+        case 'd': { if (pbEq(string, STR_def))    return TOK_def;    break; }
+        case 'f': { if (pbEq(string, STR_fn))     return TOK_fn;     break; }
+        case 'r': { if (pbEq(string, STR_return)) return TOK_return; break; }
     }
 
     return makeValue(STR_identifier, string);

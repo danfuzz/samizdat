@@ -471,7 +471,7 @@ DEF_PARSE(fnCommon1) {
         return EMPTY_LIST;
     }
 
-    return listFrom1(makeVarDef(result, makeVarRef(STR_RETURN)));
+    return listFrom1(makeVarDef(result, makeVarRef(STR_return)));
 }
 
 /**
@@ -492,7 +492,7 @@ DEF_PARSE(fnCommon2) {
 DEF_PARSE(fnCommon) {
     MARK();
 
-    MATCH_OR_REJECT(FN);
+    MATCH_OR_REJECT(fn);
 
     zvalue returnDef = PARSE(fnCommon1); // This never fails.
     zvalue name = PARSE(fnCommon2); // This never fails.
@@ -508,7 +508,7 @@ DEF_PARSE(fnCommon) {
     zvalue result = mapAdd(codeMap, name);
     result = mapAdd(result, formals);
     result = mapAdd(result,
-        mapFrom2(STR_yieldDef, STR_RETURN, STR_statements, statements));
+        mapFrom2(STR_yieldDef, STR_return, STR_statements, statements));
     return result;
 }
 
@@ -572,9 +572,9 @@ DEF_PARSE(identifierString) {
 
     if (result == NULL) { result = MATCH(string); }
     if (result == NULL) { result = MATCH(identifier); }
-    if (result == NULL) { result = MATCH(DEF); }
-    if (result == NULL) { result = MATCH(FN); }
-    if (result == NULL) { result = MATCH(RETURN); }
+    if (result == NULL) { result = MATCH(def); }
+    if (result == NULL) { result = MATCH(fn); }
+    if (result == NULL) { result = MATCH(return); }
     if (result == NULL) { return NULL; }
 
     zvalue value = dataOf(result);
@@ -757,7 +757,7 @@ DEF_PARSE(varRef) {
 DEF_PARSE(varDef) {
     MARK();
 
-    MATCH_OR_REJECT(DEF);
+    MATCH_OR_REJECT(def);
     zvalue identifier = MATCH_OR_REJECT(identifier);
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue expression = PARSE_OR_REJECT(expression);
@@ -931,8 +931,8 @@ DEF_PARSE(nonlocalExit1) {
 DEF_PARSE(nonlocalExit2) {
     MARK();
 
-    MATCH_OR_REJECT(RETURN);
-    return makeVarRef(STR_RETURN);
+    MATCH_OR_REJECT(return);
+    return makeVarRef(STR_return);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

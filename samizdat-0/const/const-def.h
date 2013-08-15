@@ -37,9 +37,9 @@ TOK(CH_QMARK,      "?");
 TOK(CH_SEMICOLON,  ";");
 TOK(CH_STAR,       "*");
 
-TOK(DEF,           "def");
-TOK(FN,            "fn");
-TOK(RETURN,        "return");
+TOK(def,           "def");
+TOK(fn,            "fn");
+TOK(return,        "return");
 
 STR(LIBRARY,       "LIBRARY");
 
