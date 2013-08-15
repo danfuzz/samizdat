@@ -42,6 +42,9 @@ typedef struct {
     /** The `"formals"` mapping inside `defMap`. */
     zvalue formals;
 
+    /** The result of `pbSize(formals)`. */
+    zint formalsSize;
+
     /** The `"statements"` mapping inside `defMap`. */
     zvalue statements;
 
@@ -87,13 +90,10 @@ static zvalue buildClosure(zvalue node) {
 
     info->defMap = defMap;
     info->formals = mapGet(defMap, STR_formals);
+    info->formalsSize = pbSize(info->formals);
     info->statements = mapGet(defMap, STR_statements);
     info->yield = mapGet(defMap, STR_yield);
     info->yieldDef = mapGet(defMap, STR_yieldDef);
-
-    if (info->formals == NULL) {
-        die("=== eek!");
-    }
 
     return result;
 }
@@ -106,7 +106,7 @@ static void bindArguments(Frame *frame, zvalue closure,
         zint argCount, const zvalue *args) {
     ClosureInfo *info = getInfo(closure);
     zvalue formals = info->formals;
-    zint formalsSize = pbSize(formals);
+    zint formalsSize = info->formalsSize;
     zvalue formalsArr[formalsSize];
     zint argAt = 0;
 
@@ -320,7 +320,7 @@ METH_IMPL(Closure, canCall) {
     zvalue value = args[1];
     ClosureInfo *info = getInfo(closure);
 
-    return (pbSize(info->formals) == 0) ? NULL : value;
+    return (info->formalsSize == 0) ? NULL : value;
 }
 
 /* Documented in header. */
