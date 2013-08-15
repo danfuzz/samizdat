@@ -42,6 +42,9 @@ typedef struct {
     /** The `"formals"` mapping inside `defMap`. */
     zvalue formals;
 
+    /** The result of `pbSize(formals)`. */
+    zint formalsSize;
+
     /** The `"statements"` mapping inside `defMap`. */
     zvalue statements;
 
@@ -87,6 +90,7 @@ static zvalue buildClosure(zvalue node) {
 
     info->defMap = defMap;
     info->formals = mapGet(defMap, STR_formals);
+    info->formalsSize = pbSize(info->formals);
     info->statements = mapGet(defMap, STR_statements);
     info->yield = mapGet(defMap, STR_yield);
     info->yieldDef = mapGet(defMap, STR_yieldDef);
@@ -102,7 +106,7 @@ static void bindArguments(Frame *frame, zvalue closure,
         zint argCount, const zvalue *args) {
     ClosureInfo *info = getInfo(closure);
     zvalue formals = info->formals;
-    zint formalsSize = (formals == NULL) ? 0 : pbSize(formals);
+    zint formalsSize = info->formalsSize;
     zvalue formalsArr[formalsSize];
     zint argAt = 0;
 
@@ -120,8 +124,8 @@ static void bindArguments(Frame *frame, zvalue closure,
         if (repeat != NULL) {
             zint count;
 
-            if ((pbSize(repeat) != 1) || !hasType(repeat, TYPE_String)) {
-                die("Invalid repeat modifier (non-string).");
+            if (stringNth(repeat, 1) != -1) {
+                die("Invalid repeat modifier.");
             }
 
             switch (stringNth(repeat, 0)) {
@@ -201,9 +205,10 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
         zvalue one = statementsArr[i];
         zvalue oneType = typeOf(one);
 
-        // Switch on size of type string to avoid gratuitous `pbEq` tests.
-        switch (pbSize(oneType)) {
-            case 5: {
+        // Switch on the first character of the type string to avoid
+        // gratuitous `pbEq` tests.
+        switch (stringNth(oneType, 0)) {
+            case 'f': {
                 if (pbEq(oneType, STR_fnDef)) {
                     // Look for immediately adjacent `fnDef` nodes, and
                     // process them all together.
@@ -221,7 +226,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                 }
                 break;
             }
-            case 6: {
+            case 'v': {
                 if (pbEq(oneType, STR_varDef)) {
                     execVarDef(&frame, one);
                 } else {
@@ -316,10 +321,7 @@ METH_IMPL(Closure, canCall) {
     zvalue value = args[1];
     ClosureInfo *info = getInfo(closure);
 
-    // This closure can be called with an argument as long as it defines
-    // at least one formal. `formals` is either `NULL` or non-empty, hence
-    // the test.
-    return (info->formals == NULL) ? NULL : value;
+    return (info->formalsSize == 0) ? NULL : value;
 }
 
 /* Documented in header. */

@@ -50,9 +50,9 @@ the evaluated actuals as its arguments, and the result of evaluation
 is the same as whatever was returned by the function call (including
 void).
 
-#### `closure` &mdash; `@[closure: [(formals: [formal+])?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?]`
+#### `closure` &mdash; `@[closure: [formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?]`
 
-* `formals: [formal+]` (optional) &mdash; An array of `formal`
+* `formals: [formal+]` (required) &mdash; An array of zero or more `formal`
   elements (as defined below). This defines the formal arguments to
   the function.
 
@@ -166,11 +166,11 @@ evaluation fails (terminating the runtime).
 These are nodes and values that appear within the data payloads
 of various expression nodes.
 
-#### `fnDef` &mdash; `@[fnDef: [name: name, (formals: [formal+])?, (yieldDef: name)?,` `statements: [statement*], (yield: expression)?]`
+#### `fnDef` &mdash; `@[fnDef: [name: name, formals: [formal+], (yieldDef: name)?,` `statements: [statement*], (yield: expression)?]`
 
 * `name: name` (required) &mdash; The name of the function.
 
-* `formals: [formal+]` (optional) &mdash; Same meaning as for
+* `formals: [formal+]` (required) &mdash; Same meaning as for
   `closure` nodes (see which).
 
 * `yieldDef: name` (optional) &mdash; Same meaning as for

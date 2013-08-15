@@ -156,35 +156,33 @@ zvalue execExpression(Frame *frame, zvalue expression) {
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     zvalue type = typeOf(e);
 
-    // Switching on the size of the type is a bit of a hack. It lets us
-    // avoid having to have a single big cascading `if` with a lot of
+    // Switching on the first character of the type is a bit of a hack. It
+    // lets us avoid having to have a single big cascading `if` with a lot of
     // `pbEq` calls.
-    switch (pbSize(type)) {
-        case 4: {
-            if (pbEq(type, STR_call))
-                return execCall(frame, e);
+    switch (stringNth(type, 0)) {
+        case 'c': {
+            if      (pbEq(type, STR_call))    { return execCall(frame, e); }
+            else if (pbEq(type, STR_closure)) { return execClosure(frame, e); }
             break;
         }
-        case 6: {
-            if (pbEq(type, STR_varRef))
-                return execVarRef(frame, e);
-            break;
-        }
-        case 7: {
-            if (pbEq(type, STR_literal))
-                return dataOf(e);
-            else if (pbEq(type, STR_closure))
-                return execClosure(frame, e);
-            break;
-        }
-        case 10: {
-            if (pbEq(type, STR_expression))
+        case 'e': {
+            if (pbEq(type, STR_expression)) {
                 return execExpressionVoidOk(frame, dataOf(e));
+            }
             break;
         }
-        case 11: {
-            if (pbEq(type, STR_interpolate))
+        case 'i': {
+            if (pbEq(type, STR_interpolate)) {
                 return execInterpolate(frame, e);
+            }
+            break;
+        }
+        case 'l': {
+            if (pbEq(type, STR_literal)) { return dataOf(e); }
+            break;
+        }
+        case 'v': {
+            if (pbEq(type, STR_varRef)) { return execVarRef(frame, e); }
             break;
         }
     }
