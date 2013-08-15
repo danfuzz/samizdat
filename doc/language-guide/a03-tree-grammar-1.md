@@ -409,8 +409,8 @@ def parMapping = {/
     value = parExpression
 
     # The `value` is wrapped in an `expression` node here to prevent
-    # interpolation from being applied to `makeMapping`.
-    { <> makeCallName("makeMapping", key, @[expression: value]) }
+    # interpolation from being applied to `makeValueMap`.
+    { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
     map = parExpression
     {

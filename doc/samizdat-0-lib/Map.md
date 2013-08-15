@@ -7,15 +7,15 @@ Maps
 <br><br>
 ### Primitive Definitions
 
-#### `makeMapping(keys*, value) <> map`
+#### `makeValueMap(keys*, value) <> map`
 
 This makes a map which maps any number of keys (including none)
 to the same value. If no keys are specified, then this function returns
 the empty map. For example:
 
 ```
-v = [(k1): v];      is equivalent to  v = makeMapping(k1, v);
-v = [[k1, k2]*: v;  is equivalent to  v = makeMapping(k1, k2, v);
+v = [(k1): v];      is equivalent to  v = makeValueMap(k1, v);
+v = [[k1, k2]*: v;  is equivalent to  v = makeValueMap(k1, k2, v);
 [etc.]
 ```
 

@@ -658,7 +658,7 @@ DEF_PARSE(mapping1) {
     MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return makeCallName(STR_makeMapping,
+    return makeCallName(STR_makeValueMap,
         listFrom2(key, makeValue(STR_expression, value)));
 }
 

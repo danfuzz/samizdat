@@ -308,7 +308,7 @@ def parMapping = pegMakeMainChoice(
         pegMakeToken(":"),
         parExpression,
         pegMakeCode { key, ., value ::
-            <> makeCallName("makeMapping", key, @[expression: value])
+            <> makeCallName("makeValueMap", key, @[expression: value])
         }),
     pegMakeSequence(
         parExpression,

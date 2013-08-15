@@ -13,7 +13,7 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeMapping) {
+PRIM_IMPL(makeValueMap) {
     zint size = argCount - 1;
     zvalue value = args[size];
 
