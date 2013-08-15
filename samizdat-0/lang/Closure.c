@@ -205,9 +205,10 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
         zvalue one = statementsArr[i];
         zvalue oneType = typeOf(one);
 
-        // Switch on size of type string to avoid gratuitous `pbEq` tests.
-        switch (pbSize(oneType)) {
-            case 5: {
+        // Switch on the first character of the type string to avoid
+        // gratuitous `pbEq` tests.
+        switch (stringNth(oneType, 0)) {
+            case 'f': {
                 if (pbEq(oneType, STR_fnDef)) {
                     // Look for immediately adjacent `fnDef` nodes, and
                     // process them all together.
@@ -225,7 +226,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                 }
                 break;
             }
-            case 6: {
+            case 'v': {
                 if (pbEq(oneType, STR_varDef)) {
                     execVarDef(&frame, one);
                 } else {
