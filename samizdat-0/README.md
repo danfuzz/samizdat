@@ -277,7 +277,7 @@ Inlines are defined using the C99 standard idiom, namely:
   file, marked just `inline` (and not `static`).
 
 * One source (non-header) file contains a declaration of the same function
-  with just `extern`.
+  with just `extern` (and not `inline`).
 
 ### External library usage
 
