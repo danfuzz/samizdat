@@ -124,7 +124,7 @@ static void bindArguments(Frame *frame, zvalue closure,
         if (repeat != NULL) {
             zint count;
 
-            if (pbSize(repeat) != 1) {
+            if (stringNth(repeat, 1) != -1) {
                 die("Invalid repeat modifier.");
             }
 
