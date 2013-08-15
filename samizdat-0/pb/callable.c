@@ -99,3 +99,23 @@ extern zvalue funCallWith3(zvalue function, zvalue arg0, zvalue arg1,
 /* Documented in header. */
 extern zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
     zvalue arg2, zvalue arg3);
+
+
+/*
+ * Type Definition
+ */
+
+/* Documented in header. */
+void pbBindCallable(void) {
+    GFN_call = makeGeneric(1, -1, stringFromUtf8(-1, "call"));
+    pbImmortalize(GFN_call);
+
+    GFN_canCall = makeGeneric(2, 2, stringFromUtf8(-1, "canCall"));
+    pbImmortalize(GFN_canCall);
+}
+
+/* Documented in header. */
+zvalue GFN_call = NULL;
+
+/* Documented in header. */
+zvalue GFN_canCall = NULL;

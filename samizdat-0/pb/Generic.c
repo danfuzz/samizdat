@@ -207,7 +207,6 @@ METH_IMPL(Generic, gcMark) {
 /* Documented in header. */
 void pbBindGeneric(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Generic`.
-
     METH_BIND(Generic, call);
     METH_BIND(Generic, canCall);
     METH_BIND(Generic, debugString);

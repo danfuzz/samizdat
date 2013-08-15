@@ -140,12 +140,8 @@ bool typeSecretIs(zvalue type, zvalue secret);
  */
 void pbInitTypeSystem(void);
 
-/**
- * Initializes the core generic functions.
- */
-void pbInitCoreGenerics(void);
-
 // Per-type binding and initialization.
+void pbBindCallable(void);
 void pbBindFunction(void);
 void pbBindGeneric(void);
 void pbBindInt(void);

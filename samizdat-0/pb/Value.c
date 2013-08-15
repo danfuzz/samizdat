@@ -170,12 +170,6 @@ METH_IMPL(Value, size) {
 
 /* Documented in header. */
 void pbBindValue(void) {
-    GFN_call = makeGeneric(1, -1, stringFromUtf8(-1, "call"));
-    pbImmortalize(GFN_call);
-
-    GFN_canCall = makeGeneric(2, 2, stringFromUtf8(-1, "canCall"));
-    pbImmortalize(GFN_canCall);
-
     GFN_debugString = makeGeneric(1, 1, stringFromUtf8(-1, "debugString"));
     pbImmortalize(GFN_debugString);
 
@@ -201,12 +195,6 @@ void pbBindValue(void) {
 
 /* Documented in header. */
 zvalue TYPE_Value = NULL;
-
-/* Documented in header. */
-zvalue GFN_call = NULL;
-
-/* Documented in header. */
-zvalue GFN_canCall = NULL;
 
 /* Documented in header. */
 zvalue GFN_debugString = NULL;
