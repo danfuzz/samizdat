@@ -24,7 +24,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
     call = dataOf(call);
 
     zvalue function = mapGet(call, STR_FUNCTION);
-    zvalue actuals = mapGet(call, STR_ACTUALS);
+    zvalue actuals = mapGet(call, STR_actuals);
     zvalue functionId = execExpression(frame, function);
 
     zint argCount = pbSize(actuals);
@@ -173,12 +173,12 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
         case 7: {
             if (pbEq(type, STR_LITERAL))
                 return dataOf(e);
-            else if (pbEq(type, STR_CLOSURE))
+            else if (pbEq(type, STR_closure))
                 return execClosure(frame, e);
             break;
         }
         case 10: {
-            if (pbEq(type, STR_EXPRESSION))
+            if (pbEq(type, STR_expression))
                 return execExpressionVoidOk(frame, dataOf(e));
             break;
         }

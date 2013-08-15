@@ -86,7 +86,7 @@ static zvalue buildClosure(zvalue node) {
     zvalue defMap = dataOf(node);
 
     info->defMap = defMap;
-    info->formals = mapGet(defMap, STR_FORMALS);
+    info->formals = mapGet(defMap, STR_formals);
     info->statements = mapGet(defMap, STR_STATEMENTS);
     info->yield = mapGet(defMap, STR_YIELD);
     info->yieldDef = mapGet(defMap, STR_YIELD_DEF);
@@ -204,13 +204,13 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
         // Switch on size of type string to avoid gratuitous `pbEq` tests.
         switch (pbSize(oneType)) {
             case 5: {
-                if (pbEq(oneType, STR_FN_DEF)) {
+                if (pbEq(oneType, STR_fnDef)) {
                     // Look for immediately adjacent `fnDef` nodes, and
                     // process them all together.
                     zint end = i + 1;
                     for (/*end*/; end < statementsSize; end++) {
                         zvalue one = statementsArr[end];
-                        if (!hasType(one, STR_FN_DEF)) {
+                        if (!hasType(one, STR_fnDef)) {
                             break;
                         }
                     }

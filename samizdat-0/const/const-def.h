@@ -43,13 +43,13 @@ TOK(RETURN,        "return");
 
 STR(UP_LIBRARY,       "LIBRARY");
 
-STR(ACTUALS,          "actuals");
+STR(actuals,          "actuals");
 STR(CALL,             "call");
-STR(CLOSURE,          "closure");
+STR(closure,          "closure");
 STR(COLLECT,          "collect");
-STR(EXPRESSION,       "expression");
-STR(FN_DEF,           "fnDef");
-STR(FORMALS,          "formals");
+STR(expression,       "expression");
+STR(fnDef,            "fnDef");
+STR(formals,          "formals");
 STR(FUNCTION,         "function");
 STR(IDENTIFIER,       "identifier");
 STR(INEG,             "ineg");
