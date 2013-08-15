@@ -189,7 +189,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZchars(size, chars);
-    return makeValue(STR_STRING, string);
+    return makeValue(STR_string, string);
 }
 
 /**

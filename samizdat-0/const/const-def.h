@@ -44,7 +44,7 @@ TOK(RETURN,        "return");
 STR(LIBRARY,       "LIBRARY");
 
 STR(actuals,          "actuals");
-STR(CALL,             "call");
+STR(call,             "call");
 STR(closure,          "closure");
 STR(expression,       "expression");
 STR(fnDef,            "fnDef");
@@ -66,7 +66,7 @@ STR(optValue,         "optValue");
 STR(repeat,           "repeat");
 STR(samCommandLine,   "samCommandLine");
 STR(statements,       "statements");
-STR(STRING,           "string");
+STR(string,           "string");
 STR(TYPE,             "type");
 STR(VALUE,            "value");
 STR(varDef,           "varDef");

@@ -161,7 +161,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     // `pbEq` calls.
     switch (pbSize(type)) {
         case 4: {
-            if (pbEq(type, STR_CALL))
+            if (pbEq(type, STR_call))
                 return execCall(frame, e);
             break;
         }

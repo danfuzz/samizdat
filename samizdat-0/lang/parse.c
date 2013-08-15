@@ -189,7 +189,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeValue(STR_CALL, value);
+    return makeValue(STR_call, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -561,7 +561,7 @@ DEF_PARSE(int) {
 DEF_PARSE(string) {
     MARK();
 
-    zvalue string = MATCH_OR_REJECT(STRING);
+    zvalue string = MATCH_OR_REJECT(string);
 
     return makeLiteral(dataOf(string));
 }
@@ -570,7 +570,7 @@ DEF_PARSE(string) {
 DEF_PARSE(identifierString) {
     zvalue result = NULL;
 
-    if (result == NULL) { result = MATCH(STRING); }
+    if (result == NULL) { result = MATCH(string); }
     if (result == NULL) { result = MATCH(identifier); }
     if (result == NULL) { result = MATCH(DEF); }
     if (result == NULL) { result = MATCH(FN); }
