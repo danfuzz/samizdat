@@ -30,7 +30,7 @@
 
 /* Documented in header. */
 void constInit(void) {
-    if (STR_DEF != NULL) {
+    if (STR_def != NULL) {
         return;
     }
 

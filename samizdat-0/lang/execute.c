@@ -23,8 +23,8 @@
 static zvalue execCall(Frame *frame, zvalue call) {
     call = dataOf(call);
 
-    zvalue function = mapGet(call, STR_FUNCTION);
-    zvalue actuals = mapGet(call, STR_ACTUALS);
+    zvalue function = mapGet(call, STR_function);
+    zvalue actuals = mapGet(call, STR_actuals);
     zvalue functionId = execExpression(frame, function);
 
     zint argCount = pbSize(actuals);
@@ -46,7 +46,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         bool interpolate;
         zvalue eval;
 
-        if (pbEq(oneType, STR_VOIDABLE)) {
+        if (pbEq(oneType, STR_voidable)) {
             // We replace the value in `actualsArr` with the voidable
             // payload in order to keep the follow-up interpolation loop
             // simpler.
@@ -57,7 +57,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             voidable = false;
         }
 
-        if (pbEq(oneType, STR_INTERPOLATE)) {
+        if (pbEq(oneType, STR_interpolate)) {
             one = dataOf(one);
             interpolate = true;
         } else {
@@ -92,7 +92,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (hasType(oneNode, STR_INTERPOLATE)) {
+            if (hasType(oneNode, STR_interpolate)) {
                 arrayFromList(&fullArgs[at], oneArg);
                 at += pbSize(oneArg);
             } else {
@@ -161,29 +161,29 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     // `pbEq` calls.
     switch (pbSize(type)) {
         case 4: {
-            if (pbEq(type, STR_CALL))
+            if (pbEq(type, STR_call))
                 return execCall(frame, e);
             break;
         }
         case 6: {
-            if (pbEq(type, STR_VAR_REF))
+            if (pbEq(type, STR_varRef))
                 return execVarRef(frame, e);
             break;
         }
         case 7: {
-            if (pbEq(type, STR_LITERAL))
+            if (pbEq(type, STR_literal))
                 return dataOf(e);
-            else if (pbEq(type, STR_CLOSURE))
+            else if (pbEq(type, STR_closure))
                 return execClosure(frame, e);
             break;
         }
         case 10: {
-            if (pbEq(type, STR_EXPRESSION))
+            if (pbEq(type, STR_expression))
                 return execExpressionVoidOk(frame, dataOf(e));
             break;
         }
         case 11: {
-            if (pbEq(type, STR_INTERPOLATE))
+            if (pbEq(type, STR_interpolate))
                 return execInterpolate(frame, e);
             break;
         }
@@ -195,8 +195,8 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 /* Documented in header. */
 void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = dataOf(varDef);
-    zvalue name = mapGet(nameValue, STR_NAME);
-    zvalue valueExpression = mapGet(nameValue, STR_VALUE);
+    zvalue name = mapGet(nameValue, STR_name);
+    zvalue valueExpression = mapGet(nameValue, STR_value);
     zvalue value = execExpression(frame, valueExpression);
 
     frameAdd(frame, name, value);

@@ -64,7 +64,7 @@ static zvalue primitiveContext(void) {
 
     // Include a mapping for a map of all the primitive bindings
     // (other than this one, since values can't self-reference).
-    ctx = mapPut(ctx, STR_UP_LIBRARY, ctx);
+    ctx = mapPut(ctx, STR_LIBRARY, ctx);
 
     return ctx;
 }
@@ -77,7 +77,7 @@ static zvalue getLibrary(void) {
     zstackPointer save = pbFrameStart();
 
     zvalue libraryFiles = getLibraryFiles();
-    zvalue mainText = mapGet(libraryFiles, STR_MAIN_SAM0);
+    zvalue mainText = mapGet(libraryFiles, STR_main_sam0);
     zvalue mainProgram = langTree0(mainText);
 
     zvalue ctx = primitiveContext();
