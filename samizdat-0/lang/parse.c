@@ -167,19 +167,19 @@ static zvalue makeLiteral(zvalue value) {
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeThunk(zvalue expression) {
-    zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
+    zvalue value = mapFrom2(STR_statements, EMPTY_LIST, STR_YIELD, expression);
     return makeValue(STR_closure, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
     zvalue payload = mapFrom2(STR_NAME, name, STR_VALUE, value);
-    return makeValue(STR_VAR_DEF, payload);
+    return makeValue(STR_varDef, payload);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarRef(zvalue name) {
-    return makeValue(STR_VAR_REF, name);
+    return makeValue(STR_varRef, name);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -346,7 +346,7 @@ DEF_PARSE(yieldDef) {
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(optYieldDef) {
     zvalue result = PARSE(yieldDef);
-    return (result != NULL) ? mapFrom1(STR_YIELD_DEF, result) : EMPTY_MAP;
+    return (result != NULL) ? mapFrom1(STR_yieldDef, result) : EMPTY_MAP;
 }
 
 /**
@@ -383,7 +383,7 @@ DEF_PARSE(formal) {
 
     zvalue repeat = PARSE(formal1); // Okay for it to be `NULL`.
 
-    return mapFrom2(STR_NAME, name, STR_REPEAT, repeat);
+    return mapFrom2(STR_NAME, name, STR_repeat, repeat);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -453,7 +453,7 @@ DEF_PARSE(codeOnlyClosure) {
 
     zvalue c = PARSE_OR_REJECT(nullaryClosure);
 
-    if (mapGet(dataOf(c), STR_YIELD_DEF) != NULL) {
+    if (mapGet(dataOf(c), STR_yieldDef) != NULL) {
         die("Invalid yield definition in code block.");
     }
 
@@ -503,12 +503,12 @@ DEF_PARSE(fnCommon) {
 
     zvalue codeMap = dataOf(code);
     zvalue statements =
-        listAdd(returnDef, mapGet(codeMap, STR_STATEMENTS));
+        listAdd(returnDef, mapGet(codeMap, STR_statements));
 
     zvalue result = mapAdd(codeMap, name);
     result = mapAdd(result, formals);
     result = mapAdd(result,
-        mapFrom2(STR_YIELD_DEF, STR_RETURN, STR_STATEMENTS, statements));
+        mapFrom2(STR_yieldDef, STR_RETURN, STR_statements, statements));
     return result;
 }
 
@@ -540,7 +540,7 @@ DEF_PARSE(fnExpression) {
     zvalue mainClosure = makeValue(
         STR_closure,
         mapFrom2(
-            STR_STATEMENTS,
+            STR_statements,
             listFrom1(makeValue(STR_fnDef, funcMap)),
             STR_YIELD,
             makeVarRef(name)));
@@ -868,7 +868,7 @@ DEF_PARSE(voidableExpression) {
     zvalue ex = PARSE_OR_REJECT(unaryExpression);
 
     if (voidable) {
-        return makeValue(STR_VOIDABLE, ex);
+        return makeValue(STR_voidable, ex);
     } else {
         return ex;
     }
@@ -985,7 +985,7 @@ DEF_PARSE(programBody) {
 
     PARSE(optSemicolons);
 
-    return mapFrom2(STR_STATEMENTS, statements, STR_YIELD, yield);
+    return mapFrom2(STR_statements, statements, STR_YIELD, yield);
 }
 
 

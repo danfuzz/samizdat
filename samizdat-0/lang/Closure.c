@@ -87,9 +87,9 @@ static zvalue buildClosure(zvalue node) {
 
     info->defMap = defMap;
     info->formals = mapGet(defMap, STR_formals);
-    info->statements = mapGet(defMap, STR_STATEMENTS);
+    info->statements = mapGet(defMap, STR_statements);
     info->yield = mapGet(defMap, STR_YIELD);
-    info->yieldDef = mapGet(defMap, STR_YIELD_DEF);
+    info->yieldDef = mapGet(defMap, STR_yieldDef);
 
     return result;
 }
@@ -113,7 +113,7 @@ static void bindArguments(Frame *frame, zvalue closure,
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
         zvalue name = mapGet(formal, STR_NAME);
-        zvalue repeat = mapGet(formal, STR_REPEAT);
+        zvalue repeat = mapGet(formal, STR_repeat);
         bool ignore = (name == NULL);
         zvalue value;
 
@@ -222,7 +222,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                 break;
             }
             case 6: {
-                if (pbEq(oneType, STR_VAR_DEF)) {
+                if (pbEq(oneType, STR_varDef)) {
                     execVarDef(&frame, one);
                 } else {
                     execExpressionVoidOk(&frame, one);

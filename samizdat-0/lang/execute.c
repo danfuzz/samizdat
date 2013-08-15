@@ -46,7 +46,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         bool interpolate;
         zvalue eval;
 
-        if (pbEq(oneType, STR_VOIDABLE)) {
+        if (pbEq(oneType, STR_voidable)) {
             // We replace the value in `actualsArr` with the voidable
             // payload in order to keep the follow-up interpolation loop
             // simpler.
@@ -166,7 +166,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
             break;
         }
         case 6: {
-            if (pbEq(type, STR_VAR_REF))
+            if (pbEq(type, STR_varRef))
                 return execVarRef(frame, e);
             break;
         }
