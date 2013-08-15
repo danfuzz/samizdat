@@ -50,17 +50,15 @@ void pbInit(void) {
 
     // The initialization of the type system has to come first, because all
     // the other initializers create types (that is, values of type `Type`).
+    // This also initializes type values for all the types that `Type`
+    // depends on.
     pbInitTypeSystem();
 
-    // Next the generics have to be defined, and the early types' methods
-    // need to be bound, so that the rest of the binding can operate properly.
-    pbInitCoreGenerics();
-
-    pbBindValue();
+    pbBindValue(); // This defines all the cross-type generics.
     pbBindType();
     pbBindString();
     pbBindFunction();
-    pbBindGeneric(); // Has to come after `Function`.
+    pbBindGeneric(); // This has to come after `Function`.
 
     pbBindInt();
     pbBindUniqlet();
