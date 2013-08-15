@@ -29,39 +29,39 @@ Directory and File Structure
 The code is structured into "modules", with each module's code in a
 directory with the module's name, and with "exports" from that module
 in a top-level header file bearing the module's name. For example,
-the code of the "dat" module is in the `dat/` directory, and the
-"dat" module exports functionality as defined in `dat.h`.
+the code of the `dat` module is in the `dat/` directory, and the
+`dat` module exports functionality as defined in `dat.h`.
 
 Here's a run-down of the defined modules, in dependency order (with
 later-named modules depending only on earlier-named ones):
 
-* util &mdash; Very basic utility functions, including console
+* `util` &mdash; Very basic utility functions, including console
   messaging, Unicode conversion, and about the simplest memory
   allocation facility.
 
-* pb &mdash; "Lowest-layer" data and plumbing model. This implements just
+* `pb` &mdash; "Lowest-layer" data and plumbing model. This implements just
   enough of the model to be able to do function definition and calling.
-  Also provides related utilities, such as assertions. Depends on util.
+  Also provides related utilities, such as assertions. Depends on `util`.
 
-* dat &mdash; "Low-layer" data model. This implements the various
+* `dat` &mdash; "Low-layer" data model. This implements the various
   Samizdat low-layer data types, providing constructors, accessors,
-  and a handful of assertions. Depends on pb and util.
+  and a handful of assertions. Depends on `util` and `pb`.
 
-* const &mdash; Commonly-used in-model constants and related utilities.
+* `const` &mdash; Commonly-used in-model constants and related utilities.
   This includes things like strings used during parsing, and the like.
-  Depends on util, pb, and dat.
+  Depends on `util`, `pb`, and `dat`.
 
-* io &mdash; I/O functions. This implements a minimal set of I/O
-  operations. Depends on util, pb, dat, and const.
+* `io` &mdash; I/O functions. This implements a minimal set of I/O
+  operations. Depends on `util`, `pb`, `dat`, and `const`.
 
-* lang &mdash; Language parsing and execution engine. This implements
+* `lang` &mdash; Language parsing and execution engine. This implements
   translation from source text to executable code trees, as well as
   the execution of same. This is also what implements the binding of
   primitive functions into execution contexts. This module does
-  not implement any of the library itself. Depends on util, pb, dat,
-  and const.
+  not implement any of the library itself. Depends on `util`, `pb`, `dat`,
+  and `const`.
 
-* lib &mdash; Library bindings. This implements both primitive and
+* `lib` &mdash; Library bindings. This implements both primitive and
   in-language bindings. The former are the parts of the core library
   that need to be (or are most conveniently) implemented in C. The
   latter are what can be implemented in Samizdat Layer 0. Depends on
@@ -70,6 +70,10 @@ later-named modules depending only on earlier-named ones):
 
 * main &mdash; Where it all comes together. This implements the
   C `main()` function. Depends on everything else.
+
+
+Coding Conventions
+------------------
 
 ### File Naming
 
@@ -94,10 +98,6 @@ Files of more than about 1,000 lines are generally considered to be
 too long. The general aim is to split them into two or more files.
 There are a couple exceptions, which unfortunately do not lend themselves
 to splitting up.
-
-
-Coding Conventions
-------------------
 
 ### Spacing and Indentation
 
