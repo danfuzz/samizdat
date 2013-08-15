@@ -173,7 +173,7 @@ static zvalue makeThunk(zvalue expression) {
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
-    zvalue payload = mapFrom2(STR_name, name, STR_VALUE, value);
+    zvalue payload = mapFrom2(STR_name, name, STR_value, value);
     return makeValue(STR_varDef, payload);
 }
 
@@ -552,7 +552,7 @@ DEF_PARSE(fnExpression) {
 DEF_PARSE(int) {
     MARK();
 
-    zvalue intval = MATCH_OR_REJECT(INT);
+    zvalue intval = MATCH_OR_REJECT(int);
 
     return makeLiteral(dataOf(intval));
 }

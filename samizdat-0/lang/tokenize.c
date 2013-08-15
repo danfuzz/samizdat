@@ -100,7 +100,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return makeValue(STR_INT, intval);
+    return makeValue(STR_int, intval);
 }
 
 /**
