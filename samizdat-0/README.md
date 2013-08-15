@@ -99,6 +99,42 @@ too long. The general aim is to split them into two or more files.
 There are a couple exceptions, which unfortunately do not lend themselves
 to splitting up.
 
+### Intra-file Arrangement
+
+Source files are generally split into sections. Within each section,
+types and variables are typically listed before functions. The following is
+the usual order for sections:
+
+* Header &mdash; This starts with the standard copyright boilerplate and
+  is followed by a comment that describes the general purpose of the
+  file (usually a one-liner). After that are `#includes`, with `"local"`
+  includes before `<system>` includes (separated by a blank line), and
+  alphabetized in each subsection.
+
+* Private code, labeled "Private Definitions" &mdash; This is all
+  meant to be scoped totally to the file in which it occurs. Functions in
+  this section are most typically listed in bottom-up (def before use) order.
+
+* Intra-module exports, labeled "Module Definitions" &mdash; Definitions
+  in this section should also have a corresponding declaration in the
+  module's `impl.h` file. Functions in this section are most typically
+  listed in alphabetical order.
+
+* Public exports, labeled "Exported Definitions" &mdash; This is any
+  code which is expected to be accessed directly by other modules. Definitions
+  in this section should also have a corresponding declaration in a top-level
+  (one directory up) file named `module.h`, where `module` is the name of
+  the module. Functions in this section are most typically listed in
+  alphabetical order.
+
+* Type definition code, labled "Type Definition" &mdash; This is code
+  which defines an in-model type. There will usually be a corresponding
+  declaration of `TYPE_Name` in *some* header (which one, depending on how
+  far the type is exported); rarely, a type is totally private to the file,
+  in which case its `TYPE_Name` is declared as `static`. Method implementation
+  functions in this section are most typically listed in alphabetical order,
+  with an overall binding / initialization function toward the bottom.
+
 ### Spacing and Indentation
 
 C code is formatted in a close approximation of the "One True" brace and
@@ -189,42 +225,6 @@ Other naming conventions (which sometimes override the above):
   function for the function `functionName`. Rarely, other digits are used
   as well.
 
-### Intra-file Arrangement
-
-Source files are generally split into sections. Within each section,
-types and variables are typically listed before functions. The following is
-the usual order for sections:
-
-* Header &mdash; This starts with the standard copyright boilerplate and
-  is followed by a comment that describes the general purpose of the
-  file (usually a one-liner). After that are `#includes`, with `"local"`
-  includes before `<system>` includes (separated by a blank line), and
-  alphabetized in each subsection.
-
-* Private code, labeled "Private Definitions" &mdash; This is all
-  meant to be scoped totally to the file in which it occurs. Functions in
-  this section are most typically listed in bottom-up (def before use) order.
-
-* Intra-module exports, labeled "Module Definitions" &mdash; Definitions
-  in this section should also have a corresponding declaration in a file
-  called `impl.h` in the same directory. Functions in this section are most
-  typically listed in alphabetical order.
-
-* Public exports, labeled "Exported Definitions" &mdash; This is any
-  code which is expected to be accessed directly by other modules. Definitions
-  in this section should also have a corresponding declaration in a top-level
-  (one directory up) file named `module.h`, where `module` is the name of
-  the module. Functions in this section are most typically listed in
-  alphabetical order.
-
-* Type definition code, labled "Type Definition" &mdash; This is code
-  which defines an in-model type. There will usually be a corresponding
-  declaration of `TYPE_Name` in *some* header (which one, depending on how
-  far the type is exported); rarely, a type is totally private to the file,
-  in which case its `TYPE_Name` is declared as `static`. Method implementation
-  functions in this section are most typically listed in alphabetical order,
-  with an overall binding / initialization function toward the bottom.
-
 ### Comments
 
 Variables, functions, types, and elements of structures all have
@@ -257,12 +257,13 @@ oversight for an item to *not* have such a comment.)
 
 ### Macros
 
-Macros are generally avoided, except for a couple narrow purposes:
+Macros are generally avoided, except for a specific couple of purposes:
 
 * As standard-form guards around header files to prevent multiple inclusion.
 
-* To help avoid particularly noisy boilerplate code. For this purpose,
-  they can be defined either in source or header files.
+* To help avoid particularly noisy boilerplate code, when no other means
+  is available. For this purpose, they can be defined either in source or
+  header files.
 
 ### Inline functions
 
