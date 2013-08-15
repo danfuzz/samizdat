@@ -24,9 +24,15 @@ This function is identical to `ifValue`, except that in the value case,
 this function calls the consequent function with no arguments, whereas
 `ifIs` calls it with an argument.
 
+**Syntax Note:** Used in the translation of `if`, `expression??`,
+and `expression & expression` forms.
+
+
 #### `ifNot(predicate, notFunction) <> . | void`
 
 This is identical to `ifIs`, except that the `isFunction` argument is omitted.
+
+**Syntax Note:** Used in the translation of `do` and `!expression` forms.
 
 #### `ifValue(function, valueFunction, voidFunction?) <> . | void`
 
@@ -46,6 +52,9 @@ This function is identical to `ifIs`, except that in the value case,
 this function calls the consequent function with an argument, whereas
 `ifIs` calls it with no arguments.
 
+**Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
+`expression & expression` forms.
+
 #### `ifValueOr(function, voidFunction) <> . | void`
 
 This is identical to `ifValue`, except that the `valueFunction` is
@@ -60,12 +69,16 @@ in that `ifValueOr(x)` would mean the same thing as `x()`, and
 This function is meant as the primitive that higher-layer logical-or
 expressions bottom out into, hence the name.
 
+**Syntax Note:** Used in the translation of `expression | expression` forms.
+
 #### `loop(function) <> void`
 
 Primitive unconditional loop construct. This repeatedly calls the given
 function with no arguments.
 
 In order for the loop to terminate, the function must use a nonlocal exit.
+
+**Syntax Note:** Used in the translation of `do` and `while` forms.
 
 #### `loopReduce(function, baseValues*) <> void`
 
@@ -76,6 +89,8 @@ or the original `baseValues` list if the function has yet to return non-void
 (including notably to the first call to the function).
 
 In order for the loop to terminate, the function must use a nonlocal exit.
+
+**Syntax Note:** Used in the translation of `for` forms.
 
 #### `optValue(function) <> list`
 
@@ -100,6 +115,9 @@ fn optValue(function) {
     <> ifValue(function, { v <> [v] }, { <> [] })
 }
 ```
+
+**Syntax Note:** Used in the translation of string interpolation,
+`expression?`, and `break` and other nonlocal exit forms.
 
 
 <br><br>

@@ -23,6 +23,10 @@ In particular, an implementation of *Samizdat 0* must provide the
 primitive definitions, but it can rely on the canonical in-language library
 source for the remainder, which is written in terms of the primitives.
 
+In addition, functions that are used in the translation of syntactic
+constructs are marked with a note along the lines of,
+"**Syntax Note:** Used in the translation of `example` forms".
+
 Each function listed here is introduced with a "prototype" that has
 the following form, meant to mimic how functions are defined in the
 language:
@@ -59,24 +63,27 @@ will be returned, or one of:
 
 ### Contents
 
-* [Constants](constants.md)
-* [Ultraprimitives](ultra.md)
-* [General Value Handling](value.md)
-* [Conditionals And Iteration](conditional.md)
-* [Ordering / Comparison](order.md)
-* [Booleans](boolean.md)
-* [Ints](int.md)
-* [Strings](string.md)
-* [Lists](list.md)
-* [Maps](map.md)
-* [Boxes](box.md)
-* [Generators](generator.md)
-* [Functions And Code](code.md)
-* [I/O](io.md)
-* [String Formatting](format.md)
-* [Parsing](peg.md)
-* [Modules](module.md)
-* [Meta-Library](meta.md)
+* Types
+  * [Booleans](Boolean.md)
+  * [Boxes](Box.md)
+  * [Ints](Int.md)
+  * [Lists](List.md)
+  * [Maps](Map.md)
+  * [Strings](String.md)
+  * [Uniqlets](Uniqlet.md)
+  * [Values (the base type)](Value.md)
+
+* Other
+  * [Constants](constants.md)
+  * [Conditionals And Iteration](conditional.md)
+  * [Ordering / Comparison](order.md)
+  * [Generators](generator.md)
+  * [Callables (function-like things)](callable.md)
+  * [I/O](io.md)
+  * [String Formatting](format.md)
+  * [Parsing](peg.md)
+  * [Modules](module.md)
+  * [Meta-Library](meta.md)
 
 - - - - -
 

@@ -71,6 +71,8 @@ list. If not, it is an error (terminating the runtime).
 Returns a list consisting of the elements of the given list, but in the
 opposite order.
 
+**Syntax Note:** Used in the translation of `switch` forms.
+
 #### `listSlice(list, start, end?) <> list`
 
 Returns a list consisting of a "slice" of elements of the given
@@ -79,6 +81,34 @@ list, from the `start` index (inclusive) through the `end` index
 into `list` (with the list size being a valid index), and must form a
 range (though possibly empty) with `start <= end`. If `end` is not
 specified, it defaults to the end of the list.
+
+#### `makeList(rest*) <> list`
+
+Returns a list with the given elements (in argument order).
+These equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = [v1];      is equivalent to  v = makeList(v1);
+v = [v1, v2];  is equivalent to  v = makeList(v1, v2);
+[etc.]
+```
+
+**Note:** The equivalence requires at least one argument, even though
+the function is happy to operate given zero arguments.
+
+**Note:** Technically, this function could be defined in-language as the
+following, but for practical reasons &mdash; e.g. and in particular,
+expected ordering of human operations during the course of
+bootstrapping an implementation, as well as efficiency of
+implementation (without sacrificing clarity) &mdash; it makes sense to
+keep this defined as a core primitive:
+
+```
+fn makeList(rest*) { <> rest };
+```
+
+**Syntax Note:** Used in the translation of `[item, ...]`,
+`[key: value, ...]`, and `switch` forms.
 
 
 <br><br>
