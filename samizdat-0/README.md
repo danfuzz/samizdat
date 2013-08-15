@@ -227,21 +227,30 @@ the usual order for sections:
 
 ### Comments
 
-Every file starts with a standard boilerplate copyright header. After that,
-most files have a brief comment about their contents.
-
 Variables, functions, types, and elements of structures all have
 documentation comments that start with `/**` as the usual indication
 that they are intended to be "published" documentation.
 
+Section and file banner comments take the form:
+
+```
+/*
+ * Title Goes Here
+ */
+```
+
+Most other comments, including multi-line comments, are `//`-prefixed.
+
 Comment text is written using Markdown syntax, even when not marked `/**`.
+Code samples are delimited with triple-backticks (Github flavor).
 
 A general aim of commenting is to take a "DRY" attitude, with
 header files being the "source of truth". Comments of the form
-`"/* Documented in header"` are used liberally in source (non-header) files
-as an explicit indication that the so-marked item does in fact have
-documentation elsewhere. (That is, it is an unintentional oversight for an
-item to *not* have such a comment.)
+`/* Documented in header. */` and `/* Documented in spec. */`
+are used liberally as an explicit indication that the so-marked item does
+in fact have documentation elsewhere. (That is, it is an unintentional
+oversight for an item to *not* have such a comment.)
+
 
 ### Macros
 
