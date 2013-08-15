@@ -27,6 +27,11 @@ def LOWER_ALPHA = [
     inclusiveRange("a", 1, "z")*: true
 ];
 
+# Returns an `interpolate` node.
+fn makeInterpolate(expression) {
+    <> @[interpolate: expression]
+};
+
 # Returns a `literal` node.
 fn makeLiteral(value) {
     <> @[literal: value]
@@ -73,7 +78,7 @@ fn makeCallNonlocalExit(name, optExpression?) {
         { ex ::
             <> makeCallName("nonlocalExit",
                 name,
-                @[interpolate: makeOptValueExpression(ex)])
+                makeInterpolate(makeOptValueExpression(ex)))
         }
         { <> makeCallName("nonlocalExit", name) }
 };
@@ -397,9 +402,7 @@ def parPostfixOperator = pegMakeMainChoice(
         }),
     pegMakeSequence(
         pegMakeToken("*"),
-        pegMakeCode { . ::
-            <> { node <> @[interpolate: node] }
-        }));
+        pegMakeCode { . <> { node <> makeInterpolate(node) } }));
 
 # Documented in Samizdat Layer 0 spec.
 def parUnaryExpression = pegMakeMainSequence(

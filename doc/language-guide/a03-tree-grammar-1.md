@@ -25,6 +25,11 @@ def LOWER_ALPHA = [
     inclusiveRange("a", 1, "z")*: true
 ];
 
+# Returns an `interpolate` node.
+fn makeInterpolate(expression) {
+    <> @[interpolate: expression]
+};
+
 # Returns a `literal` node.
 fn makeLiteral(value) {
     <> @[literal: value]
@@ -71,7 +76,7 @@ fn makeCallNonlocalExit(name, optExpression?) {
         { ex ::
             <> makeCallName("nonlocalExit",
                 name,
-                @[interpolate: makeOptValueExpression(ex)])
+                makeInterpolate(makeOptValueExpression(ex)))
         }
         { <> makeCallName("nonlocalExit", name) }
 };
@@ -506,7 +511,7 @@ def parPostfixOperator = {/
     # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
     # but higher layers augment its meaning.)
     @"*" !parExpression
-    { <> { node <> @[interpolate: node] } }
+    { <> { node <> makeInterpolate(node) } }
 #|
     # Note: *Layer 2* adds additional rules here.
 /};

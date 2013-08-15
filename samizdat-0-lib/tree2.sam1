@@ -27,6 +27,11 @@ def LOWER_ALPHA = [
     inclusiveRange("a", 1, "z")*: true
 ];
 
+# Returns an `interpolate` node.
+fn makeInterpolate(expression) {
+    <> @[interpolate: expression]
+};
+
 # Returns a `literal` node.
 fn makeLiteral(value) {
     <> @[literal: value]
@@ -73,7 +78,7 @@ fn makeCallNonlocalExit(name, optExpression?) {
         { ex ::
             <> makeCallName("nonlocalExit",
                 name,
-                @[interpolate: makeOptValueExpression(ex)])
+                makeInterpolate(makeOptValueExpression(ex)))
         }
         { <> makeCallName("nonlocalExit", name) }
 };
@@ -496,7 +501,7 @@ def parMapKey = {/
     firstKey = parKeyAtom
     moreKeys = (@"," parKeyAtom)+
     @")"
-    { <> @[interpolate: makeCallName("makeList", firstKey, moreKeys*)] }
+    { <> makeInterpolate(makeCallName("makeList", firstKey, moreKeys*)) }
 |
     parKeyAtom
 /};
@@ -914,7 +919,7 @@ def parInterpolatedString = {/
                         { io0Die("Invalid syntax in string interpolation.") };
 
                     <> makeCall(formatter,
-                        @[interpolate: makeOptValueExpression(call)])
+                        makeInterpolate(makeOptValueExpression(call)))
                 }
         };
 
@@ -1077,7 +1082,7 @@ def implPostfixOperator = {/
     # The lookahead failure here is to make the grammar prefer `*` to be
     # treated as a binary op.
     @"*" !parExpression
-    { <> { node <> @[interpolate: node] } }
+    { <> { node <> makeInterpolate(node) } }
 |
     @"?"
     { <> { node <> makeOptValueExpression(node) } }
@@ -1556,10 +1561,9 @@ def parSwitchExpression = {/
         def testBody = makeThunk(
                 makeCallName("makeList",
                     makeCallName("mapAdd",
-                        @[interpolate:
+                        makeInterpolate(
                             makeCallName("listReverse",
-                                makeCallName("makeList", regularCases*))
-                        ]),
+                                makeCallName("makeList", regularCases*)))),
                     ifValue { <> optDefault* }
                         { value <> closureWithFormals(value, formal) }
                         { <> YIELD_VOID_FN_1 },

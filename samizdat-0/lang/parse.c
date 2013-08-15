@@ -158,6 +158,11 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+static zvalue makeInterpolate(zvalue expression) {
+    return makeValue(STR_INTERPOLATE, expression);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeLiteral(zvalue value) {
     return makeValue(STR_LITERAL, value);
 }
@@ -205,7 +210,7 @@ static zvalue makeCallNonlocalExit(zvalue name, zvalue optExpression) {
 
     if (optExpression != NULL) {
         actuals = listFrom2(name,
-            makeValue(STR_INTERPOLATE, makeOptValueExpression(optExpression)));
+            makeInterpolate(makeOptValueExpression(optExpression)));
     } else {
         actuals = listFrom1(name);
     }
@@ -839,7 +844,7 @@ DEF_PARSE(unaryExpression) {
         if (hasType(one, TYPE_List)) {
             result = makeCall(result, one);
         } else if (pbEq(one, TOK_CH_STAR)) {
-            result = makeValue(STR_INTERPOLATE, result);
+            result = makeInterpolate(result);
         } else {
             die("Unexpected postfix.");
         }
