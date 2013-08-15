@@ -88,6 +88,13 @@ of "definitions" of some sort. Wherever these files are included, the
 `#include` is preceded by per-file `#define`s to properly expand the
 definitions contained in the file in question.
 
+### File Length
+
+Files of more than about 1,000 lines are generally considered to be
+too long. The general aim is to split them into two or more files.
+There are a couple exceptions, which unfortunately do not lend themselves
+to splitting up.
+
 
 Coding Conventions
 ------------------
@@ -177,6 +184,10 @@ Other naming conventions (which sometimes override the above):
   type `TypeName`. These are almost all for the creation of "identified"
   values (that is, values that have an identity beyond their underlying
   data).
+
+* `functionName0` (that is, `0` as a suffix) &mdash; Indicates a "helper"
+  function for the function `functionName`. Rarely, other digits are used
+  as well.
 
 ### Intra-file Arrangement
 
