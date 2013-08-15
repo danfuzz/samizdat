@@ -255,7 +255,6 @@ are used liberally as an explicit indication that the so-marked item does
 in fact have documentation elsewhere. (That is, it is an unintentional
 oversight for an item to *not* have such a comment.)
 
-
 ### Macros
 
 Macros are generally avoided, except for a couple narrow purposes:
