@@ -25,17 +25,10 @@ typedef struct {
 } ListInfo;
 
 /**
- * Gets the array of `zvalue` elements from a list.
+ * Gets a pointer to the value's info.
  */
-static zvalue *listElems(zvalue list) {
-    return ((ListInfo *) pbPayload(list))->elems;
-}
-
-/**
- * Gets the size of a list.
- */
-static zint listSizeOf(zvalue list) {
-    return ((ListInfo *) pbPayload(list))->size;
+static ListInfo *getInfo(zvalue list) {
+    return pbPayload(list);
 }
 
 /**
@@ -45,7 +38,7 @@ static zvalue allocList(zint size) {
     zvalue result =
         pbAllocValue(TYPE_List, sizeof(ListInfo) + size * sizeof(zvalue));
 
-    ((ListInfo *) pbPayload(result))->size = size;
+    getInfo(result)->size = size;
     return result;
 }
 
@@ -65,7 +58,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
     }
 
     zvalue result = allocList(size);
-    zvalue *resultElems = listElems(result);
+    zvalue *resultElems = getInfo(result)->elems;
 
     if (size1 != 0) {
         memcpy(resultElems, elems1, size1 * sizeof(zvalue));
@@ -96,16 +89,21 @@ void datAssertList(zvalue value) {
 /* Documented in header. */
 void arrayFromList(zvalue *result, zvalue list) {
     datAssertList(list);
-    memcpy(result, listElems(list), listSizeOf(list) * sizeof(zvalue));
+
+    ListInfo *info = getInfo(list);
+
+    memcpy(result, info->elems, info->size * sizeof(zvalue));
 }
 
 /* Documented in header. */
-zvalue listAdd(zvalue list1, zvalue list2) {
+zvalue listCat(zvalue list1, zvalue list2) {
     datAssertList(list1);
     datAssertList(list2);
 
-    zint size1 = listSizeOf(list1);
-    zint size2 = listSizeOf(list2);
+    ListInfo *info1 = getInfo(list1);
+    ListInfo *info2 = getInfo(list2);
+    zint size1 = info1->size;
+    zint size2 = info2->size;
 
     if (size1 == 0) {
         return list2;
@@ -113,15 +111,16 @@ zvalue listAdd(zvalue list1, zvalue list2) {
         return list1;
     }
 
-    return listFrom(size1, listElems(list1), NULL, size2, listElems(list2));
+    return listFrom(size1, info1->elems, NULL, size2, info2->elems);
 }
 
 /* Documented in header. */
 zvalue listDelNth(zvalue list, zint n) {
     datAssertList(list);
 
-    zvalue *elems = listElems(list);
-    zint size = listSizeOf(list);
+    ListInfo *info = getInfo(list);
+    zvalue *elems = info->elems;
+    zint size = info->size;
 
     pbAssertNth(size, n);
 
@@ -142,8 +141,9 @@ zvalue listInsNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
     pbAssertValid(value);
 
-    zint size = listSizeOf(list);
-    zvalue *elems = listElems(list);
+    ListInfo *info = getInfo(list);
+    zvalue *elems = info->elems;
+    zint size = info->size;
 
     pbAssertNthOrSize(size, n);
 
@@ -154,11 +154,13 @@ zvalue listInsNth(zvalue list, zint n, zvalue value) {
 zvalue listNth(zvalue list, zint n) {
     datAssertList(list);
 
-    if ((n < 0) || (n >= listSizeOf(list))) {
+    ListInfo *info = getInfo(list);
+
+    if ((n < 0) || (n >= info->size)) {
         return NULL;
     }
 
-    return listElems(list)[n];
+    return info->elems[n];
 }
 
 /* Documented in header. */
@@ -166,7 +168,8 @@ zvalue listPutNth(zvalue list, zint n, zvalue value) {
     datAssertList(list);
     pbAssertValid(value);
 
-    zint size = listSizeOf(list);
+    ListInfo *info = getInfo(list);
+    zint size = info->size;
 
     pbAssertNthOrSize(size, n);
 
@@ -174,18 +177,20 @@ zvalue listPutNth(zvalue list, zint n, zvalue value) {
         return listInsNth(list, n, value);
     }
 
-    zvalue result = listFrom(size, listElems(list), NULL, 0, NULL);
+    zvalue result = listFrom(size, info->elems, NULL, 0, NULL);
 
-    listElems(result)[n] = value;
+    getInfo(result)->elems[n] = value;
     return result;
 }
 
 /* Documented in header. */
 zvalue listSlice(zvalue list, zint start, zint end) {
     datAssertList(list);
-    pbAssertSliceRange(listSizeOf(list), start, end);
 
-    return listFrom(end - start, &listElems(list)[start], NULL, 0, NULL);
+    ListInfo *info = getInfo(list);
+
+    pbAssertSliceRange(info->size, start, end);
+    return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
 }
 
 
@@ -200,17 +205,19 @@ zvalue EMPTY_LIST = NULL;
 METH_IMPL(List, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    zint sz1 = listSizeOf(v1);
-    zint sz2 = listSizeOf(v2);
+    ListInfo *info1 = getInfo(v1);
+    ListInfo *info2 = getInfo(v2);
+    zint size1 = info1->size;
+    zint size2 = info2->size;
 
-    if (sz1 != sz2) {
+    if (size1 != size2) {
         return NULL;
     }
 
-    zvalue *e1 = listElems(v1);
-    zvalue *e2 = listElems(v2);
+    zvalue *e1 = info1->elems;
+    zvalue *e2 = info2->elems;
 
-    for (zint i = 0; i < sz1; i++) {
+    for (zint i = 0; i < size1; i++) {
         if (!pbEq(e1[i], e2[i])) {
             return NULL;
         }
@@ -222,8 +229,9 @@ METH_IMPL(List, eq) {
 /* Documented in header. */
 METH_IMPL(List, gcMark) {
     zvalue list = args[0];
-    zint size = listSizeOf(list);
-    zvalue *elems = listElems(list);
+    ListInfo *info = getInfo(list);
+    zvalue *elems = info->elems;
+    zint size = info->size;
 
     for (zint i = 0; i < size; i++) {
         pbMark(elems[i]);
@@ -236,30 +244,32 @@ METH_IMPL(List, gcMark) {
 METH_IMPL(List, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    zvalue *e1 = listElems(v1);
-    zvalue *e2 = listElems(v2);
-    zint sz1 = listSizeOf(v1);
-    zint sz2 = listSizeOf(v2);
-    zint sz = (sz1 < sz2) ? sz1 : sz2;
+    ListInfo *info1 = getInfo(v1);
+    ListInfo *info2 = getInfo(v2);
+    zvalue *e1 = info1->elems;
+    zvalue *e2 = info2->elems;
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+    zint size = (size1 < size2) ? size1 : size2;
 
-    for (zint i = 0; i < sz; i++) {
+    for (zint i = 0; i < size; i++) {
         zorder result = pbOrder(e1[i], e2[i]);
         if (result != ZSAME) {
             return intFromZint(result);
         }
     }
 
-    if (sz1 == sz2) {
+    if (size1 == size2) {
         return PB_0;
     }
 
-    return (sz1 < sz2) ? PB_NEG1 : PB_1;
+    return (size1 < size2) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
 METH_IMPL(List, size) {
     zvalue list = args[0];
-    return intFromZint(listSizeOf(list));
+    return intFromZint(getInfo(list)->size);
 }
 
 /* Documented in header. */

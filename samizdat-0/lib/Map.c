@@ -13,7 +13,7 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeMapping) {
+PRIM_IMPL(makeValueMap) {
     zint size = argCount - 1;
     zvalue value = args[size];
 
@@ -28,15 +28,15 @@ PRIM_IMPL(makeMapping) {
         mappings[i].value = value;
     }
 
-    return mapAddArray(EMPTY_MAP, size, mappings);
+    return mapCatArray(EMPTY_MAP, size, mappings);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapAdd) {
+PRIM_IMPL(mapCat) {
     zvalue result = EMPTY_MAP;
 
     for (zint i = 0; i < argCount; i++) {
-        result = mapAdd(result, args[i]);
+        result = mapCat(result, args[i]);
     }
 
     return result;

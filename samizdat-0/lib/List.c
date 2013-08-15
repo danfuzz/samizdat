@@ -12,7 +12,7 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listAdd) {
+PRIM_IMPL(listCat) {
     // Special case code for the common and easy cases.
     switch (argCount) {
         case 0: {
@@ -23,7 +23,7 @@ PRIM_IMPL(listAdd) {
             return args[0];
         }
         case 2: {
-            return listAdd(args[0], args[1]);
+            return listCat(args[0], args[1]);
         }
     }
 
@@ -33,7 +33,7 @@ PRIM_IMPL(listAdd) {
     zvalue result = args[0];
 
     for (zint i = 1; i < argCount; i++) {
-        result = listAdd(result, args[i]);
+        result = listCat(result, args[i]);
     }
 
     return result;

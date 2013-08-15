@@ -162,7 +162,7 @@ forms.
 
 Takes a generator which must yield map values, and collects all of its
 generated results, in generated order, by building up an overall map,
-as if by successive calls to `mapAdd`.
+as if by successive calls to `mapCat`.
 
 If there are mappings in the yielded results with equal keys, then the
 *last* such mapping is the one that "wins" in the final result.

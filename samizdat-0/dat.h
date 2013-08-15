@@ -34,7 +34,7 @@ void arrayFromList(zvalue *result, zvalue list);
  * Combines the elements of two lists, in order, into a new
  * list.
  */
-zvalue listAdd(zvalue list1, zvalue list2);
+zvalue listCat(zvalue list1, zvalue list2);
 
 /**
  * Gets the list resulting from deleting the nth element of the
@@ -91,24 +91,19 @@ extern zvalue EMPTY_MAP;
 void arrayFromMap(zmapping *result, zvalue map);
 
 /**
- * Constructs and returns a single-mapping map.
- */
-zvalue makeMapping(zvalue key, zvalue value);
-
-/**
  * Gets the map resulting from putting the all the given mappings
  * into the given map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
  * The effect is identical to calling a chain of `mapPut()`s on each
  * of the mappings in order.
  */
-zvalue mapAddArray(zvalue map, zint size, const zmapping *mappings);
+zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings);
 
 /**
  * Combines the mappings of the two given maps into a new map.
  * For overlapping keys between the two, the second argument "wins".
  */
-zvalue mapAdd(zvalue map1, zvalue map2);
+zvalue mapCat(zvalue map1, zvalue map2);
 
 /**
  * Gets a map resulting from the removal of the given key from the

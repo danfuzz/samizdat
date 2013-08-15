@@ -360,15 +360,15 @@ METH_IMPL(Type, debugString) {
     TypeInfo *info = getInfo(type);
 
     zvalue result = stringFromUtf8(-1, "@(Type ");
-    result = stringAdd(result, GFN_CALL(debugString, info->name));
+    result = stringCat(result, GFN_CALL(debugString, info->name));
 
     if (!info->derived) {
-        result = stringAdd(result, stringFromUtf8(-1, " /*core*/"));
+        result = stringCat(result, stringFromUtf8(-1, " /*core*/"));
     } else if (info->secret != NULL) {
-        result = stringAdd(result, stringFromUtf8(-1, " /*opaque*/"));
+        result = stringCat(result, stringFromUtf8(-1, " /*opaque*/"));
     }
 
-    result = stringAdd(result, stringFromUtf8(-1, ")"));
+    result = stringCat(result, stringFromUtf8(-1, ")"));
     return result;
 }
 

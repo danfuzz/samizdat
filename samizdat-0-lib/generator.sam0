@@ -317,7 +317,7 @@ fn mapFromGenerator(generator) {
     ifIs { <> isMap(generator) }
         { return generator };
 
-    <> mapAdd(generatorFromValue(generator)*)
+    <> mapCat(generatorFromValue(generator)*)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -459,7 +459,7 @@ fn stringFromGenerator(generator) {
     ifIs { <> isString(generator) }
         { return generator };
 
-    <> stringAdd(generatorFromValue(generator)*)
+    <> stringCat(generatorFromValue(generator)*)
 };
 
 # Documented in Samizdat Layer 0 spec.

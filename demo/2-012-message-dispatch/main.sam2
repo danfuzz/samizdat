@@ -84,13 +84,13 @@ msg(weirdValue[0]);
 
 io0Note("\nExpression syntax for name");
 msg(weirdValue."size"());
-msg(weirdValue.(stringAdd("s", "ize"))());
+msg(weirdValue.(stringCat("s", "ize"))());
 
 io0Note("\nGetting raw methods");
 def method1 = [1, 2, 3].size;
 msg(method1());
 
-def method2 = [4, 5, 6].(stringAdd("n", "th"));
+def method2 = [4, 5, 6].(stringCat("n", "th"));
 msg(method2(1));
 
 <> 0
