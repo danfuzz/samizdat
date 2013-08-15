@@ -41,8 +41,8 @@ later-named modules depending only on earlier-named ones):
   enough of the model to be able to do function definition and calling.
   Also provides related utilities, such as assertions. Depends on `util`.
 
-* `dat` &mdash; "Low-layer" data model. This implements the various
-  Samizdat low-layer data types, providing constructors, accessors,
+* `dat` &mdash; "Low-layer" data model. This implements the Samizdat
+  low-layer data types not covered by `pb`, providing constructors, accessors,
   and a handful of assertions. Depends on `util` and `pb`.
 
 * `const` &mdash; Commonly-used in-model constants and related utilities.
