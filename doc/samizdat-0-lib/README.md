@@ -64,7 +64,6 @@ will be returned, or one of:
 ### Contents
 
 * [Constants](constants.md)
-* [Ultraprimitives](ultra.md)
 * [General Value Handling](value.md)
 * [Conditionals And Iteration](conditional.md)
 * [Ordering / Comparison](order.md)
@@ -74,6 +73,7 @@ will be returned, or one of:
 * [Lists](list.md)
 * [Maps](map.md)
 * [Boxes](box.md)
+* [Uniqlets](Uniqlet.md)
 * [Generators](generator.md)
 * [Functions And Code](code.md)
 * [I/O](io.md)
