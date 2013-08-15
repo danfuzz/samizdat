@@ -40,7 +40,7 @@ fn makeLiteral(value) {
 # Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
-    <> @[closure: [statements: [], yield: expression]]
+    <> @[closure: [formals: [], statements: [], yield: expression]]
 };
 
 # Returns a `varDef` node.
@@ -137,25 +137,23 @@ def parFormalsList = pegMakeMainChoice(
     pegMakeSequence(
         parFormal,
         pegMakeStar(pegMakeSequence(pegMakeToken(","), parFormal)),
-        pegMakeCode { first, rest ::
-            <> [formals: [first, rest*]]
-        }),
-    pegMakeCode { <> [:] });
+        pegMakeCode { first, rest <> [first, rest*] }),
+    pegMakeCode { <> [] });
 
 # Documented in Samizdat Layer 0 spec.
-def parProgramDeclarations = pegMakeMainSequence(
-    parOptYieldDef,
-    parFormalsList,
-    pegMakeChoice(
-        pegMakeToken("::"),
-        pegMakeLookaheadSuccess(pegMakeToken("<>"))),
-    pegMakeCode { yieldDef, formals, . <> [:, formals*, yieldDef*] });
+def parProgramDeclarations = pegMakeMainChoice(
+    pegMakeSequence(
+        parOptYieldDef,
+        parFormalsList,
+        pegMakeChoice(
+            pegMakeToken("::"),
+            pegMakeLookaheadSuccess(pegMakeToken("<>"))),
+        pegMakeCode { yieldDef, formals, . <> [formals: formals, yieldDef*] }),
+    pegMakeCode { <> [formals: []] });
 
 # Documented in Samizdat Layer 0 spec.
 def parProgram = pegMakeMainSequence(
-    pegMakeChoice(
-        parProgramDeclarations,
-        pegMakeCode { <> [:] }),
+    parProgramDeclarations,
     parProgramBody,
     pegMakeCode { decls, body <> @[closure: [:, decls*, body*]] });
 
@@ -170,7 +168,8 @@ def parClosure = pegMakeMainSequence(
 def parNullaryClosure = pegMakeMainSequence(
     parClosure,
     pegMakeCode { c ::
-        ifIs { <> mapGet(dataOf(c), "formals") }
+        def formals = mapGet(dataOf(c), "formals");
+        ifIs { <> ne(formals, []) }
             { io0Die("Invalid formal argument in code block.") };
         <> c
     });
@@ -204,7 +203,8 @@ def parFnCommon = pegMakeMainSequence(
         def codeMap = dataOf(code);
         def statements = [returnDef*, mapGet(codeMap, "statements")*];
         <> [
-            codeMap*, name*, formals*,
+            codeMap*, name*,
+            formals: formals,
             yieldDef: "return",
             statements: statements
         ]
@@ -227,6 +227,7 @@ def parFnExpression = pegMakeMainSequence(
             pegMakeCode { funcMap, . <> mapGet(funcMap, "name") },
             pegMakeCode { funcMap, closure, name ::
                 def mainClosure = @[closure: [
+                    formals: [],
                     statements: [@[fnDef: funcMap]],
                     yield: makeVarRef(name)
                 ]];
