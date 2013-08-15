@@ -23,15 +23,17 @@ PRIM_IMPL(makeMutableBox) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(optValue) {
+    zvalue function = args[0];
+    zvalue value = FUN_CALL(function);
+
+    return (value == NULL) ? EMPTY_LIST : listFromArray(1, &value);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(nonlocalExit) {
     zvalue yieldFunction = args[0];
-    zvalue value;
-
-    if (argCount == 1) {
-        value = NULL;
-    } else {
-        value = FUN_CALL(args[1]);
-    }
+    zvalue value = (argCount == 2) ? args[1] : NULL;
 
     if (value == NULL) {
         FUN_CALL(yieldFunction);

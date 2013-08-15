@@ -33,18 +33,8 @@ void arrayFromList(zvalue *result, zvalue list);
 /**
  * Combines the elements of two lists, in order, into a new
  * list.
- *
- * Contrasting this with `listAppend()`, that function operates
- * heterogeneously on a list and an element, whereas this one
- * operates on two peer lists.
  */
 zvalue listAdd(zvalue list1, zvalue list2);
-
-/**
- * Gets the list resulting from appending the given value to the
- * given list.
- */
-zvalue listAppend(zvalue list, zvalue value);
 
 /**
  * Gets the list resulting from deleting the nth element of the
@@ -101,6 +91,11 @@ extern zvalue EMPTY_MAP;
 void arrayFromMap(zmapping *result, zvalue map);
 
 /**
+ * Constructs and returns a single-mapping map.
+ */
+zvalue makeMapping(zvalue key, zvalue value);
+
+/**
  * Gets the map resulting from putting the all the given mappings
  * into the given map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
@@ -141,11 +136,6 @@ zvalue mapNth(zvalue map, zint n);
  * existing mapping.
  */
 zvalue mapPut(zvalue map, zvalue key, zvalue value);
-
-/**
- * Constructs and returns a single-mapping map.
- */
-zvalue mapping(zvalue key, zvalue value);
 
 /**
  * Given a single-mapping map, returns its sole key. `map` must be a

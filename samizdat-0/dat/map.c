@@ -60,7 +60,7 @@ static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
     zorder comp = pbOrder(k1, k2);
 
     if (comp == ZSAME) {
-        return mapping(k2, v2);
+        return makeMapping(k2, v2);
     }
 
     zvalue result = allocMap(2);
@@ -158,6 +158,16 @@ void datAssertMapSize1(zvalue value) {
 void arrayFromMap(zmapping *result, zvalue map) {
     datAssertMap(map);
     memcpy(result, mapElems(map), mapSizeOf(map) * sizeof(zmapping));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+zvalue makeMapping(zvalue key, zvalue value) {
+    zvalue result = allocMap(1);
+    zmapping *elems = mapElems(result);
+
+    elems->key = key;
+    elems->value = value;
+    return result;
 }
 
 /* Documented in header. */
@@ -265,7 +275,7 @@ zvalue mapNth(zvalue map, zint n) {
     }
 
     zmapping *m = &mapElems(map)[n];
-    return mapping(m->key, m->value);
+    return makeMapping(m->key, m->value);
 }
 
 /* Documented in header. */
@@ -278,7 +288,7 @@ zvalue mapPut(zvalue map, zvalue key, zvalue value) {
     switch (size) {
         case 0: {
             pbAssertValid(key);
-            return mapping(key, value);
+            return makeMapping(key, value);
         }
         case 1: {
             pbAssertValid(key);
@@ -311,16 +321,6 @@ zvalue mapPut(zvalue map, zvalue key, zvalue value) {
     zmapping *elem = &mapElems(result)[index];
     elem->key = key;
     elem->value = value;
-    return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-zvalue mapping(zvalue key, zvalue value) {
-    zvalue result = allocMap(1);
-    zmapping *elems = mapElems(result);
-
-    elems->key = key;
-    elems->value = value;
     return result;
 }
 

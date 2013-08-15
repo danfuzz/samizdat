@@ -7,23 +7,17 @@ Functions And Code
 <br><br>
 ### Primitive Definitions
 
-#### `nonlocalExit(yieldFunction, thunk?) <> n/a # Returns elsewhere.`
+#### `nonlocalExit(exitFunction, optValue?) <> n/a # Returns elsewhere.`
 
-Helper for calling nonlocal exit functions. This takes a function of
-zero-or-one argument &mdash; such as in particular the "yield" functions
-defined when using nonlocal exit syntax &mdash; and an optional thunk
-(function of no arguments).
+Helper for calling nonlocal exit functions. This calls the given
+`exitFunction`, passing it `optValue*` (that is, the given value as a
+single argument if present, or with no arguments).
 
-If `thunk` is passed, then this function call calls `thunk()`. If the call
-to `thunk` returns a value, then it then calls `yieldFunction` passing it
-that value. If the call to `thunk` returns void, then it calls `yieldFunction`
-with no arguments.
+This function expects that `exitFunction` will not return to it. If it
+does, then that is considered an error (terminating the runtime). The point
+of this is so that code can rely on calls to *this* function to never
+return, even in the face of misbehaving exit functions.
 
-If `thunk` is not passed, then this function calls `yieldFunction` with no
-arguments.
-
-It is an error (terminating the runtime) if the call to `yieldFunction`
-returns to this function.
 
 <br><br>
 ### In-Language Definitions
