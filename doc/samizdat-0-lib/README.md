@@ -78,7 +78,7 @@ will be returned, or one of:
   * [Conditionals And Iteration](conditional.md)
   * [Ordering / Comparison](order.md)
   * [Generators](generator.md)
-  * [Functions And Code](code.md)
+  * [Callables (function-like things)](callable.md)
   * [I/O](io.md)
   * [String Formatting](format.md)
   * [Parsing](peg.md)

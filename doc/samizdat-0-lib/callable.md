@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Functions And Code
-------------------
+Callables (function-like things)
+--------------------------------
 
 <br><br>
 ### Primitive Definitions
