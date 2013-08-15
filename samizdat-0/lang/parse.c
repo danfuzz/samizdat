@@ -163,6 +163,12 @@ static zvalue makeLiteral(zvalue value) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+static zvalue makeThunk(zvalue expression) {
+    zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
+    return makeValue(STR_CLOSURE, value);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
     zvalue payload = mapFrom2(STR_NAME, name, STR_VALUE, value);
     return makeValue(STR_VAR_DEF, payload);
@@ -186,12 +192,6 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeCallName(zvalue name, zvalue actuals) {
     return makeCall(makeVarRef(name), actuals);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-static zvalue makeThunk(zvalue expression) {
-    zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
-    return makeValue(STR_CLOSURE, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
