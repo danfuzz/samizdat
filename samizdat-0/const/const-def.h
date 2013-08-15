@@ -46,7 +46,6 @@ STR(UP_LIBRARY,       "LIBRARY");
 STR(actuals,          "actuals");
 STR(CALL,             "call");
 STR(closure,          "closure");
-STR(COLLECT,          "collect");
 STR(expression,       "expression");
 STR(fnDef,            "fnDef");
 STR(formals,          "formals");
