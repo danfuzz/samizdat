@@ -23,7 +23,7 @@
 static zvalue execCall(Frame *frame, zvalue call) {
     call = dataOf(call);
 
-    zvalue function = mapGet(call, STR_FUNCTION);
+    zvalue function = mapGet(call, STR_function);
     zvalue actuals = mapGet(call, STR_actuals);
     zvalue functionId = execExpression(frame, function);
 

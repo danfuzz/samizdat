@@ -139,7 +139,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'r': { if (pbEq(string, STR_RETURN)) return TOK_RETURN; break; }
     }
 
-    return makeValue(STR_IDENTIFIER, string);
+    return makeValue(STR_identifier, string);
 }
 
 /**
@@ -205,7 +205,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
 
     zvalue result = tokenizeString(state);
     zvalue string = dataOf(result);
-    return makeValue(STR_IDENTIFIER, string);
+    return makeValue(STR_identifier, string);
 }
 
 /**

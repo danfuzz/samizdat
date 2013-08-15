@@ -188,7 +188,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
         actuals = EMPTY_LIST;
     }
 
-    zvalue value = mapFrom2(STR_FUNCTION, function, STR_actuals, actuals);
+    zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
     return makeValue(STR_CALL, value);
 }
 
@@ -337,7 +337,7 @@ DEF_PARSE(yieldDef) {
     MARK();
 
     MATCH_OR_REJECT(CH_LT);
-    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
+    zvalue identifier = MATCH_OR_REJECT(identifier);
     MATCH_OR_REJECT(CH_GT);
 
     return dataOf(identifier);
@@ -371,7 +371,7 @@ DEF_PARSE(formal1) {
 DEF_PARSE(formal) {
     MARK();
 
-    zvalue name = MATCH(IDENTIFIER);
+    zvalue name = MATCH(identifier);
 
     if (name != NULL) {
         name = dataOf(name);
@@ -479,7 +479,7 @@ DEF_PARSE(fnCommon1) {
  * wrapping.
  */
 DEF_PARSE(fnCommon2) {
-    zvalue n = MATCH(IDENTIFIER);
+    zvalue n = MATCH(identifier);
 
     if (n == NULL) {
         return EMPTY_MAP;
@@ -571,7 +571,7 @@ DEF_PARSE(identifierString) {
     zvalue result = NULL;
 
     if (result == NULL) { result = MATCH(STRING); }
-    if (result == NULL) { result = MATCH(IDENTIFIER); }
+    if (result == NULL) { result = MATCH(identifier); }
     if (result == NULL) { result = MATCH(DEF); }
     if (result == NULL) { result = MATCH(FN); }
     if (result == NULL) { result = MATCH(RETURN); }
@@ -748,7 +748,7 @@ DEF_PARSE(deriv) {
 DEF_PARSE(varRef) {
     MARK();
 
-    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
+    zvalue identifier = MATCH_OR_REJECT(identifier);
 
     return makeVarRef(dataOf(identifier));
 }
@@ -758,7 +758,7 @@ DEF_PARSE(varDef) {
     MARK();
 
     MATCH_OR_REJECT(DEF);
-    zvalue identifier = MATCH_OR_REJECT(IDENTIFIER);
+    zvalue identifier = MATCH_OR_REJECT(identifier);
     MATCH_OR_REJECT(CH_EQUAL);
     zvalue expression = PARSE_OR_REJECT(expression);
 
