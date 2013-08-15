@@ -25,24 +25,9 @@ def LOWER_ALPHA = [
     inclusiveRange("a", 1, "z")*: true
 ];
 
-# Returns a `call` node.
-fn makeCall(function, actuals*) {
-    <> @[call: [function: function, actuals: actuals]]
-};
-
-# Returns a `varDef` node.
-fn makeVarDef(name, value) {
-    <> @[varDef: [name: name, value: value]
-};
-
-# Returns a `varRef` node.
-fn makeVarRef(name) {
-    <> @[varRef: name]
-};
-
-# Returns a `call` node that names a function as a `varRef`.
-fn makeCallName(name, actuals*) {
-    <> @[call: [function: makeVarRef(name), actuals: actuals]]
+# Returns an `interpolate` node.
+fn makeInterpolate(expression) {
+    <> @[interpolate: expression]
 };
 
 # Returns a `literal` node.
@@ -53,16 +38,47 @@ fn makeLiteral(value) {
 # Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
-    <> @[closure: @[statements: [], yield: expression]];
+    <> @[closure: [statements: [], yield: expression]]
+};
+
+# Returns a `varDef` node.
+fn makeVarDef(name, value) {
+    <> @[varDef: [name: name, value: value]]
+};
+
+# Returns a `varRef` node.
+fn makeVarRef(name) {
+    <> @[varRef: name]
+};
+
+# Returns a `call` node.
+fn makeCall(function, actuals*) {
+    <> @[call: [function: function, actuals: actuals]]
+};
+
+# Returns a `call` node that names a function as a `varRef`.
+fn makeCallName(name, actuals*) {
+    <> @[call: [function: makeVarRef(name), actuals: actuals]]
+};
+
+# Returns an optional-value expression. This wraps `node` as
+# `optValue { <> node }`.
+fn makeOptValueExpression(node) {
+    <> makeCallName("optValue", makeThunk(node))
 };
 
 # Returns a `call` node to a nonlocal exit with the given name and
-# with optional expression value. The expression if supplied is automatically
-# "thunked".
-fn makeCallNonlocalExit(name, expression?) {
-    <> ifValue { <> listFirst(expression) }
-        { ex <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
-        { <> makeCall(makeVarRef("nonlocalExit"), name) }
+# with optional expression value. If passed, the expression is allowed
+# to evaluate to void, in which case the nonlocal exit yields void at
+# its exit point.
+fn makeCallNonlocalExit(name, optExpression?) {
+    <> ifValue { <> optExpression* }
+        { ex ::
+            <> makeCallName("nonlocalExit",
+                name,
+                makeInterpolate(makeOptValueExpression(ex)))
+        }
+        { <> makeCallName("nonlocalExit", name) }
 };
 
 
@@ -81,7 +97,7 @@ def parVoidableExpression = forwardFunction();
 # Forward declaration required for integrating layer 1 definitions.
 def parParser = forwardFunction();
 
-# Parses a yield / non-local exit definition, yielding the def name.
+# Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
     @"<"
     name = @identifier
@@ -89,7 +105,7 @@ def parYieldDef = {/
     { <> dataOf(name) }
 /};
 
-# Parses an optional yield / non-local exit definition, always yielding
+# Parses an optional yield / nonlocal exit definition, always yielding
 # a map (an empty map if no yield def was present).
 def parOptYieldDef = {/
     y = parYieldDef
@@ -495,7 +511,7 @@ def parPostfixOperator = {/
     # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
     # but higher layers augment its meaning.)
     @"*" !parExpression
-    { <> { node <> @[interpolate: node] } }
+    { <> { node <> makeInterpolate(node) } }
 #|
     # Note: *Layer 2* adds additional rules here.
 /};

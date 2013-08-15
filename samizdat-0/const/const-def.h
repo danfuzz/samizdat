@@ -65,6 +65,7 @@ STR(MAIN_SAM0,        "main.sam0");
 STR(MAP_ADD,          "mapAdd");
 STR(NAME,             "name");
 STR(NONLOCAL_EXIT,    "nonlocalExit");
+STR(OPT_VALUE,        "optValue");
 STR(REPEAT,           "repeat");
 STR(RESULT,           "result");
 STR(SAM_COMMAND_LINE, "samCommandLine");

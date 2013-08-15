@@ -252,12 +252,8 @@ void zcharsFromString(zchar *result, zvalue string);
  */
 
 /**
- * Generic `call(value)`: Somewhat-degenerate generic for dispatching to
- * a function call mechanism (how meta). Only defined for types `Function`
- * and `Generic`. When called, argument count and pointer will have been
- * checked, but the argument count may not match what's expected by the
- * target function. The `state` argument is always passed as the function
- * or generic value itself.
+ * Generic `call(function, args*)`: Generic for dispatching to a function
+ * calling mechanism (how meta).
  */
 extern zvalue GFN_call;
 

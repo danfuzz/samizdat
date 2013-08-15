@@ -151,30 +151,40 @@ static zvalue listFrom2(zvalue e1, zvalue e2) {
 }
 
 /**
- * Constructs a `literal` node.
+ * Appends an element to a list.
  */
+static zvalue listAppend(zvalue list, zvalue elem) {
+    return listAdd(list, listFrom1(elem));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue makeInterpolate(zvalue expression) {
+    return makeValue(STR_INTERPOLATE, expression);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeLiteral(zvalue value) {
     return makeValue(STR_LITERAL, value);
 }
 
-/**
- * Constructs a `varDef` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue makeThunk(zvalue expression) {
+    zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
+    return makeValue(STR_CLOSURE, value);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
     zvalue payload = mapFrom2(STR_NAME, name, STR_VALUE, value);
     return makeValue(STR_VAR_DEF, payload);
 }
 
-/**
- * Constructs a `varRef` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarRef(zvalue name) {
     return makeValue(STR_VAR_REF, name);
 }
 
-/**
- * Constructs a `call` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeCall(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = EMPTY_LIST;
@@ -184,12 +194,28 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     return makeValue(STR_CALL, value);
 }
 
-/**
- * Constructs a thunk node (function of no arguments), from an expression node.
- */
-static zvalue makeThunk(zvalue expression) {
-    zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
-    return makeValue(STR_CLOSURE, value);
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue makeCallName(zvalue name, zvalue actuals) {
+    return makeCall(makeVarRef(name), actuals);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue makeOptValueExpression(zvalue expression) {
+    return makeCallName(STR_OPT_VALUE, listFrom1(makeThunk(expression)));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue makeCallNonlocalExit(zvalue name, zvalue optExpression) {
+    zvalue actuals;
+
+    if (optExpression != NULL) {
+        actuals = listFrom2(name,
+            makeInterpolate(makeOptValueExpression(optExpression)));
+    } else {
+        actuals = listFrom1(name);
+    }
+
+    return makeCallName(STR_NONLOCAL_EXIT, actuals);
 }
 
 
@@ -577,7 +603,7 @@ DEF_PARSE(list) {
     if (pbSize(expressions) == 0) {
         return makeLiteral(EMPTY_LIST);
     } else {
-        return makeCall(makeVarRef(STR_MAKE_LIST), expressions);
+        return makeCallName(STR_MAKE_LIST, expressions);
     }
 }
 
@@ -623,7 +649,7 @@ DEF_PARSE(mapping1) {
     MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return makeCall(makeVarRef(STR_MAKE_MAPPING),
+    return makeCallName(STR_MAKE_MAPPING,
         listFrom2(key, makeValue(STR_EXPRESSION, value)));
 }
 
@@ -664,7 +690,7 @@ DEF_PARSE(map) {
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCall(makeVarRef(STR_MAP_ADD), mappings);
+    return makeCallName(STR_MAP_ADD, mappings);
 }
 
 /**
@@ -717,7 +743,7 @@ DEF_PARSE(deriv) {
     if (args == NULL) { args = PARSE(deriv2); }
     REJECT_IF(args == NULL);
 
-    return makeCall(makeVarRef(STR_MAKE_VALUE), args);
+    return makeCallName(STR_MAKE_VALUE, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -818,7 +844,7 @@ DEF_PARSE(unaryExpression) {
         if (hasType(one, TYPE_List)) {
             result = makeCall(result, one);
         } else if (pbEq(one, TOK_CH_STAR)) {
-            result = makeValue(STR_INTERPOLATE, result);
+            result = makeInterpolate(result);
         } else {
             die("Unexpected postfix.");
         }
@@ -827,7 +853,7 @@ DEF_PARSE(unaryExpression) {
     for (zint i = pbSize(prefixes) - 1; i >= 0; i--) {
         zvalue one = listNth(prefixes, i);
         if (pbEq(one, TOK_CH_MINUS)) {
-            result = makeCall(makeVarRef(STR_INEG), listFrom1(result));
+            result = makeCallName(STR_INEG, listFrom1(result));
         } else {
             die("Unexpected prefix.");
         }
@@ -920,10 +946,7 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { return NULL; }
 
     zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
-    zvalue actuals = (value == NULL)
-        ? listFrom1(name) : listFrom2(name, makeThunk(value));
-
-    return makeCall(makeVarRef(STR_NONLOCAL_EXIT), actuals);
+    return makeCallNonlocalExit(name, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
