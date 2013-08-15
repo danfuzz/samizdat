@@ -57,7 +57,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             voidable = false;
         }
 
-        if (pbEq(oneType, STR_INTERPOLATE)) {
+        if (pbEq(oneType, STR_interpolate)) {
             one = dataOf(one);
             interpolate = true;
         } else {
@@ -92,7 +92,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (hasType(oneNode, STR_INTERPOLATE)) {
+            if (hasType(oneNode, STR_interpolate)) {
                 arrayFromList(&fullArgs[at], oneArg);
                 at += pbSize(oneArg);
             } else {
@@ -171,7 +171,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
             break;
         }
         case 7: {
-            if (pbEq(type, STR_LITERAL))
+            if (pbEq(type, STR_literal))
                 return dataOf(e);
             else if (pbEq(type, STR_closure))
                 return execClosure(frame, e);
@@ -183,7 +183,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
             break;
         }
         case 11: {
-            if (pbEq(type, STR_INTERPOLATE))
+            if (pbEq(type, STR_interpolate))
                 return execInterpolate(frame, e);
             break;
         }

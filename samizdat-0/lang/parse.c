@@ -157,12 +157,12 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeInterpolate(zvalue expression) {
-    return makeValue(STR_INTERPOLATE, expression);
+    return makeValue(STR_interpolate, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeLiteral(zvalue value) {
-    return makeValue(STR_LITERAL, value);
+    return makeValue(STR_literal, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -199,7 +199,7 @@ static zvalue makeCallName(zvalue name, zvalue actuals) {
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeOptValueExpression(zvalue expression) {
-    return makeCallName(STR_OPT_VALUE, listFrom1(makeThunk(expression)));
+    return makeCallName(STR_optValue, listFrom1(makeThunk(expression)));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -213,7 +213,7 @@ static zvalue makeCallNonlocalExit(zvalue name, zvalue optExpression) {
         actuals = listFrom1(name);
     }
 
-    return makeCallName(STR_NONLOCAL_EXIT, actuals);
+    return makeCallName(STR_nonlocalExit, actuals);
 }
 
 
@@ -601,7 +601,7 @@ DEF_PARSE(list) {
     if (pbSize(expressions) == 0) {
         return makeLiteral(EMPTY_LIST);
     } else {
-        return makeCallName(STR_MAKE_LIST, expressions);
+        return makeCallName(STR_makeList, expressions);
     }
 }
 
@@ -647,7 +647,7 @@ DEF_PARSE(mapping1) {
     MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return makeCallName(STR_MAKE_MAPPING,
+    return makeCallName(STR_makeMapping,
         listFrom2(key, makeValue(STR_expression, value)));
 }
 
@@ -658,7 +658,7 @@ DEF_PARSE(mapping2) {
     MARK();
 
     zvalue map = PARSE_OR_REJECT(expression);
-    REJECT_IF(!hasType(map, STR_INTERPOLATE));
+    REJECT_IF(!hasType(map, STR_interpolate));
 
     return dataOf(map);
 }
@@ -688,7 +688,7 @@ DEF_PARSE(map) {
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCallName(STR_MAP_ADD, mappings);
+    return makeCallName(STR_mapAdd, mappings);
 }
 
 /**
@@ -741,7 +741,7 @@ DEF_PARSE(deriv) {
     if (args == NULL) { args = PARSE(deriv2); }
     REJECT_IF(args == NULL);
 
-    return makeCallName(STR_MAKE_VALUE, args);
+    return makeCallName(STR_makeValue, args);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -851,7 +851,7 @@ DEF_PARSE(unaryExpression) {
     for (zint i = pbSize(prefixes) - 1; i >= 0; i--) {
         zvalue one = listNth(prefixes, i);
         if (pbEq(one, TOK_CH_MINUS)) {
-            result = makeCallName(STR_INEG, listFrom1(result));
+            result = makeCallName(STR_ineg, listFrom1(result));
         } else {
             die("Unexpected prefix.");
         }
