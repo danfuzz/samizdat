@@ -133,7 +133,7 @@ switch (something) {
 }
 ```
 
-Table-like code and other runs of similar lines are horizontally-aligned:
+Table-like code and other runs of similar lines are horizontally aligned:
 
 ```
 DEF(blort,  POTION, "see in the dark");
