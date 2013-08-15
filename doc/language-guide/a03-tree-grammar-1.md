@@ -25,26 +25,6 @@ def LOWER_ALPHA = [
     inclusiveRange("a", 1, "z")*: true
 ];
 
-# Returns a `call` node.
-fn makeCall(function, actuals*) {
-    <> @[call: [function: function, actuals: actuals]]
-};
-
-# Returns a `varDef` node.
-fn makeVarDef(name, value) {
-    <> @[varDef: [name: name, value: value]
-};
-
-# Returns a `varRef` node.
-fn makeVarRef(name) {
-    <> @[varRef: name]
-};
-
-# Returns a `call` node that names a function as a `varRef`.
-fn makeCallName(name, actuals*) {
-    <> @[call: [function: makeVarRef(name), actuals: actuals]]
-};
-
 # Returns a `literal` node.
 fn makeLiteral(value) {
     <> @[literal: value]
@@ -54,6 +34,26 @@ fn makeLiteral(value) {
 # expression represented by the given node.
 fn makeThunk(expression) {
     <> @[closure: [statements: [], yield: expression]]
+};
+
+# Returns a `varDef` node.
+fn makeVarDef(name, value) {
+    <> @[varDef: [name: name, value: value]]
+};
+
+# Returns a `varRef` node.
+fn makeVarRef(name) {
+    <> @[varRef: name]
+};
+
+# Returns a `call` node.
+fn makeCall(function, actuals*) {
+    <> @[call: [function: function, actuals: actuals]]
+};
+
+# Returns a `call` node that names a function as a `varRef`.
+fn makeCallName(name, actuals*) {
+    <> @[call: [function: makeVarRef(name), actuals: actuals]]
 };
 
 # Returns an optional-value expression. This wraps `node` as
