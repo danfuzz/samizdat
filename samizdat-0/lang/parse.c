@@ -8,8 +8,6 @@
 #include "impl.h"
 #include "util.h"
 
-#include <stddef.h>
-
 
 /*
  * ParseState definition and functions

@@ -8,8 +8,6 @@
 #include "impl.h"
 #include "lang.h"
 
-#include <stddef.h>
-
 
 /*
  * Private Definitions

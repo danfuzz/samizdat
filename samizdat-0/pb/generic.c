@@ -11,8 +11,6 @@
 #include "impl.h"
 #include "zlimits.h"
 
-#include <stddef.h>
-
 
 /*
  * Private Definitions

@@ -6,8 +6,6 @@
 
 #include "impl.h"
 
-#include <stddef.h>
-
 
 /*
  * Exported Definitions

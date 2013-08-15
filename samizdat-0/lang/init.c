@@ -11,8 +11,6 @@
 #include "const.h"
 #include "impl.h"
 
-#include <stddef.h>
-
 
 /*
  * Module Definitions

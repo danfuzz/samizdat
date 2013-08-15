@@ -12,7 +12,6 @@
 #include "util.h"
 
 #include <setjmp.h>
-#include <stddef.h>
 
 
 /*

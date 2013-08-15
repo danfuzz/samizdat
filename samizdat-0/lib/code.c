@@ -8,8 +8,6 @@
 #include "lang.h"
 #include "util.h"
 
-#include <stddef.h>
-
 
 /*
  * Exported Definitions

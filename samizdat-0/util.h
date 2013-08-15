@@ -14,6 +14,7 @@
 #include "ztype.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 
 
 /*

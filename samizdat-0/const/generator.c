@@ -12,8 +12,6 @@
 #include "util.h"
 #include "zlimits.h"
 
-#include <stddef.h>
-
 
 /*
  * Private Definitions

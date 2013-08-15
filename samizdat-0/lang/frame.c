@@ -11,8 +11,6 @@
 #include "impl.h"
 #include "util.h"
 
-#include <stddef.h>
-
 
 /*
  * Module Definitions

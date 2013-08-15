@@ -6,8 +6,6 @@
 
 #include "util.h"
 
-#include <stddef.h>
-
 
 /*
  * Private Definitions
