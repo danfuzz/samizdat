@@ -24,8 +24,8 @@ primitive definitions, but it can rely on the canonical in-language library
 source for the remainder, which is written in terms of the primitives.
 
 In addition, functions that are used in the translation of syntactic
-constructs are marked with a note along the lines of, "Used to translate
-`example` syntax".
+constructs are marked with a note along the lines of,
+"**Syntax Note:** Used in the translation of `example` forms".
 
 Each function listed here is introduced with a "prototype" that has
 the following form, meant to mimic how functions are defined in the

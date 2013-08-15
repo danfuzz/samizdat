@@ -33,6 +33,9 @@ does, then that is considered an error (terminating the runtime). The point
 of this is so that code can rely on calls to *this* function to never
 return, even in the face of misbehaving exit functions.
 
+**Syntax Note:** Used in the translation of `break` and other nonlocal
+exit forms.
+
 
 <br><br>
 ### In-Language Definitions

@@ -32,6 +32,8 @@ following, with the indicated meaning:
 * `x` &mdash; Converts the argument, which must be an int, into a hexadecimal
   string.
 
+**Syntax Note:** Used in the translation of string interpolation forms.
+
 #### `sourceString(value?) <> string`
 
 Converts an arbitrary value into a string representation form

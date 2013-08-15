@@ -22,11 +22,17 @@ v = [[k1, k2]*: v;  is equivalent to  v = makeMapping(k1, k2, v);
 Note that the argument list is "stretchy" in front, which isn't really
 representable in Samizdat syntax as presented.
 
+**Syntax Note:** Used in the translation of `[key: value, ...]`
+and `switch` forms.
+
 #### `mapAdd(maps*) <> map`
 
 Returns a map consisting of the combination of the mappings of the
 argument maps. For any keys in common between the maps,
 the lastmost argument's value is the one that ends up in the result.
+
+**Syntax Note:** Used in the translation of `[key: value, ...]`
+and `switch` forms.
 
 #### `mapDel(map, keys*) <> map`
 

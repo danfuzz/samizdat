@@ -34,6 +34,8 @@ This is a convenient and idiomatic shorthand for saying something like:
 [(filterGenerator(generator, ...) { ... code ... })*]
 ```
 
+**Syntax Note:** Used in the translation of comprehension forms.
+
 #### `collectGenerator(generator) <> list`
 
 Takes an arbitrary generator, and collects all of its generated results,
@@ -104,6 +106,9 @@ voided.
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
 
+**Syntax Note:** Used in the translation of `expression..!expression`
+forms.
+
 #### `filterGenerator(filterFunction, generator*) <> generator`
 
 Filtering generator constructor. This takes any number of arbitrary generator,
@@ -120,6 +125,8 @@ returns a value, then that value in turn becomes the yielded result of
 the outer generator. If the filter function yields void, then the
 value-in-progress is discarded, and the inner generator is retried, with
 the same void-or-value behavior.
+
+**Syntax Note:** Used in the translation of comprehension forms.
 
 #### `generatorFromValue(value) <> generator`
 
@@ -148,6 +155,9 @@ would be beyond the given `limit`, the generator becomes voided.
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
 
+**Syntax Note:** Used in the translation of `expression..expression`
+forms.
+
 #### `mapFromGenerator(generator) <> map`
 
 Takes a generator which must yield map values, and collects all of its
@@ -169,6 +179,8 @@ single-character string if `first` is a string).
 As a special case, if `increment` is `0`, the resulting generator just
 yields `first` and then becomes voided.
 
+**Syntax Note:** Used in the translation of `expression..+` forms.
+
 #### `optGenerator(generator) <> generator`
 
 "Optional" generator constructor. This takes an arbitrary generator,
@@ -186,6 +198,8 @@ generators, and returns a generator that yields lists.
 Each yielded list consists of values yielded from the individual generators,
 in passed order. The generator becomes voided when *any* of the individual
 generators is voided.
+
+**Syntax Note:** Used in the translation of `for` forms.
 
 #### `reduceGenerator(reduceFunction, [generators*], [baseValues*]) <> generator`
 

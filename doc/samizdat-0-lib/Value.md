@@ -54,6 +54,9 @@ v = @[(type): value];  is equivalent to  v = makeValue(type, value);
 If `type` names a core type, and the given `value` is a value
 of that type, then this function returns `value` directly.
 
+**Syntax Note:** Used in the translation of `@type` and `@[type: value]`
+forms.
+
 #### `isOpaqueValue(value) <> logic`
 
 Returns `value` if it is an opaque value &mdash; that is, if its type has

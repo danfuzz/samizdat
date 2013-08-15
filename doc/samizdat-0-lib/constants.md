@@ -85,3 +85,5 @@ names (such as, correspondingly, `"<" ">" "⇝"`).
 The set of entities is intended to track the XML spec for same, which
 as of this writing can be found at
 <http://www.w3.org/TR/xml-entity-names/bycodes.html>.
+
+**Syntax Note:** Used during the parsing of string literal forms.
