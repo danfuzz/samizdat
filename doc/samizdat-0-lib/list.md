@@ -80,6 +80,31 @@ into `list` (with the list size being a valid index), and must form a
 range (though possibly empty) with `start <= end`. If `end` is not
 specified, it defaults to the end of the list.
 
+#### `makeList(rest*) <> list`
+
+Returns a list with the given elements (in argument order).
+These equivalences hold for *Samizdat Layer 0* source code:
+
+```
+v = [v1];      is equivalent to  v = makeList(v1);
+v = [v1, v2];  is equivalent to  v = makeList(v1, v2);
+[etc.]
+```
+
+**Note:** The equivalence requires at least one argument, even though
+the function is happy to operate given zero arguments.
+
+**Note:** Technically, this function could be defined in-language as the
+following, but for practical reasons &mdash; e.g. and in particular,
+expected ordering of human operations during the course of
+bootstrapping an implementation, as well as efficiency of
+implementation (without sacrificing clarity) &mdash; it makes sense to
+keep this defined as an "ultraprimitive":
+
+```
+fn makeList(rest*) { <> rest };
+```
+
 
 <br><br>
 ### In-Language Definitions
