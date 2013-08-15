@@ -27,14 +27,14 @@ def MANIFEST = [
 
     # Layer 0: Simple functions. These only rely on primitive functions.
     "order.sam0",
-    "type.sam0",
-    "list.sam0",
-    "boolean.sam0",
+    "Type.sam0",
+    "List.sam0",
+    "Boolean.sam0",
     "callable.sam0",
 
     # Layer 0: Complicated functions
     "generator.sam0",
-    "string.sam0",
+    "String.sam0",
     "format.sam0",
     "module.sam0",
     "peg.sam0",
