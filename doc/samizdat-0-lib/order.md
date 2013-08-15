@@ -106,7 +106,6 @@ Comparison, requiring identical types. This is just like `le`
 function terminates the runtime with an error. It is also a terminal error
 if either argument is a derived value with the type of a core value.
 
-
 #### `coreLt(value1, value2) <> logic`
 
 Comparison, requiring identical types. This is just like `lt`
@@ -140,11 +139,15 @@ if either argument is a derived value with the type of a core value.
 Checks for equality, using the total order of values. Returns `value2` if the
 two given values are identical. Otherwise returns void.
 
+**Syntax Note:** Used in the translation of `expression \== expression` forms.
+
 #### `le(value1, value2) <> logic`
 
 Checks for a less-than-or-equal relationship, using the total order of values.
 Returns `value2` if the first value orders before the second or is identical
 to it. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \<= expression` forms.
 
 #### `lt(value1, value2) <> logic`
 
@@ -152,11 +155,15 @@ Checks for a less-than relationship, using the total order of values.
 Returns `value2` if the first value orders before the second. Otherwise
 returns void.
 
+**Syntax Note:** Used in the translation of `expression \< expression` forms.
+
 #### `ge(value1, value2) <> logic`
 
 Checks for a greater-than-or-equal relationship, using the total order of
 values. Returns `value2` if the first value orders after the second or is
 identical to it. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \>= expression` forms.
 
 #### `gt(value1, value2) <> logic`
 
@@ -164,7 +171,11 @@ Checks for a greater-than relationship, using the total order of values.
 Returns `value2` if the first value orders after the second. Otherwise
 returns void.
 
+**Syntax Note:** Used in the translation of `expression \> expression` forms.
+
 #### `ne(value1, value2) <> logic`
 
 Checks for inequality, using the total order of values. Returns `value2` if
 the two given values are not identical. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \!= expression` forms.
