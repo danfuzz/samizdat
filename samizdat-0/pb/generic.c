@@ -72,10 +72,15 @@ static char *callReporter(void *state) {
     return pbDebugString((zvalue) state);
 }
 
+
+/*
+ * Module Definitions
+ */
+
 /**
  * Actual implementation of generic function dispatch.
  */
-static zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
+zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     GenericInfo *info = getInfo(generic);
 
     if (argCount < info->minArgs) {
@@ -89,98 +94,26 @@ static zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     zvalue function = genericFind(generic, args[0]);
 
     if (function == NULL) {
-        die("No type binding found for generic.");
+        die("No type binding found for generic: %s", pbDebugString(generic));
     }
 
     return funCall(function, argCount, args);
 }
-
-/**
- * Inner implementation of `funCall`, which does *not* do argument validation,
- * nor debug and local frame setup/teardown.
- */
-static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
-    zint index = indexFromType(function->type);
-
-    // The first two cases are how we bottom out the recursion, instead
-    // of calling `funCall` on the `call` methods for `Function` or `Generic`.
-    switch (index) {
-        case PB_INDEX_FUNCTION: {
-            return functionCall(function, argCount, args);
-            break;
-        }
-        case PB_INDEX_GENERIC: {
-            return genericCall(function, argCount, args);
-            break;
-        }
-        default: {
-            // The original `function` is some kind of higher layer
-            // function, and `callImpl` will be the function that was bound
-            // as its `call` method. We prepend `function` as a new first
-            // argument, and recurse on a call to `caller`.
-            zvalue callImpl = getInfo(GFN_call)->functions[index];
-            if (callImpl == NULL) {
-                die("Attempt to call non-function.");
-            } else {
-                zvalue newArgs[argCount + 1];
-                newArgs[0] = function;
-                memcpy(&newArgs[1], args, argCount * sizeof(zvalue));
-                return funCall0(callImpl, argCount + 1, newArgs);
-            }
-        }
-    }
-}
-
-
-/*
- * Module Definitions
- */
 
 /* Documented in header. */
 zvalue genericFind(zvalue generic, zvalue value) {
     return findByTrueType(generic, trueTypeOf(value));
 }
 
+/* Documented in header. */
+zvalue genericFindByIndex(zvalue generic, zint index) {
+    return getInfo(generic)->functions[index];
+}
+
 
 /*
  * Exported Definitions
  */
-
-/* Documented in header. */
-zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
-    if (argCount < 0) {
-        die("Invalid argument count for function call: %lld", argCount);
-    } else if ((argCount != 0) && (args == NULL)) {
-        die("Function call argument inconsistency.");
-    }
-
-    UTIL_TRACE_START(callReporter, function);
-    zstackPointer save = pbFrameStart();
-
-    zvalue result = funCall0(function, argCount, args);
-
-    pbFrameReturn(save, result);
-    UTIL_TRACE_END();
-
-    return result;
-}
-
-/* Documented in header. */
-extern zvalue funCallWith0(zvalue function);
-
-/* Documented in header. */
-extern zvalue funCallWith1(zvalue function, zvalue arg0);
-
-/* Documented in header. */
-extern zvalue funCallWith2(zvalue function, zvalue arg0, zvalue arg1);
-
-/* Documented in header. */
-extern zvalue funCallWith3(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2);
-
-/* Documented in header. */
-extern zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
-    zvalue arg2, zvalue arg3);
 
 /* Documented in header. */
 void genericBindCore(zvalue generic, zvalue type, zfunction function) {

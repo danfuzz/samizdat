@@ -78,10 +78,23 @@ void derivBind(zvalue type);
 zvalue functionCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
+ * Actual implementation of generic function calling. This is where
+ * short-circuited generic function dispatch of `call` on type `Generic`
+ * lands.
+ */
+zvalue genericCall(zvalue function, zint argCount, const zvalue *args);
+
+/**
  * Gets the function bound to the given generic for the given value, if any.
  * Returns `NULL` if there is no binding.
  */
 zvalue genericFind(zvalue generic, zvalue value);
+
+/**
+ * Gets the function bound to the given generic for the given type index,
+ * if any. Returns `NULL` if there is no binding.
+ */
+zvalue genericFindByIndex(zvalue generic, zint index);
 
 /**
  * Gets the index for a given type value. The given value *must* be a
