@@ -67,7 +67,6 @@ STR(repeat,           "repeat");
 STR(samCommandLine,   "samCommandLine");
 STR(statements,       "statements");
 STR(string,           "string");
-STR(TYPE,             "type");
 STR(VALUE,            "value");
 STR(varDef,           "varDef");
 STR(varRef,           "varRef");
