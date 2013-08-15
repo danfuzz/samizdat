@@ -53,16 +53,27 @@ fn makeLiteral(value) {
 # Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
-    <> @[closure: @[statements: [], yield: expression]];
+    <> @[closure: [statements: [], yield: expression]]
+};
+
+# Returns an optional-value expression. This wraps `node` as
+# `optValue { <> node }`.
+fn makeOptValueExpression(node) {
+    <> makeCallName("optValue", makeThunk(node))
 };
 
 # Returns a `call` node to a nonlocal exit with the given name and
-# with optional expression value. The expression if supplied is automatically
-# "thunked".
-fn makeCallNonlocalExit(name, expression?) {
-    <> ifValue { <> listFirst(expression) }
-        { ex <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
-        { <> makeCall(makeVarRef("nonlocalExit"), name) }
+# with optional expression value. If passed, the expression is allowed
+# to evaluate to void, in which case the nonlocal exit yields void at
+# its exit point.
+fn makeCallNonlocalExit(name, optExpression?) {
+    <> ifValue { <> optExpression* }
+        { ex ::
+            <> makeCallName("nonlocalExit",
+                name,
+                @[interpolate: makeOptValueExpression(ex)])
+        }
+        { <> makeCallName("nonlocalExit", name) }
 };
 
 

@@ -157,31 +157,23 @@ static zvalue listAppend(zvalue list, zvalue elem) {
     return listAdd(list, listFrom1(elem));
 }
 
-/**
- * Constructs a `literal` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeLiteral(zvalue value) {
     return makeValue(STR_LITERAL, value);
 }
 
-/**
- * Constructs a `varDef` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
     zvalue payload = mapFrom2(STR_NAME, name, STR_VALUE, value);
     return makeValue(STR_VAR_DEF, payload);
 }
 
-/**
- * Constructs a `varRef` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarRef(zvalue name) {
     return makeValue(STR_VAR_REF, name);
 }
 
-/**
- * Constructs a `call` node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeCall(zvalue function, zvalue actuals) {
     if (actuals == NULL) {
         actuals = EMPTY_LIST;
@@ -191,26 +183,34 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     return makeValue(STR_CALL, value);
 }
 
-/**
- * Constructs a `call` node given a function name.
- */
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeCallName(zvalue name, zvalue actuals) {
     return makeCall(makeVarRef(name), actuals);
 }
 
-/**
- * Constructs a thunk node (function of no arguments), from an expression node.
- */
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeThunk(zvalue expression) {
     zvalue value = mapFrom2(STR_STATEMENTS, EMPTY_LIST, STR_YIELD, expression);
     return makeValue(STR_CLOSURE, value);
 }
 
-/**
- * Constructs an optional-value expression.
- */
+/* Documented in Samizdat Layer 0 spec. */
 static zvalue makeOptValueExpression(zvalue expression) {
-    return makeCallName(STR_OPT_VALUE, makeThunk(expression));
+    return makeCallName(STR_OPT_VALUE, listFrom1(makeThunk(expression)));
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+static zvalue makeCallNonlocalExit(zvalue name, zvalue optExpression) {
+    zvalue actuals;
+
+    if (optExpression != NULL) {
+        actuals = listFrom2(name,
+            makeValue(STR_INTERPOLATE, makeOptValueExpression(optExpression)));
+    } else {
+        actuals = listFrom1(name);
+    }
+
+    return makeCallName(STR_NONLOCAL_EXIT, actuals);
 }
 
 
@@ -941,10 +941,7 @@ DEF_PARSE(nonlocalExit) {
     if (name == NULL) { return NULL; }
 
     zvalue value = PARSE(expression); // It's okay for this to be `NULL`.
-    zvalue actuals = (value == NULL)
-        ? listFrom1(name) : listFrom2(name, makeThunk(value));
-
-    return makeCallName(STR_NONLOCAL_EXIT, actuals);
+    return makeCallNonlocalExit(name, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

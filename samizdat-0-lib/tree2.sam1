@@ -58,13 +58,24 @@ fn makeThunk(expression) {
     <> @[closure: [statements: [], yield: expression]]
 };
 
+# Returns an optional-value expression. This wraps `node` as
+# `optValue { <> node }`.
+fn makeOptValueExpression(node) {
+    <> makeCallName("optValue", makeThunk(node))
+};
+
 # Returns a `call` node to a nonlocal exit with the given name and
-# with optional expression value. The expression if supplied is automatically
-# "thunked".
-fn makeCallNonlocalExit(name, expression?) {
-    <> ifValue { <> expression* }
-        { ex <> makeCall(makeVarRef("nonlocalExit"), name, makeThunk(ex)) }
-        { <> makeCall(makeVarRef("nonlocalExit"), name) }
+# with optional expression value. If passed, the expression is allowed
+# to evaluate to void, in which case the nonlocal exit yields void at
+# its exit point.
+fn makeCallNonlocalExit(name, optExpression?) {
+    <> ifValue { <> optExpression* }
+        { ex ::
+            <> makeCallName("nonlocalExit",
+                name,
+                @[interpolate: makeOptValueExpression(ex)])
+        }
+        { <> makeCallName("nonlocalExit", name) }
 };
 
 # Returns a `call` node that names a function as a `varRef` and passes
@@ -843,13 +854,6 @@ parChoicePex(implChoicePex);
 #
 # Layer 2 Definitions and Rules
 #
-
-# Helper for nonlocal exit, `?` expression postfix, and string interpolation:
-# Construct an optional-value expression. This wraps `node` as
-# `optValue { <> node }`.
-fn makeOptValueExpression(node) {
-    <> makeCallName("optValue", makeThunk(node))
-};
 
 # Helper for string interpolation: Parses the two kinds of interpolation,
 # yielding an appropriate expression node if syntactically valid, including
