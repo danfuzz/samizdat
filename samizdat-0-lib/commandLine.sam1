@@ -67,7 +67,7 @@ def parArguments = {/
     "--\0"?
     args = parWord*
     {
-        def options = mapAdd(optionList*);
+        def options = mapCat(optionList*);
         ifIs { <> mapGet(options, "error") }
             { io0Die("Invalid option(s).") };
         <> [options: options, args: args]

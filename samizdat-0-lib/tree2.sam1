@@ -539,7 +539,7 @@ def parMap = {/
     first = parMapping
     rest = (@"," parMapping)*
     @"]"
-    { <> makeCallName("mapAdd", first, rest*) }
+    { <> makeCallName("mapCat", first, rest*) }
 /};
 
 # Parses a literal in derived value form.
@@ -1555,7 +1555,7 @@ def parSwitchExpression = {/
         # * The cases are constructed in the somewhat-convoluted way that
         #   they are in order to preserve the left-to-right evaluation order
         #   of the apparent text, even though the key/case override semantics
-        #   is the opposite of what `mapAdd` defines.
+        #   is the opposite of what `mapCat` defines.
         #
         # * The `test` is wrapped in a `voidable` node to make the
         #   "logic nature" of the expression operate as expected (that is,
@@ -1565,7 +1565,7 @@ def parSwitchExpression = {/
         #   which will have to have expression and not argument semantics.
         def testBody = makeThunk(
                 makeCallName("makeList",
-                    makeCallName("mapAdd",
+                    makeCallName("mapCat",
                         makeInterpolate(
                             makeCallName("listReverse",
                                 makeCallName("makeList", regularCases*)))),

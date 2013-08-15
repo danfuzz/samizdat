@@ -171,7 +171,7 @@ zvalue makeMapping(zvalue key, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue mapAdd(zvalue map1, zvalue map2) {
+zvalue mapCat(zvalue map1, zvalue map2) {
     datAssertMap(map1);
     datAssertMap(map2);
 
@@ -184,11 +184,11 @@ zvalue mapAdd(zvalue map1, zvalue map2) {
         return map1;
     }
 
-    return mapAddArray(map1, size2, mapElems(map2));
+    return mapCatArray(map1, size2, mapElems(map2));
 }
 
 /* Documented in header. */
-zvalue mapAddArray(zvalue map, zint size, const zmapping *mappings) {
+zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
     datAssertMap(map);
 
     if (size == 0) {

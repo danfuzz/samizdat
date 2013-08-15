@@ -102,13 +102,13 @@ zvalue makeMapping(zvalue key, zvalue value);
  * The effect is identical to calling a chain of `mapPut()`s on each
  * of the mappings in order.
  */
-zvalue mapAddArray(zvalue map, zint size, const zmapping *mappings);
+zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings);
 
 /**
  * Combines the mappings of the two given maps into a new map.
  * For overlapping keys between the two, the second argument "wins".
  */
-zvalue mapAdd(zvalue map1, zvalue map2);
+zvalue mapCat(zvalue map1, zvalue map2);
 
 /**
  * Gets a map resulting from the removal of the given key from the

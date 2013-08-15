@@ -58,7 +58,7 @@ STR(makeList,       "makeList");
 STR(makeMapping,    "makeMapping");
 STR(makeValue,      "makeValue");
 STR(main_sam0,      "main.sam0");
-STR(mapAdd,         "mapAdd");
+STR(mapCat,         "mapCat");
 STR(name,           "name");
 STR(nonlocalExit,   "nonlocalExit");
 STR(optValue,       "optValue");

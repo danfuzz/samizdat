@@ -89,7 +89,7 @@ PRIM_FUNC(makeMutableBox, 0, 1);
 PRIM_FUNC(makeUniqlet,    0, 0);
 PRIM_FUNC(makeValue,      1, 2);
 PRIM_FUNC(makeYieldBox,   0, 0);
-PRIM_FUNC(mapAdd,         0, -1);
+PRIM_FUNC(mapCat,         0, -1);
 PRIM_FUNC(mapDel,         1, -1);
 PRIM_FUNC(mapGet,         2, 2);
 PRIM_FUNC(mapKeys,        1, 1);

@@ -408,7 +408,7 @@ DEF_PARSE(programDeclarations1) {
         MATCH_OR_REJECT(CH_COLONCOLON);
     }
 
-    return mapAdd(mapFrom1(STR_formals, formals), yieldDef);
+    return mapCat(mapFrom1(STR_formals, formals), yieldDef);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -426,7 +426,7 @@ DEF_PARSE(program) {
     zvalue declarations = PARSE(programDeclarations); // This never fails.
     zvalue body = PARSE(programBody); // This never fails.
 
-    return makeValue(STR_closure, mapAdd(declarations, body));
+    return makeValue(STR_closure, mapCat(declarations, body));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -515,8 +515,8 @@ DEF_PARSE(fnCommon) {
     zvalue statements =
         listCat(returnDef, mapGet(codeMap, STR_statements));
 
-    zvalue result = mapAdd(codeMap, name);
-    result = mapAdd(result,
+    zvalue result = mapCat(codeMap, name);
+    result = mapCat(result,
         mapFrom3(
             STR_formals,    formals,
             STR_yieldDef,   STR_return,
@@ -699,7 +699,7 @@ DEF_PARSE(map) {
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCallName(STR_mapAdd, mappings);
+    return makeCallName(STR_mapCat, mappings);
 }
 
 /**

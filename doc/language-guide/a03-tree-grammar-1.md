@@ -430,7 +430,7 @@ def parMap = {/
     first = parMapping
     rest = (@"," parMapping)*
     @"]"
-    { <> makeCallName("mapAdd", first, rest*) }
+    { <> makeCallName("mapCat", first, rest*) }
 /};
 
 # Parses a literal in derived value form.
