@@ -102,11 +102,15 @@ static zint shl(zint value, zint shift) {
 
 /**
  * Helper for `intGet` and `intNth`, which acts like `ibit` except that
- * out-of-range indices result in void, not the sign bit.
+ * out-of-range indices result in void, not the sign bit. `n` is always
+ * passed as non-negative.
  */
 static zvalue doIntNth(zvalue value, zint n) {
     if (n < pbSize(value)) {
-        return intFromZint(intGetBit(value, n));
+        zint intval = zintFromInt(value);
+        zint result;
+        zintGetBit(&result, intval, n); // Always succeeds
+        return intFromZint(result);
     } else {
         return NULL;
     }
@@ -126,7 +130,6 @@ UNARY_PRIM(isign, (x == 0) ? 0 : ((x > 0) ? 1 : -1));
 /* These are all documented in Samizdat Layer 0 spec. */
 BINARY_PRIM(iadd, x + y);
 BINARY_PRIM(iand, x & y);
-BINARY_PRIM(ibit, zintGetBit(x, y));
 BINARY_PRIM(idiv, div(x, y));
 BINARY_PRIM(imod, mod(x, y));
 BINARY_PRIM(imul, x * y);
@@ -136,6 +139,17 @@ BINARY_PRIM(isub, x - y);
 BINARY_PRIM(ishl, shl(x, y));
 BINARY_PRIM(ishr, shl(x, -y));
 BINARY_PRIM(ixor, x ^ y);
+
+PRIM_IMPL(ibit) {
+    zint x = zintFromInt(args[0]);
+    zint y = zintFromInt(args[1]);
+    zint result;
+    if (zintGetBit(&result, x, y)) {
+        return intFromZint(result);
+    } else {
+        die("Overflow / error on ibit(%lld, %lld).", x, y);
+    }
+}
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intGet) {

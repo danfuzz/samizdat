@@ -148,14 +148,20 @@ bool zintDivEu(zint *result, zint v1, zint v2) {
 }
 
 /* Documented in header. */
-bool zintGetBit(zint value, zint n) {
-    if (n < 0) {
-        die("Attempt to access negative bit index: %lld", n);
-    } else if (n >= ZINT_BITS) {
-        n = ZINT_BITS - 1;
+bool zintGetBit(zint *result, zint v1, zint v2) {
+    if (v2 < 0) {
+        return false;
     }
 
-    return (bool) ((value >> n) & 1);
+    if (result != NULL) {
+        if (v2 >= ZINT_BITS) {
+            v2 = ZINT_BITS - 1;
+        }
+
+        *result = (v1 >> v2) & 1;
+    }
+
+    return true;
 }
 
 /* Documented in header. */

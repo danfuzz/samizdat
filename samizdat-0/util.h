@@ -166,29 +166,33 @@ bool zintAdd(zint *result, zint v1, zint v2);
 zint zintBitSize(zint value);
 
 /**
- * Performs `v1 / v2` (trucated division), detecting overflow. Returns a
- * success flag, and stores the result in the indicated pointer if non-`NULL`.
+ * Performs `v1 / v2` (trucated division), detecting overflow and errors.
+ * Returns a success flag, and stores the result in the indicated pointer
+ * if non-`NULL`.
  *
- * **Note:** The only possible overflow cases are `ZINT_MIN / -1` and
- * division by zero.
+ * **Note:** The only possible overflow case is `ZINT_MIN / -1`, and the
+ * only other error is division by zero.
  */
 bool zintDiv(zint *result, zint v1, zint v2);
 
 /**
- * Performs `v1 // v2` (Euclidean division), detecting overflow. Returns a
- * success flag, and stores the result in the indicated pointer if non-`NULL`.
+ * Performs `v1 // v2` (Euclidean division), detecting overflow and errors.
+ * Returns a success flag, and stores the result in the indicated pointer
+ * if non-`NULL`.
  *
- * **Note:** The only possible overflow cases are `ZINT_MIN // -1` and
- * division by zero.
+ * **Note:** The only possible overflow case is `ZINT_MIN / -1`, and the
+ * only other error is division by zero.
  */
-bool zintDiv(zint *result, zint v1, zint v2);
+bool zintDivEu(zint *result, zint v1, zint v2);
 
 /**
- * Given a 32-bit int value, returns the `n`th bit. This is just like
- * `intGetBit()` except using a `zint` value. This function is
- * exported for the convenience of other modules.
+ * Performs bit extraction `(v1 >> v2) & 1`, detecting errors. Returns a
+ * success flag, and stores the result in the indicated pointer if non-`NULL`.
+ * For `v2 >= ZINT_BITS`, this returns the sign bit.
+ *
+ * **Note:** The only possible errors are when `v2 < 0`.
  */
-bool zintGetBit(zint value, zint n);
+bool zintGetBit(zint *result, zint v1, zint v2);
 
 /**
  * Performs `v1 % v2` (that is, remainder after truncated division, with the

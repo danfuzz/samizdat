@@ -74,12 +74,6 @@ zvalue intFromZint(zint value) {
 }
 
 /* Documented in header. */
-bool intGetBit(zvalue intval, zint n) {
-    assertHasType(intval, TYPE_Int);
-    return zintGetBit(zintValue(intval), n);
-}
-
-/* Documented in header. */
 zint zintFromInt(zvalue intval) {
     assertHasType(intval, TYPE_Int);
     return zintValue(intval);
