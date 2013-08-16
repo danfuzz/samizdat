@@ -7,15 +7,15 @@ Maps
 <br><br>
 ### Primitive Definitions
 
-#### `makeMapping(keys*, value) <> map`
+#### `makeValueMap(keys*, value) <> map`
 
 This makes a map which maps any number of keys (including none)
 to the same value. If no keys are specified, then this function returns
 the empty map. For example:
 
 ```
-v = [(k1): v];      is equivalent to  v = makeMapping(k1, v);
-v = [[k1, k2]*: v;  is equivalent to  v = makeMapping(k1, k2, v);
+v = [(k1): v];      is equivalent to  v = makeValueMap(k1, v);
+v = [[k1, k2]*: v;  is equivalent to  v = makeValueMap(k1, k2, v);
 [etc.]
 ```
 
@@ -25,11 +25,14 @@ representable in Samizdat syntax as presented.
 **Syntax Note:** Used in the translation of `[key: value, ...]`
 and `switch` forms.
 
-#### `mapAdd(maps*) <> map`
+#### `mapCat(maps*) <> map`
 
 Returns a map consisting of the combination of the mappings of the
 argument maps. For any keys in common between the maps,
 the lastmost argument's value is the one that ends up in the result.
+Despite the `cat` name, strictly speaking this isn't a linear concatenation,
+but it is as close as one can get to it given the type's key ordering
+and uniqueness constraints.
 
 **Syntax Note:** Used in the translation of `[key: value, ...]`
 and `switch` forms.

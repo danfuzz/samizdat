@@ -29,28 +29,21 @@ typedef struct {
 } StringInfo;
 
 /**
+ * Gets a pointer to the value's info.
+ */
+static StringInfo *getInfo(zvalue list) {
+    return pbPayload(list);
+}
+
+/**
  * Allocates a string of the given size.
  */
 static zvalue allocString(zint size) {
     zvalue result =
         pbAllocValue(TYPE_String, sizeof(StringInfo) + size * sizeof(zchar));
 
-    ((StringInfo *) pbPayload(result))->size = size;
+    getInfo(result)->size = size;
     return result;
-}
-
-/**
- * Gets the size of a string.
- */
-static zint stringSizeOf(zvalue string) {
-    return ((StringInfo *) pbPayload(string))->size;
-}
-
-/**
- * Gets the array of `zvalue` elements from a list.
- */
-static zchar *stringElems(zvalue string) {
-    return ((StringInfo *) pbPayload(string))->elems;
 }
 
 
@@ -66,18 +59,20 @@ void pbAssertString(zvalue value) {
 /* Documented in header. */
 void pbAssertStringSize1(zvalue value) {
     pbAssertString(value);
-    if (pbSize(value) != 1) {
+    if (getInfo(value)->size != 1) {
         die("Not a size 1 string.");
     }
 }
 
 /* Documented in header. */
-zvalue stringAdd(zvalue str1, zvalue str2) {
+zvalue stringCat(zvalue str1, zvalue str2) {
     pbAssertString(str1);
     pbAssertString(str2);
 
-    zint size1 = stringSizeOf(str1);
-    zint size2 = stringSizeOf(str2);
+    StringInfo *info1 = getInfo(str1);
+    StringInfo *info2 = getInfo(str2);
+    zint size1 = info1->size;
+    zint size2 = info2->size;
 
     if (size1 == 0) {
         return str2;
@@ -86,11 +81,10 @@ zvalue stringAdd(zvalue str1, zvalue str2) {
     }
 
     zvalue result = allocString(size1 + size2);
+    zchar *resultElems = getInfo(result)->elems;
 
-    memcpy(stringElems(result), stringElems(str1),
-           size1 * sizeof(zchar));
-    memcpy(stringElems(result) + size1, stringElems(str2),
-           size2 * sizeof(zchar));
+    memcpy(resultElems,         info1->elems, size1 * sizeof(zchar));
+    memcpy(&resultElems[size1], info2->elems, size2 * sizeof(zchar));
     return result;
 }
 
@@ -117,7 +111,7 @@ zvalue stringFromUtf8(zint stringBytes, const char *string) {
 
     zvalue result = allocString(decodedSize);
 
-    utf8DecodeCharsFromString(stringElems(result), stringBytes, string);
+    utf8DecodeCharsFromString(getInfo(result)->elems, stringBytes, string);
     return result;
 }
 
@@ -131,7 +125,7 @@ zvalue stringFromZchar(zchar value) {
     }
 
     zvalue result = allocString(1);
-    stringElems(result)[0] = value;
+    getInfo(result)->elems[0] = value;
 
     if (value <= PB_MAX_CACHED_CHAR) {
         CACHED_CHARS[value] = result;
@@ -152,7 +146,7 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 
     zvalue result = allocString(size);
 
-    memcpy(stringElems(result), chars, size * sizeof(zchar));
+    memcpy(getInfo(result)->elems, chars, size * sizeof(zchar));
     return result;
 }
 
@@ -160,27 +154,31 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 zint stringNth(zvalue string, zint n) {
     pbAssertString(string);
 
-    if ((n < 0) || (n >= stringSizeOf(string))) {
+    StringInfo *info = getInfo(string);
+    if ((n < 0) || (n >= info->size)) {
         return -1;
     }
 
-    return stringElems(string)[n];
+    return info->elems[n];
 }
 
 /* Documented in header. */
 zvalue stringSlice(zvalue string, zint start, zint end) {
     pbAssertString(string);
-    pbAssertSliceRange(stringSizeOf(string), start, end);
 
-    return stringFromZchars(end - start, &stringElems(string)[start]);
+    StringInfo *info = getInfo(string);
+
+    pbAssertSliceRange(info->size, start, end);
+    return stringFromZchars(end - start, &info->elems[start]);
 }
 
 /* Documented in header. */
 void utf8FromString(zint resultSize, char *result, zvalue string) {
     pbAssertString(string);
 
-    zint size = stringSizeOf(string);
-    zchar *elems = stringElems(string);
+    StringInfo *info = getInfo(string);
+    zint size = info->size;
+    zchar *elems = info->elems;
     char *out = result;
 
     for (zint i = 0; i < size; i++) {
@@ -199,8 +197,9 @@ void utf8FromString(zint resultSize, char *result, zvalue string) {
 zint utf8SizeFromString(zvalue string) {
     pbAssertString(string);
 
-    zint size = stringSizeOf(string);
-    zchar *elems = stringElems(string);
+    StringInfo *info = getInfo(string);
+    zint size = info->size;
+    zchar *elems = info->elems;
     zint result = 0;
 
     for (zint i = 0; i < size; i++) {
@@ -214,7 +213,9 @@ zint utf8SizeFromString(zvalue string) {
 void zcharsFromString(zchar *result, zvalue string) {
     pbAssertString(string);
 
-    memcpy(result, stringElems(string), stringSizeOf(string) * sizeof(zchar));
+    StringInfo *info = getInfo(string);
+
+    memcpy(result, info->elems, info->size * sizeof(zchar));
 }
 
 
@@ -230,8 +231,8 @@ METH_IMPL(String, debugString) {
     zvalue string = args[0];
     zvalue quote = stringFromUtf8(1, "\"");
 
-    zvalue result = stringAdd(quote, string);
-    result = stringAdd(result, quote);
+    zvalue result = stringCat(quote, string);
+    result = stringCat(result, quote);
 
     return result;
 }
@@ -240,17 +241,19 @@ METH_IMPL(String, debugString) {
 METH_IMPL(String, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    zint sz1 = stringSizeOf(v1);
-    zint sz2 = stringSizeOf(v2);
+    StringInfo *info1 = getInfo(v1);
+    StringInfo *info2 = getInfo(v2);
+    zint size1 = info1->size;
+    zint size2 = info2->size;
 
-    if (sz1 != sz2) {
+    if (size1 != size2) {
         return NULL;
     }
 
-    zchar *e1 = stringElems(v1);
-    zchar *e2 = stringElems(v2);
+    zchar *e1 = info1->elems;
+    zchar *e2 = info2->elems;
 
-    for (zint i = 0; i < sz1; i++) {
+    for (zint i = 0; i < size1; i++) {
         if (e1[i] != e2[i]) {
             return NULL;
         }
@@ -263,13 +266,15 @@ METH_IMPL(String, eq) {
 METH_IMPL(String, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    zchar *e1 = stringElems(v1);
-    zchar *e2 = stringElems(v2);
-    zint sz1 = stringSizeOf(v1);
-    zint sz2 = stringSizeOf(v2);
-    zint sz = (sz1 < sz2) ? sz1 : sz2;
+    StringInfo *info1 = getInfo(v1);
+    StringInfo *info2 = getInfo(v2);
+    zchar *e1 = info1->elems;
+    zchar *e2 = info2->elems;
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+    zint size = (size1 < size2) ? size1 : size2;
 
-    for (zint i = 0; i < sz; i++) {
+    for (zint i = 0; i < size; i++) {
         zchar c1 = e1[i];
         zchar c2 = e2[i];
 
@@ -280,17 +285,17 @@ METH_IMPL(String, order) {
         }
     }
 
-    if (sz1 == sz2) {
+    if (size1 == size2) {
         return PB_0;
     }
 
-    return (sz1 < sz2) ? PB_NEG1 : PB_1;
+    return (size1 < size2) ? PB_NEG1 : PB_1;
 }
 
 /* Documented in header. */
 METH_IMPL(String, size) {
     zvalue string = args[0];
-    return intFromZint(stringSizeOf(string));
+    return intFromZint(getInfo(string)->size);
 }
 
 /* Documented in header. */

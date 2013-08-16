@@ -33,9 +33,9 @@ fn intBody(start, value, base) {
         <> ifIs { <> ne(value, 0) }
             {
                 def digit = stringNth(DIGIT_CHARS, imod(value, base));
-                <> [stringAdd(digit, text), idiv(value, base)];
+                <> [stringCat(digit, text), idiv(value, base)];
             }
-            { return stringAdd(start, text) }
+            { return stringCat(start, text) }
     }
 };
 
@@ -54,7 +54,7 @@ fn stringFromIntBase(int, base) {
 # Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
     <> ifIs { <> logicFromBoolean(adorn) }
-        { <> stringAdd(before, value, after) }
+        { <> stringCat(before, value, after) }
         { <> value }
 };
 
@@ -67,7 +67,7 @@ fn collectionBody(elems, ifEmpty) {
         { return ifEmpty };
 
     def first = stringSlice(listFirst(elems), 2);
-    <> stringAdd(first, listButFirst(elems)*)
+    <> stringCat(first, listButFirst(elems)*)
 };
 
 # Stringifies an int.
@@ -92,7 +92,7 @@ def SPECIAL_CHARS = [
 
 # Does hex character conversion.
 fn hexStringChar(ch) {
-    <> stringAdd(
+    <> stringCat(
         "\\x",
         stringFromIntBase(intFromChar(ch), 16),
         ";")
@@ -173,7 +173,7 @@ fn keyString(key) {
         { return key };
 
     ifValue { <> mapGet(SPECIAL_VALUES, key) }
-        { string :: return stringAdd("(", string, ")") };
+        { string :: return stringCat("(", string, ")") };
 
     <> callSourceString(key)
 };
@@ -181,13 +181,13 @@ fn keyString(key) {
 # Stringifies a string.
 fn doString(string, adorn) {
     def bodyChars = filterGenerator(string) { ch <> stringChar(ch) };
-    <> adornIf(adorn, "\"", stringAdd(bodyChars*), "\"")
+    <> adornIf(adorn, "\"", stringCat(bodyChars*), "\"")
 };
 
 # Stringifies a list.
 fn doList(list, adorn) {
     def listElems = collectFilter(list)
-        { elem <> stringAdd(", ", callSourceString(elem)) };
+        { elem <> stringCat(", ", callSourceString(elem)) };
 
     <> adornIf(adorn, "[", collectionBody(listElems, ""), "]")
 };
@@ -198,7 +198,7 @@ fn doMap(map, adorn) {
         { mapping ::
             def key = keyString(mappingKey(mapping));
             def value = callSourceString(mappingValue(mapping));
-            <> stringAdd(", ", key, ": ", value)
+            <> stringCat(", ", key, ": ", value)
         };
 
     <> adornIf(adorn, "[", collectionBody(mapElems, ":"), "]");
@@ -225,7 +225,7 @@ fn doDerivOrOpaque(value, adorn) {
             <> ifValue { <> dataOf(value) }
                 { data ::
                     # Transparent derived value with payload.
-                    <> stringAdd(": ", callSourceString(data))
+                    <> stringCat(": ", callSourceString(data))
                 }
                 {
                     # Type-only transparent derived value.
@@ -235,7 +235,7 @@ fn doDerivOrOpaque(value, adorn) {
                 }
         };
 
-    def body = stringAdd(typeString, dataString);
+    def body = stringCat(typeString, dataString);
 
     <> adornIf(adorn, "@[", body, "]");
 };
@@ -251,7 +251,7 @@ fn doStringAsIs(string, .) {
 # general `adorn` argument, which is degenerate and ignored in this case.
 fn doListFlatten(list, .) {
     def elems = filterGenerator(list) { e <> callStringFromValue(e) };
-    <> stringAdd(elems*)
+    <> stringCat(elems*)
 };
 
 # Mapping from low-layer type names to stringifiers to use for `%q`-style
@@ -345,7 +345,7 @@ def FORMATTERS = [
 fn formatterFromString(formatSpec) {
     <> ifValueOr { <> mapGet(FORMATTERS, formatSpec) }
         {
-            io0Die(stringAdd(
+            io0Die(stringCat(
                 "Unrecognized format spec: ",
                 sourceString(formatSpec)))
         }

@@ -41,7 +41,7 @@ PRIM_IMPL(intFromChar) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringAdd) {
+PRIM_IMPL(stringCat) {
     switch (argCount) {
         case 0: {
             return EMPTY_STRING;
@@ -51,7 +51,7 @@ PRIM_IMPL(stringAdd) {
             return args[0];
         }
         case 2: {
-            return stringAdd(args[0], args[1]);
+            return stringCat(args[0], args[1]);
         }
     }
 

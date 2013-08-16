@@ -190,7 +190,7 @@ extern zvalue EMPTY_STRING;
  * Combines the characters of two strings, in order, into a new
  * string.
  */
-zvalue stringAdd(zvalue str1, zvalue str2);
+zvalue stringCat(zvalue str1, zvalue str2);
 
 /**
  * Gets the string resulting from interpreting the given UTF-8

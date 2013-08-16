@@ -409,8 +409,8 @@ def parMapping = {/
     value = parExpression
 
     # The `value` is wrapped in an `expression` node here to prevent
-    # interpolation from being applied to `makeMapping`.
-    { <> makeCallName("makeMapping", key, @[expression: value]) }
+    # interpolation from being applied to `makeValueMap`.
+    { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
     map = parExpression
     {
@@ -430,7 +430,7 @@ def parMap = {/
     first = parMapping
     rest = (@"," parMapping)*
     @"]"
-    { <> makeCallName("mapAdd", first, rest*) }
+    { <> makeCallName("mapCat", first, rest*) }
 /};
 
 # Parses a literal in derived value form.
@@ -690,7 +690,7 @@ def parParserSetString = {/
             def endChar = dataOf(end);
             <> ifIs
                 { <> eq(1, &eq(coreSizeOf(startChar), coreSizeOf(endChar))) }
-                { <> stringAdd(inclusiveRange(startChar, 1, endChar)*) }
+                { <> stringCat(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
         { <> dataOf(s) }
@@ -709,7 +709,7 @@ def parParserSet = {/
 
     terminals = (
         strings = parParserSetString+
-        { <> [stringAdd(strings*)*] }
+        { <> [stringCat(strings*)*] }
     |
         tokens = parParserToken+
         { <> collectFilter(tokens) { tok <> dataOf(tok) } }

@@ -190,7 +190,7 @@ def tokError = {/
     [! "\n"]*
 
     {
-        def msg = stringAdd("Unrecognized character: ", typeOf(badCh));
+        def msg = stringCat("Unrecognized character: ", typeOf(badCh));
         <> @[error: msg]
     }
 /};
@@ -268,7 +268,7 @@ fn implProcessStringParts(parts) {
     def elems = doReduce1(listButFirst(parts), [listFirst(parts)])
         { part, result ::
             <> ifValue { <> [&isString(listLast(result)), &isString(part)] }
-                { newLast <> [listButLast(result)*, stringAdd(newLast*)] }
+                { newLast <> [listButLast(result)*, stringCat(newLast*)] }
                 { <> [result*, part] };
         };
 
@@ -398,7 +398,7 @@ def implStringInterpolation = {/
 
     {
         <> ifIs { <> eq(typeOf(close), expectClose) }
-            { <> [open, listAdd(tokens*)*, close] }
+            { <> [open, listCat(tokens*)*, close] }
     }
 /};
 tokStringInterpolation(implStringInterpolation);
@@ -420,7 +420,7 @@ def implStringPart2 = {/
             first = tokHexChar
             more = ("," tokHexChar)*
             ";"
-            { <> stringAdd(first, more*) }
+            { <> stringCat(first, more*) }
         |
             { <> @[error: "Invalid hexadecimal character literal."] }
         )
@@ -430,7 +430,7 @@ def implStringPart2 = {/
             first = tokNamedChar
             more = ("," tokNamedChar)*
             ";"
-            { <> stringAdd(first, more*) }
+            { <> stringCat(first, more*) }
         |
             { <> @[error: "Invalid named character literal."] }
         )

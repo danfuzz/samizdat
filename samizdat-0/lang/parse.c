@@ -152,7 +152,7 @@ static zvalue listFrom2(zvalue e1, zvalue e2) {
  * Appends an element to a list.
  */
 static zvalue listAppend(zvalue list, zvalue elem) {
-    return listAdd(list, listFrom1(elem));
+    return listCat(list, listFrom1(elem));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -408,7 +408,7 @@ DEF_PARSE(programDeclarations1) {
         MATCH_OR_REJECT(CH_COLONCOLON);
     }
 
-    return mapAdd(mapFrom1(STR_formals, formals), yieldDef);
+    return mapCat(mapFrom1(STR_formals, formals), yieldDef);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -426,7 +426,7 @@ DEF_PARSE(program) {
     zvalue declarations = PARSE(programDeclarations); // This never fails.
     zvalue body = PARSE(programBody); // This never fails.
 
-    return makeValue(STR_closure, mapAdd(declarations, body));
+    return makeValue(STR_closure, mapCat(declarations, body));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -513,10 +513,10 @@ DEF_PARSE(fnCommon) {
 
     zvalue codeMap = dataOf(code);
     zvalue statements =
-        listAdd(returnDef, mapGet(codeMap, STR_statements));
+        listCat(returnDef, mapGet(codeMap, STR_statements));
 
-    zvalue result = mapAdd(codeMap, name);
-    result = mapAdd(result,
+    zvalue result = mapCat(codeMap, name);
+    result = mapCat(result,
         mapFrom3(
             STR_formals,    formals,
             STR_yieldDef,   STR_return,
@@ -658,7 +658,7 @@ DEF_PARSE(mapping1) {
     MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 
-    return makeCallName(STR_makeMapping,
+    return makeCallName(STR_makeValueMap,
         listFrom2(key, makeValue(STR_expression, value)));
 }
 
@@ -699,7 +699,7 @@ DEF_PARSE(map) {
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCallName(STR_mapAdd, mappings);
+    return makeCallName(STR_mapCat, mappings);
 }
 
 /**
@@ -813,7 +813,7 @@ DEF_PARSE(actualsList) {
         zvalue normalActuals = PARSE(unadornedList); // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
         zvalue closureActuals = PARSE_STAR(closure); // This never fails.
-        return listAdd(closureActuals, normalActuals);
+        return listCat(closureActuals, normalActuals);
     }
 
     return PARSE_PLUS(closure);
