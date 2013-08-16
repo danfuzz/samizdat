@@ -18,7 +18,7 @@
 
 
 /*
- * Message functions
+ * Message Declarations
  */
 
 enum {
@@ -113,32 +113,6 @@ bool utilIsHeapAllocated(void *memory);
 
 
 /*
- * `zint` Declarations
- */
-
-/**
- * Converts a `zint` to a `zchar`, asserting that the value is in fact in
- * range for same.
- */
-zchar zcharFromZint(zint value);
-
-/**
- * Gets the bit size (highest-order significant bit number, plus one)
- * of the given `zint`, assuming sign-extended representation. For example,
- * this is `1` for both `0` and `-1` (because both can be represented with
- * *just* a single sign bit).
- */
-zint zintBitSize(zint value);
-
-/**
- * Given a 32-bit int value, returns the `n`th bit. This is just like
- * `intGetBit()` except using a `zint` value. This function is
- * exported for the convenience of other modules.
- */
-bool zintGetBit(zint value, zint n);
-
-
-/*
  * UTF-8 Declarations
  */
 
@@ -165,5 +139,106 @@ void utf8DecodeCharsFromString(zchar *result,
  * size`).
  */
 char *utf8EncodeOne(char *result, zint ch);
+
+
+/*
+ * `zint` Declarations
+ */
+
+/**
+ * Converts a `zint` to a `zchar`, asserting that the value is in fact in
+ * range for same.
+ */
+zchar zcharFromZint(zint value);
+
+/**
+ * Performs `v1 + v2`, detecting overflow. Returns a success flag, and
+ * stores the result in the indicated pointer if non-`NULL`.
+ */
+bool zintAdd(zint *result, zint v1, zint v2);
+
+/**
+ * Gets the bit size (highest-order significant bit number, plus one)
+ * of the given `zint`, assuming sign-extended representation. For example,
+ * this is `1` for both `0` and `-1` (because both can be represented with
+ * *just* a single sign bit).
+ */
+zint zintBitSize(zint value);
+
+/**
+ * Performs `v1 / v2` (trucated division), detecting overflow. Returns a
+ * success flag, and stores the result in the indicated pointer if non-`NULL`.
+ *
+ * **Note:** The only possible overflow cases are `ZINT_MIN / -1` and
+ * division by zero.
+ */
+bool zintDiv(zint *result, zint v1, zint v2);
+
+/**
+ * Performs `v1 // v2` (Euclidean division), detecting overflow. Returns a
+ * success flag, and stores the result in the indicated pointer if non-`NULL`.
+ *
+ * **Note:** The only possible overflow cases are `ZINT_MIN // -1` and
+ * division by zero.
+ */
+bool zintDiv(zint *result, zint v1, zint v2);
+
+/**
+ * Given a 32-bit int value, returns the `n`th bit. This is just like
+ * `intGetBit()` except using a `zint` value. This function is
+ * exported for the convenience of other modules.
+ */
+bool zintGetBit(zint value, zint n);
+
+/**
+ * Performs `v1 % v2` (that is, remainder after truncated division, with the
+ * result sign matching `v1`), detecting overflow. Returns a success flag, and
+ * stores the result in the indicated pointer if non-`NULL`.
+ *
+ * **Note:** This only succeeds in cases that `v1 / v2` succeeds, that is,
+ * `ZINT_MIN % -1` fails.
+ */
+bool zintMod(zint *result, zint v1, zint v2);
+
+/**
+ * Performs `v1 %% v2` (that is, remainder after Euclidean division, with the
+ * result sign matching `v2`), detecting overflow. Returns a success flag, and
+ * stores the result in the indicated pointer if non-`NULL`.
+ *
+ * **Note:** This only succeeds in cases that `v1 / v2` succeeds, that is,
+ * `ZINT_MIN %% -1` fails.
+ */
+bool zintModEu(zint *result, zint v1, zint v2);
+
+/**
+ * Performs `v1 * v2`, detecting overflow. Returns a success flag, and
+ * stores the result in the indicated pointer if non-`NULL`.
+ */
+bool zintMul(zint *result, zint v1, zint v2);
+
+/**
+ * Performs `v1 << v2`, detecting overflow (never losing high-order bits).
+ * Returns a success flag, and stores the result in the indicated pointer
+ * if non-`NULL`.
+ *
+ * **Note:** This defines `(v1 << -v2) == (v1 >> v2)`.
+ */
+bool zintShl(zint *result, zint v1, zint v2);
+
+/**
+ * Performs `v1 >> v2`, detecting overflow (never losing high-order bits).
+ * Returns a success flag, and stores the result in the indicated pointer
+ * if non-`NULL`.
+ *
+ * **Note:** This defines `(v1 >> -v2) == (v1 << v2)`.
+ */
+bool zintShr(zint *result, zint v1, zint v2);
+
+/**
+ * Performs `v1 - v2`, detecting overflow. Returns a success flag, and
+ * stores the result in the indicated pointer if non-`NULL`.
+ */
+bool zintSub(zint *result, zint v1, zint v2);
+
 
 #endif
