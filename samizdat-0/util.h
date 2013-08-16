@@ -128,7 +128,7 @@ zint utf8DecodeStringSize(zint stringBytes, const char *string);
  * large to hold the result of decoding.
  */
 void utf8DecodeCharsFromString(zchar *result,
-                               zint stringBytes, const char *string);
+        zint stringBytes, const char *string);
 
 /**
  * Encodes a single Unicode code point as UTF-8, writing it to the
