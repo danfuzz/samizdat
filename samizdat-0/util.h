@@ -92,7 +92,7 @@ void die(const char *format, ...)
 
 
 /*
- * Allocation functions
+ * Allocation Declarations
  */
 
 /**
@@ -113,7 +113,33 @@ bool utilIsHeapAllocated(void *memory);
 
 
 /*
- * Unicode functions
+ * `zint` Declarations
+ */
+
+/**
+ * Converts a `zint` to a `zchar`, asserting that the value is in fact in
+ * range for same.
+ */
+zchar zcharFromZint(zint value);
+
+/**
+ * Gets the bit size (highest-order significant bit number, plus one)
+ * of the given `zint`, assuming sign-extended representation. For example,
+ * this is `1` for both `0` and `-1` (because both can be represented with
+ * *just* a single sign bit).
+ */
+zint zintBitSize(zint value);
+
+/**
+ * Given a 32-bit int value, returns the `n`th bit. This is just like
+ * `intGetBit()` except using a `zint` value. This function is
+ * exported for the convenience of other modules.
+ */
+bool zintGetBit(zint value, zint n);
+
+
+/*
+ * UTF-8 Declarations
  */
 
 /**

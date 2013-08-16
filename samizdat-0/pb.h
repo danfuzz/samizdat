@@ -168,13 +168,6 @@ bool intGetBit(zvalue intval, zint n);
  */
 zint zintFromInt(zvalue intval);
 
-/**
- * Given a 32-bit int value, returns the `n`th bit. This is just like
- * `intGetBit()` except using a `zint` value. This function is
- * exported for the convenience of other modules.
- */
-bool zintGetBit(zint value, zint n);
-
 
 /*
  * `String` Type Declarations

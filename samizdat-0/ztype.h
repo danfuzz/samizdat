@@ -26,6 +26,23 @@ typedef int64_t zint;
  */
 typedef uint32_t zchar;
 
+enum {
+    /** Number of bits in type `zchar`. */
+    ZCHAR_BITS = 32,
+
+    /** Maximum value of type `zchar`. */
+    ZCHAR_MAX = UINT32_MAX,
+
+    /** Number of bits in type `zint`. */
+    ZINT_BITS = 64,
+
+    /** Maximum value of type `zint`. */
+    ZINT_MAX = INT64_MAX,
+
+    /** Minimum value of type `zint`. */
+    ZINT_MIN = INT64_MIN
+};
+
 /**
  * The result of a comparison, which is to say, an order.
  */
