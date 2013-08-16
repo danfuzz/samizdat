@@ -96,8 +96,9 @@ there was no `yield` to evaluate.
 **Note:** As a possible clarification about nonlocal-exit functions: Defining
 and using these amounts to something along the lines of `try` / `catch` in
 systems that are defined using those terms. In C terms, the facility is
-along the lines of `setjmp` / `longjmp`. In Lisp terms, the facility is
-an implementation of downward-passed / upward-called continuations.
+along the lines of `setjmp` / `longjmp`. In Lisp or Scheme terms, the
+facility is an implementation of downward-passed / upward-called
+continuations.
 
 #### `expression` &mdash; `@[expression: expression]`
 
@@ -113,8 +114,8 @@ interpolation from regular expression interpolation.
 
 For example, `foo(bar*)` is a call to `foo` with an interpolation of all
 of `bar`'s (zero or more) elements as arguments, whereas `foo((bar*))`
-is a single-argument call to `foo`, with the implied (and asserted)
-a single element of list `bar` as the argument.
+is a single-argument call to `foo`, asserting that `bar` is indeed a
+single-element list.
 
 #### `interpolate` &mdash; `@[interpolate: expression]`
 
@@ -242,7 +243,7 @@ indicated `name`.
 * `expression` &mdash; Expression node.
 
 This represents a "voidable" expression as part of an actuals list to a
-`call` node.
+`call` node. `voidable` nodes are not valid anywhere else.
 
 When a `voidable` is evaluated, the inner expression is evaluated. If
 that results in a value (not void), then the value becomes the result of
