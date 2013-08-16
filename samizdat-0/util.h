@@ -152,10 +152,10 @@ char *utf8EncodeOne(char *result, zint ch);
 zchar zcharFromZint(zint value);
 
 /**
- * Performs `v1 + v2`, detecting overflow. Returns a success flag, and
+ * Performs `x + y`, detecting overflow. Returns a success flag, and
  * stores the result in the indicated pointer if non-`NULL`.
  */
-bool zintAdd(zint *result, zint v1, zint v2);
+bool zintAdd(zint *result, zint x, zint y);
 
 /**
  * Gets the bit size (highest-order significant bit number, plus one)
@@ -166,83 +166,83 @@ bool zintAdd(zint *result, zint v1, zint v2);
 zint zintBitSize(zint value);
 
 /**
- * Performs `v1 / v2` (trucated division), detecting overflow and errors.
+ * Performs `x / y` (trucated division), detecting overflow and errors.
  * Returns a success flag, and stores the result in the indicated pointer
  * if non-`NULL`.
  *
  * **Note:** The only possible overflow case is `ZINT_MIN / -1`, and the
  * only other error is division by zero.
  */
-bool zintDiv(zint *result, zint v1, zint v2);
+bool zintDiv(zint *result, zint x, zint y);
 
 /**
- * Performs `v1 // v2` (Euclidean division), detecting overflow and errors.
+ * Performs `x // y` (Euclidean division), detecting overflow and errors.
  * Returns a success flag, and stores the result in the indicated pointer
  * if non-`NULL`.
  *
  * **Note:** The only possible overflow case is `ZINT_MIN / -1`, and the
  * only other error is division by zero.
  */
-bool zintDivEu(zint *result, zint v1, zint v2);
+bool zintDivEu(zint *result, zint x, zint y);
 
 /**
- * Performs bit extraction `(v1 >> v2) & 1`, detecting errors. Returns a
+ * Performs bit extraction `(x >> y) & 1`, detecting errors. Returns a
  * success flag, and stores the result in the indicated pointer if non-`NULL`.
- * For `v2 >= ZINT_BITS`, this returns the sign bit.
+ * For `y >= ZINT_BITS`, this returns the sign bit.
  *
- * **Note:** The only possible errors are when `v2 < 0`.
+ * **Note:** The only possible errors are when `y < 0`.
  */
-bool zintGetBit(zint *result, zint v1, zint v2);
+bool zintGetBit(zint *result, zint x, zint y);
 
 /**
- * Performs `v1 % v2` (that is, remainder after truncated division, with the
- * result sign matching `v1`), detecting overflow. Returns a success flag, and
+ * Performs `x % y` (that is, remainder after truncated division, with the
+ * result sign matching `x`), detecting overflow. Returns a success flag, and
  * stores the result in the indicated pointer if non-`NULL`.
  *
- * **Note:** This only succeeds in cases that `v1 / v2` succeeds, that is,
+ * **Note:** This only succeeds in cases that `x / y` succeeds, that is,
  * `ZINT_MIN % -1` fails.
  */
-bool zintMod(zint *result, zint v1, zint v2);
+bool zintMod(zint *result, zint x, zint y);
 
 /**
- * Performs `v1 %% v2` (that is, remainder after Euclidean division, with the
- * result sign matching `v2`), detecting overflow. Returns a success flag, and
+ * Performs `x %% y` (that is, remainder after Euclidean division, with the
+ * result sign matching `y`), detecting overflow. Returns a success flag, and
  * stores the result in the indicated pointer if non-`NULL`.
  *
- * **Note:** This only succeeds in cases that `v1 / v2` succeeds, that is,
+ * **Note:** This only succeeds in cases that `x / y` succeeds, that is,
  * `ZINT_MIN %% -1` fails.
  */
-bool zintModEu(zint *result, zint v1, zint v2);
+bool zintModEu(zint *result, zint x, zint y);
 
 /**
- * Performs `v1 * v2`, detecting overflow. Returns a success flag, and
+ * Performs `x * y`, detecting overflow. Returns a success flag, and
  * stores the result in the indicated pointer if non-`NULL`.
  */
-bool zintMul(zint *result, zint v1, zint v2);
+bool zintMul(zint *result, zint x, zint y);
 
 /**
- * Performs `v1 << v2`, detecting overflow (never losing high-order bits).
+ * Performs `x << y`, detecting overflow (never losing high-order bits).
  * Returns a success flag, and stores the result in the indicated pointer
  * if non-`NULL`.
  *
- * **Note:** This defines `(v1 << -v2) == (v1 >> v2)`.
+ * **Note:** This defines `(x << -y) == (x >> y)`.
  */
-bool zintShl(zint *result, zint v1, zint v2);
+bool zintShl(zint *result, zint x, zint y);
 
 /**
- * Performs `v1 >> v2`, detecting overflow (never losing high-order bits).
+ * Performs `x >> y`, detecting overflow (never losing high-order bits).
  * Returns a success flag, and stores the result in the indicated pointer
  * if non-`NULL`.
  *
- * **Note:** This defines `(v1 >> -v2) == (v1 << v2)`.
+ * **Note:** This defines `(x >> -y) == (x << y)`.
  */
-bool zintShr(zint *result, zint v1, zint v2);
+bool zintShr(zint *result, zint x, zint y);
 
 /**
- * Performs `v1 - v2`, detecting overflow. Returns a success flag, and
+ * Performs `x - y`, detecting overflow. Returns a success flag, and
  * stores the result in the indicated pointer if non-`NULL`.
  */
-bool zintSub(zint *result, zint v1, zint v2);
+bool zintSub(zint *result, zint x, zint y);
 
 
 #endif

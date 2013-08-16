@@ -39,13 +39,13 @@
 /**
  * Common check for all divide and remainder functions.
  */
-static bool canDivide(zint v1, zint v2) {
-    if (v2 == 0) {
+static bool canDivide(zint x, zint y) {
+    if (y == 0) {
         // Divide by zero.
         return false;
     }
 
-    if ((v1 == ZINT_MIN) && (v2 == -1)) {
+    if ((x == ZINT_MIN) && (y == -1)) {
         // Overflow: `-ZINT_MIN` is not representable as a `zint`.
         return false;
     }
@@ -68,26 +68,26 @@ zchar zcharFromZint(zint value) {
 }
 
 /* Documented in header. */
-bool zintAdd(zint *result, zint v1, zint v2) {
+bool zintAdd(zint *result, zint x, zint y) {
     // If the signs are opposite or either argument is zero, then overflow
     // is impossible. The two clauses here are for the same-sign-and-not-zero
     // cases.
-    if ((v1 > 0) && (v2 > 0)) {
-        // Both arguments are positive. The largest that `v1` can be is the
-        // difference between `v2` and the largest representable value.
-        if (v1 > (ZINT_MAX - v2)) {
+    if ((x > 0) && (y > 0)) {
+        // Both arguments are positive. The largest that `x` can be is the
+        // difference between `y` and the largest representable value.
+        if (x > (ZINT_MAX - y)) {
             return false;
         }
-    } else if ((v1 < 0) && (v2 < 0)) {
-        // Both arguments are negative. The smallest that `v1` can be is the
-        // difference between `v2` and the smallest representable value.
-        if (v1 < (ZINT_MIN - v2)) {
+    } else if ((x < 0) && (y < 0)) {
+        // Both arguments are negative. The smallest that `x` can be is the
+        // difference between `y` and the smallest representable value.
+        if (x < (ZINT_MIN - y)) {
             return false;
         }
     }
 
     if (result != NULL) {
-        *result = v1 + v2;
+        *result = x + y;
     }
 
     return true;
@@ -116,30 +116,30 @@ zint zintBitSize(zint value) {
 }
 
 /* Documented in header. */
-bool zintDiv(zint *result, zint v1, zint v2) {
-    if (!canDivide(v1, v2)) {
+bool zintDiv(zint *result, zint x, zint y) {
+    if (!canDivide(x, y)) {
         return false;
     }
 
     if (result != NULL) {
-        *result = v1 / v2;
+        *result = x / y;
     }
 
     return true;
 }
 
 /* Documented in header. */
-bool zintDivEu(zint *result, zint v1, zint v2) {
-    if (!canDivide(v1, v2)) {
+bool zintDivEu(zint *result, zint x, zint y) {
+    if (!canDivide(x, y)) {
         return false;
     }
 
     if (result != NULL) {
-        zint quo = v1 / v2;
-        zint rem = v1 % v2;
+        zint quo = x / y;
+        zint rem = x % y;
         if (rem < 0) {
-            if (v2 > 0) { quo--; }
-            else        { quo++; }
+            if (y > 0) { quo--; }
+            else       { quo++; }
         }
         *result = quo;
     }
@@ -148,46 +148,46 @@ bool zintDivEu(zint *result, zint v1, zint v2) {
 }
 
 /* Documented in header. */
-bool zintGetBit(zint *result, zint v1, zint v2) {
-    if (v2 < 0) {
+bool zintGetBit(zint *result, zint x, zint y) {
+    if (y < 0) {
         return false;
     }
 
     if (result != NULL) {
-        if (v2 >= ZINT_BITS) {
-            v2 = ZINT_BITS - 1;
+        if (y >= ZINT_BITS) {
+            y = ZINT_BITS - 1;
         }
 
-        *result = (v1 >> v2) & 1;
+        *result = (x >> y) & 1;
     }
 
     return true;
 }
 
 /* Documented in header. */
-bool zintMod(zint *result, zint v1, zint v2) {
-    if (!canDivide(v1, v2)) {
+bool zintMod(zint *result, zint x, zint y) {
+    if (!canDivide(x, y)) {
         return false;
     }
 
     if (result != NULL) {
-        *result = v1 % v2;
+        *result = x % y;
     }
 
     return true;
 }
 
 /* Documented in header. */
-bool zintModEu(zint *result, zint v1, zint v2) {
-    if (!canDivide(v1, v2)) {
+bool zintModEu(zint *result, zint x, zint y) {
+    if (!canDivide(x, y)) {
         return false;
     }
 
     if (result != NULL) {
-        zint rem = v1 % v2;
+        zint rem = x % y;
         if (rem < 0) {
-            if (v2 > 0) { rem += v2; }
-            else        { rem -= v2; }
+            if (y > 0) { rem += y; }
+            else       { rem -= y; }
         }
         *result = rem;
     }
@@ -196,59 +196,59 @@ bool zintModEu(zint *result, zint v1, zint v2) {
 }
 
 /* Documented in header. */
-bool zintMul(zint *result, zint v1, zint v2) {
+bool zintMul(zint *result, zint x, zint y) {
     // This is broken down by sign of the arguments, with zeros getting
     // an easy pass-through.
 
-    if (v1 > 0) {
-        if (v2 > 0) {
+    if (x > 0) {
+        if (y > 0) {
             // Both arguments are positive.
-            if (v1 > (ZINT_MAX / v2)) {
+            if (x > (ZINT_MAX / y)) {
                 return false;
             }
-        } else if (v2 < 0) {
-            // `v1` is positive, and `v2` is negative.
-            if (v2 < (ZINT_MIN / v1)) {
+        } else if (y < 0) {
+            // `x` is positive, and `y` is negative.
+            if (y < (ZINT_MIN / x)) {
                 return false;
             }
         }
-    } else if (v1 < 0) {
-        if (v2 > 0) {
-            // `v1` is negative, and `v2` is positive.
-            if (v1 < (ZINT_MIN / v2)) {
+    } else if (x < 0) {
+        if (y > 0) {
+            // `x` is negative, and `y` is positive.
+            if (x < (ZINT_MIN / y)) {
                 return false;
             }
-        } else if (v2 < 0) {
+        } else if (y < 0) {
             // Both arguments are negative.
-            if (v2 < (ZINT_MAX / v1)) {
+            if (y < (ZINT_MAX / x)) {
                 return false;
             }
         }
     }
 
     if (result != NULL) {
-        *result = v1 * v2;
+        *result = x * y;
     }
 
     return true;
 }
 
 /* Documented in header. */
-bool zintShl(zint *result, zint v1, zint v2) {
+bool zintShl(zint *result, zint x, zint y) {
     zint res;
 
-    if (v2 > 0) {
-        // Left shift. If `v1` isn't `0`, then there's a possibility of
-        // loss of bits. In particular, the most that `v1` can be shifted by
+    if (y > 0) {
+        // Left shift. If `x` isn't `0`, then there's a possibility of
+        // loss of bits. In particular, the most that `x` can be shifted by
         // is `ZINT_BITS - N - 1`, where `N` is the number of significant
-        // bits in `v1` (including the sign).
-        if ((v1 != 0) && (v2 >= (ZINT_BITS - zintBitSize(v1)))) {
+        // bits in `x` (including the sign).
+        if ((x != 0) && (y >= (ZINT_BITS - zintBitSize(x)))) {
             return false;
         }
-        res = v1 << v2;
-    } else if (v2 < 0) {
+        res = x << y;
+    } else if (y < 0) {
         // Right shift. It's always safe, but we have to behave specially
-        // when `v2 <= -ZINT_BITS`, as C99 leaves it undefined when the
+        // when `y <= -ZINT_BITS`, as C99 leaves it undefined when the
         // right-hand side is greater than the number of bits in the type
         // in question.
         //
@@ -258,13 +258,13 @@ bool zintShl(zint *result, zint v1, zint v2) {
         // numbers means what it usually means for twos-complement; the
         // weaseliness of the spec is apparently just to allow for the
         // possibility ones-complement integer implementations.
-        if (v2 <= -ZINT_BITS) {
-            res = v1 >> (ZINT_BITS - 1);
+        if (y <= -ZINT_BITS) {
+            res = x >> (ZINT_BITS - 1);
         } else {
-            res = v1 >> -v2;
+            res = x >> -y;
         }
     } else {
-        res = v1;
+        res = x;
     }
 
     if (result != NULL) {
@@ -275,28 +275,28 @@ bool zintShl(zint *result, zint v1, zint v2) {
 }
 
 /* Documented in header. */
-bool zintShr(zint *result, zint v1, zint v2) {
+bool zintShr(zint *result, zint x, zint y) {
     // We just define this in terms of `zintShl`, but note the test to
-    // deal with the possibility of passing `ZINT_MIN` for `v2`.
-    return zintShl(result, v1, (v2 <= -ZINT_BITS) ? ZINT_BITS : -v2);
+    // deal with the possibility of passing `ZINT_MIN` for `y`.
+    return zintShl(result, x, (y <= -ZINT_BITS) ? ZINT_BITS : -y);
 }
 
 /* Documented in header. */
-bool zintSub(zint *result, zint v1, zint v2) {
-    // Note: This isn't equivalent to `zintAdd(v1, -v2)`, because of the
+bool zintSub(zint *result, zint x, zint y) {
+    // Note: This isn't equivalent to `zintAdd(x, -y)`, because of the
     // asymmetry of twos-complement integers. In particular,
     // `-ZINT_MIN == ZINT_MIN`. For example, `0 - ZINT_MIN` is an overflow.
 
     // Overflow can only happen when the two arguments are of opposite sign.
     // The two halves of the test here are equivalent, with each part
-    // being a test of the limit of possible `v1`s given `v2`.
-    if (((v2 <= 0) && (v1 > (ZINT_MAX + v2))) ||
-        ((v2 > 0) && (v1 < (ZINT_MIN + v2)))) {
+    // being a test of the limit of possible `x`s given `y`.
+    if (((y <= 0) && (x > (ZINT_MAX + y))) ||
+        ((y > 0) && (x < (ZINT_MIN + y)))) {
         return false;
     }
 
     if (result != NULL) {
-        *result = v1 - v2;
+        *result = x - y;
     }
 
     return true;
