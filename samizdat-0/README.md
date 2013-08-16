@@ -20,6 +20,12 @@ The language parser and runtime do the bare minimum of error
 checking, attempting to fail fast in the face of any errors but not to
 provide much in the way of meaningful messages.
 
+On the topic of "debugability", the code is written to be totally
+deterministic. For example, the addresses of structures are never
+used for things like "identity hashes", and the C stack is *not*
+scanned conservatively. (The GC has a conservative aspect to it,
+but not due to confusion between ints and pointers.)
+
 
 Directory and File Organization
 -------------------------------
@@ -66,7 +72,7 @@ later-named modules depending only on earlier-named ones):
   everything above it. It also bundles in code from the parallel directory
   `samizdat-0-lib`.
 
-* main &mdash; Where it all comes together. This implements the
+* `main` &mdash; Where it all comes together. This implements the
   C `main()` function. Depends on everything else.
 
 
