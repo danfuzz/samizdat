@@ -39,6 +39,12 @@ Returns the quotient of the given values (first over second),
 using Euclidean division, to yield an int result. It is an
 error (terminating the runtime) if the second argument is `0`.
 
+Euclidean division differs from truncating division when given
+arguments of opposite sign. The usual equivalence holds with Euclidean
+division that `x == (x // y) + (x %% y)` (for `y != 0`), but the
+modulo result is guaranteed to be non-negative, and this means that
+division is correspondingly different.
+
 #### `imod(int1, int2) <> int`
 
 Returns the remainder after truncated division of the given values (first
@@ -46,7 +52,7 @@ over second). The sign of the result will always match the sign of the
 first argument. It is an error (terminating the runtime) if the second
 argument is `0`.
 
-`imod(x, y)` can be defined as `isub(x, imul(idiv(x, y), y))`.
+The truncated modulo operation `x % y` can be defined as `x - (x / y) * y`.
 
 #### `imodEu(int1, int2) <> int`
 
@@ -55,7 +61,7 @@ over second). The sign of the result will always be positive.
 It is an error (terminating the runtime) if the second
 argument is `0`.
 
-`imodEu(x, y)` can be defined as `isub(x, imul(idivEu(x, y), y))`.
+The Euclidean modulo operation `x %% y` can be defined as `x - (x // y) * y`.
 
 #### `imul(int1, int2) <> int`
 
