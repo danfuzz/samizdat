@@ -119,6 +119,23 @@ bool zintAdd(zint *result, zint x, zint y) {
 extern bool zintAnd(zint *result, zint x, zint y);
 
 /* Documented in header. */
+bool zintBit(zint *result, zint x, zint y) {
+    if (y < 0) {
+        return false;
+    }
+
+    if (result != NULL) {
+        if (y >= ZINT_BITS) {
+            y = ZINT_BITS - 1;
+        }
+
+        *result = (x >> y) & 1;
+    }
+
+    return true;
+}
+
+/* Documented in header. */
 zint zintBitSize(zint value) {
     if (value < 0) {
         value = ~value;
@@ -167,23 +184,6 @@ bool zintDivEu(zint *result, zint x, zint y) {
             else       { quo++; }
         }
         *result = quo;
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-bool zintGetBit(zint *result, zint x, zint y) {
-    if (y < 0) {
-        return false;
-    }
-
-    if (result != NULL) {
-        if (y >= ZINT_BITS) {
-            y = ZINT_BITS - 1;
-        }
-
-        *result = (x >> y) & 1;
     }
 
     return true;

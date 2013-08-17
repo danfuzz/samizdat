@@ -189,6 +189,15 @@ inline bool zintAnd(zint *result, zint x, zint y) {
 zint zintBitSize(zint value);
 
 /**
+ * Performs bit extraction `(x >>> y) &&& 1`, detecting errors. Returns a
+ * success flag, and stores the result in the indicated pointer if non-`NULL`.
+ * For `y >= ZINT_BITS`, this returns the sign bit.
+ *
+ * **Note:** The only possible errors are when `y < 0`.
+ */
+bool zintBit(zint *result, zint x, zint y);
+
+/**
  * Performs `x / y` (trucated division), detecting overflow and errors.
  * Returns a success flag, and stores the result in the indicated pointer
  * if non-`NULL`.
@@ -209,15 +218,6 @@ bool zintDiv(zint *result, zint x, zint y);
 bool zintDivEu(zint *result, zint x, zint y);
 
 /**
- * Performs bit extraction `(x >> y) & 1`, detecting errors. Returns a
- * success flag, and stores the result in the indicated pointer if non-`NULL`.
- * For `y >= ZINT_BITS`, this returns the sign bit.
- *
- * **Note:** The only possible errors are when `y < 0`.
- */
-bool zintGetBit(zint *result, zint x, zint y);
-
-/**
  * Performs `x % y` (that is, remainder after truncated division, with the
  * result sign matching `x`), detecting overflow. Returns a success flag, and
  * stores the result in the indicated pointer if non-`NULL`.
@@ -229,10 +229,10 @@ bool zintMod(zint *result, zint x, zint y);
 
 /**
  * Performs `x %% y` (that is, remainder after Euclidean division, with the
- * result sign matching `y`), detecting overflow. Returns a success flag, and
- * stores the result in the indicated pointer if non-`NULL`.
+ * result sign always positive), detecting overflow. Returns a success flag,
+ * and stores the result in the indicated pointer if non-`NULL`.
  *
- * **Note:** This only succeeds in cases that `x / y` succeeds, that is,
+ * **Note:** This only succeeds in cases that `x // y` succeeds, that is,
  * `ZINT_MIN %% -1` fails.
  */
 bool zintModEu(zint *result, zint x, zint y);
