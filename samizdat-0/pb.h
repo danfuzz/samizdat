@@ -149,31 +149,15 @@ zchar zcharFromInt(zvalue intval);
 /**
  * Gets an int value equal to the given `zint`. In this
  * implementation, ints are restricted to only taking on the range
- * of 32-bit signed quantities, when represented as twos-complement.
+ * of 64-bit signed twos-complement integers.
  */
 zvalue intFromZint(zint value);
-
-/**
- * Given an int, returns the `n`th bit, counting from the least
- * significant bit. `intval` must be an int. Returns `false` for a
- * `0` bit, and `true` for a `1` bit. If `n` references a bit beyond
- * the value's size, then the return value is the sign bit of the
- * value. It is an error if `n < 0`.
- */
-bool intGetBit(zvalue intval, zint n);
 
 /**
  * Gets a `zint` equal to the given int value. `intval` must be an
  * int. It is an error if the value is out of range.
  */
 zint zintFromInt(zvalue intval);
-
-/**
- * Given a 32-bit int value, returns the `n`th bit. This is just like
- * `intGetBit()` except using a `zint` value. This function is
- * exported for the convenience of other modules.
- */
-bool zintGetBit(zint value, zint n);
 
 
 /*

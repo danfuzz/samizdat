@@ -21,7 +21,7 @@ def BINARY_OPS = [
     "-": [function: isub, precedence: 1],
     "*": [function: imul, precedence: 2],
     "/": [function: idiv, precedence: 2],
-    "%": [function: irem, precedence: 2]
+    "%": [function: imod, precedence: 2]
 ];
 
 # Map from unary operation names to functions.

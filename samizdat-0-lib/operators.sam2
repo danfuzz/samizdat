@@ -33,7 +33,7 @@ fn \"binary/"(v1, v2) {
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"binary%"(v1, v2) {
-    <> irem(v1, v2)
+    <> imod(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
