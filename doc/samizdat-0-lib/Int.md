@@ -52,7 +52,8 @@ over second). The sign of the result will always match the sign of the
 first argument. It is an error (terminating the runtime) if the second
 argument is `0`.
 
-The truncated modulo operation `x % y` can be defined as `x - (x / y) * y`.
+The truncated modulo operation `x % y` can be defined in terms
+of truncated division as `x - (x / y) * y`.
 
 #### `imodEu(int1, int2) <> int`
 
@@ -61,7 +62,8 @@ over second). The sign of the result will always be positive.
 It is an error (terminating the runtime) if the second
 argument is `0`.
 
-The Euclidean modulo operation `x %% y` can be defined as `x - (x // y) * y`.
+The Euclidean modulo operation `x %% y` can be defined in terms of
+Euclidean division as `x - (x // y) * y`.
 
 #### `imul(int1, int2) <> int`
 
