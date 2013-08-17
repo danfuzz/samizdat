@@ -24,21 +24,14 @@
     PRIM_IMPL(name) { \
         zint x = zintFromInt(args[0]); \
         zint y = zintFromInt(args[1]); \
-        return intFromZint((op)); \
-    } \
-    extern int semicolonRequiredHere
-
-#define ZBINARY_PRIM(name, op) \
-    PRIM_IMPL(name) { \
-        zint x = zintFromInt(args[0]); \
-        zint y = zintFromInt(args[1]); \
         zint result; \
         if ((op)(&result, x, y)) { \
             return intFromZint(result); \
         } else { \
             die("Overflow / error on" #name "(%lld, %lld).", x, y); \
         } \
-    }
+    } \
+    extern int semicolonRequiredHere
 
 /**
  * Helper for `intGet` and `intNth`, which acts like `ibit` except that
@@ -68,21 +61,19 @@ UNARY_PRIM(inot,  ~x);
 UNARY_PRIM(isign, (x == 0) ? 0 : ((x > 0) ? 1 : -1));
 
 /* These are all documented in Samizdat Layer 0 spec. */
-
-BINARY_PRIM(iand, x & y);
-BINARY_PRIM(ior,  x | y);
-BINARY_PRIM(ixor, x ^ y);
-
-ZBINARY_PRIM(iadd,   zintAdd);
-ZBINARY_PRIM(idiv,   zintDiv);
-ZBINARY_PRIM(idivEu, zintDivEu);
-ZBINARY_PRIM(ibit,   zintGetBit);
-ZBINARY_PRIM(imod,   zintMod);
-ZBINARY_PRIM(imodEu, zintModEu);
-ZBINARY_PRIM(imul,   zintMul);
-ZBINARY_PRIM(ishl,   zintShl);
-ZBINARY_PRIM(ishr,   zintShr);
-ZBINARY_PRIM(isub,   zintSub);
+BINARY_PRIM(iadd,   zintAdd);
+BINARY_PRIM(iand,   zintAnd);
+BINARY_PRIM(idiv,   zintDiv);
+BINARY_PRIM(idivEu, zintDivEu);
+BINARY_PRIM(ibit,   zintGetBit);
+BINARY_PRIM(imod,   zintMod);
+BINARY_PRIM(imodEu, zintModEu);
+BINARY_PRIM(imul,   zintMul);
+BINARY_PRIM(ior,    zintOr);
+BINARY_PRIM(ishl,   zintShl);
+BINARY_PRIM(ishr,   zintShr);
+BINARY_PRIM(isub,   zintSub);
+BINARY_PRIM(ixor,    zintXor);
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intGet) {
