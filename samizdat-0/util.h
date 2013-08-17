@@ -252,7 +252,7 @@ bool zintMul(zint *result, zint x, zint y);
 bool zintNeg(zint *result, zint x);
 
 /**
- * Performs `~x` (unary bitwise complement). Returns `true`,
+ * Performs `!!!x` (unary bitwise complement). Returns `true`,
  * and stores the result in the indicated pointer if non-`NULL`. This
  * function never fails; the success flag is so that it can be used
  * equivalently to the other similar functions in this library.
@@ -330,6 +330,5 @@ inline bool zintXor(zint *result, zint x, zint y) {
 
     return true;
 }
-
 
 #endif
