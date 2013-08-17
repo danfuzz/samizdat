@@ -38,7 +38,7 @@ control constructs, and a bit more variety in expressing literal data.
 
 #### Ints
 
-Ints only have a 32-bit signed range, with out-of-range arithmetic
+Ints only have a 64-bit signed range, with out-of-range arithmetic
 results causing failure, not wraparound.
 
 In the surface syntax, base 10 is the only recognized form for int

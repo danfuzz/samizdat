@@ -52,7 +52,7 @@ static const char *getStringEnd(zint stringBytes, const char *string) {
  * Does the basic decoding step, with syntactic but not semantic validation.
  */
 static const char *justDecode(zchar *result,
-                              zint stringBytes, const char *string) {
+        zint stringBytes, const char *string) {
     if (stringBytes <= 0) {
         die("Invalid string size: %lld", stringBytes);
     }
@@ -176,7 +176,7 @@ static const char *justDecode(zchar *result,
  * a pointer to the position just after the bytes that were decoded.
  */
 static const char *decodeValid(zchar *result,
-                               zint stringBytes, const char *string) {
+        zint stringBytes, const char *string) {
     string = justDecode(result, stringBytes, string);
     assertValidCodePoint(*result);
     return string;
@@ -202,7 +202,7 @@ zint utf8DecodeStringSize(zint stringBytes, const char *string) {
 
 /* Documented in header. */
 void utf8DecodeCharsFromString(zchar *result,
-                               zint stringBytes, const char *string) {
+        zint stringBytes, const char *string) {
     const char *stringEnd = getStringEnd(stringBytes, string);
 
     while (string < stringEnd) {

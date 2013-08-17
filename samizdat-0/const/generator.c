@@ -32,7 +32,8 @@ METH_IMPL(Int, collect) {
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        zint bit = zintGetBit(raw, i);
+        zint bit;
+        zintGetBit(&bit, raw, i); // Always succeeds.
         arr[i] = (bit == 0) ? PB_0 : PB_1;
     }
 

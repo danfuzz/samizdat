@@ -30,23 +30,32 @@ argument is negative.
 #### `idiv(int1, int2) <> int`
 
 Returns the quotient of the given values (first over second),
-truncated (rounded toward zero) to yield an int result. It is an
+using truncated division, to yield an int result. It is an
+error (terminating the runtime) if the second argument is `0`.
+
+#### `idivEu(int1, int2) <> int`
+
+Returns the quotient of the given values (first over second),
+using Euclidean division, to yield an int result. It is an
 error (terminating the runtime) if the second argument is `0`.
 
 #### `imod(int1, int2) <> int`
 
-Returns the division modulus of the given values (first over
-second). The sign of the result will always match the sign of the
-second argument. It is an error (terminating the runtime) if the
-second argument is `0`.
+Returns the remainder after truncated division of the given values (first
+over second). The sign of the result will always match the sign of the
+first argument. It is an error (terminating the runtime) if the second
+argument is `0`.
 
-`imod(x, y)` can be thought of as the smallest magnitude value `m` with
-the same sign as `y` such that `isub(x, m)` is a multiple of `y`.
+`imod(x, y)` can be defined as `isub(x, imul(idiv(x, y), y))`.
 
-`imod(x, y)` can be defined as `irem(iadd(irem(x, y), y), y)`.
+#### `imodEu(int1, int2) <> int`
 
-**Note:** This differs from the `irem` in the treatment of negative
-numbers.
+Returns the remainder after Euclidean division of the given values (first
+over second). The sign of the result will always be positive.
+It is an error (terminating the runtime) if the second
+argument is `0`.
+
+`imodEu(x, y)` can be defined as `isub(x, imul(idivEu(x, y), y))`.
 
 #### `imul(int1, int2) <> int`
 
@@ -77,18 +86,6 @@ terminates the runtime with an error.
 #### `ior(int1, int2) <> int`
 
 Returns the binary-or (union of all one-bits) of the given values.
-
-#### `irem(int1, int2) <> int`
-
-Returns the truncated-division remainder of the given values (first
-over second). The sign of the result will always match the sign of the
-first argument. It is an error (terminating the runtime) if the second
-argument is `0`.
-
-`irem(x, y)` can be defined as `isub(x, imul(idiv(x, y), y))`.
-
-**Note:** This differs from the `imod` in the treatment of negative
-numbers.
 
 #### `ishl(int, shift) <> int`
 

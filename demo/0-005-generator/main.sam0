@@ -79,7 +79,7 @@ msgAll("Paragenerator with opt element",
 msgAll("Filter generator (square even numbers)",
     filterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ::
-            <> ifIs { <> eq(irem(value, 2), 0) }
+            <> ifIs { <> eq(imod(value, 2), 0) }
                 { <> imul(value, value) }
         });
 

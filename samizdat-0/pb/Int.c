@@ -13,9 +13,6 @@
  */
 
 enum {
-    /** Ints are restricted to being in the range of `int32_t`. */
-    MAX_BITS = 32,
-
     /** Count of cached small int value. */
     PB_SMALL_INT_COUNT = PB_SMALL_INT_MAX - PB_SMALL_INT_MIN + 1
 };
@@ -27,34 +24,9 @@ static zvalue SMALL_INTS[PB_SMALL_INT_COUNT];
  * Int structure.
  */
 typedef struct {
-    /** Int value. See `intFromZint()` about range restriction. */
-    int32_t value;
+    /** Int value. */
+    zint value;
 } IntInfo;
-
-/**
- * Gets the bit size (highest-order significant bit number, plus one)
- * of the given `zint`.
- */
-static zint bitSize(zint value) {
-    if (value < 0) {
-        value = ~value;
-    }
-
-    // "Binary-search" style implementation. Many compilers have a
-    // built-in "count leading zeroes" function, but we're aiming
-    // for portability here.
-
-    zint result = 1; // +1 in that we want size, not zero-based bit number.
-    uint64_t uv = (uint64_t) value; // Use `uint` to account for `-MAX_ZINT`.
-
-    if (uv >= ((zint) 1 << 32)) { result += 32; uv >>= 32; }
-    if (uv >= ((zint) 1 << 16)) { result += 16; uv >>= 16; }
-    if (uv >= ((zint) 1 << 8))  { result +=  8; uv >>=  8; }
-    if (uv >= ((zint) 1 << 4))  { result +=  4; uv >>=  4; }
-    if (uv >= ((zint) 1 << 2))  { result +=  2; uv >>=  2; }
-    if (uv >= ((zint) 1 << 1))  { result +=  1; uv >>=  1; }
-    return result + uv;
-}
 
 /**
  * Gets the value of the given int as a `zint`. Doesn't do any
@@ -68,14 +40,10 @@ static zint zintValue(zvalue intval) {
  * Constructs and returns an int.
  */
 zvalue intFrom(zint value) {
-    zint size = bitSize(value);
-    zvalue result = pbAllocValue(TYPE_Int, sizeof(int32_t));
+    zint size = zintBitSize(value);
+    zvalue result = pbAllocValue(TYPE_Int, sizeof(IntInfo));
 
-    if (size > MAX_BITS) {
-        die("Value too large to fit into int: %lld", value);
-    }
-
-    ((IntInfo *) pbPayload(result))->value = (int32_t) value;
+    ((IntInfo *) pbPayload(result))->value = value;
     return result;
 }
 
@@ -86,13 +54,7 @@ zvalue intFrom(zint value) {
 
 /* Documented in header. */
 zchar zcharFromInt(zvalue intval) {
-    zint value = zintFromInt(intval);
-
-    if ((value < 0) || (value >= 0x100000000)) {
-        die("Invalid int value for character: %lld", value);
-    }
-
-    return (zchar) value;
+    return zcharFromZint(zintFromInt(intval));
 }
 
 /* Documented in header. */
@@ -105,26 +67,9 @@ zvalue intFromZint(zint value) {
 }
 
 /* Documented in header. */
-bool intGetBit(zvalue intval, zint n) {
-    assertHasType(intval, TYPE_Int);
-    return zintGetBit(zintValue(intval), n);
-}
-
-/* Documented in header. */
 zint zintFromInt(zvalue intval) {
     assertHasType(intval, TYPE_Int);
     return zintValue(intval);
-}
-
-/* Documented in header. */
-bool zintGetBit(zint value, zint n) {
-    if (n < 0) {
-        die("Attempt to access negative bit index: %lld", n);
-    } else if (n >= MAX_BITS) {
-        n = MAX_BITS - 1;
-    }
-
-    return (bool) ((value >> n) & 1);
 }
 
 
@@ -168,7 +113,7 @@ METH_IMPL(Int, order) {
 METH_IMPL(Int, size) {
     zvalue intval = args[0];
 
-    return intFromZint(bitSize(zintValue(intval)));
+    return intFromZint(zintBitSize(zintValue(intval)));
 }
 
 /* Documented in header. */
