@@ -152,13 +152,22 @@ char *utf8EncodeOne(char *result, zint ch);
 zchar zcharFromZint(zint value);
 
 /**
+ * Performs `abs(x)` (unary absolute value), detecting overflow. Returns
+ * a success flag, and stores the result in the indicated pointer if
+ * non-`NULL`.
+ *
+ * **Note:** The only possible overflow case is `abs(ZINT_MIN)`.
+ */
+bool zintAbs(zint *result, zint x);
+
+/**
  * Performs `x + y`, detecting overflow. Returns a success flag, and
  * stores the result in the indicated pointer if non-`NULL`.
  */
 bool zintAdd(zint *result, zint x, zint y);
 
 /**
- * Performs `x &&& y`. Returns a success flag, and stores the result in the
+ * Performs `x &&& y`. Returns `true`, and stores the result in the
  * indicated pointer if non-`NULL`. This function never fails; the success
  * flag is so that it can be used equivalently to the other similar functions
  * in this library.
@@ -235,7 +244,29 @@ bool zintModEu(zint *result, zint x, zint y);
 bool zintMul(zint *result, zint x, zint y);
 
 /**
- * Performs `x ||| y`. Returns a success flag, and stores the result in the
+ * Performs `-x` (unary negation), detecting overflow. Returns a success flag,
+ * and stores the result in the indicated pointer if non-`NULL`.
+ *
+ * **Note:** The only possible overflow case is `-ZINT_MIN`.
+ */
+bool zintNeg(zint *result, zint x);
+
+/**
+ * Performs `~x` (unary bitwise complement). Returns `true`,
+ * and stores the result in the indicated pointer if non-`NULL`. This
+ * function never fails; the success flag is so that it can be used
+ * equivalently to the other similar functions in this library.
+ */
+inline bool zintNot(zint *result, zint x) {
+    if (result != NULL) {
+        *result = ~x;
+    }
+
+    return true;
+}
+
+/**
+ * Performs `x ||| y`. Returns `true`, and stores the result in the
  * indicated pointer if non-`NULL`. This function never fails; the success
  * flag is so that it can be used equivalently to the other similar functions
  * in this library.
@@ -243,6 +274,20 @@ bool zintMul(zint *result, zint x, zint y);
 inline bool zintOr(zint *result, zint x, zint y) {
     if (result != NULL) {
         *result = x | y;
+    }
+
+    return true;
+}
+
+/**
+ * Performs `sign(x)`. Returns `true`, and stores the result in the
+ * indicated pointer if non-`NULL`. This function never fails; the success
+ * flag is so that it can be used equivalently to the other similar functions
+ * in this library.
+ */
+inline bool zintSign(zint *result, zint x) {
+    if (result != NULL) {
+        *result = (x == 0) ? 0 : ((x < 0) ? -1 : 1);
     }
 
     return true;
@@ -273,7 +318,7 @@ bool zintShr(zint *result, zint x, zint y);
 bool zintSub(zint *result, zint x, zint y);
 
 /**
- * Performs `x ^^^ y`. Returns a success flag, and stores the result in the
+ * Performs `x ^^^ y`. Returns `true`, and stores the result in the
  * indicated pointer if non-`NULL`. This function never fails; the success
  * flag is so that it can be used equivalently to the other similar functions
  * in this library.

@@ -77,6 +77,19 @@ zchar zcharFromZint(zint value) {
 }
 
 /* Documented in header. */
+bool zintAbs(zint *result, zint x) {
+    if (x == ZINT_MIN) {
+        return false;
+    }
+
+    if (result != NULL) {
+        *result = (x < 0) ? -x : x;
+    }
+
+    return true;
+}
+
+/* Documented in header. */
 bool zintAdd(zint *result, zint x, zint y) {
     // If the signs are opposite or either argument is zero, then overflow
     // is impossible. The two clauses here are for the same-sign-and-not-zero
@@ -246,7 +259,26 @@ bool zintMul(zint *result, zint x, zint y) {
 }
 
 /* Documented in header. */
+bool zintNeg(zint *result, zint x) {
+    if (x == ZINT_MIN) {
+        return false;
+    }
+
+    if (result != NULL) {
+        *result = -x;
+    }
+
+    return true;
+}
+
+/* Documented in header. */
+extern bool zintNot(zint *result, zint x);
+
+/* Documented in header. */
 extern bool zintOr(zint *result, zint x, zint y);
+
+/* Documented in header. */
+extern bool zintSign(zint *result, zint x);
 
 /* Documented in header. */
 bool zintShl(zint *result, zint x, zint y) {
