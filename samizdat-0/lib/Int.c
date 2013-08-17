@@ -16,7 +16,12 @@
 #define UNARY_PRIM(name, op) \
     PRIM_IMPL(name) { \
         zint x = zintFromInt(args[0]); \
-        return intFromZint((op)); \
+        zint result; \
+        if ((op)(&result, x)) { \
+            return intFromZint(result); \
+        } else { \
+            die("Overflow / error on" #name "(%lld).", x); \
+        } \
     } \
     extern int semicolonRequiredHere
 
@@ -55,10 +60,10 @@ static zvalue doIntNth(zvalue value, zint n) {
  */
 
 /* These are all documented in Samizdat Layer 0 spec. */
-UNARY_PRIM(iabs,  (x >= 0) ? x : -x);
-UNARY_PRIM(ineg,  -x);
-UNARY_PRIM(inot,  ~x);
-UNARY_PRIM(isign, (x == 0) ? 0 : ((x > 0) ? 1 : -1));
+UNARY_PRIM(iabs,  zintAbs);
+UNARY_PRIM(ineg,  zintNeg);
+UNARY_PRIM(inot,  zintNot);
+UNARY_PRIM(isign, zintSign);
 
 /* These are all documented in Samizdat Layer 0 spec. */
 BINARY_PRIM(iadd,   zintAdd);
