@@ -149,7 +149,7 @@ zchar zcharFromInt(zvalue intval);
 /**
  * Gets an int value equal to the given `zint`. In this
  * implementation, ints are restricted to only taking on the range
- * of 32-bit signed quantities, when represented as twos-complement.
+ * of 64-bit signed twos-complement integers.
  */
 zvalue intFromZint(zint value);
 
