@@ -158,6 +158,20 @@ zchar zcharFromZint(zint value);
 bool zintAdd(zint *result, zint x, zint y);
 
 /**
+ * Performs `x &&& y`. Returns a success flag, and stores the result in the
+ * indicated pointer if non-`NULL`. This function never fails; the success
+ * flag is so that it can be used equivalently to the other similar functions
+ * in this library.
+ */
+inline bool zintAnd(zint *result, zint x, zint y) {
+    if (result != NULL) {
+        *result = x & y;
+    }
+
+    return true;
+}
+
+/**
  * Gets the bit size (highest-order significant bit number, plus one)
  * of the given `zint`, assuming sign-extended representation. For example,
  * this is `1` for both `0` and `-1` (because both can be represented with
@@ -221,20 +235,34 @@ bool zintModEu(zint *result, zint x, zint y);
 bool zintMul(zint *result, zint x, zint y);
 
 /**
- * Performs `x << y`, detecting overflow (never losing high-order bits).
+ * Performs `x ||| y`. Returns a success flag, and stores the result in the
+ * indicated pointer if non-`NULL`. This function never fails; the success
+ * flag is so that it can be used equivalently to the other similar functions
+ * in this library.
+ */
+inline bool zintOr(zint *result, zint x, zint y) {
+    if (result != NULL) {
+        *result = x | y;
+    }
+
+    return true;
+}
+
+/**
+ * Performs `x <<< y`, detecting overflow (never losing high-order bits).
  * Returns a success flag, and stores the result in the indicated pointer
  * if non-`NULL`.
  *
- * **Note:** This defines `(x << -y) == (x >> y)`.
+ * **Note:** This defines `(x <<< -y) == (x >>> y)`.
  */
 bool zintShl(zint *result, zint x, zint y);
 
 /**
- * Performs `x >> y`, detecting overflow (never losing high-order bits).
+ * Performs `x >>> y`, detecting overflow (never losing high-order bits).
  * Returns a success flag, and stores the result in the indicated pointer
  * if non-`NULL`.
  *
- * **Note:** This defines `(x >> -y) == (x << y)`.
+ * **Note:** This defines `(x >>> -y) == (x <<< y)`.
  */
 bool zintShr(zint *result, zint x, zint y);
 
@@ -243,6 +271,20 @@ bool zintShr(zint *result, zint x, zint y);
  * stores the result in the indicated pointer if non-`NULL`.
  */
 bool zintSub(zint *result, zint x, zint y);
+
+/**
+ * Performs `x ^^^ y`. Returns a success flag, and stores the result in the
+ * indicated pointer if non-`NULL`. This function never fails; the success
+ * flag is so that it can be used equivalently to the other similar functions
+ * in this library.
+ */
+inline bool zintXor(zint *result, zint x, zint y) {
+    if (result != NULL) {
+        *result = x ^ y;
+    }
+
+    return true;
+}
 
 
 #endif

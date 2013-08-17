@@ -7,13 +7,19 @@
 /*
  * `zint` Utilities
  *
- * On the topic of arithmetic operations: C compilers are allowed to
- * optimize overflowing operations in surprising ways. Therefore, the usual
+ * Notes on the arithmetic operations:
+ *
+ * With regard to detecting overflow, C compilers are allowed to optimize
+ * overflowing operations in surprising ways. Therefore, the usual
  * recommendation for portable code is to detect overflow by inspection of
- * operands, not results. The code here is informed by the CERT "AIR"
- * recommendations. Also, note that the remainder implementations here
- * rely on the C99 definition for the `%` operator (that is, sign matches
- * the left-hand side).
+ * operands, not results. The choices for what to detect here are informed by,
+ * but not exactly the same as, the CERT "AIR" recommendations.
+ *
+ * With regard to division and modulo, this file implements both
+ * traditional truncating division and Euclidean division, each with its
+ * corresponding modulo operation. These are implemented to assume the C99
+ * definition of remainder, in particular that the sign of the result is
+ * the same as the sign of the dividend (the left-hand argument).
  *
  * References:
  *
@@ -22,6 +28,9 @@
  *
  * * [Division and Modulus for Computer
  *   Scientists](http://legacy.cs.uu.nl/daan/download/papers/divmodnote.pdf)
+ *
+ * * [The Euclidean Definition of the Functions div and
+ *   mod](https://biblio.ugent.be/publication/314490/file/452146.pdf)
  *
  * * [Modulo operation
  *   (Wikipedia)](http://en.wikipedia.org/wiki/Modulo_operation)
@@ -92,6 +101,9 @@ bool zintAdd(zint *result, zint x, zint y) {
 
     return true;
 }
+
+/* Documented in header. */
+extern bool zintAnd(zint *result, zint x, zint y);
 
 /* Documented in header. */
 zint zintBitSize(zint value) {
@@ -234,6 +246,9 @@ bool zintMul(zint *result, zint x, zint y) {
 }
 
 /* Documented in header. */
+extern bool zintOr(zint *result, zint x, zint y);
+
+/* Documented in header. */
 bool zintShl(zint *result, zint x, zint y) {
     zint res;
 
@@ -301,3 +316,6 @@ bool zintSub(zint *result, zint x, zint y) {
 
     return true;
 }
+
+/* Documented in header. */
+extern bool zintXor(zint *result, zint x, zint y);
