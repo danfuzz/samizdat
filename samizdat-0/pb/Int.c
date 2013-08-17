@@ -13,9 +13,6 @@
  */
 
 enum {
-    /** Ints are restricted to being in the range of `int32_t`. */
-    MAX_BITS = 32,
-
     /** Count of cached small int value. */
     PB_SMALL_INT_COUNT = PB_SMALL_INT_MAX - PB_SMALL_INT_MIN + 1
 };
@@ -27,8 +24,8 @@ static zvalue SMALL_INTS[PB_SMALL_INT_COUNT];
  * Int structure.
  */
 typedef struct {
-    /** Int value. See `intFromZint()` about range restriction. */
-    int32_t value;
+    /** Int value. */
+    zint value;
 } IntInfo;
 
 /**
@@ -44,13 +41,9 @@ static zint zintValue(zvalue intval) {
  */
 zvalue intFrom(zint value) {
     zint size = zintBitSize(value);
-    zvalue result = pbAllocValue(TYPE_Int, sizeof(int32_t));
+    zvalue result = pbAllocValue(TYPE_Int, sizeof(IntInfo));
 
-    if (size > MAX_BITS) {
-        die("Value too large to fit into int: %lld", value);
-    }
-
-    ((IntInfo *) pbPayload(result))->value = (int32_t) value;
+    ((IntInfo *) pbPayload(result))->value = value;
     return result;
 }
 
