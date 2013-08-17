@@ -10,7 +10,7 @@ Ints
 #### `iabs(int) <> int`
 
 Returns the absolute value of the given value. This is `value` itself if
-it is non-negative, or `-value` if it is negative values.
+it is non-negative, or `-value` if it is negative.
 
 #### `iadd(int1, int2) <> int`
 
