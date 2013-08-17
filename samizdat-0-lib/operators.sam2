@@ -37,6 +37,16 @@ fn \"binary%"(v1, v2) {
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
+fn \"binary//"(v1, v2) {
+    <> idivEu(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
+fn \"binary%%"(v1, v2) {
+    <> imodEu(v1, v2)
+};
+
+# TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary+"(value) {
     <> iadd(0, value)
 };
@@ -52,6 +62,8 @@ fn \"unary-"(value) {
     "binary*":  \"binary*",
     "binary/":  \"binary/",
     "binary%":  \"binary%",
+    "binary//": \"binary//",
+    "binary%%": \"binary%%",
     "unary+":   \"unary+",
     "unary-":   \"unary-"
 ]

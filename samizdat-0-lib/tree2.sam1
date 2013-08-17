@@ -134,6 +134,8 @@ def BINARY_OPERATORS = [
     "*":    makeVarRef("binary*"),
     "/":    makeVarRef("binary/"),
     "%":    makeVarRef("binary%"),
+    "//":   makeVarRef("binary//"),
+    "%%":   makeVarRef("binary%%"),
     "==":   makeLiteral("eq"),
     "!=":   makeLiteral("ne"),
     "<":    makeLiteral("lt"),
@@ -1183,7 +1185,7 @@ def parRangeExpression = {/
 def parMulExpression = {/
     firstEx = parRangeExpression
     opExes = (
-        op = [@"*" @"/" @"%" @"<<<" @">>>"]
+        op = [@"*" @"/" @"%" @"//" @"%%" @"<<<" @">>>"]
         ex = parRangeExpression
         { <> [op, ex] }
     )*

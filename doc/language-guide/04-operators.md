@@ -250,15 +250,29 @@ This is equivalent to `openRange(first, increment)`.
 This asserts that both expressions result in numbers, and results in the
 product of the two numbers.
 
-#### Division &mdash; `expression / expression`
+#### Truncated Division &mdash; `expression / expression`
 
 This asserts that both expressions result in numbers, and results in the
-quotient of the two numbers (first over second).
+quotient of the two numbers (first over second), using truncated
+division.
 
-#### Remainder &mdash; `expression % expression`
+#### Truncated Modulo &mdash; `expression % expression`
 
 This asserts that both expressions result in numbers, and results in the
-remainder after division of the two numbers (first over second).
+remainder after division of the two numbers (first over second), using
+a truncated division definition.
+
+#### Euclidean Division &mdash; `expression / expression`
+
+This asserts that both expressions result in numbers, and results in the
+quotient of the two numbers (first over second), using Euclidean
+division.
+
+#### Euclidean Modulo &mdash; `expression % expression`
+
+This asserts that both expressions result in numbers, and results in the
+remainder after division of the two numbers (first over second), using
+a Euclidean division definition.
 
 #### Bitwise shift left &mdash; `expression <<< expression`
 
