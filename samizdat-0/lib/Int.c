@@ -78,7 +78,7 @@ BINARY_PRIM(ior,    zintOr);
 BINARY_PRIM(ishl,   zintShl);
 BINARY_PRIM(ishr,   zintShr);
 BINARY_PRIM(isub,   zintSub);
-BINARY_PRIM(ixor,    zintXor);
+BINARY_PRIM(ixor,   zintXor);
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intGet) {
