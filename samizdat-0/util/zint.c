@@ -26,6 +26,9 @@
  * * [As-If Infinitely Ranged Integer Model, Second
  *   Edition](http://www.cert.org/archive/pdf/10tn008.pdf)
  *
+ * * [CERT C Secure Coding
+ *   Standard](https://www.securecoding.cert.org/confluence/display/seccode/CERT+C+Secure+Coding+Standard)
+ *
  * * [Division and Modulus for Computer
  *   Scientists](http://legacy.cs.uu.nl/daan/download/papers/divmodnote.pdf)
  *
