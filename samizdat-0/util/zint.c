@@ -287,9 +287,9 @@ bool zintShl(zint *result, zint x, zint y) {
     if (y > 0) {
         // Left shift. If `x` isn't `0`, then there's a possibility of
         // loss of bits. In particular, the most that `x` can be shifted by
-        // is `ZINT_BITS - N - 1`, where `N` is the number of significant
+        // is `ZINT_BITS - N`, where `N` is the number of significant
         // bits in `x` (including the sign).
-        if ((x != 0) && (y >= (ZINT_BITS - zintBitSize(x)))) {
+        if ((x != 0) && (y > (ZINT_BITS - zintBitSize(x)))) {
             return false;
         }
         res = x << y;
