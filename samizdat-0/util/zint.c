@@ -279,20 +279,25 @@ extern bool zintSign(zint *result, zint x);
 bool zintShl(zint *result, zint x, zint y) {
     zint res;
 
-    if (y > 0) {
-        // Left shift. If `x` isn't `0`, then there's a possibility of
-        // loss of bits. In particular, the most that `x` can be shifted by
-        // is `ZINT_BITS - N`, where `N` is the number of significant
-        // bits in `x` (including the sign).
-        if ((x != 0) && (y > (ZINT_BITS - zintBitSize(x)))) {
+    if ((x == 0) || (y == 0)) {
+        res = x;
+    } else if (y > 0) {
+        // Left shift (and `x` is non-zero). There's definite loss of
+        // bits if `y` is more than the size of an int. With a potentially
+        // in-range `y`, we have to check based on the sign of `x`, ensuring
+        // that a positive `x` is small enough or a negative `x` is large
+        // enough that the shift couldn't lose its top significant bit.
+        if ((y >= ZINT_BITS) ||
+            ((x > 0) && (x > (ZINT_MAX >> y))) ||
+            ((x < 0) && (x < (ZINT_MIN >> y)))) {
             return false;
         }
         res = x << y;
-    } else if (y < 0) {
+    } else {
         // Right shift. It's always safe, but we have to behave specially
         // when `y <= -ZINT_BITS`, as C99 leaves it undefined when the
-        // right-hand side is greater than the number of bits in the type
-        // in question.
+        // right-hand side is greater than or equal to the number of bits
+        // in the type in question.
         //
         // Also, note that strictly speaking, this isn't portable for
         // negative numbers, as the C99 standard does not say what right shift
@@ -305,8 +310,6 @@ bool zintShl(zint *result, zint x, zint y) {
         } else {
             res = x >> -y;
         }
-    } else {
-        res = x;
     }
 
     if (result != NULL) {
