@@ -322,11 +322,7 @@ bool zintShl(zint *result, zint x, zint y) {
 }
 
 /* Documented in header. */
-bool zintShr(zint *result, zint x, zint y) {
-    // We just define this in terms of `zintShl`, but note the test to
-    // deal with the possibility of passing `ZINT_MIN` for `y`.
-    return zintShl(result, x, (y <= -ZINT_BITS) ? ZINT_BITS : -y);
-}
+extern bool zintShr(zint *result, zint x, zint y);
 
 /* Documented in header. */
 bool zintSub(zint *result, zint x, zint y) {

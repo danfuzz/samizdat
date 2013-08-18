@@ -184,7 +184,8 @@ inline bool zintAnd(zint *result, zint x, zint y) {
  * Gets the bit size (highest-order significant bit number, plus one)
  * of the given `zint`, assuming sign-extended representation. For example,
  * this is `1` for both `0` and `-1` (because both can be represented with
- * *just* a single sign bit).
+ * *just* a single sign bit); and this is `2` for `1` (because it requires
+ * one value bit and one sign bit).
  */
 zint zintBitSize(zint value);
 
@@ -309,7 +310,11 @@ bool zintShl(zint *result, zint x, zint y);
  *
  * **Note:** This defines `(x >>> -y) == (x <<< y)`.
  */
-bool zintShr(zint *result, zint x, zint y);
+inline bool zintShr(zint *result, zint x, zint y) {
+    // We just define this in terms of `zintShl`, but note the limit test,
+    // which ensures that we don't try to calculate `-ZINT_MIN` for `y`.
+    return zintShl(result, x, (y <= -ZINT_BITS) ? ZINT_BITS : -y);
+}
 
 /**
  * Performs `x - y`, detecting overflow. Returns a success flag, and
