@@ -93,19 +93,11 @@ bool zintAbs(zint *result, zint x) {
 bool zintAdd(zint *result, zint x, zint y) {
     // If the signs are opposite or either argument is zero, then overflow
     // is impossible. The two clauses here are for the same-sign-and-not-zero
-    // cases.
-    if ((x > 0) && (y > 0)) {
-        // Both arguments are positive. The largest that `x` can be is the
-        // difference between `y` and the largest representable value.
-        if (x > (ZINT_MAX - y)) {
-            return false;
-        }
-    } else if ((x < 0) && (y < 0)) {
-        // Both arguments are negative. The smallest that `x` can be is the
-        // difference between `y` and the smallest representable value.
-        if (x < (ZINT_MIN - y)) {
-            return false;
-        }
+    // cases. Each one is of the form: Given a {positive, negative} `y`,
+    // what is the {largest, smallest} `x` that won't overflow?
+    if (((y > 0) && (x > (ZINT_MAX - y))) ||
+        ((y < 0) && (x < (ZINT_MIN - y)))) {
+        return false;
     }
 
     if (result != NULL) {
@@ -326,14 +318,14 @@ extern bool zintShr(zint *result, zint x, zint y);
 
 /* Documented in header. */
 bool zintSub(zint *result, zint x, zint y) {
-    // Note: This isn't equivalent to `zintAdd(x, -y)`, because of the
-    // asymmetry of twos-complement integers. In particular,
-    // `-ZINT_MIN == ZINT_MIN`. For example, `0 - ZINT_MIN` is an overflow.
+    // Note: This can't be written as `zintAdd(x, -y)`, because of the
+    // asymmetry of twos-complement integers. That is, that would fail if
+    // `y == ZINT_MIN`.
 
     // Overflow can only happen when the two arguments are of opposite sign.
     // The two halves of the test here are equivalent, with each part
     // being a test of the limit of possible `x`s given `y`.
-    if (((y <= 0) && (x > (ZINT_MAX + y))) ||
+    if (((y < 0) && (x > (ZINT_MAX + y))) ||
         ((y > 0) && (x < (ZINT_MIN + y)))) {
         return false;
     }
