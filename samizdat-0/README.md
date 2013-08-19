@@ -39,6 +39,11 @@ Some modules have additional headers under a directory named
 `include/module`. These typically get included by `include/module.h` and
 are not intended for direct consumption by other modules.
 
+Several modules define in-language types. Instead of listed with the
+module header, each type is declared in its own header, under the
+directory `include/type`. For example, the `List` type is declared
+in `include/type/List.h`.
+
 Here's a run-down of the defined modules, in dependency order (with
 later-named modules depending only on earlier-named ones):
 
