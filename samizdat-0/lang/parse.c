@@ -6,6 +6,11 @@
 
 #include "const.h"
 #include "impl.h"
+#include "type/List.h"
+#include "type/Map.h"
+#include "type/String.h"
+#include "type/Type.h"
+#include "type/Value.h"
 #include "util.h"
 
 
@@ -57,7 +62,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
     zvalue result = listNth(state->tokens, state->at);
     zvalue resultType = typeOf(result);
 
-    if (!pbEq(type, resultType)) {
+    if (!valEq(type, resultType)) {
         return NULL;
     }
 
@@ -157,12 +162,12 @@ static zvalue listAppend(zvalue list, zvalue elem) {
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeInterpolate(zvalue expression) {
-    return makeValue(STR_interpolate, expression);
+    return makeTransValue(STR_interpolate, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeLiteral(zvalue value) {
-    return makeValue(STR_literal, value);
+    return makeTransValue(STR_literal, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -171,18 +176,18 @@ static zvalue makeThunk(zvalue expression) {
         STR_formals, EMPTY_LIST,
         STR_statements, EMPTY_LIST,
         STR_yield, expression);
-    return makeValue(STR_closure, value);
+    return makeTransValue(STR_closure, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarDef(zvalue name, zvalue value) {
     zvalue payload = mapFrom2(STR_name, name, STR_value, value);
-    return makeValue(STR_varDef, payload);
+    return makeTransValue(STR_varDef, payload);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 static zvalue makeVarRef(zvalue name) {
-    return makeValue(STR_varRef, name);
+    return makeTransValue(STR_varRef, name);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -192,7 +197,7 @@ static zvalue makeCall(zvalue function, zvalue actuals) {
     }
 
     zvalue value = mapFrom2(STR_function, function, STR_actuals, actuals);
-    return makeValue(STR_call, value);
+    return makeTransValue(STR_call, value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -273,7 +278,7 @@ zvalue parsePlus(parserFunction rule, ParseState *state) {
     MARK();
 
     zvalue result = parseStar(rule, state);
-    REJECT_IF(pbSize(result) == 0);
+    REJECT_IF(valSize(result) == 0);
 
     return result;
 }
@@ -426,7 +431,7 @@ DEF_PARSE(program) {
     zvalue declarations = PARSE(programDeclarations); // This never fails.
     zvalue body = PARSE(programBody); // This never fails.
 
-    return makeValue(STR_closure, mapCat(declarations, body));
+    return makeTransValue(STR_closure, mapCat(declarations, body));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -450,7 +455,7 @@ DEF_PARSE(nullaryClosure) {
     zvalue c = PARSE_OR_REJECT(closure);
 
     zvalue formals = mapGet(dataOf(c), STR_formals);
-    if (!pbEq(formals, EMPTY_LIST)) {
+    if (!valEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
 
@@ -534,7 +539,7 @@ DEF_PARSE(fnDef) {
         return NULL;
     }
 
-    return makeValue(STR_fnDef, funcMap);
+    return makeTransValue(STR_fnDef, funcMap);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -542,18 +547,18 @@ DEF_PARSE(fnExpression) {
     MARK();
 
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
-    zvalue closure = makeValue(STR_closure, funcMap);
+    zvalue closure = makeTransValue(STR_closure, funcMap);
 
     zvalue name = mapGet(funcMap, STR_name);
     if (name == NULL) {
         return closure;
     }
 
-    zvalue mainClosure = makeValue(
+    zvalue mainClosure = makeTransValue(
         STR_closure,
         mapFrom3(
             STR_formals,    EMPTY_LIST,
-            STR_statements, listFrom1(makeValue(STR_fnDef, funcMap)),
+            STR_statements, listFrom1(makeTransValue(STR_fnDef, funcMap)),
             STR_yield,      makeVarRef(name)));
 
     return makeCall(mainClosure, NULL);
@@ -609,7 +614,7 @@ DEF_PARSE(list) {
     zvalue expressions = PARSE(unadornedList);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    if (pbSize(expressions) == 0) {
+    if (valSize(expressions) == 0) {
         return makeLiteral(EMPTY_LIST);
     } else {
         return makeCallName(STR_makeList, expressions);
@@ -659,7 +664,7 @@ DEF_PARSE(mapping1) {
     zvalue value = PARSE_OR_REJECT(expression);
 
     return makeCallName(STR_makeValueMap,
-        listFrom2(key, makeValue(STR_expression, value)));
+        listFrom2(key, makeTransValue(STR_expression, value)));
 }
 
 /**
@@ -695,7 +700,7 @@ DEF_PARSE(map) {
     }
 
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
-    zint size = pbSize(mappings);
+    zint size = valSize(mappings);
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
@@ -785,7 +790,7 @@ DEF_PARSE(parenExpression) {
     zvalue expression = PARSE_OR_REJECT(expression);
     MATCH_OR_REJECT(CH_CPAREN);
 
-    return makeValue(STR_expression, expression);
+    return makeTransValue(STR_expression, expression);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -847,21 +852,21 @@ DEF_PARSE(unaryExpression) {
     zvalue result = PARSE_OR_REJECT(atom);
     zvalue postfixes = PARSE_STAR(postfixOperator);
 
-    zint size = pbSize(postfixes);
+    zint size = valSize(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = listNth(postfixes, i);
         if (hasType(one, TYPE_List)) {
             result = makeCall(result, one);
-        } else if (pbEq(one, TOK_CH_STAR)) {
+        } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
         } else {
             die("Unexpected postfix.");
         }
     }
 
-    for (zint i = pbSize(prefixes) - 1; i >= 0; i--) {
+    for (zint i = valSize(prefixes) - 1; i >= 0; i--) {
         zvalue one = listNth(prefixes, i);
-        if (pbEq(one, TOK_CH_MINUS)) {
+        if (valEq(one, TOK_CH_MINUS)) {
             result = makeCallName(STR_ineg, listFrom1(result));
         } else {
             die("Unexpected prefix.");
@@ -879,7 +884,7 @@ DEF_PARSE(voidableExpression) {
     zvalue ex = PARSE_OR_REJECT(unaryExpression);
 
     if (voidable) {
-        return makeValue(STR_voidable, ex);
+        return makeTransValue(STR_voidable, ex);
     } else {
         return ex;
     }
@@ -1016,7 +1021,7 @@ zvalue langTree0(zvalue program) {
         tokens = program;
     }
 
-    ParseState state = { tokens, pbSize(tokens), 0 };
+    ParseState state = { tokens, valSize(tokens), 0 };
     zvalue result = parse_program(&state);
 
     if (!isEof(&state)) {

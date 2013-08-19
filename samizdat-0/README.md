@@ -32,9 +32,17 @@ Directory and File Organization
 
 The code is structured into "modules", with each module's code in a
 directory with the module's name, and with "exports" from that module
-in a top-level header file bearing the module's name. For example,
-the code of the `dat` module is in the `dat/` directory, and the
-`dat` module exports functionality as defined in `dat.h`.
+in a header file directly under `include/` bearing the module's name.
+For example, the code of the `dat` module is in the `dat/` directory,
+and the `dat` module exports functionality as defined in `include/dat.h`.
+Some modules have additional headers under a directory named
+`include/module`. These typically get included by `include/module.h` and
+are not intended for direct consumption by other modules.
+
+Several modules define in-language types. Instead of listed with the
+module header, each type is declared in its own header, under the
+directory `include/type`. For example, the `List` type is declared
+in `include/type/List.h`.
 
 Here's a run-down of the defined modules, in dependency order (with
 later-named modules depending only on earlier-named ones):
@@ -189,7 +197,8 @@ types use `UppercaseInitialCamelCase`. Other types use `zlowercaseInitial`
 (that is, prefixed with `z` per se). Numeric constants and some special
 valius use `ALL_CAPS_WITH_UNDERSCORES`.
 
-A "Hungarianesque" name prefix is used to identify aspects of some globals:
+A "Hungarianesque" name prefix is used to identify aspects of some variables
+and functions:
 
 * `TYPE_TypeName` &mdash; Identifies a value of type `Type`.
 
@@ -224,6 +233,13 @@ Other naming conventions (which sometimes override the above):
   type `TypeName`. These are almost all for the creation of "identified"
   values (that is, values that have an identity beyond their underlying
   data).
+
+* `assertSomething` &mdash; Indicates an assertion function of some sort.
+
+* `assertTypeName` &mdash; Indicates an assertion function whose purpose
+  is to assert that the argument is of the indicated type. Occasionally
+  an additional suffix indicates some extra aspect being asserted (e.g.,
+  `assertStringSize1`).
 
 * `functionName0` (that is, `0` as a suffix) &mdash; Indicates a "helper"
   function for the function `functionName`. Rarely, other digits are used

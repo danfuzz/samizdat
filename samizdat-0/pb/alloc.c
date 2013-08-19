@@ -5,6 +5,8 @@
  */
 
 #include "impl.h"
+#include "type/Callable.h"
+#include "type/Value.h"
 #include "zlimits.h"
 
 
@@ -264,7 +266,7 @@ zvalue pbAllocValue(zvalue type, zint extraBytes) {
 }
 
 /* Documented in header. */
-void pbAssertValid(zvalue value) {
+void assertValid(zvalue value) {
     if (value == NULL) {
         die("Null value.");
     }
@@ -279,9 +281,9 @@ void pbAssertValid(zvalue value) {
 }
 
 /* Documented in header. */
-void pbAssertValidOrNull(zvalue value) {
+void assertValidOrNull(zvalue value) {
     if (value != NULL) {
-        pbAssertValid(value);
+        assertValid(value);
     }
 }
 
@@ -340,7 +342,7 @@ void pbImmortalize(zvalue value) {
         die("Too many immortal values!");
     }
 
-    pbAssertValid(value);
+    assertValid(value);
 
     immortals[immortalsSize] = value;
     immortalsSize++;
@@ -352,7 +354,7 @@ void pbMark(zvalue value) {
         return;
     }
 
-    pbAssertValid(value);
+    assertValid(value);
 
     if (value->marked) {
         return;

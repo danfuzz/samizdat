@@ -5,6 +5,12 @@
  */
 
 #include "impl.h"
+#include "type/Generic.h"
+#include "type/Int.h"
+#include "type/List.h"
+#include "type/String.h"
+#include "type/Type.h"
+#include "type/Value.h"
 
 #include <string.h>
 
@@ -82,13 +88,13 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
  */
 
 /* Documented in header. */
-void datAssertList(zvalue value) {
+void assertList(zvalue value) {
     assertHasType(value, TYPE_List);
 }
 
 /* Documented in header. */
 void arrayFromList(zvalue *result, zvalue list) {
-    datAssertList(list);
+    assertList(list);
 
     ListInfo *info = getInfo(list);
 
@@ -97,8 +103,8 @@ void arrayFromList(zvalue *result, zvalue list) {
 
 /* Documented in header. */
 zvalue listCat(zvalue list1, zvalue list2) {
-    datAssertList(list1);
-    datAssertList(list2);
+    assertList(list1);
+    assertList(list2);
 
     ListInfo *info1 = getInfo(list1);
     ListInfo *info2 = getInfo(list2);
@@ -116,13 +122,13 @@ zvalue listCat(zvalue list1, zvalue list2) {
 
 /* Documented in header. */
 zvalue listDelNth(zvalue list, zint n) {
-    datAssertList(list);
+    assertList(list);
 
     ListInfo *info = getInfo(list);
     zvalue *elems = info->elems;
     zint size = info->size;
 
-    pbAssertNth(size, n);
+    assertNth(size, n);
 
     return listFrom(n, elems, NULL, size - n - 1, elems + n + 1);
 }
@@ -130,7 +136,7 @@ zvalue listDelNth(zvalue list, zint n) {
 /* Documented in header. */
 zvalue listFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
-        pbAssertValid(values[i]);
+        assertValid(values[i]);
     }
 
     return listFrom(size, values, NULL, 0, NULL);
@@ -138,21 +144,21 @@ zvalue listFromArray(zint size, const zvalue *values) {
 
 /* Documented in header. */
 zvalue listInsNth(zvalue list, zint n, zvalue value) {
-    datAssertList(list);
-    pbAssertValid(value);
+    assertList(list);
+    assertValid(value);
 
     ListInfo *info = getInfo(list);
     zvalue *elems = info->elems;
     zint size = info->size;
 
-    pbAssertNthOrSize(size, n);
+    assertNthOrSize(size, n);
 
     return listFrom(n, elems, value, size - n, elems + n);
 }
 
 /* Documented in header. */
 zvalue listNth(zvalue list, zint n) {
-    datAssertList(list);
+    assertList(list);
 
     ListInfo *info = getInfo(list);
 
@@ -165,13 +171,13 @@ zvalue listNth(zvalue list, zint n) {
 
 /* Documented in header. */
 zvalue listPutNth(zvalue list, zint n, zvalue value) {
-    datAssertList(list);
-    pbAssertValid(value);
+    assertList(list);
+    assertValid(value);
 
     ListInfo *info = getInfo(list);
     zint size = info->size;
 
-    pbAssertNthOrSize(size, n);
+    assertNthOrSize(size, n);
 
     if (n == size) {
         return listInsNth(list, n, value);
@@ -185,11 +191,11 @@ zvalue listPutNth(zvalue list, zint n, zvalue value) {
 
 /* Documented in header. */
 zvalue listSlice(zvalue list, zint start, zint end) {
-    datAssertList(list);
+    assertList(list);
 
     ListInfo *info = getInfo(list);
 
-    pbAssertSliceRange(info->size, start, end);
+    assertSliceRange(info->size, start, end);
     return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
 }
 
@@ -218,7 +224,7 @@ METH_IMPL(List, eq) {
     zvalue *e2 = info2->elems;
 
     for (zint i = 0; i < size1; i++) {
-        if (!pbEq(e1[i], e2[i])) {
+        if (!valEq(e1[i], e2[i])) {
             return NULL;
         }
     }
@@ -253,7 +259,7 @@ METH_IMPL(List, order) {
     zint size = (size1 < size2) ? size1 : size2;
 
     for (zint i = 0; i < size; i++) {
-        zorder result = pbOrder(e1[i], e2[i]);
+        zorder result = valOrder(e1[i], e2[i]);
         if (result != ZSAME) {
             return intFromZint(result);
         }

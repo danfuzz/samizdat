@@ -4,8 +4,13 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
+#include "dat.h"
 #include "impl.h"
+#include "type/String.h"
+#include "type/Value.h"
 #include "zlimits.h"
+
+#include <stddef.h>
 
 
 /*
@@ -18,7 +23,7 @@
     STR(name, str); \
     zvalue TOK_##name = NULL
 
-#include "const-def.h"
+#include "const/const-def.h"
 
 #undef STR
 #undef TOK
@@ -44,10 +49,10 @@ void constInit(void) {
 
     #define TOK(name, str) \
         STR(name, str); \
-        TOK_##name = makeValue(STR_##name, NULL); \
+        TOK_##name = makeTransValue(STR_##name, NULL); \
         pbImmortalize(TOK_##name)
 
-    #include "const-def.h"
+    #include "const/const-def.h"
 
     generatorInit();
 

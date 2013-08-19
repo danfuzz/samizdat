@@ -9,6 +9,10 @@
  */
 
 #include "impl.h"
+#include "type/Callable.h"
+#include "type/Generic.h"
+#include "type/String.h"
+#include "type/Value.h"
 
 #include <string.h>
 
@@ -22,7 +26,7 @@
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
-    return pbDebugString((zvalue) state);
+    return valDebugString((zvalue) state);
 }
 
 /**

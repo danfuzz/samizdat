@@ -6,6 +6,9 @@
 
 #include "const.h"
 #include "impl.h"
+#include "type/Int.h"
+#include "type/Type.h"
+#include "type/Value.h"
 #include "util.h"
 
 
@@ -19,7 +22,7 @@
 static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
     assertHaveSameType(v1, v2);
 
-    if (!pbEq(typeOf(v1), typeOf(v2))) {
+    if (!valEq(typeOf(v1), typeOf(v2))) {
         die("Mismatched derived types.");
     }
 }
@@ -31,10 +34,10 @@ static bool doOrderIs(zint argCount, const zvalue *args) {
     zorder want = zintFromInt(args[2]);
 
     if ((argCount == 3) && (want == ZSAME)) {
-        return pbEq(args[0], args[1]);
+        return valEq(args[0], args[1]);
     }
 
-    zorder comp = pbOrder(args[0], args[1]);
+    zorder comp = valOrder(args[0], args[1]);
 
     return (comp == want) ||
         ((argCount == 4) && (comp == zintFromInt(args[3])));
@@ -51,7 +54,7 @@ PRIM_IMPL(coreOrder) {
     zvalue arg1 = args[1];
 
     coreOrderTypeCheck(arg0, arg1);
-    return intFromZint(pbOrder(arg0, arg1));
+    return intFromZint(valOrder(arg0, arg1));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -68,7 +71,7 @@ PRIM_IMPL(dataOf) {
     zvalue value = args[0];
     zvalue secret = (argCount == 2) ? args[1] : NULL;
 
-    return derivDataOf(value, secret);
+    return valDataOf(value, secret);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -80,12 +83,12 @@ PRIM_IMPL(isOpaqueValue) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeValue) {
     zvalue value = (argCount == 2) ? args[1] : NULL;
-    return makeValue(args[0], value);
+    return makeTransValue(args[0], value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(totalOrder) {
-    return intFromZint(pbOrder(args[0], args[1]));
+    return intFromZint(valOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

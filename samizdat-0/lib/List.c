@@ -5,6 +5,11 @@
  */
 
 #include "impl.h"
+#include "type/Callable.h"
+#include "type/Int.h"
+#include "type/List.h"
+#include "type/Type.h"
+#include "type/Value.h"
 
 
 /*
@@ -19,7 +24,7 @@ PRIM_IMPL(listCat) {
             return EMPTY_LIST;
         }
         case 1: {
-            datAssertList(args[0]);
+            assertList(args[0]);
             return args[0];
         }
         case 2: {
@@ -52,11 +57,11 @@ PRIM_IMPL(listDelNth) {
 PRIM_IMPL(listFilter) {
     zvalue function = args[0];
     zvalue list = args[1];
-    zint size = pbSize(list);
+    zint size = valSize(list);
     zvalue result[size];
     zint at = 0;
 
-    datAssertList(list);
+    assertList(list);
 
     for (zint i = 0; i < size; i++) {
         zvalue elem = listNth(list, i);
@@ -94,7 +99,7 @@ PRIM_IMPL(listPutNth) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listReverse) {
     zvalue list = args[0];
-    zint size = pbSize(list);
+    zint size = valSize(list);
     zvalue elems[size];
 
     arrayFromList(elems, list);
@@ -112,7 +117,7 @@ PRIM_IMPL(listReverse) {
 PRIM_IMPL(listSlice) {
     zvalue list = args[0];
     zint startIndex = zintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : pbSize(list);
+    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : valSize(list);
 
     return listSlice(list, startIndex, endIndex);
 }
