@@ -6,6 +6,7 @@
 
 #include "dat.h"
 #include "impl.h"
+#include "type/String.h"
 #include "zlimits.h"
 
 

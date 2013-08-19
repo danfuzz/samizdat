@@ -6,6 +6,7 @@
 
 #include "io.h"
 #include "impl.h"
+#include "type/String.h"
 #include "util.h"
 
 #include <stdio.h>

@@ -9,6 +9,7 @@
 #include "util.h"
 #include "type/Int.h"
 #include "type/List.h"
+#include "type/String.h"
 #include "zlimits.h"
 
 

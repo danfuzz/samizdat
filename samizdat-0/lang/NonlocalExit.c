@@ -10,6 +10,7 @@
 
 #include "impl.h"
 #include "type/Generic.h"
+#include "type/String.h"
 #include "type/Type.h"
 #include "util.h"
 
