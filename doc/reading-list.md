@@ -28,6 +28,8 @@ design and implementation of *Samizdat*.
 * Erlang (and Go) in Clojure (and Java) &mdash;
   <http://blog.paralleluniverse.co/post/49445260575/quasar-pulsar>
 
+* Finger Tree (Wikipedia) &mdash; <http://en.wikipedia.org/wiki/Finger_tree>
+
 * Foreign-Function Interfaces for Garbage-Collected Programming Languages
   &mdash;
   <http://pu.inf.uni-tuebingen.de/users/crestani/publications/2008-sws-ffi.pdf>
@@ -78,3 +80,6 @@ design and implementation of *Samizdat*.
 
 * Why Programming Languages? &mdash;
   <http://soft.vub.ac.be/~tvcutsem/invokedynamic/node/11>
+
+* Yet Another Article on Zippers, in Erlang &mdash;
+  <http://ferd.ca/yet-another-article-on-zippers.html>
