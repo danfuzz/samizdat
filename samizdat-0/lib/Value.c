@@ -6,6 +6,7 @@
 
 #include "const.h"
 #include "impl.h"
+#include "type/Type.h"
 #include "util.h"
 
 

@@ -10,6 +10,8 @@
 #include "type/Box.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/Type.h"
+#include "type/Uniqlet.h"
 
 
 /*

@@ -5,6 +5,8 @@
  */
 
 #include "impl.h"
+#include "type/Type.h"
+#include "type/Uniqlet.h"
 #include "zlimits.h"
 
 #include <stdlib.h>

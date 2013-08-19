@@ -9,6 +9,7 @@
  */
 
 #include "impl.h"
+#include "type/Type.h"
 
 
 /*
