@@ -5,6 +5,9 @@
  */
 
 #include "impl.h"
+#include "type/Generic.h"
+#include "type/Int.h"
+#include "type/Value.h"
 #include "zlimits.h"
 
 
@@ -33,7 +36,7 @@ static DerivInfo *getInfo(zvalue value) {
  */
 
 /* Documented in header. */
-zvalue derivDataOf(zvalue value, zvalue secret) {
+zvalue valDataOf(zvalue value, zvalue secret) {
     zvalue type = value->type;
 
     if (typeIsDerived(type) && typeSecretIs(type, secret)) {
@@ -44,10 +47,10 @@ zvalue derivDataOf(zvalue value, zvalue secret) {
 }
 
 /* Documented in header. */
-zvalue makeDeriv(zvalue type, zvalue data, zvalue secret) {
-    pbAssertValid(type);
-    pbAssertValidOrNull(data);
-    pbAssertValidOrNull(secret);
+zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
+    assertValid(type);
+    assertValidOrNull(data);
+    assertValidOrNull(secret);
 
     // Make sure the secrets match. In the case of a transparent type,
     // this checks that `secret` is `NULL`.
@@ -62,8 +65,8 @@ zvalue makeDeriv(zvalue type, zvalue data, zvalue secret) {
 }
 
 /* Documented in header. */
-zvalue makeValue(zvalue type, zvalue data) {
-    return makeDeriv(type, data, NULL);
+zvalue makeTransValue(zvalue type, zvalue data) {
+    return makeValue(type, data, NULL);
 }
 
 
@@ -79,7 +82,7 @@ METH_IMPL(Deriv, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return pbEq(getInfo(v1)->data, getInfo(v2)->data) ? v2 : NULL;
+    return valEq(getInfo(v1)->data, getInfo(v2)->data) ? v2 : NULL;
 }
 
 /* Documented in header. */
@@ -101,7 +104,7 @@ METH_IMPL(Deriv, order) {
     } else if (data2 == NULL) {
         return PB_1;
     } else {
-        return intFromZint(pbOrder(data1, data2));
+        return intFromZint(valOrder(data1, data2));
     }
 }
 

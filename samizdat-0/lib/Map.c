@@ -5,6 +5,9 @@
  */
 
 #include "impl.h"
+#include "type/List.h"
+#include "type/Map.h"
+#include "type/Value.h"
 #include "util.h"
 
 
@@ -48,7 +51,7 @@ PRIM_IMPL(mapDel) {
 
     if (argCount == 0) {
         // Need the assert, since we won't end up making any other map calls.
-        datAssertMap(result);
+        assertMap(result);
     } else {
         for (zint i = 1; i < argCount; i++) {
             result = mapDel(result, args[i]);
@@ -66,7 +69,7 @@ PRIM_IMPL(mapGet) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapKeys) {
     zvalue map = args[0];
-    zint size = pbSize(map);
+    zint size = valSize(map);
     zmapping mappings[size];
     zvalue arr[size];
 

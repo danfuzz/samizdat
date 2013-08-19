@@ -7,6 +7,10 @@
 #include "const.h"
 #include "impl.h"
 #include "util.h"
+#include "type/Int.h"
+#include "type/List.h"
+#include "type/String.h"
+#include "type/Value.h"
 #include "zlimits.h"
 
 
@@ -100,7 +104,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return makeValue(STR_int, intval);
+    return makeTransValue(STR_int, intval);
 }
 
 /**
@@ -134,12 +138,12 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     zvalue string = stringFromZchars(size, chars);
 
     switch (chars[0]) {
-        case 'd': { if (pbEq(string, STR_def))    return TOK_def;    break; }
-        case 'f': { if (pbEq(string, STR_fn))     return TOK_fn;     break; }
-        case 'r': { if (pbEq(string, STR_return)) return TOK_return; break; }
+        case 'd': { if (valEq(string, STR_def))    return TOK_def;    break; }
+        case 'f': { if (valEq(string, STR_fn))     return TOK_fn;     break; }
+        case 'r': { if (valEq(string, STR_return)) return TOK_return; break; }
     }
 
-    return makeValue(STR_identifier, string);
+    return makeTransValue(STR_identifier, string);
 }
 
 /**
@@ -189,7 +193,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZchars(size, chars);
-    return makeValue(STR_string, string);
+    return makeTransValue(STR_string, string);
 }
 
 /**
@@ -205,7 +209,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
 
     zvalue result = tokenizeString(state);
     zvalue string = dataOf(result);
-    return makeValue(STR_identifier, string);
+    return makeTransValue(STR_identifier, string);
 }
 
 /**
@@ -290,7 +294,7 @@ zvalue langTokenize0(zvalue string) {
     zstackPointer save = pbFrameStart();
 
     zvalue result[LANG_MAX_TOKENS];
-    ParseState state = { string, pbSize(string), 0 };
+    ParseState state = { string, valSize(string), 0 };
     zint out = 0;
 
     for (;;) {

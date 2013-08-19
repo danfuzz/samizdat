@@ -5,6 +5,12 @@
  */
 
 #include "impl.h"
+#include "type/Generic.h"
+#include "type/Int.h"
+#include "type/Map.h"
+#include "type/String.h"
+#include "type/Type.h"
+#include "type/Value.h"
 #include "zlimits.h"
 
 #include <stdlib.h>
@@ -62,7 +68,7 @@ static zvalue makeMapping(zvalue key, zvalue value) {
  * the *second* value is used.
  */
 static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    zorder comp = pbOrder(k1, k2);
+    zorder comp = valOrder(k1, k2);
 
     if (comp == ZSAME) {
         return makeMapping(k2, v2);
@@ -101,8 +107,8 @@ static zint mapFind(zvalue map, zvalue key) {
     // Note: There's no need to do assertions on the cache hit path, since
     // we wouldn't have found an invalid entry.
 
-    datAssertMap(map);
-    pbAssertValid(key);
+    assertMap(map);
+    assertValid(key);
 
     entry->map = map;
     entry->key = key;
@@ -114,7 +120,7 @@ static zint mapFind(zvalue map, zvalue key) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        switch (pbOrder(key, elems[guess].key)) {
+        switch (valOrder(key, elems[guess].key)) {
             case ZLESS: max = guess - 1; break;
             case ZMORE: min = guess + 1; break;
             default: {
@@ -138,7 +144,7 @@ static zint mapFind(zvalue map, zvalue key) {
  * functions.
  */
 static int mappingOrder(const void *m1, const void *m2) {
-    return pbOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
+    return valOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
 
@@ -147,13 +153,13 @@ static int mappingOrder(const void *m1, const void *m2) {
  */
 
 /* Documented in header. */
-void datAssertMap(zvalue value) {
+void assertMap(zvalue value) {
     assertHasType(value, TYPE_Map);
 }
 
 /* Documented in header. */
-void datAssertMapSize1(zvalue value) {
-    datAssertMap(value);
+void assertMapSize1(zvalue value) {
+    assertMap(value);
     if (getInfo(value)->size != 1) {
         die("Not a size 1 map.");
     }
@@ -161,7 +167,7 @@ void datAssertMapSize1(zvalue value) {
 
 /* Documented in header. */
 void arrayFromMap(zmapping *result, zvalue map) {
-    datAssertMap(map);
+    assertMap(map);
 
     MapInfo *info = getInfo(map);
     memcpy(result, info->elems, info->size * sizeof(zmapping));
@@ -169,8 +175,8 @@ void arrayFromMap(zmapping *result, zvalue map) {
 
 /* Documented in header. */
 zvalue mapCat(zvalue map1, zvalue map2) {
-    datAssertMap(map1);
-    datAssertMap(map2);
+    assertMap(map1);
+    assertMap(map2);
 
     MapInfo *info2 = getInfo(map2);
     zint size2 = info2->size;
@@ -186,7 +192,7 @@ zvalue mapCat(zvalue map1, zvalue map2) {
 
 /* Documented in header. */
 zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
-    datAssertMap(map);
+    assertMap(map);
 
     if (size == 0) {
         return map;
@@ -214,7 +220,7 @@ zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
 
     zint at = 1;
     for (zint i = 1; i < resultSize; i++) {
-        if (pbEq(resultElems[i].key, resultElems[at-1].key)) {
+        if (valEq(resultElems[i].key, resultElems[at-1].key)) {
             at--;
         }
 
@@ -263,7 +269,7 @@ zvalue mapGet(zvalue map, zvalue key) {
 
 /* Documented in Samizdat Layer 0 spec. */
 zvalue mapNth(zvalue map, zint n) {
-    datAssertMap(map);
+    assertMap(map);
 
     MapInfo *info = getInfo(map);
     zint size = info->size;
@@ -282,8 +288,8 @@ zvalue mapNth(zvalue map, zint n) {
 
 /* Documented in header. */
 zvalue mapPut(zvalue map, zvalue key, zvalue value) {
-    datAssertMap(map);
-    pbAssertValid(value);
+    assertMap(map);
+    assertValid(value);
 
     MapInfo *info = getInfo(map);
     zmapping *elems = info->elems;
@@ -291,11 +297,11 @@ zvalue mapPut(zvalue map, zvalue key, zvalue value) {
 
     switch (size) {
         case 0: {
-            pbAssertValid(key);
+            assertValid(key);
             return makeMapping(key, value);
         }
         case 1: {
-            pbAssertValid(key);
+            assertValid(key);
             zmapping *elems = info->elems;
             return mapFrom2(elems[0].key, elems[0].value, key, value);
         }
@@ -329,13 +335,13 @@ zvalue mapPut(zvalue map, zvalue key, zvalue value) {
 
 /* Documented in Samizdat Layer 0 spec. */
 zvalue mappingKey(zvalue map) {
-    datAssertMapSize1(map);
+    assertMapSize1(map);
     return getInfo(map)->elems[0].key;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 zvalue mappingValue(zvalue map) {
-    datAssertMapSize1(map);
+    assertMapSize1(map);
     return getInfo(map)->elems[0].value;
 }
 
@@ -366,7 +372,7 @@ METH_IMPL(Map, eq) {
     for (zint i = 0; i < size1; i++) {
         zmapping *e1 = &elems1[i];
         zmapping *e2 = &elems2[i];
-        if (!(pbEq(e1->key, e2->key) && pbEq(e1->value, e2->value))) {
+        if (!(valEq(e1->key, e2->key) && valEq(e1->value, e2->value))) {
             return NULL;
         }
     }
@@ -402,7 +408,7 @@ METH_IMPL(Map, order) {
     zint size = (size1 < size2) ? size1 : size2;
 
     for (zint i = 0; i < size; i++) {
-        zorder result = pbOrder(e1[i].key, e2[i].key);
+        zorder result = valOrder(e1[i].key, e2[i].key);
         if (result != ZSAME) {
             return intFromZint(result);
         }
@@ -415,7 +421,7 @@ METH_IMPL(Map, order) {
     }
 
     for (zint i = 0; i < size; i++) {
-        zorder result = pbOrder(e1[i].value, e2[i].value);
+        zorder result = valOrder(e1[i].value, e2[i].value);
         if (result != ZSAME) {
             return intFromZint(result);
         }

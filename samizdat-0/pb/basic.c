@@ -9,6 +9,7 @@
  */
 
 #include "impl.h"
+#include "type/Type.h"
 
 
 /*
@@ -16,7 +17,7 @@
  */
 
 /* Documented in header. */
-void pbAssertNth(zint size, zint n) {
+void assertNth(zint size, zint n) {
     if (n < 0) {
         die("Invalid index (negative): %lld", n);
     }
@@ -27,19 +28,19 @@ void pbAssertNth(zint size, zint n) {
 }
 
 /* Documented in header. */
-void pbAssertNthOrSize(zint size, zint n) {
+void assertNthOrSize(zint size, zint n) {
     if (n != size) {
-        pbAssertNth(size, n);
+        assertNth(size, n);
     }
 }
 
 /* Documented in header. */
-void pbAssertSliceRange(zint size, zint start, zint end) {
+void assertSliceRange(zint size, zint start, zint end) {
     if ((start < 0) || (end < 0) || (end < start)) {
         die("Invalid slice range: (%lld..!%lld)", start, end);
     }
 
-    pbAssertNthOrSize(size, end);
+    assertNthOrSize(size, end);
 }
 
 /* Documented in header. */

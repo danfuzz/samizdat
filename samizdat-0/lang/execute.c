@@ -10,6 +10,12 @@
 
 #include "const.h"
 #include "impl.h"
+#include "type/Callable.h"
+#include "type/List.h"
+#include "type/Map.h"
+#include "type/String.h"
+#include "type/Type.h"
+#include "type/Value.h"
 #include "util.h"
 
 
@@ -27,7 +33,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zvalue actuals = mapGet(call, STR_actuals);
     zvalue functionId = execExpression(frame, function);
 
-    zint argCount = pbSize(actuals);
+    zint argCount = valSize(actuals);
     zvalue actualsArr[argCount];
     zvalue args[argCount];
 
@@ -46,7 +52,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         bool interpolate;
         zvalue eval;
 
-        if (pbEq(oneType, STR_voidable)) {
+        if (valEq(oneType, STR_voidable)) {
             // We replace the value in `actualsArr` with the voidable
             // payload in order to keep the follow-up interpolation loop
             // simpler.
@@ -57,7 +63,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             voidable = false;
         }
 
-        if (pbEq(oneType, STR_interpolate)) {
+        if (valEq(oneType, STR_interpolate)) {
             one = dataOf(one);
             interpolate = true;
         } else {
@@ -76,7 +82,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         if (interpolate) {
             eval = constCollectGenerator(eval);
             args[i] = eval;
-            fullCount += pbSize(eval);
+            fullCount += valSize(eval);
             interpolateAny = true;
         } else {
             args[i] = eval;
@@ -94,7 +100,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             zvalue oneArg = args[i];
             if (hasType(oneNode, STR_interpolate)) {
                 arrayFromList(&fullArgs[at], oneArg);
-                at += pbSize(oneArg);
+                at += valSize(oneArg);
             } else {
                 fullArgs[at] = oneArg;
                 at++;
@@ -127,7 +133,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 
     result = constCollectGenerator(result);
 
-    switch (pbSize(result)) {
+    switch (valSize(result)) {
         case 0: return NULL;
         case 1: return listNth(result, 0);
         default: {
@@ -158,31 +164,31 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 
     // Switching on the first character of the type is a bit of a hack. It
     // lets us avoid having to have a single big cascading `if` with a lot of
-    // `pbEq` calls.
+    // `valEq` calls.
     switch (stringNth(type, 0)) {
         case 'c': {
-            if      (pbEq(type, STR_call))    { return execCall(frame, e); }
-            else if (pbEq(type, STR_closure)) { return execClosure(frame, e); }
+            if      (valEq(type, STR_call))    { return execCall(frame, e); }
+            else if (valEq(type, STR_closure)) { return execClosure(frame, e); }
             break;
         }
         case 'e': {
-            if (pbEq(type, STR_expression)) {
+            if (valEq(type, STR_expression)) {
                 return execExpressionVoidOk(frame, dataOf(e));
             }
             break;
         }
         case 'i': {
-            if (pbEq(type, STR_interpolate)) {
+            if (valEq(type, STR_interpolate)) {
                 return execInterpolate(frame, e);
             }
             break;
         }
         case 'l': {
-            if (pbEq(type, STR_literal)) { return dataOf(e); }
+            if (valEq(type, STR_literal)) { return dataOf(e); }
             break;
         }
         case 'v': {
-            if (pbEq(type, STR_varRef)) { return execVarRef(frame, e); }
+            if (valEq(type, STR_varRef)) { return execVarRef(frame, e); }
             break;
         }
     }

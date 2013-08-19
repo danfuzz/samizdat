@@ -5,6 +5,13 @@
  */
 
 #include "impl.h"
+#include "type/Function.h"
+#include "type/Generic.h"
+#include "type/Int.h"
+#include "type/String.h"
+#include "type/Type.h"
+#include "type/Uniqlet.h"
+#include "type/Value.h"
 #include "zlimits.h"
 
 #include <stdlib.h>
@@ -32,7 +39,7 @@ typedef struct {
 
     /**
      * Whether the type is "identified". `true` indicates that
-     * `identityOf` will work on values of the type.
+     * `valIdentityOf` will work on values of the type.
      */
     bool identified : 1;
 
@@ -130,7 +137,7 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
         return hasSecret2 ? ZLESS : ZMORE;
     }
 
-    zorder nameOrder = pbOrder(name1, name2);
+    zorder nameOrder = valOrder(name1, name2);
 
     if (nameOrder != ZSAME) {
         return nameOrder;
@@ -142,7 +149,7 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
         // Handles the case of both `NULL`.
         return ZSAME;
     } else {
-        return pbOrder(secret1, secret2);
+        return valOrder(secret1, secret2);
     }
 }
 
@@ -253,7 +260,7 @@ bool typeIsDerived(zvalue type) {
 /* Documented in header. */
 bool typeSecretIs(zvalue type, zvalue secret) {
     zvalue typeSecret = isType(type) ? getInfo(type)->secret : NULL;
-    return pbEq(typeSecret, secret);
+    return valEq(typeSecret, secret);
 }
 
 
@@ -268,18 +275,18 @@ void assertHasType(zvalue value, zvalue type) {
         && (value->type != type)
         && !hasType(value, type)) {
         die("Expected type %s; got %s.",
-            pbDebugString(type), pbDebugString(value));
+            valDebugString(type), valDebugString(value));
     }
 }
 
 /* Documented in header. */
 void assertHaveSameType(zvalue v1, zvalue v2) {
-    pbAssertValid(v1);
-    pbAssertValid(v2);
+    assertValid(v1);
+    assertValid(v2);
 
     if (!haveSameType(v1, v2)) {
         die("Mismatched types: %s, %s",
-            pbDebugString(v1), pbDebugString(v2));
+            valDebugString(v1), valDebugString(v2));
     }
 }
 
@@ -298,7 +305,7 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
 
 /* Documented in header. */
 bool hasType(zvalue value, zvalue type) {
-    return pbEq(typeOf(value), type);
+    return valEq(typeOf(value), type);
 }
 
 /* Documented in header. */
@@ -307,7 +314,7 @@ bool haveSameType(zvalue v1, zvalue v2) {
     if (v1->type == v2->type) {
         return true;
     } else {
-        return pbEq(typeOf(v1), typeOf(v2));
+        return valEq(typeOf(v1), typeOf(v2));
     }
 }
 
@@ -331,7 +338,7 @@ zvalue typeName(zvalue type) {
 
 /* Documented in header. */
 zvalue typeOf(zvalue value) {
-    pbAssertValid(value);
+    assertValid(value);
 
     zvalue type = value->type;
     if (isType(type)) {

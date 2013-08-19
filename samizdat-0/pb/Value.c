@@ -5,6 +5,11 @@
  */
 
 #include "impl.h"
+#include "type/Generic.h"
+#include "type/Int.h"
+#include "type/String.h"
+#include "type/Type.h"
+#include "type/Value.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -43,13 +48,13 @@ static zint nextIdentity(void) {
 
 /* Documented in header. */
 zvalue dataOf(zvalue value) {
-    return derivDataOf(value, NULL);
+    return valDataOf(value, NULL);
 }
 
 /* Documented in header. */
-zint identityOf(zvalue value) {
+zint valIdentityOf(zvalue value) {
     if (!typeIsIdentified(typeOf(value))) {
-        die("Attempt to use `identityOf` on non-identified value.");
+        die("Attempt to use `valIdentityOf` on non-identified value.");
     }
 
     zint result = value->identity;
@@ -62,7 +67,7 @@ zint identityOf(zvalue value) {
 }
 
 /* Documented in header. */
-char *pbDebugString(zvalue value) {
+char *valDebugString(zvalue value) {
     if (value == NULL) {
         return strdup("(null)");
     }
@@ -76,15 +81,15 @@ char *pbDebugString(zvalue value) {
 }
 
 /* Documented in header. */
-bool pbEq(zvalue v1, zvalue v2) {
+bool valEq(zvalue v1, zvalue v2) {
     if (v1 == v2) {
         return true;
     } else if ((v1 == NULL) || (v2 == NULL)) {
         return false;
     }
 
-    pbAssertValid(v1);
-    pbAssertValid(v2);
+    assertValid(v1);
+    assertValid(v2);
 
     if (haveSameType(v1, v2)) {
         return (GFN_CALL(eq, v1, v2) != NULL);
@@ -94,7 +99,7 @@ bool pbEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder pbOrder(zvalue v1, zvalue v2) {
+zorder valOrder(zvalue v1, zvalue v2) {
     if (v1 == v2) {
         return ZSAME;
     } else if (v1 == NULL) {
@@ -103,8 +108,8 @@ zorder pbOrder(zvalue v1, zvalue v2) {
         return ZMORE;
     }
 
-    pbAssertValid(v1);
-    pbAssertValid(v2);
+    assertValid(v1);
+    assertValid(v2);
 
     if (haveSameType(v1, v2)) {
         zstackPointer save = pbFrameStart();
@@ -112,12 +117,12 @@ zorder pbOrder(zvalue v1, zvalue v2) {
         pbFrameReturn(save, NULL);
         return result;
     } else {
-        return pbOrder(typeOf(v1), typeOf(v2));
+        return valOrder(typeOf(v1), typeOf(v2));
     }
 }
 
 /* Documented in header. */
-zint pbSize(zvalue value) {
+zint valSize(zvalue value) {
     return zintFromInt(GFN_CALL(size, value));
 }
 
@@ -151,8 +156,8 @@ METH_IMPL(Value, eq) {
 METH_IMPL(Value, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    zint id1 = identityOf(v1);
-    zint id2 = identityOf(v2);
+    zint id1 = valIdentityOf(v1);
+    zint id2 = valIdentityOf(v2);
 
     if (id1 < id2) {
         return PB_NEG1;

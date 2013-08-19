@@ -7,6 +7,17 @@
 #include "const.h"
 #include "impl.h"
 #include "lang.h"
+#include "type/Box.h"
+#include "type/Callable.h"
+#include "type/Function.h"
+#include "type/Generic.h"
+#include "type/Int.h"
+#include "type/List.h"
+#include "type/Map.h"
+#include "type/String.h"
+#include "type/Type.h"
+#include "type/Uniqlet.h"
+#include "type/Value.h"
 
 
 /*

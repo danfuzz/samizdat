@@ -5,6 +5,7 @@
  */
 
 #include "io.h"
+#include "type/String.h"
 #include "util.h"
 #include "zlimits.h"
 

@@ -88,7 +88,7 @@ if [[ ${optimize} == 'yes' ]]; then
     CC=(${CC[@]} -O3)
 fi
 
-COMPILE_C=("${CC[@]}" -g -c -I"${progDir}")
+COMPILE_C=("${CC[@]}" -g -c -I"${progDir}/include")
 LINK_BIN=("${CC[@]}" -g)
 cd "${progDir}"
 
