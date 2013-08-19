@@ -303,31 +303,20 @@ inline bool zintModEu(zint *result, zint x, zint y) {
  */
 inline bool zintMul(zint *result, zint x, zint y) {
     // This is broken down by sign of the arguments, with zeros getting
-    // an easy pass-through.
+    // an easy pass-through. The outer test is for the sign of `x`. Each
+    // inner test checks the sign of `y` with a subsequent required
+    // range check, similar to how the `add` and `sub` implementations are
+    // written.
 
     if (x > 0) {
-        if (y > 0) {
-            // Both arguments are positive.
-            if (x > (ZINT_MAX / y)) {
-                return false;
-            }
-        } else if (y < 0) {
-            // `x` is positive, and `y` is negative.
-            if (y < (ZINT_MIN / x)) {
-                return false;
-            }
+        if (((y > 0) && (x > (ZINT_MAX / y))) ||
+            ((y < 0) && (y < (ZINT_MIN / x)))) {
+            return false;
         }
     } else if (x < 0) {
-        if (y > 0) {
-            // `x` is negative, and `y` is positive.
-            if (x < (ZINT_MIN / y)) {
-                return false;
-            }
-        } else if (y < 0) {
-            // Both arguments are negative.
-            if (y < (ZINT_MAX / x)) {
-                return false;
-            }
+        if (((y > 0) && (x < (ZINT_MIN / y))) ||
+            ((y < 0) && (y < (ZINT_MAX / x)))) {
+            return false;
         }
     }
 
