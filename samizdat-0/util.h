@@ -223,8 +223,8 @@ bool zintDivEu(zint *result, zint x, zint y);
  * result sign matching `x`), detecting overflow. Returns a success flag, and
  * stores the result in the indicated pointer if non-`NULL`.
  *
- * **Note:** This only succeeds in cases that `x / y` succeeds, that is,
- * `ZINT_MIN % -1` fails.
+ * **Note:** This will not fail if an infinite-size int implementation
+ * would succeed. In particular, `ZINT_MIN % -1` succeeds and returns `0`.
  */
 bool zintMod(zint *result, zint x, zint y);
 
@@ -233,8 +233,8 @@ bool zintMod(zint *result, zint x, zint y);
  * result sign always positive), detecting overflow. Returns a success flag,
  * and stores the result in the indicated pointer if non-`NULL`.
  *
- * **Note:** This only succeeds in cases that `x // y` succeeds, that is,
- * `ZINT_MIN %% -1` fails.
+ * **Note:** This will not fail if an infinite-size int implementation
+ * would succeed. In particular, `ZINT_MIN %% -1` succeeds and returns `0`.
  */
 bool zintModEu(zint *result, zint x, zint y);
 

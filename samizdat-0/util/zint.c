@@ -186,7 +186,8 @@ bool zintDivEu(zint *result, zint x, zint y) {
 
 /* Documented in header. */
 bool zintMod(zint *result, zint x, zint y) {
-    if (!canDivide(x, y)) {
+    if (y == 0) {
+        // Divide by zero.
         return false;
     }
 
@@ -199,7 +200,8 @@ bool zintMod(zint *result, zint x, zint y) {
 
 /* Documented in header. */
 bool zintModEu(zint *result, zint x, zint y) {
-    if (!canDivide(x, y)) {
+    if (y == 0) {
+        // Divide by zero.
         return false;
     }
 
