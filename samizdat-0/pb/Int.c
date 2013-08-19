@@ -59,7 +59,14 @@ zvalue intFrom(zint value) {
 
 /* Documented in header. */
 zchar zcharFromInt(zvalue intval) {
-    return zcharFromZint(zintFromInt(intval));
+    zint n = zintFromInt(intval);
+    zchar result;
+
+    if (!zcharFromZint(&result, n)) {
+        die("Invalid int value for zchar: %lld", n);
+    }
+
+    return result;
 }
 
 /* Documented in header. */

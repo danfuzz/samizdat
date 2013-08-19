@@ -5,40 +5,7 @@
  */
 
 /*
- * `zint` Utilities
- *
- * Notes on the arithmetic operations:
- *
- * With regard to detecting overflow, C compilers are allowed to optimize
- * overflowing operations in surprising ways. Therefore, the usual
- * recommendation for portable code is to detect overflow by inspection of
- * operands, not results. The choices for what to detect here are informed by,
- * but not exactly the same as, the CERT "AIR" recommendations.
- *
- * With regard to division and modulo, this file implements both
- * traditional truncating division and Euclidean division, each with its
- * corresponding modulo operation. These are implemented to assume the C99
- * definition of remainder, in particular that the sign of the result is
- * the same as the sign of the dividend (the left-hand argument).
- *
- * References:
- *
- * * [As-If Infinitely Ranged Integer Model, Second
- *   Edition](http://www.cert.org/archive/pdf/10tn008.pdf)
- *
- * * [CERT C Secure Coding
- *   Standard](https://www.securecoding.cert.org/confluence/display/seccode/CERT+C+Secure+Coding+Standard)
- *
- * * [Division and Modulus for Computer
- *   Scientists](http://legacy.cs.uu.nl/daan/download/papers/divmodnote.pdf)
- *
- * * [The Euclidean Definition of the Functions div and
- *   mod](https://biblio.ugent.be/publication/314490/file/452146.pdf)
- *
- * * [Modulo operation
- *   (Wikipedia)](http://en.wikipedia.org/wiki/Modulo_operation)
- *
- * * [Safe IOP Library](https://code.google.com/p/safe-iop/)
+ * Safe integer functions
  */
 
 #include "util.h"
@@ -70,87 +37,13 @@ static bool canDivide(zint x, zint y) {
  * Exported Definitions
  */
 
-/* Documented in header. */
-zchar zcharFromZint(zint value) {
-    if ((value < 0) || (value > ZCHAR_MAX)) {
-        die("Invalid zint value for zchar: %lld", value);
-    }
-
-    return (zchar) value;
-}
-
-/* Documented in header. */
-bool zintAbs(zint *result, zint x) {
-    if (x == ZINT_MIN) {
-        return false;
-    }
-
-    if (result != NULL) {
-        *result = (x < 0) ? -x : x;
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-bool zintAdd(zint *result, zint x, zint y) {
-    // If the signs are opposite or either argument is zero, then overflow
-    // is impossible. The two clauses here are for the same-sign-and-not-zero
-    // cases. Each one is of the form: Given a {positive, negative} `y`,
-    // what is the {largest, smallest} `x` that won't overflow?
-    if (((y > 0) && (x > (ZINT_MAX - y))) ||
-        ((y < 0) && (x < (ZINT_MIN - y)))) {
-        return false;
-    }
-
-    if (result != NULL) {
-        *result = x + y;
-    }
-
-    return true;
-}
-
-/* Documented in header. */
+// These are all documented in the header file.
+extern bool zcharFromZint(zchar *result, zint value);
+extern bool zintAbs(zint *result, zint x);
+extern bool zintAdd(zint *result, zint x, zint y);
 extern bool zintAnd(zint *result, zint x, zint y);
-
-/* Documented in header. */
-bool zintBit(zint *result, zint x, zint y) {
-    if (y < 0) {
-        return false;
-    }
-
-    if (result != NULL) {
-        if (y >= ZINT_BITS) {
-            y = ZINT_BITS - 1;
-        }
-
-        *result = (x >> y) & 1;
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-zint zintBitSize(zint value) {
-    if (value < 0) {
-        value = ~value;
-    }
-
-    // "Binary-search" style implementation. Many compilers have a
-    // built-in "count leading zeroes" function, but we're aiming
-    // for portability here.
-
-    zint result = 1; // +1 in that we want size, not zero-based bit number.
-    uint64_t uv = (uint64_t) value; // Use `uint` to account for `-ZINT_MAX`.
-
-    if (uv >= ((uint64_t) 1 << 32)) { result += 32; uv >>= 32; }
-    if (uv >= ((uint64_t) 1 << 16)) { result += 16; uv >>= 16; }
-    if (uv >= ((uint64_t) 1 << 8))  { result +=  8; uv >>=  8; }
-    if (uv >= ((uint64_t) 1 << 4))  { result +=  4; uv >>=  4; }
-    if (uv >= ((uint64_t) 1 << 2))  { result +=  2; uv >>=  2; }
-    if (uv >= ((uint64_t) 1 << 1))  { result +=  1; uv >>=  1; }
-    return result + uv;
-}
+extern bool zintBit(zint *result, zint x, zint y);
+extern zint zintBitSize(zint value);
 
 /* Documented in header. */
 bool zintDiv(zint *result, zint x, zint y) {
@@ -268,13 +161,8 @@ bool zintNeg(zint *result, zint x) {
     return true;
 }
 
-/* Documented in header. */
 extern bool zintNot(zint *result, zint x);
-
-/* Documented in header. */
 extern bool zintOr(zint *result, zint x, zint y);
-
-/* Documented in header. */
 extern bool zintSign(zint *result, zint x);
 
 /* Documented in header. */
@@ -321,7 +209,6 @@ bool zintShl(zint *result, zint x, zint y) {
     return true;
 }
 
-/* Documented in header. */
 extern bool zintShr(zint *result, zint x, zint y);
 
 /* Documented in header. */
@@ -345,5 +232,4 @@ bool zintSub(zint *result, zint x, zint y) {
     return true;
 }
 
-/* Documented in header. */
 extern bool zintXor(zint *result, zint x, zint y);
