@@ -173,7 +173,7 @@ zvalue stringSlice(zvalue string, zint start, zint end) {
 
     StringInfo *info = getInfo(string);
 
-    pbAssertSliceRange(info->size, start, end);
+    assertSliceRange(info->size, start, end);
     return stringFromZchars(end - start, &info->elems[start]);
 }
 

@@ -48,9 +48,9 @@ zvalue valDataOf(zvalue value, zvalue secret) {
 
 /* Documented in header. */
 zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
-    pbAssertValid(type);
-    pbAssertValidOrNull(data);
-    pbAssertValidOrNull(secret);
+    assertValid(type);
+    assertValidOrNull(data);
+    assertValidOrNull(secret);
 
     // Make sure the secrets match. In the case of a transparent type,
     // this checks that `secret` is `NULL`.

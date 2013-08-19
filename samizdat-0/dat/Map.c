@@ -108,7 +108,7 @@ static zint mapFind(zvalue map, zvalue key) {
     // we wouldn't have found an invalid entry.
 
     assertMap(map);
-    pbAssertValid(key);
+    assertValid(key);
 
     entry->map = map;
     entry->key = key;
@@ -289,7 +289,7 @@ zvalue mapNth(zvalue map, zint n) {
 /* Documented in header. */
 zvalue mapPut(zvalue map, zvalue key, zvalue value) {
     assertMap(map);
-    pbAssertValid(value);
+    assertValid(value);
 
     MapInfo *info = getInfo(map);
     zmapping *elems = info->elems;
@@ -297,11 +297,11 @@ zvalue mapPut(zvalue map, zvalue key, zvalue value) {
 
     switch (size) {
         case 0: {
-            pbAssertValid(key);
+            assertValid(key);
             return makeMapping(key, value);
         }
         case 1: {
-            pbAssertValid(key);
+            assertValid(key);
             zmapping *elems = info->elems;
             return mapFrom2(elems[0].key, elems[0].value, key, value);
         }

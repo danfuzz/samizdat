@@ -282,8 +282,8 @@ void assertHasType(zvalue value, zvalue type) {
 
 /* Documented in header. */
 void assertHaveSameType(zvalue v1, zvalue v2) {
-    pbAssertValid(v1);
-    pbAssertValid(v2);
+    assertValid(v1);
+    assertValid(v2);
 
     if (!haveSameType(v1, v2)) {
         die("Mismatched types: %s, %s",
@@ -339,7 +339,7 @@ zvalue typeName(zvalue type) {
 
 /* Documented in header. */
 zvalue typeOf(zvalue value) {
-    pbAssertValid(value);
+    assertValid(value);
 
     zvalue type = value->type;
     if (isType(type)) {

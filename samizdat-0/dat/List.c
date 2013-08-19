@@ -128,7 +128,7 @@ zvalue listDelNth(zvalue list, zint n) {
     zvalue *elems = info->elems;
     zint size = info->size;
 
-    pbAssertNth(size, n);
+    assertNth(size, n);
 
     return listFrom(n, elems, NULL, size - n - 1, elems + n + 1);
 }
@@ -136,7 +136,7 @@ zvalue listDelNth(zvalue list, zint n) {
 /* Documented in header. */
 zvalue listFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
-        pbAssertValid(values[i]);
+        assertValid(values[i]);
     }
 
     return listFrom(size, values, NULL, 0, NULL);
@@ -145,13 +145,13 @@ zvalue listFromArray(zint size, const zvalue *values) {
 /* Documented in header. */
 zvalue listInsNth(zvalue list, zint n, zvalue value) {
     assertList(list);
-    pbAssertValid(value);
+    assertValid(value);
 
     ListInfo *info = getInfo(list);
     zvalue *elems = info->elems;
     zint size = info->size;
 
-    pbAssertNthOrSize(size, n);
+    assertNthOrSize(size, n);
 
     return listFrom(n, elems, value, size - n, elems + n);
 }
@@ -172,12 +172,12 @@ zvalue listNth(zvalue list, zint n) {
 /* Documented in header. */
 zvalue listPutNth(zvalue list, zint n, zvalue value) {
     assertList(list);
-    pbAssertValid(value);
+    assertValid(value);
 
     ListInfo *info = getInfo(list);
     zint size = info->size;
 
-    pbAssertNthOrSize(size, n);
+    assertNthOrSize(size, n);
 
     if (n == size) {
         return listInsNth(list, n, value);
@@ -195,7 +195,7 @@ zvalue listSlice(zvalue list, zint start, zint end) {
 
     ListInfo *info = getInfo(list);
 
-    pbAssertSliceRange(info->size, start, end);
+    assertSliceRange(info->size, start, end);
     return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
 }
 

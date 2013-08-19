@@ -63,19 +63,19 @@ void pbInit(void);
  * This includes asserting that `n >= 0`. Note that all non-negative `n`
  * are valid for accessing ints (their size notwithstanding).
  */
-void pbAssertNth(zint size, zint n);
+void assertNth(zint size, zint n);
 
 /**
- * Like `pbAssertNth` but also accepts the case where `n` is the size
+ * Like `assertNth` but also accepts the case where `n` is the size
  * of the value.
  */
-void pbAssertNthOrSize(zint size, zint n);
+void assertNthOrSize(zint size, zint n);
 
 /**
  * Asserts that the given range is valid for a `slice`-like operation
  * for a value of the given size.
  */
-void pbAssertSliceRange(zint size, zint start, zint end);
+void assertSliceRange(zint size, zint start, zint end);
 
 /**
  * Asserts that the given value is a valid `zvalue` (non-`NULL` and
@@ -83,12 +83,12 @@ void pbAssertSliceRange(zint size, zint start, zint end);
  * but not exhaustive, tests. If not valid, this aborts the process
  * with a diagnostic message.
  */
-void pbAssertValid(zvalue value);
+void assertValid(zvalue value);
 
 /**
- * Like `pbAssertValid` except that `NULL` is accepted too.
+ * Like `assertValid` except that `NULL` is accepted too.
  */
-void pbAssertValidOrNull(zvalue value);
+void assertValidOrNull(zvalue value);
 
 
 /*
