@@ -17,6 +17,7 @@
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Uniqlet.h"
+#include "type/Value.h"
 
 
 /*

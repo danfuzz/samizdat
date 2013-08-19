@@ -9,6 +9,7 @@
 #include "type/Int.h"
 #include "type/String.h"
 #include "type/Type.h"
+#include "type/Value.h"
 #include "zlimits.h"
 
 

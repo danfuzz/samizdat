@@ -13,6 +13,7 @@
 #include "type/Function.h"
 #include "type/Generic.h"
 #include "type/String.h"
+#include "type/Value.h"
 
 
 /*

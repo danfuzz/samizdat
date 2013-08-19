@@ -8,6 +8,7 @@
 #include "impl.h"
 #include "type/Int.h"
 #include "type/String.h"
+#include "type/Value.h"
 #include "util.h"
 
 

@@ -16,6 +16,7 @@
 #include "type/Map.h"
 #include "type/String.h"
 #include "type/Type.h"
+#include "type/Value.h"
 #include "util.h"
 
 

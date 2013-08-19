@@ -9,6 +9,7 @@
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Type.h"
+#include "type/Value.h"
 
 
 /*

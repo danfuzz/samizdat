@@ -12,6 +12,7 @@
 #include "type/Callable.h"
 #include "type/Generic.h"
 #include "type/String.h"
+#include "type/Value.h"
 
 #include <string.h>
 

@@ -7,6 +7,7 @@
 #include "dat.h"
 #include "impl.h"
 #include "type/String.h"
+#include "type/Value.h"
 #include "zlimits.h"
 
 

@@ -7,6 +7,7 @@
 #include "const.h"
 #include "impl.h"
 #include "type/Int.h"
+#include "type/Value.h"
 #include "util.h"
 
 

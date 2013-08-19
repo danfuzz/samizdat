@@ -7,6 +7,7 @@
 #include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/Value.h"
 #include "zlimits.h"
 
 
