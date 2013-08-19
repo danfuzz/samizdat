@@ -400,11 +400,11 @@ inline bool zintShl(zint *result, zint x, zint y) {
     if ((x == 0) || (y == 0)) {
         res = x;
     } else if (y > 0) {
-        // Left shift (and `x` is non-zero). There's definite loss of
-        // bits if `y` is more than the size of an int. With a potentially
-        // in-range `y`, we have to check based on the sign of `x`, ensuring
-        // that a positive `x` is small enough or a negative `x` is large
-        // enough that the shift couldn't lose its top significant bit.
+        // Left shift (and `x` is non-zero). There's definite loss of bits if
+        // `y` is more than the size of an int. With a potentially in-range
+        // `y`, we have to check based on the sign of `x`, ensuring that a
+        // positive `x` is small enough or a negative `x` is large enough
+        // that the shift couldn't lose its most significant non-sign bit.
         if ((y >= ZINT_BITS) ||
             ((x > 0) && (x > (ZINT_MAX >> y))) ||
             ((x < 0) && (x < (ZINT_MIN >> y)))) {
