@@ -12,6 +12,7 @@
 #define _TYPE_GENERIC_H_
 
 #include "pb.h"
+#include "type/Callable.h"
 
 
 /** Declaration for a method on the given type with the given name. */

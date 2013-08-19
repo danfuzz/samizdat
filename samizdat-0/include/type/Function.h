@@ -12,6 +12,7 @@
 #define _TYPE_FUNCTION_H_
 
 #include "pb.h"
+#include "type/Callable.h"
 
 
 /** Type value for in-model type `Function`. */

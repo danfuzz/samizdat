@@ -25,12 +25,6 @@
  */
 typedef struct PbHeader *zvalue;
 
-/**
- * Prototype for an underlying C function corresponding to an in-model
- * function (value of type `Function`).
- */
-typedef zvalue (*zfunction)(zint argCount, const zvalue *args);
-
 /** Type for local value stack pointers. */
 typedef const zvalue *zstackPointer;
 
