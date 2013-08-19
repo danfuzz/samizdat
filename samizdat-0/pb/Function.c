@@ -9,6 +9,8 @@
  */
 
 #include "impl.h"
+#include "type/Function.h"
+#include "type/Generic.h"
 
 
 /*

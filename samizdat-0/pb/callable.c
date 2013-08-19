@@ -9,6 +9,7 @@
  */
 
 #include "impl.h"
+#include "type/Generic.h"
 
 #include <string.h>
 

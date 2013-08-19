@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "type/Generic.h"
 #include "zlimits.h"
 
 
