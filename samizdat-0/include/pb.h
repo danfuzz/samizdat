@@ -97,20 +97,6 @@ void pbAssertNthOrSize(zint size, zint n);
 void pbAssertSliceRange(zint size, zint start, zint end);
 
 /**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a string. If not, this aborts the process
- * with a diagnostic message.
- */
-void pbAssertString(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a string, and even furthermore that its size
- * is `1`. If not, this aborts the process with a diagnostic message.
- */
-void pbAssertStringSize1(zvalue value);
-
-/**
  * Asserts that the given value is a valid `zvalue` (non-`NULL` and
  * seems to actually have the right form). This performs reasonable,
  * but not exhaustive, tests. If not valid, this aborts the process
@@ -125,42 +111,6 @@ void pbAssertValidOrNull(zvalue value);
 
 
 /*
- * `Int` Type Declarations
- */
-
-/** Type value for in-model type `Int`. */
-extern zvalue TYPE_Int;
-
-/** The standard value `0`. */
-extern zvalue PB_0;
-
-/** The standard value `1`. */
-extern zvalue PB_1;
-
-/** The standard value `-1`. */
-extern zvalue PB_NEG1;
-
-/**
- * Gets the `zchar` of the given int, asserting that the value
- * is in fact an int and in range for same.
- */
-zchar zcharFromInt(zvalue intval);
-
-/**
- * Gets an int value equal to the given `zint`. In this
- * implementation, ints are restricted to only taking on the range
- * of 64-bit signed twos-complement integers.
- */
-zvalue intFromZint(zint value);
-
-/**
- * Gets a `zint` equal to the given int value. `intval` must be an
- * int. It is an error if the value is out of range.
- */
-zint zintFromInt(zvalue intval);
-
-
-/*
  * `String` Type Declarations
  */
 
@@ -169,6 +119,20 @@ extern zvalue TYPE_String;
 
 /** The standard value `""`. */
 extern zvalue EMPTY_STRING;
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a string. If not, this aborts the process
+ * with a diagnostic message.
+ */
+void pbAssertString(zvalue value);
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a string, and even furthermore that its size
+ * is `1`. If not, this aborts the process with a diagnostic message.
+ */
+void pbAssertStringSize1(zvalue value);
 
 /**
  * Combines the characters of two strings, in order, into a new

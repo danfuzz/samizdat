@@ -7,6 +7,7 @@
 #include "impl.h"
 #include "type/Function.h"
 #include "type/Generic.h"
+#include "type/Int.h"
 #include "type/Type.h"
 #include "type/Uniqlet.h"
 #include "zlimits.h"

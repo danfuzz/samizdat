@@ -10,6 +10,7 @@
 #include "type/Box.h"
 #include "type/Function.h"
 #include "type/Generic.h"
+#include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/Type.h"
