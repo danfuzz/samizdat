@@ -79,12 +79,12 @@ zvalue dataOf(zvalue value);
  *   is taken to indicate a transparent type whose name is `type`. As such
  *   `secret` must be `NULL`.
  */
-zvalue makeDeriv(zvalue type, zvalue data, zvalue secret);
+zvalue makeValue(zvalue type, zvalue data, zvalue secret);
 
 /**
  * Returns a transparent derived value with the given type tag, and with the
  * given optional data payload. This is a convenient shorthand for calling
- * `makeDeriv(type, data, NULL)`.
+ * `makeValue(type, data, NULL)`.
  */
 zvalue makeTransValue(zvalue type, zvalue data);
 
