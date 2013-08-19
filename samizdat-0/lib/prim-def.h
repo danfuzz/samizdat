@@ -27,11 +27,15 @@ PRIM_DEF(Uniqlet,    TYPE_Uniqlet);
 PRIM_DEF(Value,      TYPE_Value);
 
 // Generic functions
+PRIM_DEF(abs,        GFN_abs);
 PRIM_DEF(call,       GFN_call);
 PRIM_DEF(canCall,    GFN_canCall);
 PRIM_DEF(canStore,   GFN_canStore);
 PRIM_DEF(coreSizeOf, GFN_size);
 PRIM_DEF(fetch,      GFN_fetch);
+PRIM_DEF(neg,        GFN_neg);
+PRIM_DEF(not,        GFN_not);
+PRIM_DEF(sign,       GFN_sign);
 PRIM_DEF(store,      GFN_store);
 
 // Special values

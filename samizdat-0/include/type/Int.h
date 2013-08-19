@@ -17,6 +17,18 @@
 /** Type value for in-model type `Int`. */
 extern zvalue TYPE_Int;
 
+/** Generic `abs(int)`: Documented in spec. */
+extern zvalue GFN_abs;
+
+/** Generic `neg(int)`: Documented in spec. */
+extern zvalue GFN_neg;
+
+/** Generic `not(int)`: Documented in spec. */
+extern zvalue GFN_not;
+
+/** Generic `sign(int)`: Documented in spec. */
+extern zvalue GFN_sign;
+
 /** The standard value `0`. */
 extern zvalue PB_0;
 

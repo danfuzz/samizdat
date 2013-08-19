@@ -98,6 +98,27 @@ zvalue PB_1 = NULL;
 /* Documented in header. */
 zvalue PB_NEG1 = NULL;
 
+/**
+ * Helper for defining unary operations as methods.
+ */
+#define UNARY_IMPL(name, op) \
+    METH_IMPL(Int, name) { \
+        zint x = zintFromInt(args[0]); \
+        zint result; \
+        if ((op)(&result, x)) { \
+            return intFromZint(result); \
+        } else { \
+            die("Overflow / error on" #name "(%lld).", x); \
+        } \
+    } \
+    extern int semicolonRequiredHere
+
+// All documented in header.
+UNARY_IMPL(abs,  zintAbs);
+UNARY_IMPL(neg,  zintNeg);
+UNARY_IMPL(not,  zintNot);
+UNARY_IMPL(sign, zintSign);
+
 /* Documented in header. */
 METH_IMPL(Int, eq) {
     zvalue v1 = args[0];
@@ -130,10 +151,26 @@ METH_IMPL(Int, size) {
 
 /* Documented in header. */
 void pbBindInt(void) {
+    GFN_abs = makeGeneric(1, 1, stringFromUtf8(-1, "abs"));
+    pbImmortalize(GFN_abs);
+
+    GFN_neg = makeGeneric(1, 1, stringFromUtf8(-1, "neg"));
+    pbImmortalize(GFN_neg);
+
+    GFN_not = makeGeneric(1, 1, stringFromUtf8(-1, "not"));
+    pbImmortalize(GFN_not);
+
+    GFN_sign = makeGeneric(1, 1, stringFromUtf8(-1, "sign"));
+    pbImmortalize(GFN_sign);
+
     TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"), false);
+    METH_BIND(Int, abs);
     METH_BIND(Int, eq);
-    METH_BIND(Int, size);
     METH_BIND(Int, order);
+    METH_BIND(Int, neg);
+    METH_BIND(Int, not);
+    METH_BIND(Int, sign);
+    METH_BIND(Int, size);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);
@@ -147,3 +184,15 @@ void pbBindInt(void) {
 
 /* Documented in header. */
 zvalue TYPE_Int = NULL;
+
+/* Documented in header. */
+zvalue GFN_abs = NULL;
+
+/** Generic `neg(int)`: Documented in spec. */
+zvalue GFN_neg = NULL;
+
+/** Generic `not(int)`: Documented in spec. */
+zvalue GFN_not = NULL;
+
+/** Generic `sign(int)`: Documented in spec. */
+zvalue GFN_sign = NULL;
