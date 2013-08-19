@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "type/Box.h"
 
 
 /*

@@ -12,6 +12,9 @@
 #define _IMPL_H_
 
 #include "dat.h"
+#include "type/Box.h"
+#include "type/List.h"
+#include "type/Map.h"
 #include "util.h"
 
 

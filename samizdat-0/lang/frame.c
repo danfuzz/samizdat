@@ -9,6 +9,7 @@
  */
 
 #include "impl.h"
+#include "type/Map.h"
 #include "util.h"
 
 
