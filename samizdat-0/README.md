@@ -197,7 +197,8 @@ types use `UppercaseInitialCamelCase`. Other types use `zlowercaseInitial`
 (that is, prefixed with `z` per se). Numeric constants and some special
 valius use `ALL_CAPS_WITH_UNDERSCORES`.
 
-A "Hungarianesque" name prefix is used to identify aspects of some globals:
+A "Hungarianesque" name prefix is used to identify aspects of some variables
+and functions:
 
 * `TYPE_TypeName` &mdash; Identifies a value of type `Type`.
 
@@ -232,6 +233,13 @@ Other naming conventions (which sometimes override the above):
   type `TypeName`. These are almost all for the creation of "identified"
   values (that is, values that have an identity beyond their underlying
   data).
+
+* `assertSomething` &mdash; Indicates an assertion function of some sort.
+
+* `assertTypeName` &mdash; Indicates an assertion function whose purpose
+  is to assert that the argument is of the indicated type. Occasionally
+  an additional suffix indicates some extra aspect being asserted (e.g.,
+  `assertStringSize1`).
 
 * `functionName0` (that is, `0` as a suffix) &mdash; Indicates a "helper"
   function for the function `functionName`. Rarely, other digits are used
