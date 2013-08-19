@@ -9,6 +9,7 @@
  */
 
 #include "impl.h"
+#include "type/Callable.h"
 #include "type/Generic.h"
 #include "type/String.h"
 #include "type/Type.h"

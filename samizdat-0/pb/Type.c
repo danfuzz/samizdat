@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "type/Callable.h"
 #include "type/Function.h"
 #include "type/Generic.h"
 #include "type/Int.h"

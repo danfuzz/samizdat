@@ -10,6 +10,7 @@
 
 #include "impl.h"
 #include "type/Box.h"
+#include "type/Callable.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
