@@ -28,13 +28,13 @@ typedef uint32_t zchar;
 
 enum {
     /** Number of bits in type `zchar`. */
-    ZCHAR_BITS = 32,
+    ZCHAR_BITS = sizeof(zchar) * 8,
 
     /** Maximum value of type `zchar`. */
     ZCHAR_MAX = UINT32_MAX,
 
     /** Number of bits in type `zint`. */
-    ZINT_BITS = 64,
+    ZINT_BITS = sizeof(zint) * 8,
 
     /** Maximum value of type `zint`. */
     ZINT_MAX = INT64_MAX,
