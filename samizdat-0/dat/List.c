@@ -5,6 +5,7 @@
  */
 
 #include "impl.h"
+#include "type/List.h"
 #include "type/Type.h"
 
 #include <string.h>

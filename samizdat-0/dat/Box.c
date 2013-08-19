@@ -9,6 +9,7 @@
  */
 
 #include "impl.h"
+#include "type/Box.h"
 #include "type/Type.h"
 #include "util.h"
 
