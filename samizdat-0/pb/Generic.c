@@ -72,7 +72,7 @@ static zvalue findByTrueType(zvalue generic, zvalue type) {
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
-    return pbDebugString((zvalue) state);
+    return valDebugString((zvalue) state);
 }
 
 
@@ -97,7 +97,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     zvalue function = genericFind(generic, args[0]);
 
     if (function == NULL) {
-        die("No type binding found for generic: %s", pbDebugString(generic));
+        die("No type binding found for generic: %s", valDebugString(generic));
     }
 
     return funCall(function, argCount, args);

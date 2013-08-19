@@ -82,7 +82,7 @@ METH_IMPL(Deriv, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
-    return pbEq(getInfo(v1)->data, getInfo(v2)->data) ? v2 : NULL;
+    return valEq(getInfo(v1)->data, getInfo(v2)->data) ? v2 : NULL;
 }
 
 /* Documented in header. */
@@ -104,7 +104,7 @@ METH_IMPL(Deriv, order) {
     } else if (data2 == NULL) {
         return PB_1;
     } else {
-        return intFromZint(pbOrder(data1, data2));
+        return intFromZint(valOrder(data1, data2));
     }
 }
 

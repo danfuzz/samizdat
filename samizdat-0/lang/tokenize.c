@@ -138,9 +138,9 @@ static zvalue tokenizeIdentifier(ParseState *state) {
     zvalue string = stringFromZchars(size, chars);
 
     switch (chars[0]) {
-        case 'd': { if (pbEq(string, STR_def))    return TOK_def;    break; }
-        case 'f': { if (pbEq(string, STR_fn))     return TOK_fn;     break; }
-        case 'r': { if (pbEq(string, STR_return)) return TOK_return; break; }
+        case 'd': { if (valEq(string, STR_def))    return TOK_def;    break; }
+        case 'f': { if (valEq(string, STR_fn))     return TOK_fn;     break; }
+        case 'r': { if (valEq(string, STR_return)) return TOK_return; break; }
     }
 
     return makeValue(STR_identifier, string);
@@ -294,7 +294,7 @@ zvalue langTokenize0(zvalue string) {
     zstackPointer save = pbFrameStart();
 
     zvalue result[LANG_MAX_TOKENS];
-    ParseState state = { string, pbSize(string), 0 };
+    ParseState state = { string, valSize(string), 0 };
     zint out = 0;
 
     for (;;) {

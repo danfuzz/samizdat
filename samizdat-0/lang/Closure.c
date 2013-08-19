@@ -49,7 +49,7 @@ typedef struct {
     /** The `"formals"` mapping inside `defMap`. */
     zvalue formals;
 
-    /** The result of `pbSize(formals)`. */
+    /** The result of `valSize(formals)`. */
     zint formalsSize;
 
     /** The `"statements"` mapping inside `defMap`. */
@@ -97,7 +97,7 @@ static zvalue buildClosure(zvalue node) {
 
     info->defMap = defMap;
     info->formals = mapGet(defMap, STR_formals);
-    info->formalsSize = pbSize(info->formals);
+    info->formalsSize = valSize(info->formals);
     info->statements = mapGet(defMap, STR_statements);
     info->yield = mapGet(defMap, STR_yield);
     info->yieldDef = mapGet(defMap, STR_yieldDef);
@@ -204,7 +204,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // Evaluate the statements, updating the frame as needed.
 
     zvalue statements = info->statements;
-    zint statementsSize = pbSize(statements);
+    zint statementsSize = valSize(statements);
     zvalue statementsArr[statementsSize];
     arrayFromList(statementsArr, statements);
 
@@ -213,10 +213,10 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
         zvalue oneType = typeOf(one);
 
         // Switch on the first character of the type string to avoid
-        // gratuitous `pbEq` tests.
+        // gratuitous `valEq` tests.
         switch (stringNth(oneType, 0)) {
             case 'f': {
-                if (pbEq(oneType, STR_fnDef)) {
+                if (valEq(oneType, STR_fnDef)) {
                     // Look for immediately adjacent `fnDef` nodes, and
                     // process them all together.
                     zint end = i + 1;
@@ -234,7 +234,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                 break;
             }
             case 'v': {
-                if (pbEq(oneType, STR_varDef)) {
+                if (valEq(oneType, STR_varDef)) {
                     execVarDef(&frame, one);
                 } else {
                     execExpressionVoidOk(&frame, one);

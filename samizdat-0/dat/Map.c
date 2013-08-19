@@ -68,7 +68,7 @@ static zvalue makeMapping(zvalue key, zvalue value) {
  * the *second* value is used.
  */
 static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
-    zorder comp = pbOrder(k1, k2);
+    zorder comp = valOrder(k1, k2);
 
     if (comp == ZSAME) {
         return makeMapping(k2, v2);
@@ -120,7 +120,7 @@ static zint mapFind(zvalue map, zvalue key) {
 
     while (min <= max) {
         zint guess = (min + max) / 2;
-        switch (pbOrder(key, elems[guess].key)) {
+        switch (valOrder(key, elems[guess].key)) {
             case ZLESS: max = guess - 1; break;
             case ZMORE: min = guess + 1; break;
             default: {
@@ -144,7 +144,7 @@ static zint mapFind(zvalue map, zvalue key) {
  * functions.
  */
 static int mappingOrder(const void *m1, const void *m2) {
-    return pbOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
+    return valOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
 
@@ -220,7 +220,7 @@ zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
 
     zint at = 1;
     for (zint i = 1; i < resultSize; i++) {
-        if (pbEq(resultElems[i].key, resultElems[at-1].key)) {
+        if (valEq(resultElems[i].key, resultElems[at-1].key)) {
             at--;
         }
 
@@ -372,7 +372,7 @@ METH_IMPL(Map, eq) {
     for (zint i = 0; i < size1; i++) {
         zmapping *e1 = &elems1[i];
         zmapping *e2 = &elems2[i];
-        if (!(pbEq(e1->key, e2->key) && pbEq(e1->value, e2->value))) {
+        if (!(valEq(e1->key, e2->key) && valEq(e1->value, e2->value))) {
             return NULL;
         }
     }
@@ -408,7 +408,7 @@ METH_IMPL(Map, order) {
     zint size = (size1 < size2) ? size1 : size2;
 
     for (zint i = 0; i < size; i++) {
-        zorder result = pbOrder(e1[i].key, e2[i].key);
+        zorder result = valOrder(e1[i].key, e2[i].key);
         if (result != ZSAME) {
             return intFromZint(result);
         }
@@ -421,7 +421,7 @@ METH_IMPL(Map, order) {
     }
 
     for (zint i = 0; i < size; i++) {
-        zorder result = pbOrder(e1[i].value, e2[i].value);
+        zorder result = valOrder(e1[i].value, e2[i].value);
         if (result != ZSAME) {
             return intFromZint(result);
         }

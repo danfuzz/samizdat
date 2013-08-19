@@ -59,7 +59,7 @@ zvalue listInsNth(zvalue list, zint n, zvalue value);
 
 /**
  * Given a list, returns the `n`th element. `list` must be a
- * list, and `n` must be `< pbSize(value)`.
+ * list, and `n` must be `< valSize(value)`.
  */
 zvalue listNth(zvalue list, zint n);
 

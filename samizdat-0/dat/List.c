@@ -224,7 +224,7 @@ METH_IMPL(List, eq) {
     zvalue *e2 = info2->elems;
 
     for (zint i = 0; i < size1; i++) {
-        if (!pbEq(e1[i], e2[i])) {
+        if (!valEq(e1[i], e2[i])) {
             return NULL;
         }
     }
@@ -259,7 +259,7 @@ METH_IMPL(List, order) {
     zint size = (size1 < size2) ? size1 : size2;
 
     for (zint i = 0; i < size; i++) {
-        zorder result = pbOrder(e1[i], e2[i]);
+        zorder result = valOrder(e1[i], e2[i]);
         if (result != ZSAME) {
             return intFromZint(result);
         }

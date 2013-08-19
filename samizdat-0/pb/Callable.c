@@ -26,7 +26,7 @@
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
-    return pbDebugString((zvalue) state);
+    return valDebugString((zvalue) state);
 }
 
 /**

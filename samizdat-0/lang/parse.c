@@ -62,7 +62,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
     zvalue result = listNth(state->tokens, state->at);
     zvalue resultType = typeOf(result);
 
-    if (!pbEq(type, resultType)) {
+    if (!valEq(type, resultType)) {
         return NULL;
     }
 
@@ -278,7 +278,7 @@ zvalue parsePlus(parserFunction rule, ParseState *state) {
     MARK();
 
     zvalue result = parseStar(rule, state);
-    REJECT_IF(pbSize(result) == 0);
+    REJECT_IF(valSize(result) == 0);
 
     return result;
 }
@@ -455,7 +455,7 @@ DEF_PARSE(nullaryClosure) {
     zvalue c = PARSE_OR_REJECT(closure);
 
     zvalue formals = mapGet(dataOf(c), STR_formals);
-    if (!pbEq(formals, EMPTY_LIST)) {
+    if (!valEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
 
@@ -614,7 +614,7 @@ DEF_PARSE(list) {
     zvalue expressions = PARSE(unadornedList);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    if (pbSize(expressions) == 0) {
+    if (valSize(expressions) == 0) {
         return makeLiteral(EMPTY_LIST);
     } else {
         return makeCallName(STR_makeList, expressions);
@@ -700,7 +700,7 @@ DEF_PARSE(map) {
     }
 
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
-    zint size = pbSize(mappings);
+    zint size = valSize(mappings);
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
@@ -852,21 +852,21 @@ DEF_PARSE(unaryExpression) {
     zvalue result = PARSE_OR_REJECT(atom);
     zvalue postfixes = PARSE_STAR(postfixOperator);
 
-    zint size = pbSize(postfixes);
+    zint size = valSize(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = listNth(postfixes, i);
         if (hasType(one, TYPE_List)) {
             result = makeCall(result, one);
-        } else if (pbEq(one, TOK_CH_STAR)) {
+        } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
         } else {
             die("Unexpected postfix.");
         }
     }
 
-    for (zint i = pbSize(prefixes) - 1; i >= 0; i--) {
+    for (zint i = valSize(prefixes) - 1; i >= 0; i--) {
         zvalue one = listNth(prefixes, i);
-        if (pbEq(one, TOK_CH_MINUS)) {
+        if (valEq(one, TOK_CH_MINUS)) {
             result = makeCallName(STR_ineg, listFrom1(result));
         } else {
             die("Unexpected prefix.");
@@ -1021,7 +1021,7 @@ zvalue langTree0(zvalue program) {
         tokens = program;
     }
 
-    ParseState state = { tokens, pbSize(tokens), 0 };
+    ParseState state = { tokens, valSize(tokens), 0 };
     zvalue result = parse_program(&state);
 
     if (!isEof(&state)) {

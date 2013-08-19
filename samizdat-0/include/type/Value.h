@@ -6,6 +6,9 @@
 
 /*
  * `Value` data type
+ *
+ * **Note:** As a slight concession to conciseness, the name prefix used for
+ * this type is `val` and not `value`.
  */
 
 #ifndef _TYPE_VALUE_H_
@@ -119,15 +122,15 @@ zvalue makeValue(zvalue type, zvalue data);
  * is responsible for `free()`ing the result. As a convenience, this
  * converts `NULL` into `"(null)"`.
  */
-char *pbDebugString(zvalue value);
+char *valDebugString(zvalue value);
 
 /**
  * Compares two values for equality. This exists in addition to
- * `pbOrder`, because it is possible for this function run much
- * quicker in the not-equal case. As with `pbOrder`, this accepts
+ * `valOrder`, because it is possible for this function run much
+ * quicker in the not-equal case. As with `valOrder`, this accepts
  * `NULL` as a value, treating it as not the same as any other value.
  */
-bool pbEq(zvalue v1, zvalue v2);
+bool valEq(zvalue v1, zvalue v2);
 
 /**
  * Compares two values, providing a full ordering. Returns one of the
@@ -139,13 +142,13 @@ bool pbEq(zvalue v1, zvalue v2);
  * If `NULL` is passed as an argument, it is accepted and treated as
  * being ordered earlier than any other value.
  */
-zorder pbOrder(zvalue v1, zvalue v2);
+zorder valOrder(zvalue v1, zvalue v2);
 
 /**
  * Gets the size of the given value. `value` must be a valid value.
  * See the *Samizdat Layer 0* specification for details on
  * what low-layer "size" means.
  */
-zint pbSize(zvalue value);
+zint valSize(zvalue value);
 
 #endif

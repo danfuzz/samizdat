@@ -35,7 +35,7 @@ static zvalue GFN_collect = NULL;
 METH_IMPL(Int, collect) {
     zvalue intValue = args[0];
 
-    zint size = pbSize(intValue);
+    zint size = valSize(intValue);
     zint raw = zintFromInt(intValue);
     zvalue arr[size];
 
@@ -62,7 +62,7 @@ METH_IMPL(List, collect) {
 METH_IMPL(Map, collect) {
     zvalue map = args[0];
 
-    zint size = pbSize(map);
+    zint size = valSize(map);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
@@ -79,7 +79,7 @@ METH_IMPL(Map, collect) {
 METH_IMPL(String, collect) {
     zvalue string = args[0];
 
-    zint size = pbSize(string);
+    zint size = valSize(string);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {

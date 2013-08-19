@@ -68,7 +68,7 @@ zint identityOf(zvalue value) {
 }
 
 /* Documented in header. */
-char *pbDebugString(zvalue value) {
+char *valDebugString(zvalue value) {
     if (value == NULL) {
         return strdup("(null)");
     }
@@ -82,7 +82,7 @@ char *pbDebugString(zvalue value) {
 }
 
 /* Documented in header. */
-bool pbEq(zvalue v1, zvalue v2) {
+bool valEq(zvalue v1, zvalue v2) {
     if (v1 == v2) {
         return true;
     } else if ((v1 == NULL) || (v2 == NULL)) {
@@ -100,7 +100,7 @@ bool pbEq(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-zorder pbOrder(zvalue v1, zvalue v2) {
+zorder valOrder(zvalue v1, zvalue v2) {
     if (v1 == v2) {
         return ZSAME;
     } else if (v1 == NULL) {
@@ -118,12 +118,12 @@ zorder pbOrder(zvalue v1, zvalue v2) {
         pbFrameReturn(save, NULL);
         return result;
     } else {
-        return pbOrder(typeOf(v1), typeOf(v2));
+        return valOrder(typeOf(v1), typeOf(v2));
     }
 }
 
 /* Documented in header. */
-zint pbSize(zvalue value) {
+zint valSize(zvalue value) {
     return zintFromInt(GFN_CALL(size, value));
 }
 
