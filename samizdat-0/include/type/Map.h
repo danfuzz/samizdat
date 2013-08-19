@@ -31,14 +31,14 @@ void arrayFromMap(zmapping *result, zvalue map);
  * furthermore that it is a map. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertMap(zvalue value);
+void assertMap(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a map, and even furthermore that its size
  * is `1`. If not, this aborts the process with a diagnostic message.
  */
-void datAssertMapSize1(zvalue value);
+void assertMapSize1(zvalue value);
 
 /**
  * Gets the map resulting from putting the all the given mappings

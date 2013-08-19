@@ -20,7 +20,7 @@ PRIM_IMPL(listCat) {
             return EMPTY_LIST;
         }
         case 1: {
-            datAssertList(args[0]);
+            assertList(args[0]);
             return args[0];
         }
         case 2: {
@@ -57,7 +57,7 @@ PRIM_IMPL(listFilter) {
     zvalue result[size];
     zint at = 0;
 
-    datAssertList(list);
+    assertList(list);
 
     for (zint i = 0; i < size; i++) {
         zvalue elem = listNth(list, i);

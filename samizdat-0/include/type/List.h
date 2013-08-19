@@ -31,7 +31,7 @@ void arrayFromList(zvalue *result, zvalue list);
  * furthermore that it is a list. If not, this aborts the process
  * with a diagnostic message.
  */
-void datAssertList(zvalue value);
+void assertList(zvalue value);
 
 /**
  * Combines the elements of two lists, in order, into a new

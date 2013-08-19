@@ -101,7 +101,7 @@ static zint mapFind(zvalue map, zvalue key) {
     // Note: There's no need to do assertions on the cache hit path, since
     // we wouldn't have found an invalid entry.
 
-    datAssertMap(map);
+    assertMap(map);
     pbAssertValid(key);
 
     entry->map = map;
@@ -147,13 +147,13 @@ static int mappingOrder(const void *m1, const void *m2) {
  */
 
 /* Documented in header. */
-void datAssertMap(zvalue value) {
+void assertMap(zvalue value) {
     assertHasType(value, TYPE_Map);
 }
 
 /* Documented in header. */
-void datAssertMapSize1(zvalue value) {
-    datAssertMap(value);
+void assertMapSize1(zvalue value) {
+    assertMap(value);
     if (getInfo(value)->size != 1) {
         die("Not a size 1 map.");
     }
@@ -161,7 +161,7 @@ void datAssertMapSize1(zvalue value) {
 
 /* Documented in header. */
 void arrayFromMap(zmapping *result, zvalue map) {
-    datAssertMap(map);
+    assertMap(map);
 
     MapInfo *info = getInfo(map);
     memcpy(result, info->elems, info->size * sizeof(zmapping));
@@ -169,8 +169,8 @@ void arrayFromMap(zmapping *result, zvalue map) {
 
 /* Documented in header. */
 zvalue mapCat(zvalue map1, zvalue map2) {
-    datAssertMap(map1);
-    datAssertMap(map2);
+    assertMap(map1);
+    assertMap(map2);
 
     MapInfo *info2 = getInfo(map2);
     zint size2 = info2->size;
@@ -186,7 +186,7 @@ zvalue mapCat(zvalue map1, zvalue map2) {
 
 /* Documented in header. */
 zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
-    datAssertMap(map);
+    assertMap(map);
 
     if (size == 0) {
         return map;
@@ -263,7 +263,7 @@ zvalue mapGet(zvalue map, zvalue key) {
 
 /* Documented in Samizdat Layer 0 spec. */
 zvalue mapNth(zvalue map, zint n) {
-    datAssertMap(map);
+    assertMap(map);
 
     MapInfo *info = getInfo(map);
     zint size = info->size;
@@ -282,7 +282,7 @@ zvalue mapNth(zvalue map, zint n) {
 
 /* Documented in header. */
 zvalue mapPut(zvalue map, zvalue key, zvalue value) {
-    datAssertMap(map);
+    assertMap(map);
     pbAssertValid(value);
 
     MapInfo *info = getInfo(map);
@@ -329,13 +329,13 @@ zvalue mapPut(zvalue map, zvalue key, zvalue value) {
 
 /* Documented in Samizdat Layer 0 spec. */
 zvalue mappingKey(zvalue map) {
-    datAssertMapSize1(map);
+    assertMapSize1(map);
     return getInfo(map)->elems[0].key;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 zvalue mappingValue(zvalue map) {
-    datAssertMapSize1(map);
+    assertMapSize1(map);
     return getInfo(map)->elems[0].value;
 }
 

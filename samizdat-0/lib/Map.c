@@ -50,7 +50,7 @@ PRIM_IMPL(mapDel) {
 
     if (argCount == 0) {
         // Need the assert, since we won't end up making any other map calls.
-        datAssertMap(result);
+        assertMap(result);
     } else {
         for (zint i = 1; i < argCount; i++) {
             result = mapDel(result, args[i]);

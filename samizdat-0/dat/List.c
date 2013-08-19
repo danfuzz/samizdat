@@ -82,13 +82,13 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
  */
 
 /* Documented in header. */
-void datAssertList(zvalue value) {
+void assertList(zvalue value) {
     assertHasType(value, TYPE_List);
 }
 
 /* Documented in header. */
 void arrayFromList(zvalue *result, zvalue list) {
-    datAssertList(list);
+    assertList(list);
 
     ListInfo *info = getInfo(list);
 
@@ -97,8 +97,8 @@ void arrayFromList(zvalue *result, zvalue list) {
 
 /* Documented in header. */
 zvalue listCat(zvalue list1, zvalue list2) {
-    datAssertList(list1);
-    datAssertList(list2);
+    assertList(list1);
+    assertList(list2);
 
     ListInfo *info1 = getInfo(list1);
     ListInfo *info2 = getInfo(list2);
@@ -116,7 +116,7 @@ zvalue listCat(zvalue list1, zvalue list2) {
 
 /* Documented in header. */
 zvalue listDelNth(zvalue list, zint n) {
-    datAssertList(list);
+    assertList(list);
 
     ListInfo *info = getInfo(list);
     zvalue *elems = info->elems;
@@ -138,7 +138,7 @@ zvalue listFromArray(zint size, const zvalue *values) {
 
 /* Documented in header. */
 zvalue listInsNth(zvalue list, zint n, zvalue value) {
-    datAssertList(list);
+    assertList(list);
     pbAssertValid(value);
 
     ListInfo *info = getInfo(list);
@@ -152,7 +152,7 @@ zvalue listInsNth(zvalue list, zint n, zvalue value) {
 
 /* Documented in header. */
 zvalue listNth(zvalue list, zint n) {
-    datAssertList(list);
+    assertList(list);
 
     ListInfo *info = getInfo(list);
 
@@ -165,7 +165,7 @@ zvalue listNth(zvalue list, zint n) {
 
 /* Documented in header. */
 zvalue listPutNth(zvalue list, zint n, zvalue value) {
-    datAssertList(list);
+    assertList(list);
     pbAssertValid(value);
 
     ListInfo *info = getInfo(list);
@@ -185,7 +185,7 @@ zvalue listPutNth(zvalue list, zint n, zvalue value) {
 
 /* Documented in header. */
 zvalue listSlice(zvalue list, zint start, zint end) {
-    datAssertList(list);
+    assertList(list);
 
     ListInfo *info = getInfo(list);
 
