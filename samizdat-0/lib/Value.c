@@ -71,7 +71,7 @@ PRIM_IMPL(dataOf) {
     zvalue value = args[0];
     zvalue secret = (argCount == 2) ? args[1] : NULL;
 
-    return derivDataOf(value, secret);
+    return valDataOf(value, secret);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

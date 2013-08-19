@@ -58,41 +58,12 @@ extern zvalue GFN_order;
 extern zvalue GFN_size;
 
 /**
- * Gets the data payload of the given value, if possible. `value` must be a
- * valid value (in particular, non-`NULL`). This is a convenient shorthand
- * for calling `derivDataOf(value, NULL)`. For everything but derived
- * values, the data payload is the same as the value itself. For derived
- * values, the data payload is (unsurprisingly) `NULL` for type-only
- * values.
+ * Gets the data payload of the given value, if it is a value-bearing
+ * transparent derived value. `value` must be a valid value (in particular,
+ * non-`NULL`). This is a convenient shorthand for calling
+ * `valDataOf(value, NULL)`.
  */
 zvalue dataOf(zvalue value);
-
-/**
- * Gets the data payload of the given value, if possible. This behaves
- * as follows:
- *
- * * If `value` is a core value, this returns `NULL`.
- *
- * * If `value`'s type secret does not match the given secret, this returns
- *   `NULL`. Notably, if `value` is of a transparent derived type and `secret`
- *   is *not* passed as `NULL`, this returns `NULL`.
- *
- * * If `value` does not have any payload data, this returns `NULL`.
- *
- * * Otherwise, this returns the payload data of `value`.
- *
- * **Note:** The function name reflects the fact that it will only possibly
- * return non-`NULL` for a derived value.
- *
- */
-zvalue derivDataOf(zvalue value, zvalue secret);
-
-/**
- * Gets a unique identity number associated with this value. Only works
- * on values of an opaque type, and only if the type is marked as
- * `identified`.
- */
-zint identityOf(zvalue value);
 
 /**
  * Returns a derived value with the given type tag, and with the given
@@ -116,6 +87,33 @@ zvalue makeDeriv(zvalue type, zvalue data, zvalue secret);
  * `makeDeriv(type, data, NULL)`.
  */
 zvalue makeValue(zvalue type, zvalue data);
+
+/**
+ * Gets the data payload of the given value, if possible. This behaves
+ * as follows:
+ *
+ * * If `value` is a core value, this returns `NULL`.
+ *
+ * * If `value`'s type secret does not match the given secret, this returns
+ *   `NULL`. Notably, if `value` is of a transparent derived type and `secret`
+ *   is *not* passed as `NULL`, this returns `NULL`.
+ *
+ * * If `value` does not have any payload data, this returns `NULL`.
+ *
+ * * Otherwise, this returns the payload data of `value`.
+ *
+ * **Note:** The function name reflects the fact that it will only possibly
+ * return non-`NULL` for a derived value.
+ *
+ */
+zvalue valDataOf(zvalue value, zvalue secret);
+
+/**
+ * Gets a unique identity number associated with this value. Only works
+ * on values of an opaque type, and only if the type is marked as
+ * `identified`.
+ */
+zint valIdentityOf(zvalue value);
 
 /**
  * Gets the "debug string" of the given value, as a `char *`. The caller

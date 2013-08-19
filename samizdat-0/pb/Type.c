@@ -40,7 +40,7 @@ typedef struct {
 
     /**
      * Whether the type is "identified". `true` indicates that
-     * `identityOf` will work on values of the type.
+     * `valIdentityOf` will work on values of the type.
      */
     bool identified : 1;
 

@@ -49,13 +49,13 @@ static zint nextIdentity(void) {
 
 /* Documented in header. */
 zvalue dataOf(zvalue value) {
-    return derivDataOf(value, NULL);
+    return valDataOf(value, NULL);
 }
 
 /* Documented in header. */
-zint identityOf(zvalue value) {
+zint valIdentityOf(zvalue value) {
     if (!typeIsIdentified(typeOf(value))) {
-        die("Attempt to use `identityOf` on non-identified value.");
+        die("Attempt to use `valIdentityOf` on non-identified value.");
     }
 
     zint result = value->identity;
@@ -157,8 +157,8 @@ METH_IMPL(Value, eq) {
 METH_IMPL(Value, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    zint id1 = identityOf(v1);
-    zint id2 = identityOf(v2);
+    zint id1 = valIdentityOf(v1);
+    zint id2 = valIdentityOf(v2);
 
     if (id1 < id2) {
         return PB_NEG1;
