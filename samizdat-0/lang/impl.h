@@ -13,6 +13,8 @@
 
 #include "lang.h"
 
+#include <stdbool.h>
+
 /** Function called into by `nleCall`. */
 typedef zvalue (*znleFunction)(void *state, zvalue exitFunction);
 

@@ -13,6 +13,8 @@
 
 #include "pb.h"
 
+#include <stdbool.h>
+
 
 /** Type value for in-model type `Type`. */
 extern zvalue TYPE_Type;
