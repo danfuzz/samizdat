@@ -98,7 +98,7 @@ LIB_SOURCES=($(find ../samizdat-0-lib -name '*.sam*'))
 for file in "${LIB_SOURCES[@]}"; do
     inDir="$(dirname "${file}")"
     inFile="$(basename "${file}")"
-    outFile="${OUT}/${inFile%.sam0}.c"
+    outFile="${OUT}/$(echo "${inFile}" | tr '.' '-').c"
     # `xxd` names its output after the full input path, hence the `cd`.
     (cd "${inDir}"; xxd -i "${inFile}" > "${outFile}") || exit 1
     C_SOURCES+=("${outFile}")
@@ -114,7 +114,7 @@ for file in "${C_SOURCES[@]}"; do
         infoName="${file}"
     else
         # It's a generated source file.
-        [[ ${file} =~ ^"${OUT}"/(.*)\.c$ ]] || exit 1
+        [[ ${file} =~ ^"${OUT}"/(.*)\.c$ ]] || exit 1 # Assert file location.
         baseName="${BASH_REMATCH[1]}"
         infoName="${baseName}"
         outDir="${OUT}"

@@ -52,14 +52,17 @@ optimize='no'
 # Whether to run with iprofiler (OS X specific profile tool)
 iprofiler='no'
 
+# Whether to run with `time`.
+timeRun='no'
+
 while [[ $1 != '' ]]; do
     opt="$1"
     if [[ ${opt} == '--' ]]; then
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--sam0 | --sam1 | --sam2] [--build] [--iprofile]" \
-            "[--optimize]"
+        echo "${progName} [--sam0 | --sam1 | --sam2] [--build] [--optimize]"
+        echo "    [--iprofile | --time]"
         echo "    demo-name arg..."
         exit
     elif [[ ${opt} == '--sam0' ]]; then
@@ -72,6 +75,10 @@ while [[ $1 != '' ]]; do
         build='yes'
     elif [[ ${opt} == '--iprofiler' ]]; then
         iprofiler='yes'
+        timeRun='no'
+    elif [[ ${opt} == '--time' ]]; then
+        timeRun='yes'
+        iprofiler='no'
     elif [[ ${opt} == '--optimize' ]]; then
         optimize='yes'
         build='yes'
@@ -147,9 +154,11 @@ if [[ ${layer} != '' ]]; then
     cmd+=(--file-suffix="sam${layer}")
 fi
 
-if [[ ${iprofiler} == 'yes' ]]; then
-    cmd=("$(which samizdat-0)")
+if [[ ${timeRun} == 'yes' ]]; then
+    cmd=(time -p "${cmd[@]}")
+elif [[ ${iprofiler} == 'yes' ]]; then
     # May also want to use the -allocations option.
+    cmd=("$(which samizdat-0)")
     cmd=(iprofiler -T 20s -timeprofiler "${cmd[@]}")
 fi
 
