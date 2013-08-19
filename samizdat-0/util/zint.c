@@ -15,152 +15,27 @@
  * Private Definitions
  */
 
-/**
- * Common check for all divide and remainder functions.
- */
-static bool canDivide(zint x, zint y) {
-    if (y == 0) {
-        // Divide by zero.
-        return false;
-    }
-
-    if ((x == ZINT_MIN) && (y == -1)) {
-        // Overflow: `-ZINT_MIN` is not representable as a `zint`.
-        return false;
-    }
-
-    return true;
-}
+// Documented in header.
+extern bool zintCanDivide(zint x, zint y);
 
 
 /*
  * Exported Definitions
  */
 
-// These are all documented in the header file.
+// All documented in header.
 extern bool zcharFromZint(zchar *result, zint value);
 extern bool zintAbs(zint *result, zint x);
 extern bool zintAdd(zint *result, zint x, zint y);
 extern bool zintAnd(zint *result, zint x, zint y);
 extern bool zintBit(zint *result, zint x, zint y);
 extern zint zintBitSize(zint value);
-
-/* Documented in header. */
-bool zintDiv(zint *result, zint x, zint y) {
-    if (!canDivide(x, y)) {
-        return false;
-    }
-
-    if (result != NULL) {
-        *result = x / y;
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-bool zintDivEu(zint *result, zint x, zint y) {
-    if (!canDivide(x, y)) {
-        return false;
-    }
-
-    if (result != NULL) {
-        zint quo = x / y;
-        zint rem = x % y;
-        if (rem < 0) {
-            if (y > 0) { quo--; }
-            else       { quo++; }
-        }
-        *result = quo;
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-bool zintMod(zint *result, zint x, zint y) {
-    if (y == 0) {
-        // Divide by zero.
-        return false;
-    }
-
-    if (result != NULL) {
-        *result = x % y;
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-bool zintModEu(zint *result, zint x, zint y) {
-    if (y == 0) {
-        // Divide by zero.
-        return false;
-    }
-
-    if (result != NULL) {
-        zint rem = x % y;
-        if (rem < 0) {
-            if (y > 0) { rem += y; }
-            else       { rem -= y; }
-        }
-        *result = rem;
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-bool zintMul(zint *result, zint x, zint y) {
-    // This is broken down by sign of the arguments, with zeros getting
-    // an easy pass-through.
-
-    if (x > 0) {
-        if (y > 0) {
-            // Both arguments are positive.
-            if (x > (ZINT_MAX / y)) {
-                return false;
-            }
-        } else if (y < 0) {
-            // `x` is positive, and `y` is negative.
-            if (y < (ZINT_MIN / x)) {
-                return false;
-            }
-        }
-    } else if (x < 0) {
-        if (y > 0) {
-            // `x` is negative, and `y` is positive.
-            if (x < (ZINT_MIN / y)) {
-                return false;
-            }
-        } else if (y < 0) {
-            // Both arguments are negative.
-            if (y < (ZINT_MAX / x)) {
-                return false;
-            }
-        }
-    }
-
-    if (result != NULL) {
-        *result = x * y;
-    }
-
-    return true;
-}
-
-/* Documented in header. */
-bool zintNeg(zint *result, zint x) {
-    if (x == ZINT_MIN) {
-        return false;
-    }
-
-    if (result != NULL) {
-        *result = -x;
-    }
-
-    return true;
-}
-
+extern bool zintDiv(zint *result, zint x, zint y);
+extern bool zintDivEu(zint *result, zint x, zint y);
+extern bool zintMod(zint *result, zint x, zint y);
+extern bool zintModEu(zint *result, zint x, zint y);
+extern bool zintMul(zint *result, zint x, zint y);
+extern bool zintNeg(zint *result, zint x);
 extern bool zintNot(zint *result, zint x);
 extern bool zintOr(zint *result, zint x, zint y);
 extern bool zintSign(zint *result, zint x);

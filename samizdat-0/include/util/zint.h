@@ -60,6 +60,24 @@
  * Private definitions
  */
 
+/**
+ * Common check for `zintDiv*` functions.
+ */
+inline bool zintCanDiv(zint x, zint y) {
+    if (y == 0) {
+        // Divide by zero.
+        return false;
+    }
+
+    if ((x == ZINT_MIN) && (y == -1)) {
+        // Overflow: `-ZINT_MIN` is not representable as a `zint`.
+        return false;
+    }
+
+    return true;
+}
+
+
 /*
  * Public definitions
  */
@@ -158,7 +176,6 @@ inline bool zintBit(zint *result, zint x, zint y) {
     return true;
 }
 
-
 /**
  * Gets the bit size (highest-order significant bit number, plus one)
  * of the given `zint`, assuming sign-extended representation. For example,
@@ -195,7 +212,17 @@ inline zint zintBitSize(zint value) {
  * **Note:** The only possible overflow case is `ZINT_MIN / -1`, and the
  * only other error is division by zero.
  */
-bool zintDiv(zint *result, zint x, zint y);
+inline bool zintDiv(zint *result, zint x, zint y) {
+    if (!zintCanDiv(x, y)) {
+        return false;
+    }
+
+    if (result != NULL) {
+        *result = x / y;
+    }
+
+    return true;
+}
 
 /**
  * Performs `x // y` (Euclidean division), detecting overflow and errors.
@@ -205,7 +232,23 @@ bool zintDiv(zint *result, zint x, zint y);
  * **Note:** The only possible overflow case is `ZINT_MIN / -1`, and the
  * only other error is division by zero.
  */
-bool zintDivEu(zint *result, zint x, zint y);
+inline bool zintDivEu(zint *result, zint x, zint y) {
+    if (!zintCanDiv(x, y)) {
+        return false;
+    }
+
+    if (result != NULL) {
+        zint quo = x / y;
+        zint rem = x % y;
+        if (rem < 0) {
+            if (y > 0) { quo--; }
+            else       { quo++; }
+        }
+        *result = quo;
+    }
+
+    return true;
+}
 
 /**
  * Performs `x % y` (that is, remainder after truncated division, with the
@@ -215,7 +258,18 @@ bool zintDivEu(zint *result, zint x, zint y);
  * **Note:** This will not fail if an infinite-size int implementation
  * would succeed. In particular, `ZINT_MIN % -1` succeeds and returns `0`.
  */
-bool zintMod(zint *result, zint x, zint y);
+inline bool zintMod(zint *result, zint x, zint y) {
+    if (y == 0) {
+        // Divide by zero.
+        return false;
+    }
+
+    if (result != NULL) {
+        *result = x % y;
+    }
+
+    return true;
+}
 
 /**
  * Performs `x %% y` (that is, remainder after Euclidean division, with the
@@ -225,13 +279,64 @@ bool zintMod(zint *result, zint x, zint y);
  * **Note:** This will not fail if an infinite-size int implementation
  * would succeed. In particular, `ZINT_MIN %% -1` succeeds and returns `0`.
  */
-bool zintModEu(zint *result, zint x, zint y);
+inline bool zintModEu(zint *result, zint x, zint y) {
+    if (y == 0) {
+        // Divide by zero.
+        return false;
+    }
+
+    if (result != NULL) {
+        zint rem = x % y;
+        if (rem < 0) {
+            if (y > 0) { rem += y; }
+            else       { rem -= y; }
+        }
+        *result = rem;
+    }
+
+    return true;
+}
 
 /**
  * Performs `x * y`, detecting overflow. Returns a success flag, and
  * stores the result in the indicated pointer if non-`NULL`.
  */
-bool zintMul(zint *result, zint x, zint y);
+inline bool zintMul(zint *result, zint x, zint y) {
+    // This is broken down by sign of the arguments, with zeros getting
+    // an easy pass-through.
+
+    if (x > 0) {
+        if (y > 0) {
+            // Both arguments are positive.
+            if (x > (ZINT_MAX / y)) {
+                return false;
+            }
+        } else if (y < 0) {
+            // `x` is positive, and `y` is negative.
+            if (y < (ZINT_MIN / x)) {
+                return false;
+            }
+        }
+    } else if (x < 0) {
+        if (y > 0) {
+            // `x` is negative, and `y` is positive.
+            if (x < (ZINT_MIN / y)) {
+                return false;
+            }
+        } else if (y < 0) {
+            // Both arguments are negative.
+            if (y < (ZINT_MAX / x)) {
+                return false;
+            }
+        }
+    }
+
+    if (result != NULL) {
+        *result = x * y;
+    }
+
+    return true;
+}
 
 /**
  * Performs `-x` (unary negation), detecting overflow. Returns a success flag,
@@ -239,7 +344,17 @@ bool zintMul(zint *result, zint x, zint y);
  *
  * **Note:** The only possible overflow case is `-ZINT_MIN`.
  */
-bool zintNeg(zint *result, zint x);
+inline bool zintNeg(zint *result, zint x) {
+    if (x == ZINT_MIN) {
+        return false;
+    }
+
+    if (result != NULL) {
+        *result = -x;
+    }
+
+    return true;
+}
 
 /**
  * Performs `!!!x` (unary bitwise complement). Returns `true`,
