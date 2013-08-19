@@ -7,6 +7,8 @@
 #include "impl.h"
 #include "type/Box.h"
 
+#include <stddef.h>
+
 
 /*
  * Exported Definitions

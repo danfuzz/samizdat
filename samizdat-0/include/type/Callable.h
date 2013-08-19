@@ -21,6 +21,8 @@
 
 #include "pb.h"
 
+#include <stddef.h>
+
 /**
  * Generic `call(function, args*)`: Generic for dispatching to a function
  * calling mechanism (how meta).

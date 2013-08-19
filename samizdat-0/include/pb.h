@@ -13,8 +13,6 @@
 
 #include "ztype.h"
 
-#include <stddef.h>
-
 
 /*
  * C Types and macros

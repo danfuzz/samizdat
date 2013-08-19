@@ -10,6 +10,8 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include <stddef.h>
+
 
 /*
  * Define globals for all of the constants.
