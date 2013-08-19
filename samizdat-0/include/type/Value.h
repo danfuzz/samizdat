@@ -86,7 +86,7 @@ zvalue makeDeriv(zvalue type, zvalue data, zvalue secret);
  * given optional data payload. This is a convenient shorthand for calling
  * `makeDeriv(type, data, NULL)`.
  */
-zvalue makeValue(zvalue type, zvalue data);
+zvalue makeTransValue(zvalue type, zvalue data);
 
 /**
  * Gets the data payload of the given value, if possible. This behaves

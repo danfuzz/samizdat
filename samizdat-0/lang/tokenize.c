@@ -104,7 +104,7 @@ static zvalue tokenizeInt(ParseState *state) {
     }
 
     zvalue intval = intFromZint(value);
-    return makeValue(STR_int, intval);
+    return makeTransValue(STR_int, intval);
 }
 
 /**
@@ -143,7 +143,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
         case 'r': { if (valEq(string, STR_return)) return TOK_return; break; }
     }
 
-    return makeValue(STR_identifier, string);
+    return makeTransValue(STR_identifier, string);
 }
 
 /**
@@ -193,7 +193,7 @@ static zvalue tokenizeString(ParseState *state) {
     }
 
     zvalue string = stringFromZchars(size, chars);
-    return makeValue(STR_string, string);
+    return makeTransValue(STR_string, string);
 }
 
 /**
@@ -209,7 +209,7 @@ static zvalue tokenizeQuotedIdentifier(ParseState *state) {
 
     zvalue result = tokenizeString(state);
     zvalue string = dataOf(result);
-    return makeValue(STR_identifier, string);
+    return makeTransValue(STR_identifier, string);
 }
 
 /**

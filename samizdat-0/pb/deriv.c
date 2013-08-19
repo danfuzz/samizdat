@@ -65,7 +65,7 @@ zvalue makeDeriv(zvalue type, zvalue data, zvalue secret) {
 }
 
 /* Documented in header. */
-zvalue makeValue(zvalue type, zvalue data) {
+zvalue makeTransValue(zvalue type, zvalue data) {
     return makeDeriv(type, data, NULL);
 }
 

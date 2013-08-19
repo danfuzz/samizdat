@@ -47,7 +47,7 @@ void constInit(void) {
 
     #define TOK(name, str) \
         STR(name, str); \
-        TOK_##name = makeValue(STR_##name, NULL); \
+        TOK_##name = makeTransValue(STR_##name, NULL); \
         pbImmortalize(TOK_##name)
 
     #include "const/const-def.h"
