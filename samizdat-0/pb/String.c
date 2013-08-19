@@ -57,13 +57,13 @@ static zvalue allocString(zint size) {
  */
 
 /* Documented in header. */
-void pbAssertString(zvalue value) {
+void assertString(zvalue value) {
     assertHasType(value, TYPE_String);
 }
 
 /* Documented in header. */
-void pbAssertStringSize1(zvalue value) {
-    pbAssertString(value);
+void assertStringSize1(zvalue value) {
+    assertString(value);
     if (getInfo(value)->size != 1) {
         die("Not a size 1 string.");
     }
@@ -71,8 +71,8 @@ void pbAssertStringSize1(zvalue value) {
 
 /* Documented in header. */
 zvalue stringCat(zvalue str1, zvalue str2) {
-    pbAssertString(str1);
-    pbAssertString(str2);
+    assertString(str1);
+    assertString(str2);
 
     StringInfo *info1 = getInfo(str1);
     StringInfo *info2 = getInfo(str2);
@@ -157,7 +157,7 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 
 /* Documented in header. */
 zint stringNth(zvalue string, zint n) {
-    pbAssertString(string);
+    assertString(string);
 
     StringInfo *info = getInfo(string);
     if ((n < 0) || (n >= info->size)) {
@@ -169,7 +169,7 @@ zint stringNth(zvalue string, zint n) {
 
 /* Documented in header. */
 zvalue stringSlice(zvalue string, zint start, zint end) {
-    pbAssertString(string);
+    assertString(string);
 
     StringInfo *info = getInfo(string);
 
@@ -179,7 +179,7 @@ zvalue stringSlice(zvalue string, zint start, zint end) {
 
 /* Documented in header. */
 void utf8FromString(zint resultSize, char *result, zvalue string) {
-    pbAssertString(string);
+    assertString(string);
 
     StringInfo *info = getInfo(string);
     zint size = info->size;
@@ -200,7 +200,7 @@ void utf8FromString(zint resultSize, char *result, zvalue string) {
 
 /* Documented in header. */
 zint utf8SizeFromString(zvalue string) {
-    pbAssertString(string);
+    assertString(string);
 
     StringInfo *info = getInfo(string);
     zint size = info->size;
@@ -216,7 +216,7 @@ zint utf8SizeFromString(zvalue string) {
 
 /* Documented in header. */
 void zcharsFromString(zchar *result, zvalue string) {
-    pbAssertString(string);
+    assertString(string);
 
     StringInfo *info = getInfo(string);
 

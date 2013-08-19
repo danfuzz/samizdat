@@ -38,7 +38,7 @@ PRIM_IMPL(charFromInt) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intFromChar) {
     zvalue string = args[0];
-    pbAssertStringSize1(string);
+    assertStringSize1(string);
 
     return intFromZint(stringNth(string, 0));
 }
@@ -50,7 +50,7 @@ PRIM_IMPL(stringCat) {
             return EMPTY_STRING;
         }
         case 1: {
-            pbAssertString(args[0]);
+            assertString(args[0]);
             return args[0];
         }
         case 2: {

@@ -25,14 +25,14 @@ extern zvalue EMPTY_STRING;
  * furthermore that it is a string. If not, this aborts the process
  * with a diagnostic message.
  */
-void pbAssertString(zvalue value);
+void assertString(zvalue value);
 
 /**
  * Asserts that the given value is a valid `zvalue`, and
  * furthermore that it is a string, and even furthermore that its size
  * is `1`. If not, this aborts the process with a diagnostic message.
  */
-void pbAssertStringSize1(zvalue value);
+void assertStringSize1(zvalue value);
 
 /**
  * Combines the characters of two strings, in order, into a new
