@@ -14,6 +14,14 @@
 #include "pb.h"
 
 
+/** Declaration for a method on the given type with the given name. */
+#define METH_IMPL(type, name) \
+    static zvalue type##_##name(zint argCount, const zvalue *args)
+
+/** Performs binding of the indicated method. */
+#define METH_BIND(type, name) \
+    do { genericBindCore(GFN_##name, TYPE_##type, type##_##name); } while(0)
+
 /** Type value for in-model type `Generic`. */
 extern zvalue TYPE_Generic;
 

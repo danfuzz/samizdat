@@ -14,6 +14,17 @@
 #include "pb.h"
 
 
+/**
+ * Arbitrary (key, value) mapping.
+ */
+typedef struct {
+    /** The key. */
+    zvalue key;
+
+    /** The value. */
+    zvalue value;
+} zmapping;
+
 /** Type value for in-model type `Map`. */
 extern zvalue TYPE_Map;
 
