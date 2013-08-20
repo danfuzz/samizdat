@@ -32,8 +32,8 @@ fn intBody(start, value, base) {
     loopReduce("", value) { text, value ::
         <> ifIs { <> ne(value, 0) }
             {
-                def digit = stringNth(DIGIT_CHARS, imod(value, base));
-                <> [stringCat(digit, text), idiv(value, base)];
+                def digit = stringNth(DIGIT_CHARS, mod(value, base));
+                <> [stringCat(digit, text), div(value, base)];
             }
             { return stringCat(start, text) }
     }

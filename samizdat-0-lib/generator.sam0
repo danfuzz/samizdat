@@ -34,7 +34,7 @@ fn makeIncrementGenerator(filterFunction, first, increment) {
             <> ifValue { <> filterFunction(value) }
                 { result ::
                     store(box, result);
-                    <> makeIncrementGenerator1(iadd(value, increment));
+                    <> makeIncrementGenerator1(add(value, increment));
                 }
                 {
                     # The filter indicated that the generator is voided.

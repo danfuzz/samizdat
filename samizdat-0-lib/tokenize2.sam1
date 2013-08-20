@@ -242,7 +242,7 @@ fn intFromDigitList(baseSign, digits) {
     def value = doReduce1(digits, 0) { digit, result ::
         <> ifIs { <> eq(digit, -1) }
             { <> result }
-            { <> iadd(imul(result, base), digit) }
+            { <> add(imul(result, base), digit) }
     };
 
     <> imul(value, sign(baseSign))

@@ -13,7 +13,7 @@
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"binary+"(v1, v2) {
-    <> iadd(v1, v2)
+    <> add(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
@@ -28,27 +28,27 @@ fn \"binary*"(v1, v2) {
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"binary/"(v1, v2) {
-    <> idiv(v1, v2)
+    <> div(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"binary%"(v1, v2) {
-    <> imod(v1, v2)
+    <> mod(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"binary//"(v1, v2) {
-    <> idivEu(v1, v2)
+    <> divEu(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"binary%%"(v1, v2) {
-    <> imodEu(v1, v2)
+    <> modEu(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary+"(value) {
-    <> iadd(0, value)
+    <> add(0, value)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.

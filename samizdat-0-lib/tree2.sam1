@@ -142,7 +142,7 @@ def BINARY_OPERATORS = [
     ">":    makeLiteral("gt"),
     "<=":   makeLiteral("le"),
     ">=":   makeLiteral("ge"),
-    "&&&":  makeVarRef("iand"),
+    "&&&":  makeVarRef("and"),
     "|||":  makeVarRef("ior"),
     "^^^":  makeVarRef("ixor"),
     "<<<":  makeVarRef("ishl"),

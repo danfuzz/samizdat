@@ -110,7 +110,7 @@ def tokInt = {/
 
     {
         def value = doReduce1(digits, 0)
-            { digit, result <> iadd(digit, imul(result, 10)) };
+            { digit, result <> add(digit, imul(result, 10)) };
         <> @[int: value]
     }
 /};
