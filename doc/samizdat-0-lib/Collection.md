@@ -14,19 +14,8 @@ here.
 
 #### `size(collection) <> int`
 
-Returns the number of elements in the given collection. For core collections,
-this is defined as follows:
+Returns the number of elements in the given collection.
 
-* `Int` &mdash; the number of significant bits (not bytes) in
-  the value when represented in twos-complement form, including a
-  high-order sign bit. The minimum size of an int is 1, which
-  is the size of both `0` and `-1`.
-
-* `String` &mdash; the number of characters.
-
-* `List` &mdash; the number of elements.
-
-* `Map` &mdash; the number of mappings (bindings).
 
 <br><br>
 ### Primitive Definitions
