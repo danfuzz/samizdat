@@ -118,7 +118,7 @@ fn pegMakeChoice(rules*) {
         { return pegRuleFail };
 
     # Trivial case: One rule. Return that rule directly.
-    ifIs { <> eq(coreSizeOf(rules), 1) }
+    ifIs { <> eq(size(rules), 1) }
         { return rules* };
 
     # The general case.
@@ -237,7 +237,7 @@ fn pegMakeSequence(rules*) {
         { return pegRuleEmpty };
 
     # Trivial case: One rule. Return that rule directly.
-    ifIs { <> eq(coreSizeOf(rules), 1) }
+    ifIs { <> eq(size(rules), 1) }
         { return rules* };
 
     # The general case. Each rule after the first gets passed as additional
@@ -291,7 +291,7 @@ fn pegMakeString(string) {
         { return pegMakeCode { <> "" } };
 
     # Trivial case: One-char string. Return a simple one-char rule.
-    ifIs { <> eq(coreSizeOf(string), 1) }
+    ifIs { <> eq(size(string), 1) }
         { return pegMakeToken(string) };
 
     # This is implemented as, in effect, `("1" "2" ... { <> string })`,

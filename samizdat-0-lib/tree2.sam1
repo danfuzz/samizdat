@@ -737,7 +737,7 @@ def parParserString = {/
     s = @string
     {
         def value = dataOf(s);
-        <> ifIs { <> eq(coreSizeOf(value), 1) }
+        <> ifIs { <> eq(size(value), 1) }
             { <> @[token: value] }
             { <> s }
     }
@@ -761,7 +761,7 @@ def parParserSetString = {/
             def startChar = dataOf(s);
             def endChar = dataOf(end);
             <> ifIs
-                { <> eq(1, &eq(coreSizeOf(startChar), coreSizeOf(endChar))) }
+                { <> eq(1, &eq(size(startChar), size(endChar))) }
                 { <> stringCat(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
@@ -1546,10 +1546,10 @@ def parSwitchExpression = {/
                 }
         };
 
-        ifIs { <> gt(coreSizeOf(optDefault), 1) }
+        ifIs { <> gt(size(optDefault), 1) }
             { io0Die("Multiple default cases in switch.") };
 
-        ifIs { <> gt(coreSizeOf(optElse), 1) }
+        ifIs { <> gt(size(optElse), 1) }
             { io0Die("Multiple else cases in switch.") };
 
         # Notes:
