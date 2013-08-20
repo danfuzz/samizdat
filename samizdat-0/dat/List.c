@@ -251,11 +251,8 @@ METH_IMPL(List, nth) {
     zvalue list = args[0];
     zvalue n = args[1];
 
-    zint index = zintFromInt(n);
-
-    if (index < 0) {
-        die("Invalid index for `nth`: %lld", index);
-    }
+    ListInfo *info = getInfo(list);
+    zint index = collNthIndexStrict(info->size, n);
 
     return listNth(list, index);
 }

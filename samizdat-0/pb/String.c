@@ -272,11 +272,8 @@ METH_IMPL(String, nth) {
     zvalue string = args[0];
     zvalue n = args[1];
 
-    zint index = zintFromInt(n);
-
-    if (index < 0) {
-        die("Invalid index for `nth`: %lld", index);
-    }
+    StringInfo *info = getInfo(string);
+    zint index = collNthIndexStrict(info->size, n);
 
     return stringFromZchar(stringNth(string, index));
 }

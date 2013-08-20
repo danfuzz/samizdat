@@ -408,10 +408,8 @@ METH_IMPL(Map, nth) {
     zvalue map = args[0];
     zvalue n = args[1];
 
-    zint index = zintFromInt(n);
-    if (index < 0) {
-        die("Invalid index for `nth`: %lld", index);
-    }
+    MapInfo *info = getInfo(map);
+    zint index = collNthIndexStrict(info->size, n);
 
     return mapNth(map, index);
 }

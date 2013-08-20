@@ -160,14 +160,7 @@ METH_IMPL(Int, nth) {
     zvalue n = args[1];
 
     zint x = zintValue(intval);
-    zint size = zintBitSize(x);
-    zint index = zintFromInt(n);
-
-    if (index < 0) {
-        die("Invalid index for `nth`: %lld", index);
-    } else if (index >= size) {
-        return NULL;
-    }
+    zint index = collNthIndexStrict(zintBitSize(x), n);
 
     zint result;
     zintBit(&result, x, index); // Won't fail.

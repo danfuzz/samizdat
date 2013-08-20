@@ -21,6 +21,29 @@
  */
 
 /* Documented in header. */
+bool collNthIndexLenient(zvalue key) {
+    if (hasType(key, TYPE_Int)) {
+        zint index = zintFromInt(key);
+        return (index >= 0);
+    } else {
+        return false;
+    }
+}
+
+/* Documented in header. */
+zint collNthIndexStrict(zint size, zvalue n) {
+    if (hasType(n, TYPE_Int)) {
+        zint index = zintFromInt(n);
+        if (index < 0) {
+            die("Invalid index for nth (negative).");
+        }
+        return index;
+    } else {
+        die("Invalid type for nth (non-int).");
+    }
+}
+
+/* Documented in header. */
 zint collSize(zvalue coll) {
     return zintFromInt(GFN_CALL(size, coll));
 }
@@ -38,9 +61,8 @@ METH_IMPL(Sequence, get) {
     zvalue seq = args[0];
     zvalue key = args[1];
 
-    if (hasType(key, TYPE_Int)) {
-        zint index = zintFromInt(key);
-        return (index < 0) ? NULL : GFN_CALL(nth, seq, key);
+    if (collNthIndexLenient(key)) {
+        return GFN_CALL(nth, seq, key);
     } else {
         return NULL;
     }
