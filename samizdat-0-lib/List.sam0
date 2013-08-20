@@ -23,12 +23,12 @@ fn listButLast(list) {
 
 # Documented in Samizdat Layer 0 spec.
 fn listFirst(list) {
-    <> listNth(list, 0)
+    <> nth(list, 0)
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn listLast(list) {
-    <> listNth(list, &le(0, sub(size(list), 1)))
+    <> nth(list, &le(0, sub(size(list), 1)))
 };
 
 

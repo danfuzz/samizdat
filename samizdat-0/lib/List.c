@@ -77,18 +77,8 @@ PRIM_IMPL(listFilter) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listGet) {
-   return doNthLenient(listNth, args[0], args[1]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listInsNth) {
     return listInsNth(args[0], zintFromInt(args[1]), args[2]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listNth) {
-    return doNthStrict(listNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

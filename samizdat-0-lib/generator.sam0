@@ -57,7 +57,7 @@ fn makeIntGenerator(int) {
 # Makes a generator for a list.
 fn makeListGenerator(list) {
     <> makeIncrementGenerator(0, 1)
-        { index <> listNth(list, index) }
+        { index <> nth(list, index) }
 };
 
 # Makes a generator for a map.
@@ -362,9 +362,9 @@ fn paraGenerator(generators*) {
                         }
                 };
             def yields = listFilter(generatorCalls)
-                { one <> listNth(one, 0) };
+                { one <> nth(one, 0) };
             def nexts = listFilter(generatorCalls)
-                { one <> listNth(one, 1) };
+                { one <> nth(one, 1) };
 
             store(box, yields);
             <> paraGenerator1(nexts);
