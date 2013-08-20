@@ -60,10 +60,11 @@ zvalue collNth(zvalue coll, zint index);
 
 /**
  * Calls `nth`, converting the given `zint` index to an `Int` value, and
- * converting the return value &mdash; which must be a single-character
- * `String` &mdash; to a `zchar`.
+ * converting a non-void return value &mdash; which must be a single-character
+ * `String` &mdash; to a `zint` in the range of a `zchar`. A void return
+ * value gets converted to `-1`.
  */
-zchar collNthChar(zvalue coll, zint index);
+zint collNthChar(zvalue coll, zint index);
 
 /**
  * Gets the size of the given collection, as a `zint`.

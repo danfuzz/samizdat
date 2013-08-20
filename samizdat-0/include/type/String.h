@@ -60,13 +60,6 @@ zvalue stringFromZchar(zchar value);
 zvalue stringFromZchars(zint size, const zchar *chars);
 
 /**
- * Given a string, returns the `n`th element, which is in the
- * range of a 32-bit unsigned int. If `n` is out of range, this
- * returns `-1`.
- */
-zint stringNth(zvalue string, zint n);
-
-/**
  * Gets the string consisting of the given "slice" of elements
  * (start inclusive, end exclusive) of the given string.
  */

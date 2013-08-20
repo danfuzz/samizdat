@@ -156,18 +156,6 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 }
 
 /* Documented in header. */
-zint stringNth(zvalue string, zint n) {
-    assertString(string);
-
-    StringInfo *info = getInfo(string);
-    if ((n < 0) || (n >= info->size)) {
-        return -1;
-    }
-
-    return info->elems[n];
-}
-
-/* Documented in header. */
 zvalue stringSlice(zvalue string, zint start, zint end) {
     assertString(string);
 

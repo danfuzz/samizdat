@@ -54,8 +54,9 @@ zvalue collNth(zvalue coll, zint index) {
 }
 
 /* Documented in header. */
-zchar collNthChar(zvalue coll, zint index) {
-    return zcharFromString(collNth(coll, index));
+zint collNthChar(zvalue coll, zint index) {
+    zvalue result = collNth(coll, index);
+    return (result == NULL) ? -1 : zcharFromString(result);
 }
 
 /* Documented in header. */
