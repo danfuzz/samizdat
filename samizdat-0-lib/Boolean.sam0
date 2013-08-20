@@ -30,14 +30,14 @@ def NOT_MAP = [
 
 # Documented in Samizdat Layer 0 spec.
 fn logicFromBoolean(value) {
-    <> ifValue { <> mapGet(LOGIC_MAP, value) }
+    <> ifValue { <> get(LOGIC_MAP, value) }
         { result <> result* }
         { io0Die("Non-boolean argument to `logicFromBoolean`.") }
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn booleanNot(value) {
-    <> ifValueOr { <> mapGet(NOT_MAP, value) }
+    <> ifValueOr { <> get(NOT_MAP, value) }
         { io0Die("Non-boolean argument to `booleanNot`.") }
 };
 

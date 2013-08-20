@@ -48,7 +48,7 @@ typedef struct {
     /** The `"formals"` mapping inside `defMap`. */
     zvalue formals;
 
-    /** The result of `valSize(formals)`. */
+    /** The result of `collSize(formals)`. */
     zint formalsSize;
 
     /** The `"statements"` mapping inside `defMap`. */
@@ -95,11 +95,11 @@ static zvalue buildClosure(zvalue node) {
     zvalue defMap = dataOf(node);
 
     info->defMap = defMap;
-    info->formals = mapGet(defMap, STR_formals);
-    info->formalsSize = valSize(info->formals);
-    info->statements = mapGet(defMap, STR_statements);
-    info->yield = mapGet(defMap, STR_yield);
-    info->yieldDef = mapGet(defMap, STR_yieldDef);
+    info->formals = collGet(defMap, STR_formals);
+    info->formalsSize = collSize(info->formals);
+    info->statements = collGet(defMap, STR_statements);
+    info->yield = collGet(defMap, STR_yield);
+    info->yieldDef = collGet(defMap, STR_yieldDef);
 
     return result;
 }
@@ -122,19 +122,19 @@ static void bindArguments(Frame *frame, zvalue closure,
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
-        zvalue name = mapGet(formal, STR_name);
-        zvalue repeat = mapGet(formal, STR_repeat);
+        zvalue name = collGet(formal, STR_name);
+        zvalue repeat = collGet(formal, STR_repeat);
         bool ignore = (name == NULL);
         zvalue value;
 
         if (repeat != NULL) {
             zint count;
 
-            if (stringNth(repeat, 1) != -1) {
+            if (collNth(repeat, 1) != NULL) {
                 die("Invalid repeat modifier.");
             }
 
-            switch (stringNth(repeat, 0)) {
+            switch (collNthChar(repeat, 0)) {
                 case '*': {
                     count = argCount - argAt;
                     break;
@@ -203,7 +203,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // Evaluate the statements, updating the frame as needed.
 
     zvalue statements = info->statements;
-    zint statementsSize = valSize(statements);
+    zint statementsSize = collSize(statements);
     zvalue statementsArr[statementsSize];
     arrayFromList(statementsArr, statements);
 
@@ -213,7 +213,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
 
         // Switch on the first character of the type string to avoid
         // gratuitous `valEq` tests.
-        switch (stringNth(oneType, 0)) {
+        switch (collNthChar(oneType, 0)) {
             case 'f': {
                 if (valEq(oneType, STR_fnDef)) {
                     // Look for immediately adjacent `fnDef` nodes, and
@@ -270,7 +270,7 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements) {
     for (zint i = 0; i < size; i++) {
         zvalue one = statements[i];
         zvalue fnMap = dataOf(one);
-        zvalue name = mapGet(fnMap, STR_name);
+        zvalue name = collGet(fnMap, STR_name);
 
         closures[i] = buildClosure(one);
         frameAdd(frame, name, closures[i]);
@@ -334,7 +334,7 @@ METH_IMPL(Closure, canCall) {
 METH_IMPL(Closure, debugString) {
     zvalue closure = args[0];
     ClosureInfo *info = getInfo(closure);
-    zvalue name = mapGet(info->defMap, STR_name);
+    zvalue name = collGet(info->defMap, STR_name);
 
     zvalue result = stringFromUtf8(-1, "@(Closure ");
 

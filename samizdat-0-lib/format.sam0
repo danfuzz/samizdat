@@ -32,7 +32,7 @@ fn intBody(start, value, base) {
     loopReduce("", value) { text, value ::
         <> ifIs { <> ne(value, 0) }
             {
-                def digit = stringNth(DIGIT_CHARS, mod(value, base));
+                def digit = nth(DIGIT_CHARS, mod(value, base));
                 <> [stringCat(digit, text), div(value, base)];
             }
             { return stringCat(start, text) }
@@ -48,7 +48,7 @@ def INT_SIGNS = [
 
 # Stringifies an int using the given base.
 fn stringFromIntBase(int, base) {
-    <> mapGet(INT_SIGNS, sign(int))(int, base)
+    <> get(INT_SIGNS, sign(int))(int, base)
 };
 
 # Helper for optionally adorning results.
@@ -101,7 +101,7 @@ fn hexStringChar(ch) {
 # Helper for stringifying strings: Returns the converted form of the
 # given character.
 fn stringChar(ch) {
-    ifValue { <> mapGet(SPECIAL_CHARS, ch) }
+    ifValue { <> get(SPECIAL_CHARS, ch) }
         { special ::
             ifIs { <> eq(special, "x") }
                 { return hexStringChar(ch) }
@@ -156,11 +156,11 @@ fn isIdentifier(string) {
     ifIs { <> eq(string, "") }
         { return };
 
-    ifNot { <> mapGet(IDENTIFIER_STARTS, stringNth(string, 0)) }
+    ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
     doFilter(string) { ch ::
-        ifNot { <> mapGet(IDENTIFIER_CHARS, ch) }
+        ifNot { <> get(IDENTIFIER_CHARS, ch) }
             { return }
     };
 
@@ -172,7 +172,7 @@ fn keyString(key) {
     ifIs { <> isIdentifier(key) }
         { return key };
 
-    ifValue { <> mapGet(SPECIAL_VALUES, key) }
+    ifValue { <> get(SPECIAL_VALUES, key) }
         { string :: return stringCat("(", string, ")") };
 
     <> callSourceString(key)
@@ -213,7 +213,7 @@ fn doType(type, adorn) {
 
 # Stringifies a derived value or an opaque core value.
 fn doDerivOrOpaque(value, adorn) {
-    ifValue { <> mapGet(SPECIAL_VALUES, value) }
+    ifValue { <> get(SPECIAL_VALUES, value) }
         { string :: return string };
 
     def type = typeOf(value);
@@ -277,7 +277,7 @@ def HUMAN_STRINGIFIERS = [
 # Common handler for the two exported functions.
 fn sourceStringGeneral(value, adorn) {
     def stringifier = ifValueOr
-        { <> mapGet(SOURCE_STRINGIFIERS, typeOf(value)) }
+        { <> get(SOURCE_STRINGIFIERS, typeOf(value)) }
         { <> doDerivOrOpaque };
 
     <> stringifier(value, adorn)
@@ -322,7 +322,7 @@ fn stringFromValue(value?) {
     <> ifValue { <> value* }
         { value ::
             def stringifier = ifValueOr
-                { <> mapGet(HUMAN_STRINGIFIERS, typeOf(value)) }
+                { <> get(HUMAN_STRINGIFIERS, typeOf(value)) }
                 { <> doDerivOrOpaque };
             <> stringifier(value, true)
         }
@@ -343,7 +343,7 @@ def FORMATTERS = [
 # This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 # is defined in terms of other exported functions.
 fn formatterFromString(formatSpec) {
-    <> ifValueOr { <> mapGet(FORMATTERS, formatSpec) }
+    <> ifValueOr { <> get(FORMATTERS, formatSpec) }
         {
             io0Die(stringCat(
                 "Unrecognized format spec: ",

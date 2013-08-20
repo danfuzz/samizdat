@@ -58,7 +58,7 @@ fn convertPexSequence(node, formals) {
     # Extract the formals out of any `varDef` nodes.
     def newFormals = collectFilter(pexes) { pex ::
         <> ifIs { <> eq(typeOf(pex), "varDef") }
-            { <> [name: mapGet(dataOf(pex), "name")] }
+            { <> [name: get(dataOf(pex), "name")] }
             { <> [:] }
     };
 
@@ -66,7 +66,7 @@ fn convertPexSequence(node, formals) {
     # lists to each conversion.
     def convertedPexes = collectFilter(openRange(0, 1), pexes) { n, pex  ::
         def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
-            { <> mapGet(dataOf(pex), "value") }
+            { <> get(dataOf(pex), "value") }
             { <> pex };
         <> convertPex(subPex, [formals*, listSlice(newFormals, 0, n)*])
     };
@@ -170,7 +170,7 @@ def CONVERT_PEX_MAP = [
 # list of lexically bound result names, in order, in the form of `formals`
 # values as defined by the Samizdat Layer 0 tree semanics spec.
 fn convertPexImpl(node, formals) {
-    <> mapGet(CONVERT_PEX_MAP, typeOf(node))(node, formals)
+    <> get(CONVERT_PEX_MAP, typeOf(node))(node, formals)
 };
 convertPex(convertPexImpl);
 
@@ -183,8 +183,8 @@ fn convertParser(node) {
 # Does parser conversion of a `call` node.
 fn convertCall(node) {
     def nodeValue = dataOf(node);
-    def function = convertExpression(mapGet(nodeValue, "function"));
-    def actuals = convertList(mapGet(nodeValue, "actuals"));
+    def function = convertExpression(get(nodeValue, "function"));
+    def actuals = convertList(get(nodeValue, "actuals"));
 
     <> @[call: [nodeValue*, function: function, actuals: actuals]]
 };
@@ -193,8 +193,8 @@ fn convertCall(node) {
 fn convertClosureLike(node) {
     def nodeType = typeOf(node);
     def nodeValue = dataOf(node);
-    def statements = convertList(mapGet(nodeValue, "statements"));
-    def yield = ifValue { <> mapGet(nodeValue, "yield") }
+    def statements = convertList(get(nodeValue, "statements"));
+    def yield = ifValue { <> get(nodeValue, "yield") }
         { yield <> [yield: convertExpression(yield)] }
         { <> [:] };
 
@@ -214,7 +214,7 @@ fn convertExpressionPayload(node) {
 # Does parser conversion of a `varDef` node.
 fn convertVarDef(node) {
     def nodeValue = dataOf(node);
-    def value = convertExpression(mapGet(nodeValue, "value"));
+    def value = convertExpression(get(nodeValue, "value"));
 
     <> @[varDef: [nodeValue*, value: value]]
 };
@@ -239,7 +239,7 @@ def CONVERT_EXPRESSION_MAP = [
 # Iterates / visits the given expression or statement node, transforming
 # parser subtrees into layer 0 function nodes.
 fn convertExpressionImpl(node) {
-    <> mapGet(CONVERT_EXPRESSION_MAP, typeOf(node))(node)
+    <> get(CONVERT_EXPRESSION_MAP, typeOf(node))(node)
 };
 convertExpression(convertExpressionImpl);
 

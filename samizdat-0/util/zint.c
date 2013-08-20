@@ -19,7 +19,7 @@
  */
 
 // Documented in header.
-extern bool zintCanDivide(zint x, zint y);
+extern bool zintCanDiv(zint x, zint y);
 
 
 /*

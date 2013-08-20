@@ -14,26 +14,26 @@
 def MODULE_PREFIX = "module:";
 
 # Size of `MODULE_PREFIX`.
-def MODULE_PREFIX_SIZE = coreSizeOf(MODULE_PREFIX);
+def MODULE_PREFIX_SIZE = size(MODULE_PREFIX);
 
 # Given a name, returns the module name portion of it if it in fact starts
 # with `MODULE_PREFIX`. Returns void if not.
 fn moduleNameFromString(orig) {
-    ifIs { <> le(coreSizeOf(orig), MODULE_PREFIX_SIZE) }
+    ifIs { <> le(size(orig), MODULE_PREFIX_SIZE) }
         { return };
 
     <> ifIs { <> eq(stringSlice(orig, 0, MODULE_PREFIX), MODULE_PREFIX) }
         { <> stringSlice(orig, add(MODULE_PREFIX_SIZE, 1)) }
 };
 
-# Does a `mapGet` on the payload data of the given value.
+# Does a `get` on the payload data of the given value.
 fn dataGet(value, key) {
-    <> mapGet(dataOf(value), key)
+    <> get(dataOf(value), key)
 };
 
-# Does a `coreSizeOf` on the payload data of the given value.
+# Does a `size` on the payload data of the given value.
 fn dataSize(value) {
-    <> coreSizeOf(dataOf(value))
+    <> size(dataOf(value))
 };
 
 # Returns `mod` iff it is a module (either uninitialized or initialized).
@@ -130,13 +130,13 @@ fn sortModules(modules) {
 
 # Documented in Samizdat Layer 0 spec.
 fn methodGet(dispatch, value, name) {
-    def function = mapGet(mapGet(dispatch, typeOf(value)), name);
+    def function = get(get(dispatch, typeOf(value)), name);
     <> { args* <> function(value, args*) }
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn methodCall(dispatch, value, name, args*) {
-    <> mapGet(mapGet(dispatch, typeOf(value)), name)(value, args*)
+    <> get(get(dispatch, typeOf(value)), name)(value, args*)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -167,7 +167,7 @@ fn moduleInit(context) {
     # each (if any), passing it the set of already-initialized modules.
     <> doReduce1(sortedModuleNames, [:])
         { name, initted ::
-            def mod = mapGet(moduleMap, name);
+            def mod = get(moduleMap, name);
             def newMod = ifValue { <> dataGet(mod, "init") }
                 { init ::
                     <> @[module: [

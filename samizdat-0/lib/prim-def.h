@@ -26,18 +26,27 @@ PRIM_DEF(Type,       TYPE_Type);
 PRIM_DEF(Uniqlet,    TYPE_Uniqlet);
 PRIM_DEF(Value,      TYPE_Value);
 
-// Generic functions
+// Generic functions: `Box` protocol
+PRIM_DEF(canStore,   GFN_canStore);
+PRIM_DEF(fetch,      GFN_fetch);
+PRIM_DEF(store,      GFN_store);
+
+// Generic functions: `Callable` protocol
+PRIM_DEF(call,       GFN_call);
+PRIM_DEF(canCall,    GFN_canCall);
+
+// Generic functions: `Collection` protocol and sub-protocols
+PRIM_DEF(get,        GFN_get);
+PRIM_DEF(nth,        GFN_nth);
+PRIM_DEF(size,       GFN_size);
+
+// Generic functions: `Int` protocol
 PRIM_DEF(abs,        GFN_abs);
 PRIM_DEF(add,        GFN_add);
 PRIM_DEF(and,        GFN_and);
 PRIM_DEF(bit,        GFN_bit);
-PRIM_DEF(call,       GFN_call);
-PRIM_DEF(canCall,    GFN_canCall);
-PRIM_DEF(canStore,   GFN_canStore);
-PRIM_DEF(coreSizeOf, GFN_size);
 PRIM_DEF(div,        GFN_div);
 PRIM_DEF(divEu,      GFN_divEu);
-PRIM_DEF(fetch,      GFN_fetch);
 PRIM_DEF(mod,        GFN_mod);
 PRIM_DEF(modEu,      GFN_modEu);
 PRIM_DEF(mul,        GFN_mul);
@@ -47,7 +56,6 @@ PRIM_DEF(or,         GFN_or);
 PRIM_DEF(shl,        GFN_shl);
 PRIM_DEF(shr,        GFN_shr);
 PRIM_DEF(sign,       GFN_sign);
-PRIM_DEF(store,      GFN_store);
 PRIM_DEF(sub,        GFN_sub);
 PRIM_DEF(xor,        GFN_xor);
 
@@ -64,8 +72,6 @@ PRIM_FUNC(ifNot,          2, 2);
 PRIM_FUNC(ifValue,        2, 3);
 PRIM_FUNC(ifValueOr,      2, 2);
 PRIM_FUNC(intFromChar,    1, 1);
-PRIM_FUNC(intGet,         2, 2);
-PRIM_FUNC(intNth,         2, 2);
 PRIM_FUNC(io0FlatCwd,     0, 0);
 PRIM_FUNC(io0FlatReadLink,      1, 1);
 PRIM_FUNC(io0FlatReadFileUtf8,  1, 1);
@@ -76,9 +82,7 @@ PRIM_FUNC(isOpaqueValue,  1, 1);
 PRIM_FUNC(listCat,        0, -1);
 PRIM_FUNC(listDelNth,     2, 2);
 PRIM_FUNC(listFilter,     2, 2);
-PRIM_FUNC(listGet,        2, 2);
 PRIM_FUNC(listInsNth,     3, 3);
-PRIM_FUNC(listNth,        2, 2);
 PRIM_FUNC(listPutNth,     3, 3);
 PRIM_FUNC(listReverse,    1, 1);
 PRIM_FUNC(listSlice,      2, 3);
@@ -92,9 +96,7 @@ PRIM_FUNC(makeValueMap,   1, -1);
 PRIM_FUNC(makeYieldBox,   0, 0);
 PRIM_FUNC(mapCat,         0, -1);
 PRIM_FUNC(mapDel,         1, -1);
-PRIM_FUNC(mapGet,         2, 2);
 PRIM_FUNC(mapKeys,        1, 1);
-PRIM_FUNC(mapNth,         2, 2);
 PRIM_FUNC(mapPut,         3, 3);
 PRIM_FUNC(mappingKey,     1, 1);
 PRIM_FUNC(mappingValue,   1, 1);
@@ -104,8 +106,6 @@ PRIM_FUNC(sam0Eval,       2, 2);
 PRIM_FUNC(sam0Tokenize,   1, 1);
 PRIM_FUNC(sam0Tree,       1, 1);
 PRIM_FUNC(stringCat,      0, -1);
-PRIM_FUNC(stringGet,      2, 2);
-PRIM_FUNC(stringNth,      2, 2);
 PRIM_FUNC(stringSlice,    2, 3);
 PRIM_FUNC(totalOrder,     2, 2);
 PRIM_FUNC(totalOrderIs,   3, 4);

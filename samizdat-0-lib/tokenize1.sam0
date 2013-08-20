@@ -33,7 +33,7 @@ def INT_CHARS = [
 
 # Documented in Samizdat Layer 0 spec.
 fn intFromDigitChar(ch) {
-    <> mapGet(INT_CHARS, typeOf(ch))
+    <> get(INT_CHARS, typeOf(ch))
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -125,7 +125,7 @@ def tokIdentifier = pegMakeMainSequence(
     pegMakeStar(pegMakeCharSet(IDENTIFIER_CHARS)),
     pegMakeCode { first, rest ::
         def string = stringFromTokenList([first, rest*]);
-        <> ifValueOr { <> mapGet(KEYWORDS, string) }
+        <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
     });
 

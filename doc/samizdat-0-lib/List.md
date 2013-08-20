@@ -5,6 +5,23 @@ Lists
 -----
 
 <br><br>
+### Generic Function Definitions: `Collection` protocol
+
+#### `get(list, key) <> . | void`
+
+This is identical to `nth(list, key)`, except that the result of passing
+a negative or non-`Int` value for `key` is void and not an error.
+
+#### `nth(list, n) <> . | void`
+
+Gets the nth element of the list.
+
+#### `size(list) <> int`
+
+Returns the number of elements in the list.
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `listCat(lists*) <> list`
@@ -34,11 +51,6 @@ smaller than the size of the argument.
 **Note:** This is a special-case version of the more general function
 `collectFilter` (see which).
 
-#### `listGet(list, key) <> . | void`
-
-Collection-style element access. Returns the same thing as `listNth(list, key)`
-if `key` is a valid int index into the list. If not, this returns void.
-
 #### `listInsNth(list, n, value) <> list`
 
 Returns a list just like the given one, except that the `n`th
@@ -48,12 +60,6 @@ are shifted up by one index.
 
 `n` must be non-negative and less than or equal to the size of the
 list. If not, it is an error (terminating the runtime).
-
-#### `listNth(list, n) <> . | void`
-
-Returns the `n`th (zero-based) element of the given list, if `n` is
-a valid int index into the list. Otherwise, if `n` is a non-negative int,
-this returns void. Otherwise, this terminates the runtime with an error.
 
 #### `listPutNth(list, n, value) <> list`
 
@@ -127,17 +133,17 @@ behaves differently than either of those when the list is empty.
 Returns a list consisting of all the elements of the given list
 except for the last element (that is, all but the last element). If
 the given list is empty, this returns void. This is similar to
-`listSlice(list, 0, sub(coreSizeOf(list), 1))` or
-`listDelNth(list, sub(coreSizeOf(list), 1))`, except that this function
+`listSlice(list, 0, sub(size(list), 1))` or
+`listDelNth(list, sub(size(list), 1))`, except that this function
 behaves differently than either of those when the list is empty.
 
 #### `listFirst(list) <> . | void`
 
 Returns the first element of the given list or void if the list is empty.
-This is just a convenient shorthand for `listNth(list, 0)`.
+This is just a convenient shorthand for `nth(list, 0)`.
 
 #### `listLast(list) <> . | void`
 
 Returns the last element of the given list or void if the list is empty.
 This is just a convenient shorthand for
-`listNth(list, sub(coreSizeOf(list), 1))`.
+`nth(list, sub(size(list), 1))`.

@@ -293,7 +293,7 @@ zvalue langTokenize0(zvalue string) {
 
     zstackPointer save = pbFrameStart();
 
-    zint size = valSize(string);
+    zint size = collSize(string);
 
     if (size > LANG_MAX_TOKENS) {
         die("Too many characters for tokenization: %lld", size);

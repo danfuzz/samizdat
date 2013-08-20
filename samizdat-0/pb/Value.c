@@ -121,11 +121,6 @@ zorder valOrder(zvalue v1, zvalue v2) {
     }
 }
 
-/* Documented in header. */
-zint valSize(zvalue value) {
-    return zintFromInt(GFN_CALL(size, value));
-}
-
 
 /*
  * Type Definition
@@ -168,10 +163,6 @@ METH_IMPL(Value, order) {
     }
 }
 
-/* Documented in header. */
-METH_IMPL(Value, size) {
-    return intFromZint(0);
-}
 
 /* Documented in header. */
 void pbBindValue(void) {
@@ -187,15 +178,11 @@ void pbBindValue(void) {
     GFN_order = makeGeneric(2, 2, stringFromUtf8(-1, "order"));
     pbImmortalize(GFN_order);
 
-    GFN_size = makeGeneric(1, 1, stringFromUtf8(-1, "size"));
-    pbImmortalize(GFN_size);
-
     // Note: The type `Type` is responsible for initializing `TYPE_Value`.
 
     METH_BIND(Value, debugString);
     METH_BIND(Value, eq);
     METH_BIND(Value, order);
-    METH_BIND(Value, size);
 }
 
 /* Documented in header. */
@@ -212,6 +199,3 @@ zvalue GFN_gcMark = NULL;
 
 /* Documented in header. */
 zvalue GFN_order = NULL;
-
-/* Documented in header. */
-zvalue GFN_size = NULL;

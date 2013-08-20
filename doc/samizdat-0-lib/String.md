@@ -5,6 +5,23 @@ Strings
 -------
 
 <br><br>
+### Generic Function Definitions: `Collection` protocol
+
+#### `get(string, key) <> . | void`
+
+This is identical to `nth(string, key)`, except that the result of passing
+a negative or non-`Int` value for `key` is void and not an error.
+
+#### `nth(string, n) <> . | void`
+
+Gets the nth character of the string, as a single-element string.
+
+#### `size(string) <> int`
+
+Returns the number of characters in the string.
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `charFromInt(int) <> string`
@@ -25,19 +42,6 @@ Returns a string consisting of the concatenation of the contents
 of all the argument strings, in argument order.
 
 **Syntax Note:** Used in the translation of interpolated string forms.
-
-#### `stringGet(string, key) <> string | void`
-
-Collection-style element access. Returns the same thing as
-`stringNth(list, key)` if `key` is a valid int index into the string.
-If not, this returns void.
-
-#### `stringNth(string, n) <> string | void`
-
-Returns the `n`th (zero-based) element of the given string, as a
-single-element string, if `n` is a valid int index into the given
-string. Otherwise, if `n` is a non-negative int, this returns void.
-Otherwise, this terminates the runtime with an error.
 
 #### `stringSlice(list, start, end?) <> list`
 

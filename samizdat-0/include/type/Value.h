@@ -51,13 +51,6 @@ extern zvalue GFN_eq;
 extern zvalue GFN_order;
 
 /**
- * Generic `size(value)`: Gets the "size" of a value of the given type,
- * for the appropriate per-type meaning of size. Defaults to always returning
- * `0`.
- */
-extern zvalue GFN_size;
-
-/**
  * Gets the data payload of the given value, if it is a value-bearing
  * transparent derived value. `value` must be a valid value (in particular,
  * non-`NULL`). This is a convenient shorthand for calling
@@ -141,12 +134,5 @@ bool valEq(zvalue v1, zvalue v2);
  * being ordered earlier than any other value.
  */
 zorder valOrder(zvalue v1, zvalue v2);
-
-/**
- * Gets the size of the given value. `value` must be a valid value.
- * See the *Samizdat Layer 0* specification for details on
- * what low-layer "size" means.
- */
-zint valSize(zvalue value);
 
 #endif

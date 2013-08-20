@@ -13,20 +13,6 @@
 
 
 /*
- * Private Definitions
- */
-
-/**
- * Calls `stringNth()`, converting the result into a proper zvalue.
- */
-static zvalue makeValueStringNth(zvalue string, zint n) {
-    zint ch = stringNth(string, n);
-
-    return (ch < 0) ? NULL : stringFromZchar(ch);
-}
-
-
-/*
  * Exported Definitions
  */
 
@@ -38,9 +24,8 @@ PRIM_IMPL(charFromInt) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intFromChar) {
     zvalue string = args[0];
-    assertStringSize1(string);
 
-    return intFromZint(stringNth(string, 0));
+    return intFromZint(zcharFromString(string));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -61,34 +46,24 @@ PRIM_IMPL(stringCat) {
     zint size = 0;
 
     for (zint i = 0; i < argCount; i++) {
-        size += valSize(args[i]);
+        size += collSize(args[i]);
     }
 
     zchar chars[size];
 
     for (zint i = 0, at = 0; i < argCount; i++) {
         zcharsFromString(&chars[at], args[i]);
-        at += valSize(args[i]);
+        at += collSize(args[i]);
     }
 
     return stringFromZchars(size, chars);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringGet) {
-    return doNthLenient(makeValueStringNth, args[0], args[1]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringNth) {
-    return doNthStrict(makeValueStringNth, args[0], args[1]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringSlice) {
     zvalue string = args[0];
     zint startIndex = zintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : valSize(string);
+    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : collSize(string);
 
     return stringSlice(string, startIndex, endIndex);
 }

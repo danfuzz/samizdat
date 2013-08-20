@@ -68,7 +68,7 @@ def parArguments = {/
     args = parWord*
     {
         def options = mapCat(optionList*);
-        ifIs { <> mapGet(options, "error") }
+        ifIs { <> get(options, "error") }
             { io0Die("Invalid option(s).") };
         <> [options: options, args: args]
     }
@@ -92,22 +92,22 @@ fn parseArgs(args) {
 # Documented in Samizdat Layer 0 spec.
 fn samCommandLine(context, rawArgs*) {
     def parsedArgs = parseArgs(rawArgs);
-    def options = mapGet(parsedArgs, "options");
-    def argWords = mapGet(parsedArgs, "args");
+    def options = get(parsedArgs, "options");
+    def argWords = get(parsedArgs, "args");
 
     def fileName = ifValueOr { <> listFirst(argWords) } { <> "/dev/stdin" };
     def filePath = io0PathFromFlat(fileName);
     def args = ifValueOr { <> listButFirst(argWords) } { <> [] };
 
-    def nameForLookup = ifValue { <> mapGet(options, "file-suffix") }
+    def nameForLookup = ifValue { <> get(options, "file-suffix") }
         { suffix <> stringCat("x.", suffix) }
         { <> listLast(filePath) };
 
     def metas = metaFunctions(context, nameForLookup);
 
     def programText = io0ReadFileUtf8(filePath);
-    def parsedProgram = mapGet(metas, "tree")(programText);
-    def evalledProgram = mapGet(metas, "eval")(context, parsedProgram);
+    def parsedProgram = get(metas, "tree")(programText);
+    def evalledProgram = get(metas, "eval")(context, parsedProgram);
 
     <> evalledProgram(filePath, args*)
 };
