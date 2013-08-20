@@ -5,13 +5,7 @@ Ints
 ----
 
 <br><br>
-### Generic Function Definitions
-
-(none)
-
-
-<br><br>
-### Primitive Definitions
+### Generic Function Definitions: `Int` protocol
 
 #### `abs(int) <> int`
 
@@ -50,19 +44,6 @@ arguments of opposite sign. The usual equivalence holds with Euclidean
 division that `x == (x // y) + (x %% y)` (for `y != 0`), but the
 modulo result is guaranteed to be non-negative, and this means that
 division is correspondingly different.
-
-#### `intGet(int, key) <> int | void`
-
-Map-style element access. This returns the same as `bit(int, key)` if
-`key` is an int in the range `0..!size(int)`. Otherwise this
-returns void.
-
-#### `intNth(int, n) <> int | void`
-
-List-style element access. This returns the same as `bit(int, n)` if
-`n` is an int in the range `0..!size(int)`. Otherwise, if
-`n` is a non-negative int, this returns void. Otherwise, this
-terminates the runtime with an error.
 
 #### `mod(int1, int2) <> int`
 
@@ -136,6 +117,23 @@ Returns the difference of the given values (first minus second).
 #### `xor(int1, int2) <> int`
 
 Returns the binary-xor (bitwise not-equal) of the given values.
+
+
+<br><br>
+### Primitive Definitions
+
+#### `intGet(int, key) <> int | void`
+
+Map-style element access. This returns the same as `bit(int, key)` if
+`key` is an int in the range `0..!size(int)`. Otherwise this
+returns void.
+
+#### `intNth(int, n) <> int | void`
+
+List-style element access. This returns the same as `bit(int, n)` if
+`n` is an int in the range `0..!size(int)`. Otherwise, if
+`n` is a non-negative int, this returns void. Otherwise, this
+terminates the runtime with an error.
 
 
 <br><br>

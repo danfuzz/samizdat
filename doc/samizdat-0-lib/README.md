@@ -15,16 +15,16 @@ language syntax.
 Each section covers definitions for one conceptual area, either
 concerning a data type or some more nebulous concept.
 
-Each section is divided into three subsections: generic functions, primitive
-defintions, and one for in-language definitions. The first section is where
-generic functions are specified as a general definition, as well as where
-particular types indicate which generics they bind and with what specific
-meaning. From the perspective of "client" code written in the language,
-there is no distinction between the latter two sections, but from the
-perspective of implementation, there is. In particular, an implementation
-of *Samizdat 0* must provide the primitive definitions, but it can rely
-on the canonical in-language library source for the remainder, which is
-written in terms of the primitives.
+Each section is divided into subsections: generic functions (one section
+per protocol), primitive defintions, and one for in-language definitions.
+The first sections are where generic functions are specified as a general
+definition, as well as where particular types indicate which generics they
+bind and with what specific meaning. From the perspective of "client"
+code written in the language, there is no distinction between the final
+two sections, but from the perspective of implementation, there is.
+In particular, an implementation of *Samizdat 0* must provide the primitive
+definitions, but it can rely on the canonical in-language library source
+for the remainder, which is written in terms of the primitives.
 
 In addition, functions that are used in the translation of syntactic
 constructs are marked with a note along the lines of,

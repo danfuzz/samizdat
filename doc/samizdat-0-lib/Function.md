@@ -5,7 +5,7 @@ Functions
 ---------
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Callable` protocol
 
 #### `call(callable, args*) <> . | void`
 
