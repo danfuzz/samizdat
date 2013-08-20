@@ -48,11 +48,7 @@ typedef struct PbHeader {
     /** Mark bit (used during GC). */
     bool marked : 1;
 
-    /**
-     * Data type. This can be either a `Type` per se, or it can be an
-     * arbitrary value to represent a transparent derived type. In the
-     * latter case, it can later be replaced (as needed) with a real `Type`.
-     */
+    /** Data type. This is always a `Type` instance. */
     zvalue type;
 
     /**
@@ -109,10 +105,16 @@ zint indexFromType(zvalue type);
 zvalue transparentTypeFromName(zvalue name);
 
 /**
- * Gets the `Type` per se for the given value. This creates a lightweight
- * transparent type, updating the value, if necessary.
+ * Gets the `Type` per se for the given value.
  */
 zvalue trueTypeOf(zvalue value);
+
+/**
+ * Gets the `Type` per se from a type (which may be the name of a transparent
+ * derived type) and secret. Returns `NULL` if the type and secret don't
+ * match.
+ */
+zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret);
 
 /**
  * Returns true iff the given type is a derived type (whether opaque or
