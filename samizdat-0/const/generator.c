@@ -28,20 +28,16 @@
 static zvalue GFN_collect = NULL;
 
 /**
- * Does listification of an int. This returns a list of individual
- * bits (as ints).
+ * Common implementation of listification, used for most types.
  */
-METH_IMPL(Int, collect) {
-    zvalue intValue = args[0];
+METH_IMPL(Collection, collect) {
+    zvalue coll = args[0];
 
-    zint size = collSize(intValue);
-    zint raw = zintFromInt(intValue);
+    zint size = collSize(coll);
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        zint bit;
-        zintBit(&bit, raw, i); // Always succeeds.
-        arr[i] = (bit == 0) ? PB_0 : PB_1;
+        arr[i] = collNth(coll, i);
     }
 
     return listFromArray(size, arr);
@@ -53,39 +49,6 @@ METH_IMPL(Int, collect) {
  */
 METH_IMPL(List, collect) {
     return args[0];
-}
-
-/**
- * Does listification of a map. This returns a list of individual mappings.
- */
-METH_IMPL(Map, collect) {
-    zvalue map = args[0];
-
-    zint size = collSize(map);
-    zvalue arr[size];
-
-    for (zint i = 0; i < size; i++) {
-        arr[i] = collNth(map, i);
-    }
-
-    return listFromArray(size, arr);
-}
-
-/**
- * Does listification of a string. This returns a list of individual
- * characters.
- */
-METH_IMPL(String, collect) {
-    zvalue string = args[0];
-
-    zint size = collSize(string);
-    zvalue arr[size];
-
-    for (zint i = 0; i < size; i++) {
-        arr[i] = collNth(string, i);
-    }
-
-    return listFromArray(size, arr);
 }
 
 /**
@@ -135,10 +98,10 @@ void generatorInit(void) {
     GFN_collect = makeGeneric(1, 1, stringFromUtf8(-1, "collect"));
     pbImmortalize(GFN_collect);
 
-    METH_BIND(Int, collect);
+    genericBindCore(GFN_collect, TYPE_Int,    Collection_collect);
+    genericBindCore(GFN_collect, TYPE_Map,    Collection_collect);
+    genericBindCore(GFN_collect, TYPE_String, Collection_collect);
     METH_BIND(List, collect);
-    METH_BIND(Map, collect);
-    METH_BIND(String, collect);
     METH_BIND(Value, collect);
     genericSeal(GFN_collect);
 }
