@@ -275,6 +275,10 @@ METH_IMPL(String, nth) {
     StringInfo *info = getInfo(string);
     zint index = collNthIndexStrict(info->size, n);
 
+    if (index < 0) {
+        return NULL;
+    }
+
     return stringFromZchar(stringNth(string, index));
 }
 

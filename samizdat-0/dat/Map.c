@@ -411,6 +411,10 @@ METH_IMPL(Map, nth) {
     MapInfo *info = getInfo(map);
     zint index = collNthIndexStrict(info->size, n);
 
+    if (index < 0) {
+        return NULL;
+    }
+
     return mapNth(map, index);
 }
 

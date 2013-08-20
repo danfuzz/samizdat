@@ -41,7 +41,8 @@ bool collNthIndexLenient(zvalue key);
 
 /**
  * Returns an index to use for an `nth` style function, given a collection
- * `size` and client-supplied index `n`. This is strict in that
+ * `size` and client-supplied index `n`. This returns `-1` to indicate that
+ * the caller should in turn return `NULL`. This is strict in that
  * blatantly-invalid `n`s (non-int or negative int) cause runtime termination.
  */
 zint collNthIndexStrict(zint size, zvalue n);

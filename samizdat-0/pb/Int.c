@@ -162,6 +162,10 @@ METH_IMPL(Int, nth) {
     zint x = zintValue(intval);
     zint index = collNthIndexStrict(zintBitSize(x), n);
 
+    if (index < 0) {
+        return NULL;
+    }
+
     zint result;
     zintBit(&result, x, index); // Won't fail.
     return intFromZint(result);

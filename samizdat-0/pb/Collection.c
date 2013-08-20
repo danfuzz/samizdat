@@ -37,7 +37,7 @@ zint collNthIndexStrict(zint size, zvalue n) {
         if (index < 0) {
             die("Invalid index for nth (negative).");
         }
-        return index;
+        return (index < size) ? index: -1;
     } else {
         die("Invalid type for nth (non-int).");
     }

@@ -254,6 +254,10 @@ METH_IMPL(List, nth) {
     ListInfo *info = getInfo(list);
     zint index = collNthIndexStrict(info->size, n);
 
+    if (index < 0) {
+        return NULL;
+    }
+
     return listNth(list, index);
 }
 
