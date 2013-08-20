@@ -268,6 +268,20 @@ METH_IMPL(String, eq) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, nth) {
+    zvalue string = args[0];
+    zvalue n = args[1];
+
+    zint index = zintFromInt(n);
+
+    if (index < 0) {
+        die("Invalid index for `nth`: %lld", index);
+    }
+
+    return stringFromZchar(stringNth(string, index));
+}
+
+/* Documented in header. */
 METH_IMPL(String, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -309,8 +323,10 @@ void pbBindString(void) {
 
     METH_BIND(String, debugString);
     METH_BIND(String, eq);
+    METH_BIND(String, nth);
     METH_BIND(String, order);
     METH_BIND(String, size);
+    seqBind(TYPE_String);
 
     EMPTY_STRING = allocString(0);
     pbImmortalize(EMPTY_STRING);

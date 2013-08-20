@@ -155,6 +155,26 @@ METH_IMPL(Int, eq) {
 }
 
 /* Documented in header. */
+METH_IMPL(Int, nth) {
+    zvalue intval = args[0];
+    zvalue n = args[1];
+
+    zint x = zintValue(intval);
+    zint size = zintBitSize(x);
+    zint index = zintFromInt(n);
+
+    if (index < 0) {
+        die("Invalid index for `nth`: %lld", index);
+    } else if (index >= size) {
+        return NULL;
+    }
+
+    zint result;
+    zintBit(&result, x, index); // Won't fail.
+    return intFromZint(result);
+}
+
+/* Documented in header. */
 METH_IMPL(Int, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -243,6 +263,7 @@ void pbBindInt(void) {
     METH_BIND(Int, mul);
     METH_BIND(Int, neg);
     METH_BIND(Int, not);
+    METH_BIND(Int, nth);
     METH_BIND(Int, or);
     METH_BIND(Int, order);
     METH_BIND(Int, shl);
@@ -251,6 +272,7 @@ void pbBindInt(void) {
     METH_BIND(Int, size);
     METH_BIND(Int, sub);
     METH_BIND(Int, xor);
+    seqBind(TYPE_Int);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);

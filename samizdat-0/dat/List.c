@@ -247,6 +247,20 @@ METH_IMPL(List, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(List, nth) {
+    zvalue list = args[0];
+    zvalue n = args[1];
+
+    zint index = zintFromInt(n);
+
+    if (index < 0) {
+        die("Invalid index for `nth`: %lld", index);
+    }
+
+    return listNth(list, index);
+}
+
+/* Documented in header. */
 METH_IMPL(List, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -283,8 +297,10 @@ void datBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
     METH_BIND(List, eq);
     METH_BIND(List, gcMark);
+    METH_BIND(List, nth);
     METH_BIND(List, order);
     METH_BIND(List, size);
+    seqBind(TYPE_List);
 
     EMPTY_LIST = allocList(0);
     pbImmortalize(EMPTY_LIST);

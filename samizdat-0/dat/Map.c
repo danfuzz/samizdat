@@ -396,6 +396,27 @@ METH_IMPL(Map, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, get) {
+    zvalue map = args[0];
+    zvalue key = args[1];
+
+    return mapGet(map, key);
+}
+
+/* Documented in header. */
+METH_IMPL(Map, nth) {
+    zvalue map = args[0];
+    zvalue n = args[1];
+
+    zint index = zintFromInt(n);
+    if (index < 0) {
+        die("Invalid index for `nth`: %lld", index);
+    }
+
+    return mapNth(map, index);
+}
+
+/* Documented in header. */
 METH_IMPL(Map, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -441,6 +462,8 @@ void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
     METH_BIND(Map, eq);
     METH_BIND(Map, gcMark);
+    METH_BIND(Map, get);
+    METH_BIND(Map, nth);
     METH_BIND(Map, order);
     METH_BIND(Map, size);
 
