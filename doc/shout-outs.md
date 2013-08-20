@@ -64,7 +64,8 @@ by Scheme, Logo, and [Underscore.js](http://underscorejs.org/).
 The implementation tactics used to build Samizdat were informed by
 [Scheme-48](http://en.wikipedia.org/wiki/Scheme_48),
 the [Jikes RVM](http://en.wikipedia.org/wiki/Jikes_RVM)
-(formerly a.k.a. Jalape&ntilde;o), and
-[Squeak](http://en.wikipedia.org/wiki/Squeak), with a tip o' the
-hat to each of [PyPy](http://en.wikipedia.org/wiki/PyPy) and
+(formerly a.k.a. Jalape&ntilde;o),
+[Squeak](http://en.wikipedia.org/wiki/Squeak), and [Objects In
+C](http://en.wikipedia.org/wiki/John_Wainwright_%28computer_scientist%29);
+with a tip o' the hat to each of [PyPy](http://en.wikipedia.org/wiki/PyPy) and
 [Chicken](http://en.wikipedia.org/wiki/Chicken_%28Scheme_implementation%29).
