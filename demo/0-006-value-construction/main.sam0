@@ -132,7 +132,7 @@ expectSame("", "");
 expectSame("x", "x");
 expectSame("blort", "blort");
 expectSame(stringCat("blort", "-fizmo", "-igram"), "blort-fizmo-igram");
-expectSame(stringNth("frotz", 4), "z");
+expectSame(nth("frotz", 4), "z");
 
 expectDifferent("blort", "Blort");
 expectDifferent("blort", "blort ");

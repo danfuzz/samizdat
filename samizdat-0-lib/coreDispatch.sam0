@@ -75,7 +75,7 @@ def DISPATCH = [
 
         # Collection access
         get:   get,
-        nth:   stringNth,
+        nth:   nth,
         size:  size
     ]
 ];

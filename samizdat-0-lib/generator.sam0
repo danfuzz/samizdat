@@ -69,7 +69,7 @@ fn makeMapGenerator(map) {
 # Makes a generator for a string.
 fn makeStringGenerator(string) {
     <> makeIncrementGenerator(0, 1)
-        { index <> stringNth(string, index) }
+        { index <> nth(string, index) }
 };
 
 # Degenerate generator maker for functions, which are tacitly assumed to

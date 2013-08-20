@@ -32,7 +32,7 @@ fn intBody(start, value, base) {
     loopReduce("", value) { text, value ::
         <> ifIs { <> ne(value, 0) }
             {
-                def digit = stringNth(DIGIT_CHARS, mod(value, base));
+                def digit = nth(DIGIT_CHARS, mod(value, base));
                 <> [stringCat(digit, text), div(value, base)];
             }
             { return stringCat(start, text) }
@@ -156,7 +156,7 @@ fn isIdentifier(string) {
     ifIs { <> eq(string, "") }
         { return };
 
-    ifNot { <> get(IDENTIFIER_STARTS, stringNth(string, 0)) }
+    ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
     doFilter(string) { ch ::

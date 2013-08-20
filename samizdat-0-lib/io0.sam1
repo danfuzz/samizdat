@@ -142,7 +142,7 @@ fn io0PathFromFlat(string) {
         { dieWith("Invalid path", "") };
 
     # Prepend the current directory if the path isn't absolute.
-    def absoluteString = ifIs { <> eq(stringNth(string, 0), "/") }
+    def absoluteString = ifIs { <> eq(nth(string, 0), "/") }
         { <> string }
         { <> stringCat(io0FlatCwd(), "/", string) };
 

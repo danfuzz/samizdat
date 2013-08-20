@@ -337,7 +337,7 @@ def parIdentifierString = {/
         <> ifNot { <> dataOf(token) }
             {
                 def type = typeOf(token);
-                def firstCh = stringNth(type, 0);
+                def firstCh = nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
