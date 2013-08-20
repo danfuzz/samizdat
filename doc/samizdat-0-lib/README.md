@@ -63,9 +63,11 @@ will be returned, or one of:
 
 ### Contents
 
-* Types
+* Types and Protocols
   * [Booleans](Boolean.md)
   * [Boxes](Box.md)
+  * [Callables (function-like things)](callable.md)
+  * [Collections (multiple-value containers)](Collection.md)
   * [Ints](Int.md)
   * [Lists](List.md)
   * [Maps](Map.md)
@@ -78,7 +80,6 @@ will be returned, or one of:
   * [Conditionals And Iteration](conditional.md)
   * [Ordering / Comparison](order.md)
   * [Generators](generator.md)
-  * [Callables (function-like things)](callable.md)
   * [I/O](io.md)
   * [String Formatting](format.md)
   * [Parsing](peg.md)
