@@ -4,6 +4,11 @@ Samizdat Layer 0: Core Library
 Callables (function-like things)
 --------------------------------
 
+There is no `Callable` type per se. There is, however, effectively a
+`Callable` protocol, consisting of the two methods `call` and `canCall`.
+Any value that binds those two methods is a `Callable`.
+
+
 <br><br>
 ### Primitive Definitions
 
