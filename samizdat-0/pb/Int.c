@@ -182,15 +182,6 @@ void pbBindInt(void) {
     GFN_abs = makeGeneric(1, 1, stringFromUtf8(-1, "abs"));
     pbImmortalize(GFN_abs);
 
-    GFN_neg = makeGeneric(1, 1, stringFromUtf8(-1, "neg"));
-    pbImmortalize(GFN_neg);
-
-    GFN_not = makeGeneric(1, 1, stringFromUtf8(-1, "not"));
-    pbImmortalize(GFN_not);
-
-    GFN_sign = makeGeneric(1, 1, stringFromUtf8(-1, "sign"));
-    pbImmortalize(GFN_sign);
-
     GFN_add = makeGeneric(2, 2, stringFromUtf8(-1, "add"));
     pbImmortalize(GFN_add);
 
@@ -215,6 +206,12 @@ void pbBindInt(void) {
     GFN_mul = makeGeneric(2, 2, stringFromUtf8(-1, "mul"));
     pbImmortalize(GFN_mul);
 
+    GFN_neg = makeGeneric(1, 1, stringFromUtf8(-1, "neg"));
+    pbImmortalize(GFN_neg);
+
+    GFN_not = makeGeneric(1, 1, stringFromUtf8(-1, "not"));
+    pbImmortalize(GFN_not);
+
     GFN_or = makeGeneric(2, 2, stringFromUtf8(-1, "or"));
     pbImmortalize(GFN_or);
 
@@ -224,6 +221,9 @@ void pbBindInt(void) {
     GFN_shr = makeGeneric(2, 2, stringFromUtf8(-1, "shr"));
     pbImmortalize(GFN_shr);
 
+    GFN_sign = makeGeneric(1, 1, stringFromUtf8(-1, "sign"));
+    pbImmortalize(GFN_sign);
+
     GFN_sub = makeGeneric(2, 2, stringFromUtf8(-1, "sub"));
     pbImmortalize(GFN_sub);
 
@@ -232,12 +232,25 @@ void pbBindInt(void) {
 
     TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"), false);
     METH_BIND(Int, abs);
+    METH_BIND(Int, add);
+    METH_BIND(Int, and);
+    METH_BIND(Int, bit);
+    METH_BIND(Int, div);
+    METH_BIND(Int, divEu);
     METH_BIND(Int, eq);
-    METH_BIND(Int, order);
+    METH_BIND(Int, mod);
+    METH_BIND(Int, modEu);
+    METH_BIND(Int, mul);
     METH_BIND(Int, neg);
     METH_BIND(Int, not);
+    METH_BIND(Int, or);
+    METH_BIND(Int, order);
+    METH_BIND(Int, shl);
+    METH_BIND(Int, shr);
     METH_BIND(Int, sign);
     METH_BIND(Int, size);
+    METH_BIND(Int, sub);
+    METH_BIND(Int, xor);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);
