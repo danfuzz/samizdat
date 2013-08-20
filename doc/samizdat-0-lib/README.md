@@ -66,7 +66,7 @@ will be returned, or one of:
 * Types and Protocols
   * [Booleans](Boolean.md)
   * [Boxes](Box.md)
-  * [Callables (function-like things)](callable.md)
+  * [Callables (function-like things)](Callable.md)
   * [Collections (multiple-value containers)](Collection.md)
   * [Ints](Int.md)
   * [Lists](List.md)
