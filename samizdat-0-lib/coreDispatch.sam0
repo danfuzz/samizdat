@@ -26,8 +26,8 @@ def DISPATCH = [
         order: coreOrder,
 
         # Collection access
-        get:   intGet,
-        nth:   intNth,
+        get:   get,
+        nth:   nth,
         size:  size
     ],
 
