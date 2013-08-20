@@ -5,13 +5,7 @@ Boxes
 -----
 
 <br><br>
-### Generic Function Definitions
-
-(none)
-
-
-<br><br>
-### Primitive Definitions
+### Generic Function Definitions: `Box` protocol
 
 #### `canStore(box) <> logic`
 
@@ -33,6 +27,10 @@ not supplied). `box` must be a box as returned by either `makeMutableBox` or
 
 It is an error (terminating the runtime) for `box` to be a yield box on
 which `store` has already been called.
+
+
+<br><br>
+### Primitive Definitions
 
 #### `makeMutableBox(value?) <> box`
 
