@@ -43,12 +43,6 @@ of all the argument strings, in argument order.
 
 **Syntax Note:** Used in the translation of interpolated string forms.
 
-#### `stringGet(string, key) <> string | void`
-
-Collection-style element access. Returns the same thing as
-`stringNth(list, key)` if `key` is a valid int index into the string.
-If not, this returns void.
-
 #### `stringNth(string, n) <> string | void`
 
 Returns the `n`th (zero-based) element of the given string, as a

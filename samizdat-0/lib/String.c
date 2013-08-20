@@ -75,11 +75,6 @@ PRIM_IMPL(stringCat) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringGet) {
-    return doNthLenient(makeValueStringNth, args[0], args[1]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringNth) {
     return doNthStrict(makeValueStringNth, args[0], args[1]);
 }

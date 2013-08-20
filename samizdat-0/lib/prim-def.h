@@ -106,7 +106,6 @@ PRIM_FUNC(sam0Eval,       2, 2);
 PRIM_FUNC(sam0Tokenize,   1, 1);
 PRIM_FUNC(sam0Tree,       1, 1);
 PRIM_FUNC(stringCat,      0, -1);
-PRIM_FUNC(stringGet,      2, 2);
 PRIM_FUNC(stringNth,      2, 2);
 PRIM_FUNC(stringSlice,    2, 3);
 PRIM_FUNC(totalOrder,     2, 2);
