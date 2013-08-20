@@ -7,6 +7,15 @@ Lists
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
+#### `get(list, key) <> . | void`
+
+This is identical to `nth(list, key)`, except that the result of passing
+a negative or non-`Int` value for `key` is void and not an error.
+
+#### `nth(list, n) <> . | void`
+
+Gets the nth element of the list.
+
 #### `size(list) <> int`
 
 Returns the number of elements in the list.

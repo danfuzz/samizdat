@@ -7,6 +7,20 @@ Maps
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
+#### `get(map, key) <> . | void`
+
+Returns the value mapped to the given key (an arbitrary value) in
+the given map. If there is no such mapping, then this returns void.
+
+#### `nth(map, n) <> . | void`
+
+Returns the nth (zero-based) *mapping* of the given map.
+
+When given a valid index, the return value is a single-mapping map, which is
+suitable as the argument to `mappingKey` and `mappingValue`.
+
+The ordering of the mappings is by sort order of the keys.
+
 #### `size(map) <> int`
 
 Returns the number of mappings in the map.

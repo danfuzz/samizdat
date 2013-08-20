@@ -7,6 +7,17 @@ Ints
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
+#### `get(int, key) <> . | void`
+
+This is identical to `nth(int, key)`, except that the result of passing
+a negative or non-`Int` value for `key` is void and not an error.
+
+#### `nth(int, n) <> . | void`
+
+Gets the nth bit, ordered low to high order and with the sign as the
+highest order bit. This is identical to `bit(int, n)` except that this
+returns void for `n > size(int)`.
+
 #### `size(int) <> int`
 
 Returns the number of significant bits (not bytes) in

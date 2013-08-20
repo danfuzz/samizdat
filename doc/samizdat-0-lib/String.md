@@ -7,6 +7,15 @@ Strings
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
+#### `get(string, key) <> . | void`
+
+This is identical to `nth(string, key)`, except that the result of passing
+a negative or non-`Int` value for `key` is void and not an error.
+
+#### `nth(string, n) <> . | void`
+
+Gets the nth character of the string.
+
 #### `size(string) <> int`
 
 Returns the number of characters in the string.
