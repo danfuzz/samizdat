@@ -80,7 +80,7 @@ msgAll("Filter generator (square even numbers)",
     filterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ::
             <> ifIs { <> eq(mod(value, 2), 0) }
-                { <> imul(value, value) }
+                { <> mul(value, value) }
         });
 
 io0Note("doGenerator on filter");
@@ -159,10 +159,10 @@ io0Note("");
 
 msgAll("Two-reduction reduceGenerator",
     reduceGenerator([[1, 2, 3, 4]], [0, 1])
-        { num, sum, product <> [add(sum, num), imul(product, num)] });
+        { num, sum, product <> [add(sum, num), mul(product, num)] });
 
 def doRedC = doReduce([[1, 2, 3, 4]], [0, 1])
-    { num, sum, product <> [add(sum, num), imul(product, num)] };
+    { num, sum, product <> [add(sum, num), mul(product, num)] };
 io0Note(stringCat("  corresponding doReduce: ", sourceString(doRedC)));
 io0Note("");
 

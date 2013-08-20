@@ -18,12 +18,12 @@ fn \"binary+"(v1, v2) {
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"binary-"(v1, v2) {
-    <> isub(v1, v2)
+    <> sub(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"binary*"(v1, v2) {
-    <> imul(v1, v2)
+    <> mul(v1, v2)
 };
 
 # TODO: Documented in Samizdat Layer 2 spec.

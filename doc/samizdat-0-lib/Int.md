@@ -109,7 +109,7 @@ masked, etc.).
 #### `shr(int, shift) <> int`
 
 Returns the first argument bit-shifted by an amount indicated by the
-second argument. This is identical to `ishl`, except that the sense of
+second argument. This is identical to `shl`, except that the sense of
 positive and negative `shift` is reversed.
 
 **Note:** Unlike some other languages, there is no unsigned right-shift

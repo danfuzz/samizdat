@@ -91,7 +91,7 @@ fn yStarCombinator(functions*) {
 def countDown = yCombinator { countDown ::
     <> { n ::
         <> ifIs { <> ge(n, 0) }
-            { <> [n, countDown(isub(n, 1))*] }
+            { <> [n, countDown(sub(n, 1))*] }
             { <> [] }
     }
 };
@@ -102,7 +102,7 @@ def countDowns = yStarCombinator
     { f1, f2 ::
         <> { n ::
             <> ifIs { <> gt(n, 0) }
-                { <> [n, f2(isub(n, 1))*] }
+                { <> [n, f2(sub(n, 1))*] }
                 { <> [0] }
         }
     }
