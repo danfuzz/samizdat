@@ -46,30 +46,12 @@ fn makeIncrementGenerator(filterFunction, first, increment) {
     <> makeIncrementGenerator1(first)
 };
 
-# Makes a generator for an int.
-fn makeIntGenerator(int) {
-    def size = size(int);
+# Makes a generator for an arbitrary collection.
+fn makeCollectionGenerator(coll) {
+    def sz = size(coll);
 
     <> makeIncrementGenerator(0, 1)
-        { index <> nth(int, index) }
-};
-
-# Makes a generator for a list.
-fn makeListGenerator(list) {
-    <> makeIncrementGenerator(0, 1)
-        { index <> nth(list, index) }
-};
-
-# Makes a generator for a map.
-fn makeMapGenerator(map) {
-    <> makeIncrementGenerator(0, 1)
-        { index <> nth(map, index) }
-};
-
-# Makes a generator for a string.
-fn makeStringGenerator(string) {
-    <> makeIncrementGenerator(0, 1)
-        { index <> nth(string, index) }
+        { index <> nth(coll, index) }
 };
 
 # Degenerate generator maker for functions, which are tacitly assumed to
@@ -83,10 +65,10 @@ fn makeFunctionGenerator(function) {
 def GENERATOR_MAKERS = [
     (Function): makeFunctionGenerator,
     (Generic):  makeFunctionGenerator,
-    (Int):      makeIntGenerator,
-    (List):     makeListGenerator,
-    (Map):      makeMapGenerator,
-    (String):   makeStringGenerator
+    (Int):      makeCollectionGenerator,
+    (List):     makeCollectionGenerator,
+    (Map):      makeCollectionGenerator,
+    (String):   makeCollectionGenerator
 ];
 
 # Map from `[direction, inclusive]` pairs to appropriate test functions.
@@ -114,7 +96,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
         {
             # Special case: A range with increment of zero always just
             # yields the `first` value and then becomes voided.
-            return makeListGenerator([first])
+            return makeCollectionGenerator([first])
         };
 
     def limitFunction = ifValue { <> optLimit* }
