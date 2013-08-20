@@ -44,12 +44,12 @@ def DISPATCH = [
     (List): [
         get:  listNth,
         nth:  listNth,
-        size: coreSizeOf
+        size: size
     ],
     (Map): [
         get:  mapGet,
         nth:  mapNth,
-        size: coreSizeOf
+        size: size
     ],
     Weird: [
         get:  weirdNth,

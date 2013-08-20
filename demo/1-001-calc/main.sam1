@@ -44,7 +44,7 @@ fn applyShuntingYard(initialValue, opValues) {
     # top two values, and combines them by applying the top op, and places
     # the result back at the top of the value stack.
     fn applyTop(ops, values) {
-        def valuesSizeM2 = sub(coreSizeOf(values), 2);
+        def valuesSizeM2 = sub(size(values), 2);
         def function = mapGet(listLast(ops), "function");
         def newValue = function(listSlice(values, valuesSizeM2)*);
         <> [
