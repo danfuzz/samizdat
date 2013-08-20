@@ -13,20 +13,6 @@
 
 
 /*
- * Private Definitions
- */
-
-/**
- * Calls `stringNth()`, converting the result into a proper zvalue.
- */
-static zvalue makeValueStringNth(zvalue string, zint n) {
-    zint ch = stringNth(string, n);
-
-    return (ch < 0) ? NULL : stringFromZchar(ch);
-}
-
-
-/*
  * Exported Definitions
  */
 
