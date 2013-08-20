@@ -157,19 +157,6 @@ zvalue listInsNth(zvalue list, zint n, zvalue value) {
 }
 
 /* Documented in header. */
-zvalue listNth(zvalue list, zint n) {
-    assertList(list);
-
-    ListInfo *info = getInfo(list);
-
-    if ((n < 0) || (n >= info->size)) {
-        return NULL;
-    }
-
-    return info->elems[n];
-}
-
-/* Documented in header. */
 zvalue listPutNth(zvalue list, zint n, zvalue value) {
     assertList(list);
     assertValid(value);
@@ -258,7 +245,7 @@ METH_IMPL(List, nth) {
         return NULL;
     }
 
-    return listNth(list, index);
+    return info->elems[index];
 }
 
 /* Documented in header. */

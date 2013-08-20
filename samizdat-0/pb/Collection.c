@@ -44,6 +44,11 @@ zint collNthIndexStrict(zint size, zvalue n) {
 }
 
 /* Documented in header. */
+zvalue collNth(zvalue coll, zint index) {
+    return GFN_CALL(nth, coll, intFromZint(index));
+}
+
+/* Documented in header. */
 zint collSize(zvalue coll) {
     return zintFromInt(GFN_CALL(size, coll));
 }

@@ -45,7 +45,7 @@ static zvalue read(ParseState *state) {
         return NULL;
     }
 
-    zvalue result = listNth(state->tokens, state->at);
+    zvalue result = collNth(state->tokens, state->at);
     state->at++;
 
     return result;
@@ -59,7 +59,7 @@ static zvalue readMatch(ParseState *state, zvalue type) {
         return NULL;
     }
 
-    zvalue result = listNth(state->tokens, state->at);
+    zvalue result = collNth(state->tokens, state->at);
     zvalue resultType = typeOf(result);
 
     if (!valEq(type, resultType)) {
@@ -854,7 +854,7 @@ DEF_PARSE(unaryExpression) {
 
     zint size = collSize(postfixes);
     for (zint i = 0; i < size; i++) {
-        zvalue one = listNth(postfixes, i);
+        zvalue one = collNth(postfixes, i);
         if (hasType(one, TYPE_List)) {
             result = makeCall(result, one);
         } else if (valEq(one, TOK_CH_STAR)) {
@@ -865,7 +865,7 @@ DEF_PARSE(unaryExpression) {
     }
 
     for (zint i = collSize(prefixes) - 1; i >= 0; i--) {
-        zvalue one = listNth(prefixes, i);
+        zvalue one = collNth(prefixes, i);
         if (valEq(one, TOK_CH_MINUS)) {
             result = makeCallName(STR_neg, listFrom1(result));
         } else {

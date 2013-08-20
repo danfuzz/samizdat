@@ -97,5 +97,4 @@ zvalue intFromZint(zint value);
  */
 zint zintFromInt(zvalue intval);
 
-
 #endif

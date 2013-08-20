@@ -59,12 +59,6 @@ zvalue listFromArray(zint size, const zvalue *values);
 zvalue listInsNth(zvalue list, zint n, zvalue value);
 
 /**
- * Given a list, returns the `n`th element. `list` must be a
- * list, and `n` must be `< collSize(value)`.
- */
-zvalue listNth(zvalue list, zint n);
-
-/**
  * Gets the list resulting from setting the value at the
  * given index to the given value. `n` must be non-negative
  * and no greater than the size of the given list.

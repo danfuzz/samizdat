@@ -19,6 +19,7 @@
 #define _TYPE_COLLECTION_H_
 
 #include "pb.h"
+#include "type/Generic.h"
 
 #include <stdbool.h>
 
@@ -46,6 +47,11 @@ bool collNthIndexLenient(zvalue key);
  * blatantly-invalid `n`s (non-int or negative int) cause runtime termination.
  */
 zint collNthIndexStrict(zint size, zvalue n);
+
+/**
+ * Calls `nth`, converting the given `zint` index to an `Int` value.
+ */
+zvalue collNth(zvalue coll, zint index);
 
 /**
  * Gets the size of the given collection, as a `zint`.

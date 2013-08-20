@@ -64,7 +64,7 @@ PRIM_IMPL(listFilter) {
     assertList(list);
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = listNth(list, i);
+        zvalue elem = collNth(list, i);
         zvalue one = FUN_CALL(function, elem);
 
         if (one != NULL) {
