@@ -47,13 +47,13 @@ division is correspondingly different.
 
 #### `intGet(int, key) <> int | void`
 
-Map-style element access. This returns the same as `ibit(int, key)` if
+Map-style element access. This returns the same as `bit(int, key)` if
 `key` is an int in the range `0..!coreSizeOf(int)`. Otherwise this
 returns void.
 
 #### `intNth(int, n) <> int | void`
 
-List-style element access. This returns the same as `ibit(int, n)` if
+List-style element access. This returns the same as `bit(int, n)` if
 `n` is an int in the range `0..!coreSizeOf(int)`. Otherwise, if
 `n` is a non-negative int, this returns void. Otherwise, this
 terminates the runtime with an error.

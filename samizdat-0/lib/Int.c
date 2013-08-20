@@ -41,7 +41,7 @@
     extern int semicolonRequiredHere
 
 /**
- * Helper for `intGet` and `intNth`, which acts like `ibit` except that
+ * Helper for `intGet` and `intNth`, which acts like `bit` except that
  * out-of-range indices result in void, not the sign bit. `n` is always
  * passed as non-negative.
  */
@@ -60,10 +60,6 @@ static zvalue doIntNth(zvalue value, zint n) {
 /*
  * Exported Definitions
  */
-
-/* These are all documented in Samizdat Layer 0 spec. */
-BINARY_PRIM(ibit,   zintBit);
-BINARY_PRIM(ior,    zintOr);
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intGet) {

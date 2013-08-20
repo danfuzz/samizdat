@@ -51,7 +51,7 @@ fn makeIntGenerator(int) {
     def size = coreSizeOf(int);
 
     <> makeIncrementGenerator(0, 1)
-        { index <> ibit(int, &gt(size, index)) }
+        { index <> intNth(int, index) }
 };
 
 # Makes a generator for a list.
