@@ -32,13 +32,11 @@ typedef zvalue (*zfunction)(zint argCount, const zvalue *args);
 
 /**
  * Generic `call(function, args*)`: Generic for dispatching to a function
- * calling mechanism (how meta).
+ * calling mechanism (how meta). Documented in spec.
  */
 extern zvalue GFN_call;
 
-/**
- * Generic `canCall(function, value)`: See spec for details.
- */
+/** Generic `canCall(function, value)`: Documented in spec. */
 extern zvalue GFN_canCall;
 
 /**

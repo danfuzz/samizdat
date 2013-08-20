@@ -392,7 +392,7 @@ def parActualsList = pegMakeMainChoice(
 # Documented in Samizdat Layer 0 spec.
 def parPrefixOperator = pegMakeMainSequence(
     pegMakeToken("-"),
-    pegMakeCode { . <> { node <> makeCallName("ineg", node) } });
+    pegMakeCode { . <> { node <> makeCallName("neg", node) } });
 
 # Documented in Samizdat Layer 0 spec.
 def parPostfixOperator = pegMakeMainChoice(

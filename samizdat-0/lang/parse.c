@@ -867,7 +867,7 @@ DEF_PARSE(unaryExpression) {
     for (zint i = valSize(prefixes) - 1; i >= 0; i--) {
         zvalue one = listNth(prefixes, i);
         if (valEq(one, TOK_CH_MINUS)) {
-            result = makeCallName(STR_ineg, listFrom1(result));
+            result = makeCallName(STR_neg, listFrom1(result));
         } else {
             die("Unexpected prefix.");
         }

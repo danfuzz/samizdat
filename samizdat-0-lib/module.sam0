@@ -23,7 +23,7 @@ fn moduleNameFromString(orig) {
         { return };
 
     <> ifIs { <> eq(stringSlice(orig, 0, MODULE_PREFIX), MODULE_PREFIX) }
-        { <> stringSlice(orig, iadd(MODULE_PREFIX_SIZE, 1)) }
+        { <> stringSlice(orig, add(MODULE_PREFIX_SIZE, 1)) }
 };
 
 # Does a `mapGet` on the payload data of the given value.

@@ -111,8 +111,8 @@ msg(((1 \== 1) & (1 \== 2))??);
 msg(((1 \== 1) & (1 \== 2) & (3 \== 3))??);
 msg(((1 \== 2) & (2 \== 2) & (3 \== 3))??);
 
-msg((x := 1) & ineg(x));
-msg((foo := 1) & (bar := ineg(foo)) & iadd(-foo, bar));
+msg((x := 1) & neg(x));
+msg((foo := 1) & (bar := neg(foo)) & add(-foo, bar));
 msg((blort := "th") & (1 \== 1) & (fizmo := "ree") & stringCat(blort, fizmo));
 
 io0Note("\nLogic 2");

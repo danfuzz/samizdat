@@ -121,7 +121,7 @@ def UNARY_OPERATORS = [
     "+":   makeVarRef("unary+"),
     "-":   makeVarRef("unary-"),
     "**":  makeVarRef("logicFromBoolean"),
-    "!!!": makeVarRef("inot")
+    "!!!": makeVarRef("not")
 ];
 
 # For binary operators, map of token types to one of:
@@ -142,11 +142,11 @@ def BINARY_OPERATORS = [
     ">":    makeLiteral("gt"),
     "<=":   makeLiteral("le"),
     ">=":   makeLiteral("ge"),
-    "&&&":  makeVarRef("iand"),
-    "|||":  makeVarRef("ior"),
-    "^^^":  makeVarRef("ixor"),
-    "<<<":  makeVarRef("ishl"),
-    ">>>":  makeVarRef("ishr"),
+    "&&&":  makeVarRef("and"),
+    "|||":  makeVarRef("or"),
+    "^^^":  makeVarRef("xor"),
+    "<<<":  makeVarRef("shl"),
+    ">>>":  makeVarRef("shr"),
     "\\==": makeVarRef("eq"),
     "\\!=": makeVarRef("ne"),
     "\\<":  makeVarRef("lt"),
