@@ -21,10 +21,13 @@
 #include "pb.h"
 
 
-/**
- * Generic `size(value)`: Gets the "size" of a value of the given type,
- * for the appropriate per-type meaning of size. Documented in spec.
- */
+/** Generic `get(collection, key)`: Documented in spec. */
+extern zvalue GFN_get;
+
+/** Generic `nth(collection, n)`: Documented in spec. */
+extern zvalue GFN_nth;
+
+/** Generic `size(collection)`: Documented in spec. */
 extern zvalue GFN_size;
 
 /**

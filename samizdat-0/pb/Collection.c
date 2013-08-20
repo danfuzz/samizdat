@@ -35,9 +35,21 @@ zint valSize(zvalue coll) {
 
 /* Documented in header. */
 void pbBindCollection(void) {
+    GFN_get = makeGeneric(2, 2, stringFromUtf8(-1, "get"));
+    pbImmortalize(GFN_get);
+
+    GFN_nth = makeGeneric(2, 2, stringFromUtf8(-1, "nth"));
+    pbImmortalize(GFN_nth);
+
     GFN_size = makeGeneric(1, 1, stringFromUtf8(-1, "size"));
     pbImmortalize(GFN_size);
 }
+
+/* Documented in header. */
+zvalue GFN_get = NULL;
+
+/* Documented in header. */
+zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_size = NULL;
