@@ -4,7 +4,6 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "const.h"
 #include "impl.h"
 #include "type/Int.h"
 #include "type/Value.h"
@@ -14,31 +13,6 @@
 /*
  * Private Definitions
  */
-
-#define UNARY_PRIM(name, op) \
-    PRIM_IMPL(name) { \
-        zint x = zintFromInt(args[0]); \
-        zint result; \
-        if ((op)(&result, x)) { \
-            return intFromZint(result); \
-        } else { \
-            die("Overflow / error on" #name "(%lld).", x); \
-        } \
-    } \
-    extern int semicolonRequiredHere
-
-#define BINARY_PRIM(name, op) \
-    PRIM_IMPL(name) { \
-        zint x = zintFromInt(args[0]); \
-        zint y = zintFromInt(args[1]); \
-        zint result; \
-        if ((op)(&result, x, y)) { \
-            return intFromZint(result); \
-        } else { \
-            die("Overflow / error on" #name "(%lld, %lld).", x, y); \
-        } \
-    } \
-    extern int semicolonRequiredHere
 
 /**
  * Helper for `intGet` and `intNth`, which acts like `bit` except that
