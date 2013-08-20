@@ -53,7 +53,7 @@ fn \"unary+"(value) {
 
 # TODO: Documented in Samizdat Layer 2 spec.
 fn \"unary-"(value) {
-    <> ineg(value)
+    <> neg(value)
 };
 
 <> [

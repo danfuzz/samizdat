@@ -62,12 +62,6 @@ static zvalue doIntNth(zvalue value, zint n) {
  */
 
 /* These are all documented in Samizdat Layer 0 spec. */
-UNARY_PRIM(iabs,  zintAbs);
-UNARY_PRIM(ineg,  zintNeg);
-UNARY_PRIM(inot,  zintNot);
-UNARY_PRIM(isign, zintSign);
-
-/* These are all documented in Samizdat Layer 0 spec. */
 BINARY_PRIM(iadd,   zintAdd);
 BINARY_PRIM(iand,   zintAnd);
 BINARY_PRIM(idiv,   zintDiv);

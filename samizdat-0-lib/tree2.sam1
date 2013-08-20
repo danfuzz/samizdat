@@ -121,7 +121,7 @@ def UNARY_OPERATORS = [
     "+":   makeVarRef("unary+"),
     "-":   makeVarRef("unary-"),
     "**":  makeVarRef("logicFromBoolean"),
-    "!!!": makeVarRef("inot")
+    "!!!": makeVarRef("not")
 ];
 
 # For binary operators, map of token types to one of:

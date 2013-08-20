@@ -127,7 +127,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
                 }
                 { <> intFromChar(limit) };
             def testFunction =
-                mapGet(INT_RANGE_TESTS, [isign(increment), (optInclusive*)]);
+                mapGet(INT_RANGE_TESTS, [sign(increment), (optInclusive*)]);
             <> { x <> testFunction(limitInt, x) }
         }
         {

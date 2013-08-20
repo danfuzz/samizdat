@@ -41,14 +41,14 @@ fn intBody(start, value, base) {
 
 # Map from int sign values to the appropriate stringifier for each.
 def INT_SIGNS = [
-    -1: { int, base <> intBody("-", ineg(int), base) },
+    -1: { int, base <> intBody("-", neg(int), base) },
     0:  { int, base <> "0" },
     1:  { int, base <> intBody("", int, base) }
 ];
 
 # Stringifies an int using the given base.
 fn stringFromIntBase(int, base) {
-    <> mapGet(INT_SIGNS, isign(int))(int, base)
+    <> mapGet(INT_SIGNS, sign(int))(int, base)
 };
 
 # Helper for optionally adorning results.
