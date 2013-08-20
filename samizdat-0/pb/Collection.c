@@ -13,11 +13,8 @@
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
+#include "type/Type.h"
 
-
-/*
- * Private Definitions
- */
 
 /*
  * Exported Definitions
@@ -30,7 +27,33 @@ zint collSize(zvalue coll) {
 
 
 /*
- * Type Definition
+ * Type Definition: `Sequence`
+ *
+ * **Note:** This isn't the usual form of type definition, since these
+ * methods are bound on many types.
+ */
+
+/* Documented in header. */
+METH_IMPL(Sequence, get) {
+    zvalue seq = args[0];
+    zvalue key = args[1];
+
+    if (hasType(key, TYPE_Int)) {
+        zint index = zintFromInt(key);
+        return (index < 0) ? NULL : GFN_CALL(nth, seq, key);
+    } else {
+        return NULL;
+    }
+}
+
+/* Documented in header. */
+void seqBind(zvalue type) {
+    genericBindCore(GFN_get, type, Sequence_get);
+}
+
+
+/*
+ * Type Definition: `Collection`
  */
 
 /* Documented in header. */

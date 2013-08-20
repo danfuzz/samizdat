@@ -35,4 +35,10 @@ extern zvalue GFN_size;
  */
 zint collSize(zvalue coll);
 
+/**
+ * Binds the standard methods for a `Sequence` type. That is, this
+ * is for collections whose keys are a zero-based `Int` sequence.
+ */
+void seqBind(zvalue type);
+
 #endif
