@@ -1,0 +1,35 @@
+/*
+ * Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+ * Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+ * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+ */
+
+/*
+ * `Collection` protocols
+ *
+ * **Note:** There is no in-model value `Collection`. There are a few
+ * different subsets of collection-like functionality which may eventually
+ * be represented as protocols or similar.
+ *
+ * **Note:** Because `collection` per se is an awkward prefix, instead the
+ * suggestive prefix `coll` is used.
+ */
+
+#ifndef _TYPE_COLLECTION_H_
+#define _TYPE_COLLECTION_H_
+
+#include "pb.h"
+
+
+/**
+ * Generic `size(value)`: Gets the "size" of a value of the given type,
+ * for the appropriate per-type meaning of size. Documented in spec.
+ */
+extern zvalue GFN_size;
+
+/**
+ * Gets the size of the given collection, as a `zint`.
+ */
+zint valSize(zvalue coll);
+
+#endif

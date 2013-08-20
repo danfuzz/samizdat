@@ -12,6 +12,7 @@
 #define _TYPE_STRING_H_
 
 #include "pb.h"
+#include "type/Collection.h"
 
 
 /** Type value for in-model type `String`. */

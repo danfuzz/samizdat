@@ -55,14 +55,14 @@ void pbInit(void) {
     // depends on.
     pbInitTypeSystem();
 
-    pbBindValue(); // This defines the cross-type generics.
+    pbBindValue();      // This defines the universal cross-type generics.
+    pbBindCallable();   // This defines the callable (function-like) generics.
+    pbBindCollection(); // This defines the collection generics.
+
     pbBindType();
     pbBindString();
-
-    pbBindCallable(); // This defines the callable generics.
     pbBindFunction();
     pbBindGeneric();
-
     pbBindInt();
     pbBindUniqlet();
 }

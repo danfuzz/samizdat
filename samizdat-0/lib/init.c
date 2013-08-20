@@ -9,6 +9,7 @@
 #include "lang.h"
 #include "type/Box.h"
 #include "type/Callable.h"
+#include "type/Collection.h"
 #include "type/Function.h"
 #include "type/Generic.h"
 #include "type/Int.h"

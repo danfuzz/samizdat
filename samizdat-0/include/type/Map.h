@@ -12,6 +12,7 @@
 #define _TYPE_MAP_H_
 
 #include "pb.h"
+#include "type/Collection.h"
 
 
 /**
