@@ -130,11 +130,11 @@ static void bindArguments(Frame *frame, zvalue closure,
         if (repeat != NULL) {
             zint count;
 
-            if (stringNth(repeat, 1) != -1) {
+            if (collNth(repeat, 1) != NULL) {
                 die("Invalid repeat modifier.");
             }
 
-            switch (stringNth(repeat, 0)) {
+            switch (collNthChar(repeat, 0)) {
                 case '*': {
                     count = argCount - argAt;
                     break;
@@ -213,7 +213,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
 
         // Switch on the first character of the type string to avoid
         // gratuitous `valEq` tests.
-        switch (stringNth(oneType, 0)) {
+        switch (collNthChar(oneType, 0)) {
             case 'f': {
                 if (valEq(oneType, STR_fnDef)) {
                     // Look for immediately adjacent `fnDef` nodes, and

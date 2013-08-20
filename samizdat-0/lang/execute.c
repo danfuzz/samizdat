@@ -165,7 +165,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     // Switching on the first character of the type is a bit of a hack. It
     // lets us avoid having to have a single big cascading `if` with a lot of
     // `valEq` calls.
-    switch (stringNth(type, 0)) {
+    switch (collNthChar(type, 0)) {
         case 'c': {
             if      (valEq(type, STR_call))    { return execCall(frame, e); }
             else if (valEq(type, STR_closure)) { return execClosure(frame, e); }
