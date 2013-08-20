@@ -242,14 +242,16 @@ zvalue transparentTypeFromName(zvalue name) {
 
 /* Documented in header. */
 zvalue trueTypeOf(zvalue value) {
-    zvalue type = value->type;
+    return value->type;
+}
 
-    if (!isType(type)) {
-        type = transparentTypeFromName(type);
-        value->type = type;
+/* Documented in header. */
+zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret) {
+    if (!isType(typeOrName)) {
+        typeOrName = transparentTypeFromName(typeOrName);
     }
 
-    return type;
+    return typeSecretIs(typeOrName, secret) ? typeOrName : NULL;
 }
 
 /* Documented in header. */

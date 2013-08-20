@@ -53,12 +53,14 @@ zvalue makeValue(zvalue type, zvalue data, zvalue secret) {
     assertValidOrNull(secret);
 
     // Make sure the secrets match. In the case of a transparent type,
-    // this checks that `secret` is `NULL`.
-    if (!typeSecretIs(type, secret)) {
+    // this both converts to a `Type` and checks that `secret` is `NULL`.
+    zvalue trueType = typeFromTypeAndSecret(type, secret);
+
+    if (trueType == NULL) {
         die("Attempt to create derived value with incorrect secret.");
     }
 
-    zvalue result = pbAllocValue(type, sizeof(DerivInfo));
+    zvalue result = pbAllocValue(trueType, sizeof(DerivInfo));
     ((DerivInfo *) pbPayload(result))->data = data;
 
     return result;
