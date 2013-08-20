@@ -215,6 +215,14 @@ zint utf8SizeFromString(zvalue string) {
 }
 
 /* Documented in header. */
+zchar zcharFromString(zvalue string) {
+    assertStringSize1(string);
+
+    StringInfo *info = getInfo(string);
+    return info->elems[0];
+}
+
+/* Documented in header. */
 void zcharsFromString(zchar *result, zvalue string) {
     assertString(string);
 

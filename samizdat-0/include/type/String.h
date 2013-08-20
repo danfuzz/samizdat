@@ -92,6 +92,12 @@ void utf8FromString(zint resultSize, char *result, zvalue string);
 zint utf8SizeFromString(zvalue string);
 
 /**
+ * Returns the single character of the given string, which must in fact
+ * be a single-character string.
+ */
+zchar zcharFromString(zvalue string);
+
+/**
  * Copies all the characters of the given string into the given result
  * array, which must be sized large enough to hold all of them.
  */

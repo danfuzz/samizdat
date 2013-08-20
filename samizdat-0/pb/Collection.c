@@ -54,6 +54,11 @@ zvalue collNth(zvalue coll, zint index) {
 }
 
 /* Documented in header. */
+zchar collNthChar(zvalue coll, zint index) {
+    return zcharFromString(collNth(coll, index));
+}
+
+/* Documented in header. */
 zint collSize(zvalue coll) {
     return zintFromInt(GFN_CALL(size, coll));
 }

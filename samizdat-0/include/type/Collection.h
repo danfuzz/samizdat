@@ -59,6 +59,13 @@ zvalue collGet(zvalue coll, zvalue key);
 zvalue collNth(zvalue coll, zint index);
 
 /**
+ * Calls `nth`, converting the given `zint` index to an `Int` value, and
+ * converting the return value &mdash; which must be a single-character
+ * `String` &mdash; to a `zchar`.
+ */
+zchar collNthChar(zvalue coll, zint index);
+
+/**
  * Gets the size of the given collection, as a `zint`.
  */
 zint collSize(zvalue coll);
