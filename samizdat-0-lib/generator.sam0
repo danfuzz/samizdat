@@ -34,7 +34,7 @@ fn makeIncrementGenerator(filterFunction, first, increment) {
             <> ifValue { <> filterFunction(value) }
                 { result ::
                     store(box, result);
-                    <> makeIncrementGenerator1(iadd(value, increment));
+                    <> makeIncrementGenerator1(add(value, increment));
                 }
                 {
                     # The filter indicated that the generator is voided.
@@ -51,7 +51,7 @@ fn makeIntGenerator(int) {
     def size = coreSizeOf(int);
 
     <> makeIncrementGenerator(0, 1)
-        { index <> ibit(int, &gt(size, index)) }
+        { index <> intNth(int, index) }
 };
 
 # Makes a generator for a list.
@@ -127,7 +127,7 @@ fn makeRangeGenerator(first, increment, optLimit?, optInclusive?) {
                 }
                 { <> intFromChar(limit) };
             def testFunction =
-                mapGet(INT_RANGE_TESTS, [isign(increment), (optInclusive*)]);
+                mapGet(INT_RANGE_TESTS, [sign(increment), (optInclusive*)]);
             <> { x <> testFunction(limitInt, x) }
         }
         {

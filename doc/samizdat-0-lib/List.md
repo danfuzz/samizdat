@@ -127,8 +127,8 @@ behaves differently than either of those when the list is empty.
 Returns a list consisting of all the elements of the given list
 except for the last element (that is, all but the last element). If
 the given list is empty, this returns void. This is similar to
-`listSlice(list, 0, isub(coreSizeOf(list), 1))` or
-`listDelNth(list, isub(coreSizeOf(list), 1))`, except that this function
+`listSlice(list, 0, sub(coreSizeOf(list), 1))` or
+`listDelNth(list, sub(coreSizeOf(list), 1))`, except that this function
 behaves differently than either of those when the list is empty.
 
 #### `listFirst(list) <> . | void`
@@ -140,4 +140,4 @@ This is just a convenient shorthand for `listNth(list, 0)`.
 
 Returns the last element of the given list or void if the list is empty.
 This is just a convenient shorthand for
-`listNth(list, isub(coreSizeOf(list), 1))`.
+`listNth(list, sub(coreSizeOf(list), 1))`.

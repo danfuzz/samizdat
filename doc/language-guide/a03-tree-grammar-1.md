@@ -502,7 +502,7 @@ def parActualsList = {/
 # This rule still exists in *Layer 2* but is totally rewritten.
 def parPrefixOperator = {/
     @"-"
-    { <> { node <> makeCallName("ineg", node) } }
+    { <> { node <> makeCallName("neg", node) } }
 /};
 
 # Parses a unary postfix operator. This yields a function (per se) to call

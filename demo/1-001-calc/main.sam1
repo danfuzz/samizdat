@@ -17,17 +17,17 @@ SELF_PATH, ARGS* ::
 
 # Map from binary operation names to precedece/function maps.
 def BINARY_OPS = [
-    "+": [function: iadd, precedence: 1],
-    "-": [function: isub, precedence: 1],
-    "*": [function: imul, precedence: 2],
-    "/": [function: idiv, precedence: 2],
-    "%": [function: imod, precedence: 2]
+    "+": [function: add, precedence: 1],
+    "-": [function: sub, precedence: 1],
+    "*": [function: mul, precedence: 2],
+    "/": [function: div, precedence: 2],
+    "%": [function: mod, precedence: 2]
 ];
 
 # Map from unary operation names to functions.
 def UNARY_OPS = [
     "+": { x <> x },
-    "-": ineg
+    "-": neg
 ];
 
 # Takes an initial value and a list of one-argument functions, and
@@ -44,7 +44,7 @@ fn applyShuntingYard(initialValue, opValues) {
     # top two values, and combines them by applying the top op, and places
     # the result back at the top of the value stack.
     fn applyTop(ops, values) {
-        def valuesSizeM2 = isub(coreSizeOf(values), 2);
+        def valuesSizeM2 = sub(coreSizeOf(values), 2);
         def function = mapGet(listLast(ops), "function");
         def newValue = function(listSlice(values, valuesSizeM2)*);
         <> [
@@ -95,7 +95,7 @@ def expression = forwardFunction();
 # Parses a single digit, yielding its value as an int.
 def digit = {/
     ch = ["0".."9"]
-    { <> isub(intFromChar(typeOf(ch)), intFromChar("0")) }
+    { <> sub(intFromChar(typeOf(ch)), intFromChar("0")) }
 /};
 
 # Parses a whole number (non-negative integer), yielding its value as an int.
@@ -103,7 +103,7 @@ def number = {/
     digits = digit+
     {
         <> doReduce1(digits, 0)
-            { digit, result <> iadd(digit, imul(result, 10)) }
+            { digit, result <> add(digit, mul(result, 10)) }
     }
 /};
 

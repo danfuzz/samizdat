@@ -43,7 +43,7 @@ fn metaFunctions(context, fileName) {
     def dotAt = charIndex(fileName, ".");
     def suffix = ifIs { <> eq(dotAt, -1) }
         { <> "" }
-        { <> stringSlice(fileName, iadd(dotAt, 1)) };
+        { <> stringSlice(fileName, add(dotAt, 1)) };
 
     # Note: As the layers get added, the default here should change.
     def nameMap = ifValueOr { <> mapGet(META_NAME_MAP, suffix) }

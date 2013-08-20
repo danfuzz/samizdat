@@ -98,6 +98,55 @@ zvalue PB_1 = NULL;
 /* Documented in header. */
 zvalue PB_NEG1 = NULL;
 
+/**
+ * Helper for defining unary operations as methods.
+ */
+#define UNARY_IMPL(name, op) \
+    METH_IMPL(Int, name) { \
+        zint x = zintValue(args[0]); \
+        zint result; \
+        if ((op)(&result, x)) { \
+            return intFromZint(result); \
+        } else { \
+            die("Overflow / error on" #name "(%lld).", x); \
+        } \
+    } \
+    extern int semicolonRequiredHere
+
+#define BINARY_IMPL(name, op) \
+    METH_IMPL(Int, name) { \
+        zint x = zintValue(args[0]); \
+        zint y = zintFromInt(args[1]); \
+        zint result; \
+        if ((op)(&result, x, y)) { \
+            return intFromZint(result); \
+        } else { \
+            die("Overflow / error on" #name "(%lld, %lld).", x, y); \
+        } \
+    } \
+    extern int semicolonRequiredHere
+
+// All documented in header.
+UNARY_IMPL(abs,  zintAbs);
+UNARY_IMPL(neg,  zintNeg);
+UNARY_IMPL(not,  zintNot);
+UNARY_IMPL(sign, zintSign);
+
+// All documented in header.
+BINARY_IMPL(add,   zintAdd);
+BINARY_IMPL(and,   zintAnd);
+BINARY_IMPL(bit,   zintBit);
+BINARY_IMPL(div,   zintDiv);
+BINARY_IMPL(divEu, zintDivEu);
+BINARY_IMPL(mod,   zintMod);
+BINARY_IMPL(modEu, zintModEu);
+BINARY_IMPL(mul,   zintMul);
+BINARY_IMPL(or,    zintOr);
+BINARY_IMPL(shl,   zintShl);
+BINARY_IMPL(shr,   zintShr);
+BINARY_IMPL(sub,   zintSub);
+BINARY_IMPL(xor,   zintXor);
+
 /* Documented in header. */
 METH_IMPL(Int, eq) {
     zvalue v1 = args[0];
@@ -130,10 +179,78 @@ METH_IMPL(Int, size) {
 
 /* Documented in header. */
 void pbBindInt(void) {
+    GFN_abs = makeGeneric(1, 1, stringFromUtf8(-1, "abs"));
+    pbImmortalize(GFN_abs);
+
+    GFN_add = makeGeneric(2, 2, stringFromUtf8(-1, "add"));
+    pbImmortalize(GFN_add);
+
+    GFN_and = makeGeneric(2, 2, stringFromUtf8(-1, "and"));
+    pbImmortalize(GFN_and);
+
+    GFN_div = makeGeneric(2, 2, stringFromUtf8(-1, "div"));
+    pbImmortalize(GFN_div);
+
+    GFN_divEu = makeGeneric(2, 2, stringFromUtf8(-1, "divEu"));
+    pbImmortalize(GFN_divEu);
+
+    GFN_bit = makeGeneric(2, 2, stringFromUtf8(-1, "bit"));
+    pbImmortalize(GFN_bit);
+
+    GFN_mod = makeGeneric(2, 2, stringFromUtf8(-1, "mod"));
+    pbImmortalize(GFN_mod);
+
+    GFN_modEu = makeGeneric(2, 2, stringFromUtf8(-1, "modEu"));
+    pbImmortalize(GFN_modEu);
+
+    GFN_mul = makeGeneric(2, 2, stringFromUtf8(-1, "mul"));
+    pbImmortalize(GFN_mul);
+
+    GFN_neg = makeGeneric(1, 1, stringFromUtf8(-1, "neg"));
+    pbImmortalize(GFN_neg);
+
+    GFN_not = makeGeneric(1, 1, stringFromUtf8(-1, "not"));
+    pbImmortalize(GFN_not);
+
+    GFN_or = makeGeneric(2, 2, stringFromUtf8(-1, "or"));
+    pbImmortalize(GFN_or);
+
+    GFN_shl = makeGeneric(2, 2, stringFromUtf8(-1, "shl"));
+    pbImmortalize(GFN_shl);
+
+    GFN_shr = makeGeneric(2, 2, stringFromUtf8(-1, "shr"));
+    pbImmortalize(GFN_shr);
+
+    GFN_sign = makeGeneric(1, 1, stringFromUtf8(-1, "sign"));
+    pbImmortalize(GFN_sign);
+
+    GFN_sub = makeGeneric(2, 2, stringFromUtf8(-1, "sub"));
+    pbImmortalize(GFN_sub);
+
+    GFN_xor = makeGeneric(2, 2, stringFromUtf8(-1, "xor"));
+    pbImmortalize(GFN_xor);
+
     TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"), false);
+    METH_BIND(Int, abs);
+    METH_BIND(Int, add);
+    METH_BIND(Int, and);
+    METH_BIND(Int, bit);
+    METH_BIND(Int, div);
+    METH_BIND(Int, divEu);
     METH_BIND(Int, eq);
-    METH_BIND(Int, size);
+    METH_BIND(Int, mod);
+    METH_BIND(Int, modEu);
+    METH_BIND(Int, mul);
+    METH_BIND(Int, neg);
+    METH_BIND(Int, not);
+    METH_BIND(Int, or);
     METH_BIND(Int, order);
+    METH_BIND(Int, shl);
+    METH_BIND(Int, shr);
+    METH_BIND(Int, sign);
+    METH_BIND(Int, size);
+    METH_BIND(Int, sub);
+    METH_BIND(Int, xor);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);
@@ -147,3 +264,54 @@ void pbBindInt(void) {
 
 /* Documented in header. */
 zvalue TYPE_Int = NULL;
+
+/* Documented in header. */
+zvalue GFN_abs = NULL;
+
+/* Documented in header. */
+zvalue GFN_add = NULL;
+
+/* Documented in header. */
+zvalue GFN_and = NULL;
+
+/* Documented in header. */
+zvalue GFN_div = NULL;
+
+/* Documented in header. */
+zvalue GFN_divEu = NULL;
+
+/* Documented in header. */
+zvalue GFN_bit = NULL;
+
+/* Documented in header. */
+zvalue GFN_mod = NULL;
+
+/* Documented in header. */
+zvalue GFN_modEu = NULL;
+
+/* Documented in header. */
+zvalue GFN_mul = NULL;
+
+/* Documented in header. */
+zvalue GFN_neg = NULL;
+
+/* Documented in header. */
+zvalue GFN_not = NULL;
+
+/* Documented in header. */
+zvalue GFN_or = NULL;
+
+/* Documented in header. */
+zvalue GFN_shl = NULL;
+
+/* Documented in header. */
+zvalue GFN_shr = NULL;
+
+/* Documented in header. */
+zvalue GFN_sign = NULL;
+
+/* Documented in header. */
+zvalue GFN_sub = NULL;
+
+/* Documented in header. */
+zvalue GFN_xor = NULL;
