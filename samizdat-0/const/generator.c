@@ -65,7 +65,7 @@ METH_IMPL(Map, collect) {
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        arr[i] = mapNth(map, i);
+        arr[i] = collNth(map, i);
     }
 
     return listFromArray(size, arr);

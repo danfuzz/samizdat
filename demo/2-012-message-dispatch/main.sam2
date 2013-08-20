@@ -47,8 +47,8 @@ def DISPATCH = [
         size: size
     ],
     (Map): [
-        get:  mapGet,
-        nth:  mapNth,
+        get:  get,
+        nth:  nth,
         size: size
     ],
     Weird: [

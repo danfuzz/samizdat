@@ -38,13 +38,13 @@ fn genericMakeTokenSet(sense, types) {
     def matcher = ifIs { <> eq(sense, true) }
         {
             <> { item ::
-                <> ifIs { <> mapGet(set, typeOf(item)) }
+                <> ifIs { <> get(set, typeOf(item)) }
                     { <> item }
             }
         }
         {
             <> { item ::
-                <> ifNot { <> mapGet(set, typeOf(item)) }
+                <> ifNot { <> get(set, typeOf(item)) }
                     { <> item }
             }
         };

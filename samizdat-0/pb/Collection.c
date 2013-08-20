@@ -21,6 +21,11 @@
  */
 
 /* Documented in header. */
+zvalue collGet(zvalue coll, zvalue key) {
+    return GFN_CALL(get, coll, key);
+}
+
+/* Documented in header. */
 bool collNthIndexLenient(zvalue key) {
     if (hasType(key, TYPE_Int)) {
         zint index = zintFromInt(key);

@@ -74,20 +74,6 @@ zvalue mapCat(zvalue map1, zvalue map2);
 zvalue mapDel(zvalue map, zvalue key);
 
 /**
- * Given a map, find the mapping of the given key and return the
- * corresponding value, or `NULL` if there is no such key. `map`
- * must be a map, and `key` must be a valid value.
- */
-zvalue mapGet(zvalue map, zvalue key);
-
-/**
- * Given a map, returns the `n`th mapping. `map` must be a
- * map, and `n` must be `< collSize(value)`. Mappings are returned
- * as single-element maps. Map ordering is by key.
- */
-zvalue mapNth(zvalue map, zint n);
-
-/**
  * Gets the map resulting from putting the given mapping into the
  * given map. This can either add a new mapping or replace an
  * existing mapping.

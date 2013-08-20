@@ -55,7 +55,7 @@ void frameAdd(Frame *frame, zvalue name, zvalue value) {
 /* Documented in header. */
 zvalue frameGet(Frame *frame, zvalue name) {
     for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
-        zvalue result = mapGet(frame->vars, name);
+        zvalue result = collGet(frame->vars, name);
 
         if (result != NULL) {
             return result;

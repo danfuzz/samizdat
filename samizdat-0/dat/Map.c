@@ -261,32 +261,6 @@ zvalue mapDel(zvalue map, zvalue key) {
 }
 
 /* Documented in header. */
-zvalue mapGet(zvalue map, zvalue key) {
-    zint index = mapFind(map, key);
-
-    return (index < 0) ? NULL : getInfo(map)->elems[index].value;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-zvalue mapNth(zvalue map, zint n) {
-    assertMap(map);
-
-    MapInfo *info = getInfo(map);
-    zint size = info->size;
-
-    if ((n < 0) || (n >= size)) {
-        return NULL;
-    }
-
-    if (size == 1) {
-        return map;
-    }
-
-    zmapping *m = &info->elems[n];
-    return makeMapping(m->key, m->value);
-}
-
-/* Documented in header. */
 zvalue mapPut(zvalue map, zvalue key, zvalue value) {
     assertMap(map);
     assertValid(value);
@@ -400,7 +374,8 @@ METH_IMPL(Map, get) {
     zvalue map = args[0];
     zvalue key = args[1];
 
-    return mapGet(map, key);
+    zint index = mapFind(map, key);
+    return (index < 0) ? NULL : getInfo(map)->elems[index].value;
 }
 
 /* Documented in header. */
@@ -415,7 +390,12 @@ METH_IMPL(Map, nth) {
         return NULL;
     }
 
-    return mapNth(map, index);
+    if (info->size == 1) {
+        return map;
+    }
+
+    zmapping *m = &info->elems[index];
+    return makeMapping(m->key, m->value);
 }
 
 /* Documented in header. */

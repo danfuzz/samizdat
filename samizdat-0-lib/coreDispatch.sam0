@@ -58,8 +58,8 @@ def DISPATCH = [
         order: coreOrder,
 
         # Collection access
-        get:   mapGet,
-        nth:   mapNth,
+        get:   get,
+        nth:   nth,
         size:  size
     ],
 

@@ -46,7 +46,7 @@ def INT_CHARS = [
 
 # Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
-    <> mapGet(INT_CHARS, typeOf(ch))
+    <> get(INT_CHARS, typeOf(ch))
 };
 
 # Processes a list of `stringPart` elements, yielding a literal `string`
@@ -170,7 +170,7 @@ def tokIdentifier = {/
 
     {
         def string = stringFromTokenList([first, rest*]);
-        <> ifValueOr { <> mapGet(KEYWORDS, string) }
+        <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
     }
 /};
@@ -360,7 +360,7 @@ def tokNamedChar = {/
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
     {
         def name = stringFromTokenList(chars);
-        <> mapGet(ENTITY_MAP, name)
+        <> get(ENTITY_MAP, name)
     }
 |
     "#x"
@@ -379,7 +379,7 @@ def tokStringInterpolation = forwardFunction();
 def implStringInterpolation = {/
     &["({"]
     open = tokToken
-    expectClose = { <> mapGet(OPEN_CLOSE_MAP, typeOf(open)) }
+    expectClose = { <> get(OPEN_CLOSE_MAP, typeOf(open)) }
 
     tokens = (
         tokOptWhitespace

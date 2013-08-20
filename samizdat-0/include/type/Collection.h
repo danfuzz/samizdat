@@ -49,6 +49,11 @@ bool collNthIndexLenient(zvalue key);
 zint collNthIndexStrict(zint size, zvalue n);
 
 /**
+ * Calls `get`.
+ */
+zvalue collGet(zvalue coll, zvalue key);
+
+/**
  * Calls `nth`, converting the given `zint` index to an `Int` value.
  */
 zvalue collNth(zvalue coll, zint index);

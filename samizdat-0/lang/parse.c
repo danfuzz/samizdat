@@ -454,7 +454,7 @@ DEF_PARSE(nullaryClosure) {
 
     zvalue c = PARSE_OR_REJECT(closure);
 
-    zvalue formals = mapGet(dataOf(c), STR_formals);
+    zvalue formals = collGet(dataOf(c), STR_formals);
     if (!valEq(formals, EMPTY_LIST)) {
         die("Invalid formal argument in code block.");
     }
@@ -468,7 +468,7 @@ DEF_PARSE(codeOnlyClosure) {
 
     zvalue c = PARSE_OR_REJECT(nullaryClosure);
 
-    if (mapGet(dataOf(c), STR_yieldDef) != NULL) {
+    if (collGet(dataOf(c), STR_yieldDef) != NULL) {
         die("Invalid yield definition in code block.");
     }
 
@@ -518,7 +518,7 @@ DEF_PARSE(fnCommon) {
 
     zvalue codeMap = dataOf(code);
     zvalue statements =
-        listCat(returnDef, mapGet(codeMap, STR_statements));
+        listCat(returnDef, collGet(codeMap, STR_statements));
 
     zvalue result = mapCat(codeMap, name);
     result = mapCat(result,
@@ -535,7 +535,7 @@ DEF_PARSE(fnDef) {
 
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
 
-    if (mapGet(funcMap, STR_name) == NULL) {
+    if (collGet(funcMap, STR_name) == NULL) {
         return NULL;
     }
 
@@ -549,7 +549,7 @@ DEF_PARSE(fnExpression) {
     zvalue funcMap = PARSE_OR_REJECT(fnCommon);
     zvalue closure = makeTransValue(STR_closure, funcMap);
 
-    zvalue name = mapGet(funcMap, STR_name);
+    zvalue name = collGet(funcMap, STR_name);
     if (name == NULL) {
         return closure;
     }

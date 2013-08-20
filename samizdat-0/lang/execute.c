@@ -29,8 +29,8 @@
 static zvalue execCall(Frame *frame, zvalue call) {
     call = dataOf(call);
 
-    zvalue function = mapGet(call, STR_function);
-    zvalue actuals = mapGet(call, STR_actuals);
+    zvalue function = collGet(call, STR_function);
+    zvalue actuals = collGet(call, STR_actuals);
     zvalue functionId = execExpression(frame, function);
 
     zint argCount = collSize(actuals);
@@ -199,8 +199,8 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 /* Documented in header. */
 void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = dataOf(varDef);
-    zvalue name = mapGet(nameValue, STR_name);
-    zvalue valueExpression = mapGet(nameValue, STR_value);
+    zvalue name = collGet(nameValue, STR_name);
+    zvalue valueExpression = collGet(nameValue, STR_value);
     zvalue value = execExpression(frame, valueExpression);
 
     frameAdd(frame, name, value);

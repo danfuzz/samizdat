@@ -26,9 +26,9 @@ fn moduleNameFromString(orig) {
         { <> stringSlice(orig, add(MODULE_PREFIX_SIZE, 1)) }
 };
 
-# Does a `mapGet` on the payload data of the given value.
+# Does a `get` on the payload data of the given value.
 fn dataGet(value, key) {
-    <> mapGet(dataOf(value), key)
+    <> get(dataOf(value), key)
 };
 
 # Does a `size` on the payload data of the given value.
@@ -130,13 +130,13 @@ fn sortModules(modules) {
 
 # Documented in Samizdat Layer 0 spec.
 fn methodGet(dispatch, value, name) {
-    def function = mapGet(mapGet(dispatch, typeOf(value)), name);
+    def function = get(get(dispatch, typeOf(value)), name);
     <> { args* <> function(value, args*) }
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn methodCall(dispatch, value, name, args*) {
-    <> mapGet(mapGet(dispatch, typeOf(value)), name)(value, args*)
+    <> get(get(dispatch, typeOf(value)), name)(value, args*)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -167,7 +167,7 @@ fn moduleInit(context) {
     # each (if any), passing it the set of already-initialized modules.
     <> doReduce1(sortedModuleNames, [:])
         { name, initted ::
-            def mod = mapGet(moduleMap, name);
+            def mod = get(moduleMap, name);
             def newMod = ifValue { <> dataGet(mod, "init") }
                 { init ::
                     <> @[module: [

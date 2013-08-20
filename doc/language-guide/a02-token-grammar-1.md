@@ -40,7 +40,7 @@ def INT_CHARS = [
 
 # Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {
-    <> mapGet(INT_CHARS, typeOf(ch))
+    <> get(INT_CHARS, typeOf(ch))
 };
 
 # Processes a list of `stringPart` elements, yielding a literal `string`
@@ -164,7 +164,7 @@ def tokIdentifier = {/
 
     {
         def string = stringFromTokenList([first, rest*]);
-        <> ifValueOr { <> mapGet(KEYWORDS, string) }
+        <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
     }
 /};

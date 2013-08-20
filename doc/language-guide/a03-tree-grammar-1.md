@@ -181,7 +181,7 @@ def parNullaryClosure = {/
     c = parClosure
 
     {
-        def formals = mapGet(dataOf(c), "formals");
+        def formals = get(dataOf(c), "formals");
         ifIs { <> ne(formals, []) }
             { io0Die("Invalid formal argument in code block.") };
         <> c
@@ -194,7 +194,7 @@ def parCodeOnlyClosure = {/
     c = parNullaryClosure
 
     {
-        ifIs { <> mapGet(dataOf(c), "yieldDef") }
+        ifIs { <> get(dataOf(c), "yieldDef") }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     }
@@ -255,7 +255,7 @@ def parFnCommon = {/
 
     {
         def codeMap = dataOf(code);
-        def statements = [returnDef*, mapGet(codeMap, "statements")*];
+        def statements = [returnDef*, get(codeMap, "statements")*];
         <> [
             codeMap*, name*,
             formals: formals,
@@ -274,7 +274,7 @@ def parFnDef = {/
     funcMap = parFnCommon
 
     {
-        <> ifIs { <> mapGet(funcMap, "name") }
+        <> ifIs { <> get(funcMap, "name") }
             { <> @[fnDef: funcMap] }
     }
 /};
@@ -299,7 +299,7 @@ def parFnExpression = {/
     closure = { <> @[closure: funcMap] }
 
     (
-        name = { <> mapGet(funcMap, "name") }
+        name = { <> get(funcMap, "name") }
         {
             def mainClosure = @[closure: [
                 formals: [],
@@ -338,7 +338,7 @@ def parIdentifierString = {/
             {
                 def type = typeOf(token);
                 def firstCh = stringNth(type, 0);
-                <> ifIs { <> mapGet(LOWER_ALPHA, firstCh) }
+                <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
     }
@@ -612,7 +612,7 @@ def implProgramBody = {/
     @";"*
 
     {
-        def allStatements = [most*, mapGet(last, "statements")*];
+        def allStatements = [most*, get(last, "statements")*];
         <> [last*, statements: allStatements]
     }
 /};

@@ -89,7 +89,7 @@ static zvalue getLibrary(void) {
     zstackPointer save = pbFrameStart();
 
     zvalue libraryFiles = getLibraryFiles();
-    zvalue mainText = mapGet(libraryFiles, STR_main_sam0);
+    zvalue mainText = collGet(libraryFiles, STR_main_sam0);
     zvalue mainProgram = langTree0(mainText);
 
     zvalue ctx = primitiveContext();
