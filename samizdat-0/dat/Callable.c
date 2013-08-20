@@ -20,7 +20,7 @@
 
 /* Documented in header. */
 zvalue funApply(zvalue function, zvalue args) {
-    zint argCount = valSize(args);
+    zint argCount = collSize(args);
     zvalue argsArray[argCount];
 
     arrayFromList(argsArray, args);

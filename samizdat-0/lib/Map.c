@@ -62,14 +62,9 @@ PRIM_IMPL(mapDel) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapGet) {
-    return mapGet(args[0], args[1]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapKeys) {
     zvalue map = args[0];
-    zint size = valSize(map);
+    zint size = collSize(map);
     zmapping mappings[size];
     zvalue arr[size];
 
@@ -80,11 +75,6 @@ PRIM_IMPL(mapKeys) {
     }
 
     return listFromArray(size, arr);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapNth) {
-    return doNthStrict(mapNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

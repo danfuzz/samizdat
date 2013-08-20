@@ -46,14 +46,14 @@ fn metaFunctions(context, fileName) {
         { <> stringSlice(fileName, add(dotAt, 1)) };
 
     # Note: As the layers get added, the default here should change.
-    def nameMap = ifValueOr { <> mapGet(META_NAME_MAP, suffix) }
-        { <> mapGet(META_NAME_MAP, "sam2") };
+    def nameMap = ifValueOr { <> get(META_NAME_MAP, suffix) }
+        { <> get(META_NAME_MAP, "sam2") };
 
     <> mapFromGenerator(
         filterGenerator(nameMap)
             { mapping ::
                 def name = mappingValue(mapping);
-                <> ifValue { <> mapGet(context, name) }
+                <> ifValue { <> get(context, name) }
                     { func <> [mappingKey(mapping): func] }
                     { io0Die(stringCat("Missing meta-function: ", name)) }
             })

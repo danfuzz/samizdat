@@ -12,6 +12,7 @@
 #define _TYPE_LIST_H_
 
 #include "pb.h"
+#include "type/Collection.h"
 
 
 /** Type value for in-model type `List`. */
@@ -56,12 +57,6 @@ zvalue listFromArray(zint size, const zvalue *values);
  * greater than the size of the given list.
  */
 zvalue listInsNth(zvalue list, zint n, zvalue value);
-
-/**
- * Given a list, returns the `n`th element. `list` must be a
- * list, and `n` must be `< valSize(value)`.
- */
-zvalue listNth(zvalue list, zint n);
 
 /**
  * Gets the list resulting from setting the value at the

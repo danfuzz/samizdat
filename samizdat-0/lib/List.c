@@ -57,14 +57,14 @@ PRIM_IMPL(listDelNth) {
 PRIM_IMPL(listFilter) {
     zvalue function = args[0];
     zvalue list = args[1];
-    zint size = valSize(list);
+    zint size = collSize(list);
     zvalue result[size];
     zint at = 0;
 
     assertList(list);
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = listNth(list, i);
+        zvalue elem = collNth(list, i);
         zvalue one = FUN_CALL(function, elem);
 
         if (one != NULL) {
@@ -77,18 +77,8 @@ PRIM_IMPL(listFilter) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listGet) {
-   return doNthLenient(listNth, args[0], args[1]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listInsNth) {
     return listInsNth(args[0], zintFromInt(args[1]), args[2]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listNth) {
-    return doNthStrict(listNth, args[0], args[1]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -99,7 +89,7 @@ PRIM_IMPL(listPutNth) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listReverse) {
     zvalue list = args[0];
-    zint size = valSize(list);
+    zint size = collSize(list);
     zvalue elems[size];
 
     arrayFromList(elems, list);
@@ -117,7 +107,7 @@ PRIM_IMPL(listReverse) {
 PRIM_IMPL(listSlice) {
     zvalue list = args[0];
     zint startIndex = zintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : valSize(list);
+    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : collSize(list);
 
     return listSlice(list, startIndex, endIndex);
 }

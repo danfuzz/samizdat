@@ -261,32 +261,6 @@ zvalue mapDel(zvalue map, zvalue key) {
 }
 
 /* Documented in header. */
-zvalue mapGet(zvalue map, zvalue key) {
-    zint index = mapFind(map, key);
-
-    return (index < 0) ? NULL : getInfo(map)->elems[index].value;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-zvalue mapNth(zvalue map, zint n) {
-    assertMap(map);
-
-    MapInfo *info = getInfo(map);
-    zint size = info->size;
-
-    if ((n < 0) || (n >= size)) {
-        return NULL;
-    }
-
-    if (size == 1) {
-        return map;
-    }
-
-    zmapping *m = &info->elems[n];
-    return makeMapping(m->key, m->value);
-}
-
-/* Documented in header. */
 zvalue mapPut(zvalue map, zvalue key, zvalue value) {
     assertMap(map);
     assertValid(value);
@@ -396,6 +370,35 @@ METH_IMPL(Map, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, get) {
+    zvalue map = args[0];
+    zvalue key = args[1];
+
+    zint index = mapFind(map, key);
+    return (index < 0) ? NULL : getInfo(map)->elems[index].value;
+}
+
+/* Documented in header. */
+METH_IMPL(Map, nth) {
+    zvalue map = args[0];
+    zvalue n = args[1];
+
+    MapInfo *info = getInfo(map);
+    zint index = collNthIndexStrict(info->size, n);
+
+    if (index < 0) {
+        return NULL;
+    }
+
+    if (info->size == 1) {
+        return map;
+    }
+
+    zmapping *m = &info->elems[index];
+    return makeMapping(m->key, m->value);
+}
+
+/* Documented in header. */
 METH_IMPL(Map, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -441,6 +444,8 @@ void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
     METH_BIND(Map, eq);
     METH_BIND(Map, gcMark);
+    METH_BIND(Map, get);
+    METH_BIND(Map, nth);
     METH_BIND(Map, order);
     METH_BIND(Map, size);
 

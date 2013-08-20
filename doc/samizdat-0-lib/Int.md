@@ -5,7 +5,29 @@ Ints
 ----
 
 <br><br>
-### Primitive Definitions
+### Generic Function Definitions: `Collection` protocol
+
+#### `get(int, key) <> . | void`
+
+This is identical to `nth(int, key)`, except that the result of passing
+a negative or non-`Int` value for `key` is void and not an error.
+
+#### `nth(int, n) <> . | void`
+
+Gets the nth bit, ordered low to high order and with the sign as the
+highest order bit. This is identical to `bit(int, n)` except that this
+returns void for `n > size(int)`.
+
+#### `size(int) <> int`
+
+Returns the number of significant bits (not bytes) in
+the value when represented in twos-complement form, including a
+high-order sign bit. The minimum size of an int is 1, which
+is the size of both `0` and `-1`.
+
+
+<br><br>
+### Generic Function Definitions: `Int` protocol
 
 #### `abs(int) <> int`
 
@@ -44,19 +66,6 @@ arguments of opposite sign. The usual equivalence holds with Euclidean
 division that `x == (x // y) + (x %% y)` (for `y != 0`), but the
 modulo result is guaranteed to be non-negative, and this means that
 division is correspondingly different.
-
-#### `intGet(int, key) <> int | void`
-
-Map-style element access. This returns the same as `bit(int, key)` if
-`key` is an int in the range `0..!coreSizeOf(int)`. Otherwise this
-returns void.
-
-#### `intNth(int, n) <> int | void`
-
-List-style element access. This returns the same as `bit(int, n)` if
-`n` is an int in the range `0..!coreSizeOf(int)`. Otherwise, if
-`n` is a non-negative int, this returns void. Otherwise, this
-terminates the runtime with an error.
 
 #### `mod(int1, int2) <> int`
 
@@ -130,6 +139,12 @@ Returns the difference of the given values (first minus second).
 #### `xor(int1, int2) <> int`
 
 Returns the binary-xor (bitwise not-equal) of the given values.
+
+
+<br><br>
+### Primitive Definitions
+
+(none)
 
 
 <br><br>

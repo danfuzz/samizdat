@@ -12,6 +12,7 @@
 #define _TYPE_INT_H_
 
 #include "pb.h"
+#include "type/Collection.h"
 
 
 /** Type value for in-model type `Int`. */
@@ -95,6 +96,5 @@ zvalue intFromZint(zint value);
  * int. It is an error if the value is out of range.
  */
 zint zintFromInt(zvalue intval);
-
 
 #endif

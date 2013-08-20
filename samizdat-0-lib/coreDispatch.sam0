@@ -26,9 +26,9 @@ def DISPATCH = [
         order: coreOrder,
 
         # Collection access
-        get:   intGet,
-        nth:   intNth,
-        size:  coreSizeOf
+        get:   get,
+        nth:   nth,
+        size:  size
     ],
 
     (List): [
@@ -42,9 +42,9 @@ def DISPATCH = [
         order: coreOrder,
 
         # Collection access
-        get:   listGet,
-        nth:   listNth,
-        size:  coreSizeOf
+        get:   get,
+        nth:   nth,
+        size:  size
     ],
 
     (Map): [
@@ -58,9 +58,9 @@ def DISPATCH = [
         order: coreOrder,
 
         # Collection access
-        get:   mapGet,
-        nth:   mapNth,
-        size:  coreSizeOf
+        get:   get,
+        nth:   nth,
+        size:  size
     ],
 
     (String): [
@@ -74,9 +74,9 @@ def DISPATCH = [
         order: coreOrder,
 
         # Collection access
-        get:   stringGet,
-        nth:   stringNth,
-        size:  coreSizeOf
+        get:   get,
+        nth:   nth,
+        size:  size
     ]
 ];
 

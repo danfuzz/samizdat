@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
     // moving into main program execution.
     pbGc();
 
-    zvalue samCommandLine = mapGet(context, STR_samCommandLine);
+    zvalue samCommandLine = collGet(context, STR_samCommandLine);
     zvalue result = funApply(samCommandLine, argsList);
 
     if ((result != NULL) && (hasType(result, TYPE_Int))) {

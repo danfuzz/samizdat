@@ -45,7 +45,7 @@ void frameAdd(Frame *frame, zvalue name, zvalue value) {
     zvalue vars = frame->vars;
     zvalue newVars = mapPut(vars, name, value);
 
-    if (valSize(vars) == valSize(newVars)) {
+    if (collSize(vars) == collSize(newVars)) {
         die("Variable already defined: %s", valDebugString(name));
     }
 
@@ -55,7 +55,7 @@ void frameAdd(Frame *frame, zvalue name, zvalue value) {
 /* Documented in header. */
 zvalue frameGet(Frame *frame, zvalue name) {
     for (/*frame*/; frame != NULL; frame = frame->parentFrame) {
-        zvalue result = mapGet(frame->vars, name);
+        zvalue result = collGet(frame->vars, name);
 
         if (result != NULL) {
             return result;

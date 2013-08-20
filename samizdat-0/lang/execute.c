@@ -29,11 +29,11 @@
 static zvalue execCall(Frame *frame, zvalue call) {
     call = dataOf(call);
 
-    zvalue function = mapGet(call, STR_function);
-    zvalue actuals = mapGet(call, STR_actuals);
+    zvalue function = collGet(call, STR_function);
+    zvalue actuals = collGet(call, STR_actuals);
     zvalue functionId = execExpression(frame, function);
 
-    zint argCount = valSize(actuals);
+    zint argCount = collSize(actuals);
     zvalue actualsArr[argCount];
     zvalue args[argCount];
 
@@ -82,7 +82,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         if (interpolate) {
             eval = constCollectGenerator(eval);
             args[i] = eval;
-            fullCount += valSize(eval);
+            fullCount += collSize(eval);
             interpolateAny = true;
         } else {
             args[i] = eval;
@@ -100,7 +100,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             zvalue oneArg = args[i];
             if (hasType(oneNode, STR_interpolate)) {
                 arrayFromList(&fullArgs[at], oneArg);
-                at += valSize(oneArg);
+                at += collSize(oneArg);
             } else {
                 fullArgs[at] = oneArg;
                 at++;
@@ -133,9 +133,9 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 
     result = constCollectGenerator(result);
 
-    switch (valSize(result)) {
+    switch (collSize(result)) {
         case 0: return NULL;
-        case 1: return listNth(result, 0);
+        case 1: return collNth(result, 0);
         default: {
             die("Attempt to interpolate multiple values.");
         }
@@ -165,7 +165,7 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
     // Switching on the first character of the type is a bit of a hack. It
     // lets us avoid having to have a single big cascading `if` with a lot of
     // `valEq` calls.
-    switch (stringNth(type, 0)) {
+    switch (collNthChar(type, 0)) {
         case 'c': {
             if      (valEq(type, STR_call))    { return execCall(frame, e); }
             else if (valEq(type, STR_closure)) { return execClosure(frame, e); }
@@ -199,8 +199,8 @@ zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
 /* Documented in header. */
 void execVarDef(Frame *frame, zvalue varDef) {
     zvalue nameValue = dataOf(varDef);
-    zvalue name = mapGet(nameValue, STR_name);
-    zvalue valueExpression = mapGet(nameValue, STR_value);
+    zvalue name = collGet(nameValue, STR_name);
+    zvalue valueExpression = collGet(nameValue, STR_value);
     zvalue value = execExpression(frame, valueExpression);
 
     frameAdd(frame, name, value);

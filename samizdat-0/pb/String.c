@@ -156,18 +156,6 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 }
 
 /* Documented in header. */
-zint stringNth(zvalue string, zint n) {
-    assertString(string);
-
-    StringInfo *info = getInfo(string);
-    if ((n < 0) || (n >= info->size)) {
-        return -1;
-    }
-
-    return info->elems[n];
-}
-
-/* Documented in header. */
 zvalue stringSlice(zvalue string, zint start, zint end) {
     assertString(string);
 
@@ -212,6 +200,14 @@ zint utf8SizeFromString(zvalue string) {
     }
 
     return result;
+}
+
+/* Documented in header. */
+zchar zcharFromString(zvalue string) {
+    assertStringSize1(string);
+
+    StringInfo *info = getInfo(string);
+    return info->elems[0];
 }
 
 /* Documented in header. */
@@ -268,6 +264,21 @@ METH_IMPL(String, eq) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, nth) {
+    zvalue string = args[0];
+    zvalue n = args[1];
+
+    StringInfo *info = getInfo(string);
+    zint index = collNthIndexStrict(info->size, n);
+
+    if (index < 0) {
+        return NULL;
+    }
+
+    return stringFromZchar(info->elems[index]);
+}
+
+/* Documented in header. */
 METH_IMPL(String, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -309,8 +320,10 @@ void pbBindString(void) {
 
     METH_BIND(String, debugString);
     METH_BIND(String, eq);
+    METH_BIND(String, nth);
     METH_BIND(String, order);
     METH_BIND(String, size);
+    seqBind(TYPE_String);
 
     EMPTY_STRING = allocString(0);
     pbImmortalize(EMPTY_STRING);

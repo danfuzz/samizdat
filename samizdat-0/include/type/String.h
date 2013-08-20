@@ -12,6 +12,7 @@
 #define _TYPE_STRING_H_
 
 #include "pb.h"
+#include "type/Collection.h"
 
 
 /** Type value for in-model type `String`. */
@@ -59,13 +60,6 @@ zvalue stringFromZchar(zchar value);
 zvalue stringFromZchars(zint size, const zchar *chars);
 
 /**
- * Given a string, returns the `n`th element, which is in the
- * range of a 32-bit unsigned int. If `n` is out of range, this
- * returns `-1`.
- */
-zint stringNth(zvalue string, zint n);
-
-/**
  * Gets the string consisting of the given "slice" of elements
  * (start inclusive, end exclusive) of the given string.
  */
@@ -89,6 +83,12 @@ void utf8FromString(zint resultSize, char *result, zvalue string);
  * as UTF-8. The result does *not* account for a terminating `'\0'` byte.
  */
 zint utf8SizeFromString(zvalue string);
+
+/**
+ * Returns the single character of the given string, which must in fact
+ * be a single-character string.
+ */
+zchar zcharFromString(zvalue string);
 
 /**
  * Copies all the characters of the given string into the given result

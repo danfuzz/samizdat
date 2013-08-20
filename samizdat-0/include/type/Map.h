@@ -12,6 +12,7 @@
 #define _TYPE_MAP_H_
 
 #include "pb.h"
+#include "type/Collection.h"
 
 
 /**
@@ -71,20 +72,6 @@ zvalue mapCat(zvalue map1, zvalue map2);
  * given map.
  */
 zvalue mapDel(zvalue map, zvalue key);
-
-/**
- * Given a map, find the mapping of the given key and return the
- * corresponding value, or `NULL` if there is no such key. `map`
- * must be a map, and `key` must be a valid value.
- */
-zvalue mapGet(zvalue map, zvalue key);
-
-/**
- * Given a map, returns the `n`th mapping. `map` must be a
- * map, and `n` must be `< valSize(value)`. Mappings are returned
- * as single-element maps. Map ordering is by key.
- */
-zvalue mapNth(zvalue map, zint n);
 
 /**
  * Gets the map resulting from putting the given mapping into the

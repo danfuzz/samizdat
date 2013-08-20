@@ -35,21 +35,21 @@ fn weirdNth(value, n) {
     ifIs { <> ge(n, size) }
         { return };
 
-    <> listNth(payload, add(n, 1))
+    <> nth(payload, add(n, 1))
 };
 
 # Method dispatch table. This is implicitly referenced (by name) by the
 # `.` and `[]` ops.
 def DISPATCH = [
     (List): [
-        get:  listNth,
-        nth:  listNth,
-        size: coreSizeOf
+        get:  nth,
+        nth:  nth,
+        size: size
     ],
     (Map): [
-        get:  mapGet,
-        nth:  mapNth,
-        size: coreSizeOf
+        get:  get,
+        nth:  nth,
+        size: size
     ],
     Weird: [
         get:  weirdNth,

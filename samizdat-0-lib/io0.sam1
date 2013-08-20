@@ -91,9 +91,9 @@ def parErrorFromPathComponent = {/
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
 fn isPrefix(prefix, path) {
-    def prefixSize = coreSizeOf(prefix);
+    def prefixSize = size(prefix);
 
-    ifIs { <> gt(prefixSize, coreSizeOf(path)) }
+    ifIs { <> gt(prefixSize, size(path)) }
         {
             # The "prefix" is longer than the path, so it can't actually be
             # a prefix.
@@ -118,7 +118,7 @@ fn io0FlatFromPath(path) {
     ifIs { <> eq(path, []) }
         { dieWith("Invalid empty path", path) };
 
-    def gen = filterGenerator(path, openRange(coreSizeOf(path), -1))
+    def gen = filterGenerator(path, openRange(size(path), -1))
         { <out> one, n ::
             # This test skips the check on the last path component, if it
             # happens to be empty (which is the only valid case of an empty
@@ -142,7 +142,7 @@ fn io0PathFromFlat(string) {
         { dieWith("Invalid path", "") };
 
     # Prepend the current directory if the path isn't absolute.
-    def absoluteString = ifIs { <> eq(stringNth(string, 0), "/") }
+    def absoluteString = ifIs { <> eq(nth(string, 0), "/") }
         { <> string }
         { <> stringCat(io0FlatCwd(), "/", string) };
 

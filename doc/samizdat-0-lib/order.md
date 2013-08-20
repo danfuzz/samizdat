@@ -5,6 +5,12 @@ Ordering / Comparison
 ---------------------
 
 <br><br>
+### Generic Function Definitions
+
+(none)
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `coreOrder(value1, value2) <> int`

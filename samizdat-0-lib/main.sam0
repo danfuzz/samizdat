@@ -27,7 +27,7 @@ LIBRARY_FILES ::
 # here in the form of a map binding file names to text contents, this
 # is really just a map lookup.
 fn readLibraryFile(name) {
-    <> ifValueOr { <> mapGet(LIBRARY_FILES, name) }
+    <> ifValueOr { <> get(LIBRARY_FILES, name) }
         { io0Die(stringCat("No such core library file: ", name)) }
 };
 
@@ -40,11 +40,11 @@ fn loadLibrary(ctx, name) {
 
     # If `metaFunctions` is available, use it to get the proper parser and
     # evaluator. Otherwise, default to the layer 0 functions.
-    def metas = ifValue { <> mapGet(ctx, "metaFunctions") }
+    def metas = ifValue { <> get(ctx, "metaFunctions") }
         { metaFunctions <> metaFunctions(ctx, name) }
         { <> [eval: sam0Eval, tree: sam0Tree] };
-    def treeFunction = mapGet(metas, "tree");
-    def evalFunction = mapGet(metas, "eval");
+    def treeFunction = get(metas, "tree");
+    def evalFunction = get(metas, "eval");
 
     def text = readLibraryFile(name);
     def tree = treeFunction(text);
@@ -66,7 +66,7 @@ fn loadLibrary(ctx, name) {
 fn loadAllLibraries(ctx, names*) {
     <> loopReduce(names, ctx)
         { names, ctx ::
-            <> ifValue { <> listNth(names, 0) }
+            <> ifValue { <> nth(names, 0) }
                 { name <> [listSlice(names, 1), loadLibrary(ctx, name)] }
                 { return ctx }
         }
@@ -80,7 +80,7 @@ fn loadAllLibraries(ctx, names*) {
 io0Note("Loading core library...");
 
 # Read the manifest file, to figure out what all to load and in what order.
-def MANIFEST = mapGet(loadLibrary(LIBRARY, "manifest.sam0"), "MANIFEST");
+def MANIFEST = get(loadLibrary(LIBRARY, "manifest.sam0"), "MANIFEST");
 
 # Use the manifest to build up the core library.
 def CORE_LIBRARY = loadAllLibraries(LIBRARY, MANIFEST*);
