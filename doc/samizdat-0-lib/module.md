@@ -40,6 +40,12 @@ That is, it is just like an uninitialized module, except that the
 
 
 <br><br>
+### Generic Function Definitions
+
+(none)
+
+
+<br><br>
 ### Primitive Definitions
 
 (none)

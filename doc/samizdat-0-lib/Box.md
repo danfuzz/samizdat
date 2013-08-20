@@ -5,6 +5,12 @@ Boxes
 -----
 
 <br><br>
+### Generic Function Definitions
+
+(none)
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `canStore(box) <> logic`

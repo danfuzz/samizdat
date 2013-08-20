@@ -5,6 +5,12 @@ Maps
 ----
 
 <br><br>
+### Generic Function Definitions
+
+(none)
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `makeValueMap(keys*, value) <> map`

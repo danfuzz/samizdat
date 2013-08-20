@@ -5,6 +5,12 @@ Values (the base type)
 ----------------------
 
 <br><br>
+### Generic Function Definitions
+
+(none)
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `dataOf(value, secret?) <> .`

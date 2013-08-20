@@ -5,6 +5,12 @@ I/O
 ---
 
 <br><br>
+### Generic Function Definitions
+
+(none)
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `io0Die(string?) <> n/a # Terminates the runtime.`

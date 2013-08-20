@@ -5,6 +5,12 @@ Lists
 -----
 
 <br><br>
+### Generic Function Definitions
+
+(none)
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `listCat(lists*) <> list`

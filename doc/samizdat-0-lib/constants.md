@@ -8,6 +8,12 @@ The definitions in this section are all simple constant values, not
 functions.
 
 <br><br>
+### Generic Function Definitions
+
+(none)
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `Box`
