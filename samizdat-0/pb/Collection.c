@@ -24,7 +24,7 @@
  */
 
 /* Documented in header. */
-zint valSize(zvalue coll) {
+zint collSize(zvalue coll) {
     return zintFromInt(GFN_CALL(size, coll));
 }
 

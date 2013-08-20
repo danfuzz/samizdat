@@ -20,7 +20,7 @@
  * passed as non-negative.
  */
 static zvalue doIntNth(zvalue value, zint n) {
-    if (n < valSize(value)) {
+    if (n < collSize(value)) {
         zint intval = zintFromInt(value);
         zint result;
         zintBit(&result, intval, n); // Always succeeds

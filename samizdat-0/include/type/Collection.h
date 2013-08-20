@@ -33,6 +33,6 @@ extern zvalue GFN_size;
 /**
  * Gets the size of the given collection, as a `zint`.
  */
-zint valSize(zvalue coll);
+zint collSize(zvalue coll);
 
 #endif

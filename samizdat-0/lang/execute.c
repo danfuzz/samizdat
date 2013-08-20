@@ -33,7 +33,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zvalue actuals = mapGet(call, STR_actuals);
     zvalue functionId = execExpression(frame, function);
 
-    zint argCount = valSize(actuals);
+    zint argCount = collSize(actuals);
     zvalue actualsArr[argCount];
     zvalue args[argCount];
 
@@ -82,7 +82,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         if (interpolate) {
             eval = constCollectGenerator(eval);
             args[i] = eval;
-            fullCount += valSize(eval);
+            fullCount += collSize(eval);
             interpolateAny = true;
         } else {
             args[i] = eval;
@@ -100,7 +100,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
             zvalue oneArg = args[i];
             if (hasType(oneNode, STR_interpolate)) {
                 arrayFromList(&fullArgs[at], oneArg);
-                at += valSize(oneArg);
+                at += collSize(oneArg);
             } else {
                 fullArgs[at] = oneArg;
                 at++;
@@ -133,7 +133,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
 
     result = constCollectGenerator(result);
 
-    switch (valSize(result)) {
+    switch (collSize(result)) {
         case 0: return NULL;
         case 1: return listNth(result, 0);
         default: {

@@ -294,7 +294,7 @@ zvalue langTokenize0(zvalue string) {
     zstackPointer save = pbFrameStart();
 
     zvalue result[LANG_MAX_TOKENS];
-    ParseState state = { string, valSize(string), 0 };
+    ParseState state = { string, collSize(string), 0 };
     zint out = 0;
 
     for (;;) {

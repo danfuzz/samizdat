@@ -61,14 +61,14 @@ PRIM_IMPL(stringCat) {
     zint size = 0;
 
     for (zint i = 0; i < argCount; i++) {
-        size += valSize(args[i]);
+        size += collSize(args[i]);
     }
 
     zchar chars[size];
 
     for (zint i = 0, at = 0; i < argCount; i++) {
         zcharsFromString(&chars[at], args[i]);
-        at += valSize(args[i]);
+        at += collSize(args[i]);
     }
 
     return stringFromZchars(size, chars);
@@ -88,7 +88,7 @@ PRIM_IMPL(stringNth) {
 PRIM_IMPL(stringSlice) {
     zvalue string = args[0];
     zint startIndex = zintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : valSize(string);
+    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : collSize(string);
 
     return stringSlice(string, startIndex, endIndex);
 }

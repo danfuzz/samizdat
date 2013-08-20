@@ -69,7 +69,7 @@ PRIM_IMPL(mapGet) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapKeys) {
     zvalue map = args[0];
-    zint size = valSize(map);
+    zint size = collSize(map);
     zmapping mappings[size];
     zvalue arr[size];
 

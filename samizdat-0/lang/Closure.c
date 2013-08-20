@@ -48,7 +48,7 @@ typedef struct {
     /** The `"formals"` mapping inside `defMap`. */
     zvalue formals;
 
-    /** The result of `valSize(formals)`. */
+    /** The result of `collSize(formals)`. */
     zint formalsSize;
 
     /** The `"statements"` mapping inside `defMap`. */
@@ -96,7 +96,7 @@ static zvalue buildClosure(zvalue node) {
 
     info->defMap = defMap;
     info->formals = mapGet(defMap, STR_formals);
-    info->formalsSize = valSize(info->formals);
+    info->formalsSize = collSize(info->formals);
     info->statements = mapGet(defMap, STR_statements);
     info->yield = mapGet(defMap, STR_yield);
     info->yieldDef = mapGet(defMap, STR_yieldDef);
@@ -203,7 +203,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // Evaluate the statements, updating the frame as needed.
 
     zvalue statements = info->statements;
-    zint statementsSize = valSize(statements);
+    zint statementsSize = collSize(statements);
     zvalue statementsArr[statementsSize];
     arrayFromList(statementsArr, statements);
 

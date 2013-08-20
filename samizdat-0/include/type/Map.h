@@ -82,7 +82,7 @@ zvalue mapGet(zvalue map, zvalue key);
 
 /**
  * Given a map, returns the `n`th mapping. `map` must be a
- * map, and `n` must be `< valSize(value)`. Mappings are returned
+ * map, and `n` must be `< collSize(value)`. Mappings are returned
  * as single-element maps. Map ordering is by key.
  */
 zvalue mapNth(zvalue map, zint n);

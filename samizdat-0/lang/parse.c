@@ -278,7 +278,7 @@ zvalue parsePlus(parserFunction rule, ParseState *state) {
     MARK();
 
     zvalue result = parseStar(rule, state);
-    REJECT_IF(valSize(result) == 0);
+    REJECT_IF(collSize(result) == 0);
 
     return result;
 }
@@ -614,7 +614,7 @@ DEF_PARSE(list) {
     zvalue expressions = PARSE(unadornedList);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    if (valSize(expressions) == 0) {
+    if (collSize(expressions) == 0) {
         return makeLiteral(EMPTY_LIST);
     } else {
         return makeCallName(STR_makeList, expressions);
@@ -700,7 +700,7 @@ DEF_PARSE(map) {
     }
 
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
-    zint size = valSize(mappings);
+    zint size = collSize(mappings);
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
@@ -852,7 +852,7 @@ DEF_PARSE(unaryExpression) {
     zvalue result = PARSE_OR_REJECT(atom);
     zvalue postfixes = PARSE_STAR(postfixOperator);
 
-    zint size = valSize(postfixes);
+    zint size = collSize(postfixes);
     for (zint i = 0; i < size; i++) {
         zvalue one = listNth(postfixes, i);
         if (hasType(one, TYPE_List)) {
@@ -864,7 +864,7 @@ DEF_PARSE(unaryExpression) {
         }
     }
 
-    for (zint i = valSize(prefixes) - 1; i >= 0; i--) {
+    for (zint i = collSize(prefixes) - 1; i >= 0; i--) {
         zvalue one = listNth(prefixes, i);
         if (valEq(one, TOK_CH_MINUS)) {
             result = makeCallName(STR_neg, listFrom1(result));
@@ -1021,7 +1021,7 @@ zvalue langTree0(zvalue program) {
         tokens = program;
     }
 
-    ParseState state = { tokens, valSize(tokens), 0 };
+    ParseState state = { tokens, collSize(tokens), 0 };
     zvalue result = parse_program(&state);
 
     if (!isEof(&state)) {
