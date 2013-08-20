@@ -26,7 +26,10 @@ enum {
     /** Maximum readable file size, in bytes. */
     IO_MAX_FILE_SIZE = 100000,
 
-    /** Maximum number of tokens in a given parse. */
+    /**
+     * Maximum number of tokens in a given parse (which is the maximum
+     * number of characters for a tokenizer).
+     */
     LANG_MAX_TOKENS = 100000,
 
     /** Maximum number of characters in an identifier. */

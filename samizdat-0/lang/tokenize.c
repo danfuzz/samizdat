@@ -21,7 +21,7 @@
 /** State of tokenization in-progress. */
 typedef struct {
     /** String being parsed. */
-    zvalue str;
+    zchar str[LANG_MAX_TOKENS];
 
     /** Size of string. */
     zint size;
@@ -41,7 +41,7 @@ static bool isEof(ParseState *state) {
  * Peeks at the next character.
  */
 static zint peek(ParseState *state) {
-    return isEof(state) ? -1 : collNthChar(state->str, state->at);
+    return isEof(state) ? -1 : state->str[state->at];
 }
 
 /**
@@ -293,9 +293,17 @@ zvalue langTokenize0(zvalue string) {
 
     zstackPointer save = pbFrameStart();
 
+    zint size = collSize(string);
+
+    if (size > LANG_MAX_TOKENS) {
+        die("Too many characters for tokenization: %lld", size);
+    }
+
     zvalue result[LANG_MAX_TOKENS];
-    ParseState state = { string, collSize(string), 0 };
+    ParseState state = { .size = size, .at = 0 };
     zint out = 0;
+
+    zcharsFromString(state.str, string);
 
     for (;;) {
         skipWhitespace(&state);
