@@ -24,9 +24,8 @@ PRIM_IMPL(charFromInt) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intFromChar) {
     zvalue string = args[0];
-    assertStringSize1(string);
 
-    return intFromZint(stringNth(string, 0));
+    return intFromZint(zcharFromString(string));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

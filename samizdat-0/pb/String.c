@@ -287,7 +287,7 @@ METH_IMPL(String, nth) {
         return NULL;
     }
 
-    return stringFromZchar(stringNth(string, index));
+    return stringFromZchar(info->elems[index]);
 }
 
 /* Documented in header. */

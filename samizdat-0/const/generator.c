@@ -82,7 +82,7 @@ METH_IMPL(String, collect) {
     zvalue arr[size];
 
     for (zint i = 0; i < size; i++) {
-        arr[i] = stringFromZchar(stringNth(string, i));
+        arr[i] = collNth(string, i);
     }
 
     return listFromArray(size, arr);
