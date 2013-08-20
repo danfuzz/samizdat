@@ -5,9 +5,11 @@ Strings
 -------
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Collection` protocol
 
-(none)
+#### `size(string) <> int`
+
+Returns the number of characters in the string.
 
 
 <br><br>

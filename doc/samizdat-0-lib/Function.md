@@ -7,12 +7,12 @@ Functions
 <br><br>
 ### Generic Function Definitions: `Callable` protocol
 
-#### `call(callable, args*) <> . | void`
+#### `call(function, args*) <> . | void`
 
 Calls the given function with the given arguments.
 
 
-#### `canCall(callable, value) <> logic`
+#### `canCall(function, value) <> logic`
 
 Checks if the given function accepts at least one argument. Returns the
 `value` argument if so.

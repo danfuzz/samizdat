@@ -5,9 +5,11 @@ Maps
 ----
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Collection` protocol
 
-(none)
+#### `size(map) <> int`
+
+Returns the number of mappings in the map.
 
 
 <br><br>

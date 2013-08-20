@@ -5,9 +5,11 @@ Lists
 -----
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Collection` protocol
 
-(none)
+#### `size(list) <> int`
+
+Returns the number of elements in the list.
 
 
 <br><br>
