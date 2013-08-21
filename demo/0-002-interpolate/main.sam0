@@ -16,7 +16,7 @@ SELF_PATH, ARGS* ::
 #
 
 fn msg(args*) {
-    io0Note(stringCat("Got: ", sourceString(args)))
+    io0Note(cat("Got: ", sourceString(args)))
 };
 
 fn ten() {

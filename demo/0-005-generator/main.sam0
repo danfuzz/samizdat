@@ -17,7 +17,7 @@ SELF_PATH, ARGS* ::
 
 # Prints the given value, indented slightly.
 fn msg(value) {
-    io0Note(stringCat("  ", sourceString(value)))
+    io0Note(cat("  ", sourceString(value)))
 };
 
 # Outputs all generated values, with an initial header, followed by
@@ -85,7 +85,7 @@ msgAll("Filter generator (square even numbers)",
 io0Note("doGenerator on filter");
 doGenerator(
     filterGenerator([1, 2, 3, 4])
-        { value :: io0Note(stringCat("    Yay ", sourceString(value))) });
+        { value :: io0Note(cat("    Yay ", sourceString(value))) });
 io0Note("");
 
 msgAll("Token generator", tokenGenerator("Tokens!"));
@@ -137,23 +137,23 @@ msgAll("Single-generator reduceGenerator",
 
 def doRedA = doReduce([[1, 2, 3, 4]], [0])
     { elem, result <> [add(elem, result)] };
-io0Note(stringCat("  corresponding doReduce: ", sourceString(doRedA)));
+io0Note(cat("  corresponding doReduce: ", sourceString(doRedA)));
 def doRedA1 = doReduce1([1, 2, 3, 4], 0)
     { elem, result <> add(elem, result) };
-io0Note(stringCat("  corresponding doReduce1: ", sourceString(doRedA1)));
+io0Note(cat("  corresponding doReduce1: ", sourceString(doRedA1)));
 io0Note("");
 
 msgAll("Two-generator reduceGenerator",
     reduceGenerator([["like", "hate"], ["biscuits", "fish sticks"]], [""])
         { verb, noun, result ::
-            <> [stringCat(result, "I ", verb, " ", noun, ". ")]
+            <> [cat(result, "I ", verb, " ", noun, ". ")]
         });
 
 def doRedB = doReduce([["like", "hate"], ["biscuits", "fish sticks"]], [""])
     { verb, noun, result ::
-        <> [stringCat(result, "I ", verb, " ", noun, ". ")]
+        <> [cat(result, "I ", verb, " ", noun, ". ")]
     };
-io0Note(stringCat("  corresponding doReduce: ", sourceString(doRedB)));
+io0Note(cat("  corresponding doReduce: ", sourceString(doRedB)));
 io0Note("");
 
 msgAll("Two-reduction reduceGenerator",
@@ -162,7 +162,7 @@ msgAll("Two-reduction reduceGenerator",
 
 def doRedC = doReduce([[1, 2, 3, 4]], [0, 1])
     { num, sum, product <> [add(sum, num), mul(product, num)] };
-io0Note(stringCat("  corresponding doReduce: ", sourceString(doRedC)));
+io0Note(cat("  corresponding doReduce: ", sourceString(doRedC)));
 io0Note("");
 
 io0Note("mapFromGenerator on filter");
@@ -171,14 +171,14 @@ def outMap = mapFromGenerator(
         { value ::
             <> [(value): value, add(value, 1): value, blort: value]
         });
-io0Note(stringCat("    ", sourceString(outMap)));
+io0Note(cat("    ", sourceString(outMap)));
 io0Note("");
 
 io0Note("stringFromGenerator on filter");
 def outString = stringFromGenerator(
     filterGenerator(inclusiveRange(65, 1, 75))
         { value <> charFromInt(value) });
-io0Note(stringCat("    ", sourceString(outString)));
+io0Note(cat("    ", sourceString(outString)));
 io0Note("");
 
 
