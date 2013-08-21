@@ -17,34 +17,6 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listCat) {
-    // Special case code for the common and easy cases.
-    switch (argCount) {
-        case 0: {
-            return EMPTY_LIST;
-        }
-        case 1: {
-            assertList(args[0]);
-            return args[0];
-        }
-        case 2: {
-            return listCat(args[0], args[1]);
-        }
-    }
-
-    // The general case. This isn't particularly fancy, because in practice
-    // (as of this writing) it barely ever gets used.
-
-    zvalue result = args[0];
-
-    for (zint i = 1; i < argCount; i++) {
-        result = listCat(result, args[i]);
-    }
-
-    return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listDelNth) {
     if (!hasType(args[1], TYPE_Int)) {
         return args[0];

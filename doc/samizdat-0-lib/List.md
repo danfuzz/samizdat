@@ -29,11 +29,6 @@ Returns the number of elements in the list.
 <br><br>
 ### Primitive Definitions
 
-#### `listCat(lists*) <> list`
-
-Returns a list consisting of the concatenation of the elements
-of all the argument lists, in argument order.
-
 #### `listDelNth(list, n) <> list`
 
 Returns a list just like the given one, except that the `n`th

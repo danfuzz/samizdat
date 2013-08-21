@@ -80,7 +80,6 @@ PRIM_FUNC(io0FlatWriteFileUtf8, 2, 2);
 PRIM_FUNC(io0Die,         0, 1);
 PRIM_FUNC(io0Note,        1, 1);
 PRIM_FUNC(isOpaqueValue,  1, 1);
-PRIM_FUNC(listCat,        0, -1);
 PRIM_FUNC(listDelNth,     2, 2);
 PRIM_FUNC(listFilter,     2, 2);
 PRIM_FUNC(listInsNth,     3, 3);

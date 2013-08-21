@@ -30,8 +30,8 @@ be different. See their docs for details.
 
 **Note:** To account for the possibility of passing *no* arguments to
 concatenate (e.g. when handling a list of arguments generically), include
-a first or final argument of an empty value of the desired type, e.g.
-`""` to perform string concatenation.
+a first argument of the empty value of the desired type, e.g.
+`""` to ensure string concatenation.
 
 #### `get(collection, key) <> . | void`
 
