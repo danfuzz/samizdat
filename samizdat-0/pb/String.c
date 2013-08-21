@@ -70,30 +70,6 @@ void assertStringSize1(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue stringCat(zvalue str1, zvalue str2) {
-    assertString(str1);
-    assertString(str2);
-
-    StringInfo *info1 = getInfo(str1);
-    StringInfo *info2 = getInfo(str2);
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-
-    if (size1 == 0) {
-        return str2;
-    } else if (size2 == 0) {
-        return str1;
-    }
-
-    zvalue result = allocString(size1 + size2);
-    zchar *resultElems = getInfo(result)->elems;
-
-    memcpy(resultElems,         info1->elems, size1 * sizeof(zchar));
-    memcpy(&resultElems[size1], info2->elems, size2 * sizeof(zchar));
-    return result;
-}
-
-/* Documented in header. */
 zvalue stringFromUtf8(zint stringBytes, const char *string) {
     if (stringBytes == -1) {
         stringBytes = strlen(string);
@@ -142,7 +118,7 @@ zvalue stringFromZchar(zchar value) {
 
 /* Documented in header. */
 zvalue stringFromZchars(zint size, const zchar *chars) {
-    // Deal with special cases. This calls into `stringFromChar` since that's
+    // Deal with special cases. This calls into `stringFromZchar` since that's
     // what handles caching of single-character strings.
     switch (size) {
         case 0: return EMPTY_STRING;
@@ -228,14 +204,33 @@ void zcharsFromString(zchar *result, zvalue string) {
 zvalue EMPTY_STRING = NULL;
 
 /* Documented in header. */
+METH_IMPL(String, cat) {
+    if (argCount == 1) {
+        return args[0];
+    }
+
+    zint size = 0;
+
+    for (zint i = 0; i < argCount; i++) {
+        size += getInfo(args[i])->size;
+    }
+
+    zchar chars[size];
+
+    for (zint i = 0, at = 0; i < argCount; i++) {
+        zcharsFromString(&chars[at], args[i]);
+        at += getInfo(args[i])->size;
+    }
+
+    return stringFromZchars(size, chars);
+}
+
+/* Documented in header. */
 METH_IMPL(String, debugString) {
     zvalue string = args[0];
     zvalue quote = stringFromUtf8(1, "\"");
 
-    zvalue result = stringCat(quote, string);
-    result = stringCat(result, quote);
-
-    return result;
+    return GFN_CALL(cat, quote, string, quote);
 }
 
 /* Documented in header. */
@@ -318,6 +313,7 @@ METH_IMPL(String, size) {
 void pbBindString(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_String`.
 
+    METH_BIND(String, cat);
     METH_BIND(String, debugString);
     METH_BIND(String, eq);
     METH_BIND(String, nth);

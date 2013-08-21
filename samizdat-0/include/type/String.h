@@ -36,12 +36,6 @@ void assertString(zvalue value);
 void assertStringSize1(zvalue value);
 
 /**
- * Combines the characters of two strings, in order, into a new
- * string.
- */
-zvalue stringCat(zvalue str1, zvalue str2);
-
-/**
  * Gets the string resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.

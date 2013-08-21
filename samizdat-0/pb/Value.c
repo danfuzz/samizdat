@@ -134,12 +134,12 @@ METH_IMPL(Value, debugString) {
 
     sprintf(addrBuf, "%p", value);
 
-    zvalue result = stringFromUtf8(-1, "@(");
-    result = stringCat(result, GFN_CALL(debugString, type));
-    result = stringCat(result, stringFromUtf8(-1, " @ "));
-    result = stringCat(result, stringFromUtf8(-1, addrBuf));
-    result = stringCat(result, stringFromUtf8(-1, ")"));
-    return result;
+    return GFN_CALL(cat,
+        stringFromUtf8(-1, "@("),
+        GFN_CALL(debugString, type),
+        stringFromUtf8(-1, " @ "),
+        stringFromUtf8(-1, addrBuf),
+        stringFromUtf8(-1, ")"));
 }
 
 /* Documented in header. */

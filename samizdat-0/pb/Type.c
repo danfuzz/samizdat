@@ -384,18 +384,21 @@ zvalue typeParent(zvalue type) {
 METH_IMPL(Type, debugString) {
     zvalue type = args[0];
     TypeInfo *info = getInfo(type);
-
-    zvalue result = stringFromUtf8(-1, "@(Type ");
-    result = stringCat(result, GFN_CALL(debugString, info->name));
+    zvalue extraString;
 
     if (!info->derived) {
-        result = stringCat(result, stringFromUtf8(-1, " /*core*/"));
+        extraString = stringFromUtf8(-1, " /*core*/");
     } else if (info->secret != NULL) {
-        result = stringCat(result, stringFromUtf8(-1, " /*opaque*/"));
+        extraString = stringFromUtf8(-1, " /*opaque*/");
+    } else {
+        extraString = EMPTY_STRING;
     }
 
-    result = stringCat(result, stringFromUtf8(-1, ")"));
-    return result;
+    return GFN_CALL(cat,
+        stringFromUtf8(-1, "@(Type "),
+        GFN_CALL(debugString, info->name),
+        extraString,
+        stringFromUtf8(-1, ")"));
 }
 
 /* Documented in header. */

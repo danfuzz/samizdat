@@ -191,17 +191,14 @@ METH_IMPL(Generic, canCall) {
 METH_IMPL(Generic, debugString) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
+    zvalue nameString = (info->name == NULL)
+        ? stringFromUtf8(-1, "(unknown)")
+        : GFN_CALL(debugString, info->name);
 
-    zvalue result = stringFromUtf8(-1, "@(Generic ");
-
-    if (info->name != NULL) {
-        result = stringCat(result, GFN_CALL(debugString, info->name));
-    } else {
-        result = stringCat(result, stringFromUtf8(-1, "(unknown)"));
-    }
-
-    result = stringCat(result, stringFromUtf8(-1, ")"));
-    return result;
+    return GFN_CALL(cat,
+        stringFromUtf8(-1, "@(Generic "),
+        nameString,
+        stringFromUtf8(-1, ")"));
 }
 
 /* Documented in header. */

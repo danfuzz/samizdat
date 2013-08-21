@@ -30,33 +30,11 @@ PRIM_IMPL(intFromChar) {
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringCat) {
-    switch (argCount) {
-        case 0: {
-            return EMPTY_STRING;
-        }
-        case 1: {
-            assertString(args[0]);
-            return args[0];
-        }
-        case 2: {
-            return stringCat(args[0], args[1]);
-        }
+    if (argCount == 0) {
+        return EMPTY_STRING;
+    } else {
+        return funCall(GFN_cat, argCount, args);
     }
-
-    zint size = 0;
-
-    for (zint i = 0; i < argCount; i++) {
-        size += collSize(args[i]);
-    }
-
-    zchar chars[size];
-
-    for (zint i = 0, at = 0; i < argCount; i++) {
-        zcharsFromString(&chars[at], args[i]);
-        at += collSize(args[i]);
-    }
-
-    return stringFromZchars(size, chars);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
