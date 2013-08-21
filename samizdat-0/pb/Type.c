@@ -208,6 +208,33 @@ static bool isType(zvalue value) {
 }
 
 /**
+ * Returns the `Type` per se for the given in-model "type", the latter which
+ * may be an arbitrary value representing a transparent type by name.
+ */
+static zvalue trueTypeFromTypeOrName(zvalue typeOrName) {
+    if (isType(typeOrName)) {
+        return typeOrName;
+    }
+
+    zvalue result = findType(typeOrName, NULL);
+
+    if (result == NULL) {
+        result = makeType(typeOrName, NULL, false);
+        derivBind(result);
+    }
+
+    return result;
+}
+
+/**
+ * Compares two types (per se) for equality. This is just `==` since
+ * types are all "identified".
+ */
+static bool typeEq(zvalue type1, zvalue type2) {
+    return (type1 == type2);
+}
+
+/**
  * Asserts that the value is a `Type`.
  */
 static void assertHasTypeType(zvalue value) {
@@ -229,29 +256,14 @@ zint indexFromType(zvalue type) {
 }
 
 /* Documented in header. */
-zvalue transparentTypeFromName(zvalue name) {
-    zvalue result = findType(name, NULL);
-
-    if (result == NULL) {
-        result = makeType(name, NULL, false);
-        derivBind(result);
-    }
-
-    return result;
-}
-
-/* Documented in header. */
 zvalue trueTypeOf(zvalue value) {
     return value->type;
 }
 
 /* Documented in header. */
 zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret) {
-    if (!isType(typeOrName)) {
-        typeOrName = transparentTypeFromName(typeOrName);
-    }
-
-    return typeSecretIs(typeOrName, secret) ? typeOrName : NULL;
+    zvalue type = trueTypeFromTypeOrName(typeOrName);
+    return typeSecretIs(type, secret) ? type : NULL;
 }
 
 /* Documented in header. */
@@ -269,6 +281,27 @@ bool typeSecretIs(zvalue type, zvalue secret) {
 /*
  * Exported Definitions
  */
+
+/* Documented in header. */
+void assertAllHaveSameType(zint argCount, const zvalue *args) {
+    if (argCount == 0) {
+        // Trivially true.
+        return;
+    }
+
+    zvalue arg0 = args[0];
+    assertValid(arg0);
+    zvalue type0 = arg0->type;
+
+    for (zint i = 1; i < argCount; i++) {
+        zvalue one = args[i];
+        assertValid(one);
+        if (!typeEq(type0, one)) {
+            die("Mismatched types: %s, %s",
+                valDebugString(arg0), valDebugString(one));
+        }
+    }
+}
 
 /* Documented in header. */
 void assertHasType(zvalue value, zvalue type) {
@@ -307,17 +340,12 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
 
 /* Documented in header. */
 bool hasType(zvalue value, zvalue type) {
-    return valEq(typeOf(value), type);
+    return typeEq(value->type, trueTypeFromTypeOrName(type));
 }
 
 /* Documented in header. */
 bool haveSameType(zvalue v1, zvalue v2) {
-    // Use `==` to handle the common cases quickly.
-    if (v1->type == v2->type) {
-        return true;
-    } else {
-        return valEq(typeOf(v1), typeOf(v2));
-    }
+    return typeEq(v1->type, v2->type);
 }
 
 /* Documented in header. */
@@ -343,14 +371,10 @@ zvalue typeOf(zvalue value) {
     assertValid(value);
 
     zvalue type = value->type;
-    if (isType(type)) {
-        TypeInfo *info = getInfo(type);
-        // `typeOf` on a transparent type returns its name.
-        return (info->secret == NULL) ? info->name : type;
-    } else {
-        // It is a transparent type.
-        return type;
-    }
+    TypeInfo *info = getInfo(type);
+
+    // `typeOf` on a transparent type returns its name.
+    return (info->secret == NULL) ? info->name : type;
 }
 
 /* Documented in header. */
