@@ -116,7 +116,7 @@ zvalue PB_NEG1 = NULL;
 #define BINARY_IMPL(name, op) \
     METH_IMPL(Int, name) { \
         zint x = zintValue(args[0]); \
-        zint y = zintFromInt(args[1]); \
+        zint y = zintValue(args[1]); \
         zint result; \
         if ((op)(&result, x, y)) { \
             return intFromZint(result); \
