@@ -5,28 +5,6 @@ Ints
 ----
 
 <br><br>
-### Generic Function Definitions: `Collection` protocol
-
-#### `get(int, key) <> . | void`
-
-This is identical to `nth(int, key)`, except that the result of passing
-a negative or non-`Int` value for `key` is void and not an error.
-
-#### `nth(int, n) <> . | void`
-
-Gets the nth bit, ordered low to high order and with the sign as the
-highest order bit. This is identical to `bit(int, n)` except that this
-returns void for `n > size(int)`.
-
-#### `size(int) <> int`
-
-Returns the number of significant bits (not bytes) in
-the value when represented in twos-complement form, including a
-high-order sign bit. The minimum size of an int is 1, which
-is the size of both `0` and `-1`.
-
-
-<br><br>
 ### Generic Function Definitions: `Int` protocol
 
 #### `abs(int) <> int`
@@ -48,6 +26,13 @@ Returns as an int (`0` or `1`) the bit value in the first
 argument at the bit position (zero-based) indicated by the second
 argument. It is an error (terminating the runtime) if the second
 argument is negative.
+
+#### `bitSize(int) <> int`
+
+Returns the number of significant bits (not bytes) in
+the value when represented in twos-complement form, including a
+high-order sign bit. The minimum size of an int is `1`, which
+is the size of both `0` and `-1`.
 
 #### `div(int1, int2) <> int`
 

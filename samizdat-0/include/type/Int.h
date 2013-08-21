@@ -30,6 +30,9 @@ extern zvalue GFN_and;
 /** Generic `bit(int, int)`: Documented in spec. */
 extern zvalue GFN_bit;
 
+/** Generic `bit(int, int)`: Documented in spec. */
+extern zvalue GFN_bitSize;
+
 /** Generic `div(int, int)`: Documented in spec. */
 extern zvalue GFN_div;
 

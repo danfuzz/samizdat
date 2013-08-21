@@ -147,53 +147,10 @@ static int mappingOrder(const void *m1, const void *m2) {
     return valOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
-
-/*
- * Exported Definitions
+/**
+ * Like `mapFromArray`, but starts with a non-empty map.
  */
-
-/* Documented in header. */
-void assertMap(zvalue value) {
-    assertHasType(value, TYPE_Map);
-}
-
-/* Documented in header. */
-void assertMapSize1(zvalue value) {
-    assertMap(value);
-    if (getInfo(value)->size != 1) {
-        die("Not a size 1 map.");
-    }
-}
-
-/* Documented in header. */
-void arrayFromMap(zmapping *result, zvalue map) {
-    assertMap(map);
-
-    MapInfo *info = getInfo(map);
-    memcpy(result, info->elems, info->size * sizeof(zmapping));
-}
-
-/* Documented in header. */
-zvalue mapCat(zvalue map1, zvalue map2) {
-    assertMap(map1);
-    assertMap(map2);
-
-    MapInfo *info2 = getInfo(map2);
-    zint size2 = info2->size;
-
-    if (getInfo(map1)->size == 0) {
-        return map2;
-    } else if (size2 == 0) {
-        return map1;
-    }
-
-    return mapCatArray(map1, size2, info2->elems);
-}
-
-/* Documented in header. */
-zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
-    assertMap(map);
-
+static zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
     if (size == 0) {
         return map;
     } else if (size == 1) {
@@ -235,6 +192,32 @@ zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
     return result;
 }
 
+
+/*
+ * Exported Definitions
+ */
+
+/* Documented in header. */
+void assertMap(zvalue value) {
+    assertHasType(value, TYPE_Map);
+}
+
+/* Documented in header. */
+void assertMapSize1(zvalue value) {
+    assertMap(value);
+    if (getInfo(value)->size != 1) {
+        die("Not a size 1 map.");
+    }
+}
+
+/* Documented in header. */
+void arrayFromMap(zmapping *result, zvalue map) {
+    assertMap(map);
+
+    MapInfo *info = getInfo(map);
+    memcpy(result, info->elems, info->size * sizeof(zmapping));
+}
+
 /* Documented in header. */
 zvalue mapDel(zvalue map, zvalue key) {
     zint index = mapFind(map, key);
@@ -258,6 +241,11 @@ zvalue mapDel(zvalue map, zvalue key) {
     memcpy(&elems[index], &oldElems[index + 1],
            (size - index) * sizeof(zmapping));
     return result;
+}
+
+/* Documented in header. */
+zvalue mapFromArray(zint size, const zmapping *mappings) {
+    return mapCatArray(EMPTY_MAP, size, mappings);
 }
 
 /* Documented in header. */
@@ -326,6 +314,28 @@ zvalue mappingValue(zvalue map) {
 
 /* Documented in header. */
 zvalue EMPTY_MAP = NULL;
+
+/* Documented in header. */
+METH_IMPL(Map, cat) {
+    if (argCount == 1) {
+        return args[0];
+    }
+
+    zint size = 0;
+
+    for (zint i = 0; i < argCount; i++) {
+        size += getInfo(args[i])->size;
+    }
+
+    zmapping elems[size];
+
+    for (zint i = 0, at = 0; i < argCount; i++) {
+        arrayFromMap(&elems[at], args[i]);
+        at += getInfo(args[i])->size;
+    }
+
+    return mapFromArray(size, elems);
+}
 
 /* Documented in header. */
 METH_IMPL(Map, eq) {
@@ -442,6 +452,7 @@ METH_IMPL(Map, size) {
 /* Documented in header. */
 void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
+    METH_BIND(Map, cat);
     METH_BIND(Map, eq);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);

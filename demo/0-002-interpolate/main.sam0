@@ -16,7 +16,7 @@ SELF_PATH, ARGS* ::
 #
 
 fn msg(args*) {
-    io0Note(stringCat("Got: ", sourceString(args)))
+    io0Note(cat("Got: ", sourceString(args)))
 };
 
 fn ten() {
@@ -45,7 +45,6 @@ msg([[1, 2, 3]*: 6]);
 msg("blort"*);
 msg([a: 10, b: "20"]*);
 msg(inclusiveRange("a", 2, "m")*);
-msg(11*);
 
 ifValue { <> yieldTest([]) }
     { value <> msg(value) }

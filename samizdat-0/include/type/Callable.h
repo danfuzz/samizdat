@@ -91,6 +91,24 @@ inline zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
 }
 
 /**
+ * Helper for `FUN_CALL`: Calls a function with five arguments.
+ */
+inline zvalue funCallWith5(zvalue function, zvalue arg0, zvalue arg1,
+        zvalue arg2, zvalue arg3, zvalue arg4) {
+    zvalue args[] = { arg0, arg1, arg2, arg3, arg4 };
+    return funCall(function, 5, args);
+}
+
+/**
+ * Helper for `FUN_CALL`: Calls a function with six arguments.
+ */
+inline zvalue funCallWith6(zvalue function, zvalue arg0, zvalue arg1,
+        zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5) {
+    zvalue args[] = { arg0, arg1, arg2, arg3, arg4, arg5 };
+    return funCall(function, 6, args);
+}
+
+/**
  * `FUN_CALL(function, arg, ...)`: Calls a function, with a variable number
  * of arguments passed in the usual C style.
  *

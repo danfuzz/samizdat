@@ -139,18 +139,13 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
 
     zorder nameOrder = valOrder(name1, name2);
 
-    if (nameOrder != ZSAME) {
+    if ((nameOrder != ZSAME) || !hasSecret1) {
         return nameOrder;
     }
 
     // This is the case of two different opaque derived types with the
     // same name.
-    if (secret1 == secret2) {
-        // Handles the case of both `NULL`.
-        return ZSAME;
-    } else {
-        return valOrder(secret1, secret2);
-    }
+    return valOrder(secret1, secret2);
 }
 
 /**
@@ -296,7 +291,7 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
     for (zint i = 1; i < argCount; i++) {
         zvalue one = args[i];
         assertValid(one);
-        if (!typeEq(type0, one)) {
+        if (!typeEq(type0, one->type)) {
             die("Mismatched types: %s, %s",
                 valDebugString(arg0), valDebugString(one));
         }
@@ -305,10 +300,8 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void assertHasType(zvalue value, zvalue type) {
-    // This tries doing `!=` a first test, to keep the usual case speedy.
-    if (   (value != NULL)
-        && (value->type != type)
-        && !hasType(value, type)) {
+    assertValid(value);
+    if (!hasType(value, type)) {
         die("Expected type %s; got %s.",
             valDebugString(type), valDebugString(value));
     }
@@ -391,18 +384,21 @@ zvalue typeParent(zvalue type) {
 METH_IMPL(Type, debugString) {
     zvalue type = args[0];
     TypeInfo *info = getInfo(type);
-
-    zvalue result = stringFromUtf8(-1, "@(Type ");
-    result = stringCat(result, GFN_CALL(debugString, info->name));
+    zvalue extraString;
 
     if (!info->derived) {
-        result = stringCat(result, stringFromUtf8(-1, " /*core*/"));
+        extraString = stringFromUtf8(-1, " /*core*/");
     } else if (info->secret != NULL) {
-        result = stringCat(result, stringFromUtf8(-1, " /*opaque*/"));
+        extraString = stringFromUtf8(-1, " /*opaque*/");
+    } else {
+        extraString = EMPTY_STRING;
     }
 
-    result = stringCat(result, stringFromUtf8(-1, ")"));
-    return result;
+    return GFN_CALL(cat,
+        stringFromUtf8(-1, "@(Type "),
+        GFN_CALL(debugString, info->name),
+        extraString,
+        stringFromUtf8(-1, ")"));
 }
 
 /* Documented in header. */
@@ -420,8 +416,13 @@ METH_IMPL(Type, gcMark) {
 METH_IMPL(Type, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    TypeInfo *info1 = getInfo(v1);
 
+    if (v1 == v2) {
+        // Easy case to avoid decomposition and detailed tests.
+        return PB_0;
+    }
+
+    TypeInfo *info1 = getInfo(v1);
     return intFromZint(typeCompare(info1->name, info1->secret, v2));
 }
 

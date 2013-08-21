@@ -16,7 +16,7 @@ fn reportError(pending) {
     io0Note("Pending tokens:");
 
     doFilter(pending, inclusiveRange(1, 1, 50))
-        { token, . :: io0Note(stringCat("    ", sourceString(token))) };
+        { token, . :: io0Note(cat("    ", sourceString(token))) };
 
     io0Die("\nExtra tokens at end of program.")
 };
@@ -541,7 +541,7 @@ def parMap = {/
     first = parMapping
     rest = (@"," parMapping)*
     @"]"
-    { <> makeCallName("mapCat", first, rest*) }
+    { <> makeCallName("cat", first, rest*) }
 /};
 
 # Parses a literal in derived value form.
@@ -762,7 +762,7 @@ def parParserSetString = {/
             def endChar = dataOf(end);
             <> ifIs
                 { <> eq(1, &eq(size(startChar), size(endChar))) }
-                { <> stringCat(inclusiveRange(startChar, 1, endChar)*) }
+                { <> cat(inclusiveRange(startChar, 1, endChar)*) }
         }
     |
         { <> dataOf(s) }
@@ -781,7 +781,7 @@ def parParserSet = {/
 
     terminals = (
         strings = parParserSetString+
-        { <> [stringCat(strings*)*] }
+        { <> [cat(strings*)*] }
     |
         tokens = parParserToken+
         { <> collectFilter(tokens) { tok <> dataOf(tok) } }
@@ -898,7 +898,7 @@ def parStringInterpolation = {/
 # ```
 # =>
 # ```
-# stringCat("string", fmt1((expr...)?*), fmt2({ block... }()?*))
+# cat("string", fmt1((expr...)?*), fmt2({ block... }()?*))
 # ```
 #
 def parInterpolatedString = {/
@@ -930,7 +930,7 @@ def parInterpolatedString = {/
                 }
         };
 
-        <> makeCallName("stringCat", elems*)
+        <> makeCallName("cat", elems*)
     }
 /};
 
@@ -1557,7 +1557,7 @@ def parSwitchExpression = {/
         # * The cases are constructed in the somewhat-convoluted way that
         #   they are in order to preserve the left-to-right evaluation order
         #   of the apparent text, even though the key/case override semantics
-        #   is the opposite of what `mapCat` defines.
+        #   is the opposite of what `cat(map)` defines.
         #
         # * The `test` is wrapped in a `voidable` node to make the
         #   "logic nature" of the expression operate as expected (that is,
@@ -1567,10 +1567,15 @@ def parSwitchExpression = {/
         #   which will have to have expression and not argument semantics.
         def testBody = makeThunk(
                 makeCallName("makeList",
-                    makeCallName("mapCat",
-                        makeInterpolate(
-                            makeCallName("listReverse",
-                                makeCallName("makeList", regularCases*)))),
+                    ifIs { <> eq(regularCases, []) }
+                        { <> makeLiteral([:]) }
+                        {
+                            <> makeCallName("cat",
+                                makeInterpolate(
+                                    makeCallName("listReverse",
+                                        makeCallName("makeList",
+                                            regularCases*))))
+                        },
                     ifValue { <> optDefault* }
                         { value <> closureWithFormals(value, formal) }
                         { <> YIELD_VOID_FN_1 },

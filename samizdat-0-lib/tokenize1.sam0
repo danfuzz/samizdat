@@ -38,7 +38,7 @@ fn intFromDigitChar(ch) {
 
 # Documented in Samizdat Layer 0 spec.
 fn processStringParts(parts) {
-    <> @[string: stringCat(parts*)]
+    <> @[string: cat("", parts*)]
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -117,7 +117,7 @@ def IDENTIFIER_START_CHARS =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
 # These are all the characters which are allowed to be in an identifier.
-def IDENTIFIER_CHARS = stringCat(IDENTIFIER_START_CHARS, "0123456789");
+def IDENTIFIER_CHARS = cat(IDENTIFIER_START_CHARS, "0123456789");
 
 # Documented in Samizdat Layer 0 spec.
 def tokIdentifier = pegMakeMainSequence(
@@ -140,7 +140,7 @@ def tokError = pegMakeMainSequence(
     pegRuleAny,
     pegMakeStar(pegMakeCharSetComplement("\n")),
     pegMakeCode { badCh, . ::
-        def msg = stringCat("Unrecognized character: ", typeOf(badCh));
+        def msg = cat("Unrecognized character: ", typeOf(badCh));
         <> @[error: msg]
     });
 

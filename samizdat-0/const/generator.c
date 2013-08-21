@@ -11,7 +11,6 @@
 #include "impl.h"
 #include "type/Box.h"
 #include "type/Generic.h"
-#include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/String.h"
@@ -95,10 +94,9 @@ METH_IMPL(Value, collect) {
 
 /* Documented in header. */
 void generatorInit(void) {
-    GFN_collect = makeGeneric(1, 1, stringFromUtf8(-1, "collect"));
+    GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
     pbImmortalize(GFN_collect);
 
-    genericBindCore(GFN_collect, TYPE_Int,    Collection_collect);
     genericBindCore(GFN_collect, TYPE_Map,    Collection_collect);
     genericBindCore(GFN_collect, TYPE_String, Collection_collect);
     METH_BIND(List, collect);

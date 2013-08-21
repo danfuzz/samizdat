@@ -20,7 +20,7 @@ fn expectSame(v1, v2) {
     ifIs { <> eq(v1, v2) }
         { io0Note("Yes.") }
         {
-            io0Note(stringCat("Different: ",
+            io0Note(cat("Different: ",
                 sourceString(v1), ", ", sourceString(v2)))
         }
 };
@@ -29,7 +29,7 @@ fn expectSame(v1, v2) {
 fn expectDifferent(v1, v2) {
     ifIs { <> ne(v1, v2) }
         { io0Note("Yes.") }
-        { io0Note(stringCat("Same: ", sourceString(v1))) }
+        { io0Note(cat("Same: ", sourceString(v1))) }
 };
 
 # Expects the value to be a core value.
@@ -37,16 +37,16 @@ fn expectCore(v) {
     ifIs { <> isOpaqueValue(v) }
         {
             ifValue { <> dataOf(v) }
-                { data :: io0Note(stringCat("Bad data: ", sourceString(data))) }
+                { data :: io0Note(cat("Bad data: ", sourceString(data))) }
                 { io0Note("Yes.") }
         }
-        { io0Note(stringCat("Derived: ", sourceString(v))) }
+        { io0Note(cat("Derived: ", sourceString(v))) }
 };
 
 # Expects the value to be a derived value.
 fn expectDerived(v) {
     ifIs { <> isOpaqueValue(v) }
-        { io0Note(stringCat("Opaque: ", sourceString(v))) }
+        { io0Note(cat("Opaque: ", sourceString(v))) }
         { io0Note("Yes.") }
 };
 
@@ -87,7 +87,7 @@ expectSame([[]], [[]]);
 expectSame([0, 0, 0], [0, 0, 0]);
 expectSame([[]*, 1], [1]);
 expectSame([1, 2, [3, 4]*], [1, [2, 3]*, 4]);
-expectSame(listCat([9, 8, 7], [6, 5, 4]), [9, 8, 7, 6, 5, 4]);
+expectSame(cat([9, 8, 7], [6, 5, 4]), [9, 8, 7, 6, 5, 4]);
 expectSame(listButFirst([1]), []);
 
 expectDifferent([], [[]]);
@@ -109,7 +109,7 @@ expectSame([[:]: [:]], [[:]: [:]]);
 expectSame([x: 5, y: 7], [y: 7, x: 5]);
 expectSame([["x", "y", "z"]*: "blort"], [x: "blort", y: "blort", z: "blort"]);
 expectSame([[a: 1]*, b: 2], [a: 1, b: 2]);
-expectSame(mapCat([10: 1], [30: 3], [20: 2]), [10: 1, 20: 2, 30: 3]);
+expectSame(cat([10: 1], [30: 3], [20: 2]), [10: 1, 20: 2, 30: 3]);
 expectSame(nth([a: 10, b: 20], 0), [a: 10]);
 
 expectDifferent([["x"]: "blort"], ["x": "blort"]);
@@ -131,7 +131,7 @@ io0Note("\nString");
 expectSame("", "");
 expectSame("x", "x");
 expectSame("blort", "blort");
-expectSame(stringCat("blort", "-fizmo", "-igram"), "blort-fizmo-igram");
+expectSame(cat("blort", "-fizmo", "-igram"), "blort-fizmo-igram");
 expectSame(nth("frotz", 4), "z");
 
 expectDifferent("blort", "Blort");
@@ -188,7 +188,7 @@ expectSame(false, @[Boolean: 0]);
 expectSame(true, @[Boolean: 1]);
 expectSame(@[eek: 10], @["eek": 10]);
 expectSame(@[eek: 10], @["eek": add(5, 5)]);
-expectSame(@[eek: 10], @[stringCat("ee", "k"): 10]);
+expectSame(@[eek: 10], @[cat("ee", "k"): 10]);
 
 expectDifferent(@x, @[x: 1]);
 expectDifferent(@[x: 1], @[x: 2]);

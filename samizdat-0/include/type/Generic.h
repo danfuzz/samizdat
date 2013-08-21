@@ -14,6 +14,16 @@
 #include "pb.h"
 #include "type/Callable.h"
 
+/** Flags passed to `makeGeneric`. */
+typedef enum {
+    /** No flags. */
+    GFN_NONE = 0,
+
+    /**
+     * Indicates that all arguments to the function must be of the same type.
+     */
+    GFN_SAME_TYPE = 1
+} zgenericFlags;
 
 /** Declaration for a method on the given type with the given name. */
 #define METH_IMPL(type, name) \
@@ -48,6 +58,7 @@ void genericSeal(zvalue generic);
  * `1`, and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name);
+zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
+        zvalue name);
 
 #endif

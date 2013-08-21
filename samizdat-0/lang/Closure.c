@@ -335,17 +335,14 @@ METH_IMPL(Closure, debugString) {
     zvalue closure = args[0];
     ClosureInfo *info = getInfo(closure);
     zvalue name = collGet(info->defMap, STR_name);
+    zvalue nameString = (name == NULL)
+        ? stringFromUtf8(-1, "(unknown)")
+        : GFN_CALL(debugString, name);
 
-    zvalue result = stringFromUtf8(-1, "@(Closure ");
-
-    if (name != NULL) {
-        result = stringCat(result, GFN_CALL(debugString, name));
-    } else {
-        result = stringCat(result, stringFromUtf8(-1, "(unknown)"));
-    }
-
-    result = stringCat(result, stringFromUtf8(-1, ")"));
-    return result;
+    return GFN_CALL(cat,
+        stringFromUtf8(-1, "@(Closure "),
+        nameString,
+        stringFromUtf8(-1, ")"));
 }
 
 /* Documented in header. */

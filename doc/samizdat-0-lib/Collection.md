@@ -12,6 +12,27 @@ here.
 <br><br>
 ### Generic Function Definitions
 
+#### `cat(collection, more*) <> collection`
+
+Returns the concatenation of all of the given collections. The collections
+must all be of the same type, and the result is the same type as the given
+type. It is an error (terminating the runtime) if one of the arguments is
+of a different type.
+
+To the extent that a collection is unconstrained in terms of its
+elements and their arrangement, the result of concatenation consists
+of the elements of all the original collections, in order, in the order
+of the arguments.
+
+For collections that have element constraints, a concatenation will
+not necessarily contain all the original elements, and the order may
+be different. See their docs for details.
+
+**Note:** To account for the possibility of passing *no* arguments to
+concatenate (e.g. when handling a list of arguments generically), include
+a first argument of the empty value of the desired type, e.g.
+`""` to ensure string concatenation.
+
 #### `get(collection, key) <> . | void`
 
 Returns the element of the collection that corresponds to the given

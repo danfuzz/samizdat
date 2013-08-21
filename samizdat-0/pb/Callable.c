@@ -87,22 +87,18 @@ zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
     return result;
 }
 
-/* Documented in header. */
+// All documented in header.
 extern zvalue funCallWith0(zvalue function);
-
-/* Documented in header. */
 extern zvalue funCallWith1(zvalue function, zvalue arg0);
-
-/* Documented in header. */
 extern zvalue funCallWith2(zvalue function, zvalue arg0, zvalue arg1);
-
-/* Documented in header. */
 extern zvalue funCallWith3(zvalue function, zvalue arg0, zvalue arg1,
     zvalue arg2);
-
-/* Documented in header. */
 extern zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
     zvalue arg2, zvalue arg3);
+extern zvalue funCallWith5(zvalue function, zvalue arg0, zvalue arg1,
+    zvalue arg2, zvalue arg3, zvalue arg4);
+extern zvalue funCallWith6(zvalue function, zvalue arg0, zvalue arg1,
+    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5);
 
 
 /*
@@ -111,10 +107,10 @@ extern zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
 
 /* Documented in header. */
 void pbBindCallable(void) {
-    GFN_call = makeGeneric(1, -1, stringFromUtf8(-1, "call"));
+    GFN_call = makeGeneric(1, -1, GFN_NONE, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 
-    GFN_canCall = makeGeneric(2, 2, stringFromUtf8(-1, "canCall"));
+    GFN_canCall = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "canCall"));
     pbImmortalize(GFN_canCall);
 }
 

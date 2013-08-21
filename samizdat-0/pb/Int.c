@@ -116,7 +116,7 @@ zvalue PB_NEG1 = NULL;
 #define BINARY_IMPL(name, op) \
     METH_IMPL(Int, name) { \
         zint x = zintValue(args[0]); \
-        zint y = zintFromInt(args[1]); \
+        zint y = zintValue(args[1]); \
         zint result; \
         if ((op)(&result, x, y)) { \
             return intFromZint(result); \
@@ -127,10 +127,11 @@ zvalue PB_NEG1 = NULL;
     extern int semicolonRequiredHere
 
 // All documented in header.
-UNARY_IMPL(abs,  zintAbs);
-UNARY_IMPL(neg,  zintNeg);
-UNARY_IMPL(not,  zintNot);
-UNARY_IMPL(sign, zintSign);
+UNARY_IMPL(abs,     zintAbs);
+UNARY_IMPL(bitSize, zintSafeBitSize);
+UNARY_IMPL(neg,     zintNeg);
+UNARY_IMPL(not,     zintNot);
+UNARY_IMPL(sign,    zintSign);
 
 // All documented in header.
 BINARY_IMPL(add,   zintAdd);
@@ -155,23 +156,6 @@ METH_IMPL(Int, eq) {
 }
 
 /* Documented in header. */
-METH_IMPL(Int, nth) {
-    zvalue intval = args[0];
-    zvalue n = args[1];
-
-    zint x = zintValue(intval);
-    zint index = collNthIndexStrict(zintBitSize(x), n);
-
-    if (index < 0) {
-        return NULL;
-    }
-
-    zint result;
-    zintBit(&result, x, index); // Won't fail.
-    return intFromZint(result);
-}
-
-/* Documented in header. */
 METH_IMPL(Int, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -188,63 +172,59 @@ METH_IMPL(Int, order) {
 }
 
 /* Documented in header. */
-METH_IMPL(Int, size) {
-    zvalue intval = args[0];
-
-    return intFromZint(zintBitSize(zintValue(intval)));
-}
-
-/* Documented in header. */
 void pbBindInt(void) {
-    GFN_abs = makeGeneric(1, 1, stringFromUtf8(-1, "abs"));
+    GFN_abs = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "abs"));
     pbImmortalize(GFN_abs);
 
-    GFN_add = makeGeneric(2, 2, stringFromUtf8(-1, "add"));
+    GFN_add = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "add"));
     pbImmortalize(GFN_add);
 
-    GFN_and = makeGeneric(2, 2, stringFromUtf8(-1, "and"));
+    GFN_and = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "and"));
     pbImmortalize(GFN_and);
 
-    GFN_div = makeGeneric(2, 2, stringFromUtf8(-1, "div"));
-    pbImmortalize(GFN_div);
-
-    GFN_divEu = makeGeneric(2, 2, stringFromUtf8(-1, "divEu"));
-    pbImmortalize(GFN_divEu);
-
-    GFN_bit = makeGeneric(2, 2, stringFromUtf8(-1, "bit"));
+    GFN_bit = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "bit"));
     pbImmortalize(GFN_bit);
 
-    GFN_mod = makeGeneric(2, 2, stringFromUtf8(-1, "mod"));
+    GFN_bitSize = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "bitSize"));
+    pbImmortalize(GFN_bitSize);
+
+    GFN_div = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "div"));
+    pbImmortalize(GFN_div);
+
+    GFN_divEu = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "divEu"));
+    pbImmortalize(GFN_divEu);
+
+    GFN_mod = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "mod"));
     pbImmortalize(GFN_mod);
 
-    GFN_modEu = makeGeneric(2, 2, stringFromUtf8(-1, "modEu"));
+    GFN_modEu = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "modEu"));
     pbImmortalize(GFN_modEu);
 
-    GFN_mul = makeGeneric(2, 2, stringFromUtf8(-1, "mul"));
+    GFN_mul = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "mul"));
     pbImmortalize(GFN_mul);
 
-    GFN_neg = makeGeneric(1, 1, stringFromUtf8(-1, "neg"));
+    GFN_neg = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "neg"));
     pbImmortalize(GFN_neg);
 
-    GFN_not = makeGeneric(1, 1, stringFromUtf8(-1, "not"));
+    GFN_not = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "not"));
     pbImmortalize(GFN_not);
 
-    GFN_or = makeGeneric(2, 2, stringFromUtf8(-1, "or"));
+    GFN_or = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "or"));
     pbImmortalize(GFN_or);
 
-    GFN_shl = makeGeneric(2, 2, stringFromUtf8(-1, "shl"));
+    GFN_shl = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "shl"));
     pbImmortalize(GFN_shl);
 
-    GFN_shr = makeGeneric(2, 2, stringFromUtf8(-1, "shr"));
+    GFN_shr = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "shr"));
     pbImmortalize(GFN_shr);
 
-    GFN_sign = makeGeneric(1, 1, stringFromUtf8(-1, "sign"));
+    GFN_sign = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sign"));
     pbImmortalize(GFN_sign);
 
-    GFN_sub = makeGeneric(2, 2, stringFromUtf8(-1, "sub"));
+    GFN_sub = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "sub"));
     pbImmortalize(GFN_sub);
 
-    GFN_xor = makeGeneric(2, 2, stringFromUtf8(-1, "xor"));
+    GFN_xor = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "xor"));
     pbImmortalize(GFN_xor);
 
     TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"), false);
@@ -252,6 +232,7 @@ void pbBindInt(void) {
     METH_BIND(Int, add);
     METH_BIND(Int, and);
     METH_BIND(Int, bit);
+    METH_BIND(Int, bitSize);
     METH_BIND(Int, div);
     METH_BIND(Int, divEu);
     METH_BIND(Int, eq);
@@ -260,16 +241,13 @@ void pbBindInt(void) {
     METH_BIND(Int, mul);
     METH_BIND(Int, neg);
     METH_BIND(Int, not);
-    METH_BIND(Int, nth);
     METH_BIND(Int, or);
     METH_BIND(Int, order);
     METH_BIND(Int, shl);
     METH_BIND(Int, shr);
     METH_BIND(Int, sign);
-    METH_BIND(Int, size);
     METH_BIND(Int, sub);
     METH_BIND(Int, xor);
-    seqBind(TYPE_Int);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);
@@ -294,13 +272,16 @@ zvalue GFN_add = NULL;
 zvalue GFN_and = NULL;
 
 /* Documented in header. */
+zvalue GFN_bit = NULL;
+
+/* Documented in header. */
+zvalue GFN_bitSize = NULL;
+
+/* Documented in header. */
 zvalue GFN_div = NULL;
 
 /* Documented in header. */
 zvalue GFN_divEu = NULL;
-
-/* Documented in header. */
-zvalue GFN_bit = NULL;
 
 /* Documented in header. */
 zvalue GFN_mod = NULL;

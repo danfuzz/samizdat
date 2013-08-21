@@ -53,7 +53,7 @@ def parCodePoint = {/
 # Parses a list of code points, yielding a converted string of them.
 def parCodePoints = {/
     codes = parCodePoint+
-    { <> stringCat(codes*) }
+    { <> cat(codes*) }
 /};
 
 # Parses an entry description.
@@ -95,7 +95,7 @@ def parFile = {/
         }
     )?
 
-    { <> mapCat(lines*) }
+    { <> cat(lines*) }
 /};
 
 def inPath = [listButLast(SELF_PATH)*, "entity-map.txt"];
@@ -112,7 +112,7 @@ def resultLines = (mapping in result ::
     <> ",\n    \%q(mappingKey(mapping)): \%q(mappingValue(mapping))"
 );
 
-def resultText = stringSlice(stringCat(resultLines*), 2);
+def resultText = stringSlice(cat(resultLines*), 2);
 
 def outText = "\
     # Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).

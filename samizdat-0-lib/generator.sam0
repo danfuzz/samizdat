@@ -65,7 +65,6 @@ fn makeFunctionGenerator(function) {
 def GENERATOR_MAKERS = [
     (Function): makeFunctionGenerator,
     (Generic):  makeFunctionGenerator,
-    (Int):      makeCollectionGenerator,
     (List):     makeCollectionGenerator,
     (Map):      makeCollectionGenerator,
     (String):   makeCollectionGenerator
@@ -299,7 +298,7 @@ fn mapFromGenerator(generator) {
     ifIs { <> isMap(generator) }
         { return generator };
 
-    <> mapCat(generatorFromValue(generator)*)
+    <> cat([:], generatorFromValue(generator)*)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -441,7 +440,7 @@ fn stringFromGenerator(generator) {
     ifIs { <> isString(generator) }
         { return generator };
 
-    <> stringCat(generatorFromValue(generator)*)
+    <> cat("", generatorFromValue(generator)*)
 };
 
 # Documented in Samizdat Layer 0 spec.

@@ -178,10 +178,11 @@ inline bool zintBit(zint *result, zint x, zint y) {
 
 /**
  * Gets the bit size (highest-order significant bit number, plus one)
- * of the given `zint`, assuming sign-extended representation. For example,
- * this is `1` for both `0` and `-1` (because both can be represented with
- * *just* a single sign bit); and this is `2` for `1` (because it requires
- * one value bit and one sign bit).
+ * of the given `zint`, assuming sign-extended representation.
+ *
+ * For example, the bit size is `1` for both `0` and `-1` (because both can
+ * be represented with *just* a single sign bit); and this is `2` for `1`
+ * (because it requires one value bit and one sign bit).
  */
 inline zint zintBitSize(zint value) {
     if (value < 0) {
@@ -202,6 +203,20 @@ inline zint zintBitSize(zint value) {
     if (uv >= ((uint64_t) 1 << 2))  { result +=  2; uv >>=  2; }
     if (uv >= ((uint64_t) 1 << 1))  { result +=  1; uv >>=  1; }
     return result + uv;
+}
+
+/**
+ * Version of `zintBitSize` that uses a result-pointer form factor.
+ * Returns `true`, and stores the result in the indicated pointer if
+ * non-`NULL`. This function never fails; the success flag is so that it
+ * can be used equivalently to the other similar functions in this library.
+ */
+inline bool zintSafeBitSize(zint *result, zint value) {
+    if (result != NULL) {
+        *result = zintBitSize(value);
+    }
+
+    return true;
 }
 
 /**
