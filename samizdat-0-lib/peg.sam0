@@ -102,13 +102,13 @@ fn pegRuleLookaheadAny(box, input, .*) {
 fn pegMakeCharSet(strings*) {
     # Make a list of all the strings' characters, passing it to the
     # general token set constructor.
-    <> genericMakeTokenSet(true, [stringCat(strings*)*])
+    <> genericMakeTokenSet(true, [cat("", strings*)*])
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeCharSetComplement(strings*) {
     # See comment in `pegMakeCharSet`.
-    <> genericMakeTokenSet(false, [stringCat(strings*)*])
+    <> genericMakeTokenSet(false, [cat("", strings*)*])
 };
 
 # Documented in Samizdat Layer 0 spec.

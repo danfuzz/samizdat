@@ -114,17 +114,14 @@ METH_IMPL(Function, canCall) {
 METH_IMPL(Function, debugString) {
     zvalue function = args[0];
     FunctionInfo *info = getInfo(function);
+    zvalue nameString = (info->name == NULL)
+        ? stringFromUtf8(-1, "(unknown)")
+        : GFN_CALL(debugString, info->name);
 
-    zvalue result = stringFromUtf8(-1, "@(Function ");
-
-    if (info->name != NULL) {
-        result = stringCat(result, GFN_CALL(debugString, info->name));
-    } else {
-        result = stringCat(result, stringFromUtf8(-1, "(unknown)"));
-    }
-
-    result = stringCat(result, stringFromUtf8(-1, ")"));
-    return result;
+    return GFN_CALL(cat,
+        stringFromUtf8(-1, "@(Function "),
+        nameString,
+        stringFromUtf8(-1, ")"));
 }
 
 /* Documented in header. */

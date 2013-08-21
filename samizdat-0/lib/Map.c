@@ -31,18 +31,7 @@ PRIM_IMPL(makeValueMap) {
         mappings[i].value = value;
     }
 
-    return mapCatArray(EMPTY_MAP, size, mappings);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapCat) {
-    zvalue result = EMPTY_MAP;
-
-    for (zint i = 0; i < argCount; i++) {
-        result = mapCat(result, args[i]);
-    }
-
-    return result;
+    return mapFromArray(size, mappings);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

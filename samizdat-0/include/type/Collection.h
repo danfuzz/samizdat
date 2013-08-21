@@ -24,6 +24,9 @@
 #include <stdbool.h>
 
 
+/** Generic `cat(collection, more*)`: Documented in spec. */
+extern zvalue GFN_cat;
+
 /** Generic `get(collection, key)`: Documented in spec. */
 extern zvalue GFN_get;
 

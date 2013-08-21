@@ -157,7 +157,7 @@ static zvalue listFrom2(zvalue e1, zvalue e2) {
  * Appends an element to a list.
  */
 static zvalue listAppend(zvalue list, zvalue elem) {
-    return listCat(list, listFrom1(elem));
+    return GFN_CALL(cat, list, listFrom1(elem));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -413,7 +413,7 @@ DEF_PARSE(programDeclarations1) {
         MATCH_OR_REJECT(CH_COLONCOLON);
     }
 
-    return mapCat(mapFrom1(STR_formals, formals), yieldDef);
+    return GFN_CALL(cat, mapFrom1(STR_formals, formals), yieldDef);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -431,7 +431,7 @@ DEF_PARSE(program) {
     zvalue declarations = PARSE(programDeclarations); // This never fails.
     zvalue body = PARSE(programBody); // This never fails.
 
-    return makeTransValue(STR_closure, mapCat(declarations, body));
+    return makeTransValue(STR_closure, GFN_CALL(cat, declarations, body));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -518,15 +518,15 @@ DEF_PARSE(fnCommon) {
 
     zvalue codeMap = dataOf(code);
     zvalue statements =
-        listCat(returnDef, collGet(codeMap, STR_statements));
+        GFN_CALL(cat, returnDef, collGet(codeMap, STR_statements));
 
-    zvalue result = mapCat(codeMap, name);
-    result = mapCat(result,
+    return GFN_CALL(cat,
+        codeMap,
+        name,
         mapFrom3(
             STR_formals,    formals,
             STR_yieldDef,   STR_return,
             STR_statements, statements));
-    return result;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -704,7 +704,7 @@ DEF_PARSE(map) {
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCallName(STR_mapCat, mappings);
+    return makeCallName(STR_cat, mappings);
 }
 
 /**
@@ -818,7 +818,7 @@ DEF_PARSE(actualsList) {
         zvalue normalActuals = PARSE(unadornedList); // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
         zvalue closureActuals = PARSE_STAR(closure); // This never fails.
-        return listCat(closureActuals, normalActuals);
+        return GFN_CALL(cat, closureActuals, normalActuals);
     }
 
     return PARSE_PLUS(closure);

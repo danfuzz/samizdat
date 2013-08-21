@@ -46,3 +46,5 @@ extern bool zintShl(zint *result, zint x, zint y);
 extern bool zintShr(zint *result, zint x, zint y);
 extern bool zintSub(zint *result, zint x, zint y);
 extern bool zintXor(zint *result, zint x, zint y);
+
+extern bool zintSafeBitSize(zint *result, zint value);

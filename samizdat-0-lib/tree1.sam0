@@ -16,7 +16,7 @@ fn reportError(pending) {
     io0Note("Pending tokens:");
 
     doFilter(pending, inclusiveRange(1, 1, 50))
-        { token, . :: io0Note(stringCat("    ", sourceString(token))) };
+        { token, . :: io0Note(cat("    ", sourceString(token))) };
 
     io0Die("\nExtra tokens at end of program.")
 };
@@ -325,7 +325,7 @@ def parMap = pegMakeMainSequence(
     pegMakeStar(pegMakeSequence(pegMakeToken(","), parMapping)),
     pegMakeToken("]"),
     pegMakeCode { ., ., first, rest, . ::
-        <> makeCallName("mapCat", first, rest*)
+        <> makeCallName("cat", first, rest*)
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -543,7 +543,7 @@ def parParserSetString = pegMakeMainSequence(
                 def endChar = dataOf(end);
                 <> ifIs
                     { <> eq(1, &eq(size(startChar), size(endChar))) }
-                    { <> stringCat(inclusiveRange(startChar, 1, endChar)*) }
+                    { <> cat(inclusiveRange(startChar, 1, endChar)*) }
             }),
         pegMakeCode { s <> dataOf(s) }));
 
@@ -558,7 +558,7 @@ def parParserSet = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakePlus(parParserSetString),
-            pegMakeCode { strings <> [stringCat(strings*)*] }),
+            pegMakeCode { strings <> [cat(strings*)*] }),
         pegMakeMainSequence(
             pegMakePlus(parParserToken),
             pegMakeCode { tokens ::

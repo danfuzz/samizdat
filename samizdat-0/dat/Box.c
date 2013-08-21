@@ -147,11 +147,13 @@ METH_IMPL(Box, store) {
 
 /* Documented in header. */
 void datBindBox(void) {
-    GFN_canStore = makeGeneric(1, 1, stringFromUtf8(-1, "canStore"));
-    GFN_fetch = makeGeneric(1, 1, stringFromUtf8(-1, "fetch"));
-    GFN_store = makeGeneric(1, 2, stringFromUtf8(-1, "store"));
+    GFN_canStore = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "canStore"));
     pbImmortalize(GFN_canStore);
+
+    GFN_fetch = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "fetch"));
     pbImmortalize(GFN_fetch);
+
+    GFN_store = makeGeneric(1, 2, GFN_NONE, stringFromUtf8(-1, "store"));
     pbImmortalize(GFN_store);
 
     TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);

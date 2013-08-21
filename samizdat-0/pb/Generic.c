@@ -28,10 +28,11 @@ typedef struct {
     /** Minimum argument count. Always `>= 1`. */
     zint minArgs;
 
-    /**
-     * Maximum argument count. Always `>= minArgs`.
-     */
+    /** Maximum argument count. Always `>= minArgs`. */
     zint maxArgs;
+
+    /** Flags (restrictions on arguments). */
+    zgenericFlags flags;
 
     /** Whether the generic is sealed (unwilling to add bindings). */
     bool sealed;
@@ -93,6 +94,11 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
+    zgenericFlags flags = info->flags;
+    if (flags & GFN_SAME_TYPE) {
+        assertAllHaveSameType(argCount, args);
+    }
+
     zvalue function = genericFind(generic, args[0]);
 
     if (function == NULL) {
@@ -141,7 +147,8 @@ void genericSeal(zvalue generic) {
 }
 
 /* Documented in header. */
-zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name) {
+zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
+        zvalue name) {
     if ((minArgs < 1) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
@@ -152,6 +159,7 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name) {
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
+    info->flags = flags;
     info->sealed = false;
     info->name = name;
 
@@ -183,17 +191,14 @@ METH_IMPL(Generic, canCall) {
 METH_IMPL(Generic, debugString) {
     zvalue generic = args[0];
     GenericInfo *info = getInfo(generic);
+    zvalue nameString = (info->name == NULL)
+        ? stringFromUtf8(-1, "(unknown)")
+        : GFN_CALL(debugString, info->name);
 
-    zvalue result = stringFromUtf8(-1, "@(Generic ");
-
-    if (info->name != NULL) {
-        result = stringCat(result, GFN_CALL(debugString, info->name));
-    } else {
-        result = stringCat(result, stringFromUtf8(-1, "(unknown)"));
-    }
-
-    result = stringCat(result, stringFromUtf8(-1, ")"));
-    return result;
+    return GFN_CALL(cat,
+        stringFromUtf8(-1, "@(Generic "),
+        nameString,
+        stringFromUtf8(-1, ")"));
 }
 
 /* Documented in header. */

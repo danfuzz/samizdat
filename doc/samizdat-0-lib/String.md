@@ -7,6 +7,13 @@ Strings
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
+#### `cat(string, more*) <> string`
+
+Returns a string consisting of the concatenation of the contents
+of all the argument strings, in argument order.
+
+**Syntax Note:** Used in the translation of interpolated string forms.
+
 #### `get(string, key) <> . | void`
 
 This is identical to `nth(string, key)`, except that the result of passing
@@ -35,13 +42,6 @@ range for representation as an unsigned 32-bit quantity.
 Given a single-character string, returns the character code
 of its sole character, as an int. It is an error (terminating
 the runtime) if `string` is not a string of size 1.
-
-#### `stringCat(strings*) <> string`
-
-Returns a string consisting of the concatenation of the contents
-of all the argument strings, in argument order.
-
-**Syntax Note:** Used in the translation of interpolated string forms.
 
 #### `stringSlice(list, start, end?) <> list`
 

@@ -96,15 +96,21 @@ void seqBind(zvalue type) {
 
 /* Documented in header. */
 void pbBindCollection(void) {
-    GFN_get = makeGeneric(2, 2, stringFromUtf8(-1, "get"));
+    GFN_cat = makeGeneric(1, -1, GFN_SAME_TYPE, stringFromUtf8(-1, "cat"));
+    pbImmortalize(GFN_cat);
+
+    GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));
     pbImmortalize(GFN_get);
 
-    GFN_nth = makeGeneric(2, 2, stringFromUtf8(-1, "nth"));
+    GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
     pbImmortalize(GFN_nth);
 
-    GFN_size = makeGeneric(1, 1, stringFromUtf8(-1, "size"));
+    GFN_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "size"));
     pbImmortalize(GFN_size);
 }
+
+/* Documented in header. */
+zvalue GFN_cat = NULL;
 
 /* Documented in header. */
 zvalue GFN_get = NULL;
