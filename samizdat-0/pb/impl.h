@@ -99,12 +99,6 @@ zvalue genericFindByIndex(zvalue generic, zint index);
 zint indexFromType(zvalue type);
 
 /**
- * Gets a transparent derived type, given its name. This creates the type
- * if necessary.
- */
-zvalue transparentTypeFromName(zvalue name);
-
-/**
  * Gets the `Type` per se for the given value.
  */
 zvalue trueTypeOf(zvalue value);

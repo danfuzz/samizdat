@@ -208,11 +208,30 @@ static bool isType(zvalue value) {
 }
 
 /**
- * Compares two types (per se) for equality.
+ * Returns the `Type` per se for the given in-model "type", the latter which
+ * may be an arbitrary value representing a transparent type by name.
+ */
+static zvalue trueTypeFromTypeOrName(zvalue typeOrName) {
+    if (isType(typeOrName)) {
+        return typeOrName;
+    }
+
+    zvalue result = findType(typeOrName, NULL);
+
+    if (result == NULL) {
+        result = makeType(typeOrName, NULL, false);
+        derivBind(result);
+    }
+
+    return result;
+}
+
+/**
+ * Compares two types (per se) for equality. This is just `==` since
+ * types are all "identified".
  */
 static bool typeEq(zvalue type1, zvalue type2) {
-    // Use `==` to handle the common cases quickly.
-    return (type1 == type2) || valEq(type1, type2);
+    return (type1 == type2);
 }
 
 /**
@@ -237,29 +256,14 @@ zint indexFromType(zvalue type) {
 }
 
 /* Documented in header. */
-zvalue transparentTypeFromName(zvalue name) {
-    zvalue result = findType(name, NULL);
-
-    if (result == NULL) {
-        result = makeType(name, NULL, false);
-        derivBind(result);
-    }
-
-    return result;
-}
-
-/* Documented in header. */
 zvalue trueTypeOf(zvalue value) {
     return value->type;
 }
 
 /* Documented in header. */
 zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret) {
-    if (!isType(typeOrName)) {
-        typeOrName = transparentTypeFromName(typeOrName);
-    }
-
-    return typeSecretIs(typeOrName, secret) ? typeOrName : NULL;
+    zvalue type = trueTypeFromTypeOrName(typeOrName);
+    return typeSecretIs(type, secret) ? type : NULL;
 }
 
 /* Documented in header. */
