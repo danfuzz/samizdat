@@ -62,7 +62,7 @@ def parPathString = {/
         .
         { <> "Invalid `..` component in path" }
     |
-        { <> listCat(components*) }
+        { <> cat(components*) }
     )
 /};
 

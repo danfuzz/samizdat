@@ -398,7 +398,7 @@ def implStringInterpolation = {/
 
     {
         <> ifIs { <> eq(typeOf(close), expectClose) }
-            { <> [open, listCat(tokens*)*, close] }
+            { <> [open, cat([], tokens*)*, close] }
     }
 /};
 tokStringInterpolation(implStringInterpolation);
