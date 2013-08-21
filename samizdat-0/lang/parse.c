@@ -704,7 +704,7 @@ DEF_PARSE(map) {
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    return makeCallName(STR_mapCat, mappings);
+    return makeCallName(STR_cat, mappings);
 }
 
 /**
