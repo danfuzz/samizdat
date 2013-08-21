@@ -35,17 +35,6 @@ PRIM_IMPL(makeValueMap) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapCat) {
-    zvalue result = EMPTY_MAP;
-
-    for (zint i = 0; i < argCount; i++) {
-        result = mapCat(result, args[i]);
-    }
-
-    return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapDel) {
     zvalue result = args[0];
 
