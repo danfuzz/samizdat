@@ -340,7 +340,7 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
 
 /* Documented in header. */
 bool hasType(zvalue value, zvalue type) {
-    return valEq(typeOf(value), type);
+    return typeEq(value->type, trueTypeFromTypeOrName(type));
 }
 
 /* Documented in header. */
@@ -371,14 +371,10 @@ zvalue typeOf(zvalue value) {
     assertValid(value);
 
     zvalue type = value->type;
-    if (isType(type)) {
-        TypeInfo *info = getInfo(type);
-        // `typeOf` on a transparent type returns its name.
-        return (info->secret == NULL) ? info->name : type;
-    } else {
-        // It is a transparent type.
-        return type;
-    }
+    TypeInfo *info = getInfo(type);
+
+    // `typeOf` on a transparent type returns its name.
+    return (info->secret == NULL) ? info->name : type;
 }
 
 /* Documented in header. */
