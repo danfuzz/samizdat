@@ -139,18 +139,13 @@ static int typeCompare(zvalue name1, zvalue secret1, zvalue v2) {
 
     zorder nameOrder = valOrder(name1, name2);
 
-    if (nameOrder != ZSAME) {
+    if ((nameOrder != ZSAME) || !hasSecret1) {
         return nameOrder;
     }
 
     // This is the case of two different opaque derived types with the
     // same name.
-    if (secret1 == secret2) {
-        // Handles the case of both `NULL`.
-        return ZSAME;
-    } else {
-        return valOrder(secret1, secret2);
-    }
+    return valOrder(secret1, secret2);
 }
 
 /**
@@ -420,8 +415,13 @@ METH_IMPL(Type, gcMark) {
 METH_IMPL(Type, order) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
-    TypeInfo *info1 = getInfo(v1);
 
+    if (v1 == v2) {
+        // Easy case to avoid decomposition and detailed tests.
+        return PB_0;
+    }
+
+    TypeInfo *info1 = getInfo(v1);
     return intFromZint(typeCompare(info1->name, info1->secret, v2));
 }
 
