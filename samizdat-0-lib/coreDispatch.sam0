@@ -23,12 +23,7 @@ def DISPATCH = [
         le:    coreLe,
         lt:    coreLt,
         ne:    coreNe,
-        order: coreOrder,
-
-        # Collection access
-        get:   get,
-        nth:   nth,
-        size:  size
+        order: coreOrder
     ],
 
     (List): [
