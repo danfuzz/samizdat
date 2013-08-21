@@ -7,6 +7,19 @@ Ints
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
+#### `cat(int, more*) <> int`
+
+Concatenates a series of ints, each taken effectively to be a bit vector.
+For two arguments, this is equivalent to:
+
+```
+def size1 = size(int1);
+<> int1 &&& ((1 <<< size1) - 1) ||| (int2 <<< size1)
+```
+
+Note that this method is a somewhat-degenerate case and is only included
+in order for the type to have a complete collection implementation.
+
 #### `get(int, key) <> . | void`
 
 This is identical to `nth(int, key)`, except that the result of passing

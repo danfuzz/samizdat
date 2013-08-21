@@ -7,6 +7,18 @@ Maps
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
+#### `cat(map, more*) <> map`
+
+Returns a map consisting of the combination of the mappings of the
+argument maps. For any keys in common between the maps,
+the lastmost argument's value is the one that ends up in the result.
+Despite the `cat` name, strictly speaking this isn't a linear concatenation,
+but it is as close as one can get to it given the type's key ordering
+and uniqueness constraints.
+
+**Syntax Note:** Used in the translation of `[key: value, ...]`
+and `switch` forms.
+
 #### `get(map, key) <> . | void`
 
 Returns the value mapped to the given key (an arbitrary value) in

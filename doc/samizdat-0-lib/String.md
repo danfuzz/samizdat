@@ -7,6 +7,13 @@ Strings
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
+#### `cat(string, more*) <> string`
+
+Returns a string consisting of the concatenation of the contents
+of all the argument strings, in argument order.
+
+**Syntax Note:** Used in the translation of interpolated string forms.
+
 #### `get(string, key) <> . | void`
 
 This is identical to `nth(string, key)`, except that the result of passing

@@ -7,6 +7,11 @@ Lists
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
+#### `cat(list, more*) <> int`
+
+Returns a list consisting of the concatenation of the elements
+of all the argument lists, in argument order.
+
 #### `get(list, key) <> . | void`
 
 This is identical to `nth(list, key)`, except that the result of passing
