@@ -28,10 +28,11 @@ typedef struct {
     /** Minimum argument count. Always `>= 1`. */
     zint minArgs;
 
-    /**
-     * Maximum argument count. Always `>= minArgs`.
-     */
+    /** Maximum argument count. Always `>= minArgs`. */
     zint maxArgs;
+
+    /** Flags (restrictions on arguments). */
+    zgenericFlags flags;
 
     /** Whether the generic is sealed (unwilling to add bindings). */
     bool sealed;
@@ -93,6 +94,12 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
             argCount, info->maxArgs);
     }
 
+    zgenericFlags flags = info->flags;
+    if (flags & GFN_SAME_TYPE) {
+        // TODO:
+        // assertAllHaveSameType(argCount, args);
+    }
+
     zvalue function = genericFind(generic, args[0]);
 
     if (function == NULL) {
@@ -141,7 +148,8 @@ void genericSeal(zvalue generic) {
 }
 
 /* Documented in header. */
-zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name) {
+zvalue makeGeneric(zint minArgs, zint maxArgs, zgenericFlags flags,
+        zvalue name) {
     if ((minArgs < 1) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
@@ -152,6 +160,7 @@ zvalue makeGeneric(zint minArgs, zint maxArgs, zvalue name) {
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
+    info->flags = flags;
     info->sealed = false;
     info->name = name;
 

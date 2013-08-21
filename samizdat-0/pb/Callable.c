@@ -111,10 +111,10 @@ extern zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
 
 /* Documented in header. */
 void pbBindCallable(void) {
-    GFN_call = makeGeneric(1, -1, stringFromUtf8(-1, "call"));
+    GFN_call = makeGeneric(1, -1, GFN_NONE, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 
-    GFN_canCall = makeGeneric(2, 2, stringFromUtf8(-1, "canCall"));
+    GFN_canCall = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "canCall"));
     pbImmortalize(GFN_canCall);
 }
 

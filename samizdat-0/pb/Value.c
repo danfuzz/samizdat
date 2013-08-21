@@ -166,16 +166,16 @@ METH_IMPL(Value, order) {
 
 /* Documented in header. */
 void pbBindValue(void) {
-    GFN_debugString = makeGeneric(1, 1, stringFromUtf8(-1, "debugString"));
+    GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     pbImmortalize(GFN_debugString);
 
-    GFN_eq = makeGeneric(2, 2, stringFromUtf8(-1, "eq"));
+    GFN_eq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "eq"));
     pbImmortalize(GFN_eq);
 
-    GFN_gcMark = makeGeneric(1, 1, stringFromUtf8(-1, "gcMark"));
+    GFN_gcMark = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "gcMark"));
     pbImmortalize(GFN_gcMark);
 
-    GFN_order = makeGeneric(2, 2, stringFromUtf8(-1, "order"));
+    GFN_order = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "order"));
     pbImmortalize(GFN_order);
 
     // Note: The type `Type` is responsible for initializing `TYPE_Value`.
