@@ -28,6 +28,11 @@ For collections that have element constraints, a concatenation will
 not necessarily contain all the original elements, and the order may
 be different. See their docs for details.
 
+**Note:** To account for the possibility of passing *no* arguments to
+concatenate (e.g. when handling a list of arguments generically), include
+a first or final argument of an empty value of the desired type, e.g.
+`""` to perform string concatenation.
+
 #### `get(collection, key) <> . | void`
 
 Returns the element of the collection that corresponds to the given
