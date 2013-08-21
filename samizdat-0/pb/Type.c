@@ -208,6 +208,14 @@ static bool isType(zvalue value) {
 }
 
 /**
+ * Compares two types (per se) for equality.
+ */
+static bool typeEq(zvalue type1, zvalue type2) {
+    // Use `==` to handle the common cases quickly.
+    return (type1 == type2) || valEq(type1, type2);
+}
+
+/**
  * Asserts that the value is a `Type`.
  */
 static void assertHasTypeType(zvalue value) {
@@ -271,6 +279,27 @@ bool typeSecretIs(zvalue type, zvalue secret) {
  */
 
 /* Documented in header. */
+void assertAllHaveSameType(zint argCount, const zvalue *args) {
+    if (argCount == 0) {
+        // Trivially true.
+        return;
+    }
+
+    zvalue arg0 = args[0];
+    assertValid(arg0);
+    zvalue type0 = arg0->type;
+
+    for (zint i = 1; i < argCount; i++) {
+        zvalue one = args[i];
+        assertValid(one);
+        if (!typeEq(type0, one)) {
+            die("Mismatched types: %s, %s",
+                valDebugString(arg0), valDebugString(one));
+        }
+    }
+}
+
+/* Documented in header. */
 void assertHasType(zvalue value, zvalue type) {
     // This tries doing `!=` a first test, to keep the usual case speedy.
     if (   (value != NULL)
@@ -312,12 +341,7 @@ bool hasType(zvalue value, zvalue type) {
 
 /* Documented in header. */
 bool haveSameType(zvalue v1, zvalue v2) {
-    // Use `==` to handle the common cases quickly.
-    if (v1->type == v2->type) {
-        return true;
-    } else {
-        return valEq(typeOf(v1), typeOf(v2));
-    }
+    return typeEq(v1->type, v2->type);
 }
 
 /* Documented in header. */
