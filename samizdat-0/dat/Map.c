@@ -219,23 +219,6 @@ void arrayFromMap(zmapping *result, zvalue map) {
 }
 
 /* Documented in header. */
-zvalue mapCat(zvalue map1, zvalue map2) {
-    assertMap(map1);
-    assertMap(map2);
-
-    MapInfo *info2 = getInfo(map2);
-    zint size2 = info2->size;
-
-    if (getInfo(map1)->size == 0) {
-        return map2;
-    } else if (size2 == 0) {
-        return map1;
-    }
-
-    return mapCatArray(map1, size2, info2->elems);
-}
-
-/* Documented in header. */
 zvalue mapDel(zvalue map, zvalue key) {
     zint index = mapFind(map, key);
 

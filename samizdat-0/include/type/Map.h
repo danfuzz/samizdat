@@ -53,12 +53,6 @@ void assertMap(zvalue value);
 void assertMapSize1(zvalue value);
 
 /**
- * Combines the mappings of the two given maps into a new map.
- * For overlapping keys between the two, the second argument "wins".
- */
-zvalue mapCat(zvalue map1, zvalue map2);
-
-/**
  * Gets a map resulting from the removal of the given key from the
  * given map.
  */
