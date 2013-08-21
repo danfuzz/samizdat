@@ -31,7 +31,7 @@ PRIM_IMPL(makeValueMap) {
         mappings[i].value = value;
     }
 
-    return mapCatArray(EMPTY_MAP, size, mappings);
+    return mapFromArray(size, mappings);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

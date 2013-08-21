@@ -53,15 +53,6 @@ void assertMap(zvalue value);
 void assertMapSize1(zvalue value);
 
 /**
- * Gets the map resulting from putting the all the given mappings
- * into the given map, in the order given (so, in particular, higher-index
- * mappings take precedence over the lower-index mappings, when keys match).
- * The effect is identical to calling a chain of `mapPut()`s on each
- * of the mappings in order.
- */
-zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings);
-
-/**
  * Combines the mappings of the two given maps into a new map.
  * For overlapping keys between the two, the second argument "wins".
  */
@@ -72,6 +63,15 @@ zvalue mapCat(zvalue map1, zvalue map2);
  * given map.
  */
 zvalue mapDel(zvalue map, zvalue key);
+
+/**
+ * Gets the map resulting from adding all the given mappings
+ * to an empty map, in the order given (so, in particular, higher-index
+ * mappings take precedence over the lower-index mappings, when keys match).
+ * The effect is identical to calling a chain of `mapPut()`s on each
+ * of the mappings in order.
+ */
+zvalue mapFromArray(zint size, const zmapping *mappings);
 
 /**
  * Gets the map resulting from putting the given mapping into the

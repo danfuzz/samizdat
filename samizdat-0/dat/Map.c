@@ -147,6 +147,51 @@ static int mappingOrder(const void *m1, const void *m2) {
     return valOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
+/**
+ * Like `mapFromArray`, but starts with a non-empty map.
+ */
+static zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
+    if (size == 0) {
+        return map;
+    } else if (size == 1) {
+        return mapPut(map, mappings[0].key, mappings[0].value);
+    }
+
+    MapInfo *info = getInfo(map);
+    zint resultSize = info->size + size;
+    zvalue result = allocMap(resultSize);
+    MapInfo *resultInfo = getInfo(result);
+    zmapping *resultElems = resultInfo->elems;
+
+    // Add all the mappings to the result, and sort it using mergesort.
+    // Mergesort is stable and operates best on sorted data, and as it
+    // happens the starting map is guaranteed to be sorted.
+
+    memcpy(resultElems, info->elems, info->size * sizeof(zmapping));
+    memcpy(&resultElems[info->size], mappings, size * sizeof(zmapping));
+    mergesort(resultElems, resultSize, sizeof(zmapping), mappingOrder);
+
+    // Remove all but the last of any sequence of equal-keys mappings.
+    // The last one is preferred, since by construction that's the last
+    // of any equal keys from the newly-added mappings.
+
+    zint at = 1;
+    for (zint i = 1; i < resultSize; i++) {
+        if (valEq(resultElems[i].key, resultElems[at-1].key)) {
+            at--;
+        }
+
+        if (at != i) {
+            resultElems[at] = resultElems[i];
+        }
+
+        at++;
+    }
+
+    resultInfo->size = at; // In case there were duplicate keys.
+    return result;
+}
+
 
 /*
  * Exported Definitions
@@ -191,51 +236,6 @@ zvalue mapCat(zvalue map1, zvalue map2) {
 }
 
 /* Documented in header. */
-zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
-    assertMap(map);
-
-    if (size == 0) {
-        return map;
-    } else if (size == 1) {
-        return mapPut(map, mappings[0].key, mappings[0].value);
-    }
-
-    MapInfo *info = getInfo(map);
-    zint resultSize = info->size + size;
-    zvalue result = allocMap(resultSize);
-    MapInfo *resultInfo = getInfo(result);
-    zmapping *resultElems = resultInfo->elems;
-
-    // Add all the mappings to the result, and sort it using mergesort.
-    // Mergesort is stable and operates best on sorted data, and as it
-    // happens the starting map is guaranteed to be sorted.
-
-    memcpy(resultElems, info->elems, info->size * sizeof(zmapping));
-    memcpy(&resultElems[info->size], mappings, size * sizeof(zmapping));
-    mergesort(resultElems, resultSize, sizeof(zmapping), mappingOrder);
-
-    // Remove all but the last of any sequence of equal-keys mappings.
-    // The last one is preferred, since by construction that's the last
-    // of any equal keys from the newly-added mappings.
-
-    zint at = 1;
-    for (zint i = 1; i < resultSize; i++) {
-        if (valEq(resultElems[i].key, resultElems[at-1].key)) {
-            at--;
-        }
-
-        if (at != i) {
-            resultElems[at] = resultElems[i];
-        }
-
-        at++;
-    }
-
-    resultInfo->size = at; // In case there were duplicate keys.
-    return result;
-}
-
-/* Documented in header. */
 zvalue mapDel(zvalue map, zvalue key) {
     zint index = mapFind(map, key);
 
@@ -258,6 +258,11 @@ zvalue mapDel(zvalue map, zvalue key) {
     memcpy(&elems[index], &oldElems[index + 1],
            (size - index) * sizeof(zmapping));
     return result;
+}
+
+/* Documented in header. */
+zvalue mapFromArray(zint size, const zmapping *mappings) {
+    return mapCatArray(EMPTY_MAP, size, mappings);
 }
 
 /* Documented in header. */
