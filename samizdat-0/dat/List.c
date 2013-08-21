@@ -195,6 +195,28 @@ zvalue listSlice(zvalue list, zint start, zint end) {
 zvalue EMPTY_LIST = NULL;
 
 /* Documented in header. */
+METH_IMPL(List, cat) {
+    if (argCount == 1) {
+        return args[0];
+    }
+
+    zint size = 0;
+
+    for (zint i = 0; i < argCount; i++) {
+        size += getInfo(args[i])->size;
+    }
+
+    zvalue elems[size];
+
+    for (zint i = 0, at = 0; i < argCount; i++) {
+        arrayFromList(&elems[at], args[i]);
+        at += getInfo(args[i])->size;
+    }
+
+    return listFrom(size, elems, NULL, 0, NULL);
+}
+
+/* Documented in header. */
 METH_IMPL(List, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -283,6 +305,7 @@ METH_IMPL(List, size) {
 /* Documented in header. */
 void datBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
+    METH_BIND(List, cat);
     METH_BIND(List, eq);
     METH_BIND(List, gcMark);
     METH_BIND(List, nth);
