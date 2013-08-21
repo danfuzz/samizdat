@@ -333,6 +333,28 @@ zvalue mappingValue(zvalue map) {
 zvalue EMPTY_MAP = NULL;
 
 /* Documented in header. */
+METH_IMPL(Map, cat) {
+    if (argCount == 1) {
+        return args[0];
+    }
+
+    zint size = 0;
+
+    for (zint i = 0; i < argCount; i++) {
+        size += getInfo(args[i])->size;
+    }
+
+    zmapping elems[size];
+
+    for (zint i = 0, at = 0; i < argCount; i++) {
+        arrayFromMap(&elems[at], args[i]);
+        at += getInfo(args[i])->size;
+    }
+
+    return mapFromArray(size, elems);
+}
+
+/* Documented in header. */
 METH_IMPL(Map, eq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -447,6 +469,7 @@ METH_IMPL(Map, size) {
 /* Documented in header. */
 void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
+    METH_BIND(Map, cat);
     METH_BIND(Map, eq);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
