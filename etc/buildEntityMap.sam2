@@ -95,7 +95,7 @@ def parFile = {/
         }
     )?
 
-    { <> mapCat(lines*) }
+    { <> cat(lines*) }
 /};
 
 def inPath = [listButLast(SELF_PATH)*, "entity-map.txt"];

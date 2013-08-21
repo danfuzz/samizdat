@@ -325,7 +325,7 @@ def parMap = pegMakeMainSequence(
     pegMakeStar(pegMakeSequence(pegMakeToken(","), parMapping)),
     pegMakeToken("]"),
     pegMakeCode { ., ., first, rest, . ::
-        <> makeCallName("mapCat", first, rest*)
+        <> makeCallName("cat", first, rest*)
     });
 
 # Documented in Samizdat Layer 0 spec.

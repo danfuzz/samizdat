@@ -298,7 +298,7 @@ fn mapFromGenerator(generator) {
     ifIs { <> isMap(generator) }
         { return generator };
 
-    <> mapCat(generatorFromValue(generator)*)
+    <> cat([:], generatorFromValue(generator)*)
 };
 
 # Documented in Samizdat Layer 0 spec.
