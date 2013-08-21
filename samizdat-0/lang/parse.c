@@ -157,7 +157,7 @@ static zvalue listFrom2(zvalue e1, zvalue e2) {
  * Appends an element to a list.
  */
 static zvalue listAppend(zvalue list, zvalue elem) {
-    return listCat(list, listFrom1(elem));
+    return GFN_CALL(cat, list, listFrom1(elem));
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -518,7 +518,7 @@ DEF_PARSE(fnCommon) {
 
     zvalue codeMap = dataOf(code);
     zvalue statements =
-        listCat(returnDef, collGet(codeMap, STR_statements));
+        GFN_CALL(cat, returnDef, collGet(codeMap, STR_statements));
 
     zvalue result = mapCat(codeMap, name);
     result = mapCat(result,
@@ -818,7 +818,7 @@ DEF_PARSE(actualsList) {
         zvalue normalActuals = PARSE(unadornedList); // This never fails.
         MATCH_OR_REJECT(CH_CPAREN);
         zvalue closureActuals = PARSE_STAR(closure); // This never fails.
-        return listCat(closureActuals, normalActuals);
+        return GFN_CALL(cat, closureActuals, normalActuals);
     }
 
     return PARSE_PLUS(closure);

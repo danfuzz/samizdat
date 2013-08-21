@@ -102,25 +102,6 @@ void arrayFromList(zvalue *result, zvalue list) {
 }
 
 /* Documented in header. */
-zvalue listCat(zvalue list1, zvalue list2) {
-    assertList(list1);
-    assertList(list2);
-
-    ListInfo *info1 = getInfo(list1);
-    ListInfo *info2 = getInfo(list2);
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-
-    if (size1 == 0) {
-        return list2;
-    } else if (size2 == 0) {
-        return list1;
-    }
-
-    return listFrom(size1, info1->elems, NULL, size2, info2->elems);
-}
-
-/* Documented in header. */
 zvalue listDelNth(zvalue list, zint n) {
     assertList(list);
 
