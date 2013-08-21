@@ -96,8 +96,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
 
     zgenericFlags flags = info->flags;
     if (flags & GFN_SAME_TYPE) {
-        // TODO:
-        // assertAllHaveSameType(argCount, args);
+        assertAllHaveSameType(argCount, args);
     }
 
     zvalue function = genericFind(generic, args[0]);

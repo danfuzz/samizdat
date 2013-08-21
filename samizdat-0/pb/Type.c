@@ -291,7 +291,7 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
     for (zint i = 1; i < argCount; i++) {
         zvalue one = args[i];
         assertValid(one);
-        if (!typeEq(type0, one)) {
+        if (!typeEq(type0, one->type)) {
             die("Mismatched types: %s, %s",
                 valDebugString(arg0), valDebugString(one));
         }
@@ -300,10 +300,8 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void assertHasType(zvalue value, zvalue type) {
-    // This tries doing `!=` a first test, to keep the usual case speedy.
-    if (   (value != NULL)
-        && (value->type != type)
-        && !hasType(value, type)) {
+    assertValid(value);
+    if (!hasType(value, type)) {
         die("Expected type %s; got %s.",
             valDebugString(type), valDebugString(value));
     }
