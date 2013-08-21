@@ -55,7 +55,7 @@ fn metaFunctions(context, fileName) {
                 def name = mappingValue(mapping);
                 <> ifValue { <> get(context, name) }
                     { func <> [mappingKey(mapping): func] }
-                    { io0Die(stringCat("Missing meta-function: ", name)) }
+                    { io0Die(cat("Missing meta-function: ", name)) }
             })
 };
 

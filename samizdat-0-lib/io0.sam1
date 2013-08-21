@@ -105,7 +105,7 @@ fn isPrefix(prefix, path) {
 
 # Dies with the given message including the given path.
 fn dieWith(msg, path) {
-    io0Die(stringCat(msg, ": ", sourceString(path)))
+    io0Die(cat(msg, ": ", sourceString(path)))
 };
 
 
@@ -129,10 +129,10 @@ fn io0FlatFromPath(path) {
                     ifValue { <> pegApply(parErrorFromPathComponent, one) }
                         { error :: dieWith(error, path) }
                 };
-            <> stringCat("/", one)
+            <> cat("/", one)
         };
 
-    <> stringCat(gen*)
+    <> cat(gen*)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -144,7 +144,7 @@ fn io0PathFromFlat(string) {
     # Prepend the current directory if the path isn't absolute.
     def absoluteString = ifIs { <> eq(nth(string, 0), "/") }
         { <> string }
-        { <> stringCat(io0FlatCwd(), "/", string) };
+        { <> cat(io0FlatCwd(), "/", string) };
 
     # Parse the string into components (or an error string).
     def components = pegApply(parPathString, absoluteString);

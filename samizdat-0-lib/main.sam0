@@ -28,7 +28,7 @@ LIBRARY_FILES ::
 # is really just a map lookup.
 fn readLibraryFile(name) {
     <> ifValueOr { <> get(LIBRARY_FILES, name) }
-        { io0Die(stringCat("No such core library file: ", name)) }
+        { io0Die(cat("No such core library file: ", name)) }
 };
 
 # Loads the named library file in the given context, returning a map
@@ -36,7 +36,7 @@ fn readLibraryFile(name) {
 # by the named library. Each library file is expected to return a map of
 # bindings that it wishes to export.
 fn loadLibrary(ctx, name) {
-    io0Note(stringCat("    ", name));
+    io0Note(cat("    ", name));
 
     # If `metaFunctions` is available, use it to get the proper parser and
     # evaluator. Otherwise, default to the layer 0 functions.

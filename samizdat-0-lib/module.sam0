@@ -68,7 +68,7 @@ fn isModule(mod) {
 fn assertModule(mod) {
     <> ifIs { <> isModule(mod) }
         { <> mod }
-        { io0Die(stringCat("Not a module: ", sourceString(mod))) }
+        { io0Die(cat("Not a module: ", sourceString(mod))) }
 };
 
 # Returns `mod` if the given module has any dependencies, or void if not.
@@ -112,7 +112,7 @@ fn sortModules(modules) {
         {
             def allNames = collectFilter(modules)
                 { mod <> dataGet(mod, "name") };
-            io0Die(stringCat("Module cycle among: ",
+            io0Die(cat("Module cycle among: ",
                 sourceStringUnadorned(allNames)));
         };
 
