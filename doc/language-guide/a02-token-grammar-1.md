@@ -47,7 +47,7 @@ fn intFromDigitChar(ch) {
 # value. In *Layer 2* (and higher) this can also yield an
 # `interpolatedString` or an `error`.
 fn processStringParts(parts) {
-    <> @[string: cat(parts*)]
+    <> @[string: cat("", parts*)]
 };
 
 # Forward declaration of `tokToken`, for use in the interpolated string

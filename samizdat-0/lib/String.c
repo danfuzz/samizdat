@@ -29,15 +29,6 @@ PRIM_IMPL(intFromChar) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringCat) {
-    if (argCount == 0) {
-        return EMPTY_STRING;
-    } else {
-        return funCall(GFN_cat, argCount, args);
-    }
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(stringSlice) {
     zvalue string = args[0];
     zint startIndex = zintFromInt(args[1]);

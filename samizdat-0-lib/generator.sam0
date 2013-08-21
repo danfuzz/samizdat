@@ -440,7 +440,7 @@ fn stringFromGenerator(generator) {
     ifIs { <> isString(generator) }
         { return generator };
 
-    <> stringCat(generatorFromValue(generator)*)
+    <> cat("", generatorFromValue(generator)*)
 };
 
 # Documented in Samizdat Layer 0 spec.
