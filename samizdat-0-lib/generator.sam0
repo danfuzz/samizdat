@@ -65,7 +65,6 @@ fn makeFunctionGenerator(function) {
 def GENERATOR_MAKERS = [
     (Function): makeFunctionGenerator,
     (Generic):  makeFunctionGenerator,
-    (Int):      makeCollectionGenerator,
     (List):     makeCollectionGenerator,
     (Map):      makeCollectionGenerator,
     (String):   makeCollectionGenerator
