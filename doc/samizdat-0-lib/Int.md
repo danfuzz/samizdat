@@ -62,6 +62,13 @@ argument at the bit position (zero-based) indicated by the second
 argument. It is an error (terminating the runtime) if the second
 argument is negative.
 
+#### `bitSize(int) <> int`
+
+Returns the number of significant bits (not bytes) in
+the value when represented in twos-complement form, including a
+high-order sign bit. The minimum size of an int is `1`, which
+is the size of both `0` and `-1`.
+
 #### `div(int1, int2) <> int`
 
 Returns the quotient of the given values (first over second),

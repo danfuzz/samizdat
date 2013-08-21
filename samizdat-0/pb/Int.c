@@ -127,10 +127,11 @@ zvalue PB_NEG1 = NULL;
     extern int semicolonRequiredHere
 
 // All documented in header.
-UNARY_IMPL(abs,  zintAbs);
-UNARY_IMPL(neg,  zintNeg);
-UNARY_IMPL(not,  zintNot);
-UNARY_IMPL(sign, zintSign);
+UNARY_IMPL(abs,     zintAbs);
+UNARY_IMPL(bitSize, zintSafeBitSize);
+UNARY_IMPL(neg,     zintNeg);
+UNARY_IMPL(not,     zintNot);
+UNARY_IMPL(sign,    zintSign);
 
 // All documented in header.
 BINARY_IMPL(add,   zintAdd);
@@ -205,14 +206,17 @@ void pbBindInt(void) {
     GFN_and = makeGeneric(2, 2, stringFromUtf8(-1, "and"));
     pbImmortalize(GFN_and);
 
+    GFN_bit = makeGeneric(2, 2, stringFromUtf8(-1, "bit"));
+    pbImmortalize(GFN_bit);
+
+    GFN_bitSize = makeGeneric(1, 1, stringFromUtf8(-1, "bitSize"));
+    pbImmortalize(GFN_bitSize);
+
     GFN_div = makeGeneric(2, 2, stringFromUtf8(-1, "div"));
     pbImmortalize(GFN_div);
 
     GFN_divEu = makeGeneric(2, 2, stringFromUtf8(-1, "divEu"));
     pbImmortalize(GFN_divEu);
-
-    GFN_bit = makeGeneric(2, 2, stringFromUtf8(-1, "bit"));
-    pbImmortalize(GFN_bit);
 
     GFN_mod = makeGeneric(2, 2, stringFromUtf8(-1, "mod"));
     pbImmortalize(GFN_mod);
@@ -252,6 +256,7 @@ void pbBindInt(void) {
     METH_BIND(Int, add);
     METH_BIND(Int, and);
     METH_BIND(Int, bit);
+    METH_BIND(Int, bitSize);
     METH_BIND(Int, div);
     METH_BIND(Int, divEu);
     METH_BIND(Int, eq);
@@ -294,13 +299,16 @@ zvalue GFN_add = NULL;
 zvalue GFN_and = NULL;
 
 /* Documented in header. */
+zvalue GFN_bit = NULL;
+
+/* Documented in header. */
+zvalue GFN_bitSize = NULL;
+
+/* Documented in header. */
 zvalue GFN_div = NULL;
 
 /* Documented in header. */
 zvalue GFN_divEu = NULL;
-
-/* Documented in header. */
-zvalue GFN_bit = NULL;
 
 /* Documented in header. */
 zvalue GFN_mod = NULL;
