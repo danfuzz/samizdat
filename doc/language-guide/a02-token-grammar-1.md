@@ -47,7 +47,7 @@ fn intFromDigitChar(ch) {
 # value. In *Layer 2* (and higher) this can also yield an
 # `interpolatedString` or an `error`.
 fn processStringParts(parts) {
-    <> @[string: stringCat(parts*)]
+    <> @[string: cat(parts*)]
 };
 
 # Forward declaration of `tokToken`, for use in the interpolated string
@@ -184,7 +184,7 @@ def tokError = {/
     [! "\n"]*
 
     {
-        def msg = stringCat("Unrecognized character: ", typeOf(badCh));
+        def msg = cat("Unrecognized character: ", typeOf(badCh));
         <> @[error: msg]
     }
 /};

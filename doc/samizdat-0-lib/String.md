@@ -43,13 +43,6 @@ Given a single-character string, returns the character code
 of its sole character, as an int. It is an error (terminating
 the runtime) if `string` is not a string of size 1.
 
-#### `stringCat(strings*) <> string`
-
-Returns a string consisting of the concatenation of the contents
-of all the argument strings, in argument order.
-
-**Syntax Note:** Used in the translation of interpolated string forms.
-
 #### `stringSlice(list, start, end?) <> list`
 
 Returns a string consisting of a "slice" of elements of the given
