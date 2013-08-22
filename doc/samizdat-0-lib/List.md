@@ -39,6 +39,10 @@ Gets the nth element of the list.
 
 Returns the number of elements in the list.
 
+#### `slice(list, start, end?) <> list`
+
+Returns a slice of the given list.
+
 
 <br><br>
 ### Primitive Definitions
@@ -65,16 +69,6 @@ smaller than the size of the argument.
 **Note:** This is a special-case version of the more general function
 `collectFilter` (see which).
 
-#### `listInsNth(list, n, value) <> list`
-
-Returns a list just like the given one, except that the `n`th
-(zero-based) element is set to be the given value (an arbitrary
-value), and all elements at or beyond index `n` in the original
-are shifted up by one index.
-
-`n` must be non-negative and less than or equal to the size of the
-list. If not, it is an error (terminating the runtime).
-
 #### `listPutNth(list, n, value) <> list`
 
 Returns a list just like the given one, except that the `n`th
@@ -92,15 +86,6 @@ Returns a list consisting of the elements of the given list, but in the
 opposite order.
 
 **Syntax Note:** Used in the translation of `switch` forms.
-
-#### `listSlice(list, start, end?) <> list`
-
-Returns a list consisting of a "slice" of elements of the given
-list, from the `start` index (inclusive) through the `end` index
-(exclusive). `start` and `end` must both be ints, must be valid indices
-into `list` (with the list size being a valid index), and must form a
-range (though possibly empty) with `start <= end`. If `end` is not
-specified, it defaults to the end of the list.
 
 #### `makeList(rest*) <> list`
 
@@ -134,30 +119,4 @@ fn makeList(rest*) { <> rest };
 <br><br>
 ### In-Language Definitions
 
-#### `listButFirst(list) <> . | void`
-
-Returns a list consisting of all the elements of the given list
-except for the first element (that is, all but the first element). If
-the given list is empty, this returns void. This is similar to
-`listSlice(list, 1)` or `listDelNth(list, 0)`, except that this function
-behaves differently than either of those when the list is empty.
-
-#### `listButLast(list) <> . | void`
-
-Returns a list consisting of all the elements of the given list
-except for the last element (that is, all but the last element). If
-the given list is empty, this returns void. This is similar to
-`listSlice(list, 0, sub(size(list), 1))` or
-`listDelNth(list, sub(size(list), 1))`, except that this function
-behaves differently than either of those when the list is empty.
-
-#### `listFirst(list) <> . | void`
-
-Returns the first element of the given list or void if the list is empty.
-This is just a convenient shorthand for `nth(list, 0)`.
-
-#### `listLast(list) <> . | void`
-
-Returns the last element of the given list or void if the list is empty.
-This is just a convenient shorthand for
-`nth(list, sub(size(list), 1))`.
+(none)

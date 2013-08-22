@@ -100,7 +100,7 @@ fn isPrefix(prefix, path) {
             return
         };
 
-    <> eq(prefix, listSlice(path, 0, prefixSize))
+    <> eq(prefix, slice(path, 0, prefixSize))
 };
 
 # Dies with the given message including the given path.

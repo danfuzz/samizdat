@@ -53,25 +53,6 @@ void pbInit(void);
  */
 
 /**
- * Asserts that the given size accommodates accessing the `n`th element.
- * This includes asserting that `n >= 0`. Note that all non-negative `n`
- * are valid for accessing ints (their size notwithstanding).
- */
-void assertNth(zint size, zint n);
-
-/**
- * Like `assertNth` but also accepts the case where `n` is the size
- * of the value.
- */
-void assertNthOrSize(zint size, zint n);
-
-/**
- * Asserts that the given range is valid for a `slice`-like operation
- * for a value of the given size.
- */
-void assertSliceRange(zint size, zint start, zint end);
-
-/**
  * Asserts that the given value is a valid `zvalue` (non-`NULL` and
  * seems to actually have the right form). This performs reasonable,
  * but not exhaustive, tests. If not valid, this aborts the process

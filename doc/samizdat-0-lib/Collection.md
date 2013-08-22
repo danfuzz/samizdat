@@ -50,6 +50,16 @@ fixed order. Returns void if `n >= size(collection)`. It is an error
 
 Returns the number of elements in the given collection.
 
+#### `slice(collection, start, end?) <> collection`
+
+Returns a collection of the same type as `collection`, consisting of an
+index-based "slice" of elements taken from `collection`, from the `start`
+index (inclusive) through the `end` index (exclusive). `start` and `end`
+must both be ints, must be valid indices into `collection` *or* the
+collection size, and must form a range (though possibly empty) with
+`start <= end`. If `end` is not specified, it defaults to the end of the
+collection.
+
 
 <br><br>
 ### Primitive Definitions
@@ -60,4 +70,29 @@ Returns the number of elements in the given collection.
 <br><br>
 ### In-Language Definitions
 
-(none)
+#### `butFirst(collection) <> . | void`
+
+Returns a collection consisting of all the elements of the given `collection`
+except for the first element (that is, all but the first element). If
+`collection` is empty, this returns void. This is similar to
+`slice(collection, 1)`, except that this function returns void instead of
+reporting an error when `collection` is empty.
+
+#### `butLast(collection) <> . | void`
+
+Returns a collection consisting of all the elements of the given `collection`
+except for the last element (that is, all but the last element). If
+`collection` is empty, this returns void. This is similar to
+`slice(collection, 0, size(collection) - 1)`, except that this function
+returns void instead of reporting an error when `collection` is empty.
+
+#### `first(collection) <> . | void`
+
+Returns the first element of the given `collection` or void if it is empty.
+This is just a convenient shorthand for `nth(collection, 0)`.
+
+#### `last(collection) <> . | void`
+
+Returns the last element of the given `collection` or void if the it is empty.
+This is just a convenient shorthand for
+`nth(collection, size(collection) - 1)`.

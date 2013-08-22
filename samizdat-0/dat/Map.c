@@ -450,6 +450,17 @@ METH_IMPL(Map, size) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, slice) {
+    zvalue map = args[0];
+    MapInfo *info = getInfo(map);
+    zint start;
+    zint end;
+
+    collConvertSliceArgs(&start, &end, info->size, argCount, args);
+    return mapFromArray(end - start, &info->elems[start]);
+}
+
+/* Documented in header. */
 void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
     METH_BIND(Map, cat);
@@ -459,6 +470,7 @@ void datBindMap(void) {
     METH_BIND(Map, perEq);
     METH_BIND(Map, perOrder);
     METH_BIND(Map, size);
+    METH_BIND(Map, slice);
 
     EMPTY_MAP = allocMap(0);
     pbImmortalize(EMPTY_MAP);

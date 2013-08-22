@@ -132,16 +132,6 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 }
 
 /* Documented in header. */
-zvalue stringSlice(zvalue string, zint start, zint end) {
-    assertString(string);
-
-    StringInfo *info = getInfo(string);
-
-    assertSliceRange(info->size, start, end);
-    return stringFromZchars(end - start, &info->elems[start]);
-}
-
-/* Documented in header. */
 void utf8FromString(zint resultSize, char *result, zvalue string) {
     assertString(string);
 
@@ -310,6 +300,17 @@ METH_IMPL(String, size) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, slice) {
+    zvalue string = args[0];
+    StringInfo *info = getInfo(string);
+    zint start;
+    zint end;
+
+    collConvertSliceArgs(&start, &end, info->size, argCount, args);
+    return stringFromZchars(end - start, &info->elems[start]);
+}
+
+/* Documented in header. */
 void pbBindString(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_String`.
 
@@ -319,6 +320,7 @@ void pbBindString(void) {
     METH_BIND(String, perEq);
     METH_BIND(String, perOrder);
     METH_BIND(String, size);
+    METH_BIND(String, slice);
     seqBind(TYPE_String);
 
     EMPTY_STRING = allocString(0);

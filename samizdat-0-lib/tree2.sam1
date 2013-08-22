@@ -172,8 +172,8 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
     def voidable = ifValueOr { <> optVoidable* } { <> false };
 
     def result = doReduce1(opExList, firstEx) { opEx, result ::
-        def op = listFirst(opEx);
-        def ex = listLast(opEx);
+        def op = first(opEx);
+        def ex = last(opEx);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
 
         def call = ifIs { <> eq(typeOf(resolvedOp), "varRef") }
@@ -1323,7 +1323,7 @@ def parLogicOrExpression = {/
     |
         {
             def allExprs = listReverse([first, rest*]);
-            <> doReduce1(listButFirst(allExprs), listFirst(allExprs))
+            <> doReduce1(butFirst(allExprs), first(allExprs))
                 { ex, result ::
                     <> makeCallName("ifValueOr",
                         makeThunk(ex), makeThunk(result))

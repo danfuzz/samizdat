@@ -52,6 +52,11 @@ The ordering of the mappings is by sort order of the keys.
 
 Returns the number of mappings in the map.
 
+#### `slice(map, start, end?) <> map`
+
+Returns a slice of the given map. **Note:** `start` and `end` are int
+indices, not map keys.
+
 
 <br><br>
 ### Primitive Definitions

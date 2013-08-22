@@ -124,20 +124,6 @@ zvalue listFromArray(zint size, const zvalue *values) {
 }
 
 /* Documented in header. */
-zvalue listInsNth(zvalue list, zint n, zvalue value) {
-    assertList(list);
-    assertValid(value);
-
-    ListInfo *info = getInfo(list);
-    zvalue *elems = info->elems;
-    zint size = info->size;
-
-    assertNthOrSize(size, n);
-
-    return listFrom(n, elems, value, size - n, elems + n);
-}
-
-/* Documented in header. */
 zvalue listPutNth(zvalue list, zint n, zvalue value) {
     assertList(list);
     assertValid(value);
@@ -148,23 +134,13 @@ zvalue listPutNth(zvalue list, zint n, zvalue value) {
     assertNthOrSize(size, n);
 
     if (n == size) {
-        return listInsNth(list, n, value);
+        return listFrom(size, info->elems, value, 0, NULL);
     }
 
     zvalue result = listFrom(size, info->elems, NULL, 0, NULL);
 
     getInfo(result)->elems[n] = value;
     return result;
-}
-
-/* Documented in header. */
-zvalue listSlice(zvalue list, zint start, zint end) {
-    assertList(list);
-
-    ListInfo *info = getInfo(list);
-
-    assertSliceRange(info->size, start, end);
-    return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
 }
 
 
@@ -284,6 +260,17 @@ METH_IMPL(List, size) {
 }
 
 /* Documented in header. */
+METH_IMPL(List, slice) {
+    zvalue list = args[0];
+    ListInfo *info = getInfo(list);
+    zint start;
+    zint end;
+
+    collConvertSliceArgs(&start, &end, info->size, argCount, args);
+    return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
+}
+
+/* Documented in header. */
 void datBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
     METH_BIND(List, cat);
@@ -292,6 +279,7 @@ void datBindList(void) {
     METH_BIND(List, perEq);
     METH_BIND(List, perOrder);
     METH_BIND(List, size);
+    METH_BIND(List, slice);
     seqBind(TYPE_List);
 
     EMPTY_LIST = allocList(0);
