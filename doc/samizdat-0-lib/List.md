@@ -5,6 +5,20 @@ Lists
 -----
 
 <br><br>
+### Generic Function Definitions: `Value` protocol
+
+#### `perEq(list1, list2) <> list | void`
+
+Compares two lists. Two lists are equal if they have equal elements in
+identical orders.
+
+#### `perOrder(list1, list2) <> int`
+
+Compares two lists for order. Lists order by pairwise corresponding-element
+comparison, with a strict prefix always ordering before its longer brethren.
+
+
+<br><br>
 ### Generic Function Definitions: `Collection` protocol
 
 #### `cat(list, more*) <> int`

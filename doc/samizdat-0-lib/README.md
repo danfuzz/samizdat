@@ -77,6 +77,7 @@ will be returned, or one of:
   * [Lists](List.md)
   * [Maps](Map.md)
   * [Strings](String.md)
+  * [Types](Type.md)
   * [Uniqlets](Uniqlet.md)
   * [Values (the base type)](Value.md)
 

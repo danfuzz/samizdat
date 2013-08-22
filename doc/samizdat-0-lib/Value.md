@@ -5,9 +5,54 @@ Values (the base type)
 ----------------------
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Value` protocol (applies to all values)
 
-(none)
+#### `perEq(value1, value2) <> . | void`
+
+Performs a "per-type" (type-specific) equality comparison of the two given
+values. When called, the two values are guaranteed to be the same type.
+If a client calls with different-typed values, it is a fatal error
+(terminating the runtime).
+
+The return value is either `value1` (or `value2` really) if the two values
+are in fact identical, or `void` if they are not.
+
+Each type specifies its own per-type equality check. See specific types for
+details. Transparent derived types all compare for equality by comparing
+both the payload value (if any).
+
+**Note:** In order for the system to operate consistently, `perEq` must
+always behave consistently with `perOrder`, in that for a given pair of
+values, `perEq` must indicate equality if and only if `perOrder` would return
+`0`. `perEq` exists at all because it is often possible to determine
+equality much quicker than determining order.
+
+**Note:** This is the generic function which underlies the implementation
+of all cross-type equality comparison functions.
+
+#### `perOrder(value1, value2) <> int`
+
+Returns the "per-type" (type-specific) order of the two given values.
+When called, the two values are guaranteed to be the same type. If a client
+calls with different-typed values, it is a fatal error (terminating the
+runtime).
+
+The return value is one of `-1 0 1` indicating how the two values sort with
+each other, using the reasonably standard meaning of those values:
+
+* `-1` &mdash; The first value orders before the second value.
+
+* `0` &mdash; The two values are identical.
+
+* `1` &mdash; The first value orders after the second value.
+
+Each type specifies its own per-type ordering. See specific types for
+details. Transparent derived types all order by performing ordering
+on the respective payload values, with a lack of payload counting as
+"before" any non-void payload.
+
+**Note:** This is the generic function which underlies the implementation
+of all cross-type ordering functions.
 
 
 <br><br>
@@ -46,11 +91,6 @@ forms.
 
 Returns `value` if it is an opaque value &mdash; that is, if its type has
 an associated secret &mdash; or void if not.
-
-#### `typeName(type) <> .`
-
-Returns the name of the type. This is an arbitrary value associated with
-a type, which is typically (but not necessarily) a string.
 
 #### `typeOf(value) <> .`
 

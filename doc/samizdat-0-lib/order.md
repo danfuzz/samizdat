@@ -50,36 +50,8 @@ standard meaning of those values:
 Ordering is calculated as follows:
 
 The "majorest" order is by type (see below for details). The minor order
-within a type is type-dependant, as follows:
-
-* Ints order by integer value, low to high.
-
-* Lists and strings order by pairwise corresponding-element
-  comparison, with a strict prefix always ordering before its
-  longer brethren.
-
-* Maps order by first comparing corresponding ordered lists
-  of keys with the same rules as list comparison. If the key
-  lists are identical, then the result is the comparison of
-  corresponding lists of values, in key order.
-
-* Derived values compare by type as primary (per above), and data payload
-  as secondary. With types equal, derived values without a payload order
-  earlier than ones with a payload.
-
-* Types compare as follows:
-
-  * Core (primitive) types order earlier than all other type.
-  * Transparent derived types order earlier than everything but core types.
-  * Opaque derived types order after all other types.
-
-  Within each category, types are ordered by name. For two different types
-  with the same category and name (which can happen only with opaque derived
-  types), the order is arbitrary but consistent.
-
-* All other core values never compare as identical to anything but themselves.
-  Within each type, there is a total ordering of values. The ordering is
-  consistent, transitive, and symmetric; but otherwise arbitrary.
+is according to `perOrder` called on the arguments. See that generic
+function for more details.
 
 #### `totalOrderIs(value1, value2, check1, check2?) <> logic`
 

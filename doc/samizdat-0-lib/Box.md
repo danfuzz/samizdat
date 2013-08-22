@@ -5,6 +5,20 @@ Boxes
 -----
 
 <br><br>
+### Generic Function Definitions: `Value` protocol
+
+#### `perEq(box1, box2) <> box | void`
+
+Performs an identity comparison. Two boxes are only equal if they are
+truly the same box.
+
+#### `perOrder(box1, box2) <> int`
+
+Performs an identity comparison. Boxes have a consistent, transitive, and
+symmetric &mdash; but arbitrary &mdash; total order.
+
+
+<br><br>
 ### Generic Function Definitions: `Box` protocol
 
 #### `canStore(box) <> logic`
