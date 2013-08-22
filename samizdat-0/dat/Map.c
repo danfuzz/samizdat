@@ -14,7 +14,6 @@
 #include "zlimits.h"
 
 #include <stdlib.h>
-#include <string.h>
 
 
 /*
@@ -48,6 +47,27 @@ static zvalue allocMap(zint size) {
 
     getInfo(result)->size = size;
     return result;
+}
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a map. If not, this aborts the process
+ * with a diagnostic message.
+ */
+static void assertMap(zvalue value) {
+    assertHasType(value, TYPE_Map);
+}
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a map, and even furthermore that its size
+ * is `1`. If not, this aborts the process with a diagnostic message.
+ */
+static void assertMapSize1(zvalue value) {
+    assertMap(value);
+    if (getInfo(value)->size != 1) {
+        die("Not a size 1 map.");
+    }
 }
 
 /**
@@ -147,151 +167,65 @@ static int mappingOrder(const void *m1, const void *m2) {
     return valOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
-/**
- * Like `mapFromArray`, but starts with a non-empty map.
- */
-static zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
-    if (size == 0) {
-        return map;
-    } else if (size == 1) {
-        return mapPut(map, mappings[0].key, mappings[0].value);
-    }
-
-    MapInfo *info = getInfo(map);
-    zint resultSize = info->size + size;
-    zvalue result = allocMap(resultSize);
-    MapInfo *resultInfo = getInfo(result);
-    zmapping *resultElems = resultInfo->elems;
-
-    // Add all the mappings to the result, and sort it using mergesort.
-    // Mergesort is stable and operates best on sorted data, and as it
-    // happens the starting map is guaranteed to be sorted.
-
-    memcpy(resultElems, info->elems, info->size * sizeof(zmapping));
-    memcpy(&resultElems[info->size], mappings, size * sizeof(zmapping));
-    mergesort(resultElems, resultSize, sizeof(zmapping), mappingOrder);
-
-    // Remove all but the last of any sequence of equal-keys mappings.
-    // The last one is preferred, since by construction that's the last
-    // of any equal keys from the newly-added mappings.
-
-    zint at = 1;
-    for (zint i = 1; i < resultSize; i++) {
-        if (valEq(resultElems[i].key, resultElems[at-1].key)) {
-            at--;
-        }
-
-        if (at != i) {
-            resultElems[at] = resultElems[i];
-        }
-
-        at++;
-    }
-
-    resultInfo->size = at; // In case there were duplicate keys.
-    return result;
-}
-
 
 /*
  * Exported Definitions
  */
 
 /* Documented in header. */
-void assertMap(zvalue value) {
-    assertHasType(value, TYPE_Map);
-}
-
-/* Documented in header. */
-void assertMapSize1(zvalue value) {
-    assertMap(value);
-    if (getInfo(value)->size != 1) {
-        die("Not a size 1 map.");
-    }
-}
-
-/* Documented in header. */
 void arrayFromMap(zmapping *result, zvalue map) {
     assertMap(map);
 
     MapInfo *info = getInfo(map);
-    memcpy(result, info->elems, info->size * sizeof(zmapping));
+    utilCpy(zmapping, result, info->elems, info->size);
 }
 
 /* Documented in header. */
-zvalue mapDel(zvalue map, zvalue key) {
-    zint index = mapFind(map, key);
-
-    if (index < 0) {
-        return map;
-    }
-
-    MapInfo *info = getInfo(map);
-    zint size = info->size - 1;
-
-    if (size == 0) {
-        return EMPTY_MAP;
-    }
-
-    zvalue result = allocMap(size);
-    zmapping *elems = getInfo(result)->elems;
-    zmapping *oldElems = info->elems;
-
-    memcpy(elems, oldElems, index * sizeof(zmapping));
-    memcpy(&elems[index], &oldElems[index + 1],
-           (size - index) * sizeof(zmapping));
-    return result;
-}
-
-/* Documented in header. */
-zvalue mapFromArray(zint size, const zmapping *mappings) {
-    return mapCatArray(EMPTY_MAP, size, mappings);
-}
-
-/* Documented in header. */
-zvalue mapPut(zvalue map, zvalue key, zvalue value) {
-    assertMap(map);
-    assertValid(value);
-
-    MapInfo *info = getInfo(map);
-    zmapping *elems = info->elems;
-    zint size = info->size;
-
+zvalue mapFromArray(zint size, zmapping *mappings) {
+    // Handle special cases that are particularly easy.
     switch (size) {
         case 0: {
-            assertValid(key);
-            return makeMapping(key, value);
+            return EMPTY_MAP;
         }
         case 1: {
-            assertValid(key);
-            zmapping *elems = info->elems;
-            return mapFrom2(elems[0].key, elems[0].value, key, value);
+            return makeMapping(mappings[0].key, mappings[0].value);
+        }
+        case 2: {
+            return mapFrom2(
+                mappings[0].key, mappings[0].value,
+                mappings[1].key, mappings[1].value);
         }
     }
 
-    zint index = mapFind(map, key);
-    zvalue result;
+    // Sort the mappings using mergesort. Mergesort is stable and operates
+    // best on partially sorted data. As it happens, the input to this
+    // function is commonly partially sorted, and the stability matters
+    // due to this function's API.
 
-    if (index >= 0) {
-        // The key exists in the given map, so we need to perform
-        // a replacement.
-        result = allocMap(size);
-        memcpy(getInfo(result)->elems, elems, size * sizeof(zmapping));
-    } else {
-        // The key wasn't found, so we need to insert a new one.
-        index = ~index;
-        result = allocMap(size + 1);
+    mergesort(mappings, size, sizeof(zmapping), mappingOrder);
 
-        zmapping *resultElems = getInfo(result)->elems;
+    // Collapse away all but the last of any sequence of same-key mappings.
+    // The last one is kept, as that is consistent with the exposed API.
 
-        memcpy(resultElems, elems, index * sizeof(zmapping));
-        memcpy(&resultElems[index + 1], &elems[index],
-               (size - index) * sizeof(zmapping));
+    zint at = 1;
+    for (zint i = 1; i < size; i++) {
+        if (valEq(mappings[i].key, mappings[at - 1].key)) {
+            at--;
+        }
+
+        if (at != i) {
+            mappings[at] = mappings[i];
+        }
+
+        at++;
     }
 
-    zmapping *elem = &getInfo(result)->elems[index];
-    elem->key = key;
-    elem->value = value;
+    // Allocate, populate, and return the result.
+
+    zvalue result = allocMap(at);
+    MapInfo *info = getInfo(result);
+
+    utilCpy(zmapping, info->elems, mappings, at);
     return result;
 }
 
@@ -335,6 +269,33 @@ METH_IMPL(Map, cat) {
     }
 
     return mapFromArray(size, elems);
+}
+
+/* Documented in header. */
+METH_IMPL(Map, del) {
+    zvalue map = args[0];
+    zvalue key = args[1];
+
+    zint index = mapFind(map, key);
+
+    if (index < 0) {
+        return map;
+    }
+
+    MapInfo *info = getInfo(map);
+    zint size = info->size;
+
+    if (size == 1) {
+        return EMPTY_MAP;
+    }
+
+    zvalue result = allocMap(size - 1);
+    zmapping *elems = getInfo(result)->elems;
+    zmapping *oldElems = info->elems;
+
+    utilCpy(zmapping, elems, oldElems, index);
+    utilCpy(zmapping, &elems[index], &oldElems[index + 1], (size - index - 1));
+    return result;
 }
 
 /* Documented in header. */
@@ -444,6 +405,51 @@ METH_IMPL(Map, perOrder) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, put) {
+    zvalue map = args[0];
+    zvalue key = args[1];
+    zvalue value = args[2];
+
+    MapInfo *info = getInfo(map);
+    zmapping *elems = info->elems;
+    zint size = info->size;
+
+    switch (size) {
+        case 0: {
+            // `put([:], ...)`
+            return makeMapping(key, value);
+        }
+        case 1: {
+            return mapFrom2(elems[0].key, elems[0].value, key, value);
+        }
+    }
+
+    zint index = mapFind(map, key);
+    zvalue result;
+
+    if (index >= 0) {
+        // The key exists in the given map, so we need to perform
+        // a replacement.
+        result = allocMap(size);
+        utilCpy(zmapping, getInfo(result)->elems, elems, size);
+    } else {
+        // The key wasn't found, so we need to insert a new one.
+        index = ~index;
+        result = allocMap(size + 1);
+
+        zmapping *resultElems = getInfo(result)->elems;
+
+        utilCpy(zmapping, resultElems, elems, index);
+        utilCpy(zmapping, &resultElems[index+1], &elems[index], (size - index));
+    }
+
+    zmapping *elem = &getInfo(result)->elems[index];
+    elem->key = key;
+    elem->value = value;
+    return result;
+}
+
+/* Documented in header. */
 METH_IMPL(Map, size) {
     zvalue map = args[0];
     return intFromZint(getInfo(map)->size);
@@ -464,11 +470,13 @@ METH_IMPL(Map, slice) {
 void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
     METH_BIND(Map, cat);
+    METH_BIND(Map, del);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
     METH_BIND(Map, nth);
     METH_BIND(Map, perEq);
     METH_BIND(Map, perOrder);
+    METH_BIND(Map, put);
     METH_BIND(Map, size);
     METH_BIND(Map, slice);
 

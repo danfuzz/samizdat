@@ -36,6 +36,11 @@ fn dataSize(value) {
     <> size(dataOf(value))
 };
 
+# Deletes all the given keys from the given map.
+fn delAll(map, keys*) {
+    <> doReduce1(keys, map) { elem, result <> del(result, elem) }
+};
+
 # Returns `mod` iff it is a module (either uninitialized or initialized).
 fn isModule(mod) {
     ifNot { <> eq(typeOf(mod), "Module") }
@@ -101,7 +106,7 @@ fn sortModules(modules) {
             <> ifIs { <> hasDependencies(mod) }
                 {
                     def importMap =
-                        mapDel([dataGet(mod, "imports")*: true],
+                        delAll([dataGet(mod, "imports")*: true],
                             independentNames*);
                     <> @[mod: [dataOf(mod)*, imports: mapKeys(importMap)]]
                 }

@@ -34,6 +34,12 @@ and uniqueness constraints.
 **Syntax Note:** Used in the translation of `[key: value, ...]`
 and `switch` forms.
 
+#### `del(map, key) <> map`
+
+Returns a map just like the one given as an argument, except that
+the result does not have a mapping for the given `key`. If `map` does
+not bind `key`, then this returns `map`.
+
 #### `get(map, key) <> . | void`
 
 Returns the value mapped to the given key (an arbitrary value) in
@@ -47,6 +53,13 @@ When given a valid index, the return value is a single-mapping map, which is
 suitable as the argument to `mappingKey` and `mappingValue`.
 
 The ordering of the mappings is by sort order of the keys.
+
+#### `put(map, key, value) <> map`
+
+Returns a map just like the given one, except with a new mapping
+for `key` to `value`. The result has a replacement for the existing
+mapping for `key` in `map` if such a one existed, or has an
+additional mapping in cases where `map` didn't already bind `key`.
 
 #### `size(map) <> int`
 
@@ -79,26 +92,9 @@ representable in Samizdat syntax as presented.
 **Syntax Note:** Used in the translation of `[key: value, ...]`
 and `switch` forms.
 
-#### `mapDel(map, keys*) <> map`
-
-Returns a map just like the one given as an argument, except that
-the result does not have mappings for the given keys. If the given
-map does not have a particular given key, then that key has no
-affect on the result.
-
 #### `mapKeys(map) <> list`
 
 Returns the list of keys contained in the given map, in sorted order.
-
-#### `mapPut(map, key, value) <> map`
-
-Returns a map just like the given one, except with a new mapping
-for `key` to `value`. The result has a replacement for the existing
-mapping for `key` in `map` if such a one existed, or has an
-additional mapping in cases where `map` didn't already bind `key`.
-These two scenarios can be easily differentiated by either noting a
-change in size (or not) between original and result, or by explicitly
-checking for the existence of `key` in the original.
 
 #### `mappingKey(map) <> .`
 

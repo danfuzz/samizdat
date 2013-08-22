@@ -42,7 +42,7 @@ static zvalue getLibraryFiles(void) {
         char *text = name##_##ext; \
         zvalue datName = stringFromUtf8(-1, #name "." #ext); \
         zvalue datText = stringFromUtf8(len, text); \
-        result = mapPut(result, datName, datText); \
+        result = collPut(result, datName, datText); \
     } while(0)
 
     #include "lib-def.h"
@@ -62,21 +62,21 @@ static zvalue primitiveContext(void) {
     #define PRIM_FUNC(name, minArgs, maxArgs) \
         do { \
             zvalue nameStr = stringFromUtf8(-1, #name); \
-            ctx = mapPut(ctx, nameStr, \
+            ctx = collPut(ctx, nameStr, \
                 makeFunction(minArgs, maxArgs, prim_##name, nameStr)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
         do { \
             zvalue nameStr = stringFromUtf8(-1, #name); \
-            ctx = mapPut(ctx, nameStr, value); \
+            ctx = collPut(ctx, nameStr, value); \
         } while(0)
 
     #include "prim-def.h"
 
     // Include a mapping for a map of all the primitive bindings
     // (other than this one, since values can't self-reference).
-    ctx = mapPut(ctx, STR_LIBRARY, ctx);
+    ctx = collPut(ctx, STR_LIBRARY, ctx);
 
     return ctx;
 }

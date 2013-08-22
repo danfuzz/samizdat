@@ -35,21 +35,8 @@ void arrayFromList(zvalue *result, zvalue list);
 void assertList(zvalue value);
 
 /**
- * Gets the list resulting from deleting the nth element of the
- * given list.
- */
-zvalue listDelNth(zvalue list, zint n);
-
-/**
  * Constructs a list from an array of `zvalue`s of the given size.
  */
 zvalue listFromArray(zint size, const zvalue *values);
-
-/**
- * Gets the list resulting from setting the value at the
- * given index to the given value. `n` must be non-negative
- * and no greater than the size of the given list.
- */
-zvalue listPutNth(zvalue list, zint n, zvalue value);
 
 #endif

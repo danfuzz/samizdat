@@ -65,12 +65,12 @@ zvalue collGet(zvalue coll, zvalue key) {
 }
 
 /* Documented in header. */
-bool collNthIndexLenient(zvalue key) {
+zint collNthIndexLenient(zvalue key) {
     if (hasType(key, TYPE_Int)) {
         zint index = zintFromInt(key);
-        return (index >= 0);
+        return (index >= 0) ? index : -1;
     } else {
-        return false;
+        return -1;
     }
 }
 
@@ -99,6 +99,26 @@ zint collNthChar(zvalue coll, zint index) {
 }
 
 /* Documented in header. */
+zvalue collPut(zvalue coll, zvalue key, zvalue value) {
+    return GFN_CALL(put, coll, key, value);
+}
+
+/* Documented in header. */
+zint collPutIndexStrict(zint size, zvalue n) {
+    if (hasType(n, TYPE_Int)) {
+        zint index = zintFromInt(n);
+        if (index < 0) {
+            die("Invalid index for put (negative).");
+        } else if (index > size) {
+            die("Invalid index for put: %lld, size %lld", index, size);
+        }
+        return index;
+    } else {
+        die("Invalid type for put (non-int).");
+    }
+}
+
+/* Documented in header. */
 zint collSize(zvalue coll) {
     return zintFromInt(GFN_CALL(size, coll));
 }
@@ -116,7 +136,7 @@ METH_IMPL(Sequence, get) {
     zvalue seq = args[0];
     zvalue key = args[1];
 
-    if (collNthIndexLenient(key)) {
+    if (collNthIndexLenient(key) >= 0) {
         return GFN_CALL(nth, seq, key);
     } else {
         return NULL;
@@ -138,11 +158,17 @@ void pbBindCollection(void) {
     GFN_cat = makeGeneric(1, -1, GFN_SAME_TYPE, stringFromUtf8(-1, "cat"));
     pbImmortalize(GFN_cat);
 
+    GFN_del = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "del"));
+    pbImmortalize(GFN_del);
+
     GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));
     pbImmortalize(GFN_get);
 
     GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
     pbImmortalize(GFN_nth);
+
+    GFN_put = makeGeneric(3, 3, GFN_NONE, stringFromUtf8(-1, "put"));
+    pbImmortalize(GFN_put);
 
     GFN_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "size"));
     pbImmortalize(GFN_size);
@@ -155,10 +181,16 @@ void pbBindCollection(void) {
 zvalue GFN_cat = NULL;
 
 /* Documented in header. */
+zvalue GFN_del = NULL;
+
+/* Documented in header. */
 zvalue GFN_get = NULL;
 
 /* Documented in header. */
 zvalue GFN_nth = NULL;
+
+/* Documented in header. */
+zvalue GFN_put = NULL;
 
 /* Documented in header. */
 zvalue GFN_size = NULL;

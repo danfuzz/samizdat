@@ -6,23 +6,12 @@
 
 #include "impl.h"
 #include "type/Callable.h"
-#include "type/Int.h"
 #include "type/List.h"
-#include "type/Type.h"
 
 
 /*
  * Exported Definitions
  */
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listDelNth) {
-    if (!hasType(args[1], TYPE_Int)) {
-        return args[0];
-    }
-
-    return listDelNth(args[0], zintFromInt(args[1]));
-}
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listFilter) {
@@ -45,11 +34,6 @@ PRIM_IMPL(listFilter) {
     }
 
     return listFromArray(at, result);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listPutNth) {
-    return listPutNth(args[0], zintFromInt(args[1]), args[2]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
