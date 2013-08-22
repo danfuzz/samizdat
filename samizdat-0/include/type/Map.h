@@ -58,8 +58,12 @@ void assertMapSize1(zvalue value);
  * mappings take precedence over the lower-index mappings, when keys match).
  * The effect is identical to calling a chain of `put()`s on each
  * of the mappings in order, with the empty map as a base.
+ *
+ * **Warning:** This function *may* modify the memory pointed at by
+ * `mappings`. However, once this function returns, it is safe to reuse
+ * or discard the memory in question.
  */
-zvalue mapFromArray(zint size, const zmapping *mappings);
+zvalue mapFromArray(zint size, zmapping *mappings);
 
 /**
  * Gets the map resulting from putting the given mapping into the

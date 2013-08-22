@@ -146,51 +146,6 @@ static int mappingOrder(const void *m1, const void *m2) {
     return valOrder(((zmapping *) m1)->key, ((zmapping *) m2)->key);
 }
 
-/**
- * Like `mapFromArray`, but starts with a non-empty map.
- */
-static zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
-    if (size == 0) {
-        return map;
-    } else if (size == 1) {
-        return mapPut(map, mappings[0].key, mappings[0].value);
-    }
-
-    MapInfo *info = getInfo(map);
-    zint resultSize = info->size + size;
-    zvalue result = allocMap(resultSize);
-    MapInfo *resultInfo = getInfo(result);
-    zmapping *resultElems = resultInfo->elems;
-
-    // Add all the mappings to the result, and sort it using mergesort.
-    // Mergesort is stable and operates best on sorted data, and as it
-    // happens the starting map is guaranteed to be sorted.
-
-    utilCpy(zmapping, resultElems, info->elems, info->size);
-    utilCpy(zmapping, &resultElems[info->size], mappings, size);
-    mergesort(resultElems, resultSize, sizeof(zmapping), mappingOrder);
-
-    // Remove all but the last of any sequence of equal-keys mappings.
-    // The last one is preferred, since by construction that's the last
-    // of any equal keys from the newly-added mappings.
-
-    zint at = 1;
-    for (zint i = 1; i < resultSize; i++) {
-        if (valEq(resultElems[i].key, resultElems[at-1].key)) {
-            at--;
-        }
-
-        if (at != i) {
-            resultElems[at] = resultElems[i];
-        }
-
-        at++;
-    }
-
-    resultInfo->size = at; // In case there were duplicate keys.
-    return result;
-}
-
 
 /*
  * Exported Definitions
@@ -218,8 +173,52 @@ void arrayFromMap(zmapping *result, zvalue map) {
 }
 
 /* Documented in header. */
-zvalue mapFromArray(zint size, const zmapping *mappings) {
-    return mapCatArray(EMPTY_MAP, size, mappings);
+zvalue mapFromArray(zint size, zmapping *mappings) {
+    // Handle special cases that are particularly easy.
+    switch (size) {
+        case 0: {
+            return EMPTY_MAP;
+        }
+        case 1: {
+            return makeMapping(mappings[0].key, mappings[0].value);
+        }
+        case 2: {
+            return mapFrom2(
+                mappings[0].key, mappings[0].value,
+                mappings[1].key, mappings[1].value);
+        }
+    }
+
+    // Sort the mappings using mergesort. Mergesort is stable and operates
+    // best on partially sorted data. As it happens, the input to this
+    // function is commonly partially sorted, and the stability matters
+    // due to this function's API.
+
+    mergesort(mappings, size, sizeof(zmapping), mappingOrder);
+
+    // Collapse away all but the last of any sequence of same-key mappings.
+    // The last one is kept, as that is consistent with the exposed API.
+
+    zint at = 1;
+    for (zint i = 1; i < size; i++) {
+        if (valEq(mappings[i].key, mappings[at - 1].key)) {
+            at--;
+        }
+
+        if (at != i) {
+            mappings[at] = mappings[i];
+        }
+
+        at++;
+    }
+
+    // Allocate, populate, and return the result.
+
+    zvalue result = allocMap(at);
+    MapInfo *info = getInfo(result);
+
+    utilCpy(zmapping, info->elems, mappings, at);
+    return result;
 }
 
 /* Documented in header. */
