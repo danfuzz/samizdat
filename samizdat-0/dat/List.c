@@ -12,8 +12,6 @@
 #include "type/Type.h"
 #include "type/Value.h"
 
-#include <string.h>
-
 
 /*
  * Private Definitions
@@ -67,7 +65,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
     zvalue *resultElems = getInfo(result)->elems;
 
     if (size1 != 0) {
-        memcpy(resultElems, elems1, size1 * sizeof(zvalue));
+        utilCpy(zvalue, resultElems, elems1, size1);
     }
 
     if (insert != NULL) {
@@ -75,8 +73,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
     }
 
     if (size2 != 0) {
-        memcpy(resultElems + size1 + insertCount, elems2,
-               size2 * sizeof(zvalue));
+        utilCpy(zvalue, resultElems + size1 + insertCount, elems2, size2);
     }
 
     return result;
@@ -98,20 +95,7 @@ void arrayFromList(zvalue *result, zvalue list) {
 
     ListInfo *info = getInfo(list);
 
-    memcpy(result, info->elems, info->size * sizeof(zvalue));
-}
-
-/* Documented in header. */
-zvalue listDelNth(zvalue list, zint n) {
-    assertList(list);
-
-    ListInfo *info = getInfo(list);
-    zvalue *elems = info->elems;
-    zint size = info->size;
-
-    assertNth(size, n);
-
-    return listFrom(n, elems, NULL, size - n - 1, elems + n + 1);
+    utilCpy(zvalue, result, info->elems, info->size);
 }
 
 /* Documented in header. */
@@ -121,26 +105,6 @@ zvalue listFromArray(zint size, const zvalue *values) {
     }
 
     return listFrom(size, values, NULL, 0, NULL);
-}
-
-/* Documented in header. */
-zvalue listPutNth(zvalue list, zint n, zvalue value) {
-    assertList(list);
-    assertValid(value);
-
-    ListInfo *info = getInfo(list);
-    zint size = info->size;
-
-    assertNthOrSize(size, n);
-
-    if (n == size) {
-        return listFrom(size, info->elems, value, 0, NULL);
-    }
-
-    zvalue result = listFrom(size, info->elems, NULL, 0, NULL);
-
-    getInfo(result)->elems[n] = value;
-    return result;
 }
 
 
@@ -171,6 +135,23 @@ METH_IMPL(List, cat) {
     }
 
     return listFrom(size, elems, NULL, 0, NULL);
+}
+
+/* Documented in header. */
+METH_IMPL(List, del) {
+    zvalue list = args[0];
+    zvalue n = args[1];
+
+    ListInfo *info = getInfo(list);
+    zvalue *elems = info->elems;
+    zint size = info->size;
+    zint index = collNthIndexLenient(n);
+
+    if ((index < 0) || (index >= size)) {
+        return list;
+    }
+
+    return listFrom(index, elems, NULL, size - index - 1, &elems[index + 1]);
 }
 
 /* Documented in header. */
@@ -254,6 +235,25 @@ METH_IMPL(List, perOrder) {
 }
 
 /* Documented in header. */
+METH_IMPL(List, put) {
+    zvalue list = args[0];
+    zvalue n = args[1];
+    zvalue value = args[2];
+
+    ListInfo *info = getInfo(list);
+    zvalue *elems = info->elems;
+    zint size = info->size;
+    zint index = collPutIndexStrict(size, n);
+
+    if (index == size) {
+        // This is an append operation.
+        return listFrom(size, elems, value, 0, NULL);
+    }
+
+    return listFrom(index, elems, value, size - index - 1, &elems[index + 1]);
+}
+
+/* Documented in header. */
 METH_IMPL(List, size) {
     zvalue list = args[0];
     return intFromZint(getInfo(list)->size);
@@ -274,10 +274,12 @@ METH_IMPL(List, slice) {
 void datBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
     METH_BIND(List, cat);
+    METH_BIND(List, del);
     METH_BIND(List, gcMark);
     METH_BIND(List, nth);
     METH_BIND(List, perEq);
     METH_BIND(List, perOrder);
+    METH_BIND(List, put);
     METH_BIND(List, size);
     METH_BIND(List, slice);
     seqBind(TYPE_List);

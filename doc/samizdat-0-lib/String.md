@@ -28,6 +28,10 @@ of all the argument strings, in argument order.
 
 **Syntax Note:** Used in the translation of interpolated string forms.
 
+#### `del(string, n) <> string`
+
+Returns a string like the given one, but without the `n`th character.
+
 #### `get(string, key) <> . | void`
 
 This is identical to `nth(string, key)`, except that the result of passing
@@ -36,6 +40,12 @@ a negative or non-`Int` value for `key` is void and not an error.
 #### `nth(string, n) <> . | void`
 
 Gets the nth character of the string, as a single-element string.
+
+#### `put(string, n, char) <> string`
+
+Returns a string like the given one, but with the `n`th character replaced
+with the given `char`, or added if `n == size(string)`. It is an error
+if `char` is not a string of size `1`.
 
 #### `size(string) <> int`
 

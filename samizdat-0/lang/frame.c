@@ -43,7 +43,7 @@ void frameMark(Frame *frame) {
 /* Documented in header. */
 void frameAdd(Frame *frame, zvalue name, zvalue value) {
     zvalue vars = frame->vars;
-    zvalue newVars = mapPut(vars, name, value);
+    zvalue newVars = collPut(frame->vars, name, value);
 
     if (collSize(vars) == collSize(newVars)) {
         die("Variable already defined: %s", valDebugString(name));

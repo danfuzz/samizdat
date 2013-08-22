@@ -39,40 +39,17 @@ extern zvalue EMPTY_MAP;
 void arrayFromMap(zmapping *result, zvalue map);
 
 /**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a map. If not, this aborts the process
- * with a diagnostic message.
- */
-void assertMap(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a map, and even furthermore that its size
- * is `1`. If not, this aborts the process with a diagnostic message.
- */
-void assertMapSize1(zvalue value);
-
-/**
- * Gets a map resulting from the removal of the given key from the
- * given map.
- */
-zvalue mapDel(zvalue map, zvalue key);
-
-/**
  * Gets the map resulting from adding all the given mappings
  * to an empty map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
- * The effect is identical to calling a chain of `mapPut()`s on each
- * of the mappings in order.
+ * The effect is identical to calling a chain of `put()`s on each
+ * of the mappings in order, with the empty map as a base.
+ *
+ * **Warning:** This function *may* modify the memory pointed at by
+ * `mappings`. However, once this function returns, it is safe to reuse
+ * or discard the memory in question.
  */
-zvalue mapFromArray(zint size, const zmapping *mappings);
-
-/**
- * Gets the map resulting from putting the given mapping into the
- * given map. This can either add a new mapping or replace an
- * existing mapping.
- */
-zvalue mapPut(zvalue map, zvalue key, zvalue value);
+zvalue mapFromArray(zint size, zmapping *mappings);
 
 /**
  * Given a single-mapping map, returns its sole key. `map` must be a

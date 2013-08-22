@@ -14,8 +14,6 @@
 #include "type/String.h"
 #include "type/Value.h"
 
-#include <string.h>
-
 
 /*
  * Private Definitions
@@ -56,7 +54,7 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
             } else {
                 zvalue newArgs[argCount + 1];
                 newArgs[0] = function;
-                memcpy(&newArgs[1], args, argCount * sizeof(zvalue));
+                utilCpy(zvalue, &newArgs[1], args, argCount);
                 return funCall0(callImpl, argCount + 1, newArgs);
             }
         }

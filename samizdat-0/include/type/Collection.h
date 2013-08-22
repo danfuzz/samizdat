@@ -27,16 +27,22 @@
 /** Generic `cat(collection, more*)`: Documented in spec. */
 extern zvalue GFN_cat;
 
+/** Generic `del(collection, key)`: Documented in spec. */
+extern zvalue GFN_del;
+
 /** Generic `get(collection, key)`: Documented in spec. */
 extern zvalue GFN_get;
 
 /** Generic `nth(collection, n)`: Documented in spec. */
 extern zvalue GFN_nth;
 
+/** Generic `put(collection, key, value)`: Documented in spec. */
+extern zvalue GFN_put;
+
 /** Generic `size(collection)`: Documented in spec. */
 extern zvalue GFN_size;
 
-/** Generic `slice(collection)`: Documented in spec. */
+/** Generic `slice(collection, start, end?)`: Documented in spec. */
 extern zvalue GFN_slice;
 
 /**
@@ -63,10 +69,10 @@ void collConvertSliceArgs(zint *startPtr, zint *endPtr, zint size,
 
 /**
  * Validates the given `key` to use for a `get` style function on a sequence.
- * Returns `true` to indicate that the `key` is valid (a non-negative `Int`),
- * or `false` if not.
+ * Returns the int value for a valid `key` (a non-negative `Int`), or
+ * `-1` if not.
  */
-bool collNthIndexLenient(zvalue key);
+zint collNthIndexLenient(zvalue key);
 
 /**
  * Returns an index to use for an `nth` style function, given a collection
@@ -77,7 +83,7 @@ bool collNthIndexLenient(zvalue key);
 zint collNthIndexStrict(zint size, zvalue n);
 
 /**
- * Calls `get`.
+ * Calls the `get` generic.
  */
 zvalue collGet(zvalue coll, zvalue key);
 
@@ -93,6 +99,20 @@ zvalue collNth(zvalue coll, zint index);
  * value gets converted to `-1`.
  */
 zint collNthChar(zvalue coll, zint index);
+
+/**
+ * Calls the `put` generic.
+ */
+zvalue collPut(zvalue coll, zvalue key, zvalue value);
+
+/**
+ * Returns an index to use for an `put` style function, given a collection
+ * `size` and client-supplied index `n`. This returns `-1` to indicate that
+ * the caller should in turn return `NULL`. This is strict in that
+ * all invalid `n` (non-int, negative int, or `> size`) cause runtime
+ * termination.
+ */
+zint collPutIndexStrict(zint size, zvalue n);
 
 /**
  * Gets the size of the given collection, as a `zint`.

@@ -22,20 +22,6 @@ extern zvalue TYPE_String;
 extern zvalue EMPTY_STRING;
 
 /**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a string. If not, this aborts the process
- * with a diagnostic message.
- */
-void assertString(zvalue value);
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a string, and even furthermore that its size
- * is `1`. If not, this aborts the process with a diagnostic message.
- */
-void assertStringSize1(zvalue value);
-
-/**
  * Gets the string resulting from interpreting the given UTF-8
  * encoded string, whose size in bytes is as given. If `stringBytes`
  * is passed as `-1`, this uses `strlen()` to determine size.

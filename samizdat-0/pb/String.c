@@ -12,8 +12,6 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
-#include <string.h>
-
 
 /*
  * Private Definitions
@@ -51,23 +49,31 @@ static zvalue allocString(zint size) {
     return result;
 }
 
-
-/*
- * Exported Definitions
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a string. If not, this aborts the process
+ * with a diagnostic message.
  */
-
-/* Documented in header. */
-void assertString(zvalue value) {
+static void assertString(zvalue value) {
     assertHasType(value, TYPE_String);
 }
 
-/* Documented in header. */
-void assertStringSize1(zvalue value) {
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a string, and even furthermore that its size
+ * is `1`. If not, this aborts the process with a diagnostic message.
+ */
+static void assertStringSize1(zvalue value) {
     assertString(value);
     if (getInfo(value)->size != 1) {
         die("Not a size 1 string.");
     }
 }
+
+
+/*
+ * Exported Definitions
+ */
 
 /* Documented in header. */
 zvalue stringFromUtf8(zint stringBytes, const char *string) {
@@ -127,7 +133,7 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 
     zvalue result = allocString(size);
 
-    memcpy(getInfo(result)->elems, chars, size * sizeof(zchar));
+    utilCpy(zchar, getInfo(result)->elems, chars, size);
     return result;
 }
 
@@ -182,7 +188,7 @@ void zcharsFromString(zchar *result, zvalue string) {
 
     StringInfo *info = getInfo(string);
 
-    memcpy(result, info->elems, info->size * sizeof(zchar));
+    utilCpy(zchar, result, info->elems, info->size);
 }
 
 
@@ -213,6 +219,26 @@ METH_IMPL(String, cat) {
     }
 
     return stringFromZchars(size, chars);
+}
+
+/* Documented in header. */
+METH_IMPL(String, del) {
+    zvalue string = args[0];
+    zvalue n = args[1];
+
+    StringInfo *info = getInfo(string);
+    zchar *elems = info->elems;
+    zint size = info->size;
+    zint index = collNthIndexLenient(n);
+
+    if ((index < 0) || (index >= size)) {
+        return string;
+    }
+
+    zchar chars[size - 1];
+    utilCpy(zchar, chars, elems, index);
+    utilCpy(zchar, &chars[index], &elems[index + 1], (size - index - 1));
+    return stringFromZchars(size - 1, chars);
 }
 
 /* Documented in header. */
@@ -294,6 +320,30 @@ METH_IMPL(String, perOrder) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, put) {
+    zvalue string = args[0];
+    zvalue n = args[1];
+    zvalue value = args[2];
+
+    assertStringSize1(value);
+
+    StringInfo *info = getInfo(string);
+    zchar *elems = info->elems;
+    zint size = info->size;
+    zint index = collPutIndexStrict(size, n);
+
+    if (index == size) {
+        // This is an append operation.
+        return GFN_CALL(cat, string, value);
+    }
+
+    zchar chars[size];
+    zcharsFromString(chars, string);
+    chars[index] = zcharFromString(value);
+    return stringFromZchars(size, chars);
+}
+
+/* Documented in header. */
 METH_IMPL(String, size) {
     zvalue string = args[0];
     return intFromZint(getInfo(string)->size);
@@ -316,9 +366,11 @@ void pbBindString(void) {
 
     METH_BIND(String, cat);
     METH_BIND(String, debugString);
+    METH_BIND(String, del);
     METH_BIND(String, nth);
     METH_BIND(String, perEq);
     METH_BIND(String, perOrder);
+    METH_BIND(String, put);
     METH_BIND(String, size);
     METH_BIND(String, slice);
     seqBind(TYPE_String);
