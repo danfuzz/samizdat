@@ -284,6 +284,17 @@ METH_IMPL(List, size) {
 }
 
 /* Documented in header. */
+METH_IMPL(List, slice) {
+    zvalue list = args[0];
+    ListInfo *info = getInfo(list);
+    zint start;
+    zint end;
+
+    collConvertSliceArgs(&start, &end, info->size, argCount, args);
+    return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
+}
+
+/* Documented in header. */
 void datBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
     METH_BIND(List, cat);
@@ -292,6 +303,7 @@ void datBindList(void) {
     METH_BIND(List, perEq);
     METH_BIND(List, perOrder);
     METH_BIND(List, size);
+    METH_BIND(List, slice);
     seqBind(TYPE_List);
 
     EMPTY_LIST = allocList(0);
