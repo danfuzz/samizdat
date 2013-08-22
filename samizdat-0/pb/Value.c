@@ -92,7 +92,7 @@ bool valEq(zvalue v1, zvalue v2) {
     assertValid(v2);
 
     if (haveSameType(v1, v2)) {
-        return (GFN_CALL(eq, v1, v2) != NULL);
+        return (GFN_CALL(perEq, v1, v2) != NULL);
     } else {
         return false;
     }
@@ -113,7 +113,7 @@ zorder valOrder(zvalue v1, zvalue v2) {
 
     if (haveSameType(v1, v2)) {
         zstackPointer save = pbFrameStart();
-        zorder result = zintFromInt(GFN_CALL(order, v1, v2));
+        zorder result = zintFromInt(GFN_CALL(perOrder, v1, v2));
         pbFrameReturn(save, NULL);
         return result;
     } else {
@@ -143,12 +143,16 @@ METH_IMPL(Value, debugString) {
 }
 
 /* Documented in header. */
-METH_IMPL(Value, eq) {
-    return NULL;
+METH_IMPL(Value, perEq) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    zvalue result = GFN_CALL(perOrder, v1, v2);
+    return valEq(result, PB_0) ? v1 : NULL;
 }
 
 /* Documented in header. */
-METH_IMPL(Value, order) {
+METH_IMPL(Value, perOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zint id1 = valIdentityOf(v1);
@@ -169,20 +173,20 @@ void pbBindValue(void) {
     GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     pbImmortalize(GFN_debugString);
 
-    GFN_eq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "eq"));
-    pbImmortalize(GFN_eq);
+    GFN_perEq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "eq"));
+    pbImmortalize(GFN_perEq);
 
     GFN_gcMark = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "gcMark"));
     pbImmortalize(GFN_gcMark);
 
-    GFN_order = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "order"));
-    pbImmortalize(GFN_order);
+    GFN_perOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "order"));
+    pbImmortalize(GFN_perOrder);
 
     // Note: The type `Type` is responsible for initializing `TYPE_Value`.
 
     METH_BIND(Value, debugString);
-    METH_BIND(Value, eq);
-    METH_BIND(Value, order);
+    METH_BIND(Value, perEq);
+    METH_BIND(Value, perOrder);
 }
 
 /* Documented in header. */
@@ -192,10 +196,10 @@ zvalue TYPE_Value = NULL;
 zvalue GFN_debugString = NULL;
 
 /* Documented in header. */
-zvalue GFN_eq = NULL;
-
-/* Documented in header. */
 zvalue GFN_gcMark = NULL;
 
 /* Documented in header. */
-zvalue GFN_order = NULL;
+zvalue GFN_perEq = NULL;
+
+/* Documented in header. */
+zvalue GFN_perOrder = NULL;

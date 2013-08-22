@@ -19,7 +19,8 @@ are in fact identical, or `void` if they are not.
 
 Each type specifies its own per-type equality check. See specific types for
 details. Transparent derived types all compare for equality by comparing
-both the payload value (if any).
+both the payload value (if any). In addition, a default implementation
+calls through to `perOrder` to determine sameness.
 
 **Note:** In order for the system to operate consistently, `perEq` must
 always behave consistently with `perOrder`, in that for a given pair of
@@ -49,7 +50,9 @@ each other, using the reasonably standard meaning of those values:
 Each type specifies its own per-type ordering. See specific types for
 details. Transparent derived types all order by performing ordering
 on the respective payload values, with a lack of payload counting as
-"before" any non-void payload.
+"before" any non-void payload. In addition, a default implementation
+compares value identities; this will fail if the type of the values is
+not an "identified" one.
 
 **Note:** This is the generic function which underlies the implementation
 of all cross-type ordering functions.

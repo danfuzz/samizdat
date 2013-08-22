@@ -80,14 +80,6 @@ zvalue makeTransValue(zvalue type, zvalue data) {
  */
 
 /* Documented in header. */
-METH_IMPL(Deriv, eq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-
-    return valEq(getInfo(v1)->data, getInfo(v2)->data) ? v2 : NULL;
-}
-
-/* Documented in header. */
 METH_IMPL(Deriv, gcMark) {
     zvalue value = args[0];
     pbMark(getInfo(value)->data);
@@ -95,7 +87,15 @@ METH_IMPL(Deriv, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Deriv, order) {
+METH_IMPL(Deriv, perEq) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return valEq(getInfo(v1)->data, getInfo(v2)->data) ? v2 : NULL;
+}
+
+/* Documented in header. */
+METH_IMPL(Deriv, perOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zvalue data1 = getInfo(v1)->data;
@@ -112,7 +112,7 @@ METH_IMPL(Deriv, order) {
 
 /* Documented in header. */
 void derivBind(zvalue type) {
-    genericBindCore(GFN_eq,     type, Deriv_eq);
-    genericBindCore(GFN_gcMark, type, Deriv_gcMark);
-    genericBindCore(GFN_order,  type, Deriv_order);
+    genericBindCore(GFN_gcMark,   type, Deriv_gcMark);
+    genericBindCore(GFN_perEq,    type, Deriv_perEq);
+    genericBindCore(GFN_perOrder, type, Deriv_perOrder);
 }
