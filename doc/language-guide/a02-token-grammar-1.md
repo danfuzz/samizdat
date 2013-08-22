@@ -159,11 +159,11 @@ def tokString = {/
 
 # Parses an identifier (in the usual form). This also parses keywords.
 def tokIdentifier = {/
-    first = ["_" "a".."z" "A".."Z"]
+    one = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
 
     {
-        def string = stringFromTokenList([first, rest*]);
+        def string = stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
     }

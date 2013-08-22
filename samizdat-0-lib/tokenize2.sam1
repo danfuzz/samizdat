@@ -165,11 +165,11 @@ def tokString = {/
 
 # Parses an identifier (in the usual form). This also parses keywords.
 def tokIdentifier = {/
-    first = ["_" "a".."z" "A".."Z"]
+    one = ["_" "a".."z" "A".."Z"]
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
 
     {
-        def string = stringFromTokenList([first, rest*]);
+        def string = stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
     }
@@ -417,20 +417,20 @@ def implStringPart2 = {/
     |
         "x"
         (
-            first = tokHexChar
-            more = ("," tokHexChar)*
+            one = tokHexChar
+            rest = ("," tokHexChar)*
             ";"
-            { <> cat(first, more*) }
+            { <> cat(one, rest*) }
         |
             { <> @[error: "Invalid hexadecimal character literal."] }
         )
     |
         "&"
         (
-            first = tokNamedChar
-            more = ("," tokNamedChar)*
+            one = tokNamedChar
+            rest = ("," tokNamedChar)*
             ";"
-            { <> cat(first, more*) }
+            { <> cat(one, rest*) }
         |
             { <> @[error: "Invalid named character literal."] }
         )

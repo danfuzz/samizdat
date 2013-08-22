@@ -98,19 +98,19 @@ The `reduceFunction` is no longer restricted to returning only list
 values, and similarly the overall result of calling this function can
 be an arbitrary value.
 
-#### `exclusiveRange(first, increment, limit) <> generator`
+#### `exclusiveRange(firstValue, increment, limit) <> generator`
 
 End-exclusive range generator for int or single-character strings.
 Takes an initial value, which must either be an int or a single-character
 string, and an int (always an int) increment. The first call to the
-resulting generator yields the `first` value, and each subsequent call
+resulting generator yields the `firstValue`, and each subsequent call
 yields the previous value plus the given increment (converted to a
-single-character string if `first` is a string). If the value yielded
+single-character string if `firstValue` is a string). If the value yielded
 would be the same as or beyond the given `limit`, the generator becomes
 voided.
 
 As a special case, if `increment` is `0`, the resulting generator just
-yields `first` and then becomes voided.
+yields `firstValue` and then becomes voided.
 
 **Syntax Note:** Used in the translation of `expression..!expression`
 forms.
@@ -148,18 +148,18 @@ directly. That is, a function that wants to take values-or-generators can
 safely call `generatorFromValue(valueOrGenerator)` without any up-front
 type checking.
 
-#### `inclusiveRange(first, increment, limit) <> generator`
+#### `inclusiveRange(firstValue, increment, limit) <> generator`
 
 End-inclusive range generator for int or single-character strings.
 Takes an initial value, which must either be an int or a single-character
 string, and an int (always an int) increment. The first call to the
-resulting generator yields the `first` value, and each subsequent call
+resulting generator yields the `firstValue`, and each subsequent call
 yields the previous value plus the given increment (converted to a
-single-character string if `first` is a string). If the value yielded
+single-character string if `firstValue` is a string). If the value yielded
 would be beyond the given `limit`, the generator becomes voided.
 
 As a special case, if `increment` is `0`, the resulting generator just
-yields `first` and then becomes voided.
+yields `firstValue` and then becomes voided.
 
 **Syntax Note:** Used in the translation of `expression..expression`
 forms.
@@ -173,17 +173,17 @@ as if by successive calls to `cat(map, map)`.
 If there are mappings in the yielded results with equal keys, then the
 *last* such mapping is the one that "wins" in the final result.
 
-#### `openRange(first, increment) <> generator`
+#### `openRange(firstValue, increment) <> generator`
 
 Open (never voided) range generator for int or single-character strings.
 Takes an initial value, which must either be an int or a single-character
 string, and an int (always an int) increment. The first call to the
-resulting generator yields the `first` value, and each subsequent call
+resulting generator yields the `firstValue`, and each subsequent call
 yields the previous value plus the given increment (converted to a
-single-character string if `first` is a string).
+single-character string if `firstValue` is a string).
 
 As a special case, if `increment` is `0`, the resulting generator just
-yields `first` and then becomes voided.
+yields `firstValue` and then becomes voided.
 
 **Syntax Note:** Used in the translation of `expression..+` forms.
 

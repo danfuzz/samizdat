@@ -123,8 +123,8 @@ def IDENTIFIER_CHARS = cat(IDENTIFIER_START_CHARS, "0123456789");
 def tokIdentifier = pegMakeMainSequence(
     pegMakeCharSet(IDENTIFIER_START_CHARS),
     pegMakeStar(pegMakeCharSet(IDENTIFIER_CHARS)),
-    pegMakeCode { first, rest ::
-        def string = stringFromTokenList([first, rest*]);
+    pegMakeCode { one, rest ::
+        def string = stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
     });

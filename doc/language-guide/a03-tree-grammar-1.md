@@ -135,9 +135,9 @@ def parFormal = {/
 
 # Parses a list of formal arguments, with no surrounding parentheses.
 def parFormalsList = {/
-    first = parFormal
+    one = parFormal
     rest = (@"," parFormal)*
-    { <> [first, rest*] }
+    { <> [one, rest*] }
 |
     { <> [] }
 /};
@@ -356,9 +356,9 @@ def parVoidableExpression = {/
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
 def parUnadornedList = {/
-    first = parVoidableExpression
+    one = parVoidableExpression
     rest = (@"," parVoidableExpression)*
-    { <> [first, rest*] }
+    { <> [one, rest*] }
 |
     { <> [] }
 /};
@@ -427,10 +427,10 @@ def parMapping = {/
 def parMap = {/
     @"["
     (@":" @",")?
-    first = parMapping
+    one = parMapping
     rest = (@"," parMapping)*
     @"]"
-    { <> makeCallName("cat", first, rest*) }
+    { <> makeCallName("cat", one, rest*) }
 /};
 
 # Parses a literal in derived value form.
@@ -784,9 +784,9 @@ def parSequencePex = {/
 
 # Parses a choice parsing expression. This includes a single choice.
 def implChoicePex = {/
-    first = parSequencePex
+    one = parSequencePex
     rest = (@"|" parSequencePex)*
-    { <> @[choice: [first, rest*]] }
+    { <> @[choice: [one, rest*]] }
 /};
 parChoicePex(implChoicePex);
 ```

@@ -249,9 +249,9 @@ def parFormal = {/
 
 # Parses a list of formal arguments, with no surrounding parentheses.
 def parFormalsList = {/
-    first = parFormal
+    one = parFormal
     rest = (@"," parFormal)*
-    { <> [first, rest*] }
+    { <> [one, rest*] }
 |
     { <> [] }
 /};
@@ -461,9 +461,9 @@ def parIdentifierString = {/
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
 def parUnadornedList = {/
-    first = parVoidableExpression
+    one = parVoidableExpression
     rest = (@"," parVoidableExpression)*
-    { <> [first, rest*] }
+    { <> [one, rest*] }
 |
     { <> [] }
 /};
@@ -538,10 +538,10 @@ def parMapping = {/
 def parMap = {/
     @"["
     (@":" @",")?
-    first = parMapping
+    one = parMapping
     rest = (@"," parMapping)*
     @"]"
-    { <> makeCallName("cat", first, rest*) }
+    { <> makeCallName("cat", one, rest*) }
 /};
 
 # Parses a literal in derived value form.
@@ -856,9 +856,9 @@ def parSequencePex = {/
 
 # Parses a choice parsing expression. This includes a single choice.
 def implChoicePex = {/
-    first = parSequencePex
+    one = parSequencePex
     rest = (@"|" parSequencePex)*
-    { <> @[choice: [first, rest*]] }
+    { <> @[choice: [one, rest*]] }
 /};
 parChoicePex(implChoicePex);
 
@@ -960,11 +960,11 @@ def parGeneratorDef = {/
 # generators, and `inits` bound to a list of generator initializer
 # expressions.
 def parGeneratorList = {/
-    firstGen = parGeneratorDef
-    moreGens = ("," parGeneratorDef)*
+    one = parGeneratorDef
+    rest = ("," parGeneratorDef)*
 
     {
-        def gens = [firstGen, moreGens*];
+        def gens = [one, rest*];
         def formals = collectFilter(gens) { gen <> get(gen, "formal") };
         def inits = collectFilter(gens) { gen <> get(gen, "init") };
 
@@ -1311,18 +1311,18 @@ def parLogicAndExpression = {/
 #     { ifValueOr { <> expr2 } { <> expr3 } }
 # ```
 def parLogicOrExpression = {/
-    first = parLogicAndExpression
+    one = parLogicAndExpression
     rest = (@"|" parLogicAndExpression)*
 
     (
         # This handles the case of not actually being a logical-or expression.
         {
             <> ifIs { <> eq(rest, []) }
-                { <> first }
+                { <> one }
         }
     |
         {
-            def allExprs = listReverse([first, rest*]);
+            def allExprs = listReverse([one, rest*]);
             <> doReduce1(butFirst(allExprs), first(allExprs))
                 { ex, result ::
                     <> makeCallName("ifValueOr",
