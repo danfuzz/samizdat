@@ -83,7 +83,7 @@ zint collNthIndexLenient(zvalue key);
 zint collNthIndexStrict(zint size, zvalue n);
 
 /**
- * Calls `get`.
+ * Calls the `get` generic.
  */
 zvalue collGet(zvalue coll, zvalue key);
 
@@ -99,6 +99,11 @@ zvalue collNth(zvalue coll, zint index);
  * value gets converted to `-1`.
  */
 zint collNthChar(zvalue coll, zint index);
+
+/**
+ * Calls the `put` generic.
+ */
+zvalue collPut(zvalue coll, zvalue key, zvalue value);
 
 /**
  * Returns an index to use for an `put` style function, given a collection

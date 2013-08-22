@@ -99,6 +99,11 @@ zint collNthChar(zvalue coll, zint index) {
 }
 
 /* Documented in header. */
+zvalue collPut(zvalue coll, zvalue key, zvalue value) {
+    return GFN_CALL(put, coll, key, value);
+}
+
+/* Documented in header. */
 zint collPutIndexStrict(zint size, zvalue n) {
     if (hasType(n, TYPE_Int)) {
         zint index = zintFromInt(n);
