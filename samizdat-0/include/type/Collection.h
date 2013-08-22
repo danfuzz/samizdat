@@ -36,6 +36,9 @@ extern zvalue GFN_nth;
 /** Generic `size(collection)`: Documented in spec. */
 extern zvalue GFN_size;
 
+/** Generic `slice(collection)`: Documented in spec. */
+extern zvalue GFN_slice;
+
 /**
  * Validates the given `key` to use for a `get` style function on a sequence.
  * Returns `true` to indicate that the `key` is valid (a non-negative `Int`),

@@ -107,6 +107,9 @@ void pbBindCollection(void) {
 
     GFN_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "size"));
     pbImmortalize(GFN_size);
+
+    GFN_slice = makeGeneric(2, 3, GFN_NONE, stringFromUtf8(-1, "slice"));
+    pbImmortalize(GFN_slice);
 }
 
 /* Documented in header. */
@@ -120,3 +123,6 @@ zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_size = NULL;
+
+/* Documented in header. */
+zvalue GFN_slice = NULL;

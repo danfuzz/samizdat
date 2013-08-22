@@ -50,6 +50,16 @@ fixed order. Returns void if `n >= size(collection)`. It is an error
 
 Returns the number of elements in the given collection.
 
+#### `slice(collection, start, end?) <> collection`
+
+Returns a collection of the same type as `collection`, consisting of an
+index-based "slice" of elements taken from `collection`, from the `start`
+index (inclusive) through the `end` index (exclusive). `start` and `end`
+must both be ints, must be valid indices into `collection` *or* the
+collection size, and must form a range (though possibly empty) with
+`start <= end`. If `end` is not specified, it defaults to the end of the
+collection.
+
 
 <br><br>
 ### Primitive Definitions

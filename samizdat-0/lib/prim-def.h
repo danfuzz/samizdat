@@ -44,6 +44,7 @@ PRIM_DEF(cat,        GFN_cat);
 PRIM_DEF(get,        GFN_get);
 PRIM_DEF(nth,        GFN_nth);
 PRIM_DEF(size,       GFN_size);
+PRIM_DEF(slice,      GFN_slice);
 
 // Generic functions: `Int` protocol
 PRIM_DEF(abs,        GFN_abs);
