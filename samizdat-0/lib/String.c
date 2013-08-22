@@ -4,11 +4,9 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "const.h"
 #include "impl.h"
 #include "type/Int.h"
 #include "type/String.h"
-#include "type/Value.h"
 #include "util.h"
 
 
@@ -26,13 +24,4 @@ PRIM_IMPL(intFromChar) {
     zvalue string = args[0];
 
     return intFromZint(zcharFromString(string));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(stringSlice) {
-    zvalue string = args[0];
-    zint startIndex = zintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : collSize(string);
-
-    return stringSlice(string, startIndex, endIndex);
 }

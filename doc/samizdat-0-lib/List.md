@@ -97,15 +97,6 @@ opposite order.
 
 **Syntax Note:** Used in the translation of `switch` forms.
 
-#### `listSlice(list, start, end?) <> list`
-
-Returns a list consisting of a "slice" of elements of the given
-list, from the `start` index (inclusive) through the `end` index
-(exclusive). `start` and `end` must both be ints, must be valid indices
-into `list` (with the list size being a valid index), and must form a
-range (though possibly empty) with `start <= end`. If `end` is not
-specified, it defaults to the end of the list.
-
 #### `makeList(rest*) <> list`
 
 Returns a list with the given elements (in argument order).

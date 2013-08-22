@@ -9,7 +9,6 @@
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Type.h"
-#include "type/Value.h"
 
 
 /*
@@ -73,15 +72,6 @@ PRIM_IMPL(listReverse) {
     }
 
     return listFromArray(size, elems);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listSlice) {
-    zvalue list = args[0];
-    zint startIndex = zintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : collSize(list);
-
-    return listSlice(list, startIndex, endIndex);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
