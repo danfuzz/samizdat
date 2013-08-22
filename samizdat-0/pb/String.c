@@ -132,16 +132,6 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 }
 
 /* Documented in header. */
-zvalue stringSlice(zvalue string, zint start, zint end) {
-    assertString(string);
-
-    StringInfo *info = getInfo(string);
-
-    assertSliceRange(info->size, start, end);
-    return stringFromZchars(end - start, &info->elems[start]);
-}
-
-/* Documented in header. */
 void utf8FromString(zint resultSize, char *result, zvalue string) {
     assertString(string);
 

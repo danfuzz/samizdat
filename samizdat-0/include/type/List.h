@@ -59,10 +59,4 @@ zvalue listInsNth(zvalue list, zint n, zvalue value);
  */
 zvalue listPutNth(zvalue list, zint n, zvalue value);
 
-/**
- * Gets the list consisting of the given "slice" of elements
- * (start inclusive, end exclusive) of the given list.
- */
-zvalue listSlice(zvalue list, zint start, zint end);
-
 #endif

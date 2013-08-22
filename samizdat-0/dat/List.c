@@ -157,16 +157,6 @@ zvalue listPutNth(zvalue list, zint n, zvalue value) {
     return result;
 }
 
-/* Documented in header. */
-zvalue listSlice(zvalue list, zint start, zint end) {
-    assertList(list);
-
-    ListInfo *info = getInfo(list);
-
-    assertSliceRange(info->size, start, end);
-    return listFrom(end - start, &info->elems[start], NULL, 0, NULL);
-}
-
 
 /*
  * Type Definition

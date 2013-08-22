@@ -134,7 +134,7 @@ fn makeList(rest*) { <> rest };
 Returns a list consisting of all the elements of the given list
 except for the first element (that is, all but the first element). If
 the given list is empty, this returns void. This is similar to
-`listSlice(list, 1)` or `listDelNth(list, 0)`, except that this function
+`slice(list, 1)` or `listDelNth(list, 0)`, except that this function
 behaves differently than either of those when the list is empty.
 
 #### `listButLast(list) <> . | void`
@@ -142,7 +142,7 @@ behaves differently than either of those when the list is empty.
 Returns a list consisting of all the elements of the given list
 except for the last element (that is, all but the last element). If
 the given list is empty, this returns void. This is similar to
-`listSlice(list, 0, sub(size(list), 1))` or
+`slice(list, 0, sub(size(list), 1))` or
 `listDelNth(list, sub(size(list), 1))`, except that this function
 behaves differently than either of those when the list is empty.
 
