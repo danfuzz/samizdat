@@ -115,13 +115,14 @@ static zvalue peekMatch(ParseState *state, zvalue type) {
  */
 static zvalue mapFrom3(zvalue k1, zvalue v1, zvalue k2, zvalue v2,
                        zvalue k3, zvalue v3) {
-    zvalue result = EMPTY_MAP;
+    zmapping elems[3];
+    zint at = 0;
 
-    if (v1 != NULL) { result = mapPut(result, k1, v1); }
-    if (v2 != NULL) { result = mapPut(result, k2, v2); }
-    if (v3 != NULL) { result = mapPut(result, k3, v3); }
+    if (v1 != NULL) { elems[at].key = k1; elems[at].value = v1; at++; }
+    if (v2 != NULL) { elems[at].key = k2; elems[at].value = v2; at++; }
+    if (v3 != NULL) { elems[at].key = k3; elems[at].value = v3; at++; }
 
-    return result;
+    return mapFromArray(at, elems);
 }
 
 /**
