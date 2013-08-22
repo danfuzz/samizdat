@@ -88,7 +88,7 @@ expectSame([0, 0, 0], [0, 0, 0]);
 expectSame([[]*, 1], [1]);
 expectSame([1, 2, [3, 4]*], [1, [2, 3]*, 4]);
 expectSame(cat([9, 8, 7], [6, 5, 4]), [9, 8, 7, 6, 5, 4]);
-expectSame(listButFirst([1]), []);
+expectSame(butFirst([1]), []);
 
 expectDifferent([], [[]]);
 expectDifferent([1], [2]);

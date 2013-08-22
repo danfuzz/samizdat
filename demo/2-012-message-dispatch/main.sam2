@@ -22,7 +22,7 @@ fn msg(value) {
 
 fn weirdSize(value) {
     def payload = dataOf(value);
-    <> listFirst(payload)
+    <> first(payload)
 };
 
 fn weirdNth(value, n) {

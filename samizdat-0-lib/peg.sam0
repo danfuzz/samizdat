@@ -223,7 +223,7 @@ fn pegMakePlus(rule) {
     fn checkSize(items*) {
         # Note: Argument order is significant here, in that `ne` returns
         # its second argument on logical-true.
-        def starMatch = listLast(items);
+        def starMatch = last(items);
         <> ne([], starMatch)
     };
 
@@ -258,9 +258,9 @@ fn pegMakeSequence(rules*) {
                     }
             };
 
-        def newInput = listFirst(reduction);
-        def results = listLast(reduction);
-        store(box, listLast(results));
+        def newInput = first(reduction);
+        def results = last(reduction);
+        store(box, last(results));
         <> newInput
     }
 };

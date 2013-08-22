@@ -12,29 +12,29 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn listButFirst(list) {
-    <> slice(&ne([], list), 1)
+fn butFirst(collection) {
+    <> slice(&ne([], collection), 1)
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listButLast(list) {
-    <> slice(&ne([], list), 0, sub(size(list), 1))
+fn butLast(collection) {
+    <> slice(&ne([], collection), 0, sub(size(collection), 1))
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listFirst(list) {
-    <> nth(list, 0)
+fn first(collection) {
+    <> nth(collection, 0)
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn listLast(list) {
-    <> nth(list, &le(0, sub(size(list), 1)))
+fn last(collection) {
+    <> nth(collection, &le(0, sub(size(collection), 1)))
 };
 
 
 <> [
-    listButFirst: listButFirst,
-    listButLast:  listButLast,
-    listFirst:    listFirst,
-    listLast:     listLast
+    butFirst: butFirst,
+    butLast:  butLast,
+    first:    first,
+    last:     last
 ]
