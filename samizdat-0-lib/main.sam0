@@ -67,7 +67,7 @@ fn loadAllLibraries(ctx, names*) {
     <> loopReduce(names, ctx)
         { names, ctx ::
             <> ifValue { <> nth(names, 0) }
-                { name <> [listSlice(names, 1), loadLibrary(ctx, name)] }
+                { name <> [slice(names, 1), loadLibrary(ctx, name)] }
                 { return ctx }
         }
 };

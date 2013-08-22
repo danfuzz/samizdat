@@ -13,12 +13,12 @@
 
 # Documented in Samizdat Layer 0 spec.
 fn listButFirst(list) {
-    <> listSlice(&ne([], list), 1)
+    <> slice(&ne([], list), 1)
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn listButLast(list) {
-    <> listSlice(&ne([], list), 0, sub(size(list), 1))
+    <> slice(&ne([], list), 0, sub(size(list), 1))
 };
 
 # Documented in Samizdat Layer 0 spec.

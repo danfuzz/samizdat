@@ -46,10 +46,10 @@ fn applyShuntingYard(initialValue, opValues) {
     fn applyTop(ops, values) {
         def valuesSizeM2 = sub(size(values), 2);
         def function = get(listLast(ops), "function");
-        def newValue = function(listSlice(values, valuesSizeM2)*);
+        def newValue = function(slice(values, valuesSizeM2)*);
         <> [
             listButLast(ops),
-            [listSlice(values, 0, valuesSizeM2)*, newValue]
+            [slice(values, 0, valuesSizeM2)*, newValue]
         ]
     };
 
