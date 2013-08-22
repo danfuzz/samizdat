@@ -13,27 +13,6 @@
 
 
 /*
- * Private Definitions
- */
-
-/**
- * Does most of the work of `totalOrderIs`.
- */
-static bool doOrderIs(zint argCount, const zvalue *args) {
-    zorder want = zintFromInt(args[2]);
-
-    if ((argCount == 3) && (want == ZSAME)) {
-        return valEq(args[0], args[1]);
-    }
-
-    zorder comp = valOrder(args[0], args[1]);
-
-    return (comp == want) ||
-        ((argCount == 4) && (comp == zintFromInt(args[3])));
-}
-
-
-/*
  * Exported Definitions
  */
 
@@ -108,11 +87,6 @@ PRIM_IMPL(ne) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(totalOrder) {
     return intFromZint(valOrder(args[0], args[1]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(totalOrderIs) {
-    return doOrderIs(argCount, args) ? args[1] : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */

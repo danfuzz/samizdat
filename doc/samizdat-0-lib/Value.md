@@ -160,19 +160,6 @@ The "majorest" order is by type (see below for details). The minor order
 is according to `perOrder` called on the arguments. See that generic
 function for more details.
 
-#### `totalOrderIs(value1, value2, check1, check2?) <> logic`
-
-The two values are compared as with `totalOrder`. The int
-result of that comparison are checked for equality with
-the one or two check values. If the comparison result is equal
-to either check value, this function returns `value2`. Otherwise
-it returns void.
-
-**Note:** This function exists in order to provide a primitive
-comparison function that returns a logic result. Without it (or something
-like it), there would be no way to define logic-semantics
-comparators in-language.
-
 #### `typeOf(value) <> .`
 
 Returns the type tag of the given arbitrary value. For transparent values,
@@ -219,17 +206,6 @@ Returns the given `value` if it is a string. Returns void if not.
 
 Returns the given `value` if it is a uniqlet. Returns void if not.
 
-#### `perLe(value1, value2) <> logic`
-
-Per-type ordering comparison, which calls `perOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered less than or equal
-to `value1`.
-
-#### `perLt(value1, value2) <> logic`
-
-Per-type ordering comparison, which calls `perOrder(value1, value2)` to
-determine result. Returns `value2` if it is considered less than `value1`.
-
 #### `perGe(value1, value2) <> logic`
 
 Per-type ordering comparison, which calls `perOrder(value1, value2)` to
@@ -240,6 +216,17 @@ to `value1`.
 
 Per-type ordering comparison, which calls `perOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered greater than `value1`.
+
+#### `perLe(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than or equal
+to `value1`.
+
+#### `perLt(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than `value1`.
 
 #### `perNe(value1, value2) <> logic`
 

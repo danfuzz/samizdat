@@ -114,6 +114,5 @@ PRIM_FUNC(sam0Tokenize,   1, 1);
 PRIM_FUNC(sam0Tree,       1, 1);
 PRIM_FUNC(stringSlice,    2, 3);
 PRIM_FUNC(totalOrder,     2, 2);
-PRIM_FUNC(totalOrderIs,   3, 4);
 PRIM_FUNC(typeName,       1, 1);
 PRIM_FUNC(typeOf,         1, 1);
