@@ -138,11 +138,17 @@ void pbBindCollection(void) {
     GFN_cat = makeGeneric(1, -1, GFN_SAME_TYPE, stringFromUtf8(-1, "cat"));
     pbImmortalize(GFN_cat);
 
+    GFN_del = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "del"));
+    pbImmortalize(GFN_del);
+
     GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));
     pbImmortalize(GFN_get);
 
     GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
     pbImmortalize(GFN_nth);
+
+    GFN_put = makeGeneric(3, 3, GFN_NONE, stringFromUtf8(-1, "put"));
+    pbImmortalize(GFN_put);
 
     GFN_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "size"));
     pbImmortalize(GFN_size);
@@ -155,10 +161,16 @@ void pbBindCollection(void) {
 zvalue GFN_cat = NULL;
 
 /* Documented in header. */
+zvalue GFN_del = NULL;
+
+/* Documented in header. */
 zvalue GFN_get = NULL;
 
 /* Documented in header. */
 zvalue GFN_nth = NULL;
+
+/* Documented in header. */
+zvalue GFN_put = NULL;
 
 /* Documented in header. */
 zvalue GFN_size = NULL;

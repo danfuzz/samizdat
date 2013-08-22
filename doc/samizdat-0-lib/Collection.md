@@ -33,6 +33,16 @@ concatenate (e.g. when handling a list of arguments generically), include
 a first argument of the empty value of the desired type, e.g.
 `""` to ensure string concatenation.
 
+#### `del(collection, key) <> collection`
+
+Returns a collection just like the given `collection`, except that
+the mapping for the given `key` is removed. If the `collection`
+does not have a particular given key, then this returns `collection`.
+
+**Note:** On sequence-like collections, this shifts elements after the
+deleted element down in index, such that there is no gap in the resulting
+collection.
+
 #### `get(collection, key) <> . | void`
 
 Returns the element of the collection that corresponds to the given
@@ -45,6 +55,18 @@ bound in the collection at all).
 Returns the nth (zero-based) element of the collection, in its defined
 fixed order. Returns void if `n >= size(collection)`. It is an error
 (terminating the runtime) if `n < 0` or if `n` is not an `Int`.
+
+#### `put(collection, key, value) <> collection`
+
+Returns a collection just like the given `collection`, except that
+the mapping for the given `key` is to the given `value`. This will
+replace an existing mapping for the `key`, or add a new one.
+
+It is an error (terminating the runtime) if the `key` is invalid for
+`collection`.
+
+**Note:** On sequence-like collections, the only valid keys are ints
+in the range `0..size(collection)` (inclusive of the size).
 
 #### `size(collection) <> int`
 

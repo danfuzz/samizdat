@@ -27,16 +27,22 @@
 /** Generic `cat(collection, more*)`: Documented in spec. */
 extern zvalue GFN_cat;
 
+/** Generic `del(collection, key)`: Documented in spec. */
+extern zvalue GFN_del;
+
 /** Generic `get(collection, key)`: Documented in spec. */
 extern zvalue GFN_get;
 
 /** Generic `nth(collection, n)`: Documented in spec. */
 extern zvalue GFN_nth;
 
+/** Generic `put(collection, key, value)`: Documented in spec. */
+extern zvalue GFN_put;
+
 /** Generic `size(collection)`: Documented in spec. */
 extern zvalue GFN_size;
 
-/** Generic `slice(collection)`: Documented in spec. */
+/** Generic `slice(collection, start, end?)`: Documented in spec. */
 extern zvalue GFN_slice;
 
 /**
