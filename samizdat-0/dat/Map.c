@@ -221,52 +221,6 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
     return result;
 }
 
-/* Documented in header. */
-zvalue mapPut(zvalue map, zvalue key, zvalue value) {
-    assertMap(map);
-    assertValid(value);
-
-    MapInfo *info = getInfo(map);
-    zmapping *elems = info->elems;
-    zint size = info->size;
-
-    switch (size) {
-        case 0: {
-            assertValid(key);
-            return makeMapping(key, value);
-        }
-        case 1: {
-            assertValid(key);
-            zmapping *elems = info->elems;
-            return mapFrom2(elems[0].key, elems[0].value, key, value);
-        }
-    }
-
-    zint index = mapFind(map, key);
-    zvalue result;
-
-    if (index >= 0) {
-        // The key exists in the given map, so we need to perform
-        // a replacement.
-        result = allocMap(size);
-        utilCpy(zmapping, getInfo(result)->elems, elems, size);
-    } else {
-        // The key wasn't found, so we need to insert a new one.
-        index = ~index;
-        result = allocMap(size + 1);
-
-        zmapping *resultElems = getInfo(result)->elems;
-
-        utilCpy(zmapping, resultElems, elems, index);
-        utilCpy(zmapping, &resultElems[index+1], &elems[index], (size - index));
-    }
-
-    zmapping *elem = &getInfo(result)->elems[index];
-    elem->key = key;
-    elem->value = value;
-    return result;
-}
-
 /* Documented in Samizdat Layer 0 spec. */
 zvalue mappingKey(zvalue map) {
     assertMapSize1(map);

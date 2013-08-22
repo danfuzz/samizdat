@@ -66,13 +66,6 @@ void assertMapSize1(zvalue value);
 zvalue mapFromArray(zint size, zmapping *mappings);
 
 /**
- * Gets the map resulting from putting the given mapping into the
- * given map. This can either add a new mapping or replace an
- * existing mapping.
- */
-zvalue mapPut(zvalue map, zvalue key, zvalue value);
-
-/**
  * Given a single-mapping map, returns its sole key. `map` must be a
  * map.
  */
