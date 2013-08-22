@@ -112,7 +112,7 @@ def resultLines = (mapping in result ::
     <> ",\n    \%q(mappingKey(mapping)): \%q(mappingValue(mapping))"
 );
 
-def resultText = stringSlice(cat(resultLines*), 2);
+def resultText = slice(cat(resultLines*), 2);
 
 def outText = "\
     # Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).

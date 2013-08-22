@@ -66,7 +66,7 @@ fn collectionBody(elems, ifEmpty) {
     ifIs { <> eq(elems, []) }
         { return ifEmpty };
 
-    def first = stringSlice(listFirst(elems), 2);
+    def first = slice(listFirst(elems), 2);
     <> cat(first, listButFirst(elems)*)
 };
 
