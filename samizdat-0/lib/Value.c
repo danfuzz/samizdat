@@ -4,12 +4,10 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "const.h"
 #include "impl.h"
 #include "type/Int.h"
 #include "type/Type.h"
 #include "type/Value.h"
-#include "util.h"
 
 
 /*
@@ -95,11 +93,6 @@ PRIM_IMPL(ne) {
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(totalOrder) {
     return intFromZint(valOrder(args[0], args[1]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(typeName) {
-    return typeName(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
