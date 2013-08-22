@@ -73,6 +73,45 @@ the value's associated secret (associated with the type). If the secret
 does not match (including if it was not passed at all), then this function
 returns void.
 
+#### `eq(value1, value2) <> logic`
+
+Checks for equality, using the total order of values. Returns `value2` if the
+two given values are identical. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \== expression` forms.
+
+#### `ge(value1, value2) <> logic`
+
+Checks for a greater-than-or-equal relationship, using the total order of
+values. Returns `value2` if the first value orders after the second or is
+identical to it. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \>= expression` forms.
+
+#### `gt(value1, value2) <> logic`
+
+Checks for a greater-than relationship, using the total order of values.
+Returns `value2` if the first value orders after the second. Otherwise
+returns void.
+
+**Syntax Note:** Used in the translation of `expression \> expression` forms.
+
+#### `le(value1, value2) <> logic`
+
+Checks for a less-than-or-equal relationship, using the total order of values.
+Returns `value2` if the first value orders before the second or is identical
+to it. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \<= expression` forms.
+
+#### `lt(value1, value2) <> logic`
+
+Checks for a less-than relationship, using the total order of values.
+Returns `value2` if the first value orders before the second. Otherwise
+returns void.
+
+**Syntax Note:** Used in the translation of `expression \< expression` forms.
+
 #### `makeValue(type, value?) <> .`
 
 Returns a general value with the given type tag (an arbitrary value)
@@ -89,6 +128,13 @@ of that type, then this function returns `value` directly.
 
 **Syntax Note:** Used in the translation of `@type` and `@[type: value]`
 forms.
+
+#### `ne(value1, value2) <> logic`
+
+Checks for inequality, using the total order of values. Returns `value2` if
+the two given values are not identical. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \!= expression` forms.
 
 #### `isOpaqueValue(value) <> logic`
 
@@ -140,29 +186,6 @@ of type `Type`.
 <br><br>
 ### In-Language Definitions
 
-#### `eq(value1, value2) <> logic`
-
-Checks for equality, using the total order of values. Returns `value2` if the
-two given values are identical. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \== expression` forms.
-
-#### `ge(value1, value2) <> logic`
-
-Checks for a greater-than-or-equal relationship, using the total order of
-values. Returns `value2` if the first value orders after the second or is
-identical to it. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \>= expression` forms.
-
-#### `gt(value1, value2) <> logic`
-
-Checks for a greater-than relationship, using the total order of values.
-Returns `value2` if the first value orders after the second. Otherwise
-returns void.
-
-**Syntax Note:** Used in the translation of `expression \> expression` forms.
-
 #### `isBox(value) <> logic`
 
 Returns the given `value` if it is a box. Returns void if not.
@@ -195,29 +218,6 @@ Returns the given `value` if it is a string. Returns void if not.
 #### `isUniqlet(value) <> logic`
 
 Returns the given `value` if it is a uniqlet. Returns void if not.
-
-#### `le(value1, value2) <> logic`
-
-Checks for a less-than-or-equal relationship, using the total order of values.
-Returns `value2` if the first value orders before the second or is identical
-to it. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \<= expression` forms.
-
-#### `lt(value1, value2) <> logic`
-
-Checks for a less-than relationship, using the total order of values.
-Returns `value2` if the first value orders before the second. Otherwise
-returns void.
-
-**Syntax Note:** Used in the translation of `expression \< expression` forms.
-
-#### `ne(value1, value2) <> logic`
-
-Checks for inequality, using the total order of values. Returns `value2` if
-the two given values are not identical. Otherwise returns void.
-
-**Syntax Note:** Used in the translation of `expression \!= expression` forms.
 
 #### `perLe(value1, value2) <> logic`
 

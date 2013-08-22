@@ -46,15 +46,63 @@ PRIM_IMPL(dataOf) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(eq) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return valEq(v1, v2) ? v2 : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(ge) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return (valOrder(v1, v2) >= 0) ? v2 : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(gt) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return (valOrder(v1, v2) > 0) ? v2 : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(isOpaqueValue) {
     zvalue value = args[0];
     return hasType(typeOf(value), TYPE_Type) ? value : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(le) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return (valOrder(v1, v2) <= 0) ? v2 : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(lt) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return (valOrder(v1, v2) < 0) ? v2 : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeValue) {
     zvalue value = (argCount == 2) ? args[1] : NULL;
     return makeTransValue(args[0], value);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(ne) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return valEq(v1, v2) ? NULL : v2;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
