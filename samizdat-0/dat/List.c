@@ -99,45 +99,12 @@ void arrayFromList(zvalue *result, zvalue list) {
 }
 
 /* Documented in header. */
-zvalue listDelNth(zvalue list, zint n) {
-    assertList(list);
-
-    ListInfo *info = getInfo(list);
-    zvalue *elems = info->elems;
-    zint size = info->size;
-
-    assertNth(size, n);
-
-    return listFrom(n, elems, NULL, size - n - 1, elems + n + 1);
-}
-
-/* Documented in header. */
 zvalue listFromArray(zint size, const zvalue *values) {
     for (zint i = 0; i < size; i++) {
         assertValid(values[i]);
     }
 
     return listFrom(size, values, NULL, 0, NULL);
-}
-
-/* Documented in header. */
-zvalue listPutNth(zvalue list, zint n, zvalue value) {
-    assertList(list);
-    assertValid(value);
-
-    ListInfo *info = getInfo(list);
-    zint size = info->size;
-
-    assertNthOrSize(size, n);
-
-    if (n == size) {
-        return listFrom(size, info->elems, value, 0, NULL);
-    }
-
-    zvalue result = listFrom(size, info->elems, NULL, 0, NULL);
-
-    getInfo(result)->elems[n] = value;
-    return result;
 }
 
 

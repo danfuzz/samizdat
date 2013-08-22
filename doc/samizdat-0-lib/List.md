@@ -56,14 +56,6 @@ Returns a slice of the given list.
 <br><br>
 ### Primitive Definitions
 
-#### `listDelNth(list, n) <> list`
-
-Returns a list just like the given one, except that the `n`th
-(zero-based) element is deleted, if `n` is a valid int index into
-the given list. If `n` is not a valid index (not an int, or with
-a value out of range), then this returns the original list as the
-result.
-
 #### `listFilter(function, list) <> list`
 
 Processes each element of a list using a filter function, collecting
@@ -77,17 +69,6 @@ smaller than the size of the argument.
 
 **Note:** This is a special-case version of the more general function
 `collectFilter` (see which).
-
-#### `listPutNth(list, n, value) <> list`
-
-Returns a list just like the given one, except that the `n`th
-(zero-based) element is set to be the given value (an arbitrary
-value), replacing whatever was at that index in the original. If
-`n` is the size of the original list, then this call behaves
-exactly like `listAppend`.
-
-`n` must be non-negative and less than or equal to the size of the
-list. If not, it is an error (terminating the runtime).
 
 #### `listReverse(list) <> list`
 
