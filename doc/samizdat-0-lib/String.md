@@ -41,6 +41,10 @@ Gets the nth character of the string, as a single-element string.
 
 Returns the number of characters in the string.
 
+#### `slice(string, start, end?) <> string`
+
+Returns a slice of the given string.
+
 
 <br><br>
 ### Primitive Definitions

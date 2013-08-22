@@ -39,6 +39,10 @@ Gets the nth element of the list.
 
 Returns the number of elements in the list.
 
+#### `slice(list, start, end?) <> list`
+
+Returns a slice of the given list.
+
 
 <br><br>
 ### Primitive Definitions
