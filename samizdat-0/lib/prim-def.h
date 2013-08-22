@@ -90,7 +90,6 @@ PRIM_FUNC(isOpaqueValue,  1, 1);
 PRIM_FUNC(le,             2, 2);
 PRIM_FUNC(listDelNth,     2, 2);
 PRIM_FUNC(listFilter,     2, 2);
-PRIM_FUNC(listInsNth,     3, 3);
 PRIM_FUNC(listPutNth,     3, 3);
 PRIM_FUNC(listReverse,    1, 1);
 PRIM_FUNC(loop,           1, 1);

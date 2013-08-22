@@ -124,20 +124,6 @@ zvalue listFromArray(zint size, const zvalue *values) {
 }
 
 /* Documented in header. */
-zvalue listInsNth(zvalue list, zint n, zvalue value) {
-    assertList(list);
-    assertValid(value);
-
-    ListInfo *info = getInfo(list);
-    zvalue *elems = info->elems;
-    zint size = info->size;
-
-    assertNthOrSize(size, n);
-
-    return listFrom(n, elems, value, size - n, elems + n);
-}
-
-/* Documented in header. */
 zvalue listPutNth(zvalue list, zint n, zvalue value) {
     assertList(list);
     assertValid(value);
@@ -148,7 +134,7 @@ zvalue listPutNth(zvalue list, zint n, zvalue value) {
     assertNthOrSize(size, n);
 
     if (n == size) {
-        return listInsNth(list, n, value);
+        return listFrom(size, info->elems, value, 0, NULL);
     }
 
     zvalue result = listFrom(size, info->elems, NULL, 0, NULL);

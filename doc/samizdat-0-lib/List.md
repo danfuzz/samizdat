@@ -69,16 +69,6 @@ smaller than the size of the argument.
 **Note:** This is a special-case version of the more general function
 `collectFilter` (see which).
 
-#### `listInsNth(list, n, value) <> list`
-
-Returns a list just like the given one, except that the `n`th
-(zero-based) element is set to be the given value (an arbitrary
-value), and all elements at or beyond index `n` in the original
-are shifted up by one index.
-
-`n` must be non-negative and less than or equal to the size of the
-list. If not, it is an error (terminating the runtime).
-
 #### `listPutNth(list, n, value) <> list`
 
 Returns a list just like the given one, except that the `n`th

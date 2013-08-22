@@ -46,13 +46,6 @@ zvalue listDelNth(zvalue list, zint n);
 zvalue listFromArray(zint size, const zvalue *values);
 
 /**
- * Gets the list resulting from inserting the given value at the
- * given index in the given list. `n` must be non-negative and no
- * greater than the size of the given list.
- */
-zvalue listInsNth(zvalue list, zint n, zvalue value);
-
-/**
  * Gets the list resulting from setting the value at the
  * given index to the given value. `n` must be non-negative
  * and no greater than the size of the given list.
