@@ -26,7 +26,6 @@ def MANIFEST = [
     "const.sam0",
 
     # Layer 0: Simple functions. These only rely on primitive functions.
-    "order.sam0",
     "Value.sam0",
     "List.sam0",
     "Boolean.sam0",

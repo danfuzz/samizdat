@@ -84,7 +84,6 @@ will be returned, or one of:
 * Other
   * [Constants](constants.md)
   * [Conditionals And Iteration](conditional.md)
-  * [Ordering / Comparison](order.md)
   * [Generators](generator.md)
   * [I/O](io.md)
   * [String Formatting](format.md)

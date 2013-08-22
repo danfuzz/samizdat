@@ -22,6 +22,15 @@ fn hasCoreType(value, type) {
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn eq(v1, v2) { <> totalOrderIs(v1, v2, 0) };
+
+# Documented in Samizdat Layer 0 spec.
+fn ge(v1, v2) { <> totalOrderIs(v1, v2, 1, 0) };
+
+# Documented in Samizdat Layer 0 spec.
+fn gt(v1, v2) { <> totalOrderIs(v1, v2, 1) };
+
+# Documented in Samizdat Layer 0 spec.
 fn isBox(value) {
     <> hasCoreType(value, Box)
 };
@@ -62,6 +71,15 @@ fn isUniqlet(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn le(v1, v2) { <> totalOrderIs(v1, v2, -1, 0) };
+
+# Documented in Samizdat Layer 0 spec.
+fn lt(v1, v2) { <> totalOrderIs(v1, v2, -1) };
+
+# Documented in Samizdat Layer 0 spec.
+fn ne(v1, v2) { <> totalOrderIs(v1, v2, -1, 1) };
+
+# Documented in Samizdat Layer 0 spec.
 fn perGe(v1, v2) {
     <> ifNot { <> perEq(perOrder(v1, v2), -1) }
         { <> v2 }
@@ -92,6 +110,9 @@ fn perNe(v1, v2) {
 };
 
 <> [
+    eq:         eq,
+    ge:         ge,
+    gt:         gt,
     isBox:      isBox,
     isFunction: isFunction,
     isGeneric:  isGeneric,
@@ -100,6 +121,9 @@ fn perNe(v1, v2) {
     isMap:      isMap,
     isString:   isString,
     isUniqlet:  isUniqlet,
+    le:         le,
+    lt:         lt,
+    ne:         ne,
     perGe:      perGe,
     perGt:      perGt,
     perLe:      perLe,
