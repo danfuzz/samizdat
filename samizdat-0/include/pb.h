@@ -66,12 +66,6 @@ void assertNth(zint size, zint n);
 void assertNthOrSize(zint size, zint n);
 
 /**
- * Asserts that the given range is valid for a `slice`-like operation
- * for a value of the given size.
- */
-void assertSliceRange(zint size, zint start, zint end);
-
-/**
  * Asserts that the given value is a valid `zvalue` (non-`NULL` and
  * seems to actually have the right form). This performs reasonable,
  * but not exhaustive, tests. If not valid, this aborts the process

@@ -35,15 +35,6 @@ void assertNthOrSize(zint size, zint n) {
 }
 
 /* Documented in header. */
-void assertSliceRange(zint size, zint start, zint end) {
-    if ((start < 0) || (end < 0) || (end < start)) {
-        die("Invalid slice range: (%lld..!%lld)", start, end);
-    }
-
-    assertNthOrSize(size, end);
-}
-
-/* Documented in header. */
 void pbInit(void) {
     if (TYPE_Type != NULL) {
         return;
