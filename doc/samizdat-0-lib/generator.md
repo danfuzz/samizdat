@@ -94,9 +94,9 @@ Generator iterator with reduce semantics. This is a special case of
 `doReduce`, where a single generator and single reduction value are used
 instead of lists of each.
 
-The `reduceFunction` is no longer restricted to returning only list
-values, and similarly the overall result of calling this function can
-be an arbitrary value.
+As opposed to `doReduce`, the `reduceFunction` can return any type of
+value (not just a list), and similarly the overall result of calling this
+function can be an arbitrary value.
 
 #### `exclusiveRange(first, increment, limit) <> generator`
 

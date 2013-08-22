@@ -96,7 +96,7 @@ collection.
 <br><br>
 ### In-Language Definitions
 
-#### `butFirst(collection) <> . | void`
+#### `butFirst(collection) <> collection | void`
 
 Returns a collection consisting of all the elements of the given `collection`
 except for the first element (that is, all but the first element). If
@@ -104,7 +104,7 @@ except for the first element (that is, all but the first element). If
 `slice(collection, 1)`, except that this function returns void instead of
 reporting an error when `collection` is empty.
 
-#### `butLast(collection) <> . | void`
+#### `butLast(collection) <> collection | void`
 
 Returns a collection consisting of all the elements of the given `collection`
 except for the last element (that is, all but the last element). If
