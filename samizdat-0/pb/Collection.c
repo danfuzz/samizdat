@@ -21,6 +21,24 @@
  */
 
 /* Documented in header. */
+void assertNth(zint size, zint n) {
+    if (n < 0) {
+        die("Invalid index (negative): %lld", n);
+    }
+
+    if (n >= size) {
+        die("Invalid index: %lld; size %lld", n, size);
+    }
+}
+
+/* Documented in header. */
+void assertNthOrSize(zint size, zint n) {
+    if (n != size) {
+        assertNth(size, n);
+    }
+}
+
+/* Documented in header. */
 void collConvertSliceArgs(zint *startPtr, zint *endPtr, zint size,
         zint argCount, const zvalue *args) {
     if (argCount < 2) {
