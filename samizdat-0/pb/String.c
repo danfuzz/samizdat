@@ -216,6 +216,26 @@ METH_IMPL(String, cat) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, del) {
+    zvalue string = args[0];
+    zvalue n = args[1];
+
+    StringInfo *info = getInfo(string);
+    zchar *elems = info->elems;
+    zint size = info->size;
+    zint index = collNthIndexLenient(n);
+
+    if ((index < 0) || (index >= size)) {
+        return string;
+    }
+
+    zchar chars[size - 1];
+    memcpy(chars, elems, index * sizeof(zchar));
+    memcpy(&chars[index], &elems[index+1], (size - index - 1) * sizeof(zchar));
+    return stringFromZchars(size - 1, chars);
+}
+
+/* Documented in header. */
 METH_IMPL(String, debugString) {
     zvalue string = args[0];
     zvalue quote = stringFromUtf8(1, "\"");
@@ -294,6 +314,30 @@ METH_IMPL(String, perOrder) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, put) {
+    zvalue string = args[0];
+    zvalue n = args[1];
+    zvalue value = args[2];
+
+    assertStringSize1(value);
+
+    StringInfo *info = getInfo(string);
+    zchar *elems = info->elems;
+    zint size = info->size;
+    zint index = collPutIndexStrict(size, n);
+
+    if (index == size) {
+        // This is an append operation.
+        return GFN_CALL(cat, string, value);
+    }
+
+    zchar chars[size];
+    zcharsFromString(chars, string);
+    chars[index] = zcharFromString(value);
+    return stringFromZchars(size, chars);
+}
+
+/* Documented in header. */
 METH_IMPL(String, size) {
     zvalue string = args[0];
     return intFromZint(getInfo(string)->size);
@@ -316,9 +360,11 @@ void pbBindString(void) {
 
     METH_BIND(String, cat);
     METH_BIND(String, debugString);
+    METH_BIND(String, del);
     METH_BIND(String, nth);
     METH_BIND(String, perEq);
     METH_BIND(String, perOrder);
+    METH_BIND(String, put);
     METH_BIND(String, size);
     METH_BIND(String, slice);
     seqBind(TYPE_String);
