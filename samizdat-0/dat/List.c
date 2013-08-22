@@ -171,6 +171,23 @@ METH_IMPL(List, cat) {
 }
 
 /* Documented in header. */
+METH_IMPL(List, del) {
+    zvalue list = args[0];
+    zvalue n = args[1];
+
+    ListInfo *info = getInfo(list);
+    zvalue *elems = info->elems;
+    zint size = info->size;
+    zint index = collNthIndexLenient(n);
+
+    if ((index < 0) || (index >= size)) {
+        return list;
+    }
+
+    return listFrom(index, elems, NULL, size - index - 1, &elems[index + 1]);
+}
+
+/* Documented in header. */
 METH_IMPL(List, gcMark) {
     zvalue list = args[0];
     ListInfo *info = getInfo(list);
@@ -251,6 +268,25 @@ METH_IMPL(List, perOrder) {
 }
 
 /* Documented in header. */
+METH_IMPL(List, put) {
+    zvalue list = args[0];
+    zvalue n = args[1];
+    zvalue value = args[2];
+
+    ListInfo *info = getInfo(list);
+    zvalue *elems = info->elems;
+    zint size = info->size;
+    zint index = collPutIndexStrict(size, n);
+
+    if (index == size) {
+        // This is an append operation.
+        return listFrom(size, elems, value, 0, NULL);
+    }
+
+    return listFrom(index, elems, value, size - index - 1, &elems[index + 1]);
+}
+
+/* Documented in header. */
 METH_IMPL(List, size) {
     zvalue list = args[0];
     return intFromZint(getInfo(list)->size);
@@ -271,10 +307,12 @@ METH_IMPL(List, slice) {
 void datBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
     METH_BIND(List, cat);
+    METH_BIND(List, del);
     METH_BIND(List, gcMark);
     METH_BIND(List, nth);
     METH_BIND(List, perEq);
     METH_BIND(List, perOrder);
+    METH_BIND(List, put);
     METH_BIND(List, size);
     METH_BIND(List, slice);
     seqBind(TYPE_List);
