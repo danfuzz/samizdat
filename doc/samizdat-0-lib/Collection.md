@@ -70,4 +70,29 @@ collection.
 <br><br>
 ### In-Language Definitions
 
-(none)
+#### `butFirst(collection) <> . | void`
+
+Returns a collection consisting of all the elements of the given `collection`
+except for the first element (that is, all but the first element). If
+`collection` is empty, this returns void. This is similar to
+`slice(collection, 1)`, except that this function returns void instead of
+reporting an error when `collection` is empty.
+
+#### `butLast(collection) <> . | void`
+
+Returns a collection consisting of all the elements of the given `collection`
+except for the last element (that is, all but the last element). If
+`collection` is empty, this returns void. This is similar to
+`slice(collection, 0, size(collection) - 1)`, except that this function
+returns void instead of reporting an error when `collection` is empty.
+
+#### `first(collection) <> . | void`
+
+Returns the first element of the given `collection` or void if it is empty.
+This is just a convenient shorthand for `nth(collection, 0)`.
+
+#### `last(collection) <> . | void`
+
+Returns the last element of the given `collection` or void if the it is empty.
+This is just a convenient shorthand for
+`nth(collection, size(collection) - 1)`.

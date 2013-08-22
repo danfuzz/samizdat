@@ -129,30 +129,4 @@ fn makeList(rest*) { <> rest };
 <br><br>
 ### In-Language Definitions
 
-#### `listButFirst(list) <> . | void`
-
-Returns a list consisting of all the elements of the given list
-except for the first element (that is, all but the first element). If
-the given list is empty, this returns void. This is similar to
-`slice(list, 1)` or `listDelNth(list, 0)`, except that this function
-behaves differently than either of those when the list is empty.
-
-#### `listButLast(list) <> . | void`
-
-Returns a list consisting of all the elements of the given list
-except for the last element (that is, all but the last element). If
-the given list is empty, this returns void. This is similar to
-`slice(list, 0, sub(size(list), 1))` or
-`listDelNth(list, sub(size(list), 1))`, except that this function
-behaves differently than either of those when the list is empty.
-
-#### `listFirst(list) <> . | void`
-
-Returns the first element of the given list or void if the list is empty.
-This is just a convenient shorthand for `nth(list, 0)`.
-
-#### `listLast(list) <> . | void`
-
-Returns the last element of the given list or void if the list is empty.
-This is just a convenient shorthand for
-`nth(list, sub(size(list), 1))`.
+(none)
