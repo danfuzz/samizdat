@@ -41,14 +41,14 @@ extern zvalue GFN_gcMark;
  * the two values are not `==`, and only ever called when the two values are
  * of the same type. Defaults to always returning logical-false.
  */
-extern zvalue GFN_eq;
+extern zvalue GFN_perEq;
 
 /**
  * Generic `order(value, value)`: Compares two values with respect to the
  * total order of values. Returns one of `-1` `0` `1` corresponding to
  * the usual meanings for comparison. Must be implemented by every type.
  */
-extern zvalue GFN_order;
+extern zvalue GFN_perOrder;
 
 /**
  * Gets the data payload of the given value, if it is a value-bearing

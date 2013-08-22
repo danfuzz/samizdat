@@ -5,9 +5,17 @@ Uniqlets
 --------
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Value` protocol
 
-(none)
+#### `perEq(uniqlet1, uniqlet2) <> uniqlet | void`
+
+Performs an identity comparison. Two uniqlets are only equal if they are
+truly the same box.
+
+#### `perOrder(uniqlet1, uniqlet2) <> int`
+
+Performs an identity comparison. Uniqlets have a consistent, transitive, and
+symmetric &mdash; but arbitrary &mdash; total order.
 
 
 <br><br>

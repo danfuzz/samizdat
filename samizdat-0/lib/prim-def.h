@@ -26,6 +26,10 @@ PRIM_DEF(Type,       TYPE_Type);
 PRIM_DEF(Uniqlet,    TYPE_Uniqlet);
 PRIM_DEF(Value,      TYPE_Value);
 
+// Generic functions for all values
+PRIM_DEF(perEq,      GFN_perEq);
+PRIM_DEF(perOrder,   GFN_perOrder);
+
 // Generic functions: `Box` protocol
 PRIM_DEF(canStore,   GFN_canStore);
 PRIM_DEF(fetch,      GFN_fetch);
@@ -65,9 +69,11 @@ PRIM_DEF(nullBox,    DAT_NULL_BOX);
 
 // Primitive functions
 PRIM_FUNC(charFromInt,    1, 1);
-PRIM_FUNC(coreOrder,      2, 2);
-PRIM_FUNC(coreOrderIs,    3, 4);
 PRIM_FUNC(dataOf,         1, 2);
+PRIM_FUNC(eq,             2, 2);
+PRIM_FUNC(ge,             2, 2);
+PRIM_FUNC(gt,             2, 2);
+PRIM_FUNC(hasType,        2, 2);
 PRIM_FUNC(ifIs,           2, 3);
 PRIM_FUNC(ifNot,          2, 2);
 PRIM_FUNC(ifValue,        2, 3);
@@ -80,6 +86,7 @@ PRIM_FUNC(io0FlatWriteFileUtf8, 2, 2);
 PRIM_FUNC(io0Die,         0, 1);
 PRIM_FUNC(io0Note,        1, 1);
 PRIM_FUNC(isOpaqueValue,  1, 1);
+PRIM_FUNC(le,             2, 2);
 PRIM_FUNC(listDelNth,     2, 2);
 PRIM_FUNC(listFilter,     2, 2);
 PRIM_FUNC(listInsNth,     3, 3);
@@ -88,6 +95,7 @@ PRIM_FUNC(listReverse,    1, 1);
 PRIM_FUNC(listSlice,      2, 3);
 PRIM_FUNC(loop,           1, 1);
 PRIM_FUNC(loopReduce,     1, -1);
+PRIM_FUNC(lt,             2, 2);
 PRIM_FUNC(makeList,       0, -1);
 PRIM_FUNC(makeMutableBox, 0, 1);
 PRIM_FUNC(makeUniqlet,    0, 0);
@@ -99,6 +107,7 @@ PRIM_FUNC(mapKeys,        1, 1);
 PRIM_FUNC(mapPut,         3, 3);
 PRIM_FUNC(mappingKey,     1, 1);
 PRIM_FUNC(mappingValue,   1, 1);
+PRIM_FUNC(ne,             2, 2);
 PRIM_FUNC(nonlocalExit,   1, 2);
 PRIM_FUNC(optValue,       1, 1);
 PRIM_FUNC(sam0Eval,       2, 2);
@@ -106,6 +115,5 @@ PRIM_FUNC(sam0Tokenize,   1, 1);
 PRIM_FUNC(sam0Tree,       1, 1);
 PRIM_FUNC(stringSlice,    2, 3);
 PRIM_FUNC(totalOrder,     2, 2);
-PRIM_FUNC(totalOrderIs,   3, 4);
 PRIM_FUNC(typeName,       1, 1);
 PRIM_FUNC(typeOf,         1, 1);

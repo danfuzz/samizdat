@@ -5,6 +5,21 @@ Maps
 ----
 
 <br><br>
+### Generic Function Definitions: `Value` protocol
+
+#### `perEq(map1, map2) <> map | void`
+
+Compares two maps. Two maps are equal if they have equal sets of mappings.
+
+#### `perOrder(map1, map2) <> int`
+
+Compares two maps for order. Maps order primarily by ordered lists of
+keys, with the same rules as list comparison. Given two maps with equal
+key lists, ordering is by comparing corresponding lists of values, in
+key order.
+
+
+<br><br>
 ### Generic Function Definitions: `Collection` protocol
 
 #### `cat(map, more*) <> map`

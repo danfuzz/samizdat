@@ -5,6 +5,20 @@ Functions
 ---------
 
 <br><br>
+### Generic Function Definitions: `Value` protocol
+
+#### `perEq(function1, function2) <> function | void`
+
+Performs an identity comparison. Two functions are only equal if they are
+truly the same box.
+
+#### `perOrder(function1, function2) <> int`
+
+Performs an identity comparison. Functions have a consistent, transitive, and
+symmetric &mdash; but arbitrary &mdash; total order.
+
+
+<br><br>
 ### Generic Function Definitions: `Callable` protocol
 
 #### `call(function, args*) <> . | void`

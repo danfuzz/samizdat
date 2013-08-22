@@ -150,7 +150,7 @@ static void enlist(PbHeader *head, zvalue value) {
 static void doGc(void) {
     zint counter; // Used throughout.
 
-    if (GFN_eq == NULL) {
+    if (GFN_perEq == NULL) {
         die("`pb` module not yet initialized.");
     }
 

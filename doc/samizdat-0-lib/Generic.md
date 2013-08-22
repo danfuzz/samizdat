@@ -5,6 +5,20 @@ Generics
 --------
 
 <br><br>
+### Generic Function Definitions: `Value` protocol
+
+#### `perEq(generic1, generic2) <> generic | void`
+
+Performs an identity comparison. Two generics are only equal if they are
+truly the same box.
+
+#### `perOrder(generic1, generic2) <> int`
+
+Performs an identity comparison. Generics have a consistent, transitive, and
+symmetric &mdash; but arbitrary &mdash; total order.
+
+
+<br><br>
 ### Generic Function Definitions: `Callable` protocol
 
 #### `call(generic, args*) <> . | void`

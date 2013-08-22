@@ -17,24 +17,24 @@
 def DISPATCH = [
     (Int): [
         # Ordering / comparison
-        eq:    coreEq,
-        ge:    coreGe,
-        gt:    coreGt,
-        le:    coreLe,
-        lt:    coreLt,
-        ne:    coreNe,
-        order: coreOrder
+        eq:    perEq,
+        ge:    perGe,
+        gt:    perGt,
+        le:    perLe,
+        lt:    perLt,
+        ne:    perNe,
+        order: perOrder
     ],
 
     (List): [
         # Ordering / comparison
-        eq:    coreEq,
-        ge:    coreGe,
-        gt:    coreGt,
-        le:    coreLe,
-        lt:    coreLt,
-        ne:    coreNe,
-        order: coreOrder,
+        eq:    perEq,
+        ge:    perGe,
+        gt:    perGt,
+        le:    perLe,
+        lt:    perLt,
+        ne:    perNe,
+        order: perOrder,
 
         # Collection access
         get:   get,
@@ -44,13 +44,13 @@ def DISPATCH = [
 
     (Map): [
         # Ordering / comparison
-        eq:    coreEq,
-        ge:    coreGe,
-        gt:    coreGt,
-        le:    coreLe,
-        lt:    coreLt,
-        ne:    coreNe,
-        order: coreOrder,
+        eq:    perEq,
+        ge:    perGe,
+        gt:    perGt,
+        le:    perLe,
+        lt:    perLt,
+        ne:    perNe,
+        order: perOrder,
 
         # Collection access
         get:   get,
@@ -60,13 +60,13 @@ def DISPATCH = [
 
     (String): [
         # Ordering / comparison
-        eq:    coreEq,
-        ge:    coreGe,
-        gt:    coreGt,
-        le:    coreLe,
-        lt:    coreLt,
-        ne:    coreNe,
-        order: coreOrder,
+        eq:    perEq,
+        ge:    perGe,
+        gt:    perGt,
+        le:    perLe,
+        lt:    perLt,
+        ne:    perNe,
+        order: perOrder,
 
         # Collection access
         get:   get,

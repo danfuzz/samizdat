@@ -338,33 +338,6 @@ METH_IMPL(Map, cat) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, eq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    MapInfo *info1 = getInfo(v1);
-    MapInfo *info2 = getInfo(v2);
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-
-    if (size1 != size2) {
-        return NULL;
-    }
-
-    zmapping *elems1 = info1->elems;
-    zmapping *elems2 = info2->elems;
-
-    for (zint i = 0; i < size1; i++) {
-        zmapping *e1 = &elems1[i];
-        zmapping *e2 = &elems2[i];
-        if (!(valEq(e1->key, e2->key) && valEq(e1->value, e2->value))) {
-            return NULL;
-        }
-    }
-
-    return v2;
-}
-
-/* Documented in header. */
 METH_IMPL(Map, gcMark) {
     zvalue map = args[0];
     MapInfo *info = getInfo(map);
@@ -409,7 +382,34 @@ METH_IMPL(Map, nth) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, order) {
+METH_IMPL(Map, perEq) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    MapInfo *info1 = getInfo(v1);
+    MapInfo *info2 = getInfo(v2);
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+
+    if (size1 != size2) {
+        return NULL;
+    }
+
+    zmapping *elems1 = info1->elems;
+    zmapping *elems2 = info2->elems;
+
+    for (zint i = 0; i < size1; i++) {
+        zmapping *e1 = &elems1[i];
+        zmapping *e2 = &elems2[i];
+        if (!(valEq(e1->key, e2->key) && valEq(e1->value, e2->value))) {
+            return NULL;
+        }
+    }
+
+    return v2;
+}
+
+/* Documented in header. */
+METH_IMPL(Map, perOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     MapInfo *info1 = getInfo(v1);
@@ -453,11 +453,11 @@ METH_IMPL(Map, size) {
 void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
     METH_BIND(Map, cat);
-    METH_BIND(Map, eq);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
     METH_BIND(Map, nth);
-    METH_BIND(Map, order);
+    METH_BIND(Map, perEq);
+    METH_BIND(Map, perOrder);
     METH_BIND(Map, size);
 
     EMPTY_MAP = allocMap(0);
