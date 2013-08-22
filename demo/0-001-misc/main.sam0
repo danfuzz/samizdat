@@ -82,8 +82,10 @@ fn main(selfPath, name?, rest*) {
     process(slice([a: "apple", b: "biscuit", s: "scones"], 2, 3));
     process(del("mufxfins", 3));
     process(del(["pie", "fishburgers", "croissants"], 1));
+    process(del([one: 1, two: 2, three: 3], "two"));
     process(put("bizcuits", 2, "s"));
     process(put(["scones", "natto"], 1, "ice cream"));
+    process(put([one: 1, two: 2, three: 3], "four", 4));
     process([:]);
     process([1: 2]);
     process([1: 2, 888: 1]);

@@ -335,6 +335,33 @@ METH_IMPL(Map, cat) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, del) {
+    zvalue map = args[0];
+    zvalue key = args[1];
+
+    zint index = mapFind(map, key);
+
+    if (index < 0) {
+        return map;
+    }
+
+    MapInfo *info = getInfo(map);
+    zint size = info->size;
+
+    if (size == 1) {
+        return EMPTY_MAP;
+    }
+
+    zvalue result = allocMap(size - 1);
+    zmapping *elems = getInfo(result)->elems;
+    zmapping *oldElems = info->elems;
+
+    utilCpy(zmapping, elems, oldElems, index);
+    utilCpy(zmapping, &elems[index], &oldElems[index + 1], (size - index - 1));
+    return result;
+}
+
+/* Documented in header. */
 METH_IMPL(Map, gcMark) {
     zvalue map = args[0];
     MapInfo *info = getInfo(map);
@@ -441,6 +468,51 @@ METH_IMPL(Map, perOrder) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, put) {
+    zvalue map = args[0];
+    zvalue key = args[1];
+    zvalue value = args[2];
+
+    MapInfo *info = getInfo(map);
+    zmapping *elems = info->elems;
+    zint size = info->size;
+
+    switch (size) {
+        case 0: {
+            // `put([:], ...)`
+            return makeMapping(key, value);
+        }
+        case 1: {
+            return mapFrom2(elems[0].key, elems[0].value, key, value);
+        }
+    }
+
+    zint index = mapFind(map, key);
+    zvalue result;
+
+    if (index >= 0) {
+        // The key exists in the given map, so we need to perform
+        // a replacement.
+        result = allocMap(size);
+        utilCpy(zmapping, getInfo(result)->elems, elems, size);
+    } else {
+        // The key wasn't found, so we need to insert a new one.
+        index = ~index;
+        result = allocMap(size + 1);
+
+        zmapping *resultElems = getInfo(result)->elems;
+
+        utilCpy(zmapping, resultElems, elems, index);
+        utilCpy(zmapping, &resultElems[index+1], &elems[index], (size - index));
+    }
+
+    zmapping *elem = &getInfo(result)->elems[index];
+    elem->key = key;
+    elem->value = value;
+    return result;
+}
+
+/* Documented in header. */
 METH_IMPL(Map, size) {
     zvalue map = args[0];
     return intFromZint(getInfo(map)->size);
@@ -461,11 +533,13 @@ METH_IMPL(Map, slice) {
 void datBindMap(void) {
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
     METH_BIND(Map, cat);
+    METH_BIND(Map, del);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
     METH_BIND(Map, nth);
     METH_BIND(Map, perEq);
     METH_BIND(Map, perOrder);
+    METH_BIND(Map, put);
     METH_BIND(Map, size);
     METH_BIND(Map, slice);
 
