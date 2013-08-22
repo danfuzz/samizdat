@@ -73,6 +73,7 @@ PRIM_FUNC(dataOf,         1, 2);
 PRIM_FUNC(eq,             2, 2);
 PRIM_FUNC(ge,             2, 2);
 PRIM_FUNC(gt,             2, 2);
+PRIM_FUNC(hasType,        2, 2);
 PRIM_FUNC(ifIs,           2, 3);
 PRIM_FUNC(ifNot,          2, 2);
 PRIM_FUNC(ifValue,        2, 3);

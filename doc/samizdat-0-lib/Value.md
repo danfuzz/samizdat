@@ -96,6 +96,10 @@ returns void.
 
 **Syntax Note:** Used in the translation of `expression \> expression` forms.
 
+#### `hasType(value, type) <> logic`
+
+Returns `value` if it has type `type`. Otherwise returns void.
+
 #### `le(value1, value2) <> logic`
 
 Checks for a less-than-or-equal relationship, using the total order of values.

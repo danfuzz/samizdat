@@ -49,6 +49,14 @@ PRIM_IMPL(gt) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(hasType) {
+    zvalue value = args[0];
+    zvalue type = args[1];
+
+    return hasType(value, type) ? value : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(isOpaqueValue) {
     zvalue value = args[0];
     return hasType(typeOf(value), TYPE_Type) ? value : NULL;
