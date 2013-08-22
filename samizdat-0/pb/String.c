@@ -49,23 +49,31 @@ static zvalue allocString(zint size) {
     return result;
 }
 
-
-/*
- * Exported Definitions
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a string. If not, this aborts the process
+ * with a diagnostic message.
  */
-
-/* Documented in header. */
-void assertString(zvalue value) {
+static void assertString(zvalue value) {
     assertHasType(value, TYPE_String);
 }
 
-/* Documented in header. */
-void assertStringSize1(zvalue value) {
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a string, and even furthermore that its size
+ * is `1`. If not, this aborts the process with a diagnostic message.
+ */
+static void assertStringSize1(zvalue value) {
     assertString(value);
     if (getInfo(value)->size != 1) {
         die("Not a size 1 string.");
     }
 }
+
+
+/*
+ * Exported Definitions
+ */
 
 /* Documented in header. */
 zvalue stringFromUtf8(zint stringBytes, const char *string) {
