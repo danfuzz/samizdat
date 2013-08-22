@@ -13,58 +13,8 @@
 
 
 /*
- * Private Definitions
- */
-
-/**
- * Does the type assertions that are part of `coreOrder` and `coreOrderIs`.
- */
-static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
-    assertHaveSameType(v1, v2);
-
-    if (!valEq(typeOf(v1), typeOf(v2))) {
-        die("Mismatched derived types.");
-    }
-}
-
-/**
- * Does most of the work of `coreOrderIs` and `totalOrderIs`.
- */
-static bool doOrderIs(zint argCount, const zvalue *args) {
-    zorder want = zintFromInt(args[2]);
-
-    if ((argCount == 3) && (want == ZSAME)) {
-        return valEq(args[0], args[1]);
-    }
-
-    zorder comp = valOrder(args[0], args[1]);
-
-    return (comp == want) ||
-        ((argCount == 4) && (comp == zintFromInt(args[3])));
-}
-
-
-/*
  * Exported Definitions
  */
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(coreOrder) {
-    zvalue arg0 = args[0];
-    zvalue arg1 = args[1];
-
-    coreOrderTypeCheck(arg0, arg1);
-    return intFromZint(valOrder(arg0, arg1));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(coreOrderIs) {
-    zvalue arg0 = args[0];
-    zvalue arg1 = args[1];
-
-    coreOrderTypeCheck(arg0, arg1);
-    return doOrderIs(argCount, args) ? arg1 : NULL;
-}
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(dataOf) {
@@ -75,9 +25,57 @@ PRIM_IMPL(dataOf) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(eq) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return valEq(v1, v2) ? v2 : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(ge) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return (valOrder(v1, v2) >= 0) ? v2 : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(gt) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return (valOrder(v1, v2) > 0) ? v2 : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(hasType) {
+    zvalue value = args[0];
+    zvalue type = args[1];
+
+    return hasType(value, type) ? value : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(isOpaqueValue) {
     zvalue value = args[0];
     return hasType(typeOf(value), TYPE_Type) ? value : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(le) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return (valOrder(v1, v2) <= 0) ? v2 : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(lt) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return (valOrder(v1, v2) < 0) ? v2 : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -87,13 +85,16 @@ PRIM_IMPL(makeValue) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(totalOrder) {
-    return intFromZint(valOrder(args[0], args[1]));
+PRIM_IMPL(ne) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+
+    return valEq(v1, v2) ? NULL : v2;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(totalOrderIs) {
-    return doOrderIs(argCount, args) ? args[1] : NULL;
+PRIM_IMPL(totalOrder) {
+    return intFromZint(valOrder(args[0], args[1]));
 }
 
 /* Documented in Samizdat Layer 0 spec. */

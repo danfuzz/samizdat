@@ -5,9 +5,57 @@ Values (the base type)
 ----------------------
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Value` protocol (applies to all values)
 
-(none)
+#### `perEq(value1, value2) <> . | void`
+
+Performs a "per-type" (type-specific) equality comparison of the two given
+values. When called, the two values are guaranteed to be the same type.
+If a client calls with different-typed values, it is a fatal error
+(terminating the runtime).
+
+The return value is either `value1` (or `value2` really) if the two values
+are in fact identical, or `void` if they are not.
+
+Each type specifies its own per-type equality check. See specific types for
+details. Transparent derived types all compare for equality by comparing
+both the payload value (if any). In addition, a default implementation
+calls through to `perOrder` to determine sameness.
+
+**Note:** In order for the system to operate consistently, `perEq` must
+always behave consistently with `perOrder`, in that for a given pair of
+values, `perEq` must indicate equality if and only if `perOrder` would return
+`0`. `perEq` exists at all because it is often possible to determine
+equality much quicker than determining order.
+
+**Note:** This is the generic function which underlies the implementation
+of all cross-type equality comparison functions.
+
+#### `perOrder(value1, value2) <> int`
+
+Returns the "per-type" (type-specific) order of the two given values.
+When called, the two values are guaranteed to be the same type. If a client
+calls with different-typed values, it is a fatal error (terminating the
+runtime).
+
+The return value is one of `-1 0 1` indicating how the two values sort with
+each other, using the reasonably standard meaning of those values:
+
+* `-1` &mdash; The first value orders before the second value.
+
+* `0` &mdash; The two values are identical.
+
+* `1` &mdash; The first value orders after the second value.
+
+Each type specifies its own per-type ordering. See specific types for
+details. Transparent derived types all order by performing ordering
+on the respective payload values, with a lack of payload counting as
+"before" any non-void payload. In addition, a default implementation
+compares value identities; this will fail if the type of the values is
+not an "identified" one.
+
+**Note:** This is the generic function which underlies the implementation
+of all cross-type ordering functions.
 
 
 <br><br>
@@ -24,6 +72,49 @@ For opaque values (including most core values), the given `secret` must match
 the value's associated secret (associated with the type). If the secret
 does not match (including if it was not passed at all), then this function
 returns void.
+
+#### `eq(value1, value2) <> logic`
+
+Checks for equality, using the total order of values. Returns `value2` if the
+two given values are identical. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \== expression` forms.
+
+#### `ge(value1, value2) <> logic`
+
+Checks for a greater-than-or-equal relationship, using the total order of
+values. Returns `value2` if the first value orders after the second or is
+identical to it. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \>= expression` forms.
+
+#### `gt(value1, value2) <> logic`
+
+Checks for a greater-than relationship, using the total order of values.
+Returns `value2` if the first value orders after the second. Otherwise
+returns void.
+
+**Syntax Note:** Used in the translation of `expression \> expression` forms.
+
+#### `hasType(value, type) <> logic`
+
+Returns `value` if it has type `type`. Otherwise returns void.
+
+#### `le(value1, value2) <> logic`
+
+Checks for a less-than-or-equal relationship, using the total order of values.
+Returns `value2` if the first value orders before the second or is identical
+to it. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \<= expression` forms.
+
+#### `lt(value1, value2) <> logic`
+
+Checks for a less-than relationship, using the total order of values.
+Returns `value2` if the first value orders before the second. Otherwise
+returns void.
+
+**Syntax Note:** Used in the translation of `expression \< expression` forms.
 
 #### `makeValue(type, value?) <> .`
 
@@ -42,15 +133,36 @@ of that type, then this function returns `value` directly.
 **Syntax Note:** Used in the translation of `@type` and `@[type: value]`
 forms.
 
+#### `ne(value1, value2) <> logic`
+
+Checks for inequality, using the total order of values. Returns `value2` if
+the two given values are not identical. Otherwise returns void.
+
+**Syntax Note:** Used in the translation of `expression \!= expression` forms.
+
 #### `isOpaqueValue(value) <> logic`
 
 Returns `value` if it is an opaque value &mdash; that is, if its type has
 an associated secret &mdash; or void if not.
 
-#### `typeName(type) <> .`
+#### `totalOrder(value1, value2) <> int`
 
-Returns the name of the type. This is an arbitrary value associated with
-a type, which is typically (but not necessarily) a string.
+Returns the order of the two given values in the total order of
+Samizdat values. This returns one of `-1 0 1` indicating
+how the two values sort with each other, using the reasonably
+standard meaning of those values:
+
+* `-1` &mdash; The first value orders before the second value.
+
+* `0` &mdash; The two values are identical.
+
+* `1` &mdash; The first value orders after the second value.
+
+Ordering is calculated as follows:
+
+The "majorest" order is by type (see below for details). The minor order
+is according to `perOrder` called on the arguments. See that generic
+function for more details.
 
 #### `typeOf(value) <> .`
 
@@ -97,3 +209,30 @@ Returns the given `value` if it is a string. Returns void if not.
 #### `isUniqlet(value) <> logic`
 
 Returns the given `value` if it is a uniqlet. Returns void if not.
+
+#### `perGe(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered greater than or equal
+to `value1`.
+
+#### `perGt(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered greater than `value1`.
+
+#### `perLe(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than or equal
+to `value1`.
+
+#### `perLt(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than `value1`.
+
+#### `perNe(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perEq(value1, value2)` to
+determine result. Returns `value2` if it is *not* considered equal to `value1`.

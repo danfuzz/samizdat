@@ -5,6 +5,20 @@ Strings
 -------
 
 <br><br>
+### Generic Function Definitions: `Value` protocol
+
+#### `perEq(string1, string2) <> string | void`
+
+Compares two strings. Two strings are equal if they have equal characters in
+identical orders.
+
+#### `perOrder(string1, string2) <> int`
+
+Compares two strings for order. Strings order by pairwise
+corresponding-character comparison, with a strict prefix always ordering
+before its longer brethren.
+
+<br><br>
 ### Generic Function Definitions: `Collection` protocol
 
 #### `cat(string, more*) <> string`

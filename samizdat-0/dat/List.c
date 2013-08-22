@@ -198,31 +198,6 @@ METH_IMPL(List, cat) {
 }
 
 /* Documented in header. */
-METH_IMPL(List, eq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    ListInfo *info1 = getInfo(v1);
-    ListInfo *info2 = getInfo(v2);
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-
-    if (size1 != size2) {
-        return NULL;
-    }
-
-    zvalue *e1 = info1->elems;
-    zvalue *e2 = info2->elems;
-
-    for (zint i = 0; i < size1; i++) {
-        if (!valEq(e1[i], e2[i])) {
-            return NULL;
-        }
-    }
-
-    return v2;
-}
-
-/* Documented in header. */
 METH_IMPL(List, gcMark) {
     zvalue list = args[0];
     ListInfo *info = getInfo(list);
@@ -252,7 +227,32 @@ METH_IMPL(List, nth) {
 }
 
 /* Documented in header. */
-METH_IMPL(List, order) {
+METH_IMPL(List, perEq) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    ListInfo *info1 = getInfo(v1);
+    ListInfo *info2 = getInfo(v2);
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+
+    if (size1 != size2) {
+        return NULL;
+    }
+
+    zvalue *e1 = info1->elems;
+    zvalue *e2 = info2->elems;
+
+    for (zint i = 0; i < size1; i++) {
+        if (!valEq(e1[i], e2[i])) {
+            return NULL;
+        }
+    }
+
+    return v2;
+}
+
+/* Documented in header. */
+METH_IMPL(List, perOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     ListInfo *info1 = getInfo(v1);
@@ -287,10 +287,10 @@ METH_IMPL(List, size) {
 void datBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
     METH_BIND(List, cat);
-    METH_BIND(List, eq);
     METH_BIND(List, gcMark);
     METH_BIND(List, nth);
-    METH_BIND(List, order);
+    METH_BIND(List, perEq);
+    METH_BIND(List, perOrder);
     METH_BIND(List, size);
     seqBind(TYPE_List);
 

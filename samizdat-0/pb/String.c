@@ -234,7 +234,22 @@ METH_IMPL(String, debugString) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, eq) {
+METH_IMPL(String, nth) {
+    zvalue string = args[0];
+    zvalue n = args[1];
+
+    StringInfo *info = getInfo(string);
+    zint index = collNthIndexStrict(info->size, n);
+
+    if (index < 0) {
+        return NULL;
+    }
+
+    return stringFromZchar(info->elems[index]);
+}
+
+/* Documented in header. */
+METH_IMPL(String, perEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     StringInfo *info1 = getInfo(v1);
@@ -259,22 +274,7 @@ METH_IMPL(String, eq) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, nth) {
-    zvalue string = args[0];
-    zvalue n = args[1];
-
-    StringInfo *info = getInfo(string);
-    zint index = collNthIndexStrict(info->size, n);
-
-    if (index < 0) {
-        return NULL;
-    }
-
-    return stringFromZchar(info->elems[index]);
-}
-
-/* Documented in header. */
-METH_IMPL(String, order) {
+METH_IMPL(String, perOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     StringInfo *info1 = getInfo(v1);
@@ -315,9 +315,9 @@ void pbBindString(void) {
 
     METH_BIND(String, cat);
     METH_BIND(String, debugString);
-    METH_BIND(String, eq);
     METH_BIND(String, nth);
-    METH_BIND(String, order);
+    METH_BIND(String, perEq);
+    METH_BIND(String, perOrder);
     METH_BIND(String, size);
     seqBind(TYPE_String);
 

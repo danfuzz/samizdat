@@ -77,13 +77,13 @@ will be returned, or one of:
   * [Lists](List.md)
   * [Maps](Map.md)
   * [Strings](String.md)
+  * [Types](Type.md)
   * [Uniqlets](Uniqlet.md)
   * [Values (the base type)](Value.md)
 
 * Other
   * [Constants](constants.md)
   * [Conditionals And Iteration](conditional.md)
-  * [Ordering / Comparison](order.md)
   * [Generators](generator.md)
   * [I/O](io.md)
   * [String Formatting](format.md)
