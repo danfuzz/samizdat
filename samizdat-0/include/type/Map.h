@@ -56,8 +56,8 @@ void assertMapSize1(zvalue value);
  * Gets the map resulting from adding all the given mappings
  * to an empty map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
- * The effect is identical to calling a chain of `mapPut()`s on each
- * of the mappings in order.
+ * The effect is identical to calling a chain of `put()`s on each
+ * of the mappings in order, with the empty map as a base.
  */
 zvalue mapFromArray(zint size, const zmapping *mappings);
 
