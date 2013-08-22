@@ -66,8 +66,8 @@ fn collectionBody(elems, ifEmpty) {
     ifIs { <> eq(elems, []) }
         { return ifEmpty };
 
-    def first = slice(first(elems), 2);
-    <> cat(first, butFirst(elems)*)
+    def one = slice(first(elems), 2);
+    <> cat(one, butFirst(elems)*)
 };
 
 # Stringifies an int.

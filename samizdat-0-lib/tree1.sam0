@@ -137,7 +137,7 @@ def parFormalsList = pegMakeMainChoice(
     pegMakeSequence(
         parFormal,
         pegMakeStar(pegMakeSequence(pegMakeToken(","), parFormal)),
-        pegMakeCode { first, rest <> [first, rest*] }),
+        pegMakeCode { one, rest <> [one, rest*] }),
     pegMakeCode { <> [] });
 
 # Documented in Samizdat Layer 0 spec.
@@ -269,7 +269,7 @@ def parUnadornedList = pegMakeMainChoice(
         parVoidableExpression,
         pegMakeStar(
             pegMakeSequence(pegMakeToken(","), parVoidableExpression)),
-        pegMakeCode { first, rest <> [first, rest*] }),
+        pegMakeCode { one, rest <> [one, rest*] }),
     pegMakeCode { <> [] });
 
 # Documented in Samizdat Layer 0 spec.
@@ -324,8 +324,8 @@ def parMap = pegMakeMainSequence(
     parMapping,
     pegMakeStar(pegMakeSequence(pegMakeToken(","), parMapping)),
     pegMakeToken("]"),
-    pegMakeCode { ., ., first, rest, . ::
-        <> makeCallName("cat", first, rest*)
+    pegMakeCode { ., ., one, rest, . ::
+        <> makeCallName("cat", one, rest*)
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -621,7 +621,7 @@ def implChoicePex = pegMakeMainSequence(
         pegMakeMainSequence(
             pegMakeToken("|"),
             parSequencePex)),
-    pegMakeCode { first, rest <> @[choice: [first, rest*]] });
+    pegMakeCode { one, rest <> @[choice: [one, rest*]] });
 parChoicePex(implChoicePex);
 
 
