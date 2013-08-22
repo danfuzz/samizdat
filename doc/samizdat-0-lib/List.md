@@ -26,6 +26,10 @@ comparison, with a strict prefix always ordering before its longer brethren.
 Returns a list consisting of the concatenation of the elements
 of all the argument lists, in argument order.
 
+#### `del(list, n) <> list`
+
+Returns a list like the given one, but without the `n`th element.
+
 #### `get(list, key) <> . | void`
 
 This is identical to `nth(list, key)`, except that the result of passing
@@ -34,6 +38,11 @@ a negative or non-`Int` value for `key` is void and not an error.
 #### `nth(list, n) <> . | void`
 
 Gets the nth element of the list.
+
+#### `put(list, n, value) <> list`
+
+Returns a list like the given one, but with the `n`th element replaced
+with the given `value`, or added if `n == size(list)`.
 
 #### `size(list) <> int`
 
