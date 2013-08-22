@@ -67,11 +67,6 @@ PRIM_IMPL(mapKeys) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapPut) {
-    return mapPut(args[0], args[1], args[2]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mappingKey) {
     return mappingKey(args[0]);
 }

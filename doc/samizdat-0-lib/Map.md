@@ -103,16 +103,6 @@ affect on the result.
 
 Returns the list of keys contained in the given map, in sorted order.
 
-#### `mapPut(map, key, value) <> map`
-
-Returns a map just like the given one, except with a new mapping
-for `key` to `value`. The result has a replacement for the existing
-mapping for `key` in `map` if such a one existed, or has an
-additional mapping in cases where `map` didn't already bind `key`.
-These two scenarios can be easily differentiated by either noting a
-change in size (or not) between original and result, or by explicitly
-checking for the existence of `key` in the original.
-
 #### `mappingKey(map) <> .`
 
 Returns the sole key of the given map, which must be a single-mapping map.

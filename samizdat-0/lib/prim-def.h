@@ -103,7 +103,6 @@ PRIM_FUNC(makeValueMap,   1, -1);
 PRIM_FUNC(makeYieldBox,   0, 0);
 PRIM_FUNC(mapDel,         1, -1);
 PRIM_FUNC(mapKeys,        1, 1);
-PRIM_FUNC(mapPut,         3, 3);
 PRIM_FUNC(mappingKey,     1, 1);
 PRIM_FUNC(mappingValue,   1, 1);
 PRIM_FUNC(ne,             2, 2);
