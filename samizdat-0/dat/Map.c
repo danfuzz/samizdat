@@ -14,7 +14,6 @@
 #include "zlimits.h"
 
 #include <stdlib.h>
-#include <string.h>
 
 
 /*
@@ -167,8 +166,8 @@ static zvalue mapCatArray(zvalue map, zint size, const zmapping *mappings) {
     // Mergesort is stable and operates best on sorted data, and as it
     // happens the starting map is guaranteed to be sorted.
 
-    memcpy(resultElems, info->elems, info->size * sizeof(zmapping));
-    memcpy(&resultElems[info->size], mappings, size * sizeof(zmapping));
+    utilCpy(zmapping, resultElems, info->elems, info->size);
+    utilCpy(zmapping, &resultElems[info->size], mappings, size);
     mergesort(resultElems, resultSize, sizeof(zmapping), mappingOrder);
 
     // Remove all but the last of any sequence of equal-keys mappings.
@@ -215,7 +214,7 @@ void arrayFromMap(zmapping *result, zvalue map) {
     assertMap(map);
 
     MapInfo *info = getInfo(map);
-    memcpy(result, info->elems, info->size * sizeof(zmapping));
+    utilCpy(zmapping, result, info->elems, info->size);
 }
 
 /* Documented in header. */
@@ -237,9 +236,8 @@ zvalue mapDel(zvalue map, zvalue key) {
     zmapping *elems = getInfo(result)->elems;
     zmapping *oldElems = info->elems;
 
-    memcpy(elems, oldElems, index * sizeof(zmapping));
-    memcpy(&elems[index], &oldElems[index + 1],
-           (size - index) * sizeof(zmapping));
+    utilCpy(zmapping, elems, oldElems, index);
+    utilCpy(zmapping, &elems[index], &oldElems[index + 1], (size - index));
     return result;
 }
 
@@ -276,7 +274,7 @@ zvalue mapPut(zvalue map, zvalue key, zvalue value) {
         // The key exists in the given map, so we need to perform
         // a replacement.
         result = allocMap(size);
-        memcpy(getInfo(result)->elems, elems, size * sizeof(zmapping));
+        utilCpy(zmapping, getInfo(result)->elems, elems, size);
     } else {
         // The key wasn't found, so we need to insert a new one.
         index = ~index;
@@ -284,9 +282,8 @@ zvalue mapPut(zvalue map, zvalue key, zvalue value) {
 
         zmapping *resultElems = getInfo(result)->elems;
 
-        memcpy(resultElems, elems, index * sizeof(zmapping));
-        memcpy(&resultElems[index + 1], &elems[index],
-               (size - index) * sizeof(zmapping));
+        utilCpy(zmapping, resultElems, elems, index);
+        utilCpy(zmapping, &resultElems[index+1], &elems[index], (size - index));
     }
 
     zmapping *elem = &getInfo(result)->elems[index];

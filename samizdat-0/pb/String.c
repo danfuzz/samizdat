@@ -12,8 +12,6 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
-#include <string.h>
-
 
 /*
  * Private Definitions
@@ -127,7 +125,7 @@ zvalue stringFromZchars(zint size, const zchar *chars) {
 
     zvalue result = allocString(size);
 
-    memcpy(getInfo(result)->elems, chars, size * sizeof(zchar));
+    utilCpy(zchar, getInfo(result)->elems, chars, size);
     return result;
 }
 
@@ -182,7 +180,7 @@ void zcharsFromString(zchar *result, zvalue string) {
 
     StringInfo *info = getInfo(string);
 
-    memcpy(result, info->elems, info->size * sizeof(zchar));
+    utilCpy(zchar, result, info->elems, info->size);
 }
 
 
@@ -230,8 +228,8 @@ METH_IMPL(String, del) {
     }
 
     zchar chars[size - 1];
-    memcpy(chars, elems, index * sizeof(zchar));
-    memcpy(&chars[index], &elems[index+1], (size - index - 1) * sizeof(zchar));
+    utilCpy(zchar, chars, elems, index);
+    utilCpy(zchar, &chars[index], &elems[index + 1], (size - index - 1));
     return stringFromZchars(size - 1, chars);
 }
 

@@ -12,8 +12,6 @@
 #include "type/Type.h"
 #include "type/Value.h"
 
-#include <string.h>
-
 
 /*
  * Private Definitions
@@ -67,7 +65,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
     zvalue *resultElems = getInfo(result)->elems;
 
     if (size1 != 0) {
-        memcpy(resultElems, elems1, size1 * sizeof(zvalue));
+        utilCpy(zvalue, resultElems, elems1, size1);
     }
 
     if (insert != NULL) {
@@ -75,8 +73,7 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
     }
 
     if (size2 != 0) {
-        memcpy(resultElems + size1 + insertCount, elems2,
-               size2 * sizeof(zvalue));
+        utilCpy(zvalue, resultElems + size1 + insertCount, elems2, size2);
     }
 
     return result;
@@ -98,7 +95,7 @@ void arrayFromList(zvalue *result, zvalue list) {
 
     ListInfo *info = getInfo(list);
 
-    memcpy(result, info->elems, info->size * sizeof(zvalue));
+    utilCpy(zvalue, result, info->elems, info->size);
 }
 
 /* Documented in header. */

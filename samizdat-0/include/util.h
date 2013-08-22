@@ -14,6 +14,7 @@
 #include "ztype.h"
 
 #include <stdbool.h>
+#include <string.h>
 
 // All the int-related declarations.
 #include "util/zint.h"
@@ -141,5 +142,18 @@ void utf8DecodeCharsFromString(zchar *result,
  * size`).
  */
 char *utf8EncodeOne(char *result, zint ch);
+
+
+/*
+ * Miscellaneous Declarations
+ */
+
+/**
+ * Like `memcpy`, except that the last argument indicates an element
+ * count (not a byte count), and a new first argument indicates the type
+ * of element (from which per-element size is derived).
+ */
+#define utilCpy(type, dest, src, count) \
+    memcpy((dest), (src), (count) * sizeof(type))
 
 #endif
