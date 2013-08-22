@@ -35,22 +35,6 @@ PRIM_IMPL(makeValueMap) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapDel) {
-    zvalue result = args[0];
-
-    if (argCount == 0) {
-        // Need the assert, since we won't end up making any other map calls.
-        assertMap(result);
-    } else {
-        for (zint i = 1; i < argCount; i++) {
-            result = mapDel(result, args[i]);
-        }
-    }
-
-    return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mapKeys) {
     zvalue map = args[0];
     zint size = collSize(map);

@@ -218,30 +218,6 @@ void arrayFromMap(zmapping *result, zvalue map) {
 }
 
 /* Documented in header. */
-zvalue mapDel(zvalue map, zvalue key) {
-    zint index = mapFind(map, key);
-
-    if (index < 0) {
-        return map;
-    }
-
-    MapInfo *info = getInfo(map);
-    zint size = info->size - 1;
-
-    if (size == 0) {
-        return EMPTY_MAP;
-    }
-
-    zvalue result = allocMap(size);
-    zmapping *elems = getInfo(result)->elems;
-    zmapping *oldElems = info->elems;
-
-    utilCpy(zmapping, elems, oldElems, index);
-    utilCpy(zmapping, &elems[index], &oldElems[index + 1], (size - index));
-    return result;
-}
-
-/* Documented in header. */
 zvalue mapFromArray(zint size, const zmapping *mappings) {
     return mapCatArray(EMPTY_MAP, size, mappings);
 }

@@ -92,13 +92,6 @@ representable in Samizdat syntax as presented.
 **Syntax Note:** Used in the translation of `[key: value, ...]`
 and `switch` forms.
 
-#### `mapDel(map, keys*) <> map`
-
-Returns a map just like the one given as an argument, except that
-the result does not have mappings for the given keys. If the given
-map does not have a particular given key, then that key has no
-affect on the result.
-
 #### `mapKeys(map) <> list`
 
 Returns the list of keys contained in the given map, in sorted order.

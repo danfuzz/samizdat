@@ -53,12 +53,6 @@ void assertMap(zvalue value);
 void assertMapSize1(zvalue value);
 
 /**
- * Gets a map resulting from the removal of the given key from the
- * given map.
- */
-zvalue mapDel(zvalue map, zvalue key);
-
-/**
  * Gets the map resulting from adding all the given mappings
  * to an empty map, in the order given (so, in particular, higher-index
  * mappings take precedence over the lower-index mappings, when keys match).
