@@ -45,11 +45,11 @@ fn applyShuntingYard(initialValue, opValues) {
     # the result back at the top of the value stack.
     fn applyTop(ops, values) {
         def valuesSizeM2 = sub(size(values), 2);
-        def function = get(listLast(ops), "function");
-        def newValue = function(listSlice(values, valuesSizeM2)*);
+        def function = get(last(ops), "function");
+        def newValue = function(slice(values, valuesSizeM2)*);
         <> [
-            listButLast(ops),
-            [listSlice(values, 0, valuesSizeM2)*, newValue]
+            butLast(ops),
+            [slice(values, 0, valuesSizeM2)*, newValue]
         ]
     };
 
@@ -58,7 +58,7 @@ fn applyShuntingYard(initialValue, opValues) {
     fn reducePending(ops, values, precedence) {
         loopReduce(ops, values)
             { <next> ops, values ::
-                ifValue { <> listLast(ops) }
+                ifValue { <> last(ops) }
                     { lastOp ::
                         ifIs { <> ge(get(lastOp, "precedence"), precedence) }
                             { <next> applyTop(ops, values) }
@@ -73,18 +73,18 @@ fn applyShuntingYard(initialValue, opValues) {
                 # Use precedence `-1` to drain the op stack, leaving a single
                 # value.
                 def finalResult = reducePending(ops, values, -1);
-                return listLast(listLast(finalResult))
+                return last(last(finalResult))
             };
 
-        def nextOpValue = listFirst(opValues);
+        def nextOpValue = first(opValues);
         def nextOp = get(nextOpValue, "op");
         def nextValue = get(nextOpValue, "value");
         def newPending =
             reducePending(ops, values, get(nextOp, "precedence"));
         <> [
-            [listFirst(newPending)*, nextOp],
-            [listLast(newPending)*, nextValue],
-            listButFirst(opValues)
+            [first(newPending)*, nextOp],
+            [last(newPending)*, nextValue],
+            butFirst(opValues)
         ]
     }
 };

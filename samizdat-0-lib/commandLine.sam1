@@ -95,13 +95,13 @@ fn samCommandLine(context, rawArgs*) {
     def options = get(parsedArgs, "options");
     def argWords = get(parsedArgs, "args");
 
-    def fileName = ifValueOr { <> listFirst(argWords) } { <> "/dev/stdin" };
+    def fileName = ifValueOr { <> first(argWords) } { <> "/dev/stdin" };
     def filePath = io0PathFromFlat(fileName);
-    def args = ifValueOr { <> listButFirst(argWords) } { <> [] };
+    def args = ifValueOr { <> butFirst(argWords) } { <> [] };
 
     def nameForLookup = ifValue { <> get(options, "file-suffix") }
         { suffix <> cat("x.", suffix) }
-        { <> listLast(filePath) };
+        { <> last(filePath) };
 
     def metas = metaFunctions(context, nameForLookup);
 

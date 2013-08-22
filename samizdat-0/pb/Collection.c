@@ -21,6 +21,45 @@
  */
 
 /* Documented in header. */
+void assertNth(zint size, zint n) {
+    if (n < 0) {
+        die("Invalid index (negative): %lld", n);
+    }
+
+    if (n >= size) {
+        die("Invalid index: %lld; size %lld", n, size);
+    }
+}
+
+/* Documented in header. */
+void assertNthOrSize(zint size, zint n) {
+    if (n != size) {
+        assertNth(size, n);
+    }
+}
+
+/* Documented in header. */
+void collConvertSliceArgs(zint *startPtr, zint *endPtr, zint size,
+        zint argCount, const zvalue *args) {
+    if (argCount < 2) {
+        die("Invalid `slice` argument count: %lld", argCount);
+    }
+
+    zvalue startVal = args[1];
+    zvalue endVal = (argCount > 2) ? args[2] : NULL;
+    zint start = zintFromInt(startVal);
+    zint end = (endVal != NULL) ? zintFromInt(endVal) : size;
+
+    if ((start < 0) || (end < 0) || (end < start) || (end > size)) {
+        die("Invalid slice range: (%lld..!%lld) for size %lld",
+            start, end, size);
+    }
+
+    *startPtr = start;
+    *endPtr = end;
+}
+
+/* Documented in header. */
 zvalue collGet(zvalue coll, zvalue key) {
     return GFN_CALL(get, coll, key);
 }
@@ -107,6 +146,9 @@ void pbBindCollection(void) {
 
     GFN_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "size"));
     pbImmortalize(GFN_size);
+
+    GFN_slice = makeGeneric(2, 3, GFN_NONE, stringFromUtf8(-1, "slice"));
+    pbImmortalize(GFN_slice);
 }
 
 /* Documented in header. */
@@ -120,3 +162,6 @@ zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_size = NULL;
+
+/* Documented in header. */
+zvalue GFN_slice = NULL;

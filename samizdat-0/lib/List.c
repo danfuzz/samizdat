@@ -9,7 +9,6 @@
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Type.h"
-#include "type/Value.h"
 
 
 /*
@@ -49,11 +48,6 @@ PRIM_IMPL(listFilter) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listInsNth) {
-    return listInsNth(args[0], zintFromInt(args[1]), args[2]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(listPutNth) {
     return listPutNth(args[0], zintFromInt(args[1]), args[2]);
 }
@@ -73,15 +67,6 @@ PRIM_IMPL(listReverse) {
     }
 
     return listFromArray(size, elems);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listSlice) {
-    zvalue list = args[0];
-    zint startIndex = zintFromInt(args[1]);
-    zint endIndex = (argCount == 3) ? zintFromInt(args[2]) : collSize(list);
-
-    return listSlice(list, startIndex, endIndex);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

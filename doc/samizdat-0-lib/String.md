@@ -41,6 +41,10 @@ Gets the nth character of the string, as a single-element string.
 
 Returns the number of characters in the string.
 
+#### `slice(string, start, end?) <> string`
+
+Returns a slice of the given string.
+
 
 <br><br>
 ### Primitive Definitions
@@ -56,15 +60,6 @@ range for representation as an unsigned 32-bit quantity.
 Given a single-character string, returns the character code
 of its sole character, as an int. It is an error (terminating
 the runtime) if `string` is not a string of size 1.
-
-#### `stringSlice(list, start, end?) <> list`
-
-Returns a string consisting of a "slice" of elements of the given
-string, from the `start` index (inclusive) through the `end` index
-(exclusive). `start` and `end` must both be ints, must be valid indices
-into `string` (with the string size being a valid index), and must form a
-range (though possibly empty) with `start <= end`. If `end` is not
-specified, it defaults to the end of the string.
 
 
 <br><br>

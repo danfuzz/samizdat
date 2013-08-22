@@ -98,8 +98,8 @@ def parFile = {/
     { <> cat(lines*) }
 /};
 
-def inPath = [listButLast(SELF_PATH)*, "entity-map.txt"];
-def outPath = [listButLast(SELF_PATH)*, "entityMap.sam0"];
+def inPath = [butLast(SELF_PATH)*, "entity-map.txt"];
+def outPath = [butLast(SELF_PATH)*, "entityMap.sam0"];
 io0Note("Processing file: \%q(inPath)");
 
 def text = io0ReadFileUtf8(inPath);
@@ -112,7 +112,7 @@ def resultLines = (mapping in result ::
     <> ",\n    \%q(mappingKey(mapping)): \%q(mappingValue(mapping))"
 );
 
-def resultText = stringSlice(cat(resultLines*), 2);
+def resultText = slice(cat(resultLines*), 2);
 
 def outText = "\
     # Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).

@@ -44,6 +44,7 @@ PRIM_DEF(cat,        GFN_cat);
 PRIM_DEF(get,        GFN_get);
 PRIM_DEF(nth,        GFN_nth);
 PRIM_DEF(size,       GFN_size);
+PRIM_DEF(slice,      GFN_slice);
 
 // Generic functions: `Int` protocol
 PRIM_DEF(abs,        GFN_abs);
@@ -89,10 +90,8 @@ PRIM_FUNC(isOpaqueValue,  1, 1);
 PRIM_FUNC(le,             2, 2);
 PRIM_FUNC(listDelNth,     2, 2);
 PRIM_FUNC(listFilter,     2, 2);
-PRIM_FUNC(listInsNth,     3, 3);
 PRIM_FUNC(listPutNth,     3, 3);
 PRIM_FUNC(listReverse,    1, 1);
-PRIM_FUNC(listSlice,      2, 3);
 PRIM_FUNC(loop,           1, 1);
 PRIM_FUNC(loopReduce,     1, -1);
 PRIM_FUNC(lt,             2, 2);
@@ -113,7 +112,6 @@ PRIM_FUNC(optValue,       1, 1);
 PRIM_FUNC(sam0Eval,       2, 2);
 PRIM_FUNC(sam0Tokenize,   1, 1);
 PRIM_FUNC(sam0Tree,       1, 1);
-PRIM_FUNC(stringSlice,    2, 3);
 PRIM_FUNC(totalOrder,     2, 2);
 PRIM_FUNC(typeName,       1, 1);
 PRIM_FUNC(typeOf,         1, 1);

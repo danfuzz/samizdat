@@ -22,8 +22,8 @@ fn moduleNameFromString(orig) {
     ifIs { <> le(size(orig), MODULE_PREFIX_SIZE) }
         { return };
 
-    <> ifIs { <> eq(stringSlice(orig, 0, MODULE_PREFIX), MODULE_PREFIX) }
-        { <> stringSlice(orig, add(MODULE_PREFIX_SIZE, 1)) }
+    <> ifIs { <> eq(slice(orig, 0, MODULE_PREFIX), MODULE_PREFIX) }
+        { <> slice(orig, add(MODULE_PREFIX_SIZE, 1)) }
 };
 
 # Does a `get` on the payload data of the given value.

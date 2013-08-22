@@ -54,12 +54,6 @@ zvalue stringFromZchar(zchar value);
 zvalue stringFromZchars(zint size, const zchar *chars);
 
 /**
- * Gets the string consisting of the given "slice" of elements
- * (start inclusive, end exclusive) of the given string.
- */
-zvalue stringSlice(zvalue string, zint start, zint end);
-
-/**
  * Encodes the given string as UTF-8 into the given buffer of the
  * given size in bytes. The buffer must be large enough to hold the entire
  * encoded result plus a terminating `'\0'` byte; if not, this function

@@ -14,12 +14,12 @@
  */
 
 LIB_FILE(Boolean,      sam0);
-LIB_FILE(List,         sam0);
+LIB_FILE(Callable,     sam0);
+LIB_FILE(Collection,   sam0);
 LIB_FILE(String,       sam0);
 LIB_FILE(Value,        sam0);
 
-LIB_FILE(callable,     sam0);
-LIB_FILE(const,        sam0);
+LIB_FILE(constants,    sam0);
 LIB_FILE(coreDispatch, sam0);
 LIB_FILE(entityMap,    sam0);
 LIB_FILE(eval1,        sam0);

@@ -68,7 +68,7 @@ fn convertPexSequence(node, formals) {
         def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
             { <> get(dataOf(pex), "value") }
             { <> pex };
-        <> convertPex(subPex, [formals*, listSlice(newFormals, 0, n)*])
+        <> convertPex(subPex, [formals*, slice(newFormals, 0, n)*])
     };
 
     <> callNameWithExpressions("pegMakeSequence", convertedPexes*)
