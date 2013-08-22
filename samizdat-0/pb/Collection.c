@@ -21,6 +21,27 @@
  */
 
 /* Documented in header. */
+void collConvertSliceArgs(zint *startPtr, zint *endPtr, zint size,
+        zint argCount, const zvalue *args) {
+    if (argCount < 2) {
+        die("Invalid `slice` argument count: %lld", argCount);
+    }
+
+    zvalue startVal = args[1];
+    zvalue endVal = (argCount > 2) ? args[2] : NULL;
+    zint start = zintFromInt(startVal);
+    zint end = (endVal != NULL) ? zintFromInt(endVal) : size;
+
+    if ((start < 0) || (end < 0) || (end < start) || (end > size)) {
+        die("Invalid slice range: (%lld..!%lld) for size %lld",
+            start, end, size);
+    }
+
+    *startPtr = start;
+    *endPtr = end;
+}
+
+/* Documented in header. */
 zvalue collGet(zvalue coll, zvalue key) {
     return GFN_CALL(get, coll, key);
 }

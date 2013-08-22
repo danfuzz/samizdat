@@ -40,6 +40,15 @@ extern zvalue GFN_size;
 extern zvalue GFN_slice;
 
 /**
+ * Validates and converts the `start` and optional `end` arguments to
+ * a `slice` call, based on having a collection of the given `size`.
+ * On success, stores the start and end values through the given pointers.
+ * On failure, terminates the runtime with an error.
+ */
+void collConvertSliceArgs(zint *startPtr, zint *endPtr, zint size,
+        zint argCount, const zvalue *args);
+
+/**
  * Validates the given `key` to use for a `get` style function on a sequence.
  * Returns `true` to indicate that the `key` is valid (a non-negative `Int`),
  * or `false` if not.
