@@ -50,6 +50,27 @@ static zvalue allocMap(zint size) {
 }
 
 /**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a map. If not, this aborts the process
+ * with a diagnostic message.
+ */
+static void assertMap(zvalue value) {
+    assertHasType(value, TYPE_Map);
+}
+
+/**
+ * Asserts that the given value is a valid `zvalue`, and
+ * furthermore that it is a map, and even furthermore that its size
+ * is `1`. If not, this aborts the process with a diagnostic message.
+ */
+static void assertMapSize1(zvalue value) {
+    assertMap(value);
+    if (getInfo(value)->size != 1) {
+        die("Not a size 1 map.");
+    }
+}
+
+/**
  * Constructs and returns a single-mapping map.
  */
 static zvalue makeMapping(zvalue key, zvalue value) {
@@ -150,19 +171,6 @@ static int mappingOrder(const void *m1, const void *m2) {
 /*
  * Exported Definitions
  */
-
-/* Documented in header. */
-void assertMap(zvalue value) {
-    assertHasType(value, TYPE_Map);
-}
-
-/* Documented in header. */
-void assertMapSize1(zvalue value) {
-    assertMap(value);
-    if (getInfo(value)->size != 1) {
-        die("Not a size 1 map.");
-    }
-}
 
 /* Documented in header. */
 void arrayFromMap(zmapping *result, zvalue map) {
