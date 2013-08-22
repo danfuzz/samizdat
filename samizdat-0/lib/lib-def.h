@@ -16,7 +16,7 @@
 LIB_FILE(Boolean,      sam0);
 LIB_FILE(List,         sam0);
 LIB_FILE(String,       sam0);
-LIB_FILE(Type,         sam0);
+LIB_FILE(Value,        sam0);
 
 LIB_FILE(callable,     sam0);
 LIB_FILE(const,        sam0);

@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# Types
+# Value functions
 #
 
 #
@@ -61,6 +61,36 @@ fn isUniqlet(value) {
     <> hasCoreType(value, Uniqlet)
 };
 
+# Documented in Samizdat Layer 0 spec.
+fn perGe(v1, v2) {
+    ifNot { <> perEq(perOrder(v1, v2), -1) }
+        { <> v2 }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn perGt(v1, v2) {
+    ifIs { <> perEq(perOrder(v1, v2), 1) }
+        { <> v2 }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn perLe(v1, v2) {
+    ifNot { <> perEq(perOrder(v1, v2), 1) }
+        { <> v2 }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn perLt(v1, v2) {
+    ifIs { <> perEq(perOrder(v1, v2), -1) }
+        { <> v2 }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn perNe(v1, v2) {
+    ifNot { <> perEq(v1, v2) }
+        { <> v2 }
+};
+
 <> [
     isBox:      isBox,
     isFunction: isFunction,
@@ -69,5 +99,10 @@ fn isUniqlet(value) {
     isList:     isList,
     isMap:      isMap,
     isString:   isString,
-    isUniqlet:  isUniqlet
+    isUniqlet:  isUniqlet,
+    perGe:      perGe,
+    perGt:      perGt,
+    perLe:      perLe,
+    perLt:      perLt,
+    perNe:      perNe
 ]

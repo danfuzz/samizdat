@@ -140,3 +140,30 @@ Returns the given `value` if it is a string. Returns void if not.
 #### `isUniqlet(value) <> logic`
 
 Returns the given `value` if it is a uniqlet. Returns void if not.
+
+#### `perLe(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than or equal
+to `value1`.
+
+#### `perLt(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than `value1`.
+
+#### `perGe(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered greater than or equal
+to `value1`.
+
+#### `perGt(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered greater than `value1`.
+
+#### `perNe(value1, value2) <> logic`
+
+Per-type ordering comparison, which calls `perEq(value1, value2)` to
+determine result. Returns `value2` if it is *not* considered equal to `value1`.
