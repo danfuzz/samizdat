@@ -15,7 +15,6 @@
 #include <string.h>
 
 
-
 /*
  * Private Definitions
  */
@@ -166,7 +165,6 @@ METH_IMPL(Value, perOrder) {
         return PB_0;
     }
 }
-
 
 /* Documented in header. */
 void pbBindValue(void) {
