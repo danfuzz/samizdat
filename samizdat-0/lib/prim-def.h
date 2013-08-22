@@ -69,8 +69,6 @@ PRIM_DEF(nullBox,    DAT_NULL_BOX);
 
 // Primitive functions
 PRIM_FUNC(charFromInt,    1, 1);
-PRIM_FUNC(coreOrder,      2, 2);
-PRIM_FUNC(coreOrderIs,    3, 4);
 PRIM_FUNC(dataOf,         1, 2);
 PRIM_FUNC(ifIs,           2, 3);
 PRIM_FUNC(ifNot,          2, 2);

@@ -17,18 +17,7 @@
  */
 
 /**
- * Does the type assertions that are part of `coreOrder` and `coreOrderIs`.
- */
-static void coreOrderTypeCheck(zvalue v1, zvalue v2) {
-    assertHaveSameType(v1, v2);
-
-    if (!valEq(typeOf(v1), typeOf(v2))) {
-        die("Mismatched derived types.");
-    }
-}
-
-/**
- * Does most of the work of `coreOrderIs` and `totalOrderIs`.
+ * Does most of the work of `totalOrderIs`.
  */
 static bool doOrderIs(zint argCount, const zvalue *args) {
     zorder want = zintFromInt(args[2]);
@@ -47,24 +36,6 @@ static bool doOrderIs(zint argCount, const zvalue *args) {
 /*
  * Exported Definitions
  */
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(coreOrder) {
-    zvalue arg0 = args[0];
-    zvalue arg1 = args[1];
-
-    coreOrderTypeCheck(arg0, arg1);
-    return intFromZint(valOrder(arg0, arg1));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(coreOrderIs) {
-    zvalue arg0 = args[0];
-    zvalue arg1 = args[1];
-
-    coreOrderTypeCheck(arg0, arg1);
-    return doOrderIs(argCount, args) ? arg1 : NULL;
-}
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(dataOf) {
