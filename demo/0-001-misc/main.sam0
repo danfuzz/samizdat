@@ -79,6 +79,7 @@ fn main(selfPath, name?, rest*) {
     process("\"Blort.\" \\ \0 \n");
     process(slice("^muffins^", 1, 8));
     process(slice(["x", "y", "muffins", "biscuits"], 2));
+    process(slice([a: "apple", b: "biscuit", s: "scone"], 2, 3));
     process([:]);
     process([1: 2]);
     process([1: 2, 888: 1]);
