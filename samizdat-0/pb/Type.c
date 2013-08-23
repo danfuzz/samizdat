@@ -345,6 +345,11 @@ bool haveSameType(zvalue v1, zvalue v2) {
 extern void *pbPayload(zvalue value);
 
 /* Documented in header. */
+zint typeIndex(zvalue typeOrName) {
+    return indexFromTrueType(trueTypeFromTypeOrName(typeOrName));
+}
+
+/* Documented in header. */
 bool typeIsIdentified(zvalue type) {
     if (!isType(type)) {
         // Transparent types are not identified.
