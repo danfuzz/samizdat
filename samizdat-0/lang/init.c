@@ -46,4 +46,5 @@ void langInit(void) {
     langTypeMap[typeIndex(STR_fnDef)]       = EVAL_fnDef;
     langTypeMap[typeIndex(STR_varDef)]      = EVAL_varDef;
     langTypeMap[typeIndex(STR_varRef)]      = EVAL_varRef;
+    langTypeMap[typeIndex(STR_voidable)]    = EVAL_voidable;
 }

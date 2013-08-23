@@ -27,7 +27,8 @@ typedef enum {
     EVAL_literal,
     EVAL_fnDef,
     EVAL_varDef,
-    EVAL_varRef
+    EVAL_varRef,
+    EVAL_voidable
 } zevalType;
 
 /** Mapping from `Type` index to corresponding `zevalType`. */

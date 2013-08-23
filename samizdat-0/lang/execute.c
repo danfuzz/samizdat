@@ -47,27 +47,22 @@ static zvalue execCall(Frame *frame, zvalue call) {
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = actualsArr[i];
-        zvalue oneType = typeOf(one);
-        bool voidable;
-        bool interpolate;
-        zvalue eval;
+        zevalType oneType = evalTypeOf(one);
+        bool voidable = (oneType == EVAL_voidable);
 
-        if (valEq(oneType, STR_voidable)) {
+        if (voidable) {
             // We replace the value in `actualsArr` with the voidable
             // payload in order to keep the follow-up interpolation loop
             // simpler.
             one = actualsArr[i] = dataOf(one);
-            oneType = typeOf(one);
-            voidable = true;
-        } else {
-            voidable = false;
+            oneType = evalTypeOf(one);
         }
 
-        if (valEq(oneType, STR_interpolate)) {
+        bool interpolate = (oneType == EVAL_interpolate);
+        zvalue eval;
+
+        if (interpolate) {
             one = dataOf(one);
-            interpolate = true;
-        } else {
-            interpolate = false;
         }
 
         if (voidable) {
@@ -98,7 +93,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (hasType(oneNode, STR_interpolate)) {
+            if (evalTypeOf(oneNode) == EVAL_interpolate) {
                 arrayFromList(&fullArgs[at], oneArg);
                 at += collSize(oneArg);
             } else {
