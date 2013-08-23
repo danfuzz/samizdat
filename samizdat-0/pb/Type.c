@@ -342,9 +342,6 @@ bool haveSameType(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-extern void *pbPayload(zvalue value);
-
-/* Documented in header. */
 zint typeIndex(zvalue typeOrName) {
     return indexFromTrueType(trueTypeFromTypeOrName(typeOrName));
 }
