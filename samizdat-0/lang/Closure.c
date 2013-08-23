@@ -22,10 +22,13 @@
 
 
 /*
- * ClosureDef Definitions
+ * Private Definitions
  */
 
-/** Cache of all encountered `defMap`s, and their associated `ClosureDef`s. */
+// Defined below.
+static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
+
+/** Cache of all encountered `defMap`s, and their associated `Closure`s. */
 static zvalue defCacheBox = NULL;
 
 /**
@@ -54,6 +57,12 @@ typedef struct {
  */
 typedef struct {
     /**
+     * Snapshot of the frame that was active at the moment the closure was
+     * constructed. Left uninitialized for cached values.
+     */
+    Frame frame;
+
+    /**
      * Closure payload map that represents the fixed definition of the
      * closure. This can be the payload of either a `closure` or a
      * `fnDef` node.
@@ -80,29 +89,43 @@ typedef struct {
 
     /** The `"yieldDef"` mapping inside `defMap`. */
     zvalue yieldDef;
-} ClosureDefInfo;
-
-// TODO: Move to header.
-extern zvalue TYPE_ClosureDef;
+} ClosureInfo;
 
 /**
- * Gets a pointer to the info of a `ClosureDef` value.
+ * Function call state. This is used during function call setup. Pointers
+ * to these are passed directly within this file as well as passed
+ * indirectly via the nonlocal exit handling code.
  */
-static ClosureDefInfo *getDefInfo(zvalue closure) {
+typedef struct {
+    /** Closure being called. */
+    zvalue closure;
+
+    /** Argument count. */
+    zint argCount;
+
+    /** Array of arguments. */
+    const zvalue *args;
+} CallState;
+
+/**
+ * Gets a pointer to the info of a closure value.
+ */
+static ClosureInfo *getInfo(zvalue closure) {
     return pbPayload(closure);
 }
 
 /**
- * Builds and returns a `ClosureDef` from a `closure` or `fnDef` payload.
+ * Builds and returns a `Closure` from a `closure` or `fnDef` payload,
+ * suitable for storage in the cache.
  */
-static zvalue buildClosureDef(zvalue defMap) {
+static zvalue buildCachedClosure(zvalue defMap) {
     zvalue formals = collGet(defMap, STR_formals);
     zint formalsSize = collSize(formals);
 
     // Build out most of the result.
 
-    zvalue result = pbAllocValue(TYPE_ClosureDef, sizeof(ClosureDefInfo));
-    ClosureDefInfo *info = getDefInfo(result);
+    zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
+    ClosureInfo *info = getInfo(result);
 
     info->defMap = defMap;
     info->formals = formals;
@@ -164,15 +187,15 @@ static zvalue buildClosureDef(zvalue defMap) {
 }
 
 /**
- * Gets the `ClosureDef` associated with the given node.
+ * Gets the cached `Closure` associated with the given node.
  */
-static zvalue getClosureDef(zvalue node) {
+static zvalue getCachedClosure(zvalue node) {
     zvalue defMap = dataOf(node);
     zvalue cache = GFN_CALL(fetch, defCacheBox);
     zvalue result = collGet(cache, defMap);
 
     if (result == NULL) {
-        result = buildClosureDef(defMap);
+        result = buildCachedClosure(defMap);
         cache = collPut(cache, defMap, result);
         GFN_CALL(store, defCacheBox, cache);
     }
@@ -184,9 +207,9 @@ static zvalue getClosureDef(zvalue node) {
  * Creates a variable map for all the formal arguments of the given
  * function.
  */
-static zvalue bindArguments(zvalue closureDef, zvalue exitFunction,
+static zvalue bindArguments(zvalue closure, zvalue exitFunction,
         zint argCount, const zvalue *args) {
-    ClosureDefInfo *info = getDefInfo(closureDef);
+    ClosureInfo *info = getInfo(closure);
     zvalue formals = info->formals;
     zint formalsSize = info->formalsSize;
 
@@ -198,18 +221,14 @@ static zvalue bindArguments(zvalue closureDef, zvalue exitFunction,
         return EMPTY_MAP;
     }
 
-    //zvalue formalsArr[formalsSize];
     zmapping elems[info->formalNameCount + (exitFunction ? 1 : 0)];
     zint elemAt = 0;
     zint argAt = 0;
 
-    //arrayFromList(formalsArr, formals);
     zformal *formalz = info->formalz;
 
     for (zint i = 0; i < formalsSize; i++) {
-        //zvalue formal = formalsArr[i];
         zvalue name = formalz[i].name;
-        //zvalue repeat = collGet(formal, STR_repeat);
         zrepeat repeat = formalz[i].repeat;
         bool ignore = (name == NULL);
         zvalue value;
@@ -270,93 +289,16 @@ static zvalue bindArguments(zvalue closureDef, zvalue exitFunction,
     return mapFromArray(elemAt, elems);
 }
 
-/* Documented in header. */
-METH_IMPL(ClosureDef, gcMark) {
-    zvalue closureDef = args[0];
-    ClosureDefInfo *info = getDefInfo(closureDef);
-
-    pbMark(info->defMap); // Everything else is also reachable from `defMap`.
-    return NULL;
-}
-
-/* Documented in header. */
-void langBindClosureDef(void) {
-    TYPE_ClosureDef = coreTypeFromName(stringFromUtf8(-1, "ClosureDef"), true);
-    METH_BIND(ClosureDef, gcMark);
-
-    defCacheBox = makeMutableBox(EMPTY_MAP);
-    pbImmortalize(defCacheBox);
-}
-
-/* Documented in header. */
-zvalue TYPE_ClosureDef = NULL;
-
-
-/*
- * Private Definitions
- */
-
-// Defined below.
-static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
-
-/**
- * Closure, that is, a function and its associated immutable bindings.
- * Instances of this structure are bound as the closure state as part of
- * function registration in `execClosure()`.
- */
-typedef struct {
-    /**
-     * Snapshot of the frame that was active at the moment the closure was
-     * constructed.
-     */
-    Frame frame;
-
-    /** `ClosureDef` containing all the vital info. */
-    zvalue closureDef;
-} ClosureInfo;
-
-/**
- * Function call state. This is used during function call setup. Pointers
- * to these are passed directly within this file as well as passed
- * indirectly via the nonlocal exit handling code.
- */
-typedef struct {
-    /** Closure being called. */
-    zvalue closure;
-
-    /** Associated `ClosureDef`. */
-    zvalue closureDef;
-
-    /** Argument count. */
-    zint argCount;
-
-    /** Array of arguments. */
-    const zvalue *args;
-} CallState;
-
-
-/**
- * Gets a pointer to the info of a closure value.
- */
-static ClosureInfo *getInfo(zvalue closure) {
-    return pbPayload(closure);
-}
-
 /**
  * Helper for evaluating `closure` and `fnDef` nodes. This allocates a
- * new `Closure` and sets up the `closureDef`.
+ * new `Closure`, cloning its info from a cached instance.
  */
 static zvalue buildClosure(zvalue node) {
-    zvalue defMap = dataOf(node);
-    zvalue formals = collGet(defMap, STR_formals);
-    zint formalsSize = collSize(formals);
-
-    // Build out most of the result.
-
+    zvalue cachedClosure = getCachedClosure(node);
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = getInfo(result);
 
-    info->closureDef = getClosureDef(node);
+    utilCpy(ClosureInfo, getInfo(result), getInfo(cachedClosure), 1);
     return result;
 }
 
@@ -372,7 +314,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    zvalue argMap = bindArguments(callState->closureDef,
+    zvalue argMap = bindArguments(closure,
         exitFunction, callState->argCount, callState->args);
     frameInit(&frame, &info->frame, closure, argMap);
 
@@ -485,7 +427,7 @@ METH_IMPL(Closure, call) {
     // it is being called with, hence `argCount - 1, &args[1]` below.
     zvalue closure = args[0];
     ClosureInfo *info = getInfo(closure);
-    CallState callState = { closure, info->closureDef, argCount - 1, &args[1] };
+    CallState callState = { closure, argCount - 1, &args[1] };
     zvalue result;
 
     if (info->yieldDef != NULL) {
@@ -527,7 +469,7 @@ METH_IMPL(Closure, gcMark) {
     ClosureInfo *info = getInfo(closure);
 
     frameMark(&info->frame);
-    pbMark(info->closureDef);
+    pbMark(info->defMap); // All the other bits are derived from this.
     return NULL;
 }
 
@@ -539,7 +481,8 @@ void langBindClosure(void) {
     METH_BIND(Closure, debugString);
     METH_BIND(Closure, gcMark);
 
-    langBindClosureDef();
+    defCacheBox = makeMutableBox(EMPTY_MAP);
+    pbImmortalize(defCacheBox);
 }
 
 /* Documented in header. */
