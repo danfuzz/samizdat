@@ -160,40 +160,17 @@ zvalue execExpression(Frame *frame, zvalue expression) {
 
 /* Documented in header. */
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    zvalue type = typeOf(e);
-
-    // Switching on the first character of the type is a bit of a hack. It
-    // lets us avoid having to have a single big cascading `if` with a lot of
-    // `valEq` calls.
-    switch (collNthChar(type, 0)) {
-        case 'c': {
-            if      (valEq(type, STR_call))    { return execCall(frame, e); }
-            else if (valEq(type, STR_closure)) { return execClosure(frame, e); }
-            break;
-        }
-        case 'e': {
-            if (valEq(type, STR_expression)) {
-                return execExpressionVoidOk(frame, dataOf(e));
-            }
-            break;
-        }
-        case 'i': {
-            if (valEq(type, STR_interpolate)) {
-                return execInterpolate(frame, e);
-            }
-            break;
-        }
-        case 'l': {
-            if (valEq(type, STR_literal)) { return dataOf(e); }
-            break;
-        }
-        case 'v': {
-            if (valEq(type, STR_varRef)) { return execVarRef(frame, e); }
-            break;
+    switch (evalTypeOf(e)) {
+        case EVAL_call:        return execCall(frame, e);
+        case EVAL_closure:     return execClosure(frame, e);
+        case EVAL_expression:  return execExpressionVoidOk(frame, dataOf(e));
+        case EVAL_interpolate: return execInterpolate(frame, e);
+        case EVAL_literal:     return dataOf(e);
+        case EVAL_varRef:      return execVarRef(frame, e);
+        default: {
+            die("Invalid expression type: %s", valDebugString(typeOf(e)));
         }
     }
-
-    die("Invalid expression type.");
 }
 
 /* Documented in header. */

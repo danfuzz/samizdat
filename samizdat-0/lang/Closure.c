@@ -347,8 +347,6 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = statementsArr[i];
 
-        // Switch on the first character of the type string to avoid
-        // gratuitous `valEq` tests.
         switch (evalTypeOf(one)) {
             case EVAL_fnDef: {
                 // Look for immediately adjacent `fnDef` nodes, and
