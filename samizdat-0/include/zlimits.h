@@ -26,6 +26,9 @@ enum {
     /** Maximum readable file size, in bytes. */
     IO_MAX_FILE_SIZE = 100000,
 
+    /** Maximum number of formal arguments to a function. */
+    LANG_MAX_FORMALS = 10,
+
     /**
      * Maximum number of tokens in a given parse (which is the maximum
      * number of characters for a tokenizer).
