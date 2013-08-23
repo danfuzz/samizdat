@@ -10,6 +10,7 @@
 
 #include "const.h"
 #include "impl.h"
+#include "type/Box.h"
 #include "type/Generic.h"
 #include "type/List.h"
 #include "type/Map.h"
@@ -21,11 +22,11 @@
 
 
 /*
- * Private Definitions
+ * ClosureDef Definitions
  */
 
-// Defined below.
-static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
+/** Cache of all encountered `defMap`s, and their associated `ClosureDef`s. */
+static zvalue defCacheBox = NULL;
 
 /**
  * Repetition style of a formal argument.
@@ -47,6 +48,166 @@ typedef struct {
     /** Repetition style. */
     zrepeat repeat;
 } zformal;
+
+/**
+ * Cached info about a `defMap`.
+ */
+typedef struct {
+    /**
+     * Closure payload map that represents the fixed definition of the
+     * closure. This can be the payload of either a `closure` or a
+     * `fnDef` node.
+     */
+    zvalue defMap;
+
+    /** The `"formals"` mapping of `defMap`, converted for easier use. */
+    zformal formalz[LANG_MAX_FORMALS];
+
+    /** The `"formals"` mapping inside `defMap`. */
+    zvalue formals;
+
+    /** The result of `collSize(formals)`. */
+    zint formalsSize;
+
+    /** The number of actual names in `formals`. */
+    zint formalNameCount;
+
+    /** The `"statements"` mapping inside `defMap`. */
+    zvalue statements;
+
+    /** The `"yield"` mapping inside `defMap`. */
+    zvalue yield;
+
+    /** The `"yieldDef"` mapping inside `defMap`. */
+    zvalue yieldDef;
+} ClosureDefInfo;
+
+// TODO: Move to header.
+extern zvalue TYPE_ClosureDef;
+
+/**
+ * Gets a pointer to the info of a `ClosureDef` value.
+ */
+static ClosureDefInfo *getDefInfo(zvalue closure) {
+    return pbPayload(closure);
+}
+
+/**
+ * Builds and returns a `ClosureDef` from a `closure` or `fnDef` payload.
+ */
+static zvalue buildClosureDef(zvalue defMap) {
+    zvalue formals = collGet(defMap, STR_formals);
+    zint formalsSize = collSize(formals);
+
+    // Build out most of the result.
+
+    zvalue result = pbAllocValue(TYPE_ClosureDef, sizeof(ClosureDefInfo));
+    ClosureDefInfo *info = getDefInfo(result);
+
+    info->defMap = defMap;
+    info->formals = formals;
+    info->formalsSize = formalsSize;
+    info->formalNameCount = -1;
+    info->statements = collGet(defMap, STR_statements);
+    info->yield = collGet(defMap, STR_yield);
+    info->yieldDef = collGet(defMap, STR_yieldDef);
+
+    // Validate and transform all the formals.
+
+    if (info->formalsSize > LANG_MAX_FORMALS) {
+        die("Too many formals: %lld", info->formalsSize);
+    }
+
+    zvalue formalsArr[info->formalsSize];
+    zvalue names = EMPTY_MAP;
+    zint formalNameCount = 0;
+    arrayFromList(formalsArr, formals);
+
+    for (zint i = 0; i < info->formalsSize; i++) {
+        zvalue formal = formalsArr[i];
+        zvalue name = collGet(formal, STR_name);
+        zvalue repeat = collGet(formal, STR_repeat);
+        zrepeat rep;
+
+        if (name != NULL) {
+            if (collGet(names, name) != NULL) {
+                die("Duplicate formal name: %s", valDebugString(name));
+            }
+            names = collPut(names, name, name);
+            formalNameCount++;
+        }
+
+        if (repeat == NULL) {
+            rep = REP_NONE;
+        } else {
+            if (collSize(repeat) != 1) {
+                die("Invalid repeat modifier: %s", valDebugString(repeat));
+            }
+            switch (collNthChar(repeat, 0)) {
+                case '*': rep = REP_STAR;  break;
+                case '+': rep = REP_PLUS;  break;
+                case '?': rep = REP_QMARK; break;
+                default: {
+                    die("Invalid repeat modifier: %s", valDebugString(repeat));
+                }
+            }
+        }
+
+        info->formalz[i].name = name;
+        info->formalz[i].repeat = rep;
+    }
+
+    // All's well. Finish up.
+
+    info->formalNameCount = formalNameCount;
+    return result;
+}
+
+/**
+ * Gets the `ClosureDef` associated with the given node.
+ */
+static zvalue getDef(zvalue node) {
+    zvalue defMap = dataOf(node);
+    zvalue cache = GFN_CALL(fetch, defCacheBox);
+    zvalue result = collGet(cache, defMap);
+
+    if (result == NULL) {
+        result = buildClosureDef(defMap);
+        cache = collPut(cache, defMap, result);
+        GFN_CALL(store, defCacheBox, cache);
+    }
+
+    return result;
+}
+
+/* Documented in header. */
+METH_IMPL(ClosureDef, gcMark) {
+    zvalue closureDef = args[0];
+    ClosureDefInfo *info = getDefInfo(closureDef);
+
+    pbMark(info->defMap); // Everything else is also reachable from `defMap`.
+    return NULL;
+}
+
+/* Documented in header. */
+void langBindClosureDef(void) {
+    TYPE_ClosureDef = coreTypeFromName(stringFromUtf8(-1, "ClosureDef"), true);
+    METH_BIND(ClosureDef, gcMark);
+
+    defCacheBox = makeMutableBox(EMPTY_MAP);
+    pbImmortalize(defCacheBox);
+}
+
+/* Documented in header. */
+zvalue TYPE_ClosureDef = NULL;
+
+
+/*
+ * Private Definitions
+ */
+
+// Defined below.
+static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
 
 /**
  * Closure, that is, a function and its associated immutable bindings.
@@ -458,6 +619,8 @@ void langBindClosure(void) {
     METH_BIND(Closure, canCall);
     METH_BIND(Closure, debugString);
     METH_BIND(Closure, gcMark);
+
+    langBindClosureDef();
 }
 
 /* Documented in header. */
