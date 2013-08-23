@@ -7,6 +7,7 @@
 #include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/List.h"
 #include "type/Map.h"
 #include "type/String.h"
 #include "type/Type.h"
@@ -323,6 +324,23 @@ METH_IMPL(Map, get) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, keyList) {
+    zvalue map = args[0];
+
+    MapInfo *info = getInfo(map);
+    zint size = info->size;
+    zmapping *elems = info->elems;
+    zmapping mappings[size];
+    zvalue arr[size];
+
+    for (zint i = 0; i < size; i++) {
+        arr[i] = elems[i].key;
+    }
+
+    return listFromArray(size, arr);
+}
+
+/* Documented in header. */
 METH_IMPL(Map, nth) {
     zvalue map = args[0];
     zvalue n = args[1];
@@ -473,6 +491,7 @@ void datBindMap(void) {
     METH_BIND(Map, del);
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
+    METH_BIND(Map, keyList);
     METH_BIND(Map, nth);
     METH_BIND(Map, perEq);
     METH_BIND(Map, perOrder);

@@ -88,6 +88,7 @@ fn main(selfPath, name?, rest*) {
     process(put([one: 1, two: 2, three: 3], "four", 4));
     process(keyList([@a, @b, @c]));
     process(keyList("abcde"));
+    process(keyList([a: "apple", b: "butter"]));
     process([:]);
     process([1: 2]);
     process([1: 2, 888: 1]);
