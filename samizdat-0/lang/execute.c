@@ -47,27 +47,22 @@ static zvalue execCall(Frame *frame, zvalue call) {
 
     for (zint i = 0; i < argCount; i++) {
         zvalue one = actualsArr[i];
-        zvalue oneType = typeOf(one);
-        bool voidable;
-        bool interpolate;
-        zvalue eval;
+        zevalType oneType = evalTypeOf(one);
+        bool voidable = (oneType == EVAL_voidable);
 
-        if (valEq(oneType, STR_voidable)) {
+        if (voidable) {
             // We replace the value in `actualsArr` with the voidable
             // payload in order to keep the follow-up interpolation loop
             // simpler.
             one = actualsArr[i] = dataOf(one);
-            oneType = typeOf(one);
-            voidable = true;
-        } else {
-            voidable = false;
+            oneType = evalTypeOf(one);
         }
 
-        if (valEq(oneType, STR_interpolate)) {
+        bool interpolate = (oneType == EVAL_interpolate);
+        zvalue eval;
+
+        if (interpolate) {
             one = dataOf(one);
-            interpolate = true;
-        } else {
-            interpolate = false;
         }
 
         if (voidable) {
@@ -98,7 +93,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (hasType(oneNode, STR_interpolate)) {
+            if (evalTypeOf(oneNode) == EVAL_interpolate) {
                 arrayFromList(&fullArgs[at], oneArg);
                 at += collSize(oneArg);
             } else {
@@ -160,40 +155,17 @@ zvalue execExpression(Frame *frame, zvalue expression) {
 
 /* Documented in header. */
 zvalue execExpressionVoidOk(Frame *frame, zvalue e) {
-    zvalue type = typeOf(e);
-
-    // Switching on the first character of the type is a bit of a hack. It
-    // lets us avoid having to have a single big cascading `if` with a lot of
-    // `valEq` calls.
-    switch (collNthChar(type, 0)) {
-        case 'c': {
-            if      (valEq(type, STR_call))    { return execCall(frame, e); }
-            else if (valEq(type, STR_closure)) { return execClosure(frame, e); }
-            break;
-        }
-        case 'e': {
-            if (valEq(type, STR_expression)) {
-                return execExpressionVoidOk(frame, dataOf(e));
-            }
-            break;
-        }
-        case 'i': {
-            if (valEq(type, STR_interpolate)) {
-                return execInterpolate(frame, e);
-            }
-            break;
-        }
-        case 'l': {
-            if (valEq(type, STR_literal)) { return dataOf(e); }
-            break;
-        }
-        case 'v': {
-            if (valEq(type, STR_varRef)) { return execVarRef(frame, e); }
-            break;
+    switch (evalTypeOf(e)) {
+        case EVAL_call:        return execCall(frame, e);
+        case EVAL_closure:     return execClosure(frame, e);
+        case EVAL_expression:  return execExpressionVoidOk(frame, dataOf(e));
+        case EVAL_interpolate: return execInterpolate(frame, e);
+        case EVAL_literal:     return dataOf(e);
+        case EVAL_varRef:      return execVarRef(frame, e);
+        default: {
+            die("Invalid expression type: %s", valDebugString(typeOf(e)));
         }
     }
-
-    die("Invalid expression type.");
 }
 
 /* Documented in header. */

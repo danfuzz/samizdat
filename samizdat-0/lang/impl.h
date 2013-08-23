@@ -12,8 +12,27 @@
 #define _IMPL_H_
 
 #include "lang.h"
+#include "type/Type.h"
+#include "zlimits.h"
 
 #include <stdbool.h>
+
+/** Simple enumeration for all the evaluable node types. */
+typedef enum {
+    EVAL_NOT_A_NODE = 0, // So that `EVAL_call` won't be a "sneaky default".
+    EVAL_call,
+    EVAL_closure,
+    EVAL_expression,
+    EVAL_interpolate,
+    EVAL_literal,
+    EVAL_fnDef,
+    EVAL_varDef,
+    EVAL_varRef,
+    EVAL_voidable
+} zevalType;
+
+/** Mapping from `Type` index to corresponding `zevalType`. */
+extern zevalType langTypeMap[PB_MAX_TYPES];
 
 /** Function called into by `nleCall`. */
 typedef zvalue (*znleFunction)(void *state, zvalue exitFunction);
@@ -42,6 +61,13 @@ extern zvalue TYPE_Closure;
 
 /** Type for nonlocal exit functions. */
 extern zvalue TYPE_NonlocalExit;
+
+/**
+ * Gets the evaluation type (enumerated value) of the given node.
+ */
+inline zevalType evalTypeOf(zvalue node) {
+    return langTypeMap[typeIndexOf(node)];
+}
 
 /**
  * Executes a `closure` form.
