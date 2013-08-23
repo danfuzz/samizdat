@@ -27,7 +27,7 @@
 
 enum {
     /** Whether to spew to the console about cache behavior. */
-    CHATTY_CACHEY = true
+    CHATTY_CACHEY = false
 };
 
 // Defined below.
