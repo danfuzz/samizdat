@@ -12,6 +12,7 @@
 #define _IMPL_H_
 
 #include "lang.h"
+#include "type/Type.h"
 #include "zlimits.h"
 
 #include <stdbool.h>
@@ -59,6 +60,13 @@ extern zvalue TYPE_Closure;
 
 /** Type for nonlocal exit functions. */
 extern zvalue TYPE_NonlocalExit;
+
+/**
+ * Gets the evaluation type (enumerated value) of the given node.
+ */
+inline zevalType evalTypeOf(zvalue node) {
+    return langTypeMap[typeIndexOf(node)];
+}
 
 /**
  * Executes a `closure` form.

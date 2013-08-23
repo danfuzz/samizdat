@@ -68,6 +68,11 @@ bool haveSameType(zvalue v1, zvalue v2);
 zint typeIndex(zvalue typeOrName);
 
 /**
+ * Returns the unique index for the type of the given value.
+ */
+zint typeIndexOf(zvalue value);
+
+/**
  * Returns true iff the given type is "identified". That is, this returns
  * true if values of the type can be fruitfully used as the argument
  * to `valIdentityOf`.

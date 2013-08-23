@@ -350,6 +350,11 @@ zint typeIndex(zvalue typeOrName) {
 }
 
 /* Documented in header. */
+zint typeIndexOf(zvalue value) {
+    return indexFromTrueType(value->type);
+}
+
+/* Documented in header. */
 bool typeIsIdentified(zvalue type) {
     if (!isType(type)) {
         // Transparent types are not identified.
