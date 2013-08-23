@@ -70,10 +70,7 @@ typedef struct {
     zvalue defMap;
 
     /** The `"formals"` mapping of `defMap`, converted for easier use. */
-    zformal formalz[LANG_MAX_FORMALS];
-
-    /** The `"formals"` mapping inside `defMap`. */
-    zvalue formals;
+    zformal formals[LANG_MAX_FORMALS];
 
     /** The result of `collSize(formals)`. */
     zint formalsSize;
@@ -128,7 +125,6 @@ static zvalue buildCachedClosure(zvalue defMap) {
     ClosureInfo *info = getInfo(result);
 
     info->defMap = defMap;
-    info->formals = formals;
     info->formalsSize = formalsSize;
     info->formalNameCount = -1;
     info->statements = collGet(defMap, STR_statements);
@@ -176,8 +172,8 @@ static zvalue buildCachedClosure(zvalue defMap) {
             }
         }
 
-        info->formalz[i].name = name;
-        info->formalz[i].repeat = rep;
+        info->formals[i].name = name;
+        info->formals[i].repeat = rep;
     }
 
     // All's well. Finish up.
@@ -210,7 +206,6 @@ static zvalue getCachedClosure(zvalue node) {
 static zvalue bindArguments(zvalue closure, zvalue exitFunction,
         zint argCount, const zvalue *args) {
     ClosureInfo *info = getInfo(closure);
-    zvalue formals = info->formals;
     zint formalsSize = info->formalsSize;
 
     if (formalsSize == 0) {
@@ -222,14 +217,13 @@ static zvalue bindArguments(zvalue closure, zvalue exitFunction,
     }
 
     zmapping elems[info->formalNameCount + (exitFunction ? 1 : 0)];
+    zformal *formals = info->formals;
     zint elemAt = 0;
     zint argAt = 0;
 
-    zformal *formalz = info->formalz;
-
     for (zint i = 0; i < formalsSize; i++) {
-        zvalue name = formalz[i].name;
-        zrepeat repeat = formalz[i].repeat;
+        zvalue name = formals[i].name;
+        zrepeat repeat = formals[i].repeat;
         bool ignore = (name == NULL);
         zvalue value;
 
