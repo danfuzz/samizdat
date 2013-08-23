@@ -54,7 +54,7 @@ zvalue coreTypeFromName(zvalue name, bool identified);
  * Returns true iff the type of the given value (that is, `typeOf(value)`)
  * is as given.
  */
-bool hasType(zvalue value, zvalue type);
+bool hasType(zvalue value, zvalue typeOrName);
 
 /**
  * Returns true iff the types of the given values (that is, `typeOf()` on
@@ -77,14 +77,14 @@ zint typeIndexOf(zvalue value);
  * true if values of the type can be fruitfully used as the argument
  * to `valIdentityOf`.
  */
-bool typeIsIdentified(zvalue type);
+bool typeIsIdentified(zvalue typeOrName);
 
 /**
- * Gets the name of the given type. If given a non-`Type` value for `type`,
- * this takes it to name a transparent derived type; as such it will return
- * `type` itself in these cases.
+ * Gets the name of the given type. If given a non-`Type` value for
+ * `typeOrName`, this takes it to name a transparent derived type; as such it
+ * will return `typeOrName` itself in these cases.
  */
-zvalue typeName(zvalue type);
+zvalue typeName(zvalue typeOrName);
 
 /**
  * Gets the overt data type of the given value. `value` must be a
@@ -98,6 +98,6 @@ zvalue typeOf(zvalue value);
  * `type`, this takes it to name a transparent derived type; as such it
  * will return `TYPE_Value` in these cases.
  */
-zvalue typeParent(zvalue type);
+zvalue typeParent(zvalue typeOrName);
 
 #endif

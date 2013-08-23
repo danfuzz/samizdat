@@ -262,13 +262,13 @@ zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret) {
 }
 
 /* Documented in header. */
-bool typeIsDerived(zvalue type) {
-    return isType(type) ? getInfo(type)->derived : true;
+bool typeIsDerived(zvalue typeOrName) {
+    return isType(typeOrName) ? getInfo(typeOrName)->derived : true;
 }
 
 /* Documented in header. */
-bool typeSecretIs(zvalue type, zvalue secret) {
-    zvalue typeSecret = isType(type) ? getInfo(type)->secret : NULL;
+bool typeSecretIs(zvalue typeOrName, zvalue secret) {
+    zvalue typeSecret = isType(typeOrName) ? getInfo(typeOrName)->secret : NULL;
     return valEq(typeSecret, secret);
 }
 
@@ -299,11 +299,11 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void assertHasType(zvalue value, zvalue type) {
+void assertHasType(zvalue value, zvalue typeOrName) {
     assertValid(value);
-    if (!hasType(value, type)) {
+    if (!hasType(value, typeOrName)) {
         die("Expected type %s; got %s.",
-            valDebugString(type), valDebugString(value));
+            valDebugString(typeOrName), valDebugString(value));
     }
 }
 
@@ -332,8 +332,8 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
 }
 
 /* Documented in header. */
-bool hasType(zvalue value, zvalue type) {
-    return typeEq(value->type, trueTypeFromTypeOrName(type));
+bool hasType(zvalue value, zvalue typeOrName) {
+    return typeEq(value->type, trueTypeFromTypeOrName(typeOrName));
 }
 
 /* Documented in header. */
@@ -355,18 +355,18 @@ zint typeIndexOf(zvalue value) {
 }
 
 /* Documented in header. */
-bool typeIsIdentified(zvalue type) {
-    if (!isType(type)) {
+bool typeIsIdentified(zvalue typeOrName) {
+    if (!isType(typeOrName)) {
         // Transparent types are not identified.
         return false;
     }
 
-    return getInfo(type)->identified;
+    return getInfo(typeOrName)->identified;
 }
 
 /* Documented in header. */
-zvalue typeName(zvalue type) {
-    return isType(type) ? getInfo(type)->name : type;
+zvalue typeName(zvalue typeOrName) {
+    return isType(typeOrName) ? getInfo(typeOrName)->name : typeOrName;
 }
 
 /* Documented in header. */
@@ -381,8 +381,8 @@ zvalue typeOf(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue typeParent(zvalue type) {
-    return isType(type) ? getInfo(type)->parent : TYPE_Value;
+zvalue typeParent(zvalue typeOrName) {
+    return isType(typeOrName) ? getInfo(typeOrName)->parent : TYPE_Value;
 }
 
 

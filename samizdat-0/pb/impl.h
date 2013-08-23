@@ -114,14 +114,14 @@ zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret);
  * Returns true iff the given type is a derived type (whether opaque or
  * transparent). This works (returns `true`) if given a non-`Type` value.
  */
-bool typeIsDerived(zvalue type);
+bool typeIsDerived(zvalue typeOrName);
 
 /**
  * Checks whether the given value matches the secret of the given type.
  * `secret` may be passed as `NULL`. This works (treating it as a transparent
- * type) if given a non-`Type` value for `type`.
+ * type) if given a non-`Type` value for `typeOrName`.
  */
-bool typeSecretIs(zvalue type, zvalue secret);
+bool typeSecretIs(zvalue typeOrName, zvalue secret);
 
 
 /*
