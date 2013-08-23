@@ -89,7 +89,7 @@ typedef struct {
     /** The result of `collSize(formals)`. */
     zint formalsSize;
 
-    /** The number of actual names in `formals`. */
+    /** The number of actual names in `formals`, plus one for a `yieldDef`. */
     zint formalNameCount;
 
     /** The `"statements"` mapping inside `defMap`. */
@@ -140,7 +140,6 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     info->defMap = defMap;
     info->formalsSize = formalsSize;
-    info->formalNameCount = -1;
     info->statements = collGet(defMap, STR_statements);
     info->yield = collGet(defMap, STR_yield);
     info->yieldDef = collGet(defMap, STR_yieldDef);
@@ -192,7 +191,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
 
     // All's well. Finish up.
 
-    info->formalNameCount = formalNameCount;
+    info->formalNameCount = formalNameCount + (info->yieldDef ? 1 : 0);
     return result;
 }
 
@@ -231,7 +230,7 @@ static zvalue getCachedClosure(zvalue node) {
 static zvalue bindArguments(zvalue closure, zvalue exitFunction,
         zint argCount, const zvalue *args) {
     ClosureInfo *info = getInfo(closure);
-    zmapping elems[info->formalNameCount + (exitFunction ? 1 : 0)];
+    zmapping elems[info->formalNameCount];
     zformal *formals = info->formals;
     zint formalsSize = info->formalsSize;
     zint elemAt = 0;
