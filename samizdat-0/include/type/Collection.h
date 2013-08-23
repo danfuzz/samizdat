@@ -33,6 +33,9 @@ extern zvalue GFN_del;
 /** Generic `get(collection, key)`: Documented in spec. */
 extern zvalue GFN_get;
 
+/** Generic `keyList(collection)`: Documented in spec. */
+extern zvalue GFN_keyList;
+
 /** Generic `nth(collection, n)`: Documented in spec. */
 extern zvalue GFN_nth;
 
@@ -122,8 +125,7 @@ zint collSize(zvalue coll);
 /**
  * Binds the standard methods for a `Sequence` type. That is, this
  * is for collections whose keys are a zero-based `Int` sequence.
- * In particular, this binds `get` to call through to `nth` when passed
- * a potentially-valid key.
+ * In particular, this binds `get` and `keyList`.
  */
 void seqBind(zvalue type);
 
