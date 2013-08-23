@@ -25,6 +25,9 @@
 zevalType langTypeMap[PB_MAX_TYPES];
 
 /* Documented in header. */
+extern zevalType evalTypeOf(zvalue node);
+
+/* Documented in header. */
 void langInit(void) {
     if (TYPE_NonlocalExit != NULL) {
         return;
@@ -35,12 +38,12 @@ void langInit(void) {
     langBindNonlocalExit();
 
     memset(langTypeMap, 0, sizeof(langTypeMap));
-    langTypeMap[EVAL_call]        = typeIndex(STR_call);
-    langTypeMap[EVAL_closure]     = typeIndex(STR_closure);
-    langTypeMap[EVAL_expression]  = typeIndex(STR_expression);
-    langTypeMap[EVAL_interpolate] = typeIndex(STR_interpolate);
-    langTypeMap[EVAL_literal]     = typeIndex(STR_literal);
-    langTypeMap[EVAL_fnDef]       = typeIndex(STR_fnDef);
-    langTypeMap[EVAL_varDef]      = typeIndex(STR_varDef);
-    langTypeMap[EVAL_varRef]      = typeIndex(STR_varRef);
+    langTypeMap[typeIndex(STR_call)]        = EVAL_call;
+    langTypeMap[typeIndex(STR_closure)]     = EVAL_closure;
+    langTypeMap[typeIndex(STR_expression)]  = EVAL_expression;
+    langTypeMap[typeIndex(STR_interpolate)] = EVAL_interpolate;
+    langTypeMap[typeIndex(STR_literal)]     = EVAL_literal;
+    langTypeMap[typeIndex(STR_fnDef)]       = EVAL_fnDef;
+    langTypeMap[typeIndex(STR_varDef)]      = EVAL_varDef;
+    langTypeMap[typeIndex(STR_varRef)]      = EVAL_varRef;
 }
