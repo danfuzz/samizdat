@@ -245,7 +245,7 @@ static void assertHasTypeType(zvalue value) {
  */
 
 /* Documented in header. */
-zint indexFromType(zvalue type) {
+zint indexFromTrueType(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->id;
 }
@@ -448,12 +448,12 @@ void pbInitTypeSystem(void) {
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
-    if (indexFromType(TYPE_Function) != PB_INDEX_FUNCTION) {
+    if (indexFromTrueType(TYPE_Function) != PB_INDEX_FUNCTION) {
         die("Mismatched index for `Function`: should be %lld",
-            indexFromType(TYPE_Function));
-    } else if (indexFromType(TYPE_Generic) != PB_INDEX_GENERIC) {
+            indexFromTrueType(TYPE_Function));
+    } else if (indexFromTrueType(TYPE_Generic) != PB_INDEX_GENERIC) {
         die("Mismatched index for `Generic`: should be %lld",
-            indexFromType(TYPE_Generic));
+            indexFromTrueType(TYPE_Generic));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.

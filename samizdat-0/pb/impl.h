@@ -96,7 +96,7 @@ zvalue genericFindByIndex(zvalue generic, zint index);
  * Gets the index for a given type value. The given value *must* be a
  * `Type` per se.
  */
-zint indexFromType(zvalue type);
+zint indexFromTrueType(zvalue type);
 
 /**
  * Gets the `Type` per se for the given value.
