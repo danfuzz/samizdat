@@ -114,16 +114,16 @@ static zvalue buildClosureDef(zvalue defMap) {
 
     // Validate and transform all the formals.
 
-    if (info->formalsSize > LANG_MAX_FORMALS) {
-        die("Too many formals: %lld", info->formalsSize);
+    if (formalsSize > LANG_MAX_FORMALS) {
+        die("Too many formals: %lld", formalsSize);
     }
 
-    zvalue formalsArr[info->formalsSize];
+    zvalue formalsArr[formalsSize];
     zvalue names = EMPTY_MAP;
     zint formalNameCount = 0;
     arrayFromList(formalsArr, formals);
 
-    for (zint i = 0; i < info->formalsSize; i++) {
+    for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
         zvalue name = collGet(formal, STR_name);
         zvalue repeat = collGet(formal, STR_repeat);
@@ -166,7 +166,7 @@ static zvalue buildClosureDef(zvalue defMap) {
 /**
  * Gets the `ClosureDef` associated with the given node.
  */
-static zvalue getDef(zvalue node) {
+static zvalue getClosureDef(zvalue node) {
     zvalue defMap = dataOf(node);
     zvalue cache = GFN_CALL(fetch, defCacheBox);
     zvalue result = collGet(cache, defMap);
@@ -178,6 +178,96 @@ static zvalue getDef(zvalue node) {
     }
 
     return result;
+}
+
+/**
+ * Creates a variable map for all the formal arguments of the given
+ * function.
+ */
+static zvalue bindArguments(zvalue closureDef, zvalue exitFunction,
+        zint argCount, const zvalue *args) {
+    ClosureDefInfo *info = getDefInfo(closureDef);
+    zvalue formals = info->formals;
+    zint formalsSize = info->formalsSize;
+
+    if (formalsSize == 0) {
+        if (argCount != 0) {
+            die("Function called with too many arguments: %lld != 0",
+                argCount);
+        }
+        return EMPTY_MAP;
+    }
+
+    //zvalue formalsArr[formalsSize];
+    zmapping elems[info->formalNameCount + (exitFunction ? 1 : 0)];
+    zint elemAt = 0;
+    zint argAt = 0;
+
+    //arrayFromList(formalsArr, formals);
+    zformal *formalz = info->formalz;
+
+    for (zint i = 0; i < formalsSize; i++) {
+        //zvalue formal = formalsArr[i];
+        zvalue name = formalz[i].name;
+        //zvalue repeat = collGet(formal, STR_repeat);
+        zrepeat repeat = formalz[i].repeat;
+        bool ignore = (name == NULL);
+        zvalue value;
+
+        if (repeat != REP_NONE) {
+            zint count;
+
+            switch (repeat) {
+                case REP_STAR: {
+                    count = argCount - argAt;
+                    break;
+                }
+                case REP_PLUS: {
+                    if (argAt >= argCount) {
+                        die("Function called with too few arguments "
+                            "(plus argument): %lld",
+                            argCount);
+                    }
+                    count = argCount - argAt;
+                    break;
+                }
+                case REP_QMARK: {
+                    count = (argAt >= argCount) ? 0 : 1;
+                    break;
+                }
+                default: {
+                    die("Invalid repeat enum (shouldn't happen).");
+                }
+            }
+
+            value = ignore ? NULL : listFromArray(count, &args[argAt]);
+            argAt += count;
+        } else if (argAt >= argCount) {
+            die("Function called with too few arguments: %lld", argCount);
+        } else {
+            value = args[argAt];
+            argAt++;
+        }
+
+        if (!ignore) {
+            elems[elemAt].key = name;
+            elems[elemAt].value = value;
+            elemAt++;
+        }
+    }
+
+    if (argAt != argCount) {
+        die("Function called with too many arguments: %lld > %lld",
+            argCount, argAt);
+    }
+
+    if (exitFunction != NULL) {
+        elems[elemAt].key = info->yieldDef;
+        elems[elemAt].value = exitFunction;
+        elemAt++;
+    }
+
+    return mapFromArray(elemAt, elems);
 }
 
 /* Documented in header. */
@@ -266,92 +356,8 @@ static zvalue buildClosure(zvalue node) {
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = getInfo(result);
 
-    info->closureDef = getDef(node);
+    info->closureDef = getClosureDef(node);
     return result;
-}
-
-/**
- * Creates a variable map for all the formal arguments of the given
- * function.
- */
-static zvalue bindArguments(zvalue closureDef, zint argCount,
-        const zvalue *args) {
-    ClosureDefInfo *info = getDefInfo(closureDef);
-    zvalue formals = info->formals;
-    zint formalsSize = info->formalsSize;
-
-    if (formalsSize == 0) {
-        if (argCount != 0) {
-            die("Function called with too many arguments: %lld != 0",
-                argCount);
-        }
-        return EMPTY_MAP;
-    }
-
-    //zvalue formalsArr[formalsSize];
-    zmapping elems[info->formalNameCount];
-    zint elemAt = 0;
-    zint argAt = 0;
-
-    //arrayFromList(formalsArr, formals);
-    zformal *formalz = info->formalz;
-
-    for (zint i = 0; i < formalsSize; i++) {
-        //zvalue formal = formalsArr[i];
-        zvalue name = formalz[i].name;
-        //zvalue repeat = collGet(formal, STR_repeat);
-        zrepeat repeat = formalz[i].repeat;
-        bool ignore = (name == NULL);
-        zvalue value;
-
-        if (repeat != REP_NONE) {
-            zint count;
-
-            switch (repeat) {
-                case REP_STAR: {
-                    count = argCount - argAt;
-                    break;
-                }
-                case REP_PLUS: {
-                    if (argAt >= argCount) {
-                        die("Function called with too few arguments "
-                            "(plus argument): %lld",
-                            argCount);
-                    }
-                    count = argCount - argAt;
-                    break;
-                }
-                case REP_QMARK: {
-                    count = (argAt >= argCount) ? 0 : 1;
-                    break;
-                }
-                default: {
-                    die("Invalid repeat enum (shouldn't happen).");
-                }
-            }
-
-            value = ignore ? NULL : listFromArray(count, &args[argAt]);
-            argAt += count;
-        } else if (argAt >= argCount) {
-            die("Function called with too few arguments: %lld", argCount);
-        } else {
-            value = args[argAt];
-            argAt++;
-        }
-
-        if (!ignore) {
-            elems[elemAt].key = name;
-            elems[elemAt].value = value;
-            elemAt++;
-        }
-    }
-
-    if (argAt != argCount) {
-        die("Function called with too many arguments: %lld > %lld",
-            argCount, argAt);
-    }
-
-    return mapFromArray(elemAt, elems);
 }
 
 /**
@@ -366,13 +372,9 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    zvalue argMap = bindArguments(
-        callState->closureDef, callState->argCount, callState->args);
+    zvalue argMap = bindArguments(callState->closureDef,
+        exitFunction, callState->argCount, callState->args);
     frameInit(&frame, &info->frame, closure, argMap);
-
-    if (exitFunction != NULL) {
-        frameAdd(&frame, info->yieldDef, exitFunction);
-    }
 
     // Evaluate the statements, updating the frame as needed.
 
