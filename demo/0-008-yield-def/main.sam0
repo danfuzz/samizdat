@@ -10,23 +10,36 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ::
 
-def x = { <out> ::
-    <out> "Hello."
+def x = { <outx> ::
+    <outx> "Hello"
 }();
 
 io0Note(x);
 
-def y = { <stuff> ::
-    ifValue { <> "and" }
-        { value :: <stuff> value }
-}();
+def y = { <outx> arg ::
+    <outx> arg
+}("and");
 
 io0Note(y);
 
+def z = { <stuff> ::
+    ifValue { <> "also" }
+        { value :: <stuff> value }
+}();
+
+io0Note(z);
+
 fn <blort> foo() {
-    <blort> "Goodbye."
+    <blort> "goodbye"
 };
 
 io0Note(foo());
+
+fn <blort> bar(arg) {
+    <blort> arg
+};
+
+io0Note(bar("to"));
+io0Note(bar("you."));
 
 <> 0
