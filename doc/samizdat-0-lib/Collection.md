@@ -10,7 +10,7 @@ here.
 
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Collection` protocol
 
 #### `cat(collection, more*) <> collection`
 
@@ -50,6 +50,10 @@ Returns the element of the collection that corresponds to the given
 corresponding value for the given `key` (including if `key` is not
 bound in the collection at all).
 
+#### `keyList(collection) <> list`
+
+Returns the list of keys mapped by the collection.
+
 #### `nth(collection, n) <> . | void`
 
 Returns the nth (zero-based) element of the collection, in its defined
@@ -85,6 +89,23 @@ must both be ints, must be valid indices into `collection` *or* the
 collection size, and must form a range (though possibly empty) with
 `start <= end`. If `end` is not specified, it defaults to the end of the
 collection.
+
+
+### Generic Function Definitions: `Sequence` protocol
+
+#### `get(sequence, key) <> . | void`
+
+(Refinement of `Collection` protocol.)
+
+For sequences, `get` behaves the same as `nth`, except that it returns
+void for `key` values that are either non-ints or negative (instead of
+reporting a terminal error).
+
+#### `keyList(sequence) <> list`
+
+(Refinement of `Collection` protocol.)
+
+Returns the list `[0..!size(sequence)]`.
 
 
 <br><br>

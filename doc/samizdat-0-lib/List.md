@@ -4,6 +4,8 @@ Samizdat Layer 0: Core Library
 Lists
 -----
 
+A `List` is a kind of `Sequence`.
+
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
@@ -32,12 +34,15 @@ Returns a list like the given one, but without the `n`th element.
 
 #### `get(list, key) <> . | void`
 
-This is identical to `nth(list, key)`, except that the result of passing
-a negative or non-`Int` value for `key` is void and not an error.
+Defined as per the `Sequence` protocol.
+
+#### `keyList(list, n) <> list`
+
+Defined as per the `Sequence` protocol.
 
 #### `nth(list, n) <> . | void`
 
-Gets the nth element of the list.
+Gets the nth element of the string.
 
 #### `put(list, n, value) <> list`
 
