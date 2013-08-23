@@ -10,6 +10,7 @@
 
 #include "const.h"
 #include "impl.h"
+#include "type/Box.h"
 #include "type/Generic.h"
 #include "type/List.h"
 #include "type/Map.h"
@@ -17,24 +18,61 @@
 #include "type/Type.h"
 #include "type/Value.h"
 #include "util.h"
+#include "zlimits.h"
 
 
 /*
  * Private Definitions
  */
 
+enum {
+    /** Whether to spew to the console about cache behavior. */
+    CHATTY_CACHEY = false
+};
+
 // Defined below.
 static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
 
 /**
- * Closure, that is, a function and its associated immutable bindings.
- * Instances of this structure are bound as the closure state as part of
- * function registration in `execClosure()`.
+ * Cache that maps all encountered closure(ish) nodes to their associated
+ * `Closure` values.
+ */
+static zvalue nodeCache = NULL;
+
+/**
+ * Box for `nodeCache`. This is registered as an immortal, so that
+ * whatever `nodeCache` happens to point at will never be garbage.
+ */
+static zvalue nodeCacheBox = NULL;
+
+/**
+ * Repetition style of a formal argument.
+ */
+typedef enum {
+    REP_NONE,
+    REP_QMARK,
+    REP_STAR,
+    REP_PLUS
+} zrepeat;
+
+/**
+ * Formal argument.
+ */
+typedef struct {
+    /** Name (optional). */
+    zvalue name;
+
+    /** Repetition style. */
+    zrepeat repeat;
+} zformal;
+
+/**
+ * Cached info about a `defMap`.
  */
 typedef struct {
     /**
      * Snapshot of the frame that was active at the moment the closure was
-     * constructed.
+     * constructed. Left uninitialized for cached values.
      */
     Frame frame;
 
@@ -45,11 +83,14 @@ typedef struct {
      */
     zvalue defMap;
 
-    /** The `"formals"` mapping inside `defMap`. */
-    zvalue formals;
+    /** The `"formals"` mapping of `defMap`, converted for easier use. */
+    zformal formals[LANG_MAX_FORMALS];
 
     /** The result of `collSize(formals)`. */
     zint formalsSize;
+
+    /** The number of actual names in `formals`. */
+    zint formalNameCount;
 
     /** The `"statements"` mapping inside `defMap`. */
     zvalue statements;
@@ -77,7 +118,6 @@ typedef struct {
     const zvalue *args;
 } CallState;
 
-
 /**
  * Gets a pointer to the info of a closure value.
  */
@@ -86,60 +126,141 @@ static ClosureInfo *getInfo(zvalue closure) {
 }
 
 /**
- * Helper for evaluating `closure` and `fnDef` nodes. This allocates a
- * new `Closure` and sets up everything but the `frame`.
+ * Builds and returns a `Closure` from a `closure` or `fnDef` payload,
+ * suitable for storage in the cache.
  */
-static zvalue buildClosure(zvalue node) {
+static zvalue buildCachedClosure(zvalue defMap) {
+    zvalue formals = collGet(defMap, STR_formals);
+    zint formalsSize = collSize(formals);
+
+    // Build out most of the result.
+
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = getInfo(result);
-    zvalue defMap = dataOf(node);
 
     info->defMap = defMap;
-    info->formals = collGet(defMap, STR_formals);
-    info->formalsSize = collSize(info->formals);
+    info->formalsSize = formalsSize;
+    info->formalNameCount = -1;
     info->statements = collGet(defMap, STR_statements);
     info->yield = collGet(defMap, STR_yield);
     info->yieldDef = collGet(defMap, STR_yieldDef);
 
-    return result;
-}
+    // Validate and transform all the formals.
 
-/**
- * Binds variables for all the formal arguments of the given
- * function (if any), into the given execution frame.
- */
-static void bindArguments(Frame *frame, zvalue closure,
-        zint argCount, const zvalue *args) {
-    ClosureInfo *info = getInfo(closure);
-    zvalue formals = info->formals;
-    zint formalsSize = info->formalsSize;
-    zvalue formalsArr[formalsSize];
-    zint argAt = 0;
-
-    if (formalsSize != 0) {
-        arrayFromList(formalsArr, formals);
+    if (formalsSize > LANG_MAX_FORMALS) {
+        die("Too many formals: %lld", formalsSize);
     }
+
+    zvalue formalsArr[formalsSize];
+    zvalue names = EMPTY_MAP;
+    zint formalNameCount = 0;
+    arrayFromList(formalsArr, formals);
 
     for (zint i = 0; i < formalsSize; i++) {
         zvalue formal = formalsArr[i];
         zvalue name = collGet(formal, STR_name);
         zvalue repeat = collGet(formal, STR_repeat);
+        zrepeat rep;
+
+        if (name != NULL) {
+            if (collGet(names, name) != NULL) {
+                die("Duplicate formal name: %s", valDebugString(name));
+            }
+            names = collPut(names, name, name);
+            formalNameCount++;
+        }
+
+        if (repeat == NULL) {
+            rep = REP_NONE;
+        } else {
+            if (collSize(repeat) != 1) {
+                die("Invalid repeat modifier: %s", valDebugString(repeat));
+            }
+            switch (collNthChar(repeat, 0)) {
+                case '*': rep = REP_STAR;  break;
+                case '+': rep = REP_PLUS;  break;
+                case '?': rep = REP_QMARK; break;
+                default: {
+                    die("Invalid repeat modifier: %s", valDebugString(repeat));
+                }
+            }
+        }
+
+        info->formals[i].name = name;
+        info->formals[i].repeat = rep;
+    }
+
+    // All's well. Finish up.
+
+    info->formalNameCount = formalNameCount;
+    return result;
+}
+
+/**
+ * Gets the cached `Closure` associated with the given node.
+ */
+static zvalue getCachedClosure(zvalue node) {
+    zvalue result = collGet(nodeCache, node);
+
+    if (CHATTY_CACHEY) {
+        static int hits = 0;
+        static int total = 0;
+        if (result != NULL) {
+            hits++;
+        }
+        total++;
+        if ((total % 1000000) == 0) {
+            note("Closure Cache: Hit rate %d/%d == %5.2f%%; %d unique nodes.",
+                hits, total, (100.0 * hits) / total, total - hits);
+        }
+    }
+
+    if (result == NULL) {
+        result = buildCachedClosure(dataOf(node));
+        nodeCache = collPut(nodeCache, node, result);
+        GFN_CALL(store, nodeCacheBox, nodeCache);
+    }
+
+    return result;
+}
+
+/**
+ * Creates a variable map for all the formal arguments of the given
+ * function.
+ */
+static zvalue bindArguments(zvalue closure, zvalue exitFunction,
+        zint argCount, const zvalue *args) {
+    ClosureInfo *info = getInfo(closure);
+    zint formalsSize = info->formalsSize;
+
+    if (formalsSize == 0) {
+        if (argCount != 0) {
+            die("Function called with too many arguments: %lld != 0",
+                argCount);
+        }
+        return EMPTY_MAP;
+    }
+
+    zmapping elems[info->formalNameCount + (exitFunction ? 1 : 0)];
+    zformal *formals = info->formals;
+    zint elemAt = 0;
+    zint argAt = 0;
+
+    for (zint i = 0; i < formalsSize; i++) {
+        zvalue name = formals[i].name;
+        zrepeat repeat = formals[i].repeat;
         bool ignore = (name == NULL);
         zvalue value;
 
-        if (repeat != NULL) {
+        if (repeat != REP_NONE) {
             zint count;
 
-            if (collNth(repeat, 1) != NULL) {
-                die("Invalid repeat modifier.");
-            }
-
-            switch (collNthChar(repeat, 0)) {
-                case '*': {
+            switch (repeat) {
+                case REP_STAR: {
                     count = argCount - argAt;
                     break;
                 }
-                case '+': {
+                case REP_PLUS: {
                     if (argAt >= argCount) {
                         die("Function called with too few arguments "
                             "(plus argument): %lld",
@@ -148,21 +269,17 @@ static void bindArguments(Frame *frame, zvalue closure,
                     count = argCount - argAt;
                     break;
                 }
-                case '?': {
+                case REP_QMARK: {
                     count = (argAt >= argCount) ? 0 : 1;
                     break;
                 }
                 default: {
-                    die("Invalid repeat modifier.");
+                    die("Invalid repeat enum (shouldn't happen).");
                 }
             }
 
-            if (count == 0) {
-                value = EMPTY_LIST;
-            } else {
-                value = ignore ? NULL : listFromArray(count, &args[argAt]);
-                argAt += count;
-            }
+            value = ignore ? NULL : listFromArray(count, &args[argAt]);
+            argAt += count;
         } else if (argAt >= argCount) {
             die("Function called with too few arguments: %lld", argCount);
         } else {
@@ -171,7 +288,9 @@ static void bindArguments(Frame *frame, zvalue closure,
         }
 
         if (!ignore) {
-            frameAdd(frame, name, value);
+            elems[elemAt].key = name;
+            elems[elemAt].value = value;
+            elemAt++;
         }
     }
 
@@ -179,6 +298,27 @@ static void bindArguments(Frame *frame, zvalue closure,
         die("Function called with too many arguments: %lld > %lld",
             argCount, argAt);
     }
+
+    if (exitFunction != NULL) {
+        elems[elemAt].key = info->yieldDef;
+        elems[elemAt].value = exitFunction;
+        elemAt++;
+    }
+
+    return mapFromArray(elemAt, elems);
+}
+
+/**
+ * Helper for evaluating `closure` and `fnDef` nodes. This allocates a
+ * new `Closure`, cloning its info from a cached instance.
+ */
+static zvalue buildClosure(zvalue node) {
+    zvalue cachedClosure = getCachedClosure(node);
+    zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
+    ClosureInfo *info = getInfo(result);
+
+    utilCpy(ClosureInfo, getInfo(result), getInfo(cachedClosure), 1);
+    return result;
 }
 
 /**
@@ -193,12 +333,9 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    frameInit(&frame, &info->frame, closure, EMPTY_MAP);
-    bindArguments(&frame, closure, callState->argCount, callState->args);
-
-    if (exitFunction != NULL) {
-        frameAdd(&frame, info->yieldDef, exitFunction);
-    }
+    zvalue argMap = bindArguments(closure,
+        exitFunction, callState->argCount, callState->args);
+    frameInit(&frame, &info->frame, closure, argMap);
 
     // Evaluate the statements, updating the frame as needed.
 
@@ -351,7 +488,7 @@ METH_IMPL(Closure, gcMark) {
     ClosureInfo *info = getInfo(closure);
 
     frameMark(&info->frame);
-    pbMark(info->defMap);
+    pbMark(info->defMap); // All the other bits are derived from this.
     return NULL;
 }
 
@@ -362,6 +499,10 @@ void langBindClosure(void) {
     METH_BIND(Closure, canCall);
     METH_BIND(Closure, debugString);
     METH_BIND(Closure, gcMark);
+
+    nodeCache = EMPTY_MAP;
+    nodeCacheBox = makeMutableBox(EMPTY_MAP);
+    pbImmortalize(nodeCacheBox);
 }
 
 /* Documented in header. */
