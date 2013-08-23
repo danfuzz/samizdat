@@ -37,6 +37,12 @@ static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
  * Cache that maps all encountered closure(ish) nodes to their associated
  * `Closure` values.
  */
+static zvalue nodeCache = NULL;
+
+/**
+ * Box for `nodeCache`. This is registered as an immortal, so that
+ * whatever `nodeCache` happens to point at will never be garbage.
+ */
 static zvalue nodeCacheBox = NULL;
 
 /**
@@ -194,8 +200,7 @@ static zvalue buildCachedClosure(zvalue defMap) {
  * Gets the cached `Closure` associated with the given node.
  */
 static zvalue getCachedClosure(zvalue node) {
-    zvalue cache = GFN_CALL(fetch, nodeCacheBox);
-    zvalue result = collGet(cache, node);
+    zvalue result = collGet(nodeCache, node);
 
     if (CHATTY_CACHEY) {
         static int hits = 0;
@@ -212,8 +217,8 @@ static zvalue getCachedClosure(zvalue node) {
 
     if (result == NULL) {
         result = buildCachedClosure(dataOf(node));
-        cache = collPut(cache, node, result);
-        GFN_CALL(store, nodeCacheBox, cache);
+        nodeCache = collPut(nodeCache, node, result);
+        GFN_CALL(store, nodeCacheBox, nodeCache);
     }
 
     return result;
@@ -495,6 +500,7 @@ void langBindClosure(void) {
     METH_BIND(Closure, debugString);
     METH_BIND(Closure, gcMark);
 
+    nodeCache = EMPTY_MAP;
     nodeCacheBox = makeMutableBox(EMPTY_MAP);
     pbImmortalize(nodeCacheBox);
 }
