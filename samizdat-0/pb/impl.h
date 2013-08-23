@@ -142,6 +142,7 @@ void pbBindCollection(void);
 void pbBindFunction(void);
 void pbBindGeneric(void);
 void pbBindInt(void);
+void pbBindList(void);
 void pbBindString(void);
 void pbBindType(void);
 void pbBindUniqlet(void);

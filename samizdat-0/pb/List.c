@@ -271,7 +271,7 @@ METH_IMPL(List, slice) {
 }
 
 /* Documented in header. */
-void datBindList(void) {
+void pbBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
     METH_BIND(List, cat);
     METH_BIND(List, del);
