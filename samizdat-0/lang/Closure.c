@@ -221,33 +221,8 @@ typedef struct {
      */
     Frame frame;
 
-    /**
-     * Closure payload map that represents the fixed definition of the
-     * closure. This can be the payload of either a `closure` or a
-     * `fnDef` node.
-     */
-    zvalue defMap;
-
-    /** The `"formals"` mapping of `defMap`, converted for easier use. */
-    zformal formalz[LANG_MAX_FORMALS];
-
-    /** The `"formals"` mapping inside `defMap`. */
-    zvalue formals;
-
-    /** The result of `collSize(formals)`. */
-    zint formalsSize;
-
-    /** The number of actual names in `formals`. */
-    zint formalNameCount;
-
-    /** The `"statements"` mapping inside `defMap`. */
-    zvalue statements;
-
-    /** The `"yield"` mapping inside `defMap`. */
-    zvalue yield;
-
-    /** The `"yieldDef"` mapping inside `defMap`. */
-    zvalue yieldDef;
+    /** `ClosureDef` containing all the vital info. */
+    zvalue closureDef;
 } ClosureInfo;
 
 /**
@@ -258,6 +233,9 @@ typedef struct {
 typedef struct {
     /** Closure being called. */
     zvalue closure;
+
+    /** Associated `ClosureDef`. */
+    zvalue closureDef;
 
     /** Argument count. */
     zint argCount;
@@ -276,8 +254,7 @@ static ClosureInfo *getInfo(zvalue closure) {
 
 /**
  * Helper for evaluating `closure` and `fnDef` nodes. This allocates a
- * new `Closure` and sets up most properties. It notably skips setting
- * up `frame` and parsing the `formals`.
+ * new `Closure` and sets up the `closureDef`.
  */
 static zvalue buildClosure(zvalue node) {
     zvalue defMap = dataOf(node);
@@ -289,73 +266,17 @@ static zvalue buildClosure(zvalue node) {
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = getInfo(result);
 
-    info->defMap = defMap;
-    info->formals = formals;
-    info->formalsSize = formalsSize;
-    info->formalNameCount = -1;
-    info->statements = collGet(defMap, STR_statements);
-    info->yield = collGet(defMap, STR_yield);
-    info->yieldDef = collGet(defMap, STR_yieldDef);
-
+    info->closureDef = getDef(node);
     return result;
-}
-
-static void setupFormals(zvalue closure) {
-    ClosureInfo *info = getInfo(closure);
-    zvalue formals = collGet(info->defMap, STR_formals);
-
-    if (info->formalsSize > LANG_MAX_FORMALS) {
-        die("Too many formals: %lld", info->formalsSize);
-    }
-
-    zvalue formalsArr[info->formalsSize];
-    zvalue names = EMPTY_MAP;
-    zint formalNameCount = 0;
-    arrayFromList(formalsArr, formals);
-
-    for (zint i = 0; i < info->formalsSize; i++) {
-        zvalue formal = formalsArr[i];
-        zvalue name = collGet(formal, STR_name);
-        zvalue repeat = collGet(formal, STR_repeat);
-        zrepeat rep;
-
-        if (name != NULL) {
-            if (collGet(names, name) != NULL) {
-                die("Duplicate formal name: %s", valDebugString(name));
-            }
-            names = collPut(names, name, name);
-            formalNameCount++;
-        }
-
-        if (repeat == NULL) {
-            rep = REP_NONE;
-        } else {
-            if (collSize(repeat) != 1) {
-                die("Invalid repeat modifier: %s", valDebugString(repeat));
-            }
-            switch (collNthChar(repeat, 0)) {
-                case '*': rep = REP_STAR;  break;
-                case '+': rep = REP_PLUS;  break;
-                case '?': rep = REP_QMARK; break;
-                default: {
-                    die("Invalid repeat modifier: %s", valDebugString(repeat));
-                }
-            }
-        }
-
-        info->formalz[i].name = name;
-        info->formalz[i].repeat = rep;
-    }
-
-    info->formalNameCount = formalNameCount;
 }
 
 /**
  * Creates a variable map for all the formal arguments of the given
  * function.
  */
-static zvalue bindArguments(zvalue closure, zint argCount, const zvalue *args) {
-    ClosureInfo *info = getInfo(closure);
+static zvalue bindArguments(zvalue closureDef, zint argCount,
+        const zvalue *args) {
+    ClosureDefInfo *info = getDefInfo(closureDef);
     zvalue formals = info->formals;
     zint formalsSize = info->formalsSize;
 
@@ -365,10 +286,6 @@ static zvalue bindArguments(zvalue closure, zint argCount, const zvalue *args) {
                 argCount);
         }
         return EMPTY_MAP;
-    }
-
-    if (info->formalNameCount < 0) {
-        setupFormals(closure);
     }
 
     //zvalue formalsArr[formalsSize];
@@ -449,8 +366,8 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    zvalue argMap =
-        bindArguments(closure, callState->argCount, callState->args);
+    zvalue argMap = bindArguments(
+        callState->closureDef, callState->argCount, callState->args);
     frameInit(&frame, &info->frame, closure, argMap);
 
     if (exitFunction != NULL) {
@@ -566,7 +483,7 @@ METH_IMPL(Closure, call) {
     // it is being called with, hence `argCount - 1, &args[1]` below.
     zvalue closure = args[0];
     ClosureInfo *info = getInfo(closure);
-    CallState callState = { closure, argCount - 1, &args[1] };
+    CallState callState = { closure, info->closureDef, argCount - 1, &args[1] };
     zvalue result;
 
     if (info->yieldDef != NULL) {
@@ -608,7 +525,7 @@ METH_IMPL(Closure, gcMark) {
     ClosureInfo *info = getInfo(closure);
 
     frameMark(&info->frame);
-    pbMark(info->defMap);
+    pbMark(info->closureDef);
     return NULL;
 }
 
