@@ -120,5 +120,6 @@ This is just a convenient shorthand for `nth(collection, 0)`.
 #### `last(collection) <> . | void`
 
 Returns the last element of the given `collection` or void if the it is empty.
-This is just a convenient shorthand for
-`nth(collection, size(collection) - 1)`.
+This is similar to `nth(collection, size(collection) - 1)`, except that this
+function returns void given an empty collection instead of reporting an
+error.
