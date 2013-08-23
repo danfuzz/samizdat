@@ -11,6 +11,7 @@
 #include "impl.h"
 #include "type/Callable.h"
 #include "type/Generic.h"
+#include "type/List.h"
 #include "type/String.h"
 #include "type/Value.h"
 
@@ -65,6 +66,16 @@ static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
 /*
  * Exported Definitions
  */
+
+/* Documented in header. */
+zvalue funApply(zvalue function, zvalue args) {
+    zint argCount = collSize(args);
+    zvalue argsArray[argCount];
+
+    arrayFromList(argsArray, args);
+
+    return funCall(function, argCount, argsArray);
+}
 
 /* Documented in header. */
 zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
