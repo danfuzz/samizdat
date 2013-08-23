@@ -231,18 +231,9 @@ static zvalue getCachedClosure(zvalue node) {
 static zvalue bindArguments(zvalue closure, zvalue exitFunction,
         zint argCount, const zvalue *args) {
     ClosureInfo *info = getInfo(closure);
-    zint formalsSize = info->formalsSize;
-
-    if (formalsSize == 0) {
-        if (argCount != 0) {
-            die("Function called with too many arguments: %lld != 0",
-                argCount);
-        }
-        return EMPTY_MAP;
-    }
-
     zmapping elems[info->formalNameCount + (exitFunction ? 1 : 0)];
     zformal *formals = info->formals;
+    zint formalsSize = info->formalsSize;
     zint elemAt = 0;
     zint argAt = 0;
 
