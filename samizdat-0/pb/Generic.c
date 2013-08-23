@@ -58,7 +58,7 @@ static zvalue findByTrueType(zvalue generic, zvalue type) {
     GenericInfo *info = getInfo(generic);
 
     for (/*type*/; type != NULL; type = typeParent(type)) {
-        zvalue result = info->functions[indexFromType(type)];
+        zvalue result = info->functions[indexFromTrueType(type)];
         if (result != NULL) {
             return result;
         }
@@ -128,7 +128,7 @@ void genericBindCore(zvalue generic, zvalue type, zfunction function) {
     assertHasType(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
-    zint index = indexFromType(type);
+    zint index = indexFromTrueType(type);
 
     if (info->sealed) {
         die("Sealed generic.");

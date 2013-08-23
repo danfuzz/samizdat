@@ -51,6 +51,9 @@ zvalue dataOf(zvalue value) {
 }
 
 /* Documented in header. */
+extern void *pbPayload(zvalue value);
+
+/* Documented in header. */
 zint valIdentityOf(zvalue value) {
     if (!typeIsIdentified(typeOf(value))) {
         die("Attempt to use `valIdentityOf` on non-identified value.");

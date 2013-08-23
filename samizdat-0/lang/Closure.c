@@ -346,35 +346,24 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
 
     for (zint i = 0; i < statementsSize; i++) {
         zvalue one = statementsArr[i];
-        zvalue oneType = typeOf(one);
 
-        // Switch on the first character of the type string to avoid
-        // gratuitous `valEq` tests.
-        switch (collNthChar(oneType, 0)) {
-            case 'f': {
-                if (valEq(oneType, STR_fnDef)) {
-                    // Look for immediately adjacent `fnDef` nodes, and
-                    // process them all together.
-                    zint end = i + 1;
-                    for (/*end*/; end < statementsSize; end++) {
-                        zvalue one = statementsArr[end];
-                        if (!hasType(one, STR_fnDef)) {
-                            break;
-                        }
+        switch (evalTypeOf(one)) {
+            case EVAL_fnDef: {
+                // Look for immediately adjacent `fnDef` nodes, and
+                // process them all together.
+                zint end = i + 1;
+                for (/*end*/; end < statementsSize; end++) {
+                    zvalue one = statementsArr[end];
+                    if (!hasType(one, STR_fnDef)) {
+                        break;
                     }
-                    execFnDefs(&frame, end - i, &statementsArr[i]);
-                    i = end - 1;
-                } else {
-                    execExpressionVoidOk(&frame, one);
                 }
+                execFnDefs(&frame, end - i, &statementsArr[i]);
+                i = end - 1;
                 break;
             }
-            case 'v': {
-                if (valEq(oneType, STR_varDef)) {
-                    execVarDef(&frame, one);
-                } else {
-                    execExpressionVoidOk(&frame, one);
-                }
+            case EVAL_varDef: {
+                execVarDef(&frame, one);
                 break;
             }
             default: {

@@ -245,7 +245,7 @@ static void assertHasTypeType(zvalue value) {
  */
 
 /* Documented in header. */
-zint indexFromType(zvalue type) {
+zint indexFromTrueType(zvalue type) {
     assertHasTypeType(type);
     return getInfo(type)->id;
 }
@@ -262,13 +262,13 @@ zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret) {
 }
 
 /* Documented in header. */
-bool typeIsDerived(zvalue type) {
-    return isType(type) ? getInfo(type)->derived : true;
+bool typeIsDerived(zvalue typeOrName) {
+    return isType(typeOrName) ? getInfo(typeOrName)->derived : true;
 }
 
 /* Documented in header. */
-bool typeSecretIs(zvalue type, zvalue secret) {
-    zvalue typeSecret = isType(type) ? getInfo(type)->secret : NULL;
+bool typeSecretIs(zvalue typeOrName, zvalue secret) {
+    zvalue typeSecret = isType(typeOrName) ? getInfo(typeOrName)->secret : NULL;
     return valEq(typeSecret, secret);
 }
 
@@ -299,11 +299,11 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
 }
 
 /* Documented in header. */
-void assertHasType(zvalue value, zvalue type) {
+void assertHasType(zvalue value, zvalue typeOrName) {
     assertValid(value);
-    if (!hasType(value, type)) {
+    if (!hasType(value, typeOrName)) {
         die("Expected type %s; got %s.",
-            valDebugString(type), valDebugString(value));
+            valDebugString(typeOrName), valDebugString(value));
     }
 }
 
@@ -332,8 +332,8 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
 }
 
 /* Documented in header. */
-bool hasType(zvalue value, zvalue type) {
-    return typeEq(value->type, trueTypeFromTypeOrName(type));
+bool hasType(zvalue value, zvalue typeOrName) {
+    return typeEq(value->type, trueTypeFromTypeOrName(typeOrName));
 }
 
 /* Documented in header. */
@@ -342,21 +342,28 @@ bool haveSameType(zvalue v1, zvalue v2) {
 }
 
 /* Documented in header. */
-extern void *pbPayload(zvalue value);
+zint typeIndex(zvalue typeOrName) {
+    return indexFromTrueType(trueTypeFromTypeOrName(typeOrName));
+}
 
 /* Documented in header. */
-bool typeIsIdentified(zvalue type) {
-    if (!isType(type)) {
+zint typeIndexOf(zvalue value) {
+    return indexFromTrueType(value->type);
+}
+
+/* Documented in header. */
+bool typeIsIdentified(zvalue typeOrName) {
+    if (!isType(typeOrName)) {
         // Transparent types are not identified.
         return false;
     }
 
-    return getInfo(type)->identified;
+    return getInfo(typeOrName)->identified;
 }
 
 /* Documented in header. */
-zvalue typeName(zvalue type) {
-    return isType(type) ? getInfo(type)->name : type;
+zvalue typeName(zvalue typeOrName) {
+    return isType(typeOrName) ? getInfo(typeOrName)->name : typeOrName;
 }
 
 /* Documented in header. */
@@ -371,8 +378,8 @@ zvalue typeOf(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue typeParent(zvalue type) {
-    return isType(type) ? getInfo(type)->parent : TYPE_Value;
+zvalue typeParent(zvalue typeOrName) {
+    return isType(typeOrName) ? getInfo(typeOrName)->parent : TYPE_Value;
 }
 
 
@@ -448,12 +455,12 @@ void pbInitTypeSystem(void) {
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
-    if (indexFromType(TYPE_Function) != PB_INDEX_FUNCTION) {
+    if (indexFromTrueType(TYPE_Function) != PB_INDEX_FUNCTION) {
         die("Mismatched index for `Function`: should be %lld",
-            indexFromType(TYPE_Function));
-    } else if (indexFromType(TYPE_Generic) != PB_INDEX_GENERIC) {
+            indexFromTrueType(TYPE_Function));
+    } else if (indexFromTrueType(TYPE_Generic) != PB_INDEX_GENERIC) {
         die("Mismatched index for `Generic`: should be %lld",
-            indexFromType(TYPE_Generic));
+            indexFromTrueType(TYPE_Generic));
     }
 
     // Make sure that the "fake" header is sized the same as the real one.
