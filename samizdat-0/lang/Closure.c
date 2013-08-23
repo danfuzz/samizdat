@@ -33,8 +33,11 @@ enum {
 // Defined below.
 static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
 
-/** Cache of all encountered `defMap`s, and their associated `Closure`s. */
-static zvalue defCacheBox = NULL;
+/**
+ * Cache that maps all encountered closure(ish) nodes to their associated
+ * `Closure` values.
+ */
+static zvalue nodeCacheBox = NULL;
 
 /**
  * Repetition style of a formal argument.
@@ -191,9 +194,8 @@ static zvalue buildCachedClosure(zvalue defMap) {
  * Gets the cached `Closure` associated with the given node.
  */
 static zvalue getCachedClosure(zvalue node) {
-    zvalue defMap = dataOf(node);
-    zvalue cache = GFN_CALL(fetch, defCacheBox);
-    zvalue result = collGet(cache, defMap);
+    zvalue cache = GFN_CALL(fetch, nodeCacheBox);
+    zvalue result = collGet(cache, node);
 
     if (CHATTY_CACHEY) {
         static int hits = 0;
@@ -209,9 +211,9 @@ static zvalue getCachedClosure(zvalue node) {
     }
 
     if (result == NULL) {
-        result = buildCachedClosure(defMap);
-        cache = collPut(cache, defMap, result);
-        GFN_CALL(store, defCacheBox, cache);
+        result = buildCachedClosure(dataOf(node));
+        cache = collPut(cache, node, result);
+        GFN_CALL(store, nodeCacheBox, cache);
     }
 
     return result;
@@ -493,8 +495,8 @@ void langBindClosure(void) {
     METH_BIND(Closure, debugString);
     METH_BIND(Closure, gcMark);
 
-    defCacheBox = makeMutableBox(EMPTY_MAP);
-    pbImmortalize(defCacheBox);
+    nodeCacheBox = makeMutableBox(EMPTY_MAP);
+    pbImmortalize(nodeCacheBox);
 }
 
 /* Documented in header. */
