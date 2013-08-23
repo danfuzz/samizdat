@@ -17,6 +17,7 @@
 #include "type/Type.h"
 #include "type/Value.h"
 #include "util.h"
+#include "zlimits.h"
 
 
 /*
@@ -25,6 +26,27 @@
 
 // Defined below.
 static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
+
+/**
+ * Repetition style of a formal argument.
+ */
+typedef enum {
+    REP_NONE,
+    REP_QMARK,
+    REP_STAR,
+    REP_PLUS
+} zrepeat;
+
+/**
+ * Formal argument.
+ */
+typedef struct {
+    /** Name (optional). */
+    zvalue name;
+
+    /** Repetition style. */
+    zrepeat repeat;
+} zformal;
 
 /**
  * Closure, that is, a function and its associated immutable bindings.
@@ -45,11 +67,17 @@ typedef struct {
      */
     zvalue defMap;
 
+    /** The `"formals"` mapping of `defMap`, converted for easier use. */
+    zformal formalz[LANG_MAX_FORMALS];
+
     /** The `"formals"` mapping inside `defMap`. */
     zvalue formals;
 
     /** The result of `collSize(formals)`. */
     zint formalsSize;
+
+    /** The number of actual names in `formals`. */
+    zint formalNameCount;
 
     /** The `"statements"` mapping inside `defMap`. */
     zvalue statements;
@@ -87,16 +115,23 @@ static ClosureInfo *getInfo(zvalue closure) {
 
 /**
  * Helper for evaluating `closure` and `fnDef` nodes. This allocates a
- * new `Closure` and sets up everything but the `frame`.
+ * new `Closure` and sets up most properties. It notably skips setting
+ * up `frame` and parsing the `formals`.
  */
 static zvalue buildClosure(zvalue node) {
+    zvalue defMap = dataOf(node);
+    zvalue formals = collGet(defMap, STR_formals);
+    zint formalsSize = collSize(formals);
+
+    // Build out most of the result.
+
     zvalue result = pbAllocValue(TYPE_Closure, sizeof(ClosureInfo));
     ClosureInfo *info = getInfo(result);
-    zvalue defMap = dataOf(node);
 
     info->defMap = defMap;
-    info->formals = collGet(defMap, STR_formals);
-    info->formalsSize = collSize(info->formals);
+    info->formals = formals;
+    info->formalsSize = formalsSize;
+    info->formalNameCount = -1;
     info->statements = collGet(defMap, STR_statements);
     info->yield = collGet(defMap, STR_yield);
     info->yieldDef = collGet(defMap, STR_yieldDef);
@@ -104,42 +139,102 @@ static zvalue buildClosure(zvalue node) {
     return result;
 }
 
-/**
- * Binds variables for all the formal arguments of the given
- * function (if any), into the given execution frame.
- */
-static void bindArguments(Frame *frame, zvalue closure,
-        zint argCount, const zvalue *args) {
+static void setupFormals(zvalue closure) {
     ClosureInfo *info = getInfo(closure);
-    zvalue formals = info->formals;
-    zint formalsSize = info->formalsSize;
-    zvalue formalsArr[formalsSize];
-    zint argAt = 0;
+    zvalue formals = collGet(info->defMap, STR_formals);
 
-    if (formalsSize != 0) {
-        arrayFromList(formalsArr, formals);
+    if (info->formalsSize > LANG_MAX_FORMALS) {
+        die("Too many formals: %lld", info->formalsSize);
     }
 
-    for (zint i = 0; i < formalsSize; i++) {
+    zvalue formalsArr[info->formalsSize];
+    zvalue names = EMPTY_MAP;
+    zint formalNameCount = 0;
+    arrayFromList(formalsArr, formals);
+
+    for (zint i = 0; i < info->formalsSize; i++) {
         zvalue formal = formalsArr[i];
         zvalue name = collGet(formal, STR_name);
         zvalue repeat = collGet(formal, STR_repeat);
+        zrepeat rep;
+
+        if (name != NULL) {
+            if (collGet(names, name) != NULL) {
+                die("Duplicate formal name: %s", valDebugString(name));
+            }
+            names = collPut(names, name, name);
+            formalNameCount++;
+        }
+
+        if (repeat == NULL) {
+            rep = REP_NONE;
+        } else {
+            if (collSize(repeat) != 1) {
+                die("Invalid repeat modifier: %s", valDebugString(repeat));
+            }
+            switch (collNthChar(repeat, 0)) {
+                case '*': rep = REP_STAR;  break;
+                case '+': rep = REP_PLUS;  break;
+                case '?': rep = REP_QMARK; break;
+                default: {
+                    die("Invalid repeat modifier: %s", valDebugString(repeat));
+                }
+            }
+        }
+
+        info->formalz[i].name = name;
+        info->formalz[i].repeat = rep;
+    }
+
+    info->formalNameCount = formalNameCount;
+}
+
+/**
+ * Creates a variable map for all the formal arguments of the given
+ * function.
+ */
+static zvalue bindArguments(zvalue closure, zint argCount, const zvalue *args) {
+    ClosureInfo *info = getInfo(closure);
+    zvalue formals = info->formals;
+    zint formalsSize = info->formalsSize;
+
+    if (formalsSize == 0) {
+        if (argCount != 0) {
+            die("Function called with too many arguments: %lld != 0",
+                argCount);
+        }
+        return EMPTY_MAP;
+    }
+
+    if (info->formalNameCount < 0) {
+        setupFormals(closure);
+    }
+
+    //zvalue formalsArr[formalsSize];
+    zmapping elems[info->formalNameCount];
+    zint elemAt = 0;
+    zint argAt = 0;
+
+    //arrayFromList(formalsArr, formals);
+    zformal *formalz = info->formalz;
+
+    for (zint i = 0; i < formalsSize; i++) {
+        //zvalue formal = formalsArr[i];
+        zvalue name = formalz[i].name;
+        //zvalue repeat = collGet(formal, STR_repeat);
+        zrepeat repeat = formalz[i].repeat;
         bool ignore = (name == NULL);
         zvalue value;
 
-        if (repeat != NULL) {
+        if (repeat != REP_NONE) {
             zint count;
 
-            if (collNth(repeat, 1) != NULL) {
-                die("Invalid repeat modifier.");
-            }
-
-            switch (collNthChar(repeat, 0)) {
-                case '*': {
+            switch (repeat) {
+                case REP_STAR: {
                     count = argCount - argAt;
                     break;
                 }
-                case '+': {
+                case REP_PLUS: {
                     if (argAt >= argCount) {
                         die("Function called with too few arguments "
                             "(plus argument): %lld",
@@ -148,21 +243,17 @@ static void bindArguments(Frame *frame, zvalue closure,
                     count = argCount - argAt;
                     break;
                 }
-                case '?': {
+                case REP_QMARK: {
                     count = (argAt >= argCount) ? 0 : 1;
                     break;
                 }
                 default: {
-                    die("Invalid repeat modifier.");
+                    die("Invalid repeat enum (shouldn't happen).");
                 }
             }
 
-            if (count == 0) {
-                value = EMPTY_LIST;
-            } else {
-                value = ignore ? NULL : listFromArray(count, &args[argAt]);
-                argAt += count;
-            }
+            value = ignore ? NULL : listFromArray(count, &args[argAt]);
+            argAt += count;
         } else if (argAt >= argCount) {
             die("Function called with too few arguments: %lld", argCount);
         } else {
@@ -171,7 +262,9 @@ static void bindArguments(Frame *frame, zvalue closure,
         }
 
         if (!ignore) {
-            frameAdd(frame, name, value);
+            elems[elemAt].key = name;
+            elems[elemAt].value = value;
+            elemAt++;
         }
     }
 
@@ -179,6 +272,8 @@ static void bindArguments(Frame *frame, zvalue closure,
         die("Function called with too many arguments: %lld > %lld",
             argCount, argAt);
     }
+
+    return mapFromArray(elemAt, elems);
 }
 
 /**
@@ -193,8 +288,9 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
     // nonlocal exit (if present), creating a new execution frame.
 
     Frame frame;
-    frameInit(&frame, &info->frame, closure, EMPTY_MAP);
-    bindArguments(&frame, closure, callState->argCount, callState->args);
+    zvalue argMap =
+        bindArguments(closure, callState->argCount, callState->args);
+    frameInit(&frame, &info->frame, closure, argMap);
 
     if (exitFunction != NULL) {
         frameAdd(&frame, info->yieldDef, exitFunction);
