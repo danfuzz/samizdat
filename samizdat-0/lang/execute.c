@@ -36,6 +36,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
     zint argCount = collSize(actuals);
     zvalue actualsArr[argCount];
     zvalue args[argCount];
+    zint interpCounts[argCount]; // -1 indicates "regular argument".
 
     arrayFromList(actualsArr, actuals);
 
@@ -51,10 +52,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         bool voidable = (oneType == EVAL_voidable);
 
         if (voidable) {
-            // We replace the value in `actualsArr` with the voidable
-            // payload in order to keep the follow-up interpolation loop
-            // simpler.
-            one = actualsArr[i] = dataOf(one);
+            one = dataOf(one);
             oneType = evalTypeOf(one);
         }
 
@@ -77,10 +75,12 @@ static zvalue execCall(Frame *frame, zvalue call) {
         if (interpolate) {
             eval = constCollectGenerator(eval);
             args[i] = eval;
-            fullCount += collSize(eval);
+            interpCounts[i] = collSize(eval);
+            fullCount += interpCounts[i];
             interpolateAny = true;
         } else {
             args[i] = eval;
+            interpCounts[i] = -1;
             fullCount++;
         }
     }
@@ -93,9 +93,10 @@ static zvalue execCall(Frame *frame, zvalue call) {
         for (zint i = 0; i < argCount; i++) {
             zvalue oneNode = actualsArr[i];
             zvalue oneArg = args[i];
-            if (evalTypeOf(oneNode) == EVAL_interpolate) {
+            zint oneCount = interpCounts[i];
+            if (oneCount >= 0) {
                 arrayFromList(&fullArgs[at], oneArg);
-                at += collSize(oneArg);
+                at += oneCount;
             } else {
                 fullArgs[at] = oneArg;
                 at++;
