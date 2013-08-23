@@ -25,6 +25,11 @@
  * Private Definitions
  */
 
+enum {
+    /** Whether to spew to the console about cache behavior. */
+    CHATTY_CACHEY = true
+};
+
 // Defined below.
 static void execFnDefs(Frame *frame, zint size, const zvalue *statements);
 
@@ -189,6 +194,19 @@ static zvalue getCachedClosure(zvalue node) {
     zvalue defMap = dataOf(node);
     zvalue cache = GFN_CALL(fetch, defCacheBox);
     zvalue result = collGet(cache, defMap);
+
+    if (CHATTY_CACHEY) {
+        static int hits = 0;
+        static int total = 0;
+        if (result != NULL) {
+            hits++;
+        }
+        total++;
+        if ((total % 1000000) == 0) {
+            note("Closure Cache: Hit rate %d/%d == %5.2f%%; %d unique nodes.",
+                hits, total, (100.0 * hits) / total, total - hits);
+        }
+    }
 
     if (result == NULL) {
         result = buildCachedClosure(defMap);
