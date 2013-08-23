@@ -353,8 +353,7 @@ static zvalue callClosureMain(CallState *callState, zvalue exitFunction) {
                 // process them all together.
                 zint end = i + 1;
                 for (/*end*/; end < statementsSize; end++) {
-                    zvalue one = statementsArr[end];
-                    if (!hasType(one, STR_fnDef)) {
+                    if (evalTypeOf(statementsArr[end]) != EVAL_fnDef) {
                         break;
                     }
                 }
