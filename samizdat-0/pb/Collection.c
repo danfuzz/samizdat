@@ -189,6 +189,9 @@ void pbBindCollection(void) {
     GFN_put = makeGeneric(3, 3, GFN_NONE, stringFromUtf8(-1, "put"));
     pbImmortalize(GFN_put);
 
+    GFN_reverse = makeGeneric(3, 3, GFN_NONE, stringFromUtf8(-1, "reverse"));
+    pbImmortalize(GFN_reverse);
+
     GFN_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "size"));
     pbImmortalize(GFN_size);
 
@@ -213,6 +216,9 @@ zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_put = NULL;
+
+/* Documented in header. */
+zvalue GFN_reverse = NULL;
 
 /* Documented in header. */
 zvalue GFN_size = NULL;

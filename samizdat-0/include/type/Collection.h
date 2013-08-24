@@ -42,6 +42,9 @@ extern zvalue GFN_nth;
 /** Generic `put(collection, key, value)`: Documented in spec. */
 extern zvalue GFN_put;
 
+/** Generic `reverse(sequence)`: Documented in spec. */
+extern zvalue GFN_reverse;
+
 /** Generic `size(collection)`: Documented in spec. */
 extern zvalue GFN_size;
 
