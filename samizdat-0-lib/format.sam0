@@ -284,7 +284,7 @@ fn sourceStringGeneral(value, adorn) {
 };
 
 # Formats a hex int argument.
-fn convertHex(arg) {
+fn formatIntHex(arg) {
     <> formatIntWithBase(arg, 16)
 };
 
@@ -335,7 +335,7 @@ def FORMATTERS = [
     q: sourceString,
     Q: sourceStringUnadorned,
     s: formatValue,
-    x: convertHex
+    x: formatIntHex
 ];
 
 # Documented in Samizdat Layer 0 spec.

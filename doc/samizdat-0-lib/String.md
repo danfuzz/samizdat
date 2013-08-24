@@ -19,7 +19,7 @@ corresponding-character comparison, with a strict prefix always ordering
 before its longer brethren.
 
 <br><br>
-### Generic Function Definitions: `Collection` protocol
+### Generic Function Definitions: `Collection` and `Sequence` protocols
 
 #### `cat(string, more*) <> string`
 
