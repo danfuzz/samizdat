@@ -102,7 +102,6 @@ PRIM_FUNC(makeUniqlet,    0, 0);
 PRIM_FUNC(makeValue,      1, 2);
 PRIM_FUNC(makeValueMap,   1, -1);
 PRIM_FUNC(makeYieldBox,   0, 0);
-PRIM_FUNC(mapKeys,        1, 1);
 PRIM_FUNC(mappingKey,     1, 1);
 PRIM_FUNC(mappingValue,   1, 1);
 PRIM_FUNC(ne,             2, 2);

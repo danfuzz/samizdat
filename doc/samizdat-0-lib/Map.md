@@ -96,10 +96,6 @@ representable in Samizdat syntax as presented.
 **Syntax Note:** Used in the translation of `[key: value, ...]`
 and `switch` forms.
 
-#### `mapKeys(map) <> list`
-
-Returns the list of keys contained in the given map, in sorted order.
-
 #### `mappingKey(map) <> .`
 
 Returns the sole key of the given map, which must be a single-mapping map.
