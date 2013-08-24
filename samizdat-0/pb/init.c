@@ -38,4 +38,5 @@ void pbInit(void) {
     pbBindGeneric();
     pbBindInt();
     pbBindUniqlet();
+    pbBindList();
 }

@@ -37,23 +37,6 @@ PRIM_IMPL(listFilter) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(listReverse) {
-    zvalue list = args[0];
-    zint size = collSize(list);
-    zvalue elems[size];
-
-    arrayFromList(elems, list);
-
-    for (zint low = 0, high = size - 1; low < high; low++, high--) {
-        zvalue temp = elems[low];
-        elems[low] = elems[high];
-        elems[high] = temp;
-    }
-
-    return listFromArray(size, elems);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(makeList) {
     return listFromArray(argCount, args);
 }

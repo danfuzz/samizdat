@@ -75,7 +75,8 @@ fn main(selfPath, name?, rest*) {
     process([]);
     process([(-1)]);
     process(butFirst([0, 1, -2]));
-    process(listReverse(butLast([-1, 2, 300, 999])));
+    process(reverse(butLast([-1, 2, 300, 999])));
+    process(reverse("!niffuM"));
     process("\"Blort.\" \\ \0 \n");
     process(slice("^muffins^", 1, 8));
     process(slice(["x", "y", "muffins", "biscuits"], 2));
@@ -86,6 +87,9 @@ fn main(selfPath, name?, rest*) {
     process(put("bizcuits", 2, "s"));
     process(put(["scones", "natto"], 1, "ice cream"));
     process(put([one: 1, two: 2, three: 3], "four", 4));
+    process(keyList([@a, @b, @c]));
+    process(keyList("abcde"));
+    process(keyList([a: "apple", b: "butter"]));
     process([:]);
     process([1: 2]);
     process([1: 2, 888: 1]);

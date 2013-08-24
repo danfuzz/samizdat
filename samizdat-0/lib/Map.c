@@ -35,22 +35,6 @@ PRIM_IMPL(makeValueMap) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mapKeys) {
-    zvalue map = args[0];
-    zint size = collSize(map);
-    zmapping mappings[size];
-    zvalue arr[size];
-
-    arrayFromMap(mappings, map);
-
-    for (zint i = 0; i < size; i++) {
-        arr[i] = mappings[i].key;
-    }
-
-    return listFromArray(size, arr);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(mappingKey) {
     return mappingKey(args[0]);
 }

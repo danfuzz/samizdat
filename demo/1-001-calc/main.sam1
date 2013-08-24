@@ -131,7 +131,7 @@ def unaryOp = {/
 def unaryExpression = {/
     ops = unaryOp*
     ex = atom
-    { <> applyAll(ex, listReverse(ops)) }
+    { <> applyAll(ex, reverse(ops)) }
 /};
 
 # Parses a binary operation, yielding a map of precedence and function.

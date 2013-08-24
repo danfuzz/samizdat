@@ -4,6 +4,8 @@ Samizdat Layer 0: Core Library
 Lists
 -----
 
+A `List` is a kind of `Sequence`.
+
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
@@ -19,7 +21,7 @@ comparison, with a strict prefix always ordering before its longer brethren.
 
 
 <br><br>
-### Generic Function Definitions: `Collection` protocol
+### Generic Function Definitions: `Collection` and `Sequence` protocols
 
 #### `cat(list, more*) <> int`
 
@@ -32,17 +34,27 @@ Returns a list like the given one, but without the `n`th element.
 
 #### `get(list, key) <> . | void`
 
-This is identical to `nth(list, key)`, except that the result of passing
-a negative or non-`Int` value for `key` is void and not an error.
+Defined as per the `Sequence` protocol.
+
+#### `keyList(list, n) <> list`
+
+Defined as per the `Sequence` protocol.
 
 #### `nth(list, n) <> . | void`
 
-Gets the nth element of the list.
+Gets the nth element of the string.
 
 #### `put(list, n, value) <> list`
 
 Returns a list like the given one, but with the `n`th element replaced
 with the given `value`, or added if `n == size(list)`.
+
+#### `reverse(list) <> list`
+
+Returns a list like the one given, except with elements in the opposite
+order.
+
+**Syntax Note:** Used in the translation of `switch` forms.
 
 #### `size(list) <> int`
 
@@ -69,13 +81,6 @@ smaller than the size of the argument.
 
 **Note:** This is a special-case version of the more general function
 `collectFilter` (see which).
-
-#### `listReverse(list) <> list`
-
-Returns a list consisting of the elements of the given list, but in the
-opposite order.
-
-**Syntax Note:** Used in the translation of `switch` forms.
 
 #### `makeList(rest*) <> list`
 

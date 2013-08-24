@@ -12,6 +12,7 @@
 #include "type/Collection.h"
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/List.h"
 #include "type/String.h"
 #include "type/Type.h"
 
@@ -144,8 +145,23 @@ METH_IMPL(Sequence, get) {
 }
 
 /* Documented in header. */
+METH_IMPL(Sequence, keyList) {
+    zvalue seq = args[0];
+
+    zint size = collSize(seq);
+    zvalue elems[size];
+
+    for (zint i = 0; i < size; i++) {
+        elems[i] = intFromZint(i);
+    }
+
+    return listFromArray(size, elems);
+}
+
+/* Documented in header. */
 void seqBind(zvalue type) {
     genericBindCore(GFN_get, type, Sequence_get);
+    genericBindCore(GFN_keyList, type, Sequence_keyList);
 }
 
 
@@ -164,11 +180,17 @@ void pbBindCollection(void) {
     GFN_get = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "get"));
     pbImmortalize(GFN_get);
 
+    GFN_keyList = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "keyList"));
+    pbImmortalize(GFN_keyList);
+
     GFN_nth = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nth"));
     pbImmortalize(GFN_nth);
 
     GFN_put = makeGeneric(3, 3, GFN_NONE, stringFromUtf8(-1, "put"));
     pbImmortalize(GFN_put);
+
+    GFN_reverse = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "reverse"));
+    pbImmortalize(GFN_reverse);
 
     GFN_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "size"));
     pbImmortalize(GFN_size);
@@ -187,10 +209,16 @@ zvalue GFN_del = NULL;
 zvalue GFN_get = NULL;
 
 /* Documented in header. */
+zvalue GFN_keyList = NULL;
+
+/* Documented in header. */
 zvalue GFN_nth = NULL;
 
 /* Documented in header. */
 zvalue GFN_put = NULL;
+
+/* Documented in header. */
+zvalue GFN_reverse = NULL;
 
 /* Documented in header. */
 zvalue GFN_size = NULL;
