@@ -54,6 +54,8 @@ with the given `value`, or added if `n == size(list)`.
 Returns a list like the one given, except with elements in the opposite
 order.
 
+**Syntax Note:** Used in the translation of `switch` forms.
+
 #### `size(list) <> int`
 
 Returns the number of elements in the list.
@@ -79,13 +81,6 @@ smaller than the size of the argument.
 
 **Note:** This is a special-case version of the more general function
 `collectFilter` (see which).
-
-#### `listReverse(list) <> list`
-
-Returns a list consisting of the elements of the given list, but in the
-opposite order.
-
-**Syntax Note:** Used in the translation of `switch` forms.
 
 #### `makeList(rest*) <> list`
 

@@ -93,7 +93,6 @@ PRIM_FUNC(io0Note,        1, 1);
 PRIM_FUNC(isOpaqueValue,  1, 1);
 PRIM_FUNC(le,             2, 2);
 PRIM_FUNC(listFilter,     2, 2);
-PRIM_FUNC(listReverse,    1, 1);
 PRIM_FUNC(loop,           1, 1);
 PRIM_FUNC(loopReduce,     1, -1);
 PRIM_FUNC(lt,             2, 2);
