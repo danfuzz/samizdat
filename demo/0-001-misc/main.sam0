@@ -116,10 +116,10 @@ fn main(selfPath, name?, rest*) {
     process(io0PathFromFlat("///foo//////./bar/./../baz"));
     process(io0PathFromFlat("/a/b/x/y/z/../../../c/"));
     process(io0FlatFromPath(["fizmo", "igram", "blort", ""]));
-    process(stringFromInt(71, 2));
-    process(stringFromInt(71, 10));
-    process(stringFromInt(71, 16));
-    process(stringFromInt(71, 36));
+    process(formatInt(71, 2));
+    process(formatInt(71, 10));
+    process(formatInt(71, 16));
+    process(formatInt(71, 36));
     process(cat(charFromInt(1), charFromInt(31), charFromInt(127)));
 
     sibling();

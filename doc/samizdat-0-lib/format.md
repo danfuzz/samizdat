@@ -19,6 +19,26 @@ String Formatting
 <br><br>
 ### In-Language Definitions
 
+#### `formatInt(value, optBase?) <> string`
+
+Converts an int into a string form, in the given base which defaults to
+10. If specified, base may be any int in the range `2..36`.
+
+#### `formatValue(value?) <> string`
+
+Converts an arbitrary value into a string representation form, meant
+to be useful for producing "human-oriented" output.
+
+* If `value` is a string, it is returned as-is.
+
+* If `value` is a list, its elements are converted as if by calling this
+  function on them, and then concatenated together without any separator
+  characters.
+
+* If `value` is void (that is, not passed), this returns the empty string.
+
+* Otherwise, this behaves just like `sourceString(value)`.
+
 #### `formatterFromString(formatSpec) <> function`
 
 This takes a formatting specification string and returns a formatter
@@ -32,7 +52,7 @@ following, with the indicated meaning:
 * `Q` &mdash; "Quotes" the argument without top-level adornment, by
   calling `sourceStringUnadorned` on it (see which).
 
-* `s` &mdash; "Quotes" a non-string argument, by calling `stringFromValue`
+* `s` &mdash; "Quotes" a non-string argument, by calling `formatValue`
   on it (see which).
 
 * `x` &mdash; Converts the argument, which must be an int, into a hexadecimal
@@ -62,23 +82,3 @@ language:
 
 This is just like `sourceString`, except that top-level adornment
 (quotes, etc.) are not produced.
-
-#### `stringFromInt(value, optBase?) <> string`
-
-Converts an int into a string form, in the given base which defaults to
-10. If specified, base may be any int in the range `2..36`.
-
-#### `stringFromValue(value?) <> string`
-
-Converts an arbitrary value into a string representation form, meant
-to be useful for producing "human-oriented" output.
-
-* If `value` is a string, it is returned as-is.
-
-* If `value` is a list, its elements are converted as if by calling this
-  function on them, and then concatenated together without any separator
-  characters.
-
-* If `value` is void (that is, not passed), this returns the empty string.
-
-* Otherwise, this behaves just like `sourceString(value)`.

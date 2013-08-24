@@ -12,7 +12,7 @@
 
 # Forward declarations.
 def callSourceString = forwardFunction();
-def callStringFromValue = forwardFunction();
+def callFormatValue = forwardFunction();
 
 # This is int digits for bases up to 36, in order.
 def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -47,7 +47,7 @@ def INT_SIGNS = [
 ];
 
 # Stringifies an int using the given base.
-fn stringFromIntBase(int, base) {
+fn formatIntWithBase(int, base) {
     <> get(INT_SIGNS, sign(int))(int, base)
 };
 
@@ -72,7 +72,7 @@ fn collectionBody(elems, ifEmpty) {
 
 # Stringifies an int.
 fn doInt(int, adorn) {
-    <> stringFromIntBase(int, 10)
+    <> formatIntWithBase(int, 10)
 };
 
 # Map of special-case characters to either their stringified forms or
@@ -94,7 +94,7 @@ def SPECIAL_CHARS = [
 fn hexStringChar(ch) {
     <> cat(
         "\\x",
-        stringFromIntBase(intFromChar(ch), 16),
+        formatIntWithBase(intFromChar(ch), 16),
         ";")
 };
 
@@ -250,7 +250,7 @@ fn doStringAsIs(string, .) {
 # Stringifies a list by recursive flattening. The extra argument is the
 # general `adorn` argument, which is degenerate and ignored in this case.
 fn doListFlatten(list, .) {
-    def elems = filterGenerator(list) { e <> callStringFromValue(e) };
+    def elems = filterGenerator(list) { e <> callFormatValue(e) };
     <> cat("", elems*)
 };
 
@@ -285,7 +285,7 @@ fn sourceStringGeneral(value, adorn) {
 
 # Formats a hex int argument.
 fn convertHex(arg) {
-    <> stringFromIntBase(arg, 16)
+    <> formatIntWithBase(arg, 16)
 };
 
 
@@ -309,16 +309,16 @@ fn sourceStringUnadorned(value?) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn stringFromInt(value, optBase?) {
+fn formatInt(value, optBase?) {
     def base = ifValueOr { <> optBase* } { <> 10 };
 
     <> ifIs { <> le(&le(2, base), 36) }
-        { <> stringFromIntBase(value, base) }
-        { io0Die("Invalid base for stringFromInt.") }
+        { <> formatIntWithBase(value, base) }
+        { io0Die("Invalid base for formatInt.") }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn stringFromValue(value?) {
+fn formatValue(value?) {
     <> ifValue { <> value* }
         { value ::
             def stringifier = ifValueOr
@@ -328,13 +328,13 @@ fn stringFromValue(value?) {
         }
         { <> "" }
 };
-callStringFromValue(stringFromValue);
+callFormatValue(formatValue);
 
 # Mapping from format escape characters to their respective handler functions.
 def FORMATTERS = [
     q: sourceString,
     Q: sourceStringUnadorned,
-    s: stringFromValue,
+    s: formatValue,
     x: convertHex
 ];
 
@@ -349,9 +349,9 @@ fn formatterFromString(formatSpec) {
 
 
 <> [
+    formatInt:             formatInt,
+    formatValue:           formatValue,
     formatterFromString:   formatterFromString,
     sourceString:          sourceString,
-    sourceStringUnadorned: sourceStringUnadorned,
-    stringFromInt:         stringFromInt,
-    stringFromValue:       stringFromValue
+    sourceStringUnadorned: sourceStringUnadorned
 ]

@@ -919,7 +919,7 @@ def parInterpolatedString = {/
                             <> makeCallName("formatterFromString",
                                 makeLiteral(format))
                         }
-                        { <> makeVarRef("stringFromValue") };
+                        { <> makeVarRef("formatValue") };
 
                     def call = ifValueOr
                         { <> pegApply(parStringInterpolation, tokens) }
