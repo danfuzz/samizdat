@@ -627,7 +627,7 @@ def parUnaryExpression = {/
     {
         def withPosts = doReduce1(postfixes, base)
             { op, result <> op(result) };
-        <> doReduce1(listReverse(prefixes), withPosts)
+        <> doReduce1(reverse(prefixes), withPosts)
             { op, result <> op(result) }
     }
 /};
@@ -1283,7 +1283,7 @@ def parLogicAndExpression = {/
     last = parCompareExpression
 
     {
-        <> doReduce1(listReverse(most), last)
+        <> doReduce1(reverse(most), last)
             { clause, result ::
                 def formal = get(clause, "formal");
                 def test = makeThunk(get(clause, "test"));
@@ -1322,7 +1322,7 @@ def parLogicOrExpression = {/
         }
     |
         {
-            def allExprs = listReverse([one, rest*]);
+            def allExprs = reverse([one, rest*]);
             <> doReduce1(butFirst(allExprs), first(allExprs))
                 { ex, result ::
                     <> makeCallName("ifValueOr",
@@ -1386,7 +1386,7 @@ def parIfExpression = {/
 
     mainThunk = {
         # This builds the full expression from back to front (inner to outer).
-        def clauses = listReverse(
+        def clauses = reverse(
             [[firstCondition*, then: firstThen], elseIfThens*]);
 
         # To keep things simple, partial results are always thunks, so that
@@ -1572,7 +1572,7 @@ def parSwitchExpression = {/
                         {
                             <> makeCallName("cat",
                                 makeInterpolate(
-                                    makeCallName("listReverse",
+                                    makeCallName("reverse",
                                         makeCallName("makeList",
                                             regularCases*))))
                         },
