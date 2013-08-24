@@ -344,6 +344,22 @@ METH_IMPL(String, put) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, reverse) {
+    zvalue string = args[0];
+
+    StringInfo *info = getInfo(string);
+    zint size = info->size;
+    zchar *elems = info->elems;
+    zchar arr[size];
+
+    for (zint i = 0, j = size - 1; i < size; i++, j--) {
+        arr[i] = elems[j];
+    }
+
+    return stringFromZchars(size, arr);
+}
+
+/* Documented in header. */
 METH_IMPL(String, size) {
     zvalue string = args[0];
     return intFromZint(getInfo(string)->size);
@@ -371,6 +387,7 @@ void pbBindString(void) {
     METH_BIND(String, perEq);
     METH_BIND(String, perOrder);
     METH_BIND(String, put);
+    METH_BIND(String, reverse);
     METH_BIND(String, size);
     METH_BIND(String, slice);
     seqBind(TYPE_String);
