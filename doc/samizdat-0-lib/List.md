@@ -21,7 +21,7 @@ comparison, with a strict prefix always ordering before its longer brethren.
 
 
 <br><br>
-### Generic Function Definitions: `Collection` protocol
+### Generic Function Definitions: `Collection` and `Sequence` protocols
 
 #### `cat(list, more*) <> int`
 
@@ -48,6 +48,11 @@ Gets the nth element of the string.
 
 Returns a list like the given one, but with the `n`th element replaced
 with the given `value`, or added if `n == size(list)`.
+
+#### `reverse(list) <> list`
+
+Returns a list like the one given, except with elements in the opposite
+order.
 
 #### `size(list) <> int`
 

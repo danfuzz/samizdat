@@ -107,6 +107,11 @@ reporting a terminal error).
 
 Returns the list `[0..!size(sequence)]`.
 
+#### `reverse(sequence) <> sequence`
+
+Returns a sequence just like the given one, except with elements in
+the opposite order.
+
 
 <br><br>
 ### Primitive Definitions
