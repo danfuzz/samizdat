@@ -266,7 +266,7 @@ METH_IMPL(List, reverse) {
         arr[i] = elems[j];
     }
 
-    return listFromArray(size, arr);
+    return listFrom(size, arr, NULL, 0, NULL);
 }
 
 /* Documented in header. */
