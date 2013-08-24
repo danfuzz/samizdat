@@ -19,10 +19,4 @@
  */
 void datInit(void);
 
-/**
- * Calls a function with the given list of arguments. `function` must be
- * a function (regular or generic), and `args` must be a list.
- */
-zvalue funApply(zvalue function, zvalue args);
-
 #endif

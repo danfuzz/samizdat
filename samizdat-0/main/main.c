@@ -5,7 +5,6 @@
  */
 
 #include "const.h"
-#include "dat.h"
 #include "io.h"
 #include "lib.h"
 #include "type/Int.h"

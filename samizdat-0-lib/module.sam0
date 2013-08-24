@@ -108,7 +108,7 @@ fn sortModules(modules) {
                     def importMap =
                         delAll([dataGet(mod, "imports")*: true],
                             independentNames*);
-                    <> @[mod: [dataOf(mod)*, imports: mapKeys(importMap)]]
+                    <> @[mod: [dataOf(mod)*, imports: keyList(importMap)]]
                 }
         };
 

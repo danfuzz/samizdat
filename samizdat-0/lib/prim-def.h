@@ -43,8 +43,10 @@ PRIM_DEF(canCall,    GFN_canCall);
 PRIM_DEF(cat,        GFN_cat);
 PRIM_DEF(del,        GFN_del);
 PRIM_DEF(get,        GFN_get);
+PRIM_DEF(keyList,    GFN_keyList);
 PRIM_DEF(nth,        GFN_nth);
 PRIM_DEF(put,        GFN_put);
+PRIM_DEF(reverse,    GFN_reverse); // `Sequence` protocol.
 PRIM_DEF(size,       GFN_size);
 PRIM_DEF(slice,      GFN_slice);
 
@@ -91,7 +93,6 @@ PRIM_FUNC(io0Note,        1, 1);
 PRIM_FUNC(isOpaqueValue,  1, 1);
 PRIM_FUNC(le,             2, 2);
 PRIM_FUNC(listFilter,     2, 2);
-PRIM_FUNC(listReverse,    1, 1);
 PRIM_FUNC(loop,           1, 1);
 PRIM_FUNC(loopReduce,     1, -1);
 PRIM_FUNC(lt,             2, 2);
@@ -101,7 +102,6 @@ PRIM_FUNC(makeUniqlet,    0, 0);
 PRIM_FUNC(makeValue,      1, 2);
 PRIM_FUNC(makeValueMap,   1, -1);
 PRIM_FUNC(makeYieldBox,   0, 0);
-PRIM_FUNC(mapKeys,        1, 1);
 PRIM_FUNC(mappingKey,     1, 1);
 PRIM_FUNC(mappingValue,   1, 1);
 PRIM_FUNC(ne,             2, 2);

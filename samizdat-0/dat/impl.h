@@ -40,7 +40,6 @@ MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 
 // Per-type binding and initialization.
 void datBindBox(void);
-void datBindList(void);
 void datBindMap(void);
 void datBindMapCache(void);
 void datBindUniqlet(void);

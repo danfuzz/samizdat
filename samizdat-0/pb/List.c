@@ -254,6 +254,22 @@ METH_IMPL(List, put) {
 }
 
 /* Documented in header. */
+METH_IMPL(List, reverse) {
+    zvalue list = args[0];
+
+    ListInfo *info = getInfo(list);
+    zint size = info->size;
+    zvalue *elems = info->elems;
+    zvalue arr[size];
+
+    for (zint i = 0, j = size - 1; i < size; i++, j--) {
+        arr[i] = elems[j];
+    }
+
+    return listFromArray(size, arr);
+}
+
+/* Documented in header. */
 METH_IMPL(List, size) {
     zvalue list = args[0];
     return intFromZint(getInfo(list)->size);
@@ -271,7 +287,7 @@ METH_IMPL(List, slice) {
 }
 
 /* Documented in header. */
-void datBindList(void) {
+void pbBindList(void) {
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
     METH_BIND(List, cat);
     METH_BIND(List, del);
@@ -280,6 +296,7 @@ void datBindList(void) {
     METH_BIND(List, perEq);
     METH_BIND(List, perOrder);
     METH_BIND(List, put);
+    METH_BIND(List, reverse);
     METH_BIND(List, size);
     METH_BIND(List, slice);
     seqBind(TYPE_List);

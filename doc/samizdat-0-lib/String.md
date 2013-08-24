@@ -34,8 +34,11 @@ Returns a string like the given one, but without the `n`th character.
 
 #### `get(string, key) <> . | void`
 
-This is identical to `nth(string, key)`, except that the result of passing
-a negative or non-`Int` value for `key` is void and not an error.
+Defined as per the `Sequence` protocol.
+
+#### `keyList(string) <> list`
+
+Defined as per the `Sequence` protocol.
 
 #### `nth(string, n) <> . | void`
 
@@ -46,6 +49,11 @@ Gets the nth character of the string, as a single-element string.
 Returns a string like the given one, but with the `n`th character replaced
 with the given `char`, or added if `n == size(string)`. It is an error
 if `char` is not a string of size `1`.
+
+#### `reverse(string) <> string`
+
+Returns a string like the one given, except with characters in the opposite
+order.
 
 #### `size(string) <> int`
 

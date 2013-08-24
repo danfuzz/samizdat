@@ -45,6 +45,10 @@ not bind `key`, then this returns `map`.
 Returns the value mapped to the given key (an arbitrary value) in
 the given map. If there is no such mapping, then this returns void.
 
+#### `keyList(map) <> list`
+
+Returns a list of all the keys mapped by the given `map`, in sorted order.
+
 #### `nth(map, n) <> . | void`
 
 Returns the nth (zero-based) *mapping* of the given map.
@@ -91,10 +95,6 @@ representable in Samizdat syntax as presented.
 
 **Syntax Note:** Used in the translation of `[key: value, ...]`
 and `switch` forms.
-
-#### `mapKeys(map) <> list`
-
-Returns the list of keys contained in the given map, in sorted order.
 
 #### `mappingKey(map) <> .`
 
