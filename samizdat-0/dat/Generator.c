@@ -91,9 +91,9 @@ void datBindGenerator(void) {
     METH_BIND(List,   collect);
     METH_BIND(Map,    collect);
     METH_BIND(String, collect);
-    genericBindCore(GFN_next, TYPE_List,   Collection_next);
-    genericBindCore(GFN_next, TYPE_Map,    Collection_next);
-    genericBindCore(GFN_next, TYPE_String, Collection_next);
+    genericBindPrim(GFN_next, TYPE_List,   Collection_next);
+    genericBindPrim(GFN_next, TYPE_Map,    Collection_next);
+    genericBindPrim(GFN_next, TYPE_String, Collection_next);
 }
 
 /* Documented in header. */
