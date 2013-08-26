@@ -141,7 +141,7 @@ void genericBind(zvalue generic, zvalue typeOrName, zvalue callable) {
 }
 
 /* Documented in header. */
-void genericBindCore(zvalue generic, zvalue typeOrName, zfunction function) {
+void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function) {
     assertHasType(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);

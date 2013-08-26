@@ -31,7 +31,7 @@ typedef enum {
 
 /** Performs binding of the indicated method. */
 #define METH_BIND(type, name) \
-    do { genericBindCore(GFN_##name, TYPE_##type, type##_##name); } while(0)
+    do { genericBindPrim(GFN_##name, TYPE_##type, type##_##name); } while(0)
 
 /** Type value for in-model type `Generic`. */
 extern zvalue TYPE_Generic;
@@ -50,7 +50,7 @@ void genericBind(zvalue generic, zvalue typeOrName, zvalue callable);
  * and `function` must be a valid `zfunction`. The type must not have already
  * been bound in the given generic, and the generic must not be sealed.
  */
-void genericBindCore(zvalue generic, zvalue typeOrName, zfunction function);
+void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function);
 
 /**
  * Seal the given generic. This prevents it from gaining any new bindings.
