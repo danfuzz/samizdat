@@ -11,6 +11,7 @@
 #include "const.h"
 #include "impl.h"
 #include "type/Callable.h"
+#include "type/Generator.h"
 #include "type/List.h"
 #include "type/Map.h"
 #include "type/String.h"
@@ -73,7 +74,7 @@ static zvalue execCall(Frame *frame, zvalue call) {
         }
 
         if (interpolate) {
-            eval = constCollectGenerator(eval);
+            eval = GFN_CALL(collect, eval);
             args[i] = eval;
             interpCounts[i] = collSize(eval);
             fullCount += interpCounts[i];
@@ -127,7 +128,7 @@ static zvalue execInterpolate(Frame *frame, zvalue interpolate) {
         die("Attempt to interpolate void.");
     }
 
-    result = constCollectGenerator(result);
+    result = GFN_CALL(collect, result);
 
     switch (collSize(result)) {
         case 0: return NULL;
