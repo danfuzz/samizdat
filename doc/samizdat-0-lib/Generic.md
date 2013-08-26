@@ -54,7 +54,7 @@ may be passed; if not passed, there is no limit. If passed it must be
 
 #### `makeUnitypeGeneric(name, minArgs, maxArgs?) <> generic`
 
-Liks `makeRegularGeneric` except that the resulting generic requires
+Like `makeRegularGeneric` except that the resulting generic requires
 that all arguments passed to it in any given call must all be the
 same type. A non-conforming call is an error that terminates the runtime.
 
