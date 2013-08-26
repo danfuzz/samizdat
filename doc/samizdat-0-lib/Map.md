@@ -82,7 +82,7 @@ indices, not map keys.
 
 Returns a list of all the individual mappings of `map`, in sorted order.
 
-#### `next(map, box) <> generator | void`
+#### `nextValue(map, box) <> generator | void`
 
 On a non-empty map, calls `store(box, first(map))` and returns
 `butFirst(map)`. On an empty map, calls `store(box)` and returns void.

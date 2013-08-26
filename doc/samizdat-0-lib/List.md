@@ -72,7 +72,7 @@ Returns a slice of the given list.
 
 Returns `list`.
 
-#### `next(list, box) <> generator | void`
+#### `nextValue(list, box) <> generator | void`
 
 On a non-empty list, calls `store(box, first(list))` and returns
 `butFirst(list)`. On an empty list, calls `store(box)` and returns void.
