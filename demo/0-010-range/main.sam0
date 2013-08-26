@@ -1,0 +1,125 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Generator function demo
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper Definitions
+#
+
+# Prints the given value, indented slightly.
+fn msg(value) {
+    io0Note(cat("  ", sourceString(value)))
+};
+
+# Outputs all generated values, with a header and a footer.
+fn msgAll(header, gen) {
+    io0Note(header);
+    listFilter([gen*]) { elem :: msg(elem) };
+    io0Note("  [fin]");
+    io0Note(cat("  value: ", sourceString(gen)));
+    io0Note("")
+};
+
+# Outputs ten generated values, with a header and a footer.
+fn msgTen(header, gen) {
+    io0Note(header);
+
+    { <done> ::
+        def count = makeMutableBox(10);
+        loopReduce(gen) { gen ::
+            store(count, sub(fetch(count), 1));
+            ifIs { <> lt(fetch(count), 0) }
+                { <done> };
+
+            def box = makeYieldBox();
+            <> ifValue { <> nextValue(gen, box) }
+                { nextGen ::
+                    msg(fetch(box));
+                    <> [nextGen]
+                }
+        }
+    }();
+
+    io0Note("  [...]");
+    io0Note(cat("  value: ", sourceString(gen)));
+    io0Note("")
+};
+
+
+#
+# Main Tests
+#
+
+msgTen("Open range (100, 5)",
+    makeOpenRange(100, 5));
+
+msgTen("Open range (\"z\", -2)",
+    makeOpenRange("z", -2));
+
+msgTen("Open range (333, 0)",
+    makeOpenRange(333, 0));
+
+msgTen("Open range (\"!\", 0)",
+    makeOpenRange("!", 0));
+
+io0Note("");
+
+msgAll("Closed range (3, 10, 5)",
+    makeClosedRange(3, 10, 5));
+
+msgAll("Closed range (3, 10, 0)",
+    makeClosedRange(3, 10, 0));
+
+msgAll("Closed range (\"9\", -1, 10)",
+    makeClosedRange("9", -1, 10));
+
+io0Note("");
+
+msgAll("Inclusive range 5..10",
+    makeInclusiveRange(5, 1, 10));
+
+msgAll("Inclusive range 10..-2..1",
+    makeInclusiveRange(10, -2, 1));
+
+msgAll("Inclusive range \"a\"..5..\"z\"",
+    makeInclusiveRange("a", 5, "z"));
+
+msgAll("Zero-increment inclusive int range",
+    makeInclusiveRange(10, 0, 20));
+
+msgAll("Zero-increment inclusive character range",
+    makeInclusiveRange("x", 0, "a"));
+
+msgAll("Empty inclusive range",
+    makeInclusiveRange(10, 1, 9));
+
+io0Note("");
+
+msgAll("Exclusive range 5..!10",
+    makeExclusiveRange(5, 1, 10));
+
+msgAll("Exclusive range 10..-2..!1",
+    makeExclusiveRange(10, -2, 1));
+
+msgAll("Exclusive range \"a\"..5..!\"z\"",
+    makeExclusiveRange("a", 5, "z"));
+
+msgAll("Zero-increment exclusive int range",
+    makeExclusiveRange(10, 0, 20));
+
+msgAll("Zero-increment exclusive character range",
+    makeExclusiveRange("x", 0, "a"));
+
+msgAll("Empty exclusive range",
+    makeExclusiveRange(10, 1, 9));
+
+<> 0
