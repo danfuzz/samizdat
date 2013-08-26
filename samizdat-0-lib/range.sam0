@@ -46,6 +46,7 @@ genericBind(rangeInt, String, String_rangeInt);
 
 # Documented in spec.
 fn makeClosedRange(firstValue, increment, sz) {
+    # `perGt` ensures that `sz` is an int.
     <> ifIs { <> perGt(sz, 0) }
         {
             <> @[ClosedRange:
@@ -70,7 +71,7 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     # limit "pushes" the limit in the right direction to make the truncated
     # division produce the correct result size.
     def sz =
-        add(1, div(sub(sub(limit, firstValue), sign(increment)), increment));
+        add(1, div(sub(sub(limitInt, firstInt), sign(increment)), increment));
 
     ifIs { <> perLe(sz, 0) }
         { return nullGenerator };
@@ -89,7 +90,7 @@ fn makeInclusiveRange(firstValue, increment, limit) {
 
     def firstInt = rangeInt(firstValue);
     def limitInt = rangeInt(limit);
-    def sz = add(1, div(sub(limit, firstValue), increment));
+    def sz = add(1, div(sub(limitInt, firstInt), increment));
 
     ifIs { <> perLe(sz, 0) }
         { return nullGenerator };
@@ -105,8 +106,8 @@ fn ClosedRange_nextValue(range, box) {
             def firstValue = get(data, "firstValue");
             def increment = get(data, "increment");
             store(box, firstValue);
-            <> makeClosedRange(sub(sz, 1),
-                rangeAdd(firstValue, increment), increment)
+            <> makeClosedRange(rangeAdd(firstValue, increment), increment,
+                sub(sz, 1))
         }
         {
             # Voided.
