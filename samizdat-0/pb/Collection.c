@@ -160,8 +160,8 @@ METH_IMPL(Sequence, keyList) {
 
 /* Documented in header. */
 void seqBind(zvalue type) {
-    genericBindCore(GFN_get, type, Sequence_get);
-    genericBindCore(GFN_keyList, type, Sequence_keyList);
+    genericBindPrim(GFN_get, type, Sequence_get);
+    genericBindPrim(GFN_keyList, type, Sequence_keyList);
 }
 
 

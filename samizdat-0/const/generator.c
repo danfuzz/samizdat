@@ -97,8 +97,8 @@ void generatorInit(void) {
     GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
     pbImmortalize(GFN_collect);
 
-    genericBindCore(GFN_collect, TYPE_Map,    Collection_collect);
-    genericBindCore(GFN_collect, TYPE_String, Collection_collect);
+    genericBindPrim(GFN_collect, TYPE_Map,    Collection_collect);
+    genericBindPrim(GFN_collect, TYPE_String, Collection_collect);
     METH_BIND(List, collect);
     METH_BIND(Value, collect);
     genericSeal(GFN_collect);

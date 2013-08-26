@@ -31,19 +31,26 @@ typedef enum {
 
 /** Performs binding of the indicated method. */
 #define METH_BIND(type, name) \
-    do { genericBindCore(GFN_##name, TYPE_##type, type##_##name); } while(0)
+    do { genericBindPrim(GFN_##name, TYPE_##type, type##_##name); } while(0)
 
 /** Type value for in-model type `Generic`. */
 extern zvalue TYPE_Generic;
 
 /**
- * Adds a type-to-function binding to the given generic, for a core type.
- * `generic` must be a generic function, `type` must be a valid value of
- * type `Type`, and `function` must be a valid `zfunction`. The type must
- * not have already been bound in the given generic, and the generic must
- * not be sealed.
+ * Adds a type-to-callable binding to the given generic. `generic` must be
+ * a generic function, `typeOrName` is the usual representation of a type,
+ * and `callable` must be a valid `Callable`. The type must not have already
+ * been bound in the given generic, and the generic must not be sealed.
  */
-void genericBindCore(zvalue generic, zvalue type, zfunction function);
+void genericBind(zvalue generic, zvalue typeOrName, zvalue callable);
+
+/**
+ * Adds a type-to-C-function binding to the given generic. `generic` must
+ * be a generic function, `typeOrName` is the usual representation of a type,
+ * and `function` must be a valid `zfunction`. The type must not have already
+ * been bound in the given generic, and the generic must not be sealed.
+ */
+void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function);
 
 /**
  * Seal the given generic. This prevents it from gaining any new bindings.
