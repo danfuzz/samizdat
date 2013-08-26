@@ -44,23 +44,23 @@ msg(["a", "b", "c"]*, ["d", "e", "f", ["g"]*]*);
 msg([[1, 2, 3]*: 6]);
 msg("blort"*);
 msg([a: 10, b: "20"]*);
-msg(inclusiveRange("a", 2, "m")*);
+msg(makeInclusiveRange("a", 2, "m")*);
 
 ifValue { <> yieldTest([]) }
     { value <> msg(value) }
-    { msg("void") };
+    { io0Note("(void)") };
 
 ifValue { <> nonlocalTest([]) }
     { value <> msg(value) }
-    { msg("void") };
+    { io0Note("(void)") };
 
 ifValue { <> yieldTest(["blort"]) }
     { value <> msg(value) }
-    { msg("void") };
+    { io0Note("(void)") };
 
 ifValue { <> nonlocalTest(["fizmo"]) }
     { value <> msg(value) }
-    { msg("void") };
+    { io0Note("(void)") };
 
 # The extra parens here force the interpolated expression not to be considered
 # at function argument level.
