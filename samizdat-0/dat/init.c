@@ -26,6 +26,7 @@ void datInit(void) {
 
     pbInit();
     datBindBox();
+    datBindGenerator();
     datBindMap();
     datBindMapCache();
 

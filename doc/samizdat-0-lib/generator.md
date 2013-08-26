@@ -15,9 +15,19 @@ bit.
 
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Generator` protocol.
 
-(none)
+#### `collect(generator) <> list`
+
+Collects all the elements yielded by the generator into a list. Returns
+the list.
+
+#### `next(generator, box) <> generator`
+
+Generates the next item in `generator`, if any. If there is a generated
+element, calls `store(box, elem)` and returns a generator which can
+generate the remainder of the elements. If there is no generated element,
+calls `store(box)` (storing void), and returns void.
 
 
 <br><br>
