@@ -66,6 +66,19 @@ Returns a slice of the given list.
 
 
 <br><br>
+### Generic Function Definitions: `Generator` protocol.
+
+#### `collect(list) <> list`
+
+Returns `list`.
+
+#### `next(list, box) <> generator | void`
+
+On a non-empty list, calls `store(box, first(list))` and returns
+`butFirst(list)`. On an empty list, calls `store(box)` and returns void.
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `listFilter(function, list) <> list`
