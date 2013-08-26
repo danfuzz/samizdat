@@ -42,6 +42,21 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### In-Language Definitions
 
+#### `makeValueGenerator(value) <> generator`
+
+Creates an unnbounded generator (one with infinite elements) which always
+yields the given `value` upon `nextValue()` call.
+
+**Note:** This makes a value of type `"ValueGenerator"`. That type has
+appropriate `Generator` method bindings.
+
+
+OLD DEFINITIONS TO BE SCRUTINIZED
+---------------------------------
+
+<br><br>
+### In-Language Definitions
+
 #### `collectFilter(filterFunction, generators*) <> list`
 
 Creates a filter generator over the indicated generators, and collects
