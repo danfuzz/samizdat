@@ -435,15 +435,6 @@ fn seqGenerator(generators*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn stringFromGenerator(generator) {
-    # Avoid pointless string->generator->string conversion.
-    ifIs { <> isString(generator) }
-        { return generator };
-
-    <> cat("", generatorFromValue(generator)*)
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn tokenGenerator(generator) {
     <> filterGenerator(generator)
         { elem <> @[(elem)] }
@@ -466,6 +457,5 @@ fn tokenGenerator(generator) {
     paraGenerator:       paraGenerator,
     reduceGenerator:     reduceGenerator,
     seqGenerator:        seqGenerator,
-    stringFromGenerator: stringFromGenerator,
     tokenGenerator:      tokenGenerator
 ]

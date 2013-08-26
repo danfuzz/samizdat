@@ -174,12 +174,5 @@ def outMap = mapFromGenerator(
 io0Note(cat("    ", sourceString(outMap)));
 io0Note("");
 
-io0Note("stringFromGenerator on filter");
-def outString = stringFromGenerator(
-    filterGenerator(inclusiveRange(65, 1, 75))
-        { value <> charFromInt(value) });
-io0Note(cat("    ", sourceString(outString)));
-io0Note("");
-
 
 <> 0
