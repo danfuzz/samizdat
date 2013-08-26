@@ -26,7 +26,7 @@
  */
 
 /* Documented in header. */
-METH_IMPL(Collection, next) {
+METH_IMPL(Collection, nextValue) {
     zvalue coll = args[0];
     zvalue box = args[1];
 
@@ -85,19 +85,19 @@ void datBindGenerator(void) {
     GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
     pbImmortalize(GFN_collect);
 
-    GFN_next = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "next"));
-    pbImmortalize(GFN_next);
+    GFN_nextValue = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nextValue"));
+    pbImmortalize(GFN_nextValue);
 
     METH_BIND(List,   collect);
     METH_BIND(Map,    collect);
     METH_BIND(String, collect);
-    genericBindPrim(GFN_next, TYPE_List,   Collection_next);
-    genericBindPrim(GFN_next, TYPE_Map,    Collection_next);
-    genericBindPrim(GFN_next, TYPE_String, Collection_next);
+    genericBindPrim(GFN_nextValue, TYPE_List,   Collection_nextValue);
+    genericBindPrim(GFN_nextValue, TYPE_Map,    Collection_nextValue);
+    genericBindPrim(GFN_nextValue, TYPE_String, Collection_nextValue);
 }
 
 /* Documented in header. */
 zvalue GFN_collect = NULL;
 
 /* Documented in header. */
-zvalue GFN_next = NULL;
+zvalue GFN_nextValue = NULL;

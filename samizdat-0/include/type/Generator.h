@@ -24,8 +24,8 @@
 /** Generic `collect()`: Documenetd in spec. */
 extern zvalue GFN_collect;
 
-/** Generic `next(box)`: Documenetd in spec. */
-extern zvalue GFN_next;
+/** Generic `nextValue(box)`: Documenetd in spec. */
+extern zvalue GFN_nextValue;
 
 
 #endif
