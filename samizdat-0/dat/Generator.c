@@ -11,6 +11,7 @@
 #include "impl.h"
 #include "type/Box.h"
 #include "type/Generator.h"
+#include "type/Function.h" // TODO: REMOVE!
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -119,6 +120,39 @@ METH_IMPL(Value, collect) {
     return result;
 }
 
+// TODO: TEMPORARY SCAFFOLDING! REMOVE!
+METH_IMPL(Function, collect) {
+    zvalue generator = args[0];
+
+    zvalue arr[DAT_MAX_GENERATOR_ITEMS];
+    zint at;
+
+    zstackPointer save = pbFrameStart();
+    zvalue box = makeMutableBox(NULL);
+
+    for (at = 0; /*at*/; at++) {
+        zvalue nextGen = FUN_CALL(generator, box);
+
+        if (nextGen == NULL) {
+            break;
+        } else if (at == DAT_MAX_GENERATOR_ITEMS) {
+            die("Generator produced too many interpolated items.");
+        }
+
+        arr[at] = GFN_CALL(fetch, box);
+        generator = nextGen;
+
+        // Ideally, we wouldn't reuse the box (we'd just use N yield boxes),
+        // but for the sake of efficiency, we use the same box but reset it
+        // for each iteration.
+        GFN_CALL(store, box);
+    }
+
+    zvalue result = listFromArray(at, arr);
+    pbFrameReturn(save, result);
+    return result;
+}
+
 /* Documented in header. */
 void datBindGenerator(void) {
     GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
@@ -127,6 +161,7 @@ void datBindGenerator(void) {
     GFN_nextValue = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nextValue"));
     pbImmortalize(GFN_nextValue);
 
+    METH_BIND(Function, collect); // TODO: REMOVE!
     METH_BIND(List,   collect);
     METH_BIND(Map,    collect);
     METH_BIND(String, collect);
