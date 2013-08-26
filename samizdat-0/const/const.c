@@ -54,8 +54,6 @@ void constInit(void) {
 
     #include "const/const-def.h"
 
-    generatorInit();
-
     pbFrameReturn(save, NULL);
 
     // Force a garbage collection here, mainly to get a reasonably early

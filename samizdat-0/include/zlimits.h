@@ -15,9 +15,6 @@
 
 enum {
     /** Maximum number of items that can be interpolated out of a generator. */
-    CONST_MAX_GENERATOR_ITEMS = 10000,
-
-    /** Maximum number of items that can be interpolated out of a generator. */
     DAT_MAX_GENERATOR_ITEMS = 10000,
 
     /**
