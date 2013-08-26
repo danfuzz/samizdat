@@ -39,8 +39,4 @@ resulting generator yields the `firstValue`, and each subsequent call
 yields the previous value plus the given increment (converted to a
 single-character string if `firstValue` is a string).
 
-As a special case, if `increment` is `0`, the resulting generator is
-a `ClosedRange` of size `1` (just yielding `firstValue` and then becoming
-voided).
-
 **Syntax Note:** Used in the translation of `expression..+` forms.

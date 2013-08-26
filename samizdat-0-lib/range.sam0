@@ -123,12 +123,7 @@ genericBind(nextValue, "ClosedRange", ClosedRange_nextValue);
 
 # Documented in spec.
 fn makeOpenRange(firstValue, increment) {
-    ifIs { <> perEq(increment, 0) }
-        { <> makeClosedRange(firstValue, increment, 1) }
-        {
-            <> @[OpenRange:
-                [firstValue: firstValue, increment: increment, size: sz]]
-        }
+    <> @[OpenRange: [firstValue: firstValue, increment: increment]]
 };
 
 # Documented in spec.
