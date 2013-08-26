@@ -25,6 +25,10 @@ the list.
 Calling `collect` on an unbounded generator (one with an infinite number
 of elements to generate) is a fatal error (terminating the runtime).
 
+The default implementation of this method iterates over calls to
+`nextValue()` in the expected manner, collecting up all the yielded
+results.
+
 #### `nextValue(generator, box) <> generator | void`
 
 Generates the next item in `generator`, if any. If there is a generated

@@ -17,6 +17,8 @@
 #include "type/Map.h"
 #include "type/String.h"
 #include "type/Type.h"
+#include "type/Value.h"
+#include "zlimits.h"
 
 
 /*
@@ -80,6 +82,43 @@ METH_IMPL(String, collect) {
     return listFromArray(size, arr);
 }
 
+/**
+ * Does generator iteration to get a list. This is what's bound to type
+ * `Value`, on the assumption that the value in question has a binding
+ * for the generic `nextValue`, which this function uses.
+ */
+METH_IMPL(Value, collect) {
+    zvalue generator = args[0];
+
+    zvalue arr[DAT_MAX_GENERATOR_ITEMS];
+    zint at;
+
+    zstackPointer save = pbFrameStart();
+    zvalue box = makeMutableBox(NULL);
+
+    for (at = 0; /*at*/; at++) {
+        zvalue nextGen = GFN_CALL(nextValue, generator, box);
+
+        if (nextGen == NULL) {
+            break;
+        } else if (at == DAT_MAX_GENERATOR_ITEMS) {
+            die("Generator produced too many interpolated items.");
+        }
+
+        arr[at] = GFN_CALL(fetch, box);
+        generator = nextGen;
+
+        // Ideally, we wouldn't reuse the box (we'd just use N yield boxes),
+        // but for the sake of efficiency, we use the same box but reset it
+        // for each iteration.
+        GFN_CALL(store, box);
+    }
+
+    zvalue result = listFromArray(at, arr);
+    pbFrameReturn(save, result);
+    return result;
+}
+
 /* Documented in header. */
 void datBindGenerator(void) {
     GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
@@ -91,6 +130,7 @@ void datBindGenerator(void) {
     METH_BIND(List,   collect);
     METH_BIND(Map,    collect);
     METH_BIND(String, collect);
+    METH_BIND(Value,  collect);
     genericBindPrim(GFN_nextValue, TYPE_List,   Collection_nextValue);
     genericBindPrim(GFN_nextValue, TYPE_Map,    Collection_nextValue);
     genericBindPrim(GFN_nextValue, TYPE_String, Collection_nextValue);

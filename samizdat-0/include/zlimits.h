@@ -17,6 +17,9 @@ enum {
     /** Maximum number of items that can be interpolated out of a generator. */
     CONST_MAX_GENERATOR_ITEMS = 10000,
 
+    /** Maximum number of items that can be interpolated out of a generator. */
+    DAT_MAX_GENERATOR_ITEMS = 10000,
+
     /**
      * Number of entries in the map lookup cache. Probably best for this
      * to be a prime number (to get better distribution of cache elements).
