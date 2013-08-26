@@ -19,10 +19,25 @@ def rangeAdd = makeRegularGeneric("rangeAdd", 2, 2);
 fn Int_rangeAdd(value, increment) {
     <> add(value, increment)
 };
+genericBind(rangeAdd, Int, Int_rangeAdd);
 
 fn String_rangeAdd(value, increment) {
     <> charFromInt(add(intFromChar(value), increment))
 };
+genericBind(rangeAdd, String, String_rangeAdd);
+
+# `rangeInt` generic, used to convert range values to ints.
+def rangeInt = makeRegularGeneric("rangeInt", 1);
+
+fn Int_rangeInt(value) {
+    <> value
+};
+genericBind(rangeInt, Int, Int_rangeInt);
+
+fn String_rangeInt(value) {
+    <> intFromChar(value)
+};
+genericBind(rangeInt, String, String_rangeInt);
 
 
 #
@@ -41,19 +56,46 @@ fn makeClosedRange(firstValue, increment, sz) {
 
 # Documented in spec.
 fn makeExclusiveRange(firstValue, increment, limit) {
-    # TODO
+    # This ensures that `firstValue` and `limit` have the same type.
+    perEq(firstValue, limit);
+
+    # `perEq` ensures that `increment` is an int.
+    ifIs { <> perEq(increment, 0) }
+        { return makeClosedRange(firstValue, 0, 1) };
+
+    def firstInt = rangeInt(firstValue);
+    def limitInt = rangeInt(limit);
+
+    # `sign(increment)` is either `-1` or `+1`, which when subtracted from
+    # limit "pushes" the limit in the right direction to make the truncated
+    # division produce the correct result size.
+    def sz =
+        add(1, div(sub(sub(limit, firstValue), sign(increment)), increment));
+
+    ifIs { <> perLe(sz, 0) }
+        { return nullGenerator };
+
+    <> makeClosedRange(firstValue, increment, sz);
 };
 
 # Documented in spec.
 fn makeInclusiveRange(firstValue, increment, limit) {
-    # TODO
-};
+    # This ensures that `firstValue` and `limit` have the same type.
+    perEq(firstValue, limit);
 
-# Documented in spec.
-fn ClosedRange_collect(range) {
-    <> [range*]
+    # `perEq` ensures that `increment` is an int.
+    ifIs { <> perEq(increment, 0) }
+        { return makeClosedRange(firstValue, 0, 1) };
+
+    def firstInt = rangeInt(firstValue);
+    def limitInt = rangeInt(limit);
+    def sz = add(1, div(sub(limit, firstValue), increment));
+
+    ifIs { <> perLe(sz, 0) }
+        { return nullGenerator };
+
+    <> makeClosedRange(firstValue, increment, sz);
 };
-genericBind(collect, "ClosedRange", ClosedRange_collect);
 
 # Documented in spec.
 fn ClosedRange_nextValue(range, box) {
