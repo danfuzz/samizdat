@@ -7,22 +7,39 @@
 #
 
 
+# `ValueGenerator` Type
+#
+# A `ValueGenerator` is a generator that just generates a particular value,
+# repeatedly, ad infinitum.
+
+fn ValueGenerator_collect(vgen) {
+    io0Die("Unbounded generator.");
+};
+
+fn ValueGenerator_nextValue(vgen, box) {
+    store(box, dataOf(vgen));
+    <> vgen
+};
+
+genericBind(collect,   "ValueGenerator", ValueGenerator_collect);
+genericBind(nextValue, "ValueGenerator", ValueGenerator_nextValue);
+
+fn makeValueGenerator(value) {
+    <> @[ValueGenerator: value]
+};
+
+
 #
 # Private Definitions
 #
 
-# Standard "voided" generator. This is a generator, not a generator
-# constructor.
-fn voidedGenerator(box) {
-    store(box)
-};
+# A "voided" generator, that is, one that just stores void in its given
+# box. This is defined to make the intent of the code that uses it clearer.
+def VOIDED_GENERATOR = [];
 
-# Empty list generator. It always yields the empty list and returns
-# itself. This is a generator, not a generator constructor.
-fn emptyListGenerator(box) {
-    store(box, []);
-    <> emptyListGenerator
-};
+# An empty list generator, that is, a generator that always generates
+# the empty list.
+def EMPTY_LIST_GENERATOR = makeValueGenerator([]);
 
 # General sequential-incrementing-value generator. Takes a "filter" function
 # (function from int to the proper actual value, returns void for
@@ -202,7 +219,7 @@ fn doReduce(reduceFunction, generators, baseValues) {
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
                     <> ifValue { <> reduceFunction(fetch(box)*, values*) }
-                        { nextValues <> [nextGenerator, nextValues] }
+                        { nextVals <> [nextGenerator, nextVals] }
                         {
                             # The reduce function discarded the values.
                             <> [nextGenerator, values]
@@ -223,7 +240,7 @@ fn doReduce1(reduceFunction, generator, baseValue) {
             <> ifValue { <> gen(box) }
                 { nextGenerator ::
                     <> ifValue { <> reduceFunction(fetch(box), value) }
-                        { nextValue <> [nextGenerator, nextValue] }
+                        { nextVal <> [nextGenerator, nextVal] }
                         {
                             # The reduce function discarded the value.
                             <> [nextGenerator, value]
@@ -317,7 +334,7 @@ fn optGenerator(generator) {
                     store(box, [fetch(innerBox)]);
                     <> optGenerator1(nextGenerator)
                 }
-                { <> emptyListGenerator(box) }
+                { <> nextValue(EMPTY_LIST_GENERATOR, box) }
         }
     };
 
@@ -354,7 +371,7 @@ fn paraGenerator(generators*) {
 
     # Handle the degenerate case of no arguments.
     ifIs { <> eq(generators, []) }
-        { return voidedGenerator };
+        { return VOIDED_GENERATOR };
 
     # Handle the degenerate case of a signle argument.
     ifIs { <> eq(size(generators), 1) }
@@ -383,10 +400,10 @@ fn reduceGenerator(reduceFunction, generators, baseValues) {
                     { nextGenerator ::
                         ifValue
                             { <> reduceFunction(fetch(innerBox)*, values*) }
-                            { nextValues ::
-                                store(box, nextValues);
+                            { nextVals ::
+                                store(box, nextVals);
                                 <out> reduceGenerator1(
-                                    nextGenerator, nextValues)
+                                    nextGenerator, nextVals)
                             }
                             {
                                 # The reducer discarded the values. Iterate!
@@ -408,7 +425,7 @@ fn reduceGenerator(reduceFunction, generators, baseValues) {
 fn seqGenerator(generators*) {
     # Return a voided generator if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
-        { return voidedGenerator };
+        { return VOIDED_GENERATOR };
 
     # Return a plain (unwrapped) generator if we were only passed one
     # argument. (This saves some gratuitous call wrapping / double yields.)

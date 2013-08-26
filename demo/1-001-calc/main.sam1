@@ -78,12 +78,12 @@ fn applyShuntingYard(initialValue, opValues) {
 
         def nextOpValue = first(opValues);
         def nextOp = get(nextOpValue, "op");
-        def nextValue = get(nextOpValue, "value");
+        def nextVal = get(nextOpValue, "value");
         def newPending =
             reducePending(ops, values, get(nextOp, "precedence"));
         <> [
             [first(newPending)*, nextOp],
-            [last(newPending)*, nextValue],
+            [last(newPending)*, nextVal],
             butFirst(opValues)
         ]
     }

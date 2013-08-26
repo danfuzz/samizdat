@@ -85,9 +85,9 @@ do {
 } while (fetch(box) \< 70);
 
 while (value := (75 \> fetch(box))) {
-    def nextValue = value + 1;
-    store(box, nextValue);
-    io0Note("Value is \%q(nextValue).")
+    def nextVal = value + 1;
+    store(box, nextVal);
+    io0Note("Value is \%q(nextVal).")
 };
 
 <> 0
