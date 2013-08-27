@@ -21,10 +21,13 @@
 #include "pb.h"
 
 
-/** Generic `collect()`: Documenetd in spec. */
+/** Generic `collect(generator)`: Documenetd in spec. */
 extern zvalue GFN_collect;
 
-/** Generic `nextValue(box)`: Documenetd in spec. */
+/** Generic `filter(generator, filterFunction)`: Documenetd in spec. */
+extern zvalue GFN_filter;
+
+/** Generic `nextValue(generator, box)`: Documenetd in spec. */
 extern zvalue GFN_nextValue;
 
 

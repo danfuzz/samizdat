@@ -52,6 +52,7 @@ PRIM_DEF(slice,      GFN_slice);
 
 // Generic functions: `Generator` protocol
 PRIM_DEF(collect,    GFN_collect);
+PRIM_DEF(filter,     GFN_filter);
 PRIM_DEF(nextValue,  GFN_nextValue);
 
 // Generic functions: `Int` protocol

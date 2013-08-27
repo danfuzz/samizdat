@@ -978,13 +978,13 @@ def parGeneratorList = {/
 def parComprehensionBody = {/
     genList = parGeneratorList
     (@"::" | &@"<>")
-    filter = parProgramBody
+    filterBody = parProgramBody
 
     {
         def genFormals = get(genList, "formals");
         def genInits = get(genList, "inits");
 
-        <> [@[closure: [filter*, formals: genFormals]], genInits*]
+        <> [@[closure: [filterBody*, formals: genFormals]], genInits*]
     }
 /};
 

@@ -29,6 +29,23 @@ The default implementation of this method iterates over calls to
 `nextValue()` in the expected manner, collecting up all the yielded
 results.
 
+#### `filter(generator, filterFunction) <> list`
+
+Collects the result of calling `filterFunction` on each of the elements
+yielded by the generator, into a list. Returns the list. If a given call
+to `filterFunction` returns void, then there is no result element for the
+corresponding generated value.
+
+Calling `filter` on an unbounded generator (one with an infinite number
+of elements to generate) is a fatal error (terminating the runtime).
+
+The default implementation of this method iterates over calls to
+`nextValue()` in the expected manner, collecting up all the yielded
+results.
+
+**Note:** The function `collectFilter` is a multi-generator generalization
+of this function.
+
 #### `nextValue(generator, box) <> generator | void`
 
 Generates the next item in `generator`, if any. If there is a generated

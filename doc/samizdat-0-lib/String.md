@@ -71,6 +71,10 @@ Returns a slice of the given string.
 
 Returns a list of all the characters of `string`, in order.
 
+#### `filter(string, filterFunction) <> list`
+
+Filters the characters of `string` using `filterFunction`.
+
 #### `nextValue(string, box) <> generator | void`
 
 On a non-empty string, calls `store(box, first(string))` and returns

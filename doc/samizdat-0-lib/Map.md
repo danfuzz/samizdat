@@ -82,6 +82,10 @@ indices, not map keys.
 
 Returns a list of all the individual mappings of `map`, in sorted order.
 
+#### `filter(map, filterFunction) <> list`
+
+Filters the mappings of `map` using `filterFunction`.
+
 #### `nextValue(map, box) <> generator | void`
 
 On a non-empty map, calls `store(box, first(map))` and returns

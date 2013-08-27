@@ -124,6 +124,9 @@ void datBindGenerator(void) {
     GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
     pbImmortalize(GFN_collect);
 
+    GFN_filter = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "filter"));
+    pbImmortalize(GFN_filter);
+
     GFN_nextValue = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nextValue"));
     pbImmortalize(GFN_nextValue);
 
@@ -138,6 +141,9 @@ void datBindGenerator(void) {
 
 /* Documented in header. */
 zvalue GFN_collect = NULL;
+
+/* Documented in header. */
+zvalue GFN_filter = NULL;
 
 /* Documented in header. */
 zvalue GFN_nextValue = NULL;

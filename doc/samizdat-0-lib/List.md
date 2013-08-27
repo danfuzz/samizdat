@@ -72,6 +72,10 @@ Returns a slice of the given list.
 
 Returns `list`.
 
+#### `filter(list, filterFunction) <> list`
+
+Filters the elements of `list` using `filterFunction`.
+
 #### `nextValue(list, box) <> generator | void`
 
 On a non-empty list, calls `store(box, first(list))` and returns
