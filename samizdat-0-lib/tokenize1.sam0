@@ -16,7 +16,7 @@
 
 # Documented in Samizdat Layer 0 spec.
 def KEYWORDS = mapFromGenerator(
-    filterGenerator([
+    makeFilterGenerator([
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
         []*])

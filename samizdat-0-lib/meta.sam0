@@ -50,7 +50,7 @@ fn metaFunctions(context, fileName) {
         { <> get(META_NAME_MAP, "sam2") };
 
     <> mapFromGenerator(
-        filterGenerator(nameMap)
+        makeFilterGenerator(nameMap)
             { mapping ::
                 def name = mappingValue(mapping);
                 <> ifValue { <> get(context, name) }

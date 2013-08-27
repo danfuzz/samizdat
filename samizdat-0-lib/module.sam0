@@ -161,7 +161,7 @@ fn moduleInit(context) {
 
     # Make a map from names to modules.
     def moduleMap = mapFromGenerator(
-        filterGenerator(unsortedModules)
+        makeFilterGenerator(unsortedModules)
             { mod :: <> [dataGet(mod, "name"): mod] });
 
     # Do a topological sort of the modules, to get them in dependency

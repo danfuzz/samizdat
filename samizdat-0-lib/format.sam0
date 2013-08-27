@@ -180,7 +180,7 @@ fn keyString(key) {
 
 # Stringifies a string.
 fn doString(string, adorn) {
-    def bodyChars = filterGenerator(string) { ch <> stringChar(ch) };
+    def bodyChars = makeFilterGenerator(string) { ch <> stringChar(ch) };
     <> adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
 
@@ -250,7 +250,7 @@ fn doStringAsIs(string, .) {
 # Stringifies a list by recursive flattening. The extra argument is the
 # general `adorn` argument, which is degenerate and ignored in this case.
 fn doListFlatten(list, .) {
-    def elems = filterGenerator(list) { e <> callFormatValue(e) };
+    def elems = makeFilterGenerator(list) { e <> callFormatValue(e) };
     <> cat("", elems*)
 };
 

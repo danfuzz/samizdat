@@ -973,7 +973,7 @@ def parGeneratorList = {/
 /};
 
 # Helper for `parComprehension`, which parses the body of a comprehension,
-# yielding appropriate arguments for a call to either `filterGenerator`
+# yielding appropriate arguments for a call to either `makeFilterGenerator`
 # or `collectFilter`.
 def parComprehensionBody = {/
     genList = parGeneratorList
@@ -998,7 +998,7 @@ def parComprehensionBody = {/
 # ```
 # =>
 # ```
-# filterGenerator(expr1, expr2)
+# makeFilterGenerator(expr1, expr2)
 #     { name1, name2 :: filterBody }
 # ```
 #
@@ -1015,7 +1015,7 @@ def parComprehension = {/
     body = parComprehensionBody
     @")"
 
-    { <> makeCallName("filterGenerator", body*) }
+    { <> makeCallName("makeFilterGenerator", body*) }
 |
     @"["
     body = parComprehensionBody
