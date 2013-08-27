@@ -58,7 +58,7 @@ def GENERATOR_MAKERS = [
 fn oneItemParaGenerator(generator) {
     <> { <out> box ::
         def innerBox = makeYieldBox();
-        <> ifValue { <> generator(innerBox) }
+        <> ifValue { <> nextValue(generator, innerBox) }
             { nextGenerator ::
                 store(box, [fetch(innerBox)]);
                 <> oneItemParaGenerator(nextGenerator)
@@ -104,7 +104,7 @@ fn doFilter(filterFunction, generators*) {
     loopReduce(paraGenerator(generators*))
         { gen ::
             def box = makeYieldBox();
-            <> ifValue { <> gen(box) }
+            <> ifValue { <> nextValue(gen, box) }
                 { nextGenerator ::
                     filterFunction(fetch(box)*);
                     <> [nextGenerator]
@@ -119,7 +119,7 @@ fn doFilter(filterFunction, generators*) {
 # Documented in Samizdat Layer 0 spec.
 fn doGenerator(generator) {
     loopReduce(generatorFromValue(generator)) { gen ::
-        <> ifValue { <> gen(nullBox) }
+        <> ifValue { <> nextValue(gen, nullBox) }
             { nextGen <> [nextGen] }
             { return }
     }
@@ -132,7 +132,7 @@ fn doReduce(reduceFunction, generator, baseValues*) {
     loopReduce(gen, baseValues)
         { gen, values ::
             def box = makeYieldBox();
-            <> ifValue { <> gen(box) }
+            <> ifValue { <> nextValue(gen, box) }
                 { nextGenerator ::
                     <> ifValue { <> reduceFunction(fetch(box), values*) }
                         { nextValues <> [nextGenerator, nextValues] }
@@ -153,7 +153,7 @@ fn doReduce1(reduceFunction, generator, baseValue) {
     loopReduce(generatorFromValue(generator), baseValue)
         { gen, value ::
             def box = makeYieldBox();
-            <> ifValue { <> gen(box) }
+            <> ifValue { <> nextValue(gen, box) }
                 { nextGenerator ::
                     <> ifValue { <> reduceFunction(fetch(box), value) }
                         { nextValue <> [nextGenerator, nextValue] }
@@ -179,7 +179,7 @@ fn filterGenerator(filterFunction, generators*) {
             # be discarded.
             loopReduce(gen) { <next> gen ::
                 def innerBox = makeYieldBox();
-                ifValue { <> gen(innerBox) }
+                ifValue { <> nextValue(gen, innerBox) }
                     { nextGenerator ::
                         ifValue { <> filterFunction(fetch(innerBox)*) }
                             { value ::
@@ -217,7 +217,7 @@ fn optGenerator(generator) {
     fn optGenerator1(gen) {
         <> { box ::
             def innerBox = makeYieldBox();
-            <> ifValue { <> gen(innerBox) }
+            <> ifValue { <> nextValue(gen, innerBox) }
                 { nextGenerator ::
                     store(box, [fetch(innerBox)]);
                     <> optGenerator1(nextGenerator)
@@ -238,7 +238,7 @@ fn paraGenerator(generators*) {
             def generatorCalls = listFilter(generators)
                 { gen ::
                     def innerBox = makeYieldBox();
-                    <> ifValue { <> gen(innerBox) }
+                    <> ifValue { <> nextValue(gen, innerBox) }
                         { nextGenerator ::
                             <> [fetch(innerBox), nextGenerator]
                         }
@@ -287,7 +287,7 @@ fn seqGenerator(generators*) {
     fn seqGenerator1(gen) {
         <> { box ::
             def innerBox = makeYieldBox();
-            <> ifValue { <> gen(innerBox) }
+            <> ifValue { <> nextValue(gen, innerBox) }
                 { nextGenerator ::
                     store(box, fetch(innerBox));
                     <> seqGenerator1(nextGenerator)
@@ -295,7 +295,7 @@ fn seqGenerator(generators*) {
                 {
                     def nextGenerator =
                         seqGenerator(butFirst(generators)*);
-                    <> nextGenerator(box)
+                    <> nextValue(nextGenerator, box)
                 }
         }
     };
