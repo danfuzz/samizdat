@@ -79,16 +79,16 @@ msgAll("ParaGenerator with opt element and ValueGenerator",
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
-msgAll("Filter generator (square even numbers)",
-    filterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
+msgAll("FilterGenerator (square even numbers)",
+    makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ::
             <> ifIs { <> eq(mod(value, 2), 0) }
                 { <> mul(value, value) }
         });
 
-io0Note("doGenerator on filter");
+io0Note("doGenerator on FilterGenerator");
 doGenerator(
-    filterGenerator([1, 2, 3, 4])
+    makeFilterGenerator([1, 2, 3, 4])
         { value :: io0Note(cat("    Yay ", sourceString(value))) });
 io0Note("");
 
@@ -111,9 +111,9 @@ msgAll("Size two SeqGenerator",
 msgAll("Size six SeqGenerator (with a couple pre-voided generators)",
     makeSeqGenerator("abc", [], [], nullGenerator, ["def", "ghi"], []));
 
-io0Note("mapFromGenerator on filter");
+io0Note("mapFromGenerator on a FilterGenerator");
 def outMap = mapFromGenerator(
-    filterGenerator(makeInclusiveRange(0, 2, 4))
+    makeFilterGenerator(makeInclusiveRange(0, 2, 4))
         { value ::
             <> [(value): value, add(value, 1): value, blort: value]
         });
