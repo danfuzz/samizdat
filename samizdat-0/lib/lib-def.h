@@ -17,6 +17,7 @@ LIB_FILE(Boolean,        sam0);
 LIB_FILE(Callable,       sam0);
 LIB_FILE(Collection,     sam0);
 LIB_FILE(NullGenerator,  sam0);
+LIB_FILE(OptGenerator,   sam0);
 LIB_FILE(String,         sam0);
 LIB_FILE(Value,          sam0);
 LIB_FILE(ValueGenerator, sam0);
