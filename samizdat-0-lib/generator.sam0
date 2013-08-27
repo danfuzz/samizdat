@@ -24,36 +24,6 @@ fn emptyListGenerator(box) {
     <> emptyListGenerator
 };
 
-# General sequential-incrementing-value generator. Takes a "filter" function
-# (function from int to the proper actual value, returns void for
-# out-of-range int), an int starting value, and an int increment.
-fn makeIncrementGenerator(filterFunction, firstValue, increment) {
-    # Main generator maker.
-    fn makeIncrementGenerator1(value) {
-        <> { box ::
-            <> ifValue { <> filterFunction(value) }
-                { result ::
-                    store(box, result);
-                    <> makeIncrementGenerator1(add(value, increment));
-                }
-                {
-                    # The filter indicated that the generator is voided.
-                    store(box);
-                }
-        }
-    };
-
-    <> makeIncrementGenerator1(firstValue)
-};
-
-# Makes a generator for an arbitrary collection.
-fn makeCollectionGenerator(coll) {
-    def sz = size(coll);
-
-    <> makeIncrementGenerator(0, 1)
-        { index <> nth(coll, index) }
-};
-
 # Degenerate generator maker for functions, which are tacitly assumed to
 # already be generators.
 fn makeFunctionGenerator(function) {
@@ -75,9 +45,9 @@ fn makeValueGenerator(value) {
 def GENERATOR_MAKERS = [
     (Function): makeFunctionGenerator,
     (Generic):  makeFunctionGenerator,
-    (List):     makeCollectionGenerator,
-    (Map):      makeCollectionGenerator,
-    (String):   makeCollectionGenerator,
+    (List):     makeValueGenerator,
+    (Map):      makeValueGenerator,
+    (String):   makeValueGenerator,
     ClosedRange: makeValueGenerator, # TODO: TEMP! REMOVE!
     OpenRange:   makeValueGenerator # TODO: TEMP! REMOVE!
 ];
