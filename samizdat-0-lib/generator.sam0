@@ -60,6 +60,16 @@ fn makeFunctionGenerator(function) {
     <> function
 };
 
+# TODO: TEMPORARY SCAFFOLDING! REMOVE!
+# This assumes that `value` is in fact a `Generator` that defines
+# `nextValue`.
+fn makeValueGenerator(value) {
+    <> { box ::
+        <> ifValue { <> nextValue(value, box) }
+            { nextGen <> makeValueGenerator(nextGen) }
+    }
+};
+
 # Map from low-layer value types to corresponding appropriate generator
 # maker functions.
 def GENERATOR_MAKERS = [
@@ -67,7 +77,9 @@ def GENERATOR_MAKERS = [
     (Generic):  makeFunctionGenerator,
     (List):     makeCollectionGenerator,
     (Map):      makeCollectionGenerator,
-    (String):   makeCollectionGenerator
+    (String):   makeCollectionGenerator,
+    ClosedRange: makeValueGenerator, # TODO: TEMP! REMOVE!
+    OpenRange:   makeValueGenerator # TODO: TEMP! REMOVE!
 ];
 
 # Map from `[direction, inclusive]` pairs to appropriate test functions.
