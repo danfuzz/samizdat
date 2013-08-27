@@ -23,7 +23,7 @@ fn msg(value) {
 # Outputs all generated values, with a header and a footer.
 fn msgAll(header, gen) {
     io0Note(header);
-    listFilter([gen*]) { elem :: msg(elem) };
+    collectFilter([gen*]) { elem :: msg(elem) };
     io0Note("  [fin]");
     io0Note(cat("  value: ", sourceString(gen)));
     io0Note("")
