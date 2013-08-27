@@ -92,7 +92,7 @@ doGenerator(
         { value :: io0Note(cat("    Yay ", sourceString(value))) });
 io0Note("");
 
-msgAll("Token generator", tokenGenerator("Tokens!"));
+msgAll("Token generator", makeTokenGenerator("Tokens!"));
 
 msgAll("ParaGenerator with open ranges",
     makeParaGenerator(
@@ -111,8 +111,8 @@ msgAll("Size two SeqGenerator",
 msgAll("Size six SeqGenerator (with a couple pre-voided generators)",
     makeSeqGenerator("abc", [], [], nullGenerator, ["def", "ghi"], []));
 
-io0Note("mapFromGenerator on a FilterGenerator");
-def outMap = mapFromGenerator(
+io0Note("collectAsMap on a FilterGenerator");
+def outMap = collectAsMap(
     makeFilterGenerator(makeInclusiveRange(0, 2, 4))
         { value ::
             <> [(value): value, add(value, 1): value, blort: value]

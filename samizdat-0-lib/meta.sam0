@@ -49,7 +49,7 @@ fn metaFunctions(context, fileName) {
     def nameMap = ifValueOr { <> get(META_NAME_MAP, suffix) }
         { <> get(META_NAME_MAP, "sam2") };
 
-    <> mapFromGenerator(
+    <> collectAsMap(
         makeFilterGenerator(nameMap)
             { mapping ::
                 def name = mappingValue(mapping);

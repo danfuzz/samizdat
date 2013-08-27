@@ -12,6 +12,15 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn collectAsMap(generator) {
+    # Avoid pointless map->generator->map conversion.
+    ifIs { <> isMap(generator) }
+        { return generator };
+
+    <> cat([:], generator*)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn collectFilter(filterFunction, generators*) {
     <> ifIs { <> eq(size(generators), 1) }
         {
@@ -66,7 +75,7 @@ fn doReduce(reduceFunction, generator, baseValues*) {
                         }
                 }
                 {
-                    # The inner generator was voided.
+                    # The generator was voided.
                     return values
                 }
         }
@@ -87,33 +96,24 @@ fn doReduce1(reduceFunction, generator, baseValue) {
                         }
                 }
                 {
-                    # The inner generator was voided.
+                    # The generator was voided.
                     return value
                 }
         }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn mapFromGenerator(generator) {
-    # Avoid pointless map->generator->map conversion.
-    ifIs { <> isMap(generator) }
-        { return generator };
-
-    <> cat([:], generator*)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn tokenGenerator(generator) {
+fn makeTokenGenerator(generator) {
     <> makeFilterGenerator(generator)
         { elem <> @[(elem)] }
 };
 
 <> [
-    collectFilter:       collectFilter,
-    doFilter:            doFilter,
-    doGenerator:         doGenerator,
-    doReduce:            doReduce,
-    doReduce1:           doReduce1,
-    mapFromGenerator:    mapFromGenerator,
-    tokenGenerator:      tokenGenerator
+    collectAsMap:       collectAsMap,
+    collectFilter:      collectFilter,
+    doFilter:           doFilter,
+    doGenerator:        doGenerator,
+    doReduce:           doReduce,
+    doReduce1:          doReduce1,
+    makeTokenGenerator: makeTokenGenerator
 ]

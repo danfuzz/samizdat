@@ -16,7 +16,7 @@
 # that, this just returns `input` unchanged.
 fn generatorFromInput(input) {
     <> ifIs { <> isString(input) }
-        { <> tokenGenerator(input) }
+        { <> makeTokenGenerator(input) }
         { <> input }
 };
 

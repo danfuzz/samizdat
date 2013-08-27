@@ -63,6 +63,15 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### In-Language Definitions
 
+#### `collectAsMap(generator) <> map`
+
+Takes a generator which must yield map values, and collects all of its
+generated results, in generated order, by building up an overall map,
+as if by calling `cat([:], map1, map2, ...)` on all the results.
+
+If there are mappings in the yielded results with equal keys, then the
+*last* such mapping is the one that "wins" in the final result.
+
 #### `makeFilterGenerator(filterFunction, generators*) <> generator`
 
 Filtering generator constructor. This takes any number of arbitrary
@@ -155,6 +164,15 @@ Special cases:
 `"SeqGenerator"` with `[generators*]` as the payload. That type has
 appropriate `Generator` method bindings.
 
+#### `makeTokenGenerator(generator) <> generator`
+
+Filter generator that produces a sequence of type-only derived values
+from whatever the underlying generator produces. This is, in particular,
+the generator used by default to produce single-character
+tokens when using the library function `pegApply` to perform
+string tokenization. The function name is meant to be suggestive of the
+expected use case.
+
 #### `makeValueGenerator(value) <> generator`
 
 Creates an unnbounded generator (one with infinite elements) which always
@@ -233,20 +251,4 @@ As opposed to `doReduce`, the `reduceFunction` can return any type of
 value (not just a list), and similarly the overall result of calling this
 function can turn out to be an arbitrary value.
 
-#### `mapFromGenerator(generator) <> map`
 
-Takes a generator which must yield map values, and collects all of its
-generated results, in generated order, by building up an overall map,
-as if by successive calls to `cat(map, map)`.
-
-If there are mappings in the yielded results with equal keys, then the
-*last* such mapping is the one that "wins" in the final result.
-
-#### `tokenGenerator(generator) <> generator`
-
-Filter generator that produces a sequence of type-only derived values
-from whatever the underlying generator produces. This is, in particular,
-the generator used by default to produce single-character
-tokens when using the library function `pegApply` to perform
-string tokenization. The function name is meant to be suggestive of the
-expected use case.

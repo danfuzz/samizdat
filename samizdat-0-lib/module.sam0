@@ -160,7 +160,7 @@ fn moduleInit(context) {
         };
 
     # Make a map from names to modules.
-    def moduleMap = mapFromGenerator(
+    def moduleMap = collectAsMap(
         makeFilterGenerator(unsortedModules)
             { mod :: <> [dataGet(mod, "name"): mod] });
 
