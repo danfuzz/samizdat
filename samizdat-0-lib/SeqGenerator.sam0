@@ -1,0 +1,56 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `SeqGenerator` Type
+#
+# Payload is `[subGens*]`, a list of sub-generators.
+
+#
+# Exported Definitions
+#
+
+# Documented in spec.
+fn makeSeqGenerator(generators*) {
+    # Return the `nullGenerator` if we weren't passed any arguments.
+    ifIs { <> eq(generators, []) }
+        { return nullGenerator };
+
+    # Return the argument directly if we were only passed one.
+    # This saves some gratuitous call wrapping / double yields.
+    ifIs { <> eq(size(generators), 1) }
+        { return generators* };
+
+    <> @[SeqGenerator: generators]
+};
+
+# Documented in spec.
+fn SeqGenerator_nextValue(gen, box) {
+    def subGens = dataOf(gen);
+
+    <> ifValue { <> first(subGens) }
+        { firstGen ::
+            def moreGens = butFirst(subGens);
+            def innerBox = makeYieldBox();
+
+            <> ifValue { <> nextValue(firstGen, innerBox) }
+                { nextGenerator ::
+                    store(box, fetch(innerBox));
+                    <> @[SeqGenerator: [nextGenerator, moreGens*]]
+                }
+                {
+                    # First generator was voided.
+                    <> nextValue(makeSeqGenerator(moreGens*), box)
+                }
+        }
+        {
+            # Totally voided.
+            store(box)
+        }
+};
+genericBind(nextValue, "SeqGenerator", SeqGenerator_nextValue);
+
+<> [
+    makeSeqGenerator: makeSeqGenerator
+]

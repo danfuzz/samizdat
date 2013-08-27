@@ -55,8 +55,25 @@ returned generator yields a single-element list of that value. Once the
 underlying generator is voided, the returned generator yields the empty
 list, and will continue doing so ad infinitum.
 
-**Note:** This makes a value of the type `"OptGenerator"` with
+**Note:** This function makes a value of the type `"OptGenerator"` with
 the given `generator` as the payload. That type has
+appropriate `Generator` method bindings.
+
+#### `makeSeqGenerator(generators*) <> generator`
+
+Sequential generator combination constructor. This takes an arbitrary number
+of generators, and returns a generator that yields from each of
+the generators in argument order.
+
+As each generator becomes voided, the next one (in argument order) is called
+upon to generate further elements. The generator becomes voided after the
+final argument is voided.
+
+As a special case, if passed no arguments, this returns `nullGenerator`, and
+if passed one argument, this returns that argument directly.
+
+**Note:** Special cases aside, this function makes a value of type
+`"SeqGenerator"` with `[generators*]` as the payload. That type has
 appropriate `Generator` method bindings.
 
 #### `makeValueGenerator(value) <> generator`
@@ -64,7 +81,7 @@ appropriate `Generator` method bindings.
 Creates an unnbounded generator (one with infinite elements) which always
 yields the given `value` upon `nextValue()` call.
 
-**Note:** This makes a value of type `"ValueGenerator"` with `value`
+**Note:** This function makes a value of type `"ValueGenerator"` with `value`
 as the payload. That type has appropriate `Generator` method bindings.
 
 

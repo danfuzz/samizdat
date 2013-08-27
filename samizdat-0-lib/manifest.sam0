@@ -35,6 +35,7 @@ def MANIFEST = [
     "NullGenerator.sam0",
     "ValueGenerator.sam0",
     "OptGenerator.sam0",
+    "SeqGenerator.sam0",
     "range.sam0",
     "generator.sam0",
     "String.sam0",
