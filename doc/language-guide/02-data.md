@@ -211,6 +211,32 @@ and an execution context.
 See the language guide section on functions for more details.
 
 
+#### Generic
+
+A `Generic` is a generic function. That is, it is an encapsulated mapping
+from types to functions, in this case based on the type of the first
+argument passed to the generic function when called.
+
+See the language guide section on generic functions for more details.
+
+
+#### Box
+
+A `Box` is a holder for some other value. Boxes are sometimes also known
+as "cells".
+
+In addition to the box constructor functions, the three functions that
+deal with boxes are `fetch` to get the contents of a box (or void if
+the box value has yet to be set), `store` to set the contents of
+a box, and `canStore` to indicate whether it is okay to call
+`store` (which is not the same as `fetch` returning non-void).
+
+As a special case, the special value `nullBox` is a box that is permanently
+un-stored. Notably, `store(nullBox, value)` is effectively a no-op. This
+arrangement is done in order to make it easy to pass a box into functions
+that require one, but where the box value is never needed.
+
+
 #### Generator
 
 Generators in *Samizdat* are the closest analog to what are sometimes
@@ -254,32 +280,6 @@ Generators also bind a couple other generic functions. See the library
 specification for `Generator` for more details.
 
 As a convenience, the global `nullGenerator` is a voided generator.
-
-
-#### Generic
-
-A `Generic` is a generic function. That is, it is an encapsulated mapping
-from types to functions, in this case based on the type of the first
-argument passed to the generic function when called.
-
-See the language guide section on generic functions for more details.
-
-
-#### Box
-
-A `Box` is a holder for some other value. Boxes are sometimes also known
-as "cells".
-
-In addition to the box constructor functions, the three functions that
-deal with boxes are `fetch` to get the contents of a box (or void if
-the box value has yet to be set), `store` to set the contents of
-a box, and `canStore` to indicate whether it is okay to call
-`store` (which is not the same as `fetch` returning non-void).
-
-As a special case, the special value `nullBox` is a box that is permanently
-un-stored. Notably, `store(nullBox, value)` is effectively a no-op. This
-arrangement is done in order to make it easy to pass a box into functions
-that require one, but where the box value is never needed.
 
 
 #### Uniqlet
