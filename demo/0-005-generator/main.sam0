@@ -52,25 +52,30 @@ fn msgAll(header, gen) {
 msgAll("Empty list", []);
 msgAll("Empty map", [:]);
 msgAll("Empty string", "");
-msgAll("Empty paraGenerator", paraGenerator());
+msgAll("NullGenerator", nullGenerator);
+msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
+msgAll("Empty ParaGenerator", makeParaGenerator());
 msgAll("Empty SeqGenerator", makeSeqGenerator());
 
 msgAll("List", [101, 33, 5555, "blort"]);
 msgAll("Map", [one: 1, two: 2, three: 3, four: 4, five: "fizmo"]);
 msgAll("String", "Happy string!");
 
-msgAll("Single-item paraGenerator",
-    paraGenerator(["blort", "igram", "fizmo"]));
+msgAll("ListWrapGenerator", makeListWrapGenerator("frotz"));
 
-msgAll("All-finite paraGenerator",
-    paraGenerator(
+msgAll("Single-item ParaGenerator",
+    makeParaGenerator(["blort", "igram", "fizmo"]));
+
+msgAll("All-finite ParaGenerator",
+    makeParaGenerator(
         [1, 2, 3],
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
-msgAll("Paragenerator with opt element",
-    paraGenerator(
+msgAll("ParaGenerator with opt element and ValueGenerator",
+    makeParaGenerator(
         makeOptGenerator([1, 2, 3]),
+        makeValueGenerator("blort"),
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
@@ -90,7 +95,7 @@ io0Note("");
 msgAll("Token generator", tokenGenerator("Tokens!"));
 
 msgAll("ParaGenerator with open ranges",
-    paraGenerator(
+    makeParaGenerator(
         makeOpenRange("a", 1),
         makeOpenRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
@@ -103,8 +108,8 @@ msgAll("Size two SeqGenerator",
         [a: 10, b: 20, c: 30],
         "defg"));
 
-msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
-    makeSeqGenerator("abc", [], [], ["def", "ghi"], []));
+msgAll("Size six SeqGenerator (with a couple pre-voided generators)",
+    makeSeqGenerator("abc", [], [], nullGenerator, ["def", "ghi"], []));
 
 io0Note("mapFromGenerator on filter");
 def outMap = mapFromGenerator(
