@@ -64,7 +64,7 @@ fn convertPexSequence(node, formals) {
 
     # Convert all the pexes, passing in appropriately-extended formals
     # lists to each conversion.
-    def convertedPexes = collectFilter(openRange(0, 1), pexes) { n, pex  ::
+    def convertedPexes = collectFilter(makeOpenRange(0, 1), pexes) { n, pex  ::
         def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
             { <> get(dataOf(pex), "value") }
             { <> pex };

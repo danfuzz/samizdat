@@ -20,7 +20,7 @@ def META_NAME_MAP = [
 # Gets the index of the first occurrence of the given character in the
 # given string.
 fn charIndex(string, ch) {
-    doFilter(openRange(0, 1), string) { index, one ::
+    doFilter(makeOpenRange(0, 1), string) { index, one ::
         <> ifIs { <> eq(ch, one) }
             { return index }
     };

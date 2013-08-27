@@ -155,7 +155,7 @@ def BINARY_OPERATORS = [
     "\\>=": makeVarRef("ge"),
     "..":   makeVarRef("inclusiveRange"),
     "..!":  makeVarRef("exclusiveRange"),
-    "..+":  makeVarRef("openRange")
+    "..+":  makeVarRef("makeOpenRange")
 ];
 
 # Helper for parsing binary operator expressions, which puts together

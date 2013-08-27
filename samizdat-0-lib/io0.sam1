@@ -118,7 +118,7 @@ fn io0FlatFromPath(path) {
     ifIs { <> eq(path, []) }
         { dieWith("Invalid empty path", path) };
 
-    def gen = filterGenerator(path, openRange(size(path), -1))
+    def gen = filterGenerator(path, makeOpenRange(size(path), -1))
         { <out> one, n ::
             # This test skips the check on the last path component, if it
             # happens to be empty (which is the only valid case of an empty
