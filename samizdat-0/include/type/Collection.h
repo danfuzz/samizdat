@@ -45,8 +45,8 @@ extern zvalue GFN_put;
 /** Generic `reverse(sequence)`: Documented in spec. */
 extern zvalue GFN_reverse;
 
-/** Generic `size(collection)`: Documented in spec. */
-extern zvalue GFN_size;
+/** Generic `sizeOf(collection)`: Documented in spec. */
+extern zvalue GFN_sizeOf;
 
 /** Generic `slice(collection, start, end?)`: Documented in spec. */
 extern zvalue GFN_slice;
@@ -121,7 +121,7 @@ zvalue collPut(zvalue coll, zvalue key, zvalue value);
 zint collPutIndexStrict(zint size, zvalue n);
 
 /**
- * Gets the size of the given collection, as a `zint`.
+ * Calls `sizeOf` on the given collection, converting the result to a `zint`.
  */
 zint collSize(zvalue coll);
 

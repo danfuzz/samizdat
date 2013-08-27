@@ -47,7 +47,7 @@ PRIM_DEF(keyList,    GFN_keyList);
 PRIM_DEF(nth,        GFN_nth);
 PRIM_DEF(put,        GFN_put);
 PRIM_DEF(reverse,    GFN_reverse); // `Sequence` protocol.
-PRIM_DEF(size,       GFN_size);
+PRIM_DEF(sizeOf,     GFN_sizeOf);
 PRIM_DEF(slice,      GFN_slice);
 
 // Generic functions: `Generator` protocol

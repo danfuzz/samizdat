@@ -102,9 +102,9 @@ METH_IMPL(Deriv, perOrder) {
     zvalue data2 = getInfo(v2)->data;
 
     if (data1 == NULL) {
-        return (data2 == NULL) ? PB_0 : PB_NEG1;
+        return (data2 == NULL) ? INT_0 : INT_NEG1;
     } else if (data2 == NULL) {
-        return PB_1;
+        return INT_1;
     } else {
         return intFromZint(valOrder(data1, data2));
     }

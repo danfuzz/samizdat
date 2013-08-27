@@ -118,8 +118,7 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 # Map of token types to corresponding unary operator function name variable
 # references.
 def UNARY_OPERATORS = [
-    "+":   makeVarRef("unary+"),
-    "-":   makeVarRef("unary-"),
+    "-":   makeVarRef("neg"),
     "**":  makeVarRef("logicFromBoolean"),
     "!!!": makeVarRef("not")
 ];
@@ -129,13 +128,13 @@ def UNARY_OPERATORS = [
 # * a `varRef` node for the corresponding function name
 # * a `literal` node for the corresponding method name
 def BINARY_OPERATORS = [
-    "+":    makeVarRef("binary+"),
-    "-":    makeVarRef("binary-"),
-    "*":    makeVarRef("binary*"),
-    "/":    makeVarRef("binary/"),
-    "%":    makeVarRef("binary%"),
-    "//":   makeVarRef("binary//"),
-    "%%":   makeVarRef("binary%%"),
+    "+":    makeVarRef("add"),
+    "-":    makeVarRef("sub"),
+    "*":    makeVarRef("mul"),
+    "/":    makeVarRef("div"),
+    "%":    makeVarRef("mod"),
+    "//":   makeVarRef("divEu"),
+    "%%":   makeVarRef("modEu"),
     "==":   makeLiteral("eq"),
     "!=":   makeLiteral("ne"),
     "<":    makeLiteral("lt"),
@@ -737,7 +736,7 @@ def parParserString = {/
     s = @string
     {
         def value = dataOf(s);
-        <> ifIs { <> eq(size(value), 1) }
+        <> ifIs { <> eq(sizeOf(value), 1) }
             { <> @[token: value] }
             { <> s }
     }
@@ -761,7 +760,7 @@ def parParserSetString = {/
             def startChar = dataOf(s);
             def endChar = dataOf(end);
             <> ifIs
-                { <> eq(1, &eq(size(startChar), size(endChar))) }
+                { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
                 { <> cat(makeInclusiveRange(startChar, 1, endChar)*) }
         }
     |
@@ -1546,10 +1545,10 @@ def parSwitchExpression = {/
                 }
         };
 
-        ifIs { <> gt(size(optDefault), 1) }
+        ifIs { <> gt(sizeOf(optDefault), 1) }
             { io0Die("Multiple default cases in switch.") };
 
-        ifIs { <> gt(size(optElse), 1) }
+        ifIs { <> gt(sizeOf(optElse), 1) }
             { io0Die("Multiple else cases in switch.") };
 
         # Notes:

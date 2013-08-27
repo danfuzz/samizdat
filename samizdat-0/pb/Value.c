@@ -150,7 +150,7 @@ METH_IMPL(Value, perEq) {
     zvalue v2 = args[1];
 
     zvalue result = GFN_CALL(perOrder, v1, v2);
-    return valEq(result, PB_0) ? v1 : NULL;
+    return valEq(result, INT_0) ? v1 : NULL;
 }
 
 /* Documented in header. */
@@ -161,11 +161,11 @@ METH_IMPL(Value, perOrder) {
     zint id2 = valIdentityOf(v2);
 
     if (id1 < id2) {
-        return PB_NEG1;
+        return INT_NEG1;
     } else if (id1 > id2) {
-        return PB_1;
+        return INT_1;
     } else {
-        return PB_0;
+        return INT_0;
     }
 }
 

@@ -175,7 +175,7 @@ static int searchOrder(const void *key, const void *vptr) {
  */
 static zvalue findType(zvalue name, zvalue secret) {
     if (theNeedSort) {
-        if (PB_1 == NULL) {
+        if (INT_1 == NULL) {
             // The system isn't yet booted enough to have ints. Therefore,
             // sorting and searching won't work, but more to the point, we
             // know we'll only be getting new types anyway.
@@ -426,7 +426,7 @@ METH_IMPL(Type, perOrder) {
 
     if (v1 == v2) {
         // Easy case to avoid decomposition and detailed tests.
-        return PB_0;
+        return INT_0;
     }
 
     TypeInfo *info1 = getInfo(v1);

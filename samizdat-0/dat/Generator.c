@@ -180,7 +180,7 @@ METH_IMPL(Collection, nextValue) {
         return NULL;
     } else {
         GFN_CALL(store, box, value);
-        return GFN_CALL(slice, coll, PB_1);
+        return GFN_CALL(slice, coll, INT_1);
     }
 }
 

@@ -60,10 +60,10 @@ def MANIFEST = [
     # Layer 2 language implementation.
     "tokenize2.sam1",
     "tree2.sam1",
-    "eval2.sam1",
+    "eval2.sam1"
 
     # Layer 2 library implementation.
-    "operators.sam2"
+    # TODO
 ];
 
 <> [
