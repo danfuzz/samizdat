@@ -85,7 +85,7 @@ On a non-empty list, calls `store(box, first(list))` and returns
 <br><br>
 ### Primitive Definitions
 
-#### `makeList(rest*) <> list`
+#### `makeList(elems*) <> list`
 
 Returns a list with the given elements (in argument order).
 These equivalences hold for *Samizdat Layer 0* source code:
@@ -107,7 +107,7 @@ implementation (without sacrificing clarity) &mdash; it makes sense to
 keep this defined as a core primitive:
 
 ```
-fn makeList(rest*) { <> rest };
+fn makeList(elems*) { <> elems };
 ```
 
 **Syntax Note:** Used in the translation of `[item, ...]`,
