@@ -57,15 +57,19 @@ fn makeClosedRange(firstValue, increment, sz) {
 
 # Documented in spec.
 fn makeExclusiveRange(firstValue, increment, limit) {
-    # This ensures that `firstValue` and `limit` have the same type.
-    perEq(firstValue, limit);
+    # `perEq` ensures that `firstValue` and `limit` have the same type.
+    # `optValue({ <> x})` == `x?`.
+    def isEmpty = optValue { <> perEq(firstValue, limit) };
+    def firstInt = rangeInt(firstValue);
+    def limitInt = rangeInt(limit);
 
     # `perEq` ensures that `increment` is an int.
     ifIs { <> perEq(increment, 0) }
-        { return makeClosedRange(firstValue, 0, 1) };
-
-    def firstInt = rangeInt(firstValue);
-    def limitInt = rangeInt(limit);
+        {
+            return ifIs { <> isEmpty* }
+                { <> nullGenerator }
+                { <> makeClosedRange(firstValue, 0, 1) }
+        };
 
     # `sign(increment)` is either `-1` or `+1`, which when subtracted from
     # limit "pushes" the limit in the right direction to make the truncated

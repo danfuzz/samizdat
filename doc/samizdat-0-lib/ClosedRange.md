@@ -56,9 +56,12 @@ single-character string if `firstValue` is a string). If the value yielded
 would be the same as or beyond the given `limit`, the generator becomes
 voided.
 
-As a special case, if `increment` is `0`, the resulting generator is
-forced to be of size `1` (just yielding `firstValue` and then becoming
-voided).
+Special cases:
+
+* If `firstValue == limit` then this returns `nullGenerator`.
+
+* Barring the above, if `increment` is `0`, the resulting generator is
+  of size `1` (just yielding `firstValue` and then becoming voided).
 
 **Syntax Note:** Used in the translation of `expression..!expression`
 forms.
