@@ -46,13 +46,26 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### In-Language Definitions
 
+#### `makeOptGenerator(generator) <> generator`
+
+"Optional" generator constructor. This takes an arbitrary generator,
+returning a new generator that always yields lists and never
+becomes voided. As long as the underlying generator yields a value, the
+returned generator yields a single-element list of that value. Once the
+underlying generator is voided, the returned generator yields the empty
+list, and will continue doing so ad infinitum.
+
+**Note:** This makes a value of the type `"OptGenerator"` with
+the given `generator` as the payload. That type has
+appropriate `Generator` method bindings.
+
 #### `makeValueGenerator(value) <> generator`
 
 Creates an unnbounded generator (one with infinite elements) which always
 yields the given `value` upon `nextValue()` call.
 
-**Note:** This makes a value of type `"ValueGenerator"`. That type has
-appropriate `Generator` method bindings.
+**Note:** This makes a value of type `"ValueGenerator"` with `value`
+as the payload. That type has appropriate `Generator` method bindings.
 
 
 OLD DEFINITIONS TO BE SCRUTINIZED
