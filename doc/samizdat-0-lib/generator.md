@@ -46,6 +46,21 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### In-Language Definitions
 
+#### `makeListWrapGenerator(generator) <> generator`
+
+List wrapping generator combination constructor. This takes a single
+generator, and returns a generator that yields single-element lists.
+This is a special case of `makeParaGenerator` and exists so that
+single-element para-generators can be implemented without undue overhead.
+
+Each yielded list consists of values yielded from the individual generators,
+in passed order. The generator becomes voided when *any* of the individual
+generators is voided.
+
+**Note:** This function makes a value of type `"ListWrapGenerator"`
+with `generator` as the payload. That type has appropriate `Generator`
+method bindings.
+
 #### `makeOptGenerator(generator) <> generator`
 
 "Optional" generator constructor. This takes an arbitrary generator,
@@ -59,6 +74,27 @@ list, and will continue doing so ad infinitum.
 the given `generator` as the payload. That type has
 appropriate `Generator` method bindings.
 
+#### `makeParaGenerator(generators*) <> generator`
+
+Parallel generator combination constructor. This takes an arbitrary number of
+generators, and returns a generator that yields lists.
+
+Each yielded list consists of values yielded from the individual generators,
+in passed order. The generator becomes voided when *any* of the individual
+generators is voided.
+
+Special cases:
+
+* If passed no arguments, this returns `nullGenerator`.
+
+* If passed one argument, this returns a result from `makeListWrapGenerator`.
+
+**Note:** Special cases aside, this function makes a value of type
+`"ParaGenerator"` with `[generators*]` as the payload. That type has
+appropriate `Generator` method bindings.
+
+**Syntax Note:** Used in the translation of `for` forms.
+
 #### `makeSeqGenerator(generators*) <> generator`
 
 Sequential generator combination constructor. This takes an arbitrary number
@@ -69,8 +105,11 @@ As each generator becomes voided, the next one (in argument order) is called
 upon to generate further elements. The generator becomes voided after the
 final argument is voided.
 
-As a special case, if passed no arguments, this returns `nullGenerator`, and
-if passed one argument, this returns that argument directly.
+Special cases:
+
+* If passed no arguments, this returns `nullGenerator`.
+
+* If passed one argument, this returns that argument directly.
 
 **Note:** Special cases aside, this function makes a value of type
 `"SeqGenerator"` with `[generators*]` as the payload. That type has
@@ -179,17 +218,6 @@ as if by successive calls to `cat(map, map)`.
 
 If there are mappings in the yielded results with equal keys, then the
 *last* such mapping is the one that "wins" in the final result.
-
-#### `paraGenerator(generators*) <> generator`
-
-Parallel generator combination constructor. This takes an arbitrary number of
-generators, and returns a generator that yields lists.
-
-Each yielded list consists of values yielded from the individual generators,
-in passed order. The generator becomes voided when *any* of the individual
-generators is voided.
-
-**Syntax Note:** Used in the translation of `for` forms.
 
 #### `tokenGenerator(generator) <> generator`
 
