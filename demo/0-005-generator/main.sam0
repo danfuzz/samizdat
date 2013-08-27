@@ -90,35 +90,11 @@ io0Note("");
 
 msgAll("Token generator", tokenGenerator("Tokens!"));
 
-msgAll("Inclusive range 5..10",
-    inclusiveRange(5, 1, 10));
-
-msgAll("Inclusive range 10..-2..1",
-    inclusiveRange(10, -2, 1));
-
-msgAll("Inclusive range \"a\"..5..\"z\"",
-    inclusiveRange("a", 5, "z"));
-
-msgAll("Exclusive range 5..10",
-    exclusiveRange(5, 1, 10));
-
-msgAll("Exclusive range 10..-2..1",
-    exclusiveRange(10, -2, 1));
-
-msgAll("Exclusive range \"a\"..5..\"z\"",
-    exclusiveRange("a", 5, "z"));
-
 msgAll("ParaGenerator with open ranges",
     paraGenerator(
-        openRange("a", 1),
-        openRange(100, 10),
+        makeOpenRange("a", 1),
+        makeOpenRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
-
-msgAll("Zero-increment int range",
-    inclusiveRange(10, 0, 20));
-
-msgAll("Zero-increment character range",
-    inclusiveRange("x", 0, "a"));
 
 msgAll("Size one SeqGenerator",
     seqGenerator([a: 10, b: 20, c: 30]));
@@ -167,7 +143,7 @@ io0Note("");
 
 io0Note("mapFromGenerator on filter");
 def outMap = mapFromGenerator(
-    filterGenerator(inclusiveRange(0, 2, 4))
+    filterGenerator(makeInclusiveRange(0, 2, 4))
         { value ::
             <> [(value): value, add(value, 1): value, blort: value]
         });
