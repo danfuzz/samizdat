@@ -13,11 +13,11 @@
 
 # Constructs a generator for the given input. This special-cases
 # strings to make them into single-character token generators. Other than
-# that, this is the same as `generatorFromValue`.
+# that, this just returns `input` unchanged.
 fn generatorFromInput(input) {
     <> ifIs { <> isString(input) }
         { <> tokenGenerator(input) }
-        { <> generatorFromValue(input) }
+        { <> input }
 };
 
 # Helper for `pegMake*Set*`, which takes a `sense` argument and produces the
@@ -63,7 +63,7 @@ fn genericMakeTokenSet(sense, types) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegRuleAny(box, input, .*) {
-    <> input(box)
+    <> nextValue(input, box)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -79,7 +79,7 @@ fn pegRuleFail(box, input, .*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegRuleEof(box, input, .*) {
-    <> ifIs { <> input(nullBox) }
+    <> ifIs { <> nextValue(input, nullBox) }
         { store(box) }
         {
             store(box, null);
@@ -89,7 +89,7 @@ fn pegRuleEof(box, input, .*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegRuleLookaheadAny(box, input, .*) {
-    <> ifIs { <> input(box) }
+    <> ifIs { <> nextValue(input, box) }
         { <> input }
 };
 

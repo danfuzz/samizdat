@@ -71,8 +71,8 @@ syntax that is built into *Samizdat Layer 0*.
 Applies a parser rule to the given input, yielding whatever result the
 rule yields on the input.
 
-`input` must be a generator or a "genaratable" value. If it is a string,
-this function automatically treats it as a generator of
+`input` must be a generator (including possibly a collection).
+If it is a string, this function automatically treats it as a generator of
 character-as-token values.
 
 #### `pegMakeCharSet(strings*) <> rule`
