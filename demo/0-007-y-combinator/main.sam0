@@ -19,7 +19,7 @@ SELF_PATH, ARGS* ::
 # implementations that truly disallow function self-reference and/or mutual
 # function reference. In particular, these functions do not make any calls
 # to non-primitive library functions, and they limit their explicit primitive
-# library function calls to just `listFilter`.
+# library function calls to just `filter`.
 #
 
 # The U combinator, which is a function that takes a function argument and
@@ -42,7 +42,7 @@ fn uCombinator(function) { <> function(function) };
 # "Y*". That is, the Y combinator uses the U combinator in the same way
 # that the Y* combinator uses this function.
 fn uStarCombinator(functions) {
-    <> listFilter(functions) { function <> function(functions*) }
+    <> filter(functions, { function <> function(functions*) })
 };
 
 # Documented in associated README file.
@@ -65,12 +65,13 @@ fn yStarCombinator(functions*) {
     # `uStarCombinator` function) where necessitated by the multiple-function
     # nature of this variant.
 
-    def applicators = listFilter(functions)
+    def applicators = filter(
+        functions,
         { function ::
             <> { selfRefs* ::
                 <> { args* <> function(uStarCombinator(selfRefs)*)(args*) }
             }
-        };
+        });
 
     <> uStarCombinator(applicators);
 };

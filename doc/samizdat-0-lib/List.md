@@ -66,23 +66,26 @@ Returns a slice of the given list.
 
 
 <br><br>
+### Generic Function Definitions: `Generator` protocol.
+
+#### `collect(list) <> list`
+
+Returns `list`.
+
+#### `filter(list, filterFunction) <> list`
+
+Filters the elements of `list` using `filterFunction`.
+
+#### `nextValue(list, box) <> generator | void`
+
+On a non-empty list, calls `store(box, first(list))` and returns
+`butFirst(list)`. On an empty list, calls `store(box)` and returns void.
+
+
+<br><br>
 ### Primitive Definitions
 
-#### `listFilter(function, list) <> list`
-
-Processes each element of a list using a filter function, collecting
-the results into a new list, and returning that list. The filter function
-is called once for each list element (in order), passing the function a
-single argument of the element in question.
-
-If the function returns void for any given call, then no item is added for
-the corresponding element. This means the size of the result may be
-smaller than the size of the argument.
-
-**Note:** This is a special-case version of the more general function
-`collectFilter` (see which).
-
-#### `makeList(rest*) <> list`
+#### `makeList(elems*) <> list`
 
 Returns a list with the given elements (in argument order).
 These equivalences hold for *Samizdat Layer 0* source code:
@@ -104,7 +107,7 @@ implementation (without sacrificing clarity) &mdash; it makes sense to
 keep this defined as a core primitive:
 
 ```
-fn makeList(rest*) { <> rest };
+fn makeList(elems*) { <> elems };
 ```
 
 **Syntax Note:** Used in the translation of `[item, ...]`,

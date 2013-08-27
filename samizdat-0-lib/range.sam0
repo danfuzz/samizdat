@@ -1,0 +1,160 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `ClosedRange` and `OpenRange` Types
+#
+# `ClosedRange` payload: `[start: intOrChar, increment: int, size: int]`
+# `OpenRange` payload: `[start: intOrChar, increment: int]`
+
+
+#
+# Private Definitions
+#
+
+# `rangeAdd` generic, used to increment ints and chars.
+def rangeAdd = makeRegularGeneric("rangeAdd", 2, 2);
+
+fn Int_rangeAdd(value, increment) {
+    <> add(value, increment)
+};
+genericBind(rangeAdd, Int, Int_rangeAdd);
+
+fn String_rangeAdd(value, increment) {
+    <> charFromInt(add(intFromChar(value), increment))
+};
+genericBind(rangeAdd, String, String_rangeAdd);
+
+# `rangeInt` generic, used to convert range values to ints.
+def rangeInt = makeRegularGeneric("rangeInt", 1);
+
+fn Int_rangeInt(value) {
+    <> value
+};
+genericBind(rangeInt, Int, Int_rangeInt);
+
+fn String_rangeInt(value) {
+    <> intFromChar(value)
+};
+genericBind(rangeInt, String, String_rangeInt);
+
+
+#
+# Exported Definitions: `ClosedRange`
+#
+
+# Documented in spec.
+fn makeClosedRange(firstValue, increment, sz) {
+    # `perGt` ensures that `sz` is an int.
+    <> ifIs { <> perGt(sz, 0) }
+        {
+            <> @[ClosedRange:
+                [firstValue: firstValue, increment: increment, size: sz]]
+        }
+        { <> nullGenerator }
+};
+
+# Documented in spec.
+fn makeExclusiveRange(firstValue, increment, limit) {
+    # `perEq` ensures that `firstValue` and `limit` have the same type.
+    # `optValue({ <> x})` == `x?`.
+    def isEmpty = optValue { <> perEq(firstValue, limit) };
+    def firstInt = rangeInt(firstValue);
+    def limitInt = rangeInt(limit);
+
+    # `perEq` ensures that `increment` is an int.
+    ifIs { <> perEq(increment, 0) }
+        {
+            return ifIs { <> isEmpty* }
+                { <> nullGenerator }
+                { <> makeClosedRange(firstValue, 0, 1) }
+        };
+
+    # `sign(increment)` is either `-1` or `+1`, which when subtracted from
+    # limit "pushes" the limit in the right direction to make the truncated
+    # division produce the correct result size.
+    def sz =
+        add(1, div(sub(sub(limitInt, firstInt), sign(increment)), increment));
+
+    ifIs { <> perLe(sz, 0) }
+        { return nullGenerator };
+
+    <> makeClosedRange(firstValue, increment, sz);
+};
+
+# Documented in spec.
+fn makeInclusiveRange(firstValue, increment, limit) {
+    # This ensures that `firstValue` and `limit` have the same type.
+    perEq(firstValue, limit);
+
+    # `perEq` ensures that `increment` is an int.
+    ifIs { <> perEq(increment, 0) }
+        { return makeClosedRange(firstValue, 0, 1) };
+
+    def firstInt = rangeInt(firstValue);
+    def limitInt = rangeInt(limit);
+    def sz = add(1, div(sub(limitInt, firstInt), increment));
+
+    ifIs { <> perLe(sz, 0) }
+        { return nullGenerator };
+
+    <> makeClosedRange(firstValue, increment, sz);
+};
+
+# Documented in spec.
+fn ClosedRange_nextValue(range, box) {
+    def data = dataOf(range);
+    <> ifValue { <> perLe(0, get(data, "size")) }
+        { sz ::
+            def firstValue = get(data, "firstValue");
+            def increment = get(data, "increment");
+            store(box, firstValue);
+            <> makeClosedRange(rangeAdd(firstValue, increment), increment,
+                sub(sz, 1))
+        }
+        {
+            # Voided.
+            store(box);
+        }
+};
+genericBind(nextValue, "ClosedRange", ClosedRange_nextValue);
+
+
+#
+# Exported Definitions: `OpenRange`
+#
+
+# Documented in spec.
+fn makeOpenRange(firstValue, increment) {
+    <> @[OpenRange: [firstValue: firstValue, increment: increment]]
+};
+
+# Documented in spec.
+fn OpenRange_collect(range) {
+    io0Die("Unbounded generator.");
+};
+genericBind(collect, "OpenRange", OpenRange_collect);
+
+# Documented in spec.
+fn OpenRange_nextValue(range, box) {
+    def data = dataOf(range);
+    def firstValue = get(data, "firstValue");
+    def increment = get(data, "increment");
+
+    store(box, firstValue);
+    <> makeOpenRange(rangeAdd(firstValue, increment), increment)
+};
+genericBind(nextValue, "OpenRange", OpenRange_nextValue);
+
+
+#
+# Overall exports
+#
+
+<> [
+    makeClosedRange:    makeClosedRange,
+    makeExclusiveRange: makeExclusiveRange,
+    makeInclusiveRange: makeInclusiveRange,
+    makeOpenRange:      makeOpenRange
+]

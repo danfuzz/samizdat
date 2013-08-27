@@ -85,13 +85,8 @@ static zvalue listFrom(zint size1, const zvalue *elems1, zvalue insert,
  */
 
 /* Documented in header. */
-void assertList(zvalue value) {
-    assertHasType(value, TYPE_List);
-}
-
-/* Documented in header. */
 void arrayFromList(zvalue *result, zvalue list) {
-    assertList(list);
+    assertHasType(list, TYPE_List);
 
     ListInfo *info = getInfo(list);
 

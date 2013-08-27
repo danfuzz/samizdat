@@ -1,0 +1,33 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `ValueGenerator` Type
+#
+
+#
+# Exported Definitions
+#
+
+# Documented in spec.
+fn ValueGenerator_collect(gen) {
+    io0Die("Unbounded generator.");
+};
+genericBind(collect, "ValueGenerator", ValueGenerator_collect);
+
+# Documented in spec.
+fn ValueGenerator_nextValue(gen, box) {
+    store(box, dataOf(gen));
+    <> gen
+};
+genericBind(nextValue, "ValueGenerator", ValueGenerator_nextValue);
+
+# Documented in spec.
+fn makeValueGenerator(value) {
+    <> @[ValueGenerator: value]
+};
+
+<> [
+    makeValueGenerator: makeValueGenerator
+]

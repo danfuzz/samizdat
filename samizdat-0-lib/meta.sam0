@@ -20,7 +20,7 @@ def META_NAME_MAP = [
 # Gets the index of the first occurrence of the given character in the
 # given string.
 fn charIndex(string, ch) {
-    doFilter(openRange(0, 1), string) { index, one ::
+    filterPump(makeOpenRange(0, 1), string) { index, one ::
         <> ifIs { <> eq(ch, one) }
             { return index }
     };
@@ -49,8 +49,8 @@ fn metaFunctions(context, fileName) {
     def nameMap = ifValueOr { <> get(META_NAME_MAP, suffix) }
         { <> get(META_NAME_MAP, "sam2") };
 
-    <> mapFromGenerator(
-        filterGenerator(nameMap)
+    <> collectAsMap(
+        makeFilterGenerator(nameMap)
             { mapping ::
                 def name = mappingValue(mapping);
                 <> ifValue { <> get(context, name) }

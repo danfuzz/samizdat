@@ -81,6 +81,11 @@ A value used when no other value is suitable, but when a value is
 nonetheless required. It is defined as `@Null`, that is, a type-only
 value with type tag `"Null"`.
 
+#### `nullGenerator`
+
+A generator which is perennially voided. It is defined as `@NullGenerator`,
+along with generator method bindings for that type.
+
 #### `ENTITY_MAP`
 
 Map of entity names to their string values. This is a map from strings to
