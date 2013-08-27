@@ -243,7 +243,7 @@ fn pegMakeSequence(rules*) {
     # The general case. Each rule after the first gets passed as additional
     # arguments the matched results of all the previous rules, in order.
     <> { <out> box, input, items* ::
-        def reduction = doReduce([rules], [input, items])
+        def reduction = doReduce(rules, input, items)
             { rule, input, items ::
                 def innerBox = makeYieldBox();
                 <> ifValue { <> rule(innerBox, input, items*) }

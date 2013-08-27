@@ -97,16 +97,16 @@ generator are ignored.
 
 This function always returns void.
 
-#### `doReduce(reduceFunction, [generators*], [baseValues*]) <> list`
+#### `doReduce(reduceFunction, generator, baseValues*) <> list`
 
 Generator iterator with reduce semantics.
 
-This repeatedly iterates on the given generators, calling the given
-`reduceFunction` with the generated results as well as additional
+This repeatedly iterates on the given generator, calling the given
+`reduceFunction` with the generated result as well as additional
 arguments, in that order. The additional arguments start as the given
 `baseValues` and are updated each time the `reduceFunction` returns non-void.
 
-The iteration stops when any of the generators becomes voided, at which
+The iteration stops when the generator becomes voided, at which
 point this function returns the most recently returned value from the
 `reduceFunction`. If `reduceFunction` never returned a (non-void) value,
 this function returns the `baseValues` list.
@@ -116,12 +116,11 @@ The `reduceFunction` must only ever return a list or void.
 #### `doReduce1(reduceFunction, generator, baseValue) <> .`
 
 Generator iterator with reduce semantics. This is a special case of
-`doReduce`, where a single generator and single reduction value are used
-instead of lists of each.
+`doReduce`, where a single reduction value is used instead of a list of them.
 
 As opposed to `doReduce`, the `reduceFunction` can return any type of
 value (not just a list), and similarly the overall result of calling this
-function can be an arbitrary value.
+function can turn out to be an arbitrary value.
 
 #### `filterGenerator(filterFunction, generator*) <> generator`
 
