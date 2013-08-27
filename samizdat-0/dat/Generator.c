@@ -28,22 +28,6 @@
  */
 
 /* Documented in header. */
-METH_IMPL(Collection, nextValue) {
-    zvalue coll = args[0];
-    zvalue box = args[1];
-
-    zvalue value = collNth(coll, 0);
-
-    if (value == NULL) {
-        GFN_CALL(store, box);
-        return NULL;
-    } else {
-        GFN_CALL(store, box, value);
-        return GFN_CALL(slice, coll, PB_1);
-    }
-}
-
-/* Documented in header. */
 METH_IMPL(List, collect) {
     zvalue list = args[0];
 
@@ -102,7 +86,7 @@ METH_IMPL(Value, collect) {
         if (nextGen == NULL) {
             break;
         } else if (at == DAT_MAX_GENERATOR_ITEMS) {
-            die("Generator produced too many interpolated items.");
+            die("Generator produced too many items for `collect`.");
         }
 
         arr[at] = GFN_CALL(fetch, box);
@@ -120,6 +104,87 @@ METH_IMPL(Value, collect) {
 }
 
 /* Documented in header. */
+METH_IMPL(Collection, filter) {
+    zvalue list = args[0];
+    zvalue function = args[1];
+    zint size = collSize(list);
+    zvalue result[size];
+    zint at = 0;
+
+    for (zint i = 0; i < size; i++) {
+        zvalue elem = collNth(list, i);
+        zvalue one = FUN_CALL(function, elem);
+
+        if (one != NULL) {
+            result[at] = one;
+            at++;
+        }
+    }
+
+    return listFromArray(at, result);
+}
+
+/**
+ * Does generator filtering to get a list. This is what's bound to type
+ * `Value`, on the assumption that the value in question has a binding
+ * for the generic `nextValue`, which this function uses.
+ */
+METH_IMPL(Value, filter) {
+    zvalue generator = args[0];
+    zvalue function = args[1];
+
+    zvalue arr[DAT_MAX_GENERATOR_ITEMS];
+    zint at = 0;
+
+    zvalue box = makeMutableBox(NULL);
+
+    for (;;) {
+        zvalue nextGen = GFN_CALL(nextValue, generator, box);
+
+        if (nextGen == NULL) {
+            break;
+        }
+
+        zvalue one = FUN_CALL(function, GFN_CALL(fetch, box));
+
+        if (one != NULL) {
+            if (at == DAT_MAX_GENERATOR_ITEMS) {
+                die("Generator produced too many items for `filter`.");
+            }
+
+            arr[at] = one;
+            at++;
+        }
+
+        generator = nextGen;
+
+        // Ideally, we wouldn't reuse the box (we'd just use N yield boxes),
+        // but for the sake of efficiency, we use the same box but reset it
+        // for each iteration.
+        GFN_CALL(store, box);
+    }
+
+    zvalue result = listFromArray(at, arr);
+    return result;
+}
+
+/* Documented in header. */
+METH_IMPL(Collection, nextValue) {
+    zvalue coll = args[0];
+    zvalue box = args[1];
+
+    zvalue value = collNth(coll, 0);
+
+    if (value == NULL) {
+        GFN_CALL(store, box);
+        return NULL;
+    } else {
+        GFN_CALL(store, box, value);
+        return GFN_CALL(slice, coll, PB_1);
+    }
+}
+
+/* Documented in header. */
 void datBindGenerator(void) {
     GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
     pbImmortalize(GFN_collect);
@@ -134,6 +199,12 @@ void datBindGenerator(void) {
     METH_BIND(Map,    collect);
     METH_BIND(String, collect);
     METH_BIND(Value,  collect);
+
+    METH_BIND(Value,  filter);
+    genericBindPrim(GFN_filter,    TYPE_List,   Collection_filter);
+    genericBindPrim(GFN_filter,    TYPE_Map,    Collection_filter);
+    genericBindPrim(GFN_filter,    TYPE_String, Collection_filter);
+
     genericBindPrim(GFN_nextValue, TYPE_List,   Collection_nextValue);
     genericBindPrim(GFN_nextValue, TYPE_Map,    Collection_nextValue);
     genericBindPrim(GFN_nextValue, TYPE_String, Collection_nextValue);
