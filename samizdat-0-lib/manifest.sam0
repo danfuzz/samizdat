@@ -34,6 +34,7 @@ def MANIFEST = [
     # Layer 0: Complicated functions
     "NullGenerator.sam0",
     "ValueGenerator.sam0",
+    "ListWrapGenerator.sam0",
     "OptGenerator.sam0",
     "ParaGenerator.sam0",
     "SeqGenerator.sam0",
