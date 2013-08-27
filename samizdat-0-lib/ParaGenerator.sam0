@@ -1,0 +1,57 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `ParaGenerator` Type
+#
+# Payload is `[subGens*]`, a list of sub-generators.
+
+#
+# Exported Definitions
+#
+
+# Documented in spec.
+fn makeParaGenerator(generators*) {
+    # Return the `nullGenerator` if we weren't passed any arguments.
+    ifIs { <> eq(generators, []) }
+        { return nullGenerator };
+
+    # Return a `ListWrapGenerator` if we were only passed one argument.
+    # This saves some overhead.
+    #ifIs { <> eq(size(generators), 1) }
+    #    { return makeListWrapGenerator(generators*) };
+
+    <> @[ParaGenerator: generators]
+};
+
+# Documented in spec.
+fn ParaGenerator_nextValue(gen, box) {
+    def subGens = dataOf(gen);
+
+    ifIs { <> eq(subGens, []) }
+        { <> nextValue(nullBox, box) };
+
+    def generatorCalls = listFilter(subGens)
+        { gen ::
+            def innerBox = makeYieldBox();
+            <> ifValue { <> nextValue(gen, innerBox) }
+                { nextGenerator <> [fetch(innerBox), nextGenerator] }
+                {
+                    # One of the sub-generators became voided.
+                    store(box);
+                    return
+                }
+        };
+
+    def yields = listFilter(generatorCalls) { one <> nth(one, 0) };
+    def nexts = listFilter(generatorCalls) { one <> nth(one, 1) };
+
+    store(box, yields);
+    <> @[ParaGenerator: nexts]
+};
+genericBind(nextValue, "ParaGenerator", ParaGenerator_nextValue);
+
+<> [
+    makeParaGenerator: makeParaGenerator
+]
