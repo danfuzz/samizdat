@@ -53,7 +53,7 @@ msgAll("Empty list", []);
 msgAll("Empty map", [:]);
 msgAll("Empty string", "");
 msgAll("Empty paraGenerator", paraGenerator());
-msgAll("Empty seqGenerator", seqGenerator());
+msgAll("Empty SeqGenerator", makeSeqGenerator());
 
 msgAll("List", [101, 33, 5555, "blort"]);
 msgAll("Map", [one: 1, two: 2, three: 3, four: 4, five: "fizmo"]);
@@ -96,15 +96,15 @@ msgAll("ParaGenerator with open ranges",
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Size one SeqGenerator",
-    seqGenerator([a: 10, b: 20, c: 30]));
+    makeSeqGenerator([a: 10, b: 20, c: 30]));
 
 msgAll("Size two SeqGenerator",
-    seqGenerator(
+    makeSeqGenerator(
         [a: 10, b: 20, c: 30],
         "defg"));
 
 msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
-    seqGenerator("abc", [], [], ["def", "ghi"], []));
+    makeSeqGenerator("abc", [], [], ["def", "ghi"], []));
 
 io0Note("mapFromGenerator on filter");
 def outMap = mapFromGenerator(

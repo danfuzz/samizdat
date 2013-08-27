@@ -196,36 +196,6 @@ fn paraGenerator(generators*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn seqGenerator(generators*) {
-    # Return a voided generator if we weren't passed any arguments.
-    ifIs { <> eq(generators, []) }
-        { return nullGenerator };
-
-    # Return the argument directly if we were only passed one
-    # argument. (This saves some gratuitous call wrapping / double yields.)
-    ifIs { <> eq(size(generators), 1) }
-        { return generators* };
-
-    fn seqGenerator1(gen) {
-        <> { box ::
-            def innerBox = makeYieldBox();
-            <> ifValue { <> nextValue(gen, innerBox) }
-                { nextGenerator ::
-                    store(box, fetch(innerBox));
-                    <> seqGenerator1(nextGenerator)
-                }
-                {
-                    def nextGenerator =
-                        seqGenerator(butFirst(generators)*);
-                    <> nextValue(nextGenerator, box)
-                }
-        }
-    };
-
-    <> seqGenerator1(first(generators));
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn tokenGenerator(generator) {
     <> filterGenerator(generator)
         { elem <> @[(elem)] }
@@ -240,6 +210,5 @@ fn tokenGenerator(generator) {
     filterGenerator:     filterGenerator,
     mapFromGenerator:    mapFromGenerator,
     paraGenerator:       paraGenerator,
-    seqGenerator:        seqGenerator,
     tokenGenerator:      tokenGenerator
 ]

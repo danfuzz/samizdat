@@ -191,16 +191,6 @@ generators is voided.
 
 **Syntax Note:** Used in the translation of `for` forms.
 
-#### `seqGenerator(generators*) <> generator`
-
-Sequential generator combination constructor. This takes an arbitrary number
-of generators, and returns a generator that yields from each of
-the generators in argument order.
-
-As each generator becomes voided, the next one (in argument order) is called
-upon to generate further elements. The generator becomes voided after the
-final argument is voided.
-
 #### `tokenGenerator(generator) <> generator`
 
 Filter generator that produces a sequence of type-only derived values
