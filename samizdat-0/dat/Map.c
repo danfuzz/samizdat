@@ -407,9 +407,9 @@ METH_IMPL(Map, perOrder) {
     }
 
     if (size1 < size2) {
-        return PB_NEG1;
+        return INT_NEG1;
     } else if (size1 > size2) {
-        return PB_1;
+        return INT_1;
     }
 
     for (zint i = 0; i < size; i++) {
@@ -419,7 +419,7 @@ METH_IMPL(Map, perOrder) {
         }
     }
 
-    return PB_0;
+    return INT_0;
 }
 
 /* Documented in header. */

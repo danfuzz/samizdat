@@ -73,13 +73,13 @@ extern zvalue GFN_sub;
 extern zvalue GFN_xor;
 
 /** The standard value `0`. */
-extern zvalue PB_0;
+extern zvalue INT_0;
 
 /** The standard value `1`. */
-extern zvalue PB_1;
+extern zvalue INT_1;
 
 /** The standard value `-1`. */
-extern zvalue PB_NEG1;
+extern zvalue INT_NEG1;
 
 /**
  * Gets the `zchar` of the given int, asserting that the value

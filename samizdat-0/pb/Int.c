@@ -90,13 +90,13 @@ zint zintFromInt(zvalue intval) {
  */
 
 /* Documented in header. */
-zvalue PB_0 = NULL;
+zvalue INT_0 = NULL;
 
 /* Documented in header. */
-zvalue PB_1 = NULL;
+zvalue INT_1 = NULL;
 
 /* Documented in header. */
-zvalue PB_NEG1 = NULL;
+zvalue INT_NEG1 = NULL;
 
 /**
  * Helper for defining unary operations as methods.
@@ -163,11 +163,11 @@ METH_IMPL(Int, perOrder) {
     zint int2 = zintValue(v2);
 
     if (int1 < int2) {
-        return PB_NEG1;
+        return INT_NEG1;
     } else if (int1 > int2) {
-        return PB_1;
+        return INT_1;
     } else {
-        return PB_0;
+        return INT_0;
     }
 }
 
@@ -254,9 +254,9 @@ void pbBindInt(void) {
         pbImmortalize(SMALL_INTS[i]);
     }
 
-    PB_0    = intFromZint(0);
-    PB_1    = intFromZint(1);
-    PB_NEG1 = intFromZint(-1);
+    INT_0    = intFromZint(0);
+    INT_1    = intFromZint(1);
+    INT_NEG1 = intFromZint(-1);
 }
 
 /* Documented in header. */

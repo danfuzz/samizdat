@@ -306,17 +306,17 @@ METH_IMPL(String, perOrder) {
         zchar c2 = e2[i];
 
         if (c1 < c2) {
-            return PB_NEG1;
+            return INT_NEG1;
         } else if (c1 > c2) {
-            return PB_1;
+            return INT_1;
         }
     }
 
     if (size1 == size2) {
-        return PB_0;
+        return INT_0;
     }
 
-    return (size1 < size2) ? PB_NEG1 : PB_1;
+    return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
 /* Documented in header. */
