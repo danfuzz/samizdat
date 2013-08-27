@@ -29,7 +29,7 @@ fn msgAll(header, gen) {
     { <done> ::
         loopReduce(gen) { gen ::
             def box = makeYieldBox();
-            <> ifValue { <> gen(box) }
+            <> ifValue { <> nextValue(gen, box) }
                 { nextGen ::
                     msg(fetch(box));
                     <> [nextGen]
@@ -39,7 +39,7 @@ fn msgAll(header, gen) {
     }();
 
     io0Note("  [all]");
-    msg(collectGenerator(gen));
+    msg(collect(gen));
     io0Note("")
 };
 
@@ -49,16 +49,15 @@ fn msgAll(header, gen) {
 # Main Tests
 #
 
-msgAll("Empty list", generatorFromValue([]));
-msgAll("Empty map", generatorFromValue([:]));
-msgAll("Empty string", generatorFromValue(""));
+msgAll("Empty list", []);
+msgAll("Empty map", [:]);
+msgAll("Empty string", "");
 msgAll("Empty paraGenerator", paraGenerator());
 msgAll("Empty seqGenerator", seqGenerator());
 
-msgAll("List", generatorFromValue([101, 33, 5555, "blort"]));
-msgAll("Map",
-    generatorFromValue([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
-msgAll("String", generatorFromValue("Happy string!"));
+msgAll("List", [101, 33, 5555, "blort"]);
+msgAll("Map", [one: 1, two: 2, three: 3, four: 4, five: "fizmo"]);
+msgAll("String", "Happy string!");
 
 msgAll("Single-item paraGenerator",
     paraGenerator(["blort", "igram", "fizmo"]));

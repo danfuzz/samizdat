@@ -66,6 +66,19 @@ fn oneItemParaGenerator(generator) {
     }
 };
 
+# Documented in Samizdat Layer 0 spec.
+fn generatorFromValue(value) {
+    <> ifValue { <> get(GENERATOR_MAKERS, typeOf(value)) }
+        { maker <> maker(value) }
+        {
+            # Catch-all. If you can call `call` on it, treat it as a
+            # generator.
+            <> ifIs { <> canCall(call, value) }
+                { <> value }
+                { io0Die("Invalid generator source.") }
+        }
+};
+
 
 #
 # Exported Definitions
@@ -84,15 +97,6 @@ fn collectFilter(filterFunction, generators*) {
         };
 
     <> [filterGenerator(filterFunction, generators*)*]
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn collectGenerator(generator) {
-    # Avoid pointless list->generator->list conversion.
-    ifIs { <> isList(generator) }
-        { return generator };
-
-    <> [generatorFromValue(generator)*]
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -196,19 +200,6 @@ fn filterGenerator(filterFunction, generators*) {
     };
 
     <> filterGenerator1(paraGenerator(generators*))
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn generatorFromValue(value) {
-    <> ifValue { <> get(GENERATOR_MAKERS, typeOf(value)) }
-        { maker <> maker(value) }
-        {
-            # Catch-all. If you can call `call` on it, treat it as a
-            # generator.
-            <> ifIs { <> canCall(call, value) }
-                { <> value }
-                { io0Die("Invalid generator source.") }
-        }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -356,13 +347,11 @@ fn tokenGenerator(generator) {
 
 <> [
     collectFilter:       collectFilter,
-    collectGenerator:    collectGenerator,
     doFilter:            doFilter,
     doGenerator:         doGenerator,
     doReduce:            doReduce,
     doReduce1:           doReduce1,
     filterGenerator:     filterGenerator,
-    generatorFromValue:  generatorFromValue,
     mapFromGenerator:    mapFromGenerator,
     optGenerator:        optGenerator,
     paraGenerator:       paraGenerator,

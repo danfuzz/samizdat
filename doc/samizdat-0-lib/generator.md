@@ -74,11 +74,6 @@ This is a convenient and idiomatic shorthand for saying something like:
 
 **Syntax Note:** Used in the translation of comprehension forms.
 
-#### `collectGenerator(generator) <> list`
-
-Takes an arbitrary generator, and collects all of its generated results,
-in generated order, into a list, returning that list.
-
 #### `doFilter(filterFunction, generators*) <> void`
 
 Iterates over the given generators, calling the given `filterFunction`
@@ -148,20 +143,6 @@ value-in-progress is discarded, and the inner generator is retried, with
 the same void-or-value behavior.
 
 **Syntax Note:** Used in the translation of comprehension forms.
-
-#### `generatorFromValue(value) <> generator`
-
-Collection iteration generator constructor. This takes an arbitrary
-"generator-amenable" value and returns a generator which successively yields
-elements of that collection, per the specification for generators.
-
-If passed a function, `generatorFromValue` returns the function directly,
-on the assumption that it is already a generator, in order to make it easy
-to write functions that can take either values or generators, coercing the
-former to generators and transparently not-transforming generators passed
-directly. That is, a function that wants to take values-or-generators can
-safely call `generatorFromValue(valueOrGenerator)` without any up-front
-type checking.
 
 #### `mapFromGenerator(generator) <> map`
 
