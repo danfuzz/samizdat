@@ -358,11 +358,6 @@ square brackets may be omitted. If, furthermore, the type tag
 abides by the syntax for identifiers in the language, then the double quotes
 may be omitted in this already-shortened form.
 
-If a value written in one of these forms has a type tag that corresponds
-to one of the core types and a data payload of that type, then it is
-equivalent to the same value written out in the "native" way for that
-core type.
-
 ```
 @["heartState": @pure]        # a "heart state" value
 @[heartState: @pure]          # shorthand for same
@@ -383,11 +378,6 @@ core type.
 
 @[Boolean: 0]                 # the value usually just written as `false`
 @[Boolean: 1]                 # the value usually just written as `true`
-
-@[Int: 100]                   # the value usually just written `100`
-@[String: "blort"]            # the value usually just written `"blort"`
-@[List: []]                   # the value usually just written `[]`
-@[Map: [:]]                   # the value usually just written `[:]`
 ```
 
 #### Boolean
