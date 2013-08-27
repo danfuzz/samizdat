@@ -253,13 +253,16 @@ than on what gets done to the box passed in as the first argument.
 Generators also bind a couple other generic functions. See the library
 specification for `Generator` for more details.
 
+As a convenience, the global `nullGenerator` is a voided generator.
+
+
 #### Generic
 
 A `Generic` is a generic function. That is, it is an encapsulated mapping
 from types to functions, in this case based on the type of the first
 argument passed to the generic function when called.
 
-TODO: See the language guide section on functions for more details.
+See the language guide section on generic functions for more details.
 
 
 #### Box
