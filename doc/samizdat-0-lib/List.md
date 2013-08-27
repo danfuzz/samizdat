@@ -85,20 +85,6 @@ On a non-empty list, calls `store(box, first(list))` and returns
 <br><br>
 ### Primitive Definitions
 
-#### `listFilter(function, list) <> list`
-
-Processes each element of a list using a filter function, collecting
-the results into a new list, and returning that list. The filter function
-is called once for each list element (in order), passing the function a
-single argument of the element in question.
-
-If the function returns void for any given call, then no item is added for
-the corresponding element. This means the size of the result may be
-smaller than the size of the argument.
-
-**Note:** This is a special-case version of the more general function
-`collectFilter` (see which).
-
 #### `makeList(rest*) <> list`
 
 Returns a list with the given elements (in argument order).
