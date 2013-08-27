@@ -1726,7 +1726,7 @@ def FOR_BODY_CLOSURE = sam0Tree("
 #         def next = \"continue";
 #         stat1; stat2
 #     };
-#     loopReduce(paraGenerator(expr1, expr2))
+#     loopReduce(makeParaGenerator(expr1, expr2))
 #         { generator ::
 #             def box = makeYieldBox();
 #             <> ifValue { <> generator(box) }
@@ -1752,7 +1752,7 @@ def parForExpression = {/
 
     {
         def genFormals = get(genList, "formals");
-        def genInit = makeCallName("paraGenerator", get(genList, "inits")*);
+        def genInit = makeCallName("makeParaGenerator", get(genList, "inits")*);
 
         def codePayload = dataOf(code);
         def continueDef = ifValue { <> get(codePayload, "yieldDef") }

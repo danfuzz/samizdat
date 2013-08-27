@@ -8,25 +8,6 @@
 
 
 #
-# Private Definitions
-#
-
-# Helper for `paraGenerator`, which implements the degenerate case of
-# a single inner generator. This can end up being usefully used in a few
-# cases, e.g. by virtue of `filterGenerator` always calling `paraGenerator`.
-fn oneItemParaGenerator(generator) {
-    <> { <out> box ::
-        def innerBox = makeYieldBox();
-        <> ifValue { <> nextValue(generator, innerBox) }
-            { nextGenerator ::
-                store(box, [fetch(innerBox)]);
-                <> oneItemParaGenerator(nextGenerator)
-            }
-    }
-};
-
-
-#
 # Exported Definitions
 #
 
@@ -47,7 +28,7 @@ fn collectFilter(filterFunction, generators*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn doFilter(filterFunction, generators*) {
-    loopReduce(paraGenerator(generators*))
+    loopReduce(makeParaGenerator(generators*))
         { gen ::
             def box = makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
@@ -143,7 +124,7 @@ fn filterGenerator(filterFunction, generators*) {
         }
     };
 
-    <> filterGenerator1(paraGenerator(generators*))
+    <> filterGenerator1(makeParaGenerator(generators*))
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -153,46 +134,6 @@ fn mapFromGenerator(generator) {
         { return generator };
 
     <> cat([:], generator*)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn paraGenerator(generators*) {
-    # Main generator maker, which takes a list (per se) of generators
-    # as a single argument.
-    fn paraGenerator1(generators) {
-        <> { <out> box ::
-            def generatorCalls = listFilter(generators)
-                { gen ::
-                    def innerBox = makeYieldBox();
-                    <> ifValue { <> nextValue(gen, innerBox) }
-                        { nextGenerator ::
-                            <> [fetch(innerBox), nextGenerator]
-                        }
-                        {
-                            store(box); # Void result.
-                            <out>
-                        }
-                };
-            def yields = listFilter(generatorCalls)
-                { one <> nth(one, 0) };
-            def nexts = listFilter(generatorCalls)
-                { one <> nth(one, 1) };
-
-            store(box, yields);
-            <> paraGenerator1(nexts);
-        }
-    };
-
-    # Handle the degenerate case of no arguments.
-    ifIs { <> eq(generators, []) }
-        { return nullGenerator };
-
-    # Handle the degenerate case of a signle argument.
-    ifIs { <> eq(size(generators), 1) }
-        { return oneItemParaGenerator(generators*) };
-
-    # Make the initial inner call (to the function defined above).
-    <> paraGenerator1(generators)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -209,6 +150,5 @@ fn tokenGenerator(generator) {
     doReduce1:           doReduce1,
     filterGenerator:     filterGenerator,
     mapFromGenerator:    mapFromGenerator,
-    paraGenerator:       paraGenerator,
     tokenGenerator:      tokenGenerator
 ]
