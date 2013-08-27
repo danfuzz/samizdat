@@ -46,6 +46,29 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### In-Language Definitions
 
+#### `makeFilterGenerator(filterFunction, generators*) <> generator`
+
+Filtering generator constructor. This takes any number of arbitrary
+generators, and returns a generator which filters the generated results
+with the given filter function. This works as follows:
+
+Each time `nextValue()` is called on the outer (result) generator, it calls
+`nextValue()` on the argument generators. If any of the argument generators
+has been voided, then the outer generator also becomes voided.
+
+Otherwise, the values yielded from the inner generators are passed to the
+`filterFunction` as its arguments (in generator order). If that function
+returns a value, then that value in turn becomes the yielded result of
+the outer generator. If the filter function yields void, then the
+value-in-progress is discarded, and the inner generator is retried, with
+the same void-or-value behavior.
+
+**Note:** This function makes a value of type `"FilterGenerator"`
+with `filterFunction` and either a `ParaGenerator` or `ListWrapGenerator`
+as the payload. That type has appropriate `Generator` method bindings.
+
+**Syntax Note:** Used in the translation of comprehension forms.
+
 #### `makeListWrapGenerator(generator) <> generator`
 
 List wrapping generator combination constructor. This takes a single
@@ -190,25 +213,6 @@ Generator iterator with reduce semantics. This is a special case of
 As opposed to `doReduce`, the `reduceFunction` can return any type of
 value (not just a list), and similarly the overall result of calling this
 function can turn out to be an arbitrary value.
-
-#### `filterGenerator(filterFunction, generator*) <> generator`
-
-Filtering generator constructor. This takes any number of arbitrary generator,
-and returns a generator which filters the generated results
-with the given filter function. This works as follows:
-
-Each time the outer (result) generator is called, it calls the argument
-generators. If any of the argument generators has been voided, then the outer
-generator also becomes voided.
-
-Otherwise, the values yielded from the inner generators are passed to the
-`filterFunction` as its arguments (in generator order). If that function
-returns a value, then that value in turn becomes the yielded result of
-the outer generator. If the filter function yields void, then the
-value-in-progress is discarded, and the inner generator is retried, with
-the same void-or-value behavior.
-
-**Syntax Note:** Used in the translation of comprehension forms.
 
 #### `mapFromGenerator(generator) <> map`
 
