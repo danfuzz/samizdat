@@ -1,0 +1,57 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `FilterGenerator` Type
+#
+# Payload is a map `[filterFunction: function, generator: subGen]`.
+# `subGen` is expected to produce lists of arguments to apply.
+
+#
+# Exported Definitions
+#
+
+# Documented in spec.
+fn makeFilterGenerator(filterFunction, generators*) {
+    <> @[FilterGenerator: [
+        filterFunction: filterFunction,
+        generator: makeParaGenerator(generators*)
+    ]]
+};
+
+# Documented in spec.
+fn FilterGenerator_nextValue(gen, box) {
+    def payload = dataOf(gen);
+    def filterFunction = get(payload, "filterFunction");
+
+    # This loop handles the fact that the filter function is
+    # allowed to yield void to indicate a generated value is to
+    # be discarded.
+    loopReduce(get(payload, "generator")) { <next> gen ::
+        def innerBox = makeYieldBox();
+
+        ifValue { <> nextValue(gen, innerBox) }
+            { nextGenerator ::
+                ifValue { <> filterFunction(fetch(innerBox)*) }
+                    { value ::
+                        store(box, value);
+                        return @[FilterGenerator:
+                            put(payload, "generator", nextGenerator)]
+                    }
+                    {
+                        # The filter discarded the value. Iterate!
+                        <next> [nextGenerator]
+                    }
+            };
+
+        # The inner generator was voided.
+        store(box);
+        return
+    }
+};
+genericBind(nextValue, "FilterGenerator", FilterGenerator_nextValue);
+
+<> [
+    makeFilterGenerator: makeFilterGenerator
+]

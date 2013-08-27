@@ -29,6 +29,8 @@ void datInit(void) {
     datBindMap();
     datBindMapCache();
 
+    datBindGenerator(); // Needs to happen after `Map`, as it binds that type.
+
     pbFrameReturn(save, NULL);
 }
 

@@ -90,8 +90,6 @@ or the original `baseValues` list if the function has yet to return non-void
 
 In order for the loop to terminate, the function must use a nonlocal exit.
 
-**Syntax Note:** Used in the translation of `for` forms.
-
 #### `optValue(function) <> list`
 
 Function call helper, to deal with value-or-void situations. This calls

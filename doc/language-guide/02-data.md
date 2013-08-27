@@ -217,7 +217,7 @@ A `Generic` is a generic function. That is, it is an encapsulated mapping
 from types to functions, in this case based on the type of the first
 argument passed to the generic function when called.
 
-TODO: See the language guide section on functions for more details.
+See the language guide section on generic functions for more details.
 
 
 #### Box
@@ -313,11 +313,6 @@ square brackets may be omitted. If, furthermore, the type tag
 abides by the syntax for identifiers in the language, then the double quotes
 may be omitted in this already-shortened form.
 
-If a value written in one of these forms has a type tag that corresponds
-to one of the core types and a data payload of that type, then it is
-equivalent to the same value written out in the "native" way for that
-core type.
-
 ```
 @["heartState": @pure]        # a "heart state" value
 @[heartState: @pure]          # shorthand for same
@@ -338,11 +333,6 @@ core type.
 
 @[Boolean: 0]                 # the value usually just written as `false`
 @[Boolean: 1]                 # the value usually just written as `true`
-
-@[Int: 100]                   # the value usually just written `100`
-@[String: "blort"]            # the value usually just written `"blort"`
-@[List: []]                   # the value usually just written `[]`
-@[Map: [:]]                   # the value usually just written `[:]`
 ```
 
 #### Boolean
@@ -370,3 +360,79 @@ defined as:
 ```
 null = @Null
 ```
+
+
+### Protocols
+
+There are a number of type-like things in *Samizdat*, which are effectively
+defined as types (per se) which have implemented a particular set of methods
+(that is, added bindings to a particular set of generics).
+
+Protocols are not first-class within *Samizdat* but they have significance
+nonetheless. The following are the protocols currently defined.
+
+#### Callable
+
+This is the protocol for function-like things, that is, things which can
+be applied to an argument list to produce a result.
+
+See the library documentation for `Callable` for more details.
+
+#### Collection
+
+This is the protocol for values which encapsulate a group of other values.
+
+See the library documentation for `Collection` for more details.
+
+#### Generator
+
+Generators in *Samizdat* are the closest analog to what are sometimes
+called "iterators" in other languages (and are sometimes called generators,
+to be clear). When called in an appropriate manner, a related series of
+generators yields a related sequence of values. Put another way,
+generators can be used to "spread" a computation across a series of values.
+
+Most basically, a generator is just a value &mdash; possibly and
+preferably, but not necessarily, pure data &mdash; with associated
+method bindings (preferably pure functions) and a particular contract.
+
+The contract is as follows:
+
+* The generic function `nextValue` always accepts exactly two arguments,
+  a generator and a "yield box" (or equivalent). (Boxes are described
+  more completely in a different section.)
+
+* When a generator is not "voided" (out of values to yield), calling
+  `nextValue` causes two things to be done:
+
+  * It calls `store(box, value)` on its argument in order to yield
+    one value out of itself.
+  * It returns a new generator as a result which, when applied to
+    `nextValue`, yields the *next* value, and so on.
+
+* When a generator has yielded its final element, it returns a voided
+  generator.
+
+* When `nextValue` is called on a voided generator, it does these two things:
+
+  * It calls `store(box)` (with no payload argument) on its argument
+    in order to yield void.
+  * It returns void.
+
+**Note:** Clients of generators should rely primarily on the return value
+from `nextValue` to determine whether the generator has been voided, rather
+than on what gets done to the box passed in as the first argument.
+
+Generators also bind a couple other generic functions. See the library
+specification for `Generator` for more details.
+
+As a convenience, the global `nullGenerator` is a voided generator.
+
+
+#### Sequence
+
+This is a sub-protocol of `Collection` for collections which encapsulate
+an ordered sequence of other values, indexable by zero-based
+sequence number.
+
+See the library documentation for `Collection` for more details.

@@ -65,6 +65,23 @@ Returns a slice of the given string.
 
 
 <br><br>
+### Generic Function Definitions: `Generator` protocol.
+
+#### `collect(string) <> list`
+
+Returns a list of all the characters of `string`, in order.
+
+#### `filter(string, filterFunction) <> list`
+
+Filters the characters of `string` using `filterFunction`.
+
+#### `nextValue(string, box) <> generator | void`
+
+On a non-empty string, calls `store(box, first(string))` and returns
+`butFirst(string)`. On an empty string, calls `store(box)` and returns void.
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `charFromInt(int) <> string`

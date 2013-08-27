@@ -50,6 +50,11 @@ PRIM_DEF(reverse,    GFN_reverse); // `Sequence` protocol.
 PRIM_DEF(size,       GFN_size);
 PRIM_DEF(slice,      GFN_slice);
 
+// Generic functions: `Generator` protocol
+PRIM_DEF(collect,    GFN_collect);
+PRIM_DEF(filter,     GFN_filter);
+PRIM_DEF(nextValue,  GFN_nextValue);
+
 // Generic functions: `Int` protocol
 PRIM_DEF(abs,        GFN_abs);
 PRIM_DEF(add,        GFN_add);
@@ -93,7 +98,6 @@ PRIM_FUNC(io0Die,               0, 1);
 PRIM_FUNC(io0Note,              1, 1);
 PRIM_FUNC(isOpaqueValue,        1, 1);
 PRIM_FUNC(le,                   2, 2);
-PRIM_FUNC(listFilter,           2, 2);
 PRIM_FUNC(loop,                 1, 1);
 PRIM_FUNC(loopReduce,           1, -1);
 PRIM_FUNC(lt,                   2, 2);

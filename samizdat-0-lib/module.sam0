@@ -96,12 +96,12 @@ fn sortModules(modules) {
     # dependencies. Remove from the dependent modules any dependencies from
     # the independent list.
 
-    def independentNames = collectFilter(modules)
+    def independentNames = filterAll(modules)
         { mod ::
             <> ifNot { <> hasDependencies(mod) } { <> dataGet(mod, "name") }
         };
 
-    def dependentModules = collectFilter(modules)
+    def dependentModules = filterAll(modules)
         { mod ::
             <> ifIs { <> hasDependencies(mod) }
                 {
@@ -115,7 +115,7 @@ fn sortModules(modules) {
     # If there are no independent modules, there's a cycle.
     ifIs { <> eq(independentModules, []) }
         {
-            def allNames = collectFilter(modules)
+            def allNames = filterAll(modules)
                 { mod <> dataGet(mod, "name") };
             io0Die(cat("Module cycle among: ",
                 sourceStringUnadorned(allNames)));
@@ -148,7 +148,7 @@ fn methodCall(dispatch, value, name, args*) {
 fn moduleInit(context) {
     # Get a list of just the uninitialized modules, each with its name added
     # to the payload.
-    def unsortedModules = collectFilter(context)
+    def unsortedModules = filterAll(context)
         { mapping ::
             def name = mappingKey(mapping);
             def mod = mappingValue(mapping);
@@ -160,8 +160,8 @@ fn moduleInit(context) {
         };
 
     # Make a map from names to modules.
-    def moduleMap = mapFromGenerator(
-        filterGenerator(unsortedModules)
+    def moduleMap = collectAsMap(
+        makeFilterGenerator(unsortedModules)
             { mod :: <> [dataGet(mod, "name"): mod] });
 
     # Do a topological sort of the modules, to get them in dependency

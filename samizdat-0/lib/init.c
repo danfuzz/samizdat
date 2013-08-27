@@ -11,6 +11,7 @@
 #include "type/Callable.h"
 #include "type/Collection.h"
 #include "type/Function.h"
+#include "type/Generator.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/List.h"

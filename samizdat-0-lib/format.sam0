@@ -78,8 +78,8 @@ fn doInt(int, adorn) {
 # Map of special-case characters to either their stringified forms or
 # to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = [
-    inclusiveRange(charFromInt(1), 1, charFromInt(31))*: "x",
-    inclusiveRange(charFromInt(127), 1, charFromInt(159))*: "x",
+    makeInclusiveRange(charFromInt(1), 1, charFromInt(31))*: "x",
+    makeInclusiveRange(charFromInt(127), 1, charFromInt(159))*: "x",
     charFromInt(65534): "x",
     charFromInt(65535): "x",
     "\0": "\\0",
@@ -159,7 +159,7 @@ fn isIdentifier(string) {
     ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
-    doFilter(string) { ch ::
+    filterPump(string) { ch ::
         ifNot { <> get(IDENTIFIER_CHARS, ch) }
             { return }
     };
@@ -180,13 +180,13 @@ fn keyString(key) {
 
 # Stringifies a string.
 fn doString(string, adorn) {
-    def bodyChars = filterGenerator(string) { ch <> stringChar(ch) };
+    def bodyChars = makeFilterGenerator(string) { ch <> stringChar(ch) };
     <> adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
 
 # Stringifies a list.
 fn doList(list, adorn) {
-    def listElems = collectFilter(list)
+    def listElems = filterAll(list)
         { elem <> cat(", ", callSourceString(elem)) };
 
     <> adornIf(adorn, "[", collectionBody(listElems, ""), "]")
@@ -194,7 +194,7 @@ fn doList(list, adorn) {
 
 # Stringifies a map.
 fn doMap(map, adorn) {
-    def mapElems = collectFilter(map)
+    def mapElems = filterAll(map)
         { mapping ::
             def key = keyString(mappingKey(mapping));
             def value = callSourceString(mappingValue(mapping));
@@ -250,7 +250,7 @@ fn doStringAsIs(string, .) {
 # Stringifies a list by recursive flattening. The extra argument is the
 # general `adorn` argument, which is degenerate and ignored in this case.
 fn doListFlatten(list, .) {
-    def elems = filterGenerator(list) { e <> callFormatValue(e) };
+    def elems = makeFilterGenerator(list) { e <> callFormatValue(e) };
     <> cat("", elems*)
 };
 

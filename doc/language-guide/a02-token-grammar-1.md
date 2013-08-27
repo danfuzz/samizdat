@@ -17,8 +17,8 @@ result as tokens of type `error`.
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
-def KEYWORDS = mapFromGenerator(
-    filterGenerator([
+def KEYWORDS = collectAsMap(
+    makeFilterGenerator([
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
         []*])

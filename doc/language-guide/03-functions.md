@@ -251,53 +251,20 @@ any number of arguments (including none).
 
 See the introductory section "Logic operations" for more details.
 
-#### Generator functions
-
-Generators in *Samizdat* are the closest analog to what are sometimes
-called "iterators" in other languages (and are sometimes called generators,
-to be clear). When called in an appropriate manner, a series of generators
-yields a sequence of values that are related in some way, with the
-relationship depending on the nature of the generators. Put another way,
-generators can be used to "spread" a computation across a series of values.
-
-Most basically, a generator is just a function &mdash; possibly and
-preferably, but not necessarily, a pure function &mdash; with a particular
-contract.
-
-The contract is as follows:
-
-* A generator as a function always accepts exactly one argument. That
-  argument is (or is the equivalent of) a "yield box". (Boxes are described
-  more completely in a different section.)
-
-* When a generator is not "voided" (out of values to yield), calling it
-  causes two things to be done:
-
-  * It calls `store(box, value)` on its argument in order to yield
-    one value out of itself.
-  * It returns a new generator as a result which, when called, yields
-    the *next* value, and so on.
-
-* When a generator has yielded its final element, it returns a voided
-  generator.
-
-* When a voided generator is called, it does these two things:
-
-  * It calls `store(box)` (with no payload argument) on its argument
-    in order to yield void.
-  * It returns void.
-
-**Note:** Clients of generators should rely primarily on the return value
-to determine whether the generator has been voided, rather than on what
-gets done to the box passed in as the first argument.
-
 #### Parser functions
 
 Parser functions are used (unsurprisingly) to perform parsing operations.
 *Samizdat* provides both syntactic and library support for parsing.
 
-Briefly, parser functions work very similar to generator functions. The
-one major difference is that parser functions consistently take two
-arguments, the first a yield box, and the second the "text" to parse.
+Briefly, parser functions work very similar to generators. The
+majore differences are:
+
+* Parser functions are `Callable` functions (and not values that bind other
+  methods).
+
+* Parser functions take two or more arguments, in this order:
+  * a yield box.
+  * The "text" to parse.
+  * Optionally, a trailing context of one or more already-parsed values.
 
 See the "Parsing" section for more details.

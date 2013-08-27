@@ -29,7 +29,7 @@ fn msgAll(header, gen) {
     { <done> ::
         loopReduce(gen) { gen ::
             def box = makeYieldBox();
-            <> ifValue { <> gen(box) }
+            <> ifValue { <> nextValue(gen, box) }
                 { nextGen ::
                     msg(fetch(box));
                     <> [nextGen]
@@ -39,7 +39,7 @@ fn msgAll(header, gen) {
     }();
 
     io0Note("  [all]");
-    msg(collectGenerator(gen));
+    msg(collect(gen));
     io0Note("")
 };
 
@@ -49,136 +49,75 @@ fn msgAll(header, gen) {
 # Main Tests
 #
 
-msgAll("Empty list", generatorFromValue([]));
-msgAll("Empty map", generatorFromValue([:]));
-msgAll("Empty string", generatorFromValue(""));
-msgAll("Empty paraGenerator", paraGenerator());
-msgAll("Empty seqGenerator", seqGenerator());
+msgAll("Empty list", []);
+msgAll("Empty map", [:]);
+msgAll("Empty string", "");
+msgAll("NullGenerator", nullGenerator);
+msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
+msgAll("Empty ParaGenerator", makeParaGenerator());
+msgAll("Empty SeqGenerator", makeSeqGenerator());
 
-msgAll("List", generatorFromValue([101, 33, 5555, "blort"]));
-msgAll("Map",
-    generatorFromValue([one: 1, two: 2, three: 3, four: 4, five: "fizmo"]));
-msgAll("String", generatorFromValue("Happy string!"));
+msgAll("List", [101, 33, 5555, "blort"]);
+msgAll("Map", [one: 1, two: 2, three: 3, four: 4, five: "fizmo"]);
+msgAll("String", "Happy string!");
 
-msgAll("Single-item paraGenerator",
-    paraGenerator(["blort", "igram", "fizmo"]));
+msgAll("ListWrapGenerator", makeListWrapGenerator("frotz"));
 
-msgAll("All-finite paraGenerator",
-    paraGenerator(
+msgAll("Single-item ParaGenerator",
+    makeParaGenerator(["blort", "igram", "fizmo"]));
+
+msgAll("All-finite ParaGenerator",
+    makeParaGenerator(
         [1, 2, 3],
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
-msgAll("Paragenerator with opt element",
-    paraGenerator(
-        optGenerator([1, 2, 3]),
+msgAll("ParaGenerator with opt element and ValueGenerator",
+    makeParaGenerator(
+        makeOptGenerator([1, 2, 3]),
+        makeValueGenerator("blort"),
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 
-msgAll("Filter generator (square even numbers)",
-    filterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
+msgAll("FilterGenerator (square even numbers)",
+    makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ::
             <> ifIs { <> eq(mod(value, 2), 0) }
                 { <> mul(value, value) }
         });
 
-io0Note("doGenerator on filter");
-doGenerator(
-    filterGenerator([1, 2, 3, 4])
+io0Note("generatorPump on FilterGenerator");
+generatorPump(
+    makeFilterGenerator([1, 2, 3, 4])
         { value :: io0Note(cat("    Yay ", sourceString(value))) });
 io0Note("");
 
-msgAll("Token generator", tokenGenerator("Tokens!"));
-
-msgAll("Inclusive range 5..10",
-    inclusiveRange(5, 1, 10));
-
-msgAll("Inclusive range 10..-2..1",
-    inclusiveRange(10, -2, 1));
-
-msgAll("Inclusive range \"a\"..5..\"z\"",
-    inclusiveRange("a", 5, "z"));
-
-msgAll("Exclusive range 5..10",
-    exclusiveRange(5, 1, 10));
-
-msgAll("Exclusive range 10..-2..1",
-    exclusiveRange(10, -2, 1));
-
-msgAll("Exclusive range \"a\"..5..\"z\"",
-    exclusiveRange("a", 5, "z"));
+msgAll("Token generator", makeTokenGenerator("Tokens!"));
 
 msgAll("ParaGenerator with open ranges",
-    paraGenerator(
-        openRange("a", 1),
-        openRange(100, 10),
+    makeParaGenerator(
+        makeOpenRange("a", 1),
+        makeOpenRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
 
-msgAll("Zero-increment int range",
-    inclusiveRange(10, 0, 20));
-
-msgAll("Zero-increment character range",
-    inclusiveRange("x", 0, "a"));
-
 msgAll("Size one SeqGenerator",
-    seqGenerator([a: 10, b: 20, c: 30]));
+    makeSeqGenerator([a: 10, b: 20, c: 30]));
 
 msgAll("Size two SeqGenerator",
-    seqGenerator(
+    makeSeqGenerator(
         [a: 10, b: 20, c: 30],
         "defg"));
 
-msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
-    seqGenerator("abc", [], [], ["def", "ghi"], []));
+msgAll("Size six SeqGenerator (with a couple pre-voided generators)",
+    makeSeqGenerator("abc", [], [], nullGenerator, ["def", "ghi"], []));
 
-msgAll("Single-generator reduceGenerator",
-    reduceGenerator([[1, 2, 3, 4]], [0])
-        { elem, result <> [add(elem, result)] });
-
-def doRedA = doReduce([[1, 2, 3, 4]], [0])
-    { elem, result <> [add(elem, result)] };
-io0Note(cat("  corresponding doReduce: ", sourceString(doRedA)));
-def doRedA1 = doReduce1([1, 2, 3, 4], 0)
-    { elem, result <> add(elem, result) };
-io0Note(cat("  corresponding doReduce1: ", sourceString(doRedA1)));
-io0Note("");
-
-msgAll("Two-generator reduceGenerator",
-    reduceGenerator([["like", "hate"], ["biscuits", "fish sticks"]], [""])
-        { verb, noun, result ::
-            <> [cat(result, "I ", verb, " ", noun, ". ")]
-        });
-
-def doRedB = doReduce([["like", "hate"], ["biscuits", "fish sticks"]], [""])
-    { verb, noun, result ::
-        <> [cat(result, "I ", verb, " ", noun, ". ")]
-    };
-io0Note(cat("  corresponding doReduce: ", sourceString(doRedB)));
-io0Note("");
-
-msgAll("Two-reduction reduceGenerator",
-    reduceGenerator([[1, 2, 3, 4]], [0, 1])
-        { num, sum, product <> [add(sum, num), mul(product, num)] });
-
-def doRedC = doReduce([[1, 2, 3, 4]], [0, 1])
-    { num, sum, product <> [add(sum, num), mul(product, num)] };
-io0Note(cat("  corresponding doReduce: ", sourceString(doRedC)));
-io0Note("");
-
-io0Note("mapFromGenerator on filter");
-def outMap = mapFromGenerator(
-    filterGenerator(inclusiveRange(0, 2, 4))
+io0Note("collectAsMap on a FilterGenerator");
+def outMap = collectAsMap(
+    makeFilterGenerator(makeInclusiveRange(0, 2, 4))
         { value ::
             <> [(value): value, add(value, 1): value, blort: value]
         });
 io0Note(cat("    ", sourceString(outMap)));
-io0Note("");
-
-io0Note("stringFromGenerator on filter");
-def outString = stringFromGenerator(
-    filterGenerator(inclusiveRange(65, 1, 75))
-        { value <> charFromInt(value) });
-io0Note(cat("    ", sourceString(outString)));
 io0Note("");
 
 

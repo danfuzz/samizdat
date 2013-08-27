@@ -1,0 +1,41 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `OptGenerator` Type
+#
+# Payload is `subGen`, the sub-generator.
+
+#
+# Exported Definitions
+#
+
+# Documented in spec.
+fn makeOptGenerator(generator) {
+    <> @[OptGenerator: generator]
+};
+
+# Documented in spec.
+fn OptGenerator_collect(gen) {
+    io0Die("Unbounded generator.");
+};
+genericBind(collect, "OptGenerator", OptGenerator_collect);
+
+# Documented in spec.
+fn OptGenerator_nextValue(gen, box) {
+    def subGen = dataOf(gen);
+    def innerBox = makeYieldBox();
+
+    <> ifValue { <> nextValue(subGen, innerBox) }
+        { nextGen ::
+            store(box, [fetch(innerBox)]);
+            <> @[OptGenerator: nextGen]
+        }
+        { <> nextValue(makeValueGenerator([]), box) }
+};
+genericBind(nextValue, "OptGenerator", OptGenerator_nextValue);
+
+<> [
+    makeOptGenerator: makeOptGenerator
+]

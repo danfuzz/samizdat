@@ -76,6 +76,23 @@ indices, not map keys.
 
 
 <br><br>
+### Generic Function Definitions: `Generator` protocol.
+
+#### `collect(map) <> list`
+
+Returns a list of all the individual mappings of `map`, in sorted order.
+
+#### `filter(map, filterFunction) <> list`
+
+Filters the mappings of `map` using `filterFunction`.
+
+#### `nextValue(map, box) <> generator | void`
+
+On a non-empty map, calls `store(box, first(map))` and returns
+`butFirst(map)`. On an empty map, calls `store(box)` and returns void.
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `makeValueMap(keys*, value) <> map`
