@@ -121,7 +121,7 @@ zint collPutIndexStrict(zint size, zvalue n) {
 
 /* Documented in header. */
 zint collSize(zvalue coll) {
-    return zintFromInt(GFN_CALL(size, coll));
+    return zintFromInt(GFN_CALL(sizeOf, coll));
 }
 
 
@@ -192,8 +192,8 @@ void pbBindCollection(void) {
     GFN_reverse = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "reverse"));
     pbImmortalize(GFN_reverse);
 
-    GFN_size = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "size"));
-    pbImmortalize(GFN_size);
+    GFN_sizeOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sizeOf"));
+    pbImmortalize(GFN_sizeOf);
 
     GFN_slice = makeGeneric(2, 3, GFN_NONE, stringFromUtf8(-1, "slice"));
     pbImmortalize(GFN_slice);
@@ -221,7 +221,7 @@ zvalue GFN_put = NULL;
 zvalue GFN_reverse = NULL;
 
 /* Documented in header. */
-zvalue GFN_size = NULL;
+zvalue GFN_sizeOf = NULL;
 
 /* Documented in header. */
 zvalue GFN_slice = NULL;

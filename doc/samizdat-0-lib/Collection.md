@@ -57,7 +57,7 @@ Returns the list of keys mapped by the collection.
 #### `nth(collection, n) <> . | void`
 
 Returns the nth (zero-based) element of the collection, in its defined
-fixed order. Returns void if `n >= size(collection)`. It is an error
+fixed order. Returns void if `n >= sizeOf(collection)`. It is an error
 (terminating the runtime) if `n < 0` or if `n` is not an `Int`.
 
 #### `put(collection, key, value) <> collection`
@@ -70,13 +70,13 @@ It is an error (terminating the runtime) if the `key` or `value` is
 invalid for `collection`.
 
 **Note:** On sequence-like collections, the only valid keys are ints
-in the range `0..size(collection)` (inclusive of the size).
+in the range `0..sizeOf(collection)` (inclusive of the size).
 
 **Note:** To differentiate between adding a new mapping versus replacing
 a mapping, either check the sizes of the original and result, or
 check for the existence of `key` in the original.
 
-#### `size(collection) <> int`
+#### `sizeOf(collection) <> int`
 
 Returns the number of elements in the given collection.
 
@@ -105,7 +105,7 @@ reporting a terminal error).
 
 (Refinement of `Collection` protocol.)
 
-Returns the list `[0..!size(sequence)]`.
+Returns the list `[0..!sizeOf(sequence)]`.
 
 #### `reverse(sequence) <> sequence`
 
@@ -135,7 +135,7 @@ reporting an error when `collection` is empty.
 Returns a collection consisting of all the elements of the given `collection`
 except for the last element (that is, all but the last element). If
 `collection` is empty, this returns void. This is similar to
-`slice(collection, 0, size(collection) - 1)`, except that this function
+`slice(collection, 0, sizeOf(collection) - 1)`, except that this function
 returns void instead of reporting an error when `collection` is empty.
 
 #### `first(collection) <> . | void`
@@ -146,6 +146,6 @@ This is just a convenient shorthand for `nth(collection, 0)`.
 #### `last(collection) <> . | void`
 
 Returns the last element of the given `collection` or void if the it is empty.
-This is similar to `nth(collection, size(collection) - 1)`, except that this
+This is similar to `nth(collection, sizeOf(collection) - 1)`, except that this
 function returns void given an empty collection instead of reporting an
 error.

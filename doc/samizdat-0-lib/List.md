@@ -47,7 +47,7 @@ Gets the nth element of the string.
 #### `put(list, n, value) <> list`
 
 Returns a list like the given one, but with the `n`th element replaced
-with the given `value`, or added if `n == size(list)`.
+with the given `value`, or added if `n == sizeOf(list)`.
 
 #### `reverse(list) <> list`
 
@@ -56,7 +56,7 @@ order.
 
 **Syntax Note:** Used in the translation of `switch` forms.
 
-#### `size(list) <> int`
+#### `sizeOf(list) <> int`
 
 Returns the number of elements in the list.
 

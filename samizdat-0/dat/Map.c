@@ -468,7 +468,7 @@ METH_IMPL(Map, put) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, size) {
+METH_IMPL(Map, sizeOf) {
     zvalue map = args[0];
     return intFromZint(getInfo(map)->size);
 }
@@ -496,7 +496,7 @@ void datBindMap(void) {
     METH_BIND(Map, perEq);
     METH_BIND(Map, perOrder);
     METH_BIND(Map, put);
-    METH_BIND(Map, size);
+    METH_BIND(Map, sizeOf);
     METH_BIND(Map, slice);
 
     EMPTY_MAP = allocMap(0);

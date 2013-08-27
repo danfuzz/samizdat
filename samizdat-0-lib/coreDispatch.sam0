@@ -37,9 +37,9 @@ def DISPATCH = [
         order: perOrder,
 
         # Collection access
-        get:   get,
-        nth:   nth,
-        size:  size
+        get:    get,
+        nth:    nth,
+        sizeOf: sizeOf
     ],
 
     (Map): [
@@ -53,9 +53,9 @@ def DISPATCH = [
         order: perOrder,
 
         # Collection access
-        get:   get,
-        nth:   nth,
-        size:  size
+        get:    get,
+        nth:    nth,
+        sizeOf: sizeOf
     ],
 
     (String): [
@@ -69,9 +69,9 @@ def DISPATCH = [
         order: perOrder,
 
         # Collection access
-        get:   get,
-        nth:   nth,
-        size:  size
+        get:    get,
+        nth:    nth,
+        sizeOf: sizeOf
     ]
 ];
 

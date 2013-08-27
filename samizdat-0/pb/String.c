@@ -360,7 +360,7 @@ METH_IMPL(String, reverse) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, size) {
+METH_IMPL(String, sizeOf) {
     zvalue string = args[0];
     return intFromZint(getInfo(string)->size);
 }
@@ -388,7 +388,7 @@ void pbBindString(void) {
     METH_BIND(String, perOrder);
     METH_BIND(String, put);
     METH_BIND(String, reverse);
-    METH_BIND(String, size);
+    METH_BIND(String, sizeOf);
     METH_BIND(String, slice);
     seqBind(TYPE_String);
 
