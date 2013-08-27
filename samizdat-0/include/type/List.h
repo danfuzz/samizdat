@@ -28,13 +28,6 @@ extern zvalue EMPTY_LIST;
 void arrayFromList(zvalue *result, zvalue list);
 
 /**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a list. If not, this aborts the process
- * with a diagnostic message.
- */
-void assertList(zvalue value);
-
-/**
  * Constructs a list from an array of `zvalue`s of the given size.
  */
 zvalue listFromArray(zint size, const zvalue *values);
