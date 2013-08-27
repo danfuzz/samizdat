@@ -14,12 +14,12 @@
 def MODULE_PREFIX = "module:";
 
 # Size of `MODULE_PREFIX`.
-def MODULE_PREFIX_SIZE = size(MODULE_PREFIX);
+def MODULE_PREFIX_SIZE = sizeOf(MODULE_PREFIX);
 
 # Given a name, returns the module name portion of it if it in fact starts
 # with `MODULE_PREFIX`. Returns void if not.
 fn moduleNameFromString(orig) {
-    ifIs { <> le(size(orig), MODULE_PREFIX_SIZE) }
+    ifIs { <> le(sizeOf(orig), MODULE_PREFIX_SIZE) }
         { return };
 
     <> ifIs { <> eq(slice(orig, 0, MODULE_PREFIX), MODULE_PREFIX) }
@@ -31,9 +31,9 @@ fn dataGet(value, key) {
     <> get(dataOf(value), key)
 };
 
-# Does a `size` on the payload data of the given value.
+# Does a `sizeOf` on the payload data of the given value.
 fn dataSize(value) {
-    <> size(dataOf(value))
+    <> sizeOf(dataOf(value))
 };
 
 # Deletes all the given keys from the given map.

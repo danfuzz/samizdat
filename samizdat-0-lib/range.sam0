@@ -45,12 +45,12 @@ genericBind(rangeInt, String, String_rangeInt);
 #
 
 # Documented in spec.
-fn makeClosedRange(firstValue, increment, sz) {
-    # `perGt` ensures that `sz` is an int.
-    <> ifIs { <> perGt(sz, 0) }
+fn makeClosedRange(firstValue, increment, size) {
+    # `perGt` ensures that `size` is an int.
+    <> ifIs { <> perGt(size, 0) }
         {
             <> @[ClosedRange:
-                [firstValue: firstValue, increment: increment, size: sz]]
+                [firstValue: firstValue, increment: increment, size: size]]
         }
         { <> nullGenerator }
 };
@@ -74,13 +74,13 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     # `sign(increment)` is either `-1` or `+1`, which when subtracted from
     # limit "pushes" the limit in the right direction to make the truncated
     # division produce the correct result size.
-    def sz =
+    def size =
         add(1, div(sub(sub(limitInt, firstInt), sign(increment)), increment));
 
-    ifIs { <> perLe(sz, 0) }
+    ifIs { <> perLe(size, 0) }
         { return nullGenerator };
 
-    <> makeClosedRange(firstValue, increment, sz);
+    <> makeClosedRange(firstValue, increment, size);
 };
 
 # Documented in spec.
@@ -94,24 +94,24 @@ fn makeInclusiveRange(firstValue, increment, limit) {
 
     def firstInt = rangeInt(firstValue);
     def limitInt = rangeInt(limit);
-    def sz = add(1, div(sub(limitInt, firstInt), increment));
+    def size = add(1, div(sub(limitInt, firstInt), increment));
 
-    ifIs { <> perLe(sz, 0) }
+    ifIs { <> perLe(size, 0) }
         { return nullGenerator };
 
-    <> makeClosedRange(firstValue, increment, sz);
+    <> makeClosedRange(firstValue, increment, size);
 };
 
 # Documented in spec.
 fn ClosedRange_nextValue(range, box) {
     def data = dataOf(range);
     <> ifValue { <> perLe(0, get(data, "size")) }
-        { sz ::
+        { size ::
             def firstValue = get(data, "firstValue");
             def increment = get(data, "increment");
             store(box, firstValue);
             <> makeClosedRange(rangeAdd(firstValue, increment), increment,
-                sub(sz, 1))
+                sub(size, 1))
         }
         {
             # Voided.

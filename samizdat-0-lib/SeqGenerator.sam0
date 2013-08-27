@@ -19,7 +19,7 @@ fn makeSeqGenerator(generators*) {
 
     # Return the argument directly if we were only passed one.
     # This saves some gratuitous call wrapping / double yields.
-    ifIs { <> eq(size(generators), 1) }
+    ifIs { <> eq(sizeOf(generators), 1) }
         { return generators* };
 
     <> @[SeqGenerator: generators]

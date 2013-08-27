@@ -47,7 +47,7 @@ Gets the nth character of the string, as a single-element string.
 #### `put(string, n, char) <> string`
 
 Returns a string like the given one, but with the `n`th character replaced
-with the given `char`, or added if `n == size(string)`. It is an error
+with the given `char`, or added if `n == sizeOf(string)`. It is an error
 if `char` is not a string of size `1`.
 
 #### `reverse(string) <> string`
@@ -55,7 +55,7 @@ if `char` is not a string of size `1`.
 Returns a string like the one given, except with characters in the opposite
 order.
 
-#### `size(string) <> int`
+#### `sizeOf(string) <> int`
 
 Returns the number of characters in the string.
 

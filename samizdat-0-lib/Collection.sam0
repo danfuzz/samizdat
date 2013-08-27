@@ -13,12 +13,12 @@
 
 # Documented in Samizdat Layer 0 spec.
 fn butFirst(collection) {
-    <> slice(collection, &ge(size(collection), 1))
+    <> slice(collection, &ge(sizeOf(collection), 1))
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn butLast(collection) {
-    <> slice(collection, 0, &le(0, sub(size(collection), 1)))
+    <> slice(collection, 0, &le(0, sub(sizeOf(collection), 1)))
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -28,7 +28,7 @@ fn first(collection) {
 
 # Documented in Samizdat Layer 0 spec.
 fn last(collection) {
-    <> nth(collection, &le(0, sub(size(collection), 1)))
+    <> nth(collection, &le(0, sub(sizeOf(collection), 1)))
 };
 
 

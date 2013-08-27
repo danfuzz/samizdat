@@ -665,7 +665,7 @@ def parParserString = {/
     s = @string
     {
         def value = dataOf(s);
-        <> ifIs { <> eq(size(value), 1) }
+        <> ifIs { <> eq(sizeOf(value), 1) }
             { <> @[token: value] }
             { <> s }
     }
@@ -689,7 +689,7 @@ def parParserSetString = {/
             def startChar = dataOf(s);
             def endChar = dataOf(end);
             <> ifIs
-                { <> eq(1, &eq(size(startChar), size(endChar))) }
+                { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
                 { <> cat(makeInclusiveRange(startChar, 1, endChar)*) }
         }
     |

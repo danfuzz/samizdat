@@ -35,11 +35,14 @@ fn returnString() {
 # Main Tests
 #
 
-msg(+0);
-msg(- 10);
+msg(-0);
+msg(-10);
 msg(- - 20);
-msg(- - + - + 30);
+msg(- - - 30);
+msg(!!! 0);
 msg(!!! -1);
+msg(!!! - 1);
+msg(!!! - !!! 1);
 msg(returnString());
 msg(returnVoid()?);
 msg(returnString()?);

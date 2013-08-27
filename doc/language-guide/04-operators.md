@@ -167,12 +167,6 @@ to a function call, element of a list construction, or index argument
 to a `[]` expression (and not, e.g., embedded any deeper in any
 sort of expression).
 
-#### Numeric positive &mdash; `+expression`
-
-Placing a plus sign in front of an expression asserts that the inner
-expression results in a number, and results in the same value as the
-inner expression.
-
 #### Numeric negative &mdash; `-expression`
 
 Placing a minus sign in front of an expression asserts that the inner

@@ -223,10 +223,10 @@ METH_IMPL(List, perOrder) {
     }
 
     if (size1 == size2) {
-        return PB_0;
+        return INT_0;
     }
 
-    return (size1 < size2) ? PB_NEG1 : PB_1;
+    return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
 /* Documented in header. */
@@ -265,7 +265,7 @@ METH_IMPL(List, reverse) {
 }
 
 /* Documented in header. */
-METH_IMPL(List, size) {
+METH_IMPL(List, sizeOf) {
     zvalue list = args[0];
     return intFromZint(getInfo(list)->size);
 }
@@ -292,7 +292,7 @@ void pbBindList(void) {
     METH_BIND(List, perOrder);
     METH_BIND(List, put);
     METH_BIND(List, reverse);
-    METH_BIND(List, size);
+    METH_BIND(List, sizeOf);
     METH_BIND(List, slice);
     seqBind(TYPE_List);
 
