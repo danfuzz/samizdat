@@ -35,32 +35,6 @@ fn filterAll(filterFunction, generators*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn doFilter(filterFunction, generators*) {
-    loopReduce(makeParaGenerator(generators*))
-        { gen ::
-            def box = makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
-                { nextGenerator ::
-                    filterFunction(fetch(box)*);
-                    <> [nextGenerator]
-                }
-                {
-                    # The inner generator was voided.
-                    return
-                }
-        }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn doGenerator(generator) {
-    loopReduce(generator) { gen ::
-        <> ifValue { <> nextValue(gen, nullBox) }
-            { nextGen <> [nextGen] }
-            { return }
-    }
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn doReduce(reduceFunction, generator, baseValues*) {
     loopReduce(generator, baseValues)
         { gen, values ::
@@ -103,6 +77,32 @@ fn doReduce1(reduceFunction, generator, baseValue) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn filterPump(filterFunction, generators*) {
+    loopReduce(makeParaGenerator(generators*))
+        { gen ::
+            def box = makeYieldBox();
+            <> ifValue { <> nextValue(gen, box) }
+                { nextGenerator ::
+                    filterFunction(fetch(box)*);
+                    <> [nextGenerator]
+                }
+                {
+                    # The inner generator was voided.
+                    return
+                }
+        }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn generatorPump(generator) {
+    loopReduce(generator) { gen ::
+        <> ifValue { <> nextValue(gen, nullBox) }
+            { nextGen <> [nextGen] }
+            { return }
+    }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn makeTokenGenerator(generator) {
     <> makeFilterGenerator(generator)
         { elem <> @[(elem)] }
@@ -110,10 +110,10 @@ fn makeTokenGenerator(generator) {
 
 <> [
     collectAsMap:       collectAsMap,
-    filterAll:          filterAll,
-    doFilter:           doFilter,
-    doGenerator:        doGenerator,
     doReduce:           doReduce,
     doReduce1:          doReduce1,
+    filterAll:          filterAll,
+    filterPump:         filterPump,
+    generatorPump:      generatorPump,
     makeTokenGenerator: makeTokenGenerator
 ]

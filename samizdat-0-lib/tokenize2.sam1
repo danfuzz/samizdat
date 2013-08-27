@@ -256,7 +256,7 @@ fn implProcessStringParts(parts) {
 
     # If there is an error part (represented as an `@error` token), return
     # it.
-    doFilter(parts)
+    filterPump(parts)
         { part ::
             <> ifIs { <> eq(typeOf(part), "error") }
                 { return part }

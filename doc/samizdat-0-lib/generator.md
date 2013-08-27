@@ -85,6 +85,31 @@ This is a convenient and idiomatic shorthand for saying something like:
 
 **Syntax Note:** Used in the translation of comprehension forms.
 
+#### `filterPump(filterFunction, generators*) <> void`
+
+Iterates over the given generators, calling the given `filterFunction`
+on generated items, iterating until at least one of the generators
+is voided. The results from calling the `filterFunction` (if any) are
+discarded. This function always returns void.
+
+This is equivalent to calling `generatorPump` on a filter generator
+constructed with the same arguments as a call to this function,
+that is, something like:
+
+```
+generatorPump(makeFilterGenerator(generator, ...) { ... code ... })
+```
+
+**Syntax Note:** Used in the translation of `for` forms.
+
+#### `generatorPump(generator) <> void`
+
+Generator iterator, ignoring results. This takes a generator, calling
+it repeatedly until it becomes voided. All results yielded by the
+generator are ignored.
+
+This function always returns void.
+
 #### `makeFilterGenerator(filterFunction, generators*) <> generator`
 
 Filtering generator constructor. This takes any number of arbitrary
@@ -200,31 +225,6 @@ OLD DEFINITIONS TO BE SCRUTINIZED
 
 <br><br>
 ### In-Language Definitions
-
-#### `doFilter(filterFunction, generators*) <> void`
-
-Iterates over the given generators, calling the given `filterFunction`
-on generated items, iterating until at least one of the generators
-is voided. The results from calling the `filterFunction` (if any) are
-discarded. This function always returns void.
-
-This is equivalent to calling `doGenerator` on a filter generator
-constructed with the same arguments as a call to this function,
-that is, something like:
-
-```
-doGenerator(makeFilterGenerator(generator, ...) { ... code ... })
-```
-
-**Syntax Note:** Used in the translation of `for` forms.
-
-#### `doGenerator(generator) <> void`
-
-Generator iterator, ignoring results. This takes a generator, calling
-it repeatedly until it becomes voided. All results yielded by the
-generator are ignored.
-
-This function always returns void.
 
 #### `doReduce(reduceFunction, generator, baseValues*) <> list`
 

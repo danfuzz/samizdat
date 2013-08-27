@@ -43,7 +43,7 @@ fn <out> exiter(foo) {
 fn boxer() {
     def box = makeMutableBox(10);
 
-    doFilter([1, 2, 3]) { n :: store(box, add(fetch(box), n)) };
+    filterPump([1, 2, 3]) { n :: store(box, add(fetch(box), n)) };
     <> fetch(box)
 };
 

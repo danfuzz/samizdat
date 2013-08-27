@@ -86,8 +86,8 @@ msgAll("FilterGenerator (square even numbers)",
                 { <> mul(value, value) }
         });
 
-io0Note("doGenerator on FilterGenerator");
-doGenerator(
+io0Note("generatorPump on FilterGenerator");
+generatorPump(
     makeFilterGenerator([1, 2, 3, 4])
         { value :: io0Note(cat("    Yay ", sourceString(value))) });
 io0Note("");

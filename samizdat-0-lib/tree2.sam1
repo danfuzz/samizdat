@@ -15,7 +15,7 @@
 fn reportError(pending) {
     io0Note("Pending tokens:");
 
-    doFilter(pending, makeInclusiveRange(1, 1, 50))
+    filterPump(pending, makeInclusiveRange(1, 1, 50))
         { token, . :: io0Note(cat("    ", sourceString(token))) };
 
     io0Die("\nExtra tokens at end of program.")
@@ -1709,7 +1709,7 @@ def parDoExpression = {/
 # ```
 # { <\"break"> ::
 #     def out = \"break";
-#     doFilter(expr1, expr2) { <\"continue"> name1, name2 ::
+#     filterPump(expr1, expr2) { <\"continue"> name1, name2 ::
 #         def next = \"continue";
 #         stat1; stat2
 #     }
@@ -1747,7 +1747,7 @@ def parForExpression = {/
             yieldDef: "break",
             statements: [
                 breakDef*,
-                makeCallName("doFilter", loopClosure, genInits*)
+                makeCallName("filterPump", loopClosure, genInits*)
             ]
         ]];
 
