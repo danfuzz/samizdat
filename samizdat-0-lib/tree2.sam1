@@ -119,7 +119,7 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 # references.
 def UNARY_OPERATORS = [
     "+":   makeVarRef("unary+"),
-    "-":   makeVarRef("unary-"),
+    "-":   makeVarRef("neg"),
     "**":  makeVarRef("logicFromBoolean"),
     "!!!": makeVarRef("not")
 ];
@@ -129,13 +129,13 @@ def UNARY_OPERATORS = [
 # * a `varRef` node for the corresponding function name
 # * a `literal` node for the corresponding method name
 def BINARY_OPERATORS = [
-    "+":    makeVarRef("binary+"),
-    "-":    makeVarRef("binary-"),
-    "*":    makeVarRef("binary*"),
-    "/":    makeVarRef("binary/"),
-    "%":    makeVarRef("binary%"),
-    "//":   makeVarRef("binary//"),
-    "%%":   makeVarRef("binary%%"),
+    "+":    makeVarRef("add"),
+    "-":    makeVarRef("sub"),
+    "*":    makeVarRef("mul"),
+    "/":    makeVarRef("div"),
+    "%":    makeVarRef("mod"),
+    "//":   makeVarRef("divEu"),
+    "%%":   makeVarRef("modEu"),
     "==":   makeLiteral("eq"),
     "!=":   makeLiteral("ne"),
     "<":    makeLiteral("lt"),
