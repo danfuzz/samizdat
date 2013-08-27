@@ -70,7 +70,7 @@ msgAll("All-finite paraGenerator",
 
 msgAll("Paragenerator with opt element",
     paraGenerator(
-        optGenerator([1, 2, 3]),
+        makeOptGenerator([1, 2, 3]),
         "abcdefg",
         [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
 

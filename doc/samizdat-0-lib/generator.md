@@ -163,15 +163,6 @@ as if by successive calls to `cat(map, map)`.
 If there are mappings in the yielded results with equal keys, then the
 *last* such mapping is the one that "wins" in the final result.
 
-#### `optGenerator(generator) <> generator`
-
-"Optional" generator constructor. This takes an arbitrary generator,
-returning a new generator that always yields lists and never
-becomes voided. As long as the underlying generator yields a value, the
-returned generator yields a single-element list of that value. Once the
-underlying generator is voided, the returned generator yields the empty
-list, and will continue doing so ad infinitum.
-
 #### `paraGenerator(generators*) <> generator`
 
 Parallel generator combination constructor. This takes an arbitrary number of
