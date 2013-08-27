@@ -340,18 +340,6 @@ fn pegApply(rule, input) {
         { <> fetch(box) }
 };
 
-# Documented in Samizdat Layer 0 spec.
-fn pegGenerator(rule, input) {
-    fn pegGenerator1(gen) {
-        <> { box ::
-            <> ifValue { <> rule(box, gen) }
-                { nextGen <> pegGenerator1(nextGen) }
-        }
-    };
-
-    <> pegGenerator1(generatorFromInput(input))
-};
-
 
 #
 # Export mechanics
@@ -359,7 +347,6 @@ fn pegGenerator(rule, input) {
 
 <> [
     pegApply:                  pegApply,
-    pegGenerator:              pegGenerator,
     pegMakeCharSet:            pegMakeCharSet,
     pegMakeCharSetComplement:  pegMakeCharSetComplement,
     pegMakeChoice:             pegMakeChoice,

@@ -75,20 +75,6 @@ rule yields on the input.
 this function automatically treats it as a generator of
 character-as-token values.
 
-#### `pegGenerator(rule, input) <> generator`
-
-Creates a generator which, when iterated, tries to match the given
-`rule` on the given `input`. The result basically acts as a single
-step in matching the rule `rule*` (that is, zero or more matches
-of `rule`), yielding each match in a separate iteration.
-
-Applies a parser rule to the given input, yielding whatever result the
-rule yields on the input.
-
-`input` must be a generator or a "genaratable" value. If it is a string,
-this function automatically treats it as a generator of
-character-as-token values.
-
 #### `pegMakeCharSet(strings*) <> rule`
 
 Makes and returns a parser rule which matches any character of any of
