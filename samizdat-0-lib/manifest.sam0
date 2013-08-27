@@ -40,7 +40,7 @@ def MANIFEST = [
     "SeqGenerator.sam0",
     "FilterGenerator.sam0",    # Uses `ParaGenerator`.
     "range.sam0",
-    "generator.sam0",
+    "Generator.sam0",
     "String.sam0",
     "format.sam0",
     "module.sam0",

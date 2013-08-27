@@ -73,6 +73,7 @@ will be returned, or one of:
   * [ClosedRange](ClosedRange.md)
   * [Collections (multiple-value containers)](Collection.md)
   * [Functions](Function.md)
+  * [Generators](Generator.md)
   * [Generics](Generic.md)
   * [Ints](Int.md)
   * [Lists](List.md)
@@ -86,7 +87,6 @@ will be returned, or one of:
 * Other
   * [Constants](constants.md)
   * [Conditionals And Iteration](conditional.md)
-  * [Generators](generator.md)
   * [I/O](io.md)
   * [String Formatting](format.md)
   * [Parsing](peg.md)
