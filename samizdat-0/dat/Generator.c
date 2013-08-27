@@ -119,14 +119,6 @@ METH_IMPL(Value, collect) {
     return result;
 }
 
-// TODO: TEMPORARY SCAFFOLDING! REMOVE!
-METH_IMPL(Value, nextValue) {
-    zvalue generator = args[0];
-    zvalue box = args[1];
-
-    return FUN_CALL(generator, box);
-}
-
 /* Documented in header. */
 void datBindGenerator(void) {
     GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
@@ -135,7 +127,6 @@ void datBindGenerator(void) {
     GFN_nextValue = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "nextValue"));
     pbImmortalize(GFN_nextValue);
 
-    METH_BIND(Value, nextValue); // TODO: REMOVE!
     METH_BIND(List,   collect);
     METH_BIND(Map,    collect);
     METH_BIND(String, collect);
