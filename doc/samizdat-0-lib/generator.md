@@ -181,6 +181,8 @@ that is, something like:
 doGenerator(makeFilterGenerator(generator, ...) { ... code ... })
 ```
 
+**Syntax Note:** Used in the translation of `for` forms.
+
 #### `doGenerator(generator) <> void`
 
 Generator iterator, ignoring results. This takes a generator, calling

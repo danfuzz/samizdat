@@ -1700,19 +1700,6 @@ def parDoExpression = {/
     }
 /};
 
-# Tree for the second argument to the `loopReduce` inside a `for` translation.
-# This expression is constant across all `for` loops, and it's most easily
-# constructed by using the built-in parser.
-def FOR_BODY_CLOSURE = sam0Tree("
-    generator ::
-    def box = makeYieldBox();
-    <> ifValue { <> generator(box) }
-        { nextGenerator ::
-            body(fetch(box)*);
-            <> [nextGenerator]
-        }
-        { <\\\"break\"> }");
-
 # Parses a for expression. The translation is along these lines:
 #
 # ```
@@ -1722,20 +1709,10 @@ def FOR_BODY_CLOSURE = sam0Tree("
 # ```
 # { <\"break"> ::
 #     def out = \"break";
-#     def body = { <\"continue"> name1, name2 ::
+#     doFilter(expr1, expr2) { <\"continue"> name1, name2 ::
 #         def next = \"continue";
 #         stat1; stat2
-#     };
-#     loopReduce(makeParaGenerator(expr1, expr2))
-#         { generator ::
-#             def box = makeYieldBox();
-#             <> ifValue { <> generator(box) }
-#                 { nextGenerator ::
-#                     body(fetch(box)*);
-#                     <> [nextGenerator]
-#                 }
-#                 { <\"break"> }
-#         }
+#     }
 # }()
 # ```
 #
@@ -1752,7 +1729,7 @@ def parForExpression = {/
 
     {
         def genFormals = get(genList, "formals");
-        def genInit = makeCallName("makeParaGenerator", get(genList, "inits")*);
+        def genInits = get(genList, "inits");
 
         def codePayload = dataOf(code);
         def continueDef = ifValue { <> get(codePayload, "yieldDef") }
@@ -1770,8 +1747,7 @@ def parForExpression = {/
             yieldDef: "break",
             statements: [
                 breakDef*,
-                makeVarDef("body", loopClosure),
-                makeCallName("loopReduce", FOR_BODY_CLOSURE, genInit)
+                makeCallName("doFilter", loopClosure, genInits*)
             ]
         ]];
 
