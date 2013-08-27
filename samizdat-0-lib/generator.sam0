@@ -11,47 +11,6 @@
 # Private Definitions
 #
 
-# Standard "voided" generator. This is a generator, not a generator
-# constructor.
-fn voidedGenerator(box) {
-    store(box)
-};
-
-# Empty list generator. It always yields the empty list and returns
-# itself. This is a generator, not a generator constructor.
-fn emptyListGenerator(box) {
-    store(box, []);
-    <> emptyListGenerator
-};
-
-# Degenerate generator maker for functions, which are tacitly assumed to
-# already be generators.
-fn makeFunctionGenerator(function) {
-    <> function
-};
-
-# TODO: TEMPORARY SCAFFOLDING! REMOVE!
-# This assumes that `value` is in fact a `Generator` that defines
-# `nextValue`.
-fn makeValueGenerator(value) {
-    <> { box ::
-        <> ifValue { <> nextValue(value, box) }
-            { nextGen <> makeValueGenerator(nextGen) }
-    }
-};
-
-# Map from low-layer value types to corresponding appropriate generator
-# maker functions.
-def GENERATOR_MAKERS = [
-    (Function): makeFunctionGenerator,
-    (Generic):  makeFunctionGenerator,
-    (List):     makeValueGenerator,
-    (Map):      makeValueGenerator,
-    (String):   makeValueGenerator,
-    ClosedRange: makeValueGenerator, # TODO: TEMP! REMOVE!
-    OpenRange:   makeValueGenerator # TODO: TEMP! REMOVE!
-];
-
 # Helper for `paraGenerator`, which implements the degenerate case of
 # a single inner generator. This can end up being usefully used in a few
 # cases, e.g. by virtue of `filterGenerator` always calling `paraGenerator`.
@@ -64,19 +23,6 @@ fn oneItemParaGenerator(generator) {
                 <> oneItemParaGenerator(nextGenerator)
             }
     }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn generatorFromValue(value) {
-    <> ifValue { <> get(GENERATOR_MAKERS, typeOf(value)) }
-        { maker <> maker(value) }
-        {
-            # Catch-all. If you can call `call` on it, treat it as a
-            # generator.
-            <> ifIs { <> canCall(call, value) }
-                { <> value }
-                { io0Die("Invalid generator source.") }
-        }
 };
 
 
@@ -118,7 +64,7 @@ fn doFilter(filterFunction, generators*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn doGenerator(generator) {
-    loopReduce(generatorFromValue(generator)) { gen ::
+    loopReduce(generator) { gen ::
         <> ifValue { <> nextValue(gen, nullBox) }
             { nextGen <> [nextGen] }
             { return }
@@ -127,9 +73,7 @@ fn doGenerator(generator) {
 
 # Documented in Samizdat Layer 0 spec.
 fn doReduce(reduceFunction, generator, baseValues*) {
-    def gen = generatorFromValue(generator);
-
-    loopReduce(gen, baseValues)
+    loopReduce(generator, baseValues)
         { gen, values ::
             def box = makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
@@ -150,7 +94,7 @@ fn doReduce(reduceFunction, generator, baseValues*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn doReduce1(reduceFunction, generator, baseValue) {
-    loopReduce(generatorFromValue(generator), baseValue)
+    loopReduce(generator, baseValue)
         { gen, value ::
             def box = makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
@@ -208,7 +152,7 @@ fn mapFromGenerator(generator) {
     ifIs { <> isMap(generator) }
         { return generator };
 
-    <> cat([:], generatorFromValue(generator)*)
+    <> cat([:], generator*)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -222,11 +166,11 @@ fn optGenerator(generator) {
                     store(box, [fetch(innerBox)]);
                     <> optGenerator1(nextGenerator)
                 }
-                { <> emptyListGenerator(box) }
+                { <> nextValue(makeValueGenerator([]), box) }
         }
     };
 
-    <> optGenerator1(generatorFromValue(generator))
+    <> optGenerator1(generator)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -259,30 +203,26 @@ fn paraGenerator(generators*) {
 
     # Handle the degenerate case of no arguments.
     ifIs { <> eq(generators, []) }
-        { return voidedGenerator };
+        { return nullGenerator };
 
     # Handle the degenerate case of a signle argument.
     ifIs { <> eq(size(generators), 1) }
-        { return oneItemParaGenerator(generatorFromValue(generators*)) };
-
-    # Coerce all the original arguments to generators.
-    def generatorsPerSe = listFilter(generators)
-        { gen <> generatorFromValue(gen) };
+        { return oneItemParaGenerator(generators*) };
 
     # Make the initial inner call (to the function defined above).
-    <> paraGenerator1(generatorsPerSe)
+    <> paraGenerator1(generators)
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn seqGenerator(generators*) {
     # Return a voided generator if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
-        { return voidedGenerator };
+        { return nullGenerator };
 
-    # Return a plain (unwrapped) generator if we were only passed one
+    # Return the argument directly if we were only passed one
     # argument. (This saves some gratuitous call wrapping / double yields.)
     ifIs { <> eq(size(generators), 1) }
-        { return generatorFromValue(generators*) };
+        { return generators* };
 
     fn seqGenerator1(gen) {
         <> { box ::
@@ -300,7 +240,7 @@ fn seqGenerator(generators*) {
         }
     };
 
-    <> seqGenerator1(generatorFromValue(first(generators)));
+    <> seqGenerator1(first(generators));
 };
 
 # Documented in Samizdat Layer 0 spec.
