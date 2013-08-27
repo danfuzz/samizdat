@@ -78,8 +78,8 @@ fn doInt(int, adorn) {
 # Map of special-case characters to either their stringified forms or
 # to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = [
-    inclusiveRange(charFromInt(1), 1, charFromInt(31))*: "x",
-    inclusiveRange(charFromInt(127), 1, charFromInt(159))*: "x",
+    makeInclusiveRange(charFromInt(1), 1, charFromInt(31))*: "x",
+    makeInclusiveRange(charFromInt(127), 1, charFromInt(159))*: "x",
     charFromInt(65534): "x",
     charFromInt(65535): "x",
     "\0": "\\0",

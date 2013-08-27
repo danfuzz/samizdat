@@ -22,7 +22,7 @@ can be used.
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    inclusiveRange("a", 1, "z")*: true
+    makeInclusiveRange("a", 1, "z")*: true
 ];
 
 # Returns an `interpolate` node.
@@ -690,7 +690,7 @@ def parParserSetString = {/
             def endChar = dataOf(end);
             <> ifIs
                 { <> eq(1, &eq(size(startChar), size(endChar))) }
-                { <> cat(inclusiveRange(startChar, 1, endChar)*) }
+                { <> cat(makeInclusiveRange(startChar, 1, endChar)*) }
         }
     |
         { <> dataOf(s) }

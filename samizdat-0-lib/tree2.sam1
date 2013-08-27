@@ -15,7 +15,7 @@
 fn reportError(pending) {
     io0Note("Pending tokens:");
 
-    doFilter(pending, inclusiveRange(1, 1, 50))
+    doFilter(pending, makeInclusiveRange(1, 1, 50))
         { token, . :: io0Note(cat("    ", sourceString(token))) };
 
     io0Die("\nExtra tokens at end of program.")
@@ -24,7 +24,7 @@ fn reportError(pending) {
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    inclusiveRange("a", 1, "z")*: true
+    makeInclusiveRange("a", 1, "z")*: true
 ];
 
 # Returns an `interpolate` node.
@@ -153,7 +153,7 @@ def BINARY_OPERATORS = [
     "\\>":  makeVarRef("gt"),
     "\\<=": makeVarRef("le"),
     "\\>=": makeVarRef("ge"),
-    "..":   makeVarRef("inclusiveRange"),
+    "..":   makeVarRef("makeInclusiveRange"),
     "..!":  makeVarRef("makeExclusiveRange"),
     "..+":  makeVarRef("makeOpenRange")
 ];
@@ -762,7 +762,7 @@ def parParserSetString = {/
             def endChar = dataOf(end);
             <> ifIs
                 { <> eq(1, &eq(size(startChar), size(endChar))) }
-                { <> cat(inclusiveRange(startChar, 1, endChar)*) }
+                { <> cat(makeInclusiveRange(startChar, 1, endChar)*) }
         }
     |
         { <> dataOf(s) }
