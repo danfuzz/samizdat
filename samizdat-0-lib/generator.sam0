@@ -274,42 +274,6 @@ fn paraGenerator(generators*) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn reduceGenerator(reduceFunction, generators, baseValues) {
-    # Main generator maker, which takes a generator (per se) and the
-    # current reduction result (list) as its arguments.
-    fn reduceGenerator1(gen, values) {
-        <> { <out> box ::
-            # This loop handles the fact that the reduce function is
-            # allowed to yield void to indicate a generated value is to
-            # be discarded.
-            loopReduce(gen) { <next> gen ::
-                def innerBox = makeYieldBox();
-                ifValue { <> gen(innerBox) }
-                    { nextGenerator ::
-                        ifValue
-                            { <> reduceFunction(fetch(innerBox)*, values*) }
-                            { nextValues ::
-                                store(box, nextValues);
-                                <out> reduceGenerator1(
-                                    nextGenerator, nextValues)
-                            }
-                            {
-                                # The reducer discarded the values. Iterate!
-                                <next> [nextGenerator]
-                            }
-                    };
-
-                # The inner generator was voided.
-                store(box);
-                <out>
-            }
-        }
-    };
-
-    <> reduceGenerator1(paraGenerator(generators*), baseValues)
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn seqGenerator(generators*) {
     # Return a voided generator if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
@@ -355,7 +319,6 @@ fn tokenGenerator(generator) {
     mapFromGenerator:    mapFromGenerator,
     optGenerator:        optGenerator,
     paraGenerator:       paraGenerator,
-    reduceGenerator:     reduceGenerator,
     seqGenerator:        seqGenerator,
     tokenGenerator:      tokenGenerator
 ]

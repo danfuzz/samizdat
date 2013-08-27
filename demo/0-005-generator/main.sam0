@@ -106,40 +106,6 @@ msgAll("Size two SeqGenerator",
 msgAll("Size five SeqGenerator (with a couple pre-voided generators)",
     seqGenerator("abc", [], [], ["def", "ghi"], []));
 
-msgAll("Single-generator reduceGenerator",
-    reduceGenerator([[1, 2, 3, 4]], [0])
-        { elem, result <> [add(elem, result)] });
-
-def doRedA = doReduce([[1, 2, 3, 4]], [0])
-    { elem, result <> [add(elem, result)] };
-io0Note(cat("  corresponding doReduce: ", sourceString(doRedA)));
-def doRedA1 = doReduce1([1, 2, 3, 4], 0)
-    { elem, result <> add(elem, result) };
-io0Note(cat("  corresponding doReduce1: ", sourceString(doRedA1)));
-io0Note("");
-
-msgAll("Two-generator reduceGenerator",
-    reduceGenerator([["like", "hate"], ["biscuits", "fish sticks"]], [""])
-        { verb, noun, result ::
-            <> [cat(result, "I ", verb, " ", noun, ". ")]
-        });
-
-def doRedB = doReduce([["like", "hate"], ["biscuits", "fish sticks"]], [""])
-    { verb, noun, result ::
-        <> [cat(result, "I ", verb, " ", noun, ". ")]
-    };
-io0Note(cat("  corresponding doReduce: ", sourceString(doRedB)));
-io0Note("");
-
-msgAll("Two-reduction reduceGenerator",
-    reduceGenerator([[1, 2, 3, 4]], [0, 1])
-        { num, sum, product <> [add(sum, num), mul(product, num)] });
-
-def doRedC = doReduce([[1, 2, 3, 4]], [0, 1])
-    { num, sum, product <> [add(sum, num), mul(product, num)] };
-io0Note(cat("  corresponding doReduce: ", sourceString(doRedC)));
-io0Note("");
-
 io0Note("mapFromGenerator on filter");
 def outMap = mapFromGenerator(
     filterGenerator(makeInclusiveRange(0, 2, 4))
