@@ -211,6 +211,48 @@ and an execution context.
 See the language guide section on functions for more details.
 
 
+#### Generator
+
+Generators in *Samizdat* are the closest analog to what are sometimes
+called "iterators" in other languages (and are sometimes called generators,
+to be clear). When called in an appropriate manner, a related series of
+generators yields a related sequence of values. Put another way,
+generators can be used to "spread" a computation across a series of values.
+
+Most basically, a generator is just a value &mdash; possibly and
+preferably, but not necessarily, pure data &mdash; with associated
+method bindings (preferably pure functions) and a particular contract.
+
+The contract is as follows:
+
+* The generic function `nextValue` always accepts exactly two arguments,
+  a generator and a "yield box" (or equivalent). (Boxes are described
+  more completely in a different section.)
+
+* When a generator is not "voided" (out of values to yield), calling
+  `nextValue` causes two things to be done:
+
+  * It calls `store(box, value)` on its argument in order to yield
+    one value out of itself.
+  * It returns a new generator as a result which, when applied to
+    `nextValue`, yields the *next* value, and so on.
+
+* When a generator has yielded its final element, it returns a voided
+  generator.
+
+* When `nextValue` is called on a voided generator, it does these two things:
+
+  * It calls `store(box)` (with no payload argument) on its argument
+    in order to yield void.
+  * It returns void.
+
+**Note:** Clients of generators should rely primarily on the return value
+from `nextValue` to determine whether the generator has been voided, rather
+than on what gets done to the box passed in as the first argument.
+
+Generators also bind a couple other generic functions. See the library
+specification for `Generator` for more details.
+
 #### Generic
 
 A `Generic` is a generic function. That is, it is an encapsulated mapping
