@@ -712,7 +712,7 @@ def parParserSet = {/
         { <> [cat(strings*)*] }
     |
         tokens = parParserToken+
-        { <> collectFilter(tokens) { tok <> dataOf(tok) } }
+        { <> filter(tokens, dataOf) }
     |
         { <> [] }
     )

@@ -17,7 +17,7 @@ def convertPex = forwardFunction();
 
 # Does parser conversion of an expression or statement list.
 fn convertList(nodes) {
-    <> collectFilter(nodes) { node <> convertExpression(node) }
+    <> filterAll(nodes) { node <> convertExpression(node) }
 };
 
 # Constructs a function call.
@@ -39,14 +39,14 @@ fn callNameWithPex(node, formals, functionName) {
 
 # Constructs a named function call of the given literal arguments.
 fn callNameWithLiterals(functionName, args*) {
-    def literalArgs = collectFilter(args) { arg <> @[literal: arg] };
+    def literalArgs = filterAll(args) { arg <> @[literal: arg] };
     <> callNameWithExpressions(functionName, literalArgs*)
 };
 
 # Converts a `choice` pex node.
 fn convertPexChoice(node, formals) {
     def pexes = dataOf(node);
-    def convertedPexes = collectFilter(pexes)
+    def convertedPexes = filterAll(pexes)
         { pex <> convertPex(pex, formals) };
     <> callNameWithExpressions("pegMakeChoice", convertedPexes*)
 };
@@ -56,7 +56,7 @@ fn convertPexSequence(node, formals) {
     def pexes = dataOf(node);
 
     # Extract the formals out of any `varDef` nodes.
-    def newFormals = collectFilter(pexes) { pex ::
+    def newFormals = filterAll(pexes) { pex ::
         <> ifIs { <> eq(typeOf(pex), "varDef") }
             { <> [name: get(dataOf(pex), "name")] }
             { <> [:] }
@@ -64,7 +64,7 @@ fn convertPexSequence(node, formals) {
 
     # Convert all the pexes, passing in appropriately-extended formals
     # lists to each conversion.
-    def convertedPexes = collectFilter(makeOpenRange(0, 1), pexes) { n, pex  ::
+    def convertedPexes = filterAll(makeOpenRange(0, 1), pexes) { n, pex  ::
         def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
             { <> get(dataOf(pex), "value") }
             { <> pex };

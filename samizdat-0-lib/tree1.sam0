@@ -562,7 +562,7 @@ def parParserSet = pegMakeMainSequence(
         pegMakeMainSequence(
             pegMakePlus(parParserToken),
             pegMakeCode { tokens ::
-                <> collectFilter(tokens) { tok <> dataOf(tok) }
+                <> filter(tokens, dataOf)
             }),
         pegMakeMainSequence(
             pegMakeCode { <> [] })),

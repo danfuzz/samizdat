@@ -43,7 +43,7 @@ The default implementation of this method iterates over calls to
 `nextValue()` in the expected manner, collecting up all the yielded
 results.
 
-**Note:** The function `collectFilter` is a multi-generator generalization
+**Note:** The function `filterAll` is a multi-generator generalization
 of this function.
 
 #### `nextValue(generator, box) <> generator | void`
@@ -71,6 +71,19 @@ as if by calling `cat([:], map1, map2, ...)` on all the results.
 
 If there are mappings in the yielded results with equal keys, then the
 *last* such mapping is the one that "wins" in the final result.
+
+#### `filterAll(filterFunction, generators*) <> list`
+
+Creates a filter generator over the indicated generators, and collects
+the results of running it into a list.
+
+This is a convenient and idiomatic shorthand for saying something like:
+
+```
+[(makeFilterGenerator(generator, ...) { ... code ... })*]
+```
+
+**Syntax Note:** Used in the translation of comprehension forms.
 
 #### `makeFilterGenerator(filterFunction, generators*) <> generator`
 
@@ -187,19 +200,6 @@ OLD DEFINITIONS TO BE SCRUTINIZED
 
 <br><br>
 ### In-Language Definitions
-
-#### `collectFilter(filterFunction, generators*) <> list`
-
-Creates a filter generator over the indicated generators, and collects
-the results of running it into a list.
-
-This is a convenient and idiomatic shorthand for saying something like:
-
-```
-[(makeFilterGenerator(generator, ...) { ... code ... })*]
-```
-
-**Syntax Note:** Used in the translation of comprehension forms.
 
 #### `doFilter(filterFunction, generators*) <> void`
 

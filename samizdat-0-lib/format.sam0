@@ -186,7 +186,7 @@ fn doString(string, adorn) {
 
 # Stringifies a list.
 fn doList(list, adorn) {
-    def listElems = collectFilter(list)
+    def listElems = filterAll(list)
         { elem <> cat(", ", callSourceString(elem)) };
 
     <> adornIf(adorn, "[", collectionBody(listElems, ""), "]")
@@ -194,7 +194,7 @@ fn doList(list, adorn) {
 
 # Stringifies a map.
 fn doMap(map, adorn) {
-    def mapElems = collectFilter(map)
+    def mapElems = filterAll(map)
         { mapping ::
             def key = keyString(mappingKey(mapping));
             def value = callSourceString(mappingValue(mapping));
