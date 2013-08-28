@@ -320,28 +320,28 @@ model of the language.
 
 #### Same-type comparison &mdash; `== != < > <= >=`
 
-These are the type-aware comparison operators. Every type can &mdash;
-and all the core types do &mdash; define an order, and these operators
-are how to use those type-specific orders. The general contract is that
-evaluating these operators results in the right-hand value if the ordering
-is satisfied (true), or void if not. If the left-hand and right-hand sides
-are not comparable, then the contract is to cause a terminal error (rather
-than returning void).
+These are the per-type comparison operators. Every type can define arbitrary
+comparison functions, and these operators are how to invoke those
+functions. The general contract is that evaluating these operators results
+in the right-hand value if the ordering is satisfied (true), or void if not.
+If the left-hand and right-hand sides are not comparable, then the contract
+is to cause a terminal error (rather than returning void).
 
-These expressions correspond to making message calls of the left-hand
-side, using one of the message names `eq` `ne` `lt` `gt` `le` or `ge`,
+Unlike the total order, the comparisons defined by these functions are not
+required to be consistent; for example, a type corresponding to IEEE754
+floating point values would define both `1.0 < NaN` and `NaN < 1.0` to
+be false. Also, unlike the analogous total order functions, these functions
+are allowed to accept arguments of differing types.
+
+These expressions correspond to making functions calls to one of the
+functions `perEq` `perGe` `perGt` `perLe` `perLt` or `perNe`, with the
+left-hand and right-hand sides as arguments, in that order,
 with the usual correspondence between the operators and those names.
-The message is called on the left-hand value, passing it the right-hand
-value as its sole argument.
 
-For core values in particular: The result of comparison is the same as
-a call to the similarly-named core library functions, assuming the two
-arguments are of the same core type. It is a terminal error if the two
-expressions are not of the same core type. It is also a terminal error if
-the left-hand expression is a core value, and the right-hand value is a
-derived value (for example, trying to compare `10` and
-`@[Int: "not-really-an-int"]`).
-
+Of these functions, `perEq` is a generic, and the rest are defined as
+regular functions in terms of `perEq` and another generic, `perOrder`.
+The default implementations of those generics is to call through to
+the generics `totEq` and `totOrder`.
 
 #### Total-order comparison &mdash; `\== \!= \< \> \<= \>=`
 
@@ -351,7 +351,8 @@ ordering.
 
 These expressions correspond to calls to the library functions
 `eq` `ne` `lt` `gt` `le` and `ge` (with the obvious mapping of operator
-to function). See the definition of those functions for more details.
+to function), which bottom out in calls to the generic functions `totEq`
+or `totOrder`. See the definition of those functions for more details.
 
 **Note:** This can sometimes have surprising results, e.g. when comparing
 ints and floating point numbers.
