@@ -16,18 +16,6 @@ functions.
 <br><br>
 ### Primitive Definitions
 
-#### `Box`
-
-The type of box values.
-
-#### `Function`
-
-The type of (non-generic) function values.
-
-#### `Generic`
-
-The type of generic function values.
-
 #### `Int`
 
 The type of int values.
