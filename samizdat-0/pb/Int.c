@@ -241,13 +241,13 @@ void pbBindInt(void) {
     METH_BIND(Int, neg);
     METH_BIND(Int, not);
     METH_BIND(Int, or);
-    METH_BIND(Int, totEq);
-    METH_BIND(Int, totOrder);
     METH_BIND(Int, shl);
     METH_BIND(Int, shr);
     METH_BIND(Int, sign);
     METH_BIND(Int, sub);
     METH_BIND(Int, xor);
+    METH_BIND(Int, totEq);
+    METH_BIND(Int, totOrder);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);
