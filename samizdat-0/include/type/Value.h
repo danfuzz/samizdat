@@ -36,17 +36,14 @@ extern zvalue GFN_debugString;
 extern zvalue GFN_gcMark;
 
 /**
- * Generic `eq(value, value)`: Compares two values for equality / sameness.
- * Returns the second value to indicate logical-true. Only ever called when
- * the two values are not `==`, and only ever called when the two values are
- * of the same type. Defaults to always returning logical-false.
+ * Generic `perEq(value, value)`: Compares two values for equality / sameness.
+ * Documented in spec.
  */
 extern zvalue GFN_perEq;
 
 /**
- * Generic `order(value, value)`: Compares two values with respect to the
- * total order of values. Returns one of `-1` `0` `1` corresponding to
- * the usual meanings for comparison. Must be implemented by every type.
+ * Generic `perOrder(value, value)`: Compares two values with respect to the
+ * total order of values. Documented in spec.
  */
 extern zvalue GFN_perOrder;
 
