@@ -34,9 +34,6 @@ extern zvalue GFN_fetch;
  */
 extern zvalue GFN_store;
 
-/** The standard value `nullBox`. */
-extern zvalue DAT_NULL_BOX;
-
 /**
  * Constructs a mutable (re-settable) box, with the given initial value.
  * Pass `NULL` to leave it initially unset.

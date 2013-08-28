@@ -208,19 +208,6 @@ of type `Type`.
 <br><br>
 ### In-Language Definitions
 
-#### `isBox(value) <> logic`
-
-Returns the given `value` if it is a box. Returns void if not.
-
-#### `isFunction(value) <> logic`
-
-Returns the given `value` if it is a (non-generic) function. Returns void
-if not.
-
-#### `isGeneric(value) <> logic`
-
-Returns the given `value` if it is a generic function. Returns void if not.
-
 #### `isInt(value) <> logic`
 
 Returns the given `value` if it is an int. Returns void if not.

@@ -7,6 +7,9 @@ Constants
 The definitions in this section are all simple constant values, not
 functions.
 
+**Note:** This section only covers constants that are not described
+elsewhere in the library documentation.
+
 <br><br>
 ### Generic Function Definitions
 
@@ -15,18 +18,6 @@ functions.
 
 <br><br>
 ### Primitive Definitions
-
-#### `Box`
-
-The type of box values.
-
-#### `Function`
-
-The type of (non-generic) function values.
-
-#### `Generic`
-
-The type of generic function values.
 
 #### `Int`
 
@@ -39,10 +30,6 @@ The type of list values.
 #### `Map`
 
 The type of map values.
-
-#### `nullBox`
-
-A special constant box, which ignores any attempts to set it.
 
 #### `String`
 
@@ -67,24 +54,11 @@ The common type of all values.
 <br><br>
 ### In-Language Definitions
 
-#### `false`
-
-The boolean value false. It is defined as `@[Boolean: 0]`.
-
-#### `true`
-
-The boolean value true. It is defined as `@[Boolean: 1]`.
-
 #### `null`
 
 A value used when no other value is suitable, but when a value is
 nonetheless required. It is defined as `@Null`, that is, a type-only
 value with type tag `"Null"`.
-
-#### `nullGenerator`
-
-A generator which is perennially voided. It is defined as `@NullGenerator`,
-along with generator method bindings for that type.
 
 #### `ENTITY_MAP`
 
