@@ -5,11 +5,11 @@
  */
 
 /*
- * In-model Functions
+ * Builtin Functions
  */
 
 #include "impl.h"
-#include "type/Function.h"
+#include "type/Builtin.h"
 #include "type/Generic.h"
 #include "type/String.h"
 #include "type/Value.h"
@@ -20,7 +20,7 @@
  */
 
 /**
- * Regular (non-generic) function structure.
+ * Builtin function structure.
  */
 typedef struct {
     /** Minimum argument count. Always `>= 0`. */
@@ -34,15 +34,15 @@ typedef struct {
     /** C function to call. */
     zfunction function;
 
-    /** The function's name, if any. Used when producing stack traces. */
+    /** The builtin's name, if any. Used when producing stack traces. */
     zvalue name;
-} FunctionInfo;
+} BuiltinInfo;
 
 /**
  * Gets a pointer to the value's info.
  */
-static FunctionInfo *getInfo(zvalue function) {
-    return pbPayload(function);
+static BuiltinInfo *getInfo(zvalue builtin) {
+    return pbPayload(builtin);
 }
 
 
@@ -51,14 +51,14 @@ static FunctionInfo *getInfo(zvalue function) {
  */
 
 /* Documented in header. */
-zvalue functionCall(zvalue function, zint argCount, const zvalue *args) {
-    FunctionInfo *info = getInfo(function);
+zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
+    BuiltinInfo *info = getInfo(builtin);
 
     if (argCount < info->minArgs) {
-        die("Too few arguments for function call: %lld, min %lld",
+        die("Too few arguments for builtin call: %lld, min %lld",
             argCount, info->minArgs);
     } else if (argCount > info->maxArgs) {
-        die("Too many arguments for function call: %lld, max %lld",
+        die("Too many arguments for builtin call: %lld, max %lld",
             argCount, info->maxArgs);
     }
 
@@ -78,8 +78,8 @@ zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
         die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
     }
 
-    zvalue result = pbAllocValue(TYPE_Function, sizeof(FunctionInfo));
-    FunctionInfo *info = getInfo(result);
+    zvalue result = pbAllocValue(TYPE_Builtin, sizeof(BuiltinInfo));
+    BuiltinInfo *info = getInfo(result);
 
     info->minArgs = minArgs;
     info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
@@ -95,39 +95,39 @@ zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
  */
 
 /* Documented in header. */
-METH_IMPL(Function, call) {
-    // The first argument is the function per se, and the rest are the
+METH_IMPL(Builtin, call) {
+    // The first argument is the builtin per se, and the rest are the
     // arguments to call it with.
-    return functionCall(args[0], argCount - 1, &args[1]);
+    return builtinCall(args[0], argCount - 1, &args[1]);
 }
 
 /* Documented in header. */
-METH_IMPL(Function, canCall) {
-    zvalue function = args[0];
+METH_IMPL(Builtin, canCall) {
+    zvalue builtin = args[0];
     zvalue value = args[1];
-    FunctionInfo *info = getInfo(function);
+    BuiltinInfo *info = getInfo(builtin);
 
     return (info->maxArgs >= 1) ? value : NULL;
 }
 
 /* Documented in header. */
-METH_IMPL(Function, debugString) {
-    zvalue function = args[0];
-    FunctionInfo *info = getInfo(function);
+METH_IMPL(Builtin, debugString) {
+    zvalue builtin = args[0];
+    BuiltinInfo *info = getInfo(builtin);
     zvalue nameString = (info->name == NULL)
         ? stringFromUtf8(-1, "(unknown)")
         : GFN_CALL(debugString, info->name);
 
     return GFN_CALL(cat,
-        stringFromUtf8(-1, "@(Function "),
+        stringFromUtf8(-1, "@(Builtin "),
         nameString,
         stringFromUtf8(-1, ")"));
 }
 
 /* Documented in header. */
-METH_IMPL(Function, gcMark) {
-    zvalue function = args[0];
-    FunctionInfo *info = getInfo(function);
+METH_IMPL(Builtin, gcMark) {
+    zvalue builtin = args[0];
+    BuiltinInfo *info = getInfo(builtin);
 
     pbMark(info->name);
     return NULL;
@@ -136,11 +136,11 @@ METH_IMPL(Function, gcMark) {
 /* Documented in header. */
 void pbBindFunction(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Function`.
-    METH_BIND(Function, call);
-    METH_BIND(Function, canCall);
-    METH_BIND(Function, debugString);
-    METH_BIND(Function, gcMark);
+    METH_BIND(Builtin, call);
+    METH_BIND(Builtin, canCall);
+    METH_BIND(Builtin, debugString);
+    METH_BIND(Builtin, gcMark);
 }
 
 /* Documented in header. */
-zvalue TYPE_Function = NULL;
+zvalue TYPE_Builtin = NULL;

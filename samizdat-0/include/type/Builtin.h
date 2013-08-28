@@ -5,18 +5,18 @@
  */
 
 /*
- * `Function` data type
+ * `Builtin` data type
  */
 
-#ifndef _TYPE_FUNCTION_H_
-#define _TYPE_FUNCTION_H_
+#ifndef _TYPE_BUILTIN_H_
+#define _TYPE_BUILTIN_H_
 
 #include "pb.h"
 #include "type/Callable.h"
 
 
-/** Type value for in-model type `Function`. */
-extern zvalue TYPE_Function;
+/** Type value for in-model type `Builtin`. */
+extern zvalue TYPE_Builtin;
 
 /**
  * Constructs and returns a function with the given argument

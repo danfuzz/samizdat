@@ -5,7 +5,7 @@
  */
 
 #include "impl.h"
-#include "type/Function.h"
+#include "type/Builtin.h"
 #include "type/Generic.h"
 #include "type/Int.h"
 #include "type/String.h"
@@ -438,7 +438,7 @@ void pbInitTypeSystem(void) {
     TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
     TYPE_Value = allocType();
-    TYPE_Function = allocType();
+    TYPE_Builtin = allocType();
     TYPE_Generic = allocType();
     TYPE_String = allocType();
     TYPE_Uniqlet = allocType();
@@ -446,18 +446,18 @@ void pbInitTypeSystem(void) {
     coreSecret = makeUniqlet();
     pbImmortalize(coreSecret);
 
-    typeInit(TYPE_Type,     TYPE_Value, stringFromUtf8(-1, "Type"),     coreSecret, false);
-    typeInit(TYPE_Value,    NULL,       stringFromUtf8(-1, "Value"),    coreSecret, false);
-    typeInit(TYPE_Function, TYPE_Value, stringFromUtf8(-1, "Function"), coreSecret, true);
-    typeInit(TYPE_Generic,  TYPE_Value, stringFromUtf8(-1, "Generic"),  coreSecret, true);
-    typeInit(TYPE_String,   TYPE_Value, stringFromUtf8(-1, "String"),   coreSecret, false);
-    typeInit(TYPE_Uniqlet,  TYPE_Value, stringFromUtf8(-1, "Uniqlet"),  coreSecret, true);
+    typeInit(TYPE_Type,    TYPE_Value, stringFromUtf8(-1, "Type"),    coreSecret, false);
+    typeInit(TYPE_Value,   NULL,       stringFromUtf8(-1, "Value"),   coreSecret, false);
+    typeInit(TYPE_Builtin, TYPE_Value, stringFromUtf8(-1, "Builtin"), coreSecret, true);
+    typeInit(TYPE_Generic, TYPE_Value, stringFromUtf8(-1, "Generic"), coreSecret, true);
+    typeInit(TYPE_String,  TYPE_Value, stringFromUtf8(-1, "String"),  coreSecret, false);
+    typeInit(TYPE_Uniqlet, TYPE_Value, stringFromUtf8(-1, "Uniqlet"), coreSecret, true);
 
     // Make sure that the enum constants match up with what got assigned here.
     // If not, `funCall` will break.
-    if (indexFromTrueType(TYPE_Function) != PB_INDEX_FUNCTION) {
-        die("Mismatched index for `Function`: should be %lld",
-            indexFromTrueType(TYPE_Function));
+    if (indexFromTrueType(TYPE_Builtin) != PB_INDEX_BUILTIN) {
+        die("Mismatched index for `Builtin`: should be %lld",
+            indexFromTrueType(TYPE_Builtin));
     } else if (indexFromTrueType(TYPE_Generic) != PB_INDEX_GENERIC) {
         die("Mismatched index for `Generic`: should be %lld",
             indexFromTrueType(TYPE_Generic));
