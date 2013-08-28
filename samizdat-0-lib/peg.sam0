@@ -247,10 +247,7 @@ fn pegMakeSequence(rules*) {
             { rule, input, items ::
                 def innerBox = makeYieldBox();
                 <> ifValue { <> rule(innerBox, input, items*) }
-                    { newInput ::
-                        def newItems = [items*, fetch(innerBox)];
-                        <> [newInput, newItems]
-                    }
+                    { newInput <> [newInput, [items*, fetch(innerBox)]] }
                     {
                         # Propagate the failure.
                         store(box);
@@ -258,8 +255,8 @@ fn pegMakeSequence(rules*) {
                     }
             };
 
-        def newInput = first(reduction);
-        def results = last(reduction);
+        def newInput = nth(reduction, 0);
+        def results = nth(reduction, 1);
         store(box, last(results));
         <> newInput
     }
@@ -272,10 +269,7 @@ fn pegMakeStar(rule) {
             { input, values ::
                 def innerBox = makeYieldBox();
                 <> ifValue { <> rule(innerBox, input, items*) }
-                    { newInput ::
-                        def newValues = [values*, fetch(innerBox)];
-                        <> [newInput, newValues]
-                    }
+                    { newInput <> [newInput, [values*, fetch(innerBox)]] }
                     {
                         store(box, values);
                         <out> input
