@@ -15,9 +15,6 @@
  */
 
 // Types
-PRIM_DEF(Box,        TYPE_Box);
-PRIM_DEF(Function,   TYPE_Function);
-PRIM_DEF(Generic,    TYPE_Generic);
 PRIM_DEF(Int,        TYPE_Int);
 PRIM_DEF(List,       TYPE_List);
 PRIM_DEF(Map,        TYPE_Map);
