@@ -20,77 +20,27 @@ fn msg(value) {
     io0Note("\%q(value)");
 };
 
-fn weirdSizeOf(value) {
-    def payload = dataOf(value);
-    <> first(payload)
-};
-
-fn weirdNth(value, n) {
-    ifIs { <> lt(n, 0) }
-        { return };
-
-    def payload = dataOf(value);
-    def size = weirdSize(value);
-
-    ifIs { <> ge(n, size) }
-        { return };
-
-    <> nth(payload, add(n, 1))
-};
-
-# Method dispatch table. This is implicitly referenced (by name) by the
-# `.` and `[]` ops.
-def DISPATCH = [
-    (List): [
-        get:    nth,
-        nth:    nth,
-        sizeOf: sizeOf
-    ],
-    (Map): [
-        get:  get,
-        nth:  nth,
-        sizeOf: sizeOf
-    ],
-    Weird: [
-        get:    weirdNth,
-        nth:    weirdNth,
-        sizeOf: weirdSizeOf
-    ]
-];
-
 
 #
 # Main Tests
 #
 
-io0Note("\nList");
+io0Note("\nBasic syntax");
 msg([1, 2].sizeOf());
 msg(["zero", "one", "two"].get(0));
 msg(["zero", "one", "two"].nth(1));
-msg(["zero", "one", "two"][2]);
-
-io0Note("\nMap");
-msg([a: "aardvark"].sizeOf());
-msg([a: "aardvark", b: "bear"].get("a"));
-msg([a: "aardvark", b: "bear"].nth(1));
-msg([a: "aardvark", b: "bear", c: "capybara"]["c"]);
-
-io0Note("\nWeird");
-def weirdValue = @[Weird: [3, @x, @y, @z, @p, @d, @q]];
-msg(weirdValue.sizeOf());
-msg(weirdValue.get(2));
-msg(weirdValue.nth(4)?);
-msg(weirdValue[0]);
+msg((100).perEq(100));
+msg("".cat("Awesome", "tastic!"));
 
 io0Note("\nExpression syntax for name");
-msg(weirdValue."sizeOf"());
-msg(weirdValue.(cat("size", "Of"))());
+def funcList = [nth, perEq];
+msg(["zero", "one", "two"].(first(funcList))(1));
 
-io0Note("\nGetting raw methods");
+io0Note("\nGetting bound methods");
 def method1 = [1, 2, 3].sizeOf;
 msg(method1());
 
-def method2 = [4, 5, 6].(cat("n", "th"));
-msg(method2(1));
+def method2 = [4, 5, 6].(last(funcList));
+msg(method2([4, 5, 6]));
 
 <> 0
