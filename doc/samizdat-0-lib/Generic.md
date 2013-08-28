@@ -7,12 +7,12 @@ Generics
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(generic1, generic2) <> generic | void`
+#### `totEq(generic1, generic2) <> generic | void`
 
 Performs an identity comparison. Two generics are only equal if they are
 truly the same box.
 
-#### `perOrder(generic1, generic2) <> int`
+#### `totOrder(generic1, generic2) <> int`
 
 Performs an identity comparison. Generics have a consistent, transitive, and
 symmetric &mdash; but arbitrary &mdash; total order.
@@ -59,7 +59,7 @@ that all arguments passed to it in any given call must all be the
 same type. A non-conforming call is an error that terminates the runtime.
 
 This is the kind of generic used for functions such as
-`perEq` and `cat`.
+`totEq` and `cat`.
 
 
 <br><br>

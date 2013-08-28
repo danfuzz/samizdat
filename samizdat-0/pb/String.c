@@ -265,61 +265,6 @@ METH_IMPL(String, nth) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, perEq) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    StringInfo *info1 = getInfo(v1);
-    StringInfo *info2 = getInfo(v2);
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-
-    if (size1 != size2) {
-        return NULL;
-    }
-
-    zchar *e1 = info1->elems;
-    zchar *e2 = info2->elems;
-
-    for (zint i = 0; i < size1; i++) {
-        if (e1[i] != e2[i]) {
-            return NULL;
-        }
-    }
-
-    return v2;
-}
-
-/* Documented in header. */
-METH_IMPL(String, perOrder) {
-    zvalue v1 = args[0];
-    zvalue v2 = args[1];
-    StringInfo *info1 = getInfo(v1);
-    StringInfo *info2 = getInfo(v2);
-    zchar *e1 = info1->elems;
-    zchar *e2 = info2->elems;
-    zint size1 = info1->size;
-    zint size2 = info2->size;
-    zint size = (size1 < size2) ? size1 : size2;
-
-    for (zint i = 0; i < size; i++) {
-        zchar c1 = e1[i];
-        zchar c2 = e2[i];
-
-        if (c1 < c2) {
-            return INT_NEG1;
-        } else if (c1 > c2) {
-            return INT_1;
-        }
-    }
-
-    if (size1 == size2) {
-        return INT_0;
-    }
-
-    return (size1 < size2) ? INT_NEG1 : INT_1;
-}
-
-/* Documented in header. */
 METH_IMPL(String, put) {
     zvalue string = args[0];
     zvalue n = args[1];
@@ -377,6 +322,61 @@ METH_IMPL(String, slice) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, totEq) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    StringInfo *info1 = getInfo(v1);
+    StringInfo *info2 = getInfo(v2);
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+
+    if (size1 != size2) {
+        return NULL;
+    }
+
+    zchar *e1 = info1->elems;
+    zchar *e2 = info2->elems;
+
+    for (zint i = 0; i < size1; i++) {
+        if (e1[i] != e2[i]) {
+            return NULL;
+        }
+    }
+
+    return v2;
+}
+
+/* Documented in header. */
+METH_IMPL(String, totOrder) {
+    zvalue v1 = args[0];
+    zvalue v2 = args[1];
+    StringInfo *info1 = getInfo(v1);
+    StringInfo *info2 = getInfo(v2);
+    zchar *e1 = info1->elems;
+    zchar *e2 = info2->elems;
+    zint size1 = info1->size;
+    zint size2 = info2->size;
+    zint size = (size1 < size2) ? size1 : size2;
+
+    for (zint i = 0; i < size; i++) {
+        zchar c1 = e1[i];
+        zchar c2 = e2[i];
+
+        if (c1 < c2) {
+            return INT_NEG1;
+        } else if (c1 > c2) {
+            return INT_1;
+        }
+    }
+
+    if (size1 == size2) {
+        return INT_0;
+    }
+
+    return (size1 < size2) ? INT_NEG1 : INT_1;
+}
+
+/* Documented in header. */
 void pbBindString(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_String`.
 
@@ -384,12 +384,12 @@ void pbBindString(void) {
     METH_BIND(String, debugString);
     METH_BIND(String, del);
     METH_BIND(String, nth);
-    METH_BIND(String, perEq);
-    METH_BIND(String, perOrder);
     METH_BIND(String, put);
     METH_BIND(String, reverse);
     METH_BIND(String, sizeOf);
     METH_BIND(String, slice);
+    METH_BIND(String, totEq);
+    METH_BIND(String, totOrder);
     seqBind(TYPE_String);
 
     EMPTY_STRING = allocString(0);

@@ -27,8 +27,8 @@ PRIM_DEF(Uniqlet,    TYPE_Uniqlet);
 PRIM_DEF(Value,      TYPE_Value);
 
 // Generic functions for all values
-PRIM_DEF(perEq,      GFN_perEq);
-PRIM_DEF(perOrder,   GFN_perOrder);
+PRIM_DEF(totEq,      GFN_totEq);
+PRIM_DEF(totOrder,   GFN_totOrder);
 
 // Generic functions: `Box` protocol
 PRIM_DEF(canStore,   GFN_canStore);

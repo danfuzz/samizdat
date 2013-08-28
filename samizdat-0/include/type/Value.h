@@ -36,16 +36,16 @@ extern zvalue GFN_debugString;
 extern zvalue GFN_gcMark;
 
 /**
- * Generic `perEq(value, value)`: Compares two values for equality / sameness.
+ * Generic `totEq(value, value)`: Compares two values for equality / sameness.
  * Documented in spec.
  */
-extern zvalue GFN_perEq;
+extern zvalue GFN_totEq;
 
 /**
- * Generic `perOrder(value, value)`: Compares two values with respect to the
+ * Generic `totOrder(value, value)`: Compares two values with respect to the
  * total order of values. Documented in spec.
  */
-extern zvalue GFN_perOrder;
+extern zvalue GFN_totOrder;
 
 /**
  * Gets the data payload of the given value, if it is a value-bearing
