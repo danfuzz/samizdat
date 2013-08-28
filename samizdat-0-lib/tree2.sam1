@@ -1109,10 +1109,30 @@ def implPostfixOperator = {/
         { <> { node <> makeCall(get(UNARY_OPERATORS, "[]"), node, exprs*) } }
     )
 |
-    # This translates as something like:
-    # * `expr.name` => `methodGet(DISPATCH, expr, "name")`
-    # * `expr.(nameExpr)` => `methodGet(DISPATCH, expr, nameExpr)`
-    # * `expr.name(arg, ...)` => `methodCall(DISPATCH, expr, "name", arg, ...)`
+    # This translates as something like the following. Note that the
+    # second translation has to use a closure to keep the order of evaluation
+    # be target-then-function. The third translation is for the common case
+    # of `func` being a simple identifier.
+    #
+    # ```
+    # target.func
+    # =>
+    # { target, func <> { args* <> func(target, args*) } }(target, func)
+    # ```
+    #
+    # ```
+    # target.funcExpr(arg, ...)
+    # =>
+    # { target, func, args* <> func(target, args*) }(target, funcExpr, arg, ...)
+    # ```
+    #
+    # ```
+    # target.funcName(arg, ...)
+    # =>
+    # funcName(target, arg, ...)
+    # ```
+    #
+    # TODO: The above is not yet implemented!
     @"."
     name = (
         n = parIdentifierString
