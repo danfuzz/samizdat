@@ -587,7 +587,7 @@ def ENTITY_MAP = [
     "UpTeeArrow": "↥",
     "Uparrow": "⇑",
     "Updownarrow": "⇕",
-    "UptotLeftArrow": "↖",
+    "UpperLeftArrow": "↖",
     "UpperRightArrow": "↗",
     "Upsi": "ϒ",
     "Upsilon": "Υ",

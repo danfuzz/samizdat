@@ -552,7 +552,7 @@ U+2192, RIGHTWARDS ARROW                       , rarr, rightarrow, RightArrow, s
 U+2193, DOWNWARDS ARROW                        , darr, downarrow, DownArrow, ShortDownArrow
 U+2194, LEFT RIGHT ARROW                       , harr, leftrightarrow, LeftRightArrow
 U+2195, UP DOWN ARROW                          , varr, updownarrow, UpDownArrow
-U+2196, NORTH WEST ARROW                       , nwarr, UptotLeftArrow, nwarrow
+U+2196, NORTH WEST ARROW                       , nwarr, UpperLeftArrow, nwarrow
 U+2197, NORTH EAST ARROW                       , nearr, UpperRightArrow, nearrow
 U+2198, SOUTH EAST ARROW                       , searr, searrow, LowerRightArrow
 U+2199, SOUTH WEST ARROW                       , swarr, swarrow, LowerLeftArrow
