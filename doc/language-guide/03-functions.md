@@ -259,7 +259,7 @@ Parser functions are used (unsurprisingly) to perform parsing operations.
 Briefly, parser functions work very similar to generators. The
 majore differences are:
 
-* Parser functions are `Callable` functions (and not values that bind other
+* Parser functions are `Function` values (and not values that bind other
   methods).
 
 * Parser functions take two or more arguments, in this order:

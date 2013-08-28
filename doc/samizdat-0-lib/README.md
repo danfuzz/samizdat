@@ -70,7 +70,7 @@ will be returned, or one of:
   * [Booleans](Boolean.md)
   * [Boxes](Box.md)
   * [Builtins](Builtin.md)
-  * [Callables (function-like things)](Callable.md)
+  * [Functions](Function.md)
   * [ClosedRange](ClosedRange.md)
   * [Collections (multiple-value containers)](Collection.md)
   * [Generators](Generator.md)

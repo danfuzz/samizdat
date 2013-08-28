@@ -31,7 +31,7 @@ symmetric &mdash; but arbitrary &mdash; total order.
 
 
 <br><br>
-### Generic Function Definitions: `Callable` protocol
+### Generic Function Definitions: `Function` protocol
 
 #### `call(builtin, args*) <> . | void`
 

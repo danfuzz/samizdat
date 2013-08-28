@@ -1,28 +1,28 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Callables (function-like things)
---------------------------------
+Functions
+---------
 
-There is no `Callable` type per se. There is, however, effectively a
-`Callable` protocol, consisting of the two methods `call` and `canCall`.
-Any value that binds those two methods is a `Callable`.
+There is no `Function` type per se. There is, however, effectively a
+`Function` protocol, consisting of the two methods `call` and `canCall`.
+Any value that binds those two methods is a `Function`.
 
 
 <br><br>
 ### Generic Function Definitions
 
-#### `call(callable, args*) <> . | void`
+#### `call(function, args*) <> . | void`
 
-Calls the given `callable` with the given arguments. This function isn't
+Calls the given `function` with the given arguments. This function isn't
 normally that useful, in that `call(x, y)` is the same as saying `x(y)`.
 However, this function is in fact a generic function, and it is possible
 to use various other functions to reflect on it.
 
-#### `canCall(callable, value) <> logic`
+#### `canCall(function, value) <> logic`
 
 Returns `value` if it can be passed as the first argument to the given
-`callable`, or void if not. In the case of a regular function, this
+`function`, or void if not. In the case of a regular function, this
 merely checks if the function accepts at least one argument. In the case
 of a generic function, this checks to see if value's type is bound.
 

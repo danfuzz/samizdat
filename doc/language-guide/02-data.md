@@ -205,7 +205,7 @@ written as `[:]`.
 #### Builtin
 
 A `Builtin` is an encapsulated potential computation, defined at the
-lowest layer of the system. It is a kind of `Callable` (see which).
+lowest layer of the system. It is a kind of `Function` (see which).
 
 
 #### Generic
@@ -213,7 +213,7 @@ lowest layer of the system. It is a kind of `Callable` (see which).
 A `Generic` is a generic function. That is, it is an encapsulated mapping
 from types to functions, in this case based on the type of the first
 argument passed to the generic function when called. It is a kind of
-`Callable` (see which).
+`Function` (see which).
 
 See the language guide section on generic functions for more details.
 
@@ -367,7 +367,7 @@ defined as types (per se) which have implemented a particular set of methods
 Protocols are not first-class within *Samizdat* but they have significance
 nonetheless. The following are the protocols currently defined.
 
-#### Callable
+#### Function
 
 This is the protocol for function-like things, that is, things which can
 be applied to an argument list to produce a result.
@@ -376,7 +376,7 @@ As with many other languages, at the highest level functions are generally
 defined in terms of source code and an execution context.
 
 See the language guide section on functions and the library documentation
-for `Callable` for more details.
+for `Function` for more details.
 
 #### Collection
 
