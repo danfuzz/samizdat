@@ -14,9 +14,9 @@
  */
 
 LIB_FILE(Boolean,           sam0);
-LIB_FILE(Callable,          sam0);
 LIB_FILE(Collection,        sam0);
 LIB_FILE(FilterGenerator,   sam0);
+LIB_FILE(Function,          sam0);
 LIB_FILE(Generator,         sam0);
 LIB_FILE(ListWrapGenerator, sam0);
 LIB_FILE(NullBox,           sam0);

@@ -29,7 +29,7 @@ def MANIFEST = [
     "Value.sam0",
     "Collection.sam0",
     "Boolean.sam0",
-    "Callable.sam0",
+    "Function.sam0",
 
     # Layer 0: Complicated functions
     "NullBox.sam0",
