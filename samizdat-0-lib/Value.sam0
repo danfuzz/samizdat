@@ -12,21 +12,6 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn isBox(value) {
-    <> hasType(value, Box)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn isFunction(value) {
-    <> hasType(value, Function)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn isGeneric(value) {
-    <> hasType(value, Generic)
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn isInt(value) {
     <> hasType(value, Int)
 };
@@ -112,9 +97,6 @@ fn totNe(v1, v2) {
 };
 
 <> [
-    isBox:      isBox,
-    isFunction: isFunction,
-    isGeneric:  isGeneric,
     isInt:      isInt,
     isList:     isList,
     isMap:      isMap,
