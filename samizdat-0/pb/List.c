@@ -179,7 +179,7 @@ METH_IMPL(List, nth) {
 }
 
 /* Documented in header. */
-METH_IMPL(List, perEq) {
+METH_IMPL(List, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     ListInfo *info1 = getInfo(v1);
@@ -204,7 +204,7 @@ METH_IMPL(List, perEq) {
 }
 
 /* Documented in header. */
-METH_IMPL(List, perOrder) {
+METH_IMPL(List, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     ListInfo *info1 = getInfo(v1);
@@ -288,8 +288,8 @@ void pbBindList(void) {
     METH_BIND(List, del);
     METH_BIND(List, gcMark);
     METH_BIND(List, nth);
-    METH_BIND(List, perEq);
-    METH_BIND(List, perOrder);
+    METH_BIND(List, totEq);
+    METH_BIND(List, totOrder);
     METH_BIND(List, put);
     METH_BIND(List, reverse);
     METH_BIND(List, sizeOf);

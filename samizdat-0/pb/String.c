@@ -265,7 +265,7 @@ METH_IMPL(String, nth) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, perEq) {
+METH_IMPL(String, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     StringInfo *info1 = getInfo(v1);
@@ -290,7 +290,7 @@ METH_IMPL(String, perEq) {
 }
 
 /* Documented in header. */
-METH_IMPL(String, perOrder) {
+METH_IMPL(String, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     StringInfo *info1 = getInfo(v1);
@@ -384,8 +384,8 @@ void pbBindString(void) {
     METH_BIND(String, debugString);
     METH_BIND(String, del);
     METH_BIND(String, nth);
-    METH_BIND(String, perEq);
-    METH_BIND(String, perOrder);
+    METH_BIND(String, totEq);
+    METH_BIND(String, totOrder);
     METH_BIND(String, put);
     METH_BIND(String, reverse);
     METH_BIND(String, sizeOf);

@@ -361,7 +361,7 @@ METH_IMPL(Map, nth) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, perEq) {
+METH_IMPL(Map, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     MapInfo *info1 = getInfo(v1);
@@ -388,7 +388,7 @@ METH_IMPL(Map, perEq) {
 }
 
 /* Documented in header. */
-METH_IMPL(Map, perOrder) {
+METH_IMPL(Map, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     MapInfo *info1 = getInfo(v1);
@@ -493,8 +493,8 @@ void datBindMap(void) {
     METH_BIND(Map, get);
     METH_BIND(Map, keyList);
     METH_BIND(Map, nth);
-    METH_BIND(Map, perEq);
-    METH_BIND(Map, perOrder);
+    METH_BIND(Map, totEq);
+    METH_BIND(Map, totOrder);
     METH_BIND(Map, put);
     METH_BIND(Map, sizeOf);
     METH_BIND(Map, slice);

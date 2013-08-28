@@ -7,7 +7,7 @@ Values (the base type)
 <br><br>
 ### Generic Function Definitions: `Value` protocol (applies to all values)
 
-#### `perEq(value1, value2) <> . | void`
+#### `totEq(value1, value2) <> . | void`
 
 Performs a "per-type" (type-specific) equality comparison of the two given
 values. When called, the two values are guaranteed to be the same type.
@@ -20,19 +20,19 @@ are in fact identical, or `void` if they are not.
 Each type specifies its own per-type equality check. See specific types for
 details. Transparent derived types all compare for equality by comparing
 both the payload value (if any). In addition, a default implementation
-checks directly for trivial sameness and calls through to `perOrder`
+checks directly for trivial sameness and calls through to `totOrder`
 for anything nontrivial.
 
-**Note:** In order for the system to operate consistently, `perEq` must
-always behave consistently with `perOrder`, in that for a given pair of
-values, `perEq` must indicate equality if and only if `perOrder` would return
-`0`. `perEq` exists at all because it is often possible to determine
+**Note:** In order for the system to operate consistently, `totEq` must
+always behave consistently with `totOrder`, in that for a given pair of
+values, `totEq` must indicate equality if and only if `totOrder` would return
+`0`. `totEq` exists at all because it is often possible to determine
 equality much quicker than determining order.
 
 **Note:** This is the generic function which underlies the implementation
 of all cross-type equality comparison functions.
 
-#### `perOrder(value1, value2) <> int`
+#### `totOrder(value1, value2) <> int`
 
 Returns the "per-type" (type-specific) order of the two given values.
 When called, the two values are guaranteed to be the same type. If a client
@@ -163,7 +163,7 @@ standard meaning of those values:
 Ordering is calculated as follows:
 
 The "majorest" order is by type (see below for details). The minor order
-is according to `perOrder` called on the arguments. See that generic
+is according to `totOrder` called on the arguments. See that generic
 function for more details.
 
 #### `typeOf(value) <> .`
@@ -212,29 +212,29 @@ Returns the given `value` if it is a string. Returns void if not.
 
 Returns the given `value` if it is a uniqlet. Returns void if not.
 
-#### `perGe(value1, value2) <> logic`
+#### `totGe(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+Per-type ordering comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered greater than or equal
 to `value1`.
 
-#### `perGt(value1, value2) <> logic`
+#### `totGt(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+Per-type ordering comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered greater than `value1`.
 
-#### `perLe(value1, value2) <> logic`
+#### `totLe(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+Per-type ordering comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered less than or equal
 to `value1`.
 
-#### `perLt(value1, value2) <> logic`
+#### `totLt(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `perOrder(value1, value2)` to
+Per-type ordering comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered less than `value1`.
 
-#### `perNe(value1, value2) <> logic`
+#### `totNe(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `perEq(value1, value2)` to
+Per-type ordering comparison, which calls `totEq(value1, value2)` to
 determine result. Returns `value2` if it is *not* considered equal to `value1`.

@@ -87,7 +87,7 @@ METH_IMPL(Deriv, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Deriv, perEq) {
+METH_IMPL(Deriv, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -95,7 +95,7 @@ METH_IMPL(Deriv, perEq) {
 }
 
 /* Documented in header. */
-METH_IMPL(Deriv, perOrder) {
+METH_IMPL(Deriv, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zvalue data1 = getInfo(v1)->data;
@@ -113,6 +113,6 @@ METH_IMPL(Deriv, perOrder) {
 /* Documented in header. */
 void derivBind(zvalue type) {
     genericBindPrim(GFN_gcMark,   type, Deriv_gcMark);
-    genericBindPrim(GFN_perEq,    type, Deriv_perEq);
-    genericBindPrim(GFN_perOrder, type, Deriv_perOrder);
+    genericBindPrim(GFN_totEq,    type, Deriv_totEq);
+    genericBindPrim(GFN_totOrder, type, Deriv_totOrder);
 }
