@@ -1106,7 +1106,7 @@ def implPostfixOperator = {/
         { <> eq(exprs, []) }
         { io0Die("Missing index value(s) from index expression.") }
     |
-        { <> { node <> makeCall(get(UNARY_OPERATORS, "[]"), exprs*) } }
+        { <> { node <> makeCall(get(UNARY_OPERATORS, "[]"), node, exprs*) } }
     )
 |
     # This translates as something like:
