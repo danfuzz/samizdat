@@ -7,6 +7,35 @@ Values (the base type)
 <br><br>
 ### Generic Function Definitions: `Value` protocol (applies to all values)
 
+#### `perEq(value, other) <> . | void`
+
+Performs a per-type equality comparison of the two given values, using the
+per-type order. This should return `value2` if the two values are to be
+considered "equal", return void if the two values are to be considered
+"unequal", or fail terminally if the two values are considered "incomparable".
+
+Each type can specify its own per-type equality check, and the two arguments
+are notably *not* required to be of the same type. The default implementation
+calls through to `totEq` (see which).
+
+**Note:** This is the generic function which underlies the implementation
+of all per-type equality comparison functions.
+
+#### `perOrder(value, other) <> int`
+
+Performs an order comparison of the two given values, using the per-type
+order. Return values are the same as with `totOrder` (see which). As
+with `perEq`, the two values are not required to be of the same type, and
+should two arguments be considered "incomparable" this function should
+terminate the runtime with an error.
+
+Each type can specify its own per-type ordering comparison.
+The default implementation calls through to `totOrder` (see which).
+
+**Note:** This is the generic function which underlies the implementation
+of all per-type ordering functions.
+
+
 #### `totEq(value1, value2) <> . | void`
 
 Performs a type-specific equality comparison of the two given

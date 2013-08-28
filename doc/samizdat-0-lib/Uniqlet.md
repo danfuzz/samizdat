@@ -7,6 +7,14 @@ Uniqlets
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `perEq(uniqlet, other) <> uniqlet | void`
+
+Calls `totEq`.
+
+#### `perOrder(uniqlet, other) <> int`
+
+Calls `totOrder`.
+
 #### `totEq(uniqlet1, uniqlet2) <> uniqlet | void`
 
 Performs an identity comparison. Two uniqlets are only equal if they are

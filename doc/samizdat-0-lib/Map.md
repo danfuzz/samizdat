@@ -7,6 +7,14 @@ Maps
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `perEq(map, other) <> map | void`
+
+Calls `totEq`.
+
+#### `perOrder(map, other) <> int`
+
+Calls `totOrder`.
+
 #### `totEq(map1, map2) <> map | void`
 
 Compares two maps. Two maps are equal if they have equal sets of mappings.
