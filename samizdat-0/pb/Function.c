@@ -5,11 +5,11 @@
  */
 
 /*
- * Callable values (function-like things)
+ * Function values
  */
 
 #include "impl.h"
-#include "type/Callable.h"
+#include "type/Function.h"
 #include "type/Generic.h"
 #include "type/List.h"
 #include "type/String.h"
@@ -115,7 +115,7 @@ extern zvalue funCallWith6(zvalue function, zvalue arg0, zvalue arg1,
  */
 
 /* Documented in header. */
-void pbBindCallable(void) {
+void pbBindFunction(void) {
     GFN_call = makeGeneric(1, -1, GFN_NONE, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 

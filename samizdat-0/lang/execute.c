@@ -10,7 +10,7 @@
 
 #include "const.h"
 #include "impl.h"
-#include "type/Callable.h"
+#include "type/Function.h"
 #include "type/Generator.h"
 #include "type/List.h"
 #include "type/Map.h"

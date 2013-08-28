@@ -12,7 +12,7 @@
 #define _TYPE_BUILTIN_H_
 
 #include "pb.h"
-#include "type/Callable.h"
+#include "type/Function.h"
 
 
 /** Type value for in-model type `Builtin`. */

@@ -29,7 +29,7 @@ void pbInit(void) {
     pbInitTypeSystem();
 
     pbBindValue();      // This defines the universal cross-type generics.
-    pbBindCallable();   // This defines the function generics.
+    pbBindFunction();   // This defines the function generics.
     pbBindCollection(); // This defines the collection generics.
 
     pbBindType();

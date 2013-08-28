@@ -124,7 +124,7 @@ zvalue genericFindByIndex(zvalue generic, zint index) {
  */
 
 /* Documented in header. */
-void genericBind(zvalue generic, zvalue typeOrName, zvalue callable) {
+void genericBind(zvalue generic, zvalue typeOrName, zvalue function) {
     assertHasType(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
@@ -137,7 +137,7 @@ void genericBind(zvalue generic, zvalue typeOrName, zvalue callable) {
             valDebugString(generic), valDebugString(typeOrName));
     }
 
-    info->functions[index] = callable;
+    info->functions[index] = function;
 }
 
 /* Documented in header. */
@@ -145,10 +145,10 @@ void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function) {
     assertHasType(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
-    zvalue callable =
+    zvalue builtin =
         makeBuiltin(info->minArgs, info->maxArgs, function, info->name);
 
-    genericBind(generic, typeOrName, callable);
+    genericBind(generic, typeOrName, builtin);
 }
 
 /* Documented in header. */

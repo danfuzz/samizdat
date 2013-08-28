@@ -5,19 +5,11 @@
  */
 
 /*
- * `Callable` protocol
- *
- * **Note:** There is no in-model value `Callable`. That said, there is
- * effectively a `Callable` interface or protocol, in that things that
- * implement the `call` and `canCall` generics can be treated the same
- * as a built-in function or generic.
- *
- * **Note:** Because `callable` per se is an awkward prefix, instead the
- * suggestive prefix `fun` is used.
+ * `Function` protocol
  */
 
-#ifndef _TYPE_CALLABLE_H_
-#define _TYPE_CALLABLE_H_
+#ifndef _TYPE_FUNCTION_H_
+#define _TYPE_FUNCTION_H_
 
 #include "pb.h"
 
@@ -47,12 +39,8 @@ zvalue funApply(zvalue function, zvalue args);
 
 /**
  * Calls a function with the given list of arguments. `function` must be
- * a callable value (regular or generic function, or other type which binds
- * the `call` generic function), and `argCount` must be non-negative.
- * If `argCount` is positive, then `args` must not be `NULL`.
- *
- * **Note:** The `fun` prefix is used to denote functions which operate
- * on all sorts of callable function-like things.
+ * a `Function`, and `argCount` must be non-negative. If `argCount` is
+ * positive, then `args` must not be `NULL`.
  */
 zvalue funCall(zvalue function, zint argCount, const zvalue *args);
 
