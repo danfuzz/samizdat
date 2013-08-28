@@ -4,26 +4,11 @@ Samizdat Layer 0: Core Library
 Boxes
 -----
 
-<br><br>
-### Generic Function Definitions: `Value` protocol
-
-#### `perEq(box, other) <> box | void`
-
-Calls `totEq`.
-
-#### `perOrder(box, other) <> int`
-
-Calls `totOrder`.
-
-#### `totEq(box1, box2) <> box | void`
-
-Performs an identity comparison. Two boxes are only equal if they are
-truly the same box.
-
-#### `totOrder(box1, box2) <> int`
-
-Performs an identity comparison. Boxes have a consistent, transitive, and
-symmetric &mdash; but arbitrary &mdash; total order.
+A `Box` is a container for a single other value or for void.
+In terms of value comparison, all boxes should compare by identity,
+and not by "happenstance content". That is, two boxes should only be
+considered "equal" if they are indistinguishable, even in the face of
+calling mutating operations.
 
 
 <br><br>
@@ -32,20 +17,17 @@ symmetric &mdash; but arbitrary &mdash; total order.
 #### `canStore(box) <> logic`
 
 Returns `box` if the `box` can be stored to. Otherwise returns void.
-`box` must be a box as returned by either `makeMutableBox` or `makeYieldBox`.
 
 #### `fetch(box) <> . | void`
 
 Gets the value inside a box, if any. If the box either is unset or has
-been set to void, this returns void. `box` must be a box as returned by
-either `makeMutableBox` or `makeYieldBox`.
+been set to void, this returns void.
 
-#### `store(box, value?) <> .`
+#### `store(box, value?) <> . | void`
 
 Sets the value of a box to the given value, or to void if `value` is
 not supplied. This function always returns `value` (or void if `value` is
-not supplied). `box` must be a box as returned by either `makeMutableBox` or
-`makeYieldBox`.
+not supplied).
 
 It is an error (terminating the runtime) for `box` to be a yield box on
 which `store` has already been called.
@@ -85,4 +67,11 @@ expect to yield values by calling a function.
 <br><br>
 ### In-Language Definitions
 
-(none)
+#### `nullBox`
+
+A value that represents a permanently empty (un-set, un-stored) box.
+`store(nullBox, value)` is effectively a no-op. This
+arrangement is done in order to make it easy to pass a box into functions
+that require one, but where the box value is never needed.
+
+It is defined as `@NullBox`.
