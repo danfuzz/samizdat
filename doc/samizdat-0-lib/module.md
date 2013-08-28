@@ -54,22 +54,6 @@ That is, it is just like an uninitialized module, except that the
 <br><br>
 ### In-Language Definitions
 
-#### `methodCall(dispatch, value, name, args*)`
-
-Looks up a method by name, and calls it. This is equivalent to
-`methodGet(dispatch, value, name)(args*)`, but it may be more efficient.
-
-#### `methodGet(dispatch, value, name)`
-
-Looks up a method by name, and returns a function which will apply that
-function to the given value.
-
-This assumes `dispatch` is a map of type names to method maps, where a
-method map is a map from method names to functions. The type name is
-determined as if by `typeOf(value)`. When applied, the function
-is passed `value` as its first argument, along with any other arguments
-that were supplied.
-
 #### `moduleInit(context) <> map`
 
 Given an execution context (that is, a map from names to values meant to
