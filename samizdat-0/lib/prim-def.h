@@ -76,9 +76,6 @@ PRIM_DEF(sign,       GFN_sign);
 PRIM_DEF(sub,        GFN_sub);
 PRIM_DEF(xor,        GFN_xor);
 
-// Special values
-PRIM_DEF(nullBox,    DAT_NULL_BOX);
-
 // Primitive functions
 PRIM_FUNC(charFromInt,          1, 1);
 PRIM_FUNC(dataOf,               1, 2);

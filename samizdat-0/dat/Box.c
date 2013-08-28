@@ -89,9 +89,6 @@ zvalue GFN_fetch;
 zvalue GFN_store;
 
 /* Documented in header. */
-zvalue DAT_NULL_BOX = NULL;
-
-/* Documented in header. */
 METH_IMPL(Box, canStore) {
     zvalue box = args[0];
     return getInfo(box)->canStore ? box : NULL;
@@ -134,13 +131,11 @@ METH_IMPL(Box, store) {
         die("Attempt to re-store yield box.");
     }
 
-    if (box != DAT_NULL_BOX) {
-        info->value = value;
-    }
-
     if (info->setOnce) {
         info->canStore = false;
     }
+
+    info->value = value;
 
     return value;
 }
@@ -161,7 +156,4 @@ void datBindBox(void) {
     METH_BIND(Box, fetch);
     METH_BIND(Box, gcMark);
     METH_BIND(Box, store);
-
-    DAT_NULL_BOX = makeMutableBox(NULL); // Note: Explicit `==` test in `store`.
-    pbImmortalize(DAT_NULL_BOX);
 }
