@@ -9,15 +9,15 @@ Values (the base type)
 
 #### `totEq(value1, value2) <> . | void`
 
-Performs a "per-type" (type-specific) equality comparison of the two given
-values. When called, the two values are guaranteed to be the same type.
-If a client calls with different-typed values, it is a fatal error
-(terminating the runtime).
+Performs a type-specific equality comparison of the two given
+values, using the "total value ordering" order. When called, the two values
+are guaranteed to be the same type. If a client calls with different-typed
+values, it is a fatal error (terminating the runtime).
 
 The return value is either `value1` (or `value2` really) if the two values
 are in fact identical, or `void` if they are not.
 
-Each type specifies its own per-type equality check. See specific types for
+Each type specifies its own total-order equality check. See specific types for
 details. Transparent derived types all compare for equality by comparing
 both the payload value (if any). In addition, a default implementation
 checks directly for trivial sameness and calls through to `totOrder`
@@ -34,10 +34,10 @@ of all cross-type equality comparison functions.
 
 #### `totOrder(value1, value2) <> int`
 
-Returns the "per-type" (type-specific) order of the two given values.
-When called, the two values are guaranteed to be the same type. If a client
-calls with different-typed values, it is a fatal error (terminating the
-runtime).
+Returns the type-specific order of the two given values, using the "total
+value ordering" order. When called, the two values are guaranteed to be the
+same type. If a client calls with different-typed values, it is a fatal error
+(terminating the runtime).
 
 The return value is one of `-1 0 1` indicating how the two values sort with
 each other, using the reasonably standard meaning of those values:
@@ -48,7 +48,7 @@ each other, using the reasonably standard meaning of those values:
 
 * `1` &mdash; The first value orders after the second value.
 
-Each type specifies its own per-type ordering. See specific types for
+Each type specifies its own total-order ordering. See specific types for
 details. Transparent derived types all order by performing ordering
 on the respective payload values, with a lack of payload counting as
 "before" any non-void payload. In addition, a default implementation
@@ -214,27 +214,27 @@ Returns the given `value` if it is a uniqlet. Returns void if not.
 
 #### `totGe(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `totOrder(value1, value2)` to
+Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered greater than or equal
 to `value1`.
 
 #### `totGt(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `totOrder(value1, value2)` to
+Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered greater than `value1`.
 
 #### `totLe(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `totOrder(value1, value2)` to
+Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered less than or equal
 to `value1`.
 
 #### `totLt(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `totOrder(value1, value2)` to
+Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered less than `value1`.
 
 #### `totNe(value1, value2) <> logic`
 
-Per-type ordering comparison, which calls `totEq(value1, value2)` to
+Type-specific total-order comparison, which calls `totEq(value1, value2)` to
 determine result. Returns `value2` if it is *not* considered equal to `value1`.
