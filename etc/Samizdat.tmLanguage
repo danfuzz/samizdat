@@ -359,7 +359,7 @@
 					<string>(?x)
 						\b(
 						break|continue|default|do|else|
-						for|if|reduce|return|switch|while
+						for|if|return|switch|while
 						)\b
 					</string>
 				</dict>
@@ -378,8 +378,8 @@
 					<string>constant.language</string>
 					<key>match</key>
 					<string>(?x)
-						\b(true|false|null|nullBox)\b |
-						\[\] | \[:\] | @@
+						\b(true|false|null|nullBox|nullGenerator)\b |
+						\[\] | \[:\]
 					</string>
 				</dict>
 				<dict>
