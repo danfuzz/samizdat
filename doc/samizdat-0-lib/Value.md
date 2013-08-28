@@ -7,6 +7,35 @@ Values (the base type)
 <br><br>
 ### Generic Function Definitions: `Value` protocol (applies to all values)
 
+#### `perEq(value, other) <> . | void`
+
+Performs a per-type equality comparison of the two given values, using the
+per-type order. This should return `value2` if the two values are to be
+considered "equal", return void if the two values are to be considered
+"unequal", or fail terminally if the two values are considered "incomparable".
+
+Each type can specify its own per-type equality check, and the two arguments
+are notably *not* required to be of the same type. The default implementation
+calls through to `totEq` (see which).
+
+**Note:** This is the generic function which underlies the implementation
+of all per-type equality comparison functions.
+
+#### `perOrder(value, other) <> int`
+
+Performs an order comparison of the two given values, using the per-type
+order. Return values are the same as with `totOrder` (see which). As
+with `perEq`, the two values are not required to be of the same type, and
+should two arguments be considered "incomparable" this function should
+terminate the runtime with an error.
+
+Each type can specify its own per-type ordering comparison.
+The default implementation calls through to `totOrder` (see which).
+
+**Note:** This is the generic function which underlies the implementation
+of all per-type ordering functions.
+
+
 #### `totEq(value1, value2) <> . | void`
 
 Performs a type-specific equality comparison of the two given
@@ -212,29 +241,64 @@ Returns the given `value` if it is a string. Returns void if not.
 
 Returns the given `value` if it is a uniqlet. Returns void if not.
 
+#### `perGe(value1, value2) <> logic`
+
+Per-type comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered greater than or equal
+to `value1`.
+
+#### `perGt(value1, value2) <> logic`
+
+Per-type comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered greater than `value1`.
+
+#### `perLe(value1, value2) <> logic`
+
+Per-type comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than or equal
+to `value1`.
+
+#### `perLt(value1, value2) <> logic`
+
+Per-type comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than `value1`.
+
+#### `perNe(value1, value2) <> logic`
+
+Per-type comparison, which calls `perEq(value1, value2)` to
+determine result. Returns `value2` if it is *not* considered equal to `value1`.
+
 #### `totGe(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered greater than or equal
-to `value1`.
+to `value1`. It is a fatal error (terminating the runtime) if the two
+arguments are of different types.
 
 #### `totGt(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered greater than `value1`.
+It is a fatal error (terminating the runtime) if the two arguments are of
+different types.
 
 #### `totLe(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered less than or equal
-to `value1`.
+to `value1`. It is a fatal error (terminating the runtime) if the two
+arguments are of different types.
 
 #### `totLt(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered less than `value1`.
+It is a fatal error (terminating the runtime) if the two arguments are of
+different types.
 
 #### `totNe(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totEq(value1, value2)` to
 determine result. Returns `value2` if it is *not* considered equal to `value1`.
+It is a fatal error (terminating the runtime) if the two arguments are of
+different types.

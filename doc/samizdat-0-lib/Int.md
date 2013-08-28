@@ -7,6 +7,14 @@ Ints
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `perEq(int, other) <> int | void`
+
+Calls `totEq`.
+
+#### `perOrder(int, other) <> int`
+
+Calls `totOrder`.
+
 #### `totEq(int1, int2) <> int | void`
 
 Compares the integer values of two ints.

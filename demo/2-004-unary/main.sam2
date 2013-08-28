@@ -35,6 +35,8 @@ fn returnString() {
 # Main Tests
 #
 
+io0Note("Ints and binary");
+
 msg(-0);
 msg(-10);
 msg(- - 20);
@@ -47,7 +49,8 @@ msg(returnString());
 msg(returnVoid()?);
 msg(returnString()?);
 
-# Boolean/logic conversion.
+io0Note("\nBoolean / logic conversion");
+
 msg(returnVoid()??);
 msg(returnString()??);
 msg(true??);
@@ -55,7 +58,8 @@ msg(false??);   # This one is the documented surprising result.
 msg((true**)?);
 msg((false**)?);
 
-# Logical ops.
+io0Note("\nLogic ops");
+
 msg((!returnVoid())?);
 msg((!returnString())?);
 msg((!true)?);
@@ -63,5 +67,27 @@ msg((!false)?);  # This one is the documented surprising result.
 msg((! !10)?);
 msg((! !"fuzzy bunnies")?);
 msg((! ! !@fizmo)?);
+
+io0Note("\nCollection indexing");
+
+msg(["blort", "fizmo", "igram"][0]);
+msg(["blort", "fizmo", "igram"][1]);
+msg(["blort", "fizmo", "igram"][3]?);
+msg(["blort", "fizmo", "igram"][-10]?);
+msg(["blort", "fizmo", "igram"]["x"]?);
+
+msg([a: "axolotl", c: "cuttlefish", n: "nutria"]["a"]);
+msg([a: "axolotl", c: "cuttlefish", n: "nutria"]["n"]);
+msg([a: "axolotl", c: "cuttlefish", n: "nutria"][0]?);
+
+msg("frotz"[0]);
+msg("frotz"[4]);
+msg("frotz"[5]?);
+msg("frotz"[-1]?);
+msg("frotz"["ztrof"]?);
+
+msg(returnString()[2]);
+msg((returnString()[99])?);
+
 
 <> 0

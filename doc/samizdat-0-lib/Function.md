@@ -7,6 +7,14 @@ Functions
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `perEq(funcion, other) <> funcion | void`
+
+Calls `totEq`.
+
+#### `perOrder(funcion, other) <> int`
+
+Calls `totOrder`.
+
 #### `totEq(function1, function2) <> function | void`
 
 Performs an identity comparison. Two functions are only equal if they are

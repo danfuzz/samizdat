@@ -7,6 +7,14 @@ Boxes
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `perEq(box, other) <> box | void`
+
+Calls `totEq`.
+
+#### `perOrder(box, other) <> int`
+
+Calls `totOrder`.
+
 #### `totEq(box1, box2) <> box | void`
 
 Performs an identity comparison. Two boxes are only equal if they are
