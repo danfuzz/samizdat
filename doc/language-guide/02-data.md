@@ -202,20 +202,18 @@ written as `[:]`.
 [:, [first: 1]*, [second: 2, third: 3]*]
 ```
 
-#### Function
+#### Builtin
 
-A `Function` is an encapsulated potential computation. As with many
-other languages, functions are generally defined in terms of source code
-and an execution context.
-
-See the language guide section on functions for more details.
+A `Builtin` is an encapsulated potential computation, defined at the
+lowest layer of the system. It is a kind of `Callable` (see which).
 
 
 #### Generic
 
 A `Generic` is a generic function. That is, it is an encapsulated mapping
 from types to functions, in this case based on the type of the first
-argument passed to the generic function when called.
+argument passed to the generic function when called. It is a kind of
+`Callable` (see which).
 
 See the language guide section on generic functions for more details.
 
@@ -374,7 +372,11 @@ nonetheless. The following are the protocols currently defined.
 This is the protocol for function-like things, that is, things which can
 be applied to an argument list to produce a result.
 
-See the library documentation for `Callable` for more details.
+As with many other languages, at the highest level functions are generally
+defined in terms of source code and an execution context.
+
+See the language guide section on functions and the library documentation
+for `Callable` for more details.
 
 #### Collection
 
