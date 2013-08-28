@@ -241,29 +241,64 @@ Returns the given `value` if it is a string. Returns void if not.
 
 Returns the given `value` if it is a uniqlet. Returns void if not.
 
+#### `perGe(value1, value2) <> logic`
+
+Per-type comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered greater than or equal
+to `value1`.
+
+#### `perGt(value1, value2) <> logic`
+
+Per-type comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered greater than `value1`.
+
+#### `perLe(value1, value2) <> logic`
+
+Per-type comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than or equal
+to `value1`.
+
+#### `perLt(value1, value2) <> logic`
+
+Per-type comparison, which calls `perOrder(value1, value2)` to
+determine result. Returns `value2` if it is considered less than `value1`.
+
+#### `perNe(value1, value2) <> logic`
+
+Per-type comparison, which calls `perEq(value1, value2)` to
+determine result. Returns `value2` if it is *not* considered equal to `value1`.
+
 #### `totGe(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered greater than or equal
-to `value1`.
+to `value1`. It is a fatal error (terminating the runtime) if the two
+arguments are of different types.
 
 #### `totGt(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered greater than `value1`.
+It is a fatal error (terminating the runtime) if the two arguments are of
+different types.
 
 #### `totLe(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered less than or equal
-to `value1`.
+to `value1`. It is a fatal error (terminating the runtime) if the two
+arguments are of different types.
 
 #### `totLt(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totOrder(value1, value2)` to
 determine result. Returns `value2` if it is considered less than `value1`.
+It is a fatal error (terminating the runtime) if the two arguments are of
+different types.
 
 #### `totNe(value1, value2) <> logic`
 
 Type-specific total-order comparison, which calls `totEq(value1, value2)` to
 determine result. Returns `value2` if it is *not* considered equal to `value1`.
+It is a fatal error (terminating the runtime) if the two arguments are of
+different types.
