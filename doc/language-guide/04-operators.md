@@ -53,25 +53,29 @@ expression evaluates to an appropriate value.
 
 The expression to apply (before the open parenthesis) must be non-void.
 
-#### Message binding lookup &mdash; `expression.nameExpr`
+#### Function-target binding &mdash; `targetExpr.funcExpr`
 
-The dot infix syntax is used to find the function used to respond to a named
-message. `nameExpr` typically, but not necessarily, evaluates to a string.
-As a convenient shorthand, the parentheses and quotes can be omitted if
-if `nameExpr` is a string literal matching the identifier token syntax.
+The dot infix syntax is used to create a function which binds a first
+argument to another function. `targetExpr.funcExpr` is approximately the same
+as `{ args* <> funcExpr(targetExpr, args*) }`, except that the expressions
+are evaluated only once when the dot expression is evaluated, and there is
+no name shadowing.
 
-The result of a dot infix expression is a function which, when called,
-sends the named message to the evaluated (left-hand) expression result.
+`funcExpr` is commonly the simple identifier name of a generic function.
+
 A typical usage looks like `def method = x.foo; ... method(y, z)`. More
 typically, a message is applied more directly using the related application
 syntax (immediately below).
 
-#### Message binding lookup and application &mdash; `expression.nameExpr(arg, arg, ...)`
+#### Method-like function application &mdash; `targetExpr.funcExpr(arg, arg, ...)`
 
-This combines message binding lookup with function application and is
-semantically equivalent to calling the result of a message binding lookup
-with the indicated arguments. That is, `x.foo(bar, baz)` is equivalent
-to `(x.foo)(bar, baz)`.
+This combines function-target binding with function application and is
+semantically equivalent to calling the result of a function-target binding
+expression with the indicated arguments. That is, `x.foo(bar, baz)` is
+equivalent to `(x.foo)(bar, baz)`.
+
+This is the preferred syntax to use for applying a method or method-like
+function to a target.
 
 #### Access collection &mdash; `expression[index, index, ...]`
 
@@ -92,8 +96,8 @@ The expression to index into and all of the indices must be non-void, except
 that index expressions can be marked with a `&` prefix to indicate void
 contagion (see which for details).
 
-A collection access expression is identical to a message application of
-the message `"get"` to the value to be accessed. That is, `x[y]` means
+A collection access expression is identical to a function call of `get`
+with the value to be accessed as the argument. That is, `x[y]` means
 the same thing as `x.get(y)`.
 
 #### Convert Value-or-void to list &mdash; `expression?`
