@@ -27,7 +27,7 @@ symmetric &mdash; but arbitrary &mdash; total order.
 
 
 <br><br>
-### Generic Function Definitions: `Callable` protocol
+### Generic Function Definitions: `Function` protocol
 
 #### `call(generic, args*) <> . | void`
 
@@ -45,9 +45,9 @@ generic. Returns the `value` argument if so.
 <br><br>
 ### Primitive Definitions
 
-#### `genericBind(generic, type, callable) <> void`
+#### `genericBind(generic, type, function) <> void`
 
-Binds the given `type` to the given `callable` on the given `generic`.
+Binds the given `type` to the given `function` on the given `generic`.
 It is an error (terminating the runtime) if `type` has already been bound.
 
 #### `makeRegularGeneric(name, minArgs, maxArgs?) <> generic`

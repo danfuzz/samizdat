@@ -8,7 +8,7 @@
 #include "impl.h"
 #include "lang.h"
 #include "type/Box.h"
-#include "type/Callable.h"
+#include "type/Builtin.h"
 #include "type/Collection.h"
 #include "type/Function.h"
 #include "type/Generator.h"
@@ -64,7 +64,7 @@ static zvalue primitiveContext(void) {
         do { \
             zvalue nameStr = stringFromUtf8(-1, #name); \
             ctx = collPut(ctx, nameStr, \
-                makeFunction(minArgs, maxArgs, prim_##name, nameStr)); \
+                makeBuiltin(minArgs, maxArgs, prim_##name, nameStr)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
