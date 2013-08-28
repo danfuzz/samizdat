@@ -7,6 +7,14 @@ Strings
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `perEq(string, other) <> string | void`
+
+Calls `totEq`.
+
+#### `perOrder(string, other) <> int`
+
+Calls `totOrder`.
+
 #### `totEq(string1, string2) <> string | void`
 
 Compares two strings. Two strings are equal if they have equal characters in

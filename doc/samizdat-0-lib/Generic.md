@@ -7,6 +7,14 @@ Generics
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `perEq(generic, other) <> generic | void`
+
+Calls `totEq`.
+
+#### `perOrder(generic, other) <> int`
+
+Calls `totOrder`.
+
 #### `totEq(generic1, generic2) <> generic | void`
 
 Performs an identity comparison. Two generics are only equal if they are

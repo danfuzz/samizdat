@@ -115,18 +115,15 @@ def YIELD_VOID_THUNK = @[closure: [formals: [], statements: []]];
 # A single-argument yield-void function.
 def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 
-# Map of token types to corresponding unary operator function name variable
-# references.
+# For unary operators, map of token types to function name variable references.
 def UNARY_OPERATORS = [
     "-":   makeVarRef("neg"),
     "**":  makeVarRef("logicFromBoolean"),
-    "!!!": makeVarRef("not")
+    "!!!": makeVarRef("not"),
+    "[]":  makeVarRef("get")
 ];
 
-# For binary operators, map of token types to one of:
-#
-# * a `varRef` node for the corresponding function name
-# * a `literal` node for the corresponding method name
+# For binary operators, map of token types to function name variable references.
 def BINARY_OPERATORS = [
     "+":    makeVarRef("add"),
     "-":    makeVarRef("sub"),
@@ -135,12 +132,12 @@ def BINARY_OPERATORS = [
     "%":    makeVarRef("mod"),
     "//":   makeVarRef("divEu"),
     "%%":   makeVarRef("modEu"),
-    "==":   makeLiteral("eq"),
-    "!=":   makeLiteral("ne"),
-    "<":    makeLiteral("lt"),
-    ">":    makeLiteral("gt"),
-    "<=":   makeLiteral("le"),
-    ">=":   makeLiteral("ge"),
+    "==":   makeVarRef("perEq"),
+    "!=":   makeVarRef("perNe"),
+    "<":    makeVarRef("perLt"),
+    ">":    makeVarRef("perGt"),
+    "<=":   makeVarRef("perLe"),
+    ">=":   makeVarRef("perGe"),
     "&&&":  makeVarRef("and"),
     "|||":  makeVarRef("or"),
     "^^^":  makeVarRef("xor"),
@@ -174,10 +171,7 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
         def op = first(opEx);
         def ex = last(opEx);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
-
-        def call = ifIs { <> eq(typeOf(resolvedOp), "varRef") }
-            { <> makeCall(resolvedOp, result, ex) }
-            { <> makeMethodCall(result, resolvedOp, ex) };
+        def call = makeCall(resolvedOp, result, ex);
 
         <> ifIs { <> eq(voidable, true) }
             { <> @[voidable: call] }
@@ -1112,7 +1106,7 @@ def implPostfixOperator = {/
         { <> eq(exprs, []) }
         { io0Die("Missing index value(s) from index expression.") }
     |
-        { <> { node <> makeMethodCall(node, makeLiteral("get"), exprs*) } }
+        { <> { node <> makeCall(get(UNARY_OPERATORS, "[]"), node, exprs*) } }
     )
 |
     # This translates as something like:

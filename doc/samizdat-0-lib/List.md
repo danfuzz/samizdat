@@ -9,6 +9,14 @@ A `List` is a kind of `Sequence`.
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `perEq(list, other) <> list | void`
+
+Calls `totEq`.
+
+#### `perOrder(list, other) <> int`
+
+Calls `totOrder`.
+
 #### `totEq(list1, list2) <> list | void`
 
 Compares two lists. Two lists are equal if they have equal elements in

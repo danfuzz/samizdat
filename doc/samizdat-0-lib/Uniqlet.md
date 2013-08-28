@@ -7,6 +7,14 @@ Uniqlets
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
+#### `perEq(uniqlet, other) <> uniqlet | void`
+
+Calls `totEq`.
+
+#### `perOrder(uniqlet, other) <> int`
+
+Calls `totOrder`.
+
 #### `totEq(uniqlet1, uniqlet2) <> uniqlet | void`
 
 Performs an identity comparison. Two uniqlets are only equal if they are
@@ -25,12 +33,7 @@ symmetric &mdash; but arbitrary &mdash; total order.
 
 Returns a uniqlet that has never before been returned from this
 function (nor from any other uniqlet-producing source, should such a
-source exist). This equivalence holds for *Samizdat Layer 0* source
-code:
-
-```
-v = @@;  is equivalent to  v = makeUniqlet();
-```
+source exist).
 
 
 <br><br>

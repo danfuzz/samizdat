@@ -145,6 +145,16 @@ METH_IMPL(Value, debugString) {
 }
 
 /* Documented in header. */
+METH_IMPL(Value, perEq) {
+    return funCall(GFN_totEq, argCount, args);
+}
+
+/* Documented in header. */
+METH_IMPL(Value, perOrder) {
+    return funCall(GFN_totOrder, argCount, args);
+}
+
+/* Documented in header. */
 METH_IMPL(Value, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -183,18 +193,26 @@ void pbBindValue(void) {
     GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     pbImmortalize(GFN_debugString);
 
-    GFN_totEq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "eq"));
-    pbImmortalize(GFN_totEq);
-
     GFN_gcMark = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "gcMark"));
     pbImmortalize(GFN_gcMark);
 
-    GFN_totOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "order"));
+    GFN_perEq = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "perEq"));
+    pbImmortalize(GFN_perEq);
+
+    GFN_perOrder = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "perOrder"));
+    pbImmortalize(GFN_perOrder);
+
+    GFN_totEq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totEq"));
+    pbImmortalize(GFN_totEq);
+
+    GFN_totOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totOrder"));
     pbImmortalize(GFN_totOrder);
 
     // Note: The type `Type` is responsible for initializing `TYPE_Value`.
 
     METH_BIND(Value, debugString);
+    METH_BIND(Value, perEq);
+    METH_BIND(Value, perOrder);
     METH_BIND(Value, totEq);
     METH_BIND(Value, totOrder);
 }
@@ -207,6 +225,12 @@ zvalue GFN_debugString = NULL;
 
 /* Documented in header. */
 zvalue GFN_gcMark = NULL;
+
+/* Documented in header. */
+zvalue GFN_perEq = NULL;
+
+/* Documented in header. */
+zvalue GFN_perOrder = NULL;
 
 /* Documented in header. */
 zvalue GFN_totEq = NULL;
