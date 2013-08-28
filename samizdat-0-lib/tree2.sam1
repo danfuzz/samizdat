@@ -1059,7 +1059,7 @@ parNonlocalExit(implNonlocalExit);
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
 def implPrefixOperator = {/
-    operator = [@"+" @"-" @"!!!"]
+    operator = [@"-" @"!!!"]
     {
         def name = get(UNARY_OPERATORS, typeOf(operator));
         <> { node <> makeCall(name, node) }
