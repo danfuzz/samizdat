@@ -69,10 +69,10 @@ will be returned, or one of:
 * Types and Protocols
   * [Booleans](Boolean.md)
   * [Boxes](Box.md)
-  * [Callables (function-like things)](Callable.md)
+  * [Builtins](Builtin.md)
+  * [Functions](Function.md)
   * [ClosedRange](ClosedRange.md)
   * [Collections (multiple-value containers)](Collection.md)
-  * [Functions](Function.md)
   * [Generators](Generator.md)
   * [Generics](Generic.md)
   * [Ints](Int.md)

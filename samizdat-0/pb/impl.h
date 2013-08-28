@@ -22,8 +22,8 @@ enum {
     /** Required byte alignment for values. */
     PB_VALUE_ALIGNMENT = 8,
 
-    /** The type index for type `Function`. */
-    PB_INDEX_FUNCTION = 2,
+    /** The type index for type `Builtin`. */
+    PB_INDEX_BUILTIN = 2,
 
     /** The type index for type `Generic`. */
     PB_INDEX_GENERIC = 3
@@ -67,11 +67,11 @@ typedef struct PbHeader {
 void derivBind(zvalue type);
 
 /**
- * Actual implementation of normal function calling. This is where
- * short-circuited generic function dispatch of `call` on type `Function`
+ * Actual implementation of builtin function calling. This is where
+ * short-circuited generic function dispatch of `call` on type `Builtin`
  * lands.
  */
-zvalue functionCall(zvalue function, zint argCount, const zvalue *args);
+zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
  * Actual implementation of generic function calling. This is where
@@ -137,7 +137,7 @@ bool typeSecretIs(zvalue typeOrName, zvalue secret);
 void pbInitTypeSystem(void);
 
 // Per-type binding and initialization.
-void pbBindCallable(void);
+void pbBindBuiltin(void);
 void pbBindCollection(void);
 void pbBindFunction(void);
 void pbBindGeneric(void);

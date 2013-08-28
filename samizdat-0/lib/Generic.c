@@ -42,9 +42,9 @@ static zvalue doMakeGeneric(zgenericFlags flags, zint argCount,
 PRIM_IMPL(genericBind) {
     zvalue generic = args[0];
     zvalue type = args[1];
-    zvalue callable = args[2];
+    zvalue function = args[2];
 
-    genericBind(generic, type, callable);
+    genericBind(generic, type, function);
     return NULL;
 }
 

@@ -12,7 +12,7 @@
 #define _TYPE_GENERIC_H_
 
 #include "pb.h"
-#include "type/Callable.h"
+#include "type/Function.h"
 
 /** Flags passed to `makeGeneric`. */
 typedef enum {
@@ -37,12 +37,12 @@ typedef enum {
 extern zvalue TYPE_Generic;
 
 /**
- * Adds a type-to-callable binding to the given generic. `generic` must be
+ * Adds a type-to-function binding to the given generic. `generic` must be
  * a generic function, `typeOrName` is the usual representation of a type,
- * and `callable` must be a valid `Callable`. The type must not have already
+ * and `function` must be a valid `Fallable`. The type must not have already
  * been bound in the given generic, and the generic must not be sealed.
  */
-void genericBind(zvalue generic, zvalue typeOrName, zvalue callable);
+void genericBind(zvalue generic, zvalue typeOrName, zvalue function);
 
 /**
  * Adds a type-to-C-function binding to the given generic. `generic` must

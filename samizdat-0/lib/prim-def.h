@@ -34,7 +34,7 @@ PRIM_DEF(canStore,   GFN_canStore);
 PRIM_DEF(fetch,      GFN_fetch);
 PRIM_DEF(store,      GFN_store);
 
-// Generic functions: `Callable` protocol
+// Generic functions: `Function` protocol
 PRIM_DEF(call,       GFN_call);
 PRIM_DEF(canCall,    GFN_canCall);
 

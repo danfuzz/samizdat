@@ -5,12 +5,13 @@
  */
 
 /*
- * In-model Functions
+ * Function values
  */
 
 #include "impl.h"
 #include "type/Function.h"
 #include "type/Generic.h"
+#include "type/List.h"
 #include "type/String.h"
 #include "type/Value.h"
 
@@ -20,49 +21,45 @@
  */
 
 /**
- * Regular (non-generic) function structure.
+ * This is the function that handles emitting a context string for a call,
+ * when dumping the stack.
  */
-typedef struct {
-    /** Minimum argument count. Always `>= 0`. */
-    zint minArgs;
-
-    /**
-     * Maximum argument count. Always `>= minArgs`.
-     */
-    zint maxArgs;
-
-    /** C function to call. */
-    zfunction function;
-
-    /** The function's name, if any. Used when producing stack traces. */
-    zvalue name;
-} FunctionInfo;
-
-/**
- * Gets a pointer to the value's info.
- */
-static FunctionInfo *getInfo(zvalue function) {
-    return pbPayload(function);
+static char *callReporter(void *state) {
+    return valDebugString((zvalue) state);
 }
 
-
-/*
- * Module Definitions
+/**
+ * Inner implementation of `funCall`, which does *not* do argument validation,
+ * nor debug and local frame setup/teardown.
  */
+static zvalue funCall0(zvalue function, zint argCount, const zvalue *args) {
+    zint index = indexFromTrueType(function->type);
 
-/* Documented in header. */
-zvalue functionCall(zvalue function, zint argCount, const zvalue *args) {
-    FunctionInfo *info = getInfo(function);
-
-    if (argCount < info->minArgs) {
-        die("Too few arguments for function call: %lld, min %lld",
-            argCount, info->minArgs);
-    } else if (argCount > info->maxArgs) {
-        die("Too many arguments for function call: %lld, max %lld",
-            argCount, info->maxArgs);
+    // The first two cases are how we bottom out the recursion, instead of
+    // calling `funCall0` on the `call` methods for `Function` or `Generic`.
+    switch (index) {
+        case PB_INDEX_BUILTIN: {
+            return builtinCall(function, argCount, args);
+        }
+        case PB_INDEX_GENERIC: {
+            return genericCall(function, argCount, args);
+        }
+        default: {
+            // The original `function` is some kind of higher layer function.
+            // Use generic dispatch to get to it: Prepend `function` as a new
+            // first argument, and call the generic `call` via a recursive
+            // call to `funCall0` to avoid the stack/frame setup.
+            zvalue callImpl = genericFindByIndex(GFN_call, index);
+            if (callImpl == NULL) {
+                die("Attempt to call non-function.");
+            } else {
+                zvalue newArgs[argCount + 1];
+                newArgs[0] = function;
+                utilCpy(zvalue, &newArgs[1], args, argCount);
+                return funCall0(callImpl, argCount + 1, newArgs);
+            }
+        }
     }
-
-    return info->function(argCount, args);
 }
 
 
@@ -71,23 +68,46 @@ zvalue functionCall(zvalue function, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
-        zvalue name) {
-    if ((minArgs < 0) ||
-        ((maxArgs != -1) && (maxArgs < minArgs))) {
-        die("Invalid `minArgs` / `maxArgs`: %lld, %lld", minArgs, maxArgs);
+zvalue funApply(zvalue function, zvalue args) {
+    zint argCount = collSize(args);
+    zvalue argsArray[argCount];
+
+    arrayFromList(argsArray, args);
+
+    return funCall(function, argCount, argsArray);
+}
+
+/* Documented in header. */
+zvalue funCall(zvalue function, zint argCount, const zvalue *args) {
+    if (argCount < 0) {
+        die("Invalid argument count for function call: %lld", argCount);
+    } else if ((argCount != 0) && (args == NULL)) {
+        die("Function call argument inconsistency.");
     }
 
-    zvalue result = pbAllocValue(TYPE_Function, sizeof(FunctionInfo));
-    FunctionInfo *info = getInfo(result);
+    UTIL_TRACE_START(callReporter, function);
+    zstackPointer save = pbFrameStart();
 
-    info->minArgs = minArgs;
-    info->maxArgs = (maxArgs != -1) ? maxArgs : INT64_MAX;
-    info->function = function;
-    info->name = name;
+    zvalue result = funCall0(function, argCount, args);
+
+    pbFrameReturn(save, result);
+    UTIL_TRACE_END();
 
     return result;
 }
+
+// All documented in header.
+extern zvalue funCallWith0(zvalue function);
+extern zvalue funCallWith1(zvalue function, zvalue arg0);
+extern zvalue funCallWith2(zvalue function, zvalue arg0, zvalue arg1);
+extern zvalue funCallWith3(zvalue function, zvalue arg0, zvalue arg1,
+    zvalue arg2);
+extern zvalue funCallWith4(zvalue function, zvalue arg0, zvalue arg1,
+    zvalue arg2, zvalue arg3);
+extern zvalue funCallWith5(zvalue function, zvalue arg0, zvalue arg1,
+    zvalue arg2, zvalue arg3, zvalue arg4);
+extern zvalue funCallWith6(zvalue function, zvalue arg0, zvalue arg1,
+    zvalue arg2, zvalue arg3, zvalue arg4, zvalue arg5);
 
 
 /*
@@ -95,52 +115,16 @@ zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
  */
 
 /* Documented in header. */
-METH_IMPL(Function, call) {
-    // The first argument is the function per se, and the rest are the
-    // arguments to call it with.
-    return functionCall(args[0], argCount - 1, &args[1]);
-}
-
-/* Documented in header. */
-METH_IMPL(Function, canCall) {
-    zvalue function = args[0];
-    zvalue value = args[1];
-    FunctionInfo *info = getInfo(function);
-
-    return (info->maxArgs >= 1) ? value : NULL;
-}
-
-/* Documented in header. */
-METH_IMPL(Function, debugString) {
-    zvalue function = args[0];
-    FunctionInfo *info = getInfo(function);
-    zvalue nameString = (info->name == NULL)
-        ? stringFromUtf8(-1, "(unknown)")
-        : GFN_CALL(debugString, info->name);
-
-    return GFN_CALL(cat,
-        stringFromUtf8(-1, "@(Function "),
-        nameString,
-        stringFromUtf8(-1, ")"));
-}
-
-/* Documented in header. */
-METH_IMPL(Function, gcMark) {
-    zvalue function = args[0];
-    FunctionInfo *info = getInfo(function);
-
-    pbMark(info->name);
-    return NULL;
-}
-
-/* Documented in header. */
 void pbBindFunction(void) {
-    // Note: The type `Type` is responsible for initializing `TYPE_Function`.
-    METH_BIND(Function, call);
-    METH_BIND(Function, canCall);
-    METH_BIND(Function, debugString);
-    METH_BIND(Function, gcMark);
+    GFN_call = makeGeneric(1, -1, GFN_NONE, stringFromUtf8(-1, "call"));
+    pbImmortalize(GFN_call);
+
+    GFN_canCall = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "canCall"));
+    pbImmortalize(GFN_canCall);
 }
 
 /* Documented in header. */
-zvalue TYPE_Function = NULL;
+zvalue GFN_call = NULL;
+
+/* Documented in header. */
+zvalue GFN_canCall = NULL;
