@@ -18,7 +18,7 @@
 
 /* Documented in header. */
 void datInit(void) {
-    if (DAT_NULL_BOX != NULL) {
+    if (TYPE_Box != NULL) {
         return;
     }
 

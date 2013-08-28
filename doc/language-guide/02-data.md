@@ -231,10 +231,8 @@ the box value has yet to be set), `store` to set the contents of
 a box, and `canStore` to indicate whether it is okay to call
 `store` (which is not the same as `fetch` returning non-void).
 
-As a special case, the special value `nullBox` is a box that is permanently
-un-stored. Notably, `store(nullBox, value)` is effectively a no-op. This
-arrangement is done in order to make it easy to pass a box into functions
-that require one, but where the box value is never needed.
+The special value `nullBox` is a box that is permanently empty (succeeds
+but does nothing when `store` is called on it).
 
 
 #### Uniqlet

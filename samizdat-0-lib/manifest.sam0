@@ -32,6 +32,7 @@ def MANIFEST = [
     "Callable.sam0",
 
     # Layer 0: Complicated functions
+    "NullBox.sam0",
     "NullGenerator.sam0",      # Used by several other generators.
     "ValueGenerator.sam0",
     "ListWrapGenerator.sam0",

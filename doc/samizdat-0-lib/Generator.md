@@ -63,6 +63,11 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### In-Language Definitions
 
+#### Constant: `nullGenerator`
+
+A generator which is perennially voided. It is defined as `@NullGenerator`,
+along with generator method bindings for that type.
+
 #### `collectAsMap(generator) <> map`
 
 Takes a generator which must yield map values, and collects all of its
@@ -71,6 +76,31 @@ as if by calling `cat([:], map1, map2, ...)` on all the results.
 
 If there are mappings in the yielded results with equal keys, then the
 *last* such mapping is the one that "wins" in the final result.
+
+#### `doReduce(reduceFunction, generator, baseValues*) <> list`
+
+Generator iterator with reduce semantics.
+
+This repeatedly iterates on the given generator, calling the given
+`reduceFunction` with the generated result as well as additional
+arguments, in that order. The additional arguments start as the given
+`baseValues` and are updated each time the `reduceFunction` returns non-void.
+
+The iteration stops when the generator becomes voided, at which
+point this function returns the most recently returned value from the
+`reduceFunction`. If `reduceFunction` never returned a (non-void) value,
+this function returns the `baseValues` list.
+
+The `reduceFunction` must only ever return a list or void.
+
+#### `doReduce1(reduceFunction, generator, baseValue) <> .`
+
+Generator iterator with reduce semantics. This is a special case of
+`doReduce`, where a single reduction value is used instead of a list of them.
+
+As opposed to `doReduce`, the `reduceFunction` can return any type of
+value (not just a list), and similarly the overall result of calling this
+function can turn out to be an arbitrary value.
 
 #### `filterAll(filterFunction, generators*) <> list`
 
@@ -218,37 +248,3 @@ yields the given `value` upon `nextValue()` call.
 
 **Note:** This function makes a value of type `"ValueGenerator"` with `value`
 as the payload. That type has appropriate `Generator` method bindings.
-
-
-OLD DEFINITIONS TO BE SCRUTINIZED
----------------------------------
-
-<br><br>
-### In-Language Definitions
-
-#### `doReduce(reduceFunction, generator, baseValues*) <> list`
-
-Generator iterator with reduce semantics.
-
-This repeatedly iterates on the given generator, calling the given
-`reduceFunction` with the generated result as well as additional
-arguments, in that order. The additional arguments start as the given
-`baseValues` and are updated each time the `reduceFunction` returns non-void.
-
-The iteration stops when the generator becomes voided, at which
-point this function returns the most recently returned value from the
-`reduceFunction`. If `reduceFunction` never returned a (non-void) value,
-this function returns the `baseValues` list.
-
-The `reduceFunction` must only ever return a list or void.
-
-#### `doReduce1(reduceFunction, generator, baseValue) <> .`
-
-Generator iterator with reduce semantics. This is a special case of
-`doReduce`, where a single reduction value is used instead of a list of them.
-
-As opposed to `doReduce`, the `reduceFunction` can return any type of
-value (not just a list), and similarly the overall result of calling this
-function can turn out to be an arbitrary value.
-
-

@@ -32,21 +32,6 @@ fn sibling() {
     io0Note(text);
 };
 
-# Demo of nonlocal exit.
-fn <out> exiter(foo) {
-    ifIs { <> eq(foo, 1) }
-        { <out> "one" }
-        { <out> }
-};
-
-# Demo of `makeMutableBox`.
-fn boxer() {
-    def box = makeMutableBox(10);
-
-    filterPump([1, 2, 3]) { n :: store(box, add(fetch(box), n)) };
-    <> fetch(box)
-};
-
 # Emits the stringified version of the given value to the console.
 fn process(value) {
     io0Note(sourceString(value));
@@ -111,7 +96,6 @@ fn main(selfPath, name?, rest*) {
     process([def: "defined", do: "done"]); # Likewise, for map keys.
     process(@[(null)]);
     process(makeUniqlet());
-    process(boxer());
     process(metaFunctions(LIBRARY, "blort.sam0"));
     process(io0PathFromFlat("///foo//////./bar/./../baz"));
     process(io0PathFromFlat("/a/b/x/y/z/../../../c/"));
@@ -131,11 +115,6 @@ fn main(selfPath, name?, rest*) {
     blort(1, 2, 3, 4, 5);
     stuff(1);
     stuff(1, 2);
-
-    process(exiter(1));
-    ifValue { <> exiter(0) }
-        { value :: io0Note("Unexpected!") }
-        { io0Note("The void.") };
 };
 
 <> main(SELF_PATH, ARGS*)
