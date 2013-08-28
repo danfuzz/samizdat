@@ -132,9 +132,6 @@ def IDENTIFIER_CHARS = [
 
 # Values with special conversions.
 def SPECIAL_VALUES = [
-    (Box):      "Box",
-    (Function): "Function",
-    (Generic):  "Generic",
     (Int):      "Int",
     (List):     "List",
     (Map):      "Map",
@@ -208,7 +205,7 @@ fn doMap(map, adorn) {
 fn doType(type, adorn) {
     def name = callSourceString(typeName(type));
 
-    <> adornIf(adorn, "@[(Type): ", name, "]");
+    <> adornIf(adorn, "@(Type ", name, ")");
 };
 
 # Stringifies a derived value or an opaque core value.
