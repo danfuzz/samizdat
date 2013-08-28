@@ -28,7 +28,6 @@ LIB_FILE(Value,             sam0);
 LIB_FILE(ValueGenerator,    sam0);
 
 LIB_FILE(constants,         sam0);
-LIB_FILE(coreDispatch,      sam0);
 LIB_FILE(entityMap,         sam0);
 LIB_FILE(eval1,             sam0);
 LIB_FILE(format,            sam0);
