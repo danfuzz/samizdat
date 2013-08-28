@@ -1072,6 +1072,17 @@ def implPrefixOperator = {/
 /};
 parPrefixOperator(implPrefixOperator);
 
+# Tree for the closure part of `target.func` syntax expansion.
+# This expression is constant across all translations, and it's most easily
+# constructed by using the built-in parser.
+def TARGET_BIND_CLOSURE = sam0Tree(
+    "target, func <> { args* <> func(target, args*) }");
+
+# Tree for the closure part of `target.func(arg, ...)` syntax expansion,
+# similar to the above.
+def TARGET_CALL_CLOSURE = sam0Tree(
+    "target, func, args* <> func(target, args*)");
+
 # Parses a unary postfix operator. This yields a function (per se) to call
 # in order to construct a node that represents the appropriate ultimate
 # function call.
@@ -1131,23 +1142,33 @@ def implPostfixOperator = {/
     # =>
     # funcName(target, arg, ...)
     # ```
-    #
-    # TODO: The above is not yet implemented!
     @"."
-    name = (
-        n = parIdentifierString
-        { <> makeLiteral(dataOf(n)) }
-    |
-        parAtom
-    )
+    funcExpr = parAtom
 
     (
+        # `target.func(arg, ...)`
         actuals = parActualsList
-        { <> { node <> makeMethodCall(node, name, actuals*) } }
+        {
+            <> ifIs { eq(typeOf(funcExpr), "varRef") }
+                {
+                    # `funcExpr` is a simple variable reference, so there's
+                    # no need to reorder using a closure.
+                    <> { node ::
+                        <> makeCall(funcExpr, node, actuals*)
+                    }
+                }
+                {
+                    <> { node ::
+                        <> makeCall(TARGET_CALL_CLOSURE,
+                            node, funcExpr, actuals*)
+                    }
+                }
+        }
     |
+        # `target.func`
         {
             <> { node ::
-                <> makeCallName("methodGet", makeVarRef("DISPATCH"), node, name)
+                <> makeCall(TARGET_BIND_CLOSURE, node, funcExpr)
             }
         }
     )
