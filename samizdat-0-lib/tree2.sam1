@@ -90,12 +90,6 @@ fn makeCallNameThunks(name, actuals*) {
     <> makeCallName(name, thunks*)
 };
 
-# Makes and returns a node representing a named method call.
-fn makeMethodCall(target, name, actuals*) {
-    <> makeCallName("methodCall",
-        makeVarRef("DISPATCH"), target, name, actuals*)
-};
-
 # Returns a `closure` node like the one given, except with the `formals`
 # binding replaced with the given arguments. Each of the `formals`
 # must be a formal argument map as described in the execution tree spec.
