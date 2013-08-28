@@ -64,10 +64,11 @@ This function is meant to be the primary way to capture the yielded values
 from functions (such as object service functions and parser functions) which
 expect to yield values by calling a function.
 
+
 <br><br>
 ### In-Language Definitions
 
-#### `nullBox`
+#### Constant: `nullBox`
 
 A value that represents a permanently empty (un-set, un-stored) box.
 `store(nullBox, value)` is effectively a no-op. This

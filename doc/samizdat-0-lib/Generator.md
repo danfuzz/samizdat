@@ -63,6 +63,11 @@ calls `store(box)` (storing void), and returns void.
 <br><br>
 ### In-Language Definitions
 
+#### Constant: `nullGenerator`
+
+A generator which is perennially voided. It is defined as `@NullGenerator`,
+along with generator method bindings for that type.
+
 #### `collectAsMap(generator) <> map`
 
 Takes a generator which must yield map values, and collects all of its
