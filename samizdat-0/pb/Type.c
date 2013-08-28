@@ -420,7 +420,7 @@ METH_IMPL(Type, gcMark) {
 }
 
 /* Documented in header. */
-METH_IMPL(Type, perOrder) {
+METH_IMPL(Type, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -473,7 +473,7 @@ void pbInitTypeSystem(void) {
 void pbBindType(void) {
     METH_BIND(Type, debugString);
     METH_BIND(Type, gcMark);
-    METH_BIND(Type, perOrder);
+    METH_BIND(Type, totOrder);
 }
 
 /* Documented in header. */

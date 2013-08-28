@@ -94,7 +94,7 @@ bool valEq(zvalue v1, zvalue v2) {
     assertValid(v2);
 
     if (haveSameType(v1, v2)) {
-        return (GFN_CALL(perEq, v1, v2) != NULL);
+        return (GFN_CALL(totEq, v1, v2) != NULL);
     } else {
         return false;
     }
@@ -115,7 +115,7 @@ zorder valOrder(zvalue v1, zvalue v2) {
 
     if (haveSameType(v1, v2)) {
         zstackPointer save = pbFrameStart();
-        zorder result = zintFromInt(GFN_CALL(perOrder, v1, v2));
+        zorder result = zintFromInt(GFN_CALL(totOrder, v1, v2));
         pbFrameReturn(save, NULL);
         return result;
     } else {
@@ -145,7 +145,7 @@ METH_IMPL(Value, debugString) {
 }
 
 /* Documented in header. */
-METH_IMPL(Value, perEq) {
+METH_IMPL(Value, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -153,12 +153,12 @@ METH_IMPL(Value, perEq) {
         return v2;
     }
 
-    zvalue result = GFN_CALL(perOrder, v1, v2);
+    zvalue result = GFN_CALL(totOrder, v1, v2);
     return valEq(result, INT_0) ? v1 : NULL;
 }
 
 /* Documented in header. */
-METH_IMPL(Value, perOrder) {
+METH_IMPL(Value, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
 
@@ -183,20 +183,20 @@ void pbBindValue(void) {
     GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     pbImmortalize(GFN_debugString);
 
-    GFN_perEq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "eq"));
-    pbImmortalize(GFN_perEq);
+    GFN_totEq = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "eq"));
+    pbImmortalize(GFN_totEq);
 
     GFN_gcMark = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "gcMark"));
     pbImmortalize(GFN_gcMark);
 
-    GFN_perOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "order"));
-    pbImmortalize(GFN_perOrder);
+    GFN_totOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "order"));
+    pbImmortalize(GFN_totOrder);
 
     // Note: The type `Type` is responsible for initializing `TYPE_Value`.
 
     METH_BIND(Value, debugString);
-    METH_BIND(Value, perEq);
-    METH_BIND(Value, perOrder);
+    METH_BIND(Value, totEq);
+    METH_BIND(Value, totOrder);
 }
 
 /* Documented in header. */
@@ -209,7 +209,7 @@ zvalue GFN_debugString = NULL;
 zvalue GFN_gcMark = NULL;
 
 /* Documented in header. */
-zvalue GFN_perEq = NULL;
+zvalue GFN_totEq = NULL;
 
 /* Documented in header. */
-zvalue GFN_perOrder = NULL;
+zvalue GFN_totOrder = NULL;

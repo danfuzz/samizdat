@@ -7,11 +7,11 @@ Ints
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(int1, int2) <> int | void`
+#### `totEq(int1, int2) <> int | void`
 
 Compares the integer values of two ints.
 
-#### `perOrder(int1, int2) <> int`
+#### `totOrder(int1, int2) <> int`
 
 Compares the integer values of two ints, ordering by value in the usual
 manner.

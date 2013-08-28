@@ -149,14 +149,14 @@ BINARY_IMPL(sub,   zintSub);
 BINARY_IMPL(xor,   zintXor);
 
 /* Documented in header. */
-METH_IMPL(Int, perEq) {
+METH_IMPL(Int, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     return (zintValue(v1) == zintValue(v2)) ? v2 : NULL;
 }
 
 /* Documented in header. */
-METH_IMPL(Int, perOrder) {
+METH_IMPL(Int, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
     zint int1 = zintValue(v1);
@@ -241,13 +241,13 @@ void pbBindInt(void) {
     METH_BIND(Int, neg);
     METH_BIND(Int, not);
     METH_BIND(Int, or);
-    METH_BIND(Int, perEq);
-    METH_BIND(Int, perOrder);
     METH_BIND(Int, shl);
     METH_BIND(Int, shr);
     METH_BIND(Int, sign);
     METH_BIND(Int, sub);
     METH_BIND(Int, xor);
+    METH_BIND(Int, totEq);
+    METH_BIND(Int, totOrder);
 
     for (zint i = 0; i < PB_SMALL_INT_COUNT; i++) {
         SMALL_INTS[i] = intFrom(i + PB_SMALL_INT_MIN);

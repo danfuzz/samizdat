@@ -7,11 +7,11 @@ Types
 <br><br>
 ### Generic Function Definitions: `Value` protocol
 
-#### `perEq(type1, type2) <> map | void`
+#### `totEq(type1, type2) <> map | void`
 
 Compares two types. Two types are equal if they are the actual same type.
 
-#### `perOrder(map1, map2) <> int`
+#### `totOrder(map1, map2) <> int`
 
 Compares two types for order, as follows:
 

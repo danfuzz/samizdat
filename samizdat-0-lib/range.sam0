@@ -46,8 +46,8 @@ genericBind(rangeInt, String, String_rangeInt);
 
 # Documented in spec.
 fn makeClosedRange(firstValue, increment, size) {
-    # `perGt` ensures that `size` is an int.
-    <> ifIs { <> perGt(size, 0) }
+    # `totGt` ensures that `size` is an int.
+    <> ifIs { <> totGt(size, 0) }
         {
             <> @[ClosedRange:
                 [firstValue: firstValue, increment: increment, size: size]]
@@ -57,14 +57,14 @@ fn makeClosedRange(firstValue, increment, size) {
 
 # Documented in spec.
 fn makeExclusiveRange(firstValue, increment, limit) {
-    # `perEq` ensures that `firstValue` and `limit` have the same type.
+    # `totEq` ensures that `firstValue` and `limit` have the same type.
     # `optValue({ <> x})` == `x?`.
-    def isEmpty = optValue { <> perEq(firstValue, limit) };
+    def isEmpty = optValue { <> totEq(firstValue, limit) };
     def firstInt = rangeInt(firstValue);
     def limitInt = rangeInt(limit);
 
-    # `perEq` ensures that `increment` is an int.
-    ifIs { <> perEq(increment, 0) }
+    # `totEq` ensures that `increment` is an int.
+    ifIs { <> totEq(increment, 0) }
         {
             return ifIs { <> isEmpty* }
                 { <> nullGenerator }
@@ -77,7 +77,7 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     def size =
         add(1, div(sub(sub(limitInt, firstInt), sign(increment)), increment));
 
-    ifIs { <> perLe(size, 0) }
+    ifIs { <> totLe(size, 0) }
         { return nullGenerator };
 
     <> makeClosedRange(firstValue, increment, size);
@@ -86,17 +86,17 @@ fn makeExclusiveRange(firstValue, increment, limit) {
 # Documented in spec.
 fn makeInclusiveRange(firstValue, increment, limit) {
     # This ensures that `firstValue` and `limit` have the same type.
-    perEq(firstValue, limit);
+    totEq(firstValue, limit);
 
-    # `perEq` ensures that `increment` is an int.
-    ifIs { <> perEq(increment, 0) }
+    # `totEq` ensures that `increment` is an int.
+    ifIs { <> totEq(increment, 0) }
         { return makeClosedRange(firstValue, 0, 1) };
 
     def firstInt = rangeInt(firstValue);
     def limitInt = rangeInt(limit);
     def size = add(1, div(sub(limitInt, firstInt), increment));
 
-    ifIs { <> perLe(size, 0) }
+    ifIs { <> totLe(size, 0) }
         { return nullGenerator };
 
     <> makeClosedRange(firstValue, increment, size);
@@ -105,7 +105,7 @@ fn makeInclusiveRange(firstValue, increment, limit) {
 # Documented in spec.
 fn ClosedRange_nextValue(range, box) {
     def data = dataOf(range);
-    <> ifValue { <> perLe(0, get(data, "size")) }
+    <> ifValue { <> totLe(0, get(data, "size")) }
         { size ::
             def firstValue = get(data, "firstValue");
             def increment = get(data, "increment");
