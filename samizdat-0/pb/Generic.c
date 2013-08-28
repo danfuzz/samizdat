@@ -146,7 +146,7 @@ void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function) {
 
     GenericInfo *info = getInfo(generic);
     zvalue callable =
-        makeFunction(info->minArgs, info->maxArgs, function, info->name);
+        makeBuiltin(info->minArgs, info->maxArgs, function, info->name);
 
     genericBind(generic, typeOrName, callable);
 }

@@ -71,7 +71,7 @@ zvalue builtinCall(zvalue builtin, zint argCount, const zvalue *args) {
  */
 
 /* Documented in header. */
-zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
+zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
         zvalue name) {
     if ((minArgs < 0) ||
         ((maxArgs != -1) && (maxArgs < minArgs))) {
@@ -134,8 +134,8 @@ METH_IMPL(Builtin, gcMark) {
 }
 
 /* Documented in header. */
-void pbBindFunction(void) {
-    // Note: The type `Type` is responsible for initializing `TYPE_Function`.
+void pbBindBuiltin(void) {
+    // Note: The type `Type` is responsible for initializing `TYPE_Builtin`.
     METH_BIND(Builtin, call);
     METH_BIND(Builtin, canCall);
     METH_BIND(Builtin, debugString);

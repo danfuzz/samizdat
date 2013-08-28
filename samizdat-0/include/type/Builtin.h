@@ -19,13 +19,13 @@
 extern zvalue TYPE_Builtin;
 
 /**
- * Constructs and returns a function with the given argument
+ * Constructs and returns a builtin with the given argument
  * restrictions, optional associated closure state, and optional name
  * (used when producing stack traces). `minArgs` must be non-negative,
  * and `maxArgs` must be either greater than `minArgs` or `-1` to indicate
  * that there is no limit.
  */
-zvalue makeFunction(zint minArgs, zint maxArgs, zfunction function,
+zvalue makeBuiltin(zint minArgs, zint maxArgs, zfunction function,
     zvalue name);
 
 #endif
