@@ -19,6 +19,7 @@ LIB_FILE(Collection,        sam0);
 LIB_FILE(FilterGenerator,   sam0);
 LIB_FILE(Generator,         sam0);
 LIB_FILE(ListWrapGenerator, sam0);
+LIB_FILE(NullBox,           sam0);
 LIB_FILE(NullGenerator,     sam0);
 LIB_FILE(OptGenerator,      sam0);
 LIB_FILE(ParaGenerator,     sam0);

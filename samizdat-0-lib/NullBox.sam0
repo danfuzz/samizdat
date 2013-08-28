@@ -1,0 +1,38 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Boxes
+#
+
+
+#
+# Exported Definitions
+#
+
+# Documented in spec.
+fn NullBox_canStore(box) {
+    # Always succeeds.
+    <> box
+};
+genericBind(canStore, "NullBox", NullBox_canStore);
+
+# Documented in spec.
+fn NullBox_fetch(box) {
+    # Return void.
+};
+genericBind(fetch, "NullBox", NullBox_fetch);
+
+# Documented in spec.
+fn NullBox_store(box, value?) {
+    # Return `value` but otherwise do nothing.
+    <> value*
+};
+genericBind(store, "NullBox", NullBox_store);
+
+def nullBox = @NullBox;
+
+<> [
+    nullBox: nullBox
+]
