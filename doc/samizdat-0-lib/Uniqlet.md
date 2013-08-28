@@ -33,12 +33,7 @@ symmetric &mdash; but arbitrary &mdash; total order.
 
 Returns a uniqlet that has never before been returned from this
 function (nor from any other uniqlet-producing source, should such a
-source exist). This equivalence holds for *Samizdat Layer 0* source
-code:
-
-```
-v = @@;  is equivalent to  v = makeUniqlet();
-```
+source exist).
 
 
 <br><br>
