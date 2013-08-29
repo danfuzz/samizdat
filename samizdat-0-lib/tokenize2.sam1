@@ -8,8 +8,8 @@
 
 
 # Forward declarations for Layer 2 definitions.
-def tokMultilineComment = forwardFunction();
-def tokStringPart2 = forwardFunction();
+def tokMultilineComment = makeForwardFunction();
+def tokStringPart2 = makeForwardFunction();
 
 
 #
@@ -52,7 +52,7 @@ fn intFromDigitChar(ch) {
 # Processes a list of `stringPart` elements, yielding a literal `string`
 # value. In *Layer 2* (and higher) this can also yield an
 # `interpolatedString` or an `error`.
-def processStringParts = forwardFunction();
+def processStringParts = makeForwardFunction();
 
 # Parses any amount of whitespace and comments (including nothing at all).
 # **Note:** The yielded result is always ignored.
@@ -118,7 +118,7 @@ def tokPunctuation = {/
 # Parses an integer literal.
 #
 # **Note:** This rule is rewritten in *Layer 2*.
-def tokInt = forwardFunction();
+def tokInt = makeForwardFunction();
 
 # Parses a run of regular characters or an escape / special sequence,
 # inside a quoted string.
@@ -286,7 +286,7 @@ fn implProcessStringParts(parts) {
     # At this point, we have a valid interpolation.
     <> @[interpolatedString: elems]
 };
-processStringParts(implProcessStringParts);
+store(processStringParts, implProcessStringParts);
 
 # Parses a `/* ... */` comment, with nesting.
 def implMultilineComment = {/
@@ -302,7 +302,7 @@ def implMultilineComment = {/
 
     "*/"
 /};
-tokMultilineComment(implMultilineComment);
+store(tokMultilineComment, implMultilineComment);
 
 # Parses a single binary digit (or spacer), returning its value.
 def tokBinDigit = {/
@@ -345,7 +345,7 @@ def implInt = {/
 
     { <> @[int: intFromDigitList(baseSign, digits)] }
 /};
-tokInt(implInt);
+store(tokInt, implInt);
 
 # Parses a single hexadecimal character. This is called during `\x...;`
 # parsing.
@@ -375,7 +375,7 @@ def tokNamedChar = {/
 # Parses the inner portion of a string interpolation expression. This
 # captures a list of inner tokens, ending when parentheses and braces are
 # balanced out (and ignoring other could-be-matched delimiter tokens).
-def tokStringInterpolation = forwardFunction();
+def tokStringInterpolation = makeForwardFunction();
 def implStringInterpolation = {/
     &["({"]
     open = tokToken
@@ -401,7 +401,7 @@ def implStringInterpolation = {/
             { <> [open, cat([], tokens*)*, close] }
     }
 /};
-tokStringInterpolation(implStringInterpolation);
+store(tokStringInterpolation, implStringInterpolation);
 
 # Additional `stringPart` definitions for *Layer 2*.
 def implStringPart2 = {/
@@ -455,7 +455,7 @@ def implStringPart2 = {/
         { <> @[error: "Invalid character literal escape sequence."] }
     )
 /};
-tokStringPart2(implStringPart2);
+store(tokStringPart2, implStringPart2);
 
 
 #
