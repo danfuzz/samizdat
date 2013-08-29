@@ -12,8 +12,8 @@
 #
 
 # Forward declaration of `convertExpression` and `convertPex`.
-def convertExpression = forwardFunction();
-def convertPex = forwardFunction();
+def convertExpression = makeForwardFunction();
+def convertPex = makeForwardFunction();
 
 # Does parser conversion of an expression or statement list.
 fn convertList(nodes) {
@@ -172,7 +172,7 @@ def CONVERT_PEX_MAP = [
 fn convertPexImpl(node, formals) {
     <> get(CONVERT_PEX_MAP, typeOf(node))(node, formals)
 };
-convertPex(convertPexImpl);
+store(convertPex, convertPexImpl);
 
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
@@ -241,7 +241,7 @@ def CONVERT_EXPRESSION_MAP = [
 fn convertExpressionImpl(node) {
     <> get(CONVERT_EXPRESSION_MAP, typeOf(node))(node)
 };
-convertExpression(convertExpressionImpl);
+store(convertExpression, convertExpressionImpl);
 
 
 #

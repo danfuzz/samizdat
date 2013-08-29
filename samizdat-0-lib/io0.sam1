@@ -36,7 +36,7 @@ def parRegularComponent = {/
 
 # Parses a matched set of components that are collectively ignored, e.g.
 # `"/x/y/../.."` or `"/."`.
-def parIgnoredComponent = forwardFunction();
+def parIgnoredComponent = makeForwardFunction();
 def implIgnoredComponent = {/
     component = parPathComponent
 
@@ -50,7 +50,7 @@ def implIgnoredComponent = {/
 
     { <> [] }
 /};
-parIgnoredComponent(implIgnoredComponent);
+store(parIgnoredComponent, implIgnoredComponent);
 
 # Helper for `io0PathFromFlat` which parses absolute path strings
 # into components. This canonicalizes the path by ignoring duplicate
