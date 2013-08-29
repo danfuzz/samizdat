@@ -11,14 +11,19 @@
 # Exported Definitions
 #
 
+# Documented in Samizdat Layer 0 spec.
 def false = @[Boolean: 0];
+
+# Documented in Samizdat Layer 0 spec.
 def true =  @[Boolean: 1];
 
+# Documented in Samizdat Layer 0 spec.
 fn Boolean_and(bool1, bool2) {
     <> @[Boolean: and(dataOf(bool1), dataOf(bool2))]
 };
 genericBind(and, "Boolean", Boolean_and);
 
+# Documented in Samizdat Layer 0 spec.
 fn Boolean_bit(bool, n) {
     <> bit(dataOf(bool), n)
 };
