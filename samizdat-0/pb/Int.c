@@ -158,7 +158,6 @@ BINARY_IMPL_UNI(modEu, zintModEu);
 BINARY_IMPL_UNI(mul,   zintMul);
 BINARY_IMPL_UNI(or,    zintOr);
 BINARY_IMPL_INT(shl,   zintShl);
-BINARY_IMPL_INT(shr,   zintShr);
 BINARY_IMPL_UNI(sub,   zintSub);
 BINARY_IMPL_UNI(xor,   zintXor);
 
@@ -202,7 +201,6 @@ void pbBindInt(void) {
     METH_BIND(Int, not);
     METH_BIND(Int, or);
     METH_BIND(Int, shl);
-    METH_BIND(Int, shr);
     METH_BIND(Int, sign);
     METH_BIND(Int, sub);
     METH_BIND(Int, xor);

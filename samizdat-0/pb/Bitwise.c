@@ -34,9 +34,6 @@ void pbBindBitwise(void) {
     GFN_shl = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "shl"));
     pbImmortalize(GFN_shl);
 
-    GFN_shr = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "shr"));
-    pbImmortalize(GFN_shr);
-
     GFN_xor = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "xor"));
     pbImmortalize(GFN_xor);
 }
@@ -58,9 +55,6 @@ zvalue GFN_or = NULL;
 
 /* Documented in header. */
 zvalue GFN_shl = NULL;
-
-/* Documented in header. */
-zvalue GFN_shr = NULL;
 
 /* Documented in header. */
 zvalue GFN_xor = NULL;

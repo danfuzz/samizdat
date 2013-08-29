@@ -32,9 +32,6 @@ extern zvalue GFN_or;
 /** Generic `shl(bitwise, int)`: Documented in spec. */
 extern zvalue GFN_shl;
 
-/** Generic `shr(bitwise, int)`: Documented in spec. */
-extern zvalue GFN_shr;
-
 /** Generic `xor(bitwise, bitwise)`: Documented in spec. */
 extern zvalue GFN_xor;
 

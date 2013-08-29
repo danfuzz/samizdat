@@ -36,7 +36,6 @@ PRIM_DEF(bitSize,    GFN_bitSize);
 PRIM_DEF(not,        GFN_not);
 PRIM_DEF(or,         GFN_or);
 PRIM_DEF(shl,        GFN_shl);
-PRIM_DEF(shr,        GFN_shr);
 PRIM_DEF(xor,        GFN_xor);
 
 // Generic functions: `Box` protocol
