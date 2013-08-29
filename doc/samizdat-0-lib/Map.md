@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Maps
-----
+Map
+---
 
 <br><br>
 ### Generic Function Definitions: `Value` protocol

@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Uniqlets
---------
+Uniqlet
+-------
 
 <br><br>
 ### Generic Function Definitions: `Value` protocol

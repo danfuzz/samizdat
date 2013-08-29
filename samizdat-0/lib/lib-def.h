@@ -13,6 +13,7 @@
  * usual guard macros.
  */
 
+LIB_FILE(Bitwise,           sam0);
 LIB_FILE(Boolean,           sam0);
 LIB_FILE(Collection,        sam0);
 LIB_FILE(FilterGenerator,   sam0);

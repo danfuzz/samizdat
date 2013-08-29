@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Lists
------
+List
+----
 
 A `List` is a kind of `Sequence`.
 
