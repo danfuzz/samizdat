@@ -32,15 +32,3 @@ The boolean value true. It is defined as `@[Boolean: 1]`.
 Returns the opposite boolean value to the one given. If given `true`,
 this returns `false`. If given `false`, this returns `true`. It is
 an error (terminating the runtime) to pass any other value.
-
-#### `logicFromBoolean(boolean) <> logic`
-
-Bridge between boolean and logic values. If called with `true` this
-returns `true`. If called with `false`, this returns void.
-
-This is equivalent to applying the `**` operator to the argument.
-
-This is useful for taking a flag value and using it in a logical
-expression (such as might be the expression checked in an `if` statement).
-
-**Syntax Note:** Used in the translation of `expression**` forms.
