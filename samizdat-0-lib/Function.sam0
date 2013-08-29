@@ -11,6 +11,35 @@
 # Exported Definitions
 #
 
+# TODO: Documented in Samizdat Layer 0 spec.
+def forward = makeRegularGeneric("forward", 1);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn makeForwardFunction() {
+    <> @[ForwardFunction: makeYieldBox()]
+};
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn ForwardFunction_forward(fwd, function) {
+    ifNot { <> canCall(call, function) }
+        { io0Die("Attempt to forward to non-function.") };
+
+    <> store(dataOf(fwd), function);
+};
+genericBind(forward, "ForwardFunction", ForwardFunction_forward);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn ForwardFunction_call(fwd, args*) {
+    <> call(fetch(dataOf(fwd)), args*)
+};
+genericBind(call, "ForwardFunction", ForwardFunction_call);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn ForwardFunction_canCall(fwd, arg) {
+    <> canCall(fetch(dataOf(fwd)), arg)
+};
+genericBind(canCall, "ForwardFunction", ForwardFunction_canCall);
+
 # Documented in Samizdat Layer 0 spec.
 fn forwardFunction() {
     def box = makeYieldBox();
@@ -40,5 +69,7 @@ fn forwardFunction() {
 };
 
 <> [
-    forwardFunction: forwardFunction
+    forwardFunction: forwardFunction,
+    forward: forward,
+    makeForwardFunction: makeForwardFunction
 ]
