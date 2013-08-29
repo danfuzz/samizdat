@@ -59,9 +59,3 @@ The boolean value false. It is defined as `@[Boolean: 0]`.
 #### Constant: `true`
 
 The boolean value true. It is defined as `@[Boolean: 1]`.
-
-#### `booleanNot(value) <> boolean`
-
-Returns the opposite boolean value to the one given. If given `true`,
-this returns `false`. If given `false`, this returns `true`. It is
-an error (terminating the runtime) to pass any other value.

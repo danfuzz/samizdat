@@ -56,20 +56,7 @@ fn Boolean_xor(bool1, bool2) {
 };
 genericBind(xor, "Boolean", Boolean_xor);
 
-# Map of boolean-notness.
-def NOT_MAP = [
-    (false): true,
-    (true):  false
-];
-
-# Documented in Samizdat Layer 0 spec.
-fn booleanNot(value) {
-    <> ifValueOr { <> get(NOT_MAP, value) }
-        { io0Die("Non-boolean argument to `booleanNot`.") }
-};
-
 <> [
     false: false,
-    true:  true,
-    booleanNot: booleanNot
+    true:  true
 ]
