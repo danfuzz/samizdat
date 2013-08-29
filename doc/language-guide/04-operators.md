@@ -151,7 +151,9 @@ either a value or void) from a function.
 
 This operator, which is essentially the converse of the double-question
 postfix operator, is useful in order to perform conditional operations
-on a boolean variable or data structure element.
+on a boolean variable or data structure element. For example, it can be
+used to take a flag value and incorporate it into a logical
+expression (such as might be the expression checked in an `if` statement).
 
 
 ### Prefix Operators (Precedence 7)
