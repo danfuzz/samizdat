@@ -11,8 +11,8 @@
 #
 
 # Forward declarations.
-def callSourceString = forwardFunction();
-def callFormatValue = forwardFunction();
+def callSourceString = makeForwardFunction();
+def callFormatValue = makeForwardFunction();
 
 # This is int digits for bases up to 36, in order.
 def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
@@ -296,7 +296,7 @@ fn sourceString(value?) {
         { value <> sourceStringGeneral(value, true) }
         { <> "void" }
 };
-callSourceString(sourceString);
+store(callSourceString, sourceString);
 
 # Documented in Samizdat Layer 0 spec.
 fn sourceStringUnadorned(value?) {
@@ -325,7 +325,7 @@ fn formatValue(value?) {
         }
         { <> "" }
 };
-callFormatValue(formatValue);
+store(callFormatValue, formatValue);
 
 # Mapping from format escape characters to their respective handler functions.
 def FORMATTERS = [

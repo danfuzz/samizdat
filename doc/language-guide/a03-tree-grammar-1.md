@@ -90,12 +90,12 @@ fn makeCallNonlocalExit(name, optExpression?) {
 #
 
 # Forward declarations.
-def parProgramBody = forwardFunction();
-def parExpression = forwardFunction();
-def parVoidableExpression = forwardFunction();
+def parProgramBody = makeForwardFunction();
+def parExpression = makeForwardFunction();
+def parVoidableExpression = makeForwardFunction();
 
 # Forward declaration required for integrating layer 1 definitions.
-def parParser = forwardFunction();
+def parParser = makeForwardFunction();
 
 # Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
@@ -345,13 +345,14 @@ def parIdentifierString = {/
 /};
 
 # Parses a possibly-voidable expression.
-def parVoidableExpression = {/
+def implVoidableExpression = {/
     @"&"
     ex = parExpression
     { <> @[voidable: ex] }
 |
     parExpression
 /};
+store(parVoidableExpression, implVoidableExpression);
 
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
@@ -547,13 +548,14 @@ def implVoidableExpression = {/
 |
     parExpression
 /};
-parVoidableExpression(implVoidableExpression);
+store(parVoidableExpression, implVoidableExpression);
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
 # This rule is totally rewritten at that layer.
-def parExpression = {/
+def implExpression = {/
     parUnaryExpression | parFnExpression
 /};
+store(parExpression, implExpression);
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
 # This rule is totally rewritten at that layer.
@@ -616,7 +618,7 @@ def implProgramBody = {/
         <> [last*, statements: allStatements]
     }
 /};
-parProgramBody(implProgramBody);
+store(parProgramBody, implProgramBody);
 
 # Top-level rule to parse a program with possible error afterwards.
 # Note that an empty string is a valid program.
@@ -641,7 +643,7 @@ def parProgramOrError = {/
 #
 
 # Forward declaration.
-def parChoicePex = forwardFunction();
+def parChoicePex = makeForwardFunction();
 
 # Parses a parser function.
 def implParser = {/
@@ -650,7 +652,7 @@ def implParser = {/
     @"/}"
     { <> @[parser: pex] }
 /};
-parParser(implParser);
+store(parParser, implParser);
 
 # Parses a parenthesized parsing expression.
 def parParenPex = {/
@@ -788,5 +790,5 @@ def implChoicePex = {/
     rest = (@"|" parSequencePex)*
     { <> @[choice: [one, rest*]] }
 /};
-parChoicePex(implChoicePex);
+store(parChoicePex, implChoicePex);
 ```

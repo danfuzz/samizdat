@@ -96,10 +96,10 @@ fn makeCallNonlocalExit(name, optExpression?) {
 #
 
 # Forward declarations.
-def parProgramBody = forwardFunction();
-def parExpression = forwardFunction();
-def parParser = forwardFunction();
-def parVoidableExpression = forwardFunction();
+def parProgramBody = makeForwardFunction();
+def parExpression = makeForwardFunction();
+def parParser = makeForwardFunction();
+def parVoidableExpression = makeForwardFunction();
 
 # Documented in Samizdat Layer 0 spec.
 def parYieldDef = pegMakeMainSequence(
@@ -424,13 +424,13 @@ def implVoidableExpression = pegMakeMainChoice(
         parUnaryExpression,
         pegMakeCode { ., ex <> @[voidable: ex] }),
     parExpression);
-parVoidableExpression(implVoidableExpression);
+store(parVoidableExpression, implVoidableExpression);
 
 # Documented in Samizdat Layer 0 spec.
 def implExpression = pegMakeChoice(
     parUnaryExpression,
     parFnExpression);
-parExpression(implExpression);
+store(parExpression, implExpression);
 
 # Documented in Samizdat Layer 0 spec.
 def parStatement = pegMakeChoice(
@@ -486,7 +486,7 @@ def implProgramBody = pegMakeMainSequence(
         def allStatements = [most*, get(last, "statements")*];
         <> [last*, statements: allStatements]
     });
-parProgramBody(implProgramBody);
+store(parProgramBody, implProgramBody);
 
 # Documented in Samizdat Layer 0 spec.
 def parProgramOrError = pegMakeMainSequence(
@@ -503,14 +503,14 @@ def parProgramOrError = pegMakeMainSequence(
 #
 
 # `choicePex` is the top-level parsing expression node type.
-def parChoicePex = forwardFunction();
+def parChoicePex = makeForwardFunction();
 
 def implParser = pegMakeMainSequence(
     pegMakeToken("{/"),
     parChoicePex,
     pegMakeToken("/}"),
     pegMakeCode { ., pex, . <> @[parser: pex] });
-parParser(implParser);
+store(parParser, implParser);
 
 def parParenPex = pegMakeMainSequence(
     pegMakeToken("("),
@@ -622,7 +622,7 @@ def implChoicePex = pegMakeMainSequence(
             pegMakeToken("|"),
             parSequencePex)),
     pegMakeCode { one, rest <> @[choice: [one, rest*]] });
-parChoicePex(implChoicePex);
+store(parChoicePex, implChoicePex);
 
 
 #

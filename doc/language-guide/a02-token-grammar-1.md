@@ -52,7 +52,7 @@ fn processStringParts(parts) {
 
 # Forward declaration of `tokToken`, for use in the interpolated string
 # rule. (This is only significant as of *Layer 2*.)
-def tokToken = forwardFunction();
+def tokToken = makeForwardFunction();
 
 # Parses any amount of whitespace and comments (including nothing at all).
 # **Note:** The yielded result is always ignored.
@@ -190,7 +190,7 @@ def tokError = {/
 /};
 
 # Parses an arbitrary token or error.
-def tokToken = {/
+def implToken = {/
     tokString | tokIdentifier | tokQuotedIdentifier
 |
     # This needs to be listed after the quoted identifier rule, to
@@ -205,6 +205,7 @@ def tokToken = {/
 |
     tokError
 /};
+store(tokToken, implToken);
 
 # Parses a file of tokens, yielding a list of them.
 def tokFile = {/
