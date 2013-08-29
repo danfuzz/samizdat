@@ -22,6 +22,58 @@
 
 
 /*
+ * Private definitions
+ */
+
+/**
+ * Common implementation for `Value:collect` and `Value:filter`.
+ */
+static zvalue collectOrFilter(zvalue generator, zvalue function) {
+    zvalue arr[DAT_MAX_GENERATOR_ITEMS];
+    zint at = 0;
+
+    zstackPointer save = pbFrameStart();
+    zvalue box = makeMutableBox(NULL);
+
+    for (;;) {
+        zvalue nextGen = GFN_CALL(nextValue, generator, box);
+
+        if (nextGen == NULL) {
+            break;
+        }
+
+        zvalue one = GFN_CALL(fetch, box);
+        generator = nextGen;
+
+        // Ideally, we wouldn't reuse the box (we'd use N yield boxes), but
+        // for the sake of efficiency, we use the same box but reset it for
+        // each iteration.
+        GFN_CALL(store, box);
+
+        if (function != NULL) {
+            one = FUN_CALL(function, one);
+            if (one == NULL) {
+                continue;
+            }
+        } else if (one == NULL) {
+            die("Unexpected lack of result.");
+        }
+
+        if (at == DAT_MAX_GENERATOR_ITEMS) {
+            die("Generator produced too many items.");
+        }
+
+        arr[at] = one;
+        at++;
+    }
+
+    zvalue result = listFromArray(at, arr);
+    pbFrameReturn(save, result);
+    return result;
+}
+
+
+/*
  * Type Definition: `Generator`
  *
  * This includes bindings for the methods on all the core types.
@@ -74,45 +126,19 @@ METH_IMPL(String, collect) {
 METH_IMPL(Value, collect) {
     zvalue generator = args[0];
 
-    zvalue arr[DAT_MAX_GENERATOR_ITEMS];
-    zint at;
-
-    zstackPointer save = pbFrameStart();
-    zvalue box = makeMutableBox(NULL);
-
-    for (at = 0; /*at*/; at++) {
-        zvalue nextGen = GFN_CALL(nextValue, generator, box);
-
-        if (nextGen == NULL) {
-            break;
-        } else if (at == DAT_MAX_GENERATOR_ITEMS) {
-            die("Generator produced too many items for `collect`.");
-        }
-
-        arr[at] = GFN_CALL(fetch, box);
-        generator = nextGen;
-
-        // Ideally, we wouldn't reuse the box (we'd just use N yield boxes),
-        // but for the sake of efficiency, we use the same box but reset it
-        // for each iteration.
-        GFN_CALL(store, box);
-    }
-
-    zvalue result = listFromArray(at, arr);
-    pbFrameReturn(save, result);
-    return result;
+    return collectOrFilter(generator, NULL);
 }
 
 /* Documented in header. */
 METH_IMPL(Collection, filter) {
-    zvalue list = args[0];
+    zvalue coll = args[0];
     zvalue function = args[1];
-    zint size = collSize(list);
+    zint size = collSize(coll);
     zvalue result[size];
     zint at = 0;
 
     for (zint i = 0; i < size; i++) {
-        zvalue elem = collNth(list, i);
+        zvalue elem = collNth(coll, i);
         zvalue one = FUN_CALL(function, elem);
 
         if (one != NULL) {
@@ -133,39 +159,7 @@ METH_IMPL(Value, filter) {
     zvalue generator = args[0];
     zvalue function = args[1];
 
-    zvalue arr[DAT_MAX_GENERATOR_ITEMS];
-    zint at = 0;
-
-    zvalue box = makeMutableBox(NULL);
-
-    for (;;) {
-        zvalue nextGen = GFN_CALL(nextValue, generator, box);
-
-        if (nextGen == NULL) {
-            break;
-        }
-
-        zvalue one = FUN_CALL(function, GFN_CALL(fetch, box));
-
-        if (one != NULL) {
-            if (at == DAT_MAX_GENERATOR_ITEMS) {
-                die("Generator produced too many items for `filter`.");
-            }
-
-            arr[at] = one;
-            at++;
-        }
-
-        generator = nextGen;
-
-        // Ideally, we wouldn't reuse the box (we'd just use N yield boxes),
-        // but for the sake of efficiency, we use the same box but reset it
-        // for each iteration.
-        GFN_CALL(store, box);
-    }
-
-    zvalue result = listFromArray(at, arr);
-    return result;
+    return collectOrFilter(generator, function);
 }
 
 /* Documented in header. */
