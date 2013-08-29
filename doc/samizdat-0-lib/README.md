@@ -85,7 +85,7 @@ will be returned, or one of:
   * [Type](Type.md)
   * [Uniqlet](Uniqlet.md)
   * [Value (the base type)](Value.md)
-  * [One-Off Generics](one-off-generics.md)
+  * [One-Off Generics](OneOff.md)
 
 * Other
   * [Constants](constants.md)
