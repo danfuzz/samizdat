@@ -1,7 +1,7 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Types
+Type
 ----
 
 <br><br>

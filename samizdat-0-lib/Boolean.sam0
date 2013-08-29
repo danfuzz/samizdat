@@ -8,26 +8,56 @@
 
 
 #
-# Private Definitions
-#
-
-# Map of boolean-notness.
-def NOT_MAP = [
-    (false): true,
-    (true):  false
-];
-
-
-#
 # Exported Definitions
 #
 
-# Documented in Samizdat Layer 0 spec.
-fn booleanNot(value) {
-    <> ifValueOr { <> get(NOT_MAP, value) }
-        { io0Die("Non-boolean argument to `booleanNot`.") }
+def false = @[Boolean: 0];
+def true =  @[Boolean: 1];
+
+fn Boolean_and(bool1, bool2) {
+    <> @[Boolean: and(dataOf(bool1), dataOf(bool2))]
 };
+genericBind(and, "Boolean", Boolean_and);
+
+fn Boolean_bit(bool, n) {
+    <> bit(dataOf(bool), n)
+};
+genericBind(bit, "Boolean", Boolean_bit);
+
+# Documented in Samizdat Layer 0 spec.
+fn Boolean_bitSize(bool) {
+    <> 1
+};
+genericBind(bitSize, "Boolean", Boolean_bitSize);
+
+# Documented in Samizdat Layer 0 spec.
+fn Boolean_not(bool) {
+    <> @[Boolean: xor(dataOf(bool), 1)]
+};
+genericBind(not, "Boolean", Boolean_not);
+
+# Documented in Samizdat Layer 0 spec.
+fn Boolean_or(bool1, bool2) {
+    <> @[Boolean: or(dataOf(bool1), dataOf(bool2))]
+};
+genericBind(or, "Boolean", Boolean_or);
+
+# Documented in Samizdat Layer 0 spec.
+fn Boolean_shl(bool, n) {
+    def newValue = shl(dataOf(bool), n);
+
+    <> ifValueOr { <> get([0: false, 1: true], newValue) }
+        { io0Die("Undefined boolean shift result.") }
+};
+genericBind(shl, "Boolean", Boolean_shl);
+
+# Documented in Samizdat Layer 0 spec.
+fn Boolean_xor(bool1, bool2) {
+    <> @[Boolean: xor(dataOf(bool1), dataOf(bool2))]
+};
+genericBind(xor, "Boolean", Boolean_xor);
 
 <> [
-    booleanNot: booleanNot
+    false: false,
+    true:  true
 ]

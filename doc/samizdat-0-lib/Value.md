@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Values (the base type)
-----------------------
+Value (the base type)
+---------------------
 
 <br><br>
 ### Generic Function Definitions: `Value` protocol (applies to all values)

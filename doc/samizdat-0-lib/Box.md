@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Boxes
------
+Box
+---
 
 A `Box` is a container for a single other value or for void.
 In terms of value comparison, all boxes should compare by identity,
