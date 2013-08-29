@@ -11,12 +11,6 @@
 # Private Definitions
 #
 
-# Map from booleans to listified logic.
-def LOGIC_MAP = [
-    (false): [],
-    (true):  [true]
-];
-
 # Map of boolean-notness.
 def NOT_MAP = [
     (false): true,
@@ -29,19 +23,11 @@ def NOT_MAP = [
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn logicFromBoolean(value) {
-    <> ifValue { <> get(LOGIC_MAP, value) }
-        { result <> result* }
-        { io0Die("Non-boolean argument to `logicFromBoolean`.") }
-};
-
-# Documented in Samizdat Layer 0 spec.
 fn booleanNot(value) {
     <> ifValueOr { <> get(NOT_MAP, value) }
         { io0Die("Non-boolean argument to `booleanNot`.") }
 };
 
 <> [
-    booleanNot:       booleanNot,
-    logicFromBoolean: logicFromBoolean
+    booleanNot: booleanNot
 ]
