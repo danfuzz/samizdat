@@ -5,8 +5,9 @@
  */
 
 #include "impl.h"
-#include "type/Generic.h"
+#include "type/Bitwise.h"
 #include "type/Int.h"
+#include "type/Number.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -173,60 +174,6 @@ METH_IMPL(Int, totOrder) {
 
 /* Documented in header. */
 void pbBindInt(void) {
-    GFN_abs = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "abs"));
-    pbImmortalize(GFN_abs);
-
-    GFN_add = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "add"));
-    pbImmortalize(GFN_add);
-
-    GFN_and = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "and"));
-    pbImmortalize(GFN_and);
-
-    GFN_bit = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "bit"));
-    pbImmortalize(GFN_bit);
-
-    GFN_bitSize = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "bitSize"));
-    pbImmortalize(GFN_bitSize);
-
-    GFN_div = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "div"));
-    pbImmortalize(GFN_div);
-
-    GFN_divEu = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "divEu"));
-    pbImmortalize(GFN_divEu);
-
-    GFN_mod = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "mod"));
-    pbImmortalize(GFN_mod);
-
-    GFN_modEu = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "modEu"));
-    pbImmortalize(GFN_modEu);
-
-    GFN_mul = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "mul"));
-    pbImmortalize(GFN_mul);
-
-    GFN_neg = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "neg"));
-    pbImmortalize(GFN_neg);
-
-    GFN_not = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "not"));
-    pbImmortalize(GFN_not);
-
-    GFN_or = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "or"));
-    pbImmortalize(GFN_or);
-
-    GFN_shl = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "shl"));
-    pbImmortalize(GFN_shl);
-
-    GFN_shr = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "shr"));
-    pbImmortalize(GFN_shr);
-
-    GFN_sign = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "sign"));
-    pbImmortalize(GFN_sign);
-
-    GFN_sub = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "sub"));
-    pbImmortalize(GFN_sub);
-
-    GFN_xor = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "xor"));
-    pbImmortalize(GFN_xor);
-
     TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"), false);
     METH_BIND(Int, abs);
     METH_BIND(Int, add);
@@ -261,57 +208,3 @@ void pbBindInt(void) {
 
 /* Documented in header. */
 zvalue TYPE_Int = NULL;
-
-/* Documented in header. */
-zvalue GFN_abs = NULL;
-
-/* Documented in header. */
-zvalue GFN_add = NULL;
-
-/* Documented in header. */
-zvalue GFN_and = NULL;
-
-/* Documented in header. */
-zvalue GFN_bit = NULL;
-
-/* Documented in header. */
-zvalue GFN_bitSize = NULL;
-
-/* Documented in header. */
-zvalue GFN_div = NULL;
-
-/* Documented in header. */
-zvalue GFN_divEu = NULL;
-
-/* Documented in header. */
-zvalue GFN_mod = NULL;
-
-/* Documented in header. */
-zvalue GFN_modEu = NULL;
-
-/* Documented in header. */
-zvalue GFN_mul = NULL;
-
-/* Documented in header. */
-zvalue GFN_neg = NULL;
-
-/* Documented in header. */
-zvalue GFN_not = NULL;
-
-/* Documented in header. */
-zvalue GFN_or = NULL;
-
-/* Documented in header. */
-zvalue GFN_shl = NULL;
-
-/* Documented in header. */
-zvalue GFN_shr = NULL;
-
-/* Documented in header. */
-zvalue GFN_sign = NULL;
-
-/* Documented in header. */
-zvalue GFN_sub = NULL;
-
-/* Documented in header. */
-zvalue GFN_xor = NULL;

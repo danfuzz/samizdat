@@ -17,6 +17,7 @@
 #include "pb.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 
 
 /** Type value for in-model type `Value`. */

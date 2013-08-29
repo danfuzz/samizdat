@@ -29,6 +29,16 @@ PRIM_DEF(perOrder,   GFN_perOrder);
 PRIM_DEF(totEq,      GFN_totEq);
 PRIM_DEF(totOrder,   GFN_totOrder);
 
+// Generic functions: `Bitwise` protocol
+PRIM_DEF(and,        GFN_and);
+PRIM_DEF(bit,        GFN_bit);
+PRIM_DEF(bitSize,    GFN_bitSize);
+PRIM_DEF(not,        GFN_not);
+PRIM_DEF(or,         GFN_or);
+PRIM_DEF(shl,        GFN_shl);
+PRIM_DEF(shr,        GFN_shr);
+PRIM_DEF(xor,        GFN_xor);
+
 // Generic functions: `Box` protocol
 PRIM_DEF(canStore,   GFN_canStore);
 PRIM_DEF(fetch,      GFN_fetch);
@@ -54,24 +64,17 @@ PRIM_DEF(collect,    GFN_collect);
 PRIM_DEF(filter,     GFN_filter);
 PRIM_DEF(nextValue,  GFN_nextValue);
 
-// Generic functions: `Int` protocol
+// Generic functions: `Number` protocol
 PRIM_DEF(abs,        GFN_abs);
 PRIM_DEF(add,        GFN_add);
-PRIM_DEF(and,        GFN_and);
-PRIM_DEF(bit,        GFN_bit);
 PRIM_DEF(div,        GFN_div);
 PRIM_DEF(divEu,      GFN_divEu);
 PRIM_DEF(mod,        GFN_mod);
 PRIM_DEF(modEu,      GFN_modEu);
 PRIM_DEF(mul,        GFN_mul);
 PRIM_DEF(neg,        GFN_neg);
-PRIM_DEF(not,        GFN_not);
-PRIM_DEF(or,         GFN_or);
-PRIM_DEF(shl,        GFN_shl);
-PRIM_DEF(shr,        GFN_shr);
 PRIM_DEF(sign,       GFN_sign);
 PRIM_DEF(sub,        GFN_sub);
-PRIM_DEF(xor,        GFN_xor);
 
 // Primitive functions
 PRIM_FUNC(charFromInt,          1, 1);
