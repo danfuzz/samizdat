@@ -27,7 +27,7 @@ fn String_rangeAdd(value, increment) {
 genericBind(rangeAdd, String, String_rangeAdd);
 
 # `rangeInt` generic, used to convert range values to ints.
-def rangeInt = makeRegularGeneric("rangeInt", 1);
+def rangeInt = makeRegularGeneric("rangeInt", 1, 1);
 
 fn Int_rangeInt(value) {
     <> value
