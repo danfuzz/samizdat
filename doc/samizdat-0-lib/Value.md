@@ -289,3 +289,5 @@ Type-specific total-order comparison, which calls `totEq(value1, value2)` to
 determine result. Returns `value2` if it is *not* considered equal to `value1`.
 It is a fatal error (terminating the runtime) if the two arguments are of
 different types.
+
+**Syntax Note:** Used in the translation of `expr**` forms.
