@@ -201,13 +201,13 @@ void datBindGenerator(void) {
     METH_BIND(Value,  collect);
 
     METH_BIND(Value,  filter);
-    genericBindPrim(GFN_filter,    TYPE_List,   Collection_filter);
-    genericBindPrim(GFN_filter,    TYPE_Map,    Collection_filter);
-    genericBindPrim(GFN_filter,    TYPE_String, Collection_filter);
+    genericBindPrim(GFN_filter,    TYPE_List,   Collection_filter, "List:filter");
+    genericBindPrim(GFN_filter,    TYPE_Map,    Collection_filter, "Map:filter");
+    genericBindPrim(GFN_filter,    TYPE_String, Collection_filter, "String:filter");
 
-    genericBindPrim(GFN_nextValue, TYPE_List,   Collection_nextValue);
-    genericBindPrim(GFN_nextValue, TYPE_Map,    Collection_nextValue);
-    genericBindPrim(GFN_nextValue, TYPE_String, Collection_nextValue);
+    genericBindPrim(GFN_nextValue, TYPE_List,   Collection_nextValue, "List:nextValue");
+    genericBindPrim(GFN_nextValue, TYPE_Map,    Collection_nextValue, "Map:nextValue");
+    genericBindPrim(GFN_nextValue, TYPE_String, Collection_nextValue, "String:nextValue");
 }
 
 /* Documented in header. */

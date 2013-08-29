@@ -141,12 +141,15 @@ void genericBind(zvalue generic, zvalue typeOrName, zvalue function) {
 }
 
 /* Documented in header. */
-void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function) {
+void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function,
+        const char *builtinName) {
     assertHasType(generic, TYPE_Generic);
 
     GenericInfo *info = getInfo(generic);
-    zvalue builtin =
-        makeBuiltin(info->minArgs, info->maxArgs, function, info->name);
+    zvalue name = (builtinName != NULL)
+        ? stringFromUtf8(-1, builtinName)
+        : info->name;
+    zvalue builtin = makeBuiltin(info->minArgs, info->maxArgs, function, name);
 
     genericBind(generic, typeOrName, builtin);
 }

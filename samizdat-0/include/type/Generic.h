@@ -25,13 +25,19 @@ typedef enum {
     GFN_SAME_TYPE = 1
 } zgenericFlags;
 
+/** C function name for a method on the given type with the given name. */
+#define METH_NAME(type, name) type##_##name
+
 /** Declaration for a method on the given type with the given name. */
 #define METH_IMPL(type, name) \
-    static zvalue type##_##name(zint argCount, const zvalue *args)
+    static zvalue METH_NAME(type, name)(zint argCount, const zvalue *args)
 
 /** Performs binding of the indicated method. */
 #define METH_BIND(type, name) \
-    do { genericBindPrim(GFN_##name, TYPE_##type, type##_##name); } while(0)
+    do { \
+        genericBindPrim(GFN_##name, TYPE_##type, METH_NAME(type, name), \
+            #type ":" #name); \
+    } while(0)
 
 /** Type value for in-model type `Generic`. */
 extern zvalue TYPE_Generic;
@@ -49,8 +55,10 @@ void genericBind(zvalue generic, zvalue typeOrName, zvalue function);
  * be a generic function, `typeOrName` is the usual representation of a type,
  * and `function` must be a valid `zfunction`. The type must not have already
  * been bound in the given generic, and the generic must not be sealed.
+ * An optional `builtinName` becomes the name of the bound builtin.
  */
-void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function);
+void genericBindPrim(zvalue generic, zvalue typeOrName, zfunction function,
+    const char *builtinName);
 
 /**
  * Seal the given generic. This prevents it from gaining any new bindings.

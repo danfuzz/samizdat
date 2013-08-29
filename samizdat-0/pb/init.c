@@ -39,4 +39,5 @@ void pbInit(void) {
     pbBindInt();
     pbBindUniqlet();
     pbBindList();
+    pbBindDeriv();
 }

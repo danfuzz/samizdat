@@ -9,6 +9,7 @@
  */
 
 #include "impl.h"
+#include "type/Builtin.h"
 #include "type/Collection.h"
 #include "type/Generic.h"
 #include "type/Int.h"
@@ -132,6 +133,12 @@ zint collSize(zvalue coll) {
  * methods are bound on many types.
  */
 
+/** Builtin for `Sequence:get`. */
+static zvalue BI_Sequence_get = NULL;
+
+/** Builtin for `Sequence:keyList`. */
+static zvalue BI_Sequence_keyList = NULL;
+
 /* Documented in header. */
 METH_IMPL(Sequence, get) {
     zvalue seq = args[0];
@@ -160,8 +167,8 @@ METH_IMPL(Sequence, keyList) {
 
 /* Documented in header. */
 void seqBind(zvalue type) {
-    genericBindPrim(GFN_get, type, Sequence_get);
-    genericBindPrim(GFN_keyList, type, Sequence_keyList);
+    genericBind(GFN_get,     type, BI_Sequence_get);
+    genericBind(GFN_keyList, type, BI_Sequence_keyList);
 }
 
 
@@ -197,6 +204,14 @@ void pbBindCollection(void) {
 
     GFN_slice = makeGeneric(2, 3, GFN_NONE, stringFromUtf8(-1, "slice"));
     pbImmortalize(GFN_slice);
+
+    BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get),
+        stringFromUtf8(-1, "Sequence:get"));
+    pbImmortalize(BI_Sequence_get);
+
+    BI_Sequence_keyList = makeBuiltin(1, 1, METH_NAME(Sequence, keyList),
+        stringFromUtf8(-1, "Sequence:keyList"));
+    pbImmortalize(BI_Sequence_keyList);
 }
 
 /* Documented in header. */

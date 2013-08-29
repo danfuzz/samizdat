@@ -5,8 +5,10 @@
  */
 
 #include "impl.h"
+#include "type/Builtin.h"
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/String.h"
 #include "type/Value.h"
 #include "zlimits.h"
 
@@ -79,6 +81,15 @@ zvalue makeTransValue(zvalue type, zvalue data) {
  * methods are bound on many types.
  */
 
+/** Builtin for `Deriv:gcMark`. */
+static zvalue BI_Deriv_gcMark = NULL;
+
+/** Builtin for `Deriv:totEq`. */
+static zvalue BI_Deriv_totEq = NULL;
+
+/** Builtin for `Deriv:totOrder`. */
+static zvalue BI_Deriv_totOrder = NULL;
+
 /* Documented in header. */
 METH_IMPL(Deriv, gcMark) {
     zvalue value = args[0];
@@ -112,7 +123,22 @@ METH_IMPL(Deriv, totOrder) {
 
 /* Documented in header. */
 void derivBind(zvalue type) {
-    genericBindPrim(GFN_gcMark,   type, Deriv_gcMark);
-    genericBindPrim(GFN_totEq,    type, Deriv_totEq);
-    genericBindPrim(GFN_totOrder, type, Deriv_totOrder);
+    genericBind(GFN_gcMark,   type, BI_Deriv_gcMark);
+    genericBind(GFN_totEq,    type, BI_Deriv_totEq);
+    genericBind(GFN_totOrder, type, BI_Deriv_totOrder);
+}
+
+/* Documented in header. */
+void pbBindDeriv(void) {
+    BI_Deriv_gcMark = makeBuiltin(1, 1, METH_NAME(Deriv, gcMark),
+        stringFromUtf8(-1, "Deriv:gcMark"));
+    pbImmortalize(BI_Deriv_gcMark);
+
+    BI_Deriv_totEq = makeBuiltin(2, 2, METH_NAME(Deriv, totEq),
+        stringFromUtf8(-1, "Deriv:totEq"));
+    pbImmortalize(BI_Deriv_totEq);
+
+    BI_Deriv_totOrder = makeBuiltin(2, 2, METH_NAME(Deriv, totOrder),
+        stringFromUtf8(-1, "Deriv:totOrder"));
+    pbImmortalize(BI_Deriv_totOrder);
 }

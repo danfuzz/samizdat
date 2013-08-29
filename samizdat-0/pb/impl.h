@@ -139,6 +139,7 @@ void pbInitTypeSystem(void);
 // Per-type binding and initialization.
 void pbBindBuiltin(void);
 void pbBindCollection(void);
+void pbBindDeriv(void);
 void pbBindFunction(void);
 void pbBindGeneric(void);
 void pbBindInt(void);
