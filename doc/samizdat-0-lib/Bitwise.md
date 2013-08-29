@@ -53,12 +53,6 @@ argument unchanged.
 **Note:** The `shift` argument is not limited in any particular way (not
 masked, etc.).
 
-#### `shr(bitwise, int) <> bitwise`
-
-Returns the first argument bit-shifted by an amount indicated by the
-second argument. This is identical to `shl`, except that the sense of
-positive and negative `shift` is reversed.
-
 #### `xor(bitwise1, bitwise2) <> bitwise`
 
 Returns the binary-xor (bitwise not-equal) of the given values.
@@ -67,7 +61,11 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 <br><br>
 ### Primitive Definitions
 
-(none)
+#### `shr(bitwise, int) <> bitwise`
+
+Returns the first argument bit-shifted by an amount indicated by the
+second argument, with the opposite sense of shift direction compared
+to `shl`. This is just a convenient way to say `shl(bitwise, -int)`.
 
 
 <br><br>
