@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Generators
-----------
+Generator
+---------
 
 In general, the generator-oriented functions accept either generators
 or collections as "generator" arguments. Collections and ints are implicitly

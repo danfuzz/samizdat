@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Builtins
---------
+Builtin
+-------
 
 `Builtin` is the type for functions that are built into the lowest level
 of the system.

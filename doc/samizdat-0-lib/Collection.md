@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Collections (multiple-value containers)
----------------------------------------
+Collection (multiple-value containers)
+--------------------------------------
 
 There is no `Collection` type per se. There is, however, effectively a
 `Collection` protocol as well as a couple sub-protocols, as documented

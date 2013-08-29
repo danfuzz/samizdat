@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Booleans
---------
+Boolean
+-------
 
 <br><br>
 ### Generic Function Definitions
