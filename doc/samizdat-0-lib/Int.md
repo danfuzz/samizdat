@@ -26,125 +26,110 @@ manner.
 
 
 <br><br>
-### Generic Function Definitions: `Int` protocol
-
-#### `abs(int) <> int`
-
-Returns the absolute value of the given value. This is `value` itself if
-it is non-negative, or `-value` if it is negative.
-
-#### `add(int1, int2) <> int`
-
-Returns the sum of the given values.
+### Generic Function Definitions: `Bitwise` protocol
 
 #### `and(int1, int2) <> int`
 
-Returns the binary-and (intersection of all one-bits) of the given values.
+Straightforward protocol implementation.
 
-#### `bit(int, n) <> int`
+#### `bit(int1, int2) <> int`
 
-Returns as an int (`0` or `1`) the bit value in the first
-argument at the bit position (zero-based) indicated by the second
-argument. It is an error (terminating the runtime) if the second
-argument is negative.
+Straightforward protocol implementation.
 
-#### `bitSize(int) <> int`
+**Note**: Bits at or beyond `bitSize(int1)` are considered to be the
+same as `bit(int1, bitSize(int1) - 1)`.
 
-Returns the number of significant bits (not bytes) in
-the value when represented in twos-complement form, including a
-high-order sign bit. The minimum size of an int is `1`, which
-is the size of both `0` and `-1`.
+#### `bitSize(bitwise) <> int`
 
-#### `div(int1, int2) <> int`
+Straightforward protocol implementation.
 
-Returns the quotient of the given values (first over second),
-using truncated division, to yield an int result. It is an
-error (terminating the runtime) if the second argument is `0`.
+**Note:** The minimum size of an int is `1`, which is the size of
+both `0` and `-1`.
 
-#### `divEu(int1, int2) <> int`
+#### `not(bitwise) <> bitwise`
 
-Returns the quotient of the given values (first over second),
-using Euclidean division, to yield an int result. It is an
-error (terminating the runtime) if the second argument is `0`.
+Straightforward protocol implementation.
 
-Euclidean division differs from truncating division when given
-arguments of opposite sign. The usual equivalence holds with Euclidean
-division that `x == (x // y) + (x %% y)` (for `y != 0`), but the
-modulo result is guaranteed to be non-negative, and this means that
-division is correspondingly different.
+#### `or(bitwise1, bitwise2) <> bitwise`
 
-#### `mod(int1, int2) <> int`
+Straightforward protocol implementation.
 
-Returns the remainder after truncated division of the given values (first
-over second). The sign of the result will always match the sign of the
-first argument. It is an error (terminating the runtime) if the second
-argument is `0`.
+#### `shl(bitwise, int) <> bitwise`
 
-The truncated modulo operation `x % y` can be defined in terms
-of truncated division as `x - (x / y) * y`.
+Straightforward protocol implementation.
 
-#### `modEu(int1, int2) <> int`
+#### `shr(bitwise, int) <> bitwise`
 
-Returns the remainder after Euclidean division of the given values (first
-over second). The sign of the result will always be positive.
-It is an error (terminating the runtime) if the second
-argument is `0`.
+Straightforward protocol implementation.
 
-The Euclidean modulo operation `x %% y` can be defined in terms of
-Euclidean division as `x - (x // y) * y`.
-
-#### `mul(int1, int2) <> int`
-
-Returns the product of the given values.
-
-#### `neg(int) <> int`
-
-Returns the negation (same magnitude, opposite sign) of the given
-value.
-
-#### `not(int) <> int`
-
-Returns the binary complement (all bits opposite) of the given value.
-
-#### `or(int1, int2) <> int`
-
-Returns the binary-or (union of all one-bits) of the given values.
-
-#### `shl(int, shift) <> int`
-
-Returns the first argument (an int) bit-shifted an amount indicated
-by the second argument (also an int). If `shift` is positive, this
-is a left-shift operation. If `shift` is negative, this is a right-shift
-operation. If `shift` is `0`, this is a no-op, returning the first
-argument unchanged.
-
-**Note:** The `shift` argument is not limited in any particular way (not
-masked, etc.).
-
-#### `shr(int, shift) <> int`
-
-Returns the first argument bit-shifted by an amount indicated by the
-second argument. This is identical to `shl`, except that the sense of
-positive and negative `shift` is reversed.
-
-**Note:** Unlike some other languages, there is no unsigned right-shift
+**Note:** Unlike some other languages, there is no unsigned int right-shift
 operation in *Samizdat Layer 0*. This is because ints are unlimited
 in bit width, and so there is no way to define such an operation. If
 you need "unsigned" operations, just operate consistently on
 non-negative ints.
 
+#### `xor(bitwise1, bitwise2) <> bitwise`
+
+Straightforward protocol implementation.
+
+
+<br><br>
+### Generic Function Definitions: `Number` protocol
+
+#### `abs(int) <> int`
+
+Straightforward protocol implementation.
+
+#### `add(int1, int2) <> int`
+
+Straightforward protocol implementation.
+
+#### `div(int1, int2) <> int`
+
+Straightforward protocol implementation, using truncated division.
+
+It is an error (terminating the runtime) if the second argument
+is `0`, as there is no "infinity" representation in the type.
+
+#### `divEu(int1, int2) <> int`
+
+Straightforward protocol implementation, using truncated Euclidean division.
+
+It is an error (terminating the runtime) if the second argument
+is `0`, as there is no "infinity" representation in the type.
+
+#### `mod(int1, int2) <> int`
+
+Straightforward protocol implementation. The truncated modulo operation
+`x % y` can be defined in terms of truncated division as `x - (x / y) * y`.
+
+It is an error (terminating the runtime) if the second argument
+is `0`, as there is no "infinity" representation in the type.
+
+#### `modEu(int1, int2) <> int`
+
+Straightforward protocol implementation. The truncated Euclidean modulo
+operation `x %% y` can be defined in terms of truncated Euclidean division
+as `x - (x // y) * y`.
+
+It is an error (terminating the runtime) if the second argument
+is `0`, as there is no "infinity" representation in the type.
+
+#### `mul(int1, int2) <> int`
+
+Straightforward protocol implementation.
+
+#### `neg(int) <> int`
+
+Straightforward protocol implementation.
+
 #### `sign(int) <> int`
 
-Returns the sign of the given value: `-1` for negative values,
-`1` for positive values, or `0` for `0`.
+Straightforward protocol implementation.
 
-#### `sub(int1, int2) <> int`
+#### `sub(int1, int2) <> number`
 
-Returns the difference of the given values (first minus second).
-
-#### `xor(int1, int2) <> int`
-
-Returns the binary-xor (bitwise not-equal) of the given values.
+Straightforward protocol implementation.
 
 
 <br><br>
