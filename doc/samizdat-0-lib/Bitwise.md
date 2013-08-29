@@ -61,14 +61,14 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 <br><br>
 ### Primitive Definitions
 
-#### `shr(bitwise, int) <> bitwise`
-
-Returns the first argument bit-shifted by an amount indicated by the
-second argument, with the opposite sense of shift direction compared
-to `shl`. This is just a convenient way to say `shl(bitwise, -int)`.
+(none)
 
 
 <br><br>
 ### In-Language Definitions
 
-(none)
+#### `shr(bitwise, int) <> bitwise`
+
+Returns the first argument bit-shifted by an amount indicated by the
+second argument, with the opposite sense of shift direction compared
+to `shl`. This is just a convenient way to say `shl(bitwise, -int)`.
