@@ -1,0 +1,85 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Boolean demo
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+#
+# Helper Definitions
+#
+
+# Checks an expected result.
+fn expect(name, result, func, args*) {
+    def got = func(args*);
+    ifNot { <> eq(got, result) }
+        {
+            io0Note(cat("Unexpected result: ", sourceString(got)));
+            io0Die(cat("For: ", name, " ", sourceString(args)));
+        }
+};
+
+
+#
+# Main demos
+#
+
+io0Note("Booleans");
+
+expect("and", false, and, false, false);
+expect("and", false, and, false, true);
+expect("and", false, and, true,  false);
+expect("and", true,  and, true,  true);
+
+expect("or", false, or, false, false);
+expect("or", true,  or, false, true);
+expect("or", true,  or, true,  false);
+expect("or", true,  or, true,  true);
+
+expect("xor", false, xor, false, false);
+expect("xor", true,  xor, false, true);
+expect("xor", true,  xor, true,  false);
+expect("xor", false, xor, true,  true);
+
+expect("not", true,  not, false);
+expect("not", false, not, true);
+
+expect("bit", 0, bit, false, 0);
+expect("bit", 1, bit, true,  0);
+expect("bit", 0, bit, false, 1);
+expect("bit", 0, bit, true,  1);
+expect("bit", 0, bit, false, 2);
+expect("bit", 0, bit, true,  2);
+
+expect("bitSize", 1, bitSize, false);
+expect("bitSize", 1, bitSize, true);
+
+expect("shl", false, shl, false, 0);
+expect("shl", false, shl, false, 1);
+expect("shl", false, shl, false, 2);
+expect("shl", false, shl, false, -1);
+expect("shl", false, shl, false, -2);
+
+expect("shl", true,  shl, true, 0);
+expect("shl", false, shl, true, -1);
+expect("shl", false, shl, true, -2);
+
+expect("shr", false, shr, false, 0);
+expect("shr", false, shr, false, -1);
+expect("shr", false, shr, false, -2);
+expect("shr", false, shr, false, 1);
+expect("shr", false, shr, false, 2);
+
+expect("shr", true,  shr, true, 0);
+expect("shr", false, shr, true, 1);
+expect("shr", false, shr, true, 2);
+
+
+io0Note("All good.");
+
+<> 0
