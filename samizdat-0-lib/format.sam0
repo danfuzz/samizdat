@@ -53,7 +53,7 @@ fn formatIntWithBase(int, base) {
 
 # Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
-    <> ifIs { <> logicFromBoolean(adorn) }
+    <> ifIs { <> totEq(adorn, true) }
         { <> cat(before, value, after) }
         { <> value }
 };
