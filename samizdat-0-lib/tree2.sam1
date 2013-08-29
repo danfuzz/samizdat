@@ -112,7 +112,6 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 # For unary operators, map of token types to function name variable references.
 def UNARY_OPERATORS = [
     "-":   makeVarRef("neg"),
-    "**":  makeVarRef("logicFromBoolean"),
     "!!!": makeVarRef("not"),
     "[]":  makeVarRef("get")
 ];
@@ -1093,7 +1092,7 @@ def implPostfixOperator = {/
     { <> { node <> makeOptValueExpression(node) } }
 |
     @"**"
-    { <> { node <> makeCall(get(UNARY_OPERATORS, "**"), node) } }
+    { <> { node <> makeCallName("totNe", makeLiteral(false), node) } }
 |
     @"??"
     {
