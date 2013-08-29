@@ -114,10 +114,13 @@ zvalue INT_NEG1 = NULL;
     } \
     extern int semicolonRequiredHere
 
-#define BINARY_IMPL(name, op) \
+/**
+ * Common helper for defining binary operations as methods.
+ */
+#define BINARY_IMPL(name, op, getY) \
     METH_IMPL(Int, name) { \
         zint x = zintValue(args[0]); \
-        zint y = zintValue(args[1]); \
+        zint y = (getY)(args[1]); \
         zint result; \
         if ((op)(&result, x, y)) { \
             return intFromZint(result); \
@@ -127,6 +130,16 @@ zvalue INT_NEG1 = NULL;
     } \
     extern int semicolonRequiredHere
 
+/**
+ * Helper for defining unitype binary operations as methods.
+ */
+#define BINARY_IMPL_UNI(name, op) BINARY_IMPL(name, op, zintValue)
+
+/**
+ * Helper for defining second-arg-int binary operations as methods.
+ */
+#define BINARY_IMPL_INT(name, op) BINARY_IMPL(name, op, zintFromInt)
+
 // All documented in header.
 UNARY_IMPL(abs,     zintAbs);
 UNARY_IMPL(bitSize, zintSafeBitSize);
@@ -135,19 +148,19 @@ UNARY_IMPL(not,     zintNot);
 UNARY_IMPL(sign,    zintSign);
 
 // All documented in header.
-BINARY_IMPL(add,   zintAdd);
-BINARY_IMPL(and,   zintAnd);
-BINARY_IMPL(bit,   zintBit);
-BINARY_IMPL(div,   zintDiv);
-BINARY_IMPL(divEu, zintDivEu);
-BINARY_IMPL(mod,   zintMod);
-BINARY_IMPL(modEu, zintModEu);
-BINARY_IMPL(mul,   zintMul);
-BINARY_IMPL(or,    zintOr);
-BINARY_IMPL(shl,   zintShl);
-BINARY_IMPL(shr,   zintShr);
-BINARY_IMPL(sub,   zintSub);
-BINARY_IMPL(xor,   zintXor);
+BINARY_IMPL_UNI(add,   zintAdd);
+BINARY_IMPL_UNI(and,   zintAnd);
+BINARY_IMPL_INT(bit,   zintBit);
+BINARY_IMPL_UNI(div,   zintDiv);
+BINARY_IMPL_UNI(divEu, zintDivEu);
+BINARY_IMPL_UNI(mod,   zintMod);
+BINARY_IMPL_UNI(modEu, zintModEu);
+BINARY_IMPL_UNI(mul,   zintMul);
+BINARY_IMPL_UNI(or,    zintOr);
+BINARY_IMPL_INT(shl,   zintShl);
+BINARY_IMPL_INT(shr,   zintShr);
+BINARY_IMPL_UNI(sub,   zintSub);
+BINARY_IMPL_UNI(xor,   zintXor);
 
 /* Documented in header. */
 METH_IMPL(Int, totEq) {

@@ -19,7 +19,7 @@ void pbBindBitwise(void) {
     GFN_and = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "and"));
     pbImmortalize(GFN_and);
 
-    GFN_bit = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "bit"));
+    GFN_bit = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "bit"));
     pbImmortalize(GFN_bit);
 
     GFN_bitSize = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "bitSize"));
@@ -31,10 +31,10 @@ void pbBindBitwise(void) {
     GFN_or = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "or"));
     pbImmortalize(GFN_or);
 
-    GFN_shl = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "shl"));
+    GFN_shl = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "shl"));
     pbImmortalize(GFN_shl);
 
-    GFN_shr = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "shr"));
+    GFN_shr = makeGeneric(2, 2, GFN_NONE, stringFromUtf8(-1, "shr"));
     pbImmortalize(GFN_shr);
 
     GFN_xor = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "xor"));
