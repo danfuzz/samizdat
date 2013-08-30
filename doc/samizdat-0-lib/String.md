@@ -29,6 +29,16 @@ before its longer brethren.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
+#### `toInt(string) <> int`
+
+Given a single-character string, returns the character code
+of its sole character, as an int. It is an error (terminating
+the runtime) if `string` is not a string of size 1.
+
+#### `toNumber(string) <> int`
+
+Same as `toInt(string)`.
+
 #### `toString(string) <> string`
 
 Returns the argument.
@@ -100,11 +110,7 @@ On a non-empty string, calls `store(box, first(string))` and returns
 <br><br>
 ### Primitive Definitions
 
-#### `intFromChar(string) <> int`
-
-Given a single-character string, returns the character code
-of its sole character, as an int. It is an error (terminating
-the runtime) if `string` is not a string of size 1.
+(none)
 
 
 <br><br>

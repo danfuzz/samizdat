@@ -28,6 +28,14 @@ manner.
 <br><br>
 ### Generic Function Definitions: One-Offs
 
+#### `toInt(int) <> int`
+
+Returns the given argument.
+
+#### `toNumber(int) <> int`
+
+Returns the given argument.
+
 #### `toString(int) <> string`
 
 Returns a single-character string whose code point is the
