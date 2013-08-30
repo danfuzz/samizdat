@@ -92,12 +92,6 @@ On a non-empty string, calls `store(box, first(string))` and returns
 <br><br>
 ### Primitive Definitions
 
-#### `charFromInt(int) <> string`
-
-Returns a single-character string that consists of the character
-code indicated by the given int argument, which must be in the
-range for representation as an unsigned 32-bit quantity.
-
 #### `intFromChar(string) <> int`
 
 Given a single-character string, returns the character code
