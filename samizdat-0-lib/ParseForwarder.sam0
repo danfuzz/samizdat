@@ -34,7 +34,7 @@ fn ParseForwarder_store(fwd, parser) {
     ifNot { <> canCall(parse, parser) }
         { io0Die("Attempt to forward to non-parser.") };
 
-    <> store(dataOf(fwd), function);
+    <> store(dataOf(fwd), parser);
 };
 genericBind(store, "ParseForwarder", ParseForwarder_store);
 
