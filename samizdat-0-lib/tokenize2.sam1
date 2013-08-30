@@ -52,7 +52,7 @@ fn intFromDigitChar(ch) {
 # Processes a list of `stringPart` elements, yielding a literal `string`
 # value. In *Layer 2* (and higher) this can also yield an
 # `interpolatedString` or an `error`.
-def processStringParts = makeForwardFunction();
+def processStringParts = makeFunctionForwarder();
 
 # Parses any amount of whitespace and comments (including nothing at all).
 # **Note:** The yielded result is always ignored.

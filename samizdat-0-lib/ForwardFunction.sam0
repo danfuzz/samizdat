@@ -13,7 +13,7 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn makeForwardFunction() {
+fn makeFunctionForwarder() {
     <> @[ForwardFunction: makeYieldBox()]
 };
 
@@ -51,5 +51,5 @@ fn ForwardFunction_canCall(fwd, arg) {
 genericBind(canCall, "ForwardFunction", ForwardFunction_canCall);
 
 <> [
-    makeForwardFunction: makeForwardFunction
+    makeFunctionForwarder: makeFunctionForwarder
 ]

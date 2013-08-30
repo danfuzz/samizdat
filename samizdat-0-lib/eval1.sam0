@@ -12,8 +12,8 @@
 #
 
 # Forward declaration of `convertExpression` and `convertPex`.
-def convertExpression = makeForwardFunction();
-def convertPex = makeForwardFunction();
+def convertExpression = makeFunctionForwarder();
+def convertPex = makeFunctionForwarder();
 
 # Does parser conversion of an expression or statement list.
 fn convertList(nodes) {
