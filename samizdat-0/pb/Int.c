@@ -8,6 +8,7 @@
 #include "type/Bitwise.h"
 #include "type/Int.h"
 #include "type/Number.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -162,6 +163,20 @@ BINARY_IMPL_UNI(sub,   zintSub);
 BINARY_IMPL_UNI(xor,   zintXor);
 
 /* Documented in header. */
+METH_IMPL(Int, toString) {
+    zvalue intval = args[0];
+
+    zint n = zintFromInt(intval);
+    zchar result;
+
+    if (!zcharFromZint(&result, n)) {
+        die("Invalid int value for char: %lld", n);
+    }
+
+    return stringFromZchar(result);
+}
+
+/* Documented in header. */
 METH_IMPL(Int, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -204,6 +219,7 @@ void pbBindInt(void) {
     METH_BIND(Int, sign);
     METH_BIND(Int, sub);
     METH_BIND(Int, xor);
+    METH_BIND(Int, toString);
     METH_BIND(Int, totEq);
     METH_BIND(Int, totOrder);
 
