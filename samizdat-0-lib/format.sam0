@@ -217,7 +217,12 @@ fn doDerivOrOpaque(value, adorn) {
     def typeString = keyString(type);
 
     def nameString = ifIs { <> canCall(nameOf, value) }
-        { <> cat(" ", callSourceString(nameOf(value))) }
+        {
+            # It binds `nameOf` but might not have a name.
+            <> ifValue { <> nameOf(value) }
+                { name <> cat(" ", callSourceString(name)) }
+                { <> "" }
+        }
         { <> "" };
 
     def dataString = ifIs { <> isOpaqueValue(value) }
