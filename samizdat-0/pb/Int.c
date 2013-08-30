@@ -151,6 +151,18 @@ BINARY_IMPL_UNI(sub,   zintSub);
 BINARY_IMPL_UNI(xor,   zintXor);
 
 /* Documented in header. */
+METH_IMPL(Int, toInt) {
+    zvalue intval = args[0];
+    return intval;
+}
+
+/* Documented in header. */
+METH_IMPL(Int, toNumber) {
+    zvalue intval = args[0];
+    return intval;
+}
+
+/* Documented in header. */
 METH_IMPL(Int, toString) {
     zvalue intval = args[0];
 
@@ -207,6 +219,8 @@ void pbBindInt(void) {
     METH_BIND(Int, sign);
     METH_BIND(Int, sub);
     METH_BIND(Int, xor);
+    METH_BIND(Int, toInt);
+    METH_BIND(Int, toNumber);
     METH_BIND(Int, toString);
     METH_BIND(Int, totEq);
     METH_BIND(Int, totOrder);
