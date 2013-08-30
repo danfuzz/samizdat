@@ -80,13 +80,6 @@ zint typeIndexOf(zvalue value);
 bool typeIsIdentified(zvalue typeOrName);
 
 /**
- * Gets the name of the given type. If given a non-`Type` value for
- * `typeOrName`, this takes it to name a transparent derived type; as such it
- * will return `typeOrName` itself in these cases.
- */
-zvalue typeName(zvalue typeOrName);
-
-/**
  * Gets the overt data type of the given value. `value` must be a
  * valid value (in particular, non-`NULL`). For transparent derived types,
  * this returns the name of the type, and not a `Type` value per se.

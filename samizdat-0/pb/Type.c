@@ -363,11 +363,6 @@ bool typeIsIdentified(zvalue typeOrName) {
 }
 
 /* Documented in header. */
-zvalue typeName(zvalue typeOrName) {
-    return isType(typeOrName) ? getInfo(typeOrName)->name : typeOrName;
-}
-
-/* Documented in header. */
 zvalue typeOf(zvalue value) {
     assertValid(value);
 
