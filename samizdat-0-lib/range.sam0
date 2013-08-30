@@ -22,7 +22,7 @@ fn Int_rangeAdd(value, increment) {
 genericBind(rangeAdd, Int, Int_rangeAdd);
 
 fn String_rangeAdd(value, increment) {
-    <> charFromInt(add(intFromChar(value), increment))
+    <> toString(add(intFromChar(value), increment))
 };
 genericBind(rangeAdd, String, String_rangeAdd);
 
