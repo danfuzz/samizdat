@@ -287,7 +287,7 @@ fn pegMakeMainSequence(rules*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeOpt(rule) {
-    @[PegOpt: rule]
+    <> @[PegOpt: rule]
 };
 
 # Documented in Samizdat Layer 0 spec.

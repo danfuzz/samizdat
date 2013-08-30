@@ -38,6 +38,7 @@ LIB_FILE(manifest,          sam0);
 LIB_FILE(meta,              sam0);
 LIB_FILE(module,            sam0);
 LIB_FILE(peg,               sam0);
+LIB_FILE(pegnext,           sam0);
 LIB_FILE(range,             sam0);
 LIB_FILE(tokenize1,         sam0);
 LIB_FILE(tree1,             sam0);
