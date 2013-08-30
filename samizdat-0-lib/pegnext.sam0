@@ -75,7 +75,7 @@ fn PegChoice_parse(peg, box, input, items*) {
         <> ifValue { <> parse(rule, innerBox, input, items*) }
             { newInput ::
                 store(box, fetch(innerBox));
-                <out> newInput
+                return newInput
             }
     };
 
@@ -191,7 +191,7 @@ fn PegSequence_parse(peg, box, input, items*) {
                 {
                     # Propagate the failure.
                     store(box);
-                    <out>
+                    return
                 }
         };
 
@@ -213,7 +213,7 @@ fn PegStar_parse(peg, box, input, items*) {
                 { newInput <> [newInput, [values*, fetch(innerBox)]] }
                 {
                     store(box, values);
-                    <out> input
+                    return input
                 }
         }
 };
@@ -391,6 +391,7 @@ fn pegApply(rule, input) {
 #
 
 <> [
+    parse:                     parse,
     xpegApply:                  pegApply,
     xpegMakeCharSet:            pegMakeCharSet,
     xpegMakeCharSetComplement:  pegMakeCharSetComplement,
