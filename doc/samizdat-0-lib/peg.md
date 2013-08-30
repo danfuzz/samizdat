@@ -4,10 +4,10 @@ Samizdat Layer 0: Core Library
 Parsing
 -------
 
-*Samizdat Layer 0* provides a set of "parsing expression grammar" (a.k.a.
-"PEG") functions, for use in building parsers. The language does not provide
-any syntactic support for using these, though. (That is the job of a higher
-layer of the language.)
+*Samizdat* provides a set of "parsing expression grammar" (a.k.a.
+"PEG") functions, for use in building parsers. *Samizdat Layer 1*
+provides syntactic support for using these functions, and they can be
+used directly in *Samizdat Layer 0*.
 
 These functions can be used to build both tokenizers (that is, parsers of
 strings / sequences of characters) and tree parsers (that is, parsers of
@@ -25,36 +25,49 @@ tokens per se, that is, tokens whose type tag is taken to indicate a
 token type.
 
 The output of the functions named `pegMake*` are all parsing rules. These
-are functions with specifically-defined behavior in terms of accepted
-arguments and return values. In particular, every rule accepts at least
-two arguments, `yield` and `state` (in that order).
+are all transparent derived values with a type that binds the `parse`
+generic. A `parse` method accepts at least two arguments, and may also
+accept additional arguments:
 
-* `yield` is a function that a rule calls to indicate the result of
-  parsing. It behaves similarly to the `yield` functions defined as part
-  of the `object` construct. A parser rule is expected to call yield
-  both on success (with a value argument) and failure (with no argument).
+* `box` &mdash; The first argument is a `box` into which the result of
+  parsing is to be `store`d, or to which void is stored in case of
+  parsing failure.
 
-* The `state` argument is a list of items (tokens per se or character-as-token
-  elements) yet to be parsed.
+* `input` &mdash; The second argument is a generator of input tokens to
+  be parsed (usually *partially* parsed).
 
-In addition, every rule when called in the context of a "sequence" is passed
-extra arguments which correspond to the parsed results that are in "scope"
-of the rule (in order). This can be used, in particular, in the implementation
-of "code" rules in order to produce a filtered result.
+* `items*` &mdash; Any further arguments are taken to be the context of
+  items that have been parsed already, in order, in the context of a
+  "sequence" being parsed. These can be used, in particular, in the
+  implementation of "code" rules in order to produce a filtered sequence
+  result.
 
-On success, a rule is expected to return a replacement for `state` to be
-used as the `state` argument for subsequent parser rules. On failure, a
-rule is expected to return void.
+A parsing function, upon success when called, must do two things: It must
+call `store` on its yield `box` to indicate the non-void result of parsing.
+Then, it must return a replacement `input` for use as the input to subsequent
+parsers, that reflects the removal of whatever elements were consumed
+by the parsing (including none). If the parsing function consumed all of
+its given input, then it must return a voided generator (that is, one which
+yields and returns void when called).
 
-In the following descriptions, code shorthands use the Samizdat parsing
-syntax for explanatory purposes. Keep in mind, however, that this is *not*
-syntax that is built into *Samizdat Layer 0*.
+A parsing function, upon failure when called, must do two things: It must
+call its yield `box` with no argument to indicate a void result of parsing.
+Then, it must also return void.
+
+In the following descriptions, code shorthands use the *Samizdat* parsing
+syntax for explanatory purposes.
 
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Parser` protocol
 
-(none)
+#### `parse(box, input, items*) <> newInput`
+
+Performs a parse of `input` (a generator) with the trailing sequence
+context of `[items*]`. If parsing is successful, stores into `box` the
+parsed result and returns a replacement for `input` that reflects the
+consumption of tokens that were used. If parsing fails, stores void
+into `box` and returns void.
 
 
 <br><br>
