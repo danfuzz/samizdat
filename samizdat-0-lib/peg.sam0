@@ -358,15 +358,10 @@ fn pegMakeString(string) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeToken(type) {
-    # This is implemented as, in effect, `(token=. { check(token) })`, which
-    # allows us to keep the main matcher function here much simpler.
-
-    fn match(item) {
-        <> ifIs { <> eq(typeOf(item), type) }
-            { <> item }
-    };
-
-    <> @[PegMain: @[PegSequence: [@PegAny, @[PegCode: match]]]]
+    # This is just uses a single-item token set. The performance difference
+    # between that and doing a more special-case single item type check is
+    # probably negligible.
+    <> @[PegTokenSet: [(type): null]];
 };
 
 # Documented in Samizdat Layer 0 spec.
