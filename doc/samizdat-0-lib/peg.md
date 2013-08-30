@@ -139,12 +139,16 @@ If any of the rules fail, then this rule also fails, consuming no input.
 In addition to the original `items*` passed in to this rule, each sub-rule
 receives the results of all the previous sub-rules as additional `items*`.
 
-#### `@[PegStar: rule].parse(...)`
+#### `@[PegStar: [rule: rule, (minSize: n)?].parse(...)`
 
 Tries to parse the input using `rule`, iterating until `rule` is no longer
 able to be parsed. Yields a list of all the parsed results, and returns
 the final input state. If `rule` was never found to apply, this yields
-`[]` and returns the original input.
+`[]` and returns the original input. If `minSize` is specified, then
+this rule fails unless the size of the yielded list is at least `n`.
+
+**Note:** This is used as the type underlying both `expr*` and `expr+`
+expressions.
 
 #### `@[PegTokenSet: [types*: null]].parse(...)`
 
