@@ -27,6 +27,14 @@ corresponding-character comparison, with a strict prefix always ordering
 before its longer brethren.
 
 <br><br>
+### Generic Function Definitions: One-Offs
+
+#### `toString(string) <> string`
+
+Returns the argument.
+
+
+<br><br>
 ### Generic Function Definitions: `Collection` and `Sequence` protocols
 
 #### `cat(string, more*) <> string`
