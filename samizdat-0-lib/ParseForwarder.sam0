@@ -42,7 +42,7 @@ genericBind(store, "ParseForwarder", ParseForwarder_store);
 fn ParseForwarder_parse(fwd, args*) {
     <> parse(fetch(dataOf(fwd)), args*)
 };
-genericBind(call, "ParseForwarder", ParseForwarder_parse);
+genericBind(parse, "ParseForwarder", ParseForwarder_parse);
 
 <> [
     makeParseForwarder: makeParseForwarder
