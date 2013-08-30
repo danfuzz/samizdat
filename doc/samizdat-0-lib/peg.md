@@ -146,6 +146,20 @@ able to be parsed. Yields a list of all the parsed results, and returns
 the final input state. If `rule` was never found to apply, this yields
 `[]` and returns the original input.
 
+#### `@[PegTokenSet: [types*: null]].parse(...)`
+
+If there is any input available, checks the type of the first input
+token against the given set of types (map where only the keys matter).
+If the type is found in the set, then yields and consumes the token.
+Otherwise fails, yielding and returning void.
+
+#### `@[PegTokenSetComplement: [types*: null]].parse(...)`
+
+If there is any input available, checks the type of the first input
+token against the given set of types (map where only the keys matter).
+If the type is *not* found in the set, then yields and consumes the token.
+Otherwise fails, yielding and returning void.
+
 
 <br><br>
 ### Generic Function Definitions: `Parser` protocol
