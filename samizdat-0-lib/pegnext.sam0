@@ -329,9 +329,9 @@ fn pegMakeStar(rule) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeString(string) {
-    # Trivial case: Empty string. Return an always-successful yield of `""`.
+    # Trivial case: Empty string. Return an always-successful yield of `@""`.
     ifIs { <> eq(string, "") }
-        { return @[PegAlways: ""] };
+        { return @[PegAlways: @""] };
 
     # Trivial case: One-char string. Return a simple one-char rule.
     ifIs { <> eq(sizeOf(string), 1) }
@@ -343,7 +343,7 @@ fn pegMakeString(string) {
     # Make a list of rules per character.
     def chars = filter(string, pegMakeToken);
 
-    <> @[PegSequence: [chars*, @[PegAlways: string]]]
+    <> @[PegSequence: [chars*, @[PegAlways: @[(string)]]]]
 };
 
 # Documented in Samizdat Layer 0 spec.
