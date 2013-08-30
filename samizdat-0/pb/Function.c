@@ -26,29 +26,47 @@
  */
 
 /**
+ * Gets the name of the given value if it has a name. Otherwise returns
+ * the value.
+ */
+static zvalue nameOrValue(zvalue value) {
+    if (GFN_CALL(canCall, GFN_nameOf, value)) {
+        zvalue name = GFN_CALL(nameOf, value);
+        if (name != NULL) {
+            return name;
+        }
+    }
+
+    return value;
+}
+
+/**
  * This is the function that handles emitting a context string for a call,
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
     zvalue value = state;
 
-    if (GFN_CALL(canCall, GFN_nameOf, value)) {
-        zvalue name = GFN_CALL(nameOf, value);
-        if (name != NULL) {
-            value = name;
-        }
-    }
+    value = nameOrValue(value);
 
     if (GFN_CALL(canCall, GFN_toString, value)) {
         return valToString(value);
-    } else {
-        zvalue type = GFN_CALL(nameOf, typeOf(value));
-        char *typeString = valToString(type);
-        char *result;
-        asprintf(&result, "(anonymous %s)", typeString);
-        free(typeString);
-        return result;
     }
+
+    zvalue type = nameOrValue(typeOf(value));
+    char *typeString;
+    char *result;
+
+    if (GFN_CALL(canCall, GFN_toString, value)) {
+        typeString = valToString(type);
+    } else {
+        typeString = valDebugString(type);
+    }
+
+    asprintf(&result, "(anonymous %s)", typeString);
+    free(typeString);
+
+    return result;
 }
 
 /**
