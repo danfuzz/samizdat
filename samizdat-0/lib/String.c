@@ -15,11 +15,6 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(charFromInt) {
-    return stringFromZchar(zcharFromInt(args[0]));
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(intFromChar) {
     zvalue string = args[0];
 

@@ -82,7 +82,6 @@ PRIM_DEF(sign,       GFN_sign);
 PRIM_DEF(sub,        GFN_sub);
 
 // Primitive functions
-PRIM_FUNC(charFromInt,          1, 1);
 PRIM_FUNC(dataOf,               1, 2);
 PRIM_FUNC(eq,                   2, 2);
 PRIM_FUNC(ge,                   2, 2);

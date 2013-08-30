@@ -60,18 +60,6 @@ zvalue intFrom(zint value) {
  */
 
 /* Documented in header. */
-zchar zcharFromInt(zvalue intval) {
-    zint n = zintFromInt(intval);
-    zchar result;
-
-    if (!zcharFromZint(&result, n)) {
-        die("Invalid int value for zchar: %lld", n);
-    }
-
-    return result;
-}
-
-/* Documented in header. */
 zvalue intFromZint(zint value) {
     if ((value >= PB_SMALL_INT_MIN) && (value < PB_SMALL_INT_MAX)) {
         return SMALL_INTS[value - PB_SMALL_INT_MIN];
