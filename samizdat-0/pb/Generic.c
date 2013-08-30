@@ -11,6 +11,7 @@
 #include "impl.h"
 #include "type/Builtin.h"
 #include "type/Generic.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -229,12 +230,21 @@ METH_IMPL(Generic, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(Generic, nameOf) {
+    zvalue generic = args[0];
+    GenericInfo *info = getInfo(generic);
+
+    return info->name;
+}
+
+/* Documented in header. */
 void pbBindGeneric(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Generic`.
     METH_BIND(Generic, call);
     METH_BIND(Generic, canCall);
     METH_BIND(Generic, debugString);
     METH_BIND(Generic, gcMark);
+    METH_BIND(Generic, nameOf);
 }
 
 /* Documented in header. */
