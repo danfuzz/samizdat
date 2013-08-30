@@ -43,6 +43,15 @@ generic. Returns the `value` argument if so.
 
 
 <br><br>
+### Generic Function Definitions: One-Offs
+
+#### `nameOf(type) <> . | void`
+
+Returns the name of the generic, if it has one. This is can be
+an arbitrary value, which is typically (but not necessarily) a string.
+
+
+<br><br>
 ### Primitive Definitions
 
 #### `genericBind(generic, type, function) <> void`

@@ -57,6 +57,18 @@ fn Boolean_shl(bool, n) {
 genericBind(shl, "Boolean", Boolean_shl);
 
 # Documented in Samizdat Layer 0 spec.
+fn Boolean_toInt(bool) {
+    <> dataOf(bool)
+};
+genericBind(toInt, "Boolean", Boolean_toInt);
+
+# Documented in Samizdat Layer 0 spec.
+fn Boolean_toNumber(bool) {
+    <> dataOf(bool)
+};
+genericBind(toNumber, "Boolean", Boolean_toNumber);
+
+# Documented in Samizdat Layer 0 spec.
 fn Boolean_xor(bool1, bool2) {
     <> @[Boolean: xor(dataOf(bool1), dataOf(bool2))]
 };

@@ -22,22 +22,9 @@ fn Int_rangeAdd(value, increment) {
 genericBind(rangeAdd, Int, Int_rangeAdd);
 
 fn String_rangeAdd(value, increment) {
-    <> charFromInt(add(intFromChar(value), increment))
+    <> toString(add(toInt(value), increment))
 };
 genericBind(rangeAdd, String, String_rangeAdd);
-
-# `rangeInt` generic, used to convert range values to ints.
-def rangeInt = makeRegularGeneric("rangeInt", 1, 1);
-
-fn Int_rangeInt(value) {
-    <> value
-};
-genericBind(rangeInt, Int, Int_rangeInt);
-
-fn String_rangeInt(value) {
-    <> intFromChar(value)
-};
-genericBind(rangeInt, String, String_rangeInt);
 
 
 #
@@ -60,8 +47,8 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     # `totEq` ensures that `firstValue` and `limit` have the same type.
     # `optValue({ <> x})` == `x?`.
     def isEmpty = optValue { <> totEq(firstValue, limit) };
-    def firstInt = rangeInt(firstValue);
-    def limitInt = rangeInt(limit);
+    def firstInt = toInt(firstValue);
+    def limitInt = toInt(limit);
 
     # `totEq` ensures that `increment` is an int.
     ifIs { <> totEq(increment, 0) }
@@ -92,8 +79,8 @@ fn makeInclusiveRange(firstValue, increment, limit) {
     ifIs { <> totEq(increment, 0) }
         { return makeClosedRange(firstValue, 0, 1) };
 
-    def firstInt = rangeInt(firstValue);
-    def limitInt = rangeInt(limit);
+    def firstInt = toInt(firstValue);
+    def limitInt = toInt(limit);
     def size = add(1, div(sub(limitInt, firstInt), increment));
 
     ifIs { <> totLe(size, 0) }

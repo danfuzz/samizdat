@@ -104,7 +104,7 @@ fn main(selfPath, name?, rest*) {
     process(formatInt(71, 10));
     process(formatInt(71, 16));
     process(formatInt(71, 36));
-    process(cat(charFromInt(1), charFromInt(31), charFromInt(127)));
+    process(cat(toString(1), toString(31), toString(127)));
 
     sibling();
 

@@ -79,6 +79,11 @@ expect("shr", true,  shr, true, 0);
 expect("shr", false, shr, true, 1);
 expect("shr", false, shr, true, 2);
 
+expect("toInt", 0, toInt, false);
+expect("toInt", 1, toInt, true);
+
+expect("toNumber", 0, toNumber, false);
+expect("toNumber", 1, toNumber, true);
 
 io0Note("All good.");
 

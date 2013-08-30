@@ -35,6 +35,7 @@ void pbInit(void) {
     pbBindCollection();
     pbBindFunction();
     pbBindNumber();
+    pbBindOneOff();
 
     pbBindType();
     pbBindString();

@@ -27,6 +27,24 @@ corresponding-character comparison, with a strict prefix always ordering
 before its longer brethren.
 
 <br><br>
+### Generic Function Definitions: One-Offs
+
+#### `toInt(string) <> int`
+
+Given a single-character string, returns the character code
+of its sole character, as an int. It is an error (terminating
+the runtime) if `string` is not a string of size 1.
+
+#### `toNumber(string) <> int`
+
+Same as `toInt(string)`.
+
+#### `toString(string) <> string`
+
+Returns the argument.
+
+
+<br><br>
 ### Generic Function Definitions: `Collection` and `Sequence` protocols
 
 #### `cat(string, more*) <> string`
@@ -92,17 +110,7 @@ On a non-empty string, calls `store(box, first(string))` and returns
 <br><br>
 ### Primitive Definitions
 
-#### `charFromInt(int) <> string`
-
-Returns a single-character string that consists of the character
-code indicated by the given int argument, which must be in the
-range for representation as an unsigned 32-bit quantity.
-
-#### `intFromChar(string) <> int`
-
-Given a single-character string, returns the character code
-of its sole character, as an int. It is an error (terminating
-the runtime) if `string` is not a string of size 1.
+(none)
 
 
 <br><br>

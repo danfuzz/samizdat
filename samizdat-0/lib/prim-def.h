@@ -29,6 +29,12 @@ PRIM_DEF(perOrder,   GFN_perOrder);
 PRIM_DEF(totEq,      GFN_totEq);
 PRIM_DEF(totOrder,   GFN_totOrder);
 
+// Generic functions: One-Offs
+PRIM_DEF(nameOf,     GFN_nameOf);
+PRIM_DEF(toInt,      GFN_toInt);
+PRIM_DEF(toNumber,   GFN_toNumber);
+PRIM_DEF(toString,   GFN_toString);
+
 // Generic functions: `Bitwise` protocol
 PRIM_DEF(and,        GFN_and);
 PRIM_DEF(bit,        GFN_bit);
@@ -76,7 +82,6 @@ PRIM_DEF(sign,       GFN_sign);
 PRIM_DEF(sub,        GFN_sub);
 
 // Primitive functions
-PRIM_FUNC(charFromInt,          1, 1);
 PRIM_FUNC(dataOf,               1, 2);
 PRIM_FUNC(eq,                   2, 2);
 PRIM_FUNC(ge,                   2, 2);
@@ -87,7 +92,6 @@ PRIM_FUNC(ifIs,                 2, 3);
 PRIM_FUNC(ifNot,                2, 2);
 PRIM_FUNC(ifValue,              2, 3);
 PRIM_FUNC(ifValueOr,            2, 2);
-PRIM_FUNC(intFromChar,          1, 1);
 PRIM_FUNC(io0FlatCwd,           0, 0);
 PRIM_FUNC(io0FlatReadLink,      1, 1);
 PRIM_FUNC(io0FlatReadFileUtf8,  1, 1);
@@ -116,5 +120,4 @@ PRIM_FUNC(sam0Eval,             2, 2);
 PRIM_FUNC(sam0Tokenize,         1, 1);
 PRIM_FUNC(sam0Tree,             1, 1);
 PRIM_FUNC(totalOrder,           2, 2);
-PRIM_FUNC(typeName,             1, 1);
 PRIM_FUNC(typeOf,               1, 1);
