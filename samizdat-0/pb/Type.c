@@ -8,6 +8,7 @@
 #include "type/Builtin.h"
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Uniqlet.h"
@@ -420,6 +421,14 @@ METH_IMPL(Type, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(Type, nameOf) {
+    zvalue type = args[0];
+    TypeInfo *info = getInfo(type);
+
+    return info->name;
+}
+
+/* Documented in header. */
 METH_IMPL(Type, totOrder) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -473,6 +482,7 @@ void pbInitTypeSystem(void) {
 void pbBindType(void) {
     METH_BIND(Type, debugString);
     METH_BIND(Type, gcMark);
+    METH_BIND(Type, nameOf);
     METH_BIND(Type, totOrder);
 }
 

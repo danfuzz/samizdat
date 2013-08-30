@@ -203,7 +203,7 @@ fn doMap(map, adorn) {
 
 # Stringifies a type.
 fn doType(type, adorn) {
-    def name = callSourceString(typeName(type));
+    def name = callSourceString(nameOf(type));
 
     <> adornIf(adorn, "@(Type ", name, ")");
 };
