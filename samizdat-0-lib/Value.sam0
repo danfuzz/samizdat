@@ -27,6 +27,12 @@ fn isMap(value) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn isOpaqueValue(value) {
+    <> ifIs { <> hasType(typeOf(value), Type) }
+        { <> value }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn isString(value) {
     <> hasType(value, String)
 };
@@ -97,19 +103,20 @@ fn totNe(v1, v2) {
 };
 
 <> [
-    isInt:      isInt,
-    isList:     isList,
-    isMap:      isMap,
-    isString:   isString,
-    isUniqlet:  isUniqlet,
-    perGe:      perGe,
-    perGt:      perGt,
-    perLe:      perLe,
-    perLt:      perLt,
-    perNe:      perNe,
-    totGe:      totGe,
-    totGt:      totGt,
-    totLe:      totLe,
-    totLt:      totLt,
-    totNe:      totNe
+    isInt:         isInt,
+    isList:        isList,
+    isMap:         isMap,
+    isOpaqueValue: isOpaqueValue,
+    isString:      isString,
+    isUniqlet:     isUniqlet,
+    perGe:         perGe,
+    perGt:         perGt,
+    perLe:         perLe,
+    perLt:         perLt,
+    perNe:         perNe,
+    totGe:         totGe,
+    totGt:         totGt,
+    totLe:         totLe,
+    totLt:         totLt,
+    totNe:         totNe
 ]

@@ -171,11 +171,6 @@ the two given values are not identical. Otherwise returns void.
 
 **Syntax Note:** Used in the translation of `expression \!= expression` forms.
 
-#### `isOpaqueValue(value) <> logic`
-
-Returns `value` if it is an opaque value &mdash; that is, if its type has
-an associated secret &mdash; or void if not.
-
 #### `totalOrder(value1, value2) <> int`
 
 Returns the order of the two given values in the total order of
@@ -219,6 +214,11 @@ Returns the given `value` if it is a list. Returns void if not.
 #### `isMap(value) <> logic`
 
 Returns the given `value` if it is a map. Returns void if not.
+
+#### `isOpaqueValue(value) <> logic`
+
+Returns `value` if it is an opaque value &mdash; that is, if it is
+*not* a transparent derived value &mdash; or void if not.
 
 #### `isString(value) <> logic`
 
