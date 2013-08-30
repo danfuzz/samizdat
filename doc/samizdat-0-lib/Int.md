@@ -26,6 +26,24 @@ manner.
 
 
 <br><br>
+### Generic Function Definitions: One-Offs
+
+#### `toInt(int) <> int`
+
+Returns the given argument.
+
+#### `toNumber(int) <> int`
+
+Returns the given argument.
+
+#### `toString(int) <> string`
+
+Returns a single-character string whose code point is the
+value is as given. If the value is out of the range of a 32-bit
+unsigned integer, this terminates the runtime with an error.
+
+
+<br><br>
 ### Generic Function Definitions: `Bitwise` protocol
 
 #### `and(int1, int2) <> int`

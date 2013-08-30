@@ -33,12 +33,18 @@ types), the order is arbitrary but consistent.
 
 
 <br><br>
-### Primitive Definitions
+### Generic Function Definitions: One-Offs
 
-#### `typeName(type) <> .`
+#### `nameOf(type) <> .`
 
 Returns the name of the type. This is an arbitrary value associated with
 a type, which is typically (but not necessarily) a string.
+
+
+<br><br>
+### Primitive Definitions
+
+(none)
 
 
 <br><br>

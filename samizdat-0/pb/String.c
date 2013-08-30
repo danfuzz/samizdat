@@ -7,6 +7,7 @@
 #include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -322,6 +323,24 @@ METH_IMPL(String, slice) {
 }
 
 /* Documented in header. */
+METH_IMPL(String, toInt) {
+    zvalue string = args[0];
+    return intFromZint(zcharFromString(string));
+}
+
+/* Documented in header. */
+METH_IMPL(String, toNumber) {
+    zvalue string = args[0];
+    return intFromZint(zcharFromString(string));
+}
+
+/* Documented in header. */
+METH_IMPL(String, toString) {
+    zvalue string = args[0];
+    return string;
+}
+
+/* Documented in header. */
 METH_IMPL(String, totEq) {
     zvalue v1 = args[0];
     zvalue v2 = args[1];
@@ -388,6 +407,9 @@ void pbBindString(void) {
     METH_BIND(String, reverse);
     METH_BIND(String, sizeOf);
     METH_BIND(String, slice);
+    METH_BIND(String, toInt);
+    METH_BIND(String, toNumber);
+    METH_BIND(String, toString);
     METH_BIND(String, totEq);
     METH_BIND(String, totOrder);
     seqBind(TYPE_String);

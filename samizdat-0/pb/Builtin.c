@@ -11,6 +11,7 @@
 #include "impl.h"
 #include "type/Builtin.h"
 #include "type/Generic.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Value.h"
 
@@ -134,12 +135,21 @@ METH_IMPL(Builtin, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(Builtin, nameOf) {
+    zvalue builtin = args[0];
+    BuiltinInfo *info = getInfo(builtin);
+
+    return info->name;
+}
+
+/* Documented in header. */
 void pbBindBuiltin(void) {
     // Note: The type `Type` is responsible for initializing `TYPE_Builtin`.
     METH_BIND(Builtin, call);
     METH_BIND(Builtin, canCall);
     METH_BIND(Builtin, debugString);
     METH_BIND(Builtin, gcMark);
+    METH_BIND(Builtin, nameOf);
 }
 
 /* Documented in header. */

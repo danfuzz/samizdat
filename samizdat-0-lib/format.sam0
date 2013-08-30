@@ -18,13 +18,13 @@ def callFormatValue = makeForwardFunction();
 def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
 
 # The first Unicode surrogate code point.
-def CHAR_SURROGATE_START = charFromInt(55296); # U+D800
+def CHAR_SURROGATE_START = toString(55296); # U+D800
 
 # The last Unicode surrogate code point.
-def CHAR_SURROGATE_END = charFromInt(57343); # U+DFFF
+def CHAR_SURROGATE_END = toString(57343); # U+DFFF
 
 # The last Unicode code point.
-def CHAR_UNICODE_END = charFromInt(1114111); # U+10FFFF
+def CHAR_UNICODE_END = toString(1114111); # U+10FFFF
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
@@ -78,10 +78,10 @@ fn doInt(int, adorn) {
 # Map of special-case characters to either their stringified forms or
 # to `"x"` to indicate a need to convert as hex.
 def SPECIAL_CHARS = [
-    makeInclusiveRange(charFromInt(1), 1, charFromInt(31))*: "x",
-    makeInclusiveRange(charFromInt(127), 1, charFromInt(159))*: "x",
-    charFromInt(65534): "x",
-    charFromInt(65535): "x",
+    makeInclusiveRange(toString(1), 1, toString(31))*: "x",
+    makeInclusiveRange(toString(127), 1, toString(159))*: "x",
+    toString(65534): "x",
+    toString(65535): "x",
     "\0": "\\0",
     "\n": "\\n",
     "\r": "\\r",
@@ -94,7 +94,7 @@ def SPECIAL_CHARS = [
 fn hexStringChar(ch) {
     <> cat(
         "\\x",
-        formatIntWithBase(intFromChar(ch), 16),
+        formatIntWithBase(toInt(ch), 16),
         ";")
 };
 
@@ -203,7 +203,7 @@ fn doMap(map, adorn) {
 
 # Stringifies a type.
 fn doType(type, adorn) {
-    def name = callSourceString(typeName(type));
+    def name = callSourceString(nameOf(type));
 
     <> adornIf(adorn, "@(Type ", name, ")");
 };
@@ -216,13 +216,17 @@ fn doDerivOrOpaque(value, adorn) {
     def type = typeOf(value);
     def typeString = keyString(type);
 
+    def nameString = ifIs { <> canCall(nameOf, value) }
+        { <> cat(" ", callSourceString(nameOf(value))) }
+        { <> "" };
+
     def dataString = ifIs { <> isOpaqueValue(value) }
-        { <> ": /*opaque*/" }
+        { <> " /*opaque*/" }
         {
             <> ifValue { <> dataOf(value) }
                 { data ::
                     # Transparent derived value with payload.
-                    <> cat(": ", callSourceString(data))
+                    <> cat(" ", callSourceString(data))
                 }
                 {
                     # Type-only transparent derived value.
@@ -232,7 +236,11 @@ fn doDerivOrOpaque(value, adorn) {
                 }
         };
 
-    def body = cat(typeString, dataString);
+    def extraString = ifValue { <> ne("", cat(nameString, dataString))  }
+        { s <> cat(":", s) }
+        { <> "" };
+
+    def body = cat(typeString, extraString);
 
     <> adornIf(adorn, "@[", body, "]");
 };

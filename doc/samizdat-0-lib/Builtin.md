@@ -31,6 +31,15 @@ symmetric &mdash; but arbitrary &mdash; total order.
 
 
 <br><br>
+### Generic Function Definitions: One-Offs
+
+#### `nameOf(type) <> . | void`
+
+Returns the name of the builtin, if it has one. This is can be
+an arbitrary value, which is typically (but not necessarily) a string.
+
+
+<br><br>
 ### Generic Function Definitions: `Function` protocol
 
 #### `call(builtin, args*) <> . | void`
