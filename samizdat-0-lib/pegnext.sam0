@@ -1,0 +1,416 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# PEG (Parsing Expression Grammar) support
+#
+
+
+#
+# Private Definitions
+#
+
+# Helper for `pegMake*Set*`, which takes a `sense` argument and produces the
+# desired rule.
+fn genericMakeTokenSet(sense, types) {
+    ifIs { <> eq(types, []) }
+        {
+            # Trivial case: Empty set. Return an appropriate absolute rule.
+            return ifIs { <> eq(sense, true) }
+                { <> @PegFail }
+                { <> @PegAny }
+        };
+
+    # This is implemented as, in effect, `(token=. { check(token) })`, which
+    # allows us to keep the main matcher function here much simpler.
+
+    def set = [types*: true]; # A set-like map of all the token types.
+    def matcher = ifIs { <> eq(sense, true) }
+        {
+            <> { item ::
+                <> ifIs { <> get(set, typeOf(item)) }
+                    { <> item }
+            }
+        }
+        {
+            <> { item ::
+                <> ifNot { <> get(set, typeOf(item)) }
+                    { <> item }
+            }
+        };
+
+    <> @[PegMain: @[PegSequence: [@PegAny, @[PegCode: matcher]]]]
+};
+
+
+#
+# Type Definitions
+#
+
+# `parse(peg, box, input, items*)`
+def parse = makeRegularGeneric("parse", 3);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegAlways_parse(peg, box, input, .*) {
+    def result = dataOf(peg);
+
+    store(box, result);
+    <> input
+};
+genericBind(parse, "PegAlways", PegAlways_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegAny_parse(peg, box, input, .*) {
+    <> nextValue(input, box)
+};
+genericBind(parse, "PegAny", PegAny_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegChoice_parse(peg, box, input, items*) {
+    def rules = dataOf(peg);
+
+    filterPump(rules) { rule ::
+        def innerBox = makeYieldBox();
+        <> ifValue { <> parse(rule, innerBox, input, items*) }
+            { newInput ::
+                store(box, fetch(innerBox));
+                <out> newInput
+            }
+    };
+
+    # No rule succeeded.
+    store(box)
+};
+genericBind(parse, "PegChoice", PegChoice_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegCode_parse(peg, box, input, items*) {
+    def function = dataOf(peg);
+
+    <> ifValue { <> function(items*) }
+        { result ::
+            store(box, result);
+            <> input
+        }
+        { store(box) };
+};
+genericBind(parse, "PegCode", PegCode_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegEmpty_parse(peg, box, input, .*) {
+    store(box, null);
+    <> input
+};
+genericBind(parse, "PegEmpty", PegEmpty_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegEof_parse(peg, box, input, .*) {
+    <> ifIs { <> nextValue(input, nullBox) }
+        { store(box) }
+        {
+            store(box, null);
+            <> input
+        }
+};
+genericBind(parse, "PegEof", PegEof_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegFail_parse(peg, box, input, .*) {
+    store(box)
+};
+genericBind(parse, "PegFail", PegFail_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegLookaheadAny_parse(peg, box, input, .*) {
+    <> ifIs { <> nextValue(input, box) }
+        { <> input }
+};
+genericBind(parse, "PegLookaheadAny", PegLookaheadAny_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegLookaheadFailure_parse(peg, box, input, items*) {
+    def rule = dataOf(peg);
+
+    <> ifIs { <> parse(rule, nullBox, input, items*) }
+        { store(box) }
+        {
+            store(box, null);
+            <> input
+        }
+};
+genericBind(parse, "PegLookaheadFailure", PegLookaheadFailure_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegLookaheadSuccess_parse(peg, box, input, items*) {
+    def rule = dataOf(peg);
+
+    <> ifIs { <> parse(rule, box, input, items*) }
+        { <> input }
+};
+genericBind(parse, "PegLookaheadSuccess", PegLookaheadSuccess_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegMain_parse(peg, box, input, .*) {
+    def rule = dataOf(peg);
+
+    # The point of this implementation is to drop the `items` context.
+    <> parse(rule, box, input)
+};
+genericBind(parse, "PegMain", PegMain_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegOpt_parse(peg, box, input, items*) {
+    def rule = dataOf(peg);
+
+    def innerBox = makeYieldBox();
+    <> ifValue { <> parse(rule, innerBox, input, items*) }
+        { newInput ::
+            store(box, [fetch(innerBox)]);
+            <> newInput
+        }
+        {
+            store(box, []);
+            <> input
+        }
+};
+genericBind(parse, "PegOpt", PegOpt_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegSequence_parse(peg, box, input, items*) {
+    def rules = dataOf(peg);
+
+    # Each rule after the first gets passed as additional arguments
+    # the matched results of all the previous rules, in order.
+
+    def reduction = doReduce(rules, input, items)
+        { rule, input, items ::
+            def innerBox = makeYieldBox();
+            <> ifValue { <> parse(rule, innerBox, input, items*) }
+                { newInput <> [newInput, [items*, fetch(innerBox)]] }
+                {
+                    # Propagate the failure.
+                    store(box);
+                    <out>
+                }
+        };
+
+    def newInput = nth(reduction, 0);
+    def results = nth(reduction, 1);
+    store(box, last(results));
+    <> newInput
+};
+genericBind(parse, "PegSequence", PegSequence_parse);
+
+# TODO: Documented in Samizdat Layer 0 spec.
+fn PegStar_parse(peg, box, input, items*) {
+    def rule = dataOf(peg);
+
+    loopReduce(input, [])
+        { input, values ::
+            def innerBox = makeYieldBox();
+            <> ifValue { <> parse(rule, innerBox, input, items*) }
+                { newInput <> [newInput, [values*, fetch(innerBox)]] }
+                {
+                    store(box, values);
+                    <out> input
+                }
+        }
+};
+genericBind(parse, "PegStar", PegStar_parse);
+
+
+#
+# Exported Definitions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeCharSet(strings*) {
+    # Make a list of all the strings' characters, passing it to the
+    # general token set constructor.
+    <> genericMakeTokenSet(true, [cat("", strings*)*])
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeCharSetComplement(strings*) {
+    # See comment in `pegMakeCharSet`.
+    <> genericMakeTokenSet(false, [cat("", strings*)*])
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeChoice(rules*) {
+    # Trivial case: No rules. Return the failure rule.
+    ifIs { <> eq(rules, []) }
+        { return @PegFail };
+
+    # Trivial case: One rule. Return that rule directly.
+    ifIs { <> eq(sizeOf(rules), 1) }
+        { return rules* };
+
+    # The general case.
+    <> @[PegChoice: rules]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeCode(function) {
+    <> @[PegCode: function]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeLookaheadFailure(rule) {
+    # Optimiziation: Representation of `!.`.
+    ifIs { <> eq(rule, @PegAny) }
+        { return @PegEof };
+
+    # Optimization: Representation of `!()`.
+    ifIs { <> eq(rule, @PegEmpty) }
+        { return @PegFail };
+
+    # The general case.
+    <> @[PegLookaheadFailure: rule]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeLookaheadSuccess(rule) {
+    <> @[PegLookaheadSuccess: rule]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeMainChoice(rules*) {
+    <> @[PegMain: pegMakeChoice(rules*)]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeMainSequence(rules*) {
+    <> @[PegMain: pegMakeSequence(rules*)]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeOpt(rule) {
+    @[PegOpt: rule]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakePlus(rule) {
+    # This is implemented as, in effect, `(elems=rule* { <> ne([], elems) })`.
+    # This allows us to minimize code duplication. Note: We can't impose a
+    # "main sequence" boundary here -- which is tempting as that would make
+    # the size check code slightly more straightforward -- because `rule` may
+    # contain back-references which would thereby get lopped off.
+
+    fn checkSize(items*) {
+        # Note: Argument order is significant here, in that `ne` returns
+        # its second argument on logical-true.
+        def starMatch = last(items);
+        <> ne([], starMatch)
+    };
+
+    <> @[PegSequence: [@[PegStar: rule], @[PegCode: checkSize]]]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeSequence(rules*) {
+    # Trivial case: No rules. Return the empty rule.
+    ifIs { <> eq(rules, []) }
+        { return @PegEmpty };
+
+    # Trivial case: One rule. Return that rule directly.
+    ifIs { <> eq(sizeOf(rules), 1) }
+        { return rules* };
+
+    # The general case.
+    <> @[PegSequence: rules]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeStar(rule) {
+    <> @[PegStar: rule]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeString(string) {
+    # Trivial case: Empty string. Return an always-successful yield of `""`.
+    ifIs { <> eq(string, "") }
+        { return @[PegAlways: ""] };
+
+    # Trivial case: One-char string. Return a simple one-char rule.
+    ifIs { <> eq(sizeOf(string), 1) }
+        { return pegMakeToken(string) };
+
+    # This is implemented as, in effect, `("1" "2" ... { <> string })`,
+    # which allows us to minimize code duplication.
+
+    # Make a list of rules per character.
+    def chars = filter(string, pegMakeToken);
+
+    <> @[PegSequence: [chars*, @[PegAlways: string]]]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeToken(type) {
+    # This is implemented as, in effect, `(token=. { check(token) })`, which
+    # allows us to keep the main matcher function here much simpler.
+
+    fn match(item) {
+        <> ifIs { <> eq(typeOf(item), type) }
+            { <> item }
+    };
+
+    <> @[PegMain: @[PegSequence: [@PegAny, @[PegCode: match]]]]
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeTokenSet(tokens*) {
+    <> genericMakeTokenSet(true, tokens)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn pegMakeTokenSetComplement(tokens*) {
+    <> genericMakeTokenSet(false, tokens)
+};
+
+
+#
+# Top-level driver functions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn pegApply(rule, input) {
+    def generator = ifIs { <> isString(input) }
+        { <> makeTokenGenerator(input) }
+        { <> input };
+    def box = makeYieldBox();
+
+    <> ifIs { <> parse(rule, box, generator) }
+        { <> fetch(box) }
+};
+
+
+#
+# Export mechanics
+#
+
+<> [
+    xpegApply:                  pegApply,
+    xpegMakeCharSet:            pegMakeCharSet,
+    xpegMakeCharSetComplement:  pegMakeCharSetComplement,
+    xpegMakeChoice:             pegMakeChoice,
+    xpegMakeCode:               pegMakeCode,
+    xpegMakeLookaheadFailure:   pegMakeLookaheadFailure,
+    xpegMakeLookaheadSuccess:   pegMakeLookaheadSuccess,
+    xpegMakeMainChoice:         pegMakeMainChoice,
+    xpegMakeMainSequence:       pegMakeMainSequence,
+    xpegMakeOpt:                pegMakeOpt,
+    xpegMakePlus:               pegMakePlus,
+    xpegMakeSequence:           pegMakeSequence,
+    xpegMakeStar:               pegMakeStar,
+    xpegMakeString:             pegMakeString,
+    xpegMakeToken:              pegMakeToken,
+    xpegMakeTokenSet:           pegMakeTokenSet,
+    xpegMakeTokenSetComplement: pegMakeTokenSetComplement,
+    xpegRuleAny:                @PegAny,
+    xpegRuleEmpty:              @PegEmpty,
+    xpegRuleEof:                @PegEof,
+    xpegRuleFail:               @PegFail,
+    xpegRuleLookaheadAny:       @PegLookaheadAny
+]
