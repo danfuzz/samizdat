@@ -96,6 +96,7 @@ fn main(selfPath, name?, rest*) {
     process([def: "defined", do: "done"]); # Likewise, for map keys.
     process(@[(null)]);
     process(makeUniqlet());
+    process(blort);
     process(metaFunctions(LIBRARY, "blort.sam0"));
     process(io0PathFromFlat("///foo//////./bar/./../baz"));
     process(io0PathFromFlat("/a/b/x/y/z/../../../c/"));

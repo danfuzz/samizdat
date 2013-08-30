@@ -14,6 +14,7 @@
 #include "type/Generic.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -471,11 +472,19 @@ METH_IMPL(Closure, gcMark) {
 }
 
 /* Documented in header. */
+METH_IMPL(Closure, nameOf) {
+    zvalue closure = args[0];
+    ClosureInfo *info = getInfo(closure);
+    return collGet(info->defMap, STR_name);
+}
+
+/* Documented in header. */
 void langBindClosure(void) {
     TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"), true);
     METH_BIND(Closure, call);
     METH_BIND(Closure, canCall);
     METH_BIND(Closure, debugString);
+    METH_BIND(Closure, nameOf);
     METH_BIND(Closure, gcMark);
 
     nodeCache = EMPTY_MAP;
