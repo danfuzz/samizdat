@@ -394,9 +394,9 @@ fn pegApply(rule, input) {
     pegMakeToken:              pegMakeToken,
     pegMakeTokenSet:           pegMakeTokenSet,
     pegMakeTokenSetComplement: pegMakeTokenSetComplement,
-    pegRuleAny:                @PegAny,
-    pegRuleEmpty:              @PegEmpty,
-    pegRuleEof:                @PegEof,
-    pegRuleFail:               @PegFail,
-    pegRuleLookaheadAny:       @PegLookaheadAny
+    pegAny:                @PegAny,
+    pegEmpty:              @PegEmpty,
+    pegEof:                @PegEof,
+    pegFail:               @PegFail,
+    pegLookaheadAny:       @PegLookaheadAny
 ]

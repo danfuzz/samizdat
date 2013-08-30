@@ -263,7 +263,7 @@ whatever token was matched.
 
 This is equivalent to the syntactic form `{/ [! @token1 @token2 @etc] /}`.
 
-#### Rule: `pegRuleAny`
+#### Rule: `pegAny`
 
 Parser rule which matches any input item, consuming and yielding it. It
 succeeds on any non-empty input.
@@ -273,7 +273,7 @@ called directly.
 
 This is equivalent to the syntactic form `{/ . /}`.
 
-#### Rule: `pegRuleEmpty`
+#### Rule: `pegEmpty`
 
 Parser rule which always succeeds, and never consumes input. It always
 yields `null`.
@@ -283,7 +283,7 @@ called directly.
 
 This is equivalent to the syntactic form `{/ () /}`.
 
-#### Rule: `pegRuleEof`
+#### Rule: `pegEof`
 
 Parser rule which succeeds only when the input is empty. When successful,
 it always yields `null`.
@@ -293,7 +293,7 @@ called directly.
 
 This is equivalent to the syntactic form `{/ !. /}`.
 
-#### Rule: `pegRuleFail`
+#### Rule: `pegFail`
 
 Parser rule which always fails.
 
@@ -305,7 +305,7 @@ to find a lookahead failure for the empty rule, said rule which always
 succeeds). It is also equivalent to the syntactic form `{/ [] /}` (that is,
 the empty set of tokens or characters).
 
-#### Rule: `pegRuleLookaheadAny`
+#### Rule: `pegLookaheadAny`
 
 Parser rule which matches any input item, yielding it but not consuming it.
 It succeeds on any non-empty input.

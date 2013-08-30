@@ -93,12 +93,12 @@ fn convertPexVarRef(node, formals) {
 
 # Converts a `.` pex node.
 fn convertPexDot(node, formals) {
-    <> @[varRef: "pegRuleAny"]
+    <> @[varRef: "pegAny"]
 };
 
 # Converts an `()` pex node.
 fn convertPexEmpty(node, formals) {
-    <> @[varRef: "pegRuleEmpty"]
+    <> @[varRef: "pegEmpty"]
 };
 
 # Converts a `[]` pex node.

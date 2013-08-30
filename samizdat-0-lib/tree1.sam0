@@ -252,7 +252,7 @@ def parIdentifierString = pegMakeMainChoice(
         pegMakeTokenSet("identifier", "string"),
         pegMakeCode { s <> makeLiteral(dataOf(s)) }),
     pegMakeSequence(
-        pegRuleAny,
+        pegAny,
         pegMakeCode { token ::
             <> ifNot { <> dataOf(token) }
                 {
@@ -493,7 +493,7 @@ def parProgramOrError = pegMakeMainSequence(
     parProgram,
     pegMakeOpt(
         pegMakeMainSequence(
-            pegMakePlus(pegRuleAny),
+            pegMakePlus(pegAny),
             pegMakeCode { pending :: reportError(pending) })),
     pegMakeCode { prog, . <> prog });
 
