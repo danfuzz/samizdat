@@ -48,6 +48,7 @@ def MANIFEST = [
     "module.sam0",
     "peg.sam0",
     "pegnext.sam0",
+    "ParseForwarder.sam0",     # Uses `parse` defined by `peg.sam0`.
     "meta.sam0",
 
     # Layer 1 language implementation.

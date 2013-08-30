@@ -24,6 +24,7 @@ LIB_FILE(NullBox,           sam0);
 LIB_FILE(NullGenerator,     sam0);
 LIB_FILE(OptGenerator,      sam0);
 LIB_FILE(ParaGenerator,     sam0);
+LIB_FILE(ParseForwarder,    sam0);
 LIB_FILE(SeqGenerator,      sam0);
 LIB_FILE(String,            sam0);
 LIB_FILE(Value,             sam0);
