@@ -216,13 +216,17 @@ fn doDerivOrOpaque(value, adorn) {
     def type = typeOf(value);
     def typeString = keyString(type);
 
+    def nameString = ifIs { <> canCall(nameOf, value) }
+        { <> cat(" ", callSourceString(nameOf(value))) }
+        { <> "" };
+
     def dataString = ifIs { <> isOpaqueValue(value) }
-        { <> ": /*opaque*/" }
+        { <> " /*opaque*/" }
         {
             <> ifValue { <> dataOf(value) }
                 { data ::
                     # Transparent derived value with payload.
-                    <> cat(": ", callSourceString(data))
+                    <> cat(" ", callSourceString(data))
                 }
                 {
                     # Type-only transparent derived value.
@@ -232,7 +236,11 @@ fn doDerivOrOpaque(value, adorn) {
                 }
         };
 
-    def body = cat(typeString, dataString);
+    def extraString = ifValue { <> ne("", cat(nameString, dataString))  }
+        { s <> cat(":", s) }
+        { <> "" };
+
+    def body = cat(typeString, extraString);
 
     <> adornIf(adorn, "@[", body, "]");
 };
