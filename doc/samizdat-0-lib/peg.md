@@ -57,6 +57,95 @@ Then, it must also return void.
 In the following descriptions, code shorthands use the *Samizdat* parsing
 syntax for explanatory purposes.
 
+<br><br>
+### Types
+
+The following is a summary of the parser types used here, including what
+data payload they use and what it means to call `parse` on them.
+
+#### `@[PegAlways: value].parse(...)`
+
+Always yields the given `value`, consuming no input.
+
+#### `@PegAny.parse(...)`
+
+Consumes and yields a single token if available.
+
+#### `@[PegChoice: [rules*]].parse(...)`
+
+Tries to parse the input using each of the given `rules` in order.
+Yields a value and returns replacement input based on the first one
+that succeeds. Fails if none of the rules succeeds.
+
+#### `@[PegCode: function].parse(...)`
+
+Calls the given `function`, passing it the current sequential input
+context. Yields whatever value it returns. Upon success (non-void
+return), this returns the originally given input (consuming no tokens)
+Upon failure, this returns void.
+
+#### `@PegEmpty.parse(...)`
+
+Always yields `null`, consuming no input.
+
+#### `@PegEof.parse(...)`
+
+Yields `null` if there is no input to consume. Otherwise, fails (yields
+void and returns void).
+
+#### `@PegFail.parse(...)`
+
+Always yields void and returns void.
+
+#### `@PegLookaheadAny.parse(...)`
+
+If there is any input available, yields the first input token, but does
+not consume it. Otherwise (at EOF), fails (yields void and returns void).
+
+#### `@[PegLookaheadFailure: rule].parse(...)`
+
+Tries to parse the input using `rule`. If it succeeds, then this rule
+fails. If it fails, then this rule succeeds, consuming no input and
+yielding `null`.
+
+#### `@[PegLookaheadSuccess: rule].parse(...)`
+
+Tries to parse the input using `rule`. If it succeeds, then this rule
+also succeeds, yielding the same result but consuming no input. If it fails,
+then this rule also fails.
+
+#### `@[PegMain: rule].parse(...)`
+
+Parses the given `rule` but does not hand it any `items*` that this rule
+may have been passed. That is, this rule provides a new "main context"
+for parsing. The yield and result of this rule is the same as that of
+the embedded `rule`.
+
+#### `@[PegOpt: rule].parse(...)`
+
+Tries to parse the input using `rule`. If it succeeds, then this rule
+also succeeds, yielding a single-element list of the result.
+If it fails, then this rule succeeds, consuming no input and yielding
+`[]`.
+
+#### `@[PegSequence: [rules*]].parse(...)`
+
+Tries to parse the given rules one after the other. Succeeds if all of
+the rules were successfully applied, yielding the result of the *final*
+rule and returning the final resulting new input value.
+
+If any of the rules fail, then this rule also fails, consuming no input.
+
+In addition to the original `items*` passed in to this rule, each sub-rule
+receives the results of all the previous sub-rules as additional `items*`.
+
+#### `@[PegStar: rule].parse(...)`
+
+Tries to parse the input using `rule`, iterating until `rule` is no longer
+able to be parsed. Yields a list of all the parsed results, and returns
+the final input state. If `rule` was never found to apply, this yields
+`[]` and returns the original input.
+
 
 <br><br>
 ### Generic Function Definitions: `Parser` protocol
