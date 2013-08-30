@@ -103,7 +103,9 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     zvalue function = genericFind(generic, args[0]);
 
     if (function == NULL) {
-        die("No type binding found for generic: %s", valDebugString(generic));
+        die("No binding found: %s on %s",
+            valDebugString(generic),
+            valDebugString(args[0]));
     }
 
     return funCall(function, argCount, args);
