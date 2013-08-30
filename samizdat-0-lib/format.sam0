@@ -94,7 +94,7 @@ def SPECIAL_CHARS = [
 fn hexStringChar(ch) {
     <> cat(
         "\\x",
-        formatIntWithBase(intFromChar(ch), 16),
+        formatIntWithBase(toInt(ch), 16),
         ";")
 };
 

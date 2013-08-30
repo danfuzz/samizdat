@@ -95,7 +95,7 @@ def expression = makeForwardFunction();
 # Parses a single digit, yielding its value as an int.
 def digit = {/
     ch = ["0".."9"]
-    { <> sub(intFromChar(typeOf(ch)), intFromChar("0")) }
+    { <> sub(toInt(typeOf(ch)), toInt("0")) }
 /};
 
 # Parses a whole number (non-negative integer), yielding its value as an int.
