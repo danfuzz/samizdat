@@ -96,10 +96,10 @@ fn makeCallNonlocalExit(name, optExpression?) {
 #
 
 # Forward declarations.
-def parProgramBody = makeForwardFunction();
-def parExpression = makeForwardFunction();
-def parParser = makeForwardFunction();
-def parVoidableExpression = makeForwardFunction();
+def parProgramBody = makeParseForwarder();
+def parExpression = makeParseForwarder();
+def parParser = makeParseForwarder();
+def parVoidableExpression = makeParseForwarder();
 
 # Documented in Samizdat Layer 0 spec.
 def parYieldDef = pegMakeMainSequence(
@@ -503,7 +503,7 @@ def parProgramOrError = pegMakeMainSequence(
 #
 
 # `choicePex` is the top-level parsing expression node type.
-def parChoicePex = makeForwardFunction();
+def parChoicePex = makeParseForwarder();
 
 def implParser = pegMakeMainSequence(
     pegMakeToken("{/"),

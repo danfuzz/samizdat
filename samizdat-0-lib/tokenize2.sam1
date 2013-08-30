@@ -8,8 +8,8 @@
 
 
 # Forward declarations for Layer 2 definitions.
-def tokMultilineComment = makeForwardFunction();
-def tokStringPart2 = makeForwardFunction();
+def tokMultilineComment = makeParseForwarder();
+def tokStringPart2 = makeParseForwarder();
 
 
 #
@@ -118,7 +118,7 @@ def tokPunctuation = {/
 # Parses an integer literal.
 #
 # **Note:** This rule is rewritten in *Layer 2*.
-def tokInt = makeForwardFunction();
+def tokInt = makeParseForwarder();
 
 # Parses a run of regular characters or an escape / special sequence,
 # inside a quoted string.
@@ -375,7 +375,7 @@ def tokNamedChar = {/
 # Parses the inner portion of a string interpolation expression. This
 # captures a list of inner tokens, ending when parentheses and braces are
 # balanced out (and ignoring other could-be-matched delimiter tokens).
-def tokStringInterpolation = makeForwardFunction();
+def tokStringInterpolation = makeParseForwarder();
 def implStringInterpolation = {/
     &["({"]
     open = tokToken
