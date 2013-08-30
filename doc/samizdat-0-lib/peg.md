@@ -79,6 +79,15 @@ into `box` and returns void.
 <br><br>
 ### In-Language Definitions
 
+#### `makeParseForwarder() <> function`
+
+Simple parser forward declaration utility. The result of a call to this
+function is a parser, which forwards `parse` calls to an initially un-set
+box.
+
+This function is like `makeFunctionForwarder`, except for parsers not
+functions. See that function for more details.
+
 #### `pegApply(rule, input) <> . | void`
 
 Applies a parser rule to the given input, yielding whatever result the
