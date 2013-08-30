@@ -11,6 +11,25 @@
 
 
 /*
+ * Exported Definitions
+ */
+
+/* Documented in header. */
+char *valToString(zvalue value) {
+    if (value == NULL) {
+        return strdup("(null)");
+    }
+
+    zvalue result = GFN_CALL(toString, value);
+    zint size = utf8SizeFromString(result);
+    char *str = utilAlloc(size + 1);
+
+    utf8FromString(size + 1, str, result);
+    return str;
+}
+
+
+/*
  * Type Definition
  */
 

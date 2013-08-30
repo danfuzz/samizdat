@@ -7,6 +7,7 @@
 #include "impl.h"
 #include "type/Generic.h"
 #include "type/Int.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -70,16 +71,11 @@ zint valIdentityOf(zvalue value) {
 
 /* Documented in header. */
 char *valDebugString(zvalue value) {
-    if (value == NULL) {
-        return strdup("(null)");
+    if (value != NULL) {
+        value = GFN_CALL(debugString, value);
     }
 
-    zvalue result = GFN_CALL(debugString, value);
-    zint size = utf8SizeFromString(result);
-    char str[size + 1];
-
-    utf8FromString(size + 1, str, result);
-    return strdup(str);
+    return valToString(value);
 }
 
 /* Documented in header. */

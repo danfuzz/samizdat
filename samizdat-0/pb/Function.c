@@ -12,8 +12,13 @@
 #include "type/Function.h"
 #include "type/Generic.h"
 #include "type/List.h"
+#include "type/OneOff.h"
 #include "type/String.h"
+#include "type/Type.h"
 #include "type/Value.h"
+
+#include <stdio.h>  // For `asprintf`.
+#include <stdlib.h> // For `free`.
 
 
 /*
@@ -25,7 +30,25 @@
  * when dumping the stack.
  */
 static char *callReporter(void *state) {
-    return valDebugString((zvalue) state);
+    zvalue value = state;
+
+    if (GFN_CALL(canCall, GFN_nameOf, value)) {
+        zvalue name = GFN_CALL(nameOf, value);
+        if (name != NULL) {
+            value = name;
+        }
+    }
+
+    if (GFN_CALL(canCall, GFN_toString, value)) {
+        return valToString(value);
+    } else {
+        zvalue type = GFN_CALL(nameOf, typeOf(value));
+        char *typeString = valToString(type);
+        char *result;
+        asprintf(&result, "(anonymous %s)", typeString);
+        free(typeString);
+        return result;
+    }
 }
 
 /**

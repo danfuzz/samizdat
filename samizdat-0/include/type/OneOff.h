@@ -26,4 +26,11 @@ extern zvalue GFN_toNumber;
 /** Generic `toString(value)`: Documented in spec. */
 extern zvalue GFN_toString;
 
+/**
+ * Calls `toString` on the given value, returning the result as a `char *`.
+ * The caller is responsible for `free()`ing the result. As a convenience,
+ * this converts `NULL` into `"(null)"`.
+ */
+char *valToString(zvalue value);
+
 #endif
