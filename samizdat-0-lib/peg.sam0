@@ -166,7 +166,7 @@ fn PegStar_parse(peg, box, input, items*) {
                 {
                     ifValue { <> get(params, "minSize") }
                         { minSize ::
-                            ifIs { <> totLt(sizeOf(values), minSize) }
+                            ifIs { <> lt(sizeOf(values), minSize) }
                                 {
                                     # Did not parse minimum required size.
                                     store(box);
