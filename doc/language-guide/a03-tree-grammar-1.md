@@ -90,12 +90,12 @@ fn makeCallNonlocalExit(name, optExpression?) {
 #
 
 # Forward declarations.
-def parProgramBody = makeForwardFunction();
-def parExpression = makeForwardFunction();
-def parVoidableExpression = makeForwardFunction();
+def parProgramBody = makeParseForwarder();
+def parExpression = makeParseForwarder();
+def parVoidableExpression = makeParseForwarder();
 
 # Forward declaration required for integrating layer 1 definitions.
-def parParser = makeForwardFunction();
+def parParser = makeParseForwarder();
 
 # Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
@@ -643,7 +643,7 @@ def parProgramOrError = {/
 #
 
 # Forward declaration.
-def parChoicePex = makeForwardFunction();
+def parChoicePex = makeParseForwarder();
 
 # Parses a parser function.
 def implParser = {/

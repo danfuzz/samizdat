@@ -11,8 +11,8 @@
 #
 
 # Forward declarations.
-def callSourceString = makeForwardFunction();
-def callFormatValue = makeForwardFunction();
+def callSourceString = makeFunctionForwarder();
+def callFormatValue = makeFunctionForwarder();
 
 # This is int digits for bases up to 36, in order.
 def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";

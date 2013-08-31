@@ -187,15 +187,15 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 #
 
 # Forward declaration required for layer 2.
-def parAtom2 = makeForwardFunction();
+def parAtom2 = makeParseForwarder();
 
 # Forward declarations.
-def parProgramBody = makeForwardFunction();
-def parExpression = makeForwardFunction();
-def parVoidableExpression = makeForwardFunction();
+def parProgramBody = makeParseForwarder();
+def parExpression = makeParseForwarder();
+def parVoidableExpression = makeParseForwarder();
 
 # Forward declaration required for integrating layer 1 definitions.
-def parParser = makeForwardFunction();
+def parParser = makeParseForwarder();
 
 # Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
@@ -599,8 +599,8 @@ def parActualsList = {/
 # `prefixOperator` and `postfixOperator` from layer 0 are replaced with
 # forwarded functions here. These are subsumed by more featureful layer 2
 # definitions, below.
-def parPrefixOperator = makeForwardFunction();
-def parPostfixOperator = makeForwardFunction();
+def parPrefixOperator = makeParseForwarder();
+def parPostfixOperator = makeParseForwarder();
 
 # Parses a unary expression. This is an atom, optionally surrounded on
 # either side by any number of unary operators. Postfix operators
@@ -633,8 +633,8 @@ store(parVoidableExpression, implVoidableExpression);
 # `expression` from layer 0 is omitted here (it's forwarded earlier), and
 # `statement` and `nonlocalExit` are replaced with forwarded functions here.
 # These are all subsumed by more featureful layer 2 definitions, below.
-def parStatement = makeForwardFunction();
-def parNonlocalExit = makeForwardFunction();
+def parStatement = makeParseForwarder();
+def parNonlocalExit = makeParseForwarder();
 
 # Parses a local yield / return.
 def parYield = {/
@@ -699,7 +699,7 @@ def parProgramOrError = {/
 #
 
 # Forward declaration.
-def parChoicePex = makeForwardFunction();
+def parChoicePex = makeParseForwarder();
 
 # Parses a parser function.
 def implParser = {/

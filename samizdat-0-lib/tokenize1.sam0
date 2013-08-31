@@ -63,12 +63,12 @@ def tokPunctuation = pegMakeMainSequence(
         pegMakeString("<>"),
         pegMakeString("{/"),
         pegMakeString("/}"),
-        pegRuleAny));
+        pegAny));
 
 # Documented in Samizdat Layer 0 spec.
 def tokInt = pegMakeMainSequence(
     pegMakePlus(
-        pegMakeMainSequence(
+        pegMakeSequence(
             pegMakeCharSet("0123456789"),
             pegMakeCode(intFromDigitChar))),
     pegMakeCode { digits ::
@@ -81,26 +81,26 @@ def tokInt = pegMakeMainSequence(
 def tokStringPart = pegMakeMainChoice(
     pegMakeSequence(
         pegMakePlus(pegMakeCharSetComplement("\\\"\n")),
-        pegMakeCode { chars <> stringFromTokenList(chars) }),
+        pegMakeCode(stringFromTokenList)),
     pegMakeSequence(
         pegMakeString("\n"),
         pegMakeStar(pegMakeString(" ")),
-        pegMakeCode { ., . <> "\n" }),
+        pegMakeResult("\n")),
     pegMakeSequence(
         pegMakeString("\\"),
         pegMakeChoice(
             pegMakeSequence(
-                pegMakeString("\\"), pegMakeCode { ., . <> "\\" }),
+                pegMakeString("\\"), pegMakeResult("\\")),
             pegMakeSequence(
-                pegMakeString("\""), pegMakeCode { ., . <> "\"" }),
+                pegMakeString("\""), pegMakeResult("\"")),
             pegMakeSequence(
-                pegMakeString("n"),  pegMakeCode { ., . <> "\n" }),
+                pegMakeString("n"),  pegMakeResult("\n")),
             pegMakeSequence(
-                pegMakeString("r"),  pegMakeCode { ., . <> "\r" }),
+                pegMakeString("r"),  pegMakeResult("\r")),
             pegMakeSequence(
-                pegMakeString("t"),  pegMakeCode { ., . <> "\t" }),
+                pegMakeString("t"),  pegMakeResult("\t")),
             pegMakeSequence(
-                pegMakeString("0"),  pegMakeCode { ., . <> "\0" }))));
+                pegMakeString("0"),  pegMakeResult("\0")))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokString = pegMakeMainSequence(
@@ -137,7 +137,7 @@ def tokQuotedIdentifier = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 def tokError = pegMakeMainSequence(
-    pegRuleAny,
+    pegAny,
     pegMakeStar(pegMakeCharSetComplement("\n")),
     pegMakeCode { badCh, . ::
         def msg = cat("Unrecognized character: ", typeOf(badCh));

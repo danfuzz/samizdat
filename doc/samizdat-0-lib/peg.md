@@ -4,10 +4,10 @@ Samizdat Layer 0: Core Library
 Parsing
 -------
 
-*Samizdat Layer 0* provides a set of "parsing expression grammar" (a.k.a.
-"PEG") functions, for use in building parsers. The language does not provide
-any syntactic support for using these, though. (That is the job of a higher
-layer of the language.)
+*Samizdat* provides a set of "parsing expression grammar" (a.k.a.
+"PEG") functions, for use in building parsers. *Samizdat Layer 1*
+provides syntactic support for using these functions, and they can be
+used directly in *Samizdat Layer 0*.
 
 These functions can be used to build both tokenizers (that is, parsers of
 strings / sequences of characters) and tree parsers (that is, parsers of
@@ -25,36 +25,151 @@ tokens per se, that is, tokens whose type tag is taken to indicate a
 token type.
 
 The output of the functions named `pegMake*` are all parsing rules. These
-are functions with specifically-defined behavior in terms of accepted
-arguments and return values. In particular, every rule accepts at least
-two arguments, `yield` and `state` (in that order).
+are all transparent derived values with a type that binds the `parse`
+generic. A `parse` method accepts at least two arguments, and may also
+accept additional arguments:
 
-* `yield` is a function that a rule calls to indicate the result of
-  parsing. It behaves similarly to the `yield` functions defined as part
-  of the `object` construct. A parser rule is expected to call yield
-  both on success (with a value argument) and failure (with no argument).
+* `box` &mdash; The first argument is a `box` into which the result of
+  parsing is to be `store`d, or to which void is stored in case of
+  parsing failure.
 
-* The `state` argument is a list of items (tokens per se or character-as-token
-  elements) yet to be parsed.
+* `input` &mdash; The second argument is a generator of input tokens to
+  be parsed (usually *partially* parsed).
 
-In addition, every rule when called in the context of a "sequence" is passed
-extra arguments which correspond to the parsed results that are in "scope"
-of the rule (in order). This can be used, in particular, in the implementation
-of "code" rules in order to produce a filtered result.
+* `items*` &mdash; Any further arguments are taken to be the context of
+  items that have been parsed already, in order, in the context of a
+  "sequence" being parsed. These can be used, in particular, in the
+  implementation of "code" rules in order to produce a filtered sequence
+  result.
 
-On success, a rule is expected to return a replacement for `state` to be
-used as the `state` argument for subsequent parser rules. On failure, a
-rule is expected to return void.
+A parsing function, upon success when called, must do two things: It must
+call `store` on its yield `box` to indicate the non-void result of parsing.
+Then, it must return a replacement `input` for use as the input to subsequent
+parsers, that reflects the removal of whatever elements were consumed
+by the parsing (including none). If the parsing function consumed all of
+its given input, then it must return a voided generator (that is, one which
+yields and returns void when called).
 
-In the following descriptions, code shorthands use the Samizdat parsing
-syntax for explanatory purposes. Keep in mind, however, that this is *not*
-syntax that is built into *Samizdat Layer 0*.
+A parsing function, upon failure when called, must do two things: It must
+call its yield `box` with no argument to indicate a void result of parsing.
+Then, it must also return void.
+
+In the following descriptions, code shorthands use the *Samizdat* parsing
+syntax for explanatory purposes.
+
+<br><br>
+### Types
+
+The following is a summary of the parser types used here, including what
+data payload they use and what it means to call `parse` on them.
+
+#### `@PegAny.parse(...)`
+
+Consumes and yields a single token if available.
+
+#### `@[PegChoice: [rules*]].parse(...)`
+
+Tries to parse the input using each of the given `rules` in order.
+Yields a value and returns replacement input based on the first one
+that succeeds. Fails if none of the rules succeeds.
+
+#### `@[PegCode: function].parse(...)`
+
+Calls the given `function`, passing it the current sequential input
+context. Yields whatever value it returns. Upon success (non-void
+return), this returns the originally given input (consuming no tokens)
+Upon failure, this returns void.
+
+#### `@PegEmpty.parse(...)`
+
+Always yields `null`, consuming no input.
+
+#### `@PegEof.parse(...)`
+
+Yields `null` if there is no input to consume. Otherwise, fails (yields
+void and returns void).
+
+#### `@PegFail.parse(...)`
+
+Always yields void and returns void.
+
+#### `@[PegLookaheadFailure: rule].parse(...)`
+
+Tries to parse the input using `rule`. If it succeeds, then this rule
+fails. If it fails, then this rule succeeds, consuming no input and
+yielding `null`.
+
+#### `@[PegLookaheadSuccess: rule].parse(...)`
+
+Tries to parse the input using `rule`. If it succeeds, then this rule
+also succeeds, yielding the same result but consuming no input. If it fails,
+then this rule also fails.
+
+#### `@[PegMain: rule].parse(...)`
+
+Parses the given `rule` but does not hand it any `items*` that this rule
+may have been passed. That is, this rule provides a new "main context"
+for parsing. The yield and result of this rule is the same as that of
+the embedded `rule`.
+
+#### `@[PegOpt: rule].parse(...)`
+
+Tries to parse the input using `rule`. If it succeeds, then this rule
+also succeeds, yielding a single-element list of the result.
+If it fails, then this rule succeeds, consuming no input and yielding
+`[]`.
+
+#### `@[PegRepeat: [rule: rule, (minSize: n)?].parse(...)`
+
+Tries to parse the input using `rule`, iterating until `rule` is no longer
+able to be parsed. Yields a list of all the parsed results, and returns
+the final input state. If `rule` was never found to apply, this yields
+`[]` and returns the original input. If `minSize` is specified, then
+this rule fails unless the size of the yielded list is at least `n`.
+
+**Note:** This is used as the type underlying both `expr*` and `expr+`
+expressions.
+
+#### `@[PegResult: value].parse(...)`
+
+Always yields the given `value`, consuming no input.
+
+#### `@[PegSequence: [rules*]].parse(...)`
+
+Tries to parse the given rules one after the other. Succeeds if all of
+the rules were successfully applied, yielding the result of the *final*
+rule and returning the final resulting new input value.
+
+If any of the rules fail, then this rule also fails, consuming no input.
+
+In addition to the original `items*` passed in to this rule, each sub-rule
+receives the results of all the previous sub-rules as additional `items*`.
+
+#### `@[PegTokenSet: [types*: null]].parse(...)`
+
+If there is any input available, checks the type of the first input
+token against the given set of types (map where only the keys matter).
+If the type is found in the set, then yields and consumes the token.
+Otherwise fails, yielding and returning void.
+
+#### `@[PegTokenSetComplement: [types*: null]].parse(...)`
+
+If there is any input available, checks the type of the first input
+token against the given set of types (map where only the keys matter).
+If the type is *not* found in the set, then yields and consumes the token.
+Otherwise fails, yielding and returning void.
 
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Parser` protocol
 
-(none)
+#### `parse(box, input, items*) <> newInput`
+
+Performs a parse of `input` (a generator) with the trailing sequence
+context of `[items*]`. If parsing is successful, stores into `box` the
+parsed result and returns a replacement for `input` that reflects the
+consumption of tokens that were used. If parsing fails, stores void
+into `box` and returns void.
 
 
 <br><br>
@@ -65,6 +180,15 @@ syntax that is built into *Samizdat Layer 0*.
 
 <br><br>
 ### In-Language Definitions
+
+#### `makeParseForwarder() <> function`
+
+Simple parser forward declaration utility. The result of a call to this
+function is a parser, which forwards `parse` calls to an initially un-set
+box.
+
+This function is like `makeFunctionForwarder`, except for parsers not
+functions. See that function for more details.
 
 #### `pegApply(rule, input) <> . | void`
 
@@ -177,6 +301,14 @@ This rule will succeed only if the given rule is matched at least once.
 
 This is equivalent to the syntactic form `{/ rule+ /}`.
 
+#### `pegMakeResult(value) <> rule`
+
+Makes and returns a parser rule which always succeeds, yielding the
+given result `value`, and never consuming any input.
+
+This is equivalent to the syntactic form `{/ { <> value } /}` assuming
+that `value` is a constant expression.
+
 #### `pegMakeSequence(rules*) <> rule`
 
 Makes and returns a parser rule which runs a sequence of given other rules
@@ -241,7 +373,7 @@ whatever token was matched.
 
 This is equivalent to the syntactic form `{/ [! @token1 @token2 @etc] /}`.
 
-#### Rule: `pegRuleAny`
+#### Rule: `pegAny`
 
 Parser rule which matches any input item, consuming and yielding it. It
 succeeds on any non-empty input.
@@ -251,7 +383,7 @@ called directly.
 
 This is equivalent to the syntactic form `{/ . /}`.
 
-#### Rule: `pegRuleEmpty`
+#### Rule: `pegEmpty`
 
 Parser rule which always succeeds, and never consumes input. It always
 yields `null`.
@@ -261,7 +393,7 @@ called directly.
 
 This is equivalent to the syntactic form `{/ () /}`.
 
-#### Rule: `pegRuleEof`
+#### Rule: `pegEof`
 
 Parser rule which succeeds only when the input is empty. When successful,
 it always yields `null`.
@@ -271,7 +403,7 @@ called directly.
 
 This is equivalent to the syntactic form `{/ !. /}`.
 
-#### Rule: `pegRuleFail`
+#### Rule: `pegFail`
 
 Parser rule which always fails.
 
@@ -282,13 +414,3 @@ This is equivalent to the syntactic form `{/ !() /}` (that is, attempting
 to find a lookahead failure for the empty rule, said rule which always
 succeeds). It is also equivalent to the syntactic form `{/ [] /}` (that is,
 the empty set of tokens or characters).
-
-#### Rule: `pegRuleLookaheadAny`
-
-Parser rule which matches any input item, yielding it but not consuming it.
-It succeeds on any non-empty input.
-
-This is a direct parser rule, meant to be referred to by value instead of
-called directly.
-
-This is equivalent to the syntactic form `{/ &. /}`.

@@ -36,7 +36,7 @@ def parRegularComponent = {/
 
 # Parses a matched set of components that are collectively ignored, e.g.
 # `"/x/y/../.."` or `"/."`.
-def parIgnoredComponent = makeForwardFunction();
+def parIgnoredComponent = makeParseForwarder();
 def implIgnoredComponent = {/
     component = parPathComponent
 
