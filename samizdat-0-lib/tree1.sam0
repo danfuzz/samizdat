@@ -353,9 +353,7 @@ def parVarDef = pegMakeMainSequence(
     pegMakeToken("identifier"),
     pegMakeToken("="),
     parExpression,
-    pegMakeCode { ., name, ., ex ::
-        <> makeVarDef(dataOf(name), ex)
-    });
+    pegMakeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) });
 
 # Documented in Samizdat Layer 0 spec.
 def parParenExpression = pegMakeMainSequence(
