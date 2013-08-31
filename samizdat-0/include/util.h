@@ -18,7 +18,6 @@
 
 
 #include "util/zint.h"    // Int-related declarations.
-#include "util/module.h"  // Module system declarations.
 
 
 /*

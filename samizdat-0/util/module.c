@@ -8,6 +8,7 @@
  * Simple C Module System
  */
 
+#include "module.h"
 #include "util.h"
 
 
