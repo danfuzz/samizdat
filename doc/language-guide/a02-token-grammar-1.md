@@ -52,7 +52,7 @@ fn processStringParts(parts) {
 
 # Forward declaration of `tokToken`, for use in the interpolated string
 # rule. (This is only significant as of *Layer 2*.)
-def tokToken = makeForwardFunction();
+def tokToken = makeParseForwarder();
 
 # Parses any amount of whitespace and comments (including nothing at all).
 # **Note:** The yielded result is always ignored.

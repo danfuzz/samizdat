@@ -48,7 +48,7 @@ exit forms.
 <br><br>
 ### In-Language Definitions
 
-#### `makeForwardFunction() <> function`
+#### `makeFunctionForwarder() <> function`
 
 Simple function forward declaration utility. The result of a call to this
 function is another function, called the "forwarding function" or
