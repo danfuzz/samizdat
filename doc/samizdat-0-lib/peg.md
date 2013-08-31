@@ -63,10 +63,6 @@ syntax for explanatory purposes.
 The following is a summary of the parser types used here, including what
 data payload they use and what it means to call `parse` on them.
 
-#### `@[PegAlways: value].parse(...)`
-
-Always yields the given `value`, consuming no input.
-
 #### `@PegAny.parse(...)`
 
 Consumes and yields a single token if available.
@@ -122,6 +118,10 @@ Tries to parse the input using `rule`. If it succeeds, then this rule
 also succeeds, yielding a single-element list of the result.
 If it fails, then this rule succeeds, consuming no input and yielding
 `[]`.
+
+#### `@[PegResult: value].parse(...)`
+
+Always yields the given `value`, consuming no input.
 
 #### `@[PegSequence: [rules*]].parse(...)`
 
@@ -300,6 +300,14 @@ updated state that reflects all the input consumed by these matches.
 This rule will succeed only if the given rule is matched at least once.
 
 This is equivalent to the syntactic form `{/ rule+ /}`.
+
+#### `pegMakeResult(value) <> rule`
+
+Makes and returns a parser rule which always succeeds, yielding the
+given result `value`, and never consuming any input.
+
+This is equivalent to the syntactic form `{/ { <> value } /}` assuming
+that `value` is a constant expression.
 
 #### `pegMakeSequence(rules*) <> rule`
 
