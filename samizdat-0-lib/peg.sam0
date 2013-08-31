@@ -36,7 +36,7 @@ genericBind(parse, "PegAny", PegAny_parse);
 fn PegChoice_parse(peg, box, input, items*) {
     filterPump(dataOf(peg)) { rule ::
         def innerBox = makeYieldBox();
-        <> ifValue { <> parse(rule, innerBox, input, items*) }
+        ifValue { <> parse(rule, innerBox, input, items*) }
             { newInput ::
                 store(box, fetch(innerBox));
                 return newInput
