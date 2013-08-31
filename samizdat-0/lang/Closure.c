@@ -480,7 +480,9 @@ METH_IMPL(Closure, nameOf) {
 
 /** Initializes the module. */
 MOD_INIT(Closure) {
+    MOD_USE(Box);
     MOD_USE(Function);
+    MOD_USE(OneOff);
 
     TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"), true);
 

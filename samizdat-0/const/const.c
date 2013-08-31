@@ -36,7 +36,7 @@
 MOD_INIT(const) {
     zstackPointer save = pbFrameStart();
 
-    MOD_USE(dat);
+    MOD_USE(Value);
 
     #define STR(name, str) \
         STR_##name = stringFromUtf8(-1, str); \
