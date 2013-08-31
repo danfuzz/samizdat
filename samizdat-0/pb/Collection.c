@@ -176,8 +176,10 @@ void seqBind(zvalue type) {
  * Type Definition: `Collection`
  */
 
-/* Documented in header. */
-void pbBindCollection(void) {
+/** Initializes the module. */
+MOD_INIT(Collection) {
+    MOD_USE(Value);
+
     GFN_cat = makeGeneric(1, -1, GFN_SAME_TYPE, stringFromUtf8(-1, "cat"));
     pbImmortalize(GFN_cat);
 

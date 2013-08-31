@@ -28,10 +28,5 @@
 #undef STR
 #undef TOK
 
-/**
- * Initializes the constants, if necessary.
- */
-void constInit(void);
-
 
 #endif

@@ -437,8 +437,10 @@ METH_IMPL(Type, totOrder) {
     return intFromZint(typeCompare(info1->name, info1->secret, v2));
 }
 
-/* Documented in header. */
-void pbInitTypeSystem(void) {
+/**
+ * Define `typeSystem` as a module, as separate from the `Type` type.
+ */
+MOD_INIT(typeSystem) {
     TYPE_Type = allocType();
     TYPE_Type->type = TYPE_Type;
     TYPE_Value = allocType();
@@ -473,8 +475,12 @@ void pbInitTypeSystem(void) {
     }
 }
 
-/* Documented in header. */
-void pbBindType(void) {
+/** Initializes the module. */
+MOD_INIT(Type) {
+    MOD_USE(OneOff);
+
+    // Note: The `typeSystem` module initializes `TYPE_Type`.
+
     METH_BIND(Type, debugString);
     METH_BIND(Type, gcMark);
     METH_BIND(Type, nameOf);

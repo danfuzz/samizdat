@@ -14,8 +14,10 @@
  * Type Definition
  */
 
-/* Documented in header. */
-void pbBindBitwise(void) {
+/** Initializes the module. */
+MOD_INIT(Bitwise) {
+    MOD_USE(Value);
+
     GFN_and = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "and"));
     pbImmortalize(GFN_and);
 

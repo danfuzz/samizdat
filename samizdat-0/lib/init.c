@@ -113,6 +113,6 @@ static zvalue getLibrary(void) {
 
 /* Documented in header. */
 zvalue libNewContext(void) {
-    constInit();
+    MOD_USE(const);
     return getLibrary();
 }

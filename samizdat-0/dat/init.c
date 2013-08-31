@@ -9,27 +9,18 @@
  */
 
 #include "impl.h"
-#include "type/Box.h"
 
 
 /*
  * Exported Definitions
  */
 
-/* Documented in header. */
-void datInit(void) {
-    if (TYPE_Box != NULL) {
-        return;
-    }
-
+/** Initializes the module. */
+MOD_INIT(dat) {
     zstackPointer save = pbFrameStart();
 
-    pbInit();
-    datBindBox();
-    datBindMap();
-    datBindMapCache();
-
-    datBindGenerator(); // Needs to happen after `Map`, as it binds that type.
+    MOD_USE(pb);
+    MOD_USE(Generator); // Inits everything (indirectly).
 
     pbFrameReturn(save, NULL);
 }

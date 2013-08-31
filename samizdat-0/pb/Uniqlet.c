@@ -22,9 +22,11 @@ zvalue makeUniqlet(void) {
  * Type Definition
  */
 
-/* Documented in header. */
-void pbBindUniqlet(void) {
-    // Note: The type `Type` is responsible for initializing `TYPE_Uniqlet`.
+/** Initializes the module. */
+MOD_INIT(Uniqlet) {
+    MOD_USE(Value);
+
+    // Note: The `typeSystem` module initializes `TYPE_Uniqlet`.
 
     // This function is just left here as a positive indication that there
     // is nothing to do.

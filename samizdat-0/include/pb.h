@@ -11,6 +11,7 @@
 #ifndef _PB_H_
 #define _PB_H_
 
+#include "module.h"
 #include "ztype.h"
 
 
@@ -36,16 +37,6 @@ enum {
     PB_HEADER_SIZE =
         (sizeof(zvalue) * 3) + (sizeof(int32_t) * 2) + sizeof(zint)
 };
-
-
-/*
- * Initialization Declarations
- */
-
-/**
- * Initializes the `pb` module.
- */
-void pbInit(void);
 
 
 /*

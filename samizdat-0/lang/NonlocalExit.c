@@ -141,10 +141,13 @@ METH_IMPL(NonlocalExit, gcMark) {
     return NULL;
 }
 
-/* Documented in header. */
-void langBindNonlocalExit(void) {
+/** Initializes the module. */
+MOD_INIT(NonlocalExit) {
+    MOD_USE(Function);
+
     TYPE_NonlocalExit =
         coreTypeFromName(stringFromUtf8(-1, "NonlocalExit"), true);
+
     METH_BIND(NonlocalExit, call);
     METH_BIND(NonlocalExit, canCall);
     METH_BIND(NonlocalExit, gcMark);

@@ -281,9 +281,13 @@ METH_IMPL(List, totOrder) {
     return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
-/* Documented in header. */
-void pbBindList(void) {
+/** Initializes the module. */
+MOD_INIT(List) {
+    MOD_USE(Collection);
+    MOD_USE(OneOff);
+
     TYPE_List = coreTypeFromName(stringFromUtf8(-1, "List"), false);
+
     METH_BIND(List, cat);
     METH_BIND(List, del);
     METH_BIND(List, gcMark);

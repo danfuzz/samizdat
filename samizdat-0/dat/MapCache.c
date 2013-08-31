@@ -69,8 +69,10 @@ METH_IMPL(MapCache, gcMark) {
     return NULL;
 }
 
-/* Documented in header. */
-void datBindMapCache(void) {
+/** Initializes the module. */
+MOD_INIT(MapCache) {
+    MOD_USE(Value);
+
     // What we're doing here is setting up a singleton instance, which
     // gets marked immortal. Its `gcMark` method gets called during gc,
     // which we use as a trigger to clear the map cache.
