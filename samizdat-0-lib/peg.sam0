@@ -123,6 +123,33 @@ fn PegOpt_parse(peg, box, input, items*) {
 genericBind(parse, "PegOpt", PegOpt_parse);
 
 # Documented in Samizdat Layer 0 spec.
+fn PegRepeat_parse(peg, box, input, items*) {
+    def params = dataOf(peg);
+    def rule = get(params, "rule");
+
+    loopReduce(input, [])
+        { input, values ::
+            def innerBox = makeYieldBox();
+            <> ifValue { <> parse(rule, innerBox, input, items*) }
+                { newInput <> [newInput, [values*, fetch(innerBox)]] }
+                {
+                    ifValue { <> get(params, "minSize") }
+                        { minSize ::
+                            ifIs { <> lt(sizeOf(values), minSize) }
+                                {
+                                    # Did not parse minimum required size.
+                                    store(box);
+                                    return
+                                }
+                        };
+                    store(box, values);
+                    return input
+                }
+        }
+};
+genericBind(parse, "PegRepeat", PegRepeat_parse);
+
+# Documented in Samizdat Layer 0 spec.
 fn PegResult_parse(peg, box, input, .*) {
     store(box, dataOf(peg));
     <> input
@@ -152,33 +179,6 @@ fn PegSequence_parse(peg, box, input, items*) {
     <> newInput
 };
 genericBind(parse, "PegSequence", PegSequence_parse);
-
-# Documented in Samizdat Layer 0 spec.
-fn PegStar_parse(peg, box, input, items*) {
-    def params = dataOf(peg);
-    def rule = get(params, "rule");
-
-    loopReduce(input, [])
-        { input, values ::
-            def innerBox = makeYieldBox();
-            <> ifValue { <> parse(rule, innerBox, input, items*) }
-                { newInput <> [newInput, [values*, fetch(innerBox)]] }
-                {
-                    ifValue { <> get(params, "minSize") }
-                        { minSize ::
-                            ifIs { <> lt(sizeOf(values), minSize) }
-                                {
-                                    # Did not parse minimum required size.
-                                    store(box);
-                                    return
-                                }
-                        };
-                    store(box, values);
-                    return input
-                }
-        }
-};
-genericBind(parse, "PegStar", PegStar_parse);
 
 # Documented in Samizdat Layer 0 spec.
 fn PegTokenSet_parse(peg, box, input, items*) {
@@ -316,7 +316,7 @@ fn pegMakeOpt(rule) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakePlus(rule) {
-    <> @[PegStar: [rule: rule, minSize: 1]]
+    <> @[PegRepeat: [rule: rule, minSize: 1]]
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -335,7 +335,7 @@ fn pegMakeSequence(rules*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeStar(rule) {
-    <> @[PegStar: [rule: rule]]
+    <> @[PegRepeat: [rule: rule]]
 };
 
 # Documented in Samizdat Layer 0 spec.
