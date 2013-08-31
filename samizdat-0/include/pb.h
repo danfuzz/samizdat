@@ -40,16 +40,6 @@ enum {
 
 
 /*
- * Initialization Declarations
- */
-
-/**
- * Initializes the `pb` module.
- */
-void pbInit(void);
-
-
-/*
  * Assertion Declarations
  */
 

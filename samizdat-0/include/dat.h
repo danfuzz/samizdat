@@ -13,10 +13,4 @@
 
 #include "pb.h"
 
-
-/**
- * Initializes the `dat` module.
- */
-void datInit(void);
-
 #endif
