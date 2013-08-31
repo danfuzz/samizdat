@@ -31,10 +31,10 @@ Directory and File Organization
 -------------------------------
 
 The code is structured into "modules", with each module's code in a
-directory with the module's name, and with "exports" from that module
-in a header file directly under `include/` bearing the module's name.
-For example, the code of the `dat` module is in the `dat/` directory,
-and the `dat` module exports functionality as defined in `include/dat.h`.
+directory with the module's name, and with "exports" from that module (if
+any) in a header file directly under `include/` bearing the module's
+name. For example, the code of the `util` module is in the `util/` directory,
+and the `util` module exports functionality as defined in `include/dat.h`.
 Some modules have additional headers under a directory named
 `include/module`. These typically get included by `include/module.h` and
 are not intended for direct consumption by other modules.
