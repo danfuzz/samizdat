@@ -289,7 +289,7 @@ static zvalue tokenizeOne(ParseState *state) {
 
 /* Documented in header. */
 zvalue langTokenize0(zvalue string) {
-    langInit();
+    MOD_USE(lang);
 
     zstackPointer save = pbFrameStart();
 

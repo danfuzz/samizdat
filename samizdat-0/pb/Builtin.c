@@ -142,9 +142,13 @@ METH_IMPL(Builtin, nameOf) {
     return info->name;
 }
 
-/* Documented in header. */
-void pbBindBuiltin(void) {
-    // Note: The type `Type` is responsible for initializing `TYPE_Builtin`.
+/** Initializes the module. */
+MOD_INIT(Builtin) {
+    MOD_USE(Function);
+    MOD_USE(OneOff);
+
+    // Note: The `typeSystem` module initializes `TYPE_Builtin`.
+
     METH_BIND(Builtin, call);
     METH_BIND(Builtin, canCall);
     METH_BIND(Builtin, debugString);

@@ -124,32 +124,4 @@ bool typeIsDerived(zvalue typeOrName);
 bool typeSecretIs(zvalue typeOrName, zvalue secret);
 
 
-/*
- * Initialization functions
- */
-
-/**
- * Initializes the type system, including in particular the type values
- * `Type` and `Value`. This also creates the types `String` and `Generic` but
- * doesn't bind methods for them; it's just enough so that types can be given
- * names and generics can be defined.
- */
-void pbInitTypeSystem(void);
-
-// Per-type binding and initialization.
-void pbBindBitwise(void);
-void pbBindBuiltin(void);
-void pbBindCollection(void);
-void pbBindDeriv(void);
-void pbBindFunction(void);
-void pbBindGeneric(void);
-void pbBindInt(void);
-void pbBindList(void);
-void pbBindNumber(void);
-void pbBindOneOff(void);
-void pbBindString(void);
-void pbBindType(void);
-void pbBindUniqlet(void);
-void pbBindValue(void);
-
 #endif

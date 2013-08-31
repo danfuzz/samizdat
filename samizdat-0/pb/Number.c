@@ -14,8 +14,10 @@
  * Type Definition
  */
 
-/* Documented in header. */
-void pbBindNumber(void) {
+/** Initializes the module. */
+MOD_INIT(Number) {
+    MOD_USE(Value);
+
     GFN_abs = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "abs"));
     pbImmortalize(GFN_abs);
 

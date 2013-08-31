@@ -33,8 +33,10 @@ char *valToString(zvalue value) {
  * Type Definition
  */
 
-/* Documented in header. */
-void pbBindOneOff(void) {
+/** Initializes the module. */
+MOD_INIT(OneOff) {
+    MOD_USE(Value);
+
     GFN_nameOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "nameOf"));
     pbImmortalize(GFN_nameOf);
 

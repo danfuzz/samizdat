@@ -4,7 +4,6 @@
  * Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
  */
 
-#include "dat.h"
 #include "impl.h"
 #include "type/String.h"
 #include "type/Value.h"
@@ -33,13 +32,9 @@
  * Module Definitions
  */
 
-/* Documented in header. */
-void constInit(void) {
-    if (STR_def != NULL) {
-        return;
-    }
-
-    datInit();
+/** Initializes the module. */
+MOD_INIT(const) {
+    MOD_USE(dat);
 
     zstackPointer save = pbFrameStart();
 

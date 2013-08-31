@@ -9,40 +9,26 @@
  */
 
 #include "impl.h"
-#include "type/Type.h"
 
 
 /*
  * Exported Definitions
  */
 
-/* Documented in header. */
-void pbInit(void) {
-    if (TYPE_Type != NULL) {
-        return;
-    }
+/** Initializes the module. */
+MOD_INIT(pb) {
+    // It suffices to just init the concrete types and `Deriv`. Everything
+    // else flows out of those.
 
-    // The initialization of the type system has to come first, because all
-    // the other initializers create types (that is, values of type `Type`).
-    // This also initializes type values for all the types that `Type`
-    // depends on.
-    pbInitTypeSystem();
+    // Concrete types.
+    MOD_USE(Type);
+    MOD_USE(String);
+    MOD_USE(Builtin);
+    MOD_USE(Generic);
+    MOD_USE(Int);
+    MOD_USE(Uniqlet);
+    MOD_USE(List);
 
-    pbBindValue(); // This defines the universal cross-type generics.
-
-    // Protocols.
-    pbBindBitwise();
-    pbBindCollection();
-    pbBindFunction();
-    pbBindNumber();
-    pbBindOneOff();
-
-    pbBindType();
-    pbBindString();
-    pbBindBuiltin();
-    pbBindGeneric();
-    pbBindInt();
-    pbBindUniqlet();
-    pbBindList();
-    pbBindDeriv();
+    // Used for all derived types.
+    MOD_USE(Deriv);
 }

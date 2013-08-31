@@ -184,8 +184,12 @@ METH_IMPL(Value, totOrder) {
     }
 }
 
-/* Documented in header. */
-void pbBindValue(void) {
+/** Initializes the module. */
+MOD_INIT(Value) {
+    MOD_USE(typeSystem);
+
+    // Note: The `typeSystem` module initializes `TYPE_Value`.
+
     GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));
     pbImmortalize(GFN_debugString);
 
@@ -203,8 +207,6 @@ void pbBindValue(void) {
 
     GFN_totOrder = makeGeneric(2, 2, GFN_SAME_TYPE, stringFromUtf8(-1, "totOrder"));
     pbImmortalize(GFN_totOrder);
-
-    // Note: The type `Type` is responsible for initializing `TYPE_Value`.
 
     METH_BIND(Value, debugString);
     METH_BIND(Value, perEq);

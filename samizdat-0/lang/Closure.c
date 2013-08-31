@@ -478,9 +478,12 @@ METH_IMPL(Closure, nameOf) {
     return collGet(info->defMap, STR_name);
 }
 
-/* Documented in header. */
-void langBindClosure(void) {
+/** Initializes the module. */
+MOD_INIT(Closure) {
+    MOD_USE(Function);
+
     TYPE_Closure = coreTypeFromName(stringFromUtf8(-1, "Closure"), true);
+
     METH_BIND(Closure, call);
     METH_BIND(Closure, canCall);
     METH_BIND(Closure, debugString);
