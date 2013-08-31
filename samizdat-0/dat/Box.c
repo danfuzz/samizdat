@@ -140,8 +140,10 @@ METH_IMPL(Box, store) {
     return value;
 }
 
-/* Documented in header. */
-void datBindBox(void) {
+/** Initializes the module. */
+MOD_INIT(Box) {
+    MOD_USE(Value);
+
     GFN_canStore = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "canStore"));
     pbImmortalize(GFN_canStore);
 
@@ -152,6 +154,7 @@ void datBindBox(void) {
     pbImmortalize(GFN_store);
 
     TYPE_Box = coreTypeFromName(stringFromUtf8(-1, "Box"), true);
+
     METH_BIND(Box, canStore);
     METH_BIND(Box, fetch);
     METH_BIND(Box, gcMark);

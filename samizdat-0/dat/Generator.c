@@ -178,8 +178,13 @@ METH_IMPL(Collection, nextValue) {
     }
 }
 
-/* Documented in header. */
-void datBindGenerator(void) {
+/** Initializes the module. */
+MOD_INIT(Generator) {
+    MOD_USE(Box);
+    MOD_USE(List);
+    MOD_USE(Map);
+    MOD_USE(String);
+
     GFN_collect = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "collect"));
     pbImmortalize(GFN_collect);
 

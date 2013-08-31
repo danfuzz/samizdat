@@ -484,9 +484,14 @@ METH_IMPL(Map, totOrder) {
     return INT_0;
 }
 
-/* Documented in header. */
-void datBindMap(void) {
+/** Initializes the module. */
+MOD_INIT(Map) {
+    MOD_USE(Collection);
+    MOD_USE(MapCache);
+    MOD_USE(OneOff);
+
     TYPE_Map = coreTypeFromName(stringFromUtf8(-1, "Map"), false);
+
     METH_BIND(Map, cat);
     METH_BIND(Map, del);
     METH_BIND(Map, gcMark);

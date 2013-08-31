@@ -38,11 +38,4 @@ typedef struct {
  */
 MapCacheEntry *mapGetCacheEntry(zvalue map, zvalue key);
 
-// Per-type binding and initialization.
-void datBindBox(void);
-void datBindGenerator(void);
-void datBindMap(void);
-void datBindMapCache(void);
-void datBindUniqlet(void);
-
 #endif

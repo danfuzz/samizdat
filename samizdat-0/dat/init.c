@@ -20,12 +20,7 @@ MOD_INIT(dat) {
     zstackPointer save = pbFrameStart();
 
     MOD_USE(pb);
-
-    datBindBox();
-    datBindMap();
-    datBindMapCache();
-
-    datBindGenerator(); // Needs to happen after `Map`, as it binds that type.
+    MOD_USE(Generator); // Inits everything (indirectly).
 
     pbFrameReturn(save, NULL);
 }
