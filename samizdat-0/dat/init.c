@@ -17,11 +17,7 @@
 
 /** Initializes the module. */
 MOD_INIT(dat) {
-    zstackPointer save = pbFrameStart();
-
     MOD_USE(pb);
     MOD_USE(Generator); // Inits everything (indirectly).
-
-    pbFrameReturn(save, NULL);
 }
 

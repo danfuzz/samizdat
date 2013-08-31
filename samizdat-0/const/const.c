@@ -34,9 +34,9 @@
 
 /** Initializes the module. */
 MOD_INIT(const) {
-    MOD_USE(dat);
-
     zstackPointer save = pbFrameStart();
+
+    MOD_USE(dat);
 
     #define STR(name, str) \
         STR_##name = stringFromUtf8(-1, str); \
