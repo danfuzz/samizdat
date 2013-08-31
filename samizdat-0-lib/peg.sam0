@@ -11,23 +11,6 @@
 # Private Definitions
 #
 
-# Helper for `pegMake*Set*`, which takes a `sense` argument and produces the
-# desired rule.
-fn genericMakeTokenSet(sense, types) {
-    def set = [types*: true]; # A set-like map of all the token types.
-
-    ifIs { <> eq(set, [:]) }
-        {
-            # Trivial case: Empty set. Return an appropriate absolute rule.
-            return ifIs { <> eq(sense, true) }
-                { <> @PegFail }
-                { <> @PegAny }
-        };
-
-    <> ifIs { <> eq(sense, true) }
-        { <> @[PegTokenSet: set] }
-        { <> @[PegTokenSetComplement: set] }
-};
 
 
 #
@@ -36,6 +19,18 @@ fn genericMakeTokenSet(sense, types) {
 
 # `parse(peg, box, input, items*)`
 def parse = makeRegularGeneric("parse", 3);
+
+# Documented in Samizdat Layer 0 spec.
+def pegAny = @PegAny;
+
+# Documented in Samizdat Layer 0 spec.
+def pegEmpty = @[PegAlways: null];
+
+# Documented in Samizdat Layer 0 spec.
+def pegEof = @PegEof;
+
+# Documented in Samizdat Layer 0 spec.
+def pegFail = @PegFail;
 
 # Documented in Samizdat Layer 0 spec.
 fn PegAlways_parse(peg, box, input, .*) {
@@ -78,13 +73,6 @@ fn PegCode_parse(peg, box, input, items*) {
 genericBind(parse, "PegCode", PegCode_parse);
 
 # Documented in Samizdat Layer 0 spec.
-fn PegEmpty_parse(peg, box, input, .*) {
-    store(box, null);
-    <> input
-};
-genericBind(parse, "PegEmpty", PegEmpty_parse);
-
-# Documented in Samizdat Layer 0 spec.
 fn PegEof_parse(peg, box, input, .*) {
     <> ifIs { <> nextValue(input, nullBox) }
         { store(box) }
@@ -100,13 +88,6 @@ fn PegFail_parse(peg, box, input, .*) {
     store(box)
 };
 genericBind(parse, "PegFail", PegFail_parse);
-
-# Documented in Samizdat Layer 0 spec.
-fn PegLookaheadAny_parse(peg, box, input, .*) {
-    <> ifIs { <> nextValue(input, box) }
-        { <> input }
-};
-genericBind(parse, "PegLookaheadAny", PegLookaheadAny_parse);
 
 # Documented in Samizdat Layer 0 spec.
 fn PegLookaheadFailure_parse(peg, box, input, items*) {
@@ -244,6 +225,24 @@ genericBind(parse, "PegTokenSetComplement", PegTokenSetComplement_parse);
 # Exported Definitions
 #
 
+# Private helper for `pegMake*Set*`, which takes a `sense` argument and
+# produces the desired rule.
+fn genericMakeTokenSet(sense, types) {
+    def set = [types*: true]; # A set-like map of all the token types.
+
+    ifIs { <> eq(set, [:]) }
+        {
+            # Trivial case: Empty set. Return an appropriate absolute rule.
+            return ifIs { <> eq(sense, true) }
+                { <> pegFail }
+                { <> pegAny }
+        };
+
+    <> ifIs { <> eq(sense, true) }
+        { <> @[PegTokenSet: set] }
+        { <> @[PegTokenSetComplement: set] }
+};
+
 # Documented in Samizdat Layer 0 spec.
 fn pegMakeCharSet(strings*) {
     # Make a combined string, passing it to the general token set constructor,
@@ -283,7 +282,7 @@ fn pegMakeLookaheadFailure(rule) {
         { return @PegEof };
 
     # Optimization: Representation of `!()`.
-    ifIs { <> eq(rule, @PegEmpty) }
+    ifIs { <> eq(rule, pegEmpty) }
         { return @PegFail };
 
     # The general case.
@@ -319,7 +318,7 @@ fn pegMakePlus(rule) {
 fn pegMakeSequence(rules*) {
     # Trivial case: No rules. Return the empty rule.
     ifIs { <> eq(rules, []) }
-        { return @PegEmpty };
+        { return pegEmpty };
 
     # Trivial case: One rule. Return that rule directly.
     ifIs { <> eq(sizeOf(rules), 1) }
@@ -411,9 +410,8 @@ fn pegApply(rule, input) {
     pegMakeToken:              pegMakeToken,
     pegMakeTokenSet:           pegMakeTokenSet,
     pegMakeTokenSetComplement: pegMakeTokenSetComplement,
-    pegAny:                    @PegAny,
-    pegEmpty:                  @PegEmpty,
-    pegEof:                    @PegEof,
-    pegFail:                   @PegFail,
-    pegLookaheadAny:           @PegLookaheadAny
+    pegAny:                    pegAny,
+    pegEmpty:                  pegEmpty,
+    pegEof:                    pegEof,
+    pegFail:                   pegFail
 ]

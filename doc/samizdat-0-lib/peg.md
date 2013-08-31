@@ -97,11 +97,6 @@ void and returns void).
 
 Always yields void and returns void.
 
-#### `@PegLookaheadAny.parse(...)`
-
-If there is any input available, yields the first input token, but does
-not consume it. Otherwise (at EOF), fails (yields void and returns void).
-
 #### `@[PegLookaheadFailure: rule].parse(...)`
 
 Tries to parse the input using `rule`. If it succeeds, then this rule
@@ -411,13 +406,3 @@ This is equivalent to the syntactic form `{/ !() /}` (that is, attempting
 to find a lookahead failure for the empty rule, said rule which always
 succeeds). It is also equivalent to the syntactic form `{/ [] /}` (that is,
 the empty set of tokens or characters).
-
-#### Rule: `pegLookaheadAny`
-
-Parser rule which matches any input item, yielding it but not consuming it.
-It succeeds on any non-empty input.
-
-This is a direct parser rule, meant to be referred to by value instead of
-called directly.
-
-This is equivalent to the syntactic form `{/ &. /}`.
