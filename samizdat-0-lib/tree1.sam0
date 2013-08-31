@@ -125,9 +125,9 @@ def parFormal = pegMakeMainSequence(
             pegMakeToken("."),
             pegMakeResult([:]))),
     pegMakeChoice(
-        pegMakeMainSequence(
+        pegMakeSequence(
             pegMakeTokenSet("?", "*", "+"),
-            pegMakeCode { r <> [repeat: typeOf(r)] }),
+            pegMakeCode { ., r <> [repeat: typeOf(r)] }),
         pegMakeResult([:])),
     pegMakeCode { name, repeat <> [:, name*, repeat*] });
 
@@ -186,13 +186,13 @@ def parCodeOnlyClosure = pegMakeMainSequence(
 def parFnCommon = pegMakeMainSequence(
     pegMakeToken("fn"),
     pegMakeOpt(
-        pegMakeMainSequence(
+        pegMakeSequence(
             parYieldDef,
-            pegMakeCode { y <> makeVarDef(y, makeVarRef("return")) })),
+            pegMakeCode { ., y <> makeVarDef(y, makeVarRef("return")) })),
     pegMakeChoice(
-        pegMakeMainSequence(
+        pegMakeSequence(
             pegMakeToken("identifier"),
-            pegMakeCode { n <> [name: dataOf(n)] }),
+            pegMakeCode { ., ., n <> [name: dataOf(n)] }),
         pegMakeResult([:])),
     pegMakeToken("("),
     parFormalsList,
@@ -477,8 +477,7 @@ def implProgramBody = pegMakeMainSequence(
         pegMakeMainSequence(
             parYield,
             pegMakeCode { y <> [statements: [], y*] }),
-        pegMakeMainSequence(
-            pegMakeCode { <> [statements: []] })),
+        pegMakeResult([statements: []])),
     pegMakeStar(pegMakeToken(";")),
     pegMakeCode { ., most, last, . ::
         def allStatements = [most*, get(last, "statements")*];

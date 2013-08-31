@@ -68,7 +68,7 @@ def tokPunctuation = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 def tokInt = pegMakeMainSequence(
     pegMakePlus(
-        pegMakeMainSequence(
+        pegMakeSequence(
             pegMakeCharSet("0123456789"),
             pegMakeCode(intFromDigitChar))),
     pegMakeCode { digits ::
