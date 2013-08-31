@@ -21,14 +21,5 @@ MOD_INIT(pb) {
     // else flows out of those.
 
     // Concrete types.
-    MOD_USE(Type);
-    MOD_USE(String);
-    MOD_USE(Builtin);
-    MOD_USE(Generic);
-    MOD_USE(Int);
-    MOD_USE(Uniqlet);
-    MOD_USE(List);
-
-    // Used for all derived types.
-    MOD_USE(Deriv);
+    MOD_USE(Value);
 }
