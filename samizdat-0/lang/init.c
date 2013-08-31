@@ -27,15 +27,11 @@ zevalType langTypeMap[PB_MAX_TYPES];
 /* Documented in header. */
 extern zevalType evalTypeOf(zvalue node);
 
-/* Documented in header. */
-void langInit(void) {
-    if (TYPE_NonlocalExit != NULL) {
-        return;
-    }
-
+/** Initializes the module. */
+MOD_INIT(lang) {
     MOD_USE(const);
-    langBindClosure();
-    langBindNonlocalExit();
+    MOD_USE(Closure);
+    MOD_USE(NonlocalExit);
 
     memset(langTypeMap, 0, sizeof(langTypeMap));
     langTypeMap[typeIndex(STR_call)]        = EVAL_call;

@@ -126,9 +126,4 @@ void frameSnap(Frame *target, Frame *source);
  */
 zvalue nleCall(znleFunction function, void *state);
 
-// Type init and binding.
-void langInit(void);
-void langBindClosure(void);
-void langBindNonlocalExit(void);
-
 #endif
