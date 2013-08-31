@@ -26,23 +26,26 @@ void pbInit(void) {
     // the other initializers create types (that is, values of type `Type`).
     // This also initializes type values for all the types that `Type`
     // depends on.
-    pbInitTypeSystem();
+    MOD_USE(typeSystem);
 
-    pbBindValue(); // This defines the universal cross-type generics.
+    MOD_USE(Value); // This defines the universal cross-type generics.
 
     // Protocols.
-    pbBindBitwise();
-    pbBindCollection();
-    pbBindFunction();
-    pbBindNumber();
-    pbBindOneOff();
+    MOD_USE(Bitwise);
+    MOD_USE(Collection);
+    MOD_USE(Function);
+    MOD_USE(Number);
+    MOD_USE(OneOff);
 
-    pbBindType();
-    pbBindString();
-    pbBindBuiltin();
-    pbBindGeneric();
-    pbBindInt();
-    pbBindUniqlet();
-    pbBindList();
-    pbBindDeriv();
+    // Normal types.
+    MOD_USE(Type);
+    MOD_USE(String);
+    MOD_USE(Builtin);
+    MOD_USE(Generic);
+    MOD_USE(Int);
+    MOD_USE(Uniqlet);
+    MOD_USE(List);
+
+    // Used for all derived types.
+    MOD_USE(Deriv);
 }

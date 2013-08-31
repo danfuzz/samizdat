@@ -199,9 +199,14 @@ METH_IMPL(Int, totOrder) {
     }
 }
 
-/* Documented in header. */
-void pbBindInt(void) {
+/** Initializes the module. */
+MOD_INIT(Int) {
+    MOD_USE(Bitwise);
+    MOD_USE(Number);
+    MOD_USE(OneOff);
+
     TYPE_Int = coreTypeFromName(stringFromUtf8(-1, "Int"), false);
+
     METH_BIND(Int, abs);
     METH_BIND(Int, add);
     METH_BIND(Int, and);

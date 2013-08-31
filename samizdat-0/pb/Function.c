@@ -155,8 +155,10 @@ extern zvalue funCallWith6(zvalue function, zvalue arg0, zvalue arg1,
  * Type Definition
  */
 
-/* Documented in header. */
-void pbBindFunction(void) {
+/** Initializes the module. */
+MOD_INIT(Function) {
+    MOD_USE(Value);
+
     GFN_call = makeGeneric(1, -1, GFN_NONE, stringFromUtf8(-1, "call"));
     pbImmortalize(GFN_call);
 

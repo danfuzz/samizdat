@@ -11,6 +11,7 @@
 #ifndef _PB_H_
 #define _PB_H_
 
+#include "module.h"
 #include "ztype.h"
 
 

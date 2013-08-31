@@ -395,9 +395,12 @@ METH_IMPL(String, totOrder) {
     return (size1 < size2) ? INT_NEG1 : INT_1;
 }
 
-/* Documented in header. */
-void pbBindString(void) {
-    // Note: The type `Type` is responsible for initializing `TYPE_String`.
+/** Initializes the module. */
+MOD_INIT(String) {
+    MOD_USE(Collection);
+    MOD_USE(OneOff);
+
+    // Note: The `typeSystem` module initializes `TYPE_String`.
 
     METH_BIND(String, cat);
     METH_BIND(String, debugString);

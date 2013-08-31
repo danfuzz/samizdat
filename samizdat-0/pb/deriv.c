@@ -128,8 +128,10 @@ void derivBind(zvalue type) {
     genericBind(GFN_totOrder, type, BI_Deriv_totOrder);
 }
 
-/* Documented in header. */
-void pbBindDeriv(void) {
+/** Initializes the module. */
+MOD_INIT(Deriv) {
+    MOD_USE(Value);
+
     BI_Deriv_gcMark = makeBuiltin(1, 1, METH_NAME(Deriv, gcMark),
         stringFromUtf8(-1, "Deriv:gcMark"));
     pbImmortalize(BI_Deriv_gcMark);

@@ -239,9 +239,13 @@ METH_IMPL(Generic, nameOf) {
     return info->name;
 }
 
-/* Documented in header. */
-void pbBindGeneric(void) {
-    // Note: The type `Type` is responsible for initializing `TYPE_Generic`.
+/** Initializes the module. */
+MOD_INIT(Generic) {
+    MOD_USE(Function);
+    MOD_USE(OneOff);
+
+    // Note: The `typeSystem` module initializes `TYPE_Generic`.
+
     METH_BIND(Generic, call);
     METH_BIND(Generic, canCall);
     METH_BIND(Generic, debugString);
