@@ -16,8 +16,9 @@
 #include <stdbool.h>
 #include <string.h>
 
-// All the int-related declarations.
-#include "util/zint.h"
+
+#include "util/zint.h"    // Int-related declarations.
+#include "util/module.h"  // Module system declarations.
 
 
 /*
