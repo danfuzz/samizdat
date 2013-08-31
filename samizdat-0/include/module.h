@@ -31,6 +31,21 @@ typedef enum {
  */
 void modUse(const char *name, zmodStatus *status, zmodInitFunction func);
 
+/**
+ * Implementation function behind `MOD_USE_NEXT`.
+ */
+void modUseNext(const char *name, zmodStatus *status, zmodInitFunction func);
+
+/**
+ * Common code between the two `USE` macros.
+ */
+#define MOD_USE0(name, useFunc) \
+    do { \
+        extern zmodStatus MOD_STATUS_##name; \
+        void MOD_INIT_##name(void); \
+        useFunc(#name, &MOD_STATUS_##name, MOD_INIT_##name); \
+    } while(0)
+
 
 /*
  * Public definitions
@@ -49,11 +64,12 @@ void modUse(const char *name, zmodStatus *status, zmodInitFunction func);
  * Generally placed inside the initialization function of some other
  * module.
  */
-#define MOD_USE(name) \
-    do { \
-        extern zmodStatus MOD_STATUS_##name; \
-        void MOD_INIT_##name(void); \
-        modUse(#name, &MOD_STATUS_##name, MOD_INIT_##name); \
-    } while(0)
+#define MOD_USE(name) MOD_USE0(name, modUse)
+
+/**
+ * Indicates that the named module should be initialized, but only
+ * after the current initialization is done.
+ */
+#define MOD_USE_NEXT(name) MOD_USE0(name, modUseNext)
 
 #endif

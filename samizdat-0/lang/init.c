@@ -30,7 +30,10 @@ extern zevalType evalTypeOf(zvalue node);
 /** Initializes the module. */
 MOD_INIT(lang) {
     MOD_USE(const);
+    MOD_USE(Box);
     MOD_USE(Closure);
+    MOD_USE(Generator);
+    MOD_USE(Map);
     MOD_USE(NonlocalExit);
 
     memset(langTypeMap, 0, sizeof(langTypeMap));
