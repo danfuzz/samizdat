@@ -188,6 +188,17 @@ METH_IMPL(Value, totOrder) {
 MOD_INIT(Value) {
     MOD_USE(typeSystem);
 
+    // Initializing this type also initializes the rest of the core types.
+    // This also gets all the protocols indirectly via their implementors.
+    MOD_USE_NEXT(Type);
+    MOD_USE_NEXT(String);
+    MOD_USE_NEXT(Builtin);
+    MOD_USE_NEXT(Generic);
+    MOD_USE_NEXT(Int);
+    MOD_USE_NEXT(Uniqlet);
+    MOD_USE_NEXT(List);
+    MOD_USE_NEXT(Deriv);   // Used for all derived types.
+
     // Note: The `typeSystem` module initializes `TYPE_Value`.
 
     GFN_debugString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "debugString"));

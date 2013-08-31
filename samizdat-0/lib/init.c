@@ -114,5 +114,6 @@ static zvalue getLibrary(void) {
 /* Documented in header. */
 zvalue libNewContext(void) {
     MOD_USE(const);
+    MOD_USE(Map);
     return getLibrary();
 }
