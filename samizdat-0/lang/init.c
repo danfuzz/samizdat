@@ -33,7 +33,7 @@ void langInit(void) {
         return;
     }
 
-    constInit();
+    MOD_USE(const);
     langBindClosure();
     langBindNonlocalExit();
 

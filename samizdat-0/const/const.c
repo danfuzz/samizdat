@@ -32,12 +32,8 @@
  * Module Definitions
  */
 
-/* Documented in header. */
-void constInit(void) {
-    if (STR_def != NULL) {
-        return;
-    }
-
+/** Initializes the module. */
+MOD_INIT(const) {
     MOD_USE(dat);
 
     zstackPointer save = pbFrameStart();
