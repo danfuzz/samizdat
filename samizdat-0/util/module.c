@@ -25,26 +25,37 @@ typedef struct PendingInit {
     zmodStatus *status;
     zmodInitFunction func;
 
+    /** Previous one in the chain. */
+    struct PendingInit *prev;
+
     /** Next one in the chain. */
     struct PendingInit *next;
 } PendingInit;
 
 /**
- * List of modules that should be initialized after the current initialization
- * is complete.
+ * Queue of modules that should be initialized after the current initialization
+ * is complete. Implemented as a circular linked list.
  */
-static PendingInit *thePendingInits = NULL;
+static PendingInit thePendingHead = {
+    .prev = &thePendingHead,
+    .next = &thePendingHead
+};
 
 /**
- * Services the pending init stack, draining it.
+ * Services the pending init queue, draining it.
  */
 static void servicePendingInits(void) {
-    // Note: `modUse()` can end up adding back to the stack, so we always
+    // Note: `modUse()` can end up adding back to the queue, so we always
     // have to leave the it in a consistent state.
 
-    while (thePendingInits != NULL) {
-        PendingInit *one = thePendingInits;
-        thePendingInits = one->next;
+    for (;;) {
+        PendingInit *one = thePendingHead.next;
+        if (one == &thePendingHead) {
+            break;
+        }
+
+        one->next->prev = one->prev;
+        one->prev->next = one->next;
 
         switch (*(one->status)) {
             case MOD_UNINITIALIZED: {
@@ -79,20 +90,28 @@ void modUseNext(const char *name, zmodStatus *status, zmodInitFunction func) {
         return;
     }
 
-    PendingInit *info = utilAlloc(sizeof(PendingInit));
-    info->name = name;
-    info->status = status;
-    info->func = func;
-    info->next = thePendingInits;
-
-    thePendingInits = info;
+    PendingInit *one = utilAlloc(sizeof(PendingInit));
+    one->name = name;
+    one->status = status;
+    one->func = func;
+    one->next = &thePendingHead;
+    one->prev = thePendingHead.prev;
+    one->next->prev = one;
+    one->prev->next = one;
 }
 
 /* Documented in header. */
 void modUse(const char *name, zmodStatus *status, zmodInitFunction func) {
-    // First, add the given info as a pending init.
-    modUseNext(name, status, func);
+    // Save off the current pending init queue.
+    PendingInit saveHead = thePendingHead;
 
-    // And then, service the pending stack, emptying it.
+    // Make a new queue with just the module we're asked to use, and service
+    // the queue until empty.
+    thePendingHead.prev = &thePendingHead;
+    thePendingHead.next = &thePendingHead;
+    modUseNext(name, status, func);
     servicePendingInits();
+
+    // Restore the old queue.
+    thePendingHead = saveHead;
 }
