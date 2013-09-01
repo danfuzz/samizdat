@@ -34,7 +34,7 @@ typedef struct PendingInit {
 
 /**
  * Queue of modules that should be initialized after the current initialization
- * is complete. Implemented as a circular linked list.
+ * is complete. Implemented as a circular double linked list.
  */
 static PendingInit thePendingHead = {
     .prev = &thePendingHead,
