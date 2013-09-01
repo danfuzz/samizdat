@@ -46,7 +46,7 @@ static PendingInit thePendingHead = {
  */
 static void servicePendingInits(void) {
     // Note: `modUse()` can end up adding back to the queue, so we always
-    // have to leave the it in a consistent state.
+    // have to leave it in a consistent state.
 
     for (;;) {
         PendingInit *one = thePendingHead.next;
