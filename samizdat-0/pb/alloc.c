@@ -350,25 +350,17 @@ void pbImmortalize(zvalue value) {
 
 /* Documented in header. */
 void pbMark(zvalue value) {
-    if (value == NULL) {
-        return;
-    }
-
-    assertValid(value);
-
-    if (value->marked) {
+    if ((value == NULL) || value->marked) {
         return;
     }
 
     value->marked = true;
     enlist(&liveHead, value);
 
-    zvalue marker = genericFind(GFN_gcMark, value);
-    if (marker != NULL) {
-        FUN_CALL(marker, value);
-    }
+    GFN_CALL(gcMark, value);
 
-    // Opaque types are all immortalized, but transparent types need to
-    // be marked.
+    // As of this writing, types are all immortal, but that may change. This
+    // `pbMark` call has negligible cost and safeguards against that possible
+    // change.
     pbMark(value->type);
 }

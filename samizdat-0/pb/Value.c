@@ -141,6 +141,12 @@ METH_IMPL(Value, debugString) {
 }
 
 /* Documented in header. */
+METH_IMPL(Value, gcMark) {
+    // Nothing to do.
+    return NULL;
+}
+
+/* Documented in header. */
 METH_IMPL(Value, perEq) {
     return funCall(GFN_totEq, argCount, args);
 }
@@ -220,6 +226,7 @@ MOD_INIT(Value) {
     pbImmortalize(GFN_totOrder);
 
     METH_BIND(Value, debugString);
+    METH_BIND(Value, gcMark);
     METH_BIND(Value, perEq);
     METH_BIND(Value, perOrder);
     METH_BIND(Value, totEq);
