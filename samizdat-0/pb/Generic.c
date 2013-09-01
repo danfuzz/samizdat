@@ -68,14 +68,6 @@ static zvalue findByTrueType(zvalue generic, zvalue type) {
     return NULL;
 }
 
-/**
- * This is the function that handles emitting a context string for a call,
- * when dumping the stack.
- */
-static char *callReporter(void *state) {
-    return valDebugString((zvalue) state);
-}
-
 
 /*
  * Module Definitions
