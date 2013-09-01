@@ -45,8 +45,8 @@ static PendingInit thePendingHead = {
  * Services the pending init queue, draining it.
  */
 static void servicePendingInits(void) {
-    // Note: `modUse()` can end up adding back to the queue, so we always
-    // have to leave it in a consistent state.
+    // Note: Running an init function can end up adding back to the queue,
+    // so we always have to leave it in a consistent state.
 
     for (;;) {
         PendingInit *one = thePendingHead.next;
