@@ -37,7 +37,7 @@ static zvalue stack[PB_MAX_STACK];
 /** Current stack size. */
 static zint stackSize = 0;
 
-/** List head for the list of all live values. */
+/** List head for the list of all live values. Double-linked circular list. */
 static PbHeader liveHead = {
     .next = &liveHead,
     .prev = &liveHead,
@@ -46,7 +46,7 @@ static PbHeader liveHead = {
     .type = NULL
 };
 
-/** List head for the list of all doomed values. */
+/** List head for the list of all doomed values. Double-linked circular list. */
 static PbHeader doomedHead = {
     .next = &doomedHead,
     .prev = &doomedHead,
