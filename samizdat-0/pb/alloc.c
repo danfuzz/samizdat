@@ -9,6 +9,8 @@
 #include "type/Value.h"
 #include "zlimits.h"
 
+#include <time.h> // Used for "chatty gc".
+
 
 /*
  * Private Definitions
@@ -333,7 +335,18 @@ void pbFrameReturn(zstackPointer savedStack, zvalue returnValue) {
 /* Documented in header. */
 void pbGc(void) {
     allocationCount = 0;
-    doGc();
+
+    if (CHATTY_GC) {
+        static double totalSec = 0;
+        clock_t startTime = clock();
+        doGc();
+        double elapsedSec = (double) (clock() - startTime) / CLOCKS_PER_SEC;
+        totalSec += elapsedSec;
+        note("GC: %g msec this cycle. %g sec overall.",
+            elapsedSec * 1000, totalSec);
+    } else {
+        doGc();
+    }
 }
 
 /* Documented in header. */
