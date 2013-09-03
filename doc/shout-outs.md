@@ -59,7 +59,7 @@ the trail for general-purpose languages that make parsing a first-class
 operation.
 
 In terms of "flavor" and "feel", the Samizdat core library was influenced
-by Scheme, Logo, and [Underscore.js](http://underscorejs.org/).
+by Scheme and [Underscore.js](http://underscorejs.org/).
 
 The implementation tactics used to build Samizdat were informed by
 [Scheme-48](http://en.wikipedia.org/wiki/Scheme_48),
