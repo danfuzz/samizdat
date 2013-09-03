@@ -84,7 +84,8 @@ The return value from this function is whatever was returned by the
 consequent function that was called (including void). If no consequent
 was called, this returns void.
 
-**Syntax Note:** Used in the translation of multiple-binding `if` forms.
+**Syntax Note:** Used in the translation of some `&` forms and
+multiple-binding `if` forms.
 
 #### `loop(function) <> void`
 
