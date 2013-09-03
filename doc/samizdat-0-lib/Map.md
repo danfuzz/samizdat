@@ -75,7 +75,7 @@ Returns a list of all the keys mapped by the given `map`, in sorted order.
 Returns the nth (zero-based) *mapping* of the given map.
 
 When given a valid index, the return value is a single-mapping map, which is
-suitable as the argument to `mappingKey` and `mappingValue`.
+suitable as the argument to `keyOf` and `valueOf`.
 
 The ordering of the mappings is by sort order of the keys.
 
