@@ -26,6 +26,19 @@ keys, with the same rules as list comparison. Given two maps with equal
 key lists, ordering is by comparing corresponding lists of values, in
 key order.
 
+<br><br>
+### Generic Function Definitions: One-Offs
+
+#### `keyOf(map) <> .`
+
+Returns the sole key of the given map, which must be a single-mapping map.
+It is a terminal error if `map` does not contain exactly one mapping.
+
+#### `valueOf(map) <> .`
+
+Returns the sole value of the given map, which must be a single-mapping map.
+It is a terminal error if `map` does not contain exactly one mapping.
+
 
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
@@ -120,14 +133,6 @@ representable in Samizdat syntax as presented.
 
 **Syntax Note:** Used in the translation of `[key: value, ...]`
 and `switch` forms.
-
-#### `mappingKey(map) <> .`
-
-Returns the sole key of the given map, which must be a single-mapping map.
-
-#### `mappingValue(map) <> .`
-
-Returns the sole value of the given map, which must be a single-mapping map.
 
 
 <br><br>
