@@ -30,10 +30,12 @@ PRIM_DEF(totEq,      GFN_totEq);
 PRIM_DEF(totOrder,   GFN_totOrder);
 
 // Generic functions: One-Offs
+PRIM_DEF(keyOf,      GFN_keyOf);
 PRIM_DEF(nameOf,     GFN_nameOf);
 PRIM_DEF(toInt,      GFN_toInt);
 PRIM_DEF(toNumber,   GFN_toNumber);
 PRIM_DEF(toString,   GFN_toString);
+PRIM_DEF(valueOf,     GFN_valueOf);
 
 // Generic functions: `Bitwise` protocol
 PRIM_DEF(and,        GFN_and);
@@ -110,8 +112,6 @@ PRIM_FUNC(makeUnitypeGeneric,   2, 3);
 PRIM_FUNC(makeValue,            1, 2);
 PRIM_FUNC(makeValueMap,         1, -1);
 PRIM_FUNC(makeYieldBox,         0, 0);
-PRIM_FUNC(mappingKey,           1, 1);
-PRIM_FUNC(mappingValue,         1, 1);
 PRIM_FUNC(ne,                   2, 2);
 PRIM_FUNC(nonlocalExit,         1, 2);
 PRIM_FUNC(optValue,             1, 1);

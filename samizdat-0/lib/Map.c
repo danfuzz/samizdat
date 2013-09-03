@@ -33,13 +33,3 @@ PRIM_IMPL(makeValueMap) {
 
     return mapFromArray(size, mappings);
 }
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mappingKey) {
-    return mappingKey(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(mappingValue) {
-    return mappingValue(args[0]);
-}
