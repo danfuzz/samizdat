@@ -14,6 +14,9 @@
 #include "pb.h"
 
 
+/** Generic `keyOf(value)`: Documented in spec. */
+extern zvalue GFN_keyOf;
+
 /** Generic `nameOf(value)`: Documented in spec. */
 extern zvalue GFN_nameOf;
 
@@ -25,6 +28,9 @@ extern zvalue GFN_toNumber;
 
 /** Generic `toString(value)`: Documented in spec. */
 extern zvalue GFN_toString;
+
+/** Generic `valueOf(value)`: Documented in spec. */
+extern zvalue GFN_valueOf;
 
 /**
  * Calls `toString` on the given value, returning the result as a `char *`.
