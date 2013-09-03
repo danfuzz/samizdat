@@ -9,6 +9,7 @@
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -341,6 +342,19 @@ METH_IMPL(Map, keyList) {
 }
 
 /* Documented in header. */
+METH_IMPL(Map, keyOf) {
+    zvalue map = args[0];
+
+    MapInfo *info = getInfo(map);
+
+    if (info->size != 1) {
+        die("Not a size 1 map.");
+    }
+
+    return info->elems[0].key;
+}
+
+/* Documented in header. */
 METH_IMPL(Map, nth) {
     zvalue map = args[0];
     zvalue n = args[1];
@@ -484,6 +498,19 @@ METH_IMPL(Map, totOrder) {
     return INT_0;
 }
 
+/* Documented in header. */
+METH_IMPL(Map, valueOf) {
+    zvalue map = args[0];
+
+    MapInfo *info = getInfo(map);
+
+    if (info->size != 1) {
+        die("Not a size 1 map.");
+    }
+
+    return info->elems[0].value;
+}
+
 /** Initializes the module. */
 MOD_INIT(Map) {
     MOD_USE(Collection);
@@ -497,12 +524,14 @@ MOD_INIT(Map) {
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
     METH_BIND(Map, keyList);
+    METH_BIND(Map, keyOf);
     METH_BIND(Map, nth);
     METH_BIND(Map, put);
     METH_BIND(Map, sizeOf);
     METH_BIND(Map, slice);
     METH_BIND(Map, totEq);
     METH_BIND(Map, totOrder);
+    METH_BIND(Map, valueOf);
 
     EMPTY_MAP = allocMap(0);
     pbImmortalize(EMPTY_MAP);
