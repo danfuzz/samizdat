@@ -1445,7 +1445,7 @@ def parIfExpression = {/
                 # There was a yield def. Add the yield def to the thunk,
                 # and wrap that in a call.
                 def mainClosure =
-                    closureWithYieldDef(mainThunk, mappingValue(yieldDef));
+                    closureWithYieldDef(mainThunk, valueOf(yieldDef));
                 <> makeCall(mainClosure)
             }
     }

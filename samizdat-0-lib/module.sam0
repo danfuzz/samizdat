@@ -139,8 +139,8 @@ fn moduleInit(context) {
     # to the payload.
     def unsortedModules = filterAll(context)
         { mapping ::
-            def name = mappingKey(mapping);
-            def mod = mappingValue(mapping);
+            def name = keyOf(mapping);
+            def mod = valueOf(mapping);
             <> ifValue { <> moduleNameFromString(name) }
                 { modName ::
                     assertModule(mod);
