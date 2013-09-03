@@ -70,9 +70,9 @@ PRIM_IMPL(ifValues) {
     arrayFromList(testArr, testFunctions);
 
     for (zint i = 0; i < size; i++) {
-        zvalue one = funCall(testArr[i], i, results);
+        zvalue one = results[i] = funCall(testArr[i], i, results);
         if (one == NULL) {
-            return voidFunction? FUN_CALL(voidFunction) : NULL;
+            return voidFunction ? FUN_CALL(voidFunction) : NULL;
         }
     }
 
