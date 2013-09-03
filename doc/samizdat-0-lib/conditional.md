@@ -71,6 +71,21 @@ expressions bottom out into, hence the name.
 
 **Syntax Note:** Used in the translation of `expression | expression` forms.
 
+#### `ifValues([testFunctions*], valueFunction, voidFunction?) <> . | void`
+
+Primitive logic conditional. This calls each of the given `testFunctions`
+in order, as long as each returns a value (not void). The list of previous
+results are passed to each subsequent test function. Should all of the
+`testFunctions` return a value, this then calls the `valueFunction`
+passing it a full list of test results. Should any of the `testFunctions`
+return void, this then calls the `voidFunction` (if any) with no arguments.
+
+The return value from this function is whatever was returned by the
+consequent function that was called (including void). If no consequent
+was called, this returns void.
+
+**Syntax Note:** Used in the translation of multiple-binding `if` forms.
+
 #### `loop(function) <> void`
 
 Primitive unconditional loop construct. This repeatedly calls the given
