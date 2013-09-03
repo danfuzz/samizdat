@@ -52,9 +52,9 @@ fn metaFunctions(context, fileName) {
     <> collectAsMap(
         makeFilterGenerator(nameMap)
             { mapping ::
-                def name = mappingValue(mapping);
+                def name = valueOf(mapping);
                 <> ifValue { <> get(context, name) }
-                    { func <> [mappingKey(mapping): func] }
+                    { func <> [keyOf(mapping): func] }
                     { io0Die(cat("Missing meta-function: ", name)) }
             })
 };

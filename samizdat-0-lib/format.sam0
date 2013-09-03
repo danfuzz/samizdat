@@ -193,8 +193,8 @@ fn doList(list, adorn) {
 fn doMap(map, adorn) {
     def mapElems = filterAll(map)
         { mapping ::
-            def key = keyString(mappingKey(mapping));
-            def value = callSourceString(mappingValue(mapping));
+            def key = keyString(keyOf(mapping));
+            def value = callSourceString(valueOf(mapping));
             <> cat(", ", key, ": ", value)
         };
 

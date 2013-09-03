@@ -109,7 +109,7 @@ def result = pegApply(parFile, text);
 # trim the first two characters off the beginning, yielding a valid comma-
 # separated list of mappings.
 def resultLines = (mapping in result ::
-    <> ",\n    \%q(mappingKey(mapping)): \%q(mappingValue(mapping))"
+    <> ",\n    \%q(keyOf(mapping)): \%q(valueOf(mapping))"
 );
 
 def resultText = slice(cat(resultLines*), 2);

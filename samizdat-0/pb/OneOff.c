@@ -37,6 +37,9 @@ char *valToString(zvalue value) {
 MOD_INIT(OneOff) {
     MOD_USE(Value);
 
+    GFN_keyOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "keyOf"));
+    pbImmortalize(GFN_keyOf);
+
     GFN_nameOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "nameOf"));
     pbImmortalize(GFN_nameOf);
 
@@ -48,7 +51,13 @@ MOD_INIT(OneOff) {
 
     GFN_toString = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "toString"));
     pbImmortalize(GFN_toString);
+
+    GFN_valueOf = makeGeneric(1, 1, GFN_NONE, stringFromUtf8(-1, "valueOf"));
+    pbImmortalize(GFN_valueOf);
 }
+
+/* Documented in header. */
+zvalue GFN_keyOf = NULL;
 
 /* Documented in header. */
 zvalue GFN_nameOf = NULL;
@@ -61,3 +70,6 @@ zvalue GFN_toNumber = NULL;
 
 /* Documented in header. */
 zvalue GFN_toString = NULL;
+
+/* Documented in header. */
+zvalue GFN_valueOf = NULL;

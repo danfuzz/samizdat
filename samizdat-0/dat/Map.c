@@ -9,6 +9,7 @@
 #include "type/Int.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/OneOff.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -57,18 +58,6 @@ static zvalue allocMap(zint size) {
  */
 static void assertMap(zvalue value) {
     assertHasType(value, TYPE_Map);
-}
-
-/**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a map, and even furthermore that its size
- * is `1`. If not, this aborts the process with a diagnostic message.
- */
-static void assertMapSize1(zvalue value) {
-    assertMap(value);
-    if (getInfo(value)->size != 1) {
-        die("Not a size 1 map.");
-    }
 }
 
 /**
@@ -230,18 +219,6 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
     return result;
 }
 
-/* Documented in Samizdat Layer 0 spec. */
-zvalue mappingKey(zvalue map) {
-    assertMapSize1(map);
-    return getInfo(map)->elems[0].key;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-zvalue mappingValue(zvalue map) {
-    assertMapSize1(map);
-    return getInfo(map)->elems[0].value;
-}
-
 
 /*
  * Type Definition
@@ -338,6 +315,19 @@ METH_IMPL(Map, keyList) {
     }
 
     return listFromArray(size, arr);
+}
+
+/* Documented in header. */
+METH_IMPL(Map, keyOf) {
+    zvalue map = args[0];
+
+    MapInfo *info = getInfo(map);
+
+    if (info->size != 1) {
+        die("Not a size 1 map.");
+    }
+
+    return info->elems[0].key;
 }
 
 /* Documented in header. */
@@ -484,6 +474,19 @@ METH_IMPL(Map, totOrder) {
     return INT_0;
 }
 
+/* Documented in header. */
+METH_IMPL(Map, valueOf) {
+    zvalue map = args[0];
+
+    MapInfo *info = getInfo(map);
+
+    if (info->size != 1) {
+        die("Not a size 1 map.");
+    }
+
+    return info->elems[0].value;
+}
+
 /** Initializes the module. */
 MOD_INIT(Map) {
     MOD_USE(Collection);
@@ -497,12 +500,14 @@ MOD_INIT(Map) {
     METH_BIND(Map, gcMark);
     METH_BIND(Map, get);
     METH_BIND(Map, keyList);
+    METH_BIND(Map, keyOf);
     METH_BIND(Map, nth);
     METH_BIND(Map, put);
     METH_BIND(Map, sizeOf);
     METH_BIND(Map, slice);
     METH_BIND(Map, totEq);
     METH_BIND(Map, totOrder);
+    METH_BIND(Map, valueOf);
 
     EMPTY_MAP = allocMap(0);
     pbImmortalize(EMPTY_MAP);
