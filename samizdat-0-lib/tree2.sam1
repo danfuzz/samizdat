@@ -1443,7 +1443,23 @@ def parIfTest = {/
     |
         # General case.
         {
-            io0Die("TODO");
+            # Make a version of the test clauses, as thunks with formals lists.
+            def formals = filterAll(clauses)
+                { clause <> get(clause, "formal") };
+            def testThunks = filterAll(clauses, makeOpenRange(0, 1))
+                { clause, index ::
+                    def test = get(clause, "test");
+                    <> closureWithFormals(makeThunk(test),
+                        slice(formals, 0, index)*)
+                };
+
+            # Result function which constructs the overall `ifValues` call.
+            <> { thenThunk, elseThunk? ::
+                <> makeCallName("ifValues",
+                    makeCallName("makeList", testThunks*),
+                    closureWithFormals(thenThunk, formals*),
+                    elseThunk*)
+            }
         }
     )
 /};
