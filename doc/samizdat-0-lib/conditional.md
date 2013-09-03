@@ -7,12 +7,12 @@ Conditionals And Iteration
 <br><br>
 ### Primitive Definitions
 
-#### `ifIs(predicate, isFunction, notFunction?) <> . | void`
+#### `ifIs(testFunction, isFunction, notFunction?) <> . | void`
 
-Primitive logic conditional. This calls the given predicate with no
+Primitive logic conditional. This calls the given `testFunction` with no
 arguments, taking note of its return value or lack thereof.
 
-If the predicate returns a value, then the `isFunction` is called
+If the function returns a value, then the `isFunction` is called
 with no arguments. If the predicate returns void, then the
 `notFunction` (if any) is called with no arguments.
 
@@ -22,21 +22,21 @@ was called, this returns void.
 
 This function is identical to `ifValue`, except that in the value case,
 this function calls the consequent function with no arguments, whereas
-`ifIs` calls it with an argument.
+`ifValue` calls it with an argument.
 
 **Syntax Note:** Used in the translation of `if`, `expression??`,
 and `expression & expression` forms.
 
 
-#### `ifNot(predicate, notFunction) <> . | void`
+#### `ifNot(testFunction, notFunction) <> . | void`
 
 This is identical to `ifIs`, except that the `isFunction` argument is omitted.
 
 **Syntax Note:** Used in the translation of `do` and `!expression` forms.
 
-#### `ifValue(function, valueFunction, voidFunction?) <> . | void`
+#### `ifValue(testFunction, valueFunction, voidFunction?) <> . | void`
 
-Primitive logic conditional. This calls the given function with no
+Primitive logic conditional. This calls the given `testFunction` with no
 arguments, taking note of its return value or lack thereof.
 
 If the function returns a value, then the `valueFunction` is called
@@ -55,7 +55,7 @@ this function calls the consequent function with an argument, whereas
 **Syntax Note:** Used in the translation of `if`, `switch`, `while`, and
 `expression & expression` forms.
 
-#### `ifValueOr(function, voidFunction) <> . | void`
+#### `ifValueOr(testFunction, voidFunction) <> . | void`
 
 This is identical to `ifValue`, except that the `valueFunction` is
 omitted and taken to be the identity function, and the `voidFunction`
