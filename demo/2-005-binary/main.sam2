@@ -155,9 +155,12 @@ msg((1 == 1) & (2 == 2) & (3 == 3) & (6 == 6));
 
 msg((returnVoid() & "a")??);
 msg((returnVoid() & returnVoid())??);
+msg((returnVoid() & returnVoid() & returnVoid())??);
+msg((returnVoid() & returnVoid() & returnVoid() & "a")??);
 msg(((1 == 1) & (1 == 2))??);
 msg(((1 == 1) & (1 == 2) & (3 == 3))??);
 msg(((1 == 2) & (2 == 2) & (3 == 3))??);
+msg(((1 == 1) & (2 == 2) & (3 == 4))??);
 
 msg((x := 1) & neg(x));
 msg((foo := 1) & (bar := neg(foo)) & add(-foo, bar));
