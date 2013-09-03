@@ -61,18 +61,6 @@ static void assertMap(zvalue value) {
 }
 
 /**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a map, and even furthermore that its size
- * is `1`. If not, this aborts the process with a diagnostic message.
- */
-static void assertMapSize1(zvalue value) {
-    assertMap(value);
-    if (getInfo(value)->size != 1) {
-        die("Not a size 1 map.");
-    }
-}
-
-/**
  * Constructs and returns a single-mapping map.
  */
 static zvalue makeMapping(zvalue key, zvalue value) {
@@ -229,18 +217,6 @@ zvalue mapFromArray(zint size, zmapping *mappings) {
 
     utilCpy(zmapping, info->elems, mappings, at);
     return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-zvalue mappingKey(zvalue map) {
-    assertMapSize1(map);
-    return getInfo(map)->elems[0].key;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-zvalue mappingValue(zvalue map) {
-    assertMapSize1(map);
-    return getInfo(map)->elems[0].value;
 }
 
 

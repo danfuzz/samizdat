@@ -51,16 +51,4 @@ void arrayFromMap(zmapping *result, zvalue map);
  */
 zvalue mapFromArray(zint size, zmapping *mappings);
 
-/**
- * Given a single-mapping map, returns its sole key. `map` must be a
- * map.
- */
-zvalue mappingKey(zvalue map);
-
-/**
- * Given a single-mapping map, returns its sole value. `map` must be a
- * map.
- */
-zvalue mappingValue(zvalue map);
-
 #endif
