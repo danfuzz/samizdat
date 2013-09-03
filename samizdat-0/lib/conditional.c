@@ -59,6 +59,27 @@ PRIM_IMPL(ifValueOr) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(ifValues) {
+    zvalue testFunctions = args[0];
+    zvalue valueFunction = args[1];
+    zvalue voidFunction = (argCount == 3) ? args[2] : NULL;
+    zint size = collSize(testFunctions);
+    zvalue testArr[size];
+    zvalue results[size];
+
+    arrayFromList(testArr, testFunctions);
+
+    for (zint i = 0; i < size; i++) {
+        zvalue one = funCall(testArr[i], i, results);
+        if (one == NULL) {
+            return voidFunction? FUN_CALL(voidFunction) : NULL;
+        }
+    }
+
+    return funCall(valueFunction, size, results);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(loop) {
     zvalue function = args[0];
     for (;;) {
