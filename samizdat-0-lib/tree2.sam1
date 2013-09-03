@@ -1287,16 +1287,30 @@ def parLogicAndClause = {/
 # the lines of:
 #
 # ```
-# (var1 = expr1) & expr2 & expr3
-# ```
+# expr1 & expr2
 # =>
-# ```
-# ifValue { <> expr1 }
-#     { var1 :: ifIs { <> expr2 } { <> expr3 } }
+# ifIs { <> expr1 } { <> expr2 }
 # ```
 #
-# That is, with a name binding, `ifValue` is used, and without a name
-# binding, `ifIs` is used.
+# ```
+# (var1 := expr1) & expr2
+# =>
+# ifValue { <> expr1 } { var1 <> expr2 }
+# ```
+#
+# ```
+# (var1 := expr1) & expr2 & (var3 := expr3) & expr4
+# =>
+# ifValues(
+#     makeList(
+#         { <> expr1 },
+#         { var1 <> expr2 },
+#         { var1, . <> expr3 }),
+#     { var1, ., var3 <> expr4 }
+# ```
+#
+# That is, a single `ifIs` or `ifValue` call if there's only one `&`, or an
+# `ifValues` call if there is a chain of three or more clauses.
 def parLogicAndExpression = {/
     # This is done with the `*` on the list head (that is, most-then-last
     # instead of the more usual arrangement of first-then-rest), since the
@@ -1309,21 +1323,45 @@ def parLogicAndExpression = {/
     )*
     last = parCompareExpression
 
-    {
-        <> doReduce1(reverse(most), last)
-            { clause, result ::
-                def formal = get(clause, "formal");
-                def test = makeThunk(get(clause, "test"));
-                def resultThunk = makeThunk(result);
-                <> ifIs { <> eq(formal, [:]) }
-                    { <> makeCallName("ifIs", test, resultThunk) }
-                    {
-                        <> makeCallName("ifValue",
-                            test,
-                            closureWithFormals(resultThunk, formal))
-                    }
-            }
-    }
+    (
+        # Not actually an `&` expression.
+        { <> eq(most, []) }
+        { <> last }
+    |
+        # Non-compound `&` expression.
+        { <> eq(sizeOf(most), 1) }
+        {
+            def clause = most*;
+            def formal = get(clause, "formal");
+            def testThunk = makeThunk(get(clause, "test"));
+            def resultThunk = makeThunk(last);
+
+            <> ifIs { <> eq(formal, [:]) }
+                { <> makeCallName("ifIs", testThunk, resultThunk) }
+                {
+                    <> makeCallName("ifValue",
+                        testThunk,
+                        closureWithFormals(resultThunk, formal))
+                }
+        }
+    |
+        # Compound `&` expression (three or more clauses).
+        {
+            # Make a version of the test clauses, as thunks with formals lists.
+            def formals = filterAll(most) { clause <> get(clause, "formal") };
+            def testThunks = filterAll(most, makeOpenRange(0, 1))
+                { clause, index ::
+                    def test = get(clause, "test");
+                    <> closureWithFormals(makeThunk(test),
+                        slice(formals, 0, index)*)
+                };
+
+            # Construct the overall `ifValues` call.
+            <> makeCallName("ifValues",
+                makeCallName("makeList", testThunks*),
+                closureWithFormals(makeThunk(last), formals*))
+        }
+    )
 /};
 
 # Parses a short-circuit logical-or expression. The translation is along
