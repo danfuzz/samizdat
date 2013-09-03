@@ -12,3 +12,10 @@ Version History
 
   Low level language concepts mostly settled and stable. High level
   language concepts still very much in flux.
+
+* 0.2.0 &mdash; 3-sep-2013 &mdash; "Method To The Madness"
+
+  First milestone after initial sprint.
+
+  Implemented basic type system and method dispatch mechanism based
+  on generic functions.
