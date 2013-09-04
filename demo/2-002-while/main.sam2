@@ -64,4 +64,16 @@ while (value := (45 > fetch(box))) {
     io0Note("Value F is \%q(nextVal).")
 };
 
+# First test will be the one that fails.
+while (value1 := (50 > fetch(box)), value2 := value1 + 100) {
+    store(box, value1 + 1);
+    io0Note("Value G is \%q(fetch(box)); \%q(value1) \%q(value2)");
+};
+
+# Second test will be the one that fails.
+while (value1 := fetch(box), value2 := (55 > value1)) {
+    store(box, value1 + 1);
+    io0Note("Value H is \%q(fetch(box)); \%q(value1) \%q(value2)");
+};
+
 <> 0
