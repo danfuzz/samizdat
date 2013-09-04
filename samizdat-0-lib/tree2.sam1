@@ -1413,10 +1413,39 @@ def parLogicOrExpression = {/
     )
 /};
 
-# Helper for `if` parsing: Takes a parenthesized list of test clauses and
-# yields a function that takes the `then` node and optional `else` node,
-# returning the final `if*` call.
-def parIfTest = {/
+# Helper for `if` and `while` parsing: Takes a parenthesized list of test
+# clauses and yields a function that takes the `then` node and optional
+# `else` node, returning the final `if*` call. The three cases are along
+# the lines of:
+#
+# ```
+# (nonBoundExpr)
+# =>
+# ifIs { <> nonBoundExpr }
+#     { ... then ... }
+#     { ... else ... }
+# ```
+#
+# ```
+# (name := boundExpr)
+# =>
+# ifValue { <> boundExpr }
+#     { name :: ... then ... }
+#     { ... else ... }
+# ```
+#
+# ```
+# (name1 := expr1, unboundExpr, name3 := expr3)
+# =>
+# ifValues(
+#     makeList(
+#         { <> expr1 },
+#         { name1 <> unboundExpr },
+#         { name1, . <> expr3 }),
+#     { name1, ., name3 :: ... then ... }
+#     { ... else ... })
+# ```
+def parMultiTest = {/
     clauses = parParenTestClauseList
 
     (
@@ -1508,13 +1537,13 @@ def parIfTest = {/
 def parIfExpression = {/
     @if
     yieldDef = parOptYieldDef
-    firstCondition = parIfTest
+    firstCondition = parMultiTest
     firstThen = parCodeOnlyClosure
 
     elseIfThens = (
         @else
         @if
-        condition = parIfTest
+        condition = parMultiTest
         then = parCodeOnlyClosure
         { <> [maker: condition, then: then] }
     )*
@@ -1568,7 +1597,7 @@ def parOptBreakDef = {/
 # Parses a while expression. The translation is along these lines:
 #
 # ```
-# while <out> (name := test) { <next> :: stat1; stat2 }
+# while <out> (name1 := test1) { <next> :: stat1; stat2 }
 # ```
 # =>
 # ```
@@ -1586,23 +1615,21 @@ def parOptBreakDef = {/
 # * the initial break assignment omitted if there is no yield def.
 # * the body argument declaration changed to `.` if there is no
 #   test expression name binding.
+# * `ifIs` instead of `ifValue` if there is no name binding.
+# * `ifValues` instead of `ifValue` if there are multiple tests.
 def parWhileExpression = {/
     @while
     breakDef = parOptBreakDef
-    testClause = parParenTestClause
+    testMaker = parMultiTest
     code = parNullaryClosure
 
     {
-        def formal = get(testClause, "formal");
-        def test = get(testClause, "test");
-
         def loopClosure = @[closure: [
             formals: [],
             yieldDef: "continue",
             statements: [
-                makeCallName("ifValue",
-                    makeThunk(test),
-                    closureWithFormals(code, formal),
+                testMaker(
+                    code,
                     makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
             ]
         ]];
