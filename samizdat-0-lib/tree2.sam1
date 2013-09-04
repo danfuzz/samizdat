@@ -1519,32 +1519,29 @@ def parIfExpression = {/
         { <> [maker: condition, then: then] }
     )*
 
-    finalElse = (
-        @else
-        parCodeOnlyClosure
-    |
-        { <> YIELD_VOID_THUNK }
-    )
+    optElse = (@else parCodeOnlyClosure)?
 
-    mainThunk = {
+    {
         # This builds the full expression from back to front (inner to outer).
         def clauses = reverse(
             [[maker: firstCondition, then: firstThen], elseIfThens*]);
 
-        # To keep things simple, partial results are always thunks, so that
-        # they can be slotted directly into place as the third argument to
-        # an enclosing `if*`. At the end -- in the last parser clause of the
-        # rule, below -- we either add a yield def to the thunk and wrap it
-        # in a call, or unwrap it into a straight call, depending on if the
-        # original `if` has a yield def or not.
-        <> doReduce1(clauses, finalElse) { clause, result ::
+        # To keep things simple, partial results are always thunks wrapped
+        # in a single-element list, so that they can be slotted directly into
+        # place as the third argument to an enclosing `if*` by saying `result*`
+        # (which also handles the case of a missing final `else`).
+        def reduction = doReduce1(clauses, optElse) { clause, optResult ::
             def maker = get(clause, "maker");
             def then = get(clause, "then");
-            <> makeThunk(maker(then, result))
-        }
-    }
+            <> [makeThunk(maker(then, optResult*))]
+        };
 
-    {
+        # Unwrap the single-element `reduction` result list;
+        def mainThunk = reduction*;
+
+        # Either add a yield def to the thunk and wrap it in a call, or
+        # unwrap it into a straight call, depending on if the original `if`
+        # has a yield def or not.
         <> ifIs { <> eq(yieldDef, [:]) }
             { <> get(dataOf(mainThunk), "yield") }
             {
