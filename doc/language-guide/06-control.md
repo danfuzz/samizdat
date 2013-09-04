@@ -155,6 +155,19 @@ yielded logical-true, the block `elseBlock` block is evaluated,
 with its result becoming the overall expression result. In case no
 consequent block is evaluated, the overall expression result is void.
 
+If one wishes to do multiple tests and/or bind multiple values in a
+single `if`, it is possible to do so by separating the test expressions
+with commas. For example:
+
+```
+if (name1 := expr1, unboundExpr, name2 := expr2) {
+    ... reference to name1 or name2 ...
+}
+```
+
+This acts as a *conjunction*, where the "then" block is only evaluated
+if all of the tests yield logical-true.
+
 `if` expressions support both explicit yield definition and
 test expression name binding.
 

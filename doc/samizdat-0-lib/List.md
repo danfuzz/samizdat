@@ -119,7 +119,7 @@ fn makeList(elems*) { <> elems };
 ```
 
 **Syntax Note:** Used in the translation of `[item, ...]`,
-`[key: value, ...]`, and `switch` forms.
+`[key: value, ...]`, `switch`, and multiple-binding `if` forms.
 
 
 <br><br>

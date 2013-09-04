@@ -1252,13 +1252,11 @@ def parCompareExpression = {/
     { <> makeBinaryCalls(firstEx, opExes, true) }
 /};
 
-# Parses a parenthesized test clause, yielding a map of the form
-# @[formal: ..., test: ...], with `formal` bound to a formal argument
+# Parses a single test clause with optional assignment, yielding a map of
+# the form @[formal: ..., test: ...], with `formal` bound to a formal argument
 # declaration and `test` bound to the test expression. If no formal was
 # parsed, `formal` is bound to `[:]`.
 def parTestClause = {/
-    @"("
-
     formal = (
         name = @identifier
         @":="
@@ -1268,16 +1266,34 @@ def parTestClause = {/
     )
 
     test = parExpression
-    @")"
 
     { <> [formal: formal, test: test] }
 /};
 
+# Parses a single parenthesized test clause.
+def parParenTestClause = {/
+    @"("
+    result = parTestClause
+    @")"
+
+    { <> result }
+/};
+
+# Parses a list of one or more comma-separated parenthesized test clauses.
+def parParenTestClauseList = {/
+    @"("
+    first = parTestClause
+    more = (@"," parTestClause)*
+    @")"
+
+    { <> [first, more*] }
+/};
+
 # Parses a clause in a logical-and expression. This is just like
-# `parTestClause` above, except that it also allows for unparenthesized
+# `parParenTestClause` above, except that it also allows for unparenthesized
 # `compareExpression`s.
 def parLogicAndClause = {/
-    parTestClause
+    parParenTestClause
 |
     test = parCompareExpression
     { <> [formal: [:], test: test] }
@@ -1287,16 +1303,30 @@ def parLogicAndClause = {/
 # the lines of:
 #
 # ```
-# (var1 = expr1) & expr2 & expr3
-# ```
+# expr1 & expr2
 # =>
-# ```
-# ifValue { <> expr1 }
-#     { var1 :: ifIs { <> expr2 } { <> expr3 } }
+# ifIs { <> expr1 } { <> expr2 }
 # ```
 #
-# That is, with a name binding, `ifValue` is used, and without a name
-# binding, `ifIs` is used.
+# ```
+# (var1 := expr1) & expr2
+# =>
+# ifValue { <> expr1 } { var1 <> expr2 }
+# ```
+#
+# ```
+# (var1 := expr1) & expr2 & (var3 := expr3) & expr4
+# =>
+# ifValues(
+#     makeList(
+#         { <> expr1 },
+#         { var1 <> expr2 },
+#         { var1, . <> expr3 }),
+#     { var1, ., var3 <> expr4 }
+# ```
+#
+# That is, a single `ifIs` or `ifValue` call if there's only one `&`, or an
+# `ifValues` call if there is a chain of three or more clauses.
 def parLogicAndExpression = {/
     # This is done with the `*` on the list head (that is, most-then-last
     # instead of the more usual arrangement of first-then-rest), since the
@@ -1309,21 +1339,45 @@ def parLogicAndExpression = {/
     )*
     last = parCompareExpression
 
-    {
-        <> doReduce1(reverse(most), last)
-            { clause, result ::
-                def formal = get(clause, "formal");
-                def test = makeThunk(get(clause, "test"));
-                def resultThunk = makeThunk(result);
-                <> ifIs { <> eq(formal, [:]) }
-                    { <> makeCallName("ifIs", test, resultThunk) }
-                    {
-                        <> makeCallName("ifValue",
-                            test,
-                            closureWithFormals(resultThunk, formal))
-                    }
-            }
-    }
+    (
+        # Not actually an `&` expression.
+        { <> eq(most, []) }
+        { <> last }
+    |
+        # Non-compound `&` expression.
+        { <> eq(sizeOf(most), 1) }
+        {
+            def clause = most*;
+            def formal = get(clause, "formal");
+            def testThunk = makeThunk(get(clause, "test"));
+            def resultThunk = makeThunk(last);
+
+            <> ifIs { <> eq(formal, [:]) }
+                { <> makeCallName("ifIs", testThunk, resultThunk) }
+                {
+                    <> makeCallName("ifValue",
+                        testThunk,
+                        closureWithFormals(resultThunk, formal))
+                }
+        }
+    |
+        # Compound `&` expression (three or more clauses).
+        {
+            # Make a version of the test clauses, as thunks with formals lists.
+            def formals = filterAll(most) { clause <> get(clause, "formal") };
+            def testThunks = filterAll(most, makeOpenRange(0, 1))
+                { clause, index ::
+                    def test = get(clause, "test");
+                    <> closureWithFormals(makeThunk(test),
+                        slice(formals, 0, index)*)
+                };
+
+            # Construct the overall `ifValues` call.
+            <> makeCallName("ifValues",
+                makeCallName("makeList", testThunks*),
+                closureWithFormals(makeThunk(last), formals*))
+        }
+    )
 /};
 
 # Parses a short-circuit logical-or expression. The translation is along
@@ -1359,13 +1413,66 @@ def parLogicOrExpression = {/
     )
 /};
 
+# Helper for `if` parsing: Takes a parenthesized list of test clauses and
+# yields a function that takes the `then` node and optional `else` node,
+# returning the final `if*` call.
+def parIfTest = {/
+    clauses = parParenTestClauseList
+
+    (
+        # Single test. Will translate as either `ifValue` or `ifIs`.
+        { <> eq(sizeOf(clauses), 1) }
+        {
+            def clause = clauses*;
+            def formal = get(clause, "formal");
+            def testThunk = makeThunk(get(clause, "test"));
+            <> { thenThunk, elseThunk? ::
+                <> ifIs { eq(formal, [:]) }
+                    {
+                        <> makeCallName("ifIs",
+                            testThunk, thenThunk, elseThunk*)
+                    }
+                    {
+                        <> makeCallName("ifValue",
+                            testThunk,
+                            closureWithFormals(thenThunk, formal),
+                            elseThunk*)
+                    }
+            }
+        }
+    |
+        # General case.
+        {
+            # Make a version of the test clauses, as thunks with formals lists.
+            def formals = filterAll(clauses)
+                { clause <> get(clause, "formal") };
+            def testThunks = filterAll(clauses, makeOpenRange(0, 1))
+                { clause, index ::
+                    def test = get(clause, "test");
+                    <> closureWithFormals(makeThunk(test),
+                        slice(formals, 0, index)*)
+                };
+
+            # Result function which constructs the overall `ifValues` call.
+            <> { thenThunk, elseThunk? ::
+                <> makeCallName("ifValues",
+                    makeCallName("makeList", testThunks*),
+                    closureWithFormals(thenThunk, formals*),
+                    elseThunk*)
+            }
+        }
+    )
+/};
+
 # Parses an if expression. The translation is along the lines of:
 #
 # ```
 # if <out> (name1 = expr1) {
 #     thenStat1
-# } else if (name2 = expr2) {
+# } else if (expr2) {
 #     thenStat2
+# } else if (name3 = expr3, name4 = expr4) {
+#     thenStat34
 # } else {
 #     elseStat
 # }
@@ -1376,69 +1483,65 @@ def parLogicOrExpression = {/
 #     <> ifValue { <> expr1 }
 #         { name1 :: thenStat1 }
 #         {
-#             ifValue { <> expr2 }
+#             <> ifIs { <> expr2 }
 #                 { name2 :: thenStat2 }
-#                 { elseStat }
+#                 {
+#                     <> ifValues(
+#                         makeList(
+#                             { <> expr3 },
+#                             { name3 <> expr4 }),
+#                         { name3, name4 :: thenStat34 },
+#                         { elseStat })
+#                 }
 #         }
 # }()
 # ```
 #
 # with:
 # * the outer thunk-call omitted if there was no yield definition.
-# * the `elseStat` block as `{}` (that is yield-void) if there was no
-#   `else` clause.
+# * omitting the final `elseStat` if there was no `else` clause.
 # * `ifIs` instead of `ifValue` and no then-clause argument declaration for
 #   any clause where no name binding was present.
+# * `ifValues` instead of `ifValue` (with incremental formals binding) for
+#   any clause that uses multiple tests.
 # * arbitrary nesting of additional clauses.
 def parIfExpression = {/
     @if
     yieldDef = parOptYieldDef
-    firstCondition = parTestClause
+    firstCondition = parIfTest
     firstThen = parCodeOnlyClosure
 
     elseIfThens = (
         @else
         @if
-        condition = parTestClause
+        condition = parIfTest
         then = parCodeOnlyClosure
-        { <> [condition*, then: then] }
+        { <> [maker: condition, then: then] }
     )*
 
-    finalElse = (
-        @else
-        parCodeOnlyClosure
-    |
-        { <> YIELD_VOID_THUNK }
-    )
-
-    mainThunk = {
-        # This builds the full expression from back to front (inner to outer).
-        def clauses = reverse(
-            [[firstCondition*, then: firstThen], elseIfThens*]);
-
-        # To keep things simple, partial results are always thunks, so that
-        # they can be slotted directly into place as the third argument to
-        # an enclosing `ifValue` or `ifIs`. At the end -- in the last parser
-        # clause of the rule, below -- we either add a yield def to the
-        # thunk and wrap it in a call, or unwrap it into a straight call,
-        # depending on if the original `if` has a yield def or not.
-        <> doReduce1(clauses, finalElse) { clause, result ::
-            def formal = get(clause, "formal");
-            def test = makeThunk(get(clause, "test"));
-            def then = get(clause, "then");
-            def ifCall = ifIs { <> eq(formal, [:]) }
-                { <> makeCallName("ifIs", test, then, result) }
-                {
-                    <> makeCallName("ifValue",
-                        test,
-                        closureWithFormals(then, formal),
-                        result)
-                };
-            <> makeThunk(ifCall)
-        }
-    }
+    optElse = (@else parCodeOnlyClosure)?
 
     {
+        # This builds the full expression from back to front (inner to outer).
+        def clauses = reverse(
+            [[maker: firstCondition, then: firstThen], elseIfThens*]);
+
+        # To keep things simple, partial results are always thunks wrapped
+        # in a single-element list, so that they can be slotted directly into
+        # place as the third argument to an enclosing `if*` by saying `result*`
+        # (which also handles the case of a missing final `else`).
+        def reduction = doReduce1(clauses, optElse) { clause, optResult ::
+            def maker = get(clause, "maker");
+            def then = get(clause, "then");
+            <> [makeThunk(maker(then, optResult*))]
+        };
+
+        # Unwrap the single-element `reduction` result list;
+        def mainThunk = reduction*;
+
+        # Either add a yield def to the thunk and wrap it in a call, or
+        # unwrap it into a straight call, depending on if the original `if`
+        # has a yield def or not.
         <> ifIs { <> eq(yieldDef, [:]) }
             { <> get(dataOf(mainThunk), "yield") }
             {
@@ -1541,7 +1644,7 @@ def SWITCH_DISPATCH_CLOSURE = sam0Tree("
 def parSwitchExpression = {/
     @switch
     breakDef = parOptBreakDef
-    testClause = parTestClause
+    testClause = parParenTestClause
 
     @"{"
 
@@ -1648,7 +1751,7 @@ def parSwitchExpression = {/
 def parWhileExpression = {/
     @while
     breakDef = parOptBreakDef
-    testClause = parTestClause
+    testClause = parParenTestClause
     code = parNullaryClosure
 
     {
