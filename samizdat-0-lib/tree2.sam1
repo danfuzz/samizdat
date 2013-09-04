@@ -1565,6 +1565,164 @@ def parOptBreakDef = {/
     )?
 /};
 
+# Parses a while expression. The translation is along these lines:
+#
+# ```
+# while <out> (name := test) { <next> :: stat1; stat2 }
+# ```
+# =>
+# ```
+# { <\"break"> ::
+#     def out = \"break";
+#     loop { <\"continue"> ::
+#         ifValue { <> test }
+#             { <next> name :: stat1; stat2 }
+#             { <\"break"> }
+#     }
+# }()
+# ```
+#
+# with:
+# * the initial break assignment omitted if there is no yield def.
+# * the body argument declaration changed to `.` if there is no
+#   test expression name binding.
+def parWhileExpression = {/
+    @while
+    breakDef = parOptBreakDef
+    testClause = parParenTestClause
+    code = parNullaryClosure
+
+    {
+        def formal = get(testClause, "formal");
+        def test = get(testClause, "test");
+
+        def loopClosure = @[closure: [
+            formals: [],
+            yieldDef: "continue",
+            statements: [
+                makeCallName("ifValue",
+                    makeThunk(test),
+                    closureWithFormals(code, formal),
+                    makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
+            ]
+        ]];
+
+        def mainClosure = @[closure: [
+            formals: [],
+            yieldDef: "break",
+            statements: [breakDef*, makeCallName("loop", loopClosure)]
+        ]];
+
+        <> makeCall(mainClosure)
+    }
+/};
+
+# Parses a do expression. The translation is along these lines:
+#
+# ```
+# do <out> { <next> :: stat1; stat2 } while (expr)
+# ```
+# =>
+# ```
+# { <\"break"> ::
+#     def out = \"break";
+#     loop { <\"continue"> ::
+#         { <next> :: stat1; stat2 }();
+#         ifNot { <> expr }
+#             { <\"break"> }
+#     }
+# }()
+# ```
+#
+# with the initial break assignment omitted if there is no yield def, and
+# with the `ifNot` statement omitted if there is no `while` at the end
+# of the `do`.
+def parDoExpression = {/
+    @do
+    breakDef = parOptBreakDef
+    code = parNullaryClosure
+    condition = (
+        @while
+        ex = parParenExpression
+        {
+            <> makeCallName("ifNot",
+                makeThunk(ex),
+                makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
+        }
+    )?
+
+    {
+        def loopClosure = @[closure: [
+            formals: [],
+            yieldDef: "continue",
+            statements: [makeCall(code), condition*]
+        ]];
+
+        def mainClosure = @[closure: [
+            formals: [],
+            yieldDef: "break",
+            statements: [breakDef*, makeCallName("loop", loopClosure)]
+        ]];
+
+        <> makeCall(mainClosure)
+    }
+/};
+
+# Parses a for expression. The translation is along these lines:
+#
+# ```
+# for <out> (name1 in expr1, name2 in expr2) { <next> :: stat1; stat2 }
+# ```
+# =>
+# ```
+# { <\"break"> ::
+#     def out = \"break";
+#     filterPump(expr1, expr2) { <\"continue"> name1, name2 ::
+#         def next = \"continue";
+#         stat1; stat2
+#     }
+# }()
+# ```
+#
+# with:
+# * the break assignment omitted if there is no outer yield def.
+# * the continue assignment omitted if there is no inner yield def
+def parForExpression = {/
+    @for
+    breakDef = parOptBreakDef
+    @"("
+    genList = parGeneratorList
+    @")"
+    code = parNullaryClosure
+
+    {
+        def genFormals = get(genList, "formals");
+        def genInits = get(genList, "inits");
+
+        def codePayload = dataOf(code);
+        def continueDef = ifValue { <> get(codePayload, "yieldDef") }
+            { name <> [makeVarDef(name, makeVarRef("continue"))] }
+            { <> [] };
+
+        def loopClosure = @[closure: [
+            formals: genFormals,
+            yieldDef: "continue",
+            statements: [continueDef*, get(codePayload, "statements")*]
+        ]];
+
+        def mainClosure = @[closure: [
+            formals: [],
+            yieldDef: "break",
+            statements: [
+                breakDef*,
+                makeCallName("filterPump", loopClosure, genInits*)
+            ]
+        ]];
+
+        <> makeCall(mainClosure)
+    }
+/};
+
 # Helper for switch expressions: Parse a single case, including
 # `default` and `else` cases. Returns a map that binds `keys` and
 # `code`.
@@ -1721,164 +1879,6 @@ def parSwitchExpression = {/
             yieldDef: "break",
             statements: [breakDef*],
             yield: ifCall
-        ]];
-
-        <> makeCall(mainClosure)
-    }
-/};
-
-# Parses a while expression. The translation is along these lines:
-#
-# ```
-# while <out> (name := test) { <next> :: stat1; stat2 }
-# ```
-# =>
-# ```
-# { <\"break"> ::
-#     def out = \"break";
-#     loop { <\"continue"> ::
-#         ifValue { <> test }
-#             { <next> name :: stat1; stat2 }
-#             { <\"break"> }
-#     }
-# }()
-# ```
-#
-# with:
-# * the initial break assignment omitted if there is no yield def.
-# * the body argument declaration changed to `.` if there is no
-#   test expression name binding.
-def parWhileExpression = {/
-    @while
-    breakDef = parOptBreakDef
-    testClause = parParenTestClause
-    code = parNullaryClosure
-
-    {
-        def formal = get(testClause, "formal");
-        def test = get(testClause, "test");
-
-        def loopClosure = @[closure: [
-            formals: [],
-            yieldDef: "continue",
-            statements: [
-                makeCallName("ifValue",
-                    makeThunk(test),
-                    closureWithFormals(code, formal),
-                    makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
-            ]
-        ]];
-
-        def mainClosure = @[closure: [
-            formals: [],
-            yieldDef: "break",
-            statements: [breakDef*, makeCallName("loop", loopClosure)]
-        ]];
-
-        <> makeCall(mainClosure)
-    }
-/};
-
-# Parses a do expression. The translation is along these lines:
-#
-# ```
-# do <out> { <next> :: stat1; stat2 } while (expr)
-# ```
-# =>
-# ```
-# { <\"break"> ::
-#     def out = \"break";
-#     loop { <\"continue"> ::
-#         { <next> :: stat1; stat2 }();
-#         ifNot { <> expr }
-#             { <\"break"> }
-#     }
-# }()
-# ```
-#
-# with the initial break assignment omitted if there is no yield def, and
-# with the `ifNot` statement omitted if there is no `while` at the end
-# of the `do`.
-def parDoExpression = {/
-    @do
-    breakDef = parOptBreakDef
-    code = parNullaryClosure
-    condition = (
-        @while
-        ex = parParenExpression
-        {
-            <> makeCallName("ifNot",
-                makeThunk(ex),
-                makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
-        }
-    )?
-
-    {
-        def loopClosure = @[closure: [
-            formals: [],
-            yieldDef: "continue",
-            statements: [makeCall(code), condition*]
-        ]];
-
-        def mainClosure = @[closure: [
-            formals: [],
-            yieldDef: "break",
-            statements: [breakDef*, makeCallName("loop", loopClosure)]
-        ]];
-
-        <> makeCall(mainClosure)
-    }
-/};
-
-# Parses a for expression. The translation is along these lines:
-#
-# ```
-# for <out> (name1 in expr1, name2 in expr2) { <next> :: stat1; stat2 }
-# ```
-# =>
-# ```
-# { <\"break"> ::
-#     def out = \"break";
-#     filterPump(expr1, expr2) { <\"continue"> name1, name2 ::
-#         def next = \"continue";
-#         stat1; stat2
-#     }
-# }()
-# ```
-#
-# with:
-# * the break assignment omitted if there is no outer yield def.
-# * the continue assignment omitted if there is no inner yield def
-def parForExpression = {/
-    @for
-    breakDef = parOptBreakDef
-    @"("
-    genList = parGeneratorList
-    @")"
-    code = parNullaryClosure
-
-    {
-        def genFormals = get(genList, "formals");
-        def genInits = get(genList, "inits");
-
-        def codePayload = dataOf(code);
-        def continueDef = ifValue { <> get(codePayload, "yieldDef") }
-            { name <> [makeVarDef(name, makeVarRef("continue"))] }
-            { <> [] };
-
-        def loopClosure = @[closure: [
-            formals: genFormals,
-            yieldDef: "continue",
-            statements: [continueDef*, get(codePayload, "statements")*]
-        ]];
-
-        def mainClosure = @[closure: [
-            formals: [],
-            yieldDef: "break",
-            statements: [
-                breakDef*,
-                makeCallName("filterPump", loopClosure, genInits*)
-            ]
         ]];
 
         <> makeCall(mainClosure)
