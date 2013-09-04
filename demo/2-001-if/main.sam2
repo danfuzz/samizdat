@@ -152,7 +152,6 @@ if (x := returnVoid()) {
     io0Note("Um?!")
 };
 
-/* TODO:
 if (x := "fr", y := "otz") {
     io0Note(cat(x, y))
 } else {
@@ -174,6 +173,11 @@ if (x := returnVoid(), y := "y") {
 if (x := "fr", "stuff", y := "ot", z := "z") {
     io0Note(cat(x, y, z))
 };
-*/
+
+if (x := returnVoid()) {
+    io0Note("Um?!")
+} else if (x := "fi", "stuff", y := "zm", z := "o") {
+    io0Note(cat(x, y, z))
+};
 
 <> 0
