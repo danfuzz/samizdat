@@ -94,6 +94,7 @@ PRIM_FUNC(ifIs,                 2, 3);
 PRIM_FUNC(ifNot,                2, 2);
 PRIM_FUNC(ifValue,              2, 3);
 PRIM_FUNC(ifValueOr,            2, 2);
+PRIM_FUNC(ifValues,             2, 3);
 PRIM_FUNC(io0FlatCwd,           0, 0);
 PRIM_FUNC(io0FlatReadLink,      1, 1);
 PRIM_FUNC(io0FlatReadFileUtf8,  1, 1);
