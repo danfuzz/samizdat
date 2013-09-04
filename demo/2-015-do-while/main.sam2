@@ -1,0 +1,50 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Loop expression demo
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Main Tests
+#
+
+def box = makeMutableBox(0);
+
+do { <next> ::
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 5) {
+        continue
+    } else if (fetch(box) == 7) {
+        <next>
+    };
+    io0Note("Value is \%q(fetch(box)).")
+} while (fetch(box) < 10);
+
+def result1 = do {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 13) {
+        break "blort"
+    };
+    io0Note("Value is \%q(fetch(box)).")
+} while (fetch(box) < 15);
+
+io0Note("Result is \%q(result1).");
+
+def result2 = do <out> {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 18) {
+        <out> "frotz"
+    };
+    io0Note("Value is \%q(fetch(box)).")
+} while (fetch(box) < 20);
+
+io0Note("Result is \%q(result2).");
+
+<> 0

@@ -1,0 +1,50 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Loop expression demo
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Main Tests
+#
+
+def box = makeMutableBox(0);
+
+do {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 5) {
+        break
+    };
+    io0Note("Value is \%q(fetch(box)).")
+};
+
+do { <next> ::
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 10) {
+        continue
+    } else if (fetch(box) == 12) {
+        <next>
+    } else if (fetch(box) == 15) {
+        break
+    };
+    io0Note("Value is \%q(fetch(box)).")
+};
+
+def result = do <out> {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 20) {
+        <out> "igram"
+    };
+    io0Note("Value is \%q(fetch(box)).")
+};
+
+io0Note("Result is \%q(result).");
+
+<> 0

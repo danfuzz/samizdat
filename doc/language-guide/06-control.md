@@ -46,6 +46,26 @@ opName (varName := someCalculation()) {
 }
 ```
 
+#### Multiple test expressions
+
+Sometimes it is useful to perform multiple tests in a single control
+construct, particularly when the test results are being bound. In
+such cases, multple test expressions can be included within parentheses,
+separated by commas.
+
+The multiple expressions are treated as a conjunction and evaluated
+in order. *All* of the expressions have to evaluate to logical-true
+(that is yield a value, and not yield void) in order for the test to
+pass.
+
+For example:
+
+```
+opName (varName1 := someExpression1, varName2 := someExpression2) {
+    ... varName1 ... varName2 ...
+}
+```
+
 #### Nonlocal yield
 
 Most control constructs (all but `if`) implicitly define a "break
@@ -155,21 +175,8 @@ yielded logical-true, the block `elseBlock` block is evaluated,
 with its result becoming the overall expression result. In case no
 consequent block is evaluated, the overall expression result is void.
 
-If one wishes to do multiple tests and/or bind multiple values in a
-single `if`, it is possible to do so by separating the test expressions
-with commas. For example:
-
-```
-if (name1 := expr1, unboundExpr, name2 := expr2) {
-    ... reference to name1 or name2 ...
-}
-```
-
-This acts as a *conjunction*, where the "then" block is only evaluated
-if all of the tests yield logical-true.
-
-`if` expressions support both explicit yield definition and
-test expression name binding.
+`if` expressions support explicit yield definition,
+test expression name binding, and multiple test expressions.
 
 `if` expressions do *not* define a break or continue context.
 
@@ -246,7 +253,8 @@ switch (expression) {
 test expression name binding. `switch` expressions define a break
 context.
 
-`switch` expressions do *not* define a continue context.
+`switch` expressions do *not* define a continue context, and do not
+allow multiple test expressions.
 
 **Note:** Unlike other languages in the C tradition, *Samizdat* does
 not allow consequent blocks to fall through. So, a block-final
@@ -274,21 +282,18 @@ result it may yield, and then evaluating the block again, ad infinitum.
 Unconditional `do` expressions support explicit yield definition
 and define both break and continue contexts.
 
-Unconditional `do` expressions, not having a test, naturally do
-not support test expression name binding.
+As they do not have tests at all, unconditional `do` expressions do
+not support test expression name binding or multiple test expressions.
 
 **Note:**  The only way an unconditional `do` expression ever yields
 a value is by explicit `break` or nonlocal exit.
 
 
-### Conditional loop &mdash; `while` and `do ... while`
+### Conditional loop &mdash; `while`
 
-Loops may be iterated conditionally with a `while` or a `do...while`
-statement. These are a straightforward extension of the `do` loop,
-described above.
-
-To execute a conditional test before each iteration, replace `do` with
-`while (expression)`:
+Loops may be iterated conditionally with a `while` expression.
+These are a straightforward extension of the `do` loop,
+described above, replacing `do` with `while (expression)`:
 
 ```
 while (expression) {
@@ -300,10 +305,13 @@ With this form, `expression` is evaluated at the start of each iteration,
 and the block is only evaluated if the expression evaluates to
 logical-true. If not, the outer expression terminates, yielding void.
 
-`while` expressions support explicit yield definition and test expression
-name binding, and define both break and continue contexts.
+`while` expressions support explicit yield definition, test expression
+name binding, and multple test expressions; and they define both break
+and continue contexts.
 
-If the test is better done after at least one iteration, the
+### Conditional loop with post-condition &mdash; `do ... while`
+
+If a loop test is better done after at least one iteration, the
 `do...while` form can be used:
 
 ```
@@ -318,7 +326,8 @@ and define both break and continue contexts.
 `do...while` expressions do *not* support test expression name binding,
 since the first iteration can't possibly have a binding for the
 test expression, and the language doesn't allow variables to be bound
-to void.
+to void. They also do not support multiple test expressions; use `&`
+expressions instead if needed.
 
 
 ### Generator iteration loop &mdash; `for`
@@ -347,5 +356,5 @@ becomes voided.
 `for` expressions support explicit yield definition, and they define both
 break and continue contexts.
 
-`for` expressions do *not* support test expression name binding (since
-there are no tests to bind).
+`for` expressions do *not* support test expression name binding
+(since there are no tests to bind), nor multiple test expressions.

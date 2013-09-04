@@ -1,0 +1,79 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Loop expression demo
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Main Tests
+#
+
+def box = makeMutableBox(0);
+
+while (fetch(box) < 5) {
+    store(box, fetch(box) + 1);
+    io0Note("Value A is \%q(fetch(box)).")
+};
+
+while (fetch(box) < 15) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) < 10) {
+        continue
+    };
+    io0Note("Value B is \%q(fetch(box)).")
+};
+
+while (fetch(box) < 30) { <next> ::
+    store(box, fetch(box) + 1);
+    if (fetch(box) < 25) {
+        <next>
+    };
+    io0Note("Value C is \%q(fetch(box)).")
+};
+
+def result1 = while (fetch(box) < 40) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 35) {
+        break "blort"
+    };
+    io0Note("Value D is \%q(fetch(box)).")
+};
+
+io0Note("Result 1 is \%q(result1).");
+
+def result2 = while <out> (fetch(box) < 40) {
+    store(box, fetch(box) + 1);
+    if (fetch(box) == 38) {
+        <out> "fizmo"
+    };
+    io0Note("Value E is \%q(fetch(box)).")
+};
+
+io0Note("Result 2 is \%q(result2).");
+
+while (value := (45 > fetch(box))) {
+    def nextVal = value + 1;
+    store(box, nextVal);
+    io0Note("Value F is \%q(nextVal).")
+};
+
+# First test will be the one that fails.
+while (value1 := (50 > fetch(box)), value2 := value1 + 100) {
+    store(box, value1 + 1);
+    io0Note("Value G is \%q(fetch(box)); \%q(value1) \%q(value2)");
+};
+
+# Second test will be the one that fails.
+while (value1 := fetch(box), value2 := (55 > value1)) {
+    store(box, value1 + 1);
+    io0Note("Value H is \%q(fetch(box)); \%q(value1) \%q(value2)");
+};
+
+<> 0
