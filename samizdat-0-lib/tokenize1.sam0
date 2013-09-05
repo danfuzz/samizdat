@@ -133,7 +133,7 @@ def tokIdentifier = pegMakeMainSequence(
 def tokQuotedIdentifier = pegMakeMainSequence(
     pegMakeString("\\"),
     tokString,
-    pegMakeCode { ., s <> @[identifier: (dataOf(s))] });
+    pegMakeCode { ., s <> @[identifier: dataOf(s)] });
 
 # Documented in Samizdat Layer 0 spec.
 def tokError = pegMakeMainSequence(
