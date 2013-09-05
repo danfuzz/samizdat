@@ -24,7 +24,7 @@ fn reportError(pending) {
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    makeInclusiveRange("a", 1, "z")*: true
+    (makeInclusiveRange("a", 1, "z"))*: true
 ];
 
 # Returns an `interpolate` node.
@@ -582,14 +582,14 @@ def parRepeatPex = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeTokenSet("?", "*", "+"),
-            pegMakeCode { atom, repeat <> @[typeOf(repeat): atom] }),
+            pegMakeCode { atom, repeat <> @[(typeOf(repeat)): atom] }),
         pegMakeCode { atom <> atom }));
 
 def parLookaheadPex = pegMakeMainChoice(
     pegMakeSequence(
         pegMakeTokenSet("&", "!"),
         parRepeatPex,
-        pegMakeCode { lookahead, pex <> @[typeOf(lookahead): pex] }),
+        pegMakeCode { lookahead, pex <> @[(typeOf(lookahead)): pex] }),
     parRepeatPex);
 
 def parNamePex = pegMakeMainChoice(

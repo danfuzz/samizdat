@@ -24,7 +24,7 @@ fn reportError(pending) {
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    makeInclusiveRange("a", 1, "z")*: true
+    (makeInclusiveRange("a", 1, "z"))*: true
 ];
 
 # Returns an `interpolate` node.
@@ -94,13 +94,13 @@ fn makeCallNameThunks(name, actuals*) {
 # binding replaced with the given arguments. Each of the `formals`
 # must be a formal argument map as described in the execution tree spec.
 fn closureWithFormals(closure, formals*) {
-    <> @[closure: [dataOf(closure)*, formals: formals]]
+    <> @[closure: [(dataOf(closure))*, formals: formals]]
 };
 
 # Returns a `closure` node like the one given, except with `yieldDef`
 # bound to the indicated name.
 fn closureWithYieldDef(closure, name) {
-    <> @[closure: [dataOf(closure)*, yieldDef: name]]
+    <> @[closure: [(dataOf(closure))*, yieldDef: name]]
 };
 
 # A no-argument yield-void thunk.
@@ -803,7 +803,7 @@ def parRepeatPex = {/
     atom = parParserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[typeOf(repeat): atom] }
+        { <> @[(typeOf(repeat)): atom] }
     |
         { <> atom }
     )
@@ -815,7 +815,7 @@ def parLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @[typeOf(lookahead): pex] }
+        { <> @[(typeOf(lookahead)): pex] }
     )
 |
     parRepeatPex

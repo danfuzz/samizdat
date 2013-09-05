@@ -22,7 +22,7 @@ can be used.
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    makeInclusiveRange("a", 1, "z")*: true
+    (makeInclusiveRange("a", 1, "z"))*: true
 ];
 
 # Returns an `interpolate` node.
@@ -747,7 +747,7 @@ def parRepeatPex = {/
     atom = parParserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[typeOf(repeat): atom] }
+        { <> @[(typeOf(repeat)): atom] }
     |
         { <> atom }
     )
@@ -759,7 +759,7 @@ def parLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @[typeOf(lookahead): pex] }
+        { <> @[(typeOf(lookahead)): pex] }
     )
 |
     parRepeatPex
