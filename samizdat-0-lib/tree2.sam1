@@ -482,24 +482,29 @@ def parKeyAtom = {/
     !@"*"
     { <> key }
 |
-    parAtom
+    key = parAtom
+    (
+        @"*"
+        { <> makeInterpolate(key) }
+    |
+        { <> key }
+    )
 /};
 
-# Parses an arbitrary map key.
+# Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
 def parKey = {/
-    # Note: This clause is only active for a list of two or more items.
-    # A single parenthesized item is properly covered by the second alternate.
-    @"("
+    # Layer 2 accepts one or more `keyAtom`s, separated by pipes.
     firstKey = parKeyAtom
-    moreKeys = (@"," parKeyAtom)+
-    @")"
-    { <> makeInterpolate(makeCallName("makeList", firstKey, moreKeys*)) }
-|
-    key = parAtom
-    @"*"
-    { <> makeInterpolate(key) }
-|
-    parKeyAtom
+    moreKeys = (@"|" parKeyAtom)*
+
+    {
+        <> ifIs { <> eq(moreKeys, []) }
+            { <> firstKey }
+            {
+                <> makeInterpolate(
+                    makeCallName("makeList", firstKey, moreKeys*))
+            }
+    }
 /};
 
 # Parses a mapping (element of a map).

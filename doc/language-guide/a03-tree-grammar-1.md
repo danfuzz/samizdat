@@ -400,12 +400,8 @@ def parKeyAtom = {/
     )
 /};
 
-# Parses an arbitrary map key.
-def parKey = {/
-    # *Layer 2* adds alternates here.
-#|
-    parKeyAtom
-/};
+# Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
+def parKey = parKeyAtom;
 
 # Parses a mapping (element of a map).
 def parMapping = {/

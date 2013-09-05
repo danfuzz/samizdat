@@ -22,14 +22,14 @@ fn powerName(value) {
         4:             { return "four" }
         8:             { <> "eight" }
         (1..4)*:       { <> "um..." }
-        (5, 6, blort): { <> "wha?" }
+        5 | 6 | blort: { <> "wha?" }
         default:       { <> "uh..." }
     }
 };
 
 fn interpolator(value, keys) {
     <> switch (value) {
-        (10, 11):    { <> "Constant override" }
+        10 | 11:     { <> "Constant override" }
         (value * 0): { <> "Calculated override" }
         keys*:       { <> "Yes" }
         default:     { <> "No" }
@@ -46,9 +46,9 @@ fn elser(item?) {
 
 fn namer(value) {
     <> switch (x := value) {
-        (1, 2, 3): { <> mul(x, 10)   }
-        (4, 5, 6): { <> mul(x, 100)  }
-        default:   { <> mul(x, 1000) }
+        1|2|3:   { <> mul(x, 10)   }
+        4|5|6:   { <> mul(x, 100)  }
+        default: { <> mul(x, 1000) }
     }
 };
 
