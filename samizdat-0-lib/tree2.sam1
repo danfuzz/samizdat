@@ -486,7 +486,7 @@ def parKeyAtom = {/
 /};
 
 # Parses an arbitrary map key.
-def parMapKey = {/
+def parKey = {/
     # Note: This clause is only active for a list of two or more items.
     # A single parenthesized item is properly covered by the second alternate.
     @"("
@@ -504,7 +504,7 @@ def parMapKey = {/
 
 # Parses a mapping (element of a map).
 def parMapping = {/
-    key = parMapKey
+    key = parKey
     @":"
     value = parExpression
 
