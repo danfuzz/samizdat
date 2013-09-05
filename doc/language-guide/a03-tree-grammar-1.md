@@ -382,9 +382,7 @@ def parEmptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-# Parses an "atomic" key (as opposed to, e.g., the parens-and-commas form
-# of map keys). This rule is used for the left-hand side of both mappings
-# and derived values.
+# Parses an "atomic" key.
 def parKeyAtom = {/
     # The lookahead-failure is to ensure we don't match a variable being
     # interpolated, which is handled by the second alternative.
@@ -395,7 +393,7 @@ def parKeyAtom = {/
     parAtom
 /};
 
-# Parses an arbitrary map key. Note: This rule is nontrivial in *Layer 2*.
+# Parses an arbitrary map key.
 def parMapKey = {/
     # *Layer 2* adds alternates here.
 #|
@@ -437,7 +435,7 @@ def parDeriv = {/
 
     derivArgs = (
         @"["
-        type = parKeyAtom
+        type = (parIdentifierString | parAtom)
         value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }

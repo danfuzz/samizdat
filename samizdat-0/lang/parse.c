@@ -734,7 +734,9 @@ DEF_PARSE(deriv1) {
 
     MATCH_OR_REJECT(CH_OSQUARE);
 
-    zvalue type = PARSE_OR_REJECT(keyAtom);
+    zvalue type = PARSE(identifierString);
+    if (type == NULL) { type = PARSE_OR_REJECT(atom); }
+
     zvalue result;
 
     if (MATCH(CH_COLON)) {

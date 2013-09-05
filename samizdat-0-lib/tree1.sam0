@@ -339,7 +339,7 @@ def parDeriv = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakeToken("["),
-            parKeyAtom,
+            pegMakeChoice(parIdentifierString, parAtom),
             pegMakeOpt(pegMakeSequence(pegMakeToken(":"), parExpression)),
             pegMakeToken("]"),
             pegMakeCode { ., type, value, . <> [type, value*] }),
