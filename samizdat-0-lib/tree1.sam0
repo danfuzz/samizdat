@@ -247,14 +247,6 @@ def parInt = pegMakeMainSequence(
             { <> makeLiteral(neg(dataOf(i))) }
             { <> makeLiteral(dataOf(i)) }
     });
-#def parInt = pegMakeMainChoice(
-#    pegMakeSequence(
-#        pegMakeToken("-"),
-#        pegMakeToken("int"),
-#        pegMakeCode { ., i <> makeLiteral(neg(dataOf(i))) }),
-#    pegMakeSequence(
-#        pegMakeToken("int"),
-#        pegMakeCode { i <> makeLiteral(dataOf(i)) }));
 
 # Documented in Samizdat Layer 0 spec.
 def parString = pegMakeMainSequence(
