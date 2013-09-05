@@ -106,9 +106,9 @@ fn sortModules(modules) {
             <> ifIs { <> hasDependencies(mod) }
                 {
                     def importMap =
-                        delAll([dataGet(mod, "imports")*: true],
+                        delAll([(dataGet(mod, "imports"))*: true],
                             independentNames*);
-                    <> @[mod: [dataOf(mod)*, imports: keyList(importMap)]]
+                    <> @[mod: [(dataOf(mod))*, imports: keyList(importMap)]]
                 }
         };
 
@@ -144,14 +144,14 @@ fn moduleInit(context) {
             <> ifValue { <> moduleNameFromString(name) }
                 { modName ::
                     assertModule(mod);
-                    <> @[module: [dataOf(mod)*, name: modName]]
+                    <> @[module: [(dataOf(mod))*, name: modName]]
                 }
         };
 
     # Make a map from names to modules.
     def moduleMap = collectAsMap(
         makeFilterGenerator(unsortedModules)
-            { mod :: <> [dataGet(mod, "name"): mod] });
+            { mod :: <> [(dataGet(mod, "name")): mod] });
 
     # Do a topological sort of the modules, to get them in dependency
     # order (dependencies before dependents).
