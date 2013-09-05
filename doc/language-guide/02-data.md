@@ -21,19 +21,18 @@ An `Int` is a signed arbitrary-precision integer value, sometimes
 called a "bigint" or "BigInteger" (even though they aren't always actually
 that big).
 
-Ints are written with an optional base specifier &mdash; `0x` for
-hexadecimal or `0b` for binary &mdash; followed by an optional
-minus sign (`-`) to indicate a negative value, and finally followed by one or
-more digits in the indicated (or implied) base.
+Ints are written with an optional minus sign (`-`) to indicate a negative
+value, followed by an optional base specifier &mdash; `0x` for hexadecimal
+or `0b` for binary &mdash; and finally followed by one or more digits in the
+indicated (or implied) base.
 
 Underscores (`_`) may be placed freely after any digit in an int literal
 without changing the meaning. If a base specifier is present, underscores
 may also be placed before the first digit. This feature is intended
 to aid in the readability of longer constants.
 
-A minus sign in front of an int constant (as in the second example below)
-is valid syntax, but note that in many contexts `-` is a separate token
-(as a unary or binary operator).
+**Note:** In many contexts, a minus sign is a separate operator token,
+and not necessarily part of an int constant.
 
 ```
 0
@@ -41,7 +40,7 @@ is valid syntax, but note that in many contexts `-` is a separate token
 20
 1_234_452
 0x1234abcd
-0x-_ABCDEF
+-0x_ABCDEF
 0b1011_0111_1110_1111
 ```
 

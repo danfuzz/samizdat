@@ -235,17 +235,13 @@ def OPEN_CLOSE_MAP = [
     "{/": "/}"
 ];
 
-# Converts a list of digit values into an int, given the base. If `baseSign`
-# is negative, this indicates that the result should be negative.
-fn intFromDigitList(baseSign, digits) {
-    def base = abs(baseSign);
-    def value = doReduce1(digits, 0) { digit, result ::
+# Converts a list of digit values into an int, given the base.
+fn intFromDigitList(base, digits) {
+    <> doReduce1(digits, 0) { digit, result ::
         <> ifIs { <> eq(digit, -1) }
             { <> result }
             { <> add(mul(result, base), digit) }
     };
-
-    <> mul(value, sign(baseSign))
 };
 
 fn implProcessStringParts(parts) {
@@ -324,26 +320,26 @@ def tokHexDigit = {/
 
 # Parses an integer literal.
 def implInt = {/
-    baseSign = (
-        "0x" ("-" { <> -16 } | { <> 16 })
+    base = (
+        "0x" { <> 16 }
     |
-        "0b" ("-" { <> -2 } | { <> 2 })
+        "0b" { <> 2 }
     |
         { <> 10 }
     )
 
     digits = (
-        { <> eq(baseSign, 10) }
+        { <> eq(base, 10) }
         tokDecDigit+
     |
-        { <> eq(abs(baseSign), 16) }
+        { <> eq(base, 16) }
         tokHexDigit+
     |
-        { <> eq(abs(baseSign), 2) }
+        { <> eq(base, 2) }
         tokBinDigit+
     )
 
-    { <> @[int: intFromDigitList(baseSign, digits)] }
+    { <> @[int: intFromDigitList(base, digits)] }
 /};
 store(tokInt, implInt);
 
