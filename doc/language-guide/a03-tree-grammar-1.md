@@ -386,20 +386,23 @@ def parEmptyMap = {/
 # of map keys). This rule is used for the left-hand side of both mappings
 # and derived values.
 def parKeyAtom = {/
-    # The lookahead at the end of the rule is to ensure we are not looking
-    # at a more complicated expression. `@","` and `@")"` are matched here,
-    # so that this rule can stay the same in *Layer 2*.
-    k = parIdentifierString
-    &[@":" @"," @")" @"]"]
-    { <> k }
+    # The lookahead-failure is to ensure we don't match a variable being
+    # interpolated, which is handled by the second alternative.
+    key = parIdentifierString
+    !@"*"
+    { <> key }
 |
-    parExpression
+    parAtom
 /};
 
 # Parses an arbitrary map key. Note: This rule is nontrivial in *Layer 2*.
 def parMapKey = {/
     # *Layer 2* adds alternates here.
 #|
+    key = parAtom
+    @"*"
+    { <> makeInterpolate(key) }
+|
     parKeyAtom
 /};
 
@@ -413,15 +416,9 @@ def parMapping = {/
     # interpolation from being applied to `makeValueMap`.
     { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
-    map = parExpression
-    {
-        # We do a check to make sure the given expression is an interpolate
-        # (which is the only way it can be valid). Note that
-        # `expression @"*"` won't do the trick, since by the time we're here,
-        # if there was a `*` it would have become part of the expression.
-        <> ifIs { <> eq(typeOf(map), "interpolate") }
-            { <> dataOf(map) }
-    }
+    map = parAtom
+    @"*"
+    { <> map }
 /};
 
 # Parses a map literal.

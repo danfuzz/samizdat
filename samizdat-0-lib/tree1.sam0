@@ -97,9 +97,12 @@ fn makeCallNonlocalExit(name, optExpression?) {
 
 # Forward declarations.
 def parProgramBody = makeParseForwarder();
+def parAtom = makeParseForwarder();
 def parExpression = makeParseForwarder();
-def parParser = makeParseForwarder();
 def parVoidableExpression = makeParseForwarder();
+
+# Forward declaration required for integrating layer 1 definitions.
+def parParser = makeParseForwarder();
 
 # Documented in Samizdat Layer 0 spec.
 def parYieldDef = pegMakeMainSequence(
@@ -293,12 +296,17 @@ def parEmptyMap = pegMakeMainSequence(
 def parKeyAtom = pegMakeMainChoice(
     pegMakeSequence(
         parIdentifierString,
-        pegMakeLookaheadSuccess(pegMakeTokenSet(":", "]")),
-        pegMakeCode { k, . <> k }),
-    parExpression);
+        pegMakeLookaheadFailure(pegMakeToken("*")),
+        pegMakeCode { key, . <> key }),
+    parAtom);
 
 # Documented in Samizdat Layer 0 spec.
-def parMapKey = parKeyAtom;
+def parMapKey = pegMakeMainChoice(
+    pegMakeSequence(
+        parAtom,
+        pegMakeToken("*"),
+        pegMakeCode { key, . <> makeInterpolate(key) }),
+    parKeyAtom);
 
 # Documented in Samizdat Layer 0 spec.
 def parMapping = pegMakeMainChoice(
@@ -310,11 +318,9 @@ def parMapping = pegMakeMainChoice(
             <> makeCallName("makeValueMap", key, @[expression: value])
         }),
     pegMakeSequence(
-        parExpression,
-        pegMakeCode { map ::
-            <> ifIs { <> eq(typeOf(map), "interpolate") }
-                { <> dataOf(map) }
-        }));
+        parAtom,
+        pegMakeToken("*"),
+        pegMakeCode { map, . <> map }));
 
 # Documented in Samizdat Layer 0 spec.
 def parMap = pegMakeMainSequence(
@@ -363,7 +369,7 @@ def parParenExpression = pegMakeMainSequence(
     pegMakeCode { ., ex, . <> @[expression: ex] });
 
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
-def parAtom = pegMakeMainChoice(
+def implAtom = pegMakeMainChoice(
     parVarRef, parInt, parString,
     parList, parEmptyMap, parMap,
     parDeriv, parClosure,
@@ -373,6 +379,7 @@ def parAtom = pegMakeMainChoice(
     pegMakeSequence(
         pegMakeLookaheadSuccess(pegMakeToken("{/")),
         parParser));
+store(parAtom, implAtom);
 
 # Documented in Samizdat Layer 0 spec.
 def parActualsList = pegMakeMainChoice(

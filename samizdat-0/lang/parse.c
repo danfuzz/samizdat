@@ -304,7 +304,11 @@ zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
             break;
         }
 
+        zstackPointer save = pbFrameStart();
         item = rule(state);
+
+        pbFrameReturn(save, item);
+
         if (item == NULL) {
             RESET();
             break;
@@ -334,6 +338,9 @@ DEF_PARSE(optSemicolons) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(programBody);
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(atom);
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression);
@@ -637,20 +644,31 @@ DEF_PARSE(emptyMap) {
 DEF_PARSE(keyAtom) {
     MARK();
 
-    zvalue k = PARSE(identifierString);
+    zvalue key = PARSE(identifierString);
 
-    if (k != NULL) {
-        if ((PEEK(CH_COLON) != NULL) || (PEEK(CH_CSQUARE) != NULL)) {
-            return k;
+    if (key != NULL) {
+        if (PEEK(CH_STAR) == NULL) {
+            return key;
         }
         RESET();
     }
 
-    return PARSE(expression);
+    return PARSE(atom);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(mapKey) {
+    MARK();
+
+    zvalue key = PARSE(atom);
+
+    if (key != NULL) {
+        if (MATCH(CH_STAR) != NULL) {
+            return makeInterpolate(key);
+        }
+        RESET();
+    }
+
     return PARSE(keyAtom);
 }
 
@@ -674,10 +692,10 @@ DEF_PARSE(mapping1) {
 DEF_PARSE(mapping2) {
     MARK();
 
-    zvalue map = PARSE_OR_REJECT(expression);
-    REJECT_IF(!hasType(map, STR_interpolate));
+    zvalue map = PARSE_OR_REJECT(atom);
+    MATCH_OR_REJECT(CH_STAR);
 
-    return dataOf(map);
+    return map;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
