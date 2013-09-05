@@ -29,10 +29,10 @@ fn powerName(value) {
 
 fn interpolator(value, keys) {
     <> switch (value) {
-        (10, 11):  { <> "Constant override" }
-        value * 0: { <> "Calculated override" }
-        keys*:     { <> "Yes" }
-        default:   { <> "No" }
+        (10, 11):    { <> "Constant override" }
+        (value * 0): { <> "Calculated override" }
+        keys*:       { <> "Yes" }
+        default:     { <> "No" }
     }
 };
 
