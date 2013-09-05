@@ -298,20 +298,21 @@ def parKeyAtom = pegMakeMainChoice(
         parIdentifierString,
         pegMakeLookaheadFailure(pegMakeToken("*")),
         pegMakeCode { key, . <> key }),
-    parAtom);
-
-# Documented in Samizdat Layer 0 spec.
-def parMapKey = pegMakeMainChoice(
     pegMakeSequence(
         parAtom,
-        pegMakeToken("*"),
-        pegMakeCode { key, . <> makeInterpolate(key) }),
-    parKeyAtom);
+        pegMakeChoice(
+            pegMakeSequence(
+                pegMakeToken("*"),
+                pegMakeCode { key, . <> makeInterpolate(key) }),
+            pegMakeCode { key <> key })));
+
+# Documented in Samizdat Layer 0 spec.
+def parKey = parKeyAtom;
 
 # Documented in Samizdat Layer 0 spec.
 def parMapping = pegMakeMainChoice(
     pegMakeSequence(
-        parMapKey,
+        parKey,
         pegMakeToken(":"),
         parExpression,
         pegMakeCode { key, ., value ::

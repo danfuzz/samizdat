@@ -382,7 +382,8 @@ def parEmptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-# Parses an "atomic" key.
+# Parses an "atomic" key. This isn't really *that* atomic, in that it
+# includes parsing of interpolations.
 def parKeyAtom = {/
     # The lookahead-failure is to ensure we don't match a variable being
     # interpolated, which is handled by the second alternative.
@@ -390,23 +391,25 @@ def parKeyAtom = {/
     !@"*"
     { <> key }
 |
-    parAtom
+    key = parAtom
+    (
+        @"*"
+        { <> makeInterpolate(key) }
+    |
+        { <> key }
+    )
 /};
 
 # Parses an arbitrary map key.
-def parMapKey = {/
+def parKey = {/
     # *Layer 2* adds alternates here.
 #|
-    key = parAtom
-    @"*"
-    { <> makeInterpolate(key) }
-|
     parKeyAtom
 /};
 
 # Parses a mapping (element of a map).
 def parMapping = {/
-    key = parMapKey
+    key = parKey
     @":"
     value = parExpression
 

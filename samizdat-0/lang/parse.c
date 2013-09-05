@@ -653,32 +653,27 @@ DEF_PARSE(keyAtom) {
         RESET();
     }
 
-    return PARSE(atom);
+    key = PARSE_OR_REJECT(atom);
+
+    if (MATCH(CH_STAR) != NULL) {
+        return makeInterpolate(key);
+    } else {
+        return key;
+    }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(mapKey) {
-    MARK();
-
-    zvalue key = PARSE(atom);
-
-    if (key != NULL) {
-        if (MATCH(CH_STAR) != NULL) {
-            return makeInterpolate(key);
-        }
-        RESET();
-    }
-
+DEF_PARSE(key) {
     return PARSE(keyAtom);
 }
 
 /**
- * Helper for `mapping`: Parses `mapKey @":" expression`.
+ * Helper for `mapping`: Parses `key @":" expression`.
  */
 DEF_PARSE(mapping1) {
     MARK();
 
-    zvalue key = PARSE_OR_REJECT(mapKey);
+    zvalue key = PARSE_OR_REJECT(key);
     MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 

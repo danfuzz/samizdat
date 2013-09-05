@@ -473,7 +473,8 @@ def parEmptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-# Parses an "atomic" key.
+# Parses an "atomic" key. This isn't really *that* atomic, in that it
+# includes parsing of interpolations.
 def parKeyAtom = {/
     # The lookahead-failure is to ensure we don't match a variable being
     # interpolated, which is handled by the second alternative.
@@ -1754,7 +1755,7 @@ def parSwitchCase = {/
     keys = (
         [@default @else]
     |
-        k = parMapKey
+        k = parKey
         { <> @[expression: k] }
     )
 
