@@ -153,8 +153,9 @@ more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
-As a short-hand, a string key with the same form as an identifier can
-be written without the quotes.
+Syntactically, keys are "atoms", that is, simple values or parenthesized
+expressions. As a short-hand, a string key with the same form as an identifier
+can be written without the quotes.
 
 A group of mappings with multiple keys that map to the same value
 can be written in a short-hand using the same interpolation syntax as with
@@ -162,7 +163,7 @@ lists. In addition, a comma-separated list of keys enclosed in parentheses
 can be used in the key position; in this form, naked identifiers have the
 same string-literal interpretation as with individual identifiers.
 
-An entire other map can be interpolated into a new map by listing the
+An entire other map can be interpolated into a new map by naming the
 map to interpolate followed by a `*`. To avoid ambiguity between a
 list and a map that is just full of interpolation, a map may optionally
 start with a "degenerate" element of just `:` (as demonstrated in the
