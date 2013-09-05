@@ -58,29 +58,26 @@ fn applyShuntingYard(initialValue, opValues) {
     fn reducePending(ops, values, precedence) {
         loopReduce(ops, values)
             { <next> ops, values ::
-                ifValue { <> last(ops) }
-                    { lastOp ::
-                        ifIs { <> lastOp["precedence"] >= precedence }
-                            { <next> applyTop(ops, values) }
-                    };
+                if (  (lastOp := last(ops))
+                    & (lastOp["precedence"] >= precedence)) {
+                    <next> applyTop(ops, values)
+                };
                 return [ops, values]
             }
     };
 
     loopReduce([], [initialValue], opValues) { ops, values, opValues ::
-        ifIs { <> eq(opValues, []) }
-            {
-                # Use precedence `-1` to drain the op stack, leaving a single
-                # value.
-                def finalResult = reducePending(ops, values, -1);
-                return last(last(finalResult))
-            };
+        if (opValues == []) {
+            # Use precedence `-1` to drain the op stack, leaving a single
+            # value.
+            def finalResult = reducePending(ops, values, -1);
+            return last(last(finalResult))
+        };
 
         def nextOpValue = first(opValues);
         def nextOp = nextOpValue["op"];
         def nextVal = nextOpValue["value"];
-        def newPending =
-            reducePending(ops, values, nextOp["precedence"]);
+        def newPending = reducePending(ops, values, nextOp["precedence"]);
         <> [
             [first(newPending)*, nextOp],
             [last(newPending)*, nextVal],
