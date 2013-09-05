@@ -170,8 +170,7 @@ def evalExpressions = {/
 #
 
 fn main(args*) {
-    def argFilter = makeFilterGenerator(args) { arg <> "\(arg)\n" };
-    def exprString = cat(argFilter*);
+    def exprString = cat((arg in args <> "\(arg)\n")*);
     pegApply(evalExpressions, exprString);
 };
 
