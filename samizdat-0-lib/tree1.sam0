@@ -240,13 +240,26 @@ def parFnExpression = pegMakeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 def parInt = pegMakeMainSequence(
+    pegMakeOpt(pegMakeToken("-")),
     pegMakeToken("int"),
-    pegMakeCode { int <> makeLiteral(dataOf(int)) });
+    pegMakeCode { isNeg, i ::
+        <> ifIs { <> isNeg* }
+            { <> makeLiteral(neg(dataOf(i))) }
+            { <> makeLiteral(dataOf(i)) }
+    });
+#def parInt = pegMakeMainChoice(
+#    pegMakeSequence(
+#        pegMakeToken("-"),
+#        pegMakeToken("int"),
+#        pegMakeCode { ., i <> makeLiteral(neg(dataOf(i))) }),
+#    pegMakeSequence(
+#        pegMakeToken("int"),
+#        pegMakeCode { i <> makeLiteral(dataOf(i)) }));
 
 # Documented in Samizdat Layer 0 spec.
 def parString = pegMakeMainSequence(
     pegMakeToken("string"),
-    pegMakeCode { string <> makeLiteral(dataOf(string)) });
+    pegMakeCode { s <> makeLiteral(dataOf(s)) });
 
 # Documented in Samizdat Layer 0 spec.
 def parIdentifierString = pegMakeMainChoice(
@@ -395,11 +408,6 @@ def parActualsList = pegMakeMainChoice(
     pegMakePlus(parClosure));
 
 # Documented in Samizdat Layer 0 spec.
-def parPrefixOperator = pegMakeMainSequence(
-    pegMakeToken("-"),
-    pegMakeCode { . <> { node <> makeCallName("neg", node) } });
-
-# Documented in Samizdat Layer 0 spec.
 def parPostfixOperator = pegMakeMainChoice(
     pegMakeSequence(
         parActualsList,
@@ -412,14 +420,10 @@ def parPostfixOperator = pegMakeMainChoice(
 
 # Documented in Samizdat Layer 0 spec.
 def parUnaryExpression = pegMakeMainSequence(
-    pegMakeStar(parPrefixOperator),
     parAtom,
     pegMakeStar(parPostfixOperator),
-    pegMakeCode { prefixes, base, postfixes ::
-        def withPosts = doReduce1(postfixes, base)
-            { op, result <> op(result) };
-        <> doReduce1(reverse(prefixes), withPosts)
-            { op, result <> op(result) }
+    pegMakeCode { base, postfixes ::
+        <> doReduce1(postfixes, base) { op, result <> op(result) }
     });
 
 # Documented in Samizdat Layer 0 spec.

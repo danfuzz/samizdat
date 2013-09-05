@@ -314,10 +314,17 @@ def parFnExpression = {/
     )
 /};
 
-# Parses an integer literal.
+# Parses an integer literal. Note: This includes parsing a `-` prefix,
+# so that simple negative numbers are considered atoms and hence eligible
+# to be used as map keys.
 def parInt = {/
+    isNeg = @"-"?
     i = @int
-    { <> makeLiteral(dataOf(i)) }
+    {
+        <> ifIs { <> isNeg* }
+            { <> makeLiteral(neg(dataOf(i))) }
+            { <> makeLiteral(dataOf(i)) }
+    }
 /};
 
 # Parses a string literal.
@@ -493,13 +500,6 @@ def parActualsList = {/
     parClosure+
 /};
 
-# Note: There are additional prefix operators in *Layer 2* and beyond.
-# This rule still exists in *Layer 2* but is totally rewritten.
-def parPrefixOperator = {/
-    @"-"
-    { <> { node <> makeCallName("neg", node) } }
-/};
-
 # Parses a unary postfix operator. This yields a function (per se) to call
 # in order to construct a node that represents the appropriate ultimate
 # function call.
@@ -520,16 +520,11 @@ def parPostfixOperator = {/
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
 def parUnaryExpression = {/
-    prefixes = parPrefixOperator*
+    # Note: Layer 2 adds prefix operator parsing here.
     base = parAtom
     postfixes = parPostfixOperator*
 
-    {
-        def withPosts = doReduce1(postfixes, base)
-            { op, result <> op(result) };
-        <> doReduce1(reverse(prefixes), withPosts)
-            { op, result <> op(result) }
-    }
+    { <> doReduce1(postfixes, base) { op, result <> op(result) } }
 /};
 
 # Parses a possibly-voidable expression. This is done rather than including

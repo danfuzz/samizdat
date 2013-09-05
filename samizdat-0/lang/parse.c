@@ -8,6 +8,7 @@
 #include "impl.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/Number.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -576,9 +577,15 @@ DEF_PARSE(fnExpression) {
 DEF_PARSE(int) {
     MARK();
 
-    zvalue intval = MATCH_OR_REJECT(int);
+    zvalue neg = MATCH(CH_MINUS);
+    zvalue intToken = MATCH_OR_REJECT(int);
 
-    return makeLiteral(dataOf(intval));
+    zvalue value = dataOf(intToken);
+    if (neg != NULL) {
+        value = GFN_CALL(neg, value);
+    }
+
+    return makeLiteral(value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -841,14 +848,6 @@ DEF_PARSE(actualsList) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(prefixOperator) {
-    // We differ from the spec here, merely returning a token if matched.
-    // The corresponding `unaryExpression` code just notes the number of
-    // minuses matched in order to make the right number of calls.
-    return MATCH(CH_MINUS);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(postfixOperator) {
     // We differ from the spec here, returning an actuals list directly
     // or a `*` token. The corresponding `unaryExpression` code decodes
@@ -864,7 +863,6 @@ DEF_PARSE(postfixOperator) {
 DEF_PARSE(unaryExpression) {
     MARK();
 
-    zvalue prefixes = PARSE_STAR(prefixOperator);
     zvalue result = PARSE_OR_REJECT(atom);
     zvalue postfixes = PARSE_STAR(postfixOperator);
 
@@ -877,15 +875,6 @@ DEF_PARSE(unaryExpression) {
             result = makeInterpolate(result);
         } else {
             die("Unexpected postfix.");
-        }
-    }
-
-    for (zint i = collSize(prefixes) - 1; i >= 0; i--) {
-        zvalue one = collNth(prefixes, i);
-        if (valEq(one, TOK_CH_MINUS)) {
-            result = makeCallName(STR_neg, listFrom1(result));
-        } else {
-            die("Unexpected prefix.");
         }
     }
 

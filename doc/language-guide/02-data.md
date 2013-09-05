@@ -23,9 +23,8 @@ that big).
 
 Ints are written with an optional base specifier &mdash; `0x` for
 hexadecimal or `0b` for binary &mdash; followed by an optional
-minus sign (`-`) to indicate a negative value (only valid if a base specifier
-is present), and finally followed by one or more digits in the indicated
-(or implied) base.
+minus sign (`-`) to indicate a negative value, and finally followed by one or
+more digits in the indicated (or implied) base.
 
 Underscores (`_`) may be placed freely after any digit in an int literal
 without changing the meaning. If a base specifier is present, underscores
@@ -33,9 +32,8 @@ may also be placed before the first digit. This feature is intended
 to aid in the readability of longer constants.
 
 A minus sign in front of an int constant (as in the second example below)
-is valid syntax, but the minus sign in this case is *not* part of the
-constant; rather, it is an application of the unary minus operator to
-the constant.
+is valid syntax, but note that in many contexts `-` is a separate token
+(as a unary or binary operator).
 
 ```
 0
