@@ -1,0 +1,182 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Calculator Demo
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ::
+
+
+#
+# Helper Definitions
+#
+
+# Map from binary operation names to precedece/function maps.
+def BINARY_OPS = [
+    "+": [function: add, precedence: 1],
+    "-": [function: sub, precedence: 1],
+    "*": [function: mul, precedence: 2],
+    "/": [function: div, precedence: 2],
+    "%": [function: mod, precedence: 2]
+];
+
+# Map from unary operation names to functions.
+def UNARY_OPS = [
+    "+": { x <> x },
+    "-": neg
+];
+
+# Takes an initial value and a list of one-argument functions, and
+# does a reduction by applying each of the functions in order.
+fn applyAll(initialValue, functions) {
+    <> doReduce1(functions, initialValue)
+        { function, result <> function(result) }
+};
+
+# Takes an initial value and a list of maps of `[op, value]`,
+# and evaluates the result using the "shunting yard" algorithm.
+fn applyShuntingYard(initialValue, opValues) {
+    # Reduces the top of the given pending stack. That is, it takes the
+    # top two values, and combines them by applying the top op, and places
+    # the result back at the top of the value stack.
+    fn applyTop(ops, values) {
+        def valuesSize = sizeOf(values);
+        def function = last(ops)["function"];
+        def newValue = function(slice(values, valuesSize - 2)*);
+        <> [
+            butLast(ops),
+            [slice(values, 0, valuesSize - 2)*, newValue]
+        ]
+    };
+
+    # Reduces the given pending stack with knowledge that the next operator
+    # to apply is of the given precedence.
+    fn reducePending(ops, values, precedence) {
+        loopReduce(ops, values)
+            { <next> ops, values ::
+                ifValue { <> last(ops) }
+                    { lastOp ::
+                        ifIs { <> lastOp["precedence"] >= precedence }
+                            { <next> applyTop(ops, values) }
+                    };
+                return [ops, values]
+            }
+    };
+
+    loopReduce([], [initialValue], opValues) { ops, values, opValues ::
+        ifIs { <> eq(opValues, []) }
+            {
+                # Use precedence `-1` to drain the op stack, leaving a single
+                # value.
+                def finalResult = reducePending(ops, values, -1);
+                return last(last(finalResult))
+            };
+
+        def nextOpValue = first(opValues);
+        def nextOp = nextOpValue["op"];
+        def nextVal = nextOpValue["value"];
+        def newPending =
+            reducePending(ops, values, nextOp["precedence"]);
+        <> [
+            [first(newPending)*, nextOp],
+            [last(newPending)*, nextVal],
+            butFirst(opValues)
+        ]
+    }
+};
+
+# Forward declaration of `expression`.
+def expression = makeParseForwarder();
+
+# Parses a single digit, yielding its value as an int.
+def digit = {/
+    ch = ["0".."9"]
+    { <> toInt(typeOf(ch)) - toInt("0") }
+/};
+
+# Parses a whole number (non-negative integer), yielding its value as an int.
+def number = {/
+    digits = digit+
+    {
+        <> doReduce1(digits, 0)
+            { digit, result <> digit + result * 10 }
+    }
+/};
+
+# Parses an atomic expression. In this case it's either a number or a
+# parenthesized expression. Yields the number or evaluated expression result,
+# respectively.
+def atom = {/
+    number
+|
+    "("
+    ex = expression
+    ")"
+    { <> ex }
+/};
+
+# Parses a unary (in this case, prefix) operation, yielding its corresponding
+# function.
+def unaryOp = {/
+    op = ["+-"]
+    { <> UNARY_OPS[typeOf(op)] }
+/};
+
+# Parses a unary expression, that is, a series of unary operators followed
+# by an atom, yielding the evaluated result.
+def unaryExpression = {/
+    ops = unaryOp*
+    ex = atom
+    { <> applyAll(ex, reverse(ops)) }
+/};
+
+# Parses a binary operation, yielding a map of precedence and function.
+def binaryOp = {/
+    op = ["+-*/%"]
+    { <> BINARY_OPS[typeOf(op)] }
+/};
+
+# Parses a chained sequence of unary expressions separated by binary
+# operators.
+def expressionImpl = {/
+    firstValue = unaryExpression
+    opValues = (
+        op = binaryOp
+        value = unaryExpression
+        { <> [op: op, value: value] }
+    )*
+    { <> applyShuntingYard(firstValue, opValues) }
+/};
+store(expression, expressionImpl);
+
+# Evaluates all the expressions passed to it, printing the evaluated results
+# in order. Each expression is expected to be terminated with a newline.
+def evalExpressions = {/
+    (
+        ex = expression
+        "\n"
+        {
+            io0Note("\%q(ex)");
+            # Explicit yield here to indicate successful parsing.
+            <> null
+        }
+    )*
+/};
+
+
+#
+# Main Definition
+#
+
+fn main(args*) {
+    def argFilter = makeFilterGenerator(args) { arg <> "\(arg)\n" };
+    def exprString = cat(argFilter*);
+    pegApply(evalExpressions, exprString);
+};
+
+def args = ([] != ARGS) | ["100+7*2"];
+<> main(args*)
