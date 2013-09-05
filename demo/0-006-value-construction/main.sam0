@@ -188,7 +188,7 @@ expectSame(false, @[Boolean: 0]);
 expectSame(true, @[Boolean: 1]);
 expectSame(@[eek: 10], @["eek": 10]);
 expectSame(@[eek: 10], @["eek": add(5, 5)]);
-expectSame(@[eek: 10], @[cat("ee", "k"): 10]);
+expectSame(@[eek: 10], @[(cat("ee", "k")): 10]);
 
 expectDifferent(@x, @[x: 1]);
 expectDifferent(@[x: 1], @[x: 2]);
