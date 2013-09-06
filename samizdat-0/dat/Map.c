@@ -52,15 +52,6 @@ static zvalue allocMap(zint size) {
 }
 
 /**
- * Asserts that the given value is a valid `zvalue`, and
- * furthermore that it is a map. If not, this aborts the process
- * with a diagnostic message.
- */
-static void assertMap(zvalue value) {
-    assertHasType(value, TYPE_Map);
-}
-
-/**
  * Constructs and returns a single-mapping map.
  */
 static zvalue makeMapping(zvalue key, zvalue value) {
@@ -114,12 +105,6 @@ static zint mapFind(zvalue map, zvalue key) {
         return entry->index;
     }
 
-    // Note: There's no need to do assertions on the cache hit path, since
-    // we wouldn't have found an invalid entry.
-
-    assertMap(map);
-    assertValid(key);
-
     entry->map = map;
     entry->key = key;
 
@@ -164,7 +149,7 @@ static int mappingOrder(const void *m1, const void *m2) {
 
 /* Documented in header. */
 void arrayFromMap(zmapping *result, zvalue map) {
-    assertMap(map);
+    assertHasType(map, TYPE_Map);
 
     MapInfo *info = getInfo(map);
     utilCpy(zmapping, result, info->elems, info->size);
