@@ -66,10 +66,6 @@ ifValue { <> nonlocalTest(["fizmo"]) }
 # at function argument level.
 msg((list5()*));
 
-# Likewise the minus sign here (because it binds looser than the
-# interpolation star).
-msg(-list5()*);
-
 def five = list5()*;
 msg(five);
 

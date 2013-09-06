@@ -24,7 +24,7 @@ fn reportError(pending) {
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    makeInclusiveRange("a", 1, "z")*: true
+    (makeInclusiveRange("a", 1, "z"))*: true
 ];
 
 # Returns an `interpolate` node.
@@ -94,13 +94,13 @@ fn makeCallNameThunks(name, actuals*) {
 # binding replaced with the given arguments. Each of the `formals`
 # must be a formal argument map as described in the execution tree spec.
 fn closureWithFormals(closure, formals*) {
-    <> @[closure: [dataOf(closure)*, formals: formals]]
+    <> @[closure: [(dataOf(closure))*, formals: formals]]
 };
 
 # Returns a `closure` node like the one given, except with `yieldDef`
 # bound to the indicated name.
 fn closureWithYieldDef(closure, name) {
-    <> @[closure: [dataOf(closure)*, yieldDef: name]]
+    <> @[closure: [(dataOf(closure))*, yieldDef: name]]
 };
 
 # A no-argument yield-void thunk.
@@ -191,6 +191,7 @@ def parAtom2 = makeParseForwarder();
 
 # Forward declarations.
 def parProgramBody = makeParseForwarder();
+def parAtom = makeParseForwarder();
 def parExpression = makeParseForwarder();
 def parVoidableExpression = makeParseForwarder();
 
@@ -414,10 +415,17 @@ def parFnExpression = {/
     )
 /};
 
-# Parses an integer literal.
+# Parses an integer literal. Note: This includes parsing a `-` prefix,
+# so that simple negative numbers are considered atoms and hence eligible
+# to be used as map keys.
 def parInt = {/
+    isNeg = @"-"?
     i = @int
-    { <> makeLiteral(dataOf(i)) }
+    {
+        <> ifIs { <> isNeg* }
+            { <> makeLiteral(neg(dataOf(i))) }
+            { <> makeLiteral(dataOf(i)) }
+    }
 /};
 
 # Parses a string literal.
@@ -472,36 +480,43 @@ def parEmptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-# Parses an "atomic" key (as opposed to, e.g., the parens-and-commas form
-# of map keys). This rule is used for the left-hand side of both mappings
-# and derived values.
+# Parses an "atomic" key. This isn't really *that* atomic, in that it
+# includes parsing of interpolations.
 def parKeyAtom = {/
-    # The lookahead at the end of the rule is to ensure we are not looking
-    # at a more complicated expression. `@","` and `@")"` are matched here,
-    # so that this rule can stay the same in *Layer 2*.
-    k = parIdentifierString
-    &[@":" @"," @")" @"]"]
-    { <> k }
+    # The lookahead-failure is to ensure we don't match a variable being
+    # interpolated, which is handled by the second alternative.
+    key = parIdentifierString
+    !@"*"
+    { <> key }
 |
-    parExpression
+    key = parAtom
+    (
+        @"*"
+        { <> makeInterpolate(key) }
+    |
+        { <> key }
+    )
 /};
 
-# Parses an arbitrary map key. Note: This rule is nontrivial in *Layer 2*.
-def parMapKey = {/
-    # Note: This clause is only active for a list of two or more items.
-    # A single parenthesized item is properly covered by the second alternate.
-    @"("
+# Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
+def parKey = {/
+    # Layer 2 accepts one or more `keyAtom`s, separated by pipes.
     firstKey = parKeyAtom
-    moreKeys = (@"," parKeyAtom)+
-    @")"
-    { <> makeInterpolate(makeCallName("makeList", firstKey, moreKeys*)) }
-|
-    parKeyAtom
+    moreKeys = (@"|" parKeyAtom)*
+
+    {
+        <> ifIs { <> eq(moreKeys, []) }
+            { <> firstKey }
+            {
+                <> makeInterpolate(
+                    makeCallName("makeList", firstKey, moreKeys*))
+            }
+    }
 /};
 
 # Parses a mapping (element of a map).
 def parMapping = {/
-    key = parMapKey
+    key = parKey
     @":"
     value = parExpression
 
@@ -509,15 +524,9 @@ def parMapping = {/
     # interpolation from being applied to `makeValueMap`.
     { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
-    map = parExpression
-    {
-        # We do a check to make sure the given expression is an interpolate
-        # (which is the only way it can be valid). Note that
-        # `expression @"*"` won't do the trick, since by the time we're here,
-        # if there was a `*` it would have become part of the expression.
-        <> ifIs { <> eq(typeOf(map), "interpolate") }
-            { <> dataOf(map) }
-    }
+    map = parAtom
+    @"*"
+    { <> map }
 /};
 
 # Parses a map literal.
@@ -536,7 +545,7 @@ def parDeriv = {/
 
     derivArgs = (
         @"["
-        type = parKeyAtom
+        type = (parIdentifierString | parAtom)
         value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }
@@ -572,7 +581,7 @@ def parParenExpression = {/
 /};
 
 # Parses an atomic expression.
-def parAtom = {/
+def implAtom = {/
     parVarRef | parInt | parString | parList | parEmptyMap | parMap |
     parDeriv | parClosure | parParenExpression
 |
@@ -583,6 +592,7 @@ def parAtom = {/
     # Defined by *Samizdat Layer 2*.
     &[@interpolatedString @"(" @"["] parAtom2
 /};
+store(parAtom, implAtom);
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
@@ -803,7 +813,7 @@ def parRepeatPex = {/
     atom = parParserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[typeOf(repeat): atom] }
+        { <> @[(typeOf(repeat)): atom] }
     |
         { <> atom }
     )
@@ -815,7 +825,7 @@ def parLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @[typeOf(lookahead): pex] }
+        { <> @[(typeOf(lookahead)): pex] }
     )
 |
     parRepeatPex
@@ -1757,7 +1767,7 @@ def parSwitchCase = {/
     keys = (
         [@default @else]
     |
-        k = parMapKey
+        k = parKey
         { <> @[expression: k] }
     )
 

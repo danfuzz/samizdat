@@ -22,7 +22,7 @@ can be used.
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = [
-    makeInclusiveRange("a", 1, "z")*: true
+    (makeInclusiveRange("a", 1, "z"))*: true
 ];
 
 # Returns an `interpolate` node.
@@ -314,10 +314,17 @@ def parFnExpression = {/
     )
 /};
 
-# Parses an integer literal.
+# Parses an integer literal. Note: This includes parsing a `-` prefix,
+# so that simple negative numbers are considered atoms and hence eligible
+# to be used as map keys.
 def parInt = {/
+    isNeg = @"-"?
     i = @int
-    { <> makeLiteral(dataOf(i)) }
+    {
+        <> ifIs { <> isNeg* }
+            { <> makeLiteral(neg(dataOf(i))) }
+            { <> makeLiteral(dataOf(i)) }
+    }
 /};
 
 # Parses a string literal.
@@ -382,30 +389,30 @@ def parEmptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-# Parses an "atomic" key (as opposed to, e.g., the parens-and-commas form
-# of map keys). This rule is used for the left-hand side of both mappings
-# and derived values.
+# Parses an "atomic" key. This isn't really *that* atomic, in that it
+# includes parsing of interpolations.
 def parKeyAtom = {/
-    # The lookahead at the end of the rule is to ensure we are not looking
-    # at a more complicated expression. `@","` and `@")"` are matched here,
-    # so that this rule can stay the same in *Layer 2*.
-    k = parIdentifierString
-    &[@":" @"," @")" @"]"]
-    { <> k }
+    # The lookahead-failure is to ensure we don't match a variable being
+    # interpolated, which is handled by the second alternative.
+    key = parIdentifierString
+    !@"*"
+    { <> key }
 |
-    parExpression
+    key = parAtom
+    (
+        @"*"
+        { <> makeInterpolate(key) }
+    |
+        { <> key }
+    )
 /};
 
-# Parses an arbitrary map key. Note: This rule is nontrivial in *Layer 2*.
-def parMapKey = {/
-    # *Layer 2* adds alternates here.
-#|
-    parKeyAtom
-/};
+# Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
+def parKey = parKeyAtom;
 
 # Parses a mapping (element of a map).
 def parMapping = {/
-    key = parMapKey
+    key = parKey
     @":"
     value = parExpression
 
@@ -413,15 +420,9 @@ def parMapping = {/
     # interpolation from being applied to `makeValueMap`.
     { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
-    map = parExpression
-    {
-        # We do a check to make sure the given expression is an interpolate
-        # (which is the only way it can be valid). Note that
-        # `expression @"*"` won't do the trick, since by the time we're here,
-        # if there was a `*` it would have become part of the expression.
-        <> ifIs { <> eq(typeOf(map), "interpolate") }
-            { <> dataOf(map) }
-    }
+    map = parAtom
+    @"*"
+    { <> map }
 /};
 
 # Parses a map literal.
@@ -440,7 +441,7 @@ def parDeriv = {/
 
     derivArgs = (
         @"["
-        type = parKeyAtom
+        type = (parIdentifierString | parAtom)
         value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }
@@ -499,13 +500,6 @@ def parActualsList = {/
     parClosure+
 /};
 
-# Note: There are additional prefix operators in *Layer 2* and beyond.
-# This rule still exists in *Layer 2* but is totally rewritten.
-def parPrefixOperator = {/
-    @"-"
-    { <> { node <> makeCallName("neg", node) } }
-/};
-
 # Parses a unary postfix operator. This yields a function (per se) to call
 # in order to construct a node that represents the appropriate ultimate
 # function call.
@@ -526,16 +520,11 @@ def parPostfixOperator = {/
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
 def parUnaryExpression = {/
-    prefixes = parPrefixOperator*
+    # Note: Layer 2 adds prefix operator parsing here.
     base = parAtom
     postfixes = parPostfixOperator*
 
-    {
-        def withPosts = doReduce1(postfixes, base)
-            { op, result <> op(result) };
-        <> doReduce1(reverse(prefixes), withPosts)
-            { op, result <> op(result) }
-    }
+    { <> doReduce1(postfixes, base) { op, result <> op(result) } }
 /};
 
 # Parses a possibly-voidable expression. This is done rather than including
@@ -747,7 +736,7 @@ def parRepeatPex = {/
     atom = parParserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[typeOf(repeat): atom] }
+        { <> @[(typeOf(repeat)): atom] }
     |
         { <> atom }
     )
@@ -759,7 +748,7 @@ def parLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @[typeOf(lookahead): pex] }
+        { <> @[(typeOf(lookahead)): pex] }
     )
 |
     parRepeatPex

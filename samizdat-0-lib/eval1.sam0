@@ -116,7 +116,7 @@ fn convertPexCode(node, formals) {
     # Use the lexical `formals` context to make a regular closure node,
     # and just convert that.
 
-    def closurePayload = [dataOf(node)*, formals: formals];
+    def closurePayload = [(dataOf(node))*, formals: formals];
     def convertedClosure = convertExpression(@[closure: closurePayload]);
 
     <> callNameWithExpressions("pegMakeCode", convertedClosure)

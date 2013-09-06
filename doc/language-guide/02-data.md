@@ -21,21 +21,18 @@ An `Int` is a signed arbitrary-precision integer value, sometimes
 called a "bigint" or "BigInteger" (even though they aren't always actually
 that big).
 
-Ints are written with an optional base specifier &mdash; `0x` for
-hexadecimal or `0b` for binary &mdash; followed by an optional
-minus sign (`-`) to indicate a negative value (only valid if a base specifier
-is present), and finally followed by one or more digits in the indicated
-(or implied) base.
+Ints are written with an optional minus sign (`-`) to indicate a negative
+value, followed by an optional base specifier &mdash; `0x` for hexadecimal
+or `0b` for binary &mdash; and finally followed by one or more digits in the
+indicated (or implied) base.
 
 Underscores (`_`) may be placed freely after any digit in an int literal
 without changing the meaning. If a base specifier is present, underscores
 may also be placed before the first digit. This feature is intended
 to aid in the readability of longer constants.
 
-A minus sign in front of an int constant (as in the second example below)
-is valid syntax, but the minus sign in this case is *not* part of the
-constant; rather, it is an application of the unary minus operator to
-the constant.
+**Note:** In many contexts, a minus sign is a separate operator token,
+and not necessarily part of an int constant.
 
 ```
 0
@@ -43,7 +40,7 @@ the constant.
 20
 1_234_452
 0x1234abcd
-0x-_ABCDEF
+-0x_ABCDEF
 0b1011_0111_1110_1111
 ```
 
@@ -153,16 +150,18 @@ more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
-As a short-hand, a string key with the same form as an identifier can
-be written without the quotes.
+Syntactically, keys are "atoms", that is, simple values or parenthesized
+expressions. As a short-hand, a string key with the same form as an identifier
+can be written without the quotes.
 
 A group of mappings with multiple keys that map to the same value
 can be written in a short-hand using the same interpolation syntax as with
-lists. In addition, a comma-separated list of keys enclosed in parentheses
-can be used in the key position; in this form, naked identifiers have the
-same string-literal interpretation as with individual identifiers.
+lists.
 
-An entire other map can be interpolated into a new map by listing the
+In addition, a pipe-separated list of keys (including interpolations)
+can be used in the key position.
+
+An entire other map can be interpolated into a new map by naming the
 map to interpolate followed by a `*`. To avoid ambiguity between a
 list and a map that is just full of interpolation, a map may optionally
 start with a "degenerate" element of just `:` (as demonstrated in the
@@ -190,11 +189,12 @@ written as `[:]`.
 [["complex", "data", "as", "key"]: "Handy!"]
 [0..9: "digits", 10: "not a digit"]
 
-# The first two here are equivalent. The third contains a variable reference
+# The first three here are equivalent. The last contains a variable reference
 # to `the`.
 [["these", "map", "to", "the"]*: "same value"]
-[(these, map, "to", the): "same value"]
-[(these, map, "to", (the)): "same value"]
+[these | map | "to" | the: "same value"]
+[["these", "map"]* | to | the: "same value"]
+[these | map | "to" | (the)): "same value"]
 
 # These are all equivalent.
 [first: 1, second: 2, third: 3]

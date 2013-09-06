@@ -54,26 +54,23 @@ fn intFromDigitChar(ch) {
 # `interpolatedString` or an `error`.
 def processStringParts = makeFunctionForwarder();
 
-# Parses any amount of whitespace and comments (including nothing at all).
+# Parses a non-zero amount of whitespace and comments.
 # **Note:** The yielded result is always ignored.
-def tokOptWhitespace = {/
-    (
-        # The lookahead here is to avoid the bulk of this rule if there's
-        # no chance we're actually looking at whitespace. The final
-        # lookahead character is only useful as of *Layer 2*.
-        &["# \n" "/"]
+def tokWhitespace = {/
+    # The lookahead here is to avoid the bulk of this rule if there's
+    # no chance we're actually looking at whitespace. The final
+    # lookahead character is only useful as of *Layer 2*.
+    &["# \n" "/"]
 
-        (
-            [" " "\n"]+
-        |
-            # The `?` at the end is to handle end-of-file comments.
-            "#" [! "\n"]* "\n"?
-        |
-            # Introduced in *Layer 2*.
-            &"/*" # Avoid calling the rule unless we know it will match.
-            tokMultilineComment
-        )*
-    )?
+    (
+        [" " "\n"]+
+    |
+        "#" [! "\n"]*
+    |
+        # Introduced in *Layer 2*.
+        &"/*" # Avoid calling the rule unless we know it will match.
+        tokMultilineComment
+    )+
 /};
 
 # Parses punctuation and operators.
@@ -214,8 +211,8 @@ def tokToken = {/
 
 # Parses a file of tokens, yielding a list of them.
 def tokFile = {/
-    tokens = (tokOptWhitespace tokToken)*
-    tokOptWhitespace
+    tokens = (tokWhitespace? tokToken)*
+    tokWhitespace?
 
     { <> tokens }
 /};
@@ -235,17 +232,13 @@ def OPEN_CLOSE_MAP = [
     "{/": "/}"
 ];
 
-# Converts a list of digit values into an int, given the base. If `baseSign`
-# is negative, this indicates that the result should be negative.
-fn intFromDigitList(baseSign, digits) {
-    def base = abs(baseSign);
-    def value = doReduce1(digits, 0) { digit, result ::
+# Converts a list of digit values into an int, given the base.
+fn intFromDigitList(base, digits) {
+    <> doReduce1(digits, 0) { digit, result ::
         <> ifIs { <> eq(digit, -1) }
             { <> result }
             { <> add(mul(result, base), digit) }
     };
-
-    <> mul(value, sign(baseSign))
 };
 
 fn implProcessStringParts(parts) {
@@ -324,26 +317,26 @@ def tokHexDigit = {/
 
 # Parses an integer literal.
 def implInt = {/
-    baseSign = (
-        "0x" ("-" { <> -16 } | { <> 16 })
+    base = (
+        "0x" { <> 16 }
     |
-        "0b" ("-" { <> -2 } | { <> 2 })
+        "0b" { <> 2 }
     |
         { <> 10 }
     )
 
     digits = (
-        { <> eq(baseSign, 10) }
+        { <> eq(base, 10) }
         tokDecDigit+
     |
-        { <> eq(abs(baseSign), 16) }
+        { <> eq(base, 16) }
         tokHexDigit+
     |
-        { <> eq(abs(baseSign), 2) }
+        { <> eq(base, 2) }
         tokBinDigit+
     )
 
-    { <> @[int: intFromDigitList(baseSign, digits)] }
+    { <> @[int: intFromDigitList(base, digits)] }
 /};
 store(tokInt, implInt);
 
@@ -382,7 +375,7 @@ def implStringInterpolation = {/
     expectClose = { <> get(OPEN_CLOSE_MAP, typeOf(open)) }
 
     tokens = (
-        tokOptWhitespace
+        tokWhitespace?
         (
             !["(){}"]
             !"/}"
@@ -393,7 +386,7 @@ def implStringInterpolation = {/
         )
     )*
 
-    tokOptWhitespace
+    tokWhitespace?
     close = tokToken
 
     {

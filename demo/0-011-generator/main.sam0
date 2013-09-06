@@ -115,7 +115,7 @@ io0Note("collectAsMap on a FilterGenerator");
 def outMap = collectAsMap(
     makeFilterGenerator(makeInclusiveRange(0, 2, 4))
         { value ::
-            <> [(value): value, add(value, 1): value, blort: value]
+            <> [(value): value, (add(value, 1)): value, blort: value]
         });
 io0Note(cat("    ", sourceString(outMap)));
 io0Note("");
