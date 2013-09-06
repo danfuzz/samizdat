@@ -90,6 +90,7 @@ typedef struct {
     zint id;
 } TypeInfo;
 
+
 /**
  * Binds the standard methods for a derived type.
  */
@@ -122,6 +123,12 @@ zvalue genericFindByIndex(zvalue generic, zint index);
 inline zint indexFromTrueType(zvalue type) {
     return ((TypeInfo *) pbPayload(type))->id;
 }
+
+/**
+ * Marks all the references on the frame stack. Returns the number of
+ * references marked.
+ */
+zint markFrameStack(void);
 
 /**
  * Gets the `Type` per se for the given value.

@@ -14,29 +14,8 @@
 #include "module.h"
 #include "ztype.h"
 
-
-/*
- * C Types and macros
- */
-
-/**
- * Arbitrary value. The contents of a value are *not* directly
- * accessible through instances of this type via the API. You
- * have to use the various accessor functions.
- */
-typedef struct PbHeader *zvalue;
-
-/** Type for local value stack pointers. */
-typedef const zvalue *zstackPointer;
-
-enum {
-    /**
-     * (Private) Size of the `PbHeader` struct; used so that `pbOffset`
-     * can be an inline function.
-     */
-    PB_HEADER_SIZE =
-        (sizeof(zvalue) * 3) + (sizeof(int32_t) * 2) + sizeof(zint)
-};
+#include "pb/type.h"  // Types (must be included before other `pb` stuff).
+#include "pb/frame.h" // Frame (stack reference) management.
 
 
 /*
@@ -67,36 +46,6 @@ void assertValidOrNull(zvalue value);
  * The resulting value is added to the live reference stack.
  */
 zvalue pbAllocValue(zvalue type, zint extraBytes);
-
-/**
- * Adds an item to the current frame. This is only necessary to call when
- * a reference gets "detached" from a live structure (via mutation), which
- * is to say, rarely.
- */
-void pbFrameAdd(zvalue value);
-
-/**
- * Indicates the start of a new frame of references on the stack.
- * The return value can subsequently be passed to `pbFrameEnd` to
- * indicate that this frame is no longer active.
- */
-zstackPointer pbFrameStart(void);
-
-/**
- * Indicates that the frame whose start returned the given stack pointer
- * should be reset to a state that *only* includes the given value
- * (or is totally reset if `stackedValue` is `NULL`).
- */
-void pbFrameReset(zstackPointer savedStack, zvalue stackedValue);
-
-/**
- * Indicates that the frame whose start returned the given stack pointer
- * is no longer active. If the given additional value is non-`NULL` it is
- * added to the frame being "returned" to. It is valid to return to any
- * frame above the current one, not just the immediately-previous frame;
- * non-immediate return can happen during a nonlocal exit.
- */
-void pbFrameReturn(zstackPointer savedStack, zvalue returnValue);
 
 /**
  * Forces a gc.
