@@ -92,8 +92,6 @@ generatorPump(
         { value :: io0Note(cat("    Yay ", sourceString(value))) });
 io0Note("");
 
-msgAll("Token generator", makeTokenGenerator("Tokens!"));
-
 msgAll("ParaGenerator with open ranges",
     makeParaGenerator(
         makeOpenRange("a", 1),

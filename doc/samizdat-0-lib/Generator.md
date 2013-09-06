@@ -244,15 +244,6 @@ Special cases:
 `"SerialGenerator"` with `[generators*]` as the payload. That type has
 appropriate `Generator` method bindings.
 
-#### `makeTokenGenerator(generator) <> generator`
-
-Filter generator that produces a sequence of type-only derived values
-from whatever the underlying generator produces. This is, in particular,
-the generator used by default to produce single-character
-tokens when using the library function `pegApply` to perform
-string tokenization. The function name is meant to be suggestive of the
-expected use case.
-
 #### `makeValueGenerator(value) <> generator`
 
 Creates an unnbounded generator (one with infinite elements) which always
