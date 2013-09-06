@@ -99,6 +99,21 @@ static zvalue mapFrom2(zvalue k1, zvalue v1, zvalue k2, zvalue v2) {
  * `~insertionIndex` (a negative number).
  */
 static zint mapFind(zvalue map, zvalue key) {
+    MapInfo *info = getInfo(map);
+    zmapping *elems = info->elems;
+
+    // Take care of a couple trivial cases.
+    switch (info->size) {
+        case 0: return ~0;
+        case 1: {
+            switch (valOrder(key, elems[0].key)) {
+                case ZLESS: return ~0;
+                case ZMORE: return ~1;
+                default:    return 0;
+            }
+        }
+    }
+
     MapCacheEntry *entry = mapGetCacheEntry(map, key);
 
     if ((entry->map == map) && (entry->key == key)) {
@@ -108,8 +123,6 @@ static zint mapFind(zvalue map, zvalue key) {
     entry->map = map;
     entry->key = key;
 
-    MapInfo *info = getInfo(map);
-    zmapping *elems = info->elems;
     zint min = 0;
     zint max = info->size - 1;
 
