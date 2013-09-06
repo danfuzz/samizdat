@@ -140,6 +140,18 @@ generator are ignored.
 
 This function always returns void.
 
+#### `makeCollectionGenerator(coll, optIndex?) <> generator`
+
+Collection generator constructor. This takes a collection and optional
+start index, returning a generator which generates the elements of the
+collection starting at the index (or at `0` if no index is supplied).
+
+**Note:** This function makes a value of type `"CollectionGenerator"`,
+with the collection and index as elements of the payload. That type has
+appropriate `Generator` method bindings.
+
+**Note:** When called on a core collection, `nextValue` uses this function.
+
 #### `makeFilterGenerator(filterFunction, generators*) <> generator`
 
 Filtering generator constructor. This takes any number of arbitrary
