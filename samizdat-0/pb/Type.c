@@ -306,8 +306,6 @@ bool typeIsIdentified(zvalue typeOrName) {
 
 /* Documented in header. */
 zvalue typeOf(zvalue value) {
-    assertValid(value);
-
     zvalue type = trueTypeOf(value);
     TypeInfo *info = getInfo(type);
 
