@@ -86,9 +86,6 @@ bool valEq(zvalue v1, zvalue v2) {
         return false;
     }
 
-    assertValid(v1);
-    assertValid(v2);
-
     if (haveSameType(v1, v2)) {
         return (GFN_CALL(totEq, v1, v2) != NULL);
     } else {
@@ -105,9 +102,6 @@ zorder valOrder(zvalue v1, zvalue v2) {
     } else if (v2 == NULL) {
         return ZMORE;
     }
-
-    assertValid(v1);
-    assertValid(v2);
 
     if (haveSameType(v1, v2)) {
         zstackPointer save = pbFrameStart();
