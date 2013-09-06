@@ -15,7 +15,7 @@
 typedef struct PbHeader *zvalue;
 
 /** Type for local value stack pointers. */
-typedef const zvalue *zstackPointer;
+typedef zvalue *zstackPointer;
 
 enum {
     /**

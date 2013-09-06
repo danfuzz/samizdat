@@ -12,14 +12,28 @@
  * Private Definitions
  */
 
-/**
- * Stack of references. This is what is scanned in lieu of scanning
- * the "real" stack during gc.
- */
-static zvalue stack[PB_MAX_STACK];
+/** Actual stack memory. */
+static zvalue theStack[PB_MAX_STACK];
 
-/** Current stack size. */
-static zint stackSize;
+/* Documented in header. */
+zstackPointer frameStackBase = theStack;
+
+/* Documented in header. */
+zstackPointer frameStackTop = theStack;
+
+/* Documented in header. */
+zstackPointer frameStackLimit = &theStack[PB_MAX_STACK];
+
+/* Documented in header. */
+void pbFrameError(const char *msg) {
+    // As a hail-mary, do a forced gc and then clear the value stack, in
+    // the hope that a gc won't end up being done while producing the
+    // dying stack trace.
+    pbGc();
+    frameStackTop = frameStackBase;
+
+    die("%s", msg);
+}
 
 
 /*
@@ -27,8 +41,10 @@ static zint stackSize;
  */
 
 zint markFrameStack(void) {
-    for (zint i = 0; i < stackSize; i++) {
-        pbMark(stack[i]);
+    zint stackSize = frameStackTop - frameStackBase;
+
+    for (int i = 0; i < stackSize; i++) {
+        pbMark(theStack[i]);
     }
 
     return stackSize;
@@ -40,44 +56,13 @@ zint markFrameStack(void) {
  */
 
 /* Documented in header. */
-zstackPointer pbFrameStart(void) {
-    return &stack[stackSize];
-}
+extern zstackPointer pbFrameStart(void);
 
 /* Documented in header. */
-void pbFrameAdd(zvalue value) {
-    if (stackSize >= PB_MAX_STACK) {
-        // As a hail-mary, do a forced gc and then clear the value stack, in
-        // the hope that a gc won't end up being done while producing the
-        // dying stack trace.
-        pbGc();
-        stackSize = 0;
-        die("Value stack overflow.");
-    }
-
-    stack[stackSize] = value;
-    stackSize++;
-}
+extern void pbFrameAdd(zvalue value);
 
 /* Documented in header. */
-void pbFrameReset(zstackPointer savedStack, zvalue stackedValue) {
-    // The difference between this function and `pbFrameReturn` is
-    // one of intent, even though the implementation is (blatantly)
-    // identical.
-    pbFrameReturn(savedStack, stackedValue);
-}
+extern void pbFrameReset(zstackPointer savedStack, zvalue stackedValue);
 
 /* Documented in header. */
-void pbFrameReturn(zstackPointer savedStack, zvalue returnValue) {
-    zint returnSize = savedStack - stack;
-
-    if (returnSize > stackSize) {
-        die("Cannot return to deeper frame.");
-    }
-
-    stackSize = returnSize;
-
-    if (returnValue != NULL) {
-        pbFrameAdd(returnValue);
-    }
-}
+extern void pbFrameReturn(zstackPointer savedStack, zvalue returnValue);
