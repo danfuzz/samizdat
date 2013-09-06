@@ -1,0 +1,43 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `CollectionGenerator` Type
+#
+# Payload is `[collection: coll, index: int]`.
+
+#
+# Exported Definitions
+#
+
+# Documented in spec.
+fn makeCollectionGenerator(coll, optIndex?) {
+    def indexMap = ifValue { <> optIndex* }
+        { index <> [index: index] }
+        { <> [:] };
+
+    <> @[CollectionGenerator: [collection: coll, indexMap*]]
+};
+
+# Documented in spec.
+fn CollectionGenerator_nextValue(gen, box) {
+    def data = dataOf(gen);
+    def coll = get(data, "collection");
+    def index = get(data, "index");
+
+    <> ifValue { <> nth(coll, index) }
+        { value ::
+            store(box, value);
+            <> @[CollectionGenerator: put(data, "index", add(index, 1))]
+        }
+        {
+            # Voided (out of elements).
+            store(box)
+        }
+};
+genericBind(nextValue, "CollectionGenerator", CollectionGenerator_nextValue);
+
+<> [
+    makeCollectionGenerator: makeCollectionGenerator
+]
