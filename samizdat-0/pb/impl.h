@@ -95,7 +95,9 @@ zint indexFromTrueType(zvalue type);
 /**
  * Gets the `Type` per se for the given value.
  */
-zvalue trueTypeOf(zvalue value);
+inline zvalue trueTypeOf(zvalue value) {
+    return value->type;
+}
 
 /**
  * Gets the `Type` per se from a type (which may be the name of a transparent

@@ -252,9 +252,7 @@ zint indexFromTrueType(zvalue type) {
 }
 
 /* Documented in header. */
-zvalue trueTypeOf(zvalue value) {
-    return value->type;
-}
+extern zvalue trueTypeOf(zvalue value);
 
 /* Documented in header. */
 zvalue typeFromTypeAndSecret(zvalue typeOrName, zvalue secret) {
