@@ -140,6 +140,18 @@ generator are ignored.
 
 This function always returns void.
 
+#### `makeCollectionGenerator(coll, optIndex?) <> generator`
+
+Collection generator constructor. This takes a collection and optional
+start index, returning a generator which generates the elements of the
+collection starting at the index (or at `0` if no index is supplied).
+
+**Note:** This function makes a value of type `"CollectionGenerator"`,
+with the collection and index as elements of the payload. That type has
+appropriate `Generator` method bindings.
+
+**Note:** When called on a core collection, `nextValue` uses this function.
+
 #### `makeFilterGenerator(filterFunction, generators*) <> generator`
 
 Filtering generator constructor. This takes any number of arbitrary
@@ -212,7 +224,7 @@ appropriate `Generator` method bindings.
 
 **Syntax Note:** Used in the translation of `for` forms.
 
-#### `makeSeqGenerator(generators*) <> generator`
+#### `makeSerialGenerator(generators*) <> generator`
 
 Sequential generator combination constructor. This takes an arbitrary number
 of generators, and returns a generator that yields from each of
@@ -229,17 +241,8 @@ Special cases:
 * If passed one argument, this returns that argument directly.
 
 **Note:** Special cases aside, this function makes a value of type
-`"SeqGenerator"` with `[generators*]` as the payload. That type has
+`"SerialGenerator"` with `[generators*]` as the payload. That type has
 appropriate `Generator` method bindings.
-
-#### `makeTokenGenerator(generator) <> generator`
-
-Filter generator that produces a sequence of type-only derived values
-from whatever the underlying generator produces. This is, in particular,
-the generator used by default to produce single-character
-tokens when using the library function `pegApply` to perform
-string tokenization. The function name is meant to be suggestive of the
-expected use case.
 
 #### `makeValueGenerator(value) <> generator`
 

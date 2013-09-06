@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 #
-# `SeqGenerator` Type
+# `SerialGenerator` Type
 #
 # Payload is `[subGens*]`, a list of sub-generators.
 
@@ -12,7 +12,7 @@
 #
 
 # Documented in spec.
-fn makeSeqGenerator(generators*) {
+fn makeSerialGenerator(generators*) {
     # Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
         { return nullGenerator };
@@ -22,11 +22,11 @@ fn makeSeqGenerator(generators*) {
     ifIs { <> eq(sizeOf(generators), 1) }
         { return generators* };
 
-    <> @[SeqGenerator: generators]
+    <> @[SerialGenerator: generators]
 };
 
 # Documented in spec.
-fn SeqGenerator_nextValue(gen, box) {
+fn SerialGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 
     <> ifValue { <> first(subGens) }
@@ -37,11 +37,11 @@ fn SeqGenerator_nextValue(gen, box) {
             <> ifValue { <> nextValue(firstGen, innerBox) }
                 { nextGenerator ::
                     store(box, fetch(innerBox));
-                    <> @[SeqGenerator: [nextGenerator, moreGens*]]
+                    <> @[SerialGenerator: [nextGenerator, moreGens*]]
                 }
                 {
                     # First generator was voided.
-                    <> nextValue(makeSeqGenerator(moreGens*), box)
+                    <> nextValue(makeSerialGenerator(moreGens*), box)
                 }
         }
         {
@@ -49,8 +49,8 @@ fn SeqGenerator_nextValue(gen, box) {
             store(box)
         }
 };
-genericBind(nextValue, "SeqGenerator", SeqGenerator_nextValue);
+genericBind(nextValue, "SerialGenerator", SerialGenerator_nextValue);
 
 <> [
-    makeSeqGenerator: makeSeqGenerator
+    makeSerialGenerator: makeSerialGenerator
 ]

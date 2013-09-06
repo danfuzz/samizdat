@@ -55,7 +55,7 @@ msgAll("Empty string", "");
 msgAll("NullGenerator", nullGenerator);
 msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
 msgAll("Empty ParaGenerator", makeParaGenerator());
-msgAll("Empty SeqGenerator", makeSeqGenerator());
+msgAll("Empty SerialGenerator", makeSerialGenerator());
 
 msgAll("List", [101, 33, 5555, "blort"]);
 msgAll("Map", [one: 1, two: 2, three: 3, four: 4, five: "fizmo"]);
@@ -92,24 +92,22 @@ generatorPump(
         { value :: io0Note(cat("    Yay ", sourceString(value))) });
 io0Note("");
 
-msgAll("Token generator", makeTokenGenerator("Tokens!"));
-
 msgAll("ParaGenerator with open ranges",
     makeParaGenerator(
         makeOpenRange("a", 1),
         makeOpenRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
 
-msgAll("Size one SeqGenerator",
-    makeSeqGenerator([a: 10, b: 20, c: 30]));
+msgAll("Size one SerialGenerator",
+    makeSerialGenerator([a: 10, b: 20, c: 30]));
 
-msgAll("Size two SeqGenerator",
-    makeSeqGenerator(
+msgAll("Size two SerialGenerator",
+    makeSerialGenerator(
         [a: 10, b: 20, c: 30],
         "defg"));
 
-msgAll("Size six SeqGenerator (with a couple pre-voided generators)",
-    makeSeqGenerator("abc", [], [], nullGenerator, ["def", "ghi"], []));
+msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
+    makeSerialGenerator("abc", [], [], nullGenerator, ["def", "ghi"], []));
 
 io0Note("collectAsMap on a FilterGenerator");
 def outMap = collectAsMap(
