@@ -247,7 +247,6 @@ static void assertHasTypeType(zvalue value) {
 
 /* Documented in header. */
 zint indexFromTrueType(zvalue type) {
-    assertHasTypeType(type);
     return getInfo(type)->id;
 }
 
