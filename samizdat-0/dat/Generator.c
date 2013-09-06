@@ -162,22 +162,6 @@ METH_IMPL(Value, filter) {
     return collectOrFilter(generator, function);
 }
 
-/* Documented in header. */
-METH_IMPL(Collection, nextValue) {
-    zvalue coll = args[0];
-    zvalue box = args[1];
-
-    zvalue value = collNth(coll, 0);
-
-    if (value == NULL) {
-        GFN_CALL(store, box);
-        return NULL;
-    } else {
-        GFN_CALL(store, box, value);
-        return GFN_CALL(slice, coll, INT_1);
-    }
-}
-
 /** Initializes the module. */
 MOD_INIT(Generator) {
     MOD_USE(Box);
@@ -203,10 +187,6 @@ MOD_INIT(Generator) {
     genericBindPrim(GFN_filter,    TYPE_List,   Collection_filter, "List:filter");
     genericBindPrim(GFN_filter,    TYPE_Map,    Collection_filter, "Map:filter");
     genericBindPrim(GFN_filter,    TYPE_String, Collection_filter, "String:filter");
-
-    genericBindPrim(GFN_nextValue, TYPE_List,   Collection_nextValue, "List:nextValue");
-    genericBindPrim(GFN_nextValue, TYPE_Map,    Collection_nextValue, "Map:nextValue");
-    genericBindPrim(GFN_nextValue, TYPE_String, Collection_nextValue, "String:nextValue");
 }
 
 /* Documented in header. */
