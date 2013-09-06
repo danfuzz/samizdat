@@ -40,7 +40,7 @@ genericBind(nextValue, "CollectionGenerator", CollectionGenerator_nextValue);
 fn Collection_nextValue(coll, box) {
     # Get the first element directly, and return a generator for the rest.
     <> ifIs { <> store(box, &nth(coll, 0)) }
-        { <> makeCollectionGenerator(coll, 1) }
+        { <> @[CollectionGenerator: [collection: coll, index: 1]] }
         {
             # `coll` is empty.
             store(box)
