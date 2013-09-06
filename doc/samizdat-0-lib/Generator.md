@@ -212,7 +212,7 @@ appropriate `Generator` method bindings.
 
 **Syntax Note:** Used in the translation of `for` forms.
 
-#### `makeSeqGenerator(generators*) <> generator`
+#### `makeSerialGenerator(generators*) <> generator`
 
 Sequential generator combination constructor. This takes an arbitrary number
 of generators, and returns a generator that yields from each of
@@ -229,7 +229,7 @@ Special cases:
 * If passed one argument, this returns that argument directly.
 
 **Note:** Special cases aside, this function makes a value of type
-`"SeqGenerator"` with `[generators*]` as the payload. That type has
+`"SerialGenerator"` with `[generators*]` as the payload. That type has
 appropriate `Generator` method bindings.
 
 #### `makeTokenGenerator(generator) <> generator`
