@@ -81,12 +81,6 @@ zvalue builtinCall(zvalue function, zint argCount, const zvalue *args);
 zvalue genericCall(zvalue function, zint argCount, const zvalue *args);
 
 /**
- * Gets the function bound to the given generic for the given value, if any.
- * Returns `NULL` if there is no binding.
- */
-zvalue genericFind(zvalue generic, zvalue value);
-
-/**
  * Gets the function bound to the given generic for the given type index,
  * if any. Returns `NULL` if there is no binding.
  */

@@ -53,7 +53,8 @@ static GenericInfo *getInfo(zvalue generic) {
 }
 
 /**
- * Find the binding for a given type.
+ * Find the function binding for a given type, including walking up the
+ * parent type chain. Returns `NULL` if there is no binding.
  */
 static zvalue findByTrueType(zvalue generic, zvalue type) {
     GenericInfo *info = getInfo(generic);
@@ -92,7 +93,7 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
         assertAllHaveSameType(argCount, args);
     }
 
-    zvalue function = genericFind(generic, args[0]);
+    zvalue function = findByTrueType(generic, trueTypeOf(args[0]));
 
     if (function == NULL) {
         die("No binding found: %s(%s, ...)",
@@ -100,11 +101,6 @@ zvalue genericCall(zvalue generic, zint argCount, const zvalue *args) {
     }
 
     return funCall(function, argCount, args);
-}
-
-/* Documented in header. */
-zvalue genericFind(zvalue generic, zvalue value) {
-    return findByTrueType(generic, trueTypeOf(value));
 }
 
 /* Documented in header. */
@@ -192,7 +188,7 @@ METH_IMPL(Generic, canCall) {
     zvalue value = args[1];
     GenericInfo *info = getInfo(generic);
 
-    return (genericFind(generic, value) != NULL) ? value : NULL;
+    return (findByTrueType(generic, trueTypeOf(value)) != NULL) ? value : NULL;
 }
 
 /* Documented in header. */
