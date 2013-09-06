@@ -30,15 +30,6 @@ static zvalue immortals[PB_MAX_IMMORTALS];
 /** How many immortal values there are right now. */
 static zint immortalsSize = 0;
 
-/**
- * Stack of references. This is what is scanned in lieu of scanning
- * the "real" stack during gc.
- */
-static zvalue stack[PB_MAX_STACK];
-
-/** Current stack size. */
-static zint stackSize = 0;
-
 /** List head for the list of all live values. Double-linked circular list. */
 static PbHeader liveHead = {
     .next = &liveHead,
@@ -118,10 +109,6 @@ static void sanityCheck(bool force) {
         thoroughlyValidate(immortals[i]);
     }
 
-    for (zint i = 0; i < stackSize; i++) {
-        thoroughlyValidate(stack[i]);
-    }
-
     sanityCheckList(&liveHead);
     sanityCheckList(&doomedHead);
 }
@@ -185,12 +172,10 @@ static void doGc(void) {
         note("GC: Marked %lld immortals.", immortalsSize);
     }
 
-    for (zint i = 0; i < stackSize; i++) {
-        pbMark(stack[i]);
-    }
+    zint count = markFrameStack();
 
     if (CHATTY_GC) {
-        note("GC: Marked %lld stack values.", stackSize);
+        note("GC: Marked %lld stack values.", count);
     }
 
     // Free everything left on the doomed list.
@@ -286,49 +271,6 @@ void assertValid(zvalue value) {
 void assertValidOrNull(zvalue value) {
     if (value != NULL) {
         assertValid(value);
-    }
-}
-
-/* Documented in header. */
-zstackPointer pbFrameStart(void) {
-    return &stack[stackSize];
-}
-
-/* Documented in header. */
-void pbFrameAdd(zvalue value) {
-    if (stackSize >= PB_MAX_STACK) {
-        // As a hail-mary, do a forced gc and then clear the value stack, in
-        // the hope that a gc won't end up being done while producing the
-        // dying stack trace.
-        pbGc();
-        stackSize = 0;
-        die("Value stack overflow.");
-    }
-
-    stack[stackSize] = value;
-    stackSize++;
-}
-
-/* Documented in header. */
-void pbFrameReset(zstackPointer savedStack, zvalue stackedValue) {
-    // The difference between this function and `pbFrameReturn` is
-    // one of intent, even though the implementation is (blatantly)
-    // identical.
-    pbFrameReturn(savedStack, stackedValue);
-}
-
-/* Documented in header. */
-void pbFrameReturn(zstackPointer savedStack, zvalue returnValue) {
-    zint returnSize = savedStack - stack;
-
-    if (returnSize > stackSize) {
-        die("Cannot return to deeper frame.");
-    }
-
-    stackSize = returnSize;
-
-    if (returnValue != NULL) {
-        pbFrameAdd(returnValue);
     }
 }
 
