@@ -200,7 +200,7 @@ static bool isType(zvalue value) {
     // This is a light-weight implementation, since (a) otherwise it consumes
     // a significant amount of runtime with no real benefit, and (b) it
     // avoids infinite recursion.
-    return (value->type == TYPE_Type);
+    return (trueTypeOf(value) == TYPE_Type);
 }
 
 /**
@@ -285,12 +285,12 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
 
     zvalue arg0 = args[0];
     assertValid(arg0);
-    zvalue type0 = arg0->type;
+    zvalue type0 = trueTypeOf(arg0);
 
     for (zint i = 1; i < argCount; i++) {
         zvalue one = args[i];
         assertValid(one);
-        if (!typeEq(type0, one->type)) {
+        if (!typeEq(type0, trueTypeOf(one))) {
             die("Mismatched types: %s, %s",
                 valDebugString(arg0), valDebugString(one));
         }
@@ -332,12 +332,12 @@ zvalue coreTypeFromName(zvalue name, bool identified) {
 
 /* Documented in header. */
 bool hasType(zvalue value, zvalue typeOrName) {
-    return typeEq(value->type, trueTypeFromTypeOrName(typeOrName));
+    return typeEq(trueTypeOf(value), trueTypeFromTypeOrName(typeOrName));
 }
 
 /* Documented in header. */
 bool haveSameType(zvalue v1, zvalue v2) {
-    return typeEq(v1->type, v2->type);
+    return typeEq(trueTypeOf(v1), trueTypeOf(v2));
 }
 
 /* Documented in header. */
@@ -347,7 +347,7 @@ zint typeIndex(zvalue typeOrName) {
 
 /* Documented in header. */
 zint typeIndexOf(zvalue value) {
-    return indexFromTrueType(value->type);
+    return indexFromTrueType(trueTypeOf(value));
 }
 
 /* Documented in header. */
@@ -364,7 +364,7 @@ bool typeIsIdentified(zvalue typeOrName) {
 zvalue typeOf(zvalue value) {
     assertValid(value);
 
-    zvalue type = value->type;
+    zvalue type = trueTypeOf(value);
     TypeInfo *info = getInfo(type);
 
     // `typeOf` on a transparent type returns its name.
