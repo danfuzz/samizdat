@@ -57,10 +57,10 @@ static GenericInfo *getInfo(zvalue generic) {
  * parent type chain. Returns `NULL` if there is no binding.
  */
 static zvalue findByTrueType(zvalue generic, zvalue type) {
-    GenericInfo *info = getInfo(generic);
+    zvalue *functions = getInfo(generic)->functions;
 
     for (/*type*/; type != NULL; type = typeParent(type)) {
-        zvalue result = info->functions[indexFromTrueType(type)];
+        zvalue result = functions[indexFromTrueType(type)];
         if (result != NULL) {
             return result;
         }
