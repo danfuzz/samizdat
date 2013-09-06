@@ -1,0 +1,55 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# `CollectionGenerator` Type
+#
+# Payload is `[collection: coll, index: int]`.
+
+#
+# Exported Definitions
+#
+
+# Documented in spec.
+fn makeCollectionGenerator(coll, optIndex?) {
+    def indexMap = ifValue { <> optIndex* }
+        { index <> [index: index] }
+        { <> [:] };
+
+    <> @[CollectionGenerator: [collection: coll, indexMap*]]
+};
+
+# Documented in spec.
+fn CollectionGenerator_nextValue(gen, box) {
+    def data = dataOf(gen);
+    def index = get(data, "index");
+
+    # This uses void contagion to fail the `store` call when `index` is
+    # out of range for the collection.
+    <> ifIs { <> store(box, &nth(get(data, "collection"), index)) }
+        { <> @[CollectionGenerator: put(data, "index", add(index, 1))] }
+        {
+            # Voided (out of elements).
+            store(box)
+        }
+};
+genericBind(nextValue, "CollectionGenerator", CollectionGenerator_nextValue);
+
+# `nextValue` binding for the core collection types.
+fn Collection_nextValue(coll, box) {
+    # Get the first element directly, and return a generator for the rest.
+    <> ifIs { <> store(box, &nth(coll, 0)) }
+        { <> @[CollectionGenerator: [collection: coll, index: 1]] }
+        {
+            # `coll` is empty.
+            store(box)
+        }
+};
+genericBind(nextValue, List,   Collection_nextValue);
+genericBind(nextValue, Map,    Collection_nextValue);
+genericBind(nextValue, String, Collection_nextValue);
+
+<> [
+    makeCollectionGenerator: makeCollectionGenerator
+]

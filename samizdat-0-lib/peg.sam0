@@ -376,10 +376,14 @@ fn pegMakeTokenSetComplement(tokens*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn pegApply(rule, input) {
-    def generator = ifIs { <> isString(input) }
-        { <> makeTokenGenerator(input) }
-        { <> input };
     def box = makeYieldBox();
+    def generator = ifIs { <> isString(input) }
+        {
+            # This converts generated characters into tokens with the
+            # characters as the type.
+            <> makeFilterGenerator(makeValue, input)
+        }
+        { <> input };
 
     <> ifIs { <> parse(rule, box, generator) }
         { <> fetch(box) }
