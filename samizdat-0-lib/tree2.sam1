@@ -193,7 +193,7 @@ def parAtom2 = makeParseForwarder();
 def parProgramBody = makeParseForwarder();
 def parAtom = makeParseForwarder();
 def parExpression = makeParseForwarder();
-def parVoidableExpression = makeParseForwarder();
+def parUnaryExpression = makeParseForwarder();
 
 # Forward declaration required for integrating layer 1 definitions.
 def parParser = makeParseForwarder();
@@ -452,28 +452,6 @@ def parIdentifierString = {/
     }
 /};
 
-# Parses an "unadorned" (no bracketing) list. Yields a list (per se)
-# of contents.
-def parUnadornedList = {/
-    one = parVoidableExpression
-    rest = (@"," parVoidableExpression)*
-    { <> [one, rest*] }
-|
-    { <> [] }
-/};
-
-# Parses a list literal.
-def parList = {/
-    @"["
-    expressions = parUnadornedList
-    @"]"
-    {
-        <> ifIs { <> eq(expressions, []) }
-            { <> makeLiteral([]) }
-            { <> makeCallName("makeList", expressions*) }
-    }
-/};
-
 # Parses an empty map literal.
 def parEmptyMap = {/
     @"[" @":" @"]"
@@ -525,18 +503,58 @@ def parMapping = {/
     { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
     map = parAtom
-    @"*"
+    @"*" @":"
     { <> map }
 /};
 
 # Parses a map literal.
 def parMap = {/
     @"["
-    (@":" @",")?
     one = parMapping
     rest = (@"," parMapping)*
     @"]"
     { <> makeCallName("cat", one, rest*) }
+/};
+
+# Parses a list item or function call argument. This handles all of:
+#
+# * accepting general expressions
+# * accepting voidable-prefixed expressions
+# * rejecting expressions that look like `key:value` mappings. This is
+#   effectively "reserved syntax" (for future expansion); rejecting this
+#   here means that `x:y` won't be mistaken for other valid syntax.
+def parListItem = {/
+    parKey
+    @":"
+    { io0Die("Mapping syntax not valid as a list item or call argument.") }
+|
+    @"&"
+    ex = parUnaryExpression
+    { <> @[voidable: ex] }
+|
+    parExpression
+/};
+
+# Parses an "unadorned" (no bracketing) list. Yields a list (per se)
+# of contents.
+def parUnadornedList = {/
+    one = parListItem
+    rest = (@"," parListItem)*
+    { <> [one, rest*] }
+|
+    { <> [] }
+/};
+
+# Parses a list literal.
+def parList = {/
+    @"["
+    expressions = parUnadornedList
+    @"]"
+    {
+        <> ifIs { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> makeCallName("makeList", expressions*) }
+    }
 /};
 
 # Parses a literal in derived value form.
@@ -580,9 +598,11 @@ def parParenExpression = {/
     { <> @[expression: ex] }
 /};
 
-# Parses an atomic expression.
+# Parses an atomic expression. **Note:** Parsing for `Map` needs to be
+# done before `List`, since the latter rejects "map-like" syntax as a
+# fatal error.
 def implAtom = {/
-    parVarRef | parInt | parString | parList | parEmptyMap | parMap |
+    parVarRef | parInt | parString | parMap | parList | parEmptyMap
     parDeriv | parClosure | parParenExpression
 |
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
@@ -615,7 +635,7 @@ def parPostfixOperator = makeParseForwarder();
 # Parses a unary expression. This is an atom, optionally surrounded on
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
-def parUnaryExpression = {/
+def implUnaryExpression = {/
     prefixes = parPrefixOperator*
     base = parAtom
     postfixes = parPostfixOperator*
@@ -627,18 +647,7 @@ def parUnaryExpression = {/
             { op, result <> op(result) }
     }
 /};
-
-# Parses a possibly-voidable expression. This is done rather than including
-# `&` as a prefix operator, since it is valid in more limited contexts than
-# general expressions.
-def implVoidableExpression = {/
-    @"&"
-    ex = parUnaryExpression
-    { <> @[voidable: ex] }
-|
-    parExpression
-/};
-store(parVoidableExpression, implVoidableExpression);
+store(parUnaryExpression, implUnaryExpression);
 
 # `expression` from layer 0 is omitted here (it's forwarded earlier), and
 # `statement` and `nonlocalExit` are replaced with forwarded functions here.
