@@ -255,7 +255,6 @@ void assertAllHaveSameType(zint argCount, const zvalue *args) {
 
 /* Documented in header. */
 void assertHasType(zvalue value, zvalue typeOrName) {
-    assertValid(value);
     if (!hasType(value, typeOrName)) {
         die("Expected type %s; got %s.",
             valDebugString(typeOrName), valDebugString(value));
