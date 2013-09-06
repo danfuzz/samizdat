@@ -61,8 +61,8 @@ Layer 0. Handling of *unescaped* newlines is implemented in Layer 1.
 
 #### Maps
 
-In Layer 0, parenthesized comma-separated lists of keys are not
-recognized. This is implemented in Layer 2.
+In Layer 0, pipe-separated lists of keys are not recognized. This is
+implemented in Layer 2.
 
 #### Variable Definition
 
@@ -79,7 +79,7 @@ all in Layer 0. This is implemented in Layer 1.
 The only operators recognized in Layer 0 are:
 
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
-* `-expr` &mdash; Unary negation, strictly limited to operating on ints.
+* `-expr` &mdash; Unary negation.
 * `expr*` &mdash; Interpolation.
 * `<> expr` &mdash; Local yield.
 * `<out> exr` &mdash; Named nonlocal return.

@@ -42,17 +42,14 @@ fn processStringParts(parts) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-def tokOptWhitespace = pegMakeMainSequence(
-    pegMakeOpt(
-        pegMakeSequence(
-            pegMakeLookaheadSuccess(pegMakeCharSet("# \n", "/")),
-            pegMakeStar(
-                pegMakeChoice(
-                    pegMakePlus(pegMakeCharSet(" \n")),
-                    pegMakeSequence(
-                        pegMakeString("#"),
-                        pegMakeStar(pegMakeCharSetComplement("\n")),
-                        pegMakeOpt(pegMakeString("\n"))))))));
+def tokWhitespace = pegMakeMainSequence(
+    pegMakeLookaheadSuccess(pegMakeCharSet("# \n", "/")),
+    pegMakePlus(
+        pegMakeChoice(
+            pegMakePlus(pegMakeCharSet(" \n")),
+            pegMakeSequence(
+                pegMakeString("#"),
+                pegMakeStar(pegMakeCharSetComplement("\n"))))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokPunctuation = pegMakeMainSequence(
@@ -89,18 +86,12 @@ def tokStringPart = pegMakeMainChoice(
     pegMakeSequence(
         pegMakeString("\\"),
         pegMakeChoice(
-            pegMakeSequence(
-                pegMakeString("\\"), pegMakeResult("\\")),
-            pegMakeSequence(
-                pegMakeString("\""), pegMakeResult("\"")),
-            pegMakeSequence(
-                pegMakeString("n"),  pegMakeResult("\n")),
-            pegMakeSequence(
-                pegMakeString("r"),  pegMakeResult("\r")),
-            pegMakeSequence(
-                pegMakeString("t"),  pegMakeResult("\t")),
-            pegMakeSequence(
-                pegMakeString("0"),  pegMakeResult("\0")))));
+            pegMakeSequence(pegMakeString("\\"), pegMakeResult("\\")),
+            pegMakeSequence(pegMakeString("\""), pegMakeResult("\"")),
+            pegMakeSequence(pegMakeString("n"),  pegMakeResult("\n")),
+            pegMakeSequence(pegMakeString("r"),  pegMakeResult("\r")),
+            pegMakeSequence(pegMakeString("t"),  pegMakeResult("\t")),
+            pegMakeSequence(pegMakeString("0"),  pegMakeResult("\0")))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokString = pegMakeMainSequence(
@@ -133,7 +124,7 @@ def tokIdentifier = pegMakeMainSequence(
 def tokQuotedIdentifier = pegMakeMainSequence(
     pegMakeString("\\"),
     tokString,
-    pegMakeCode { ., s <> @[identifier: (dataOf(s))] });
+    pegMakeCode { ., s <> @[identifier: dataOf(s)] });
 
 # Documented in Samizdat Layer 0 spec.
 def tokError = pegMakeMainSequence(
@@ -157,9 +148,9 @@ def tokToken = pegMakeMainChoice(
 def tokFile = pegMakeMainSequence(
     pegMakeStar(
         pegMakeSequence(
-            tokOptWhitespace,
+            pegMakeOpt(tokWhitespace),
             tokToken)),
-    tokOptWhitespace,
+    pegMakeOpt(tokWhitespace),
     pegMakeCode { tokens, . <> tokens });
 
 

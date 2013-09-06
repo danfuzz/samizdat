@@ -122,7 +122,7 @@ static zvalue tokenizeIdentifier(ParseState *state) {
               ((ch >= 'a') && (ch <= 'z')) ||
               ((ch >= 'A') && (ch <= 'Z')))) {
             break;
-        } else if (size == sizeof(chars)) {
+        } else if (size == LANG_MAX_IDENTIFIER_CHARS) {
             die("Overlong identifier token.");
         }
 
@@ -166,7 +166,7 @@ static zvalue tokenizeString(ParseState *state) {
         } else if (ch == '\"') {
             read(state);
             break;
-        } else if (size == sizeof(chars)) {
+        } else if (size == LANG_MAX_STRING_CHARS) {
             die("Overlong string token.");
         } else if (ch == '\\') {
             read(state);

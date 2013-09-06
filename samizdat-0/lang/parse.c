@@ -8,6 +8,7 @@
 #include "impl.h"
 #include "type/List.h"
 #include "type/Map.h"
+#include "type/Number.h"
 #include "type/String.h"
 #include "type/Type.h"
 #include "type/Value.h"
@@ -304,7 +305,11 @@ zvalue parseCommaSequence(parserFunction rule, ParseState *state) {
             break;
         }
 
+        zstackPointer save = pbFrameStart();
         item = rule(state);
+
+        pbFrameReturn(save, item);
+
         if (item == NULL) {
             RESET();
             break;
@@ -334,6 +339,9 @@ DEF_PARSE(optSemicolons) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(programBody);
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(atom);
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression);
@@ -569,9 +577,15 @@ DEF_PARSE(fnExpression) {
 DEF_PARSE(int) {
     MARK();
 
-    zvalue intval = MATCH_OR_REJECT(int);
+    zvalue neg = MATCH(CH_MINUS);
+    zvalue intToken = MATCH_OR_REJECT(int);
 
-    return makeLiteral(dataOf(intval));
+    zvalue value = dataOf(intToken);
+    if (neg != NULL) {
+        value = GFN_CALL(neg, value);
+    }
+
+    return makeLiteral(value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -637,30 +651,36 @@ DEF_PARSE(emptyMap) {
 DEF_PARSE(keyAtom) {
     MARK();
 
-    zvalue k = PARSE(identifierString);
+    zvalue key = PARSE(identifierString);
 
-    if (k != NULL) {
-        if ((PEEK(CH_COLON) != NULL) || (PEEK(CH_CSQUARE) != NULL)) {
-            return k;
+    if (key != NULL) {
+        if (PEEK(CH_STAR) == NULL) {
+            return key;
         }
         RESET();
     }
 
-    return PARSE(expression);
+    key = PARSE_OR_REJECT(atom);
+
+    if (MATCH(CH_STAR) != NULL) {
+        return makeInterpolate(key);
+    } else {
+        return key;
+    }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(mapKey) {
+DEF_PARSE(key) {
     return PARSE(keyAtom);
 }
 
 /**
- * Helper for `mapping`: Parses `mapKey @":" expression`.
+ * Helper for `mapping`: Parses `key @":" expression`.
  */
 DEF_PARSE(mapping1) {
     MARK();
 
-    zvalue key = PARSE_OR_REJECT(mapKey);
+    zvalue key = PARSE_OR_REJECT(key);
     MATCH_OR_REJECT(CH_COLON);
     zvalue value = PARSE_OR_REJECT(expression);
 
@@ -674,10 +694,10 @@ DEF_PARSE(mapping1) {
 DEF_PARSE(mapping2) {
     MARK();
 
-    zvalue map = PARSE_OR_REJECT(expression);
-    REJECT_IF(!hasType(map, STR_interpolate));
+    zvalue map = PARSE_OR_REJECT(atom);
+    MATCH_OR_REJECT(CH_STAR);
 
-    return dataOf(map);
+    return map;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -716,7 +736,9 @@ DEF_PARSE(deriv1) {
 
     MATCH_OR_REJECT(CH_OSQUARE);
 
-    zvalue type = PARSE_OR_REJECT(keyAtom);
+    zvalue type = PARSE(identifierString);
+    if (type == NULL) { type = PARSE_OR_REJECT(atom); }
+
     zvalue result;
 
     if (MATCH(CH_COLON)) {
@@ -826,14 +848,6 @@ DEF_PARSE(actualsList) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(prefixOperator) {
-    // We differ from the spec here, merely returning a token if matched.
-    // The corresponding `unaryExpression` code just notes the number of
-    // minuses matched in order to make the right number of calls.
-    return MATCH(CH_MINUS);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(postfixOperator) {
     // We differ from the spec here, returning an actuals list directly
     // or a `*` token. The corresponding `unaryExpression` code decodes
@@ -849,7 +863,6 @@ DEF_PARSE(postfixOperator) {
 DEF_PARSE(unaryExpression) {
     MARK();
 
-    zvalue prefixes = PARSE_STAR(prefixOperator);
     zvalue result = PARSE_OR_REJECT(atom);
     zvalue postfixes = PARSE_STAR(postfixOperator);
 
@@ -862,15 +875,6 @@ DEF_PARSE(unaryExpression) {
             result = makeInterpolate(result);
         } else {
             die("Unexpected postfix.");
-        }
-    }
-
-    for (zint i = collSize(prefixes) - 1; i >= 0; i--) {
-        zvalue one = collNth(prefixes, i);
-        if (valEq(one, TOK_CH_MINUS)) {
-            result = makeCallName(STR_neg, listFrom1(result));
-        } else {
-            die("Unexpected prefix.");
         }
     }
 

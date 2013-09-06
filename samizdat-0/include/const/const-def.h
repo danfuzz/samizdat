@@ -59,7 +59,6 @@ STR(makeValue,      "makeValue");
 STR(makeValueMap,   "makeValueMap");
 STR(main_sam0,      "main.sam0");
 STR(name,           "name");
-STR(neg,            "neg");
 STR(nonlocalExit,   "nonlocalExit");
 STR(optValue,       "optValue");
 STR(repeat,         "repeat");
