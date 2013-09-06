@@ -62,6 +62,35 @@ typedef struct PbHeader {
 } PbHeader;
 
 /**
+ * Payload struct for type `Type`.
+ */
+typedef struct {
+    /** Parent type. Only allowed to be `NULL` for `Value`. */
+    zvalue parent;
+
+    /** Name of the type. Arbitrary value. */
+    zvalue name;
+
+    /** Access secret of the type. Optional, and arbitrary if present. */
+    zvalue secret;
+
+    /** Whether the type is derived. `false` indicates a core type. */
+    bool derived : 1;
+
+    /**
+     * Whether the type is "identified". `true` indicates that
+     * `valIdentityOf` will work on values of the type.
+     */
+    bool identified : 1;
+
+    /**
+     * Type identifier / index. Assigned upon initialization, in sequential
+     * order.
+     */
+    zint id;
+} TypeInfo;
+
+/**
  * Binds the standard methods for a derived type.
  */
 void derivBind(zvalue type);
@@ -90,7 +119,9 @@ zvalue genericFindByIndex(zvalue generic, zint index);
  * Gets the index for a given type value. The given value *must* be a
  * `Type` per se; this is *not* checked.
  */
-zint indexFromTrueType(zvalue type);
+inline zint indexFromTrueType(zvalue type) {
+    return ((TypeInfo *) pbPayload(type))->id;
+}
 
 /**
  * Gets the `Type` per se for the given value.

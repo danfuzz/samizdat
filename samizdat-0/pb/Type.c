@@ -22,35 +22,6 @@
  * Private Definitions
  */
 
-/**
- * Payload struct for type `Type`.
- */
-typedef struct {
-    /** Parent type. Only allowed to be `NULL` for `Value`. */
-    zvalue parent;
-
-    /** Name of the type. Arbitrary value. */
-    zvalue name;
-
-    /** Access secret of the type. Optional, and arbitrary if present. */
-    zvalue secret;
-
-    /** Whether the type is derived. `false` indicates a core type. */
-    bool derived : 1;
-
-    /**
-     * Whether the type is "identified". `true` indicates that
-     * `valIdentityOf` will work on values of the type.
-     */
-    bool identified : 1;
-
-    /**
-     * Type identifier / index. Assigned upon initialization, in sequential
-     * order.
-     */
-    zint id;
-} TypeInfo;
-
 /** Next type sequence number to assign. */
 static zint theNextId = 0;
 
@@ -230,25 +201,13 @@ static bool typeEq(zvalue type1, zvalue type2) {
     return (type1 == type2);
 }
 
-/**
- * Asserts that the value is a `Type`.
- */
-static void assertHasTypeType(zvalue value) {
-    if (!isType(value)) {
-        // Upon failure, use the regular implementation to produce the error.
-        assertHasType(value, TYPE_Type);
-    }
-}
-
 
 /*
  * Module Definitions
  */
 
 /* Documented in header. */
-zint indexFromTrueType(zvalue type) {
-    return getInfo(type)->id;
-}
+extern zint indexFromTrueType(zvalue type);
 
 /* Documented in header. */
 extern zvalue trueTypeOf(zvalue value);
