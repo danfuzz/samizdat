@@ -171,7 +171,8 @@ call itself yield void, instead of actually performing the call.
 This operator is *only* valid when placed directly before an argument
 to a function call, element of a list construction, or index argument
 to a `[]` expression (and not, e.g., embedded any deeper in any
-sort of expression).
+sort of expression). If the argument isn't a simple atom or a unary
+expression, then it must be placed in parentheses.
 
 #### Numeric negative &mdash; `-expression`
 
