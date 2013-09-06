@@ -756,8 +756,7 @@ def parParserSetString = {/
         {
             def startChar = dataOf(s);
             def endChar = dataOf(end);
-            <> ifIs
-                { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
+            <> ifIs { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
                 { <> cat(makeInclusiveRange(startChar, 1, endChar)*) }
         }
     |

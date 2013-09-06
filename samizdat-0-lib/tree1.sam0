@@ -403,9 +403,7 @@ def parActualsList = pegMakeMainChoice(
 def parPostfixOperator = pegMakeMainChoice(
     pegMakeSequence(
         parActualsList,
-        pegMakeCode { actuals ::
-            <> { node <> makeCall(node, actuals*) }
-        }),
+        pegMakeCode { actuals <> { node <> makeCall(node, actuals*) } }),
     pegMakeSequence(
         pegMakeToken("*"),
         pegMakeCode { . <> { node <> makeInterpolate(node) } }));
@@ -449,7 +447,7 @@ def parNonlocalExit = pegMakeMainSequence(
             pegMakeCode { ., n, . <> n }),
         pegMakeSequence(
             pegMakeToken("return"),
-            pegMakeCode { . <> makeVarRef("return") })),
+            pegMakeResult(makeVarRef("return")))),
     pegMakeOpt(parExpression),
     pegMakeCode { name, value ::
         <> makeCallNonlocalExit(name, value*)
@@ -540,8 +538,7 @@ def parParserSetString = pegMakeMainSequence(
             pegMakeCode { s, ., end ::
                 def startChar = dataOf(s);
                 def endChar = dataOf(end);
-                <> ifIs
-                    { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
+                <> ifIs { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
                     { <> cat(makeInclusiveRange(startChar, 1, endChar)*) }
             }),
         pegMakeCode { s <> dataOf(s) }));
