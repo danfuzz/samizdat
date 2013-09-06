@@ -20,9 +20,9 @@
 extern zvalue TYPE_Type;
 
 /**
- * Asserts that all the given arguments are valid `zvalue`s, and furthermore
- * that they all have the same type. If not, this aborts the process with a
- * diagnostic message.
+ * Asserts that all the given arguments have the same type. If not, this
+ * aborts the process with a diagnostic message. **Note:** This does not
+ * do a validity check on the values.
  */
 void assertAllHaveSameType(zint argCount, const zvalue *args);
 
@@ -33,13 +33,6 @@ void assertAllHaveSameType(zint argCount, const zvalue *args);
  * transparent derived type.
  */
 void assertHasType(zvalue value, zvalue type);
-
-/**
- * Asserts that the given two values are valid `zvalue`s, and furthermore
- * that they have the same type. If not, this aborts the process
- * with a diagnostic message.
- */
-void assertHaveSameType(zvalue v1, zvalue v2);
 
 /**
  * Gets a new core type, given its name. When given the same name twice, this
