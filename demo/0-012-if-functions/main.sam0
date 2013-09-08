@@ -15,7 +15,7 @@ SELF_PATH, ARGS* ::
 # Main demos
 #
 
-def opt1 = optValue { };
+def opt1 = optValue { <> };
 io0Note(sourceString(opt1));
 
 def opt2 = optValue { <> "Yes: opt" };
@@ -36,7 +36,7 @@ def v2 = ifValue { <> "Yes." }
     { io0Die("No.") };
 io0Note(v2);
 
-def v3 = ifValue { }
+def v3 = ifValue { <> }
     { value :: io0Die("No.") }
     {
         io0Note("Yes.");
@@ -44,7 +44,7 @@ def v3 = ifValue { }
     };
 io0Note(v3);
 
-def v4 = optValue { <> ifValue { } { value :: io0Die("No."); } };
+def v4 = optValue { <> ifValue { <> } { value :: io0Die("No."); } };
 io0Note(sourceString(v4));
 
 def v5 = ifIs { <> "Yes." }
@@ -56,18 +56,18 @@ def v6 = ifIs { <> "Yes." }
     { io0Die("No.") };
 io0Note(v6);
 
-def v7 = ifIs { }
+def v7 = ifIs { <> }
     { io0Die("No.") }
     { <> "Yes: v7" };
 io0Note(v7);
 
-def v8 = optValue { <> ifIs { } { io0Die("No.") } };
+def v8 = optValue { <> ifIs { <> } { io0Die("No.") } };
 io0Note(sourceString(v8));
 
 def v9 = optValue { <> ifNot { <> "Yes." } { io0Die("No.") } };
 io0Note(sourceString(v9));
 
-def v10 = ifNot { }
+def v10 = ifNot { <> }
     { <> "Yes: v10" };
 io0Note(v10);
 
@@ -77,7 +77,7 @@ def v11 = ifValueOr
 io0Note(v11);
 
 def v12 = ifValueOr
-    { }
+    { <> }
     { <> "Yes: v12" };
 io0Note(v12);
 
@@ -109,13 +109,13 @@ io0Note(v16);
 
 def v17 = ifValues(
     [
-        { }
+        { <> }
     ],
     { x :: io0Die("No.") },
     { <> "Yes: v17" });
 io0Note(v17);
 
-def v18 = optValue { <> ifValues([ { } ], { x :: io0Die("No.") }) };
+def v18 = optValue { <> ifValues([ { <> } ], { x :: io0Die("No.") }) };
 io0Note(sourceString(v18));
 
 def v19 = ifValues(
