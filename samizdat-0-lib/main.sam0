@@ -48,7 +48,7 @@ fn loadLibrary(ctx, name) {
 
     def text = readLibraryFile(name);
     def tree = treeFunction(text);
-    def function = evalFunction([ctx*, LIBRARY: ctx], tree);
+    def function = evalFunction([ctx*:, LIBRARY: ctx], tree);
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -57,7 +57,7 @@ fn loadLibrary(ctx, name) {
 
     # The end result is the addition of the new bindings to the original
     # context.
-    <> [:, ctx*, bindings*];
+    <> [ctx*:, bindings*:];
 };
 
 # Loads all of the named libraries, in order, allowing later libraries to
@@ -86,7 +86,7 @@ def MANIFEST = get(loadLibrary(LIBRARY, "manifest.sam0"), "MANIFEST");
 def CORE_LIBRARY = loadAllLibraries(LIBRARY, MANIFEST*);
 
 # "Manually" inline `makeLibrary` to produce the final core library.
-def FINAL_LIBRARY = [CORE_LIBRARY*, LIBRARY: CORE_LIBRARY];
+def FINAL_LIBRARY = [CORE_LIBRARY*:, LIBRARY: CORE_LIBRARY];
 
 io0Note("    [fin]");
 io0Note("");
