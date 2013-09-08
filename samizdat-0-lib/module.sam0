@@ -108,7 +108,7 @@ fn sortModules(modules) {
                     def importMap =
                         delAll([(dataGet(mod, "imports"))*: true],
                             independentNames*);
-                    <> @[mod: [(dataOf(mod))*, imports: keyList(importMap)]]
+                    <> @[mod: [(dataOf(mod))*:, imports: keyList(importMap)]]
                 }
         };
 
@@ -144,7 +144,7 @@ fn moduleInit(context) {
             <> ifValue { <> moduleNameFromString(name) }
                 { modName ::
                     assertModule(mod);
-                    <> @[module: [(dataOf(mod))*, name: modName]]
+                    <> @[module: [(dataOf(mod))*:, name: modName]]
                 }
         };
 
@@ -174,7 +174,7 @@ fn moduleInit(context) {
                     # It's a pre-initialized module.
                     <> mod
                 };
-            <> [initted*, (name): newMod]
+            <> [initted*:, (name): newMod]
         }
 };
 

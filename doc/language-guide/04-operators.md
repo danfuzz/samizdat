@@ -77,7 +77,7 @@ equivalent to `(x.foo)(bar, baz)`.
 This is the preferred syntax to use for applying a method or method-like
 function to a target.
 
-#### Access collection &mdash; `expression[index, index, ...]`
+#### Access collection &mdash; `expression[index]`
 
 To index into a collection (e.g., a list, map, or string) or collection-like
 value, by integer index (e.g., for a list or string) or arbitrary key value
@@ -87,18 +87,31 @@ expression is the value "located" at the indicated index within the
 collection, or void if the indicated element does not exist (e.g., index out
 of range or key not in map).
 
-Within the brackets, one can list as many indices as there are dimensions
-in the collection. Note that the core collection types are all
-single-dimensioned. As with function calls, a star after an index expression
-indicates interpolation.
+As with function calls, a star after an index expression indicates
+interpolation. However, it is only ever valid to include one index.
 
-The expression to index into and all of the indices must be non-void, except
-that index expressions can be marked with a `&` prefix to indicate void
+The expression to index into and the index must both be non-void, except
+that an index expression can be marked with a `&` prefix to indicate void
 contagion (see which for details).
 
 A collection access expression is identical to a function call of `get`
 with the value to be accessed as the argument. That is, `x[y]` means
 the same thing as `x.get(y)`.
+
+#### Access collection with string key &mdash; `expression:name`
+
+If the key to use to access a collection is a string literal, then
+instead of placing it in square brackets, it can be placed after a
+colon. Furthermore, if the string fits the syntax of an in-language
+identifier, then it is valid to omit the quotes.
+
+For example, all of these are equivalent:
+
+```
+someExpression["blort"]
+someExpression:"blort"
+someExpression:blort
+```
 
 #### Convert Value-or-void to list &mdash; `expression?`
 
@@ -171,7 +184,8 @@ call itself yield void, instead of actually performing the call.
 This operator is *only* valid when placed directly before an argument
 to a function call, element of a list construction, or index argument
 to a `[]` expression (and not, e.g., embedded any deeper in any
-sort of expression).
+sort of expression). If the argument isn't a simple atom or a unary
+expression, then it must be placed in parentheses.
 
 #### Numeric negative &mdash; `-expression`
 

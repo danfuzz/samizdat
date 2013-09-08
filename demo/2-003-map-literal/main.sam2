@@ -39,7 +39,7 @@ msg([["f", "u", "z"]*: "muffins"]);
 io0Note("\nLayer 2...");
 
 msg([("0".."9")*: "woo"]);
-msg([:, [(0..6)*: "blort"]*, [(5..9)*: "fizmo"]*]);
+msg([[(0..6)*: "blort"]*:, [(5..9)*: "fizmo"]*:]);
 msg(["a" | "b": 10]);
 msg([a | b: 20]);
 msg([true | (true): 30]);
