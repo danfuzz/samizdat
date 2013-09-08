@@ -347,7 +347,7 @@ DEF_PARSE(atom);
 DEF_PARSE(expression);
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(voidableExpression);
+DEF_PARSE(unaryExpression);
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(yieldDef) {
@@ -617,26 +617,6 @@ DEF_PARSE(identifierString) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(unadornedList) {
-    return PARSE_COMMA_SEQ(voidableExpression);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(list) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    zvalue expressions = PARSE(unadornedList);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    if (collSize(expressions) == 0) {
-        return makeLiteral(EMPTY_LIST);
-    } else {
-        return makeCallName(STR_makeList, expressions);
-    }
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(emptyMap) {
     MARK();
 
@@ -696,6 +676,7 @@ DEF_PARSE(mapping2) {
 
     zvalue map = PARSE_OR_REJECT(atom);
     MATCH_OR_REJECT(CH_STAR);
+    MATCH_OR_REJECT(CH_COLON);
 
     return map;
 }
@@ -716,16 +697,54 @@ DEF_PARSE(map) {
 
     MATCH_OR_REJECT(CH_OSQUARE);
 
-    if (MATCH(CH_COLON)) {
-        MATCH_OR_REJECT(CH_COMMA);
-    }
-
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
     zint size = collSize(mappings);
     REJECT_IF(size == 0);
     MATCH_OR_REJECT(CH_CSQUARE);
 
     return makeCallName(STR_cat, mappings);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(listItem) {
+    MARK();
+
+    if (PARSE(key) && MATCH(CH_COLON)) {
+        die("Mapping syntax not valid as a list item or call argument.");
+    }
+
+    RESET();
+
+    if (MATCH(CH_AND)) {
+        zvalue ex = PARSE(unaryExpression);
+        if (ex != NULL) {
+            return makeTransValue(STR_voidable, ex);
+        }
+    }
+
+    RESET();
+
+    return PARSE(expression);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(unadornedList) {
+    return PARSE_COMMA_SEQ(listItem);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+DEF_PARSE(list) {
+    MARK();
+
+    MATCH_OR_REJECT(CH_OSQUARE);
+    zvalue expressions = PARSE(unadornedList);
+    MATCH_OR_REJECT(CH_CSQUARE);
+
+    if (collSize(expressions) == 0) {
+        return makeLiteral(EMPTY_LIST);
+    } else {
+        return makeCallName(STR_makeList, expressions);
+    }
 }
 
 /**
@@ -823,9 +842,9 @@ DEF_PARSE(atom) {
     if (result == NULL) { result = PARSE(varRef); }
     if (result == NULL) { result = PARSE(int); }
     if (result == NULL) { result = PARSE(string); }
+    if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(list); }
     if (result == NULL) { result = PARSE(emptyMap); }
-    if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(deriv); }
     if (result == NULL) { result = PARSE(closure); }
     if (result == NULL) { result = PARSE(parenExpression); }
@@ -879,20 +898,6 @@ DEF_PARSE(unaryExpression) {
     }
 
     return result;
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(voidableExpression) {
-    MARK();
-
-    bool voidable = (MATCH(CH_AND) != NULL);
-    zvalue ex = PARSE_OR_REJECT(unaryExpression);
-
-    if (voidable) {
-        return makeTransValue(STR_voidable, ex);
-    } else {
-        return ex;
-    }
 }
 
 /* Documented in Samizdat Layer 0 spec. */
