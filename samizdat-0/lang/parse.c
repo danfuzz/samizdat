@@ -709,7 +709,7 @@ DEF_PARSE(map) {
 DEF_PARSE(listItem) {
     MARK();
 
-    if (PARSE(key) && MATCH(CH_COLON)) {
+    if (PARSE(identifierString) && MATCH(CH_COLON)) {
         die("Mapping syntax not valid as a list item or call argument.");
     }
 

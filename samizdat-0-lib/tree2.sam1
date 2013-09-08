@@ -113,7 +113,8 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, [:]);
 def UNARY_OPERATORS = [
     "-":   makeVarRef("neg"),
     "!!!": makeVarRef("not"),
-    "[]":  makeVarRef("get")
+    "[]":  makeVarRef("get"),
+    ":":   makeVarRef("get")
 ];
 
 # For binary operators, map of token types to function name variable references.
@@ -524,7 +525,7 @@ def parMap = {/
 #   effectively "reserved syntax" (for future expansion); rejecting this
 #   here means that `x:y` won't be mistaken for other valid syntax.
 def parListItem = {/
-    parKey
+    parIdentifierString
     @":"
     { io0Die("Mapping syntax not valid as a list item or call argument.") }
 |
@@ -1130,6 +1131,12 @@ def implPostfixOperator = {/
     |
         { <> { node <> makeCall(get(UNARY_OPERATORS, "[]"), node, exprs*) } }
     )
+|
+    # This is sorta-kinda a binary operator, but in terms of precedence it
+    # fits better here.
+    @":"
+    key = parIdentifierString
+    { <> { node <> makeCall(get(UNARY_OPERATORS, ":"), node, key) } }
 |
     # This translates as something like the following. Note that the
     # second translation has to use a closure to keep the order of evaluation

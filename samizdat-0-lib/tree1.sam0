@@ -322,7 +322,7 @@ def parMap = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 def parListItem = pegMakeMainChoice(
     pegMakeSequence(
-        parKey,
+        parIdentifierString,
         pegMakeToken(":"),
         pegMakeCode { ., . ::
             io0Die("Mapping syntax not valid as a list item or call argument.")
