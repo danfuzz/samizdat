@@ -116,7 +116,7 @@ fn convertPexCode(node, formals) {
     # Use the lexical `formals` context to make a regular closure node,
     # and just convert that.
 
-    def closurePayload = [(dataOf(node))*, formals: formals];
+    def closurePayload = [(dataOf(node))*:, formals: formals];
     def convertedClosure = convertExpression(@[closure: closurePayload]);
 
     <> callNameWithExpressions("pegMakeCode", convertedClosure)
@@ -186,7 +186,7 @@ fn convertCall(node) {
     def function = convertExpression(get(nodeValue, "function"));
     def actuals = convertList(get(nodeValue, "actuals"));
 
-    <> @[call: [nodeValue*, function: function, actuals: actuals]]
+    <> @[call: [nodeValue*:, function: function, actuals: actuals]]
 };
 
 # Does parser conversion of a `closure` or `fnDef` node.
@@ -198,7 +198,7 @@ fn convertClosureLike(node) {
         { yield <> [yield: convertExpression(yield)] }
         { <> [:] };
 
-    <> @[(nodeType): [nodeValue*, yield*, statements: statements]]
+    <> @[(nodeType): [nodeValue*:, yield*:, statements: statements]]
 };
 
 # Does parser conversion of a node whose payload value is an
@@ -216,7 +216,7 @@ fn convertVarDef(node) {
     def nodeValue = dataOf(node);
     def value = convertExpression(get(nodeValue, "value"));
 
-    <> @[varDef: [nodeValue*, value: value]]
+    <> @[varDef: [nodeValue*:, value: value]]
 };
 
 # Does no-op node conversion.

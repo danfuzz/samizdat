@@ -108,7 +108,7 @@ expectSame([a: 10], ["a": 10]);
 expectSame([[:]: [:]], [[:]: [:]]);
 expectSame([x: 5, y: 7], [y: 7, x: 5]);
 expectSame([["x", "y", "z"]*: "blort"], [x: "blort", y: "blort", z: "blort"]);
-expectSame([[a: 1]*, b: 2], [a: 1, b: 2]);
+expectSame([[a: 1]*:, b: 2], [a: 1, b: 2]);
 expectSame(cat([10: 1], [30: 3], [20: 2]), [10: 1, 20: 2, 30: 3]);
 expectSame(nth([a: 10, b: 20], 0), [a: 10]);
 

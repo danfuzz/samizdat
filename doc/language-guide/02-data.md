@@ -162,10 +162,7 @@ In addition, a pipe-separated list of keys (including interpolations)
 can be used in the key position.
 
 An entire other map can be interpolated into a new map by naming the
-map to interpolate followed by a `*`. To avoid ambiguity between a
-list and a map that is just full of interpolation, a map may optionally
-start with a "degenerate" element of just `:` (as demonstrated in the
-final example below).
+map to interpolate followed by `*:`.
 
 To avoid ambiguity with the empty list, the empty map is
 written as `[:]`.
@@ -198,8 +195,8 @@ written as `[:]`.
 
 # These are all equivalent.
 [first: 1, second: 2, third: 3]
-[first: 1, [second: 2, third: 3]*]
-[:, [first: 1]*, [second: 2, third: 3]*]
+[first: 1, [second: 2, third: 3]*:]
+[[first: 1]*:, [second: 2, third: 3]*:]
 ```
 
 #### Builtin

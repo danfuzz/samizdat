@@ -17,7 +17,7 @@ fn makeCollectionGenerator(coll, optIndex?) {
         { index <> [index: index] }
         { <> [:] };
 
-    <> @[CollectionGenerator: [collection: coll, indexMap*]]
+    <> @[CollectionGenerator: [collection: coll, indexMap*:]]
 };
 
 # Documented in spec.

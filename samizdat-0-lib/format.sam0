@@ -126,7 +126,7 @@ def IDENTIFIER_STARTS = [
 
 # These are all the characters which are allowed to be in an identifier.
 def IDENTIFIER_CHARS = [
-    IDENTIFIER_STARTS*,
+    IDENTIFIER_STARTS*:,
     "0123456789"*: true
 ];
 
