@@ -49,7 +49,12 @@ def tokWhitespace = pegMakeMainSequence(
             pegMakePlus(pegMakeCharSet(" \n")),
             pegMakeSequence(
                 pegMakeString("#"),
-                pegMakeStar(pegMakeCharSetComplement("\n"))))));
+                pegMakeChoice(
+                    pegMakeSequence(
+                        pegMakeCharSet("#! "),
+                        pegMakeStar(pegMakeCharSetComplement("\n"))),
+                    pegMakeString("\n"),
+                    pegEof)))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokPunctuation = pegMakeMainSequence(

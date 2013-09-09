@@ -65,7 +65,14 @@ def tokWhitespace = {/
     (
         [" " "\n"]+
     |
-        "#" [! "\n"]*
+        "#"
+        (
+            (["#! "] [! "\n"]*)
+        |
+            "\n"
+        |
+            !.
+        )
     |
         # Introduced in *Layer 2*.
         &"/*" # Avoid calling the rule unless we know it will match.
