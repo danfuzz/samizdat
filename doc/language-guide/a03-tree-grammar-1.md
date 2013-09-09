@@ -634,6 +634,15 @@ def parProgramOrError = {/
 # Forward declaration.
 def parChoicePex = makeParseForwarder();
 
+# Map from parser tokens to derived value types for pexes.
+def PEX_TYPES = [
+    "&": "lookaheadSuccess",
+    "!": "lookaheadFailure",
+    "?": "opt",
+    "*": "star",
+    "+": "plus"
+];
+
 # Parses a parser function.
 def implParser = {/
     @"{/"
@@ -679,8 +688,7 @@ def parParserSetString = {/
         {
             def startChar = dataOf(s);
             def endChar = dataOf(end);
-            <> ifIs
-                { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
+            <> ifIs { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
                 { <> cat(makeInclusiveRange(startChar, 1, endChar)*) }
         }
     |
@@ -693,9 +701,9 @@ def parParserSet = {/
     @"["
 
     type = (
-        @"!" { <> "[!]" }
+        @"!" { <> "tokenSetComplement" }
     |
-        { <> "[]" }
+        { <> "tokenSet" }
     )
 
     terminals = (
@@ -716,16 +724,17 @@ def parParserSet = {/
 # Parses a code block parsing expression.
 def parParserCode = {/
     closure = parNullaryClosure
-    { <> @["{}": dataOf(closure) ] }
+    { <> @[code: dataOf(closure) ] }
 /};
 
 # Parses an atomic parsing expression.
 def parParserAtom = {/
     @"."
+    { <> @any }
 |
     @"("
     @")"
-    { <> @"()" }
+    { <> @empty }
 |
     parVarRef | parParserString | parParserToken | parParserSet |
     parParserCode | parParenPex
@@ -736,7 +745,7 @@ def parRepeatPex = {/
     atom = parParserAtom
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(typeOf(repeat)): atom] }
+        { <> @[(get(PEX_TYPES, typeOf(repeat))): atom] }
     |
         { <> atom }
     )
@@ -748,7 +757,7 @@ def parLookaheadPex = {/
     (
         lookahead = [@"&" @"!"]
         pex = parRepeatPex
-        { <> @[(typeOf(lookahead)): pex] }
+        { <> @[(get(PEX_TYPES, typeOf(lookahead))): pex] }
     )
 |
     parRepeatPex

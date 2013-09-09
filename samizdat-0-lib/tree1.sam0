@@ -508,6 +508,15 @@ def parProgramOrError = pegMakeMainSequence(
 # `choicePex` is the top-level parsing expression node type.
 def parChoicePex = makeParseForwarder();
 
+# Map from parser tokens to derived value types for pexes.
+def PEX_TYPES = [
+    "&": "lookaheadSuccess",
+    "!": "lookaheadFailure",
+    "?": "opt",
+    "*": "star",
+    "+": "plus"
+];
+
 def implParser = pegMakeMainSequence(
     pegMakeToken("{/"),
     parChoicePex,
@@ -554,8 +563,8 @@ def parParserSet = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeToken("!"),
-            pegMakeResult("[!]")),
-        pegMakeResult("[]")),
+            pegMakeResult("tokenSetComplement")),
+        pegMakeResult("tokenSet")),
     pegMakeChoice(
         pegMakeMainSequence(
             pegMakePlus(parParserSetString),
@@ -569,14 +578,16 @@ def parParserSet = pegMakeMainSequence(
 
 def parParserCode = pegMakeMainSequence(
     parNullaryClosure,
-    pegMakeCode { closure <> @["{}": dataOf(closure)] });
+    pegMakeCode { closure <> @[code: dataOf(closure)] });
 
 def parParserAtom = pegMakeMainChoice(
-    pegMakeToken("."),
+    pegMakeSequence(
+        pegMakeToken("."),
+        pegMakeResult(@any)),
     pegMakeSequence(
         pegMakeToken("("),
         pegMakeToken(")"),
-        pegMakeResult(@"()")),
+        pegMakeResult(@empty)),
     parVarRef,
     parParserString,
     parParserToken,
@@ -589,14 +600,18 @@ def parRepeatPex = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeTokenSet("?", "*", "+"),
-            pegMakeCode { atom, repeat <> @[(typeOf(repeat)): atom] }),
+            pegMakeCode { atom, repeat <>
+                @[(get(PEX_TYPES, typeOf(repeat))): atom]
+            }),
         pegMakeCode { atom <> atom }));
 
 def parLookaheadPex = pegMakeMainChoice(
     pegMakeSequence(
         pegMakeTokenSet("&", "!"),
         parRepeatPex,
-        pegMakeCode { lookahead, pex <> @[(typeOf(lookahead)): pex] }),
+        pegMakeCode { lookahead, pex <>
+            @[(get(PEX_TYPES, typeOf(lookahead))): pex]
+        }),
     parRepeatPex);
 
 def parNamePex = pegMakeMainChoice(
