@@ -105,31 +105,31 @@ fn varRef_convertPex(node, formals) {
 };
 genericBind(convertPex, "varRef", varRef_convertPex);
 
-# Converts a `.` pex node.
+# Converts an `any` pex node.
 fn any_convertPex(node, formals) {
     <> @[varRef: "pegAny"]
 };
-genericBind(convertPex, ".", any_convertPex);
+genericBind(convertPex, "any", any_convertPex);
 
-# Converts an `()` pex node.
+# Converts an `empty` pex node.
 fn empty_convertPex(node, formals) {
     <> @[varRef: "pegEmpty"]
 };
-genericBind(convertPex, "()", empty_convertPex);
+genericBind(convertPex, "empty", empty_convertPex);
 
-# Converts a `[]` pex node.
-fn set_convertPex(node, formals) {
+# Converts a `tokenSet` pex node.
+fn tokenSet_convertPex(node, formals) {
     <> callNameWithLiterals("pegMakeTokenSet", dataOf(node)*)
 };
-genericBind(convertPex, "[]", set_convertPex);
+genericBind(convertPex, "tokenSet", tokenSet_convertPex);
 
-# Converts a `[!]` pex node.
-fn setComplement_convertPex(node, formals) {
+# Converts a `tokenSetComplement` pex node.
+fn tokenSetComplement_convertPex(node, formals) {
     <> callNameWithLiterals("pegMakeTokenSetComplement", dataOf(node)*);
 };
-genericBind(convertPex, "[!]", setComplement_convertPex);
+genericBind(convertPex, "tokenSetComplement", tokenSetComplement_convertPex);
 
-# Converts a `{}` pex node.
+# Converts a `code` pex node.
 fn code_convertPex(node, formals) {
     # Use the lexical `formals` context to make a regular closure node,
     # and just convert that.
@@ -139,37 +139,37 @@ fn code_convertPex(node, formals) {
 
     <> callNameWithExpressions("pegMakeCode", convertedClosure)
 };
-genericBind(convertPex, "{}", code_convertPex);
+genericBind(convertPex, "code", code_convertPex);
 
-# Converts a `&` pex node.
+# Converts a `lookaheadSuccess` pex node.
 fn lookaheadSuccess_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeLookaheadSuccess")
 };
-genericBind(convertPex, "&", lookaheadSuccess_convertPex);
+genericBind(convertPex, "lookaheadSuccess", lookaheadSuccess_convertPex);
 
-# Converts a `!` pex node.
+# Converts a `lookaheadFailure` pex node.
 fn lookaheadFailure_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeLookaheadFailure")
 };
-genericBind(convertPex, "!", lookaheadFailure_convertPex);
+genericBind(convertPex, "lookaheadFailure", lookaheadFailure_convertPex);
 
-# Converts a `?` pex node.
+# Converts an `opt` pex node.
 fn opt_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeOpt")
 };
-genericBind(convertPex, "?", opt_convertPex);
+genericBind(convertPex, "opt", opt_convertPex);
 
-# Converts a `*` pex node.
+# Converts a `star` pex node.
 fn star_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeStar")
 };
-genericBind(convertPex, "*", star_convertPex);
+genericBind(convertPex, "star", star_convertPex);
 
-# Converts a `+` pex node.
+# Converts a `plus` pex node.
 fn plus_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakePlus")
 };
-genericBind(convertPex, "+", plus_convertPex);
+genericBind(convertPex, "plus", plus_convertPex);
 
 
 #
