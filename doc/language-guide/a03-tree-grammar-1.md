@@ -228,8 +228,7 @@ def parCodeOnlyClosure = {/
 #
 # * no yield def binding statement if an explicit yield def was not present.
 #
-# * the key `name` bound to the function name, if a name was defined. (This
-#   is not representable in lower-layer surface syntax.)
+# * the key `name` bound to the function name, if a name was defined.
 def parFnCommon = {/
     @fn
 
