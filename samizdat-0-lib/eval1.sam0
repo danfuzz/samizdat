@@ -11,17 +11,17 @@
 # Private Definitions
 #
 
-# `convertNode(node)`, used to convert a layer 1 expression or statement
-# node into an equivalent layer 0 node.
-def convertNode = makeRegularGeneric("convertNode", 1, 1);
-
 # `convertPex(node, formals)`, used to expand pex nodes into expression
 # or statement nodes.
 def convertPex = makeRegularGeneric("convertPex", 2, 2);
 
+# `convertPexIn(node)`, used to convert a layer 1 expression or statement
+# node into an equivalent layer 0 node.
+def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
+
 # Does parser conversion of an expression or statement list.
-fn convertList(nodes) {
-    <> filterAll(nodes) { node <> convertNode(node) }
+fn convertPexInList(nodes) {
+    <> filterAll(nodes) { node <> convertPexIn(node) }
 };
 
 # Constructs a function call.
@@ -135,7 +135,7 @@ fn code_convertPex(node, formals) {
     # and just convert that.
 
     def closurePayload = [(dataOf(node))*:, formals: formals];
-    def convertedClosure = convertNode(@[closure: closurePayload]);
+    def convertedClosure = convertPexIn(@[closure: closurePayload]);
 
     <> callNameWithExpressions("pegMakeCode", convertedClosure)
 };
@@ -173,16 +173,16 @@ genericBind(convertPex, "plus", plus_convertPex);
 
 
 #
-# Other Private Definitions
+# `convertPexIn` bindings
 #
 
 # Does parser conversion of a `closure` or `fnDef` node.
 fn convertClosureLike(node) {
     def nodeType = typeOf(node);
     def nodeValue = dataOf(node);
-    def statements = convertList(get(nodeValue, "statements"));
+    def statements = convertPexInList(get(nodeValue, "statements"));
     def yield = ifValue { <> get(nodeValue, "yield") }
-        { yield <> [yield: convertNode(yield)] }
+        { yield <> [yield: convertPexIn(yield)] }
         { <> [:] };
 
     <> @[(nodeType): [nodeValue*:, yield*:, statements: statements]]
@@ -193,78 +193,78 @@ fn convertClosureLike(node) {
 # `interpolate` nodes.
 fn convertExpressionPayload(node) {
     def nodeType = typeOf(node);
-    def nodeValue = convertNode(dataOf(node));
+    def nodeValue = convertPexIn(dataOf(node));
 
     <> @[(nodeType): nodeValue]
 };
 
 # Does parser conversion of a `call` node.
-fn call_convertNode(node) {
+fn call_convertPexIn(node) {
     def nodeValue = dataOf(node);
-    def function = convertNode(get(nodeValue, "function"));
-    def actuals = convertList(get(nodeValue, "actuals"));
+    def function = convertPexIn(get(nodeValue, "function"));
+    def actuals = convertPexInList(get(nodeValue, "actuals"));
 
     <> @[call: [nodeValue*:, function: function, actuals: actuals]]
 };
-genericBind(convertNode, "call", call_convertNode);
+genericBind(convertPexIn, "call", call_convertPexIn);
 
 # Does parser conversion of a `closure` node.
-fn closure_convertNode(node) {
+fn closure_convertPexIn(node) {
     <> convertClosureLike(node)
 };
-genericBind(convertNode, "closure", closure_convertNode);
+genericBind(convertPexIn, "closure", closure_convertPexIn);
 
 # Does parser conversion of an `expression` node.
-fn expression_convertNode(node) {
+fn expression_convertPexIn(node) {
     <> convertExpressionPayload(node)
 };
-genericBind(convertNode, "expression", expression_convertNode);
+genericBind(convertPexIn, "expression", expression_convertPexIn);
 
 # Does parser conversion of a `fnDef` node.
-fn fnDef_convertNode(node) {
+fn fnDef_convertPexIn(node) {
     <> convertClosureLike(node)
 };
-genericBind(convertNode, "fnDef", fnDef_convertNode);
+genericBind(convertPexIn, "fnDef", fnDef_convertPexIn);
 
 # Does parser conversion of an `interpolate` node.
-fn interpolate_convertNode(node) {
+fn interpolate_convertPexIn(node) {
     <> convertExpressionPayload(node)
 };
-genericBind(convertNode, "interpolate", interpolate_convertNode);
+genericBind(convertPexIn, "interpolate", interpolate_convertPexIn);
 
 # Does parser conversion of a `literal` node.
-fn literal_convertNode(node) {
+fn literal_convertPexIn(node) {
     <> node
 };
-genericBind(convertNode, "literal", literal_convertNode);
+genericBind(convertPexIn, "literal", literal_convertPexIn);
 
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
-fn parser_convertNode(node) {
+fn parser_convertPexIn(node) {
     <> callNameWithPex(node, [], "pegMakeMainSequence")
 };
-genericBind(convertNode, "parser", parser_convertNode);
+genericBind(convertPexIn, "parser", parser_convertPexIn);
 
 # Does parser conversion of a `varDef` node.
-fn varDef_convertNode(node) {
+fn varDef_convertPexIn(node) {
     def nodeValue = dataOf(node);
-    def value = convertNode(get(nodeValue, "value"));
+    def value = convertPexIn(get(nodeValue, "value"));
 
     <> @[varDef: [nodeValue*:, value: value]]
 };
-genericBind(convertNode, "varDef", varDef_convertNode);
+genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 
 # Does parser conversion of a `varRef` node.
-fn varRef_convertNode(node) {
+fn varRef_convertPexIn(node) {
     <> node
 };
-genericBind(convertNode, "varRef", varRef_convertNode);
+genericBind(convertPexIn, "varRef", varRef_convertPexIn);
 
 # Does parser conversion of a `voidable` node.
-fn voidable_convertNode(node) {
+fn voidable_convertPexIn(node) {
     <> convertExpressionPayload(node)
 };
-genericBind(convertNode, "voidable", voidable_convertNode);
+genericBind(convertPexIn, "voidable", voidable_convertPexIn);
 
 
 #
@@ -273,7 +273,7 @@ genericBind(convertNode, "voidable", voidable_convertNode);
 
 # Documented in Samizdat Layer 0 spec.
 fn sam1Eval(context, expressionNode) {
-    def convertedNode = convertNode(expressionNode);
+    def convertedNode = convertPexIn(expressionNode);
     <> sam0Eval(context, convertedNode)
 };
 
