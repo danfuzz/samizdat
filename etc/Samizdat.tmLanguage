@@ -191,6 +191,60 @@
 				</dict>
 			</array>
 		</dict>
+		<key>map-body</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#recursive-comment</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>string.unquoted</string>
+					<key>match</key>
+					<string>[_a-zA-Z][_a-zA-Z0-9]*</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#simple-constants</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator</string>
+					<key>match</key>
+					<string>\|</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>meta.parens.samizdat</string>
+					<key>begin</key>
+					<string>\(</string>
+					<key>end</key>
+					<string>\)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>:</string>
+					<key>end</key>
+					<string>,|(?=\])</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
 		<key>block-body</key>
 		<dict>
 			<key>patterns</key>
@@ -205,11 +259,71 @@
 				</dict>
 				<dict>
 					<key>name</key>
+					<string>keyword.control</string>
+					<key>match</key>
+					<string>(?x)
+						\b(
+						break|continue|default|do|else|
+						for|if|return|switch|while
+						)\b
+					</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>keyword.definition</string>
+					<key>match</key>
+					<string>(?x)
+						\b(
+						def|export|fn|import|in|module|var
+						)\b
+					</string>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>constant.language</string>
+					<key>match</key>
+					<string>(?x)
+						\b(true|false|null|nullBox|nullGenerator)\b |
+						\[\] | \[:\]
+					</string>
+				</dict>
+				<dict>
+					<key>name</key>
 					<string>meta.parens.samizdat</string>
 					<key>begin</key>
 					<string>\(</string>
 					<key>end</key>
 					<string>\)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#block-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>meta.collection.samizdat</string>
+					<key>begin</key>
+					<string>@?\[(?=.*:)</string>
+					<key>end</key>
+					<string>\]</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#map-body</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>name</key>
+					<string>meta.collection.samizdat</string>
+					<key>begin</key>
+					<string>\[</string>
+					<key>end</key>
+					<string>\]</string>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -240,21 +354,6 @@
 					<string>\{</string>
 					<key>end</key>
 					<string>\}</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>include</key>
-							<string>#block-body</string>
-						</dict>
-					</array>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>meta.collection.samizdat</string>
-					<key>begin</key>
-					<string>\[</string>
-					<key>end</key>
-					<string>\]</string>
 					<key>patterns</key>
 					<array>
 						<dict>
@@ -313,23 +412,6 @@
 					<string>([a-zA-Z_.][^:@"{}()\[\]]*) *(::|(?=&lt;&gt;))</string>
 				</dict>
 				<dict>
-					<key>captures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>string.unquoted</string>
-						</dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.definition</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>([_a-zA-Z][_a-zA-Z0-9]*)(:)</string>
-				</dict>
-				<dict>
 					<key>name</key>
 					<string>variable.parameter</string>
 					<key>match</key>
@@ -361,36 +443,6 @@
 					</dict>
 					<key>match</key>
 					<string>(fn)  *([_a-zA-Z][_a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>keyword.control</string>
-					<key>match</key>
-					<string>(?x)
-						\b(
-						break|continue|default|do|else|
-						for|if|return|switch|while
-						)\b
-					</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>keyword.definition</string>
-					<key>match</key>
-					<string>(?x)
-						\b(
-						def|export|fn|import|in|module|var
-						)\b
-					</string>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>constant.language</string>
-					<key>match</key>
-					<string>(?x)
-						\b(true|false|null|nullBox|nullGenerator)\b |
-						\[\] | \[:\]
-					</string>
 				</dict>
 				<dict>
 					<key>name</key>
