@@ -390,9 +390,14 @@
 							<key>name</key>
 							<string>punctuation.definition.comment</string>
 						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.comment</string>
+						</dict>
 					</dict>
 					<key>match</key>
-					<string>(#+).*$</string>
+					<string>(#[! ]|###*).*$|(#)$</string>
 				</dict>
 				<dict>
 					<key>captures</key>

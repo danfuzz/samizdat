@@ -25,7 +25,12 @@ with any other expressions in the language.
 Samizdat has both single-line and multi-line comments.
 
 A single-line comment starts with a number sign (`#`) and continues to the
-end of the line it appears on.
+end of the line it appears on. To be considered a comment, in addition one
+of the following must be the case:
+
+* It is the final character on its line (or in the file).
+* It is followed by one of the characters `#` `!` or ` ` (another number
+  sign, an exclamation mark, or a space).
 
 ```
 #

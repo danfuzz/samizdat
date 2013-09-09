@@ -55,19 +55,41 @@ static zint read(ParseState *state) {
 }
 
 /**
+ * Skips a single-line comment.
+ */
+static void skipComment(ParseState *state) {
+    read(state); // Skip the initial `#`.
+
+    if (isEof(state)) {
+        // `#` at end-of-file.
+        return;
+    }
+
+    zint ch = read(state);
+
+    if (ch == '\n') {
+        // `#` at end-of-line.
+        return;
+    } else if ((ch != '#') && (ch != '!') && (ch != ' ')) {
+        die("Invalid character after `#`: %c", (char) ch);
+    }
+
+    while (!isEof(state)) {
+        if (read(state) == '\n') {
+            break;
+        }
+    }
+}
+
+/**
  * Skips whitespace.
  */
 static void skipWhitespace(ParseState *state) {
     while (!isEof(state)) {
         zint ch = peek(state);
+
         if (ch == '#') {
-            read(state);
-            while (!isEof(state)) {
-                ch = read(state);
-                if (ch == '\n') {
-                    break;
-                }
-            }
+            skipComment(state);
         } else if ((ch != ' ') && (ch != '\n')) {
             break;
         } else {
