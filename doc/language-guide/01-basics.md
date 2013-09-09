@@ -29,7 +29,7 @@ end of the line it appears on. To be considered a comment, in addition one
 of the following must be the case:
 
 * It is the final character on its line (or in the file).
-* It is followed by one of the characters `#` `!` or ` ` (another number
+* It is followed by one of the characters `#` `!` or <code>&nbsp;</code> (another number
   sign, an exclamation mark, or a space).
 
 ```
