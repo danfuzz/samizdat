@@ -11,9 +11,12 @@
 # Private Definitions
 #
 
-# Forward declaration of `convertExpression` and `convertPex`.
+# Forward declaration of `convertExpression`.
 def convertExpression = makeFunctionForwarder();
-def convertPex = makeFunctionForwarder();
+
+# `convertPex(node, formals)`, used to expand pex nodes into expression
+# or statement nodes.
+def convertPex = makeRegularGeneric("convertPex", 2, 2);
 
 # Does parser conversion of an expression or statement list.
 fn convertList(nodes) {
@@ -43,16 +46,22 @@ fn callNameWithLiterals(functionName, args*) {
     <> callNameWithExpressions(functionName, literalArgs*)
 };
 
+
+#
+# `convertPex` bindings
+#
+
 # Converts a `choice` pex node.
-fn convertPexChoice(node, formals) {
+fn choice_convertPex(node, formals) {
     def pexes = dataOf(node);
     def convertedPexes = filterAll(pexes)
         { pex <> convertPex(pex, formals) };
     <> callNameWithExpressions("pegMakeChoice", convertedPexes*)
 };
+genericBind(convertPex, "choice", choice_convertPex);
 
 # Converts a `sequence` pex node.
-fn convertPexSequence(node, formals) {
+fn sequence_convertPex(node, formals) {
     def pexes = dataOf(node);
 
     # Extract the formals out of any `varDef` nodes.
@@ -73,46 +82,54 @@ fn convertPexSequence(node, formals) {
 
     <> callNameWithExpressions("pegMakeSequence", convertedPexes*)
 };
+genericBind(convertPex, "sequence", sequence_convertPex);
 
 # Converts a `string` pex node.
-fn convertPexString(node, formals) {
+fn string_convertPex(node, formals) {
     <> callNameWithLiterals("pegMakeString", dataOf(node))
 };
+genericBind(convertPex, "string", string_convertPex);
 
 # Converts a `token` pex node.
-fn convertPexToken(node, formals) {
+fn token_convertPex(node, formals) {
     <> callNameWithLiterals("pegMakeToken", dataOf(node))
 };
+genericBind(convertPex, "token", token_convertPex);
 
 # Converts a `varRef` pex node.
-fn convertPexVarRef(node, formals) {
+fn varRef_convertPex(node, formals) {
     # `varRef` in the context of a pex just translates to the same `varRef`
     # in the context of an expression / statement.
     <> node
 };
+genericBind(convertPex, "varRef", varRef_convertPex);
 
 # Converts a `.` pex node.
-fn convertPexDot(node, formals) {
+fn any_convertPex(node, formals) {
     <> @[varRef: "pegAny"]
 };
+genericBind(convertPex, ".", any_convertPex);
 
 # Converts an `()` pex node.
-fn convertPexEmpty(node, formals) {
+fn empty_convertPex(node, formals) {
     <> @[varRef: "pegEmpty"]
 };
+genericBind(convertPex, "()", empty_convertPex);
 
 # Converts a `[]` pex node.
-fn convertPexSet(node, formals) {
+fn set_convertPex(node, formals) {
     <> callNameWithLiterals("pegMakeTokenSet", dataOf(node)*)
 };
+genericBind(convertPex, "[]", set_convertPex);
 
 # Converts a `[!]` pex node.
-fn convertPexSetComplement(node, formals) {
+fn setComplement_convertPex(node, formals) {
     <> callNameWithLiterals("pegMakeTokenSetComplement", dataOf(node)*);
 };
+genericBind(convertPex, "[!]", setComplement_convertPex);
 
 # Converts a `{}` pex node.
-fn convertPexCode(node, formals) {
+fn code_convertPex(node, formals) {
     # Use the lexical `formals` context to make a regular closure node,
     # and just convert that.
 
@@ -121,58 +138,42 @@ fn convertPexCode(node, formals) {
 
     <> callNameWithExpressions("pegMakeCode", convertedClosure)
 };
+genericBind(convertPex, "{}", code_convertPex);
 
 # Converts a `&` pex node.
-fn convertPexLookaheadSuccess(node, formals) {
+fn lookaheadSuccess_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeLookaheadSuccess")
 };
+genericBind(convertPex, "&", lookaheadSuccess_convertPex);
 
 # Converts a `!` pex node.
-fn convertPexLookaheadFailure(node, formals) {
+fn lookaheadFailure_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeLookaheadFailure")
 };
+genericBind(convertPex, "!", lookaheadFailure_convertPex);
 
 # Converts a `?` pex node.
-fn convertPexOpt(node, formals) {
+fn opt_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeOpt")
 };
+genericBind(convertPex, "?", opt_convertPex);
 
 # Converts a `*` pex node.
-fn convertPexStar(node, formals) {
+fn star_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakeStar")
 };
+genericBind(convertPex, "*", star_convertPex);
 
 # Converts a `+` pex node.
-fn convertPexPlus(node, formals) {
+fn plus_convertPex(node, formals) {
     <> callNameWithPex(node, formals, "pegMakePlus")
 };
+genericBind(convertPex, "+", plus_convertPex);
 
-# Map of types to parsing expression node converters.
-def CONVERT_PEX_MAP = [
-    choice:   convertPexChoice,
-    sequence: convertPexSequence,
-    string:   convertPexString,
-    token:    convertPexToken,
-    varRef:   convertPexVarRef,
-    ".":      convertPexDot,
-    "()":     convertPexEmpty,
-    "[]":     convertPexSet,
-    "[!]":    convertPexSetComplement,
-    "{}":     convertPexCode,
-    "&":      convertPexLookaheadSuccess,
-    "!":      convertPexLookaheadFailure,
-    "?":      convertPexOpt,
-    "*":      convertPexStar,
-    "+":      convertPexPlus
-];
 
-# Dispatches to an appropriate parser node converter. `formals` is the
-# list of lexically bound result names, in order, in the form of `formals`
-# values as defined by the Samizdat Layer 0 tree semanics spec.
-fn convertPexImpl(node, formals) {
-    <> get(CONVERT_PEX_MAP, typeOf(node))(node, formals)
-};
-store(convertPex, convertPexImpl);
+#
+# Other Private Definitions
+#
 
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
