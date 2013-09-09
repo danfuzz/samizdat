@@ -65,8 +65,14 @@ def tokWhitespace = {/
     (
         [" " "\n"]+
     |
-        # The `?` at the end is to handle end-of-file comments.
-        "#" [! "\n"]* "\n"?
+        "#"
+        (
+            (["#! "] [! "\n"]*)
+        |
+            "\n"
+        |
+            !.
+        )
     #|
         # Note: Layer 2 introduces additional definitions here.
     )+
