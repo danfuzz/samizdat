@@ -5,13 +5,8 @@ Parser Parse Trees
 ------------------
 
 The node types and contents used in the parsed form of the parser syntax
-have a fairly direct correspondence to the surface syntax. Most of the
-nodes have token types whose name is the exactly the corresponding
-syntactic operator or reminiscent of the corresponding syntactic forms.
-As exceptions, the highest layer of nodes have token types that are
-(English) words, both to help distinguish them as well as to avoid the
-problem that a "sequence" has no syntactic operator; and the most basic
-token and string terminals are named `token` and `string`.
+have a fairly direct correspondence to the surface syntax and the
+types and functions used to implement parsing.
 
 ### Normal (non-parsing) expression nodes
 
@@ -53,19 +48,19 @@ an arbitrary value, but typically a string.
 This corresponds to the syntax `name` (that is, a normal variable
 reference).
 
-#### `@["."]`
+#### `@any`
 
 Representation of the "match anything" rule.
 
 This corresponds to the syntax `.`.
 
-#### `@["()"]`
+#### `@empty`
 
-Representation of the "always succeed" (no-op) rule.
+Representation of the "empty" ("always succeed" / no-op) rule.
 
 This corresponds to the syntax `()`.
 
-#### `@["[]": tokenSet]`
+#### `@[tokenSet: tokenSet]`
 
 Representation of a token set rule. This is also used for matching
 character sets in tokenizers. `tokenSet` must be a list of strings,
@@ -73,7 +68,7 @@ which is taken to be an unordered set of token types to match.
 
 This corresponds to the syntax `[token1 token2 etc]` or `["charsToMatch"]`.
 
-#### `@["[!]": tokenSet]`
+#### `@[tokenSetComplement: tokenSet]`
 
 Representation of a token set complement rule. This is also used for matching
 character set complements in tokenizers. `tokenSet` must be a list of
@@ -82,7 +77,7 @@ strings, which is taken to be an unordered set of token types to not-match.
 This corresponds to the syntax `[! token1 token2 etc]` or
 `[! "charsToNotMatch"]`.
 
-#### `@["{}": [(yieldDef: name)?, statements: [statement*], (yield: expression)?]]`
+#### `@[code: [(yieldDef: name)?, statements: [statement*], (yield: expression)?]]`
 
 Representation of a code expression.
 
@@ -115,35 +110,35 @@ of the list must be a parsing expression node or a `varDef` node.
 
 This corresponds to the syntax `pex1 pex2 etc`.
 
-#### `@["&": pex]`
+#### `@[lookaheadSuccess: pex]`
 
 Representation of a lookahead-success expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `&pex`.
 
-#### `@["!": pex]`
+#### `@[lookaheadFailure: pex]`
 
 Representation of a lookahead-failure expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `!pex`.
 
-#### `@["?": pex]`
+#### `@[opt: pex]`
 
 Representation of an optional (zero-or-one) expression. `pex` must be a
 parsing expression node.
 
 This corresponds to the syntax `pex?`.
 
-#### `@["*": pex]`
+#### `@[star: pex]`
 
 Representation of a star (zero-or-more) expression. `pex` must be a parsing
 expression node.
 
 This corresponds to the syntax `pex*`.
 
-#### `@["+": pex]`
+#### `@[plus: pex]`
 
 Representation of a plus (one-or-more) expression. `pex` must be a parsing
 expression node.
