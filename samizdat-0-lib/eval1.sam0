@@ -12,7 +12,7 @@
 #
 
 # `convertPex(node, formals)`, used to expand pex nodes into expression
-# or statement nodes.
+# nodes.
 def convertPex = makeRegularGeneric("convertPex", 2, 2);
 
 # `convertPexIn(node)`, used to convert a layer 1 expression or statement
