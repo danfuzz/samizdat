@@ -10,21 +10,12 @@
 # Private Definitions
 #
 
-# Forward declarations.
-def callSourceString = makeFunctionForwarder();
-def callFormatValue = makeFunctionForwarder();
+#
+# Int formatting
+#
 
 # This is int digits for bases up to 36, in order.
 def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
-
-# The first Unicode surrogate code point.
-def CHAR_SURROGATE_START = toString(55296); # U+D800
-
-# The last Unicode surrogate code point.
-def CHAR_SURROGATE_END = toString(57343); # U+DFFF
-
-# The last Unicode code point.
-def CHAR_UNICODE_END = toString(1114111); # U+10FFFF
 
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
@@ -51,6 +42,20 @@ fn formatIntWithBase(int, base) {
     <> get(INT_SIGNS, sign(int))(int, base)
 };
 
+# Formats a hex int argument.
+fn formatIntHex(arg) {
+    <> formatIntWithBase(arg, 16)
+};
+
+
+#
+# `sourceStringGeneral` and helpers
+#
+
+# Common generic for the two `sourceString*` variants, which takes an
+# `adorn` flag.
+def sourceStringGeneral = makeRegularGeneric("sourceStringGeneral", 2, 2);
+
 # Helper for optionally adorning results.
 fn adornIf(adorn, before, value, after) {
     <> ifIs { <> totEq(adorn, true) }
@@ -68,55 +73,6 @@ fn collectionBody(elems, ifEmpty) {
 
     def one = slice(first(elems), 2);
     <> cat(one, butFirst(elems)*)
-};
-
-# Stringifies an int.
-fn doInt(int, adorn) {
-    <> formatIntWithBase(int, 10)
-};
-
-# Map of special-case characters to either their stringified forms or
-# to `"x"` to indicate a need to convert as hex.
-def SPECIAL_CHARS = [
-    (makeInclusiveRange(toString(1), 1, toString(31)))*: "x",
-    (makeInclusiveRange(toString(127), 1, toString(159)))*: "x",
-    (toString(65534)): "x",
-    (toString(65535)): "x",
-    "\0": "\\0",
-    "\n": "\\n",
-    "\r": "\\r",
-    "\t": "\\t",
-    "\"": "\\\"",
-    "\\": "\\\\"
-];
-
-# Does hex character conversion.
-fn hexStringChar(ch) {
-    <> cat(
-        "\\x",
-        formatIntWithBase(toInt(ch), 16),
-        ";")
-};
-
-# Helper for stringifying strings: Returns the converted form of the
-# given character.
-fn stringChar(ch) {
-    ifValue { <> get(SPECIAL_CHARS, ch) }
-        { special ::
-            ifIs { <> eq(special, "x") }
-                { return hexStringChar(ch) }
-                { return special }
-        };
-
-    ifIs { <> lt(ch, CHAR_SURROGATE_START) }
-        { return ch };
-
-    ifIs { <> le(ch, CHAR_SURROGATE_END) }
-        { return hexStringChar(ch) };
-
-    <> ifIs { <> le(ch, CHAR_UNICODE_END) }
-        { <> ch }
-        { <> hexStringChar(ch) }
 };
 
 # These are all the characters which are allowed to start an identifier.
@@ -172,44 +128,107 @@ fn keyString(key) {
     ifValue { <> get(SPECIAL_VALUES, key) }
         { string :: return cat("(", string, ")") };
 
-    <> callSourceString(key)
+    <> sourceStringGeneral(key, true)
 };
 
-# Stringifies a string.
-fn doString(string, adorn) {
-    def bodyChars = makeFilterGenerator(string) { ch <> stringChar(ch) };
-    <> adornIf(adorn, "\"", cat("", bodyChars*), "\"")
+# The first Unicode surrogate code point.
+def CHAR_SURROGATE_START = toString(55296); # U+D800
+
+# The last Unicode surrogate code point.
+def CHAR_SURROGATE_END = toString(57343); # U+DFFF
+
+# The last Unicode code point.
+def CHAR_UNICODE_END = toString(1114111); # U+10FFFF
+
+# Map of special-case characters to either their stringified forms or
+# to `"x"` to indicate a need to convert as hex.
+def SPECIAL_CHARS = [
+    (makeInclusiveRange(toString(1), 1, toString(31)))*: "x",
+    (makeInclusiveRange(toString(127), 1, toString(159)))*: "x",
+    (toString(65534)): "x",
+    (toString(65535)): "x",
+    "\0": "\\0",
+    "\n": "\\n",
+    "\r": "\\r",
+    "\t": "\\t",
+    "\"": "\\\"",
+    "\\": "\\\\"
+];
+
+# Does hex character conversion.
+fn hexStringChar(ch) {
+    <> cat(
+        "\\x",
+        formatIntWithBase(toInt(ch), 16),
+        ";")
 };
+
+# Helper for stringifying strings: Returns the converted form of the
+# given character.
+fn stringChar(ch) {
+    ifValue { <> get(SPECIAL_CHARS, ch) }
+        { special ::
+            ifIs { <> eq(special, "x") }
+                { return hexStringChar(ch) }
+                { return special }
+        };
+
+    ifIs { <> lt(ch, CHAR_SURROGATE_START) }
+        { return ch };
+
+    ifIs { <> le(ch, CHAR_SURROGATE_END) }
+        { return hexStringChar(ch) };
+
+    <> ifIs { <> le(ch, CHAR_UNICODE_END) }
+        { <> ch }
+        { <> hexStringChar(ch) }
+};
+
+# Stringifies an int.
+fn Int_sourceStringGeneral(int, adorn) {
+    <> formatIntWithBase(int, 10)
+};
+genericBind(sourceStringGeneral, Int, Int_sourceStringGeneral);
 
 # Stringifies a list.
-fn doList(list, adorn) {
+fn List_sourceStringGeneral(list, adorn) {
     def listElems = filterAll(list)
-        { elem <> cat(", ", callSourceString(elem)) };
+        { elem <> cat(", ", sourceStringGeneral(elem, true)) };
 
     <> adornIf(adorn, "[", collectionBody(listElems, ""), "]")
 };
+genericBind(sourceStringGeneral, List, List_sourceStringGeneral);
 
 # Stringifies a map.
-fn doMap(map, adorn) {
+fn Map_sourceStringGeneral(map, adorn) {
     def mapElems = filterAll(map)
         { mapping ::
             def key = keyString(keyOf(mapping));
-            def value = callSourceString(valueOf(mapping));
+            def value = sourceStringGeneral(valueOf(mapping), true);
             <> cat(", ", key, ": ", value)
         };
 
     <> adornIf(adorn, "[", collectionBody(mapElems, ":"), "]");
 };
+genericBind(sourceStringGeneral, Map, Map_sourceStringGeneral);
+
+# Stringifies a string.
+fn String_sourceStringGeneral(string, adorn) {
+    def bodyChars = makeFilterGenerator(string) { ch <> stringChar(ch) };
+    <> adornIf(adorn, "\"", cat("", bodyChars*), "\"")
+};
+genericBind(sourceStringGeneral, String, String_sourceStringGeneral);
 
 # Stringifies a type.
-fn doType(type, adorn) {
-    def name = callSourceString(nameOf(type));
+fn Type_sourceStringGeneral(type, adorn) {
+    def name = sourceStringGeneral(nameOf(type), true);
 
     <> adornIf(adorn, "@(Type ", name, ")");
 };
+genericBind(sourceStringGeneral, Type, Type_sourceStringGeneral);
 
 # Stringifies a derived value or an opaque core value.
-fn doDerivOrOpaque(value, adorn) {
+fn Value_sourceStringGeneral(value, adorn) {
     ifValue { <> get(SPECIAL_VALUES, value) }
         { string :: return string };
 
@@ -220,7 +239,7 @@ fn doDerivOrOpaque(value, adorn) {
         {
             # It binds `nameOf` but might not have a name.
             <> ifValue { <> nameOf(value) }
-                { name <> cat(" ", callSourceString(name)) }
+                { name <> cat(" ", sourceStringGeneral(name, true)) }
                 { <> "" }
         }
         { <> "" };
@@ -231,7 +250,7 @@ fn doDerivOrOpaque(value, adorn) {
             <> ifValue { <> dataOf(value) }
                 { data ::
                     # Transparent derived value with payload.
-                    <> cat(" ", callSourceString(data))
+                    <> cat(" ", sourceStringGeneral(data, true))
                 }
                 {
                     # Type-only transparent derived value.
@@ -249,54 +268,36 @@ fn doDerivOrOpaque(value, adorn) {
 
     <> adornIf(adorn, "@[", body, "]");
 };
+genericBind(sourceStringGeneral, Value, Value_sourceStringGeneral);
 
-# Stringifies a string as-is. That is, it just returns the argument. The
-# extra argument is the general `adorn` argument, which is degenerate and
-# ignored in this case.
-fn doStringAsIs(string, .) {
-    <> string
-};
 
-# Stringifies a list by recursive flattening. The extra argument is the
-# general `adorn` argument, which is degenerate and ignored in this case.
-fn doListFlatten(list, .) {
-    def elems = makeFilterGenerator(list) { e <> callFormatValue(e) };
+#
+# `humanString`
+#
+
+# `humanString(value)`: Produces a human-oriented string of the argument.
+def humanString = makeRegularGeneric("humanString", 1, 1);
+
+# Human-stringifies a list, which recursively flattens it using
+# `humanString`.
+fn List_humanString(list) {
+    def elems = makeFilterGenerator(humanString, list);
     <> cat("", elems*)
 };
+genericBind(humanString, List, List_humanString);
 
-# Mapping from low-layer type names to stringifiers to use for `%q`-style
-# source-stringification.
-def SOURCE_STRINGIFIERS = [
-    (Int):    doInt,
-    (List):   doList,
-    (Map):    doMap,
-    (String): doString,
-    (Type):   doType
-];
-
-# Mapping from low-layer type names to stringifiers to use for `%s`-style
-# human-stringification.
-def HUMAN_STRINGIFIERS = [
-    (Int):    doInt,
-    (List):   doListFlatten,
-    (Map):    doMap,
-    (String): doStringAsIs,
-    (Type):   doType
-];
-
-# Common handler for the two exported functions.
-fn sourceStringGeneral(value, adorn) {
-    def stringifier = ifValueOr
-        { <> get(SOURCE_STRINGIFIERS, typeOf(value)) }
-        { <> doDerivOrOpaque };
-
-    <> stringifier(value, adorn)
+# Human-stringifies a string, which just returns the string as-is.
+fn String_humanString(string) {
+    <> string
 };
+genericBind(humanString, String, String_humanString);
 
-# Formats a hex int argument.
-fn formatIntHex(arg) {
-    <> formatIntWithBase(arg, 16)
+# Default human-stringifier, which just calls through to
+# `sourceStringGeneral`.
+fn Value_humanString(value) {
+    <> sourceStringGeneral(value, true)
 };
+genericBind(humanString, Value, Value_humanString);
 
 
 #
@@ -309,7 +310,6 @@ fn sourceString(value?) {
         { value <> sourceStringGeneral(value, true) }
         { <> "void" }
 };
-store(callSourceString, sourceString);
 
 # Documented in Samizdat Layer 0 spec.
 fn sourceStringUnadorned(value?) {
@@ -330,15 +330,9 @@ fn formatInt(value, optBase?) {
 # Documented in Samizdat Layer 0 spec.
 fn formatValue(value?) {
     <> ifValue { <> value* }
-        { value ::
-            def stringifier = ifValueOr
-                { <> get(HUMAN_STRINGIFIERS, typeOf(value)) }
-                { <> doDerivOrOpaque };
-            <> stringifier(value, true)
-        }
+        { value <> humanString(value) }
         { <> "" }
 };
-store(callFormatValue, formatValue);
 
 # Mapping from format escape characters to their respective handler functions.
 def FORMATTERS = [
