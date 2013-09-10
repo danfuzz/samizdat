@@ -107,10 +107,10 @@ def number = {/
     }
 /};
 
-# Parses an atomic expression. In this case it's either a number or a
+# Parses an expression term. In this case it's either a number or a
 # parenthesized expression. Yields the number or evaluated expression result,
 # respectively.
-def atom = {/
+def term = {/
     number
 |
     "("
@@ -127,10 +127,10 @@ def unaryOp = {/
 /};
 
 # Parses a unary expression, that is, a series of unary operators followed
-# by an atom, yielding the evaluated result.
+# by a term, yielding the evaluated result.
 def unaryExpression = {/
     ops = unaryOp*
-    ex = atom
+    ex = term
     { <> applyAll(ex, reverse(ops)) }
 /};
 
