@@ -150,9 +150,9 @@ more mappings, followed by a final `]`. Mappings are written as
 the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
-Syntactically, keys are "atoms", that is, simple values or parenthesized
-expressions. As a short-hand, a string key with the same form as an identifier
-can be written without the quotes.
+Syntactically, keys are "terms", that is, simple values, collection literals,
+or parenthesized expressions. As a short-hand, a string key with the same
+form as an identifier can be written without the quotes.
 
 A group of mappings with multiple keys that map to the same value
 can be written in a short-hand using the same interpolation syntax as with

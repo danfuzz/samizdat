@@ -313,7 +313,7 @@ def parFnExpression = {/
 /};
 
 # Parses an integer literal. Note: This includes parsing a `-` prefix,
-# so that simple negative numbers are considered atoms and hence eligible
+# so that simple negative numbers are considered terms and hence eligible
 # to be used as map keys.
 def parInt = {/
     @"-"
@@ -386,16 +386,15 @@ def parEmptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-# Parses an "atomic" key. This isn't really *that* atomic, in that it
-# includes parsing of interpolations.
-def parKeyAtom = {/
+# Parses a key term. This includes parsing of interpolation syntax.
+def parKeyTerm = {/
     # The lookahead-failure is to ensure we don't match a variable being
     # interpolated, which is handled by the second alternative.
     key = parIdentifierString
     !@"*"
     { <> key }
 |
-    key = parAtom
+    key = parTerm
     (
         @"*"
         { <> makeInterpolate(key) }
@@ -405,7 +404,7 @@ def parKeyAtom = {/
 /};
 
 # Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
-def parKey = parKeyAtom;
+def parKey = parKeyTerm;
 
 # Parses a mapping (element of a map).
 def parMapping = {/
@@ -417,7 +416,7 @@ def parMapping = {/
     # interpolation from being applied to `makeValueMap`.
     { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
-    map = parAtom
+    map = parTerm
     @"*"
     { <> map }
 /};
@@ -438,7 +437,7 @@ def parDeriv = {/
 
     derivArgs = (
         @"["
-        type = (parIdentifierString | parAtom)
+        type = (parIdentifierString | parTerm)
         value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }
@@ -473,8 +472,10 @@ def parParenExpression = {/
     { <> @[expression: ex] }
 /};
 
-# Parses an atomic expression.
-def parAtom = {/
+# Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
+# to be done before `List`, since the latter rejects "map-like" syntax as a
+# fatal error.
+def parTerm = {/
     parVarRef | parInt | parString | parList | parEmptyMap | parMap |
     parDeriv | parClosure | parParenExpression
 |
@@ -482,7 +483,7 @@ def parAtom = {/
     # that *Layer 1* can only be "activated" with that one specific token.
     &@"{/" parParser
 #|
-    # Note: There are additional atom rules in *Samizdat Layer 2*.
+    # Note: There are additional term rules in *Samizdat Layer 2*.
 /};
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
@@ -513,12 +514,12 @@ def parPostfixOperator = {/
     # Note: *Layer 2* adds additional rules here.
 /};
 
-# Parses a unary expression. This is an atom, optionally surrounded on
+# Parses a unary expression. This is a term, optionally surrounded on
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
 def parUnaryExpression = {/
     # Note: Layer 2 adds prefix operator parsing here.
-    base = parAtom
+    base = parTerm
     postfixes = parPostfixOperator*
 
     { <> doReduce1(postfixes, base) { op, result <> op(result) } }
@@ -724,8 +725,8 @@ def parParserCode = {/
     { <> @[code: dataOf(closure) ] }
 /};
 
-# Parses an atomic parsing expression.
-def parParserAtom = {/
+# Parses a parsing expression term.
+def parParserTerm = {/
     @"."
     { <> @any }
 |
@@ -739,12 +740,12 @@ def parParserAtom = {/
 
 # Parses a repeat (or not) parsing expression.
 def parRepeatPex = {/
-    atom = parParserAtom
+    term = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(get(PEX_TYPES, typeOf(repeat))): atom] }
+        { <> @[(get(PEX_TYPES, typeOf(repeat))): term] }
     |
-        { <> atom }
+        { <> term }
     )
 /};
 
