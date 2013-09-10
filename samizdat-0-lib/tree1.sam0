@@ -600,10 +600,10 @@ def parRepeatPex = pegMakeMainSequence(
     pegMakeChoice(
         pegMakeSequence(
             pegMakeTokenSet("?", "*", "+"),
-            pegMakeCode { atom, repeat <>
-                @[(get(PEX_TYPES, typeOf(repeat))): atom]
+            pegMakeCode { term, repeat <>
+                @[(get(PEX_TYPES, typeOf(repeat))): term]
             }),
-        pegMakeCode { atom <> atom }));
+        pegMakeCode { term <> term }));
 
 def parLookaheadPex = pegMakeMainChoice(
     pegMakeSequence(
