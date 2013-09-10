@@ -15,6 +15,10 @@
 # list-of-strings denoting a "path" to the module.
 def theModuleBox = makeMutableBox([:]);
 
+# Box containing a set-like map of fully-qualified names representing
+# modules in the middle of being loaded.
+def thePendingBox = makeMutableBox([:]);
+
 
 #
 # Type Definition
@@ -131,7 +135,18 @@ fn moduleUse(name, info) {
     ifValue { <> moduleGet(name) }
         { module :: return module };
 
-    io0Die("TODO: Load module here.")
+    def pendings = fetch(thePendingBox);
+    ifIs { <> get(pendings, name) }
+        {
+            io0Die(cat(
+                "Dependency loop with modules: ",
+                sourceString(keyList(pendings))))
+        };
+
+    store(thePendingBox, put(pendings, name, null));
+
+    io0Die("TODO: Load module here.");
+    io0Die("TODO: Remove module from pendings here.")
 };
 
 
