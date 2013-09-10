@@ -223,11 +223,10 @@ def parFnDef = pegMakeMainSequence(
 # Documented in Samizdat Layer 0 spec.
 def parFnExpression = pegMakeMainSequence(
     parFnCommon,
-    pegMakeCode { funcMap <> @[closure: funcMap] },
     pegMakeChoice(
         pegMakeSequence(
             pegMakeCode { funcMap, . <> get(funcMap, "name") },
-            pegMakeCode { funcMap, closure, name ::
+            pegMakeCode { funcMap, name ::
                 def mainClosure = @[closure: [
                     formals: [],
                     statements: [@[fnDef: funcMap]],
@@ -236,7 +235,7 @@ def parFnExpression = pegMakeMainSequence(
 
                 <> makeCall(mainClosure)
             }),
-        pegMakeCode { ., closure <> closure }));
+        pegMakeCode { funcMap <> @[closure: funcMap] }));
 
 # Documented in Samizdat Layer 0 spec.
 def parInt = pegMakeMainSequence(

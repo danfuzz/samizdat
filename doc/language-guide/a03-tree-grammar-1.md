@@ -295,7 +295,6 @@ def parFnDef = {/
 # ```
 def parFnExpression = {/
     funcMap = parFnCommon
-    closure = { <> @[closure: funcMap] }
 
     (
         name = { <> get(funcMap, "name") }
@@ -309,7 +308,7 @@ def parFnExpression = {/
             <> makeCall(mainClosure)
         }
     |
-        { <> closure }
+        { <> @[closure: funcMap] }
     )
 /};
 
