@@ -388,14 +388,14 @@ def parEmptyMap = {/
 
 # Parses an "atomic" key. This isn't really *that* atomic, in that it
 # includes parsing of interpolations.
-def parKeyAtom = {/
+def parKeyTerm = {/
     # The lookahead-failure is to ensure we don't match a variable being
     # interpolated, which is handled by the second alternative.
     key = parIdentifierString
     !@"*"
     { <> key }
 |
-    key = parAtom
+    key = parTerm
     (
         @"*"
         { <> makeInterpolate(key) }
@@ -405,7 +405,7 @@ def parKeyAtom = {/
 /};
 
 # Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
-def parKey = parKeyAtom;
+def parKey = parKeyTerm;
 
 # Parses a mapping (element of a map).
 def parMapping = {/
@@ -417,7 +417,7 @@ def parMapping = {/
     # interpolation from being applied to `makeValueMap`.
     { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
-    map = parAtom
+    map = parTerm
     @"*"
     { <> map }
 /};
@@ -438,7 +438,7 @@ def parDeriv = {/
 
     derivArgs = (
         @"["
-        type = (parIdentifierString | parAtom)
+        type = (parIdentifierString | parTerm)
         value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }
@@ -474,7 +474,7 @@ def parParenExpression = {/
 /};
 
 # Parses an atomic expression.
-def parAtom = {/
+def parTerm = {/
     parVarRef | parInt | parString | parList | parEmptyMap | parMap |
     parDeriv | parClosure | parParenExpression
 |
@@ -518,7 +518,7 @@ def parPostfixOperator = {/
 # take precedence over (are applied before) the prefix operators.
 def parUnaryExpression = {/
     # Note: Layer 2 adds prefix operator parsing here.
-    base = parAtom
+    base = parTerm
     postfixes = parPostfixOperator*
 
     { <> doReduce1(postfixes, base) { op, result <> op(result) } }
@@ -725,7 +725,7 @@ def parParserCode = {/
 /};
 
 # Parses an atomic parsing expression.
-def parParserAtom = {/
+def parParserTerm = {/
     @"."
     { <> @any }
 |
@@ -739,7 +739,7 @@ def parParserAtom = {/
 
 # Parses a repeat (or not) parsing expression.
 def parRepeatPex = {/
-    atom = parParserAtom
+    atom = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
         { <> @[(get(PEX_TYPES, typeOf(repeat))): atom] }

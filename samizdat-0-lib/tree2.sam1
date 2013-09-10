@@ -188,11 +188,11 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 #
 
 # Forward declaration required for layer 2.
-def parAtom2 = makeParseForwarder();
+def parTerm2 = makeParseForwarder();
 
 # Forward declarations.
 def parProgramBody = makeParseForwarder();
-def parAtom = makeParseForwarder();
+def parTerm = makeParseForwarder();
 def parExpression = makeParseForwarder();
 def parUnaryExpression = makeParseForwarder();
 
@@ -458,14 +458,14 @@ def parEmptyMap = {/
 
 # Parses an "atomic" key. This isn't really *that* atomic, in that it
 # includes parsing of interpolations.
-def parKeyAtom = {/
+def parKeyTerm = {/
     # The lookahead-failure is to ensure we don't match a variable being
     # interpolated, which is handled by the second alternative.
     key = parIdentifierString
     !@"*"
     { <> key }
 |
-    key = parAtom
+    key = parTerm
     (
         @"*"
         { <> makeInterpolate(key) }
@@ -476,9 +476,9 @@ def parKeyAtom = {/
 
 # Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
 def parKey = {/
-    # Layer 2 accepts one or more `keyAtom`s, separated by pipes.
-    firstKey = parKeyAtom
-    moreKeys = (@"|" parKeyAtom)*
+    # Layer 2 accepts one or more `keyTerm`s, separated by pipes.
+    firstKey = parKeyTerm
+    moreKeys = (@"|" parKeyTerm)*
 
     {
         <> ifIs { <> eq(moreKeys, []) }
@@ -500,7 +500,7 @@ def parMapping = {/
     # interpolation from being applied to `makeValueMap`.
     { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
-    map = parAtom
+    map = parTerm
     @"*" @":"
     { <> map }
 /};
@@ -561,7 +561,7 @@ def parDeriv = {/
 
     derivArgs = (
         @"["
-        type = (parIdentifierString | parAtom)
+        type = (parIdentifierString | parTerm)
         value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }
@@ -599,7 +599,7 @@ def parParenExpression = {/
 # Parses an atomic expression. **Note:** Parsing for `Map` needs to be
 # done before `List`, since the latter rejects "map-like" syntax as a
 # fatal error.
-def implAtom = {/
+def implTerm = {/
     parVarRef | parInt | parString | parMap | parList | parEmptyMap |
     parDeriv | parClosure | parParenExpression
 |
@@ -608,9 +608,9 @@ def implAtom = {/
     &@"{/" parParser
 |
     # Defined by *Samizdat Layer 2*.
-    &[@interpolatedString @"(" @"["] parAtom2
+    &[@interpolatedString @"(" @"["] parTerm2
 /};
-store(parAtom, implAtom);
+store(parTerm, implTerm);
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
@@ -635,7 +635,7 @@ def parPostfixOperator = makeParseForwarder();
 # take precedence over (are applied before) the prefix operators.
 def implUnaryExpression = {/
     prefixes = parPrefixOperator*
-    base = parAtom
+    base = parTerm
     postfixes = parPostfixOperator*
 
     {
@@ -812,7 +812,7 @@ def parParserCode = {/
 /};
 
 # Parses an atomic parsing expression.
-def parParserAtom = {/
+def parParserTerm = {/
     @"."
     { <> @any }
 |
@@ -826,7 +826,7 @@ def parParserAtom = {/
 
 # Parses a repeat (or not) parsing expression.
 def parRepeatPex = {/
-    atom = parParserAtom
+    atom = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
         { <> @[(get(PEX_TYPES, typeOf(repeat))): atom] }
@@ -884,7 +884,7 @@ store(parChoicePex, implChoicePex);
 # verification that all input was consumed.
 def parStringInterpolation = {/
     &@"("
-    ex = parAtom
+    ex = parTerm
     !.
     { <> ex }
 |
@@ -1037,12 +1037,12 @@ def parComprehension = {/
 /};
 
 # Parses the `atom` variants introduced in *Layer 2*.
-def implAtom2 = {/
+def implTerm2 = {/
     parInterpolatedString
 |
     parComprehension
 /};
-store(parAtom2, implAtom2);
+store(parTerm2, implTerm2);
 
 # Parses a nonlocal exit / return. All of the form matched by this rule
 # have the dual properties of (a) necessarily being at the end of a code
@@ -1168,7 +1168,7 @@ def implPostfixOperator = {/
     # funcName(target, arg, ...)
     # ```
     @"."
-    funcExpr = parAtom
+    funcExpr = parTerm
 
     (
         # `target.func(arg, ...)`
