@@ -341,7 +341,7 @@ DEF_PARSE(optSemicolons) {
 DEF_PARSE(programBody);
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(atom);
+DEF_PARSE(term);
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(expression);
@@ -628,7 +628,7 @@ DEF_PARSE(emptyMap) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(keyAtom) {
+DEF_PARSE(keyTerm) {
     MARK();
 
     zvalue key = PARSE(identifierString);
@@ -640,7 +640,7 @@ DEF_PARSE(keyAtom) {
         RESET();
     }
 
-    key = PARSE_OR_REJECT(atom);
+    key = PARSE_OR_REJECT(term);
 
     if (MATCH(CH_STAR) != NULL) {
         return makeInterpolate(key);
@@ -651,7 +651,7 @@ DEF_PARSE(keyAtom) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(key) {
-    return PARSE(keyAtom);
+    return PARSE(keyTerm);
 }
 
 /**
@@ -674,7 +674,7 @@ DEF_PARSE(mapping1) {
 DEF_PARSE(mapping2) {
     MARK();
 
-    zvalue map = PARSE_OR_REJECT(atom);
+    zvalue map = PARSE_OR_REJECT(term);
     MATCH_OR_REJECT(CH_STAR);
     MATCH_OR_REJECT(CH_COLON);
 
@@ -748,7 +748,7 @@ DEF_PARSE(list) {
 }
 
 /**
- * Helper for `deriv`: Parses `@"[" keyAtom (@":" expression)? @"]"`.
+ * Helper for `deriv`: Parses `@"[" keyTerm (@":" expression)? @"]"`.
  */
 DEF_PARSE(deriv1) {
     MARK();
@@ -756,7 +756,7 @@ DEF_PARSE(deriv1) {
     MATCH_OR_REJECT(CH_OSQUARE);
 
     zvalue type = PARSE(identifierString);
-    if (type == NULL) { type = PARSE_OR_REJECT(atom); }
+    if (type == NULL) { type = PARSE_OR_REJECT(term); }
 
     zvalue result;
 
@@ -836,7 +836,7 @@ DEF_PARSE(parenExpression) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(atom) {
+DEF_PARSE(term) {
     zvalue result = NULL;
 
     if (result == NULL) { result = PARSE(varRef); }
@@ -882,7 +882,7 @@ DEF_PARSE(postfixOperator) {
 DEF_PARSE(unaryExpression) {
     MARK();
 
-    zvalue result = PARSE_OR_REJECT(atom);
+    zvalue result = PARSE_OR_REJECT(term);
     zvalue postfixes = PARSE_STAR(postfixOperator);
 
     zint size = collSize(postfixes);

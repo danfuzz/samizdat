@@ -188,11 +188,11 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 #
 
 # Forward declaration required for layer 2.
-def parAtom2 = makeParseForwarder();
+def parTerm2 = makeParseForwarder();
 
 # Forward declarations.
 def parProgramBody = makeParseForwarder();
-def parAtom = makeParseForwarder();
+def parTerm = makeParseForwarder();
 def parExpression = makeParseForwarder();
 def parUnaryExpression = makeParseForwarder();
 
@@ -415,7 +415,7 @@ def parFnExpression = {/
 /};
 
 # Parses an integer literal. Note: This includes parsing a `-` prefix,
-# so that simple negative numbers are considered atoms and hence eligible
+# so that simple negative numbers are considered terms and hence eligible
 # to be used as map keys.
 def parInt = {/
     @"-"
@@ -456,16 +456,15 @@ def parEmptyMap = {/
     { <> makeLiteral([:]) }
 /};
 
-# Parses an "atomic" key. This isn't really *that* atomic, in that it
-# includes parsing of interpolations.
-def parKeyAtom = {/
+# Parses a key term. This includes parsing of interpolation syntax.
+def parKeyTerm = {/
     # The lookahead-failure is to ensure we don't match a variable being
     # interpolated, which is handled by the second alternative.
     key = parIdentifierString
     !@"*"
     { <> key }
 |
-    key = parAtom
+    key = parTerm
     (
         @"*"
         { <> makeInterpolate(key) }
@@ -476,9 +475,9 @@ def parKeyAtom = {/
 
 # Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
 def parKey = {/
-    # Layer 2 accepts one or more `keyAtom`s, separated by pipes.
-    firstKey = parKeyAtom
-    moreKeys = (@"|" parKeyAtom)*
+    # Layer 2 accepts one or more `keyTerm`s, separated by pipes.
+    firstKey = parKeyTerm
+    moreKeys = (@"|" parKeyTerm)*
 
     {
         <> ifIs { <> eq(moreKeys, []) }
@@ -500,7 +499,7 @@ def parMapping = {/
     # interpolation from being applied to `makeValueMap`.
     { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
-    map = parAtom
+    map = parTerm
     @"*" @":"
     { <> map }
 /};
@@ -561,7 +560,7 @@ def parDeriv = {/
 
     derivArgs = (
         @"["
-        type = (parIdentifierString | parAtom)
+        type = (parIdentifierString | parTerm)
         value = (@":" parExpression)?
         @"]"
         { <> [type, value*] }
@@ -596,10 +595,10 @@ def parParenExpression = {/
     { <> @[expression: ex] }
 /};
 
-# Parses an atomic expression. **Note:** Parsing for `Map` needs to be
-# done before `List`, since the latter rejects "map-like" syntax as a
+# Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
+# to be done before `List`, since the latter rejects "map-like" syntax as a
 # fatal error.
-def implAtom = {/
+def implTerm = {/
     parVarRef | parInt | parString | parMap | parList | parEmptyMap |
     parDeriv | parClosure | parParenExpression
 |
@@ -608,9 +607,9 @@ def implAtom = {/
     &@"{/" parParser
 |
     # Defined by *Samizdat Layer 2*.
-    &[@interpolatedString @"(" @"["] parAtom2
+    &[@interpolatedString @"(" @"["] parTerm2
 /};
-store(parAtom, implAtom);
+store(parTerm, implTerm);
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
@@ -630,12 +629,12 @@ def parActualsList = {/
 def parPrefixOperator = makeParseForwarder();
 def parPostfixOperator = makeParseForwarder();
 
-# Parses a unary expression. This is an atom, optionally surrounded on
+# Parses a unary expression. This is a term, optionally surrounded on
 # either side by any number of unary operators. Postfix operators
 # take precedence over (are applied before) the prefix operators.
 def implUnaryExpression = {/
     prefixes = parPrefixOperator*
-    base = parAtom
+    base = parTerm
     postfixes = parPostfixOperator*
 
     {
@@ -811,8 +810,8 @@ def parParserCode = {/
     { <> @[code: dataOf(closure) ] }
 /};
 
-# Parses an atomic parsing expression.
-def parParserAtom = {/
+# Parses a parsing expression term.
+def parParserTerm = {/
     @"."
     { <> @any }
 |
@@ -826,12 +825,12 @@ def parParserAtom = {/
 
 # Parses a repeat (or not) parsing expression.
 def parRepeatPex = {/
-    atom = parParserAtom
+    term = parParserTerm
     (
         repeat = [@"?" @"*" @"+"]
-        { <> @[(get(PEX_TYPES, typeOf(repeat))): atom] }
+        { <> @[(get(PEX_TYPES, typeOf(repeat))): term] }
     |
-        { <> atom }
+        { <> term }
     )
 /};
 
@@ -884,7 +883,7 @@ store(parChoicePex, implChoicePex);
 # verification that all input was consumed.
 def parStringInterpolation = {/
     &@"("
-    ex = parAtom
+    ex = parTerm
     !.
     { <> ex }
 |
@@ -1000,7 +999,7 @@ def parComprehensionBody = {/
     }
 /};
 
-# Parses a comprehension atom, which can result in either a
+# Parses a comprehension expression, which can result in either a
 # list or a generator, depending on choice of delimiter.
 #
 # The translation is along the lines of:
@@ -1036,13 +1035,13 @@ def parComprehension = {/
     { <> makeCallName("filterAll", body*) }
 /};
 
-# Parses the `atom` variants introduced in *Layer 2*.
-def implAtom2 = {/
+# Parses the `term` variants introduced in *Layer 2*.
+def implTerm2 = {/
     parInterpolatedString
 |
     parComprehension
 /};
-store(parAtom2, implAtom2);
+store(parTerm2, implTerm2);
 
 # Parses a nonlocal exit / return. All of the form matched by this rule
 # have the dual properties of (a) necessarily being at the end of a code
@@ -1168,7 +1167,7 @@ def implPostfixOperator = {/
     # funcName(target, arg, ...)
     # ```
     @"."
-    funcExpr = parAtom
+    funcExpr = parTerm
 
     (
         # `target.func(arg, ...)`
