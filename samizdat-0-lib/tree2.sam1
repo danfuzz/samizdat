@@ -418,13 +418,12 @@ def parFnExpression = {/
 # so that simple negative numbers are considered atoms and hence eligible
 # to be used as map keys.
 def parInt = {/
-    isNeg = @"-"?
+    @"-"
     i = @int
-    {
-        <> ifIs { <> isNeg* }
-            { <> makeLiteral(neg(dataOf(i))) }
-            { <> makeLiteral(dataOf(i)) }
-    }
+    { <> makeLiteral(neg(dataOf(i))) }
+|
+    i = @int
+    { <> makeLiteral(dataOf(i)) }
 /};
 
 # Parses a string literal.

@@ -238,14 +238,15 @@ def parFnExpression = pegMakeMainSequence(
         pegMakeCode { funcMap <> @[closure: funcMap] }));
 
 # Documented in Samizdat Layer 0 spec.
-def parInt = pegMakeMainSequence(
-    pegMakeOpt(pegMakeToken("-")),
-    pegMakeToken("int"),
-    pegMakeCode { isNeg, i ::
-        <> ifIs { <> isNeg* }
-            { <> makeLiteral(neg(dataOf(i))) }
-            { <> makeLiteral(dataOf(i)) }
-    });
+
+def parInt = pegMakeMainChoice(
+    pegMakeSequence(
+        pegMakeToken("-"),
+        pegMakeToken("int"),
+        pegMakeCode { ., i <> makeLiteral(neg(dataOf(i))) }),
+    pegMakeSequence(
+        pegMakeToken("int"),
+        pegMakeCode { i <> makeLiteral(dataOf(i)) }));
 
 # Documented in Samizdat Layer 0 spec.
 def parString = pegMakeMainSequence(
