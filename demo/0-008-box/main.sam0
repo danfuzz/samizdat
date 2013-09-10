@@ -67,4 +67,16 @@ msg(nullBox);
 store(nullBox, "stuff");
 msg(nullBox);
 
+io0Note("\nUpdate mutable box");
+def box4 = makeMutableBox();
+update(box4, { args* <> sourceString(args) });
+msg(box4);
+update(box4, { value <> cat("Yes: ", value) });
+msg(box4);
+
+io0Note("\nUpdate yield box");
+def box5 = makeYieldBox();
+update(box5, { args* <> sourceString(args) });
+msg(box5);
+
 <> 0
