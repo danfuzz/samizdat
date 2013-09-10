@@ -76,3 +76,12 @@ arrangement is done in order to make it easy to pass a box into functions
 that require one, but where the box value is never needed.
 
 It is defined as `@NullBox`.
+
+#### `update(box, updateFunction) <> . | void`
+
+Updates a box's value. This fetches the value out of `box` if any, passing
+it as an argument to `updateFunction` (or passing no arguments if `box` was
+empty). The return value from the call to `updateFunction` is then stored
+back to `box`; void is stored if `updateFunction` returned void.
+
+This function returns whatever the `store` call on `box` returns.
