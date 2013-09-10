@@ -75,6 +75,9 @@ design and implementation of *Samizdat*.
 * Shunting-yard algorithm (operator-precedence parsing) &mdash;
   <http://en.wikipedia.org/wiki/Shunting-yard_algorithm>
 
+* Syntax across languages (a survey) &mdash;
+  <http://rigaux.org/language-study/syntax-across-languages.html>
+
 * Tradeoffs in Metaprogramming &mdash;
   <http://arxiv.org/abs/cs/0512065>
 
