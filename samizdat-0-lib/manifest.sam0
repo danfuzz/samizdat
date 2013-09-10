@@ -30,6 +30,7 @@ def MANIFEST = [
     "Collection.sam0",
     "Bitwise.sam0",
     "Boolean.sam0",
+    "Box.sam0",
     "FunctionForwarder.sam0",
 
     # Layer 0: Complicated functions
