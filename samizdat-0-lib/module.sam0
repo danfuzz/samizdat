@@ -6,6 +6,140 @@
 # Module functions
 #
 
+
+#
+# Private Definitions
+#
+
+# Box containing a map from fully-qualified names to modules. Each name is a
+# list-of-strings denoting a "path" to the module.
+def theModuleBox = makeMutableBox([:]);
+
+
+#
+# Type Definition
+#
+# `Module` payload is `[info: map, exports: map]`. `info` includes at least
+# `[name: [string, ...], version: string]`.
+
+# Gets the `exports` of a module.
+fn getExports(module) {
+    <> get(dataOf(module), "exports")
+};
+
+# Gets the `info` of a module.
+fn getInfo(module) {
+    <> get(dataOf(module), "info")
+};
+
+# Returns a new module like the given one, except with `exports` as
+# given.
+fn withExports(module, newExports) {
+    <> @[Module: [(dataOf(module))*:, exports: newExports]]
+};
+
+# TODO: Documented in spec.
+fn Module_cat(module, more*) {
+    def data = dataOf(module);
+
+    def allExports = filterAll(getExports, [module, more*]);
+    def combinedExports = cat([:], allExports*);
+
+    <> withExports(module, combinedExports)
+};
+genericBind(cat, "Module", Module_cat);
+
+# TODO: Documented in spec.
+fn Module_del(module, key) {
+    <> withExports(module, del(getExports(module), key))
+};
+genericBind(del, "Module", Module_del);
+
+# TODO: Documented in spec.
+fn Module_get(module, key) {
+    <> get(getExports(module), key)
+};
+genericBind(get, "Module", Module_get);
+
+# TODO: Documented in spec.
+fn Module_keyList(module) {
+    <> keyList(getExports(module))
+};
+genericBind(keyList, "Module", Module_keyList);
+
+# TODO: Documented in spec.
+fn Module_nameOf(module) {
+    <> get(infoOf(module), "name")
+};
+genericBind(nameOf, "Module", Module_nameOf);
+
+# TODO: Documented in spec.
+fn Module_nth(module, n) {
+    <> nth(getExports(module), n)
+};
+genericBind(nth, "Module", Module_nth);
+
+# TODO: Documented in spec.
+fn Module_put(module, key, value) {
+    <> withExports(module, put(getExports(module), key, value))
+};
+genericBind(put, "Module", Module_put);
+
+# TODO: Documented in spec.
+fn Module_sizeOf(module) {
+    <> sizeOf(getExports(module))
+};
+genericBind(sizeOf, "Module", Module_sizeOf);
+
+# TODO: Documented in spec.
+fn Module_slice(module, start, end?) {
+    <> withExports(module, slice(getExports(module), start, end*))
+};
+genericBind(slice, "Module", Module_slice);
+
+
+
+#
+# Exported Definitions
+#
+
+# TODO: Documented in spec. (Define a previously-undefined module.)
+fn moduleDef(module) {
+    def name = nameOf(module);
+
+    ifIs { <> moduleGet(name) }
+        { io0Die(cat("Cannot redefine module: "), sourceString(name)) };
+
+    def mods = fetch(theModuleBox);
+    store(theModuleBox, put(mods, name, module));
+
+    <> module
+};
+
+# TODO: Documented in spec. (Get a previously-defined module.)
+fn moduleGet(name) {
+    def mods = fetch(theModuleBox);
+    <> get(mods, name)
+};
+
+# TODO: Documented in spec. (Get a module, first reading it from storage and
+# initializing it if necessary.)
+fn moduleUse(name, info) {
+    # TODO: Currently ignores everything about `info` other than the name.
+    def name = get(info, "name");
+
+    ifValue { <> moduleGet(name) }
+        { module :: return module };
+
+    io0Die("TODO: Load module here.")
+};
+
+
+
+#
+# BEGIN OLD VERSION
+#
+
 #
 # Private Definitions
 #
@@ -178,7 +312,16 @@ fn moduleInit(context) {
         }
 };
 
+# <> [
+#     moduleInit: moduleInit
+# ]
+
+#
+# END OLD VERSION
+#
 
 <> [
-    moduleInit: moduleInit
+    moduleDef: moduleDef,
+    moduleGet: moduleGet,
+    moduleUse: moduleUse
 ]
