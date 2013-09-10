@@ -83,3 +83,5 @@ Updates a box's value. This fetches the value out of `box` if any, passing
 it as an argument to `updateFunction` (or passing no arguments if `box` was
 empty). The return value from the call to `updateFunction` is then stored
 back to `box`; void is stored if `updateFunction` returned void.
+
+This function returns whatever the `store` call on `box` returns.
