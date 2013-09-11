@@ -115,12 +115,15 @@ fn moduleDef(module) {
         { io0Die(cat("Cannot redefine module: "), sourceString(name)) };
 
     update(theModulesBox, { mods <> put(mods, name, module) });
+
     <> module
 };
 
 # Documented in spec.
-fn moduleGet(name) {
-    def mods = fetch(theModulesBox);
+fn moduleGet(searchInfo) {
+    # TODO: Currently ignores everything about `searchInfo` other than the name.
+    def name = get(searchInfo, "name");
+
     <> get(mods, name)
 };
 

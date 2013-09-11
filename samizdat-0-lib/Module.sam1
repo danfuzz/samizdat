@@ -22,10 +22,9 @@ def thePendingBox = makeMutableBox([:]);
 
 # Documented in spec.
 fn moduleUse(searchInfo) {
-    # TODO: Currently ignores everything about `searchInfo` other than the name.
     def name = get(searchInfo, "name");
 
-    ifValue { <> moduleGet(name) }
+    ifValue { <> moduleGet(searchInfo) }
         { module :: return module };
 
     def pendings = fetch(thePendingBox);
@@ -43,6 +42,7 @@ fn moduleUse(searchInfo) {
     def infoText = moduleReader(["module.sam"]);
     def info = sam0Eval(LIBRARY, sam0Tree(infoText))();
 
+    # TODO: Currently ignores everything about `searchInfo` other than the name.
     ifIs { <> ne(name, get(info, "name")) }
         { io0Die(cat("Module name mismatch: ", sourceString(name))) };
 
