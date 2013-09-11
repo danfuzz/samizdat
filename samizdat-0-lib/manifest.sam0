@@ -60,6 +60,7 @@ def MANIFEST = [
     # Layer 1 additional library.
     "io0.sam1",
     "commandLine.sam1",
+    "Module.sam1",
 
     # Layer 2 language implementation.
     "tokenize2.sam1",
