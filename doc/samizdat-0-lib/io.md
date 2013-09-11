@@ -64,6 +64,12 @@ functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 <br><br>
 ### In-Language Definitions
 
+#### `io0FileExists(path) <> logic`
+
+Returns `path` if it corresponds to an already-existing file.
+Returns void if not. `path` must be a componentized path-list,
+such as might have been returned from `io0PathFromFlat`.
+
 #### `io0FlatFromPath(path) <> flatPath`
 
 Converts the given path list to an absolute "Posix-style" flat string.
