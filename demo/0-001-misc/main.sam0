@@ -104,13 +104,14 @@ fn main(selfPath, name?, rest*) {
     process(@"%fizmo%");
     process(@[potion: "blort"]);
     process(@["^zorch^": ["scorch"]]);
-    process(@if); # Demos that keywords can be used as token types.
-    process(@[while]); # Ditto.
-    process([def: "defined", do: "done"]); # Likewise, for map keys.
+    process(@def); # Demos that keywords can be used as token types.
+    process(@[fn]); # Ditto.
+    process([def: "defined", fn: "done"]); # Likewise, for map keys.
     process(@[(null)]);
     process(makeUniqlet());
     process(blort);
-    process(metaFunctions(LIBRARY, "blort.sam0"));
+    process(get(LIBRARY, "cat"));
+    process(get(LIBRARY, "ne"));
     process(io0PathFromFlat("///foo//////./bar/./../baz"));
     process(io0PathFromFlat("/a/b/x/y/z/../../../c/"));
     process(io0FlatFromPath(["fizmo", "igram", "blort", ""]));
