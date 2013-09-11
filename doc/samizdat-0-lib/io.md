@@ -44,6 +44,11 @@ Writes out a newline-terminated note to the system console or equivalent.
 This is intended for debugging, and as such this will generally end up
 emitting to the standard-error stream.
 
+#### `io0FlatFileExists(flatPath) <> logic`
+
+Returns `flatPath` if it corresponds to an already-existing file.
+Returns void if not.
+
 #### `io0FlatReadFileUtf8(flatPath) <> string`
 
 Reads the named file, using the underlying OS's functionality,
@@ -58,6 +63,12 @@ functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 
 <br><br>
 ### In-Language Definitions
+
+#### `io0FileExists(path) <> logic`
+
+Returns `path` if it corresponds to an already-existing file.
+Returns void if not. `path` must be a componentized path-list,
+such as might have been returned from `io0PathFromFlat`.
 
 #### `io0FlatFromPath(path) <> flatPath`
 

@@ -108,10 +108,31 @@ fn dieWith(msg, path) {
     io0Die(cat(msg, ": ", sourceString(path)))
 };
 
+# Helper for `io0SandboxedReader` which does symbolic link resolution,
+# respecting the sandbox directory.
+fn resolveLinks(sandboxDirectory, path) {
+    loopReduce(path, 50) { path, limit ::
+        ifIs { <> le(limit, 0) }
+            { io0Die("Too many links in symbolic link chain.") };
+        ifNot { <> isPrefix(sandboxDirectory, path) }
+            { io0Die("Symbolic link escapes sandbox directory.") };
+
+        <> ifValue { <> io0ReadLink(path) }
+            { newPath <> [newPath, sub(limit, 1)] }
+            { return path }
+    }
+};
+
 
 #
 # Exported Definitions
 #
+
+# Documented in Samizdat Layer 0 spec.
+fn io0FileExists(path) {
+    <> ifIs { <> io0FlatFileExists(io0FlatFromPath(path)) }
+        { <> path }
+};
 
 # Documented in Samizdat Layer 0 spec.
 fn io0FlatFromPath(path) {
@@ -166,24 +187,6 @@ fn io0ReadLink(path) {
         { newPath <> io0PathFromFlat(newPath) }
 };
 
-# Helper for `io0SandboxedReader` which does symbolic link resolution,
-# respecting the sandbox directory.
-#
-# This is located in the "exported" section, as it makes use of
-# the exported function `io0ReadLink`, defined above.
-fn resolveLinks(sandboxDirectory, path) {
-    loopReduce(path, 50) { path, limit ::
-        ifIs { <> le(limit, 0) }
-            { io0Die("Too many links in symbolic link chain.") };
-        ifNot { <> isPrefix(sandboxDirectory, path) }
-            { io0Die("Symbolic link escapes sandbox directory.") };
-
-        <> ifValue { <> io0ReadLink(path) }
-            { newPath <> [newPath, sub(limit, 1)] }
-            { return path }
-    }
-};
-
 # Documented in Samizdat Layer 0 spec.
 fn io0SandboxedReader(directory) {
     <> { path ::
@@ -198,6 +201,7 @@ fn io0WriteFileUtf8(path, text) {
 };
 
 <> [
+    io0FileExists:      io0FileExists,
     io0FlatFromPath:    io0FlatFromPath,
     io0PathFromFlat:    io0PathFromFlat,
     io0ReadFileUtf8:    io0ReadFileUtf8,
