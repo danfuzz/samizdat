@@ -113,7 +113,7 @@ fn samCommandLine(context, rawArgs*) {
 
     def programText = io0ReadFileUtf8(filePath);
 
-    def evalled = ifValue { <> get(options, "layer-0") }
+    def evalled = ifIs { <> get(options, "layer-0") }
         { <> evalText0(context, programText) }
         { <> evalText(context, programText) };
 
