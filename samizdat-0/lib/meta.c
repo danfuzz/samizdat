@@ -13,19 +13,24 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(sam0Tokenize) {
-    return langTokenize0(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(sam0Tree) {
-    return langTree0(args[0]);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(sam0Eval) {
+PRIM_IMPL(samEval) {
     zvalue ctx = args[0];
     zvalue expressionNode = args[1];
 
     return langEval0(ctx, expressionNode);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(samParseExpression) {
+    return langParseExpression0(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(samParseProgram) {
+    return langParseProgram0(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(samTokenize) {
+    return langTokenize0(args[0]);
 }

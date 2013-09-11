@@ -6,60 +6,32 @@
 # Meta functions
 #
 
-#
-# Private Definitions
-#
-
-# Map from file name suffixes to names of parsing and evaluation functions.
-def META_NAME_MAP = [
-    sam0: [eval: "sam0Eval", tokenize: "sam0Tokenize", tree: "sam0Tree"],
-    sam1: [eval: "sam1Eval", tokenize: "sam1Tokenize", tree: "sam1Tree"],
-    sam2: [eval: "sam2Eval", tokenize: "sam2Tokenize", tree: "sam2Tree"]
-];
-
-# Gets the index of the first occurrence of the given character in the
-# given string.
-fn charIndex(string, ch) {
-    filterPump(makeOpenRange(0, 1), string) { index, one ::
-        <> ifIs { <> eq(ch, one) }
-            { return index }
-    };
-
-    <> -1
-};
-
 
 #
 # Exported Definitions
 #
 
 # Documented in Samizdat Layer 0 spec.
+def sam0Eval = samEval;
+
+# Documented in Samizdat Layer 0 spec.
+def sam0ParseExpression = samParseExpression;
+
+# Documented in Samizdat Layer 0 spec.
+def sam0ParseProgram = samParseProgram;
+
+# Documented in Samizdat Layer 0 spec.
+def sam0Tokenize = samTokenize;
+
+# Documented in Samizdat Layer 0 spec.
 fn makeLibrary(context) {
     <> [context*:, LIBRARY: context]
 };
 
-# Documented in Samizdat Layer 0 spec.
-fn metaFunctions(context, fileName) {
-    def dotAt = charIndex(fileName, ".");
-    def suffix = ifIs { <> eq(dotAt, -1) }
-        { <> "" }
-        { <> slice(fileName, add(dotAt, 1)) };
-
-    # Note: As the layers get added, the default here should change.
-    def nameMap = ifValueOr { <> get(META_NAME_MAP, suffix) }
-        { <> get(META_NAME_MAP, "sam2") };
-
-    <> collectAsMap(
-        makeFilterGenerator(nameMap)
-            { mapping ::
-                def name = valueOf(mapping);
-                <> ifValue { <> get(context, name) }
-                    { func <> [(keyOf(mapping)): func] }
-                    { io0Die(cat("Missing meta-function: ", name)) }
-            })
-};
-
 <> [
-    makeLibrary:   makeLibrary,
-    metaFunctions: metaFunctions
+    makeLibrary:         makeLibrary,
+    sam0Eval:            sam0Eval,
+    sam0ParseExpression: sam0ParseExpression,
+    sam0ParseProgram:    sam0ParseProgram,
+    sam0Tokenize:        sam0Tokenize
 ]

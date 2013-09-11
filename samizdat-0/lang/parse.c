@@ -1020,7 +1020,29 @@ DEF_PARSE(programBody) {
  */
 
 /* Documented in header. */
-zvalue langTree0(zvalue program) {
+zvalue langParseExpression0(zvalue expression) {
+    MOD_USE(lang);
+
+    zvalue tokens;
+
+    if (hasType(expression, TYPE_String)) {
+        tokens = langTokenize0(expression);
+    } else {
+        tokens = expression;
+    }
+
+    ParseState state = { tokens, collSize(tokens), 0 };
+    zvalue result = parse_expression(&state);
+
+    if (!isEof(&state)) {
+        die("Extra tokens at end of expression.");
+    }
+
+    return result;
+}
+
+/* Documented in header. */
+zvalue langParseProgram0(zvalue program) {
     MOD_USE(lang);
 
     zvalue tokens;

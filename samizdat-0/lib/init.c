@@ -67,7 +67,7 @@ static zvalue primitiveContext(void) {
         do { \
             zvalue nameStr = stringFromUtf8(-1, #name); \
             ctx = collPut(ctx, nameStr, \
-                makeBuiltin(minArgs, maxArgs, prim_##name, nameStr)); \
+                makeBuiltin(minArgs, maxArgs, PRIM_##name, nameStr)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
@@ -94,7 +94,7 @@ static zvalue getLibrary(void) {
 
     zvalue libraryFiles = getLibraryFiles();
     zvalue mainText = collGet(libraryFiles, STR_main_sam0);
-    zvalue mainProgram = langTree0(mainText);
+    zvalue mainProgram = langParseProgram0(mainText);
 
     zvalue ctx = primitiveContext();
     zvalue mainFunction = langEval0(ctx, mainProgram);

@@ -22,12 +22,12 @@ typedef zvalue (*znth)(zvalue value, zint n);
  * function prototype.
  */
 #define PRIM_IMPL(name) \
-    zvalue prim_##name(zint argCount, const zvalue *args)
+    zvalue PRIM_##name(zint argCount, const zvalue *args)
 
 /* Declarations for all the primitive functions */
 #define PRIM_DEF(name, value) /*empty*/
 #define PRIM_FUNC(name, minArgs, maxArgs) \
-    zvalue prim_##name(zint, const zvalue *)
+    zvalue PRIM_##name(zint, const zvalue *)
 #include "prim-def.h"
 #undef PRIM_DEF
 #undef PRIM_FUNC
