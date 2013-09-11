@@ -32,6 +32,19 @@ fn sibling() {
     io0Note(text);
 };
 
+# Demo of finding and non-finding files.
+fn fileExists() {
+    fn tryFile(path) {
+        ifIs { <> io0FileExists(path) }
+            { io0Note(cat("Exists: ", sourceString(path))) }
+            { io0Note(cat("Does not exist: ", sourceString(path))) }
+    };
+
+    def base = butLast(SELF_PATH);
+    tryFile([base*, "sibling.txt"]);
+    tryFile([base*, "non-sibling.txt"]);
+};
+
 # Emits the stringified version of the given value to the console.
 fn process(value) {
     io0Note(sourceString(value));
@@ -108,6 +121,7 @@ fn main(selfPath, name?, rest*) {
     process(cat(toString(1), toString(31), toString(127)));
 
     sibling();
+    fileExists();
 
     blort(1);
     blort(1, 2);

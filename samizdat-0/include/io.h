@@ -13,10 +13,19 @@
 
 #include "pb.h"
 
+#include <stdbool.h>
+
+
 /**
  * Returns `getcwd()` as a string.
  */
 zvalue ioFlatCwd(void);
+
+/**
+ * Returns `true` if there is a "regular" file at the given path, or
+ * `false` if not.
+ */
+bool ioFlatFileExists(zvalue flatPath);
 
 /**
  * Gets symbolic link information about the file with the given name.

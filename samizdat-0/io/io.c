@@ -58,6 +58,25 @@ zvalue ioFlatCwd(void) {
 }
 
 /* Documented in header. */
+bool ioFlatFileExists(zvalue flatPath) {
+    zint pathSize = utf8SizeFromString(flatPath);
+    char path[pathSize + 1];
+    utf8FromString(pathSize + 1, path, flatPath);
+
+    struct stat statBuf;
+    if (stat(path, &statBuf) != 0) {
+        if ((errno == ENOENT) || (errno == ENOTDIR)) {
+            // File not found or invalid component, neither of which
+            // are really errors from the perspective of this function.
+            return NULL;
+        }
+        die("Trouble with stat(): %s", strerror(errno));
+    }
+
+    return S_ISREG(statBuf.st_mode);
+}
+
+/* Documented in header. */
 zvalue ioFlatReadLink(zvalue flatPath) {
     zint pathSize = utf8SizeFromString(flatPath);
     char path[pathSize + 1];
