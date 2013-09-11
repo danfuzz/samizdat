@@ -84,6 +84,18 @@ fn parseArgs(args) {
     <> pegApply(parArguments, argString)
 };
 
+# Evals a program using layer 0.
+fn evalText0(context, programText) {
+    def parsedProgram = get(context, "sam0ParseProgram")(programText);
+    <> get(context, "sam0Eval")(context, parsedProgram);
+};
+
+# Evals a program using the highest-defined layer.
+fn evalText(context, programText) {
+    def parsedProgram = get(context, "samParseProgram")(programText);
+    <> get(context, "samEval")(context, parsedProgram);
+};
+
 
 #
 # Exported Definitions
@@ -99,17 +111,13 @@ fn samCommandLine(context, rawArgs*) {
     def filePath = io0PathFromFlat(fileName);
     def args = ifValueOr { <> butFirst(argWords) } { <> [] };
 
-    def nameForLookup = ifValue { <> get(options, "file-suffix") }
-        { suffix <> cat("x.", suffix) }
-        { <> last(filePath) };
-
-    def metas = metaFunctions(context, nameForLookup);
-
     def programText = io0ReadFileUtf8(filePath);
-    def parsedProgram = get(metas, "tree")(programText);
-    def evalledProgram = get(metas, "eval")(context, parsedProgram);
 
-    <> evalledProgram(filePath, args*)
+    def evalled = ifIs { <> get(options, "layer-0") }
+        { <> evalText0(context, programText) }
+        { <> evalText(context, programText) };
+
+    <> evalled(filePath, args*)
 };
 
 <> [

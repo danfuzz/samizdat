@@ -43,7 +43,7 @@ LIB_FILE(meta,                sam0);
 LIB_FILE(peg,                 sam0);
 LIB_FILE(range,               sam0);
 LIB_FILE(tokenize1,           sam0);
-LIB_FILE(tree1,               sam0);
+LIB_FILE(parse1,              sam0);
 
 LIB_FILE(Module,              sam1);
 
@@ -51,4 +51,4 @@ LIB_FILE(commandLine,         sam1);
 LIB_FILE(eval2,               sam1);
 LIB_FILE(io0,                 sam1);
 LIB_FILE(tokenize2,           sam1);
-LIB_FILE(tree2,               sam1);
+LIB_FILE(parse2,              sam1);

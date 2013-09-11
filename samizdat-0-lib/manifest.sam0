@@ -26,6 +26,7 @@ def MANIFEST = [
     "constants.sam0",
 
     # Layer 0: Simple functions. These only rely on primitive functions.
+    "meta.sam0",
     "Value.sam0",
     "Collection.sam0",
     "Bitwise.sam0",
@@ -50,11 +51,10 @@ def MANIFEST = [
     "Module.sam0",
     "peg.sam0",
     "ParseForwarder.sam0",     # Uses `parse` defined by `peg.sam0`.
-    "meta.sam0",
 
     # Layer 1 language implementation.
     "tokenize1.sam0",
-    "tree1.sam0",
+    "parse1.sam0",
     "eval1.sam0",
 
     # Layer 1 additional library.
@@ -64,7 +64,7 @@ def MANIFEST = [
 
     # Layer 2 language implementation.
     "tokenize2.sam1",
-    "tree2.sam1",
+    "parse2.sam1",
     "eval2.sam1"
 
     # Layer 2 library implementation.

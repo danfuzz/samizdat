@@ -463,10 +463,10 @@ store(tokStringPart2, implStringPart2);
 #
 
 # Documented in Samizdat Layer 1 spec.
-fn sam2Tokenize(programText) {
+fn samTokenize(programText) {
     <> pegApply(tokFile, programText)
 };
 
 <> [
-    sam2Tokenize: sam2Tokenize
+    samTokenize: samTokenize
 ]
