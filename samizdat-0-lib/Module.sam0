@@ -13,7 +13,7 @@
 
 # Box containing a map from fully-qualified names to modules. Each name is a
 # list-of-strings denoting a "path" to the module.
-def theModuleBox = makeMutableBox([:]);
+def theModulesBox = makeMutableBox([:]);
 
 # Box containing a set-like map of fully-qualified names representing
 # modules in the middle of being loaded.
@@ -114,23 +114,21 @@ fn moduleDef(module) {
     ifIs { <> moduleGet(name) }
         { io0Die(cat("Cannot redefine module: "), sourceString(name)) };
 
-    def mods = fetch(theModuleBox);
-    store(theModuleBox, put(mods, name, module));
-
+    update(theModulesBox, { mods <> put(mods, name, module) });
     <> module
 };
 
 # TODO: Documented in spec. (Get a previously-defined module.)
 fn moduleGet(name) {
-    def mods = fetch(theModuleBox);
+    def mods = fetch(theModulesBox);
     <> get(mods, name)
 };
 
 # TODO: Documented in spec. (Get a module, first reading it from storage and
 # initializing it if necessary.)
-fn moduleUse(name, info) {
-    # TODO: Currently ignores everything about `info` other than the name.
-    def name = get(info, "name");
+fn moduleUse(searchInfo) {
+    # TODO: Currently ignores everything about `searchInfo` other than the name.
+    def name = get(searchInfo, "name");
 
     ifValue { <> moduleGet(name) }
         { module :: return module };
@@ -143,10 +141,27 @@ fn moduleUse(name, info) {
                 sourceString(keyList(pendings))))
         };
 
+    # Indicate that the module is in the process of being loaded.
     store(thePendingBox, put(pendings, name, null));
 
-    io0Die("TODO: Load module here.");
-    io0Die("TODO: Remove module from pendings here.")
+    def moduleReader = io0SandboxedReader([MODULE_PATH*, name*]);
+    def infoText = moduleReader(["module.sam"]);
+    def info = sam0Eval(LIBRARY, sam0Tree(infoText))();
+
+    ifIs { <> ne(name, get(info, "name")) }
+        { io0Die(cat("Module name mismatch: ", sourceString(name))) };
+
+    def mainText = moduleReader(["main.sam"]);
+    def subLibrary = makeLibrary([LIBRARY*:, INFO: info, READER: moduleReader]);
+    def exports = sam0Eval(subLibrary, sam0Tree(mainText))();
+
+    def result = @[Module: [info: info, exports: exports]];
+    moduleDef(result);
+
+    # Indicate that the module load is no longer in-process.
+    update(thePendingBox, { pendings <> del(pendings, name) });
+
+    <> result
 };
 
 
