@@ -94,7 +94,7 @@ static zvalue getLibrary(void) {
 
     zvalue libraryFiles = getLibraryFiles();
     zvalue mainText = collGet(libraryFiles, STR_main_sam0);
-    zvalue mainProgram = langTree0(mainText);
+    zvalue mainProgram = langParseProgram0(mainText);
 
     zvalue ctx = primitiveContext();
     zvalue mainFunction = langEval0(ctx, mainProgram);

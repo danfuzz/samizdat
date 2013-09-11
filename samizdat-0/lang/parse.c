@@ -1020,7 +1020,7 @@ DEF_PARSE(programBody) {
  */
 
 /* Documented in header. */
-zvalue langTree0(zvalue program) {
+zvalue langParseProgram0(zvalue program) {
     MOD_USE(lang);
 
     zvalue tokens;
