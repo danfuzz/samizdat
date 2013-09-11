@@ -1972,14 +1972,14 @@ store(parStatement, implStatement);
 #
 
 # Documented in Samizdat Layer 1 spec.
-fn sam2Tree(program) {
+fn samTree(program) {
     def tokens = ifIs { <> isString(program) }
-        { <> sam2Tokenize(program) }
+        { <> samTokenize(program) }
         { <> program };
 
     <> pegApply(parProgramOrError, tokens)
 };
 
 <> [
-    sam2Tree: sam2Tree
+    samTree: samTree
 ]

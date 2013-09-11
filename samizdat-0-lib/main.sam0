@@ -38,13 +38,8 @@ fn readLibraryFile(name) {
 fn loadLibrary(ctx, name) {
     io0Note(cat("    ", name));
 
-    # If `metaFunctions` is available, use it to get the proper parser and
-    # evaluator. Otherwise, default to the layer 0 functions.
-    def metas = ifValue { <> get(ctx, "metaFunctions") }
-        { metaFunctions <> metaFunctions(ctx, name) }
-        { <> [eval: sam0Eval, tree: sam0Tree] };
-    def treeFunction = get(metas, "tree");
-    def evalFunction = get(metas, "eval");
+    def treeFunction = get(ctx, "samTree");
+    def evalFunction = get(ctx, "samEval");
 
     def text = readLibraryFile(name);
     def tree = treeFunction(text);

@@ -164,10 +164,10 @@ def tokFile = pegMakeMainSequence(
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn sam1Tokenize(programText) {
+fn samTokenize(programText) {
     <> pegApply(tokFile, programText)
 };
 
 <> [
-    sam1Tokenize: sam1Tokenize
+    samTokenize: samTokenize
 ]

@@ -643,14 +643,14 @@ store(parChoicePex, implChoicePex);
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn sam1Tree(program) {
+fn samTree(program) {
     def tokens = ifIs { <> isString(program) }
-        { <> sam1Tokenize(program) }
+        { <> samTokenize(program) }
         { <> program };
 
     <> pegApply(parProgramOrError, tokens)
 };
 
 <> [
-    sam1Tree: sam1Tree
+    samTree: samTree
 ]

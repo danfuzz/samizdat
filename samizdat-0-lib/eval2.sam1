@@ -10,6 +10,9 @@
 # Private Definitions
 #
 
+# The old binding for `samEval`.
+def subEval = samEval;
+
 # TODO
 fn convertExpression(node) {
     io0Die("TODO");
@@ -21,12 +24,12 @@ fn convertExpression(node) {
 #
 
 # Documented in Samizdat Layer 1 spec.
-fn sam2Eval(context, expressionNode) {
-    <> sam1Eval(context, expressionNode)
+fn samEval(context, expressionNode) {
+    <> subEval(context, expressionNode)
     # def convertedNode = convertExpression(expressionNode);
     # <> sam0Eval(context, convertedNode)
 };
 
 <> [
-    sam2Eval: sam2Eval
+    samEval: samEval
 ]
