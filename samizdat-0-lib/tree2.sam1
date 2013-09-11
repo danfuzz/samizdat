@@ -1093,12 +1093,12 @@ store(parPrefixOperator, implPrefixOperator);
 # Tree for the closure part of `target.func` syntax expansion.
 # This expression is constant across all translations, and it's most easily
 # constructed by using the built-in parser.
-def TARGET_BIND_CLOSURE = sam0Tree(
+def TARGET_BIND_CLOSURE = sam0ParseProgram(
     "target, func <> { args* <> func(target, args*) }");
 
 # Tree for the closure part of `target.func(arg, ...)` syntax expansion,
 # similar to the above.
-def TARGET_CALL_CLOSURE = sam0Tree(
+def TARGET_CALL_CLOSURE = sam0ParseProgram(
     "target, func, args* <> func(target, args*)");
 
 # Parses a unary postfix operator. This yields a function (per se) to call
@@ -1801,7 +1801,7 @@ def parSwitchCase = {/
 # Tree for the second argument to the `ifValue` inside a `switch` translation.
 # This expression is constant across all switches, and it's most easily
 # constructed by using the built-in parser.
-def SWITCH_DISPATCH_CLOSURE = sam0Tree("
+def SWITCH_DISPATCH_CLOSURE = sam0ParseProgram("
     args ::
     <> { cases, defaultFunction, value ::
         <> ifValue { <> get(cases, value) }
@@ -1972,7 +1972,7 @@ store(parStatement, implStatement);
 #
 
 # Documented in Samizdat Layer 1 spec.
-fn samTree(program) {
+fn samParseProgram(program) {
     def tokens = ifIs { <> isString(program) }
         { <> samTokenize(program) }
         { <> program };
@@ -1981,5 +1981,5 @@ fn samTree(program) {
 };
 
 <> [
-    samTree: samTree
+    samParseProgram: samParseProgram
 ]

@@ -26,6 +26,6 @@ PRIM_IMPL(samTokenize) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(samTree) {
+PRIM_IMPL(samParseProgram) {
     return langParseProgram0(args[0]);
 }

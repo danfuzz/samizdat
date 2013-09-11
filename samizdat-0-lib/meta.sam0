@@ -18,7 +18,7 @@ def sam0Eval = samEval;
 def sam0Tokenize = samTokenize;
 
 # Documented in Samizdat Layer 0 spec.
-def sam0Tree = samTree;
+def sam0ParseProgram = samParseProgram;
 
 # Documented in Samizdat Layer 0 spec.
 fn makeLibrary(context) {
@@ -29,5 +29,5 @@ fn makeLibrary(context) {
     makeLibrary:  makeLibrary,
     sam0Eval:     sam0Eval,
     sam0Tokenize: sam0Tokenize,
-    sam0Tree:     sam0Tree
+    sam0ParseProgram:     sam0ParseProgram
 ]

@@ -86,13 +86,13 @@ fn parseArgs(args) {
 
 # Evals a program using layer 0.
 fn evalText0(context, programText) {
-    def parsedProgram = get(context, "sam0Tree")(programText);
+    def parsedProgram = get(context, "sam0ParseProgram")(programText);
     <> get(context, "sam0Eval")(context, parsedProgram);
 };
 
 # Evals a program using the highest-defined layer.
 fn evalText(context, programText) {
-    def parsedProgram = get(context, "samTree")(programText);
+    def parsedProgram = get(context, "samParseProgram")(programText);
     <> get(context, "samEval")(context, parsedProgram);
 };
 

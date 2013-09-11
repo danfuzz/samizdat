@@ -38,7 +38,7 @@ fn readLibraryFile(name) {
 fn loadLibrary(ctx, name) {
     io0Note(cat("    ", name));
 
-    def treeFunction = get(ctx, "samTree");
+    def treeFunction = get(ctx, "samParseProgram");
     def evalFunction = get(ctx, "samEval");
 
     def text = readLibraryFile(name);
