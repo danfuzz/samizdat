@@ -137,34 +137,6 @@ the top language layer. It is an error (terminating the runtime)
 if the file's suffix corresponds to a language layer not represented
 in `context`.
 
-#### `sam1Eval(context, expressionNode) <> . | void`
-
-Returns the evaluation result of executing the given *Samizdat Layer 1*
-expression node. This is just like `sam0Eval`, except for the specification
-used to interpret the node.
-
-Very notably, the result of calling `sam1Tree` is valid as the
-`expressionNode` argument here.
-
-#### `sam1Tokenize(string) <> [token*]`
-
-*Samizdat Layer 1* tokenizer. This parses a string according to the
-*Samizdat Layer 1* tokenization rules, returning a list of tokens,
-per the *Samizdat Layer 1* specification.
-
-This function is part of the bridge between layers 0 and 1.
-
-#### `sam1Tree(program) <> functionNode`
-
-*Samizdat Layer 1* tree parser. This parses a program according to the
-*Samizdat Layer 1* parsing rules, returning a top-level function node,
-per the *Samizdat Layer 1* specification. `program` must be either
-a string or a list of tokens. If it is a string, then this function
-builds in a call to `sam1Tokenize` to first convert it to a list of
-tokens.
-
-This function is part of the bridge between layers 0 and 1.
-
 #### `samCommandLine(context, args*) <> . | void`
 
 Command-line evaluator. This implements standardized top-level command-line
