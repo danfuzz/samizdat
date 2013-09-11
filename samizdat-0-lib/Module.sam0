@@ -42,7 +42,7 @@ fn withExports(module, newExports) {
     <> @[Module: [(dataOf(module))*:, exports: newExports]]
 };
 
-# TODO: Documented in spec.
+# Documented in spec.
 fn Module_cat(module, more*) {
     def data = dataOf(module);
 
@@ -53,49 +53,49 @@ fn Module_cat(module, more*) {
 };
 genericBind(cat, "Module", Module_cat);
 
-# TODO: Documented in spec.
+# Documented in spec.
 fn Module_del(module, key) {
     <> withExports(module, del(getExports(module), key))
 };
 genericBind(del, "Module", Module_del);
 
-# TODO: Documented in spec.
+# Documented in spec.
 fn Module_get(module, key) {
     <> get(getExports(module), key)
 };
 genericBind(get, "Module", Module_get);
 
-# TODO: Documented in spec.
+# Documented in spec.
 fn Module_keyList(module) {
     <> keyList(getExports(module))
 };
 genericBind(keyList, "Module", Module_keyList);
 
-# TODO: Documented in spec.
+# Documented in spec.
 fn Module_nameOf(module) {
     <> get(infoOf(module), "name")
 };
 genericBind(nameOf, "Module", Module_nameOf);
 
-# TODO: Documented in spec.
+# Documented in spec.
 fn Module_nth(module, n) {
     <> nth(getExports(module), n)
 };
 genericBind(nth, "Module", Module_nth);
 
-# TODO: Documented in spec.
+# Documented in spec.
 fn Module_put(module, key, value) {
     <> withExports(module, put(getExports(module), key, value))
 };
 genericBind(put, "Module", Module_put);
 
-# TODO: Documented in spec.
+# Documented in spec.
 fn Module_sizeOf(module) {
     <> sizeOf(getExports(module))
 };
 genericBind(sizeOf, "Module", Module_sizeOf);
 
-# TODO: Documented in spec.
+# Documented in spec.
 fn Module_slice(module, start, end?) {
     <> withExports(module, slice(getExports(module), start, end*))
 };
@@ -107,7 +107,7 @@ genericBind(slice, "Module", Module_slice);
 # Exported Definitions
 #
 
-# TODO: Documented in spec. (Define a previously-undefined module.)
+# Documented in spec.
 fn moduleDef(module) {
     def name = nameOf(module);
 
@@ -118,7 +118,7 @@ fn moduleDef(module) {
     <> module
 };
 
-# TODO: Documented in spec. (Get a previously-defined module.)
+# Documented in spec.
 fn moduleGet(name) {
     def mods = fetch(theModulesBox);
     <> get(mods, name)

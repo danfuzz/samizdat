@@ -20,8 +20,7 @@ def thePendingBox = makeMutableBox([:]);
 # Exported Definitions
 #
 
-# TODO: Documented in spec. (Get a module, first reading it from storage and
-# initializing it if necessary.)
+# Documented in spec.
 fn moduleUse(searchInfo) {
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     def name = get(searchInfo, "name");
