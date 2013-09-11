@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     zstackPointer save = pbFrameStart();
     zvalue context = libNewContext();
 
-    // The first argumengt to `samCommandLine` is the context. The
+    // The first argument to `samCommandLine` is the context. The
     // rest are the original command-line arguments (per se, so not
     // including C's `argv[0]`).
 
