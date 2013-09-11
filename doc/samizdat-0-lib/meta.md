@@ -138,6 +138,4 @@ was returned by the inner function call (including void).
 
 Currently recognized command-line options:
 
-* `--file-suffix="suffix"` &mdash; acts as if the input file name ended
-  with `".suffix"` instead of whatever it happened to end with. This can
-  be used to force a particular language layer to be used.
+* `--layer-0` &mdash; uses the layer 0 parser and evaluator.
