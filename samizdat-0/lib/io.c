@@ -54,6 +54,13 @@ PRIM_IMPL(io0FlatCwd) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(io0FlatFileExists) {
+    zvalue flatPath = args[0];
+
+    return ioFlatFileExists(flatPath) ? flatPath : NULL;
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(io0FlatReadFileUtf8) {
     return ioFlatReadFileUtf8(args[0]);
 }
