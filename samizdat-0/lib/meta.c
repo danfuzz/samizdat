@@ -21,11 +21,16 @@ PRIM_IMPL(samEval) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(samTokenize) {
-    return langTokenize0(args[0]);
+PRIM_IMPL(samParseExpression) {
+    return langParseExpression0(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(samParseProgram) {
     return langParseProgram0(args[0]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(samTokenize) {
+    return langTokenize0(args[0]);
 }

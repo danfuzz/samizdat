@@ -42,6 +42,16 @@ It is recommended (but not required) that the given `context` include
 bindings for all of the library functions specified by this document.
 See `makeLibrary` for further suggestions and information.
 
+#### `sam0ParseExpression(expression) <> expressionNode`
+
+Parses the given expression as an expression in *Samizdat Layer 0*.
+`expression` must be either a string or a list of tokens. If it is a string,
+then this function builds in a call to `sam0Tokenize` to first convert it
+to a list of tokens.
+
+Returns an expression node, as defined by the *Samizdat Layer 0* parse tree
+semantics, that represents the parsed expression.
+
 #### `sam0ParseProgram(program) <> functionNode`
 
 Parses the given program as a top-level program written in
@@ -116,6 +126,20 @@ See `makeLibrary` for further suggestions and information.
 **Note:** This function gets bound and re-bound during system initialization,
 as the higher language layers are hooked in. It is initially equivalent to
 `sam0Eval`.
+
+#### `samParseExpression(expression) <> expressionNode`
+
+Parses the given expression as an expression in *Samizdat*. `expression`
+must be either a string or a list of tokens. If it is a string, then this
+function builds in a call to `samTokenize` to first convert it to a list of
+tokens.
+
+Returns an expression node, as defined by the *Samizdat* parse tree
+semantics, that represents the parsed expression.
+
+**Note:** This function gets bound and re-bound during system initialization,
+as the higher language layers are hooked in. It is initially equivalent to
+`sam0ParseExpression`.
 
 #### `samParseProgram(program) <> functionNode`
 
