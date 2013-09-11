@@ -67,7 +67,7 @@ fn moduleUse(searchInfo) {
     def moduleDir = findModuleDirectory(fqName);
     def moduleReader = io0SandboxedReader(moduleDir);
     def infoText = moduleReader(["module.sam"]);
-    def info = sam0Eval(LIBRARY, sam0ParseProgram(infoText))();
+    def info = sam0Eval(LIBRARY, sam0ParseExpression(infoText))();
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     ifIs { <> ne(fqName, get(info, "name")) }
