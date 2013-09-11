@@ -1,0 +1,134 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Module functions
+#
+
+
+#
+# Private Definitions
+#
+
+# Box containing a map from fully-qualified names to modules. Each name is a
+# list-of-strings denoting a "path" to the module.
+def theModulesBox = makeMutableBox([:]);
+
+# Box containing a set-like map of fully-qualified names representing
+# modules in the middle of being loaded.
+def thePendingBox = makeMutableBox([:]);
+
+
+#
+# Type Definition
+#
+# `Module` payload is `[info: map, exports: map]`. `info` includes at least
+# `[name: [string, ...], version: string]`.
+
+# Gets the `exports` of a module.
+fn getExports(module) {
+    <> get(dataOf(module), "exports")
+};
+
+# Gets the `info` of a module.
+fn getInfo(module) {
+    <> get(dataOf(module), "info")
+};
+
+# Returns a new module like the given one, except with `exports` as
+# given.
+fn withExports(module, newExports) {
+    <> @[Module: [(dataOf(module))*:, exports: newExports]]
+};
+
+# Documented in spec.
+fn Module_cat(module, more*) {
+    def data = dataOf(module);
+
+    def allExports = filterAll(getExports, [module, more*]);
+    def combinedExports = cat([:], allExports*);
+
+    <> withExports(module, combinedExports)
+};
+genericBind(cat, "Module", Module_cat);
+
+# Documented in spec.
+fn Module_del(module, key) {
+    <> withExports(module, del(getExports(module), key))
+};
+genericBind(del, "Module", Module_del);
+
+# Documented in spec.
+fn Module_get(module, key) {
+    <> get(getExports(module), key)
+};
+genericBind(get, "Module", Module_get);
+
+# Documented in spec.
+fn Module_keyList(module) {
+    <> keyList(getExports(module))
+};
+genericBind(keyList, "Module", Module_keyList);
+
+# Documented in spec.
+fn Module_nameOf(module) {
+    <> get(infoOf(module), "name")
+};
+genericBind(nameOf, "Module", Module_nameOf);
+
+# Documented in spec.
+fn Module_nth(module, n) {
+    <> nth(getExports(module), n)
+};
+genericBind(nth, "Module", Module_nth);
+
+# Documented in spec.
+fn Module_put(module, key, value) {
+    <> withExports(module, put(getExports(module), key, value))
+};
+genericBind(put, "Module", Module_put);
+
+# Documented in spec.
+fn Module_sizeOf(module) {
+    <> sizeOf(getExports(module))
+};
+genericBind(sizeOf, "Module", Module_sizeOf);
+
+# Documented in spec.
+fn Module_slice(module, start, end?) {
+    <> withExports(module, slice(getExports(module), start, end*))
+};
+genericBind(slice, "Module", Module_slice);
+
+
+
+#
+# Exported Definitions
+#
+
+# Documented in spec.
+fn moduleDef(module) {
+    def name = nameOf(module);
+
+    ifIs { <> moduleGet(name) }
+        { io0Die(cat("Cannot redefine module: "), sourceString(name)) };
+
+    update(theModulesBox, { mods <> put(mods, name, module) });
+
+    <> module
+};
+
+# Documented in spec.
+fn moduleGet(searchInfo) {
+    # TODO: Currently ignores everything about `searchInfo` other than the name.
+    def name = get(searchInfo, "name");
+
+    <> get(mods, name)
+};
+
+
+<> [
+    moduleDef: moduleDef,
+    moduleGet: moduleGet
+]

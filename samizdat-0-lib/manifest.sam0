@@ -47,7 +47,7 @@ def MANIFEST = [
     "Generator.sam0",
     "String.sam0",
     "format.sam0",
-    "module.sam0",
+    "Module.sam0",
     "peg.sam0",
     "ParseForwarder.sam0",     # Uses `parse` defined by `peg.sam0`.
     "meta.sam0",
@@ -60,6 +60,7 @@ def MANIFEST = [
     # Layer 1 additional library.
     "io0.sam1",
     "commandLine.sam1",
+    "Module.sam1",
 
     # Layer 2 language implementation.
     "tokenize2.sam1",

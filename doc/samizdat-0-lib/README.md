@@ -79,6 +79,7 @@ will be returned, or one of:
   * [Int](Int.md)
   * [List](List.md)
   * [Map](Map.md)
+  * [Module](Module.md)
   * [Number](Number.md)
   * [OpenRange](OpenRange.md)
   * [String](String.md)
@@ -93,7 +94,6 @@ will be returned, or one of:
   * [I/O](io.md)
   * [String Formatting](format.md)
   * [Parsing](peg.md)
-  * [Modules](module.md)
   * [Meta-Library](meta.md)
 
 - - - - -
