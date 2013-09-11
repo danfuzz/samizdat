@@ -4,45 +4,66 @@ Samizdat Layer 0: Core Library
 Modules
 -------
 
-The *Layer 0* support for modules consists of library functions that
-allow manipulation of module values, but does not include anything
-that affects global system state.
+A `Module` is a derived value with a map payload, consisting of
+mappings for `info` and `exports`, each of which is expected to
+itself be a map. `Module` implements the `Collection` protocol, effectively
+by delegating to the `exports`.
 
-An uninitialized module value is a derived value of the form:
+Module values in-hand can be bound into the system with `moduleDef`. This
+is used during system bootstrap.
 
-```
-@[module: [
-    name:    "name",
-    version: "version",
-    imports: ["name1", "name2", ...],
-    init:    { modules :: ... }
-]]
-```
-
-That is, `name` and `version` are strings, `imports` is a list of strings,
-and `init` is a function that should take a `modules` parameter.
-The `modules` parameter should be expected to itself be a map from names to
-*initialized* modules.
-
-An initialized module value is a derived value of the form:
-
-```
-@[module: [
-    name:    "name",
-    version: "version",
-    imports: ["name1", "name2", ...],
-    exports: [name1: value1, name2: value2, ...]
-]]
-```
-
-That is, it is just like an uninitialized module, except that the
-`init` mapping is replaced by an `exports` map.
+More commonly, modules can be found in stable storage and initialized
+with `moduleUse`.
 
 
 <br><br>
-### Generic Function Definitions
+### Generic Function Definitions: `Collection` protocol
 
-(none)
+#### `cat(module, more*) <> module`
+
+Returns a module with the same `info` as the one given, but with
+additional and/or replaced `exports` mappings from the `more`
+modules.
+
+#### `del(module, key) <> module`
+
+Returns a module just like the given `module`, except that
+the `exports` mapping for the given `key` is removed.
+
+#### `get(module, key) <> . | void`
+
+Returns the `exports` element of the module that corresponds to the given
+`key`.
+
+#### `keyList(module) <> list`
+
+Returns the list of keys mapped by the module's `exports`.
+
+#### `nth(module, n) <> . | void`
+
+Returns the nth (zero-based) `exports` element of the module.
+
+#### `put(module, key, value) <> module`
+
+Returns a module just like the given `module`, except that
+the `exports` mapping for the given `key` is to the given `value`.
+
+#### `sizeOf(module) <> int`
+
+Returns the number of elements in the given module's `exports`.
+
+#### `slice(module, start, end?) <> module`
+
+Returns a module just like the given one, except with only the given slice
+of the original's `exports`.
+
+
+<br><br>
+### Generic Function Definitions: One-Offs
+
+#### `nameOf(module) <> . | void`
+
+Returns the `name` mapping in the module's `info`.
 
 
 <br><br>
@@ -54,9 +75,34 @@ That is, it is just like an uninitialized module, except that the
 <br><br>
 ### In-Language Definitions
 
-#### `moduleInit(context) <> map`
+#### `moduleDef(module) <> module`
 
-Given an execution context (that is, a map from names to values meant to
-be used as global variable bindings), extract the names that appear to
-be module names (`"module:..."`), and perform initialization on the so-bound
-modules. Returns a map from module names to initialized modules.
+Defines a new module, for later retrieval via `moduleGet` or `moduleUse`.
+There must not already be a defined module with the same name as the given
+one.
+
+#### `moduleGet(searchInfo) <> module | .`
+
+Gets an already-defined module whose `info` matches the given `searchInfo`.
+Returns the matching module if it is found, or returns void if there was
+no such already-defined module.
+
+The `searchInfo` map indicates the required information about the module.
+The `name` binding of `searchInfo` is required and should be a list-of-strings
+representing the fully-qualified module name.
+
+TODO: Right now, only the `name` in the `searchInfo` is checked.
+
+#### `moduleUse(searchInfo)` <> module
+
+Gets a module, as if by `moduleGet`, if it has already been defined; or
+attempts to load it from storage if it has *not* already been defined.
+
+The `searchInfo` map indicates the required information about the module.
+The `name` binding of `searchInfo` is required and should be a list-of-strings
+representing the fully-qualified module name.
+
+This will fail with a terminal error if the module isn't defined and
+cannot be loaded.
+
+TODO: Right now, only the `name` in the `searchInfo` is checked.
