@@ -22,6 +22,7 @@ LIB_FILE(FilterGenerator,     sam0);
 LIB_FILE(FunctionForwarder,   sam0);
 LIB_FILE(Generator,           sam0);
 LIB_FILE(ListWrapGenerator,   sam0);
+LIB_FILE(Module,              sam0);
 LIB_FILE(NullBox,             sam0);
 LIB_FILE(NullGenerator,       sam0);
 LIB_FILE(OptGenerator,        sam0);
@@ -39,11 +40,12 @@ LIB_FILE(format,              sam0);
 LIB_FILE(main,                sam0);
 LIB_FILE(manifest,            sam0);
 LIB_FILE(meta,                sam0);
-LIB_FILE(module,              sam0);
 LIB_FILE(peg,                 sam0);
 LIB_FILE(range,               sam0);
 LIB_FILE(tokenize1,           sam0);
 LIB_FILE(tree1,               sam0);
+
+LIB_FILE(Module,              sam1);
 
 LIB_FILE(commandLine,         sam1);
 LIB_FILE(eval2,               sam1);

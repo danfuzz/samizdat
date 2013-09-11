@@ -179,7 +179,7 @@ fn resolveLinks(sandboxDirectory, path) {
             { io0Die("Symbolic link escapes sandbox directory.") };
 
         <> ifValue { <> io0ReadLink(path) }
-            { newPath <> [newPath, (sub(limit, 1))] }
+            { newPath <> [newPath, sub(limit, 1)] }
             { return path }
     }
 };
