@@ -121,22 +121,6 @@ passing as the library / global context argument to evaluation
 functions (such as `sam0Eval`), in that callees can rightfully expect
 there to be a binding for `LIBRARY`.
 
-#### `metaFunctions(context, fileName) <> map`
-
-Given a context (map of variable bindings, presumed to be a variant of
-the core library) and a file name (a string), returns a map of the
-functions to use to process that file as source code. The result is a
-map that binds the three keys `eval` `tokenize` and `tree`. These are
-bound to a matched set of functions for evaluating trees, tokenizing
-text, and parsing text or token lists into trees (respectively).
-
-This function works by noting `fileName`'s suffix, and matching it
-against a mapping from suffixes to function names. If the suffix is
-unrecognized, it assumes that the file is intended to be used with
-the top language layer. It is an error (terminating the runtime)
-if the file's suffix corresponds to a language layer not represented
-in `context`.
-
 #### `samCommandLine(context, args*) <> . | void`
 
 Command-line evaluator. This implements standardized top-level command-line
