@@ -12,10 +12,22 @@
 #
 
 # Documented in Samizdat Layer 0 spec.
+def sam0Eval = samEval;
+
+# Documented in Samizdat Layer 0 spec.
+def sam0Tokenize = samTokenize;
+
+# Documented in Samizdat Layer 0 spec.
+def sam0Tree = samTree;
+
+# Documented in Samizdat Layer 0 spec.
 fn makeLibrary(context) {
     <> [context*:, LIBRARY: context]
 };
 
 <> [
-    makeLibrary:   makeLibrary
+    makeLibrary:  makeLibrary,
+    sam0Eval:     sam0Eval,
+    sam0Tokenize: sam0Tokenize,
+    sam0Tree:     sam0Tree
 ]

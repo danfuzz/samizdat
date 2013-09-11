@@ -13,21 +13,6 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(sam0Eval) {
-    return PRIM_samEval(argCount, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(sam0Tokenize) {
-    return PRIM_samTokenize(argCount, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(sam0Tree) {
-    return PRIM_samTree(argCount, args);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(samEval) {
     zvalue ctx = args[0];
     zvalue expressionNode = args[1];
