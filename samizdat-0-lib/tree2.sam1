@@ -692,6 +692,16 @@ def implProgramBody = {/
 /};
 store(parProgramBody, implProgramBody);
 
+# Top-level rule to parse an expression with possible error afterwards.
+def parExpressionOrError = {/
+    ex = parExpression
+    (
+        pending = .+
+        { reportError(pending) }
+    )?
+    { <> ex }
+/};
+
 # Top-level rule to parse a program with possible error afterwards.
 # Note that an empty string is a valid program.
 def parProgramOrError = {/
@@ -1971,6 +1981,15 @@ store(parStatement, implStatement);
 # Exported Definitions
 #
 
+# Documented in Samizdat Layer 0 spec.
+fn samParseExpression(expression) {
+    def tokens = ifIs { <> isString(expression) }
+        { <> samTokenize(expression) }
+        { <> expression };
+
+    <> pegApply(parExpressionOrError, tokens)
+};
+
 # Documented in Samizdat Layer 1 spec.
 fn samParseProgram(program) {
     def tokens = ifIs { <> isString(program) }
@@ -1981,5 +2000,6 @@ fn samParseProgram(program) {
 };
 
 <> [
-    samParseProgram: samParseProgram
+    samParseExpression: samParseExpression,
+    samParseProgram:    samParseProgram
 ]

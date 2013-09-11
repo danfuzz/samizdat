@@ -492,6 +492,15 @@ def implProgramBody = pegMakeMainSequence(
 store(parProgramBody, implProgramBody);
 
 # Documented in Samizdat Layer 0 spec.
+def parExpressionOrError = pegMakeMainSequence(
+    parExpression,
+    pegMakeOpt(
+        pegMakeMainSequence(
+            pegMakePlus(pegAny),
+            pegMakeCode { pending :: reportError(pending) })),
+    pegMakeCode { ex, . <> ex });
+
+# Documented in Samizdat Layer 0 spec.
 def parProgramOrError = pegMakeMainSequence(
     parProgram,
     pegMakeOpt(
@@ -643,6 +652,15 @@ store(parChoicePex, implChoicePex);
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn samParseExpression(expression) {
+    def tokens = ifIs { <> isString(expression) }
+        { <> samTokenize(expression) }
+        { <> expression };
+
+    <> pegApply(parExpressionOrError, tokens)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn samParseProgram(program) {
     def tokens = ifIs { <> isString(program) }
         { <> samTokenize(program) }
@@ -652,5 +670,6 @@ fn samParseProgram(program) {
 };
 
 <> [
-    samParseProgram: samParseProgram
+    samParseExpression: samParseExpression,
+    samParseProgram:    samParseProgram
 ]

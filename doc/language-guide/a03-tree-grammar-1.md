@@ -607,6 +607,16 @@ def implProgramBody = {/
 /};
 store(parProgramBody, implProgramBody);
 
+# Top-level rule to parse an expression with possible error afterwards.
+def parExpressionOrError = {/
+    ex = parExpression
+    (
+        pending = .+
+        { reportError(pending) }
+    )?
+    { <> ex }
+/};
+
 # Top-level rule to parse a program with possible error afterwards.
 # Note that an empty string is a valid program.
 def parProgramOrError = {/
