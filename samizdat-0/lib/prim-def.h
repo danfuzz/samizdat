@@ -120,5 +120,8 @@ PRIM_FUNC(optValue,             1, 1);
 PRIM_FUNC(sam0Eval,             2, 2);
 PRIM_FUNC(sam0Tokenize,         1, 1);
 PRIM_FUNC(sam0Tree,             1, 1);
+PRIM_FUNC(samEval,              2, 2);
+PRIM_FUNC(samTokenize,          1, 1);
+PRIM_FUNC(samTree,              1, 1);
 PRIM_FUNC(totalOrder,           2, 2);
 PRIM_FUNC(typeOf,               1, 1);

@@ -67,7 +67,7 @@ static zvalue primitiveContext(void) {
         do { \
             zvalue nameStr = stringFromUtf8(-1, #name); \
             ctx = collPut(ctx, nameStr, \
-                makeBuiltin(minArgs, maxArgs, prim_##name, nameStr)); \
+                makeBuiltin(minArgs, maxArgs, PRIM_##name, nameStr)); \
         } while(0)
 
     #define PRIM_DEF(name, value) \
