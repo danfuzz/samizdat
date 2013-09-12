@@ -6,6 +6,7 @@
 
 #include "const.h"
 #include "io.h"
+#include "impl.h"
 #include "lib.h"
 #include "type/Int.h"
 #include "type/List.h"
@@ -30,6 +31,10 @@ int main(int argc, char **argv) {
     if (argc < 1) {
         die("Too few arguments.");
     }
+
+    // TODO: Pass this in when creating the library.
+    char *dir = getProgramDirectory(argv[0]);
+    utilFree(dir);
 
     zstackPointer save = pbFrameStart();
     zvalue context = libNewContext();

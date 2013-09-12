@@ -44,17 +44,11 @@ static FILE *openFile(zvalue flatPath, const char *mode) {
 
 /* Documented in header. */
 zvalue ioFlatCwd(void) {
-    // The maximum buffer size is determined per the recommendation
-    // in the Posix docs for `getcwd`.
+    char *dir = utilCwd();
+    zvalue result = stringFromUtf8(-1, dir);
 
-    long maxSize = pathconf(".", _PC_PATH_MAX);
-    char buf[maxSize + 1];
-
-    if (getcwd(buf, maxSize) == NULL) {
-        die("Trouble with getcwd(): %s", strerror(errno));
-    }
-
-    return stringFromUtf8(-1, buf);
+    utilFree(dir);
+    return result;
 }
 
 /* Documented in header. */
