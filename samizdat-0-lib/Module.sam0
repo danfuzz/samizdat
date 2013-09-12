@@ -15,10 +15,6 @@
 # list-of-strings denoting a "path" to the module.
 def theModulesBox = makeMutableBox([:]);
 
-# Box containing a set-like map of fully-qualified names representing
-# modules in the middle of being loaded.
-def thePendingBox = makeMutableBox([:]);
-
 
 #
 # Type Definition
@@ -46,7 +42,7 @@ fn withExports(module, newExports) {
 fn Module_cat(module, more*) {
     def data = dataOf(module);
 
-    def allExports = filterAll(getExports, [module, more*]);
+    def allExports = filter([module, more*], getExports);
     def combinedExports = cat([:], allExports*);
 
     <> withExports(module, combinedExports)
@@ -112,7 +108,7 @@ fn moduleDef(module) {
     def name = nameOf(module);
 
     ifIs { <> moduleGet(name) }
-        { io0Die(cat("Cannot redefine module: "), sourceString(name)) };
+        { io0Die(cat("Cannot redefine module: "), stringFromModuleName(name)) };
 
     update(theModulesBox, { mods <> put(mods, name, module) });
 
@@ -127,8 +123,19 @@ fn moduleGet(searchInfo) {
     <> get(mods, name)
 };
 
+# Gets a human-oriented name given a list-of-components fully-qualified one.
+fn stringFromModuleName(fqName) {
+    # Prefix each component with ":", combine them all, and then drop the
+    # first character.
+    def parts = filter(fqName, { n <> cat(":", n) });
+    def result = cat(parts*);
+
+    <> slice(result, 1)
+};
+
 
 <> [
-    moduleDef: moduleDef,
-    moduleGet: moduleGet
+    moduleDef:            moduleDef,
+    moduleGet:            moduleGet,
+    stringFromModuleName: stringFromModuleName
 ]
