@@ -23,11 +23,11 @@ fn makeCollectionGenerator(coll, optIndex?) {
 # Documented in spec.
 fn CollectionGenerator_nextValue(gen, box) {
     def data = dataOf(gen);
-    def index = get(data, "index");
+    def index = data:index;
 
     # This uses void contagion to fail the `store` call when `index` is
     # out of range for the collection.
-    <> ifIs { <> store(box, &nth(get(data, "collection"), index)) }
+    <> ifIs { <> store(box, &nth((data:collection), index)) }
         { <> @[CollectionGenerator: put(data, "index", add(index, 1))] }
         {
             # Voided (out of elements).

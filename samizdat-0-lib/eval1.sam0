@@ -71,7 +71,7 @@ fn sequence_convertPex(node, formals) {
     # Extract the formals out of any `varDef` nodes.
     def newFormals = filterAll(pexes) { pex ::
         <> ifIs { <> eq(typeOf(pex), "varDef") }
-            { <> [name: get(dataOf(pex), "name")] }
+            { <> [name: (dataOf(pex):name)] }
             { <> [:] }
     };
 
@@ -79,7 +79,7 @@ fn sequence_convertPex(node, formals) {
     # lists to each conversion.
     def convertedPexes = filterAll(makeOpenRange(0, 1), pexes) { n, pex  ::
         def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
-            { <> get(dataOf(pex), "value") }
+            { <> dataOf(pex):value }
             { <> pex };
         <> convertPex(subPex, [formals*, slice(newFormals, 0, n)*])
     };
@@ -183,8 +183,8 @@ genericBind(convertPex, "plus", plus_convertPex);
 fn convertClosureLike(node) {
     def nodeType = typeOf(node);
     def nodeValue = dataOf(node);
-    def statements = convertPexInList(get(nodeValue, "statements"));
-    def yield = ifValue { <> get(nodeValue, "yield") }
+    def statements = convertPexInList((nodeValue:statements));
+    def yield = ifValue { <> nodeValue:yield }
         { yield <> [yield: convertPexIn(yield)] }
         { <> [:] };
 
@@ -204,8 +204,8 @@ fn convertExpressionPayload(node) {
 # Does parser conversion of a `call` node.
 fn call_convertPexIn(node) {
     def nodeValue = dataOf(node);
-    def function = convertPexIn(get(nodeValue, "function"));
-    def actuals = convertPexInList(get(nodeValue, "actuals"));
+    def function = convertPexIn((nodeValue:function));
+    def actuals = convertPexInList((nodeValue:actuals));
 
     <> @[call: [nodeValue*:, function: function, actuals: actuals]]
 };
@@ -251,7 +251,7 @@ genericBind(convertPexIn, "parser", parser_convertPexIn);
 # Does parser conversion of a `varDef` node.
 fn varDef_convertPexIn(node) {
     def nodeValue = dataOf(node);
-    def value = convertPexIn(get(nodeValue, "value"));
+    def value = convertPexIn((nodeValue:value));
 
     <> @[varDef: [nodeValue*:, value: value]]
 };
