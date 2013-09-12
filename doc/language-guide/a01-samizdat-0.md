@@ -21,7 +21,7 @@ embodies *just* the main thrusts of the language with very little
 embellishment.
 
 The goal is that code written in this layer be recognizably Samizdat,
-even while eschewing such niceties as operators and control constructs.
+even while eschewing niceties such as most operators and control constructs.
 
 #### Layer 1
 
@@ -78,6 +78,7 @@ all in Layer 0. This is implemented in Layer 1.
 The only operators recognized in Layer 0 are:
 
 * `expr(expr, ...) { block } ...` &mdash; Function calls.
+* `expr:name` &mdash; Collection-style indexing by name.
 * `expr*` &mdash; Interpolation.
 * `<> expr` &mdash; Local yield.
 * `<out> exr` &mdash; Named nonlocal return.
