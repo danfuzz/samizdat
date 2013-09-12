@@ -868,13 +868,22 @@ DEF_PARSE(actualsList) {
 
 /* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(postfixOperator) {
-    // We differ from the spec here, returning an actuals list directly
-    // or a `*` token. The corresponding `unaryExpression` code decodes
-    // these as appropriate.
+    // We differ from the spec here, returning the payload directly
+    // or a `*` token for interpolation. The corresponding `unaryExpression`
+    // code decodes these as appropriate.
+
+    MARK();
 
     zvalue result = NULL;
+
     if (result == NULL) { result = PARSE(actualsList); }
+
+    if ((result == NULL) && (MATCH(CH_COLON) != NULL)) {
+        result = PARSE_OR_REJECT(identifierString);
+    }
+
     if (result == NULL) { result = MATCH(CH_STAR); }
+
     return result;
 }
 
@@ -892,6 +901,8 @@ DEF_PARSE(unaryExpression) {
             result = makeCall(result, one);
         } else if (valEq(one, TOK_CH_STAR)) {
             result = makeInterpolate(result);
+        } else if (hasType(one, STR_literal)) {
+            result = makeCallName(STR_get, listFrom2(result, one));
         } else {
             die("Unexpected postfix.");
         }
