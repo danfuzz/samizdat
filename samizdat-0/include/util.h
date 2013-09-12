@@ -145,6 +145,16 @@ char *utf8EncodeOne(char *result, zint ch);
 
 
 /*
+ * I/O Declarations
+ */
+
+/**
+ * Gets the current directory into an allocated buffer.
+ */
+char *utilCwd(void);
+
+
+/*
  * Miscellaneous Declarations
  */
 
