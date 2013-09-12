@@ -11,9 +11,35 @@
 # Private Definitions
 #
 
+# The (base) name of a module metainformation file.
+def MODULE_FILE_NAME = "module.sam";
+
 # Box containing a set-like map of fully-qualified names representing
 # modules in the middle of being loaded.
 def thePendingBox = makeMutableBox([:]);
+
+# Turns a fully-qualified module name into a simple string, for
+# human-output purposes.
+fn stringFromFqName(fqName) {
+    <> cat(filter(fqName, { n <> cat("/", n) })*)
+};
+
+# Finds the directory for the named module, by iterating over
+# `MODULE_PATHS`, looking for a `module.sam` file. Either returns
+# the directory path or dies with an error.
+fn findModuleDirectory(fqName, optPaths?) {
+    def paths = ifValueOr { <> optPaths* } { <> MODULE_PATHS };
+
+    ifIs { <> eq(paths, []) }
+        { io0Die(cat("Module not found: ", stringFromFqName(fqName))) };
+
+    def oneDir = [first(paths)*, fqName*];
+
+    <> ifIs { <> io0FileExists([oneDir*, MODULE_FILE_NAME]) }
+        { <> oneDir }
+        { <> findModuleDirectory(fqName, butFirst(paths)) }
+};
+
 
 
 #
@@ -22,7 +48,7 @@ def thePendingBox = makeMutableBox([:]);
 
 # Documented in spec.
 fn moduleUse(searchInfo) {
-    def name = get(searchInfo, "name");
+    def fqName = get(searchInfo, "name");
 
     ifValue { <> moduleGet(searchInfo) }
         { module :: return module };
@@ -36,15 +62,16 @@ fn moduleUse(searchInfo) {
         };
 
     # Indicate that the module is in the process of being loaded.
-    store(thePendingBox, put(pendings, name, null));
+    store(thePendingBox, put(pendings, fqName, null));
 
-    def moduleReader = io0SandboxedReader([MODULE_PATH*, name*]);
+    def moduleDir = findModuleDirectory(fqName);
+    def moduleReader = io0SandboxedReader(moduleDir);
     def infoText = moduleReader(["module.sam"]);
-    def info = sam0Eval(LIBRARY, sam0ParseProgram(infoText))();
+    def info = sam0Eval(LIBRARY, sam0ParseExpression(infoText))();
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
-    ifIs { <> ne(name, get(info, "name")) }
-        { io0Die(cat("Module name mismatch: ", sourceString(name))) };
+    ifIs { <> ne(fqName, get(info, "name")) }
+        { io0Die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
 
     def mainText = moduleReader(["main.sam"]);
     def subLibrary = makeLibrary([LIBRARY*:, INFO: info, READER: moduleReader]);
@@ -54,7 +81,7 @@ fn moduleUse(searchInfo) {
     moduleDef(result);
 
     # Indicate that the module load is no longer in-process.
-    update(thePendingBox, { pendings <> del(pendings, name) });
+    update(thePendingBox, { pendings <> del(pendings, fqName) });
 
     <> result
 };
