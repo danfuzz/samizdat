@@ -50,6 +50,7 @@ STR(expression,     "expression");
 STR(fnDef,          "fnDef");
 STR(formals,        "formals");
 STR(function,       "function");
+STR(get,            "get");
 STR(identifier,     "identifier");
 STR(int,            "int");
 STR(interpolate,    "interpolate");

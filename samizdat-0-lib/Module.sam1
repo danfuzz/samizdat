@@ -48,7 +48,7 @@ fn findModuleDirectory(fqName, optPaths?) {
 
 # Documented in spec.
 fn moduleUse(searchInfo) {
-    def fqName = get(searchInfo, "name");
+    def fqName = searchInfo:name;
 
     ifValue { <> moduleGet(searchInfo) }
         { module :: return module };
@@ -70,7 +70,7 @@ fn moduleUse(searchInfo) {
     def info = sam0Eval(LIBRARY, sam0ParseExpression(infoText))();
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
-    ifIs { <> ne(fqName, get(info, "name")) }
+    ifIs { <> ne(fqName, (info:name)) }
         { io0Die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
 
     def mainText = moduleReader(["main.sam"]);

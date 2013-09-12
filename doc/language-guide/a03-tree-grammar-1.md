@@ -505,6 +505,12 @@ def parPostfixOperator = {/
     actuals = parActualsList
     { <> { node <> makeCall(node, actuals*) } }
 |
+    # This is sorta-kinda a binary operator, but in terms of precedence it
+    # fits better here.
+    @":"
+    key = parIdentifierString
+    { <> { node <> makeCallName("get", node, key) } }
+|
     # The lookahead failure here is to make the grammar prefer `*` to be
     # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
     # but higher layers augment its meaning.)

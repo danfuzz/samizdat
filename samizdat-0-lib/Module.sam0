@@ -28,12 +28,12 @@ def thePendingBox = makeMutableBox([:]);
 
 # Gets the `exports` of a module.
 fn getExports(module) {
-    <> get(dataOf(module), "exports")
+    <> dataOf(module):exports
 };
 
 # Gets the `info` of a module.
 fn getInfo(module) {
-    <> get(dataOf(module), "info")
+    <> dataOf(module):info
 };
 
 # Returns a new module like the given one, except with `exports` as
@@ -73,7 +73,7 @@ genericBind(keyList, "Module", Module_keyList);
 
 # Documented in spec.
 fn Module_nameOf(module) {
-    <> get(infoOf(module), "name")
+    <> infoOf(module):name
 };
 genericBind(nameOf, "Module", Module_nameOf);
 
@@ -122,7 +122,7 @@ fn moduleDef(module) {
 # Documented in spec.
 fn moduleGet(searchInfo) {
     # TODO: Currently ignores everything about `searchInfo` other than the name.
-    def name = get(searchInfo, "name");
+    def name = searchInfo:name;
 
     <> get(mods, name)
 };

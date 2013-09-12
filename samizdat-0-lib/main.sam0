@@ -38,8 +38,8 @@ fn readLibraryFile(name) {
 fn loadLibrary(ctx, name) {
     io0Note(cat("    ", name));
 
-    def treeFunction = get(ctx, "samParseProgram");
-    def evalFunction = get(ctx, "samEval");
+    def treeFunction = ctx:samParseProgram;
+    def evalFunction = ctx:samEval;
 
     def text = readLibraryFile(name);
     def tree = treeFunction(text);
@@ -75,7 +75,7 @@ fn loadAllLibraries(ctx, names*) {
 io0Note("Loading core library...");
 
 # Read the manifest file, to figure out what all to load and in what order.
-def MANIFEST = get(loadLibrary(LIBRARY, "manifest.sam0"), "MANIFEST");
+def MANIFEST = loadLibrary(LIBRARY, "manifest.sam0"):MANIFEST;
 
 # Use the manifest to build up the core library.
 def CORE_LIBRARY = loadAllLibraries(LIBRARY, MANIFEST*);
