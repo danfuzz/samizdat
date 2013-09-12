@@ -170,7 +170,7 @@ def parClosure = pegMakeMainSequence(
 def parNullaryClosure = pegMakeMainSequence(
     parClosure,
     pegMakeCode { c ::
-        def formals = get(dataOf(c), "formals");
+        def formals = dataOf(c):formals;
         ifIs { <> ne(formals, []) }
             { io0Die("Invalid formal argument in code block.") };
         <> c
@@ -180,7 +180,7 @@ def parNullaryClosure = pegMakeMainSequence(
 def parCodeOnlyClosure = pegMakeMainSequence(
     parNullaryClosure,
     pegMakeCode { c ::
-        ifIs { <> get(dataOf(c), "yieldDef") }
+        ifIs { <> dataOf(c):yieldDef }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     });
@@ -203,7 +203,7 @@ def parFnCommon = pegMakeMainSequence(
     parCodeOnlyClosure,
     pegMakeCode { ., returnDef, name, ., formals, ., code ::
         def codeMap = dataOf(code);
-        def statements = [returnDef*, get(codeMap, "statements")*];
+        def statements = [returnDef*, (codeMap:statements)*];
         <> [
             codeMap*:, name*:,
             formals: formals,
@@ -216,7 +216,7 @@ def parFnCommon = pegMakeMainSequence(
 def parFnDef = pegMakeMainSequence(
     parFnCommon,
     pegMakeCode { funcMap ::
-        <> ifIs { <> get(funcMap, "name") }
+        <> ifIs { <> funcMap:name }
             { <> @[fnDef: funcMap] }
     });
 
@@ -225,7 +225,7 @@ def parFnExpression = pegMakeMainSequence(
     parFnCommon,
     pegMakeChoice(
         pegMakeSequence(
-            pegMakeCode { funcMap, . <> get(funcMap, "name") },
+            pegMakeCode { funcMap, . <> funcMap:name },
             pegMakeCode { funcMap, name ::
                 def mainClosure = @[closure: [
                     formals: [],
@@ -419,6 +419,10 @@ def parPostfixOperator = pegMakeMainChoice(
         parActualsList,
         pegMakeCode { actuals <> { node <> makeCall(node, actuals*) } }),
     pegMakeSequence(
+        pegMakeToken(":"),
+        parIdentifierString,
+        pegMakeCode { ., key <> { node <> makeCallName("get", node, key) } }),
+    pegMakeSequence(
         pegMakeToken("*"),
         pegMakeCode { . <> { node <> makeInterpolate(node) } }));
 
@@ -486,7 +490,7 @@ def implProgramBody = pegMakeMainSequence(
         pegMakeResult([statements: []])),
     pegMakeStar(pegMakeToken(";")),
     pegMakeCode { ., most, last, . ::
-        def allStatements = [most*, get(last, "statements")*];
+        def allStatements = [most*, (last:statements)*];
         <> [last*:, statements: allStatements]
     });
 store(parProgramBody, implProgramBody);

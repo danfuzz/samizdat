@@ -68,7 +68,7 @@ def parArguments = {/
     args = parWord*
     {
         def options = cat([:], optionList*);
-        ifIs { <> get(options, "error") }
+        ifIs { <> options:error }
             { io0Die("Invalid option(s).") };
         <> [options: options, args: args]
     }
@@ -86,14 +86,14 @@ fn parseArgs(args) {
 
 # Evals a program using layer 0.
 fn evalText0(context, programText) {
-    def parsedProgram = get(context, "sam0ParseProgram")(programText);
-    <> get(context, "sam0Eval")(context, parsedProgram);
+    def parsedProgram = context:sam0ParseProgram(programText);
+    <> context:sam0Eval(context, parsedProgram);
 };
 
 # Evals a program using the highest-defined layer.
 fn evalText(context, programText) {
-    def parsedProgram = get(context, "samParseProgram")(programText);
-    <> get(context, "samEval")(context, parsedProgram);
+    def parsedProgram = context:samParseProgram(programText);
+    <> context:samEval(context, parsedProgram);
 };
 
 
@@ -104,8 +104,8 @@ fn evalText(context, programText) {
 # Documented in Samizdat Layer 0 spec.
 fn samCommandLine(context, rawArgs*) {
     def parsedArgs = parseArgs(rawArgs);
-    def options = get(parsedArgs, "options");
-    def argWords = get(parsedArgs, "args");
+    def options = parsedArgs:options;
+    def argWords = parsedArgs:args;
 
     def fileName = ifValueOr { <> first(argWords) } { <> "/dev/stdin" };
     def filePath = io0PathFromFlat(fileName);
@@ -113,7 +113,7 @@ fn samCommandLine(context, rawArgs*) {
 
     def programText = io0ReadFileUtf8(filePath);
 
-    def evalled = ifIs { <> get(options, "layer-0") }
+    def evalled = ifIs { <> options:"layer-0" }
         { <> evalText0(context, programText) }
         { <> evalText(context, programText) };
 
