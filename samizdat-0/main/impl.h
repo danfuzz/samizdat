@@ -18,7 +18,9 @@
  *
  * This returns an allocated string, which can be freed with `utilFree()`.
  *
- * Reference: <http://stackoverflow.com/questions/933850>
+ * References:
+ * * <http://stackoverflow.com/questions/933850>
+ * * <http://stackoverflow.com/questions/1023306>
  */
 char *getProgramDirectory(const char *argv0);
 

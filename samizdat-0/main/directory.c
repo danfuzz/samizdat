@@ -24,6 +24,17 @@
  */
 
 /**
+ * Names of proc-type files to try, when determining the executable path.
+ */
+static const char *PROC_SELF_FILES[] = {
+    "/proc/self/exe",        // Linux
+    "/proc/curproc/file",    // FreeBSD and some other BSD variants
+    "/proc/curproc/exe",     // NetBSD
+    "/proc/self/path/a.out", // Solaris and variants
+    NULL
+};
+
+/**
  * Reads and returns the contents of a symlink, if it in fact exists.
  * Otherwise returns `NULL`.
  */
@@ -141,14 +152,13 @@ static char *resolveArgv0(const char *argv0) {
 
 /* Documented in header. */
 char *getProgramDirectory(const char *argv0) {
-    char *execPath = getLink("/proc/self/exe"); // Linux
+    char *execPath = NULL;
 
-    if (execPath == NULL) {
-        execPath = getLink("/proc/curproc/file"); // BSD variants
-    }
-
-    if (execPath == NULL) {
-        execPath = getLink("/proc/self/path/a.out"); // Solaris variants
+    for (int i = 0; PROC_SELF_FILES[i] != NULL; i++) {
+        execPath = getLink(PROC_SELF_FILES[i]);
+        if (execPath != NULL) {
+            break;
+        }
     }
 
     if (execPath == NULL) {
