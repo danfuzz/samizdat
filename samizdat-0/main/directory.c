@@ -24,23 +24,6 @@
  */
 
 /**
- * Gets the current directory into an allocated buffer.
- */
-static char *allocCwd(void) {
-    // The maximum buffer size is determined per the recommendation
-    // in the Posix docs for `getcwd`.
-
-    long maxSize = pathconf(".", _PC_PATH_MAX);
-    char buf[maxSize + 1];
-
-    if (getcwd(buf, maxSize) == NULL) {
-        die("Trouble with getcwd(): %s", strerror(errno));
-    }
-
-    return strdup(buf);
-}
-
-/**
  * Reads and returns the contents of a symlink, if it in fact exists.
  * Otherwise returns `NULL`.
  */
@@ -105,7 +88,7 @@ static char *resolveArgv0(const char *argv0) {
 
     if (strchr(argv0, '/') != NULL) {
         // Relative path from CWD.
-        char *curDir = allocCwd();
+        char *curDir = utilCwd();
         char *result = catTwoPaths(curDir, argv0);
         utilFree(curDir);
         return result;
