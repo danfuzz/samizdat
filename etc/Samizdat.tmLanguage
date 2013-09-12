@@ -136,6 +136,22 @@
 				</dict>
 			</array>
 		</dict>
+		<key>identifier-string</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>name</key>
+					<string>string.unquoted</string>
+					<key>match</key>
+					<string>[_a-zA-Z][_a-zA-Z0-9]*</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#recursive-string</string>
+				</dict>
+			</array>
+		</dict>
 		<key>simple-constants</key>
 		<dict>
 			<key>patterns</key>
@@ -448,6 +464,19 @@
 					</dict>
 					<key>match</key>
 					<string>(fn)  *([_a-zA-Z][_a-zA-Z0-9]*)? *\(([^\)]*)\)</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>: *</string>
+					<key>end</key>
+					<string>(?=[^"_a-zA-Z0-9])</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#identifier-string</string>
+						</dict>
+					</array>
 				</dict>
 				<dict>
 					<key>name</key>
