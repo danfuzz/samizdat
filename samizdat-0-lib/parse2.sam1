@@ -283,7 +283,7 @@ def parNullaryClosure = {/
     c = parClosure
 
     {
-        def formals = get(dataOf(c), "formals");
+        def formals = dataOf(c):formals;
         ifIs { <> ne(formals, []) }
             { io0Die("Invalid formal argument in code block.") };
         <> c
@@ -296,7 +296,7 @@ def parCodeOnlyClosure = {/
     c = parNullaryClosure
 
     {
-        ifIs { <> get(dataOf(c), "yieldDef") }
+        ifIs { <> dataOf(c):yieldDef }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     }
@@ -356,7 +356,7 @@ def parFnCommon = {/
 
     {
         def codeMap = dataOf(code);
-        def statements = [returnDef*, get(codeMap, "statements")*];
+        def statements = [returnDef*, (codeMap:statements)*];
         <> [
             codeMap*:, name*:,
             formals: formals,
@@ -375,7 +375,7 @@ def parFnDef = {/
     funcMap = parFnCommon
 
     {
-        <> ifIs { <> get(funcMap, "name") }
+        <> ifIs { <> funcMap:name }
             { <> @[fnDef: funcMap] }
     }
 /};
@@ -399,7 +399,7 @@ def parFnExpression = {/
     funcMap = parFnCommon
 
     (
-        name = { <> get(funcMap, "name") }
+        name = { <> funcMap:name }
         {
             def mainClosure = @[closure: [
                 formals: [],
@@ -686,7 +686,7 @@ def implProgramBody = {/
     @";"*
 
     {
-        def allStatements = [most*, get(last, "statements")*];
+        def allStatements = [most*, (last:statements)*];
         <> [last*:, statements: allStatements]
     }
 /};
@@ -933,9 +933,9 @@ def parInterpolatedString = {/
             <> ifIs { <> isString(elem) }
                 { <> makeLiteral(elem) }
                 {
-                    def tokens = get(elem, "tokens");
+                    def tokens = elem:tokens;
 
-                    def formatter = ifValue { <> get(elem, "format") }
+                    def formatter = ifValue { <> elem:format }
                         { format ::
                             <> makeCallName("formatterFromString",
                                 makeLiteral(format))
@@ -986,8 +986,8 @@ def parGeneratorList = {/
 
     {
         def gens = [one, rest*];
-        def formals = filterAll(gens) { gen <> get(gen, "formal") };
-        def inits = filterAll(gens) { gen <> get(gen, "init") };
+        def formals = filterAll(gens) { gen <> gen:formal };
+        def inits = filterAll(gens) { gen <> gen:init };
 
         <> [formals: formals, inits: inits]
     }
@@ -1002,8 +1002,8 @@ def parComprehensionBody = {/
     filterBody = parProgramBody
 
     {
-        def genFormals = get(genList, "formals");
-        def genInits = get(genList, "inits");
+        def genFormals = genList:formals;
+        def genInits = genList:inits;
 
         <> [@[closure: [filterBody*:, formals: genFormals]], genInits*]
     }
@@ -1151,7 +1151,7 @@ def implPostfixOperator = {/
         { <> eq(exprs, []) }
         { io0Die("Missing index value(s) from index expression.") }
     |
-        { <> { node <> makeCall(get(UNARY_OPERATORS, "[]"), node, exprs*) } }
+        { <> { node <> makeCall((UNARY_OPERATORS:"[]"), node, exprs*) } }
     )
 |
     # This translates as something like the following. Note that the
@@ -1236,7 +1236,7 @@ def parRangeExpression = {/
             }
         |
             @"..+"
-            { <> makeCall(get(BINARY_OPERATORS, "..+"), base, increment) }
+            { <> makeCall((BINARY_OPERATORS:"..+"), base, increment) }
         )
 
         (
@@ -1389,8 +1389,8 @@ def parLogicAndExpression = {/
         { <> eq(sizeOf(most), 1) }
         {
             def clause = most*;
-            def formal = get(clause, "formal");
-            def testThunk = makeThunk(get(clause, "test"));
+            def formal = clause:formal;
+            def testThunk = makeThunk((clause:test));
             def resultThunk = makeThunk(last);
 
             <> ifIs { <> eq(formal, [:]) }
@@ -1405,10 +1405,10 @@ def parLogicAndExpression = {/
         # Compound `&` expression (three or more clauses).
         {
             # Make a version of the test clauses, as thunks with formals lists.
-            def formals = filterAll(most) { clause <> get(clause, "formal") };
+            def formals = filterAll(most) { clause <> clause:formal };
             def testThunks = filterAll(most, makeOpenRange(0, 1))
                 { clause, index ::
-                    def test = get(clause, "test");
+                    def test = clause:test;
                     <> closureWithFormals(makeThunk(test),
                         slice(formals, 0, index)*)
                 };
@@ -1494,8 +1494,8 @@ def parMultiTest = {/
         { <> eq(sizeOf(clauses), 1) }
         {
             def clause = clauses*;
-            def formal = get(clause, "formal");
-            def testThunk = makeThunk(get(clause, "test"));
+            def formal = clause:formal;
+            def testThunk = makeThunk((clause:test));
             <> { thenThunk, elseThunk? ::
                 <> ifIs { eq(formal, [:]) }
                     {
@@ -1514,11 +1514,10 @@ def parMultiTest = {/
         # General case.
         {
             # Make a version of the test clauses, as thunks with formals lists.
-            def formals = filterAll(clauses)
-                { clause <> get(clause, "formal") };
+            def formals = filterAll(clauses) { clause <> clause:formal };
             def testThunks = filterAll(clauses, makeOpenRange(0, 1))
                 { clause, index ::
-                    def test = get(clause, "test");
+                    def test = clause:test;
                     <> closureWithFormals(makeThunk(test),
                         slice(formals, 0, index)*)
                 };
@@ -1601,8 +1600,8 @@ def parIfExpression = {/
         # place as the third argument to an enclosing `if*` by saying `result*`
         # (which also handles the case of a missing final `else`).
         def reduction = doReduce1(clauses, optElse) { clause, optResult ::
-            def maker = get(clause, "maker");
-            def then = get(clause, "then");
+            def maker = clause:maker;
+            def then = clause:then;
             <> [makeThunk(maker(then, optResult*))]
         };
 
@@ -1613,7 +1612,7 @@ def parIfExpression = {/
         # unwrap it into a straight call, depending on if the original `if`
         # has a yield def or not.
         <> ifIs { <> eq(yieldDef, [:]) }
-            { <> get(dataOf(mainThunk), "yield") }
+            { <> dataOf(mainThunk):yield }
             {
                 # There was a yield def. Add the yield def to the thunk,
                 # and wrap that in a call.
@@ -1764,18 +1763,18 @@ def parForExpression = {/
     code = parNullaryClosure
 
     {
-        def genFormals = get(genList, "formals");
-        def genInits = get(genList, "inits");
+        def genFormals = genList:formals;
+        def genInits = genList:inits;
 
         def codePayload = dataOf(code);
-        def continueDef = ifValue { <> get(codePayload, "yieldDef") }
+        def continueDef = ifValue { <> codePayload:yieldDef }
             { name <> [makeVarDef(name, makeVarRef("continue"))] }
             { <> [] };
 
         def loopClosure = @[closure: [
             formals: genFormals,
             yieldDef: "continue",
-            statements: [continueDef*, get(codePayload, "statements")*]
+            statements: [continueDef*, (codePayload:statements)*]
         ]];
 
         def mainClosure = @[closure: [
@@ -1879,26 +1878,26 @@ def parSwitchExpression = {/
     @"}"
 
     {
-        def formal = get(testClause, "formal");
-        def test = get(testClause, "test");
+        def formal = testClause:formal;
+        def test = testClause:test;
 
         def optDefault = filterAll(cases) { case ::
-            <> ifIs { <> eq(get(case, "keys"), @default) }
-                { <> closureWithFormals(get(case, "code"), formal) }
+            <> ifIs { <> eq((case:keys), @default) }
+                { <> closureWithFormals((case:code), formal) }
         };
 
         def optElse = filterAll(cases) { case ::
-            <> ifIs { <> eq(get(case, "keys"), @else) }
-                { <> get(case, "code") }
+            <> ifIs { <> eq((case:keys), @else) }
+                { <> case:code }
         };
 
         def regularCases = filterAll(cases) { case ::
-            def keys = get(case, "keys");
+            def keys = case:keys;
             <> ifIs { <> eq(typeOf(keys), "expression") }
                 {
                     <> makeCallName("makeValueMap",
                         dataOf(keys),
-                        closureWithFormals(get(case, "code"), formal))
+                        closureWithFormals((case:code), formal))
                 }
         };
 
