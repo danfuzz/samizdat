@@ -34,6 +34,7 @@ TOK(CH_OPAREN,      "(");
 TOK(CH_OSQUARE,     "[");
 TOK(CH_PLUS,        "+");
 TOK(CH_QMARK,       "?");
+TOK(CH_RARROW,      "->");
 TOK(CH_SEMICOLON,   ";");
 TOK(CH_STAR,        "*");
 
