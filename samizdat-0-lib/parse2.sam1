@@ -1811,8 +1811,8 @@ def parSwitchCase = {/
 # This expression is constant across all switches, and it's most easily
 # constructed by using the built-in parser.
 def SWITCH_DISPATCH_CLOSURE = sam0ParseProgram("
-    args ::
-    <> { cases, defaultFunction, value ::
+    args ->
+    <> { cases, defaultFunction, value ->
         <> ifValue { <> get(cases, value) }
             { function <> function(value) }
             { <> defaultFunction(value) }

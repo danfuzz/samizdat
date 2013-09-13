@@ -74,7 +74,7 @@ def tokInt = Peg:makeMainSequence(
         pegMakeSequence(
             pegMakeCharSet("0123456789"),
             pegMakeCode(intFromDigitChar))),
-    pegMakeCode { digits ::
+    pegMakeCode { digits ->
         def value = doReduce1(digits, 0)
             { digit, result <> add(digit, mul(result, 10)) };
         <> @[int: value]
@@ -120,7 +120,7 @@ def IDENTIFIER_CHARS = cat(IDENTIFIER_START_CHARS, "0123456789");
 def tokIdentifier = Peg:makeMainSequence(
     pegMakeCharSet(IDENTIFIER_START_CHARS),
     pegMakeStar(pegMakeCharSet(IDENTIFIER_CHARS)),
-    pegMakeCode { one, rest ::
+    pegMakeCode { one, rest ->
         def string = stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
@@ -136,7 +136,7 @@ def tokQuotedIdentifier = Peg:makeMainSequence(
 def tokError = Peg:makeMainSequence(
     pegAny,
     pegMakeStar(pegMakeCharSetComplement("\n")),
-    pegMakeCode { badCh, . ::
+    pegMakeCode { badCh, . ->
         def msg = cat("Unrecognized character: ", typeOf(badCh));
         <> @[error: msg]
     });
