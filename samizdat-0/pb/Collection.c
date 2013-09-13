@@ -133,10 +133,10 @@ zint collSize(zvalue coll) {
  * methods are bound on many types.
  */
 
-/** Builtin for `Sequence:get`. */
+/** Builtin for `Sequence.get`. */
 static zvalue BI_Sequence_get = NULL;
 
-/** Builtin for `Sequence:keyList`. */
+/** Builtin for `Sequence.keyList`. */
 static zvalue BI_Sequence_keyList = NULL;
 
 /* Documented in header. */
@@ -208,11 +208,11 @@ MOD_INIT(Collection) {
     pbImmortalize(GFN_slice);
 
     BI_Sequence_get = makeBuiltin(2, 2, METH_NAME(Sequence, get),
-        stringFromUtf8(-1, "Sequence:get"));
+        stringFromUtf8(-1, "Sequence.get"));
     pbImmortalize(BI_Sequence_get);
 
     BI_Sequence_keyList = makeBuiltin(1, 1, METH_NAME(Sequence, keyList),
-        stringFromUtf8(-1, "Sequence:keyList"));
+        stringFromUtf8(-1, "Sequence.keyList"));
     pbImmortalize(BI_Sequence_keyList);
 }
 

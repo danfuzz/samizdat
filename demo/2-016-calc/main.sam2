@@ -45,7 +45,7 @@ fn applyShuntingYard(initialValue, opValues) {
     # the result back at the top of the value stack.
     fn applyTop(ops, values) {
         def valuesSize = sizeOf(values);
-        def function = last(ops):function;
+        def function = last(ops)::function;
         def newValue = function(slice(values, valuesSize - 2)*);
         <> [
             butLast(ops),
@@ -59,7 +59,7 @@ fn applyShuntingYard(initialValue, opValues) {
         loopReduce(ops, values)
             { <next> ops, values ->
                 if (  (lastOp := last(ops))
-                    & (lastOp:precedence >= precedence)) {
+                    & (lastOp::precedence >= precedence)) {
                     <next> applyTop(ops, values)
                 };
                 return [ops, values]
@@ -75,9 +75,9 @@ fn applyShuntingYard(initialValue, opValues) {
         };
 
         def nextOpValue = first(opValues);
-        def nextOp = nextOpValue:op;
-        def nextVal = nextOpValue:value;
-        def newPending = reducePending(ops, values, (nextOp:precedence));
+        def nextOp = nextOpValue::op;
+        def nextVal = nextOpValue::value;
+        def newPending = reducePending(ops, values, nextOp::precedence);
         <> [
             [first(newPending)*, nextOp],
             [last(newPending)*, nextVal],

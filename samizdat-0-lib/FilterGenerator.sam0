@@ -23,12 +23,12 @@ fn makeFilterGenerator(filterFunction, generators*) {
 # Documented in spec.
 fn FilterGenerator_nextValue(gen, box) {
     def payload = dataOf(gen);
-    def filterFunction = payload:filterFunction;
+    def filterFunction = payload::filterFunction;
 
     # This loop handles the fact that the filter function is
     # allowed to yield void to indicate a generated value is to
     # be discarded.
-    loopReduce((payload:generator)) { <next> gen ->
+    loopReduce(payload::generator) { <next> gen ->
         def innerBox = makeYieldBox();
 
         ifValue { <> nextValue(gen, innerBox) }

@@ -119,7 +119,7 @@ genericBind(parse, "PegOpt", PegOpt_parse);
 # Documented in Samizdat Layer 0 spec.
 fn PegRepeat_parse(peg, box, input, items*) {
     def params = dataOf(peg);
-    def rule = params:rule;
+    def rule = params::rule;
 
     loopReduce(input, [])
         { input, values ->
@@ -127,7 +127,7 @@ fn PegRepeat_parse(peg, box, input, items*) {
             <> ifValue { <> parse(rule, innerBox, input, items*) }
                 { newInput <> [newInput, [values*, fetch(innerBox)]] }
                 {
-                    ifValue { <> params:minSize }
+                    ifValue { <> params::minSize }
                         { minSize ->
                             ifIs { <> lt(sizeOf(values), minSize) }
                                 {
