@@ -212,26 +212,26 @@ The declaration section consists of the following, in order:
   individual argument declarations (without any enclosing parentheses).
   See "Argument Declarations" above.
 
-* The special token equal-arrow (`=>`), to indicate the end of
+* The special token right-arrow (`->`), to indicate the end of
   the declarations. If the entire body of the block is just a direct
-  yield (`<> ...`), then the equal-arrow may be omitted.
+  yield (`<> ...`), then the right-arrow may be omitted.
 
 Examples:
 
 ```
 # This is equivalent to the second example in the "Functions" section, above.
-def fizmo = { a+ => ... }
+def fizmo = { a+ -> ... }
 
 # This is a block that takes no arguments.
 def borch = { ... }
 
 # This is a block that takes no arguments but does define a yield point.
-def frotz = { <leave> => ... <leave> ... }
+def frotz = { <leave> -> ... <leave> ... }
 
 # This is one with everything.
-def ignatz = { <out> x, y?, z* => ... <out> ... }
+def ignatz = { <out> x, y?, z* -> ... <out> ... }
 
-# Since the main body is just a yield, no equal-arrow is required.
+# Since the main body is just a yield, no right-arrow is required.
 def krazy = { x, y <> x + y }
 ```
 
