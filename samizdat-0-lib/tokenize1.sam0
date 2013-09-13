@@ -43,38 +43,38 @@ fn processStringParts(parts) {
 
 # Documented in Samizdat Layer 0 spec.
 def tokWhitespace = Peg::makeMainSequence(
-    pegMakeLookaheadSuccess(pegMakeCharSet("# \n", "/")),
-    pegMakePlus(
-        pegMakeChoice(
-            pegMakePlus(pegMakeCharSet(" \n")),
-            pegMakeSequence(
-                pegMakeString("#"),
-                pegMakeChoice(
-                    pegMakeSequence(
-                        pegMakeCharSet("#! "),
-                        pegMakeStar(pegMakeCharSetComplement("\n"))),
-                    pegMakeString("\n"),
-                    pegEof)))));
+    Peg::makeLookaheadSuccess(Peg::makeCharSet("# \n", "/")),
+    Peg::makePlus(
+        Peg::makeChoice(
+            Peg::makePlus(Peg::makeCharSet(" \n")),
+            Peg::makeSequence(
+                Peg::makeString("#"),
+                Peg::makeChoice(
+                    Peg::makeSequence(
+                        Peg::makeCharSet("#! "),
+                        Peg::makeStar(Peg::makeCharSetComplement("\n"))),
+                    Peg::makeString("\n"),
+                    Peg::eof)))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokPunctuation = Peg::makeMainSequence(
-    pegMakeLookaheadSuccess(pegMakeCharSet("&@:.,=-+?;*<>{}()[]", "/|!")),
-    pegMakeChoice(
-        pegMakeString("->"),
-        pegMakeString("::"),
-        pegMakeString(".."),
-        pegMakeString("<>"),
-        pegMakeString("{/"),
-        pegMakeString("/}"),
-        pegAny));
+    Peg::makeLookaheadSuccess(Peg::makeCharSet("&@:.,=-+?;*<>{}()[]", "/|!")),
+    Peg::makeChoice(
+        Peg::makeString("->"),
+        Peg::makeString("::"),
+        Peg::makeString(".."),
+        Peg::makeString("<>"),
+        Peg::makeString("{/"),
+        Peg::makeString("/}"),
+        Peg::any));
 
 # Documented in Samizdat Layer 0 spec.
 def tokInt = Peg::makeMainSequence(
-    pegMakePlus(
-        pegMakeSequence(
-            pegMakeCharSet("0123456789"),
-            pegMakeCode(intFromDigitChar))),
-    pegMakeCode { digits ->
+    Peg::makePlus(
+        Peg::makeSequence(
+            Peg::makeCharSet("0123456789"),
+            Peg::makeCode(intFromDigitChar))),
+    Peg::makeCode { digits ->
         def value = doReduce1(digits, 0)
             { digit, result <> add(digit, mul(result, 10)) };
         <> @[int: value]
@@ -82,32 +82,32 @@ def tokInt = Peg::makeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 def tokStringPart = Peg::makeMainChoice(
-    pegMakeSequence(
-        pegMakePlus(pegMakeCharSetComplement("\\\"\n")),
-        pegMakeCode(stringFromTokenList)),
-    pegMakeSequence(
-        pegMakeString("\n"),
-        pegMakeStar(pegMakeString(" ")),
-        pegMakeResult("\n")),
-    pegMakeSequence(
-        pegMakeString("\\"),
-        pegMakeChoice(
-            pegMakeSequence(pegMakeString("\\"), pegMakeResult("\\")),
-            pegMakeSequence(pegMakeString("\""), pegMakeResult("\"")),
-            pegMakeSequence(pegMakeString("n"),  pegMakeResult("\n")),
-            pegMakeSequence(pegMakeString("r"),  pegMakeResult("\r")),
-            pegMakeSequence(pegMakeString("t"),  pegMakeResult("\t")),
-            pegMakeSequence(pegMakeString("0"),  pegMakeResult("\0")))));
+    Peg::makeSequence(
+        Peg::makePlus(Peg::makeCharSetComplement("\\\"\n")),
+        Peg::makeCode(stringFromTokenList)),
+    Peg::makeSequence(
+        Peg::makeString("\n"),
+        Peg::makeStar(Peg::makeString(" ")),
+        Peg::makeResult("\n")),
+    Peg::makeSequence(
+        Peg::makeString("\\"),
+        Peg::makeChoice(
+            Peg::makeSequence(Peg::makeString("\\"), Peg::makeResult("\\")),
+            Peg::makeSequence(Peg::makeString("\""), Peg::makeResult("\"")),
+            Peg::makeSequence(Peg::makeString("n"),  Peg::makeResult("\n")),
+            Peg::makeSequence(Peg::makeString("r"),  Peg::makeResult("\r")),
+            Peg::makeSequence(Peg::makeString("t"),  Peg::makeResult("\t")),
+            Peg::makeSequence(Peg::makeString("0"),  Peg::makeResult("\0")))));
 
 # Documented in Samizdat Layer 0 spec.
 def tokString = Peg::makeMainSequence(
-    pegMakeString("\""),
-    pegMakeStar(tokStringPart),
-    pegMakeChoice(
-        pegMakeSequence(
-            pegMakeString("\""),
-            pegMakeCode { ., parts, . <> processStringParts(parts) }),
-        pegMakeCode { ., . <> @[error: "Unterminated string literal."] }));
+    Peg::makeString("\""),
+    Peg::makeStar(tokStringPart),
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeString("\""),
+            Peg::makeCode { ., parts, . <> processStringParts(parts) }),
+        Peg::makeCode { ., . <> @[error: "Unterminated string literal."] }));
 
 # These are all the characters which are allowed to start an identifier.
 def IDENTIFIER_START_CHARS =
@@ -118,9 +118,9 @@ def IDENTIFIER_CHARS = cat(IDENTIFIER_START_CHARS, "0123456789");
 
 # Documented in Samizdat Layer 0 spec.
 def tokIdentifier = Peg::makeMainSequence(
-    pegMakeCharSet(IDENTIFIER_START_CHARS),
-    pegMakeStar(pegMakeCharSet(IDENTIFIER_CHARS)),
-    pegMakeCode { one, rest ->
+    Peg::makeCharSet(IDENTIFIER_START_CHARS),
+    Peg::makeStar(Peg::makeCharSet(IDENTIFIER_CHARS)),
+    Peg::makeCode { one, rest ->
         def string = stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
@@ -128,15 +128,15 @@ def tokIdentifier = Peg::makeMainSequence(
 
 # Documented in Samizdat Layer 0 spec.
 def tokQuotedIdentifier = Peg::makeMainSequence(
-    pegMakeString("\\"),
+    Peg::makeString("\\"),
     tokString,
-    pegMakeCode { ., s <> @[identifier: dataOf(s)] });
+    Peg::makeCode { ., s <> @[identifier: dataOf(s)] });
 
 # Documented in Samizdat Layer 0 spec.
 def tokError = Peg::makeMainSequence(
-    pegAny,
-    pegMakeStar(pegMakeCharSetComplement("\n")),
-    pegMakeCode { badCh, . ->
+    Peg::any,
+    Peg::makeStar(Peg::makeCharSetComplement("\n")),
+    Peg::makeCode { badCh, . ->
         def msg = cat("Unrecognized character: ", typeOf(badCh));
         <> @[error: msg]
     });
@@ -152,12 +152,12 @@ def tokToken = Peg::makeMainChoice(
 
 # Documented in Samizdat Layer 0 spec.
 def tokFile = Peg::makeMainSequence(
-    pegMakeStar(
-        pegMakeSequence(
-            pegMakeOpt(tokWhitespace),
+    Peg::makeStar(
+        Peg::makeSequence(
+            Peg::makeOpt(tokWhitespace),
             tokToken)),
-    pegMakeOpt(tokWhitespace),
-    pegMakeCode { tokens, . <> tokens });
+    Peg::makeOpt(tokWhitespace),
+    Peg::makeCode { tokens, . <> tokens });
 
 
 #
