@@ -31,7 +31,7 @@ genericBind(fetch, "ParseForwarder", ParseForwarder_fetch);
 
 # Documented in Samizdat Layer 0 spec.
 fn ParseForwarder_store(fwd, parser) {
-    ifNot { <> canCall(parse, parser) }
+    ifNot { <> canCall(Peg::parse, parser) }
         { io0Die("Attempt to forward to non-parser.") };
 
     <> store(dataOf(fwd), parser);
@@ -42,7 +42,7 @@ genericBind(store, "ParseForwarder", ParseForwarder_store);
 fn ParseForwarder_parse(fwd, args*) {
     <> Peg::parse(fetch(dataOf(fwd)), args*)
 };
-genericBind(parse, "ParseForwarder", ParseForwarder_parse);
+genericBind(Peg::parse, "ParseForwarder", ParseForwarder_parse);
 
 <> [
     makeParseForwarder: makeParseForwarder
