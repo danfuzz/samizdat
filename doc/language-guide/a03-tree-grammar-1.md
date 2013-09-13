@@ -506,7 +506,7 @@ def parPostfixOperator = {/
 |
     # This is sorta-kinda a binary operator, but in terms of precedence it
     # fits better here.
-    @":"
+    @"::"
     key = parIdentifierString
     { <> { node <> makeCallName("get", node, key) } }
 |
