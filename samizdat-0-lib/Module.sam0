@@ -69,7 +69,7 @@ genericBind(keyList, "Module", Module_keyList);
 
 # Documented in spec.
 fn Module_nameOf(modu) {
-    <> infoOf(modu):name
+    <> getInfo(modu):name
 };
 genericBind(nameOf, "Module", Module_nameOf);
 
@@ -107,10 +107,11 @@ genericBind(slice, "Module", Module_slice);
 fn moduleDef(modu) {
     def name = nameOf(modu);
 
-    ifIs { <> moduleGet(name) }
-        { io0Die(cat("Cannot redefine module: "), stringFromModuleName(name)) };
+    ifIs { <> moduleGet([name: name]) }
+        { io0Die(cat("Cannot redefine module: ", stringFromModuleName(name))) };
 
-    update(theModulesBox, { mods <> put(mods, name, modu) });
+    def mods = fetch(theModulesBox);
+    store(theModulesBox, put(mods, name, modu));
 
     <> modu
 };
@@ -120,7 +121,7 @@ fn moduleGet(searchInfo) {
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     def name = searchInfo:name;
 
-    <> get(mods, name)
+    <> get(fetch(theModulesBox), name)
 };
 
 # Documented in spec.
