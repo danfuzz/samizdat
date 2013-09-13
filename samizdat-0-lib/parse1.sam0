@@ -419,7 +419,7 @@ def parPostfixOperator = pegMakeMainChoice(
         parActualsList,
         pegMakeCode { actuals <> { node <> makeCall(node, actuals*) } }),
     pegMakeSequence(
-        pegMakeToken(":"),
+        pegMakeToken("::"),
         parIdentifierString,
         pegMakeCode { ., key <> { node <> makeCallName("get", node, key) } }),
     pegMakeSequence(
