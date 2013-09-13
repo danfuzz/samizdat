@@ -103,7 +103,7 @@ def outPath = [butLast(SELF_PATH)*, "entityMap.sam0"];
 io0Note("Processing file: \%q(inPath)");
 
 def text = io0ReadFileUtf8(inPath);
-def result = pegApply(parFile, text);
+def result = Peg::apply(parFile, text);
 
 # This makes each result line *start* with `,\n`, to make it easy to just
 # trim the first two characters off the beginning, yielding a valid comma-

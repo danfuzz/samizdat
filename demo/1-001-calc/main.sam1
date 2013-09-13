@@ -174,7 +174,7 @@ def evalExpressions = {/
 fn main(args*) {
     def argFilter = makeFilterGenerator(args) { arg <> cat(arg, "\n") };
     def exprString = cat(argFilter*);
-    pegApply(evalExpressions, exprString);
+    Peg::apply(evalExpressions, exprString);
 };
 
 def args = ifIs { <> ne(ARGS, []) } { <> ARGS} { <> ["100+7*2"] };

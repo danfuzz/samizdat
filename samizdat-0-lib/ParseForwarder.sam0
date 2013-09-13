@@ -40,7 +40,7 @@ genericBind(store, "ParseForwarder", ParseForwarder_store);
 
 # Documented in Samizdat Layer 0 spec.
 fn ParseForwarder_parse(fwd, args*) {
-    <> parse(fetch(dataOf(fwd)), args*)
+    <> Peg::parse(fetch(dataOf(fwd)), args*)
 };
 genericBind(parse, "ParseForwarder", ParseForwarder_parse);
 

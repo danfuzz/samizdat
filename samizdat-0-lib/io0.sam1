@@ -147,7 +147,7 @@ fn io0FlatFromPath(path) {
             ifIs { <> eq([one, n], ["", 1]) }
                 { <out> "/" }
                 {
-                    ifValue { <> pegApply(parErrorFromPathComponent, one) }
+                    ifValue { <> Peg::apply(parErrorFromPathComponent, one) }
                         { error -> dieWith(error, path) }
                 };
             <> cat("/", one)
@@ -168,7 +168,7 @@ fn io0PathFromFlat(string) {
         { <> cat(io0FlatCwd(), "/", string) };
 
     # Parse the string into components (or an error string).
-    def components = pegApply(parPathString, absoluteString);
+    def components = Peg::apply(parPathString, absoluteString);
 
     ifIs { <> isString(components) }
         { dieWith(components, string) };

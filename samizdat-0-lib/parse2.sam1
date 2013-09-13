@@ -943,7 +943,7 @@ def parInterpolatedString = {/
                         { <> makeVarRef("formatValue") };
 
                     def call = ifValueOr
-                        { <> pegApply(parStringInterpolation, tokens) }
+                        { <> Peg::apply(parStringInterpolation, tokens) }
                         { io0Die("Invalid syntax in string interpolation.") };
 
                     <> makeCall(formatter,
@@ -1986,7 +1986,7 @@ fn samParseExpression(expression) {
         { <> samTokenize(expression) }
         { <> expression };
 
-    <> pegApply(parExpressionOrError, tokens)
+    <> Peg::apply(parExpressionOrError, tokens)
 };
 
 # Documented in Samizdat Layer 1 spec.
@@ -1995,7 +1995,7 @@ fn samParseProgram(program) {
         { <> samTokenize(program) }
         { <> program };
 
-    <> pegApply(parProgramOrError, tokens)
+    <> Peg::apply(parProgramOrError, tokens)
 };
 
 <> [

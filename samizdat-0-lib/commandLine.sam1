@@ -81,7 +81,7 @@ fn parseArgs(args) {
     def argString = cat(argFilter*);
 
     # Use the peg grammar above to split the arguments back apart.
-    <> pegApply(parArguments, argString)
+    <> Peg::apply(parArguments, argString)
 };
 
 # Evals a program using layer 0.

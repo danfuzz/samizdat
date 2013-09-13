@@ -464,7 +464,7 @@ store(tokStringPart2, implStringPart2);
 
 # Documented in Samizdat Layer 1 spec.
 fn samTokenize(programText) {
-    <> pegApply(tokFile, programText)
+    <> Peg::apply(tokFile, programText)
 };
 
 <> [
