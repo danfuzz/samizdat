@@ -23,77 +23,77 @@ def theModulesBox = makeMutableBox([:]);
 # `[name: [string, ...], version: string]`.
 
 # Gets the `exports` of a module.
-fn getExports(module) {
-    <> dataOf(module):exports
+fn getExports(modu) {
+    <> dataOf(modu):exports
 };
 
 # Gets the `info` of a module.
-fn getInfo(module) {
-    <> dataOf(module):info
+fn getInfo(modu) {
+    <> dataOf(modu):info
 };
 
 # Returns a new module like the given one, except with `exports` as
 # given.
-fn withExports(module, newExports) {
-    <> @[Module: [(dataOf(module))*:, exports: newExports]]
+fn withExports(modu, newExports) {
+    <> @[Module: [(dataOf(modu))*:, exports: newExports]]
 };
 
 # Documented in spec.
-fn Module_cat(module, more*) {
-    def data = dataOf(module);
+fn Module_cat(modu, more*) {
+    def data = dataOf(modu);
 
-    def allExports = filter([module, more*], getExports);
+    def allExports = filter([modu, more*], getExports);
     def combinedExports = cat([:], allExports*);
 
-    <> withExports(module, combinedExports)
+    <> withExports(modu, combinedExports)
 };
 genericBind(cat, "Module", Module_cat);
 
 # Documented in spec.
-fn Module_del(module, key) {
-    <> withExports(module, del(getExports(module), key))
+fn Module_del(modu, key) {
+    <> withExports(modu, del(getExports(modu), key))
 };
 genericBind(del, "Module", Module_del);
 
 # Documented in spec.
-fn Module_get(module, key) {
-    <> get(getExports(module), key)
+fn Module_get(modu, key) {
+    <> get(getExports(modu), key)
 };
 genericBind(get, "Module", Module_get);
 
 # Documented in spec.
-fn Module_keyList(module) {
-    <> keyList(getExports(module))
+fn Module_keyList(modu) {
+    <> keyList(getExports(modu))
 };
 genericBind(keyList, "Module", Module_keyList);
 
 # Documented in spec.
-fn Module_nameOf(module) {
-    <> infoOf(module):name
+fn Module_nameOf(modu) {
+    <> infoOf(modu):name
 };
 genericBind(nameOf, "Module", Module_nameOf);
 
 # Documented in spec.
-fn Module_nth(module, n) {
-    <> nth(getExports(module), n)
+fn Module_nth(modu, n) {
+    <> nth(getExports(modu), n)
 };
 genericBind(nth, "Module", Module_nth);
 
 # Documented in spec.
-fn Module_put(module, key, value) {
-    <> withExports(module, put(getExports(module), key, value))
+fn Module_put(modu, key, value) {
+    <> withExports(modu, put(getExports(modu), key, value))
 };
 genericBind(put, "Module", Module_put);
 
 # Documented in spec.
-fn Module_sizeOf(module) {
-    <> sizeOf(getExports(module))
+fn Module_sizeOf(modu) {
+    <> sizeOf(getExports(modu))
 };
 genericBind(sizeOf, "Module", Module_sizeOf);
 
 # Documented in spec.
-fn Module_slice(module, start, end?) {
-    <> withExports(module, slice(getExports(module), start, end*))
+fn Module_slice(modu, start, end?) {
+    <> withExports(modu, slice(getExports(modu), start, end*))
 };
 genericBind(slice, "Module", Module_slice);
 
@@ -104,15 +104,15 @@ genericBind(slice, "Module", Module_slice);
 #
 
 # Documented in spec.
-fn moduleDef(module) {
-    def name = nameOf(module);
+fn moduleDef(modu) {
+    def name = nameOf(modu);
 
     ifIs { <> moduleGet(name) }
         { io0Die(cat("Cannot redefine module: "), stringFromModuleName(name)) };
 
-    update(theModulesBox, { mods <> put(mods, name, module) });
+    update(theModulesBox, { mods <> put(mods, name, modu) });
 
-    <> module
+    <> modu
 };
 
 # Documented in spec.
