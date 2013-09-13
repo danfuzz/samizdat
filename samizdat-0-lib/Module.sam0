@@ -24,12 +24,12 @@ def theModulesBox = makeMutableBox([:]);
 
 # Gets the `exports` of a module.
 fn getExports(modu) {
-    <> dataOf(modu):exports
+    <> dataOf(modu)::exports
 };
 
 # Gets the `info` of a module.
 fn getInfo(modu) {
-    <> dataOf(modu):info
+    <> dataOf(modu)::info
 };
 
 # Returns a new module like the given one, except with `exports` as
@@ -69,7 +69,7 @@ genericBind(keyList, "Module", Module_keyList);
 
 # Documented in spec.
 fn Module_nameOf(modu) {
-    <> getInfo(modu):name
+    <> getInfo(modu)::name
 };
 genericBind(nameOf, "Module", Module_nameOf);
 
@@ -119,7 +119,7 @@ fn moduleDef(modu) {
 # Documented in spec.
 fn moduleGet(searchInfo) {
     # TODO: Currently ignores everything about `searchInfo` other than the name.
-    def name = searchInfo:name;
+    def name = searchInfo::name;
 
     <> get(fetch(theModulesBox), name)
 };
