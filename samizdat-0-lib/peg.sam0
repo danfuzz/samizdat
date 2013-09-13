@@ -428,28 +428,5 @@ def Peg = @[Module: [
 moduleDef(Peg);
 
 <> [
-    Peg:                       Peg,
-    parse:                     parse,
-    pegApply:                  pegApply,
-    pegMakeCharSet:            pegMakeCharSet,
-    pegMakeCharSetComplement:  pegMakeCharSetComplement,
-    pegMakeChoice:             pegMakeChoice,
-    pegMakeCode:               pegMakeCode,
-    pegMakeLookaheadFailure:   pegMakeLookaheadFailure,
-    pegMakeLookaheadSuccess:   pegMakeLookaheadSuccess,
-    pegMakeMainChoice:         pegMakeMainChoice,
-    pegMakeMainSequence:       pegMakeMainSequence,
-    pegMakeOpt:                pegMakeOpt,
-    pegMakePlus:               pegMakePlus,
-    pegMakeResult:             pegMakeResult,
-    pegMakeSequence:           pegMakeSequence,
-    pegMakeStar:               pegMakeStar,
-    pegMakeString:             pegMakeString,
-    pegMakeToken:              pegMakeToken,
-    pegMakeTokenSet:           pegMakeTokenSet,
-    pegMakeTokenSetComplement: pegMakeTokenSetComplement,
-    pegAny:                    pegAny,
-    pegEmpty:                  pegEmpty,
-    pegEof:                    pegEof,
-    pegFail:                   pegFail
+    Peg: Peg
 ]
