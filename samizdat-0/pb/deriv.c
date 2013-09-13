@@ -81,13 +81,13 @@ zvalue makeTransValue(zvalue type, zvalue data) {
  * methods are bound on many types.
  */
 
-/** Builtin for `Deriv:gcMark`. */
+/** Builtin for `Deriv.gcMark`. */
 static zvalue BI_Deriv_gcMark = NULL;
 
-/** Builtin for `Deriv:totEq`. */
+/** Builtin for `Deriv.totEq`. */
 static zvalue BI_Deriv_totEq = NULL;
 
-/** Builtin for `Deriv:totOrder`. */
+/** Builtin for `Deriv.totOrder`. */
 static zvalue BI_Deriv_totOrder = NULL;
 
 /* Documented in header. */
@@ -133,14 +133,14 @@ MOD_INIT(Deriv) {
     MOD_USE(Value);
 
     BI_Deriv_gcMark = makeBuiltin(1, 1, METH_NAME(Deriv, gcMark),
-        stringFromUtf8(-1, "Deriv:gcMark"));
+        stringFromUtf8(-1, "Deriv.gcMark"));
     pbImmortalize(BI_Deriv_gcMark);
 
     BI_Deriv_totEq = makeBuiltin(2, 2, METH_NAME(Deriv, totEq),
-        stringFromUtf8(-1, "Deriv:totEq"));
+        stringFromUtf8(-1, "Deriv.totEq"));
     pbImmortalize(BI_Deriv_totEq);
 
     BI_Deriv_totOrder = makeBuiltin(2, 2, METH_NAME(Deriv, totOrder),
-        stringFromUtf8(-1, "Deriv:totOrder"));
+        stringFromUtf8(-1, "Deriv.totOrder"));
     pbImmortalize(BI_Deriv_totOrder);
 }
