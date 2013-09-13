@@ -147,7 +147,7 @@ def parProgramDeclarations = {/
     yieldDef = parOptYieldDef
     formals = parFormalsList
 
-    (@"::" | &@"<>")
+    (@"=>" | &@"<>")
 
     { <> [formals: formals, yieldDef*] }
 |

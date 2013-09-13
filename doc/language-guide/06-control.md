@@ -131,7 +131,7 @@ yield name can be used in nonlocal exit statements to continue the loop.
 For example:
 
 ```
-opName (expression) { <next> ::
+opName (expression) { <next> =>
     ...
     <next>
     ...

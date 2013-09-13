@@ -10,7 +10,7 @@ a generator or a list, depending on delimiter. As used here,
 the term "comprehension" applies to either variant.
 
 The complete form for a comprehension consists of an opening delimiter,
-one or more comma-separated generator expressions, a double-colon (`::`)
+one or more comma-separated generator expressions, an equal-arrow (`=>`)
 to introduce the body, one or more body statements, and a closing delimeter.
 
 With the delimiters `(...)`, the result is a generator. With the delimiters
@@ -30,7 +30,7 @@ then there is no corresponding comprehension yield for that particular set
 of values.
 
 If the body *only* consists of a single local-yield statement (`<> ...`),
-then the `::` may be omitted.
+then the `=>` may be omitted.
 
 For example:
 
@@ -52,7 +52,7 @@ For example:
 # => [101, 202, 303, 404, 505, 606, 707, 808, 909]
 
 # Sum of three ranges.
-[a in 0..4, b in 50..10..90, c in 300..100..700 ::
+[a in 0..4, b in 50..10..90, c in 300..100..700 =>
     def sum = a + b + c;
     <> sum
 ]
