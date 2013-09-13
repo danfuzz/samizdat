@@ -21,6 +21,10 @@ def BOOTSTRAP_FILES = [
 def MANIFEST = [
     # Layer 0 in-language core library.
 
+    # Layer 0: Basic module system. Listed first so it can be used
+    # by everything else.
+    "Module.sam0",
+
     # Layer 0: Constant value definitions.
     "entityMap.sam0",
     "constants.sam0",
@@ -48,7 +52,6 @@ def MANIFEST = [
     "Generator.sam0",
     "String.sam0",
     "format.sam0",
-    "Module.sam0",
     "peg.sam0",
     "ParseForwarder.sam0",     # Uses `parse` defined by `peg.sam0`.
 

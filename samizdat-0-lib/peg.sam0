@@ -394,7 +394,41 @@ fn pegApply(rule, input) {
 # Export mechanics
 #
 
+def Peg = @[Module: [
+    info: [
+        name: ["core", "peg"],
+        version: "0.1.0"
+    ],
+    exports: [
+        any:                    pegAny,
+        apply:                  pegApply,
+        empty:                  pegEmpty,
+        eof:                    pegEof,
+        fail:                   pegFail,
+        makeCharSet:            pegMakeCharSet,
+        makeCharSetComplement:  pegMakeCharSetComplement,
+        makeChoice:             pegMakeChoice,
+        makeCode:               pegMakeCode,
+        makeLookaheadFailure:   pegMakeLookaheadFailure,
+        makeLookaheadSuccess:   pegMakeLookaheadSuccess,
+        makeMainChoice:         pegMakeMainChoice,
+        makeMainSequence:       pegMakeMainSequence,
+        makeOpt:                pegMakeOpt,
+        makePlus:               pegMakePlus,
+        makeResult:             pegMakeResult,
+        makeSequence:           pegMakeSequence,
+        makeStar:               pegMakeStar,
+        makeString:             pegMakeString,
+        makeToken:              pegMakeToken,
+        makeTokenSet:           pegMakeTokenSet,
+        makeTokenSetComplement: pegMakeTokenSetComplement,
+        parse:                  parse
+    ]
+]];
+moduleDef(Peg);
+
 <> [
+    Peg:                       Peg,
     parse:                     parse,
     pegApply:                  pegApply,
     pegMakeCharSet:            pegMakeCharSet,
