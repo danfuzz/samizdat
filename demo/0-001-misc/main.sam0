@@ -110,8 +110,8 @@ fn main(selfPath, name?, rest*) {
     process(@[(null)]);
     process(makeUniqlet());
     process(blort);
-    process((LIBRARY:cat));
-    process((LIBRARY:ne));
+    process(LIBRARY::cat);
+    process(LIBRARY::ne);
     process(io0PathFromFlat("///foo//////./bar/./../baz"));
     process(io0PathFromFlat("/a/b/x/y/z/../../../c/"));
     process(io0FlatFromPath(["fizmo", "igram", "blort", ""]));

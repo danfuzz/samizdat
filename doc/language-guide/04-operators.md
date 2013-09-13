@@ -98,7 +98,7 @@ A collection access expression is identical to a function call of `get`
 with the value to be accessed as the argument. That is, `x[y]` means
 the same thing as `x.get(y)`.
 
-#### Access collection with string key &mdash; `expression:name`
+#### Access collection with string key &mdash; `expression::name`
 
 If the key to use to access a collection is a string literal, then
 instead of placing it in square brackets, it can be placed after a
@@ -109,8 +109,8 @@ For example, all of these are equivalent:
 
 ```
 someExpression["blort"]
-someExpression:"blort"
-someExpression:blort
+someExpression::"blort"
+someExpression::blort
 ```
 
 #### Convert Value-or-void to list &mdash; `expression?`

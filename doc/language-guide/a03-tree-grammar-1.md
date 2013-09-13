@@ -181,7 +181,7 @@ def parNullaryClosure = {/
     c = parClosure
 
     {
-        def formals = get(dataOf(c), "formals");
+        def formals = dataOf(c)::formals;
         ifIs { <> ne(formals, []) }
             { io0Die("Invalid formal argument in code block.") };
         <> c
@@ -194,7 +194,7 @@ def parCodeOnlyClosure = {/
     c = parNullaryClosure
 
     {
-        ifIs { <> get(dataOf(c), "yieldDef") }
+        ifIs { <> dataOf(c)::yieldDef }
             { io0Die("Invalid yield definition in code block.") };
         <> c
     }
@@ -254,7 +254,7 @@ def parFnCommon = {/
 
     {
         def codeMap = dataOf(code);
-        def statements = [returnDef*, get(codeMap, "statements")*];
+        def statements = [returnDef*, codeMap::statements*];
         <> [
             codeMap*, name*,
             formals: formals,
@@ -273,7 +273,7 @@ def parFnDef = {/
     funcMap = parFnCommon
 
     {
-        <> ifIs { <> get(funcMap, "name") }
+        <> ifIs { <> funcMap::name }
             { <> @[fnDef: funcMap] }
     }
 /};
@@ -297,7 +297,7 @@ def parFnExpression = {/
     funcMap = parFnCommon
 
     (
-        name = { <> get(funcMap, "name") }
+        name = { <> funcMap::name }
         {
             def mainClosure = @[closure: [
                 formals: [],
@@ -424,7 +424,6 @@ def parMapping = {/
 # Parses a map literal.
 def parMap = {/
     @"["
-    (@":" @",")?
     one = parMapping
     rest = (@"," parMapping)*
     @"]"
@@ -507,7 +506,7 @@ def parPostfixOperator = {/
 |
     # This is sorta-kinda a binary operator, but in terms of precedence it
     # fits better here.
-    @":"
+    @"::"
     key = parIdentifierString
     { <> { node <> makeCallName("get", node, key) } }
 |
@@ -607,7 +606,7 @@ def implProgramBody = {/
     @";"*
 
     {
-        def allStatements = [most*, get(last, "statements")*];
+        def allStatements = [most*, last::statements*];
         <> [last*, statements: allStatements]
     }
 /};
