@@ -419,10 +419,7 @@ DEF_PARSE(programDeclarations1) {
     zvalue formals = PARSE(formalsList);
 
     if (PEEK(CH_DIAMOND) == NULL) {
-        // TODO: Remove `::` check.
-        if (!MATCH(CH_COLONCOLON)) {
-            MATCH_OR_REJECT(CH_RARROW);
-        }
+        MATCH_OR_REJECT(CH_RARROW);
     }
 
     return GFN_CALL(cat, mapFrom1(STR_formals, formals), yieldDef);
