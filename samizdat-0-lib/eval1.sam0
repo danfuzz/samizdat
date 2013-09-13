@@ -22,6 +22,12 @@ def convertPex = makeRegularGeneric("convertPex", 2, 2);
 # node into an equivalent layer 0 node.
 def convertPexIn = makeRegularGeneric("convertPexIn", 1, 1);
 
+# Reference to the variable `get`.
+def GET_REF = @[varRef: "get"];
+
+# Reference to the variable `Peg`.
+def PEG_REF = @[varRef: "Peg"];
+
 # Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
     <> filterAll(nodes) { node <> convertPexIn(node) }
@@ -32,22 +38,27 @@ fn makeCall(function, args*) {
     <> @[call: [function: function, actuals: args]]
 };
 
-# Constructs a named function call with the given arguments, each of
+# Makes a peg variable reference.
+fn makePegRef(name) {
+    <> makeCall(GET_REF, PEG_REF, @[literal: name])
+};
+
+# Constructs a named peg function call with the given arguments, each of
 # which must be a (non-parsing) expression node.
-fn callNameWithExpressions(functionName, args*) {
-    <> makeCall(@[varRef: functionName], args*);
+fn callPegNameWithExpressions(functionName, args*) {
+    <> makeCall(makePegRef(functionName), args*);
 };
 
-# Converts a pex to a named function call of the converted inner pex.
-fn callNameWithPex(node, formals, functionName) {
+# Converts a pex to a named peg function call of the converted inner pex.
+fn callPegNameWithPex(node, formals, functionName) {
     def convertedNode = convertPex(dataOf(node), formals);
-    <> callNameWithExpressions(functionName, convertedNode)
+    <> callPegNameWithExpressions(functionName, convertedNode)
 };
 
-# Constructs a named function call of the given literal arguments.
-fn callNameWithLiterals(functionName, args*) {
+# Constructs a named peg function call of the given literal arguments.
+fn callPegNameWithLiterals(functionName, args*) {
     def literalArgs = filterAll(args) { arg <> @[literal: arg] };
-    <> callNameWithExpressions(functionName, literalArgs*)
+    <> callPegNameWithExpressions(functionName, literalArgs*)
 };
 
 
@@ -60,7 +71,7 @@ fn choice_convertPex(node, formals) {
     def pexes = dataOf(node);
     def convertedPexes = filterAll(pexes)
         { pex <> convertPex(pex, formals) };
-    <> callNameWithExpressions("pegMakeChoice", convertedPexes*)
+    <> callPegNameWithExpressions("makeChoice", convertedPexes*)
 };
 genericBind(convertPex, "choice", choice_convertPex);
 
@@ -84,19 +95,19 @@ fn sequence_convertPex(node, formals) {
         <> convertPex(subPex, [formals*, slice(newFormals, 0, n)*])
     };
 
-    <> callNameWithExpressions("pegMakeSequence", convertedPexes*)
+    <> callPegNameWithExpressions("makeSequence", convertedPexes*)
 };
 genericBind(convertPex, "sequence", sequence_convertPex);
 
 # Converts a `string` pex node.
 fn string_convertPex(node, formals) {
-    <> callNameWithLiterals("pegMakeString", dataOf(node))
+    <> callPegNameWithLiterals("makeString", dataOf(node))
 };
 genericBind(convertPex, "string", string_convertPex);
 
 # Converts a `token` pex node.
 fn token_convertPex(node, formals) {
-    <> callNameWithLiterals("pegMakeToken", dataOf(node))
+    <> callPegNameWithLiterals("makeToken", dataOf(node))
 };
 genericBind(convertPex, "token", token_convertPex);
 
@@ -110,25 +121,25 @@ genericBind(convertPex, "varRef", varRef_convertPex);
 
 # Converts an `any` pex node.
 fn any_convertPex(node, formals) {
-    <> @[varRef: "pegAny"]
+    <> makePegRef("any")
 };
 genericBind(convertPex, "any", any_convertPex);
 
 # Converts an `empty` pex node.
 fn empty_convertPex(node, formals) {
-    <> @[varRef: "pegEmpty"]
+    <> makePegRef("empty")
 };
 genericBind(convertPex, "empty", empty_convertPex);
 
 # Converts a `tokenSet` pex node.
 fn tokenSet_convertPex(node, formals) {
-    <> callNameWithLiterals("pegMakeTokenSet", dataOf(node)*)
+    <> callPegNameWithLiterals("makeTokenSet", dataOf(node)*)
 };
 genericBind(convertPex, "tokenSet", tokenSet_convertPex);
 
 # Converts a `tokenSetComplement` pex node.
 fn tokenSetComplement_convertPex(node, formals) {
-    <> callNameWithLiterals("pegMakeTokenSetComplement", dataOf(node)*);
+    <> callPegNameWithLiterals("makeTokenSetComplement", dataOf(node)*);
 };
 genericBind(convertPex, "tokenSetComplement", tokenSetComplement_convertPex);
 
@@ -140,37 +151,37 @@ fn code_convertPex(node, formals) {
     def closurePayload = [(dataOf(node))*:, formals: formals];
     def convertedClosure = convertPexIn(@[closure: closurePayload]);
 
-    <> callNameWithExpressions("pegMakeCode", convertedClosure)
+    <> callPegNameWithExpressions("makeCode", convertedClosure)
 };
 genericBind(convertPex, "code", code_convertPex);
 
 # Converts a `lookaheadSuccess` pex node.
 fn lookaheadSuccess_convertPex(node, formals) {
-    <> callNameWithPex(node, formals, "pegMakeLookaheadSuccess")
+    <> callPegNameWithPex(node, formals, "makeLookaheadSuccess")
 };
 genericBind(convertPex, "lookaheadSuccess", lookaheadSuccess_convertPex);
 
 # Converts a `lookaheadFailure` pex node.
 fn lookaheadFailure_convertPex(node, formals) {
-    <> callNameWithPex(node, formals, "pegMakeLookaheadFailure")
+    <> callPegNameWithPex(node, formals, "makeLookaheadFailure")
 };
 genericBind(convertPex, "lookaheadFailure", lookaheadFailure_convertPex);
 
 # Converts an `opt` pex node.
 fn opt_convertPex(node, formals) {
-    <> callNameWithPex(node, formals, "pegMakeOpt")
+    <> callPegNameWithPex(node, formals, "makeOpt")
 };
 genericBind(convertPex, "opt", opt_convertPex);
 
 # Converts a `star` pex node.
 fn star_convertPex(node, formals) {
-    <> callNameWithPex(node, formals, "pegMakeStar")
+    <> callPegNameWithPex(node, formals, "makeStar")
 };
 genericBind(convertPex, "star", star_convertPex);
 
 # Converts a `plus` pex node.
 fn plus_convertPex(node, formals) {
-    <> callNameWithPex(node, formals, "pegMakePlus")
+    <> callPegNameWithPex(node, formals, "makePlus")
 };
 genericBind(convertPex, "plus", plus_convertPex);
 
@@ -244,7 +255,7 @@ genericBind(convertPexIn, "literal", literal_convertPexIn);
 # Does parser conversion of a `parser` node. This is where the juicy stuff
 # happens!
 fn parser_convertPexIn(node) {
-    <> callNameWithPex(node, [], "pegMakeMainSequence")
+    <> callPegNameWithPex(node, [], "makeMainSequence")
 };
 genericBind(convertPexIn, "parser", parser_convertPexIn);
 
