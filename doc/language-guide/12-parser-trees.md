@@ -44,7 +44,7 @@ Representation of a code expression.
   (local) result value for the code. Expression nodes are as defined
   by the *Samizdat Layer 0* specification.
 
-This corresponds to the syntax `{ <yieldDef> :: statement1; statement2;
+This corresponds to the syntax `{ <yieldDef> -> statement1; statement2;
 etc; <> yield }`.
 
 #### `@empty`

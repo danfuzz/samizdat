@@ -16,7 +16,7 @@
 # to create the final core library that then gets used as the global
 # context when loading regular programs.
 
-LIBRARY_FILES ::
+LIBRARY_FILES ->
 
 
 #
@@ -60,7 +60,7 @@ fn loadLibrary(ctx, name) {
 # given context.
 fn loadAllLibraries(ctx, names*) {
     <> loopReduce(names, ctx)
-        { names, ctx ::
+        { names, ctx ->
             <> ifValue { <> nth(names, 0) }
                 { name <> [slice(names, 1), loadLibrary(ctx, name)] }
                 { return ctx }

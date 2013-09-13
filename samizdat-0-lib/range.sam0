@@ -93,7 +93,7 @@ fn makeInclusiveRange(firstValue, increment, limit) {
 fn ClosedRange_nextValue(range, box) {
     def data = dataOf(range);
     <> ifValue { <> totLe(0, (data:size)) }
-        { size ::
+        { size ->
             def firstValue = data:firstValue;
             def increment = data:increment;
             store(box, firstValue);

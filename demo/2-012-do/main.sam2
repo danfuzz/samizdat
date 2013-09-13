@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -25,7 +25,7 @@ do {
     io0Note("Value is \%q(fetch(box)).")
 };
 
-do { <next> ::
+do { <next> ->
     store(box, fetch(box) + 1);
     if (fetch(box) == 10) {
         continue

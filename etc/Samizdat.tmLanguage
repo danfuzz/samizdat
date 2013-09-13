@@ -430,7 +430,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>([a-zA-Z_.][^:@"{}()\[\]]*) *(::|(?=&lt;&gt;))</string>
+					<string>([a-zA-Z_.][^:@"{}()\[\]]*) *(-&gt;|(?=&lt;&gt;))</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -467,7 +467,15 @@
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>: *</string>
+					<string>(::) *</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator</string>
+						</dict>
+					</dict>
 					<key>end</key>
 					<string>(?=[^"_a-zA-Z0-9])</string>
 					<key>patterns</key>
@@ -490,9 +498,9 @@
 					<key>match</key>
 					<string>(?x)
 						&amp;&amp;?&amp;? | \|\|?\|? | \^\^?\^? |
-						\\?&lt;&lt;?&lt;? | \\?&gt;&gt;?&gt;? |
-						!!?!? | := | \\?==? | \\?!= | \\?&lt;= | \\?&gt;= |
-						&lt;&gt; | \.\.[!+]? | \+ | - | \* | / | % | \?
+						\\?&lt;&lt;?&lt;? | \\?&gt;&gt;?&gt;? | !!?!? |
+						:: | := | \\?==? | \\?!= | \\?&lt;= | \\?&gt;= |
+						&lt;&gt; | \.\.[!+]? | \+ | - | \* | //? | %%? | \?
 					</string>
 				</dict>
 				<dict>

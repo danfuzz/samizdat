@@ -111,7 +111,7 @@ fn dieWith(msg, path) {
 # Helper for `io0SandboxedReader` which does symbolic link resolution,
 # respecting the sandbox directory.
 fn resolveLinks(sandboxDirectory, path) {
-    loopReduce(path, 50) { path, limit ::
+    loopReduce(path, 50) { path, limit ->
         ifIs { <> le(limit, 0) }
             { io0Die("Too many links in symbolic link chain.") };
         ifNot { <> isPrefix(sandboxDirectory, path) }
@@ -140,7 +140,7 @@ fn io0FlatFromPath(path) {
         { dieWith("Invalid empty path", path) };
 
     def gen = makeFilterGenerator(path, makeOpenRange(sizeOf(path), -1))
-        { <out> one, n ::
+        { <out> one, n ->
             # This test skips the check on the last path component, if it
             # happens to be empty (which is the only valid case of an empty
             # path component).
@@ -148,7 +148,7 @@ fn io0FlatFromPath(path) {
                 { <out> "/" }
                 {
                     ifValue { <> pegApply(parErrorFromPathComponent, one) }
-                        { error :: dieWith(error, path) }
+                        { error -> dieWith(error, path) }
                 };
             <> cat("/", one)
         };
@@ -189,7 +189,7 @@ fn io0ReadLink(path) {
 
 # Documented in Samizdat Layer 0 spec.
 fn io0SandboxedReader(directory) {
-    <> { path ::
+    <> { path ->
         def fullPath = resolveLinks(directory, [directory*, path*]);
         <> io0ReadFileUtf8(fullPath);
     }
