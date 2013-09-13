@@ -106,3 +106,8 @@ This will fail with a terminal error if the module isn't defined and
 cannot be loaded.
 
 TODO: Right now, only the `name` in the `searchInfo` is checked.
+
+#### `stringFromModuleName(fqName) <> string`
+
+Returns a "human-oriented" name given a list-of-components fully-qualified
+module name.

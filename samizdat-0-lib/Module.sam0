@@ -123,7 +123,7 @@ fn moduleGet(searchInfo) {
     <> get(mods, name)
 };
 
-# Gets a human-oriented name given a list-of-components fully-qualified one.
+# Documented in spec.
 fn stringFromModuleName(fqName) {
     # Prefix each component with ":", combine them all, and then drop the
     # first character.
