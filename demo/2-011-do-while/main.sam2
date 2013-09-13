@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -17,7 +17,7 @@ SELF_PATH, ARGS* ::
 
 def box = makeMutableBox(0);
 
-do { <next> ::
+do { <next> ->
     store(box, fetch(box) + 1);
     if (fetch(box) == 5) {
         continue

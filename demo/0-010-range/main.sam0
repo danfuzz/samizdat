@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -23,7 +23,7 @@ fn msg(value) {
 # Outputs all generated values, with a header and a footer.
 fn msgAll(header, gen) {
     io0Note(header);
-    filterAll([gen*]) { elem :: msg(elem) };
+    filterAll([gen*]) { elem -> msg(elem) };
     io0Note("  [fin]");
     io0Note(cat("  value: ", sourceString(gen)));
     io0Note("")
@@ -33,16 +33,16 @@ fn msgAll(header, gen) {
 fn msgTen(header, gen) {
     io0Note(header);
 
-    { <done> ::
+    { <done> ->
         def count = makeMutableBox(10);
-        loopReduce(gen) { gen ::
+        loopReduce(gen) { gen ->
             store(count, sub(fetch(count), 1));
             ifIs { <> lt(fetch(count), 0) }
                 { <done> };
 
             def box = makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
-                { nextGen ::
+                { nextGen ->
                     msg(fetch(box));
                     <> [nextGen]
                 }

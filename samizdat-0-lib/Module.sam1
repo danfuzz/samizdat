@@ -45,7 +45,7 @@ fn moduleUse(searchInfo) {
     def fqName = searchInfo:name;
 
     ifValue { <> moduleGet(searchInfo) }
-        { modu :: return modu };
+        { modu -> return modu };
 
     def pendings = fetch(thePendingBox);
     ifIs { <> get(pendings, name) }

@@ -8,23 +8,23 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
-def x = { <outx> ::
+def x = { <outx> ->
     <outx> "Hello"
 }();
 
 io0Note(x);
 
-def y = { <outx> arg ::
+def y = { <outx> arg ->
     <outx> arg
 }("and");
 
 io0Note(y);
 
-def z = { <stuff> ::
+def z = { <stuff> ->
     ifValue { <> "also" }
-        { value :: <stuff> value }
+        { value -> <stuff> value }
 }();
 
 io0Note(z);

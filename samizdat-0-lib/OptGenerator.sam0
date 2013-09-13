@@ -28,7 +28,7 @@ fn OptGenerator_nextValue(gen, box) {
     def innerBox = makeYieldBox();
 
     <> ifValue { <> nextValue(subGen, innerBox) }
-        { nextGen ::
+        { nextGen ->
             store(box, [fetch(innerBox)]);
             <> @[OptGenerator: nextGen]
         }

@@ -245,7 +245,7 @@ returns becomes the yielded value of the rule. If it returns void, then
 the rule is considered to have failed. Code rules never consume any
 input.
 
-This is equivalent to the syntactic form `{/ ... { arg1 arg2 etc :: code } /}`.
+This is equivalent to the syntactic form `{/ ... { arg1 arg2 etc -> code } /}`.
 
 #### `pegMakeLookaheadFailure(rule) <> rule`
 

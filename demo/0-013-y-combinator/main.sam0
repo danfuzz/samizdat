@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -67,8 +67,8 @@ fn yStarCombinator(functions*) {
 
     def applicators = filter(
         functions,
-        { function ::
-            <> { selfRefs* ::
+        { function ->
+            <> { selfRefs* ->
                 <> { args* <> function(uStarCombinator(selfRefs)*)(args*) }
             }
         });
@@ -89,8 +89,8 @@ fn yStarCombinator(functions*) {
 # generated recursively. The "main" function literal here is wrapped
 # in an outer function layer, whose argument is used to achieve
 # recursion.
-def countDown = yCombinator { countDown ::
-    <> { n ::
+def countDown = yCombinator { countDown ->
+    <> { n ->
         <> ifIs { <> ge(n, 0) }
             { <> [n, countDown(sub(n, 1))*] }
             { <> [] }
@@ -100,14 +100,14 @@ def countDown = yCombinator { countDown ::
 # Example of mutual recursion using `yStarCombinator`. See discussion
 # above.
 def countDowns = yStarCombinator
-    { f1, f2 ::
-        <> { n ::
+    { f1, f2 ->
+        <> { n ->
             <> ifIs { <> gt(n, 0) }
                 { <> [n, f2(sub(n, 1))*] }
                 { <> [0] }
         }
     }
-    { f1, f2 ::
+    { f1, f2 ->
         <> { n <> ["and", f1(n)*] }
     };
 def countDown2 = nth(countDowns, 0);

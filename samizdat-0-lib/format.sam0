@@ -20,7 +20,7 @@ def DIGIT_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz";
 # Helper for stringifying ints, which does most of the conversion,
 # as well as prepending the given prefix.
 fn intBody(start, value, base) {
-    loopReduce("", value) { text, value ::
+    loopReduce("", value) { text, value ->
         <> ifIs { <> ne(value, 0) }
             {
                 def digit = nth(DIGIT_CHARS, mod(value, base));
@@ -112,7 +112,7 @@ fn isIdentifier(string) {
     ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
-    filterPump(string) { ch ::
+    filterPump(string) { ch ->
         ifNot { <> get(IDENTIFIER_CHARS, ch) }
             { return }
     };
@@ -126,7 +126,7 @@ fn keyString(key) {
         { return key };
 
     ifValue { <> get(SPECIAL_VALUES, key) }
-        { string :: return cat("(", string, ")") };
+        { string -> return cat("(", string, ")") };
 
     <> sourceStringGeneral(key, true)
 };
@@ -167,7 +167,7 @@ fn hexStringChar(ch) {
 # given character.
 fn stringChar(ch) {
     ifValue { <> get(SPECIAL_CHARS, ch) }
-        { special ::
+        { special ->
             ifIs { <> eq(special, "x") }
                 { return hexStringChar(ch) }
                 { return special }
@@ -202,7 +202,7 @@ genericBind(sourceStringGeneral, List, List_sourceStringGeneral);
 # Stringifies a map.
 fn Map_sourceStringGeneral(map, adorn) {
     def mapElems = filterAll(map)
-        { mapping ::
+        { mapping ->
             def key = keyString(keyOf(mapping));
             def value = sourceStringGeneral(valueOf(mapping), true);
             <> cat(", ", key, ": ", value)
@@ -230,7 +230,7 @@ genericBind(sourceStringGeneral, Type, Type_sourceStringGeneral);
 # Stringifies a derived value or an opaque core value.
 fn Value_sourceStringGeneral(value, adorn) {
     ifValue { <> get(SPECIAL_VALUES, value) }
-        { string :: return string };
+        { string -> return string };
 
     def type = typeOf(value);
     def typeString = keyString(type);
@@ -248,7 +248,7 @@ fn Value_sourceStringGeneral(value, adorn) {
         { <> " /*opaque*/" }
         {
             <> ifValue { <> dataOf(value) }
-                { data ::
+                { data ->
                     # Transparent derived value with payload.
                     <> cat(" ", sourceStringGeneral(data, true))
                 }

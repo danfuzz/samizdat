@@ -73,7 +73,7 @@ fn makeOptValueExpression(node) {
 # its exit point.
 fn makeCallNonlocalExit(name, optExpression?) {
     <> ifValue { <> optExpression* }
-        { ex ::
+        { ex ->
             <> makeCallName("nonlocalExit",
                 name,
                 makeInterpolate(makeOptValueExpression(ex)))
@@ -147,7 +147,7 @@ def parProgramDeclarations = {/
     yieldDef = parOptYieldDef
     formals = parFormalsList
 
-    (@"::" | &@"<>")
+    (@"->" | &@"<>")
 
     { <> [formals: formals, yieldDef*] }
 |
@@ -217,7 +217,7 @@ def parCodeOnlyClosure = {/
 # ```
 # =>
 # ```
-# { <\"return"> arg1, arg2 ::
+# { <\"return"> arg1, arg2 ->
 #     def out = \"return";
 #     stat1;
 #     stat2

@@ -9,7 +9,7 @@
 # (very large) map literal corresponding to its contents.
 #
 
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 # Map of hex digit tokens to int values.
 def DIGIT_VALUES = [
@@ -108,7 +108,7 @@ def result = pegApply(parFile, text);
 # This makes each result line *start* with `,\n`, to make it easy to just
 # trim the first two characters off the beginning, yielding a valid comma-
 # separated list of mappings.
-def resultLines = (mapping in result ::
+def resultLines = (mapping in result ->
     <> ",\n    \%q(keyOf(mapping)): \%q(valueOf(mapping))"
 );
 

@@ -37,10 +37,10 @@ fn filterAll(filterFunction, generators*) {
 # Documented in Samizdat Layer 0 spec.
 fn doReduce(reduceFunction, generator, baseValues*) {
     loopReduce(generator, baseValues)
-        { gen, values ::
+        { gen, values ->
             def box = makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
-                { nextGenerator ::
+                { nextGenerator ->
                     <> ifValue { <> reduceFunction(fetch(box), values*) }
                         { nextValues <> [nextGenerator, nextValues] }
                         {
@@ -58,10 +58,10 @@ fn doReduce(reduceFunction, generator, baseValues*) {
 # Documented in Samizdat Layer 0 spec.
 fn doReduce1(reduceFunction, generator, baseValue) {
     loopReduce(generator, baseValue)
-        { gen, value ::
+        { gen, value ->
             def box = makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
-                { nextGenerator ::
+                { nextGenerator ->
                     <> ifValue { <> reduceFunction(fetch(box), value) }
                         { nextValue <> [nextGenerator, nextValue] }
                         {
@@ -79,10 +79,10 @@ fn doReduce1(reduceFunction, generator, baseValue) {
 # Documented in Samizdat Layer 0 spec.
 fn filterPump(filterFunction, generators*) {
     loopReduce(makeParaGenerator(generators*))
-        { gen ::
+        { gen ->
             def box = makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
-                { nextGenerator ::
+                { nextGenerator ->
                     filterFunction(fetch(box)*);
                     <> [nextGenerator]
                 }
@@ -95,7 +95,7 @@ fn filterPump(filterFunction, generators*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn generatorPump(generator) {
-    loopReduce(generator) { gen ::
+    loopReduce(generator) { gen ->
         <> ifValue { <> nextValue(gen, nullBox) }
             { nextGen <> [nextGen] }
             { return }

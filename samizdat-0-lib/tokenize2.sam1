@@ -100,7 +100,7 @@ def tokPunctuation = {/
         # Introduced in *Layer 2*.
         "==" | "!=" | "<=" | ">=" | "??" | "**" | ":=" | "//" | "%%"
     |
-        "::" | ".." | "<>"
+        "->" | "::" | ".." | "<>"
     |
         # These are only needed in *Layer 1*.
         "{/" | "/}"
@@ -241,7 +241,7 @@ def OPEN_CLOSE_MAP = [
 
 # Converts a list of digit values into an int, given the base.
 fn intFromDigitList(base, digits) {
-    <> doReduce1(digits, 0) { digit, result ::
+    <> doReduce1(digits, 0) { digit, result ->
         <> ifIs { <> eq(digit, -1) }
             { <> result }
             { <> add(mul(result, base), digit) }
@@ -257,7 +257,7 @@ fn implProcessStringParts(parts) {
     # If there is an error part (represented as an `@error` token), return
     # it.
     filterPump(parts)
-        { part ::
+        { part ->
             <> ifIs { <> eq(typeOf(part), "error") }
                 { return part }
         };
@@ -266,7 +266,7 @@ fn implProcessStringParts(parts) {
     # `elems` list consisting of multi-character strings and
     # interpolation maps.
     def elems = doReduce1(butFirst(parts), [first(parts)])
-        { part, result ::
+        { part, result ->
             <> ifValue { <> [&isString(last(result)), &isString(part)] }
                 { newLast <> [butLast(result)*, cat(newLast*)] }
                 { <> [result*, part] };
@@ -276,7 +276,7 @@ fn implProcessStringParts(parts) {
     ifIs { <> eq(sizeOf(elems), 1) }
         {
             ifValue { <> isString(elems*) }
-                { elem ::
+                { elem ->
                     # There's only one element, and it's a string. So,
                     # we have a simple non-interpolated string. Return it.
                     return @[string: elem]
