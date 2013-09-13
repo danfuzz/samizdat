@@ -878,7 +878,7 @@ DEF_PARSE(postfixOperator) {
 
     if (result == NULL) { result = PARSE(actualsList); }
 
-    if ((result == NULL) && (MATCH(CH_COLON) != NULL)) {
+    if ((result == NULL) && (MATCH(CH_COLONCOLON) != NULL)) {
         result = PARSE_OR_REJECT(identifierString);
     }
 
