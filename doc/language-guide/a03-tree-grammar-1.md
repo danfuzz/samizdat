@@ -424,7 +424,6 @@ def parMapping = {/
 # Parses a map literal.
 def parMap = {/
     @"["
-    (@":" @",")?
     one = parMapping
     rest = (@"," parMapping)*
     @"]"
