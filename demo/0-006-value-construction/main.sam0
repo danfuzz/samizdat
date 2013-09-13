@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -37,7 +37,7 @@ fn expectCore(v) {
     ifIs { <> isOpaqueValue(v) }
         {
             ifValue { <> dataOf(v) }
-                { data :: io0Note(cat("Bad data: ", sourceString(data))) }
+                { data -> io0Note(cat("Bad data: ", sourceString(data))) }
                 { io0Note("Yes.") }
         }
         { io0Note(cat("Derived: ", sourceString(v))) }

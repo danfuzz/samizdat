@@ -34,7 +34,7 @@ fn ParaGenerator_nextValue(gen, box) {
 
     def generatorCalls = filter(
         subGens,
-        { gen ::
+        { gen ->
             def innerBox = makeYieldBox();
             <> ifValue { <> nextValue(gen, innerBox) }
                 { nextGenerator <> [fetch(innerBox), nextGenerator] }

@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -57,9 +57,9 @@ fn applyShuntingYard(initialValue, opValues) {
     # to apply is of the given precedence.
     fn reducePending(ops, values, precedence) {
         loopReduce(ops, values)
-            { <next> ops, values ::
+            { <next> ops, values ->
                 ifValue { <> last(ops) }
-                    { lastOp ::
+                    { lastOp ->
                         ifIs { <> ge((lastOp:precedence), precedence) }
                             { <next> applyTop(ops, values) }
                     };
@@ -67,7 +67,7 @@ fn applyShuntingYard(initialValue, opValues) {
             }
     };
 
-    loopReduce([], [initialValue], opValues) { ops, values, opValues ::
+    loopReduce([], [initialValue], opValues) { ops, values, opValues ->
         ifIs { <> eq(opValues, []) }
             {
                 # Use precedence `-1` to drain the op stack, leaving a single

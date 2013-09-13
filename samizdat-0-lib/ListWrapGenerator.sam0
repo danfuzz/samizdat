@@ -21,7 +21,7 @@ fn ListWrapGenerator_nextValue(gen, box) {
     def innerBox = makeYieldBox();
 
     <> ifValue { <> nextValue(dataOf(gen), innerBox) }
-        { nextGenerator ::
+        { nextGenerator ->
             store(box, [fetch(innerBox)]);
             <> @[ListWrapGenerator: nextGenerator]
         }

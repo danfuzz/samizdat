@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -86,7 +86,7 @@ for (x in [1, 2, 3, 4, 5]) {
 };
 
 io0Note("\nNamed continue.");
-for (x in [1, 2, 3, 4, 5]) { <next> ::
+for (x in [1, 2, 3, 4, 5]) { <next> ->
     if (x \== 3) { <next> };
     print(x)
 };

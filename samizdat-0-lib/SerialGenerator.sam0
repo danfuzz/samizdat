@@ -30,12 +30,12 @@ fn SerialGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 
     <> ifValue { <> first(subGens) }
-        { firstGen ::
+        { firstGen ->
             def moreGens = butFirst(subGens);
             def innerBox = makeYieldBox();
 
             <> ifValue { <> nextValue(firstGen, innerBox) }
-                { nextGenerator ::
+                { nextGenerator ->
                     store(box, fetch(innerBox));
                     <> @[SerialGenerator: [nextGenerator, moreGens*]]
                 }
