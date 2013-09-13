@@ -16,7 +16,7 @@ fn reportError(pending) {
     io0Note("Pending tokens:");
 
     filterPump(pending, makeInclusiveRange(1, 1, 50))
-        { token, . :: io0Note(cat("    ", sourceString(token))) };
+        { token, . -> io0Note(cat("    ", sourceString(token))) };
 
     io0Die("\nExtra tokens at end of program.")
 };
@@ -75,7 +75,7 @@ fn makeOptValueExpression(node) {
 # its exit point.
 fn makeCallNonlocalExit(name, optExpression?) {
     <> ifValue { <> optExpression* }
-        { ex ::
+        { ex ->
             <> makeCallName("nonlocalExit",
                 name,
                 makeInterpolate(makeOptValueExpression(ex)))
@@ -161,7 +161,7 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 
     def voidable = ifValueOr { <> optVoidable* } { <> false };
 
-    def result = doReduce1(opExList, firstEx) { opEx, result ::
+    def result = doReduce1(opExList, firstEx) { opEx, result ->
         def op = first(opEx);
         def ex = last(opEx);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
@@ -249,7 +249,7 @@ def parProgramDeclarations = {/
     yieldDef = parOptYieldDef
     formals = parFormalsList
 
-    (@"::" | &@"<>")
+    (@"->" | &@"<>")
 
     { <> [formals: formals, yieldDef*:] }
 |
@@ -319,7 +319,7 @@ def parCodeOnlyClosure = {/
 # ```
 # =>
 # ```
-# { <\"return"> arg1, arg2 ::
+# { <\"return"> arg1, arg2 ->
 #     def out = \"return";
 #     stat1;
 #     stat2
@@ -929,14 +929,14 @@ def parInterpolatedString = {/
         # Convert each of the payload items into the proper form.
         # This includes recursive parser calls to convert list forms
         # into appropriate node types.
-        def elems = filterAll(dataOf(token)) { elem ::
+        def elems = filterAll(dataOf(token)) { elem ->
             <> ifIs { <> isString(elem) }
                 { <> makeLiteral(elem) }
                 {
                     def tokens = elem:tokens;
 
                     def formatter = ifValue { <> elem:format }
-                        { format ::
+                        { format ->
                             <> makeCallName("formatterFromString",
                                 makeLiteral(format))
                         }
@@ -998,7 +998,7 @@ def parGeneratorList = {/
 # or `filterAll`.
 def parComprehensionBody = {/
     genList = parGeneratorList
-    (@"::" | &@"<>")
+    (@"->" | &@"<>")
     filterBody = parProgramBody
 
     {
@@ -1015,21 +1015,21 @@ def parComprehensionBody = {/
 # The translation is along the lines of:
 #
 # ```
-# (name1 in expr1, name2 in expr2 :: filterBody)
+# (name1 in expr1, name2 in expr2 -> filterBody)
 # ```
 # =>
 # ```
 # makeFilterGenerator(expr1, expr2)
-#     { name1, name2 :: filterBody }
+#     { name1, name2 -> filterBody }
 # ```
 #
 # ```
-# [name1 in expr1, name2 in expr2 :: filterBody]
+# [name1 in expr1, name2 in expr2 -> filterBody]
 # ```
 # =>
 # ```
 # filterAll(expr1, expr2)
-#     { name1, name2 :: filterBody }
+#     { name1, name2 -> filterBody }
 # ```
 def parComprehension = {/
     @"("
@@ -1137,7 +1137,7 @@ def implPostfixOperator = {/
 |
     @"??"
     {
-        <> { node ::
+        <> { node ->
             <> makeCallNameThunks("ifIs",
                 node, makeLiteral(true), makeLiteral(false))
         }
@@ -1187,12 +1187,12 @@ def implPostfixOperator = {/
                 {
                     # `funcExpr` is a simple variable reference, so there's
                     # no need to reorder using a closure.
-                    <> { node ::
+                    <> { node ->
                         <> makeCall(funcExpr, node, actuals*)
                     }
                 }
                 {
-                    <> { node ::
+                    <> { node ->
                         <> makeCall(TARGET_CALL_CLOSURE,
                             node, funcExpr, actuals*)
                     }
@@ -1201,7 +1201,7 @@ def implPostfixOperator = {/
     |
         # `target.func`
         {
-            <> { node ::
+            <> { node ->
                 <> makeCall(TARGET_BIND_CLOSURE, node, funcExpr)
             }
         }
@@ -1407,7 +1407,7 @@ def parLogicAndExpression = {/
             # Make a version of the test clauses, as thunks with formals lists.
             def formals = filterAll(most) { clause <> clause:formal };
             def testThunks = filterAll(most, makeOpenRange(0, 1))
-                { clause, index ::
+                { clause, index ->
                     def test = clause:test;
                     <> closureWithFormals(makeThunk(test),
                         slice(formals, 0, index)*)
@@ -1446,7 +1446,7 @@ def parLogicOrExpression = {/
         {
             def allExprs = reverse([one, rest*]);
             <> doReduce1(butFirst(allExprs), first(allExprs))
-                { ex, result ::
+                { ex, result ->
                     <> makeCallName("ifValueOr",
                         makeThunk(ex), makeThunk(result))
                 }
@@ -1471,7 +1471,7 @@ def parLogicOrExpression = {/
 # (name := boundExpr)
 # =>
 # ifValue { <> boundExpr }
-#     { name :: ... then ... }
+#     { name -> ... then ... }
 #     { ... else ... }
 # ```
 #
@@ -1483,7 +1483,7 @@ def parLogicOrExpression = {/
 #         { <> expr1 },
 #         { name1 <> unboundExpr },
 #         { name1, . <> expr3 }),
-#     { name1, ., name3 :: ... then ... }
+#     { name1, ., name3 -> ... then ... }
 #     { ... else ... })
 # ```
 def parMultiTest = {/
@@ -1496,7 +1496,7 @@ def parMultiTest = {/
             def clause = clauses*;
             def formal = clause:formal;
             def testThunk = makeThunk((clause:test));
-            <> { thenThunk, elseThunk? ::
+            <> { thenThunk, elseThunk? ->
                 <> ifIs { eq(formal, [:]) }
                     {
                         <> makeCallName("ifIs",
@@ -1516,14 +1516,14 @@ def parMultiTest = {/
             # Make a version of the test clauses, as thunks with formals lists.
             def formals = filterAll(clauses) { clause <> clause:formal };
             def testThunks = filterAll(clauses, makeOpenRange(0, 1))
-                { clause, index ::
+                { clause, index ->
                     def test = clause:test;
                     <> closureWithFormals(makeThunk(test),
                         slice(formals, 0, index)*)
                 };
 
             # Result function which constructs the overall `ifValues` call.
-            <> { thenThunk, elseThunk? ::
+            <> { thenThunk, elseThunk? ->
                 <> makeCallName("ifValues",
                     makeCallName("makeList", testThunks*),
                     closureWithFormals(thenThunk, formals*),
@@ -1548,18 +1548,18 @@ def parMultiTest = {/
 # ```
 # =>
 # ```
-# { <out> ::
+# { <out> ->
 #     <> ifValue { <> expr1 }
-#         { name1 :: thenStat1 }
+#         { name1 -> thenStat1 }
 #         {
 #             <> ifIs { <> expr2 }
-#                 { name2 :: thenStat2 }
+#                 { name2 -> thenStat2 }
 #                 {
 #                     <> ifValues(
 #                         makeList(
 #                             { <> expr3 },
 #                             { name3 <> expr4 }),
-#                         { name3, name4 :: thenStat34 },
+#                         { name3, name4 -> thenStat34 },
 #                         { elseStat })
 #                 }
 #         }
@@ -1599,7 +1599,7 @@ def parIfExpression = {/
         # in a single-element list, so that they can be slotted directly into
         # place as the third argument to an enclosing `if*` by saying `result*`
         # (which also handles the case of a missing final `else`).
-        def reduction = doReduce1(clauses, optElse) { clause, optResult ::
+        def reduction = doReduce1(clauses, optElse) { clause, optResult ->
             def maker = clause:maker;
             def then = clause:then;
             <> [makeThunk(maker(then, optResult*))]
@@ -1637,15 +1637,15 @@ def parOptBreakDef = {/
 # Parses a while expression. The translation is along these lines:
 #
 # ```
-# while <out> (name1 := test1) { <next> :: stat1; stat2 }
+# while <out> (name1 := test1) { <next> -> stat1; stat2 }
 # ```
 # =>
 # ```
-# { <\"break"> ::
+# { <\"break"> ->
 #     def out = \"break";
-#     loop { <\"continue"> ::
+#     loop { <\"continue"> ->
 #         ifValue { <> test }
-#             { <next> name :: stat1; stat2 }
+#             { <next> name -> stat1; stat2 }
 #             { <\"break"> }
 #     }
 # }()
@@ -1687,14 +1687,14 @@ def parWhileExpression = {/
 # Parses a do expression. The translation is along these lines:
 #
 # ```
-# do <out> { <next> :: stat1; stat2 } while (expr)
+# do <out> { <next> -> stat1; stat2 } while (expr)
 # ```
 # =>
 # ```
-# { <\"break"> ::
+# { <\"break"> ->
 #     def out = \"break";
-#     loop { <\"continue"> ::
-#         { <next> :: stat1; stat2 }();
+#     loop { <\"continue"> ->
+#         { <next> -> stat1; stat2 }();
 #         ifNot { <> expr }
 #             { <\"break"> }
 #     }
@@ -1738,13 +1738,13 @@ def parDoExpression = {/
 # Parses a for expression. The translation is along these lines:
 #
 # ```
-# for <out> (name1 in expr1, name2 in expr2) { <next> :: stat1; stat2 }
+# for <out> (name1 in expr1, name2 in expr2) { <next> -> stat1; stat2 }
 # ```
 # =>
 # ```
-# { <\"break"> ::
+# { <\"break"> ->
 #     def out = \"break";
-#     filterPump(expr1, expr2) { <\"continue"> name1, name2 ::
+#     filterPump(expr1, expr2) { <\"continue"> name1, name2 ->
 #         def next = \"continue";
 #         stat1; stat2
 #     }
@@ -1830,21 +1830,21 @@ def SWITCH_DISPATCH_CLOSURE = sam0ParseProgram("
 # ```
 # =>
 # ```
-# { <\"break"> ::
+# { <\"break"> ->
 #     def out = \"break";
 #     <> ifValue
 #         {
 #             <> [
 #                 [
-#                     (ex1): { name :: stat1a; stat1b },
-#                     (ex2): { name :: stat2a; stat2b }
+#                     (ex1): { name -> stat1a; stat1b },
+#                     (ex2): { name -> stat2a; stat2b }
 #                 ],
-#                 { name :: statDefault },
+#                 { name -> statDefault },
 #                 &test
 #             ]
 #         }
-#         { args ::
-#             <> { cases, defaultFunction, value ::
+#         { args ->
+#             <> { cases, defaultFunction, value ->
 #                 <> ifValue { <> get(cases, value) }
 #                     { function <> function(value) }
 #                     { <> defaultFunction(value) }
@@ -1858,7 +1858,7 @@ def SWITCH_DISPATCH_CLOSURE = sam0ParseProgram("
 # * The initial break assignment omitted if there is no yield def.
 # * Overrides of map keys switched around so the *first* key wins.
 # * The `statElse` block omitted if there is no `else` clause.
-# * The `statDefault` block replaced with `{ . :: }` (that is, a yield-void
+# * The `statDefault` block replaced with `{ . -> }` (that is, a yield-void
 #   one-arg function) if there is no `default` clause.
 # * the consequent closure argument declarations changed to `.` for any
 #   if no name binding was present.
@@ -1881,17 +1881,17 @@ def parSwitchExpression = {/
         def formal = testClause:formal;
         def test = testClause:test;
 
-        def optDefault = filterAll(cases) { case ::
+        def optDefault = filterAll(cases) { case ->
             <> ifIs { <> eq((case:keys), @default) }
                 { <> closureWithFormals((case:code), formal) }
         };
 
-        def optElse = filterAll(cases) { case ::
+        def optElse = filterAll(cases) { case ->
             <> ifIs { <> eq((case:keys), @else) }
                 { <> case:code }
         };
 
-        def regularCases = filterAll(cases) { case ::
+        def regularCases = filterAll(cases) { case ->
             def keys = case:keys;
             <> ifIs { <> eq(typeOf(keys), "expression") }
                 {

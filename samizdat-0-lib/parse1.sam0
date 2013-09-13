@@ -148,7 +148,7 @@ def parProgramDeclarations = pegMakeMainChoice(
         parOptYieldDef,
         parFormalsList,
         pegMakeChoice(
-            pegMakeToken("::"),
+            pegMakeToken("->"),
             pegMakeLookaheadSuccess(pegMakeToken("<>"))),
         pegMakeCode { yieldDef, formals, . <> [formals: formals, yieldDef*:] }),
     pegMakeResult([formals: []]));
