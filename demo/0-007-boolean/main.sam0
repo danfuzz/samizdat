@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 #
 # Helper Definitions

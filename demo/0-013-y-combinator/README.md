@@ -12,9 +12,9 @@ If you want to make a self-recursive function in *Samizdat Layer 0*,
 you can write it like this:
 
 ```
-myRecursiveFunction = yCombinator { selfCall ::
+myRecursiveFunction = yCombinator { selfCall ->
     # Inner function.
-    <> { myArg1 myArg2 ... ::
+    <> { myArg1 myArg2 ... ->
         ... my code ...
         selfCall args ...
         ... my code ...
@@ -80,18 +80,18 @@ If you want to make a set of N mututally-recursive functions in
 
 ```
 myRecursiveFunctions = yStarCombinator
-    { selfCall1, selfCall2, ... ::
+    { selfCall1, selfCall2, ... ->
         # Inner function.
-        <> { myArg1, myArg2, ... ::
+        <> { myArg1, myArg2, ... ->
             ... my code ...
             selfCall1(args, ...) # Call this function self-recursively.
             selfCall2(args, ...) # Call the other function.
             ... my code ...
         }
     }
-    { selfCall1, selfCall2, ... ::
+    { selfCall1, selfCall2, ... ->
         # Inner function.
-        <> { myArg1, myArg2, ... ::
+        <> { myArg1, myArg2, ... ->
             ... my code ...
             selfCall1(args, ...) # Call the other function.
             selfCall2(args, ...) # Call this function self-recursively.

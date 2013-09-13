@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -22,14 +22,14 @@ def opt2 = optValue { <> "Yes: opt" };
 io0Note(sourceString(opt2));
 
 def v1 = ifValue { <> "Yes." }
-    { value ::
+    { value ->
         io0Note(value);
         <> "Yes: v1"
     };
 io0Note(v1);
 
 def v2 = ifValue { <> "Yes." }
-    { value ::
+    { value ->
         io0Note(value);
         <> "Yes: v2"
     }
@@ -37,14 +37,14 @@ def v2 = ifValue { <> "Yes." }
 io0Note(v2);
 
 def v3 = ifValue { <> }
-    { value :: io0Die("No.") }
+    { value -> io0Die("No.") }
     {
         io0Note("Yes.");
         <> "Yes: v3"
     };
 io0Note(v3);
 
-def v4 = optValue { <> ifValue { <> } { value :: io0Die("No."); } };
+def v4 = optValue { <> ifValue { <> } { value -> io0Die("No."); } };
 io0Note(sourceString(v4));
 
 def v5 = ifIs { <> "Yes." }
@@ -111,11 +111,11 @@ def v17 = ifValues(
     [
         { <> }
     ],
-    { x :: io0Die("No.") },
+    { x -> io0Die("No.") },
     { <> "Yes: v17" });
 io0Note(v17);
 
-def v18 = optValue { <> ifValues([ { <> } ], { x :: io0Die("No.") }) };
+def v18 = optValue { <> ifValues([ { <> } ], { x -> io0Die("No.") }) };
 io0Note(sourceString(v18));
 
 def v19 = ifValues(

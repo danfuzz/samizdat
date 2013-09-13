@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -26,11 +26,11 @@ fn msg(value) {
 fn msgAll(header, gen) {
     io0Note(header);
 
-    { <done> ::
-        loopReduce(gen) { gen ::
+    { <done> ->
+        loopReduce(gen) { gen ->
             def box = makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
-                { nextGen ::
+                { nextGen ->
                     msg(fetch(box));
                     <> [nextGen]
                 }
@@ -81,7 +81,7 @@ msgAll("ParaGenerator with opt element and ValueGenerator",
 
 msgAll("FilterGenerator (square even numbers)",
     makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
-        { value ::
+        { value ->
             <> ifIs { <> eq(mod(value, 2), 0) }
                 { <> mul(value, value) }
         });
@@ -89,7 +89,7 @@ msgAll("FilterGenerator (square even numbers)",
 io0Note("generatorPump on FilterGenerator");
 generatorPump(
     makeFilterGenerator([1, 2, 3, 4])
-        { value :: io0Note(cat("    Yay ", sourceString(value))) });
+        { value -> io0Note(cat("    Yay ", sourceString(value))) });
 io0Note("");
 
 msgAll("ParaGenerator with open ranges",
@@ -112,7 +112,7 @@ msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
 io0Note("collectAsMap on a FilterGenerator");
 def outMap = collectAsMap(
     makeFilterGenerator(makeInclusiveRange(0, 2, 4))
-        { value ::
+        { value ->
             <> [(value): value, (add(value, 1)): value, blort: value]
         });
 io0Note(cat("    ", sourceString(outMap)));

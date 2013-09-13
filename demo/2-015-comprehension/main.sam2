@@ -8,7 +8,7 @@
 
 
 # This declares the arguments to the program itself.
-SELF_PATH, ARGS* ::
+SELF_PATH, ARGS* ->
 
 
 #
@@ -44,29 +44,29 @@ msg("Two-item collect",
 io0Note("Extended forms\n");
 
 msg("One-item generator",
-    (x in ["a", "b", "c"] ::
+    (x in ["a", "b", "c"] ->
         <> "~~\(x)~~"
     ));
 
 msg("Two-item multi-line generator",
-    (foo in 1..10, bar in 100..100..+ ::
+    (foo in 1..10, bar in 100..100..+ ->
         def result = foo + bar;
         <> result
     ));
 
 msg("One-item collect",
-    [x in ["a", "b", "c"] ::
+    [x in ["a", "b", "c"] ->
         <> "~~\(x)~~"
     ]);
 
 msg("Two-item multi-line collect",
-    [foo in 1..10, bar in 100..100..+ ::
+    [foo in 1..10, bar in 100..100..+ ->
         def result = foo + bar;
         <> result
     ]);
 
 msg("Three-item multi-line collect",
-    [a in 0..4, b in 50..10..90, c in 300..100..700 ::
+    [a in 0..4, b in 50..10..90, c in 300..100..700 ->
         def sum = a + b + c;
         def evenOdd = ((sum % 2) \== 0) & "Even" | "Odd";
         <> "\(evenOdd)\(sum)"
