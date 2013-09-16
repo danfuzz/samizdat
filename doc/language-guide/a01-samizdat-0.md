@@ -38,8 +38,8 @@ control constructs, and a bit more variety in expressing literal data.
 
 #### Ints
 
-Ints only have a 64-bit signed range, with out-of-range arithmetic
-results causing failure, not wraparound.
+Ints only have a 64-bit signed range in Layers 0, 1, and 2. Out-of-range
+arithmetic results causing failure, not wraparound.
 
 In the surface syntax, base 10 is the only recognized form for int
 constants in Layer 0. Layer 2 introduces syntax for hexadecimal and
@@ -52,7 +52,7 @@ digit spacers in int literals. Layer 2 introduces this syntax.
 
 In Layer 0, the only backslash escapes that are recognized are the
 trivial one-character ones. *Not* included are hexadecimal escapes,
-entity escapes, `\/`, the escaped newlines, or string interpolation.
+entity escapes, `\/`, escaped newlines, or string interpolation.
 Handling of all of these is implemented in Layer 2.
 
 In addition, literal newlines are not ever valid inside string literals in
