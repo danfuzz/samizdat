@@ -111,26 +111,13 @@ static zvalue getLibraryFiles(zvalue libraryDir) {
     zvalue allFiles = GFN_CALL(cat,
         collGet(manifestMap, STR_BOOTSTRAP_FILES),
         collGet(manifestMap, STR_MANIFEST));
+    zint size = collSize(allFiles);
 
-    for (zint i = 0; i < collSize(allFiles); i++) {
-        note("=== %s", valDebugString(collNth(allFiles, i)));
+    for (zint i = 0; i < size; i++) {
+        zvalue oneName = collNth(allFiles, i);
+        zvalue text = readFile(libraryDir, oneName);
+        result = collPut(result, oneName, text);
     }
-    // TODO: Use the manifest.
-
-    // This adds an element to `result` for each of the embedded files,
-    // and sets up the static name constants.
-    #define LIB_FILE(name, ext) do { \
-        extern unsigned int name##_##ext##_len; \
-        extern char name##_##ext[]; \
-        unsigned int len = name##_##ext##_len; \
-        char *text = name##_##ext; \
-        zvalue datName = stringFromUtf8(-1, #name "." #ext); \
-        zvalue datText = stringFromUtf8(len, text); \
-        result = collPut(result, datName, datText); \
-    } while(0)
-
-    #include "lib-def.h"
-    #undef LIB_FILE
 
     return result;
 }
