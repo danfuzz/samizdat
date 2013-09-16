@@ -34,8 +34,10 @@
  * This is what ends up bound to `LIBRARY_FILES` in the main entry
  * of `samizdat-0-lib`.
  */
-static zvalue getLibraryFiles(void) {
+static zvalue getLibraryFiles(zvalue libraryDir) {
     zvalue result = EMPTY_MAP;
+
+    // TODO: Use `libraryDir`.
 
     // This adds an element to `result` for each of the embedded files,
     // and sets up the static name constants.
@@ -89,10 +91,10 @@ static zvalue primitiveContext(void) {
  * Returns a map with all the core library bindings. This is the
  * return value from running the in-language library `main`.
  */
-static zvalue getLibrary(void) {
+static zvalue getLibrary(zvalue libraryDir) {
     zstackPointer save = pbFrameStart();
 
-    zvalue libraryFiles = getLibraryFiles();
+    zvalue libraryFiles = getLibraryFiles(libraryDir);
     zvalue mainText = collGet(libraryFiles, STR_main_sam0);
     zvalue mainProgram = langParseProgram0(mainText);
 
@@ -112,8 +114,9 @@ static zvalue getLibrary(void) {
  */
 
 /* Documented in header. */
-zvalue libNewContext(void) {
+zvalue libNewContext(const char *libraryDir) {
     MOD_USE(const);
     MOD_USE(Map);
-    return getLibrary();
+
+    return getLibrary(stringFromUtf8(-1, libraryDir));
 }
