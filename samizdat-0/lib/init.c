@@ -25,6 +25,7 @@
 #include "type/Uniqlet.h"
 #include "type/Value.h"
 
+#include "util.h" // TEMP! TODO: Remove me.
 
 /*
  * Private Definitions
@@ -162,6 +163,8 @@ static zvalue getLibrary(zvalue libraryDir) {
 /* Documented in header. */
 zvalue libNewContext(const char *libraryDir) {
     MOD_USE(const);
+    MOD_USE(Box);
+    MOD_USE(Generator);
     MOD_USE(Map);
 
     makePrimitiveContext();
