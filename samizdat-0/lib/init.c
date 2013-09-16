@@ -25,7 +25,6 @@
 #include "type/Uniqlet.h"
 #include "type/Value.h"
 
-#include "util.h" // TEMP! TODO: Remove me.
 
 /*
  * Private Definitions
