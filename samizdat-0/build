@@ -96,18 +96,6 @@ C_SOURCES=($(find . -name '*.c'))
 LIB_SOURCE_BASE="${progDir}/../samizdat-0-lib"
 LIB_SOURCES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 
-# Turns each library file into a C source file containing the text.
-for file in "${LIB_SOURCES[@]}"; do
-    inFile="$(basename "${file}")"
-    outFile="${OUT}/$(echo "${inFile}" | tr '.' '-').c"
-    # `xxd` names its output after the full input path, hence the `cd`.
-    (
-        cd "${LIB_SOURCE_BASE}/$(dirname "${file}")"
-        xxd -i "${inFile}" > "${outFile}"
-    ) || exit 1
-    C_SOURCES+=("${outFile}")
-done
-
 # Copies each library source file to the executable `out` directory.
 for file in "${LIB_SOURCES[@]}"; do
     outFile="${OUT}/corelib/${file}"
