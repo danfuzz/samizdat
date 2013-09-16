@@ -63,6 +63,7 @@ STR(makeList,        "makeList");
 STR(makeValue,       "makeValue");
 STR(makeValueMap,    "makeValueMap");
 STR(main_sam0,       "main.sam0");
+STR(manifest_sam0,   "manifest.sam0");
 STR(name,            "name");
 STR(nonlocalExit,    "nonlocalExit");
 STR(optValue,        "optValue");

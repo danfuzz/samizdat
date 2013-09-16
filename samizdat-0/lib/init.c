@@ -106,8 +106,7 @@ static zvalue getLibraryFiles(zvalue libraryDir) {
     // Read the manifest file, and evaluate it. It evaluates to a map
     // that binds `BOOTSTRAP_FILES` and `MANIFEST`, and those list all
     // the ultimate library files.
-    zvalue manifestName = stringFromUtf8(-1, MANIFEST_FILE_NAME);
-    zvalue manifestMap = FUN_CALL(evalFile(libraryDir, manifestName));
+    zvalue manifestMap = FUN_CALL(evalFile(libraryDir, STR_manifest_sam0));
     zvalue allFiles = GFN_CALL(cat,
         collGet(manifestMap, STR_BOOTSTRAP_FILES),
         collGet(manifestMap, STR_MANIFEST));

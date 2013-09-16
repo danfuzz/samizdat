@@ -14,12 +14,6 @@
 #include "lib.h"
 
 /**
- * Name of the manifest file. This is the file which is used to find the
- * names of all the other files in the library.
- */
-static const char *MANIFEST_FILE_NAME = "manifest.sam0";
-
-/**
  * Used at the top of primitive functions, to supply the standard
  * function prototype.
  */
