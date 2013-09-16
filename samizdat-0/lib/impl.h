@@ -14,9 +14,6 @@
 #include "lib.h"
 
 
-/** Prototype for any of the dat module `nth` style functions. */
-typedef zvalue (*znth)(zvalue value, zint n);
-
 /**
  * Used at the top of primitive functions, to supply the standard
  * function prototype.
