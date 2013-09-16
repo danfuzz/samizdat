@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
         die("Too few arguments.");
     }
 
-    char *libraryDir = getProgramDirectory(argv[0], "lib");
+    char *libraryDir = getProgramDirectory(argv[0], "corelib");
     zstackPointer save = pbFrameStart();
     zvalue context = libNewContext(libraryDir);
 
