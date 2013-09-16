@@ -20,7 +20,7 @@ TOK(CH_CCURLY,       "}");
 TOK(CH_CPAREN,       ")");
 TOK(CH_CSQUARE,      "]");
 TOK(CH_COLON,        ":");
-TOK(CH_COLONCOLON ,  "::");
+TOK(CH_COLONCOLON,   "::");
 TOK(CH_COMMA,        ",");
 TOK(CH_DIAMOND,      "<>");
 TOK(CH_DOT,          ".");
