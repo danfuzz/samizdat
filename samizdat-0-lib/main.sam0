@@ -11,12 +11,15 @@
 
 # The following declares the arguments passed to the library itself.
 #
+# `LIBRARY_DIR` is expected to be a flat path naming the directory
+# where library files may be found.
+#
 # `LIBRARY_FILES` is expected to be a map from core library file names
 # to their contents as strings. These are read and loaded in order
 # to create the final core library that then gets used as the global
 # context when loading regular programs.
 
-LIBRARY_FILES ->
+LIBRARY_DIR, LIBRARY_FILES ->
 
 
 #
@@ -77,7 +80,7 @@ io0Note("Loading core library...");
 # Read the manifest file, to figure out what all to load and in what order.
 def MANIFEST = loadLibrary(LIBRARY, "manifest.sam0")::MANIFEST;
 
-# Use the manifest to build up the core library.
+# Use the manifest to build up most of the core library.
 def CORE_LIBRARY = loadAllLibraries(LIBRARY, MANIFEST*);
 
 # "Manually" inline `makeLibrary` to produce the final core library.

@@ -137,7 +137,7 @@ static zvalue getLibrary(zvalue libraryDir) {
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    return FUN_CALL(mainFunction, libraryFiles);
+    return FUN_CALL(mainFunction, libraryDir, libraryFiles);
 }
 
 
