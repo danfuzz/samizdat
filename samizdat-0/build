@@ -105,20 +105,11 @@ done
 
 errors=0
 for file in "${C_SOURCES[@]}"; do
-    if [[ ${file} =~ ^\./(.*)/([^/]*)\.c$ ]]; then
-        # It's a normal source file.
-        dir="${BASH_REMATCH[1]}"
-        baseName="${BASH_REMATCH[2]}"
-        outDir="${OUT}/${dir}"
-        infoName="${file}"
-    else
-        # It's a generated source file.
-        [[ ${file} =~ ^"${OUT}"/(.*)\.c$ ]] || exit 1 # Assert file location.
-        baseName="${BASH_REMATCH[1]}"
-        infoName="${baseName}"
-        outDir="${OUT}"
-        infoName="${baseName}.c"
-    fi
+    [[ ${file} =~ ^\./(.*)/([^/]*)\.c$ ]] || exit 1
+    dir="${BASH_REMATCH[1]}"
+    baseName="${BASH_REMATCH[2]}"
+    outDir="${OUT}/${dir}"
+    infoName="${file}"
 
     outFile="${outDir}/${baseName}.o"
     mkdir -p "${outDir}"
@@ -127,7 +118,7 @@ for file in "${C_SOURCES[@]}"; do
 done
 
 if (( errors != 0 )); then
-    printf '%d error(s)\n' "${errors}"
+    printf '%d file(s) with error(s)\n' "${errors}"
     exit 1
 fi
 
