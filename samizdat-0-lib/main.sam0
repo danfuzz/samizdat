@@ -13,13 +13,8 @@
 #
 # `LIBRARY_DIR` is expected to be a flat path naming the directory
 # where library files may be found.
-#
-# `LIBRARY_FILES` is expected to be a map from core library file names
-# to their contents as strings. These are read and loaded in order
-# to create the final core library that then gets used as the global
-# context when loading regular programs.
 
-LIBRARY_DIR, LIBRARY_FILES ->
+LIBRARY_DIR ->
 
 
 #
