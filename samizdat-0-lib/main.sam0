@@ -36,12 +36,9 @@ fn readLibraryFile(name) {
 fn loadLibrary(ctx, name) {
     io0Note(cat("    ", name));
 
-    def treeFunction = ctx::samParseProgram;
-    def evalFunction = ctx::samEval;
-
     def text = readLibraryFile(name);
-    def tree = treeFunction(text);
-    def function = evalFunction([ctx*:, LIBRARY: ctx], tree);
+    def tree = ctx::samParseProgram(text);
+    def function = ctx::samEval([ctx*:, LIBRARY: ctx], tree);
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
