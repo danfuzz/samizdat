@@ -48,7 +48,7 @@ fn moduleUse(searchInfo) {
         { modu -> return modu };
 
     def pendings = fetch(thePendingBox);
-    ifIs { <> get(pendings, name) }
+    ifIs { <> get(pendings, fqName) }
         {
             io0Die(cat(
                 "Dependency loop with modules: ",

@@ -35,7 +35,7 @@ PRIM_DEF(nameOf,     GFN_nameOf);
 PRIM_DEF(toInt,      GFN_toInt);
 PRIM_DEF(toNumber,   GFN_toNumber);
 PRIM_DEF(toString,   GFN_toString);
-PRIM_DEF(valueOf,     GFN_valueOf);
+PRIM_DEF(valueOf,    GFN_valueOf);
 
 // Generic functions: `Bitwise` protocol
 PRIM_DEF(and,        GFN_and);

@@ -14,7 +14,8 @@
 /**
  * Given `argv[0]`, figures out the directory in which the executable
  * resides. This works reliably on systems that use a `/proc` filesystem,
- * but may fail on other systems for various reasons.
+ * but may fail on other systems for various reasons. If passed as non-`NULL`,
+ * the `suffix` is appended to the result, after a `/`.
  *
  * This returns an allocated string, which can be freed with `utilFree()`.
  *
@@ -22,6 +23,6 @@
  * * <http://stackoverflow.com/questions/933850>
  * * <http://stackoverflow.com/questions/1023306>
  */
-char *getProgramDirectory(const char *argv0);
+char *getProgramDirectory(const char *argv0, const char *suffix);
 
 #endif

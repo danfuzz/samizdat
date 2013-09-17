@@ -16,4 +16,4 @@ the other files in a dependency-appropriate order.
 
 **Note:** If files are added or removed here, then a corresponding line
 needs to be added to or removed from the file `manifest.sam0` in this
-directory as well as `samizdat-0/lib/lib-def.h`.
+directory.
