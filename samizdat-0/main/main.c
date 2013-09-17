@@ -32,12 +32,11 @@ int main(int argc, char **argv) {
         die("Too few arguments.");
     }
 
-    // TODO: Pass this in when creating the library.
-    char *dir = getProgramDirectory(argv[0]);
-    utilFree(dir);
-
+    char *libraryDir = getProgramDirectory(argv[0], "corelib");
     zstackPointer save = pbFrameStart();
-    zvalue context = libNewContext();
+    zvalue context = libNewContext(libraryDir);
+
+    utilFree(libraryDir);
 
     // The first argument to `samCommandLine` is the context. The
     // rest are the original command-line arguments (per se, so not

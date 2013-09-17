@@ -151,7 +151,7 @@ static char *resolveArgv0(const char *argv0) {
  */
 
 /* Documented in header. */
-char *getProgramDirectory(const char *argv0) {
+char *getProgramDirectory(const char *argv0, const char *suffix) {
     char *execPath = NULL;
 
     for (int i = 0; PROC_SELF_FILES[i] != NULL; i++) {
@@ -178,6 +178,16 @@ char *getProgramDirectory(const char *argv0) {
     char *slashAt = strrchr(result, '/');
     if (slashAt != result) {
         *slashAt = '\0';
+    }
+
+    if (suffix != NULL) {
+        int finalLength = strlen(result) + strlen(suffix) + 2;
+        char *newResult = utilAlloc(finalLength);
+        strcpy(newResult, result);
+        strcat(newResult, "/");
+        strcat(newResult, suffix);
+        utilFree(result);
+        result = newResult;
     }
 
     return result;

@@ -14,9 +14,11 @@
 #include "pb.h"
 
 /**
- * Constructs and returns a fresh execution context, containing
- * bindings for all the core library values and functions.
+ * Constructs and returns a fresh execution context, containing bindings for
+ * all the core library values and functions. `libraryDir` is a filesystem path
+ * which is expected to point at a directory containing all the in-language
+ * library implementation files.
  */
-zvalue libNewContext(void);
+zvalue libNewContext(const char *libraryDir);
 
 #endif

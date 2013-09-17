@@ -93,33 +93,23 @@ LINK_BIN=("${CC[@]}" -g)
 cd "${progDir}"
 
 C_SOURCES=($(find . -name '*.c'))
-LIB_SOURCES=($(find ../samizdat-0-lib -name '*.sam*'))
+LIB_SOURCE_BASE="${progDir}/../samizdat-0-lib"
+LIB_SOURCES=($(cd "${LIB_SOURCE_BASE}"; find . -name '*.sam*'))
 
+# Copies each library source file to the executable `out` directory.
 for file in "${LIB_SOURCES[@]}"; do
-    inDir="$(dirname "${file}")"
-    inFile="$(basename "${file}")"
-    outFile="${OUT}/$(echo "${inFile}" | tr '.' '-').c"
-    # `xxd` names its output after the full input path, hence the `cd`.
-    (cd "${inDir}"; xxd -i "${inFile}" > "${outFile}") || exit 1
-    C_SOURCES+=("${outFile}")
+    outFile="${OUT}/corelib/${file}"
+    mkdir -p "$(dirname "${outFile}")"
+    cp "${LIB_SOURCE_BASE}/${file}" "${outFile}"
 done
 
 errors=0
 for file in "${C_SOURCES[@]}"; do
-    if [[ ${file} =~ ^\./(.*)/([^/]*)\.c$ ]]; then
-        # It's a normal source file.
-        dir="${BASH_REMATCH[1]}"
-        baseName="${BASH_REMATCH[2]}"
-        outDir="${OUT}/${dir}"
-        infoName="${file}"
-    else
-        # It's a generated source file.
-        [[ ${file} =~ ^"${OUT}"/(.*)\.c$ ]] || exit 1 # Assert file location.
-        baseName="${BASH_REMATCH[1]}"
-        infoName="${baseName}"
-        outDir="${OUT}"
-        infoName="${baseName}.c"
-    fi
+    [[ ${file} =~ ^\./(.*)/([^/]*)\.c$ ]] || exit 1
+    dir="${BASH_REMATCH[1]}"
+    baseName="${BASH_REMATCH[2]}"
+    outDir="${OUT}/${dir}"
+    infoName="${file}"
 
     outFile="${outDir}/${baseName}.o"
     mkdir -p "${outDir}"
@@ -128,7 +118,7 @@ for file in "${C_SOURCES[@]}"; do
 done
 
 if (( errors != 0 )); then
-    printf '%d error(s)\n' "${errors}"
+    printf '%d file(s) with error(s)\n' "${errors}"
     exit 1
 fi
 
