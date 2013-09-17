@@ -26,11 +26,11 @@ LIBRARY_DIR, LIBRARY_FILES ->
 # Private Definitions
 #
 
-# "Reads" the named library file. Since the files are passed into
-# here in the form of a map binding file names to text contents, this
-# is really just a map lookup.
+# Reads the named library file.
 fn readLibraryFile(name) {
-    <> ifValueOr { <> get(LIBRARY_FILES, name) }
+    def path = cat(LIBRARY_DIR, "/", name);
+    <> ifIs { <> io0FlatFileExists(path) }
+        { <> io0FlatReadFileUtf8(path) }
         { io0Die(cat("No such core library file: ", name)) }
 };
 
