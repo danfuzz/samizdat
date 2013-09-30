@@ -500,7 +500,7 @@ def parMapping = {/
     { <> makeCallName("makeValueMap", key, @[expression: value]) }
 |
     map = parTerm
-    @"*" @":"
+    @"*" @":"?
     { <> map }
 /};
 
