@@ -316,10 +316,10 @@ def parMapping = Peg::makeMainChoice(
 
 # Documented in Samizdat Layer 0 spec.
 def parMap = Peg::makeMainSequence(
-    Peg::makeToken("["),
+    Peg::makeTokenSet("{", "["),
     parMapping,
     Peg::makeStar(Peg::makeSequence(Peg::makeToken(","), parMapping)),
-    Peg::makeToken("]"),
+    Peg::makeTokenSet("}", "]"),
     Peg::makeCode { ., one, rest, . ->
         <> makeCallName("cat", one, rest*)
     });
