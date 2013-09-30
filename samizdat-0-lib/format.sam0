@@ -65,11 +65,11 @@ fn adornIf(adorn, before, value, after) {
 
 # Helper which concatenates a list of list or map element stringifications.
 # It assumes that every element is a string that starts with `", "`, and it
-# removes that prefix from the first element. As a special case, returns
-# the given `ifEmpty` if `elems` is empty.
-fn collectionBody(elems, ifEmpty) {
-    ifIs { <> eq(elems, []) }
-        { return ifEmpty };
+# removes that prefix from the first element. As a special case, this returns
+# `""` if given `[]` for `elems`.
+fn collectionBody(elems) {
+    ifIs { <> totEq(elems, []) }
+        { return "" };
 
     def one = slice(first(elems), 2);
     <> cat(one, butFirst(elems)*)
@@ -195,7 +195,7 @@ fn List_sourceStringGeneral(list, adorn) {
     def listElems = filterAll(list)
         { elem <> cat(", ", sourceStringGeneral(elem, true)) };
 
-    <> adornIf(adorn, "[", collectionBody(listElems, ""), "]")
+    <> adornIf(adorn, "[", collectionBody(listElems), "]")
 };
 genericBind(sourceStringGeneral, List, List_sourceStringGeneral);
 
@@ -208,7 +208,7 @@ fn Map_sourceStringGeneral(map, adorn) {
             <> cat(", ", key, ": ", value)
         };
 
-    <> adornIf(adorn, "[", collectionBody(mapElems, ":"), "]");
+    <> adornIf(adorn, "{", collectionBody(mapElems), "}");
 };
 genericBind(sourceStringGeneral, Map, Map_sourceStringGeneral);
 
