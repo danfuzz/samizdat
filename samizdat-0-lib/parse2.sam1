@@ -94,13 +94,13 @@ fn makeCallNameThunks(name, actuals*) {
 # binding replaced with the given arguments. Each of the `formals`
 # must be a formal argument map as described in the execution tree spec.
 fn closureWithFormals(closure, formals*) {
-    <> @[closure: {(dataOf(closure))*:, formals: formals}]
+    <> @[closure: {(dataOf(closure))*, formals: formals}]
 };
 
 # Returns a `closure` node like the one given, except with `yieldDef`
 # bound to the indicated name.
 fn closureWithYieldDef(closure, name) {
-    <> @[closure: {(dataOf(closure))*:, yieldDef: name}]
+    <> @[closure: {(dataOf(closure))*, yieldDef: name}]
 };
 
 # A no-argument yield-void thunk.
@@ -232,7 +232,7 @@ def parFormal = {/
         { <> {} }
     )
 
-    { <> {name*:, repeat*:} }
+    { <> {name*, repeat*} }
 /};
 
 # Parses a list of formal arguments, with no surrounding parentheses.
@@ -251,7 +251,7 @@ def parProgramDeclarations = {/
 
     (@"->" | &@"<>")
 
-    { <> {formals: formals, yieldDef*:} }
+    { <> {formals: formals, yieldDef*} }
 |
     { <> {formals: []} }
 /};
@@ -260,7 +260,7 @@ def parProgramDeclarations = {/
 def parProgram = {/
     decls = parProgramDeclarations
     body = parProgramBody
-    { <> @[closure: {decls*:, body*:}] }
+    { <> @[closure: {decls*, body*}] }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
@@ -358,7 +358,7 @@ def parFnCommon = {/
         def codeMap = dataOf(code);
         def statements = [returnDef*, codeMap::statements*];
         <> {
-            codeMap*:, name*:,
+            codeMap*, name*,
             formals: formals,
             yieldDef: "return",
             statements: statements
@@ -678,7 +678,7 @@ def implProgramBody = {/
         { <> {statements: [s]} }
     |
         y = parYield
-        { <> {statements: [], y*:} }
+        { <> {statements: [], y*} }
     |
         { <> {statements: []} }
     )
@@ -687,7 +687,7 @@ def implProgramBody = {/
 
     {
         def allStatements = [most*, last::statements*];
-        <> {last*:, statements: allStatements}
+        <> {last*, statements: allStatements}
     }
 /};
 store(parProgramBody, implProgramBody);
@@ -1005,7 +1005,7 @@ def parComprehensionBody = {/
         def genFormals = genList::formals;
         def genInits = genList::inits;
 
-        <> [@[closure: {filterBody*:, formals: genFormals}], genInits*]
+        <> [@[closure: {filterBody*, formals: genFormals}], genInits*]
     }
 /};
 

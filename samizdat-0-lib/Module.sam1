@@ -68,7 +68,7 @@ fn moduleUse(searchInfo) {
         { io0Die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
 
     def mainText = moduleReader(["main.sam"]);
-    def subLibrary = makeLibrary({LIBRARY*:, INFO: info, READER: moduleReader});
+    def subLibrary = makeLibrary({LIBRARY*, INFO: info, READER: moduleReader});
     def exports = sam0Eval(subLibrary, sam0ParseProgram(mainText))();
 
     def result = @[Module: {info: info, exports: exports}];

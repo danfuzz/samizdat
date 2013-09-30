@@ -35,7 +35,7 @@ fn getInfo(modu) {
 # Returns a new module like the given one, except with `exports` as
 # given.
 fn withExports(modu, newExports) {
-    <> @[Module: {(dataOf(modu))*:, exports: newExports}]
+    <> @[Module: {(dataOf(modu))*, exports: newExports}]
 };
 
 # Documented in spec.

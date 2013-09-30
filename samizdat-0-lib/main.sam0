@@ -38,7 +38,7 @@ fn loadLibrary(ctx, name) {
 
     def text = readLibraryFile(name);
     def tree = ctx::samParseProgram(text);
-    def function = ctx::samEval({ctx*:, LIBRARY: ctx}, tree);
+    def function = ctx::samEval({ctx*, LIBRARY: ctx}, tree);
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -47,7 +47,7 @@ fn loadLibrary(ctx, name) {
 
     # The end result is the addition of the new bindings to the original
     # context.
-    <> {ctx*:, bindings*:};
+    <> {ctx*, bindings*};
 };
 
 # Loads all of libraries named by the manifest, in order, allowing later
@@ -76,12 +76,12 @@ fn makeCoreLibrary() {
     def modulePaths = [base::io0PathFromFlat(LIBRARY_DIR)];
 
     def full = {
-        base*:,
+        base*,
         MODULE_PATHS: modulePaths
     };
 
     # "Manually" inline `makeLibrary` to produce the final core library.
-    <> {full*:, LIBRARY: full};
+    <> {full*, LIBRARY: full};
 };
 
 

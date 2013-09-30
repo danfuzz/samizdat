@@ -25,7 +25,7 @@ def sam0Tokenize = samTokenize;
 
 # Documented in Samizdat Layer 0 spec.
 fn makeLibrary(context) {
-    <> {context*:, LIBRARY: context}
+    <> {context*, LIBRARY: context}
 };
 
 <> {
