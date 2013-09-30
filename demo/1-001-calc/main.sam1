@@ -146,7 +146,7 @@ def expressionImpl = {/
     opValues = (
         op = binaryOp
         value = unaryExpression
-        { <> [op: op, value: value] }
+        { <> {op: op, value: value} }
     )*
     { <> applyShuntingYard(firstValue, opValues) }
 /};

@@ -132,17 +132,17 @@ io0Note("\nTotal Order 4");
 msg(0 \== 0);
 msg(1 \!= "1");
 msg([1] \!= "2");
-msg([1: 1] \!= "3");
+msg({1: 1} \!= "3");
 msg("1" \!= 4);
 msg(1 \< [5]);
 msg(1 \< [6: 6]);
 msg(1 \< "7");
 msg([1] \< [8: 8]);
 msg([1] \< "9");
-msg([1: 1] \< "10");
+msg({1: 1} \< "10");
 msg("1" \> 11);
 msg(1 \<= [12]);
-msg("1" \>= [13: 13]);
+msg("1" \>= {13: 13});
 
 # Logical ops. The ones expected to be "falsey" are surrounded by `??` to
 # make them easily printable.

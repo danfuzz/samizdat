@@ -67,7 +67,7 @@ def parArguments = {/
     "--\0"?
     args = parWord*
     {
-        def options = cat([:], optionList*);
+        def options = cat({}, optionList*);
         ifIs { <> options::error }
             { io0Die("Invalid option(s).") };
         <> {options: options, args: args}

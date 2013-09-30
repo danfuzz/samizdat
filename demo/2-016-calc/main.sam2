@@ -16,19 +16,19 @@ SELF_PATH, ARGS* ->
 #
 
 # Map from binary operation names to precedece/function maps.
-def BINARY_OPS = [
-    "+": [function: add, precedence: 1],
-    "-": [function: sub, precedence: 1],
-    "*": [function: mul, precedence: 2],
-    "/": [function: div, precedence: 2],
-    "%": [function: mod, precedence: 2]
-];
+def BINARY_OPS = {
+    "+": {function: add, precedence: 1},
+    "-": {function: sub, precedence: 1},
+    "*": {function: mul, precedence: 2},
+    "/": {function: div, precedence: 2},
+    "%": {function: mod, precedence: 2}
+};
 
 # Map from unary operation names to functions.
-def UNARY_OPS = [
+def UNARY_OPS = {
     "+": { x <> x },
     "-": neg
-];
+};
 
 # Takes an initial value and a list of one-argument functions, and
 # does a reduction by applying each of the functions in order.
@@ -144,7 +144,7 @@ def expressionImpl = {/
     opValues = (
         op = binaryOp
         value = unaryExpression
-        { <> [op: op, value: value] }
+        { <> {op: op, value: value} }
     )*
     { <> applyShuntingYard(firstValue, opValues) }
 /};
