@@ -196,7 +196,7 @@ fn convertClosureLike(node) {
     def nodeValue = dataOf(node);
     def statements = convertPexInList(nodeValue::statements);
     def yield = ifValue { <> nodeValue::yield }
-        { yield <> [yield: convertPexIn(yield)] }
+        { yield <> {yield: convertPexIn(yield)} }
         { <> {} };
 
     <> @[(nodeType): {nodeValue*:, yield*:, statements: statements}]
