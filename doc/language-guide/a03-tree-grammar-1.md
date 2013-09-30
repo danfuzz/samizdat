@@ -382,7 +382,7 @@ def parList = {/
 
 # Parses an empty map literal.
 def parEmptyMap = {/
-    @"[" @":" @"]"
+    @"{" @"}"
     { <> makeLiteral({}) }
 /};
 
@@ -423,10 +423,10 @@ def parMapping = {/
 
 # Parses a map literal.
 def parMap = {/
-    @"["
+    @"{"
     one = parMapping
     rest = (@"," parMapping)*
-    @"]"
+    @"}"
     { <> makeCallName("cat", one, rest*) }
 /};
 
@@ -475,7 +475,7 @@ def parParenExpression = {/
 # to be done before `List`, since the latter rejects "map-like" syntax as a
 # fatal error.
 def parTerm = {/
-    parVarRef | parInt | parString | parList | parEmptyMap | parMap |
+    parVarRef | parInt | parString | parEmptyMap | parMap | parList
     parDeriv | parClosure | parParenExpression
 |
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
