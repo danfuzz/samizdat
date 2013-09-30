@@ -162,7 +162,7 @@ In addition, a pipe-separated list of keys (including interpolations)
 can be used in the key position.
 
 An entire other map can be interpolated into a new map by naming the
-map to interpolate followed by `*:`.
+map to interpolate followed by `*`.
 
 `{}` denotes the empty map.
 
@@ -194,8 +194,8 @@ map to interpolate followed by `*:`.
 
 # These are all equivalent.
 {first: 1, second: 2, third: 3}
-{first: 1, {second: 2, third: 3}*:}
-{{first: 1}*:, {second: 2, third: 3}*:}
+{first: 1, {second: 2, third: 3}*}
+{{first: 1}*, {second: 2, third: 3}*}
 ```
 
 #### Builtin
