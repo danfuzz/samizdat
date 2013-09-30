@@ -53,6 +53,6 @@ fn ParaGenerator_nextValue(gen, box) {
 };
 genericBind(nextValue, "ParaGenerator", ParaGenerator_nextValue);
 
-<> [
+<> {
     makeParaGenerator: makeParaGenerator
-]
+}
