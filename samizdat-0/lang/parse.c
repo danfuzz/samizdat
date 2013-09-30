@@ -617,17 +617,6 @@ DEF_PARSE(identifierString) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-DEF_PARSE(emptyMapOld) {
-    MARK();
-
-    MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_COLON);
-    MATCH_OR_REJECT(CH_CSQUARE);
-
-    return makeLiteral(EMPTY_MAP);
-}
-
-/* Documented in Samizdat Layer 0 spec. */
 DEF_PARSE(emptyMap) {
     MARK();
 
@@ -705,16 +694,11 @@ DEF_PARSE(mapping) {
 DEF_PARSE(map) {
     MARK();
 
-    if (!MATCH(CH_OSQUARE)) { MATCH_OR_REJECT(CH_OCURLY); }
+    MATCH_OR_REJECT(CH_OCURLY);
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
-    if (!MATCH(CH_CSQUARE)) { MATCH_OR_REJECT(CH_CCURLY); }
+    MATCH_OR_REJECT(CH_CCURLY);
 
-    // TODO: Remove this once the `[...]` map syntax is removed.
-    REJECT_IF(collSize(mappings) == 0);
-
-    return (collSize(mappings) == 0)
-        ? makeLiteral(EMPTY_MAP)
-        : makeCallName(STR_cat, mappings);
+    return makeCallName(STR_cat, mappings);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
@@ -852,10 +836,9 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(varRef); }
     if (result == NULL) { result = PARSE(int); }
     if (result == NULL) { result = PARSE(string); }
+    if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(list); }
-    if (result == NULL) { result = PARSE(emptyMapOld); }
-    if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(deriv); }
     if (result == NULL) { result = PARSE(closure); }
     if (result == NULL) { result = PARSE(parenExpression); }
