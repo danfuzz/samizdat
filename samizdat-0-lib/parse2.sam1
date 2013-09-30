@@ -599,7 +599,7 @@ def parParenExpression = {/
 # to be done before `List`, since the latter rejects "map-like" syntax as a
 # fatal error.
 def implTerm = {/
-    parVarRef | parInt | parString | parMap | parEmptyMap | parList |
+    parVarRef | parInt | parString | parEmptyMap | parMap | parList |
     parDeriv | parClosure | parParenExpression
 |
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
