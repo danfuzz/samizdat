@@ -130,7 +130,7 @@ def parFormal = {/
         { <> {} }
     )
 
-    { <> {name*:, repeat*:} }
+    { <> {name*, repeat*} }
 /};
 
 # Parses a list of formal arguments, with no surrounding parentheses.
@@ -158,7 +158,7 @@ def parProgramDeclarations = {/
 def parProgram = {/
     decls = parProgramDeclarations
     body = parProgramBody
-    { <> @[closure: {decls*:, body*:}] }
+    { <> @[closure: {decls*, body*}] }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
