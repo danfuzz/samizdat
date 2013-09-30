@@ -52,7 +52,7 @@ Despite the `cat` name, strictly speaking this isn't a linear concatenation,
 but it is as close as one can get to it given the type's key ordering
 and uniqueness constraints.
 
-**Syntax Note:** Used in the translation of `[key: value, ...]`
+**Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
 #### `del(map, key) <> map`
@@ -123,15 +123,15 @@ to the same value. If no keys are specified, then this function returns
 the empty map. For example:
 
 ```
-v = [(k1): v];      is equivalent to  v = makeValueMap(k1, v);
-v = [[k1, k2]*: v;  is equivalent to  v = makeValueMap(k1, k2, v);
+v = {(k1): v};      is equivalent to  v = makeValueMap(k1, v);
+v = {[k1, k2]*: v}; is equivalent to  v = makeValueMap(k1, k2, v);
 [etc.]
 ```
 
 Note that the argument list is "stretchy" in front, which isn't really
 representable in Samizdat syntax as presented.
 
-**Syntax Note:** Used in the translation of `[key: value, ...]`
+**Syntax Note:** Used in the translation of `{key: value, ...}`
 and `switch` forms.
 
 
