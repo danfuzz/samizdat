@@ -30,7 +30,7 @@ Representation of the "match anything" rule.
 
 This corresponds to the syntax `.`.
 
-#### `@[code: [(yieldDef: name)?, statements: [statement*], (yield: expression)?]]`
+#### `@[code: {(yieldDef: name)?, statements: [statement*], (yield: expression)?}]`
 
 Representation of a code expression.
 
@@ -149,7 +149,7 @@ This corresponds to the syntax `pex*`.
 
 ### Other nodes
 
-#### `@[varDef: [name: name, value: pex]]`
+#### `@[varDef: {name: name, value: pex}]`
 
 Representation of a name-bound expression. These are *only* ever valid
 as direct elements of the array of parsing nodes attached to a `sequence`

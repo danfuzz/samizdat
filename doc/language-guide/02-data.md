@@ -145,8 +145,8 @@ from arbitrary keys to arbitrary values. Keys and values are both
 allowed to be any type of value. Notably, keys are *not* restricted to
 only being strings (or string-like things).
 
-Non-empty maps are written as an initial `[`, followed by one or
-more mappings, followed by a final `]`. Mappings are written as
+Non-empty maps are written as an initial `{`, followed by one or
+more mappings, followed by a final `}`. Mappings are written as
 the key representation, followed by an `:`, followed by the value
 representation. Mappings are separated with commas.
 
@@ -164,39 +164,38 @@ can be used in the key position.
 An entire other map can be interpolated into a new map by naming the
 map to interpolate followed by `*:`.
 
-To avoid ambiguity with the empty list, the empty map is
-written as `[:]`.
+`{}` denotes the empty map.
 
 ```
-[:]                           # the empty map
-[1: "number one"]
-[two: 2]                      # the same as ["two": 2]
-[true: "yes"]                 # the same as ["true": "yes"]
-[(true): "yes"]               # key is (the boolean value) `true`, not a string
-[favorites: ["biscuits", "muffins"]]
+{}                            # the empty map
+{1: "number one"}
+{two: 2}                      # the same as {"two": 2}
+{true: "yes"}                 # the same as {"true": "yes"}
+{(true): "yes"}               # key is (the boolean value) `true`, not a string
+{favorites: ["biscuits", "muffins"]}
 
-[
+{
     "blort":  "potion; the ability to see in the dark",
     "borch":  "spell; insect soporific",
     "fizmo":  "spell; unclogs pipes",
     "ignatz": "potion; unknown effect",
     "igram":  "spell; make purple things invisible"
-]
+}
 
-[["complex", "data", "as", "key"]: "Handy!"]
-[0..9: "digits", 10: "not a digit"]
+{["complex", "data", "as", "key"]: "Handy!"}
+{0..9: "digits", 10: "not a digit"}
 
 # The first three here are equivalent. The last contains a variable reference
 # to `the`.
-[["these", "map", "to", "the"]*: "same value"]
-[these | map | "to" | the: "same value"]
-[["these", "map"]* | to | the: "same value"]
-[these | map | "to" | (the)): "same value"]
+{["these", "map", "to", "the"]*: "same value"}
+{these | map | "to" | the: "same value"}
+{["these", "map"]* | to | the: "same value"}
+{these | map | "to" | (the)): "same value"}
 
 # These are all equivalent.
-[first: 1, second: 2, third: 3]
-[first: 1, [second: 2, third: 3]*:]
-[[first: 1]*:, [second: 2, third: 3]*:]
+{first: 1, second: 2, third: 3}
+{first: 1, {second: 2, third: 3}*:}
+{{first: 1}*:, {second: 2, third: 3}*:}
 ```
 
 #### Builtin
@@ -312,7 +311,7 @@ may be omitted in this already-shortened form.
 
 @[
   "spell":
-  [name: "frotz", purpose: "cause item to glow"]
+  {name: "frotz", purpose: "cause item to glow"}
 ]
 
 @["lozenge"]                  # a payload-free value of type "lozenge"
