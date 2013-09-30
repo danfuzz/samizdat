@@ -30,6 +30,6 @@ fn samEval(context, expressionNode) {
     # <> sam0Eval(context, convertedNode)
 };
 
-<> [
+<> {
     samEval: samEval
-]
+}

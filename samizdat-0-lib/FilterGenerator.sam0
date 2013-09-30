@@ -14,10 +14,10 @@
 
 # Documented in spec.
 fn makeFilterGenerator(filterFunction, generators*) {
-    <> @[FilterGenerator: [
+    <> @[FilterGenerator: {
         filterFunction: filterFunction,
         generator: makeParaGenerator(generators*)
-    ]]
+    }]
 };
 
 # Documented in spec.
@@ -52,6 +52,6 @@ fn FilterGenerator_nextValue(gen, box) {
 };
 genericBind(nextValue, "FilterGenerator", FilterGenerator_nextValue);
 
-<> [
+<> {
     makeFilterGenerator: makeFilterGenerator
-]
+}

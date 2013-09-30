@@ -11,7 +11,7 @@
 # of this file need to be updated.
 
 # Documented in the specification.
-def ENTITY_MAP = [
+def ENTITY_MAP = {
     "AElig": "Æ",
     "AMP": "&",
     "Aacgr": "Ά",
@@ -2249,6 +2249,6 @@ def ENTITY_MAP = [
     "zscr": "𝓏",
     "zwj": "‍",
     "zwnj": "‌"
-];
+};
 
-<> [ ENTITY_MAP: ENTITY_MAP ]
+<> { ENTITY_MAP: ENTITY_MAP }
