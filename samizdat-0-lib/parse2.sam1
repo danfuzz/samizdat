@@ -454,6 +454,9 @@ def parIdentifierString = {/
 def parEmptyMap = {/
     @"[" @":" @"]"
     { <> makeLiteral([:]) }
+|
+    @"{" @"}"
+    { <> makeLiteral([:]) }
 /};
 
 # Parses a key term. This includes parsing of interpolation syntax.
@@ -506,10 +509,10 @@ def parMapping = {/
 
 # Parses a map literal.
 def parMap = {/
-    @"["
+    [@"[" @"{"]
     one = parMapping
     rest = (@"," parMapping)*
-    @"]"
+    [@"]" @"}"]
     { <> makeCallName("cat", one, rest*) }
 /};
 

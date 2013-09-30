@@ -271,11 +271,16 @@ def parIdentifierString = Peg::makeMainChoice(
             }));
 
 # Documented in Samizdat Layer 0 spec.
-def parEmptyMap = Peg::makeMainSequence(
-    Peg::makeToken("["),
-    Peg::makeToken(":"),
-    Peg::makeToken("]"),
-    Peg::makeResult(makeLiteral([:])));
+def parEmptyMap = Peg::makeMainChoice(
+    Peg::makeMainSequence(
+        Peg::makeToken("["),
+        Peg::makeToken(":"),
+        Peg::makeToken("]"),
+        Peg::makeResult(makeLiteral([:]))),
+    Peg::makeMainSequence(
+        Peg::makeToken("{"),
+        Peg::makeToken("}"),
+        Peg::makeResult(makeLiteral([:]))));
 
 # Documented in Samizdat Layer 0 spec.
 def parKeyTerm = Peg::makeMainChoice(
