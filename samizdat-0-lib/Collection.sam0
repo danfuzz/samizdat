@@ -32,9 +32,9 @@ fn last(collection) {
 };
 
 
-<> [
+<> {
     butFirst: butFirst,
     butLast:  butLast,
     first:    first,
     last:     last
-]
+}

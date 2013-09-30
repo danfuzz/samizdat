@@ -30,7 +30,7 @@ def parKeyValue = {/
     key = parKey
     "="
     value = parWord
-    { <> [(key): value] }
+    { <> {(key): value} }
 /};
 
 # Parses a non-value flag option word. Yields a single-mapping map of
@@ -38,7 +38,7 @@ def parKeyValue = {/
 def parFlag = {/
     "--"
     flag = parWord
-    { <> [(flag): true] }
+    { <> {(flag): true} }
 /};
 
 # Parses a syntactically invalid option. This includes words that start with
@@ -51,7 +51,7 @@ def parError = {/
     {
         def value = cat(stringFromTokens(ch1, ch2), word);
         io0Note(cat("Unknown option: ", sourceString(value)));
-        <> [error: true]
+        <> {error: true}
     }
 /};
 
@@ -70,7 +70,7 @@ def parArguments = {/
         def options = cat([:], optionList*);
         ifIs { <> options::error }
             { io0Die("Invalid option(s).") };
-        <> [options: options, args: args]
+        <> {options: options, args: args}
     }
 /};
 
@@ -120,6 +120,6 @@ fn samCommandLine(context, rawArgs*) {
     <> evalled(filePath, args*)
 };
 
-<> [
+<> {
     samCommandLine: samCommandLine
-]
+}

@@ -19,6 +19,6 @@ fn update(box, updateFunction) {
 };
 
 
-<> [
+<> {
     update: update
-]
+}
