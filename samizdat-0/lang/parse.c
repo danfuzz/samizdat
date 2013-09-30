@@ -675,7 +675,6 @@ DEF_PARSE(mapping2) {
 
     zvalue map = PARSE_OR_REJECT(term);
     MATCH_OR_REJECT(CH_STAR);
-    MATCH(CH_COLON);
 
     return map;
 }
