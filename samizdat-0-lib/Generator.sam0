@@ -17,7 +17,7 @@ fn collectAsMap(generator) {
     ifIs { <> isMap(generator) }
         { return generator };
 
-    <> cat([:], generator*)
+    <> cat({}, generator*)
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -102,11 +102,11 @@ fn generatorPump(generator) {
     }
 };
 
-<> [
+<> {
     collectAsMap:  collectAsMap,
     doReduce:      doReduce,
     doReduce1:     doReduce1,
     filterAll:     filterAll,
     filterPump:    filterPump,
     generatorPump: generatorPump
-]
+}

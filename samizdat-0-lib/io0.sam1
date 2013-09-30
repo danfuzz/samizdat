@@ -200,7 +200,7 @@ fn io0WriteFileUtf8(path, text) {
     <> io0FlatWriteFileUtf8(io0FlatFromPath(path), text)
 };
 
-<> [
+<> {
     io0FileExists:      io0FileExists,
     io0FlatFromPath:    io0FlatFromPath,
     io0PathFromFlat:    io0PathFromFlat,
@@ -208,4 +208,4 @@ fn io0WriteFileUtf8(path, text) {
     io0ReadLink:        io0ReadLink,
     io0SandboxedReader: io0SandboxedReader,
     io0WriteFileUtf8:   io0WriteFileUtf8
-];
+};

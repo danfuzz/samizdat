@@ -13,14 +13,14 @@
 
 # Box containing a map from fully-qualified names to modules. Each name is a
 # list-of-strings denoting a "path" to the module.
-def theModulesBox = makeMutableBox([:]);
+def theModulesBox = makeMutableBox({});
 
 
 #
 # Type Definition
 #
-# `Module` payload is `[info: map, exports: map]`. `info` includes at least
-# `[name: [string, ...], version: string]`.
+# `Module` payload is `{info: map, exports: map}`. `info` includes at least
+# `{name: [string, ...], version: string}`.
 
 # Gets the `exports` of a module.
 fn getExports(modu) {
@@ -35,7 +35,7 @@ fn getInfo(modu) {
 # Returns a new module like the given one, except with `exports` as
 # given.
 fn withExports(modu, newExports) {
-    <> @[Module: [(dataOf(modu))*:, exports: newExports]]
+    <> @[Module: {(dataOf(modu))*:, exports: newExports}]
 };
 
 # Documented in spec.
@@ -43,7 +43,7 @@ fn Module_cat(modu, more*) {
     def data = dataOf(modu);
 
     def allExports = filter([modu, more*], getExports);
-    def combinedExports = cat([:], allExports*);
+    def combinedExports = cat({}, allExports*);
 
     <> withExports(modu, combinedExports)
 };
@@ -107,7 +107,7 @@ genericBind(slice, "Module", Module_slice);
 fn moduleDef(modu) {
     def name = nameOf(modu);
 
-    ifIs { <> moduleGet([name: name]) }
+    ifIs { <> moduleGet({name: name}) }
         { io0Die(cat("Cannot redefine module: ", stringFromModuleName(name))) };
 
     def mods = fetch(theModulesBox);
@@ -135,8 +135,8 @@ fn stringFromModuleName(fqName) {
 };
 
 
-<> [
+<> {
     moduleDef:            moduleDef,
     moduleGet:            moduleGet,
     stringFromModuleName: stringFromModuleName
-]
+}
