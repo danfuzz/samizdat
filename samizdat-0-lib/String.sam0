@@ -16,6 +16,6 @@ fn stringFromTokenList(tokens) {
     <> cat("", filter(tokens, typeOf)*)
 };
 
-<> [
+<> {
     stringFromTokenList: stringFromTokenList
-]
+}

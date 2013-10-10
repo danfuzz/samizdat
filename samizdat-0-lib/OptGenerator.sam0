@@ -36,6 +36,6 @@ fn OptGenerator_nextValue(gen, box) {
 };
 genericBind(nextValue, "OptGenerator", OptGenerator_nextValue);
 
-<> [
+<> {
     makeOptGenerator: makeOptGenerator
-]
+}

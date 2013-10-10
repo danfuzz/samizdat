@@ -28,6 +28,6 @@ fn makeValueGenerator(value) {
     <> @[ValueGenerator: value]
 };
 
-<> [
+<> {
     makeValueGenerator: makeValueGenerator
-]
+}

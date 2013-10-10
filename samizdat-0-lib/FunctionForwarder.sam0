@@ -50,6 +50,6 @@ fn FunctionForwarder_canCall(fwd, arg) {
 };
 genericBind(canCall, "FunctionForwarder", FunctionForwarder_canCall);
 
-<> [
+<> {
     makeFunctionForwarder: makeFunctionForwarder
-]
+}

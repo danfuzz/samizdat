@@ -22,7 +22,7 @@ def KEYWORDS = collectAsMap(
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
         []*])
-        { name <> [(name): @[(name)]] });
+        { name <> {(name): @[(name)]} });
 
 # These are all the int digits, as a map from strings to digit values. This
 # includes hex digits as well, in both lower and upper case. Finally, this
@@ -30,13 +30,13 @@ def KEYWORDS = collectAsMap(
 # "digit space" syntax.
 #
 # **Note:** Only the decimal digits matter in *Layer 0* and *Layer 1*.
-def INT_CHARS = [
+def INT_CHARS = {
     "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
     "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
     "a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15,
     "A": 10, "B": 11, "C": 12, "D": 13, "E": 14, "F": 15,
     "_": -1
-];
+};
 
 # Given a decimal digit, returns the digit value.
 fn intFromDigitChar(ch) {

@@ -79,6 +79,7 @@ definition is placed syntactically.
 A yield definition consists of a variable name enclosed in angle
 brackets (`<...>`).
 
+
 ### Body
 
 The main body of a closure is a sequence of statements. The last
@@ -126,6 +127,12 @@ One kind of yield is applicable in the context of a function definition
 
 The remaining forms of yield are associated with looping constructs
 and are described along with those constructs.
+
+
+### The empty closure
+
+In order to disambiguate with the empty list, an otherwise empty function
+must contain at least an `->` or a `<>`, e.g. `{ <> }`.
 
 
 ### Functions

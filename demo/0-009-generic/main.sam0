@@ -27,7 +27,7 @@ whatIs("stuff");
 whatIs([]);
 
 whatAre([1], [2]);
-whatAre([a: 10], [b: 20], [:]);
+whatAre({a: 10}, {b: 20}, {});
 whatAre(9, 8, 7, 6, 5, 4);
 
 

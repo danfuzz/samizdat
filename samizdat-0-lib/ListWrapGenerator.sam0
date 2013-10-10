@@ -32,6 +32,6 @@ fn ListWrapGenerator_nextValue(gen, box) {
 };
 genericBind(nextValue, "ListWrapGenerator", ListWrapGenerator_nextValue);
 
-<> [
+<> {
     makeListWrapGenerator: makeListWrapGenerator
-]
+}

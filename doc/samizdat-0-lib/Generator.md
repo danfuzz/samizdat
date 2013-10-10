@@ -72,7 +72,7 @@ along with generator method bindings for that type.
 
 Takes a generator which must yield map values, and collects all of its
 generated results, in generated order, by building up an overall map,
-as if by calling `cat([:], map1, map2, ...)` on all the results.
+as if by calling `cat({}, map1, map2, ...)` on all the results.
 
 If there are mappings in the yielded results with equal keys, then the
 *last* such mapping is the one that "wins" in the final result.

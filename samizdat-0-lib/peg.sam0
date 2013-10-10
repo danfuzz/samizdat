@@ -222,9 +222,9 @@ genericBind(parse, "PegTokenSetComplement", PegTokenSetComplement_parse);
 # Private helper for `make*Set*`, which takes a `sense` argument and
 # produces the desired rule.
 fn genericMakeTokenSet(sense, types) {
-    def set = [types*: true]; # A set-like map of all the token types.
+    def set = {types*: true}; # A set-like map of all the token types.
 
-    ifIs { <> eq(set, [:]) }
+    ifIs { <> eq(set, {}) }
         {
             # Trivial case: Empty set. Return an appropriate absolute rule.
             return ifIs { <> eq(sense, true) }
@@ -310,7 +310,7 @@ fn makeOpt(rule) {
 
 # Documented in Samizdat Layer 0 spec.
 fn makePlus(rule) {
-    <> @[PegRepeat: [rule: rule, minSize: 1]]
+    <> @[PegRepeat: {rule: rule, minSize: 1}]
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -329,7 +329,7 @@ fn makeSequence(rules*) {
 
 # Documented in Samizdat Layer 0 spec.
 fn makeStar(rule) {
-    <> @[PegRepeat: [rule: rule]]
+    <> @[PegRepeat: {rule: rule}]
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -356,7 +356,7 @@ fn makeToken(type) {
     # This is just uses a single-item token set. The performance difference
     # between that and doing a more special-case single item type check is
     # probably negligible.
-    <> @[PegTokenSet: [(type): null]];
+    <> @[PegTokenSet: {(type): null}];
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -394,12 +394,12 @@ fn apply(rule, input) {
 # Export mechanics
 #
 
-def Peg = @[Module: [
-    info: [
+def Peg = @[Module: {
+    info: {
         name: ["core", "peg"],
         version: "0.1.0"
-    ],
-    exports: [
+    },
+    exports: {
         any:                    any,
         apply:                  apply,
         empty:                  empty,
@@ -423,10 +423,10 @@ def Peg = @[Module: [
         makeTokenSet:           makeTokenSet,
         makeTokenSetComplement: makeTokenSetComplement,
         parse:                  parse
-    ]
-]];
+    }
+}];
 moduleDef(Peg);
 
-<> [
+<> {
     Peg: Peg
-]
+}

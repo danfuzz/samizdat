@@ -21,9 +21,9 @@ can be used.
 
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
-def LOWER_ALPHA = [
+def LOWER_ALPHA = {
     (makeInclusiveRange("a", 1, "z"))*: true
-];
+};
 
 # Returns an `interpolate` node.
 fn makeInterpolate(expression) {
@@ -38,12 +38,12 @@ fn makeLiteral(value) {
 # Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
-    <> @[closure: [formals: [], statements: [], yield: expression]]
+    <> @[closure: {formals: [], statements: [], yield: expression}]
 };
 
 # Returns a `varDef` node.
 fn makeVarDef(name, value) {
-    <> @[varDef: [name: name, value: value]]
+    <> @[varDef: {name: name, value: value}]
 };
 
 # Returns a `varRef` node.
@@ -53,12 +53,12 @@ fn makeVarRef(name) {
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
-    <> @[call: [function: function, actuals: actuals]]
+    <> @[call: {function: function, actuals: actuals}]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> @[call: [function: makeVarRef(name), actuals: actuals]]
+    <> @[call: {function: makeVarRef(name), actuals: actuals}]
 };
 
 # Returns an optional-value expression. This wraps `node` as
@@ -109,28 +109,28 @@ def parYieldDef = {/
 # a map (an empty map if no yield def was present).
 def parOptYieldDef = {/
     y = parYieldDef
-    { <> [yieldDef: y] }
+    { <> {yieldDef: y} }
 |
-    { <> [:] }
+    { <> {} }
 /};
 
 # Parses a formal argument decalaration.
 def parFormal = {/
     name = (
         n = @identifier
-        { <> [name: dataOf(n)] }
+        { <> {name: dataOf(n)} }
     |
-        @"." { <> [:] }
+        @"." { <> {} }
     )
 
     repeat = (
         r = [@"?" @"*" @"+"]
-        { <> [repeat: typeOf(r)] }
+        { <> {repeat: typeOf(r)} }
     |
-        { <> [:] }
+        { <> {} }
     )
 
-    { <> [:, name*, repeat*] }
+    { <> {name*, repeat*} }
 /};
 
 # Parses a list of formal arguments, with no surrounding parentheses.
@@ -149,16 +149,16 @@ def parProgramDeclarations = {/
 
     (@"->" | &@"<>")
 
-    { <> [formals: formals, yieldDef*] }
+    { <> {formals: formals, yieldDef*} }
 |
-    { <> [formals: []] }
+    { <> {formals: []} }
 /};
 
 # Parses a program (top-level program or contents inside function braces).
 def parProgram = {/
     decls = parProgramDeclarations
     body = parProgramBody
-    { <> @[closure: [:, decls*, body*]] }
+    { <> @[closure: {decls*, body*}] }
 /};
 
 # Parses a closure (in-line anonymous function, with no extra bindings).
@@ -241,9 +241,9 @@ def parFnCommon = {/
 
     name = (
         n = @identifier
-        { <> [name: dataOf(n)] }
+        { <> {name: dataOf(n)} }
     |
-        { <> [:] }
+        { <> {} }
     )
 
     @"("
@@ -255,12 +255,12 @@ def parFnCommon = {/
     {
         def codeMap = dataOf(code);
         def statements = [returnDef*, codeMap::statements*];
-        <> [
+        <> {
             codeMap*, name*,
             formals: formals,
             yieldDef: "return",
             statements: statements
-        ]
+        }
     }
 /};
 
@@ -299,11 +299,11 @@ def parFnExpression = {/
     (
         name = { <> funcMap::name }
         {
-            def mainClosure = @[closure: [
+            def mainClosure = @[closure: {
                 formals: [],
                 statements: [@[fnDef: funcMap]],
                 yield: makeVarRef(name)
-            ]];
+            }];
 
             <> makeCall(mainClosure)
         }
@@ -382,8 +382,8 @@ def parList = {/
 
 # Parses an empty map literal.
 def parEmptyMap = {/
-    @"[" @":" @"]"
-    { <> makeLiteral([:]) }
+    @"{" @"}"
+    { <> makeLiteral({}) }
 /};
 
 # Parses a key term. This includes parsing of interpolation syntax.
@@ -423,10 +423,10 @@ def parMapping = {/
 
 # Parses a map literal.
 def parMap = {/
-    @"["
+    @"{"
     one = parMapping
     rest = (@"," parMapping)*
-    @"]"
+    @"}"
     { <> makeCallName("cat", one, rest*) }
 /};
 
@@ -475,7 +475,7 @@ def parParenExpression = {/
 # to be done before `List`, since the latter rejects "map-like" syntax as a
 # fatal error.
 def parTerm = {/
-    parVarRef | parInt | parString | parList | parEmptyMap | parMap |
+    parVarRef | parInt | parString | parEmptyMap | parMap | parList
     parDeriv | parClosure | parParenExpression
 |
     # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
@@ -577,9 +577,9 @@ def parYield = {/
     @"<>"
     (
         ex = parExpression
-        { <> [yield: ex] }
+        { <> {yield: ex} }
     |
-        { <> [:] }
+        { <> {} }
     )
 /};
 
@@ -595,12 +595,12 @@ def implProgramBody = {/
 
     last = (
         s = (parStatement | parNonlocalExit)
-        { <> [statements: [s]] }
+        { <> {statements: [s]} }
     |
         y = parYield
-        { <> [statements: [], y*] }
+        { <> {statements: [], y*} }
     |
-        { <> [statements: []] }
+        { <> {statements: []} }
     )
 
     @";"*
@@ -648,13 +648,13 @@ def parProgramOrError = {/
 def parChoicePex = makeParseForwarder();
 
 # Map from parser tokens to derived value types for pexes.
-def PEX_TYPES = [
+def PEX_TYPES = {
     "&": "lookaheadSuccess",
     "!": "lookaheadFailure",
     "?": "opt",
     "*": "star",
     "+": "plus"
-];
+};
 
 # Parses a parser function.
 def implParser = {/
@@ -782,7 +782,7 @@ def parNamePex = {/
         name = @identifier
         @"="
         pex = parLookaheadPex
-        { <> @[varDef: [name: dataOf(name), value: pex]] }
+        { <> @[varDef: {name: dataOf(name), value: pex}] }
     )
 |
     parLookaheadPex

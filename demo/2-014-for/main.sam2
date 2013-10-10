@@ -51,7 +51,7 @@ for (x in "Blort!") {
 };
 
 io0Note("\nFive-element map, no name binding.");
-for (. in [a:1, b:2, c:3, d:4, e:5]) {
+for (. in {a:1, b:2, c:3, d:4, e:5}) {
     print("(item)")
 };
 

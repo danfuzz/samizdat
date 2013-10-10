@@ -25,6 +25,6 @@ genericBind(nextValue, "NullGenerator", NullGenerator_nextValue);
 # Documented in spec.
 def nullGenerator = @NullGenerator;
 
-<> [
+<> {
     nullGenerator: nullGenerator
-]
+}
