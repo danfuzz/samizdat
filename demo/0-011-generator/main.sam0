@@ -50,7 +50,7 @@ fn msgAll(header, gen) {
 #
 
 msgAll("Empty list", []);
-msgAll("Empty map", [:]);
+msgAll("Empty map", {});
 msgAll("Empty string", "");
 msgAll("NullGenerator", nullGenerator);
 msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
@@ -58,7 +58,7 @@ msgAll("Empty ParaGenerator", makeParaGenerator());
 msgAll("Empty SerialGenerator", makeSerialGenerator());
 
 msgAll("List", [101, 33, 5555, "blort"]);
-msgAll("Map", [one: 1, two: 2, three: 3, four: 4, five: "fizmo"]);
+msgAll("Map", {one: 1, two: 2, three: 3, four: 4, five: "fizmo"});
 msgAll("String", "Happy string!");
 
 msgAll("ListWrapGenerator", makeListWrapGenerator("frotz"));
@@ -70,14 +70,14 @@ msgAll("All-finite ParaGenerator",
     makeParaGenerator(
         [1, 2, 3],
         "abcdefg",
-        [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
+        {a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"}));
 
 msgAll("ParaGenerator with opt element and ValueGenerator",
     makeParaGenerator(
         makeOptGenerator([1, 2, 3]),
         makeValueGenerator("blort"),
         "abcdefg",
-        [a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"]));
+        {a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"}));
 
 msgAll("FilterGenerator (square even numbers)",
     makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -99,11 +99,11 @@ msgAll("ParaGenerator with open ranges",
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Size one SerialGenerator",
-    makeSerialGenerator([a: 10, b: 20, c: 30]));
+    makeSerialGenerator({a: 10, b: 20, c: 30}));
 
 msgAll("Size two SerialGenerator",
     makeSerialGenerator(
-        [a: 10, b: 20, c: 30],
+        {a: 10, b: 20, c: 30},
         "defg"));
 
 msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
@@ -113,7 +113,7 @@ io0Note("collectAsMap on a FilterGenerator");
 def outMap = collectAsMap(
     makeFilterGenerator(makeInclusiveRange(0, 2, 4))
         { value ->
-            <> [(value): value, (add(value, 1)): value, blort: value]
+            <> {(value): value, (add(value, 1)): value, blort: value}
         });
 io0Note(cat("    ", sourceString(outMap)));
 io0Note("");

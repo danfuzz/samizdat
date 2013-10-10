@@ -44,6 +44,6 @@ fn ParseForwarder_parse(fwd, args*) {
 };
 genericBind(Peg::parse, "ParseForwarder", ParseForwarder_parse);
 
-<> [
+<> {
     makeParseForwarder: makeParseForwarder
-]
+}

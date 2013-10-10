@@ -620,9 +620,8 @@ DEF_PARSE(identifierString) {
 DEF_PARSE(emptyMap) {
     MARK();
 
-    MATCH_OR_REJECT(CH_OSQUARE);
-    MATCH_OR_REJECT(CH_COLON);
-    MATCH_OR_REJECT(CH_CSQUARE);
+    MATCH_OR_REJECT(CH_OCURLY);
+    MATCH_OR_REJECT(CH_CCURLY);
 
     return makeLiteral(EMPTY_MAP);
 }
@@ -676,7 +675,6 @@ DEF_PARSE(mapping2) {
 
     zvalue map = PARSE_OR_REJECT(term);
     MATCH_OR_REJECT(CH_STAR);
-    MATCH_OR_REJECT(CH_COLON);
 
     return map;
 }
@@ -695,12 +693,9 @@ DEF_PARSE(mapping) {
 DEF_PARSE(map) {
     MARK();
 
-    MATCH_OR_REJECT(CH_OSQUARE);
-
+    MATCH_OR_REJECT(CH_OCURLY);
     zvalue mappings = PARSE_COMMA_SEQ(mapping);
-    zint size = collSize(mappings);
-    REJECT_IF(size == 0);
-    MATCH_OR_REJECT(CH_CSQUARE);
+    MATCH_OR_REJECT(CH_CCURLY);
 
     return makeCallName(STR_cat, mappings);
 }
@@ -740,11 +735,9 @@ DEF_PARSE(list) {
     zvalue expressions = PARSE(unadornedList);
     MATCH_OR_REJECT(CH_CSQUARE);
 
-    if (collSize(expressions) == 0) {
-        return makeLiteral(EMPTY_LIST);
-    } else {
-        return makeCallName(STR_makeList, expressions);
-    }
+    return (collSize(expressions) == 0)
+        ? makeLiteral(EMPTY_LIST)
+        : makeCallName(STR_makeList, expressions);
 }
 
 /**
@@ -842,9 +835,9 @@ DEF_PARSE(term) {
     if (result == NULL) { result = PARSE(varRef); }
     if (result == NULL) { result = PARSE(int); }
     if (result == NULL) { result = PARSE(string); }
+    if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(map); }
     if (result == NULL) { result = PARSE(list); }
-    if (result == NULL) { result = PARSE(emptyMap); }
     if (result == NULL) { result = PARSE(deriv); }
     if (result == NULL) { result = PARSE(closure); }
     if (result == NULL) { result = PARSE(parenExpression); }

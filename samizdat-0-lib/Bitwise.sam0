@@ -17,6 +17,6 @@ fn shr(bitwise, n) {
 };
 
 
-<> [
+<> {
     shr: shr
-]
+}

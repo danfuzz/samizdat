@@ -23,9 +23,9 @@ fn reportError(pending) {
 
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
-def LOWER_ALPHA = [
+def LOWER_ALPHA = {
     (makeInclusiveRange("a", 1, "z"))*: true
-];
+};
 
 # Returns an `interpolate` node.
 fn makeInterpolate(expression) {
@@ -40,12 +40,12 @@ fn makeLiteral(value) {
 # Returns a node representing a thunk (no-arg function) that returns the
 # expression represented by the given node.
 fn makeThunk(expression) {
-    <> @[closure: [formals: [], statements: [], yield: expression]]
+    <> @[closure: {formals: [], statements: [], yield: expression}]
 };
 
 # Returns a `varDef` node.
 fn makeVarDef(name, value) {
-    <> @[varDef: [name: name, value: value]]
+    <> @[varDef: {name: name, value: value}]
 };
 
 # Returns a `varRef` node.
@@ -55,12 +55,12 @@ fn makeVarRef(name) {
 
 # Returns a `call` node.
 fn makeCall(function, actuals*) {
-    <> @[call: [function: function, actuals: actuals]]
+    <> @[call: {function: function, actuals: actuals}]
 };
 
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
-    <> @[call: [function: makeVarRef(name), actuals: actuals]]
+    <> @[call: {function: makeVarRef(name), actuals: actuals}]
 };
 
 # Returns an optional-value expression. This wraps `node` as
@@ -115,24 +115,24 @@ def parYieldDef = Peg::makeMainSequence(
 def parOptYieldDef = Peg::makeMainChoice(
     Peg::makeSequence(
         parYieldDef,
-        Peg::makeCode { y <> [yieldDef: y] }),
-    Peg::makeResult([:]));
+        Peg::makeCode { y <> {yieldDef: y} }),
+    Peg::makeResult({}));
 
 # Documented in Samizdat Layer 0 spec.
 def parFormal = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeToken("identifier"),
-            Peg::makeCode { n <> [name: dataOf(n)] }),
+            Peg::makeCode { n <> {name: dataOf(n)} }),
         Peg::makeSequence(
             Peg::makeToken("."),
-            Peg::makeResult([:]))),
+            Peg::makeResult({}))),
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeTokenSet("?", "*", "+"),
-            Peg::makeCode { ., r <> [repeat: typeOf(r)] }),
-        Peg::makeResult([:])),
-    Peg::makeCode { name, repeat <> [name*:, repeat*:] });
+            Peg::makeCode { ., r <> {repeat: typeOf(r)} }),
+        Peg::makeResult({})),
+    Peg::makeCode { name, repeat <> {name*, repeat*} });
 
 # Documented in Samizdat Layer 0 spec.
 def parFormalsList = Peg::makeMainChoice(
@@ -150,14 +150,14 @@ def parProgramDeclarations = Peg::makeMainChoice(
         Peg::makeChoice(
             Peg::makeToken("->"),
             Peg::makeLookaheadSuccess(Peg::makeToken("<>"))),
-        Peg::makeCode { yieldDef, formals, . <> [formals: formals, yieldDef*:] }),
-    Peg::makeResult([formals: []]));
+        Peg::makeCode { yieldDef, formals, . <> {formals: formals, yieldDef*} }),
+    Peg::makeResult({formals: []}));
 
 # Documented in Samizdat Layer 0 spec.
 def parProgram = Peg::makeMainSequence(
     parProgramDeclarations,
     parProgramBody,
-    Peg::makeCode { decls, body <> @[closure: [decls*:, body*:]] });
+    Peg::makeCode { decls, body <> @[closure: {decls*, body*}] });
 
 # Documented in Samizdat Layer 0 spec.
 def parClosure = Peg::makeMainSequence(
@@ -195,8 +195,8 @@ def parFnCommon = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             Peg::makeToken("identifier"),
-            Peg::makeCode { ., ., n <> [name: dataOf(n)] }),
-        Peg::makeResult([:])),
+            Peg::makeCode { ., ., n <> {name: dataOf(n)} }),
+        Peg::makeResult({})),
     Peg::makeToken("("),
     parFormalsList,
     Peg::makeToken(")"),
@@ -204,12 +204,12 @@ def parFnCommon = Peg::makeMainSequence(
     Peg::makeCode { ., returnDef, name, ., formals, ., code ->
         def codeMap = dataOf(code);
         def statements = [returnDef*, codeMap::statements*];
-        <> [
-            codeMap*:, name*:,
+        <> {
+            codeMap*, name*,
             formals: formals,
             yieldDef: "return",
             statements: statements
-        ]
+        }
     });
 
 # Documented in Samizdat Layer 0 spec.
@@ -227,11 +227,11 @@ def parFnExpression = Peg::makeMainSequence(
         Peg::makeSequence(
             Peg::makeCode { funcMap, . <> funcMap::name },
             Peg::makeCode { funcMap, name ->
-                def mainClosure = @[closure: [
+                def mainClosure = @[closure: {
                     formals: [],
                     statements: [@[fnDef: funcMap]],
                     yield: makeVarRef(name)
-                ]];
+                }];
 
                 <> makeCall(mainClosure)
             }),
@@ -272,10 +272,9 @@ def parIdentifierString = Peg::makeMainChoice(
 
 # Documented in Samizdat Layer 0 spec.
 def parEmptyMap = Peg::makeMainSequence(
-    Peg::makeToken("["),
-    Peg::makeToken(":"),
-    Peg::makeToken("]"),
-    Peg::makeResult(makeLiteral([:])));
+    Peg::makeToken("{"),
+    Peg::makeToken("}"),
+    Peg::makeResult(makeLiteral({})));
 
 # Documented in Samizdat Layer 0 spec.
 def parKeyTerm = Peg::makeMainChoice(
@@ -306,15 +305,14 @@ def parMapping = Peg::makeMainChoice(
     Peg::makeSequence(
         parTerm,
         Peg::makeToken("*"),
-        Peg::makeToken(":"),
-        Peg::makeCode { map, ., . <> map }));
+        Peg::makeCode { map, . <> map }));
 
 # Documented in Samizdat Layer 0 spec.
 def parMap = Peg::makeMainSequence(
-    Peg::makeToken("["),
+    Peg::makeToken("{"),
     parMapping,
     Peg::makeStar(Peg::makeSequence(Peg::makeToken(","), parMapping)),
-    Peg::makeToken("]"),
+    Peg::makeToken("}"),
     Peg::makeCode { ., one, rest, . ->
         <> makeCallName("cat", one, rest*)
     });
@@ -391,7 +389,7 @@ def parParenExpression = Peg::makeMainSequence(
 # Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
 def implTerm = Peg::makeMainChoice(
     parVarRef, parInt, parString,
-    parMap, parList, parEmptyMap,
+    parEmptyMap, parMap, parList,
     parDeriv, parClosure,
     parParenExpression,
     # Defined by Samizdat Layer 1. The lookahead is just to make
@@ -469,8 +467,8 @@ def parYield = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeSequence(
             parExpression,
-            Peg::makeCode { ., ex <> [yield: ex] }),
-        Peg::makeResult([:])));
+            Peg::makeCode { ., ex <> {yield: ex} }),
+        Peg::makeResult({})));
 
 # Documented in Samizdat Layer 0 spec.
 def implProgramBody = Peg::makeMainSequence(
@@ -483,15 +481,15 @@ def implProgramBody = Peg::makeMainSequence(
     Peg::makeChoice(
         Peg::makeMainSequence(
             Peg::makeChoice(parStatement, parNonlocalExit),
-            Peg::makeCode { s <> [statements: [s]] }),
+            Peg::makeCode { s <> {statements: [s]} }),
         Peg::makeMainSequence(
             parYield,
-            Peg::makeCode { y <> [statements: [], y*:] }),
-        Peg::makeResult([statements: []])),
+            Peg::makeCode { y <> {statements: [], y*} }),
+        Peg::makeResult({statements: []})),
     Peg::makeStar(Peg::makeToken(";")),
     Peg::makeCode { ., most, last, . ->
         def allStatements = [most*, last::statements*];
-        <> [last*:, statements: allStatements]
+        <> {last*, statements: allStatements}
     });
 store(parProgramBody, implProgramBody);
 
@@ -522,13 +520,13 @@ def parProgramOrError = Peg::makeMainSequence(
 def parChoicePex = makeParseForwarder();
 
 # Map from parser tokens to derived value types for pexes.
-def PEX_TYPES = [
+def PEX_TYPES = {
     "&": "lookaheadSuccess",
     "!": "lookaheadFailure",
     "?": "opt",
     "*": "star",
     "+": "plus"
-];
+};
 
 def implParser = Peg::makeMainSequence(
     Peg::makeToken("{/"),
@@ -633,7 +631,7 @@ def parNamePex = Peg::makeMainChoice(
         Peg::makeToken("="),
         parLookaheadPex,
         Peg::makeCode { name, ., pex ->
-            <> @[varDef: [name: dataOf(name), value: pex]]
+            <> @[varDef: {name: dataOf(name), value: pex}]
         }),
     parLookaheadPex);
 
@@ -673,7 +671,7 @@ fn samParseProgram(program) {
     <> Peg::apply(parProgramOrError, tokens)
 };
 
-<> [
+<> {
     samParseExpression: samParseExpression,
     samParseProgram:    samParseProgram
-]
+}

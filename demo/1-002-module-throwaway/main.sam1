@@ -15,7 +15,7 @@ SELF_PATH, ARGS* ->
 # Main Tests
 #
 
-def exmod = moduleUse([name: ["core", "example"]]);
+def exmod = moduleUse({name: ["core", "example"]});
 io0Note(sourceString(exmod));
 
 <> 0

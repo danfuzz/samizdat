@@ -32,14 +32,14 @@ print("I like \([@muffins, @scones]).");
 print("\
     I like \{
         # A small sampling of foods.
-        def foods = [icky: "sardines", yummy: "muffins"];
+        def foods = {icky: "sardines", yummy: "muffins"};
         <> foods::yummy
     }!");
 
 print("\
     I also like \{ <out> ->
         /* A couple more foods here. */
-        def foods = [icky: "natto", yummy: "biscuits"];
+        def foods = {icky: "natto", yummy: "biscuits"};
         ifValue { <> foods::yummy }
             { food -> <out> food }
     }!");

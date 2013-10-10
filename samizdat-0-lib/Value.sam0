@@ -102,7 +102,7 @@ fn totNe(v1, v2) {
         { <> v2 }
 };
 
-<> [
+<> {
     isInt:         isInt,
     isList:        isList,
     isMap:         isMap,
@@ -119,4 +119,4 @@ fn totNe(v1, v2) {
     totLe:         totLe,
     totLt:         totLt,
     totNe:         totNe
-]
+}

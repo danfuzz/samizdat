@@ -33,6 +33,6 @@ genericBind(store, "NullBox", NullBox_store);
 
 def nullBox = @NullBox;
 
-<> [
+<> {
     nullBox: nullBox
-]
+}

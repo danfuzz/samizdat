@@ -51,7 +51,7 @@ genericBind(or, "Boolean", Boolean_or);
 fn Boolean_shl(bool, n) {
     def newValue = shl(dataOf(bool), n);
 
-    <> ifValueOr { <> get([0: false, 1: true], newValue) }
+    <> ifValueOr { <> get({0: false, 1: true}, newValue) }
         { io0Die("Undefined boolean shift result.") }
 };
 genericBind(shl, "Boolean", Boolean_shl);
@@ -74,7 +74,7 @@ fn Boolean_xor(bool1, bool2) {
 };
 genericBind(xor, "Boolean", Boolean_xor);
 
-<> [
+<> {
     false: false,
     true:  true
-]
+}

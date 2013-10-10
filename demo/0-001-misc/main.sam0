@@ -78,21 +78,21 @@ fn main(selfPath, name?, rest*) {
     process("\"Blort.\" \\ \0 \n");
     process(slice("^muffins^", 1, 8));
     process(slice(["x", "y", "muffins", "biscuits"], 2));
-    process(slice([a: "apple", b: "biscuit", s: "scones"], 2, 3));
+    process(slice({a: "apple", b: "biscuit", s: "scones"}, 2, 3));
     process(del("mufxfins", 3));
     process(del(["pie", "fishburgers", "croissants"], 1));
-    process(del([one: 1, two: 2, three: 3], "two"));
+    process(del({one: 1, two: 2, three: 3}, "two"));
     process(put("bizcuits", 2, "s"));
     process(put(["scones", "natto"], 1, "ice cream"));
-    process(put([one: 1, two: 2, three: 3], "four", 4));
+    process(put({one: 1, two: 2, three: 3}, "four", 4));
     process(keyList([@a, @b, @c]));
     process(keyList("abcde"));
-    process(keyList([a: "apple", b: "butter"]));
-    process([:]);
-    process([1: 2]);
-    process([1: 2, 888: 1]);
-    process([fizmo: "omzif", igram: "margi", blort: "trolb"]);
-    process(["#stuff": "muff", ["x", "y"]: "zee"]);
+    process(keyList({a: "apple", b: "butter"}));
+    process({});
+    process({1: 2});
+    process({1: 2, 888: 1});
+    process({fizmo: "omzif", igram: "margi", blort: "trolb"});
+    process({"#stuff": "muff", ["x", "y"]: "zee"});
     process(@["Null"]);
     process(@"Null");
     process(@Null);
@@ -106,7 +106,7 @@ fn main(selfPath, name?, rest*) {
     process(@["^zorch^": ["scorch"]]);
     process(@def); # Demos that keywords can be used as token types.
     process(@[fn]); # Ditto.
-    process([def: "defined", fn: "done"]); # Likewise, for map keys.
+    process({def: "defined", fn: "done"}); # Likewise, for map keys.
     process(@[(null)]);
     process(makeUniqlet());
     process(blort);

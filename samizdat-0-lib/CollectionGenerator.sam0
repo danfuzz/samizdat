@@ -14,10 +14,10 @@
 # Documented in spec.
 fn makeCollectionGenerator(coll, optIndex?) {
     def indexMap = ifValue { <> optIndex* }
-        { index <> [index: index] }
-        { <> [:] };
+        { index <> {index: index} }
+        { <> {} };
 
-    <> @[CollectionGenerator: [collection: coll, indexMap*:]]
+    <> @[CollectionGenerator: {collection: coll, indexMap*}]
 };
 
 # Documented in spec.
@@ -40,7 +40,7 @@ genericBind(nextValue, "CollectionGenerator", CollectionGenerator_nextValue);
 fn Collection_nextValue(coll, box) {
     # Get the first element directly, and return a generator for the rest.
     <> ifIs { <> store(box, &nth(coll, 0)) }
-        { <> @[CollectionGenerator: [collection: coll, index: 1]] }
+        { <> @[CollectionGenerator: {collection: coll, index: 1}] }
         {
             # `coll` is empty.
             store(box)
@@ -50,6 +50,6 @@ genericBind(nextValue, List,   Collection_nextValue);
 genericBind(nextValue, Map,    Collection_nextValue);
 genericBind(nextValue, String, Collection_nextValue);
 
-<> [
+<> {
     makeCollectionGenerator: makeCollectionGenerator
-]
+}

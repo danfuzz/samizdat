@@ -35,7 +35,7 @@ fn convertPexInList(nodes) {
 
 # Constructs a function call.
 fn makeCall(function, args*) {
-    <> @[call: [function: function, actuals: args]]
+    <> @[call: {function: function, actuals: args}]
 };
 
 # Makes a peg variable reference.
@@ -82,8 +82,8 @@ fn sequence_convertPex(node, formals) {
     # Extract the formals out of any `varDef` nodes.
     def newFormals = filterAll(pexes) { pex ->
         <> ifIs { <> eq(typeOf(pex), "varDef") }
-            { <> [name: dataOf(pex)::name] }
-            { <> [:] }
+            { <> {name: dataOf(pex)::name} }
+            { <> {} }
     };
 
     # Convert all the pexes, passing in appropriately-extended formals
@@ -148,7 +148,7 @@ fn code_convertPex(node, formals) {
     # Use the lexical `formals` context to make a regular closure node,
     # and just convert that.
 
-    def closurePayload = [(dataOf(node))*:, formals: formals];
+    def closurePayload = {(dataOf(node))*, formals: formals};
     def convertedClosure = convertPexIn(@[closure: closurePayload]);
 
     <> callPegNameWithExpressions("makeCode", convertedClosure)
@@ -196,10 +196,10 @@ fn convertClosureLike(node) {
     def nodeValue = dataOf(node);
     def statements = convertPexInList(nodeValue::statements);
     def yield = ifValue { <> nodeValue::yield }
-        { yield <> [yield: convertPexIn(yield)] }
-        { <> [:] };
+        { yield <> {yield: convertPexIn(yield)} }
+        { <> {} };
 
-    <> @[(nodeType): [nodeValue*:, yield*:, statements: statements]]
+    <> @[(nodeType): {nodeValue*, yield*, statements: statements}]
 };
 
 # Does parser conversion of a node whose payload value is an
@@ -218,7 +218,7 @@ fn call_convertPexIn(node) {
     def function = convertPexIn(nodeValue::function);
     def actuals = convertPexInList(nodeValue::actuals);
 
-    <> @[call: [nodeValue*:, function: function, actuals: actuals]]
+    <> @[call: {nodeValue*, function: function, actuals: actuals}]
 };
 genericBind(convertPexIn, "call", call_convertPexIn);
 
@@ -264,7 +264,7 @@ fn varDef_convertPexIn(node) {
     def nodeValue = dataOf(node);
     def value = convertPexIn(nodeValue::value);
 
-    <> @[varDef: [nodeValue*:, value: value]]
+    <> @[varDef: {nodeValue*, value: value}]
 };
 genericBind(convertPexIn, "varDef", varDef_convertPexIn);
 
@@ -291,6 +291,6 @@ fn samEval(context, expressionNode) {
     <> subEval(context, convertedNode)
 };
 
-<> [
+<> {
     samEval: samEval
-]
+}
