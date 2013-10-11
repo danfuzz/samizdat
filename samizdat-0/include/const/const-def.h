@@ -43,6 +43,7 @@ TOK(def,            "def");
 TOK(fn,             "fn");
 TOK(return,         "return");
 
+STR(ENVIRONMENT,    "ENVIRONMENT");
 STR(LIBRARY,        "LIBRARY");
 STR(actuals,        "actuals");
 STR(call,           "call");

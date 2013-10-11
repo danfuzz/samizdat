@@ -8,7 +8,7 @@
 
 
 #
-# Private Definitions
+# Private Definitions: `parPathString`
 #
 
 # Parses a single path component.
@@ -66,25 +66,55 @@ def parPathString = {/
     )
 /};
 
+
+#
+# Private Definitions: `parPathList`
+#
+
+# Parses a path within a path list.
+def parOnePath = {/
+    chars = [! ":"]+
+    { <> stringFromTokenList(chars) }
+/};
+
+# Parses a flattened path list (e.g. the format for `MODULE_PATHS`) into
+# a list of strings (for further parsing).
+def parPathList = {/
+    ":"*
+    first = parOnePath
+    rest = (
+        ":"+
+        parOnePath
+    )*
+    ":"*
+
+    { <> [first, rest*] }
+/};
+
+
+#
+# Private Definitions
+#
+
 # Helper for `io0FlatFromPath` which validates a single path component.
 # Yields an error string on invalid. Parsing fails for valid components.
 def parErrorFromPathComponent = {/
     ".." !.
-    { <> "Invalid `..` component in path" }
+    { <> "Invalid `..` component in path." }
 |
     "." !.
-    { <> "Invalid `.` component in path" }
+    { <> "Invalid `.` component in path." }
 |
     !.
-    { <> "Invalid empty component in path" }
+    { <> "Invalid empty component in path." }
 |
     [! "/\0"]+
     (
         "/"
-        { <> "Invalid `/` in path" }
+        { <> "Invalid `/` in path." }
     |
         "\0"
-        { <> "Invalid `\\0` in path" }
+        { <> "Invalid `\\0` in path." }
     )
 /};
 
@@ -177,6 +207,15 @@ fn io0PathFromFlat(string) {
 };
 
 # Documented in Samizdat Layer 0 spec.
+fn io0PathListFromFlat(string) {
+    # Parse the given string into a list of flat paths.
+    def flats = Peg::apply(parPathList, string);
+
+    # Call `io0PathFromFlat` on each element.
+    <> filterAll(io0PathFromFlat, flats)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn io0ReadFileUtf8(path) {
     <> io0FlatReadFileUtf8(io0FlatFromPath(path))
 };
@@ -201,11 +240,12 @@ fn io0WriteFileUtf8(path, text) {
 };
 
 <> {
-    io0FileExists:      io0FileExists,
-    io0FlatFromPath:    io0FlatFromPath,
-    io0PathFromFlat:    io0PathFromFlat,
-    io0ReadFileUtf8:    io0ReadFileUtf8,
-    io0ReadLink:        io0ReadLink,
-    io0SandboxedReader: io0SandboxedReader,
-    io0WriteFileUtf8:   io0WriteFileUtf8
+    io0FileExists:       io0FileExists,
+    io0FlatFromPath:     io0FlatFromPath,
+    io0PathFromFlat:     io0PathFromFlat,
+    io0PathListFromFlat: io0PathListFromFlat,
+    io0ReadFileUtf8:     io0ReadFileUtf8,
+    io0ReadLink:         io0ReadLink,
+    io0SandboxedReader:  io0SandboxedReader,
+    io0WriteFileUtf8:    io0WriteFileUtf8
 };

@@ -52,12 +52,12 @@ fn loadLibrary(ctx, name) {
 
 # Loads all of libraries named by the manifest, in order, allowing later
 # libraries to depend on earlier ones. The first listed library can depend
-# only on the initial `LIBRARY` (that is, the primitive context).
-fn loadAllLibraries() {
+# only on the initial given `baseCtx` (that is, the primitive library context).
+fn loadAllLibraries(baseCtx) {
     # Read the manifest file, to figure out what all to load and in what order.
-    def manifest = loadLibrary(LIBRARY, "manifest.sam0")::MANIFEST;
+    def manifest = loadLibrary(baseCtx, "manifest.sam0")::MANIFEST;
 
-    <> loopReduce(manifest, LIBRARY)
+    <> loopReduce(manifest, baseCtx)
         { names, ctx ->
             <> ifValue { <> nth(names, 0) }
                 { name <> [slice(names, 1), loadLibrary(ctx, name)] }
@@ -68,20 +68,19 @@ fn loadAllLibraries() {
 # Builds the final core library, by doing file loading / evaluation, and then
 # adding a couple extra bindings.
 fn makeCoreLibrary() {
-    def base = loadAllLibraries();
+    # Make a replacement (or new) `MODULE_PATHS` that includes `LIBRARY_DIR`.
+    def modulePaths = ifValue { <> ENVIRONMENT::MODULE_PATHS }
+        { orig <> cat(LIBRARY_DIR, ":", orig) }
+        { <> LIBRARY_DIR };
 
-    # Convert `LIBRARY_DIR` to a structured path, using the appropriate
-    # library function found in `base`, and wrap it in a list to become
-    # the value of `MODULE_PATHS`.
-    def modulePaths = [base::io0PathFromFlat(LIBRARY_DIR)];
+    def newEnvironment = put(ENVIRONMENT, "MODULE_PATHS", modulePaths);
+    def baseCtx = put(LIBRARY, "ENVIRONMENT", newEnvironment);
 
-    def full = {
-        base*,
-        MODULE_PATHS: modulePaths
-    };
+    # Do the loading.
+    def fullCtx = loadAllLibraries(baseCtx);
 
-    # "Manually" inline `makeLibrary` to produce the final core library.
-    <> {full*, LIBRARY: full};
+    # "Manually inline" `makeLibrary` to produce the final core library.
+    <> {fullCtx*, LIBRARY: fullCtx};
 };
 
 

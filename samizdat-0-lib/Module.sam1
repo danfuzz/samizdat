@@ -11,6 +11,12 @@
 # Private Definitions
 #
 
+# Parsed version of `ENVIRONMENT::MODULE_PATHS`, which includes a parsed
+# version of `LIBRARY_DIR` as the first element.
+def MODULE_PATHS_LIST = ifValue { <> ENVIRONMENT::MODULE_PATHS }
+    { paths <> io0PathListFromFlat(paths) }
+    { <> [] };
+
 # The (base) name of a module metainformation file.
 def MODULE_FILE_NAME = "module.sam";
 
@@ -19,10 +25,10 @@ def MODULE_FILE_NAME = "module.sam";
 def thePendingBox = makeMutableBox({});
 
 # Finds the directory for the named module, by iterating over
-# `MODULE_PATHS`, looking for a `module.sam` file. Either returns
+# `MODULE_PATHS_LIST`, looking for a `module.sam` file. Either returns
 # the directory path or dies with an error.
 fn findModuleDirectory(fqName, optPaths?) {
-    def paths = ifValueOr { <> optPaths* } { <> MODULE_PATHS };
+    def paths = ifValueOr { <> optPaths* } { <> MODULE_PATHS_LIST };
 
     ifIs { <> eq(paths, []) }
         { io0Die(cat("Module not found: ", stringFromModuleName(fqName))) };
@@ -61,7 +67,7 @@ fn moduleUse(searchInfo) {
     def moduleDir = findModuleDirectory(fqName);
     def moduleReader = io0SandboxedReader(moduleDir);
     def infoText = moduleReader(["module.sam"]);
-    def info = sam0Eval(LIBRARY, sam0ParseExpression(infoText))();
+    def info = sam0Eval(LIBRARY, sam0ParseExpression(infoText));
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     ifIs { <> ne(fqName, info::name) }
