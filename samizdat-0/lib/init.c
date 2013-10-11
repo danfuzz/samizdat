@@ -24,6 +24,7 @@
 #include "type/Type.h"
 #include "type/Uniqlet.h"
 #include "type/Value.h"
+#include "util.h"
 
 
 /*
@@ -32,6 +33,36 @@
 
 /** Globals map (context) containing all the primitive definitions. */
 static zvalue PRIMITIVE_CONTEXT = NULL;
+
+/**
+ * Posix-defined list of environment variables. This variable is not declared
+ * in a standard header, surprisingly.
+ */
+extern char **environ;
+
+/**
+ * Makes an `ENVIRONMENT` map based on `environ` (that is, the list
+ * of all environment variables passed into this process).
+ */
+static zvalue makeEnvironment(void) {
+    zvalue result = EMPTY_MAP;
+
+    for (char **envp = environ; *envp; envp++) {
+        char *one = *envp;
+        char *equalAt = strchr(one, '=');
+
+        if (equalAt == NULL) {
+            note("Odd environment line: %s", one);
+            continue;
+        }
+
+        zvalue key = stringFromUtf8(equalAt - one, one);
+        zvalue value = stringFromUtf8(-1, equalAt + 1);
+        result = collPut(result, key, value);
+    }
+
+    return result;
+}
 
 /**
  * Sets up `PRIMITIVE_CONTEXT`, if not already done.
@@ -59,6 +90,9 @@ static void makePrimitiveContext(void) {
         } while(0)
 
     #include "prim-def.h"
+
+    // Add a mapping for `ENVIRONMENT`.
+    ctx = collPut(ctx, STR_ENVIRONMENT, makeEnvironment());
 
     // Include a mapping for a map of all the primitive bindings
     // (other than this one, since values can't self-reference).
@@ -88,7 +122,7 @@ static zvalue evalFile(zvalue directory, zvalue name) {
 
 /**
  * Returns a map with all the core library bindings. This is the
- * return value from running the in-language library `main`.
+ * return value from running the in-language library file `main`.
  */
 static zvalue getLibrary(zvalue libraryDir) {
     zvalue mainFunction = evalFile(libraryDir, STR_main_sam0);

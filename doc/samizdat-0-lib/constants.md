@@ -19,6 +19,11 @@ elsewhere in the library documentation.
 <br><br>
 ### Primitive Definitions
 
+#### `ENVIRONMENT`
+
+A map of strings to strings, representing the (Posix or Posix-like)
+environment variables passed into the program.
+
 #### `Int`
 
 The type of int values.

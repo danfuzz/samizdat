@@ -117,6 +117,13 @@ original path ended with a trailing slash.
 
 It is an error (terminating the runtime) if `string` is empty (`""`).
 
+#### `io0PathListFromFlat(flatPathList) <> [path*]`
+
+Converts the given path list string to a list (per se) of absolute
+internal-form paths. The given `flatPathList` is taken to be a colon-separated
+list of flat paths. It is split apart on colons, and each split path is
+processed as if by `io0PathFromFlat`.
+
 #### `io0ReadFileUtf8(path) <> string`
 
 Reads the named file, using the underlying OS's functionality,
