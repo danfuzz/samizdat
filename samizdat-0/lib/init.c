@@ -122,7 +122,7 @@ static zvalue evalFile(zvalue directory, zvalue name) {
 
 /**
  * Returns a map with all the core library bindings. This is the
- * return value from running the in-language library `main`.
+ * return value from running the in-language library file `main`.
  */
 static zvalue getLibrary(zvalue libraryDir) {
     zvalue mainFunction = evalFile(libraryDir, STR_main_sam0);
