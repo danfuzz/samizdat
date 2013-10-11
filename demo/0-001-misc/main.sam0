@@ -115,6 +115,7 @@ fn main(selfPath, name?, rest*) {
     process(io0PathFromFlat("///foo//////./bar/./../baz"));
     process(io0PathFromFlat("/a/b/x/y/z/../../../c/"));
     process(io0FlatFromPath(["fizmo", "igram", "blort", ""]));
+    process(io0PathListFromFlat("/foo:/foo/bar:baz/blort/"));
     process(formatInt(71, 2));
     process(formatInt(71, 10));
     process(formatInt(71, 16));
