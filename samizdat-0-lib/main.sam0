@@ -80,7 +80,7 @@ fn makeCoreLibrary() {
         MODULE_PATHS: modulePaths
     };
 
-    # "Manually" inline `makeLibrary` to produce the final core library.
+    # "Manually inline" `makeLibrary` to produce the final core library.
     <> {full*, LIBRARY: full};
 };
 
