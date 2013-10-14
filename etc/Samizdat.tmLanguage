@@ -207,7 +207,7 @@
 				</dict>
 			</array>
 		</dict>
-		<key>map-body</key>
+		<key>collection-body</key>
 		<dict>
 			<key>patterns</key>
 			<array>
@@ -216,20 +216,25 @@
 					<string>#recursive-comment</string>
 				</dict>
 				<dict>
-					<key>name</key>
-					<string>string.unquoted</string>
-					<key>match</key>
-					<string>[_a-zA-Z][_a-zA-Z0-9]*</string>
-				</dict>
-				<dict>
 					<key>include</key>
 					<string>#simple-constants</string>
 				</dict>
 				<dict>
-					<key>name</key>
-					<string>keyword.operator</string>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>string.unquoted</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition</string>
+						</dict>
+					</dict>
 					<key>match</key>
-					<string>\|</string>
+					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(:)</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -300,8 +305,25 @@
 					<key>match</key>
 					<string>(?x)
 						\b(true|false|null|nullBox|nullGenerator)\b |
-						\[\] | \[:\]
+						\[\] | \{\}
 					</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>string.unquoted</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>([_a-zA-Z][_a-zA-Z0-9]*) *(:)</string>
 				</dict>
 				<dict>
 					<key>name</key>
@@ -322,29 +344,14 @@
 					<key>name</key>
 					<string>meta.collection.samizdat</string>
 					<key>begin</key>
-					<string>@?\[(?=.*:)</string>
+					<string>@?\[</string>
 					<key>end</key>
 					<string>\]</string>
 					<key>patterns</key>
 					<array>
 						<dict>
 							<key>include</key>
-							<string>#map-body</string>
-						</dict>
-					</array>
-				</dict>
-				<dict>
-					<key>name</key>
-					<string>meta.collection.samizdat</string>
-					<key>begin</key>
-					<string>\[</string>
-					<key>end</key>
-					<string>\]</string>
-					<key>patterns</key>
-					<array>
-						<dict>
-							<key>include</key>
-							<string>#block-body</string>
+							<string>#collection-body</string>
 						</dict>
 					</array>
 				</dict>
