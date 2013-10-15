@@ -25,6 +25,9 @@ def MANIFEST = [
     # by everything else.
     "Module.sam0",
 
+    # Trivial modules
+    ["core", "EntityMap"],
+
     # Layer 0: Constant value definitions.
     "entityMap.sam0",
     "constants.sam0",
