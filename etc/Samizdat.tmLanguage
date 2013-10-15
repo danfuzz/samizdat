@@ -26,6 +26,38 @@
 	</array>
 	<key>repository</key>
 	<dict>
+		<key>comment</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#recursive-comment</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>comment.line.number-sign</string>
+						</dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.comment</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.comment</string>
+						</dict>
+					</dict>
+					<key>match</key>
+					<string>(#[! ]|###*).*$|(#)$</string>
+				</dict>
+			</array>
+		</dict>
 		<key>recursive-comment</key>
 		<dict>
 			<key>name</key>
@@ -213,7 +245,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#recursive-comment</string>
+					<string>#comment</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -272,7 +304,7 @@
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#recursive-comment</string>
+					<string>#comment</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -399,28 +431,6 @@
 							<string>#recursive-string-content</string>
 						</dict>
 					</array>
-				</dict>
-				<dict>
-					<key>captures</key>
-					<dict>
-						<key>0</key>
-						<dict>
-							<key>name</key>
-							<string>comment.line.number-sign</string>
-						</dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.definition.comment</string>
-						</dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.definition.comment</string>
-						</dict>
-					</dict>
-					<key>match</key>
-					<string>(#[! ]|###*).*$|(#)$</string>
 				</dict>
 				<dict>
 					<key>captures</key>
