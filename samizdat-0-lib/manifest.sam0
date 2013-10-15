@@ -25,11 +25,10 @@ def MANIFEST = [
     # by everything else.
     "Module.sam0",
 
-    # Trivial modules
+    # Simple modules.
     ["core", "EntityMap"],
 
     # Layer 0: Constant value definitions.
-    "entityMap.sam0",
     "constants.sam0",
 
     # Layer 0: Simple functions. These only rely on primitive functions.
