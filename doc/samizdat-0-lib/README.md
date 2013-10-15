@@ -88,6 +88,9 @@ will be returned, or one of:
   * [Value (the base type)](Value.md)
   * [One-Off Generics](OneOff.md)
 
+* Modules
+  * [core::EntityMap](EntityMap.md)
+
 * Other
   * [Constants](constants.md)
   * [Conditionals And Iteration](conditional.md)
