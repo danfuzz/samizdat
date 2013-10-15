@@ -7,6 +7,9 @@
 #
 
 
+# The standard entity map.
+def ENTITY_MAP = moduleGet({name: ["core", "EntityMap"]})::ENTITY_MAP;
+
 # Forward declarations for Layer 2 definitions.
 def tokMultilineComment = makeParseForwarder();
 def tokStringPart2 = makeParseForwarder();

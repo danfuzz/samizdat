@@ -126,12 +126,12 @@ fn moduleGet(searchInfo) {
 
 # Documented in spec.
 fn stringFromModuleName(fqName) {
-    # Prefix each component with ":", combine them all, and then drop the
-    # first character.
-    def parts = filter(fqName, { n <> cat(":", n) });
+    # Prefix each component with "::", combine them all, and then drop the
+    # first two characters.
+    def parts = filter(fqName, { n <> cat("::", n) });
     def result = cat(parts*);
 
-    <> slice(result, 1)
+    <> slice(result, 2)
 };
 
 
