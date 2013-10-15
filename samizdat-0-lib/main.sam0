@@ -21,6 +21,16 @@ LIBRARY_DIR ->
 # Private Definitions
 #
 
+# Flattens a module name to a simple directory name.
+#
+# **Note:** This function is a (low rent) duplicate of functionality in
+# `io0*`, because this function needs to be called before `io0*` is loaded.
+fn flattenName(name) {
+    # Suffix each component with `/`, and concatenate them all together.
+    def withSlashes = filter(name, { elem <> cat(elem, "/") });
+    <> cat(withSlashes*)
+};
+
 # Reads the named library file.
 fn readLibraryFile(name) {
     def path = cat(LIBRARY_DIR, "/", name);
@@ -34,8 +44,6 @@ fn readLibraryFile(name) {
 # by the named library. Each library file is expected to return a map of
 # bindings that it wishes to export.
 fn loadLibrary(ctx, name) {
-    io0Note(cat("    ", name));
-
     def text = readLibraryFile(name);
     def tree = ctx::samParseProgram(text);
     def function = ctx::samEval({ctx*, LIBRARY: ctx}, tree);
@@ -50,6 +58,46 @@ fn loadLibrary(ctx, name) {
     <> {ctx*, bindings*};
 };
 
+# Loads the named module (given a flattened directory name), installing
+# it by using `moduleDef` from the given `ctx`.
+#
+# **Note:** This function is a (low rent) duplicate of functionality in
+# `Module`, because this function needs to be called before `Module` is
+# fully loaded.
+fn loadModule(ctx, flatName) {
+    def mainText = readLibraryFile(cat(flatName, "main.sam"));
+    def infoText = readLibraryFile(cat(flatName, "module.sam"));
+
+    # Evaluate `mainText` as per `loadLibrary` above (same rationale),
+    # but with the result becoming the module exports.
+    def mainTree = ctx::samParseProgram(mainText);
+    def mainFunction = ctx::samEval(ctx, mainTree);
+    def exports = mainFunction();
+
+    # Evaluate `infoText` as an expression, expecting a map.
+    def info = ctx::samEval(LIBRARY, ctx::samParseExpression(infoText));
+
+    # Combine `info` and `exports to form the final module.
+    def result = @[Module: {info: info, exports: exports}];
+    ctx::moduleDef(result);
+};
+
+# Loads the named library or module, using either `loadLibrary` or
+# `loadModule` above (see which).
+fn loadLibraryOrModule(ctx, name) {
+    <> ifIs { <> hasType(name, List) }
+        {
+            def flatName = flattenName(name);
+            io0Note(cat("    module:  ", flatName));
+            loadModule(ctx, flatName);
+            <> ctx
+        }
+        {
+            io0Note(cat("    library: ", name));
+            <> loadLibrary(ctx, name)
+        }
+};
+
 # Loads all of libraries named by the manifest, in order, allowing later
 # libraries to depend on earlier ones. The first listed library can depend
 # only on the initial given `baseCtx` (that is, the primitive library context).
@@ -60,7 +108,7 @@ fn loadAllLibraries(baseCtx) {
     <> loopReduce(manifest, baseCtx)
         { names, ctx ->
             <> ifValue { <> nth(names, 0) }
-                { name <> [slice(names, 1), loadLibrary(ctx, name)] }
+                { name <> [slice(names, 1), loadLibraryOrModule(ctx, name)] }
                 { return ctx }
         }
 };
