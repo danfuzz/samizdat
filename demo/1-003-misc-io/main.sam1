@@ -1,0 +1,48 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Demo / scratch code
+#
+
+
+# This declares the arguments to the program itself.
+SELF_PATH, ARGS* ->
+
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
+
+#
+# Helper Definitions
+#
+
+# Demo of reading a sibling file through a sandboxed reader.
+fn sibling() {
+    def reader = Io1::sandboxedReader(butLast(SELF_PATH));
+    def text = reader(["sibling.txt"]);
+    Io1::note(text);
+};
+
+# Demo of finding and non-finding files.
+fn fileExists() {
+    fn tryFile(path) {
+        ifIs { <> Io1::fileExists(path) }
+            { Io1::note(cat("Exists: ", sourceString(path))) }
+            { Io1::note(cat("Does not exist: ", sourceString(path))) }
+    };
+
+    def base = butLast(SELF_PATH);
+    tryFile([base*, "sibling.txt"]);
+    tryFile([base*, "non-sibling.txt"]);
+};
+
+
+#
+# Main Tests
+#
+
+sibling();
+fileExists();
+
+<> 0

@@ -27,26 +27,6 @@ fn blort(foo, bar?, \"weird name"?, more*) {
     stuff(foo, bar, \"weird name", more)
 };
 
-# Demo of reading a sibling file through a sandboxed reader.
-fn sibling() {
-    def reader = io0SandboxedReader(butLast(SELF_PATH));
-    def text = reader(["sibling.txt"]);
-    Io0::note(text);
-};
-
-# Demo of finding and non-finding files.
-fn fileExists() {
-    fn tryFile(path) {
-        ifIs { <> io0FileExists(path) }
-            { Io0::note(cat("Exists: ", sourceString(path))) }
-            { Io0::note(cat("Does not exist: ", sourceString(path))) }
-    };
-
-    def base = butLast(SELF_PATH);
-    tryFile([base*, "sibling.txt"]);
-    tryFile([base*, "non-sibling.txt"]);
-};
-
 # Emits the stringified version of the given value to the console.
 fn process(value) {
     Io0::note(sourceString(value));
@@ -124,9 +104,6 @@ fn main(selfPath, name?, rest*) {
     process(formatInt(71, 16));
     process(formatInt(71, 36));
     process(cat(toString(1), toString(31), toString(127)));
-
-    sibling();
-    fileExists();
 
     blort(1);
     blort(1, 2);
