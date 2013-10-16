@@ -58,7 +58,6 @@ def MANIFEST = [
 
     # Layer 0: Nontrivial modules.
     ["core", "Peg"],
-    "peg.sam0",
     "ParseForwarder.sam0",     # Uses `parse` defined by `peg.sam0`.
 
     # Layer 1 language implementation.
