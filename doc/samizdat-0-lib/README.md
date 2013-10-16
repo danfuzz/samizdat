@@ -92,12 +92,12 @@ will be returned, or one of:
   * [core::EntityMap](EntityMap.md)
   * [core::Io0](Io0.md)
   * [core::Io1](Io1.md)
+  * [core::Peg (parsing)](Peg.md)
 
 * Other
   * [Constants](constants.md)
   * [Conditionals And Iteration](conditional.md)
   * [String Formatting](format.md)
-  * [Parsing](peg.md)
   * [Meta-Library](meta.md)
 
 - - - - -

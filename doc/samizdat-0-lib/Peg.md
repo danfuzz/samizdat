@@ -1,10 +1,10 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Parsing
--------
+core::Peg (parsing)
+-------------------
 
-*Samizdat* provides a set of "parsing expression grammar" (a.k.a.
+*Samizdat* provides a module of "parsing expression grammar" (a.k.a.
 "PEG") functions, for use in building parsers. *Samizdat Layer 1*
 provides syntactic support for using these functions, and they can be
 used directly in *Samizdat Layer 0*.
@@ -179,7 +179,7 @@ into `box` and returns void.
 
 
 <br><br>
-### In-Language Definitions: `Peg` module
+### In-Language Definitions
 
 #### `apply(rule, input) <> . | void`
 
@@ -409,11 +409,6 @@ the empty set of tokens or characters).
 
 <br><br>
 ### In-Language Definitions: globals
-
-#### Constant: `Peg`
-
-The global variable `Peg` is bound to a module containing PEG-related
-library functionality. See above.
 
 #### `makeParseForwarder() <> function`
 
