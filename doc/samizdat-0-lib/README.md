@@ -90,6 +90,7 @@ will be returned, or one of:
 
 * Modules
   * [core::EntityMap](EntityMap.md)
+  * [core::FunctionForwarder](FunctionForwarder.md)
   * [core::Io0](Io0.md)
   * [core::Io1](Io1.md)
   * [core::ParseForwarder](ParseForwarder.md)
