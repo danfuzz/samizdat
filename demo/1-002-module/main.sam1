@@ -10,14 +10,15 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
-def Io1 = moduleGet({name: ["core", "Io1"]});
-
 
 #
 # Main Tests
 #
 
-def exmod = moduleUse({name: ["core", "example"]});
+def Io1 = moduleUse({name: ["core", "Io1"]});
+
+# Use a known-simple module.
+def exmod = moduleUse({name: ["core", "FunctionForwarder"]});
 Io1::note(sourceString(exmod));
 
 <> 0
