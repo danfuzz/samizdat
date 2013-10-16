@@ -96,7 +96,6 @@ will be returned, or one of:
 * Other
   * [Constants](constants.md)
   * [Conditionals And Iteration](conditional.md)
-  * [I/O](io.md)
   * [String Formatting](format.md)
   * [Parsing](peg.md)
   * [Meta-Library](meta.md)
