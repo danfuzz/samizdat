@@ -1,0 +1,17 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Modularization of primitive I/O functions
+#
+
+<> {
+    die:               io0Die,
+    flatCwd:           io0FlatCwd,
+    flatReadLink:      io0FlatReadLink,
+    flatFileExists:    io0FlatFileExists,
+    flatReadFileUtf8:  io0FlatReadFileUtf8,
+    flatWriteFileUtf8: io0FlatWriteFileUtf8,
+    note:              io0Note
+}

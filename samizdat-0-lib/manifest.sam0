@@ -27,6 +27,7 @@ def MANIFEST = [
 
     # Simple modules.
     ["core", "EntityMap"],
+    ["core", "Io0"],
 
     # Layer 0: Constant value definitions.
     "constants.sam0",
@@ -63,6 +64,7 @@ def MANIFEST = [
     "eval1.sam0",
 
     # Layer 1 additional library.
+    ["core", "Io1"],
     "io0.sam1",
     "commandLine.sam1",
     "Module.sam1",
