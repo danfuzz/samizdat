@@ -18,7 +18,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 #
 
 fn print(args*) {
-    io0Note(sourceStringUnadorned(args))
+    Io0::note(sourceStringUnadorned(args))
 };
 
 
@@ -31,14 +31,14 @@ def func1 = fn (x) {
     return "func1"
 };
 
-io0Note(func1(10));
+Io0::note(func1(10));
 
 def func2 = fn <out> (x*) {
     print("func2", x);
     <out> "func2"
 };
 
-io0Note(func2(20, "twenty"));
+Io0::note(func2(20, "twenty"));
 
 # Recursive call.
 def func3 = fn whee(x) {
@@ -50,6 +50,6 @@ def func3 = fn whee(x) {
         }
 };
 
-io0Note(func3(1));
+Io0::note(func3(1));
 
 <> 0

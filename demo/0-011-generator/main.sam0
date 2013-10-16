@@ -19,14 +19,14 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 
 # Prints the given value, indented slightly.
 fn msg(value) {
-    io0Note(cat("  ", sourceString(value)))
+    Io0::note(cat("  ", sourceString(value)))
 };
 
 # Outputs all generated values, with an initial header, followed by
 # the listification of the generator, all followed by an extra newline
 # at the end.
 fn msgAll(header, gen) {
-    io0Note(header);
+    Io0::note(header);
 
     { <done> ->
         loopReduce(gen) { gen ->
@@ -40,9 +40,9 @@ fn msgAll(header, gen) {
         }
     }();
 
-    io0Note("  [all]");
+    Io0::note("  [all]");
     msg(collect(gen));
-    io0Note("")
+    Io0::note("")
 };
 
 
@@ -88,11 +88,11 @@ msgAll("FilterGenerator (square even numbers)",
                 { <> mul(value, value) }
         });
 
-io0Note("generatorPump on FilterGenerator");
+Io0::note("generatorPump on FilterGenerator");
 generatorPump(
     makeFilterGenerator([1, 2, 3, 4])
-        { value -> io0Note(cat("    Yay ", sourceString(value))) });
-io0Note("");
+        { value -> Io0::note(cat("    Yay ", sourceString(value))) });
+Io0::note("");
 
 msgAll("ParaGenerator with open ranges",
     makeParaGenerator(
@@ -111,14 +111,14 @@ msgAll("Size two SerialGenerator",
 msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
     makeSerialGenerator("abc", [], [], nullGenerator, ["def", "ghi"], []));
 
-io0Note("collectAsMap on a FilterGenerator");
+Io0::note("collectAsMap on a FilterGenerator");
 def outMap = collectAsMap(
     makeFilterGenerator(makeInclusiveRange(0, 2, 4))
         { value ->
             <> {(value): value, (add(value, 1)): value, blort: value}
         });
-io0Note(cat("    ", sourceString(outMap)));
-io0Note("");
+Io0::note(cat("    ", sourceString(outMap)));
+Io0::note("");
 
 
 <> 0

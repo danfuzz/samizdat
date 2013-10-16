@@ -17,32 +17,32 @@ def x = { <outx> ->
     <outx> "Hello"
 }();
 
-io0Note(x);
+Io0::note(x);
 
 def y = { <outx> arg ->
     <outx> arg
 }("and");
 
-io0Note(y);
+Io0::note(y);
 
 def z = { <stuff> ->
     ifValue { <> "also" }
         { value -> <stuff> value }
 }();
 
-io0Note(z);
+Io0::note(z);
 
 fn <blort> foo() {
     <blort> "goodbye"
 };
 
-io0Note(foo());
+Io0::note(foo());
 
 fn <blort> bar(arg) {
     <blort> arg
 };
 
-io0Note(bar("to"));
+Io0::note(bar("to"));
 
 fn <out> baz(foo) {
     ifIs { <> eq(foo, 1) }
@@ -50,8 +50,8 @@ fn <out> baz(foo) {
         { <out> }
 };
 
-io0Note(baz(1));
+Io0::note(baz(1));
 ifNot { <> baz(2) }
-    { io0Note("too!"); };
+    { Io0::note("too!"); };
 
 <> 0

@@ -18,7 +18,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 #
 
 fn print(args*) {
-    io0Note(sourceStringUnadorned(args))
+    Io0::note(sourceStringUnadorned(args))
 };
 
 
@@ -31,14 +31,14 @@ fn func1(x) {
     return "func1"
 };
 
-io0Note(func1(10));
+Io0::note(func1(10));
 
 fn <out> func2(x*) {
     print("func2", x);
     <out> "func2"
 };
 
-io0Note(func2(20, "twenty"));
+Io0::note(func2(20, "twenty"));
 
 # Self-recursion.
 fn func3(x) {
@@ -50,7 +50,7 @@ fn func3(x) {
         }
 };
 
-io0Note(func3(1));
+Io0::note(func3(1));
 
 # Mutual recursion.
 fn recFunc1(x) {
@@ -67,6 +67,6 @@ fn recFunc2(x) {
         { recFunc1(add(x, 1)) };
 };
 
-io0Note(recFunc1(1));
+Io0::note(recFunc1(1));
 
 <> 0

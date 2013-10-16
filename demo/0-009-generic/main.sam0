@@ -15,15 +15,15 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 
 def whatIs = makeRegularGeneric("whatIs", 1, 1);
 
-genericBind(whatIs, Int,    { . -> io0Note("I am an int.") });
-genericBind(whatIs, String, { . -> io0Note("I am a string.") });
-genericBind(whatIs, Value,  { . -> io0Note("I am unknown.") });
+genericBind(whatIs, Int,    { . -> Io0::note("I am an int.") });
+genericBind(whatIs, String, { . -> Io0::note("I am a string.") });
+genericBind(whatIs, Value,  { . -> Io0::note("I am unknown.") });
 
 def whatAre = makeUnitypeGeneric("whatAre", 2);
 
-genericBind(whatAre, List,  { .* -> io0Note("We are lists.") });
-genericBind(whatAre, Map,   { .* -> io0Note("We are maps.") });
-genericBind(whatAre, Value, { .* -> io0Note("We are unknown.") });
+genericBind(whatAre, List,  { .* -> Io0::note("We are lists.") });
+genericBind(whatAre, Map,   { .* -> Io0::note("We are maps.") });
+genericBind(whatAre, Value, { .* -> Io0::note("We are unknown.") });
 
 whatIs(10);
 whatIs("stuff");

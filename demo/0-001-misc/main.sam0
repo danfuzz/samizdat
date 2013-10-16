@@ -19,7 +19,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 
 # Demo of `+` argument repeat modifier.
 fn stuff(items+) {
-    io0Note(cat("stuff: ", sourceString(items)))
+    Io0::note(cat("stuff: ", sourceString(items)))
 };
 
 # Demo of formal argument repeat modifiers. Also of quoted identifiers.
@@ -31,15 +31,15 @@ fn blort(foo, bar?, \"weird name"?, more*) {
 fn sibling() {
     def reader = io0SandboxedReader(butLast(SELF_PATH));
     def text = reader(["sibling.txt"]);
-    io0Note(text);
+    Io0::note(text);
 };
 
 # Demo of finding and non-finding files.
 fn fileExists() {
     fn tryFile(path) {
         ifIs { <> io0FileExists(path) }
-            { io0Note(cat("Exists: ", sourceString(path))) }
-            { io0Note(cat("Does not exist: ", sourceString(path))) }
+            { Io0::note(cat("Exists: ", sourceString(path))) }
+            { Io0::note(cat("Does not exist: ", sourceString(path))) }
     };
 
     def base = butLast(SELF_PATH);
@@ -49,7 +49,7 @@ fn fileExists() {
 
 # Emits the stringified version of the given value to the console.
 fn process(value) {
-    io0Note(sourceString(value));
+    Io0::note(sourceString(value));
 
     # Test of explicit void yield.
     <>
@@ -64,8 +64,8 @@ fn main(selfPath, name?, rest*) {
     # Be welcoming.
 
     ifIs { <> eq(&(name*), "danfuzz") }
-        { io0Note("Hello, Danfuzz!\n") }
-        { io0Note("Hello, Самиздат!\n") };
+        { Io0::note("Hello, Danfuzz!\n") }
+        { Io0::note("Hello, Самиздат!\n") };
 
     process(selfPath);
     process(rest);
