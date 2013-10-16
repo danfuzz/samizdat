@@ -6,6 +6,8 @@
 # Samizdat Layer 2 Tokenizer
 #
 
+def Peg = moduleGet({name: ["core", "Peg"]});
+
 
 # The standard entity map.
 def ENTITY_MAP = moduleGet({name: ["core", "EntityMap"]})::ENTITY_MAP;
