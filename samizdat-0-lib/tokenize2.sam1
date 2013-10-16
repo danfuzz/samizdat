@@ -6,13 +6,17 @@
 # Samizdat Layer 2 Tokenizer
 #
 
+def FunctionForwarder = moduleGet({name: ["core", "FunctionForwarder"]});
+def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
+def Peg = moduleGet({name: ["core", "Peg"]});
+
 
 # The standard entity map.
 def ENTITY_MAP = moduleGet({name: ["core", "EntityMap"]})::ENTITY_MAP;
 
 # Forward declarations for Layer 2 definitions.
-def tokMultilineComment = makeParseForwarder();
-def tokStringPart2 = makeParseForwarder();
+def tokMultilineComment = ParseForwarder::make();
+def tokStringPart2 = ParseForwarder::make();
 
 
 #
@@ -55,7 +59,7 @@ fn intFromDigitChar(ch) {
 # Processes a list of `stringPart` elements, yielding a literal `string`
 # value. In *Layer 2* (and higher) this can also yield an
 # `interpolatedString` or an `error`.
-def processStringParts = makeFunctionForwarder();
+def processStringParts = FunctionForwarder::make();
 
 # Parses a non-zero amount of whitespace and comments.
 # **Note:** The yielded result is always ignored.
@@ -125,7 +129,7 @@ def tokPunctuation = {/
 # Parses an integer literal.
 #
 # **Note:** This rule is rewritten in *Layer 2*.
-def tokInt = makeParseForwarder();
+def tokInt = ParseForwarder::make();
 
 # Parses a run of regular characters or an escape / special sequence,
 # inside a quoted string.
@@ -378,7 +382,7 @@ def tokNamedChar = {/
 # Parses the inner portion of a string interpolation expression. This
 # captures a list of inner tokens, ending when parentheses and braces are
 # balanced out (and ignoring other could-be-matched delimiter tokens).
-def tokStringInterpolation = makeParseForwarder();
+def tokStringInterpolation = ParseForwarder::make();
 def implStringInterpolation = {/
     &["({"]
     open = tokToken

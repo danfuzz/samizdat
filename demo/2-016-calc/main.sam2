@@ -11,6 +11,8 @@
 SELF_PATH, ARGS* ->
 
 def Io1 = moduleGet({name: ["core", "Io1"]});
+def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
+def Peg = moduleGet({name: ["core", "Peg"]});
 
 
 #
@@ -89,7 +91,7 @@ fn applyShuntingYard(initialValue, opValues) {
 };
 
 # Forward declaration of `expression`.
-def expression = makeParseForwarder();
+def expression = ParseForwarder::make();
 
 # Parses a single digit, yielding its value as an int.
 def digit = {/

@@ -7,6 +7,8 @@
 #
 
 def Io0 = moduleGet({name: ["core", "Io0"]});
+def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
+def Peg = moduleGet({name: ["core", "Peg"]});
 
 
 #
@@ -98,13 +100,13 @@ fn makeCallNonlocalExit(name, optExpression?) {
 #
 
 # Forward declarations.
-def parProgramBody = makeParseForwarder();
-def parTerm = makeParseForwarder();
-def parExpression = makeParseForwarder();
-def parUnaryExpression = makeParseForwarder();
+def parProgramBody = ParseForwarder::make();
+def parTerm = ParseForwarder::make();
+def parExpression = ParseForwarder::make();
+def parUnaryExpression = ParseForwarder::make();
 
 # Forward declaration required for integrating layer 1 definitions.
-def parParser = makeParseForwarder();
+def parParser = ParseForwarder::make();
 
 # Documented in Samizdat Layer 0 spec.
 def parYieldDef = Peg::makeMainSequence(
@@ -519,7 +521,7 @@ def parProgramOrError = Peg::makeMainSequence(
 #
 
 # `choicePex` is the top-level parsing expression node type.
-def parChoicePex = makeParseForwarder();
+def parChoicePex = ParseForwarder::make();
 
 # Map from parser tokens to derived value types for pexes.
 def PEX_TYPES = {

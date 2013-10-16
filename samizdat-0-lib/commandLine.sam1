@@ -7,6 +7,7 @@
 #
 
 def Io1 = moduleGet({name: ["core", "Io1"]});
+def Peg = moduleGet({name: ["core", "Peg"]});
 
 
 #
