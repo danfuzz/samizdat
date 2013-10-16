@@ -405,16 +405,3 @@ This is equivalent to the syntactic form `{/ !() /}` (that is, attempting
 to find a lookahead failure for the empty rule, said rule which always
 succeeds). It is also equivalent to the syntactic form `{/ [] /}` (that is,
 the empty set of tokens or characters).
-
-
-<br><br>
-### In-Language Definitions: globals
-
-#### `makeParseForwarder() <> function`
-
-Simple parser forward declaration utility. The result of a call to this
-function is a parser, which forwards `parse` calls to an initially un-set
-box.
-
-This function is like `makeFunctionForwarder`, except for parsers not
-functions. See that function for more details.
