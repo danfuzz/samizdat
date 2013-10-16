@@ -394,39 +394,28 @@ fn apply(rule, input) {
 # Export mechanics
 #
 
-def Peg = @[Module: {
-    info: {
-        name: ["core", "peg"],
-        version: "0.1.0"
-    },
-    exports: {
-        any:                    any,
-        apply:                  apply,
-        empty:                  empty,
-        eof:                    eof,
-        fail:                   fail,
-        makeCharSet:            makeCharSet,
-        makeCharSetComplement:  makeCharSetComplement,
-        makeChoice:             makeChoice,
-        makeCode:               makeCode,
-        makeLookaheadFailure:   makeLookaheadFailure,
-        makeLookaheadSuccess:   makeLookaheadSuccess,
-        makeMainChoice:         makeMainChoice,
-        makeMainSequence:       makeMainSequence,
-        makeOpt:                makeOpt,
-        makePlus:               makePlus,
-        makeResult:             makeResult,
-        makeSequence:           makeSequence,
-        makeStar:               makeStar,
-        makeString:             makeString,
-        makeToken:              makeToken,
-        makeTokenSet:           makeTokenSet,
-        makeTokenSetComplement: makeTokenSetComplement,
-        parse:                  parse
-    }
-}];
-moduleDef(Peg);
-
 <> {
-    Peg: Peg
+    any:                    any,
+    apply:                  apply,
+    empty:                  empty,
+    eof:                    eof,
+    fail:                   fail,
+    makeCharSet:            makeCharSet,
+    makeCharSetComplement:  makeCharSetComplement,
+    makeChoice:             makeChoice,
+    makeCode:               makeCode,
+    makeLookaheadFailure:   makeLookaheadFailure,
+    makeLookaheadSuccess:   makeLookaheadSuccess,
+    makeMainChoice:         makeMainChoice,
+    makeMainSequence:       makeMainSequence,
+    makeOpt:                makeOpt,
+    makePlus:               makePlus,
+    makeResult:             makeResult,
+    makeSequence:           makeSequence,
+    makeStar:               makeStar,
+    makeString:             makeString,
+    makeToken:              makeToken,
+    makeTokenSet:           makeTokenSet,
+    makeTokenSetComplement: makeTokenSetComplement,
+    parse:                  parse
 }

@@ -16,7 +16,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn makeFunctionForwarder() {
+fn make() {
     <> @[FunctionForwarder: makeYieldBox()]
 };
 
@@ -54,5 +54,5 @@ fn FunctionForwarder_canCall(fwd, arg) {
 genericBind(canCall, "FunctionForwarder", FunctionForwarder_canCall);
 
 <> {
-    makeFunctionForwarder: makeFunctionForwarder
+    make: make
 }

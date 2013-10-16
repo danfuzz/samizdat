@@ -27,9 +27,12 @@ LIBRARY_DIR ->
 # `Io*` modules, because this function needs to be called before any modules
 # are loaded.
 fn flattenName(name) {
-    # Suffix each component with `/`, and concatenate them all together.
+    # Suffix each component with `/`, concatenate them all together, and
+    # drop the final `/`.
+
     def withSlashes = filter(name, { elem <> cat(elem, "/") });
-    <> cat(withSlashes*)
+    def nearResult = cat(withSlashes*);
+    <> slice(nearResult, 0, sub(sizeOf(nearResult), 1))
 };
 
 # Reads the named library file.
@@ -66,8 +69,8 @@ fn loadLibrary(ctx, name) {
 # `Module`, because this function needs to be called before `Module` is
 # fully loaded.
 fn loadModule(ctx, flatName) {
-    def mainText = readLibraryFile(cat(flatName, "main.sam"));
-    def infoText = readLibraryFile(cat(flatName, "module.sam"));
+    def mainText = readLibraryFile(cat(flatName, "/main.sam"));
+    def infoText = readLibraryFile(cat(flatName, "/module.sam"));
 
     # Evaluate `mainText` as per `loadLibrary` above (same rationale),
     # but with the result becoming the module exports.

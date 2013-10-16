@@ -7,6 +7,8 @@
 #
 
 def Io1 = moduleGet({name: ["core", "Io1"]});
+def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
+def Peg = moduleGet({name: ["core", "Peg"]});
 
 
 #
@@ -190,16 +192,16 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 #
 
 # Forward declaration required for layer 2.
-def parTerm2 = makeParseForwarder();
+def parTerm2 = ParseForwarder::make();
 
 # Forward declarations.
-def parProgramBody = makeParseForwarder();
-def parTerm = makeParseForwarder();
-def parExpression = makeParseForwarder();
-def parUnaryExpression = makeParseForwarder();
+def parProgramBody = ParseForwarder::make();
+def parTerm = ParseForwarder::make();
+def parExpression = ParseForwarder::make();
+def parUnaryExpression = ParseForwarder::make();
 
 # Forward declaration required for integrating layer 1 definitions.
-def parParser = makeParseForwarder();
+def parParser = ParseForwarder::make();
 
 # Parses a yield / nonlocal exit definition, yielding the def name.
 def parYieldDef = {/
@@ -628,8 +630,8 @@ def parActualsList = {/
 # `prefixOperator` and `postfixOperator` from layer 0 are replaced with
 # forwarded functions here. These are subsumed by more featureful layer 2
 # definitions, below.
-def parPrefixOperator = makeParseForwarder();
-def parPostfixOperator = makeParseForwarder();
+def parPrefixOperator = ParseForwarder::make();
+def parPostfixOperator = ParseForwarder::make();
 
 # Parses a unary expression. This is a term, optionally surrounded on
 # either side by any number of unary operators. Postfix operators
@@ -651,8 +653,8 @@ store(parUnaryExpression, implUnaryExpression);
 # `expression` from layer 0 is omitted here (it's forwarded earlier), and
 # `statement` and `nonlocalExit` are replaced with forwarded functions here.
 # These are all subsumed by more featureful layer 2 definitions, below.
-def parStatement = makeParseForwarder();
-def parNonlocalExit = makeParseForwarder();
+def parStatement = ParseForwarder::make();
+def parNonlocalExit = ParseForwarder::make();
 
 # Parses a local yield / return.
 def parYield = {/
@@ -727,7 +729,7 @@ def parProgramOrError = {/
 #
 
 # Forward declaration.
-def parChoicePex = makeParseForwarder();
+def parChoicePex = ParseForwarder::make();
 
 # Map from parser tokens to derived value types for pexes.
 def PEX_TYPES = {
