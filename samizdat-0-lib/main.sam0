@@ -24,7 +24,8 @@ LIBRARY_DIR ->
 # Flattens a module name to a simple directory name.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
-# `io0*`, because this function needs to be called before `io0*` is loaded.
+# `Io*` modules, because this function needs to be called before any modules
+# are loaded.
 fn flattenName(name) {
     # Suffix each component with `/`, and concatenate them all together.
     def withSlashes = filter(name, { elem <> cat(elem, "/") });

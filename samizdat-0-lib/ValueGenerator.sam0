@@ -6,13 +6,15 @@
 # `ValueGenerator` Type
 #
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
 #
 # Exported Definitions
 #
 
 # Documented in spec.
 fn ValueGenerator_collect(gen) {
-    io0Die("Unbounded generator.");
+    Io0::die("Unbounded generator.");
 };
 genericBind(collect, "ValueGenerator", ValueGenerator_collect);
 

@@ -6,6 +6,8 @@
 # Booleans
 #
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
 
 #
 # Exported Definitions
@@ -52,7 +54,7 @@ fn Boolean_shl(bool, n) {
     def newValue = shl(dataOf(bool), n);
 
     <> ifValueOr { <> get({0: false, 1: true}, newValue) }
-        { io0Die("Undefined boolean shift result.") }
+        { Io0::die("Undefined boolean shift result.") }
 };
 genericBind(shl, "Boolean", Boolean_shl);
 

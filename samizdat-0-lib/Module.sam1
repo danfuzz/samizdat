@@ -6,6 +6,8 @@
 # Module functions
 #
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
 
 #
 # Private Definitions
@@ -14,7 +16,7 @@
 # Parsed version of `ENVIRONMENT::MODULE_PATHS`, which includes a parsed
 # version of `LIBRARY_DIR` as the first element.
 def MODULE_PATHS_LIST = ifValue { <> ENVIRONMENT::MODULE_PATHS }
-    { paths <> io0PathListFromFlat(paths) }
+    { paths <> Io1::pathListFromFlat(paths) }
     { <> [] };
 
 # The (base) name of a module metainformation file.
@@ -31,11 +33,11 @@ fn findModuleDirectory(fqName, optPaths?) {
     def paths = ifValueOr { <> optPaths* } { <> MODULE_PATHS_LIST };
 
     ifIs { <> eq(paths, []) }
-        { io0Die(cat("Module not found: ", stringFromModuleName(fqName))) };
+        { Io1::die(cat("Module not found: ", stringFromModuleName(fqName))) };
 
     def oneDir = [first(paths)*, fqName*];
 
-    <> ifIs { <> io0FileExists([oneDir*, MODULE_FILE_NAME]) }
+    <> ifIs { <> Io1::fileExists([oneDir*, MODULE_FILE_NAME]) }
         { <> oneDir }
         { <> findModuleDirectory(fqName, butFirst(paths)) }
 };
@@ -56,7 +58,7 @@ fn moduleUse(searchInfo) {
     def pendings = fetch(thePendingBox);
     ifIs { <> get(pendings, fqName) }
         {
-            io0Die(cat(
+            Io1::die(cat(
                 "Dependency loop with modules: ",
                 sourceString(keyList(pendings))))
         };
@@ -65,13 +67,13 @@ fn moduleUse(searchInfo) {
     store(thePendingBox, put(pendings, fqName, null));
 
     def moduleDir = findModuleDirectory(fqName);
-    def moduleReader = io0SandboxedReader(moduleDir);
+    def moduleReader = Io1::sandboxedReader(moduleDir);
     def infoText = moduleReader(["module.sam"]);
     def info = sam0Eval(LIBRARY, sam0ParseExpression(infoText));
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     ifIs { <> ne(fqName, info::name) }
-        { io0Die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
+        { io1::die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
 
     def mainText = moduleReader(["main.sam"]);
     def subLibrary = makeLibrary({LIBRARY*, INFO: info, READER: moduleReader});

@@ -6,6 +6,8 @@
 # Samizdat Layer 2 Tree Parser
 #
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
 
 #
 # Private Definitions
@@ -13,12 +15,12 @@
 
 # Reports the given list of pending tokens as part of error processing.
 fn reportError(pending) {
-    io0Note("Pending tokens:");
+    Io1::note("Pending tokens:");
 
     filterPump(pending, makeInclusiveRange(1, 1, 50))
-        { token, . -> io0Note(cat("    ", sourceString(token))) };
+        { token, . -> Io1::note(cat("    ", sourceString(token))) };
 
-    io0Die("\nExtra tokens at end of program.")
+    Io1::die("\nExtra tokens at end of program.")
 };
 
 # Set-like map of all lowercase identifier characters. Used to figure
@@ -285,7 +287,7 @@ def parNullaryClosure = {/
     {
         def formals = dataOf(c)::formals;
         ifIs { <> ne(formals, []) }
-            { io0Die("Invalid formal argument in code block.") };
+            { Io1::die("Invalid formal argument in code block.") };
         <> c
     }
 /};
@@ -297,7 +299,7 @@ def parCodeOnlyClosure = {/
 
     {
         ifIs { <> dataOf(c)::yieldDef }
-            { io0Die("Invalid yield definition in code block.") };
+            { Io1::die("Invalid yield definition in code block.") };
         <> c
     }
 /};
@@ -523,7 +525,7 @@ def parMap = {/
 def parListItem = {/
     parIdentifierString
     @":"
-    { io0Die("Mapping syntax not valid as a list item or call argument.") }
+    { Io1::die("Mapping syntax not valid as a list item or call argument.") }
 |
     @"&"
     ex = parUnaryExpression
@@ -944,7 +946,7 @@ def parInterpolatedString = {/
 
                     def call = ifValueOr
                         { <> Peg::apply(parStringInterpolation, tokens) }
-                        { io0Die("Invalid syntax in string interpolation.") };
+                        { Io1::die("Invalid syntax in string interpolation.") };
 
                     <> makeCall(formatter,
                         makeInterpolate(makeOptValueExpression(call)))
@@ -1075,7 +1077,7 @@ def implNonlocalExit = {/
             # (rather than just letting the rule fail) in order to make the
             # error message more sensible.
             ifIs { <> eq(dataOf(name), "continue") }
-                { io0Die("Invalid use of continue with value.") };
+                { Io1::die("Invalid use of continue with value.") };
             <> ex
         }
     )?
@@ -1149,7 +1151,7 @@ def implPostfixOperator = {/
 
     (
         { <> eq(exprs, []) }
-        { io0Die("Missing index value(s) from index expression.") }
+        { Io1::die("Missing index value(s) from index expression.") }
     |
         { <> { node <> makeCall((UNARY_OPERATORS::"[]"), node, exprs*) } }
     )
@@ -1242,7 +1244,7 @@ def parRangeExpression = {/
         (
             # Any additional range-ish operators cause an explicit error.
             [@".." @"..!" @"..+"]
-            { io0Die("Invalid form for range expression.") }
+            { Io1::die("Invalid form for range expression.") }
         |
             { <> result }
         )
@@ -1902,10 +1904,10 @@ def parSwitchExpression = {/
         };
 
         ifIs { <> gt(sizeOf(optDefault), 1) }
-            { io0Die("Multiple default cases in switch.") };
+            { Io1::die("Multiple default cases in switch.") };
 
         ifIs { <> gt(sizeOf(optElse), 1) }
-            { io0Die("Multiple else cases in switch.") };
+            { Io1::die("Multiple else cases in switch.") };
 
         # Notes:
         #

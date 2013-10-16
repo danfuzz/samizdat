@@ -6,6 +6,8 @@
 # Samizdat Layer 1 tree parser
 #
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
 
 #
 # Private Definitions
@@ -13,12 +15,12 @@
 
 # Reports the given list of pending tokens as part of error processing.
 fn reportError(pending) {
-    io0Note("Pending tokens:");
+    Io0::note("Pending tokens:");
 
     filterPump(pending, makeInclusiveRange(1, 1, 50))
-        { token, . -> io0Note(cat("    ", sourceString(token))) };
+        { token, . -> Io0::note(cat("    ", sourceString(token))) };
 
-    io0Die("\nExtra tokens at end of program.")
+    Io0::die("\nExtra tokens at end of program.")
 };
 
 # Set-like map of all lowercase identifier characters. Used to figure
@@ -172,7 +174,7 @@ def parNullaryClosure = Peg::makeMainSequence(
     Peg::makeCode { c ->
         def formals = dataOf(c)::formals;
         ifIs { <> ne(formals, []) }
-            { io0Die("Invalid formal argument in code block.") };
+            { Io0::die("Invalid formal argument in code block.") };
         <> c
     });
 
@@ -181,7 +183,7 @@ def parCodeOnlyClosure = Peg::makeMainSequence(
     parNullaryClosure,
     Peg::makeCode { c ->
         ifIs { <> dataOf(c)::yieldDef }
-            { io0Die("Invalid yield definition in code block.") };
+            { Io0::die("Invalid yield definition in code block.") };
         <> c
     });
 
@@ -323,7 +325,7 @@ def parListItem = Peg::makeMainChoice(
         parIdentifierString,
         Peg::makeToken(":"),
         Peg::makeCode { ., . ->
-            io0Die("Mapping syntax not valid as a list item or call argument.")
+            Io0::die("Mapping syntax not valid as a list item or call argument.")
         }),
     Peg::makeSequence(
         Peg::makeToken("&"),
