@@ -90,6 +90,8 @@ will be returned, or one of:
 
 * Modules
   * [core::EntityMap](EntityMap.md)
+  * [core::Io0](Io0.md)
+  * [core::Io1](Io1.md)
 
 * Other
   * [Constants](constants.md)
