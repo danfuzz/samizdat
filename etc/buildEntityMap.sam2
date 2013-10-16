@@ -11,6 +11,9 @@
 
 SELF_PATH, ARGS* ->
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
+
 # Map of hex digit tokens to int values.
 def DIGIT_VALUES = {
     @"0": 0,  @"1": 1,  @"2": 2,  @"3": 3,  @"4": 4,
@@ -91,7 +94,7 @@ def parFile = {/
         extras = [! "\n"]+
         {
             def string = stringFromTokenList(extras);
-            io0Die("Unexpected line: \%q(string)")
+            Io1::die("Unexpected line: \%q(string)")
         }
     )?
 
@@ -100,9 +103,9 @@ def parFile = {/
 
 def inPath = [butLast(SELF_PATH)*, "entity-map.txt"];
 def outPath = [butLast(SELF_PATH)*, "entityMap.sam0"];
-io0Note("Processing file: \%q(inPath)");
+Io1::note("Processing file: \%q(inPath)");
 
-def text = io0ReadFileUtf8(inPath);
+def text = Io1::readFileUtf8(inPath);
 def result = Peg::apply(parFile, text);
 
 # This makes each result line *start* with `,\n`, to make it easy to just
@@ -135,6 +138,6 @@ def outText = "\
     <> { ENTITY_MAP: ENTITY_MAP }
     ";
 
-io0WriteFileUtf8(outPath, outText);
+Io1::writeFileUtf8(outPath, outText);
 
 <> 0

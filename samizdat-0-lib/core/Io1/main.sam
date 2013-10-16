@@ -7,6 +7,9 @@
 #
 
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
+
 #
 # Private Definitions: `parPathString`
 #
@@ -52,7 +55,7 @@ def implIgnoredComponent = {/
 /};
 store(parIgnoredComponent, implIgnoredComponent);
 
-# Helper for `io0PathFromFlat` which parses absolute path strings
+# Helper for `pathFromFlat` which parses absolute path strings
 # into components. This canonicalizes the path by ignoring duplicate
 # slashes, `.` components, and matched `name/..` pairs.
 def parPathString = {/
@@ -96,7 +99,7 @@ def parPathList = {/
 # Private Definitions
 #
 
-# Helper for `io0FlatFromPath` which validates a single path component.
+# Helper for `flatFromPath` which validates a single path component.
 # Yields an error string on invalid. Parsing fails for valid components.
 def parErrorFromPathComponent = {/
     ".." !.
@@ -135,19 +138,19 @@ fn isPrefix(prefix, path) {
 
 # Dies with the given message including the given path.
 fn dieWith(msg, path) {
-    io0Die(cat(msg, ": ", sourceString(path)))
+    Io0::die(cat(msg, ": ", sourceString(path)))
 };
 
-# Helper for `io0SandboxedReader` which does symbolic link resolution,
+# Helper for `sandboxedReader` which does symbolic link resolution,
 # respecting the sandbox directory.
 fn resolveLinks(sandboxDirectory, path) {
     loopReduce(path, 50) { path, limit ->
         ifIs { <> le(limit, 0) }
-            { io0Die("Too many links in symbolic link chain.") };
+            { Io0::die("Too many links in symbolic link chain.") };
         ifNot { <> isPrefix(sandboxDirectory, path) }
-            { io0Die("Symbolic link escapes sandbox directory.") };
+            { Io0::die("Symbolic link escapes sandbox directory.") };
 
-        <> ifValue { <> io0ReadLink(path) }
+        <> ifValue { <> readLink(path) }
             { newPath <> [newPath, sub(limit, 1)] }
             { return path }
     }
@@ -159,13 +162,13 @@ fn resolveLinks(sandboxDirectory, path) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn io0FileExists(path) {
-    <> ifIs { <> io0FlatFileExists(io0FlatFromPath(path)) }
+fn fileExists(path) {
+    <> ifIs { <> Io0::flatFileExists(flatFromPath(path)) }
         { <> path }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn io0FlatFromPath(path) {
+fn flatFromPath(path) {
     ifIs { <> eq(path, []) }
         { dieWith("Invalid empty path", path) };
 
@@ -187,7 +190,7 @@ fn io0FlatFromPath(path) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn io0PathFromFlat(string) {
+fn pathFromFlat(string) {
     # Reject the empty string.
     ifIs { <> eq(string, "") }
         { dieWith("Invalid path", "") };
@@ -195,7 +198,7 @@ fn io0PathFromFlat(string) {
     # Prepend the current directory if the path isn't absolute.
     def absoluteString = ifIs { <> eq(nth(string, 0), "/") }
         { <> string }
-        { <> cat(io0FlatCwd(), "/", string) };
+        { <> cat(Io0::flatCwd(), "/", string) };
 
     # Parse the string into components (or an error string).
     def components = Peg::apply(parPathString, absoluteString);
@@ -207,45 +210,50 @@ fn io0PathFromFlat(string) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn io0PathListFromFlat(string) {
+fn pathListFromFlat(string) {
     # Parse the given string into a list of flat paths.
     def flats = Peg::apply(parPathList, string);
 
-    # Call `io0PathFromFlat` on each element.
-    <> filterAll(io0PathFromFlat, flats)
+    # Call `pathFromFlat` on each element.
+    <> filterAll(pathFromFlat, flats)
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn io0ReadFileUtf8(path) {
-    <> io0FlatReadFileUtf8(io0FlatFromPath(path))
+fn readFileUtf8(path) {
+    <> Io0::flatReadFileUtf8(flatFromPath(path))
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn io0ReadLink(path) {
-    <> ifValue { <> io0FlatReadLink(io0FlatFromPath(path)) }
-        { newPath <> io0PathFromFlat(newPath) }
+fn readLink(path) {
+    <> ifValue { <> Io0::flatReadLink(flatFromPath(path)) }
+        { newPath <> pathFromFlat(newPath) }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn io0SandboxedReader(directory) {
+fn sandboxedReader(directory) {
     <> { path ->
         def fullPath = resolveLinks(directory, [directory*, path*]);
-        <> io0ReadFileUtf8(fullPath);
+        <> readFileUtf8(fullPath);
     }
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn io0WriteFileUtf8(path, text) {
-    <> io0FlatWriteFileUtf8(io0FlatFromPath(path), text)
+fn writeFileUtf8(path, text) {
+    <> Io0::flatWriteFileUtf8(flatFromPath(path), text)
 };
 
 <> {
-    io0FileExists:       io0FileExists,
-    io0FlatFromPath:     io0FlatFromPath,
-    io0PathFromFlat:     io0PathFromFlat,
-    io0PathListFromFlat: io0PathListFromFlat,
-    io0ReadFileUtf8:     io0ReadFileUtf8,
-    io0ReadLink:         io0ReadLink,
-    io0SandboxedReader:  io0SandboxedReader,
-    io0WriteFileUtf8:    io0WriteFileUtf8
-};
+    # Re-exported from Io0.
+    die:               Io0::die,
+    note:              Io0::note,
+
+    # Defined in this file.
+    fileExists:        fileExists,
+    flatFromPath:      flatFromPath,
+    pathFromFlat:      pathFromFlat,
+    pathListFromFlat:  pathListFromFlat,
+    readFileUtf8:      readFileUtf8,
+    readLink:          readLink,
+    sandboxedReader:   sandboxedReader,
+    writeFileUtf8:     writeFileUtf8
+}

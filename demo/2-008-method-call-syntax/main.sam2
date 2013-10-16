@@ -10,6 +10,8 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
 
 #
 # Helper Definitions
@@ -17,7 +19,7 @@ SELF_PATH, ARGS* ->
 
 # Prints out the given value.
 fn msg(value) {
-    io0Note("\%q(value)");
+    Io1::note("\%q(value)");
 };
 
 
@@ -25,18 +27,18 @@ fn msg(value) {
 # Main Tests
 #
 
-io0Note("\nBasic syntax");
+Io1::note("\nBasic syntax");
 msg([1, 2].sizeOf());
 msg(["zero", "one", "two"].get(0));
 msg(["zero", "one", "two"].nth(1));
 msg((100).perEq(100));
 msg("".cat("Awesome", "tastic!"));
 
-io0Note("\nExpression syntax for name");
+Io1::note("\nExpression syntax for name");
 def funcList = [nth, perEq];
 msg(["zero", "one", "two"].(first(funcList))(1));
 
-io0Note("\nGetting bound methods");
+Io1::note("\nGetting bound methods");
 def method1 = [1, 2, 3].sizeOf;
 msg(method1());
 

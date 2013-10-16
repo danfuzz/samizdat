@@ -10,6 +10,9 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
+
 #
 # Helper Definitions
 #
@@ -24,7 +27,7 @@ fn msg(box) {
         { value <> sourceString(value) }
         { <> "(void)" };
 
-    io0Note(cat(storeStr, fetchStr))
+    Io0::note(cat(storeStr, fetchStr))
 };
 
 
@@ -32,7 +35,7 @@ fn msg(box) {
 # Main demos
 #
 
-io0Note("Mutable Box");
+Io0::note("Mutable Box");
 
 def box1 = makeMutableBox();
 msg(box1);
@@ -45,7 +48,7 @@ msg(box1);
 store(box1);
 msg(box1);
 
-io0Note("\nMutable Box, pre-set");
+Io0::note("\nMutable Box, pre-set");
 
 def box2 = makeMutableBox("blort");
 msg(box2);
@@ -54,27 +57,27 @@ msg(box2);
 store(box2, "igram");
 msg(box2);
 
-io0Note("\nYield Box");
+Io0::note("\nYield Box");
 
 def box3 = makeYieldBox();
 msg(box3);
 store(box3, "fizmo");
 msg(box3);
 
-io0Note("\nnullBox");
+Io0::note("\nnullBox");
 
 msg(nullBox);
 store(nullBox, "stuff");
 msg(nullBox);
 
-io0Note("\nUpdate mutable box");
+Io0::note("\nUpdate mutable box");
 def box4 = makeMutableBox();
 update(box4, { args* <> sourceString(args) });
 msg(box4);
 update(box4, { value <> cat("Yes: ", value) });
 msg(box4);
 
-io0Note("\nUpdate yield box");
+Io0::note("\nUpdate yield box");
 def box5 = makeYieldBox();
 update(box5, { args* <> sourceString(args) });
 msg(box5);

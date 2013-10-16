@@ -10,6 +10,8 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
 
 #
 # Helper Definitions
@@ -17,21 +19,21 @@ SELF_PATH, ARGS* ->
 
 # Prints the given value, indented slightly.
 fn msg(value) {
-    io0Note(cat("  ", sourceString(value)))
+    Io0::note(cat("  ", sourceString(value)))
 };
 
 # Outputs all generated values, with a header and a footer.
 fn msgAll(header, gen) {
-    io0Note(header);
+    Io0::note(header);
     filterAll([gen*]) { elem -> msg(elem) };
-    io0Note("  [fin]");
-    io0Note(cat("  value: ", sourceString(gen)));
-    io0Note("")
+    Io0::note("  [fin]");
+    Io0::note(cat("  value: ", sourceString(gen)));
+    Io0::note("")
 };
 
 # Outputs ten generated values, with a header and a footer.
 fn msgTen(header, gen) {
-    io0Note(header);
+    Io0::note(header);
 
     { <done> ->
         def count = makeMutableBox(10);
@@ -49,9 +51,9 @@ fn msgTen(header, gen) {
         }
     }();
 
-    io0Note("  [...]");
-    io0Note(cat("  value: ", sourceString(gen)));
-    io0Note("")
+    Io0::note("  [...]");
+    Io0::note(cat("  value: ", sourceString(gen)));
+    Io0::note("")
 };
 
 
@@ -71,7 +73,7 @@ msgTen("Open range (333, 0)",
 msgTen("Open range (\"!\", 0)",
     makeOpenRange("!", 0));
 
-io0Note("");
+Io0::note("");
 
 msgAll("Closed range (3, 10, 5)",
     makeClosedRange(3, 10, 5));
@@ -82,7 +84,7 @@ msgAll("Closed range (3, 10, 0)",
 msgAll("Closed range (\"9\", -1, 10)",
     makeClosedRange("9", -1, 10));
 
-io0Note("");
+Io0::note("");
 
 msgAll("Inclusive range 5..10",
     makeInclusiveRange(5, 1, 10));
@@ -102,7 +104,7 @@ msgAll("Zero-increment inclusive character range",
 msgAll("Empty inclusive range",
     makeInclusiveRange(10, 1, 9));
 
-io0Note("");
+Io0::note("");
 
 msgAll("Exclusive range 5..!10",
     makeExclusiveRange(5, 1, 10));

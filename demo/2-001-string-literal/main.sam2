@@ -10,13 +10,15 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
 
 #
 # Helper Definitions
 #
 
 fn msg(string) {
-    io0Note("Got: \%q(string)")
+    Io1::note("Got: \%q(string)")
 };
 
 #

@@ -24,7 +24,8 @@ LIBRARY_DIR ->
 # Flattens a module name to a simple directory name.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
-# `io0*`, because this function needs to be called before `io0*` is loaded.
+# `Io*` modules, because this function needs to be called before any modules
+# are loaded.
 fn flattenName(name) {
     # Suffix each component with `/`, and concatenate them all together.
     def withSlashes = filter(name, { elem <> cat(elem, "/") });
@@ -34,9 +35,9 @@ fn flattenName(name) {
 # Reads the named library file.
 fn readLibraryFile(name) {
     def path = cat(LIBRARY_DIR, "/", name);
-    <> ifIs { <> io0FlatFileExists(path) }
-        { <> io0FlatReadFileUtf8(path) }
-        { io0Die(cat("No such core library file: ", name)) }
+    <> ifIs { <> Io0_flatFileExists(path) }
+        { <> Io0_flatReadFileUtf8(path) }
+        { Io0_die(cat("No such core library file: ", name)) }
 };
 
 # Loads the named library file in the given context, returning a map
@@ -88,12 +89,12 @@ fn loadLibraryOrModule(ctx, name) {
     <> ifIs { <> hasType(name, List) }
         {
             def flatName = flattenName(name);
-            io0Note(cat("    module:  ", flatName));
+            Io0_note(cat("    module:  ", flatName));
             loadModule(ctx, flatName);
             <> ctx
         }
         {
-            io0Note(cat("    library: ", name));
+            Io0_note(cat("    library: ", name));
             <> loadLibrary(ctx, name)
         }
 };
@@ -136,11 +137,11 @@ fn makeCoreLibrary() {
 # Main Definition
 #
 
-io0Note("Loading core library...");
+Io0_note("Loading core library...");
 
 def CORE_LIBRARY = makeCoreLibrary();
 
-io0Note("    [fin]");
-io0Note("");
+Io0_note("    [fin]");
+Io0_note("");
 
 <> CORE_LIBRARY

@@ -10,6 +10,8 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
 
 #
 # Helper Definitions
@@ -17,7 +19,7 @@ SELF_PATH, ARGS* ->
 
 # Demo of `+` argument repeat modifier.
 fn stuff(items+) {
-    io0Note(cat("stuff: ", sourceString(items)))
+    Io0::note(cat("stuff: ", sourceString(items)))
 };
 
 # Demo of formal argument repeat modifiers. Also of quoted identifiers.
@@ -25,29 +27,9 @@ fn blort(foo, bar?, \"weird name"?, more*) {
     stuff(foo, bar, \"weird name", more)
 };
 
-# Demo of reading a sibling file through a sandboxed reader.
-fn sibling() {
-    def reader = io0SandboxedReader(butLast(SELF_PATH));
-    def text = reader(["sibling.txt"]);
-    io0Note(text);
-};
-
-# Demo of finding and non-finding files.
-fn fileExists() {
-    fn tryFile(path) {
-        ifIs { <> io0FileExists(path) }
-            { io0Note(cat("Exists: ", sourceString(path))) }
-            { io0Note(cat("Does not exist: ", sourceString(path))) }
-    };
-
-    def base = butLast(SELF_PATH);
-    tryFile([base*, "sibling.txt"]);
-    tryFile([base*, "non-sibling.txt"]);
-};
-
 # Emits the stringified version of the given value to the console.
 fn process(value) {
-    io0Note(sourceString(value));
+    Io0::note(sourceString(value));
 
     # Test of explicit void yield.
     <>
@@ -62,8 +44,8 @@ fn main(selfPath, name?, rest*) {
     # Be welcoming.
 
     ifIs { <> eq(&(name*), "danfuzz") }
-        { io0Note("Hello, Danfuzz!\n") }
-        { io0Note("Hello, Самиздат!\n") };
+        { Io0::note("Hello, Danfuzz!\n") }
+        { Io0::note("Hello, Самиздат!\n") };
 
     process(selfPath);
     process(rest);
@@ -112,19 +94,12 @@ fn main(selfPath, name?, rest*) {
     process(blort);
     process(LIBRARY::cat);
     process(LIBRARY::ne);
-    process(io0PathFromFlat("///foo//////./bar/./../baz"));
-    process(io0PathFromFlat("/a/b/x/y/z/../../../c/"));
-    process(io0FlatFromPath(["fizmo", "igram", "blort", ""]));
-    process(io0PathListFromFlat("/foo:/foo/bar:baz/blort/"));
     process(ENVIRONMENT::HOME);
     process(formatInt(71, 2));
     process(formatInt(71, 10));
     process(formatInt(71, 16));
     process(formatInt(71, 36));
     process(cat(toString(1), toString(31), toString(127)));
-
-    sibling();
-    fileExists();
 
     blort(1);
     blort(1, 2);

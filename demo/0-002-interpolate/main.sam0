@@ -10,13 +10,15 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
 
 #
 # Helper Definitions
 #
 
 fn msg(args*) {
-    io0Note(cat("Got: ", sourceString(args)))
+    Io0::note(cat("Got: ", sourceString(args)))
 };
 
 fn ten() {
@@ -48,19 +50,19 @@ msg(makeInclusiveRange("a", 2, "m")*);
 
 ifValue { <> yieldTest([]) }
     { value <> msg(value) }
-    { io0Note("(void)") };
+    { Io0::note("(void)") };
 
 ifValue { <> nonlocalTest([]) }
     { value <> msg(value) }
-    { io0Note("(void)") };
+    { Io0::note("(void)") };
 
 ifValue { <> yieldTest(["blort"]) }
     { value <> msg(value) }
-    { io0Note("(void)") };
+    { Io0::note("(void)") };
 
 ifValue { <> nonlocalTest(["fizmo"]) }
     { value <> msg(value) }
-    { io0Note("(void)") };
+    { Io0::note("(void)") };
 
 # The extra parens here force the interpolated expression not to be considered
 # at function argument level.

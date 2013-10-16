@@ -7,6 +7,9 @@
 #
 # Payload is `subGen`, the sub-generator.
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
+
 #
 # Exported Definitions
 #
@@ -18,7 +21,7 @@ fn makeOptGenerator(generator) {
 
 # Documented in spec.
 fn OptGenerator_collect(gen) {
-    io0Die("Unbounded generator.");
+    Io0::die("Unbounded generator.");
 };
 genericBind(collect, "OptGenerator", OptGenerator_collect);
 

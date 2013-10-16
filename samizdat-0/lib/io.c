@@ -34,7 +34,7 @@ static void emitNote(zvalue message) {
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0Die) {
+PRIM_IMPL(Io0_die) {
     if (argCount == 1) {
         emitNote(args[0]);
     }
@@ -43,35 +43,35 @@ PRIM_IMPL(io0Die) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0Note) {
+PRIM_IMPL(Io0_note) {
     emitNote(args[0]);
     return NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0FlatCwd) {
+PRIM_IMPL(Io0_flatCwd) {
     return ioFlatCwd();
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0FlatFileExists) {
+PRIM_IMPL(Io0_flatFileExists) {
     zvalue flatPath = args[0];
 
     return ioFlatFileExists(flatPath) ? flatPath : NULL;
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0FlatReadFileUtf8) {
+PRIM_IMPL(Io0_flatReadFileUtf8) {
     return ioFlatReadFileUtf8(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0FlatReadLink) {
+PRIM_IMPL(Io0_flatReadLink) {
     return ioFlatReadLink(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(io0FlatWriteFileUtf8) {
+PRIM_IMPL(Io0_flatWriteFileUtf8) {
     ioFlatWriteFileUtf8(args[0], args[1]);
     return NULL;
 }
