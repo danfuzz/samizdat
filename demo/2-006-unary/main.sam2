@@ -19,7 +19,7 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 
 # Prints out the given value.
 fn msg(value) {
-    io0Note(sourceString(value))
+    Io1::note(sourceString(value))
 };
 
 # Something to call.
@@ -37,7 +37,7 @@ fn returnString() {
 # Main Tests
 #
 
-io0Note("Ints and binary");
+Io1::note("Ints and binary");
 
 msg(-0);
 msg(-10);
@@ -51,7 +51,7 @@ msg(returnString());
 msg(returnVoid()?);
 msg(returnString()?);
 
-io0Note("\nBoolean / logic conversion");
+Io1::note("\nBoolean / logic conversion");
 
 msg(returnVoid()??);
 msg(returnString()??);
@@ -60,7 +60,7 @@ msg(false??);   # This one is the documented surprising result.
 msg((true**)?);
 msg((false**)?);
 
-io0Note("\nLogic ops");
+Io1::note("\nLogic ops");
 
 msg((!returnVoid())?);
 msg((!returnString())?);
@@ -70,7 +70,7 @@ msg((! !10)?);
 msg((! !"fuzzy bunnies")?);
 msg((! ! !@fizmo)?);
 
-io0Note("\nCollection indexing");
+Io1::note("\nCollection indexing");
 
 msg(["blort", "fizmo", "igram"][0]);
 msg(["blort", "fizmo", "igram"][1]);

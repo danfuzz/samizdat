@@ -18,6 +18,6 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 #
 
 def exmod = moduleUse({name: ["core", "example"]});
-io0Note(sourceString(exmod));
+Io1::note(sourceString(exmod));
 
 <> 0

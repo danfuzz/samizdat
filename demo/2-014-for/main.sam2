@@ -19,7 +19,7 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 
 # Output the given values.
 fn print(values*) {
-    io0Note("    \%Q(values)")
+    Io1::note("    \%Q(values)")
 };
 
 
@@ -27,67 +27,67 @@ fn print(values*) {
 # Main Tests
 #
 
-io0Note("Empty content.");
+Io1::note("Empty content.");
 for (x in []) {
-    io0Die("Shouldn't happen.");
+    Io1::die("Shouldn't happen.");
 };
 
-io0Note("\nSingle element list.");
+Io1::note("\nSingle element list.");
 for (x in [1]) {
     print(x)
 };
 
-io0Note("\nTwo element list.");
+Io1::note("\nTwo element list.");
 for (x in [@blort, @fizmo]) {
     print(x)
 };
 
-io0Note("\nThree element list.");
+Io1::note("\nThree element list.");
 for (x in ["muffin", "biscuit", "scone"]) {
     print(x)
 };
 
-io0Note("\nString.");
+Io1::note("\nString.");
 for (x in "Blort!") {
     print(x)
 };
 
-io0Note("\nFive-element map, no name binding.");
+Io1::note("\nFive-element map, no name binding.");
 for (. in {a:1, b:2, c:3, d:4, e:5}) {
     print("(item)")
 };
 
-io0Note("\nList and string in parallel.");
+Io1::note("\nList and string in parallel.");
 for (x in [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55], y in "fibonacci") {
     print(x, y)
 };
 
-io0Note("\nExplicit generator.");
+Io1::note("\nExplicit generator.");
 for (value in makeFilterGenerator({ x <> x * x }, [1, 2, 3, 4])) {
     print(value)
 };
 
-io0Note("\nUnnamed break.");
+Io1::note("\nUnnamed break.");
 def result1 = for (x in [1, 2, 3, 4, 5]) {
     if (x \== 3) { break 23 };
     print(x)
 };
-io0Note("Result: \%q(result1)");
+Io1::note("Result: \%q(result1)");
 
-io0Note("\nNamed break.");
+Io1::note("\nNamed break.");
 def result2 = for <out> (x in [1, 2, 3, 4, 5]) {
     if (x \== 3) { <out> 187 };
     print(x)
 };
-io0Note("Result: \%q(result2)");
+Io1::note("Result: \%q(result2)");
 
-io0Note("\nUnnamed continue.");
+Io1::note("\nUnnamed continue.");
 for (x in [1, 2, 3, 4, 5]) {
     if (x \== 3) { continue };
     print(x)
 };
 
-io0Note("\nNamed continue.");
+Io1::note("\nNamed continue.");
 for (x in [1, 2, 3, 4, 5]) { <next> ->
     if (x \== 3) { <next> };
     print(x)

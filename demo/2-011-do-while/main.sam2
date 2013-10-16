@@ -26,7 +26,7 @@ do { <next> ->
     } else if (fetch(box) == 7) {
         <next>
     };
-    io0Note("Value is \%q(fetch(box)).")
+    Io1::note("Value is \%q(fetch(box)).")
 } while (fetch(box) < 10);
 
 def result1 = do {
@@ -34,19 +34,19 @@ def result1 = do {
     if (fetch(box) == 13) {
         break "blort"
     };
-    io0Note("Value is \%q(fetch(box)).")
+    Io1::note("Value is \%q(fetch(box)).")
 } while (fetch(box) < 15);
 
-io0Note("Result is \%q(result1).");
+Io1::note("Result is \%q(result1).");
 
 def result2 = do <out> {
     store(box, fetch(box) + 1);
     if (fetch(box) == 18) {
         <out> "frotz"
     };
-    io0Note("Value is \%q(fetch(box)).")
+    Io1::note("Value is \%q(fetch(box)).")
 } while (fetch(box) < 20);
 
-io0Note("Result is \%q(result2).");
+Io1::note("Result is \%q(result2).");
 
 <> 0

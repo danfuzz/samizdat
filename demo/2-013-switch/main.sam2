@@ -59,46 +59,46 @@ fn namer(value) {
 # Main Tests
 #
 
-io0Note("Power...");
-io0Note(powerName(0));
-io0Note(powerName(1));
-io0Note(powerName(2));
-io0Note(powerName(3));
-io0Note(powerName(4));
-io0Note(powerName(5));
-io0Note(powerName(6));
-io0Note(powerName(7));
-io0Note(powerName("blort"));
+Io1::note("Power...");
+Io1::note(powerName(0));
+Io1::note(powerName(1));
+Io1::note(powerName(2));
+Io1::note(powerName(3));
+Io1::note(powerName(4));
+Io1::note(powerName(5));
+Io1::note(powerName(6));
+Io1::note(powerName(7));
+Io1::note(powerName("blort"));
 
-io0Note("\nInterpolate...");
-io0Note(interpolator(1, [1, 2, 3]));
-io0Note(interpolator(2, [(4..6)*]));
-io0Note(interpolator(10, [(8..18)*]));
-io0Note(interpolator(11, [(8..18)*]));
-io0Note(interpolator(0, [0, 5]));
+Io1::note("\nInterpolate...");
+Io1::note(interpolator(1, [1, 2, 3]));
+Io1::note(interpolator(2, [(4..6)*]));
+Io1::note(interpolator(10, [(8..18)*]));
+Io1::note(interpolator(11, [(8..18)*]));
+Io1::note(interpolator(0, [0, 5]));
 
-io0Note("\nElse...");
-io0Note(elser("blort"));
-io0Note(elser("fizmo"));
-io0Note(elser());
-io0Note(sourceString(elser("igram")?)); # `?` because we expect void.
+Io1::note("\nElse...");
+Io1::note(elser("blort"));
+Io1::note(elser("fizmo"));
+Io1::note(elser());
+Io1::note(sourceString(elser("igram")?)); # `?` because we expect void.
 
-io0Note("\nVoid yield...");
+Io1::note("\nVoid yield...");
 ifNot
     {
         <> switch (lt(2, 1)) {
-            default: { io0Note("Huh?") }
+            default: { Io1::note("Huh?") }
         }
     }
-    { io0Note("Yes, void.") };
+    { Io1::note("Yes, void.") };
 
-io0Note("\nNames...");
-io0Note(sourceString(namer(1)));
-io0Note(sourceString(namer(2)));
-io0Note(sourceString(namer(3)));
-io0Note(sourceString(namer(4)));
-io0Note(sourceString(namer(5)));
-io0Note(sourceString(namer(6)));
-io0Note(sourceString(namer(7)));
+Io1::note("\nNames...");
+Io1::note(sourceString(namer(1)));
+Io1::note(sourceString(namer(2)));
+Io1::note(sourceString(namer(3)));
+Io1::note(sourceString(namer(4)));
+Io1::note(sourceString(namer(5)));
+Io1::note(sourceString(namer(6)));
+Io1::note(sourceString(namer(7)));
 
 <> 0

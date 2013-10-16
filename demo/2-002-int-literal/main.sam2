@@ -18,7 +18,7 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 #
 
 fn msg(v) {
-    io0Note("Got: \%q(v)")
+    Io1::note("Got: \%q(v)")
 };
 
 #

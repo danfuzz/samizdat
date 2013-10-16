@@ -24,7 +24,7 @@ do {
     if (fetch(box) == 5) {
         break
     };
-    io0Note("Value is \%q(fetch(box)).")
+    Io1::note("Value is \%q(fetch(box)).")
 };
 
 do { <next> ->
@@ -36,7 +36,7 @@ do { <next> ->
     } else if (fetch(box) == 15) {
         break
     };
-    io0Note("Value is \%q(fetch(box)).")
+    Io1::note("Value is \%q(fetch(box)).")
 };
 
 def result = do <out> {
@@ -44,9 +44,9 @@ def result = do <out> {
     if (fetch(box) == 20) {
         <out> "igram"
     };
-    io0Note("Value is \%q(fetch(box)).")
+    Io1::note("Value is \%q(fetch(box)).")
 };
 
-io0Note("Result is \%q(result).");
+Io1::note("Result is \%q(result).");
 
 <> 0

@@ -18,7 +18,7 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 #
 
 fn msg(v) {
-    io0Note("Got: \%q(v)")
+    Io1::note("Got: \%q(v)")
 };
 
 #
@@ -26,7 +26,7 @@ fn msg(v) {
 #
 
 
-io0Note("Layer 0...");
+Io1::note("Layer 0...");
 
 msg({});
 msg({1: 2});
@@ -38,7 +38,7 @@ msg({def: "defined", do: "done"}); # Keywords should be "stringified".
 msg({true: 10, (true): 20}); # First key is a string, second is a boolean.
 msg({["f", "u", "z"]*: "muffins"});
 
-io0Note("\nLayer 2...");
+Io1::note("\nLayer 2...");
 
 msg({("0".."9")*: "woo"});
 msg({{(0..6)*: "blort"}*, {(5..9)*: "fizmo"}*});

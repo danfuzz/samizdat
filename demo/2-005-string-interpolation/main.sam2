@@ -18,7 +18,7 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 #
 
 fn print(string) {
-    io0Note(string)
+    Io1::note(string)
 };
 
 #
