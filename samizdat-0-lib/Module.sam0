@@ -108,7 +108,10 @@ fn moduleDef(modu) {
     def name = nameOf(modu);
 
     ifIs { <> moduleGet({name: name}) }
-        { io0Die(cat("Cannot redefine module: ", stringFromModuleName(name))) };
+        {
+            Io0_die(cat("Cannot redefine module: ",
+                stringFromModuleName(name)))
+        };
 
     def mods = fetch(theModulesBox);
     store(theModulesBox, put(mods, name, modu));
