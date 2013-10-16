@@ -6,6 +6,7 @@
 # Samizdat Layer 2 Tokenizer
 #
 
+def FunctionForwarder = moduleGet({name: ["core", "FunctionForwarder"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
 
@@ -58,7 +59,7 @@ fn intFromDigitChar(ch) {
 # Processes a list of `stringPart` elements, yielding a literal `string`
 # value. In *Layer 2* (and higher) this can also yield an
 # `interpolatedString` or an `error`.
-def processStringParts = makeFunctionForwarder();
+def processStringParts = FunctionForwarder::make();
 
 # Parses a non-zero amount of whitespace and comments.
 # **Note:** The yielded result is always ignored.

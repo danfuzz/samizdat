@@ -28,7 +28,7 @@ def MANIFEST = [
     # Layer 0: Constant value definitions.
     "constants.sam0",
 
-    # Simple modules.
+    # Simplest modules.
     ["core", "EntityMap"],
     ["core", "Io0"],
 
@@ -39,7 +39,9 @@ def MANIFEST = [
     "Bitwise.sam0",
     "Boolean.sam0",
     "Box.sam0",
-    "FunctionForwarder.sam0",
+
+    # Layer 0: Simple modules.
+    ["core", "FunctionForwarder"],
 
     # Layer 0: Complicated functions
     "NullBox.sam0",
@@ -56,7 +58,7 @@ def MANIFEST = [
     "String.sam0",
     "format.sam0",
 
-    # Layer 0: Nontrivial modules.
+    # Layer 0: Complicated modules.
     ["core", "Peg"],
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 
