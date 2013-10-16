@@ -1,8 +1,11 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-I/O
----
+core::Io1
+---------
+
+This module defines simple I/O operations.
+
 
 <br><br>
 ### Generic Function Definitions
@@ -11,69 +14,23 @@ I/O
 
 
 <br><br>
-### Primitive Definitions
+### Function Definitions
 
-#### `io0Die(string?) <> n/a # Terminates the runtime.`
+#### `die(string?) <> n/a # Terminates the runtime.`
 
-Prints the given string to the system console (as if with `io0Note`)
+Prints the given string to the system console (as if with `Io1::note`)
 if supplied, and terminates the runtime with a failure status code (`1`).
 
-#### `io0FlatCwd() <> flatPath`
-
-Returns the current working directory of the process, as a
-string.
-
-This function is a thin veneer over the standard Posix call `getcwd()`.
-
-#### `io0FlatReadLink(flatPath) <> flatPath | void`
-
-Checks the filesystem to see if the given path (given as a flat string)
-refers to a symbolic link. If it does, then this returns the string which
-represents the direct resolution of that link. It does not try to re-resolve
-the result iteratively, so the result may not actually refer to a
-real file (for example).
-
-If the path does not refer to a symbolic link, then this function returns
-void.
-
-This function is a thin veneer over the standard Posix call `readlink()`.
-
-#### `io0Note(string) <> void`
-
-Writes out a newline-terminated note to the system console or equivalent.
-This is intended for debugging, and as such this will generally end up
-emitting to the standard-error stream.
-
-#### `io0FlatFileExists(flatPath) <> logic`
-
-Returns `flatPath` if it corresponds to an already-existing file.
-Returns void if not.
-
-#### `io0FlatReadFileUtf8(flatPath) <> string`
-
-Reads the named file, using the underlying OS's functionality,
-interpreting the contents as UTF-8 encoded text. Returns a string
-of the read and decoded text.
-
-#### `io0FlatWriteFileUtf8(flatPath, text) <> void`
-
-Writes out the given text to the named file, using the underlying OS's
-functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
-
-
-<br><br>
-### In-Language Definitions
-
-#### `io0FileExists(path) <> logic`
+#### `fileExists(path) <> logic`
 
 Returns `path` if it corresponds to an already-existing file.
 Returns void if not. `path` must be a componentized path-list,
-such as might have been returned from `io0PathFromFlat`.
+such as might have been returned from `pathFromFlat`.
 
-#### `io0FlatFromPath(path) <> flatPath`
+#### `flatFromPath(path) <> flatPath`
 
 Converts the given path list to an absolute "Posix-style" flat string.
-This is the reverse of the operation specified in `io0PathFromFlat`.
+This is the reverse of the operation specified in `pathFromFlat`.
 
 It is an error (terminating the runtime) if any of the following
 constraints are violated.
@@ -87,7 +44,13 @@ constraints are violated.
 * No path component other than the final one may be empty (that is,
   equal to `""`).
 
-#### `io0PathFromFlat(flatPath) <> path`
+#### `note(string) <> void`
+
+Writes out a newline-terminated note to the system console or equivalent.
+This is intended for debugging, and as such this will generally end up
+emitting to the standard-error stream.
+
+#### `pathFromFlat(flatPath) <> path`
 
 Converts the given path string to an absolute form, in the "form factor"
 that is used internally. The input `string` is expected to be a
@@ -117,21 +80,21 @@ original path ended with a trailing slash.
 
 It is an error (terminating the runtime) if `string` is empty (`""`).
 
-#### `io0PathListFromFlat(flatPathList) <> [path*]`
+#### `pathListFromFlat(flatPathList) <> [path*]`
 
 Converts the given path list string to a list (per se) of absolute
 internal-form paths. The given `flatPathList` is taken to be a colon-separated
 list of flat paths. It is split apart on colons, and each split path is
-processed as if by `io0PathFromFlat`.
+processed as if by `pathFromFlat`.
 
-#### `io0ReadFileUtf8(path) <> string`
+#### `readFileUtf8(path) <> string`
 
 Reads the named file, using the underlying OS's functionality,
 interpreting the contents as UTF-8 encoded text. Returns a string
 of the read and decoded text. `path` must be a componentized path-list,
-such as might have been returned from `io0PathFromFlat`.
+such as might have been returned from `pathFromFlat`.
 
-#### `io0ReadLink(path) <> path | void`
+#### `readLink(path) <> path | void`
 
 Checks the filesystem to see if the given path refers to a symbolic
 link. If it does, then this returns the path which represents the
@@ -142,15 +105,15 @@ real file (for example).
 If the path does not refer to a symbolic link, then this function returns
 void.
 
-`pathList` must be a list of the form described by `io0PathFromFlat`
-(see which). See `io0ReadFileUtf8` for further discussion.
+`pathList` must be a list of the form described by `pathFromFlat`
+(see which). See `readFileUtf8` for further discussion.
 
-#### `io0SandboxedReader(directory) <> function`
+#### `sandboxedReader(directory) <> function`
 
 Returns a file reader function which is limited to *only* reading
 files from underneath the named directory (a path-list as
-described in `io0PathFromFlat`). The return value from this call
-behaves like `ioFlatReadFileUtf8`, as if the given directory is both the
+described in `pathFromFlat`). The return value from this call
+behaves like `flatReadFileUtf8`, as if the given directory is both the
 root of the filesystem and is the current working directory. Symbolic
 links are respected, but only if the link target is under the named
 directory.
@@ -158,9 +121,9 @@ directory.
 This function is meant to help enable a "supervisor" to build a sandbox
 from which untrusted code can read its own files.
 
-#### `io0WriteFileUtf8(flatPath, text) <> void`
+#### `writeFileUtf8(flatPath, text) <> void`
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
 `path` must be a componentized path-list, such as might have been returned
-from `io0PathFromFlat`.
+from `pathFromFlat`.

@@ -10,6 +10,8 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
 
 #
 # Helper Definitions
@@ -17,9 +19,9 @@ SELF_PATH, ARGS* ->
 
 # Prints generator or collection output.
 fn msg(header, gen) {
-    io0Note(header);
-    filterPump(gen) { item <> io0Note("  \%q(item)") };
-    io0Note("")
+    Io1::note(header);
+    filterPump(gen) { item <> Io1::note("  \%q(item)") };
+    Io1::note("")
 };
 
 
@@ -27,7 +29,7 @@ fn msg(header, gen) {
 # Main Tests
 #
 
-io0Note("Concise Forms\n");
+Io1::note("Concise Forms\n");
 
 msg("One-item generator",
     (x in ["a", "b", "c"] <> "~~\(x)~~"));
@@ -41,7 +43,7 @@ msg("One-item collect",
 msg("Two-item collect",
     [foo in 1..10, bar in 100..100..+ <> foo + bar]);
 
-io0Note("Extended forms\n");
+Io1::note("Extended forms\n");
 
 msg("One-item generator",
     (x in ["a", "b", "c"] ->

@@ -8,6 +8,9 @@
 # Data payload is a yield box.
 #
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
+
 #
 # Exported Definitions
 #
@@ -32,7 +35,7 @@ genericBind(fetch, "FunctionForwarder", FunctionForwarder_fetch);
 # Documented in Samizdat Layer 0 spec.
 fn FunctionForwarder_store(fwd, function) {
     ifNot { <> canCall(call, function) }
-        { io0Die("Attempt to forward to non-function.") };
+        { Io0::die("Attempt to forward to non-function.") };
 
     <> store(dataOf(fwd), function);
 };

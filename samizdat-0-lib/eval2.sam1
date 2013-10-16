@@ -6,6 +6,9 @@
 # Samizdat Layer 2 Evaluation
 #
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
+
 #
 # Private Definitions
 #
@@ -15,7 +18,7 @@ def subEval = samEval;
 
 # TODO
 fn convertExpression(node) {
-    io0Die("TODO");
+    Io1::die("TODO");
 };
 
 

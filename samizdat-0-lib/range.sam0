@@ -8,6 +8,8 @@
 # `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
 # `OpenRange` payload: `{start: intOrChar, increment: int}`
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
 
 #
 # Private Definitions
@@ -119,7 +121,7 @@ fn makeOpenRange(firstValue, increment) {
 
 # Documented in spec.
 fn OpenRange_collect(range) {
-    io0Die("Unbounded generator.");
+    Io0::die("Unbounded generator.");
 };
 genericBind(collect, "OpenRange", OpenRange_collect);
 

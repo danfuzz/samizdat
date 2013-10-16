@@ -10,6 +10,8 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
 
 #
 # Combinator Definitions
@@ -114,11 +116,11 @@ def countDown2 = nth(countDowns, 0);
 
 # Emits the stringified version of the given value to the console.
 fn msg(value) {
-    io0Note(sourceString(value));
+    Io0::note(sourceString(value));
 };
 
 msg(countDown(10));
-io0Note("");
+Io0::note("");
 msg(countDown2(5));
 
 <> 0

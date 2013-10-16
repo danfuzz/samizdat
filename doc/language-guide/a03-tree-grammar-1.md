@@ -183,7 +183,7 @@ def parNullaryClosure = {/
     {
         def formals = dataOf(c)::formals;
         ifIs { <> ne(formals, []) }
-            { io0Die("Invalid formal argument in code block.") };
+            { Io0::die("Invalid formal argument in code block.") };
         <> c
     }
 /};
@@ -195,7 +195,7 @@ def parCodeOnlyClosure = {/
 
     {
         ifIs { <> dataOf(c)::yieldDef }
-            { io0Die("Invalid yield definition in code block.") };
+            { Io0::die("Invalid yield definition in code block.") };
         <> c
     }
 /};

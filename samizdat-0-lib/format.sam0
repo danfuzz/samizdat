@@ -6,6 +6,9 @@
 # Value stringification
 #
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
+
 #
 # Private Definitions
 #
@@ -324,7 +327,7 @@ fn formatInt(value, optBase?) {
 
     <> ifIs { <> le(&le(2, base), 36) }
         { <> formatIntWithBase(value, base) }
-        { io0Die("Invalid base for formatInt.") }
+        { Io0::die("Invalid base for formatInt.") }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -348,7 +351,7 @@ def FORMATTERS = {
 # is defined in terms of other exported functions.
 fn formatterFromString(formatSpec) {
     <> ifValueOr { <> get(FORMATTERS, formatSpec) }
-        { io0Die(cat("Unrecognized format spec: ", sourceString(formatSpec))) }
+        { Io0::die(cat("Unrecognized format spec: ", sourceString(formatSpec))) }
 };
 
 

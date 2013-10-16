@@ -10,6 +10,8 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
 
 #
 # Helper Definitions
@@ -17,13 +19,13 @@ SELF_PATH, ARGS* ->
 
 # Prints out the values yielded by the given generator.
 fn msg(generator) {
-    io0Note("Got: \%q([generator*])")
+    Io1::note("Got: \%q([generator*])")
 };
 
 # Prints out 10 values yielded by the given generator (and no more).
 fn msgTen(generator) {
     def values = makeFilterGenerator(generator, 1..10) { v, . <> v };
-    io0Note("Got: \%q([values*])")
+    Io1::note("Got: \%q([values*])")
 };
 
 
@@ -31,7 +33,7 @@ fn msgTen(generator) {
 # Main Tests
 #
 
-io0Note("Inclusive, default increment...");
+Io1::note("Inclusive, default increment...");
 msg(100..110);
 msg("U".."Z");
 msg(9..9);
@@ -39,14 +41,14 @@ msg(9..0);
 msg("f".."f");
 msg("f".."a");
 
-io0Note("\nInclusive, explicit increment...");
+Io1::note("\nInclusive, explicit increment...");
 msg(0..200..1000);
 msg("a"..5.."z");
 msg(10..-1..1);
 msg("F"..-2.."A");
 msg(9..0..9);
 
-io0Note("\nExclusive, default increment...");
+Io1::note("\nExclusive, default increment...");
 msg(100..!110);
 msg("U"..!"Z");
 msg(9..!9);
@@ -54,18 +56,18 @@ msg(9..!0);
 msg("f"..!"f");
 msg("f"..!"a");
 
-io0Note("\nExclusive, explicit increment...");
+Io1::note("\nExclusive, explicit increment...");
 msg(0..200..!1000);
 msg("a"..5..!"z");
 msg(10..-1..!1);
 msg("F"..-2..!"A");
 msg(9..0..!9);
 
-io0Note("\nOpen, default increment...");
+Io1::note("\nOpen, default increment...");
 msgTen(-10..+);
 msgTen("M"..+);
 
-io0Note("\nOpen, explicit increment...");
+Io1::note("\nOpen, explicit increment...");
 msgTen(99..-1..+);
 msgTen("z"..-2..+);
 

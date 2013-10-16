@@ -10,113 +10,115 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
 
 #
 # Main demos
 #
 
 def opt1 = optValue { <> };
-io0Note(sourceString(opt1));
+Io0::note(sourceString(opt1));
 
 def opt2 = optValue { <> "Yes: opt" };
-io0Note(sourceString(opt2));
+Io0::note(sourceString(opt2));
 
 def v1 = ifValue { <> "Yes." }
     { value ->
-        io0Note(value);
+        Io0::note(value);
         <> "Yes: v1"
     };
-io0Note(v1);
+Io0::note(v1);
 
 def v2 = ifValue { <> "Yes." }
     { value ->
-        io0Note(value);
+        Io0::note(value);
         <> "Yes: v2"
     }
-    { io0Die("No.") };
-io0Note(v2);
+    { Io0::die("No.") };
+Io0::note(v2);
 
 def v3 = ifValue { <> }
-    { value -> io0Die("No.") }
+    { value -> Io0::die("No.") }
     {
-        io0Note("Yes.");
+        Io0::note("Yes.");
         <> "Yes: v3"
     };
-io0Note(v3);
+Io0::note(v3);
 
-def v4 = optValue { <> ifValue { <> } { value -> io0Die("No."); } };
-io0Note(sourceString(v4));
+def v4 = optValue { <> ifValue { <> } { value -> Io0::die("No."); } };
+Io0::note(sourceString(v4));
 
 def v5 = ifIs { <> "Yes." }
     { <> "Yes: v5" };
-io0Note(v5);
+Io0::note(v5);
 
 def v6 = ifIs { <> "Yes." }
     { <> "Yes: v6" }
-    { io0Die("No.") };
-io0Note(v6);
+    { Io0::die("No.") };
+Io0::note(v6);
 
 def v7 = ifIs { <> }
-    { io0Die("No.") }
+    { Io0::die("No.") }
     { <> "Yes: v7" };
-io0Note(v7);
+Io0::note(v7);
 
-def v8 = optValue { <> ifIs { <> } { io0Die("No.") } };
-io0Note(sourceString(v8));
+def v8 = optValue { <> ifIs { <> } { Io0::die("No.") } };
+Io0::note(sourceString(v8));
 
-def v9 = optValue { <> ifNot { <> "Yes." } { io0Die("No.") } };
-io0Note(sourceString(v9));
+def v9 = optValue { <> ifNot { <> "Yes." } { Io0::die("No.") } };
+Io0::note(sourceString(v9));
 
 def v10 = ifNot { <> }
     { <> "Yes: v10" };
-io0Note(v10);
+Io0::note(v10);
 
 def v11 = ifValueOr
     { <> "Yes: v11" }
-    { io0Die("No.") };
-io0Note(v11);
+    { Io0::die("No.") };
+Io0::note(v11);
 
 def v12 = ifValueOr
     { <> }
     { <> "Yes: v12" };
-io0Note(v12);
+Io0::note(v12);
 
 # Admittedly odd edge case.
 def v13 = ifValues([],
     { <> "Yes: v13" },
-    { io0Die("No.") });
-io0Note(v13);
+    { Io0::die("No.") });
+Io0::note(v13);
 
 # Admittedly odd edge case.
 def v14 = ifValues([],
     { <> "Yes: v14" });
-io0Note(v14);
+Io0::note(v14);
 
 def v15 = ifValues(
     [
         { <> "Yes: v15" }
     ],
     { args* <> sourceString(args) });
-io0Note(v15);
+Io0::note(v15);
 
 def v16 = ifValues(
     [
         { <> "Yes: v16" }
     ],
     { args* <> sourceString(args) },
-    { io0Die("No.") });
-io0Note(v16);
+    { Io0::die("No.") });
+Io0::note(v16);
 
 def v17 = ifValues(
     [
         { <> }
     ],
-    { x -> io0Die("No.") },
+    { x -> Io0::die("No.") },
     { <> "Yes: v17" });
-io0Note(v17);
+Io0::note(v17);
 
-def v18 = optValue { <> ifValues([ { <> } ], { x -> io0Die("No.") }) };
-io0Note(sourceString(v18));
+def v18 = optValue { <> ifValues([ { <> } ], { x -> Io0::die("No.") }) };
+Io0::note(sourceString(v18));
 
 def v19 = ifValues(
     [
@@ -124,17 +126,17 @@ def v19 = ifValues(
         { x <> cat(x, "2") }
     ],
     { args* <> sourceString(args) },
-    { io0Die("No.") });
-io0Note(v19);
+    { Io0::die("No.") });
+Io0::note(v19);
 
 def v20 = ifValues(
     [
         { <> "1" },
         { x <> }
     ],
-    { io0Die("No.") },
+    { Io0::die("No.") },
     { <> "Yes: v20" });
-io0Note(v20);
+Io0::note(v20);
 
 def v21 = ifValues(
     [
@@ -144,7 +146,7 @@ def v21 = ifValues(
         { x, y, z <> cat(x, y, z, "4") }
     ],
     { args* <> sourceString(args) },
-    { io0Die("No.") });
-io0Note(v21);
+    { Io0::die("No.") });
+Io0::note(v21);
 
 <> 0

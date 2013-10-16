@@ -6,6 +6,9 @@
 # Command line interpreter
 #
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
+
 #
 # Private Definitions
 #
@@ -50,7 +53,7 @@ def parError = {/
     word = parWord
     {
         def value = cat(stringFromTokens(ch1, ch2), word);
-        io0Note(cat("Unknown option: ", sourceString(value)));
+        Io1::note(cat("Unknown option: ", sourceString(value)));
         <> {error: true}
     }
 /};
@@ -69,7 +72,7 @@ def parArguments = {/
     {
         def options = cat({}, optionList*);
         ifIs { <> options::error }
-            { io0Die("Invalid option(s).") };
+            { Io1::die("Invalid option(s).") };
         <> {options: options, args: args}
     }
 /};
@@ -108,10 +111,10 @@ fn samCommandLine(context, rawArgs*) {
     def argWords = parsedArgs::args;
 
     def fileName = ifValueOr { <> first(argWords) } { <> "/dev/stdin" };
-    def filePath = io0PathFromFlat(fileName);
+    def filePath = Io1::pathFromFlat(fileName);
     def args = ifValueOr { <> butFirst(argWords) } { <> [] };
 
-    def programText = io0ReadFileUtf8(filePath);
+    def programText = Io1::readFileUtf8(filePath);
 
     def evalled = ifIs { <> options::"layer-0" }
         { <> evalText0(context, programText) }

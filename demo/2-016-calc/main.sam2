@@ -10,6 +10,8 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
 
 #
 # Helper Definitions
@@ -157,7 +159,7 @@ def evalExpressions = {/
         ex = expression
         "\n"
         {
-            io0Note("\%q(ex)");
+            Io1::note("\%q(ex)");
             # Explicit yield here to indicate successful parsing.
             <> null
         }
