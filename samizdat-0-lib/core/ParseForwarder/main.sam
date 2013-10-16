@@ -17,7 +17,7 @@ def Peg = moduleGet({name: ["core", "Peg"]});
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn makeParseForwarder() {
+fn make() {
     <> @[ParseForwarder: makeYieldBox()]
 };
 
@@ -49,5 +49,5 @@ fn ParseForwarder_parse(fwd, args*) {
 genericBind(Peg::parse, "ParseForwarder", ParseForwarder_parse);
 
 <> {
-    makeParseForwarder: makeParseForwarder
+    make: make
 }

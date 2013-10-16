@@ -25,12 +25,12 @@ def MANIFEST = [
     # by everything else.
     "Module.sam0",
 
+    # Layer 0: Constant value definitions.
+    "constants.sam0",
+
     # Simple modules.
     ["core", "EntityMap"],
     ["core", "Io0"],
-
-    # Layer 0: Constant value definitions.
-    "constants.sam0",
 
     # Layer 0: Simple functions. These only rely on primitive functions.
     "meta.sam0",
@@ -43,14 +43,14 @@ def MANIFEST = [
 
     # Layer 0: Complicated functions
     "NullBox.sam0",
-    "NullGenerator.sam0",      # Used by several other generators.
+    "NullGenerator.sam0",        # Used by several other generators.
     "ValueGenerator.sam0",
     "ListWrapGenerator.sam0",
-    "OptGenerator.sam0",       # Uses `ValueGenerator`.
-    "ParaGenerator.sam0",      # Uses `ListWrapGenerator`.
+    "OptGenerator.sam0",         # Uses `ValueGenerator`.
+    "ParaGenerator.sam0",        # Uses `ListWrapGenerator`.
     "CollectionGenerator.sam0",
     "SerialGenerator.sam0",
-    "FilterGenerator.sam0",    # Uses `ParaGenerator`.
+    "FilterGenerator.sam0",      # Uses `ParaGenerator`.
     "range.sam0",
     "Generator.sam0",
     "String.sam0",
@@ -58,7 +58,7 @@ def MANIFEST = [
 
     # Layer 0: Nontrivial modules.
     ["core", "Peg"],
-    "ParseForwarder.sam0",     # Uses `parse` defined by `peg.sam0`.
+    ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 
     # Layer 1 language implementation.
     "tokenize1.sam0",

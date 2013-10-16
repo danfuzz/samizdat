@@ -6,6 +6,7 @@
 # Samizdat Layer 2 Tokenizer
 #
 
+def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
 
 
@@ -13,8 +14,8 @@ def Peg = moduleGet({name: ["core", "Peg"]});
 def ENTITY_MAP = moduleGet({name: ["core", "EntityMap"]})::ENTITY_MAP;
 
 # Forward declarations for Layer 2 definitions.
-def tokMultilineComment = makeParseForwarder();
-def tokStringPart2 = makeParseForwarder();
+def tokMultilineComment = ParseForwarder::make();
+def tokStringPart2 = ParseForwarder::make();
 
 
 #
@@ -127,7 +128,7 @@ def tokPunctuation = {/
 # Parses an integer literal.
 #
 # **Note:** This rule is rewritten in *Layer 2*.
-def tokInt = makeParseForwarder();
+def tokInt = ParseForwarder::make();
 
 # Parses a run of regular characters or an escape / special sequence,
 # inside a quoted string.
@@ -380,7 +381,7 @@ def tokNamedChar = {/
 # Parses the inner portion of a string interpolation expression. This
 # captures a list of inner tokens, ending when parentheses and braces are
 # balanced out (and ignoring other could-be-matched delimiter tokens).
-def tokStringInterpolation = makeParseForwarder();
+def tokStringInterpolation = ParseForwarder::make();
 def implStringInterpolation = {/
     &["({"]
     open = tokToken

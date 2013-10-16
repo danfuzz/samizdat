@@ -8,6 +8,7 @@
 
 
 def Io0 = moduleGet({name: ["core", "Io0"]});
+def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
 
 
@@ -40,7 +41,7 @@ def parRegularComponent = {/
 
 # Parses a matched set of components that are collectively ignored, e.g.
 # `"/x/y/../.."` or `"/."`.
-def parIgnoredComponent = makeParseForwarder();
+def parIgnoredComponent = ParseForwarder::make();
 def implIgnoredComponent = {/
     component = parPathComponent
 
