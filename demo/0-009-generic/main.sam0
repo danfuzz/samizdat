@@ -10,6 +10,9 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
+
 def whatIs = makeRegularGeneric("whatIs", 1, 1);
 
 genericBind(whatIs, Int,    { . -> io0Note("I am an int.") });

@@ -10,6 +10,9 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Io0 = moduleGet({name: ["core", "Io0"]});
+
+
 #
 # Helper Definitions
 #
@@ -19,8 +22,8 @@ fn expect(name, result, func, args*) {
     def got = func(args*);
     ifNot { <> eq(got, result) }
         {
-            io0Note(cat("Unexpected result: ", sourceString(got)));
-            io0Die(cat("For: ", name, " ", sourceString(args)));
+            Io0::note(cat("Unexpected result: ", sourceString(got)));
+            Io0::die(cat("For: ", name, " ", sourceString(args)));
         }
 };
 
@@ -29,7 +32,7 @@ fn expect(name, result, func, args*) {
 # Main demos
 #
 
-io0Note("Booleans");
+Io0::note("Booleans");
 
 expect("and", false, and, false, false);
 expect("and", false, and, false, true);
@@ -85,6 +88,6 @@ expect("toInt", 1, toInt, true);
 expect("toNumber", 0, toNumber, false);
 expect("toNumber", 1, toNumber, true);
 
-io0Note("All good.");
+Io0::note("All good.");
 
 <> 0
