@@ -38,12 +38,6 @@ void.
 
 This function is a thin veneer over the standard Posix call `readlink()`.
 
-#### `io0Note(string) <> void`
-
-Writes out a newline-terminated note to the system console or equivalent.
-This is intended for debugging, and as such this will generally end up
-emitting to the standard-error stream.
-
 #### `io0FlatFileExists(flatPath) <> logic`
 
 Returns `flatPath` if it corresponds to an already-existing file.
@@ -59,6 +53,12 @@ of the read and decoded text.
 
 Writes out the given text to the named file, using the underlying OS's
 functionality, and encoding the text (a string) as a stream of UTF-8 bytes.
+
+#### `io0Note(string) <> void`
+
+Writes out a newline-terminated note to the system console or equivalent.
+This is intended for debugging, and as such this will generally end up
+emitting to the standard-error stream.
 
 
 <br><br>
