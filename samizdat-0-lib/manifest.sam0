@@ -65,7 +65,6 @@ def MANIFEST = [
 
     # Layer 1 additional library.
     ["core", "Io1"],
-    "io0.sam1",
     "commandLine.sam1",
     "Module.sam1",
 
