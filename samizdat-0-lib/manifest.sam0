@@ -55,6 +55,9 @@ def MANIFEST = [
     "Generator.sam0",
     "String.sam0",
     "format.sam0",
+
+    # Layer 0: Nontrivial modules.
+    ["core", "Peg"],
     "peg.sam0",
     "ParseForwarder.sam0",     # Uses `parse` defined by `peg.sam0`.
 
