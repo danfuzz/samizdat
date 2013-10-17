@@ -56,10 +56,10 @@ def MANIFEST = [
     "range.sam0",
     "Generator.sam0",
     "String.sam0",
-    "format.sam0",
 
     # Layer 0: Complicated modules.
     ["core", "Format"],
+    "format.sam0",               # Exports `Format` as a core library global.
     ["core", "Peg"],
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 

@@ -6,6 +6,7 @@
 # Value stringification
 #
 
+def Format = moduleGet({name: ["core", "Format"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -356,6 +357,7 @@ fn formatterFromString(formatSpec) {
 
 
 <> {
+    Format: Format,
     formatInt:             formatInt,
     formatValue:           formatValue,
     formatterFromString:   formatterFromString,
