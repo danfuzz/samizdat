@@ -41,13 +41,13 @@ def INT_SIGNS = {
 };
 
 # Stringifies an int using the given base.
-fn formatIntWithBase(int, base) {
+fn intWithBase(int, base) {
     <> get(INT_SIGNS, sign(int))(int, base)
 };
 
 # Formats a hex int argument.
-fn formatIntHex(arg) {
-    <> formatIntWithBase(arg, 16)
+fn intHex(arg) {
+    <> intWithBase(arg, 16)
 };
 
 
@@ -162,7 +162,7 @@ def SPECIAL_CHARS = {
 fn hexStringChar(ch) {
     <> cat(
         "\\x",
-        formatIntWithBase(toInt(ch), 16),
+        intWithBase(toInt(ch), 16),
         ";")
 };
 
@@ -189,7 +189,7 @@ fn stringChar(ch) {
 
 # Stringifies an int.
 fn Int_sourceGeneral(int, adorn) {
-    <> formatIntWithBase(int, 10)
+    <> intWithBase(int, 10)
 };
 genericBind(sourceGeneral, Int, Int_sourceGeneral);
 
@@ -322,12 +322,12 @@ fn sourceUnadorned(value?) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn formatInt(value, optBase?) {
+fn int(value, optBase?) {
     def base = ifValueOr { <> optBase* } { <> 10 };
 
     <> ifIs { <> le(&le(2, base), 36) }
-        { <> formatIntWithBase(value, base) }
-        { Io0::die("Invalid base for formatInt.") }
+        { <> intWithBase(value, base) }
+        { Io0::die("Invalid base for int.") }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -342,7 +342,7 @@ def FORMATTERS = {
     q: source,
     Q: sourceUnadorned,
     s: usual,
-    x: formatIntHex
+    x: intHex
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -356,7 +356,7 @@ fn formatterFor(formatSpec) {
 
 
 <> {
-    formatInt:             formatInt,
+    int:             int,
     usual:           usual,
     formatterFor:   formatterFor,
     source:          source,

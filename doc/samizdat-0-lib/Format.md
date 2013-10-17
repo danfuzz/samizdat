@@ -17,7 +17,7 @@ implicitly by the string interpolation system.
 <br><br>
 ### Function Definitions
 
-#### `formatInt(value, optBase?) <> string`
+#### `int(value, optBase?) <> string`
 
 Converts an int into a string form, in the given base which defaults to
 10. If specified, base may be any int in the range `2..36`.

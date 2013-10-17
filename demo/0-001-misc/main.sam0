@@ -95,10 +95,10 @@ fn main(selfPath, name?, rest*) {
     process(LIBRARY::cat);
     process(LIBRARY::ne);
     process(ENVIRONMENT::HOME);
-    process(Format::formatInt(71, 2));
-    process(Format::formatInt(71, 10));
-    process(Format::formatInt(71, 16));
-    process(Format::formatInt(71, 36));
+    process(Format::int(71, 2));
+    process(Format::int(71, 10));
+    process(Format::int(71, 16));
+    process(Format::int(71, 36));
     process(cat(toString(1), toString(31), toString(127)));
 
     blort(1);
