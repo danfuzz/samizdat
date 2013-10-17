@@ -349,7 +349,7 @@ def FORMATTERS = {
 #
 # This is listed out of (alphabetical) order, as it uses `FORMATTERS`, which
 # is defined in terms of other exported functions.
-fn formatterFromString(formatSpec) {
+fn formatterFor(formatSpec) {
     <> ifValueOr { <> get(FORMATTERS, formatSpec) }
         { Io0::die(cat("Unrecognized format spec: ", source(formatSpec))) }
 };
@@ -358,7 +358,7 @@ fn formatterFromString(formatSpec) {
 <> {
     formatInt:             formatInt,
     usual:           usual,
-    formatterFromString:   formatterFromString,
+    formatterFor:   formatterFor,
     source:          source,
     sourceUnadorned: sourceUnadorned
 }

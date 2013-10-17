@@ -39,7 +39,7 @@ is given.
 
 * Otherwise, this behaves just like `source(value)`.
 
-#### `formatterFromString(formatSpec) <> function`
+#### `formatterFor(formatSpec) <> function`
 
 This takes a formatting specification string and returns a formatter
 function which takes a single argument and applies the so specified
