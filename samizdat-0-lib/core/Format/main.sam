@@ -45,11 +45,6 @@ fn intWithBase(int, base) {
     <> get(INT_SIGNS, sign(int))(int, base)
 };
 
-# Formats a hex int argument.
-fn intHex(arg) {
-    <> intWithBase(arg, 16)
-};
-
 
 #
 # `sourceGeneral` and helpers
@@ -308,6 +303,11 @@ genericBind(humanString, Value, Value_humanString);
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn intHex(arg) {
+    <> intWithBase(arg, 16)
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn source(value?) {
     <> ifValue { <> value* }
         { value <> sourceGeneral(value, true) }
@@ -357,6 +357,7 @@ fn formatterFor(formatSpec) {
 
 <> {
     int:             int,
+    intHex:          intHex,
     usual:           usual,
     formatterFor:   formatterFor,
     source:          source,

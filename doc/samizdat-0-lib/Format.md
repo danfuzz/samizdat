@@ -22,6 +22,10 @@ implicitly by the string interpolation system.
 Converts an int into a string form, in the given base which defaults to
 10. If specified, base may be any int in the range `2..36`.
 
+#### `intHex(value) <> string`
+
+Same as `int(value, 16)`.
+
 #### `usual(value?) <> string`
 
 Converts an arbitrary value into a string representation form, meant
