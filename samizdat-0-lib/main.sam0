@@ -88,7 +88,7 @@ fn loadModule(ctx, flatName) {
     # If `info` indicates that the module is to be exported to the
     # global context, do so. Otherwise, return the original context.
     <> ifValue { <> info::globalName }
-        { name <> { ctx*, name: result } }
+        { name <> { ctx*, (name): result } }
         { <> ctx }
 };
 
