@@ -303,6 +303,15 @@ genericBind(humanString, Value, Value_humanString);
 #
 
 # Documented in Samizdat Layer 0 spec.
+fn int(value, optBase?) {
+    def base = ifValueOr { <> optBase* } { <> 10 };
+
+    <> ifIs { <> le(&le(2, base), 36) }
+        { <> intWithBase(value, base) }
+        { Io0::die("Invalid base for int.") }
+};
+
+# Documented in Samizdat Layer 0 spec.
 fn intHex(arg) {
     <> intWithBase(arg, 16)
 };
@@ -319,15 +328,6 @@ fn sourceUnadorned(value?) {
     <> ifValue { <> value* }
         { value <> sourceGeneral(value, false) }
         { <> "void" }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn int(value, optBase?) {
-    def base = ifValueOr { <> optBase* } { <> 10 };
-
-    <> ifIs { <> le(&le(2, base), 36) }
-        { <> intWithBase(value, base) }
-        { Io0::die("Invalid base for int.") }
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -356,10 +356,10 @@ fn formatterFor(formatSpec) {
 
 
 <> {
+    formatterFor:    formatterFor,
     int:             int,
     intHex:          intHex,
-    usual:           usual,
-    formatterFor:   formatterFor,
     source:          source,
-    sourceUnadorned: sourceUnadorned
+    sourceUnadorned: sourceUnadorned,
+    usual:           usual
 }
