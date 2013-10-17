@@ -17,32 +17,6 @@ implicitly by the string interpolation system.
 <br><br>
 ### Function Definitions
 
-#### `int(value, optBase?) <> string`
-
-Converts an int into a string form, in the given base which defaults to
-10. If specified, base may be any int in the range `2..36`.
-
-#### `intHex(value) <> string`
-
-Same as `int(value, 16)`.
-
-#### `usual(value?) <> string`
-
-Converts an arbitrary value into a string representation form, meant
-to be useful for producing the "usual" human-oriented output. This is
-the formatter used during string interpolation if no format specifier
-is given.
-
-* If `value` is a string, it is returned as-is.
-
-* If `value` is a list, its elements are converted as if by calling this
-  function on them, and then concatenated together without any separator
-  characters.
-
-* If `value` is void (that is, not passed), this returns the empty string.
-
-* Otherwise, this behaves just like `source(value)`.
-
 #### `formatterFor(formatSpec) <> function`
 
 This takes a formatting specification string and returns a formatter
@@ -63,6 +37,15 @@ following, with the indicated meaning:
   string.
 
 **Syntax Note:** Used in the translation of string interpolation forms.
+
+#### `int(value, optBase?) <> string`
+
+Converts an int into a string form, in the given base which defaults to
+10. If specified, base may be any int in the range `2..36`.
+
+#### `intHex(value) <> string`
+
+Same as `int(value, 16)`.
 
 #### `source(value?) <> string`
 
@@ -86,3 +69,20 @@ language:
 
 This is just like `source`, except that top-level adornment
 (quotes, etc.) are not produced.
+
+#### `usual(value?) <> string`
+
+Converts an arbitrary value into a string representation form, meant
+to be useful for producing the "usual" human-oriented output. This is
+the formatter used during string interpolation if no format specifier
+is given.
+
+* If `value` is a string, it is returned as-is.
+
+* If `value` is a list, its elements are converted as if by calling this
+  function on them, and then concatenated together without any separator
+  characters.
+
+* If `value` is void (that is, not passed), this returns the empty string.
+
+* Otherwise, this behaves just like `source(value)`.
