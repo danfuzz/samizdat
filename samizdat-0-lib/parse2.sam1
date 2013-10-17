@@ -931,8 +931,9 @@ def parStringInterpolation = {/
 # cat("string", fmt1((expr...)?*), fmt2({ block... }()?*))
 # ```
 #
-# where `fmt*` is either a reference to `formatValue` (if no format specifier
-# is given) or a call to `formatterFromString` (if a specifier *is* given).
+# where `fmt*` is either a reference to `Format::formatValue` (if no format
+# specifier is given) or a call to `Format::formatterFromString` (if a
+# specifier *is* given).
 def parInterpolatedString = {/
     token = @interpolatedString
 
@@ -946,12 +947,20 @@ def parInterpolatedString = {/
                 {
                     def tokens = elem::tokens;
 
+                    def formatRef = makeVarRef("Format");
                     def formatter = ifValue { <> elem::format }
                         { format ->
-                            <> makeCallName("formatterFromString",
+                            <> makeCall(
+                                makeGetExpression(
+                                    formatRef,
+                                    makeLiteral("formatterFromString")),
                                 makeLiteral(format))
                         }
-                        { <> makeVarRef("formatValue") };
+                        {
+                            <> makeGetExpression(
+                                formatRef,
+                                makeLiteral("formatValue"))
+                        };
 
                     def call = ifValueOr
                         { <> Peg::apply(parStringInterpolation, tokens) }
