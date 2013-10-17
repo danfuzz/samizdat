@@ -24,7 +24,7 @@ fn msg(box) {
         { <> "no-store  : " };
 
     def fetchStr = ifValue { <> fetch(box) }
-        { value <> sourceString(value) }
+        { value <> Format::source(value) }
         { <> "(void)" };
 
     Io0::note(cat(storeStr, fetchStr))
@@ -72,14 +72,14 @@ msg(nullBox);
 
 Io0::note("\nUpdate mutable box");
 def box4 = makeMutableBox();
-update(box4, { args* <> sourceString(args) });
+update(box4, { args* <> Format::source(args) });
 msg(box4);
 update(box4, { value <> cat("Yes: ", value) });
 msg(box4);
 
 Io0::note("\nUpdate yield box");
 def box5 = makeYieldBox();
-update(box5, { args* <> sourceString(args) });
+update(box5, { args* <> Format::source(args) });
 msg(box5);
 
 <> 0

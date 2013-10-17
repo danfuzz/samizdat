@@ -19,7 +19,7 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 
 # Prints out the given value.
 fn msg(value) {
-    Io1::note(sourceString(value))
+    Io1::note(Format::source(value))
 };
 
 # Prints out the given value in hex.

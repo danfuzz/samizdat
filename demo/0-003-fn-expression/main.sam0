@@ -18,7 +18,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 #
 
 fn print(args*) {
-    Io0::note(sourceStringUnadorned(args))
+    Io0::note(Format::sourceUnadorned(args))
 };
 
 

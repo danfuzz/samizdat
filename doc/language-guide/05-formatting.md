@@ -14,7 +14,7 @@ they expect within the delimiters.
 In addition, after the backslash and before the opening parenthesis or
 brace, a format specifier can be included, introduced with the tried
 and true percent sign (`%`). These are outlined below, but see also
-the documentation for the library function `formatterFromString`, which
+the documentation for the library function `formatterFor`, which
 this functionality is based upon.
 
 ### `\(...)` &mdash; Expression interpolation

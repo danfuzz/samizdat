@@ -54,7 +54,7 @@ def parError = {/
     word = parWord
     {
         def value = cat(stringFromTokens(ch1, ch2), word);
-        Io1::note(cat("Unknown option: ", sourceString(value)));
+        Io1::note(cat("Unknown option: ", Format::source(value)));
         <> {error: true}
     }
 /};

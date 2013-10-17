@@ -84,6 +84,12 @@ fn loadModule(ctx, flatName) {
     # Combine `info` and `exports to form the final module.
     def result = @[Module: {info: info, exports: exports}];
     ctx::moduleDef(result);
+
+    # If `info` indicates that the module is to be exported to the
+    # global context, do so. Otherwise, return the original context.
+    <> ifValue { <> info::globalName }
+        { name <> { ctx*, (name): result } }
+        { <> ctx }
 };
 
 # Loads the named library or module, using either `loadLibrary` or
@@ -93,8 +99,7 @@ fn loadLibraryOrModule(ctx, name) {
         {
             def flatName = flattenName(name);
             Io0_note(cat("    module:  ", flatName));
-            loadModule(ctx, flatName);
-            <> ctx
+            <> loadModule(ctx, flatName)
         }
         {
             Io0_note(cat("    library: ", name));

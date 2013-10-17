@@ -116,7 +116,7 @@ def countDown2 = nth(countDowns, 0);
 
 # Emits the stringified version of the given value to the console.
 fn msg(value) {
-    Io0::note(sourceString(value));
+    Io0::note(Format::source(value));
 };
 
 msg(countDown(10));

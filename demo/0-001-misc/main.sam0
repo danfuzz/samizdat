@@ -19,7 +19,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 
 # Demo of `+` argument repeat modifier.
 fn stuff(items+) {
-    Io0::note(cat("stuff: ", sourceString(items)))
+    Io0::note(cat("stuff: ", Format::source(items)))
 };
 
 # Demo of formal argument repeat modifiers. Also of quoted identifiers.
@@ -29,7 +29,7 @@ fn blort(foo, bar?, \"weird name"?, more*) {
 
 # Emits the stringified version of the given value to the console.
 fn process(value) {
-    Io0::note(sourceString(value));
+    Io0::note(Format::source(value));
 
     # Test of explicit void yield.
     <>
@@ -95,10 +95,10 @@ fn main(selfPath, name?, rest*) {
     process(LIBRARY::cat);
     process(LIBRARY::ne);
     process(ENVIRONMENT::HOME);
-    process(formatInt(71, 2));
-    process(formatInt(71, 10));
-    process(formatInt(71, 16));
-    process(formatInt(71, 36));
+    process(Format::int(71, 2));
+    process(Format::int(71, 10));
+    process(Format::int(71, 16));
+    process(Format::int(71, 36));
     process(cat(toString(1), toString(31), toString(127)));
 
     blort(1);

@@ -140,7 +140,7 @@ fn isPrefix(prefix, path) {
 
 # Dies with the given message including the given path.
 fn dieWith(msg, path) {
-    Io0::die(cat(msg, ": ", sourceString(path)))
+    Io0::die(cat(msg, ": ", Format::source(path)))
 };
 
 # Helper for `sandboxedReader` which does symbolic link resolution,

@@ -20,7 +20,7 @@ fn reportError(pending) {
     Io0::note("Pending tokens:");
 
     filterPump(pending, makeInclusiveRange(1, 1, 50))
-        { token, . -> Io0::note(cat("    ", sourceString(token))) };
+        { token, . -> Io0::note(cat("    ", Format::source(token))) };
 
     Io0::die("\nExtra tokens at end of program.")
 };
@@ -65,6 +65,12 @@ fn makeCall(function, actuals*) {
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
     <> @[call: {function: makeVarRef(name), actuals: actuals}]
+};
+
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
 };
 
 # Returns an optional-value expression. This wraps `node` as
@@ -423,7 +429,7 @@ def parPostfixOperator = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("::"),
         parIdentifierString,
-        Peg::makeCode { ., key <> { node <> makeCallName("get", node, key) } }),
+        Peg::makeCode { ., key <> { node <> makeGetExpression(node, key) } }),
     Peg::makeSequence(
         Peg::makeToken("*"),
         Peg::makeCode { . <> { node <> makeInterpolate(node) } }));

@@ -20,7 +20,7 @@ fn reportError(pending) {
     Io1::note("Pending tokens:");
 
     filterPump(pending, makeInclusiveRange(1, 1, 50))
-        { token, . -> Io1::note(cat("    ", sourceString(token))) };
+        { token, . -> Io1::note(cat("    ", Format::source(token))) };
 
     Io1::die("\nExtra tokens at end of program.")
 };
@@ -65,6 +65,12 @@ fn makeCall(function, actuals*) {
 # Returns a `call` node that names a function as a `varRef`.
 fn makeCallName(name, actuals*) {
     <> @[call: {function: makeVarRef(name), actuals: actuals}]
+};
+
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
 };
 
 # Returns an optional-value expression. This wraps `node` as
@@ -117,8 +123,7 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
 def UNARY_OPERATORS = {
     "-":   makeVarRef("neg"),
     "!!!": makeVarRef("not"),
-    "[]":  makeVarRef("get"),
-    ":":   makeVarRef("get")
+    "[]":  makeVarRef("get")
 };
 
 # For binary operators, map of token types to function name variable references.
@@ -926,6 +931,9 @@ def parStringInterpolation = {/
 # cat("string", fmt1((expr...)?*), fmt2({ block... }()?*))
 # ```
 #
+# where `fmt*` is either a reference to `Format::usual` (if no format
+# specifier is given) or a call to `Format::formatterFor` (if a
+# specifier *is* given).
 def parInterpolatedString = {/
     token = @interpolatedString
 
@@ -939,12 +947,20 @@ def parInterpolatedString = {/
                 {
                     def tokens = elem::tokens;
 
+                    def formatRef = makeVarRef("Format");
                     def formatter = ifValue { <> elem::format }
                         { format ->
-                            <> makeCallName("formatterFromString",
+                            <> makeCall(
+                                makeGetExpression(
+                                    formatRef,
+                                    makeLiteral("formatterFor")),
                                 makeLiteral(format))
                         }
-                        { <> makeVarRef("formatValue") };
+                        {
+                            <> makeGetExpression(
+                                formatRef,
+                                makeLiteral("usual"))
+                        };
 
                     def call = ifValueOr
                         { <> Peg::apply(parStringInterpolation, tokens) }
@@ -1126,7 +1142,7 @@ def implPostfixOperator = {/
     # fits better here.
     @"::"
     key = parIdentifierString
-    { <> { node <> makeCallName("get", node, key) } }
+    { <> { node <> makeGetExpression(node, key) } }
 |
     # The lookahead failure here is to make the grammar prefer `*` to be
     # treated as a binary op.

@@ -61,6 +61,12 @@ fn makeCallName(name, actuals*) {
     <> @[call: {function: makeVarRef(name), actuals: actuals}]
 };
 
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
+};
+
 # Returns an optional-value expression. This wraps `node` as
 # `optValue { <> node }`.
 fn makeOptValueExpression(node) {
@@ -508,7 +514,7 @@ def parPostfixOperator = {/
     # fits better here.
     @"::"
     key = parIdentifierString
-    { <> { node <> makeCallName("get", node, key) } }
+    { <> { node <> makeGetExpression(node, key) } }
 |
     # The lookahead failure here is to make the grammar prefer `*` to be
     # treated as a binary op. (`*` is only defined as postfix in *Layer 0*,
