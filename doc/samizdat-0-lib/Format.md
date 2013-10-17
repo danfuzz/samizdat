@@ -1,8 +1,12 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-String Formatting
------------------
+core::Format (string formatting)
+--------------------------------
+
+This module provides a handful of functions for taking arbitrary values
+and formatting them into strings. Many of the functions are used
+implicitly by the string interpolation system.
 
 <br><br>
 ### Generic Function Definitions
@@ -11,13 +15,7 @@ String Formatting
 
 
 <br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
+### Function Definitions
 
 #### `formatInt(value, optBase?) <> string`
 
