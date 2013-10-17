@@ -20,7 +20,7 @@ fn reportError(pending) {
     Io1::note("Pending tokens:");
 
     filterPump(pending, makeInclusiveRange(1, 1, 50))
-        { token, . -> Io1::note(cat("    ", sourceString(token))) };
+        { token, . -> Io1::note(cat("    ", Format::sourceString(token))) };
 
     Io1::die("\nExtra tokens at end of program.")
 };
