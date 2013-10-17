@@ -19,7 +19,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 
 # Prints the given value, indented slightly.
 fn msg(value) {
-    Io0::note(cat("  ", Format::sourceString(value)))
+    Io0::note(cat("  ", Format::source(value)))
 };
 
 # Outputs all generated values, with an initial header, followed by
@@ -91,7 +91,7 @@ msgAll("FilterGenerator (square even numbers)",
 Io0::note("generatorPump on FilterGenerator");
 generatorPump(
     makeFilterGenerator([1, 2, 3, 4])
-        { value -> Io0::note(cat("    Yay ", Format::sourceString(value))) });
+        { value -> Io0::note(cat("    Yay ", Format::source(value))) });
 Io0::note("");
 
 msgAll("ParaGenerator with open ranges",
@@ -117,7 +117,7 @@ def outMap = collectAsMap(
         { value ->
             <> {(value): value, (add(value, 1)): value, blort: value}
         });
-Io0::note(cat("    ", Format::sourceString(outMap)));
+Io0::note(cat("    ", Format::source(outMap)));
 Io0::note("");
 
 

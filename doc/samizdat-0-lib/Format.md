@@ -35,7 +35,7 @@ to be useful for producing "human-oriented" output.
 
 * If `value` is void (that is, not passed), this returns the empty string.
 
-* Otherwise, this behaves just like `sourceString(value)`.
+* Otherwise, this behaves just like `source(value)`.
 
 #### `formatterFromString(formatSpec) <> function`
 
@@ -44,11 +44,11 @@ function which takes a single argument and applies the so specified
 formatting to it, yielding a string. The string must be one of the
 following, with the indicated meaning:
 
-* `q` &mdash; "Quotes" the argument by calling `sourceString` on it
+* `q` &mdash; "Quotes" the argument by calling `source` on it
   (see which).
 
 * `Q` &mdash; "Quotes" the argument without top-level adornment, by
-  calling `sourceStringUnadorned` on it (see which).
+  calling `sourceUnadorned` on it (see which).
 
 * `s` &mdash; "Quotes" a non-string argument, by calling `formatValue`
   on it (see which).
@@ -58,7 +58,7 @@ following, with the indicated meaning:
 
 **Syntax Note:** Used in the translation of string interpolation forms.
 
-#### `sourceString(value?) <> string`
+#### `source(value?) <> string`
 
 Converts an arbitrary value into a string representation form
 that is meant to mimic the Samizdat source syntax. If `value` is not passed,
@@ -76,7 +76,7 @@ language:
   non-printing characters other than newline that are in the Latin-1
   code point range.
 
-#### `sourceStringUnadorned(value?) <> string`
+#### `sourceUnadorned(value?) <> string`
 
-This is just like `sourceString`, except that top-level adornment
+This is just like `source`, except that top-level adornment
 (quotes, etc.) are not produced.

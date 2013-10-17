@@ -60,7 +60,7 @@ fn moduleUse(searchInfo) {
         {
             Io1::die(cat(
                 "Dependency loop with modules: ",
-                Format::sourceString(keyList(pendings))))
+                Format::source(keyList(pendings))))
         };
 
     # Indicate that the module is in the process of being loaded.

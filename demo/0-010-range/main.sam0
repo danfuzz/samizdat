@@ -19,7 +19,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 
 # Prints the given value, indented slightly.
 fn msg(value) {
-    Io0::note(cat("  ", Format::sourceString(value)))
+    Io0::note(cat("  ", Format::source(value)))
 };
 
 # Outputs all generated values, with a header and a footer.
@@ -27,7 +27,7 @@ fn msgAll(header, gen) {
     Io0::note(header);
     filterAll([gen*]) { elem -> msg(elem) };
     Io0::note("  [fin]");
-    Io0::note(cat("  value: ", Format::sourceString(gen)));
+    Io0::note(cat("  value: ", Format::source(gen)));
     Io0::note("")
 };
 
@@ -52,7 +52,7 @@ fn msgTen(header, gen) {
     }();
 
     Io0::note("  [...]");
-    Io0::note(cat("  value: ", Format::sourceString(gen)));
+    Io0::note(cat("  value: ", Format::source(gen)));
     Io0::note("")
 };
 

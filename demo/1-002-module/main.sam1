@@ -19,6 +19,6 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 
 # Use a known-simple module.
 def exmod = moduleUse({name: ["core", "FunctionForwarder"]});
-Io1::note(Format::sourceString(exmod));
+Io1::note(Format::source(exmod));
 
 <> 0

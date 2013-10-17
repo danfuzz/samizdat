@@ -18,10 +18,10 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 #
 
 def opt1 = optValue { <> };
-Io0::note(Format::sourceString(opt1));
+Io0::note(Format::source(opt1));
 
 def opt2 = optValue { <> "Yes: opt" };
-Io0::note(Format::sourceString(opt2));
+Io0::note(Format::source(opt2));
 
 def v1 = ifValue { <> "Yes." }
     { value ->
@@ -47,7 +47,7 @@ def v3 = ifValue { <> }
 Io0::note(v3);
 
 def v4 = optValue { <> ifValue { <> } { value -> Io0::die("No."); } };
-Io0::note(Format::sourceString(v4));
+Io0::note(Format::source(v4));
 
 def v5 = ifIs { <> "Yes." }
     { <> "Yes: v5" };
@@ -64,10 +64,10 @@ def v7 = ifIs { <> }
 Io0::note(v7);
 
 def v8 = optValue { <> ifIs { <> } { Io0::die("No.") } };
-Io0::note(Format::sourceString(v8));
+Io0::note(Format::source(v8));
 
 def v9 = optValue { <> ifNot { <> "Yes." } { Io0::die("No.") } };
-Io0::note(Format::sourceString(v9));
+Io0::note(Format::source(v9));
 
 def v10 = ifNot { <> }
     { <> "Yes: v10" };
@@ -98,14 +98,14 @@ def v15 = ifValues(
     [
         { <> "Yes: v15" }
     ],
-    { args* <> Format::sourceString(args) });
+    { args* <> Format::source(args) });
 Io0::note(v15);
 
 def v16 = ifValues(
     [
         { <> "Yes: v16" }
     ],
-    { args* <> Format::sourceString(args) },
+    { args* <> Format::source(args) },
     { Io0::die("No.") });
 Io0::note(v16);
 
@@ -118,14 +118,14 @@ def v17 = ifValues(
 Io0::note(v17);
 
 def v18 = optValue { <> ifValues([ { <> } ], { x -> Io0::die("No.") }) };
-Io0::note(Format::sourceString(v18));
+Io0::note(Format::source(v18));
 
 def v19 = ifValues(
     [
         { <> "1" },
         { x <> cat(x, "2") }
     ],
-    { args* <> Format::sourceString(args) },
+    { args* <> Format::source(args) },
     { Io0::die("No.") });
 Io0::note(v19);
 
@@ -145,7 +145,7 @@ def v21 = ifValues(
         { x, y <> cat(x, y, "3") },
         { x, y, z <> cat(x, y, z, "4") }
     ],
-    { args* <> Format::sourceString(args) },
+    { args* <> Format::source(args) },
     { Io0::die("No.") });
 Io0::note(v21);
 

@@ -28,8 +28,8 @@ fn sibling() {
 fn fileExists() {
     fn tryFile(path) {
         ifIs { <> Io1::fileExists(path) }
-            { Io1::note(cat("Exists: ", Format::sourceString(path))) }
-            { Io1::note(cat("Does not exist: ", Format::sourceString(path))) }
+            { Io1::note(cat("Exists: ", Format::source(path))) }
+            { Io1::note(cat("Does not exist: ", Format::source(path))) }
     };
 
     def base = butLast(SELF_PATH);
@@ -39,7 +39,7 @@ fn fileExists() {
 
 # Emits the stringified version of the given value to the console.
 fn process(value) {
-    Io1::note(Format::sourceString(value));
+    Io1::note(Format::source(value));
 };
 
 

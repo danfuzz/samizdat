@@ -163,7 +163,7 @@ def evalExpressions = {/
         ex = expression
         "\n"
         {
-            Io1::note(Format::sourceString(ex));
+            Io1::note(Format::source(ex));
             # Explicit yield here to indicate successful parsing.
             <> null
         }
