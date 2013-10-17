@@ -59,7 +59,6 @@ def MANIFEST = [
 
     # Layer 0: Complicated modules.
     ["core", "Format"],
-    "format.sam0",               # Exports `Format` as a core library global.
     ["core", "Peg"],
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 
