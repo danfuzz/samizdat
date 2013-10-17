@@ -59,6 +59,7 @@ def MANIFEST = [
     "format.sam0",
 
     # Layer 0: Complicated modules.
+    ["core", "Format"],
     ["core", "Peg"],
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 
