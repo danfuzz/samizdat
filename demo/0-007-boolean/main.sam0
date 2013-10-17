@@ -22,8 +22,8 @@ fn expect(name, result, func, args*) {
     def got = func(args*);
     ifNot { <> eq(got, result) }
         {
-            Io0::note(cat("Unexpected result: ", sourceString(got)));
-            Io0::die(cat("For: ", name, " ", sourceString(args)));
+            Io0::note(cat("Unexpected result: ", Format::sourceString(got)));
+            Io0::die(cat("For: ", name, " ", Format::sourceString(args)));
         }
 };
 

@@ -23,7 +23,7 @@ fn expectSame(v1, v2) {
         { Io0::note("Yes.") }
         {
             Io0::note(cat("Different: ",
-                sourceString(v1), ", ", sourceString(v2)))
+                Format::sourceString(v1), ", ", Format::sourceString(v2)))
         }
 };
 
@@ -31,7 +31,7 @@ fn expectSame(v1, v2) {
 fn expectDifferent(v1, v2) {
     ifIs { <> ne(v1, v2) }
         { Io0::note("Yes.") }
-        { Io0::note(cat("Same: ", sourceString(v1))) }
+        { Io0::note(cat("Same: ", Format::sourceString(v1))) }
 };
 
 # Expects the value to be a core value.
@@ -39,16 +39,16 @@ fn expectCore(v) {
     ifIs { <> isOpaqueValue(v) }
         {
             ifValue { <> dataOf(v) }
-                { data -> Io0::note(cat("Bad data: ", sourceString(data))) }
+                { data -> Io0::note(cat("Bad data: ", Format::sourceString(data))) }
                 { Io0::note("Yes.") }
         }
-        { Io0::note(cat("Derived: ", sourceString(v))) }
+        { Io0::note(cat("Derived: ", Format::sourceString(v))) }
 };
 
 # Expects the value to be a derived value.
 fn expectDerived(v) {
     ifIs { <> isOpaqueValue(v) }
-        { Io0::note(cat("Opaque: ", sourceString(v))) }
+        { Io0::note(cat("Opaque: ", Format::sourceString(v))) }
         { Io0::note("Yes.") }
 };
 

@@ -18,7 +18,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 #
 
 fn msg(args*) {
-    Io0::note(cat("Got: ", sourceString(args)))
+    Io0::note(cat("Got: ", Format::sourceString(args)))
 };
 
 fn ten() {

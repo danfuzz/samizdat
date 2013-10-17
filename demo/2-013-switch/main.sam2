@@ -81,7 +81,7 @@ Io1::note("\nElse...");
 Io1::note(elser("blort"));
 Io1::note(elser("fizmo"));
 Io1::note(elser());
-Io1::note(sourceString(elser("igram")?)); # `?` because we expect void.
+Io1::note(Format::sourceString(elser("igram")?)); # `?` because we expect void.
 
 Io1::note("\nVoid yield...");
 ifNot
@@ -93,12 +93,12 @@ ifNot
     { Io1::note("Yes, void.") };
 
 Io1::note("\nNames...");
-Io1::note(sourceString(namer(1)));
-Io1::note(sourceString(namer(2)));
-Io1::note(sourceString(namer(3)));
-Io1::note(sourceString(namer(4)));
-Io1::note(sourceString(namer(5)));
-Io1::note(sourceString(namer(6)));
-Io1::note(sourceString(namer(7)));
+Io1::note(Format::sourceString(namer(1)));
+Io1::note(Format::sourceString(namer(2)));
+Io1::note(Format::sourceString(namer(3)));
+Io1::note(Format::sourceString(namer(4)));
+Io1::note(Format::sourceString(namer(5)));
+Io1::note(Format::sourceString(namer(6)));
+Io1::note(Format::sourceString(namer(7)));
 
 <> 0
