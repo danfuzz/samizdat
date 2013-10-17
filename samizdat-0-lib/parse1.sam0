@@ -67,6 +67,12 @@ fn makeCallName(name, actuals*) {
     <> @[call: {function: makeVarRef(name), actuals: actuals}]
 };
 
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
+};
+
 # Returns an optional-value expression. This wraps `node` as
 # `optValue { <> node }`.
 fn makeOptValueExpression(node) {
@@ -423,7 +429,7 @@ def parPostfixOperator = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("::"),
         parIdentifierString,
-        Peg::makeCode { ., key <> { node <> makeCallName("get", node, key) } }),
+        Peg::makeCode { ., key <> { node <> makeGetExpression(node, key) } }),
     Peg::makeSequence(
         Peg::makeToken("*"),
         Peg::makeCode { . <> { node <> makeInterpolate(node) } }));
