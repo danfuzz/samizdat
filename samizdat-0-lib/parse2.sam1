@@ -931,7 +931,7 @@ def parStringInterpolation = {/
 # cat("string", fmt1((expr...)?*), fmt2({ block... }()?*))
 # ```
 #
-# where `fmt*` is either a reference to `Format::formatValue` (if no format
+# where `fmt*` is either a reference to `Format::usual` (if no format
 # specifier is given) or a call to `Format::formatterFromString` (if a
 # specifier *is* given).
 def parInterpolatedString = {/
@@ -959,7 +959,7 @@ def parInterpolatedString = {/
                         {
                             <> makeGetExpression(
                                 formatRef,
-                                makeLiteral("formatValue"))
+                                makeLiteral("usual"))
                         };
 
                     def call = ifValueOr

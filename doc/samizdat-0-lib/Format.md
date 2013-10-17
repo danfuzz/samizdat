@@ -22,10 +22,12 @@ implicitly by the string interpolation system.
 Converts an int into a string form, in the given base which defaults to
 10. If specified, base may be any int in the range `2..36`.
 
-#### `formatValue(value?) <> string`
+#### `usual(value?) <> string`
 
 Converts an arbitrary value into a string representation form, meant
-to be useful for producing "human-oriented" output.
+to be useful for producing the "usual" human-oriented output. This is
+the formatter used during string interpolation if no format specifier
+is given.
 
 * If `value` is a string, it is returned as-is.
 
@@ -50,7 +52,7 @@ following, with the indicated meaning:
 * `Q` &mdash; "Quotes" the argument without top-level adornment, by
   calling `sourceUnadorned` on it (see which).
 
-* `s` &mdash; "Quotes" a non-string argument, by calling `formatValue`
+* `s` &mdash; "Quotes" a non-string argument, by calling `usual`
   on it (see which).
 
 * `x` &mdash; Converts the argument, which must be an int, into a hexadecimal

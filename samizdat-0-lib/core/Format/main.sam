@@ -331,7 +331,7 @@ fn formatInt(value, optBase?) {
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn formatValue(value?) {
+fn usual(value?) {
     <> ifValue { <> value* }
         { value <> humanString(value) }
         { <> "" }
@@ -341,7 +341,7 @@ fn formatValue(value?) {
 def FORMATTERS = {
     q: source,
     Q: sourceUnadorned,
-    s: formatValue,
+    s: usual,
     x: formatIntHex
 };
 
@@ -357,7 +357,7 @@ fn formatterFromString(formatSpec) {
 
 <> {
     formatInt:             formatInt,
-    formatValue:           formatValue,
+    usual:           usual,
     formatterFromString:   formatterFromString,
     source:          source,
     sourceUnadorned: sourceUnadorned
