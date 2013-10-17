@@ -926,6 +926,8 @@ def parStringInterpolation = {/
 # cat("string", fmt1((expr...)?*), fmt2({ block... }()?*))
 # ```
 #
+# where `fmt*` is either a reference to `formatValue` (if no format specifier
+# is given) or a call to `formatterFromString` (if a specifier *is* given).
 def parInterpolatedString = {/
     token = @interpolatedString
 
