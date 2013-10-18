@@ -67,9 +67,9 @@ msg(box3);
 
 Io0::note("\nnullBox");
 
-msg(nullBox);
-Box::store(nullBox, "stuff");
-msg(nullBox);
+msg(Box::nullBox);
+Box::store(Box::nullBox, "stuff");
+msg(Box::nullBox);
 
 Io0::note("\nUpdate mutable box");
 def box4 = Box::makeMutableBox();

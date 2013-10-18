@@ -98,7 +98,7 @@ fn filterPump(filterFunction, generators*) {
 # Documented in Samizdat Layer 0 spec.
 fn generatorPump(generator) {
     loopReduce(generator) { gen ->
-        <> ifValue { <> nextValue(gen, nullBox) }
+        <> ifValue { <> nextValue(gen, Box::nullBox) }
             { nextGen <> [nextGen] }
             { return }
     }

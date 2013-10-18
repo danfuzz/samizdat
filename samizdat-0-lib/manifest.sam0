@@ -40,7 +40,6 @@ def MANIFEST = [
     "Collection.sam0",
     "Bitwise.sam0",
     "Boolean.sam0",
-    "Box.sam0",
     "String.sam0",
 
     # Layer 0: Simple modules.

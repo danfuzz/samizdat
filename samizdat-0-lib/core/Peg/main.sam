@@ -63,7 +63,7 @@ genericBind(parse, "PegCode", PegCode_parse);
 
 # Documented in Samizdat Layer 0 spec.
 fn PegEof_parse(peg, box, input, .*) {
-    <> ifIs { <> nextValue(input, nullBox) }
+    <> ifIs { <> nextValue(input, Box::nullBox) }
         { Box::store(box) }
         {
             Box::store(box, null);
@@ -80,7 +80,7 @@ genericBind(parse, "PegFail", PegFail_parse);
 
 # Documented in Samizdat Layer 0 spec.
 fn PegLookaheadFailure_parse(peg, box, input, items*) {
-    <> ifIs { <> parse(dataOf(peg), nullBox, input, items*) }
+    <> ifIs { <> parse(dataOf(peg), Box::nullBox, input, items*) }
         { Box::store(box) }
         {
             Box::store(box, null);

@@ -33,7 +33,7 @@ fn ParaGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 
     ifIs { <> eq(subGens, []) }
-        { return nextValue(nullBox, box) };
+        { return nextValue(Box::nullBox, box) };
 
     def generatorCalls = filter(
         subGens,
