@@ -21,15 +21,15 @@ fn update(box, updateFunction) {
 # Documented in Samizdat Layer 0 spec.
 def nullBox = @NullBox;
 
-# Other than `update` and `nullBox`, this is a re-export of functions from the
-# primitive core library.
-
 <> {
+    # Re-exported from primitive core library.
     canStore:       Box_canStore,
     fetch:          Box_fetch,
     makeMutableBox: Box_makeMutableBox,
     makeYieldBox:   Box_makeYieldBox,
-    nullBox:        nullBox,
     store:          Box_store,
+
+    # Defined in this file.
+    nullBox:        nullBox,
     update:         update
 }
