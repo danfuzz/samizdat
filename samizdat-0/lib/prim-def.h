@@ -47,9 +47,6 @@ PRIM_DEF(shl,        GFN_shl);
 PRIM_DEF(xor,        GFN_xor);
 
 // Generic functions: `Box` protocol, intended for modularization
-PRIM_DEF(canStore,   GFN_canStore);
-PRIM_DEF(fetch,      GFN_fetch);
-PRIM_DEF(store,      GFN_store);
 PRIM_DEF(Box_canStore, GFN_canStore);
 PRIM_DEF(Box_fetch,    GFN_fetch);
 PRIM_DEF(Box_store,    GFN_store);
