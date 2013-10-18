@@ -40,7 +40,7 @@ fn PegChoice_parse(peg, box, input, items*) {
         def innerBox = Box::makeYieldBox();
         ifValue { <> parse(rule, innerBox, input, items*) }
             { newInput ->
-                store(box, fetch(innerBox));
+                store(box, Box::fetch(innerBox));
                 return newInput
             }
     };
@@ -108,7 +108,7 @@ fn PegOpt_parse(peg, box, input, items*) {
     def innerBox = Box::makeYieldBox();
     <> ifValue { <> parse(dataOf(peg), innerBox, input, items*) }
         { newInput ->
-            store(box, [fetch(innerBox)]);
+            store(box, [Box::fetch(innerBox)]);
             <> newInput
         }
         {
@@ -127,7 +127,7 @@ fn PegRepeat_parse(peg, box, input, items*) {
         { input, values ->
             def innerBox = Box::makeYieldBox();
             <> ifValue { <> parse(rule, innerBox, input, items*) }
-                { newInput <> [newInput, [values*, fetch(innerBox)]] }
+                { newInput <> [newInput, [values*, Box::fetch(innerBox)]] }
                 {
                     ifValue { <> params::minSize }
                         { minSize ->
@@ -161,7 +161,7 @@ fn PegSequence_parse(peg, box, input, items*) {
         { rule, input, items ->
             def innerBox = Box::makeYieldBox();
             <> ifValue { <> parse(rule, innerBox, input, items*) }
-                { newInput <> [newInput, [items*, fetch(innerBox)]] }
+                { newInput <> [newInput, [items*, Box::fetch(innerBox)]] }
                 {
                     # Propagate the failure.
                     store(box);
@@ -183,7 +183,7 @@ fn PegTokenSet_parse(peg, box, input, items*) {
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
-            def item = fetch(innerBox);
+            def item = Box::fetch(innerBox);
             ifIs { <> get(set, typeOf(item)) }
                 {
                     store(box, item);
@@ -203,7 +203,7 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
 
     ifValue { <> nextValue(input, innerBox) }
         { newInput ->
-            def item = fetch(innerBox);
+            def item = Box::fetch(innerBox);
             ifNot { <> get(set, typeOf(item)) }
                 {
                     store(box, item);
@@ -388,7 +388,7 @@ fn apply(rule, input) {
         { <> input };
 
     <> ifIs { <> parse(rule, box, generator) }
-        { <> fetch(box) }
+        { <> Box::fetch(box) }
 };
 
 

@@ -56,7 +56,7 @@ fn moduleUse(searchInfo) {
     ifValue { <> moduleGet(searchInfo) }
         { modu -> return modu };
 
-    def pendings = fetch(thePendingBox);
+    def pendings = Box::fetch(thePendingBox);
     ifIs { <> get(pendings, fqName) }
         {
             Io1::die(cat(

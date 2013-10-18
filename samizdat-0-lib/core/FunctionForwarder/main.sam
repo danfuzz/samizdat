@@ -44,13 +44,13 @@ genericBind(Box::store, "FunctionForwarder", FunctionForwarder_store);
 
 # Documented in Samizdat Layer 0 spec.
 fn FunctionForwarder_call(fwd, args*) {
-    <> call(fetch(dataOf(fwd)), args*)
+    <> call(Box::fetch(dataOf(fwd)), args*)
 };
 genericBind(call, "FunctionForwarder", FunctionForwarder_call);
 
 # Documented in Samizdat Layer 0 spec.
 fn FunctionForwarder_canCall(fwd, arg) {
-    <> canCall(fetch(dataOf(fwd)), arg)
+    <> canCall(Box::fetch(dataOf(fwd)), arg)
 };
 genericBind(canCall, "FunctionForwarder", FunctionForwarder_canCall);
 

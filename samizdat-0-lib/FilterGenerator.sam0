@@ -36,7 +36,7 @@ fn FilterGenerator_nextValue(gen, box) {
 
         ifValue { <> nextValue(gen, innerBox) }
             { nextGenerator ->
-                ifValue { <> filterFunction(fetch(innerBox)*) }
+                ifValue { <> filterFunction(Box::fetch(innerBox)*) }
                     { value ->
                         store(box, value);
                         return @[FilterGenerator:

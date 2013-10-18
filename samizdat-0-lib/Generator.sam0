@@ -43,7 +43,7 @@ fn doReduce(reduceFunction, generator, baseValues*) {
             def box = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
                 { nextGenerator ->
-                    <> ifValue { <> reduceFunction(fetch(box), values*) }
+                    <> ifValue { <> reduceFunction(Box::fetch(box), values*) }
                         { nextValues <> [nextGenerator, nextValues] }
                         {
                             # The reduce function discarded the values.
@@ -64,7 +64,7 @@ fn doReduce1(reduceFunction, generator, baseValue) {
             def box = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
                 { nextGenerator ->
-                    <> ifValue { <> reduceFunction(fetch(box), value) }
+                    <> ifValue { <> reduceFunction(Box::fetch(box), value) }
                         { nextValue <> [nextGenerator, nextValue] }
                         {
                             # The reduce function discarded the value.
@@ -85,7 +85,7 @@ fn filterPump(filterFunction, generators*) {
             def box = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
                 { nextGenerator ->
-                    filterFunction(fetch(box)*);
+                    filterFunction(Box::fetch(box)*);
                     <> [nextGenerator]
                 }
                 {

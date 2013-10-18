@@ -25,7 +25,7 @@ fn ListWrapGenerator_nextValue(gen, box) {
 
     <> ifValue { <> nextValue(dataOf(gen), innerBox) }
         { nextGenerator ->
-            store(box, [fetch(innerBox)]);
+            store(box, [Box::fetch(innerBox)]);
             <> @[ListWrapGenerator: nextGenerator]
         }
         {

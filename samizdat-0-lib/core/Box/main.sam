@@ -13,9 +13,9 @@
 
 # Documented in Samizdat Layer 0 spec.
 fn update(box, updateFunction) {
-    <> ifValue { <> fetch(box) }
-        { value <> store(box, updateFunction(value)) }
-        { <> store(box, updateFunction()) }
+    <> ifValue { <> Box_fetch(box) }
+        { value <> Box_store(box, updateFunction(value)) }
+        { <> Box_store(box, updateFunction()) }
 };
 
 # Documented in Samizdat Layer 0 spec.

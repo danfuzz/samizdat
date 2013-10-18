@@ -40,7 +40,7 @@ fn ParaGenerator_nextValue(gen, box) {
         { gen ->
             def innerBox = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, innerBox) }
-                { nextGenerator <> [fetch(innerBox), nextGenerator] }
+                { nextGenerator <> [Box::fetch(innerBox), nextGenerator] }
                 {
                     # One of the sub-generators became voided.
                     store(box);
