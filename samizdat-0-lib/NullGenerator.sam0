@@ -6,6 +6,9 @@
 # `nullGenerator` Value and Type
 #
 
+def Box = moduleGet({name: ["core", "Box"]});
+
+
 #
 # Exported Definitions
 #
@@ -18,7 +21,7 @@ genericBind(collect, "NullGenerator", NullGenerator_collect);
 
 # Documented in spec.
 fn NullGenerator_nextValue(gen, box) {
-    store(box)
+    Box::store(box)
 };
 genericBind(nextValue, "NullGenerator", NullGenerator_nextValue);
 

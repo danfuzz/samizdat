@@ -362,7 +362,7 @@ def implVoidableExpression = {/
 |
     parExpression
 /};
-store(parVoidableExpression, implVoidableExpression);
+Box::store(parVoidableExpression, implVoidableExpression);
 
 # Parses an "unadorned" (no bracketing) list. Yields a list (per se)
 # of contents.
@@ -546,14 +546,14 @@ def implVoidableExpression = {/
 |
     parExpression
 /};
-store(parVoidableExpression, implVoidableExpression);
+Box::store(parVoidableExpression, implVoidableExpression);
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
 # This rule is totally rewritten at that layer.
 def implExpression = {/
     parUnaryExpression | parFnExpression
 /};
-store(parExpression, implExpression);
+Box::store(parExpression, implExpression);
 
 # Note: There are additional expression rules in *Layer 2* and beyond.
 # This rule is totally rewritten at that layer.
@@ -616,7 +616,7 @@ def implProgramBody = {/
         <> [last*, statements: allStatements]
     }
 /};
-store(parProgramBody, implProgramBody);
+Box::store(parProgramBody, implProgramBody);
 
 # Top-level rule to parse an expression with possible error afterwards.
 def parExpressionOrError = {/
@@ -669,7 +669,7 @@ def implParser = {/
     @"/}"
     { <> @[parser: pex] }
 /};
-store(parParser, implParser);
+Box::store(parParser, implParser);
 
 # Parses a parenthesized parsing expression.
 def parParenPex = {/
@@ -807,5 +807,5 @@ def implChoicePex = {/
     rest = (@"|" parSequencePex)*
     { <> @[choice: [one, rest*]] }
 /};
-store(parChoicePex, implChoicePex);
+Box::store(parChoicePex, implChoicePex);
 ```

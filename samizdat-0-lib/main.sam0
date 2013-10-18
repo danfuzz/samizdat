@@ -54,12 +54,19 @@ fn loadLibrary(ctx, name) {
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
-    # each library file is written).
-    def bindings = function();
-
-    # The end result is the addition of the new bindings to the original
-    # context.
-    <> {ctx*, bindings*};
+    # each library file is written). If the function yields void, then
+    # the file was only loaded for side effects (such as binding generic
+    # functions).
+    <> ifValue { <> function() }
+        { bindings ->
+            # The end result is the addition of the new bindings to the
+            # original context.
+            <> {ctx*, bindings*};
+        }
+        {
+            # No new bindings.
+            <> ctx
+        }
 };
 
 # Loads the named module (given a flattened directory name), installing

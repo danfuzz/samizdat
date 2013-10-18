@@ -7,6 +7,9 @@
 #
 # Payload is `[subGens*]`, a list of sub-generators.
 
+def Box = moduleGet({name: ["core", "Box"]});
+
+
 #
 # Exported Definitions
 #
@@ -30,17 +33,17 @@ fn ParaGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 
     ifIs { <> eq(subGens, []) }
-        { return nextValue(nullBox, box) };
+        { return nextValue(Box::nullBox, box) };
 
     def generatorCalls = filter(
         subGens,
         { gen ->
-            def innerBox = makeYieldBox();
+            def innerBox = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, innerBox) }
-                { nextGenerator <> [fetch(innerBox), nextGenerator] }
+                { nextGenerator <> [Box::fetch(innerBox), nextGenerator] }
                 {
                     # One of the sub-generators became voided.
-                    store(box);
+                    Box::store(box);
                     return
                 }
         });
@@ -48,7 +51,7 @@ fn ParaGenerator_nextValue(gen, box) {
     def yields = filter(generatorCalls, { one <> nth(one, 0) });
     def nexts = filter(generatorCalls, { one <> nth(one, 1) });
 
-    store(box, yields);
+    Box::store(box, yields);
     <> @[ParaGenerator: nexts]
 };
 genericBind(nextValue, "ParaGenerator", ParaGenerator_nextValue);

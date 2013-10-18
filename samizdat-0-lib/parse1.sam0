@@ -6,6 +6,7 @@
 # Samizdat Layer 1 tree parser
 #
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
@@ -407,7 +408,7 @@ def implTerm = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeLookaheadSuccess(Peg::makeToken("{/")),
         parParser));
-store(parTerm, implTerm);
+Box::store(parTerm, implTerm);
 
 # Documented in Samizdat Layer 0 spec.
 def parActualsList = Peg::makeMainChoice(
@@ -441,13 +442,13 @@ def implUnaryExpression = Peg::makeMainSequence(
     Peg::makeCode { base, postfixes ->
         <> doReduce1(postfixes, base) { op, result <> op(result) }
     });
-store(parUnaryExpression, implUnaryExpression);
+Box::store(parUnaryExpression, implUnaryExpression);
 
 # Documented in Samizdat Layer 0 spec.
 def implExpression = Peg::makeChoice(
     parUnaryExpression,
     parFnExpression);
-store(parExpression, implExpression);
+Box::store(parExpression, implExpression);
 
 # Documented in Samizdat Layer 0 spec.
 def parStatement = Peg::makeChoice(
@@ -501,7 +502,7 @@ def implProgramBody = Peg::makeMainSequence(
         def allStatements = [most*, last::statements*];
         <> {last*, statements: allStatements}
     });
-store(parProgramBody, implProgramBody);
+Box::store(parProgramBody, implProgramBody);
 
 # Documented in Samizdat Layer 0 spec.
 def parExpressionOrError = Peg::makeMainSequence(
@@ -543,7 +544,7 @@ def implParser = Peg::makeMainSequence(
     parChoicePex,
     Peg::makeToken("/}"),
     Peg::makeCode { ., pex, . <> @[parser: pex] });
-store(parParser, implParser);
+Box::store(parParser, implParser);
 
 def parParenPex = Peg::makeMainSequence(
     Peg::makeToken("("),
@@ -656,7 +657,7 @@ def implChoicePex = Peg::makeMainSequence(
             Peg::makeToken("|"),
             parSequencePex)),
     Peg::makeCode { one, rest <> @[choice: [one, rest*]] });
-store(parChoicePex, implChoicePex);
+Box::store(parChoicePex, implChoicePex);
 
 
 #

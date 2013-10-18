@@ -6,6 +6,8 @@
 # Boxes
 #
 
+def Box = moduleGet({name: ["core", "Box"]});
+
 
 #
 # Exported Definitions
@@ -16,23 +18,17 @@ fn NullBox_canStore(box) {
     # Always succeeds.
     <> box
 };
-genericBind(canStore, "NullBox", NullBox_canStore);
+genericBind(Box::canStore, "NullBox", NullBox_canStore);
 
 # Documented in spec.
 fn NullBox_fetch(box) {
     # Return void.
 };
-genericBind(fetch, "NullBox", NullBox_fetch);
+genericBind(Box::fetch, "NullBox", NullBox_fetch);
 
 # Documented in spec.
 fn NullBox_store(box, value?) {
     # Return `value` but otherwise do nothing.
     <> value*
 };
-genericBind(store, "NullBox", NullBox_store);
-
-def nullBox = @NullBox;
-
-<> {
-    nullBox: nullBox
-}
+genericBind(Box::store, "NullBox", NullBox_store);

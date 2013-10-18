@@ -6,6 +6,7 @@
 # Module functions
 #
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 
 
@@ -24,7 +25,7 @@ def MODULE_FILE_NAME = "module.sam";
 
 # Box containing a set-like map of fully-qualified names representing
 # modules in the middle of being loaded.
-def thePendingBox = makeMutableBox({});
+def thePendingBox = Box::makeMutableBox({});
 
 # Finds the directory for the named module, by iterating over
 # `MODULE_PATHS_LIST`, looking for a `module.sam` file. Either returns
@@ -55,7 +56,7 @@ fn moduleUse(searchInfo) {
     ifValue { <> moduleGet(searchInfo) }
         { modu -> return modu };
 
-    def pendings = fetch(thePendingBox);
+    def pendings = Box::fetch(thePendingBox);
     ifIs { <> get(pendings, fqName) }
         {
             Io1::die(cat(
@@ -64,7 +65,7 @@ fn moduleUse(searchInfo) {
         };
 
     # Indicate that the module is in the process of being loaded.
-    store(thePendingBox, put(pendings, fqName, null));
+    Box::store(thePendingBox, put(pendings, fqName, null));
 
     def moduleDir = findModuleDirectory(fqName);
     def moduleReader = Io1::sandboxedReader(moduleDir);
@@ -83,7 +84,7 @@ fn moduleUse(searchInfo) {
     moduleDef(result);
 
     # Indicate that the module load is no longer in-process.
-    update(thePendingBox, { pendings <> del(pendings, fqName) });
+    Box::update(thePendingBox, { pendings <> del(pendings, fqName) });
 
     <> result
 };

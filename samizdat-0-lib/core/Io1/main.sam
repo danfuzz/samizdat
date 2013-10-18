@@ -7,6 +7,7 @@
 #
 
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
@@ -55,7 +56,7 @@ def implIgnoredComponent = {/
 
     { <> [] }
 /};
-store(parIgnoredComponent, implIgnoredComponent);
+Box::store(parIgnoredComponent, implIgnoredComponent);
 
 # Helper for `pathFromFlat` which parses absolute path strings
 # into components. This canonicalizes the path by ignoring duplicate

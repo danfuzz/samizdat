@@ -69,7 +69,7 @@ will be returned, or one of:
 * Types and Protocols
   * [Bitwise (bit lists)](Bitwise.md)
   * [Boolean](Boolean.md)
-  * [Box](Box.md)
+  * Box &mdash; See [core::Box](Box.md) module.
   * [Builtin](Builtin.md)
   * [Function](Function.md)
   * [ClosedRange](ClosedRange.md)
@@ -89,6 +89,7 @@ will be returned, or one of:
   * [One-Off Generics](OneOff.md)
 
 * Modules
+  * [core::Box](Box.md)
   * [core::EntityMap](EntityMap.md)
   * [core::Format (string formatting)](Format.md)
   * [core::FunctionForwarder](FunctionForwarder.md)

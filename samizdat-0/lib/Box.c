@@ -15,12 +15,12 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeMutableBox) {
+PRIM_IMPL(Box_makeMutableBox) {
     zvalue value = (argCount == 1) ? args[0] : NULL;
     return makeMutableBox(value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(makeYieldBox) {
+PRIM_IMPL(Box_makeYieldBox) {
     return makeYieldBox();
 }

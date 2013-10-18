@@ -8,6 +8,7 @@
 # `ClosedRange` payload: `{start: intOrChar, increment: int, size: int}`
 # `OpenRange` payload: `{start: intOrChar, increment: int}`
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -98,13 +99,13 @@ fn ClosedRange_nextValue(range, box) {
         { size ->
             def firstValue = data::firstValue;
             def increment = data::increment;
-            store(box, firstValue);
+            Box::store(box, firstValue);
             <> makeClosedRange(rangeAdd(firstValue, increment), increment,
                 sub(size, 1))
         }
         {
             # Voided.
-            store(box);
+            Box::store(box);
         }
 };
 genericBind(nextValue, "ClosedRange", ClosedRange_nextValue);
@@ -131,7 +132,7 @@ fn OpenRange_nextValue(range, box) {
     def firstValue = data::firstValue;
     def increment = data::increment;
 
-    store(box, firstValue);
+    Box::store(box, firstValue);
     <> makeOpenRange(rangeAdd(firstValue, increment), increment)
 };
 genericBind(nextValue, "OpenRange", OpenRange_nextValue);

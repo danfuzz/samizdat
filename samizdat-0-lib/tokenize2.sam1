@@ -6,6 +6,7 @@
 # Samizdat Layer 2 Tokenizer
 #
 
+def Box = moduleGet({name: ["core", "Box"]});
 def FunctionForwarder = moduleGet({name: ["core", "FunctionForwarder"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
@@ -293,7 +294,7 @@ fn implProcessStringParts(parts) {
     # At this point, we have a valid interpolation.
     <> @[interpolatedString: elems]
 };
-store(processStringParts, implProcessStringParts);
+Box::store(processStringParts, implProcessStringParts);
 
 # Parses a `/* ... */` comment, with nesting.
 def implMultilineComment = {/
@@ -309,7 +310,7 @@ def implMultilineComment = {/
 
     "*/"
 /};
-store(tokMultilineComment, implMultilineComment);
+Box::store(tokMultilineComment, implMultilineComment);
 
 # Parses a single binary digit (or spacer), returning its value.
 def tokBinDigit = {/
@@ -352,7 +353,7 @@ def implInt = {/
 
     { <> @[int: intFromDigitList(base, digits)] }
 /};
-store(tokInt, implInt);
+Box::store(tokInt, implInt);
 
 # Parses a single hexadecimal character. This is called during `\x...;`
 # parsing.
@@ -408,7 +409,7 @@ def implStringInterpolation = {/
             { <> [open, cat([], tokens*)*, close] }
     }
 /};
-store(tokStringInterpolation, implStringInterpolation);
+Box::store(tokStringInterpolation, implStringInterpolation);
 
 # Additional `stringPart` definitions for *Layer 2*.
 def implStringPart2 = {/
@@ -462,7 +463,7 @@ def implStringPart2 = {/
         { <> @[error: "Invalid character literal escape sequence."] }
     )
 /};
-store(tokStringPart2, implStringPart2);
+Box::store(tokStringPart2, implStringPart2);
 
 
 #

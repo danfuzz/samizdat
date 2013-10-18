@@ -46,10 +46,10 @@ PRIM_DEF(or,         GFN_or);
 PRIM_DEF(shl,        GFN_shl);
 PRIM_DEF(xor,        GFN_xor);
 
-// Generic functions: `Box` protocol
-PRIM_DEF(canStore,   GFN_canStore);
-PRIM_DEF(fetch,      GFN_fetch);
-PRIM_DEF(store,      GFN_store);
+// Generic functions: `Box` protocol, intended for modularization
+PRIM_DEF(Box_canStore, GFN_canStore);
+PRIM_DEF(Box_fetch,    GFN_fetch);
+PRIM_DEF(Box_store,    GFN_store);
 
 // Generic functions: `Function` protocol
 PRIM_DEF(call,       GFN_call);
@@ -100,13 +100,11 @@ PRIM_FUNC(loop,               1, 1);
 PRIM_FUNC(loopReduce,         1, -1);
 PRIM_FUNC(lt,                 2, 2);
 PRIM_FUNC(makeList,           0, -1);
-PRIM_FUNC(makeMutableBox,     0, 1);
 PRIM_FUNC(makeRegularGeneric, 2, 3);
 PRIM_FUNC(makeUniqlet,        0, 0);
 PRIM_FUNC(makeUnitypeGeneric, 2, 3);
 PRIM_FUNC(makeValue,          1, 2);
 PRIM_FUNC(makeValueMap,       1, -1);
-PRIM_FUNC(makeYieldBox,       0, 0);
 PRIM_FUNC(ne,                 2, 2);
 PRIM_FUNC(nonlocalExit,       1, 2);
 PRIM_FUNC(optValue,           1, 1);
@@ -118,6 +116,8 @@ PRIM_FUNC(totalOrder,         2, 2);
 PRIM_FUNC(typeOf,             1, 1);
 
 // Primitive functions: intended for modularization
+PRIM_FUNC(Box_makeMutableBox,    0, 1);
+PRIM_FUNC(Box_makeYieldBox,      0, 0);
 PRIM_FUNC(Io0_flatCwd,           0, 0);
 PRIM_FUNC(Io0_flatFileExists,    1, 1);
 PRIM_FUNC(Io0_flatReadLink,      1, 1);

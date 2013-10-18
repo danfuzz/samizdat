@@ -94,7 +94,6 @@ def SPECIAL_VALUES = {
     (Uniqlet):  "Uniqlet",
     (false):    "false",
     (null):     "null",
-    (nullBox):  "nullBox",
     (true):     "true"
 };
 

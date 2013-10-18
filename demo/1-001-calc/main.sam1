@@ -10,6 +10,7 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
@@ -154,7 +155,7 @@ def expressionImpl = {/
     )*
     { <> applyShuntingYard(firstValue, opValues) }
 /};
-store(expression, expressionImpl);
+Box::store(expression, expressionImpl);
 
 # Evaluates all the expressions passed to it, printing the evaluated results
 # in order. Each expression is expected to be terminated with a newline.

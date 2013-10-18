@@ -10,6 +10,7 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 
 
@@ -17,65 +18,65 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 # Main Tests
 #
 
-def box = makeMutableBox(0);
+def box = Box::makeMutableBox(0);
 
-while (fetch(box) < 5) {
-    store(box, fetch(box) + 1);
-    Io1::note("Value A is \%q(fetch(box)).")
+while (Box::fetch(box) < 5) {
+    Box::store(box, Box::fetch(box) + 1);
+    Io1::note("Value A is \%q(Box::fetch(box)).")
 };
 
-while (fetch(box) < 15) {
-    store(box, fetch(box) + 1);
-    if (fetch(box) < 10) {
+while (Box::fetch(box) < 15) {
+    Box::store(box, Box::fetch(box) + 1);
+    if (Box::fetch(box) < 10) {
         continue
     };
-    Io1::note("Value B is \%q(fetch(box)).")
+    Io1::note("Value B is \%q(Box::fetch(box)).")
 };
 
-while (fetch(box) < 30) { <next> ->
-    store(box, fetch(box) + 1);
-    if (fetch(box) < 25) {
+while (Box::fetch(box) < 30) { <next> ->
+    Box::store(box, Box::fetch(box) + 1);
+    if (Box::fetch(box) < 25) {
         <next>
     };
-    Io1::note("Value C is \%q(fetch(box)).")
+    Io1::note("Value C is \%q(Box::fetch(box)).")
 };
 
-def result1 = while (fetch(box) < 40) {
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 35) {
+def result1 = while (Box::fetch(box) < 40) {
+    Box::store(box, Box::fetch(box) + 1);
+    if (Box::fetch(box) == 35) {
         break "blort"
     };
-    Io1::note("Value D is \%q(fetch(box)).")
+    Io1::note("Value D is \%q(Box::fetch(box)).")
 };
 
 Io1::note("Result 1 is \%q(result1).");
 
-def result2 = while <out> (fetch(box) < 40) {
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 38) {
+def result2 = while <out> (Box::fetch(box) < 40) {
+    Box::store(box, Box::fetch(box) + 1);
+    if (Box::fetch(box) == 38) {
         <out> "fizmo"
     };
-    Io1::note("Value E is \%q(fetch(box)).")
+    Io1::note("Value E is \%q(Box::fetch(box)).")
 };
 
 Io1::note("Result 2 is \%q(result2).");
 
-while (value := (45 > fetch(box))) {
+while (value := (45 > Box::fetch(box))) {
     def nextVal = value + 1;
-    store(box, nextVal);
+    Box::store(box, nextVal);
     Io1::note("Value F is \%q(nextVal).")
 };
 
 # First test will be the one that fails.
-while (value1 := (50 > fetch(box)), value2 := value1 + 100) {
-    store(box, value1 + 1);
-    Io1::note("Value G is \%q(fetch(box)); \%q(value1) \%q(value2)");
+while (value1 := (50 > Box::fetch(box)), value2 := value1 + 100) {
+    Box::store(box, value1 + 1);
+    Io1::note("Value G is \%q(Box::fetch(box)); \%q(value1) \%q(value2)");
 };
 
 # Second test will be the one that fails.
-while (value1 := fetch(box), value2 := (55 > value1)) {
-    store(box, value1 + 1);
-    Io1::note("Value H is \%q(fetch(box)); \%q(value1) \%q(value2)");
+while (value1 := Box::fetch(box), value2 := (55 > value1)) {
+    Box::store(box, value1 + 1);
+    Io1::note("Value H is \%q(Box::fetch(box)); \%q(value1) \%q(value2)");
 };
 
 <> 0

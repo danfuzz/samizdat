@@ -1,0 +1,35 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Box functions
+#
+
+
+#
+# Exported Definitions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn update(box, updateFunction) {
+    <> ifValue { <> Box_fetch(box) }
+        { value <> Box_store(box, updateFunction(value)) }
+        { <> Box_store(box, updateFunction()) }
+};
+
+# Documented in Samizdat Layer 0 spec.
+def nullBox = @NullBox;
+
+<> {
+    # Re-exported from primitive core library.
+    canStore:       Box_canStore,
+    fetch:          Box_fetch,
+    makeMutableBox: Box_makeMutableBox,
+    makeYieldBox:   Box_makeYieldBox,
+    store:          Box_store,
+
+    # Defined in this file.
+    nullBox:        nullBox,
+    update:         update
+}

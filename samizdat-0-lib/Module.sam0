@@ -13,7 +13,7 @@
 
 # Box containing a map from fully-qualified names to modules. Each name is a
 # list-of-strings denoting a "path" to the module.
-def theModulesBox = makeMutableBox({});
+def theModulesBox = Box_makeMutableBox({});
 
 
 #
@@ -113,8 +113,8 @@ fn moduleDef(modu) {
                 stringFromModuleName(name)))
         };
 
-    def mods = fetch(theModulesBox);
-    store(theModulesBox, put(mods, name, modu));
+    def mods = Box_fetch(theModulesBox);
+    Box_store(theModulesBox, put(mods, name, modu));
 
     <> modu
 };
@@ -124,7 +124,7 @@ fn moduleGet(searchInfo) {
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     def name = searchInfo::name;
 
-    <> get(fetch(theModulesBox), name)
+    <> get(Box_fetch(theModulesBox), name)
 };
 
 # Documented in spec.

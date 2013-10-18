@@ -10,6 +10,7 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 
 
@@ -17,34 +18,34 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 # Main Tests
 #
 
-def box = makeMutableBox(0);
+def box = Box::makeMutableBox(0);
 
 do {
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 5) {
+    Box::store(box, Box::fetch(box) + 1);
+    if (Box::fetch(box) == 5) {
         break
     };
-    Io1::note("Value is \%q(fetch(box)).")
+    Io1::note("Value is \%q(Box::fetch(box)).")
 };
 
 do { <next> ->
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 10) {
+    Box::store(box, Box::fetch(box) + 1);
+    if (Box::fetch(box) == 10) {
         continue
-    } else if (fetch(box) == 12) {
+    } else if (Box::fetch(box) == 12) {
         <next>
-    } else if (fetch(box) == 15) {
+    } else if (Box::fetch(box) == 15) {
         break
     };
-    Io1::note("Value is \%q(fetch(box)).")
+    Io1::note("Value is \%q(Box::fetch(box)).")
 };
 
 def result = do <out> {
-    store(box, fetch(box) + 1);
-    if (fetch(box) == 20) {
+    Box::store(box, Box::fetch(box) + 1);
+    if (Box::fetch(box) == 20) {
         <out> "igram"
     };
-    Io1::note("Value is \%q(fetch(box)).")
+    Io1::note("Value is \%q(Box::fetch(box)).")
 };
 
 Io1::note("Result is \%q(result).");

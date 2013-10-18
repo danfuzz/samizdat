@@ -7,6 +7,9 @@
 #
 # Payload is `subGen`, the sub-generator.
 
+def Box = moduleGet({name: ["core", "Box"]});
+
+
 #
 # Exported Definitions
 #
@@ -18,16 +21,16 @@ fn makeListWrapGenerator(generator) {
 
 # Documented in spec.
 fn ListWrapGenerator_nextValue(gen, box) {
-    def innerBox = makeYieldBox();
+    def innerBox = Box::makeYieldBox();
 
     <> ifValue { <> nextValue(dataOf(gen), innerBox) }
         { nextGenerator ->
-            store(box, [fetch(innerBox)]);
+            Box::store(box, [Box::fetch(innerBox)]);
             <> @[ListWrapGenerator: nextGenerator]
         }
         {
             # It became voided.
-            store(box);
+            Box::store(box);
         }
 };
 genericBind(nextValue, "ListWrapGenerator", ListWrapGenerator_nextValue);

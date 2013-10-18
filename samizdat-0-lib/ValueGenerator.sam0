@@ -6,6 +6,7 @@
 # `ValueGenerator` Type
 #
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 #
@@ -20,7 +21,7 @@ genericBind(collect, "ValueGenerator", ValueGenerator_collect);
 
 # Documented in spec.
 fn ValueGenerator_nextValue(gen, box) {
-    store(box, dataOf(gen));
+    Box::store(box, dataOf(gen));
     <> gen
 };
 genericBind(nextValue, "ValueGenerator", ValueGenerator_nextValue);

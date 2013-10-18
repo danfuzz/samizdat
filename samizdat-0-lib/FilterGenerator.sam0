@@ -8,6 +8,9 @@
 # Payload is a map `[filterFunction: function, generator: subGen]`.
 # `subGen` is expected to produce lists of arguments to apply.
 
+def Box = moduleGet({name: ["core", "Box"]});
+
+
 #
 # Exported Definitions
 #
@@ -29,13 +32,13 @@ fn FilterGenerator_nextValue(gen, box) {
     # allowed to yield void to indicate a generated value is to
     # be discarded.
     loopReduce(payload::generator) { <next> gen ->
-        def innerBox = makeYieldBox();
+        def innerBox = Box::makeYieldBox();
 
         ifValue { <> nextValue(gen, innerBox) }
             { nextGenerator ->
-                ifValue { <> filterFunction(fetch(innerBox)*) }
+                ifValue { <> filterFunction(Box::fetch(innerBox)*) }
                     { value ->
-                        store(box, value);
+                        Box::store(box, value);
                         return @[FilterGenerator:
                             put(payload, "generator", nextGenerator)]
                     }
@@ -46,7 +49,7 @@ fn FilterGenerator_nextValue(gen, box) {
             };
 
         # The inner generator was voided.
-        store(box);
+        Box::store(box);
         return
     }
 };
