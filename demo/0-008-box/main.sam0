@@ -20,11 +20,11 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 
 # Prints box info.
 fn msg(box) {
-    def storeStr = ifIs { <> canStore(box) }
+    def storeStr = ifIs { <> Box::canStore(box) }
         { <> "can-store : "}
         { <> "no-store  : " };
 
-    def fetchStr = ifValue { <> fetch(box) }
+    def fetchStr = ifValue { <> Box::fetch(box) }
         { value <> Format::source(value) }
         { <> "(void)" };
 

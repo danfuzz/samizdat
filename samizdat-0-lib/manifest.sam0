@@ -31,8 +31,8 @@ def MANIFEST = [
     # Simplest modules.
     ["core", "EntityMap"],
     ["core", "Io0"],
-    "NullBox.sam0",
     ["core", "Box"],
+    "NullBox.sam0",
 
     # Layer 0: Simple functions. These only rely on primitive functions.
     "meta.sam0",

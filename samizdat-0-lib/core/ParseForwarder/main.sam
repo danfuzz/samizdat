@@ -24,24 +24,24 @@ fn make() {
 
 # Documented in Samizdat Layer 0 spec.
 fn ParseForwarder_canStore(fwd) {
-    <> canStore(dataOf(fwd))
+    <> Box::canStore(dataOf(fwd))
 };
-genericBind(canStore, "ParseForwarder", ParseForwarder_canStore);
+genericBind(Box::canStore, "ParseForwarder", ParseForwarder_canStore);
 
 # Documented in Samizdat Layer 0 spec.
 fn ParseForwarder_fetch(fwd) {
-    <> fetch(dataOf(fwd))
+    <> Box::fetch(dataOf(fwd))
 };
-genericBind(fetch, "ParseForwarder", ParseForwarder_fetch);
+genericBind(Box::fetch, "ParseForwarder", ParseForwarder_fetch);
 
 # Documented in Samizdat Layer 0 spec.
 fn ParseForwarder_store(fwd, parser) {
     ifNot { <> canCall(Peg::parse, parser) }
         { Io0::die("Attempt to forward to non-parser.") };
 
-    <> store(dataOf(fwd), parser);
+    <> Box::store(dataOf(fwd), parser);
 };
-genericBind(store, "ParseForwarder", ParseForwarder_store);
+genericBind(Box::store, "ParseForwarder", ParseForwarder_store);
 
 # Documented in Samizdat Layer 0 spec.
 fn ParseForwarder_parse(fwd, args*) {
