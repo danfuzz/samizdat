@@ -39,6 +39,7 @@ def MANIFEST = [
     "Bitwise.sam0",
     "Boolean.sam0",
     "Box.sam0",
+    "String.sam0",
 
     # Layer 0: Simple modules.
     ["core", "FunctionForwarder"],
@@ -55,7 +56,6 @@ def MANIFEST = [
     "FilterGenerator.sam0",      # Uses `ParaGenerator`.
     "range.sam0",
     "Generator.sam0",
-    "String.sam0",
 
     # Layer 0: Complicated modules.
     ["core", "Format"],
