@@ -28,11 +28,12 @@ def MANIFEST = [
     # Layer 0: Constant value definitions.
     "constants.sam0",
 
-    # Simplest modules.
+    # Simples modules.
     ["core", "EntityMap"],
     ["core", "Io0"],
     ["core", "Box"],
     "NullBox.sam0",
+    ["core", "FunctionForwarder"],
 
     # Layer 0: Simple functions.
     "meta.sam0",
@@ -41,9 +42,6 @@ def MANIFEST = [
     "Bitwise.sam0",
     "Boolean.sam0",
     "String.sam0",
-
-    # Layer 0: Simple modules.
-    ["core", "FunctionForwarder"],
 
     # Layer 0: Complicated functions.
     "NullGenerator.sam0",        # Used by several other generators.
@@ -54,8 +52,8 @@ def MANIFEST = [
     "CollectionGenerator.sam0",
     "SerialGenerator.sam0",
     "FilterGenerator.sam0",      # Uses `ParaGenerator`.
-    "range.sam0",
     "Generator.sam0",
+    "range.sam0",
 
     # Layer 0: Complicated modules.
     ["core", "Format"],
