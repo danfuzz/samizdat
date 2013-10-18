@@ -1,14 +1,17 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Box
----
+core::Box
+---------
 
 A `Box` is a container for a single other value or for void.
 In terms of value comparison, all boxes should compare by identity,
 and not by "happenstance content". That is, two boxes should only be
 considered "equal" if they are indistinguishable, even in the face of
 calling mutating operations.
+
+The `Box` module provides the generic functions of the `Box` protocol,
+as well as related constructors and constants.
 
 
 <br><br>
