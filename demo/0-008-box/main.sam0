@@ -40,35 +40,35 @@ Io0::note("Mutable Box");
 
 def box1 = Box::makeMutableBox();
 msg(box1);
-store(box1);
+Box::store(box1);
 msg(box1);
-store(box1, "Hi");
+Box::store(box1, "Hi");
 msg(box1);
-store(box1, "there!");
+Box::store(box1, "there!");
 msg(box1);
-store(box1);
+Box::store(box1);
 msg(box1);
 
 Io0::note("\nMutable Box, pre-set");
 
 def box2 = Box::makeMutableBox("blort");
 msg(box2);
-store(box2);
+Box::store(box2);
 msg(box2);
-store(box2, "igram");
+Box::store(box2, "igram");
 msg(box2);
 
 Io0::note("\nYield Box");
 
 def box3 = Box::makeYieldBox();
 msg(box3);
-store(box3, "fizmo");
+Box::store(box3, "fizmo");
 msg(box3);
 
 Io0::note("\nnullBox");
 
 msg(nullBox);
-store(nullBox, "stuff");
+Box::store(nullBox, "stuff");
 msg(nullBox);
 
 Io0::note("\nUpdate mutable box");

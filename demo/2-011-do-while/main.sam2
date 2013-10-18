@@ -21,7 +21,7 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 def box = Box::makeMutableBox(0);
 
 do { <next> ->
-    store(box, Box::fetch(box) + 1);
+    Box::store(box, Box::fetch(box) + 1);
     if (Box::fetch(box) == 5) {
         continue
     } else if (Box::fetch(box) == 7) {
@@ -31,7 +31,7 @@ do { <next> ->
 } while (Box::fetch(box) < 10);
 
 def result1 = do {
-    store(box, Box::fetch(box) + 1);
+    Box::store(box, Box::fetch(box) + 1);
     if (Box::fetch(box) == 13) {
         break "blort"
     };
@@ -41,7 +41,7 @@ def result1 = do {
 Io1::note("Result is \%q(result1).");
 
 def result2 = do <out> {
-    store(box, Box::fetch(box) + 1);
+    Box::store(box, Box::fetch(box) + 1);
     if (Box::fetch(box) == 18) {
         <out> "frotz"
     };

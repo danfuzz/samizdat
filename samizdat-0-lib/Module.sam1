@@ -65,7 +65,7 @@ fn moduleUse(searchInfo) {
         };
 
     # Indicate that the module is in the process of being loaded.
-    store(thePendingBox, put(pendings, fqName, null));
+    Box::store(thePendingBox, put(pendings, fqName, null));
 
     def moduleDir = findModuleDirectory(fqName);
     def moduleReader = Io1::sandboxedReader(moduleDir);

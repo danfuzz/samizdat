@@ -6,6 +6,7 @@
 # Samizdat Layer 2 Tree Parser
 #
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
@@ -618,7 +619,7 @@ def implTerm = {/
     # Defined by *Samizdat Layer 2*.
     &[@interpolatedString @"(" @"["] parTerm2
 /};
-store(parTerm, implTerm);
+Box::store(parTerm, implTerm);
 
 # Parses a list of "actual" (as opposed to formal) arguments to a function.
 # Yields a list of expression nodes.
@@ -653,7 +654,7 @@ def implUnaryExpression = {/
             { op, result <> op(result) }
     }
 /};
-store(parUnaryExpression, implUnaryExpression);
+Box::store(parUnaryExpression, implUnaryExpression);
 
 # `expression` from layer 0 is omitted here (it's forwarded earlier), and
 # `statement` and `nonlocalExit` are replaced with forwarded functions here.
@@ -699,7 +700,7 @@ def implProgramBody = {/
         <> {last*, statements: allStatements}
     }
 /};
-store(parProgramBody, implProgramBody);
+Box::store(parProgramBody, implProgramBody);
 
 # Top-level rule to parse an expression with possible error afterwards.
 def parExpressionOrError = {/
@@ -752,7 +753,7 @@ def implParser = {/
     @"/}"
     { <> @[parser: pex] }
 /};
-store(parParser, implParser);
+Box::store(parParser, implParser);
 
 # Parses a parenthesized parsing expression.
 def parParenPex = {/
@@ -890,7 +891,7 @@ def implChoicePex = {/
     rest = (@"|" parSequencePex)*
     { <> @[choice: [one, rest*]] }
 /};
-store(parChoicePex, implChoicePex);
+Box::store(parChoicePex, implChoicePex);
 
 
 #
@@ -1071,7 +1072,7 @@ def implTerm2 = {/
 |
     parComprehension
 /};
-store(parTerm2, implTerm2);
+Box::store(parTerm2, implTerm2);
 
 # Parses a nonlocal exit / return. All of the form matched by this rule
 # have the dual properties of (a) necessarily being at the end of a code
@@ -1102,7 +1103,7 @@ def implNonlocalExit = {/
 
     { <> makeCallNonlocalExit(name, value*) }
 /};
-store(parNonlocalExit, implNonlocalExit);
+Box::store(parNonlocalExit, implNonlocalExit);
 
 # Parses a unary prefix operator. This yields a function (per se) that
 # takes a node and yields a call to the appropriate operator function.
@@ -1118,7 +1119,7 @@ def implPrefixOperator = {/
     @"!"
     { <> { node <> makeCallNameThunks("ifNot", node, makeLiteral(true)) } }
 /};
-store(parPrefixOperator, implPrefixOperator);
+Box::store(parPrefixOperator, implPrefixOperator);
 
 # Tree for the closure part of `target.func` syntax expansion.
 # This expression is constant across all translations, and it's most easily
@@ -1227,7 +1228,7 @@ def implPostfixOperator = {/
         }
     )
 /};
-store(parPostfixOperator, implPostfixOperator);
+Box::store(parPostfixOperator, implPostfixOperator);
 
 # Parses a range expression.
 def parRangeExpression = {/
@@ -1987,13 +1988,13 @@ def implExpression = {/
     parDoExpression | parForExpression |
     parIfExpression | parSwitchExpression | parWhileExpression
 /};
-store(parExpression, implExpression);
+Box::store(parExpression, implExpression);
 
 # Parses a statement.
 def implStatement = {/
     parVarDef | parFnDef | parExpression
 /};
-store(parStatement, implStatement);
+Box::store(parStatement, implStatement);
 
 
 #

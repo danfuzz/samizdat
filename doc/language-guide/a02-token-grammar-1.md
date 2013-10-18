@@ -209,7 +209,7 @@ def implToken = {/
 |
     tokError
 /};
-store(tokToken, implToken);
+Box::store(tokToken, implToken);
 
 # Parses a file of tokens, yielding a list of them.
 def tokFile = {/

@@ -21,12 +21,12 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 def box = Box::makeMutableBox(0);
 
 while (Box::fetch(box) < 5) {
-    store(box, Box::fetch(box) + 1);
+    Box::store(box, Box::fetch(box) + 1);
     Io1::note("Value A is \%q(Box::fetch(box)).")
 };
 
 while (Box::fetch(box) < 15) {
-    store(box, Box::fetch(box) + 1);
+    Box::store(box, Box::fetch(box) + 1);
     if (Box::fetch(box) < 10) {
         continue
     };
@@ -34,7 +34,7 @@ while (Box::fetch(box) < 15) {
 };
 
 while (Box::fetch(box) < 30) { <next> ->
-    store(box, Box::fetch(box) + 1);
+    Box::store(box, Box::fetch(box) + 1);
     if (Box::fetch(box) < 25) {
         <next>
     };
@@ -42,7 +42,7 @@ while (Box::fetch(box) < 30) { <next> ->
 };
 
 def result1 = while (Box::fetch(box) < 40) {
-    store(box, Box::fetch(box) + 1);
+    Box::store(box, Box::fetch(box) + 1);
     if (Box::fetch(box) == 35) {
         break "blort"
     };
@@ -52,7 +52,7 @@ def result1 = while (Box::fetch(box) < 40) {
 Io1::note("Result 1 is \%q(result1).");
 
 def result2 = while <out> (Box::fetch(box) < 40) {
-    store(box, Box::fetch(box) + 1);
+    Box::store(box, Box::fetch(box) + 1);
     if (Box::fetch(box) == 38) {
         <out> "fizmo"
     };
@@ -63,19 +63,19 @@ Io1::note("Result 2 is \%q(result2).");
 
 while (value := (45 > Box::fetch(box))) {
     def nextVal = value + 1;
-    store(box, nextVal);
+    Box::store(box, nextVal);
     Io1::note("Value F is \%q(nextVal).")
 };
 
 # First test will be the one that fails.
 while (value1 := (50 > Box::fetch(box)), value2 := value1 + 100) {
-    store(box, value1 + 1);
+    Box::store(box, value1 + 1);
     Io1::note("Value G is \%q(Box::fetch(box)); \%q(value1) \%q(value2)");
 };
 
 # Second test will be the one that fails.
 while (value1 := Box::fetch(box), value2 := (55 > value1)) {
-    store(box, value1 + 1);
+    Box::store(box, value1 + 1);
     Io1::note("Value H is \%q(Box::fetch(box)); \%q(value1) \%q(value2)");
 };
 

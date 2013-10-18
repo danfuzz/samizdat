@@ -114,7 +114,7 @@ fn moduleDef(modu) {
         };
 
     def mods = Box_fetch(theModulesBox);
-    store(theModulesBox, put(mods, name, modu));
+    Box_store(theModulesBox, put(mods, name, modu));
 
     <> modu
 };

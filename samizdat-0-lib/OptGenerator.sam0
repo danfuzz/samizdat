@@ -33,7 +33,7 @@ fn OptGenerator_nextValue(gen, box) {
 
     <> ifValue { <> nextValue(subGen, innerBox) }
         { nextGen ->
-            store(box, [Box::fetch(innerBox)]);
+            Box::store(box, [Box::fetch(innerBox)]);
             <> @[OptGenerator: nextGen]
         }
         { <> nextValue(makeValueGenerator([]), box) }

@@ -39,7 +39,7 @@ fn SerialGenerator_nextValue(gen, box) {
 
             <> ifValue { <> nextValue(firstGen, innerBox) }
                 { nextGenerator ->
-                    store(box, Box::fetch(innerBox));
+                    Box::store(box, Box::fetch(innerBox));
                     <> @[SerialGenerator: [nextGenerator, moreGens*]]
                 }
                 {
@@ -49,7 +49,7 @@ fn SerialGenerator_nextValue(gen, box) {
         }
         {
             # Totally voided.
-            store(box)
+            Box::store(box)
         }
 };
 genericBind(nextValue, "SerialGenerator", SerialGenerator_nextValue);

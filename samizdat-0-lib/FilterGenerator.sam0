@@ -38,7 +38,7 @@ fn FilterGenerator_nextValue(gen, box) {
             { nextGenerator ->
                 ifValue { <> filterFunction(Box::fetch(innerBox)*) }
                     { value ->
-                        store(box, value);
+                        Box::store(box, value);
                         return @[FilterGenerator:
                             put(payload, "generator", nextGenerator)]
                     }
@@ -49,7 +49,7 @@ fn FilterGenerator_nextValue(gen, box) {
             };
 
         # The inner generator was voided.
-        store(box);
+        Box::store(box);
         return
     }
 };

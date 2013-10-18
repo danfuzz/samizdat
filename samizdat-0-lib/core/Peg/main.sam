@@ -40,13 +40,13 @@ fn PegChoice_parse(peg, box, input, items*) {
         def innerBox = Box::makeYieldBox();
         ifValue { <> parse(rule, innerBox, input, items*) }
             { newInput ->
-                store(box, Box::fetch(innerBox));
+                Box::store(box, Box::fetch(innerBox));
                 return newInput
             }
     };
 
     # No rule succeeded.
-    store(box)
+    Box::store(box)
 };
 genericBind(parse, "PegChoice", PegChoice_parse);
 
@@ -54,19 +54,19 @@ genericBind(parse, "PegChoice", PegChoice_parse);
 fn PegCode_parse(peg, box, input, items*) {
     <> ifValue { <> dataOf(peg)(items*) }
         { result ->
-            store(box, result);
+            Box::store(box, result);
             <> input
         }
-        { store(box) };
+        { Box::store(box) };
 };
 genericBind(parse, "PegCode", PegCode_parse);
 
 # Documented in Samizdat Layer 0 spec.
 fn PegEof_parse(peg, box, input, .*) {
     <> ifIs { <> nextValue(input, nullBox) }
-        { store(box) }
+        { Box::store(box) }
         {
-            store(box, null);
+            Box::store(box, null);
             <> input
         }
 };
@@ -74,16 +74,16 @@ genericBind(parse, "PegEof", PegEof_parse);
 
 # Documented in Samizdat Layer 0 spec.
 fn PegFail_parse(peg, box, input, .*) {
-    store(box)
+    Box::store(box)
 };
 genericBind(parse, "PegFail", PegFail_parse);
 
 # Documented in Samizdat Layer 0 spec.
 fn PegLookaheadFailure_parse(peg, box, input, items*) {
     <> ifIs { <> parse(dataOf(peg), nullBox, input, items*) }
-        { store(box) }
+        { Box::store(box) }
         {
-            store(box, null);
+            Box::store(box, null);
             <> input
         }
 };
@@ -108,11 +108,11 @@ fn PegOpt_parse(peg, box, input, items*) {
     def innerBox = Box::makeYieldBox();
     <> ifValue { <> parse(dataOf(peg), innerBox, input, items*) }
         { newInput ->
-            store(box, [Box::fetch(innerBox)]);
+            Box::store(box, [Box::fetch(innerBox)]);
             <> newInput
         }
         {
-            store(box, []);
+            Box::store(box, []);
             <> input
         }
 };
@@ -134,11 +134,11 @@ fn PegRepeat_parse(peg, box, input, items*) {
                             ifIs { <> lt(sizeOf(values), minSize) }
                                 {
                                     # Did not parse minimum required size.
-                                    store(box);
+                                    Box::store(box);
                                     return
                                 }
                         };
-                    store(box, values);
+                    Box::store(box, values);
                     return input
                 }
         }
@@ -147,7 +147,7 @@ genericBind(parse, "PegRepeat", PegRepeat_parse);
 
 # Documented in Samizdat Layer 0 spec.
 fn PegResult_parse(peg, box, input, .*) {
-    store(box, dataOf(peg));
+    Box::store(box, dataOf(peg));
     <> input
 };
 genericBind(parse, "PegResult", PegResult_parse);
@@ -164,14 +164,14 @@ fn PegSequence_parse(peg, box, input, items*) {
                 { newInput <> [newInput, [items*, Box::fetch(innerBox)]] }
                 {
                     # Propagate the failure.
-                    store(box);
+                    Box::store(box);
                     return
                 }
         };
 
     def newInput = nth(reduction, 0);
     def results = nth(reduction, 1);
-    store(box, last(results));
+    Box::store(box, last(results));
     <> newInput
 };
 genericBind(parse, "PegSequence", PegSequence_parse);
@@ -186,13 +186,13 @@ fn PegTokenSet_parse(peg, box, input, items*) {
             def item = Box::fetch(innerBox);
             ifIs { <> get(set, typeOf(item)) }
                 {
-                    store(box, item);
+                    Box::store(box, item);
                     return newInput
                 }
         };
 
     # Either EOF or no match.
-    store(box);
+    Box::store(box);
 };
 genericBind(parse, "PegTokenSet", PegTokenSet_parse);
 
@@ -206,13 +206,13 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
             def item = Box::fetch(innerBox);
             ifNot { <> get(set, typeOf(item)) }
                 {
-                    store(box, item);
+                    Box::store(box, item);
                     return newInput
                 }
         };
 
     # Either EOF or no match.
-    store(box);
+    Box::store(box);
 };
 genericBind(parse, "PegTokenSetComplement", PegTokenSetComplement_parse);
 
