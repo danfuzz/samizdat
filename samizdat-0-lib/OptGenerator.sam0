@@ -7,6 +7,7 @@
 #
 # Payload is `subGen`, the sub-generator.
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -28,7 +29,7 @@ genericBind(collect, "OptGenerator", OptGenerator_collect);
 # Documented in spec.
 fn OptGenerator_nextValue(gen, box) {
     def subGen = dataOf(gen);
-    def innerBox = makeYieldBox();
+    def innerBox = Box::makeYieldBox();
 
     <> ifValue { <> nextValue(subGen, innerBox) }
         { nextGen ->

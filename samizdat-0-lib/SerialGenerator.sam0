@@ -7,6 +7,9 @@
 #
 # Payload is `[subGens*]`, a list of sub-generators.
 
+def Box = moduleGet({name: ["core", "Box"]});
+
+
 #
 # Exported Definitions
 #
@@ -32,7 +35,7 @@ fn SerialGenerator_nextValue(gen, box) {
     <> ifValue { <> first(subGens) }
         { firstGen ->
             def moreGens = butFirst(subGens);
-            def innerBox = makeYieldBox();
+            def innerBox = Box::makeYieldBox();
 
             <> ifValue { <> nextValue(firstGen, innerBox) }
                 { nextGenerator ->

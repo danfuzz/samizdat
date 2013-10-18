@@ -10,6 +10,7 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -36,13 +37,13 @@ fn msgTen(header, gen) {
     Io0::note(header);
 
     { <done> ->
-        def count = makeMutableBox(10);
+        def count = Box::makeMutableBox(10);
         loopReduce(gen) { gen ->
             store(count, sub(fetch(count), 1));
             ifIs { <> lt(fetch(count), 0) }
                 { <done> };
 
-            def box = makeYieldBox();
+            def box = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
                 { nextGen ->
                     msg(fetch(box));

@@ -10,6 +10,7 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -37,7 +38,7 @@ fn msg(box) {
 
 Io0::note("Mutable Box");
 
-def box1 = makeMutableBox();
+def box1 = Box::makeMutableBox();
 msg(box1);
 store(box1);
 msg(box1);
@@ -50,7 +51,7 @@ msg(box1);
 
 Io0::note("\nMutable Box, pre-set");
 
-def box2 = makeMutableBox("blort");
+def box2 = Box::makeMutableBox("blort");
 msg(box2);
 store(box2);
 msg(box2);
@@ -59,7 +60,7 @@ msg(box2);
 
 Io0::note("\nYield Box");
 
-def box3 = makeYieldBox();
+def box3 = Box::makeYieldBox();
 msg(box3);
 store(box3, "fizmo");
 msg(box3);
@@ -71,14 +72,14 @@ store(nullBox, "stuff");
 msg(nullBox);
 
 Io0::note("\nUpdate mutable box");
-def box4 = makeMutableBox();
+def box4 = Box::makeMutableBox();
 update(box4, { args* <> Format::source(args) });
 msg(box4);
 update(box4, { value <> cat("Yes: ", value) });
 msg(box4);
 
 Io0::note("\nUpdate yield box");
-def box5 = makeYieldBox();
+def box5 = Box::makeYieldBox();
 update(box5, { args* <> Format::source(args) });
 msg(box5);
 

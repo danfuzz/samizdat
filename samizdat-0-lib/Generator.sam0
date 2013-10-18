@@ -6,6 +6,8 @@
 # Generator functions
 #
 
+def Box = moduleGet({name: ["core", "Box"]});
+
 
 #
 # Exported Definitions
@@ -38,7 +40,7 @@ fn filterAll(filterFunction, generators*) {
 fn doReduce(reduceFunction, generator, baseValues*) {
     loopReduce(generator, baseValues)
         { gen, values ->
-            def box = makeYieldBox();
+            def box = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
                 { nextGenerator ->
                     <> ifValue { <> reduceFunction(fetch(box), values*) }
@@ -59,7 +61,7 @@ fn doReduce(reduceFunction, generator, baseValues*) {
 fn doReduce1(reduceFunction, generator, baseValue) {
     loopReduce(generator, baseValue)
         { gen, value ->
-            def box = makeYieldBox();
+            def box = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
                 { nextGenerator ->
                     <> ifValue { <> reduceFunction(fetch(box), value) }
@@ -80,7 +82,7 @@ fn doReduce1(reduceFunction, generator, baseValue) {
 fn filterPump(filterFunction, generators*) {
     loopReduce(makeParaGenerator(generators*))
         { gen ->
-            def box = makeYieldBox();
+            def box = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
                 { nextGenerator ->
                     filterFunction(fetch(box)*);

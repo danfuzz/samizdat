@@ -8,6 +8,7 @@
 # Data payload is a yield box.
 #
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -17,7 +18,7 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 
 # Documented in Samizdat Layer 0 spec.
 fn make() {
-    <> @[FunctionForwarder: makeYieldBox()]
+    <> @[FunctionForwarder: Box::makeYieldBox()]
 };
 
 # Documented in Samizdat Layer 0 spec.

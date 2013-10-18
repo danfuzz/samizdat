@@ -10,6 +10,7 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Box = moduleGet({name: ["core", "Box"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 
 
@@ -17,7 +18,7 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 # Main Tests
 #
 
-def box = makeMutableBox(0);
+def box = Box::makeMutableBox(0);
 
 do {
     store(box, fetch(box) + 1);
