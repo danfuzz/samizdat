@@ -45,7 +45,7 @@ def MANIFEST = [
     # Layer 0: Simple modules.
     ["core", "FunctionForwarder"],
 
-    # Layer 0: Complicated functions
+    # Layer 0: Complicated functions.
     "NullGenerator.sam0",        # Used by several other generators.
     "ValueGenerator.sam0",
     "ListWrapGenerator.sam0",
