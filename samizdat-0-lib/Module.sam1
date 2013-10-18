@@ -84,7 +84,7 @@ fn moduleUse(searchInfo) {
     moduleDef(result);
 
     # Indicate that the module load is no longer in-process.
-    update(thePendingBox, { pendings <> del(pendings, fqName) });
+    Box::update(thePendingBox, { pendings <> del(pendings, fqName) });
 
     <> result
 };

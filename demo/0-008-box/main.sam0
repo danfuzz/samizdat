@@ -73,14 +73,14 @@ msg(nullBox);
 
 Io0::note("\nUpdate mutable box");
 def box4 = Box::makeMutableBox();
-update(box4, { args* <> Format::source(args) });
+Box::update(box4, { args* <> Format::source(args) });
 msg(box4);
-update(box4, { value <> cat("Yes: ", value) });
+Box::update(box4, { value <> cat("Yes: ", value) });
 msg(box4);
 
 Io0::note("\nUpdate yield box");
 def box5 = Box::makeYieldBox();
-update(box5, { args* <> Format::source(args) });
+Box::update(box5, { args* <> Format::source(args) });
 msg(box5);
 
 <> 0
