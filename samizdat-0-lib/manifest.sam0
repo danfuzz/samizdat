@@ -34,7 +34,7 @@ def MANIFEST = [
     ["core", "Box"],
     "NullBox.sam0",
 
-    # Layer 0: Simple functions. These only rely on primitive functions.
+    # Layer 0: Simple functions.
     "meta.sam0",
     "Value.sam0",
     "Collection.sam0",

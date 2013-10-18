@@ -32,9 +32,3 @@ fn NullBox_store(box, value?) {
     <> value*
 };
 genericBind(Box::store, "NullBox", NullBox_store);
-
-def nullBox = @NullBox;
-
-<> {
-    nullBox: nullBox
-}
