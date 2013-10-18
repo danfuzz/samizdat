@@ -31,6 +31,8 @@ def MANIFEST = [
     # Simplest modules.
     ["core", "EntityMap"],
     ["core", "Io0"],
+    "NullBox.sam0",
+    ["core", "Box"],
 
     # Layer 0: Simple functions. These only rely on primitive functions.
     "meta.sam0",
@@ -45,7 +47,6 @@ def MANIFEST = [
     ["core", "FunctionForwarder"],
 
     # Layer 0: Complicated functions
-    "NullBox.sam0",
     "NullGenerator.sam0",        # Used by several other generators.
     "ValueGenerator.sam0",
     "ListWrapGenerator.sam0",
