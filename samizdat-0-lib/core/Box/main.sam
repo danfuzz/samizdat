@@ -24,8 +24,8 @@ fn update(box, updateFunction) {
 <> {
     canStore:       Box_canStore,
     fetch:          Box_fetch,
-    makeMutableBox: makeMutableBox,
-    makeYieldBox:   makeYieldBox,
+    makeMutableBox: Box_makeMutableBox,
+    makeYieldBox:   Box_makeYieldBox,
     nullBox:        nullBox,
     store:          Box_store,
     update:         update

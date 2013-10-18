@@ -13,7 +13,7 @@
 
 # Box containing a map from fully-qualified names to modules. Each name is a
 # list-of-strings denoting a "path" to the module.
-def theModulesBox = makeMutableBox({});
+def theModulesBox = Box_makeMutableBox({});
 
 
 #
