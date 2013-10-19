@@ -28,7 +28,7 @@ def MANIFEST = [
     # Layer 0: Constant value definitions.
     "constants.sam0",
 
-    # Simples modules.
+    # Simple modules.
     ["core", "EntityMap"],
     ["core", "Io0"],
     ["core", "Box"],
