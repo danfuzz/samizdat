@@ -31,8 +31,9 @@ def MANIFEST = [
     # Simple modules.
     ["core", "EntityMap"],
     ["core", "Io0"],
+    ["proto", "Box"],
+    ["impl", "NullBox"],
     ["core", "Box"],
-    "NullBox.sam0",
     ["core", "FunctionForwarder"],
 
     # Layer 0: Simple functions.
