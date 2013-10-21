@@ -6,109 +6,19 @@
 # Generator functions
 #
 
-def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["core", "Generator"]});
 
 
 #
 # Exported Definitions
 #
 
-# Documented in Samizdat Layer 0 spec.
-fn collectAsMap(generator) {
-    # Avoid pointless map->generator->map conversion.
-    ifIs { <> isMap(generator) }
-        { return generator };
-
-    <> cat({}, generator*)
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn filterAll(filterFunction, generators*) {
-    <> ifIs { <> eq(sizeOf(generators), 1) }
-        {
-            # We are filtering a single generator, so just use the
-            # special-case (and often more efficient) `filter`.
-            <> filter(generators*, filterFunction)
-        }
-        {
-            # The general case.
-            <> collect(makeFilterGenerator(filterFunction, generators*))
-        }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn doReduce(reduceFunction, generator, baseValues*) {
-    loopReduce(generator, baseValues)
-        { gen, values ->
-            def box = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
-                { nextGenerator ->
-                    <> ifValue { <> reduceFunction(Box::fetch(box), values*) }
-                        { nextValues <> [nextGenerator, nextValues] }
-                        {
-                            # The reduce function discarded the values.
-                            <> [nextGenerator, values]
-                        }
-                }
-                {
-                    # The generator was voided.
-                    return values
-                }
-        }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn doReduce1(reduceFunction, generator, baseValue) {
-    loopReduce(generator, baseValue)
-        { gen, value ->
-            def box = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
-                { nextGenerator ->
-                    <> ifValue { <> reduceFunction(Box::fetch(box), value) }
-                        { nextValue <> [nextGenerator, nextValue] }
-                        {
-                            # The reduce function discarded the value.
-                            <> [nextGenerator, value]
-                        }
-                }
-                {
-                    # The generator was voided.
-                    return value
-                }
-        }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn filterPump(filterFunction, generators*) {
-    loopReduce(makeParaGenerator(generators*))
-        { gen ->
-            def box = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
-                { nextGenerator ->
-                    filterFunction(Box::fetch(box)*);
-                    <> [nextGenerator]
-                }
-                {
-                    # The inner generator was voided.
-                    return
-                }
-        }
-};
-
-# Documented in Samizdat Layer 0 spec.
-fn generatorPump(generator) {
-    loopReduce(generator) { gen ->
-        <> ifValue { <> nextValue(gen, Box::nullBox) }
-            { nextGen <> [nextGen] }
-            { return }
-    }
-};
-
+# TEMP: Re-export the module as regular globals.
 <> {
-    collectAsMap:  collectAsMap,
-    doReduce:      doReduce,
-    doReduce1:     doReduce1,
-    filterAll:     filterAll,
-    filterPump:    filterPump,
-    generatorPump: generatorPump
+    collectAsMap:  Generator::collectAsMap,
+    doReduce:      Generator::doReduce,
+    doReduce1:     Generator::doReduce1,
+    filterAll:     Generator::filterAll,
+    filterPump:    Generator::filterPump,
+    generatorPump: Generator::generatorPump
 }

@@ -44,6 +44,8 @@ def MANIFEST = [
     "String.sam0",
 
     # Layer 0: Complicated functions.
+    ["proto", "Generator"],
+    ["impl", "NullGenerator"],
     "NullGenerator.sam0",        # Used by several other generators.
     "ValueGenerator.sam0",
     "ListWrapGenerator.sam0",
@@ -52,6 +54,7 @@ def MANIFEST = [
     "CollectionGenerator.sam0",
     "SerialGenerator.sam0",
     "FilterGenerator.sam0",      # Uses `ParaGenerator`.
+    ["core", "Generator"],
     "Generator.sam0",
     "range.sam0",
 

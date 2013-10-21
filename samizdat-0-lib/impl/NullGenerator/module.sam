@@ -2,17 +2,7 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# `nullGenerator` Value and Type
-#
-
-def NullGenerator = moduleGet({name: ["impl", "NullGenerator"]});
-
-
-#
-# Exported Definitions
-#
-
-<> {
-    nullGenerator: NullGenerator::nullGenerator
+{
+    name: ["impl", "NullGenerator"],
+    version: "0.0.1"
 }
