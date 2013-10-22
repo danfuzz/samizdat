@@ -91,7 +91,7 @@ msgAll("FilterGenerator (square even numbers)",
         });
 
 Io0::note("generatorPump on FilterGenerator");
-generatorPump(
+Generator::generatorPump(
     makeFilterGenerator([1, 2, 3, 4])
         { value -> Io0::note(cat("    Yay ", Format::source(value))) });
 Io0::note("");

@@ -110,7 +110,7 @@ fn isIdentifier(string) {
     ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
-    filterPump(string) { ch ->
+    Generator::filterPump(string) { ch ->
         ifNot { <> get(IDENTIFIER_CHARS, ch) }
             { return }
     };

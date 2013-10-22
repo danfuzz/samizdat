@@ -10,6 +10,7 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 
 
@@ -20,7 +21,7 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 # Prints generator or collection output.
 fn msg(header, gen) {
     Io1::note(header);
-    filterPump(gen) { item <> Io1::note("  \%q(item)") };
+    Generator::filterPump(gen) { item <> Io1::note("  \%q(item)") };
     Io1::note("")
 };
 

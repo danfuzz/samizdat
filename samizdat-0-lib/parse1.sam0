@@ -21,7 +21,7 @@ def Peg = moduleGet({name: ["core", "Peg"]});
 fn reportError(pending) {
     Io0::note("Pending tokens:");
 
-    filterPump(pending, makeInclusiveRange(1, 1, 50))
+    Generator::filterPump(pending, makeInclusiveRange(1, 1, 50))
         { token, . -> Io0::note(cat("    ", Format::source(token))) };
 
     Io0::die("\nExtra tokens at end of program.")
