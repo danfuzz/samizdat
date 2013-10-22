@@ -11,6 +11,7 @@
 SELF_PATH, ARGS* ->
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -55,7 +56,7 @@ fn msgAll(header, gen) {
 msgAll("Empty list", []);
 msgAll("Empty map", {});
 msgAll("Empty string", "");
-msgAll("NullGenerator", nullGenerator);
+msgAll("NullGenerator", Generator::nullGenerator);
 msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
 msgAll("Empty ParaGenerator", makeParaGenerator());
 msgAll("Empty SerialGenerator", makeSerialGenerator());
@@ -110,7 +111,13 @@ msgAll("Size two SerialGenerator",
         "defg"));
 
 msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
-    makeSerialGenerator("abc", [], [], nullGenerator, ["def", "ghi"], []));
+    makeSerialGenerator(
+        "abc",
+        [],
+        [],
+        Generator::nullGenerator,
+        ["def", "ghi"],
+        []));
 
 Io0::note("collectAsMap on a FilterGenerator");
 def outMap = collectAsMap(

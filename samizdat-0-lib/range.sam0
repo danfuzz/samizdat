@@ -9,6 +9,7 @@
 # `OpenRange` payload: `{start: intOrChar, increment: int}`
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -42,7 +43,7 @@ fn makeClosedRange(firstValue, increment, size) {
             <> @[ClosedRange:
                 {firstValue: firstValue, increment: increment, size: size}]
         }
-        { <> nullGenerator }
+        { <> Generator::nullGenerator }
 };
 
 # Documented in spec.
@@ -57,7 +58,7 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     ifIs { <> totEq(increment, 0) }
         {
             return ifIs { <> isEmpty* }
-                { <> nullGenerator }
+                { <> Generator::nullGenerator }
                 { <> makeClosedRange(firstValue, 0, 1) }
         };
 
@@ -68,7 +69,7 @@ fn makeExclusiveRange(firstValue, increment, limit) {
         add(1, div(sub(sub(limitInt, firstInt), sign(increment)), increment));
 
     ifIs { <> totLe(size, 0) }
-        { return nullGenerator };
+        { return Generator::nullGenerator };
 
     <> makeClosedRange(firstValue, increment, size);
 };
@@ -87,7 +88,7 @@ fn makeInclusiveRange(firstValue, increment, limit) {
     def size = add(1, div(sub(limitInt, firstInt), increment));
 
     ifIs { <> totLe(size, 0) }
-        { return nullGenerator };
+        { return Generator::nullGenerator };
 
     <> makeClosedRange(firstValue, increment, size);
 };
