@@ -2,11 +2,11 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
+# TEMP: Remove this file!
+
 #
 # `nullGenerator` Value and Type
 #
-
-def NullGenerator = moduleGet({name: ["impl", "NullGenerator"]});
 
 
 #
@@ -14,5 +14,5 @@ def NullGenerator = moduleGet({name: ["impl", "NullGenerator"]});
 #
 
 <> {
-    nullGenerator: NullGenerator::nullGenerator
+    nullGenerator: @NullGenerator
 }
