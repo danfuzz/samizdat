@@ -7,6 +7,7 @@
 #
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
@@ -440,7 +441,7 @@ def implUnaryExpression = Peg::makeMainSequence(
     parTerm,
     Peg::makeStar(parPostfixOperator),
     Peg::makeCode { base, postfixes ->
-        <> doReduce1(postfixes, base) { op, result <> op(result) }
+        <> Generator::doReduce1(postfixes, base) { op, result <> op(result) }
     });
 Box::store(parUnaryExpression, implUnaryExpression);
 

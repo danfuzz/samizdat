@@ -11,6 +11,7 @@
 SELF_PATH, ARGS* ->
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
@@ -38,7 +39,7 @@ def UNARY_OPS = {
 # Takes an initial value and a list of one-argument functions, and
 # does a reduction by applying each of the functions in order.
 fn applyAll(initialValue, functions) {
-    <> doReduce1(functions, initialValue)
+    <> Generator::doReduce1(functions, initialValue)
         { function, result <> function(result) }
 };
 
@@ -104,7 +105,7 @@ def digit = {/
 def number = {/
     digits = digit+
     {
-        <> doReduce1(digits, 0)
+        <> Generator::doReduce1(digits, 0)
             { digit, result <> digit + result * 10 }
     }
 /};

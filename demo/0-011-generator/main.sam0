@@ -120,7 +120,7 @@ msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
         []));
 
 Io0::note("collectAsMap on a FilterGenerator");
-def outMap = collectAsMap(
+def outMap = Generator::collectAsMap(
     makeFilterGenerator(makeInclusiveRange(0, 2, 4))
         { value ->
             <> {(value): value, (add(value, 1)): value, blort: value}

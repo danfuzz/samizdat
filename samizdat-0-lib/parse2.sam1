@@ -7,6 +7,7 @@
 #
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
@@ -171,7 +172,7 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 
     def voidable = ifValueOr { <> optVoidable* } { <> false };
 
-    def result = doReduce1(opExList, firstEx) { opEx, result ->
+    def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
         def op = first(opEx);
         def ex = last(opEx);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
@@ -648,9 +649,9 @@ def implUnaryExpression = {/
     postfixes = parPostfixOperator*
 
     {
-        def withPosts = doReduce1(postfixes, base)
+        def withPosts = Generator::doReduce1(postfixes, base)
             { op, result <> op(result) };
-        <> doReduce1(reverse(prefixes), withPosts)
+        <> Generator::doReduce1(reverse(prefixes), withPosts)
             { op, result <> op(result) }
     }
 /};
@@ -1466,7 +1467,7 @@ def parLogicOrExpression = {/
     |
         {
             def allExprs = reverse([one, rest*]);
-            <> doReduce1(butFirst(allExprs), first(allExprs))
+            <> Generator::doReduce1(butFirst(allExprs), first(allExprs))
                 { ex, result ->
                     <> makeCallName("ifValueOr",
                         makeThunk(ex), makeThunk(result))
@@ -1620,7 +1621,7 @@ def parIfExpression = {/
         # in a single-element list, so that they can be slotted directly into
         # place as the third argument to an enclosing `if*` by saying `result*`
         # (which also handles the case of a missing final `else`).
-        def reduction = doReduce1(clauses, optElse) { clause, optResult ->
+        def reduction = Generator::doReduce1(clauses, optElse) { clause, optResult ->
             def maker = clause::maker;
             def then = clause::then;
             <> [makeThunk(maker(then, optResult*))]

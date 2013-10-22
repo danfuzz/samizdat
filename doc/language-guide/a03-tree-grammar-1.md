@@ -533,7 +533,7 @@ def parUnaryExpression = {/
     base = parTerm
     postfixes = parPostfixOperator*
 
-    { <> doReduce1(postfixes, base) { op, result <> op(result) } }
+    { <> Generator::doReduce1(postfixes, base) { op, result <> op(result) } }
 /};
 
 # Parses a possibly-voidable expression. This is done rather than including

@@ -7,6 +7,7 @@
 #
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["core", "Generator"]});
 
 
 #
@@ -157,7 +158,7 @@ fn PegSequence_parse(peg, box, input, items*) {
     # Each rule after the first gets passed as additional arguments
     # the matched results of all the previous rules, in order.
 
-    def reduction = doReduce(dataOf(peg), input, items)
+    def reduction = Generator::doReduce(dataOf(peg), input, items)
         { rule, input, items ->
             def innerBox = Box::makeYieldBox();
             <> ifValue { <> parse(rule, innerBox, input, items*) }

@@ -17,7 +17,7 @@ result as tokens of type `error`.
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
-def KEYWORDS = collectAsMap(
+def KEYWORDS = Generator::collectAsMap(
     makeFilterGenerator([
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
@@ -113,7 +113,7 @@ def tokInt = {/
     )+
 
     {
-        def value = doReduce1(digits, 0)
+        def value = Generator::doReduce1(digits, 0)
             { digit, result <> add(digit, mul(result, 10)) };
         <> @[int: value]
     }
