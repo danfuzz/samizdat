@@ -7,7 +7,9 @@
 #
 
 def Box = moduleGet({name: ["proto", "Box"]});
-def NullBox = moduleGet({name: ["impl", "NullBox"]});
+
+def NullBox = submoduleLoad("NullBox");
+
 
 #
 # Exported Definitions

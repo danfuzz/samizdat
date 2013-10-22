@@ -32,7 +32,6 @@ def MANIFEST = [
     ["core", "EntityMap"],
     ["core", "Io0"],
     ["proto", "Box"],
-    ["impl", "NullBox"],
     ["core", "Box"],
     ["core", "FunctionForwarder"],
 
