@@ -54,7 +54,6 @@ def MANIFEST = [
     "SerialGenerator.sam0",
     "FilterGenerator.sam0",      # Uses `ParaGenerator`.
     ["core", "Generator"],
-    "Generator.sam0",
     "range.sam0",
 
     # Layer 0: Complicated modules.
