@@ -69,26 +69,57 @@ fn loadLibrary(ctx, name) {
         }
 };
 
-# Loads the named module (given a flattened directory name), installing
-# it by using `moduleDef` from the given `ctx`.
+# Makes a submodule global context, based on the given `baseCtx` and which
+# adds submodule read and load functions that use the given `directory` (a
+# flat path).
+fn makeModuleContext(baseCtx, directory) {
+    # A box for the final load context, to enable the necessary self-reference.
+    def ctxBox = Box_makeYieldBox();
+
+    fn submoduleRead(name) {
+        <> readLibraryFile(cat(directory, "/", name))
+    };
+
+    fn submoduleLoadExpression(name) {
+        def ctx = Box_fetch(ctxBox);
+        def text = submoduleRead(cat(name, ".sam"));
+        def tree = ctx::samParseExpression(text);
+        <> ctx::samEval(ctx, tree)
+    };
+
+    fn submoduleLoad(name) {
+        def ctx = Box_fetch(ctxBox);
+        def text = submoduleRead(cat(name, ".sam"));
+        def tree = ctx::samParseProgram(text);
+        def func = ctx::samEval(ctx, tree);
+        <> func()
+    };
+
+    def fullCtx = {
+        baseCtx*,
+        submoduleLoadExpression: submoduleLoadExpression,
+        submoduleLoad:           submoduleLoad,
+        submoduleRead:           submoduleRead
+    };
+
+    Box_store(ctxBox, fullCtx);
+    <> fullCtx
+};
+
+# Loads the named module (given a flattened directory name), using a
+# global context based on the given `baseCtx`.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
 # `Module`, because this function needs to be called before `Module` is
 # fully loaded.
-fn loadModule(ctx, flatName) {
-    def mainText = readLibraryFile(cat(flatName, "/main.sam"));
-    def infoText = readLibraryFile(cat(flatName, "/module.sam"));
+fn loadModule(baseCtx, flatName) {
+    def ctx = makeModuleContext(baseCtx, flatName);
 
-    # Evaluate `mainText` as per `loadLibrary` above (same rationale),
-    # but with the result becoming the module exports.
-    def mainTree = ctx::samParseProgram(mainText);
-    def mainFunction = ctx::samEval(ctx, mainTree);
-    def exports = mainFunction();
+    # Both of these should evaluate to maps.
+    def info = ctx::submoduleLoadExpression("module");
+    def exports = ctx::submoduleLoad("main");
 
-    # Evaluate `infoText` as an expression, expecting a map.
-    def info = ctx::samEval(LIBRARY, ctx::samParseExpression(infoText));
-
-    # Combine `info` and `exports to form the final module.
+    # Combine `info` and `exports to form the final module value.
     def result = @[Module: {info: info, exports: exports}];
     ctx::moduleDef(result);
 
