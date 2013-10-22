@@ -11,6 +11,7 @@
 SELF_PATH, ARGS* ->
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -26,7 +27,7 @@ fn msg(value) {
 # Outputs all generated values, with a header and a footer.
 fn msgAll(header, gen) {
     Io0::note(header);
-    filterAll([gen*]) { elem -> msg(elem) };
+    Generator::filterAll([gen*]) { elem -> msg(elem) };
     Io0::note("  [fin]");
     Io0::note(cat("  value: ", Format::source(gen)));
     Io0::note("")

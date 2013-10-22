@@ -6,6 +6,8 @@
 # Samizdat Layer 1 Evaluation
 #
 
+def Generator = moduleGet({name: ["core", "Generator"]});
+
 
 #
 # Private Definitions
@@ -30,7 +32,7 @@ def PEG_REF = @[varRef: "Peg"];
 
 # Does parser conversion of an expression or statement list.
 fn convertPexInList(nodes) {
-    <> filterAll(nodes) { node <> convertPexIn(node) }
+    <> Generator::filterAll(nodes) { node <> convertPexIn(node) }
 };
 
 # Constructs a function call.
@@ -57,7 +59,7 @@ fn callPegNameWithPex(node, formals, functionName) {
 
 # Constructs a named peg function call of the given literal arguments.
 fn callPegNameWithLiterals(functionName, args*) {
-    def literalArgs = filterAll(args) { arg <> @[literal: arg] };
+    def literalArgs = Generator::filterAll(args) { arg <> @[literal: arg] };
     <> callPegNameWithExpressions(functionName, literalArgs*)
 };
 
@@ -69,7 +71,7 @@ fn callPegNameWithLiterals(functionName, args*) {
 # Converts a `choice` pex node.
 fn choice_convertPex(node, formals) {
     def pexes = dataOf(node);
-    def convertedPexes = filterAll(pexes)
+    def convertedPexes = Generator::filterAll(pexes)
         { pex <> convertPex(pex, formals) };
     <> callPegNameWithExpressions("makeChoice", convertedPexes*)
 };
@@ -80,7 +82,7 @@ fn sequence_convertPex(node, formals) {
     def pexes = dataOf(node);
 
     # Extract the formals out of any `varDef` nodes.
-    def newFormals = filterAll(pexes) { pex ->
+    def newFormals = Generator::filterAll(pexes) { pex ->
         <> ifIs { <> eq(typeOf(pex), "varDef") }
             { <> {name: dataOf(pex)::name} }
             { <> {} }
@@ -88,12 +90,13 @@ fn sequence_convertPex(node, formals) {
 
     # Convert all the pexes, passing in appropriately-extended formals
     # lists to each conversion.
-    def convertedPexes = filterAll(makeOpenRange(0, 1), pexes) { n, pex ->
-        def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
-            { <> dataOf(pex)::value }
-            { <> pex };
-        <> convertPex(subPex, [formals*, slice(newFormals, 0, n)*])
-    };
+    def convertedPexes = Generator::filterAll(makeOpenRange(0, 1), pexes)
+        { n, pex ->
+            def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
+                { <> dataOf(pex)::value }
+                { <> pex };
+            <> convertPex(subPex, [formals*, slice(newFormals, 0, n)*])
+        };
 
     <> callPegNameWithExpressions("makeSequence", convertedPexes*)
 };

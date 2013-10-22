@@ -8,6 +8,7 @@
 
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
@@ -218,7 +219,7 @@ fn pathListFromFlat(string) {
     def flats = Peg::apply(parPathList, string);
 
     # Call `pathFromFlat` on each element.
-    <> filterAll(pathFromFlat, flats)
+    <> Generator::filterAll(pathFromFlat, flats)
 };
 
 # Documented in Samizdat Layer 0 spec.

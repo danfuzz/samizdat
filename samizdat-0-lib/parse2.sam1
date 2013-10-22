@@ -98,7 +98,7 @@ fn makeCallNonlocalExit(name, optExpression?) {
 # Returns a `call` node that names a function as a `varRef` and passes
 # "thunked" versions of each of the given actual arguments.
 fn makeCallNameThunks(name, actuals*) {
-    def thunks = filterAll(actuals) { one <> makeThunk(one) };
+    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
     <> makeCallName(name, thunks*)
 };
 
@@ -943,7 +943,7 @@ def parInterpolatedString = {/
         # Convert each of the payload items into the proper form.
         # This includes recursive parser calls to convert list forms
         # into appropriate node types.
-        def elems = filterAll(dataOf(token)) { elem ->
+        def elems = Generator::filterAll(dataOf(token)) { elem ->
             <> ifIs { <> isString(elem) }
                 { <> makeLiteral(elem) }
                 {
@@ -1008,8 +1008,8 @@ def parGeneratorList = {/
 
     {
         def gens = [one, rest*];
-        def formals = filterAll(gens) { gen <> gen::formal };
-        def inits = filterAll(gens) { gen <> gen::init };
+        def formals = Generator::filterAll(gens) { gen <> gen::formal };
+        def inits = Generator::filterAll(gens) { gen <> gen::init };
 
         <> {formals: formals, inits: inits}
     }
@@ -1050,7 +1050,7 @@ def parComprehensionBody = {/
 # ```
 # =>
 # ```
-# filterAll(expr1, expr2)
+# Generator::filterAll(expr1, expr2)
 #     { name1, name2 -> filterBody }
 # ```
 def parComprehension = {/
@@ -1064,7 +1064,13 @@ def parComprehension = {/
     body = parComprehensionBody
     @"]"
 
-    { <> makeCallName("filterAll", body*) }
+    {
+        <> makeCall(
+            makeGetExpression(
+                makeVarRef("Generator"),
+                makeLiteral("filterAll")),
+            body*)
+    }
 /};
 
 # Parses the `term` variants introduced in *Layer 2*.
@@ -1427,8 +1433,8 @@ def parLogicAndExpression = {/
         # Compound `&` expression (three or more clauses).
         {
             # Make a version of the test clauses, as thunks with formals lists.
-            def formals = filterAll(most) { clause <> clause::formal };
-            def testThunks = filterAll(most, makeOpenRange(0, 1))
+            def formals = Generator::filterAll(most) { clause <> clause::formal };
+            def testThunks = Generator::filterAll(most, makeOpenRange(0, 1))
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),
@@ -1536,8 +1542,8 @@ def parMultiTest = {/
         # General case.
         {
             # Make a version of the test clauses, as thunks with formals lists.
-            def formals = filterAll(clauses) { clause <> clause::formal };
-            def testThunks = filterAll(clauses, makeOpenRange(0, 1))
+            def formals = Generator::filterAll(clauses) { clause <> clause::formal };
+            def testThunks = Generator::filterAll(clauses, makeOpenRange(0, 1))
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),
@@ -1903,17 +1909,17 @@ def parSwitchExpression = {/
         def formal = testClause::formal;
         def test = testClause::test;
 
-        def optDefault = filterAll(cases) { case ->
+        def optDefault = Generator::filterAll(cases) { case ->
             <> ifIs { <> eq(case::keys, @default) }
                 { <> closureWithFormals(case::code, formal) }
         };
 
-        def optElse = filterAll(cases) { case ->
+        def optElse = Generator::filterAll(cases) { case ->
             <> ifIs { <> eq(case::keys, @else) }
                 { <> case::code }
         };
 
-        def regularCases = filterAll(cases) { case ->
+        def regularCases = Generator::filterAll(cases) { case ->
             def keys = case::keys;
             <> ifIs { <> eq(typeOf(keys), "expression") }
                 {

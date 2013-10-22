@@ -6,6 +6,7 @@
 # Value stringification
 #
 
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 
@@ -189,7 +190,7 @@ genericBind(sourceGeneral, Int, Int_sourceGeneral);
 
 # Stringifies a list.
 fn List_sourceGeneral(list, adorn) {
-    def listElems = filterAll(list)
+    def listElems = Generator::filterAll(list)
         { elem <> cat(", ", sourceGeneral(elem, true)) };
 
     <> adornIf(adorn, "[", collectionBody(listElems), "]")
@@ -198,7 +199,7 @@ genericBind(sourceGeneral, List, List_sourceGeneral);
 
 # Stringifies a map.
 fn Map_sourceGeneral(map, adorn) {
-    def mapElems = filterAll(map)
+    def mapElems = Generator::filterAll(map)
         { mapping ->
             def key = keyString(keyOf(mapping));
             def value = sourceGeneral(valueOf(mapping), true);
