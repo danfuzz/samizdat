@@ -12,6 +12,7 @@ def Generator = moduleGet({name: ["proto", "Generator"]});
 def CollectionGenerator = submoduleUse("CollectionGenerator");
 def FilterGenerator = submoduleUse("FilterGenerator");
 def NullGenerator = submoduleUse("NullGenerator");
+def OptGenerator = submoduleUse("OptGenerator");
 def ParaGenerator = submoduleUse("ParaGenerator");
 def SerialGenerator = submoduleUse("SerialGenerator");
 
@@ -123,6 +124,7 @@ fn generatorPump(generator) {
     # Re-exported from submodules.
     makeCollectionGenerator: CollectionGenerator::makeCollectionGenerator,
     makeFilterGenerator:     FilterGenerator::makeFilterGenerator,
+    makeOptGenerator:        OptGenerator::makeOptGenerator,
     makeParaGenerator:       ParaGenerator::makeParaGenerator,
     makeSerialGenerator:     SerialGenerator::makeSerialGenerator,
     nullGenerator:           NullGenerator::nullGenerator,

@@ -48,7 +48,6 @@ def MANIFEST = [
     "NullGenerator.sam0",        # Used by several other generators.
     "ValueGenerator.sam0",
     "ListWrapGenerator.sam0",
-    "OptGenerator.sam0",         # Uses `ValueGenerator`.
     ["core", "Generator"],
     "range.sam0",
 
