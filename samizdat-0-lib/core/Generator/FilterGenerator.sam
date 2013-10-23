@@ -10,6 +10,8 @@
 
 def Box = moduleGet({name: ["core", "Box"]});
 
+def ParaGenerator = submoduleUse("ParaGenerator");
+
 
 #
 # Exported Definitions
@@ -19,7 +21,7 @@ def Box = moduleGet({name: ["core", "Box"]});
 fn makeFilterGenerator(filterFunction, generators*) {
     <> @[FilterGenerator: {
         filterFunction: filterFunction,
-        generator: makeParaGenerator(generators*)
+        generator: ParaGenerator::makeParaGenerator(generators*)
     }]
 };
 

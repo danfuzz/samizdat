@@ -12,6 +12,7 @@ def Generator = moduleGet({name: ["proto", "Generator"]});
 def CollectionGenerator = submoduleUse("CollectionGenerator");
 def FilterGenerator = submoduleUse("FilterGenerator");
 def NullGenerator = submoduleUse("NullGenerator");
+def ParaGenerator = submoduleUse("ParaGenerator");
 def SerialGenerator = submoduleUse("SerialGenerator");
 
 
@@ -88,7 +89,7 @@ fn doReduce1(reduceFunction, generator, baseValue) {
 
 # Documented in Samizdat Layer 0 spec.
 fn filterPump(filterFunction, generators*) {
-    loopReduce(makeParaGenerator(generators*))
+    loopReduce(ParaGenerator::makeParaGenerator(generators*))
         { gen ->
             def box = Box::makeYieldBox();
             <> ifValue { <> nextValue(gen, box) }
@@ -122,6 +123,7 @@ fn generatorPump(generator) {
     # Re-exported from submodules.
     makeCollectionGenerator: CollectionGenerator::makeCollectionGenerator,
     makeFilterGenerator:     FilterGenerator::makeFilterGenerator,
+    makeParaGenerator:       ParaGenerator::makeParaGenerator,
     makeSerialGenerator:     SerialGenerator::makeSerialGenerator,
     nullGenerator:           NullGenerator::nullGenerator,
 
