@@ -109,7 +109,7 @@ fn ClosedRange_nextValue(range, box) {
             Box::store(box);
         }
 };
-genericBind(nextValue, "ClosedRange", ClosedRange_nextValue);
+genericBind(Generator::nextValue, "ClosedRange", ClosedRange_nextValue);
 
 
 #
@@ -125,7 +125,7 @@ fn makeOpenRange(firstValue, increment) {
 fn OpenRange_collect(range) {
     Io0::die("Unbounded generator.");
 };
-genericBind(collect, "OpenRange", OpenRange_collect);
+genericBind(Generator::collect, "OpenRange", OpenRange_collect);
 
 # Documented in spec.
 fn OpenRange_nextValue(range, box) {
@@ -136,7 +136,7 @@ fn OpenRange_nextValue(range, box) {
     Box::store(box, firstValue);
     <> makeOpenRange(rangeAdd(firstValue, increment), increment)
 };
-genericBind(nextValue, "OpenRange", OpenRange_nextValue);
+genericBind(Generator::nextValue, "OpenRange", OpenRange_nextValue);
 
 
 #

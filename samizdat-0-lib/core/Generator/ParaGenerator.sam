@@ -8,6 +8,7 @@
 # Payload is `[subGens*]`, a list of sub-generators.
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["proto", "Generator"]});
 
 def ListWrapGenerator = submoduleUse("ListWrapGenerator");
 def NullGenerator = submoduleUse("NullGenerator");
@@ -57,7 +58,7 @@ fn ParaGenerator_nextValue(gen, box) {
     Box::store(box, yields);
     <> @[ParaGenerator: nexts]
 };
-genericBind(nextValue, "ParaGenerator", ParaGenerator_nextValue);
+genericBind(Generator::nextValue, "ParaGenerator", ParaGenerator_nextValue);
 
 <> {
     makeParaGenerator: makeParaGenerator

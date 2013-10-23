@@ -7,6 +7,7 @@
 #
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["proto", "Generator"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 #
@@ -17,14 +18,14 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 fn ValueGenerator_collect(gen) {
     Io0::die("Unbounded generator.");
 };
-genericBind(collect, "ValueGenerator", ValueGenerator_collect);
+genericBind(Generator::collect, "ValueGenerator", ValueGenerator_collect);
 
 # Documented in spec.
 fn ValueGenerator_nextValue(gen, box) {
     Box::store(box, dataOf(gen));
     <> gen
 };
-genericBind(nextValue, "ValueGenerator", ValueGenerator_nextValue);
+genericBind(Generator::nextValue, "ValueGenerator", ValueGenerator_nextValue);
 
 # Documented in spec.
 fn makeValueGenerator(value) {

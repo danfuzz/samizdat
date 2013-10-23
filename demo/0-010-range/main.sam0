@@ -45,7 +45,7 @@ fn msgTen(header, gen) {
                 { <done> };
 
             def box = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
+            <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGen ->
                     msg(Box::fetch(box));
                     <> [nextGen]

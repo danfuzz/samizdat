@@ -8,6 +8,7 @@
 # Payload is `[subGens*]`, a list of sub-generators.
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["proto", "Generator"]});
 
 def NullGenerator = submoduleUse("NullGenerator");
 
@@ -54,7 +55,7 @@ fn SerialGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(nextValue, "SerialGenerator", SerialGenerator_nextValue);
+genericBind(Generator::nextValue, "SerialGenerator", SerialGenerator_nextValue);
 
 <> {
     makeSerialGenerator: makeSerialGenerator

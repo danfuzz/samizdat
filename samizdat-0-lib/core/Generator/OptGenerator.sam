@@ -8,6 +8,7 @@
 # Payload is `subGen`, the sub-generator.
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["proto", "Generator"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
 def ValueGenerator = submoduleUse("ValueGenerator");
@@ -26,7 +27,7 @@ fn makeOptGenerator(generator) {
 fn OptGenerator_collect(gen) {
     Io0::die("Unbounded generator.");
 };
-genericBind(collect, "OptGenerator", OptGenerator_collect);
+genericBind(Generator::collect, "OptGenerator", OptGenerator_collect);
 
 # Documented in spec.
 fn OptGenerator_nextValue(gen, box) {
@@ -40,7 +41,7 @@ fn OptGenerator_nextValue(gen, box) {
         }
         { <> nextValue(ValueGenerator::makeValueGenerator([]), box) }
 };
-genericBind(nextValue, "OptGenerator", OptGenerator_nextValue);
+genericBind(Generator::nextValue, "OptGenerator", OptGenerator_nextValue);
 
 <> {
     makeOptGenerator: makeOptGenerator

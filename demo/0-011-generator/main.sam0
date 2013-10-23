@@ -33,7 +33,7 @@ fn msgAll(header, gen) {
     { <done> ->
         loopReduce(gen) { gen ->
             def box = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
+            <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGen ->
                     msg(Box::fetch(box));
                     <> [nextGen]
@@ -43,7 +43,7 @@ fn msgAll(header, gen) {
     }();
 
     Io0::note("  [all]");
-    msg(collect(gen));
+    msg(Generator::collect(gen));
     Io0::note("")
 };
 

@@ -42,7 +42,7 @@ fn filterAll(filterFunction, generators*) {
         }
         {
             # The general case.
-            <> collect(
+            <> Generator::collect(
                 FilterGenerator::makeFilterGenerator(
                     filterFunction, generators*))
         }
@@ -53,7 +53,7 @@ fn doReduce(reduceFunction, generator, baseValues*) {
     loopReduce(generator, baseValues)
         { gen, values ->
             def box = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
+            <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGenerator ->
                     <> ifValue { <> reduceFunction(Box::fetch(box), values*) }
                         { nextValues <> [nextGenerator, nextValues] }
@@ -74,10 +74,10 @@ fn doReduce1(reduceFunction, generator, baseValue) {
     loopReduce(generator, baseValue)
         { gen, value ->
             def box = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
+            <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGenerator ->
                     <> ifValue { <> reduceFunction(Box::fetch(box), value) }
-                        { nextValue <> [nextGenerator, nextValue] }
+                        { nextVal <> [nextGenerator, nextVal] }
                         {
                             # The reduce function discarded the value.
                             <> [nextGenerator, value]
@@ -95,7 +95,7 @@ fn filterPump(filterFunction, generators*) {
     loopReduce(ParaGenerator::makeParaGenerator(generators*))
         { gen ->
             def box = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
+            <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGenerator ->
                     filterFunction(Box::fetch(box)*);
                     <> [nextGenerator]
@@ -110,7 +110,7 @@ fn filterPump(filterFunction, generators*) {
 # Documented in Samizdat Layer 0 spec.
 fn generatorPump(generator) {
     loopReduce(generator) { gen ->
-        <> ifValue { <> nextValue(gen, Box::nullBox) }
+        <> ifValue { <> Generator::nextValue(gen, Box::nullBox) }
             { nextGen <> [nextGen] }
             { return }
     }
