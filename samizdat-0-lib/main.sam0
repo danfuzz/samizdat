@@ -30,7 +30,7 @@ fn flattenName(name) {
     # Suffix each component with `/`, concatenate them all together, and
     # drop the final `/`.
 
-    def withSlashes = filter(name, { elem <> cat(elem, "/") });
+    def withSlashes = Generator_filter(name, { elem <> cat(elem, "/") });
     def nearResult = cat(withSlashes*);
     <> slice(nearResult, 0, sub(sizeOf(nearResult), 1))
 };

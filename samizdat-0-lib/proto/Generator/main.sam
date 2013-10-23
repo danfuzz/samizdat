@@ -7,7 +7,7 @@
 #
 
 <> {
-    collect:       collect,
-    filter:        filter,
-    nextValue:     nextValue
+    collect:   Generator_collect,
+    filter:    Generator_filter,
+    nextValue: Generator_nextValue
 }
