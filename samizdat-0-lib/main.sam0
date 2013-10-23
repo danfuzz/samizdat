@@ -80,6 +80,7 @@ fn makeModuleContext(baseCtx, directory) {
     def subsBox = Box_makeMutableBox({});
 
     fn submoduleRead(name) {
+        Io0_note(cat("                 ", name));
         <> readLibraryFile(cat(directory, "/", name))
     };
 
