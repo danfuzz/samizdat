@@ -52,7 +52,6 @@ def MANIFEST = [
     "ParaGenerator.sam0",        # Uses `ListWrapGenerator`.
     "CollectionGenerator.sam0",
     "SerialGenerator.sam0",
-    "FilterGenerator.sam0",      # Uses `ParaGenerator`.
     ["core", "Generator"],
     "range.sam0",
 
