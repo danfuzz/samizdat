@@ -29,9 +29,10 @@ def MANIFEST = [
     "constants.sam0",
 
     # Simple modules.
+    ["proto", "Box"],
+    ["proto", "Generator"],
     ["core", "EntityMap"],
     ["core", "Io0"],
-    ["proto", "Box"],
     ["core", "Box"],
     ["core", "FunctionForwarder"],
 
@@ -44,7 +45,6 @@ def MANIFEST = [
     "String.sam0",
 
     # Layer 0: Complicated functions.
-    ["proto", "Generator"],
     "NullGenerator.sam0",        # Used by several other generators.
     "ValueGenerator.sam0",
     "ListWrapGenerator.sam0",
