@@ -79,7 +79,7 @@ msgAll("All-finite ParaGenerator",
 msgAll("ParaGenerator with opt element and ValueGenerator",
     Generator::makeParaGenerator(
         Generator::makeOptGenerator([1, 2, 3]),
-        makeValueGenerator("blort"),
+        Generator::makeValueGenerator("blort"),
         "abcdefg",
         {a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"}));
 

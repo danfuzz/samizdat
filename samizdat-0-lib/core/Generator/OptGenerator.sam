@@ -10,6 +10,8 @@
 def Box = moduleGet({name: ["core", "Box"]});
 def Io0 = moduleGet({name: ["core", "Io0"]});
 
+def ValueGenerator = submoduleUse("ValueGenerator");
+
 
 #
 # Exported Definitions
@@ -36,7 +38,7 @@ fn OptGenerator_nextValue(gen, box) {
             Box::store(box, [Box::fetch(innerBox)]);
             <> @[OptGenerator: nextGen]
         }
-        { <> nextValue(makeValueGenerator([]), box) }
+        { <> nextValue(ValueGenerator::makeValueGenerator([]), box) }
 };
 genericBind(nextValue, "OptGenerator", OptGenerator_nextValue);
 

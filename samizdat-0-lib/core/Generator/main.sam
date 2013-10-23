@@ -16,6 +16,7 @@ def NullGenerator = submoduleUse("NullGenerator");
 def OptGenerator = submoduleUse("OptGenerator");
 def ParaGenerator = submoduleUse("ParaGenerator");
 def SerialGenerator = submoduleUse("SerialGenerator");
+def ValueGenerator = submoduleUse("ValueGenerator");
 
 
 #
@@ -129,6 +130,7 @@ fn generatorPump(generator) {
     makeOptGenerator:        OptGenerator::makeOptGenerator,
     makeParaGenerator:       ParaGenerator::makeParaGenerator,
     makeSerialGenerator:     SerialGenerator::makeSerialGenerator,
+    makeValueGenerator:      ValueGenerator::makeValueGenerator,
     nullGenerator:           NullGenerator::nullGenerator,
 
     # Defined in this file.
