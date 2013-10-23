@@ -349,7 +349,7 @@ fn makeString(string) {
     # which allows us to minimize code duplication.
 
     # Make a list of rules per character.
-    def chars = filter(string, makeToken);
+    def chars = Generator::filter(string, makeToken);
 
     <> @[PegSequence: [chars*, @[PegResult: @[(string)]]]]
 };

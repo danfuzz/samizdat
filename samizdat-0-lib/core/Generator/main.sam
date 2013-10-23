@@ -38,7 +38,7 @@ fn filterAll(filterFunction, generators*) {
         {
             # We are filtering a single generator, so just use the
             # special-case (and often more efficient) `filter`.
-            <> filter(generators*, filterFunction)
+            <> Generator::filter(generators*, filterFunction)
         }
         {
             # The general case.

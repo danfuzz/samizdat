@@ -44,7 +44,7 @@ fn uCombinator(function) { <> function(function) };
 # "Y*". That is, the Y combinator uses the U combinator in the same way
 # that the Y* combinator uses this function.
 fn uStarCombinator(functions) {
-    <> filter(functions, { function <> function(functions*) })
+    <> Generator::filter(functions, { function <> function(functions*) })
 };
 
 # Documented in associated README file.
