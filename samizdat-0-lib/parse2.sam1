@@ -69,12 +69,6 @@ fn makeCallName(name, actuals*) {
     <> @[call: {function: makeVarRef(name), actuals: actuals}]
 };
 
-# Returns a collection access (`get`) expression. This is a `call` node
-# of two arguments (a collection node and a key node).
-fn makeGetExpression(collArg, keyArg) {
-    <> makeCallName("get", collArg, keyArg)
-};
-
 # Returns an optional-value expression. This wraps `node` as
 # `optValue { <> node }`.
 fn makeOptValueExpression(node) {
@@ -100,6 +94,24 @@ fn makeCallNonlocalExit(name, optExpression?) {
 fn makeCallNameThunks(name, actuals*) {
     def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
     <> makeCallName(name, thunks*)
+};
+
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
+};
+
+# Returns a collection access expression, with a `varRef` to the collection
+# and a literal string to look up.
+fn makeModNameRef(modVar, name) {
+    <> makeGetExpression(makeVarRef(modVar), makeLiteral(name))
+};
+
+# Returns a `call` node that names a function as a `varRef` to a module
+# and a literal name to look up in that module.
+fn makeCallModName(modVar, funcName, actuals*) {
+    <> makeCall(makeModNameRef(modVar, funcName), actuals*)
 };
 
 # Returns a `closure` node like the one given, except with the `formals`
@@ -949,20 +961,12 @@ def parInterpolatedString = {/
                 {
                     def tokens = elem::tokens;
 
-                    def formatRef = makeVarRef("Format");
                     def formatter = ifValue { <> elem::format }
                         { format ->
-                            <> makeCall(
-                                makeGetExpression(
-                                    formatRef,
-                                    makeLiteral("formatterFor")),
-                                makeLiteral(format))
+                            <> makeCallModName(
+                                "Format", "formatterFor", makeLiteral(format))
                         }
-                        {
-                            <> makeGetExpression(
-                                formatRef,
-                                makeLiteral("usual"))
-                        };
+                        { <> makeModNameRef("Format", "usual") };
 
                     def call = ifValueOr
                         { <> Peg::apply(parStringInterpolation, tokens) }
@@ -1041,7 +1045,7 @@ def parComprehensionBody = {/
 # ```
 # =>
 # ```
-# makeFilterGenerator(expr1, expr2)
+# Generator::makeFilterGenerator(expr1, expr2)
 #     { name1, name2 -> filterBody }
 # ```
 #
@@ -1058,19 +1062,13 @@ def parComprehension = {/
     body = parComprehensionBody
     @")"
 
-    { <> makeCallName("makeFilterGenerator", body*) }
+    { <> makeCallModName("Generator", "makeFilterGenerator", body*) }
 |
     @"["
     body = parComprehensionBody
     @"]"
 
-    {
-        <> makeCall(
-            makeGetExpression(
-                makeVarRef("Generator"),
-                makeLiteral("filterAll")),
-            body*)
-    }
+    { <> makeCallModName("Generator", "filterAll", body*) }
 /};
 
 # Parses the `term` variants introduced in *Layer 2*.
@@ -1810,11 +1808,8 @@ def parForExpression = {/
             yieldDef: "break",
             statements: [
                 breakDef*,
-                makeCallName(
-                    makeGetExpression(
-                        makeVarRef("Generator"),
-                        makeLiteral("filterPump")),
-                    loopClosure, genInits*)
+                makeCallModName(
+                    "Generator", "filterPump", loopClosure, genInits*)
             ]
         }];
 

@@ -84,7 +84,7 @@ msgAll("ParaGenerator with opt element and ValueGenerator",
         {a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"}));
 
 msgAll("FilterGenerator (square even numbers)",
-    makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
+    Generator::makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ->
             <> ifIs { <> eq(mod(value, 2), 0) }
                 { <> mul(value, value) }
@@ -92,7 +92,7 @@ msgAll("FilterGenerator (square even numbers)",
 
 Io0::note("generatorPump on FilterGenerator");
 Generator::generatorPump(
-    makeFilterGenerator([1, 2, 3, 4])
+    Generator::makeFilterGenerator([1, 2, 3, 4])
         { value -> Io0::note(cat("    Yay ", Format::source(value))) });
 Io0::note("");
 
@@ -121,7 +121,7 @@ msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
 
 Io0::note("collectAsMap on a FilterGenerator");
 def outMap = Generator::collectAsMap(
-    makeFilterGenerator(makeInclusiveRange(0, 2, 4))
+    Generator::makeFilterGenerator(makeInclusiveRange(0, 2, 4))
         { value ->
             <> {(value): value, (add(value, 1)): value, blort: value}
         });

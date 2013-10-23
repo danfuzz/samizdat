@@ -19,7 +19,7 @@ def Peg = moduleGet({name: ["core", "Peg"]});
 
 # Documented in Samizdat Layer 0 spec.
 def KEYWORDS = Generator::collectAsMap(
-    makeFilterGenerator([
+    Generator::makeFilterGenerator([
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
         []*])

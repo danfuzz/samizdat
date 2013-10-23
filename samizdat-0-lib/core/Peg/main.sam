@@ -384,7 +384,7 @@ fn apply(rule, input) {
         {
             # This converts generated characters into tokens with the
             # characters as the type.
-            <> makeFilterGenerator(makeValue, input)
+            <> Generator::makeFilterGenerator(makeValue, input)
         }
         { <> input };
 

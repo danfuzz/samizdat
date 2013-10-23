@@ -212,7 +212,8 @@ genericBind(sourceGeneral, Map, Map_sourceGeneral);
 
 # Stringifies a string.
 fn String_sourceGeneral(string, adorn) {
-    def bodyChars = makeFilterGenerator(string) { ch <> stringChar(ch) };
+    def bodyChars = Generator::makeFilterGenerator(string)
+        { ch <> stringChar(ch) };
     <> adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
 genericBind(sourceGeneral, String, String_sourceGeneral);
@@ -279,7 +280,7 @@ def humanString = makeRegularGeneric("humanString", 1, 1);
 # Human-stringifies a list, which recursively flattens it using
 # `humanString`.
 fn List_humanString(list) {
-    def elems = makeFilterGenerator(humanString, list);
+    def elems = Generator::makeFilterGenerator(humanString, list);
     <> cat("", elems*)
 };
 genericBind(humanString, List, List_humanString);

@@ -10,6 +10,7 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
+def Generator = moduleGet({name: ["core", "Generator"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 
 
@@ -63,7 +64,7 @@ for (x in [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55], y in "fibonacci") {
 };
 
 Io1::note("\nExplicit generator.");
-for (value in makeFilterGenerator({ x <> x * x }, [1, 2, 3, 4])) {
+for (value in Generator::makeFilterGenerator({ x <> x * x }, [1, 2, 3, 4])) {
     print(value)
 };
 

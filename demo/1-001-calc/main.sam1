@@ -178,7 +178,8 @@ def evalExpressions = {/
 #
 
 fn main(args*) {
-    def argFilter = makeFilterGenerator(args) { arg <> cat(arg, "\n") };
+    def argFilter = Generator::makeFilterGenerator(args)
+        { arg <> cat(arg, "\n") };
     def exprString = cat(argFilter*);
     Peg::apply(evalExpressions, exprString);
 };
