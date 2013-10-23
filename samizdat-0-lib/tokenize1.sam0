@@ -9,7 +9,6 @@
 # the *Samizdat Layer 0* and *Samizdat Layer 1* specifications.
 #
 
-def Generator = moduleGet({name: ["core", "Generator"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
 
 #

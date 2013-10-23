@@ -7,7 +7,6 @@
 #
 
 def Box = moduleGet({name: ["core", "Box"]});
-def Generator = moduleGet({name: ["core", "Generator"]});
 
 
 #

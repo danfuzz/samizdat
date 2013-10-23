@@ -6,8 +6,6 @@
 # Samizdat Layer 1 Evaluation
 #
 
-def Generator = moduleGet({name: ["core", "Generator"]});
-
 
 #
 # Private Definitions

@@ -8,7 +8,6 @@
 
 def Box = moduleGet({name: ["core", "Box"]});
 def FunctionForwarder = moduleGet({name: ["core", "FunctionForwarder"]});
-def Generator = moduleGet({name: ["core", "Generator"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
 

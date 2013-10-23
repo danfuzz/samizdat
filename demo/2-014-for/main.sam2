@@ -10,7 +10,6 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
-def Generator = moduleGet({name: ["core", "Generator"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
 
 
