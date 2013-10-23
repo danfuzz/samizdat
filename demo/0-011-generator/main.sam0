@@ -59,7 +59,7 @@ msgAll("Empty string", "");
 msgAll("NullGenerator", Generator::nullGenerator);
 msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
 msgAll("Empty ParaGenerator", makeParaGenerator());
-msgAll("Empty SerialGenerator", makeSerialGenerator());
+msgAll("Empty SerialGenerator", Generator::makeSerialGenerator());
 
 msgAll("List", [101, 33, 5555, "blort"]);
 msgAll("Map", {one: 1, two: 2, three: 3, four: 4, five: "fizmo"});
@@ -103,15 +103,15 @@ msgAll("ParaGenerator with open ranges",
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Size one SerialGenerator",
-    makeSerialGenerator({a: 10, b: 20, c: 30}));
+    Generator::makeSerialGenerator({a: 10, b: 20, c: 30}));
 
 msgAll("Size two SerialGenerator",
-    makeSerialGenerator(
+    Generator::makeSerialGenerator(
         {a: 10, b: 20, c: 30},
         "defg"));
 
 msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
-    makeSerialGenerator(
+    Generator::makeSerialGenerator(
         "abc",
         [],
         [],
