@@ -9,7 +9,7 @@
 def Box = moduleGet({name: ["core", "Box"]});
 def Generator = moduleGet({name: ["proto", "Generator"]});
 
-def NullGenerator = submoduleLoad("NullGenerator");
+def NullGenerator = submoduleUse("NullGenerator");
 
 
 #

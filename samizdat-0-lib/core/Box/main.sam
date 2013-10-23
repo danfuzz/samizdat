@@ -8,7 +8,7 @@
 
 def Box = moduleGet({name: ["proto", "Box"]});
 
-def NullBox = submoduleLoad("NullBox");
+def NullBox = submoduleUse("NullBox");
 
 
 #
