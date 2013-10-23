@@ -100,13 +100,11 @@ fn makeModuleContext(baseCtx, directory) {
     };
 
     fn submoduleUse(name) {
-        def subs = Box_fetch(subsBox);
-
-        ifValue { <> get(subs, name) }
+        ifValue { <> get(Box_fetch(subsBox), name) }
             { value -> return value };
 
         def result = submoduleLoad(name);
-        Box_store(subsBox, {subs*, name: result});
+        Box_store(subsBox, {(Box_fetch(subsBox))*, (name): result});
         <> result
     };
 
