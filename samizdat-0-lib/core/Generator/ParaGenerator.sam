@@ -9,6 +9,8 @@
 
 def Box = moduleGet({name: ["core", "Box"]});
 
+def ListWrapGenerator = submoduleUse("ListWrapGenerator");
+
 
 #
 # Exported Definitions
@@ -23,7 +25,7 @@ fn makeParaGenerator(generators*) {
     # Return a `ListWrapGenerator` if we were only passed one argument.
     # This saves some overhead.
     ifIs { <> eq(sizeOf(generators), 1) }
-        { return makeListWrapGenerator(generators*) };
+        { return ListWrapGenerator::makeListWrapGenerator(generators*) };
 
     <> @[ParaGenerator: generators]
 };

@@ -57,7 +57,7 @@ msgAll("Empty list", []);
 msgAll("Empty map", {});
 msgAll("Empty string", "");
 msgAll("NullGenerator", Generator::nullGenerator);
-msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
+msgAll("Empty ListWrapGenerator", Generator::makeListWrapGenerator([]));
 msgAll("Empty ParaGenerator", Generator::makeParaGenerator());
 msgAll("Empty SerialGenerator", Generator::makeSerialGenerator());
 
@@ -65,7 +65,7 @@ msgAll("List", [101, 33, 5555, "blort"]);
 msgAll("Map", {one: 1, two: 2, three: 3, four: 4, five: "fizmo"});
 msgAll("String", "Happy string!");
 
-msgAll("ListWrapGenerator", makeListWrapGenerator("frotz"));
+msgAll("ListWrapGenerator", Generator::makeListWrapGenerator("frotz"));
 
 msgAll("Single-item ParaGenerator",
     Generator::makeParaGenerator(["blort", "igram", "fizmo"]));

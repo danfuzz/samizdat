@@ -11,6 +11,7 @@ def Generator = moduleGet({name: ["proto", "Generator"]});
 
 def CollectionGenerator = submoduleUse("CollectionGenerator");
 def FilterGenerator = submoduleUse("FilterGenerator");
+def ListWrapGenerator = submoduleUse("ListWrapGenerator");
 def NullGenerator = submoduleUse("NullGenerator");
 def OptGenerator = submoduleUse("OptGenerator");
 def ParaGenerator = submoduleUse("ParaGenerator");
@@ -124,6 +125,7 @@ fn generatorPump(generator) {
     # Re-exported from submodules.
     makeCollectionGenerator: CollectionGenerator::makeCollectionGenerator,
     makeFilterGenerator:     FilterGenerator::makeFilterGenerator,
+    makeListWrapGenerator:   ListWrapGenerator::makeListWrapGenerator,
     makeOptGenerator:        OptGenerator::makeOptGenerator,
     makeParaGenerator:       ParaGenerator::makeParaGenerator,
     makeSerialGenerator:     SerialGenerator::makeSerialGenerator,
