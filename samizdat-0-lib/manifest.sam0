@@ -45,7 +45,6 @@ def MANIFEST = [
     "String.sam0",
 
     # Layer 0: Complicated functions.
-    "NullGenerator.sam0",        # Used by several other generators.
     ["core", "Generator"],
     "range.sam0",
 

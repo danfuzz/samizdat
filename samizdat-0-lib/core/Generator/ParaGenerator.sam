@@ -10,6 +10,7 @@
 def Box = moduleGet({name: ["core", "Box"]});
 
 def ListWrapGenerator = submoduleUse("ListWrapGenerator");
+def NullGenerator = submoduleUse("NullGenerator");
 
 
 #
@@ -20,7 +21,7 @@ def ListWrapGenerator = submoduleUse("ListWrapGenerator");
 fn makeParaGenerator(generators*) {
     # Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
-        { return nullGenerator };
+        { return NullGenerator::nullGenerator };
 
     # Return a `ListWrapGenerator` if we were only passed one argument.
     # This saves some overhead.

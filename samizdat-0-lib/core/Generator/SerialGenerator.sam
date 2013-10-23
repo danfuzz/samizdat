@@ -9,6 +9,8 @@
 
 def Box = moduleGet({name: ["core", "Box"]});
 
+def NullGenerator = submoduleUse("NullGenerator");
+
 
 #
 # Exported Definitions
@@ -18,7 +20,7 @@ def Box = moduleGet({name: ["core", "Box"]});
 fn makeSerialGenerator(generators*) {
     # Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
-        { return nullGenerator };
+        { return NullGenerator::nullGenerator };
 
     # Return the argument directly if we were only passed one.
     # This saves some gratuitous call wrapping / double yields.
