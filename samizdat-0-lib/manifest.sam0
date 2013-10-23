@@ -50,7 +50,6 @@ def MANIFEST = [
     "ListWrapGenerator.sam0",
     "OptGenerator.sam0",         # Uses `ValueGenerator`.
     "ParaGenerator.sam0",        # Uses `ListWrapGenerator`.
-    "CollectionGenerator.sam0",
     ["core", "Generator"],
     "range.sam0",
 
