@@ -83,7 +83,7 @@ fn makeModuleContext(baseCtx, directory) {
         <> readLibraryFile(cat(directory, "/", name))
     };
 
-    fn submoduleLoadExpression(name) {
+    fn submoduleExpression(name) {
         def ctx = Box_fetch(ctxBox);
         def text = submoduleRead(cat(name, ".sam"));
         def tree = ctx::samParseExpression(text);
@@ -111,10 +111,9 @@ fn makeModuleContext(baseCtx, directory) {
 
     def fullCtx = {
         baseCtx*,
-        submoduleLoadExpression: submoduleLoadExpression,
-        submoduleLoad:           submoduleLoad,
-        submoduleUse:            submoduleUse,
-        submoduleRead:           submoduleRead
+        submoduleExpression: submoduleExpression,
+        submoduleUse:        submoduleUse,
+        submoduleRead:       submoduleRead
     };
 
     Box_store(ctxBox, fullCtx);
@@ -131,8 +130,8 @@ fn loadModule(baseCtx, flatName) {
     def ctx = makeModuleContext(baseCtx, flatName);
 
     # Both of these should evaluate to maps.
-    def info = ctx::submoduleLoadExpression("module");
-    def exports = ctx::submoduleLoad("main");
+    def info = ctx::submoduleExpression("module");
+    def exports = ctx::submoduleUse("main");
 
     # Combine `info` and `exports to form the final module value.
     def result = @[Module: {info: info, exports: exports}];
