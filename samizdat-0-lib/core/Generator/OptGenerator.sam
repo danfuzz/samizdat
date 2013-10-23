@@ -34,12 +34,12 @@ fn OptGenerator_nextValue(gen, box) {
     def subGen = dataOf(gen);
     def innerBox = Box::makeYieldBox();
 
-    <> ifValue { <> nextValue(subGen, innerBox) }
+    <> ifValue { <> Generator::nextValue(subGen, innerBox) }
         { nextGen ->
             Box::store(box, [Box::fetch(innerBox)]);
             <> @[OptGenerator: nextGen]
         }
-        { <> nextValue(ValueGenerator::makeValueGenerator([]), box) }
+        { <> Generator::nextValue(ValueGenerator::makeValueGenerator([]), box) }
 };
 genericBind(Generator::nextValue, "OptGenerator", OptGenerator_nextValue);
 

@@ -31,7 +31,7 @@ def fail = @PegFail;
 
 # Documented in Samizdat Layer 0 spec.
 fn PegAny_parse(peg, box, input, .*) {
-    <> nextValue(input, box)
+    <> Generator::nextValue(input, box)
 };
 genericBind(parse, "PegAny", PegAny_parse);
 
@@ -64,7 +64,7 @@ genericBind(parse, "PegCode", PegCode_parse);
 
 # Documented in Samizdat Layer 0 spec.
 fn PegEof_parse(peg, box, input, .*) {
-    <> ifIs { <> nextValue(input, Box::nullBox) }
+    <> ifIs { <> Generator::nextValue(input, Box::nullBox) }
         { Box::store(box) }
         {
             Box::store(box, null);
@@ -182,7 +182,7 @@ fn PegTokenSet_parse(peg, box, input, items*) {
     def set = dataOf(peg);
     def innerBox = Box::makeYieldBox();
 
-    ifValue { <> nextValue(input, innerBox) }
+    ifValue { <> Generator::nextValue(input, innerBox) }
         { newInput ->
             def item = Box::fetch(innerBox);
             ifIs { <> get(set, typeOf(item)) }
@@ -202,7 +202,7 @@ fn PegTokenSetComplement_parse(peg, box, input, items*) {
     def set = dataOf(peg);
     def innerBox = Box::makeYieldBox();
 
-    ifValue { <> nextValue(input, innerBox) }
+    ifValue { <> Generator::nextValue(input, innerBox) }
         { newInput ->
             def item = Box::fetch(innerBox);
             ifNot { <> get(set, typeOf(item)) }
