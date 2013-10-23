@@ -1,17 +1,14 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Generator
----------
+core::Generator
+---------------
 
-In general, the generator-oriented functions accept either generators
-or collections as "generator" arguments. Collections and ints are implicitly
-converted to generators, as if by a call to `generatorFromValue` (defined
-below).
+The `Generator` module exports a `Generator` protocol and a set of
+utility functions for making and using various generators.
 
-Collections generate each of their elements in order. Ints generate each
-of their bits as an int, from low- to high-order, ending with the sign
-bit.
+Note that all collections are also generators (which generate their
+elements in sequence).
 
 
 <br><br>
