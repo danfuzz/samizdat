@@ -9,6 +9,7 @@
 def Box = moduleGet({name: ["core", "Box"]});
 def Generator = moduleGet({name: ["proto", "Generator"]});
 
+def FilterGenerator = submoduleUse("FilterGenerator");
 def NullGenerator = submoduleUse("NullGenerator");
 
 
@@ -35,7 +36,9 @@ fn filterAll(filterFunction, generators*) {
         }
         {
             # The general case.
-            <> collect(makeFilterGenerator(filterFunction, generators*))
+            <> collect(
+                FilterGenerator::makeFilterGenerator(
+                    filterFunction, generators*))
         }
 };
 
@@ -110,18 +113,19 @@ fn generatorPump(generator) {
 
 <> {
     # Re-exported from proto module.
-    collect:       Generator::collect,
-    filter:        Generator::filter,
-    nextValue:     Generator::nextValue,
+    collect:             Generator::collect,
+    filter:              Generator::filter,
+    nextValue:           Generator::nextValue,
 
-    # Re-exported from impl modules.
-    nullGenerator: NullGenerator::nullGenerator,
+    # Re-exported from submodules.
+    makeFilterGenerator: FilterGenerator::makeFilterGenerator,
+    nullGenerator:       NullGenerator::nullGenerator,
 
     # Defined in this file.
-    collectAsMap:  collectAsMap,
-    doReduce:      doReduce,
-    doReduce1:     doReduce1,
-    filterAll:     filterAll,
-    filterPump:    filterPump,
-    generatorPump: generatorPump
+    collectAsMap:        collectAsMap,
+    doReduce:            doReduce,
+    doReduce1:           doReduce1,
+    filterAll:           filterAll,
+    filterPump:          filterPump,
+    generatorPump:       generatorPump
 }
