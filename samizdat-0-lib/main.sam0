@@ -76,6 +76,9 @@ fn makeModuleContext(baseCtx, directory) {
     # A box for the final load context, to enable the necessary self-reference.
     def ctxBox = Box_makeYieldBox();
 
+    # A box for all the loaded submodules.
+    def subsBox = Box_makeMutableBox({});
+
     fn submoduleRead(name) {
         <> readLibraryFile(cat(directory, "/", name))
     };
@@ -95,10 +98,22 @@ fn makeModuleContext(baseCtx, directory) {
         <> func()
     };
 
+    fn submoduleUse(name) {
+        def subs = Box_fetch(subsBox);
+
+        ifValue { <> get(subs, name) }
+            { value -> return value };
+
+        def result = submoduleLoad(name);
+        Box_store(subsBox, {subs*, name: result});
+        <> result
+    };
+
     def fullCtx = {
         baseCtx*,
         submoduleLoadExpression: submoduleLoadExpression,
         submoduleLoad:           submoduleLoad,
+        submoduleUse:            submoduleUse,
         submoduleRead:           submoduleRead
     };
 
