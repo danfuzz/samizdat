@@ -67,7 +67,7 @@ fn yStarCombinator(functions*) {
     # `uStarCombinator` function) where necessitated by the multiple-function
     # nature of this variant.
 
-    def applicators = filter(
+    def applicators = Generator::filter(
         functions,
         { function ->
             <> { selfRefs* ->
