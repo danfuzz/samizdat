@@ -20,7 +20,7 @@ def Peg = moduleGet({name: ["core", "Peg"]});
 fn reportError(pending) {
     Io1::note("Pending tokens:");
 
-    Generator::filterPump(pending, makeInclusiveRange(1, 1, 50))
+    Generator::filterPump(pending, Range::makeInclusiveRange(1, 1, 50))
         { token, . -> Io1::note(cat("    ", Format::source(token))) };
 
     Io1::die("\nExtra tokens at end of program.")
@@ -29,7 +29,7 @@ fn reportError(pending) {
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
-    (makeInclusiveRange("a", 1, "z"))*: true
+    (Range::makeInclusiveRange("a", 1, "z"))*: true
 };
 
 # Returns an `interpolate` node.
@@ -165,9 +165,9 @@ def BINARY_OPERATORS = {
     "\\>":  makeVarRef("gt"),
     "\\<=": makeVarRef("le"),
     "\\>=": makeVarRef("ge"),
-    "..":   makeVarRef("makeInclusiveRange"),
-    "..!":  makeVarRef("makeExclusiveRange"),
-    "..+":  makeVarRef("makeOpenRange")
+    "..":   makeModNameRef("Range", "makeInclusiveRange"),
+    "..!":  makeModNameRef("Range", "makeExclusiveRange"),
+    "..+":  makeModNameRef("Range", "makeOpenRange")
 };
 
 # Helper for parsing binary operator expressions, which puts together
@@ -804,7 +804,7 @@ def parParserSetString = {/
             def startChar = dataOf(s);
             def endChar = dataOf(end);
             <> ifIs { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
-                { <> cat(makeInclusiveRange(startChar, 1, endChar)*) }
+                { <> cat(Range::makeInclusiveRange(startChar, 1, endChar)*) }
         }
     |
         { <> dataOf(s) }
@@ -1431,7 +1431,7 @@ def parLogicAndExpression = {/
         {
             # Make a version of the test clauses, as thunks with formals lists.
             def formals = Generator::filterAll(most) { clause <> clause::formal };
-            def testThunks = Generator::filterAll(most, makeOpenRange(0, 1))
+            def testThunks = Generator::filterAll(most, Range::makeOpenRange(0, 1))
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),
@@ -1540,7 +1540,7 @@ def parMultiTest = {/
         {
             # Make a version of the test clauses, as thunks with formals lists.
             def formals = Generator::filterAll(clauses) { clause <> clause::formal };
-            def testThunks = Generator::filterAll(clauses, makeOpenRange(0, 1))
+            def testThunks = Generator::filterAll(clauses, Range::makeOpenRange(0, 1))
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),

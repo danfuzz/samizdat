@@ -45,7 +45,7 @@ def MANIFEST = [
 
     # Layer 0: Complicated functions.
     ["core", "Generator"],
-    "range.sam0",
+    ["core", "Range"],
 
     # Layer 0: Complicated modules.
     ["core", "Format"],

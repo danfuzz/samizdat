@@ -97,8 +97,8 @@ Io0::note("");
 
 msgAll("ParaGenerator with open ranges",
     Generator::makeParaGenerator(
-        makeOpenRange("a", 1),
-        makeOpenRange(100, 10),
+        Range::makeOpenRange("a", 1),
+        Range::makeOpenRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Size one SerialGenerator",
@@ -120,7 +120,7 @@ msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
 
 Io0::note("collectAsMap on a FilterGenerator");
 def outMap = Generator::collectAsMap(
-    Generator::makeFilterGenerator(makeInclusiveRange(0, 2, 4))
+    Generator::makeFilterGenerator(Range::makeInclusiveRange(0, 2, 4))
         { value ->
             <> {(value): value, (add(value, 1)): value, blort: value}
         });

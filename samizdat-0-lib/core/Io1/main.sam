@@ -176,19 +176,21 @@ fn flatFromPath(path) {
         { dieWith("Invalid empty path", path) };
 
     def gen =
-        Generator::makeFilterGenerator(path, makeOpenRange(sizeOf(path), -1))
-        { <out> one, n ->
-            # This test skips the check on the last path component, if it
-            # happens to be empty (which is the only valid case of an empty
-            # path component).
-            ifIs { <> eq([one, n], ["", 1]) }
-                { <out> "/" }
-                {
-                    ifValue { <> Peg::apply(parErrorFromPathComponent, one) }
-                        { error -> dieWith(error, path) }
-                };
-            <> cat("/", one)
-        };
+        Generator::makeFilterGenerator(
+            path, Range::makeOpenRange(sizeOf(path), -1))
+            { <out> one, n ->
+                # This test skips the check on the last path component, if it
+                # happens to be empty (which is the only valid case of an empty
+                # path component).
+                ifIs { <> eq([one, n], ["", 1]) }
+                    { <out> "/" }
+                    {
+                        ifValue
+                            { <> Peg::apply(parErrorFromPathComponent, one) }
+                            { error -> dieWith(error, path) }
+                    };
+                <> cat("/", one)
+            };
 
     <> cat(gen*)
 };

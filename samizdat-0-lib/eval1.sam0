@@ -88,7 +88,7 @@ fn sequence_convertPex(node, formals) {
 
     # Convert all the pexes, passing in appropriately-extended formals
     # lists to each conversion.
-    def convertedPexes = Generator::filterAll(makeOpenRange(0, 1), pexes)
+    def convertedPexes = Generator::filterAll(Range::makeOpenRange(0, 1), pexes)
         { n, pex ->
             def subPex = ifIs { <> eq(typeOf(pex), "varDef") }
                 { <> dataOf(pex)::value }

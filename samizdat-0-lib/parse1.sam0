@@ -20,7 +20,7 @@ def Peg = moduleGet({name: ["core", "Peg"]});
 fn reportError(pending) {
     Io0::note("Pending tokens:");
 
-    Generator::filterPump(pending, makeInclusiveRange(1, 1, 50))
+    Generator::filterPump(pending, Range::makeInclusiveRange(1, 1, 50))
         { token, . -> Io0::note(cat("    ", Format::source(token))) };
 
     Io0::die("\nExtra tokens at end of program.")
@@ -29,7 +29,7 @@ fn reportError(pending) {
 # Set-like map of all lowercase identifier characters. Used to figure
 # out if we're looking at a keyword in the `identifierString` rule.
 def LOWER_ALPHA = {
-    (makeInclusiveRange("a", 1, "z"))*: true
+    (Range::makeInclusiveRange("a", 1, "z"))*: true
 };
 
 # Returns an `interpolate` node.
@@ -576,7 +576,7 @@ def parParserSetString = Peg::makeMainSequence(
                 def startChar = dataOf(s);
                 def endChar = dataOf(end);
                 <> ifIs { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
-                    { <> cat(makeInclusiveRange(startChar, 1, endChar)*) }
+                    { <> cat(Range::makeInclusiveRange(startChar, 1, endChar)*) }
             }),
         Peg::makeCode { s <> dataOf(s) }));
 
