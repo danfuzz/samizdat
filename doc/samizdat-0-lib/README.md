@@ -89,11 +89,11 @@ will be returned, or one of:
   * [One-Off Generics](OneOff.md)
 
 * Modules
-  * [core::Box](Box.md)
+  * [core::Box / proto::Box](Box.md)
   * [core::EntityMap](EntityMap.md)
   * [core::Format (string formatting)](Format.md)
   * [core::FunctionForwarder](FunctionForwarder.md)
-  * [core::Generator](Generator.md)
+  * [core::Generator / proto::Generator](Generator.md)
   * [core::Io0](Io0.md)
   * [core::Io1](Io1.md)
   * [core::ParseForwarder](ParseForwarder.md)
