@@ -127,7 +127,7 @@ def tokInt = {/
 def tokStringPart = {/
     (
         chars = [! "\\" "\"" "\n"]+
-        { <> stringFromTokenList(chars) }
+        { <> Peg::stringFromTokenList(chars) }
     )
 |
     # This is the rule that ignores spaces after newlines.
@@ -167,7 +167,7 @@ def tokIdentifier = {/
     rest = ["_" "a".."z" "A".."Z" "0".."9"]*
 
     {
-        def string = stringFromTokenList([one, rest*]);
+        def string = Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
     }

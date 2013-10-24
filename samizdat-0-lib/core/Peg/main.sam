@@ -373,7 +373,7 @@ fn makeTokenSetComplement(tokens*) {
 
 
 #
-# Top-level driver functions
+# Miscellaneous functions
 #
 
 # Documented in Samizdat Layer 0 spec.
@@ -389,6 +389,11 @@ fn apply(rule, input) {
 
     <> ifIs { <> parse(rule, box, generator) }
         { <> Box::fetch(box) }
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn stringFromTokenList(tokens) {
+    <> cat("", Generator::filter(tokens, typeOf)*)
 };
 
 
@@ -419,5 +424,6 @@ fn apply(rule, input) {
     makeToken:              makeToken,
     makeTokenSet:           makeTokenSet,
     makeTokenSetComplement: makeTokenSetComplement,
-    parse:                  parse
+    parse:                  parse,
+    stringFromTokenList:    stringFromTokenList
 }

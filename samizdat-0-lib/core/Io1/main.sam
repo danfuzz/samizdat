@@ -27,7 +27,7 @@ def parPathComponent = {/
     # successfully match a string-final empty component (that is, a trailing
     # slash on the overall path string).
     component = [! "/"]*
-    { <> stringFromTokenList(component) }
+    { <> Peg::stringFromTokenList(component) }
 /};
 
 # Parses a regular (non-up-directory) component. The `..` check ensures that
@@ -80,7 +80,7 @@ def parPathString = {/
 # Parses a path within a path list.
 def parOnePath = {/
     chars = [! ":"]+
-    { <> stringFromTokenList(chars) }
+    { <> Peg::stringFromTokenList(chars) }
 /};
 
 # Parses a flattened path list (e.g. the format for `MODULE_PATHS`) into

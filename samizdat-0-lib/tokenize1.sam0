@@ -86,7 +86,7 @@ def tokInt = Peg::makeMainSequence(
 def tokStringPart = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makePlus(Peg::makeCharSetComplement("\\\"\n")),
-        Peg::makeCode(stringFromTokenList)),
+        Peg::makeCode(Peg::stringFromTokenList)),
     Peg::makeSequence(
         Peg::makeString("\n"),
         Peg::makeStar(Peg::makeString(" ")),
@@ -123,7 +123,7 @@ def tokIdentifier = Peg::makeMainSequence(
     Peg::makeCharSet(IDENTIFIER_START_CHARS),
     Peg::makeStar(Peg::makeCharSet(IDENTIFIER_CHARS)),
     Peg::makeCode { one, rest ->
-        def string = stringFromTokenList([one, rest*]);
+        def string = Peg::stringFromTokenList([one, rest*]);
         <> ifValueOr { <> get(KEYWORDS, string) }
             { <> @[identifier: string] }
     });

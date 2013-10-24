@@ -18,13 +18,13 @@ def Peg = moduleGet({name: ["core", "Peg"]});
 def parWord = {/
     chars = [! "\0"]*
     "\0"
-    { <> stringFromTokenList(chars) }
+    { <> Peg::stringFromTokenList(chars) }
 /};
 
 # Parses a key prefix of a word, not including the ending `=`.
 def parKey = {/
     chars = [! "=\0"]+
-    { <> stringFromTokenList(chars) }
+    { <> Peg::stringFromTokenList(chars) }
 /};
 
 # Parses a key-value option word. Yields a single-mapping map of
