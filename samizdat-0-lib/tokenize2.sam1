@@ -29,8 +29,8 @@ def tokStringPart2 = ParseForwarder::make();
 # Map of all the keywords, from their string name to valueless tokens. These
 # are (to a first approximation) operators whose spellings match the
 # tokenization syntax of identifiers.
-def KEYWORDS = collectAsMap(
-    makeFilterGenerator([
+def KEYWORDS = Generator::collectAsMap(
+    Generator::makeFilterGenerator([
         "def", "fn", "return",
         # *Layer 2* defines additional keywords here.
         "break", "continue", "default", "do", "else", "export",
@@ -249,7 +249,7 @@ def OPEN_CLOSE_MAP = {
 
 # Converts a list of digit values into an int, given the base.
 fn intFromDigitList(base, digits) {
-    <> doReduce1(digits, 0) { digit, result ->
+    <> Generator::doReduce1(digits, 0) { digit, result ->
         <> ifIs { <> eq(digit, -1) }
             { <> result }
             { <> add(mul(result, base), digit) }
@@ -264,7 +264,7 @@ fn implProcessStringParts(parts) {
 
     # If there is an error part (represented as an `@error` token), return
     # it.
-    filterPump(parts)
+    Generator::filterPump(parts)
         { part ->
             <> ifIs { <> eq(typeOf(part), "error") }
                 { return part }
@@ -273,7 +273,7 @@ fn implProcessStringParts(parts) {
     # Coalesce adjacent literal strings in `parts`. The result is an
     # `elems` list consisting of multi-character strings and
     # interpolation maps.
-    def elems = doReduce1(butFirst(parts), [first(parts)])
+    def elems = Generator::doReduce1(butFirst(parts), [first(parts)])
         { part, result ->
             <> ifValue { <> [&isString(last(result)), &isString(part)] }
                 { newLast <> [butLast(result)*, cat(newLast*)] }

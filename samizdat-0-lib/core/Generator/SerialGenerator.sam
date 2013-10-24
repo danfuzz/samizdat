@@ -8,6 +8,9 @@
 # Payload is `[subGens*]`, a list of sub-generators.
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["proto", "Generator"]});
+
+def NullGenerator = submoduleUse("NullGenerator");
 
 
 #
@@ -18,7 +21,7 @@ def Box = moduleGet({name: ["core", "Box"]});
 fn makeSerialGenerator(generators*) {
     # Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
-        { return nullGenerator };
+        { return NullGenerator::nullGenerator };
 
     # Return the argument directly if we were only passed one.
     # This saves some gratuitous call wrapping / double yields.
@@ -37,14 +40,14 @@ fn SerialGenerator_nextValue(gen, box) {
             def moreGens = butFirst(subGens);
             def innerBox = Box::makeYieldBox();
 
-            <> ifValue { <> nextValue(firstGen, innerBox) }
+            <> ifValue { <> Generator::nextValue(firstGen, innerBox) }
                 { nextGenerator ->
                     Box::store(box, Box::fetch(innerBox));
                     <> @[SerialGenerator: [nextGenerator, moreGens*]]
                 }
                 {
                     # First generator was voided.
-                    <> nextValue(makeSerialGenerator(moreGens*), box)
+                    <> Generator::nextValue(makeSerialGenerator(moreGens*), box)
                 }
         }
         {
@@ -52,7 +55,7 @@ fn SerialGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(nextValue, "SerialGenerator", SerialGenerator_nextValue);
+genericBind(Generator::nextValue, "SerialGenerator", SerialGenerator_nextValue);
 
 <> {
     makeSerialGenerator: makeSerialGenerator

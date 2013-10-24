@@ -20,7 +20,7 @@ def Peg = moduleGet({name: ["core", "Peg"]});
 fn reportError(pending) {
     Io0::note("Pending tokens:");
 
-    filterPump(pending, makeInclusiveRange(1, 1, 50))
+    Generator::filterPump(pending, makeInclusiveRange(1, 1, 50))
         { token, . -> Io0::note(cat("    ", Format::source(token))) };
 
     Io0::die("\nExtra tokens at end of program.")
@@ -440,7 +440,7 @@ def implUnaryExpression = Peg::makeMainSequence(
     parTerm,
     Peg::makeStar(parPostfixOperator),
     Peg::makeCode { base, postfixes ->
-        <> doReduce1(postfixes, base) { op, result <> op(result) }
+        <> Generator::doReduce1(postfixes, base) { op, result <> op(result) }
     });
 Box::store(parUnaryExpression, implUnaryExpression);
 
@@ -593,7 +593,7 @@ def parParserSet = Peg::makeMainSequence(
             Peg::makeCode { strings <> [cat(strings*)*] }),
         Peg::makeMainSequence(
             Peg::makePlus(parParserToken),
-            Peg::makeCode { tokens <> filter(tokens, dataOf) }),
+            Peg::makeCode { tokens <> Generator::filter(tokens, dataOf) }),
         Peg::makeResult([])),
     Peg::makeToken("]"),
     Peg::makeCode { ., type, terminals, . <> @[(type): terminals] });

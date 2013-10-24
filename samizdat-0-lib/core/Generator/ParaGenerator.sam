@@ -8,6 +8,10 @@
 # Payload is `[subGens*]`, a list of sub-generators.
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["proto", "Generator"]});
+
+def ListWrapGenerator = submoduleUse("ListWrapGenerator");
+def NullGenerator = submoduleUse("NullGenerator");
 
 
 #
@@ -18,12 +22,12 @@ def Box = moduleGet({name: ["core", "Box"]});
 fn makeParaGenerator(generators*) {
     # Return the `nullGenerator` if we weren't passed any arguments.
     ifIs { <> eq(generators, []) }
-        { return nullGenerator };
+        { return NullGenerator::nullGenerator };
 
     # Return a `ListWrapGenerator` if we were only passed one argument.
     # This saves some overhead.
     ifIs { <> eq(sizeOf(generators), 1) }
-        { return makeListWrapGenerator(generators*) };
+        { return ListWrapGenerator::makeListWrapGenerator(generators*) };
 
     <> @[ParaGenerator: generators]
 };
@@ -33,13 +37,13 @@ fn ParaGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 
     ifIs { <> eq(subGens, []) }
-        { return nextValue(Box::nullBox, box) };
+        { return Generator::nextValue(Box::nullBox, box) };
 
-    def generatorCalls = filter(
+    def generatorCalls = Generator::filter(
         subGens,
         { gen ->
             def innerBox = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, innerBox) }
+            <> ifValue { <> Generator::nextValue(gen, innerBox) }
                 { nextGenerator <> [Box::fetch(innerBox), nextGenerator] }
                 {
                     # One of the sub-generators became voided.
@@ -48,13 +52,13 @@ fn ParaGenerator_nextValue(gen, box) {
                 }
         });
 
-    def yields = filter(generatorCalls, { one <> nth(one, 0) });
-    def nexts = filter(generatorCalls, { one <> nth(one, 1) });
+    def yields = Generator::filter(generatorCalls, { one <> nth(one, 0) });
+    def nexts = Generator::filter(generatorCalls, { one <> nth(one, 1) });
 
     Box::store(box, yields);
     <> @[ParaGenerator: nexts]
 };
-genericBind(nextValue, "ParaGenerator", ParaGenerator_nextValue);
+genericBind(Generator::nextValue, "ParaGenerator", ParaGenerator_nextValue);
 
 <> {
     makeParaGenerator: makeParaGenerator

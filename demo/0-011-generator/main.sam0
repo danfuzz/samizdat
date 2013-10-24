@@ -32,7 +32,7 @@ fn msgAll(header, gen) {
     { <done> ->
         loopReduce(gen) { gen ->
             def box = Box::makeYieldBox();
-            <> ifValue { <> nextValue(gen, box) }
+            <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGen ->
                     msg(Box::fetch(box));
                     <> [nextGen]
@@ -42,7 +42,7 @@ fn msgAll(header, gen) {
     }();
 
     Io0::note("  [all]");
-    msg(collect(gen));
+    msg(Generator::collect(gen));
     Io0::note("")
 };
 
@@ -55,66 +55,72 @@ fn msgAll(header, gen) {
 msgAll("Empty list", []);
 msgAll("Empty map", {});
 msgAll("Empty string", "");
-msgAll("NullGenerator", nullGenerator);
-msgAll("Empty ListWrapGenerator", makeListWrapGenerator([]));
-msgAll("Empty ParaGenerator", makeParaGenerator());
-msgAll("Empty SerialGenerator", makeSerialGenerator());
+msgAll("NullGenerator", Generator::nullGenerator);
+msgAll("Empty ListWrapGenerator", Generator::makeListWrapGenerator([]));
+msgAll("Empty ParaGenerator", Generator::makeParaGenerator());
+msgAll("Empty SerialGenerator", Generator::makeSerialGenerator());
 
 msgAll("List", [101, 33, 5555, "blort"]);
 msgAll("Map", {one: 1, two: 2, three: 3, four: 4, five: "fizmo"});
 msgAll("String", "Happy string!");
 
-msgAll("ListWrapGenerator", makeListWrapGenerator("frotz"));
+msgAll("ListWrapGenerator", Generator::makeListWrapGenerator("frotz"));
 
 msgAll("Single-item ParaGenerator",
-    makeParaGenerator(["blort", "igram", "fizmo"]));
+    Generator::makeParaGenerator(["blort", "igram", "fizmo"]));
 
 msgAll("All-finite ParaGenerator",
-    makeParaGenerator(
+    Generator::makeParaGenerator(
         [1, 2, 3],
         "abcdefg",
         {a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"}));
 
 msgAll("ParaGenerator with opt element and ValueGenerator",
-    makeParaGenerator(
-        makeOptGenerator([1, 2, 3]),
-        makeValueGenerator("blort"),
+    Generator::makeParaGenerator(
+        Generator::makeOptGenerator([1, 2, 3]),
+        Generator::makeValueGenerator("blort"),
         "abcdefg",
         {a: "a!", b: "b!", c: "c!", d: "d!", e: "e!"}));
 
 msgAll("FilterGenerator (square even numbers)",
-    makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
+    Generator::makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ->
             <> ifIs { <> eq(mod(value, 2), 0) }
                 { <> mul(value, value) }
         });
 
 Io0::note("generatorPump on FilterGenerator");
-generatorPump(
-    makeFilterGenerator([1, 2, 3, 4])
+Generator::generatorPump(
+    Generator::makeFilterGenerator([1, 2, 3, 4])
         { value -> Io0::note(cat("    Yay ", Format::source(value))) });
 Io0::note("");
 
 msgAll("ParaGenerator with open ranges",
-    makeParaGenerator(
+    Generator::makeParaGenerator(
         makeOpenRange("a", 1),
         makeOpenRange(100, 10),
         [1, 2, 3, 4, 5, 6, 7]));
 
 msgAll("Size one SerialGenerator",
-    makeSerialGenerator({a: 10, b: 20, c: 30}));
+    Generator::makeSerialGenerator({a: 10, b: 20, c: 30}));
 
 msgAll("Size two SerialGenerator",
-    makeSerialGenerator(
+    Generator::makeSerialGenerator(
         {a: 10, b: 20, c: 30},
         "defg"));
 
 msgAll("Size six SerialGenerator (with a couple pre-voided generators)",
-    makeSerialGenerator("abc", [], [], nullGenerator, ["def", "ghi"], []));
+    Generator::makeSerialGenerator(
+        "abc",
+        [],
+        [],
+        Generator::nullGenerator,
+        ["def", "ghi"],
+        []));
 
 Io0::note("collectAsMap on a FilterGenerator");
-def outMap = collectAsMap(
-    makeFilterGenerator(makeInclusiveRange(0, 2, 4))
+def outMap = Generator::collectAsMap(
+    Generator::makeFilterGenerator(makeInclusiveRange(0, 2, 4))
         { value ->
             <> {(value): value, (add(value, 1)): value, blort: value}
         });

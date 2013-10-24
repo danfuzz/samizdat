@@ -9,6 +9,9 @@
 # `subGen` is expected to produce lists of arguments to apply.
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["proto", "Generator"]});
+
+def ParaGenerator = submoduleUse("ParaGenerator");
 
 
 #
@@ -19,7 +22,7 @@ def Box = moduleGet({name: ["core", "Box"]});
 fn makeFilterGenerator(filterFunction, generators*) {
     <> @[FilterGenerator: {
         filterFunction: filterFunction,
-        generator: makeParaGenerator(generators*)
+        generator: ParaGenerator::makeParaGenerator(generators*)
     }]
 };
 
@@ -34,7 +37,7 @@ fn FilterGenerator_nextValue(gen, box) {
     loopReduce(payload::generator) { <next> gen ->
         def innerBox = Box::makeYieldBox();
 
-        ifValue { <> nextValue(gen, innerBox) }
+        ifValue { <> Generator::nextValue(gen, innerBox) }
             { nextGenerator ->
                 ifValue { <> filterFunction(Box::fetch(innerBox)*) }
                     { value ->
@@ -53,7 +56,7 @@ fn FilterGenerator_nextValue(gen, box) {
         return
     }
 };
-genericBind(nextValue, "FilterGenerator", FilterGenerator_nextValue);
+genericBind(Generator::nextValue, "FilterGenerator", FilterGenerator_nextValue);
 
 <> {
     makeFilterGenerator: makeFilterGenerator

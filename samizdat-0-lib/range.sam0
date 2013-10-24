@@ -42,7 +42,7 @@ fn makeClosedRange(firstValue, increment, size) {
             <> @[ClosedRange:
                 {firstValue: firstValue, increment: increment, size: size}]
         }
-        { <> nullGenerator }
+        { <> Generator::nullGenerator }
 };
 
 # Documented in spec.
@@ -57,7 +57,7 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     ifIs { <> totEq(increment, 0) }
         {
             return ifIs { <> isEmpty* }
-                { <> nullGenerator }
+                { <> Generator::nullGenerator }
                 { <> makeClosedRange(firstValue, 0, 1) }
         };
 
@@ -68,7 +68,7 @@ fn makeExclusiveRange(firstValue, increment, limit) {
         add(1, div(sub(sub(limitInt, firstInt), sign(increment)), increment));
 
     ifIs { <> totLe(size, 0) }
-        { return nullGenerator };
+        { return Generator::nullGenerator };
 
     <> makeClosedRange(firstValue, increment, size);
 };
@@ -87,7 +87,7 @@ fn makeInclusiveRange(firstValue, increment, limit) {
     def size = add(1, div(sub(limitInt, firstInt), increment));
 
     ifIs { <> totLe(size, 0) }
-        { return nullGenerator };
+        { return Generator::nullGenerator };
 
     <> makeClosedRange(firstValue, increment, size);
 };
@@ -108,7 +108,7 @@ fn ClosedRange_nextValue(range, box) {
             Box::store(box);
         }
 };
-genericBind(nextValue, "ClosedRange", ClosedRange_nextValue);
+genericBind(Generator::nextValue, "ClosedRange", ClosedRange_nextValue);
 
 
 #
@@ -124,7 +124,7 @@ fn makeOpenRange(firstValue, increment) {
 fn OpenRange_collect(range) {
     Io0::die("Unbounded generator.");
 };
-genericBind(collect, "OpenRange", OpenRange_collect);
+genericBind(Generator::collect, "OpenRange", OpenRange_collect);
 
 # Documented in spec.
 fn OpenRange_nextValue(range, box) {
@@ -135,7 +135,7 @@ fn OpenRange_nextValue(range, box) {
     Box::store(box, firstValue);
     <> makeOpenRange(rangeAdd(firstValue, increment), increment)
 };
-genericBind(nextValue, "OpenRange", OpenRange_nextValue);
+genericBind(Generator::nextValue, "OpenRange", OpenRange_nextValue);
 
 
 #

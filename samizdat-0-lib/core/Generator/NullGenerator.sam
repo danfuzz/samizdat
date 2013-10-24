@@ -7,6 +7,7 @@
 #
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["proto", "Generator"]});
 
 
 #
@@ -17,13 +18,13 @@ def Box = moduleGet({name: ["core", "Box"]});
 fn NullGenerator_collect(gen) {
     <> []
 };
-genericBind(collect, "NullGenerator", NullGenerator_collect);
+genericBind(Generator::collect, "NullGenerator", NullGenerator_collect);
 
 # Documented in spec.
 fn NullGenerator_nextValue(gen, box) {
     Box::store(box)
 };
-genericBind(nextValue, "NullGenerator", NullGenerator_nextValue);
+genericBind(Generator::nextValue, "NullGenerator", NullGenerator_nextValue);
 
 # Documented in spec.
 def nullGenerator = @NullGenerator;

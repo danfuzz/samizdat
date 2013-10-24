@@ -109,7 +109,7 @@ fn isIdentifier(string) {
     ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
         { return };
 
-    filterPump(string) { ch ->
+    Generator::filterPump(string) { ch ->
         ifNot { <> get(IDENTIFIER_CHARS, ch) }
             { return }
     };
@@ -189,7 +189,7 @@ genericBind(sourceGeneral, Int, Int_sourceGeneral);
 
 # Stringifies a list.
 fn List_sourceGeneral(list, adorn) {
-    def listElems = filterAll(list)
+    def listElems = Generator::filterAll(list)
         { elem <> cat(", ", sourceGeneral(elem, true)) };
 
     <> adornIf(adorn, "[", collectionBody(listElems), "]")
@@ -198,7 +198,7 @@ genericBind(sourceGeneral, List, List_sourceGeneral);
 
 # Stringifies a map.
 fn Map_sourceGeneral(map, adorn) {
-    def mapElems = filterAll(map)
+    def mapElems = Generator::filterAll(map)
         { mapping ->
             def key = keyString(keyOf(mapping));
             def value = sourceGeneral(valueOf(mapping), true);
@@ -211,7 +211,8 @@ genericBind(sourceGeneral, Map, Map_sourceGeneral);
 
 # Stringifies a string.
 fn String_sourceGeneral(string, adorn) {
-    def bodyChars = makeFilterGenerator(string) { ch <> stringChar(ch) };
+    def bodyChars = Generator::makeFilterGenerator(string)
+        { ch <> stringChar(ch) };
     <> adornIf(adorn, "\"", cat("", bodyChars*), "\"")
 };
 genericBind(sourceGeneral, String, String_sourceGeneral);
@@ -278,7 +279,7 @@ def humanString = makeRegularGeneric("humanString", 1, 1);
 # Human-stringifies a list, which recursively flattens it using
 # `humanString`.
 fn List_humanString(list) {
-    def elems = makeFilterGenerator(humanString, list);
+    def elems = Generator::makeFilterGenerator(humanString, list);
     <> cat("", elems*)
 };
 genericBind(humanString, List, List_humanString);

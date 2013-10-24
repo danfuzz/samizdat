@@ -81,7 +81,8 @@ def parArguments = {/
 # Simple command-line argument parser.
 fn parseArgs(args) {
     # Make a unified string with each argument "\0"-terminated.
-    def argFilter = makeFilterGenerator(args) { arg <> cat(arg, "\0") };
+    def argFilter = Generator::makeFilterGenerator(args)
+        { arg <> cat(arg, "\0") };
     def argString = cat(argFilter*);
 
     # Use the peg grammar above to split the arguments back apart.

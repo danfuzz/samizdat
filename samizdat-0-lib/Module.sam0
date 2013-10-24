@@ -42,7 +42,7 @@ fn withExports(modu, newExports) {
 fn Module_cat(modu, more*) {
     def data = dataOf(modu);
 
-    def allExports = filter([modu, more*], getExports);
+    def allExports = Generator_filter([modu, more*], getExports);
     def combinedExports = cat({}, allExports*);
 
     <> withExports(modu, combinedExports)
@@ -131,7 +131,7 @@ fn moduleGet(searchInfo) {
 fn stringFromModuleName(fqName) {
     # Prefix each component with "::", combine them all, and then drop the
     # first two characters.
-    def parts = filter(fqName, { n <> cat("::", n) });
+    def parts = Generator_filter(fqName, { n <> cat("::", n) });
     def result = cat(parts*);
 
     <> slice(result, 2)

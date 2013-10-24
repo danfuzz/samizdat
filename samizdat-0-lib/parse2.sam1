@@ -20,7 +20,7 @@ def Peg = moduleGet({name: ["core", "Peg"]});
 fn reportError(pending) {
     Io1::note("Pending tokens:");
 
-    filterPump(pending, makeInclusiveRange(1, 1, 50))
+    Generator::filterPump(pending, makeInclusiveRange(1, 1, 50))
         { token, . -> Io1::note(cat("    ", Format::source(token))) };
 
     Io1::die("\nExtra tokens at end of program.")
@@ -68,12 +68,6 @@ fn makeCallName(name, actuals*) {
     <> @[call: {function: makeVarRef(name), actuals: actuals}]
 };
 
-# Returns a collection access (`get`) expression. This is a `call` node
-# of two arguments (a collection node and a key node).
-fn makeGetExpression(collArg, keyArg) {
-    <> makeCallName("get", collArg, keyArg)
-};
-
 # Returns an optional-value expression. This wraps `node` as
 # `optValue { <> node }`.
 fn makeOptValueExpression(node) {
@@ -97,8 +91,26 @@ fn makeCallNonlocalExit(name, optExpression?) {
 # Returns a `call` node that names a function as a `varRef` and passes
 # "thunked" versions of each of the given actual arguments.
 fn makeCallNameThunks(name, actuals*) {
-    def thunks = filterAll(actuals) { one <> makeThunk(one) };
+    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
     <> makeCallName(name, thunks*)
+};
+
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
+};
+
+# Returns a collection access expression, with a `varRef` to the collection
+# and a literal string to look up.
+fn makeModNameRef(modVar, name) {
+    <> makeGetExpression(makeVarRef(modVar), makeLiteral(name))
+};
+
+# Returns a `call` node that names a function as a `varRef` to a module
+# and a literal name to look up in that module.
+fn makeCallModName(modVar, funcName, actuals*) {
+    <> makeCall(makeModNameRef(modVar, funcName), actuals*)
 };
 
 # Returns a `closure` node like the one given, except with the `formals`
@@ -171,7 +183,7 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
 
     def voidable = ifValueOr { <> optVoidable* } { <> false };
 
-    def result = doReduce1(opExList, firstEx) { opEx, result ->
+    def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
         def op = first(opEx);
         def ex = last(opEx);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
@@ -648,9 +660,9 @@ def implUnaryExpression = {/
     postfixes = parPostfixOperator*
 
     {
-        def withPosts = doReduce1(postfixes, base)
+        def withPosts = Generator::doReduce1(postfixes, base)
             { op, result <> op(result) };
-        <> doReduce1(reverse(prefixes), withPosts)
+        <> Generator::doReduce1(reverse(prefixes), withPosts)
             { op, result <> op(result) }
     }
 /};
@@ -814,7 +826,7 @@ def parParserSet = {/
         { <> [cat(strings*)*] }
     |
         tokens = parParserToken+
-        { <> filter(tokens, dataOf) }
+        { <> Generator::filter(tokens, dataOf) }
     |
         { <> [] }
     )
@@ -942,26 +954,18 @@ def parInterpolatedString = {/
         # Convert each of the payload items into the proper form.
         # This includes recursive parser calls to convert list forms
         # into appropriate node types.
-        def elems = filterAll(dataOf(token)) { elem ->
+        def elems = Generator::filterAll(dataOf(token)) { elem ->
             <> ifIs { <> isString(elem) }
                 { <> makeLiteral(elem) }
                 {
                     def tokens = elem::tokens;
 
-                    def formatRef = makeVarRef("Format");
                     def formatter = ifValue { <> elem::format }
                         { format ->
-                            <> makeCall(
-                                makeGetExpression(
-                                    formatRef,
-                                    makeLiteral("formatterFor")),
-                                makeLiteral(format))
+                            <> makeCallModName(
+                                "Format", "formatterFor", makeLiteral(format))
                         }
-                        {
-                            <> makeGetExpression(
-                                formatRef,
-                                makeLiteral("usual"))
-                        };
+                        { <> makeModNameRef("Format", "usual") };
 
                     def call = ifValueOr
                         { <> Peg::apply(parStringInterpolation, tokens) }
@@ -1007,8 +1011,8 @@ def parGeneratorList = {/
 
     {
         def gens = [one, rest*];
-        def formals = filterAll(gens) { gen <> gen::formal };
-        def inits = filterAll(gens) { gen <> gen::init };
+        def formals = Generator::filterAll(gens) { gen <> gen::formal };
+        def inits = Generator::filterAll(gens) { gen <> gen::init };
 
         <> {formals: formals, inits: inits}
     }
@@ -1040,7 +1044,7 @@ def parComprehensionBody = {/
 # ```
 # =>
 # ```
-# makeFilterGenerator(expr1, expr2)
+# Generator::makeFilterGenerator(expr1, expr2)
 #     { name1, name2 -> filterBody }
 # ```
 #
@@ -1049,7 +1053,7 @@ def parComprehensionBody = {/
 # ```
 # =>
 # ```
-# filterAll(expr1, expr2)
+# Generator::filterAll(expr1, expr2)
 #     { name1, name2 -> filterBody }
 # ```
 def parComprehension = {/
@@ -1057,13 +1061,13 @@ def parComprehension = {/
     body = parComprehensionBody
     @")"
 
-    { <> makeCallName("makeFilterGenerator", body*) }
+    { <> makeCallModName("Generator", "makeFilterGenerator", body*) }
 |
     @"["
     body = parComprehensionBody
     @"]"
 
-    { <> makeCallName("filterAll", body*) }
+    { <> makeCallModName("Generator", "filterAll", body*) }
 /};
 
 # Parses the `term` variants introduced in *Layer 2*.
@@ -1426,8 +1430,8 @@ def parLogicAndExpression = {/
         # Compound `&` expression (three or more clauses).
         {
             # Make a version of the test clauses, as thunks with formals lists.
-            def formals = filterAll(most) { clause <> clause::formal };
-            def testThunks = filterAll(most, makeOpenRange(0, 1))
+            def formals = Generator::filterAll(most) { clause <> clause::formal };
+            def testThunks = Generator::filterAll(most, makeOpenRange(0, 1))
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),
@@ -1466,7 +1470,7 @@ def parLogicOrExpression = {/
     |
         {
             def allExprs = reverse([one, rest*]);
-            <> doReduce1(butFirst(allExprs), first(allExprs))
+            <> Generator::doReduce1(butFirst(allExprs), first(allExprs))
                 { ex, result ->
                     <> makeCallName("ifValueOr",
                         makeThunk(ex), makeThunk(result))
@@ -1535,8 +1539,8 @@ def parMultiTest = {/
         # General case.
         {
             # Make a version of the test clauses, as thunks with formals lists.
-            def formals = filterAll(clauses) { clause <> clause::formal };
-            def testThunks = filterAll(clauses, makeOpenRange(0, 1))
+            def formals = Generator::filterAll(clauses) { clause <> clause::formal };
+            def testThunks = Generator::filterAll(clauses, makeOpenRange(0, 1))
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),
@@ -1620,7 +1624,7 @@ def parIfExpression = {/
         # in a single-element list, so that they can be slotted directly into
         # place as the third argument to an enclosing `if*` by saying `result*`
         # (which also handles the case of a missing final `else`).
-        def reduction = doReduce1(clauses, optElse) { clause, optResult ->
+        def reduction = Generator::doReduce1(clauses, optElse) { clause, optResult ->
             def maker = clause::maker;
             def then = clause::then;
             <> [makeThunk(maker(then, optResult*))]
@@ -1765,7 +1769,7 @@ def parDoExpression = {/
 # ```
 # { <\"break"> ->
 #     def out = \"break";
-#     filterPump(expr1, expr2) { <\"continue"> name1, name2 ->
+#     Generator::filterPump(expr1, expr2) { <\"continue"> name1, name2 ->
 #         def next = \"continue";
 #         stat1; stat2
 #     }
@@ -1803,7 +1807,8 @@ def parForExpression = {/
             yieldDef: "break",
             statements: [
                 breakDef*,
-                makeCallName("filterPump", loopClosure, genInits*)
+                makeCallModName(
+                    "Generator", "filterPump", loopClosure, genInits*)
             ]
         }];
 
@@ -1902,17 +1907,17 @@ def parSwitchExpression = {/
         def formal = testClause::formal;
         def test = testClause::test;
 
-        def optDefault = filterAll(cases) { case ->
+        def optDefault = Generator::filterAll(cases) { case ->
             <> ifIs { <> eq(case::keys, @default) }
                 { <> closureWithFormals(case::code, formal) }
         };
 
-        def optElse = filterAll(cases) { case ->
+        def optElse = Generator::filterAll(cases) { case ->
             <> ifIs { <> eq(case::keys, @else) }
                 { <> case::code }
         };
 
-        def regularCases = filterAll(cases) { case ->
+        def regularCases = Generator::filterAll(cases) { case ->
             def keys = case::keys;
             <> ifIs { <> eq(typeOf(keys), "expression") }
                 {

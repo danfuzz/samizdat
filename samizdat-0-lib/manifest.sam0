@@ -29,10 +29,11 @@ def MANIFEST = [
     "constants.sam0",
 
     # Simple modules.
+    ["proto", "Box"],
+    ["proto", "Generator"],
     ["core", "EntityMap"],
     ["core", "Io0"],
     ["core", "Box"],
-    "NullBox.sam0",
     ["core", "FunctionForwarder"],
 
     # Layer 0: Simple functions.
@@ -41,22 +42,14 @@ def MANIFEST = [
     "Collection.sam0",
     "Bitwise.sam0",
     "Boolean.sam0",
-    "String.sam0",
 
     # Layer 0: Complicated functions.
-    "NullGenerator.sam0",        # Used by several other generators.
-    "ValueGenerator.sam0",
-    "ListWrapGenerator.sam0",
-    "OptGenerator.sam0",         # Uses `ValueGenerator`.
-    "ParaGenerator.sam0",        # Uses `ListWrapGenerator`.
-    "CollectionGenerator.sam0",
-    "SerialGenerator.sam0",
-    "FilterGenerator.sam0",      # Uses `ParaGenerator`.
-    "Generator.sam0",
+    ["core", "Generator"],
     "range.sam0",
 
     # Layer 0: Complicated modules.
     ["core", "Format"],
+    "String.sam0",
     ["core", "Peg"],
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 

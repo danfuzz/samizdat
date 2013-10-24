@@ -74,7 +74,7 @@ will be returned, or one of:
   * [Function](Function.md)
   * [ClosedRange](ClosedRange.md)
   * [Collection (multiple-value containers)](Collection.md)
-  * [Generator](Generator.md)
+  * Generator &mdash; See [core::Generator](Generator.md) module.
   * [Generic](Generic.md)
   * [Int](Int.md)
   * [List](List.md)
@@ -93,6 +93,7 @@ will be returned, or one of:
   * [core::EntityMap](EntityMap.md)
   * [core::Format (string formatting)](Format.md)
   * [core::FunctionForwarder](FunctionForwarder.md)
+  * [core::Generator](Generator.md)
   * [core::Io0](Io0.md)
   * [core::Io1](Io1.md)
   * [core::ParseForwarder](ParseForwarder.md)

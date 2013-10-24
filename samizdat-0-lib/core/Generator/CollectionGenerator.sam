@@ -8,6 +8,7 @@
 # Payload is `[collection: coll, index: int]`.
 
 def Box = moduleGet({name: ["core", "Box"]});
+def Generator = moduleGet({name: ["proto", "Generator"]});
 
 
 #
@@ -37,7 +38,7 @@ fn CollectionGenerator_nextValue(gen, box) {
             Box::store(box)
         }
 };
-genericBind(nextValue, "CollectionGenerator", CollectionGenerator_nextValue);
+genericBind(Generator::nextValue, "CollectionGenerator", CollectionGenerator_nextValue);
 
 # `nextValue` binding for the core collection types.
 fn Collection_nextValue(coll, box) {
@@ -49,9 +50,9 @@ fn Collection_nextValue(coll, box) {
             Box::store(box)
         }
 };
-genericBind(nextValue, List,   Collection_nextValue);
-genericBind(nextValue, Map,    Collection_nextValue);
-genericBind(nextValue, String, Collection_nextValue);
+genericBind(Generator::nextValue, List,   Collection_nextValue);
+genericBind(Generator::nextValue, Map,    Collection_nextValue);
+genericBind(Generator::nextValue, String, Collection_nextValue);
 
 <> {
     makeCollectionGenerator: makeCollectionGenerator
