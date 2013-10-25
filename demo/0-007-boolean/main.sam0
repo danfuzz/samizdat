@@ -34,53 +34,53 @@ fn expect(name, result, func, args*) {
 
 Io0::note("Booleans");
 
-expect("and", false, and, false, false);
-expect("and", false, and, false, true);
-expect("and", false, and, true,  false);
-expect("and", true,  and, true,  true);
+expect("and", false, Bitwise::and, false, false);
+expect("and", false, Bitwise::and, false, true);
+expect("and", false, Bitwise::and, true,  false);
+expect("and", true,  Bitwise::and, true,  true);
 
-expect("or", false, or, false, false);
-expect("or", true,  or, false, true);
-expect("or", true,  or, true,  false);
-expect("or", true,  or, true,  true);
+expect("or", false, Bitwise::or, false, false);
+expect("or", true,  Bitwise::or, false, true);
+expect("or", true,  Bitwise::or, true,  false);
+expect("or", true,  Bitwise::or, true,  true);
 
-expect("xor", false, xor, false, false);
-expect("xor", true,  xor, false, true);
-expect("xor", true,  xor, true,  false);
-expect("xor", false, xor, true,  true);
+expect("xor", false, Bitwise::xor, false, false);
+expect("xor", true,  Bitwise::xor, false, true);
+expect("xor", true,  Bitwise::xor, true,  false);
+expect("xor", false, Bitwise::xor, true,  true);
 
-expect("not", true,  not, false);
-expect("not", false, not, true);
+expect("not", true,  Bitwise::not, false);
+expect("not", false, Bitwise::not, true);
 
-expect("bit", 0, bit, false, 0);
-expect("bit", 1, bit, true,  0);
-expect("bit", 0, bit, false, 1);
-expect("bit", 0, bit, true,  1);
-expect("bit", 0, bit, false, 2);
-expect("bit", 0, bit, true,  2);
+expect("bit", 0, Bitwise::bit, false, 0);
+expect("bit", 1, Bitwise::bit, true,  0);
+expect("bit", 0, Bitwise::bit, false, 1);
+expect("bit", 0, Bitwise::bit, true,  1);
+expect("bit", 0, Bitwise::bit, false, 2);
+expect("bit", 0, Bitwise::bit, true,  2);
 
-expect("bitSize", 1, bitSize, false);
-expect("bitSize", 1, bitSize, true);
+expect("bitSize", 1, Bitwise::bitSize, false);
+expect("bitSize", 1, Bitwise::bitSize, true);
 
-expect("shl", false, shl, false, 0);
-expect("shl", false, shl, false, 1);
-expect("shl", false, shl, false, 2);
-expect("shl", false, shl, false, -1);
-expect("shl", false, shl, false, -2);
+expect("shl", false, Bitwise::shl, false, 0);
+expect("shl", false, Bitwise::shl, false, 1);
+expect("shl", false, Bitwise::shl, false, 2);
+expect("shl", false, Bitwise::shl, false, -1);
+expect("shl", false, Bitwise::shl, false, -2);
 
-expect("shl", true,  shl, true, 0);
-expect("shl", false, shl, true, -1);
-expect("shl", false, shl, true, -2);
+expect("shl", true,  Bitwise::shl, true, 0);
+expect("shl", false, Bitwise::shl, true, -1);
+expect("shl", false, Bitwise::shl, true, -2);
 
-expect("shr", false, shr, false, 0);
-expect("shr", false, shr, false, -1);
-expect("shr", false, shr, false, -2);
-expect("shr", false, shr, false, 1);
-expect("shr", false, shr, false, 2);
+expect("shr", false, Bitwise::shr, false, 0);
+expect("shr", false, Bitwise::shr, false, -1);
+expect("shr", false, Bitwise::shr, false, -2);
+expect("shr", false, Bitwise::shr, false, 1);
+expect("shr", false, Bitwise::shr, false, 2);
 
-expect("shr", true,  shr, true, 0);
-expect("shr", false, shr, true, 1);
-expect("shr", false, shr, true, 2);
+expect("shr", true,  Bitwise::shr, true, 0);
+expect("shr", false, Bitwise::shr, true, 1);
+expect("shr", false, Bitwise::shr, true, 2);
 
 expect("toInt", 0, toInt, false);
 expect("toInt", 1, toInt, true);
