@@ -68,7 +68,7 @@ def parDescription = {/
 # Parses an entity name.
 def parName = {/
     chars = ["a".."z" "A".."Z" "0".."9" "."]+
-    { <> stringFromTokenList(chars) }
+    { <> Peg::stringFromTokenList(chars) }
 /};
 
 # Parses a single content line.

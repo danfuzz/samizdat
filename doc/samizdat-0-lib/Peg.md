@@ -364,6 +364,14 @@ whatever token was matched.
 
 This is equivalent to the syntactic form `{/ [! @token1 @token2 @etc] /}`.
 
+#### `stringFromTokenList(tokens) <> string`
+
+Takes a list of tokenizer-style character tokens (that is, derived values
+whose type tags are each a single-character string), returning the result
+of concatenating all the characters together in order.
+
+This function is intended to aid in the building of tokenizers.
+
 #### Rule: `any`
 
 Parser rule which matches any input item, consuming and yielding it. It

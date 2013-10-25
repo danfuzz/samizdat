@@ -32,7 +32,7 @@ return void, but with normal usage, this never happens.
 
 
 <br><br>
-### In-Language Definitions
+### In-Language Definitions: `Range` module
 
 #### `makeClosedRange(firstValue, increment, size) <> range | nullGenerator`
 

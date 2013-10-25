@@ -72,7 +72,7 @@ will be returned, or one of:
   * Box &mdash; See [core::Box](Box.md) module.
   * [Builtin](Builtin.md)
   * [Function](Function.md)
-  * [ClosedRange](ClosedRange.md)
+  * [ClosedRange](ClosedRange.md) (part of `Range` module)
   * [Collection (multiple-value containers)](Collection.md)
   * Generator &mdash; See [core::Generator](Generator.md) module.
   * [Generic](Generic.md)
@@ -81,7 +81,7 @@ will be returned, or one of:
   * [Map](Map.md)
   * [Module](Module.md)
   * [Number](Number.md)
-  * [OpenRange](OpenRange.md)
+  * [OpenRange](OpenRange.md) (part of `Range` module)
   * [String](String.md)
   * [Type](Type.md)
   * [Uniqlet](Uniqlet.md)
@@ -89,15 +89,16 @@ will be returned, or one of:
   * [One-Off Generics](OneOff.md)
 
 * Modules
-  * [core::Box](Box.md)
+  * [core::Box / proto::Box](Box.md)
   * [core::EntityMap](EntityMap.md)
   * [core::Format (string formatting)](Format.md)
   * [core::FunctionForwarder](FunctionForwarder.md)
-  * [core::Generator](Generator.md)
+  * [core::Generator / proto::Generator](Generator.md)
   * [core::Io0](Io0.md)
   * [core::Io1](Io1.md)
   * [core::ParseForwarder](ParseForwarder.md)
   * [core::Peg (parsing)](Peg.md)
+  * [core::Range](Range.md)
 
 * Other
   * [Constants](constants.md)

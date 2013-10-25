@@ -225,8 +225,8 @@ If not specified, the `increment` defaults to `1`. Even if the `first` and
 `limit` are strings, the `increment` if specified must always be an int.
 
 Ranges all bottom out in their evaluation to calls to one of the
-functions `makeExclusiveRange`, `makeInclusiveRange`,
-or `makeOpenRange`. Refer to the documentation on those functions
+functions `Range::makeExclusiveRange`, `Range::makeInclusiveRange`,
+or `Range::makeOpenRange`. Refer to the documentation on those functions
 for how to interpret the various combinations.
 
 **Note:** Unlike most binary operators, the range operators have no
@@ -234,27 +234,27 @@ operator associativity, in that `x..y..z..huhwhat` is a syntax error.
 
 #### Inclusive range with increment 1 &mdash; `first..limit`
 
-This is equivalent to `makeInclusiveRange(first, 1, limit)`.
+This is equivalent to `Range::makeInclusiveRange(first, 1, limit)`.
 
 #### Inclusive range with arbitrary increment &mdash; `first..increment..limit`
 
-This is equivalent to `makeInclusiveRange(first, increment, limit)`.
+This is equivalent to `Range::makeInclusiveRange(first, increment, limit)`.
 
 #### Exclusive range with increment 1 &mdash; `first..!limit`
 
-This is equivalent to `makeExclusiveRange(first, 1, limit)`.
+This is equivalent to `Range::makeExclusiveRange(first, 1, limit)`.
 
 #### Exclusive range with arbitrary increment &mdash; `first..increment..!limit`
 
-This is equivalent to `makeExclusiveRange(first, increment, limit)`.
+This is equivalent to `Range::makeExclusiveRange(first, increment, limit)`.
 
 #### Open range with increment 1 &mdash; `first..+`
 
-This is equivalent to `makeOpenRange(first, 1)`.
+This is equivalent to `Range::makeOpenRange(first, 1)`.
 
 #### Open range with arbitrary increment &mdash; `first..increment..+`
 
-This is equivalent to `makeOpenRange(first, increment)`.
+This is equivalent to `Range::makeOpenRange(first, increment)`.
 
 
 ### Multiplicative Infix Operators (Precedence 5)

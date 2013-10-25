@@ -45,11 +45,10 @@ def MANIFEST = [
 
     # Layer 0: Complicated functions.
     ["core", "Generator"],
-    "range.sam0",
+    ["core", "Range"],
 
     # Layer 0: Complicated modules.
     ["core", "Format"],
-    "String.sam0",
     ["core", "Peg"],
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 

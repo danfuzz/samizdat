@@ -28,7 +28,7 @@ the remaining elements.
 
 
 <br><br>
-### In-Language Definitions
+### In-Language Definitions: `Range` module
 
 #### `makeOpenRange(firstValue, increment) <> range`
 
