@@ -14,12 +14,6 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 #
 
 # Documented in Samizdat Layer 0 spec.
-def false = @[Boolean: 0];
-
-# Documented in Samizdat Layer 0 spec.
-def true =  @[Boolean: 1];
-
-# Documented in Samizdat Layer 0 spec.
 fn Boolean_and(bool1, bool2) {
     <> @[Boolean: Bitwise::and(dataOf(bool1), dataOf(bool2))]
 };
@@ -75,8 +69,3 @@ fn Boolean_xor(bool1, bool2) {
     <> @[Boolean: Bitwise::xor(dataOf(bool1), dataOf(bool2))]
 };
 genericBind(Bitwise::xor, "Boolean", Boolean_xor);
-
-<> {
-    false: false,
-    true:  true
-}
