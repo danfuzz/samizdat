@@ -40,12 +40,12 @@ def MANIFEST = [
     ["core", "Box"],
     ["core", "FunctionForwarder"],
     ["core", "Bitwise"],
+    ["core", "Boolean"],
 
     # Layer 0: Simple functions.
     "meta.sam0",
     "Value.sam0",
     "Collection.sam0",
-    "Boolean.sam0",
 
     # Layer 0: Complicated functions.
     ["core", "Generator"],
