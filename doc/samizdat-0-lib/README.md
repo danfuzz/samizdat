@@ -67,7 +67,6 @@ will be returned, or one of:
 ### Contents
 
 * Types and Protocols
-  * [Bitwise (bit lists)](Bitwise.md)
   * [Boolean](Boolean.md)
   * Box &mdash; See [core::Box](Box.md) module.
   * [Builtin](Builtin.md)
@@ -89,6 +88,7 @@ will be returned, or one of:
   * [One-Off Generics](OneOff.md)
 
 * Modules
+  * [core::Bitwise / proto::Bitwise](Bitwise.md)
   * [core::Box / proto::Box](Box.md)
   * [core::EntityMap](EntityMap.md)
   * [core::Format (string formatting)](Format.md)

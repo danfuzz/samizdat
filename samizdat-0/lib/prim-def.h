@@ -38,13 +38,13 @@ PRIM_DEF(toString,   GFN_toString);
 PRIM_DEF(valueOf,    GFN_valueOf);
 
 // Generic functions: `Bitwise` protocol
-PRIM_DEF(and,        GFN_and);
-PRIM_DEF(bit,        GFN_bit);
-PRIM_DEF(bitSize,    GFN_bitSize);
-PRIM_DEF(not,        GFN_not);
-PRIM_DEF(or,         GFN_or);
-PRIM_DEF(shl,        GFN_shl);
-PRIM_DEF(xor,        GFN_xor);
+PRIM_DEF(Bitwise_and,     GFN_and);
+PRIM_DEF(Bitwise_bit,     GFN_bit);
+PRIM_DEF(Bitwise_bitSize, GFN_bitSize);
+PRIM_DEF(Bitwise_not,     GFN_not);
+PRIM_DEF(Bitwise_or,      GFN_or);
+PRIM_DEF(Bitwise_shl,     GFN_shl);
+PRIM_DEF(Bitwise_xor,     GFN_xor);
 
 // Generic functions: `Box` protocol, intended for modularization
 PRIM_DEF(Box_canStore, GFN_canStore);

@@ -2,21 +2,7 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Bitwise functions
-#
-
-
-#
-# Exported Definitions
-#
-
-# Documented in Samizdat Layer 0 spec.
-fn shr(bitwise, n) {
-    <> shl(bitwise, neg(n))
-};
-
-
-<> {
-    shr: shr
+{
+    name: ["proto", "Bitwise"],
+    version: "0.0.1"
 }
