@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Bitwise
--------
+core::Bitwise / proto::Bitwise
+------------------------------
 
 `Bitwise` is a protocol for values that can be treated as fixed-width
 lists of bits.
@@ -65,7 +65,7 @@ Returns the binary-xor (bitwise not-equal) of the given values.
 
 
 <br><br>
-### In-Language Definitions
+### In-Language Definitions: `Bitwise` module
 
 #### `shr(bitwise, int) <> bitwise`
 
