@@ -190,7 +190,7 @@ map to interpolate followed by `*`.
 {["these", "map", "to", "the"]*: "same value"}
 {these | map | "to" | the: "same value"}
 {["these", "map"]* | to | the: "same value"}
-{these | map | "to" | (the)): "same value"}
+{these | map | "to" | (the): "same value"}
 
 # These are all equivalent.
 {first: 1, second: 2, third: 3}
