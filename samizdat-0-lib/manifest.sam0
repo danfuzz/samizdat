@@ -28,19 +28,23 @@ def MANIFEST = [
     # Layer 0: Constant value definitions.
     "constants.sam0",
 
-    # Simple modules.
+    # Prototype definition modules, re-exported from the primitive
+    # core library.
+    ["proto", "Bitwise"],
     ["proto", "Box"],
     ["proto", "Generator"],
+
+    # Simple modules.
     ["core", "EntityMap"],
     ["core", "Io0"],
     ["core", "Box"],
     ["core", "FunctionForwarder"],
+    ["core", "Bitwise"],
 
     # Layer 0: Simple functions.
     "meta.sam0",
     "Value.sam0",
     "Collection.sam0",
-    "Bitwise.sam0",
     "Boolean.sam0",
 
     # Layer 0: Complicated functions.
