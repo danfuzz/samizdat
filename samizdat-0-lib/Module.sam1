@@ -36,11 +36,11 @@ fn findModuleDirectory(fqName, optPaths?) {
     ifIs { <> eq(paths, []) }
         { Io1::die(cat("Module not found: ", stringFromModuleName(fqName))) };
 
-    def oneDir = [first(paths)*, fqName*];
+    def oneDir = [Collection::first(paths)*, fqName*];
 
     <> ifIs { <> Io1::fileExists([oneDir*, MODULE_FILE_NAME]) }
         { <> oneDir }
-        { <> findModuleDirectory(fqName, butFirst(paths)) }
+        { <> findModuleDirectory(fqName, Collection::butFirst(paths)) }
 };
 
 

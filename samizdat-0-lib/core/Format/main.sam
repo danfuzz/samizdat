@@ -70,7 +70,7 @@ fn collectionBody(elems) {
         { return "" };
 
     def one = slice(first(elems), 2);
-    <> cat(one, butFirst(elems)*)
+    <> cat(one, Collection::butFirst(elems)*)
 };
 
 # These are all the characters which are allowed to start an identifier.

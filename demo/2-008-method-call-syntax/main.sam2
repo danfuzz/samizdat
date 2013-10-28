@@ -36,13 +36,13 @@ msg("".cat("Awesome", "tastic!"));
 
 Io1::note("\nExpression syntax for name");
 def funcList = [nth, perEq];
-msg(["zero", "one", "two"].(first(funcList))(1));
+msg(["zero", "one", "two"].(Collection::first(funcList))(1));
 
 Io1::note("\nGetting bound methods");
 def method1 = [1, 2, 3].sizeOf;
 msg(method1());
 
-def method2 = [4, 5, 6].(last(funcList));
+def method2 = [4, 5, 6].(Collection::last(funcList));
 msg(method2([4, 5, 6]));
 msg(method2([9])?);
 

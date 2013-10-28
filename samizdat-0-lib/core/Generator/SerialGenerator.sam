@@ -35,9 +35,9 @@ fn makeSerialGenerator(generators*) {
 fn SerialGenerator_nextValue(gen, box) {
     def subGens = dataOf(gen);
 
-    <> ifValue { <> first(subGens) }
+    <> ifValue { <> Collection::first(subGens) }
         { firstGen ->
-            def moreGens = butFirst(subGens);
+            def moreGens = Collection::butFirst(subGens);
             def innerBox = Box::makeYieldBox();
 
             <> ifValue { <> Generator::nextValue(firstGen, innerBox) }

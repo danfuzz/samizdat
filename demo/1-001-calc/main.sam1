@@ -50,10 +50,10 @@ fn applyShuntingYard(initialValue, opValues) {
     # the result back at the top of the value stack.
     fn applyTop(ops, values) {
         def valuesSizeM2 = Number::sub(sizeOf(values), 2);
-        def function = last(ops)::function;
+        def function = Collection::last(ops)::function;
         def newValue = function(slice(values, valuesSizeM2)*);
         <> [
-            butLast(ops),
+            Collection::butLast(ops),
             [slice(values, 0, valuesSizeM2)*, newValue]
         ]
     };
@@ -63,7 +63,7 @@ fn applyShuntingYard(initialValue, opValues) {
     fn reducePending(ops, values, precedence) {
         loopReduce(ops, values)
             { <next> ops, values ->
-                ifValue { <> last(ops) }
+                ifValue { <> Collection::last(ops) }
                     { lastOp ->
                         ifIs { <> ge(lastOp::precedence, precedence) }
                             { <next> applyTop(ops, values) }
@@ -78,17 +78,17 @@ fn applyShuntingYard(initialValue, opValues) {
                 # Use precedence `-1` to drain the op stack, leaving a single
                 # value.
                 def finalResult = reducePending(ops, values, -1);
-                return last(last(finalResult))
+                return Collection::last(Collection::last(finalResult))
             };
 
-        def nextOpValue = first(opValues);
+        def nextOpValue = Collection::first(opValues);
         def nextOp = nextOpValue::op;
         def nextVal = nextOpValue::value;
         def newPending = reducePending(ops, values, nextOp::precedence);
         <> [
-            [first(newPending)*, nextOp],
-            [last(newPending)*, nextVal],
-            butFirst(opValues)
+            [Collection::first(newPending)*, nextOp],
+            [Collection::last(newPending)*, nextVal],
+            Collection::butFirst(opValues)
         ]
     }
 };

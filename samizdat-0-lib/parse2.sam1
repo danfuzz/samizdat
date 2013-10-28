@@ -184,8 +184,8 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
     def voidable = ifValueOr { <> optVoidable* } { <> false };
 
     def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
-        def op = first(opEx);
-        def ex = last(opEx);
+        def op = Collection::first(opEx);
+        def ex = Collection::last(opEx);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
         def call = makeCall(resolvedOp, result, ex);
 
@@ -1470,7 +1470,9 @@ def parLogicOrExpression = {/
     |
         {
             def allExprs = Sequence::reverse([one, rest*]);
-            <> Generator::doReduce1(butFirst(allExprs), first(allExprs))
+            <> Generator::doReduce1(
+                Collection::butFirst(allExprs),
+                Collection::first(allExprs))
                 { ex, result ->
                     <> makeCallName("ifValueOr",
                         makeThunk(ex), makeThunk(result))
