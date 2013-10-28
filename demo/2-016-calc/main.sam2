@@ -133,7 +133,7 @@ def unaryOp = {/
 def unaryExpression = {/
     ops = unaryOp*
     ex = term
-    { <> applyAll(ex, reverse(ops)) }
+    { <> applyAll(ex, Sequence::reverse(ops)) }
 /};
 
 # Parses a binary operation, yielding a map of precedence and function.

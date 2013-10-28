@@ -662,7 +662,7 @@ def implUnaryExpression = {/
     {
         def withPosts = Generator::doReduce1(postfixes, base)
             { op, result <> op(result) };
-        <> Generator::doReduce1(reverse(prefixes), withPosts)
+        <> Generator::doReduce1(Sequence::reverse(prefixes), withPosts)
             { op, result <> op(result) }
     }
 /};
@@ -1469,7 +1469,7 @@ def parLogicOrExpression = {/
         }
     |
         {
-            def allExprs = reverse([one, rest*]);
+            def allExprs = Sequence::reverse([one, rest*]);
             <> Generator::doReduce1(butFirst(allExprs), first(allExprs))
                 { ex, result ->
                     <> makeCallName("ifValueOr",
@@ -1617,7 +1617,7 @@ def parIfExpression = {/
 
     {
         # This builds the full expression from back to front (inner to outer).
-        def clauses = reverse(
+        def clauses = Sequence::reverse(
             [{maker: firstCondition, then: firstThen}, elseIfThens*]);
 
         # To keep things simple, partial results are always thunks wrapped
@@ -1953,7 +1953,7 @@ def parSwitchExpression = {/
                         {
                             <> makeCallName("cat",
                                 makeInterpolate(
-                                    makeCallName("reverse",
+                                    makeCallModName("Sequence", "reverse",
                                         makeCallName("makeList",
                                             regularCases*))))
                         },

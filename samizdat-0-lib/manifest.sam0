@@ -34,6 +34,7 @@ def MANIFEST = [
     ["proto", "Box"],
     ["proto", "Generator"],
     ["proto", "Number"],
+    ["proto", "Sequence"],
 
     # Simple modules.
     ["core", "EntityMap"],

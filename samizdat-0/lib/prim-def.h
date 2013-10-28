@@ -55,16 +55,18 @@ PRIM_DEF(Box_store,    GFN_store);
 PRIM_DEF(call,       GFN_call);
 PRIM_DEF(canCall,    GFN_canCall);
 
-// Generic functions: `Collection` protocol and sub-protocols
+// Generic functions: `Collection` protocol
 PRIM_DEF(cat,        GFN_cat);
 PRIM_DEF(del,        GFN_del);
 PRIM_DEF(get,        GFN_get);
 PRIM_DEF(keyList,    GFN_keyList);
 PRIM_DEF(nth,        GFN_nth);
 PRIM_DEF(put,        GFN_put);
-PRIM_DEF(reverse,    GFN_reverse); // `Sequence` protocol.
 PRIM_DEF(sizeOf,     GFN_sizeOf);
 PRIM_DEF(slice,      GFN_slice);
+
+// Generic functions: `Sequence` protocol, intended for modularization
+PRIM_DEF(Sequence_reverse,    GFN_reverse);
 
 // Generic functions: `Generator` protocol, intended for modularization
 PRIM_DEF(Generator_collect,   GFN_collect);
