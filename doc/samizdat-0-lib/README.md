@@ -90,6 +90,7 @@ will be returned, or one of:
   * [proto::Box](Box.md)
   * [proto::Generator](Generator.md)
   * [proto::Number](Number.md)
+  * [proto::Sequence](Sequence.md)
 
 * Implementation Modules
   * [core::Bitwise](Bitwise.md)
