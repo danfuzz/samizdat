@@ -20,12 +20,12 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 def rangeAdd = makeRegularGeneric("rangeAdd", 2, 2);
 
 fn Int_rangeAdd(value, increment) {
-    <> add(value, increment)
+    <> Number::add(value, increment)
 };
 genericBind(rangeAdd, Int, Int_rangeAdd);
 
 fn String_rangeAdd(value, increment) {
-    <> toString(add(toInt(value), increment))
+    <> toString(Number::add(toInt(value), increment))
 };
 genericBind(rangeAdd, String, String_rangeAdd);
 
@@ -109,7 +109,7 @@ fn ClosedRange_nextValue(range, box) {
             def increment = data::increment;
             Box::store(box, firstValue);
             <> makeClosedRange(rangeAdd(firstValue, increment), increment,
-                sub(size, 1))
+                Number::sub(size, 1))
         }
         {
             # Voided.

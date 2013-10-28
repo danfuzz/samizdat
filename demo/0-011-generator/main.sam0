@@ -122,7 +122,7 @@ Io0::note("collectAsMap on a FilterGenerator");
 def outMap = Generator::collectAsMap(
     Generator::makeFilterGenerator(Range::makeInclusiveRange(0, 2, 4))
         { value ->
-            <> {(value): value, (add(value, 1)): value, blort: value}
+            <> {(value): value, (Number::add(value, 1)): value, blort: value}
         });
 Io0::note(cat("    ", Format::source(outMap)));
 Io0::note("");

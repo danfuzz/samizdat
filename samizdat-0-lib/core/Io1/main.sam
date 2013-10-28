@@ -154,7 +154,7 @@ fn resolveLinks(sandboxDirectory, path) {
             { Io0::die("Symbolic link escapes sandbox directory.") };
 
         <> ifValue { <> readLink(path) }
-            { newPath <> [newPath, sub(limit, 1)] }
+            { newPath <> [newPath, Number::sub(limit, 1)] }
             { return path }
     }
 };

@@ -45,7 +45,7 @@ fn func3(x) {
     print("func3", x);
     ifIs { <> lt(x, 5) }
         {
-            func3(add(x, 1));
+            func3(Number::add(x, 1));
             return "func3"
         }
 };
@@ -56,7 +56,7 @@ Io0::note(func3(1));
 fn recFunc1(x) {
     print("recFunc1", x);
     ifIs { <> lt(x, 5) }
-        { recFunc2(add(x, 1)) };
+        { recFunc2(Number::add(x, 1)) };
 
     return "recFunc1"
 };
@@ -64,7 +64,7 @@ fn recFunc1(x) {
 fn recFunc2(x) {
     print("recFunc2", x);
     ifIs { <> lt(x, 5) }
-        { recFunc1(add(x, 1)) };
+        { recFunc1(Number::add(x, 1)) };
 };
 
 Io0::note(recFunc1(1));

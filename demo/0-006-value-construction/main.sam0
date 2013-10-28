@@ -68,8 +68,8 @@ expectSame(100, 100);
 expectSame(-1000, -1000);
 expectSame(12345678, 12345678);
 expectSame(0, -0);
-expectSame(add(1, 10), 11);
-expectSame(add(99998880, 8), 99998888);
+expectSame(Number::add(1, 10), 11);
+expectSame(Number::add(99998880, 8), 99998888);
 
 expectDifferent(0, 1);
 expectDifferent(99998888, -99998888);
@@ -189,7 +189,7 @@ expectSame(null, @[Null]);
 expectSame(false, @[Boolean: 0]);
 expectSame(true, @[Boolean: 1]);
 expectSame(@[eek: 10], @["eek": 10]);
-expectSame(@[eek: 10], @["eek": add(5, 5)]);
+expectSame(@[eek: 10], @["eek": Number::add(5, 5)]);
 expectSame(@[eek: 10], @[(cat("ee", "k")): 10]);
 
 expectDifferent(@x, @[x: 1]);

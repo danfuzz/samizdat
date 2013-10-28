@@ -165,7 +165,7 @@ msg(((1 == 2) & (2 == 2) & (3 == 3))??);
 msg(((1 == 1) & (2 == 2) & (3 == 4))??);
 
 msg((x := 1) & -x);
-msg((foo := 1) & (bar := -foo) & add(-foo, bar));
+msg((foo := 1) & (bar := -foo) & Number::add(-foo, bar));
 msg((blort := "th") & (1 == 1) & (fizmo := "ree") & cat(blort, fizmo));
 
 Io1::note("\nLogic 2");

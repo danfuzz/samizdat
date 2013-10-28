@@ -32,7 +32,7 @@ fn flattenName(name) {
 
     def withSlashes = Generator_filter(name, { elem <> cat(elem, "/") });
     def nearResult = cat(withSlashes*);
-    <> slice(nearResult, 0, sub(sizeOf(nearResult), 1))
+    <> slice(nearResult, 0, Number::sub(sizeOf(nearResult), 1))
 };
 
 # Reads the named library file.
