@@ -7,7 +7,7 @@
 #
 
 <> {
-    canStore:       Box_canStore,
-    fetch:          Box_fetch,
-    store:          Box_store
+    canStore: Box_canStore,
+    fetch:    Box_fetch,
+    store:    Box_store
 }
