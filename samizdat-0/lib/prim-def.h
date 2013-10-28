@@ -71,7 +71,7 @@ PRIM_DEF(Generator_collect,   GFN_collect);
 PRIM_DEF(Generator_filter,    GFN_filter);
 PRIM_DEF(Generator_nextValue, GFN_nextValue);
 
-// Generic functions: `Number` protocol
+// Generic functions: `Number` protocol, intended for modularization
 PRIM_DEF(Number_abs,          GFN_abs);
 PRIM_DEF(Number_add,          GFN_add);
 PRIM_DEF(Number_div,          GFN_div);
