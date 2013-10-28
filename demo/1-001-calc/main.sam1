@@ -107,7 +107,7 @@ def number = {/
     digits = digit+
     {
         <> Generator::doReduce1(digits, 0)
-            { digit, result <> add(digit, mul(result, 10)) }
+            { digit, result <> add(digit, Number::mul(result, 10)) }
     }
 /};
 

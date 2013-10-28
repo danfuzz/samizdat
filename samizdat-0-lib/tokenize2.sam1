@@ -252,7 +252,7 @@ fn intFromDigitList(base, digits) {
     <> Generator::doReduce1(digits, 0) { digit, result ->
         <> ifIs { <> eq(digit, -1) }
             { <> result }
-            { <> add(mul(result, base), digit) }
+            { <> Number::add(Number::mul(result, base), digit) }
     };
 };
 

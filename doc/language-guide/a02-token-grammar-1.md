@@ -114,7 +114,7 @@ def tokInt = {/
 
     {
         def value = Generator::doReduce1(digits, 0)
-            { digit, result <> add(digit, mul(result, 10)) };
+            { digit, result <> Number::add(digit, Number::mul(result, 10)) };
         <> @[int: value]
     }
 /};

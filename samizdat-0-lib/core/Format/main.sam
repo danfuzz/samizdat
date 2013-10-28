@@ -27,7 +27,7 @@ fn intBody(start, value, base) {
         <> ifIs { <> ne(value, 0) }
             {
                 def digit = nth(DIGIT_CHARS, Number::mod(value, base));
-                <> [cat(digit, text), div(value, base)];
+                <> [cat(digit, text), Number::div(value, base)];
             }
             { return cat(start, text) }
     }
@@ -42,7 +42,7 @@ def INT_SIGNS = {
 
 # Stringifies an int using the given base.
 fn intWithBase(int, base) {
-    <> get(INT_SIGNS, sign(int))(int, base)
+    <> get(INT_SIGNS, Number::sign(int))(int, base)
 };
 
 

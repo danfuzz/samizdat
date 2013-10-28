@@ -65,7 +65,12 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     # limit "pushes" the limit in the right direction to make the truncated
     # division produce the correct result size.
     def size =
-        add(1, div(sub(sub(limitInt, firstInt), sign(increment)), increment));
+        Number::add(1,
+            Number::div(
+                Number::sub(
+                    Number::sub(limitInt, firstInt),
+                    Number::sign(increment)),
+                increment));
 
     ifIs { <> totLe(size, 0) }
         { return Generator::nullGenerator };
@@ -84,7 +89,10 @@ fn makeInclusiveRange(firstValue, increment, limit) {
 
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
-    def size = add(1, div(sub(limitInt, firstInt), increment));
+    def size = Number::add(1,
+        Number::div(
+            Number::sub(limitInt, firstInt),
+            increment));
 
     ifIs { <> totLe(size, 0) }
         { return Generator::nullGenerator };
