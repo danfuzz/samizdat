@@ -15,12 +15,17 @@ def Collection = moduleGet({name: ["proto", "Collection"]});
 
 # Documented in Samizdat Layer 0 spec.
 fn butFirst(collection) {
-    <> slice(collection, &ge(sizeOf(collection), 1))
+    <> Collection::slice(
+        collection,
+        &ge(Collection::sizeOf(collection), 1))
 };
 
 # Documented in Samizdat Layer 0 spec.
 fn butLast(collection) {
-    <> slice(collection, 0, &le(0, Number::sub(sizeOf(collection), 1)))
+    <> Collection::slice(
+        collection,
+        0,
+        &le(0, Number::sub(Collection::sizeOf(collection), 1)))
 };
 
 # Documented in Samizdat Layer 0 spec.
@@ -30,7 +35,9 @@ fn first(collection) {
 
 # Documented in Samizdat Layer 0 spec.
 fn last(collection) {
-    <> nth(collection, &le(0, Number::sub(sizeOf(collection), 1)))
+    <> nth(
+        collection,
+        &le(0, Number::sub(Collection::sizeOf(collection), 1)))
 };
 
 <> {
