@@ -324,7 +324,7 @@ def parFnExpression = {/
 def parInt = {/
     @"-"
     i = @int
-    { <> makeLiteral(neg(dataOf(i))) }
+    { <> makeLiteral(Number::neg(dataOf(i))) }
 |
     i = @int
     { <> makeLiteral(dataOf(i)) }

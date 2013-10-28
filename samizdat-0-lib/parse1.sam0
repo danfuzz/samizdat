@@ -254,7 +254,7 @@ def parInt = Peg::makeMainChoice(
     Peg::makeSequence(
         Peg::makeToken("-"),
         Peg::makeToken("int"),
-        Peg::makeCode { ., i <> makeLiteral(neg(dataOf(i))) }),
+        Peg::makeCode { ., i <> makeLiteral(Number::neg(dataOf(i))) }),
     Peg::makeSequence(
         Peg::makeToken("int"),
         Peg::makeCode { i <> makeLiteral(dataOf(i)) }));
