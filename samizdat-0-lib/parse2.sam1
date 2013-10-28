@@ -134,20 +134,20 @@ def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
 
 # For unary operators, map of token types to function name variable references.
 def UNARY_OPERATORS = {
-    "-":   makeVarRef("neg"),
+    "-":   makeModNameRef("Number", "neg"),
     "!!!": makeModNameRef("Bitwise", "not"),
     "[]":  makeVarRef("get")
 };
 
 # For binary operators, map of token types to function name variable references.
 def BINARY_OPERATORS = {
-    "+":    makeVarRef("add"),
-    "-":    makeVarRef("sub"),
-    "*":    makeVarRef("mul"),
-    "/":    makeVarRef("div"),
-    "%":    makeVarRef("mod"),
-    "//":   makeVarRef("divEu"),
-    "%%":   makeVarRef("modEu"),
+    "+":    makeModNameRef("Number", "add"),
+    "-":    makeModNameRef("Number", "sub"),
+    "*":    makeModNameRef("Number", "mul"),
+    "/":    makeModNameRef("Number", "div"),
+    "%":    makeModNameRef("Number", "mod"),
+    "//":   makeModNameRef("Number", "divEu"),
+    "%%":   makeModNameRef("Number", "modEu"),
     "==":   makeVarRef("perEq"),
     "!=":   makeVarRef("perNe"),
     "<":    makeVarRef("perLt"),
