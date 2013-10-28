@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Number
-------
+proto::Number
+-------------
 
 `Number` is a protocol for values that can be treated numerically.
 All the generics in this protocol are defined to return the same type
@@ -77,15 +77,3 @@ Returns the sign of the given value: `-1` for negative values,
 #### `sub(number1, number2) <> number`
 
 Returns the difference of the given values (first minus second).
-
-
-<br><br>
-### Primitive Definitions
-
-(none)
-
-
-<br><br>
-### In-Language Definitions
-
-(none)

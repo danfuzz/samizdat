@@ -32,7 +32,7 @@ fn CollectionGenerator_nextValue(gen, box) {
     # This uses void contagion to fail the `Box::store` call when `index` is
     # out of range for the collection.
     <> ifIs { <> Box::store(box, &nth(data::collection, index)) }
-        { <> @[CollectionGenerator: put(data, "index", add(index, 1))] }
+        { <> @[CollectionGenerator: put(data, "index", Number::add(index, 1))] }
         {
             # Voided (out of elements).
             Box::store(box)

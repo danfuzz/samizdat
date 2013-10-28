@@ -45,7 +45,7 @@ def func3 = fn whee(x) {
     print("func3", x);
     ifIs { <> lt(x, 5) }
         {
-            whee(add(x, 1));
+            whee(Number::add(x, 1));
             return "func3"
         }
 };

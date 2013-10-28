@@ -20,12 +20,12 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 def rangeAdd = makeRegularGeneric("rangeAdd", 2, 2);
 
 fn Int_rangeAdd(value, increment) {
-    <> add(value, increment)
+    <> Number::add(value, increment)
 };
 genericBind(rangeAdd, Int, Int_rangeAdd);
 
 fn String_rangeAdd(value, increment) {
-    <> toString(add(toInt(value), increment))
+    <> toString(Number::add(toInt(value), increment))
 };
 genericBind(rangeAdd, String, String_rangeAdd);
 
@@ -65,7 +65,12 @@ fn makeExclusiveRange(firstValue, increment, limit) {
     # limit "pushes" the limit in the right direction to make the truncated
     # division produce the correct result size.
     def size =
-        add(1, div(sub(sub(limitInt, firstInt), sign(increment)), increment));
+        Number::add(1,
+            Number::div(
+                Number::sub(
+                    Number::sub(limitInt, firstInt),
+                    Number::sign(increment)),
+                increment));
 
     ifIs { <> totLe(size, 0) }
         { return Generator::nullGenerator };
@@ -84,7 +89,10 @@ fn makeInclusiveRange(firstValue, increment, limit) {
 
     def firstInt = toInt(firstValue);
     def limitInt = toInt(limit);
-    def size = add(1, div(sub(limitInt, firstInt), increment));
+    def size = Number::add(1,
+        Number::div(
+            Number::sub(limitInt, firstInt),
+            increment));
 
     ifIs { <> totLe(size, 0) }
         { return Generator::nullGenerator };
@@ -101,7 +109,7 @@ fn ClosedRange_nextValue(range, box) {
             def increment = data::increment;
             Box::store(box, firstValue);
             <> makeClosedRange(rangeAdd(firstValue, increment), increment,
-                sub(size, 1))
+                Number::sub(size, 1))
         }
         {
             # Voided.

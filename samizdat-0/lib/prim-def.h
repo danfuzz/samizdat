@@ -72,16 +72,16 @@ PRIM_DEF(Generator_filter,    GFN_filter);
 PRIM_DEF(Generator_nextValue, GFN_nextValue);
 
 // Generic functions: `Number` protocol
-PRIM_DEF(abs,        GFN_abs);
-PRIM_DEF(add,        GFN_add);
-PRIM_DEF(div,        GFN_div);
-PRIM_DEF(divEu,      GFN_divEu);
-PRIM_DEF(mod,        GFN_mod);
-PRIM_DEF(modEu,      GFN_modEu);
-PRIM_DEF(mul,        GFN_mul);
-PRIM_DEF(neg,        GFN_neg);
-PRIM_DEF(sign,       GFN_sign);
-PRIM_DEF(sub,        GFN_sub);
+PRIM_DEF(Number_abs,          GFN_abs);
+PRIM_DEF(Number_add,          GFN_add);
+PRIM_DEF(Number_div,          GFN_div);
+PRIM_DEF(Number_divEu,        GFN_divEu);
+PRIM_DEF(Number_mod,          GFN_mod);
+PRIM_DEF(Number_modEu,        GFN_modEu);
+PRIM_DEF(Number_mul,          GFN_mul);
+PRIM_DEF(Number_neg,          GFN_neg);
+PRIM_DEF(Number_sign,         GFN_sign);
+PRIM_DEF(Number_sub,          GFN_sub);
 
 // Primitive functions: directly exported
 PRIM_FUNC(dataOf,             1, 2);

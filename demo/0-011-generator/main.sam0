@@ -85,8 +85,8 @@ msgAll("ParaGenerator with opt element and ValueGenerator",
 msgAll("FilterGenerator (square even numbers)",
     Generator::makeFilterGenerator([1, 2, 3, 4, 5, 6, 7, 8, 9])
         { value ->
-            <> ifIs { <> eq(mod(value, 2), 0) }
-                { <> mul(value, value) }
+            <> ifIs { <> eq(Number::mod(value, 2), 0) }
+                { <> Number::mul(value, value) }
         });
 
 Io0::note("generatorPump on FilterGenerator");
@@ -122,7 +122,7 @@ Io0::note("collectAsMap on a FilterGenerator");
 def outMap = Generator::collectAsMap(
     Generator::makeFilterGenerator(Range::makeInclusiveRange(0, 2, 4))
         { value ->
-            <> {(value): value, (add(value, 1)): value, blort: value}
+            <> {(value): value, (Number::add(value, 1)): value, blort: value}
         });
 Io0::note(cat("    ", Format::source(outMap)));
 Io0::note("");

@@ -68,7 +68,6 @@ will be returned, or one of:
 
 * Types and Protocols
   * [Boolean](Boolean.md)
-  * Box &mdash; See [core::Box](Box.md) module.
   * [Builtin](Builtin.md)
   * [Function](Function.md)
   * [ClosedRange](ClosedRange.md) (part of `Range` module)
@@ -79,7 +78,6 @@ will be returned, or one of:
   * [List](List.md)
   * [Map](Map.md)
   * [Module](Module.md)
-  * [Number](Number.md)
   * [OpenRange](OpenRange.md) (part of `Range` module)
   * [String](String.md)
   * [Type](Type.md)
@@ -87,13 +85,19 @@ will be returned, or one of:
   * [Value (the base type)](Value.md)
   * [One-Off Generics](OneOff.md)
 
-* Modules
-  * [core::Bitwise / proto::Bitwise](Bitwise.md)
-  * [core::Box / proto::Box](Box.md)
+* Protocol Modules
+  * [proto::Bitwise](Bitwise.md)
+  * [proto::Box](Box.md)
+  * [proto::Generator](Generator.md)
+  * [proto::Number](Number.md)
+
+* Implementation Modules
+  * [core::Bitwise](Bitwise.md)
+  * [core::Box](Box.md)
   * [core::EntityMap](EntityMap.md)
   * [core::Format (string formatting)](Format.md)
   * [core::FunctionForwarder](FunctionForwarder.md)
-  * [core::Generator / proto::Generator](Generator.md)
+  * [core::Generator](Generator.md)
   * [core::Io0](Io0.md)
   * [core::Io1](Io1.md)
   * [core::ParseForwarder](ParseForwarder.md)
