@@ -1,12 +1,12 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Collection (multiple-value containers)
---------------------------------------
+core::Collection / proto::Collection
+------------------------------------
 
-There is no `Collection` type per se. There is, however, effectively a
-`Collection` protocol.
-
+A `Collection` is a set of key-value mappings. Every `Collection` has
+a defined order of iteration. *Some* `Collection`s allow arbitrary
+keys.
 
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
