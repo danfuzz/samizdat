@@ -8,6 +8,14 @@ A `Collection` is a set of key-value mappings. Every `Collection` has
 a defined order of iteration. *Some* `Collection`s allow arbitrary
 keys.
 
+The `Collection` protocol is defined in a `proto::` module as one
+would expect. However, as a special case, two of the `Collection` generics
+are also exported plain to the global variable environment:
+
+* `get` is exported, since that is the generic that is used to access
+  the contents of modules.
+* `cat` is exported, since it's just so commonly used.
+
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
 
