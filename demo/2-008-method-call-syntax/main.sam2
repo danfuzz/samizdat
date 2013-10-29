@@ -27,6 +27,9 @@ fn msg(value) {
 # Main Tests
 #
 
+def sizeOf = Collection::sizeOf;
+def nth = Collection::nth;
+
 Io1::note("\nBasic syntax");
 msg([1, 2].sizeOf());
 msg(["zero", "one", "two"].get(0));

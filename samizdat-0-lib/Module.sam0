@@ -51,9 +51,9 @@ genericBind(cat, "Module", Module_cat);
 
 # Documented in spec.
 fn Module_del(modu, key) {
-    <> withExports(modu, del(getExports(modu), key))
+    <> withExports(modu, Collection_del(getExports(modu), key))
 };
-genericBind(del, "Module", Module_del);
+genericBind(Collection_del, "Module", Module_del);
 
 # Documented in spec.
 fn Module_get(modu, key) {
@@ -63,9 +63,9 @@ genericBind(get, "Module", Module_get);
 
 # Documented in spec.
 fn Module_keyList(modu) {
-    <> keyList(getExports(modu))
+    <> Collection_keyList(getExports(modu))
 };
-genericBind(keyList, "Module", Module_keyList);
+genericBind(Collection_keyList, "Module", Module_keyList);
 
 # Documented in spec.
 fn Module_nameOf(modu) {
@@ -87,9 +87,9 @@ genericBind(put, "Module", Module_put);
 
 # Documented in spec.
 fn Module_sizeOf(modu) {
-    <> sizeOf(getExports(modu))
+    <> Collection_sizeOf(getExports(modu))
 };
-genericBind(sizeOf, "Module", Module_sizeOf);
+genericBind(Collection_sizeOf, "Module", Module_sizeOf);
 
 # Documented in spec.
 fn Module_slice(modu, start, end?) {

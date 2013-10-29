@@ -49,7 +49,7 @@ fn applyShuntingYard(initialValue, opValues) {
     # top two values, and combines them by applying the top op, and places
     # the result back at the top of the value stack.
     fn applyTop(ops, values) {
-        def valuesSize = sizeOf(values);
+        def valuesSize = Collection::sizeOf(values);
         def function = Collection::last(ops)::function;
         def newValue = function(slice(values, valuesSize - 2)*);
         <> [

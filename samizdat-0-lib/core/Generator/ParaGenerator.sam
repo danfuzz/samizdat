@@ -26,7 +26,7 @@ fn makeParaGenerator(generators*) {
 
     # Return a `ListWrapGenerator` if we were only passed one argument.
     # This saves some overhead.
-    ifIs { <> eq(sizeOf(generators), 1) }
+    ifIs { <> eq(Collection::sizeOf(generators), 1) }
         { return ListWrapGenerator::makeListWrapGenerator(generators*) };
 
     <> @[ParaGenerator: generators]

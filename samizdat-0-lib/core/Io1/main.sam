@@ -127,9 +127,9 @@ def parErrorFromPathComponent = {/
 # Checks whether the given alleged prefix is actually a prefix of the
 # given path, or equal to it.
 fn isPrefix(prefix, path) {
-    def prefixSize = sizeOf(prefix);
+    def prefixSize = Collection::sizeOf(prefix);
 
-    ifIs { <> gt(prefixSize, sizeOf(path)) }
+    ifIs { <> gt(prefixSize, Collection::sizeOf(path)) }
         {
             # The "prefix" is longer than the path, so it can't actually be
             # a prefix.
@@ -177,7 +177,7 @@ fn flatFromPath(path) {
 
     def gen =
         Generator::makeFilterGenerator(
-            path, Range::makeOpenRange(sizeOf(path), -1))
+            path, Range::makeOpenRange(Collection::sizeOf(path), -1))
             { <out> one, n ->
                 # This test skips the check on the last path component, if it
                 # happens to be empty (which is the only valid case of an empty

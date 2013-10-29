@@ -8,11 +8,11 @@
 
 <> {
     cat:     cat,
-    del:     del,
+    del:     Collection_del,
     get:     get,
-    keyList: keyList,
+    keyList: Collection_keyList,
     nth:     nth,
     put:     put,
-    sizeOf:  sizeOf,
+    sizeOf:  Collection_sizeOf,
     slice:   slice
 }
