@@ -60,7 +60,7 @@ PRIM_DEF(cat,        GFN_cat);
 PRIM_DEF(Collection_del,        GFN_del);
 PRIM_DEF(get,        GFN_get);
 PRIM_DEF(Collection_keyList,    GFN_keyList);
-PRIM_DEF(nth,        GFN_nth);
+PRIM_DEF(Collection_nth,        GFN_nth);
 PRIM_DEF(Collection_put,        GFN_put);
 PRIM_DEF(Collection_sizeOf,     GFN_sizeOf);
 PRIM_DEF(Collection_slice,      GFN_slice);

@@ -26,7 +26,8 @@ fn intBody(start, value, base) {
     loopReduce("", value) { text, value ->
         <> ifIs { <> ne(value, 0) }
             {
-                def digit = nth(DIGIT_CHARS, Number::mod(value, base));
+                def digit =
+                    Collection::nth(DIGIT_CHARS, Number::mod(value, base));
                 <> [cat(digit, text), Number::div(value, base)];
             }
             { return cat(start, text) }
@@ -106,7 +107,7 @@ fn isIdentifier(string) {
     ifIs { <> eq(string, "") }
         { return };
 
-    ifNot { <> get(IDENTIFIER_STARTS, nth(string, 0)) }
+    ifNot { <> get(IDENTIFIER_STARTS, Collection::nth(string, 0)) }
         { return };
 
     Generator::filterPump(string) { ch ->

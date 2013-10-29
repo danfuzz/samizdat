@@ -5,13 +5,15 @@
 #
 # Collection protocol. This is just a re-export from the primitive core library.
 #
+# **Note:** `cat` and `get` are special in that they are kept in the global
+# environment as well as becoming part of this module. See the spec for details.
 
 <> {
     cat:     cat,
     del:     Collection_del,
     get:     get,
     keyList: Collection_keyList,
-    nth:     nth,
+    nth:     Collection_nth,
     put:     Collection_put,
     sizeOf:  Collection_sizeOf,
     slice:   Collection_slice

@@ -169,8 +169,8 @@ fn PegSequence_parse(peg, box, input, items*) {
                 }
         };
 
-    def newInput = nth(reduction, 0);
-    def results = nth(reduction, 1);
+    def newInput = Collection::nth(reduction, 0);
+    def results = Collection::nth(reduction, 1);
     Box::store(box, Collection::last(results));
     <> newInput
 };

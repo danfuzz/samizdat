@@ -173,7 +173,7 @@ fn loadAllLibraries(baseCtx) {
 
     <> loopReduce(manifest, baseCtx)
         { names, ctx ->
-            <> ifValue { <> nth(names, 0) }
+            <> ifValue { <> Collection_nth(names, 0) }
                 { name ->
                     <> [
                         Collection_slice(names, 1),

@@ -75,9 +75,9 @@ genericBind(nameOf, "Module", Module_nameOf);
 
 # Documented in spec.
 fn Module_nth(modu, n) {
-    <> nth(getExports(modu), n)
+    <> Collection_nth(getExports(modu), n)
 };
-genericBind(nth, "Module", Module_nth);
+genericBind(Collection_nth, "Module", Module_nth);
 
 # Documented in spec.
 fn Module_put(modu, key, value) {

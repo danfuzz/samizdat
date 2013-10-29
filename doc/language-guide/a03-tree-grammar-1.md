@@ -347,7 +347,7 @@ def parIdentifierString = {/
         <> ifNot { <> dataOf(token) }
             {
                 def type = typeOf(token);
-                def firstCh = nth(type, 0);
+                def firstCh = Collection::nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
