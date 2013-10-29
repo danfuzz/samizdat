@@ -32,7 +32,10 @@ fn flattenName(name) {
 
     def withSlashes = Generator_filter(name, { elem <> cat(elem, "/") });
     def nearResult = cat(withSlashes*);
-    <> slice(nearResult, 0, Number_sub(Collection_sizeOf(nearResult), 1))
+    <> Collection_slice(
+        nearResult,
+        0,
+        Number_sub(Collection_sizeOf(nearResult), 1))
 };
 
 # Reads the named library file.
@@ -171,7 +174,12 @@ fn loadAllLibraries(baseCtx) {
     <> loopReduce(manifest, baseCtx)
         { names, ctx ->
             <> ifValue { <> nth(names, 0) }
-                { name <> [slice(names, 1), loadLibraryOrModule(ctx, name)] }
+                { name ->
+                    <> [
+                        Collection_slice(names, 1),
+                        loadLibraryOrModule(ctx, name)
+                    ]
+                }
                 { return ctx }
         }
 };
@@ -184,8 +192,10 @@ fn makeCoreLibrary() {
         { orig <> cat(LIBRARY_DIR, ":", orig) }
         { <> LIBRARY_DIR };
 
-    def newEnvironment = put(ENVIRONMENT, "MODULE_PATHS", modulePaths);
-    def baseCtx = put(LIBRARY, "ENVIRONMENT", newEnvironment);
+    def newEnvironment =
+        Collection_put(ENVIRONMENT, "MODULE_PATHS", modulePaths);
+    def baseCtx =
+        Collection_put(LIBRARY, "ENVIRONMENT", newEnvironment);
 
     # Do the loading.
     def fullCtx = loadAllLibraries(baseCtx);

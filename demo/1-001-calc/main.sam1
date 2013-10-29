@@ -51,10 +51,10 @@ fn applyShuntingYard(initialValue, opValues) {
     fn applyTop(ops, values) {
         def valuesSizeM2 = Number::sub(Collection::sizeOf(values), 2);
         def function = Collection::last(ops)::function;
-        def newValue = function(slice(values, valuesSizeM2)*);
+        def newValue = function(Collection::slice(values, valuesSizeM2)*);
         <> [
             Collection::butLast(ops),
-            [slice(values, 0, valuesSizeM2)*, newValue]
+            [Collection::slice(values, 0, valuesSizeM2)*, newValue]
         ]
     };
 

@@ -81,9 +81,9 @@ genericBind(nth, "Module", Module_nth);
 
 # Documented in spec.
 fn Module_put(modu, key, value) {
-    <> withExports(modu, put(getExports(modu), key, value))
+    <> withExports(modu, Collection_put(getExports(modu), key, value))
 };
-genericBind(put, "Module", Module_put);
+genericBind(Collection_put, "Module", Module_put);
 
 # Documented in spec.
 fn Module_sizeOf(modu) {
@@ -93,9 +93,9 @@ genericBind(Collection_sizeOf, "Module", Module_sizeOf);
 
 # Documented in spec.
 fn Module_slice(modu, start, end?) {
-    <> withExports(modu, slice(getExports(modu), start, end*))
+    <> withExports(modu, Collection_slice(getExports(modu), start, end*))
 };
-genericBind(slice, "Module", Module_slice);
+genericBind(Collection_slice, "Module", Module_slice);
 
 
 
@@ -114,7 +114,7 @@ fn moduleDef(modu) {
         };
 
     def mods = Box_fetch(theModulesBox);
-    Box_store(theModulesBox, put(mods, name, modu));
+    Box_store(theModulesBox, Collection_put(mods, name, modu));
 
     <> modu
 };
@@ -134,7 +134,7 @@ fn stringFromModuleName(fqName) {
     def parts = Generator_filter(fqName, { n <> cat("::", n) });
     def result = cat(parts*);
 
-    <> slice(result, 2)
+    <> Collection_slice(result, 2)
 };
 
 

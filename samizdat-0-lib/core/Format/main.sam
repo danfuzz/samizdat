@@ -69,7 +69,7 @@ fn collectionBody(elems) {
     ifIs { <> totEq(elems, []) }
         { return "" };
 
-    def one = slice(Collection::first(elems), 2);
+    def one = Collection::slice(Collection::first(elems), 2);
     <> cat(one, Collection::butFirst(elems)*)
 };
 

@@ -1440,7 +1440,7 @@ def parLogicAndExpression = {/
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),
-                        slice(formals, 0, index)*)
+                        Collection::slice(formals, 0, index)*)
                 };
 
             # Construct the overall `ifValues` call.
@@ -1551,7 +1551,7 @@ def parMultiTest = {/
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),
-                        slice(formals, 0, index)*)
+                        Collection::slice(formals, 0, index)*)
                 };
 
             # Result function which constructs the overall `ifValues` call.

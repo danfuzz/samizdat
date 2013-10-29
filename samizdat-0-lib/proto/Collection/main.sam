@@ -12,7 +12,7 @@
     get:     get,
     keyList: Collection_keyList,
     nth:     nth,
-    put:     put,
+    put:     Collection_put,
     sizeOf:  Collection_sizeOf,
-    slice:   slice
+    slice:   Collection_slice
 }
