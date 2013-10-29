@@ -26,7 +26,7 @@ fn makeParaGenerator(generators*) {
 
     # Return a `ListWrapGenerator` if we were only passed one argument.
     # This saves some overhead.
-    ifIs { <> eq(sizeOf(generators), 1) }
+    ifIs { <> eq(Collection::sizeOf(generators), 1) }
         { return ListWrapGenerator::makeListWrapGenerator(generators*) };
 
     <> @[ParaGenerator: generators]
@@ -52,8 +52,10 @@ fn ParaGenerator_nextValue(gen, box) {
                 }
         });
 
-    def yields = Generator::filter(generatorCalls, { one <> nth(one, 0) });
-    def nexts = Generator::filter(generatorCalls, { one <> nth(one, 1) });
+    def yields = Generator::filter(generatorCalls,
+        { one <> Collection::nth(one, 0) });
+    def nexts = Generator::filter(generatorCalls,
+        { one <> Collection::nth(one, 1) });
 
     Box::store(box, yields);
     <> @[ParaGenerator: nexts]

@@ -49,12 +49,12 @@ fn applyShuntingYard(initialValue, opValues) {
     # top two values, and combines them by applying the top op, and places
     # the result back at the top of the value stack.
     fn applyTop(ops, values) {
-        def valuesSize = sizeOf(values);
-        def function = last(ops)::function;
-        def newValue = function(slice(values, valuesSize - 2)*);
+        def valuesSize = Collection::sizeOf(values);
+        def function = Collection::last(ops)::function;
+        def newValue = function(Collection::slice(values, valuesSize - 2)*);
         <> [
-            butLast(ops),
-            [slice(values, 0, valuesSize - 2)*, newValue]
+            Collection::butLast(ops),
+            [Collection::slice(values, 0, valuesSize - 2)*, newValue]
         ]
     };
 
@@ -63,7 +63,7 @@ fn applyShuntingYard(initialValue, opValues) {
     fn reducePending(ops, values, precedence) {
         loopReduce(ops, values)
             { <next> ops, values ->
-                if (  (lastOp := last(ops))
+                if (  (lastOp := Collection::last(ops))
                     & (lastOp::precedence >= precedence)) {
                     <next> applyTop(ops, values)
                 };
@@ -76,17 +76,17 @@ fn applyShuntingYard(initialValue, opValues) {
             # Use precedence `-1` to drain the op stack, leaving a single
             # value.
             def finalResult = reducePending(ops, values, -1);
-            return last(last(finalResult))
+            return Collection::last(Collection::last(finalResult))
         };
 
-        def nextOpValue = first(opValues);
+        def nextOpValue = Collection::first(opValues);
         def nextOp = nextOpValue::op;
         def nextVal = nextOpValue::value;
         def newPending = reducePending(ops, values, nextOp::precedence);
         <> [
-            [first(newPending)*, nextOp],
-            [last(newPending)*, nextVal],
-            butFirst(opValues)
+            [Collection::first(newPending)*, nextOp],
+            [Collection::last(newPending)*, nextVal],
+            Collection::butFirst(opValues)
         ]
     }
 };
@@ -133,7 +133,7 @@ def unaryOp = {/
 def unaryExpression = {/
     ops = unaryOp*
     ex = term
-    { <> applyAll(ex, reverse(ops)) }
+    { <> applyAll(ex, Sequence::reverse(ops)) }
 /};
 
 # Parses a binary operation, yielding a map of precedence and function.

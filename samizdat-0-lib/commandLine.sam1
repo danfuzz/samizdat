@@ -112,9 +112,11 @@ fn samCommandLine(context, rawArgs*) {
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
 
-    def fileName = ifValueOr { <> first(argWords) } { <> "/dev/stdin" };
+    def fileName = ifValueOr { <> Collection::first(argWords) }
+        { <> "/dev/stdin" };
     def filePath = Io1::pathFromFlat(fileName);
-    def args = ifValueOr { <> butFirst(argWords) } { <> [] };
+    def args = ifValueOr { <> Collection::butFirst(argWords) }
+        { <> [] };
 
     def programText = Io1::readFileUtf8(filePath);
 

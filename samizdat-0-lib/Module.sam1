@@ -36,11 +36,11 @@ fn findModuleDirectory(fqName, optPaths?) {
     ifIs { <> eq(paths, []) }
         { Io1::die(cat("Module not found: ", stringFromModuleName(fqName))) };
 
-    def oneDir = [first(paths)*, fqName*];
+    def oneDir = [Collection::first(paths)*, fqName*];
 
     <> ifIs { <> Io1::fileExists([oneDir*, MODULE_FILE_NAME]) }
         { <> oneDir }
-        { <> findModuleDirectory(fqName, butFirst(paths)) }
+        { <> findModuleDirectory(fqName, Collection::butFirst(paths)) }
 };
 
 
@@ -61,11 +61,11 @@ fn moduleUse(searchInfo) {
         {
             Io1::die(cat(
                 "Dependency loop with modules: ",
-                Format::source(keyList(pendings))))
+                Format::source(Collection::keyList(pendings))))
         };
 
     # Indicate that the module is in the process of being loaded.
-    Box::store(thePendingBox, put(pendings, fqName, null));
+    Box::store(thePendingBox, Collection::put(pendings, fqName, null));
 
     def moduleDir = findModuleDirectory(fqName);
     def moduleReader = Io1::sandboxedReader(moduleDir);
@@ -84,7 +84,8 @@ fn moduleUse(searchInfo) {
     moduleDef(result);
 
     # Indicate that the module load is no longer in-process.
-    Box::update(thePendingBox, { pendings <> del(pendings, fqName) });
+    Box::update(thePendingBox,
+        { pendings <> Collection::del(pendings, fqName) });
 
     <> result
 };

@@ -43,7 +43,7 @@ fn FilterGenerator_nextValue(gen, box) {
                     { value ->
                         Box::store(box, value);
                         return @[FilterGenerator:
-                            put(payload, "generator", nextGenerator)]
+                            Collection::put(payload, "generator", nextGenerator)]
                     }
                     {
                         # The filter discarded the value. Iterate!

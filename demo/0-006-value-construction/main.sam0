@@ -90,7 +90,7 @@ expectSame([0, 0, 0], [0, 0, 0]);
 expectSame([[]*, 1], [1]);
 expectSame([1, 2, [3, 4]*], [1, [2, 3]*, 4]);
 expectSame(cat([9, 8, 7], [6, 5, 4]), [9, 8, 7, 6, 5, 4]);
-expectSame(butFirst([1]), []);
+expectSame(Collection::butFirst([1]), []);
 
 expectDifferent([], [[]]);
 expectDifferent([1], [2]);
@@ -112,7 +112,7 @@ expectSame({x: 5, y: 7}, {y: 7, x: 5});
 expectSame({["x", "y", "z"]*: "blort"}, {x: "blort", y: "blort", z: "blort"});
 expectSame({{a: 1}*, b: 2}, {a: 1, b: 2});
 expectSame(cat({10: 1}, {30: 3}, {20: 2}), {10: 1, 20: 2, 30: 3});
-expectSame(nth({a: 10, b: 20}, 0), {a: 10});
+expectSame(Collection::nth({a: 10, b: 20}, 0), {a: 10});
 
 expectDifferent({["x"]: "blort"}, {"x": "blort"});
 
@@ -134,7 +134,7 @@ expectSame("", "");
 expectSame("x", "x");
 expectSame("blort", "blort");
 expectSame(cat("blort", "-fizmo", "-igram"), "blort-fizmo-igram");
-expectSame(nth("frotz", 4), "z");
+expectSame(Collection::nth("frotz", 4), "z");
 
 expectDifferent("blort", "Blort");
 expectDifferent("blort", "blort ");

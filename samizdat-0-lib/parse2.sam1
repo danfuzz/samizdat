@@ -184,8 +184,8 @@ fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
     def voidable = ifValueOr { <> optVoidable* } { <> false };
 
     def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
-        def op = first(opEx);
-        def ex = last(opEx);
+        def op = Collection::first(opEx);
+        def ex = Collection::last(opEx);
         def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
         def call = makeCall(resolvedOp, result, ex);
 
@@ -465,7 +465,7 @@ def parIdentifierString = {/
         <> ifNot { <> dataOf(token) }
             {
                 def type = typeOf(token);
-                def firstCh = nth(type, 0);
+                def firstCh = Collection::nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
@@ -662,7 +662,7 @@ def implUnaryExpression = {/
     {
         def withPosts = Generator::doReduce1(postfixes, base)
             { op, result <> op(result) };
-        <> Generator::doReduce1(reverse(prefixes), withPosts)
+        <> Generator::doReduce1(Sequence::reverse(prefixes), withPosts)
             { op, result <> op(result) }
     }
 /};
@@ -780,7 +780,7 @@ def parParserString = {/
     s = @string
     {
         def value = dataOf(s);
-        <> ifIs { <> eq(sizeOf(value), 1) }
+        <> ifIs { <> eq(Collection::sizeOf(value), 1) }
             { <> @[token: value] }
             { <> s }
     }
@@ -803,7 +803,12 @@ def parParserSetString = {/
         {
             def startChar = dataOf(s);
             def endChar = dataOf(end);
-            <> ifIs { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
+            <> ifIs
+                {
+                    <> eq(1,
+                        &eq(Collection::sizeOf(startChar),
+                            Collection::sizeOf(endChar)))
+                }
                 { <> cat(Range::makeInclusiveRange(startChar, 1, endChar)*) }
         }
     |
@@ -1411,7 +1416,7 @@ def parLogicAndExpression = {/
         { <> last }
     |
         # Non-compound `&` expression.
-        { <> eq(sizeOf(most), 1) }
+        { <> eq(Collection::sizeOf(most), 1) }
         {
             def clause = most*;
             def formal = clause::formal;
@@ -1435,7 +1440,7 @@ def parLogicAndExpression = {/
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),
-                        slice(formals, 0, index)*)
+                        Collection::slice(formals, 0, index)*)
                 };
 
             # Construct the overall `ifValues` call.
@@ -1469,8 +1474,10 @@ def parLogicOrExpression = {/
         }
     |
         {
-            def allExprs = reverse([one, rest*]);
-            <> Generator::doReduce1(butFirst(allExprs), first(allExprs))
+            def allExprs = Sequence::reverse([one, rest*]);
+            <> Generator::doReduce1(
+                Collection::butFirst(allExprs),
+                Collection::first(allExprs))
                 { ex, result ->
                     <> makeCallName("ifValueOr",
                         makeThunk(ex), makeThunk(result))
@@ -1516,7 +1523,7 @@ def parMultiTest = {/
 
     (
         # Single test. Will translate as either `ifValue` or `ifIs`.
-        { <> eq(sizeOf(clauses), 1) }
+        { <> eq(Collection::sizeOf(clauses), 1) }
         {
             def clause = clauses*;
             def formal = clause::formal;
@@ -1544,7 +1551,7 @@ def parMultiTest = {/
                 { clause, index ->
                     def test = clause::test;
                     <> closureWithFormals(makeThunk(test),
-                        slice(formals, 0, index)*)
+                        Collection::slice(formals, 0, index)*)
                 };
 
             # Result function which constructs the overall `ifValues` call.
@@ -1617,7 +1624,7 @@ def parIfExpression = {/
 
     {
         # This builds the full expression from back to front (inner to outer).
-        def clauses = reverse(
+        def clauses = Sequence::reverse(
             [{maker: firstCondition, then: firstThen}, elseIfThens*]);
 
         # To keep things simple, partial results are always thunks wrapped
@@ -1927,10 +1934,10 @@ def parSwitchExpression = {/
                 }
         };
 
-        ifIs { <> gt(sizeOf(optDefault), 1) }
+        ifIs { <> gt(Collection::sizeOf(optDefault), 1) }
             { Io1::die("Multiple default cases in switch.") };
 
-        ifIs { <> gt(sizeOf(optElse), 1) }
+        ifIs { <> gt(Collection::sizeOf(optElse), 1) }
             { Io1::die("Multiple else cases in switch.") };
 
         # Notes:
@@ -1953,7 +1960,7 @@ def parSwitchExpression = {/
                         {
                             <> makeCallName("cat",
                                 makeInterpolate(
-                                    makeCallName("reverse",
+                                    makeCallModName("Sequence", "reverse",
                                         makeCallName("makeList",
                                             regularCases*))))
                         },

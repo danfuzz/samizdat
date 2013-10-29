@@ -273,15 +273,17 @@ fn implProcessStringParts(parts) {
     # Coalesce adjacent literal strings in `parts`. The result is an
     # `elems` list consisting of multi-character strings and
     # interpolation maps.
-    def elems = Generator::doReduce1(butFirst(parts), [first(parts)])
+    def elems = Generator::doReduce1(
+        Collection::butFirst(parts),
+        [Collection::first(parts)])
         { part, result ->
-            <> ifValue { <> [&isString(last(result)), &isString(part)] }
-                { newLast <> [butLast(result)*, cat(newLast*)] }
+            <> ifValue { <> [&isString(Collection::last(result)), &isString(part)] }
+                { newLast <> [Collection::butLast(result)*, cat(newLast*)] }
                 { <> [result*, part] };
         };
 
     # Check for a simple result.
-    ifIs { <> eq(sizeOf(elems), 1) }
+    ifIs { <> eq(Collection::sizeOf(elems), 1) }
         {
             ifValue { <> isString(elems*) }
                 { elem ->

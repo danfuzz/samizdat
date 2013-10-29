@@ -347,7 +347,7 @@ def parIdentifierString = {/
         <> ifNot { <> dataOf(token) }
             {
                 def type = typeOf(token);
-                def firstCh = nth(type, 0);
+                def firstCh = Collection::nth(type, 0);
                 <> ifIs { <> get(LOWER_ALPHA, firstCh) }
                     { <> makeLiteral(type) }
             }
@@ -684,7 +684,7 @@ def parParserString = {/
     s = @string
     {
         def value = dataOf(s);
-        <> ifIs { <> eq(sizeOf(value), 1) }
+        <> ifIs { <> eq(Collection::sizeOf(value), 1) }
             { <> @[token: value] }
             { <> s }
     }
@@ -707,7 +707,12 @@ def parParserSetString = {/
         {
             def startChar = dataOf(s);
             def endChar = dataOf(end);
-            <> ifIs { <> eq(1, &eq(sizeOf(startChar), sizeOf(endChar))) }
+            <> ifIs
+                {
+                    <> eq(1,
+                        &eq(Collection::sizeOf(startChar),
+                            Collection::sizeOf(endChar)))
+                }
                 { <> cat(Range::makeInclusiveRange(startChar, 1, endChar)*) }
         }
     |

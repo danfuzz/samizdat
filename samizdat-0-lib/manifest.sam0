@@ -32,21 +32,24 @@ def MANIFEST = [
     # core library.
     ["proto", "Bitwise"],
     ["proto", "Box"],
+    ["proto", "Collection"],
     ["proto", "Generator"],
     ["proto", "Number"],
+    ["proto", "Sequence"],
 
     # Simple modules.
     ["core", "EntityMap"],
-    ["core", "Io0"],
-    ["core", "Box"],
-    ["core", "FunctionForwarder"],
     ["core", "Bitwise"],
-    ["core", "Boolean"],
+    ["core", "Box"],
+    ["core", "Collection"],
+
+    ["core", "Io0"],
+    ["core", "FunctionForwarder"], # Uses `Box` and `Io0`.
+    ["core", "Boolean"],           # Uses `Io0`.
 
     # Layer 0: Simple functions.
     "meta.sam0",
     "Value.sam0",
-    "Collection.sam0",
 
     # Layer 0: Complicated functions.
     ["core", "Generator"],

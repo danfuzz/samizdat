@@ -71,8 +71,6 @@ will be returned, or one of:
   * [Builtin](Builtin.md)
   * [Function](Function.md)
   * [ClosedRange](ClosedRange.md) (part of `Range` module)
-  * [Collection (multiple-value containers)](Collection.md)
-  * Generator &mdash; See [core::Generator](Generator.md) module.
   * [Generic](Generic.md)
   * [Int](Int.md)
   * [List](List.md)
@@ -88,12 +86,15 @@ will be returned, or one of:
 * Protocol Modules
   * [proto::Bitwise](Bitwise.md)
   * [proto::Box](Box.md)
+  * [proto::Collection](Collection.md)
   * [proto::Generator](Generator.md)
   * [proto::Number](Number.md)
+  * [proto::Sequence](Sequence.md)
 
 * Implementation Modules
   * [core::Bitwise](Bitwise.md)
   * [core::Box](Box.md)
+  * [core::Collection](Collection.md)
   * [core::EntityMap](EntityMap.md)
   * [core::Format (string formatting)](Format.md)
   * [core::FunctionForwarder](FunctionForwarder.md)

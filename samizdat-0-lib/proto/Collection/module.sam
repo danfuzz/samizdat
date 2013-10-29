@@ -2,12 +2,8 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Box protocol. This is just a re-export from the primitive core library.
-#
-
-<> {
-    canStore: Box_canStore,
-    fetch:    Box_fetch,
-    store:    Box_store
+{
+    globalName: "Collection",
+    name: ["proto", "Collection"],
+    version: "0.0.1"
 }

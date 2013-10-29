@@ -1,13 +1,20 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Collection (multiple-value containers)
---------------------------------------
+core::Collection / proto::Collection
+------------------------------------
 
-There is no `Collection` type per se. There is, however, effectively a
-`Collection` protocol as well as a couple sub-protocols, as documented
-here.
+A `Collection` is a set of key-value mappings. Every `Collection` has
+a defined order of iteration. *Some* `Collection`s allow arbitrary
+keys.
 
+The `Collection` protocol is defined in a `proto::` module as one
+would expect. However, as a special case, two of the `Collection` generics
+are also exported plain to the global variable environment:
+
+* `get` is exported, since that is the generic that is used to access
+  the contents of modules.
+* `cat` is exported, since it's just so commonly used.
 
 <br><br>
 ### Generic Function Definitions: `Collection` protocol
@@ -89,28 +96,6 @@ must both be ints, must be valid indices into `collection` *or* the
 collection size, and must form a range (though possibly empty) with
 `start <= end`. If `end` is not specified, it defaults to the end of the
 collection.
-
-
-### Generic Function Definitions: `Sequence` protocol
-
-#### `get(sequence, key) <> . | void`
-
-(Refinement of `Collection` protocol.)
-
-For sequences, `get` behaves the same as `nth`, except that it returns
-void for `key` values that are either non-ints or negative (instead of
-reporting a terminal error).
-
-#### `keyList(sequence) <> list`
-
-(Refinement of `Collection` protocol.)
-
-Returns the list `[0..!sizeOf(sequence)]`.
-
-#### `reverse(sequence) <> sequence`
-
-Returns a sequence just like the given one, except with elements in
-the opposite order.
 
 
 <br><br>

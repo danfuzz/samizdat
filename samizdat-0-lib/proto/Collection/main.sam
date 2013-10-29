@@ -1,0 +1,20 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Collection protocol. This is just a re-export from the primitive core library.
+#
+# **Note:** `cat` and `get` are special in that they are kept in the global
+# environment as well as becoming part of this module. See the spec for details.
+
+<> {
+    cat:     cat,
+    del:     Collection_del,
+    get:     get,
+    keyList: Collection_keyList,
+    nth:     Collection_nth,
+    put:     Collection_put,
+    sizeOf:  Collection_sizeOf,
+    slice:   Collection_slice
+}

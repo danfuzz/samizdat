@@ -1,0 +1,59 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Collection functions
+#
+
+def Collection = moduleGet({name: ["proto", "Collection"]});
+
+
+#
+# Exported Definitions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn butFirst(collection) {
+    <> Collection::slice(
+        collection,
+        &ge(Collection::sizeOf(collection), 1))
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn butLast(collection) {
+    <> Collection::slice(
+        collection,
+        0,
+        &le(0, Number::sub(Collection::sizeOf(collection), 1)))
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn first(collection) {
+    <> Collection::nth(collection, 0)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn last(collection) {
+    <> Collection::nth(
+        collection,
+        &le(0, Number::sub(Collection::sizeOf(collection), 1)))
+};
+
+<> {
+    # Re-exported from proto.
+    cat:      Collection::cat,
+    del:      Collection::del,
+    get:      Collection::get,
+    keyList:  Collection::keyList,
+    nth:      Collection::nth,
+    put:      Collection::put,
+    sizeOf:   Collection::sizeOf,
+    slice:    Collection::slice,
+
+    # Defined in this file.
+    butFirst: butFirst,
+    butLast:  butLast,
+    first:    first,
+    last:     last
+}
