@@ -107,7 +107,7 @@ fn evalText(context, programText) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn samCommandLine(context, rawArgs*) {
+fn run(context, rawArgs*) {
     def parsedArgs = parseArgs(rawArgs);
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
@@ -128,5 +128,5 @@ fn samCommandLine(context, rawArgs*) {
 };
 
 <> {
-    samCommandLine: samCommandLine
+    run: run
 }

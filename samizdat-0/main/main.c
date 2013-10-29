@@ -24,7 +24,7 @@
 
 /**
  * Main driver for Samizdat Layer 0. This makes a library context, and
- * uses the `samCommandLine` function defined therein to do all the
+ * uses the `CommandLine::run` function defined therein to do all the
  * real work.
  */
 int main(int argc, char **argv) {
@@ -38,9 +38,8 @@ int main(int argc, char **argv) {
 
     utilFree(libraryDir);
 
-    // The first argument to `samCommandLine` is the context. The
-    // rest are the original command-line arguments (per se, so not
-    // including C's `argv[0]`).
+    // The first argument to `run` is the context. The rest are the original
+    // command-line arguments (per se, so not including C's `argv[0]`).
 
     zvalue args[argc];
 
@@ -58,8 +57,8 @@ int main(int argc, char **argv) {
     // moving into main program execution.
     pbGc();
 
-    zvalue samCommandLine = collGet(context, STR_samCommandLine);
-    zvalue result = funApply(samCommandLine, argsList);
+    zvalue runFunc = collGet(collGet(context, STR_CommandLine), STR_run);
+    zvalue result = funApply(runFunc, argsList);
 
     if ((result != NULL) && (hasType(result, TYPE_Int))) {
         exit((int) zintFromInt(result));
