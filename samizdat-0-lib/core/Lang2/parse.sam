@@ -11,6 +11,8 @@ def Io1 = moduleGet({name: ["core", "Io1"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
 
+def tokenize = submoduleUse("tokenize")::tokenize;
+
 
 #
 # Private Definitions
@@ -2016,7 +2018,7 @@ Box::store(parStatement, implStatement);
 # Documented in Samizdat Layer 0 spec.
 fn parseExpression(expression) {
     def tokens = ifIs { <> isString(expression) }
-        { <> samTokenize(expression) }
+        { <> tokenize(expression) }
         { <> expression };
 
     <> Peg::apply(parExpressionOrError, tokens)
@@ -2025,7 +2027,7 @@ fn parseExpression(expression) {
 # Documented in Samizdat Layer 1 spec.
 fn parseProgram(program) {
     def tokens = ifIs { <> isString(program) }
-        { <> samTokenize(program) }
+        { <> tokenize(program) }
         { <> program };
 
     <> Peg::apply(parProgramOrError, tokens)
