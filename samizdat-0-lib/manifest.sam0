@@ -28,6 +28,10 @@ def MANIFEST = [
     # Layer 0: Constant value definitions.
     "constants.sam0",
 
+    # Layer 0 evaluation as a module. Used by everything that follows.
+    "meta.sam0",
+    ["core", "Sam0"],
+
     # Prototype definition modules, re-exported from the primitive
     # core library.
     ["proto", "Bitwise"],
@@ -48,7 +52,6 @@ def MANIFEST = [
     ["core", "Boolean"],           # Uses `Io0`.
 
     # Layer 0: Simple functions.
-    "meta.sam0",
     "Value.sam0",
 
     # Layer 0: Complicated functions.
