@@ -5,5 +5,7 @@
 {
     globalName: "Lang2",
     name: ["core", "Lang2"],
-    version: "0.0.1"
+    version: "0.0.1",
+
+    language: "Lang1"
 }

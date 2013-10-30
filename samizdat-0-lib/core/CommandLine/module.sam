@@ -5,5 +5,7 @@
 {
     globalName: "CommandLine",
     name: ["core", "CommandLine"],
-    version: "0.0.1"
+    version: "0.0.1",
+
+    language: "Lang1"
 }
