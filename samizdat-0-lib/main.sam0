@@ -87,18 +87,11 @@ fn makeModuleContext(baseCtx, directory) {
         <> readLibraryFile(cat(directory, "/", name))
     };
 
-    fn submoduleExpression(name) {
-        def ctx = Box_fetch(ctxBox);
-        def text = submoduleRead(cat(name, ".sam"));
-        def tree = ctx::samParseExpression(text);
-        <> ctx::samEval(ctx, tree)
-    };
-
     fn submoduleLoad(name) {
         def ctx = Box_fetch(ctxBox);
         def text = submoduleRead(cat(name, ".sam"));
-        def tree = ctx::samParseProgram(text);
-        def func = ctx::samEval(ctx, tree);
+        def tree = ctx::submoduleParse(text);
+        def func = ctx::submoduleEval(ctx, tree);
         <> func()
     };
 
@@ -114,11 +107,27 @@ fn makeModuleContext(baseCtx, directory) {
         <> result
     };
 
+    # This must evaluate to a map.
+    def moduleInfo = samEval(baseCtx,
+        samParseExpression(submoduleRead("module.sam")));
+
+    def languageModule = ifValue { <> moduleInfo::language }
+        { name <> baseCtx::moduleGet(name) }
+        {
+            <> {
+                eval:         baseCtx::samEval,
+                parseProgram: baseCtx::samParseProgram
+            }
+        };
+
     def fullCtx = {
         baseCtx*,
-        submoduleExpression: submoduleExpression,
-        submoduleUse:        submoduleUse,
-        submoduleRead:       submoduleRead
+        languageModule: languageModule,
+        moduleInfo:     moduleInfo,
+        submoduleEval:  languageModule::eval,
+        submoduleUse:   submoduleUse,
+        submoduleParse: languageModule::parseProgram,
+        submoduleRead:  submoduleRead
     };
 
     Box_store(ctxBox, fullCtx);
@@ -134,19 +143,18 @@ fn makeModuleContext(baseCtx, directory) {
 fn loadModule(baseCtx, flatName) {
     def ctx = makeModuleContext(baseCtx, flatName);
 
-    # Both of these should evaluate to maps.
-    def info = ctx::submoduleExpression("module");
+    # This must evaluate to a map.
     def exports = ctx::submoduleUse("main");
 
-    # Combine `info` and `exports to form the final module value.
-    def result = @[Module: {info: info, exports: exports}];
+    # Combine `moduleInfo` and `exports` to form the final module value.
+    def result = @[Module: {info: ctx::moduleInfo, exports: exports}];
     ctx::moduleDef(result);
 
-    # If `info` indicates that the module is to be exported to the
+    # If `moduleInfo` indicates that the module is to be exported to the
     # global context, do so. Otherwise, return the original context.
-    <> ifValue { <> info::globalName }
-        { name <> { ctx*, (name): result } }
-        { <> ctx }
+    <> ifValue { <> ctx::moduleInfo::globalName }
+        { name <> { baseCtx*, (name): result } }
+        { <> baseCtx }
 };
 
 # Loads the named library or module, using either `loadLibrary` or
