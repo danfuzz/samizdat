@@ -102,6 +102,7 @@ will be returned, or one of:
   * [core::Generator](Generator.md)
   * [core::Io0](Io0.md)
   * [core::Io1](Io1.md)
+  * [core::Lang*](LangN.md)
   * [core::ParseForwarder](ParseForwarder.md)
   * [core::Peg (parsing)](Peg.md)
   * [core::Range](Range.md)
