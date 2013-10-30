@@ -13,8 +13,8 @@
 
 <> {
     # Re-exported from primitive library.
-    eval:            sam0Eval,
-    parseExpression: sam0ParseExpression,
-    parseProgram:    sam0ParseProgram,
-    tokenize:        sam0Tokenize
+    eval:            Lang0_eval,
+    parseExpression: Lang0_parseExpression,
+    parseProgram:    Lang0_parseProgram,
+    tokenize:        Lang0_tokenize
 }

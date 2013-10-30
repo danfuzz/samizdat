@@ -13,7 +13,7 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(samEval) {
+PRIM_IMPL(Lang0_eval) {
     zvalue ctx = args[0];
     zvalue expressionNode = args[1];
 
@@ -21,16 +21,16 @@ PRIM_IMPL(samEval) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(samParseExpression) {
+PRIM_IMPL(Lang0_parseExpression) {
     return langParseExpression0(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(samParseProgram) {
+PRIM_IMPL(Lang0_parseProgram) {
     return langParseProgram0(args[0]);
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(samTokenize) {
+PRIM_IMPL(Lang0_tokenize) {
     return langTokenize0(args[0]);
 }

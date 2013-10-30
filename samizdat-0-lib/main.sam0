@@ -52,8 +52,8 @@ fn readLibraryFile(name) {
 # bindings that it wishes to export.
 fn loadLibrary(ctx, name) {
     def text = readLibraryFile(name);
-    def tree = ctx::samParseProgram(text);
-    def function = ctx::samEval({ctx*, LIBRARY: ctx}, tree);
+    def tree = ctx::Lang0_parseProgram(text);
+    def function = ctx::Lang0_eval({ctx*, LIBRARY: ctx}, tree);
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -108,15 +108,15 @@ fn makeModuleContext(baseCtx, directory) {
     };
 
     # This must evaluate to a map.
-    def moduleInfo = samEval(baseCtx,
-        samParseExpression(submoduleRead("module.sam")));
+    def moduleInfo = Lang0_eval(baseCtx,
+        Lang0_parseExpression(submoduleRead("module.sam")));
 
     def languageModule = ifValue { <> moduleInfo::language }
         { name <> baseCtx::moduleGet({name: ["core", name]}) }
         {
             <> {
-                eval:         baseCtx::samEval,
-                parseProgram: baseCtx::samParseProgram
+                eval:         Lang0_eval,
+                parseProgram: Lang0_parseProgram
             }
         };
 

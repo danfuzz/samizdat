@@ -44,5 +44,5 @@ Takes a library context (map of variable bindings) and returns one that
 is just like the one given, except that the key `"LIBRARY"` is bound to
 the given map. This makes a `LIBRARY` binding into a form suitable for
 passing as the library / global context argument to evaluation
-functions (such as `sam0Eval`), in that callees can rightfully expect
+functions (such as `Lang*::eval`), in that callees can rightfully expect
 there to be a binding for `LIBRARY`.
