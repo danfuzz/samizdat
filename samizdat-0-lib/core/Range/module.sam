@@ -5,5 +5,7 @@
 {
     globalName: "Range",
     name: ["core", "Range"],
-    version: "0.0.1"
+    version: "0.0.1",
+
+    language: "Lang0"
 }

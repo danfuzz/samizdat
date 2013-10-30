@@ -4,5 +4,7 @@
 
 {
     name: ["core", "Boolean"],
-    version: "0.0.1"
+    version: "0.0.1",
+
+    language: "Lang0"
 }
