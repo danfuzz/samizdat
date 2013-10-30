@@ -112,7 +112,7 @@ fn makeModuleContext(baseCtx, directory) {
         samParseExpression(submoduleRead("module.sam")));
 
     def languageModule = ifValue { <> moduleInfo::language }
-        { name <> baseCtx::moduleGet(name) }
+        { name <> baseCtx::moduleGet({name: ["core", name]}) }
         {
             <> {
                 eval:         baseCtx::samEval,
