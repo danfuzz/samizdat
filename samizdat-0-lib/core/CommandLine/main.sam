@@ -109,7 +109,7 @@ fn run(context, rawArgs*) {
     def programText = Io1::readFileUtf8(filePath);
 
     def langLayer = ifValueOr { <> options::layer } { <> "2" };
-    def langModule = moduleGet({name: cat("Lang", layer)});
+    def langModule = moduleGet({name: ["core", cat("Lang", langLayer)]});
     def parsedProgram = langModule::parseProgram(programText);
     def evalled = langModule::eval(context, parsedProgram);
 
