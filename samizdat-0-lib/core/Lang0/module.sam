@@ -3,7 +3,7 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 {
-    globalName: "Sam0",
-    name: ["core", "Sam0"],
+    globalName: "Lang0",
+    name: ["core", "Lang0"],
     version: "0.0.1"
 }
