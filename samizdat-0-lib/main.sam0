@@ -111,9 +111,11 @@ fn makeModuleContext(baseCtx, directory) {
     def moduleInfo = Lang0_eval(baseCtx,
         Lang0_parseExpression(submoduleRead("module.sam")));
 
-    def languageModule = ifValue { <> moduleInfo::language }
-        { name <> baseCtx::moduleGet({name: ["core", name]}) }
+    def languageName = moduleInfo::language;
+    def languageModule = ifIs { <> ne(languageName, "none") }
+        { <> baseCtx::moduleGet({name: ["core", languageName]}) }
         {
+            # Fall-back used when loading modules before `Lang0` is defined.
             <> {
                 eval:         Lang0_eval,
                 parseProgram: Lang0_parseProgram
@@ -122,7 +124,6 @@ fn makeModuleContext(baseCtx, directory) {
 
     def fullCtx = {
         baseCtx*,
-        languageModule: languageModule,
         moduleInfo:     moduleInfo,
         submoduleEval:  languageModule::eval,
         submoduleUse:   submoduleUse,
