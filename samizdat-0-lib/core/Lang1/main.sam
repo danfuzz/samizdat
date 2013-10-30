@@ -6,15 +6,13 @@
 # Layer 1 parsing and evaluation functions
 #
 
-
 #
 # Exported Definitions
 #
 
+# This just re-exports stuff defined in submodules.
 <> {
-    # TEMP: Re-exported from core library.
-    eval:            samEval,
-    parseExpression: samParseExpression,
-    parseProgram:    samParseProgram,
-    tokenize:        samTokenize
+    (submoduleUse("tokenize"))*,
+    (submoduleUse("parse"))*,
+    (submoduleUse("eval"))*
 }

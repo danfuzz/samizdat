@@ -1,0 +1,693 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Samizdat Layer 1 tree parser
+#
+
+def Box = moduleGet({name: ["core", "Box"]});
+def Io0 = moduleGet({name: ["core", "Io0"]});
+def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
+def Peg = moduleGet({name: ["core", "Peg"]});
+
+
+#
+# Private Definitions
+#
+
+# Reports the given list of pending tokens as part of error processing.
+fn reportError(pending) {
+    Io0::note("Pending tokens:");
+
+    Generator::filterPump(pending, Range::makeInclusiveRange(1, 1, 50))
+        { token, . -> Io0::note(cat("    ", Format::source(token))) };
+
+    Io0::die("\nExtra tokens at end of program.")
+};
+
+# Set-like map of all lowercase identifier characters. Used to figure
+# out if we're looking at a keyword in the `identifierString` rule.
+def LOWER_ALPHA = {
+    (Range::makeInclusiveRange("a", 1, "z"))*: true
+};
+
+# Returns an `interpolate` node.
+fn makeInterpolate(expression) {
+    <> @[interpolate: expression]
+};
+
+# Returns a `literal` node.
+fn makeLiteral(value) {
+    <> @[literal: value]
+};
+
+# Returns a node representing a thunk (no-arg function) that returns the
+# expression represented by the given node.
+fn makeThunk(expression) {
+    <> @[closure: {formals: [], statements: [], yield: expression}]
+};
+
+# Returns a `varDef` node.
+fn makeVarDef(name, value) {
+    <> @[varDef: {name: name, value: value}]
+};
+
+# Returns a `varRef` node.
+fn makeVarRef(name) {
+    <> @[varRef: name]
+};
+
+# Returns a `call` node.
+fn makeCall(function, actuals*) {
+    <> @[call: {function: function, actuals: actuals}]
+};
+
+# Returns a `call` node that names a function as a `varRef`.
+fn makeCallName(name, actuals*) {
+    <> @[call: {function: makeVarRef(name), actuals: actuals}]
+};
+
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
+};
+
+# Returns an optional-value expression. This wraps `node` as
+# `optValue { <> node }`.
+fn makeOptValueExpression(node) {
+    <> makeCallName("optValue", makeThunk(node))
+};
+
+# Returns a `call` node to a nonlocal exit with the given name and
+# with optional expression value. If passed, the expression is allowed
+# to evaluate to void, in which case the nonlocal exit yields void at
+# its exit point.
+fn makeCallNonlocalExit(name, optExpression?) {
+    <> ifValue { <> optExpression* }
+        { ex ->
+            <> makeCallName("nonlocalExit",
+                name,
+                makeInterpolate(makeOptValueExpression(ex)))
+        }
+        { <> makeCallName("nonlocalExit", name) }
+};
+
+
+#
+# Grammar rules
+#
+# The following is a near-transliteration of the tree grammar in
+# the *Samizdat Layer 0* and *Samizdat Layer 1* specifications.
+#
+
+#
+# Samizdat Layer 0 definitions
+#
+
+# Forward declarations.
+def parProgramBody = ParseForwarder::make();
+def parTerm = ParseForwarder::make();
+def parExpression = ParseForwarder::make();
+def parUnaryExpression = ParseForwarder::make();
+
+# Forward declaration required for integrating layer 1 definitions.
+def parParser = ParseForwarder::make();
+
+# Documented in Samizdat Layer 0 spec.
+def parYieldDef = Peg::makeMainSequence(
+    Peg::makeToken("<"),
+    Peg::makeToken("identifier"),
+    Peg::makeToken(">"),
+    Peg::makeCode { ., name, . <> dataOf(name) });
+
+# Documented in Samizdat Layer 0 spec.
+def parOptYieldDef = Peg::makeMainChoice(
+    Peg::makeSequence(
+        parYieldDef,
+        Peg::makeCode { y <> {yieldDef: y} }),
+    Peg::makeResult({}));
+
+# Documented in Samizdat Layer 0 spec.
+def parFormal = Peg::makeMainSequence(
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeToken("identifier"),
+            Peg::makeCode { n <> {name: dataOf(n)} }),
+        Peg::makeSequence(
+            Peg::makeToken("."),
+            Peg::makeResult({}))),
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeTokenSet("?", "*", "+"),
+            Peg::makeCode { ., r <> {repeat: typeOf(r)} }),
+        Peg::makeResult({})),
+    Peg::makeCode { name, repeat <> {name*, repeat*} });
+
+# Documented in Samizdat Layer 0 spec.
+def parFormalsList = Peg::makeMainChoice(
+    Peg::makeSequence(
+        parFormal,
+        Peg::makeStar(Peg::makeSequence(Peg::makeToken(","), parFormal)),
+        Peg::makeCode { one, rest <> [one, rest*] }),
+    Peg::makeResult([]));
+
+# Documented in Samizdat Layer 0 spec.
+def parProgramDeclarations = Peg::makeMainChoice(
+    Peg::makeSequence(
+        parOptYieldDef,
+        parFormalsList,
+        Peg::makeChoice(
+            Peg::makeToken("->"),
+            Peg::makeLookaheadSuccess(Peg::makeToken("<>"))),
+        Peg::makeCode { yieldDef, formals, . <> {formals: formals, yieldDef*} }),
+    Peg::makeResult({formals: []}));
+
+# Documented in Samizdat Layer 0 spec.
+def parProgram = Peg::makeMainSequence(
+    parProgramDeclarations,
+    parProgramBody,
+    Peg::makeCode { decls, body <> @[closure: {decls*, body*}] });
+
+# Documented in Samizdat Layer 0 spec.
+def parClosure = Peg::makeMainSequence(
+    Peg::makeToken("{"),
+    parProgram,
+    Peg::makeToken("}"),
+    Peg::makeCode { ., prog, . <> prog });
+
+# Documented in Samizdat Layer 0 spec.
+def parNullaryClosure = Peg::makeMainSequence(
+    parClosure,
+    Peg::makeCode { c ->
+        def formals = dataOf(c)::formals;
+        ifIs { <> ne(formals, []) }
+            { Io0::die("Invalid formal argument in code block.") };
+        <> c
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parCodeOnlyClosure = Peg::makeMainSequence(
+    parNullaryClosure,
+    Peg::makeCode { c ->
+        ifIs { <> dataOf(c)::yieldDef }
+            { Io0::die("Invalid yield definition in code block.") };
+        <> c
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parFnCommon = Peg::makeMainSequence(
+    Peg::makeToken("fn"),
+    Peg::makeOpt(
+        Peg::makeSequence(
+            parYieldDef,
+            Peg::makeCode { ., y <> makeVarDef(y, makeVarRef("return")) })),
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeToken("identifier"),
+            Peg::makeCode { ., ., n <> {name: dataOf(n)} }),
+        Peg::makeResult({})),
+    Peg::makeToken("("),
+    parFormalsList,
+    Peg::makeToken(")"),
+    parCodeOnlyClosure,
+    Peg::makeCode { ., returnDef, name, ., formals, ., code ->
+        def codeMap = dataOf(code);
+        def statements = [returnDef*, codeMap::statements*];
+        <> {
+            codeMap*, name*,
+            formals: formals,
+            yieldDef: "return",
+            statements: statements
+        }
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parFnDef = Peg::makeMainSequence(
+    parFnCommon,
+    Peg::makeCode { funcMap ->
+        <> ifIs { <> funcMap::name }
+            { <> @[fnDef: funcMap] }
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parFnExpression = Peg::makeMainSequence(
+    parFnCommon,
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeCode { funcMap, . <> funcMap::name },
+            Peg::makeCode { funcMap, name ->
+                def mainClosure = @[closure: {
+                    formals: [],
+                    statements: [@[fnDef: funcMap]],
+                    yield: makeVarRef(name)
+                }];
+
+                <> makeCall(mainClosure)
+            }),
+        Peg::makeCode { funcMap <> @[closure: funcMap] }));
+
+# Documented in Samizdat Layer 0 spec.
+
+def parInt = Peg::makeMainChoice(
+    Peg::makeSequence(
+        Peg::makeToken("-"),
+        Peg::makeToken("int"),
+        Peg::makeCode { ., i <> makeLiteral(Number::neg(dataOf(i))) }),
+    Peg::makeSequence(
+        Peg::makeToken("int"),
+        Peg::makeCode { i <> makeLiteral(dataOf(i)) }));
+
+# Documented in Samizdat Layer 0 spec.
+def parString = Peg::makeMainSequence(
+    Peg::makeToken("string"),
+    Peg::makeCode { s <> makeLiteral(dataOf(s)) });
+
+# Documented in Samizdat Layer 0 spec.
+def parIdentifierString = Peg::makeMainChoice(
+    Peg::makeSequence(
+        Peg::makeTokenSet("identifier", "string"),
+        Peg::makeCode { s <> makeLiteral(dataOf(s)) }),
+    Peg::makeSequence(
+        Peg::any,
+        Peg::makeCode { token ->
+            <> ifNot { <> dataOf(token) }
+                {
+                    def type = typeOf(token);
+                    def firstCh = Collection::nth(type, 0);
+                    <> ifIs { <> get(LOWER_ALPHA, firstCh) }
+                        { <> makeLiteral(type) }
+                }
+            }));
+
+# Documented in Samizdat Layer 0 spec.
+def parEmptyMap = Peg::makeMainSequence(
+    Peg::makeToken("{"),
+    Peg::makeToken("}"),
+    Peg::makeResult(makeLiteral({})));
+
+# Documented in Samizdat Layer 0 spec.
+def parKeyTerm = Peg::makeMainChoice(
+    Peg::makeSequence(
+        parIdentifierString,
+        Peg::makeLookaheadFailure(Peg::makeToken("*")),
+        Peg::makeCode { key, . <> key }),
+    Peg::makeSequence(
+        parTerm,
+        Peg::makeChoice(
+            Peg::makeSequence(
+                Peg::makeToken("*"),
+                Peg::makeCode { key, . <> makeInterpolate(key) }),
+            Peg::makeCode { key <> key })));
+
+# Documented in Samizdat Layer 0 spec.
+def parKey = parKeyTerm;
+
+# Documented in Samizdat Layer 0 spec.
+def parMapping = Peg::makeMainChoice(
+    Peg::makeSequence(
+        parKey,
+        Peg::makeToken(":"),
+        parExpression,
+        Peg::makeCode { key, ., value ->
+            <> makeCallName("makeValueMap", key, @[expression: value])
+        }),
+    Peg::makeSequence(
+        parTerm,
+        Peg::makeToken("*"),
+        Peg::makeCode { map, . <> map }));
+
+# Documented in Samizdat Layer 0 spec.
+def parMap = Peg::makeMainSequence(
+    Peg::makeToken("{"),
+    parMapping,
+    Peg::makeStar(Peg::makeSequence(Peg::makeToken(","), parMapping)),
+    Peg::makeToken("}"),
+    Peg::makeCode { ., one, rest, . ->
+        <> makeCallName("cat", one, rest*)
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parListItem = Peg::makeMainChoice(
+    Peg::makeSequence(
+        parIdentifierString,
+        Peg::makeToken(":"),
+        Peg::makeCode { ., . ->
+            Io0::die("Mapping syntax not valid as a list item or call argument.")
+        }),
+    Peg::makeSequence(
+        Peg::makeToken("&"),
+        parUnaryExpression,
+        Peg::makeCode { ., ex <> @[voidable: ex] }),
+    parExpression);
+
+# Documented in Samizdat Layer 0 spec.
+def parUnadornedList = Peg::makeMainChoice(
+    Peg::makeSequence(
+        parListItem,
+        Peg::makeStar(
+            Peg::makeSequence(Peg::makeToken(","), parListItem)),
+        Peg::makeCode { one, rest <> [one, rest*] }),
+    Peg::makeResult([]));
+
+# Documented in Samizdat Layer 0 spec.
+def parList = Peg::makeMainSequence(
+    Peg::makeToken("["),
+    parUnadornedList,
+    Peg::makeToken("]"),
+    Peg::makeCode { ., expressions, . ->
+        <> ifIs { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> makeCallName("makeList", expressions*) }
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parDeriv = Peg::makeMainSequence(
+    Peg::makeToken("@"),
+    Peg::makeChoice(
+        Peg::makeMainSequence(
+            Peg::makeToken("["),
+            Peg::makeChoice(parIdentifierString, parTerm),
+            Peg::makeOpt(Peg::makeSequence(Peg::makeToken(":"), parExpression)),
+            Peg::makeToken("]"),
+            Peg::makeCode { ., type, value, . <> [type, value*] }),
+        Peg::makeMainSequence(
+            parIdentifierString,
+            Peg::makeCode { type <> [type] })),
+    Peg::makeCode { ., tokenArgs <> makeCallName("makeValue", tokenArgs*) });
+
+# Documented in Samizdat Layer 0 spec.
+def parVarRef = Peg::makeMainSequence(
+    Peg::makeToken("identifier"),
+    Peg::makeCode { name <> makeVarRef(dataOf(name)) });
+
+# Documented in Samizdat Layer 0 spec.
+def parVarDef = Peg::makeMainSequence(
+    Peg::makeToken("def"),
+    Peg::makeToken("identifier"),
+    Peg::makeToken("="),
+    parExpression,
+    Peg::makeCode { ., name, ., ex <> makeVarDef(dataOf(name), ex) });
+
+# Documented in Samizdat Layer 0 spec.
+def parParenExpression = Peg::makeMainSequence(
+    Peg::makeToken("("),
+    parExpression,
+    Peg::makeToken(")"),
+    Peg::makeCode { ., ex, . <> @[expression: ex] });
+
+# Documented in Samizdat Layer 0 spec and Samizdat Layer 1 spec.
+def implTerm = Peg::makeMainChoice(
+    parVarRef, parInt, parString,
+    parEmptyMap, parMap, parList,
+    parDeriv, parClosure,
+    parParenExpression,
+    # Defined by Samizdat Layer 1. The lookahead is just to make
+    # it clear what is required to "jump into" Layer 1 parsing.
+    Peg::makeSequence(
+        Peg::makeLookaheadSuccess(Peg::makeToken("{/")),
+        parParser));
+Box::store(parTerm, implTerm);
+
+# Documented in Samizdat Layer 0 spec.
+def parActualsList = Peg::makeMainChoice(
+    Peg::makeSequence(
+        Peg::makeToken("("),
+        parUnadornedList,
+        Peg::makeToken(")"),
+        Peg::makeStar(parClosure),
+        Peg::makeCode { ., normalActuals, ., closureActuals ->
+            <> [closureActuals*, normalActuals*]
+        }),
+    Peg::makePlus(parClosure));
+
+# Documented in Samizdat Layer 0 spec.
+def parPostfixOperator = Peg::makeMainChoice(
+    Peg::makeSequence(
+        parActualsList,
+        Peg::makeCode { actuals <> { node <> makeCall(node, actuals*) } }),
+    Peg::makeSequence(
+        Peg::makeToken("::"),
+        parIdentifierString,
+        Peg::makeCode { ., key <> { node <> makeGetExpression(node, key) } }),
+    Peg::makeSequence(
+        Peg::makeToken("*"),
+        Peg::makeCode { . <> { node <> makeInterpolate(node) } }));
+
+# Documented in Samizdat Layer 0 spec.
+def implUnaryExpression = Peg::makeMainSequence(
+    parTerm,
+    Peg::makeStar(parPostfixOperator),
+    Peg::makeCode { base, postfixes ->
+        <> Generator::doReduce1(postfixes, base) { op, result <> op(result) }
+    });
+Box::store(parUnaryExpression, implUnaryExpression);
+
+# Documented in Samizdat Layer 0 spec.
+def implExpression = Peg::makeChoice(
+    parUnaryExpression,
+    parFnExpression);
+Box::store(parExpression, implExpression);
+
+# Documented in Samizdat Layer 0 spec.
+def parStatement = Peg::makeChoice(
+    parVarDef,
+    parFnDef,
+    parExpression);
+
+# Documented in Samizdat Layer 0 spec.
+def parNonlocalExit = Peg::makeMainSequence(
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeToken("<"),
+            parVarRef,
+            Peg::makeToken(">"),
+            Peg::makeCode { ., n, . <> n }),
+        Peg::makeSequence(
+            Peg::makeToken("return"),
+            Peg::makeResult(makeVarRef("return")))),
+    Peg::makeOpt(parExpression),
+    Peg::makeCode { name, value ->
+        <> makeCallNonlocalExit(name, value*)
+    });
+
+# Documented in Samizdat Layer 0 spec.
+def parYield = Peg::makeMainSequence(
+    Peg::makeToken("<>"),
+    Peg::makeChoice(
+        Peg::makeSequence(
+            parExpression,
+            Peg::makeCode { ., ex <> {yield: ex} }),
+        Peg::makeResult({})));
+
+# Documented in Samizdat Layer 0 spec.
+def implProgramBody = Peg::makeMainSequence(
+    Peg::makeStar(Peg::makeToken(";")),
+    Peg::makeStar(
+        Peg::makeMainSequence(
+            parStatement,
+            Peg::makePlus(Peg::makeToken(";")),
+            Peg::makeCode { s, . <> s })),
+    Peg::makeChoice(
+        Peg::makeMainSequence(
+            Peg::makeChoice(parStatement, parNonlocalExit),
+            Peg::makeCode { s <> {statements: [s]} }),
+        Peg::makeMainSequence(
+            parYield,
+            Peg::makeCode { y <> {statements: [], y*} }),
+        Peg::makeResult({statements: []})),
+    Peg::makeStar(Peg::makeToken(";")),
+    Peg::makeCode { ., most, last, . ->
+        def allStatements = [most*, last::statements*];
+        <> {last*, statements: allStatements}
+    });
+Box::store(parProgramBody, implProgramBody);
+
+# Documented in Samizdat Layer 0 spec.
+def parExpressionOrError = Peg::makeMainSequence(
+    parExpression,
+    Peg::makeOpt(
+        Peg::makeMainSequence(
+            Peg::makePlus(Peg::any),
+            Peg::makeCode { pending -> reportError(pending) })),
+    Peg::makeCode { ex, . <> ex });
+
+# Documented in Samizdat Layer 0 spec.
+def parProgramOrError = Peg::makeMainSequence(
+    parProgram,
+    Peg::makeOpt(
+        Peg::makeMainSequence(
+            Peg::makePlus(Peg::any),
+            Peg::makeCode { pending -> reportError(pending) })),
+    Peg::makeCode { prog, . <> prog });
+
+
+#
+# Samizdat Layer 1 definitions
+#
+
+# `choicePex` is the top-level parsing expression node type.
+def parChoicePex = ParseForwarder::make();
+
+# Map from parser tokens to derived value types for pexes.
+def PEX_TYPES = {
+    "&": "lookaheadSuccess",
+    "!": "lookaheadFailure",
+    "?": "opt",
+    "*": "star",
+    "+": "plus"
+};
+
+def implParser = Peg::makeMainSequence(
+    Peg::makeToken("{/"),
+    parChoicePex,
+    Peg::makeToken("/}"),
+    Peg::makeCode { ., pex, . <> @[parser: pex] });
+Box::store(parParser, implParser);
+
+def parParenPex = Peg::makeMainSequence(
+    Peg::makeToken("("),
+    parChoicePex,
+    Peg::makeToken(")"),
+    Peg::makeCode { ., pex, . <> pex });
+
+def parParserString = Peg::makeMainSequence(
+    Peg::makeToken("string"),
+    Peg::makeCode { s ->
+        def value = dataOf(s);
+        <> ifIs { <> eq(Collection::sizeOf(value), 1) }
+            { <> @[token: value] }
+            { <> s }
+    });
+
+def parParserToken = Peg::makeMainSequence(
+    Peg::makeToken("@"),
+    parIdentifierString,
+    Peg::makeCode { ., type <> @[token: dataOf(type)] });
+
+def parParserSetString = Peg::makeMainSequence(
+    Peg::makeToken("string"),
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeToken(".."),
+            Peg::makeToken("string"),
+            Peg::makeCode { s, ., end ->
+                def startChar = dataOf(s);
+                def endChar = dataOf(end);
+                <> ifIs
+                    {
+                        <> eq(1,
+                            &eq(Collection::sizeOf(startChar),
+                                Collection::sizeOf(endChar)))
+                    }
+                    { <> cat(Range::makeInclusiveRange(startChar, 1, endChar)*) }
+            }),
+        Peg::makeCode { s <> dataOf(s) }));
+
+def parParserSet = Peg::makeMainSequence(
+    Peg::makeToken("["),
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeToken("!"),
+            Peg::makeResult("tokenSetComplement")),
+        Peg::makeResult("tokenSet")),
+    Peg::makeChoice(
+        Peg::makeMainSequence(
+            Peg::makePlus(parParserSetString),
+            Peg::makeCode { strings <> [cat(strings*)*] }),
+        Peg::makeMainSequence(
+            Peg::makePlus(parParserToken),
+            Peg::makeCode { tokens <> Generator::filter(tokens, dataOf) }),
+        Peg::makeResult([])),
+    Peg::makeToken("]"),
+    Peg::makeCode { ., type, terminals, . <> @[(type): terminals] });
+
+def parParserCode = Peg::makeMainSequence(
+    parNullaryClosure,
+    Peg::makeCode { closure <> @[code: dataOf(closure)] });
+
+def parParserTerm = Peg::makeMainChoice(
+    Peg::makeSequence(
+        Peg::makeToken("."),
+        Peg::makeResult(@any)),
+    Peg::makeSequence(
+        Peg::makeToken("("),
+        Peg::makeToken(")"),
+        Peg::makeResult(@empty)),
+    parVarRef,
+    parParserString,
+    parParserToken,
+    parParserSet,
+    parParserCode,
+    parParenPex);
+
+def parRepeatPex = Peg::makeMainSequence(
+    parParserTerm,
+    Peg::makeChoice(
+        Peg::makeSequence(
+            Peg::makeTokenSet("?", "*", "+"),
+            Peg::makeCode { term, repeat <>
+                @[(get(PEX_TYPES, typeOf(repeat))): term]
+            }),
+        Peg::makeCode { term <> term }));
+
+def parLookaheadPex = Peg::makeMainChoice(
+    Peg::makeSequence(
+        Peg::makeTokenSet("&", "!"),
+        parRepeatPex,
+        Peg::makeCode { lookahead, pex <>
+            @[(get(PEX_TYPES, typeOf(lookahead))): pex]
+        }),
+    parRepeatPex);
+
+def parNamePex = Peg::makeMainChoice(
+    Peg::makeSequence(
+        Peg::makeToken("identifier"),
+        Peg::makeToken("="),
+        parLookaheadPex,
+        Peg::makeCode { name, ., pex ->
+            <> @[varDef: {name: dataOf(name), value: pex}]
+        }),
+    parLookaheadPex);
+
+def parSequencePex = Peg::makeMainSequence(
+    Peg::makePlus(parNamePex),
+    Peg::makeCode { items <> @[sequence: items] });
+
+def implChoicePex = Peg::makeMainSequence(
+    parSequencePex,
+    Peg::makeStar(
+        Peg::makeSequence(
+            Peg::makeToken("|"),
+            parSequencePex)),
+    Peg::makeCode { one, rest <> @[choice: [one, rest*]] });
+Box::store(parChoicePex, implChoicePex);
+
+
+#
+# Exported Definitions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn parseExpression(expression) {
+    def tokens = ifIs { <> isString(expression) }
+        { <> samTokenize(expression) }
+        { <> expression };
+
+    <> Peg::apply(parExpressionOrError, tokens)
+};
+
+# Documented in Samizdat Layer 0 spec.
+fn parseProgram(program) {
+    def tokens = ifIs { <> isString(program) }
+        { <> samTokenize(program) }
+        { <> program };
+
+    <> Peg::apply(parProgramOrError, tokens)
+};
+
+<> {
+    parseExpression: parseExpression,
+    parseProgram:    parseProgram
+}
