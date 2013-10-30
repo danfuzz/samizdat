@@ -1,0 +1,2037 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Samizdat Layer 2 Tree Parser
+#
+
+def Box = moduleGet({name: ["core", "Box"]});
+def Io1 = moduleGet({name: ["core", "Io1"]});
+def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
+def Peg = moduleGet({name: ["core", "Peg"]});
+
+
+#
+# Private Definitions
+#
+
+# Reports the given list of pending tokens as part of error processing.
+fn reportError(pending) {
+    Io1::note("Pending tokens:");
+
+    Generator::filterPump(pending, Range::makeInclusiveRange(1, 1, 50))
+        { token, . -> Io1::note(cat("    ", Format::source(token))) };
+
+    Io1::die("\nExtra tokens at end of program.")
+};
+
+# Set-like map of all lowercase identifier characters. Used to figure
+# out if we're looking at a keyword in the `identifierString` rule.
+def LOWER_ALPHA = {
+    (Range::makeInclusiveRange("a", 1, "z"))*: true
+};
+
+# Returns an `interpolate` node.
+fn makeInterpolate(expression) {
+    <> @[interpolate: expression]
+};
+
+# Returns a `literal` node.
+fn makeLiteral(value) {
+    <> @[literal: value]
+};
+
+# Returns a node representing a thunk (no-arg function) that returns the
+# expression represented by the given node.
+fn makeThunk(expression) {
+    <> @[closure: {formals: [], statements: [], yield: expression}]
+};
+
+# Returns a `varDef` node.
+fn makeVarDef(name, value) {
+    <> @[varDef: {name: name, value: value}]
+};
+
+# Returns a `varRef` node.
+fn makeVarRef(name) {
+    <> @[varRef: name]
+};
+
+# Returns a `call` node.
+fn makeCall(function, actuals*) {
+    <> @[call: {function: function, actuals: actuals}]
+};
+
+# Returns a `call` node that names a function as a `varRef`.
+fn makeCallName(name, actuals*) {
+    <> @[call: {function: makeVarRef(name), actuals: actuals}]
+};
+
+# Returns an optional-value expression. This wraps `node` as
+# `optValue { <> node }`.
+fn makeOptValueExpression(node) {
+    <> makeCallName("optValue", makeThunk(node))
+};
+
+# Returns a `call` node to a nonlocal exit with the given name and
+# with optional expression value. If passed, the expression is allowed
+# to evaluate to void, in which case the nonlocal exit yields void at
+# its exit point.
+fn makeCallNonlocalExit(name, optExpression?) {
+    <> ifValue { <> optExpression* }
+        { ex ->
+            <> makeCallName("nonlocalExit",
+                name,
+                makeInterpolate(makeOptValueExpression(ex)))
+        }
+        { <> makeCallName("nonlocalExit", name) }
+};
+
+# Returns a `call` node that names a function as a `varRef` and passes
+# "thunked" versions of each of the given actual arguments.
+fn makeCallNameThunks(name, actuals*) {
+    def thunks = Generator::filterAll(actuals) { one <> makeThunk(one) };
+    <> makeCallName(name, thunks*)
+};
+
+# Returns a collection access (`get`) expression. This is a `call` node
+# of two arguments (a collection node and a key node).
+fn makeGetExpression(collArg, keyArg) {
+    <> makeCallName("get", collArg, keyArg)
+};
+
+# Returns a collection access expression, with a `varRef` to the collection
+# and a literal string to look up.
+fn makeModNameRef(modVar, name) {
+    <> makeGetExpression(makeVarRef(modVar), makeLiteral(name))
+};
+
+# Returns a `call` node that names a function as a `varRef` to a module
+# and a literal name to look up in that module.
+fn makeCallModName(modVar, funcName, actuals*) {
+    <> makeCall(makeModNameRef(modVar, funcName), actuals*)
+};
+
+# Returns a `closure` node like the one given, except with the `formals`
+# binding replaced with the given arguments. Each of the `formals`
+# must be a formal argument map as described in the execution tree spec.
+fn closureWithFormals(closure, formals*) {
+    <> @[closure: {(dataOf(closure))*, formals: formals}]
+};
+
+# Returns a `closure` node like the one given, except with `yieldDef`
+# bound to the indicated name.
+fn closureWithYieldDef(closure, name) {
+    <> @[closure: {(dataOf(closure))*, yieldDef: name}]
+};
+
+# A no-argument yield-void thunk.
+def YIELD_VOID_THUNK = @[closure: {formals: [], statements: []}];
+
+# A single-argument yield-void function.
+def YIELD_VOID_FN_1 = closureWithFormals(YIELD_VOID_THUNK, {});
+
+# For unary operators, map of token types to function name variable references.
+def UNARY_OPERATORS = {
+    "-":   makeModNameRef("Number", "neg"),
+    "!!!": makeModNameRef("Bitwise", "not"),
+    "[]":  makeVarRef("get")
+};
+
+# For binary operators, map of token types to function name variable references.
+def BINARY_OPERATORS = {
+    "+":    makeModNameRef("Number", "add"),
+    "-":    makeModNameRef("Number", "sub"),
+    "*":    makeModNameRef("Number", "mul"),
+    "/":    makeModNameRef("Number", "div"),
+    "%":    makeModNameRef("Number", "mod"),
+    "//":   makeModNameRef("Number", "divEu"),
+    "%%":   makeModNameRef("Number", "modEu"),
+    "==":   makeVarRef("perEq"),
+    "!=":   makeVarRef("perNe"),
+    "<":    makeVarRef("perLt"),
+    ">":    makeVarRef("perGt"),
+    "<=":   makeVarRef("perLe"),
+    ">=":   makeVarRef("perGe"),
+    "&&&":  makeModNameRef("Bitwise", "and"),
+    "|||":  makeModNameRef("Bitwise", "or"),
+    "^^^":  makeModNameRef("Bitwise", "xor"),
+    "<<<":  makeModNameRef("Bitwise", "shl"),
+    ">>>":  makeModNameRef("Bitwise", "shr"),
+    "\\==": makeVarRef("eq"),
+    "\\!=": makeVarRef("ne"),
+    "\\<":  makeVarRef("lt"),
+    "\\>":  makeVarRef("gt"),
+    "\\<=": makeVarRef("le"),
+    "\\>=": makeVarRef("ge"),
+    "..":   makeModNameRef("Range", "makeInclusiveRange"),
+    "..!":  makeModNameRef("Range", "makeExclusiveRange"),
+    "..+":  makeModNameRef("Range", "makeOpenRange")
+};
+
+# Helper for parsing binary operator expressions, which puts together
+# a sequence of function calls. `voidable`, if passed as `true`, indicates
+# that the inner calls should be made voidable.
+fn makeBinaryCalls(firstEx, opExList, optVoidable?) {
+    ifIs { <> eq(opExList, []) }
+        {
+            # Don't bother with the rest if there are no ops to apply.
+            # This avoids having to special-case the voidable stuff.
+            return firstEx
+        };
+
+    def voidable = ifValueOr { <> optVoidable* } { <> false };
+
+    def result = Generator::doReduce1(opExList, firstEx) { opEx, result ->
+        def op = Collection::first(opEx);
+        def ex = Collection::last(opEx);
+        def resolvedOp = get(BINARY_OPERATORS, typeOf(op));
+        def call = makeCall(resolvedOp, result, ex);
+
+        <> ifIs { <> eq(voidable, true) }
+            { <> @[voidable: call] }
+            { <> call }
+    };
+
+    # For an inner-voidable expression, unwrap the outermost layer of
+    # voidability.
+    <> ifIs { <> eq(voidable, true) }
+        { <> dataOf(result) }
+        { <> result }
+};
+
+
+#
+# *Layer 0* Rules
+#
+# This section consists of the definitions required to implement *Layer 0*,
+# with comments indicating the "hooks" for higher layers.
+#
+
+# Forward declaration required for layer 2.
+def parTerm2 = ParseForwarder::make();
+
+# Forward declarations.
+def parProgramBody = ParseForwarder::make();
+def parTerm = ParseForwarder::make();
+def parExpression = ParseForwarder::make();
+def parUnaryExpression = ParseForwarder::make();
+
+# Forward declaration required for integrating layer 1 definitions.
+def parParser = ParseForwarder::make();
+
+# Parses a yield / nonlocal exit definition, yielding the def name.
+def parYieldDef = {/
+    @"<"
+    name = @identifier
+    @">"
+    { <> dataOf(name) }
+/};
+
+# Parses an optional yield / nonlocal exit definition, always yielding
+# a map (an empty map if no yield def was present).
+def parOptYieldDef = {/
+    y = parYieldDef
+    { <> {yieldDef: y} }
+|
+    { <> {} }
+/};
+
+# Parses a formal argument decalaration.
+def parFormal = {/
+    name = (
+        n = @identifier
+        { <> {name: dataOf(n)} }
+    |
+        @"." { <> {} }
+    )
+
+    repeat = (
+        r = [@"?" @"*" @"+"]
+        { <> {repeat: typeOf(r)} }
+    |
+        { <> {} }
+    )
+
+    { <> {name*, repeat*} }
+/};
+
+# Parses a list of formal arguments, with no surrounding parentheses.
+def parFormalsList = {/
+    one = parFormal
+    rest = (@"," parFormal)*
+    { <> [one, rest*] }
+|
+    { <> [] }
+/};
+
+# Parses program / function declarations.
+def parProgramDeclarations = {/
+    yieldDef = parOptYieldDef
+    formals = parFormalsList
+
+    (@"->" | &@"<>")
+
+    { <> {formals: formals, yieldDef*} }
+|
+    { <> {formals: []} }
+/};
+
+# Parses a program (top-level program or contents inside function braces).
+def parProgram = {/
+    decls = parProgramDeclarations
+    body = parProgramBody
+    { <> @[closure: {decls*, body*}] }
+/};
+
+# Parses a closure (in-line anonymous function, with no extra bindings).
+def parClosure = {/
+    @"{"
+    prog = parProgram
+    @"}"
+    { <> prog }
+/};
+
+# Parses a closure which must not define any formal arguments. This is done
+# by parsing an arbitrary closure and then verifying that it does not
+# declare formals. This is preferable to not-including formal argument
+# syntax, because (a) no rule wants to differentiate these cases (rules either
+# want an arbitrary closure or a specifically-constrained kind); (b) it
+# reduces redundancy in the syntax, and (c) the error case on the former
+# would be more obscure (as in just something like "unexpected token" on
+# the would-be formal argument).
+def parNullaryClosure = {/
+    c = parClosure
+
+    {
+        def formals = dataOf(c)::formals;
+        ifIs { <> ne(formals, []) }
+            { Io1::die("Invalid formal argument in code block.") };
+        <> c
+    }
+/};
+
+# Parses a closure which must have neither formal arguments nor a yield
+# definition. See `parseNullaryClosure` above for discussion.
+def parCodeOnlyClosure = {/
+    c = parNullaryClosure
+
+    {
+        ifIs { <> dataOf(c)::yieldDef }
+            { Io1::die("Invalid yield definition in code block.") };
+        <> c
+    }
+/};
+
+# Common parsing for `fn` statements and expressions. The syntax for
+# both is identical, except that the statement form requires that the
+# function be named. The result of this rule is a map identical in form to
+# what's required for a closure payload, except that `name` may also
+# be bound.
+#
+# The result of this rule is suitable for use as a `closure` node
+# payload. And as long as `name` is bound, the result is valid to use
+# as the payload for a `fnDef` node.
+#
+# The translation is along these lines:
+#
+# ```
+# fn <out> name(arg1, arg2) { stat1; stat2 }
+# ```
+# =>
+# ```
+# { <\"return"> arg1, arg2 ->
+#     def out = \"return";
+#     stat1;
+#     stat2
+# }
+# ```
+#
+# with:
+#
+# * no yield def binding statement if an explicit yield def was not present.
+#
+# * the key `name` bound to the function name, if a name was defined.
+def parFnCommon = {/
+    @fn
+
+    # This is a variable definition statement which binds the yield def
+    # name to the `return` function, if there is in fact a yield def present.
+    returnDef = (
+        y = parYieldDef
+        { <> makeVarDef(y, makeVarRef("return")) }
+    )?
+
+    name = (
+        n = @identifier
+        { <> {name: dataOf(n)} }
+    |
+        { <> {} }
+    )
+
+    @"("
+    formals = parFormalsList
+    @")"
+
+    code = parCodeOnlyClosure
+
+    {
+        def codeMap = dataOf(code);
+        def statements = [returnDef*, codeMap::statements*];
+        <> {
+            codeMap*, name*,
+            formals: formals,
+            yieldDef: "return",
+            statements: statements
+        }
+    }
+/};
+
+# Parses a `fn` definition statement. The syntax here is the same as
+# what's recognized by `parFnCommon`, except that the name is required.
+# We don't error out (terminate the runtime) on a missing name, though, as
+# that just means that we're looking at a legit `fn` expression, which will
+# get successfully parsed by the `expression` alternative of `statement`.
+def parFnDef = {/
+    funcMap = parFnCommon
+
+    {
+        <> ifIs { <> funcMap::name }
+            { <> @[fnDef: funcMap] }
+    }
+/};
+
+# Parses a `fn` (function with `return` binding) expression. The translation
+# is as described in `parFnCommon` (above) if the function is not given a
+# name. If the function *is* given a name, the translation is along the
+# following lines (so as to enable self-recursion):
+#
+# ```
+# fn <out> name ...
+# ```
+# =>
+# ```
+# {
+#     fn <out> name ...;
+#     <> name
+# }()
+# ```
+def parFnExpression = {/
+    funcMap = parFnCommon
+
+    (
+        name = { <> funcMap::name }
+        {
+            def mainClosure = @[closure: {
+                formals: [],
+                statements: [@[fnDef: funcMap]],
+                yield: makeVarRef(name)
+            }];
+
+            <> makeCall(mainClosure)
+        }
+    |
+        { <> @[closure: funcMap] }
+    )
+/};
+
+# Parses an integer literal. Note: This includes parsing a `-` prefix,
+# so that simple negative numbers are considered terms and hence eligible
+# to be used as map keys.
+def parInt = {/
+    @"-"
+    i = @int
+    { <> makeLiteral(Number::neg(dataOf(i))) }
+|
+    i = @int
+    { <> makeLiteral(dataOf(i)) }
+/};
+
+# Parses a string literal.
+def parString = {/
+    s = @string
+    { <> makeLiteral(dataOf(s)) }
+/};
+
+# Parses an identifier, identifier-like keyword, or string literal,
+# returning a string literal in all cases.
+def parIdentifierString = {/
+    s = [@identifier @string]
+    { <> makeLiteral(dataOf(s)) }
+|
+    token = .
+    {
+        <> ifNot { <> dataOf(token) }
+            {
+                def type = typeOf(token);
+                def firstCh = Collection::nth(type, 0);
+                <> ifIs { <> get(LOWER_ALPHA, firstCh) }
+                    { <> makeLiteral(type) }
+            }
+    }
+/};
+
+# Parses an empty map literal.
+def parEmptyMap = {/
+    @"{" @"}"
+    { <> makeLiteral({}) }
+/};
+
+# Parses a key term. This includes parsing of interpolation syntax.
+def parKeyTerm = {/
+    # The lookahead-failure is to ensure we don't match a variable being
+    # interpolated, which is handled by the second alternative.
+    key = parIdentifierString
+    !@"*"
+    { <> key }
+|
+    key = parTerm
+    (
+        @"*"
+        { <> makeInterpolate(key) }
+    |
+        { <> key }
+    )
+/};
+
+# Parses an arbitrary map key. **Note:** This is nontrivial in layer 2.
+def parKey = {/
+    # Layer 2 accepts one or more `keyTerm`s, separated by pipes.
+    firstKey = parKeyTerm
+    moreKeys = (@"|" parKeyTerm)*
+
+    {
+        <> ifIs { <> eq(moreKeys, []) }
+            { <> firstKey }
+            {
+                <> makeInterpolate(
+                    makeCallName("makeList", firstKey, moreKeys*))
+            }
+    }
+/};
+
+# Parses a mapping (element of a map).
+def parMapping = {/
+    key = parKey
+    @":"
+    value = parExpression
+
+    # The `value` is wrapped in an `expression` node here to prevent
+    # interpolation from being applied to `makeValueMap`.
+    { <> makeCallName("makeValueMap", key, @[expression: value]) }
+|
+    map = parTerm
+    @"*"
+    { <> map }
+/};
+
+# Parses a map literal.
+def parMap = {/
+    @"{"
+    one = parMapping
+    rest = (@"," parMapping)*
+    @"}"
+    { <> makeCallName("cat", one, rest*) }
+/};
+
+# Parses a list item or function call argument. This handles all of:
+#
+# * accepting general expressions
+# * accepting voidable-prefixed expressions
+# * rejecting expressions that look like `key:value` mappings. This is
+#   effectively "reserved syntax" (for future expansion); rejecting this
+#   here means that `x:y` won't be mistaken for other valid syntax.
+def parListItem = {/
+    parIdentifierString
+    @":"
+    { Io1::die("Mapping syntax not valid as a list item or call argument.") }
+|
+    @"&"
+    ex = parUnaryExpression
+    { <> @[voidable: ex] }
+|
+    parExpression
+/};
+
+# Parses an "unadorned" (no bracketing) list. Yields a list (per se)
+# of contents.
+def parUnadornedList = {/
+    one = parListItem
+    rest = (@"," parListItem)*
+    { <> [one, rest*] }
+|
+    { <> [] }
+/};
+
+# Parses a list literal.
+def parList = {/
+    @"["
+    expressions = parUnadornedList
+    @"]"
+    {
+        <> ifIs { <> eq(expressions, []) }
+            { <> makeLiteral([]) }
+            { <> makeCallName("makeList", expressions*) }
+    }
+/};
+
+# Parses a literal in derived value form.
+def parDeriv = {/
+    @"@"
+
+    derivArgs = (
+        @"["
+        type = (parIdentifierString | parTerm)
+        value = (@":" parExpression)?
+        @"]"
+        { <> [type, value*] }
+    |
+        type = parIdentifierString
+        { <> [type] }
+    )
+
+    { <> makeCallName("makeValue", derivArgs*) }
+/};
+
+# Parses a variable reference.
+def parVarRef = {/
+    name = @identifier
+    { <> makeVarRef(dataOf(name)) }
+/};
+
+# Parses a variable definition.
+def parVarDef = {/
+    @def
+    name = @identifier
+    @"="
+    ex = parExpression
+    { <> makeVarDef(dataOf(name), ex) }
+/};
+
+# Parses a parenthesized expression.
+def parParenExpression = {/
+    @"("
+    ex = parExpression
+    @")"
+    { <> @[expression: ex] }
+/};
+
+# Parses a term (basic expression unit). **Note:** Parsing for `Map` needs
+# to be done before `List`, since the latter rejects "map-like" syntax as a
+# fatal error.
+def implTerm = {/
+    parVarRef | parInt | parString | parEmptyMap | parMap | parList |
+    parDeriv | parClosure | parParenExpression
+|
+    # Defined by *Samizdat Layer 1*. The lookahead is just to make it clear
+    # that *Layer 1* can only be "activated" with that one specific token.
+    &@"{/" parParser
+|
+    # Defined by *Samizdat Layer 2*.
+    &[@interpolatedString @"(" @"["] parTerm2
+/};
+Box::store(parTerm, implTerm);
+
+# Parses a list of "actual" (as opposed to formal) arguments to a function.
+# Yields a list of expression nodes.
+def parActualsList = {/
+    @"("
+    normalActuals = parUnadornedList
+    @")"
+    closureActuals = parClosure*
+    { <> [closureActuals*, normalActuals*] }
+|
+    parClosure+
+/};
+
+# `prefixOperator` and `postfixOperator` from layer 0 are replaced with
+# forwarded functions here. These are subsumed by more featureful layer 2
+# definitions, below.
+def parPrefixOperator = ParseForwarder::make();
+def parPostfixOperator = ParseForwarder::make();
+
+# Parses a unary expression. This is a term, optionally surrounded on
+# either side by any number of unary operators. Postfix operators
+# take precedence over (are applied before) the prefix operators.
+def implUnaryExpression = {/
+    prefixes = parPrefixOperator*
+    base = parTerm
+    postfixes = parPostfixOperator*
+
+    {
+        def withPosts = Generator::doReduce1(postfixes, base)
+            { op, result <> op(result) };
+        <> Generator::doReduce1(Sequence::reverse(prefixes), withPosts)
+            { op, result <> op(result) }
+    }
+/};
+Box::store(parUnaryExpression, implUnaryExpression);
+
+# `expression` from layer 0 is omitted here (it's forwarded earlier), and
+# `statement` and `nonlocalExit` are replaced with forwarded functions here.
+# These are all subsumed by more featureful layer 2 definitions, below.
+def parStatement = ParseForwarder::make();
+def parNonlocalExit = ParseForwarder::make();
+
+# Parses a local yield / return.
+def parYield = {/
+    @"<>"
+    (
+        ex = parExpression
+        { <> {yield: ex} }
+    |
+        { <> {} }
+    )
+/};
+
+# Parses a program body (statements plus optional yield).
+def implProgramBody = {/
+    @";"*
+
+    most = (
+        s = parStatement
+        @";"+
+        { <> s }
+    )*
+
+    last = (
+        s = (parStatement | parNonlocalExit)
+        { <> {statements: [s]} }
+    |
+        y = parYield
+        { <> {statements: [], y*} }
+    |
+        { <> {statements: []} }
+    )
+
+    @";"*
+
+    {
+        def allStatements = [most*, last::statements*];
+        <> {last*, statements: allStatements}
+    }
+/};
+Box::store(parProgramBody, implProgramBody);
+
+# Top-level rule to parse an expression with possible error afterwards.
+def parExpressionOrError = {/
+    ex = parExpression
+    (
+        pending = .+
+        { reportError(pending) }
+    )?
+    { <> ex }
+/};
+
+# Top-level rule to parse a program with possible error afterwards.
+# Note that an empty string is a valid program.
+def parProgramOrError = {/
+    prog = parProgram
+    (
+        pending = .+
+        { reportError(pending) }
+    )?
+    { <> prog }
+/};
+
+
+#
+# *Layer 1* Rules
+#
+# This section consists of the definitions required to implement *Layer 1*,
+# above and beyond the preceding section.
+#
+# **Note:** The grammar uses the label "pex" to denote various
+# "Parser EXpression" types.
+#
+
+# Forward declaration.
+def parChoicePex = ParseForwarder::make();
+
+# Map from parser tokens to derived value types for pexes.
+def PEX_TYPES = {
+    "&": "lookaheadSuccess",
+    "!": "lookaheadFailure",
+    "?": "opt",
+    "*": "star",
+    "+": "plus"
+};
+
+# Parses a parser function.
+def implParser = {/
+    @"{/"
+    pex = parChoicePex
+    @"/}"
+    { <> @[parser: pex] }
+/};
+Box::store(parParser, implParser);
+
+# Parses a parenthesized parsing expression.
+def parParenPex = {/
+    @"("
+    pex = parChoicePex
+    @")"
+    { <> pex }
+/};
+
+# Parses a string literal parsing expression.
+def parParserString = {/
+    s = @string
+    {
+        def value = dataOf(s);
+        <> ifIs { <> eq(Collection::sizeOf(value), 1) }
+            { <> @[token: value] }
+            { <> s }
+    }
+/};
+
+# Parses a token literal parsing expression.
+def parParserToken = {/
+    @"@"
+    type = parIdentifierString
+    { <> @[token: dataOf(type)] }
+/};
+
+# Parses a string or character range parsing expression, used when defining
+# sets. Yields a string per se (not a token).
+def parParserSetString = {/
+    s = @string
+    (
+        @".."
+        end = @string
+        {
+            def startChar = dataOf(s);
+            def endChar = dataOf(end);
+            <> ifIs
+                {
+                    <> eq(1,
+                        &eq(Collection::sizeOf(startChar),
+                            Collection::sizeOf(endChar)))
+                }
+                { <> cat(Range::makeInclusiveRange(startChar, 1, endChar)*) }
+        }
+    |
+        { <> dataOf(s) }
+    )
+/};
+
+# Parses a set (or set complement) parsing expression.
+def parParserSet = {/
+    @"["
+
+    type = (
+        @"!" { <> "tokenSetComplement" }
+    |
+        { <> "tokenSet" }
+    )
+
+    terminals = (
+        strings = parParserSetString+
+        { <> [cat(strings*)*] }
+    |
+        tokens = parParserToken+
+        { <> Generator::filter(tokens, dataOf) }
+    |
+        { <> [] }
+    )
+
+    @"]"
+
+    { <> @[(type): terminals] }
+/};
+
+# Parses a code block parsing expression.
+def parParserCode = {/
+    closure = parNullaryClosure
+    { <> @[code: dataOf(closure) ] }
+/};
+
+# Parses a parsing expression term.
+def parParserTerm = {/
+    @"."
+    { <> @any }
+|
+    @"("
+    @")"
+    { <> @empty }
+|
+    parVarRef | parParserString | parParserToken | parParserSet |
+    parParserCode | parParenPex
+/};
+
+# Parses a repeat (or not) parsing expression.
+def parRepeatPex = {/
+    term = parParserTerm
+    (
+        repeat = [@"?" @"*" @"+"]
+        { <> @[(get(PEX_TYPES, typeOf(repeat))): term] }
+    |
+        { <> term }
+    )
+/};
+
+# Parses a lookahead (or not) parsing expression. This covers both lookahead
+# success and lookahead failure.
+def parLookaheadPex = {/
+    (
+        lookahead = [@"&" @"!"]
+        pex = parRepeatPex
+        { <> @[(get(PEX_TYPES, typeOf(lookahead))): pex] }
+    )
+|
+    parRepeatPex
+/};
+
+# Parses a name (or not) parsing expression.
+def parNamePex = {/
+    (
+        name = @identifier
+        @"="
+        pex = parLookaheadPex
+        { <> @[varDef: {name: dataOf(name), value: pex}] }
+    )
+|
+    parLookaheadPex
+/};
+
+# Parses a sequence parsing expression. This includes sequences of length
+# one, but it does *not* parse empty (zero-length) sequences.
+def parSequencePex = {/
+    items = parNamePex+
+    { <> @[sequence: items] }
+/};
+
+# Parses a choice parsing expression. This includes a single choice.
+def implChoicePex = {/
+    one = parSequencePex
+    rest = (@"|" parSequencePex)*
+    { <> @[choice: [one, rest*]] }
+/};
+Box::store(parChoicePex, implChoicePex);
+
+
+#
+# Layer 2 Definitions and Rules
+#
+
+# Helper for string interpolation: Parses the two kinds of interpolation,
+# yielding an appropriate expression node if syntactically valid, including
+# verification that all input was consumed.
+def parStringInterpolation = {/
+    &@"("
+    ex = parTerm
+    !.
+    { <> ex }
+|
+    &@"{"
+    block = parNullaryClosure
+    !.
+    { <> makeCall(block) }
+/};
+
+# Parses an interpolated string. The payload of an interpolated string
+# token is a list with elements being either simple strings or lists of
+# tokens. The token lists are delimited either with parentheses or braces.
+# Parenthesized lists are taken to be expressions to be evaluated. Braced
+# lists are taken to be thunks to be evaluated-and-called. The translation
+# is along these lines:
+#
+# ```
+# @[interpolatedString: {
+#     "string",
+#     {format: "formatStr", tokens: [@"(", exprToken, ..., @")"]},
+#     {format: "formatStr", tokens: [@"{", blockToken, ..., @"}"]}
+# ]]
+# ```
+# =>
+# ```
+# cat("string", fmt1((expr...)?*), fmt2({ block... }()?*))
+# ```
+#
+# where `fmt*` is either a reference to `Format::usual` (if no format
+# specifier is given) or a call to `Format::formatterFor` (if a
+# specifier *is* given).
+def parInterpolatedString = {/
+    token = @interpolatedString
+
+    {
+        # Convert each of the payload items into the proper form.
+        # This includes recursive parser calls to convert list forms
+        # into appropriate node types.
+        def elems = Generator::filterAll(dataOf(token)) { elem ->
+            <> ifIs { <> isString(elem) }
+                { <> makeLiteral(elem) }
+                {
+                    def tokens = elem::tokens;
+
+                    def formatter = ifValue { <> elem::format }
+                        { format ->
+                            <> makeCallModName(
+                                "Format", "formatterFor", makeLiteral(format))
+                        }
+                        { <> makeModNameRef("Format", "usual") };
+
+                    def call = ifValueOr
+                        { <> Peg::apply(parStringInterpolation, tokens) }
+                        { Io1::die("Invalid syntax in string interpolation.") };
+
+                    <> makeCall(formatter,
+                        makeInterpolate(makeOptValueExpression(call)))
+                }
+        };
+
+        <> makeCallName("cat", elems*)
+    }
+/};
+
+# Parses a single generator definition, for use in comprehensions and
+# `for` loops. This yields a map of the form `{init: ..., formal: ...}`,
+# with `init` bound to an initializer expression and `formal` bound to
+# a formal argument declaration.
+def parGeneratorDef = {/
+    formal = (
+        name = @identifier
+        { <> {name: dataOf(name)} }
+    |
+        "."
+        { <> {} }
+    )
+
+    @in
+    init = parExpression
+
+    { <> {formal: formal, init: init} }
+/};
+
+# Parses a comma-separated list of generator definitions, for use in
+# comprehensions and `for` loops. This yields a map of the form
+# `{formals: ..., inits: ...}`, with `formals` bound to a formal
+# argument declaration corresponding to the names given to each of the
+# generators, and `inits` bound to a list of generator initializer
+# expressions.
+def parGeneratorList = {/
+    one = parGeneratorDef
+    rest = ("," parGeneratorDef)*
+
+    {
+        def gens = [one, rest*];
+        def formals = Generator::filterAll(gens) { gen <> gen::formal };
+        def inits = Generator::filterAll(gens) { gen <> gen::init };
+
+        <> {formals: formals, inits: inits}
+    }
+/};
+
+# Helper for `parComprehension`, which parses the body of a comprehension,
+# yielding appropriate arguments for a call to either `makeFilterGenerator`
+# or `filterAll`.
+def parComprehensionBody = {/
+    genList = parGeneratorList
+    (@"->" | &@"<>")
+    filterBody = parProgramBody
+
+    {
+        def genFormals = genList::formals;
+        def genInits = genList::inits;
+
+        <> [@[closure: {filterBody*, formals: genFormals}], genInits*]
+    }
+/};
+
+# Parses a comprehension expression, which can result in either a
+# list or a generator, depending on choice of delimiter.
+#
+# The translation is along the lines of:
+#
+# ```
+# (name1 in expr1, name2 in expr2 -> filterBody)
+# ```
+# =>
+# ```
+# Generator::makeFilterGenerator(expr1, expr2)
+#     { name1, name2 -> filterBody }
+# ```
+#
+# ```
+# [name1 in expr1, name2 in expr2 -> filterBody]
+# ```
+# =>
+# ```
+# Generator::filterAll(expr1, expr2)
+#     { name1, name2 -> filterBody }
+# ```
+def parComprehension = {/
+    @"("
+    body = parComprehensionBody
+    @")"
+
+    { <> makeCallModName("Generator", "makeFilterGenerator", body*) }
+|
+    @"["
+    body = parComprehensionBody
+    @"]"
+
+    { <> makeCallModName("Generator", "filterAll", body*) }
+/};
+
+# Parses the `term` variants introduced in *Layer 2*.
+def implTerm2 = {/
+    parInterpolatedString
+|
+    parComprehension
+/};
+Box::store(parTerm2, implTerm2);
+
+# Parses a nonlocal exit / return. All of the form matched by this rule
+# have the dual properties of (a) necessarily being at the end of a code
+# block, and (b) being represented as a function call in the underlying
+# function representation of code blocks.
+def implNonlocalExit = {/
+    name = (
+        @"<"
+        n = parVarRef
+        @">"
+        { <> n }
+    |
+        op = [@break @continue @return]
+        { <> makeVarRef(typeOf(op)) }
+    )
+
+    value = (
+        ex = parExpression
+        {
+            # The test for a valued `continue` is done explicitly here
+            # (rather than just letting the rule fail) in order to make the
+            # error message more sensible.
+            ifIs { <> eq(dataOf(name), "continue") }
+                { Io1::die("Invalid use of continue with value.") };
+            <> ex
+        }
+    )?
+
+    { <> makeCallNonlocalExit(name, value*) }
+/};
+Box::store(parNonlocalExit, implNonlocalExit);
+
+# Parses a unary prefix operator. This yields a function (per se) that
+# takes a node and yields a call to the appropriate operator function.
+def implPrefixOperator = {/
+    operator = [@"-" @"!!!"]
+    {
+        def name = get(UNARY_OPERATORS, typeOf(operator));
+        <> { node <> makeCall(name, node) }
+    }
+|
+    # This one is specially converted, since it's a control construct,
+    # not just a simple function application.
+    @"!"
+    { <> { node <> makeCallNameThunks("ifNot", node, makeLiteral(true)) } }
+/};
+Box::store(parPrefixOperator, implPrefixOperator);
+
+# Tree for the closure part of `target.func` syntax expansion.
+# This expression is constant across all translations, and it's most easily
+# constructed by using the built-in parser.
+def TARGET_BIND_CLOSURE = sam0ParseProgram(
+    "target, func <> { args* <> func(target, args*) }");
+
+# Tree for the closure part of `target.func(arg, ...)` syntax expansion,
+# similar to the above.
+def TARGET_CALL_CLOSURE = sam0ParseProgram(
+    "target, func, args* <> func(target, args*)");
+
+# Parses a unary postfix operator. This yields a function (per se) to call
+# in order to construct a node that represents the appropriate ultimate
+# function call.
+def implPostfixOperator = {/
+    actuals = parActualsList
+    { <> { node <> makeCall(node, actuals*) } }
+|
+    # This is sorta-kinda a binary operator, but in terms of precedence it
+    # fits better here.
+    @"::"
+    key = parIdentifierString
+    { <> { node <> makeGetExpression(node, key) } }
+|
+    # The lookahead failure here is to make the grammar prefer `*` to be
+    # treated as a binary op.
+    @"*" !parExpression
+    { <> { node <> makeInterpolate(node) } }
+|
+    @"?"
+    { <> { node <> makeOptValueExpression(node) } }
+|
+    @"**"
+    { <> { node <> makeCallName("totNe", makeLiteral(false), node) } }
+|
+    @"??"
+    {
+        <> { node ->
+            <> makeCallNameThunks("ifIs",
+                node, makeLiteral(true), makeLiteral(false))
+        }
+    }
+|
+    @"["
+    exprs = parUnadornedList
+    @"]"
+
+    (
+        { <> eq(exprs, []) }
+        { Io1::die("Missing index value(s) from index expression.") }
+    |
+        { <> { node <> makeCall((UNARY_OPERATORS::"[]"), node, exprs*) } }
+    )
+|
+    # This translates as something like the following. Note that the
+    # second translation has to use a closure to keep the order of evaluation
+    # be target-then-function. The third translation is for the common case
+    # of `func` being a simple identifier.
+    #
+    # ```
+    # target.func
+    # =>
+    # { target, func <> { args* <> func(target, args*) } }(target, func)
+    # ```
+    #
+    # ```
+    # target.funcExpr(arg, ...)
+    # =>
+    # { target, func, args* <> func(target, args*) }(target, funcExpr, arg, ...)
+    # ```
+    #
+    # ```
+    # target.funcName(arg, ...)
+    # =>
+    # funcName(target, arg, ...)
+    # ```
+    @"."
+    funcExpr = parTerm
+
+    (
+        # `target.func(arg, ...)`
+        actuals = parActualsList
+        {
+            <> ifIs { eq(typeOf(funcExpr), "varRef") }
+                {
+                    # `funcExpr` is a simple variable reference, so there's
+                    # no need to reorder using a closure.
+                    <> { node ->
+                        <> makeCall(funcExpr, node, actuals*)
+                    }
+                }
+                {
+                    <> { node ->
+                        <> makeCall(TARGET_CALL_CLOSURE,
+                            node, funcExpr, actuals*)
+                    }
+                }
+        }
+    |
+        # `target.func`
+        {
+            <> { node ->
+                <> makeCall(TARGET_BIND_CLOSURE, node, funcExpr)
+            }
+        }
+    )
+/};
+Box::store(parPostfixOperator, implPostfixOperator);
+
+# Parses a range expression.
+def parRangeExpression = {/
+    base = parUnaryExpression
+
+    (
+        # Not actually a range expression.
+        ![@".." @"..!" @"..+"]
+        { <> base }
+    |
+        increment = (
+            @".."
+            inc = parUnaryExpression
+            &[@".." @"..!" @"..+"] # So this won't match a limit expression.
+            { <> inc }
+        |
+            { <> makeLiteral(1) }
+        )
+
+        result = (
+            op = [@".." @"..!"]
+            limit = parUnaryExpression
+            {
+                <> makeCall(get(BINARY_OPERATORS, typeOf(op)),
+                    base, increment, limit)
+            }
+        |
+            @"..+"
+            { <> makeCall((BINARY_OPERATORS::"..+"), base, increment) }
+        )
+
+        (
+            # Any additional range-ish operators cause an explicit error.
+            [@".." @"..!" @"..+"]
+            { Io1::die("Invalid form for range expression.") }
+        |
+            { <> result }
+        )
+    )
+/};
+
+# Parses a multiplicative expression.
+def parMulExpression = {/
+    firstEx = parRangeExpression
+    opExes = (
+        op = [@"*" @"/" @"%" @"//" @"%%" @"<<<" @">>>"]
+        ex = parRangeExpression
+        { <> [op, ex] }
+    )*
+
+    { <> makeBinaryCalls(firstEx, opExes) }
+/};
+
+# Parses an additive expression.
+def parAddExpression = {/
+    firstEx = parMulExpression
+    opExes = (
+        op = [@"+" @"-" @"&&&" @"|||" @"^^^"]
+        ex = parMulExpression
+        { <> [op, ex] }
+    )*
+
+    { <> makeBinaryCalls(firstEx, opExes) }
+/};
+
+# Parses a comparison expression. The syntax here is the mathematical
+# style of `x < y < z` meaning `(x < y) & (y < z)`. This semantics
+# falls naturally out of the left-associativity of the expression
+# along with the value-or-void logic model, as defined by the language.
+def parCompareExpression = {/
+    firstEx = parAddExpression
+    opExes = (
+        op = [
+            @"=="   @"!="   @"<"   @">"   @"<="   @">="
+            @"\\==" @"\\!=" @"\\<" @"\\>" @"\\<=" @"\\>="
+        ]
+        ex = parAddExpression
+        { <> [op, ex] }
+    )*
+
+    # Third argument here indicates that the inner calls need to be made
+    # voidable.
+    { <> makeBinaryCalls(firstEx, opExes, true) }
+/};
+
+# Parses a single test clause with optional assignment, yielding a map of
+# the form @[formal: ..., test: ...], with `formal` bound to a formal argument
+# declaration and `test` bound to the test expression. If no formal was
+# parsed, `formal` is bound to `{}`.
+def parTestClause = {/
+    formal = (
+        name = @identifier
+        @":="
+        { <> {name: dataOf(name)} }
+    |
+        { <> {} }
+    )
+
+    test = parExpression
+
+    { <> {formal: formal, test: test} }
+/};
+
+# Parses a single parenthesized test clause.
+def parParenTestClause = {/
+    @"("
+    result = parTestClause
+    @")"
+
+    { <> result }
+/};
+
+# Parses a list of one or more comma-separated parenthesized test clauses.
+def parParenTestClauseList = {/
+    @"("
+    first = parTestClause
+    more = (@"," parTestClause)*
+    @")"
+
+    { <> [first, more*] }
+/};
+
+# Parses a clause in a logical-and expression. This is just like
+# `parParenTestClause` above, except that it also allows for unparenthesized
+# `compareExpression`s.
+def parLogicAndClause = {/
+    parParenTestClause
+|
+    test = parCompareExpression
+    { <> {formal: {}, test: test} }
+/};
+
+# Parses a short-circuit logical-and expression. The translation is along
+# the lines of:
+#
+# ```
+# expr1 & expr2
+# =>
+# ifIs { <> expr1 } { <> expr2 }
+# ```
+#
+# ```
+# (var1 := expr1) & expr2
+# =>
+# ifValue { <> expr1 } { var1 <> expr2 }
+# ```
+#
+# ```
+# (var1 := expr1) & expr2 & (var3 := expr3) & expr4
+# =>
+# ifValues(
+#     makeList(
+#         { <> expr1 },
+#         { var1 <> expr2 },
+#         { var1, . <> expr3 }),
+#     { var1, ., var3 <> expr4 }
+# ```
+#
+# That is, a single `ifIs` or `ifValue` call if there's only one `&`, or an
+# `ifValues` call if there is a chain of three or more clauses.
+def parLogicAndExpression = {/
+    # This is done with the `*` on the list head (that is, most-then-last
+    # instead of the more usual arrangement of first-then-rest), since the
+    # last clause is special in that it can't be an assignment. The last
+    # clause is also the base case for the `doReduce1` call.
+    most = (
+        clause = parLogicAndClause
+        @"&"
+        { <> clause }
+    )*
+    last = parCompareExpression
+
+    (
+        # Not actually an `&` expression.
+        { <> eq(most, []) }
+        { <> last }
+    |
+        # Non-compound `&` expression.
+        { <> eq(Collection::sizeOf(most), 1) }
+        {
+            def clause = most*;
+            def formal = clause::formal;
+            def testThunk = makeThunk(clause::test);
+            def resultThunk = makeThunk(last);
+
+            <> ifIs { <> eq(formal, {}) }
+                { <> makeCallName("ifIs", testThunk, resultThunk) }
+                {
+                    <> makeCallName("ifValue",
+                        testThunk,
+                        closureWithFormals(resultThunk, formal))
+                }
+        }
+    |
+        # Compound `&` expression (three or more clauses).
+        {
+            # Make a version of the test clauses, as thunks with formals lists.
+            def formals = Generator::filterAll(most) { clause <> clause::formal };
+            def testThunks = Generator::filterAll(most, Range::makeOpenRange(0, 1))
+                { clause, index ->
+                    def test = clause::test;
+                    <> closureWithFormals(makeThunk(test),
+                        Collection::slice(formals, 0, index)*)
+                };
+
+            # Construct the overall `ifValues` call.
+            <> makeCallName("ifValues",
+                makeCallName("makeList", testThunks*),
+                closureWithFormals(makeThunk(last), formals*))
+        }
+    )
+/};
+
+# Parses a short-circuit logical-or expression. The translation is along
+# the lines of:
+#
+# ```
+# expr1 | expr2 | expr3
+# ```
+# =>
+# ```
+# ifValueOr { <> expr1 }
+#     { ifValueOr { <> expr2 } { <> expr3 } }
+# ```
+def parLogicOrExpression = {/
+    one = parLogicAndExpression
+    rest = (@"|" parLogicAndExpression)*
+
+    (
+        # This handles the case of not actually being a logical-or expression.
+        {
+            <> ifIs { <> eq(rest, []) }
+                { <> one }
+        }
+    |
+        {
+            def allExprs = Sequence::reverse([one, rest*]);
+            <> Generator::doReduce1(
+                Collection::butFirst(allExprs),
+                Collection::first(allExprs))
+                { ex, result ->
+                    <> makeCallName("ifValueOr",
+                        makeThunk(ex), makeThunk(result))
+                }
+        }
+    )
+/};
+
+# Helper for `if` and `while` parsing: Takes a parenthesized list of test
+# clauses and yields a function that takes the `then` node and optional
+# `else` node, returning the final `if*` call. The three cases are along
+# the lines of:
+#
+# ```
+# (nonBoundExpr)
+# =>
+# ifIs { <> nonBoundExpr }
+#     { ... then ... }
+#     { ... else ... }
+# ```
+#
+# ```
+# (name := boundExpr)
+# =>
+# ifValue { <> boundExpr }
+#     { name -> ... then ... }
+#     { ... else ... }
+# ```
+#
+# ```
+# (name1 := expr1, unboundExpr, name3 := expr3)
+# =>
+# ifValues(
+#     makeList(
+#         { <> expr1 },
+#         { name1 <> unboundExpr },
+#         { name1, . <> expr3 }),
+#     { name1, ., name3 -> ... then ... }
+#     { ... else ... })
+# ```
+def parMultiTest = {/
+    clauses = parParenTestClauseList
+
+    (
+        # Single test. Will translate as either `ifValue` or `ifIs`.
+        { <> eq(Collection::sizeOf(clauses), 1) }
+        {
+            def clause = clauses*;
+            def formal = clause::formal;
+            def testThunk = makeThunk(clause::test);
+            <> { thenThunk, elseThunk? ->
+                <> ifIs { eq(formal, {}) }
+                    {
+                        <> makeCallName("ifIs",
+                            testThunk, thenThunk, elseThunk*)
+                    }
+                    {
+                        <> makeCallName("ifValue",
+                            testThunk,
+                            closureWithFormals(thenThunk, formal),
+                            elseThunk*)
+                    }
+            }
+        }
+    |
+        # General case.
+        {
+            # Make a version of the test clauses, as thunks with formals lists.
+            def formals = Generator::filterAll(clauses) { clause <> clause::formal };
+            def testThunks = Generator::filterAll(clauses, Range::makeOpenRange(0, 1))
+                { clause, index ->
+                    def test = clause::test;
+                    <> closureWithFormals(makeThunk(test),
+                        Collection::slice(formals, 0, index)*)
+                };
+
+            # Result function which constructs the overall `ifValues` call.
+            <> { thenThunk, elseThunk? ->
+                <> makeCallName("ifValues",
+                    makeCallName("makeList", testThunks*),
+                    closureWithFormals(thenThunk, formals*),
+                    elseThunk*)
+            }
+        }
+    )
+/};
+
+# Parses an if expression. The translation is along the lines of:
+#
+# ```
+# if <out> (name1 := expr1) {
+#     thenStat1
+# } else if (expr2) {
+#     thenStat2
+# } else if (name3 := expr3, name4 := expr4) {
+#     thenStat34
+# } else {
+#     elseStat
+# }
+# ```
+# =>
+# ```
+# { <out> ->
+#     <> ifValue { <> expr1 }
+#         { name1 -> thenStat1 }
+#         {
+#             <> ifIs { <> expr2 }
+#                 { name2 -> thenStat2 }
+#                 {
+#                     <> ifValues(
+#                         makeList(
+#                             { <> expr3 },
+#                             { name3 <> expr4 }),
+#                         { name3, name4 -> thenStat34 },
+#                         { elseStat })
+#                 }
+#         }
+# }()
+# ```
+#
+# with:
+# * the outer thunk-call omitted if there was no yield definition.
+# * omitting the final `elseStat` if there was no `else` clause.
+# * `ifIs` instead of `ifValue` and no then-clause argument declaration for
+#   any clause where no name binding was present.
+# * `ifValues` instead of `ifValue` (with incremental formals binding) for
+#   any clause that uses multiple tests.
+# * arbitrary nesting of additional clauses.
+def parIfExpression = {/
+    @if
+    yieldDef = parOptYieldDef
+    firstCondition = parMultiTest
+    firstThen = parCodeOnlyClosure
+
+    elseIfThens = (
+        @else
+        @if
+        condition = parMultiTest
+        then = parCodeOnlyClosure
+        { <> {maker: condition, then: then} }
+    )*
+
+    optElse = (@else parCodeOnlyClosure)?
+
+    {
+        # This builds the full expression from back to front (inner to outer).
+        def clauses = Sequence::reverse(
+            [{maker: firstCondition, then: firstThen}, elseIfThens*]);
+
+        # To keep things simple, partial results are always thunks wrapped
+        # in a single-element list, so that they can be slotted directly into
+        # place as the third argument to an enclosing `if*` by saying `result*`
+        # (which also handles the case of a missing final `else`).
+        def reduction = Generator::doReduce1(clauses, optElse) { clause, optResult ->
+            def maker = clause::maker;
+            def then = clause::then;
+            <> [makeThunk(maker(then, optResult*))]
+        };
+
+        # Unwrap the single-element `reduction` result list;
+        def mainThunk = reduction*;
+
+        # Either add a yield def to the thunk and wrap it in a call, or
+        # unwrap it into a straight call, depending on if the original `if`
+        # has a yield def or not.
+        <> ifIs { <> eq(yieldDef, {}) }
+            { <> dataOf(mainThunk)::yield }
+            {
+                # There was a yield def. Add the yield def to the thunk,
+                # and wrap that in a call.
+                def mainClosure =
+                    closureWithYieldDef(mainThunk, valueOf(yieldDef));
+                <> makeCall(mainClosure)
+            }
+    }
+/};
+
+# Parses the optional yield definition that's associated with the `break`
+# exit of a loop. This always results in a list, which is empty if there
+# is no yield definition present, or is a single-element list of an
+# appropriate variable definition and assignment.
+def parOptBreakDef = {/
+    (
+        y = parYieldDef
+        { <> makeVarDef(y, makeVarRef("break")) }
+    )?
+/};
+
+# Parses a while expression. The translation is along these lines:
+#
+# ```
+# while <out> (name1 := test1) { <next> -> stat1; stat2 }
+# ```
+# =>
+# ```
+# { <\"break"> ->
+#     def out = \"break";
+#     loop { <\"continue"> ->
+#         ifValue { <> test }
+#             { <next> name -> stat1; stat2 }
+#             { <\"break"> }
+#     }
+# }()
+# ```
+#
+# with:
+# * the initial break assignment omitted if there is no yield def.
+# * the body argument declaration changed to `.` if there is no
+#   test expression name binding.
+# * `ifIs` instead of `ifValue` if there is no name binding.
+# * `ifValues` instead of `ifValue` if there are multiple tests.
+def parWhileExpression = {/
+    @while
+    breakDef = parOptBreakDef
+    testMaker = parMultiTest
+    code = parNullaryClosure
+
+    {
+        def loopClosure = @[closure: {
+            formals: [],
+            yieldDef: "continue",
+            statements: [
+                testMaker(
+                    code,
+                    makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
+            ]
+        }];
+
+        def mainClosure = @[closure: {
+            formals: [],
+            yieldDef: "break",
+            statements: [breakDef*, makeCallName("loop", loopClosure)]
+        }];
+
+        <> makeCall(mainClosure)
+    }
+/};
+
+# Parses a do expression. The translation is along these lines:
+#
+# ```
+# do <out> { <next> -> stat1; stat2 } while (expr)
+# ```
+# =>
+# ```
+# { <\"break"> ->
+#     def out = \"break";
+#     loop { <\"continue"> ->
+#         { <next> -> stat1; stat2 }();
+#         ifNot { <> expr }
+#             { <\"break"> }
+#     }
+# }()
+# ```
+#
+# with the initial break assignment omitted if there is no yield def, and
+# with the `ifNot` statement omitted if there is no `while` at the end
+# of the `do`.
+def parDoExpression = {/
+    @do
+    breakDef = parOptBreakDef
+    code = parNullaryClosure
+    condition = (
+        @while
+        ex = parParenExpression
+        {
+            <> makeCallName("ifNot",
+                makeThunk(ex),
+                makeThunk(makeCallNonlocalExit(makeVarRef("break"))))
+        }
+    )?
+
+    {
+        def loopClosure = @[closure: {
+            formals: [],
+            yieldDef: "continue",
+            statements: [makeCall(code), condition*]
+        }];
+
+        def mainClosure = @[closure: {
+            formals: [],
+            yieldDef: "break",
+            statements: [breakDef*, makeCallName("loop", loopClosure)]
+        }];
+
+        <> makeCall(mainClosure)
+    }
+/};
+
+# Parses a for expression. The translation is along these lines:
+#
+# ```
+# for <out> (name1 in expr1, name2 in expr2) { <next> -> stat1; stat2 }
+# ```
+# =>
+# ```
+# { <\"break"> ->
+#     def out = \"break";
+#     Generator::filterPump(expr1, expr2) { <\"continue"> name1, name2 ->
+#         def next = \"continue";
+#         stat1; stat2
+#     }
+# }()
+# ```
+#
+# with:
+# * the break assignment omitted if there is no outer yield def.
+# * the continue assignment omitted if there is no inner yield def
+def parForExpression = {/
+    @for
+    breakDef = parOptBreakDef
+    @"("
+    genList = parGeneratorList
+    @")"
+    code = parNullaryClosure
+
+    {
+        def genFormals = genList::formals;
+        def genInits = genList::inits;
+
+        def codePayload = dataOf(code);
+        def continueDef = ifValue { <> codePayload::yieldDef }
+            { name <> [makeVarDef(name, makeVarRef("continue"))] }
+            { <> [] };
+
+        def loopClosure = @[closure: {
+            formals: genFormals,
+            yieldDef: "continue",
+            statements: [continueDef*, codePayload::statements*]
+        }];
+
+        def mainClosure = @[closure: {
+            formals: [],
+            yieldDef: "break",
+            statements: [
+                breakDef*,
+                makeCallModName(
+                    "Generator", "filterPump", loopClosure, genInits*)
+            ]
+        }];
+
+        <> makeCall(mainClosure)
+    }
+/};
+
+# Helper for switch expressions: Parse a single case, including
+# `default` and `else` cases. Returns a map that binds `keys` and
+# `code`.
+def parSwitchCase = {/
+    keys = (
+        [@default @else]
+    |
+        k = parKey
+        { <> @[expression: k] }
+    )
+
+    @":"
+    code = parCodeOnlyClosure
+
+    { <> {code: code, keys: keys} }
+/};
+
+# Tree for the second argument to the `ifValue` inside a `switch` translation.
+# This expression is constant across all switches, and it's most easily
+# constructed by using the built-in parser.
+def SWITCH_DISPATCH_CLOSURE = sam0ParseProgram("
+    args ->
+    <> { cases, defaultFunction, value ->
+        <> ifValue { <> get(cases, value) }
+            { function <> function(value) }
+            { <> defaultFunction(value) }
+    }(args*)");
+
+# Parses a switch expression. The translation is along these lines:
+#
+# ```
+# switch <out> (name := test) {
+#     ex1: { stat1a; stat1b }
+#     ex2: { stat2a; stat2b }
+#     default: { statDefault }
+#     else: { statElse }
+# }
+# ```
+# =>
+# ```
+# { <\"break"> ->
+#     def out = \"break";
+#     <> ifValue
+#         {
+#             <> [
+#                 {
+#                     (ex1): { name -> stat1a; stat1b },
+#                     (ex2): { name -> stat2a; stat2b }
+#                 },
+#                 { name -> statDefault },
+#                 &test
+#             ]
+#         }
+#         { args ->
+#             <> { cases, defaultFunction, value ->
+#                 <> ifValue { <> get(cases, value) }
+#                     { function <> function(value) }
+#                     { <> defaultFunction(value) }
+#             }(args*)
+#         }
+#         { statElse }
+# }()
+# ```
+#
+# with:
+# * The initial break assignment omitted if there is no yield def.
+# * Overrides of map keys switched around so the *first* key wins.
+# * The `statElse` block omitted if there is no `else` clause.
+# * The `statDefault` block replaced with `{ . -> }` (that is, a yield-void
+#   one-arg function) if there is no `default` clause.
+# * the consequent closure argument declarations changed to `.` for any
+#   if no name binding was present.
+#
+# Note that the translation here is arranged so that the expressions to
+# evaluate and all the case bodies only see the expected variable bindings,
+# and not any "implementation detail" local variables.
+def parSwitchExpression = {/
+    @switch
+    breakDef = parOptBreakDef
+    testClause = parParenTestClause
+
+    @"{"
+
+    cases = parSwitchCase*
+
+    @"}"
+
+    {
+        def formal = testClause::formal;
+        def test = testClause::test;
+
+        def optDefault = Generator::filterAll(cases) { case ->
+            <> ifIs { <> eq(case::keys, @default) }
+                { <> closureWithFormals(case::code, formal) }
+        };
+
+        def optElse = Generator::filterAll(cases) { case ->
+            <> ifIs { <> eq(case::keys, @else) }
+                { <> case::code }
+        };
+
+        def regularCases = Generator::filterAll(cases) { case ->
+            def keys = case::keys;
+            <> ifIs { <> eq(typeOf(keys), "expression") }
+                {
+                    <> makeCallName("makeValueMap",
+                        dataOf(keys),
+                        closureWithFormals(case::code, formal))
+                }
+        };
+
+        ifIs { <> gt(Collection::sizeOf(optDefault), 1) }
+            { Io1::die("Multiple default cases in switch.") };
+
+        ifIs { <> gt(Collection::sizeOf(optElse), 1) }
+            { Io1::die("Multiple else cases in switch.") };
+
+        # Notes:
+        #
+        # * The cases are constructed in the somewhat-convoluted way that
+        #   they are in order to preserve the left-to-right evaluation order
+        #   of the apparent text, even though the key/case override semantics
+        #   is the opposite of what `cat(map)` defines.
+        #
+        # * The `test` is wrapped in a `voidable` node to make the
+        #   "logic nature" of the expression operate as expected (that is,
+        #   not cause a runtime error if the test is logical-false, instead
+        #   running the `else` block if any). The test is furthermore wrapped
+        #   in an `expression` node in case it happens to be an interpolation,
+        #   which will have to have expression and not argument semantics.
+        def testBody = makeThunk(
+                makeCallName("makeList",
+                    ifIs { <> eq(regularCases, []) }
+                        { <> makeLiteral({}) }
+                        {
+                            <> makeCallName("cat",
+                                makeInterpolate(
+                                    makeCallModName("Sequence", "reverse",
+                                        makeCallName("makeList",
+                                            regularCases*))))
+                        },
+                    ifValue { <> optDefault* }
+                        { value <> closureWithFormals(value, formal) }
+                        { <> YIELD_VOID_FN_1 },
+                    @[voidable: @[expression: test]]));
+
+        def ifCall = makeCallName("ifValue",
+            testBody,
+            SWITCH_DISPATCH_CLOSURE,
+            optElse*);
+
+        def mainClosure = @[closure: {
+            formals: [],
+            yieldDef: "break",
+            statements: [breakDef*],
+            yield: ifCall
+        }];
+
+        <> makeCall(mainClosure)
+    }
+/};
+
+# Parses a general expression.
+def implExpression = {/
+    # This one's the top level "regular-looking" expression (in that it
+    # covers the territory of C-style expressions).
+    parLogicOrExpression
+|
+    # This one is only nominally "regular-looking" (in that not many C
+    # family languages have function expressions).
+    parFnExpression
+|
+    # These are "statement-like" expressions, in that they look like
+    # similar statements in many (most?) C-derived languages.
+    parDoExpression | parForExpression |
+    parIfExpression | parSwitchExpression | parWhileExpression
+/};
+Box::store(parExpression, implExpression);
+
+# Parses a statement.
+def implStatement = {/
+    parVarDef | parFnDef | parExpression
+/};
+Box::store(parStatement, implStatement);
+
+
+#
+# Exported Definitions
+#
+
+# Documented in Samizdat Layer 0 spec.
+fn parseExpression(expression) {
+    def tokens = ifIs { <> isString(expression) }
+        { <> samTokenize(expression) }
+        { <> expression };
+
+    <> Peg::apply(parExpressionOrError, tokens)
+};
+
+# Documented in Samizdat Layer 1 spec.
+fn parseProgram(program) {
+    def tokens = ifIs { <> isString(program) }
+        { <> samTokenize(program) }
+        { <> program };
+
+    <> Peg::apply(parProgramOrError, tokens)
+};
+
+<> {
+    parseExpression: parseExpression,
+    parseProgram:    parseProgram
+}

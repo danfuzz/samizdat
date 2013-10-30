@@ -1,0 +1,35 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Samizdat Layer 2 Evaluation
+#
+
+def Io1 = moduleGet({name: ["core", "Io1"]});
+
+
+#
+# Private Definitions
+#
+
+# TODO
+fn convertExpression(node) {
+    Io1::die("TODO");
+};
+
+
+#
+# Exported Definitions
+#
+
+# Documented in Samizdat Layer 1 spec.
+fn eval(context, expressionNode) {
+    <> submoduleEval(context, expressionNode)
+    # def convertedNode = convertExpression(expressionNode);
+    # <> Lang0::eval(context, convertedNode)
+};
+
+<> {
+    eval: eval
+}
