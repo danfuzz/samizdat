@@ -63,9 +63,6 @@ def MANIFEST = [
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 
     # Layer 1 language implementation.
-    "tokenize1.sam0",
-    "parse1.sam0",
-    "eval1.sam0",
     ["core", "Lang1"],
 
     # Layer 1 additional library.
@@ -74,9 +71,6 @@ def MANIFEST = [
     "Module.sam1",
 
     # Layer 2 language implementation.
-    "tokenize2.sam1",
-    "parse2.sam1",
-    "eval2.sam1",
     ["core", "Lang2"]
 
     # Layer 2 library implementation.
