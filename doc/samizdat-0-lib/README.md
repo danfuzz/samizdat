@@ -95,6 +95,7 @@ will be returned, or one of:
   * [core::Bitwise](Bitwise.md)
   * [core::Box](Box.md)
   * [core::Collection](Collection.md)
+  * [core::CommandLine](CommandLine.md)
   * [core::EntityMap](EntityMap.md)
   * [core::Format (string formatting)](Format.md)
   * [core::FunctionForwarder](FunctionForwarder.md)
