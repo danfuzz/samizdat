@@ -137,9 +137,21 @@ fn stringFromModuleName(fqName) {
     <> Collection_slice(result, 2)
 };
 
+# Documented in spec. This is a manual definition of the `Module0` module.
+def Module0 = @[Module: {
+    info: {
+        name: ["core", "Module0"],
+        version: "0.0.1"
+    },
+    exports: {
+        moduleDef:            moduleDef,
+        moduleGet:            moduleGet,
+        stringFromModuleName: stringFromModuleName
+    }
+}];
+moduleDef(Module0);
 
 <> {
-    moduleDef:            moduleDef,
-    moduleGet:            moduleGet,
-    stringFromModuleName: stringFromModuleName
+    moduleDef: moduleDef,
+    moduleGet: moduleGet
 }

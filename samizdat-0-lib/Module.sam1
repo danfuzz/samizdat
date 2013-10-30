@@ -8,6 +8,7 @@
 
 def Box = moduleGet({name: ["core", "Box"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
+def Module0 = moduleGet({name: ["core", "Module0"]});
 
 
 #
@@ -34,7 +35,11 @@ fn findModuleDirectory(fqName, optPaths?) {
     def paths = ifValueOr { <> optPaths* } { <> MODULE_PATHS_LIST };
 
     ifIs { <> eq(paths, []) }
-        { Io1::die(cat("Module not found: ", stringFromModuleName(fqName))) };
+        {
+            Io1::die(cat(
+                "Module not found: ",
+                Module0::stringFromModuleName(fqName)))
+        };
 
     def oneDir = [Collection::first(paths)*, fqName*];
 
