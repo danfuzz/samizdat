@@ -135,13 +135,14 @@ fn makeModuleContext(baseCtx, directory) {
     <> fullCtx
 };
 
-# Loads the named module (given a flattened directory name), using a
+# Loads the named module (given a fully-qualified name), using a
 # global context based on the given `baseCtx`.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
 # `Module`, because this function needs to be called before `Module` is
 # fully loaded.
-fn loadModule(baseCtx, flatName) {
+fn loadModule(baseCtx, name) {
+    def flatName = flattenName(name);
     def ctx = makeModuleContext(baseCtx, flatName);
 
     # This must evaluate to a map.
@@ -163,9 +164,9 @@ fn loadModule(baseCtx, flatName) {
 fn loadLibraryOrModule(ctx, name) {
     <> ifIs { <> hasType(name, List) }
         {
-            def flatName = flattenName(name);
-            Io0_note(cat("    module:  ", flatName));
-            <> loadModule(ctx, flatName)
+            def Module0 = ctx::moduleGet({name: ["core", "Module0"]});
+            Io0_note(cat("    module:  ", Module0::stringFromModuleName(name)));
+            <> loadModule(ctx, name)
         }
         {
             Io0_note(cat("    library: ", name));
