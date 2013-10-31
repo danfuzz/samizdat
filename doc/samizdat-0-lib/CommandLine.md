@@ -36,4 +36,5 @@ was returned by the inner function call (including void).
 
 Currently recognized command-line options:
 
-* `--layer-0` &mdash; uses the layer 0 parser and evaluator.
+* `--layer=N` &mdash; Indicates which layer to use for parsing and
+  evaluation. `N` must be one of: `0` `1` `2`

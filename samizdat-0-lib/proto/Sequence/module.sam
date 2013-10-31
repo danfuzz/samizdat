@@ -5,5 +5,7 @@
 {
     globalName: "Sequence",
     name: ["proto", "Sequence"],
-    version: "0.0.1"
+    version: "0.0.1",
+
+    language: "Lang0"
 }

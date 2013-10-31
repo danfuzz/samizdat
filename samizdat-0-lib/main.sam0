@@ -11,36 +11,32 @@
 
 # The following declares the arguments passed to the library itself.
 #
-# `LIBRARY_DIR` is expected to be a flat path naming the directory
+# `LIBRARY_FLAT_DIR` is expected to be a flat path naming the directory
 # where library files may be found.
 
-LIBRARY_DIR ->
+LIBRARY_FLAT_DIR ->
 
 
 #
 # Private Definitions
 #
 
-# Flattens a module name to a simple directory name.
-#
-# **Note:** This function is a (low rent) duplicate of functionality in
-# `Io*` modules, because this function needs to be called before any modules
-# are loaded.
-fn flattenName(name) {
-    # Suffix each component with `/`, concatenate them all together, and
-    # drop the final `/`.
-
-    def withSlashes = Generator_filter(name, { elem <> cat(elem, "/") });
-    def nearResult = cat(withSlashes*);
-    <> Collection_slice(
-        nearResult,
-        0,
-        Number_sub(Collection_sizeOf(nearResult), 1))
-};
+# Structured path (non-flat) version of `LIBRARY_FLAT_DIR`.
+def LIBRARY_DIR = { <out> ->
+    loopReduce(LIBRARY_FLAT_DIR, [], "") { dir, path, one ->
+        ifIs { <> eq(dir, "") }
+            { <out> [path*, one] };
+        def ch = Collection_nth(dir, 0);
+        def newDir = Collection_slice(dir, 1);
+        <> ifIs { <> eq(ch, "/") }
+            { <> [newDir, [path*, one], ""] }
+            { <> [newDir, path, cat(one, ch)] };
+    }
+}();
 
 # Reads the named library file.
 fn readLibraryFile(name) {
-    def path = cat(LIBRARY_DIR, "/", name);
+    def path = cat(LIBRARY_FLAT_DIR, "/", name);
     <> ifIs { <> Io0_flatFileExists(path) }
         { <> Io0_flatReadFileUtf8(path) }
         { Io0_die(cat("No such core library file: ", name)) }
@@ -52,8 +48,8 @@ fn readLibraryFile(name) {
 # bindings that it wishes to export.
 fn loadLibrary(ctx, name) {
     def text = readLibraryFile(name);
-    def tree = ctx::samParseProgram(text);
-    def function = ctx::samEval({ctx*, LIBRARY: ctx}, tree);
+    def tree = ctx::Lang0_parseProgram(text);
+    def function = ctx::Lang0_eval({ctx*, LIBRARY: ctx}, tree);
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -72,91 +68,14 @@ fn loadLibrary(ctx, name) {
         }
 };
 
-# Makes a submodule global context, based on the given `baseCtx` and which
-# adds submodule read and load functions that use the given `directory` (a
-# flat path).
-fn makeModuleContext(baseCtx, directory) {
-    # A box for the final load context, to enable the necessary self-reference.
-    def ctxBox = Box_makeYieldBox();
-
-    # A box for all the loaded submodules.
-    def subsBox = Box_makeMutableBox({});
-
-    fn submoduleRead(name) {
-        Io0_note(cat("                 ", name));
-        <> readLibraryFile(cat(directory, "/", name))
-    };
-
-    fn submoduleExpression(name) {
-        def ctx = Box_fetch(ctxBox);
-        def text = submoduleRead(cat(name, ".sam"));
-        def tree = ctx::samParseExpression(text);
-        <> ctx::samEval(ctx, tree)
-    };
-
-    fn submoduleLoad(name) {
-        def ctx = Box_fetch(ctxBox);
-        def text = submoduleRead(cat(name, ".sam"));
-        def tree = ctx::samParseProgram(text);
-        def func = ctx::samEval(ctx, tree);
-        <> func()
-    };
-
-    fn submoduleUse(name) {
-        ifValue { <> get(Box_fetch(subsBox), name) }
-            { value -> return value };
-
-        def result = ifValue { <> submoduleLoad(name) }
-            { r <> r }
-            { <> {} };
-
-        Box_store(subsBox, {(Box_fetch(subsBox))*, (name): result});
-        <> result
-    };
-
-    def fullCtx = {
-        baseCtx*,
-        submoduleExpression: submoduleExpression,
-        submoduleUse:        submoduleUse,
-        submoduleRead:       submoduleRead
-    };
-
-    Box_store(ctxBox, fullCtx);
-    <> fullCtx
-};
-
-# Loads the named module (given a flattened directory name), using a
-# global context based on the given `baseCtx`.
-#
-# **Note:** This function is a (low rent) duplicate of functionality in
-# `Module`, because this function needs to be called before `Module` is
-# fully loaded.
-fn loadModule(baseCtx, flatName) {
-    def ctx = makeModuleContext(baseCtx, flatName);
-
-    # Both of these should evaluate to maps.
-    def info = ctx::submoduleExpression("module");
-    def exports = ctx::submoduleUse("main");
-
-    # Combine `info` and `exports to form the final module value.
-    def result = @[Module: {info: info, exports: exports}];
-    ctx::moduleDef(result);
-
-    # If `info` indicates that the module is to be exported to the
-    # global context, do so. Otherwise, return the original context.
-    <> ifValue { <> info::globalName }
-        { name <> { ctx*, (name): result } }
-        { <> ctx }
-};
-
 # Loads the named library or module, using either `loadLibrary` or
 # `loadModule` above (see which).
 fn loadLibraryOrModule(ctx, name) {
     <> ifIs { <> hasType(name, List) }
         {
-            def flatName = flattenName(name);
-            Io0_note(cat("    module:  ", flatName));
-            <> loadModule(ctx, flatName)
+            def Module0 = ctx::moduleGet({name: ["core", "Module0"]});
+            Io0_note(cat("    module:  ", Module0::stringFromModuleName(name)));
+            <> Module0::load(ctx, [LIBRARY_DIR*, name*])
         }
         {
             Io0_note(cat("    library: ", name));
@@ -187,10 +106,11 @@ fn loadAllLibraries(baseCtx) {
 # Builds the final core library, by doing file loading / evaluation, and then
 # adding a couple extra bindings.
 fn makeCoreLibrary() {
-    # Make a replacement (or new) `MODULE_PATHS` that includes `LIBRARY_DIR`.
+    # Make a replacement (or new) `MODULE_PATHS` that includes
+    # `LIBRARY_FLAT_DIR`.
     def modulePaths = ifValue { <> ENVIRONMENT::MODULE_PATHS }
-        { orig <> cat(LIBRARY_DIR, ":", orig) }
-        { <> LIBRARY_DIR };
+        { orig <> cat(LIBRARY_FLAT_DIR, ":", orig) }
+        { <> LIBRARY_FLAT_DIR };
 
     def newEnvironment =
         Collection_put(ENVIRONMENT, "MODULE_PATHS", modulePaths);

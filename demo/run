@@ -40,9 +40,6 @@ unset newProg
 # Argument parsing
 #
 
-# Whether to use layer 0 if the suffix matches.
-layer0='yes'
-
 # Whether to build the binary.
 build='no'
 
@@ -61,12 +58,9 @@ while [[ $1 != '' ]]; do
         shift
         break
     elif [[ ${opt} == '--help' ]]; then
-        echo "${progName} [--full-sam] [--build] [--optimize]"
-        echo "    [--iprofile | --time]"
+        echo "${progName} [--build] [--optimize] [--iprofile | --time]"
         echo "    demo-name arg..."
         exit
-    elif [[ ${opt} == '--full-sam' ]]; then
-        layer0='no'
     elif [[ ${opt} == '--build' ]]; then
         build='yes'
     elif [[ ${opt} == '--iprofiler' ]]; then
@@ -146,12 +140,10 @@ fi
 PATH="${PATH}:${baseDir}/out/samizdat-0"
 cmd=("samizdat-0")
 
-if [[ ${layer0} == 'yes' ]]; then
-    [[ ${mainFile} =~ ^.*\.([^.]*)$ ]]
-    extension="${BASH_REMATCH[1]}"
-    if [[ ${extension} == 'sam0' ]]; then
-        cmd=("${cmd[@]}" --layer-0)
-    fi
+# If it's numbered, use the file extension to generate a `--layer=` option.
+if [[ ${mainFile} =~ ^.*\.sam([0-9])$ ]]; then
+    layer="${BASH_REMATCH[1]}"
+    cmd=("${cmd[@]}" --layer="${layer}")
 fi
 
 if [[ ${timeRun} == 'yes' ]]; then

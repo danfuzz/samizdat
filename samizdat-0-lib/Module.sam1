@@ -8,6 +8,7 @@
 
 def Box = moduleGet({name: ["core", "Box"]});
 def Io1 = moduleGet({name: ["core", "Io1"]});
+def Module0 = moduleGet({name: ["core", "Module0"]});
 
 
 #
@@ -34,7 +35,11 @@ fn findModuleDirectory(fqName, optPaths?) {
     def paths = ifValueOr { <> optPaths* } { <> MODULE_PATHS_LIST };
 
     ifIs { <> eq(paths, []) }
-        { Io1::die(cat("Module not found: ", stringFromModuleName(fqName))) };
+        {
+            Io1::die(cat(
+                "Module not found: ",
+                Module0::stringFromModuleName(fqName)))
+        };
 
     def oneDir = [Collection::first(paths)*, fqName*];
 
@@ -70,7 +75,7 @@ fn moduleUse(searchInfo) {
     def moduleDir = findModuleDirectory(fqName);
     def moduleReader = Io1::sandboxedReader(moduleDir);
     def infoText = moduleReader(["module.sam"]);
-    def info = sam0Eval(LIBRARY, sam0ParseExpression(infoText));
+    def info = Lang0_eval(LIBRARY, Lang0_parseExpression(infoText));
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     ifIs { <> ne(fqName, info::name) }
@@ -78,7 +83,7 @@ fn moduleUse(searchInfo) {
 
     def mainText = moduleReader(["main.sam"]);
     def subLibrary = makeLibrary({LIBRARY*, INFO: info, READER: moduleReader});
-    def exports = sam0Eval(subLibrary, sam0ParseProgram(mainText))();
+    def exports = Lang0_eval(subLibrary, Lang0_parseProgram(mainText))();
 
     def result = @[Module: {info: info, exports: exports}];
     moduleDef(result);

@@ -473,10 +473,10 @@ Box::store(tokStringPart2, implStringPart2);
 #
 
 # Documented in Samizdat Layer 1 spec.
-fn samTokenize(programText) {
+fn tokenize(programText) {
     <> Peg::apply(tokFile, programText)
 };
 
 <> {
-    samTokenize: samTokenize
+    tokenize: tokenize
 }

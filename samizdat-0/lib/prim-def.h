@@ -110,10 +110,6 @@ PRIM_FUNC(makeValueMap,          1, -1);
 PRIM_FUNC(ne,                    2, 2);
 PRIM_FUNC(nonlocalExit,          1, 2);
 PRIM_FUNC(optValue,              1, 1);
-PRIM_FUNC(samEval,               2, 2);
-PRIM_FUNC(samParseExpression,    1, 1);
-PRIM_FUNC(samParseProgram,       1, 1);
-PRIM_FUNC(samTokenize,           1, 1);
 PRIM_FUNC(totalOrder,            2, 2);
 PRIM_FUNC(typeOf,                1, 1);
 
@@ -127,3 +123,7 @@ PRIM_FUNC(Io0_flatReadFileUtf8,  1, 1);
 PRIM_FUNC(Io0_flatWriteFileUtf8, 2, 2);
 PRIM_FUNC(Io0_die,               0, 1);
 PRIM_FUNC(Io0_note,              1, 1);
+PRIM_FUNC(Lang0_eval,            2, 2);
+PRIM_FUNC(Lang0_parseExpression, 1, 1);
+PRIM_FUNC(Lang0_parseProgram,    1, 1);
+PRIM_FUNC(Lang0_tokenize,        1, 1);

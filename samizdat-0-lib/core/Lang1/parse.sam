@@ -11,6 +11,8 @@ def Io0 = moduleGet({name: ["core", "Io0"]});
 def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
 def Peg = moduleGet({name: ["core", "Peg"]});
 
+def tokenize = submoduleUse("tokenize")::tokenize;
+
 
 #
 # Private Definitions
@@ -670,24 +672,24 @@ Box::store(parChoicePex, implChoicePex);
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn samParseExpression(expression) {
+fn parseExpression(expression) {
     def tokens = ifIs { <> isString(expression) }
-        { <> samTokenize(expression) }
+        { <> tokenize(expression) }
         { <> expression };
 
     <> Peg::apply(parExpressionOrError, tokens)
 };
 
 # Documented in Samizdat Layer 0 spec.
-fn samParseProgram(program) {
+fn parseProgram(program) {
     def tokens = ifIs { <> isString(program) }
-        { <> samTokenize(program) }
+        { <> tokenize(program) }
         { <> program };
 
     <> Peg::apply(parProgramOrError, tokens)
 };
 
 <> {
-    samParseExpression: samParseExpression,
-    samParseProgram:    samParseProgram
+    parseExpression: parseExpression,
+    parseProgram:    parseProgram
 }

@@ -11,9 +11,6 @@
 # Private Definitions
 #
 
-# The old binding for `samEval`.
-def subEval = samEval;
-
 # `convertPex(node, formals)`, used to expand pex nodes into expression
 # nodes.
 def convertPex = makeRegularGeneric("convertPex", 2, 2);
@@ -288,11 +285,11 @@ genericBind(convertPexIn, "voidable", voidable_convertPexIn);
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn samEval(context, expressionNode) {
+fn eval(context, expressionNode) {
     def convertedNode = convertPexIn(expressionNode);
-    <> subEval(context, convertedNode)
+    <> submoduleEval(context, convertedNode)
 };
 
 <> {
-    samEval: samEval
+    eval: eval
 }

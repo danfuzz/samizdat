@@ -75,24 +75,6 @@ Returns the `name` mapping in the module's `info`.
 <br><br>
 ### In-Language Definitions
 
-#### `moduleDef(modu) <> module`
-
-Defines a new module, for later retrieval via `moduleGet` or `moduleUse`.
-There must not already be a defined module with the same name as the given
-one.
-
-#### `moduleGet(searchInfo) <> module | .`
-
-Gets an already-defined module whose `info` matches the given `searchInfo`.
-Returns the matching module if it is found, or returns void if there was
-no such already-defined module.
-
-The `searchInfo` map indicates the required information about the module.
-The `name` binding of `searchInfo` is required and should be a list-of-strings
-representing the fully-qualified module name.
-
-TODO: Right now, only the `name` in the `searchInfo` is checked.
-
 #### `moduleUse(searchInfo)` <> module
 
 Gets a module, as if by `moduleGet`, if it has already been defined; or
@@ -106,8 +88,3 @@ This will fail with a terminal error if the module isn't defined and
 cannot be loaded.
 
 TODO: Right now, only the `name` in the `searchInfo` is checked.
-
-#### `stringFromModuleName(fqName) <> string`
-
-Returns a "human-oriented" name given a list-of-components fully-qualified
-module name.

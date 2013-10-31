@@ -25,8 +25,14 @@ def MANIFEST = [
     # by everything else.
     "Module.sam0",
 
-    # Layer 0: Constant value definitions.
+    # Layer 0: Constant value definitions and simple functions, directly
+    # added to the global library context.
     "constants.sam0",
+    "Value.sam0",
+
+    # Layer 0 evaluation as a module. Used by everything that follows.
+    "meta.sam0",
+    ["core", "Lang0"],
 
     # Prototype definition modules, re-exported from the primitive
     # core library.
@@ -47,10 +53,6 @@ def MANIFEST = [
     ["core", "FunctionForwarder"], # Uses `Box` and `Io0`.
     ["core", "Boolean"],           # Uses `Io0`.
 
-    # Layer 0: Simple functions.
-    "meta.sam0",
-    "Value.sam0",
-
     # Layer 0: Complicated functions.
     ["core", "Generator"],
     ["core", "Range"],
@@ -61,9 +63,7 @@ def MANIFEST = [
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 
     # Layer 1 language implementation.
-    "tokenize1.sam0",
-    "parse1.sam0",
-    "eval1.sam0",
+    ["core", "Lang1"],
 
     # Layer 1 additional library.
     ["core", "Io1"],
@@ -71,9 +71,7 @@ def MANIFEST = [
     "Module.sam1",
 
     # Layer 2 language implementation.
-    "tokenize2.sam1",
-    "parse2.sam1",
-    "eval2.sam1"
+    ["core", "Lang2"]
 
     # Layer 2 library implementation.
     # TODO

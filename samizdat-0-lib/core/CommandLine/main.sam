@@ -89,18 +89,6 @@ fn parseArgs(args) {
     <> Peg::apply(parArguments, argString)
 };
 
-# Evals a program using layer 0.
-fn evalText0(context, programText) {
-    def parsedProgram = context::sam0ParseProgram(programText);
-    <> context::sam0Eval(context, parsedProgram);
-};
-
-# Evals a program using the highest-defined layer.
-fn evalText(context, programText) {
-    def parsedProgram = context::samParseProgram(programText);
-    <> context::samEval(context, parsedProgram);
-};
-
 
 #
 # Exported Definitions
@@ -120,9 +108,10 @@ fn run(context, rawArgs*) {
 
     def programText = Io1::readFileUtf8(filePath);
 
-    def evalled = ifIs { <> options::"layer-0" }
-        { <> evalText0(context, programText) }
-        { <> evalText(context, programText) };
+    def langLayer = ifValueOr { <> options::layer } { <> "2" };
+    def langModule = moduleGet({name: ["core", cat("Lang", langLayer)]});
+    def parsedProgram = langModule::parseProgram(programText);
+    def evalled = langModule::eval(context, parsedProgram);
 
     <> evalled(filePath, args*)
 };
