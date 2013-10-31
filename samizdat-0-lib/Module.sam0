@@ -186,9 +186,7 @@ genericBind(Collection_slice, "Module", Module_slice);
 # Exported Definitions
 #
 
-# Loads the module found directly in the given `directory`, using a global
-# context based on the given `baseCtx`. This does not check to see if the
-# module has already been loaded.
+# Documented in spec.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
 # `Module`, because this function needs to be called before `Module` is

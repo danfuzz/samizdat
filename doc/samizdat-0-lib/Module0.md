@@ -19,6 +19,17 @@ The globally exported functions are:
 <br><br>
 ### Function Definitions
 
+#### `load(fqPath) <> module`
+
+Loads a module from the directory named by the given fully-qualified path
+(list of directory names). This loads the code and returns the constructed
+module, but it does *not* cause the module to be findable via `moduleGet`.
+It also does *not* check to see if the module has already been loaded.
+
+This is the "early" version of module loading, which takes a few shortcuts
+compared to the full module-loading semantics. This is what is used to load
+most of the system modules, and it is not intended for use beyond that.
+
 #### `moduleDef(modu) <> module`
 
 Defines a new module, for later retrieval via `moduleGet` or `moduleUse`.
