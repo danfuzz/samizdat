@@ -21,23 +21,6 @@ LIBRARY_DIR ->
 # Private Definitions
 #
 
-# Flattens a module name to a simple directory name.
-#
-# **Note:** This function is a (low rent) duplicate of functionality in
-# `Io*` modules, because this function needs to be called before any modules
-# are loaded.
-fn flattenName(name) {
-    # Suffix each component with `/`, concatenate them all together, and
-    # drop the final `/`.
-
-    def withSlashes = Generator_filter(name, { elem <> cat(elem, "/") });
-    def nearResult = cat(withSlashes*);
-    <> Collection_slice(
-        nearResult,
-        0,
-        Number_sub(Collection_sizeOf(nearResult), 1))
-};
-
 # Reads the named library file.
 fn readLibraryFile(name) {
     def path = cat(LIBRARY_DIR, "/", name);
@@ -72,93 +55,6 @@ fn loadLibrary(ctx, name) {
         }
 };
 
-# Makes a submodule global context, based on the given `baseCtx` and which
-# adds submodule read and load functions that use the given `directory` (a
-# flat path).
-fn makeModuleContext(baseCtx, directory) {
-    # A box for the final load context, to enable the necessary self-reference.
-    def ctxBox = Box_makeYieldBox();
-
-    # A box for all the loaded submodules.
-    def subsBox = Box_makeMutableBox({});
-
-    fn submoduleRead(name) {
-        Io0_note(cat("                 ", name));
-        <> readLibraryFile(cat(directory, "/", name))
-    };
-
-    fn submoduleLoad(name) {
-        def ctx = Box_fetch(ctxBox);
-        def text = submoduleRead(cat(name, ".sam"));
-        def tree = ctx::submoduleParse(text);
-        def func = ctx::submoduleEval(ctx, tree);
-        <> func()
-    };
-
-    fn submoduleUse(name) {
-        ifValue { <> get(Box_fetch(subsBox), name) }
-            { value -> return value };
-
-        def result = ifValue { <> submoduleLoad(name) }
-            { r <> r }
-            { <> {} };
-
-        Box_store(subsBox, {(Box_fetch(subsBox))*, (name): result});
-        <> result
-    };
-
-    # This must evaluate to a map.
-    def moduleInfo = Lang0_eval(baseCtx,
-        Lang0_parseExpression(submoduleRead("module.sam")));
-
-    def languageName = moduleInfo::language;
-    def languageModule = ifIs { <> ne(languageName, "none") }
-        { <> baseCtx::moduleGet({name: ["core", languageName]}) }
-        {
-            # Fall-back used when loading modules before `Lang0` is defined.
-            <> {
-                eval:         Lang0_eval,
-                parseProgram: Lang0_parseProgram
-            }
-        };
-
-    def fullCtx = {
-        baseCtx*,
-        moduleInfo:     moduleInfo,
-        submoduleEval:  languageModule::eval,
-        submoduleUse:   submoduleUse,
-        submoduleParse: languageModule::parseProgram,
-        submoduleRead:  submoduleRead
-    };
-
-    Box_store(ctxBox, fullCtx);
-    <> fullCtx
-};
-
-# Loads the named module (given a fully-qualified name), using a
-# global context based on the given `baseCtx`.
-#
-# **Note:** This function is a (low rent) duplicate of functionality in
-# `Module`, because this function needs to be called before `Module` is
-# fully loaded.
-fn loadModule(baseCtx, name) {
-    def flatName = flattenName(name);
-    def ctx = makeModuleContext(baseCtx, flatName);
-
-    # This must evaluate to a map.
-    def exports = ctx::submoduleUse("main");
-
-    # Combine `moduleInfo` and `exports` to form the final module value.
-    def result = @[Module: {info: ctx::moduleInfo, exports: exports}];
-    ctx::moduleDef(result);
-
-    # If `moduleInfo` indicates that the module is to be exported to the
-    # global context, do so. Otherwise, return the original context.
-    <> ifValue { <> ctx::moduleInfo::globalName }
-        { name <> { baseCtx*, (name): result } }
-        { <> baseCtx }
-};
-
 # Loads the named library or module, using either `loadLibrary` or
 # `loadModule` above (see which).
 fn loadLibraryOrModule(ctx, name) {
@@ -166,7 +62,7 @@ fn loadLibraryOrModule(ctx, name) {
         {
             def Module0 = ctx::moduleGet({name: ["core", "Module0"]});
             Io0_note(cat("    module:  ", Module0::stringFromModuleName(name)));
-            <> loadModule(ctx, name)
+            <> Module0::load(ctx, LIBRARY_DIR, name)
         }
         {
             Io0_note(cat("    library: ", name));

@@ -15,6 +15,89 @@
 # list-of-strings denoting a "path" to the module.
 def theModulesBox = Box_makeMutableBox({});
 
+# Flattens a module name to a simple directory name.
+#
+# **Note:** This function is a (low rent) duplicate of functionality in
+# `Io*` modules, because this function needs to be called before the `Io*`
+# modules are loaded.
+fn flattenName(name) {
+    # Suffix each component with `/`, concatenate them all together, and
+    # drop the final `/`.
+
+    def withSlashes = Generator_filter(name, { elem <> cat(elem, "/") });
+    def nearResult = cat(withSlashes*);
+    <> Collection_slice(
+        nearResult,
+        0,
+        Number_sub(Collection_sizeOf(nearResult), 1))
+};
+
+# Makes a module-load global context, based on the given `baseCtx` and which
+# adds submodule read and load functions that use the given `directory` (a
+# flat path).
+fn makeModuleContext(baseCtx, directory) {
+    # A box for the final load context, to enable the necessary self-reference.
+    def ctxBox = Box_makeYieldBox();
+
+    # A box for all the loaded submodules.
+    def subsBox = Box_makeMutableBox({});
+
+    fn submoduleRead(name) {
+        Io0_note(cat("                 ", name));
+        def path = cat(directory, "/", name);
+        <> ifIs { <> Io0_flatFileExists(path) }
+            { <> Io0_flatReadFileUtf8(path) }
+            { Io0_die(cat("No such module file: ", name)) }
+    };
+
+    fn submoduleLoad(name) {
+        def ctx = Box_fetch(ctxBox);
+        def text = submoduleRead(cat(name, ".sam"));
+        def tree = ctx::submoduleParse(text);
+        def func = ctx::submoduleEval(ctx, tree);
+        <> func()
+    };
+
+    fn submoduleUse(name) {
+        ifValue { <> get(Box_fetch(subsBox), name) }
+            { value -> return value };
+
+        def result = ifValue { <> submoduleLoad(name) }
+            { r <> r }
+            { <> {} };
+
+        Box_store(subsBox, {(Box_fetch(subsBox))*, (name): result});
+        <> result
+    };
+
+    # This must evaluate to a map.
+    def moduleInfo = Lang0_eval(baseCtx,
+        Lang0_parseExpression(submoduleRead("module.sam")));
+
+    def languageName = moduleInfo::language;
+    def languageModule = ifIs { <> ne(languageName, "none") }
+        { <> baseCtx::moduleGet({name: ["core", languageName]}) }
+        {
+            # Fall-back used when loading modules before `Lang0` is defined.
+            <> {
+                eval:         Lang0_eval,
+                parseProgram: Lang0_parseProgram
+            }
+        };
+
+    def fullCtx = {
+        baseCtx*,
+        moduleInfo:     moduleInfo,
+        submoduleEval:  languageModule::eval,
+        submoduleUse:   submoduleUse,
+        submoduleParse: languageModule::parseProgram,
+        submoduleRead:  submoduleRead
+    };
+
+    Box_store(ctxBox, fullCtx);
+    <> fullCtx
+};
+
 
 #
 # Type Definition
@@ -103,6 +186,31 @@ genericBind(Collection_slice, "Module", Module_slice);
 # Exported Definitions
 #
 
+# Loads the named module (given a fully-qualified name) from the given
+# modules `directory`, using a global context based on the given `baseCtx`.
+# This does not check to see if the module has already been loaded.
+#
+# **Note:** This function is a (low rent) duplicate of functionality in
+# `Module`, because this function needs to be called before `Module` is
+# fully loaded.
+fn load(baseCtx, directory, name) {
+    def fullPath = cat(directory, "/", flattenName(name));
+    def ctx = makeModuleContext(baseCtx, fullPath);
+
+    # This must evaluate to a map.
+    def exports = ctx::submoduleUse("main");
+
+    # Combine `moduleInfo` and `exports` to form the final module value.
+    def result = @[Module: {info: ctx::moduleInfo, exports: exports}];
+    ctx::moduleDef(result);
+
+    # If `moduleInfo` indicates that the module is to be exported to the
+    # global context, do so. Otherwise, return the original context.
+    <> ifValue { <> ctx::moduleInfo::globalName }
+        { name <> { baseCtx*, (name): result } }
+        { <> baseCtx }
+};
+
 # Documented in spec.
 fn moduleDef(modu) {
     def name = nameOf(modu);
@@ -144,6 +252,7 @@ def Module0 = @[Module: {
         version: "0.0.1"
     },
     exports: {
+        load:                 load,
         moduleDef:            moduleDef,
         moduleGet:            moduleGet,
         stringFromModuleName: stringFromModuleName
