@@ -186,16 +186,16 @@ genericBind(Collection_slice, "Module", Module_slice);
 # Exported Definitions
 #
 
-# Loads the named module (given a fully-qualified name) from the given
-# modules `directory`, using a global context based on the given `baseCtx`.
-# This does not check to see if the module has already been loaded.
+# Loads the module found directly in the given `directory`, using a global
+# context based on the given `baseCtx`. This does not check to see if the
+# module has already been loaded.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
 # `Module`, because this function needs to be called before `Module` is
 # fully loaded.
-fn load(baseCtx, directory, name) {
-    def fullPath = cat(directory, "/", flattenName(name));
-    def ctx = makeModuleContext(baseCtx, fullPath);
+fn load(baseCtx, directory) {
+    def flatPath = flattenName(directory);
+    def ctx = makeModuleContext(baseCtx, flatPath);
 
     # This must evaluate to a map.
     def exports = ctx::submoduleUse("main");

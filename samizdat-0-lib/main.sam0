@@ -11,19 +11,32 @@
 
 # The following declares the arguments passed to the library itself.
 #
-# `LIBRARY_DIR` is expected to be a flat path naming the directory
+# `LIBRARY_FLAT_DIR` is expected to be a flat path naming the directory
 # where library files may be found.
 
-LIBRARY_DIR ->
+LIBRARY_FLAT_DIR ->
 
 
 #
 # Private Definitions
 #
 
+# Structured path (non-flat) version of `LIBRARY_FLAT_DIR`.
+def LIBRARY_DIR = { <out> ->
+    loopReduce(LIBRARY_FLAT_DIR, [], "") { dir, path, one ->
+        ifIs { <> eq(dir, "") }
+            { <out> [path*, one] };
+        def ch = Collection_nth(dir, 0);
+        def newDir = Collection_slice(dir, 1);
+        <> ifIs { <> eq(ch, "/") }
+            { <> [newDir, [path*, one], ""] }
+            { <> [newDir, path, cat(one, ch)] };
+    }
+}();
+
 # Reads the named library file.
 fn readLibraryFile(name) {
-    def path = cat(LIBRARY_DIR, "/", name);
+    def path = cat(LIBRARY_FLAT_DIR, "/", name);
     <> ifIs { <> Io0_flatFileExists(path) }
         { <> Io0_flatReadFileUtf8(path) }
         { Io0_die(cat("No such core library file: ", name)) }
@@ -62,7 +75,7 @@ fn loadLibraryOrModule(ctx, name) {
         {
             def Module0 = ctx::moduleGet({name: ["core", "Module0"]});
             Io0_note(cat("    module:  ", Module0::stringFromModuleName(name)));
-            <> Module0::load(ctx, LIBRARY_DIR, name)
+            <> Module0::load(ctx, [LIBRARY_DIR*, name*])
         }
         {
             Io0_note(cat("    library: ", name));
@@ -93,10 +106,11 @@ fn loadAllLibraries(baseCtx) {
 # Builds the final core library, by doing file loading / evaluation, and then
 # adding a couple extra bindings.
 fn makeCoreLibrary() {
-    # Make a replacement (or new) `MODULE_PATHS` that includes `LIBRARY_DIR`.
+    # Make a replacement (or new) `MODULE_PATHS` that includes
+    # `LIBRARY_FLAT_DIR`.
     def modulePaths = ifValue { <> ENVIRONMENT::MODULE_PATHS }
-        { orig <> cat(LIBRARY_DIR, ":", orig) }
-        { <> LIBRARY_DIR };
+        { orig <> cat(LIBRARY_FLAT_DIR, ":", orig) }
+        { <> LIBRARY_FLAT_DIR };
 
     def newEnvironment =
         Collection_put(ENVIRONMENT, "MODULE_PATHS", modulePaths);
