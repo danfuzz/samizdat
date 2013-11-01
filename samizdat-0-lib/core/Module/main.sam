@@ -57,7 +57,7 @@ fn findModuleDirectory(fqName, optPaths?) {
 fn moduleUse(searchInfo) {
     def fqName = searchInfo::name;
 
-    ifValue { <> moduleGet(searchInfo) }
+    ifValue { <> Module0::moduleGet(searchInfo) }
         { modu -> return modu };
 
     def pendings = Box::fetch(thePendingBox);
@@ -85,7 +85,7 @@ fn moduleUse(searchInfo) {
     def exports = Lang0_eval(subLibrary, Lang0_parseProgram(mainText))();
 
     def result = @[Module: {info: info, exports: exports}];
-    moduleDef(result);
+    Module0::moduleDef(result);
 
     # Indicate that the module load is no longer in-process.
     Box::update(thePendingBox,

@@ -76,7 +76,7 @@ fn makeModuleContext(baseCtx, directory) {
 
     def languageName = moduleInfo::language;
     def languageModule = ifIs { <> ne(languageName, "none") }
-        { <> baseCtx::moduleGet({name: ["core", languageName]}) }
+        { <> baseCtx::moduleUse({name: ["core", languageName]}) }
         {
             # Fall-back used when loading modules before `Lang0` is defined.
             <> {
