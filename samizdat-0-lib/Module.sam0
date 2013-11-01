@@ -197,7 +197,7 @@ fn getGlobals(modu) {
             <> cat(bindings*)
         }
         { <> {} };
-    def moduleBinding = ifValue { <> info::globalName }
+    def moduleBinding = ifValue { <> info::globalModuleName }
         { name <> {(name): modu} }
         { <> {} };
 
