@@ -187,6 +187,17 @@ genericBind(Collection_slice, "Module", Module_slice);
 #
 
 # Documented in spec.
+fn getGlobals(modu) {
+    def info = getInfo(modu);
+    <> ifValue { <> info::exportGlobals }
+        { globals ->
+            def bindings = filter(globals, { g -> {(g): get(modu, g)} });
+            <> { bindings* }
+        }
+        { <> {} }
+};
+
+# Documented in spec.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
 # `Module`, because this function needs to be called before `Module` is
@@ -250,6 +261,7 @@ def Module0 = @[Module: {
         version: "0.0.1"
     },
     exports: {
+        getGlobals:           getGlobals,
         load:                 load,
         moduleDef:            moduleDef,
         moduleGet:            moduleGet,
