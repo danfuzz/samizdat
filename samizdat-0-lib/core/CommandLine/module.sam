@@ -3,9 +3,10 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 {
-    globalModuleName: "CommandLine",
     name: ["core", "CommandLine"],
     version: "0.0.1",
+
+    globalModuleName: "CommandLine",
 
     language: "Lang1"
 }

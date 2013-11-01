@@ -3,9 +3,10 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 {
-    globalModuleName: "Generator",
     name: ["core", "Generator"],
     version: "0.0.1",
+
+    globalModuleName: "Generator",
 
     language: "Lang0"
 }
