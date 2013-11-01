@@ -6,7 +6,7 @@
 # Box functions
 #
 
-def Box = moduleGet({name: ["proto", "Box"]});
+def Box = moduleUse({name: ["proto", "Box"]});
 
 def NullBox = submoduleUse("NullBox");
 

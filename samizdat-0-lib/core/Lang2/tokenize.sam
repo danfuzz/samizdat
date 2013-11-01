@@ -6,14 +6,14 @@
 # Samizdat Layer 2 Tokenizer
 #
 
-def Box = moduleGet({name: ["core", "Box"]});
-def FunctionForwarder = moduleGet({name: ["core", "FunctionForwarder"]});
-def ParseForwarder = moduleGet({name: ["core", "ParseForwarder"]});
-def Peg = moduleGet({name: ["core", "Peg"]});
+def Box = moduleUse({name: ["core", "Box"]});
+def FunctionForwarder = moduleUse({name: ["core", "FunctionForwarder"]});
+def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
+def Peg = moduleUse({name: ["core", "Peg"]});
 
 
 # The standard entity map.
-def ENTITY_MAP = moduleGet({name: ["core", "EntityMap"]})::ENTITY_MAP;
+def ENTITY_MAP = moduleUse({name: ["core", "EntityMap"]})::ENTITY_MAP;
 
 # Forward declarations for Layer 2 definitions.
 def tokMultilineComment = ParseForwarder::make();

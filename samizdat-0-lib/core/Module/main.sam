@@ -6,9 +6,9 @@
 # Module functions
 #
 
-def Box = moduleGet({name: ["core", "Box"]});
-def Io1 = moduleGet({name: ["core", "Io1"]});
-def Module0 = moduleGet({name: ["core", "Module0"]});
+def Box = moduleUse({name: ["core", "Box"]});
+def Io1 = moduleUse({name: ["core", "Io1"]});
+def Module0 = moduleUse({name: ["core", "Module0"]});
 
 
 #

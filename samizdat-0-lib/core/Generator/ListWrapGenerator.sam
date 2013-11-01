@@ -7,8 +7,8 @@
 #
 # Payload is `subGen`, the sub-generator.
 
-def Box = moduleGet({name: ["core", "Box"]});
-def Generator = moduleGet({name: ["proto", "Generator"]});
+def Box = moduleUse({name: ["core", "Box"]});
+def Generator = moduleUse({name: ["proto", "Generator"]});
 
 
 #

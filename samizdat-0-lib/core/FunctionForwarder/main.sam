@@ -8,8 +8,8 @@
 # Data payload is a yield box.
 #
 
-def Box = moduleGet({name: ["core", "Box"]});
-def Io0 = moduleGet({name: ["core", "Io0"]});
+def Box = moduleUse({name: ["core", "Box"]});
+def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
 #
