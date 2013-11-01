@@ -191,7 +191,9 @@ fn getGlobals(modu) {
     def info = getInfo(modu);
     def bindings = ifValue { <> info::exportGlobals }
         { globals ->
-            def bindings = filter(globals, { g -> {(g): get(modu, g)} });
+            def bindings = Generator_filter(
+                globals,
+                { g <> {(g): get(modu, g)} });
             <> cat(bindings*)
         }
         { <> {} };
