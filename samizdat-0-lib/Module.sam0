@@ -189,7 +189,7 @@ genericBind(Collection_slice, "Module", Module_slice);
 # Documented in spec.
 fn getGlobals(modu) {
     def info = getInfo(modu);
-    def bindings = ifValue { <> info::exportGlobals }
+    def bindings = ifValue { <> info::globalExports }
         { globals ->
             def bindings = Generator_filter(
                 globals,
