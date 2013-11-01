@@ -243,6 +243,18 @@ fn moduleGet(searchInfo) {
 };
 
 # Documented in spec.
+#
+# **Note:** This is the early-bootstrap version of this function, which
+# requires a module to be pre-defined.
+fn moduleUse(searchInfo) {
+    <> ifValueOr { <> moduleGet(searchInfo) }
+        {
+            Io0_die(cat("Module not found: ",
+                stringFromModuleName(searchInfo::name)))
+        }
+};
+
+# Documented in spec.
 fn stringFromModuleName(fqName) {
     # Prefix each component with "::", combine them all, and then drop the
     # first two characters.
@@ -263,6 +275,7 @@ def Module0 = @[Module: {
         load:                 load,
         moduleDef:            moduleDef,
         moduleGet:            moduleGet,
+        moduleUse:            moduleUse,
         stringFromModuleName: stringFromModuleName
     }
 }];
@@ -270,5 +283,6 @@ moduleDef(Module0);
 
 <> {
     moduleDef: moduleDef,
-    moduleGet: moduleGet
+    moduleGet: moduleGet,
+    moduleUse: moduleUse
 }

@@ -15,6 +15,7 @@ The globally exported functions are:
 
 * `moduleGet`
 * `moduleDef`
+* `moduleUse`
 
 <br><br>
 ### Function Definitions
@@ -47,6 +48,14 @@ The `name` binding of `searchInfo` is required and should be a list-of-strings
 representing the fully-qualified module name.
 
 TODO: Right now, only the `name` in the `searchInfo` is checked.
+
+#### `moduleUse(searchInfo)` <> module
+
+See the module `core::Module` for the full description.
+
+In the `Module0` version of this function, it requires that the
+indicated module already have been loaded in order to be found.
+In addition, only the `name` in the `searchInfo` is checked.
 
 #### `stringFromModuleName(fqName) <> string`
 
