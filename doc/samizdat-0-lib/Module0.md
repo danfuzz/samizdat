@@ -30,7 +30,7 @@ This is the "early" version of module loading, which takes a few shortcuts
 compared to the full module-loading semantics. This is what is used to load
 most of the system modules, and it is not intended for use beyond that.
 
-#### `moduleDef(modu) <> module`
+#### `moduleDef(modu) <> void`
 
 Defines a new module, for later retrieval via `moduleGet` or `moduleUse`.
 There must not already be a defined module with the same name as the given

@@ -189,12 +189,17 @@ genericBind(Collection_slice, "Module", Module_slice);
 # Documented in spec.
 fn getGlobals(modu) {
     def info = getInfo(modu);
-    <> ifValue { <> info::exportGlobals }
+    def bindings = ifValue { <> info::exportGlobals }
         { globals ->
             def bindings = filter(globals, { g -> {(g): get(modu, g)} });
-            <> { bindings* }
+            <> cat(bindings*)
         }
-        { <> {} }
+        { <> {} };
+    def moduleBinding = ifValue { <> info::globalName }
+        { name <> {(name): modu} }
+        { <> {} };
+
+    <> { bindings*, moduleBinding* }
 };
 
 # Documented in spec.
@@ -210,14 +215,7 @@ fn load(baseCtx, directory) {
     def exports = ctx::submoduleUse("main");
 
     # Combine `moduleInfo` and `exports` to form the final module value.
-    def result = @[Module: {info: ctx::moduleInfo, exports: exports}];
-    ctx::moduleDef(result);
-
-    # If `moduleInfo` indicates that the module is to be exported to the
-    # global context, do so. Otherwise, return the original context.
-    <> ifValue { <> ctx::moduleInfo::globalName }
-        { name <> { baseCtx*, (name): result } }
-        { <> baseCtx }
+    <> @[Module: {info: ctx::moduleInfo, exports: exports}];
 };
 
 # Documented in spec.
@@ -232,8 +230,6 @@ fn moduleDef(modu) {
 
     def mods = Box_fetch(theModulesBox);
     Box_store(theModulesBox, Collection_put(mods, name, modu));
-
-    <> modu
 };
 
 # Documented in spec.
