@@ -6,8 +6,8 @@
 # Generator functions
 #
 
-def Box = moduleGet({name: ["core", "Box"]});
-def Generator = moduleGet({name: ["proto", "Generator"]});
+def Box = moduleUse({name: ["core", "Box"]});
+def Generator = moduleUse({name: ["proto", "Generator"]});
 
 def CollectionGenerator = submoduleUse("CollectionGenerator");
 def FilterGenerator = submoduleUse("FilterGenerator");

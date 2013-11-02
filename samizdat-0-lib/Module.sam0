@@ -43,7 +43,7 @@ fn makeModuleContext(baseCtx, directory) {
     def subsBox = Box_makeMutableBox({});
 
     fn submoduleRead(name) {
-        Io0_note(cat("                 ", name));
+        Io0_note(cat("        ", name));
         def path = cat(directory, "/", name);
         <> ifIs { <> Io0_flatFileExists(path) }
             { <> Io0_flatReadFileUtf8(path) }
@@ -76,7 +76,7 @@ fn makeModuleContext(baseCtx, directory) {
 
     def languageName = moduleInfo::language;
     def languageModule = ifIs { <> ne(languageName, "none") }
-        { <> baseCtx::moduleGet({name: ["core", languageName]}) }
+        { <> baseCtx::moduleUse({name: ["core", languageName]}) }
         {
             # Fall-back used when loading modules before `Lang0` is defined.
             <> {
@@ -187,6 +187,24 @@ genericBind(Collection_slice, "Module", Module_slice);
 #
 
 # Documented in spec.
+fn getGlobals(modu) {
+    def info = getInfo(modu);
+    def bindings = ifValue { <> info::globalExports }
+        { globals ->
+            def bindings = Generator_filter(
+                globals,
+                { g <> {(g): get(modu, g)} });
+            <> cat(bindings*)
+        }
+        { <> {} };
+    def moduleBinding = ifValue { <> info::globalModuleName }
+        { name <> {(name): modu} }
+        { <> {} };
+
+    <> { bindings*, moduleBinding* }
+};
+
+# Documented in spec.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
 # `Module`, because this function needs to be called before `Module` is
@@ -199,14 +217,7 @@ fn load(baseCtx, directory) {
     def exports = ctx::submoduleUse("main");
 
     # Combine `moduleInfo` and `exports` to form the final module value.
-    def result = @[Module: {info: ctx::moduleInfo, exports: exports}];
-    ctx::moduleDef(result);
-
-    # If `moduleInfo` indicates that the module is to be exported to the
-    # global context, do so. Otherwise, return the original context.
-    <> ifValue { <> ctx::moduleInfo::globalName }
-        { name <> { baseCtx*, (name): result } }
-        { <> baseCtx }
+    <> @[Module: {info: ctx::moduleInfo, exports: exports}];
 };
 
 # Documented in spec.
@@ -221,8 +232,6 @@ fn moduleDef(modu) {
 
     def mods = Box_fetch(theModulesBox);
     Box_store(theModulesBox, Collection_put(mods, name, modu));
-
-    <> modu
 };
 
 # Documented in spec.
@@ -231,6 +240,18 @@ fn moduleGet(searchInfo) {
     def name = searchInfo::name;
 
     <> get(Box_fetch(theModulesBox), name)
+};
+
+# Documented in spec.
+#
+# **Note:** This is the early-bootstrap version of this function, which
+# requires a module to be pre-defined.
+fn moduleUse(searchInfo) {
+    <> ifValueOr { <> moduleGet(searchInfo) }
+        {
+            Io0_die(cat("Module not found: ",
+                stringFromModuleName(searchInfo::name)))
+        }
 };
 
 # Documented in spec.
@@ -250,9 +271,11 @@ def Module0 = @[Module: {
         version: "0.0.1"
     },
     exports: {
+        getGlobals:           getGlobals,
         load:                 load,
         moduleDef:            moduleDef,
         moduleGet:            moduleGet,
+        moduleUse:            moduleUse,
         stringFromModuleName: stringFromModuleName
     }
 }];
@@ -260,5 +283,6 @@ moduleDef(Module0);
 
 <> {
     moduleDef: moduleDef,
-    moduleGet: moduleGet
+    moduleGet: moduleGet,
+    moduleUse: moduleUse
 }

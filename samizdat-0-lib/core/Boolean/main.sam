@@ -6,7 +6,7 @@
 # Booleans
 #
 
-def Io0 = moduleGet({name: ["core", "Io0"]});
+def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
 #

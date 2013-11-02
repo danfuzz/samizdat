@@ -3,10 +3,10 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 {
-    name: ["core", "Format"],
+    name: ["core", "Module"],
     version: "0.0.1",
 
-    globalModuleName: "Format",
+    globalExports: ["moduleUse"],
 
-    language: "Lang0"
+    language: "Lang1"
 }

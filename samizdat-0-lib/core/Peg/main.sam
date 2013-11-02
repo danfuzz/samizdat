@@ -6,7 +6,7 @@
 # PEG (Parsing Expression Grammar) support
 #
 
-def Box = moduleGet({name: ["core", "Box"]});
+def Box = moduleUse({name: ["core", "Box"]});
 
 
 #

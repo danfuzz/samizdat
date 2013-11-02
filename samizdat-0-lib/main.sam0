@@ -68,17 +68,24 @@ fn loadLibrary(ctx, name) {
         }
 };
 
+# Loads the named module, returning a map that includes any additional
+# global bindings as specified by the module.
+fn loadModule(ctx, name) {
+    def Module0 = ctx::moduleUse({name: ["core", "Module0"]});
+    Io0_note(cat("    ", Module0::stringFromModuleName(name)));
+
+    def modu = Module0::load(ctx, [LIBRARY_DIR*, name*]);
+    Module0::moduleDef(modu);
+    <> { ctx*, (Module0::getGlobals(modu))* }
+};
+
 # Loads the named library or module, using either `loadLibrary` or
 # `loadModule` above (see which).
 fn loadLibraryOrModule(ctx, name) {
     <> ifIs { <> hasType(name, List) }
+        { <> loadModule(ctx, name) }
         {
-            def Module0 = ctx::moduleGet({name: ["core", "Module0"]});
-            Io0_note(cat("    module:  ", Module0::stringFromModuleName(name)));
-            <> Module0::load(ctx, [LIBRARY_DIR*, name*])
-        }
-        {
-            Io0_note(cat("    library: ", name));
+            Io0_note(cat("    ", name));
             <> loadLibrary(ctx, name)
         }
 };

@@ -3,9 +3,10 @@
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
 {
-    globalName: "Range",
     name: ["core", "Range"],
     version: "0.0.1",
+
+    globalModuleName: "Range",
 
     language: "Lang0"
 }

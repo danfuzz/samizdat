@@ -6,7 +6,7 @@
 # Collection functions
 #
 
-def Collection = moduleGet({name: ["proto", "Collection"]});
+def Collection = moduleUse({name: ["proto", "Collection"]});
 
 
 #

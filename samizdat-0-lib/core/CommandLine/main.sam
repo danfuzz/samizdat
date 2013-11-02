@@ -6,8 +6,8 @@
 # Command line interpreter
 #
 
-def Io1 = moduleGet({name: ["core", "Io1"]});
-def Peg = moduleGet({name: ["core", "Peg"]});
+def Io1 = moduleUse({name: ["core", "Io1"]});
+def Peg = moduleUse({name: ["core", "Peg"]});
 
 
 #
@@ -109,7 +109,7 @@ fn run(context, rawArgs*) {
     def programText = Io1::readFileUtf8(filePath);
 
     def langLayer = ifValueOr { <> options::layer } { <> "2" };
-    def langModule = moduleGet({name: ["core", cat("Lang", langLayer)]});
+    def langModule = moduleUse({name: ["core", cat("Lang", langLayer)]});
     def parsedProgram = langModule::parseProgram(programText);
     def evalled = langModule::eval(context, parsedProgram);
 

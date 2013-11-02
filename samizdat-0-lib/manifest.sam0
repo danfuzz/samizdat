@@ -34,7 +34,7 @@ def MANIFEST = [
     "meta.sam0",
     ["core", "Lang0"],
 
-    # Prototype definition modules, re-exported from the primitive
+    # Layer 0: Prototype definition modules, re-exported from the primitive
     # core library.
     ["proto", "Bitwise"],
     ["proto", "Box"],
@@ -43,7 +43,7 @@ def MANIFEST = [
     ["proto", "Number"],
     ["proto", "Sequence"],
 
-    # Simple modules.
+    # Layer 0: Simple modules.
     ["core", "EntityMap"],
     ["core", "Bitwise"],
     ["core", "Box"],
@@ -53,27 +53,25 @@ def MANIFEST = [
     ["core", "FunctionForwarder"], # Uses `Box` and `Io0`.
     ["core", "Boolean"],           # Uses `Io0`.
 
-    # Layer 0: Complicated functions.
+    # Layer 0: Nontrivial modules.
     ["core", "Generator"],
     ["core", "Range"],
-
-    # Layer 0: Complicated modules.
     ["core", "Format"],
     ["core", "Peg"],
     ["core", "ParseForwarder"],  # Uses `parse` defined by `core::Peg`.
 
-    # Layer 1 language implementation.
+    # Layer 1: Language implementation.
     ["core", "Lang1"],
 
-    # Layer 1 additional library.
+    # Layer 1: Modules.
     ["core", "Io1"],
     ["core", "CommandLine"],
-    "Module.sam1",
+    ["core", "Module"],
 
-    # Layer 2 language implementation.
+    # Layer 2: Language implementation.
     ["core", "Lang2"]
 
-    # Layer 2 library implementation.
+    # Layer 2: Modules.
     # TODO
 ];
 

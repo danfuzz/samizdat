@@ -10,8 +10,8 @@
 # This declares the arguments to the program itself.
 SELF_PATH, ARGS* ->
 
-def Box = moduleGet({name: ["core", "Box"]});
-def Io1 = moduleGet({name: ["core", "Io1"]});
+def Box = moduleUse({name: ["core", "Box"]});
+def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
 #

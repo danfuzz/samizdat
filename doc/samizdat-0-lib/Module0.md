@@ -15,6 +15,7 @@ The globally exported functions are:
 
 * `moduleGet`
 * `moduleDef`
+* `moduleUse`
 
 <br><br>
 ### Function Definitions
@@ -30,7 +31,7 @@ This is the "early" version of module loading, which takes a few shortcuts
 compared to the full module-loading semantics. This is what is used to load
 most of the system modules, and it is not intended for use beyond that.
 
-#### `moduleDef(modu) <> module`
+#### `moduleDef(modu) <> void`
 
 Defines a new module, for later retrieval via `moduleGet` or `moduleUse`.
 There must not already be a defined module with the same name as the given
@@ -47,6 +48,14 @@ The `name` binding of `searchInfo` is required and should be a list-of-strings
 representing the fully-qualified module name.
 
 TODO: Right now, only the `name` in the `searchInfo` is checked.
+
+#### `moduleUse(searchInfo)` <> module
+
+See the module `core::Module` for the full description.
+
+In the `Module0` version of this function, it requires that the
+indicated module already have been loaded in order to be found.
+In addition, only the `name` in the `searchInfo` is checked.
 
 #### `stringFromModuleName(fqName) <> string`
 

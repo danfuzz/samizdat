@@ -6,17 +6,17 @@
 # Module functions
 #
 
-def Box = moduleGet({name: ["core", "Box"]});
-def Io1 = moduleGet({name: ["core", "Io1"]});
-def Module0 = moduleGet({name: ["core", "Module0"]});
+def Box = moduleUse({name: ["core", "Box"]});
+def Io1 = moduleUse({name: ["core", "Io1"]});
+def Module0 = moduleUse({name: ["core", "Module0"]});
 
 
 #
 # Private Definitions
 #
 
-# Parsed version of `ENVIRONMENT::MODULE_PATHS`, which includes a parsed
-# version of `LIBRARY_DIR` as the first element.
+# Parsed version of `ENVIRONMENT::MODULE_PATHS`, which includes `LIBRARY_DIR`
+# as the first element.
 def MODULE_PATHS_LIST = ifValue { <> ENVIRONMENT::MODULE_PATHS }
     { paths <> Io1::pathListFromFlat(paths) }
     { <> [] };
@@ -49,7 +49,6 @@ fn findModuleDirectory(fqName, optPaths?) {
 };
 
 
-
 #
 # Exported Definitions
 #
@@ -58,7 +57,7 @@ fn findModuleDirectory(fqName, optPaths?) {
 fn moduleUse(searchInfo) {
     def fqName = searchInfo::name;
 
-    ifValue { <> moduleGet(searchInfo) }
+    ifValue { <> Module0::moduleGet(searchInfo) }
         { modu -> return modu };
 
     def pendings = Box::fetch(thePendingBox);
@@ -86,7 +85,7 @@ fn moduleUse(searchInfo) {
     def exports = Lang0_eval(subLibrary, Lang0_parseProgram(mainText))();
 
     def result = @[Module: {info: info, exports: exports}];
-    moduleDef(result);
+    Module0::moduleDef(result);
 
     # Indicate that the module load is no longer in-process.
     Box::update(thePendingBox,
@@ -96,5 +95,11 @@ fn moduleUse(searchInfo) {
 };
 
 <> {
+    # Re-exports from `core::Module0`.
+    moduleDef:            Module0::moduleDef,
+    moduleGet:            Module0::moduleGet,
+    stringFromModuleName: Module0::stringFromModuleName,
+
+    # Defined here.
     moduleUse: moduleUse
 }
