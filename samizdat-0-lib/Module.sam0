@@ -74,7 +74,7 @@ fn makeModuleContext(baseCtx, directory) {
     def moduleInfo = Lang0_eval(baseCtx,
         Lang0_parseExpression(submoduleRead("module.sam")));
 
-    def languageName = moduleInfo::language;
+    def languageName = ifValueOr { <> moduleInfo::language } { <> "Lang2" };
     def languageModule = ifIs { <> ne(languageName, "none") }
         { <> baseCtx::moduleUse({name: ["core", languageName]}) }
         {
