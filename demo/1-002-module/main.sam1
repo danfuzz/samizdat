@@ -15,10 +15,12 @@ SELF_PATH, ARGS* ->
 # Main Tests
 #
 
+# A known module (shouldn't cause any trouble).
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
-# Use a known-simple module.
-def exmod = moduleUse({name: ["core", "FunctionForwarder"]});
-Io1::note(Format::source(exmod));
+# A locally-defined module.
+def Stuff = moduleUse({name: ["app", "Stuff"]});
+
+Io1::note(Format::source(Stuff::STUFF));
 
 <> 0
