@@ -19,12 +19,6 @@ def Module0 = moduleUse({name: ["core", "Module0"]});
 # Box for the parsed list of module paths.
 def theModulePathsBox = Box::makeYieldBox();
 
-# The (base) name of a module metainformation file.
-def MODULE_FILE_NAME = "module.sam";
-
-# The (base) name of a main module program file.
-def MAIN_FILE_NAME = "main.sam";
-
 # Box containing a set-like map of fully-qualified names representing
 # modules in the middle of being loaded.
 def thePendingBox = Box::makeMutableBox({});
@@ -36,7 +30,7 @@ fn findModuleDirectory(fqName) {
     Generator::filterPump(Box::fetch(theModulePathsBox))
         { onePath ->
             def fullPath = [onePath*, fqName*];
-            ifIs { <> Io1::fileExists([fullPath*, MODULE_FILE_NAME]) }
+            ifIs { <> Io1::fileExists([fullPath*, "module.sam"]) }
                 { return fullPath }
         };
 
