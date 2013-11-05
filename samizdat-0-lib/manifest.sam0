@@ -69,10 +69,13 @@ def MANIFEST = [
     ["core", "Module"],
 
     # Layer 2: Language implementation.
-    ["core", "Lang2"]
+    ["core", "Lang2"],
 
     # Layer 2: Modules.
     # TODO
+
+    # Final global variable context setup.
+    ["core", "Globals"]
 ];
 
 <> {
