@@ -45,7 +45,6 @@ TOK(return,         "return");
 
 STR(CommandLine,    "CommandLine");
 STR(ENVIRONMENT,    "ENVIRONMENT");
-STR(LIBRARY,        "LIBRARY");
 STR(actuals,        "actuals");
 STR(call,           "call");
 STR(cat,            "cat");
