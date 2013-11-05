@@ -75,7 +75,13 @@ Returns the `name` mapping in the module's `info`.
 <br><br>
 ### In-Language Definitions
 
-#### `moduleUse(searchInfo)` <> module
+#### `initModule(moduleDirs) <> void`
+
+One-time initialization of the module system. Needs to be passed a
+colon-separated list of flat (slash-separated) paths to be searched
+when trying to find a module.
+
+#### `moduleUse(searchInfo) <> module`
 
 Gets a module, as if by `moduleGet`, if it has already been defined; or
 attempts to load it from storage if it has *not* already been defined.

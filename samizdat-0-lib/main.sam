@@ -14,8 +14,9 @@
 # * `PRIMITIVE_CONTEXT` is expected to be a map of all primitively-defined
 #   variables.
 #
-# * `LIBRARY_FLAT_DIR` is expected to be a flat path naming the directory
-#   where library files may be found.
+# * `LIBRARY_FLAT_DIR` is expected to be a flat path (simple string with
+#   slashes separating components) naming the directory where library files
+#   are to be found.
 
 PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
 
@@ -135,21 +136,21 @@ fn loadAllLibraries(baseCtx) {
 };
 
 # Builds the final core library, by doing file loading / evaluation, and then
-# adding a couple extra bindings.
+# doing final module system setup.
 fn makeCoreLibrary() {
-    # Make a replacement (or new) `MODULE_PATHS` that includes
-    # `LIBRARY_FLAT_DIR`.
-    def modulePaths = ifValue { <> ENVIRONMENT::MODULE_PATHS }
-        { orig <> cat(LIBRARY_FLAT_DIR, ":", orig) }
+    # This is the final core library load context, which has extra bindings
+    # beyond what's supposed to be in the real core library.
+    def finalContext = loadAllLibraries(PRIMITIVE_CONTEXT);
+
+    # The `Module` module needs to be told where to find modules.
+    def Module = finalContext::moduleUse({name: ["core", "Module"]});
+    def moduleDirs = ifValue { <> finalContext::ENVIRONMENT::MODULE_PATH }
+        { path <> cat(LIBRARY_FLAT_DIR, ":", path) }
         { <> LIBRARY_FLAT_DIR };
+    Module::initModule(moduleDirs);
 
-    def newEnvironment =
-        Collection_put(ENVIRONMENT, "MODULE_PATHS", modulePaths);
-    def baseCtx =
-        Collection_put(PRIMITIVE_CONTEXT, "ENVIRONMENT", newEnvironment);
-
-    # Do the loading, and return the result.
-    <> loadAllLibraries(baseCtx);
+    # The module `core::Globals` is the "sanitized" core library context.
+    <> finalContext::moduleUse({name: ["core", "Globals"]});
 };
 
 
