@@ -96,6 +96,8 @@ fn moduleUse(searchInfo) {
 
 <> {
     # Re-exports from `core::Module0`.
+    getAllModules:        Module0::getAllModules,
+    getGlobals:           Module0::getGlobals,
     moduleDef:            Module0::moduleDef,
     moduleGet:            Module0::moduleGet,
     stringFromModuleName: Module0::stringFromModuleName,

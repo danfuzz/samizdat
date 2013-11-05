@@ -187,6 +187,12 @@ genericBind(Collection_slice, "Module", Module_slice);
 #
 
 # Documented in spec.
+fn getAllModules() {
+    def mods = Box_fetch(theModulesBox);
+    <> Generator_filter(mods, { mod <> valueOf(mod) })
+};
+
+# Documented in spec.
 fn getGlobals(modu) {
     def info = getInfo(modu);
     def bindings = ifValue { <> info::globalExports }
@@ -271,6 +277,7 @@ def Module0 = @[Module: {
         version: "0.0.1"
     },
     exports: {
+        getAllModules:        getAllModules,
         getGlobals:           getGlobals,
         load:                 load,
         moduleDef:            moduleDef,
