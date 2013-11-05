@@ -30,7 +30,6 @@ def MANIFEST = [
     ["core", "Globals0"],
 
     # Layer 0 evaluation as a module. Used by everything that follows.
-    "meta.sam0",
     ["core", "Lang0"],
 
     # Layer 0: Prototype definition modules, re-exported from the primitive
