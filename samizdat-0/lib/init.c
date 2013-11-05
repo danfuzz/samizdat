@@ -94,10 +94,6 @@ static void makePrimitiveContext(void) {
     // Add a mapping for `ENVIRONMENT`.
     ctx = collPut(ctx, STR_ENVIRONMENT, makeEnvironment());
 
-    // Include a mapping for a map of all the primitive bindings
-    // (other than this one, since values can't self-reference).
-    ctx = collPut(ctx, STR_LIBRARY, ctx);
-
     // Set the final value, and make it immortal.
     PRIMITIVE_CONTEXT = ctx;
     pbImmortalize(PRIMITIVE_CONTEXT);
@@ -129,7 +125,7 @@ static zvalue getLibrary(zvalue libraryDir) {
 
     // It is the responsibility of the `main` core library program
     // to return the full set of core library bindings.
-    return FUN_CALL(mainFunction, libraryDir);
+    return FUN_CALL(mainFunction, PRIMITIVE_CONTEXT, libraryDir);
 }
 
 
