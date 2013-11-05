@@ -214,10 +214,6 @@ fn getGlobals(modu) {
 };
 
 # Documented in spec.
-#
-# **Note:** This function is a (low rent) duplicate of functionality in
-# `Module`, because this function needs to be called before `Module` is
-# fully loaded.
 fn load(baseCtx, directory) {
     def flatPath = flattenName(directory);
     def ctx = makeModuleContext(baseCtx, flatPath);

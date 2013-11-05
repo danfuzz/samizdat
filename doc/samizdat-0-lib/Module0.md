@@ -46,9 +46,9 @@ Loads a module from the directory named by the given fully-qualified path
 module, but it does *not* cause the module to be findable via `moduleGet`.
 It also does *not* check to see if the module has already been loaded.
 
-This is the "early" version of module loading, which takes a few shortcuts
-compared to the full module-loading semantics. This is what is used to load
-most of the system modules, and it is not intended for use beyond that.
+This is the "raw" version of module loading, which takes a few shortcuts
+compared to the full module-loading semantics. It is not intended to be
+used directly.
 
 #### `moduleDef(modu) <> void`
 
