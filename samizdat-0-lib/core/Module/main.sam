@@ -8,6 +8,7 @@
 
 def Box = moduleUse({name: ["core", "Box"]});
 def Io1 = moduleUse({name: ["core", "Io1"]});
+def Lang0 = moduleUse({name: ["core", "Lang0"]});
 def Module0 = moduleUse({name: ["core", "Module0"]});
 
 
@@ -34,8 +35,9 @@ def thePendingBox = Box::makeMutableBox({});
 fn findModuleDirectory(fqName) {
     Generator::filterPump(Box::fetch(theModulePathsBox))
         { onePath ->
-            ifIs { <> Io1::fileExists([onePath*, MODULE_FILE_NAME]) }
-                { return onePath }
+            def fullPath = [onePath*, fqName*];
+            ifIs { <> Io1::fileExists([fullPath*, MODULE_FILE_NAME]) }
+                { return fullPath }
         };
 
     Io1::die(cat(
@@ -72,19 +74,25 @@ fn moduleUse(searchInfo) {
     # Indicate that the module is in the process of being loaded.
     Box::store(thePendingBox, Collection::put(pendings, fqName, null));
 
-    def baseContext = Module0::moduleGet({name: ["core", "Globals"]});
+    def baseContext = Module0::getGlobals(
+        Module0::moduleGet({name: ["core", "Globals"]}));
     def moduleDir = findModuleDirectory(fqName);
+
     def moduleReader = Io1::sandboxedReader(moduleDir);
     def infoText = moduleReader([MODULE_FILE_NAME]);
-    def info = Lang0_eval(baseContext, Lang0_parseExpression(infoText));
+    def info = Lang0::eval(baseContext, Lang0::parseExpression(infoText));
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     ifIs { <> ne(fqName, info::name) }
-        { io1::die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
+        { Io1::die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
 
     def mainText = moduleReader([MAIN_FILE_NAME]);
-    def fullContext = {baseContext*, INFO: info, READER: moduleReader};
-    def exports = Lang0_eval(fullContext, Lang0_parseProgram(mainText))();
+    def fullContext = {
+        baseContext*,
+        INFO: info,
+        READER: moduleReader
+    };
+    def exports = Lang0::eval(fullContext, Lang0::parseProgram(mainText))();
 
     def result = @[Module: {info: info, exports: exports}];
     Module0::moduleDef(result);
