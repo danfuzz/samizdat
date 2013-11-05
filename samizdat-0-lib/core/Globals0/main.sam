@@ -13,5 +13,6 @@
 # This just re-exports stuff defined in submodules.
 <> {
     (submoduleUse("constants"))*,
+    (submoduleUse("primitives"))*,
     (submoduleUse("Value"))*
 }
