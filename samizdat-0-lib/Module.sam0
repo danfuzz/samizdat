@@ -197,10 +197,18 @@ fn getGlobals(modu) {
     def info = getInfo(modu);
     def bindings = ifValue { <> info::globalExports }
         { globals ->
-            def bindings = Generator_filter(
-                globals,
-                { g <> {(g): get(modu, g)} });
-            <> cat(bindings*)
+            <> ifIs { <> eq(globals, "all") }
+                {
+                    # Export all bindings.
+                    <> getExports(modu)
+                }
+                {
+                    # Selective global export.
+                    def bindings = Generator_filter(
+                        globals,
+                        { g <> {(g): get(modu, g)} });
+                    <> cat(bindings*)
+                }
         }
         { <> {} };
     def moduleBinding = ifValue { <> info::globalModuleName }
