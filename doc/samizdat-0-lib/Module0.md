@@ -24,10 +24,20 @@ The globally exported functions are:
 
 Gets a list of all currently loaded modules.
 
+#### `getExports(modu) <> map`
+
+Gets a map of all the definitions exported from the given module,
+as a mapping of names to values.
+
 #### `getGlobals(modu) <> map`
 
 Gets a map of all the global variables exported from the given module,
-mapping names to values.
+as a mapping of names to values.
+
+#### `getInfo(modu) <> map`
+
+Gets a map of the metainformation about the given module, as a
+mapping of names to values.
 
 #### `load(fqPath) <> module`
 

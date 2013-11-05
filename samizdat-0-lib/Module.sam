@@ -281,7 +281,9 @@ def Module0 = @[Module: {
     },
     exports: {
         getAllModules:        getAllModules,
+        getExports:           getExports,
         getGlobals:           getGlobals,
+        getInfo:              getInfo,
         load:                 load,
         moduleDef:            moduleDef,
         moduleGet:            moduleGet,
