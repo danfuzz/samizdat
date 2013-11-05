@@ -15,21 +15,16 @@
 # list-of-strings denoting a "path" to the module.
 def theModulesBox = Box_makeMutableBox({});
 
-# Flattens a module name to a simple directory name.
+# Flattens an absolute module name to a simple directory name.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
 # `Io*` modules, because this function needs to be called before the `Io*`
 # modules are loaded.
 fn flattenName(name) {
-    # Suffix each component with `/`, concatenate them all together, and
-    # drop the final `/`.
+    # Prefix each component with `/`, and concatenate them all together.
 
-    def withSlashes = Generator_filter(name, { elem <> cat(elem, "/") });
-    def nearResult = cat(withSlashes*);
-    <> Collection_slice(
-        nearResult,
-        0,
-        Number_sub(Collection_sizeOf(nearResult), 1))
+    def withSlashes = Generator_filter(name, { elem <> cat("/", elem) });
+    <> cat(withSlashes*);
 };
 
 # Makes a module-load global context, based on the given `baseCtx` and which
@@ -47,7 +42,7 @@ fn makeModuleContext(baseCtx, directory) {
         def path = cat(directory, "/", name);
         <> ifIs { <> Io0_flatFileExists(path) }
             { <> Io0_flatReadFileUtf8(path) }
-            { Io0_die(cat("No such module file: ", name)) }
+            { Io0_die(cat("No such module file: ", path)) }
     };
 
     fn submoduleLoad(name) {

@@ -24,25 +24,46 @@ PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
 # Private Definitions
 #
 
-# Structured path (non-flat) version of `LIBRARY_FLAT_DIR`.
-def LIBRARY_DIR = { <out> ->
-    loopReduce(LIBRARY_FLAT_DIR, [], "") { dir, path, one ->
-        ifIs { <> eq(dir, "") }
-            { <out> [path*, one] };
-        def ch = Collection_nth(dir, 0);
-        def newDir = Collection_slice(dir, 1);
-        <> ifIs { <> eq(ch, "/") }
-            { <> [newDir, [path*, one], ""] }
-            { <> [newDir, path, cat(one, ch)] };
+# Converts an unstructured string into a list-of-strings, by delimiting on
+# the given character. Empty strings are discarded from the result list.
+fn splitString(string, delimCh) {
+    # Append to list, ignoring empty strings.
+    fn appendNonempty(list, one) {
+        <> ifIs { <> eq(one, "") }
+            { <> list }
+            { <> [list*, one] }
+    };
+
+    loopReduce(string, [], "") { str, result, one ->
+        ifIs { <> eq(str, "") }
+            { return appendNonempty(result, one) };
+        def ch = Collection_nth(str, 0);
+        def newStr = Collection_slice(str, 1);
+        <> ifIs { <> eq(ch, delimCh) }
+            { <> [newStr, appendNonempty(result, one), ""] }
+            { <> [newStr, result, cat(one, ch)] };
     }
-}();
+};
+
+# Converts a flat path into an absolute structured (list of components)
+# version. This prepends the current directory if the given path is
+# not absolute.
+fn convertFlatPath(flat) {
+    def flatAbs = ifIs { <> eq(Collection_nth(flat, 0), "/") }
+        { <> flat }
+        { <> cat(Io0_flatCwd(), "/", flat) };
+    <> splitString(flatAbs, "/")
+};
+
+# Structured path (list of components) version of `LIBRARY_FLAT_DIR`.
+def LIBRARY_DIR = convertFlatPath(LIBRARY_FLAT_DIR);
 
 # Reads the named library file.
 fn readLibraryFile(name) {
     def path = cat(LIBRARY_FLAT_DIR, "/", name);
     <> ifIs { <> Io0_flatFileExists(path) }
         { <> Io0_flatReadFileUtf8(path) }
-        { Io0_die(cat("No such core library file: ", name)) }
+        { Io0_die(cat("No such core library file: ", path)) }
 };
 
 # Loads the named library file in the given context, returning a map
