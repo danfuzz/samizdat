@@ -1,0 +1,64 @@
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+#
+# Primitives (re-exporting of primitive definitions)
+#
+
+#
+# Exported Definitions
+#
+
+# These are all documented in Samizdat Layer 0 spec.
+
+<> {
+    ENVIRONMENT:        ENVIRONMENT,
+    Int:                Int,
+    List:               List,
+    Map:                Map,
+    String:             String,
+    Type:               Type,
+    Uniqlet:            Uniqlet,
+    Value:              Value,
+    call:               call,
+    canCall:            canCall,
+    cat:                cat,
+    dataOf:             dataOf,
+    eq:                 eq,
+    ge:                 ge,
+    genericBind:        genericBind,
+    get:                get,
+    gt:                 gt,
+    hasType:            hasType,
+    ifIs:               ifIs,
+    ifNot:              ifNot,
+    ifValue:            ifValue,
+    ifValueOr:          ifValueOr,
+    ifValues:           ifValues,
+    keyOf:              keyOf,
+    le:                 le,
+    loop:               loop,
+    loopReduce:         loopReduce,
+    lt:                 lt,
+    makeList:           makeList,
+    makeRegularGeneric: makeRegularGeneric,
+    makeUniqlet:        makeUniqlet,
+    makeUnitypeGeneric: makeUnitypeGeneric,
+    makeValue:          makeValue,
+    makeValueMap:       makeValueMap,
+    nameOf:             nameOf,
+    ne:                 ne,
+    nonlocalExit:       nonlocalExit,
+    optValue:           optValue,
+    perEq:              perEq,
+    perOrder:           perOrder,
+    toInt:              toInt,
+    toNumber:           toNumber,
+    toString:           toString,
+    totEq:              totEq,
+    totOrder:           totOrder,
+    totalOrder:         totalOrder,
+    typeOf:             typeOf,
+    valueOf:            valueOf
+}

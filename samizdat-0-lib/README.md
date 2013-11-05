@@ -15,5 +15,5 @@ to the library is the `main` file, which is responsible for loading up all
 the other files in a dependency-appropriate order.
 
 **Note:** If files are added or removed here, then a corresponding line
-needs to be added to or removed from the file `manifest.sam0` in this
+needs to be added to or removed from the file `manifest.sam` in this
 directory.

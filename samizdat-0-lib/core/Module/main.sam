@@ -71,18 +71,19 @@ fn moduleUse(searchInfo) {
     # Indicate that the module is in the process of being loaded.
     Box::store(thePendingBox, Collection::put(pendings, fqName, null));
 
+    def baseContext = Module0::moduleGet({name: ["core", "Globals"]});
     def moduleDir = findModuleDirectory(fqName);
     def moduleReader = Io1::sandboxedReader(moduleDir);
     def infoText = moduleReader(["module.sam"]);
-    def info = Lang0_eval(LIBRARY, Lang0_parseExpression(infoText));
+    def info = Lang0_eval(baseContext, Lang0_parseExpression(infoText));
 
     # TODO: Currently ignores everything about `searchInfo` other than the name.
     ifIs { <> ne(fqName, info::name) }
         { io1::die(cat("Module name mismatch: ", stringFromFqName(fqName))) };
 
     def mainText = moduleReader(["main.sam"]);
-    def subLibrary = makeLibrary({LIBRARY*, INFO: info, READER: moduleReader});
-    def exports = Lang0_eval(subLibrary, Lang0_parseProgram(mainText))();
+    def fullContext = {baseContext*, INFO: info, READER: moduleReader};
+    def exports = Lang0_eval(fullContext, Lang0_parseProgram(mainText))();
 
     def result = @[Module: {info: info, exports: exports}];
     Module0::moduleDef(result);
@@ -96,6 +97,8 @@ fn moduleUse(searchInfo) {
 
 <> {
     # Re-exports from `core::Module0`.
+    getAllModules:        Module0::getAllModules,
+    getGlobals:           Module0::getGlobals,
     moduleDef:            Module0::moduleDef,
     moduleGet:            Module0::moduleGet,
     stringFromModuleName: Module0::stringFromModuleName,

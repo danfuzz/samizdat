@@ -74,7 +74,7 @@ fn makeModuleContext(baseCtx, directory) {
     def moduleInfo = Lang0_eval(baseCtx,
         Lang0_parseExpression(submoduleRead("module.sam")));
 
-    def languageName = moduleInfo::language;
+    def languageName = ifValueOr { <> moduleInfo::language } { <> "Lang2" };
     def languageModule = ifIs { <> ne(languageName, "none") }
         { <> baseCtx::moduleUse({name: ["core", languageName]}) }
         {
@@ -187,14 +187,28 @@ genericBind(Collection_slice, "Module", Module_slice);
 #
 
 # Documented in spec.
+fn getAllModules() {
+    def mods = Box_fetch(theModulesBox);
+    <> Generator_filter(mods, { mod <> valueOf(mod) })
+};
+
+# Documented in spec.
 fn getGlobals(modu) {
     def info = getInfo(modu);
     def bindings = ifValue { <> info::globalExports }
         { globals ->
-            def bindings = Generator_filter(
-                globals,
-                { g <> {(g): get(modu, g)} });
-            <> cat(bindings*)
+            <> ifIs { <> eq(globals, "all") }
+                {
+                    # Export all bindings.
+                    <> getExports(modu)
+                }
+                {
+                    # Selective global export.
+                    def bindings = Generator_filter(
+                        globals,
+                        { g <> {(g): get(modu, g)} });
+                    <> cat(bindings*)
+                }
         }
         { <> {} };
     def moduleBinding = ifValue { <> info::globalModuleName }
@@ -271,6 +285,7 @@ def Module0 = @[Module: {
         version: "0.0.1"
     },
     exports: {
+        getAllModules:        getAllModules,
         getGlobals:           getGlobals,
         load:                 load,
         moduleDef:            moduleDef,

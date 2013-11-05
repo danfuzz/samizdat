@@ -75,7 +75,6 @@ will be returned, or one of:
   * [Int](Int.md)
   * [List](List.md)
   * [Map](Map.md)
-  * [Module](Module.md)
   * [OpenRange](OpenRange.md) (part of `Range` module)
   * [String](String.md)
   * [Type](Type.md)
@@ -100,9 +99,11 @@ will be returned, or one of:
   * [core::Format (string formatting)](Format.md)
   * [core::FunctionForwarder](FunctionForwarder.md)
   * [core::Generator](Generator.md)
+  * [core::Globals / core::Globals0](Globals.md)
   * [core::Io0](Io0.md)
   * [core::Io1](Io1.md)
   * [core::Lang*](LangN.md)
+  * [core::Module](Module.md)
   * [core::Module0](Module0.md)
   * [core::ParseForwarder](ParseForwarder.md)
   * [core::Peg (parsing)](Peg.md)
@@ -111,7 +112,6 @@ will be returned, or one of:
 * Other
   * [Constants](constants.md)
   * [Conditionals And Iteration](conditional.md)
-  * [Meta-Library](meta.md)
 
 - - - - -
 

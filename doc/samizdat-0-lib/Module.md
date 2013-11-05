@@ -1,8 +1,8 @@
 Samizdat Layer 0: Core Library
 ==============================
 
-Modules
--------
+core::Module
+------------
 
 A `Module` is a derived value with a map payload, consisting of
 mappings for `info` and `exports`, each of which is expected to

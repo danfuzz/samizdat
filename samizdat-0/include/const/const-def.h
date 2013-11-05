@@ -45,7 +45,6 @@ TOK(return,         "return");
 
 STR(CommandLine,    "CommandLine");
 STR(ENVIRONMENT,    "ENVIRONMENT");
-STR(LIBRARY,        "LIBRARY");
 STR(actuals,        "actuals");
 STR(call,           "call");
 STR(cat,            "cat");
@@ -62,7 +61,7 @@ STR(literal,        "literal");
 STR(makeList,       "makeList");
 STR(makeValue,      "makeValue");
 STR(makeValueMap,   "makeValueMap");
-STR(main_sam0,      "main.sam0");
+STR(main_sam,       "main.sam");
 STR(name,           "name");
 STR(nonlocalExit,   "nonlocalExit");
 STR(optValue,       "optValue");

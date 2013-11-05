@@ -2,20 +2,7 @@
 # Licensed AS IS and WITHOUT WARRANTY under the Apache License,
 # Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
 
-#
-# Meta functions
-#
-
-
-#
-# Exported Definitions
-#
-
-# Documented in Samizdat Layer 0 spec.
-fn makeLibrary(context) {
-    <> {context*, LIBRARY: context}
-};
-
-<> {
-    makeLibrary:         makeLibrary
+{
+    name: ["core", "Globals"],
+    version: "0.0.1"
 }

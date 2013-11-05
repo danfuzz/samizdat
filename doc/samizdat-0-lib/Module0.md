@@ -20,6 +20,15 @@ The globally exported functions are:
 <br><br>
 ### Function Definitions
 
+#### `getAllModules() <> list`
+
+Gets a list of all currently loaded modules.
+
+#### `getGlobals(modu) <> map`
+
+Gets a map of all the global variables exported from the given module,
+mapping names to values.
+
 #### `load(fqPath) <> module`
 
 Loads a module from the directory named by the given fully-qualified path

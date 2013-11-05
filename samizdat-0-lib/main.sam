@@ -11,10 +11,13 @@
 
 # The following declares the arguments passed to the library itself.
 #
-# `LIBRARY_FLAT_DIR` is expected to be a flat path naming the directory
-# where library files may be found.
+# * `PRIMITIVE_CONTEXT` is expected to be a map of all primitively-defined
+#   variables.
+#
+# * `LIBRARY_FLAT_DIR` is expected to be a flat path naming the directory
+#   where library files may be found.
 
-LIBRARY_FLAT_DIR ->
+PRIMITIVE_CONTEXT, LIBRARY_FLAT_DIR ->
 
 
 #
@@ -49,7 +52,7 @@ fn readLibraryFile(name) {
 fn loadLibrary(ctx, name) {
     def text = readLibraryFile(name);
     def tree = ctx::Lang0_parseProgram(text);
-    def function = ctx::Lang0_eval({ctx*, LIBRARY: ctx}, tree);
+    def function = ctx::Lang0_eval(ctx, tree);
 
     # Evaluating the program text/tree results in a function which, when
     # called, yields the bindings defined by that file (because that's how
@@ -95,7 +98,7 @@ fn loadLibraryOrModule(ctx, name) {
 # only on the initial given `baseCtx` (that is, the primitive library context).
 fn loadAllLibraries(baseCtx) {
     # Read the manifest file, to figure out what all to load and in what order.
-    def manifest = loadLibrary(baseCtx, "manifest.sam0")::MANIFEST;
+    def manifest = loadLibrary(baseCtx, "manifest.sam")::MANIFEST;
 
     <> loopReduce(manifest, baseCtx)
         { names, ctx ->
@@ -122,13 +125,10 @@ fn makeCoreLibrary() {
     def newEnvironment =
         Collection_put(ENVIRONMENT, "MODULE_PATHS", modulePaths);
     def baseCtx =
-        Collection_put(LIBRARY, "ENVIRONMENT", newEnvironment);
+        Collection_put(PRIMITIVE_CONTEXT, "ENVIRONMENT", newEnvironment);
 
-    # Do the loading.
-    def fullCtx = loadAllLibraries(baseCtx);
-
-    # "Manually inline" `makeLibrary` to produce the final core library.
-    <> {fullCtx*, LIBRARY: fullCtx};
+    # Do the loading, and return the result.
+    <> loadAllLibraries(baseCtx);
 };
 
 
