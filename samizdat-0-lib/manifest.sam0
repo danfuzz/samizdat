@@ -27,8 +27,7 @@ def MANIFEST = [
 
     # Layer 0: Constant value definitions and simple functions, directly
     # added to the global library context.
-    "constants.sam0",
-    "Value.sam0",
+    ["core", "Globals0"],
 
     # Layer 0 evaluation as a module. Used by everything that follows.
     "meta.sam0",
