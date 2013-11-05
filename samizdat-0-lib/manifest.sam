@@ -11,8 +11,8 @@
 # (e.g. just to get the text) can use the list here to avoid having to
 # name them explicitly.
 def BOOTSTRAP_FILES = [
-    "manifest.sam0",
-    "main.sam0"
+    "manifest.sam",
+    "main.sam"
 ];
 
 # The following is a list of the names of all the core library files, in
@@ -23,7 +23,7 @@ def MANIFEST = [
 
     # Layer 0: Basic module system. Listed first so it can be used
     # by everything else.
-    "Module.sam0",
+    "Module.sam",
 
     # Layer 0: Constant value definitions and simple functions, directly
     # added to the global library context.

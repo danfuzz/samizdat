@@ -98,7 +98,7 @@ fn loadLibraryOrModule(ctx, name) {
 # only on the initial given `baseCtx` (that is, the primitive library context).
 fn loadAllLibraries(baseCtx) {
     # Read the manifest file, to figure out what all to load and in what order.
-    def manifest = loadLibrary(baseCtx, "manifest.sam0")::MANIFEST;
+    def manifest = loadLibrary(baseCtx, "manifest.sam")::MANIFEST;
 
     <> loopReduce(manifest, baseCtx)
         { names, ctx ->
