@@ -95,7 +95,7 @@ fn parseArgs(args) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn run(rawArgs*) {
+fn runCommandLine(rawArgs*) {
     def parsedArgs = parseArgs(rawArgs);
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
@@ -118,5 +118,5 @@ fn run(rawArgs*) {
 };
 
 <> {
-    run: run
+    runCommandLine: runCommandLine
 }

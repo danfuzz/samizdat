@@ -5,7 +5,8 @@ core::CommandLine
 -----------------
 
 The `CommandLine` module provides, unsurprisingly, command-line processing
-functionality.
+functionality. For convenience, it exports `runCommandLine` to the default
+global variable environment.
 
 <br><br>
 ### Generic Function Definitions
@@ -19,7 +20,7 @@ functionality.
 (none)
 
 
-#### `run(args*) <> . | void`
+#### `runCommandLine(args*) <> . | void`
 
 Command-line evaluator. This implements standardized top-level command-line
 parsing and evaluation. `args` are arbitrary arguments, which are parsed as
