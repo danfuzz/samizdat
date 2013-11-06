@@ -60,7 +60,7 @@ msg(box2);
 
 Io0::note("\nYield Box");
 
-def box3 = Box::makeYieldBox();
+def box3 = Box::makePromise();
 msg(box3);
 Box::store(box3, "fizmo");
 msg(box3);
@@ -79,7 +79,7 @@ Box::update(box4, { value <> cat("Yes: ", value) });
 msg(box4);
 
 Io0::note("\nUpdate yield box");
-def box5 = Box::makeYieldBox();
+def box5 = Box::makePromise();
 Box::update(box5, { args* <> Format::source(args) });
 msg(box5);
 

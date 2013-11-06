@@ -60,7 +60,7 @@ zvalue makeCell(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue makeYieldBox(void) {
+zvalue makePromise(void) {
     zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 

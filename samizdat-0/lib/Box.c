@@ -21,6 +21,6 @@ PRIM_IMPL(Box_makeCell) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(Box_makeYieldBox) {
-    return makeYieldBox();
+PRIM_IMPL(Box_makePromise) {
+    return makePromise();
 }

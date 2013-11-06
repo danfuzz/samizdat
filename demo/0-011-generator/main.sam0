@@ -31,7 +31,7 @@ fn msgAll(header, gen) {
 
     { <done> ->
         loopReduce(gen) { gen ->
-            def box = Box::makeYieldBox();
+            def box = Box::makePromise();
             <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGen ->
                     msg(Box::fetch(box));

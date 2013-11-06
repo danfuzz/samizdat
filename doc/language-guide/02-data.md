@@ -230,7 +230,7 @@ There are three predefined box variants:
 * A "cell" is a fully mutable box, which can be stored to any number of
   times.
 
-* A "yield box" is a box which can be stored to at most once. This type
+* A "promise" is a box which can be stored to at most once. This type
   of box is often used as something along the lines of a "reified
   return value".
 

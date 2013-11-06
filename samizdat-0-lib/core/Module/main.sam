@@ -17,7 +17,7 @@ def Module0 = moduleUse({name: ["core", "Module0"]});
 #
 
 # Box for the parsed list of module paths.
-def theModulePathsBox = Box::makeYieldBox();
+def theModulePathsBox = Box::makePromise();
 
 # Box containing a set-like map of fully-qualified names representing
 # modules in the middle of being loaded.

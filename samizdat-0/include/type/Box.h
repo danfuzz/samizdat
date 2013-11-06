@@ -43,6 +43,6 @@ zvalue makeCell(zvalue value);
 /**
  * Constructs a yield (set-once) box.
  */
-zvalue makeYieldBox(void);
+zvalue makePromise(void);
 
 #endif

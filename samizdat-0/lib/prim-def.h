@@ -115,7 +115,7 @@ PRIM_FUNC(typeOf,                1, 1);
 
 // Primitive functions: intended for modularization
 PRIM_FUNC(Box_makeCell,          0, 1);
-PRIM_FUNC(Box_makeYieldBox,      0, 0);
+PRIM_FUNC(Box_makePromise,       0, 0);
 PRIM_FUNC(Io0_flatCwd,           0, 0);
 PRIM_FUNC(Io0_flatFileExists,    1, 1);
 PRIM_FUNC(Io0_flatReadLink,      1, 1);

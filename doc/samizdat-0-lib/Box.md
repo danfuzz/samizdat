@@ -55,12 +55,12 @@ variables. It is hoped that this facility will be used as minimally as
 possible, so as to not preclude the system from performing functional-style
 optimizations.
 
-#### `makeYieldBox() <> box`
+#### `makePromise() <> promise`
 
-Creates a set-once "yield box". The result of a call to this function is a
-box which can be stored to at most once, using `store`. Subsequent
-attempts to store to the box will fail (terminating the runtime). The
-contents of the box are accessible by calling `fetch`. `fetch` returns
+Creates a promise (set-at-most-once box). The result of a call to this
+function is a box which can be stored to at most once, using `store`.
+Subsequent attempts to call `store` will fail (terminating the runtime). The
+contents of the promise are accessible by calling `fetch`. `fetch` returns
 void until and unless `store` is called with a second argument.
 
 This function is meant to be the primary way to capture the yielded values

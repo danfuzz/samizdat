@@ -32,7 +32,7 @@ fn flattenName(name) {
 # flat path).
 fn makeModuleContext(baseCtx, directory) {
     # A box for the final load context, to enable the necessary self-reference.
-    def ctxBox = Box_makeYieldBox();
+    def ctxBox = Box_makePromise();
 
     # A box for all the loaded submodules.
     def subsBox = Box_makeCell({});

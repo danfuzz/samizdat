@@ -18,7 +18,7 @@ def Io0 = moduleUse({name: ["core", "Io0"]});
 
 # Documented in Samizdat Layer 0 spec.
 fn make() {
-    <> @[ParseForwarder: Box::makeYieldBox()]
+    <> @[ParseForwarder: Box::makePromise()]
 };
 
 # Documented in Samizdat Layer 0 spec.
