@@ -18,7 +18,7 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 # Main Tests
 #
 
-def box = Box::makeMutableBox(0);
+def box = Box::makeCell(0);
 
 do {
     Box::store(box, Box::fetch(box) + 1);

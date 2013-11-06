@@ -15,9 +15,9 @@
  */
 
 /* Documented in Samizdat Layer 0 spec. */
-PRIM_IMPL(Box_makeMutableBox) {
+PRIM_IMPL(Box_makeCell) {
     zvalue value = (argCount == 1) ? args[0] : NULL;
-    return makeMutableBox(value);
+    return makeCell(value);
 }
 
 /* Documented in Samizdat Layer 0 spec. */

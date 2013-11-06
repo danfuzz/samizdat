@@ -37,7 +37,7 @@ fn msgTen(header, gen) {
     Io0::note(header);
 
     { <done> ->
-        def count = Box::makeMutableBox(10);
+        def count = Box::makeCell(10);
         loopReduce(gen) { gen ->
             Box::store(count, Number::sub(Box::fetch(count), 1));
             ifIs { <> lt(Box::fetch(count), 0) }

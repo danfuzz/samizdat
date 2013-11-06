@@ -39,13 +39,13 @@ which `store` has already been called.
 <br><br>
 ### Primitive Definitions
 
-#### `makeMutableBox(value?) <> box`
+#### `makeCell(value?) <> cell`
 
-Creates a mutable box, with optional pre-set value. The result of a call to
-this function is a box which can be set any number of times using
-`store`. The contents of the box are accessible by calling `fetch`.
+Creates a cell (a mutable box), with optional pre-set value. The result of
+a call to this function is a cell which can be set any number of times using
+`store`. The contents of the cell are accessible by calling `fetch`.
 
-The initial box content value is the `value` given to this function. This
+The initial cell content value is the `value` given to this function. This
 is what is returned from `fetch` until `store` is called to replace it.
 If `value` is not supplied, `fetch` returns void until `store` is called.
 

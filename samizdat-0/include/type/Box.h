@@ -38,7 +38,7 @@ extern zvalue GFN_store;
  * Constructs a mutable (re-settable) box, with the given initial value.
  * Pass `NULL` to leave it initially unset.
  */
-zvalue makeMutableBox(zvalue value);
+zvalue makeCell(zvalue value);
 
 /**
  * Constructs a yield (set-once) box.

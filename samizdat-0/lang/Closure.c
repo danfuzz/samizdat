@@ -493,7 +493,7 @@ MOD_INIT(Closure) {
     METH_BIND(Closure, gcMark);
 
     nodeCache = EMPTY_MAP;
-    nodeCacheBox = makeMutableBox(EMPTY_MAP);
+    nodeCacheBox = makeCell(EMPTY_MAP);
     pbImmortalize(nodeCacheBox);
 }
 

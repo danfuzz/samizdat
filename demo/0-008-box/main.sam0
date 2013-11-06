@@ -38,7 +38,7 @@ fn msg(box) {
 
 Io0::note("Mutable Box");
 
-def box1 = Box::makeMutableBox();
+def box1 = Box::makeCell();
 msg(box1);
 Box::store(box1);
 msg(box1);
@@ -51,7 +51,7 @@ msg(box1);
 
 Io0::note("\nMutable Box, pre-set");
 
-def box2 = Box::makeMutableBox("blort");
+def box2 = Box::makeCell("blort");
 msg(box2);
 Box::store(box2);
 msg(box2);
@@ -72,7 +72,7 @@ Box::store(Box::nullBox, "stuff");
 msg(Box::nullBox);
 
 Io0::note("\nUpdate mutable box");
-def box4 = Box::makeMutableBox();
+def box4 = Box::makeCell();
 Box::update(box4, { args* <> Format::source(args) });
 msg(box4);
 Box::update(box4, { value <> cat("Yes: ", value) });
