@@ -19,13 +19,11 @@ functionality.
 (none)
 
 
-#### `run(context, args*) <> . | void`
+#### `run(args*) <> . | void`
 
 Command-line evaluator. This implements standardized top-level command-line
-parsing and evaluation. `context` is expected to be a library context, such
-as one of the standard `LIBRARY` bindings. `args` are arbitrary other
-arguments, which are parsed as optional command-line options, a program
-file name, and additional arguments.
+parsing and evaluation. `args` are arbitrary arguments, which are parsed as
+optional command-line options, a program file name, and additional arguments.
 
 This parses the indicated file, as implied by its recognized suffix
 (or lack thereof), evaluates the result of parsing, and then calls that

@@ -95,7 +95,7 @@ fn parseArgs(args) {
 #
 
 # Documented in Samizdat Layer 0 spec.
-fn run(context, rawArgs*) {
+fn run(rawArgs*) {
     def parsedArgs = parseArgs(rawArgs);
     def options = parsedArgs::options;
     def argWords = parsedArgs::args;
@@ -108,10 +108,11 @@ fn run(context, rawArgs*) {
 
     def programText = Io1::readFileUtf8(filePath);
 
+    def globals = moduleUse({name: ["core", "Globals"]});
     def langLayer = ifValueOr { <> options::layer } { <> "2" };
     def langModule = moduleUse({name: ["core", cat("Lang", langLayer)]});
     def parsedProgram = langModule::parseProgram(programText);
-    def evalled = langModule::eval(context, parsedProgram);
+    def evalled = langModule::eval(globals, parsedProgram);
 
     <> evalled(filePath, args*)
 };
