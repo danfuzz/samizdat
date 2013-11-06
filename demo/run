@@ -115,7 +115,7 @@ fi
 
 # Find the "main" script.
 
-mainFile="$(cd "${name}"; find . -name 'main.sam*')"
+mainFile="$(cd "${name}"; find . -maxdepth 1 -name 'main.sam*')"
 
 if [[ ${mainFile} == '' ]]; then
     echo "No main script in directory: ${name}" 1>&2
@@ -156,6 +156,8 @@ fi
 
 # Run it in the demo dir, passing it the main script name and any other
 # arguments passed to this script.
+
+export MODULE_PATH="modules"
 
 echo "Running demo: $(basename "${name}")"
 cd "${name}"
