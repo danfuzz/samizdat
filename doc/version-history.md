@@ -20,7 +20,7 @@ Version History
   * Implemented basic type system and method dispatch mechanism based
     on generic functions.
 
-* 0.3.0 &mdash; 6-nov-2013 &mdash; ""
+* 0.3.0 &mdash; 6-nov-2013 &mdash; "Now I'm Feeling Modularized"
 
   * Milestone: System is sufficiently stable to start work on a self-hosted
     compiler.
