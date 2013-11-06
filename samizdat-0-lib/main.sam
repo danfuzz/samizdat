@@ -7,6 +7,7 @@
 #
 # This is a Samizdat Layer 0 program which defines all the
 # core library functions and other bindings that aren't primitive.
+# It returns the default global variable environment.
 #
 
 # The following declares the arguments passed to the library itself.

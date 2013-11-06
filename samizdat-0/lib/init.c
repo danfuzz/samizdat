@@ -141,5 +141,15 @@ zvalue libNewContext(const char *libraryDir) {
     MOD_USE(Map);
 
     makePrimitiveContext();
-    return getLibrary(stringFromUtf8(-1, libraryDir));
+
+    zstackPointer save = pbFrameStart();
+    zvalue result = getLibrary(stringFromUtf8(-1, libraryDir));
+
+    pbFrameReturn(save, result);
+
+    // Force a garbage collection here, to have a maximally clean slate when
+    // moving into main program execution.
+    pbGc();
+
+    return result;
 }

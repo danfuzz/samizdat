@@ -6,7 +6,7 @@
     name: ["core", "CommandLine"],
     version: "0.0.1",
 
-    globalModuleName: "CommandLine",
+    globalExports: ["runCommandLine"],
 
     language: "Lang1"
 }

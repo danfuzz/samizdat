@@ -43,7 +43,6 @@ TOK(def,            "def");
 TOK(fn,             "fn");
 TOK(return,         "return");
 
-STR(CommandLine,    "CommandLine");
 STR(ENVIRONMENT,    "ENVIRONMENT");
 STR(actuals,        "actuals");
 STR(call,           "call");
@@ -66,7 +65,7 @@ STR(name,           "name");
 STR(nonlocalExit,   "nonlocalExit");
 STR(optValue,       "optValue");
 STR(repeat,         "repeat");
-STR(run,            "run");
+STR(runCommandLine, "runCommandLine");
 STR(statements,     "statements");
 STR(string,         "string");
 STR(value,          "value");

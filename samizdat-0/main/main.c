@@ -5,7 +5,6 @@
  */
 
 #include "const.h"
-#include "io.h"
 #include "impl.h"
 #include "lib.h"
 #include "type/Int.h"
@@ -33,31 +32,19 @@ int main(int argc, char **argv) {
     }
 
     char *libraryDir = getProgramDirectory(argv[0], "corelib");
-    zstackPointer save = pbFrameStart();
     zvalue context = libNewContext(libraryDir);
 
     utilFree(libraryDir);
 
-    // The first argument to `run` is the context. The rest are the original
-    // command-line arguments (per se, so not including C's `argv[0]`).
-
-    zvalue args[argc];
-
-    args[0] = context;
+    // The arguments to `run` are the original command-line arguments (per se,
+    // so not including C's `argv[0]`).
+    zvalue args[argc - 1];
     for (int i = 1; i < argc; i++) {
-        args[i] = stringFromUtf8(-1, argv[i]);
+        args[i - 1] = stringFromUtf8(-1, argv[i]);
     }
-    zvalue argsList = listFromArray(argc, args);
+    zvalue argsList = listFromArray(argc - 1, args);
 
-    // `argsList` refers to `context`, so it's safe to keep referring to
-    // the latter, immediately below.
-    pbFrameReturn(save, argsList);
-
-    // Force a garbage collection here, to have a maximally clean slate when
-    // moving into main program execution.
-    pbGc();
-
-    zvalue runFunc = collGet(collGet(context, STR_CommandLine), STR_run);
+    zvalue runFunc = collGet(context, STR_runCommandLine);
     zvalue result = funApply(runFunc, argsList);
 
     if ((result != NULL) && (hasType(result, TYPE_Int))) {
