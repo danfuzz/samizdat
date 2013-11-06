@@ -5,7 +5,6 @@
  */
 
 #include "const.h"
-#include "io.h"
 #include "impl.h"
 #include "lib.h"
 #include "type/Int.h"
@@ -33,18 +32,9 @@ int main(int argc, char **argv) {
     }
 
     char *libraryDir = getProgramDirectory(argv[0], "corelib");
-    zstackPointer save = pbFrameStart();
     zvalue context = libNewContext(libraryDir);
 
     utilFree(libraryDir);
-
-    // `argsList` refers to `context`, so it's safe to keep referring to
-    // the latter, immediately below.
-    pbFrameReturn(save, context);
-
-    // Force a garbage collection here, to have a maximally clean slate when
-    // moving into main program execution.
-    pbGc();
 
     // The arguments to `run` are the original command-line arguments (per se,
     // so not including C's `argv[0]`).
