@@ -9,7 +9,6 @@
 # the *Samizdat Layer 0* and *Samizdat Layer 1* specifications.
 #
 
-def Peg = moduleUse({name: ["core", "Peg"]});
 
 #
 # These definitions are meant to mirror the code in the spec for

@@ -6,5 +6,7 @@
     name: ["core", "Peg"],
     version: "0.0.1",
 
+    globalModuleName: "Peg",
+
     language: "Lang0"
 }

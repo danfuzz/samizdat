@@ -7,7 +7,6 @@
 #
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
-def Peg = moduleUse({name: ["core", "Peg"]});
 
 
 #

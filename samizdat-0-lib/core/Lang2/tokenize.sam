@@ -9,7 +9,6 @@
 def Box = moduleUse({name: ["core", "Box"]});
 def FunctionForwarder = moduleUse({name: ["core", "FunctionForwarder"]});
 def ParseForwarder = moduleUse({name: ["core", "ParseForwarder"]});
-def Peg = moduleUse({name: ["core", "Peg"]});
 
 
 # The standard entity map.

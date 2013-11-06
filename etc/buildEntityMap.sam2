@@ -12,7 +12,6 @@
 SELF_PATH, ARGS* ->
 
 def Io1 = moduleUse({name: ["core", "Io1"]});
-def Peg = moduleUse({name: ["core", "Peg"]});
 
 
 # Map of hex digit tokens to int values.
