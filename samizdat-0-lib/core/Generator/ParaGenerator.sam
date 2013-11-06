@@ -42,7 +42,7 @@ fn ParaGenerator_nextValue(gen, box) {
     def generatorCalls = Generator::filter(
         subGens,
         { gen ->
-            def innerBox = Box::makeYieldBox();
+            def innerBox = Box::makePromise();
             <> ifValue { <> Generator::nextValue(gen, innerBox) }
                 { nextGenerator <> [Box::fetch(innerBox), nextGenerator] }
                 {

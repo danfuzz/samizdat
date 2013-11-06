@@ -33,7 +33,7 @@ static zvalue collectOrFilter(zvalue generator, zvalue function) {
     zint at = 0;
 
     zstackPointer save = pbFrameStart();
-    zvalue box = makeMutableBox(NULL);
+    zvalue box = makeCell(NULL);
 
     for (;;) {
         zvalue nextGen = GFN_CALL(nextValue, generator, box);

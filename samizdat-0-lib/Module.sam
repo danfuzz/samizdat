@@ -13,7 +13,7 @@
 
 # Box containing a map from fully-qualified names to modules. Each name is a
 # list-of-strings denoting a "path" to the module.
-def theModulesBox = Box_makeMutableBox({});
+def theModulesBox = Box_makeCell({});
 
 # Flattens an absolute module name to a simple directory name.
 #
@@ -32,10 +32,10 @@ fn flattenName(name) {
 # flat path).
 fn makeModuleContext(baseCtx, directory) {
     # A box for the final load context, to enable the necessary self-reference.
-    def ctxBox = Box_makeYieldBox();
+    def ctxBox = Box_makePromise();
 
     # A box for all the loaded submodules.
-    def subsBox = Box_makeMutableBox({});
+    def subsBox = Box_makeCell({});
 
     fn submoduleRead(name) {
         Io0_note(cat("        ", name));

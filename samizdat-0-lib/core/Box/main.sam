@@ -24,17 +24,17 @@ fn update(box, updateFunction) {
 
 <> {
     # Re-exported from proto.
-    canStore:       Box::canStore,
-    fetch:          Box::fetch,
-    store:          Box::store,
+    canStore:    Box::canStore,
+    fetch:       Box::fetch,
+    store:       Box::store,
 
     # Re-exported from `NullBox`.
-    nullBox:        NullBox::nullBox,
+    nullBox:     NullBox::nullBox,
 
     # Re-exported from primitive library.
-    makeMutableBox: Box_makeMutableBox,
-    makeYieldBox:   Box_makeYieldBox,
+    makeCell:    Box_makeCell,
+    makePromise: Box_makePromise,
 
     # Defined in this file.
-    update:         update
+    update:      update
 }

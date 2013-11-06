@@ -22,7 +22,7 @@ fn makeListWrapGenerator(generator) {
 
 # Documented in spec.
 fn ListWrapGenerator_nextValue(gen, box) {
-    def innerBox = Box::makeYieldBox();
+    def innerBox = Box::makePromise();
 
     <> ifValue { <> Generator::nextValue(dataOf(gen), innerBox) }
         { nextGenerator ->

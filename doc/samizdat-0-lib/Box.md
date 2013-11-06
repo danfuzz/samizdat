@@ -39,13 +39,13 @@ which `store` has already been called.
 <br><br>
 ### Primitive Definitions
 
-#### `makeMutableBox(value?) <> box`
+#### `makeCell(value?) <> cell`
 
-Creates a mutable box, with optional pre-set value. The result of a call to
-this function is a box which can be set any number of times using
-`store`. The contents of the box are accessible by calling `fetch`.
+Creates a cell (a mutable box), with optional pre-set value. The result of
+a call to this function is a cell which can be set any number of times using
+`store`. The contents of the cell are accessible by calling `fetch`.
 
-The initial box content value is the `value` given to this function. This
+The initial cell content value is the `value` given to this function. This
 is what is returned from `fetch` until `store` is called to replace it.
 If `value` is not supplied, `fetch` returns void until `store` is called.
 
@@ -55,12 +55,12 @@ variables. It is hoped that this facility will be used as minimally as
 possible, so as to not preclude the system from performing functional-style
 optimizations.
 
-#### `makeYieldBox() <> box`
+#### `makePromise() <> promise`
 
-Creates a set-once "yield box". The result of a call to this function is a
-box which can be stored to at most once, using `store`. Subsequent
-attempts to store to the box will fail (terminating the runtime). The
-contents of the box are accessible by calling `fetch`. `fetch` returns
+Creates a promise (set-at-most-once box). The result of a call to this
+function is a box which can be stored to at most once, using `store`.
+Subsequent attempts to call `store` will fail (terminating the runtime). The
+contents of the promise are accessible by calling `fetch`. `fetch` returns
 void until and unless `store` is called with a second argument.
 
 This function is meant to be the primary way to capture the yielded values

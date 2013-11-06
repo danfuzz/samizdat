@@ -48,7 +48,7 @@ static BoxInfo *getInfo(zvalue box) {
  */
 
 /* Documented in header. */
-zvalue makeMutableBox(zvalue value) {
+zvalue makeCell(zvalue value) {
     zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 
@@ -60,7 +60,7 @@ zvalue makeMutableBox(zvalue value) {
 }
 
 /* Documented in header. */
-zvalue makeYieldBox(void) {
+zvalue makePromise(void) {
     zvalue result = pbAllocValue(TYPE_Box, sizeof(BoxInfo));
     BoxInfo *info = getInfo(result);
 

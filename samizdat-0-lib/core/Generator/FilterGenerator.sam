@@ -35,7 +35,7 @@ fn FilterGenerator_nextValue(gen, box) {
     # allowed to yield void to indicate a generated value is to
     # be discarded.
     loopReduce(payload::generator) { <next> gen ->
-        def innerBox = Box::makeYieldBox();
+        def innerBox = Box::makePromise();
 
         ifValue { <> Generator::nextValue(gen, innerBox) }
             { nextGenerator ->

@@ -17,11 +17,11 @@ def Module0 = moduleUse({name: ["core", "Module0"]});
 #
 
 # Box for the parsed list of module paths.
-def theModulePathsBox = Box::makeYieldBox();
+def theModulePathsBox = Box::makePromise();
 
 # Box containing a set-like map of fully-qualified names representing
 # modules in the middle of being loaded.
-def thePendingBox = Box::makeMutableBox({});
+def thePendingBox = Box::makeCell({});
 
 # Finds the directory for the named module, by iterating over
 # `MODULE_PATHS_LIST`, looking for a `module.sam` file. Either returns

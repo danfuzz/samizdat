@@ -52,7 +52,7 @@ fn filterAll(filterFunction, generators*) {
 fn doReduce(reduceFunction, generator, baseValues*) {
     loopReduce(generator, baseValues)
         { gen, values ->
-            def box = Box::makeYieldBox();
+            def box = Box::makePromise();
             <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGenerator ->
                     <> ifValue { <> reduceFunction(Box::fetch(box), values*) }
@@ -73,7 +73,7 @@ fn doReduce(reduceFunction, generator, baseValues*) {
 fn doReduce1(reduceFunction, generator, baseValue) {
     loopReduce(generator, baseValue)
         { gen, value ->
-            def box = Box::makeYieldBox();
+            def box = Box::makePromise();
             <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGenerator ->
                     <> ifValue { <> reduceFunction(Box::fetch(box), value) }
@@ -94,7 +94,7 @@ fn doReduce1(reduceFunction, generator, baseValue) {
 fn filterPump(filterFunction, generators*) {
     loopReduce(ParaGenerator::makeParaGenerator(generators*))
         { gen ->
-            def box = Box::makeYieldBox();
+            def box = Box::makePromise();
             <> ifValue { <> Generator::nextValue(gen, box) }
                 { nextGenerator ->
                     filterFunction(Box::fetch(box)*);

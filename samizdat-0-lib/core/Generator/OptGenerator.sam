@@ -32,7 +32,7 @@ genericBind(Generator::collect, "OptGenerator", OptGenerator_collect);
 # Documented in spec.
 fn OptGenerator_nextValue(gen, box) {
     def subGen = dataOf(gen);
-    def innerBox = Box::makeYieldBox();
+    def innerBox = Box::makePromise();
 
     <> ifValue { <> Generator::nextValue(subGen, innerBox) }
         { nextGen ->
