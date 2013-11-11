@@ -72,6 +72,9 @@ design and implementation of *Samizdat*.
 * PyPy STM design (blog post) &mdash;
   <http://morepypy.blogspot.com/2013/06/stm-on-drawing-board.html>
 
+* Pyret language &mdash;
+  <http://www.pyret.org/>
+
 * Shunting-yard algorithm (operator-precedence parsing) &mdash;
   <http://en.wikipedia.org/wiki/Shunting-yard_algorithm>
 
