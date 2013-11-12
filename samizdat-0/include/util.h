@@ -86,8 +86,8 @@ void note(const char *format, ...)
 /**
  * Dies (aborts the process) with the given message. Arguments are as
  * with `printf()`. If there is any active stack context (more
- * `deathPush*()`es than `deathPop()`s), then that context is appended
- * to the death report.
+ * `UTIL_TRACE_START()`s than `UTIL_TRACE_END()`s), then that context is
+ * appended to the death report.
  */
 void die(const char *format, ...)
     __attribute__((noreturn))
