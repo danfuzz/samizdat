@@ -6,6 +6,7 @@
 
 #include "util.h"
 
+// TODO: Maybe also use `__attribute((weak))`.
 static void run(void) __attribute__((constructor));
 static void run(void) {
     note("=== yo");
