@@ -1,0 +1,82 @@
+#!/bin/bash
+#
+# Copyright 2013 the Samizdat Authors (Dan Bornstein et alia).
+# Licensed AS IS and WITHOUT WARRANTY under the Apache License,
+# Version 2.0. Details: <http://www.apache.org/licenses/LICENSE-2.0>
+
+
+#
+# Directory and program name detection
+#
+
+# Preserve the original working dir as origDir.
+origDir="${PWD}"
+
+# Set progName to the program name, progDir to its directory, and baseDir
+# to progDir's directory. Follows symlinks.
+prog="$0"
+while [[ -h ${prog} ]]; do
+    [[ "$(/bin/ls -ld "${prog}")" =~ .*' -> '(.*)$ ]]
+    newProg="${BASH_REMATCH[1]}"
+    if [[ ${newProg} =~ ^/ ]]; then
+        prog="${newProg}"
+    else
+        prog="$(dirname "${prog}")/${newProg}"
+    fi
+done
+progName="$(basename "${prog}")"
+progDir="$(dirname "${prog}")"
+cd "${progDir}"
+progDir="${PWD}"
+cd ..
+baseDir="${PWD}"
+cd "${origDir}"
+unset prog
+unset newProg
+
+
+#
+# Main script
+#
+
+projectName="$(basename "${progDir}")"
+
+OUT="${OUT:-${baseDir}/out}/${projectName}"
+rm -rf "${OUT}" || exit 1
+mkdir -p "${OUT}" || exit 1
+
+CC=cc
+COMPILE_C=(
+    "${CC[@]}" -g -c -I"${baseDir}/samizdat-0/include" -I"${progDir}/include"
+)
+
+# Note: The GNU equivalent to `-dynamiclib` seems to be `-shared`, and
+# the equivalent to `-undefined dynamic_lookup` seems to be `-Ur`.
+LINK_LIB=("${CC[@]}" -g -dynamiclib -undefined dynamic_lookup)
+
+cd "${progDir}"
+
+C_SOURCES=($(find . -name '*.c'))
+
+errors=0
+for file in "${C_SOURCES[@]}"; do
+    [[ ${file} =~ ^\./(.*)/([^/]*)\.c$ ]] || exit 1
+    dir="${BASH_REMATCH[1]}"
+    baseName="${BASH_REMATCH[2]}"
+    outDir="${OUT}/${dir}"
+    infoName="${file}"
+
+    outFile="${outDir}/${baseName}.o"
+    mkdir -p "${outDir}"
+    echo "Compile: ${infoName}"
+    "${COMPILE_C[@]}" -o "${outFile}" "${file}" || (( errors++ ))
+done
+
+if (( errors != 0 )); then
+    printf '%d file(s) with error(s)\n' "${errors}"
+    exit 1
+fi
+
+cd "${OUT}"
+OBJECTS=($(find . -name '*.o'))
+"${LINK_LIB[@]}" -o "${projectName}.dylib" "${OBJECTS[@]}" || exit 1
