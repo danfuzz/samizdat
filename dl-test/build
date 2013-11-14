@@ -79,4 +79,4 @@ fi
 
 cd "${OUT}"
 OBJECTS=($(find . -name '*.o'))
-"${LINK_LIB[@]}" -o "${projectName}.dylib" "${OBJECTS[@]}" || exit 1
+"${LINK_LIB[@]}" -o "${projectName}.samb" "${OBJECTS[@]}" || exit 1
