@@ -37,6 +37,12 @@ fn makeModuleContext(baseCtx, directory) {
     # A box for all the loaded submodules.
     def subsBox = Box_makeCell({});
 
+    fn submoduleExists(name) {
+        def path = cat(directory, "/", name);
+        <> ifIs { <> Io0_flatFileExists(path) }
+            { <> name }
+    };
+
     fn submoduleRead(name) {
         Io0_note(cat("        ", name));
         def path = cat(directory, "/", name);
@@ -47,18 +53,28 @@ fn makeModuleContext(baseCtx, directory) {
 
     fn submoduleLoad(name) {
         def ctx = Box_fetch(ctxBox);
-        def text = submoduleRead(cat(name, ".sam"));
-        def tree = ctx::submoduleParse(text);
-        def func = ctx::submoduleEval(ctx, tree);
-        <> func()
+
+        ifValue { <> submoduleExists(cat(name, ".sam")) }
+            { name ->
+                def text = submoduleRead(name);
+                def tree = ctx::submoduleParse(text);
+                def func = ctx::submoduleEval(ctx, tree);
+                return func()
+            };
+
+        ifValue { <> submoduleExists(cat(name, ".samb")) }
+            { name ->
+                return Lang0_evalBinary(ctx, name)
+            };
+
+        Io0_die(cat("Missing module file: ", directory, "/", name));
     };
 
     fn submoduleUse(name) {
         ifValue { <> get(Box_fetch(subsBox), name) }
             { value -> return value };
 
-        def result = ifValue { <> submoduleLoad(name) }
-            { r <> r }
+        def result = ifValueOr { <> submoduleLoad(name) }
             { <> {} };
 
         Box_store(subsBox, {(Box_fetch(subsBox))*, (name): result});
