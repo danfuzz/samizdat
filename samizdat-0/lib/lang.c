@@ -21,6 +21,11 @@ PRIM_IMPL(Lang0_eval) {
 }
 
 /* Documented in Samizdat Layer 0 spec. */
+PRIM_IMPL(Lang0_evalBinary) {
+    return pbEvalBinary(args[0], args[1]);
+}
+
+/* Documented in Samizdat Layer 0 spec. */
 PRIM_IMPL(Lang0_parseExpression) {
     return langParseExpression0(args[0]);
 }

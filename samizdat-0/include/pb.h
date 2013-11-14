@@ -37,6 +37,19 @@ void assertValidOrNull(zvalue value);
 
 
 /*
+ * Code Loading Declarations
+ */
+
+/**
+ * Loads and evaluates (runs) a native binary module, passing the given
+ * `context` argument to its `eval` function. `path` indicates the filesystem
+ * path to the module (as a flat string), which must be absolute. This
+ * function returns whatever was returned by the `eval` function.
+ */
+zvalue pbEvalBinary(zvalue context, zvalue flatPath);
+
+
+/*
  * Memory Management Declarations
  */
 
