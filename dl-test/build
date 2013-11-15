@@ -79,4 +79,9 @@ fi
 
 cd "${OUT}"
 OBJECTS=($(find . -name '*.o'))
-"${LINK_LIB[@]}" -o "${projectName}.samb" "${OBJECTS[@]}" || exit 1
+"${LINK_LIB[@]}" -o "main.samb" "${OBJECTS[@]}" || exit 1
+
+mkdir -p final/modules/app/Test
+cp main.samb final/modules/app/Test
+cp "${progDir}/module.sam" final/modules/app/Test
+cp "${progDir}/run.sam" final
