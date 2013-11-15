@@ -7,8 +7,10 @@ SELF_PATH, ARGS* ->
 
 
 #
-# Main Tests
+# Main Test
 #
+
+def Io1 = moduleUse({name: ["core", "Io1"]});
 
 # A locally-defined binary module.
 def Test = moduleUse({name: ["app", "Test"]});
