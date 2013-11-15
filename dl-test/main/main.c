@@ -8,8 +8,13 @@
 #include "type/String.h"
 #include "util.h"
 
+static void init(void) __attribute__((constructor));
+static void init(void) {
+    note("Test module: In `init()`.");
+}
+
 zvalue eval(zvalue context) {
-    note("=== Hello module!");
+    note("Test module: In `eval()`.");
 
     zvalue testStr = stringFromUtf8(-1, "TEST");
     zmapping mappings[] = {
