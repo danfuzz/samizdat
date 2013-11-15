@@ -37,37 +37,37 @@ fn makeModuleContext(baseCtx, directory) {
     # A box for all the loaded submodules.
     def subsBox = Box_makeCell({});
 
-    fn submoduleExists(name) {
-        def path = cat(directory, "/", name);
-        <> ifIs { <> Io0_flatFileExists(path) }
-            { <> name }
+    fn submoduleFileName(name, extension?) {
+        <> ifIs { <> extension* }
+            { <> cat(directory, "/", name, ".", extension*) }
+            { <> cat(directory, "/", name) }
     };
 
-    fn submoduleRead(name) {
-        Io0_note(cat("        ", name));
-        def path = cat(directory, "/", name);
+    fn submoduleRead(name, extension?) {
+        def path = submoduleFileName(name, extension*);
         <> ifIs { <> Io0_flatFileExists(path) }
             { <> Io0_flatReadFileUtf8(path) }
             { Io0_die(cat("No such module file: ", path)) }
     };
 
     fn submoduleLoad(name) {
+        Io0_note(cat("        ", name));
         def ctx = Box_fetch(ctxBox);
 
-        ifValue { <> submoduleExists(cat(name, ".sam")) }
-            { name ->
-                def text = submoduleRead(name);
+        def regularName = submoduleFileName(name, "sam");
+        ifIs { <> Io0_flatFileExists(regularName) }
+            {
+                def text = Io0_flatReadFileUtf8(regularName);
                 def tree = ctx::submoduleParse(text);
                 def func = ctx::submoduleEval(ctx, tree);
                 return func()
             };
 
-        ifValue { <> submoduleExists(cat(name, ".samb")) }
-            { name ->
-                return Lang0_evalBinary(ctx, name)
-            };
+        def binName = submoduleFileName(name, "samb");
+        ifIs { <> Io0_flatFileExists(binName) }
+            { return Lang0_evalBinary(ctx, binName) };
 
-        Io0_die(cat("Missing module file: ", directory, "/", name));
+        Io0_die(cat("Missing module file: ", regularName));
     };
 
     fn submoduleUse(name) {
@@ -83,7 +83,7 @@ fn makeModuleContext(baseCtx, directory) {
 
     # This must evaluate to a map.
     def moduleInfo = Lang0_eval(baseCtx,
-        Lang0_parseExpression(submoduleRead("module.sam")));
+        Lang0_parseExpression(submoduleRead("module", "sam")));
 
     def languageName = ifValueOr { <> moduleInfo::language } { <> "Lang2" };
     def languageModule = ifIs { <> ne(languageName, "none") }
