@@ -84,6 +84,10 @@ design and implementation of *Samizdat*.
 * Tradeoffs in Metaprogramming &mdash;
   <http://arxiv.org/abs/cs/0512065>
 
+* Value representation in Javascript implementations (NaN-Boxing and
+  Nun-Boxing) &mdash;
+  <http://wingolog.org/archives/2011/05/18/value-representation-in-javascript-implementations>
+
 * Why Programming Languages? &mdash;
   <http://soft.vub.ac.be/~tvcutsem/invokedynamic/node/11>
 
