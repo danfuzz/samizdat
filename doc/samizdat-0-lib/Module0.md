@@ -39,12 +39,16 @@ as a mapping of names to values.
 Gets a map of the metainformation about the given module, as a
 mapping of names to values.
 
-#### `load(fqPath) <> module`
+#### `load(globals, fqPath, mainName?) <> module`
 
 Loads a module from the directory named by the given fully-qualified path
-(list of directory names). This loads the code and returns the constructed
-module, but it does *not* cause the module to be findable via `moduleGet`.
-It also does *not* check to see if the module has already been loaded.
+(list of directory names), using the given `globals` for global bindings.
+If `mainName` is supplied, uses that as the name of the main file to load;
+if not, it defaults to `"main.sam"`.
+
+This loads the code and returns the constructed module, but it does *not*
+cause the module to be findable via `moduleGet`. It also does *not* check to
+see if the module has already been loaded.
 
 This is the "raw" version of module loading, which takes a few shortcuts
 compared to the full module-loading semantics. It is not intended to be

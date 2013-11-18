@@ -15,12 +15,15 @@
 # list-of-strings denoting a "path" to the module.
 def theModulesBox = Box_makeCell({});
 
-# Flattens an absolute module name to a simple directory name.
+# Box containing a map from full directory paths to corresponding modules.
+def thePathsBox = Box_makeCell({});
+
+# Flattens an absolute path to a simple name.
 #
 # **Note:** This function is a (low rent) duplicate of functionality in
 # `Io*` modules, because this function needs to be called before the `Io*`
 # modules are loaded.
-fn flattenName(name) {
+fn flattenPath(name) {
     # Prefix each component with `/`, and concatenate them all together.
 
     def withSlashes = Generator_filter(name, { elem <> cat("/", elem) });
@@ -29,8 +32,10 @@ fn flattenName(name) {
 
 # Makes a module-load global context, based on the given `baseCtx` and which
 # adds submodule read and load functions that use the given `directory` (a
-# flat path).
+# structured path).
 fn makeModuleContext(baseCtx, directory) {
+    def flatDir = flattenPath(directory);
+
     # A box for the final load context, to enable the necessary self-reference.
     def ctxBox = Box_makePromise();
 
@@ -39,15 +44,22 @@ fn makeModuleContext(baseCtx, directory) {
 
     fn submoduleFileName(name, extension?) {
         <> ifIs { <> extension* }
-            { <> cat(directory, "/", name, ".", extension*) }
-            { <> cat(directory, "/", name) }
+            { <> cat(flatDir, "/", name, ".", extension*) }
+            { <> cat(flatDir, "/", name) }
     };
 
-    fn submoduleRead(name, extension?) {
+    fn submoduleReadIfExists(name, extension?) {
         def path = submoduleFileName(name, extension*);
         <> ifIs { <> Io0_flatFileExists(path) }
             { <> Io0_flatReadFileUtf8(path) }
-            { Io0_die(cat("No such module file: ", path)) }
+    };
+
+    fn submoduleRead(name, extension?) {
+        <> ifValueOr { <> submoduleReadIfExists(name, extension*) }
+            {
+                Io0_die(cat("No such module file: ",
+                    submoduleFileName(name, extension*)))
+            }
     };
 
     fn submoduleLoad(name) {
@@ -81,9 +93,19 @@ fn makeModuleContext(baseCtx, directory) {
         <> result
     };
 
-    # This must evaluate to a map.
-    def moduleInfo = Lang0_eval(baseCtx,
-        Lang0_parseExpression(submoduleRead("module", "sam")));
+    # If the `module` file exists, it must evaluate to a map. If not,
+    # create a minimal "anonymous" module definition. In either case, add
+    # an extra binding for the path to the module.
+    def moduleInfo = {
+        (
+            ifValue { <> submoduleReadIfExists("module", "sam") }
+                { moduleText ->
+                    <> Lang0_eval(baseCtx, Lang0_parseExpression(moduleText))
+                }
+                { <> {name: [], version: "1.0.0"} }
+        )*,
+        path: directory
+    };
 
     def languageName = ifValueOr { <> moduleInfo::language } { <> "Lang2" };
     def languageModule = ifIs { <> ne(languageName, "none") }
@@ -230,12 +252,11 @@ fn getGlobals(modu) {
 };
 
 # Documented in spec.
-fn load(baseCtx, directory) {
-    def flatPath = flattenName(directory);
-    def ctx = makeModuleContext(baseCtx, flatPath);
+fn load(baseCtx, directory, mainName?) {
+    def ctx = makeModuleContext(baseCtx, directory);
 
-    # This must evaluate to a map.
-    def exports = ctx::submoduleUse("main");
+    # This generally evaluates to a map.
+    def exports = ctx::submoduleUse(ifValueOr { <> mainName* } { <> "main" });
 
     # Combine `moduleInfo` and `exports` to form the final module value.
     <> @[Module: {info: ctx::moduleInfo, exports: exports}];
@@ -243,15 +264,21 @@ fn load(baseCtx, directory) {
 
 # Documented in spec.
 fn moduleDef(modu) {
-    def name = nameOf(modu);
+    def paths = Box_fetch(thePathsBox);
+    def path = getInfo(modu)::path;
+    ifIs { <> get(paths, path) }
+        { Io0_die(cat("Cannot redefine module: ", flattenPath(path))) };
 
-    ifIs { <> moduleGet({name: name}) }
+    Box_store(thePathsBox, Collection_put(paths, path, modu));
+
+    def mods = Box_fetch(theModulesBox);
+    def name = nameOf(modu);
+    ifIs { <> get(mods, name) }
         {
-            Io0_die(cat("Cannot redefine module: ",
+            Io0_die(cat("Cannot redefine module by name: ",
                 stringFromModuleName(name)))
         };
 
-    def mods = Box_fetch(theModulesBox);
     Box_store(theModulesBox, Collection_put(mods, name, modu));
 };
 
@@ -289,6 +316,7 @@ fn stringFromModuleName(fqName) {
 def Module0 = @[Module: {
     info: {
         name: ["core", "Module0"],
+        path: [],
         version: "0.0.1"
     },
     exports: {
