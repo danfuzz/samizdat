@@ -113,13 +113,18 @@ if [[ ! (-r ${name} && -d ${name}) ]]; then
     exit 1
 fi
 
-# Find the "main" script.
+# Find the "main" and/or "module" file.
 
-mainFile="$(cd "${name}"; find . -maxdepth 1 -name 'main.sam*')"
-
-if [[ ${mainFile} == '' ]]; then
-    echo "No main script in directory: ${name}" 1>&2
-    exit 1
+moduleFile="$(cd "${name}"; find . -maxdepth 1 -name 'module.sam')"
+if [[ ${moduleFile} != '' ]]; then
+    # If there's a module file, the path to pass is the directory.
+    mainFile="."
+else
+    mainFile="$(cd "${name}"; find . -maxdepth 1 -name 'main.sam*')"
+    if [[ ${mainFile} == '' ]]; then
+        echo "No main or module file in directory: ${name}" 1>&2
+        exit 1
+    fi
 fi
 
 # Build the executable, if requested.

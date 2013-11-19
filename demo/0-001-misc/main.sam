@@ -6,10 +6,6 @@
 # Demo / scratch code
 #
 
-
-# This declares the arguments to the program itself.
-SELF_PATH, ARGS* ->
-
 def Io0 = moduleUse({name: ["core", "Io0"]});
 
 
@@ -109,4 +105,4 @@ fn main(selfPath, name?, rest*) {
     stuff(1, 2);
 };
 
-<> main(SELF_PATH, ARGS*)
+<> {main: main}
