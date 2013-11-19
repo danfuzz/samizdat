@@ -41,6 +41,5 @@ unset newProg
 "${baseDir}/samizdat-0/build" --optimize
 "${progDir}/build"
 
-MODULE_PATH="${baseDir}/out/dl-test/final/modules" \
-    "${baseDir}/out/samizdat-0/samizdat-0" \
-    "${baseDir}/out/dl-test/final/run.sam"
+"${baseDir}/out/samizdat-0/samizdat-0" \
+    "${baseDir}/out/dl-test/final"
