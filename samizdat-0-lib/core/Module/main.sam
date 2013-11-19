@@ -16,9 +16,6 @@ def Module0 = moduleUse({name: ["core", "Module0"]});
 # Private Definitions
 #
 
-# Box for the parsed list of module paths.
-def theModulePathsBox = Box::makePromise();
-
 # Box containing a set-like map of fully-qualified names representing
 # modules in the middle of being loaded.
 def thePendingBox = Box::makeCell({});
@@ -45,12 +42,6 @@ fn findModuleDirectory(searchInfo, modulePaths) {
 #
 # Exported Definitions
 #
-
-# Documented in spec.
-fn initModule(moduleDirs) {
-    def pathsList = Io1::pathListFromFlat(moduleDirs);
-    Box::store(theModulePathsBox, pathsList)
-};
 
 # Documented in spec.
 fn moduleUse(searchInfo, modulePaths?) {
@@ -113,6 +104,5 @@ fn moduleUse(searchInfo, modulePaths?) {
     stringFromModuleName: Module0::stringFromModuleName,
 
     # Defined here.
-    initModule: initModule,
     moduleUse:  moduleUse
 }
