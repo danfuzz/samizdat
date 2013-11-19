@@ -6,10 +6,6 @@
 # Range demo, with layer 2 syntax
 #
 
-
-# This declares the arguments to the program itself.
-SELF_PATH, ARGS* ->
-
 def Io1 = moduleUse({name: ["core", "Io1"]});
 
 
