@@ -7,9 +7,21 @@ def Io1 = moduleUse({name: ["core", "Io1"]});
 fn main(selfPath, args*) {
     Io1::note("\
         Starting: \%q(selfPath)
-        Args:     \%q(args)\n")
+        Args:     \%q(args)\n");
+
+    def sourceFile = args[0];
+    def targetFile = args[1];
+
+    Io1::note("\
+        Source: \%q(sourceFile)
+        Target: \%q(targetFile)\n");
+
+    def sourcePath = Io1::pathFromFlat(sourceFile);
+    def targetPath = Io1::pathFromFlat(targetFile);
+    def sourceText = Io1::readFileUtf8(sourcePath);
 
     # TODO!
+    Io1::writeFileUtf8(targetPath, sourceText)
 };
 
 <> {main: main}
